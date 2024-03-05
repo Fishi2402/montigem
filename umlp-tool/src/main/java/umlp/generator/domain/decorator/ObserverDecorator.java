@@ -71,11 +71,6 @@ public class ObserverDecorator extends AbstractDecorator {
                                                                 ast,
                                                                 new ArrayList<>());
     this.generationDetails.add(generationSummary);
-    var mem = new Object() {
-      void add(ASTCDMethodSignature signature, String template) {
-        generationSummary.notifyMethodSignatures().add(new GeneratedMethodSignature(template, signature));
-      }
-    };
 
     CD4C cd4C = getCD4C();
 
@@ -86,34 +81,41 @@ public class ObserverDecorator extends AbstractDecorator {
           String attributeName = a.getName();
           if (GenService.isList(a)) {
             String innerType = GenService.getInnerType(a.getMCType());
-            mem.add(cd4C.addMethod(ast, NOTIFY_ADD_TEMPLATE, attributeName, className, innerType),
-                    NOTIFY_ADD_TEMPLATE);
-            mem.add(cd4C.addMethod(ast,
-                                   MAYBE_NOTIFY_ADD_TEMPLATE,
-                                   attributeName,
-                                   className,
-                                   innerType), MAYBE_NOTIFY_ADD_TEMPLATE);
-            mem.add(cd4C.addMethod(ast,
-                                   NOTIFY_REMOVE_TEMPLATE,
-                                   attributeName,
-                                   className,
-                                   innerType), NOTIFY_REMOVE_TEMPLATE);
-            mem.add(cd4C.addMethod(ast,
-                                   MAYBE_NOTIFY_REMOVE_TEMPLATE,
-                                   attributeName,
-                                   className,
-                                   innerType), MAYBE_NOTIFY_REMOVE_TEMPLATE);
+            generationSummary.addSignature(cd4C.addMethod(ast,
+                                                          NOTIFY_ADD_TEMPLATE,
+                                                          attributeName,
+                                                          className,
+                                                          innerType), NOTIFY_ADD_TEMPLATE);
+            generationSummary.addSignature(cd4C.addMethod(ast,
+                                                          MAYBE_NOTIFY_ADD_TEMPLATE,
+                                                          attributeName,
+                                                          className,
+                                                          innerType), MAYBE_NOTIFY_ADD_TEMPLATE);
+            generationSummary.addSignature(cd4C.addMethod(ast,
+                                                          NOTIFY_REMOVE_TEMPLATE,
+                                                          attributeName,
+                                                          className,
+                                                          innerType), NOTIFY_REMOVE_TEMPLATE);
+            generationSummary.addSignature(cd4C.addMethod(ast,
+                                                          MAYBE_NOTIFY_REMOVE_TEMPLATE,
+                                                          attributeName,
+                                                          className,
+                                                          innerType), MAYBE_NOTIFY_REMOVE_TEMPLATE);
           }
 
           String fullType = getCDPrinter().prettyprint(createType(a));
-          mem.add(cd4C.addMethod(ast, NOTIFY_TEMPLATE, attributeName, className, fullType, false),
-                  NOTIFY_TEMPLATE);
-          mem.add(cd4C.addMethod(ast,
-                                 MAYBE_NOTIFY_TEMPLATE,
-                                 attributeName,
-                                 className,
-                                 fullType,
-                                 false), MAYBE_NOTIFY_TEMPLATE);
+          generationSummary.addSignature(cd4C.addMethod(ast,
+                                                        NOTIFY_TEMPLATE,
+                                                        attributeName,
+                                                        className,
+                                                        fullType,
+                                                        false), NOTIFY_TEMPLATE);
+          generationSummary.addSignature(cd4C.addMethod(ast,
+                                                        MAYBE_NOTIFY_TEMPLATE,
+                                                        attributeName,
+                                                        className,
+                                                        fullType,
+                                                        false), MAYBE_NOTIFY_TEMPLATE);
         });
 
     // Add Notify for list associations
@@ -121,18 +123,38 @@ public class ObserverDecorator extends AbstractDecorator {
         .filter(Predicate.not(GenService::isSymbolDerived))
         .filter(GenService::isList)
         .forEach(a -> {
-          mem.add(cd4C.addMethod(ast, NOTIFY_ADD_TEMPLATE, a.getName(), className, "long"),
-                  NOTIFY_ADD_TEMPLATE);
-          mem.add(cd4C.addMethod(ast, MAYBE_NOTIFY_ADD_TEMPLATE, a.getName(), className, "long"),
-                  MAYBE_NOTIFY_ADD_TEMPLATE);
-          mem.add(cd4C.addMethod(ast, NOTIFY_REMOVE_TEMPLATE, a.getName(), className, "long"),
-                  NOTIFY_REMOVE_TEMPLATE);
-          mem.add(cd4C.addMethod(ast, MAYBE_NOTIFY_REMOVE_TEMPLATE, a.getName(), className, "long"),
-                  MAYBE_NOTIFY_REMOVE_TEMPLATE);
-          mem.add(cd4C.addMethod(ast, NOTIFY_TEMPLATE, a.getName(), className, "long", true),
-                  NOTIFY_TEMPLATE);
-          mem.add(cd4C.addMethod(ast, MAYBE_NOTIFY_TEMPLATE, a.getName(), className, "long", true),
-                  MAYBE_NOTIFY_TEMPLATE);
+          generationSummary.addSignature(cd4C.addMethod(ast,
+                                                        NOTIFY_ADD_TEMPLATE,
+                                                        a.getName(),
+                                                        className,
+                                                        "long"), NOTIFY_ADD_TEMPLATE);
+          generationSummary.addSignature(cd4C.addMethod(ast,
+                                                        MAYBE_NOTIFY_ADD_TEMPLATE,
+                                                        a.getName(),
+                                                        className,
+                                                        "long"), MAYBE_NOTIFY_ADD_TEMPLATE);
+          generationSummary.addSignature(cd4C.addMethod(ast,
+                                                        NOTIFY_REMOVE_TEMPLATE,
+                                                        a.getName(),
+                                                        className,
+                                                        "long"), NOTIFY_REMOVE_TEMPLATE);
+          generationSummary.addSignature(cd4C.addMethod(ast,
+                                                        MAYBE_NOTIFY_REMOVE_TEMPLATE,
+                                                        a.getName(),
+                                                        className,
+                                                        "long"), MAYBE_NOTIFY_REMOVE_TEMPLATE);
+          generationSummary.addSignature(cd4C.addMethod(ast,
+                                                        NOTIFY_TEMPLATE,
+                                                        a.getName(),
+                                                        className,
+                                                        "long",
+                                                        true), NOTIFY_TEMPLATE);
+          generationSummary.addSignature(cd4C.addMethod(ast,
+                                                        MAYBE_NOTIFY_TEMPLATE,
+                                                        a.getName(),
+                                                        className,
+                                                        "long",
+                                                        true), MAYBE_NOTIFY_TEMPLATE);
         });
 
     // Add Notify for associations
@@ -140,10 +162,10 @@ public class ObserverDecorator extends AbstractDecorator {
         .filter(Predicate.not(GenService::isSymbolDerived))
         .filter(Predicate.not(GenService::isList))
         .forEach(a -> {
-          mem.add(cd4C.addMethod(ast, NOTIFY_TEMPLATE, a.getName(), className, "long", false),
-                  NOTIFY_TEMPLATE);
-          mem.add(cd4C.addMethod(ast, MAYBE_NOTIFY_TEMPLATE, a.getName(), className, "long", false),
-                  MAYBE_NOTIFY_TEMPLATE);
+          generationSummary.addSignature(cd4C.addMethod(ast, NOTIFY_TEMPLATE, a.getName(), className, "long", false),
+                                         NOTIFY_TEMPLATE);
+          generationSummary.addSignature(cd4C.addMethod(ast, MAYBE_NOTIFY_TEMPLATE, a.getName(), className, "long", false),
+                                         MAYBE_NOTIFY_TEMPLATE);
         });
 
     cd4C.addMethod(ast, "umlp.observer.GetScope");
@@ -183,6 +205,10 @@ public class ObserverDecorator extends AbstractDecorator {
       this.domainClass = domainClass;
       this.observerInterface = observerInterface;
       this.notifyMethodSignatures = notifyMethodSignatures;
+    }
+
+    private void addSignature(ASTCDMethodSignature signature, String template) {
+      notifyMethodSignatures.add(new GeneratedMethodSignature(template, signature));
     }
 
     public ASTCDType domainClass() {
