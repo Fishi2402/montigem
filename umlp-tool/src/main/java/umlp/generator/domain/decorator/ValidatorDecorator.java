@@ -117,7 +117,7 @@ public class ValidatorDecorator extends AbstractDecorator {
     for(ASTOCLInvariant invariant : collectInvariantsForType(domainClass.getName())) {
       OCLInvariantTree oCLInvariantTree = this.oclInvariantTrees.stream().filter(a -> a.getInvariant().equals(invariant)).findFirst().get();
       String body = OCLParser.generate(invariant, new IndentPrinter(), enumMap, oCLInvariantTree);
-      // The use with multiple invariant context declarations requires additional implementation. This is not supported yet.
+      // Multiple context definitions were replaced by multiple invariants in the OCLASTPreProcessor
       ASTOCLParamDeclaration dec = invariant.getOCLContextDefinitionList().get(0).getOCLParamDeclaration();
 
       oclRules.add(getCD4C().addMethod(validatorClass, getValidateRuleTemplate(), domainClass.getName(), invariant.getName(), dec.getMCType().printType(), dec.getName(), body));
