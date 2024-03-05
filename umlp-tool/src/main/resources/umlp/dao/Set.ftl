@@ -2,7 +2,7 @@
 ${signature("statement","index","type","columnName", "isOptional","neo4j")}
 <#if type?contains(".")>
   <#assign tmplName=type?replace(".", "_")>
-    <#if genService.isCDEnum(attr.getSymbol().getType()) || genService.isInnerCDEnum(attr.getSymbol().getType())>
+    <#if tmplName == "java_lang_Enum">
         ${includeArgs("umlp.dao.set."+tmplName, statement, columnName, index, isOptional)}
     <#else>
         ${includeArgs("umlp.dao.set."+tmplName+neo4j, statement, columnName, index, isOptional)}
