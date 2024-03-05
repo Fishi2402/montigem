@@ -26,7 +26,7 @@ import java.util.List;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
-public class EnsureCorrectManager4Decorator extends AbstractDecorator {
+public class EnsureCorrectManager4TypeDecorator extends AbstractDecorator {
 
   //same package as normal test infrastructure
   public static final String PACKAGE = TestSetupDecorator.PACK_TEST_INFRASTRUCTURE;
@@ -41,8 +41,8 @@ public class EnsureCorrectManager4Decorator extends AbstractDecorator {
   private final ObserverDecorator observerDecorator;
   private Collection<GenerationSummary> generationSummaries = List.of();
 
-  public EnsureCorrectManager4Decorator(GlobalExtensionManagement glex,
-                                        ObserverDecorator observerDecorator) {
+  public EnsureCorrectManager4TypeDecorator(GlobalExtensionManagement glex,
+                                            ObserverDecorator observerDecorator) {
     super(glex);
     this.observerDecorator = observerDecorator;
   }

@@ -24,7 +24,7 @@ import java.util.List;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
-public class EnsureCorrectManagerDecorator extends AbstractDecorator {
+public class EnsureCorrectManager4DiagrammDecorator extends AbstractDecorator {
 
   //same package as normal test infrastructure
   public static final String PACKAGE = TestSetupDecorator.PACK_TEST_INFRASTRUCTURE;
@@ -37,14 +37,14 @@ public class EnsureCorrectManagerDecorator extends AbstractDecorator {
       "return NotificationScope.MINIMAL;");
 
   private final DiagramObserverDecorator diagramObserverDecorator;
-  private final EnsureCorrectManager4Decorator ensureCorrectManager4Decorator;
+  private final EnsureCorrectManager4TypeDecorator ensureCorrectManager4TypeDecorator;
 
-  public EnsureCorrectManagerDecorator(GlobalExtensionManagement glex,
-                                       DiagramObserverDecorator diagramObserverDecorator,
-                                       EnsureCorrectManager4Decorator ensureCorrectManager4Decorator) {
+  public EnsureCorrectManager4DiagrammDecorator(GlobalExtensionManagement glex,
+                                                DiagramObserverDecorator diagramObserverDecorator,
+                                                EnsureCorrectManager4TypeDecorator ensureCorrectManager4TypeDecorator) {
     super(glex);
     this.diagramObserverDecorator = diagramObserverDecorator;
-    this.ensureCorrectManager4Decorator = ensureCorrectManager4Decorator;
+    this.ensureCorrectManager4TypeDecorator = ensureCorrectManager4TypeDecorator;
   }
 
   private static void makePublic(ASTCDMethodSignature signature) {
@@ -87,8 +87,8 @@ public class EnsureCorrectManagerDecorator extends AbstractDecorator {
 
     //ensureCorrectManager4 attributes
     List<ASTCDAttribute> attributes = new ArrayList<>();
-    for (EnsureCorrectManager4Decorator.GenerationSummary ecm4GenerationSummary :
-        ensureCorrectManager4Decorator.getGenerationSummaries()) {
+    for (EnsureCorrectManager4TypeDecorator.GenerationSummary ecm4GenerationSummary :
+        ensureCorrectManager4TypeDecorator.getGenerationSummaries()) {
       //attribute
       ASTCDClass generatedClass = ecm4GenerationSummary.generatedClass();
       String attributeType = generatedClass.getName();
