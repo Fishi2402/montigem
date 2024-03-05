@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("typeName", "cdName", "attributes", "optionalAttributes", "listAttributes", "listAssocs", "gemAssocs", "assocsToDefinitionDiagramMap")}
+${tc.signature("typeName", "cdName", "attributes", "optionalAttributes", "listAttributes", "listAssocs", "gemAssocs", "assocsToDefinitionDiagramMap", "neo4j")}
 ${cd4c.method("public void insert${typeName}(${typeName} o)")}
   <#assign statement="insert"+typeName>
   ensureInsert${typeName}Created();
@@ -8,10 +8,10 @@ ${cd4c.method("public void insert${typeName}(${typeName} o)")}
     ${statement}.setLong(1, o.getGemId());
     <#assign index = 1>
     <#list attributes as attr><#assign index = index+1>
-      ${includeArgs("umlp.dao.Set", statement, index, genService.getDBType(attr.getSymbol().getType()), "o."+genService.getGetterName(attr.getName(), attr.getSymbol().getType())+"()", false)};
+      ${includeArgs("umlp.dao.Set", statement, index, genService.getDBType(attr.getSymbol().getType()), "o."+genService.getGetterName(attr.getName(), attr.getSymbol().getType())+"()", false, neo4j)};
     </#list>
     <#list optionalAttributes as attr><#assign index = index+1>
-      ${includeArgs("umlp.dao.Set", statement, index, genService.getDBType(attr.getSymbol().getType()), "o."+genService.getGetterName(attr.getName(), attr.getSymbol().getType())+"()", true)};
+      ${includeArgs("umlp.dao.Set", statement, index, genService.getDBType(attr.getSymbol().getType()), "o."+genService.getGetterName(attr.getName(), attr.getSymbol().getType())+"()", true, neo4j)};
     </#list>
     ${statement}.executeUpdate();
     <#list listAttributes as attr>
