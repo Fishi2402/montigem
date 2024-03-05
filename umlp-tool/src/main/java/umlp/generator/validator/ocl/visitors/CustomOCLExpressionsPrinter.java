@@ -105,12 +105,26 @@ public class CustomOCLExpressionsPrinter extends OCLExpressionsPrinter {
     List<String> addToValidationResultListCalls = new ArrayList<>();
 
     for(ASTInDeclaration dec : node.getInDeclarationList()) {
-      List<String> inCall = getExpressionCall(dec.getExpression());
-      Optional<OCLInvariantTreeNode> treeNode = oCLInvariantTree.findMatchingBranch(inCall, node.getEnclosingScope());
-      if(inCall.isEmpty()) {
-        // TODO: handle this case
-      } else if(inCall.size() == 1) {
-        treeNode = traceBackCallFromParamDeclarationExpressionName(oCLInvariantTree, inCall, node.getEnclosingScope());
+      List<String> inCall = new ArrayList<>();
+      String decType = "";
+      Optional<OCLInvariantTreeNode> treeNode = Optional.empty();
+      if(dec.isPresentExpression()) {
+        inCall = getExpressionCall(dec.getExpression());
+        if(inCall.size() == 1) {
+          treeNode = traceBackCallFromParamDeclarationExpressionName(oCLInvariantTree, inCall, node.getEnclosingScope());
+        } else {
+          treeNode = oCLInvariantTree.findMatchingBranch(inCall, node.getEnclosingScope());
+        }
+        if(treeNode.isPresent()) {
+          OCLInvariantTreeNode deepestNode = treeNode.get().findDeepestNodeForCallBranch();
+          if (deepestNode.hasAssociation()) {
+            decType = deepestNode.getAssociation().get().getRight().getMCQualifiedType().printType();
+          } else {
+            decType = deepestNode.getParameterDeclaration().get().getMCType().printType();
+          }
+        }
+      } else if(dec.isPresentMCType()) {
+        decType = dec.getMCType().printType();
       }
       if (treeNode.isPresent()) {
         String call = String.join(".", inCall);
@@ -118,20 +132,7 @@ public class CustomOCLExpressionsPrinter extends OCLExpressionsPrinter {
           firstVisitedInCallLevel.put(call, currentForallLevel);
         }
         boolean newLevel = firstVisitedInCallLevel.computeIfAbsent(call, k -> -1) == currentForallLevel;
-        String decType = "";
-        if(dec.isPresentMCType()) {
-          decType = dec.getMCType().printType();
-        } else {
-          Optional<OCLInvariantTreeNode> decNode = oCLInvariantTree.findMatchingBranch(inCall, node.getEnclosingScope());
-          if(decNode.isPresent()) {
-            OCLInvariantTreeNode deepestNode = decNode.get().findDeepestNodeForCallBranch();
-            if(deepestNode.hasAssociation()) {
-              decType = deepestNode.getAssociation().get().getRight().getMCQualifiedType().printType();
-            } else {
-              decType = deepestNode.getParameterDeclaration().get().getMCType().printType();
-            }
-          }
-        }
+
         for (ASTInDeclarationVariable var : dec.getInDeclarationVariableList()) {
           if (newLevel) {
             this.getPrinter().println(getValidationResultListDeclaration(decType, getVRCallForCallBranch(oCLInvariantTree, treeNode.get(), currentForallLevel)));
@@ -261,7 +262,7 @@ public class CustomOCLExpressionsPrinter extends OCLExpressionsPrinter {
       this.getPrinter().print(vRCall);
       this.getPrinter().print(".add(new ");
       this.getPrinter().print(type);
-      this.getPrinter().print("ValidationResult());");
+      this.getPrinter().println("ValidationResult());");
       this.getPrinter().print(vRCall);
       this.getPrinter().print(".get(i).addThisObjectRelatedValidationMessage(v");
       this.getPrinter().print(valueLevel);
@@ -310,7 +311,7 @@ public class CustomOCLExpressionsPrinter extends OCLExpressionsPrinter {
     if (innerType == null) {
       Log.error(INNER_TYPE_NOT_DERIVED_ERROR, node.get_SourcePositionStart());
     }
-    if (node.isPresentExpression()) {
+    if (node.isPresentExpression() || node.isPresentMCType()) {
       for (ASTInDeclarationVariable var : node.getInDeclarationVariableList()) {
         TypeSymbol type = innerType.getTypeInfo();
         String name = var.getName();
@@ -337,6 +338,10 @@ public class CustomOCLExpressionsPrinter extends OCLExpressionsPrinter {
           } else {
             node.getExpression().accept(getTraverser());
           }
+        } else {
+          this.getPrinter().print("SehubManager.get");
+          this.getPrinter().print(node.getMCType().printType());
+          this.getPrinter().print("List()");
         }
         this.getPrinter().println(") {");
         this.getPrinter().indent();
@@ -430,7 +435,7 @@ public class CustomOCLExpressionsPrinter extends OCLExpressionsPrinter {
         if(expressionCall.size() == 1) {
           return traceBackCallFromParamDeclarationExpressionName(oCLInvariantTree, expressionCall, findBasicSymbolsScope(expression.getEnclosingScope()));
         } else {
-          return treeNode;
+          return oCLInvariantTree.findMatchingBranch(expressionCall, findBasicSymbolsScope(expression.getEnclosingScope()));
         }
       } else {
         return treeNode;
