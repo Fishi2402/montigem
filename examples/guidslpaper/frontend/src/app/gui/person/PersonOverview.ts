@@ -15,13 +15,23 @@ import { PersonOverviewComponent, config } from '@src/gui/person/PersonOverviewC
 export class PersonOverview extends PersonOverviewComponent {
 
   public override init() {
-    this.gemTable5Columns = [
-      new TableColumn("_personalnummer", "Personalnummer"),
-      new TableColumn("_kuerzel", "Kürzel"),
-      new TableColumn("_nachname", "Name"),
-      new TableColumn("_vorname", "Vorname"),
-      new TableColumn("_beschBeginn", "Anstellungsbeginn"),
-      new TableColumn("_beschEnde", "Anstellungsende")
+    this.gemTable5Columns = <any[]>[
+      { prop: "_nachname", name: "Surname" },
+      { prop: "_vorname", name: "Name" },
+      {
+        prop: "_beschBeginn", name: "Contract start", displayValue: v => new Date(v).toLocaleDateString("de-DE", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        })
+      },
+      {
+        prop: "_beschEnde", name: "Contract end", displayValue: v => new Date(v).toLocaleDateString("de-DE", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        })
+      }
     ];
   }
 

@@ -169,6 +169,7 @@ public class GuidslpaperServerApplication extends guidslpaper.GuidslpaperServerA
         .build()
         .get();
 
+    /*
     p = GuidslpaperManager.personBuilder()
         .personalnummer(Optional.of("62345"))
         .kuerzel("MUSMO")
@@ -208,6 +209,7 @@ public class GuidslpaperServerApplication extends guidslpaper.GuidslpaperServerA
         .beschEnde(Optional.empty())
         .build()
         .get();
+    /**/
   }
 
 

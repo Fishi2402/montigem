@@ -23,7 +23,7 @@ page AccountOverview(List<Konto> accounts) {
     ]),
 
     @GemCard(titleComponent =
-      @Header(left = "Übersicht Konten", right = [
+      @Header(left = "Accounts overview", right = [
         @GemButton(width = "auto", label = "Zahlungen erfassen"),
         @GemButton(width = "auto", label = "Konto hinzufügen"),
         @GemButton(width = "auto", label = "?")

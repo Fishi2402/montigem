@@ -13,23 +13,19 @@ import gui.common.Header;
 import Guidslpaper.Person;
 
 page PersonOverview(List<Person> persons) {
-  @GemColumn(rowGap = "1rem", components = [
-    @GemCard(titleComponent =
-      @Header(left = "Übersicht Personal", right = [
-        @GemButton(width = "auto", label = "Mitarbeiter hinzufügen"),
-        @GemButton(width = "auto", label = "?")
-      ]),
-      component = @GemTable(
-        rows = persons,
-        columns = [
-          TableColumn("personalnummer", "Personal-nummer"),
-          TableColumn("kuerzel", "Kürzel"),
-          TableColumn("name", "Name"),
-          TableColumn("vorname", "Vorname"),
-          TableColumn("beschBeginn", "Anstellungsbeginn"),
-          TableColumn("beschEnde", "Anstellungsende")
-        ]
-      )
+  @GemCard(titleComponent =
+    @Header(left = "Staff overview", right = [
+      @GemButton(width = "auto", label = "Add person"),
+      @GemButton(width = "auto", label = "?")
+    ]),
+    component = @GemTable(
+      rows = persons,
+      columns = [
+        TableColumn("name", "Name"),
+        TableColumn("vorname", "Surname"),
+        TableColumn("beschBeginn", "Contract start"),
+        TableColumn("beschEnde", "Contract end")
+      ]
     )
-  ]);
+  );
 }
