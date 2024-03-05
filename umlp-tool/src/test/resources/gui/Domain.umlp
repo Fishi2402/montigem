@@ -1,15 +1,25 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-classdiagram Domain {
+umlp Domain {
   class Person {
     java.time.LocalDate birthday;
     String name;
     boolean employed;
+    MaritalStatus status;
+    / int getAge();
+    void eat();
   }
 
   class Address {
     String street;
     int house;
+  }
+
+  +enum MaritalStatus {
+    MARRIED,
+    SINGLE,
+    DIVORCED,
+    WIDOWED;
   }
 
   association home [1] Person -> (address) Address [0..1];

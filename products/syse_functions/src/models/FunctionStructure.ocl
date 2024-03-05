@@ -3,7 +3,6 @@
 ocl FunctionStructure {
 
   /*
-    
     Channel setzen voraus, dass sie durch 
 	einen eindeutigen Atomaren Outport aufgespannt werden. 
 	Hierbei werden zwischen Owner und Subfunktionen out mit out bzw. in mit in verbunden,
@@ -13,13 +12,13 @@ ocl FunctionStructure {
   
   /*
     In each component structure, the feed for an input is either the output
-	of a sister-component or the input of its owning component:
+	of a sister-component or the input of its owning component.
   */
   context Function f inv ValidChannelStructureInDecomposition:
     forall c in f.subFunction.in.values() :
 	  c isin f.in.values() ^
 	  c isin f.subFunction.out.values();
-
+	  
   /*
     In each component structure, an output can provide the feed for
 	the input of a sister-component or the output of its owning component:
@@ -30,33 +29,57 @@ ocl FunctionStructure {
 	  c isin f.subFunction.in.values();
 
   /*
+    Each root component forwards incoming ports to its subcomponents incoming ports
+	and its outgoing ports to its subcomponents outgoing ports
+  */
+  context Function f inv ValidChannelStructureRootDecomposition :
+    f.owner.isEmpty() && !f.subFunction.isEmpty() implies
+      ((forall c in f.in.values() : c isin f.subFunction.in.values()) &&
+	  (forall c in f.out.values() : c isin f.subFunction.out.values()));
+	
+  /*
+    Each root components outgoing ports are connected to its subcomponents outgoing ports
+  */
+  context Function f inv ValidChannelStructureRootOutDecomposition :
+    f.owner.isEmpty() && !f.subFunction.isEmpty() implies
+    (forall c in f.out.values() :
+	  c isin f.subFunction.out.values());
+	
+  /*
     Each atomic component knows each of its outgoing Channels by exactly one identifier
   */
   context Function f inv AtomicOutPortUniqueId:
     f.subfunction.isEmpty() implies
-      (forall c1 in f.out.values(), a in f.out.keys(), b in f.out.keys() :
+      (forall c1 in f.out.values(), a, b in f.out.keys() :
           f.out.get(a) == c1 && f.out.get(b) == c1 implies (a == b));
 
   /*
-    Each Channel without an atomic outPort has an inport with no parent component
+    Each Channel without an atomic outPort has exactly one inport of a root component
   */
-  context Channel c inv UniqueAtomicOutPort:
+  context Channel c inv UniqueRootInport:
     c.ownerOut.isEmpty() implies
       (exists Function f1 in c.ownerIn : 
 	    f1.owner.isEmpty() &&
 		(forall f2 in c.ownerIn :
-		  f1.owner.isEmpty() implies (f1 == f2));
+		  f2.owner.isEmpty() implies (f1 == f2));
    		  
+  /*
+    Each root component knows each of its incoming Channels by exactly one identifier
+  */
+  context Function f inv AtomicOutPortUniqueId:
+    f.owner.isEmpty() implies
+      (forall c1 in f.in.values(), a, b in f.in.keys() :
+          f.in.get(a) == c1 && f.in.get(b) == c1 implies (a == b));
 		
   /*
-    if a Channel has an atomic outPort, it has exactly 1.
+    Each Channel with an atomic outPort has exactly one
   */
   context Channel c inv UniqueAtomicOutPort:
     !c.ownerOut.isEmpty() implies
       (exists Function f1 in c.ownerOut : 
 	    f1.subFunction.isEmpty() && 
-	    (forall f2 in c.ownerIn :
-	      f1.owner.isEmpty() implies (f1 == f2)));
+	    (forall f2 in c.ownerOut: 
+		  (f1 != f2) implies f2 isin f1.owner**)
 
   <--------------------------------------------------------------------------->
 
@@ -70,10 +93,9 @@ ocl FunctionStructure {
   /*
     The types of a Channel and its stream must match
   */
-  context Channel c, FunctionStream s inv StreamTypeConsistency:
-    s == c.stream implies:
-      s.category == c.category;
-
+  context Channel c inv StreamTypeConsistency:
+    c.functionstream.isPresent() implies
+      (c.category == c.functionstream.category);
 
   /* ---------------------------------------------------------
    * Monitoring Teil
@@ -90,36 +112,23 @@ ocl FunctionStructure {
   /*
     All observed values must be contained in the observed stream
   */
-  context Stream s, Observation o, Value v inv ObservationOnlyOnStream:
-    s == o.stream && v isin observation.value implies:
-      v isin s.value;
+  context Observation o inv ObservationOnlyOnStream:
+    o.stream.isPresent() implies
+	  (forall v in o.value :
+        v isin o.stream.value);
 
   /*
     The types of an observation and the observed stream must match
   */
-  context FunctionStream s, Observation o inv ObservationTypeConsistency:
-    s == o.stream implies:
-      s.category == o.category;
+  context Observation o inv ObservationTypeConsistency:
+    o.stream.isPresent() implies
+      (o.stream.category == o.category);
 
   /*
     The types of a stream and its values must match
   */
-  context FunctionStream s, Value v inv ValueTypeConsistency:
-    v isin s.value implies:
-      s.category == v.category;
+  context Value v inv ValueTypeConsistency:
+    v.stream.isPresent() implies
+      (v.stream.category == v.category);
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -180,7 +180,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
     // --- end
 
     ASTCDAttribute domainAttribute = getCDAttributeFacade().createAttribute(
-        CDModifier.PUBLIC.build(), attributeType, util.gui2cdAttrName(attributeName));
+        CDModifier.PUBLIC.build(), attributeType, attributeName);
 
     clazz.addCDMember(domainAttribute);
 
@@ -427,7 +427,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
     // attr
     ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
         modifier, transformTypeForAttr(clazz, astguiParam),
-        util.gui2cdAttrName(astguiParam.getName())
+        astguiParam.getName()
     );
     addInitialValue(attr);
     clazz.addCDMember(attr);

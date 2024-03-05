@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package util;
+
+import Domain.Person;
+import Domain.MaritalStatus;
+
+component P(Person p, boolean b, String s, MaritalStatus m)

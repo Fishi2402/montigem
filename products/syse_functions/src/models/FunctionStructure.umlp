@@ -3,14 +3,18 @@
 import java.time.LocalDate;
 
 /*
-  Zweck dieses Klassendiagramms:
+  Das Funktions-Struktur-Modell
+  
+  Zweck dieses Klassendiagramms ist die:
 
   * Beschreibung der logischen
     (und gegebenenfalls auch der physikalischen)
     Struktur von Maschinen und Produkten
     (Beispiel: Auto, Produktionsstraße, Motor, Getriebe,
     inclusive expliziter Einbeziehung der Steuerung durch
-    Softwarekomponenten) auf der Basis des Konzepts "Funktion"
+    Softwarekomponenten) auf der Basis des Konzepts "Funktion".
+    Siehe z.B. Combemale/Gray/Rumpe [CGR23e] or
+    Broy/Stoelen [BS01] (see https://se-rwth.github.io/publications/)
 
   * die funktionale Beschreibung der Komponenten
     beinhaltet deren Namen sowie die Form aller Interaktionen
@@ -22,16 +26,16 @@ import java.time.LocalDate;
   * Funktionen können hierarchisch dekomponiert sein.
     (Funktionsstruktur)
 
-  * Funktionen können komplex sein, brechen sich aber letztlich runter
-    auf entweder Software, Sensoren, Aktuatoren oder elementare
-    Funktionen, wie sie die Maschinenbauer in Form von
+  * Funktionen können komplex sein, dekomponieren sich aber letztlich 
+    zu entweder Software, Sensoren, Aktuatoren oder elementaren 
+    physikalischen Funktionen, wie sie die Maschinenbauer in Form von
     etwa 300 Stück kennen [Koller-Katalog].
 
   * Die Funktionen können einen internen Zustand haben und diesen Zustand
     dynamisch wechseln.
     (das lässt sich genauso wie das Geschehen auf versteckten Kanälen
-     möglicherweise nicht beobachten, aber zur Modellierung
-     und Spezifikation lassen sich diese Dinge dennoch verwenden.)
+    möglicherweise nicht beobachten, aber zur Modellierung
+    und Spezifikation dennoch verwenden.)
 
   * Das Klassendiagramm beschreibt diese Funktionsstruktur,
     die logisch oder physikalisch interpretiert werden kann.
@@ -41,7 +45,7 @@ import java.time.LocalDate;
     wobei dort jeweils spezifische Ergänzungen und Erweiterungen sinnvoll
     und notwendig erscheinen.
 
-  * Dieses Diagramm hat den Charakter eines Referenzmodell,
+  * Dieses Diagramm hat den Charakter eines Referenzmodells,
     seine Realisierung erlaubt aber auch die Entwicklung darauf
     aufbauender Funktionalitäten.
 
@@ -90,11 +94,11 @@ umlp FunctionStructure {
    * --------------------------------------------------------- */
 
   /* Klasse Funktion:
-        das Kernelement der Funktionsstruktur.
-        Sie wird beschrieben durch ihre Schnittstellen
-        und gegebenenfalls einem internen Zustand
-        und gegebenenfalls einer Dekompositions-Struktur
-        (Architektur), bestehend aus weiteren Funktionen
+     das Kernelement der Funktionsstruktur.
+     Sie wird beschrieben durch ihre Schnittstellen
+     und gegebenenfalls einem internen Zustand
+     und gegebenenfalls einer Dekompositions-Struktur
+     (Architektur), bestehend aus weiteren Funktionen
   */
   class Function {
     String name;

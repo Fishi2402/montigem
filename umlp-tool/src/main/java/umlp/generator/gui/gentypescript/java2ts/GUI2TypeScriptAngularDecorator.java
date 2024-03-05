@@ -125,7 +125,7 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
         scssPaths.add(hwScssPath.get());
       }
 
-      String selector = GUIGeneratorUtil.getInstance().getComponentNameFromCamelCaseName(originalName);
+      String selector = GUIGeneratorUtil.getInstance().pascal2KebabCase(originalName);
 
       glex.replaceTemplate(
           GUI2ComponentTemplates.ANNOTATIONS,
@@ -363,7 +363,7 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
     // attr
     ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
         modifier, transformTypeForAttr(clazz, astguiParam),
-        util.gui2cdAttrName(astguiParam.getName())
+        astguiParam.getName()
     );
     glex.replaceTemplate(GUI2ComponentTemplates.ATTRIBUTE, attr,
         new TemplateHookPoint(GUI2ComponentTemplates.OVERRIDEATTRIBUTE));
@@ -420,7 +420,7 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
     // --- end
 
     ASTCDAttribute domainAttribute = getCDAttributeFacade().createAttribute(
-        CDModifier.PUBLIC.build(), attributeType, util.gui2cdAttrName(attributeName));
+        CDModifier.PUBLIC.build(), attributeType, attributeName);
 
     clazz.addCDMember(domainAttribute);
 

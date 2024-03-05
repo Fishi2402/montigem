@@ -220,6 +220,8 @@ build.dependsOn(buildAll)
 
 publish.dependsOn(publishAll)
 
+tasks.build_charts.dependsOn(tasks.build_commonj2ts)
+
 publishing {
   publications {
     mavenJava(MavenPublication) {
