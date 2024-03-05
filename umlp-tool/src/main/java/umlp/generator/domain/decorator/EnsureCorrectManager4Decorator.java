@@ -63,14 +63,15 @@ public class EnsureCorrectManager4Decorator extends AbstractDecorator {
         .getGenerationSummaries()
         .forEach(generationSummary -> aPackage.addCDElement(withOrigin(createEnsureCorrectManager(
             origCD,
+            decoratedCD,
             generationSummary))));
 
   }
 
   private ASTCDClass createEnsureCorrectManager(ASTCDCompilationUnit origCD,
+                                                ASTCDCompilationUnit decoratedCD,
                                                 ObserverDecorator.GenerationSummary observerGenerationSummary) {
-    ASTCDDefinition cdDefinition = origCD.getCDDefinition();
-    String cdName = cdDefinition.getName();
+    String cdName = origCD.getCDDefinition().getName();
     ASTCDType domainClass = observerGenerationSummary.domainClass();
     String domainClassName = domainClass.getName();
 
@@ -132,21 +133,25 @@ public class EnsureCorrectManager4Decorator extends AbstractDecorator {
         //filter out already qualified types
         if (typeName.contains(".")) continue;
 
+        String importSignature = dot.join(defaultPackage, typeName);
+
         //ignore everything that is already imported
         for (ASTMCImportStatement importStatement : cd4C.getImportList(res)) {
-          if (importStatement.getQName().endsWith(typeName)) continue importParams;
+          if (importStatement.getQName().equals(importSignature)) continue importParams;
         }
 
-        //add an import for the parameter type, if it is part of the original class diagramm
-        var iter = cdDefinition.iteratorCDElements();
-        while (iter.hasNext()) {
-          ASTCDElement element = iter.next();
+        //add an import for the parameter type, if it is part of the original or decorated class diagramm
+        Collection<ASTCDElement> cdElements = new ArrayList<>();
+        cdElements.addAll(origCD.getCDDefinition().getCDElementList());
+        cdElements.addAll(decoratedCD.getCDDefinition().getCDElementList());
+
+        for (ASTCDElement element : cdElements) {
           if (!(element instanceof ASTCDType)) continue;
 
           ASTCDType cdType = (ASTCDType) element;
           if (!cdType.getName().equals(typeName)) continue;
 
-          cd4C.addImport(res, dot.join(defaultPackage, typeName));
+          cd4C.addImport(res, importSignature);
           break;
         }
       }
