@@ -85,7 +85,7 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
             scssPaths.add("./" + originalName + ".scss");
           }
         }
-        String selector = GUIGeneratorUtil.getInstance().getComponentNameFromCamelCaseName(originalName);
+        String selector = GUIGeneratorUtil.getInstance().pascal2KebabCase(originalName);
         glex.replaceTemplate(
             GUI2ComponentTemplates.ANNOTATIONS,
             clazz,

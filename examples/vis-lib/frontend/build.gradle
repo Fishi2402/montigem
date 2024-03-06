@@ -5,40 +5,34 @@ plugins {
   id "de.rwth.se.umlp-tool-frontend"
 }
 
+dependencies {
+  implementation project(":examples:dtcockpit-jsweet:backend")
+  implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version
+}
+
 node {
-  // Whether to download and install a specific Node.js version or not
-  // If false, it will use the globally installed Node.js
-  // If true, it will download node using above parameters
-  // Note that npm is bundled with Node.js
   download = true
-
-  // Version of node to download and install (only used if download is true)
-  // It will be unpacked in the workDir
   version = "${node_version}"
-
-  // Whether the plugin automatically should add the proxy configuration to npm and yarn commands
-  // according the proxy configuration defined for Gradle
-  // Disable this option if you want to configure the proxy for npm or yarn on your own
-  // (in the .npmrc file for instance)
   nodeProxySettings = ProxySettings.OFF
-
-  // The Node.js project directory location
-  // This is where the package.json file and node_modules directory are located
-  // By default it is at the root of the current project
   nodeProjectDir = file("${buildDir}/frontendGen")
 }
-nodeSetup.dependsOn(frontendSetup)
 
 genGUI {
   domainModels = ["Domain"]
   guiCreateModels = ["person.Create"]
-
-  /*
-  debug = true
-  outputs.upToDateWhen { false }
-  /**/
 }
 
+translateJava2TSDomain {
+  domainModel = 'Domain'
+  verbose = true
+}
+
+translateJava2TSGUI {
+  domainModel = 'Domain'
+  verbose = true
+}
+
+nodeSetup.dependsOn(frontendSetup)
 npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 
 def prebuildTasks = [

@@ -37,6 +37,7 @@ public class DomainServerApplication extends domain.DomainServerApplicationTOP {
         "A big fan of model-driven software engineering," +
             " generative approaches, domain-specific languages," +
             " and test-driven development",
+        true,
         a
     );
     a = addAddress("München", "Lichtenfelser Str.", 18);
@@ -69,18 +70,19 @@ public class DomainServerApplication extends domain.DomainServerApplicationTOP {
         .get();
   }
 
-  protected Person addPerson(String name, LocalDate birthday, String aboutMe, Address address) {
+  protected Person addPerson(String name, LocalDate birthday, String aboutMe, boolean employed, Address address) {
     return DomainManager.personBuilder()
         .name(name)
         .birthday(birthday)
         .address(address)
         .aboutMe(aboutMe)
+        .employed(employed)
         .build()
         .get();
   }
 
   protected Person addPerson(String name, LocalDate birthday, Address address) {
-    return addPerson(name, birthday, "", address);
+    return addPerson(name, birthday, "", false, address);
   }
 
 }
