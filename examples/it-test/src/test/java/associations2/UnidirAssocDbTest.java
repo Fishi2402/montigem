@@ -41,6 +41,7 @@ public abstract class UnidirAssocDbTest extends Associations2DBTestSetup {
     var eleftToRight = Associations2Manager.eleftToRightBuilder().fleftToRight(fleftToRight).build().get();
     assertEquals(fleftToRight.gemId, eleftToRight.getFleftToRight().gemId);
 
+    getBackend().activate();
     var dao = Associations2DAOFactory.getEleftToRightDAO();
     var clone = dao.selectEleftToRight(eleftToRight.gemId).get();
 
@@ -59,6 +60,7 @@ public abstract class UnidirAssocDbTest extends Associations2DBTestSetup {
 
     assertEquals(rhs.gemId, lhs.getFleftToRight().gemId);
 
+    getBackend().activate();
     var dao = Associations2DAOFactory.getEleftToRightDAO();
     var clone = dao.selectEleftToRight(lhs.gemId).get();
 
@@ -77,6 +79,7 @@ public abstract class UnidirAssocDbTest extends Associations2DBTestSetup {
     assertTrue(rhs.containsDleftToRight(lhs1));
     assertTrue(rhs.containsDleftToRight(lhs2));
 
+    getBackend().activate();
     var dao = Associations2DAOFactory.getCleftToRightDAO();
     var clone = dao.selectCleftToRight(rhs.gemId).get();
 
@@ -97,6 +100,7 @@ public abstract class UnidirAssocDbTest extends Associations2DBTestSetup {
     assertTrue(rhs.containsDleftToRight(lhs1));
     assertTrue(rhs.containsDleftToRight(lhs2));
 
+    getBackend().activate();
     var dao = Associations2DAOFactory.getCleftToRightDAO();
     var clone = dao.selectCleftToRight(rhs.gemId).get();
 
