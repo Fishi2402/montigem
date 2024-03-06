@@ -32,6 +32,7 @@ for (${cdName}TestContext client : getClientsList()) {
 }
 
 //check dao access
+${cdName}DAOFactory.init();
 ${cdName}DAOFactory.addAccessListener(() -> {
   ${cdName}Manager inst = ${cdName}Manager.getSingleton();
   if (inst != be) {
