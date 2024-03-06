@@ -4,6 +4,7 @@ import {
   EventEmitter,
   Output,
   HostBinding,
+  Input,
 } from "@angular/core";
 import { GemCheckBoxInput as GemCheckBoxInputTOP } from "./gem-check-box-input/gem-check-box-input.component-gen";
 
@@ -25,6 +26,19 @@ export class GemCheckBoxInput extends GemCheckBoxInputTOP implements OnInit {
 
   onCheckedChange(event: boolean) {
     this.checkedChange.emit(event);
+  }
+
+  public override get labelPosition(): string {
+    return this._labelPosition;
+  }
+
+  @Input()
+  public override set labelPosition(labelPosition: string) {
+    if (labelPosition === 'left') {
+      this.rightPosition = false;
+    } else {
+      this.rightPosition = true;
+    }
   }
 
   ngOnInit(): void {
