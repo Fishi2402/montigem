@@ -22,3 +22,10 @@ for(int i = 0; i < getNumberOfClients(); i++){
 }
 
 backend.activate();
+
+${cdName}Manager be = getBackend().getManager();
+be._addObserver(new EnsureCorrectManager${cdName}(be));
+
+for (${cdName}TestContext client : getClientsList()) {
+  client.getManager()._addObserver(new EnsureCorrectManager${cdName}(client.getManager()));
+}
