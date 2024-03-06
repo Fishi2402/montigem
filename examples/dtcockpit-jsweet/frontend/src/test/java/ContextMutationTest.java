@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+//TODO would be better in umlp-tool/test/decorator but I don't know how to set that up properly
 public class ContextMutationTest extends DtcockpitMockTestSetup {
 
   public ContextMutationTest() {
