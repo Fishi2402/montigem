@@ -1,6 +1,6 @@
 package umlp.generator.domain.decorator;
 
-import de.monticore.cd._symboltable.CDSymbolTables;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cdassociation._ast.ASTCDAssociation;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
@@ -8,15 +8,12 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.check.SymTypeExpression;
-import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
@@ -26,6 +23,7 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC;
 public class DAOFactoryDecorator extends AbstractDecorator {
 
   public static final String SUFFIX = "DAOFactory";
+  private static final String CUSTOM_TEMPLATE_PATH = "umlp.daofactory.";
 
   protected List<String> addedAssocAttributeNames = new ArrayList<>();
 
@@ -50,6 +48,19 @@ public class DAOFactoryDecorator extends AbstractDecorator {
             StringTransformations.uncapitalize("instance")))
         .build();
 
+    CD4C cd4C = getCD4C();
+
+    //listener attribute
+    ASTCDAttribute accessListenersAttribute = cd4C.addAttribute(daoFactory,
+                                                                false,
+                                                                false,
+                                                                "protected final List<Runnable> accessListeners;");
+
+    //constructor
+    cd4C.addConstructor(daoFactory, CUSTOM_TEMPLATE_PATH + "Constructor",
+                        daoFactory.getName(),
+                        accessListenersAttribute.getName());
+
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
         .forEach(c -> addClassElements(c, daoFactory));
 
@@ -61,15 +72,19 @@ public class DAOFactoryDecorator extends AbstractDecorator {
         .forEach(assoc -> addAssocDAOElements(assoc, daoFactory));
 
     // methods
+    cd4C.addMethod(daoFactory,
+                   CUSTOM_TEMPLATE_PATH + "AddAccessListener",
+                   daoFactory.getName(),
+                   accessListenersAttribute.getName());
     List<ASTCDClass> concreteDomainClasses = origCD.getCDDefinition().getCDClassesList().stream()
         .filter(c -> !c.getModifier().isAbstract() && !c.getModifier().isDerived())
         .collect(Collectors.toList());
 
-    getCD4C().addMethod(daoFactory, "umlp.daofactory.Init", name + DAOFactoryDecorator.SUFFIX,
-        concreteDomainClasses, origCD.getCDDefinition().getCDAssociationsList().stream()
+    cd4C.addMethod(daoFactory, CUSTOM_TEMPLATE_PATH + "Init", name + DAOFactoryDecorator.SUFFIX,
+                   concreteDomainClasses, origCD.getCDDefinition().getCDAssociationsList().stream()
             .filter(a -> !a.getModifier().isDerived()).map(a -> a.getName()).collect(Collectors.toList()));
-    getCD4C().addMethod(daoFactory, "umlp.daofactory.InitNeo4J", name + DAOFactoryDecorator.SUFFIX,
-        concreteDomainClasses, origCD.getCDDefinition().getCDAssociationsList().stream()
+    cd4C.addMethod(daoFactory, CUSTOM_TEMPLATE_PATH + "InitNeo4J", name + DAOFactoryDecorator.SUFFIX,
+                   concreteDomainClasses, origCD.getCDDefinition().getCDAssociationsList().stream()
             .filter(a -> !a.getModifier().isDerived()).map(a -> a.getName()).collect(Collectors.toList()));
 
     return daoFactory;
@@ -80,8 +95,8 @@ public class DAOFactoryDecorator extends AbstractDecorator {
     String assocDAOType = "Assoc"+StringTransformations.capitalize(association.getName());
 
     daoFactory.addCDMember(getDaoAttribute(assocDAOType));
-    getCD4C().addMethod(daoFactory, "umlp.daofactory.StaticGetDAOInstance", assocDAOType);
-    getCD4C().addMethod(daoFactory, "umlp.daofactory.GetDAOInstance", assocDAOType);
+    getCD4C().addMethod(daoFactory, CUSTOM_TEMPLATE_PATH + "StaticGetDAOInstance", assocDAOType);
+    getCD4C().addMethod(daoFactory, CUSTOM_TEMPLATE_PATH + "GetDAOInstance", assocDAOType);
   }
 
   protected void addClassElements(ASTCDClass domainClass,
@@ -89,8 +104,8 @@ public class DAOFactoryDecorator extends AbstractDecorator {
     String name = domainClass.getName();
     if (!domainClass.getModifier().isAbstract()) {
       daoFactory.addCDMember(getDaoAttribute(domainClass));
-      getCD4C().addMethod(daoFactory, "umlp.daofactory.StaticGetDAOInstance", name);
-      getCD4C().addMethod(daoFactory, "umlp.daofactory.GetDAOInstance", name);
+      getCD4C().addMethod(daoFactory, CUSTOM_TEMPLATE_PATH + "StaticGetDAOInstance", name);
+      getCD4C().addMethod(daoFactory, CUSTOM_TEMPLATE_PATH + "GetDAOInstance", name);
     }
   }
 
