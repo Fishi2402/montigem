@@ -8,6 +8,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
@@ -55,11 +56,9 @@ public class DAOFactoryDecorator extends AbstractDecorator {
                                                                 false,
                                                                 false,
                                                                 "protected final List<Runnable> accessListeners;");
-
-    //constructor
-    cd4C.addConstructor(daoFactory, CUSTOM_TEMPLATE_PATH + "Constructor",
-                        daoFactory.getName(),
-                        accessListenersAttribute.getName());
+    glex.replaceTemplate("cd2java.Value",
+                         accessListenersAttribute,
+                         new StringHookPoint(" = new ArrayList<>()"));
 
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
         .forEach(c -> addClassElements(c, daoFactory));
