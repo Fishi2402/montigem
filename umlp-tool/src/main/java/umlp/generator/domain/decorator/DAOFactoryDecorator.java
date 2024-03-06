@@ -76,6 +76,7 @@ public class DAOFactoryDecorator extends AbstractDecorator {
                    CUSTOM_TEMPLATE_PATH + "AddAccessListener",
                    daoFactory.getName(),
                    accessListenersAttribute.getName());
+    cd4C.addMethod(daoFactory, CUSTOM_TEMPLATE_PATH + "StaticAddAccessListener");
     List<ASTCDClass> concreteDomainClasses = origCD.getCDDefinition().getCDClassesList().stream()
         .filter(c -> !c.getModifier().isAbstract() && !c.getModifier().isDerived())
         .collect(Collectors.toList());
