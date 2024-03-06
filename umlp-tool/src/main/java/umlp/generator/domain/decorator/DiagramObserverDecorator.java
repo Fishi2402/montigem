@@ -55,13 +55,6 @@ public class DiagramObserverDecorator extends AbstractDecorator {
                                                                 new ArrayList<>(),
                                                                 new ArrayList<>());
     this.generationSummary = Optional.of(generationSummary);
-    var mem = new Object() {
-      void add(ASTCDMethodSignature signature, String template, ASTCDClass changedType) {
-        generationSummary
-            .notifyMethodSignatures()
-            .add(new NotifyMethod(changedType, new GeneratedMethodSignature(template, signature)));
-      }
-    };
 
     CD4C cd4C = getCD4C();
 
@@ -71,10 +64,10 @@ public class DiagramObserverDecorator extends AbstractDecorator {
             .filter(c -> !c.getModifier().isAbstract())
             .forEach(c -> {
               String cName = c.getName();
-              mem.add(cd4C.addMethod(ast, NOTIFY_ADD_TEMPLATE, cName), NOTIFY_ADD_TEMPLATE, c);
-              mem.add(cd4C.addMethod(ast, NOTIFY_DELETE_TEMPLATE, cName), NOTIFY_DELETE_TEMPLATE, c);
-              mem.add(cd4C.addMethod(ast, MAYBE_NOTIFY_ADD_TEMPLATE, cName), MAYBE_NOTIFY_ADD_TEMPLATE, c);
-              mem.add(cd4C.addMethod(ast, MAYBE_NOTIFY_DELETE_TEMPLATE, cName), MAYBE_NOTIFY_DELETE_TEMPLATE, c);
+              generationSummary.addMethod(cd4C.addMethod(ast, NOTIFY_ADD_TEMPLATE, cName), NOTIFY_ADD_TEMPLATE, c);
+              generationSummary.addMethod(cd4C.addMethod(ast, NOTIFY_DELETE_TEMPLATE, cName), NOTIFY_DELETE_TEMPLATE, c);
+              generationSummary.addMethod(cd4C.addMethod(ast, MAYBE_NOTIFY_ADD_TEMPLATE, cName), MAYBE_NOTIFY_ADD_TEMPLATE, c);
+              generationSummary.addMethod(cd4C.addMethod(ast, MAYBE_NOTIFY_DELETE_TEMPLATE, cName), MAYBE_NOTIFY_DELETE_TEMPLATE, c);
             });
 
     generationSummary
@@ -129,6 +122,12 @@ public class DiagramObserverDecorator extends AbstractDecorator {
       this.notifyMethodSignatures = notifyMethodSignatures;
       this.otherMethodSignatures = otherMethodSignatures;
       this.importStatements = importStatements;
+    }
+
+    void addMethod(ASTCDMethodSignature signature, String template, ASTCDClass changedType) {
+      notifyMethodSignatures.add(new NotifyMethod(changedType,
+                                                  new GeneratedMethodSignature(template,
+                                                                               signature)));
     }
 
     public Collection<NotifyMethod> notifyMethodSignatures() {
