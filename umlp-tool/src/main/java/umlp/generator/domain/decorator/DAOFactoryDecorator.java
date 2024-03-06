@@ -56,7 +56,7 @@ public class DAOFactoryDecorator extends AbstractDecorator {
                                                                 false,
                                                                 false,
                                                                 "protected final List<Runnable> accessListeners;");
-    glex.replaceTemplate("cd2java.Value",
+    getGlex().replaceTemplate("cd2java.Value",
                          accessListenersAttribute,
                          new StringHookPoint(" = new ArrayList<>()"));
 
