@@ -69,7 +69,7 @@ public class ValidationResultDeSerDecorator extends AbstractDecorator {
       String rightName = association.getRightQualifiedName().getQName();
       String leftName = association.getLeftQualifiedName().getQName();
 
-      String assocName = association.getName();
+      String assocName = StringTransformations.uncapitalize(association.getName());
 
       if(leftName.equals(className)) {
         if(rightName.equals(className)) {
@@ -88,7 +88,7 @@ public class ValidationResultDeSerDecorator extends AbstractDecorator {
         listAssociationNames.add(leftType.isPresent() ? "right" + StringTransformations.capitalize(assocName) : assocName);
       } else {
         associationTypes.add(type);
-        associationNames.add(leftType.isPresent() ? "right" + StringTransformations.capitalize(assocName) : association.getName());
+        associationNames.add(leftType.isPresent() ? "right" + StringTransformations.capitalize(assocName) : assocName);
       }
 
       if(leftType.isPresent()) {
@@ -104,23 +104,22 @@ public class ValidationResultDeSerDecorator extends AbstractDecorator {
 
     getCD4C().addMethod(deSer, getSerializeTemplate(), cdClass.getName());
     getCD4C().addMethod(deSer, getDeserializeTemplate(),
-        cdName,
-        cdClass.getName(),
-        attributeNames,
-        new ArrayList<>(),
-        new ArrayList<>()
-    );
-    ASTCDMethodSignature buildJson = getCD4C().addMethod(deSer, getBuildJsonTemplate(),
             cdClass.getName(),
-        attributeNames,
-        associationTypes,
-        associationNames,
-        listAssociationTypes,
-        listAssociationNames
+            attributeNames,
+            associationTypes,
+            associationNames,
+            listAssociationTypes,
+            listAssociationNames
     );
-    glex.replaceTemplate("cd2java.Annotations", buildJson, new StringHookPoint("@Override"));
-    ASTCDMethodSignature fromJson = getCD4C().addMethod(deSer, getFromJsonTemplate(), cdClass.getName());
-    glex.replaceTemplate("cd2java.Annotations", fromJson, new StringHookPoint("@Override"));
+    getCD4C().addMethod(deSer, getBuildJsonTemplate(),
+            cdClass.getName(),
+            attributeNames,
+            associationTypes,
+            associationNames,
+            listAssociationTypes,
+            listAssociationNames
+    );
+    getCD4C().addMethod(deSer, getFromJsonTemplate(), cdClass.getName());
 
     addImports(cdClass, deSer);
 
@@ -148,6 +147,8 @@ public class ValidationResultDeSerDecorator extends AbstractDecorator {
     getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.json.JsonObject");
     getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.json.JsonElement");
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("ValidationMessage"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("ValidationMessageDeSer"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("ValidationStatus"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("Gem"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("JsonDeSer"));
   }

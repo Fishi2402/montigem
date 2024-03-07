@@ -95,13 +95,13 @@ public class ValidationResultDecorator extends AbstractDecorator {
     getCD4C().addMethod(validationResultClass, getGetDomainObjectIdTemplate());
 
     ASTCDMethodSignature getDomainType = getCD4C().addMethod(validationResultClass, getGetDomainTypeTemplate(), packageName + "." + className);
-    annotate(getDomainType, "@Override");
+    annotateWithOverride(getDomainType);
 
     List<String> attributeNames = attributes.stream().map(ASTCDAttributeTOP::getName).collect(Collectors.toList());
     attributeNames.add("thisObjectRelated");
     getCD4C().addMethod(validationResultClass, getShallowCloneTemplate(), className, attributeNames);
     ASTCDMethodSignature hasError = getCD4C().addMethod(validationResultClass, getHasErrorTemplate(), className, attributeNames);
-    annotate(hasError, "@Override");
+    annotateWithOverride(hasError);
 
     for(ASTCDAttribute attribute : attributes) {
       getCD4C().addMethod(validationResultClass, getAddValidationMessageTemplate(), className, attribute.getName());
@@ -132,6 +132,10 @@ public class ValidationResultDecorator extends AbstractDecorator {
     } else {
       return type + SUFFIX;
     }
+  }
+
+  protected void annotateWithOverride(ASTCDMethodSignature method) {
+    annotate(method, "@Override");
   }
 
   protected void annotate(ASTCDMethodSignature method, String annotation) {

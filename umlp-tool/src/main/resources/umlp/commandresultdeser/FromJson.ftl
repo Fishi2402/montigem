@@ -41,5 +41,15 @@ if(jsonObject.getBooleanMemberOpt("listResult").orElse(false)){
   }
 }
 
+if(jsonObject.getBooleanMemberOpt("validationResult").orElse(false)){
+  String tp = jsonObject.getStringMember("typeParameter");
+  Object res = deserSingleValue(jsonObject.getMember("value"), tp);
+  if(res == null) {
+    return Optional.empty();
+  }
+
+  return Optional.of(new ValidationResult(jsonObject.getLongMember("commandId"), (DomainValidationResult) res, tp));
+}
+
 return Optional.empty();
 

@@ -5,8 +5,6 @@ package umlp.backendrte.command;
 
 // todo: erläutern
 
-import umlp.backendrte.common.ValidationResult;
-
 import java.util.List;
 
 /**

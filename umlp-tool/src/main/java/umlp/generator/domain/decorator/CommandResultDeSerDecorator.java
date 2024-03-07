@@ -61,6 +61,9 @@ public class CommandResultDeSerDecorator extends AbstractDecorator {
     for (ASTCDClass c :  origCD.getCDDefinition().getCDClassesList()) {
       if (canSerialize(c)) {
         classNames.add(Joiners.DOT.join(packageName, c.getName()));
+        if(hasOCL) {
+          classNames.add(Joiners.DOT.join(packageName, c.getName() + "ValidationResult"));
+        }
       }
     }
 
@@ -108,9 +111,10 @@ public class CommandResultDeSerDecorator extends AbstractDecorator {
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandResult"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("SimpleResult"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("ListResult"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("ValidationResult"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("LoadingState"));
-
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("BaseClassObjectMapper"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("DomainValidationResult"));
   }
 
 

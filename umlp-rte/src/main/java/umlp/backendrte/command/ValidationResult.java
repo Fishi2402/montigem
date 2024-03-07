@@ -1,6 +1,7 @@
-package umlp.backendrte.common;
+package umlp.backendrte.command;
 
 import umlp.backendrte.command.StatusResult;
+import umlp.backendrte.common.DomainValidationResult;
 
 public class ValidationResult extends StatusResult {
 
@@ -12,6 +13,11 @@ public class ValidationResult extends StatusResult {
   }
 
   @Override
+  public boolean isStatusResult() {
+    return false;
+  }
+
+  @Override
   public boolean isValidationResult() {
     return true;
   }
@@ -19,6 +25,10 @@ public class ValidationResult extends StatusResult {
   @Override
   public boolean isSuccessful() {
     return !validationResult.hasErrors();
+  }
+
+  public DomainValidationResult get() {
+    return validationResult;
   }
 
 }
