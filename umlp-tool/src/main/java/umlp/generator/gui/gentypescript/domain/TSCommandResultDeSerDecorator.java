@@ -83,10 +83,12 @@ public class TSCommandResultDeSerDecorator extends CommandResultDeSerDecorator {
         getCD4C().addImport(clazz, this.astcdPackage + "." + c.getName());
         getCD4C().addImport(clazz, this.astcdPackage + "."
             + c.getName() + DeSerDecorator.SUFFIX);
-        getCD4C().addImport(clazz, this.astcdPackage + "."
-                + c.getName() + ValidationResultDecorator.SUFFIX);
-        getCD4C().addImport(clazz, this.astcdPackage + "."
-                + c.getName() + ValidationResultDeSerDecorator.SUFFIX);
+        if(hasOCL) {
+          getCD4C().addImport(clazz, this.astcdPackage + "."
+                  + c.getName() + ValidationResultDecorator.SUFFIX);
+          getCD4C().addImport(clazz, this.astcdPackage + "."
+                  + c.getName() + ValidationResultDeSerDecorator.SUFFIX);
+        }
       }
     }
 
@@ -100,7 +102,6 @@ public class TSCommandResultDeSerDecorator extends CommandResultDeSerDecorator {
         if(canSerialize(astcdClass)) {
           getCD4C().addImport(clazz, Joiners.DOT.join(curPackName, astcdClass.getName()));
           getCD4C().addImport(clazz, Joiners.DOT.join(curPackName, astcdClass.getName() + DeSerDecorator.SUFFIX));
-
         }
       }
     }

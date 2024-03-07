@@ -152,9 +152,12 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
       getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoBuilderParam", name);
       getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoDeSerBuilder", name);
       if (!isSingleton) {
-        List<String> attributeNames = domainClass.getCDAttributeList().stream().filter(a -> !a.getModifier().isDerived()).map(ASTCDAttributeTOP::getName).collect(Collectors.toList());
-        attributeNames.add("thisObjectRelated");
-        getCD4C().addMethod(managerClass, "umlp.gui2ts.managerclientimpl.TSDoAdd", name, managerName, attributeNames);
+        List<String> attributeNames = new ArrayList<>();
+        if(hasOCL) {
+          attributeNames.addAll(domainClass.getCDAttributeList().stream().filter(a -> !a.getModifier().isDerived()).map(ASTCDAttributeTOP::getName).collect(Collectors.toList()));
+          attributeNames.add("thisObjectRelated");
+        }
+        getCD4C().addMethod(managerClass, "umlp.gui2ts.managerclientimpl.TSDoAdd", name, managerName, attributeNames, hasOCL);
         getCD4C().addMethod(managerClass, "umlp.gui2ts.managerclientimpl.TSDoDelete", name, managerName);
       }
     }

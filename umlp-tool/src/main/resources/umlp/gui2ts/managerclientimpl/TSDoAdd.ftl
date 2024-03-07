@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("name", "managerName", "attributes")}
+${tc.signature("name", "managerName", "attributes", "hasOCL")}
 ${cd4c.method("public Promise<Void> _doAdd${name}2(${name} o, NotificationScope scope)")}
   console.debug("Adding known ${name?uncap_first} " + o.getGemId());
   console.trace();
@@ -12,6 +12,7 @@ ${cd4c.method("public Promise<Void> _doAdd${name}2(${name} o, NotificationScope 
   if(scope.contains(NotificationScope.GLOBAL)){
     return CommandManager.executeCommand(new ${name}_create(o)).then(v => {
       if(v.isValidationResult()){
+        <#if hasOCL>
           const res = <${name}ValidationResult>v.asValidationResult().get();
           <#list attributes as attribute>
             for(let message of res.get${attribute?cap_first}ValidationMessages()) {
@@ -20,6 +21,7 @@ ${cd4c.method("public Promise<Void> _doAdd${name}2(${name} o, NotificationScope 
               }
             }
           </#list>
+        </#if>
       } else {
         let res = v.asStatusResult();
         // TODO: Error handling
