@@ -1,24 +1,23 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { CommandResult } from "./CommandResult";
-import {ValidationMessage} from "../common/ValidationMessage";
+import {DomainValidationResult} from "../common/DomainValidationResult";
 
 export class ValidationResult extends CommandResult<void> {
 
-  protected messages : ValidationMessage[];
+  protected validationResult : DomainValidationResult;
 
-  constructor(id: number, messages: ValidationMessage[]) {
-    super(id, "void");
-    this.messages = messages;
-    return this;
+  public constructor(id: number, validationResult: DomainValidationResult, type: string) {
+    super(id, type);
+    this.validationResult = validationResult;
   }
 
-  public static error(id: number, typeParameter: string , messages: ValidationMessage[]): ValidationResult {
-    return new ValidationResult(id, messages);
+  public static of(id: number, validationResult: DomainValidationResult, type: string): ValidationResult {
+    return new ValidationResult(id, validationResult, type);
   }
 
-  public override isSuccessful(): Promise<boolean> {
-    return Promise.resolve(false);
+  public isSuccessful(): Promise<boolean> {
+    return Promise.resolve(this.validationResult.hasErrors());
   }
 
 
@@ -27,6 +26,6 @@ export class ValidationResult extends CommandResult<void> {
   }
 
   public get() {
-    return this.messages;
+    return this.validationResult;
   }
 }
