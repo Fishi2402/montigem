@@ -65,7 +65,7 @@ export  class ComponentTreeView extends ComponentTreeViewComponent {
             descr = child.getName()+descr
           }
           children.push(new GemTreeviewEntry(false,
-              descr, this.createTreeRecursively(child)))
+              descr, descr, this.createTreeRecursively(child)))
         }
 
       })

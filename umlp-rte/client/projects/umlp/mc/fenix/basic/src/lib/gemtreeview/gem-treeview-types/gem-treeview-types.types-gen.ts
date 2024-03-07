@@ -3,5 +3,6 @@
   export interface GemTreeviewEntry {
        expanded?: boolean;
        name?: string;
+       value?: string;
        children?: GemTreeviewEntry[];
   }
