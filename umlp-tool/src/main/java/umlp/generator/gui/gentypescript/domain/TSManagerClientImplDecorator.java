@@ -263,9 +263,11 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("ValidationStatus"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTEUtilPath("LogUtil"));
 
-    for (ASTCDClass c : this.origCD.getCDDefinition().getCDClassesList()) {
-      getCD4C().addImport(clazz, this.astcdPackage + "."
-              + c.getName() + ValidationResultDecorator.SUFFIX);
+    if(hasOCL) {
+      for (ASTCDClass c : this.origCD.getCDDefinition().getCDClassesList()) {
+        getCD4C().addImport(clazz, this.astcdPackage + "."
+                + c.getName() + ValidationResultDecorator.SUFFIX);
+      }
     }
   }
 
