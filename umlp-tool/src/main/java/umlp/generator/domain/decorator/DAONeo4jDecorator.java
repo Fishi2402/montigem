@@ -9,6 +9,7 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDTypeTOP;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.se_rwth.commons.StringTransformations;
 import umlp.generator.db.sql.SQLSchemaGenerator;
 import umlp.generator.util.UMLPSymbolTables;
@@ -24,6 +25,7 @@ import java.util.stream.Stream;
 public class DAONeo4jDecorator extends DAODecorator {
 
   public static final String neo4J_SUFFIX = "Neo4J";
+  private static final String neo4J_Template_SUFFIX="_Neo4j";
 
   public DAONeo4jDecorator(GlobalExtensionManagement glex) {
     super(glex);
@@ -47,12 +49,38 @@ public class DAONeo4jDecorator extends DAODecorator {
     removeMethodForAssociationDAO(daoClass, association);
     if(association.getCDAssocDir().isDefinitiveNavigableRight()) {
       selectMethodForAssocDAO(daoClass, association.getName(), association.getLeft(), association.getRight());
-      removeAllMethodForAssocDAO(daoClass, association.getName(), association.getLeft().getName());
+      removeAllMethodForAssocDAO(daoClass, association.getLeft().getName(), association.getRight().getName(),
+          CD4CodeMill.prettyPrint(association.getLeft().getMCQualifiedType(), false),
+          CD4CodeMill.prettyPrint(association.getRight().getMCQualifiedType(), false)
+      );
     }
     if(association.getCDAssocDir().isDefinitiveNavigableLeft()) {
       selectMethodForAssocDAO(daoClass, association.getName(), association.getRight(), association.getLeft());
-      removeAllMethodForAssocDAO(daoClass, association.getName(), association.getRight().getName());
+      removeAllMethodForAssocDAO(daoClass, association.getRight().getName() ,association.getLeft().getName(),
+          CD4CodeMill.prettyPrint(association.getRight().getMCQualifiedType(), false),
+          CD4CodeMill.prettyPrint(association.getLeft().getMCQualifiedType(), false)
+      );
     }
+  }
+
+  protected void removeAllMethodForAssocDAO(ASTCDClass daoClass, String startName, String endName,
+                                            String startType, String endType) {
+    getCD4C().addMethod(daoClass, "umlp.dao.associations.RemoveAllInitNeo4jForAssocDAO", startName,
+        startName, endName, startType, endType);
+    getCD4C().addMethod(daoClass, "umlp.dao.associations.RemoveAllForAssocDAO", startName);
+  }
+
+  public void removeMethodForAssociationDAO(ASTCDClass daoClass, ASTCDAssociation assoc) {
+    ASTCDAssocSide assocStart = assoc.getLeft();
+    ASTCDAssocSide assocEnd = assoc.getRight();
+
+    getCD4C().addMethod(daoClass, "umlp.dao.associations.RemoveInitNeo4jForAssocDAO", assoc.getName(),
+        assocStart.getName(),
+        assocEnd.getName(),
+        CD4CodeMill.prettyPrint(assocStart.getMCQualifiedType(), false),
+        CD4CodeMill.prettyPrint(assocEnd.getMCQualifiedType(), false)
+        );
+    getCD4C().addMethod(daoClass, "umlp.dao.associations.RemoveForAssocDAO", assoc);
   }
 
   @Override
@@ -123,9 +151,9 @@ public class DAONeo4jDecorator extends DAODecorator {
     getCD4C().addMethod(daoClass, "umlp.dao.InsertInitNeo4j",
         superTypeNamesInclSelf, attributes, optionalAttributes);
     getCD4C().addMethod(daoClass, "umlp.dao.Insert", domainClass.getName(), cdName, attributes,
-        optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap, assocToCorrectManagerMap);
+        optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap, assocToCorrectManagerMap, neo4J_Template_SUFFIX);
     getCD4C().addMethod(daoClass, "umlp.dao.BulkInsert", domainClass.getName(), cdName, attributes,
-        optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap);
+        optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap, neo4J_Template_SUFFIX);
     getCD4C().addMethod(daoClass, "umlp.dao.AddManyAssociationsToBatch", domainClass.getName(), cdName, attributes,
         optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap, assocToCorrectManagerMap);
     getCD4C().addMethod(daoClass, "umlp.dao.ExecuteAssocBatches", domainClass.getName(), cdName, attributes,
@@ -186,12 +214,12 @@ public class DAONeo4jDecorator extends DAODecorator {
 
     if(navigableLeft) {
       getCD4C().addMethod(daoClass, "umlp.dao.associations.UpdateInitNeo4jForAssocDAO", association.getName(),
-          leftName, leftType, rightType, navigableLeft, navigableRight);
+          rightName, leftName, rightType, leftType, navigableLeft, navigableRight);
       getCD4C().addMethod(daoClass, "umlp.dao.associations.UpdateNeo4jForAssocDAO", rightName, leftName);
     }
     if(navigableRight) {
       getCD4C().addMethod(daoClass, "umlp.dao.associations.UpdateInitNeo4jForAssocDAO", association.getName(),
-          rightName, rightType, leftType, navigableLeft, navigableRight);
+          leftName, rightName, leftType, rightType, navigableLeft, navigableRight);
       getCD4C().addMethod(daoClass, "umlp.dao.associations.UpdateNeo4jForAssocDAO", leftName, rightName);
     }
 
@@ -218,6 +246,6 @@ public class DAONeo4jDecorator extends DAODecorator {
     Map<ASTCDAttribute, String> attributeMap = Maps.newLinkedHashMap();
     attributes.forEach(e -> attributeMap.put(e, "\"" + e.getName() + "\""));
     getCD4C().addMethod(daoClass, "umlp.dao.Unpack", domainClass.getName(), cdName, attributeMap,
-        optMap, listAttributes, listAssociationMap, gemAssociationMap, assocToCorrectManagerMap, assocToCorrectDAOFactoryMap);
+        optMap, listAttributes, listAssociationMap, gemAssociationMap, assocToCorrectManagerMap, assocToCorrectDAOFactoryMap,neo4J_Template_SUFFIX);
   }
 }

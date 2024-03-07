@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("typeName", "cdName", "attributes", "optionalAttributes", "listAttributes", "listAssocs", "gemAssocs")}
+${tc.signature("typeName", "cdName", "attributes", "optionalAttributes", "listAttributes", "listAssocs", "gemAssocs", "neo4j")}
 ${cd4c.method("public Boolean insert${typeName}(Collection<${typeName}> objectsToInsert)")}
 <#assign statement="insert"+typeName>
 ensureInsert${typeName}Created();
@@ -11,10 +11,10 @@ try{
     ${statement}.setLong(1, o.getGemId());
     <#assign index = 1>
     <#list attributes as attr><#assign index = index+1>
-        ${includeArgs("umlp.dao.Set", statement, index, genService.getDBType(attr.getSymbol().getType()), "o."+genService.getGetterName(attr.getName(), attr.getSymbol().getType())+"()", false)};
+        ${includeArgs("umlp.dao.Set", statement, index, genService.getDBType(attr.getSymbol().getType()), "o."+genService.getGetterName(attr.getName(), attr.getSymbol().getType())+"()", false,neo4j)};
     </#list>
     <#list optionalAttributes as attr><#assign index = index+1>
-        ${includeArgs("umlp.dao.Set", statement, index, genService.getDBType(attr.getSymbol().getType()), "o."+genService.getGetterName(attr.getName(), attr.getSymbol().getType())+"()", true)};
+        ${includeArgs("umlp.dao.Set", statement, index, genService.getDBType(attr.getSymbol().getType()), "o."+genService.getGetterName(attr.getName(), attr.getSymbol().getType())+"()", true,neo4j)};
     </#list>
     ${statement}.addBatch();
     <#list listAttributes as attr>

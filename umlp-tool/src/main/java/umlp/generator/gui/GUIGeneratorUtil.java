@@ -222,8 +222,8 @@ public class GUIGeneratorUtil {
   public final boolean isEnumType(SymTypeExpression type) {
     Optional<TypeSymbol> symb = type.getTypeInfo().getEnclosingScope().resolveType(type.getTypeInfo().getName());
     if (symb.isPresent()) {
-      if (OOSymbolsMill.typeDispatcher().isOOType(symb.get())) {
-        return OOSymbolsMill.typeDispatcher().asOOType(symb.get()).isIsEnum();
+      if (OOSymbolsMill.typeDispatcher().isOOSymbolsOOType(symb.get())) {
+        return OOSymbolsMill.typeDispatcher().asOOSymbolsOOType(symb.get()).isIsEnum();
       }
     }
     return false;
@@ -260,8 +260,8 @@ public class GUIGeneratorUtil {
       if (symb.get().getEnclosingScope() instanceof IGUIDSLArtifactScope) {
         IGUIDSLArtifactScope as = (IGUIDSLArtifactScope) symb.get().getEnclosingScope();
         boolean isDomain = DOMAIN_MODELS.contains(as.getFullName());
-        if (isDomain && OOSymbolsMill.typeDispatcher().isOOType(symb.get())) {
-          return OOSymbolsMill.typeDispatcher().asOOType(symb.get()).isIsEnum();
+        if (isDomain && OOSymbolsMill.typeDispatcher().isOOSymbolsOOType(symb.get())) {
+          return OOSymbolsMill.typeDispatcher().asOOSymbolsOOType(symb.get()).isIsEnum();
         }
       }
     }

@@ -22,15 +22,34 @@ public class TestSetupDecorator extends AbstractDecorator {
   public static final String DB_TEST_SETUP = "DBTestSetup";
 
   private boolean isNeo4jGen;
+  private final ObserverDecorator observerDecorator;
+  private final DiagramObserverDecorator diagramObserverDecorator;
 
-  public TestSetupDecorator(GlobalExtensionManagement glex, boolean isNeo4jGen) {
+  public TestSetupDecorator(GlobalExtensionManagement glex,
+                            boolean isNeo4jGen,
+                            ObserverDecorator observerDecorator,
+                            DiagramObserverDecorator diagramObserverDecorator) {
     super(glex);
     this.isNeo4jGen = isNeo4jGen;
+    this.observerDecorator = observerDecorator;
+    this.diagramObserverDecorator = diagramObserverDecorator;
   }
 
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage aPackage = getPackage(origCD, decoratedCD, PACK_TEST_INFRASTRUCTURE);
+
+    EnsureCorrectManager4TypeDecorator ensureCorrectManager4TypeDecorator =
+        new EnsureCorrectManager4TypeDecorator(
+        glex,
+        observerDecorator);
+    ensureCorrectManager4TypeDecorator.transform(origCD, decoratedCD);
+
+    EnsureCorrectManager4DiagrammDecorator ensureCorrectManager4DiagrammDecorator = new EnsureCorrectManager4DiagrammDecorator(
+        glex,
+        diagramObserverDecorator, ensureCorrectManager4TypeDecorator);
+    ensureCorrectManager4DiagrammDecorator.transform(origCD, decoratedCD);
+
     aPackage.addCDElement(withOrigin(createMockTestSetup(origCD)));
     aPackage.addCDElement(withOrigin(createDbTestSetup(origCD)));
   }
@@ -136,6 +155,7 @@ public class TestSetupDecorator extends AbstractDecorator {
 
     getCD4C().addImport(type, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE), name + TestContextDecorator.SUFFIX));
     getCD4C().addImport(type, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE), name + ManagerDecorator.SUFFIX));
+    getCD4C().addImport(type, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE), name + DAOFactoryDecorator.SUFFIX));
 
     getCD4C().addImport(type, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE), name + ManagerMockDecorator.SUFFIX));
     getCD4C().addImport(type, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE), name + ManagerClientImplDecorator.SUFFIX));

@@ -24,7 +24,7 @@ public abstract class GenAbstractDBTest {
 
   private static DatabaseManagementService managementService = null;
 
-  private static final int port = 7687;
+  private static final int port = 7689;
 
   public GenAbstractDBTest(DatabaseConnectionType dbConnectionType) {
     this.dbType = dbConnectionType;

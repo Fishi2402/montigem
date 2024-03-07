@@ -1,0 +1,6 @@
+umlp Context {
+  class Person {
+    String name;
+    int age;
+  }
+}
