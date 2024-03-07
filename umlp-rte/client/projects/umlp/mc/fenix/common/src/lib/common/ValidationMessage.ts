@@ -17,6 +17,10 @@ export class ValidationMessage {
     return new ValidationMessage().ValidationMessage(message, status);
   }
 
+  public isErrorMessage() : boolean {
+    return this._status === ValidationStatus.ERROR;
+  }
+
   public getMessage(): string {
     return this._message;
   }

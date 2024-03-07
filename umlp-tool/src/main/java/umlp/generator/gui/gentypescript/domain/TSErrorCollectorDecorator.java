@@ -74,6 +74,8 @@ public class TSErrorCollectorDecorator extends ErrorCollectorDecorator {
               getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.TS_ReportInvalid", a.getName(), domainClass.getName());
               getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.TS_BuildInvalidMsg", a.getName(), domainClass.getName());
             });
+    getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.TSReportInvalidWithMessage", "thisObjectRelated", domainClass.getName());
+    getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.TS_ReportInvalid", "thisObjectRelated", domainClass.getName());
 
     // Add methods for domain associations
     CDSymbolTables.getAssociationsInHierarchy(domainClass).stream().filter(a -> !a.getSymbol().getAssoc().getAssociation().getAstNode().getModifier().isDerived())
