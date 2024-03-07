@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { CommandResult } from "./CommandResult";
-import {ValidationMessage} from "../common/ValidationMessage";
+import {DomainValidationResult} from "../common/DomainValidationResult";
 
 export class ValidationResult extends CommandResult<void> {
 
-  protected messages : ValidationMessage[];
+  protected validationResult : DomainValidationResult;
 
   public ValidationResult(id: number, messages: ValidationMessage[]) : ValidationResult {
   super.CommandResult(id, "void");
@@ -23,6 +23,6 @@ export class ValidationResult extends CommandResult<void> {
   }
 
   public get() {
-    return this.messages;
+    return this.validationResult;
   }
 }

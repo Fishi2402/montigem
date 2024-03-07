@@ -210,7 +210,7 @@ public class ValidationResultDecorator extends AbstractDecorator {
     return "umlp.validator.validationResult.ShallowClone";
   }
 
-  private String getGetDomainObjectIdTemplate() {
+  protected String getGetDomainObjectIdTemplate() {
     return "umlp.validator.validationResult.GetDomainObjectId";
   }
 

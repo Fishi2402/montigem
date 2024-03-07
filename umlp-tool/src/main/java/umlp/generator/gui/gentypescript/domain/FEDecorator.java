@@ -28,6 +28,8 @@ import umlp.generator.domain.decorator.ManagerClientImplDecorator;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.domain.decorator.ManagerMockDecorator;
 import umlp.generator.domain.decorator.ObserverDecorator;
+import umlp.generator.domain.decorator.ValidationResultDeSerDecorator;
+import umlp.generator.domain.decorator.ValidationResultDecorator;
 import umlp.generator.gui.gentypescript.commands.TSAccessPolicyDecorator;
 
 public class FEDecorator extends BEDecorator {
@@ -168,6 +170,12 @@ public class FEDecorator extends BEDecorator {
     CommandResultDeSerDecorator commandResultDeSerDecorator = new TSCommandResultDeSerDecorator(glex);
     commandResultDeSerDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: CommandResultDeSerDecorator", FEDecorator.class.getName());
+
+    if(hasOCL) {
+      ValidationResultDecorator validationResultDecorator = new TSValidationResultDecorator(glex);
+      validationResultDecorator.transform(cdAST, decoratedAST);
+      Log.info("After decorator: ValidationResultDecorator", FEDecorator.class.getName());
+    }
 
     /*
     TestContextDecorator testContextDecorator = new TestContextDecorator(glex);
