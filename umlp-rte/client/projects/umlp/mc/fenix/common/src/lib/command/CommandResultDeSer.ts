@@ -66,16 +66,6 @@ export class CommandResultDeSer implements JsonDeSer<CommandResult<any>> {
         jsonObject.successful
       );
     }
-    if(jsonObject.validationResult) {
-      let messages: ValidationMessage[] = [];
-      for (const m of jsonObject.messages) {
-        messages.push(ValidationMessage.create(m.message, m.status, m.attributes));
-      }
-      return new ValidationResult().ValidationResult(
-        jsonObject.commandId,
-        messages
-      );
-    }
     // Simple result is handled in generated subclass
 
     return null;

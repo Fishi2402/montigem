@@ -47,7 +47,9 @@ export * from './lib/common/Result';
 export * from './lib/common/ShortDeSer';
 export * from './lib/common/StringDeSer';
 export * from './lib/common/ValidationMessage';
+export * from './lib/common/ValidationMessageDeSer';
 export * from './lib/common/ValidationStatus';
+export * from './lib/common/DomainValidationResult';
 
 export * from './lib/request/Request';
 

@@ -41,8 +41,6 @@ public class ValidationResultDecorator extends AbstractDecorator {
     getCD4C().addImport(validatorClass, PathUtil.getBackendRTECommonPath("ValidationMessage"));
     getCD4C().addImport(validatorClass, PathUtil.getBackendRTECommonPath("ValidationStatus"));
     getCD4C().addImport(validatorClass, PathUtil.getBackendRTECommonPath("DomainValidationResult"));
-    getCD4C().addImport(validatorClass, "java.time.ZonedDateTime");
-    getCD4C().addImport(validatorClass, "java.time.chrono.ChronoLocalDateTime");
   }
 
   protected ASTCDElement createValidatorClassForDomainClass(ASTCDType domainClass, ASTCDCompilationUnit origCD, String packageName) {

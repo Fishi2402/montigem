@@ -6,19 +6,15 @@ export class ValidationMessage {
 
   private _message: string;
   private _status: ValidationStatus;
-  private _attributes: string[];
 
-  // extend with further attributes
-
-  private ValidationMessage(message: string, status: ValidationStatus, attributes: string[]): ValidationMessage {
+  private ValidationMessage(message: string, status: ValidationStatus): ValidationMessage {
     this._message = message;
     this._status = status;
-    this._attributes = attributes;
     return this;
   }
 
-  public static create(message: string, status: ValidationStatus, attributes: string[]): ValidationMessage {
-    return new ValidationMessage().ValidationMessage(message, status, attributes);
+  public static create(message: string, status: ValidationStatus): ValidationMessage {
+    return new ValidationMessage().ValidationMessage(message, status);
   }
 
   public getMessage(): string {
@@ -35,13 +31,5 @@ export class ValidationMessage {
 
   public setStatus(status: ValidationStatus): void {
     this._status = status;
-  }
-
-  public getAttributes(): string[] {
-    return this._attributes;
-  }
-
-  public setAttributes(attributes: string[]): void {
-    this._attributes = attributes;
   }
 }

@@ -175,6 +175,9 @@ public class FEDecorator extends BEDecorator {
       ValidationResultDecorator validationResultDecorator = new TSValidationResultDecorator(glex);
       validationResultDecorator.transform(cdAST, decoratedAST);
       Log.info("After decorator: ValidationResultDecorator", FEDecorator.class.getName());
+      ValidationResultDeSerDecorator validationResultDeSerDecorator = new TSValidationResultDeSerDecorator(glex);
+      validationResultDeSerDecorator.transform(cdAST, decoratedAST);
+      Log.info("After decorator: ValidationResultDeSerDecorator", FEDecorator.class.getName());
     }
 
     /*
