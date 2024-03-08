@@ -6,6 +6,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
+import umlp.UMLPMill;
 import umlp.generator.domain.decorator.BEDecorator;
 import umlp.generator.domain.decorator.BaseClassObjectMapperDecorator;
 import umlp.generator.domain.decorator.BuilderDecorator;
@@ -178,6 +179,8 @@ public class FEDecorator extends BEDecorator {
       ValidationResultDeSerDecorator validationResultDeSerDecorator = new TSValidationResultDeSerDecorator(glex);
       validationResultDeSerDecorator.transform(cdAST, decoratedAST);
       Log.info("After decorator: ValidationResultDeSerDecorator", FEDecorator.class.getName());
+      // OCLMill was used in the decorators. To assure UMLP functionality initialize the UMLP-Mill
+      UMLPMill.init();
     }
 
     /*
