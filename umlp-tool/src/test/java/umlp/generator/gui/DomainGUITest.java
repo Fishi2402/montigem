@@ -14,7 +14,7 @@ import java.io.File;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-public class DomainGUITest extends AbstractGUITest {
+public abstract class DomainGUITest extends AbstractGUITest {
 
   protected ASTGUICompilationUnit processGUIModel(
       String modelPath,

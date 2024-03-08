@@ -44,7 +44,7 @@ public class ManagerDecorator extends AbstractDecorator {
 
     ASTCDClass managerClass = UMLPMill.cDClassBuilder()
         .setModifier(PUBLIC_ABSTRACT.build())
-        .setName(name + SUFFIX).build();
+        .setName(getClassName(name)).build();
 
     // Attribute observerList
     ASTCDAttribute attrObserver = getCDAttributeFacade().createAttribute(PROTECTED.build(),
@@ -64,6 +64,10 @@ public class ManagerDecorator extends AbstractDecorator {
     addImports(managerClass);
 
     return managerClass;
+  }
+
+  public static String getClassName(String name) {
+    return name + SUFFIX;
   }
 
   protected String getObserversType(String name) {

@@ -1,0 +1,22 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package genjava;
+
+import Domain.Person;
+import Domain.Address;
+import Domain.MaritalStatus;
+
+import util.P;
+
+page GUI2JavaClassDecorator(
+  Person person,
+  Person $per$son,
+  MaritalStatus status,
+  List<Address> la,
+  String s,
+  boolean b,
+  ?int i,
+  GUIViewElement v,
+  Event<Void> e
+) {
+}
