@@ -23,10 +23,7 @@ public class DomainTypeFilterDecorator extends AbstractDecorator {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_PACKAGE);
     origCD.getCDDefinition().getCDClassesList().stream()
         .filter(c -> !c.getSymbol().isIsDerived())
-        .filter(c -> !c.getSymbol().isIsAbstract())
         .forEach(c -> astcdPackage.addCDElement(withOrigin(createClass(origCD, c, astcdPackage))));
-
-
   }
 
   protected ASTCDElement createClass(ASTCDCompilationUnit origCD, ASTCDClass c, ASTCDPackage pack) {
