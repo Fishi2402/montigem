@@ -54,7 +54,13 @@ ${cd4c.method("public ${type?cap_first} merge(${type?cap_first} other)")}
         if(otherId == 0) {
           throw new IllegalArgumentException("Cannot merge results for left association ${name} because the number of results is not equal and there are results with id 0.");
         } else {
-          Optional<${type}ValidationResult> existing = this.get${name?cap_first}ValidationResults().stream().filter(r -> r.getDomainObjectId() == otherId).findFirst();
+          Optional<${type}ValidationResult> existing = Optional.empty();
+          for(${type}ValidationResult vr : this.get${name?cap_first}ValidationResults()) {
+            if(vr.getDomainObjectId() == otherId) {
+              existing = Optional.of(vr);
+              break;
+            }
+          }
           if(existing.isEmpty()) {
             this.add${name?cap_first}ValidationResult(${name}ValidationResult);
           } else {
@@ -64,7 +70,7 @@ ${cd4c.method("public ${type?cap_first} merge(${type?cap_first} other)")}
         }
       }
     } else {
-      for(int i = 0; i < this.get${name?cap_first}ValidationResults().size(); i++) {
+      for(int i = 0; i < this.get${name?cap_first}VcalidationResults().size(); i++) {
         this.get${name?cap_first}ValidationResults().set(i, this.get${name?cap_first}ValidationResults().get(i).merge(other.get${name?cap_first}ValidationResults().get(i)));
       }
     }
