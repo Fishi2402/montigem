@@ -26,7 +26,6 @@ public class ManagerSubscriptionDecorator extends AbstractDeSerDecorator {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_PACKAGE);
     origCD.getCDDefinition().getCDClassesList().stream()
         .filter(c -> !c.getSymbol().isIsDerived())
-        .filter(c -> !c.getSymbol().isIsAbstract())
         .forEach(c -> {
           astcdPackage.addCDElement(withOrigin(createClass(origCD, c, astcdPackage.getName())));
           astcdPackage.addCDElement(withOrigin(createDeSer(origCD, c)));
