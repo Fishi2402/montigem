@@ -70,7 +70,7 @@ ${cd4c.method("public ${type?cap_first} merge(${type?cap_first} other)")}
         }
       }
     } else {
-      for(int i = 0; i < this.get${name?cap_first}VcalidationResults().size(); i++) {
+      for(int i = 0; i < this.get${name?cap_first}ValidationResults().size(); i++) {
         this.get${name?cap_first}ValidationResults().set(i, this.get${name?cap_first}ValidationResults().get(i).merge(other.get${name?cap_first}ValidationResults().get(i)));
       }
     }

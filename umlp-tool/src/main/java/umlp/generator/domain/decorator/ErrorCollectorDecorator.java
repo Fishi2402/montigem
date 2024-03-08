@@ -65,14 +65,15 @@ public class ErrorCollectorDecorator extends AbstractDecorator {
                 .forEach(a -> {
                     getCD4C().addMethod(collectorClass, "umlp.errorcollector.ReportInvalid", a.getName(), domainClass.getName());
                     if(hasOCL) {
-                      getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.TSReportInvalidWithMessage", a.getName(), domainClass.getName());
+                      getCD4C().addMethod(collectorClass, "umlp.errorcollector.ReportInvalidWithMessage", a.getName(), domainClass.getName());
+                      getCD4C().addMethod(collectorClass, "umlp.errorcollector._ReportInvalidWithMessage", a.getName(), domainClass.getName());
                     }
                     getCD4C().addMethod(collectorClass, "umlp.errorcollector._ReportInvalid", a.getName(), domainClass.getName());
                     getCD4C().addMethod(collectorClass, "umlp.errorcollector._BuildInvalidMsg", a.getName(), domainClass.getName());
                 });
         if(hasOCL) {
-          getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.TSReportInvalidWithMessage", "thisObjectRelated", domainClass.getName());
-          getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.TS_ReportInvalid", "thisObjectRelated", domainClass.getName());
+          getCD4C().addMethod(collectorClass, "umlp.errorcollector.ReportInvalidWithMessage", "thisObjectRelated", domainClass.getName());
+          getCD4C().addMethod(collectorClass, "umlp.errorcollector._ReportInvalidWithMessage", "thisObjectRelated", domainClass.getName());
         }
 
         // Add methods for domain associations
