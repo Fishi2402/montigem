@@ -93,6 +93,8 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
 
       umlpTask.getInput().from(getModelsPath(project));
 
+      umlpTask.getOcl().from(getOCLPath(project));
+
       setIfPathExists(x -> umlpTask.getHwcDir().from(x), Path.of(
           project.getProjectDir().getAbsolutePath(), "src", "app"));
 
@@ -357,6 +359,11 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
   @NotNull
   private static Path getModelsPath(Project project) {
     return Path.of(project.getProjectDir().getAbsolutePath(), "..", "models");
+  }
+
+  @NotNull
+  private static Path getOCLPath(Project project) {
+    return Path.of(project.getProjectDir().getAbsolutePath(), "..", "models", "ocl");
   }
 
   @NotNull

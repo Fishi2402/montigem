@@ -33,3 +33,11 @@ if(result.isListResult()){
     printer.endArray();
   }
 }
+
+if(result.isValidationResult()) {
+  String tp = result.getTypeParameter();
+  printer.member("successful", result.asValidationResult().isSuccessful());
+  printer.beginObject("value");
+  serSingleValue(result.asValidationResult().get(), printer, tp);
+  printer.endObject();
+}

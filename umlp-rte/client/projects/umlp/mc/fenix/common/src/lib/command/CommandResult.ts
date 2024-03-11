@@ -3,6 +3,7 @@
 import { ListResult } from "./ListResult";
 import { SimpleResult } from "./SimpleResult";
 import { StatusResult } from "./StatusResult";
+import {ValidationResult} from "./ValidationResult";
 
 /**
  * single result of an executed command
@@ -62,4 +63,13 @@ export abstract class CommandResult<T> {
   public asListResult(): ListResult<T, Array<T>>  {
     return <ListResult<T, Array<T>>> <any> this;
   }
+
+  public isValidationResult(): boolean {
+    return false;
+  }
+
+  public asValidationResult(): ValidationResult {
+    return <ValidationResult> <any> this;
+  }
+
 }

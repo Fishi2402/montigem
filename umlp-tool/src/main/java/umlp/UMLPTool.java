@@ -72,6 +72,7 @@ import umlp.generator.gui.gentypescript.domain.TSUMLPGenerator;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentGenerator;
 import umlp.generator.gui.guivariability.GUIVariabilityHandler;
 import umlp.generator.util.UMLPSymbolTables;
+import umlp.generator.validator.ocl.OCLASTPreProcessor;
 
 import java.io.File;
 import java.io.IOException;
@@ -429,27 +430,27 @@ public class UMLPTool extends UMLPToolTOP {
                 oclModelPath.addEntry(Paths.get(v));
               }
               List<URL> oclFiles = MCPathUtil.getAllModels(oclModelPath, ".*[.]ocl");
-              for (URL modelUrl : oclFiles) {
-                File oclFile = new File(modelUrl.toURI());
-                OCLParser oclParser = new OCLParser();
-                Optional<ASTOCLCompilationUnit> oclCompilationUnit;
-                try {
-                  oclCompilationUnit = oclParser.parse(oclFile.getAbsolutePath());
+              if(!oclFiles.isEmpty()) {
+                for (URL modelUrl : oclFiles) {
+                  File oclFile = new File(modelUrl.toURI());
+                  OCLParser oclParser = new OCLParser();
+                  Optional<ASTOCLCompilationUnit> oclCompilationUnit;
+                  try {
+                    oclCompilationUnit = oclParser.parse(oclFile.getAbsolutePath());
+                  } catch (IOException e) {
+                    throw new RuntimeException(e);
+                  }
+                  if (!oclCompilationUnit.isPresent()) {
+                    Log.error("0xE0001 Could not parse OCL file");
+                  }
+                  ASTOCLCompilationUnit oCLAst = oclCompilationUnit.get();
+                  oclCompilationUnits.add(OCLASTPreProcessor.preProcessInvariants(oCLAst));
+                  SymbolTableUtil.prepareMill();
+                  UMLPSymbolTables.addCd4cSymbols();
+                  SymbolTableUtil.loadSymbolFile(symbolPath.toString());
+                  SymbolTableUtil.runSymTabGenitor(oCLAst);
+                  SymbolTableUtil.runSymTabCompleter(oCLAst);
                 }
-                catch (IOException e) {
-                  throw new RuntimeException(e);
-                }
-                if (!oclCompilationUnit.isPresent()) {
-                  Log.error("0xE0001 Could not parse OCL file");
-                }
-                ASTOCLCompilationUnit oCLAst = oclCompilationUnit.get();
-
-                SymbolTableUtil.prepareMill();
-                UMLPSymbolTables.addCd4cSymbols();
-                SymbolTableUtil.loadSymbolFile(symbolPath.toString());
-                SymbolTableUtil.runSymTabGenitor(oCLAst);
-                SymbolTableUtil.runSymTabCompleter(oCLAst);
-                oclCompilationUnits.add(oCLAst);
                 AbstractDecorator.hasOCL = true;
               }
             }
