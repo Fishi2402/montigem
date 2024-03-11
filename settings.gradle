@@ -17,8 +17,20 @@ pluginManagement {
     maven { url "https://repo.spring.io/milestone" }
 
     // TODO: Publish jsweet dependency in nexus, so that this is _not_ required!!!!!
-    maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
-    maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
+    // Only use jsweet repos for everything in org.jsweet*(excl jsweet-core which is in maven-central)
+    // since they throw 409 errors for dependencies in other groups
+    maven {
+      url "https://repository.jsweet.org/artifactory/libs-snapshot-local"
+      mavenContent {
+        includeModuleByRegex("org[.]jsweet.*", "(?!jsweet-core).*")
+      }
+    }
+    maven {
+      url "https://repository.jsweet.org/artifactory/libs-release-local"
+      mavenContent {
+        includeModuleByRegex("org[.]jsweet.*", "(?!jsweet-core).*")
+      }
+    }
   }
 }
 
