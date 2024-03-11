@@ -87,6 +87,19 @@ import {TooltipOptions} from "primeng/api";
 })
 @AutoUnsubscribe()
 export class GemGraphComponent extends GraphBasisComponent implements OnChanges {
+
+    switchExtendedButton : boolean = true;
+
+    exampleComplexLayout = {
+      mode: ComplexGraphLayouts.FORCEATLAS2,
+      maxIterations: 100,
+      parameters: {
+        settings: {
+          gravity: 1,
+          slowDown: 1.2
+        }
+      }};
+
     // ========================================================================================
     // Input Properties
     // ========================================================================================
@@ -143,7 +156,24 @@ export class GemGraphComponent extends GraphBasisComponent implements OnChanges 
       }};
 
     /** Array of additional control buttons to be displayed. */
-    @Input() cbExtendButtons?: ControlButton[];
+    @Input() cbExtendButtons?: ControlButton[] = [
+      {
+        key: "continueLayout",
+        actionFn: (button: ControlButton, graphManager: GraphManagerService): void => {
+          console.debug("Switch Layout")
+          if(this.switchExtendedButton) {
+            this.switchExtendedButton = !this.switchExtendedButton
+            graphManager.updateLayoutConfiguration(this.exampleComplexLayout,true)
+          } else {
+            this.switchExtendedButton = !this.switchExtendedButton
+            graphManager.updateLayoutConfiguration(null,true)
+          }
+        },
+        tooltip: "Switch Layout",
+        icon: "pi pi-arrow-right-arrow-left",
+      }
+
+    ];
 
     /** Array of identifiers for control buttons to be removed. */
     @Input() cbRemoveButtons?: string[];
