@@ -1,18 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package example_charts;
 
+import Domain.Person;
 import mc.fenix.charts.GemGaugeChart;
-import mc.fenix.charts.GemGaugeChartTypes.GemGaugeChartData;
 
-page GemGaugeChartExample(
-  GemGaugeChartData data
-) {
+page GemGaugeChartExample(List<Person> persons) {
   @GemGaugeChart(
-    data = data,
-    min = -30,
-    max = 70,
-    unit = "kt",
-    textValue = "CO2 Emission"
+    data = null,
+    min = 0,
+    max = 50,
+    unit = "#friends",
+    textValue = "average number of friends for age group"
   );
 }
 

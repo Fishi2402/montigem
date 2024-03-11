@@ -1,13 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 package example_charts;
 
+import Domain.Person;
 import mc.fenix.charts.GemHeatmapChart;
 import mc.fenix.charts.GemHeatmapChartTypes.GemHeatmapChartData;
 
-page GemHeatmapChartExample(
-  GemHeatmapChartData data
-) {
+page GemHeatmapChartExample(List<Person> persons) {
   @GemHeatmapChart(
-    data = data
+    data = null,
+    timestampdata = false,
+    xLabel = "amount of money spent for stocks",
+    yLabel = "age groups"
   );
 }
