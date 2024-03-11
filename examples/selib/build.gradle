@@ -18,7 +18,7 @@ plugins {
   id 'java'
   id 'application'
 
-  id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+  id 'io.spring.dependency-management' version '1.0.15.RELEASE'
   id 'org.springframework.boot' version "${spring_version}"
 
   // Makes the task-types `UMLPBackendTask` and `UMLPMergeTask` available

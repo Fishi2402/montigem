@@ -1,16 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package example_charts;
 
-//import mc.fenix.charts.GemCandlestickChart;
-//import mc.fenix.charts.GemCandlestickChartTypes.GemData2CandlestickChart;
+import Domain.Person;
+import mc.fenix.charts.GemCandlestickChart;
 
-page GemCandlestickChartExample(
-  //List<GemData2CandlestickChart> data
-) {
-
-
-/*
+page GemCandlestickChartExample(List<Person> persons) {
   @GemCandlestickChart(
-    data = data
-  );*/
+    data = null
+  );
 }

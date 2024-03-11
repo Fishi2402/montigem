@@ -12,6 +12,11 @@ public class StatusResult extends CommandResult<Void> {
     this.successful = successful;
   }
 
+  protected StatusResult(long id, boolean successful, String type) {
+    super(id, type);
+    this.successful = successful;
+  }
+
   public static StatusResult ok(long id){
     return new StatusResult(id, true);
   }
@@ -32,5 +37,9 @@ public class StatusResult extends CommandResult<Void> {
   @Override
   public boolean isStatusResult() {
     return true;
+  }
+
+  public boolean isValidationResult() {
+    return false;
   }
 }

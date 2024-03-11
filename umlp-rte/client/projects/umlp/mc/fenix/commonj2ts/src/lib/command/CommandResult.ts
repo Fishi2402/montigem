@@ -7,6 +7,7 @@ import {SimpleResult} from './SimpleResult';
 
 
 import {StatusResult} from './StatusResult';
+import {ValidationResult} from "./ValidationResult";
 
 /**
  * single result of an executed command
@@ -68,6 +69,14 @@ export abstract class CommandResult<T> {
 
   public asListResult(): ListResult<T, IUMLPList<T>> {
     return <ListResult<T, IUMLPList<T>>><unknown>this;
+  }
+
+  public isValidationResult(): boolean {
+    return false;
+  }
+
+  public asValidationResult(): ValidationResult {
+    return <ValidationResult> <any> this;
   }
 
   protected setParams(id: number, typeParameter: string): CommandResult<T> {

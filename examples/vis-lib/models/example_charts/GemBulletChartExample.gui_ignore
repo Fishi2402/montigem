@@ -1,23 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
 package example_charts;
 
-//import mc.fenix.charts.GemBulletChart;
+import Domain.Person;
+import mc.fenix.charts.GemBulletChart;
 
 page GemBulletChartExample(
-  Integer value,
-  Integer reference,
-  Integer thresholdvalue,
-  String title,
-  String subtitle,
+  List<Person> persons,
   List<Integer> range,
-  List<Integer> steps
-) {
-  @GemBulletChart(
-    value = value,
-    reference = reference,
-    thresholdvalue = thresholdvalue,
-    title = title,
-    subtitle = subtitle,
+  List<Integer> steps) {
+  bulletchart@GemBulletChart(
+    value = null,
+    reference = 4000,
+    thresholdvalue = 4000,
+    title = "Profit of MontiCore Inc. from stocks",
+    subtitle = "in US $",
     range = range,
     steps = steps
   );

@@ -1,17 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
 package example_charts;
 
+import Domain.Person;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
 import mc.fenix.charts.GemSunburstChart;
-import mc.fenix.charts.GemSunburstChartTypes.GemSunburstData;
-import mc.fenix.charts.GemSunburstChartTypes.GemSDNshort;
 
-page GemSunburstChartExample(
-  GemSunburstData data,
-  GemSDNshort dataShort
-) {
-  @GemSunburstChart(
-    data = data,
-    dataShort = dataShort,
-    ignoreError = true
-  );
+page GemSunburstChartExample(List<Person> persons) {
+  @GemRow(width = "513px", height = "620px", components = [
+    @GemColumn(rowGap = "10px", width = "100%", components = [
+      @GemSunburstChart(
+        data = null,
+        ignoreError = true
+      )
+    ])
+  ]);
 }

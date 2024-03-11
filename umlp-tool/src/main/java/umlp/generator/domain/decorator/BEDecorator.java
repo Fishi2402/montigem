@@ -6,6 +6,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
+import umlp.UMLPMill;
 import umlp.UMLPTool;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.UMLPGeneratorConfig;
@@ -78,7 +79,7 @@ public class BEDecorator extends AbstractDecorator {
 
     DAONeo4jDecorator daoNeo4jDecorator = new DAONeo4jDecorator(glex);
     daoNeo4jDecorator.transform(cdAST, decoratedAST);
-    Log.info("After decorator: DAODecorator", BEDecorator.class.getName());
+    Log.info("After decorator: DAONeo4jDecorator", BEDecorator.class.getName());
 
     // Generate DeSer
     DeSerDecorator deSerDecorator = new DeSerDecorator(glex, hwPath, supportedDesers);
@@ -216,7 +217,10 @@ public class BEDecorator extends AbstractDecorator {
     testContextDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: TestContextDecorator", ShellAPIDecorator.class.getName());
 
-    TestSetupDecorator testSetupDecorator = new TestSetupDecorator(glex, neo4j);
+    TestSetupDecorator testSetupDecorator = new TestSetupDecorator(glex,
+                                                                   neo4j,
+                                                                   observerDecorator,
+                                                                   diagramObserverDecorator);
     testSetupDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: TestContextDecorator", TestSetupDecorator.class.getName());
 
@@ -225,6 +229,14 @@ public class BEDecorator extends AbstractDecorator {
       validatorDecorator.setOclCompilationUnits(UMLPTool.getOclCompilationUnits());
       validatorDecorator.transform(cdAST, decoratedAST);
       Log.info("After decorator: ValidatorDecorator", BEDecorator.class.getName());
+      ValidationResultDecorator validationResultDecorator = new ValidationResultDecorator(glex);
+      validationResultDecorator.transform(cdAST, decoratedAST);
+      Log.info("After decorator: ValidationResultDecorator", BEDecorator.class.getName());
+      ValidationResultDeSerDecorator validationResultDeSerDecorator = new ValidationResultDeSerDecorator(glex);
+      validationResultDeSerDecorator.transform(cdAST, decoratedAST);
+      Log.info("After decorator: ValidationResultDeSerDecorator", BEDecorator.class.getName());
+      // OCLMill was used in the decorators. To assure UMLP functionality initialize the UMLP-Mill
+      UMLPMill.init();
     }
 
 

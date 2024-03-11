@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature( "attributename","classname","manager", "isGem", "targetname")}
+${tc.signature( "attributename","classname","manager", "isGem", "targetname", "hasOCL")}
 ${cd4c.method("public Promise<StatusResult> doRun()")}
 
 return ${manager}.${classname?uncap_first}Opt(this.gemId).then(v => {

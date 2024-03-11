@@ -6,6 +6,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
+import umlp.UMLPMill;
 import umlp.generator.domain.decorator.BEDecorator;
 import umlp.generator.domain.decorator.BaseClassObjectMapperDecorator;
 import umlp.generator.domain.decorator.BuilderDecorator;
@@ -28,6 +29,8 @@ import umlp.generator.domain.decorator.ManagerClientImplDecorator;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.domain.decorator.ManagerMockDecorator;
 import umlp.generator.domain.decorator.ObserverDecorator;
+import umlp.generator.domain.decorator.ValidationResultDeSerDecorator;
+import umlp.generator.domain.decorator.ValidationResultDecorator;
 import umlp.generator.gui.gentypescript.commands.TSAccessPolicyDecorator;
 
 public class FEDecorator extends BEDecorator {
@@ -168,6 +171,17 @@ public class FEDecorator extends BEDecorator {
     CommandResultDeSerDecorator commandResultDeSerDecorator = new TSCommandResultDeSerDecorator(glex);
     commandResultDeSerDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: CommandResultDeSerDecorator", FEDecorator.class.getName());
+
+    if(hasOCL) {
+      ValidationResultDecorator validationResultDecorator = new TSValidationResultDecorator(glex);
+      validationResultDecorator.transform(cdAST, decoratedAST);
+      Log.info("After decorator: ValidationResultDecorator", FEDecorator.class.getName());
+      ValidationResultDeSerDecorator validationResultDeSerDecorator = new TSValidationResultDeSerDecorator(glex);
+      validationResultDeSerDecorator.transform(cdAST, decoratedAST);
+      Log.info("After decorator: ValidationResultDeSerDecorator", FEDecorator.class.getName());
+      // OCLMill was used in the decorators. To assure UMLP functionality initialize the UMLP-Mill
+      UMLPMill.init();
+    }
 
     /*
     TestContextDecorator testContextDecorator = new TestContextDecorator(glex);

@@ -22,7 +22,7 @@ public class AttributesDBTestSetup extends attributes.test_infrastructure.Attrib
 
   protected String dbType = "SQL";
 
-  public final static int port = 7687;
+  public final static int port = 7690;
 
   protected static DatabaseManagementService managementService;
 
@@ -79,7 +79,7 @@ public class AttributesDBTestSetup extends attributes.test_infrastructure.Attrib
       managementService.database(GraphDatabaseSettings.DEFAULT_DATABASE_NAME);
       return;
     }
-    managementService = new DatabaseManagementServiceBuilder(Paths.get("build", "temporaryNeo4jDB"))
+    managementService = new DatabaseManagementServiceBuilder(Paths.get("build", "attributesDbTest"))
         .setConfig(BoltConnector.enabled, true)
         .setConfig(BoltConnector.listen_address, new SocketAddress("localhost", port)).build();
     registerShutdownHook(managementService);

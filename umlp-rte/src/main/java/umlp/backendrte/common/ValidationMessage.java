@@ -14,6 +14,14 @@ public class ValidationMessage {
       this.status = status;
     }
 
+    public static ValidationMessage error(String message) {
+      return new ValidationMessage(ValidationStatus.ERROR, message);
+    }
+
+    public static ValidationMessage ok() {
+      return new ValidationMessage(ValidationStatus.OK, "");
+    }
+
     public String getMessage() {
         return message;
     }

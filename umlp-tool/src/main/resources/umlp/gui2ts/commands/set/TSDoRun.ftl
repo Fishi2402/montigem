@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature( "attributename","classname","manager", "isGem", "targettype", "targetTypeManager", "packagename")}
+${tc.signature( "attributename","classname","manager", "isGem", "targettype", "targetTypeManager", "packagename", "hasOCL")}
 ${cd4c.method("public Promise<StatusResult> doRun()")}
 
 console.debug("Executing set_${attributename} to " + this.${attributename}<#if isGem>GemId</#if> + " on ${classname?uncap_first} " + this.gemId);

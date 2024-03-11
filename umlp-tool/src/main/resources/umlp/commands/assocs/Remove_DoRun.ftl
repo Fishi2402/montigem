@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature( "assoc","sourceName","targetName","sourceType","targetType",
-                "isSourceList","isTargetList","managerName")}
+                "isSourceList","isTargetList","managerName", "hasOCL")}
 ${cd4c.method("public StatusResult doAction()")}
 
 <#assign csourceName=sourceName?cap_first>
@@ -31,7 +31,18 @@ if(loaded${ctargetName} && loaded${csourceName}){
 <#else>
   // TODO
 </#if>
-
+  <#if hasOCL>
+  ${sourceType}Validator sourceValidator = new ${sourceType}Validator();
+  ${sourceType}ValidationResult sourceValidationResult = sourceValidator.validate(p);
+  if (sourceValidationResult.hasErrors()) {
+    return new ValidationResult(getId(), sourceValidationResult, "sehub.${sourceType}ValidationResult");
+  }
+  ${targetType}Validator targetValidator = new ${targetType}Validator();
+  ${targetType}ValidationResult targetValidationResult = targetValidator.validate(a);
+  if (targetValidationResult.hasErrors()) {
+    return new ValidationResult(getId(), targetValidationResult, "sehub.${targetType}ValidationResult");
+  }
+  </#if>
 }else{
   // Do not trigger load of ${sourceName}. If the ${targetName} is loaded, we can change it instead and avoid a load operation
   if(loaded${ctargetName}){
@@ -44,6 +55,13 @@ if(loaded${ctargetName} && loaded${csourceName}){
 <#else>
     // TODO
 </#if>
+  <#if hasOCL>
+    ${targetType}Validator targetValidator = new ${targetType}Validator();
+    ${targetType}ValidationResult targetValidationResult = targetValidator.validate(a);
+    if (targetValidationResult.hasErrors()) {
+      return new ValidationResult(getId(), targetValidationResult, "sehub.${targetType}ValidationResult");
+    }
+  </#if>
   } else if(loaded${csourceName}) {
     ${sourceType} p = ${managerName}.get${sourceType}Sure(${sourceName}GemId);
 <#if isTargetList>
@@ -54,6 +72,13 @@ if(loaded${ctargetName} && loaded${csourceName}){
 <#else>
   // TODO
 </#if>
+  <#if hasOCL>
+    ${sourceType}Validator sourceValidator = new ${sourceType}Validator();
+    ${sourceType}ValidationResult sourceValidationResult = sourceValidator.validate(p);
+    if (sourceValidationResult.hasErrors()) {
+      return new ValidationResult(getId(), sourceValidationResult, "sehub.${sourceType}ValidationResult");
+    }
+  </#if>
   } else {
     // Why did the client receive this command, if it does not contain a or p?
     GeneralErrorCollector.reportSyncError();
