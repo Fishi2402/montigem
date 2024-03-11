@@ -16,7 +16,7 @@ component GemGraph(
   boolean showControlButtons=true,
   boolean showInformation=true,
   List<String> metricKeys
-  // TODO configure Layout from GUIDsl 
+  // TODO configure Layout from GUIDsl
 
   //@Input() customMetricsGenerator?: CustomMetricsGenerator;
   //@Input() serializedGraph?: SerializedGraph<NodeAttributes, EdgeAttributes>;
