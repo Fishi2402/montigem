@@ -136,20 +136,30 @@ public abstract class AbstractDecorator {
   }
 
   /**
+   * Adds an attribute with an initial value to the given {@link ASTCDType} without adding getters nor setters.
+   *
+   * @param target       Where to define the attribute
+   * @param declaration  The declaration code of the attribute
+   * @param initialValue The initial value code of the attribute. If blank no initial value will be added
+   * @return The added {@link ASTCDAttribute}
+   * @see #addAttribute(ASTCDType, boolean, boolean, String, String)
+   */
+  protected ASTCDAttribute addAttribute(ASTCDType target, String declaration, String initialValue) {
+    return addAttribute(target, false, false, declaration, initialValue);
+  }
+
+  /**
    * Adds an attribute with an initial value to the given {@link ASTCDType}.
    *
    * @param target       Where to define the attribute
    * @param addGetter    Whether to add a getter
    * @param addSetter    Whether to add a setter
-   * @param declaration  The declaration code of the attribute, either with or without a trailing semicolon
+   * @param declaration  The declaration code of the attribute
    * @param initialValue The initial value code of the attribute. If blank no initial value will be added
    * @return The added {@link ASTCDAttribute}
    * @see CD4C#addAttribute(ASTCDType, boolean, boolean, String)
    */
   protected ASTCDAttribute addAttribute(ASTCDType target, boolean addGetter, boolean addSetter, String declaration, String initialValue) {
-    //declaration must end with a semicolon
-    if (!declaration.endsWith(";")) declaration += ";";
-
     ASTCDAttribute attribute = getCD4C().addAttribute(target, addGetter, addSetter, declaration);
 
     if (!initialValue.isBlank()) {
