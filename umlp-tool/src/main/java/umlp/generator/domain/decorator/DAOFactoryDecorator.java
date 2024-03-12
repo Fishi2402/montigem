@@ -52,13 +52,11 @@ public class DAOFactoryDecorator extends AbstractDecorator {
     CD4C cd4C = getCD4C();
 
     //listener attribute
-    ASTCDAttribute accessListenersAttribute = cd4C.addAttribute(daoFactory,
-                                                                false,
-                                                                false,
-                                                                "protected final List<Runnable> accessListeners;");
-    getGlex().replaceTemplate("cd2java.Value",
-                         accessListenersAttribute,
-                         new StringHookPoint(" = new ArrayList<>()"));
+    ASTCDAttribute accessListenersAttribute = addAttribute(daoFactory,
+                                                           false,
+                                                           false,
+                                                           "protected final List<Runnable> accessListeners",
+                                                           "new ArrayList<>()");
 
     origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
         .forEach(c -> addClassElements(c, daoFactory));

@@ -145,9 +145,10 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
     }
 
     // Attribute observerList
-    ASTCDAttribute attrObserver = getCD4C().addAttribute(clazz,
-        " protected List<" + domainClass.getName() + "Observer> " + StringTransformations.uncapitalize(domainClass.getName()) + "Observers");
-    glex.replaceTemplate("cd2java.Value", attrObserver, new StringHookPoint(defaultListValue()));
+    ASTCDAttribute attrObserver = addAttribute(clazz,
+                                               " protected List<" + domainClass.getName() + "Observer> " + StringTransformations.uncapitalize(
+                                                   domainClass.getName()) + "Observers",
+                                               defaultListValue());
     addTransientModifier(attrObserver);
 
     // Add attributes to class

@@ -75,11 +75,9 @@ public class ValidationResultDecorator extends AbstractDecorator {
   private void createAttributes(ASTCDType validationResultClass, List<ASTCDAttribute> attributes, List<ASTCDAssociation> leftAssociations, List<ASTCDAssociation> rightAssociations) {
     getCD4C().addAttribute(validationResultClass, getSignatureForTypeAndAttributeName("long", "domainObjectId"));
     for(ASTCDAttribute attribute : attributes) {
-      ASTCDAttribute attr = getCD4C().addAttribute(validationResultClass, getListSignatureForTypeAndAttributeName("ValidationMessage", attribute.getName() + "ValidationMessages"));
-      glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint(getListInitializer()));
+      addAttribute(validationResultClass, getListSignatureForTypeAndAttributeName("ValidationMessage", attribute.getName() + "ValidationMessages"), getListInitializer());
     }
-    ASTCDAttribute attr = getCD4C().addAttribute(validationResultClass, getListSignatureForTypeAndAttributeName("ValidationMessage", "thisObjectRelated" + "ValidationMessages"));
-    glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint(getListInitializer()));
+    addAttribute(validationResultClass, getListSignatureForTypeAndAttributeName("ValidationMessage", "thisObjectRelated" + "ValidationMessages"), getListInitializer());
 
     for(ASTCDAssociation association : leftAssociations) {
       addAssociationAttributes(validationResultClass, association, true);
