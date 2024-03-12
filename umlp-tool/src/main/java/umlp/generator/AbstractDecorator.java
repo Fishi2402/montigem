@@ -163,13 +163,34 @@ public abstract class AbstractDecorator {
    * @see CD4C#addAttribute(ASTCDType, boolean, boolean, String)
    */
   protected ASTCDAttribute addAttribute(ASTCDType target, boolean addGetter, boolean addSetter, String declaration, String initialValue) {
+    return addAttribute(target,
+                        addGetter,
+                        addSetter,
+                        declaration,
+                        Optional.of(initialValue)
+                                .filter(s -> !s.isBlank())
+                                .map(s -> new StringHookPoint(" = " + s)));
+  }
+
+  /**
+   * Adds an attribute with an initial value to the given {@link ASTCDType}.
+   *
+   * @param target                Where to define the attribute
+   * @param addGetter             Whether to add a getter
+   * @param addSetter             Whether to add a setter
+   * @param declaration           The declaration code of the attribute
+   * @param initialValueHookPoint An optional {@link HookPoint} with the initial value of the
+   *                              attribute. The value must start with an equals sign!
+   *                              (evaluate to an assign expression)
+   * @return The added {@link ASTCDAttribute}
+   * @see CD4C#addAttribute(ASTCDType, boolean, boolean, String)
+   */
+  protected ASTCDAttribute addAttribute(ASTCDType target, boolean addGetter, boolean addSetter, String declaration, Optional<HookPoint> initialValueHookPoint) {
     ASTCDAttribute attribute = getCD4C().addAttribute(target, addGetter, addSetter, declaration);
 
-    if (!initialValue.isBlank()) {
-      getGlex().replaceTemplate("cd2java.Value",
-                                attribute,
-                                new StringHookPoint(" = " + initialValue));
-    }
+    initialValueHookPoint.ifPresent(hookPoint -> getGlex().replaceTemplate("cd2java.Value",
+                                                                           attribute,
+                                                                           hookPoint));
 
     return attribute;
   }
