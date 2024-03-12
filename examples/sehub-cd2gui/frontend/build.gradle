@@ -62,7 +62,7 @@ tasks.register('generateCDTOGUI', UMLPCdToGuiTask) {
 
 task guiVariability(type: GuiVariabilityHandlerTask) {
   if(useCD2GUI) {
-    input.from(generateCDTOGUI.getOutputDir().dir("models"))
+    input.from(generateCDTOGUI.getOutputDir())
   }
   input.from(file("../models/gui"))
   outputDir = layout.buildDirectory.dir("guiVariability")
