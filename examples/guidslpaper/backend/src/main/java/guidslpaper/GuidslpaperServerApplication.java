@@ -87,22 +87,23 @@ public class GuidslpaperServerApplication extends guidslpaper.GuidslpaperServerA
         .get();
 
     k = GuidslpaperManager.kontoBuilder()
-        .name("Haushaltskonto")
-        .pspElement(Optional.of("131100108300000"))
-        .kontoart("10")
-        .kontotyp(Optional.of("94 (Haushaltskonto)"))
-        .istPlanKonto(false)
-        .budgetRahmenCent(100000L)
-        .build()
-        .get();
-
-    k = GuidslpaperManager.kontoBuilder()
         .name("EU München")
         .pspElement(Optional.of("172101234560002"))
         .kontoart("10")
         .kontotyp(Optional.of("EU"))
         .istPlanKonto(false)
         .budgetRahmenCent(1900L)
+        .build()
+        .get();
+
+    /*
+    k = GuidslpaperManager.kontoBuilder()
+        .name("Haushaltskonto")
+        .pspElement(Optional.of("131100108300000"))
+        .kontoart("10")
+        .kontotyp(Optional.of("94 (Haushaltskonto)"))
+        .istPlanKonto(false)
+        .budgetRahmenCent(100000L)
         .build()
         .get();
 
@@ -135,6 +136,7 @@ public class GuidslpaperServerApplication extends guidslpaper.GuidslpaperServerA
         .budgetRahmenCent(4450L)
         .build()
         .get();
+    /**/
   }
 
   public void createDummyPersons() {
@@ -169,6 +171,7 @@ public class GuidslpaperServerApplication extends guidslpaper.GuidslpaperServerA
         .build()
         .get();
 
+    /*
     p = GuidslpaperManager.personBuilder()
         .personalnummer(Optional.of("62345"))
         .kuerzel("MUSMO")
@@ -208,6 +211,7 @@ public class GuidslpaperServerApplication extends guidslpaper.GuidslpaperServerA
         .beschEnde(Optional.empty())
         .build()
         .get();
+    /**/
   }
 
 

@@ -21,11 +21,9 @@ export class AccountOverview extends AccountOverviewComponent {
   });
 
   public override init() {
-    this.gemTable11Columns = <any[]>[
-      { prop: "_pspElement", name: "PSP-Element" },
+    this.gemTable6Columns = <any[]>[
       { prop: "_name", name: "Name" },
       { prop: "_kontotyp", name: "Typ" },
-      { prop: "_kontoart", name: "Projektart" },
       { prop: "_budgetRahmenCent", name: "Gesamtbudget", displayValue: v => this.formatter.format(v)  }
     ];
   }

@@ -12,10 +12,10 @@ import { Input } from '@angular/core';
 })
 export class GemButton {
   @HostBinding("style.width")
-  _width: string = "100%";
+  _width: string = "auto";
 
   @HostBinding("style.height")
-  _height: string = "100%";
+  _height: string = "auto";
 
   public get width(): string {
     return this._width;

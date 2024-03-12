@@ -13,7 +13,7 @@ component GemButton(
   Event<Void> leftClick,
 
   /** Width of the button. */
-  String width = "100%",
+  String width = "auto",
   /** Height of the button. */
-  String height = "100%"
+  String height = "auto"
 )
