@@ -13,7 +13,6 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
-import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentTemplates;
 import umlp.generator.util.PathUtil;
 
 import java.util.ArrayList;
@@ -95,9 +94,10 @@ public class DiagramObserverDecorator extends AbstractDecorator {
       if(astcdMethod.getName().startsWith("maybe") || astcdMethod.getName().equals("getScope")) {
         continue;
       }
-      ASTCDMethod element = replaceMethodBody(astcdMethod, new StringHookPoint(""), ast);
+      ASTCDMethod element = astcdMethod.deepClone();
       element.setIsDefault(false);
       element.setModifier(PUBLIC.build());
+      replaceMethodBody(element, new StringHookPoint(""), ast);
     }
 
     return ast;
