@@ -13,9 +13,11 @@ import de.monticore.cd.facade.CDStereotypeFacade;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._prettyprint.CD4CodeFullPrettyPrinter;
+import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdassociation._ast.ASTCDAssociation;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cdbasis._ast.ASTCDElement;
@@ -47,6 +49,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 // TODO refactor this class
@@ -169,6 +172,36 @@ public abstract class AbstractDecorator {
     }
 
     return attribute;
+  }
+
+  /**
+   * Creates a deep clone of the provided {@link ASTCDMethodSignature}, replaces its body with a
+   * {@link HookPoint} and adds the created signature to the target {@link ASTCDClass}
+   *
+   * @param original         The original {@link ASTCDMethodSignature}
+   * @param newBodyHookPoint A {@link HookPoint} to replace the body
+   * @param target           A {@link ASTCDClass} to add the new method to
+   * @return The new {@link ASTCDMethodSignature} with the new body
+   * @see #replaceMethodBody(ASTCDMethodSignature, HookPoint)
+   */
+  protected ASTCDMethodSignature replaceMethodBody(ASTCDMethodSignature original, HookPoint newBodyHookPoint, ASTCDClass target) {
+    ASTCDMethodSignature signature = replaceMethodBody(original, newBodyHookPoint);
+    target.addCDMember(signature);
+    return signature;
+  }
+
+  /**
+   * Creates a deep clone of the provided {@link ASTCDMethodSignature} and replaces its body with a
+   * {@link HookPoint}
+   *
+   * @param original         The original {@link ASTCDMethodSignature}
+   * @param newBodyHookPoint A {@link HookPoint} to replace the body
+   * @return The new {@link ASTCDMethodSignature} with the new body
+   */
+  protected ASTCDMethodSignature replaceMethodBody(ASTCDMethodSignature original, HookPoint newBodyHookPoint) {
+    ASTCDMethodSignature copy = original.deepClone();
+    getGlex().replaceTemplate(getCD4C().getEmptyBodyTemplate(), copy, newBodyHookPoint);
+    return copy;
   }
 
   protected ASTCDPackage getPackage(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD, String packageName) {
