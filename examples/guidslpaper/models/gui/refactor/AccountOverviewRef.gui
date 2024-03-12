@@ -18,8 +18,8 @@ page AccountOverviewRef(List<Konto> accounts) {
   @Overview(
     title = "Accounts overview",
     buttons = [
-      @GemButton(width = "auto", label = "Add account"),
-      @GemButton(width = "auto", label = "?")
+      @GemButton(label = "Add account"),
+      @GemButton(label = "?")
     ],
     main = @GemTable(
       rows = accounts,

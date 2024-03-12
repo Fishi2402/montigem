@@ -17,8 +17,8 @@ page PersonOverviewRef(List<Person> persons) {
   @Overview(
     title = "Staff overview",
     buttons = [
-      @GemButton(width = "auto", label = "Add person"),
-      @GemButton(width = "auto", label = "?")
+      @GemButton(label = "Add person"),
+      @GemButton(label = "?")
     ],
     main = @GemTable(
       rows = persons,

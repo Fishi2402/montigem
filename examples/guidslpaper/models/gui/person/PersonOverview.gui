@@ -16,8 +16,8 @@ page PersonOverview(List<Person> persons) {
     titleComponent = @GemRow(hAlign = "space-between", components = [
       @GemText(value = "Staff overview"),
       @GemRow(width = "70%", hAlign = "right", vAlign = "center", colGap = "0.5rem", components = [
-        @GemButton(width = "auto", label = "Add person"),
-        @GemButton(width = "auto", label = "?")
+        @GemButton(label = "Add person"),
+        @GemButton(label = "?")
       ])
     ]),
     component = @GemTable(
