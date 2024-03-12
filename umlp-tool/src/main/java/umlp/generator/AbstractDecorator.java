@@ -49,7 +49,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 // TODO refactor this class
@@ -158,7 +157,8 @@ public abstract class AbstractDecorator {
    * @param addGetter    Whether to add a getter
    * @param addSetter    Whether to add a setter
    * @param declaration  The declaration code of the attribute
-   * @param initialValue The initial value code of the attribute. If blank no initial value will be added
+   * @param initialValue The initial value code of the attribute. If blank no initial value will be
+   *                     added. May start with an equals sign, but is not required to.
    * @return The added {@link ASTCDAttribute}
    * @see CD4C#addAttribute(ASTCDType, boolean, boolean, String)
    */
@@ -169,7 +169,8 @@ public abstract class AbstractDecorator {
                         declaration,
                         Optional.of(initialValue)
                                 .filter(s -> !s.isBlank())
-                                .map(s -> new StringHookPoint(" = " + s)));
+                                .map(s -> s.trim().startsWith("=") ? "" : " = ")
+                                .map(StringHookPoint::new));
   }
 
   /**
@@ -202,12 +203,11 @@ public abstract class AbstractDecorator {
    * @param original         The original {@link ASTCDMethodSignature}
    * @param newBodyHookPoint A {@link HookPoint} to replace the body
    * @param target           A {@link ASTCDClass} to add the new method to
-   * @param <T>              The exact type of signature being overridden
    * @return The new {@link ASTCDMethodSignature} with the new body
    * @see #replaceMethodBody(ASTCDMethodSignature, HookPoint)
    */
-  protected <T extends ASTCDMethodSignature> T replaceMethodBody(T original, HookPoint newBodyHookPoint, ASTCDClass target) {
-    T copy = replaceMethodBody(original, newBodyHookPoint);
+  protected ASTCDMethodSignature replaceMethodBody(ASTCDMethodSignature original, HookPoint newBodyHookPoint, ASTCDClass target) {
+    ASTCDMethodSignature copy = replaceMethodBody(original, newBodyHookPoint);
     target.addCDMember(copy);
     return copy;
   }
@@ -218,15 +218,10 @@ public abstract class AbstractDecorator {
    *
    * @param original         The original {@link ASTCDMethodSignature}
    * @param newBodyHookPoint A {@link HookPoint} to replace the body
-   * @param <T>              The exact type of signature being overridden
    * @return The new {@link ASTCDMethodSignature} with the new body
    */
-  protected <T extends ASTCDMethodSignature> T replaceMethodBody(T original, HookPoint newBodyHookPoint) {
-    ASTCDMethodSignature deepClone = original.deepClone();
-    if (!original.getClass().isInstance(deepClone)) {
-      Log.error("type does not properly override deepClone method: " + original.getClass());
-    }
-    @SuppressWarnings("unchecked") T copy = (T) deepClone;
+  protected ASTCDMethodSignature replaceMethodBody(ASTCDMethodSignature original, HookPoint newBodyHookPoint) {
+    ASTCDMethodSignature copy = original.deepClone();
     getGlex().replaceTemplate(getCD4C().getEmptyBodyTemplate(), copy, newBodyHookPoint);
     return copy;
   }
