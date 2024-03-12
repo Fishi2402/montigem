@@ -23,6 +23,7 @@ import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cdbasis._ast.ASTCDElement;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -32,6 +33,7 @@ import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.TypeCheck;
+import de.monticore.umlmodifier._ast.ASTModifier;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.monticore.umlstereotype._ast.ASTStereoValueTOP;
 import de.se_rwth.commons.Joiners;
@@ -224,6 +226,49 @@ public abstract class AbstractDecorator {
     ASTCDMethodSignature copy = original.deepClone();
     getGlex().replaceTemplate(getCD4C().getEmptyBodyTemplate(), copy, newBodyHookPoint);
     return copy;
+  }
+
+  /**
+   * Gets all {@link ASTCDClass}es of a class diagramm which are not derived and not abstract
+   *
+   * @param cd A class diagramm
+   * @return A list of all concrete domain classes
+   * @see #getNonDerivedDomainClasses(ASTCDCompilationUnit)
+   */
+  protected List<ASTCDClass> getConcreteDomainClasses(ASTCDCompilationUnit cd) {
+    return cd.getCDDefinition().getCDClassesList().stream().filter(c -> {
+      ASTModifier modifier = c.getModifier();
+      return !modifier.isDerived() && !modifier.isAbstract();
+    }).collect(Collectors.toList());
+  }
+
+  /**
+   * Gets all {@link ASTCDClass}es of a class diagramm which are not derived (but may be abstract!)
+   *
+   * @param cd A class diagramm
+   * @return A list of all non-derived domain classes
+   * @see #getConcreteDomainClasses(ASTCDCompilationUnit)
+   */
+  protected List<ASTCDClass> getNonDerivedDomainClasses(ASTCDCompilationUnit cd) {
+    return cd.getCDDefinition()
+             .getCDClassesList()
+             .stream()
+             .filter(c -> !c.getModifier().isDerived())
+             .collect(Collectors.toList());
+  }
+
+  /**
+   * Gets all {@link ASTCDInterface}s of a class diagramm which are not derived
+   *
+   * @param cd A class diagramm
+   * @return A list of all non-derived domain interfaces
+   */
+  protected List<ASTCDInterface> getNonDerivedDomainInterfaces(ASTCDCompilationUnit cd) {
+    return cd.getCDDefinition()
+             .getCDInterfacesList()
+             .stream()
+             .filter(c -> !c.getModifier().isDerived())
+             .collect(Collectors.toList());
   }
 
   protected ASTCDPackage getPackage(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD, String packageName) {
