@@ -36,7 +36,6 @@ public class EnsureCorrectManager4TypeDecorator extends AbstractDecorator {
   public static final TemplateHookPoint DELEGATION_HOOKPOINT = new TemplateHookPoint(
       CUSTOM_TEMPLATE_PATH + "CallCheckManagerBody");
   public static final String BASIC_CONSTRUCTOR_TEMPLATE = "umlp.common.BasicConstructor";
-  public static final String EMPTY_BODY_TEMPLATE = "cd2java.EmptyBody";
 
   private final ObserverDecorator observerDecorator;
   private Collection<GenerationSummary> generationSummaries = List.of();
@@ -115,10 +114,10 @@ public class EnsureCorrectManager4TypeDecorator extends AbstractDecorator {
     cd4C.addMethod(res, CUSTOM_TEMPLATE_PATH + "CheckManager", cdName);
     //override listener methods to call checkManager()
     for (GeneratedMethodSignature gms : observerGenerationSummary.notifyMethodSignatures()) {
-      ASTCDMethodSignature overriddenMethod = gms.signature().deepClone();
+      ASTCDMethodSignature overriddenMethod = replaceMethodBody(gms.signature(),
+                                                                DELEGATION_HOOKPOINT,
+                                                                res);
       makePublic(overriddenMethod);
-      getGlex().replaceTemplate(EMPTY_BODY_TEMPLATE, overriddenMethod, DELEGATION_HOOKPOINT);
-      res.addCDMember(overriddenMethod);
 
       //method parameter imports
       importParams:
