@@ -135,23 +135,12 @@ public class TSManagerMockDecorator extends ManagerMockDecorator {
         getCD4C().addMethod(managerClass, "umlp.gui2ts.managermock.TSDoGetList", name, concreteSubclassesInclSelf);
       }
 
-      ASTCDAttribute attr;
       if (isSingleton) {
-        attr = getCD4C().addAttribute(managerClass, "protected Optional<" + name + "> " + lName + "Instance");
-        glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= null"));
-        attr = getCD4C().addAttribute(managerClass, "protected GemList<" + name + "> " + lName + "GemList");
-        glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new " + name + "GemList([]).build()"));
+        addAttribute(managerClass, "protected Optional<" + name + "> " + lName + "Instance", "null");
+      } else {
+        addAttribute(managerClass, "protected Map<number, " + name + "> " + lName + "s", "new Map()");
       }
-      else {
-        attr = getCD4C().addAttribute(managerClass, "protected Map<number, " + name + "> " + lName + "s");
-        glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new Map()"));
-        attr = getCD4C().addAttribute(managerClass, "protected GemList<" + name + "> " + lName + "GemList");
-        glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new " + name + "GemList([]).build()"));
-      }
-      /*
-      attr = getCD4C().addAttribute(managerClass, "protected " + name + "CommandSendingObserver the" + name + "CommandObserver");
-      glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new " + name + "CommandSendingObserver()"));
-      /**/
+      addAttribute(managerClass, "protected GemList<" + name + "> " + lName + "GemList", "new " + name + "GemList([]).build()");
       getCD4C().addMethod(managerClass, "umlp.gui2ts.managermock.TSDoBuilderParam", name);
       getCD4C().addMethod(managerClass, "umlp.gui2ts.managermock.TSDoDeSerBuilder", name);
       if (!isSingleton) {
@@ -190,10 +179,8 @@ public class TSManagerMockDecorator extends ManagerMockDecorator {
     String name = domainClass.getName();
     String lName = StringTransformations.uncapitalize(name);
 
-    ASTCDAttribute attr = getCD4C().addAttribute(managerClass, "protected Map<number, " + name + "> " + lName + "s");
-    glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new Map()"));
-    attr = getCD4C().addAttribute(managerClass, "protected GemList<" + name + "> " + lName + "GemList");
-    glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new " + name + "GemList([]).build()"));
+    addAttribute(managerClass, "protected Map<number, " + name + "> " + lName + "s", "new Map()");
+    addAttribute(managerClass, "protected GemList<" + name + "> " + lName + "GemList", "new " + name + "GemList([]).build()");
 
     List<ASTCDAssocSide> assocs = CDSymbolTables.getAssociations(domainClass);
     Set<ASTCDType> concreteSubclassesInclSelf = UMLPSymbolTables.collectConcreteSubclassesInclSelf(origCD, domainClass);
