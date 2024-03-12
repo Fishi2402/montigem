@@ -1,0 +1,33 @@
+package gui.refactor;
+
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.input.GemTextInput;
+import mc.fenix.basic.GemButton;
+import mc.fenix.table.GemTable;
+import mc.fenix.table.TableTypes.TableColumn;
+
+import gui.common.Header;
+import gui.refactor.Overview;
+
+import Guidslpaper.Person;
+
+page PersonOverviewRef(List<Person> persons) {
+  @Overview(
+    title = "Staff overview",
+    buttons = [
+      @GemButton(width = "auto", label = "Add person"),
+      @GemButton(width = "auto", label = "?")
+    ],
+    main = @GemTable(
+      rows = persons,
+      columns = [
+        TableColumn("name", "Name"),
+        TableColumn("vorname", "Surname"),
+        TableColumn("beschBeginn", "Contract start"),
+        TableColumn("beschEnde", "Contract end")
+      ]
+    )
+  );
+}

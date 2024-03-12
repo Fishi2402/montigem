@@ -16,6 +16,8 @@ component GuidslPaperNavigation() {
     @GuidslPaperNavHeader(),
     @GemNavItem(title = "Home", target = "/gui/Start"),
     @GemNavItem(title = "Finanzen", target = "/gui/konto/AccountOverview"),
-    @GemNavItem(title = "Personen", target = "/gui/person/PersonOverview")
+    @GemNavItem(title = "Personen", target = "/gui/person/PersonOverview"),
+    @GemNavItem(title = "Finanzen refactored", target = "/gui/refactor/AccountOverviewRef"),
+    @GemNavItem(title = "Personen refactored", target = "/gui/refactor/PersonOverviewRef")
   ]);
 }

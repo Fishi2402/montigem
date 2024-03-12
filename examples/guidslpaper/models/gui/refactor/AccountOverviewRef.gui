@@ -1,0 +1,41 @@
+package gui.refactor;
+
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.input.GemTextInput;
+import mc.fenix.basic.GemButton;
+import mc.fenix.table.GemTable;
+import mc.fenix.table.TableTypes.TableColumn;
+
+import gui.common.BalanceBox;
+import gui.common.Header;
+import gui.refactor.Overview;
+
+import Guidslpaper.Konto;
+
+page AccountOverviewRef(List<Konto> accounts) {
+  @Overview(
+    title = "Accounts overview",
+    buttons = [
+      @GemButton(width = "auto", label = "Add account"),
+      @GemButton(width = "auto", label = "?")
+    ],
+    main = @GemTable(
+      rows = accounts,
+      columns = [
+        TableColumn("name", "Name"),
+        TableColumn("kontotyp", "Typ"),
+        TableColumn("budgetRahmenCent", "Gesamtbudget")
+      ]
+    )
+  );
+}
+/*
+@GemRow(hAlign = "right", colGap = "1rem", components = [
+  @BalanceBox(title = "GESAMTBUDGET", value = 527925331),
+  @BalanceBox(title = "AUSGABEN", value = 17315300),
+  @BalanceBox(title = "PLANAUSGABEN", value = 54260943),
+  @BalanceBox(title = "RESTBUDGET", value = 456349088, color = "green")
+]),
+/**/
