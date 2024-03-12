@@ -23,6 +23,7 @@ import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
+import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.MCTypeFacade;
@@ -132,6 +133,32 @@ public abstract class AbstractDecorator {
 
   public void setTypeCheck(TypeCheck typeCheck) {
     this.typeCheck = typeCheck;
+  }
+
+  /**
+   * Adds an attribute with an initial value to the given {@link ASTCDType}.
+   *
+   * @param target       Where to define the attribute
+   * @param addGetter    Whether to add a getter
+   * @param addSetter    Whether to add a setter
+   * @param declaration  The declaration code of the attribute, either with or without a trailing semicolon
+   * @param initialValue The initial value code of the attribute. If blank no initial value will be added
+   * @return The added {@link ASTCDAttribute}
+   * @see CD4C#addAttribute(ASTCDType, boolean, boolean, String)
+   */
+  protected ASTCDAttribute addAttribute(ASTCDType target, boolean addGetter, boolean addSetter, String declaration, String initialValue) {
+    //declaration must end with a semicolon
+    if (!declaration.endsWith(";")) declaration += ";";
+
+    ASTCDAttribute attribute = getCD4C().addAttribute(target, addGetter, addSetter, declaration);
+
+    if (!initialValue.isBlank()) {
+      getGlex().replaceTemplate("cd2java.Value",
+                                attribute,
+                                new StringHookPoint(" = " + initialValue));
+    }
+
+    return attribute;
   }
 
   protected ASTCDPackage getPackage(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD, String packageName) {
