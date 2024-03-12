@@ -95,12 +95,9 @@ public class DiagramObserverDecorator extends AbstractDecorator {
       if(astcdMethod.getName().startsWith("maybe") || astcdMethod.getName().equals("getScope")) {
         continue;
       }
-      ASTCDMethod element = astcdMethod.deepClone();
+      ASTCDMethod element = replaceMethodBody(astcdMethod, new StringHookPoint(""), ast);
       element.setIsDefault(false);
-      element.getModifier().setAbstract(false);
       element.setModifier(PUBLIC.build());
-      glex.replaceTemplate(GUI2ComponentTemplates.EMPTY_BODY, element, new StringHookPoint(""));
-      ast.addCDMember(element);
     }
 
     return ast;
