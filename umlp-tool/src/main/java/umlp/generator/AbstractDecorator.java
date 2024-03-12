@@ -181,13 +181,14 @@ public abstract class AbstractDecorator {
    * @param original         The original {@link ASTCDMethodSignature}
    * @param newBodyHookPoint A {@link HookPoint} to replace the body
    * @param target           A {@link ASTCDClass} to add the new method to
+   * @param <T>              The exact type of signature being overridden
    * @return The new {@link ASTCDMethodSignature} with the new body
    * @see #replaceMethodBody(ASTCDMethodSignature, HookPoint)
    */
-  protected ASTCDMethodSignature replaceMethodBody(ASTCDMethodSignature original, HookPoint newBodyHookPoint, ASTCDClass target) {
-    ASTCDMethodSignature signature = replaceMethodBody(original, newBodyHookPoint);
-    target.addCDMember(signature);
-    return signature;
+  protected <T extends ASTCDMethodSignature> T replaceMethodBody(T original, HookPoint newBodyHookPoint, ASTCDClass target) {
+    T copy = replaceMethodBody(original, newBodyHookPoint);
+    target.addCDMember(copy);
+    return copy;
   }
 
   /**
@@ -196,10 +197,15 @@ public abstract class AbstractDecorator {
    *
    * @param original         The original {@link ASTCDMethodSignature}
    * @param newBodyHookPoint A {@link HookPoint} to replace the body
+   * @param <T>              The exact type of signature being overridden
    * @return The new {@link ASTCDMethodSignature} with the new body
    */
-  protected ASTCDMethodSignature replaceMethodBody(ASTCDMethodSignature original, HookPoint newBodyHookPoint) {
-    ASTCDMethodSignature copy = original.deepClone();
+  protected <T extends ASTCDMethodSignature> T replaceMethodBody(T original, HookPoint newBodyHookPoint) {
+    ASTCDMethodSignature deepClone = original.deepClone();
+    if (!original.getClass().isInstance(deepClone)) {
+      Log.error("type does not properly override deepClone method: " + original.getClass());
+    }
+    @SuppressWarnings("unchecked") T copy = (T) deepClone;
     getGlex().replaceTemplate(getCD4C().getEmptyBodyTemplate(), copy, newBodyHookPoint);
     return copy;
   }
