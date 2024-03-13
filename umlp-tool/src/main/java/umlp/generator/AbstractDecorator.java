@@ -233,7 +233,7 @@ public abstract class AbstractDecorator {
    *
    * @param cd A class diagramm
    * @return A list of all concrete domain classes
-   * @see #getNonDerivedDomainClasses(ASTCDCompilationUnit)
+   * @see #getDeclaredDomainClasses(ASTCDCompilationUnit)
    */
   protected List<ASTCDClass> getConcreteDomainClasses(ASTCDCompilationUnit cd) {
     return cd.getCDDefinition().getCDClassesList().stream().filter(c -> {
@@ -249,7 +249,7 @@ public abstract class AbstractDecorator {
    * @return A list of all non-derived domain classes
    * @see #getConcreteDomainClasses(ASTCDCompilationUnit)
    */
-  protected List<ASTCDClass> getNonDerivedDomainClasses(ASTCDCompilationUnit cd) {
+  protected List<ASTCDClass> getDeclaredDomainClasses(ASTCDCompilationUnit cd) {
     return cd.getCDDefinition()
              .getCDClassesList()
              .stream()
@@ -263,7 +263,7 @@ public abstract class AbstractDecorator {
    * @param cd A class diagramm
    * @return A list of all non-derived domain interfaces
    */
-  protected List<ASTCDInterface> getNonDerivedDomainInterfaces(ASTCDCompilationUnit cd) {
+  protected List<ASTCDInterface> getDeclaredDomainInterfaces(ASTCDCompilationUnit cd) {
     return cd.getCDDefinition()
              .getCDInterfacesList()
              .stream()
