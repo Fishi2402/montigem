@@ -65,12 +65,25 @@ classdiagram DemoRec {
   class EndEffector {
     String name;
   }
+  /*
+  class ComponentKind {
+    String oENumber;
+    String name;
+
+    double width;
+    double length;
+    double height;
+
+    double weight;
+    boolean isDeconstructible;
+    Optional<String> humanDescription;
+  }*/
 
   class DemoRecComponent {
     String name;
-    String uniqueId;
+    //String uniqueId;
     String oENumber;
-    String manufacturer;
+    //String manufacturer;
 
     Optional<String> condition;
     Optional<String> humanDescription;
@@ -84,11 +97,13 @@ classdiagram DemoRec {
 
     double weight;
 
-    boolean isDeconstructible;
+    //boolean isDeconstructible;
 
     List<String> photoLocations;
     List<String> threeDFileLocations;
   }
+
+  //association [*] DemoRecComponent -> (isA) ComponentKind [1];
 
   class JoinConnection {
     double state; // TODO what kind of data type for state?

@@ -34,13 +34,13 @@ export class ComponentCreate extends ComponentCreateComponent {
   @Output()
   public createComponent: EventEmitter<DemoRecComponent> = new EventEmitter<DemoRecComponent>();
 
-  public override getDeconstructibleChecked (): boolean {
+/*  public override getDeconstructibleChecked (): boolean {
     return this.getComponent()?.isIsDeconstructible()
-  }
+  }*/
 
-  public override setDeconstructibleChecked (value: boolean): void {
+/*  public override setDeconstructibleChecked (value: boolean): void {
     this.getComponent().isDeconstructible(value)
-  }
+  }*/
 
   public override createNewComponent(event: any): void {
     /*if(this.getComponent()?.isBuildFinished()) {

@@ -23,9 +23,7 @@ component ComponentCreate(DemoRecComponent component, Event<DemoRecComponent> cr
         wrap="nowrap",
         components=[
           @GemTextInput(labelText = "Component Name", inputType = "string", entry = component.name),
-          @GemTextInput(labelText = "Unique ID", inputType = "string", entry = component.uniqueId),
           @GemTextInput(labelText = "OE-Number", inputType = "string", entry = component.oENumber),
-          @GemTextInput(labelText = "Component Manufacturer", inputType = "string", entry = component.manufacturer),
           @GemTextInput(labelText = "Component Condition", inputType = "string", entry = component.condition),
           @GemTextInput(labelText = "Description for human identification", inputType = "string", entry = component.humanDescription),
           @GemTextInput(labelText = "X-Position", inputType = "number", entry = component.xPos),
@@ -35,7 +33,6 @@ component ComponentCreate(DemoRecComponent component, Event<DemoRecComponent> cr
           @GemTextInput(labelText = "Length (mm)", inputType = "number", entry = component.length),
           @GemTextInput(labelText = "Height (mm)", inputType = "number", entry = component.height),
           @GemTextInput(labelText = "Weight (kg)", inputType = "number", entry = component.weight),
-          deconstructible@GemCheckBoxInput(labelText = "Deconstructible", checked=null),
           @PhotoDisplay(component=component),
           photoDragAndDrop@PhotoDragNDrop(attachedComponent = component),
           addComponent@GemButton(label = "Add Component", leftClick = createNewComponent, disabled=false)
