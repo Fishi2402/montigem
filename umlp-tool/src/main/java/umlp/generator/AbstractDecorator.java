@@ -170,7 +170,7 @@ public abstract class AbstractDecorator {
                         declaration,
                         Optional.of(initialValue)
                                 .filter(s -> !s.isBlank())
-                                .map(s -> s.trim().startsWith("=") ? "" : " = ")
+                                .map(s -> (s.trim().startsWith("=") ? "" : " = ") + s)
                                 .map(StringHookPoint::new));
   }
 
