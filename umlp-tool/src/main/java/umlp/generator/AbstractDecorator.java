@@ -50,6 +50,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 // TODO refactor this class
@@ -235,12 +236,7 @@ public abstract class AbstractDecorator {
    * @see #getNonDerivedDomainClasses(ASTCDCompilationUnit)
    */
   protected List<ASTCDClass> getConcreteDomainClasses(ASTCDCompilationUnit cd) {
-    return cd.getCDDefinition()
-             .getCDClassesList()
-             .stream()
-             //a derived modifier implies a derived symbol
-             .filter(c -> !c.getSymbol().isIsDerived() && !c.getModifier().isAbstract())
-             .collect(Collectors.toList());
+    return getDomainClasses(cd, Filter.DERIVED.or(Filter.ABSTRACT).negate());
   }
 
   /**
@@ -251,12 +247,7 @@ public abstract class AbstractDecorator {
    * @see #getNonDerivedDomainClasses(ASTCDCompilationUnit)
    */
   protected List<ASTCDClass> getDerivedDomainClasses(ASTCDCompilationUnit cd) {
-    return cd.getCDDefinition()
-             .getCDClassesList()
-             .stream()
-             //a derived modifier implies a derived symbol
-             .filter(c -> c.getSymbol().isIsDerived())
-             .collect(Collectors.toList());
+    return getDomainClasses(cd, Filter.DERIVED);
   }
 
   /**
@@ -267,12 +258,24 @@ public abstract class AbstractDecorator {
    * @see #getConcreteDomainClasses(ASTCDCompilationUnit)
    */
   protected List<ASTCDClass> getNonDerivedDomainClasses(ASTCDCompilationUnit cd) {
+    return getDomainClasses(cd, Filter.DERIVED.negate());
+  }
+
+  /**
+   * Gets all classes from the specified class diagramm which match the given filter. Best used in
+   * combination with {@link Filter}
+   *
+   * @param cd     A class diagramm
+   * @param filter A filter
+   * @return A list with all matching classes
+   * @see Filter
+   */
+  protected List<ASTCDClass> getDomainClasses(ASTCDCompilationUnit cd, Predicate<Filter.Wrapper> filter) {
     return cd.getCDDefinition()
-             .getCDClassesList()
-             .stream()
-             //a derived modifier implies a derived symbol
-             .filter(c -> !c.getSymbol().isIsDerived())
-             .collect(Collectors.toList());
+        .getCDClassesList()
+        .stream()
+        .filter(c -> filter.test(Filter.Wrapper.wrap(c)))
+        .collect(Collectors.toList());
   }
 
   /**
@@ -282,12 +285,24 @@ public abstract class AbstractDecorator {
    * @return A list of all non-derived domain interfaces
    */
   protected List<ASTCDInterface> getNonDerivedDomainInterfaces(ASTCDCompilationUnit cd) {
+    return getDomainInterfaces(cd, Filter.DERIVED.negate());
+  }
+
+  /**
+   * Gets all interfaces from the specified class diagramm which match the given filter. Best used in
+   * combination with {@link Filter}
+   *
+   * @param cd     A class diagramm
+   * @param filter A filter
+   * @return A list with all matching interfaces
+   * @see Filter
+   */
+  protected List<ASTCDInterface> getDomainInterfaces(ASTCDCompilationUnit cd, Predicate<Filter.Wrapper> filter) {
     return cd.getCDDefinition()
-             .getCDInterfacesList()
-             .stream()
-             //a derived modifier implies a derived symbol
-             .filter(c -> !c.getSymbol().isIsDerived())
-             .collect(Collectors.toList());
+        .getCDInterfacesList()
+        .stream()
+        .filter(c -> filter.test(Filter.Wrapper.wrap(c)))
+        .collect(Collectors.toList());
   }
 
   protected ASTCDPackage getPackage(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD, String packageName) {
