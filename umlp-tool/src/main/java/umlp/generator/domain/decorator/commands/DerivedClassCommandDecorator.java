@@ -44,8 +44,7 @@ public class DerivedClassCommandDecorator extends AbstractDeSerDecorator {
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     addedDeSers.clear();
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_DERIVED_CLASS_PACKAGE);
-    origCD.getCDDefinition().getCDClassesList().stream()
-            .filter(a -> a.getModifier().isDerived())
+    getDerivedDomainClasses(origCD)
             .forEach(a -> astcdPackage.addAllCDElements(withOrigin(createClass(origCD, a, astcdPackage.getName()))));
   }
 

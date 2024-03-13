@@ -8,7 +8,6 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.StringHookPoint;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
@@ -58,8 +57,7 @@ public class DAOFactoryDecorator extends AbstractDecorator {
                                                            "protected final List<Runnable> accessListeners",
                                                            "new ArrayList<>()");
 
-    origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
-        .forEach(c -> addClassElements(c, daoFactory));
+    getNonDerivedDomainClasses(origCD).forEach(c -> addClassElements(c, daoFactory));
 
     // TODO remove this cancerous check for multiple associations with the same name introduced by CDMerge
     origCD.getCDDefinition().getCDAssociationsList().stream()
@@ -74,9 +72,7 @@ public class DAOFactoryDecorator extends AbstractDecorator {
                    daoFactory.getName(),
                    accessListenersAttribute.getName());
     cd4C.addMethod(daoFactory, CUSTOM_TEMPLATE_PATH + "StaticAddAccessListener");
-    List<ASTCDClass> concreteDomainClasses = origCD.getCDDefinition().getCDClassesList().stream()
-        .filter(c -> !c.getModifier().isAbstract() && !c.getModifier().isDerived())
-        .collect(Collectors.toList());
+    List<ASTCDClass> concreteDomainClasses = getConcreteDomainClasses(origCD);
 
     cd4C.addMethod(daoFactory, CUSTOM_TEMPLATE_PATH + "Init", name + DAOFactoryDecorator.SUFFIX,
                    concreteDomainClasses, origCD.getCDDefinition().getCDAssociationsList().stream()

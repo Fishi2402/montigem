@@ -35,8 +35,8 @@ public class DerivedClassClientImplDecorator extends AbstractDecorator {
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
-    origCD.getCDDefinition().getCDClassesList().stream().filter(c -> c.getSymbol().isIsDerived())
-      .forEach(c -> astcdPackage.addCDElement(withOrigin(createClass(c, origCD))));
+    getDerivedDomainClasses(origCD).forEach(c -> astcdPackage.addCDElement(withOrigin(createClass(c,
+                                                                                                  origCD))));
   }
 
   protected ASTCDClass createClass(ASTCDClass domainClass, ASTCDCompilationUnit origCD) {

@@ -31,10 +31,8 @@ public class ValidationResultDecorator extends AbstractDecorator {
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     String packageName = astcdPackage.getMCQualifiedName().getQName();
-    origCD.getCDDefinition().getCDClassesList().stream()
-            .filter(c -> !c.getSymbol().isIsDerived())
-            .filter(c -> !c.getSymbol().isIsAbstract())
-            .forEach(c -> astcdPackage.addCDElement(withOrigin(createValidatorClassForDomainClass(c, origCD, packageName))));
+    getConcreteDomainClasses(origCD).forEach(c -> astcdPackage.addCDElement(withOrigin(
+        createValidatorClassForDomainClass(c, origCD, packageName))));
   }
 
   protected void addImports(ASTCDClass validatorClass) {

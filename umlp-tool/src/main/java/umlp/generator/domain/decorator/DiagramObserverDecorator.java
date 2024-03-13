@@ -58,16 +58,15 @@ public class DiagramObserverDecorator extends AbstractDecorator {
     CD4C cd4C = getCD4C();
 
     // Methods
-    origCD.getCDDefinition().getCDClassesList().stream()
-            .filter(c -> !c.getModifier().isDerived())
-            .filter(c -> !c.getModifier().isAbstract())
-            .forEach(c -> {
-              String cName = c.getName();
-              generationSummary.addMethod(cd4C.addMethod(ast, NOTIFY_ADD_TEMPLATE, cName), NOTIFY_ADD_TEMPLATE, c);
-              generationSummary.addMethod(cd4C.addMethod(ast, NOTIFY_DELETE_TEMPLATE, cName), NOTIFY_DELETE_TEMPLATE, c);
-              generationSummary.addMethod(cd4C.addMethod(ast, MAYBE_NOTIFY_ADD_TEMPLATE, cName), MAYBE_NOTIFY_ADD_TEMPLATE, c);
-              generationSummary.addMethod(cd4C.addMethod(ast, MAYBE_NOTIFY_DELETE_TEMPLATE, cName), MAYBE_NOTIFY_DELETE_TEMPLATE, c);
-            });
+    getConcreteDomainClasses(origCD).forEach(c -> {
+      String cName = c.getName();
+      generationSummary.addMethod(cd4C.addMethod(ast, NOTIFY_ADD_TEMPLATE, cName), NOTIFY_ADD_TEMPLATE, c);
+      generationSummary.addMethod(cd4C.addMethod(ast, NOTIFY_DELETE_TEMPLATE, cName), NOTIFY_DELETE_TEMPLATE, c);
+      generationSummary.addMethod(cd4C.addMethod(ast, MAYBE_NOTIFY_ADD_TEMPLATE, cName), MAYBE_NOTIFY_ADD_TEMPLATE, c);
+      generationSummary.addMethod(cd4C.addMethod(ast, MAYBE_NOTIFY_DELETE_TEMPLATE, cName),
+                                  MAYBE_NOTIFY_DELETE_TEMPLATE,
+                                  c);
+    });
 
     generationSummary
         .otherMethodSignatures()

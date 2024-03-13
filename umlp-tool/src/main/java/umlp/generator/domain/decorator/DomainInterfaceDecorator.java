@@ -26,7 +26,7 @@ public class DomainInterfaceDecorator extends DomainTypeDecorator {
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage cdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
-    origCD.getCDDefinition().getCDInterfacesList().stream().filter(i -> !i.getSymbol().isIsDerived())
+    getNonDerivedDomainInterfaces(origCD)
             .forEach(i -> cdPackage.addCDElement(withOrigin(createInterface(i, origCD))));
   }
 

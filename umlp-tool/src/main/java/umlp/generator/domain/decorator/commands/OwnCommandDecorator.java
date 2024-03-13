@@ -18,6 +18,7 @@ import de.monticore.umlstereotype._ast.ASTStereotypeBuilder;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
+import umlp.generator.Filter;
 import umlp.generator.domain.decorator.AccessPolicyDecorator;
 import umlp.generator.domain.decorator.BaseClassObjectMapperDecorator;
 import umlp.generator.domain.decorator.GenService;
@@ -29,6 +30,7 @@ import umlp.generator.util.UMLPSymbolTables;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
@@ -50,10 +52,8 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     addedDeSers.clear();
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_PACKAGE);
-    origCD.getCDDefinition().getCDClassesList().stream()
-        .filter(c -> !c.getSymbol().isIsDerived())
-        .filter(c -> GenService.hasStereotype(c.getModifier(), SINGLETON))
-       // .filter(c -> TagLookUp.isSingleton(c.getSymbol())) // Doesn't work properly anymore
+    Predicate<Filter.Wrapper> filter = Filter.DERIVED.negate().and(Filter.SINGLETON);
+    getDomainClasses(origCD, filter)
         .forEach(c -> c.getCDMethodList().stream()
                           //   .filter(m -> GenService.hasStereotype(m.getModifier(), COMMAND))
         //  .filter(m -> TagLookUp.isCommand(m.getSymbol())) // Doesn't work properly anymore
@@ -64,9 +64,7 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
         )
     );
 
-    origCD.getCDDefinition().getCDInterfacesList().stream()
-        .filter(c -> !c.getSymbol().isIsDerived())
-        .filter(c -> GenService.hasStereotype(c.getModifier(), SINGLETON))
+    getDomainInterfaces(origCD, filter)
         .forEach(c -> c.getCDMethodList().stream()
         // .filter(m -> GenService.hasStereotype(m.getModifier(), COMMAND))
           .filter(m -> TagLookUp.isCommand(m.getSymbol()))
