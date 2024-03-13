@@ -5,31 +5,29 @@ import mc.fenix.arrange.GemColumn;
 import mc.fenix.arrange.GemCard;
 import mc.fenix.input.GemTextInput;
 import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemText;
 import mc.fenix.table.GemTable;
 import mc.fenix.table.TableTypes.TableColumn;
-
-import gui.common.Header;
 
 import Guidslpaper.Person;
 
 page PersonOverview(List<Person> persons) {
-  @GemColumn(rowGap = "1rem", components = [
-    @GemCard(titleComponent =
-      @Header(left = "Übersicht Personal", right = [
-        @GemButton(width = "auto", label = "Mitarbeiter hinzufügen"),
-        @GemButton(width = "auto", label = "?")
-      ]),
-      component = @GemTable(
-        rows = persons,
-        columns = [
-          TableColumn("personalnummer", "Personal-nummer"),
-          TableColumn("kuerzel", "Kürzel"),
-          TableColumn("name", "Name"),
-          TableColumn("vorname", "Vorname"),
-          TableColumn("beschBeginn", "Anstellungsbeginn"),
-          TableColumn("beschEnde", "Anstellungsende")
-        ]
-      )
+  @GemCard(
+    titleComponent = @GemRow(hAlign = "space-between", components = [
+      @GemText(value = "Staff overview"),
+      @GemRow(width = "70%", hAlign = "right", vAlign = "center", colGap = "0.5rem", components = [
+        @GemButton(label = "Add person"),
+        @GemButton(label = "?")
+      ])
+    ]),
+    component = @GemTable(
+      rows = persons,
+      columns = [
+        TableColumn("name", "Name"),
+        TableColumn("vorname", "Surname"),
+        TableColumn("beschBeginn", "Contract start"),
+        TableColumn("beschEnde", "Contract end")
+      ]
     )
-  ]);
+  );
 }

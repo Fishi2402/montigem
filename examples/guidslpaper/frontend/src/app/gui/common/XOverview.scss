@@ -1,0 +1,39 @@
+/* (c) https://github.com/MontiCore/monticore */
+@import "../../../../config/src/variables";
+
+:host {
+  padding: 1rem;
+}
+
+::ng-deep .gem-card-header {
+  background-color: $rwth-blue-4 !important;
+}
+
+::ng-deep th {
+  font-weight: bold !important;
+}
+
+::ng-deep .gem-card {
+  box-shadow: 1px 4px rgba(85,85,85,0.3),0 0 40px rgba(207,209,210,0.1) inset;
+  border: 1px solid $rwth-blue-3;
+  border-radius: 0.2rem;
+}
+
+.green-box {
+  background-color: $rwth-green-4;
+  border-color: $rwth-green-2;
+  color: $rwth-green;
+  border: 1px solid $rwth-green-3;
+}
+
+.blue-box {
+  background-color: $rwth-blue-4;
+  border-color: $rwth-blue-2;
+  color: $rwth-blue;
+  border: 1px solid $rwth-blue-3;
+}
+
+.gemText2 {
+  color: $rwth-blue;
+  font-size: 1rem;
+}

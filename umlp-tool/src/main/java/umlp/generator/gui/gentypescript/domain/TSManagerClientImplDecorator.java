@@ -79,7 +79,7 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
               + c.getName() + BuilderDecorator.BUILDER_SUFFIX);
           getCD4C().addImport(clazz, getPackageName(cdDef, DEFAULT_PACKAGE) + "."
               + c.getName() + DeSerBuilderDecorator.DESER_BUILDER_SUFFIX);
-          getCD4C().addImport(clazz, this.astcdPackage + "."
+          getCD4C().addImport(clazz, getPackageName(cdDef, DEFAULT_PACKAGE) + "."
                   + c.getName() + ErrorCollectorDecorator.SUFFIX);
         }
       }
@@ -265,7 +265,7 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
 
     if(hasOCL) {
       for (ASTCDClass c : this.origCD.getCDDefinition().getCDClassesList()) {
-        getCD4C().addImport(clazz, this.astcdPackage + "."
+        getCD4C().addImport(clazz, getPackageName(origCD, DEFAULT_PACKAGE) + "."
                 + c.getName() + ValidationResultDecorator.SUFFIX);
       }
     }
