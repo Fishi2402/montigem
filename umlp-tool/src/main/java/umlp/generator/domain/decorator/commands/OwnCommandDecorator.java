@@ -91,7 +91,8 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
     ASTStereotypeBuilder stereotype = UMLPMill.stereotypeBuilder();
     stereotype.addValues(
         TopDecorator.NEEDS_TOP_STEREO_BUILDER.apply(
-            String.format("Custom implementation for class: %s required. Contains doAction", classname)));
+            String.format("Custom implementation of command class %%s required - use the TOP mechanism. " +
+                "Please implement the %s#doAction() method", classname)));
     ast.getModifier().setStereotype(stereotype.build());
 
     List<ASTCDAttribute> attrList = Lists.newArrayList();

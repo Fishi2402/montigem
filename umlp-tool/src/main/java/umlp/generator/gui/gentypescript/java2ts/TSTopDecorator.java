@@ -39,9 +39,10 @@ public class TSTopDecorator extends TopDecorator {
     compUnit.accept(traverser);
 
     for (ASTCDClass cdClass : compUnit.getCDDefinition().getCDClassesList()) {
-      boolean existsHw = GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, determineQualifiedName(cdClass, compUnit));
+      String qualifiedName = determineQualifiedName(cdClass, compUnit);
+      boolean existsHw = GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, qualifiedName);
       if (!existsHw) {
-        checkNeedsHandwrittenClass(cdClass);
+        checkNeedsHandwrittenClass(cdClass, qualifiedName);
       }
       if (existsHw && !GUIGeneratorUtil.getInstance().isComponent(cdClass)) {
         if (importHW && !GUIGeneratorUtil.getInstance().isCommand(cdClass)) {
@@ -75,43 +76,18 @@ public class TSTopDecorator extends TopDecorator {
     return compUnit;
   }
 
-  protected void checkNeedsHandwrittenClass(ASTCDClass cdClass) {
-    super.checkNeedsHandwrittenClass(false, cdClass);
+  protected void checkNeedsHandwrittenClass(ASTCDClass cdClass, String qualifiedName) {
+    super.checkNeedsHandwrittenClass(false, cdClass, qualifiedName);
   }
+
 
   @Override
   protected void checkNeedsHandwrittenClass(boolean existsHw, ASTCDClass cdClass) {
   }
 
-  // TODO: TopDecorator.DetermineNameVisitor has a protected constructor >.<
-  protected class DetermineNameVisitor implements CDBasisVisitor2, CDInterfaceAndEnumVisitor2 {
-
-    protected String packageName = "";
-
-    @Override
-    public void visit(ASTCDPackage node) {
-      packageName = node.getName();
-    }
-
-    @Override
-    public void endVisit(ASTCDPackage node) {
-      packageName = "";
-    }
-
-    @Override
-    public void visit(ASTCDClass node) {
-      nameMap.put(node, packageName);
-    }
-
-    @Override
-    public void visit(ASTCDInterface node) {
-      nameMap.put(node, packageName);
-    }
-
-    @Override
-    public void visit(ASTCDEnum node) {
-      nameMap.put(node, packageName);
-    }
+  @Override
+  protected void checkNeedsHandwrittenClass(boolean existsHw, ASTCDClass cdClass, String qualifiedName) {
   }
+
 
 }
