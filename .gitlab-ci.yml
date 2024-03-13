@@ -62,7 +62,7 @@ build:
 
 slowtest:
   stage: check
-  tags: 
+  tags:
     - node2-docker-postgres
   services:
     - postgres:12.2-alpine
@@ -205,6 +205,14 @@ trigger-dtmm:
   only:
     - dev
 
+trigger-car-rental:
+  stage: testDeployed
+  allow_failure: false # Failure is not an option
+  trigger:
+    project: monticore/umlp-anwendungen/car-rental
+    branch: main
+  only:
+    - dev
 
 checkMDLinks:
   stage: check

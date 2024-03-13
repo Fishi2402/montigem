@@ -52,8 +52,6 @@ export class PieChart extends PieChartComponent {
     }
     this.chartData = newGraphData;
     this.chartDataHash = JSON.stringify(this.chartData);
-    console.log("People before 1993" + dataEntries[0].value);
-    console.log("People after and in 1993" + dataEntries[1].value);
     return this.chartData;
   }
 

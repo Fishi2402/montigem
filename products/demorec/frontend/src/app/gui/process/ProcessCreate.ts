@@ -139,7 +139,7 @@ export  class ProcessCreate extends ProcessCreateComponent {
       pack = type.then(bPackType => {
         return new Promise((resolve, reject) => {
           this.getPack().type(bPackType)
-          this.getPack().isDeconstructible(true)
+          /*this.getPack().isDeconstructible(true)*/
           if(this.getPack().isBuildable()) {
             resolve(this.getPack().build())
           } else {

@@ -8,10 +8,13 @@ import gradle.specific.UMLPJava2TypeScriptTask;
 import gradle.specific.UMLPSymbolsTask;
 import gradle.specific.serialize.SerializeCDSymbolsTask;
 import gradle.specific.serialize.SerializeGUISymbolsTask;
+import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
+import org.gradle.api.artifacts.repositories.MavenRepositoryContentDescriptor;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.Sync;
@@ -53,12 +56,12 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
     //Create Tasks
     TaskProvider<FrontendSetup> frontendSetupTask = createFrontendSetupTask(project);
 
-    TaskProvider<UMLPFrontendTask> frontendDomainTask = j2ts ? null : createFrontendDomainTask(project);
-    TaskProvider<UMLPJava2TypeScriptTask> frontendDomainJ2TSTask = j2ts ? createFrontendDomainJ2TSTask(project, local) : null;
+    TaskProvider<UMLPFrontendTask> frontendDomainTask = createFrontendDomainTask(project);
+    TaskProvider<UMLPJava2TypeScriptTask> frontendDomainJ2TSTask = createFrontendDomainJ2TSTask(project, local);
 
     TaskProvider<UMLPSymbolsTask> domainSymbolGenTask = createDomainSymbolGen(project, frontendSetupTask);
     TaskProvider<UMLPGuiGenTask> frontendGuiTask = createFrontendGuiTask(project, j2ts, local, domainSymbolGenTask);
-    TaskProvider<UMLPJava2TypeScriptTask> frontendGUIJ2TSTask = j2ts ? createFrontendGUIJ2TSTask(project, frontendDomainJ2TSTask, frontendGuiTask) : null;
+    TaskProvider<UMLPJava2TypeScriptTask> frontendGUIJ2TSTask = createFrontendGUIJ2TSTask(project, frontendDomainJ2TSTask, frontendGuiTask);
 
     // Sync Output of UMLP-Task to the correct directory. This done because "npm serve" cannot handle the intermediate state while the UMLPTasks are running
     // and Hot-Reload aborts
@@ -89,6 +92,8 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
       umlpTask.setGroup(UMLP_GROUP_NAME);
 
       umlpTask.getInput().from(getModelsPath(project));
+
+      umlpTask.getOcl().from(getOCLPath(project));
 
       setIfPathExists(x -> umlpTask.getHwcDir().from(x), Path.of(
           project.getProjectDir().getAbsolutePath(), "src", "app"));
@@ -311,12 +316,24 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
 
     // JSweet
     if (j2ts) {
-      project.getRepositories().maven(repo -> {
+      MavenArtifactRepository snapshotRepo = project.getRepositories().maven(repo -> {
         repo.setUrl("https://repository.jsweet.org/artifactory/libs-snapshot-local");
       });
-      project.getRepositories().maven(repo -> {
+      MavenArtifactRepository releaseRepo = project.getRepositories().maven(repo -> {
         repo.setUrl("https://repository.jsweet.org/artifactory/libs-release-local");
       });
+
+      // Only use jsweet repos for everything in org.jsweet*(excl jsweet-core which is in maven-central)
+      // since they throw 409 errors for dependencies in other groups
+      Action<MavenRepositoryContentDescriptor> filterContent = new Action<MavenRepositoryContentDescriptor>() {
+        @Override
+        public void execute(MavenRepositoryContentDescriptor it) {
+          it.includeModuleByRegex("org[.]jsweet.*", "(?!jsweet-core).*");
+        }
+      };
+      snapshotRepo.mavenContent(filterContent);
+      releaseRepo.mavenContent(filterContent);
+
       project.getDependencies().add("implementation", "org.jsweet:jsweet-core:6.3.0");
       project.getDependencies().add("implementation", "de.rwth.se.umlp.jsweet:jsweet-transpiler:3.2.0-UMLP-SNAPSHOT");
       if (local) {
@@ -342,6 +359,11 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
   @NotNull
   private static Path getModelsPath(Project project) {
     return Path.of(project.getProjectDir().getAbsolutePath(), "..", "models");
+  }
+
+  @NotNull
+  private static Path getOCLPath(Project project) {
+    return Path.of(project.getProjectDir().getAbsolutePath(), "..", "models", "ocl");
   }
 
   @NotNull

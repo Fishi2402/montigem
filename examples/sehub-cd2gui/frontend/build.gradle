@@ -8,7 +8,7 @@ plugins {
   id 'de.rwth.se.umlp-tool'
 }
 
-def useCD2GUI = false
+def useCD2GUI = true
 
 configurations {
   guiDefaultTypes
@@ -62,7 +62,7 @@ tasks.register('generateCDTOGUI', UMLPCdToGuiTask) {
 
 task guiVariability(type: GuiVariabilityHandlerTask) {
   if(useCD2GUI) {
-    input.from(generateCDTOGUI.getOutputDir().dir("models"))
+    input.from(generateCDTOGUI.getOutputDir())
   }
   input.from(file("../models/gui"))
   outputDir = layout.buildDirectory.dir("guiVariability")
@@ -101,7 +101,7 @@ tasks.register('genGUI2', UMLPGuiGenTask) {
   enabled(useCD2GUI)
   setGroup('build')
   dependsOn(genGUI, guiVariability)
-  input = file(guiVariability.getOutputDir().dir("cd2gui"))
+  input = file(guiVariability.getOutputDir())
   symbolDir = files(
       generateCDTOGUI.getOutputDir().file("symbols"),
       project(":umlp-rte:client").tasks.createGuiSymbols.output,
@@ -110,8 +110,9 @@ tasks.register('genGUI2', UMLPGuiGenTask) {
   hwcDir = file("src/app/")
   symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")
   outputDir = layout.buildDirectory.dir("umlp/fe2")
+  modelDir = file(guiVariability.getOutputDir())
   domainModels = ["Sehub"]
-  guiCreateModelsAsFile = file(generateCDTOGUI.getOutputDir().file("meta/guiCreateModels.txt"))
+  guiCreateModelsAsFile = file(generateCDTOGUI.getOutputDir().file("meta/Sehub/guiCreateTextModels"))
 }
 
 npmInstall.dependsOn(':umlp-rte:client:npmInstall')

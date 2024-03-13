@@ -1,24 +1,27 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui;
 
+import com.google.common.base.CaseFormat;
 import de.monticore.ast.ASTNode;
 import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cd4code._prettyprint.CD4CodeFullPrettyPrinter;
-import de.monticore.cd4code._prettyprint.CD4CodePrettyPrinter;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl.GUIDSLMill;
+import de.monticore.guidsl._ast.ASTGUIAdapt;
 import de.monticore.guidsl._ast.ASTGUIArgValue;
+import de.monticore.guidsl._ast.ASTGUIBlockContent;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUIIterate;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._ast.ASTGUIParam;
-import de.monticore.guidsl._ast.ASTGUIRangeIterateControl;
+import de.monticore.guidsl._ast.ASTGUIRemove;
 import de.monticore.guidsl._ast.ASTGUIShortIterateControl;
 import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.guidsl._symboltable.BuiltInTypes;
@@ -26,23 +29,32 @@ import de.monticore.guidsl._symboltable.GUIComponentDeclarationSymbol;
 import de.monticore.guidsl._symboltable.GUIParamSymbol;
 import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
 import de.monticore.guidsl._symboltable.IGUIDSLScope;
+import de.monticore.guidsl._visitor.GUIDSLTraverser;
+import de.monticore.guidsl.types.check.util.GUIDSLTypeTraverserFactory;
 import de.monticore.io.paths.MCPath;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
+import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
+import de.monticore.symboltable.IGlobalScope;
+import de.monticore.symboltable.IScope;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
+import de.monticore.types3.Type4Ast;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
-import org.gradle.internal.impldep.org.apache.commons.lang.ArrayUtils;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
-import umlp.generator.gui.genjava.decorator.GUIIterableReplaceVisitor;
+import umlp.generator.gui.genjava.prettyprinter.Expression2NullCheckAccessorPrinter;
+import umlp.generator.gui.genjava.prettyprinter.IterationItemsFinder;
 import umlp.generator.gui.gentypescript.config.GUI2TSConfigGenerator;
 import umlp.generator.gui.gentypescript.printer.TSBackendMap;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
@@ -53,6 +65,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -62,10 +75,11 @@ import java.util.stream.Collectors;
 public class GUIGeneratorUtil {
 
   public static final String SYNCHRONIZED_SUFFIX = "_synchronized";
+  public static final String NG_TEMPLATE_SUFFIX = "Tpl";
+  public static final String NG_TEMPLATE_ELSE_BLOCK_SUFFIX = "Else";
+  public static final String HTML_ITERATE_INDEX_PREFIX = "c";
 
   protected static GUIGeneratorUtil instance;
-  protected final String TPL_INTERN = "TPL_INTERN";
-  protected final String TPL_SUFFIX = "TPL";
   protected GUIDSLFullPrettyPrinter printer;
   protected static CD4CodeFullPrettyPrinter cdPrinter;
   // Fully qualified Name of the classdiagram, e.g. "hardy.Flensburg"
@@ -104,7 +118,7 @@ public class GUIGeneratorUtil {
 
   public boolean isCommand(ASTCDClass clazz) {
     return !clazz.getSuperclassList().isEmpty()
-               && (cdPrinter.prettyprint(clazz.getSuperclassList().get(0)).startsWith("Command")
+        && (cdPrinter.prettyprint(clazz.getSuperclassList().get(0)).startsWith("Command")
         || cdPrinter.prettyprint(clazz.getSuperclassList().get(0)).startsWith("Request"));
   }
 
@@ -123,7 +137,7 @@ public class GUIGeneratorUtil {
   }
 
   /**
-   * Check whewther an handwritten version of this generated file already exists and shall be integrated
+   * Check whether a handwritten version of this generated file already exists and shall be integrated
    * (e.g. to apply TOP mechanism)
    */
   public boolean existsHandwrittenFile(MCPath targetPath, String hwFile) {
@@ -200,14 +214,44 @@ public class GUIGeneratorUtil {
     return false;
   }
 
+  public boolean isEnum(String name, IOOSymbolsScope scope) {
+    Optional<OOTypeSymbol> sym = scope.resolveOOType(name);
+    return sym.isPresent() && sym.get().isIsEnum();
+  }
+
   public final boolean isEnumType(SymTypeExpression type) {
     Optional<TypeSymbol> symb = type.getTypeInfo().getEnclosingScope().resolveType(type.getTypeInfo().getName());
     if (symb.isPresent()) {
-      if (OOSymbolsMill.typeDispatcher().isOOType(symb.get())) {
-        return OOSymbolsMill.typeDispatcher().asOOType(symb.get()).isIsEnum();
+      if (OOSymbolsMill.typeDispatcher().isOOSymbolsOOType(symb.get())) {
+        return OOSymbolsMill.typeDispatcher().asOOSymbolsOOType(symb.get()).isIsEnum();
       }
     }
     return false;
+  }
+
+  public boolean isEnumMember(ASTFieldAccessExpression node) {
+    GUIGeneratorUtil util = GUIGeneratorUtil.getInstance();
+    SymTypeExpression ste = util.getType(node);
+    boolean res = false;
+
+    if (ste.hasTypeInfo()
+        && ste.getTypeInfo() instanceof TypeSymbolSurrogate
+        && ((TypeSymbolSurrogate) ste.getTypeInfo()).lazyLoadDelegate() instanceof OOTypeSymbol) {
+      OOTypeSymbol sym = (OOTypeSymbol) ((TypeSymbolSurrogate) ste.getTypeInfo()).lazyLoadDelegate();
+      res = sym.isIsEnum();
+    }
+    if (node.getEnclosingScope() instanceof IOOSymbolsScope) {
+      IOOSymbolsScope scope = (IOOSymbolsScope) node.getEnclosingScope();
+      res = res && util.isEnum(util.print(node.getExpression()), scope);
+    }
+    else {
+      Log.error("0x0000C Attempted to resolve type of '"
+          + util.print(node) + "' from outside of an OOSymbolsScope,"
+          + " but expression conversion is restricted to OOSymbols context.");
+      return false;
+    }
+
+    return res;
   }
 
   public final boolean isDomainEnumType(SymTypeExpression type) {
@@ -216,8 +260,8 @@ public class GUIGeneratorUtil {
       if (symb.get().getEnclosingScope() instanceof IGUIDSLArtifactScope) {
         IGUIDSLArtifactScope as = (IGUIDSLArtifactScope) symb.get().getEnclosingScope();
         boolean isDomain = DOMAIN_MODELS.contains(as.getFullName());
-        if (isDomain && OOSymbolsMill.typeDispatcher().isOOType(symb.get())) {
-          return OOSymbolsMill.typeDispatcher().asOOType(symb.get()).isIsEnum();
+        if (isDomain && OOSymbolsMill.typeDispatcher().isOOSymbolsOOType(symb.get())) {
+          return OOSymbolsMill.typeDispatcher().asOOSymbolsOOType(symb.get()).isIsEnum();
         }
       }
     }
@@ -399,37 +443,35 @@ public class GUIGeneratorUtil {
     return Optional.empty();
   }
 
-  public String gui2cdAttrName(String domainParamName) {
-    return getHTMLName(domainParamName);
-  }
-
   public String gui2cdAttrName(String componentId, String argName) {
-    return getHTMLName(componentId + StringTransformations.capitalize(argName));
+    return componentId + StringTransformations.capitalize(argName);
   }
 
   public String gui2cdAttrGetterName(String domainParamName) {
-    return getHTMLName("get" + StringTransformations.capitalize(domainParamName));
+    return "get" + StringTransformations.capitalize(domainParamName);
   }
 
   public String gui2cdAttrSetterName(String domainParamName) {
-    return getHTMLName("set" + StringTransformations.capitalize(domainParamName));
+    return "set" + StringTransformations.capitalize(domainParamName);
   }
 
   public String gui2cdAttrBuilderSetterName(String domainParamName) {
-    return getHTMLName(domainParamName);
+    return domainParamName;
   }
 
   public String gui2cdAttrGetterName(String componentId, String argName) {
-    return getHTMLName("get"
+    return "get"
         + StringTransformations.capitalize(componentId)
-        + StringTransformations.capitalize(argName));
+        + StringTransformations.capitalize(argName);
   }
 
   public String gui2cdAttrGetterNameTS(String componentId, ASTGUINamedArg namedArg) {
-    return getHTMLName("get"
+    return "get"
         + StringTransformations.capitalize(componentId)
-        + StringTransformations.capitalize(namedArg.getName())) +
-        (UMLPGeneratorConfig.getInstance().isGenerateTypescript() || isList(namedArg) ? "" : SYNCHRONIZED_SUFFIX);
+        + StringTransformations.capitalize(namedArg.getName())
+        + (UMLPGeneratorConfig.getInstance().isGenerateTypescript() || isList(namedArg)
+        ? ""
+        : SYNCHRONIZED_SUFFIX);
   }
 
   public boolean isList(ASTGUINamedArg namedArg) {
@@ -449,28 +491,19 @@ public class GUIGeneratorUtil {
   }
 
   public String gui2cdAttrSetterName(String componentId, String argName) {
-    return getHTMLName("set"
+    return "set"
         + StringTransformations.capitalize(componentId)
-        + StringTransformations.capitalize(argName));
+        + StringTransformations.capitalize(argName);
   }
 
   public String gui2cdEventCallName(ASTGUIComponent guiComponent, String eventName) {
-    // TODO AGe: connected to GUI2HtmlTrafo problem
-    //  setting the name in trafo makes derivation of method names incorrect
-    return getHTMLName(StringTransformations.uncapitalize(
-        getComponentActualName(guiComponent.getId().getName())
-    ) + StringTransformations.capitalize(eventName));
+    return StringTransformations.uncapitalize(guiComponent.getId().getName())
+        + StringTransformations.capitalize(eventName);
   }
 
-  public String getIteratorItemName(ASTGUIIterate iterate) {
-    return getHTMLName("i" + iterate.getId().getName());
-  }
-
-  // TODO AGe: remove when problem with RangeControl is resolved
   public String getShortIteratorItemName(ASTGUIIterate iterate) {
     if (iterate.getIterateControl() instanceof ASTGUIShortIterateControl) {
-      return getHTMLName(
-          ((ASTGUIShortIterateControl) iterate.getIterateControl()).getItem().getName());
+      return ((ASTGUIShortIterateControl) iterate.getIterateControl()).getItem().getName();
     }
     Log.error("0x00004 iterate construct " + iterate.getId().getName()
         + " was not processed: range iterate control not supported yet");
@@ -478,44 +511,28 @@ public class GUIGeneratorUtil {
   }
 
   public String getIteratorCounterName(ASTGUIIterate iterate) {
-    return getHTMLName("c" + iterate.getId().getName());
+    return HTML_ITERATE_INDEX_PREFIX + StringTransformations.capitalize(iterate.getId().getName());
   }
 
-  // TODO AGe: remove when problem with RangeControl is resolved
-  public String getShortIteratorIterable(ASTGUIIterate iterate, List<String> ignore) {
+  public String getShortIteratorIterable(ASTGUIIterate iterate) {
     if (iterate.getIterateControl() instanceof ASTGUIShortIterateControl) {
+      IterationItemsFinder finder = new IterationItemsFinder();
+      Collection<ASTExpression> iterationItems = finder.getItems(iterate);
+
+      Expression2NullCheckAccessorPrinter printer = new Expression2NullCheckAccessorPrinter(
+          new IndentPrinter(), true, iterationItems, iterationItems
+      );
       ASTGUIShortIterateControl ic = ((ASTGUIShortIterateControl) iterate.getIterateControl());
-      GUIIterableReplaceVisitor visitor = new GUIIterableReplaceVisitor();
-      visitor.setIgnore(ignore);
-      visitor.transform(ic);
-      String expressionWithNullChecks = replaceDots(print(visitor.getGetterExpression()));
+
+      String expressionWithNullChecks = printer.prettyprint(ic.getIterable());
       if (!UMLPGeneratorConfig.getInstance().isGenerateTypescript()) {
         expressionWithNullChecks = expressionWithNullChecks.replace("()", SYNCHRONIZED_SUFFIX + "()");
       }
-      return getHTMLName(expressionWithNullChecks);
+      return expressionWithNullChecks;
     }
     Log.error("0x00004 iterate construct " + iterate.getId().getName()
         + " was not processed: range iterate control not supported yet");
     return "";
-  }
-
-  public String getIteratorIterable(ASTGUIIterate iterate) {
-    if (iterate.getIterateControl() instanceof ASTGUIRangeIterateControl) {
-      ASTGUIRangeIterateControl control = (ASTGUIRangeIterateControl) iterate.getIterateControl();
-      IterableExtractVisitor visitor = IterableExtractVisitor.getInstance();
-      control.getEnd().accept(visitor.getTraverser());
-      Optional<ASTExpression> res = visitor.getOut();
-      if (res.isPresent()) {
-        return getHTMLName(print(res.get()));
-      }
-    }
-    Log.error("0x00003 iterate construct " + iterate.getId().getName()
-        + " was not processed: no range iterate control found");
-    return "";
-  }
-
-  public String getHTMLName(String name) {
-    return name.replaceAll(TPL_INTERN, "").replaceAll(TPL_SUFFIX, "");
   }
 
   public String gui2tsGeneralImport(String forComponent, String postfix) {
@@ -573,10 +590,13 @@ public class GUIGeneratorUtil {
     return argSymbol.isPresent() && argSymbol.get().isIsReference();
   }
 
+  public boolean isEventArgument(ASTGUINamedArg arg) {
+    return arg.isPresentNameSymbol() && isEventArgument(arg.getNameSymbol());
+  }
+
+  @Deprecated
   public boolean isEventArgument(ASTGUIComponent guiComponent, ASTGUINamedArg arg) {
-    Optional<GUIParamSymbol> paramSym = resolveGUIParamSym(
-        arg.getEnclosingScope(), guiComponent.getNameSymbol().getFullName(), arg.getName());
-    return paramSym.isPresent() && isEventArgument(paramSym.get());
+    return isEventArgument(arg);
   }
 
   public boolean isEventArgument(GUIParamSymbol paramSym) {
@@ -634,7 +654,7 @@ public class GUIGeneratorUtil {
   }
 
   public String getNameOfNameExpression(ASTExpression expression) {
-    return isNameExpression(expression)? ((ASTNameExpression)expression).getName() : "";
+    return isNameExpression(expression) ? ((ASTNameExpression) expression).getName() : "";
   }
 
   public boolean isViewElementsCollection(ASTGUIComponent comp, ASTGUINamedArg arg) {
@@ -682,61 +702,8 @@ public class GUIGeneratorUtil {
     return type;
   }
 
-  public boolean isNgTemplate(String compName) {
-    return compName.endsWith(TPL_INTERN);
-  }
-
-  public String getNgTemplateName(String name) {
-    return name + TPL_INTERN;
-  }
-
-  public String getNgTemplateActualName(String internName) {
-    return getComponentActualName(internName) + TPL_SUFFIX;
-  }
-
-  public String getComponentActualName(String internName) {
-    return internName.replace(TPL_INTERN, "");
-  }
-
-  public String getComponentNameFromCamelCaseName(String camelCaseName) {
-    return String.join("-", splitCamelCase(camelCaseName)).toLowerCase();
-  }
-
-  public String[] splitCamelCase(String str) {
-    if (str == null) {
-      return null;
-    }
-    else if (str.length() == 0) {
-      return ArrayUtils.EMPTY_STRING_ARRAY;
-    }
-    else {
-      char[] c = str.toCharArray();
-      List<String> list = new ArrayList();
-      int tokenStart = 0;
-      int currentType = Character.getType(c[tokenStart]);
-
-      for (int pos = tokenStart + 1; pos < c.length; ++pos) {
-        int type = Character.getType(c[pos]);
-        if (type != currentType) {
-          if (type == 2 && currentType == 1) {
-            int newTokenStart = pos - 1;
-            if (newTokenStart != tokenStart) {
-              list.add(new String(c, tokenStart, newTokenStart - tokenStart));
-              tokenStart = newTokenStart;
-            }
-          }
-          else {
-            list.add(new String(c, tokenStart, pos - tokenStart));
-            tokenStart = pos;
-          }
-
-          currentType = type;
-        }
-      }
-
-      list.add(new String(c, tokenStart, c.length - tokenStart));
-      return list.toArray(new String[list.size()]);
-    }
+  public String pascal2KebabCase(String pascalCaseName) {
+    return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_HYPHEN, pascalCaseName);
   }
 
   public String getModuleName(String qualifiedModulName) {
@@ -816,28 +783,24 @@ public class GUIGeneratorUtil {
 
   public String gui2htmlArgValue(ASTGUIArgValue node) {
     if (node.isPresentGUIComponent()) {
-      return node.getGUIComponent().getId().getName();
+      return getNgTemplateName(node.getGUIComponent().getId().getName());
     }
     if (node.isPresentGUIGuard()) {
-      return node.getGUIGuard().getId().getName();
+      return getNgTemplateName(node.getGUIGuard().getId().getName());
     }
     if (node.isPresentGUIIterate()) {
-      return node.getGUIIterate().getId().getName();
+      return getNgTemplateName(node.getGUIIterate().getId().getName());
     }
     if (node.isPresentExpression()) {
-      String value = print(node);
-      if (node.getEnclosingScope().resolveGUIParam(value).isPresent()) {
-        return print(node);
-      }
-      return print(node) + TPL_SUFFIX;
+      return print(node);
     }
     if (node.isPresentGUIList()) {
-      String res = "[";
+      StringBuilder res = new StringBuilder("[");
       for (ASTGUIArgValue v : node.getGUIList().getGUIArgValueList()) {
-        res += gui2htmlArgValue(v) + ", ";
+        res.append(gui2htmlArgValue(v)).append(", ");
       }
-      res += "]";
-      return res;
+      res.append("]");
+      return res.toString();
     }
     Log.error("0x00005 corrupt ASTGUIArgValue node " + node
         + ": missing actual value");
@@ -997,4 +960,128 @@ public class GUIGeneratorUtil {
     }
     return name.substring(0, index2) + name.substring(index1);
   }
+
+  public SymTypeExpression getType(ASTExpression node) {
+    Type4Ast type4Ast = new Type4Ast();
+    GUIDSLTraverser traverser = GUIDSLTypeTraverserFactory.getInstance().createTraverserForOO(type4Ast);
+    node.accept(traverser);
+
+    return type4Ast.getTypeOfExpression(node);
+  }
+
+  public String getNgTemplateName(ASTGUIBlockContent node) {
+    String name;
+    if (node.isPresentGUIComponent()) {
+      name = node.getGUIComponent().getId().getName();
+    }
+    else if (node.isPresentGUIGuard()) {
+      name = node.getGUIGuard().getId().getName();
+    }
+    else if (node.isPresentGUIIterate()) {
+      name = node.getGUIIterate().getId().getName();
+    }
+    else {
+      String received = "Unknown";
+      if (node.isPresentExpression()) {
+        received = ASTExpression.class.getSimpleName();
+      }
+      if (node.isPresentGUIAdapt()) {
+        received = ASTGUIAdapt.class.getSimpleName();
+      }
+      if (node.isPresentGUIRemove()) {
+        received = ASTGUIRemove.class.getSimpleName();
+      }
+      if (node.isPresentSemicolon()) {
+        received = "Semicolon";
+      }
+      Log.error("0x0000F Unable to transform ASTGUIBlockContent to an ng-template name."
+          + "Expected template to contain an ASTGUIComponent, ASTGUIGuard or ASTGUIIterate,"
+          + " but got " + received + "."
+      );
+      return null;
+    }
+    return getNgTemplateName(name);
+  }
+
+  public String getNgTemplateName(String name) {
+    return name + NG_TEMPLATE_SUFFIX;
+  }
+
+  public String getNgTemplateElseBlockName(String name) {
+    return name + NG_TEMPLATE_ELSE_BLOCK_SUFFIX;
+  }
+
+  /**
+   * Search from bottom to top in a scope tree for an IGUIDSLScope instance.
+   *
+   * @param scope Scope from which the search starts.
+   * @return Optional.empty() if no IGUIDSLScope instance could be found, otherwise optional of the
+   * first encountered IGUIDSLScope instance.
+   */
+  public Optional<IGUIDSLScope> findClosestGUIDSLScope(IScope scope) {
+    if (scope instanceof IGUIDSLScope) {
+      return Optional.of((IGUIDSLScope) scope);
+    }
+    if (scope instanceof IGlobalScope) {
+      return Optional.empty();
+    }
+    return findClosestGUIDSLScope(scope.getEnclosingScope());
+  }
+
+  /**
+   * Search from bottom to top in a scope tree for a VariableSymbol instance representing an
+   * iteration item.
+   *
+   * @param name  Name of the variable (iteration item).
+   * @param scope Scope from which the search starts.
+   * @return Optional.empty() if no iteration item with given name was found, otherwise optional of
+   * VariableSymbol instance representing the iteration item.
+   */
+  public Optional<VariableSymbol> findIterationItemSymbols(String name, IScope scope) {
+    Optional<IGUIDSLScope> guiScope = findClosestGUIDSLScope(scope);
+    if (guiScope.isPresent()) {
+      Optional<VariableSymbol> vs = guiScope.get().resolveVariable(name);
+      if (vs.isPresent() && vs.get().getEnclosingScope().getAstNode() instanceof ASTGUIIterate) {
+        return vs;
+      }
+    }
+    return Optional.empty();
+  }
+
+  /**
+   * Search from bottom to top in a scope tree for all VariableSymbol instances representing
+   * iteration items.
+   *
+   * @param scope Scope from which the search starts.
+   * @return List of VariableSymbol instances representing the iteration items.
+   */
+  public List<VariableSymbol> findIterationItemSymbols(IScope scope) {
+    List<VariableSymbol> symbols = new ArrayList<>();
+    Optional<IGUIDSLScope> guiScope = findClosestGUIDSLScope(scope);
+    if (guiScope.isEmpty()) {
+      return symbols;
+    }
+    return findIterationItemSymbols(guiScope.get(), symbols);
+  }
+
+  protected List<VariableSymbol> findIterationItemSymbols(
+      IGUIDSLScope scope, List<VariableSymbol> symbols
+  ) {
+    if (scope instanceof IGlobalScope) {
+      return symbols;
+    }
+    ASTNode node = scope.getAstNode();
+    if (node instanceof ASTGUIIterate) {
+      for (VariableSymbol vs : scope.getLocalVariableSymbols()) {
+        if (((ASTGUIIterate) node).getIterateControl() instanceof ASTGUIShortIterateControl
+            && ((ASTGUIShortIterateControl) ((ASTGUIIterate) node).getIterateControl()).getItem()
+            .equals(vs.getAstNode())
+        ) {
+          symbols.add(vs);
+        }
+      }
+    }
+    return findIterationItemSymbols(scope.getEnclosingScope(), symbols);
+  }
+
 }

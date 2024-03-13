@@ -56,9 +56,7 @@ public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
 
       BatteryPack pack = DemoRecManager.batteryPackBuilder()
           .name("Demontage gestartet am 24.01.29")
-          .uniqueId("1")
           .oENumber("27347239")
-          .manufacturer("VW")
           .condition(Optional.of("Sieht gut aus."))
           .humanDescription(Optional.of("Ganzes Pack"))
           .xPos(0.0)
@@ -72,7 +70,6 @@ public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
           .health(Optional.of(70.00))
           .type(type)
 
-          .isDeconstructible(true)
           .build().get();
 
       Process process = DemoRecManager.processBuilder()
@@ -82,9 +79,7 @@ public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
 
       DemoRecComponent component = DemoRecManager.demoRecComponentBuilder()
           .name("Deckel")
-          .uniqueId("2")
           .oENumber("27347239")
-          .manufacturer("VW")
           .condition(Optional.of("Sieht gut aus."))
           .humanDescription(Optional.of("Deckel"))
           .xPos(0.5)
@@ -94,14 +89,11 @@ public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
           .length(150.2)
           .height(52.8)
           .weight(1056.5)
-          .isDeconstructible(true)
           .build().get();
 
       DemoRecComponent component2 = DemoRecManager.demoRecComponentBuilder()
           .name("PackUnterteil")
-          .uniqueId("3")
           .oENumber("27347239")
-          .manufacturer("VW")
           .condition(Optional.of("Top"))
           .humanDescription(Optional.of("Pack nach Deckelentfernung"))
           .xPos(1.0)
@@ -111,7 +103,6 @@ public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
           .length(150.425)
           .height(52.234)
           .weight(19132.5)
-          .isDeconstructible(false)
           .build().get();
 
       JoinConnection connection = DemoRecManager.joinConnectionBuilder()

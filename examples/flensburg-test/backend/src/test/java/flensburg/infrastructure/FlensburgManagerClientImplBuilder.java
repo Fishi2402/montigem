@@ -8,10 +8,12 @@ import hardy.flensburg.AccountErrorCollector;
 import hardy.flensburg.AddressErrorCollector;
 import hardy.flensburg.BudgetErrorCollector;
 import hardy.flensburg.CarErrorCollector;
+import hardy.flensburg.CarManufacturerErrorCollector;
 import hardy.flensburg.FlensburgManagerClientImpl;
 import hardy.flensburg.FlensburgTestContext;
 import hardy.flensburg.HumanErrorCollector;
 import hardy.flensburg.InvoiceErrorCollector;
+import hardy.flensburg.ManufacturerErrorCollector;
 import hardy.flensburg.PersonErrorCollector;
 import hardy.flensburg.TransactionErrorCollector;
 import umlp.backendrte.command.ClientCommandCommunication;
@@ -27,6 +29,8 @@ import java.util.Optional;
 public class FlensburgManagerClientImplBuilder {
   protected FlensburgTestContext serverContext;
   protected GeneralErrorCollector generalErrorCollector;
+  protected ManufacturerErrorCollector manufacturerCollector;
+  protected CarManufacturerErrorCollector carManufacturerErrorCollector;
   protected HumanErrorCollector humanErrorCollector;
   protected CarErrorCollector carErrorCollector;
   protected AddressErrorCollector addressErrorCollector;
@@ -112,6 +116,8 @@ public class FlensburgManagerClientImplBuilder {
         commandManager,
         generalErrorCollector != null ? generalErrorCollector : new GeneralErrorCollector(),
         carErrorCollector != null ? carErrorCollector : new CarErrorCollector(),
+        manufacturerCollector != null ? manufacturerCollector : new ManufacturerErrorCollector(),
+        carManufacturerErrorCollector != null ? carManufacturerErrorCollector : new CarManufacturerErrorCollector(),
         humanErrorCollector != null ? humanErrorCollector : new HumanErrorCollector(),
         personErrorCollector != null ? personErrorCollector : new PersonErrorCollector(),
         addressErrorCollector != null ? addressErrorCollector : new AddressErrorCollector(),

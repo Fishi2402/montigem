@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("typeName", "cdName", "attributes", "optionalAttributes", "listAttributes", "listAssocs", "gemAssocs", "assocToDAOFactoryDiagramMap", "assocToManagerDiagramMap")}
+${tc.signature("typeName", "cdName", "attributes", "optionalAttributes", "listAttributes", "listAssocs", "gemAssocs", "assocToDAOFactoryDiagramMap", "assocToManagerDiagramMap", "neo4j")}
 ${cd4c.method("public Optional<${typeName}> unpack${typeName}(ResultSet res) throws SQLException")}
   int gemId = res.getInt("id");
   ${typeName}Builder builder = ${cdName}Manager.${typeName?uncap_first}BuilderFromId(gemId);
@@ -8,13 +8,13 @@ ${cd4c.method("public Optional<${typeName}> unpack${typeName}(ResultSet res) thr
   builder
 </#if>
 <#list attributes as attr, dbName>
-    .${attr.getName()}(${includeArgs("umlp.dao.Get", "res", attr, dbName)})<#sep>${'\n'}</#sep><#rt>
+    .${attr.getName()}(${includeArgs("umlp.dao.Get", "res", attr, dbName, neo4j)})<#sep>${'\n'}</#sep><#rt>
 </#list><#lt><#if attributes?has_content>;</#if>
 <#if optionalAttributes?has_content>
   builder
 </#if>
 <#list optionalAttributes as attr, dbName>
-  .${attr.getName()}(Optional.ofNullable(${includeArgs("umlp.dao.Get", "res", attr, dbName)}))<#sep>${'\n'}</#sep><#rt>
+  .${attr.getName()}(Optional.ofNullable(${includeArgs("umlp.dao.Get", "res", attr, dbName, neo4j)}))<#sep>${'\n'}</#sep><#rt>
 </#list><#lt><#if optionalAttributes?has_content>;</#if><#rt>
 <#if listAttributes?has_content>
   builder

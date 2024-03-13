@@ -1,16 +1,20 @@
 package umlp.generator.gui.genjava.decorator;
 
-import com.google.common.collect.Lists;
 import de.monticore.cdbasis._ast.ASTCDClass;
-import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIGuard;
+import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import umlp.generator.gui.GUIAbstractDecorator;
+import umlp.generator.gui.genjava.prettyprinter.Expression2AccessorPrinter;
+import umlp.generator.gui.genjava.prettyprinter.Expression2NullCheckPrinter;
+import umlp.generator.gui.genjava.prettyprinter.IterationItemsFinder;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 public class GUI2JavaGuardDecorator extends GUIAbstractDecorator {
 
@@ -23,36 +27,35 @@ public class GUI2JavaGuardDecorator extends GUIAbstractDecorator {
   }
 
   public void transform(ASTCDClass decoratedClass, ASTGUIGuard guard) {
-    // collect args from iterate statement
-    GUIIterate2ArgsVisitor it2Arg = new GUIIterate2ArgsVisitor();
-    it2Arg.transform(guiAst, guard);
+    IterationItemsFinder finder = new IterationItemsFinder();
+    Collection<ASTExpression> ignoreOnPrint = finder.getItems(guiAst);
 
-    // replace field access with getters, except iterator args
-    GUIGuardConditionReplaceVisitor visitor = new GUIGuardConditionReplaceVisitor();
-    visitor.setIgnore(it2Arg.getArgs().keySet());
-    visitor.transform(guard);
+    // replace field access with getters
+    Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
+        new IndentPrinter(), false, ignoreOnPrint, ignoreOnPrint
+    );
+
+    Expression2NullCheckPrinter nullCheckPrinter = new Expression2NullCheckPrinter(getterPrinter);
+
+    String nullCheck = nullCheckPrinter.prettyprint(guard.getCondition());
+    String getterValue = getterPrinter.prettyprint(guard.getCondition());
 
     String getterName = util.gui2cdAttrGetterName(guard.getId().getName(), "condition");
-    String nullCheck = "";
-    GUINullCheckVisitor nullCheckVisitor = new GUINullCheckVisitor();
-    nullCheckVisitor.transform(visitor.getGetterExpression());
-    if (nullCheckVisitor.getNullCheckExpression().isPresent()) {
-      nullCheck = guiDSLPrinter.prettyprint(nullCheckVisitor.getNullCheckExpression().get());
-    }
-    String getterValue = guiDSLPrinter.prettyprint(visitor.getGetterExpression());
-    boolean isLiteral = visitor.getGetterExpression() instanceof ASTLiteralExpression;
+
+    List<VariableSymbol> iterItemSymbols = util.findIterationItemSymbols(guard.getEnclosingScope());
+    List<String> iterItemArgs = getArgs(iterItemSymbols);
 
     addGetComponentMethod(decoratedClass, getterName, "boolean",
-        getterValue, prepareArguments(it2Arg.getArgs()), isLiteral, nullCheck);
+        getterValue, iterItemArgs, nullCheck);
   }
 
   protected void addGetComponentMethod(
       ASTCDClass decoratedClass, String methodName, String attrType, String returnValue,
-      List<String> arguments, boolean isLiteral, String condition
+      List<String> arguments, String condition
   ) {
     getCD4C().addMethod(
         decoratedClass, getGetterTemplate(), methodName, attrType,
-        returnValue, String.join(", ", arguments), isLiteral, condition
+        returnValue, String.join(", ", arguments), condition
     );
   }
 
@@ -60,10 +63,12 @@ public class GUI2JavaGuardDecorator extends GUIAbstractDecorator {
     return "umlp.gui2java.GetComponentReplaced";
   }
 
-  protected List<String> prepareArguments(Map<String, String> arguments) {
-    List<String> retList = Lists.newArrayList();
-    arguments.forEach((k,v) -> retList.add(v + " " + k));
-    return retList;
+  public List<String> getArgs(List<VariableSymbol> symbols) {
+    List<String> res = new ArrayList<>();
+    for (VariableSymbol sym : symbols) {
+      res.add(sym.getType().getTypeInfo().getName() + " " + sym.getName());
+    }
+    return res;
   }
 
 }

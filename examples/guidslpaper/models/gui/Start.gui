@@ -14,13 +14,10 @@ import Guidslpaper.Person;
 import Guidslpaper.Konto;
 
 page Start(
-  List<App> apps
+  App app
 ) {
   @GuidslPaperNavigation();
 
   @GemRow(width = "100%", rowGap = "10px", colGap = "10px", hAlign = "center", components = [
-    // TODO: App is a singleton
-    @iterate(App app : apps) {
-    }
   ]);
 }

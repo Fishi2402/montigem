@@ -4,7 +4,7 @@
     "@angular/core": "^17.0.7"
   },
   "name": "@umlp/basic",
-  "version": "7.6.1",
+  "version": "7.6.2",
   "sideEffects": false,
   "dependencies": {"tslib": "^2.3.0"}
 }

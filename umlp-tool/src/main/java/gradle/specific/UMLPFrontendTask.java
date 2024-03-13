@@ -39,6 +39,18 @@ public abstract class UMLPFrontendTask extends UMLPSingleFilev2Task {
   // This Annotation requires custom java-logic to run correctly. See "getStreamOfChanges()"
   public abstract ConfigurableFileCollection getModelDir();
 
+  ConfigurableFileCollection ocl = getProject().getObjects().fileCollection();
+
+  @InputFiles
+  @PathSensitive(PathSensitivity.RELATIVE)
+  public ConfigurableFileCollection getOcl() {
+    return ocl;
+  }
+
+  public void setOcl(File f){
+    ocl.from(f);
+  }
+
   /**
    * @param filePath Path of InputFile
    * @return Arguments that can be used to start CLI-Tool
@@ -60,6 +72,11 @@ public abstract class UMLPFrontendTask extends UMLPSingleFilev2Task {
         result.add("-modelPath");
         result.add(handlePath.apply(file.toPath()));
       }
+    }
+
+    if(!this.getOcl().isEmpty()) {
+      result.add("-ocl");
+      result.add(handlePath.apply(Path.of(getOcl().getAsPath())));
     }
 
     return result;

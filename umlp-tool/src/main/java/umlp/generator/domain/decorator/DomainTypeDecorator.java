@@ -120,8 +120,8 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
   protected void createSetAbsent(ASTCDType cdType, ASTCDAssocSide ast, boolean isInterface) {
     // create method void set%Name%Absent(NotificationScope scope)
     ASTCDMethodSignature method = getCD4C().addMethod(cdType, getSetAbsentTemplate(), ast.getName());
-    if (isInterface && UMLPMill.typeDispatcher().isASTCDMethod(method)) {
-      UMLPMill.typeDispatcher().asASTCDMethod(method).getModifier().setAbstract(true);
+    if (isInterface && UMLPMill.typeDispatcher().isCD4CodeBasisASTCDMethod(method)) {
+      UMLPMill.typeDispatcher().asCD4CodeBasisASTCDMethod(method).getModifier().setAbstract(true);
     }
     // create method void set%Name%Absent()
     method = getCD4C().addMethod(cdType, getSetAbsentTemplate(), ast.getName());

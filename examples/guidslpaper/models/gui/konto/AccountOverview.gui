@@ -5,39 +5,38 @@ import mc.fenix.arrange.GemColumn;
 import mc.fenix.arrange.GemCard;
 import mc.fenix.input.GemTextInput;
 import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemText;
 import mc.fenix.table.GemTable;
 import mc.fenix.table.TableTypes.TableColumn;
 
 import gui.common.BalanceBox;
-import gui.common.Header;
 
 import Guidslpaper.Konto;
 
 page AccountOverview(List<Konto> accounts) {
-  @GemColumn(rowGap = "1rem", components = [
-    @GemRow(hAlign = "right", colGap = "1rem", components = [
-       @BalanceBox(title = "GESAMTBUDGET", value = 527925331),
-       @BalanceBox(title = "AUSGABEN", value = 17315300),
-       @BalanceBox(title = "PLANAUSGABEN", value = 54260943),
-       @BalanceBox(title = "RESTBUDGET", value = 456349088, color = "green")
+  @GemCard(
+    titleComponent = @GemRow(hAlign = "space-between", components = [
+      @GemText(value = "Accounts overview"),
+      @GemRow(width = "70%", hAlign = "right", vAlign = "center", colGap = "0.5rem", components = [
+        @GemButton(label = "Add acount"),
+        @GemButton(label = "?")
+      ])
     ]),
-
-    @GemCard(titleComponent =
-      @Header(left = "Übersicht Konten", right = [
-        @GemButton(width = "auto", label = "Zahlungen erfassen"),
-        @GemButton(width = "auto", label = "Konto hinzufügen"),
-        @GemButton(width = "auto", label = "?")
-      ]),
-      component = @GemTable(
-        rows = accounts,
-        columns = [
-          TableColumn("pspElement", "PSP-Element"),
-          TableColumn("name", "Name"),
-          TableColumn("kontotyp", "Typ"),
-          TableColumn("kontoart", "Projektart"),
-          TableColumn("budgetRahmenCent", "Gesamtbudget")
-        ]
-      )
+    component = @GemTable(
+      rows = accounts,
+      columns = [
+        TableColumn("name", "Name"),
+        TableColumn("kontotyp", "Typ"),
+        TableColumn("budgetRahmenCent", "Gesamtbudget")
+      ]
     )
-  ]);
+  );
 }
+/*
+@GemRow(hAlign = "right", colGap = "1rem", components = [
+  @BalanceBox(title = "GESAMTBUDGET", value = 527925331),
+  @BalanceBox(title = "AUSGABEN", value = 17315300),
+  @BalanceBox(title = "PLANAUSGABEN", value = 54260943),
+  @BalanceBox(title = "RESTBUDGET", value = 456349088, color = "green")
+]),
+/**/

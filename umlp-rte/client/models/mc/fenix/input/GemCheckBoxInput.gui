@@ -1,14 +1,23 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.fenix.input;
 
-//This component represents a checkbox with a label.
-//It is designed to be used in forms or other contexts where the user needs to indicate a binary choice, such as agreeing to terms and conditions or opting in to a newsletter.
-//A single instance of the component results in a single checkbox input.
-
+/**
+  The component is a checkbox with a label. It is used whenever an input for a
+  binary choice is required, e.g., agreeing to terms and conditions or opting in
+  to a newsletter.
+*/
 component GemCheckBoxInput(
+  /**
+    A unique id ensures proper screen reader functionality for the checkbox
+    description.
+  */
   String id,
-  String labelPosition,
-  String labelText,
+  /** The position of the label, can be `"left"` or `"right"`. */
+  String labelPosition = "right",
+  /** The text of the checkbox label. */
+  String labelText = "",
+  /** Whether the input field is disabled. */
   boolean disabled = false,
-  ?Boolean checked
+  /** Indicates if the checkbox is checked (`true`) or not (`false`). */
+  ?boolean checked
 )

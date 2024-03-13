@@ -15,9 +15,9 @@ import de.monticore.guidsl._ast.ASTGUIArgValue;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
-import de.monticore.guidsl._ast.ASTGUIParam;
 import de.monticore.guidsl._symboltable.GUIComponentDeclarationSymbol;
 import de.monticore.guidsl._symboltable.GUIParamSymbol;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.MCTypeFacade;
@@ -29,16 +29,20 @@ import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIComponentsVisitor;
+import umlp.generator.gui.genjava.prettyprinter.IterationItemsFinder;
+import umlp.generator.gui.genjava.prettyprinter.Expression2AccessorPrinter;
+import umlp.generator.gui.genjava.prettyprinter.Expression2BuilderPrinter;
+import umlp.generator.gui.genjava.prettyprinter.Expression2MutatorPrinter;
+import umlp.generator.gui.genjava.prettyprinter.Expression2NullCheckPrinter;
+import umlp.generator.gui.genjava.prettyprinter.Expression2SetterPrinter;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 import umlp.generator.util.PathUtil;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
 
@@ -74,19 +78,9 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
           + " cannot be resolved");
     }
 
-    // collect args from iterate statement
-    GUIIterate2ArgsVisitor it2Arg = new GUIIterate2ArgsVisitor();
-    it2Arg.transform(guiAst, guiComponent);
-
-    // replace field access with getters, except iterator args
-    GUIArgValueReplaceVisitor visitor = new GUIArgValueReplaceVisitor();
-    visitor.setIgnore(it2Arg.getArgs().keySet());
-    if (util.isCreateClass(guiAst)) {
-      visitor.setUsesBuilder(true);
-    }
     SymTypeExpression paramSTE = paramSym.get().getType();
-    visitor.transform(paramSTE, namedArg);
-    if (!visitor.argNeedsGetter()) {
+
+    if (!util.hasGetter(paramSTE)) {
       return;
     }
 
@@ -157,7 +151,10 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       paramType += BuilderDecorator.BUILDER_SUFFIX;
     }
 
-    if (visitor.argNeedsOwnParamWithInit()) {
+    List<VariableSymbol> iterItemSymbols = util.findIterationItemSymbols(namedArg.getEnclosingScope());
+    List<String> iterItemArgs = getArgs(iterItemSymbols);
+
+    if (namedArg.getGUIArgValue().isPresentGUIList()) {
       // TODO AGe: how to do that better?
       // if List
       if (namedArg.getGUIArgValue().isPresentGUIList()) {
@@ -186,33 +183,47 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
 
         // TODO AGe: add this automatically
         addGetComponentMethod(decoratedClass, getterName, paramType,
-            "this." + attr.getName(), getArgs(it2Arg.getArgs()), false, "");
+            "this." + attr.getName(), iterItemArgs, "");
         List<String> setterArgs = new ArrayList<>();
-        String argValueHolder = "value";
+        String argValueHolder = Expression2SetterPrinter.SETTER_PARAM;
         setterArgs.add(paramType + " " + argValueHolder);
-        setterArgs.addAll(getArgs(it2Arg.getArgs()));
+        setterArgs.addAll(iterItemArgs);
         addSetComponentMethod(getSetterTemplate(), decoratedClass, setterName, paramType,
-            attr.getName(), setterArgs, argValueHolder, false, "");
+            attr.getName(), setterArgs, argValueHolder, "");
 
         List<String> initValues = new ArrayList<>();
         for (ASTGUIArgValue av : valueList) {
-          initValues.add(guiDSLPrinter.prettyprint(av.getExpression()));
+          initValues.add(util.print(av.getExpression()));
         }
         TemplateHookPoint hp = new TemplateHookPoint(
-            getInitListsTemplate(), attr.getName(), setterName, isPrimitive, initValues, getArgs(it2Arg.getArgs())
+            getInitListsTemplate(), attr.getName(), setterName, isPrimitive, initValues, iterItemArgs
         );
 //        initHPs.add(hp); // MH TODO: wird irgendwie in andere Dateien injected, in welche es nicht gehört (replace Template)
       }
     }
     else {
-      String nullCheck = "";
-      GUINullCheckVisitor nullCheckVisitor = new GUINullCheckVisitor();
-      nullCheckVisitor.transform(visitor.getGetterExpression());
-      if (nullCheckVisitor.getNullCheckExpression().isPresent()) {
-        nullCheck = guiDSLPrinter.prettyprint(nullCheckVisitor.getNullCheckExpression().get());
+      IterationItemsFinder finder = new IterationItemsFinder();
+      Collection<ASTExpression> iterateItems = finder.getItems(guiAst);
+
+      // replace field access with getters
+      Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
+          new IndentPrinter(), false, iterateItems, iterateItems
+      );
+      Expression2SetterPrinter setterPrinter;
+
+      if (util.isCreateClass(guiAst)) {
+        setterPrinter = new Expression2BuilderPrinter(
+            new IndentPrinter(), false, iterateItems, iterateItems
+        );
+      } else {
+        setterPrinter = new Expression2MutatorPrinter(
+            new IndentPrinter(), false, iterateItems, iterateItems
+        );
       }
-      String getterValue = guiDSLPrinter.prettyprint(visitor.getGetterExpression());
-      boolean isLiteral = visitor.getGetterExpression() instanceof ASTLiteralExpression;
+      Expression2NullCheckPrinter nullCheckPrinter = new Expression2NullCheckPrinter(getterPrinter);
+
+      String nullCheck = nullCheckPrinter.prettyprint(namedArg.getGUIArgValue());
+      String getterValue = getterPrinter.prettyprint(namedArg.getGUIArgValue());
 
       Function<String, String> conversion = getConversion(decoratedClass,
           paramSTE, namedArg.getGUIArgValue().getExpression(), true);
@@ -240,20 +251,20 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       }
 
       addGetComponentMethod(decoratedClass, getterName, paramType,
-          getterValue, getArgs(it2Arg.getArgs()), isLiteral, nullCheck);
-      if (paramSym.get().isIsReference() && visitor.getSetterExpression().isPresent()) {
-        String setterValue = guiDSLPrinter.prettyprint(visitor.getSetterExpression().get());
+          getterValue, iterItemArgs, nullCheck);
+      if (paramSym.get().isIsReference()) {
+        String setterValue = setterPrinter.prettyprint(namedArg.getGUIArgValue());
         List<String> setterArgs = new ArrayList<>();
         // TODO AGe: clean up
-        String argValueHolder = "value";
-        setterArgs.add(paramType + " " + argValueHolder);
-        setterArgs.addAll(getArgs(it2Arg.getArgs()));
+        String valueConversion = Expression2SetterPrinter.SETTER_PARAM + "4Conv";
+        setterArgs.add(paramType + " " + valueConversion);
+        setterArgs.addAll(iterItemArgs);
         conversion = getConversion(
             decoratedClass, paramSTE, namedArg.getGUIArgValue().getExpression(), false
         );
-        argValueHolder = conversion.apply(argValueHolder);
+        valueConversion = "var " + Expression2SetterPrinter.SETTER_PARAM + " = " + conversion.apply(valueConversion);
         addSetComponentMethod(getSetterReplacedTemplate(), decoratedClass, setterName, paramType,
-            setterValue, setterArgs, argValueHolder, isLiteral, nullCheck);
+            setterValue, setterArgs, valueConversion, nullCheck);
       }
     }
   }
@@ -294,23 +305,21 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
   }
   /**/
 
-  public List<String> getArgs(LinkedHashMap<String, String> args) {
+  public List<String> getArgs(List<VariableSymbol> symbols) {
     List<String> res = new ArrayList<>();
-    List<Map.Entry<String, String>> list = new ArrayList<>(args.entrySet());
-    for (int i = list.size() - 1; i >= 0; i--) {
-      Map.Entry<String, String> arg = list.get(i);
-      res.add(arg.getValue() + " " + arg.getKey());
+    for (VariableSymbol sym : symbols) {
+      res.add(sym.getType().getTypeInfo().getName() + " " + sym.getName());
     }
     return res;
   }
 
   protected void addGetComponentMethod(
       ASTCDClass decoratedClass, String methodName, String attrType, String returnValue,
-      List<String> arguments, boolean isLiteral, String condition
+      List<String> arguments, String condition
   ) {
     getCD4C().addMethod(
         decoratedClass, getGetterTemplate(), methodName, attrType,
-        returnValue, String.join(", ", arguments), isLiteral, condition
+        returnValue, String.join(", ", arguments), condition
     );
   }
 
@@ -320,7 +329,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
 
   protected void addSetComponentMethod(
       String template, ASTCDClass decoratedClass, String methodName, String attrType, String attrName,
-      List<String> arguments, String argValueHolder, boolean isLiteral, String condition
+      List<String> arguments, String argValueHolder, String condition
   ) {
     getCD4C().addMethod(decoratedClass, template, methodName, attrType, attrName,
         String.join(", ", arguments), argValueHolder, condition);

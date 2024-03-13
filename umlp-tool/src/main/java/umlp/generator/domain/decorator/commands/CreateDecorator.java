@@ -72,6 +72,7 @@ public class CreateDecorator extends AbstractDeSerDecorator {
 
     if(hasOCL) {
       getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + classname + "Validator");
+      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + classname + "ValidationResult");
     }
 
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ getCorrectManager(domainClass));
@@ -79,9 +80,9 @@ public class CreateDecorator extends AbstractDeSerDecorator {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("StatusResult"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
     getCD4C().addImport(ast, "com.google.common.collect.Sets");
-    getCD4C().addImport(ast, "umlp.backendrte.command.CommandResult");
-    getCD4C().addImport(ast, "umlp.backendrte.common.ValidationMessage");
-    getCD4C().addImport(ast, "umlp.backendrte.common.ValidationStatus");
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("ValidationMessage"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("ValidationStatus"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("ValidationResult"));
     getCD4C().addImport(ast, "java.util.stream.Collectors;");
   }
 

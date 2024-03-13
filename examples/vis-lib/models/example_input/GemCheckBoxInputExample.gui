@@ -1,13 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 package example_input;
 
+import Domain.Person;
+
 import mc.fenix.input.GemCheckBoxInput;
 
-page GemCheckBoxInputExample() {
-  @GemCheckBoxInput(
-    labelText = "TestCheckbox"
-  );
-  @GemCheckBoxInput(
-    labelText = "TestCheckbox2LongerLabelExample"
-  );
+page GemCheckBoxInputExample(List<Person> persons) {
+  @iterate(Person p : persons) {
+    @GemCheckBoxInput(
+      labelText = p.name + " is employed",
+      checked = p.employed
+    );
+  }
 }

@@ -9,6 +9,7 @@ import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.class2mc.OOClass2MCResolver;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.reporting.Reporting;
@@ -20,18 +21,23 @@ import de.monticore.guidsl._parser.GUIDSLParser;
 import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.guidsl._symboltable.GUIDSLSymbols2Json;
 import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
+import de.monticore.guidsl._symboltable.IGUIDSLGlobalScope;
+import de.monticore.guidsl._symboltable.RoleSymbolDeSer;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
 import de.monticore.ocl.ocl._ast.ASTOCLCompilationUnit;
 import de.monticore.ocl.ocl._parser.OCLParser;
 import de.monticore.ocl.util.SymbolTableUtil;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolDeSer;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonBoolean;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.symboltable.serialization.json.UserJsonString;
 import de.monticore.tagging.tags.TagsMill;
+import de.monticore.types.check.SymTypeExpressionDeSer;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.CommandLine;
@@ -40,7 +46,10 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import umlp._cocos.UMLPCoCos;
+import umlp._symboltable.FieldSymbolDeSer4GUI;
 import umlp._symboltable.IUMLPArtifactScope;
+import umlp._symboltable.SymTypeExpressionDeSer4GUI;
+import umlp._symboltable.SymTypeOfGenericsDeSer4GUI;
 import umlp._symboltable.UMLPSymbols2Json;
 import umlp._visitor.UMLPTraverser;
 import umlp.generator.AbstractDecorator;
@@ -52,10 +61,10 @@ import umlp.generator.domain.UMLPGenerator;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.UMLSetDefaultsTrafo;
 import umlp.generator.gui.GUIComponentsVisitor;
+import umlp.generator.gui.coco.GUIDSLCoCosForUMLP;
 import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.GUINodeIdTrafo;
 import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
-import umlp.generator.gui.genhtml.GUI2HtmlTrafo;
 import umlp.generator.gui.genjava.GUI2JavaGenerator;
 import umlp.generator.gui.gentypescript.config.GUI2TSConfigGenerator;
 import umlp.generator.gui.gentypescript.config.ModuleRoutingInfo;
@@ -63,6 +72,7 @@ import umlp.generator.gui.gentypescript.domain.TSUMLPGenerator;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentGenerator;
 import umlp.generator.gui.guivariability.GUIVariabilityHandler;
 import umlp.generator.util.UMLPSymbolTables;
+import umlp.generator.validator.ocl.OCLASTPreProcessor;
 
 import java.io.File;
 import java.io.IOException;
@@ -115,7 +125,7 @@ public class UMLPTool extends UMLPToolTOP {
 
   protected static final String DEFAULT_CONFIGTEMPLATE_GUI2JAVA2TS = "umlp.UMLP2Java2TS";
   protected static final String DEFAULT_CONFIGTEMPLATE_GUI2JAVA = "umlp.GUI2Java";
-  protected static final String DEFAULT_CONFIGTEMPLATE_GUI2HTML = "umlp.GUI2Html";
+  public static final String DEFAULT_CONFIGTEMPLATE_GUI2HTML = "umlp.GUI2Html";
   protected static final String DEFAULT_CONFIGTEMPLATE_GUI2TS = "umlp.GUI2TypeScript";
 
   private static final List<ASTOCLCompilationUnit> oclCompilationUnits = new ArrayList<>();
@@ -420,27 +430,27 @@ public class UMLPTool extends UMLPToolTOP {
                 oclModelPath.addEntry(Paths.get(v));
               }
               List<URL> oclFiles = MCPathUtil.getAllModels(oclModelPath, ".*[.]ocl");
-              for (URL modelUrl : oclFiles) {
-                File oclFile = new File(modelUrl.toURI());
-                OCLParser oclParser = new OCLParser();
-                Optional<ASTOCLCompilationUnit> oclCompilationUnit;
-                try {
-                  oclCompilationUnit = oclParser.parse(oclFile.getAbsolutePath());
+              if(!oclFiles.isEmpty()) {
+                for (URL modelUrl : oclFiles) {
+                  File oclFile = new File(modelUrl.toURI());
+                  OCLParser oclParser = new OCLParser();
+                  Optional<ASTOCLCompilationUnit> oclCompilationUnit;
+                  try {
+                    oclCompilationUnit = oclParser.parse(oclFile.getAbsolutePath());
+                  } catch (IOException e) {
+                    throw new RuntimeException(e);
+                  }
+                  if (!oclCompilationUnit.isPresent()) {
+                    Log.error("0xE0001 Could not parse OCL file");
+                  }
+                  ASTOCLCompilationUnit oCLAst = oclCompilationUnit.get();
+                  oclCompilationUnits.add(OCLASTPreProcessor.preProcessInvariants(oCLAst));
+                  SymbolTableUtil.prepareMill();
+                  UMLPSymbolTables.addCd4cSymbols();
+                  SymbolTableUtil.loadSymbolFile(symbolPath.toString());
+                  SymbolTableUtil.runSymTabGenitor(oCLAst);
+                  SymbolTableUtil.runSymTabCompleter(oCLAst);
                 }
-                catch (IOException e) {
-                  throw new RuntimeException(e);
-                }
-                if (!oclCompilationUnit.isPresent()) {
-                  Log.error("0xE0001 Could not parse OCL file");
-                }
-                ASTOCLCompilationUnit oCLAst = oclCompilationUnit.get();
-
-                SymbolTableUtil.prepareMill();
-                UMLPSymbolTables.addCd4cSymbols();
-                SymbolTableUtil.loadSymbolFile(symbolPath.toString());
-                SymbolTableUtil.runSymTabGenitor(oCLAst);
-                SymbolTableUtil.runSymTabCompleter(oCLAst);
-                oclCompilationUnits.add(oCLAst);
                 AbstractDecorator.hasOCL = true;
               }
             }
@@ -515,6 +525,8 @@ public class UMLPTool extends UMLPToolTOP {
           Reporting.reportParseInputFile(guiModel.toAbsolutePath(), report_on);
           GUINodeIdTrafo nodeIdTrafo = new GUINodeIdTrafo();
           nodeIdTrafo.transform(astGui);
+          // logTrafoExec("GUINodeIdTrafo", astGui);
+
           IGUIDSLArtifactScope symbolTable = createSymbolTable(astGui, Optional.of(guiModel), importedSymbolPath);
           runDefaultCoCos(astGui);
 
@@ -569,16 +581,6 @@ public class UMLPTool extends UMLPToolTOP {
 
           GUIGeneratorUtil.getInstance().init(domainModels, createModels);
 
-          // logTrafoExec("GUINodeIdTrafo", astGui);
-
-          // TODO AGe: range iterate results in type check issue
-          /*
-          GUIShortIterateTrafo shortIterateTrafo = new GUIShortIterateTrafo();
-          shortIterateTrafo.transform(astGui);
-          createSymbolTable(astGui, importedSymbolPath);
-          /**/
-          // logTrafoExec("GUIShortIterateTrafo", astGui);
-
           // Get all ASTGUIComponents
           GUIComponentsVisitor viewComponents = new GUIComponentsVisitor(astGui, genSetup.getGlex());
           genSetup.getGlex().setGlobalValue("viewComponents", viewComponents);
@@ -595,15 +597,9 @@ public class UMLPTool extends UMLPToolTOP {
           //GUI2TypeScriptGenerator tsConfigGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath);
           //String standaloneConfigPath=outDir + "/"+tsConfigGenerator.genStandaloneConfig(astGui);
 
-          GUI2HtmlTrafo gui2HtmlTrafo = new GUI2HtmlTrafo();
-          gui2HtmlTrafo.transform(astGui);
-          ASTGUICompilationUnit astGui4Html = gui2HtmlTrafo.getOut();
-          createSymbolTable(astGui4Html, Optional.empty(), importedSymbolPath);
-
-          // System.out.println(new GUIDSLFullPrettyPrinter(new IndentPrinter()).prettyprint(astGui4Html));
-          GUI2HtmlGenerator htmlGenerator = new GUI2HtmlGenerator(genSetup, viewComponents);
+          GUI2HtmlGenerator htmlGenerator = new GUI2HtmlGenerator(genSetup);
           String htmlConfigTemplate = cmd.getOptionValue("ct_html", DEFAULT_CONFIGTEMPLATE_GUI2HTML);
-          htmlGenerator.generate(astGui4Html, htmlConfigTemplate);
+          htmlGenerator.generate(astGui, htmlConfigTemplate);
 
           // write reports
           Reporting.flush(astGui);
@@ -760,8 +756,8 @@ public class UMLPTool extends UMLPToolTOP {
     return f.getName().endsWith(".ocl");
   }
 
-  // TODO MB
-  protected IGUIDSLArtifactScope createSymbolTable(
+  // TODO MB, AGe
+  public static IGUIDSLArtifactScope createSymbolTable(
       ASTGUICompilationUnit ast, Optional<Path> modelFilePathOpt, MCPath modelPath) {
     GUIDSLTool tool = new GUIDSLTool();
     tool.defaultImportTrafo(ast);
@@ -769,11 +765,36 @@ public class UMLPTool extends UMLPToolTOP {
     if (modelFilePathOpt.isPresent()) {
       tool.registerLoadedFile(modelFilePathOpt.get().toString());
     }
-    return tool.createSymbolTable(ast, modelPath);
+    return createSymbolTable(tool, ast, modelPath);
+  }
+
+  public static IGUIDSLArtifactScope createSymbolTable(GUIDSLTool tool, ASTGUICompilationUnit node, MCPath modelPath) {
+    initGUIGlobalScope(modelPath);
+    IGUIDSLArtifactScope as = tool.createSymbolTableP1(node);
+    tool.createSymbolTableP2(node);
+    tool.createSymbolTableP3(node);
+    return as;
+  }
+
+  public static void initGUIGlobalScope(MCPath modelPath) {
+    BasicSymbolsMill.initializePrimitives();
+    IGUIDSLGlobalScope gs = GUIDSLMill.globalScope();
+    gs.setSymbolPath(modelPath);
+    gs.addAdaptedTypeSymbolResolver(new OOClass2MCResolver());
+    gs.addAdaptedOOTypeSymbolResolver(new OOClass2MCResolver());
+    SymTypeExpressionDeSer.setInstance(SymTypeExpressionDeSer4GUI.getInstance());
+    gs.putSymbolDeSer("de.monticore.cdbasis._symboltable.CDTypeSymbol",
+        new OOTypeSymbolDeSer());
+    gs.putSymbolDeSer("de.monticore.symbols.oosymbols._symboltable.FieldSymbol",
+        new FieldSymbolDeSer4GUI());
+    gs.putSymbolDeSer("de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol",
+        new de.monticore.symbols.oosymbols._symboltable.MethodSymbolDeSer());
+    gs.putSymbolDeSer("de.monticore.cdassociation._symboltable.CDRoleSymbol",
+        new RoleSymbolDeSer());
   }
 
   protected void runDefaultCoCos(ASTGUICompilationUnit ast) {
-    GUIDSLCoCos checker = new GUIDSLCoCos();
+    GUIDSLCoCos checker = new GUIDSLCoCosForUMLP();
     checker.createChecker().checkAll(ast);
   }
 }

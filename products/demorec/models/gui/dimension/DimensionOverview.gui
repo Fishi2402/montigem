@@ -3,8 +3,10 @@ package gui.dimension;
 import DemoRec.Dimension;
 
 import mc.fenix.basic.GemText;
+import mc.fenix.input.GemTextInput;
 import mc.fenix.arrange.GemCard;
 import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
 
 import gui.dimension.DimensionCreate;
 import gui.staticcontainer.NavContainer;
@@ -21,7 +23,10 @@ page DimensionOverview(List<Dimension> dimensions) {
       components=[
         newDimension@DimensionCreate(),
         @iterate(Dimension dimension : dimensions) {
-          @GemText(value=dimension.name+" ("+dimension.unit+")");
+          @GemRow(wrap="nowrap",components= [
+            @GemTextInput(inputType = "string", entry = dimension.name),
+            @GemTextInput(inputType = "string", entry = dimension.unit)
+          ]);
         }
       ]
     )
