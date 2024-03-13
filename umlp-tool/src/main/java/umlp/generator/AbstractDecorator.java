@@ -244,6 +244,22 @@ public abstract class AbstractDecorator {
   }
 
   /**
+   * Gets all {@link ASTCDClass}es of a class diagramm which are derived
+   *
+   * @param cd A class diagramm
+   * @return A list of all derived domain classes
+   * @see #getNonDerivedDomainClasses(ASTCDCompilationUnit)
+   */
+  protected List<ASTCDClass> getDerivedDomainClasses(ASTCDCompilationUnit cd) {
+    return cd.getCDDefinition()
+             .getCDClassesList()
+             .stream()
+             //a derived modifier implies a derived symbol
+             .filter(c -> c.getSymbol().isIsDerived())
+             .collect(Collectors.toList());
+  }
+
+  /**
    * Gets all {@link ASTCDClass}es of a class diagramm which are not derived (but may be abstract!)
    *
    * @param cd A class diagramm
