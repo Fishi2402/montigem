@@ -50,13 +50,10 @@ public class TSDiagramObserverDecorator extends DiagramObserverDecorator {
 
     // TODO: something like this:
     // Methods with default impl
-    origCD.getCDDefinition().getCDClassesList().stream()
-        .filter(c -> !c.getModifier().isDerived())
-        .filter(c -> !c.getModifier().isAbstract())
-        .forEach(c -> {
-          getCD4C().addMethod(clazz, "umlp.diagram.MaybeNotifyAdd", c.getName());
-          getCD4C().addMethod(clazz, "umlp.diagram.MaybeNotifyDelete", c.getName());
-        });
+    getConcreteDomainClasses(origCD).forEach(c -> {
+      getCD4C().addMethod(clazz, "umlp.diagram.MaybeNotifyAdd", c.getName());
+      getCD4C().addMethod(clazz, "umlp.diagram.MaybeNotifyDelete", c.getName());
+    });
     getCD4C().addMethod(clazz, "umlp.common_observer.GetScopeGlobal");
 
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));

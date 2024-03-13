@@ -47,24 +47,28 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     addedDeSers.clear();
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_PACKAGE);
-    origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
-        .forEach(c -> {
-          CDSymbolTables.getAttributesInHierarchy(c)
-              .stream()
-              .filter(a -> a.getModifier().isDerived())
-              .forEach(a -> {
-                astcdPackage.addCDElement(withOrigin(createClass(origCD, a.getName(), a.getSymbol().getType(), c, GenService.isCDEnum(a.getSymbol().getType()), false)));
-                astcdPackage.addCDElement(withOrigin(createDeSer(origCD, a.getName(), a.getSymbol().getType(), c)));
-              });
-          CDSymbolTables.getAssociationsInHierarchy(c)
-              .stream()
-              .filter(a -> GenService.isSymbolDerived(a))
-              .filter(a -> !GenService.isBidirectional(a))
-              .forEach(a -> {
-                astcdPackage.addCDElement(withOrigin(createClass(origCD, a.getName(), a.getSymbol().getType(), c, true, a.getSymbol().getCardinality().isMult())));
-                astcdPackage.addCDElement(withOrigin(createDeSer(origCD, a.getName(), getSymType("long"), c)));
-              });
-        });
+    getNonDerivedDomainClasses(origCD).forEach(c -> {
+      CDSymbolTables.getAttributesInHierarchy(c).stream().filter(a -> a.getModifier().isDerived()).forEach(a -> {
+        astcdPackage.addCDElement(withOrigin(createClass(origCD,
+                                                         a.getName(),
+                                                         a.getSymbol().getType(),
+                                                         c,
+                                                         GenService.isCDEnum(a.getSymbol().getType()), false)));
+        astcdPackage.addCDElement(withOrigin(createDeSer(origCD, a.getName(), a.getSymbol().getType(), c)));
+      });
+      CDSymbolTables.getAssociationsInHierarchy(c)
+                    .stream()
+                    .filter(a -> GenService.isSymbolDerived(a))
+                    .filter(a -> !GenService.isBidirectional(a))
+                    .forEach(a -> {
+                      astcdPackage.addCDElement(withOrigin(createClass(origCD,
+                                                                       a.getName(),
+                                                                       a.getSymbol().getType(),
+                                                                       c,
+                                                                       true, a.getSymbol().getCardinality().isMult())));
+                      astcdPackage.addCDElement(withOrigin(createDeSer(origCD, a.getName(), getSymType("long"), c)));
+                    });
+    });
   }
 
 

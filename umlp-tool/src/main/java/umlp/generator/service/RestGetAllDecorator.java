@@ -12,6 +12,7 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.check.SymTypeExpression;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.Filter;
 import umlp.generator.domain.decorator.ManagerDecorator;
 
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ public class RestGetAllDecorator extends AbstractDecorator {
   private void addGraph(ASTCDCompilationUnit origCD, ASTCDClass clazz) {
     ASTCDMethodSignature graph = getCD4C().addMethod(clazz, "umlp.service4teaching.graph",
         origCD.getCDDefinition().getName(),
-        origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isAbstract()).collect(Collectors.toList()),
+        getDomainClasses(origCD, Filter.ABSTRACT.negate()),
         origCD.getCDDefinition().getCDAssociationsList().stream().flatMap(a -> {
           List<Map.Entry<SymTypeExpression, ASTCDAssocSide>> sides = new ArrayList<>();
           if (a.getLeft().getSymbol().isIsDefinitiveNavigable()) {
@@ -75,9 +76,7 @@ public class RestGetAllDecorator extends AbstractDecorator {
   }
 
   private void addGetAll(ASTCDCompilationUnit origCD, ASTCDClass clazz) {
-    List<ASTCDClass> classes = origCD.getCDDefinition().getCDClassesList().stream()
-        .filter(c -> !c.getModifier().isAbstract())
-        .collect(Collectors.toList());
+    List<ASTCDClass> classes = getDomainClasses(origCD, Filter.ABSTRACT.negate());
     ASTCDMethodSignature getAll = getCD4C().addMethod(clazz, "umlp.service4teaching.getAll",
         origCD.getCDDefinition().getName(), classes);
     String annotation = "@GetMapping(value = \"/getall/{type}\") @CrossOrigin";

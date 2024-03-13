@@ -38,13 +38,10 @@ public class ManagerDbObserverDecorator extends AbstractDecorator {
         .setCDInterfaceUsage(getInterfaceUsageFacade().createCDInterfaceUsage(cDName + "Observer"))
         .build();
     // Methods
-    origCD.getCDDefinition().getCDClassesList().stream()
-        .filter(c -> !c.getModifier().isDerived())
-        .filter(c -> !c.getModifier().isAbstract())
-        .forEach(c -> {
-          getCD4C().addMethod(ast, "umlp.dbobserver.manager.NotifyAdd", cDName, c.getName());
-          getCD4C().addMethod(ast, "umlp.dbobserver.manager.NotifyDelete",cDName, c.getName());
-        });
+    getConcreteDomainClasses(origCD).forEach(c -> {
+      getCD4C().addMethod(ast, "umlp.dbobserver.manager.NotifyAdd", cDName, c.getName());
+      getCD4C().addMethod(ast, "umlp.dbobserver.manager.NotifyDelete", cDName, c.getName());
+    });
 
     // Scope
     var getScope = getCD4C().addMethod(ast, "umlp.common_observer.GetScopeLocal");
