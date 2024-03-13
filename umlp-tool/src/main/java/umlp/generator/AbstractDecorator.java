@@ -33,7 +33,6 @@ import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.TypeCheck;
-import de.monticore.umlmodifier._ast.ASTModifier;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.monticore.umlstereotype._ast.ASTStereoValueTOP;
 import de.se_rwth.commons.Joiners;
@@ -229,17 +228,19 @@ public abstract class AbstractDecorator {
   }
 
   /**
-   * Gets all {@link ASTCDClass}es of a class diagramm which are not derived and not abstract
+   * Gets all {@link ASTCDClass}es of a class diagramm which are not derived nor abstract
    *
    * @param cd A class diagramm
    * @return A list of all concrete domain classes
-   * @see #getDeclaredDomainClasses(ASTCDCompilationUnit)
+   * @see #getNonDerivedDomainClasses(ASTCDCompilationUnit)
    */
   protected List<ASTCDClass> getConcreteDomainClasses(ASTCDCompilationUnit cd) {
-    return cd.getCDDefinition().getCDClassesList().stream().filter(c -> {
-      ASTModifier modifier = c.getModifier();
-      return !modifier.isDerived() && !modifier.isAbstract();
-    }).collect(Collectors.toList());
+    return cd.getCDDefinition()
+             .getCDClassesList()
+             .stream()
+             //a derived modifier implies a derived symbol
+             .filter(c -> !c.getSymbol().isIsDerived() && !c.getModifier().isAbstract())
+             .collect(Collectors.toList());
   }
 
   /**
@@ -249,11 +250,12 @@ public abstract class AbstractDecorator {
    * @return A list of all non-derived domain classes
    * @see #getConcreteDomainClasses(ASTCDCompilationUnit)
    */
-  protected List<ASTCDClass> getDeclaredDomainClasses(ASTCDCompilationUnit cd) {
+  protected List<ASTCDClass> getNonDerivedDomainClasses(ASTCDCompilationUnit cd) {
     return cd.getCDDefinition()
              .getCDClassesList()
              .stream()
-             .filter(c -> !c.getModifier().isDerived())
+             //a derived modifier implies a derived symbol
+             .filter(c -> !c.getSymbol().isIsDerived())
              .collect(Collectors.toList());
   }
 
@@ -263,11 +265,12 @@ public abstract class AbstractDecorator {
    * @param cd A class diagramm
    * @return A list of all non-derived domain interfaces
    */
-  protected List<ASTCDInterface> getDeclaredDomainInterfaces(ASTCDCompilationUnit cd) {
+  protected List<ASTCDInterface> getNonDerivedDomainInterfaces(ASTCDCompilationUnit cd) {
     return cd.getCDDefinition()
              .getCDInterfacesList()
              .stream()
-             .filter(c -> !c.getModifier().isDerived())
+             //a derived modifier implies a derived symbol
+             .filter(c -> !c.getSymbol().isIsDerived())
              .collect(Collectors.toList());
   }
 
