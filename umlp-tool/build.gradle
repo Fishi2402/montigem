@@ -118,6 +118,8 @@ task generateUMLP(type: MCTask) {
   outputs.upToDateWhen { uptoDate }
 }
 
+/*
+ ALu: Mit tagging-lite vmtl. erst mal nicht mehr notwendig
 task generateUMLPTagDef(type: MCTask) {
   grammar = file "$buildDir/generated-sources/monticore/sourcecode/UMLPTagDefinition.mc4"
   outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
@@ -137,6 +139,7 @@ task generateUMLPTagSchema(type: MCTask) {
   def uptoDate = incCheck("UMLP.mc4")
   outputs.upToDateWhen { uptoDate }
 }
+ */
 
 
 compileJava {
