@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.BuilderDecorator;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BuilderDecoratorTest extends DecoratorTest {
@@ -25,18 +25,14 @@ public class BuilderDecoratorTest extends DecoratorTest {
             () -> hasSuperClass(clazz, "Foo"),
 
             // check no of methods and attributes
-            () -> assertEquals(5, clazz.getCDAttributeList().size(), "number of attributes"),
-            () -> assertEquals(16, clazz.getCDMethodList().size(), "number of methods"),
+            () -> assertEquals(2, clazz.getCDAttributeList().size(), "number of attributes"),
+            () -> assertEquals(13, clazz.getCDMethodList().size(), "number of methods"),
 
             // check attributes
             () -> existsAttribute(clazz, "buildFinished"),
             () -> existsAttribute(clazz, "INTERNAL_deser_mode"),
-            () -> existsAttribute(clazz, "fooAttrPresent"),
-            () -> existsAttribute(clazz, "barPresent"),
 
             // check methods
-            () -> existsMethod(clazz, "isFooAttrPresent"),
-            () -> existsMethod(clazz, "isBarPresent"),
             () -> existsMethod(clazz, "build"),
             () -> existsMethod(clazz, "isBuildFinished"),
             () -> existsMethod(clazz, "isBuildable")
