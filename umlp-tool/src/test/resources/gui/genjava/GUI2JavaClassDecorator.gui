@@ -2,9 +2,9 @@
 
 package genjava;
 
-import Domain.Person;
-import Domain.Address;
-import Domain.MaritalStatus;
+import packaged.Domain.Person;
+import packaged.Domain.Address;
+import packaged.Domain.MaritalStatus;
 
 import util.P;
 
@@ -13,6 +13,7 @@ page GUI2JavaClassDecorator(
   Person $per$son,
   MaritalStatus status,
   List<Address> la,
+  List<List<Address>> lla,
   String s,
   boolean b,
   ?int i,

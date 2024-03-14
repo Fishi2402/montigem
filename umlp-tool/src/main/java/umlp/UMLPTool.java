@@ -49,7 +49,6 @@ import umlp._cocos.UMLPCoCos;
 import umlp._symboltable.FieldSymbolDeSer4GUI;
 import umlp._symboltable.IUMLPArtifactScope;
 import umlp._symboltable.SymTypeExpressionDeSer4GUI;
-import umlp._symboltable.SymTypeOfGenericsDeSer4GUI;
 import umlp._symboltable.UMLPSymbols2Json;
 import umlp._visitor.UMLPTraverser;
 import umlp.generator.AbstractDecorator;
@@ -61,9 +60,9 @@ import umlp.generator.domain.UMLPGenerator;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.UMLSetDefaultsTrafo;
 import umlp.generator.gui.GUIComponentsVisitor;
-import umlp.generator.gui.coco.GUIDSLCoCosForUMLP;
 import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.GUINodeIdTrafo;
+import umlp.generator.gui.coco.GUIDSLCoCosForUMLP;
 import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
 import umlp.generator.gui.genjava.GUI2JavaGenerator;
 import umlp.generator.gui.gentypescript.config.GUI2TSConfigGenerator;
@@ -568,6 +567,7 @@ public class UMLPTool extends UMLPToolTOP {
               .map(p -> p.toFile()).collect(Collectors.toList()));
           GlobalExtensionManagement glex = createGlex(getModuleConfigTemplates(cmd));
           genSetup.setGlex(glex);
+          CD4C.init(genSetup);
 
           List<String> domainModels = new ArrayList<>();
           if (DOMAIN.isSelected(cmd)) {

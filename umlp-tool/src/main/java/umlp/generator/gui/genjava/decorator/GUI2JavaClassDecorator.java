@@ -16,16 +16,16 @@ import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._ast.ASTGUIParam;
-import de.monticore.guidsl._symboltable.GUIParamSymbol;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
+import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
+import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeOfGenerics;
+import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
-import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.gui.GUIAbstractDecorator;
-
-import java.util.function.Function;
 
 public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUIDSLVisitor2 {
 
@@ -63,11 +63,56 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
 
   @Override
   public void visit(ASTGUIParam node) {
-    if (util.isCreateModel(gui.getComponentQName()) && util.isDomainType(node)) {
-      addBuilderLogic(node);
+    // calc type
+    if (!node.isPresentSymbol()) {
+      Log.error("0x0000E Unable to find symbol for '" + node.getName()
+          + "' at " + node.get_SourcePositionStart().toString()
+          + " - " + node.get_SourcePositionEnd().toString()
+      );
+    }
+    SymTypeExpression typeSTE = node.getSymbol().getType();
+    String type = importAndPrintType(typeSTE);
+
+    // calc name
+    String name = node.getName();
+
+    // add attr
+    ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
+        CDModifier.PROTECTED.build(), type, name);
+    clazz.addCDMember(attr);
+
+    // add getter and setter
+    MethodDecorator methodDecorator = new MethodDecorator(glex);
+    clazz.addAllCDMembers(methodDecorator.decorate(attr));
+
+    if (util.getMainDomainModelSimpleName().isPresent()) {
+      String manager = ManagerDecorator.getClassName(util.getMainDomainModelSimpleName().get());
+      // add attr init
+      ASTCDMethodSignature attrInit = getCD4C().addMethod(
+          clazz, getInitDomainTemplate(),
+          attr, manager
+      );
+
+      // add attr init to class init
+      glex.addAfterTemplate(
+          getInitBodyHookpoint(),
+          new TemplateHookPoint(getInitBuilderCallTemplate(), attrInit)
+      );
+
+      // add builder init
+      ASTCDMethodSignature builderInit = getCD4C().addMethod(
+          clazz, getInitBuilderTemplate(),
+          attr, manager
+      );
+
+      // add builder init to class init
+      glex.addAfterTemplate(
+          getInitBodyHookpoint(),
+          new TemplateHookPoint(getInitBuilderCallTemplate(), builderInit)
+      );
     }
     else {
-      addDomainLogic(node);
+      Log.warn("0x00007 Could not identify the manager name: domain class diagram is missing");
     }
   }
 
@@ -89,96 +134,50 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     return getCD4C().addConstructor(clazz, "umlp.gui2java.GUI2JavaConstructor");
   }
 
-  protected ASTCDAttribute addBuilderLogic(ASTGUIParam p) {
-    // attr
-    ASTCDAttribute attr = addBuilderAttr(clazz, p);
+  protected String importAndPrintType(SymTypeExpression ste) {
+    if (ste.isObjectType()) {
+      // given in GUI:
+      // import hardy.Domain.Person;
+      // the resolved type is `hardy.Person`
+      // but the CD Generator produces `hardy.domain.Person`, so calculate that instead
+      IBasicSymbolsScope scope = ste.getTypeInfo().getEnclosingScope();
+      if (scope.isPresentName()
+          && util.getMainDomainModelSimpleName().isPresent()
+          && scope.getName().equals(util.getMainDomainModelSimpleName().get())) {
 
-    // getter
-    MethodDecorator methodDecorator = new MethodDecorator(glex);
-    clazz.addAllCDMembers(methodDecorator.decorate(attr));
+        String insert = StringTransformations.uncapitalize(scope.getName()) + ".";
+        String qTypeName = ste.asObjectType().printFullName();
 
-    // build
-    getCD4C().addMethod(clazz, getBuildErrorTemplate(), attr);
-    getCD4C().addMethod(clazz, getBuildTemplate(), attr);
+        int lastIndex = qTypeName.lastIndexOf('.');
 
-    // init
-    if (util.getMainDomainModelSimpleName().isPresent()) {
-      // builder init
-      ASTCDMethodSignature builderInit = getCD4C().addMethod(
-          clazz, getInitBuilderTemplate(),
-          attr, ManagerDecorator.getClassName(util.getMainDomainModelSimpleName().get())
-      );
-
-      // add builder init to class init
-      glex.addAfterTemplate(
-          getInitBodyHookpoint(),
-          new TemplateHookPoint(getInitBuilderCallTemplate(), builderInit)
-      );
+        if (lastIndex != -1) {
+          StringBuilder sb = new StringBuilder(qTypeName);
+          sb.insert(lastIndex + 1, insert);
+          qTypeName = sb.toString();
+        }
+        else {
+          qTypeName = insert + qTypeName;
+        }
+        getCD4C().addImport(clazz, qTypeName);
+      }
+      else {
+        getCD4C().addImport(clazz, ste.printFullName());
+      }
     }
-    else {
-      Log.warn("0x00007 Could not identify the manager name: domain classdiagram is missing");
+    else if (ste.isGenericType()) {
+      SymTypeOfGenerics stog = ste.asGenericType();
+
+      getCD4C().addImport(clazz, stog.getTypeConstructorFullName());
+
+      for (SymTypeExpression steArg : stog.getArgumentList()) {
+        importAndPrintType(steArg);
+      }
     }
-    return attr;
-  }
-
-  protected ASTCDAttribute addDomainLogic(ASTGUIParam p) {
-    // attr
-    ASTCDAttribute attr = addDomainAttr(clazz, p);
-
-    // getter
-    MethodDecorator methodDecorator = new MethodDecorator(glex);
-    clazz.addAllCDMembers(methodDecorator.decorate(attr));
-
-    // init
-    if (util.getMainDomainModelSimpleName().isPresent()) {
-      // attr init
-      ASTCDMethodSignature attrInit = getCD4C().addMethod(
-          clazz, getInitDomainTemplate(),
-          attr, ManagerDecorator.getClassName(util.getMainDomainModelSimpleName().get())
-      );
-
-      // add attr init to class init
-      glex.addAfterTemplate(
-          getInitBodyHookpoint(),
-          new TemplateHookPoint(getInitBuilderCallTemplate(), attrInit)
-      );
+    else if (!(ste.isPrimitive() || ste.isNullType() || ste.isVoidType() || ste.isWildcard())) {
+      Log.error("0x00010 Encountered unsupported type in " + gui.getComponentQName()
+          + ": parameter type '" + ste.printFullName() + "'");
     }
-    else {
-      Log.warn("0x00007 Could not identify the manager name: domain classdiagram is missing");
-    }
-    return attr;
-  }
-
-  protected ASTCDAttribute addBuilderAttr(ASTCDClass clazz, ASTGUIParam param) {
-    return addAttr(clazz, param, x -> BuilderDecorator.getClassName(x));
-  }
-
-  protected ASTCDAttribute addDomainAttr(ASTCDClass clazz, ASTGUIParam param) {
-    return addAttr(clazz, param, x -> x);
-  }
-
-  protected ASTCDAttribute addAttr(
-      ASTCDClass clazz, ASTGUIParam param, Function<String, String> typeConversion
-  ) {
-    // type
-    if (!param.isPresentSymbol()) {
-      Log.error("0x0000E Unable to find symbol for '" + param.getName()
-          + "' at " + param.get_SourcePositionStart().toString()
-          + " - " + param.get_SourcePositionEnd().toString()
-      );
-    }
-    GUIParamSymbol paramSym = param.getSymbol();
-    String type = paramSym.getType().print();
-    getCD4C().addImport(clazz, paramSym.getType().printFullName());
-
-    // name
-    String name = param.getName();
-    ASTCDAttribute domainAttribute = getCDAttributeFacade().createAttribute(
-        CDModifier.PROTECTED.build(), type, name);
-
-    clazz.addCDMember(domainAttribute);
-
-    return domainAttribute;
+    return ste.print();
   }
 
   protected String getInitDomainTemplate() {
@@ -191,14 +190,6 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
 
   protected String getInitBuilderCallTemplate() {
     return "umlp.gui2java.GUI2JavaInitBuilderCall";
-  }
-
-  protected String getBuildErrorTemplate() {
-    return "umlp.gui2java.GUI2JavaBuildError";
-  }
-
-  protected String getBuildTemplate() {
-    return "umlp.gui2java.GUI2JavaBuild";
   }
 
   protected String getInitBodyHookpoint() {

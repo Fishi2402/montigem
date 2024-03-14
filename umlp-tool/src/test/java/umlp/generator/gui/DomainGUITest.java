@@ -20,14 +20,22 @@ public abstract class DomainGUITest extends AbstractGUITest {
       String modelPath,
       String symbolPath
   ) {
+    return processGUIModel(modelPath, symbolPath, "Domain.umlp");
+  }
+
+  protected ASTGUICompilationUnit processGUIModel(
+      String modelPath,
+      String symbolPath,
+      String domainPath
+  ) {
     UMLPMill.reset();
     UMLPMill.globalScope().clear();
     UMLPMill.init();
     BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope());
 
     String symFolder = BUILD_FOLDER + "/guitests";
-    String domainSymFile = symFolder + "/Domain.umlpsym";
-    ASTCDCompilationUnit ast = parse("gui/Domain.umlp");
+    String domainSymFile = symFolder + "/" + domainPath + "sym";
+    ASTCDCompilationUnit ast = parse("gui/" + domainPath);
     runAfterParseTrafo(ast);
     IUMLPArtifactScope as = createSymTab(ast);
     runDefaultTrafos(ast);
@@ -54,4 +62,5 @@ public abstract class DomainGUITest extends AbstractGUITest {
     );
     return guiAst;
   }
+
 }
