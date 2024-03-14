@@ -7,7 +7,6 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
-import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -29,12 +28,12 @@ import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIComponentsVisitor;
-import umlp.generator.gui.genjava.prettyprinter.IterationItemsFinder;
 import umlp.generator.gui.genjava.prettyprinter.Expression2AccessorPrinter;
 import umlp.generator.gui.genjava.prettyprinter.Expression2BuilderPrinter;
 import umlp.generator.gui.genjava.prettyprinter.Expression2MutatorPrinter;
 import umlp.generator.gui.genjava.prettyprinter.Expression2NullCheckPrinter;
 import umlp.generator.gui.genjava.prettyprinter.Expression2SetterPrinter;
+import umlp.generator.gui.genjava.prettyprinter.IterationItemsFinder;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 import umlp.generator.util.PathUtil;
 
@@ -228,27 +227,22 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       Function<String, String> conversion = getConversion(decoratedClass,
           paramSTE, namedArg.getGUIArgValue().getExpression(), true);
       // TODO AGe: explicit gem lists when domain typed lists are used as an input
-      // TODO: This needs to be decided on the type of the expression, not the parameter
-      // Workaround for the simplest cases:
-      ASTExpression expr = namedArg.getGUIArgValue().getExpression();
-      boolean canResolveParam = false;
-      if(expr instanceof ASTNameExpression){
-        String name = ((ASTNameExpression) expr).getName();
-        canResolveParam = namedArg.getEnclosingScope().resolveGUIParam(name).isPresent();
-      }
-
-      if(canResolveParam){
-        // Keep getter value
-      } else if (!paramType.contains("GemList")) {
+      if (!paramType.contains("GemList")) {
         getterValue = conversion.apply(getterValue);
       } else {
         getCD4C().addImport(decoratedClass, PathUtil.getBackendRTECommonPath("GemList"));
-        // TODO(Blocked #3580): with TypeCheck 3: Use Type4AST#getTypeOfExpression to calculate correct getter in visitor instead
-        String[] split = getterValue.split("\\.");
-        String getterPartial = split[split.length - 1];
-        split[split.length - 1] = "_internal_" + getterPartial.replace("()", "") + "GemList()";
-        getterValue = String.join(".", split);
       }
+
+      // TODO:
+      //  public  getNextHoursForecast5Forecasts (): GemList<Forecast>
+      //  calls this.getApp().getCurrentCity().getNextHours();
+      //    CityTOP has getNextHours (): Array<Forecast>
+      //  calls GemList#toArray
+      //  On dev: getNextHoursForecast5Forecasts (): GemList<Forecast>
+      //  calls this.getApp().getCurrentCity().getNextHours();
+      //    CityTOP has NO getNextHours
+      //    City getNextHours returns weird stuff
+      // Cardinality changed!!
 
       addGetComponentMethod(decoratedClass, getterName, paramType,
           getterValue, iterItemArgs, nullCheck);

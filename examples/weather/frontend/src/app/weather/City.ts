@@ -26,6 +26,10 @@ export class City extends CityTOP {
     return this._nextDays;
   }
 
+  public getNextDays(){
+    return this._nextDays.get();
+  }
+
   public getCurrentDerivedGem (): Gem<Forecast> {
     this.calcCurrent();
     const res = new Gem<Forecast>();
@@ -33,8 +37,20 @@ export class City extends CityTOP {
     return res;
   }
 
+  public getCurrent(): Forecast | null {
+    return this._current;
+  }
+
   public getNextHoursDerivedGemList(): GemList<Forecast> {
     this.calcNextHours();
+    return this._nextHours;
+  }
+
+  public getNextHours(){
+    return this._nextHours;
+  }
+
+  public getNextHoursList(){
     return this._nextHours;
   }
 
@@ -45,7 +61,7 @@ export class City extends CityTOP {
     this.original.nextDays.calculating = true;
 
     const today = new Date();
-    today.setHours(0, 0, 0, 0)
+    today.setHours(0, 0, 0, 0);
     const until = new Date(today);
     until.setDate(until.getDate() + 7);
 

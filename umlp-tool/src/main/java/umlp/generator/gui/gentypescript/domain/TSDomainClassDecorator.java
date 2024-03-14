@@ -130,11 +130,20 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
   protected void createGetterSetterForAssocs(ASTCDType domainInterface, ASTCDType cdType,
                                              List<ASTCDAttribute> attrList, boolean isInterface) {
     CDGenService service = new MethodGenService();
+    TSAssocAccessorDecorator accessorDecorator = new TSAssocAccessorDecorator(glex, service, cdType);
+    TSAssocMutatorDecorator mutatorDecorator = new TSAssocMutatorDecorator(glex, service, cdType);
     MethodDecorator methodDecorator = new MethodDecorator(glex,
-        new TSAssocAccessorDecorator(glex, service, cdType),
-        new TSAssocMutatorDecorator(glex, service, cdType), service);
+        accessorDecorator,
+        mutatorDecorator, service);
     for (ASTCDAttribute attribute : attrList) {
-      List<ASTCDMethod> methods = methodDecorator.decorate(attribute);
+      List<ASTCDMethod> methods;
+      if(attribute.getModifier().isDerived()) {
+        // Workaround: do not generate accessor at all
+        // JSweet will replace this entirely => minimal effort
+       methods = mutatorDecorator.decorate(attribute);
+      }else{
+        methods = methodDecorator.decorate(attribute);
+      }
       // methods.forEach(m -> m.getModifier().setAbstract(isInterface));
       //methods.forEach(m -> m.getModifier().setDerived(isInterface));
       // TODO AGe: why is it getting set to abstract?

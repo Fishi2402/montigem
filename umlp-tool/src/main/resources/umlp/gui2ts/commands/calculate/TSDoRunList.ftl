@@ -1,11 +1,11 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("classname", "originalclassname", "returntype", "definition", "fieldName")}
+${tc.signature("classname", "originalclassname", "returntype", "definition", "fieldName", "multiCardinality")}
 ${cd4c.method("public Promise<ListResult<${returntype}, List<${returntype}>>> doRun()")}
 
 return ${definition}.${originalclassname?uncap_first}Opt(this.gemId).then(v => {
   let ${originalclassname?uncap_first}: ${originalclassname} = v;
   if (${originalclassname?uncap_first} != null) {
-    return ListResult.of(this.getId(), ${originalclassname?uncap_first}.get${fieldName?cap_first}(), "${returntype}");
+    return ListResult.of(this.getId(), ${originalclassname?uncap_first}.get${fieldName?cap_first}<#if multiCardinality>List().toArray()<#else>()</#if>, "${returntype}");
   } else {
     return ListResult.error(this.getId(), "${returntype}");
   }

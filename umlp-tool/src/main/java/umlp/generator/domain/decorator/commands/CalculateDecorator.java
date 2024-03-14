@@ -88,7 +88,7 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
 
     String methodPrefix = SymTypeRelations.isBoolean(type) ? "is" : "get";
     if(multiCardinality || GenService.isList(type)) {
-      getCD4C().addMethod(ast, getDoRunListTemplate(), classname, originalClassname, t, getCorrectManager(domainClass), name);
+      getCD4C().addMethod(ast, getDoRunListTemplate(), classname, originalClassname, t, getCorrectManager(domainClass), name, multiCardinality);
     }else{
       getCD4C().addMethod(ast, getDoRunSimpleTemplate(), classname, originalClassname, t, getCorrectManager(domainClass), name, methodPrefix);
     }

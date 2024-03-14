@@ -16,6 +16,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.util.TagLookUp;
@@ -109,19 +110,35 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
     List<String> parameters = new ArrayList<>();
     ArrayList<String> annotations = new ArrayList<>();
     for (ASTCDAttribute attribute : domainAttributes) {
-      String type = attribute.getMCType().printType();
-      Optional<TypeSymbol> typeSymbol = attribute.getEnclosingScope().resolveType(type);
+      String deSerType;
+      ASTMCType attrType = attribute.getMCType();
+      boolean isOpt = GenService.isOptional(attrType);
+      boolean isList = GenService.isList(attrType);
+      if(isOpt || isList){
+        deSerType = GenService.getInnerType(attrType);
+      }else{
+        deSerType = attrType.printType();
+      }
+
+      String type = attrType.printType();
+      Optional<TypeSymbol> typeSymbol = attribute.getEnclosingScope().resolveType(deSerType);
       if(typeSymbol.isPresent()){
         String fullName = typeSymbol.get().getFullName();
         if(!fullName.isEmpty() && Character.isUpperCase(fullName.charAt(0))){
-          // Domain import
-        }else{
+          // imported Domain type
+        }else if(!fullName.startsWith("java.lang.")){
           type = fullName;
         }
       }
 
-      if (supportedDesers.contains(type)) {
-        parameters.add("String " + attribute.getName());
+      if (!deSerType.startsWith("java.lang.") && supportedDesers.contains(deSerType)) {
+        if(isOpt) {
+          parameters.add("String " + attribute.getName());
+        }else if(isList){
+          parameters.add("List<String> " + attribute.getName());
+        }else{
+          parameters.add("String " + attribute.getName());
+        }
       } else {
         parameters.add(type + " " + attribute.getName());
       }
