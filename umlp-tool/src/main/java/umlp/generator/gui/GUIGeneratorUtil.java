@@ -66,6 +66,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -517,7 +518,7 @@ public class GUIGeneratorUtil {
   public String getShortIteratorIterable(ASTGUIIterate iterate) {
     if (iterate.getIterateControl() instanceof ASTGUIShortIterateControl) {
       IterationItemsFinder finder = new IterationItemsFinder();
-      Collection<ASTExpression> iterationItems = finder.getItems(iterate);
+      Collection<ASTExpression> iterationItems = new HashSet<>(finder.getItems(iterate));
 
       Expression2NullCheckAccessorPrinter printer = new Expression2NullCheckAccessorPrinter(
           new IndentPrinter(), true, iterationItems, iterationItems

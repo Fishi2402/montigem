@@ -6,13 +6,17 @@ import de.monticore.expressions.expressionsbasis._prettyprint.ExpressionsBasisPr
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
+import umlp.generator.domain.decorator.BuilderDecorator;
+import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public class Name2AccessorConverter extends ExpressionsBasisPrettyPrinter {
 
@@ -34,10 +38,23 @@ public class Name2AccessorConverter extends ExpressionsBasisPrettyPrinter {
       CommentPrettyPrinter.printPreComments(node, getPrinter());
     }
 
-    if (!nonClassMembers.contains(node) && !isEnum(node)) {
+    boolean isConstructor = isConstructor(node);
+    if (!nonClassMembers.contains(node) && !isEnum(node) && !isConstructor) {
       getPrinter().print("this.");
     }
-    if (ignore.contains(node)) {
+    if (isConstructor) {
+      if (GUIGeneratorUtil.getInstance().getMainDomainModelSimpleName().isPresent()) {
+        String manager = ManagerDecorator.getClassName(
+            GUIGeneratorUtil.getInstance().getMainDomainModelSimpleName().get()
+        );
+        getPrinter().print(manager + "."
+            + BuilderDecorator.getClassName(StringTransformations.uncapitalize(node.getName())));
+      }
+      else {
+        Log.error("0x00007 Could not identify the manager name: domain class diagram is missing");
+      }
+    }
+    else if (ignore.contains(node)) {
       getPrinter().print(node.getName() + " ");
     }
     else {
@@ -65,6 +82,20 @@ public class Name2AccessorConverter extends ExpressionsBasisPrettyPrinter {
     if (node.getEnclosingScope() instanceof IOOSymbolsScope) {
       IOOSymbolsScope scope = (IOOSymbolsScope) node.getEnclosingScope();
       return GUIGeneratorUtil.getInstance().isEnum(node.getName(), scope);
+    }
+    else {
+      Log.error("0x0000C Attempted to resolve type of '"
+          + GUIGeneratorUtil.getInstance().print(node) + "' from outside of an OOSymbolsScope,"
+          + " but expression conversion is restricted to OOSymbols context.");
+      return false;
+    }
+  }
+
+  protected boolean isConstructor(ASTNameExpression node) {
+    if (node.getEnclosingScope() instanceof IOOSymbolsScope) {
+      IOOSymbolsScope scope = (IOOSymbolsScope) node.getEnclosingScope();
+      Optional<OOTypeSymbol> sym = scope.resolveOOType(node.getName());
+      return sym.isPresent() && sym.get().isIsClass();
     }
     else {
       Log.error("0x0000C Attempted to resolve type of '"

@@ -9,6 +9,7 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl.GUIDSLMill;
@@ -18,6 +19,7 @@ import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._ast.ASTGUIParam;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
@@ -26,6 +28,14 @@ import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.gui.GUIAbstractDecorator;
+import umlp.generator.gui.genjava.prettyprinter.Expression2AccessorPrinter;
+import umlp.generator.gui.genjava.prettyprinter.Expression2MutatorPrinter;
+import umlp.generator.gui.genjava.prettyprinter.Expression2NullCheckPrinter;
+import umlp.generator.gui.genjava.prettyprinter.Expression2SetterPrinter;
+import umlp.generator.gui.genjava.prettyprinter.IterationItemsFinder;
+
+import java.util.Collection;
+import java.util.HashSet;
 
 public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUIDSLVisitor2 {
 
@@ -112,13 +122,53 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
       );
     }
     else {
-      Log.warn("0x00007 Could not identify the manager name: domain class diagram is missing");
+      Log.error("0x00007 Could not identify the manager name: domain class diagram is missing");
     }
   }
 
   @Override
   public void visit(ASTGUINamedArg node) {
+    // calc type
+    if (!node.isPresentNameSymbol()) {
+      Log.error("0x0000E Unable to find symbol for '" + node.getName()
+          + "' at " + node.get_SourcePositionStart().toString()
+          + " - " + node.get_SourcePositionEnd().toString()
+      );
+    }
+    SymTypeExpression typeSTE = node.getNameSymbol().getType();
+    String type = importAndPrintType(typeSTE);
 
+    // calc name
+    String name = node.getName();
+
+    // add getter and setter
+    IterationItemsFinder finder = new IterationItemsFinder();
+    Collection<ASTExpression> iterateItems = new HashSet<>(finder.getItems(gui));
+
+    // replace field access with getters
+    Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
+        new IndentPrinter(), false, iterateItems, iterateItems
+    );
+    Expression2SetterPrinter setterPrinter = new Expression2MutatorPrinter(
+        new IndentPrinter(), false, iterateItems, iterateItems
+    );
+    Expression2NullCheckPrinter nullCheckPrinter = new Expression2NullCheckPrinter(getterPrinter);
+
+    String nullCheck = nullCheckPrinter.prettyprint(node.getGUIArgValue());
+    String getterValue = getterPrinter.prettyprint(node.getGUIArgValue());
+    String setterValue = setterPrinter.prettyprint(node.getGUIArgValue());
+
+    // add getter
+    getCD4C().addMethod(
+        clazz, getArgGetterTemplate(),
+        type, name, nullCheck, getterValue
+    );
+
+    // add setter
+    getCD4C().addMethod(
+        clazz, getArgSetterTemplate(),
+        type, name, nullCheck, setterValue
+    );
   }
 
   protected ASTCDClass emptyClass(ASTGUICompilationUnit ast) {
@@ -173,7 +223,10 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
         importAndPrintType(steArg);
       }
     }
-    else if (!(ste.isPrimitive() || ste.isNullType() || ste.isVoidType() || ste.isWildcard())) {
+    else if (ste.isPrimitive()) {
+      return ste.asPrimitive().getBoxedPrimitiveName();
+    }
+    else if (!(ste.isNullType() || ste.isVoidType() || ste.isWildcard())) {
       Log.error("0x00010 Encountered unsupported type in " + gui.getComponentQName()
           + ": parameter type '" + ste.printFullName() + "'");
     }
@@ -194,6 +247,14 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
 
   protected String getInitBodyHookpoint() {
     return "umlp.gui2java.GUI2JavaInitBody";
+  }
+
+  protected String getArgGetterTemplate() {
+    return "umlp.gui2java.GUI2JavaArgGetter";
+  }
+
+  protected String getArgSetterTemplate() {
+    return "umlp.gui2java.GUI2JavaArgSetter";
   }
 
 }

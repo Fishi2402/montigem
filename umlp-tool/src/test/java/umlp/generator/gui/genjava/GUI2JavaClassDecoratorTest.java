@@ -2,6 +2,7 @@
 package umlp.generator.gui.genjava;
 
 import de.monticore.cd.methodtemplates.CD4C;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -150,10 +151,110 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     assertAll(assertions);
   }
 
+  @Test
+  public void testVisitGUINamedArg() {
+    ASTGUICompilationUnit gui;
+    ASTCDCompilationUnit cd;
+
+    gui = processGUIModel(
+        "gui/genjava/GUI2JavaClassDecorator.gui",
+        "src/test/resources/gui",
+        "packaged/Domain.umlp"
+    );
+    cd = GUI2CDTrafo.createCDCompilationUnit(gui);
+
+    GUIGeneratorUtil.getInstance().init(List.of("packaged.Domain"), List.of("genjava.GUI2JavaClassDecorator"));
+
+    GUI2JavaClassDecorator decorator = new GUI2JavaClassDecorator(glex);
+    decorator.transform(gui, cd);
+
+    ASTCDClass clazz = cd.getCDDefinition().getCDClassesList().get(0);
+
+    List<Executable> assertions = new ArrayList<>();
+
+    List<ASTCDMethod> methods = clazz.getCDMethodList();
+
+    ASTCDMethod getAP = getMethod(methods, "getAP");
+    ASTCDMethod getAM = getMethod(methods, "getAM");
+    ASTCDMethod getAS = getMethod(methods, "getAS");
+    ASTCDMethod getAB = getMethod(methods, "getAB");
+    ASTCDMethod getAA = getMethod(methods, "getAA");
+    ASTCDMethod getCP = getMethod(methods, "getCP");
+    ASTCDMethod getCA = getMethod(methods, "getCA");
+    ASTCDMethod getDI = getMethod(methods, "getDI");
+    ASTCDMethod setDI = getMethod(methods, "setDI");
+    ASTCDMethod getFI = getMethod(methods, "getFI");
+    ASTCDMethod setFI = getMethod(methods, "setFI");
+    ASTCDMethod getGGve = getMethod(methods, "getGGve");
+    ASTCDMethod getGLgve = getMethod(methods, "getGLgve");
+    ASTCDMethod getHE = getMethod(methods, "getHE");
+    ASTCDMethod getJE = getMethod(methods, "getJE");
+    ASTCDMethod getKA = getMethod(methods, "getKA");
+    ASTCDMethod getKS = getMethod(methods, "getKS");
+    ASTCDMethod getKM = getMethod(methods, "getKM");
+    ASTCDMethod getMCondition = getMethod(methods, "getMCondition");
+
+    assertions.add(() -> assertNotNull(getAP));
+    assertions.add(() -> assertNotNull(getAM));
+    assertions.add(() -> assertNotNull(getAS));
+    assertions.add(() -> assertNotNull(getAB));
+    assertions.add(() -> assertNotNull(getAA));
+    assertions.add(() -> assertNotNull(getCP));
+    assertions.add(() -> assertNotNull(getCA));
+    assertions.add(() -> assertNotNull(getDI));
+    assertions.add(() -> assertNotNull(setDI));
+    assertions.add(() -> assertNotNull(getFI));
+    assertions.add(() -> assertNotNull(setFI));
+    assertions.add(() -> assertNotNull(getGGve));
+    assertions.add(() -> assertNotNull(getGLgve));
+    assertions.add(() -> assertNotNull(getHE));
+    assertions.add(() -> assertNotNull(getJE));
+    assertions.add(() -> assertNotNull(getKA));
+    assertions.add(() -> assertNotNull(getKS));
+    assertions.add(() -> assertNotNull(getKM));
+    assertions.add(() -> assertNotNull(getMCondition));
+
+    /*
+    Collection<ASTMCImportStatement> imports = CD4C.getInstance().getImportList(clazz);
+
+    assertions.add(() -> assertEquals(8, imports.size()));
+
+    ASTMCImportStatement personImport = getImport(imports, "packaged.domain.Person");
+    ASTMCImportStatement maritalStatusImport = getImport(imports, "packaged.domain.MaritalStatus");
+    ASTMCImportStatement listImport = getImport(imports, "java.util.List");
+    ASTMCImportStatement addressImport = getImport(imports, "packaged.domain.Address");
+    ASTMCImportStatement guiViewElementImport = getImport(imports, "de.monticore.guidsl.types.GUIViewElement");
+    ASTMCImportStatement eventImport = getImport(imports, "de.monticore.guidsl.types.Event");
+    // optional imports, byproduct of type handling
+    ASTMCImportStatement stringImport = getImport(imports, "java.lang.String");
+    ASTMCImportStatement voidImport = getImport(imports, "java.lang.Void");
+
+    assertions.add(() -> assertNotNull(personImport));
+    assertions.add(() -> assertNotNull(maritalStatusImport));
+    assertions.add(() -> assertNotNull(listImport));
+    assertions.add(() -> assertNotNull(addressImport));
+    assertions.add(() -> assertNotNull(guiViewElementImport));
+    assertions.add(() -> assertNotNull(eventImport));
+    assertions.add(() -> assertNotNull(stringImport));
+    assertions.add(() -> assertNotNull(voidImport));
+
+    assertAll(assertions);
+    /**/
+  }
+
   protected ASTCDAttribute getAttr(Collection<ASTCDAttribute> attrs, String name) {
     for (ASTCDAttribute attr : attrs) {
       if (attr.getName().equals(name)) {
         return attr;
+      }
+    }
+    return null;
+  }
+
+  protected ASTCDMethod getMethod(Collection<ASTCDMethod> methods, String name) {
+    for (ASTCDMethod method : methods) {
+      if (method.getName().equals(name)) {
+        return method;
       }
     }
     return null;

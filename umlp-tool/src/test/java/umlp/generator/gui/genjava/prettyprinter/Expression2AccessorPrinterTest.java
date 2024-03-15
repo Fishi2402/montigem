@@ -12,8 +12,11 @@ import de.monticore.prettyprint.IndentPrinter;
 import org.junit.jupiter.api.Test;
 import umlp.generator.gui.DomainGUITest;
 import umlp.generator.gui.GUIComponentStat;
+import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -149,6 +152,8 @@ public class Expression2AccessorPrinterTest extends DomainGUITest {
         "src/test/resources/gui"
     ).getGUIComponentDeclaration();
 
+    GUIGeneratorUtil.getInstance().init(List.of("Domain"), Collections.emptyList());
+
     components = stat.getComponents(componentDecl);
 
     ASTGUIComponent call = stat.getCompById(components, "call");
@@ -160,6 +165,7 @@ public class Expression2AccessorPrinterTest extends DomainGUITest {
     ASTGUIComponent fieldCall5 = stat.getCompById(components, "fieldCall5");
     ASTGUIComponent fieldCall6 = stat.getCompById(components, "fieldCall6");
     ASTGUIComponent literal = stat.getCompById(components, "literal");
+    ASTGUIComponent list = stat.getCompById(components, "list");
 
     String expect1 = removeSpaces("this.getAge()");
     String result1 = removeSpaces(printer.prettyprint(
@@ -199,6 +205,10 @@ public class Expression2AccessorPrinterTest extends DomainGUITest {
     String result9 = removeSpaces(printer.prettyprint(
         fieldCall6.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
 
+    String expect10 = removeSpaces("List.of(DomainManager.personBuilder(), this.getPersons().get(0))");
+    String result10 = removeSpaces(printer.prettyprint(
+        list.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+
     assertAll(
         () -> assertEquals(expect1, result1),
         () -> assertEquals(expect2, result2),
@@ -208,7 +218,8 @@ public class Expression2AccessorPrinterTest extends DomainGUITest {
         () -> assertEquals(expect6, result6),
         () -> assertEquals(expect7, result7),
         () -> assertEquals(expect8, result8),
-        () -> assertEquals(expect9, result9)
+        () -> assertEquals(expect9, result9),
+        () -> assertEquals(expect10, result10)
     );
   }
 
@@ -227,7 +238,7 @@ public class Expression2AccessorPrinterTest extends DomainGUITest {
     ).getGUIComponentDeclaration();
 
     IterationItemsFinder finder = new IterationItemsFinder();
-    Collection<ASTExpression> iterationItems = finder.getItems(componentDecl);
+    Collection<ASTExpression> iterationItems = new HashSet<>(finder.getItems(componentDecl));
     Expression2AccessorPrinter printer = new Expression2AccessorPrinter(
         new IndentPrinter(), true, iterationItems, iterationItems
     );

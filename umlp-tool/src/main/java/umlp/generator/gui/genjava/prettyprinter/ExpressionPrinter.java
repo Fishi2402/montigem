@@ -3,6 +3,7 @@ package umlp.generator.gui.genjava.prettyprinter;
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
+import de.monticore.guidsl._prettyprint.GUIDSLPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 
 import java.util.Collection;
@@ -37,6 +38,11 @@ public abstract class ExpressionPrinter extends GUIDSLFullPrettyPrinter {
 
   protected void resetPrinter() {
     allIgnore = ignore;
+
+    GUIDSLPrettyPrinter gUIDSL = new GUIList2JavaConverter(getPrinter(), printComments);
+    getTraverser().setGUIDSLHandler(gUIDSL);
+    getTraverser().getGUIDSLVisitorList().clear();
+    getTraverser().add4GUIDSL(gUIDSL);
   }
 
   @Override

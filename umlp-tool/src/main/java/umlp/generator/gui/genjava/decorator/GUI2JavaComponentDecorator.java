@@ -39,6 +39,7 @@ import umlp.generator.util.PathUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -202,7 +203,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     }
     else {
       IterationItemsFinder finder = new IterationItemsFinder();
-      Collection<ASTExpression> iterateItems = finder.getItems(guiAst);
+      Collection<ASTExpression> iterateItems = new HashSet<>(finder.getItems(guiAst));
 
       // replace field access with getters
       Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
