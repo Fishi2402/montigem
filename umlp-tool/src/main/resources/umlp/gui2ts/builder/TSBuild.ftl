@@ -33,7 +33,7 @@ if (!this.buildFinished) {
             <#else>
                 <#if genService.isBidirectional(assoc)>
                     <#assign otherSide=assoc.getSymbol().getOtherSide().getAssocSide()>
-                  if (this.${assoc.getName()}Present()) {
+                  if (this.${name} != null) {
                     <#if genService.isList(otherSide)>
                       if (!this._${assoc.getName()}.get().get${otherSide.getName()?cap_first}().includes(this)) {
                       this._${assoc.getName()}.get().add${otherSide.getName()?cap_first}(this, NotificationScope.MINIMAL);
@@ -67,7 +67,7 @@ if (!this.buildFinished) {
   <#else>
     <#if genService.isBidirectional(assoc)>
       <#assign otherSide=assoc.getSymbol().getOtherSide().getAssocSide()>
-      if (this.${assoc.getName()}Present()) {
+      if (this.${name} != null) {
       <#if genService.isList(otherSide)>
         if (!this._${assoc.getName()}.get().get${otherSide.getName()?cap_first}().includes(this)) {
           this._${assoc.getName()}.get().add${otherSide.getName()?cap_first}(this, NotificationScope.MINIMAL);
