@@ -3,24 +3,18 @@
 
 import { BatteryPackBuilder } from '@src/demorec/BatteryPackBuilder';
 
-import { ProcessBuilder } from '@src/demorec/ProcessBuilder';
-
 import { DemoRecManager } from '@src/demorec/DemoRecManager';
 
-import { BatteryPackTypeBuilder } from '@src/demorec/BatteryPackTypeBuilder';
 import { BatteryPackType } from '@src/demorec/BatteryPackType';
 
 import { BatteryPack } from '@src/demorec/BatteryPack';
 
+import { ComponentKind } from '@src/demorec/ComponentKind';
+
 import { ProcessCreateComponent,config } from '@src/gui/process/ProcessCreateComponent';
 
 import {
-  Directive,
   Component,
-  Input,
-  Output,
-  EventEmitter,
-  TemplateRef,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -43,6 +37,9 @@ export  class ProcessCreate extends ProcessCreateComponent {
 
   public bPackTypeEntry: string = "";
   public bPackTypeOptions: Option[] = [newOption];
+
+  public kindEntry: string = "";
+  public kindOptions: Option[] = [newOption];
 
   public typeHash = -1
   public lastType : BatteryPackType;
@@ -81,6 +78,22 @@ export  class ProcessCreate extends ProcessCreateComponent {
     });
   }
 
+  public override getSelectComponentKindOptions(): Array<Option> {
+    return this.kindOptions;
+  }
+
+  public override getSelectComponentKindEntry(): string {
+    return this.kindEntry;
+  }
+
+  public override setSelectComponentKindEntry(value: string): void {
+    this.kindEntry = value;
+  }
+
+  public override getCreateKindCondition (): boolean {
+    return this.getSelectComponentKindEntry()==newOption.value
+  }
+
   public override getSelectBPackOptions(): Array<Option> {
     return this.bPackOptions;
   }
@@ -116,6 +129,7 @@ export  class ProcessCreate extends ProcessCreateComponent {
 
   public override sendEverything (event: any): void {
     let type : Promise<BatteryPackType>
+    let componentKind : Promise<ComponentKind>
     let pack : Promise<BatteryPack>
 
     if(this.getSelectBPackEntry() != newOption.value) {
@@ -136,9 +150,25 @@ export  class ProcessCreate extends ProcessCreateComponent {
           }
         })
       }
-      pack = type.then(bPackType => {
+
+      if((this.getSelectComponentKindEntry() != newOption.value)) {
+        componentKind = DemoRecManager.getComponentKindSure(+this.getSelectComponentKindEntry())
+      } else {
+        this.getComponentKind().build()
+        componentKind = new Promise((resolve, reject) => {
+          if(this.getComponentKind().isBuildFinished()) {
+            resolve(this.getComponentKind())
+          } else {
+            reject("Component Kind could not be built.")
+          }
+        })
+      }
+
+
+      pack = Promise.all([type, componentKind]).then( ([bPackType, kind ]) => {
         return new Promise((resolve, reject) => {
           this.getPack().type(bPackType)
+          this.getPack().isA(kind)
           /*this.getPack().isDeconstructible(true)*/
           if(this.getPack().isBuildable()) {
             resolve(this.getPack().build())
@@ -149,10 +179,9 @@ export  class ProcessCreate extends ProcessCreateComponent {
       })
     }
 
-    Promise.all([type, pack]).then(([type, pack]) => {
+    pack.then(pack => {
       this.getP().deconstructionOf(pack)
       this.getP().build()
-      this.ngOnInit()
       this.router.navigate(["gui/process/ProcessOverview/"+this.getP().getGemId()])
     })
   }

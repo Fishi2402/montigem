@@ -54,4 +54,7 @@ page HTMLHelper(List<String> ls, GUIViewElement comp) {
     ae@V(gve = af@iterate(String s2 : ls) {
     });
   }
+  ag@guard(true) {
+    ah@V(gve = ai@guard(true){});
+  }
 }

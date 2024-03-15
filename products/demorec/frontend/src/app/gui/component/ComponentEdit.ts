@@ -39,6 +39,10 @@ export  class ComponentEdit extends ComponentEditComponent {
       }
     })
   }
+
+  public editComponentKind (event: any): void {
+    this.router.navigateByUrl("gui/kind/Edit/"+this.getComponent().getIsA().getGemId())
+  }
 }
 
 
