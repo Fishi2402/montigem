@@ -20,29 +20,29 @@ import java.util.Map;
 
 public class OCLParser extends OCL2JavaGenerator {
 
-  public OCLParser(IndentPrinter printer, Map<String, List<String>> enumMap, OCLInvariantTree oCLInvariantTree) {
-    this(printer, new VariableNaming(), enumMap, oCLInvariantTree);
+  public OCLParser(IndentPrinter printer, Map<String, List<String>> enumMap, OCLInvariantTree oCLInvariantTree, String cDDefinition) {
+    this(printer, new VariableNaming(), enumMap, oCLInvariantTree, cDDefinition);
   }
 
-  protected OCLParser(IndentPrinter printer, VariableNaming naming, Map<String, List<String>> enumMap, OCLInvariantTree oCLInvariantTree) {
-    this(printer, naming, new CustomTypeCheck3AsOCLDeriver(enumMap), new CustomTypeCheck3AsOCLSynthesizer(enumMap), enumMap, oCLInvariantTree);
+  protected OCLParser(IndentPrinter printer, VariableNaming naming, Map<String, List<String>> enumMap, OCLInvariantTree oCLInvariantTree, String cDDefinition) {
+    this(printer, naming, new CustomTypeCheck3AsOCLDeriver(enumMap), new CustomTypeCheck3AsOCLSynthesizer(enumMap), enumMap, oCLInvariantTree, cDDefinition);
   }
 
-  protected OCLParser(IndentPrinter printer, VariableNaming naming, IDerive deriver, ISynthesize syntheziser, Map<String, List<String>> enumMap, OCLInvariantTree oCLInvariantTree) {
+  protected OCLParser(IndentPrinter printer, VariableNaming naming, IDerive deriver, ISynthesize syntheziser, Map<String, List<String>> enumMap, OCLInvariantTree oCLInvariantTree, String cDDefinition) {
     super(printer, naming, deriver, syntheziser);
     this.traverser.setCommonExpressionsHandler(new CustomCommonExpressionsPrinter(printer, naming, deriver, syntheziser, enumMap));
-    CustomOCLExpressionsPrinter customOCLExpressionsPrinter = new CustomOCLExpressionsPrinter(printer, naming, deriver, syntheziser, oCLInvariantTree);
+    CustomOCLExpressionsPrinter customOCLExpressionsPrinter = new CustomOCLExpressionsPrinter(printer, naming, deriver, syntheziser, oCLInvariantTree, cDDefinition);
     this.traverser.setOCLExpressionsHandler(customOCLExpressionsPrinter);
     CustomOCLPrinter customOCLPrinter = new CustomOCLPrinter(printer, naming, deriver, syntheziser, oCLInvariantTree);
     this.traverser.setOCLHandler(customOCLPrinter);
     this.traverser.setSetExpressionsHandler(new CustomSetExpressionsPrinter(printer, naming, deriver, syntheziser));
   }
 
-  public static String generate(ASTOCLInvariant invariant, IndentPrinter printer, Map<String, List<String>> enumMap, OCLInvariantTree oCLInvariantTree) {
+  public static String generate(ASTOCLInvariant invariant, IndentPrinter printer, Map<String, List<String>> enumMap, OCLInvariantTree oCLInvariantTree, String cDDefinition) {
     Preconditions.checkNotNull(invariant);
     Preconditions.checkNotNull(printer);
 
-    invariant.accept(new OCLParser(printer, enumMap, oCLInvariantTree).getTraverser());
+    invariant.accept(new OCLParser(printer, enumMap, oCLInvariantTree, cDDefinition).getTraverser());
     return printer.getContent();
   }
 }
