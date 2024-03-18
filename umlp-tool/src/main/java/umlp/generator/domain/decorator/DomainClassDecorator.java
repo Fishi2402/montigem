@@ -280,7 +280,7 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
     List<String> objects = new ArrayList<>();
     FullSynthesizeFromCD4Code synthesize = new FullSynthesizeFromCD4Code();
 
-    for (ASTCDAttribute attribute : domainClass.getCDAttributeList()) {
+    for (ASTCDAttribute attribute : CDSymbolTables.getAttributesInHierarchy(domainClass)) {
       if (attribute.getModifier().isDerived() || attribute.getModifier().isAbstract()) {
         continue;
       }

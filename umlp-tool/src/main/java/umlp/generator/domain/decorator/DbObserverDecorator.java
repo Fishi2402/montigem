@@ -2,7 +2,7 @@
 package umlp.generator.domain.decorator;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
-import de.monticore.cd.methodtemplates.CD4C;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdassociation._ast.ASTCDAssociation;
@@ -16,13 +16,11 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.Joiners;
-import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +28,6 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.PRIVATE;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 public class DbObserverDecorator extends AbstractDecorator {
@@ -68,20 +65,21 @@ public class DbObserverDecorator extends AbstractDecorator {
         .filter(e -> !e.getKey().getModifier().isDerived())
         .forEach(e -> {
           ASTCDAttribute a = e.getKey();
+          ASTCDType definingType = e.getValue();
           if(GenService.isList(a)) {
             String innerType = GenService.getInnerType(a.getMCType());
             getCD4C().addMethod(observerClass, "umlp.dbobserver.listattrs.AddNotify",
-                UMLPSymbolTables.getDiagramFor(a).getCDDefinition().getName(), a.getName(), e.getValue().getName(), innerType);
+                UMLPSymbolTables.getDiagramFor(a).getCDDefinition().getName(), a.getName(), definingType.getName(), domainClass.getName(), innerType);
             getCD4C().addMethod(observerClass, "umlp.dbobserver.listattrs.RemoveNotify",
-                UMLPSymbolTables.getDiagramFor(a).getCDDefinition().getName(), a.getName(), e.getValue().getName(), innerType);
+                UMLPSymbolTables.getDiagramFor(a).getCDDefinition().getName(), a.getName(), definingType.getName(), domainClass.getName(), innerType);
           }
 
           ASTCDMethodSignature set = getCD4C().addMethod(observerClass, "umlp.dbobserver.Notify",
-              cdName, className, a.getName(), e.getValue().getName(), GenService.getType(a.getSymbol().getType()));
+              cdName, className, a.getName(), definingType.getName(), GenService.getType(a.getSymbol().getType()));
           glex.replaceTemplate("cd2java.Annotations", set, new StringHookPoint("@Override"));
 
-          ASTCDCompilationUnit typeCD = UMLPSymbolTables.getDiagramFor(e.getValue());
-          getCD4C().addImport(observerClass, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + e.getValue().getName());
+          ASTCDCompilationUnit typeCD = UMLPSymbolTables.getDiagramFor(definingType);
+          getCD4C().addImport(observerClass, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + definingType.getName());
         });
 
     Set<String> daoFactoryImports = new HashSet<>();
@@ -122,6 +120,11 @@ public class DbObserverDecorator extends AbstractDecorator {
 
     addImports(domainClass, observerClass);
     super.addImports(domainClass, observerClass);
+
+    for (ASTCDMethod method : observerClass.getCDMethodList()) {
+      glex.replaceTemplate("cd2java.Annotations", method, new StringHookPoint("@Override"));
+    }
+
     return observerClass;
   }
 
