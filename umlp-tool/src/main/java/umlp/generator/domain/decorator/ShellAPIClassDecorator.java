@@ -110,7 +110,7 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
     ArrayList<String> annotations = new ArrayList<>();
     for (ASTCDAttribute attribute : domainAttributes) {
       String type = attribute.getMCType().printType();
-      Optional<TypeSymbol> typeSymbol = attribute.getEnclosingScope().resolveType(type);
+      Optional<TypeSymbol> typeSymbol = attribute.getMCType().getDefiningSymbol().map(it -> (TypeSymbol) it);
       if(typeSymbol.isPresent()){
         String fullName = typeSymbol.get().getFullName();
         if(!fullName.isEmpty() && Character.isUpperCase(fullName.charAt(0))){
