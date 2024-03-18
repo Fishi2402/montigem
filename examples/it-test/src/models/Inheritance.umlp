@@ -62,4 +62,29 @@ umlp Inheritance{
   }
 
   class BListAttr extends AListAttr {}
+
+  // Multiple Inheritance
+  interface MI1 {
+    int simpleAttr1;
+    List<int> listAttr1;
+  }
+
+  interface MI2 {
+    int simpleAttr2;
+    List<int> listAttr2;
+  }
+
+  class MultipleInhClass implements MI1, MI2 {
+    int simpleAttr3;
+    List<int> listAttr3;
+  }
+
+  class AssocHelper;
+  association MI1 -> (gemAssoc1) AssocHelper [0..1];
+  association MI2 -> (gemAssoc2) AssocHelper [0..1];
+  association MultipleInhClass -> (gemAssoc3) AssocHelper [0..1];
+
+  association MI1 -> (listAssoc1) AssocHelper [*];
+  association MI2 -> (listAssoc2) AssocHelper [*];
+  association MultipleInhClass -> (listAssoc3) AssocHelper [*];
 }

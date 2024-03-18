@@ -10,8 +10,9 @@ import de.monticore.cdbasis._ast.ASTCDBasisNode;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
-import de.monticore.cdbasis._visitor.CDBasisVisitor2;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.prettyprint.IndentPrinter;
@@ -19,13 +20,9 @@ import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.symboltable.ISymbol;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
-import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.se_rwth.commons.logging.Log;
-import umlp.UMLPMill;
-import umlp._auxiliary.CD4AnalysisMillForUMLP;
 import umlp._prettyprint.UMLPFullPrettyPrinter;
 import umlp.generator.domain.decorator.GenService;
-import umlp.generator.util.UMLPSymbolTables;
 
 import java.nio.file.Paths;
 import java.util.LinkedHashMap;
@@ -152,22 +149,18 @@ public class SQLSchemaGenerator {
   }
 
   protected void generateTypeSchemas(ASTCDDefinition cd, IndentPrinter p) {
-    var v = new CDBasisVisitor2() {
-      @Override
-      public void visit(ASTCDClass node) {
-        if (!node.getModifier().isDerived() && !node.getModifier().isAbstract()) {
-          generateClassSchema(cd, node, p);
-        }
-      }
-    };
-    var t = UMLPMill.traverser();
-    t.add4CDBasis(v);
-    cd.accept(t);
+    for (ASTCDClass node : cd.getCDClassesList()) {
+      generateClassSchema(cd, node, p);
+    }
+    // List attributes are saved in a table named after the defining type
+    // thus we also need to take interfaces into account here
+    for (ASTCDInterface node : cd.getCDInterfacesList()) {
+      generateListAttributeTables(cd, node, p);
+    }
   }
 
   public void generateClassSchema(ASTCDDefinition cd, ASTCDClass node, IndentPrinter p) {
     p.print("CREATE TABLE ");
-    // TODO: is this mapping always unique and possible?
     String tableName = convertClassName(node.getName(), AttributeType.QUOTED);
     p.print(tableName);
     p.println("(");
@@ -196,7 +189,10 @@ public class SQLSchemaGenerator {
     p.unindent();
     p.println(");");
 
-    // TODO: associations in hierarchie?
+    generateListAttributeTables(cd, node, p);
+  }
+
+  private void generateListAttributeTables(ASTCDDefinition cd, ASTCDType node, IndentPrinter p) {
     // Only create List Attribute Tables once for inheritance chain
     List<ASTCDAttribute> relevantListAttributes = node.getCDAttributeList()
         .stream()
@@ -214,9 +210,9 @@ public class SQLSchemaGenerator {
     }
   }
 
-  protected void generateListFieldTable(ASTCDDefinition cd, ASTCDClass classNode, ASTCDAttribute attribute, IndentPrinter p) {
+  protected void generateListFieldTable(ASTCDDefinition cd, ASTCDType typeNode, ASTCDAttribute attribute, IndentPrinter p) {
     p.print("CREATE TABLE ");
-    String tableName = convertClassName(classNode.getName(), AttributeType.PLAIN) + "$" + convertAttributeName(attribute.getName(), AttributeType.PLAIN);
+    String tableName = convertClassName(typeNode.getName(), AttributeType.PLAIN) + "$" + convertAttributeName(attribute.getName(), AttributeType.PLAIN);
     p.print(tableName);
     p.println("(");
     p.indent();
@@ -233,7 +229,7 @@ public class SQLSchemaGenerator {
     String type = GenService.isInnerCDEnum(attribute.getSymbol().getType()) ?
         "java.lang.Enum" : ((SymTypeOfGenerics) attribute.getSymbol().getType()).getArgument(0).printFullName();
     if (!fqnClassNameToType.containsKey(type)) {
-      Log.error("0xdf10c Can not convert type to SQL: " + type + " used in " + cd.getName() + "." + classNode.getName() + "." + attribute.getName());
+      Log.error("0xdf10c Can not convert type to SQL: " + type + " used in " + cd.getName() + "." + typeNode.getName() + "." + attribute.getName());
     }
 
     p.print(fqnClassNameToType.get(type));

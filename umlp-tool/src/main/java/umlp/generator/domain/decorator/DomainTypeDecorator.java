@@ -206,7 +206,7 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
   }
 
   public void addDeepEqualsMethod(ASTCDType domainType, ASTCDType targetType) {
-    List<ASTCDAssocSide> assocs = CDSymbolTables.getAssociations(domainType);
+    List<ASTCDAssocSide> assocs = CDSymbolTables.getAssociationsInHierarchy(domainType);
     List<ASTCDAssocSide> listAssocs = assocs.stream().filter(a -> a.getSymbol().getCardinality().isAtLeastOne() || a.getSymbol().getCardinality().isMult()).collect(Collectors.toList());
     List<ASTCDAssocSide> gemAssocs = assocs.stream().filter(a -> !listAssocs.contains(a)).collect(Collectors.toList());
     ASTCDMethodSignature m = getCD4C().addMethod(targetType, getDeepEqualsTemplate(), domainType.getName(), gemAssocs, listAssocs);
