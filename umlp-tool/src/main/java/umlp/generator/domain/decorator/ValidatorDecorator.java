@@ -119,7 +119,7 @@ public class ValidatorDecorator extends AbstractDecorator {
     List<ASTCDMethodSignature> oclRules = new ArrayList<>();
     for(ASTOCLInvariant invariant : collectInvariantsForType(domainClass.getName())) {
       OCLInvariantTree oCLInvariantTree = this.oclInvariantTrees.stream().filter(a -> a.getInvariant().equals(invariant)).findFirst().get();
-      String body = OCLParser.generate(invariant, new IndentPrinter(), enumMap, oCLInvariantTree);
+      String body = OCLParser.generate(invariant, new IndentPrinter(), enumMap, oCLInvariantTree, cDDefinition);
       // Multiple context definitions were replaced by multiple invariants in the OCLASTPreProcessor
       ASTOCLParamDeclaration dec = invariant.getOCLContextDefinitionList().get(0).getOCLParamDeclaration();
 
