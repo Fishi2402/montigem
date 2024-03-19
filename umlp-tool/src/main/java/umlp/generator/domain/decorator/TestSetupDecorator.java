@@ -21,6 +21,7 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 
 public class TestSetupDecorator extends AbstractDecorator {
+
   public static final String PACK_TEST_INFRASTRUCTURE = "test_infrastructure";
   public static final String SUFFIX = "TestSetup";
   public static final String MOCK_TEST_SETUP = "MockTestSetup";
@@ -85,23 +86,19 @@ public class TestSetupDecorator extends AbstractDecorator {
                  false,
                  "protected List<" + cdName + TestContextDecorator.SUFFIX + "> clients",
                  "new ArrayList<>()");
-    ASTCDAttribute numberOfClientsArg = cd4C.addAttribute(res,
-                                                          true,
-                                                          false,
-                                                          "protected int numberOfClients;");
-    ASTCDAttribute clientNamesArg = addAttribute(res,
+    ASTCDAttribute clientSetupAttr = cd4C.addAttribute(res,
                                                  true,
                                                  false,
-                                                 "protected List<String> clientNames",
-                                                 "new ArrayList<>()");
+                                                 "protected ClientSetup clientSetup;");
 
-    this.lastGenSummary = Optional.of(new GenSummary(numberOfClientsArg, clientNamesArg));
+    this.lastGenSummary = Optional.of(new GenSummary(clientSetupAttr));
 
     // constructor
     addConstructors(res, false);
 
     // common methods
     cd4C.addMethod(res, COMMON_CUSTOM_TEMPLATE_PATH + "GetClientName", cdName);
+    cd4C.addMethod(res, COMMON_CUSTOM_TEMPLATE_PATH + "GetNumberOfClients");
     cd4C.addMethod(res, COMMON_CUSTOM_TEMPLATE_PATH + "Init", cdName);
     cd4C.addMethod(res, COMMON_CUSTOM_TEMPLATE_PATH + "HasDatabase");
 
@@ -119,23 +116,23 @@ public class TestSetupDecorator extends AbstractDecorator {
       return;
     }
     GenSummary genSummary = lastGenSummary.get();
+    @SuppressWarnings("OptionalGetWithoutIsPresent") ASTCDAttribute fakeNumberOfClientsAttr = cd4C.createAttribute(
+        target,
+        "int numberOfClients").get();
 
     String basicTemplate = "umlp.common.BasicConstructor";
-    String namesTemplate = COMMON_CUSTOM_TEMPLATE_PATH + "NamesConstructor";
+    String numOfClientsTemplate = COMMON_CUSTOM_TEMPLATE_PATH + "NumberOfClientsConstructor";
     String superTemplate = "umlp.common.SuperConstructor";
 
     cd4C.addConstructor(target,
                         delegateToSuper ? superTemplate : basicTemplate,
                         typeName,
-                        List.of(genSummary.numClientsAttr()));
+                        List.of(genSummary.clientSetupAttr()));
+    //support legacy calls
     cd4C.addConstructor(target,
-                        delegateToSuper ? superTemplate : basicTemplate,
+                        delegateToSuper ? superTemplate : numOfClientsTemplate,
                         typeName,
-                        List.of(genSummary.numClientsAttr(), genSummary.clientNamesAttr()));
-    cd4C.addConstructor(target,
-                        delegateToSuper ? superTemplate : namesTemplate,
-                        typeName,
-                        delegateToSuper ? List.of(genSummary.clientNamesAttr()) : genSummary.clientNamesAttr());
+                        delegateToSuper ? List.of(fakeNumberOfClientsAttr) : fakeNumberOfClientsAttr);
   }
 
   protected ASTCDClass createMockTestSetup(ASTCDCompilationUnit origCD) {
@@ -189,11 +186,13 @@ public class TestSetupDecorator extends AbstractDecorator {
     Joiner dot = Joiners.DOT;
     String backendRTECommandPath = PathUtil.getBackendRTECommandPath();
     String backendRTECommonPath = PathUtil.getBackendRTECommonPath();
+    String backendRTETestInfrastructurePath = PathUtil.getBackendRTETestInfrastructurePath();
     String packageName = getPackageName(origCD, DEFAULT_PACKAGE);
 
     cd4C.addImport(type, dot.join(backendRTECommandPath, "CommandManager"));
     cd4C.addImport(type, dot.join(backendRTECommandPath, "TestClientCommandManager"));
     cd4C.addImport(type, dot.join(backendRTECommandPath, "CommandDirectCommunication"));
+    cd4C.addImport(type, dot.join(backendRTETestInfrastructurePath, "ClientSetup"));
 
     cd4C.addImport(type, dot.join(packageName, name + TestContextDecorator.SUFFIX));
     cd4C.addImport(type, dot.join(packageName, name + ManagerDecorator.SUFFIX));
@@ -220,20 +219,14 @@ public class TestSetupDecorator extends AbstractDecorator {
 
   protected static final class GenSummary {
 
-    private final ASTCDAttribute numClientsAttr;
-    private final ASTCDAttribute clientNamesAttr;
+    private final ASTCDAttribute clientSetupAttr;
 
-    public GenSummary(ASTCDAttribute numClientsAttr, ASTCDAttribute clientNamesAttr) {
-      this.numClientsAttr = numClientsAttr;
-      this.clientNamesAttr = clientNamesAttr;
+    public GenSummary(ASTCDAttribute clientSetupAttr) {
+      this.clientSetupAttr = clientSetupAttr;
     }
 
-    public ASTCDAttribute numClientsAttr() {
-      return numClientsAttr;
-    }
-
-    public ASTCDAttribute clientNamesAttr() {
-      return clientNamesAttr;
+    public ASTCDAttribute clientSetupAttr() {
+      return clientSetupAttr;
     }
   }
 }
