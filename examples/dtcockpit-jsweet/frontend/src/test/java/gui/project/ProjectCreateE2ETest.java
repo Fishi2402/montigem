@@ -3,6 +3,7 @@ package gui.project;
 import dtcockpit.Project;
 import dtcockpit.test_infrastructure.DtcockpitMockTestSetup;
 import org.junit.jupiter.api.Test;
+import umlp.backendrte.test_infrastructure.ClientSetup;
 
 import java.util.Optional;
 
@@ -12,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ProjectCreateE2ETest extends DtcockpitMockTestSetup {
 
   public ProjectCreateE2ETest() {
-    super(1);
+    super(ClientSetup.of(1));
   }
 
   @Test

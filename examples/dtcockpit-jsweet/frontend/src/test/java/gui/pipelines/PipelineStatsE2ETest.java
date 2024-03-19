@@ -6,6 +6,7 @@ import dtcockpit.test_infrastructure.DtcockpitMockTestSetup;
 import mc.fenix.charts.GemBarChartData;
 import mc.fenix.charts.GemBarChartEntry;
 import org.junit.jupiter.api.Test;
+import umlp.backendrte.test_infrastructure.ClientSetup;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class PipelineStatsE2ETest extends DtcockpitMockTestSetup {
 
   public PipelineStatsE2ETest() {
-    super(1);
+    super(ClientSetup.of(1));
   }
 
   @Test

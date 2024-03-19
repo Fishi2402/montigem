@@ -6,6 +6,7 @@ import dtcockpit.User;
 import dtcockpit.UserBuilder;
 import dtcockpit.test_infrastructure.DtcockpitMockTestSetup;
 import org.junit.jupiter.api.Test;
+import umlp.backendrte.test_infrastructure.ClientSetup;
 
 import java.time.LocalDateTime;
 
@@ -17,7 +18,7 @@ class ResetPasswordE2ETest extends DtcockpitMockTestSetup {
   ResetPassword pageUnderTest;
 
   public ResetPasswordE2ETest() {
-    super(1);
+    super(ClientSetup.of(1));
   }
 
   @Override
