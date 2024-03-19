@@ -116,6 +116,7 @@ public class TestSetupDecorator extends AbstractDecorator {
       return;
     }
     GenSummary genSummary = lastGenSummary.get();
+    //this should never fail
     @SuppressWarnings("OptionalGetWithoutIsPresent") ASTCDAttribute fakeNumberOfClientsAttr = cd4C.createAttribute(
         target,
         "int numberOfClients").get();
