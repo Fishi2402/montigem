@@ -233,17 +233,6 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
         getCD4C().addImport(decoratedClass, PathUtil.getBackendRTECommonPath("GemList"));
       }
 
-      // TODO:
-      //  public  getNextHoursForecast5Forecasts (): GemList<Forecast>
-      //  calls this.getApp().getCurrentCity().getNextHours();
-      //    CityTOP has getNextHours (): Array<Forecast>
-      //  calls GemList#toArray
-      //  On dev: getNextHoursForecast5Forecasts (): GemList<Forecast>
-      //  calls this.getApp().getCurrentCity().getNextHours();
-      //    CityTOP has NO getNextHours
-      //    City getNextHours returns weird stuff
-      // Cardinality changed!!
-
       addGetComponentMethod(decoratedClass, getterName, paramType,
           getterValue, iterItemArgs, nullCheck);
       if (paramSym.get().isIsReference()) {
