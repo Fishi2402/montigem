@@ -2,6 +2,8 @@
 package gradle;
 
 import gradle.specific.FrontendSetup;
+import gradle.specific.UMLPFrontendCIImageTask;
+import gradle.specific.UMLPFrontendLocalImageTask;
 import gradle.specific.UMLPFrontendTask;
 import gradle.specific.UMLPGuiGenTask;
 import gradle.specific.UMLPJava2TypeScriptTask;
@@ -37,6 +39,8 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
   static final String UMLP_FRONTEND_DOMAIN_J2TS_TASK_NAME = "translateJava2TSDomain";
   static final String UMLP_FRONTEND_GUI_TASK_NAME = "genGUI";
   static final String UMLP_FRONTEND_GUI_J2TS_TASK_NAME = "translateJava2TSGUI";
+  static final String UMLP_FRONTEND_BUILD_IMAGE_LOCAL = "buildImageLocal";
+  static final String UMLP_FRONTEND_DEPLOY_IMAGE_CI = "deployImageCI";
   private static final String CREATE_DOMAIN_SYMBOLS_TASK_NAME = "createDomainSymbols";
   static final String UMLP_GROUP_NAME = "umlp";
   private static final String GUI_TYPES_NAME = "guiTypes";
@@ -85,6 +89,18 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
 
     // Source Sets
     addSourceSets(project, j2ts);
+
+    // Docker images
+    createBuildImageLocalTask(project);
+    createDeployImageCITask(project);
+  }
+
+  protected TaskProvider<?> createBuildImageLocalTask(Project project) {
+    return project.getTasks().register(UMLP_FRONTEND_BUILD_IMAGE_LOCAL, UMLPFrontendLocalImageTask.class);
+  }
+
+  protected TaskProvider<?> createDeployImageCITask(Project project) {
+    return project.getTasks().register(UMLP_FRONTEND_DEPLOY_IMAGE_CI, UMLPFrontendCIImageTask.class);
   }
 
   protected TaskProvider<UMLPFrontendTask> createFrontendDomainTask(final Project project) {

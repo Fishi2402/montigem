@@ -19,7 +19,7 @@ stages:
   - deploy
   - testDeployed
 
-build:
+build_no_containers:
   stage: build
   script:
     - "gradle --version"
@@ -38,56 +38,26 @@ build:
       - products/demorec/frontend/.gradle/nodejs
   artifacts:
     paths:
-      - examples/weather/frontend/build/frontendGen/dist/**
-      - examples/weather/frontend/build/frontendGen/Dockerfile
-      - examples/weather/frontend/build/frontendGen/Caddyfile
-      - examples/weather/frontend/build/frontendGen/.dockerignore
-      - examples/sehub/frontend/build/frontendGen/dist/**
-      - examples/sehub/frontend/build/frontendGen/Dockerfile
-      - examples/sehub/frontend/build/frontendGen/Caddyfile
-      - examples/sehub/frontend/build/frontendGen/.dockerignore
-      - examples/dtcockpit/frontend/build/frontendGen/dist/**
-      - examples/dtcockpit/frontend/build/frontendGen/Dockerfile
-      - examples/dtcockpit/frontend/build/frontendGen/Caddyfile
-      - examples/dtcockpit/frontend/build/frontendGen/.dockerignore
-      - products/demorec/frontend/build/frontendGen/dist/**
-      - products/demorec/frontend/build/frontendGen/Dockerfile
-      - products/demorec/frontend/build/frontendGen/Caddyfile
-      - products/demorec/frontend/build/frontendGen/.dockerignore
+      - examples/weather/frontend/build/frontendGen/**
+      - examples/sehub/frontend/build/frontendGen/**
+      - examples/dtcockpit/frontend/build/frontendGen/**
+      - products/demorec/frontend/build/frontendGen/**
       - umlp-tool/target/distributions/**
-
     reports:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
+  except:
+    refs:
+      - dev
 
-slowtest:
-  stage: check
-  tags:
-    - node2-docker-postgres
-  services:
-    - postgres:12.2-alpine
-  variables:
-    POSTGRES_DB:  $POSTGRES_DB
-    POSTGRES_USER:  $user
-    POSTGRES_PASSWORD:  $pass
-    POSTGRES_HOST_AUTH_METHOD: trust
-  dependencies:
-    - build
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "schedule"
+build_with_containers:
+  stage: build
   script:
     - "gradle --version"
-    - "gradle slowtest --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
-  artifacts:
-    reports:
-      # Lets gitlab render infos about failed tests
-      junit: "**/slowtest/**/TEST-*.xml"
-
-deployBackendDocker:
-  stage: deploy
-  dependencies:
-    - build
-  script:
+    - "gradle build --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
+    - "cd umlp-tool"
+    - "gradle buildPlugin --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
+    - "cd .."
     # Weather Backend
     - "gradle :examples:weather:backend:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
       -Djib.to.image=$CI_REGISTRY_IMAGE/weather_backend:latest \
@@ -114,76 +84,57 @@ deployBackendDocker:
        -Djib.to.auth.username=$CI_REGISTRY_USER  \
        -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
 
+    # Frontends
+    - "gradle :examples:weather:frontend:deployImageCI :examples:sehub:frontend:deployImageCI :examples:dtcockpit:frontend:deployImageCI :products:demorec:frontend:deployImageCI -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
+  cache:
+    paths:
+      - examples/weather/frontend/build/frontendGen/node_modules
+      - examples/weather/frontend/.gradle/nodejs
+      - examples/sehub/frontend/build/frontendGen/node_modules
+      - examples/sehub/frontend/.gradle/nodejs
+      - examples/dtcockpit/frontend/build/frontendGen/node_modules
+      - examples/dtcockpit/frontend/.gradle/nodejs
+      - products/demorec/frontend/build/frontendGen/node_modules
+      - products/demorec/frontend/.gradle/nodejs
+  artifacts:
+    paths:
+      - examples/weather/frontend/build/frontendGen/**
+      - examples/sehub/frontend/build/frontendGen/**
+      - examples/dtcockpit/frontend/build/frontendGen/**
+      - products/demorec/frontend/build/frontendGen/**
+      - umlp-tool/target/distributions/**
+    reports:
+      # Lets gitlab render infos about failed tests
+      junit: "**/test/**/TEST-*.xml"
   only:
-    - dev
+    refs:
+      - dev
+
+slowtest:
+  stage: check
+  tags:
+    - node2-docker-postgres
+  services:
+    - postgres:12.2-alpine
+  variables:
+    POSTGRES_DB:  $POSTGRES_DB
+    POSTGRES_USER:  $user
+    POSTGRES_PASSWORD:  $pass
+    POSTGRES_HOST_AUTH_METHOD: trust
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+  script:
+    - "gradle --version"
+    - "gradle slowtest --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
+  artifacts:
+    reports:
+      # Lets gitlab render infos about failed tests
+      junit: "**/slowtest/**/TEST-*.xml"
 
 deployRTE:
   stage: deploy
-  dependencies:
-    - build
   script:
     - "gradle :umlp-tool:publish :umlp-rte:publish :umlp-rte:umlp-jsweet:publish :umlp-rte:client:publish -P mavenPassword=$pass -P mavenUser=$user"
-  only:
-    - dev
-
-### TODO: Do this via Gradle. e.g. similar to backend with JIB
-deployWeatherFrontendDocker:
-  stage: deploy
-  tags:
-    - shell
-    - docker
-  dependencies:
-    - build
-  script:
-    - "cd examples/weather/frontend/build/frontendGen"
-    - "docker build . -t $CI_REGISTRY_IMAGE/weather_frontend:latest"
-    - "docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY"
-    - "docker push $CI_REGISTRY_IMAGE/weather_frontend:latest"
-  only:
-    - dev
-
-deploySEHubFrontendDocker:
-  stage: deploy
-  tags:
-    - shell
-    - docker
-  dependencies:
-    - build
-  script:
-    - "cd examples/sehub/frontend/build/frontendGen"
-    - "docker build . -t $CI_REGISTRY_IMAGE/sehub_frontend:latest"
-    - "docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY"
-    - "docker push $CI_REGISTRY_IMAGE/sehub_frontend:latest"
-  only:
-    - dev
-
-deployDTCockpitFrontendDocker:
-  stage: deploy
-  tags:
-    - shell
-    - docker
-  dependencies:
-    - build
-  script:
-    - "cd examples/dtcockpit/frontend/build/frontendGen"
-    - "docker build . -t $CI_REGISTRY_IMAGE/dtcockpit_frontend:latest"
-    - "docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY"
-    - "docker push $CI_REGISTRY_IMAGE/dtcockpit_frontend:latest"
-  only:
-    - dev
-
-deployDemoRecFrontendDocker:
-  stage: deploy
-  tags:
-    - shell
-    - docker
-  dependencies:
-    - build
-  script:
-    - "cd products/demorec/frontend/build/frontendGen"
-    - "docker build . -t $CI_REGISTRY_IMAGE/demorec_frontend:latest"
-    - "docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY"
-    - "docker push $CI_REGISTRY_IMAGE/demorec_frontend:latest"
   only:
     - dev
 

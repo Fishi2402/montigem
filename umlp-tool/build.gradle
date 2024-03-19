@@ -44,6 +44,8 @@ dependencies {
   implementation group: 'org.jsweet', name: 'jsweet-core', version: "6.3.0"
   implementation group: 'de.rwth.se.umlp.jsweet', name: 'jsweet-transpiler', version: '3.2.0-UMLP-SNAPSHOT'
 
+  implementation('com.google.cloud.tools:jib-core:0.21.0')
+
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit_version
   testImplementation group: 'com.github.javaparser', name: 'javaparser-symbol-solver-core', version: javaparser_version
@@ -118,6 +120,8 @@ task generateUMLP(type: MCTask) {
   outputs.upToDateWhen { uptoDate }
 }
 
+/*
+ ALu: Mit tagging-lite vmtl. erst mal nicht mehr notwendig
 task generateUMLPTagDef(type: MCTask) {
   grammar = file "$buildDir/generated-sources/monticore/sourcecode/UMLPTagDefinition.mc4"
   outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
@@ -137,6 +141,7 @@ task generateUMLPTagSchema(type: MCTask) {
   def uptoDate = incCheck("UMLP.mc4")
   outputs.upToDateWhen { uptoDate }
 }
+ */
 
 
 compileJava {

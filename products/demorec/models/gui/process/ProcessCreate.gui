@@ -13,8 +13,9 @@ import gui.staticcontainer.NavContainer;
 import DemoRec.BatteryPack;
 import DemoRec.Process;
 import DemoRec.BatteryPackType;
+import DemoRec.ComponentKind;
 
-page ProcessCreate(Process p, BatteryPack pack, BatteryPackType type) {
+page ProcessCreate(Process p, BatteryPack pack, ComponentKind componentKind,BatteryPackType type) {
   @NavContainer(
     content=[
   @GemCard(
@@ -43,16 +44,25 @@ page ProcessCreate(Process p, BatteryPack pack, BatteryPackType type) {
           packName@GemTextInput(labelText = "Component Name", inputType = "string", entry = pack.name, placeholder="Override"),
           @GemTextInput(labelText = "Health (%)", inputType = "number", entry = pack.health),
           @GemTextInput(labelText = "Charge (%)", inputType = "number", entry = pack.stateOfCharge),
-          @GemTextInput(labelText = "OE-Number", inputType = "string", entry = pack.oENumber),
           @GemTextInput(labelText = "Component Condition", inputType = "string", entry = pack.condition),
-          @GemTextInput(labelText = "Description for human identification", inputType = "string", entry = pack.humanDescription),
           @GemTextInput(labelText = "X-Position", inputType = "number", entry = pack.xPos),
           @GemTextInput(labelText = "Y-Position", inputType = "number", entry = pack.yPos),
           @GemTextInput(labelText = "Z-Position", inputType = "number", entry = pack.zPos),
-          @GemTextInput(labelText = "Width (mm)", inputType = "number", entry = pack.width),
-          @GemTextInput(labelText = "Length (mm)", inputType = "number", entry = pack.length),
-          @GemTextInput(labelText = "Height (mm)", inputType = "number", entry = pack.height),
-          @GemTextInput(labelText = "Weight (kg)", inputType = "number", entry = pack.weight),
+          selectComponentKind@GemTextInput(
+            labelText = "Component Kind",
+            inputType = "dropdown",
+            options = null,
+            entry = null
+          ),
+          createKind@guard(true) {
+            @GemTextInput(labelText = "Component Kind Name", inputType = "string", entry = componentKind.name);
+            @GemTextInput(labelText = "OE-Number", inputType = "string", entry = componentKind.oENumber);
+            @GemTextInput(labelText = "Description for human identification", inputType = "string", entry = componentKind.humanDescription);
+            @GemTextInput(labelText = "Width (mm)", inputType = "number", entry = componentKind.width);
+            @GemTextInput(labelText = "Length (mm)", inputType = "number", entry = componentKind.length);
+            @GemTextInput(labelText = "Height (mm)", inputType = "number", entry = componentKind.height);
+            @GemTextInput(labelText = "Weight (kg)", inputType = "number", entry = componentKind.weight);
+          },
           @PhotoDisplay(component=pack),
           photoDragAndDrop@PhotoDragNDrop(attachedComponent = pack),
           selectBPackType@GemTextInput(

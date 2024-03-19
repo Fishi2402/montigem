@@ -17,8 +17,6 @@ page AllPacksOverview(List<BatteryPack> allPacks) {
         components = [
           @iterate(BatteryPack pack : allPacks) {
             @BatteryPackOverview(pack=pack);
-            // TODO: delete
-            @BatteryPackOverview(pack=pack);
           }
       ])
     ]

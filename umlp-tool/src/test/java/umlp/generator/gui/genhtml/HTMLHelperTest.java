@@ -89,6 +89,10 @@ public class HTMLHelperTest extends DomainGUITest {
     ASTGUIComponent ae = stat.getCompById(components, "ae");
     ASTGUIIterate af = stat.getIterById(iterates, "af");
 
+    ASTGUIGuard ag = stat.getGuardById(guards, "ag");
+    ASTGUIComponent ah = stat.getCompById(components, "ah");
+    ASTGUIGuard ai = stat.getGuardById(guards, "ai");
+
     Set<ASTGUIBlockContent> result;
 
     List<Executable> assertions = new ArrayList<>();
@@ -118,7 +122,7 @@ public class HTMLHelperTest extends DomainGUITest {
     }
 
     assertions.add(() -> assertEquals(2, comp1.size()));
-    assertions.add(() -> assertEquals(1, guard1.size()));
+    assertions.add(() -> assertEquals(2, guard1.size()));
     assertions.add(() -> assertEquals(2, iter1.size()));
     assertions.add(() -> assertEquals(0, exp1.size()));
 
@@ -126,6 +130,7 @@ public class HTMLHelperTest extends DomainGUITest {
     assertions.add(() -> assertTrue(comp1.contains(x)));
 
     assertions.add(() -> assertTrue(guard1.contains(q)));
+    assertions.add(() -> assertTrue(guard1.contains(ai)));
 
     assertions.add(() -> assertTrue(iter1.contains(ab)));
     assertions.add(() -> assertTrue(iter1.contains(t)));

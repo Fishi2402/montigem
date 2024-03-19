@@ -4,7 +4,6 @@ package flensburg;//+ HWC-PT
 import hardy.flensburg.Address;
 import hardy.flensburg.Car;
 import hardy.flensburg.CityInfo;
-import hardy.flensburg.CityInfoImpl;
 import hardy.flensburg.FlensburgManager;
 import hardy.flensburg.FlensburgMock;
 import hardy.flensburg.FlensburgTestContext;
@@ -50,8 +49,8 @@ public class CityInfoTest {
         .mainResidence(a2)
         .age(40);
 
-    p1.ownsAdd(c1).ownsAdd(c2).build();
-    p2.ownsAdd(c3).ownsAdd(c4).ownsAdd(c5).ownsAdd(c6).build();
+    p1.ownsAdd(c1).ownsAdd(c2).build().get();
+    p2.ownsAdd(c3).ownsAdd(c4).ownsAdd(c5).ownsAdd(c6).build().get();
 
     CityInfo cityInfo = FlensburgManager.getCityInfo();
 
