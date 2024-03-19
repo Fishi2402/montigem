@@ -102,6 +102,8 @@ public class TestSetupDecorator extends AbstractDecorator {
 
     // common methods
     cd4C.addMethod(res, COMMON_CUSTOM_TEMPLATE_PATH + "GetClientName", cdName);
+    cd4C.addMethod(res, COMMON_CUSTOM_TEMPLATE_PATH + "Init", cdName);
+    cd4C.addMethod(res, COMMON_CUSTOM_TEMPLATE_PATH + "HasDatabase");
 
     addImports(origCD, res);
 
@@ -187,13 +189,11 @@ public class TestSetupDecorator extends AbstractDecorator {
     Joiner dot = Joiners.DOT;
     String backendRTECommandPath = PathUtil.getBackendRTECommandPath();
     String backendRTECommonPath = PathUtil.getBackendRTECommonPath();
-    String backendRTETestInfrastructurePath = PathUtil.getBackendRTETestInfrastructurePath();
     String packageName = getPackageName(origCD, DEFAULT_PACKAGE);
 
     cd4C.addImport(type, dot.join(backendRTECommandPath, "CommandManager"));
     cd4C.addImport(type, dot.join(backendRTECommandPath, "TestClientCommandManager"));
     cd4C.addImport(type, dot.join(backendRTECommandPath, "CommandDirectCommunication"));
-    cd4C.addImport(type, dot.join(backendRTETestInfrastructurePath, "ClientSetup"));
 
     cd4C.addImport(type, dot.join(packageName, name + TestContextDecorator.SUFFIX));
     cd4C.addImport(type, dot.join(packageName, name + ManagerDecorator.SUFFIX));

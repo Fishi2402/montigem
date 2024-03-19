@@ -7,6 +7,7 @@ import java.util.Optional;
 /**
  * Describes the setup of how many clients a TestSetup shall have and if they should have names.
  */
+//TODO refactor test setup and use this class
 public class ClientSetup {
 
   protected final int numberOfClients;
