@@ -4,7 +4,7 @@ import { WeatherState } from "@src/weather/WeatherState";
 
 // TODO: JSweet?
 export class DailyForecast extends DailyForecastTOP {
-  getMinimumTemperature (): number {
+  public override getMinimumTemperature (): number {
     let min = NaN;
     for (let forecast of this.getDailyForecasts()) {
       let cur = forecast.getTemperature();
@@ -17,7 +17,7 @@ export class DailyForecast extends DailyForecastTOP {
     return min;
   }
 
-  getMaximumTemperature (): number {
+  public override getMaximumTemperature (): number {
     let max = NaN;
     for (let forecast of this.getDailyForecasts()) {
       let cur = forecast.getTemperature();
@@ -30,7 +30,7 @@ export class DailyForecast extends DailyForecastTOP {
     return max;
   }
 
-  getWeatherState (): WeatherState {
+  public override getWeatherState (): WeatherState {
     let counts = [0, 0, 0, 0];
 
     for (let forecast of this.getDailyForecasts()) {

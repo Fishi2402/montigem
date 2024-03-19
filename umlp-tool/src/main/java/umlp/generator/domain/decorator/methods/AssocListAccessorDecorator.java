@@ -16,6 +16,7 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -39,19 +40,17 @@ public class AssocListAccessorDecorator extends MandatoryAccessorDecorator {
     String targetName = (new CdUtilsPrinter()).printType(((ASTMCGenericType) ast.getMCType()).getMCTypeArgument(0).getMCTypeOpt().get());
     String paramName = getParamName(ast);
 
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Contains", paramName, targetName).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.ContainsAll", paramName, targetName).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Iterator", paramName, targetName).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Size", paramName).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.GetList", paramName, targetName).get());
-    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.SubList", paramName, targetName).get());
+    List<ASTCDMethod> methods = getMethodTemplates().stream()
+        .map(template -> (ASTCDMethod) cd4c.createMethod(this.ast, template, paramName, targetName).get())
+        .collect(Collectors.toList());
+    methodList.addAll(methods);
 
     // generate getX-Method
-    methodList.add(createGetMethod(ast));
+    methodList.addAll(createGetMethod(ast));
 
     // generate getXGem-Method
     ASTCDMethod getGemList = createGetGemList(ast);
-    if (getGemList.getModifier().isAbstract()){
+    if (getGemList.getModifier().isAbstract()) {
       //Add method to override
       ASTCDMethod getOverride = createGetGemListOverride(ast);
       methodList.add(getOverride);
@@ -64,21 +63,17 @@ public class AssocListAccessorDecorator extends MandatoryAccessorDecorator {
     return methodList;
   }
 
-  protected ASTCDMethod createGetMethod(ASTCDAttribute ast) {
+  protected List<ASTCDMethod> createGetMethod(ASTCDAttribute ast) {
     String paramName = getParamName(ast);
-    String name = String.format(GET, paramName);
+    String name = String.format(getAssocGetListNameTemplate(), String.format(GET, paramName));
     String type = (new CdUtilsPrinter()).printType(((ASTMCGenericType) ast.getMCType()).getMCTypeArgument(0).getMCTypeOpt().get());
     ASTCDParameter param = getCDParameterFacade().createParameter("int", "index");
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), type, name, param);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(getAssocGetTemplate(), paramName));
-    return method;
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(getAssocGetListTemplate(), paramName));
+    return List.of(method);
   }
 
-  protected String getAssocGetTemplate() {
-    return "umlp.methods.AssocGetList";
-  }
-
-  protected ASTCDMethod createGetGemList(ASTCDAttribute ast) {
+  private ASTCDMethod createGetGemList(ASTCDAttribute ast) {
     ASTCDMethod method = createGetter(ast);
     method.setName("_internal_" + method.getName() + "GemList");
     return method;
@@ -91,8 +86,27 @@ public class AssocListAccessorDecorator extends MandatoryAccessorDecorator {
     return method;
   }
 
-  private String getParamName(ASTCDAttribute ast) {
+  protected String getParamName(ASTCDAttribute ast) {
     return StringTransformations.capitalize(service.getNativeAttributeName(ast.getName()));
+  }
+
+  protected String getAssocGetListTemplate() {
+    return "umlp.methods.AssocGetList";
+  }
+
+  protected String getAssocGetListNameTemplate() {
+    return "%s";
+  }
+
+  protected List<String> getMethodTemplates() {
+    return List.of(
+        "umlp.methods.assocs.Contains",
+        "umlp.methods.assocs.ContainsAll",
+        "umlp.methods.assocs.Iterator",
+        "umlp.methods.assocs.Size",
+        "umlp.methods.assocs.GetList",
+        "umlp.methods.assocs.SubList"
+    );
   }
 }
 

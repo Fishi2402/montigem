@@ -53,7 +53,7 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
               .stream()
               .filter(a -> a.getModifier().isDerived())
               .forEach(a -> {
-                astcdPackage.addCDElement(withOrigin(createClass(origCD, a.getName(), a.getSymbol().getType(), c, GenService.isCDEnum(a.getSymbol().getType()))));
+                astcdPackage.addCDElement(withOrigin(createClass(origCD, a.getName(), a.getSymbol().getType(), c, GenService.isCDEnum(a.getSymbol().getType()), false)));
                 astcdPackage.addCDElement(withOrigin(createDeSer(origCD, a.getName(), a.getSymbol().getType(), c)));
               });
           CDSymbolTables.getAssociationsInHierarchy(c)
@@ -61,14 +61,14 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
               .filter(a -> GenService.isSymbolDerived(a))
               .filter(a -> !GenService.isBidirectional(a))
               .forEach(a -> {
-                astcdPackage.addCDElement(withOrigin(createClass(origCD, a.getName(), a.getSymbol().getType(), c, true)));
+                astcdPackage.addCDElement(withOrigin(createClass(origCD, a.getName(), a.getSymbol().getType(), c, true, a.getSymbol().getCardinality().isMult())));
                 astcdPackage.addCDElement(withOrigin(createDeSer(origCD, a.getName(), getSymType("long"), c)));
               });
         });
   }
 
 
-  protected ASTCDClass createClass(ASTCDCompilationUnit origCD, String name, SymTypeExpression type, ASTCDClass domainClass, boolean needsImport) {
+  protected ASTCDClass createClass(ASTCDCompilationUnit origCD, String name, SymTypeExpression type, ASTCDClass domainClass, boolean needsImport, boolean multiCardinality) {
     String classname = domainClass.getName()+SUFFIX
         + StringTransformations.capitalize(name);
 
@@ -87,8 +87,8 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
     String originalClassname = domainClass.getName();
 
     String methodPrefix = SymTypeRelations.isBoolean(type) ? "is" : "get";
-    if(GenService.isList(type)) {
-      getCD4C().addMethod(ast, getDoRunListTemplate(), classname, originalClassname, t, getCorrectManager(domainClass), name);
+    if(multiCardinality || GenService.isList(type)) {
+      getCD4C().addMethod(ast, getDoRunListTemplate(), classname, originalClassname, t, getCorrectManager(domainClass), name, multiCardinality);
     }else{
       getCD4C().addMethod(ast, getDoRunSimpleTemplate(), classname, originalClassname, t, getCorrectManager(domainClass), name, methodPrefix);
     }

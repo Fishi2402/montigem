@@ -26,7 +26,8 @@ export class FavoriteItem extends FavoriteItemComponent {
   }
 
   public override removeFavorite(event: any): void {
-    this.getFav().removeFavorite();
+  // TODO: why does this not work?
+    //this.getFav()?.removeFavorite();
   }
 
 }
