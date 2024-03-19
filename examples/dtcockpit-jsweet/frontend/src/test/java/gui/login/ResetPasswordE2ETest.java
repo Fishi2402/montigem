@@ -21,7 +21,7 @@ class ResetPasswordE2ETest extends DtcockpitMockTestSetup {
   }
 
   @Override
-  public void _init() {
+  public void _init() throws Exception {
     super._init();
     pageUnderTest = new ResetPassword(null, null);
   }
