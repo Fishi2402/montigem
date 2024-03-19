@@ -21,6 +21,7 @@ public class CommandResultDeSer implements JsonDeSer<CommandResult<?>> {
     printer.member("statusResult", result.isStatusResult());
     printer.member("simpleResult", result.isSimpleResult());
     printer.member("listResult", result.isListResult());
+    printer.member("validationResult", result.isValidationResult());
     if(result.isStatusResult()){
       printer.member("successful", result.asStatusResult().wasSuccessful());
     }else if(result.isSimpleResult()){

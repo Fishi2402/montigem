@@ -6,6 +6,7 @@ import mc.fenix.table.GemTable;
 import mc.fenix.table.TableTypes.TableColumn;
 
 import mc.fenix.basic.GemText;
+import mc.fenix.input.GemTextInput;
 import mc.fenix.arrange.GemCard;
 import mc.fenix.arrange.GemColumn;
 
@@ -35,7 +36,7 @@ page EndEffectorOverview(List<EndEffector> endEffectors) {
       components=[
         newEffector@EndEffectorCreate(),
         @iterate(EndEffector endEffector : endEffectors) {
-          @GemText(value=endEffector.name);
+          @GemTextInput(inputType = "string", entry = endEffector.name);
         }
       ]
     )

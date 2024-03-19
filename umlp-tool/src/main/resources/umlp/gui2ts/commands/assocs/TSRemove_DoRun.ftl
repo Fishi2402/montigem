@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature( "assoc","sourceName","targetName","sourceType","targetType",
-                "isSourceList","isTargetList","manager")}
+                "isSourceList","isTargetList","manager", "hasOCL")}
 ${cd4c.method("public Promise<StatusResult> doRun()")}
 
 <#assign csourceName=sourceName?cap_first>

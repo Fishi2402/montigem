@@ -109,9 +109,11 @@ public class TSDeSerDecorator extends DeSerDecorator {
     getCD4C().addImport(clazz, this.astcdPackage + "." + name + BaseClassObjectMapperDecorator.SUFFIX);
 
     for (ASTCDClass c : this.origCD.getCDDefinition().getCDClassesList()) {
-      if (!c.getModifier().isDerived() && !c.getModifier().isAbstract()) {
+      if (!c.getModifier().isDerived()) {
         getCD4C().addImport(clazz, this.astcdPackage + "." + c.getName());
-        if (!(c.getName() + DeSerDecorator.SUFFIX).equals(clazz.getName())) {
+        if (!(c.getName() + DeSerDecorator.SUFFIX).equals(clazz.getName())  && !c.getModifier().isAbstract()
+
+        ) {
           getCD4C().addImport(clazz, this.astcdPackage + "."
               + c.getName() + DeSerDecorator.SUFFIX);
         }

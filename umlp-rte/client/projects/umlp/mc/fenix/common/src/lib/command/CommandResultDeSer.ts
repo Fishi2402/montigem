@@ -4,6 +4,9 @@ import {BaseClassObjectMapper} from "../common/BaseClassObjectMapper";
 import {CommandResult} from "./CommandResult";
 import {JsonDeSer} from "./JsonDeSer";
 import {StatusResult} from "./StatusResult";
+import {ValidationResult} from "./ValidationResult";
+import {ValidationMessage} from "../common/ValidationMessage";
+import {ValidationStatus} from "../common/ValidationStatus";
 
 export class CommandResultDeSer implements JsonDeSer<CommandResult<any>> {
   buildJson(result: CommandResult<any>, printer: any): void {

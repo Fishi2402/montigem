@@ -120,8 +120,8 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
   protected void createSetAbsent(ASTCDType cdType, ASTCDAssocSide ast, boolean isInterface) {
     // create method void set%Name%Absent(NotificationScope scope)
     ASTCDMethodSignature method = getCD4C().addMethod(cdType, getSetAbsentTemplate(), ast.getName());
-    if (isInterface && UMLPMill.typeDispatcher().isASTCDMethod(method)) {
-      UMLPMill.typeDispatcher().asASTCDMethod(method).getModifier().setAbstract(true);
+    if (isInterface && UMLPMill.typeDispatcher().isCD4CodeBasisASTCDMethod(method)) {
+      UMLPMill.typeDispatcher().asCD4CodeBasisASTCDMethod(method).getModifier().setAbstract(true);
     }
     // create method void set%Name%Absent()
     method = getCD4C().addMethod(cdType, getSetAbsentTemplate(), ast.getName());
@@ -206,7 +206,7 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
   }
 
   public void addDeepEqualsMethod(ASTCDType domainType, ASTCDType targetType) {
-    List<ASTCDAssocSide> assocs = CDSymbolTables.getAssociations(domainType);
+    List<ASTCDAssocSide> assocs = CDSymbolTables.getAssociationsInHierarchy(domainType);
     List<ASTCDAssocSide> listAssocs = assocs.stream().filter(a -> a.getSymbol().getCardinality().isAtLeastOne() || a.getSymbol().getCardinality().isMult()).collect(Collectors.toList());
     List<ASTCDAssocSide> gemAssocs = assocs.stream().filter(a -> !listAssocs.contains(a)).collect(Collectors.toList());
     ASTCDMethodSignature m = getCD4C().addMethod(targetType, getDeepEqualsTemplate(), domainType.getName(), gemAssocs, listAssocs);

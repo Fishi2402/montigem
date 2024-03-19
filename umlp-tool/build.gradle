@@ -44,6 +44,8 @@ dependencies {
   implementation group: 'org.jsweet', name: 'jsweet-core', version: "6.3.0"
   implementation group: 'de.rwth.se.umlp.jsweet', name: 'jsweet-transpiler', version: '3.2.0-UMLP-SNAPSHOT'
 
+  implementation('com.google.cloud.tools:jib-core:0.21.0')
+
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit_version
   testImplementation group: 'com.github.javaparser', name: 'javaparser-symbol-solver-core', version: javaparser_version
@@ -72,8 +74,20 @@ repositories {
   if(shouldBuildIntelliJPlugin) {
     maven { url 'https://www.jitpack.io' }
   }
-  maven { url "https://repository.jsweet.org/artifactory/libs-snapshot-local" }
-  maven { url "https://repository.jsweet.org/artifactory/libs-release-local" }
+  // Only use jsweet repos for everything in org.jsweet*(excl jsweet-core which is in maven-central)
+  // since they throw 409 errors for dependencies in other groups
+  maven {
+    url "https://repository.jsweet.org/artifactory/libs-snapshot-local"
+    mavenContent {
+      includeModuleByRegex("org[.]jsweet.*", "(?!jsweet-core).*")
+    }
+  }
+  maven {
+    url "https://repository.jsweet.org/artifactory/libs-release-local"
+    mavenContent {
+      includeModuleByRegex("org[.]jsweet.*", "(?!jsweet-core).*")
+    }
+  }
 }
 
 test {
@@ -106,6 +120,8 @@ task generateUMLP(type: MCTask) {
   outputs.upToDateWhen { uptoDate }
 }
 
+/*
+ ALu: Mit tagging-lite vmtl. erst mal nicht mehr notwendig
 task generateUMLPTagDef(type: MCTask) {
   grammar = file "$buildDir/generated-sources/monticore/sourcecode/UMLPTagDefinition.mc4"
   outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
@@ -125,6 +141,7 @@ task generateUMLPTagSchema(type: MCTask) {
   def uptoDate = incCheck("UMLP.mc4")
   outputs.upToDateWhen { uptoDate }
 }
+ */
 
 
 compileJava {

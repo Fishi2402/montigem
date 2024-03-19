@@ -11,6 +11,8 @@ import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.se_rwth.commons.Joiners;
 import umlp.generator.domain.decorator.CommandResultDeSerDecorator;
 import umlp.generator.domain.decorator.DeSerDecorator;
+import umlp.generator.domain.decorator.ValidationResultDeSerDecorator;
+import umlp.generator.domain.decorator.ValidationResultDecorator;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
@@ -68,9 +70,11 @@ public class TSCommandResultDeSerDecorator extends CommandResultDeSerDecorator {
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("BaseClassObjectMapper"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("LoadingState"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandResultDeSer"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("ValidationResult"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandResult"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("SimpleResult"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("ListResult"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("DomainValidationResult"));
 
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("BaseClassObjectMapper"));
 
@@ -79,6 +83,12 @@ public class TSCommandResultDeSerDecorator extends CommandResultDeSerDecorator {
         getCD4C().addImport(clazz, this.astcdPackage + "." + c.getName());
         getCD4C().addImport(clazz, this.astcdPackage + "."
             + c.getName() + DeSerDecorator.SUFFIX);
+        if(hasOCL) {
+          getCD4C().addImport(clazz, this.astcdPackage + "."
+                  + c.getName() + ValidationResultDecorator.SUFFIX);
+          getCD4C().addImport(clazz, this.astcdPackage + "."
+                  + c.getName() + ValidationResultDeSerDecorator.SUFFIX);
+        }
       }
     }
 

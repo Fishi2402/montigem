@@ -19,17 +19,17 @@ public class CDAssociationsAreNotCyclicAtLeastOne implements CDBasisASTCDDefinit
   public void check(ASTCDDefinition node) {
 
     for (ASTCDAssociation assoc: node.getCDAssociationsList()) {
-      if (dispatcher.isASTCDRightToLeftDir(assoc.getCDAssocDir()) || dispatcher.isASTCDBiDir(assoc.getCDAssocDir())) {
-        if (assoc.getLeft().isPresentCDCardinality() && (dispatcher.isASTCDCardOne(assoc.getLeft().getCDCardinality()) ||
-                dispatcher.isASTCDCardAtLeastOne(assoc.getLeft().getCDCardinality()))) {
+      if (dispatcher.isCDAssociationASTCDRightToLeftDir(assoc.getCDAssocDir()) || dispatcher.isCDAssociationASTCDBiDir(assoc.getCDAssocDir())) {
+        if (assoc.getLeft().isPresentCDCardinality() && (dispatcher.isCDAssociationASTCDCardOne(assoc.getLeft().getCDCardinality()) ||
+                dispatcher.isCDAssociationASTCDCardAtLeastOne(assoc.getLeft().getCDCardinality()))) {
           List<String> adj = graph.getOrDefault(assoc.getRight().getMCQualifiedType().getMCQualifiedName().getQName(), new ArrayList<>());
           adj.add(assoc.getLeft().getMCQualifiedType().getMCQualifiedName().getQName());
           graph.put(assoc.getRight().getMCQualifiedType().getMCQualifiedName().getQName(), adj);
         }
       }
-      if (dispatcher.isASTCDLeftToRightDir(assoc.getCDAssocDir()) || dispatcher.isASTCDBiDir(assoc.getCDAssocDir())) {
-        if (assoc.getRight().isPresentCDCardinality() && (dispatcher.isASTCDCardOne(assoc.getRight().getCDCardinality()) ||
-                dispatcher.isASTCDCardAtLeastOne(assoc.getRight().getCDCardinality()))) {
+      if (dispatcher.isCDAssociationASTCDLeftToRightDir(assoc.getCDAssocDir()) || dispatcher.isCDAssociationASTCDBiDir(assoc.getCDAssocDir())) {
+        if (assoc.getRight().isPresentCDCardinality() && (dispatcher.isCDAssociationASTCDCardOne(assoc.getRight().getCDCardinality()) ||
+                dispatcher.isCDAssociationASTCDCardAtLeastOne(assoc.getRight().getCDCardinality()))) {
           List<String> adj = graph.getOrDefault(assoc.getLeft().getMCQualifiedType().getMCQualifiedName().getQName(), new ArrayList<>());
           adj.add(assoc.getRight().getMCQualifiedType().getMCQualifiedName().getQName());
           graph.put(assoc.getLeft().getMCQualifiedType().getMCQualifiedName().getQName(), adj);

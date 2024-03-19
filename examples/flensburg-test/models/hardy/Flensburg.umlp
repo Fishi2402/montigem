@@ -11,16 +11,25 @@ import java.time.LocalDate;
 
 classdiagram Flensburg {
 
-    class Car {
-      boolean wheelLeft; // Test Boolean values
-      List<String> namesOfAllParts;
-    }
+  class Car {
+    boolean wheelLeft; // Test Boolean values
+    List<String> namesOfAllParts;
+    -> (producedBy) Manufacturer [0..1];
+  }
+
+  abstract class Manufacturer {
+    String name;
+  }
+
+  class CarManufacturer extends Manufacturer {
+
+  }
 
   class Human {
     int age;
   }
 
-  class  Person extends Human {
+  class Person extends Human {
     String nickname;
 
     // calculated attribute: wird nicht persistiert,

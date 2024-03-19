@@ -31,3 +31,4 @@ export * from "./LoadingState";
 export * from "./IUMLPList";
 export * from "./NotificationScope";
 export * from "./IdStorage";
+export * from "./DomainValidationResult";

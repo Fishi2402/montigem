@@ -45,5 +45,11 @@ if(jsonObject["listResult"]){
   }
 }
 
+if(jsonObject["validationResult"]) {
+  let tp: string = jsonObject["typeParameter"];
+  let res: DomainValidationResult = this.deserSingleValue(jsonObject["value"], tp);
+  return ValidationResult.of(jsonObject["commandId"], res, tp);
+}
+
 return null;
 

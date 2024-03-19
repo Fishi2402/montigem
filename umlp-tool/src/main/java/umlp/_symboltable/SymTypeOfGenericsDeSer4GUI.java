@@ -21,6 +21,7 @@ public class SymTypeOfGenericsDeSer4GUI extends SymTypeOfGenericsDeSer {
       String typeConstructorFullName = serialized.getStringMember(SERIALIZED_TYPE_CONSTRUCTOR);
       // adapted part start
       if (typeConstructorFullName.equals("Optional")
+          || typeConstructorFullName.equals("List")
           || typeConstructorFullName.equals("Map")
           || typeConstructorFullName.equals("Set")) {
         typeConstructorFullName = "java.util." + typeConstructorFullName;

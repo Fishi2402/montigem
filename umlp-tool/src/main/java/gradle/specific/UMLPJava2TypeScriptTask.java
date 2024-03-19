@@ -2,22 +2,29 @@
 package gradle.specific;
 
 import de.monticore.generating.GeneratorSetup;
+import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.tools.ant.DirectoryScanner;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
+import org.gradle.api.tasks.IgnoreEmptyDirectories;
 import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
+import org.gradle.api.tasks.PathSensitive;
+import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.TaskAction;
+import org.gradle.work.Incremental;
 import org.gradle.work.InputChanges;
 import org.jsweet.transpiler.EcmaScriptComplianceLevel;
 import org.jsweet.transpiler.JSweetFactory;
@@ -99,6 +106,10 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
   @Optional
   public abstract Property<Boolean> getDomain();
 
+  @Input
+  @Optional
+  public abstract Property<String> getHandWrittenConfigDir();
+
   protected List<String> includes;
 
   protected List<String> excludes;
@@ -113,8 +124,11 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
     JSweetFactory factory = new JSweetFactory();
     File buildDir = this.getProject().getBuildDir();
     File workingDir = new File(buildDir, "jsweetWorkingDir");
-    File jsweetDir = new File(buildDir, "jsweet");
+    File jSweetDir = new File(buildDir, "jsweet");
     File candiesJsOut = new File(workingDir, "candies");
+
+    File hwcDir = getHandWrittenConfigDir().isPresent() ? new File(jSweetDir, getHandWrittenConfigDir().get()) : baseDirectory;
+
 
     // Get the sourceSets for this gradle plugin
     SourceSetContainer sourceSets = (SourceSetContainer) this.getProject().getProperties()
@@ -156,7 +170,7 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
         new ConsoleTranspilationHandler());
     try {
       transpiler.transpile(transpilationHandler, excludedSources, sourceFiles);
-      generateJSweetConfig(jsweetDir);
+      generateJSweetConfig(jSweetDir, baseDirectory);
     }
     catch (IOException e) {
       throw new RuntimeException(e);
@@ -381,9 +395,10 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
    *
    * @param targetDir The target directory the config files are generated to.
    */
-  protected void generateJSweetConfig(File targetDir) {
+  protected void generateJSweetConfig(File targetDir, File hwcDir) {
     GeneratorSetup gs = new GeneratorSetup();
     gs.setOutputDirectory(targetDir);
+    gs.setHandcodedPath(new MCPath(hwcDir.toPath()));
     JSweetConfigGenerator generator = new JSweetConfigGenerator(gs);
     generator.generate(getDomainModel().get());
 

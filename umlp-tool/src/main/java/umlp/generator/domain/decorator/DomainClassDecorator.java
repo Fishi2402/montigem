@@ -103,7 +103,7 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
           }).collect(Collectors.joining(", "));
       stereotype.addValues(
           TopDecorator.NEEDS_TOP_STEREO_BUILDER.apply(
-              String.format("Custom implementation for class: %s required. Contains derived attribute(s): %s", domainClass.getName(), derivedAttribs)
+              String.format("Custom implementation for class: %s required - use the TOP mechanism. Contains derived attribute(s): %s", "%s", derivedAttribs)
           )
       );
     }
@@ -124,7 +124,7 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
           }).collect(Collectors.joining(", "));
       stereotype.addValues(
           TopDecorator.NEEDS_TOP_STEREO_BUILDER.apply(
-              String.format("Custom implementation for class: %s required. Contains derived association(s): %s", domainClass.getName(), derivedAssocsStr)
+              String.format("Custom implementation for class: %s required - use the TOP mechanism. Contains derived association(s): %s", "%s", derivedAssocsStr)
           )
       );
     }
@@ -278,7 +278,7 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
     List<String> objects = new ArrayList<>();
     FullSynthesizeFromCD4Code synthesize = new FullSynthesizeFromCD4Code();
 
-    for (ASTCDAttribute attribute : domainClass.getCDAttributeList()) {
+    for (ASTCDAttribute attribute : CDSymbolTables.getAttributesInHierarchy(domainClass)) {
       if (attribute.getModifier().isDerived() || attribute.getModifier().isAbstract()) {
         continue;
       }

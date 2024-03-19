@@ -92,7 +92,7 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
     getCD4C().addMethod(ast, getAdd_DoRunTemplate(), assoc.getName(),
             sourceName, targetName, sourceType, targetType,
             GenService.isList(assoc.getLeft()), GenService.isList(assoc.getRight()),
-            getCorrectManager(assoc));
+            getCorrectManager(assoc), hasOCL);
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(),
             Lists.newArrayList(sourceName+"GemId", targetName+"GemId"));
     getCD4C().addMethod(ast, getAssocsCheckAccessPolicyTemplate(), sourceType, targetType, "Create");
@@ -144,7 +144,7 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
     getCD4C().addMethod(ast, getRemove_DoRunTemplate(), assoc.getName(),
             sourceName, targetName, sourceType, targetType,
             GenService.isList(assoc.getLeft()), GenService.isList(assoc.getRight()),
-            getCorrectManager(assoc));
+            getCorrectManager(assoc), hasOCL);
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(),
             Lists.newArrayList(sourceName+"GemId", targetName+"GemId"));
     getCD4C().addMethod(ast, getAssocsCheckAccessPolicyTemplate(), sourceType, targetType, "Delete");
@@ -200,11 +200,11 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
     getCD4C().addMethod(ast, getSet_Source_ExchangeTemplate(), assoc.getName(),
             targetName, sourceName, targetType, sourceType,
             GenService.isList(assoc.getRight()), GenService.isList(assoc.getLeft()),
-            getCorrectManager(assoc));
+            getCorrectManager(assoc), hasOCL);
     getCD4C().addMethod(ast, getSet_Source_ExchangeTemplate(), assoc.getName(),
             sourceName, targetName, sourceType, targetType,
             GenService.isList(assoc.getLeft()), GenService.isList(assoc.getRight()),
-            getCorrectManager(assoc));
+            getCorrectManager(assoc), hasOCL);
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(),
             Lists.newArrayList(sourceName+"GemId", targetName+"GemId"));
     getCD4C().addMethod(ast, getAssocsCheckAccessPolicyTemplate(), sourceType, targetType, "Update");
@@ -290,5 +290,13 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+targetType);
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ sourceType + "AccessPolicy");
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ targetType + "AccessPolicy");
+
+    if(hasOCL) {
+      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + sourceType + "Validator");
+      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + sourceType + "ValidationResult");
+      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + targetType + "Validator");
+      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + targetType + "ValidationResult");
+    }
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("ValidationResult"));
   }
 }

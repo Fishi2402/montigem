@@ -15,6 +15,7 @@ import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.io.paths.MCPath;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.util.TagLookUp;
@@ -109,6 +110,16 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
     ArrayList<String> annotations = new ArrayList<>();
     for (ASTCDAttribute attribute : domainAttributes) {
       String type = attribute.getMCType().printType();
+      Optional<TypeSymbol> typeSymbol = attribute.getMCType().getDefiningSymbol().map(it -> (TypeSymbol) it);
+      if(typeSymbol.isPresent()){
+        String fullName = typeSymbol.get().getFullName();
+        if(!fullName.isEmpty() && Character.isUpperCase(fullName.charAt(0))){
+          // Domain import
+        }else{
+          type = fullName;
+        }
+      }
+
       if (supportedDesers.contains(type)) {
         parameters.add("String " + attribute.getName());
       } else {

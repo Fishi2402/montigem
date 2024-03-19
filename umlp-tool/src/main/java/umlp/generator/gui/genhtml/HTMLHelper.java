@@ -118,13 +118,13 @@ public class HTMLHelper implements GUIDSLVisitor2 {
   @Override
   public void endVisit(ASTGUIGuard node) {
     if (currentGuard.isPresent() && currentGuard.get().equals(node)) {
-      if (currentComp.isPresent() && !currentBlocks.contains(node)) {
-        ASTGUIBlockContent content = GUIDSLMill.gUIBlockContentBuilder()
-            .setGUIGuard(node)
-            .build();
-        addNgTemplate(content);
-      }
       currentGuard = Optional.empty();
+    }
+    if (currentComp.isPresent() && !currentBlocks.contains(node)) {
+      ASTGUIBlockContent content = GUIDSLMill.gUIBlockContentBuilder()
+          .setGUIGuard(node)
+          .build();
+      addNgTemplate(content);
     }
     removeGuardBlocks(node);
   }

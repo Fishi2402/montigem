@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature( "attributename","classname","managerName", "isGem", "targetname", "targettype", "targetTypeManager")}
+${tc.signature( "attributename","classname","managerName", "isGem", "targetname", "targettype", "targetTypeManager", "hasOCL")}
 ${cd4c.method("public StatusResult doAction()")}
 
 Optional<${classname}> ${classname?uncap_first}Opt = ${managerName}.${classname?uncap_first}Opt(gemId);
@@ -18,5 +18,12 @@ if(${classname?uncap_first}Opt.isEmpty()){
   ${classname?uncap_first}Opt.get().add${targetname?cap_first}(indexInList, ${targetname}Opt.get(), NotificationScope.LOCAL);
 <#else>
   ${classname?uncap_first}Opt.get().add${attributename?cap_first}(indexInList, ${attributename}, NotificationScope.LOCAL);
+</#if>
+<#if hasOCL>
+  ${classname}Validator validator = new ${classname}Validator();
+  ${classname}ValidationResult validationResult = validator.validate(${classname?uncap_first}Opt.get());
+  if (validationResult.hasErrors()) {
+    return new ValidationResult(getId(), validationResult, "sehub.${classname}ValidationResult");
+  }
 </#if>
 return StatusResult.error(getId());

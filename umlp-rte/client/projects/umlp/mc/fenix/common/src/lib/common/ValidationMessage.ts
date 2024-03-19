@@ -1,25 +1,39 @@
 /* (c) https://github.com/MontiCore/monticore */
 
+import {ValidationStatus} from "./ValidationStatus";
+
 export class ValidationMessage {
 
-  private message: string;
+  private _message: string;
+  private _status: ValidationStatus;
 
-  // extend with further attributes
-
-  private ValidationMessage(message: string): ValidationMessage {
-    this.message = message;
+  private ValidationMessage(message: string, status: ValidationStatus): ValidationMessage {
+    this._message = message;
+    this._status = status;
     return this;
   }
 
+  public static create(message: string, status: ValidationStatus): ValidationMessage {
+    return new ValidationMessage().ValidationMessage(message, status);
+  }
+
+  public isErrorMessage() : boolean {
+    return this._status === ValidationStatus.ERROR;
+  }
+
   public getMessage(): string {
-    return this.message;
+    return this._message;
   }
 
   public setMessage(message: string): void {
-    this.message = message;
+    this._message = message;
   }
 
-  public static create(message: string): ValidationMessage {
-    return new ValidationMessage().ValidationMessage(message);
+  public getStatus(): ValidationStatus {
+    return this._status;
+  }
+
+  public setStatus(status: ValidationStatus): void {
+    this._status = status;
   }
 }

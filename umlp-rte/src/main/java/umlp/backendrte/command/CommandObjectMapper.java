@@ -30,7 +30,7 @@ public abstract class CommandObjectMapper {
     }
 
     String msg = String.format("%s Could not serialize command: %s\n%s", "0xS0004", command.getCommandType(), err.getMessage());
-    Log.error(msg);
+    Log.error(msg, err);
     return getInstance()._serializeCommand(new ServerError(err)).get();
   }
 
@@ -42,7 +42,7 @@ public abstract class CommandObjectMapper {
       return getInstance()._deserializeCommand(cmdStr);
     } catch (Exception e) {
       String msg = String.format("%s Could not deserialize command: %s\n%s", "0xS0003", cmdStr, e.getMessage());
-      Log.error(msg);
+      Log.error(msg, e);
       return Optional.empty();
     }
   }

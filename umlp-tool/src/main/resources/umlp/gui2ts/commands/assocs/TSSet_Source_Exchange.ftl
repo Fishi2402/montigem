@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature( "assoc","sourceName","targetName", "sourceType", "targetType",
-                "isSourceList","isTargetList","definition")}
+                "isSourceList","isTargetList","definition", "hasOCL")}
 <#assign csourceName=sourceName?cap_first>
 <#assign ctargetName=targetName?cap_first>
 

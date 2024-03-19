@@ -59,6 +59,22 @@ subprojects {
       exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
     }
   }
+
+  afterEvaluate {
+    tasks.withType(gradle.specific.UMLPFrontendCIImageTask.class).each {
+      it.getFullImageName().set(project.provider {
+        String imgBase = Objects.requireNonNull(System.getenv("CI_REGISTRY_IMAGE"), "CI_REGISTRY_IMAGE not set")
+        String parentName = project.parent.name
+        return imgBase + "/" + parentName + "_frontend:latest"
+      })
+    }
+
+    tasks.withType(gradle.specific.UMLPFrontendLocalImageTask.class).each {
+      it.getFullImageName().set(getProject().provider(() ->
+          (getProject().getParent() != null ? getProject().getParent().getName() : getProject().getName()) + "/frontend"
+      ))
+    }
+  }
 }
 
 repositories { // required to resolve the ecj dependency, including the whole chain of repos to avoid unexpected behaviour

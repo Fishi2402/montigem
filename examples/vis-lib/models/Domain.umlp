@@ -13,8 +13,16 @@ classdiagram Domain {
     int house;
   }
 
+  class Stock {
+    java.time.LocalDateTime date;
+    String name;
+    int price;
+  }
+
 
   association home [1] Person -> (address) Address [0..1];
 
   association friends [*] Person -> (friends) Person [*];
+
+  association stocks [*] Person -> (stocks) Stock [*];
 }
