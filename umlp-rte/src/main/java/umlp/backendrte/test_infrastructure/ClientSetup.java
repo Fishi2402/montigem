@@ -7,7 +7,6 @@ import java.util.Optional;
 /**
  * Describes the setup of how many clients a TestSetup shall have and if they should have names.
  */
-//TODO create unit test for this
 public class ClientSetup {
 
   protected final int numberOfClients;
