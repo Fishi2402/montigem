@@ -161,10 +161,6 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
     }
   }
 
-  protected void addJavaImport(ASTCDClass ast, SymTypeExpression type) {
-    getCD4C().addImport(ast, box(type.printFullName()));
-  }
-
   protected String extendedClass(ASTCDMethod command, ASTCDClass ast) {
     SymTypeExpression returnTypeSymbol = command.getSymbol().getType();
     if (returnTypeSymbol.isVoidType()) {
@@ -229,7 +225,7 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
       paramNameList.add(paramName);
       typeList.add(type);
       if (GenService.isJavaType(type)) {
-        addDeSerJavaImport(ast, type.printFullName());
+        addJavaImport(ast, type);
       }
 
       String typeName = GenService.printTypeFullName(type);
@@ -268,10 +264,6 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
-  }
-
-  protected void addDeSerJavaImport(ASTCDClass ast, String typeName) {
-    getCD4C().addImport(ast, typeName);
   }
 
   protected void addDeSerImport(ASTCDClass ast, ASTCDCompilationUnit origCD, boolean useDeSer,

@@ -2,6 +2,7 @@ package umlp.generator.gui.gentypescript.commands;
 
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.check.SymTypeExpression;
@@ -58,9 +59,15 @@ public class TSCalculateDecorator extends CalculateDecorator {
   }
 
   @Override
-  protected void addJavaImport(ASTCDClass ast, SymTypeExpression type) {
-    if (!TypeScriptTypes.isDefault(type.print())) {
-      getCD4C().addImport(ast, type.print());
+  protected void addJavaImport(ASTCDType ast, SymTypeExpression type) {
+    if (type.isGenericType()) {
+      if (!TypeScriptTypes.isDefault(type.asGenericType().getArgument(0).print())) {
+        getCD4C().addImport(ast, type.asGenericType().getArgument(0).print());
+      }
+    } else {
+      if (!TypeScriptTypes.isDefault(type.print())) {
+        getCD4C().addImport(ast, type.print());
+      }
     }
   }
 

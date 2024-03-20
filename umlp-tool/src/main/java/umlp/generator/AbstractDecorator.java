@@ -27,7 +27,6 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.TypeCheck;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.monticore.umlstereotype._ast.ASTStereoValueTOP;
@@ -181,16 +180,7 @@ public abstract class AbstractDecorator {
   }
 
   protected void addImports(ASTCDType domainType, ASTCDType cdType) {
-    CDSymbolTables.getAttributesInHierarchy(domainType).forEach(a -> {
-      if (GenService.isJavaType(a.getSymbol().getType())) {
-        getCD4C().addImport(cdType, a.getSymbol().getType().printFullName());
-      } else if (a.getSymbol().getType().isGenericType()) {
-        if (GenService.isJavaType(((SymTypeOfGenerics) a.getSymbol().getType()).getArgument(0))) {
-          String imp = ((SymTypeOfGenerics) a.getSymbol().getType()).getArgument(0).printFullName();
-          getCD4C().addImport(cdType, imp);
-        }
-      }
-    });
+    CDSymbolTables.getAttributesInHierarchy(domainType).forEach(a -> addJavaImport(cdType, a.getSymbol().getType()));
     CDSymbolTables.getAssociationsInHierarchy(domainType).forEach(assocSide -> {
       getPackageFromFQNString(assocSide.getSymbol().getType().printFullName())
           .ifPresent(cdPackage ->
@@ -205,6 +195,17 @@ public abstract class AbstractDecorator {
         cdExtension.getDefiningSymbol().ifPresent(definingSymbol ->
             getCD4C().addImport(cdType, Joiners.DOT.join(definingSymbol.getPackageName().toLowerCase(),
                 definingSymbol.getName()))));
+  }
+
+  protected void addJavaImport(ASTCDType domainType, SymTypeExpression type) {
+    if (type.isGenericType()) {
+      if (GenService.isJavaType(type.asGenericType().getArgument(0))) {
+        String imp = type.asGenericType().getArgument(0).printFullName();
+        getCD4C().addImport(domainType, imp);
+      }
+    } else if (GenService.isJavaType(type)) {
+      getCD4C().addImport(domainType, type.printFullName());
+    }
   }
 
   protected void addDecoratorComment(ASTCDElement... nodes) {

@@ -175,10 +175,6 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
     return t;
   }
 
-  protected void addJavaImport(ASTCDClass ast, SymTypeExpression type) {
-    getCD4C().addImport(ast, type.printFullName());
-  }
-
   protected String getConstructorTemplate() {
     return "umlp.commands.get.Constructor";
   }

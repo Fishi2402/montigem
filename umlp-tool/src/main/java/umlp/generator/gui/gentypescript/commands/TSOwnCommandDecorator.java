@@ -130,7 +130,7 @@ public class TSOwnCommandDecorator extends OwnCommandDecorator {
   }
 
   @Override
-  protected void addJavaImport(ASTCDClass ast, SymTypeExpression type) {
+  protected void addJavaImport(ASTCDType ast, SymTypeExpression type) {
     // getCD4C().addImport(ast, box(type.printFullName()));
   }
 
@@ -243,7 +243,7 @@ public class TSOwnCommandDecorator extends OwnCommandDecorator {
       paramNameList.add(paramName);
       typeList.add(type);
       if (!type.isObscureType() && GenService.isJavaType(type)) {
-        addDeSerJavaImport(ast, type.printFullName());
+        addJavaImport(ast, type);
       }
 
       String typeName = GenService.printTypeFullName(type);
@@ -282,9 +282,6 @@ public class TSOwnCommandDecorator extends OwnCommandDecorator {
   protected void addDeSerImports(ASTCDClass ast) {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
   }
-
-  @Override
-  protected void addDeSerJavaImport(ASTCDClass ast, String typeName) {}
 
   @Override
   protected void addDeSerImport(ASTCDClass ast, ASTCDCompilationUnit origCD, boolean useDeSer,
