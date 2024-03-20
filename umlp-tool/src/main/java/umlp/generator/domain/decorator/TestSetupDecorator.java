@@ -24,9 +24,12 @@ public class TestSetupDecorator extends AbstractDecorator {
 
   public static final String PACK_TEST_INFRASTRUCTURE = "test_infrastructure";
   public static final String SUFFIX = "TestSetup";
-  public static final String MOCK_TEST_SETUP = "MockTestSetup";
-  public static final String DB_TEST_SETUP = "DBTestSetup";
+  public static final String MOCK_TEST_SETUP_SUFFIX = "Mock" + SUFFIX;
+  public static final String DB_TEST_SETUP_SUFFIX = "DB" + SUFFIX;
+  public static final String SQL_TEST_SETUP_SUFFIX = "SQL" + DB_TEST_SETUP_SUFFIX;
+  public static final String NEO4J_TEST_SETUP_SUFFIX = "Neo4J" + DB_TEST_SETUP_SUFFIX;
   private static final String COMMON_CUSTOM_TEMPLATE_PATH = "umlp.test_infrastructure.";
+  private static final String DB_TEMPLATE_PATH = COMMON_CUSTOM_TEMPLATE_PATH + "dbTestSetup.";
 
   private final boolean isNeo4jGen;
   private final ObserverDecorator observerDecorator;
@@ -62,7 +65,9 @@ public class TestSetupDecorator extends AbstractDecorator {
 
     aPackage.addCDElement(withOrigin(createAbstractTestSetup(origCD)));
     aPackage.addCDElement(withOrigin(createMockTestSetup(origCD)));
-    aPackage.addCDElement(withOrigin(createDbTestSetup(origCD)));
+    aPackage.addCDElement(withOrigin(createAbstractDBTestSetup(origCD)));
+    aPackage.addCDElement(withOrigin(createSQLDBTestSetup(origCD)));
+    aPackage.addCDElement(withOrigin(createNeo4JDBTestSetup(origCD)));
   }
 
   protected ASTCDClass createAbstractTestSetup(ASTCDCompilationUnit origCD) {
@@ -142,39 +147,81 @@ public class TestSetupDecorator extends AbstractDecorator {
     ASTCDClass res = UMLPMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
         .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(cdName + SUFFIX))
-        .setName(cdName + MOCK_TEST_SETUP).build();
+        .setName(cdName + MOCK_TEST_SETUP_SUFFIX)
+        .build();
+
+    CD4C cd4C = getCD4C();
 
     // constructor
     addConstructors(res, true);
 
     // methods
-    getCD4C().addMethod(res, COMMON_CUSTOM_TEMPLATE_PATH + "mockTestSetup.Init", cdName);
-    getCD4C().addMethod(res, COMMON_CUSTOM_TEMPLATE_PATH + "mockTestSetup.HasDatabase", cdName);
+    cd4C.addMethod(res, COMMON_CUSTOM_TEMPLATE_PATH + "mockTestSetup.Init", cdName);
+    cd4C.addMethod(res, COMMON_CUSTOM_TEMPLATE_PATH + "mockTestSetup.HasDatabase", cdName);
 
     addImports(origCD, res);
     return res;
   }
 
-  protected ASTCDClass createDbTestSetup(ASTCDCompilationUnit origCD) {
+  protected ASTCDClass createAbstractDBTestSetup(ASTCDCompilationUnit origCD) {
     String cdName = origCD.getCDDefinition().getName();
 
     ASTCDClass res = UMLPMill.cDClassBuilder()
-        .setModifier(PUBLIC.build())
+        .setModifier(PUBLIC_ABSTRACT.build())
         .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(cdName + SUFFIX))
-        .setName(cdName + DB_TEST_SETUP).build();
+        .setName(cdName + DB_TEST_SETUP_SUFFIX)
+        .build();
 
     // constructor
     addConstructors(res, true);
 
     // methods
     CD4C cd4C = getCD4C();
-    if(isNeo4jGen) {
-      cd4C.addMethod(res, "umlp.test_infrastructure.dbTestSetup.InitNeo4j", cdName);
-    } else {
-      cd4C.addMethod(res, "umlp.test_infrastructure.dbTestSetup.Init", cdName);
-    }
-    cd4C.addMethod(res, "umlp.test_infrastructure.dbTestSetup.Cleanup", cdName);
-    cd4C.addMethod(res, "umlp.test_infrastructure.dbTestSetup.HasDatabase", cdName);
+    cd4C.addMethod(res, DB_TEMPLATE_PATH + "Cleanup", cdName);
+    cd4C.addMethod(res, DB_TEMPLATE_PATH + "HasDatabase", cdName);
+    cd4C.addMethod(res, DB_TEMPLATE_PATH + "Init", cdName);
+
+    addImports(origCD, res);
+    return res;
+  }
+
+  protected ASTCDClass createSQLDBTestSetup(ASTCDCompilationUnit origCD) {
+    String cdName = origCD.getCDDefinition().getName();
+
+    ASTCDClass res = UMLPMill.cDClassBuilder()
+        .setModifier(PUBLIC.build())
+        .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(cdName + DB_TEST_SETUP_SUFFIX))
+        .setName(cdName + SQL_TEST_SETUP_SUFFIX)
+        .build();
+
+    CD4C cd4C = getCD4C();
+
+    // constructor
+    addConstructors(res, true);
+
+    // methods
+    cd4C.addMethod(res, DB_TEMPLATE_PATH + "sql.Init", cdName);
+
+    addImports(origCD, res);
+    return res;
+  }
+
+  protected ASTCDClass createNeo4JDBTestSetup(ASTCDCompilationUnit origCD) {
+    String cdName = origCD.getCDDefinition().getName();
+
+    ASTCDClass res = UMLPMill.cDClassBuilder()
+        .setModifier(PUBLIC.build())
+        .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(cdName + DB_TEST_SETUP_SUFFIX))
+        .setName(cdName + NEO4J_TEST_SETUP_SUFFIX)
+        .build();
+
+    CD4C cd4C = getCD4C();
+
+    // constructor
+    addConstructors(res, true);
+
+    // methods
+    cd4C.addMethod(res, DB_TEMPLATE_PATH + "neo4j.Init", cdName);
 
     addImports(origCD, res);
     return res;
