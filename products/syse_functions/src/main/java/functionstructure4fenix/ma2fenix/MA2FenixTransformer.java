@@ -62,7 +62,7 @@ public class MA2FenixTransformer {
     if(this.getQname().isEmpty()) {
       stack.push(node.getName().toLowerCase());
     }
-    Function function = FunctionStructure4FenixManagerImpl.functionBuilder().name(this.getQname());
+    Function function = FunctionStructure4FenixManagerImpl.functionBuilder().name(stack.peek());
 
     for (ASTConnector c : node.getConnectors()){
       mapConnectorToChannel(c);
