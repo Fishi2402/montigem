@@ -60,14 +60,18 @@ public class TestSetupDecorator extends AbstractDecorator {
 
     EnsureCorrectManager4DiagrammDecorator ensureCorrectManager4DiagrammDecorator = new EnsureCorrectManager4DiagrammDecorator(
         glex,
-        diagramObserverDecorator, ensureCorrectManager4TypeDecorator);
+        diagramObserverDecorator,
+        ensureCorrectManager4TypeDecorator);
     ensureCorrectManager4DiagrammDecorator.transform(origCD, decoratedCD);
 
     aPackage.addCDElement(withOrigin(createAbstractTestSetup(origCD)));
     aPackage.addCDElement(withOrigin(createMockTestSetup(origCD)));
     aPackage.addCDElement(withOrigin(createAbstractDBTestSetup(origCD)));
-    aPackage.addCDElement(withOrigin(createSQLDBTestSetup(origCD)));
-    aPackage.addCDElement(withOrigin(createNeo4JDBTestSetup(origCD)));
+    if (isNeo4jGen) {
+      aPackage.addCDElement(withOrigin(createNeo4JDBTestSetup(origCD)));
+    } else {
+      aPackage.addCDElement(withOrigin(createSQLDBTestSetup(origCD)));
+    }
   }
 
   protected ASTCDClass createAbstractTestSetup(ASTCDCompilationUnit origCD) {
@@ -180,6 +184,7 @@ public class TestSetupDecorator extends AbstractDecorator {
     cd4C.addMethod(res, DB_TEMPLATE_PATH + "Cleanup", cdName);
     cd4C.addMethod(res, DB_TEMPLATE_PATH + "HasDatabase", cdName);
     cd4C.addMethod(res, DB_TEMPLATE_PATH + "Init", cdName);
+    cd4C.addMethod(res, DB_TEMPLATE_PATH + "LegacyCheck");
 
     addImports(origCD, res);
     return res;
@@ -201,6 +206,7 @@ public class TestSetupDecorator extends AbstractDecorator {
 
     // methods
     cd4C.addMethod(res, DB_TEMPLATE_PATH + "sql.Init", cdName);
+    cd4C.addMethod(res, DB_TEMPLATE_PATH + "LegacyCheckImpl");
 
     addImports(origCD, res);
     return res;
@@ -222,6 +228,7 @@ public class TestSetupDecorator extends AbstractDecorator {
 
     // methods
     cd4C.addMethod(res, DB_TEMPLATE_PATH + "neo4j.Init", cdName);
+    cd4C.addMethod(res, DB_TEMPLATE_PATH + "LegacyCheckImpl");
 
     addImports(origCD, res);
     return res;
