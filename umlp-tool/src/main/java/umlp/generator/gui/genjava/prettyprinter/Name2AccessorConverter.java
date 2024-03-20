@@ -11,8 +11,6 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
-import umlp.generator.domain.decorator.BuilderDecorator;
-import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.Collection;
@@ -38,23 +36,10 @@ public class Name2AccessorConverter extends ExpressionsBasisPrettyPrinter {
       CommentPrettyPrinter.printPreComments(node, getPrinter());
     }
 
-    boolean isConstructor = isConstructor(node);
-    if (!nonClassMembers.contains(node) && !isEnum(node) && !isConstructor) {
+    if (!nonClassMembers.contains(node) && !isEnum(node)) {
       getPrinter().print("this.");
     }
-    if (isConstructor) {
-      if (GUIGeneratorUtil.getInstance().getMainDomainModelSimpleName().isPresent()) {
-        String manager = ManagerDecorator.getClassName(
-            GUIGeneratorUtil.getInstance().getMainDomainModelSimpleName().get()
-        );
-        getPrinter().print(manager + "."
-            + BuilderDecorator.getClassName(StringTransformations.uncapitalize(node.getName())));
-      }
-      else {
-        Log.error("0x00007 Could not identify the manager name: domain class diagram is missing");
-      }
-    }
-    else if (ignore.contains(node)) {
+    if (ignore.contains(node)) {
       getPrinter().print(node.getName() + " ");
     }
     else {

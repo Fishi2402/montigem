@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import umlp.generator.gui.DomainGUITest;
 import umlp.generator.gui.GUIComponentStat;
 import umlp.generator.gui.GUIGeneratorUtil;
+import umlp.generator.gui.genjava.decorator.StaticObjectsCollector;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -165,7 +166,6 @@ public class Expression2AccessorPrinterTest extends DomainGUITest {
     ASTGUIComponent fieldCall5 = stat.getCompById(components, "fieldCall5");
     ASTGUIComponent fieldCall6 = stat.getCompById(components, "fieldCall6");
     ASTGUIComponent literal = stat.getCompById(components, "literal");
-    ASTGUIComponent list = stat.getCompById(components, "list");
 
     String expect1 = removeSpaces("this.getAge()");
     String result1 = removeSpaces(printer.prettyprint(
@@ -205,10 +205,6 @@ public class Expression2AccessorPrinterTest extends DomainGUITest {
     String result9 = removeSpaces(printer.prettyprint(
         fieldCall6.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
 
-    String expect10 = removeSpaces("List.of(DomainManager.personBuilder(), this.getPersons().get(0))");
-    String result10 = removeSpaces(printer.prettyprint(
-        list.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
-
     assertAll(
         () -> assertEquals(expect1, result1),
         () -> assertEquals(expect2, result2),
@@ -218,8 +214,7 @@ public class Expression2AccessorPrinterTest extends DomainGUITest {
         () -> assertEquals(expect6, result6),
         () -> assertEquals(expect7, result7),
         () -> assertEquals(expect8, result8),
-        () -> assertEquals(expect9, result9),
-        () -> assertEquals(expect10, result10)
+        () -> assertEquals(expect9, result9)
     );
   }
 
@@ -275,6 +270,83 @@ public class Expression2AccessorPrinterTest extends DomainGUITest {
         () -> assertEquals(expect2, result2),
         () -> assertEquals(expect3, result3),
         () -> assertEquals(expect4, result4)
+    );
+  }
+
+  @Test
+  public void testAccessorConversion6() {
+    ASTGUIComponentDeclaration componentDecl;
+    GUIComponentStat stat = GUIComponentStat.getInstance();
+
+    List<ASTGUIComponent> components;
+    List<ASTGUIGuard> guards;
+    List<ASTGUIIterate> iterates;
+
+    componentDecl = processGUIModel(
+        "gui/genjava/decorator/StaticObjectsCollector.gui",
+        "src/test/resources/gui"
+    ).getGUIComponentDeclaration();
+
+    StaticObjectsCollector.getInstance().init(componentDecl);
+
+    IterationItemsFinder finder = new IterationItemsFinder();
+    Collection<ASTExpression> iterationItems = new HashSet<>(finder.getItems(componentDecl));
+    Expression2AccessorPrinter printer = new Expression2AccessorPrinter(
+        new IndentPrinter(), true, iterationItems, iterationItems
+    );
+
+    components = stat.getComponents(componentDecl);
+    guards = stat.getGuards(componentDecl);
+    iterates = stat.getIterates(componentDecl);
+
+    ASTGUIComponent a = stat.getCompById(components, "a");
+    ASTGUIComponent b = stat.getCompById(components, "b");
+    ASTGUIComponent c = stat.getCompById(components, "c");
+    ASTGUIComponent d = stat.getCompById(components, "d");
+    ASTGUIGuard e = stat.getGuardById(guards, "e");
+    ASTGUIIterate f = stat.getIterById(iterates, "f");
+    ASTGUIComponent g = stat.getCompById(components, "g");
+    ASTGUIComponent h = stat.getCompById(components, "h");
+    ASTGUIComponent i = stat.getCompById(components, "i");
+
+    String expect1 = removeSpaces("this.getPerson()");
+    String result1 = removeSpaces(printer.prettyprint(a.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+
+    String expect2 = removeSpaces("this.getBP0()");
+    String result2 = removeSpaces(printer.prettyprint(b.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+
+    String expect3 = removeSpaces("this.getCA1()");
+    String result3 = removeSpaces(printer.prettyprint(c.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+
+    String expect4 = removeSpaces("this.getDLp3()");
+    String result4 = removeSpaces(printer.prettyprint(d.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+
+    String expect5 = removeSpaces("this.getECondition7().isEmployed()");
+    String result5 = removeSpaces(printer.prettyprint(e.getCondition()));
+
+    String expect6 = removeSpaces("this.getFIterable8(p).getFriends()");
+    String result6 = removeSpaces(printer.prettyprint(((ASTGUIShortIterateControl) f.getIterateControl()).getIterable()));
+
+    String expect7 = removeSpaces("this.getGA9(p2, p)");
+    String result7 = removeSpaces(printer.prettyprint(g.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+
+    String expect8 = removeSpaces("this.getHA10(p2, p)");
+    String result8 = removeSpaces(printer.prettyprint(h.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+
+    String expect9 = removeSpaces("this.getIP11(this.getPerson().getName(), p2, p)");
+    String result9 = removeSpaces(printer.prettyprint(i.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+
+    assertAll(
+        () -> assertEquals(expect1, result1),
+        () -> assertEquals(expect2, result2),
+        () -> assertEquals(expect3, result3),
+        () -> assertEquals(expect4, result4),
+        // TODO: GUI DSL should interpret calls of form `Person()` as a constructor call
+        // () -> assertEquals(expect5, result5),
+        () -> assertEquals(expect6, result6),
+        () -> assertEquals(expect7, result7),
+        () -> assertEquals(expect8, result8),
+        () -> assertEquals(expect9, result9)
     );
   }
 

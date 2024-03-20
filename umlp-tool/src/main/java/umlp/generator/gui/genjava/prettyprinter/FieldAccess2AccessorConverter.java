@@ -1,17 +1,23 @@
 package umlp.generator.gui.genjava.prettyprinter;
 
+import de.monticore.ast.ASTNode;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.commonexpressions._prettyprint.CommonExpressionsPrettyPrinter;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.StringTransformations;
 import umlp.generator.gui.GUIGeneratorUtil;
+import umlp.generator.gui.genjava.decorator.StaticObjectsCollector;
 
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
 
 public class FieldAccess2AccessorConverter extends CommonExpressionsPrettyPrinter {
 
@@ -27,9 +33,67 @@ public class FieldAccess2AccessorConverter extends CommonExpressionsPrettyPrinte
 
   @Override
   public void handle(ASTCallExpression node) {
+    Map<ASTNode, ASTCDAttribute> node2Attr = StaticObjectsCollector.getInstance().getNode2Attr();
+    // a special case with builder
+    if (node2Attr.containsKey(node)) {
+      getPrinter().print("this.get" + StringTransformations.capitalize(
+          node2Attr.get(node).getName()
+      ));
+
+      if (this.isPrintComments()) {
+        CommentPrettyPrinter.printPreComments(node, getPrinter());
+      }
+
+      // arguments start
+      if (this.isPrintComments()) {
+        CommentPrettyPrinter.printPreComments(node.getArguments(), getPrinter());
+      }
+      Iterator<ASTExpression> iter_expression = node.getArguments().getExpressionList().iterator();
+
+      getPrinter().stripTrailing();
+      getPrinter().print("(");
+
+      Iterator<VariableSymbol> vs = GUIGeneratorUtil.getInstance()
+          .findIterationItemSymbols(node.getEnclosingScope()).iterator();
+
+      if (iter_expression.hasNext()) {
+        iter_expression.next().accept(getTraverser());
+        while (iter_expression.hasNext()) {
+          getPrinter().stripTrailing();
+          getPrinter().print(",");
+          iter_expression.next().accept(getTraverser());
+        }
+        if (vs.hasNext()) {
+          getPrinter().print(",");
+        }
+      }
+
+      if (vs.hasNext()) {
+        getPrinter().print(vs.next().getName());
+        while (vs.hasNext()) {
+          getPrinter().stripTrailing();
+          getPrinter().print(",");
+          getPrinter().print(vs.next().getName());
+        }
+      }
+
+      getPrinter().stripTrailing();
+      getPrinter().print(")");
+
+      if (this.isPrintComments()) {
+        CommentPrettyPrinter.printPostComments(node.getArguments(), getPrinter());
+      }
+      // arguments end
+
+      if (this.isPrintComments()) {
+        CommentPrettyPrinter.printPostComments(node, getPrinter());
+      }
+    }
     // ignore field and name expressions that are direct children of ASTCallExpression
-    ignore.add(node.getExpression());
-    super.handle(node);
+    else {
+      ignore.add(node.getExpression());
+      super.handle(node);
+    }
   }
 
   @Override

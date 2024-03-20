@@ -1,0 +1,27 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package genjava.decorator;
+
+import Domain.Person;
+import Domain.Address;
+import Domain.MaritalStatus;
+
+import util.P;
+import util.L;
+
+page StaticObjectsCollector(Person person) {
+  a@P(p = person);
+  b@P(p = Person());
+  c@L(a = [person.address, Address()]);
+  d@L(lp = [[person, Person()], [person.friends.get(0)]]);
+  // doesn't make sense but technically correct
+  e@guard(Person().employed) {}
+  f@iterate(Person p : Person().friends) {
+    j@iterate(Person p2 : person.friends) {
+      g@L(a = [p.address, p2.address]);
+      h@L(a = [p2.address, p.address]);
+      i@P(p = Person(person.name));
+    }
+  }
+  // TODO: iterate and guard tests with lists. Lists are currently unsupported in guards and iterate
+}

@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui.genjava.decorator;
 
+import de.monticore.ast.ASTNode;
 import de.monticore.cd.codegen.methods.MethodDecorator;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd4code.CD4CodeMill;
@@ -9,12 +10,16 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
+import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl.GUIDSLMill;
+import de.monticore.guidsl._ast.ASTGUIArgValue;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
+import de.monticore.guidsl._ast.ASTGUIList;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._ast.ASTGUIParam;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
@@ -34,10 +39,14 @@ import umlp.generator.gui.genjava.prettyprinter.Expression2NullCheckPrinter;
 import umlp.generator.gui.genjava.prettyprinter.Expression2SetterPrinter;
 import umlp.generator.gui.genjava.prettyprinter.IterationItemsFinder;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
-public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUIDSLVisitor2 {
+public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUIDSLVisitor2, CommonExpressionsVisitor2 {
 
   protected ASTCDClass clazz;
   protected GUIDSLTraverser traverser;
@@ -47,6 +56,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     super(glex);
     traverser = GUIDSLMill.traverser();
     traverser.add4GUIDSL(this);
+    traverser.add4CommonExpressions(this);
   }
 
   public void transform(ASTGUICompilationUnit gui, ASTCDCompilationUnit cd) {
@@ -68,6 +78,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     // TODO add router
     // addAdditionalAttributes(clazz);
 
+    StaticObjectsCollector.getInstance().init(gui.getGUIComponentDeclaration());
     gui.accept(traverser);
   }
 
@@ -106,7 +117,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
       // add attr init to class init
       glex.addAfterTemplate(
           getInitBodyHookpoint(),
-          new TemplateHookPoint(getInitBuilderCallTemplate(), attrInit)
+          new TemplateHookPoint(getInitCallTemplate(), attrInit)
       );
 
       // add builder init
@@ -118,7 +129,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
       // add builder init to class init
       glex.addAfterTemplate(
           getInitBodyHookpoint(),
-          new TemplateHookPoint(getInitBuilderCallTemplate(), builderInit)
+          new TemplateHookPoint(getInitCallTemplate(), builderInit)
       );
     }
     else {
@@ -127,7 +138,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
   }
 
   @Override
-  public void visit(ASTGUINamedArg node) {
+  public void endVisit(ASTGUINamedArg node) {
     // calc type
     if (!node.isPresentNameSymbol()) {
       Log.error("0x0000E Unable to find symbol for '" + node.getName()
@@ -145,7 +156,6 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     IterationItemsFinder finder = new IterationItemsFinder();
     Collection<ASTExpression> iterateItems = new HashSet<>(finder.getItems(gui));
 
-    // replace field access with getters
     Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
         new IndentPrinter(), false, iterateItems, iterateItems
     );
@@ -169,6 +179,69 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
         clazz, getArgSetterTemplate(),
         type, name, nullCheck, setterValue
     );
+  }
+
+  @Override
+  public void endVisit(ASTGUIList node) {
+    Map<ASTNode, ASTCDAttribute> node2Attr = StaticObjectsCollector.getInstance().getNode2Attr();
+    if (node2Attr.containsKey(node)) {
+      // add attr
+      ASTCDAttribute attr = node2Attr.get(node);
+      clazz.addCDMember(attr);
+
+      // add getter and setter
+      MethodDecorator methodDecorator = new MethodDecorator(glex);
+      clazz.addAllCDMembers(methodDecorator.decorate(attr));
+
+      // add attr init
+      Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
+          new IndentPrinter(), false, Collections.emptyList(), Collections.emptyList()
+      );
+      List<String> listItems = new ArrayList<>();
+      for (ASTGUIArgValue val : node.getGUIArgValueList()) {
+        listItems.add(getterPrinter.prettyprint(val));
+      }
+
+      ASTCDMethodSignature attrInit = getCD4C().addMethod(
+          clazz, getInitListTemplate(), attr, listItems
+      );
+
+      // add attr init to class init
+      glex.addAfterTemplate(
+          getInitBodyHookpoint(),
+          new TemplateHookPoint(getInitCallTemplate(), attrInit)
+      );
+    }
+  }
+
+  @Override
+  public void endVisit(ASTCallExpression node) {
+    Map<ASTNode, ASTCDAttribute> node2Attr = StaticObjectsCollector.getInstance().getNode2Attr();
+    if (node2Attr.containsKey(node)) {
+      // add attr
+      ASTCDAttribute attr = node2Attr.get(node);
+      clazz.addCDMember(attr);
+
+      // add getter and setter
+      MethodDecorator methodDecorator = new MethodDecorator(glex);
+      clazz.addAllCDMembers(methodDecorator.decorate(attr));
+
+      if (util.getMainDomainModelSimpleName().isPresent()) {
+        String manager = ManagerDecorator.getClassName(util.getMainDomainModelSimpleName().get());
+
+        // add builder init
+        ASTCDMethodSignature builderInit = getCD4C().addMethod(
+            clazz, getInitBuilderTemplate(),
+            attr, manager
+        );
+
+        // add builder init to class init
+        glex.addAfterTemplate(
+            getInitBodyHookpoint(),
+            new TemplateHookPoint(getInitCallTemplate(), builderInit)
+        );
+      }
+    }
   }
 
   protected ASTCDClass emptyClass(ASTGUICompilationUnit ast) {
@@ -241,7 +314,11 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     return "umlp.gui2java.GUI2JavaInitBuilder";
   }
 
-  protected String getInitBuilderCallTemplate() {
+  protected String getInitListTemplate() {
+    return "umlp.gui2java.GUI2JavaInitList";
+  }
+
+  protected String getInitCallTemplate() {
     return "umlp.gui2java.GUI2JavaInitBuilderCall";
   }
 

@@ -20,5 +20,4 @@ page Prettyprinter(List<Person> persons) {
   literal@GemText(value = "bob");
   fieldCall5@GemText(value = persons.get(0).status);
   fieldCall6@GemText(value = MaritalStatus.MARRIED);
-  list@Prettyprinter(persons = [Person(), persons.get(0)]);
 }

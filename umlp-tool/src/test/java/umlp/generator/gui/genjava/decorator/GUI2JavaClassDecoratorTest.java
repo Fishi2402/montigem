@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package umlp.generator.gui.genjava;
+package umlp.generator.gui.genjava.decorator;
 
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import umlp.generator.gui.DomainGUITest;
 import umlp.generator.gui.GUIGeneratorUtil;
-import umlp.generator.gui.genjava.decorator.GUI2JavaClassDecorator;
+import umlp.generator.gui.genjava.GUI2CDTrafo;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -73,13 +73,16 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     ASTCDCompilationUnit cd;
 
     gui = processGUIModel(
-        "gui/genjava/GUI2JavaClassDecorator.gui",
+        "gui/genjava/decorator/GUI2JavaClassDecorator.gui",
         "src/test/resources/gui",
         "packaged/Domain.umlp"
     );
     cd = GUI2CDTrafo.createCDCompilationUnit(gui);
 
-    GUIGeneratorUtil.getInstance().init(List.of("packaged.Domain"), List.of("genjava.GUI2JavaClassDecorator"));
+    GUIGeneratorUtil.getInstance().init(
+        List.of("packaged.Domain"),
+        List.of("genjava.decorator.GUI2JavaClassDecorator")
+    );
 
     GUI2JavaClassDecorator decorator = new GUI2JavaClassDecorator(glex);
     decorator.transform(gui, cd);
@@ -157,13 +160,16 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     ASTCDCompilationUnit cd;
 
     gui = processGUIModel(
-        "gui/genjava/GUI2JavaClassDecorator.gui",
+        "gui/genjava/decorator/GUI2JavaClassDecorator.gui",
         "src/test/resources/gui",
         "packaged/Domain.umlp"
     );
     cd = GUI2CDTrafo.createCDCompilationUnit(gui);
 
-    GUIGeneratorUtil.getInstance().init(List.of("packaged.Domain"), List.of("genjava.GUI2JavaClassDecorator"));
+    GUIGeneratorUtil.getInstance().init(
+        List.of("packaged.Domain"),
+        List.of("genjava.decorator.GUI2JavaClassDecorator")
+    );
 
     GUI2JavaClassDecorator decorator = new GUI2JavaClassDecorator(glex);
     decorator.transform(gui, cd);
