@@ -6,6 +6,7 @@ import dtcockpit.DtcockpitTestContext;
 import dtcockpit.User;
 import dtcockpit.test_infrastructure.DtcockpitDBTestSetup;
 import dtcockpit.test_infrastructure.DtcockpitMockTestSetup;
+import dtcockpit.test_infrastructure.DtcockpitSQLDBTestSetup;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import umlp.backendrte.test_infrastructure.ClientSetup;
@@ -30,7 +31,7 @@ public interface UserCreateE2ETest extends TestSetup<DtcockpitTestContext> {
   }
 
   @Disabled
-  class UserCreateE2EDbTest extends DtcockpitDBTestSetup implements UserCreateE2ETest {
+  class UserCreateE2EDbTest extends DtcockpitSQLDBTestSetup implements UserCreateE2ETest {
     public UserCreateE2EDbTest() {
       super(ClientSetup.of(adminUserName));
     }

@@ -1,10 +1,7 @@
 package associations;
 
-import associations.test_infrastructure.AssociationsDBTestSetup;
-import attributes.AttributesDAOFactory;
-import attributes.DbTypesTest;
-import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Disabled;
+import associations.test_infrastructure.AssociationsSQLDBTestSetup;
+import associations.test_infrastructure.AssociationsSQLDBTestSetupTOP;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public abstract class BidirectionalAssocsDbTest extends AssociationsDBTestSetup {
+public abstract class BidirectionalAssocsDbTest extends AssociationsSQLDBTestSetup {
 
   @DisplayName("Neo4J-BidirectionalAssocs")
   public static class

@@ -5,6 +5,7 @@ import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDExtendUsage;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -130,6 +131,8 @@ public class TestSetupDecorator extends AbstractDecorator {
         target,
         "int numberOfClients").get();
 
+    //TODO add delegating super constructors for every constructor there is in the parent class
+
     String basicTemplate = "umlp.common.BasicConstructor";
     String numOfClientsTemplate = COMMON_CUSTOM_TEMPLATE_PATH + "NumberOfClientsConstructor";
     String superTemplate = "umlp.common.SuperConstructor";
@@ -217,7 +220,8 @@ public class TestSetupDecorator extends AbstractDecorator {
 
     ASTCDClass res = UMLPMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
-        .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(cdName + DB_TEST_SETUP_SUFFIX))
+        .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(
+            cdName + DB_TEST_SETUP_SUFFIX))
         .setName(cdName + NEO4J_TEST_SETUP_SUFFIX)
         .build();
 

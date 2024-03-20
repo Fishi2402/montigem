@@ -1,11 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
-package attributes.test_infrastructure;
+package associations.test_infrastructure;
 
-import attributes.AttributesManager;
-import attributes.AttributesManagerClientImpl;
-import attributes.AttributesManagerImpl;
-import attributes.AttributesTestContext;
-import org.junit.jupiter.api.BeforeAll;
+import associations.AssociationsManager;
+import associations.AssociationsManagerClientImpl;
+import associations.AssociationsManagerImpl;
+import associations.AssociationsTestContext;
 import org.neo4j.configuration.GraphDatabaseSettings;
 import org.neo4j.configuration.connectors.BoltConnector;
 import org.neo4j.configuration.helpers.SocketAddress;
@@ -15,25 +14,30 @@ import umlp.backendrte.command.CommandDirectCommunication;
 import umlp.backendrte.command.CommandManager;
 import umlp.backendrte.command.TestClientCommandManager;
 import umlp.backendrte.common.DatabaseAccessManager4Neo4j;
+import umlp.backendrte.test_infrastructure.ClientSetup;
 
 import java.nio.file.Paths;
 
-public class AttributesDBTestSetup extends attributes.test_infrastructure.AttributesDBTestSetupTOP {
+public abstract class AssociationsSQLDBTestSetup extends AssociationsSQLDBTestSetupTOP {
 
   protected String dbType = "SQL";
 
-  public final static int port = 7690;
+  public final static int port = 7687;
 
   protected static DatabaseManagementService managementService;
 
-  public AttributesDBTestSetup(int numberOfClients, String dbType) {
+  public AssociationsSQLDBTestSetup(int numberOfClients, String dbType) {
     super(numberOfClients);
     this.dbType = dbType;
   }
 
-  public AttributesDBTestSetup(int numberOfClients) {
+  public AssociationsSQLDBTestSetup(int numberOfClients) {
     super(numberOfClients);
     this.dbType = "SQL";
+  }
+
+  public AssociationsSQLDBTestSetup(ClientSetup clientSetup) {
+    super(clientSetup);
   }
 
   @Override
@@ -41,20 +45,19 @@ public class AttributesDBTestSetup extends attributes.test_infrastructure.Attrib
     if (dbType.equals("SQL")) {
       super._init();
     } else {
-      AttributesTestContext.clear();
-      AttributesManagerImpl.init();
+      AssociationsTestContext.clear();
 
       DatabaseAccessManager4Neo4j.initBoltLocalhost(port, "neo4j", "");
-      AttributesManagerImpl.initNeo4J();
+      AssociationsManagerImpl.initNeo4J();
 
-      backend = AttributesTestContext.fromCurrentContext();
+      backend = AssociationsTestContext.fromCurrentContext();
       for (int i = 0; i < getNumberOfClients(); i++) {
-        AttributesTestContext.clear();
-        AttributesManager.initMe(new AttributesManagerClientImpl());
+        AssociationsTestContext.clear();
+        AssociationsManager.initMe(new AssociationsManagerClientImpl());
         CommandDirectCommunication communication = new CommandDirectCommunication(backend);
         TestClientCommandManager clientCommandManager = new TestClientCommandManager(communication);
         CommandManager.initMe(clientCommandManager);
-        var client = AttributesTestContext.fromCurrentContext();
+        var client = AssociationsTestContext.fromCurrentContext();
         communication.setClientContext(client);
         clients.add(client);
       }
@@ -79,7 +82,7 @@ public class AttributesDBTestSetup extends attributes.test_infrastructure.Attrib
       managementService.database(GraphDatabaseSettings.DEFAULT_DATABASE_NAME);
       return;
     }
-    managementService = new DatabaseManagementServiceBuilder(Paths.get("build", "attributesDbTest"))
+    managementService = new DatabaseManagementServiceBuilder(Paths.get("build", "associationDbTest"))
         .setConfig(BoltConnector.enabled, true)
         .setConfig(BoltConnector.listen_address, new SocketAddress("localhost", port)).build();
     registerShutdownHook(managementService);

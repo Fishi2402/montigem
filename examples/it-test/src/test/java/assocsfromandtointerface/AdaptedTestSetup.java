@@ -3,6 +3,7 @@ package assocsfromandtointerface;
 
 import assocsfromandtointerface.test_infrastructure.AssocsFromAndToInterfaceDBTestSetup;
 import assocsfromandtointerface.test_infrastructure.AssocsFromAndToInterfaceMockTestSetup;
+import assocsfromandtointerface.test_infrastructure.AssocsFromAndToInterfaceSQLDBTestSetup;
 import umlp.backendrte.test_infrastructure.TestSetup;
 
 public interface AdaptedTestSetup extends TestSetup<AssocsFromAndToInterfaceTestContext> {
@@ -25,7 +26,7 @@ public interface AdaptedTestSetup extends TestSetup<AssocsFromAndToInterfaceTest
     }
   }
 
-  class DbTestSetup extends AssocsFromAndToInterfaceDBTestSetup implements AdaptedTestSetup{
+  class DbTestSetup extends AssocsFromAndToInterfaceSQLDBTestSetup implements AdaptedTestSetup{
     public DbTestSetup(int numberOfClients) {
       super(numberOfClients);
     }
