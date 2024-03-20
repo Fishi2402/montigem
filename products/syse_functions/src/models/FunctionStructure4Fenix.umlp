@@ -32,7 +32,7 @@ umlp FunctionStructure4Fenix {
     association [*] Port <-> Channel [1];
 
     association [*] Channel -> Category [1];
-    composition [0..1] Function (owner) -> (subFunction) Function [*];
+    composition [0..1] Function (owner) <-> (subFunction) Function [*];
 
     class FunctionStream;
 
