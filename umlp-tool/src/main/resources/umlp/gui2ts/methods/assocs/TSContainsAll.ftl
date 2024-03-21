@@ -2,4 +2,4 @@
 ${tc.signature("name", "targetName")}
 
 ${cd4c.method("public boolean containsAll${name?cap_first}(GemList<${targetName}> o)")}
-return this._${name}.containsAll(o);
+return this._internal_get${name?cap_first}GemList().containsAll(o);
