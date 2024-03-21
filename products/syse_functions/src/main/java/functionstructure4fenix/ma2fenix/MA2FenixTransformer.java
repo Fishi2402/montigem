@@ -11,7 +11,7 @@ import functionstructure4fenix.Category;
 import functionstructure4fenix.Channel;
 import functionstructure4fenix.Data;
 import functionstructure4fenix.Function;
-import functionstructure4fenix.FunctionStructure4FenixManagerImpl;
+import functionstructure4fenix.FunctionStructure4FenixManager;
 import functionstructure4fenix.Port;
 import functionstructure4fenix.PortBuilder;
 import functionstructure4fenix.Type;
@@ -24,26 +24,26 @@ import java.util.Stack;
 import java.util.stream.Collectors;
 
 public class MA2FenixTransformer {
-  private Stack<String> stack;
-  private List<Type> types;
-  private Map<String, Category> categories;
-  private List<Function> functions;
-  private List<Port> ports;
-  private final Data data;
+  protected Stack<String> stack;
+  protected List<Type> types;
+  protected Map<String, Category> categories;
+  protected List<Function> functions;
+  protected List<Port> ports;
+  protected final Data data;
+  protected HashMap<String, Channel> channelMap;
 
-  MA2FenixTransformer(){
+  public MA2FenixTransformer(){
     channelMap = new HashMap<>();
     stack = new Stack();
     types = new ArrayList();
     functions = new ArrayList();
     ports = new ArrayList();
     categories = new HashMap<>();
-    FunctionStructure4FenixManagerImpl.init();
-    data = FunctionStructure4FenixManagerImpl.dataBuilder().build().get();
+    data = FunctionStructure4FenixManager.dataBuilder().build().get();
   }
 
 
-  private HashMap<String, Channel> channelMap;
+
 
   public void transform(ASTComponentType node){
     createFunction(node);
@@ -62,7 +62,7 @@ public class MA2FenixTransformer {
     if(this.getQname().isEmpty()) {
       stack.push(node.getName().toLowerCase());
     }
-    Function function = FunctionStructure4FenixManagerImpl.functionBuilder().name(stack.peek());
+    Function function = FunctionStructure4FenixManager.functionBuilder().name(stack.peek());
 
     for (ASTConnector c : node.getConnectors()){
       mapConnectorToChannel(c);
@@ -139,7 +139,7 @@ public class MA2FenixTransformer {
     if(categories.containsKey(node.getSymbol().getTypeInfo().getFullName())){
       category = categories.get(node.getSymbol().getTypeInfo().getFullName());
     }else {
-      category = FunctionStructure4FenixManagerImpl.categoryBuilder()
+      category = FunctionStructure4FenixManager.categoryBuilder()
           .type(createType(node.getSymbol().getTypeInfo())).kind(data);
       categories.put(node.getSymbol().getTypeInfo().getFullName(), category);
     }
@@ -147,13 +147,13 @@ public class MA2FenixTransformer {
   }
 
   public Type createType(TypeSymbol node){
-    Type type = FunctionStructure4FenixManagerImpl.typeBuilder().mctype(node.getFullName());
+    Type type = FunctionStructure4FenixManager.typeBuilder().mctype(node.getFullName());
     types.add(type);
     return type;
   }
 
   public Port createPort(ASTArcPort node){
-    PortBuilder port = FunctionStructure4FenixManagerImpl.portBuilder().name(node.getName());
+    PortBuilder port = FunctionStructure4FenixManager.portBuilder().name(node.getName());
     if(channelMap.containsKey(getQname()+"."+node.getName())){
       port.channel(channelMap.get(getQname()+"."+node.getName()));
     }else{
@@ -184,14 +184,14 @@ public class MA2FenixTransformer {
             channelMap.put(entry.getKey(), channelMap.get(this.getQname() + "." + key.getQName()));
           }
         }
-        FunctionStructure4FenixManagerImpl.deleteChannel(del.getGemId());
+        FunctionStructure4FenixManager.deleteChannel(del.getGemId());
       } else {
         channelMap.put(this.getQname() + "." + key.getQName(), channelMap.get(this.getQname() + "." + value.getQName()));
       }
     } else if (channelMap.containsKey(this.getQname() + "." + key.getQName())){
       channelMap.put(this.getQname() + "." + value.getQName(), channelMap.get(this.getQname() + "." + key.getQName()));
     }else{
-      Channel c = FunctionStructure4FenixManagerImpl.channelBuilder().category(createCategory(key.getPortSymbol().getAstNode()));
+      Channel c = FunctionStructure4FenixManager.channelBuilder().category(createCategory(key.getPortSymbol().getAstNode()));
       channelMap.put(this.getQname()+"."+key.getQName(), c);
       channelMap.put(this.getQname()+"."+value.getQName(), c);
     }

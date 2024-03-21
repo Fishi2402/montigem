@@ -15,8 +15,8 @@ public class MA2FenixTransformTest extends FunctionStructure4FenixDBTestSetup {
     super(0);
   }
 
-  Path input1 = Paths.get("src/test/resources/ma2fenix/channelsplit");
-  Path input2 = Paths.get("src/test/resources/ma2fenix/general");
+  Path input1 = Paths.get("src/test/resources/ma2fenix/test1");
+  Path input2 = Paths.get("src/test/resources/ma2fenix/test2");
 
   @Test
   public void Test1(){
@@ -25,16 +25,13 @@ public class MA2FenixTransformTest extends FunctionStructure4FenixDBTestSetup {
         "-main", "A"
     };
     MA2FenixTool.main(args);
-    Function a = FunctionStructure4FenixManagerImpl.getFunctionSure(1);
+    Function a = FunctionStructure4FenixManager.getFunctionSure(1);
     Function b1 = a.getSubFunction(0);
     Function c1 = b1.getSubFunction(0);
-    System.out.println(a.getName());
-    System.out.println(b1.getName());
-    System.out.println(c1.getName());
-    assertEquals(FunctionStructure4FenixManagerImpl.getChannelList().size(), 2);
-    assertEquals(FunctionStructure4FenixManagerImpl.getDataList().size(), 1);
-    assertEquals(FunctionStructure4FenixManagerImpl.getCategoryList().size(), 1);
-    assertEquals(FunctionStructure4FenixManagerImpl.getTypeList().size(), 1);
+    assertEquals(2, FunctionStructure4FenixManager.getChannelList().size());
+    assertEquals(1, FunctionStructure4FenixManager.getDataList().size());
+    assertEquals(1, FunctionStructure4FenixManager.getCategoryList().size());
+    assertEquals(1, FunctionStructure4FenixManager.getTypeList().size());
     assertEquals("a", a.getName());
     assertEquals("b1", b1.getName());
     assertEquals("c1", c1.getName());
@@ -50,14 +47,14 @@ public class MA2FenixTransformTest extends FunctionStructure4FenixDBTestSetup {
         "-main", "L"
     };
     MA2FenixTool.main(args);
-    Function l = FunctionStructure4FenixManagerImpl.getFunctionSure(1);
+    Function l = FunctionStructure4FenixManager.getFunctionSure(1);
     Function m1 = l.getSubFunction(0);
     Function n1 = m1.getSubFunction(0);
     Function n2 = m1.getSubFunction(1);
-    assertEquals(5, FunctionStructure4FenixManagerImpl.getChannelList().size());
-    assertEquals(1, FunctionStructure4FenixManagerImpl.getDataList().size());
-    assertEquals(2, FunctionStructure4FenixManagerImpl.getCategoryList().size());
-    assertEquals(2, FunctionStructure4FenixManagerImpl.getTypeList().size());
+    assertEquals(5, FunctionStructure4FenixManager.getChannelList().size());
+    assertEquals(1, FunctionStructure4FenixManager.getDataList().size());
+    assertEquals(2, FunctionStructure4FenixManager.getCategoryList().size());
+    assertEquals(2, FunctionStructure4FenixManager.getTypeList().size());
     assertEquals("l", l.getName());
     assertEquals("m1", m1.getName());
     assertEquals("n1", n1.getName());
