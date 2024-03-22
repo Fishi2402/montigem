@@ -54,10 +54,6 @@ import java.util.stream.Collectors;
 
 public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
 
-  private static final String DOMAIN_OUTPUT_DIR = "frontendGen/build/appdomain/";
-
-  private static final String GUI_OUTPUT_DIR = "frontendGen/build/appgui/";
-
   private static final String NODE_VERSION = "18.13.0";
 
   @Input
