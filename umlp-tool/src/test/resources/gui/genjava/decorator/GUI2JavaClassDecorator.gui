@@ -55,7 +55,7 @@ page GUI2JavaClassDecorator(
   /*
     this.getPerson().getAddress().getHouse();
   */
-  g@V(gve = v, lgve = [@V(), @P()]);
+  g@V(gve = v, lgve = [$1@V(), $2@P()]);
   /*
     this.getV();
     List.of(this.getV(), this.getP());

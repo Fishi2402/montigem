@@ -341,7 +341,8 @@ public class Expression2AccessorPrinterTest extends DomainGUITest {
         () -> assertEquals(expect2, result2),
         () -> assertEquals(expect3, result3),
         () -> assertEquals(expect4, result4),
-        // TODO: GUI DSL should interpret calls of form `Person()` as a constructor call
+        // TODO: GUI DSL should interpret calls of form `Person()` as a constructor call with
+        //  return type Person
         // () -> assertEquals(expect5, result5),
         () -> assertEquals(expect6, result6),
         () -> assertEquals(expect7, result7),

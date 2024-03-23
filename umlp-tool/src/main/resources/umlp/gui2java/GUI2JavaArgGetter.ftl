@@ -1,6 +1,9 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("type", "name", "nullCheck", "getterExpression", "args")}
-${cd4c.method("protected ${type} get${name?cap_first}(${args})")}
+<#assign genHelper = glex.getGlobalVar("genHelper")>
+<#assign argsString = genHelper.variableSymbols2ArgsString(args)>
+
+${cd4c.method("protected ${type} get${name?cap_first}(${argsString})")}
 if (${nullCheck}) {
   return null;
 }

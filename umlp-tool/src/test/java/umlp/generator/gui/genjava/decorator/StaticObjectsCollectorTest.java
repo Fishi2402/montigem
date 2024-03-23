@@ -51,12 +51,14 @@ public class StaticObjectsCollectorTest extends DomainGUITest {
     ASTGUIGuard e = stat.getGuardById(guards, "e");
     ASTGUIIterate f = stat.getIterById(iterates, "f");
     ASTGUIComponent g = stat.getCompById(components, "g");
+    ASTGUIComponent h = stat.getCompById(components, "h");
+    ASTGUIComponent i = stat.getCompById(components, "i");
 
     List<Executable> assertions = new ArrayList<>();
 
     Map<ASTNode, ASTCDAttribute> node2Attr = StaticObjectsCollector.getInstance().getNode2Attr();
 
-    assertions.add(() -> assertEquals(10, node2Attr.size()));
+    assertions.add(() -> assertEquals(12, node2Attr.size()));
 
     ASTCDAttribute bP0 = node2Attr.get(
         stat.getArgByName(b, "p").getGUIArgValue().getExpression());
@@ -107,6 +109,16 @@ public class StaticObjectsCollectorTest extends DomainGUITest {
         stat.getArgByName(g, "a").getGUIArgValue().getGUIList());
     assertions.add(() -> assertEquals("List<Address>", gA9.getMCType().printType()));
     assertions.add(() -> assertEquals("gA9", gA9.getName()));
+
+    ASTCDAttribute hA10 = node2Attr.get(
+        stat.getArgByName(h, "a").getGUIArgValue().getGUIList());
+    assertions.add(() -> assertEquals("List<Address>", hA10.getMCType().printType()));
+    assertions.add(() -> assertEquals("hA10", hA10.getName()));
+
+    ASTCDAttribute iP11 = node2Attr.get(
+        stat.getArgByName(i, "p").getGUIArgValue().getExpression());
+    assertions.add(() -> assertEquals("Person", iP11.getMCType().printType()));
+    assertions.add(() -> assertEquals("iP11", iP11.getName()));
 
     assertAll(assertions);
   }

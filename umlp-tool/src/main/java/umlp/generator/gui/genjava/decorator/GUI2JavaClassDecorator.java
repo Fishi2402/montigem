@@ -26,6 +26,7 @@ import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.se_rwth.commons.StringTransformations;
@@ -123,7 +124,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
       // add builder init
       ASTCDMethodSignature builderInit = getCD4C().addMethod(
           clazz, getInitBuilderTemplate(),
-          attr, manager
+          attr, manager, Collections.emptyList()
       );
 
       // add builder init to class init
@@ -168,16 +169,22 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     String getterValue = getterPrinter.prettyprint(node.getGUIArgValue());
     String setterValue = setterPrinter.prettyprint(node.getGUIArgValue());
 
+    // calc iterate items as additional args
+    List<VariableSymbol> iterateArgs = util.findIterationItemSymbols(node.getEnclosingScope());
+    for (VariableSymbol vs : iterateArgs) {
+      getCD4C().addImport(clazz, vs.getType().printFullName());
+    }
+
     // add getter
     getCD4C().addMethod(
         clazz, getArgGetterTemplate(),
-        type, name, nullCheck, getterValue
+        type, name, nullCheck, getterValue, iterateArgs
     );
 
     // add setter
     getCD4C().addMethod(
         clazz, getArgSetterTemplate(),
-        type, name, nullCheck, setterValue
+        type, name, nullCheck, setterValue, iterateArgs
     );
   }
 
@@ -202,8 +209,14 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
         listItems.add(getterPrinter.prettyprint(val));
       }
 
+      // calc iterate items as additional args
+      List<VariableSymbol> iterateArgs = util.findIterationItemSymbols(node.getEnclosingScope());
+      for (VariableSymbol vs : iterateArgs) {
+        getCD4C().addImport(clazz, vs.getType().printFullName());
+      }
+
       ASTCDMethodSignature attrInit = getCD4C().addMethod(
-          clazz, getInitListTemplate(), attr, listItems
+          clazz, getInitListTemplate(), attr, listItems, iterateArgs
       );
 
       // add attr init to class init
@@ -229,10 +242,16 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
       if (util.getMainDomainModelSimpleName().isPresent()) {
         String manager = ManagerDecorator.getClassName(util.getMainDomainModelSimpleName().get());
 
+        // calc iterate items as additional args
+        List<VariableSymbol> iterateArgs = util.findIterationItemSymbols(node.getEnclosingScope());
+        for (VariableSymbol vs : iterateArgs) {
+          getCD4C().addImport(clazz, vs.getType().printFullName());
+        }
+
         // add builder init
         ASTCDMethodSignature builderInit = getCD4C().addMethod(
             clazz, getInitBuilderTemplate(),
-            attr, manager
+            attr, manager, iterateArgs
         );
 
         // add builder init to class init

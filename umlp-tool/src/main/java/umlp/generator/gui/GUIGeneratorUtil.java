@@ -67,6 +67,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -1083,6 +1084,21 @@ public class GUIGeneratorUtil {
       }
     }
     return findIterationItemSymbols(scope.getEnclosingScope(), symbols);
+  }
+
+  public String variableSymbols2ArgsString(Collection<VariableSymbol> variableSymbols) {
+    StringBuilder res = new StringBuilder();
+    Iterator<VariableSymbol> iter = variableSymbols.iterator();
+    while (iter.hasNext()) {
+      VariableSymbol vs = iter.next();
+      res.append(vs.getType().printFullName());
+      res.append(" ");
+      res.append(vs.getName());
+      if (iter.hasNext()) {
+        res.append(",");
+      }
+    }
+    return res.toString();
   }
 
 }

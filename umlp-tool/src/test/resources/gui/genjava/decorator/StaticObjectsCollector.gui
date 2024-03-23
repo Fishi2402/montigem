@@ -17,7 +17,7 @@ page StaticObjectsCollector(Person person) {
   // doesn't make sense but technically correct
   e@guard(Person().employed) {}
   f@iterate(Person p : Person().friends) {
-    j@iterate(Person p2 : person.friends) {
+    $1@iterate(Person p2 : person.friends) {
       g@L(a = [p.address, p2.address]);
       h@L(a = [p2.address, p.address]);
       i@P(p = Person(person.name));

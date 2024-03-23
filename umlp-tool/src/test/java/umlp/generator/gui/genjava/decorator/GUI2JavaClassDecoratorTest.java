@@ -50,7 +50,7 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     ASTCDCompilationUnit cd;
 
     gui = processGUIModel(
-        "gui/genjava/GUI2JavaClassDecorator.gui",
+        "gui/genjava/decorator/GUI2JavaClassDecorator.gui",
         "src/test/resources/gui",
         "packaged/Domain.umlp"
     );
