@@ -100,7 +100,7 @@ task genGUI(type: UMLPGuiGenTask) {
 tasks.register('genGUI2', UMLPGuiGenTask) {
   enabled(useCD2GUI)
   setGroup('build')
-  dependsOn(genGUI, guiVariability)
+  dependsOn(genGUI, guiVariability, generateCDTOGUI)
   input = file(guiVariability.getOutputDir())
   symbolDir = files(
       generateCDTOGUI.getOutputDir().file("symbols"),
