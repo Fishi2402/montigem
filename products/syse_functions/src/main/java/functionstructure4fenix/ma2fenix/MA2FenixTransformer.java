@@ -11,6 +11,7 @@ import functionstructure4fenix.Category;
 import functionstructure4fenix.Channel;
 import functionstructure4fenix.Data;
 import functionstructure4fenix.Function;
+import functionstructure4fenix.FunctionBuilder;
 import functionstructure4fenix.FunctionStructure4FenixManager;
 import functionstructure4fenix.Port;
 import functionstructure4fenix.PortBuilder;
@@ -42,8 +43,13 @@ public class MA2FenixTransformer {
     data = FunctionStructure4FenixManager.dataBuilder().build().get();
   }
 
-
-
+  public void buildFunctionStructure() {
+    buildTypes();
+    buildCategories();
+    buildChannels();
+    buildPorts();
+    buildFunctions();
+  }
 
   public void transform(ASTComponentType node){
     createFunction(node);
@@ -62,7 +68,7 @@ public class MA2FenixTransformer {
     if(this.getQname().isEmpty()) {
       stack.push(node.getName().toLowerCase());
     }
-    Function function = FunctionStructure4FenixManager.functionBuilder().name(stack.peek());
+    FunctionBuilder function = FunctionStructure4FenixManager.functionBuilder().name(stack.peek());
 
     for (ASTConnector c : node.getConnectors()){
       mapConnectorToChannel(c);
@@ -71,7 +77,7 @@ public class MA2FenixTransformer {
     if(node.getSymbol().isDecomposed()){
       for(ASTComponentInstance instance : node.getSubComponents()) {
         stack.push(instance.getName());
-        function.addSubFunction(createFunction(node.getSpannedScope().resolveComponentType(
+        function.subFunctionAdd(createFunction(node.getSpannedScope().resolveComponentType(
             instance.getSymbol().getType().getTypeInfo().getName()
         ).get().getAstNode()));
         stack.pop();
@@ -82,10 +88,10 @@ public class MA2FenixTransformer {
     List<ASTArcPort> outports = node.getPorts().stream().filter(x -> x.getSymbol().isOutgoing()).collect(Collectors.toList());
 
     for (ASTArcPort inport : inports) {
-      function.addIn(createPort(inport));
+      function.inAdd(createPort(inport));
     }
     for(ASTArcPort outport : outports){
-      function.addOut(createPort(outport));
+      function.outAdd(createPort(outport));
     }
     functions.add(function);
     if(getQname().isEmpty()){
@@ -93,45 +99,6 @@ public class MA2FenixTransformer {
       buildFunctionStructure();
     }
     return function;
-  }
-
-  public void buildFunctionStructure() {
-    buildTypes();
-    buildCategories();
-    buildChannels();
-    buildPorts();
-    buildFunctions();
-    System.out.println("test");
-  }
-
-  public void buildChannels(){
-    for(Channel c : new HashSet<>(channelMap.values())){
-      c.build();
-    }
-  }
-
-  public void buildTypes(){
-    for(Type t : types){
-      t.build();
-    }
-  }
-
-  public void buildFunctions(){
-    for(Function f : functions){
-      f.build();
-    }
-  }
-
-  public void buildPorts(){
-    for(Port p : ports){
-      p.build();
-    }
-  }
-
-  public void buildCategories(){
-    for(Category c : categories.values()){
-      c.build();
-    }
   }
 
   public Category createCategory(ASTArcPort node){
@@ -184,7 +151,6 @@ public class MA2FenixTransformer {
             channelMap.put(entry.getKey(), channelMap.get(this.getQname() + "." + key.getQName()));
           }
         }
-        FunctionStructure4FenixManager.deleteChannel(del.getGemId());
       } else {
         channelMap.put(this.getQname() + "." + key.getQName(), channelMap.get(this.getQname() + "." + value.getQName()));
       }
@@ -194,6 +160,36 @@ public class MA2FenixTransformer {
       Channel c = FunctionStructure4FenixManager.channelBuilder().category(createCategory(key.getPortSymbol().getAstNode()));
       channelMap.put(this.getQname()+"."+key.getQName(), c);
       channelMap.put(this.getQname()+"."+value.getQName(), c);
+    }
+  }
+
+  public void buildChannels(){
+    for(Channel c : new HashSet<>(channelMap.values())){
+      c.build();
+    }
+  }
+
+  public void buildTypes(){
+    for(Type t : types){
+      t.build();
+    }
+  }
+
+  public void buildFunctions(){
+    for(Function f : functions){
+      f.build();
+    }
+  }
+
+  public void buildPorts(){
+    for(Port p : ports){
+      p.build();
+    }
+  }
+
+  public void buildCategories(){
+    for(Category c : categories.values()){
+      c.build();
     }
   }
 
