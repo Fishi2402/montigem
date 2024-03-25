@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -126,7 +127,7 @@ public abstract class AbstractUMLPTest {
           System.err.println(f.toString());
         }
       }
-      fail();
+      fail("Unexpected errors: " + Log.getFindings().stream().map(Finding::toString).collect(Collectors.joining("\n")));
     }
   }
 

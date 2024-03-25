@@ -5,9 +5,7 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.se_rwth.commons.StringTransformations;
 import umlp.generator.domain.decorator.ManagerDecorator;
-import umlp.generator.domain.decorator.commands.AssocCommandDecorator;
 import umlp.generator.domain.decorator.commands.DerivedClassCommandDecorator;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentTemplates;
 import umlp.generator.util.PathUtil;
@@ -58,11 +56,24 @@ public class TSDerivedClassCommandDecorator extends DerivedClassCommandDecorator
 
   @Override
   protected String boxType(String type) {
-    if (type.equals("int") || type.equals("long") || type.equals("java.lang.int") || type.equals("java.lang.long"))
-      return "number";
-    if (type.equals("String") || type.equals("java.lang.String"))
-      return "string";
-    return type;
+    // Sometimes the type starts with "java.lang.", sometimes not (for native types)
+    String typeToCheck = type;
+    if (type.startsWith("java.lang."))
+      typeToCheck = typeToCheck.substring("java.lang.".length());
+    switch (typeToCheck) {
+      case "byte":
+      case "int":
+      case "long":
+      case "short":
+      case "float":
+      case "double":
+        return "number";
+      case "String":
+      case "char":
+        return "string";
+      default:
+        return type;
+    }
   }
 
   @Override
