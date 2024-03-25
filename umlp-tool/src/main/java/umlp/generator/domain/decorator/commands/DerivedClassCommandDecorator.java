@@ -92,7 +92,7 @@ public class DerivedClassCommandDecorator extends AbstractDeSerDecorator {
 
 
     String fqnType = type;
-    if (nativeTypes.contains(fqnType))
+    if (nativeTypes.contains(fqnType) || nativeTypes.contains(boxType(fqnType)))
       fqnType = "java.lang." + boxType(type);
 
 
