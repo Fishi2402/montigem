@@ -46,13 +46,14 @@ public class DerivedClassImplDecorator extends AbstractDecorator {
 
     addImports(domainClass, ast);
 
-    if (!domainClass.getCDAttributeList().isEmpty()) {
-      if (!ast.getModifier().isPresentStereotype())
-        ast.getModifier().setStereotype(CD4CodeMill.stereotypeBuilder().build());
-
-      ast.getModifier().getStereotype().addValues(TopDecorator.NEEDS_TOP_STEREO_BUILDER
-          .apply("Impl class %s of derived a class requires a hand-written implementation using the TOP mechanism." ));
-    }
+    // Do not require TOP here?
+//    if (!domainClass.getCDAttributeList().isEmpty()) {
+//      if (!ast.getModifier().isPresentStereotype())
+//        ast.getModifier().setStereotype(CD4CodeMill.stereotypeBuilder().build());
+//
+//      ast.getModifier().getStereotype().addValues(TopDecorator.NEEDS_TOP_STEREO_BUILDER
+//          .apply("Impl class %s of derived a class requires a hand-written implementation using the TOP mechanism." ));
+//    }
 
     return ast;
   }
