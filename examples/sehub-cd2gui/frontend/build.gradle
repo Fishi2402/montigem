@@ -112,6 +112,11 @@ tasks.register('genGUI2', UMLPGuiGenTask) {
   outputDir = layout.buildDirectory.dir("umlp/fe2")
   modelDir = file(guiVariability.getOutputDir())
   domainModels = ["Sehub"]
+  println("########DEBUG######")
+  println(generateCDTOGUI.getOutputDir().file("meta/Sehub/guiCreateTextModels").get().toString())
+  def files = []
+  generateCDTOGUI.getOutputDir().file("meta").get().getAsFile().eachFileRecurse {f -> files << f}
+  println(files)
   guiCreateModelsAsFile = file(generateCDTOGUI.getOutputDir().file("meta/Sehub/guiCreateTextModels"))
 }
 
