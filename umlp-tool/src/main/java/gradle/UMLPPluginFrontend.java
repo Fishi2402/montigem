@@ -84,7 +84,7 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
 
     // Other dependencies
     if (j2ts) {
-      project.getTasks().getByName("compileJava").dependsOn(frontendGuiTask.get());
+// TODO Revert      project.getTasks().getByName("compileJava").dependsOn(frontendGuiTask.get());
     }
 
     // Source Sets

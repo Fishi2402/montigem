@@ -1,0 +1,85 @@
+Validity und so übersetzen
+Stream Methoden entfernen
+Command HWC erfordert
+Windows open Implementierung
+
+
+
+Was nicht klappt:
+Cast von List auf Collection
+Generierung löschen -> Inkrementelles Bauen unterstützen
+jsweetconfig Generierung fixen
+GUI Gen bei Methoden ist nur Object
+styleUrls wird noch nicht übernommen
+HWC TS wird nicht beachtet
+
+
+
+Fehler Transpilierung aus Fehlerhafter Generierung:
+
+import mc.fenix.basic.GemTreeviewEntry;
+import mc.fenix.basic.GemTreeviewTypes.GemTreeviewEntry;
+
+import mc.fenix.charts.GemGaugeChartData;
+
+import mc.fenix.charts.GemHeatmapChartData;
+import mc.fenix.charts.GemHeatmapChartTypes.GemHeatmapChartData;
+
+import mc.fenix.charts.GemLineChartData;
+
+import mc.fenix.charts.GemPieChartData;
+
+import mc.fenix.charts.GemSunburstData;
+
+import mc.fenix.charts.GemVennDiagramData;
+
+page GemTableExample(List<Person> persons) {
+  @GemTable(
+    rows = persons,
+    columns = [
+      TableColumn("_name", "Name"),
+      TableColumn("_birthday", "Birthday")
+    ]
+  );
+}
+ public  List<E> getGemTable0Rows ()
+ {
+    return this.getPersons();
+}
+
+
+import mc.fenix.table.TableColumn;
+import mc.fenix.table.TableTypes.TableColumn;
+
+@GemTextInput(
+  inputType = "date",
+  labelText = "Date of birth:",
+  entry = p.birthday
+);
+ public  void setGemTextInput2Entry (java.lang.String val4Conv,Person p)
+ {
+  var val = LocalDate.parse(val4Conv);
+  p.setBirthday(val);
+
+}
+
+
+
+Bugs bei der Transpilierung:
+
+ public  void setGemCheckBoxInput1Checked (boolean val4Conv,Person p)
+ {
+  var val = val4Conv;
+  p.setEmployed(val);
+}
+ public setGemCheckBoxInput1Checked(val4Conv: boolean, p: Person) {
+        const val:
+
+
+ public  List<TableColumn> getGemTable0Columns ()
+ {
+    return this.gemTable0Columns;
+}
+    public getGemTable0Columns(): IUMLPList<TableColumn> {
+        return;
+    }

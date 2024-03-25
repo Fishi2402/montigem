@@ -42,7 +42,7 @@ build_no_containers:
       - examples/sehub/frontend/build/frontendGen/**
       - examples/dtcockpit/frontend/build/frontendGen/**
       - products/demorec/frontend/build/frontendGen/**
-      - umlp-tool/target/distributions/**
+      - umlp-tool/build/distributions/**
     reports:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
@@ -102,7 +102,7 @@ build_with_containers:
       - examples/sehub/frontend/build/frontendGen/**
       - examples/dtcockpit/frontend/build/frontendGen/**
       - products/demorec/frontend/build/frontendGen/**
-      - umlp-tool/target/distributions/**
+      - umlp-tool/build/distributions/**
     reports:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
