@@ -5,27 +5,24 @@ import hardy.flensburg.Address;
 import hardy.flensburg.Car;
 import hardy.flensburg.CityInfo;
 import hardy.flensburg.FlensburgManager;
-import hardy.flensburg.FlensburgMock;
-import hardy.flensburg.FlensburgTestContext;
 import hardy.flensburg.PersonBuilder;
-import org.junit.jupiter.api.BeforeEach;
+import hardy.flensburg.test_infrastructure.FlensburgMockTestSetup;
 import org.junit.jupiter.api.Test;
+import umlp.backendrte.test_infrastructure.ClientSetup;
 
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class CityInfoTest {
+public class CityInfoTest extends FlensburgMockTestSetup {
 
-  @BeforeEach
-  public void clear(){
-    FlensburgTestContext.clear();
+  public CityInfoTest() {
+    super(ClientSetup.of(1));
   }
 
   @Test
   public void testCityInfo(){
-    FlensburgMock.init();
 
     Car c1 = FlensburgManager.carBuilder().wheelLeft(false).namesOfAllParts(new ArrayList<>()).build().get();
     Car c2 = FlensburgManager.carBuilder().wheelLeft(false).namesOfAllParts(new ArrayList<>()).build().get();
