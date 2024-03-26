@@ -30,6 +30,7 @@ import de.monticore.ocl.ocl._parser.OCLParser;
 import de.monticore.ocl.util.SymbolTableUtil;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.oosymbols._symboltable.FieldSymbolDeSer;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolDeSer;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonBoolean;
@@ -37,7 +38,6 @@ import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.symboltable.serialization.json.UserJsonString;
 import de.monticore.tagging.tags.TagsMill;
-import de.monticore.types.check.SymTypeExpressionDeSer;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.CommandLine;
@@ -46,10 +46,7 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import umlp._cocos.UMLPCoCos;
-import umlp._symboltable.FieldSymbolDeSer4GUI;
 import umlp._symboltable.IUMLPArtifactScope;
-import umlp._symboltable.SymTypeExpressionDeSer4GUI;
-import umlp._symboltable.SymTypeOfGenericsDeSer4GUI;
 import umlp._symboltable.UMLPSymbols2Json;
 import umlp._visitor.UMLPTraverser;
 import umlp.generator.AbstractDecorator;
@@ -57,13 +54,14 @@ import umlp.generator.domain.UMLAddCommentTrafo;
 import umlp.generator.domain.UMLAddGemIdTrafo;
 import umlp.generator.domain.UMLAssocToAttrTrafo;
 import umlp.generator.domain.UMLAttrToAssocTrafo;
+import umlp.generator.domain.UMLImportTrafo;
 import umlp.generator.domain.UMLPGenerator;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.UMLSetDefaultsTrafo;
 import umlp.generator.gui.GUIComponentsVisitor;
-import umlp.generator.gui.coco.GUIDSLCoCosForUMLP;
 import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.GUINodeIdTrafo;
+import umlp.generator.gui.coco.GUIDSLCoCosForUMLP;
 import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
 import umlp.generator.gui.genjava.GUI2JavaGenerator;
 import umlp.generator.gui.gentypescript.config.GUI2TSConfigGenerator;
@@ -132,7 +130,7 @@ public class UMLPTool extends UMLPToolTOP {
 
   public UMLPTool() {
     UMLPMill.init();
-    BuiltInTypes.addBuiltInTypes(CD4CodeMill.globalScope());
+    BuiltInTypes.addBuiltInTypes(CD4CodeMill.globalScope(), false);
   }
 
   public static List<ASTOCLCompilationUnit> getOclCompilationUnits() {
@@ -292,7 +290,7 @@ public class UMLPTool extends UMLPToolTOP {
         Reporting.on(report_on);
 
         UMLPMill.init();
-        BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope());
+        BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope(), false);
 
         // parse, create symbol table, check all cocos
         ASTCDCompilationUnit ast = parse(inputFile.getPath());
@@ -380,7 +378,7 @@ public class UMLPTool extends UMLPToolTOP {
           TagsMill.init(); // instead we only support generic tagging models
         }
         UMLPMill.init();
-        BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope());
+        BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope(), false);
         UMLPMill.globalScope().setSymbolPath(importedSymbolPath);
 
         List<URL> models = MCPathUtil.getAllModels(modelPath, ".*[.]umlp");
@@ -711,6 +709,10 @@ public class UMLPTool extends UMLPToolTOP {
     UMLPTraverser trav = UMLPMill.traverser();
     CD4CodeAfterParseTrafo.init(new CDAfterParseHelper(), trav);
     node.accept(trav);
+
+    UMLImportTrafo importTrafo = new UMLImportTrafo(CD4CodeMill.traverser());
+    importTrafo.transform(node);
+    logTrafoExec("UMLImportTrafo", node);
   }
 
   public void runDefaultTrafos(ASTCDCompilationUnit node) {
@@ -729,6 +731,7 @@ public class UMLPTool extends UMLPToolTOP {
     UMLAddCommentTrafo commentTrafo = new UMLAddCommentTrafo(CD4CodeMill.traverser());
     commentTrafo.transform(node);
     logTrafoExec("UMLAddCommentTrafo", node);
+
   }
 
   public IUMLPArtifactScope recreateSymbolTable(ASTCDCompilationUnit node) {
@@ -782,11 +785,10 @@ public class UMLPTool extends UMLPToolTOP {
     gs.setSymbolPath(modelPath);
     gs.addAdaptedTypeSymbolResolver(new OOClass2MCResolver());
     gs.addAdaptedOOTypeSymbolResolver(new OOClass2MCResolver());
-    SymTypeExpressionDeSer.setInstance(SymTypeExpressionDeSer4GUI.getInstance());
     gs.putSymbolDeSer("de.monticore.cdbasis._symboltable.CDTypeSymbol",
         new OOTypeSymbolDeSer());
     gs.putSymbolDeSer("de.monticore.symbols.oosymbols._symboltable.FieldSymbol",
-        new FieldSymbolDeSer4GUI());
+        new FieldSymbolDeSer());
     gs.putSymbolDeSer("de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol",
         new de.monticore.symbols.oosymbols._symboltable.MethodSymbolDeSer());
     gs.putSymbolDeSer("de.monticore.cdassociation._symboltable.CDRoleSymbol",

@@ -4,17 +4,12 @@ package umlp.generator.domain.decorator.commands;
 import com.google.common.collect.Lists;
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.codegen.methods.AccessorDecorator;
-import de.monticore.cd4codebasis._ast.ASTCDMethod;
-import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
-import de.monticore.cdassociation._ast.ASTCDAssociation;
-import de.monticore.cdassociation._ast.ASTCDBiDir;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.StringTransformations;
-import org.jetbrains.annotations.NotNull;
 import umlp.UMLPMill;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
@@ -34,6 +29,8 @@ public class DerivedClassCommandDecorator extends AbstractDeSerDecorator {
 
   public static final String COMMAND_DERIVED_CLASS_PACKAGE = COMMAND_PACKAGE + ".derivedclass";
   public static final String GET_SUFFIX = "_get";
+
+  public final static List<String> nativeTypes = List.of("String", "Void", "Boolean", "Char", "Byte", "Short", "Integer", "Long", "Float", "Double");
 
 
   public DerivedClassCommandDecorator(GlobalExtensionManagement glex) {
@@ -93,16 +90,16 @@ public class DerivedClassCommandDecorator extends AbstractDeSerDecorator {
     type = cleanupType(origCD, type);
 
 
-    String nativeType = type;
+    String fqnType = type;
+    if (nativeTypes.contains(fqnType) || nativeTypes.contains(boxType(fqnType)))
+      fqnType = "java.lang." + boxType(type);
+
+
+    // box the type, if needed
+    type = this.boxType(type);
+
 
     // TODO: nativeType => assoc
-    if (nativeType.equals("String"))
-      nativeType = "java.lang.String";
-    else if (nativeType.equals("int"))
-      nativeType = "java.lang.Integer";
-
-    // TODO: box primitive
-    type = this.boxType(type);
 
 
     ASTCDClass ast = UMLPMill.cDClassBuilder()
@@ -122,7 +119,7 @@ public class DerivedClassCommandDecorator extends AbstractDeSerDecorator {
         attrName,
             type,
             getCorrectManager(domainClass),
-            nativeType,
+            fqnType,
             isList);
     getCD4C().addMethod(ast, getAssocsCheckAccessPolicyTemplate());
 
@@ -139,8 +136,20 @@ public class DerivedClassCommandDecorator extends AbstractDeSerDecorator {
   protected String boxType(String type) {
     if (type.equals("int"))
       type = "Integer";
+    else if (type.equals("boolean"))
+      type = "Boolean";
+    else if (type.equals("char"))
+      type = "Character";
+    else if (type.equals("byte"))
+      type = "Byte";
+    else if (type.equals("short"))
+      type = "Short";
     else if (type.equals("long"))
       type = "Long";
+    else if (type.equals("float"))
+      type = "Float";
+    else if (type.equals("double"))
+      type = "Double";
     return type;
   }
 
