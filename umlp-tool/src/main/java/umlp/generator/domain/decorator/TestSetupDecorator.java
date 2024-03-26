@@ -9,13 +9,11 @@ import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.Joiners;
-import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
 
 import java.util.List;
-import java.util.Optional;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
@@ -35,8 +33,6 @@ public class TestSetupDecorator extends AbstractDecorator {
   private final ObserverDecorator observerDecorator;
   private final DiagramObserverDecorator diagramObserverDecorator;
 
-  private Optional<GenSummary> lastGenSummary = Optional.empty();
-
   public TestSetupDecorator(GlobalExtensionManagement glex,
                             boolean isNeo4jGen,
                             ObserverDecorator observerDecorator,
@@ -49,7 +45,6 @@ public class TestSetupDecorator extends AbstractDecorator {
 
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
-    this.lastGenSummary = Optional.empty();
     ASTCDPackage aPackage = getPackage(origCD, decoratedCD, PACK_TEST_INFRASTRUCTURE);
 
     EnsureCorrectManager4TypeDecorator ensureCorrectManager4TypeDecorator =
@@ -64,13 +59,16 @@ public class TestSetupDecorator extends AbstractDecorator {
         ensureCorrectManager4TypeDecorator);
     ensureCorrectManager4DiagrammDecorator.transform(origCD, decoratedCD);
 
-    aPackage.addCDElement(withOrigin(createAbstractTestSetup(origCD)));
-    aPackage.addCDElement(withOrigin(createMockTestSetup(origCD)));
-    aPackage.addCDElement(withOrigin(createAbstractDBTestSetup(origCD)));
+
+    ASTCDClass abstractTestSetup = createAbstractTestSetup(origCD);
+    aPackage.addCDElement(withOrigin(abstractTestSetup));
+    aPackage.addCDElement(withOrigin(createMockTestSetup(origCD, abstractTestSetup)));
+    ASTCDClass abstractDBTestSetup = createAbstractDBTestSetup(origCD, abstractTestSetup);
+    aPackage.addCDElement(withOrigin(abstractDBTestSetup));
     if (isNeo4jGen) {
-      aPackage.addCDElement(withOrigin(createNeo4JDBTestSetup(origCD)));
+      aPackage.addCDElement(withOrigin(createNeo4JDBTestSetup(origCD, abstractTestSetup)));
     } else {
-      aPackage.addCDElement(withOrigin(createSQLDBTestSetup(origCD)));
+      aPackage.addCDElement(withOrigin(createSQLDBTestSetup(origCD, abstractDBTestSetup)));
     }
   }
 
@@ -86,6 +84,7 @@ public class TestSetupDecorator extends AbstractDecorator {
         .build();
 
     CD4C cd4C = getCD4C();
+    String typeName = res.getName();
 
     // attributes
     String testContextClass = cdName + TestContextDecorator.SUFFIX;
@@ -100,10 +99,24 @@ public class TestSetupDecorator extends AbstractDecorator {
                                                  false,
                                                  "protected ClientSetup clientSetup;");
 
-    this.lastGenSummary = Optional.of(new GenSummary(clientSetupAttr));
+
+    GenSummary genSummary = new GenSummary(clientSetupAttr);
 
     // constructor
-    addConstructors(res, false);
+    //this should never fail
+    @SuppressWarnings("OptionalGetWithoutIsPresent") ASTCDAttribute fakeNumberOfClientsAttr = cd4C.createAttribute(
+        res,
+        "int numberOfClients").get();
+
+    String basicTemplate = "umlp.common.BasicConstructor";
+    String numOfClientsTemplate = COMMON_CUSTOM_TEMPLATE_PATH + "NumberOfClientsConstructor";
+
+    cd4C.addConstructor(res, basicTemplate,
+                        typeName,
+                        List.of(genSummary.clientSetupAttr()));
+    //support legacy calls where constructor is called with only an int describing the number of clients
+    cd4C.addConstructor(res, numOfClientsTemplate,
+                        typeName, fakeNumberOfClientsAttr);
 
     // common methods
     cd4C.addMethod(res, COMMON_CUSTOM_TEMPLATE_PATH + "GetClientName", cdName);
@@ -116,51 +129,19 @@ public class TestSetupDecorator extends AbstractDecorator {
     return res;
   }
 
-  protected void addConstructors(ASTCDClass target, boolean delegateToSuper) {
-    CD4C cd4C = getCD4C();
-    String typeName = target.getName();
-
-    if (lastGenSummary.isEmpty()) {
-      Log.error("Can't add constructors when no testsetup has been generated yet");
-      return;
-    }
-    GenSummary genSummary = lastGenSummary.get();
-    //this should never fail
-    @SuppressWarnings("OptionalGetWithoutIsPresent") ASTCDAttribute fakeNumberOfClientsAttr = cd4C.createAttribute(
-        target,
-        "int numberOfClients").get();
-
-    //TODO add delegating super constructors for every constructor there is in the parent class
-    // -> problem: parent class may be handwritten code and as such not exist yet. Solution?
-
-    String basicTemplate = "umlp.common.BasicConstructor";
-    String numOfClientsTemplate = COMMON_CUSTOM_TEMPLATE_PATH + "NumberOfClientsConstructor";
-    String superTemplate = "umlp.common.SuperConstructor";
-
-    cd4C.addConstructor(target,
-                        delegateToSuper ? superTemplate : basicTemplate,
-                        typeName,
-                        List.of(genSummary.clientSetupAttr()));
-    //support legacy calls where constructor is called with only an int describing the number of clients
-    cd4C.addConstructor(target,
-                        delegateToSuper ? superTemplate : numOfClientsTemplate,
-                        typeName,
-                        delegateToSuper ? List.of(fakeNumberOfClientsAttr) : fakeNumberOfClientsAttr);
-  }
-
-  protected ASTCDClass createMockTestSetup(ASTCDCompilationUnit origCD) {
+  protected ASTCDClass createMockTestSetup(ASTCDCompilationUnit origCD, ASTCDClass parentClass) {
     String cdName = origCD.getCDDefinition().getName();
 
     ASTCDClass res = UMLPMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
-        .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(cdName + SUFFIX))
+        .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(parentClass.getName()))
         .setName(cdName + MOCK_TEST_SETUP_SUFFIX)
         .build();
 
     CD4C cd4C = getCD4C();
 
     // constructor
-    addConstructors(res, true);
+    addSuperConstructors(res, parentClass);
 
     // methods
     cd4C.addMethod(res, COMMON_CUSTOM_TEMPLATE_PATH + "mockTestSetup.Init", cdName);
@@ -170,17 +151,17 @@ public class TestSetupDecorator extends AbstractDecorator {
     return res;
   }
 
-  protected ASTCDClass createAbstractDBTestSetup(ASTCDCompilationUnit origCD) {
+  protected ASTCDClass createAbstractDBTestSetup(ASTCDCompilationUnit origCD, ASTCDClass parentClass) {
     String cdName = origCD.getCDDefinition().getName();
 
     ASTCDClass res = UMLPMill.cDClassBuilder()
         .setModifier(PUBLIC_ABSTRACT.build())
-        .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(cdName + SUFFIX))
+        .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(parentClass.getName()))
         .setName(cdName + DB_TEST_SETUP_SUFFIX)
         .build();
 
     // constructor
-    addConstructors(res, true);
+    addSuperConstructors(res, parentClass);
 
     // methods
     CD4C cd4C = getCD4C();
@@ -193,19 +174,19 @@ public class TestSetupDecorator extends AbstractDecorator {
     return res;
   }
 
-  protected ASTCDClass createSQLDBTestSetup(ASTCDCompilationUnit origCD) {
+  protected ASTCDClass createSQLDBTestSetup(ASTCDCompilationUnit origCD, ASTCDClass parentClass) {
     String cdName = origCD.getCDDefinition().getName();
 
     ASTCDClass res = UMLPMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
-        .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(cdName + DB_TEST_SETUP_SUFFIX))
+        .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(parentClass.getName()))
         .setName(cdName + SQL_TEST_SETUP_SUFFIX)
         .build();
 
     CD4C cd4C = getCD4C();
 
     // constructor
-    addConstructors(res, true);
+    addSuperConstructors(res, parentClass);
 
     // methods
     cd4C.addMethod(res, DB_TEMPLATE_PATH + "sql.Init", cdName);
@@ -215,20 +196,19 @@ public class TestSetupDecorator extends AbstractDecorator {
     return res;
   }
 
-  protected ASTCDClass createNeo4JDBTestSetup(ASTCDCompilationUnit origCD) {
+  protected ASTCDClass createNeo4JDBTestSetup(ASTCDCompilationUnit origCD, ASTCDClass parentClass) {
     String cdName = origCD.getCDDefinition().getName();
 
     ASTCDClass res = UMLPMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
-        .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(
-            cdName + DB_TEST_SETUP_SUFFIX))
+        .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(parentClass.getName()))
         .setName(cdName + NEO4J_TEST_SETUP_SUFFIX)
         .build();
 
     CD4C cd4C = getCD4C();
 
     // constructor
-    addConstructors(res, true);
+    addSuperConstructors(res, parentClass);
 
     // methods
     cd4C.addMethod(res, DB_TEMPLATE_PATH + "neo4j.Init", cdName);
