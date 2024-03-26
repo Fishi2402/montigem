@@ -6,13 +6,13 @@ import com.google.common.collect.Multimaps;
 import de.se_rwth.commons.logging.Log;
 import hardy.flensburg.Address;
 import hardy.flensburg.FlensburgManager;
-import hardy.flensburg.FlensburgMock;
 import hardy.flensburg.Person;
 import hardy.flensburg.PersonBuilder;
 import hardy.flensburg.PersonErrorCollector;
 import hardy.flensburg.PersonErrorObserver;
-import org.junit.jupiter.api.BeforeEach;
+import hardy.flensburg.test_infrastructure.FlensburgMockTestSetup;
 import org.junit.jupiter.api.Test;
+import umlp.backendrte.test_infrastructure.ClientSetup;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,18 +23,23 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PersonBuilderTest {
+public class PersonBuilderTest extends FlensburgMockTestSetup {
 
+  private static final int GEM_ID = 1001;
   private PersonBuilder personBuilder;
   private ListMultimap<Person, String> errors = Multimaps.newListMultimap(new HashMap<>(),
                                                                           ArrayList::new);
 
-  @BeforeEach
-  public void before() {
+  public PersonBuilderTest() {
+    super(ClientSetup.of(1));
+  }
+
+  @Override
+  public void _init() throws Exception {
+    super._init();
     Log.init();
     Log.enableFailQuick(false);
-    FlensburgMock.init();
-    this.personBuilder = new PersonBuilder(1001L);
+    this.personBuilder = FlensburgManager.personBuilderFromId(GEM_ID);
     errors.clear();
     PersonErrorCollector.init();
     PersonErrorCollector.addErrorObserver(new PersonErrorObserver() {
@@ -62,9 +67,6 @@ public class PersonBuilderTest {
 
   @Test
   public void testBuildValidPerson() {
-    int id = 1001;
-    FlensburgMock.secretlyAdaptNextGemId(id);
-
     Address mainResidence = FlensburgManager.addressBuilder().city("Flensburg").build().get();
 
     String name = "Hardy";
@@ -72,7 +74,7 @@ public class PersonBuilderTest {
     personBuilder.age(age).nickname(name).mainResidence(mainResidence).build();
     assertTrue(Log.getFindings().isEmpty(), "Log not empty: " + Log.getFindings());
 
-    Optional<Person> personOpt = FlensburgManager.personOpt(id);
+    Optional<Person> personOpt = FlensburgManager.personOpt(GEM_ID);
 
     assertTrue(personOpt.isPresent());
     Person person = personOpt.get();
@@ -85,9 +87,6 @@ public class PersonBuilderTest {
 
   @Test
   public void testBuildInvalidPersonNoNickname() {
-    int id = 1001;
-    FlensburgMock.secretlyAdaptNextGemId(id);
-
     Address mainResidence = FlensburgManager.addressBuilder().city("Flensburg").build().get();
 
     PersonBuilder builder = personBuilder.age(18).mainResidence(mainResidence);
@@ -103,6 +102,6 @@ public class PersonBuilderTest {
     assertTrue(msg.toLowerCase().contains("nickname"));
     assertTrue(msg.toLowerCase().contains("invalid"));
 
-    assertFalse(FlensburgManager.personOpt(id).isPresent());
+    assertFalse(FlensburgManager.personOpt(GEM_ID).isPresent());
   }
 }
