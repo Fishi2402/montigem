@@ -2,16 +2,13 @@
 package umlp.generator.domain.decorator;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
-import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
-import de.monticore.cdassociation._ast.ASTCDAssociation;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import org.jetbrains.annotations.NotNull;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
@@ -21,7 +18,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 
 /**
  * The generated ClientImpl sends requests to the backend
@@ -46,9 +42,6 @@ public class DerivedClassClientImplDecorator extends AbstractDecorator {
         .setModifier(PUBLIC.build())
       .setName(classname).build();
 
-    // TODO: As of now, associations are not generated
-    if (CDSymbolTables.getAssociationsInHierarchy(domainClass).isEmpty())
-      ast.setModifier(PUBLIC_ABSTRACT.build());
 
     String packageName = getPackageName(origCD, DEFAULT_PACKAGE);
 
@@ -60,6 +53,7 @@ public class DerivedClassClientImplDecorator extends AbstractDecorator {
 
     ast.getSuperclassList().add(getMCTypeFacade().createQualifiedType(domainClass.getName()));
 
+    // For each attribute
     List<ASTCDAttribute> attributeList =
     CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
       .filter(a -> !a.getModifier().isDerived())
@@ -69,6 +63,7 @@ public class DerivedClassClientImplDecorator extends AbstractDecorator {
     List<ASTCDAssocSide> singleAssocs = new ArrayList<>();
     List<ASTCDAssocSide> listAssocs = new ArrayList<>();
 
+    // For each association
     CDSymbolTables.getAssociationsInHierarchy(domainClass)
         .forEach(assoc -> {
           String type = assoc.getSymbol().getType().print();

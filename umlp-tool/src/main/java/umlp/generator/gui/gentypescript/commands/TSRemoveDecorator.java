@@ -34,7 +34,7 @@ public class TSRemoveDecorator extends RemoveDecorator {
   }
 
   @Override
-  protected void addJavaImport(ASTCDClass ast, SymTypeExpression type) {
+  protected void addJavaImport(ASTCDType ast, SymTypeExpression type) {
     // don't
   }
 

@@ -160,10 +160,6 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
     getCD4C().addImport(ast, "com.google.common.collect.Sets");
   }
 
-  protected void addJavaImport(ASTCDClass ast, SymTypeExpression type) {
-    getCD4C().addImport(ast, type.printFullName());
-  }
-
   protected void addConstructor(ASTCDClass ast, String classname, String packageName,
                                 String attrName, String type) {
     getCD4C().addConstructor(ast, getConstructorTemplate(), classname, packageName,
