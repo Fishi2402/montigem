@@ -4,10 +4,8 @@ package flensburg.gui.neuepersonanlegen;
 // HW-T
 
 import flensburg.gui.AbstractGUITest;
-import hardy.flensburg.FlensburgMock;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
+import umlp.backendrte.test_infrastructure.ClientSetup;
 
 /* Test GUI (also E2E) for creation of Person using generated java-gui from this gui-model:
 package stanley.neuepersonanlegen;
@@ -27,11 +25,14 @@ page NeuePersonAnlegen(Person p) { // "leere" Person
  */
 public class NeuePersonAnlegenGeneratedGUITest extends AbstractGUITest {
 
+  public NeuePersonAnlegenGeneratedGUITest() {
+    super(ClientSetup.of(1));
+  }
+
   @Test
   public void createNewPersonTest() {
     // eine Ausbaustufe wäre: einen Validator hinzufügen und wenn der failed,
     // zusaetlich eine Fehlermeldung anzeigen (die analog angezeigt wird)
-    FlensburgMock.init();
 /*  TODO MB
     NeuePersonAnlegenCreate e = new NeuePersonAnlegenCreate();
 
