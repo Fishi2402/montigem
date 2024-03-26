@@ -25,88 +25,84 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PersonBuilderTest {
 
-    private PersonBuilder personBuilder;
-    private ListMultimap<Person, String> errors = Multimaps.newListMultimap(new HashMap<>(), ArrayList::new);
+  private PersonBuilder personBuilder;
+  private ListMultimap<Person, String> errors = Multimaps.newListMultimap(new HashMap<>(),
+                                                                          ArrayList::new);
 
-    @BeforeEach
-    public void before() {
-        Log.init();
-        Log.enableFailQuick(false);
-        FlensburgMock.init();
-        this.personBuilder = new PersonBuilder(1001L);
-        errors.clear();
-        PersonErrorCollector.init();
-        PersonErrorCollector.addErrorObserver(new PersonErrorObserver() {
-            @Override
-            public void notifyNicknameInvalid(Person person, String msg) {
-                errors.put(person, msg);
-            }
-            @Override
-            public void notifyAgeInvalid(Person person, String msg) {
-                errors.put(person, msg);
-            }
+  @BeforeEach
+  public void before() {
+    Log.init();
+    Log.enableFailQuick(false);
+    FlensburgMock.init();
+    this.personBuilder = new PersonBuilder(1001L);
+    errors.clear();
+    PersonErrorCollector.init();
+    PersonErrorCollector.addErrorObserver(new PersonErrorObserver() {
+      @Override
+      public void notifyNicknameInvalid(Person person, String msg) {
+        errors.put(person, msg);
+      }
 
-            @Override
-            public void notifyOwnsInvalid(Person person, String msg) {
-                errors.put(person, msg);
-            }
+      @Override
+      public void notifyAgeInvalid(Person person, String msg) {
+        errors.put(person, msg);
+      }
 
-            @Override
-            public void notifyMainResidenceInvalid(Person person, String msg) {
-                errors.put(person, msg);
-            }
-        });
-    }
+      @Override
+      public void notifyOwnsInvalid(Person person, String msg) {
+        errors.put(person, msg);
+      }
 
-    @Test
-    public void testBuildValidPerson(){
-        int id = 1001;
-        FlensburgMock.secretlyAdaptNextGemId(id);
+      @Override
+      public void notifyMainResidenceInvalid(Person person, String msg) {
+        errors.put(person, msg);
+      }
+    });
+  }
 
-        Address mainResidence = FlensburgManager.addressBuilder().city("Flensburg").build().get();
+  @Test
+  public void testBuildValidPerson() {
+    int id = 1001;
+    FlensburgMock.secretlyAdaptNextGemId(id);
 
-        String name = "Hardy";
-        int age = 18;
-        personBuilder
-            .age(age)
-            .nickname(name)
-            .mainResidence(mainResidence)
-            .build();
-        assertTrue(Log.getFindings().isEmpty(), "Log not empty: " + Log.getFindings());
+    Address mainResidence = FlensburgManager.addressBuilder().city("Flensburg").build().get();
 
-        Optional<Person> personOpt = FlensburgManager.personOpt(id);
+    String name = "Hardy";
+    int age = 18;
+    personBuilder.age(age).nickname(name).mainResidence(mainResidence).build();
+    assertTrue(Log.getFindings().isEmpty(), "Log not empty: " + Log.getFindings());
 
-        assertTrue(personOpt.isPresent());
-        Person person = personOpt.get();
+    Optional<Person> personOpt = FlensburgManager.personOpt(id);
 
-        assertTrue(errors.isEmpty());
+    assertTrue(personOpt.isPresent());
+    Person person = personOpt.get();
 
-        assertEquals(name, person.getNickname());
-        assertEquals(age, person.getAge().intValue());
-    }
+    assertTrue(errors.isEmpty());
 
-    @Test
-    public void testBuildInvalidPersonNoNickname(){
-        int id = 1001;
-        FlensburgMock.secretlyAdaptNextGemId(id);
+    assertEquals(name, person.getNickname());
+    assertEquals(age, person.getAge().intValue());
+  }
 
-        Address mainResidence = FlensburgManager.addressBuilder().city("Flensburg").build().get();
+  @Test
+  public void testBuildInvalidPersonNoNickname() {
+    int id = 1001;
+    FlensburgMock.secretlyAdaptNextGemId(id);
 
-        PersonBuilder builder = personBuilder
-            .age(18)
-            .mainResidence(mainResidence);
-        Optional<Person> personOpt = builder.build();
+    Address mainResidence = FlensburgManager.addressBuilder().city("Flensburg").build().get();
 
-        assertFalse(personOpt.isPresent());
-        assertEquals(1, errors.size());
+    PersonBuilder builder = personBuilder.age(18).mainResidence(mainResidence);
+    Optional<Person> personOpt = builder.build();
 
-        List<String> msgs = errors.get(builder);
-        assertEquals(1, msgs.size());
+    assertFalse(personOpt.isPresent());
+    assertEquals(1, errors.size());
 
-        String msg = msgs.get(0);
-        assertTrue(msg.toLowerCase().contains("nickname"));
-        assertTrue(msg.toLowerCase().contains("invalid"));
+    List<String> msgs = errors.get(builder);
+    assertEquals(1, msgs.size());
 
-        assertFalse(FlensburgManager.personOpt(id).isPresent());
-    }
+    String msg = msgs.get(0);
+    assertTrue(msg.toLowerCase().contains("nickname"));
+    assertTrue(msg.toLowerCase().contains("invalid"));
+
+    assertFalse(FlensburgManager.personOpt(id).isPresent());
+  }
 }
