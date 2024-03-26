@@ -131,6 +131,7 @@ public class TestSetupDecorator extends AbstractDecorator {
         "int numberOfClients").get();
 
     //TODO add delegating super constructors for every constructor there is in the parent class
+    // -> problem: parent class may be handwritten code and as such not exist yet. Solution?
 
     String basicTemplate = "umlp.common.BasicConstructor";
     String numOfClientsTemplate = COMMON_CUSTOM_TEMPLATE_PATH + "NumberOfClientsConstructor";
@@ -140,7 +141,7 @@ public class TestSetupDecorator extends AbstractDecorator {
                         delegateToSuper ? superTemplate : basicTemplate,
                         typeName,
                         List.of(genSummary.clientSetupAttr()));
-    //support legacy calls
+    //support legacy calls where constructor is called with only an int describing the number of clients
     cd4C.addConstructor(target,
                         delegateToSuper ? superTemplate : numOfClientsTemplate,
                         typeName,
