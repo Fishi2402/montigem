@@ -2,8 +2,6 @@ package functionstructure4fenix.ma2fenix;
 
 
 import arcbasis._symboltable.ComponentTypeSymbol;
-import functionstructure4fenix.FunctionStructure4FenixManager;
-import functionstructure4fenix.FunctionStructure4FenixManagerImpl;
 import montiarc.MontiArcMill;
 import montiarc.MontiArcTool;
 import com.google.common.base.Preconditions;

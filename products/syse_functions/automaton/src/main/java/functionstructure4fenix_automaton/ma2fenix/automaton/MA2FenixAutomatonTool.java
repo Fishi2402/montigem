@@ -4,11 +4,7 @@ package functionstructure4fenix_automaton.ma2fenix.automaton;
 import arcbasis._symboltable.ComponentTypeSymbol;
 import com.google.common.base.Preconditions;
 import de.se_rwth.commons.logging.Log;
-import functionstructure4fenix.FunctionStructure4FenixManager;
-import functionstructure4fenix.FunctionStructure4FenixManagerImpl;
 import functionstructure4fenix.ma2fenix.MA2FenixTool;
-import functionstructure4fenix_automaton.FunctionStructure4Fenix_AutomatonManager;
-import functionstructure4fenix_automaton.FunctionStructure4Fenix_AutomatonManagerImpl;
 import montiarc.MontiArcMill;
 
 import java.util.Optional;
