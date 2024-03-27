@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.charts;
+
+import mc.fenix.charts.GemScatterPlotTypes.GemScatterPlotData;
+import mc.fenix.charts.GemScatterPlotTypes.GemScatterPlotAxis;
+
+//A scatterplot visualises a set of scattered points in a two dimensional space.
+//The axes have a certain range and provide more detail with a title
+
+component GemScatterPlot(
+  GemScatterPlotData data,
+  GemScatterPlotAxis xAxis,
+  GemScatterPlotAxis yAxis
+)

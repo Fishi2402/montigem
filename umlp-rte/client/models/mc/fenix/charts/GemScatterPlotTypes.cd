@@ -1,0 +1,32 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.charts;
+import java.util.List;
+import java.util.Optional;
+
+classdiagram GemBarChartTypes {
+
+  public class GemScatterPlotData {
+    List<GemScatterPlotEntry> entries;
+  }
+
+  public class GemScatterPlotAxis {
+    String label;
+    double minValue;
+    double maxValue;
+    double stepWidth;
+  }
+
+  public class GemScatterPlotEntry {
+    Optional<GemScatterPlotEntryShape> shape;
+    double x;
+    double y;
+    Optional<String> color;
+    Optional<String> hoverColor;
+  }
+
+  public enum GemScatterPlotEntryShape {
+    CIRCLE,
+    SQUARE
+  }
+
+}
