@@ -2,6 +2,8 @@
 package umlp.generator.domain.decorator;
 
 import de.monticore.ast.Comment;
+import de.monticore.cd.codegen.TopDecorator;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
@@ -43,6 +45,15 @@ public class DerivedClassImplDecorator extends AbstractDecorator {
     ast.getSuperclassList().add(getMCTypeFacade().createQualifiedType(domainClass.getName()));
 
     addImports(domainClass, ast);
+
+    // Do not require TOP here?
+//    if (!domainClass.getCDAttributeList().isEmpty()) {
+//      if (!ast.getModifier().isPresentStereotype())
+//        ast.getModifier().setStereotype(CD4CodeMill.stereotypeBuilder().build());
+//
+//      ast.getModifier().getStereotype().addValues(TopDecorator.NEEDS_TOP_STEREO_BUILDER
+//          .apply("Impl class %s of derived a class requires a hand-written implementation using the TOP mechanism." ));
+//    }
 
     return ast;
   }
