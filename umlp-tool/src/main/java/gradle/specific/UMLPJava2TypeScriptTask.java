@@ -205,7 +205,11 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
   private static final String PATTERN_DAO_NEO4J = "**/%s/*DAONeo4J*.java";
   private static final String PATTERN_DB_OBSERVER = "**/%s/*DbObserver*.java";
   private static final String PATTERN_DOMAIN = "**/%s/**/*.java";
-  private static final String PATTERN_GUI = "**/gui/**/*.java";
+  // TODO: These filter-paths can not be a proper solution
+  // We should use File Properties instead!
+  // https://docs.gradle.org/current/userguide/lazy_configuration.html#working_with_files_in_lazy_properties
+  private static final String PATTERN_GUI = "**/appgui/**/*.java"; // appgui = cd2gui output
+  private static final String PATTERN_GUI2 = "**/gui/**/*.java";
 
   private void computeIncludes() {
     List<String> includes = new ArrayList<>();
@@ -213,6 +217,7 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
       includes.add(generatePattern(PATTERN_DOMAIN_MODEL));
       if (getGui().orElse(false).get()) {
         includes.add(PATTERN_GUI);
+        includes.add(PATTERN_GUI2);
       }
     }
     else {
