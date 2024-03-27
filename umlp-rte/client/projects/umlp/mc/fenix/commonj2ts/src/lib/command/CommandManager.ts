@@ -187,8 +187,9 @@ export class CommandManager {
   }
 
   protected _subscribeToType(participantId: number, domainTypeFilter: DomainTypeFilter) {
+    console.log("PPPP", this.particpants)
     let p = this.particpants.get(participantId);
-    if (p != null) {
+    if (this.particpants.hasOwnProperty(participantId)) {
       p.subscribeType(domainTypeFilter);
     }
   }
