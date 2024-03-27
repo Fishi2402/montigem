@@ -30,4 +30,14 @@ public class TSEventDecorator extends EventDecorator {
     return "umlp.gui2ts.TSEventCallback";
   }
 
+  @Override
+  protected String getEventTypeTemplate(EventType inbuild) {
+    switch (inbuild) {
+      case CREATE:
+        return "umlp.gui2ts.TSCreateEvent";
+      case DELETE:
+        return "umlp.gui2ts.TSDeleteEvent";
+    }
+    return "";  }
+
 }

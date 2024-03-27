@@ -7,6 +7,7 @@ import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
@@ -17,6 +18,8 @@ import umlp.generator.gui.GUIComponentsVisitor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 
 public class EventDecorator extends GUI2JavaComponentDecorator {
 
@@ -59,7 +62,12 @@ public class EventDecorator extends GUI2JavaComponentDecorator {
           Optional<ASTCDMethodSignature> methodSignature = getCD4C().createMethod(decoratedClass,
               getEventCallbackTemplate(), methodName, "", args);
           if (methodSignature.isPresent() && !GenService.containsMethod(decoratedClass, methodSignature.get())) {
-            getCD4C().addMethod(decoratedClass, getEventCallbackTemplate(), methodName, "", args);
+            decoratedClass.addCDMember(methodSignature.get());
+            for(EventType eventType: EventType.values()){
+              if(methodName.equals(eventType.eventName)){
+                glex.replaceTemplate(EMPTY_BODY, methodSignature.get(), new TemplateHookPoint(getEventTypeTemplate(EventType.valueOf(eventType.name()))));
+              }
+            }
           }
           if (UMLPGeneratorConfig.getInstance().isUseJsweet()) {
             addImport(decoratedClass, "java.util.function.Consumer");
@@ -77,4 +85,24 @@ public class EventDecorator extends GUI2JavaComponentDecorator {
     return "umlp.gui2java.EventCallback";
   }
 
+  protected String getEventTypeTemplate(EventType inbuild) {
+    switch (inbuild) {
+      case CREATE:
+        return "umlp.gui2java.CreateEvent";
+      case DELETE:
+        return "umlp.gui2java.DeleteEvent";
+    }
+    return "";
+  }
+
+  public enum EventType {
+    DELETE("delete"),
+    CREATE("create");
+
+    final String eventName;
+
+    EventType(String eventName){
+      this.eventName = eventName;
+    }
+  }
 }
