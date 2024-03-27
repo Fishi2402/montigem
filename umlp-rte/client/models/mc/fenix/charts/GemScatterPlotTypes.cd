@@ -3,7 +3,7 @@ package mc.fenix.charts;
 import java.util.List;
 import java.util.Optional;
 
-classdiagram GemBarChartTypes {
+classdiagram GemScatterPlotTypes {
 
   public class GemScatterPlotData {
     List<GemScatterPlotEntry> entries;
@@ -26,7 +26,6 @@ classdiagram GemBarChartTypes {
 
   public enum GemScatterPlotEntryShape {
     CIRCLE,
-    SQUARE
+    SQUARE;
   }
-
 }
