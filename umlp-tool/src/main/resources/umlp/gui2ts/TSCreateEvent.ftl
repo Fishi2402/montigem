@@ -1,3 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-// TODO MB
-  return event => {};
+${tc.signature("domainName", "type", "name")}
+// TODO extend?
+  return event => {
+    ${domainName}Manager.add${type}(${name}.build());
+  };

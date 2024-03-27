@@ -1,3 +1,3 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature()}
-// MB Todo
+${tc.signature("domainName", "type", "name")}
+// TODO

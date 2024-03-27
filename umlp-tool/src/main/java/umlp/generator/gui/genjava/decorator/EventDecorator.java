@@ -11,6 +11,10 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
+import de.monticore.guidsl._visitor.GUIDSLTraverser;
+import de.monticore.guidsl.types.check.util.GUIDSLTypeTraverserFactory;
+import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types3.Type4Ast;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.gui.GUIComponentsVisitor;
@@ -63,9 +67,19 @@ public class EventDecorator extends GUI2JavaComponentDecorator {
               getEventCallbackTemplate(), methodName, "", args);
           if (methodSignature.isPresent() && !GenService.containsMethod(decoratedClass, methodSignature.get())) {
             decoratedClass.addCDMember(methodSignature.get());
-            for(EventType eventType: EventType.values()){
-              if(methodName.equals(eventType.eventName)){
-                glex.replaceTemplate(EMPTY_BODY, methodSignature.get(), new TemplateHookPoint(getEventTypeTemplate(EventType.valueOf(eventType.name()))));
+            if (!call.getArguments().getExpressionList().isEmpty()) {
+              Type4Ast type4Ast = new Type4Ast();
+              GUIDSLTraverser traverser = GUIDSLTypeTraverserFactory.getInstance()
+                  .createTraverserForOO(type4Ast);
+              call.getArguments().getExpression(0).accept(traverser);
+              SymTypeExpression te = type4Ast.getTypeOfExpression(call.getArguments().getExpression(0));
+              if(te.hasTypeInfo() && util.isDomainType(te)) {
+                for (EventType eventType : EventType.values()) {
+                  if (methodName.equals(eventType.eventName)) {
+                    glex.replaceTemplate(EMPTY_BODY, methodSignature.get(), new TemplateHookPoint(getEventTypeTemplate(EventType.valueOf(eventType.name())),
+                        util.getMainDomainModelSimpleName().get(), te.print(), args.get(0)));
+                  }
+                }
               }
             }
           }
