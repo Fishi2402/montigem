@@ -1,6 +1,7 @@
 package kitchencompanion;
 
 import de.se_rwth.commons.logging.Log;
+import examples.ExamplesInstantiator;
 import org.h2.tools.Server;
 import org.springframework.boot.SpringApplication;
 //import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -383,6 +384,8 @@ public class KitchenCompanionServerApplication extends KitchenCompanionServerApp
           .name("Müsliriegeln/ Fruchtriegeln")
           .price(0.25)
           .build();
+
+      new ExamplesInstantiator().instantiate();
 
     }
 
