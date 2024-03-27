@@ -66,7 +66,7 @@ public class TestSetupDecorator extends AbstractDecorator {
     ASTCDClass abstractDBTestSetup = createAbstractDBTestSetup(origCD, abstractTestSetup);
     aPackage.addCDElement(withOrigin(abstractDBTestSetup));
     if (isNeo4jGen) {
-      aPackage.addCDElement(withOrigin(createNeo4JDBTestSetup(origCD, abstractTestSetup)));
+      aPackage.addCDElement(withOrigin(createNeo4JDBTestSetup(origCD, abstractDBTestSetup)));
     } else {
       aPackage.addCDElement(withOrigin(createSQLDBTestSetup(origCD, abstractDBTestSetup)));
     }
