@@ -20,14 +20,14 @@ to atomic functions, which are pure software, sensors, actuators, or elementary
 physical functions, as the Koller catalog knows them in the form of about 300 pieces.
 
 ## Explanation
-A detailed explanation is given in [this PPT](doc/FunctionStructure.Explanation.pptx)
+A detailed explanation is given in [this PPT](products/syse_functions/doc/FunctionStructure.Explanation.pptx)
 
 ## The model
-- primarily defined by a [class diagram](src/models/FunctionStructure.umlp)
-- and [ocl constraints](src/models/FunctionStructure.ocl)
-- incarnated with a [class diagram for implementation purposes](src/models/FunctionStructure4Fenix.umlp) in Fenix
+- primarily defined by a [class diagram](products/syse_functions/doc/models/FunctionStructure.umlp)
+- and [ocl constraints](products/syse_functions/doc/models/FunctionStructure.ocl)
+- incarnated with a [class diagram for implementation purposes](products/syse_functions/src/models/FunctionStructure4Fenix.umlp) in Fenix
   (this is a current workaround to be removed, because of a deficiency of Fenix)
-- and corresponding [ocl constraints](src/models/FunctionStructure4Fenix.ocl)
+- and corresponding [ocl constraints](products/syse_functions/src/models/FunctionStructure4Fenix.ocl)
 
 ## Application
 We collect possible use cases for which our function structure model will be
@@ -36,7 +36,7 @@ structural elements of a functional composition of a system, and then
 transform it further. In other cases, it acts as the source for analysis
 or data structure directly.
 
-Many of these concepts are also collected [here](doc/FunctionStructure.UseCases.pptx).
+Many of these concepts are also collected [here](products/syse_functions/doc/FunctionStructure.UseCases.pptx).
 
 ### Basic Structure for the Digital Product Record (Resp: BR, JM)
 
