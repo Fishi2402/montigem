@@ -1,22 +1,22 @@
 import { ChartsModule } from "ng2-charts";
 import { CommonModule } from "@angular/common";
-import { GemBarChart } from "./gem-bar-chart.component";
+import { GemScatterPlot } from "./gem-scatter-plot.component";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { GemChartLegend } from "../gemchartlegend/gem-chart-legend.component";
 
-describe("NewBarChartComponent", () => {
-  let component: GemBarChart;
-  let fixture: ComponentFixture<GemBarChart>;
+describe("NewScatterPlotComponent", () => {
+  let component: GemScatterPlot;
+  let fixture: ComponentFixture<GemScatterPlot>;
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      declarations: [GemBarChart, GemChartLegend],
+      declarations: [GemScatterPlot, GemChartLegend],
       imports: [CommonModule, ChartsModule],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(GemBarChart);
+    fixture = TestBed.createComponent(GemScatterPlot);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -24,6 +24,8 @@ describe("NewBarChartComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
+
+  //TODO test the component I wrote
 
   it("should set properly the property options when stacked is entered", () => {
     component.stacked = true;

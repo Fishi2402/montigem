@@ -1,43 +1,22 @@
 import { Component, Input } from '@angular/core';
 import { ChartDataset, ChartOptions } from 'chart.js';
 import { autoColors } from "../colors";
-import { GemBarChartData } from './gem-bar-chart-types/gem-bar-chart-types.types-gen';
-import { GemBarChart as GemBarChartTOP } from './gem-bar-chart/gem-bar-chart.component-gen';
+import { GemScatterPlotData, GemScatterPlotAxis } from './gem-scatter-plot-types/gem-scatter-plot-types.types-gen';
+import { GemScatterPlot as GemScatterPlotTOP } from './gem-scatter-plot/gem-scatter-plot.component-gen';
 
 @Component({
-  selector: 'gem-bar-chart',
-  templateUrl: './gem-bar-chart.component.html',
-  styleUrls: ['./gem-bar-chart.component.scss']
+  selector: 'gem-scatter-plot',
+  templateUrl: './gem-scatter-plot.component.html',
+  styleUrls: ['./gem-scatter-plot.component.scss']
 })
-
-export class GemBarChart extends GemBarChartTOP {
-
-  /**labels on x axis in a vertical bar chart respectively on y axis in a horizontal bar*/
-  public labels: string[];
+export class GemScatterPlot extends GemScatterPlotTOP {
 
   /** contains the data for all entries that will be displayed in the chart*/
-  public dataSets: ChartDataset<'bar'>[] = [];
+  public dataSets: ChartDataset<'scatter'>[] = [];
 
-  /** contains all the data provided by the user */
-  public rawData;
-
-  /**contains the colors for each entry */
-  public colors = [];
-
-  /** the maximal value to which the data will be displayed*/
-  public _maxValue: number = undefined;
-
-  /** the minimal value from which the data will begin to be displayed*/
-  public _minValue: number = undefined;
-
-  /** variable that shows if the data will be stacked*/
-  public _stacked: boolean;
-
-  /** adds by the desire of the user additional symbols to the values  */
-  public _displayValue: (value: number) => string;
-
-  /**labels for chart legend */
-  public legendLabels: string[] = [];
+  //stuff that has to be used when changing the options
+  public _xAxis: GemScatterPlotAxis = {};
+  public _yAxis: GemScatterPlotAxis = {};
 
   /**colors for chart legend */
   public legendColors: string[] = [];
@@ -49,6 +28,7 @@ export class GemBarChart extends GemBarChartTOP {
   public displayLegend = true;
 
   /** variable that contains the settings for the chart */
+  //will be overridden on init
   public options: ChartOptions = {
     responsive: true,
     maintainAspectRatio: true,
@@ -63,10 +43,10 @@ export class GemBarChart extends GemBarChartTOP {
   }
 
   /** setter that processes the data to be shown correctly by the chart and the legend.
-   * Also sets the colors for each entry when no color is given as it uses the provided colors service 
+   * Also sets the colors for each entry when no color is given as it uses the provided colors service
    */
   @Input()
-  public set data(data: GemBarChartData) {
+  public set data(data: GemScatterPlotData) {
     if (!data) {
       return;
     }
@@ -75,80 +55,66 @@ export class GemBarChart extends GemBarChartTOP {
     const labels = [];
     let pointerAutoColors = 0;
     let autocolors = this.getColors();
-    this.labels = data.labels;
 
-    for (let i = 0; i < data.entries.length; i++) {
-      if (!CSS.supports('color', data.entries[i].backgroundColor)) {
-        data.entries[i].backgroundColor = autocolors[pointerAutoColors++];
+    for (let i = 0; i < data.sets.length; i++) {
+      const set = data.sets[i];
+      if (!CSS.supports('color', set.color)) {
+        set.color = autocolors[pointerAutoColors++];
+      }
+      if (!CSS.supports('color', set.hoverColor)) {
+        set.hoverColor = autocolors[pointerAutoColors++];
       }
 
-      let entry: ChartDataset<'bar'> = {
-        data: data.entries[i].data,
-        label: data.entries[i].label,
-        stack: data.entries[i].stack,
-        backgroundColor: data.entries[i].backgroundColor,
-        hoverBackgroundColor: data.entries[i].backgroundColor,
+      const points = [];
+      set.points.forEach((point) => {
+        points.push({
+          x: point.x,
+          y: point.y,
+        });
+      });
+
+      let entry: ChartDataset<'scatter'> = {
+        label: set.label,
+        pointStyle: this.getPointStyle(set.shape),
+        data: points,
+        backgroundColor: set.color,
+        hoverBackgroundColor: set.hoverColor,
         hoverBorderWidth: 2,
       };
 
-      labels.push(entry.label);
-      colors.push(entry.backgroundColor);
       this.dataSets.push(entry);
     }
-    this.legendLabels = labels;
     this.legendColors = colors;
   }
 
+  public getPointStyle(shape?: GemScatterPlotShape): string {
+    return switch (shape) {
+      case GemScatterPlotShape.SQUARE:
+        'rect';
+        break;
+      default:
+        'circle';
+    }
+  }
+
   @Input()
-  public set minValue(minValue: number) {
-    this._minValue = minValue;
+  public set xAxis(axis: GemScatterPlotAxis) {
+    this._xAxis = axis;
     this.saveAllOptionsChanges();
   }
 
   @Input()
-  public set maxValue(maxValue: number) {
-    this._maxValue = maxValue;
+  public set yAxis(axis: GemScatterPlotAxis) {
+    this._yAxis = axis;
     this.saveAllOptionsChanges();
   }
 
-  @Input()
-  public set displayValue(displayValue: (value: number) => string) {
-    this._displayValue = displayValue;
-    this.saveAllOptionsChanges();
-  }
-
-  @Input()
-  public set stacked(stacked: boolean) {
-    this._stacked = stacked;
-    this.saveAllOptionsChanges();
-    this.setData();
-  }
-  
   constructor() {
     super();
   }
 
   ngOnInit(): void {
     this.saveAllOptionsChanges();
-  }
-
-  /**
-   * handles a problem connected with different order of variables in the input 
-   */
-  public setData(): void {
-    if (this._stacked && this.rawData != undefined) {
-      for (let i = 0; i < this.dataSets.length; i++) {
-        this.dataSets[i].stack = this.rawData.entries[i].stack;
-      }
-    }
-    else if (!this._stacked && this.rawData != undefined) {
-      for (let i = 0; i < this.dataSets.length; i++) {
-        this.dataSets[i].stack = undefined;
-      }
-    }
-    else {
-      return;
-    }
   }
 
   /** function that saves all settings of the variables that are not reset in the new input */
@@ -158,7 +124,12 @@ export class GemBarChart extends GemBarChartTOP {
       maintainAspectRatio: false,
       scales: {
         x: {
-          stacked: this._stacked,
+          title: {
+            display: this._xAxis.label,
+            text: this._xAxis.label,
+          },
+          min: this._xAxis.minValue,
+          max: this._xAxis.maxValue,
           grid: {
             color: '#888'
           },
@@ -167,6 +138,10 @@ export class GemBarChart extends GemBarChartTOP {
           }
         },
         y: {
+          title: {
+            display: this._yAxis.label,
+            text: this._yAxis.label,
+          },
           min: this._minValue,
           max: this._maxValue,
           stacked: this._stacked,

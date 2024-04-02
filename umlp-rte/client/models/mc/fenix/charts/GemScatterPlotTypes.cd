@@ -6,25 +6,31 @@ import java.util.Optional;
 classdiagram GemScatterPlotTypes {
 
   public class GemScatterPlotData {
-    List<GemScatterPlotEntry> entries;
+    List<GemScatterPlotSet> sets;
   }
 
   public class GemScatterPlotAxis {
-    String label;
-    double minValue;
-    double maxValue;
-    double stepWidth;
+    Optional<String> label;
+    Optional<Double> minValue;
+    Optional<Double> maxValue;
+    Optional<Double> stepWidth;
   }
 
-  public class GemScatterPlotEntry {
+  public class GemScatterPlotSet {
+    String label;
     Optional<GemScatterPlotEntryShape> shape;
-    double x;
-    double y;
+    List<GemScatterPlotPoint> points;
     Optional<String> color;
     Optional<String> hoverColor;
   }
 
-  public enum GemScatterPlotEntryShape {
+  public class GemScatterPlotPoint {
+    double x;
+    double y;
+  }
+
+  //TODO if enums are supported copy over all allowed shapes
+  public enum GemScatterPlotShape {
     CIRCLE,
     SQUARE;
   }
