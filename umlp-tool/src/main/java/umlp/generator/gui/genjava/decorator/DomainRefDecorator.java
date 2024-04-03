@@ -246,6 +246,11 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
         ));
 
         addEditConstructor(clazz, params, domainAttributes, otherAttributes);
+
+        // Add set_internal setters for the attribute
+        for (ASTCDAttribute astcdAttribute : domainAttributes) {
+          getCD4C().addMethod(clazz, getInternalSetterTemplate(), astcdAttribute.getName(), astcdAttribute.getMCType().printType());
+        }
       }
 
       // TODO AGe: readd error observers when error concept is realized
@@ -445,6 +450,10 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
 //      glex.replaceTemplate("cd2java.Annotations", method, new StringHookPoint("@SynchronizedGemList"));
 //      getCD4C().addImport(clazz, "umlp.jsweet.extension.annotation.SynchronizedGemList");
 //    }
+  }
+
+  protected String getInternalSetterTemplate() {
+    return "umlp.gui2java.InternalSet";
   }
 
   protected void addInitialValue(ASTCDAttribute attr) {
