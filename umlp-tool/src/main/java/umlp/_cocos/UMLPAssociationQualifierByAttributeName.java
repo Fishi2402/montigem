@@ -1,14 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
 package umlp._cocos;
 
-import de.monticore.cd.CDMill;
 import de.monticore.cd4code.typescalculator.FullSynthesizeFromCD4Code;
-import de.monticore.cdassociation.CDAssociationMill;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdassociation._ast.ASTCDAssociation;
 import de.monticore.cdassociation._cocos.CDAssociationASTCDAssociationCoCo;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.util.WithinTypeBasicSymbolsResolver;
 import de.se_rwth.commons.logging.Log;
