@@ -1,0 +1,22 @@
+:host ::ng-deep .editJoinConnectionLabel {
+  margin-top: 1rem;
+  margin-bottom: .5rem;
+  font-weight: bold;
+}
+
+
+:host ::ng-deep .editJoinConnectionTable {
+  margin-bottom: 1rem;
+  width: 100%;
+
+  > stat-table > gem-column > stat-table-row > gem-row > gem-column.leftComponent {
+    width: 50%;
+  }
+
+  > stat-table > gem-column > stat-table-row > gem-row > gem-column.rightComponent {
+    width: 50%;
+  }
+
+}
+
+

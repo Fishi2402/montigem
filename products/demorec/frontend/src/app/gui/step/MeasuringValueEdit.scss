@@ -1,0 +1,26 @@
+:host ::ng-deep gem-row.displayedMeasuringValueRow {
+  //position: relative;
+  display: flex;
+
+  > gem-button.displayedMeasuringValueDeleteButton > button {
+    /*position: absolute;
+    width: 20%;*/
+    flex: 1 1 20%;
+  }
+
+  > gem-text-input.displayedMeasuringValue > label, input {
+    //position: absolute;
+    //width: 40%;
+    flex: 1;
+  }
+
+  > gem-text-input.displayedMeasuringValueDimensionUnit > label, input {
+    //position: absolute;
+    //width: 40%;
+    flex: 1;
+  }
+}
+
+:host ::ng-deep .addNewMeasuringValue {
+  width: 100%;
+}
