@@ -1,0 +1,5 @@
+umlp UMLPCheckAttributeModifier {
+  class UMLPCheckDiagramName {
+    private int invalidAttr;
+  }
+}
