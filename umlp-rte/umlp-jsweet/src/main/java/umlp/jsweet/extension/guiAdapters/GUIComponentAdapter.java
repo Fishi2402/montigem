@@ -209,8 +209,10 @@ public class GUIComponentAdapter extends PrinterAdapter {
         .print(" {").println().startIndent().printIndent();
 
     // Method Body
+    print("/* Printed by ").print(getClass().getName()).print(" */").println();
     print("if (this." + fieldName + " === undefined) {").startIndent().println().printIndent();
     print("this." + fieldName + " = " + initializer + ";").println().printIndent();
+    // TODO: Add this to the set{fieldName?cap_first}_internal method too?
     print("new Promise<");
     printType(returnType, optionalArrayStart, optionalArrayEnd, overloadMethod);
     print(">(async resolve => {").println().startIndent().printIndent();
