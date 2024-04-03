@@ -8,6 +8,10 @@ import mc.fenix.arrange.GemCard;
 import mc.fenix.arrange.GemColumn;
 import mc.fenix.basic.GemText;
 import mc.fenix.basic.GemLink;
+import mc.fenix.basic.GemButton;
+
+import gui.staticcontainer.StatTable;
+import gui.staticcontainer.StatTableRow;
 
 import gui.staticcontainer.NavContainer;
 import gui.step.ProcessStepCreate;
@@ -18,31 +22,34 @@ page ProcessOverview(Process p) {
 
   @NavContainer(
       content=[
-  @GemCard(
-      title="Deconstruction Process of Pack",
-      component=@BatteryPackOverview(pack=p.deconstructionOf)
-    ),
-  @GemCard(
-    title="Process Steps",
-    component=@GemColumn(
-      components = [
-        stepCreate@ProcessStepCreate(create = attachStep),
-        @iterate(ProcessStep step : p.consistsOf) {
-          @GemRow(colGap="5px",
-            components=[
-              @GemText(value="Step "+step.index),
-              @GemText(value=step.type),
-              @GemText(value=" took "),
-              @GemText(value=step.timeConsumption+ " seconds."),
-              /*@guard(true) { // ensure that step.description is not null
-                @GemText(value=step.description);
-              },*/
-              sensorValues@GemText(value=" Value"),
-              editStep@GemLink(url="gui/process/ProcessStepCreate/", text="Edit Step")
+        @GemCard(
+            title="Deconstruction Process of Pack",
+            component=@BatteryPackOverview(pack=p.deconstructionOf)
+          ),
+        @GemCard(
+          title="Process Steps",
+          component=@GemColumn(
+            components = [
+              stepCreate@ProcessStepCreate(create = attachStep),
+
+              @iterate(ProcessStep step : getReverseProcessSteps()) {
+                stepInfos@GemColumn(
+                  components=[
+                    stepIndex@GemText(value="Step Nr. "+step.index),
+                    @StatTable(rows = [
+                      @StatTableRow(left = @GemText(value = "Type"), right = @GemText(value = step.type)),
+                      @StatTableRow(left = @GemText(value = "Description"), right = @GemText(value = step.description)),
+                      @StatTableRow(left = @GemText(value = "Endeffector"), right = @GemText(value = step.uses.name)),
+                      @StatTableRow(left = @GemText(value = "Duration"), right = @GemText(value = step.timeConsumption + " seconds"))
+                      //@StatTableRow(left = @GemText(value = "Number of Measured Values"), right = @GemText(value = getNumberOfMeasuredValues(step)))
+                      /*stepHasJoinConnection(step)@guard(true) {
+                        //@StatTableRow(left = @GemText(value = "Join Connection"), right = @GemText(value = getDisplayNameOfJoinConnection(step)));
+                      }*/
+                    ]),
+                    editStepButton@GemButton(width = "25%", label = "Edit Step " + step.index, leftClick = editStep(step))
+                  ]);
+              }
             ]
-          );
-        }
-      ]
-    )
-  )]);
+          )
+)]);
 }

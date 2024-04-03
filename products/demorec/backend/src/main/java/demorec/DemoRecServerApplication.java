@@ -135,11 +135,15 @@ public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
           .name("Screwdriver")
           .build().get();
 
+      EndEffector endEffector2 = DemoRecManager.endEffectorBuilder()
+          .name("Allen key")
+          .build().get();
+
       ProcessStep step = DemoRecManager.processStepBuilder()
           .type(ProcessStepType.DECONSTRUCTION)
           .uses(endEffector)
           .deconstructs(connection)
-          .timeConsumption(786l)
+          .timeConsumption(786.0)
           .index(0)
           .build().get();
 

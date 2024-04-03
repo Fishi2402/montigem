@@ -112,7 +112,7 @@ export class JoinConnectionCreate extends JoinConnectionCreateComponent {
   }
 
   public override getBuildConnectionDisabled (): boolean {
-    return this.getConnection().isBuildable();
+    return this.getConnection()?.isBuildable();
   }
 
   public override createNewConnection (event: any): void {

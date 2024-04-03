@@ -34,7 +34,7 @@ classdiagram DemoRec {
   association [*] Process -> (deconstructionOf) BatteryPack [1];
 
   class ProcessStep {
-    long timeConsumption;
+    double timeConsumption;
     ProcessStepType type;
     Optional<String> description;
     int index;
