@@ -246,11 +246,10 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
         ));
 
         addEditConstructor(clazz, params, domainAttributes, otherAttributes);
-
-        // Add set_internal setters for the attribute
-        for (ASTCDAttribute astcdAttribute : domainAttributes) {
-          getCD4C().addMethod(clazz, getInternalSetterTemplate(), astcdAttribute.getName(), astcdAttribute.getMCType().printType());
-        }
+      }
+      // Add set_internal setters for the attribute
+      for (ASTCDAttribute astcdAttribute : domainAttributes) {
+        getCD4C().addMethod(clazz, getInternalSetterTemplate(), astcdAttribute.getName(), astcdAttribute.getMCType().printType());
       }
 
       // TODO AGe: readd error observers when error concept is realized
