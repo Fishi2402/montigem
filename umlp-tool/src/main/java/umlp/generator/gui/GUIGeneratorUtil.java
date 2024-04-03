@@ -526,7 +526,9 @@ public class GUIGeneratorUtil {
 
       String expressionWithNullChecks = printer.prettyprint(ic.getIterable());
       if (!UMLPGeneratorConfig.getInstance().isGenerateTypescript()) {
-        expressionWithNullChecks = expressionWithNullChecks.replace("()", SYNCHRONIZED_SUFFIX + "()");
+        // Use the async pipe: https://angular.io/api/common/AsyncPipe
+        // This requires the iterated object to be Observeable<NGiterable>, Subscribeable<NGiterable>, ...
+        expressionWithNullChecks = "(" + expressionWithNullChecks + " | async )";
       }
       return expressionWithNullChecks;
     }

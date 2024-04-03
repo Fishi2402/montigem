@@ -7,10 +7,41 @@ import {LoadResult} from "../common/LoadResult";
 import {LoadingState} from "../common/LoadingState";
 import {IUMLPList} from "../common/IUMLPList";
 import {UMLPArrayList} from "../common/UMLPArrayList";
+import {Observer, Subscribable, Unsubscribable} from "rxjs";
+import {NgIterable} from "@angular/core";
 
-export abstract class GemList<E extends GemIdentifiable> implements GemBuildable, IUMLPList<E> {
+export abstract class GemList<E extends GemIdentifiable> implements GemBuildable, IUMLPList<E>,
+  Subscribable<NgIterable<E>> {
   protected ids: Array<number> = [];
   protected asArray: Array<E> = null;
+
+  protected changeObservers: Partial<Observer<NgIterable<E>>>[] = [];
+  subscribe(observer: Partial<Observer<NgIterable<E>>>): Unsubscribable {
+    this.changeObservers.push(observer);
+    const outer = this;
+    // And push an initial value to the observer
+    observer.next(this.toArray());
+
+    // Ub-subscriber
+    return new class implements Unsubscribable {
+      unsubscribe(): void {
+        // remove observer
+        outer.changeObservers.splice(outer.changeObservers.indexOf(observer), 1);
+      }
+    }
+  }
+
+  /**
+   * Notify about a change to the GemList (as seen by the toArray)
+   */
+  protected updateIds() {
+    // Pass the toArray to all observers (but call toArray lazy)
+    let lazy = undefined;
+    const getVar = () => lazy || (lazy = this.toArray());
+    this.changeObservers.forEach(value => value.next(getVar()));
+  }
+
+
 
   public constructor(ids?: IUMLPList<number>) {
     if (typeof ids !== 'undefined' && ids != null) {
@@ -131,6 +162,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     if (this.asArray != null) {
       this.asArray[idx] = (await this.loadSingleObject(gemID)).get();
     }
+    this.updateIds();
   }
 
   public async add(idxOrElem: number | E, elem?: E): Promise<boolean> {
@@ -176,6 +208,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
         this.asArray.splice(idx, 0 + i++, await this.get(gemID));
       }
     }
+    this.updateIds();
   }
 
   public clear() {
@@ -246,6 +279,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
         this.asArray.splice((<number>idx | 0), 1)[0];
       }
     }
+    this.updateIds();
   }
 
   public isEmpty(): boolean {
@@ -421,7 +455,6 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
           this.asArray.push(gemListElement);
         }
       });
-
     }
     return this.asArray;
   }
