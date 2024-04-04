@@ -233,19 +233,19 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
     List<String> excludes = new ArrayList<>();
     if (!getExcludes().isPresent() || getExcludes().get().isEmpty()) {
       excludes.addAll(Arrays.asList(
-          generatePattern(PATTERN_MANAGER_IMPL),
-          generatePattern(PATTERN_MOCK),
-          generatePattern(PATTERN_MOCK_TEST_SETUP),
-          generatePattern(PATTERN_DUMMY_PROVIDER),
-          generatePattern(PATTERN_TEST_CONTEXT),
-          generatePattern(PATTERN_SERVER_APPLICATION),
-          generatePattern(PATTERN_SHELL_API_APPLICATION),
-//          generatePattern(PATTERN_DAO),
-//          generatePattern(PATTERN_DAO_NEO4J),
-//          generatePattern(PATTERN_DAO_INTERFACE),
-//          generatePattern(PATTERN_DAO_FACTORY),
-          generatePattern(PATTERN_TEST_INFRASTRUCTURE),
-          generatePattern(PATTERN_SHELLAPI)
+//          generatePattern(PATTERN_MANAGER_IMPL), //@ jsweet.lang.Erased added by the decorator
+//          generatePattern(PATTERN_MOCK), // @
+//          generatePattern(PATTERN_MOCK_TEST_SETUP), //@
+//          generatePattern(PATTERN_DUMMY_PROVIDER), // @
+//          generatePattern(PATTERN_TEST_CONTEXT), // @
+//          generatePattern(PATTERN_SERVER_APPLICATION), //@
+//          generatePattern(PATTERN_SHELL_API_APPLICATION), //@
+////          generatePattern(PATTERN_DAO),
+////          generatePattern(PATTERN_DAO_NEO4J),
+////          generatePattern(PATTERN_DAO_INTERFACE),
+////          generatePattern(PATTERN_DAO_FACTORY),
+          generatePattern(PATTERN_TEST_INFRASTRUCTURE), //?
+          generatePattern(PATTERN_SHELLAPI) //?
       ));
     }
     else {
@@ -265,17 +265,18 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
             generatePattern(PATTERN_DOMAIN)
         ));
       } else if (getDomain().orElse(false).get()) {
+        // done via @Erased
         excludeTranspilation.addAll(Arrays.asList(
-            generatePattern(PATTERN_MANAGER_IMPL),
-            generatePattern(PATTERN_MOCK),
-            generatePattern(PATTERN_MOCK_TEST_SETUP),
-            generatePattern(PATTERN_DUMMY_PROVIDER),
-            generatePattern(PATTERN_TEST_CONTEXT),
-            generatePattern(PATTERN_DAO),
-            generatePattern(PATTERN_DAO_NEO4J),
-            generatePattern(PATTERN_DAO_INTERFACE),
-            generatePattern(PATTERN_DAO_FACTORY),
-            generatePattern(PATTERN_DB_OBSERVER)
+//            generatePattern(PATTERN_MANAGER_IMPL),
+//            generatePattern(PATTERN_MOCK),
+//            generatePattern(PATTERN_MOCK_TEST_SETUP),
+//            generatePattern(PATTERN_DUMMY_PROVIDER),
+//            generatePattern(PATTERN_TEST_CONTEXT),
+//            generatePattern(PATTERN_DAO),
+//            generatePattern(PATTERN_DAO_NEO4J),
+//            generatePattern(PATTERN_DAO_INTERFACE),
+//            generatePattern(PATTERN_DAO_FACTORY),
+//            generatePattern(PATTERN_DB_OBSERVER)
         ));
       }
     }

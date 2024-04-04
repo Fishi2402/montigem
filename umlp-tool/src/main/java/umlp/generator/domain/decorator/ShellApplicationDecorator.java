@@ -35,7 +35,8 @@ public class ShellApplicationDecorator extends AbstractDecorator {
     getCD4C().addMethod(shellApplicationClass, "umlp.shellapplication.shellApiMain.ftl", name);
     glex.replaceTemplate("cd2java.Annotations", shellApplicationClass,
         new StringHookPoint(
-            "@SpringBootApplication(scanBasePackages={\"" + origCD.getCDDefinition().getName().toLowerCase() + ".shellapi\"})"
+            "@SpringBootApplication(scanBasePackages={\"" + origCD.getCDDefinition().getName().toLowerCase() + ".shellapi\"})\n"
+            + "@jsweet.lang.Erased\n"
         ));
 
     // Imports

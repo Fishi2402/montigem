@@ -62,6 +62,11 @@ public class TestSetupDecorator extends AbstractDecorator {
         .setCDInterfaceUsage(getInterfaceUsageFacade().createCDInterfaceUsage("umlp.backendrte.test_infrastructure.TestSetup<" + name + "TestContext>"))
         .setName(name + MOCK_TEST_SETUP).build();
 
+    // Add @jsweet.lang.Erased annotation
+    glex.replaceTemplate("cd2java.Annotations", res,
+        new StringHookPoint("@jsweet.lang.Erased"));
+
+
     // Attributes
     String testContextClass = name + TestContextDecorator.SUFFIX;
     getCD4C().addAttribute(res, true, false, "protected " + testContextClass + " backend;");
@@ -102,6 +107,11 @@ public class TestSetupDecorator extends AbstractDecorator {
         .setModifier(PUBLIC.build())
         .setCDInterfaceUsage(getInterfaceUsageFacade().createCDInterfaceUsage("umlp.backendrte.test_infrastructure.TestSetup<" + name + "TestContext>"))
         .setName(name + DB_TEST_SETUP).build();
+
+    // Add @jsweet.lang.Erased annotation
+    glex.replaceTemplate("cd2java.Annotations", res,
+        new StringHookPoint("@jsweet.lang.Erased"));
+
 
     // Attributes
     String testContextClass = name + TestContextDecorator.SUFFIX;
