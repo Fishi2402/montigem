@@ -1,0 +1,24 @@
+package gui.test;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
+
+import Dtcockpit.Project;
+
+import gui.test.TestNav;
+
+// Show a static text for every entry of a list
+page Test1(List<Project> projects) {
+  @TestNav();
+  @GemText(value = "Show the same, static text for every item of a list:");
+  @iterate(Project p : projects) {
+    @GemText(value = "Got a project");
+  }
+  @GemText(value = "---");
+
+
+  @GemButton(label = "AddProject", leftClick = addProject);
+}
