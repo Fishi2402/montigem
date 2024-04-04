@@ -2,7 +2,7 @@
 package gradle.specific;
 
 import de.monticore.od4development.OD4DevelopmentTool;
-import gradle.common.UMLPSingleFilev2Task;
+import gradle.common.UMLPSingleFileTask;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.tasks.*;
 import org.gradle.work.InputChanges;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.function.Function;
 
 // Task might not be a @CacheableTask since relative paths are generated for HWC-files
-public abstract class UMLPOD2DataTask extends UMLPSingleFilev2Task {
+public abstract class UMLPOD2DataTask extends UMLPSingleFileTask {
 
   public UMLPOD2DataTask() {
     super("UMLPOD2DataTask", null);
