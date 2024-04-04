@@ -50,6 +50,7 @@ import java.util.zip.ZipFile;
 
 import static gradle.UMLPPluginBase.UMLP_MODULES_CONFIG;
 
+@Deprecated
 public abstract class CommonUMLPTask extends DefaultTask {
   final static String UMLP_TASK_DEBUG = "de.rwth.se.umlp.debug";
   final static String ORG_GRADLE_PARALLEL = "org.gradle.parallel";
