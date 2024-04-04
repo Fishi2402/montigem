@@ -10,7 +10,7 @@ import java.util.Arrays;
 public class UMLPToolInvoker {
   public static void run(String[] args){
     Log.info("Starting UMLPTool: \n" +
-        "\t  java -jar UMLPTool.jar " + Arrays.toString(args), UMLPAction.class.getName());
+        "\t  java -jar UMLPTool.jar " + Arrays.toString(args), UMLPActionv2.class.getName());
     try {
       UMLPTool.main(args);
     }catch (final AmbiguityException | MontiCoreFreeMarkerException e){
