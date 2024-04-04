@@ -27,7 +27,7 @@ import java.util.function.Function;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-public abstract class UMLPSingleFilev2Task extends MCSingleFileTask {
+public abstract class UMLPSingleFileTask extends MCSingleFileTask {
 
   @InputFiles     // Not Incremental. Any change should trigger full rebuild
   @PathSensitive(PathSensitivity.NAME_ONLY)
@@ -38,7 +38,7 @@ public abstract class UMLPSingleFilev2Task extends MCSingleFileTask {
   @Optional
   public abstract ListProperty<String> getModuleConfigTemplates();
 
-  public UMLPSingleFilev2Task(String type, String symbolPathConfigurationName) {
+  public UMLPSingleFileTask(String type, String symbolPathConfigurationName) {
     super(type, symbolPathConfigurationName);
 
     getModules().from(getProject().getConfigurations().getByName(UMLPPluginBase.UMLP_MODULES_CONFIG));

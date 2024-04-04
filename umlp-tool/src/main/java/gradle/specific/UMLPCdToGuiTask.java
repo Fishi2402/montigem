@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gradle.specific;
 
-import gradle.common.UMLPSingleFilev2Task;
+import gradle.common.UMLPSingleFileTask;
 import umlp.UMLPToolOptions;
 
 import java.io.File;
@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Function;
 
-public abstract class UMLPCdToGuiTask extends UMLPSingleFilev2Task {
+public abstract class UMLPCdToGuiTask extends UMLPSingleFileTask {
   public UMLPCdToGuiTask() {
     super("UMLPCdToGuiTask", null);
   }
