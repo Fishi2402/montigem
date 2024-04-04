@@ -11,7 +11,6 @@ import gradle.specific.UMLPFrontendTask;
 import gradle.specific.UMLPGuiGenTask;
 import gradle.specific.UMLPOD2DataTask;
 import gradle.specific.UMLPSymbolsTask;
-import gradle.specific.UMLPTask;
 import gradle.specific.merge.UMLPMergeTask;
 import gradle.specific.serialize.SerializeCDSymbolsTask;
 import gradle.specific.serialize.SerializeGUISymbolsTask;
@@ -30,7 +29,6 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
   @Override
     public void apply(Project project) {
       // Make the Tasks available without fully qualified name
-      project.getExtensions().getExtraProperties().set("UMLPTask", UMLPTask.class);
       project.getExtensions().getExtraProperties().set("UMLPMergeTask", UMLPMergeTask.class);
       project.getExtensions().getExtraProperties().set("UMLPGuiGenTask", UMLPGuiGenTask.class);
       project.getExtensions().getExtraProperties().set("NPMAuthCreate", NPMAuthCreate.class);

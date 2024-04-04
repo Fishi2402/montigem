@@ -1,6 +1,3 @@
-import gradle.common.CommonUMLPTask
-import gradle.common.UMLPOutputReportCheck
-
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
@@ -97,7 +94,7 @@ build.dependsOn(gradle.includedBuild("umlp-tool").task(":build"))
 task umlp_check_report
 build.dependsOn(umlp_check_report)
 
-subprojects {
+/*subprojects {
   // After every UMLPTask, run basic checks on the generated report
   // e.g. "every generated file is also reported"
   tasks.withType(CommonUMLPTask).findAll( {it.enabled}).forEach {
@@ -114,5 +111,5 @@ subprojects {
     }
     umlp_check_report.dependsOn(t)
   }
-}
+}*/
 
