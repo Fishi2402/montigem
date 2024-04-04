@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gradle.specific;
 
-import gradle.common.UMLPSingleFileTask;
 import gradle.common.UMLPSingleFilev2Task;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
