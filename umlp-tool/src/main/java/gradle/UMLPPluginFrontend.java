@@ -93,6 +93,11 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
     // Docker images
     createBuildImageLocalTask(project);
     createDeployImageCITask(project);
+
+    // Add dependency to jsweet-core, to import the annotations (such as @Erased)
+    // Only during compilation of the backend
+    // TODO: Use constant for jsweet-core
+    project.getDependencies().add("compileOnly", "org.jsweet:jsweet-core:6.3.0");
   }
 
   protected TaskProvider<?> createBuildImageLocalTask(Project project) {
