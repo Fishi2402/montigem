@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gradle.specific;
 
-import gradle.common.UMLPAllFilesTask;
+import gradle.common.UMLPAllFilesv2Task;
 import umlp.UMLPToolOptions;
 
 import java.io.File;
@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Function;
 
-abstract public class GuiVariabilityHandlerTask extends UMLPAllFilesTask {
+abstract public class GuiVariabilityHandlerTask extends UMLPAllFilesv2Task {
 
   public GuiVariabilityHandlerTask() {
     super("GuiVariabilityHandlerTask");

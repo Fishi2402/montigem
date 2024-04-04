@@ -2,7 +2,7 @@
 package gradle.specific;
 
 import de.monticore.io.FileReaderWriter;
-import gradle.common.UMLPAllFilesTask;
+import gradle.common.UMLPAllFilesv2Task;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.provider.ListProperty;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.function.Function;
 
 // Task might not be a @CacheableTask since relative paths are generated for HWC-files
-public abstract class UMLPGuiGenTask extends UMLPAllFilesTask {
+public abstract class UMLPGuiGenTask extends UMLPAllFilesv2Task {
 
   public UMLPGuiGenTask() {
     super("UMLPGuiGenTask");
