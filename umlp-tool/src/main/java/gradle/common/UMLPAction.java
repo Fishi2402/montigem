@@ -7,7 +7,7 @@ import de.monticore.gradle.internal.isolation.CachedIsolation;
 /**
  * Isolated?/Parallel? Execution of UMLPTool
  */
-public abstract class UMLPActionv2 extends AToolAction {
+public abstract class UMLPAction extends AToolAction {
 
   protected static final CachedIsolation.WithClassPath isolator = new CachedIsolation.WithClassPath();
 

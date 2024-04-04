@@ -121,7 +121,7 @@ public abstract class UMLPSingleFilev2Task extends MCSingleFileTask {
 
   @Override
   protected Class<? extends AToolAction> getToolAction() {
-    return UMLPActionv2.class;
+    return UMLPAction.class;
   }
 
 }
