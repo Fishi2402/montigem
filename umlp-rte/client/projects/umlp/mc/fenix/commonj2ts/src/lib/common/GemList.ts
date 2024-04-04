@@ -200,8 +200,11 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
       this.logIndexError("0xAC727", "_internal_add", idx);
     }
     this.ids.splice(idx, 0, ...(await gemIDs.toArray()));
+    console.trace("Spliced _internal_add ", [...this.ids], this.ids);
 
     if (this.asArray != null) {
+      // TODO: The gemID might not not loaded? (in case a gem of ID 8 is added)
+      // [ERROR] 0xAC729 GemList::get index out of bounds, size: 7, idx: 8
       await this.loadObjects(gemIDs);
       let i = 0;
       for await (let gemID of gemIDs) {
