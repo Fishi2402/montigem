@@ -2,7 +2,10 @@ package gradle.common;
 
 import de.monticore.gradle.common.AToolAction;
 import de.monticore.gradle.common.MCSingleFileTask;
+import de.monticore.symboltable.serialization.json.JsonElement;
 import gradle.UMLPPluginBase;
+import gradle.stat.GradleTaskStatistic;
+import gradle.stat.TaskStatData;
 import org.apache.commons.io.IOUtils;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.provider.ListProperty;
@@ -27,7 +30,9 @@ import java.util.function.Function;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-public abstract class UMLPSingleFileTask extends MCSingleFileTask {
+public abstract class UMLPSingleFileTask extends MCSingleFileTask implements GradleTaskStatistic {
+  @Internal
+  protected final TaskStatData statdata = new TaskStatData("SingleFile");
 
   @InputFiles     // Not Incremental. Any change should trigger full rebuild
   @PathSensitive(PathSensitivity.NAME_ONLY)
@@ -124,4 +129,23 @@ public abstract class UMLPSingleFileTask extends MCSingleFileTask {
     return UMLPAction.class;
   }
 
+
+
+  @Override
+  @Internal
+  protected void startGeneration(List<String> args, String progressName) {
+    statdata.countRun();
+    super.startGeneration(args, progressName);
+  }
+  @Override
+  @Internal
+  public void prepareRun(){
+    super.prepareRun();
+    statdata.setNumberOfInputFiles(getInput().getAsFileTree().getFiles().stream().filter(this::isInputFile).count());
+  }
+  @Override
+  @Internal
+  public JsonElement getGradleStatisticData() {
+    return statdata.getData();
+  }
 }
