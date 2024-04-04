@@ -35,10 +35,9 @@ public class ValidationResultDeSerDecorator extends AbstractDecorator {
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     String cdName = origCD.getCDDefinition().getName();
-    origCD.getCDDefinition().getCDClassesList().stream()
-            .filter(c -> !c.getSymbol().isIsDerived())
-            .filter(c -> !c.getSymbol().isIsAbstract())
-            .forEach(c -> astcdPackage.addCDElement(withOrigin(createDeSer(origCD, cdName, c))));
+    getConcreteDomainClasses(origCD).forEach(c -> astcdPackage.addCDElement(withOrigin(createDeSer(origCD,
+                                                                                                   cdName,
+                                                                                                   c))));
   }
 
   protected ASTCDElement createDeSer(ASTCDCompilationUnit origCD, String cdName, ASTCDClass cdClass) {

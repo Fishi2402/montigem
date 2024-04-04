@@ -29,8 +29,9 @@ public class TypeAdapterDecorator extends AbstractDecorator {
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
-    origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
-            .forEach(c -> astcdPackage.addAllCDElements(withOrigin(createClasses(c, origCD.getCDDefinition().getName()))));
+    getNonDerivedDomainClasses(origCD).forEach(c -> astcdPackage.addAllCDElements(withOrigin(createClasses(c,
+                                                                                                           origCD.getCDDefinition()
+                                                                                                               .getName()))));
   }
 
   protected List<ASTCDClass> createClasses(ASTCDClass domainClass, String name) {

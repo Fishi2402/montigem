@@ -86,10 +86,8 @@ public class ValidatorDecorator extends AbstractDecorator {
       this.setComprehensionContext.putAll(contextCollector.getSetComprehensionContext());
     }
 
-    origCD.getCDDefinition().getCDClassesList().stream()
-            .filter(c -> !c.getSymbol().isIsDerived())
-            .filter(c -> !c.getSymbol().isIsAbstract())
-            .forEach(c -> astcdPackage.addCDElement(withOrigin(createValidatorClassForDomainClass(c))));
+    getConcreteDomainClasses(origCD).forEach(c -> astcdPackage.addCDElement(withOrigin(
+        createValidatorClassForDomainClass(c))));
   }
 
   protected void addImports(ASTCDClass validatorClass) {

@@ -63,8 +63,9 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
 
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
-    origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getSymbol().isIsDerived())
-        .forEach(c -> astcdPackage.addCDElement(withOrigin(createClass(origCD, c))));
+    getNonDerivedDomainClasses(origCD).forEach(c -> astcdPackage.addCDElement(withOrigin(createClass(
+        origCD,
+        c))));
 
     origCD.getCDDefinition().getCDEnumsList().stream().filter(c -> !c.getSymbol().isIsDerived())
         .forEach(c -> {
@@ -145,9 +146,10 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
     }
 
     // Attribute observerList
-    ASTCDAttribute attrObserver = getCD4C().addAttribute(clazz,
-        " protected List<" + domainClass.getName() + "Observer> " + StringTransformations.uncapitalize(domainClass.getName()) + "Observers");
-    glex.replaceTemplate("cd2java.Value", attrObserver, new StringHookPoint(defaultListValue()));
+    ASTCDAttribute attrObserver = addAttribute(clazz,
+                                               " protected List<" + domainClass.getName() + "Observer> " + StringTransformations.uncapitalize(
+                                                   domainClass.getName()) + "Observers",
+                                               defaultListValue());
     addTransientModifier(attrObserver);
 
     // Add attributes to class
