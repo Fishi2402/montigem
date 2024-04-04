@@ -22,7 +22,7 @@ plugins {
   id 'org.springframework.boot' version "${spring_version}"
 
   // Makes the task-types `UMLPBackendTask` and `UMLPMergeTask` available
-  id 'de.rwth.se.umlp-tool'
+  id 'de.rwth.se.umlp-tool' // TODO: decide why we are not using the backend tool?
 }
 
 description 'SE Bib Example'
@@ -72,6 +72,7 @@ dependencies {
   implementation group: 'org.springframework.shell', name: 'spring-shell-starter', version: spring_shell_version
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version
   implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
+  compileOnly "org.jsweet:jsweet-core:6.3.0"
 }
 
 
