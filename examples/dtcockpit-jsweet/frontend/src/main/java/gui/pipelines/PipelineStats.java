@@ -21,7 +21,10 @@ import java.util.Optional;
 @Component
 public class PipelineStats extends PipelineStatsTOP {
 
+  // TODO: JSweet initial value missing (new ProjectDataCheck())
   private final ProjectDataCheck projectDataCheck = new ProjectDataCheck();
+
+  // TODO: JSweet initial value missing (=0  !== undefined)
   private int maxValue = 0;
 
   public PipelineStats(Project p) {
@@ -30,6 +33,7 @@ public class PipelineStats extends PipelineStatsTOP {
 
   @Override
   public String getGemCard0Title() {
+    if (getP() == null) return "Loading... (project is null)";
     return "Pipeline dashboard for " + this.getP().getName();
   }
 

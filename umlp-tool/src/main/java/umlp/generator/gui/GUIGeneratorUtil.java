@@ -471,7 +471,9 @@ public class GUIGeneratorUtil {
         + StringTransformations.capitalize(namedArg.getName())
         + (UMLPGeneratorConfig.getInstance().isGenerateTypescript() || isList(namedArg)
         ? ""
-        : SYNCHRONIZED_SUFFIX);
+        : SYNCHRONIZED_SUFFIX); // required for
+    // : build/appgui/gui/pipelines/PipelineStats.html:31
+    // getBarChartForPipelineRunsData
   }
 
   public boolean isList(ASTGUINamedArg namedArg) {
@@ -486,7 +488,9 @@ public class GUIGeneratorUtil {
     return GenService.isList(guiParamSymbolOpt.get().getType());
   }
 
+  @SuppressWarnings("unused") // Component.ftl
   public String getIsSynchronizedSuffix() {
+    if (true)return "";
     return UMLPGeneratorConfig.getInstance().isGenerateTypescript() ? SYNCHRONIZED_SUFFIX : "";
   }
 
