@@ -6,9 +6,9 @@ import de.monticore.gradle.common.MCAllFilesTask;
 
 import java.util.function.Consumer;
 
-abstract public class UMLPAllFilesv2Task extends MCAllFilesTask {
+abstract public class UMLPAllFilesTask extends MCAllFilesTask {
 
-  public UMLPAllFilesv2Task(String type) {
+  public UMLPAllFilesTask(String type) {
     super(type, null);
   }
 
