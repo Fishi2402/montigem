@@ -489,8 +489,9 @@ public class GUIGeneratorUtil {
   }
 
   @SuppressWarnings("unused") // Component.ftl
+  @Deprecated(forRemoval = true)
   public String getIsSynchronizedSuffix() {
-    if (true)return "";
+    if (true)return ""; // no longer required due to | async
     return UMLPGeneratorConfig.getInstance().isGenerateTypescript() ? SYNCHRONIZED_SUFFIX : "";
   }
 
