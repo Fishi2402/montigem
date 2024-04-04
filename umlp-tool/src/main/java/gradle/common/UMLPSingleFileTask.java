@@ -31,7 +31,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public abstract class UMLPSingleFileTask extends MCSingleFileTask implements GradleTaskStatistic {
-  @Internal
   protected final TaskStatData statdata = new TaskStatData("SingleFile");
 
   @InputFiles     // Not Incremental. Any change should trigger full rebuild
@@ -132,13 +131,11 @@ public abstract class UMLPSingleFileTask extends MCSingleFileTask implements Gra
 
 
   @Override
-  @Internal
   protected void startGeneration(List<String> args, String progressName) {
     statdata.countRun();
     super.startGeneration(args, progressName);
   }
   @Override
-  @Internal
   public void prepareRun(){
     super.prepareRun();
     statdata.setNumberOfInputFiles(getInput().getAsFileTree().getFiles().stream().filter(this::isInputFile).count());
