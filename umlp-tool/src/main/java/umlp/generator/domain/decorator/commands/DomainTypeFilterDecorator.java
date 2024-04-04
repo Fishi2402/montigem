@@ -21,9 +21,9 @@ public class DomainTypeFilterDecorator extends AbstractDecorator {
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_PACKAGE);
-    origCD.getCDDefinition().getCDClassesList().stream()
-        .filter(c -> !c.getSymbol().isIsDerived())
-        .forEach(c -> astcdPackage.addCDElement(withOrigin(createClass(origCD, c, astcdPackage))));
+    getNonDerivedDomainClasses(origCD).forEach(c -> astcdPackage.addCDElement(withOrigin(createClass(origCD,
+                                                                                                     c,
+                                                                                                     astcdPackage))));
   }
 
   protected ASTCDElement createClass(ASTCDCompilationUnit origCD, ASTCDClass c, ASTCDPackage pack) {

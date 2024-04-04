@@ -16,6 +16,7 @@ import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.Filter;
 import umlp.generator.domain.decorator.commands.GetFreeGemIdRequestDecorator;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.TagLookUp;
@@ -58,18 +59,14 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
     getCD4C().addMethod(managerClass, getDoGetFreeGemIdTemplate());
     getCD4C().addMethod(managerClass, getErrorNotificationScopeTemplate());
 
-    List<ASTCDClass> concreteDomainClasses = origCD.getCDDefinition().getCDClassesList().stream()
-        .filter(c -> !c.getModifier().isAbstract() && !c.getModifier().isDerived())
-        .filter(c -> !TagLookUp.isSingleton(c))
-        .collect(Collectors.toList());
+    List<ASTCDClass> concreteDomainClasses = getDomainClasses(origCD, Filter.ABSTRACT.or(Filter.DERIVED).or(Filter.SINGLETON).negate());
     getCD4C().addMethod(managerClass, getClearCacheTemplate(), concreteDomainClasses);
 
 
     origCD.getCDDefinition().getCDClassesList()
         .forEach(c -> addClassElements(origCD, c, managerClass, name));
 
-    origCD.getCDDefinition().getCDInterfacesList().stream().filter(i -> !i.getModifier().isDerived())
-        .forEach(i -> addInterfaceElements(origCD, i, managerClass));
+    getNonDerivedDomainInterfaces(origCD).forEach(i -> addInterfaceElements(origCD, i, managerClass));
 
     // Imports
     addImports(origCD, managerClass);

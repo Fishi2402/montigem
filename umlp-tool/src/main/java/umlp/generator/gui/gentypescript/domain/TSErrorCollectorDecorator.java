@@ -50,10 +50,8 @@ public class TSErrorCollectorDecorator extends ErrorCollectorDecorator {
 
     // Attributes
     getCD4C().addAttribute(collectorClass, "protected static " + domainClass.getName() + "ErrorCollector instance;");
-    // TODO:  CD4Code kann das nicht parsen "= new ArrayList<>()". Ursache ist die fehlende Super-Grammatik
     // JavaClassExpression
-    ASTCDAttribute attr = getCD4C().addAttribute(collectorClass, "protected List<" + domainClass.getName() + "ErrorObserver> observers;");
-    glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= []"));
+    addAttribute(collectorClass, "protected List<" + domainClass.getName() + "ErrorObserver> observers", "[]");
 
     // Methods
     getCD4C().addMethod(collectorClass, "umlp.gui2ts.errorcollector.TSInit", domainClass.getName());

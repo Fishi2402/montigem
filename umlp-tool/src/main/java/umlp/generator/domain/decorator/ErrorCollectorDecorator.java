@@ -5,7 +5,6 @@ package umlp.generator.domain.decorator;
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.StringHookPoint;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
@@ -25,8 +24,9 @@ public class ErrorCollectorDecorator extends AbstractDecorator {
     public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
         ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
         String name = origCD.getCDDefinition().getName();
-        origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
-                .forEach(c -> astcdPackage.addCDElement(withOrigin(createClass(origCD, c, name))));
+      getNonDerivedDomainClasses(origCD).forEach(c -> astcdPackage.addCDElement(withOrigin(createClass(origCD,
+                                                                                                       c,
+                                                                                                       name))));
     }
 
     public static String getClassName(String domainClassName) {
@@ -44,10 +44,11 @@ public class ErrorCollectorDecorator extends AbstractDecorator {
 
         // Attributes
         getCD4C().addAttribute(collectorClass, "protected static " + domainClass.getName() + "ErrorCollector instance;");
-        // TODO:  CD4Code kann das nicht parsen "= new ArrayList<>()". Ursache ist die fehlende Super-Grammatik
+
         // JavaClassExpression
-        ASTCDAttribute attr = getCD4C().addAttribute(collectorClass, "protected List<" + domainClass.getName() + "ErrorObserver> observers;");
-        glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new ArrayList<>()"));
+        addAttribute(collectorClass,
+                   "protected List<" + domainClass.getName() + "ErrorObserver> observers",
+                   "new ArrayList<>()");
 
         // Methods
         getCD4C().addMethod(collectorClass, "umlp.errorcollector.Init", domainClass.getName());

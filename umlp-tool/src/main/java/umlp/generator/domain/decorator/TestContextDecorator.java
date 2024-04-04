@@ -10,7 +10,6 @@ import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
@@ -42,8 +41,7 @@ public class TestContextDecorator extends AbstractDecorator {
     getCD4C().addAttribute(testContextClass, true, true, "protected CommandManager commandManager");
     getCD4C().addAttribute(testContextClass, true, true, "protected GeneralErrorCollector generalErrorCollector");
 
-    List<ASTCDClass> relevantClasses = origCD.getCDDefinition().getCDClassesList().stream()
-        .filter(c -> !c.getModifier().isDerived()).collect(Collectors.toList());
+    List<ASTCDClass> relevantClasses = getNonDerivedDomainClasses(origCD);
 
     relevantClasses.forEach(c -> {
           getCD4C().addAttribute(testContextClass, true, true,"protected " + c.getName() + ErrorCollectorDecorator.SUFFIX + " " + StringTransformations.uncapitalize(c.getName()) + ErrorCollectorDecorator.SUFFIX);
