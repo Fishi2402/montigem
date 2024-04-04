@@ -86,3 +86,6 @@ include ':products:kizam:backend'
 include ':modules:login'
 include ':modules:sovd-gateway'
 include ':modules:sovd-gateway-it:backend'
+include 'products:syse_functions:automaton'
+findProject(':products:syse_functions:automaton')?.name = 'automaton'
+

@@ -720,13 +720,13 @@ public class UMLPTool extends UMLPToolTOP {
     assocTrafo.transform(node);
     logTrafoExec("UMLAttrToAssocTrafo", node);
 
-    UMLSetDefaultsTrafo assocNameTrafo = new UMLSetDefaultsTrafo(CD4CodeMill.traverser());
-    assocNameTrafo.transform(node);
-    logTrafoExec("UMLSetDefaultsTrafo", node);
-
     UMLAssocToAttrTrafo assoc2Trafo = new UMLAssocToAttrTrafo(CD4CodeMill.traverser());
     assoc2Trafo.transform(node);
     logTrafoExec("UMLAssocToAttrTrafo", node);
+
+    UMLSetDefaultsTrafo assocNameTrafo = new UMLSetDefaultsTrafo(CD4CodeMill.traverser());
+    assocNameTrafo.transform(node);
+    logTrafoExec("UMLSetDefaultsTrafo", node);
 
     UMLAddCommentTrafo commentTrafo = new UMLAddCommentTrafo(CD4CodeMill.traverser());
     commentTrafo.transform(node);

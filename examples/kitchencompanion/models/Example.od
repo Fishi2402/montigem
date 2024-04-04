@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package examples;
+
+import KitchenCompanion.*;
+
+objectdiagram Examples {
+
+  supCof: Offer {
+    double price = 5.5;
+    java.lang.String name = "super_coffee";
+  };
+
+}

@@ -56,9 +56,9 @@ public class TagLookUp {
     if (stereo != tag) {
       // Ensure tagging does work like it should
       // Only here for testing purposes
-      Log.error("Missing tag for " + astcdClass.getName(), astcdClass.get_SourcePositionStart());
+      Log.warn("Missing tag for " + astcdClass.getName(), astcdClass.get_SourcePositionStart());
     }
-    return tag;
+    return tag || stereo;
   }
 
   public static boolean isCommand(CDMethodSignatureSymbol methodSignatureSymbol) {

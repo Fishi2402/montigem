@@ -1,0 +1,18 @@
+package gui.test;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
+
+import Dtcockpit.Project;
+
+import gui.test.TestNav;
+
+page Test5(Project project) {
+  @TestNav();
+  @GemText(value = "Showing only one project");
+  @GemText(value = "Name: " + project.name);
+  @GemText(value = "---");
+}

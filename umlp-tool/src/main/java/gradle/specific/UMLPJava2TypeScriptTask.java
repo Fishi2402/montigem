@@ -3,28 +3,20 @@ package gradle.specific;
 
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.io.paths.MCPath;
-import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.tools.ant.DirectoryScanner;
 import org.gradle.api.DefaultTask;
-import org.gradle.api.file.ConfigurableFileCollection;
-import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
-import org.gradle.api.tasks.IgnoreEmptyDirectories;
 import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
-import org.gradle.api.tasks.PathSensitive;
-import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.TaskAction;
-import org.gradle.work.Incremental;
 import org.gradle.work.InputChanges;
 import org.jsweet.transpiler.EcmaScriptComplianceLevel;
 import org.jsweet.transpiler.JSweetFactory;
@@ -116,16 +108,30 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
 
   protected List<String> excludeTranspilaitons;
 
+  @OutputDirectory
+  public abstract DirectoryProperty getJsweetDir();
+
+  @OutputDirectory
+  public abstract DirectoryProperty getJsweetWorkingDir();
+
+  @OutputDirectory
+  public abstract DirectoryProperty getCandiesJsOutDir();
+
+  public UMLPJava2TypeScriptTask() {
+    getJsweetDir().convention(getProject().getLayout().getBuildDirectory().dir("jsweet"));
+    getJsweetWorkingDir().convention(getProject().getLayout().getBuildDirectory().dir("jsweetWorkingDir"));
+    getCandiesJsOutDir().convention(getJsweetWorkingDir().dir("candies"));
+  }
+
   @TaskAction
   public void run(InputChanges inputChanges) {
     init();
 
     File baseDirectory = new File(this.getProject().getProjectDir(), "jsweet");
     JSweetFactory factory = new JSweetFactory();
-    File buildDir = this.getProject().getBuildDir();
-    File workingDir = new File(buildDir, "jsweetWorkingDir");
-    File jSweetDir = new File(buildDir, "jsweet");
-    File candiesJsOut = new File(workingDir, "candies");
+    File workingDir = getJsweetWorkingDir().get().getAsFile();
+    File jSweetDir = getJsweetDir().get().getAsFile();
+    File candiesJsOut = getCandiesJsOutDir().get().getAsFile();
 
     File hwcDir = getHandWrittenConfigDir().isPresent() ? new File(jSweetDir, getHandWrittenConfigDir().get()) : baseDirectory;
 
@@ -199,7 +205,11 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
   private static final String PATTERN_DAO_NEO4J = "**/%s/*DAONeo4J*.java";
   private static final String PATTERN_DB_OBSERVER = "**/%s/*DbObserver*.java";
   private static final String PATTERN_DOMAIN = "**/%s/**/*.java";
-  private static final String PATTERN_GUI = "**/gui/**/*.java";
+  // TODO: These filter-paths can not be a proper solution
+  // We should use File Properties instead!
+  // https://docs.gradle.org/current/userguide/lazy_configuration.html#working_with_files_in_lazy_properties
+  private static final String PATTERN_GUI = "**/appgui/**/*.java"; // appgui = cd2gui output
+  private static final String PATTERN_GUI2 = "**/gui/**/*.java";
 
   private void computeIncludes() {
     List<String> includes = new ArrayList<>();
@@ -207,6 +217,7 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
       includes.add(generatePattern(PATTERN_DOMAIN_MODEL));
       if (getGui().orElse(false).get()) {
         includes.add(PATTERN_GUI);
+        includes.add(PATTERN_GUI2);
       }
     }
     else {
