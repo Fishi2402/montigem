@@ -6,32 +6,45 @@ import packaged.Domain.Person;
 import packaged.Domain.Address;
 import packaged.Domain.MaritalStatus;
 
-import util.P;
+import util.packaged.P;
 import util.I;
 import util.V;
-import util.L;
+import util.packaged.L;
 import util.E;
 
+// init
 page GUI2JavaClassDecorator(
+  // get + set + init(val) + init()
   Person person,
+  // get + set + init(val) + init()
   Person $per$son,
-  MaritalStatus status,
+  // get + set + init()
+  MaritalStatus status = MaritalStatus.SINGLE,
+  // get + set + init(val) + init()
   List<Address> la,
+  // get + set + init(val) + init()
   List<List<Address>> lla,
+  // get + set + init()
   String s,
+  // get + set + init()
   boolean b,
+  // get + set + init()
   ?int i,
+  // get + set + init()
   GUIViewElement v,
+  // get + set + init()
   Event<Void> e
 ) {
+  // getAP + getAM + getAS + getAB + getAA
   a@P(p = person, m = status, s = s, b = b, a = person.address);
   /*
     this.getPerson();
     this.getStatus();
     this.getS();
-    this.isB();
+    this.getB();
     this.getPerson().getAddress();
   */
+  // getCP + getCS + calcStr + getCA + getCA_0 + initCA_0
   c@P(p = $per$son, s = calcStr(), a = Address());
   /*
     this.get$per$son();
@@ -46,20 +59,24 @@ page GUI2JavaClassDecorator(
       return this.getCA1();
     }
   */
+  // getDI + setDI
   d@I(i = i);
   /*
     this.getI();
     this.setI(val);
   */
+  // getFI + setFI
   f@I(i = person.address.house);
   /*
     this.getPerson().getAddress().getHouse();
   */
+  // getGGve + getGLgve + getGLgve1 + initGLgve1
   g@V(gve = v, lgve = [$1@V(), $2@P()]);
   /*
     this.getV();
     List.of(this.getV(), this.getP());
   */
+  // hE
   h@E(e = e);
   /*
     this.getE();
@@ -67,6 +84,7 @@ page GUI2JavaClassDecorator(
     // TS:
     this.e.emit();
   */
+  // jE
   j@E(e = action());
   /*
     this.action()();
@@ -74,20 +92,24 @@ page GUI2JavaClassDecorator(
     // TS:
     this.action()();
   */
+  // getKA + getKS + getKS2 + initKS2 + getKM + getKM3 + initKM3
   k@L(a = la, s = ["a", "b"], m = [MaritalStatus.SINGLE, MaritalStatus.MARRIED]);
   /*
     this.getLa();
     List.of("a", "b");
     List.of(MaritalStatus.SINGLE, MaritalStatus.MARRIED);
   */
+  // getLIterate
   l@iterate(Person friend : person.friends) {
   /*
     this.getPerson().getFriends();
   */
+    // getMCondition
     m@guard(friend.empoyed) {
     /*
       friend.isEmployed();
     */
+      // getNP
       n@P(p = friend);
       /*
         friend

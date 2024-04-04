@@ -54,6 +54,7 @@ import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.gui.genjava.prettyprinter.Expression2NullCheckAccessorPrinter;
+import umlp.generator.gui.genjava.prettyprinter.Expression2SetterPrinter;
 import umlp.generator.gui.genjava.prettyprinter.IterationItemsFinder;
 import umlp.generator.gui.gentypescript.config.GUI2TSConfigGenerator;
 import umlp.generator.gui.gentypescript.printer.TSBackendMap;
@@ -1097,6 +1098,21 @@ public class GUIGeneratorUtil {
       if (iter.hasNext()) {
         res.append(",");
       }
+    }
+    return res.toString();
+  }
+
+  public String variableSymbols2ArgsString(
+      String setterType, Collection<VariableSymbol> variableSymbols
+  ) {
+    StringBuilder res = new StringBuilder(setterType + " " + Expression2SetterPrinter.SETTER_PARAM);
+    Iterator<VariableSymbol> iter = variableSymbols.iterator();
+    while (iter.hasNext()) {
+      res.append(",");
+      VariableSymbol vs = iter.next();
+      res.append(vs.getType().printFullName());
+      res.append(" ");
+      res.append(vs.getName());
     }
     return res.toString();
   }

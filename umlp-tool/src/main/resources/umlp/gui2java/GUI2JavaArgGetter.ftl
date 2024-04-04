@@ -3,7 +3,7 @@ ${tc.signature("type", "name", "nullCheck", "getterExpression", "args")}
 <#assign genHelper = glex.getGlobalVar("genHelper")>
 <#assign argsString = genHelper.variableSymbols2ArgsString(args)>
 
-${cd4c.method("protected ${type} get${name?cap_first}(${argsString})")}
+${cd4c.method("public ${type} get${name?cap_first}(${argsString})")}
 if (${nullCheck}) {
   return null;
 }

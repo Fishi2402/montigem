@@ -28,7 +28,6 @@ import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIGeneratorUtil;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -90,13 +89,13 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
 
   @Override
   public void visit(ASTGUIShortIterateControl node) {
-    curArg = "iterable";
+    curArg = GUI2JavaClassDecorator.ITERATE_ARG;
   }
 
   @Override
   public void visit(ASTGUIGuard node) {
     curComp = node.getId().getName();
-    curArg = "condition";
+    curArg = GUI2JavaClassDecorator.GUARD_ARG;
   }
 
   @Override
@@ -119,7 +118,7 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
       recordTypes(node, lastArg.get().getNameSymbol().getType());
     }
     String type = printType(node);
-    String name = curComp + StringTransformations.capitalize(curArg) + counter++;
+    String name = curComp + StringTransformations.capitalize(curArg) + "_" + counter++;
     ASTCDAttribute attr = CDAttributeFacade.getInstance().createAttribute(
         CDModifier.PROTECTED.build(), type, name);
     node2Attr.put(node, attr);
