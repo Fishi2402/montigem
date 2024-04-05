@@ -199,11 +199,13 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
       if (file.isFile()) {
         if (file.getName().endsWith(SOURCE_FILE_EXTENSION))
           individualInputPaths.add(file.toPath());
-      } else {
+      } else if (file.exists()) {
         try (Stream<Path> o = Files.walk(file.toPath())) {
           o.filter(f -> f.getFileName().toString().endsWith(SOURCE_FILE_EXTENSION))
               .forEach(individualInputPaths::add);
         }
+      } else {
+        getLogger().warn("Failed to open non-existing directory: " + file.getAbsolutePath());
       }
     }
     return individualInputPaths;
