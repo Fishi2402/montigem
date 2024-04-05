@@ -56,7 +56,7 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
         .setModifier(CDModifier.PUBLIC.build())
         .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(origCD.getCDDefinition().getName() + ShellAPIDecorator.SUFFIX))
         .build();
-    glex.replaceTemplate("cd2java.Annotations", shellapiClass, new StringHookPoint("@ShellComponent"));
+    glex.replaceTemplate("cd2java.Annotations", shellapiClass, new StringHookPoint("@ShellComponent\n@jsweet.lang.Erased"));
 
     addBasicImports(cdName, origCD, shellapiClass, originalClassName);
     addImports(cdClass, shellapiClass);
