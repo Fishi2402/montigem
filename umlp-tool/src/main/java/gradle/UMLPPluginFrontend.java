@@ -231,8 +231,6 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
           umlpTask.getSymbolDir().from(domainSymbolGenTask.get().getSymbolOutDir());
           umlpTask.dependsOn(domainSymbolGenTask);
 
-//          umlpTask.dependsOn(genDomainTask);
-
           if (j2ts) {
             setIfPathExists(x -> umlpTask.getHwcDir().from(x), Path.of(
                 project.getProjectDir().getAbsolutePath(), "src", "main", "java"));
@@ -242,6 +240,9 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
           else {
             setIfPathExists(x -> umlpTask.getHwcDir().from(x), Path.of(
                 project.getProjectDir().getAbsolutePath(), "src", "app"));
+
+            // Ensure our symbols exist
+            umlpTask.dependsOn(genDomainTask);
           }
 
           // It is important that the directory-depth of the intermediate-output is the the same as the final location (after sync!)
