@@ -50,9 +50,13 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
    * Filters out files from transpilation which are still part of the source files. This allows to
    * skip RTE implementation which otherwise would lead to a symbol not found Exception during java
    * compiling.
+   * {@link FileSystem#getPathMatcher(String)} for valid patterns
    */
   @Input
   public abstract ListProperty<String> getExcludeTranspile();
+
+  @InputFiles
+  public abstract ConfigurableFileCollection getExcludeTranspileFiles();
 
   @Input
   @Optional
@@ -143,10 +147,15 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
     ConfigurableFileCollection excludedFromTr = getProject().getObjects().fileCollection();
     List<PathMatcher> excludeFromTransMatchers = getExcludeTranspile().get().stream()
         .map(fs::getPathMatcher).collect(Collectors.toList());
+
+
     if (!excludeFromTransMatchers.isEmpty())
       individualInputPaths.stream().filter(p -> excludeFromTransMatchers.stream()
               .allMatch(pm -> pm.matches(p)))
           .forEach(excludedFromTr::from);
+
+    // also add all files (recursively) from getExcludeTranspileFiles
+    walkAndCollectJavaFiles(getExcludeTranspileFiles().getFiles()).forEach(excludedFromTr::from);
 
 
     // Copy relevant properties into the transpile-work-action
@@ -182,7 +191,6 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
     JSweetConfigGenerator generator = new JSweetConfigGenerator(gs);
     generator.generate(getDomainModel().get());
   }
-
 
 
   protected Set<Path> walkAndCollectJavaFiles(Set<File> input) throws IOException {
