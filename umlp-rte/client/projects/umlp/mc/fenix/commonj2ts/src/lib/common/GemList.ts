@@ -195,21 +195,23 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     await this._internal_add(idx, gemIDs);
   }
 
+  // TODO: TSAddToListOfDomain.ftl with concrete object reference?
+  // right now we have to load the object twice
   public async _internal_add(idx: number, gemIDs: IUMLPList<number>) {
     if (this.isNotIdxInExclusiveBounds(idx)) {
       this.logIndexError("0xAC727", "_internal_add", idx);
     }
     this.ids.splice(idx, 0, ...(await gemIDs.toArray()));
-    console.trace("Spliced _internal_add ", [...this.ids], this.ids);
 
     if (this.asArray != null) {
-      // TODO: The gemID might not not loaded? (in case a gem of ID 8 is added)
-      // [ERROR] 0xAC729 GemList::get index out of bounds, size: 7, idx: 8
-      await this.loadObjects(gemIDs);
-      let i = 0;
-      for await (let gemID of gemIDs) {
-        this.asArray.splice(idx, 0 + i++, await this.get(gemID));
+      if (gemIDs.size() != 1) {
+        throw Error("Did not expect an internal_add with size of" + gemIDs.size() + gemIDs);
       }
+      const loadResult = await this.loadSingleObject(await gemIDs.get(0));
+      if (loadResult.isPresent())
+        this.asArray.splice(idx, 0, loadResult.get());
+      else
+        throw Error("Failed to load single object " + await gemIDs.get(0));
     }
     this.updateIds();
   }
