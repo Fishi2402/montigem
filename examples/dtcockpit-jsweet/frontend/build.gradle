@@ -34,7 +34,6 @@ nodeSetup.dependsOn(frontendSetup)
 genGUI {
   domainModels = ["Dtcockpit"]
   guiCreateModels = ["gui.login.UserCreate", "gui.project.ProjectCreate"]
-  dependsOn([tasks.createDomainSymbols,tasks.genDomain])
 }
 
 translateJava2TSDomain {
@@ -44,17 +43,7 @@ translateJava2TSDomain {
 
 translateJava2TSGUI {
   domainModel = 'Dtcockpit'
-
-
-//  // TODO: Remove the following at some point
-//  // required with getExcludeTranspile - otherwise "import { Project } from '@src/dtcockpit/Project';" is missing
-////  input.from(configurations.domainSources)
-//  getExcludeSource().add("glob:**/shellapi/*ShellAPI.java")
-////  getExcludeTranspile().add("glob:**/dtcockpit/**.java")
-
-  // TODO: END OF REMOVAL
-
-  verbose = true
+  verbose = false
 }
 
 nodeSetup.dependsOn(frontendSetup)
