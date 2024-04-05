@@ -7,8 +7,20 @@ plugins {
   id 'de.rwth.se.umlp-tool-frontend'
 }
 
+configurations {
+  // a configuration containing the domain sources
+  domainSources {
+    setTransitive(false)
+    attributes {
+      attribute(Attribute.of("org.gradle.verificationtype", String), "main-sources")
+      attribute(Attribute.of("org.gradle.dependency.bundling", String), "external")
+    }
+  }
+}
+
 dependencies {
   implementation project(":examples:dtcockpit-jsweet:backend")
+  domainSources project(":examples:dtcockpit-jsweet:backend")
 
   implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version
@@ -28,32 +40,50 @@ node {
 }
 nodeSetup.dependsOn(frontendSetup)
 
+configurations {
+  jsweettranspiler {
+    extendsFrom(configurations.compileClasspath)
+  }
+}
+dependencies {
+  jsweettranspiler project(":umlp-rte:umlp-jsweet")
+}
+
 genGUI {
   domainModels = ["Dtcockpit"]
   guiCreateModels = ["gui.login.UserCreate", "gui.project.ProjectCreate"]
+  dependsOn([tasks.createDomainSymbols,tasks.genDomain])
 }
 
 translateJava2TSDomain {
   domainModel = 'Dtcockpit'
-  additionalIncludes = [
-      '**/security/*.java'
-  ]
-  additionalExcludes = [
-      '**/security/CustomUserDetailsService.java',
-      '**/security/MailService.java',
-      '**/security/WebSecurityConfig.java',
-  ]
-  verbose = true
+  getJSweetClassPath().from(configurations.jsweettranspiler)
+
+  // add domain-sources to the to-be-transpiled
+  input.from(configurations.domainSources)
+
+  // TODO: Fix ShellAPI imports
+  // Required due to "imports cannot use * wildcards when using modules"
+  getExcludeSource().add("glob:**/shellapi/*ShellAPI.java") // via @Erased
+
+  verbose = false
 }
 
 translateJava2TSGUI {
   domainModel = 'Dtcockpit'
-  additionalIncludes = [
-      '**/security/*.java'
-  ]
-  additionalExcludeTranspilation = [
-      '**/security/*.java'
-  ]
+  getJSweetClassPath().from(configurations.jsweettranspiler)
+
+  input.from(tasks.getByName("genGUI").getOutputDir())
+  input.from("src/main/java") // plz?
+
+  // TODO: Remove the following at some point
+  // required with getExcludeTranspile - otherwise "import { Project } from '@src/dtcockpit/Project';" is missing
+  input.from(configurations.domainSources)
+  getExcludeSource().add("glob:**/shellapi/*ShellAPI.java")
+  getExcludeTranspile().add("glob:**/dtcockpit/**.java")
+
+  // TODO: END OF REMOVAL
+
   verbose = true
 }
 

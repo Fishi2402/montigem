@@ -61,7 +61,7 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
     TaskProvider<FrontendSetup> frontendSetupTask = createFrontendSetupTask(project);
 
     TaskProvider<UMLPFrontendTask> frontendDomainTask = createFrontendDomainTask(project);
-    TaskProvider<UMLPJava2TypeScriptTask> frontendDomainJ2TSTask = createFrontendDomainJ2TSTask(project, local);
+    TaskProvider<UMLPJava2TypeScriptTask> frontendDomainJ2TSTask = createFrontendDomainJ2TSTask(project, frontendDomainTask, local);
 
     TaskProvider<UMLPSymbolsTask> domainSymbolGenTask = createDomainSymbolGen(project, frontendSetupTask);
     TaskProvider<UMLPGuiGenTask> frontendGuiTask = createFrontendGuiTask(project, j2ts, local, domainSymbolGenTask);
@@ -130,14 +130,15 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
   }
 
   protected TaskProvider<UMLPJava2TypeScriptTask> createFrontendDomainJ2TSTask(final Project project,
-      boolean local) {
+                                                                               TaskProvider<UMLPFrontendTask> frontendDomainTask,
+                                                                               boolean local) {
     TaskProvider<UMLPJava2TypeScriptTask> j2tsTask = project.getTasks()
         .register(UMLP_FRONTEND_DOMAIN_J2TS_TASK_NAME, UMLPJava2TypeScriptTask.class, umlpTask -> {
           umlpTask.setGroup(UMLP_GROUP_NAME);
+
+          umlpTask.getInput().from(frontendDomainTask);
           umlpTask.getOutputDir().set(
               getAppDomainPath(project).toFile());
-          umlpTask.getGui().set(false);
-          umlpTask.getDomain().set(true);
         });
 
     if (local) {
@@ -231,16 +232,23 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
   }
 
   protected TaskProvider<UMLPJava2TypeScriptTask> createFrontendGUIJ2TSTask(final Project project,
-      TaskProvider<UMLPJava2TypeScriptTask> frontendDomainJ2TSTask,
-      TaskProvider<UMLPGuiGenTask> frontendGuiTask) {
+                                                                            TaskProvider<UMLPJava2TypeScriptTask> frontendDomainJ2TSTask,
+                                                                            TaskProvider<UMLPGuiGenTask> frontendGuiTask) {
     return project.getTasks()
         .register(UMLP_FRONTEND_GUI_J2TS_TASK_NAME, UMLPJava2TypeScriptTask.class, umlpTask -> {
           umlpTask.setGroup(UMLP_GROUP_NAME);
           umlpTask.getOutputDir().set(getAppGuiJ2TSPath(project).toFile());
-          umlpTask.getGui().set(true);
-          umlpTask.getDomain().set(false);
+//          umlpTask.getGui().set(true);
+//          umlpTask.getDomain().set(false);
 
-          umlpTask.dependsOn(frontendGuiTask.get(), frontendDomainJ2TSTask.get());
+          // Depend on the
+//          umlpTask.getInput().setDir(project.getProjectDir());
+//          umlpTask.getInput().from(frontendGuiTask);
+          // TODO: Add HWC
+//          umlpTask.getInput().from(project.getExtensions().getByType(JavaPluginExtension.class).getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME));
+
+          // dependsOn frontendDomainJ2TSTask: Ensure the domain exists
+          umlpTask.dependsOn(frontendGuiTask, frontendDomainJ2TSTask);
         });
   }
 
@@ -271,11 +279,11 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
 
   @NotNull
   private static TaskProvider<Sync> createSyncGuiTask(Project project,
-      TaskProvider<FrontendSetup> frontendSetupTask, boolean j2ts,
-      TaskProvider<UMLPJava2TypeScriptTask> frontendGUIJ2TSTask,
-      TaskProvider<UMLPJava2TypeScriptTask> frontendDomainJ2TSTask, TaskProvider<?> syncDomainTask,
-      TaskProvider<UMLPGuiGenTask> frontendGuiTask,
-      TaskProvider<UMLPFrontendTask> frontendDomainTask) {
+                                                      TaskProvider<FrontendSetup> frontendSetupTask, boolean j2ts,
+                                                      TaskProvider<UMLPJava2TypeScriptTask> frontendGUIJ2TSTask,
+                                                      TaskProvider<UMLPJava2TypeScriptTask> frontendDomainJ2TSTask, TaskProvider<?> syncDomainTask,
+                                                      TaskProvider<UMLPGuiGenTask> frontendGuiTask,
+                                                      TaskProvider<UMLPFrontendTask> frontendDomainTask) {
     return project.getTasks()
         .register("SYNC_" + UMLP_FRONTEND_GUI_TASK_NAME, Sync.class, syncTask -> {
           syncTask.into(
@@ -302,7 +310,7 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
 
   @NotNull
   private static Task createGenerateTask(Project project, boolean j2ts,
-      TaskProvider<UMLPJava2TypeScriptTask> frontendGUIJ2TSTask, TaskProvider<?> syncDomainTask,
+      TaskProvider<?> frontendGUIJ2TSTask, TaskProvider<?> syncDomainTask,
       TaskProvider<?> syncGuiTask, TaskProvider<UMLPGuiGenTask> frontendGuiTask) {
     Task generateTask = project.getTasks().create("generate");
     if (j2ts) {
