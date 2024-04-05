@@ -72,9 +72,10 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
   @OutputDirectory
   public abstract DirectoryProperty getOutputDir();
 
-  @Input
-  @Optional
-  public abstract DirectoryProperty getHandWrittenConfigDir();
+  // Unused hwc?
+//  @InputDirectory
+//  @Optional
+//  public abstract DirectoryProperty getHandWrittenConfigDir();
 
   @OutputDirectory
   public abstract DirectoryProperty getJsweetDir();
