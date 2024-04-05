@@ -53,6 +53,7 @@ import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
+import umlp.generator.gui.genjava.decorator.Argument;
 import umlp.generator.gui.genjava.prettyprinter.Expression2NullCheckAccessorPrinter;
 import umlp.generator.gui.genjava.prettyprinter.Expression2SetterPrinter;
 import umlp.generator.gui.genjava.prettyprinter.IterationItemsFinder;
@@ -182,8 +183,14 @@ public class GUIGeneratorUtil {
             .filter(p -> isDomainType(p)).findAny().isPresent();
   }
 
-  public final boolean isDomainType(ASTGUIParam astguiParam) {
-    return isDomainType(astguiParam.getSymbol().getType());
+  public final boolean isDomainType(ASTGUIParam param) {
+    if (!param.isPresentSymbol()) {
+      Log.error("0x0000E Unable to find symbol for '" + param.getName()
+          + "' at " + param.get_SourcePositionStart().toString()
+          + " - " + param.get_SourcePositionEnd().toString()
+      );
+    }
+    return isDomainType(param.getSymbol().getType());
   }
 
   public final boolean isDomainType(SymTypeExpression type) {
@@ -198,8 +205,8 @@ public class GUIGeneratorUtil {
     return DOMAIN_MODELS.contains(as.getFullName());
   }
 
-  public final boolean isDomainListType(ASTGUIParam astguiParam) {
-    SymTypeExpression type = astguiParam.getSymbol().getType();
+  public final boolean isDomainListType(ASTGUIParam param) {
+    SymTypeExpression type = param.getSymbol().getType();
     return isDomainListType(type);
   }
 
@@ -1085,6 +1092,21 @@ public class GUIGeneratorUtil {
       }
     }
     return findIterationItemSymbols(scope.getEnclosingScope(), symbols);
+  }
+
+  public String args2ArgsString(Collection<Argument> args) {
+    StringBuilder res = new StringBuilder();
+    Iterator<Argument> iter = args.iterator();
+    while (iter.hasNext()) {
+      Argument arg = iter.next();
+      res.append(arg.getType());
+      res.append(" ");
+      res.append(arg.getName());
+      if (iter.hasNext()) {
+        res.append(",");
+      }
+    }
+    return res.toString();
   }
 
   public String variableSymbols2ArgsString(Collection<VariableSymbol> variableSymbols) {

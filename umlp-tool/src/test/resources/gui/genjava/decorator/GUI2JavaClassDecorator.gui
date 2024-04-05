@@ -18,21 +18,21 @@ page GUI2JavaClassDecorator(
   Person person,
   // get + set + init(val) + init()
   Person $per$son,
-  // get + set + init()
+  // get + set + init(val) + init()
   MaritalStatus status = MaritalStatus.SINGLE,
   // get + set + init(val) + init()
   List<Address> la,
   // get + set + init(val) + init()
   List<List<Address>> lla,
-  // get + set + init()
+  // get + set + init(val) + init()
   String s,
-  // get + set + init()
+  // get + set + init(val) + init()
   boolean b,
-  // get + set + init()
+  // get + set + init(val) + init()
   ?int i,
-  // get + set + init()
+  // get + set + init(val) + init()
   GUIViewElement v,
-  // get + set + init()
+  // get + set + init(val) + init()
   Event<Void> e
 ) {
   // getAP + getAM + getAS + getAB + getAA
@@ -45,10 +45,15 @@ page GUI2JavaClassDecorator(
     this.getPerson().getAddress();
   */
   // getCP + getCS + calcStr + getCA + getCA_0 + initCA_0
-  c@P(p = $per$son, s = calcStr(), a = Address());
+  c@P(p = $per$son, s = calcStr(person), a = Address());
   /*
     this.get$per$son();
-    this.calcStr();
+
+    cS() {
+      this.calcStr(this.getPerson())();
+    }
+
+    public abstract Consumer<Void> calcStr(Person arg0);
 
     final cA1 = Manager.addressBuilder();
     public Address getCA1() {
@@ -70,7 +75,7 @@ page GUI2JavaClassDecorator(
   /*
     this.getPerson().getAddress().getHouse();
   */
-  // getGGve + getGLgve + getGLgve1 + initGLgve1
+  // getGGve + getGLgve + getGLgve_1 + initGLgve_1
   g@V(gve = v, lgve = [$1@V(), $2@P()]);
   /*
     this.getV();
@@ -79,20 +84,28 @@ page GUI2JavaClassDecorator(
   // hE
   h@E(e = e);
   /*
-    this.getE();
+    void hE() {
+      this.e()();
+    }
+
+    Consumer<Void> e = x -> {};
 
     // TS:
     this.e.emit();
   */
-  // jE
+  // jE + action
   j@E(e = action());
   /*
-    this.action()();
+    void jE() {
+      this.action()();
+    }
+
+    abstract Consumer<Void> action();
 
     // TS:
     this.action()();
   */
-  // getKA + getKS + getKS2 + initKS2 + getKM + getKM3 + initKM3
+  // getKA + getKS + getKS_2 + initKS_2 + getKM + getKM_3 + initKM_3
   k@L(a = la, s = ["a", "b"], m = [MaritalStatus.SINGLE, MaritalStatus.MARRIED]);
   /*
     this.getLa();
@@ -105,7 +118,7 @@ page GUI2JavaClassDecorator(
     this.getPerson().getFriends();
   */
     // getMCondition
-    m@guard(friend.empoyed) {
+    m@guard(friend.employed) {
     /*
       friend.isEmployed();
     */

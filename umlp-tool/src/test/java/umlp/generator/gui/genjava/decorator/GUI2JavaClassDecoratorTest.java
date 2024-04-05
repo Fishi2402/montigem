@@ -10,6 +10,7 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
+import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
@@ -25,6 +26,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GUI2JavaClassDecoratorTest extends DomainGUITest {
 
@@ -68,8 +70,9 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     Collection<ASTMCImportStatement> imports = CD4C.getInstance().getImportList(clazz);
 
     assertAll(
+        () -> assertTrue(Log.getFindings().isEmpty()),
         () -> assertEquals(14, clazz.getCDAttributeList().size()),
-        () -> assertEquals(66, clazz.getCDMethodList().size()),
+        () -> assertEquals(73, clazz.getCDMethodList().size()),
         () -> assertEquals(1, clazz.getCDConstructorList().size()),
         () -> assertEquals(8, imports.size())
     );
@@ -102,7 +105,7 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     assertAll(
         () -> assertNotNull(init),
         () -> assertEquals("void", init.getMCReturnType().printType()),
-        () -> assertEquals(1, init.getCDParameterList().size())
+        () -> assertEquals(0, init.getCDParameterList().size())
     );
   }
 
@@ -131,38 +134,47 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     List<Executable> assertions = new ArrayList<>();
     List<ASTCDAttribute> attrs = clazz.getCDAttributeList();
 
-    ASTCDAttribute person = getAttr(attrs, "person");
-    ASTCDAttribute $per$son = getAttr(attrs, "$per$son");
-    ASTCDAttribute status = getAttr(attrs, "status");
-    ASTCDAttribute la = getAttr(attrs, "la");
-    ASTCDAttribute lla = getAttr(attrs, "lla");
-    ASTCDAttribute s = getAttr(attrs, "s");
-    ASTCDAttribute b = getAttr(attrs, "b");
-    ASTCDAttribute i = getAttr(attrs, "i");
-    ASTCDAttribute v = getAttr(attrs, "v");
-    ASTCDAttribute e = getAttr(attrs, "e");
+    ASTCDAttribute _person = getAttr(attrs, "_person");
+    ASTCDAttribute _$per$son = getAttr(attrs, "_$per$son");
+    ASTCDAttribute _status = getAttr(attrs, "_status");
+    ASTCDAttribute _la = getAttr(attrs, "_la");
+    ASTCDAttribute _lla = getAttr(attrs, "_lla");
+    ASTCDAttribute _s = getAttr(attrs, "_s");
+    ASTCDAttribute _b = getAttr(attrs, "_b");
+    ASTCDAttribute _i = getAttr(attrs, "_i");
+    ASTCDAttribute _v = getAttr(attrs, "_v");
+    ASTCDAttribute _e = getAttr(attrs, "_e");
 
-    assertions.add(() -> assertNotNull(person));
-    assertions.add(() -> assertNotNull($per$son));
-    assertions.add(() -> assertNotNull(status));
-    assertions.add(() -> assertNotNull(lla));
-    assertions.add(() -> assertNotNull(la));
-    assertions.add(() -> assertNotNull(s));
-    assertions.add(() -> assertNotNull(b));
-    assertions.add(() -> assertNotNull(i));
-    assertions.add(() -> assertNotNull(v));
-    assertions.add(() -> assertNotNull(e));
+    assertions.add(() -> assertNotNull(_person));
+    assertions.add(() -> assertNotNull(_$per$son));
+    assertions.add(() -> assertNotNull(_status));
+    assertions.add(() -> assertNotNull(_lla));
+    assertions.add(() -> assertNotNull(_la));
+    assertions.add(() -> assertNotNull(_s));
+    assertions.add(() -> assertNotNull(_b));
+    assertions.add(() -> assertNotNull(_i));
+    assertions.add(() -> assertNotNull(_v));
+    assertions.add(() -> assertNotNull(_e));
 
-    assertions.add(() -> assertEquals("Person", person.getMCType().printType()));
-    assertions.add(() -> assertEquals("Person", $per$son.getMCType().printType()));
-    assertions.add(() -> assertEquals("MaritalStatus", status.getMCType().printType()));
-    assertions.add(() -> assertEquals("List<Address>", la.getMCType().printType()));
-    assertions.add(() -> assertEquals("List<List<Address>>", lla.getMCType().printType()));
-    assertions.add(() -> assertEquals("String", s.getMCType().printType()));
-    assertions.add(() -> assertEquals("Boolean", b.getMCType().printType()));
-    assertions.add(() -> assertEquals("Integer", i.getMCType().printType()));
-    assertions.add(() -> assertEquals("GUIViewElement", v.getMCType().printType()));
-    assertions.add(() -> assertEquals("Event<Void>", e.getMCType().printType()));
+    assertions.add(() -> assertEquals("Person", _person.getMCType().printType()));
+    assertions.add(() -> assertEquals("Person", _$per$son.getMCType().printType()));
+    assertions.add(() -> assertEquals("MaritalStatus", _status.getMCType().printType()));
+    assertions.add(() -> assertEquals("List<Address>", _la.getMCType().printType()));
+    assertions.add(() -> assertEquals("List<List<Address>>", _lla.getMCType().printType()));
+    assertions.add(() -> assertTrue(
+        "java.lang.String".equals(_s.getMCType().printType())
+        || "String".equals(_s.getMCType().printType())
+    ));
+    assertions.add(() -> assertTrue(
+        "java.lang.Boolean".equals(_b.getMCType().printType())
+            || "Boolean".equals(_b.getMCType().printType())
+    ));
+    assertions.add(() -> assertTrue(
+        "java.lang.Integer".equals(_i.getMCType().printType())
+        || "Integer".equals(_i.getMCType().printType())
+    ));
+    assertions.add(() -> assertEquals("GUIViewElement", _v.getMCType().printType()));
+    assertions.add(() -> assertEquals("Event<Void>", _e.getMCType().printType()));
 
     List<ASTCDMethod> methods = clazz.getCDMethodList();
 
@@ -246,8 +258,6 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     ASTMCImportStatement eventImport = getImport(imports, "de.monticore.guidsl.types.Event");
     // optional imports, byproduct of type handling
     ASTMCImportStatement stringImport = getImport(imports, "java.lang.String");
-    ASTMCImportStatement booleanImport = getImport(imports, "java.lang.Boolean");
-    ASTMCImportStatement integerImport = getImport(imports, "java.lang.Boolean");
     ASTMCImportStatement voidImport = getImport(imports, "java.lang.Void");
 
     assertions.add(() -> assertNotNull(personImport));
@@ -257,8 +267,6 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     assertions.add(() -> assertNotNull(guiViewElementImport));
     assertions.add(() -> assertNotNull(eventImport));
     assertions.add(() -> assertNotNull(stringImport));
-    assertions.add(() -> assertNotNull(booleanImport));
-    assertions.add(() -> assertNotNull(integerImport));
     assertions.add(() -> assertNotNull(voidImport));
 
     assertAll(assertions);

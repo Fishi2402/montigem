@@ -68,6 +68,7 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
   }
 
   public void init(ASTGUIComponentDeclaration node) {
+    counter = 0;
     if (node.isPresentGUIBlock()) {
       node.getGUIBlock().accept(getTraverser());
     }
@@ -145,7 +146,7 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
       }
       if (isConstructor) {
         String type = node.getName();
-        String name = curComp + StringTransformations.capitalize(curArg) + counter++;
+        String name = curComp + StringTransformations.capitalize(curArg) + "_" + counter++;
         ASTCDAttribute attr = CDAttributeFacade.getInstance().createAttribute(
             CDModifier.PROTECTED.build(), type, name);
         node2Attr.put(lastCall.get(), attr);
