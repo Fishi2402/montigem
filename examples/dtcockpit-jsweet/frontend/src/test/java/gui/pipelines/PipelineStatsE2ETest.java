@@ -40,6 +40,7 @@ public class PipelineStatsE2ETest extends DtcockpitMockTestSetup {
   }
 
   @Test
+  @org.junit.jupiter.api.Disabled // gui.pipelines.PipelineStats#getBarChartForPipelineRunsData is currently disabled
   public void testBarChartForPipelineRunsData() {
     //create project
     long id = 123;

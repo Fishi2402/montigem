@@ -471,7 +471,9 @@ public class GUIGeneratorUtil {
         + StringTransformations.capitalize(namedArg.getName())
         + (UMLPGeneratorConfig.getInstance().isGenerateTypescript() || isList(namedArg)
         ? ""
-        : SYNCHRONIZED_SUFFIX); // required for
+         // // If the method is async/returning a promise, this requires further work?
+        : "" //SYNCHRONIZED_SUFFIX
+    ); // required for
     // : build/appgui/gui/pipelines/PipelineStats.html:31
     // getBarChartForPipelineRunsData
   }
