@@ -186,6 +186,7 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
 
           umlpTask.getSymbolDir().from(guiTypes);
           umlpTask.getSymbolDir().from(domainSymbolGenTask.get().getSymbolOutDir());
+          umlpTask.dependsOn(domainSymbolGenTask);
 
           if (j2ts) {
             setIfPathExists(x -> umlpTask.getHwcDir().from(x), Path.of(
