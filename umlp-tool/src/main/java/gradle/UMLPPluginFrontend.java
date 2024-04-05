@@ -64,7 +64,7 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
     TaskProvider<UMLPJava2TypeScriptTask> frontendDomainJ2TSTask = createFrontendDomainJ2TSTask(project, frontendDomainTask, local);
 
     TaskProvider<UMLPSymbolsTask> domainSymbolGenTask = createDomainSymbolGen(project, frontendSetupTask);
-    TaskProvider<UMLPGuiGenTask> frontendGuiTask = createFrontendGuiTask(project, j2ts, local, domainSymbolGenTask);
+    TaskProvider<UMLPGuiGenTask> frontendGuiTask = createFrontendGuiTask(project, j2ts, local, domainSymbolGenTask, frontendDomainTask);
     TaskProvider<UMLPJava2TypeScriptTask> frontendGUIJ2TSTask = createFrontendGUIJ2TSTask(project, frontendDomainJ2TSTask, frontendGuiTask);
 
     // Sync Output of UMLP-Task to the correct directory. This done because "npm serve" cannot handle the intermediate state while the UMLPTasks are running
@@ -173,7 +173,7 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
   }
 
   private TaskProvider<UMLPGuiGenTask> createFrontendGuiTask(final Project project,
-      boolean j2ts, boolean local, TaskProvider<UMLPSymbolsTask> domainSymbolGenTask) {
+      boolean j2ts, boolean local, TaskProvider<UMLPSymbolsTask> domainSymbolGenTask, TaskProvider<?> genDomainTask) {
 
     // Add Configuration for TypeSymbols.
     Configuration guiTypes = project.getConfigurations().getByName(GUI_TYPES_NAME);
@@ -188,6 +188,7 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
           umlpTask.getSymbolDir().from(guiTypes);
           umlpTask.getSymbolDir().from(domainSymbolGenTask.get().getSymbolOutDir());
           umlpTask.dependsOn(domainSymbolGenTask);
+          umlpTask.dependsOn(genDomainTask); // TODO: Why is this required?
 
           if (j2ts) {
             setIfPathExists(x -> umlpTask.getHwcDir().from(x), Path.of(
