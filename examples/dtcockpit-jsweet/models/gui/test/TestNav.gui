@@ -17,5 +17,5 @@ component TestNav() {
   @GemNavItem(title = "3HWC (inner-list)" , target = "/gui/test/Test3HWC");
   @GemNavItem(title = "4 (HWC expr)" , target = "/gui/test/Test4");
   @GemNavItem(title = "5 (single item)" , target = "/gui/test/Test5/1");
-  @GemNavItem(title = "vis-example (pipelinestats - might crash your browser)" , target = "/gui/pipelines/PipelineStats/1");
+  @GemNavItem(title = "vis-example (pipelinestats - might crash your browser - or not update data once loaded - see console)" , target = "/gui/pipelines/PipelineStats/1");
 }

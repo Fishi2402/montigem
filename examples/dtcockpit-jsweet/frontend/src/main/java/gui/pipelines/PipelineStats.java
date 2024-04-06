@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gui.pipelines;
 
+import de.se_rwth.commons.logging.Log;
 import dtcockpit.PipelineStatistic;
 import dtcockpit.Project;
 import jsweet.lang.Replace;
@@ -21,7 +22,7 @@ import java.util.Optional;
 @Component
 public class PipelineStats extends PipelineStatsTOP {
 
-  // TODO: JSweet initial value missing (new ProjectDataCheck())
+  // TODO: JSweet initial value missing (new ProjectDataCheck()) #3968
   private final ProjectDataCheck projectDataCheck = new ProjectDataCheck();
 
   // TODO: JSweet initial value missing (=0  !== undefined)
@@ -41,8 +42,12 @@ public class PipelineStats extends PipelineStatsTOP {
   public GemBarChartData getBarChartForPipelineRunsData() {
     Project project = getP();
     if (project == null) {
+      Log.warn("#3967 - p variable might be updated at a later point, but getBarChartForPipelineRunsData never updated accordingly");
       return null;
     }
+
+    if (this.projectDataCheck == null)
+      Log.error("Please fix #3968 - projectDataCheck is not set to any initial value");
 
     List<String> labels = new ArrayList<>();
     Map<String, List<Integer>> entries = new HashMap<>();
