@@ -471,11 +471,9 @@ public class GUIGeneratorUtil {
         + StringTransformations.capitalize(namedArg.getName())
         + (UMLPGeneratorConfig.getInstance().isGenerateTypescript() || isList(namedArg)
         ? ""
-         // // If the method is async/returning a promise, this requires further work?
-        : "" //SYNCHRONIZED_SUFFIX
-    ); // required for
-    // : build/appgui/gui/pipelines/PipelineStats.html:31
-    // getBarChartForPipelineRunsData
+        : SYNCHRONIZED_SUFFIX // in case the actual method does not have to be async,
+        // the synchronized method might just call the original method
+    );
   }
 
   public boolean isList(ASTGUINamedArg namedArg) {

@@ -39,71 +39,63 @@ public class PipelineStats extends PipelineStatsTOP {
 
   @Override
   public GemBarChartData getBarChartForPipelineRunsData() {
-    // TODO: as soon as this becomes async,
-    // we either have to use the getBarChartForPipelineRunsData_synchronized() method
-    // or an getBarChartForPipelineRunsData()|async
-    //
-    // See umlp.generator.gui.GuiGeneratorUtil#gui2cdAttrGetterNameTS (this commit)
+    Project project = getP();
+    if (project == null) {
+      return null;
+    }
 
+    List<String> labels = new ArrayList<>();
+    Map<String, List<Integer>> entries = new HashMap<>();
+    List<Integer> successful = new ArrayList<>();
+    List<Integer> unsuccessful = new ArrayList<>();
+    entries.put("Successful", successful);
+    entries.put("Unsuccessful", unsuccessful);
 
-//    Project project = getP();
-//    if (project == null) {
-//      return null;
-//    }
-//
-//    List<String> labels = new ArrayList<>();
-//    Map<String, List<Integer>> entries = new HashMap<>();
-//    List<Integer> successful = new ArrayList<>();
-//    List<Integer> unsuccessful = new ArrayList<>();
-//    entries.put("Successful", successful);
-//    entries.put("Unsuccessful", unsuccessful);
-//
-//    for (PipelineStatistic stat : project.getPStatistics()) {
-//      String label = formatDate(stat.getTime());
-//      int index = labels.indexOf(label);
-//      if (index == -1) {
-//        index = labels.size();
-//        labels.add(label);
-//        successful.add(0);
-//        unsuccessful.add(0);
-//      }
-//      if (stat.isSuccessful()) {
-//        successful.set(index, successful.get(index) + 1);
-//      } else {
-//        unsuccessful.set(index, unsuccessful.get(index) + 1);
-//      }
-//    }
-//    for (int i = 0; i < successful.size(); i++) {
-//      Integer currentMaxValue = getBarChartForPipelineRunsMaxValue();
-//      if (getBarChartForPipelineRunsStacked()) {
-//        this.maxValue = Math.max(currentMaxValue, successful.get(i) + unsuccessful.get(i) + 5);
-//      } else {
-//        this.maxValue = Math.max(currentMaxValue,
-//                                 Math.max(successful.get(i), unsuccessful.get(i)) + 5);
-//      }
-//    }
-//    List<GemBarChartEntry> barChartEntries = new ArrayList<>();
-//    for (Map.Entry<String, List<Integer>> entry : entries.entrySet()) {
-//      String label = entry.getKey();
-//      List<Integer> value = entry.getValue();
-//      barChartEntries.add(new GemBarChartEntry(Optional.of(label),
-//          Optional.empty(),
-//          value,
-//          Optional.of(label.equals(
-//              "Successful") ?
-//              "#57ab27" :
-//              "#cc071e"),
-//          Optional.empty()));
-//    }
-//    GemBarChartData data = new GemBarChartData(barChartEntries, labels);
-//    String newHash = data.toString();
-//    if (projectDataCheck.getHash() == null || projectDataCheck.getHash().equals(newHash)) {
-//      projectDataCheck.setHash(newHash);
-//      projectDataCheck.setValue(data);
-//    }
-//
-//    return projectDataCheck.getValue();
-    return null;
+    for (PipelineStatistic stat : project.getPStatistics()) {
+      String label = formatDate(stat.getTime());
+      int index = labels.indexOf(label);
+      if (index == -1) {
+        index = labels.size();
+        labels.add(label);
+        successful.add(0);
+        unsuccessful.add(0);
+      }
+      if (stat.isSuccessful()) {
+        successful.set(index, successful.get(index) + 1);
+      } else {
+        unsuccessful.set(index, unsuccessful.get(index) + 1);
+      }
+    }
+    for (int i = 0; i < successful.size(); i++) {
+      Integer currentMaxValue = getBarChartForPipelineRunsMaxValue();
+      if (getBarChartForPipelineRunsStacked()) {
+        this.maxValue = Math.max(currentMaxValue, successful.get(i) + unsuccessful.get(i) + 5);
+      } else {
+        this.maxValue = Math.max(currentMaxValue,
+                                 Math.max(successful.get(i), unsuccessful.get(i)) + 5);
+      }
+    }
+    List<GemBarChartEntry> barChartEntries = new ArrayList<>();
+    for (Map.Entry<String, List<Integer>> entry : entries.entrySet()) {
+      String label = entry.getKey();
+      List<Integer> value = entry.getValue();
+      barChartEntries.add(new GemBarChartEntry(Optional.of(label),
+          Optional.empty(),
+          value,
+          Optional.of(label.equals(
+              "Successful") ?
+              "#57ab27" :
+              "#cc071e"),
+          Optional.empty()));
+    }
+    GemBarChartData data = new GemBarChartData(barChartEntries, labels);
+    String newHash = data.toString();
+    if (projectDataCheck.getHash() == null || projectDataCheck.getHash().equals(newHash)) {
+      projectDataCheck.setHash(newHash);
+      projectDataCheck.setValue(data);
+    }
+
+    return projectDataCheck.getValue();
   }
 
   @Replace("return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;")
