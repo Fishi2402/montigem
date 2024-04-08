@@ -11,7 +11,7 @@ export interface GemScatterPlotAxis {
 
 export interface GemScatterPlotSet {
   label?: string;
-  shape?: GemScatterPlotEntryShape;
+  shape?: GemScatterPlotShape;
   points?: GemScatterPlotPoint[];
   color?: string;
   hoverColor?: string;
