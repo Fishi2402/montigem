@@ -1,4 +1,5 @@
 import { GemScatterPlotData as GemScatterPlotDataI } from "./gem-scatter-plot-types/gem-scatter-plot-types.types-gen";
+import { GemScatterPlotAxis as GemScatterPlotAxisI } from "./gem-scatter-plot-types/gem-scatter-plot-types.types-gen";
 import { GemScatterPlotSet as GemScatterPlotSetI } from "./gem-scatter-plot-types/gem-scatter-plot-types.types-gen";
 import { GemScatterPlotPoint as GemScatterPlotPointI } from "./gem-scatter-plot-types/gem-scatter-plot-types.types-gen";
 import { GemScatterPlotShape } from "./gem-scatter-plot-types/gem-scatter-plot-types.types-gen";
@@ -63,3 +64,5 @@ export class GemScatterPlotPoint implements GemScatterPlotPointI {
     this.y = y;
   }
 }
+
+export { GemScatterPlotShape };
