@@ -19,8 +19,32 @@ export class GemScatterPlotExample extends GemScatterPlotExampleComponent {
       return null;
     }
 
+    let personsPerYear: Map<number, number> = new Map<number, number>();
+
+    for (const person of this.persons) {
+      //no idea why that works, I copied it from GemBarChartExample
+      let yearOfBirth = Number(person?.getBirthday()?.toDateString().substring(11, 15));
+      if (personsPerYear.has(yearOfBirth)) {
+        personsPerYear.set(yearOfBirth, personsPerYear.get(yearOfBirth) + 1);
+      } else {
+        personsPerYear.set(yearOfBirth, 1);
+      }
+    }
+
+    let yearSet: GemScatterPlotSet = {
+      label: "Personen pro Jahr",
+      points: []
+    }
+
+    personsPerYear.forEach((year, persons) => {
+      yearSet.points.push({
+        x: year,
+        y: persons
+      });
+    });
+
     let data: GemScatterPlotData = {
-      sets: []
+      sets: [yearSet]
     }
 
     if (JSON.stringify(data) === this.chartDataHash && this.chartData) {
