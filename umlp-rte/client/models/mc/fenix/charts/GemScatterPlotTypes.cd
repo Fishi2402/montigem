@@ -18,7 +18,7 @@ classdiagram GemScatterPlotTypes {
 
   public class GemScatterPlotSet {
     String label;
-    Optional<GemScatterPlotEntryShape> shape;
+    Optional<GemScatterPlotShape> shape;
     List<GemScatterPlotPoint> points;
     Optional<String> color;
     Optional<String> hoverColor;
