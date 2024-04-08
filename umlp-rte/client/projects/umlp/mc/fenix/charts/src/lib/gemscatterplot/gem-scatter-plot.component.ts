@@ -131,10 +131,11 @@ export class GemScatterPlot extends GemScatterPlotTOP {
           min: this._xAxis.minValue,
           max: this._xAxis.maxValue,
           grid: {
-            color: '#888'
+            color: '#888',
           },
           ticks: {
-            color: '#888'
+            color: '#888',
+            stepSize: this._xAxis.stepWidth,
           }
         },
         y: {
@@ -142,35 +143,17 @@ export class GemScatterPlot extends GemScatterPlotTOP {
             display: this._yAxis.label,
             text: this._yAxis.label,
           },
-          min: this._minValue,
-          max: this._maxValue,
-          stacked: this._stacked,
+          min: this._yAxis.minValue,
+          max: this._yAxis.maxValue,
           grid: {
-            color: '#888'
+            color: '#888',
           },
           ticks: {
-            color: '#888'
+            color: '#888',
+            stepSize: this._yAxis.stepWidth,
           }
         }
       },
-      plugins: {
-        tooltip: {
-          callbacks: {
-            label: (tooltipItem) => {
-              const label = tooltipItem.dataset.label || "";
-              let value = tooltipItem.parsed.y;
-              let res = "";
-              if (this._displayValue != undefined && typeof value === 'number') {
-                res = this._displayValue(value);
-              }
-              return label + ": " + res;
-            }
-          }
-        },
-        legend: {
-          display: false
-        }
-      }
     }
   }
 
