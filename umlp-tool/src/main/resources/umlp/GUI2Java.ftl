@@ -8,14 +8,14 @@
 ${tc.signature("decoratedAST", "glex", "hwPath", "guiJavaGenerator", "viewComponents")}
 
 <#-- Call all decorators -->
-<#assign guiDecorator = tc.instantiate("umlp.generator.gui.genjava.decorator.GUI2JavaDecorator", [glex])>
+<#assign guiDecorator = tc.instantiate("umlp.generator.gui.genjava.decorator.GUI2JavaClassDecorator", [glex])>
 
 <#-- TopDecorator, which is aware about hand-written TS code -->
 <#assign topDecorator = tc.instantiate("umlp.generator.gui.gentypescript.java2ts.TSTopDecorator", [hwPath])>
 
 <#--${includeArgs("umlp.generator.hook.BeforeTransform", decoratedAST, glex, hwPath, guiJavaGenerator, guiDecorator, topDecorator)}-->
 
-${guiDecorator.transform(ast, decoratedAST, viewComponents)}
+${guiDecorator.transform(ast, decoratedAST)}
 
 ${topDecorator.decorate(decoratedAST)}
 

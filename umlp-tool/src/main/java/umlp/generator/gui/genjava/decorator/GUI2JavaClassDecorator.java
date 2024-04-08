@@ -58,8 +58,6 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
 
   public static final String GUARD_ARG = "condition";
   public static final String ITERATE_ARG = "iterable";
-  public static final String CONSUMER_QNAME = "java.util.function.Consumer";
-  public static final String CONSUMER_NAME = "Consumer";
 
   protected ASTCDClass clazz;
   protected GUIDSLTraverser traverser;
@@ -122,52 +120,56 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     // add attr init
     getCD4C().addMethod(clazz, getInitParamTemplate(), type, name);
 
-    if (util.getMainDomainModelSimpleName().isPresent()) {
-      if (util.isDomainType(typeSTE)) {
-        String manager = ManagerDecorator.getClassName(util.getMainDomainModelSimpleName().get());
-        // add builder init
-        ASTCDMethodSignature builderInit = getCD4C().addMethod(
-            clazz, getInitParamBuilderTemplate(),
-            type, name, manager, Collections.emptyList()
-        );
-
-        // add builder init to class init
-        glex.addAfterTemplate(
-            getInitBodyHookpoint(),
-            new TemplateHookPoint(getInitCallTemplate(), builderInit)
-        );
+    if (util.isDomainType(typeSTE)) {
+      if (util.getMainDomainModelSimpleName().isEmpty()) {
+        Log.error("0x00007 Could not identify the manager name: domain class diagram is missing");
+        return;
       }
-      else if (util.isDomainListType(typeSTE)) {
-        // add attr init
-        ASTCDMethodSignature attrInit = getCD4C().addMethod(
-            clazz, getInitDomainListTemplate(), type, name
-        );
+      String manager = ManagerDecorator.getClassName(util.getMainDomainModelSimpleName().get());
+      // add builder init
+      ASTCDMethodSignature builderInit = getCD4C().addMethod(
+          clazz, getInitParamBuilderTemplate(),
+          type, name, manager, Collections.emptyList()
+      );
 
-        // add attr init to class init
-        glex.addAfterTemplate(
-            getInitBodyHookpoint(),
-            new TemplateHookPoint(getInitCallTemplate(), attrInit)
-        );
+      // add builder init to class init
+      glex.addAfterTemplate(
+          getInitBodyHookpoint(),
+          new TemplateHookPoint(getInitCallTemplate(), builderInit)
+      );
+    }
+    else if (util.isDomainListType(typeSTE)) {
+      if (util.getMainDomainModelSimpleName().isEmpty()) {
+        Log.error("0x00007 Could not identify the manager name: domain class diagram is missing");
+        return;
       }
-      else {
-        Optional<String> value = Optional.empty();
-        if (node.isPresentDefault()) {
-          value = Optional.of(util.print(node.getDefault()));
-        }
-        // add attr init
-        ASTCDMethodSignature attrInit = getCD4C().addMethod(
-            clazz, getInitDefaultParamTemplate(), name, value
-        );
+      String manager = ManagerDecorator.getClassName(util.getMainDomainModelSimpleName().get());
+      // add attr init
+      ASTCDMethodSignature attrInit = getCD4C().addMethod(
+          clazz, getInitDomainListTemplate(), type, name, manager
+      );
 
-        // add attr init to class init
-        glex.addAfterTemplate(
-            getInitBodyHookpoint(),
-            new TemplateHookPoint(getInitCallTemplate(), attrInit)
-        );
-      }
+      // add attr init to class init
+      glex.addAfterTemplate(
+          getInitBodyHookpoint(),
+          new TemplateHookPoint(getInitCallTemplate(), attrInit)
+      );
     }
     else {
-      Log.error("0x00007 Could not identify the manager name: domain class diagram is missing");
+      Optional<String> value = Optional.empty();
+      if (node.isPresentDefault()) {
+        value = Optional.of(util.print(node.getDefault()));
+      }
+      // add attr init
+      ASTCDMethodSignature attrInit = getCD4C().addMethod(
+          clazz, getInitDefaultParamTemplate(), name, value
+      );
+
+      // add attr init to class init
+      glex.addAfterTemplate(
+          getInitBodyHookpoint(),
+          new TemplateHookPoint(getInitCallTemplate(), attrInit)
+      );
     }
   }
 
