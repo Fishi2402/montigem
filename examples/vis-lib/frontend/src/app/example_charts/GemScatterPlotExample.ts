@@ -36,7 +36,7 @@ export class GemScatterPlotExample extends GemScatterPlotExampleComponent {
       points: []
     }
 
-    personsPerYear.forEach((year, persons) => {
+    personsPerYear.forEach((persons, year) => {
       yearSet.points.push({
         x: year,
         y: persons
