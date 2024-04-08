@@ -81,8 +81,8 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
     }
     for (ASTCDInterface c : this.origCD.getCDDefinition().getCDInterfacesList()) {
       if (!c.getName().equals(domainType.getName())) {
-        ASTCDCompilationUnit cdOfSuper = UMLPSymbolTables.getDiagramFor(domainType.getSuperclassList().get(0));
-        getCD4C().addImport(cdType, getPackageName(cdOfSuper, DEFAULT_PACKAGE) + "." + domainType.getSuperclassList().get(0).printType());
+        ASTCDCompilationUnit cdOfSuper = UMLPSymbolTables.getDiagramFor(c);
+        getCD4C().addImport(cdType, getPackageName(cdOfSuper, DEFAULT_PACKAGE) + "." + c.getName());
       }
     }
 

@@ -47,7 +47,7 @@ public class FEDecorator extends BEDecorator {
     domainClassDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: CreateDecorator", FEDecorator.class.getName());
 
-    DomainInterfaceDecorator domainInterfaceDecorator = new DomainInterfaceDecorator(glex);
+    DomainInterfaceDecorator domainInterfaceDecorator = new TSDomainInterfaceDecorator(glex);
     domainInterfaceDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: CreateDecorator", FEDecorator.class.getName());
 
