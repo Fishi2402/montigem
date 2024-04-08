@@ -3,11 +3,12 @@ package example_charts;
 
 import Domain.Person;
 import mc.fenix.charts.GemScatterPlot;
+import mc.fenix.charts.GemScatterPlotAxis;
 
 page GemScatterPlotExample(List<Person> persons) {
-  scatterplot@GemScatterPlot(
+  @GemScatterPlot(
     data = null,
-    xAxis = null,
+    xAxis = null, //TODO how do I set a value here?
     yAxis = null
   );
 }
