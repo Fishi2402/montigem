@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { ChartDataset, ChartOptions } from 'chart.js';
 import { autoColors } from "../colors";
-import { GemScatterPlotData, GemScatterPlotAxis } from './gem-scatter-plot-types/gem-scatter-plot-types.types-gen';
+import { GemScatterPlotData, GemScatterPlotAxis, GemScatterPlotSet, GemScatterPlotShape } from './gem-scatter-plot-types/gem-scatter-plot-types.types-gen';
 import { GemScatterPlot as GemScatterPlotTOP } from './gem-scatter-plot/gem-scatter-plot.component-gen';
 
 @Component({
@@ -88,13 +88,13 @@ export class GemScatterPlot extends GemScatterPlotTOP {
   }
 
   public getPointStyle(shape?: GemScatterPlotShape): string {
-    return switch (shape) {
+    let name: string = "circle";
+    switch (shape) {
       case GemScatterPlotShape.SQUARE:
-        'rect';
+        name = 'rect';
         break;
-      default:
-        'circle';
     }
+    return name;
   }
 
   @Input()
@@ -125,7 +125,7 @@ export class GemScatterPlot extends GemScatterPlotTOP {
       scales: {
         x: {
           title: {
-            display: this._xAxis.label,
+            display: this._xAxis.label !== null,
             text: this._xAxis.label,
           },
           min: this._xAxis.minValue,
@@ -140,7 +140,7 @@ export class GemScatterPlot extends GemScatterPlotTOP {
         },
         y: {
           title: {
-            display: this._yAxis.label,
+            display: this._yAxis.label !== null,
             text: this._yAxis.label,
           },
           min: this._yAxis.minValue,
