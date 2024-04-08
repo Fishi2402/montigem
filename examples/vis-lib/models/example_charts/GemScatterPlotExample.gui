@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_charts;
+
+import Domain.Person;
+import mc.fenix.charts.GemScatterPlot;
+
+page GemScatterPlotExample(List<Person> persons) {
+  scatterplot@GemScatterPlot(
+    data = null,
+    xAxis = null,
+    yAxis = null
+  );
+}
+
