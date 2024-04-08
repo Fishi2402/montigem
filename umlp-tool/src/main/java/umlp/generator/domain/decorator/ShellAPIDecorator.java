@@ -39,7 +39,8 @@ public class ShellAPIDecorator extends AbstractDecorator {
         .setModifier(PUBLIC.build())
         .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(PathUtil.getBackendRTEShellApiPath("UMLPShellAPI")))
         .build();
-    glex.replaceTemplate("cd2java.Annotations", shellapi, new StringHookPoint("@ShellComponent"));
+    glex.replaceTemplate("cd2java.Annotations", shellapi,
+        new StringHookPoint("@ShellComponent\n@jsweet.lang.Erased"));
 
     addImports(origCD, shellapi);
 

@@ -44,31 +44,38 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     addedDeSers.clear();
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_PACKAGE);
-    origCD.getCDDefinition().getCDClassesList().stream()
-        .filter(c -> !c.getSymbol().isIsDerived())
-        .forEach(c -> {
-          CDSymbolTables.getAttributesInHierarchy(c)
-              .stream()
-              .filter(a -> !a.getModifier().isDerived())
-              .filter(GenService::isList)
-              .forEach(a -> {
-                astcdPackage.addCDElement(withOrigin(createClass(origCD, a.getName(),
-                    ((SymTypeOfGenerics) a.getSymbol().getType()).getArgument(0), c, false)));
-                astcdPackage.addCDElement(withOrigin(createDeSer(origCD, a.getName(), a.getSymbol().getType(), c, false)));
-              });
-          CDSymbolTables.getAssociations(c)
-              .stream()
-              .filter(Predicate.not(GenService::isSymbolDerived))
-              .filter(Predicate.not(GenService::isBidirectional))
-              .filter(GenService::isList)
-              .forEach(a -> {
-                astcdPackage.addCDElement(withOrigin(createClass(origCD, a.getName(), a.getSymbol().getType(), c, true)));
-                astcdPackage.addCDElement(withOrigin(createDeSer(origCD, a.getName(), getSymType("long"), c, true)));
-              });
-        });
-    origCD.getCDDefinition().getCDInterfacesList().stream()
-        .filter(c -> !c.getSymbol().isIsDerived())
-        .forEach(c -> {
+    getNonDerivedDomainClasses(origCD).forEach(c -> {
+      CDSymbolTables.getAttributesInHierarchy(c)
+                    .stream()
+                    .filter(a -> !a.getModifier().isDerived())
+                    .filter(GenService::isList)
+                    .forEach(a -> {
+                      astcdPackage.addCDElement(withOrigin(createClass(origCD,
+                                                                       a.getName(),
+                                                                       ((SymTypeOfGenerics) a.getSymbol().getType()).getArgument(0),
+                                                                       c,
+                                                                       false)));
+                      astcdPackage.addCDElement(withOrigin(createDeSer(origCD,
+                                                                       a.getName(),
+                                                                       a.getSymbol().getType(),
+                                                                       c,
+                                                                       false)));
+                    });
+      CDSymbolTables.getAssociations(c)
+                    .stream()
+                    .filter(Predicate.not(GenService::isSymbolDerived))
+                    .filter(Predicate.not(GenService::isBidirectional))
+                    .filter(GenService::isList)
+                    .forEach(a -> {
+                      astcdPackage.addCDElement(withOrigin(createClass(origCD,
+                                                                       a.getName(),
+                                                                       a.getSymbol().getType(),
+                                                                       c,
+                                                                       true)));
+                      astcdPackage.addCDElement(withOrigin(createDeSer(origCD, a.getName(), getSymType("long"), c, true)));
+                    });
+    });
+    getNonDerivedDomainInterfaces(origCD).forEach(c -> {
           CDSymbolTables.getAttributesInHierarchy(c)
               .stream()
               .filter(a -> !a.getModifier().isDerived())
@@ -151,10 +158,6 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ domainClass.getName() + "AccessPolicy");
 
     getCD4C().addImport(ast, "com.google.common.collect.Sets");
-  }
-
-  protected void addJavaImport(ASTCDClass ast, SymTypeExpression type) {
-    getCD4C().addImport(ast, type.printFullName());
   }
 
   protected void addConstructor(ASTCDClass ast, String classname, String packageName,

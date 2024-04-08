@@ -12,6 +12,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
@@ -41,10 +42,8 @@ public class DAODecorator extends AbstractDecorator {
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     cdName = origCD.getCDDefinition().getName();
-    origCD.getCDDefinition().getCDClassesList().stream()
-        .filter(c -> !c.getSymbol().isIsDerived())
-        .filter(c -> !c.getSymbol().isIsAbstract())
-        .forEach(c -> astcdPackage.addCDElement(withOrigin(createDAOClassForDomainClass(c))));
+    getConcreteDomainClasses(origCD).forEach(c -> astcdPackage.addCDElement(withOrigin(
+        createDAOClassForDomainClass(c))));
 
     origCD.getCDDefinition().getCDAssociationsList().stream()
         .filter(a -> !a.getModifier().isDerived())
@@ -72,6 +71,10 @@ public class DAODecorator extends AbstractDecorator {
         .createCDInterfaceUsage(domainClass.getName() + "DAO" + DAOInterfaceDecorator.INTERFACE_SUFFIX));
 
     ASTCDClass clazz = builder.build();
+    // Add @jsweet.lang.Erased annotation
+    glex.replaceTemplate("cd2java.Annotations", clazz,
+        new StringHookPoint("@jsweet.lang.Erased"));
+
     addStaticImports(clazz);
     this.addImports(domainClass, clazz);
     domainClassDAOMethods(clazz, domainClass, assocSideToAssociation);

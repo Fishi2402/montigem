@@ -7,5 +7,4 @@ this._${name} = new ArrayList(${name});
 <#else>
 this._${name} = ${name};
 </#if>
-${name}Present = true;
 return this;

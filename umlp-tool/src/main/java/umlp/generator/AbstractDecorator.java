@@ -13,21 +13,24 @@ import de.monticore.cd.facade.CDStereotypeFacade;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._prettyprint.CD4CodeFullPrettyPrinter;
+import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdassociation._ast.ASTCDAssociation;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cdbasis._ast.ASTCDElement;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
+import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.TypeCheck;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.monticore.umlstereotype._ast.ASTStereoValueTOP;
@@ -46,6 +49,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 // TODO refactor this class
@@ -134,6 +138,172 @@ public abstract class AbstractDecorator {
     this.typeCheck = typeCheck;
   }
 
+  /**
+   * Adds an attribute with an initial value to the given {@link ASTCDType} without adding getters nor setters.
+   *
+   * @param target       Where to define the attribute
+   * @param declaration  The declaration code of the attribute
+   * @param initialValue The initial value code of the attribute. If blank no initial value will be added
+   * @return The added {@link ASTCDAttribute}
+   * @see #addAttribute(ASTCDType, boolean, boolean, String, String)
+   */
+  protected ASTCDAttribute addAttribute(ASTCDType target, String declaration, String initialValue) {
+    return addAttribute(target, false, false, declaration, initialValue);
+  }
+
+  /**
+   * Adds an attribute with an initial value to the given {@link ASTCDType}.
+   *
+   * @param target       Where to define the attribute
+   * @param addGetter    Whether to add a getter
+   * @param addSetter    Whether to add a setter
+   * @param declaration  The declaration code of the attribute
+   * @param initialValue The initial value code of the attribute. If blank no initial value will be
+   *                     added. May start with an equals sign, but is not required to.
+   * @return The added {@link ASTCDAttribute}
+   * @see CD4C#addAttribute(ASTCDType, boolean, boolean, String)
+   */
+  protected ASTCDAttribute addAttribute(ASTCDType target, boolean addGetter, boolean addSetter, String declaration, String initialValue) {
+    return addAttribute(target,
+                        addGetter,
+                        addSetter,
+                        declaration,
+                        Optional.of(initialValue)
+                                .filter(s -> !s.isBlank())
+                                .map(s -> (s.trim().startsWith("=") ? "" : " = ") + s)
+                                .map(StringHookPoint::new));
+  }
+
+  /**
+   * Adds an attribute with an initial value to the given {@link ASTCDType}.
+   *
+   * @param target                Where to define the attribute
+   * @param addGetter             Whether to add a getter
+   * @param addSetter             Whether to add a setter
+   * @param declaration           The declaration code of the attribute
+   * @param initialValueHookPoint An optional {@link HookPoint} with the initial value of the
+   *                              attribute. The value must start with an equals sign!
+   *                              (evaluate to an assign expression)
+   * @return The added {@link ASTCDAttribute}
+   * @see CD4C#addAttribute(ASTCDType, boolean, boolean, String)
+   */
+  protected ASTCDAttribute addAttribute(ASTCDType target, boolean addGetter, boolean addSetter, String declaration, Optional<HookPoint> initialValueHookPoint) {
+    ASTCDAttribute attribute = getCD4C().addAttribute(target, addGetter, addSetter, declaration);
+
+    initialValueHookPoint.ifPresent(hookPoint -> getGlex().replaceTemplate("cd2java.Value",
+                                                                           attribute,
+                                                                           hookPoint));
+
+    return attribute;
+  }
+
+  /**
+   * Creates a deep clone of the provided {@link ASTCDMethodSignature}, replaces its body with a
+   * {@link HookPoint} and adds the created signature to the target {@link ASTCDClass}
+   *
+   * @param original         The original {@link ASTCDMethodSignature}
+   * @param newBodyHookPoint A {@link HookPoint} to replace the body
+   * @param target           A {@link ASTCDClass} to add the new method to
+   * @return The new {@link ASTCDMethodSignature} with the new body
+   * @see #replaceMethodBody(ASTCDMethodSignature, HookPoint)
+   */
+  protected ASTCDMethodSignature replaceMethodBody(ASTCDMethodSignature original, HookPoint newBodyHookPoint, ASTCDClass target) {
+    ASTCDMethodSignature copy = replaceMethodBody(original, newBodyHookPoint);
+    target.addCDMember(copy);
+    return copy;
+  }
+
+  /**
+   * Creates a deep clone of the provided {@link ASTCDMethodSignature} and replaces its body with a
+   * {@link HookPoint}
+   *
+   * @param original         The original {@link ASTCDMethodSignature}
+   * @param newBodyHookPoint A {@link HookPoint} to replace the body
+   * @return The new {@link ASTCDMethodSignature} with the new body
+   */
+  protected ASTCDMethodSignature replaceMethodBody(ASTCDMethodSignature original, HookPoint newBodyHookPoint) {
+    ASTCDMethodSignature copy = original.deepClone();
+    getGlex().replaceTemplate(getCD4C().getEmptyBodyTemplate(), copy, newBodyHookPoint);
+    return copy;
+  }
+
+  /**
+   * Gets all {@link ASTCDClass}es of a class diagramm which are not derived nor abstract
+   *
+   * @param cd A class diagramm
+   * @return A list of all concrete domain classes
+   * @see #getNonDerivedDomainClasses(ASTCDCompilationUnit)
+   */
+  protected List<ASTCDClass> getConcreteDomainClasses(ASTCDCompilationUnit cd) {
+    return getDomainClasses(cd, Filter.DERIVED.or(Filter.ABSTRACT).negate());
+  }
+
+  /**
+   * Gets all {@link ASTCDClass}es of a class diagramm which are derived
+   *
+   * @param cd A class diagramm
+   * @return A list of all derived domain classes
+   * @see #getNonDerivedDomainClasses(ASTCDCompilationUnit)
+   */
+  protected List<ASTCDClass> getDerivedDomainClasses(ASTCDCompilationUnit cd) {
+    return getDomainClasses(cd, Filter.DERIVED);
+  }
+
+  /**
+   * Gets all {@link ASTCDClass}es of a class diagramm which are not derived (but may be abstract!)
+   *
+   * @param cd A class diagramm
+   * @return A list of all non-derived domain classes
+   * @see #getConcreteDomainClasses(ASTCDCompilationUnit)
+   */
+  protected List<ASTCDClass> getNonDerivedDomainClasses(ASTCDCompilationUnit cd) {
+    return getDomainClasses(cd, Filter.DERIVED.negate());
+  }
+
+  /**
+   * Gets all classes from the specified class diagramm which match the given filter. Best used in
+   * combination with {@link Filter}
+   *
+   * @param cd     A class diagramm
+   * @param filter A filter
+   * @return A list with all matching classes
+   * @see Filter
+   */
+  protected List<ASTCDClass> getDomainClasses(ASTCDCompilationUnit cd, Predicate<Filter.Wrapper> filter) {
+    return cd.getCDDefinition()
+        .getCDClassesList()
+        .stream()
+        .filter(c -> filter.test(Filter.Wrapper.wrap(c)))
+        .collect(Collectors.toList());
+  }
+
+  /**
+   * Gets all {@link ASTCDInterface}s of a class diagramm which are not derived
+   *
+   * @param cd A class diagramm
+   * @return A list of all non-derived domain interfaces
+   */
+  protected List<ASTCDInterface> getNonDerivedDomainInterfaces(ASTCDCompilationUnit cd) {
+    return getDomainInterfaces(cd, Filter.DERIVED.negate());
+  }
+
+  /**
+   * Gets all interfaces from the specified class diagramm which match the given filter. Best used in
+   * combination with {@link Filter}
+   *
+   * @param cd     A class diagramm
+   * @param filter A filter
+   * @return A list with all matching interfaces
+   * @see Filter
+   */
+  protected List<ASTCDInterface> getDomainInterfaces(ASTCDCompilationUnit cd, Predicate<Filter.Wrapper> filter) {
+    return cd.getCDDefinition()
+        .getCDInterfacesList()
+        .stream()
+        .filter(c -> filter.test(Filter.Wrapper.wrap(c)))
+        .collect(Collectors.toList());
+  }
+
   protected ASTCDPackage getPackage(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD, String packageName) {
     String completeName = getPackageName(origCD, packageName);
     Optional<ASTCDPackage> astCDPackage = decoratedCD.getCDDefinition().getCDPackagesList().stream()
@@ -181,16 +351,7 @@ public abstract class AbstractDecorator {
   }
 
   protected void addImports(ASTCDType domainType, ASTCDType cdType) {
-    CDSymbolTables.getAttributesInHierarchy(domainType).forEach(a -> {
-      if (GenService.isJavaType(a.getSymbol().getType())) {
-        getCD4C().addImport(cdType, a.getSymbol().getType().printFullName());
-      } else if (a.getSymbol().getType().isGenericType()) {
-        if (GenService.isJavaType(((SymTypeOfGenerics) a.getSymbol().getType()).getArgument(0))) {
-          String imp = ((SymTypeOfGenerics) a.getSymbol().getType()).getArgument(0).printFullName();
-          getCD4C().addImport(cdType, imp);
-        }
-      }
-    });
+    CDSymbolTables.getAttributesInHierarchy(domainType).forEach(a -> addJavaImport(cdType, a.getSymbol().getType()));
     CDSymbolTables.getAssociationsInHierarchy(domainType).forEach(assocSide -> {
       getPackageFromFQNString(assocSide.getSymbol().getType().printFullName())
           .ifPresent(cdPackage ->
@@ -205,6 +366,17 @@ public abstract class AbstractDecorator {
         cdExtension.getDefiningSymbol().ifPresent(definingSymbol ->
             getCD4C().addImport(cdType, Joiners.DOT.join(definingSymbol.getPackageName().toLowerCase(),
                 definingSymbol.getName()))));
+  }
+
+  protected void addJavaImport(ASTCDType domainType, SymTypeExpression type) {
+    if (type.isGenericType()) {
+      if (GenService.isJavaType(type.asGenericType().getArgument(0))) {
+        String imp = type.asGenericType().getArgument(0).printFullName();
+        getCD4C().addImport(domainType, imp);
+      }
+    } else if (GenService.isJavaType(type)) {
+      getCD4C().addImport(domainType, type.printFullName());
+    }
   }
 
   protected void addDecoratorComment(ASTCDElement... nodes) {

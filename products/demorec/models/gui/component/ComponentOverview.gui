@@ -6,10 +6,6 @@ import mc.fenix.basic.GemText;
 
 
 page ComponentOverview(DemoRecComponent c) {
-  @GemText(value="Width: "+c.width);
-  @GemText(value="Length: "+c.length);
-  @GemText(value="Height: "+c.height);
-
   @GemText(value="X-Position: "+c.xPos);
   @GemText(value="Y-Position: "+c.yPos);
   @GemText(value="Z-Position: "+c.zPos);

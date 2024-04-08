@@ -66,29 +66,42 @@ classdiagram DemoRec {
     String name;
   }
 
-  class DemoRecComponent {
+  class ComponentKind {
     String name;
-    String uniqueId;
     String oENumber;
-    String manufacturer;
-
-    Optional<String> condition;
     Optional<String> humanDescription;
-    double xPos;
-    double yPos;
-    double zPos;
 
     double width;
     double length;
     double height;
-
     double weight;
+  }
 
-    boolean isDeconstructible;
+  class DemoRecComponent {
+    String name;
+    //String uniqueId; 1.1 removed because we have gemID
+    //String oENumber; 1.2 moved to ComponentKind
+    //String manufacturer; 1.1 removed because it is implied by oeNumber
+
+    Optional<String> condition;
+    // Optional<String> humanDescription; 1.2 moved to ComponentKind
+    double xPos;
+    double yPos;
+    double zPos;
+
+    //double width; 1.2 moved to ComponentKind
+    //double length; 1.2 moved to ComponentKind
+    //double height; 1.2 moved to ComponentKind
+
+    //double weight; 1.2 moved to ComponentKind
+
+    //boolean isDeconstructible; removed because it is already implied composedOf
 
     List<String> photoLocations;
     List<String> threeDFileLocations;
   }
+
+  association [*] DemoRecComponent -> (isA) ComponentKind [1]; // 1.2
 
   class JoinConnection {
     double state; // TODO what kind of data type for state?

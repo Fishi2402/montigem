@@ -29,13 +29,11 @@ public class GemListDomainDecorator extends AbstractDecorator {
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, GEMLIST_PACKAGE);
-    origCD.getCDDefinition().getCDClassesList().stream()
-        .filter(c -> !c.getSymbol().isIsDerived())
-        .forEach(c -> astcdPackage.addAllCDElements(withOrigin(createClasses(origCD, c))));
+    getNonDerivedDomainClasses(origCD).forEach(c -> astcdPackage.addAllCDElements(withOrigin(
+        createClasses(origCD, c))));
 
-    origCD.getCDDefinition().getCDInterfacesList().stream()
-            .filter(i -> !i.getSymbol().isIsDerived())
-            .forEach(i -> astcdPackage.addAllCDElements(withOrigin(createClasses(origCD, i))));
+    getNonDerivedDomainInterfaces(origCD).forEach(i -> astcdPackage.addAllCDElements(withOrigin(createClasses(origCD,
+                                                                                                              i))));
   }
 
   protected Collection<ASTCDClass> createClasses(ASTCDCompilationUnit origCD, ASTCDType clazz) {

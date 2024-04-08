@@ -7,10 +7,41 @@ import {LoadResult} from "../common/LoadResult";
 import {LoadingState} from "../common/LoadingState";
 import {IUMLPList} from "../common/IUMLPList";
 import {UMLPArrayList} from "../common/UMLPArrayList";
+import {Observer, Subscribable, Unsubscribable} from "rxjs";
+import {NgIterable} from "@angular/core";
 
-export abstract class GemList<E extends GemIdentifiable> implements GemBuildable, IUMLPList<E> {
+export abstract class GemList<E extends GemIdentifiable> implements GemBuildable, IUMLPList<E>,
+  Subscribable<NgIterable<E>> {
   protected ids: Array<number> = [];
   protected asArray: Array<E> = null;
+
+  protected changeObservers: Partial<Observer<NgIterable<E>>>[] = [];
+  subscribe(observer: Partial<Observer<NgIterable<E>>>): Unsubscribable {
+    this.changeObservers.push(observer);
+    const outer = this;
+    // And push an initial value to the observer
+    observer.next(this.toArray());
+
+    // Ub-subscriber
+    return new class implements Unsubscribable {
+      unsubscribe(): void {
+        // remove observer
+        outer.changeObservers.splice(outer.changeObservers.indexOf(observer), 1);
+      }
+    }
+  }
+
+  /**
+   * Notify about a change to the GemList (as seen by the toArray)
+   */
+  protected updateIds() {
+    // Pass the toArray to all observers (but call toArray lazy)
+    let lazy = undefined;
+    const getVar = () => lazy || (lazy = this.toArray());
+    this.changeObservers.forEach(value => value.next(getVar()));
+  }
+
+
 
   public constructor(ids?: IUMLPList<number>) {
     if (typeof ids !== 'undefined' && ids != null) {
@@ -131,6 +162,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     if (this.asArray != null) {
       this.asArray[idx] = (await this.loadSingleObject(gemID)).get();
     }
+    this.updateIds();
   }
 
   public async add(idxOrElem: number | E, elem?: E): Promise<boolean> {
@@ -163,6 +195,8 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     await this._internal_add(idx, gemIDs);
   }
 
+  // TODO: TSAddToListOfDomain.ftl with concrete object reference?
+  // right now we have to load the object twice
   public async _internal_add(idx: number, gemIDs: IUMLPList<number>) {
     if (this.isNotIdxInExclusiveBounds(idx)) {
       this.logIndexError("0xAC727", "_internal_add", idx);
@@ -170,12 +204,16 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     this.ids.splice(idx, 0, ...(await gemIDs.toArray()));
 
     if (this.asArray != null) {
-      await this.loadObjects(gemIDs);
-      let i = 0;
-      for await (let gemID of gemIDs) {
-        this.asArray.splice(idx, 0 + i++, await this.get(gemID));
+      if (gemIDs.size() != 1) {
+        throw Error("Did not expect an internal_add with size of" + gemIDs.size() + gemIDs);
       }
+      const loadResult = await this.loadSingleObject(await gemIDs.get(0));
+      if (loadResult.isPresent())
+        this.asArray.splice(idx, 0, loadResult.get());
+      else
+        throw Error("Failed to load single object " + await gemIDs.get(0));
     }
+    this.updateIds();
   }
 
   public clear() {
@@ -246,6 +284,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
         this.asArray.splice((<number>idx | 0), 1)[0];
       }
     }
+    this.updateIds();
   }
 
   public isEmpty(): boolean {
@@ -421,7 +460,6 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
           this.asArray.push(gemListElement);
         }
       });
-
     }
     return this.asArray;
   }

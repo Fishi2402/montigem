@@ -14,11 +14,11 @@ export const routes: Routes = [
     // redirect to a module, not a component (use package part instead of the component name)
     redirectTo: "gui/login/LoginPage"
   },
-    ...routesTOP,
-  {
-    path:"cd2gui",
- //   loadChildren:() => import('../../build/umlp/fe2/cd2gui/models/ModelsGemRouting').then(m=>m.routes)
-  },
+{
+   path:"sehub",
+   loadChildren:() => import("../../build/umlp/fe2/sehub/SehubGemRouting").then(m=>m.routes)
+   },
+      ...routesTOP,
 
 
 

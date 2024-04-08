@@ -18,7 +18,7 @@ if (!o.containsObserver(the${name}CommandObserver)) {
       <#if genService.isList(otherSide)>
         other._internal_add${otherSide.getName()?cap_first}(other.size${otherSide.getName()?cap_first}s(), Collections.singletonList(o.getGemId()), NotificationScope.MINIMAL);
       <#else>
-        other._internal_set${otherSide.getName()?cap_first}(o.getGemId(), NotificationScope.MINIMAL);
+        other._internal_set${otherSide.getName()?cap_first}(o, NotificationScope.MINIMAL);
       </#if>
       }
     }
@@ -29,7 +29,7 @@ if (!o.containsObserver(the${name}CommandObserver)) {
     <#if genService.isList(otherSide)>
       other._internal_add${otherSide.getName()?cap_first}(other.size${otherSide.getName()?cap_first}s(), Collections.singletonList(o.getGemId()), NotificationScope.MINIMAL);
     <#else>
-      other._internal_set${otherSide.getName()?cap_first}(o.getGemId(), NotificationScope.MINIMAL);
+      other._internal_set${otherSide.getName()?cap_first}(o, NotificationScope.MINIMAL);
     </#if>
     }
   </#if>

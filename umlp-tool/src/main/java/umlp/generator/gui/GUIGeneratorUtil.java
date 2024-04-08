@@ -481,7 +481,9 @@ public class GUIGeneratorUtil {
         + StringTransformations.capitalize(namedArg.getName())
         + (UMLPGeneratorConfig.getInstance().isGenerateTypescript() || isList(namedArg)
         ? ""
-        : SYNCHRONIZED_SUFFIX);
+        : SYNCHRONIZED_SUFFIX // in case the actual method does not have to be async,
+        // the synchronized method might just call the original method
+    );
   }
 
   public boolean isList(ASTGUINamedArg namedArg) {
@@ -496,7 +498,10 @@ public class GUIGeneratorUtil {
     return GenService.isList(guiParamSymbolOpt.get().getType());
   }
 
+  @SuppressWarnings("unused") // Component.ftl
+  @Deprecated(forRemoval = true)
   public String getIsSynchronizedSuffix() {
+    if (true)return ""; // no longer required due to | async
     return UMLPGeneratorConfig.getInstance().isGenerateTypescript() ? SYNCHRONIZED_SUFFIX : "";
   }
 
@@ -536,7 +541,9 @@ public class GUIGeneratorUtil {
 
       String expressionWithNullChecks = printer.prettyprint(ic.getIterable());
       if (!UMLPGeneratorConfig.getInstance().isGenerateTypescript()) {
-        expressionWithNullChecks = expressionWithNullChecks.replace("()", SYNCHRONIZED_SUFFIX + "()");
+        // Use the async pipe: https://angular.io/api/common/AsyncPipe
+        // This requires the iterated object to be Observeable<NGiterable>, Subscribeable<NGiterable>, ...
+        expressionWithNullChecks = "(" + expressionWithNullChecks + " | async )";
       }
       return expressionWithNullChecks;
     }

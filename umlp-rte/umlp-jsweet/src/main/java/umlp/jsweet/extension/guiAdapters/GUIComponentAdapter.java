@@ -163,6 +163,7 @@ public class GUIComponentAdapter extends PrinterAdapter {
       optionalArrayStart = "Array<";
       optionalArrayEnd = ">";
       initializer = "[]";
+      return; // TODO: Do not do stuff for GemLists - they are Observeable by default
     }
 
     // MethodName
@@ -187,9 +188,18 @@ public class GUIComponentAdapter extends PrinterAdapter {
 
     // Method Header
     print("public ").print(methodName + SYNCHRONIZED_SUFFIX).print("(");
+    boolean isAsyncE = context.hasAnnotationType(executable, JSweetConfig.ANNOTATION_ASYNC);
+//    print("/* TYPE")
+//        .print(executable.getReturnType().toString())
+//        .print("--\n")
+//        .print("o=" + overloadMethod + "\n")
+//        .print(executable.asType().toString())
+//        .print("=\n")
+//        .print(isAsyncE ? "async" : "na" + "\n")
+//        .print("*/");
     if (executable.getParameters().size() >= 1 && executable.getParameters().get(0) instanceof ExtendedElement) {
       printArgList((List<? extends ExtendedElement>) executable.getParameters());
-    } else if (executable.getParameters().size() > 0){
+    } else if (executable.getParameters().size() > 0) {
       for (VariableElement parameter : executable.getParameters()) {
         Tree tree = trees().getTree(parameter);
         String paramName = context.getActualName(parameter);
@@ -209,34 +219,53 @@ public class GUIComponentAdapter extends PrinterAdapter {
         .print(" {").println().startIndent().printIndent();
 
     // Method Body
-    print("if (this." + fieldName + " === undefined) {").startIndent().println().printIndent();
-    print("this." + fieldName + " = " + initializer + ";").println().printIndent();
-    print("new Promise<");
-    printType(returnType, optionalArrayStart, optionalArrayEnd, overloadMethod);
-    print(">(async resolve => {").println().startIndent().printIndent();
-    print("resolve(");
-    if (isList) {
-      importFrom("GemListUtil", "@umlp/commonj2ts");
-      print("GemListUtil.toArray(");
+    if (isAsyncE) {
+      print("// TODO: make me properly!");
+      print("/* Printed by ").print(getClass().getName()).print(" */").println();
+      print("if (this." + fieldName + " === undefined) {").startIndent().println().printIndent();
+      print("this." + fieldName + " = " + initializer + ";").println().printIndent();
+      // TODO: Add this to the set{fieldName?cap_first}_internal method too?
+      print("new Promise<");
+      printType(returnType, optionalArrayStart, optionalArrayEnd, overloadMethod);
+      print(">(async resolve => {").println().startIndent().printIndent();
+      print("resolve(");
+      if (isList) {
+        importFrom("GemListUtil", "@umlp/commonj2ts");
+        print("GemListUtil.toArray(");
+      }
+      print("(");
+      if (context.hasAnnotationType(executable, JSweetConfig.ANNOTATION_ASYNC)) {
+        print("await ");
+      }
+      print("this.").print(executable.getSimpleName()).print("(");
+      if (executable.getParameters().size() > 0) {
+        print(executable.getParameters().stream().map(p -> p.getSimpleName().toString()).collect(
+            Collectors.joining(", ")));
+      }
+      print("))");
+      if (isList) {
+        //        .printArgList((List<? extends ExtendedElement>) executable.getParameters())
+        print(")");
+      }
+      print(");").println().endIndent().printIndent();
+      print("}).then(val => { this." + fieldName + " = val; });").println().endIndent().printIndent();
+      print("}").println().printIndent();
+      print("return this." + fieldName + ";");
+    } else {
+      print("//Simply delegate without additional sync").println();
+      print("return this." + methodName + "(");
+      if (executable.getParameters().size() >= 1 && executable.getParameters().get(0) instanceof ExtendedElement) {
+        throw new IllegalStateException("TODO");
+      } else if (executable.getParameters().size() > 0) {
+        for (VariableElement parameter : executable.getParameters()) {
+          String paramName = context.getActualName(parameter);
+          print(paramName);
+          print(", ");
+        }
+        getPrinter().removeLastChars(2);
+      }
+      print(");");
     }
-    print("(");
-    if (context.hasAnnotationType(executable, JSweetConfig.ANNOTATION_ASYNC)) {
-      print("await ");
-    }
-    print("this.").print(executable.getSimpleName()).print("(");
-    if (executable.getParameters().size() > 0){
-      print(executable.getParameters().stream().map(p -> p.getSimpleName().toString()).collect(
-          Collectors.joining(", ")));
-    }
-    print("))");
-    if (isList) {
-      //        .printArgList((List<? extends ExtendedElement>) executable.getParameters())
-      print(")");
-    }
-    print(");").println().endIndent().printIndent();
-    print("}).then(val => { this." + fieldName + " = val; });").println().endIndent().printIndent();
-    print("}").println().printIndent();
-    print("return this." + fieldName + ";");
     endIndent().println().printIndent().print("}").println().println().printIndent();
   }
 

@@ -18,6 +18,7 @@ import de.monticore.umlstereotype._ast.ASTStereotypeBuilder;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
+import umlp.generator.Filter;
 import umlp.generator.domain.decorator.AccessPolicyDecorator;
 import umlp.generator.domain.decorator.BaseClassObjectMapperDecorator;
 import umlp.generator.domain.decorator.GenService;
@@ -29,6 +30,7 @@ import umlp.generator.util.UMLPSymbolTables;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
@@ -50,10 +52,8 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     addedDeSers.clear();
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, COMMAND_PACKAGE);
-    origCD.getCDDefinition().getCDClassesList().stream()
-        .filter(c -> !c.getSymbol().isIsDerived())
-        .filter(c -> GenService.hasStereotype(c.getModifier(), SINGLETON))
-       // .filter(c -> TagLookUp.isSingleton(c.getSymbol())) // Doesn't work properly anymore
+    Predicate<Filter.Wrapper> filter = Filter.DERIVED.negate().and(Filter.SINGLETON);
+    getDomainClasses(origCD, filter)
         .forEach(c -> c.getCDMethodList().stream()
                           //   .filter(m -> GenService.hasStereotype(m.getModifier(), COMMAND))
         //  .filter(m -> TagLookUp.isCommand(m.getSymbol())) // Doesn't work properly anymore
@@ -64,9 +64,7 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
         )
     );
 
-    origCD.getCDDefinition().getCDInterfacesList().stream()
-        .filter(c -> !c.getSymbol().isIsDerived())
-        .filter(c -> GenService.hasStereotype(c.getModifier(), SINGLETON))
+    getDomainInterfaces(origCD, filter)
         .forEach(c -> c.getCDMethodList().stream()
         // .filter(m -> GenService.hasStereotype(m.getModifier(), COMMAND))
           .filter(m -> TagLookUp.isCommand(m.getSymbol()))
@@ -91,7 +89,8 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
     ASTStereotypeBuilder stereotype = UMLPMill.stereotypeBuilder();
     stereotype.addValues(
         TopDecorator.NEEDS_TOP_STEREO_BUILDER.apply(
-            String.format("Custom implementation for class: %s required. Contains doAction", classname)));
+            String.format("Custom implementation of command class %%s required - use the TOP mechanism. " +
+                "Please implement the %s#doAction() method", classname)));
     ast.getModifier().setStereotype(stereotype.build());
 
     List<ASTCDAttribute> attrList = Lists.newArrayList();
@@ -160,10 +159,6 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
     }
   }
 
-  protected void addJavaImport(ASTCDClass ast, SymTypeExpression type) {
-    getCD4C().addImport(ast, box(type.printFullName()));
-  }
-
   protected String extendedClass(ASTCDMethod command, ASTCDClass ast) {
     SymTypeExpression returnTypeSymbol = command.getSymbol().getType();
     if (returnTypeSymbol.isVoidType()) {
@@ -228,7 +223,7 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
       paramNameList.add(paramName);
       typeList.add(type);
       if (GenService.isJavaType(type)) {
-        addDeSerJavaImport(ast, type.printFullName());
+        addJavaImport(ast, type);
       }
 
       String typeName = GenService.printTypeFullName(type);
@@ -267,10 +262,6 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
-  }
-
-  protected void addDeSerJavaImport(ASTCDClass ast, String typeName) {
-    getCD4C().addImport(ast, typeName);
   }
 
   protected void addDeSerImport(ASTCDClass ast, ASTCDCompilationUnit origCD, boolean useDeSer,

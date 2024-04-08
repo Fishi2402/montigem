@@ -11,6 +11,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.se_rwth.commons.Names;
 import umlp.UMLPMill;
@@ -18,6 +19,7 @@ import umlp.generator.AbstractDecorator;
 import umlp.generator.util.TagLookUp;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -42,17 +44,18 @@ public class DummyProviderDecorator extends AbstractDecorator {
             .setModifier(PUBLIC.build())
             .setName(name+SUFFIX)
             .build();
+
+    // Add @jsweet.lang.Erased annotation
+    glex.replaceTemplate("cd2java.Annotations", ast,
+        new StringHookPoint("@jsweet.lang.Erased"));
+
     // constructors
     getCD4C().addConstructor(ast, "umlp.dummyprovider.Constructor1", ast.getName());
     getCD4C().addConstructor(ast, "umlp.dummyprovider.Constructor2", ast.getName());
 
-    List<ASTCDClass> classList = origCD.getCDDefinition().getCDClassesList().stream()
-        .filter(c -> !c.getModifier().isDerived())
-        .filter(c -> !c.getModifier().isAbstract())
-        .collect(Collectors.toList());
+    List<ASTCDClass> classList = getConcreteDomainClasses(origCD);
 
-    List<ASTCDInterface> interfaceList = origCD.getCDDefinition().getCDInterfacesList().stream()
-            .filter(i -> !i.getModifier().isDerived()).collect(Collectors.toList());
+    List<ASTCDInterface> interfaceList = getNonDerivedDomainInterfaces(origCD);
 
     // attributes
     List<ASTCDAttribute> attrList = Lists.newArrayList();
@@ -61,9 +64,12 @@ public class DummyProviderDecorator extends AbstractDecorator {
     attrList.add(getCD4C().addAttribute(ast, "protected Random random;"));
     attrList.add(getCD4C().addAttribute(ast, "protected int stringMinLength = 10;"));
     attrList.add(getCD4C().addAttribute(ast, "protected int stringMaxLength = 100;"));
-    ASTCDAttribute possChars = getCD4C().addAttribute(ast, "protected char[] possibleCharacters;");
-    getGlex().replaceTemplate("cd2java.Value", possChars,
-            new TemplateHookPoint("umlp.dummyprovider.PossibleCharacters"));
+    ASTCDAttribute possChars = addAttribute(ast,
+                                            false,
+                                            false,
+                                            "protected char[] possibleCharacters",
+                                            Optional.of(new TemplateHookPoint(
+                                                "umlp.dummyprovider.PossibleCharacters")));
     attrList.add(possChars);
     classList.forEach(c -> attrList.add(getCD4C().addAttribute(ast,
             "protected int max" + c.getName() + " = 100;")));

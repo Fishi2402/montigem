@@ -26,7 +26,7 @@ public class DomainInterfaceDecorator extends DomainTypeDecorator {
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage cdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
-    origCD.getCDDefinition().getCDInterfacesList().stream().filter(i -> !i.getSymbol().isIsDerived())
+    getNonDerivedDomainInterfaces(origCD)
             .forEach(i -> cdPackage.addCDElement(withOrigin(createInterface(i, origCD))));
   }
 
@@ -53,7 +53,7 @@ public class DomainInterfaceDecorator extends DomainTypeDecorator {
     AttributesTuple attributes = getAllAttributes(domainInterface, true, origCD);
 
     // Add method signatures for Getters and Setter to be implemented by Subclasses
-    createGetterSetterForAttrs(cdInterface, domainInterface, attributes.attrFields, true);
+    createGetterSetterForAttrs(domainInterface, cdInterface, attributes.attrFields, true);
     createGetterSetterForAssocs(domainInterface, cdInterface, attributes.attrAssocs, true);
 
     // Add method signatures for all Methods in Interface

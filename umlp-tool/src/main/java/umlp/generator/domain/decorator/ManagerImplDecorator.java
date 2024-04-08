@@ -53,6 +53,11 @@ public class ManagerImplDecorator extends AbstractDecorator {
         .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(name + ManagerDecorator.SUFFIX))
         .build();
 
+    // Add @jsweet.lang.Erased annotation
+    glex.replaceTemplate("cd2java.Annotations", managerClass,
+        new StringHookPoint("@jsweet.lang.Erased"));
+
+
     // methods
     getCD4C().addMethod(managerClass, "umlp.managerimpl.Constructor", name + SUFFIX, name);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.Init", name, name + ManagerDecorator.SUFFIX + "Impl");
@@ -62,8 +67,8 @@ public class ManagerImplDecorator extends AbstractDecorator {
 
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), name + EventSendingObserverDecorator.SUFFIX));
 
-    List<ASTCDClass> concreteDomainClasses = origCD.getCDDefinition().getCDClassesList().stream()
-        .filter(c -> !c.getModifier().isAbstract() && !c.getModifier().isDerived())
+    List<ASTCDClass> concreteDomainClasses = getConcreteDomainClasses(origCD)
+        .stream()
         .filter(c -> !TagLookUp.isSingleton(c))
         .collect(Collectors.toList());
     getCD4C().addMethod(managerClass, "umlp.managerimpl.ClearCache", concreteDomainClasses);
@@ -71,8 +76,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
     origCD.getCDDefinition().getCDClassesList()
         .forEach(c -> addClassElements(origCD, c, managerClass, name));
 
-    origCD.getCDDefinition().getCDInterfacesList().stream().filter(i -> !i.getModifier().isDerived())
-        .forEach(i -> addInterfaceElements(origCD, i, managerClass));
+    getNonDerivedDomainInterfaces(origCD).forEach(i -> addInterfaceElements(origCD, i, managerClass));
 
     // Imports
     addImports(managerClass);

@@ -24,6 +24,7 @@ import umlp._symboltable.IUMLPArtifactScope;
 import umlp._visitor.UMLPTraverser;
 import umlp.generator.domain.UMLAssocToAttrTrafo;
 import umlp.generator.domain.UMLAttrToAssocTrafo;
+import umlp.generator.domain.UMLImportTrafo;
 import umlp.generator.domain.UMLSetDefaultsTrafo;
 import umlp.generator.util.UMLPSymbolTables;
 
@@ -32,6 +33,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -47,7 +49,7 @@ public abstract class AbstractUMLPTest {
     Log.enableFailQuick(false);
     UMLPMill.reset();
     UMLPMill.init();
-    BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope());
+    BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope(), false);
   }
 
   public ASTCDCompilationUnit parse(String model) {
@@ -106,6 +108,9 @@ public abstract class AbstractUMLPTest {
     UMLPTraverser trav = UMLPMill.traverser();
     CD4CodeAfterParseTrafo.init(new CDAfterParseHelper(), trav);
     node.accept(trav);
+
+    UMLImportTrafo importTrafo = new UMLImportTrafo(CD4CodeMill.traverser());
+    importTrafo.transform(node);
   }
 
   protected void runAfterParseTrafoForMerge(ASTCDCompilationUnit node){
@@ -122,7 +127,7 @@ public abstract class AbstractUMLPTest {
           System.err.println(f.toString());
         }
       }
-      fail();
+      fail("Unexpected errors: " + Log.getFindings().stream().map(Finding::toString).collect(Collectors.joining("\n")));
     }
   }
 
@@ -169,10 +174,11 @@ public abstract class AbstractUMLPTest {
     assoc2Trafo.transform(node);
   }
 
-  public void recreateSymbolTable(ASTCDCompilationUnit node) {
+  public IUMLPArtifactScope recreateSymbolTable(ASTCDCompilationUnit node) {
     // rebuild symbol table
     CD4CodeMill.globalScope().removeSubScope(node.getEnclosingScope());
-    UMLPMill.scopesGenitorDelegator().createFromAST(node);
+    IUMLPArtifactScope as = UMLPMill.scopesGenitorDelegator().createFromAST(node);
     node.accept(new CD4CodeSymbolTableCompleter(node).getTraverser());
+    return as;
   }
 }

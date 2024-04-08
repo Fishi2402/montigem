@@ -49,19 +49,20 @@ public class DAOFactoryDecorator extends AbstractDecorator {
             StringTransformations.uncapitalize("instance")))
         .build();
 
+    // Add @jsweet.lang.Erased annotation
+    glex.replaceTemplate("cd2java.Annotations", daoFactory,
+        new StringHookPoint("@jsweet.lang.Erased"));
+
     CD4C cd4C = getCD4C();
 
     //listener attribute
-    ASTCDAttribute accessListenersAttribute = cd4C.addAttribute(daoFactory,
-                                                                false,
-                                                                false,
-                                                                "protected final List<Runnable> accessListeners;");
-    getGlex().replaceTemplate("cd2java.Value",
-                         accessListenersAttribute,
-                         new StringHookPoint(" = new ArrayList<>()"));
+    ASTCDAttribute accessListenersAttribute = addAttribute(daoFactory,
+                                                           false,
+                                                           false,
+                                                           "protected final List<Runnable> accessListeners",
+                                                           "new ArrayList<>()");
 
-    origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
-        .forEach(c -> addClassElements(c, daoFactory));
+    getNonDerivedDomainClasses(origCD).forEach(c -> addClassElements(c, daoFactory));
 
     // TODO remove this cancerous check for multiple associations with the same name introduced by CDMerge
     origCD.getCDDefinition().getCDAssociationsList().stream()
@@ -76,9 +77,7 @@ public class DAOFactoryDecorator extends AbstractDecorator {
                    daoFactory.getName(),
                    accessListenersAttribute.getName());
     cd4C.addMethod(daoFactory, CUSTOM_TEMPLATE_PATH + "StaticAddAccessListener");
-    List<ASTCDClass> concreteDomainClasses = origCD.getCDDefinition().getCDClassesList().stream()
-        .filter(c -> !c.getModifier().isAbstract() && !c.getModifier().isDerived())
-        .collect(Collectors.toList());
+    List<ASTCDClass> concreteDomainClasses = getConcreteDomainClasses(origCD);
 
     cd4C.addMethod(daoFactory, CUSTOM_TEMPLATE_PATH + "Init", name + DAOFactoryDecorator.SUFFIX,
                    concreteDomainClasses, origCD.getCDDefinition().getCDAssociationsList().stream()

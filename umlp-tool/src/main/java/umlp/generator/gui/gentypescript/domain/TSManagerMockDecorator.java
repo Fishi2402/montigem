@@ -4,14 +4,12 @@ package umlp.generator.gui.gentypescript.domain;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
-import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
@@ -77,20 +75,16 @@ public class TSManagerMockDecorator extends ManagerMockDecorator {
 
     // getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), name + EventSendingObserverDecorator.SUFFIX));
 
-    List<ASTCDClass> concreteDomainClasses = origCD.getCDDefinition().getCDClassesList().stream()
-        .filter(c -> !c.getModifier().isAbstract() && !c.getModifier().isDerived())
-        .collect(Collectors.toList());
+    List<ASTCDClass> concreteDomainClasses = getConcreteDomainClasses(origCD);
     Function<ASTCDClass, Boolean> isSingleton = TagLookUp::isSingleton;
     getCD4C().addMethod(managerClass, "umlp.gui2ts.managermock.TSClearCache",
         concreteDomainClasses.stream().filter(x -> !isSingleton.apply(x)).collect(Collectors.toList()),
         concreteDomainClasses.stream().filter(isSingleton::apply).collect(Collectors.toList()));
 
 
-    origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
-        .forEach(c -> addClassElements(origCD, c, managerClass, name));
+    getNonDerivedDomainClasses(origCD).forEach(c -> addClassElements(origCD, c, managerClass, name));
 
-    origCD.getCDDefinition().getCDInterfacesList().stream().filter(i -> !i.getModifier().isDerived())
-        .forEach(i -> addInterfaceElements(origCD, i, managerClass));
+    getNonDerivedDomainInterfaces(origCD).forEach(i -> addInterfaceElements(origCD, i, managerClass));
 
     // Imports
     addImports(managerClass);
@@ -135,23 +129,12 @@ public class TSManagerMockDecorator extends ManagerMockDecorator {
         getCD4C().addMethod(managerClass, "umlp.gui2ts.managermock.TSDoGetList", name, concreteSubclassesInclSelf);
       }
 
-      ASTCDAttribute attr;
       if (isSingleton) {
-        attr = getCD4C().addAttribute(managerClass, "protected Optional<" + name + "> " + lName + "Instance");
-        glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= null"));
-        attr = getCD4C().addAttribute(managerClass, "protected GemList<" + name + "> " + lName + "GemList");
-        glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new " + name + "GemList([]).build()"));
+        addAttribute(managerClass, "protected Optional<" + name + "> " + lName + "Instance", "null");
+      } else {
+        addAttribute(managerClass, "protected Map<number, " + name + "> " + lName + "s", "new Map()");
       }
-      else {
-        attr = getCD4C().addAttribute(managerClass, "protected Map<number, " + name + "> " + lName + "s");
-        glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new Map()"));
-        attr = getCD4C().addAttribute(managerClass, "protected GemList<" + name + "> " + lName + "GemList");
-        glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new " + name + "GemList([]).build()"));
-      }
-      /*
-      attr = getCD4C().addAttribute(managerClass, "protected " + name + "CommandSendingObserver the" + name + "CommandObserver");
-      glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new " + name + "CommandSendingObserver()"));
-      /**/
+      addAttribute(managerClass, "protected GemList<" + name + "> " + lName + "GemList", "new " + name + "GemList([]).build()");
       getCD4C().addMethod(managerClass, "umlp.gui2ts.managermock.TSDoBuilderParam", name);
       getCD4C().addMethod(managerClass, "umlp.gui2ts.managermock.TSDoDeSerBuilder", name);
       if (!isSingleton) {
@@ -190,10 +173,8 @@ public class TSManagerMockDecorator extends ManagerMockDecorator {
     String name = domainClass.getName();
     String lName = StringTransformations.uncapitalize(name);
 
-    ASTCDAttribute attr = getCD4C().addAttribute(managerClass, "protected Map<number, " + name + "> " + lName + "s");
-    glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new Map()"));
-    attr = getCD4C().addAttribute(managerClass, "protected GemList<" + name + "> " + lName + "GemList");
-    glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint("= new " + name + "GemList([]).build()"));
+    addAttribute(managerClass, "protected Map<number, " + name + "> " + lName + "s", "new Map()");
+    addAttribute(managerClass, "protected GemList<" + name + "> " + lName + "GemList", "new " + name + "GemList([]).build()");
 
     List<ASTCDAssocSide> assocs = CDSymbolTables.getAssociations(domainClass);
     Set<ASTCDType> concreteSubclassesInclSelf = UMLPSymbolTables.collectConcreteSubclassesInclSelf(origCD, domainClass);

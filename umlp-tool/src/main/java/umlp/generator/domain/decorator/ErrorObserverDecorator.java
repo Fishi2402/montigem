@@ -26,8 +26,7 @@ public class ErrorObserverDecorator extends AbstractDecorator {
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
-    origCD.getCDDefinition().getCDClassesList().stream().filter(c -> !c.getModifier().isDerived())
-        .forEach(c -> astcdPackage.addCDElement(withOrigin(createInterface(c))));
+    getNonDerivedDomainClasses(origCD).forEach(c -> astcdPackage.addCDElement(withOrigin(createInterface(c))));
   }
 
   public static String getClassName(String domainClassName) {

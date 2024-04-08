@@ -146,7 +146,7 @@ public class GuidslpaperServerApplication extends guidslpaper.GuidslpaperServerA
         .kuerzel("MUSMI")
         .nachname("Musterfrau")
         .vorname("Mia")
-        .beschBeginn(Optional.of(LocalDate.of(2018, 1,1)))
+        .beschBeginn(Optional.of(java.time.LocalDate.of(2018, 1,1)))
         .beschEnde(Optional.of(LocalDate.of(2023, 12,31)))
         .build()
         .get();

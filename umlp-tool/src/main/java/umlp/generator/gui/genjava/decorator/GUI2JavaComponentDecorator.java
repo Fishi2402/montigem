@@ -28,12 +28,12 @@ import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIComponentsVisitor;
-import umlp.generator.gui.genjava.prettyprinter.IterationItemsFinder;
 import umlp.generator.gui.genjava.prettyprinter.Expression2AccessorPrinter;
 import umlp.generator.gui.genjava.prettyprinter.Expression2BuilderPrinter;
 import umlp.generator.gui.genjava.prettyprinter.Expression2MutatorPrinter;
 import umlp.generator.gui.genjava.prettyprinter.Expression2NullCheckPrinter;
 import umlp.generator.gui.genjava.prettyprinter.Expression2SetterPrinter;
+import umlp.generator.gui.genjava.prettyprinter.IterationItemsFinder;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 import umlp.generator.util.PathUtil;
 

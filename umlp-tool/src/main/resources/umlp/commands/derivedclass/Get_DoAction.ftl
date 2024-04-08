@@ -6,7 +6,7 @@ ${cd4c.method("public CommandResult<" + returntype + "> doAction()")}
 <#if !isList>
   ${returntype} obj = ${managerName}.get${clazz}().get${attribute?cap_first}();
   if (obj == null) {
-    return new SimpleResult<>(getId(), umlp.backendrte.common.LoadingState.EMPTY, "${returnedtype}");
+    return new SimpleResult<>(getId(), LoadingState.EMPTY, "${returnedtype}");
   } else {
     return new SimpleResult<>(getId(), obj, "${returnedtype}");
   }

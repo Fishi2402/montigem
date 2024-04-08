@@ -29,7 +29,6 @@ public class EnsureCorrectManager4DiagrammDecorator extends AbstractDecorator {
   //same package as normal test infrastructure
   public static final String PACKAGE = TestSetupDecorator.PACK_TEST_INFRASTRUCTURE;
   public static final String NAME_FORMAT = "EnsureCorrectManager%s";
-  public static final String EMPTY_BODY_TEMPLATE = "cd2java.EmptyBody";
   public static final String CUSTOM_TEMPLATE_PATH =
       "umlp.test_infrastructure" + ".ensurecorrectmanager.";
   public static final StringHookPoint RETURN_NOTIFICATION_SCOPE_MINIMAL_HOOK_POINT =
@@ -109,15 +108,15 @@ public class EnsureCorrectManager4DiagrammDecorator extends AbstractDecorator {
         GeneratedMethodSignature gms = notifyMethodSignature.generatedMethodSignature();
         if (!gms.template().equals(DiagramObserverDecorator.NOTIFY_ADD_TEMPLATE)) continue;
 
-        ASTCDMethodSignature overriddenMethod = gms.signature().deepClone();
+        ASTCDMethodSignature signature = gms.signature();
+        String observableParamName = signature.getCDParameter(0).getName();
+        TemplateHookPoint notifyAddBodyHookPoint = new TemplateHookPoint(CUSTOM_TEMPLATE_PATH + "NotifyAddBody",
+                                                                         attributeName,
+                                                                         observableParamName);
+        ASTCDMethodSignature overriddenMethod = replaceMethodBody(signature,
+                                                                  notifyAddBodyHookPoint,
+                                                                  res);
         makePublic(overriddenMethod);
-        String observableParamName = overriddenMethod.getCDParameter(0).getName();
-        getGlex().replaceTemplate(EMPTY_BODY_TEMPLATE,
-                                  overriddenMethod,
-                                  new TemplateHookPoint(CUSTOM_TEMPLATE_PATH + "NotifyAddBody",
-                                                        attributeName,
-                                                        observableParamName));
-        res.addCDMember(overriddenMethod);
 
         break; //there is only one notify add method per domain class
       }
@@ -136,12 +135,8 @@ public class EnsureCorrectManager4DiagrammDecorator extends AbstractDecorator {
     for (GeneratedMethodSignature gms : diagramGenerationSummary.otherMethodSignatures()) {
       if (!gms.template().equals(DiagramObserverDecorator.GET_SCOPE_GLOBAL_TEMPLATE)) continue;
 
-      ASTCDMethodSignature overriddenMethod = gms.signature().deepClone();
+      ASTCDMethodSignature overriddenMethod = replaceMethodBody(gms.signature(), RETURN_NOTIFICATION_SCOPE_MINIMAL_HOOK_POINT, res);
       makePublic(overriddenMethod);
-      getGlex().replaceTemplate(EMPTY_BODY_TEMPLATE,
-                                overriddenMethod,
-                                RETURN_NOTIFICATION_SCOPE_MINIMAL_HOOK_POINT);
-      res.addCDMember(overriddenMethod);
 
       break; //there is only one getScope method
     }

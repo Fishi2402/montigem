@@ -32,10 +32,7 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     String name = origCD.getCDDefinition().getName();
-    origCD.getCDDefinition().getCDClassesList().stream()
-      .filter(c -> !c.getModifier().isDerived())
-      .filter(c -> !c.getModifier().isAbstract())
-      .forEach(c -> astcdPackage.addCDElement(withOrigin(createClass(c, name, origCD))));
+    getConcreteDomainClasses(origCD).forEach(c -> astcdPackage.addCDElement(withOrigin(createClass(c, name, origCD))));
   }
 
   protected ASTCDClass createClass(ASTCDClass domainClass, String name, ASTCDCompilationUnit origCD) {

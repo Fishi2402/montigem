@@ -38,15 +38,19 @@ dependencies {
   implementation "de.monticore.language-server:monticore-language-server-runtime:$mclsg_version"
   implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version, classifier: 'language-server'
   implementation group: 'de.se_rwth.commons', name: 'se-commons-gradle', version: mc_version
+  implementation group: 'de.monticore.lang', name: 'od', version: mc_version
 
   implementation group: "org.yaml", name: "snakeyaml", version: "$snake_yaml_version"
 
   implementation group: 'org.jsweet', name: 'jsweet-core', version: "6.3.0"
   implementation group: 'de.rwth.se.umlp.jsweet', name: 'jsweet-transpiler', version: '3.2.0-UMLP-SNAPSHOT'
 
+  implementation('com.google.cloud.tools:jib-core:0.21.0')
+
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit_version
   testImplementation group: 'com.github.javaparser', name: 'javaparser-symbol-solver-core', version: javaparser_version
+  testImplementation group: 'org.mockito', name: 'mockito-inline', version: mockito_version
   testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
   grammar("de.monticore.lang:cd4analysis:$mc_version:grammars")
@@ -118,6 +122,8 @@ task generateUMLP(type: MCTask) {
   outputs.upToDateWhen { uptoDate }
 }
 
+/*
+ ALu: Mit tagging-lite vmtl. erst mal nicht mehr notwendig
 task generateUMLPTagDef(type: MCTask) {
   grammar = file "$buildDir/generated-sources/monticore/sourcecode/UMLPTagDefinition.mc4"
   outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
@@ -137,6 +143,7 @@ task generateUMLPTagSchema(type: MCTask) {
   def uptoDate = incCheck("UMLP.mc4")
   outputs.upToDateWhen { uptoDate }
 }
+ */
 
 
 compileJava {

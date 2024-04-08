@@ -2,14 +2,11 @@
 package umlp.generator.gui.gentypescript.method;
 
 import de.monticore.cd.codegen.CDGenService;
-import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
-import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.StringTransformations;
 import umlp.generator.domain.decorator.methods.AssocMandatoryMutatorDecorator;
 
@@ -63,4 +60,7 @@ public class TSAssocMandatoryMutatorDecorator extends AssocMandatoryMutatorDecor
     return "umlp.gui2ts.methods.TSNotificationSetter";
   }
 
+  protected String getInternalSetOneTemplateGemId() {
+    return "umlp.gui2ts.methods.assocs.TSInternalSetOneGemId";
+  }
 }

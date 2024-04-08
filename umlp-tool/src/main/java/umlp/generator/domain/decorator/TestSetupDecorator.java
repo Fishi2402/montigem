@@ -62,11 +62,15 @@ public class TestSetupDecorator extends AbstractDecorator {
         .setCDInterfaceUsage(getInterfaceUsageFacade().createCDInterfaceUsage("umlp.backendrte.test_infrastructure.TestSetup<" + name + "TestContext>"))
         .setName(name + MOCK_TEST_SETUP).build();
 
+    // Add @jsweet.lang.Erased annotation
+    glex.replaceTemplate("cd2java.Annotations", res,
+        new StringHookPoint("@jsweet.lang.Erased"));
+
+
     // Attributes
     String testContextClass = name + TestContextDecorator.SUFFIX;
     getCD4C().addAttribute(res, true, false, "protected " + testContextClass + " backend;");
-    ASTCDAttribute clientsAttr = getCD4C().addAttribute(res, true, false, "protected List<" + name + TestContextDecorator.SUFFIX + "> clients;");
-    glex.replaceTemplate("cd2java.Value", clientsAttr, new StringHookPoint(" = new ArrayList<>();"));
+    addAttribute(res, true, false, "protected List<" + name + TestContextDecorator.SUFFIX + "> clients", "new ArrayList<>()");
     ASTCDAttribute numberOfClientsArg = getCD4C().addAttribute(res, true, false, "protected int numberOfClients;");
     ASTCDAttribute clientNamesArg = getCD4C().addAttribute(res,
                                                            true,
@@ -104,11 +108,15 @@ public class TestSetupDecorator extends AbstractDecorator {
         .setCDInterfaceUsage(getInterfaceUsageFacade().createCDInterfaceUsage("umlp.backendrte.test_infrastructure.TestSetup<" + name + "TestContext>"))
         .setName(name + DB_TEST_SETUP).build();
 
+    // Add @jsweet.lang.Erased annotation
+    glex.replaceTemplate("cd2java.Annotations", res,
+        new StringHookPoint("@jsweet.lang.Erased"));
+
+
     // Attributes
     String testContextClass = name + TestContextDecorator.SUFFIX;
     getCD4C().addAttribute(res, true, false, "protected " + testContextClass + " backend;");
-    ASTCDAttribute clientsAttr = getCD4C().addAttribute(res, true, false, "protected List<" + name + TestContextDecorator.SUFFIX + "> clients;");
-    glex.replaceTemplate("cd2java.Value", clientsAttr, new StringHookPoint(" = new ArrayList<>();"));
+    addAttribute(res, true, false, "protected List<" + name + TestContextDecorator.SUFFIX + "> clients", "new ArrayList<>()");
     ASTCDAttribute numberOfClientsArg = getCD4C().addAttribute(res, true, false, "protected int numberOfClients;");
     ASTCDAttribute clientNamesArg = getCD4C().addAttribute(res,
                                                            true,

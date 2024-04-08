@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gradle.specific.merge;
 
+import de.monticore.gradle.common.CommonMCTask;
 import de.se_rwth.commons.logging.Log;
-import gradle.common.CommonUMLPTask;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
@@ -27,7 +27,7 @@ public abstract class UMLPMergeTask extends SourceTask {
   abstract public WorkerExecutor getWorkerExecutor();
 
   public UMLPMergeTask() {
-    CommonUMLPTask.setDebugConvention(getProject(), getDebug());
+    CommonMCTask.setDebugConvention(getProject(), getDebug());
   }
 
   @TaskAction

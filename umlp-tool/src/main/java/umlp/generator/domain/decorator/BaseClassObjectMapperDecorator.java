@@ -38,14 +38,14 @@ public class BaseClassObjectMapperDecorator extends AbstractDecorator {
             .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage("BaseClassObjectMapper"))
             .build();
 
-    List<String> classesList = origCD.getCDDefinition().getCDClassesList().stream()
-        .filter(c -> !c.getSymbol().isIsDerived())
+    List<String> classesList = getNonDerivedDomainClasses(origCD)
+        .stream()
         .map(c -> Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE), c.getName()))
         .collect(Collectors.toList());
 
     // constructor
     getCD4C().addConstructor(mapperClass, getConstructorTemplate(),
-        new ArrayList(), name+SUFFIX);
+        new ArrayList<>(), name+SUFFIX);
 
     // add methods
     getCD4C().addMethod(mapperClass, getInitTemplate(), name);

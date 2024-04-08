@@ -31,10 +31,8 @@ public class ValidationResultDecorator extends AbstractDecorator {
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     String packageName = astcdPackage.getMCQualifiedName().getQName();
-    origCD.getCDDefinition().getCDClassesList().stream()
-            .filter(c -> !c.getSymbol().isIsDerived())
-            .filter(c -> !c.getSymbol().isIsAbstract())
-            .forEach(c -> astcdPackage.addCDElement(withOrigin(createValidatorClassForDomainClass(c, origCD, packageName))));
+    getConcreteDomainClasses(origCD).forEach(c -> astcdPackage.addCDElement(withOrigin(
+        createValidatorClassForDomainClass(c, origCD, packageName))));
   }
 
   protected void addImports(ASTCDClass validatorClass) {
@@ -75,11 +73,9 @@ public class ValidationResultDecorator extends AbstractDecorator {
   private void createAttributes(ASTCDType validationResultClass, List<ASTCDAttribute> attributes, List<ASTCDAssociation> leftAssociations, List<ASTCDAssociation> rightAssociations) {
     getCD4C().addAttribute(validationResultClass, getSignatureForTypeAndAttributeName("long", "domainObjectId"));
     for(ASTCDAttribute attribute : attributes) {
-      ASTCDAttribute attr = getCD4C().addAttribute(validationResultClass, getListSignatureForTypeAndAttributeName("ValidationMessage", attribute.getName() + "ValidationMessages"));
-      glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint(getListInitializer()));
+      addAttribute(validationResultClass, getListSignatureForTypeAndAttributeName("ValidationMessage", attribute.getName() + "ValidationMessages"), getListInitializer());
     }
-    ASTCDAttribute attr = getCD4C().addAttribute(validationResultClass, getListSignatureForTypeAndAttributeName("ValidationMessage", "thisObjectRelated" + "ValidationMessages"));
-    glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint(getListInitializer()));
+    addAttribute(validationResultClass, getListSignatureForTypeAndAttributeName("ValidationMessage", "thisObjectRelated" + "ValidationMessages"), getListInitializer());
 
     for(ASTCDAssociation association : leftAssociations) {
       addAssociationAttributes(validationResultClass, association, true);

@@ -37,19 +37,19 @@ public class GemListAssocDecorator extends AbstractDecorator {
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, GEMLIST_PACKAGE);
-    origCD.getCDDefinition().getCDClassesList().stream()
-            .filter(c -> !c.getSymbol().isIsDerived())
-            .forEach(c -> CDSymbolTables.getAssociations(c)
-                    .stream()
-                    .filter(Predicate.not(GenService::isSymbolDerived))
-                    .forEach(a -> astcdPackage.addAllCDElements(withOrigin(createClasses(origCD, a, c)))));
+    getNonDerivedDomainClasses(origCD).forEach(c -> CDSymbolTables.getAssociations(c)
+                                                                  .stream()
+                                                                  .filter(Predicate.not(GenService::isSymbolDerived))
+                                                                  .forEach(a -> astcdPackage.addAllCDElements(
+                                                                      withOrigin(createClasses(
+                                                                          origCD,
+                                                                          a,
+                                                                          c)))));
 
-    origCD.getCDDefinition().getCDInterfacesList().stream()
-            .filter(i -> !i.getSymbol().isIsDerived())
-            .forEach(i -> CDSymbolTables.getAssociations(i)
-                    .stream()
-                    .filter(Predicate.not(GenService::isSymbolDerived))
-                    .forEach(a -> astcdPackage.addAllCDElements(withOrigin(createClasses(origCD, a, i)))));
+    getNonDerivedDomainInterfaces(origCD).forEach(i -> CDSymbolTables.getAssociations(i)
+        .stream()
+        .filter(Predicate.not(GenService::isSymbolDerived))
+        .forEach(a -> astcdPackage.addAllCDElements(withOrigin(createClasses(origCD, a, i)))));
   }
 
   protected Collection<ASTCDClass> createClasses(ASTCDCompilationUnit origCD, ASTCDAssocSide assoc, ASTCDType clazz) {

@@ -2,6 +2,8 @@
 package gradle;
 
 import gradle.specific.FrontendSetup;
+import gradle.specific.UMLPFrontendCIImageTask;
+import gradle.specific.UMLPFrontendLocalImageTask;
 import gradle.specific.UMLPFrontendTask;
 import gradle.specific.UMLPGuiGenTask;
 import gradle.specific.UMLPJava2TypeScriptTask;
@@ -15,6 +17,9 @@ import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
 import org.gradle.api.artifacts.repositories.MavenRepositoryContentDescriptor;
+import org.gradle.api.attributes.Bundling;
+import org.gradle.api.attributes.VerificationType;
+import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.Sync;
@@ -23,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -37,6 +43,8 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
   static final String UMLP_FRONTEND_DOMAIN_J2TS_TASK_NAME = "translateJava2TSDomain";
   static final String UMLP_FRONTEND_GUI_TASK_NAME = "genGUI";
   static final String UMLP_FRONTEND_GUI_J2TS_TASK_NAME = "translateJava2TSGUI";
+  static final String UMLP_FRONTEND_BUILD_IMAGE_LOCAL = "buildImageLocal";
+  static final String UMLP_FRONTEND_DEPLOY_IMAGE_CI = "deployImageCI";
   private static final String CREATE_DOMAIN_SYMBOLS_TASK_NAME = "createDomainSymbols";
   static final String UMLP_GROUP_NAME = "umlp";
   private static final String GUI_TYPES_NAME = "guiTypes";
@@ -50,6 +58,27 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
     boolean j2ts = getBooleanProjectProperty(project, "j2ts");
     boolean local = getBooleanProjectProperty(project, "useLocalDependencies");
 
+    if (j2ts) {
+      Configuration domainSources = project.getConfigurations().create("domainSources");
+      domainSources.setTransitive(false);
+      domainSources.attributes(at -> {
+        at.attribute(VerificationType.VERIFICATION_TYPE_ATTRIBUTE, project.getObjects().named(VerificationType.class, VerificationType.MAIN_SOURCES));
+        at.attribute(Bundling.BUNDLING_ATTRIBUTE, project.getObjects().named(Bundling.class, Bundling.EXTERNAL));
+      });
+
+      // Configuration containing the compile/transpile dependencies (for running jsweet)
+      Configuration jsweettranspiler = project.getConfigurations().create("jsweettranspiler");
+      jsweettranspiler.extendsFrom(project.getConfigurations().getByName("compileClasspath"));
+
+      if (local)
+        project.getDependencies().add("jsweettranspiler",
+            project.getDependencies().project(Map.of("path", ":umlp-rte:umlp-jsweet")));
+      else
+        project.getDependencies().add("jsweettranspiler",
+            project.getDependencies().create("umlp:umlp-jsweet:" + project.getVersion())
+        );
+    }
+
     // Create Dependencies
     addProjectDependencies(project, j2ts, local);
 
@@ -57,11 +86,11 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
     TaskProvider<FrontendSetup> frontendSetupTask = createFrontendSetupTask(project);
 
     TaskProvider<UMLPFrontendTask> frontendDomainTask = createFrontendDomainTask(project);
-    TaskProvider<UMLPJava2TypeScriptTask> frontendDomainJ2TSTask = createFrontendDomainJ2TSTask(project, local);
+    TaskProvider<UMLPJava2TypeScriptTask> frontendDomainJ2TSTask = createFrontendDomainJ2TSTask(project, j2ts, frontendDomainTask, local);
 
     TaskProvider<UMLPSymbolsTask> domainSymbolGenTask = createDomainSymbolGen(project, frontendSetupTask);
-    TaskProvider<UMLPGuiGenTask> frontendGuiTask = createFrontendGuiTask(project, j2ts, local, domainSymbolGenTask);
-    TaskProvider<UMLPJava2TypeScriptTask> frontendGUIJ2TSTask = createFrontendGUIJ2TSTask(project, frontendDomainJ2TSTask, frontendGuiTask);
+    TaskProvider<UMLPGuiGenTask> frontendGuiTask = createFrontendGuiTask(project, j2ts, local, domainSymbolGenTask, frontendDomainTask);
+    TaskProvider<UMLPJava2TypeScriptTask> frontendGUIJ2TSTask = createFrontendGUIJ2TSTask(project, j2ts, frontendDomainJ2TSTask, frontendGuiTask);
 
     // Sync Output of UMLP-Task to the correct directory. This done because "npm serve" cannot handle the intermediate state while the UMLPTasks are running
     // and Hot-Reload aborts
@@ -85,6 +114,23 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
 
     // Source Sets
     addSourceSets(project, j2ts);
+
+    // Docker images
+    createBuildImageLocalTask(project);
+    createDeployImageCITask(project);
+
+    // Add dependency to jsweet-core, to import the annotations (such as @Erased)
+    // Only during compilation of the backend
+    // TODO: Use constant for jsweet-core
+    project.getDependencies().add("compileOnly", "org.jsweet:jsweet-core:6.3.0");
+  }
+
+  protected TaskProvider<?> createBuildImageLocalTask(Project project) {
+    return project.getTasks().register(UMLP_FRONTEND_BUILD_IMAGE_LOCAL, UMLPFrontendLocalImageTask.class);
+  }
+
+  protected TaskProvider<?> createDeployImageCITask(Project project) {
+    return project.getTasks().register(UMLP_FRONTEND_DEPLOY_IMAGE_CI, UMLPFrontendCIImageTask.class);
   }
 
   protected TaskProvider<UMLPFrontendTask> createFrontendDomainTask(final Project project) {
@@ -109,14 +155,26 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
   }
 
   protected TaskProvider<UMLPJava2TypeScriptTask> createFrontendDomainJ2TSTask(final Project project,
-      boolean local) {
+                                                                               boolean j2ts,
+                                                                               TaskProvider<UMLPFrontendTask> frontendDomainTask,
+                                                                               boolean local) {
     TaskProvider<UMLPJava2TypeScriptTask> j2tsTask = project.getTasks()
         .register(UMLP_FRONTEND_DOMAIN_J2TS_TASK_NAME, UMLPJava2TypeScriptTask.class, umlpTask -> {
           umlpTask.setGroup(UMLP_GROUP_NAME);
+
+          if (j2ts) {
+            // // add domain-sources to the to-be-transpiled
+            umlpTask.getInput().from(project.getConfigurations().getByName("domainSources"));
+            umlpTask.getJSweetClassPath().from(project.getConfigurations().getByName("jsweettranspiler"));
+
+            // TODO: Fix ShellAPI imports
+            // Required due to "imports cannot use * wildcards when using modules"
+            umlpTask.getExcludeSource().add("glob:**/shellapi/*ShellAPI.java"); // via @Erased
+          }
+
+          umlpTask.getInput().from(frontendDomainTask);
           umlpTask.getOutputDir().set(
               getAppDomainPath(project).toFile());
-          umlpTask.getGui().set(false);
-          umlpTask.getDomain().set(true);
         });
 
     if (local) {
@@ -151,7 +209,13 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
   }
 
   private TaskProvider<UMLPGuiGenTask> createFrontendGuiTask(final Project project,
-      boolean j2ts, boolean local, TaskProvider<UMLPSymbolsTask> domainSymbolGenTask) {
+      boolean j2ts, boolean local, TaskProvider<UMLPSymbolsTask> domainSymbolGenTask, TaskProvider<?> genDomainTask) {
+
+    if (j2ts) {
+      // Disable genDomain, as we otherwise run into issued with the same symbol import directory
+      // & appdomain output directories being used
+      genDomainTask.configure(genDomain->genDomain.setEnabled(false));
+    }
 
     // Add Configuration for TypeSymbols.
     Configuration guiTypes = project.getConfigurations().getByName(GUI_TYPES_NAME);
@@ -165,16 +229,20 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
 
           umlpTask.getSymbolDir().from(guiTypes);
           umlpTask.getSymbolDir().from(domainSymbolGenTask.get().getSymbolOutDir());
+          umlpTask.dependsOn(domainSymbolGenTask);
 
           if (j2ts) {
-            setIfPathExists(x -> umlpTask.getHwcDir().set(x), Path.of(
+            setIfPathExists(x -> umlpTask.getHwcDir().from(x), Path.of(
                 project.getProjectDir().getAbsolutePath(), "src", "main", "java"));
             umlpTask.getGuiGenTSFuncionality().set(false);
             umlpTask.getGuiGenJsweet().set(true);
           }
           else {
-            setIfPathExists(x -> umlpTask.getHwcDir().set(x), Path.of(
+            setIfPathExists(x -> umlpTask.getHwcDir().from(x), Path.of(
                 project.getProjectDir().getAbsolutePath(), "src", "app"));
+
+            // Ensure our symbols exist
+            umlpTask.dependsOn(genDomainTask);
           }
 
           // It is important that the directory-depth of the intermediate-output is the the same as the final location (after sync!)
@@ -209,16 +277,38 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
   }
 
   protected TaskProvider<UMLPJava2TypeScriptTask> createFrontendGUIJ2TSTask(final Project project,
-      TaskProvider<UMLPJava2TypeScriptTask> frontendDomainJ2TSTask,
-      TaskProvider<UMLPGuiGenTask> frontendGuiTask) {
+                                                                            boolean j2ts,
+                                                                            TaskProvider<UMLPJava2TypeScriptTask> frontendDomainJ2TSTask,
+                                                                            TaskProvider<UMLPGuiGenTask> frontendGuiTask) {
     return project.getTasks()
         .register(UMLP_FRONTEND_GUI_J2TS_TASK_NAME, UMLPJava2TypeScriptTask.class, umlpTask -> {
           umlpTask.setGroup(UMLP_GROUP_NAME);
           umlpTask.getOutputDir().set(getAppGuiJ2TSPath(project).toFile());
-          umlpTask.getGui().set(true);
-          umlpTask.getDomain().set(false);
 
-          umlpTask.dependsOn(frontendGuiTask.get(), frontendDomainJ2TSTask.get());
+          if (j2ts) {
+            // set jsweet-runtime classpath
+            umlpTask.getJSweetClassPath().from(project.getConfigurations().getByName("jsweettranspiler"));
+            // add src/main/java as an input
+            umlpTask.getInput().from(project.getExtensions().getByType(JavaPluginExtension.class)
+                .getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME).getJava());
+            // Add genGUI-outputdir as an input
+            umlpTask.getInput().from(frontendGuiTask.get().getOutputDir());
+
+            // TODO: Remove the following at some point
+            // required with getExcludeTranspile - otherwise "import { Project } from '@src/dtcockpit/Project';" is missing in GUI ts files
+            // Add the domain-sources as a java-source
+            umlpTask.getInput().from(project.getConfigurations().getByName("domainSources"));
+            // but exclude them from being transpiled (thus, only available as source files)
+            umlpTask.getExcludeTranspileFiles().from(project.getConfigurations().getByName("domainSources").getFiles());
+            // TODO: END OF REMOVAL
+
+            // TODO: Fix ShellAPI imports
+            // Required due to "imports cannot use * wildcards when using modules"
+            umlpTask.getExcludeSource().add("glob:**/shellapi/*ShellAPI.java"); // via @Erased
+          }
+
+          // dependsOn frontendDomainJ2TSTask: Ensure the domain exists
+          umlpTask.dependsOn(frontendGuiTask, frontendDomainJ2TSTask);
         });
   }
 
@@ -249,11 +339,11 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
 
   @NotNull
   private static TaskProvider<Sync> createSyncGuiTask(Project project,
-      TaskProvider<FrontendSetup> frontendSetupTask, boolean j2ts,
-      TaskProvider<UMLPJava2TypeScriptTask> frontendGUIJ2TSTask,
-      TaskProvider<UMLPJava2TypeScriptTask> frontendDomainJ2TSTask, TaskProvider<?> syncDomainTask,
-      TaskProvider<UMLPGuiGenTask> frontendGuiTask,
-      TaskProvider<UMLPFrontendTask> frontendDomainTask) {
+                                                      TaskProvider<FrontendSetup> frontendSetupTask, boolean j2ts,
+                                                      TaskProvider<UMLPJava2TypeScriptTask> frontendGUIJ2TSTask,
+                                                      TaskProvider<UMLPJava2TypeScriptTask> frontendDomainJ2TSTask, TaskProvider<?> syncDomainTask,
+                                                      TaskProvider<UMLPGuiGenTask> frontendGuiTask,
+                                                      TaskProvider<UMLPFrontendTask> frontendDomainTask) {
     return project.getTasks()
         .register("SYNC_" + UMLP_FRONTEND_GUI_TASK_NAME, Sync.class, syncTask -> {
           syncTask.into(
@@ -280,7 +370,7 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
 
   @NotNull
   private static Task createGenerateTask(Project project, boolean j2ts,
-      TaskProvider<UMLPJava2TypeScriptTask> frontendGUIJ2TSTask, TaskProvider<?> syncDomainTask,
+      TaskProvider<?> frontendGUIJ2TSTask, TaskProvider<?> syncDomainTask,
       TaskProvider<?> syncGuiTask, TaskProvider<UMLPGuiGenTask> frontendGuiTask) {
     Task generateTask = project.getTasks().create("generate");
     if (j2ts) {

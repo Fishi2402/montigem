@@ -1,6 +1,3 @@
-import gradle.common.CommonUMLPTask
-import gradle.common.UMLPOutputReportCheck
-
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
@@ -44,6 +41,8 @@ subprojects {
   }
 
   tasks.withType(JavaCompile).configureEach {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
     options.encoding = 'UTF-8'
     options.warnings = false
   }
@@ -57,6 +56,22 @@ subprojects {
       exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
       exclude group: 'ch.qos.logback', module: 'logback-classic'
       exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
+    }
+  }
+
+  afterEvaluate {
+    tasks.withType(gradle.specific.UMLPFrontendCIImageTask.class).each {
+      it.getFullImageName().set(project.provider {
+        String imgBase = Objects.requireNonNull(System.getenv("CI_REGISTRY_IMAGE"), "CI_REGISTRY_IMAGE not set")
+        String parentName = project.parent.name
+        return imgBase + "/" + parentName + "_frontend:latest"
+      })
+    }
+
+    tasks.withType(gradle.specific.UMLPFrontendLocalImageTask.class).each {
+      it.getFullImageName().set(getProject().provider(() ->
+          (getProject().getParent() != null ? getProject().getParent().getName() : getProject().getName()) + "/frontend"
+      ))
     }
   }
 }
@@ -79,7 +94,7 @@ build.dependsOn(gradle.includedBuild("umlp-tool").task(":build"))
 task umlp_check_report
 build.dependsOn(umlp_check_report)
 
-subprojects {
+/*subprojects {
   // After every UMLPTask, run basic checks on the generated report
   // e.g. "every generated file is also reported"
   tasks.withType(CommonUMLPTask).findAll( {it.enabled}).forEach {
@@ -96,5 +111,5 @@ subprojects {
     }
     umlp_check_report.dependsOn(t)
   }
-}
+}*/
 

@@ -112,7 +112,7 @@ To disable incremental build during debugging, add the argument ``outputs.upToDa
 
 An example for debug configuration:
 ````
-task exampleForDebugging(type: UMLPTask) {
+task exampleForDebugging(type: UMLPBackendTask) {
   input = file("models/")
 
   debug = true  // Disable isolation and set LogLevel to DEBUG. Allows to use debugging tools and breakpoints.
@@ -124,7 +124,7 @@ task exampleForDebugging(type: UMLPTask) {
 
 To globally enable debugging for every ``UMLPTask``, set in `gradle.properties`:
 ````
-de.rwth.se.umlp.debug=true
+de.monticore.gradle.debug=true
 org.gradle.parallel=false  // parallel execution not compatible with debugging
 ````
 

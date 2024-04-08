@@ -31,7 +31,7 @@ public abstract class DomainGUITest extends AbstractGUITest {
     UMLPMill.reset();
     UMLPMill.globalScope().clear();
     UMLPMill.init();
-    BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope());
+    BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope(), false);
 
     String symFolder = BUILD_FOLDER + "/guitests";
     String domainSymFile = symFolder + "/" + domainPath + "sym";
@@ -39,7 +39,7 @@ public abstract class DomainGUITest extends AbstractGUITest {
     runAfterParseTrafo(ast);
     IUMLPArtifactScope as = createSymTab(ast);
     runDefaultTrafos(ast);
-    recreateSymbolTable(ast);
+    as = recreateSymbolTable(ast);
 
     UMLPSymbols2Json s2j = new UMLPSymbols2Json();
     s2j.store(as, domainSymFile);

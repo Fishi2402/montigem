@@ -29,7 +29,7 @@ public class TSAddDecorator extends AddDecorator {
   }
 
   @Override
-  protected void addJavaImport(ASTCDClass ast, SymTypeExpression type) {
+  protected void addJavaImport(ASTCDType ast, SymTypeExpression type) {
     // don't
   }
 
