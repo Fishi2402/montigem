@@ -6,7 +6,7 @@ import mc.fenix.charts.GemScatterPlot;
 import mc.fenix.charts.GemScatterPlotAxis;
 
 page GemScatterPlotExample(List<Person> persons) {
-  @GemScatterPlot(
+  scatterplot@GemScatterPlot(
     data = null,
     xAxis = null, //TODO how do I set a value here?
     yAxis = null
