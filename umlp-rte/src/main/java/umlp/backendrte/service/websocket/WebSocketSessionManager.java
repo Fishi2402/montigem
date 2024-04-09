@@ -60,7 +60,9 @@ public class WebSocketSessionManager {
 
     while (tries < MAX_TRIES) {
       try {
-        synchronizedSession.get().sendMessage(new TextMessage(message));
+        synchronized (synchronizedSession) {
+          synchronizedSession.get().sendMessage(new TextMessage(message));
+        }
         return true;
       } catch (IllegalStateException e) {
         lastException = e;

@@ -32,7 +32,9 @@ public class CommandWebSocketNoAuthService extends CommandWebSocketService {
       subscriberId = CommandManager.register(participant);
       clientIds.put(session.getId(), subscriberId);
     }
-    session.sendMessage(new TextMessage(Long.toString(subscriberId)));
+    synchronized (session) {
+      session.sendMessage(new TextMessage(Long.toString(subscriberId)));
+    }
   }
 
   @Override
@@ -67,7 +69,10 @@ public class CommandWebSocketNoAuthService extends CommandWebSocketService {
       returnResult = CommandObjectMapper.serializeResponse(StatusResult.error(commandId));
     }
     System.out.println("Responding: " + returnResult);
-    session.sendMessage(new TextMessage(returnResult));
+    System.out.println(session);
+    synchronized (session) {
+      session.sendMessage(new TextMessage(returnResult));
+    }
   }
 
 }
