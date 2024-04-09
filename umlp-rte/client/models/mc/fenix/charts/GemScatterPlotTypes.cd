@@ -29,9 +29,16 @@ classdiagram GemScatterPlotTypes {
     double y;
   }
 
-  //TODO if enums are supported copy over all allowed shapes
   public enum GemScatterPlotShape {
     CIRCLE,
-    SQUARE;
+    SQUARE,
+    ROUNDED_SQUARE,
+    ROTATED_SQUARE,
+    CROSS,
+    ROTATED_CROSS,
+    DASH,
+    LINE,
+    STAR,
+    TRIANGLE;
   }
 }

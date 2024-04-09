@@ -25,4 +25,12 @@ export interface GemScatterPlotPoint {
 export enum GemScatterPlotShape {
   CIRCLE,
   SQUARE,
+  ROUNDED_SQUARE,
+  ROTATED_SQUARE,
+  CROSS,
+  ROTATED_CROSS,
+  DASH,
+  LINE,
+  STAR,
+  TRIANGLE,
 }

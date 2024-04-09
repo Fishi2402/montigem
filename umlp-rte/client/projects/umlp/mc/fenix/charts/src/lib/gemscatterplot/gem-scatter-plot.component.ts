@@ -88,10 +88,35 @@ export class GemScatterPlot extends GemScatterPlotTOP {
   }
 
   public getPointStyle(shape?: GemScatterPlotShape): string {
+    //https://www.chartjs.org/docs/latest/configuration/elements.html#point-styles
     let name: string = "circle";
     switch (shape) {
       case GemScatterPlotShape.SQUARE:
-        name = 'rect';
+        name = "rect";
+        break;
+      case GemScatterPlotShape.ROUNDED_SQUARE:
+        name = "rectRounded";
+        break;
+      case GemScatterPlotShape.ROTATED_SQUARE:
+        name = "rectRot";
+        break;
+      case GemScatterPlotShape.CROSS:
+        name = "cross";
+        break;
+      case GemScatterPlotShape.ROTATED_CROSS:
+        name = "crossRot";
+        break;
+      case GemScatterPlotShape.DASH:
+        name = "dash";
+        break;
+      case GemScatterPlotShape.LINE:
+        name = "line";
+        break;
+      case GemScatterPlotShape.STAR:
+        name = "star";
+        break;
+      case GemScatterPlotShape.TRIANGLE:
+        name = "triangle";
         break;
     }
     return name;
