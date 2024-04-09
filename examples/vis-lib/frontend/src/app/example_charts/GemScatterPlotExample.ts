@@ -20,31 +20,52 @@ export class GemScatterPlotExample extends GemScatterPlotExampleComponent {
     }
 
     let personsPerYear: Map<number, number> = new Map<number, number>();
+    let friendsPerYear: Map<number, number> = new Map<number, number>();
 
     for (const person of this.persons) {
       //no idea why that works, I copied it from GemBarChartExample
       let yearOfBirth = Number(person?.getBirthday()?.toDateString().substring(11, 15));
+      let numberOfFriends = person.getFriends().length;
       if (personsPerYear.has(yearOfBirth)) {
         personsPerYear.set(yearOfBirth, personsPerYear.get(yearOfBirth) + 1);
       } else {
         personsPerYear.set(yearOfBirth, 1);
       }
+      if (friendsPerYear.has(yearOfBirth)) {
+        friendsPerYear.set(yearOfBirth, friendsPerYear.get(yearOfBirth) + numberOfFriends);
+      } else {
+        friendsPerYear.set(yearOfBirth, numberOfFriends);
+      }
     }
 
     let yearSet: GemScatterPlotSet = {
-      label: "Personen pro Jahr",
-      points: []
+      label: "Geborene Personen pro Jahr",
+      points: [],
     }
 
     personsPerYear.forEach((persons, year) => {
       yearSet.points.push({
         x: year,
-        y: persons
+        y: persons,
+      });
+    });
+
+    let friendsSet: GemScatterPlotSet = {
+      label: "Anzahl Freundschaften",
+      points: [],
+      color: "green",
+      shape: GemScatterPlotShape.SQUARE,
+    };
+
+    friendsPerYear.forEach((friends, year) => {
+      friendsSet.points.push({
+        x: year,
+        y: friends,
       });
     });
 
     let data: GemScatterPlotData = {
-      sets: [yearSet]
+      sets: [yearSet, friendsSet],
     }
 
     if (JSON.stringify(data) === this.chartDataHash && this.chartData) {
@@ -53,5 +74,19 @@ export class GemScatterPlotExample extends GemScatterPlotExampleComponent {
     this.chartData = data;
     this.chartDataHash = JSON.stringify(this.chartData);
     return this.chartData;
+  }
+
+  public override getScatterplotXAxis() : GemScatterPlotAxis {
+    return {
+      label: "Geburtsjahr",
+      stepWidth: 1,
+    };
+  }
+
+  public override getScatterplotYAxis() : GemScatterPlotAxis {
+    return {
+      label: "Anzahl",
+      stepWidth: 1,
+    };
   }
 }

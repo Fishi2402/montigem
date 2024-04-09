@@ -8,7 +8,7 @@ import mc.fenix.charts.GemScatterPlotAxis;
 page GemScatterPlotExample(List<Person> persons) {
   scatterplot@GemScatterPlot(
     data = null,
-    xAxis = null, //TODO how do I set a value here?
+    xAxis = null,
     yAxis = null
   );
 }
