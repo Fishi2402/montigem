@@ -25,56 +25,92 @@ describe("NewScatterPlotComponent", () => {
     expect(component).toBeTruthy();
   });
 
-  //TODO test the component I wrote
+  it("should properly set the axis labels", () => {
+    component.xAxis = {
+      label: "x",
+    };
+    component.yAxis = {
+      label: "y",
+    };
+    expect(component.options.scales.x.title.display).toBe(true);
+    expect(component.options.scales.x.title.text).toBe("x");
+    expect(component.options.scales.y.title.display).toBe(true);
+    expect(component.options.scales.y.title.text).toBe("y");
+  });
 
-//   it("should set properly the property options when stacked is entered", () => {
-//     component.stacked = true;
-//     expect(component.options.scales.xAxes[0].stacked).toBe(true);
-//     expect(component.options.scales.yAxes[0].stacked).toBe(true);
-//   });
-//
-//   it("should set properly the grid lines of the chart based on its type", () => {
-//     expect(component.options.scales.xAxes[0].gridLines.display).toBe(false);
-//     expect(component.options.scales.yAxes[0].gridLines.display).toBe(false);
-//   });
-//
-//   it("should set properly max and min of the chart based on its type", () => {
-//     component.maxValue = 10;
-//     expect(component.options.scales.yAxes[0].ticks.max).toBe(10);
-//     component.minValue = 5;
-//     expect(component.options.scales.yAxes[0].ticks.min).toBe(5);
-//     expect(component.options.scales.yAxes[0].ticks.min).toBe(undefined);
-//     expect(component.options.scales.yAxes[0].ticks.max).toBe(undefined);
-//     expect(component.options.scales.xAxes[0].ticks.min).toBe(5);
-//     expect(component.options.scales.xAxes[0].ticks.max).toBe(10);
-//   });
-//
-//   it("should add a color to an entry without entered backgroundColor", () => {
-//     component.data = {
-//       entries: [
-//         {
-//           data: [12, 25, 13, 25],
-//           label: "Title 1",
-//         },
-//       ],
-//       labels: ["January"],
-//     };
-//     expect(component.dataSets[0].backgroundColor).not.toBeUndefined;
-//   });
-//
-//   it("should set the property stack of the entries only when stacked equals true ", () => {
-//     component.data = {
-//       entries: [
-//         {
-//           data: [12, 25, 13, 25],
-//           label: "Title 1",
-//           stack: "Group1",
-//         },
-//       ],
-//       labels: ["January"],
-//     };
-//     expect(component.dataSets[0].stack).toBeUndefined;
-//     component.stacked = true;
-//     expect(component.dataSets[0].stack).toBe("Group1");
-//   });
+  it("should properly set the axis step width", () => {
+    component.xAxis = {
+      stepWidth: 2,
+    };
+    expect(component.options.scales.x.stepSize).toBe(2);
+    component.yAxis = {
+      stepWidth: 3,
+    };
+    expect(component.options.scales.y.stepSize).toBe(3);
+  });
+
+  it("should properly set min and max value of the axes", () => {
+    component.xAxis = {
+      minValue: 0,
+      maxValue: 2,
+    };
+    component.yAxis = {
+      minValue: 1,
+      maxValue: 3,
+    };
+    expect(component.options.scales.x.min).toBe(0);
+    expect(component.options.scales.x.max).toBe(2);
+    expect(component.options.scales.y.min).toBe(1);
+    expect(component.options.scales.y.max).toBe(3);
+  });
+
+  it("should properly set the shape property", () => {
+    component.data = {
+      sets: [{
+        label: "foo",
+        points: [],
+        shape: GemScatterPlotShape.ROTATED_CROSS,
+      }],
+    };
+    expect(component.dataSets[0].pointStyle).toBe("crossRot");
+  });
+
+  it("should copy over data points", () => {
+    component.data = {
+      sets: [{
+        label: "foo",
+        points: [{
+          x: 3,
+          y: 7,
+        }],
+      }],
+    };
+    expect(component.dataSets[0].data).toBe([{
+      x: 3,
+      y: 7,
+    }]);
+  });
+
+  it("should properly set the data set label", () => {
+    component.data = {
+      sets: [{
+        label: "foo",
+        points: [],
+      }],
+    };
+    expect(component.dataSets[0].label).toBe("foo");
+  });
+
+  it("should validate colors", () => {
+    component.data = {
+      sets: [{
+        label: "foo",
+        points: [],
+        color: "fizz buzz",
+      }],
+    };
+    expect(component.dataSets[0].color).not.toBe("fizz buzz");
+    expect(component.dataSets[0].color).not.toBeUndefined;
+    expect(component.dataSets[0].backgroundColor).not.toBeUndefined;
+  });
 });
