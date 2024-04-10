@@ -16,9 +16,12 @@ import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._symboltable.GUIComponentDeclarationSymbol;
 import de.monticore.guidsl._symboltable.GUIParamSymbol;
+import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.monticore.symboltable.IGlobalScope;
+import de.monticore.symboltable.IScope;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
@@ -375,7 +378,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       }
       boolean rightIsEnum = util.isEnumType(rightType);
       if (leftIsString && rightIsEnum) {
-        String type = rightType.print();
+        String type = printFullNameOfTypeHotfix(rightType);
         addImport(decoratedClass, type);
         type = type.lastIndexOf('.') > 0 ? type.substring(type.lastIndexOf('.') + 1) : type;
         if (forGetter) {
@@ -388,7 +391,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       }
       boolean rightIsOptionalEnum = util.isOptionalEnumType(rightType);
       if (leftIsString && rightIsOptionalEnum) {
-        String innerType = ((SymTypeOfGenerics) rightType).getArgument(0).print();
+        String innerType = printFullNameOfTypeHotfix(((SymTypeOfGenerics) rightType).getArgument(0));
         addImport(decoratedClass, innerType);
         innerType = innerType.lastIndexOf('.') > 0 ? innerType.substring(innerType.lastIndexOf('.') + 1) : innerType;
         if (forGetter) {
@@ -418,6 +421,28 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       }
     }
     return s -> s;
+  }
+
+  // todo FDr why is this required? Something might be VERY broken somewhere.
+  protected String printFullNameOfTypeHotfix(SymTypeExpression type) {
+    String fullName = type.getTypeInfo().getName();
+    de.monticore.symboltable.IScope optCurrentScope = type.getTypeInfo().getEnclosingScope();
+    while (optCurrentScope != null) {
+      IScope currentScope = optCurrentScope;
+      if (!(currentScope instanceof IGlobalScope)) {
+        if (!currentScope.getName().isEmpty()) {
+          fullName = currentScope.getName() + "." + fullName;
+        }
+        if (currentScope instanceof IGUIDSLArtifactScope) {
+          IGUIDSLArtifactScope artifactScope = (IGUIDSLArtifactScope) currentScope;
+          if (artifactScope.getPackageName().isEmpty()) {
+            fullName = artifactScope.getPackageName() + "." + fullName;
+          }
+        }
+      }
+      optCurrentScope = currentScope.getEnclosingScope();
+    }
+    return "";
   }
 
   protected void addEnum2CapStringMethod(ASTCDClass decoratedClass, String type) {
