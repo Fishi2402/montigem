@@ -54,5 +54,10 @@ public class JavaProjectExtractorTest extends GenAbstractNeo4jDBTest {
 
     Optional<ArtifactView> viewCopyViaOtherManager = BaseArtifactsTestManager.artifactViewOpt(view.getGemId());
     assertTrue(viewCopyViaOtherManager.isPresent());
+
+    // Ensure linking of artifact to its view
+    BaseArtifactsTestManager.getFileArtifactList().stream().filter(f -> f.getNameExtension().equals(".java"))
+        .forEach( f -> assertEquals(1, f.getArtifactView().size()));
+
   }
 }
