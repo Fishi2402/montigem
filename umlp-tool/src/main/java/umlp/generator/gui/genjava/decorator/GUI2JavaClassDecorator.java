@@ -56,6 +56,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * Turn a GUI AST into a CD AST containing one class. The class manages component state and
+ * implements some logic, such as navigation to pages, creation of objects, etc.
+ */
 public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUIDSLVisitor2, CommonExpressionsVisitor2 {
 
   public static final String GUARD_ARG = "condition";
@@ -72,6 +76,19 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     traverser.add4CommonExpressions(this);
   }
 
+  /**
+   * Main function that transforms GUI AST into CD AST. Transformation stages:
+   * 1. create empty class
+   * 2. add directive annotation
+   * 3. traverse GUI AST and add class members in a reverse order
+   * 4. add constructor
+   * 5. add initialization method
+   * Adding members includes adding initialization functions for the attributes. These functions
+   * must be called in a specific order in the class initialization method, namely in reverse.
+   *
+   * @param gui input GUI AST
+   * @param cd output CD AST
+   */
   public void transform(ASTGUICompilationUnit gui, ASTCDCompilationUnit cd) {
     this.gui = gui;
     glex.replaceTemplate("cd2java.Imports", new TemplateHookPoint("umlp.Imports"));
@@ -85,6 +102,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     // class
     clazz = emptyClass(gui);
     cdPackage.addCDElement(withOrigin(clazz));
+    // directive
     addDirectiveAnnotation();
 
     // TODO add router
@@ -93,10 +111,26 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     StaticObjectsCollector.getInstance().init(gui.getGUIComponentDeclaration());
     gui.accept(traverser);
 
+    // constructor
     addConstructor();
+    // init
     addInit();
   }
 
+  /**
+   * Each input parameter (with one exception) is transformed into
+   * - attribute
+   * - getter
+   * - setter
+   * - 2 init functions
+   * One init function does not require an input parameter and sets a default value of a parameter.
+   * Input parameters representing domain objects receive a value loaded from a server.
+   * Another init function takes an argument and delegates to the setter.
+   * `GUIViewElement` and its collections are not transformed, since they do not represent the state
+   * of a component, but rather its appearance (useless in the context of HWC/testing)
+   *
+   * @param node input parameter of a component
+   */
   @Override
   public void endVisit(ASTGUIParam node) {
     // calc type
@@ -107,12 +141,11 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
       );
     }
     SymTypeExpression typeSTE = node.getSymbol().getType();
-
+    // exclude GUIViewElement
     if (GUIGeneratorUtil.getInstance().isViewElement(typeSTE)
         || GUIGeneratorUtil.getInstance().isViewElementsCollection(typeSTE)) {
       return;
     }
-
     String type = importAndPrintType(typeSTE);
 
     // calc name
@@ -130,6 +163,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     // add attr init
     getCD4C().addMethod(clazz, getInitParamTemplate(), type, name);
 
+    // case 1: component Foo(Person p)
     if (util.isDomainType(typeSTE)) {
       if (util.getMainDomainModelSimpleName().isEmpty()) {
         Log.error("0x00007 Could not identify the manager name: domain class diagram is missing");
@@ -148,6 +182,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
           new TemplateHookPoint(getInitCallTemplate(), builderInit)
       );
     }
+    // case 2: component Foo(List<Person> p)
     else if (util.getDomainListInnerType(typeSTE).isPresent()
         && !util.isEnumType(util.getDomainListInnerType(typeSTE).get())) {
       if (util.getMainDomainModelSimpleName().isEmpty()) {
@@ -167,6 +202,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
           new TemplateHookPoint(getInitCallTemplate(), attrInit)
       );
     }
+    // case 3: component Foo(String s)
     else {
       Optional<String> value = Optional.empty();
       if (node.isPresentDefault()) {
@@ -185,6 +221,18 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     }
   }
 
+  /**
+   * An argument is transformed into a getter.
+   * If the argument holds a reference, i.e., argument corresponds to a parameter like `?int value`,
+   * it is also transformed into a setter (used for input fields or forms).
+   * If the argument is an `Event` it is transformed into a call instead of a getter, e.g.,
+   * `foo@GemButton(leftClick = action())` is transformed into `fooLeftClick` method that calls
+   * whatever is on the right side of the assignment.
+   * `GUIViewElement` and its collections are not transformed, since they do not represent the state
+   * of a component, but rather its appearance (useless in the context of HWC/testing)
+   *
+   * @param node argument passed to a component
+   */
   @Override
   public void endVisit(ASTGUIComponent node) {
     for (ASTGUINamedArg arg : node.getGUINamedArgs().getGUINamedArgList()) {
@@ -196,12 +244,10 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
         );
       }
       SymTypeExpression typeSTE = arg.getNameSymbol().getType();
-
       if (GUIGeneratorUtil.getInstance().isViewElement(typeSTE)
           || GUIGeneratorUtil.getInstance().isViewElementsCollection(typeSTE)) {
         return;
       }
-
       String type = importAndPrintType(typeSTE);
 
       // calc name
@@ -254,6 +300,11 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     }
   }
 
+  /**
+   * A guard condition is transformed into a getter.
+   *
+   * @param node guard AST node
+   */
   @Override
   public void endVisit(ASTGUIGuard node) {
     // calc type
@@ -288,6 +339,12 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     );
   }
 
+  /**
+   * An iterable of the iterate statement is transformed into a getter.
+   * Currently only iterate statement of form `@iterate(Person p : persons)` is supported
+   *
+   * @param node iterate AST node
+   */
   @Override
   public void endVisit(ASTGUIIterate node) {
     if (!(node.getIterateControl() instanceof ASTGUIShortIterateControl)) {
@@ -327,8 +384,18 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     );
   }
 
+  /**
+   * A GUIList is transformed into an attribute, getter, and an init method.
+   * A list of form `[1, 2, 3]` in a GUI model represents an immutable list that is initialized once
+   * and is a static part of the component's state. For example,
+   * `@PersonList(persons = [p1, p2, p3])` produces a `getPersons()` method that always returns the
+   * same `List` object, which is stored as a class attribute.
+   *
+   * @param node GUIList AST node
+   */
   @Override
   public void endVisit(ASTGUIList node) {
+    // a GUIList requires preprocessing and extra information for code generation
     Map<ASTNode, ASTCDAttribute> node2Attr = StaticObjectsCollector
         .getInstance().getNode2Attr();
     if (node2Attr.containsKey(node)) {
@@ -366,6 +433,21 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     }
   }
 
+  /**
+   * A Call expression is transformed into either an attribute, getter, and an init method for a
+   * static object, or into a function.
+   * Calls of form `Person()` represent a constructor call that creates an object. The object is a
+   * static part of the component's state. For example,
+   * `@PersonForm(person = Person())` produces a `getPerson()` method that always returns the same
+   * `Person` object, which is stored as a class attribute.
+   * Calls of form `doSomething()`, `alert("my message")`, `findPerson(persons)` represent a
+   * function that has to be defined by hand. The result of generation is an abstract function
+   * `doSomething` whose return type is derived from the left side of the assignment.
+   * Complex calls, such as `doSomething()()`, `alert(alert())`, `persons.get(calcIndex())` are
+   * forbidden. Such calls must be simplified to an accepted format.
+   *
+   * @param node GUIList AST node
+   */
   @Override
   public void endVisit(ASTCallExpression node) {
     Map<ASTNode, ASTCDAttribute> node2Attr = StaticObjectsCollector.getInstance().getNode2Attr();
@@ -433,7 +515,8 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
             + util.print(node)
             + "' at " + node.get_SourcePositionStart().toString()
             + " - " + node.get_SourcePositionEnd().toString()
-            + ". Please make sure that the call is a direct value of"
+            + ". Please make sure that the call is simple, e.g., doStuff(),"
+            + " a direct value of"
             + " a GUI component parameter, "
             + " a GUI component argument, "
             + " a guard, "
@@ -444,6 +527,10 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     }
   }
 
+  /**
+   * @param ast base GUI AST to create an empty class from
+   * @return empty class
+   */
   protected ASTCDClass emptyClass(ASTGUICompilationUnit ast) {
     ASTGUIComponentDeclaration domainClass = ast.getGUIComponentDeclaration();
     String className = domainClass.getName();
@@ -453,6 +540,9 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
         .build();
   }
 
+  /**
+   * Add directive to a Java class for further JSweet translation
+   */
   protected void addDirectiveAnnotation() {
     String domainModel = util.getMainDomainModelQName().orElse("");
     boolean isEmpty = gui.getGUIComponentDeclaration().getGUIParamList().isEmpty();
@@ -466,10 +556,22 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     return getCD4C().addConstructor(clazz, "umlp.gui2java.GUI2JavaConstructor");
   }
 
+  /**
+   * An init method is a slightly more flexible alternative to a constructor.
+   * @return class initialization method
+   */
   protected ASTCDMethodSignature addInit() {
     return getCD4C().addMethod(clazz, "umlp.gui2java.GUI2JavaInit");
   }
 
+  /**
+   * Transform a GUI type into a Java type and add all necessary imports for its usage. For example,
+   * `List<Person>` is transformed into `GemList<Person>` and imports `umlp.backendrte.GemList`,
+   * `my.domain.Person` are added along the way.
+   *
+   * @param ste GUI type to be processed
+   * @return Java type that corresponds to the input GUI type
+   */
   protected String importAndPrintType(SymTypeExpression ste) {
     if (ste.isObjectType()) {
       // given in GUI:
