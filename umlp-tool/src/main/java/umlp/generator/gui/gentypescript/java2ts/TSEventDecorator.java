@@ -31,6 +31,11 @@ public class TSEventDecorator extends EventDecorator {
   }
 
   @Override
+  protected String getEventArgCallbackTemplate() {
+    return "umlp.gui2ts.TSEventArgCallback";
+  }
+
+  @Override
   protected String getEventTypeTemplate(EventType inbuild) {
     switch (inbuild) {
       case CREATE:
