@@ -1,4 +1,3 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-//${cd4c.method("public void init()")}
-public void init()
-  ${tc.include("umlp.gui2java.GUI2JavaInitBody")}
+${cd4c.method("public void init()")}
+${tc.include("umlp.gui2java.GUI2JavaInitBody")}
