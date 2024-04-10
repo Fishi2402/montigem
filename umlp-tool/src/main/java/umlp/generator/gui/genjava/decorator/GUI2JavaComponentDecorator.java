@@ -433,8 +433,11 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
   }
 
   protected void addImport(ASTCDClass decoratedClass, String type) {
-    getCD4C().addImport(decoratedClass, Joiners.DOT.join(Names.getQualifier(type).toLowerCase(),
-        Names.getSimpleName(type)));
+    List<String> toJoin = new ArrayList<>();
+    if (!Names.getQualifier(type).isEmpty()) // in case the import is without a dot (otherwise CD4C fails ugly)
+      toJoin.add(Names.getQualifier(type).toLowerCase());
+    toJoin.add(Names.getSimpleName(type));
+    getCD4C().addImport(decoratedClass, Joiners.DOT.join(toJoin));
   }
 
   protected Function<String, String> enumOptionalToStringConversion(String type) {
