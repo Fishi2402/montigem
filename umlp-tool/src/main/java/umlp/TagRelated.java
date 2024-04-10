@@ -95,6 +95,7 @@ public class TagRelated {
         .map(x -> x.toFile().listFiles(f -> f.getName().endsWith(".tags")))
         .filter(Objects::nonNull)
         .flatMap(Arrays::stream)
+        .peek(p -> System.err.println("Looking for tags within " + p.getAbsolutePath()))
         .collect(Collectors.toSet());
 
     if (tagFiles.isEmpty()) return;
