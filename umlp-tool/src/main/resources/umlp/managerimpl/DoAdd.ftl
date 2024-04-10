@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("name", "managerName", "assocs")}
+${tc.signature("name", "managerName", "assocs", "assocsSideToManager")}
 ${cd4c.method("protected void _doAdd${name}(${name} o, NotificationScope scope)")}
   known${name}s.put(o.getGemId(), o);
   if(!o.containsObserver(the${name}DbObserver)){
@@ -15,8 +15,8 @@ ${cd4c.method("protected void _doAdd${name}(${name} o, NotificationScope scope)"
   <#assign otherSide = assoc.getSymbol().getOtherSide().getAssocSide()>
   <#if genService.isList(assoc)>
   for (Long initialId : o._internal_get${assoc.getName()?cap_first}GemList().getIDs(0, o.size${assoc.getName()?cap_first}s())) {
-    if(${managerName}Manager.isLoaded${type}(initialId)){
-      ${type} other = ${managerName}Manager.get${type}Sure(initialId);
+    if(${assocsSideToManager[assoc.getName()]}.isLoaded${type}(initialId)){
+      ${type} other = ${assocsSideToManager[assoc.getName()]}.get${type}Sure(initialId);
       <#if genService.isList(otherSide)>
         other._internal_add${otherSide.getName()?cap_first}(other.size${otherSide.getName()?cap_first}s(), Collections.singletonList(o.getGemId()), NotificationScope.MINIMAL);
       <#else>
