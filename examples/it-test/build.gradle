@@ -13,6 +13,7 @@ dependencies {
 }
 
 generateUmlpBackend {
+
   hwcDir = [file("$projectDir/src/main/java"), file("$projectDir/src/test/java")]
 }
 

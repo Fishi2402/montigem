@@ -1,11 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package attributes;
 
+import attributes.test_infrastructure.AttributesNeo4JDBTestSetup;
 import attributes.test_infrastructure.AttributesSQLDBTestSetup;
+import attributes.test_infrastructure.AttributesTestSetup;
 import com.google.common.collect.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -19,30 +22,25 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings("OptionalGetWithoutIsPresent")
-public abstract class DbTypesTest extends AttributesSQLDBTestSetup {
+public interface DbTypesTest extends AttributesTestSetup {
 
   @DisplayName("Neo4J-DbTypes")
-  public static class
-  Neo4JTestSuite extends DbTypesTest {
+  class Neo4JTestSuite extends AttributesNeo4JDBTestSetup implements DbTypesTest {
     Neo4JTestSuite() {
-      super("NEO4J");
-      setUpLocalNeo4jInstance();
+      super(0);
+      dbStarter.start(7687, Paths.get("build", "Neo4JTestSetup"));
     }
   }
 
   @DisplayName("SQL-DbTypes")
-  public static class SQLTestSuite extends DbTypesTest {
+  class SQLTestSuite extends AttributesSQLDBTestSetup implements DbTypesTest {
     SQLTestSuite() {
-      super("SQL");
+      super(0);
     }
   }
 
-  public DbTypesTest(String dbConnectionType) {
-    super(0, dbConnectionType);
-  }
-
   @Test
-  public void testListOfPrimitivesIsWrittenToDb() {
+  default void testListOfPrimitivesIsWrittenToDb() {
     List<Integer> values = List.of(0, 0, 1, 2, 3, 4);
     var sut = AttributesManager.listOfPrimitivesBuilder().ints(values).build().get();
 
@@ -53,7 +51,7 @@ public abstract class DbTypesTest extends AttributesSQLDBTestSetup {
   }
 
   @Test
-  public void testAddToListOfPrimitivesInDb() {
+  default void testAddToListOfPrimitivesInDb() {
     List<Integer> values = List.of(0, -1, -2, -3, -4);
     ListOfPrimitives sut = AttributesManager.listOfPrimitivesBuilder().ints(values).build().get();
     var dao = AttributesDAOFactory.getListOfPrimitivesDAO();
@@ -76,7 +74,7 @@ public abstract class DbTypesTest extends AttributesSQLDBTestSetup {
   }
 
   @Test
-  public void testDeleteInListOfPrimitivesInDb() {
+  default void testDeleteInListOfPrimitivesInDb() {
     List<Integer> values = List.of(-1, -1, -2, -3, -4);
     var sut = AttributesManager.listOfPrimitivesBuilder().ints(values).build().get();
 
@@ -98,7 +96,7 @@ public abstract class DbTypesTest extends AttributesSQLDBTestSetup {
   }
 
   @Test
-  public void testOptionalOfprimitivesIsWritten() {
+  default void testOptionalOfprimitivesIsWritten() {
     Optional<Integer> value = Optional.of(-1);
     var sut = AttributesManager.optionalOfPrimitivesBuilder().iVal(value).build().get();
 
@@ -112,7 +110,7 @@ public abstract class DbTypesTest extends AttributesSQLDBTestSetup {
   }
 
   @Test
-  public void testSetToOptionalOfPrimitive() {
+  default void testSetToOptionalOfPrimitive() {
     var sut = AttributesManager.optionalOfPrimitivesBuilder().build().get();
 
     // db
@@ -131,7 +129,7 @@ public abstract class DbTypesTest extends AttributesSQLDBTestSetup {
   }
 
   @Test
-  public void testDeleteInOptionalOfPrimitives() {
+  default void testDeleteInOptionalOfPrimitives() {
     Optional<Integer> value = Optional.of(-3);
     var sut = AttributesManager.optionalOfPrimitivesBuilder().iVal(value).build().get();
 
@@ -150,7 +148,7 @@ public abstract class DbTypesTest extends AttributesSQLDBTestSetup {
   }
 
   @Test
-  public void testListOfStringsIsWrittenToDb() {
+  default void testListOfStringsIsWrittenToDb() {
     List<String> values = List.of("A", "B", "C");
     var sut = AttributesManager.listOfStringsBuilder().strings(values).build().get();
 
@@ -161,7 +159,7 @@ public abstract class DbTypesTest extends AttributesSQLDBTestSetup {
   }
 
   @Test
-  public void testAddToListOfStringsInDb() {
+  default void testAddToListOfStringsInDb() {
     List<String> values = List.of("A", "B", "C");
     var sut = AttributesManager.listOfStringsBuilder().strings(values).build().get();
     var dao = AttributesDAOFactory.getListOfStringsDAO();
@@ -184,7 +182,7 @@ public abstract class DbTypesTest extends AttributesSQLDBTestSetup {
   }
 
   @Test
-  public void testDeleteInListOfStringsInDb() {
+  default void testDeleteInListOfStringsInDb() {
     List<String> values = List.of("A", "B", "C");
     var sut = AttributesManager.listOfStringsBuilder().strings(values).build().get();
     var dao = AttributesDAOFactory.getListOfStringsDAO();
@@ -205,7 +203,7 @@ public abstract class DbTypesTest extends AttributesSQLDBTestSetup {
   }
 
   @Test
-  public void testOptionalOfStringIsWritten() {
+  default void testOptionalOfStringIsWritten() {
     Optional<String> value = Optional.of("A");
     var sut = AttributesManager.optionalOfStringBuilder().str(value).build().get();
 
@@ -219,7 +217,7 @@ public abstract class DbTypesTest extends AttributesSQLDBTestSetup {
   }
 
   @Test
-  public void testSetToOptionalOfString() {
+  default void testSetToOptionalOfString() {
     var sut = AttributesManager.optionalOfStringBuilder().build().get();
 
     // db
@@ -235,7 +233,7 @@ public abstract class DbTypesTest extends AttributesSQLDBTestSetup {
   }
 
   @Test
-  public void testDeleteInOptionalOfString() {
+  default void testDeleteInOptionalOfString() {
     Optional<String> value = Optional.of("A");
     var sut = AttributesManager.optionalOfStringBuilder().str(value).build().get();
 
@@ -252,7 +250,7 @@ public abstract class DbTypesTest extends AttributesSQLDBTestSetup {
   }
 
   @Test
-  public void testListOfDatesIsWritten() {
+  default void testListOfDatesIsWritten() {
     List<LocalDate> values = Lists.newArrayList();
     values.add(LocalDate.now());
     values.add(LocalDate.of(2000, 1, 1));
@@ -266,7 +264,7 @@ public abstract class DbTypesTest extends AttributesSQLDBTestSetup {
   }
 
   @Test
-  public void testAddToListOfDates() {
+  default void testAddToListOfDates() {
     List<LocalDate> values = Lists.newArrayList();
     values.add(LocalDate.now());
     values.add(LocalDate.of(2000, 1, 1));
@@ -293,7 +291,7 @@ public abstract class DbTypesTest extends AttributesSQLDBTestSetup {
   }
 
   @Test
-  public void testDeleteInListOfDates() {
+  default void testDeleteInListOfDates() {
     List<LocalDate> values = List.of(LocalDate.now(), LocalDate.of(2000, 1, 1), LocalDate.of(2000, 2, 2));
     var sut = AttributesManager.listOfTimeBuilder().dates(values).build().get();
 
@@ -317,7 +315,7 @@ public abstract class DbTypesTest extends AttributesSQLDBTestSetup {
   }
 
   @Test
-  public void testOptionalOfTimeIsWritten() {
+  default void testOptionalOfTimeIsWritten() {
     Optional<LocalDate> value = Optional.of(LocalDate.now());
     var sut = AttributesManager.optionalOfTimeBuilder().date(value).build().get();
 
@@ -329,7 +327,7 @@ public abstract class DbTypesTest extends AttributesSQLDBTestSetup {
   }
 
   @Test
-  public void testSetToOptionalOfTime() {
+  default void testSetToOptionalOfTime() {
     var sut = AttributesManager.optionalOfTimeBuilder().build().get();
 
     // db
@@ -346,7 +344,7 @@ public abstract class DbTypesTest extends AttributesSQLDBTestSetup {
   }
 
   @Test
-  public void testDeleteInOptionalOfTime() {
+  default void testDeleteInOptionalOfTime() {
     Optional<LocalDate> value = Optional.of(LocalDate.now());
     var sut = AttributesManager.optionalOfTimeBuilder().date(value).build().get();
 
@@ -364,7 +362,7 @@ public abstract class DbTypesTest extends AttributesSQLDBTestSetup {
   }
 
   @Test
-  public void testListOfBooleansIsWritten() {
+  default void testListOfBooleansIsWritten() {
     List<Boolean> values = List.of(true, false, true);
     var sut = AttributesManager.listOfBooleansBuilder().bVals(values).build().get();
 
@@ -376,7 +374,7 @@ public abstract class DbTypesTest extends AttributesSQLDBTestSetup {
   }
 
   @Test
-  public void testAddToListOfBooleans() {
+  default void testAddToListOfBooleans() {
     List<Boolean> values = List.of(true, false, true);
     var sut = AttributesManager.listOfBooleansBuilder().bVals(values).build().get();
 
@@ -402,7 +400,7 @@ public abstract class DbTypesTest extends AttributesSQLDBTestSetup {
   }
 
   @Test
-  public void testDeleteInListOfBooleans() {
+  default void testDeleteInListOfBooleans() {
     List<Boolean> values = List.of(true, false, true);
     var sut = AttributesManager.listOfBooleansBuilder().bVals(values).build().get();
 
@@ -426,7 +424,7 @@ public abstract class DbTypesTest extends AttributesSQLDBTestSetup {
   }
 
   @Test
-  public void testOptionalOfBooleanIsWritten() {
+  default void testOptionalOfBooleanIsWritten() {
     Optional<Boolean> value = Optional.of(true);
     var sut = AttributesManager.optionalOfBooleanBuilder().bVal(value).build().get();
 
@@ -440,7 +438,7 @@ public abstract class DbTypesTest extends AttributesSQLDBTestSetup {
   }
 
   @Test
-  public void testSetToOptionalOfBoolean() {
+  default void testSetToOptionalOfBoolean() {
     var sut = AttributesManager.optionalOfBooleanBuilder().build().get();
 
     // db
@@ -458,7 +456,7 @@ public abstract class DbTypesTest extends AttributesSQLDBTestSetup {
   }
 
   @Test
-  public void testDeleteInOptionalOfBoolean() {
+  default void testDeleteInOptionalOfBoolean() {
     Optional<Boolean> value = Optional.of(true);
     var sut = AttributesManager.optionalOfBooleanBuilder().bVal(value).build().get();
 
@@ -476,7 +474,7 @@ public abstract class DbTypesTest extends AttributesSQLDBTestSetup {
   }
 
   @Test
-  public void testMinimalJavaTimeDb(){
+  default void testMinimalJavaTimeDb(){
     MinimalJavaTime sut = AttributesManager.minimalJavaTimeBuilder()
         .bar_local_date(LocalDate.now())
         .bar_local_time(LocalTime.now())

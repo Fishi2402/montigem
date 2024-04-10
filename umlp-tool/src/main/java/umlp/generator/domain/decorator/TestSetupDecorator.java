@@ -5,6 +5,7 @@ import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDElement;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -30,16 +31,13 @@ public class TestSetupDecorator extends AbstractDecorator {
   private static final String COMMON_CUSTOM_TEMPLATE_PATH = "umlp.test_infrastructure.";
   private static final String DB_TEMPLATE_PATH = COMMON_CUSTOM_TEMPLATE_PATH + "dbTestSetup.";
 
-  private final boolean isNeo4jGen;
   private final ObserverDecorator observerDecorator;
   private final DiagramObserverDecorator diagramObserverDecorator;
 
   public TestSetupDecorator(GlobalExtensionManagement glex,
-                            boolean isNeo4jGen,
                             ObserverDecorator observerDecorator,
                             DiagramObserverDecorator diagramObserverDecorator) {
     super(glex);
-    this.isNeo4jGen = isNeo4jGen;
     this.observerDecorator = observerDecorator;
     this.diagramObserverDecorator = diagramObserverDecorator;
   }
@@ -60,17 +58,34 @@ public class TestSetupDecorator extends AbstractDecorator {
         ensureCorrectManager4TypeDecorator);
     ensureCorrectManager4DiagrammDecorator.transform(origCD, decoratedCD);
 
-
+    aPackage.addCDElement(withOrigin(createTestSetupInterface(origCD)));
     ASTCDClass abstractTestSetup = createAbstractTestSetup(origCD);
     aPackage.addCDElement(withOrigin(abstractTestSetup));
     aPackage.addCDElement(withOrigin(createMockTestSetup(origCD, abstractTestSetup)));
     ASTCDClass abstractDBTestSetup = createAbstractDBTestSetup(origCD, abstractTestSetup);
     aPackage.addCDElement(withOrigin(abstractDBTestSetup));
-    if (isNeo4jGen) {
-      aPackage.addCDElement(withOrigin(createNeo4JDBTestSetup(origCD, abstractDBTestSetup)));
-    } else {
-      aPackage.addCDElement(withOrigin(createSQLDBTestSetup(origCD, abstractDBTestSetup)));
-    }
+    aPackage.addCDElement(withOrigin(createNeo4JDBTestSetup(origCD, abstractDBTestSetup)));
+    aPackage.addCDElement(withOrigin(createSQLDBTestSetup(origCD, abstractDBTestSetup)));
+  }
+
+  private ASTCDElement createTestSetupInterface(ASTCDCompilationUnit origCD) {
+    String cdName = origCD.getCDDefinition().getName();
+
+    ASTCDType res = UMLPMill.cDInterfaceBuilder()
+        .setModifier(PUBLIC_ABSTRACT.build())
+        .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(Joiners.DOT.join(
+            PathUtil.getBackendRTETestInfrastructurePath(),
+            "TestSetup<" + cdName + "TestContext>")))
+        .setName(cdName + SUFFIX)
+        .build();
+
+    String packageName = getPackageName(origCD, DEFAULT_PACKAGE);
+    getCD4C().addImport(res, Joiners.DOT.join(packageName, cdName  + TestContextDecorator.SUFFIX));
+
+    // Add @jsweet.lang.Erased annotation
+    glex.replaceTemplate("cd2java.Annotations", res,
+        new StringHookPoint("@jsweet.lang.Erased"));
+    return res;
   }
 
   protected ASTCDClass createAbstractTestSetup(ASTCDCompilationUnit origCD) {
@@ -78,10 +93,8 @@ public class TestSetupDecorator extends AbstractDecorator {
 
     ASTCDClass res = UMLPMill.cDClassBuilder()
         .setModifier(PUBLIC_ABSTRACT.build())
-        .setCDInterfaceUsage(getInterfaceUsageFacade().createCDInterfaceUsage(Joiners.DOT.join(
-            PathUtil.getBackendRTETestInfrastructurePath(),
-            "TestSetup<" + cdName + "TestContext>")))
-        .setName(cdName + SUFFIX)
+        .setCDInterfaceUsage(getInterfaceUsageFacade().createCDInterfaceUsage(cdName + SUFFIX))
+        .setName("Abstract" + cdName + SUFFIX)
         .build();
 
     // Add @jsweet.lang.Erased annotation
@@ -231,9 +244,15 @@ public class TestSetupDecorator extends AbstractDecorator {
     // constructor
     addSuperConstructors(res, parentClass);
 
+    // attributes
+    addAttribute(res, "protected Neo4jDatabaseStarter dbStarter", " = new Neo4jDatabaseStarter()");
+    cd4C.addImport(res, "umlp.backendrte.common.Neo4jDatabaseStarter");
+    cd4C.addImport(res, "java.nio.file.Paths");
+
     // methods
     cd4C.addMethod(res, DB_TEMPLATE_PATH + "neo4j.Init", cdName);
     cd4C.addMethod(res, DB_TEMPLATE_PATH + "LegacyCheckImpl");
+    cd4C.addMethod(res, DB_TEMPLATE_PATH + "neo4j.Neo4jCleanup", cdName);
 
     addImports(origCD, res);
     return res;
@@ -270,11 +289,8 @@ public class TestSetupDecorator extends AbstractDecorator {
     cd4C.addImport(type, "java.util.Spliterator");
     cd4C.addImport(type, "java.util.ListIterator");
 
-    if(isNeo4jGen) {
-      cd4C.addImport(type, dot.join(backendRTECommonPath, "DatabaseAccessManager4Neo4j"));
-    } else {
-      cd4C.addImport(type, dot.join(backendRTECommonPath, "DatabaseAccessManager4SQL"));
-    }
+    cd4C.addImport(type, dot.join(backendRTECommonPath, "DatabaseAccessManager4Neo4j"));
+    cd4C.addImport(type, dot.join(backendRTECommonPath, "DatabaseAccessManager4SQL"));
   }
 
   protected static final class GenSummary {
