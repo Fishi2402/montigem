@@ -7,16 +7,21 @@ import org.neo4j.dbms.api.DatabaseManagementService;
 import org.neo4j.dbms.api.DatabaseManagementServiceBuilder;
 
 import java.nio.file.Path;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Can be used to start a Neo4j instance from this program.
  * Should only be used for short-lived instances, like tests.
  * Permanent deployments should probably use a neo4j container
  */
+// TODO: current setup requires one db per project
+// TODO: tests for each project are run in a JVM => incrementing the port is not possible in a var
+// TODO: Alternative: find empty port via serverport
 public class Neo4jDatabaseStarter {
   protected static DatabaseManagementService managementService;
+  protected static AtomicInteger port = new AtomicInteger(7689);
 
-  public void start(int port, Path dbFilePath){
+  public void start(Path dbBasePath){
     if (managementService != null) {
       managementService.database(GraphDatabaseSettings.DEFAULT_DATABASE_NAME);
       return;
