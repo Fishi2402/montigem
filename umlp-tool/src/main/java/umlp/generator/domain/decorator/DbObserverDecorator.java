@@ -125,6 +125,11 @@ public class DbObserverDecorator extends AbstractDecorator {
       glex.replaceTemplate("cd2java.Annotations", method, new StringHookPoint("@Override"));
     }
 
+    // Add @jsweet.lang.Erased annotation
+    glex.replaceTemplate("cd2java.Annotations", observerClass,
+        new StringHookPoint("@jsweet.lang.Erased"));
+
+
     return observerClass;
   }
 

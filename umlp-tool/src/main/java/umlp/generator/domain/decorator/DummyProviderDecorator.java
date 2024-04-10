@@ -11,6 +11,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.se_rwth.commons.Names;
 import umlp.UMLPMill;
@@ -43,6 +44,11 @@ public class DummyProviderDecorator extends AbstractDecorator {
             .setModifier(PUBLIC.build())
             .setName(name+SUFFIX)
             .build();
+
+    // Add @jsweet.lang.Erased annotation
+    glex.replaceTemplate("cd2java.Annotations", ast,
+        new StringHookPoint("@jsweet.lang.Erased"));
+
     // constructors
     getCD4C().addConstructor(ast, "umlp.dummyprovider.Constructor1", ast.getName());
     getCD4C().addConstructor(ast, "umlp.dummyprovider.Constructor2", ast.getName());

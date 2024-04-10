@@ -13,6 +13,7 @@ import java.util.function.Function;
 
 import static umlp.backendrte.service.websocket.WebSocketConfig.UMLP_DOMAINNAME_ENV;
 
+@jsweet.lang.Erased // do not transpile
 public class MailService {
   protected static MailService instance = new MailService();
 

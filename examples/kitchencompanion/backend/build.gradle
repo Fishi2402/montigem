@@ -101,6 +101,14 @@ task genTestGUI(type: UMLPGuiGenTask) {
   guiCreateModels = ["gui.UserCreate"]
 }
 
+task genTestData(type: UMLPOD2DataTask) {
+  dependsOn(generateUmlpBackend)
+  input = file("../models/Example.od")
+  outputDir = file("$project.buildDir/testdata")
+  hwcDir = file("$projectDir/src/main/java")
+  symbolDir = files(generateUmlpBackend.symbolOutDir)
+}
+
 test {
   testLogging {
     events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
@@ -110,7 +118,7 @@ test {
 
 sourceSets {
   main {
-    //java.srcDirs += [layout.buildDirectory.dir("testgui")]
+    java.srcDirs += [layout.buildDirectory.dir("testdata")]
     //java.srcDirs += [layout.buildDirectory.dir("umlp/fe2")]
     // main.resources.srcDirs += generateUmlpBackend.getOutputDir().dir("resources")  // Add generated resources (e.g. html & sql files) to JAR
   }
@@ -121,5 +129,5 @@ sourceSets {
   }
 }
 
-compileJava.dependsOn(generateUmlpBackend, genTestGUI)
+compileJava.dependsOn(generateUmlpBackend, genTestGUI, genTestData)
 //compileJava.dependsOn(generateUmlpBackend)

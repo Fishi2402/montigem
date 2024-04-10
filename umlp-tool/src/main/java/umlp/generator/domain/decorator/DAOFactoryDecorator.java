@@ -8,6 +8,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
@@ -47,6 +48,10 @@ public class DAOFactoryDecorator extends AbstractDecorator {
             getMCTypeFacade().createQualifiedType(name+SUFFIX),
             StringTransformations.uncapitalize("instance")))
         .build();
+
+    // Add @jsweet.lang.Erased annotation
+    glex.replaceTemplate("cd2java.Annotations", daoFactory,
+        new StringHookPoint("@jsweet.lang.Erased"));
 
     CD4C cd4C = getCD4C();
 

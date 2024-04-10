@@ -8,6 +8,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
 import de.se_rwth.commons.Joiners;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
@@ -83,6 +84,10 @@ public class TestSetupDecorator extends AbstractDecorator {
         .setName(cdName + SUFFIX)
         .build();
 
+    // Add @jsweet.lang.Erased annotation
+    glex.replaceTemplate("cd2java.Annotations", res,
+        new StringHookPoint("@jsweet.lang.Erased"));
+
     CD4C cd4C = getCD4C();
     String typeName = res.getName();
 
@@ -138,6 +143,10 @@ public class TestSetupDecorator extends AbstractDecorator {
         .setName(cdName + MOCK_TEST_SETUP_SUFFIX)
         .build();
 
+    // Add @jsweet.lang.Erased annotation
+    glex.replaceTemplate("cd2java.Annotations", res,
+        new StringHookPoint("@jsweet.lang.Erased"));
+
     CD4C cd4C = getCD4C();
 
     // constructor
@@ -159,6 +168,10 @@ public class TestSetupDecorator extends AbstractDecorator {
         .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(parentClass.getName()))
         .setName(cdName + DB_TEST_SETUP_SUFFIX)
         .build();
+
+    // Add @jsweet.lang.Erased annotation
+    glex.replaceTemplate("cd2java.Annotations", res,
+        new StringHookPoint("@jsweet.lang.Erased"));
 
     // constructor
     addSuperConstructors(res, parentClass);
@@ -183,6 +196,10 @@ public class TestSetupDecorator extends AbstractDecorator {
         .setName(cdName + SQL_TEST_SETUP_SUFFIX)
         .build();
 
+    // Add @jsweet.lang.Erased annotation
+    glex.replaceTemplate("cd2java.Annotations", res,
+        new StringHookPoint("@jsweet.lang.Erased"));
+
     CD4C cd4C = getCD4C();
 
     // constructor
@@ -204,6 +221,10 @@ public class TestSetupDecorator extends AbstractDecorator {
         .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(parentClass.getName()))
         .setName(cdName + NEO4J_TEST_SETUP_SUFFIX)
         .build();
+
+    // Add @jsweet.lang.Erased annotation
+    glex.replaceTemplate("cd2java.Annotations", res,
+        new StringHookPoint("@jsweet.lang.Erased"));
 
     CD4C cd4C = getCD4C();
 

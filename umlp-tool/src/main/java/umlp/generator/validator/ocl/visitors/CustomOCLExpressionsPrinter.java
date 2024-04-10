@@ -49,10 +49,12 @@ public class CustomOCLExpressionsPrinter extends OCLExpressionsPrinter {
   private final Map<ASTSetComprehension, Integer> setComprehensionContext = new LinkedHashMap<>();
   private final Map<String, String> setComprehensionVariablesInScope = new LinkedHashMap<>();
   private final List<String> inDecSetCompNames = new ArrayList<>();
+  private final String cDDefinition;
 
-  public CustomOCLExpressionsPrinter(IndentPrinter printer, VariableNaming naming, IDerive deriver, ISynthesize syntheziser, OCLInvariantTree oCLInvariantTree) {
+  public CustomOCLExpressionsPrinter(IndentPrinter printer, VariableNaming naming, IDerive deriver, ISynthesize syntheziser, OCLInvariantTree oCLInvariantTree, String cDDefinition) {
     super(printer, naming, deriver, syntheziser);
     this.oCLInvariantTree = oCLInvariantTree;
+    this.cDDefinition = cDDefinition;
     oCLInvariantTree.findSetComprehensions().forEach(setComprehension -> this.setComprehensionContext.put(setComprehension, setComprehensionCounter++));
   }
 
@@ -339,7 +341,7 @@ public class CustomOCLExpressionsPrinter extends OCLExpressionsPrinter {
             node.getExpression().accept(getTraverser());
           }
         } else {
-          this.getPrinter().print("SehubManager.get");
+          this.getPrinter().print(this.cDDefinition + "Manager.get");
           this.getPrinter().print(node.getMCType().printType());
           this.getPrinter().print("List()");
         }

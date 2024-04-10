@@ -51,6 +51,8 @@ include ":experiments:module-system:routes-usage"
 include ":examples"
 include ':examples:selib'
 include ':examples:stat'
+ include ':examples:carrental-tmp:backend'
+include ':examples:carrental-tmp:frontend'
 include ':examples:artifacts-test'
 include ':examples:artifacts-java'
 include ':examples:flensburg-test:backend'
@@ -86,3 +88,6 @@ include ':products:kizam:backend'
 include ':modules:login'
 include ':modules:sovd-gateway'
 include ':modules:sovd-gateway-it:backend'
+include 'products:syse_functions:automaton'
+findProject(':products:syse_functions:automaton')?.name = 'automaton'
+

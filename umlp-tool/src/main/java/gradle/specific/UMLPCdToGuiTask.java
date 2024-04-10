@@ -11,7 +11,7 @@ import java.util.function.Function;
 
 public abstract class UMLPCdToGuiTask extends UMLPSingleFileTask {
   public UMLPCdToGuiTask() {
-    super("UMLPCdToGuiTask");
+    super("UMLPCdToGuiTask", null);
   }
 
   /**

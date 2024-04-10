@@ -72,6 +72,10 @@ public class AssocMandatoryMutatorDecorator extends UMLPMandatoryMutatorDecorato
             service.getNativeAttributeName(ast.getName()), getter, CD4CodeMill.prettyPrint(simpleType, false), this.ast.getName(), managerName).get();
     methodList.add(method5);
 
+    ASTCDMethod method6 = (ASTCDMethod) cd4c.createMethod(this.ast, getInternalSetOneTemplateGemId(),
+        service.getNativeAttributeName(ast.getName()), getter, CD4CodeMill.prettyPrint(simpleType, false), this.ast.getName(), managerName).get();
+    methodList.add(method6);
+
     return methodList;
   }
 
@@ -83,4 +87,7 @@ public class AssocMandatoryMutatorDecorator extends UMLPMandatoryMutatorDecorato
     return "umlp.methods.assocs.InternalSetOne";
   }
 
+  protected String getInternalSetOneTemplateGemId() {
+    return "umlp.methods.assocs.InternalSetOneGemId";
+  }
 }

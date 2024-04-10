@@ -9,8 +9,8 @@ import gradle.specific.UMLPBackendTask;
 import gradle.specific.UMLPCdToGuiTask;
 import gradle.specific.UMLPFrontendTask;
 import gradle.specific.UMLPGuiGenTask;
+import gradle.specific.UMLPOD2DataTask;
 import gradle.specific.UMLPSymbolsTask;
-import gradle.specific.UMLPTask;
 import gradle.specific.merge.UMLPMergeTask;
 import gradle.specific.serialize.SerializeCDSymbolsTask;
 import gradle.specific.serialize.SerializeGUISymbolsTask;
@@ -29,7 +29,6 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
   @Override
     public void apply(Project project) {
       // Make the Tasks available without fully qualified name
-      project.getExtensions().getExtraProperties().set("UMLPTask", UMLPTask.class);
       project.getExtensions().getExtraProperties().set("UMLPMergeTask", UMLPMergeTask.class);
       project.getExtensions().getExtraProperties().set("UMLPGuiGenTask", UMLPGuiGenTask.class);
       project.getExtensions().getExtraProperties().set("NPMAuthCreate", NPMAuthCreate.class);
@@ -42,6 +41,7 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
       project.getExtensions().getExtraProperties().set("SerializeGUISymbolsTask", SerializeGUISymbolsTask.class);
       project.getExtensions().getExtraProperties().set("SerializeCDSymbolsTask", SerializeCDSymbolsTask.class);
       project.getExtensions().getExtraProperties().set("CheckDirEqualityTask", CheckDirEqualityTask.class);
+      project.getExtensions().getExtraProperties().set("UMLPOD2DataTask", UMLPOD2DataTask.class);
 
       // Module system
       project.getConfigurations().maybeCreate(UMLP_MODULES_CONFIG);

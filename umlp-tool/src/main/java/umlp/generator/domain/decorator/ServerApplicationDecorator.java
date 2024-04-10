@@ -42,7 +42,7 @@ public class ServerApplicationDecorator extends AbstractDecorator {
         "    exclude={DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class},\n" +
         "    scanBasePackages={\"umlp.backendrte.service.websocket\", \"umlp.backendrte.service.rest\", \"" +origCD.getCDDefinition().getName().toLowerCase() +
         ".service\"}\n" +
-        ")"));
+        ")\n@jsweet.lang.Erased\n"));
 
     ASTCDMethodSignature initMethod = isNeo4jGen? getCD4C().addMethod(serverApplicationClass, "umlp.serverapplication.initNeo4j", name)
         : getCD4C().addMethod(serverApplicationClass, "umlp.serverapplication.init", name);

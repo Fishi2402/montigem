@@ -1,7 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
 package umlp._cocos;
 
 import de.monticore.cd4code.typescalculator.FullSynthesizeFromCD4Code;
-import de.monticore.cdassociation.CDAssociationMill;
 import de.monticore.cdassociation._ast.ASTCDAssociation;
 import de.monticore.cdassociation._cocos.CDAssociationASTCDAssociationCoCo;
 import de.monticore.types.check.SymTypeExpression;

@@ -193,7 +193,7 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
         let finalCommandOptional: Command<Object> = commandOptional;
         // this.executor.submit(() => {
         for (const consumer of this.commandObserver) {
-          // consumer(finalCommandOptional);
+          consumer(finalCommandOptional);
         }
         // });
       }

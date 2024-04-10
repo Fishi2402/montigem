@@ -53,6 +53,11 @@ public class ManagerMockDecorator extends AbstractDecorator {
         .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(name + ManagerDecorator.SUFFIX))
         .build();
 
+    // Add @jsweet.lang.Erased annotation
+    glex.replaceTemplate("cd2java.Annotations", managerClass,
+        new StringHookPoint("@jsweet.lang.Erased"));
+
+
     // attributes
     getCD4C().addAttribute(managerClass, "static protected long freeGemId = 1001L");
     getCD4C().addAttribute(managerClass, "protected static " + name + "DummyProvider dummyProvider");

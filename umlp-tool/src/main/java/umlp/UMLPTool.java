@@ -8,7 +8,9 @@ import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
+import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._visitor.CDBasisVisitor2;
 import de.monticore.class2mc.OOClass2MCResolver;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -69,6 +71,7 @@ import umlp.generator.gui.gentypescript.config.ModuleRoutingInfo;
 import umlp.generator.gui.gentypescript.domain.TSUMLPGenerator;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentGenerator;
 import umlp.generator.gui.guivariability.GUIVariabilityHandler;
+import umlp.generator.util.TagLookUp;
 import umlp.generator.util.UMLPSymbolTables;
 import umlp.generator.validator.ocl.OCLASTPreProcessor;
 
@@ -300,7 +303,16 @@ public class UMLPTool extends UMLPToolTOP {
         runDefaultCoCos(ast);
         runDefaultTrafos(ast);
         recreateSymbolTable(ast);
-        CD2GUITool guiTool = new CD2GUITool(ast, outDir, hwcPath);
+
+        // Do not gen Forms for singletons
+        List<String> extraOpts = new ArrayList<>();
+        for (String singletonClass : getSingletonClasses(ast)) {
+          extraOpts.add("-");
+          extraOpts.add("ExcludeForm");
+          extraOpts.add(singletonClass);
+        }
+
+        CD2GUITool guiTool = new CD2GUITool(ast, outDir, hwcPath, extraOpts.toArray(new String[0]));
         guiTool.generateGUI();
 
         // TODO (MB): Ist diese Lösung okay?
@@ -649,6 +661,23 @@ public class UMLPTool extends UMLPToolTOP {
     }
   }
 
+  private static List<String> getSingletonClasses(ASTCDCompilationUnit ast) {
+    List<String> singletonClasses = new ArrayList<>();
+    CDBasisVisitor2 v = new CDBasisVisitor2() {
+      @Override
+      public void visit(ASTCDClass node) {
+        if (TagLookUp.isSingleton(node)) {
+          singletonClasses.add(node.getSymbol().getFullName());
+        }
+      }
+    };
+    UMLPTraverser t = UMLPMill.traverser();
+    t.add4CDBasis(v);
+    ast.accept(t);
+
+    return singletonClasses;
+  }
+
   protected List<String> getModuleConfigTemplates(CommandLine cmd) {
     if (!cmd.hasOption(UMLPToolOptions.MODULE_CONFIG.getCMD())) {
       return List.of();
@@ -720,13 +749,13 @@ public class UMLPTool extends UMLPToolTOP {
     assocTrafo.transform(node);
     logTrafoExec("UMLAttrToAssocTrafo", node);
 
-    UMLSetDefaultsTrafo assocNameTrafo = new UMLSetDefaultsTrafo(CD4CodeMill.traverser());
-    assocNameTrafo.transform(node);
-    logTrafoExec("UMLSetDefaultsTrafo", node);
-
     UMLAssocToAttrTrafo assoc2Trafo = new UMLAssocToAttrTrafo(CD4CodeMill.traverser());
     assoc2Trafo.transform(node);
     logTrafoExec("UMLAssocToAttrTrafo", node);
+
+    UMLSetDefaultsTrafo assocNameTrafo = new UMLSetDefaultsTrafo(CD4CodeMill.traverser());
+    assocNameTrafo.transform(node);
+    logTrafoExec("UMLSetDefaultsTrafo", node);
 
     UMLAddCommentTrafo commentTrafo = new UMLAddCommentTrafo(CD4CodeMill.traverser());
     commentTrafo.transform(node);

@@ -50,6 +50,11 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
     // Lifecycle task "continuous". Intended use is with "--continuous" flag of gradle & HotReload
     Task continuousTask = project.getTasks().create("continuous");
     continuousTask.dependsOn(project.getTasks().withType(Jar.class));
+
+    // Add dependency to jsweet-core, to import the annotations (such as @Erased)
+    // Only during compilation of the backend
+    // TODO: Use constant for jsweet-core
+    project.getDependencies().add("compileOnly", "org.jsweet:jsweet-core:6.3.0");
   }
 
   // Add generated files to SourceSets

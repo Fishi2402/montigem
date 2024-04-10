@@ -2,10 +2,8 @@
 package gradle.specific;
 
 import gradle.common.UMLPSingleFileTask;
-import gradle.common.UMLPSingleFilev2Task;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
-import org.gradle.api.tasks.CacheableTask;
 import org.gradle.api.tasks.CacheableTask;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.OutputDirectory;
@@ -24,7 +22,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @CacheableTask
-public abstract class UMLPSymbolsTask extends UMLPSingleFilev2Task {
+public abstract class UMLPSymbolsTask extends UMLPSingleFileTask {
 
   public UMLPSymbolsTask() {
     super("UMLPSymbolsTask", null);

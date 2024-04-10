@@ -4,6 +4,7 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
@@ -34,6 +35,12 @@ public class TestContextDecorator extends AbstractDecorator {
         .setModifier(PUBLIC.build())
         .setCDInterfaceUsage(getInterfaceUsageFacade().createCDInterfaceUsage("TestContext"))
         .setName(name + SUFFIX).build();
+
+    // Add @jsweet.lang.Erased annotation
+    // Add @jsweet.lang.Erased annotation
+    glex.replaceTemplate("cd2java.Annotations", testContextClass,
+        new StringHookPoint("@jsweet.lang.Erased"));
+
 
 
     // Attributes

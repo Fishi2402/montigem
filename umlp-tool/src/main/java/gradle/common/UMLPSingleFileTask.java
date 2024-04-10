@@ -1,112 +1,148 @@
-/* (c) https://github.com/MontiCore/monticore */
 package gradle.common;
 
-import de.se_rwth.commons.logging.Log;
-import org.apache.commons.io.FileUtils;
-import org.gradle.api.file.Directory;
-import org.gradle.api.file.FileType;
-import org.gradle.api.tasks.TaskAction;
-import org.gradle.work.ChangeType;
-import org.gradle.work.InputChanges;
-import umlp.UMLPToolOptions;
+import de.monticore.gradle.common.AToolAction;
+import de.monticore.gradle.common.MCSingleFileTask;
+import de.monticore.symboltable.serialization.json.JsonElement;
+import gradle.UMLPPluginBase;
+import gradle.stat.GradleTaskStatistic;
+import gradle.stat.TaskStatData;
+import org.apache.commons.io.IOUtils;
+import org.gradle.api.file.ConfigurableFileCollection;
+import org.gradle.api.provider.ListProperty;
+import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.InputFiles;
+import org.gradle.api.tasks.Internal;
+import org.gradle.api.tasks.Optional;
+import org.gradle.api.tasks.PathSensitive;
+import org.gradle.api.tasks.PathSensitivity;
+import umlp.module_system.ModuleMetadata;
+import umlp.module_system.TaskModuleMetadata;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
-@Deprecated
-abstract public class UMLPSingleFileTask extends CommonUMLPTask {
+public abstract class UMLPSingleFileTask extends MCSingleFileTask implements GradleTaskStatistic {
+  protected final TaskStatData statdata = new TaskStatData("SingleFile");
 
-  public UMLPSingleFileTask(String type) {
-    super(type);
+  @InputFiles     // Not Incremental. Any change should trigger full rebuild
+  @PathSensitive(PathSensitivity.NAME_ONLY)
+  @Optional
+  public abstract ConfigurableFileCollection getModules();
+
+  @Input
+  @Optional
+  public abstract ListProperty<String> getModuleConfigTemplates();
+
+  public UMLPSingleFileTask(String type, String symbolPathConfigurationName) {
+    super(type, symbolPathConfigurationName);
+
+    getModules().from(getProject().getConfigurations().getByName(UMLPPluginBase.UMLP_MODULES_CONFIG));
+
+    getModuleConfigTemplates().convention(getProject().provider(() -> {
+      List<String> res = new ArrayList<>();
+      for (TaskModuleMetadata taskMetadata : getMetadataForThisTask()) {
+        res.addAll(taskMetadata.getAdditionalConfigs());
+      }
+      return res;
+    }));
+
+    getExtraClasspathElements().from(getModules());
   }
 
   @Override
-  protected Directory getReportDirOfFile(File f) {
-    String pathName = getProject().getProjectDir().toPath().toAbsolutePath().relativize(f.toPath()).toString();
-    return getReportDir().dir(pathName.replace(".", "__")).get();
-  }
-
-  protected void deletePreviousOutput(File f, IncGenData lastRun) {
-    Log.info("Deleting generated artifacts from previous run of " + f.getName(), this.getName());
-    lastRun.deleteGeneratedFiles();
-
-    // Deleting old reports.
-    try {
-      FileUtils.deleteDirectory(this.getReportDirOfFile(f).getAsFile());
-    } catch (IOException e) {
-      Log.warn("Error deleting old reports. " +
-          "This could cause errors in upcoming incremental builds." +
-          "Affected directory: " + this.getReportDirOfFile(f));
-    }
-  }
-
-  protected void runOnSingleInputFile(File f, InputChanges changedInput) {
-    assert f.exists();
-    assert f.isFile();
-    assert isInputFile(f);
-
-    IncGenData lastRun = new IncGenData(getIncGenFile(f), this.getProject().getProjectDir());
-
-    if (!changedInput.isIncremental()  || !lastRun.isUpToDate(getStreamOfChanges(changedInput))) {
-      Log.warn(f.getName() + " is *NOT* UP-TO-DATE, starting generation process");
-
-      deletePreviousOutput(f, lastRun);
-      startGeneration(f);
-    } else {
-      Log.warn(f.getName() + " is UP-TO-DATE, no action required");
-    }
-  }
-
-  private void startGeneration(File f) {
-    Path cwd = getProject().getProjectDir().toPath().toAbsolutePath();
-    Log.warn("Starting UMLPTool: \n" +
-        "\t  java -jar UMLPTool.jar " +
-        String.join(" ", createArgList(f.toPath(), p -> "." + File.separator + cwd.relativize(p)))
-    );
-
-    List<String> args = createArgList(f.toPath(), p -> p.toAbsolutePath().toString());
-    startGeneration(args);
-  }
-
-  /**
-   * @param filePath Path of InputFile
-   * @return Arguments that can be used to start CLI-Tool
-   */
   protected List<String> createArgList(Path filePath, Function<Path, String> handlePath) {
-    assert (filePath.toFile().isFile());
-    assert (isInputFile(filePath.toFile()));
-
-    List<String> result = super.createArgList(handlePath);
-
-    result.add("-" + UMLPToolOptions.INPUT.getCMD());
-    result.add(handlePath.apply(filePath));
-
-    result.add("-" + UMLPToolOptions.REPORTS.getCMD());
-    result.add(handlePath.apply(getReportDirOfFile(filePath.toFile()).getAsFile().toPath()));
+    List<String> result = super.createArgList(filePath, handlePath);
+    if(getModuleConfigTemplates().isPresent()){
+      for (String moduleConfigTemplate : getModuleConfigTemplates().get()) {
+        result.add("--module-config");
+        result.add(moduleConfigTemplate);
+      }
+    }
 
     return result;
   }
 
-  @TaskAction
-  public void run(InputChanges inputChanges) {
-    prepareRun();
 
-    // Remove Artifacts from deleted inputs
-    inputChanges.getFileChanges(this.getInput()).forEach(ch -> {
-      if (ch.getChangeType() == ChangeType.REMOVED
-          && isInputFile(ch.getFile())
-          && ch.getFileType() == FileType.FILE) {
-        this.deletePreviousOutput(ch.getFile(), new IncGenData(getIncGenFile(ch.getFile()), getProject().getProjectDir().toPath().toAbsolutePath().toFile()));
-      }
-    });
+  @Internal
+  protected List<ModuleMetadata> getModuleMetadataList(){
+    List<ModuleMetadata> res = new ArrayList<>();
 
-    // Generate from input
-    getInput().getAsFileTree().getFiles().stream()
-        .filter(this::isInputFile)    // TODO: match directly on "getInput()"
-        .forEach(x -> runOnSingleInputFile(x, inputChanges));
+    for (File file : getModules().getFiles()) {
+      res.add(ModuleMetadata.fromJson(readModuleMetadata(file)));
+    }
+    return res;
   }
 
+  protected String readModuleMetadata(File file) {
+    try(var zf = new ZipFile(file)){
+      Enumeration<? extends ZipEntry> entries = zf.entries();
+      ZipEntry entry;
+      while((entry = entries.nextElement()) != null){
+        if(entry.getName().matches("[^/]+[.]metadata[.](json)")){
+          break;
+        }
+      }
+      if(entry != null){
+        try(var is = zf.getInputStream(entry)){
+          return IOUtils.toString(is, StandardCharsets.UTF_8);
+        }
+      }
+    }catch (IOException e){
+      throw new RuntimeException("Error loading metadata of module " + file, e);
+    }
+
+    throw new IllegalStateException("Can not find metadata of module "  + file);
+  }
+
+  @Internal
+  protected List<TaskModuleMetadata> getMetadataForThisTask(){
+    List<TaskModuleMetadata> res = new ArrayList<>();
+
+    for (ModuleMetadata moduleMetadata : getModuleMetadataList()) {
+      for (TaskModuleMetadata taskModuleMetadata : moduleMetadata.getTasks()) {
+        if(taskModuleMetadata.getType().equals(type)){
+          getLogger().info("Adding module " + moduleMetadata.getName(), this.getName());
+          res.add(taskModuleMetadata);
+        }
+      }
+    }
+    return res;
+  }
+
+  @Override
+  protected Consumer<String[]> getRunMethod() {
+    return UMLPToolInvoker::run;
+  }
+
+  @Override
+  protected Class<? extends AToolAction> getToolAction() {
+    return UMLPAction.class;
+  }
+
+
+
+  @Override
+  protected void startGeneration(List<String> args, String progressName) {
+    statdata.countRun();
+    super.startGeneration(args, progressName);
+  }
+  @Override
+  public void prepareRun(){
+    super.prepareRun();
+    statdata.setNumberOfInputFiles(getInput().getAsFileTree().getFiles().stream().filter(this::isInputFile).count());
+  }
+  @Override
+  @Internal
+  public JsonElement getGradleStatisticData() {
+    return statdata.getData();
+  }
 }
