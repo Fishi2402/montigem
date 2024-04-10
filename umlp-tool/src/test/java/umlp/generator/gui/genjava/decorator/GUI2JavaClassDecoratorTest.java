@@ -71,10 +71,10 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
 
     assertAll(
         () -> assertTrue(Log.getFindings().isEmpty()),
-        () -> assertEquals(14, clazz.getCDAttributeList().size()),
+        () -> assertEquals(13, clazz.getCDAttributeList().size()),
         () -> assertEquals(73, clazz.getCDMethodList().size()),
         () -> assertEquals(1, clazz.getCDConstructorList().size()),
-        () -> assertEquals(8, imports.size())
+        () -> assertEquals(9, imports.size())
     );
   }
 
@@ -159,7 +159,7 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     assertions.add(() -> assertEquals("Person", _person.getMCType().printType()));
     assertions.add(() -> assertEquals("Person", _$per$son.getMCType().printType()));
     assertions.add(() -> assertEquals("MaritalStatus", _status.getMCType().printType()));
-    assertions.add(() -> assertEquals("List<Address>", _la.getMCType().printType()));
+    assertions.add(() -> assertEquals("GemList<Address>", _la.getMCType().printType()));
     assertions.add(() -> assertEquals("List<List<Address>>", _lla.getMCType().printType()));
     assertions.add(() -> assertTrue(
         "java.lang.String".equals(_s.getMCType().printType())
@@ -253,6 +253,7 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     ASTMCImportStatement personImport = getImport(imports, "packaged.domain.Person");
     ASTMCImportStatement maritalStatusImport = getImport(imports, "packaged.domain.MaritalStatus");
     ASTMCImportStatement listImport = getImport(imports, "java.util.List");
+    ASTMCImportStatement gemListImport = getImport(imports, "umlp.backendrte.common.GemList");
     ASTMCImportStatement addressImport = getImport(imports, "packaged.domain.Address");
     ASTMCImportStatement guiViewElementImport = getImport(imports, "de.monticore.guidsl.types.GUIViewElement");
     ASTMCImportStatement eventImport = getImport(imports, "de.monticore.guidsl.types.Event");
@@ -263,6 +264,7 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     assertions.add(() -> assertNotNull(personImport));
     assertions.add(() -> assertNotNull(maritalStatusImport));
     assertions.add(() -> assertNotNull(listImport));
+    assertions.add(() -> assertNotNull(gemListImport));
     assertions.add(() -> assertNotNull(addressImport));
     assertions.add(() -> assertNotNull(guiViewElementImport));
     assertions.add(() -> assertNotNull(eventImport));
@@ -313,23 +315,20 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     ASTCDMethod setDI = getMethod(methods, "setDI");
     ASTCDMethod getFI = getMethod(methods, "getFI");
     ASTCDMethod setFI = getMethod(methods, "setFI");
-    ASTCDMethod getGGve = getMethod(methods, "getGGve");
-    ASTCDMethod getGLgve = getMethod(methods, "getGLgve");
-    ASTCDMethod getGLgve_1 = getMethod(methods, "getGLgve_1");
-    ASTCDMethod initGLgve_1 = getMethod(methods, "initGLgve_1");
     ASTCDMethod hE = getMethod(methods, "hE");
     ASTCDMethod jE = getMethod(methods, "jE");
     ASTCDMethod action = getMethod(methods, "action");
     ASTCDMethod getKA = getMethod(methods, "getKA");
     ASTCDMethod getKS = getMethod(methods, "getKS");
-    ASTCDMethod getKS_2 = getMethod(methods, "getKS_2");
-    ASTCDMethod initKS_2 = getMethod(methods, "initKS_2");
+    ASTCDMethod getKS_1 = getMethod(methods, "getKS_1");
+    ASTCDMethod initKS_1 = getMethod(methods, "initKS_1");
     ASTCDMethod getKM = getMethod(methods, "getKM");
-    ASTCDMethod getKM_3 = getMethod(methods, "getKM_3");
-    ASTCDMethod initKM_3 = getMethod(methods, "getKM_3");
+    ASTCDMethod getKM_2 = getMethod(methods, "getKM_2");
+    ASTCDMethod initKM_2 = getMethod(methods, "getKM_2");
     ASTCDMethod getLIterable = getMethod(methods, "getLIterable");
     ASTCDMethod getMCondition = getMethod(methods, "getMCondition");
     ASTCDMethod getNP = getMethod(methods, "getNP");
+    ASTCDMethod getPIterable = getMethod(methods, "getPIterable");
 
     assertions.add(() -> assertNotNull(getAP));
     assertions.add(() -> assertNotNull(getAM));
@@ -346,23 +345,20 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     assertions.add(() -> assertNotNull(setDI));
     assertions.add(() -> assertNotNull(getFI));
     assertions.add(() -> assertNotNull(setFI));
-    assertions.add(() -> assertNotNull(getGGve));
-    assertions.add(() -> assertNotNull(getGLgve));
-    assertions.add(() -> assertNotNull(getGLgve_1));
-    assertions.add(() -> assertNotNull(initGLgve_1));
     assertions.add(() -> assertNotNull(hE));
     assertions.add(() -> assertNotNull(jE));
     assertions.add(() -> assertNotNull(action));
     assertions.add(() -> assertNotNull(getKA));
     assertions.add(() -> assertNotNull(getKS));
-    assertions.add(() -> assertNotNull(getKS_2));
-    assertions.add(() -> assertNotNull(initKS_2));
+    assertions.add(() -> assertNotNull(getKS_1));
+    assertions.add(() -> assertNotNull(initKS_1));
     assertions.add(() -> assertNotNull(getKM));
-    assertions.add(() -> assertNotNull(getKM_3));
-    assertions.add(() -> assertNotNull(initKM_3));
+    assertions.add(() -> assertNotNull(getKM_2));
+    assertions.add(() -> assertNotNull(initKM_2));
     assertions.add(() -> assertNotNull(getLIterable));
     assertions.add(() -> assertNotNull(getMCondition));
     assertions.add(() -> assertNotNull(getNP));
+    assertions.add(() -> assertNotNull(getPIterable));
 
     assertAll(assertions);
   }

@@ -129,4 +129,10 @@ page GUI2JavaClassDecorator(
       */
     }
   }
+  // getOV + getGLgve + getGLgve_1 + initGLgve_1
+  o@L(v = [
+    p@iterate(Person friend : person.friends) {
+      q@P();
+    }
+  ]);
 }

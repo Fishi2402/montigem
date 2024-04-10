@@ -21,6 +21,7 @@ page StaticObjectsCollector(Person person) {
       g@L(a = [p.address, p2.address]);
       h@L(a = [p2.address, p.address]);
       i@P(p = Person(person.name));
+      j@L(v = [$2@iterate(Person p3 : person.friends) { $3@L(); }]);
     }
   }
   // TODO: iterate and guard tests with lists. Lists are currently unsupported in guards and iterate

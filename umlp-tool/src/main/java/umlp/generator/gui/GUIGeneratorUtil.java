@@ -211,17 +211,23 @@ public class GUIGeneratorUtil {
   }
 
   public final boolean isDomainListType(SymTypeExpression type) {
+    return getDomainListInnerType(type).isPresent();
+  }
+
+  public Optional<SymTypeExpression> getDomainListInnerType(SymTypeExpression type) {
     if (type.hasTypeInfo() && GenService.isList(type)) {
       if (((SymTypeOfGenerics) type).sizeArguments() == 1) {
         SymTypeExpression inner = ((SymTypeOfGenerics) type).getArgument(0);
         TypeSymbol ts = inner.getTypeInfo();
         if (ts.getEnclosingScope() instanceof IGUIDSLArtifactScope) {
           IGUIDSLArtifactScope as = (IGUIDSLArtifactScope) ts.getEnclosingScope();
-          return DOMAIN_MODELS.contains(as.getFullName());
+          if (DOMAIN_MODELS.contains(as.getFullName())) {
+            return Optional.of(inner);
+          }
         }
       }
     }
-    return false;
+    return Optional.empty();
   }
 
   public boolean isEnum(String name, IOOSymbolsScope scope) {

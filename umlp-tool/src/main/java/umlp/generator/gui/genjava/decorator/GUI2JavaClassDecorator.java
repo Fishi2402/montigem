@@ -31,7 +31,6 @@ import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
@@ -40,16 +39,19 @@ import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.gui.GUIAbstractDecorator;
+import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.genjava.prettyprinter.Expression2AccessorPrinter;
 import umlp.generator.gui.genjava.prettyprinter.Expression2MutatorPrinter;
 import umlp.generator.gui.genjava.prettyprinter.Expression2NullCheckPrinter;
 import umlp.generator.gui.genjava.prettyprinter.Expression2SetterPrinter;
 import umlp.generator.gui.genjava.prettyprinter.IterationItemsFinder;
+import umlp.generator.util.PathUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -72,6 +74,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
 
   public void transform(ASTGUICompilationUnit gui, ASTCDCompilationUnit cd) {
     this.gui = gui;
+    glex.replaceTemplate("cd2java.Imports", new TemplateHookPoint("umlp.Imports"));
 
     // package
     ASTCDPackage cdPackage = CD4CodeMill.cDPackageBuilder()
@@ -103,6 +106,12 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
       );
     }
     SymTypeExpression typeSTE = node.getSymbol().getType();
+
+    if (GUIGeneratorUtil.getInstance().isViewElement(typeSTE)
+        || GUIGeneratorUtil.getInstance().isViewElementsCollection(typeSTE)) {
+      return;
+    }
+
     String type = importAndPrintType(typeSTE);
 
     // calc name
@@ -138,15 +147,17 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
           new TemplateHookPoint(getInitCallTemplate(), builderInit)
       );
     }
-    else if (util.isDomainListType(typeSTE)) {
+    else if (util.getDomainListInnerType(typeSTE).isPresent()
+        && !util.isEnumType(util.getDomainListInnerType(typeSTE).get())) {
       if (util.getMainDomainModelSimpleName().isEmpty()) {
         Log.error("0x00007 Could not identify the manager name: domain class diagram is missing");
         return;
       }
+      String innerType = util.getDomainListInnerType(typeSTE).get().print();
       String manager = ManagerDecorator.getClassName(util.getMainDomainModelSimpleName().get());
       // add attr init
       ASTCDMethodSignature attrInit = getCD4C().addMethod(
-          clazz, getInitDomainListTemplate(), type, name, manager
+          clazz, getInitDomainListTemplate(), innerType, name, manager
       );
 
       // add attr init to class init
@@ -184,6 +195,12 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
         );
       }
       SymTypeExpression typeSTE = arg.getNameSymbol().getType();
+
+      if (GUIGeneratorUtil.getInstance().isViewElement(typeSTE)
+          || GUIGeneratorUtil.getInstance().isViewElementsCollection(typeSTE)) {
+        return;
+      }
+
       String type = importAndPrintType(typeSTE);
 
       // calc name
@@ -210,9 +227,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
         importAndPrintType(vs.getType());
       }
 
-      Optional<TypeSymbol> eventType = node.getEnclosingScope()
-          .resolveType(BuiltInTypes.EVENT.getQName());
-      if (eventType.isPresent() && typeSTE.getTypeInfo().equals(eventType.get())) {
+      if (typeSTE.printFullName().startsWith(BuiltInTypes.EVENT.getQName())) {
         // add event caller
         getCD4C().addMethod(
             clazz, getEventCallerTemplate(),
@@ -405,7 +420,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
             );
           }
           importAndPrintType(argSTE);
-          arguments.add(new Argument(type, name));
+          arguments.add(new Argument(argSTE.print(), Expression2SetterPrinter.SETTER_PARAM));
         }
         importAndPrintType(deriver.getResult());
         getCD4C().addMethod(clazz, getEmptyCallTemplate(), type, name, arguments);
@@ -475,9 +490,25 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     }
     else if (ste.isGenericType()) {
       SymTypeOfGenerics stog = ste.asGenericType();
-
+      // a List<Person> must be printed as GemList<Person>
+      // a List<String> as a List<String>
+      // a List<MyDomainEnum> as a List<MyDomainEnum>
+      if (util.getDomainListInnerType(ste).isPresent()
+          && !util.isEnumType(util.getDomainListInnerType(ste).get())) {
+        getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("GemList"));
+        StringBuilder sb = new StringBuilder("GemList");
+        sb.append("<");
+        Iterator<SymTypeExpression> steArgIter = stog.getArgumentList().iterator();
+        while (steArgIter.hasNext()) {
+          sb.append(importAndPrintType(steArgIter.next()));
+          if (steArgIter.hasNext()) {
+            sb.append(",");
+          }
+        }
+        sb.append(">");
+        return sb.toString();
+      }
       getCD4C().addImport(clazz, stog.getTypeConstructorFullName());
-
       for (SymTypeExpression steArg : stog.getArgumentList()) {
         importAndPrintType(steArg);
       }
@@ -485,7 +516,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     else if (ste.isPrimitive()) {
       return ste.asPrimitive().getBoxedPrimitiveName();
     }
-    else if (!(ste.isNullType() || ste.isVoidType() || ste.isWildcard())) {
+    else if (!(ste.isNullType() || ste.isVoidType() || ste.isWildcard() || ste.isTypeVariable())) {
       Log.error("0x00010 Encountered unsupported type in " + gui.getComponentQName()
           + ": parameter type '" + ste.printFullName() + "'");
     }

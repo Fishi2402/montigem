@@ -107,16 +107,20 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
 
   @Override
   public void visit(ASTGUIList node) {
-    if (!listTypes.containsKey(node)
-        && lastArg.isPresent()
-        && lastArg.get().getGUIArgValue().isPresentGUIList()
-        && lastArg.get().getGUIArgValue().getGUIList().equals(node)) {
+    if (!listTypes.containsKey(node) && lastArg.isPresent()) {
       if (!lastArg.get().isPresentNameSymbol()) {
         Log.error("0x00012 Unable to find defining symbol for argument '"
             + lastArg.get().getName() + "'.");
         return;
       }
-      recordTypes(node, lastArg.get().getNameSymbol().getType());
+      SymTypeExpression ste = lastArg.get().getNameSymbol().getType();
+      if (GUIGeneratorUtil.getInstance().isViewElementsCollection(ste)) {
+        return;
+      }
+      if (lastArg.get().getGUIArgValue().isPresentGUIList()
+          && lastArg.get().getGUIArgValue().getGUIList().equals(node)) {
+        recordTypes(node, ste);
+      }
     }
     String type = printType(node);
     String name = curComp + StringTransformations.capitalize(curArg) + "_" + counter++;
