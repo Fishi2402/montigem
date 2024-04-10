@@ -13,13 +13,17 @@ import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl.types.check.util.GUIDSLTypeTraverserFactory;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.Type4Ast;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.gui.GUIComponentsVisitor;
+import umlp.generator.gui.genjava.prettyprinter.Expression2AccessorPrinter;
+import umlp.generator.gui.genjava.prettyprinter.IterationItemsFinder;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,17 +58,38 @@ public class EventDecorator extends GUI2JavaComponentDecorator {
           ASTCallExpression call = (ASTCallExpression) event.getGUIArgValue().getExpression();
           ASTNameExpression callName = (ASTNameExpression) call.getExpression();
 
-          List<String> args = new ArrayList<>();
+          List<String> argCallbackArgs = new ArrayList<>();
+          List<String> argCallbackParams = new ArrayList<>();
+
+          List<String> callbackArgs = new ArrayList<>();
+          List<String> callbackParams = new ArrayList<>();
           for (ASTExpression e : call.getArguments().getExpressionList()) {
-            args.add(util.print(e));
+            IterationItemsFinder finder = new IterationItemsFinder();
+            Collection<ASTExpression> iterateItems = finder.getItems(guiAst);
+
+            // replace field access with getters
+            Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
+                new IndentPrinter(), false, iterateItems, iterateItems
+            );
+
+            String getterValue = getterPrinter.prettyprint(e);
+
+            if (!iterateItems.contains(e)) {
+              argCallbackArgs.add(getterValue);
+            } else {
+              argCallbackArgs.add(util.print(e));
+              argCallbackParams.add(util.print(e));
+            }
+            callbackArgs.add(util.print(e));
+            callbackParams.add(util.print(e));
           }
           String methodName = callName.getName();
 
-          getCD4C().addMethod(decoratedClass, getEventCallbackTemplate(),
-              util.gui2cdEventCallName(guiComponent, event.getName()), methodName, args);
+          getCD4C().addMethod(decoratedClass, getEventArgCallbackTemplate(),
+              util.gui2cdEventCallName(guiComponent, event.getName()), methodName, argCallbackArgs, argCallbackParams);
 
           Optional<ASTCDMethodSignature> methodSignature = getCD4C().createMethod(decoratedClass,
-              getEventCallbackTemplate(), methodName, "", args);
+              getEventCallbackTemplate(), methodName, callbackArgs, callbackParams);
           if (methodSignature.isPresent() && !GenService.containsMethod(decoratedClass, methodSignature.get())) {
             decoratedClass.addCDMember(methodSignature.get());
             if (!call.getArguments().getExpressionList().isEmpty()) {
@@ -77,7 +102,7 @@ public class EventDecorator extends GUI2JavaComponentDecorator {
                 for (EventType eventType : EventType.values()) {
                   if (methodName.equals(eventType.eventName)) {
                     glex.replaceTemplate(EMPTY_BODY, methodSignature.get(), new TemplateHookPoint(getEventTypeTemplate(EventType.valueOf(eventType.name())),
-                        util.getMainDomainModelSimpleName().get(), te.print(), args.get(0)));
+                        util.getMainDomainModelSimpleName().get(), te.print(), argCallbackArgs.get(0)));
                   }
                 }
               }
@@ -97,6 +122,10 @@ public class EventDecorator extends GUI2JavaComponentDecorator {
 
   protected String getEventCallbackTemplate() {
     return "umlp.gui2java.EventCallback";
+  }
+
+  protected String getEventArgCallbackTemplate() {
+    return "umlp.gui2java.EventArgCallback";
   }
 
   protected String getEventTypeTemplate(EventType inbuild) {
