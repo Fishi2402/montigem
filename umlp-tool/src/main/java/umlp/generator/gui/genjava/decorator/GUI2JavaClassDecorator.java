@@ -85,6 +85,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     // class
     clazz = emptyClass(gui);
     cdPackage.addCDElement(withOrigin(clazz));
+    addDirectiveAnnotation();
 
     // TODO add router
     // addAdditionalAttributes(clazz);
@@ -452,6 +453,15 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
         .build();
   }
 
+  protected void addDirectiveAnnotation() {
+    String domainModel = util.getMainDomainModelQName().orElse("");
+    boolean isEmpty = gui.getGUIComponentDeclaration().getGUIParamList().isEmpty();
+
+    getCD4C().addImport(clazz, "umlp.jsweet.extension.annotation.Directive");
+    glex.replaceTemplate("cd2java.Annotations", clazz,
+        new TemplateHookPoint(getDirectiveAnnotationTemplate(), domainModel, isEmpty));
+  }
+
   protected ASTCDMethodSignature addConstructor() {
     return getCD4C().addConstructor(clazz, "umlp.gui2java.GUI2JavaConstructor");
   }
@@ -523,6 +533,10 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
           + ": parameter type '" + ste.printFullName() + "'");
     }
     return ste.print();
+  }
+
+  protected String getDirectiveAnnotationTemplate() {
+    return "umlp.gui2java.GUI2JavaDirectiveAnnotation";
   }
 
   protected String getInitParamTemplate() {
