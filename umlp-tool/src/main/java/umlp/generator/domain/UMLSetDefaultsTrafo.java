@@ -31,6 +31,10 @@ public class UMLSetDefaultsTrafo implements CDAssociationVisitor2, CDBasisVisito
 
   @Override
   public void visit(ASTCDAssociation ast) {
+    if (!(ast.getModifier().isPrivate() || ast.getModifier().isProtected() || ast.getModifier().isPublic())) {
+      ast.getModifier().setPublic(true);
+    }
+
     if (ast.isPresentName()) {
       return;
     }
@@ -47,12 +51,20 @@ public class UMLSetDefaultsTrafo implements CDAssociationVisitor2, CDBasisVisito
     if (!ast.isPresentCDCardinality()) {
       ast.setCDCardinality(CD4CodeMill.cDCardOneBuilder().build());
     }
+
+    if (!(ast.getModifier().isPrivate() || ast.getModifier().isProtected() || ast.getModifier().isPublic())) {
+      ast.getModifier().setPublic(true);
+    }
   }
 
   @Override
   public void visit(ASTCDAssocLeftSide ast) {
     if (!ast.isPresentCDCardinality()) {
       ast.setCDCardinality(CD4CodeMill.cDCardOneBuilder().build());
+    }
+
+    if (!(ast.getModifier().isPrivate() || ast.getModifier().isProtected() || ast.getModifier().isPublic())) {
+      ast.getModifier().setPublic(true);
     }
   }
 
