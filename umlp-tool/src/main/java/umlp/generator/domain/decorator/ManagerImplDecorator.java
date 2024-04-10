@@ -22,6 +22,8 @@ import umlp.generator.util.PathUtil;
 import umlp.generator.util.TagLookUp;
 import umlp.generator.util.UMLPSymbolTables;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -102,11 +104,23 @@ public class ManagerImplDecorator extends AbstractDecorator {
       getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderParam", name);
       getCD4C().addMethod(managerClass, "umlp.managerimpl.DoDeSerBuilder", name);
       if (!isSingleton) {
-        List<ASTCDAssocSide> assocs = CDSymbolTables.getAssociations(domainClass).stream()
+        List<ASTCDAssocSide> assocs = CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
             .filter(GenService::isBidirectional)
             .filter(Predicate.not(GenService::isSymbolDerived))
             .collect(Collectors.toList());
-        getCD4C().addMethod(managerClass, "umlp.managerimpl.DoAdd", name, managerName, assocs);
+        Map<String, String> sideToCorrectManager = new LinkedHashMap<>();
+        assocs.forEach(a -> {
+          ASTCDCompilationUnit cd = UMLPSymbolTables.getDiagramFor((ASTCDType) a.getSymbol().getType()
+                  .getTypeInfo().getAstNode());
+          String printedType = a.getSymbol().getType().print();
+          getCD4C().addImport(managerClass, getPackageName(cd, DEFAULT_PACKAGE) + "." + printedType);
+
+          String correctManager = getCorrectManager(a.getSymbol().getAssoc().getAssociation().getAstNode());
+          getCD4C().addImport(managerClass, getPackageName(cd, DEFAULT_PACKAGE) + "." +correctManager);
+
+          sideToCorrectManager.put(a.getName(), correctManager);
+        });
+        getCD4C().addMethod(managerClass, "umlp.managerimpl.DoAdd", name, managerName, assocs, sideToCorrectManager);
         getCD4C().addMethod(managerClass, "umlp.managerimpl.DoDelete",origCD.getCDDefinition().getName(), name, managerName);
       }
     }
