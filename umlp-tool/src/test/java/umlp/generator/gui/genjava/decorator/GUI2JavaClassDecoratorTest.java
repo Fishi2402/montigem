@@ -71,10 +71,10 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
 
     assertAll(
         () -> assertTrue(Log.getFindings().isEmpty()),
-        () -> assertEquals(13, clazz.getCDAttributeList().size()),
-        () -> assertEquals(73, clazz.getCDMethodList().size()),
+        () -> assertEquals(12, clazz.getCDAttributeList().size()),
+        () -> assertEquals(66, clazz.getCDMethodList().size()),
         () -> assertEquals(1, clazz.getCDConstructorList().size()),
-        () -> assertEquals(9, imports.size())
+        () -> assertEquals(8, imports.size())
     );
   }
 
@@ -142,7 +142,6 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     ASTCDAttribute _s = getAttr(attrs, "_s");
     ASTCDAttribute _b = getAttr(attrs, "_b");
     ASTCDAttribute _i = getAttr(attrs, "_i");
-    ASTCDAttribute _v = getAttr(attrs, "_v");
     ASTCDAttribute _e = getAttr(attrs, "_e");
 
     assertions.add(() -> assertNotNull(_person));
@@ -153,7 +152,6 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     assertions.add(() -> assertNotNull(_s));
     assertions.add(() -> assertNotNull(_b));
     assertions.add(() -> assertNotNull(_i));
-    assertions.add(() -> assertNotNull(_v));
     assertions.add(() -> assertNotNull(_e));
 
     assertions.add(() -> assertEquals("Person", _person.getMCType().printType()));
@@ -173,7 +171,6 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
         "java.lang.Integer".equals(_i.getMCType().printType())
         || "Integer".equals(_i.getMCType().printType())
     ));
-    assertions.add(() -> assertEquals("GUIViewElement", _v.getMCType().printType()));
     assertions.add(() -> assertEquals("Event<Void>", _e.getMCType().printType()));
 
     List<ASTCDMethod> methods = clazz.getCDMethodList();
@@ -206,9 +203,6 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     ASTCDMethod getI = getMethod(methods, "getI");
     ASTCDMethod setI = getMethod(methods, "setI");
     ASTCDMethod initI = getMethod(methods, "initI");
-    ASTCDMethod getV = getMethod(methods, "getV");
-    ASTCDMethod setV = getMethod(methods, "setV");
-    ASTCDMethod initV = getMethod(methods, "initV");
     ASTCDMethod getE = getMethod(methods, "getE");
     ASTCDMethod setE = getMethod(methods, "setE");
     ASTCDMethod initE = getMethod(methods, "initE");
@@ -241,9 +235,6 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     assertions.add(() -> assertNotNull(getI));
     assertions.add(() -> assertNotNull(setI));
     assertions.add(() -> assertNotNull(initI));
-    assertions.add(() -> assertNotNull(getV));
-    assertions.add(() -> assertNotNull(setV));
-    assertions.add(() -> assertNotNull(initV));
     assertions.add(() -> assertNotNull(getE));
     assertions.add(() -> assertNotNull(setE));
     assertions.add(() -> assertNotNull(initE));
@@ -255,7 +246,6 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     ASTMCImportStatement listImport = getImport(imports, "java.util.List");
     ASTMCImportStatement gemListImport = getImport(imports, "umlp.backendrte.common.GemList");
     ASTMCImportStatement addressImport = getImport(imports, "packaged.domain.Address");
-    ASTMCImportStatement guiViewElementImport = getImport(imports, "de.monticore.guidsl.types.GUIViewElement");
     ASTMCImportStatement eventImport = getImport(imports, "de.monticore.guidsl.types.Event");
     // optional imports, byproduct of type handling
     ASTMCImportStatement stringImport = getImport(imports, "java.lang.String");
@@ -266,7 +256,6 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     assertions.add(() -> assertNotNull(listImport));
     assertions.add(() -> assertNotNull(gemListImport));
     assertions.add(() -> assertNotNull(addressImport));
-    assertions.add(() -> assertNotNull(guiViewElementImport));
     assertions.add(() -> assertNotNull(eventImport));
     assertions.add(() -> assertNotNull(stringImport));
     assertions.add(() -> assertNotNull(voidImport));

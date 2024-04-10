@@ -30,7 +30,7 @@ page GUI2JavaClassDecorator(
   boolean b,
   // get + set + init(val) + init()
   ?int i,
-  // get + set + init(val) + init()
+  //
   GUIViewElement v,
   // get + set + init(val) + init()
   Event<Void> e
@@ -75,7 +75,7 @@ page GUI2JavaClassDecorator(
   /*
     this.getPerson().getAddress().getHouse();
   */
-  // getGGve + getGLgve + getGLgve_1 + initGLgve_1
+  //
   g@V(gve = v, lgve = [$1@V(), $2@P()]);
   /*
     this.getV();
@@ -129,7 +129,7 @@ page GUI2JavaClassDecorator(
       */
     }
   }
-  // getOV + getGLgve + getGLgve_1 + initGLgve_1
+  //
   o@L(v = [
     p@iterate(Person friend : person.friends) {
       q@P();

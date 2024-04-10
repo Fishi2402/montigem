@@ -368,6 +368,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
   @Override
   public void endVisit(ASTCallExpression node) {
     Map<ASTNode, ASTCDAttribute> node2Attr = StaticObjectsCollector.getInstance().getNode2Attr();
+    // a constructor call, e.g., @PersonForm(person = Person())
     if (node2Attr.containsKey(node)) {
       // add attr
       ASTCDAttribute attr = node2Attr.get(node);
@@ -400,7 +401,8 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
         );
       }
     }
-    // a custom function or a predefined one
+    // a custom function or a predefined one, e.g.,
+    // @PersonForm(person = makePerson()) or @PersonForm(buttonClick = create(person))
     else if (node.getExpression() instanceof ASTNameExpression) {
       CallTypeDeriver deriver = CallTypeDeriver.getInstance();
       deriver.init(gui.getGUIComponentDeclaration(), node);
