@@ -86,14 +86,14 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     clazz = emptyClass(gui);
     cdPackage.addCDElement(withOrigin(clazz));
 
-    addConstructor();
-    addInit();
-
     // TODO add router
     // addAdditionalAttributes(clazz);
 
     StaticObjectsCollector.getInstance().init(gui.getGUIComponentDeclaration());
     gui.accept(traverser);
+
+    addConstructor();
+    addInit();
   }
 
   @Override
