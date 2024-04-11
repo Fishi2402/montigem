@@ -51,8 +51,9 @@ include ":experiments:module-system:routes-usage"
 include ":examples"
 include ':examples:selib'
 include ':examples:stat'
- include ':examples:carrental-tmp:backend'
-include ':examples:carrental-tmp:frontend'
+// CD2GUI&JSweet example
+//include ':examples:carrental-tmp:backend'
+//include ':examples:carrental-tmp:frontend'
 include ':examples:artifacts-test'
 include ':examples:artifacts-java'
 include ':examples:flensburg-test:backend'
