@@ -435,14 +435,14 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
         }
         if (currentScope instanceof IGUIDSLArtifactScope) {
           IGUIDSLArtifactScope artifactScope = (IGUIDSLArtifactScope) currentScope;
-          if (artifactScope.getPackageName().isEmpty()) {
+          if (!artifactScope.getPackageName().isEmpty()) {
             fullName = artifactScope.getPackageName() + "." + fullName;
           }
         }
       }
       optCurrentScope = currentScope.getEnclosingScope();
     }
-    return "";
+    return fullName;
   }
 
   protected void addEnum2CapStringMethod(ASTCDClass decoratedClass, String type) {
