@@ -91,7 +91,7 @@ describe("NewScatterPlotComponent", () => {
     }]);
   });
 
-  it("should properly set the data set label", () => {
+  it("should properly set the data label", () => {
     component.data = {
       sets: [{
         label: "foo",
