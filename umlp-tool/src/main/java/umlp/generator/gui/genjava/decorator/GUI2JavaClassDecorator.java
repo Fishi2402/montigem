@@ -202,7 +202,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
           new TemplateHookPoint(getInitCallTemplate(), attrInit)
       );
     }
-    // case 3: component Foo(String s)
+    // case 3: component Foo(String s, MyDomainEnum e)
     else {
       Optional<String> value = Optional.empty();
       if (node.isPresentDefault()) {

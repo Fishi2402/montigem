@@ -19,6 +19,7 @@ public abstract class AbstractGUITest extends AbstractUMLPTest {
   public void guiSetup() {
     LogStub.init();
     Log.enableFailQuick(false);
+    Log.clearFindings();
     GUIDSLTool tool = new GUIDSLTool();
     tool.resetGSAndMill();
   }

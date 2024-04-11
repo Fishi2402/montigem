@@ -74,7 +74,7 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
         () -> assertEquals(12, clazz.getCDAttributeList().size()),
         () -> assertEquals(66, clazz.getCDMethodList().size()),
         () -> assertEquals(1, clazz.getCDConstructorList().size()),
-        () -> assertEquals(8, imports.size())
+        () -> assertEquals(9, imports.size())
     );
   }
 
@@ -102,10 +102,14 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     List<ASTCDMethod> methods = clazz.getCDMethodList();
     ASTCDMethod init = getMethod(methods, "init");
 
+    Collection<ASTMCImportStatement> imports = CD4C.getInstance().getImportList(clazz);
+    ASTMCImportStatement directiveImport = getImport(imports, "umlp.jsweet.extension.annotation.Directive");
+
     assertAll(
         () -> assertNotNull(init),
         () -> assertEquals("void", init.getMCReturnType().printType()),
-        () -> assertEquals(0, init.getCDParameterList().size())
+        () -> assertEquals(0, init.getCDParameterList().size()),
+        () -> assertNotNull(directiveImport)
     );
   }
 
