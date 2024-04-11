@@ -68,10 +68,20 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
   }
 
   public void init(ASTGUIComponentDeclaration node) {
-    counter = 0;
+    reset();
     if (node.isPresentGUIBlock()) {
       node.getGUIBlock().accept(getTraverser());
     }
+  }
+
+  public void reset() {
+    counter = 0;
+    curComp = "";
+    curArg = "";
+    lastArg = Optional.empty();
+    lastCall = Optional.empty();
+    listTypes = new HashMap<>();
+    node2Attr = new HashMap<>();
   }
 
   public Map<ASTNode, ASTCDAttribute> getNode2Attr() {
