@@ -15,7 +15,7 @@ import mc.fenix.arrange.GemColumn;
 import mc.fenix.charts.GemLineChart;
 import mc.fenix.charts.GemGaugeChart;
 import mc.fenix.table.GemTable;
-import mc.fenix.table.TableTypes.TableColumn.*;
+import mc.fenix.table.TableTypes.TableColumn;
 
 page WeatherView(List<Forecast> forecasts) {
   @GemRow(colGap = "5px", height = "initial", components = [

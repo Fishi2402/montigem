@@ -93,8 +93,8 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
         if (!TypeScriptTypes.isDefault(paramSTE.printFullName())) {
           if (!util.isDomainType(innerType)) {
             if (!TypeScriptTypes.isDefault(innerType.print())
-              && !innerType.print().equals("java.util.List.E")) {
-              getCD4C().addImport(decoratedClass, innerType.print());
+              && !innerType.printFullName().equals("java.util.List.E")) {
+              getCD4C().addImport(decoratedClass, innerType.printFullName());
             }
           } else {
             Optional<String> domainQName = util.getMainDomainModelQName();
