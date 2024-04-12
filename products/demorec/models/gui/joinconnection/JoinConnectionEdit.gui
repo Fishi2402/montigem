@@ -12,7 +12,6 @@ import mc.fenix.arrange.GemColumn;
 import mc.fenix.arrange.GemRow;
 import mc.fenix.input.GemTextInput;
 
-import gui.component.ComponentEdit;
 import gui.component.ComponentCreate;
 
 import gui.staticcontainer.NavContainer;

@@ -18,7 +18,6 @@ import { MeasuringValue } from '@src/demorec/MeasuringValue'
 
 
 import {
-  AfterViewChecked,
   Directive,
   Component,
   Input,
@@ -42,19 +41,15 @@ const newOption: Option = { value: "NEW", display: "NEW" };
   styleUrls: config.styleUrls
 })
 
-export class ProcessStepEdit extends ProcessStepEditComponent implements AfterViewChecked, OnInit {
+export class ProcessStepEdit extends ProcessStepEditComponent implements OnInit {
   public selectTypeOptions: Option[] = []
   public endEffectorOptions: Option[] = []
   public endEffectorEntry: string = ""
-  /*public endEffectors: Object = {}
-  public currentEndEffectorGemId: string = ""*/
-
-  public endEffectorNameWasDisplayed: boolean = false
-  public joinConnectionNameWasDisplayed: boolean = false
 
   public joinConnectionEntry: string = ""
   public joinConnectionOptions: Option[] = [newOption]
   public addJoinConnectionClicked: boolean = false
+
   public measuringValues : MeasuringValue[] = []
 
   private deconstructionVal = ProcessStepType.DECONSTRUCTION.toString()
@@ -97,28 +92,6 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements AfterVi
     });
   }
 
-  public ngAfterViewChecked() {
-    if (!this.endEffectorNameWasDisplayed && this.getStep()?.getUses()) {
-      const endEffectorEntry = this.getStep()?.getUses()?.getGemId() + ""
-      //console.debug("!X! currentEntry not displayed:", endEffectorEntry)
-      if (endEffectorEntry) {
-        this.setSelectEndeffectorEntry(endEffectorEntry)
-        this.endEffectorNameWasDisplayed = true
-        //console.debug("!X! currentEntry displayed:", endEffectorEntry)
-      }
-      //console.debug("!X! this.endEffectorNameWasDisplayed:", this.endEffectorNameWasDisplayed)
-    }
-
-    if (!this.joinConnectionNameWasDisplayed && this.getStep()?.getDeconstructs()) {
-      const joinConnectionEntry = this.getStep()?.getDeconstructs()?.getGemId() + ""
-
-      if (joinConnectionEntry) {
-        this.setSelectJoinConnectionEntry(joinConnectionEntry)
-        this.joinConnectionNameWasDisplayed = true
-      }
-    }
-  }
-
   // Select Types
 
   public override getSelectTypeOptions(): Array<Option> {
@@ -135,8 +108,7 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements AfterVi
         this.getStep().setType(ProcessStepType[key])
 
         if (key !== this.deconstructionVal) {
-          console.debug("key:", key, " index:", index)
-          this.getStep().setDeconstructs1(null)
+          this.getStep().setDeconstructsAbsent1()
         }
        }
     })
@@ -149,34 +121,30 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements AfterVi
   }
 
   public override getSelectEndeffectorEntry(): string {
-    return this.endEffectorEntry
+    if (this.endEffectorEntry) {
+      return this.endEffectorEntry
+    }
+    else {
+      if(this.getStep()) {
+        this.endEffectorEntry = this.getStep().getUses().getGemId() + ""
+      }
+      return this.endEffectorEntry
+    }
   }
 
+
   public override setSelectEndeffectorEntry(value: string): void {
-    //console.debug("Effector value:"+value)
-
-    //this.getSelectEndeffectorOptions().forEach((element) => console.log("Options:"+element));
-
-    /*this.getStep().setUses1(this.endEffectors[value])
-    this.currentEndEffectorGemId = value*/
-
-    DemoRecManager.getEndEffectorSure(+value)
+   DemoRecManager.getEndEffectorSure(+value)
       .then((endEffector) => {
         this.getStep().setUses1(endEffector)
         this.endEffectorEntry = value
-    })
+   })
   }
 
 
   // Edit JoinConnections
 
   public override editJoinConnection(any): void {
-    /*let compNamesString = ""
-    this.getStep().getDeconstructs().getConnects().forEach((component) => {
-      compNamesString += (component.getName()+":"+component.getGemId())
-    })
-    this.router.navigate(["gui/joinconnection/JoinConnectionEdit/"+this.getP().getGemId()+"/"+this.getStep().getGemId()+"/"+this.getStep().getDeconstructs().getGemId()], { queryParams: { compNames: compNamesString } } )*/
-
     this.router.navigate(["gui/joinconnection/JoinConnectionEdit/"+this.getP().getGemId()+"/"+this.getStep().getGemId()+"/"+this.getStep().getDeconstructs().getGemId()])
   }
 
@@ -185,7 +153,15 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements AfterVi
   }
 
   public override getSelectJoinConnectionEntry(): string {
-    return this.joinConnectionEntry
+    if (this.joinConnectionEntry) {
+      return this.joinConnectionEntry
+    }
+    else {
+      if(this.getStep()) {
+        this.joinConnectionEntry = this.getStep().getDeconstructs().getGemId() + ""
+      }
+      return this.joinConnectionEntry
+    }
   }
 
   public override setSelectJoinConnectionEntry(value: string): void {
@@ -205,20 +181,12 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements AfterVi
   }
 
   public override getIsDeconstructionCondition() : boolean {
-    //this.getSelectEndeffectorOptions().forEach((element) => console.log("JoinConnection Options:"+element));
     return this.getSelectTypeEntry() === this.deconstructionVal
   }
 
   public override getHasJoinConnectionCondition() : boolean {
-    //console.debug("Has JoinConnection: " + (this.getStep().getDeconstructs() !== null))
     return this.getStep().getDeconstructs() !== null
   }
-
-  /*public override getCreateNewJoinConnectionCondition() :boolean {
-    console.debug("!!! getCreateNewJoinConnectionCondition !!!")
-    return this.getIsDeconstructionCondition() &&
-        (this.getSelectJoinConnectionEntry() === newOption["NEW"])
-  }*/
 
   private calculateDisplayValueOfJoinConnection(connection : JoinConnection) : Promise<Option> {
     return connection._internal_getConnectsGemList().loadAll().then(
@@ -260,13 +228,13 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements AfterVi
   // Edit Measuring Values
 
   public override getHasMeasuringValuesCondition() :boolean {
-    //console.debug("Has Measuring Values: " + (this.getStep()?.getMeasured().length !== 0))
     return this.getStep()?.getMeasured().length !== 0
   }
 
   public override editMeasuringValues(any): void {
     this.router.navigate(["gui/step/MeasuringValueEdit/"+this.getP().getGemId()+"/"+this.getStep().getGemId()])
   }
+
 
 
   public override backToProcessOverview(any): void {

@@ -43,7 +43,7 @@ page ProcessStepEdit(Process p, ProcessStep step) {
                   labelText = "Endeffector",
                   inputType = "dropdown",
                   options = null,
-                  entry = step.uses.name),
+                  entry = null),
 
                 @GemTextInput(labelText = "Duration in seconds", inputType = "number", placeholder = step.timeConsumption, entry = step.timeConsumption),
 
@@ -75,9 +75,9 @@ page ProcessStepEdit(Process p, ProcessStep step) {
                 },
 
                 hasMeasuringValues@guard(true) {
-                  @GemButton(width = "auto", label = "Edit Measuring Values", leftClick = editMeasuringValues);
+                  editMeasuringValuesButton@GemButton(width = "auto", label = "Edit Measuring Values", leftClick = editMeasuringValues);
                 } else {
-                  @GemButton(width = "auto", label = "Add Measuring Values", leftClick = editMeasuringValues);
+                  addMeasuringValuesButton@GemButton(width = "auto", label = "Add Measuring Values", leftClick = editMeasuringValues);
                 },
 
                 @GemButton(width = "auto", label = "Back to Process Overview", leftClick = backToProcessOverview)

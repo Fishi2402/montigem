@@ -5,18 +5,28 @@
 }
 
 
-:host ::ng-deep .editJoinConnectionTable {
+:host ::ng-deep stat-table.editJoinConnectionTable {
   margin-bottom: 1rem;
-  width: 100%;
 
-  > stat-table > gem-column > stat-table-row > gem-row > gem-column.leftComponent {
+  /*> stat-table > gem-column > stat-table-row > gem-row > gem-column.leftComponent {
     width: 50%;
   }
 
   > stat-table > gem-column > stat-table-row > gem-row > gem-column.rightComponent {
     width: 50%;
+  }*/
+
+  //> gem-column > stat-table-row > gem-row > gem-colum.leftComponent > gem-text-input.selectJoinConnection {
+  //> gem-column > stat-table-row > gem-row > gem-column.leftComponent > gem-text-input.selectJoinConnection > label.gem-label-text-input, select#undefinedInput {
+  > gem-column > stat-table-row > gem-row > gem-column.leftComponent {//> gem-text-input.selectJoinConnection > select:nth-child(1), select:nth-child(2) {
+    width: 100%;
+    //display: grid;
   }
 
 }
 
 
+//:host ::ng-deep gem-column > gem-button.editMeasuringValuesButton, gem-button.addMeasuringValuesButton {
+:host ::ng-deep gem-button.editMeasuringValuesButton > button.gem-button {
+  width: 50%;
+}
