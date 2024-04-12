@@ -63,7 +63,7 @@ export class MeasuringValueEdit extends MeasuringValueEditComponent implements A
 
   public ngAfterViewChecked() {
     // Initialize dimensionOptions
-    if (this.getStep()?.getMeasured().length !== 0 && this.dimensionOptions.length === 0) {
+    /*if (this.getStep()?.getMeasured().length !== 0 && this.dimensionOptions.length === 0) {
       this.initializeDimensionOptions()
     }
 
@@ -73,7 +73,7 @@ export class MeasuringValueEdit extends MeasuringValueEditComponent implements A
         this.getDisplayedMeasuringValueDimensionUnitEntry(measuredValue)
       })
       this.dimensionUnitsWereDisplayed = true
-    }
+    }*/
   }
 
   public initializeDimensionOptions(): void {
@@ -93,6 +93,7 @@ export class MeasuringValueEdit extends MeasuringValueEditComponent implements A
 
   public override deleteMeasuringValue(measuringValue: MeasuringValue): (measuringValue: MeasuringValue) => void {
     return () => this.getStep().removeMeasured2(measuringValue)
+
   }
 
   // Display and change the dimension unit of a concrete existing measuring value
@@ -105,12 +106,12 @@ export class MeasuringValueEdit extends MeasuringValueEditComponent implements A
     let displayValue = ""
     this.dimensionOptions.forEach((option) => {
       if (+option["value"] === measuringValue.getDimension().getGemId()) {
-        console.error("This is the displayvalue:", option["display"])
-        displayValue = option["display"]
+        console.error("This is the displayvalue:", option["value"])
+        displayValue = option["value"]
       }
     })
     console.error("Messwert mit id "+measuringValue.getGemId()+" hat die Unit "+measuringValue.getDimension().getGemId()+" und es wurde folgende Option ausgesucht:"+ displayValue)
-    //console.debug("maggi")
+    //console.debug("A short message")
     return displayValue
   }
 

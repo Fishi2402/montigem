@@ -30,14 +30,14 @@ page MeasuringValueEdit(Process p, ProcessStep step) {
                 wrap="nowrap",
                 colGap="5px",
                 components=[
-                  displayedMeasuringValueDeleteButton@GemButton(label = "Delete Value", leftClick = deleteMeasuringValue(measuringValue)),
                   displayedMeasuringValue@GemTextInput(labelText = "Value", inputType = "string", entry = measuringValue.value),
                   displayedMeasuringValueDimensionUnit@GemTextInput(
                     labelText = "Unit",
                     inputType = "dropdown",
                     options = null,
-                    entry = measuringValue.dimension.name
-                  )
+                    entry = null
+                  ),
+                  displayedMeasuringValueDeleteButton@GemButton(label = "Delete Value", leftClick = deleteMeasuringValue(measuringValue))
                 ]
               );
             },
