@@ -15,9 +15,9 @@ public class TypeScriptSimpleGenericTypesPrettyPrinter extends MCSimpleGenericTy
     }
     java.util.Iterator<de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument> iter_mCTypeArgument = node.getMCTypeArgumentList().iterator();
 
-    if (node.getNameList().size() > 0) {
+    if (!node.getNameList().isEmpty()) {
       String last = node.getName(node.sizeNames() - 1);
-      // TODO AGe: some Optionals land here ...
+      // java.util.Optional and java.util.List land here
       if (!last.equals("Optional")) {
         if (last.equals("Consumer")) {
           getPrinter().print("(arg: any) => void");
