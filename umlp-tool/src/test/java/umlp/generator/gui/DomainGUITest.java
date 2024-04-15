@@ -34,20 +34,13 @@ public abstract class DomainGUITest extends AbstractGUITest {
     BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope(), false);
 
     String symFolder = BUILD_FOLDER + "/guitests";
-    String domainSymFile = symFolder + "/" + domainPath + "sym";
-    ASTCDCompilationUnit ast = parse("gui/" + domainPath);
-    runAfterParseTrafo(ast);
-    IUMLPArtifactScope as = createSymTab(ast);
-    runDefaultTrafos(ast);
-    as = recreateSymbolTable(ast);
 
-    UMLPSymbols2Json s2j = new UMLPSymbols2Json();
-    s2j.store(as, domainSymFile);
+    cd2Sym(symFolder, domainPath);
 
-    ASTGUICompilationUnit guiAst;
+    String otherCDFile = "packaged/Types.umlp";
+    cd2Sym(symFolder, otherCDFile);
+
     MCPath importedSymbolPath;
-
-    guiAst = parseGUI(modelPath);
     importedSymbolPath = new MCPath();
     importedSymbolPath.addEntry(Paths.get(symFolder));
     importedSymbolPath.addEntry(Paths.get(symbolPath));
@@ -55,12 +48,26 @@ public abstract class DomainGUITest extends AbstractGUITest {
     for (String path : guidslTypesJarPath) {
       importedSymbolPath.addEntry(Paths.get(path));
     }
+
+    ASTGUICompilationUnit guiAst;
+    guiAst = parseGUI(modelPath);
     UMLPTool.createSymbolTable(
         guiAst,
         Optional.of(Paths.get("src/test/resources/" + modelPath)),
         importedSymbolPath
     );
     return guiAst;
+  }
+
+  public void cd2Sym(String symFolder, String cdPath) {
+    UMLPSymbols2Json s2j = new UMLPSymbols2Json();
+    String domainSymFile = symFolder + "/" + cdPath + "sym";
+    ASTCDCompilationUnit ast = parse("gui/" + cdPath);
+    runAfterParseTrafo(ast);
+    IUMLPArtifactScope as = createSymTab(ast);
+    runDefaultTrafos(ast);
+    as = recreateSymbolTable(ast);
+    s2j.store(as, domainSymFile);
   }
 
 }

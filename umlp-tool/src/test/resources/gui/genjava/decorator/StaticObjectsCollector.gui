@@ -5,9 +5,12 @@ package genjava.decorator;
 import Domain.Person;
 import Domain.Address;
 import Domain.MaritalStatus;
+import packaged.Types.MyData;
+import packaged.Types.InputStatus;
 
 import util.P;
 import util.L;
+import util.T;
 
 page StaticObjectsCollector(Person person) {
   a@P(p = person);
@@ -22,6 +25,23 @@ page StaticObjectsCollector(Person person) {
       h@L(a = [p2.address, p.address]);
       i@P(p = Person(person.name));
       j@L(v = [$2@iterate(Person p3 : person.friends) { $3@L(); }]);
+      /*
+
+      k@T(
+        md = MyData(InputStatus.WARNING),
+        is = InputStatus.ERROR,
+        lmd = [MyData(InputStatus.SUCCESS)],
+        lis = InputStatus.ERROR
+      );
+
+      // String s
+      l@P(s = InputStatus.ERROR);
+
+      // List<String> s
+      m@L(s = [InputStatus.ERROR, InputStatus.WARNING]);
+      // m@L(s = values(InputStatus));
+
+      /**/
     }
   }
   // TODO: iterate and guard tests with lists. Lists are currently unsupported in guards and iterate
