@@ -6,6 +6,8 @@ public constructor(${route}: ActivatedRoute, ${router}: Router) {
   super();
   super.${router} = ${router};
   <#list ids as id>
-    this.${id} = +${route}.snapshot.paramMap.get("${id}");
+    if(${route}.snapshot.paramMap.get("${id}") != null) {
+      this.${id} = +${route}.snapshot.paramMap.get("${id}");
+    }
   </#list>
 }

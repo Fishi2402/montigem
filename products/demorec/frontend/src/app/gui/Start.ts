@@ -30,10 +30,6 @@ export class Start extends StartComponent {
     super(route, router);
   }
 
-  public getBatteryPackOverview5Pack (p: Process): BatteryPack {
-    console.debug(p.getDeconstructionOf().getTypeGem().get())
-    return p.getDeconstructionOf();
-  }
 
   public override editProcess (p: Process): (p: Process) => void {
     console.debug("Event: ", p)

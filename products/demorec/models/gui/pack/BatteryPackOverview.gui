@@ -28,7 +28,7 @@ component BatteryPackOverview(BatteryPack pack) {
         width="30%",
         rowGap = "15px",
         components=[
-          editPack@GemButton(label = "Edit Pack", leftClick = editPack),
+          editPackBtn@GemButton(label = "Edit Pack", leftClick = editPack),
           @GemText(value=pack.name),
           @StatTable(rows = [
             @StatTableRow(left = @GemText(value = "Health (%)"), right = @GemText(value = pack.health)),
