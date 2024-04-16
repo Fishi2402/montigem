@@ -87,7 +87,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
    * must be called in a specific order in the class initialization method, namely in reverse.
    *
    * @param gui input GUI AST
-   * @param cd output CD AST
+   * @param cd  output CD AST
    */
   public void transform(ASTGUICompilationUnit gui, ASTCDCompilationUnit cd) {
     this.gui = gui;
@@ -441,8 +441,9 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
    * `@PersonForm(person = Person())` produces a `getPerson()` method that always returns the same
    * `Person` object, which is stored as a class attribute.
    * Calls of form `doSomething()`, `alert("my message")`, `findPerson(persons)` represent a
-   * function that has to be defined by hand. The result of generation is an abstract function
-   * `doSomething` whose return type is derived from the left side of the assignment.
+   * function that has to be defined by hand. The result of generation are abstract functions
+   * `doSomething()`, `alert(String val)`, `findPerson(List<Person> p)`, whose return type is
+   * derived from the left side of the assignment.
    * Complex calls, such as `doSomething()()`, `alert(alert())`, `persons.get(calcIndex())` are
    * forbidden. Such calls must be simplified to an accepted format.
    *
@@ -453,6 +454,15 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     Map<ASTNode, ASTCDAttribute> node2Attr = StaticObjectsCollector.getInstance().getNode2Attr();
     // a constructor call, e.g., @PersonForm(person = Person())
     if (node2Attr.containsKey(node)) {
+      if (!node.getArguments().isEmptyExpressions()) {
+        Log.error("0x00016 Constructor with arguments '" + util.print(node)
+            + " at " + node.getArguments().get_SourcePositionStart().toString()
+            + " - " + node.getArguments().get_SourcePositionEnd().toString()
+            + ". Only constructors without arguments are supported so far. Please replace the call"
+            + " via a custom or a predefined function call."
+        );
+      }
+
       // add attr
       ASTCDAttribute attr = node2Attr.get(node);
       String type = attr.getMCType().printType();
@@ -558,6 +568,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
 
   /**
    * An init method is a slightly more flexible alternative to a constructor.
+   *
    * @return class initialization method
    */
   protected ASTCDMethodSignature addInit() {
