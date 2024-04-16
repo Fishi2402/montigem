@@ -31,6 +31,7 @@ import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { Option } from '@umlp/input';
 
 const newOption: Option = { value: "NEW", display: "NEW" };
+const noneOption: Option = { value: "NONE", display: "NONE" };
 
 @Component({
   standalone:true,
@@ -47,7 +48,7 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements OnInit 
   public endEffectorEntry: string = ""
 
   public joinConnectionEntry: string = ""
-  public joinConnectionOptions: Option[] = [newOption]
+  public joinConnectionOptions: Option[] = []
   public addJoinConnectionClicked: boolean = false
 
   public measuringValues : MeasuringValue[] = []
@@ -82,7 +83,7 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements OnInit 
       const joinConnections = gemPromiseRes;
       joinConnections.loadAll().then(() => {
         console.debug(joinConnections)
-        this.joinConnectionOptions = [newOption]
+        this.joinConnectionOptions = [noneOption, newOption]
         for (const joinConnection of joinConnections) {
           this.calculateDisplayValueOfJoinConnection(joinConnection).then(opt =>
           this.joinConnectionOptions.push(opt))
@@ -152,6 +153,10 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements OnInit 
     return this.joinConnectionOptions
   }
 
+  public override getSelectJoinConnection1Options(): Array<Option> {
+    return this.getSelectJoinConnectionOptions()
+  }
+
   public override getSelectJoinConnectionEntry(): string {
     if (this.joinConnectionEntry) {
       return this.joinConnectionEntry
@@ -164,20 +169,42 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements OnInit 
     }
   }
 
+  public override getSelectJoinConnection1Entry(): string {
+    if (!this.getStep().getDeconstructs()) {
+      return noneOption["value"]
+    }
+    else {
+      return this.getSelectJoinConnectionEntry()
+    }
+  }
+
   public override setSelectJoinConnectionEntry(value: string): void {
     this.joinConnectionEntry = value
 
     if (this.getSelectJoinConnectionEntry()) {
-      DemoRecManager.getJoinConnectionSure(+this.getSelectJoinConnectionEntry())
-      .then((joinConnection) => {
-        this.getStep().setDeconstructs1(joinConnection)
-      })
+      if (this.getSelectJoinConnectionEntry() === noneOption["value"]) {
+        this.getStep().setDeconstructsAbsent1()
+      }
+      else if (this.getSelectJoinConnectionEntry() !== newOption["value"]) {
+        DemoRecManager.getJoinConnectionSure(+this.getSelectJoinConnectionEntry())
+          .then((joinConnection) => {
+            this.getStep().setDeconstructs1(joinConnection)
+          })
+      }
     }
+  }
+
+  public override setSelectJoinConnection1Entry(value: string): void {
+    this.setSelectJoinConnectionEntry(value)
   }
 
   public override getCreateNewJoinConnectionCondition() :boolean {
     return this.getIsDeconstructionCondition() &&
         (this.getSelectJoinConnectionEntry() === newOption["value"])
+  }
+
+  public override getCreateNewJoinConnection1Condition() :boolean {
+    return this.getCreateNewJoinConnectionCondition()
   }
 
   public override getIsDeconstructionCondition() : boolean {
@@ -222,7 +249,17 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements OnInit 
     this.setSelectJoinConnectionEntry(String(connection.getGemId()))
   }
 
+  public override getAddJoinConnectionButtonDisabled(): boolean {
+    return this.getAddJoinConnectionClickedCondition()
+  }
 
+  public override getEditJoinConnectionButtonDisabled(): boolean {
+    return ((this.getSelectJoinConnectionEntry() === noneOption["value"]) || (this.getSelectJoinConnectionEntry() === newOption["value"]))
+  }
+
+  public override getEditJoinConnectionButton1Disabled(): boolean {
+    return this.getEditJoinConnectionButtonDisabled()
+  }
 
 
   // Edit Measuring Values
