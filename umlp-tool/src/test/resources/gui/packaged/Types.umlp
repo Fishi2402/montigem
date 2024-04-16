@@ -4,27 +4,6 @@ package packaged;
 umlp Types {
   class MyData {
     InputStatus status;
-
-    // in GUI:
-    // MyData(InputStatus.WARNING)
-
-    // constructor order?
-    // MyData(InputStatus status, List<MyEntry> entries)
-    // MyData(InputStatus status)
-    // MyData()
-
-    // special syntax?
-    // MyData(status = InputStatus.WARNING)
-
-    // in Java:
-
-    // same API as other Fenix CDs
-    // MyDataBuilder().status(status)
-
-    // or extended constructors
-    // MyData(InputStatus status, List<MyEntry> entries)
-    // MyData(InputStatus status)
-    // MyData()
   }
 
   class MyEntry {

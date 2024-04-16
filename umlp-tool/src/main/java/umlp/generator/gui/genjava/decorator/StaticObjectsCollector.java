@@ -151,7 +151,9 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
       if (node.getEnclosingScope() instanceof IOOSymbolsScope) {
         IOOSymbolsScope scope = (IOOSymbolsScope) node.getEnclosingScope();
         Optional<OOTypeSymbol> sym = scope.resolveOOType(node.getName());
-        isConstructor = sym.isPresent() && sym.get().isIsClass();
+        if (sym.isPresent()) {
+          isConstructor = !sym.get().getMethodList(node.getName()).isEmpty();
+        }
       }
       else {
         Log.error("0x0000C Attempted to resolve type of '"
