@@ -1,0 +1,88 @@
+/* (c) https://github.com/MontiCore/monticore */
+import java.time.LocalDateTime;
+
+// TODO: CD2GUI: No private members allowed (COCO 0xF737F)
+
+
+/**
+* An application which represents a car rental place
+*/
+umlp Carrental {
+// One could also use "classdiagram Carrental {", but the umlp tool prefers the first syntax
+
+  interface Rentable {
+    boolean isAvailable();
+  }
+
+  abstract class RentableItem implements Rentable {
+    String name;
+    // TODO: Imports import mc.fenix.input.Option; (not existing)
+ //   RentableStatus rentableStatus; // TODO: MUST NOT BE AN ASSOC
+  }
+
+
+  // EX: Add implements?
+  class Car extends RentableItem  {
+    String model;
+    String make;
+    derived float mileage;   // EX: Implement
+  }
+
+// TODO CD2GUI: enum leads to: CarDetailsEdit.gui:<17,565>: 0xF737F given expression of type Car unable to derive the type of the access ".rentableStatus"
+  enum RentableStatus {
+    AVAILABLE, RENTED, MAINTENANCE; // EX: Add MAINTENANCE
+ }
+//  association Car -> RentableStatus [1];
+
+  class RentalTransaction {
+    // We can also use Java types, such as LocalDateTime (which we have imported above)
+    LocalDateTime rentalDate;
+    LocalDateTime returnDate;  // EX: Add return Date
+    float totalCost;
+  }
+  // TODO: MUSE BE -> (?)
+  association [1] RentalTransaction -> Customer [*];
+
+   class Customer {
+     String name;
+     String email; //EX: Add E-Mail
+   }
+
+
+
+  <<singleton>>  // There only ever exists one instance of a singleton
+  class RentalService {
+    RentalTransaction rentItem (Customer customer, Rentable rentable);
+    void returnItem(RentalTransaction rentalTransaction);
+    void processPayment(RentalTransaction rentalTransaction);  // EX: add another command
+  }
+
+   association [1] RentalService -> Rentable [*];
+   association [1] RentalService -> RentalTransaction [*]; // EX: Add assoc
+
+
+  // EX: Add VIP Status
+   // Some customers are special to the car rental agency
+   class VIPStatus {
+     String personalGreetingAtTheDesk;
+   }
+   association Customer -> VIPStatus [0..1]; // EX: add Status
+
+
+
+   class MileageDataPoint {
+      LocalDateTime recordDate;
+      float mileage;
+   }
+   // To be able to create a histogram, the mileage is tracked along with the data entry date.
+   association [1] Car -> MileageDataPoint [*];
+
+
+  // Derived classes are ethereal, not stored in the database and without an identifier
+  derived class CarRecommendation {
+    String salesPitch;
+    float estimatedCostPerMile;
+  }
+
+
+}

@@ -16,7 +16,7 @@ import { GemList } from '@umlp/common';
 export class Dashboard extends DashboardComponent {
 
   public override getCalendarMeetings(): GemList<Meeting> {
-    return this.app._internal_getDisplayedMeetingsGemList();
+    return this.app?._internal_getDisplayedMeetingsGemList();
   }
 
 }

@@ -61,7 +61,7 @@ public class GUI2JavaGuardDecorator extends GUIAbstractDecorator {
   }
 
   protected String getGetterTemplate() {
-    return "umlp.gui2java.GetComponentReplaced";
+    return "umlp.gui2java.GetGuardReplaced";
   }
 
   public List<String> getArgs(List<VariableSymbol> symbols) {
