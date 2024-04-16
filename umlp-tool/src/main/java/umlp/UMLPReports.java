@@ -58,7 +58,6 @@ public class UMLPReports implements ReportManager.ReportManagerFactory {
     String lowerCaseName = modelName.toLowerCase();
 
     ReportingRepository repository = new ReportingRepository(new ASTNodeIdentHelper());
-    repository.initAllTemplates();
 
 
     ReportManager reports = new ReportManager(this.reportDirectory);
