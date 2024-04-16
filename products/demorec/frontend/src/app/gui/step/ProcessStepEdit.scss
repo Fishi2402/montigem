@@ -1,32 +1,36 @@
-:host ::ng-deep .editJoinConnectionLabel {
+:host ::ng-deep gem-text.editJoinConnectionLabel, :host ::ng-deep gem-text.addJoinConnectionLabel {
   margin-top: 1rem;
   margin-bottom: .5rem;
   font-weight: bold;
 }
 
+:host ::ng-deep gem-row.editJoinConnectionRow, :host ::ng-deep gem-row.editJoinConnectionRow1 {
+  margin-bottom: 1rem;
+}
 
-:host ::ng-deep stat-table.editJoinConnectionTable {
+:host ::ng-deep gem-button.addJoinConnectionButton {
+  margin-top: 1rem;
+
+  > button.gem-button {
+    width: 50%;
+  }
+}
+
+:host ::ng-deep gem-button.editMeasuringValuesButton, :host ::ng-deep gem-button.addMeasuringValuesButton {
+  margin-top: 1rem;
   margin-bottom: 1rem;
 
-  /*> stat-table > gem-column > stat-table-row > gem-row > gem-column.leftComponent {
+  > button.gem-button {
     width: 50%;
   }
-
-  > stat-table > gem-column > stat-table-row > gem-row > gem-column.rightComponent {
-    width: 50%;
-  }*/
-
-  //> gem-column > stat-table-row > gem-row > gem-colum.leftComponent > gem-text-input.selectJoinConnection {
-  //> gem-column > stat-table-row > gem-row > gem-column.leftComponent > gem-text-input.selectJoinConnection > label.gem-label-text-input, select#undefinedInput {
-  > gem-column > stat-table-row > gem-row > gem-column.leftComponent {//> gem-text-input.selectJoinConnection > select:nth-child(1), select:nth-child(2) {
-    width: 100%;
-    //display: grid;
-  }
-
 }
 
-
-//:host ::ng-deep gem-column > gem-button.editMeasuringValuesButton, gem-button.addMeasuringValuesButton {
-:host ::ng-deep gem-button.editMeasuringValuesButton > button.gem-button {
+:host ::ng-deep join-connection-create.joinConnectionCreateCard {
   width: 50%;
 }
+
+/*:host ::ng-deep gem-row.editJoinConnectionRow > gem-text-input.selectJoinConnection, :host ::ng-deep gem-row.editJoinConnectionRow1 > gem-text-input.selectJoinConnection1 {
+  > label.gem-label-text-input, > select {
+    width: 50%;
+  }
+}*/
