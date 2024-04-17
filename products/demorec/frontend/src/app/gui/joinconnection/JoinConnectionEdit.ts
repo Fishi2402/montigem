@@ -2,13 +2,11 @@
 
 import { DemoRecManager } from '@src/demorec/DemoRecManager';
 
-import { BatteryPackType } from '@src/demorec/BatteryPackType';
-import { JoinConnectionType } from '@src/demorec/JoinConnectionType';
-import { JoinConnection } from '@src/demorec/JoinConnection';
-import { ProcessStep } from '@src/demorec/ProcessStep';
 import { NotificationScope } from '@umlp/common';
 
 import { DemoRecComponent } from '@src/demorec/DemoRecComponent';
+
+import { JoinConnectionType } from '@src/demorec/JoinConnectionType';
 
 import { JoinConnectionEditComponent, config } from '../../../../build/frontendGen/build/appgui/gui/joinconnection/JoinConnectionEditComponent';
 
@@ -76,7 +74,7 @@ export class JoinConnectionEdit extends JoinConnectionEditComponent implements O
   }
 
   public override getJoinConnectionEditGemCardTitle(): string {
-    return "Edit Join Connection of Step " + this.getStep().getIndex()
+    return "Edit Join Connection of Step " + this.getStep()?.getIndex()
   }
 
   // Select Type of connection
@@ -99,12 +97,12 @@ export class JoinConnectionEdit extends JoinConnectionEditComponent implements O
   // Select Super Component
 
   public override getSelectSuperComponentOptions(): Array<Option> {
-    return this.superComponentsOptions;
+    return this.superComponentsOptions
   }
 
   public override getSelectSuperComponentEntry(): string {
     if (this.superComponentEntry) {
-      return this.superComponentEntry;
+      return this.superComponentEntry
     }
     else {
       if (this.getConnection()) {
@@ -175,17 +173,9 @@ export class JoinConnectionEdit extends JoinConnectionEditComponent implements O
   }
 
   public override addNewComponent(comp: DemoRecComponent) {
-    console.error("Received new component with name:", comp.getName(), " and gemId:", comp.getGemId())
     this.getConnection().build()
     this.getConnection().addConnects2(comp)
-    //this.getConnection().connectsAdd(comp)
     this.syncDummyComponentsWithBuilderObject(comp)
-  }
-
-  clearConnects() {
-    this.getConnection().clearConnectss()
-    this.dummyComponents = []
-    this.dummyComponentNames = []
   }
 
   addComponentName(comp: DemoRecComponent) {
@@ -200,15 +190,11 @@ export class JoinConnectionEdit extends JoinConnectionEditComponent implements O
 
   public override removeSelectedComponent(dummyComponentName: string): (arg: any) => void {
     console.debug("removeSelectedComponent: ", dummyComponentName)
-
-    //console.error("Connects List before removing Component: ", this.getConnection().getConnects().length)
-
     return event => {
       const nameSplitByDoubleColon = dummyComponentName.split(":")
       const len = nameSplitByDoubleColon.length
       if(len > 0) {
         const gemIdOfComponent = nameSplitByDoubleColon[len-1]
-        console.error("Component to be removed has the following gemId:", gemIdOfComponent)
         const indexInDummyComps = this.dummyComponentNames.indexOf(dummyComponentName)
         console.debug("Removing Component from Connects by Id ", gemIdOfComponent)
         console.debug("indexInDummyComps:",indexInDummyComps)
@@ -216,16 +202,11 @@ export class JoinConnectionEdit extends JoinConnectionEditComponent implements O
         console.debug(this.getConnection().removeConnects(this.dummyComponents[indexInDummyComps],
             NotificationScope.ALL))
         this.getConnection().removeConnectsByIdSure(+gemIdOfComponent)
-        /*DemoRecManager.getDemoRecComponentSure(+gemIdOfComponent).then((component) => {
-          this.getConnection().removeConnects2(component)
-        })*/
         console.debug(this.getConnection().getConnects().map(c => c.getGemId()))
         this.dummyComponentNames.splice(indexInDummyComps, 1)
         this.dummyComponents.splice(indexInDummyComps, 1)
-
-        //console.error("Connects List after removing Component: ", this.getConnection().getConnects().length)
       }
-    };
+    }
   }
 
   public override getNewCompGuardCondition() :boolean {

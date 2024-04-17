@@ -96,7 +96,7 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements OnInit 
   // Select Types
 
   public override getSelectTypeOptions(): Array<Option> {
-    return this.selectTypeOptions;
+    return this.selectTypeOptions
   }
 
   public override getSelectTypeEntry(): string {
@@ -118,7 +118,7 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements OnInit 
   // Select End Effectors
 
   public override getSelectEndeffectorOptions(): Array<Option> {
-    return this.endEffectorOptions;
+    return this.endEffectorOptions
   }
 
   public override getSelectEndeffectorEntry(): string {
@@ -271,7 +271,6 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements OnInit 
   public override editMeasuringValues(any): void {
     this.router.navigate(["gui/step/MeasuringValueEdit/"+this.getP().getGemId()+"/"+this.getStep().getGemId()])
   }
-
 
 
   public override backToProcessOverview(any): void {
