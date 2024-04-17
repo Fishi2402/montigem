@@ -19,9 +19,8 @@ import gui.staticcontainer.NavContainer;
 page JoinConnectionEdit(Process p, ProcessStep step, JoinConnection connection, List<String> dummyComponentNames) {
   @NavContainer(
     content=[
-      @GemCard(
-        //title = "Edit Join Connection " + calculateDisplayValueOfJoinConnection(connection),
-        title = "Edit Join Connection",
+      joinConnectionEditGemCard@GemCard(
+        title = "",
 
         component = @GemColumn(
             wrap="nowrap",
@@ -59,7 +58,7 @@ page JoinConnectionEdit(Process p, ProcessStep step, JoinConnection connection, 
                 ]
               ),
 
-              @GemRow(
+              addedComponentsRow@GemRow(
                 wrap="nowrap",
                 colGap="5px",
                 components = [
@@ -72,7 +71,7 @@ page JoinConnectionEdit(Process p, ProcessStep step, JoinConnection connection, 
               ),
 
               newCompGuard@guard(true) {
-                @GemColumn(
+                createComponentDialog@GemColumn(
                   components=[
                     @ComponentCreate(createComponent=addNewComponent)
                   ]
