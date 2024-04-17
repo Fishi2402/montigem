@@ -23,6 +23,26 @@ page StaticObjectsCollector(Person person) {
     $1@iterate(Person p2 : person.friends) {
       g@L(a = [p.address, p2.address]);
       h@L(a = [p2.address, p.address]);
+
+      /*
+      Map<Person, Map<Person, List<Address>>> hA = new HashMap();
+
+
+
+      getHA(p, p2) {
+        return ha.get(p).get(p2);
+      }
+
+      initHA(p2, p) {
+        if (!qA.containsKey(p)) {
+          qA.put(p, new HashMap<>());
+        }
+        if (!qA.get(p).containsKey(p2)) {
+          qA.get(p).put(p2, [p2.address, p.address])
+        }
+      }
+      */
+
       i@P(p = Person(person.name));
       j@L(v = [$2@iterate(Person p3 : person.friends) { $3@L(); }]);
       /*

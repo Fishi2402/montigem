@@ -27,6 +27,7 @@ import umlp.generator.gui.genjava.prettyprinter.IterationItemsFinder;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -167,7 +168,7 @@ public class EventDecorator extends GUI2JavaComponentDecorator {
     SymTypeExpression ste = type4Ast.getTypeOfExpression(e);
 
     IterationItemsFinder finder = new IterationItemsFinder();
-    Collection<ASTExpression> iterateItems = finder.getItems(guiAst);
+    Collection<ASTExpression> iterateItems = new HashSet<>(finder.getItems(guiAst));
 
     // replace field access with getters
     Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
@@ -182,7 +183,7 @@ public class EventDecorator extends GUI2JavaComponentDecorator {
 
     for (ASTExpression e : call.getArguments().getExpressionList()) {
       IterationItemsFinder finder = new IterationItemsFinder();
-      Collection<ASTExpression> iterateItems = finder.getItems(guiAst);
+      Collection<ASTExpression> iterateItems = new HashSet<>(finder.getItems(guiAst));
 
       // replace field access with getters
       Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
@@ -218,7 +219,7 @@ public class EventDecorator extends GUI2JavaComponentDecorator {
     // Rest as normal
     for (ASTExpression e : expressions.subList(1, expressions.size())) {
       IterationItemsFinder finder = new IterationItemsFinder();
-      Collection<ASTExpression> iterateItems = finder.getItems(guiAst);
+      Collection<ASTExpression> iterateItems = new HashSet<>(finder.getItems(guiAst));
 
       // replace field access with getters
       Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(

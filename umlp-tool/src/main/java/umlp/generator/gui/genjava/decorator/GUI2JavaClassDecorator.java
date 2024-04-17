@@ -12,7 +12,6 @@ import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl.GUIDSLMill;
@@ -68,6 +67,8 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
   protected ASTCDClass clazz;
   protected GUIDSLTraverser traverser;
   protected ASTGUICompilationUnit gui;
+
+  protected List<Method> addedMethods = new ArrayList<>();
 
   public GUI2JavaClassDecorator(final GlobalExtensionManagement glex) {
     super(glex);
@@ -349,7 +350,8 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
   public void endVisit(ASTGUIIterate node) {
     if (!(node.getIterateControl() instanceof ASTGUIShortIterateControl)) {
       Log.error("0x00004 iterate construct " + node.getId().getName()
-          + " was not processed: range iterate control not supported yet");
+          + " was not processed: only short version, such as '(Type item : list)',"
+          + " is supported so far");
     }
     ASTGUIShortIterateControl control = (ASTGUIShortIterateControl) node.getIterateControl();
     // calc type
@@ -452,6 +454,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
   @Override
   public void endVisit(ASTCallExpression node) {
     Map<ASTNode, ASTCDAttribute> node2Attr = StaticObjectsCollector.getInstance().getNode2Attr();
+    Map<ASTNode, Method> node2Method = StaticObjectsCollector.getInstance().getNode2Method();
     // a constructor call, e.g., @PersonForm(person = Person())
     if (node2Attr.containsKey(node)) {
       if (!node.getArguments().isEmptyExpressions()) {
@@ -496,43 +499,31 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     }
     // a custom function or a predefined one, e.g.,
     // @PersonForm(person = makePerson()) or @PersonForm(buttonClick = create(person))
-    else if (node.getExpression() instanceof ASTNameExpression) {
-      CallTypeDeriver deriver = CallTypeDeriver.getInstance();
-      deriver.init(gui.getGUIComponentDeclaration(), node);
-      if (deriver.isPresentResult()) {
-        String name = ((ASTNameExpression) node.getExpression()).getName();
-        String type = deriver.getResult().print();
+    else if (node2Method.containsKey(node)) {
+      Method method = node2Method.get(node);
+      String name = method.getName();
+      if (!addedMethods.contains(method)) {
+        addedMethods.add(method);
 
         List<Argument> arguments = new ArrayList<>();
-        for (int i = 0; i < node.getArguments().getExpressionList().size(); ++i) {
-          ASTExpression exp = node.getArguments().getExpressionList().get(i);
-          SymTypeExpression argSTE = util.getType(exp);
-          if (argSTE.isObscureType()) {
-            Log.error("0x00015 Unable to derive the type of expression "
-                + util.print(node)
-                + "' at " + node.get_SourcePositionStart().toString()
-                + " - " + node.get_SourcePositionEnd().toString()
-            );
-          }
+        for (int i = 0; i < method.getParamTypes().size(); ++i) {
+          SymTypeExpression argSTE = method.getParamTypes().get(i);
           importAndPrintType(argSTE);
-          arguments.add(new Argument(argSTE.print(), Expression2SetterPrinter.SETTER_PARAM));
+          arguments.add(new Argument(argSTE.print(), Expression2SetterPrinter.SETTER_PARAM + i));
         }
-        importAndPrintType(deriver.getResult());
-        getCD4C().addMethod(clazz, getEmptyCallTemplate(), type, name, arguments);
-      }
-      else {
-        Log.error("0x00014 Unable to derive the type of call "
-            + util.print(node)
-            + "' at " + node.get_SourcePositionStart().toString()
-            + " - " + node.get_SourcePositionEnd().toString()
-            + ". Please make sure that the call is simple, e.g., doStuff(),"
-            + " a direct value of"
-            + " a GUI component parameter, "
-            + " a GUI component argument, "
-            + " a guard, "
-            + " an iterable item, "
-            + " or is inside a block."
-        );
+
+        // predefined function: @PersonForm(buttonClick = create(person))
+        if (PredefinedFunction.getMember(name).isPresent()) {
+          // TODO AGe: check type correctness
+          PredefinedFunction fun = PredefinedFunction.getMember(name).get();
+
+          getCD4C().addMethod(clazz, getPredefinedFunctionTemplate(fun), arguments);
+        }
+        // custom function: @PersonForm(person = makePerson())
+        else {
+          String type = importAndPrintType(method.getReturnType());
+          getCD4C().addMethod(clazz, getEmptyMethodTemplate(), type, name, arguments);
+        }
       }
     }
   }
@@ -704,12 +695,26 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     return "umlp.gui2java.GUI2JavaGetter";
   }
 
-  protected String getEmptyCallTemplate() {
-    return "umlp.gui2java.GUI2JavaCall";
+  protected String getEmptyMethodTemplate() {
+    return "umlp.gui2java.GUI2JavaEmptyMethod";
   }
 
   protected String getEventCallerTemplate() {
     return "umlp.gui2java.GUI2JavaEventCaller";
+  }
+
+  protected String getPredefinedFunctionTemplate(PredefinedFunction fun) {
+    switch (fun) {
+      case CREATE:
+        return "umlp.gui2java.predefined.GUI2JavaCreate";
+      case DELETE:
+        return "umlp.gui2java.predefined.GUI2JavaDelete";
+      case ASSOC_ADD:
+        return "umlp.gui2java.predefined.GUI2JavaAssocAdd";
+      case ASSOC_REMOVE:
+        return "umlp.gui2java.predefined.GUI2JavaAssocRemove";
+    }
+    return "";
   }
 
 }

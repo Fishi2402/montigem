@@ -28,7 +28,9 @@ import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIGeneratorUtil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -48,6 +50,7 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
   protected Map<ASTGUIList, SymTypeExpression> listTypes = new HashMap<>();
 
   protected Map<ASTNode, ASTCDAttribute> node2Attr = new HashMap<>();
+  protected Map<ASTNode, Method> node2Method = new HashMap<>();
 
   public static StaticObjectsCollector getInstance() {
     if (instance == null) {
@@ -69,9 +72,8 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
 
   public void init(ASTGUIComponentDeclaration node) {
     reset();
-    if (node.isPresentGUIBlock()) {
-      node.getGUIBlock().accept(getTraverser());
-    }
+    CallTypeDeriver.getInstance().init(node);
+    node.accept(getTraverser());
   }
 
   public void reset() {
@@ -82,10 +84,15 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
     lastCall = Optional.empty();
     listTypes = new HashMap<>();
     node2Attr = new HashMap<>();
+    node2Method = new HashMap<>();
   }
 
   public Map<ASTNode, ASTCDAttribute> getNode2Attr() {
     return node2Attr;
+  }
+
+  public Map<ASTNode, Method> getNode2Method() {
+    return node2Method;
   }
 
   @Override
@@ -166,6 +173,69 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
         ASTCDAttribute attr = CDAttributeFacade.getInstance().createAttribute(
             CDModifier.PROTECTED.build(), type, name);
         node2Attr.put(lastCall.get(), attr);
+      }
+      else if (CallTypeDeriver.getInstance().hasReturnType(lastCall.get())) {
+        SymTypeExpression returnType = CallTypeDeriver.getInstance().getReturnType(lastCall.get());
+        List<SymTypeExpression> paramTypes = new ArrayList<>();
+        for (ASTExpression exp : lastCall.get().getArguments().getExpressionList()) {
+          SymTypeExpression argSTE = util.getType(exp);
+          if (argSTE.isObscureType()) {
+            Log.error("0x00015 Unable to derive the type of expression '"
+                + util.print(node)
+                + "' at " + node.get_SourcePositionStart().toString()
+                + " - " + node.get_SourcePositionEnd().toString()
+            );
+          }
+          paramTypes.add(argSTE);
+        }
+
+        Method guiMethod = new Method(returnType, node.getName(), paramTypes);
+        for (ASTNode n : node2Method.keySet()) {
+          Method m = node2Method.get(n);
+          if (guiMethod.getName().equals(m.getName())) {
+            if (!guiMethod.compatibleParamTypes(m) && guiMethod.sameParamTypesErasure(m)) {
+              Log.error("0x00018 Found methods with the same type erasure: '"
+                  + util.print(n) + "' at " + n.get_SourcePositionStart().toString()
+                  + " - " + node.get_SourcePositionEnd().toString()
+                  + " and "
+                  + util.print(lastCall.get())
+                  + "' at " + lastCall.get().get_SourcePositionStart().toString()
+                  + " - " + lastCall.get().get_SourcePositionEnd().toString()
+                  + ". Please rename one of the methods."
+              );
+            }
+            else if (guiMethod.compatibleReturnType(m) && guiMethod.compatibleParamTypes(m)) {
+              guiMethod = m;
+              break;
+            }
+            else if (!guiMethod.compatibleReturnType(m) && guiMethod.compatibleParamTypes(m)) {
+              Log.error("0x00019 Found methods with the same return types: '"
+                  + util.print(n) + "' at " + n.get_SourcePositionStart().toString()
+                  + " - " + node.get_SourcePositionEnd().toString()
+                  + " and "
+                  + util.print(lastCall.get())
+                  + "' at " + lastCall.get().get_SourcePositionStart().toString()
+                  + " - " + lastCall.get().get_SourcePositionEnd().toString()
+                  + ". Please rename one of the methods."
+              );
+            }
+          }
+        }
+        node2Method.put(lastCall.get(), guiMethod);
+      }
+      else {
+        Log.error("0x00014 Unable to derive the type of call "
+            + util.print(lastCall.get())
+            + "' at " + lastCall.get().get_SourcePositionStart().toString()
+            + " - " + lastCall.get().get_SourcePositionEnd().toString()
+            + ". Please make sure that the call is simple, e.g., doStuff(),"
+            + " a direct value of"
+            + " a GUI component parameter, "
+            + " a GUI component argument, "
+            + " a guard, "
+            + " an iterable item, "
+            + " or is inside a block."
+        );
       }
     }
   }

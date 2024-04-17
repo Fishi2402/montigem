@@ -472,7 +472,7 @@ public class GenService {
   }
 
   public static boolean containsMethod(ASTCDType type, ASTCDMethodSignature method) {
-    return type.getCDMethodList().stream().filter(m -> m.deepEquals(method)).findAny().isPresent();
+    return type.getCDMethodList().stream().anyMatch(m -> m.deepEquals(method));
   }
 
   public static boolean hasStereotype(ASTModifier modifier, String value) {
