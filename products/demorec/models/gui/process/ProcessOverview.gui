@@ -40,11 +40,11 @@ page ProcessOverview(Process p) {
                       @StatTableRow(left = @GemText(value = "Type"), right = @GemText(value = step.type)),
                       @StatTableRow(left = @GemText(value = "Description"), right = @GemText(value = step.description)),
                       @StatTableRow(left = @GemText(value = "Endeffector"), right = @GemText(value = step.uses.name)),
-                      @StatTableRow(left = @GemText(value = "Duration"), right = @GemText(value = step.timeConsumption + " seconds"))
-                      //@StatTableRow(left = @GemText(value = "Number of Measured Values"), right = @GemText(value = getNumberOfMeasuredValues(step)))
-                      /*stepHasJoinConnection(step)@guard(true) {
-                        //@StatTableRow(left = @GemText(value = "Join Connection"), right = @GemText(value = getDisplayNameOfJoinConnection(step)));
-                      }*/
+                      @StatTableRow(left = @GemText(value = "Duration"), right = @GemText(value = step.timeConsumption + " seconds")),
+                      @StatTableRow(left = @GemText(value = "Number of Measured Values"), right = measuredValuesCount@GemText(value = null)),
+                      stepHasJoinConnection@guard(true) {
+                        @StatTableRow(left = @GemText(value = "Join Connection"), right = joinConnectionDescription@GemText(value = null));
+                      }
                     ]),
                     editStepButton@GemButton(width = "25%", label = "Edit Step " + step.index, leftClick = editStep(step))
                   ]);
