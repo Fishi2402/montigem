@@ -7,54 +7,43 @@ import mc.fenix.arrange.GemCard;
 import mc.fenix.arrange.GemColumn;
 import mc.fenix.arrange.GemRow;
 
-import gui.staticcontainer.NavContainer;
-
-import DemoRec.Process;
 import DemoRec.ProcessStep;
 import DemoRec.MeasuringValue;
-import DemoRec.Dimension;
 
 import gui.step.MeasuringValueCreate;
 
-page MeasuringValueEdit(Process p, ProcessStep step) {
-  @NavContainer(
-    content=[
-      @GemCard(
-        title = "Edit Measuring Values",
-        component = @GemColumn(
-          colGap="10px",
-          components = [
+page MeasuringValueEdit(ProcessStep step) {
+  @GemCard(
+    title = "Edit Measuring Values",
+    component = @GemColumn(
+      colGap="10px",
+      components = [
 
-            @iterate(MeasuringValue measuringValue : step.measured) {
-              displayedMeasuringValueRow@GemRow(
-                wrap="nowrap",
-                colGap="5px",
-                components=[
-                  displayedMeasuringValue@GemTextInput(labelText = "Value", inputType = "string", entry = measuringValue.value),
-                  displayedMeasuringValueDimensionUnit@GemTextInput(
-                    labelText = "Unit",
-                    inputType = "dropdown",
-                    options = null,
-                    entry = null
-                  ),
-                  displayedMeasuringValueDeleteButton@GemButton(label = "Delete Value", leftClick = deleteMeasuringValue(measuringValue))
-                ]
-              );
-            },
+        @iterate(MeasuringValue measuringValue : step.measured) {
+          displayedMeasuringValueRow@GemRow(
+            wrap="nowrap",
+            colGap="5px",
+            components=[
+              displayedMeasuringValue@GemTextInput(labelText = "Value", inputType = "string", entry = measuringValue.value),
+              displayedMeasuringValueDimensionUnit@GemTextInput(
+                labelText = "Unit",
+                inputType = "dropdown",
+                options = null,
+                entry = null
+              ),
+              displayedMeasuringValueDeleteButton@GemButton(label = "Delete Value", leftClick = deleteMeasuringValue(measuringValue))
+            ]
+          );
+        },
 
-            @GemRow(
-              wrap="nowrap",
-              colGap="5px",
-              components=[
-                addNewMeasuringValue@MeasuringValueCreate(measuringValueEvent = attachMeasuringValue)
-              ]
-            ),
-
-
-            @GemButton(label = "Back to Step Editing", leftClick = backToStepEditing)
+        @GemRow(
+          wrap="nowrap",
+          colGap="5px",
+          components=[
+            addNewMeasuringValue@MeasuringValueCreate(measuringValueEvent = attachMeasuringValue)
           ]
         )
-      )
-    ]
+      ]
+    )
   );
 }
