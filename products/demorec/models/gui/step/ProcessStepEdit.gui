@@ -13,6 +13,8 @@ import mc.fenix.basic.GemCheckbox;
 import mc.fenix.basic.GemButton;
 import mc.fenix.input.GemTextInput;
 
+import gui.step.MeasuringValueEdit;
+
 import gui.component.SubComponentView;
 import gui.staticcontainer.NavContainer;
 
@@ -88,11 +90,7 @@ page ProcessStepEdit(Process p, ProcessStep step) {
                   }
                 },
 
-                hasMeasuringValues@guard(true) {
-                  editMeasuringValuesButton@GemButton(width = "auto", label = "Edit Measuring Values", leftClick = editMeasuringValues);
-                } else {
-                  addMeasuringValuesButton@GemButton(width = "auto", disabled = false, label = "Add Measuring Values", leftClick = editMeasuringValues);
-                },
+                editMeasuringValuesCard@MeasuringValueEdit(step=step),
 
                 @GemButton(width = "auto", label = "Back to Process Overview", leftClick = backToProcessOverview)
             ])

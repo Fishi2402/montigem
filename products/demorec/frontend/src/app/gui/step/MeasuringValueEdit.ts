@@ -103,8 +103,4 @@ export class MeasuringValueEdit extends MeasuringValueEditComponent implements O
     this.getStep().addMeasured2(val)
   }
 
-  public override backToStepEditing(any): void {
-    this.router.navigate(["gui/step/ProcessStepEdit/"+this.getP().getGemId()+"/"+this.getStep().getGemId()])
-  }
-
 }

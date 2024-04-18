@@ -262,17 +262,6 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements OnInit 
   }
 
 
-  // Edit Measuring Values
-
-  public override getHasMeasuringValuesCondition() :boolean {
-    return this.getStep()?.getMeasured().length !== 0
-  }
-
-  public override editMeasuringValues(any): void {
-    this.router.navigate(["gui/step/MeasuringValueEdit/"+this.getP().getGemId()+"/"+this.getStep().getGemId()])
-  }
-
-
   public override backToProcessOverview(any): void {
     this.router.navigate(["gui/process/ProcessOverview/"+this.getP().getGemId()])
   }
