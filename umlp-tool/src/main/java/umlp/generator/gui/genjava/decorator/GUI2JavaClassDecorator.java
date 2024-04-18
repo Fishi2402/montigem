@@ -505,23 +505,49 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
       if (!addedMethods.contains(method)) {
         addedMethods.add(method);
 
-        List<Argument> arguments = new ArrayList<>();
-        for (int i = 0; i < method.getParamTypes().size(); ++i) {
-          SymTypeExpression argSTE = method.getParamTypes().get(i);
-          importAndPrintType(argSTE);
-          arguments.add(new Argument(argSTE.print(), Expression2SetterPrinter.SETTER_PARAM + i));
-        }
-
         // predefined function: @PersonForm(buttonClick = create(person))
         if (PredefinedFunction.getMember(name).isPresent()) {
           // TODO AGe: check type correctness
           PredefinedFunction fun = PredefinedFunction.getMember(name).get();
+          if (util.getMainDomainModelSimpleName().isEmpty()) {
+            Log.error("0x00007 Could not identify the manager name:"
+                + " domain class diagram is missing");
+            return;
+          }
+          String manager = ManagerDecorator.getClassName(util.getMainDomainModelSimpleName().get());
 
-          getCD4C().addMethod(clazz, getPredefinedFunctionTemplate(fun), arguments);
+          switch (fun) {
+            case CREATE:
+              if (method.getParamTypes().size() != 1
+                  || !util.isDomainType(method.getParamTypes().get(0))) {
+                Log.error("0x0001A Function create expects a single domain type argument"
+                    + " at " + node.get_SourcePositionStart().toString()
+                    + " - " + node.get_SourcePositionEnd().toString());
+              }
+              getCD4C().addMethod(clazz, getCreateTemplate(),
+                  manager, method.getParamTypes().get(0).print());
+              break;
+            case DELETE:
+              getCD4C().addMethod(clazz, getDeleteTemplate(), manager);
+              break;
+            case ASSOC_ADD:
+              getCD4C().addMethod(clazz, getAssocAddTemplate(), manager);
+              break;
+            case ASSOC_REMOVE:
+              getCD4C().addMethod(clazz, getAssocRemoveTemplate(), manager);
+              break;
+          }
         }
         // custom function: @PersonForm(person = makePerson())
         else {
           String type = importAndPrintType(method.getReturnType());
+          List<Argument> arguments = new ArrayList<>();
+          for (int i = 0; i < method.getParamTypes().size(); ++i) {
+            SymTypeExpression argSTE = method.getParamTypes().get(i);
+            importAndPrintType(argSTE);
+            arguments.add(new Argument(argSTE.print(), Expression2SetterPrinter.SETTER_PARAM + i));
+          }
+
           getCD4C().addMethod(clazz, getEmptyMethodTemplate(), type, name, arguments);
         }
       }
@@ -703,18 +729,20 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     return "umlp.gui2java.GUI2JavaEventCaller";
   }
 
-  protected String getPredefinedFunctionTemplate(PredefinedFunction fun) {
-    switch (fun) {
-      case CREATE:
-        return "umlp.gui2java.predefined.GUI2JavaCreate";
-      case DELETE:
-        return "umlp.gui2java.predefined.GUI2JavaDelete";
-      case ASSOC_ADD:
-        return "umlp.gui2java.predefined.GUI2JavaAssocAdd";
-      case ASSOC_REMOVE:
-        return "umlp.gui2java.predefined.GUI2JavaAssocRemove";
-    }
-    return "";
+  protected String getCreateTemplate() {
+    return "umlp.gui2java.predefined.GUI2JavaCreate";
+  }
+
+  protected String getDeleteTemplate() {
+    return "umlp.gui2java.predefined.GUI2JavaCreate";
+  }
+
+  protected String getAssocAddTemplate() {
+    return "umlp.gui2java.predefined.GUI2JavaCreate";
+  }
+
+  protected String getAssocRemoveTemplate() {
+    return "umlp.gui2java.predefined.GUI2JavaCreate";
   }
 
 }

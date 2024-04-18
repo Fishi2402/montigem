@@ -19,7 +19,7 @@ node {
 
 genGUI {
   domainModels = ["Domain"]
-  guiCreateModels = ["person.Create"]
+  guiCreateModels = ["person.CreatePerson"]
 }
 
 translateJava2TSDomain {

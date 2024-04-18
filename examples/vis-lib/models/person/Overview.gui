@@ -9,12 +9,12 @@ import mc.fenix.arrange.GemRow;
 import mc.fenix.basic.GemText;
 
 import person.Row;
-import person.Create;
+import person.CreatePerson;
 import person.PieChart;
 
 page Overview(List<Person> persons) {
   @GemColumn(rowGap = "10px", width = "50%", components = [
-    @Create(),
+    @CreatePerson(),
     @iterate(Person p : persons) {
         @Row(
           col1 = @GemText(value = p.birthday),

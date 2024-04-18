@@ -1,8 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { CreateComponent, config } from '@src/person/CreateComponent';
+import { CreatePersonComponent, config } from '@src/person/CreatePersonComponent';
 import { Component } from '@angular/core';
 import { DomainManager } from '@src/domain/DomainManager';
+
+function Mix<T extends new (...args: any[]) => {}>(base: T) {
+  return class extends base {
+    foo() {
+      alert('here');
+    }
+  }
+}
+
 @Component({
   standalone: true,
   imports: [...config.imports],
@@ -10,7 +19,7 @@ import { DomainManager } from '@src/domain/DomainManager';
   templateUrl: config.templateUrl,
   styleUrls: config.styleUrls
 })
-export class Create extends CreateComponent {
+export class CreatePerson extends Mix(CreatePersonComponent) {
 
   public override getBdayEntry(): string {
     return this.getPerson()?.getBirthday()?.toDateString();
@@ -18,15 +27,15 @@ export class Create extends CreateComponent {
 
   public override create(): (arg: any) => void {
     return () => {
-      const addr = this.address.build();
-      this.person.address(addr).build();
-      DomainManager.addressBuilder().then(b => {
-        this.address = b;
-      });
-      DomainManager.personBuilder().then(b => {
-        this.person = b;
-      });
+      this.foo();
+      this.getPerson().setAddress1(this.getAddress());
+      this.getPerson().setAboutMe("none");
+      DomainManager.addPerson(this.getPerson().build());
     }
+  }
+
+  foo() {
+    alert('Created person')
   }
 
 }
