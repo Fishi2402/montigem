@@ -29,12 +29,10 @@ dependencies {
   implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version
   implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
   implementation group: 'de.monticore', name: 'class2mc', version: mc_version
-  implementation group: 'de.monticore', name: 'monticore-grammar-tagging', version: mc_version
   implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
   implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version, classifier: 'cdmerge'
   implementation group: 'de.monticore.lang', name: 'guidsl', version: mc_version
   implementation group: 'de.monticore.lang', name: 'cd2gui', version: mc_version
-  implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version,  classifier: 'tagging'
   implementation "de.monticore.language-server:monticore-language-server-runtime:$mclsg_version"
   implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version, classifier: 'language-server'
   implementation group: 'de.se_rwth.commons', name: 'se-commons-gradle', version: mc_version
@@ -122,28 +120,6 @@ task generateUMLP(type: MCTask) {
   outputs.upToDateWhen { uptoDate }
 }
 
-/*
- ALu: Mit tagging-lite vmtl. erst mal nicht mehr notwendig
-task generateUMLPTagDef(type: MCTask) {
-  grammar = file "$buildDir/generated-sources/monticore/sourcecode/UMLPTagDefinition.mc4"
-  outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
-  modelPath("$projectDir/$grammarDir")
-  modelPath("$buildDir/generated-sources/monticore/sourcecode")
-  dependsOn(generateUMLP)
-  genTag = true
-  def uptoDate = incCheck("UMLP.mc4")
-  outputs.upToDateWhen { uptoDate }
-}
-task generateUMLPTagSchema(type: MCTask) {
-  grammar = file "$buildDir/generated-sources/monticore/sourcecode/UMLPTagSchema.mc4"
-  outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
-  modelPath("$projectDir/$grammarDir")
-  modelPath("$buildDir/generated-sources/monticore/sourcecode")
-  dependsOn(generateUMLPTagDef)
-  def uptoDate = incCheck("UMLP.mc4")
-  outputs.upToDateWhen { uptoDate }
-}
- */
 
 
 compileJava {
