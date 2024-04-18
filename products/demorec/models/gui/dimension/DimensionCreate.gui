@@ -4,25 +4,31 @@ import DemoRec.Dimension;
 
 import mc.fenix.basic.GemText;
 import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
 import mc.fenix.input.GemTextInput;
 import mc.fenix.basic.GemButton;
 
 page DimensionCreate(Dimension dimension) {
-
-  @GemRow(
-    wrap="nowrap",
-    colGap="5%",
+  @GemColumn(
+    rowGap="5px",
     components=[
-      @GemTextInput(
-        labelText = "Name",
-        inputType = "text",
-        entry = dimension.name),
-      @GemTextInput(
-        labelText = "Unit",
-        inputType = "text",
-        entry = dimension.unit)
+      @GemRow(
+        wrap="nowrap",
+        colGap="5%",
+        components=[
+          @GemTextInput(
+            labelText = "Name",
+            inputType = "text",
+            entry = dimension.name),
+          @GemTextInput(
+            labelText = "Unit",
+            inputType = "text",
+            entry = dimension.unit)
+        ]
+      ),
+      @GemButton(label="Save", leftClick = createDimension)
     ]
   );
-  @GemButton(label="Save", leftClick = createDimension);
+
 
 }

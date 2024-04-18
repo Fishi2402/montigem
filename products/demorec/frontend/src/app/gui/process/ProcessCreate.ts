@@ -65,6 +65,17 @@ export  class ProcessCreate extends ProcessCreateComponent {
       });
     });
 
+    DemoRecManager.getComponentKindList().then(gemPromiseRes => {
+      const kinds = gemPromiseRes
+      kinds.loadAll().then(() => {
+        for (const kind of kinds) {
+          // TODO filter so that only PackKind Options remain
+          let kindValue = kind.getGemId()+"";
+          this.kindOptions.push({value: kindValue, display: kind.getName()})
+        }
+      })
+    })
+
     DemoRecManager.getBatteryPackTypeList().then(gemPromiseRes => {
       const bPackTypes = gemPromiseRes;
       bPackTypes.loadAll().then(() => {

@@ -26,8 +26,8 @@ page ProcessStepEdit(Process p, ProcessStep step) {
       content=[
         @GemCard(
           title = "Edit Step " + step.index,
-
           component = @GemColumn(
+              rowGap="5px",
               wrap="nowrap",
               components=[
 
