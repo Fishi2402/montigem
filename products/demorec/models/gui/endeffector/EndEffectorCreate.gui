@@ -10,10 +10,16 @@ import mc.fenix.basic.GemButton;
 
 page EndEffectorCreate(EndEffector endEffector) {
 
-  @GemTextInput(
-    labelText = "Name",
-    inputType = "text",
-    entry = endEffector.name);
-  @GemButton(label="Save", leftClick = createEndEffector);
+  @GemColumn(
+    rowGap="5px",
+    components=[
+      @GemTextInput(
+        labelText = "Name",
+        inputType = "text",
+        entry = endEffector.name),
+      @GemButton(label="Save", leftClick = createEndEffector)
+    ]
+  );
+
 
 }

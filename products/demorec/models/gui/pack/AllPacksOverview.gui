@@ -3,6 +3,7 @@ package gui.pack;
 import DemoRec.BatteryPack;
 
 import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemCard;
 import mc.fenix.arrange.GemColumn;
 import mc.fenix.basic.GemText;
 
@@ -12,13 +13,17 @@ import gui.staticcontainer.NavContainer;
 page AllPacksOverview(List<BatteryPack> allPacks) {
   @NavContainer(
     content = [
-      @GemColumn(
-        rowGap = "15px",
-        components = [
-          @iterate(BatteryPack pack : allPacks) {
-            @BatteryPackOverview(pack=pack);
-          }
-      ])
+      @GemCard(
+        title="Overview of Packs in Database",
+        component=
+          @GemColumn(
+            rowGap = "15px",
+            components = [
+              @iterate(BatteryPack pack : allPacks) {
+                @BatteryPackOverview(pack=pack);
+              }
+          ])
+      )
     ]
   );
 
