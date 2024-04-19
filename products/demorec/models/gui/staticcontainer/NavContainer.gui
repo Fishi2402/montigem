@@ -8,7 +8,7 @@ import gui.staticcontainer.Navigation;
 import gui.staticcontainer.Footer;
 
 component NavContainer(List<GUIViewElement> content) {
-  @GemRow(
+  @GemColumn(
     components=[
       @Navigation(),
       @GemRow(

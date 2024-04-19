@@ -19,6 +19,7 @@ page Start(List<Process> allProcesses) {
         title="All Processes",
         component=
           @GemColumn(
+           rowGap="15px",
            components = [
              @iterate(Process p : allProcesses) {
                processRow@GemRow(

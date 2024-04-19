@@ -7,8 +7,8 @@ import mc.fenix.basic.GemText;
 import mc.fenix.basic.GemLink;
 
 component Navigation() {
-  @GemColumn(
-    rowGap="5px",
+  @GemRow(
+    colGap="5px",
     components=[
       @GemLink(url="gui/Start", text="Processes"),
       @GemLink(url="gui/process/ProcessCreate", text="Start new Process"),
