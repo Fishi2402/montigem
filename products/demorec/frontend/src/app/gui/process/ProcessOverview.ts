@@ -44,40 +44,4 @@ export  class ProcessOverview extends ProcessOverviewComponent {
     this.getP().addConsistsOf2(step);
   }
 
-  public getReverseProcessSteps(): Array<ProcessStep> {
-    let stepsCopy = []
-
-    if (this.getP()) {
-      const steps = this.getP().getConsistsOf()
-
-      for (let i = 0; i < steps.length; i++) {
-        stepsCopy[i] = steps[i];
-      }
-
-      return stepsCopy.reverse()
-    }
-
-    return stepsCopy
-  }
-
-  public override getMeasuredValuesCountValue(step: ProcessStep): string {
-    return step.getMeasured().length + ""
-  }
-
-  public override getStepHasJoinConnectionCondition(step: ProcessStep): boolean {
-    return step.getDeconstructs() !== null
-  }
-
-  public override getJoinConnectionDescriptionValue(step: ProcessStep): string {
-    if (step.getDeconstructs()) {
-      return "Available"
-    }
-    else {
-      return "Not available"
-    }
-  }
-
-  public override editStep(step: ProcessStep): (step: ProcessStep) => void {
-    return () => this.router.navigate(["gui/step/ProcessStepEdit/"+this.getP().getGemId()+"/"+step.getGemId()])
-  }
 }
