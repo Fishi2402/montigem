@@ -58,16 +58,21 @@ page ProcessStepCreate(ProcessStep step, List<String> values, Event<ProcessStep>
             labelText = "Description (optional)",
             inputType = "text",
             entry = step.description),
-        selectEndeffector@GemTextInput(
-            labelText = "Used Endeffector in this step",
-            inputType = "dropdown",
-            options = null,
-            entry = null),
-        selectType@GemTextInput(
-            labelText = "Step type",
-            inputType = "dropdown",
-            options = null,
-            entry = null),
+        @GemRow(
+          colGap="5px",
+          components=[
+            selectEndeffector@GemTextInput(
+                labelText = "Used Endeffector in this step",
+                inputType = "dropdown",
+                options = null,
+                entry = null),
+            selectType@GemTextInput(
+                labelText = "Step type",
+                inputType = "dropdown",
+                options = null,
+                entry = null)
+          ]
+        ),
         isDeconstruction@guard(true) {
           selectJoinConnection@GemTextInput(
               labelText = "Deconstructing Join Connection",
