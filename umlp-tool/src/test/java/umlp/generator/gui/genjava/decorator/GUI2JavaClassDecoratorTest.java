@@ -303,7 +303,7 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     ASTCDMethod calcStr = getMethod(methods, "calcStr");
     ASTCDMethod getCA = getMethod(methods, "getCA");
     ASTCDMethod getCA_0 = getMethod(methods, "getCA_0");
-    ASTCDMethod initCA_0 = getMethod(methods, "initCA_0");
+    ASTCDMethod syncCA_0 = getMethod(methods, "syncCA_0");
     ASTCDMethod getDI = getMethod(methods, "getDI");
     ASTCDMethod setDI = getMethod(methods, "setDI");
     ASTCDMethod getFI = getMethod(methods, "getFI");
@@ -314,7 +314,7 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     ASTCDMethod getKA = getMethod(methods, "getKA");
     ASTCDMethod getKS = getMethod(methods, "getKS");
     ASTCDMethod getKS_1 = getMethod(methods, "getKS_1");
-    ASTCDMethod initKS_1 = getMethod(methods, "initKS_1");
+    ASTCDMethod syncKS_1 = getMethod(methods, "syncKS_1");
     ASTCDMethod getKM = getMethod(methods, "getKM");
     ASTCDMethod getKM_2 = getMethod(methods, "getKM_2");
     ASTCDMethod initKM_2 = getMethod(methods, "getKM_2");
@@ -333,7 +333,7 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     assertions.add(() -> assertNotNull(calcStr));
     assertions.add(() -> assertNotNull(getCA));
     assertions.add(() -> assertNotNull(getCA_0));
-    assertions.add(() -> assertNotNull(initCA_0));
+    assertions.add(() -> assertNotNull(syncCA_0));
     assertions.add(() -> assertNotNull(getDI));
     assertions.add(() -> assertNotNull(setDI));
     assertions.add(() -> assertNotNull(getFI));
@@ -344,7 +344,7 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     assertions.add(() -> assertNotNull(getKA));
     assertions.add(() -> assertNotNull(getKS));
     assertions.add(() -> assertNotNull(getKS_1));
-    assertions.add(() -> assertNotNull(initKS_1));
+    assertions.add(() -> assertNotNull(syncKS_1));
     assertions.add(() -> assertNotNull(getKM));
     assertions.add(() -> assertNotNull(getKM_2));
     assertions.add(() -> assertNotNull(initKM_2));

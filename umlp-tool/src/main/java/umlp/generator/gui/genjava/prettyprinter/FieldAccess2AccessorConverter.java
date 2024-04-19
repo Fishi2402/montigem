@@ -13,6 +13,7 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.StringTransformations;
 import umlp.generator.gui.GUIGeneratorUtil;
+import umlp.generator.gui.genjava.decorator.Attribute;
 import umlp.generator.gui.genjava.decorator.StaticObjectsCollector;
 
 import java.util.Collection;
@@ -33,11 +34,11 @@ public class FieldAccess2AccessorConverter extends CommonExpressionsPrettyPrinte
 
   @Override
   public void handle(ASTCallExpression node) {
-    Map<ASTNode, ASTCDAttribute> node2Attr = StaticObjectsCollector.getInstance().getNode2Attr();
+    Map<ASTNode, Attribute> node2Attr = StaticObjectsCollector.getInstance().getNode2Attr();
     // a special case with builder
     if (node2Attr.containsKey(node)) {
       getPrinter().print("this.get" + StringTransformations.capitalize(
-          node2Attr.get(node).getName()
+          node2Attr.get(node).getCdAttr().getName()
       ));
 
       if (this.isPrintComments()) {

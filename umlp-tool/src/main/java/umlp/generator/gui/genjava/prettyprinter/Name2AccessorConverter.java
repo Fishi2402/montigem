@@ -76,18 +76,4 @@ public class Name2AccessorConverter extends ExpressionsBasisPrettyPrinter {
     }
   }
 
-  protected boolean isConstructor(ASTNameExpression node) {
-    if (node.getEnclosingScope() instanceof IOOSymbolsScope) {
-      IOOSymbolsScope scope = (IOOSymbolsScope) node.getEnclosingScope();
-      Optional<OOTypeSymbol> sym = scope.resolveOOType(node.getName());
-      return sym.isPresent() && sym.get().isIsClass();
-    }
-    else {
-      Log.error("0x0000C Attempted to resolve type of '"
-          + GUIGeneratorUtil.getInstance().print(node) + "' from outside of an OOSymbolsScope,"
-          + " but expression conversion is restricted to OOSymbols context.");
-      return false;
-    }
-  }
-
 }

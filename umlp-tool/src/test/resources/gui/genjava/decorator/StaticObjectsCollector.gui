@@ -25,28 +25,37 @@ page StaticObjectsCollector(Person person) {
       h@L(a = [p2.address, p.address]);
 
       /*
-      Map<Person, Map<Person, List<Address>>> hA = new HashMap();
+      Map<Person, Map<Person, List<Address>>> hA = new HashMap<>();
 
-
-
-      getHA(p, p2) {
-        return ha.get(p).get(p2);
+      List<Address> getHA(p, p2) {
+        if (hA.containsKey(p) && hA.get(p).containsKey(p2)) {
+          return hA.get(p).get(p2);
+        }
+        return null;
       }
 
-      initHA(p2, p) {
-        if (!qA.containsKey(p)) {
-          qA.put(p, new HashMap<>());
+      void addHA(p, p2) {
+        hA.get(p).put(p2, List.of(p2.address, p.address));
+      }
+
+      void removeHA(p, p2) {
+        hA.get(p).remove(p2);
+      }
+
+      void syncHA(p, p2) {
+        if (!ha.containsKey(p)) {
+          ha.put(p, new HashMap<>());
         }
-        if (!qA.get(p).containsKey(p2)) {
-          qA.get(p).put(p2, [p2.address, p.address])
+        if (!ha.get(p).containsKey(p2)) {
+          ha.get(p).put(p2, List.of(p2.address, p.address));
         }
       }
       */
 
       i@P(p = Person(person.name));
       j@L(v = [$2@iterate(Person p3 : person.friends) { $3@L(); }]);
-      /*
 
+      /*
       k@T(
         md = MyData(InputStatus.WARNING),
         is = InputStatus.ERROR,
@@ -60,7 +69,6 @@ page StaticObjectsCollector(Person person) {
       // List<String> s
       m@L(s = [InputStatus.ERROR, InputStatus.WARNING]);
       // m@L(s = values(InputStatus));
-
       /**/
     }
   }

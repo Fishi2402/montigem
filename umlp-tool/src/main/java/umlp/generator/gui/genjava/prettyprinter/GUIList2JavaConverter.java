@@ -10,6 +10,7 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.se_rwth.commons.StringTransformations;
 import umlp.generator.gui.GUIGeneratorUtil;
+import umlp.generator.gui.genjava.decorator.Attribute;
 import umlp.generator.gui.genjava.decorator.StaticObjectsCollector;
 
 import java.util.Iterator;
@@ -24,13 +25,13 @@ public class GUIList2JavaConverter extends GUIDSLPrettyPrinter {
 
   @Override
   public void handle(ASTGUIList node) {
-    Map<ASTNode, ASTCDAttribute> node2Attr = StaticObjectsCollector.getInstance().getNode2Attr();
+    Map<ASTNode, Attribute> node2Attr = StaticObjectsCollector.getInstance().getNode2Attr();
     // a special case with a list
     if (node2Attr.containsKey(node)) {
       Iterator<VariableSymbol> vs = GUIGeneratorUtil.getInstance()
           .findIterationItemSymbols(node.getEnclosingScope()).iterator();
       getPrinter().print("this.get" + StringTransformations.capitalize(
-          node2Attr.get(node).getName()
+          node2Attr.get(node).getCdAttr().getName()
       ) + "(");
       if (vs.hasNext()) {
         getPrinter().print(vs.next().getName());

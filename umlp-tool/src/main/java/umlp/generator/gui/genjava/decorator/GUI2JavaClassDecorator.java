@@ -245,6 +245,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
         );
       }
       SymTypeExpression typeSTE = arg.getNameSymbol().getType();
+      // exclude GUIViewElement
       if (GUIGeneratorUtil.getInstance().isViewElement(typeSTE)
           || GUIGeneratorUtil.getInstance().isViewElementsCollection(typeSTE)) {
         return;
@@ -398,40 +399,66 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
   @Override
   public void endVisit(ASTGUIList node) {
     // a GUIList requires preprocessing and extra information for code generation
-    Map<ASTNode, ASTCDAttribute> node2Attr = StaticObjectsCollector
+    Map<ASTNode, Attribute> node2Attr = StaticObjectsCollector
         .getInstance().getNode2Attr();
     if (node2Attr.containsKey(node)) {
       // add attr
-      ASTCDAttribute attr = node2Attr.get(node);
+      Attribute attrWrapper = node2Attr.get(node);
+      ASTCDAttribute attr = attrWrapper.getCdAttr();
       clazz.addCDMember(attr);
 
-      // add getter
-      getCD4C().addMethod(clazz, getGetterTemplate(), attr.getMCType().printType(), attr.getName());
-
-      // add attr init
-      Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
-          new IndentPrinter(), false, Collections.emptyList(), Collections.emptyList()
-      );
-      List<String> listItems = new ArrayList<>();
-      for (ASTGUIArgValue val : node.getGUIArgValueList()) {
-        listItems.add(getterPrinter.prettyprint(val));
-      }
-
       // calc iterate items as additional args
-      List<VariableSymbol> iterateArgs = util.findIterationItemSymbols(node.getEnclosingScope());
-      for (VariableSymbol vs : iterateArgs) {
-        importAndPrintType(vs.getType());
+      Collection<VariableSymbol> iterateArgs = attrWrapper.getIterateArgs();
+
+      if (iterateArgs.isEmpty()) {
+        String type = attr.getMCType().printType();
+        String name = attr.getName();
+
+        // add attr sync
+        Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
+            new IndentPrinter(), false, new ArrayList<>(), new ArrayList<>()
+        );
+        List<String> listItems = new ArrayList<>();
+        for (ASTGUIArgValue val : node.getGUIArgValueList()) {
+          listItems.add(getterPrinter.prettyprint(val));
+        }
+
+        ASTCDMethodSignature attrSync = getCD4C().addMethod(clazz, getListSyncTemplate(),
+            type, name, listItems
+        );
+
+        // add getter
+        getCD4C().addMethod(clazz, getGetterTemplate(),
+            type, name, attrSync);
       }
+      else {
+        // calc iterate items as additional args
+        for (VariableSymbol vs : iterateArgs) {
+          importAndPrintType(vs.getType());
+        }
 
-      ASTCDMethodSignature attrInit = getCD4C().addMethod(
-          clazz, getInitListTemplate(), attr, listItems, iterateArgs
-      );
+        String type = attrWrapper.getBaseType();
+        String name = attr.getName();
 
-      // add attr init to class init
-      glex.addAfterTemplate(
-          getInitBodyHookpoint(),
-          new TemplateHookPoint(getInitCallTemplate(), attrInit)
-      );
+        // add attr sync
+        IterationItemsFinder finder = new IterationItemsFinder();
+        Collection<ASTExpression> iterateItems = new HashSet<>(finder.getItems(gui));
+
+        Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
+            new IndentPrinter(), false, iterateItems, iterateItems
+        );
+        List<String> listItems = new ArrayList<>();
+        for (ASTGUIArgValue val : node.getGUIArgValueList()) {
+          listItems.add(getterPrinter.prettyprint(val));
+        }
+
+        ASTCDMethodSignature attrSync = getCD4C().addMethod(clazz, getStaticListSyncTemplate(),
+            type, name, listItems, iterateArgs);
+
+        // add getter
+        getCD4C().addMethod(clazz, getStaticObjectGetterTemplate(),
+            type, name, attrSync, iterateArgs);
+      }
     }
   }
 
@@ -453,7 +480,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
    */
   @Override
   public void endVisit(ASTCallExpression node) {
-    Map<ASTNode, ASTCDAttribute> node2Attr = StaticObjectsCollector.getInstance().getNode2Attr();
+    Map<ASTNode, Attribute> node2Attr = StaticObjectsCollector.getInstance().getNode2Attr();
     Map<ASTNode, Method> node2Method = StaticObjectsCollector.getInstance().getNode2Method();
     // a constructor call, e.g., @PersonForm(person = Person())
     if (node2Attr.containsKey(node)) {
@@ -467,34 +494,53 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
       }
 
       // add attr
-      ASTCDAttribute attr = node2Attr.get(node);
-      String type = attr.getMCType().printType();
-      String name = attr.getName();
+      Attribute attrWrapper = node2Attr.get(node);
+      ASTCDAttribute attr = attrWrapper.getCdAttr();
       clazz.addCDMember(attr);
 
-      // add getter
-      getCD4C().addMethod(clazz, getGetterTemplate(), attr.getMCType().printType(), attr.getName());
+      // calc iterate items as additional args
+      Collection<VariableSymbol> iterateArgs = attrWrapper.getIterateArgs();
 
-      if (util.getMainDomainModelSimpleName().isPresent()) {
-        String manager = ManagerDecorator.getClassName(util.getMainDomainModelSimpleName().get());
+      if (iterateArgs.isEmpty()) {
+        String type = attr.getMCType().printType();
+        String name = attr.getName();
+
+        if (util.getMainDomainModelSimpleName().isPresent()) {
+          String manager = ManagerDecorator.getClassName(util.getMainDomainModelSimpleName().get());
+
+          // add builder sync
+          ASTCDMethodSignature builderSync = getCD4C().addMethod(
+              clazz, getBuilderSyncTemplate(),
+              type, name, manager
+          );
+
+          // add getter
+          getCD4C().addMethod(clazz, getGetterTemplate(),
+              type, name, builderSync);
+        }
+      }
+      else {
+        String type = attrWrapper.getBaseType();
+        String name = attr.getName();
 
         // calc iterate items as additional args
-        List<VariableSymbol> iterateArgs = util.findIterationItemSymbols(node.getEnclosingScope());
         for (VariableSymbol vs : iterateArgs) {
           importAndPrintType(vs.getType());
         }
 
-        // add builder init
-        ASTCDMethodSignature builderInit = getCD4C().addMethod(
-            clazz, getInitBuilderTemplate(),
-            type, name, manager, iterateArgs
-        );
+        if (util.getMainDomainModelSimpleName().isPresent()) {
+          String manager = ManagerDecorator.getClassName(util.getMainDomainModelSimpleName().get());
 
-        // add builder init to class init
-        glex.addAfterTemplate(
-            getInitBodyHookpoint(),
-            new TemplateHookPoint(getInitCallTemplate(), builderInit)
-        );
+          // add builder sync
+          ASTCDMethodSignature builderSync = getCD4C().addMethod(
+              clazz, getStaticBuilderSyncTemplate(),
+              type, name, manager, iterateArgs
+          );
+
+          // add getter
+          getCD4C().addMethod(clazz, getStaticObjectGetterTemplate(),
+              type, name, builderSync, iterateArgs);
+        }
       }
     }
     // a custom function or a predefined one, e.g.,
@@ -541,14 +587,13 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
         // custom function: @PersonForm(person = makePerson())
         else {
           String type = importAndPrintType(method.getReturnType());
-          List<Argument> arguments = new ArrayList<>();
+          List<String> argTypes = new ArrayList<>();
           for (int i = 0; i < method.getParamTypes().size(); ++i) {
             SymTypeExpression argSTE = method.getParamTypes().get(i);
-            importAndPrintType(argSTE);
-            arguments.add(new Argument(argSTE.print(), Expression2SetterPrinter.SETTER_PARAM + i));
+            argTypes.add(importAndPrintType(argSTE));
           }
 
-          getCD4C().addMethod(clazz, getEmptyMethodTemplate(), type, name, arguments);
+          getCD4C().addMethod(clazz, getEmptyMethodTemplate(), type, name, argTypes);
         }
       }
     }
@@ -685,14 +730,6 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     return "umlp.gui2java.GUI2JavaInitParamBuilder";
   }
 
-  protected String getInitBuilderTemplate() {
-    return "umlp.gui2java.GUI2JavaInitBuilder";
-  }
-
-  protected String getInitListTemplate() {
-    return "umlp.gui2java.GUI2JavaInitList";
-  }
-
   protected String getInitCallTemplate() {
     return "umlp.gui2java.GUI2JavaInitCall";
   }
@@ -717,8 +754,28 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     return "umlp.gui2java.GUI2JavaArgSetter";
   }
 
+  protected String getListSyncTemplate() {
+    return "umlp.gui2java.GUI2JavaListSync";
+  }
+
   protected String getGetterTemplate() {
     return "umlp.gui2java.GUI2JavaGetter";
+  }
+
+  protected String getStaticObjectGetterTemplate() {
+    return "umlp.gui2java.GUI2JavaStaticObjectGetter";
+  }
+
+  protected String getStaticListSyncTemplate() {
+    return "umlp.gui2java.GUI2JavaStaticListSync";
+  }
+
+  protected String getBuilderSyncTemplate() {
+    return "umlp.gui2java.GUI2JavaBuilderSync";
+  }
+
+  protected String getStaticBuilderSyncTemplate() {
+    return "umlp.gui2java.GUI2JavaStaticBuilderSync";
   }
 
   protected String getEmptyMethodTemplate() {

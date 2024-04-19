@@ -53,7 +53,6 @@ import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
-import umlp.generator.gui.genjava.decorator.Argument;
 import umlp.generator.gui.genjava.prettyprinter.Expression2NullCheckAccessorPrinter;
 import umlp.generator.gui.genjava.prettyprinter.Expression2SetterPrinter;
 import umlp.generator.gui.genjava.prettyprinter.IterationItemsFinder;
@@ -1107,14 +1106,15 @@ public class GUIGeneratorUtil {
     return findIterationItemSymbols(scope.getEnclosingScope(), symbols);
   }
 
-  public String args2ArgsString(Collection<Argument> args) {
+  public String types2ArgsString(Collection<String> types) {
     StringBuilder res = new StringBuilder();
-    Iterator<Argument> iter = args.iterator();
+    Iterator<String> iter = types.iterator();
+    int i = 0;
     while (iter.hasNext()) {
-      Argument arg = iter.next();
-      res.append(arg.getType());
+      String type = iter.next();
+      res.append(type);
       res.append(" ");
-      res.append(arg.getName());
+      res.append(Expression2SetterPrinter.SETTER_PARAM + i);
       if (iter.hasNext()) {
         res.append(",");
       }

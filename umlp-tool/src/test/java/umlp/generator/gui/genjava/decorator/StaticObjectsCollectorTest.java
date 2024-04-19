@@ -58,69 +58,101 @@ public class StaticObjectsCollectorTest extends DomainGUITest {
 
     List<Executable> assertions = new ArrayList<>();
 
-    Map<ASTNode, ASTCDAttribute> node2Attr = StaticObjectsCollector.getInstance().getNode2Attr();
+    Map<ASTNode, Attribute> node2Attr = StaticObjectsCollector.getInstance().getNode2Attr();
 
     assertions.add(() -> assertEquals(12, node2Attr.size()));
 
-    ASTCDAttribute bP0 = node2Attr.get(
+    Attribute bP0Wrapper = node2Attr.get(
         stat.getArgByName(b, "p").getGUIArgValue().getExpression());
+    ASTCDAttribute bP0 = bP0Wrapper.getCdAttr();
     assertions.add(() -> assertEquals("Person", bP0.getMCType().printType()));
     assertions.add(() -> assertEquals("bP_0", bP0.getName()));
+    assertions.add(() -> assertEquals(0, bP0Wrapper.getIterateArgs().size()));
 
-    ASTCDAttribute cA1 = node2Attr.get(
+    Attribute cA1Wrapper = node2Attr.get(
         stat.getArgByName(c, "a").getGUIArgValue().getGUIList());
+    ASTCDAttribute cA1 = cA1Wrapper.getCdAttr();
     assertions.add(() -> assertEquals("List<Address>", cA1.getMCType().printType()));
     assertions.add(() -> assertEquals("cA_1", cA1.getName()));
+    assertions.add(() -> assertEquals(0, cA1Wrapper.getIterateArgs().size()));
 
-    ASTCDAttribute cA2 = node2Attr.get(
-        stat.getArgByName(c, "a").getGUIArgValue().getGUIList().getGUIArgValue(1).getExpression());
+    Attribute cA2Wrapper = node2Attr.get(
+        stat.getArgByName(c, "a").getGUIArgValue().getGUIList()
+            .getGUIArgValue(1).getExpression());
+    ASTCDAttribute cA2 = cA2Wrapper.getCdAttr();
     assertions.add(() -> assertEquals("Address", cA2.getMCType().printType()));
     assertions.add(() -> assertEquals("cA_2", cA2.getName()));
+    assertions.add(() -> assertEquals(0, cA2Wrapper.getIterateArgs().size()));
 
-    ASTCDAttribute dLp3 = node2Attr.get(
+    Attribute dLp3Wrapper = node2Attr.get(
         stat.getArgByName(d, "lp").getGUIArgValue().getGUIList());
+    ASTCDAttribute dLp3 = dLp3Wrapper.getCdAttr();
     assertions.add(() -> assertEquals("List<List<Person>>", dLp3.getMCType().printType()));
     assertions.add(() -> assertEquals("dLp_3", dLp3.getName()));
+    assertions.add(() -> assertEquals(0, dLp3Wrapper.getIterateArgs().size()));
 
-    ASTCDAttribute dLp4 = node2Attr.get(
-        stat.getArgByName(d, "lp").getGUIArgValue().getGUIList().getGUIArgValue(0).getGUIList());
+    Attribute dLp4Wrapper = node2Attr.get(
+        stat.getArgByName(d, "lp").getGUIArgValue().getGUIList()
+            .getGUIArgValue(0).getGUIList());
+    ASTCDAttribute dLp4 = dLp4Wrapper.getCdAttr();
     assertions.add(() -> assertEquals("List<Person>", dLp4.getMCType().printType()));
     assertions.add(() -> assertEquals("dLp_4", dLp4.getName()));
+    assertions.add(() -> assertEquals(0, dLp4Wrapper.getIterateArgs().size()));
 
-    ASTCDAttribute dLp5 = node2Attr.get(
-        stat.getArgByName(d, "lp").getGUIArgValue().getGUIList().getGUIArgValue(0).getGUIList().getGUIArgValue(1).getExpression());
+    Attribute dLp5Wrapper = node2Attr.get(
+        stat.getArgByName(d, "lp").getGUIArgValue().getGUIList()
+            .getGUIArgValue(0).getGUIList().getGUIArgValue(1).getExpression());
+    ASTCDAttribute dLp5 = dLp5Wrapper.getCdAttr();
     assertions.add(() -> assertEquals("Person", dLp5.getMCType().printType()));
     assertions.add(() -> assertEquals("dLp_5", dLp5.getName()));
+    assertions.add(() -> assertEquals(0, dLp5Wrapper.getIterateArgs().size()));
 
-    ASTCDAttribute dLp6 = node2Attr.get(
-        stat.getArgByName(d, "lp").getGUIArgValue().getGUIList().getGUIArgValue(1).getGUIList());
+    Attribute dLp6Wrapper = node2Attr.get(
+        stat.getArgByName(d, "lp").getGUIArgValue().getGUIList()
+            .getGUIArgValue(1).getGUIList());
+    ASTCDAttribute dLp6 = dLp6Wrapper.getCdAttr();
     assertions.add(() -> assertEquals("List<Person>", dLp6.getMCType().printType()));
     assertions.add(() -> assertEquals("dLp_6", dLp6.getName()));
+    assertions.add(() -> assertEquals(0, dLp6Wrapper.getIterateArgs().size()));
 
-    ASTCDAttribute eCondition7 = node2Attr.get(
+    Attribute eCondition7Wrapper = node2Attr.get(
         ((ASTFieldAccessExpression) e.getCondition()).getExpression());
+    ASTCDAttribute eCondition7 = eCondition7Wrapper.getCdAttr();
     assertions.add(() -> assertEquals("Person", eCondition7.getMCType().printType()));
     assertions.add(() -> assertEquals("eCondition_7", eCondition7.getName()));
+    assertions.add(() -> assertEquals(0, eCondition7Wrapper.getIterateArgs().size()));
 
-    ASTCDAttribute fIterable8 = node2Attr.get(
-        ((ASTFieldAccessExpression) ((ASTGUIShortIterateControl) f.getIterateControl()).getIterable()).getExpression());
+    Attribute fIterable8Wrapper = node2Attr.get(
+        ((ASTFieldAccessExpression) ((ASTGUIShortIterateControl) f.getIterateControl())
+            .getIterable()).getExpression());
+    ASTCDAttribute fIterable8 = fIterable8Wrapper.getCdAttr();
     assertions.add(() -> assertEquals("Person", fIterable8.getMCType().printType()));
     assertions.add(() -> assertEquals("fIterable_8", fIterable8.getName()));
+    assertions.add(() -> assertEquals(0, fIterable8Wrapper.getIterateArgs().size()));
 
-    ASTCDAttribute gA9 = node2Attr.get(
+    Attribute gA9Wrapper = node2Attr.get(
         stat.getArgByName(g, "a").getGUIArgValue().getGUIList());
-    assertions.add(() -> assertEquals("List<Address>", gA9.getMCType().printType()));
+    ASTCDAttribute gA9 = gA9Wrapper.getCdAttr();
+    assertions.add(() -> assertEquals(
+        "Map<Person, Map<Person, List<Address>>>", gA9.getMCType().printType()));
     assertions.add(() -> assertEquals("gA_9", gA9.getName()));
+    assertions.add(() -> assertEquals(2, gA9Wrapper.getIterateArgs().size()));
 
-    ASTCDAttribute hA10 = node2Attr.get(
+    Attribute hA10Wrapper = node2Attr.get(
         stat.getArgByName(h, "a").getGUIArgValue().getGUIList());
-    assertions.add(() -> assertEquals("List<Address>", hA10.getMCType().printType()));
+    ASTCDAttribute hA10 = hA10Wrapper.getCdAttr();
+    assertions.add(() -> assertEquals(
+        "Map<Person, Map<Person, List<Address>>>", hA10.getMCType().printType()));
     assertions.add(() -> assertEquals("hA_10", hA10.getName()));
+    assertions.add(() -> assertEquals(2, hA10Wrapper.getIterateArgs().size()));
 
-    ASTCDAttribute iP11 = node2Attr.get(
+    Attribute iP11Wrapper = node2Attr.get(
         stat.getArgByName(i, "p").getGUIArgValue().getExpression());
-    assertions.add(() -> assertEquals("Person", iP11.getMCType().printType()));
+    ASTCDAttribute iP11 = iP11Wrapper.getCdAttr();
+    assertions.add(() -> assertEquals(
+        "Map<Person, Map<Person, Person>>", iP11.getMCType().printType()));
     assertions.add(() -> assertEquals("iP_11", iP11.getName()));
+    assertions.add(() -> assertEquals(2, iP11Wrapper.getIterateArgs().size()));
 
     boolean contains_jV12 = node2Attr.containsKey(
         stat.getArgByName(j, "v").getGUIArgValue().getGUIList());

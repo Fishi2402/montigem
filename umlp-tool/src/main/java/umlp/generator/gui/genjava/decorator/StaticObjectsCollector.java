@@ -21,12 +21,15 @@ import de.monticore.guidsl._ast.ASTGUIShortIterateControl;
 import de.monticore.guidsl._symboltable.BuiltInTypes;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
+import de.monticore.symboltable.IScope;
 import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIGeneratorUtil;
+import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,8 +52,10 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
   protected Optional<ASTCallExpression> lastCall = Optional.empty();
   protected Map<ASTGUIList, SymTypeExpression> listTypes = new HashMap<>();
 
-  protected Map<ASTNode, ASTCDAttribute> node2Attr = new HashMap<>();
+  protected Map<ASTNode, Attribute> node2Attr = new HashMap<>();
   protected Map<ASTNode, Method> node2Method = new HashMap<>();
+
+  boolean insideIterateControl = false;
 
   public static StaticObjectsCollector getInstance() {
     if (instance == null) {
@@ -87,7 +92,7 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
     node2Method = new HashMap<>();
   }
 
-  public Map<ASTNode, ASTCDAttribute> getNode2Attr() {
+  public Map<ASTNode, Attribute> getNode2Attr() {
     return node2Attr;
   }
 
@@ -108,6 +113,12 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
   @Override
   public void visit(ASTGUIShortIterateControl node) {
     curArg = GUI2JavaClassDecorator.ITERATE_ARG;
+    insideIterateControl = true;
+  }
+
+  @Override
+  public void endVisit(ASTGUIShortIterateControl node) {
+    insideIterateControl = false;
   }
 
   @Override
@@ -124,6 +135,8 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
 
   @Override
   public void visit(ASTGUIList node) {
+    // given an argument with a nested list type, e.g., val = [[1]], "peel off" and record types
+    // of the list layers one by one.
     if (!listTypes.containsKey(node) && lastArg.isPresent()) {
       if (!lastArg.get().isPresentNameSymbol()) {
         Log.error("0x00012 Unable to find defining symbol for argument '"
@@ -141,8 +154,8 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
     }
     String type = printType(node);
     String name = curComp + StringTransformations.capitalize(curArg) + "_" + counter++;
-    ASTCDAttribute attr = CDAttributeFacade.getInstance().createAttribute(
-        CDModifier.PROTECTED.build(), type, name);
+    Attribute attr = createAttribute(node, type, name);
+
     node2Attr.put(node, attr);
   }
 
@@ -168,10 +181,8 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
             + " but expression conversion is restricted to OOSymbols context.");
       }
       if (isConstructor) {
-        String type = node.getName();
         String name = curComp + StringTransformations.capitalize(curArg) + "_" + counter++;
-        ASTCDAttribute attr = CDAttributeFacade.getInstance().createAttribute(
-            CDModifier.PROTECTED.build(), type, name);
+        Attribute attr = createAttribute(node, node.getName(), name);
         node2Attr.put(lastCall.get(), attr);
       }
       else if (CallTypeDeriver.getInstance().hasReturnType(lastCall.get())) {
@@ -240,6 +251,36 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
     }
   }
 
+  protected Attribute createAttribute(ASTNode node, String baseType, String name) {
+    IScope scope = node.getEnclosingScope();
+    if (insideIterateControl) {
+      scope = scope.getEnclosingScope();
+    }
+    List<VariableSymbol> iterateArgs = util.findIterationItemSymbols(scope);
+    StringBuilder sb = new StringBuilder();
+    // given @iterate(Person p ...) { @itearte(Address a ...) { } }
+    // Map<Person, Map<Address,
+    for (VariableSymbol vs : iterateArgs) {
+      sb.append("Map");
+      sb.append("<");
+      sb.append(vs.getType().print());
+      sb.append(", ");
+    }
+
+    // SomeType
+    sb.append(baseType);
+
+    // >>
+    for (VariableSymbol vs : iterateArgs) {
+      sb.append(">");
+    }
+    // result: Map<Person, Map<Address, SomeType>>
+    String type = sb.toString();
+    ASTCDAttribute attr = CDAttributeFacade.getInstance().createAttribute(
+        CDModifier.PROTECTED.build(), type, name);
+    return new Attribute(attr, baseType, iterateArgs);
+  }
+
   protected void recordTypes(ASTGUIList node, SymTypeExpression ste) {
     if (!listTypes.containsKey(node)) {
       listTypes.put(node, ste);
@@ -257,15 +298,20 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
   }
 
   protected String printType(ASTGUIList node) {
+    StringBuilder sb = new StringBuilder();
+    // List<...>
     if (listTypes.containsKey(node)) {
-      return listTypes.get(node).print();
+      sb.append(listTypes.get(node).print());
+    } else {
+      sb.append(BuiltInTypes.LIST.getName());
+      if (!node.getGUIArgValueList().isEmpty()) {
+        sb.append("<");
+        sb.append(printType(node.getGUIArgValue(0)));
+        sb.append(">");
+      }
     }
-    StringBuilder sb = new StringBuilder(BuiltInTypes.LIST.getName());
-    if (!node.getGUIArgValueList().isEmpty()) {
-      sb.append("<");
-      sb.append(printType(node.getGUIArgValue(0)));
-      sb.append(">");
-    }
+
+    // result: Map<Person, Map<Address, List<...>>>
     return sb.toString();
   }
 
@@ -288,7 +334,7 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
       return printType(node.getExpression());
     }
     Log.error("0x00011 Unexpected empty ASTGUIArgValue");
-    return "";
+    return null;
   }
 
 }
