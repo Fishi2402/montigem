@@ -147,7 +147,16 @@ public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
           .index(0)
           .build().get();
 
+      ProcessStep step2 = DemoRecManager.processStepBuilder()
+          .type(ProcessStepType.DECONSTRUCTION)
+          .uses(endEffector)
+          .deconstructs(connection)
+          .timeConsumption(23.0)
+          .index(1)
+          .build().get();
+
       process.addConsistsOf(step);
+      process.addConsistsOf(step2);
 
       DemoRecManager.dimensionBuilder().name("Torque").unit("Nm").build().get();
 

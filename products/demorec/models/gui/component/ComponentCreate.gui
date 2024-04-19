@@ -17,7 +17,7 @@ import gui.component.PhotoDragNDrop;
 
 component ComponentCreate(DemoRecComponent component, ComponentKind componentKind, Event<DemoRecComponent> createComponent) {
   @GemCard(
-    title = "Specify Component.",
+    title = "Specify Component",
     component = @GemColumn(
         wrap="nowrap",
         components=[
