@@ -135,15 +135,28 @@ public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
           .name("Screwdriver")
           .build().get();
 
+      EndEffector endEffector2 = DemoRecManager.endEffectorBuilder()
+          .name("Allen key")
+          .build().get();
+
       ProcessStep step = DemoRecManager.processStepBuilder()
           .type(ProcessStepType.DECONSTRUCTION)
           .uses(endEffector)
           .deconstructs(connection)
-          .timeConsumption(786l)
+          .timeConsumption(786.0)
           .index(0)
           .build().get();
 
+      ProcessStep step2 = DemoRecManager.processStepBuilder()
+          .type(ProcessStepType.DECONSTRUCTION)
+          .uses(endEffector)
+          .deconstructs(connection)
+          .timeConsumption(23.0)
+          .index(1)
+          .build().get();
+
       process.addConsistsOf(step);
+      process.addConsistsOf(step2);
 
       DemoRecManager.dimensionBuilder().name("Torque").unit("Nm").build().get();
 
