@@ -129,10 +129,9 @@ page GUI2JavaClassDecorator(
       */
     }
   }
-  //
-  o@L(v = [
-    p@iterate(Person friend : person.friends) {
-      q@P();
+  o@iterate(Person friend : person.friends) {
+    p@iterate(Person contact : friend.friends) {
+      q@L(lp = [[person, contact, Person()], friend.friends]);
     }
-  ]);
+  }
 }

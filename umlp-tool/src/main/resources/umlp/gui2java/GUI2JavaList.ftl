@@ -1,7 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("type", "name", "listItems")}
+${tc.signature("type", "tmp", "listItems")}
 <#assign genHelper = glex.getGlobalVar("genHelper")>
-${type} ${name} = new ArrayList<>();
+${type} ${tmp} = new ArrayList<>();
 <#list listItems as item>
-${name}.add(${item});
+${tmp}.add(${item});
 </#list>

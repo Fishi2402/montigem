@@ -602,8 +602,10 @@ public class UMLPTool extends UMLPToolTOP {
           String javaConfigTemplate = cmd.getOptionValue("ct_java", DEFAULT_CONFIGTEMPLATE_GUI2JAVA);
           javaGenerator.generate(astGui, javaConfigTemplate);
 
+          /*
           GUI2ComponentGenerator componentGenerator = new GUI2ComponentGenerator(genSetup, viewComponents);
           componentGenerator.generate(astGui, "umlp.GUI2Component");
+          /**/
 
           //GUI2TypeScriptGenerator tsConfigGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath);
           //String standaloneConfigPath=outDir + "/"+tsConfigGenerator.genStandaloneConfig(astGui);

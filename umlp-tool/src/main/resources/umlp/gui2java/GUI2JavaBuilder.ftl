@@ -1,4 +1,4 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("type", "name", "manager")}
+${tc.signature("type", "tmp", "manager")}
 <#assign genHelper = glex.getGlobalVar("genHelper")>
-${type} ${name} =  ${manager}.${type?uncap_first}Builder();
+${type} ${tmp} = ${manager}.${type?uncap_first}Builder();
