@@ -24,8 +24,10 @@ build_no_containers:
   script:
     - "gradle --version"
     - "gradle build --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
+    # add one of the downloaded nodejs distributions to PATH, so we can build the vscode plugin
+    - export PATH="$PATH:$(dirname $(find $(pwd) -type f -name "node" -print -quit))"
     - "cd umlp-tool"
-    - "gradle buildPlugin --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
+    - "gradle buildPlugin packageUMLPWithGUIVscodePlugin -P buildIntelliJPlugin=true -P buildVscodePlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
   cache:
     paths:
       - examples/weather/frontend/build/frontendGen/node_modules
@@ -43,6 +45,7 @@ build_no_containers:
       - examples/dtcockpit/frontend/build/frontendGen/**
       - products/demorec/frontend/build/frontendGen/**
       - umlp-tool/build/distributions/**
+      - umlp-tool/build/generated-sources/UMLPWithGUI/**/*.vsix
     reports:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
@@ -55,8 +58,10 @@ build_with_containers:
   script:
     - "gradle --version"
     - "gradle build --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
+    # add one of the downloaded nodejs distributions to PATH, so we can build the vscode plugin
+    - export PATH="$PATH:$(dirname $(find $(pwd) -type f -name "node" -print -quit))"
     - "cd umlp-tool"
-    - "gradle buildPlugin --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
+    - "gradle buildPlugin packageUMLPWithGUIVscodePlugin -P buildIntelliJPlugin=true -P buildVscodePlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
     - "cd .."
     # Weather Backend
     - "gradle :examples:weather:backend:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
@@ -103,6 +108,7 @@ build_with_containers:
       - examples/dtcockpit/frontend/build/frontendGen/**
       - products/demorec/frontend/build/frontendGen/**
       - umlp-tool/build/distributions/**
+      - umlp-tool/build/generated-sources/UMLPWithGUI/**/*.vsix
     reports:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
