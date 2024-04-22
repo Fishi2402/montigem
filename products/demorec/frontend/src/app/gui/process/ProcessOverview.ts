@@ -1,18 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-
-import { BatteryPackBuilder } from '@src/demorec/BatteryPackBuilder';
-
 import { ProcessBuilder } from '@src/demorec/ProcessBuilder';
 
 import { DemoRecManager } from '@src/demorec/DemoRecManager';
 
-import { BatteryPackTypeBuilder } from '@src/demorec/BatteryPackTypeBuilder';
-
-import { BatteryPack } from '@src/demorec/BatteryPack';
-
 import { ProcessOverviewComponent,config } from '@src/gui/process/ProcessOverviewComponent';
+
 import {ProcessStep} from '@src/demorec/ProcessStep'
+
+import {Process} from '@src/demorec/Process'
 
 import {
   Directive,
@@ -24,6 +20,7 @@ import {
 } from '@angular/core';
 
 import { ActivatedRoute, Router } from '@angular/router';
+import { Option } from '@umlp/input';
 
 const newOption = "-- Create new --";
 
@@ -47,13 +44,4 @@ export  class ProcessOverview extends ProcessOverviewComponent {
     this.getP().addConsistsOf2(step);
   }
 
-  public override getSensorValuesValue (step: ProcessStep): string {
-    return  step.getMeasured().length+" Values";
-  }
-
-  public override getEditStepUrl(step: ProcessStep): string {
-    return "gui/step/ProcessStepCreate/"+step.getGemId();
-  }
 }
-
-

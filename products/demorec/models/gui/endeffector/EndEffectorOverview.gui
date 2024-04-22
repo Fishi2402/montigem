@@ -31,7 +31,8 @@ page EndEffectorOverview(List<EndEffector> endEffectors) {
   @GemCard(
     title="End Effectors",
     component=@GemColumn(
-      rowGap="1px",
+      width="40rem",
+      rowGap="5px",
       wrap="nowrap",
       components=[
         newEffector@EndEffectorCreate(),

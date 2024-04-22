@@ -39,8 +39,12 @@ import umlp.generator.util.TagLookUp;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
@@ -331,12 +335,13 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
         .filter(util::isDomainListType)
         .collect(Collectors.toList());
 
-    List<String> types = paramsTypedListOfDomain.stream()
-        .map(util::getDomainListInnerType)
-        .collect(Collectors.toList());
+    Set<String> types = new HashSet<>();
+    for (ASTGUIParam p : paramsTypedListOfDomain) {
+      types.add(util.getDomainListInnerType(p));
+    }
 
     String originalName = util.getMainDomainModelSimpleName().get();
-    getCD4C().addAttributeFromTemplate(clazz, "umlp.gui2ts.UpdateObserverAttr", originalName, types);
+    getCD4C().addAttributeFromTemplate(clazz, "umlp.gui2ts.UpdateObserverAttr", originalName, types, paramsTypedListOfDomain);
     getCD4C().addImport(clazz, util.gui2tsGeneralImport(originalName, originalName + "Observer"));
     getCD4C().addImport(clazz, util.gui2tsGeneralImport(originalName, "Empty" + originalName + "Observer"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));

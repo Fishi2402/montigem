@@ -1,0 +1,26 @@
+:host ::ng-deep .removeComponent > button.gem-button::before {
+  content: '\00D7'; /* Unicode for the "x" character */
+  font-family: 'FontAwesome'; /* Font family to render the content as an icon */
+  font-size: 30px;
+  margin-right: 5px; /* Adjust spacing between the icon and existing content */
+}
+
+:host ::ng-deep .removeComponent > button.gem-button {
+  background-color: #ff6666;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-self: flex-start;
+  align-items: center;
+}
+
+:host ::ng-deep gem-row.addedComponentsRow {
+  margin-top: .25rem;
+  margin-bottom: 1rem;
+}
+
+:host ::ng-deep gem-column.createComponentDialog {
+  margin-bottom: 1rem;
+}
+
