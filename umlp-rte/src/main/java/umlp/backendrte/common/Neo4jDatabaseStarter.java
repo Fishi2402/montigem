@@ -6,8 +6,9 @@ import org.neo4j.configuration.helpers.SocketAddress;
 import org.neo4j.dbms.api.DatabaseManagementService;
 import org.neo4j.dbms.api.DatabaseManagementServiceBuilder;
 
+import java.io.IOException;
+import java.net.ServerSocket;
 import java.nio.file.Path;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Can be used to start a Neo4j instance from this program.
@@ -15,22 +16,26 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Permanent deployments should probably use a neo4j container
  */
 // TODO: current setup requires one db per project
-// TODO: tests for each project are run in a JVM => incrementing the port is not possible in a var
-// TODO: Alternative: find empty port via serverport
 public class Neo4jDatabaseStarter {
   protected static DatabaseManagementService managementService;
-  protected static AtomicInteger port = new AtomicInteger(7689);
 
-  public void start(Path dbBasePath){
+  public void start(Path dbBasePath) throws IOException {
     if (managementService != null) {
       managementService.database(GraphDatabaseSettings.DEFAULT_DATABASE_NAME);
       return;
     }
-    managementService = new DatabaseManagementServiceBuilder(dbFilePath)
+    managementService = new DatabaseManagementServiceBuilder(dbBasePath)
         .setConfig(BoltConnector.enabled, true)
-        .setConfig(BoltConnector.listen_address, new SocketAddress("localhost", port)).build();
+        .setConfig(BoltConnector.listen_address, new SocketAddress("localhost", getFreePort())).build();
     registerShutdownHook(managementService);
     managementService.database(GraphDatabaseSettings.DEFAULT_DATABASE_NAME);
+  }
+
+  private int getFreePort() throws IOException {
+    ServerSocket socket = new ServerSocket(0);
+    int port = socket.getLocalPort();
+    socket.close();
+    return port;
   }
 
   private static void registerShutdownHook( final DatabaseManagementService managementService )
