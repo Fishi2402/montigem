@@ -12,7 +12,8 @@ plugins {
   id "io.github.themrmilchmann.ecj" version "0.2.0"
 }
 
-def shouldBuildIntelliJPlugin = ("true").equals(getProperty('buildIntelliJPlugin')) || System.getenv("CI") == "true"
+def shouldBuildIntelliJPlugin = ("true").equals(getProperty('buildIntelliJPlugin'))
+def shouldBuildVscodePlugin = ("true").equals(getProperty('buildVscodePlugin'))
 
 if(shouldBuildIntelliJPlugin) {
   apply plugin: "org.jetbrains.intellij"
@@ -136,6 +137,9 @@ task autoconfigure(type: de.mclsg.task.AutoconfigureTask) {
     modelPath = ["$projectDir/src/main/grammars"]
     if(shouldBuildIntelliJPlugin) {
       including(de.mclsg.TaskTypes.INTELLIJ_PLUGIN)
+    }
+    if(shouldBuildVscodePlugin){
+      including(de.mclsg.TaskTypes.VSCODE_PLUGIN)
     }
   }
 }
