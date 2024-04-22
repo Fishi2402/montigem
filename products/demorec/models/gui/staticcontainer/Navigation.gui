@@ -8,13 +8,14 @@ import mc.fenix.basic.GemLink;
 
 component Navigation() {
   @GemRow(
-    colGap="1px",
+    colGap="5px",
     components=[
       @GemLink(url="gui/Start", text="Processes"),
       @GemLink(url="gui/process/ProcessCreate", text="Start new Process"),
       @GemLink(url="gui/pack/AllPacksOverview", text="Battery Packs"),
       @GemLink(url="gui/endeffector/EndEffectorOverview", text="End Effectors"),
-      @GemLink(url="gui/dimension/DimensionOverview", text="Dimensions")
+      @GemLink(url="gui/dimension/DimensionOverview", text="Dimensions"),
+      @GemLink(url="generalinfo/About", text="About")
     ]
   );
 

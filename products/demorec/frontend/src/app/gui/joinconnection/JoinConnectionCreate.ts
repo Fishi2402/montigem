@@ -109,10 +109,11 @@ export class JoinConnectionCreate extends JoinConnectionCreateComponent {
 
   public override setSelectConnectsComponentEntry (value: string): void{
     this.connectsComponentEntry = value;
+    this.connectSelectedComponent(null)
   }
 
   public override getBuildConnectionDisabled (): boolean {
-    return this.getConnection().isBuildable();
+    return this.getConnection()?.isBuildable();
   }
 
   public override createNewConnection (event: any): void {
@@ -174,7 +175,7 @@ export class JoinConnectionCreate extends JoinConnectionCreateComponent {
     this.dummyComponents.push(comp);
   }
 
-  public override connectSelectedComponent(event: any) {
+  public connectSelectedComponent(event: any) {
     if(this.getSelectConnectsComponentEntry()) {
       DemoRecManager.getDemoRecComponentSure(+this.getSelectConnectsComponentEntry()).then(
           demoRecComponent => {

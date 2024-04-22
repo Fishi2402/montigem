@@ -25,16 +25,23 @@ page Edit(ComponentKind componentKind) {
   @GemCard(
     title = "Edit component kind",
     component = @GemColumn(
-        wrap="nowrap",
+      rowGap="5px",
+      wrap="nowrap",
+      components=[
+      @GemTextInput(labelText = "Component Kind Name", inputType = "string", entry = componentKind.name),
+      @GemTextInput(labelText = "OE-Number", inputType = "string", entry = componentKind.oENumber),
+      @GemTextInput(labelText = "Description for human identification", inputType = "string", entry = componentKind.humanDescription),
+      @GemRow(
+        width="30em",
+        colGap="5px",
         components=[
-         @GemTextInput(labelText = "Component Kind Name", inputType = "string", entry = componentKind.name),
-         @GemTextInput(labelText = "OE-Number", inputType = "string", entry = componentKind.oENumber),
-         @GemTextInput(labelText = "Description for human identification", inputType = "string", entry = componentKind.humanDescription),
-         @GemTextInput(labelText = "Width (mm)", inputType = "number", entry = componentKind.width),
-         @GemTextInput(labelText = "Length (mm)", inputType = "number", entry = componentKind.length),
-         @GemTextInput(labelText = "Height (mm)", inputType = "number", entry = componentKind.height),
-         @GemTextInput(labelText = "Weight (kg)", inputType = "number", entry = componentKind.weight)
-      ])
+          @GemTextInput(labelText = "Width (mm)", inputType = "number", entry = componentKind.width),
+          @GemTextInput(labelText = "Length (mm)", inputType = "number", entry = componentKind.length),
+          @GemTextInput(labelText = "Height (mm)", inputType = "number", entry = componentKind.height)
+        ]
+      ),
+      @GemTextInput(labelText = "Weight (kg)", inputType = "number", entry = componentKind.weight)
+    ])
   )
   ]);
 }
