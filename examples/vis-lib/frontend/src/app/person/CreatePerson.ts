@@ -29,7 +29,7 @@ export class CreatePerson extends Mix(CreatePersonComponent) {
     return () => {
       this.foo();
       this.getPerson().setAddress1(this.getAddress());
-      this.getPerson().setAboutMe("none");
+      this.getPerson().setAboutMe1("none");
       DomainManager.addPerson(this.getPerson().build());
     }
   }

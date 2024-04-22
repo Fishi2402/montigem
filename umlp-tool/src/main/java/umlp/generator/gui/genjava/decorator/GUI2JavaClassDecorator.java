@@ -13,6 +13,7 @@ import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUIArgValue;
@@ -92,7 +93,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
    */
   public void transform(ASTGUICompilationUnit gui, ASTCDCompilationUnit cd) {
     this.gui = gui;
-    glex.replaceTemplate("cd2java.Imports", new TemplateHookPoint("umlp.Imports"));
+    replaceTemplates();
 
     // package
     ASTCDPackage cdPackage = CD4CodeMill.cDPackageBuilder()
@@ -116,6 +117,13 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     addConstructor();
     // init
     addInit();
+  }
+
+  /**
+   * Replace CD2Java generator templates with GUI2Java templates
+   */
+  protected void replaceTemplates() {
+    glex.replaceTemplate("cd2java.Imports", new StringHookPoint(""));
   }
 
   /**
@@ -405,13 +413,16 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
       // add attr
       Attribute attrWrapper = node2Attr.get(node);
       ASTCDAttribute attr = attrWrapper.getCdAttr();
+      for (String qName : attrWrapper.getImportList()) {
+        getCD4C().addImport(clazz, qName);
+      }
       clazz.addCDMember(attr);
 
       // calc iterate items as additional args
       Collection<VariableSymbol> iterateArgs = attrWrapper.getIterateArgs();
 
       if (iterateArgs.isEmpty()) {
-        String type = attr.getMCType().printType();
+        String type = attrWrapper.getBaseType().printType();
         String name = attr.getName();
 
         // add attr sync
@@ -437,7 +448,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
           importAndPrintType(vs.getType());
         }
 
-        String type = attrWrapper.getBaseType();
+        String type = attrWrapper.getBaseType().printType();
         String name = attr.getName();
 
         // add attr sync
@@ -495,6 +506,9 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
 
       // add attr
       Attribute attrWrapper = node2Attr.get(node);
+      for (String qName : attrWrapper.getImportList()) {
+        getCD4C().addImport(clazz, qName);
+      }
       ASTCDAttribute attr = attrWrapper.getCdAttr();
       clazz.addCDMember(attr);
 
@@ -520,7 +534,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
         }
       }
       else {
-        String type = attrWrapper.getBaseType();
+        String type = attrWrapper.getBaseType().printType();
         String name = attr.getName();
 
         // calc iterate items as additional args
@@ -791,15 +805,15 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
   }
 
   protected String getDeleteTemplate() {
-    return "umlp.gui2java.predefined.GUI2JavaCreate";
+    return "umlp.gui2java.predefined.GUI2JavaDelete";
   }
 
   protected String getAssocAddTemplate() {
-    return "umlp.gui2java.predefined.GUI2JavaCreate";
+    return "umlp.gui2java.predefined.GUI2JavaAssocAdd";
   }
 
   protected String getAssocRemoveTemplate() {
-    return "umlp.gui2java.predefined.GUI2JavaCreate";
+    return "umlp.gui2java.predefined.GUI2JavaAssocRemove";
   }
 
 }

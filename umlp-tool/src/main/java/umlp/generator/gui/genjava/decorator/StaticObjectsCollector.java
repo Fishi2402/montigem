@@ -21,21 +21,34 @@ import de.monticore.guidsl._ast.ASTGUIShortIterateControl;
 import de.monticore.guidsl._symboltable.BuiltInTypes;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
+import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.symboltable.IScope;
+import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.check.SymTypeOfFunction;
+import de.monticore.types.check.SymTypeOfGenerics;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericTypeBuilder;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIGeneratorUtil;
-import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressionsVisitor2, ExpressionsBasisVisitor2 {
 
@@ -152,9 +165,8 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
         recordTypes(node, ste);
       }
     }
-    String type = printType(node);
     String name = curComp + StringTransformations.capitalize(curArg) + "_" + counter++;
-    Attribute attr = createAttribute(node, type, name);
+    Attribute attr = createAttribute(node, listTypes.get(node), name);
 
     node2Attr.put(node, attr);
   }
@@ -167,22 +179,35 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
   @Override
   public void visit(ASTNameExpression node) {
     if (lastCall.isPresent() && lastCall.get().getExpression().equals(node)) {
-      boolean isConstructor = false;
-      if (node.getEnclosingScope() instanceof IOOSymbolsScope) {
-        IOOSymbolsScope scope = (IOOSymbolsScope) node.getEnclosingScope();
-        Optional<OOTypeSymbol> sym = scope.resolveOOType(node.getName());
-        if (sym.isPresent()) {
-          isConstructor = !sym.get().getMethodList(node.getName()).isEmpty();
-        }
-      }
-      else {
+      if (!(node.getEnclosingScope() instanceof IOOSymbolsScope)) {
         Log.error("0x0000C Attempted to resolve type of '"
             + GUIGeneratorUtil.getInstance().print(node) + "' from outside of an OOSymbolsScope,"
             + " but expression conversion is restricted to OOSymbols context.");
+        return;
+      }
+      IOOSymbolsScope scope = (IOOSymbolsScope) node.getEnclosingScope();
+      Optional<OOTypeSymbol> sym = scope.resolveOOType(node.getName());
+
+      boolean isConstructor = false;
+      // TODO AGe: use this code after bug in type check is fixed
+      /*
+      SymTypeExpression ste = util.getType(node);
+      // those conditions should always be both true or false
+      if (sym.isPresent() && ste.isFunctionType()) {
+        isConstructor = !sym.get().getMethodList(node.getName()).isEmpty();
+        SymTypeOfFunction stof = ste.asFunctionType();
+        ste = stof.getType();
+      }
+      /**/
+
+      // those conditions should always be both true or false
+      if (sym.isPresent()) {
+        isConstructor = !sym.get().getMethodList(node.getName()).isEmpty();
       }
       if (isConstructor) {
         String name = curComp + StringTransformations.capitalize(curArg) + "_" + counter++;
-        Attribute attr = createAttribute(node, node.getName(), name);
+        SymTypeExpression ste = SymTypeExpressionFactory.createTypeObject(sym.get());
+        Attribute attr = createAttribute(node, ste, name);
         node2Attr.put(lastCall.get(), attr);
       }
       else if (CallTypeDeriver.getInstance().hasReturnType(lastCall.get())) {
@@ -251,34 +276,54 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
     }
   }
 
-  protected Attribute createAttribute(ASTNode node, String baseType, String name) {
+  protected Attribute createAttribute(ASTNode node, SymTypeExpression ste, String name) {
     IScope scope = node.getEnclosingScope();
     if (insideIterateControl) {
       scope = scope.getEnclosingScope();
     }
+    Set<String> importSet = new HashSet<>();
+    ASTMCType baseType = createTypeAndAddImports(ste, importSet);
+    ASTMCType type = baseType;
+
     List<VariableSymbol> iterateArgs = util.findIterationItemSymbols(scope);
-    StringBuilder sb = new StringBuilder();
     // given @iterate(Person p ...) { @itearte(Address a ...) { } }
-    // Map<Person, Map<Address,
-    for (VariableSymbol vs : iterateArgs) {
-      sb.append("Map");
-      sb.append("<");
-      sb.append(vs.getType().print());
-      sb.append(", ");
+    // build: Map<Person, Map<Address, SomeType>>
+    if (!iterateArgs.isEmpty()) {
+      // SomeType
+      ASTMCCustomTypeArgument typeArgument = MCSimpleGenericTypesMill.mCCustomTypeArgumentBuilder()
+          .setMCType(type)
+          .build();
+      // first iteration -> second iteration:
+      // Map<Address, SomeType> -> Map<Person, Map<Address, SomeType>>
+      for (int i = iterateArgs.size() - 1; i >= 0; --i) {
+        VariableSymbol vs = iterateArgs.get(i);
+        ASTMCBasicGenericType genType = MCFullGenericTypesMill.mCBasicGenericTypeBuilder()
+            .setNamesList(new ArrayList<>(List.of("java", "util", "Map")))
+            .setMCTypeArgumentsList(new ArrayList<>(List.of(
+                MCSimpleGenericTypesMill.mCCustomTypeArgumentBuilder()
+                    .setMCType(MCTypeFacade.getInstance()
+                        // Address -> Person
+                        .createQualifiedType(vs.getType().printFullName())).build(),
+                // SomeType -> Map<Address, SomeType>
+                typeArgument
+            )))
+            .build();
+        if (i > 0) {
+          typeArgument = MCSimpleGenericTypesMill.mCCustomTypeArgumentBuilder()
+              .setMCType(genType)
+              .build();
+        }
+        else {
+          type = genType;
+        }
+      }
+      importSet.add("java.util.Map");
+      importSet.add("java.util.HashMap");
     }
 
-    // SomeType
-    sb.append(baseType);
-
-    // >>
-    for (VariableSymbol vs : iterateArgs) {
-      sb.append(">");
-    }
-    // result: Map<Person, Map<Address, SomeType>>
-    String type = sb.toString();
-    ASTCDAttribute attr = CDAttributeFacade.getInstance().createAttribute(
-        CDModifier.PROTECTED.build(), type, name);
-    return new Attribute(attr, baseType, iterateArgs);
+    ASTCDAttribute attr = CDAttributeFacade.getInstance()
+        .createAttribute(CDModifier.PROTECTED.build(), type, name);
+    return new Attribute(attr, baseType, iterateArgs, importSet);
   }
 
   protected void recordTypes(ASTGUIList node, SymTypeExpression ste) {
@@ -297,44 +342,61 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
     }
   }
 
-  protected String printType(ASTGUIList node) {
-    StringBuilder sb = new StringBuilder();
-    // List<...>
-    if (listTypes.containsKey(node)) {
-      sb.append(listTypes.get(node).print());
-    } else {
-      sb.append(BuiltInTypes.LIST.getName());
-      if (!node.getGUIArgValueList().isEmpty()) {
-        sb.append("<");
-        sb.append(printType(node.getGUIArgValue(0)));
-        sb.append(">");
+  protected ASTMCType createTypeAndAddImports(SymTypeExpression ste, Set<String> importSet) {
+    if (ste.isObjectType()) {
+      // given in GUI:
+      // import hardy.Domain.Person;
+      // the resolved type is `hardy.Person`
+      // but the CD Generator produces `hardy.domain.Person`, so calculate that instead
+      IBasicSymbolsScope scope = ste.getTypeInfo().getEnclosingScope();
+      if (scope.isPresentName()
+          && util.getMainDomainModelSimpleName().isPresent()
+          && scope.getName().equals(util.getMainDomainModelSimpleName().get())) {
+
+        String insert = StringTransformations.uncapitalize(scope.getName()) + ".";
+        String qTypeName = ste.asObjectType().printFullName();
+
+        int lastIndex = qTypeName.lastIndexOf('.');
+
+        if (lastIndex != -1) {
+          StringBuilder sb = new StringBuilder(qTypeName);
+          sb.insert(lastIndex + 1, insert);
+          qTypeName = sb.toString();
+        }
+        else {
+          qTypeName = insert + qTypeName;
+        }
+        importSet.add(qTypeName);
+      }
+      else {
+        importSet.add(ste.printFullName());
       }
     }
+    else if (ste.isGenericType()) {
+      SymTypeOfGenerics stog = ste.asGenericType();
+      String qName = stog.getTypeConstructorFullName();
+      importSet.add(qName);
 
-    // result: Map<Person, Map<Address, List<...>>>
-    return sb.toString();
-  }
-
-  protected String printType(ASTExpression node) {
-    SymTypeExpression ste = util.getType(node);
-    if (ste.isPrimitive()) {
-      return ste.asPrimitive().getBoxedPrimitiveName();
+      ASTMCBasicGenericTypeBuilder genTypeBuilder = MCFullGenericTypesMill.mCBasicGenericTypeBuilder()
+          .setNamesList(new ArrayList<>(Arrays.asList(qName.split("\\."))))
+          .setMCTypeArgumentsList(new ArrayList<>());
+      for (SymTypeExpression steArg : stog.getArgumentList()) {
+        genTypeBuilder.addMCTypeArgument(
+            MCSimpleGenericTypesMill.mCCustomTypeArgumentBuilder()
+                .setMCType(createTypeAndAddImports(steArg, importSet))
+                .build());
+      }
+      return genTypeBuilder.build();
     }
-    return ste.print();
-  }
-
-  protected String printType(ASTGUIArgValue node) {
-    if (node.isPresentGUIList()) {
-      printType(node.getGUIList());
+    else if (ste.isPrimitive()) {
+      return MCTypeFacade.getInstance().createQualifiedType(
+          ste.asPrimitive().getBoxedPrimitiveName());
     }
-    if (node.isPresentGUIComponent() || node.isPresentGUIGuard() || node.isPresentGUIIterate()) {
-      return BuiltInTypes.GUI_VIEW_ELEMENT.getName();
+    else if (!(ste.isNullType() || ste.isVoidType() || ste.isWildcard() || ste.isTypeVariable())) {
+      Log.error("0x00010 Encountered unsupported type in a parameter: '"
+          + ste.printFullName() + "'");
     }
-    if (node.isPresentExpression()) {
-      return printType(node.getExpression());
-    }
-    Log.error("0x00011 Unexpected empty ASTGUIArgValue");
-    return null;
+    return MCTypeFacade.getInstance().createQualifiedType(ste.printFullName());
   }
 
 }

@@ -3,6 +3,7 @@ package umlp.generator.gui.gentypescript.printer;
 
 import umlp.generator.domain.UMLPGeneratorConfig;
 
+@Deprecated
 public class TSBackendMap {
 
   // Gem, NotificationScope, etc.

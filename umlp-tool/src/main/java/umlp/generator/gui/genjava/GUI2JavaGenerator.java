@@ -9,24 +9,19 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
-import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIComponentsVisitor;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class GUI2JavaGenerator extends CDGenerator {
 
   protected static CD4CodeFullPrettyPrinter astPrinter;
 
-  protected GUIComponentsVisitor viewComponents;
-
-  public GUI2JavaGenerator(GeneratorSetup genSetup, GUIComponentsVisitor viewComponents) {
+  public GUI2JavaGenerator(GeneratorSetup genSetup) {
     super(genSetup);
     astPrinter = new CD4CodeFullPrettyPrinter(new IndentPrinter());
-    this.viewComponents = viewComponents;
     genSetup.getGlex().setGlobalValue("cdPrinter", new CdUtilsPrinter()); // TODO GV
   }
 
@@ -37,9 +32,9 @@ public class GUI2JavaGenerator extends CDGenerator {
 
   public void generate(ASTGUICompilationUnit modelAST, String configTemplate) {
     this.setup.setTracing(true);
+
     // create an empty classdiagram
     ASTCDCompilationUnit decoratedAST = GUI2CDTrafo.createCDCompilationUnit(modelAST);
-    //GUI2CDTrafo.createCD4CodeSymTab(decoratedAST);
     logTrafoExec("GUI2CDTrafo", decoratedAST);
 
     TemplateController tc = setup.getNewTemplateController(configTemplate);
@@ -47,8 +42,7 @@ public class GUI2JavaGenerator extends CDGenerator {
 
     // translate the GUI-AST into Java
     hpp.processValue(tc, modelAST,
-        Arrays.asList(decoratedAST, setup.getGlex(), setup.getHandcodedPath(), this, viewComponents));
+        Arrays.asList(decoratedAST, setup.getGlex(), setup.getHandcodedPath(), this));
   }
-
 
 }

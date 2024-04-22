@@ -1,5 +1,9 @@
 package umlp.generator.gui.gentypescript.printer;
 
+import umlp.generator.domain.UMLPGeneratorConfig;
+
+import java.util.Optional;
+
 // TODO AGe: move to frontend-rte
 public enum TSImportMap {
   // vis libs
@@ -17,8 +21,10 @@ public enum TSImportMap {
   COMMON_DEPRECATED("common", "@umlp/common"),
   NAVIGATION_DEPRECATED("navigation", "@umlp/navigation"),
   INPUT_DEPRECATED("input", "@umlp/input"),
-  TABLE_DEPRECATED("table", "@umlp/table");
+  TABLE_DEPRECATED("table", "@umlp/table"),
+  BACKEND_RTE("umlp.backendrte", "@umlp/common");
 
+  private static final String JSWEET_RTE = "@umlp/commonj2ts";
 
   private final String tsPackage;
   private final String javaPackage;
@@ -34,6 +40,18 @@ public enum TSImportMap {
 
   public String getTSPackage() {
     return tsPackage;
+  }
+
+  public static Optional<String> getTSPackage(String javaPackage) {
+    for (TSImportMap type : TSImportMap.values()) {
+      if (javaPackage.startsWith(type.getJavaPackage())) {
+        if (type == BACKEND_RTE && UMLPGeneratorConfig.getInstance().isUseJsweet()) {
+          return Optional.of(JSWEET_RTE);
+        }
+        return Optional.of(type.getTSPackage());
+      }
+    }
+    return Optional.empty();
   }
 
 }

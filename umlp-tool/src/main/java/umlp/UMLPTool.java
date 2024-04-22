@@ -66,6 +66,7 @@ import umlp.generator.gui.GUINodeIdTrafo;
 import umlp.generator.gui.coco.GUIDSLCoCosForUMLP;
 import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
 import umlp.generator.gui.genjava.GUI2JavaGenerator;
+import umlp.generator.gui.gentypescript.GUI2TSGenerator;
 import umlp.generator.gui.gentypescript.config.GUI2TSConfigGenerator;
 import umlp.generator.gui.gentypescript.config.ModuleRoutingInfo;
 import umlp.generator.gui.gentypescript.domain.TSUMLPGenerator;
@@ -598,17 +599,17 @@ public class UMLPTool extends UMLPToolTOP {
           genSetup.getGlex().setGlobalValue("genHelper", GUIGeneratorUtil.getInstance());
           genSetup.getGlex().setGlobalValue("UMLPGeneratorConfig", UMLPGeneratorConfig.getInstance().initFromCmd(cmd));
 
-          GUI2JavaGenerator javaGenerator = new GUI2JavaGenerator(genSetup, viewComponents);
+          GUI2JavaGenerator javaGenerator = new GUI2JavaGenerator(genSetup);
           String javaConfigTemplate = cmd.getOptionValue("ct_java", DEFAULT_CONFIGTEMPLATE_GUI2JAVA);
           javaGenerator.generate(astGui, javaConfigTemplate);
+
+          GUI2TSGenerator tsGenerator = new GUI2TSGenerator(genSetup);
+          tsGenerator.generate(astGui, DEFAULT_CONFIGTEMPLATE_GUI2TS);
 
           /*
           GUI2ComponentGenerator componentGenerator = new GUI2ComponentGenerator(genSetup, viewComponents);
           componentGenerator.generate(astGui, "umlp.GUI2Component");
           /**/
-
-          //GUI2TypeScriptGenerator tsConfigGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath);
-          //String standaloneConfigPath=outDir + "/"+tsConfigGenerator.genStandaloneConfig(astGui);
 
           GUI2HtmlGenerator htmlGenerator = new GUI2HtmlGenerator(genSetup);
           String htmlConfigTemplate = cmd.getOptionValue("ct_html", DEFAULT_CONFIGTEMPLATE_GUI2HTML);
