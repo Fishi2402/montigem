@@ -1,4 +1,4 @@
-FROM caddy:2.6-alpine
+FROM caddy:2.7-alpine
 
 COPY Caddyfile /etc/caddy/Caddyfile
 COPY dist/client /srv
