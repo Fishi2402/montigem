@@ -37,6 +37,14 @@ You can try UMLP using the [SELib Example](./examples/selib).
 - In your browser you can try to add new data to the tables
 - Once you're finished you can stop the server in the terminal window by pressing the `CTRL` and `C` keys
 
+## Editor plugins
+- Download Latest Plugin
+  - [IntelliJ](https://git.rwth-aachen.de/monticore/umlp/-/jobs/artifacts/dev/raw/umlp-tool/build/distributions/umlp-tool-7.7.0-SNAPSHOT.zip?job=build_with_containers)
+  - [Visual Studio Code](https://git.rwth-aachen.de/monticore/umlp/-/jobs/artifacts/dev/raw/umlp-tool/build/generated-sources/UMLPWithGUI/plugins/umlpwithgui-vscode-plugin/umlpwithgui-lsp-7.7.0-SNAPSHOT.vsix?job=build_with_containers)
+- Install it
+  - IntelliJ: https://www.jetbrains.com/help/idea/managing-plugins.html#install_plugin_from_disk
+  - VSCode: https://code.visualstudio.com/docs/editor/extension-marketplace#_install-from-a-vsix
+
 ## Project Structure
 * **doc** contains the documentation for the UMLPTool
 * **examples** contains examples that demonstrate commonly used features of the UMLPTool
