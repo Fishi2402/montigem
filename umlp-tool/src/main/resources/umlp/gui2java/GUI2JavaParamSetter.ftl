@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("type", "name")}
+${tc.signature("type", "name", "setter")}
 <#assign genHelper = glex.getGlobalVar("genHelper")>
 
-${cd4c.method("public void set${name?cap_first}(${type} val)")}
-this._${name} = val;
+${cd4c.method("public void ${setter}(${type} val)")}
+this.${name} = val;

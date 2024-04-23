@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("type", "name", "manager", "keys")}
+${tc.signature("mcType", "name", "manager", "keys")}
 <#assign genHelper = glex.getGlobalVar("genHelper")>
 <#assign argsString = genHelper.variableSymbols2ArgsString(keys)>
 <#assign tmpVar = "tmp">
@@ -8,7 +8,7 @@ ${cd4c.method("public void sync${name?cap_first}(${argsString})")}
 if (${tc.includeArgs("umlp.gui2java.GUI2JavaStaticObjectSyncCheck", [keys])}) {
   return;
 }
-${tc.includeArgs("umlp.gui2java.GUI2JavaBuilder", [type, tmpVar, manager])}
+${tc.includeArgs("umlp.gui2java.GUI2JavaBuilder", [mcType, tmpVar, manager])}
 <#list keys as key>
   <#assign i = key?index - 1>
   this.${name}

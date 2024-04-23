@@ -29,7 +29,6 @@ import de.monticore.symboltable.IScope;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
-import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
@@ -298,12 +297,12 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
       for (int i = iterateArgs.size() - 1; i >= 0; --i) {
         VariableSymbol vs = iterateArgs.get(i);
         ASTMCBasicGenericType genType = MCFullGenericTypesMill.mCBasicGenericTypeBuilder()
-            .setNamesList(new ArrayList<>(List.of("java", "util", "Map")))
+            .setNamesList(new ArrayList<>(List.of("Map")))
             .setMCTypeArgumentsList(new ArrayList<>(List.of(
                 MCSimpleGenericTypesMill.mCCustomTypeArgumentBuilder()
                     .setMCType(MCTypeFacade.getInstance()
                         // Address -> Person
-                        .createQualifiedType(vs.getType().printFullName())).build(),
+                        .createQualifiedType(vs.getType().print())).build(),
                 // SomeType -> Map<Address, SomeType>
                 typeArgument
             )))
@@ -343,6 +342,10 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
   }
 
   protected ASTMCType createTypeAndAddImports(SymTypeExpression ste, Set<String> importSet) {
+    if (!ste.hasTypeInfo()) {
+      Log.error("0x0001B Encountered a SymTypeExpression disconnected from a type symbol: "
+          + ste.printFullName());
+    }
     if (ste.isObjectType()) {
       // given in GUI:
       // import hardy.Domain.Person;
@@ -354,19 +357,19 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
           && scope.getName().equals(util.getMainDomainModelSimpleName().get())) {
 
         String insert = StringTransformations.uncapitalize(scope.getName()) + ".";
-        String qTypeName = ste.asObjectType().printFullName();
+        String type = ste.asObjectType().print();
 
-        int lastIndex = qTypeName.lastIndexOf('.');
+        int lastIndex = type.lastIndexOf('.');
 
         if (lastIndex != -1) {
-          StringBuilder sb = new StringBuilder(qTypeName);
+          StringBuilder sb = new StringBuilder(type);
           sb.insert(lastIndex + 1, insert);
-          qTypeName = sb.toString();
+          type = sb.toString();
         }
         else {
-          qTypeName = insert + qTypeName;
+          type = insert + type;
         }
-        importSet.add(qTypeName);
+        importSet.add(type);
       }
       else {
         importSet.add(ste.printFullName());
@@ -374,11 +377,12 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
     }
     else if (ste.isGenericType()) {
       SymTypeOfGenerics stog = ste.asGenericType();
-      String qName = stog.getTypeConstructorFullName();
-      importSet.add(qName);
+      String qType = stog.getTypeConstructorFullName();
+      importSet.add(qType);
+      String type = stog.getTypeInfo().getName();
 
       ASTMCBasicGenericTypeBuilder genTypeBuilder = MCFullGenericTypesMill.mCBasicGenericTypeBuilder()
-          .setNamesList(new ArrayList<>(Arrays.asList(qName.split("\\."))))
+          .setNamesList(new ArrayList<>(Arrays.asList(type)))
           .setMCTypeArgumentsList(new ArrayList<>());
       for (SymTypeExpression steArg : stog.getArgumentList()) {
         genTypeBuilder.addMCTypeArgument(

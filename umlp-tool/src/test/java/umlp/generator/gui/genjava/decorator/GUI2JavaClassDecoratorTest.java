@@ -72,9 +72,9 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     assertAll(
         () -> assertTrue(Log.getFindings().isEmpty()),
         () -> assertEquals(15, clazz.getCDAttributeList().size()),
-        () -> assertEquals(74, clazz.getCDMethodList().size()),
+        () -> assertEquals(65, clazz.getCDMethodList().size()),
         () -> assertEquals(1, clazz.getCDConstructorList().size()),
-        () -> assertEquals(9, imports.size())
+        () -> assertEquals(11, imports.size())
     );
   }
 
@@ -182,22 +182,18 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     ASTCDMethod getPerson = getMethod(methods, "getPerson");
     ASTCDMethod setPerson = getMethod(methods, "setPerson");
     ASTCDMethod initPerson = getMethod(methods, "initPerson");
-    int initPersonCount = methodCount(methods, "initPerson");
     ASTCDMethod get$per$son = getMethod(methods, "get$per$son");
     ASTCDMethod set$per$son = getMethod(methods, "set$per$son");
     ASTCDMethod init$per$son = getMethod(methods, "init$per$son");
-    int init$per$sonCount = methodCount(methods, "init$per$son");
     ASTCDMethod getStatus = getMethod(methods, "getStatus");
     ASTCDMethod setStatus = getMethod(methods, "setStatus");
     ASTCDMethod initStatus = getMethod(methods, "initStatus");
     ASTCDMethod getLa = getMethod(methods, "getLa");
     ASTCDMethod setLa = getMethod(methods, "setLa");
     ASTCDMethod initLa = getMethod(methods, "initLa");
-    int initLaCount = methodCount(methods, "initLa");
     ASTCDMethod getLla = getMethod(methods, "getLla");
     ASTCDMethod setLla = getMethod(methods, "setLla");
     ASTCDMethod initLla = getMethod(methods, "initLla");
-    int initLlaCount = methodCount(methods, "initLla");
     ASTCDMethod getS = getMethod(methods, "getS");
     ASTCDMethod setS = getMethod(methods, "setS");
     ASTCDMethod initS = getMethod(methods, "initS");
@@ -214,22 +210,18 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     assertions.add(() -> assertNotNull(getPerson));
     assertions.add(() -> assertNotNull(setPerson));
     assertions.add(() -> assertNotNull(initPerson));
-    assertions.add(() -> assertEquals(2, initPersonCount));
     assertions.add(() -> assertNotNull(get$per$son));
     assertions.add(() -> assertNotNull(set$per$son));
     assertions.add(() -> assertNotNull(init$per$son));
-    assertions.add(() -> assertEquals(2, init$per$sonCount));
     assertions.add(() -> assertNotNull(getStatus));
     assertions.add(() -> assertNotNull(setStatus));
     assertions.add(() -> assertNotNull(initStatus));
     assertions.add(() -> assertNotNull(getLa));
     assertions.add(() -> assertNotNull(setLa));
     assertions.add(() -> assertNotNull(initLa));
-    assertions.add(() -> assertEquals(2, initLaCount));
     assertions.add(() -> assertNotNull(getLla));
     assertions.add(() -> assertNotNull(setLla));
     assertions.add(() -> assertNotNull(initLla));
-    assertions.add(() -> assertEquals(2, initLlaCount));
     assertions.add(() -> assertNotNull(getS));
     assertions.add(() -> assertNotNull(setS));
     assertions.add(() -> assertNotNull(initS));

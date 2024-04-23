@@ -67,8 +67,7 @@ public enum TypeScriptTypes {
   public static Optional<String> getTsImportPath(String mcType) {
     for (TypeScriptTypes type : TypeScriptTypes.values()) {
       if ((type.mcType.equals(mcType)
-          || (type.javaQName.isPresent() && type.javaQName.get().equals(mcType)))
-          && type.tsImportPath.isPresent()) {
+          || (type.javaQName.isPresent() && type.javaQName.get().equals(mcType)))) {
         return type.tsImportPath;
       }
     }
@@ -80,8 +79,7 @@ public enum TypeScriptTypes {
 
     for (TypeScriptTypes type : TypeScriptTypes.values()) {
       if ((type.mcType.equals(mcType)
-          || (type.javaQName.isPresent() && type.javaQName.get().equals(mcType)))
-          && type.tsImportPath.isPresent()) {
+          || (type.javaQName.isPresent() && type.javaQName.get().equals(mcType)))) {
         res = type.tsType;
       }
     }

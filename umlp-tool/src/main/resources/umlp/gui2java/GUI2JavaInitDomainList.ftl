@@ -1,4 +1,4 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("type", "name", "manager")}
-${cd4c.method("protected void init${name?cap_first}()")}
+${tc.signature("type", "name", "manager", "init")}
+${cd4c.method("protected void ${init}()")}
 this.${name} = ${manager}.get${type}List();

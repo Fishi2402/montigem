@@ -1,4 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("type", "tmp", "manager")}
+${tc.signature("mcType", "tmp", "manager")}
 <#assign genHelper = glex.getGlobalVar("genHelper")>
-${type} ${tmp} = ${manager}.${type?uncap_first}Builder();
+<#assign cdPrinter = glex.getGlobalVar("cdPrinter")>
+
+${cdPrinter.printType(mcType)} ${tmp} = ${manager}.${type?uncap_first}Builder();

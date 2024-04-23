@@ -13,8 +13,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import umlp.generator.gui.DomainGUITest;
 import umlp.generator.gui.GUIComponentStat;
+import umlp.generator.gui.GUIGeneratorUtil;
+import umlp.generator.gui.TestUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +42,7 @@ public class StaticObjectsCollectorTest extends DomainGUITest {
         "src/test/resources/gui"
     ).getGUIComponentDeclaration();
 
+    GUIGeneratorUtil.getInstance().init(List.of("Domain"), Collections.emptyList());
     StaticObjectsCollector.getInstance().init(decl);
 
     components = stat.getComponents(decl);
@@ -134,7 +138,9 @@ public class StaticObjectsCollectorTest extends DomainGUITest {
         stat.getArgByName(g, "a").getGUIArgValue().getGUIList());
     ASTCDAttribute gA9 = gA9Wrapper.getCdAttr();
     assertions.add(() -> assertEquals(
-        "Map<Person, Map<Person, List<Address>>>", gA9.getMCType().printType()));
+        TestUtils.removeSpaces("Map<Person, Map<Person, List<Address>>>"),
+        TestUtils.removeSpaces(gA9.getMCType().printType())
+    ));
     assertions.add(() -> assertEquals("gA_9", gA9.getName()));
     assertions.add(() -> assertEquals(2, gA9Wrapper.getIterateArgs().size()));
 
@@ -142,7 +148,9 @@ public class StaticObjectsCollectorTest extends DomainGUITest {
         stat.getArgByName(h, "a").getGUIArgValue().getGUIList());
     ASTCDAttribute hA10 = hA10Wrapper.getCdAttr();
     assertions.add(() -> assertEquals(
-        "Map<Person, Map<Person, List<Address>>>", hA10.getMCType().printType()));
+        TestUtils.removeSpaces("Map<Person, Map<Person, List<Address>>>"),
+        TestUtils.removeSpaces(hA10.getMCType().printType())
+    ));
     assertions.add(() -> assertEquals("hA_10", hA10.getName()));
     assertions.add(() -> assertEquals(2, hA10Wrapper.getIterateArgs().size()));
 
@@ -150,7 +158,9 @@ public class StaticObjectsCollectorTest extends DomainGUITest {
         stat.getArgByName(i, "p").getGUIArgValue().getExpression());
     ASTCDAttribute iP11 = iP11Wrapper.getCdAttr();
     assertions.add(() -> assertEquals(
-        "Map<Person, Map<Person, Person>>", iP11.getMCType().printType()));
+        TestUtils.removeSpaces("Map<Person, Map<Person, Person>>"),
+        TestUtils.removeSpaces(iP11.getMCType().printType())
+    ));
     assertions.add(() -> assertEquals("iP_11", iP11.getName()));
     assertions.add(() -> assertEquals(2, iP11Wrapper.getIterateArgs().size()));
 

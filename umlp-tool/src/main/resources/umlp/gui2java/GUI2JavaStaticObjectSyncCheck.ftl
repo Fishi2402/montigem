@@ -11,6 +11,6 @@ true
       .get(${prev.getName()})
     </#list>
   <#else>
-      .containsKey(${key.getName()});
+      .containsKey(${key.getName()})
   </#if>
 </#list>
