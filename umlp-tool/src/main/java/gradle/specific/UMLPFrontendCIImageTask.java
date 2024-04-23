@@ -6,7 +6,7 @@ public abstract class UMLPFrontendCIImageTask extends UMLPFrontendImageTask {
 
   public UMLPFrontendCIImageTask() {
     getFullImageName().convention(getProject().provider(() -> {
-        String result = System.getenv("umlp.deploy.frontend.to.image");
+        String result = System.getProperty("umlp.deploy.frontend.to.image");
         if(result == null) {
          result = Objects.requireNonNull(System.getenv("CI_REGISTRY_IMAGE"), "CI_REGISTRY_IMAGE not set")
               + "/frontend:latest";
