@@ -19,7 +19,8 @@ Die Dateien werden auf dem FileSystem des Servers abgespeichert.
 
 ## Data Migration with PostgresQL
 
-Prerequisites are that you have Docker installed on your local pc.
+Prerequisites are that you have Docker installed on your local pc. 
+Make sure no other process is running on your Postgres port.
 
 1. Create a SQL dump of the current database state with the following command on the deployed server
 
@@ -32,7 +33,7 @@ docker exec -i demorec-db-1 /bin/bash -c "PGPASSWORD={db pwd} pg_dump --username
 scp demorec:/../back_up/{currentDate}.sql "{localPath}\DemoRec\{CurrentDate}backUp.sql"
 ```
 
-3. Run local Postgres Docker contaienr
+3. Run local Postgres Docker container
 ```
 docker run --name test_db -e POSTGRES_DB={dbName} -e POSTGRES_USER={username} -e POSTGRES_PASSWORD=newpass -p 5432:5432 postgres:15-alpine
 ```
@@ -58,9 +59,8 @@ psql -U admin -d umlpdb
 ```
 
 8. While editing the SQL DB with your SQL commands create a Update SQL file in a text editor containing each command you executed
-```
-psql -U admin -d umlpdb
-```
+
+9. Adapt `application.properties` to let the backend use the locally running Postgres Database from the backend 
 
 9. Check if everything works by running the application locally. While clicking through the App, check if no errors appear in the backend.
 

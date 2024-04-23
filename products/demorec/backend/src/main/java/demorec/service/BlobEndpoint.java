@@ -144,6 +144,10 @@ public class BlobEndpoint {
     File test = Paths.get(filePath).toFile();
     Log.info(test.getAbsolutePath(), this.getClass().getName());
 
+    if(!test.exists()) {
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     // Read the image bytes
     byte[] imageBytes = Files.readAllBytes(Paths.get(filePath));
 
