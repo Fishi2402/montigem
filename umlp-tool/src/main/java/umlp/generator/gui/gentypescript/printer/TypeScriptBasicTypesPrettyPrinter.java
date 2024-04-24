@@ -44,6 +44,9 @@ public class TypeScriptBasicTypesPrettyPrinter extends MCBasicTypesPrettyPrinter
     if (this.isPrintComments()) {
       de.monticore.prettyprint.CommentPrettyPrinter.printPreComments(node, getPrinter());
     }
+    if (node.getMCQualifiedName().getBaseName().equals("E")) {
+      return;
+    }
     if (node.getQName().equals(BuiltInTypes.EVENT.getQName())) {
       getPrinter().print("import { " + TypeScriptTypes.EVENT.getTSType()
           + " } from '@angular/core';");
