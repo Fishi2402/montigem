@@ -26,6 +26,31 @@ component JoinConnectionCreate(JoinConnection connection, List<String> dummyComp
               rowGap="5px",
               components = [
                 @GemRow(
+                  components=[
+                    @GemColumn(
+                      width="60%",
+                      components= [
+                        blueprint@GemTextInput(
+                          labelText = "Prefill data based on connection",
+                          inputType = "dropdown",
+                          options = null,
+                          entry = null
+                        )
+                      ]
+                    ),
+                    @GemText(value="New Connection must differ in Position or Type.")
+                  ]
+                ),
+                @GemRow(
+                  width="30em",
+                  colGap="5px",
+                  components=[
+                    xPos@GemTextInput(labelText = "X-Position", inputType = "number", entry = connection.xPos),
+                    yPos@GemTextInput(labelText = "Y-Position", inputType = "number", entry = connection.yPos),
+                    zPos@GemTextInput(labelText = "Z-Position", inputType = "number", entry = connection.zPos)
+                  ]
+                ),
+                @GemRow(
                   colGap="5px",
                   components=[
                     selectTypeOfConnection@GemTextInput(
@@ -33,7 +58,7 @@ component JoinConnectionCreate(JoinConnection connection, List<String> dummyComp
                         inputType = "dropdown",
                         options = null,
                         entry = null),
-                    @GemTextInput(
+                    state@GemTextInput(
                         labelText = "State of Connection (%)",
                         inputType = "number",
                         entry = connection.state)

@@ -12,7 +12,7 @@ import DemoRec.Dimension;
 
 page MeasuringValueCreate(MeasuringValue measuringValue, Event<MeasuringValue> measuringValueEvent) {
   @GemCard(
-    title = "Measuring Value",
+    title = "Measured Value",
     component = @GemRow(
       wrap="nowrap",
       colGap="5px",
