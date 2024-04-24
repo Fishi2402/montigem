@@ -425,14 +425,14 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
 
   // todo why is this required? Something might be VERY broken somewhere.
   protected String printFullNameOfTypeHotfix(SymTypeExpression type) {
-    String fullName = type.getTypeInfo().getName();
-    if (!Names.getQualifier(fullName).isEmpty()) {
+    String name = type.getTypeInfo().getName();
+    if (!Names.getQualifier(name).isEmpty()) {
       Log.warn("getName() on Symbol incorrect, expecting incorrect Symbol table," +
-          "using workaround for: " + fullName);
-      return fullName;
+          "using workaround for: " + name);
+      return name;
     }
     // TODO: Why is this import broken now? https://se-rwth.slack.com/archives/CNJLC0AD9/p1712748721166509
-    return Joiners.DOT.join(util.getMainDomainModelQName().get(), type);
+    return Joiners.DOT.join(util.getMainDomainModelQName().get(), name);
   }
 
   protected void addEnum2CapStringMethod(ASTCDClass decoratedClass, String type) {
