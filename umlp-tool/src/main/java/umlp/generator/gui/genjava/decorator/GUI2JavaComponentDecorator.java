@@ -423,26 +423,16 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     return s -> s;
   }
 
-  // todo FDr why is this required? Something might be VERY broken somewhere.
+  // todo why is this required? Something might be VERY broken somewhere.
   protected String printFullNameOfTypeHotfix(SymTypeExpression type) {
     String fullName = type.getTypeInfo().getName();
-    de.monticore.symboltable.IScope optCurrentScope = type.getTypeInfo().getEnclosingScope();
-    while (optCurrentScope != null) {
-      IScope currentScope = optCurrentScope;
-      if (!(currentScope instanceof IGlobalScope)) {
-        if (!currentScope.getName().isEmpty()) {
-          fullName = currentScope.getName() + "." + fullName;
-        }
-        if (currentScope instanceof IGUIDSLArtifactScope) {
-          IGUIDSLArtifactScope artifactScope = (IGUIDSLArtifactScope) currentScope;
-          if (!artifactScope.getPackageName().isEmpty()) {
-            fullName = artifactScope.getPackageName() + "." + fullName;
-          }
-        }
-      }
-      optCurrentScope = currentScope.getEnclosingScope();
+    if (!Names.getQualifier(fullName).isEmpty()) {
+      Log.warn("getName() on Symbol incorrect, expecting incorrect Symbol table," +
+          "using workaround for: " + fullName);
+      return fullName;
     }
-    return fullName;
+    // TODO: Why is this import broken now? https://se-rwth.slack.com/archives/CNJLC0AD9/p1712748721166509
+    return Joiners.DOT.join(util.getMainDomainModelQName().get(), type);
   }
 
   protected void addEnum2CapStringMethod(ASTCDClass decoratedClass, String type) {
