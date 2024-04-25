@@ -49,6 +49,7 @@ build_no_containers:
     reports:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
+    expire_in: 1 week
   except:
     refs:
       - dev
@@ -112,6 +113,7 @@ build_with_containers:
     reports:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
+    expire_in: 1 week
   only:
     refs:
       - dev
@@ -136,6 +138,7 @@ slowtest:
     reports:
       # Lets gitlab render infos about failed tests
       junit: "**/slowtest/**/TEST-*.xml"
+    expire_in: 1 week
 
 deployRTE:
   stage: deploy
@@ -188,6 +191,7 @@ buildNativeImage:
   artifacts:
     paths:
       - ./examples/native-image/build/native/nativeCompile/*
+    expire_in: 1 week
   script:
     - "gradle :examples:native-image:nativeBuild --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
     - "gradle :examples:native-image:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
