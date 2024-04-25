@@ -1,0 +1,49 @@
+package gui.step;
+
+import mc.fenix.basic.GemText;
+import mc.fenix.input.GemTextInput;
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+
+import DemoRec.ProcessStep;
+import DemoRec.MeasuringValue;
+
+import gui.step.MeasuringValueCreate;
+
+page MeasuringValueEdit(ProcessStep step) {
+  @GemCard(
+    title = "Edit Measured Values",
+    component = @GemColumn(
+      colGap="10px",
+      components = [
+
+        @iterate(MeasuringValue measuringValue : step.measured) {
+          displayedMeasuringValueRow@GemRow(
+            wrap="nowrap",
+            colGap="5px",
+            components=[
+              displayedMeasuringValue@GemTextInput(labelText = "Value", inputType = "string", entry = measuringValue.value),
+              displayedMeasuringValueDimensionUnit@GemTextInput(
+                labelText = "Unit",
+                inputType = "dropdown",
+                options = null,
+                entry = null
+              ),
+              displayedMeasuringValueDeleteButton@GemButton(label = "Delete Value", leftClick = deleteMeasuringValue(measuringValue))
+            ]
+          );
+        },
+
+        @GemRow(
+          wrap="nowrap",
+          colGap="5px",
+          components=[
+            addNewMeasuringValue@MeasuringValueCreate(measuringValueEvent = attachMeasuringValue)
+          ]
+        )
+      ]
+    )
+  );
+}

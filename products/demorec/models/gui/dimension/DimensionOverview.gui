@@ -18,12 +18,13 @@ page DimensionOverview(List<Dimension> dimensions) {
   @GemCard(
     title="Dimensions of values",
     component=@GemColumn(
-      rowGap="1px",
+      width="40rem",
+      rowGap="5px",
       wrap="nowrap",
       components=[
         newDimension@DimensionCreate(),
         @iterate(Dimension dimension : dimensions) {
-          @GemRow(wrap="nowrap",components= [
+          @GemRow(wrap="nowrap", colGap="5%",components= [
             @GemTextInput(inputType = "string", entry = dimension.name),
             @GemTextInput(inputType = "string", entry = dimension.unit)
           ]);

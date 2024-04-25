@@ -34,7 +34,7 @@ classdiagram DemoRec {
   association [*] Process -> (deconstructionOf) BatteryPack [1];
 
   class ProcessStep {
-    long timeConsumption;
+    double timeConsumption;
     ProcessStepType type;
     Optional<String> description;
     int index;
@@ -101,14 +101,17 @@ classdiagram DemoRec {
     List<String> threeDFileLocations;
   }
 
-  association [*] DemoRecComponent -> (isA) ComponentKind [1]; // 1.2
+  association [*] DemoRecComponent <-> (isA) ComponentKind [1]; // 1.2
 
   class JoinConnection {
     double state; // TODO what kind of data type for state?
     JoinConnectionType joinConnectionType;
+    Optional<Double> xPos;
+    Optional<Double> yPos;
+    Optional<Double> zPos;
   }
 
-  association [*] DemoRecComponent -> (composedOf) JoinConnection [*];
+  association [0..1] DemoRecComponent (partOf) <-> (composedOf) JoinConnection [*];
 
   association [*] DemoRecComponent (connects) <-> (connectedBy) JoinConnection [*];  // TODO should be 2..* on left side
 

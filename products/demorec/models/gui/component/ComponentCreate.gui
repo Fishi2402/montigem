@@ -17,15 +17,21 @@ import gui.component.PhotoDragNDrop;
 
 component ComponentCreate(DemoRecComponent component, ComponentKind componentKind, Event<DemoRecComponent> createComponent) {
   @GemCard(
-    title = "Specify Component.",
+    title = "Specify Component",
     component = @GemColumn(
         wrap="nowrap",
         components=[
           @GemTextInput(labelText = "Component Name", inputType = "string", entry = component.name),
           @GemTextInput(labelText = "Component Condition", inputType = "string", entry = component.condition),
-          @GemTextInput(labelText = "X-Position", inputType = "number", entry = component.xPos),
-          @GemTextInput(labelText = "Y-Position", inputType = "number", entry = component.yPos),
-          @GemTextInput(labelText = "Z-Position", inputType = "number", entry = component.zPos),
+          @GemRow(
+            width="30em",
+            colGap="5px",
+            components=[
+              @GemTextInput(labelText = "X-Position", inputType = "number", entry = component.xPos),
+              @GemTextInput(labelText = "Y-Position", inputType = "number", entry = component.yPos),
+              @GemTextInput(labelText = "Z-Position", inputType = "number", entry = component.zPos)
+            ]
+          ),
           selectComponentKind@GemTextInput(
             labelText = "Component Kind",
             inputType = "dropdown",
@@ -36,9 +42,15 @@ component ComponentCreate(DemoRecComponent component, ComponentKind componentKin
             @GemTextInput(labelText = "Component Kind Name", inputType = "string", entry = componentKind.name);
             @GemTextInput(labelText = "OE-Number", inputType = "string", entry = componentKind.oENumber);
             @GemTextInput(labelText = "Description for human identification", inputType = "string", entry = componentKind.humanDescription);
-            @GemTextInput(labelText = "Width (mm)", inputType = "number", entry = componentKind.width);
-            @GemTextInput(labelText = "Length (mm)", inputType = "number", entry = componentKind.length);
-            @GemTextInput(labelText = "Height (mm)", inputType = "number", entry = componentKind.height);
+            @GemRow(
+              width="30em",
+              colGap="5px",
+              components=[
+                @GemTextInput(labelText = "Width (mm)", inputType = "number", entry = componentKind.width),
+                @GemTextInput(labelText = "Length (mm)", inputType = "number", entry = componentKind.length),
+                @GemTextInput(labelText = "Height (mm)", inputType = "number", entry = componentKind.height)
+              ]
+            );
             @GemTextInput(labelText = "Weight (kg)", inputType = "number", entry = componentKind.weight);
           },
           @PhotoDisplay(component=component),

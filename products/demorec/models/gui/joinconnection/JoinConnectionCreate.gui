@@ -25,15 +25,46 @@ component JoinConnectionCreate(JoinConnection connection, List<String> dummyComp
             component = @GemColumn(
               rowGap="5px",
               components = [
-                @GemTextInput(
-                    labelText = "State of Connection (%)",
-                    inputType = "number",
-                    entry = connection.state),
-                selectTypeOfConnection@GemTextInput(
-                  labelText = "Type of Connection",
-                  inputType = "dropdown",
-                  options = null,
-                  entry = null),
+                @GemRow(
+                  components=[
+                    @GemColumn(
+                      width="60%",
+                      components= [
+                        blueprint@GemTextInput(
+                          labelText = "Prefill data based on connection",
+                          inputType = "dropdown",
+                          options = null,
+                          entry = null
+                        )
+                      ]
+                    ),
+                    @GemText(value="New Connection must differ in Position or Type.")
+                  ]
+                ),
+                @GemRow(
+                  width="30em",
+                  colGap="5px",
+                  components=[
+                    xPos@GemTextInput(labelText = "X-Position", inputType = "number", entry = connection.xPos),
+                    yPos@GemTextInput(labelText = "Y-Position", inputType = "number", entry = connection.yPos),
+                    zPos@GemTextInput(labelText = "Z-Position", inputType = "number", entry = connection.zPos)
+                  ]
+                ),
+                @GemRow(
+                  colGap="5px",
+                  components=[
+                    selectTypeOfConnection@GemTextInput(
+                        labelText = "Type of Connection",
+                        inputType = "dropdown",
+                        options = null,
+                        entry = null),
+                    state@GemTextInput(
+                        labelText = "State of Connection (%)",
+                        inputType = "number",
+                        entry = connection.state)
+                  ]
+                ),
+
                 selectSuperComponent@GemTextInput(
                     labelText = "Part of Component",
                     inputType = "dropdown",
@@ -45,12 +76,11 @@ component JoinConnectionCreate(JoinConnection connection, List<String> dummyComp
                   hAlign="center",
                   components= [
                     selectConnectsComponent@GemTextInput(
-                        labelText = "Components connected by this connection",
+                        labelText = "Choose components connected by this connection",
                         inputType = "dropdown",
                         options = null,
                         entry = null,
-                        keyRelease = tryToAddComponent),
-                    addComponent@GemButton(label = "Add Component", leftClick = connectSelectedComponent, disabled=false)
+                        keyRelease = tryToAddComponent)
                   ]
                 ),
                 @GemRow(

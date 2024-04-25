@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp;
 
+import com.google.common.collect.Iterables;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._visitor.CDBasisVisitor2;
@@ -91,10 +92,12 @@ public class TagRelated {
 
 
   public static void initLookup(MCPath importedSymbolPath) {
+    System.err.println("Init tag lookup: " + importedSymbolPath.getEntries().size() + "(" + Iterables.size(TagRepository.getLoadedTagUnits()));
     Set<File> tagFiles = importedSymbolPath.getEntries().stream()
         .map(x -> x.toFile().listFiles(f -> f.getName().endsWith(".tags")))
         .filter(Objects::nonNull)
         .flatMap(Arrays::stream)
+        .peek(p -> System.err.println("Looking for tags within " + p.getAbsolutePath()))
         .collect(Collectors.toSet());
 
     if (tagFiles.isEmpty()) return;

@@ -54,6 +54,7 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
   @Output()
   public create: EventEmitter<ProcessStep> = new EventEmitter<ProcessStep>();
 
+
   public override ngOnInit(): void {
     super.ngOnInit()
 
@@ -79,27 +80,32 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
       const joinConnections = gemPromiseRes;
       joinConnections.loadAll().then(() => {
         console.debug(joinConnections)
-        this.joinConnectionOptions = [newOption]
+        const options = []; //this.joinConnectionOptions = [newOption]
         for (const joinConnection of joinConnections) {
-          this.calculateDisplayValueOfJoinConnection(joinConnection).then(opt =>
-          this.joinConnectionOptions.push(opt))
+          options.push(this.calculateDisplayValueOfJoinConnection(joinConnection))
         }
-        this.joinConnectionOptions = this.joinConnectionOptions.slice();
+        // Get newest JoinConnections -> Ordered by GemID Descending
+        Promise.all(options).then(results => {
+          this.joinConnectionOptions = this.joinConnectionOptions.concat(results.sort((l,r) => Number(r.value)-Number(l.value)))
+        })
       });
     });
   }
 
+  // Copy from ProcessStepCreate
   private calculateDisplayValueOfJoinConnection(connection : JoinConnection) : Promise<Option> {
     return connection._internal_getConnectsGemList().loadAll().then(
         list => {
           console.debug("Connects: " + list.map(c => c.getName()))
           console.debug(connection._internal_getConnectsGemList().toArray())
 
+          const connectionTypeString : string = JoinConnectionType[connection.getJoinConnectionType()]
+          const correctCase : string = connectionTypeString.charAt(0)+connectionTypeString.slice(1).toLowerCase()
+
           let value = connection.getGemId() + "";
-          const displayValue = list.map(c => c.getName()?
-                  c.getName()+":"+c.getGemId() :
-                  ":"+c.getGemId()).join("_")+
-              "_"+JoinConnectionType[connection.getJoinConnectionType()]
+          const displayValue = correctCase+"("+list.map(c => c.getName()?
+              c.getName()+":"+c.getGemId() :
+              ":"+c.getGemId()).join(" - ")+"):"+connection.getGemId()
           return new Promise<Option>((resolve, reject) => {
                 resolve({value: value, display: displayValue})
               }

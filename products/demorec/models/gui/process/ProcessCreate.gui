@@ -5,6 +5,7 @@ import mc.fenix.input.GemTextInput;
 import mc.fenix.basic.GemButton;
 import mc.fenix.arrange.GemCard;
 import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
 
 import gui.component.PhotoDragNDrop;
 import gui.component.PhotoDisplay;
@@ -21,6 +22,7 @@ page ProcessCreate(Process p, BatteryPack pack, ComponentKind componentKind,Batt
   @GemCard(
     title = "Process",
     component = @GemColumn(
+      rowGap="5px",
       components = [
         startedAt@GemTextInput(
             labelText = "Started",
@@ -40,14 +42,27 @@ page ProcessCreate(Process p, BatteryPack pack, ComponentKind componentKind,Batt
     @GemCard(
       title = "Battery Pack",
       component = @GemColumn(
+        rowGap="5px",
         components = [
           packName@GemTextInput(labelText = "Component Name", inputType = "string", entry = pack.name, placeholder="Override"),
-          @GemTextInput(labelText = "Health (%)", inputType = "number", entry = pack.health),
-          @GemTextInput(labelText = "Charge (%)", inputType = "number", entry = pack.stateOfCharge),
+          @GemRow(
+            width="20em",
+            colGap="5px",
+            components=[
+              @GemTextInput(labelText = "Health (%)", inputType = "number", entry = pack.health),
+              @GemTextInput(labelText = "Charge (%)", inputType = "number", entry = pack.stateOfCharge)
+            ]
+          ),
           @GemTextInput(labelText = "Component Condition", inputType = "string", entry = pack.condition),
-          @GemTextInput(labelText = "X-Position", inputType = "number", entry = pack.xPos),
-          @GemTextInput(labelText = "Y-Position", inputType = "number", entry = pack.yPos),
-          @GemTextInput(labelText = "Z-Position", inputType = "number", entry = pack.zPos),
+          @GemRow(
+            width="30em",
+            colGap="5px",
+            components=[
+              @GemTextInput(labelText = "X-Position", inputType = "number", entry = pack.xPos),
+              @GemTextInput(labelText = "Y-Position", inputType = "number", entry = pack.yPos),
+              @GemTextInput(labelText = "Z-Position", inputType = "number", entry = pack.zPos)
+            ]
+          ),
           selectComponentKind@GemTextInput(
             labelText = "Component Kind",
             inputType = "dropdown",
@@ -59,9 +74,15 @@ page ProcessCreate(Process p, BatteryPack pack, ComponentKind componentKind,Batt
             @GemTextInput(labelText = "OE-Number", inputType = "string", entry = componentKind.oENumber);
             @GemTextInput(labelText = "Description for human identification", inputType = "string", entry = componentKind.humanDescription);
             @GemTextInput(labelText = "Width (mm)", inputType = "number", entry = componentKind.width);
-            @GemTextInput(labelText = "Length (mm)", inputType = "number", entry = componentKind.length);
-            @GemTextInput(labelText = "Height (mm)", inputType = "number", entry = componentKind.height);
-            @GemTextInput(labelText = "Weight (kg)", inputType = "number", entry = componentKind.weight);
+            @GemRow(
+              width="30em",
+              colGap="5px",
+              components=[
+                @GemTextInput(labelText = "Width (mm)", inputType = "number", entry = componentKind.width),
+                @GemTextInput(labelText = "Length (mm)", inputType = "number", entry = componentKind.length),
+                @GemTextInput(labelText = "Height (mm)", inputType = "number", entry = componentKind.height)
+              ]
+            );
           },
           @PhotoDisplay(component=pack),
           photoDragAndDrop@PhotoDragNDrop(attachedComponent = pack),
@@ -78,6 +99,7 @@ page ProcessCreate(Process p, BatteryPack pack, ComponentKind componentKind,Batt
       @GemCard(
         title = "Battery Pack Type",
         component = @GemColumn(
+          rowGap="5px",
           components = [
             @GemTextInput(labelText = "Voltage (V)", inputType = "number", entry = type.voltage),
             @GemTextInput(labelText = "Capacity (kWh)", inputType = "number", entry = type.capacity),
