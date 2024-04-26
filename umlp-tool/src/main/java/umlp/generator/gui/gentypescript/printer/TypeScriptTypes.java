@@ -14,6 +14,9 @@ public enum TypeScriptTypes {
       BuiltInTypes.EVENT.getQName(), "@angular/core"),
   TEMPLATE_REF(BuiltInTypes.GUI_VIEW_ELEMENT.getName(), "TemplateRef",
       BuiltInTypes.GUI_VIEW_ELEMENT.getQName(), "@angular/core"),
+  // TODO: set proper router service when implemented
+  ROUTER("RouterService", "Router",
+      "RouterService", "@angular/router"),
   LIST("List", "Array", "java.util.List"),
   COLLECTION("Collection", "Array", "java.util.Collection"),
   MAP("Map", "Map", "java.util.Map"),
@@ -142,5 +145,12 @@ public enum TypeScriptTypes {
     return tsType;
   }
 
+  public Optional<String> getTsImportPath() {
+    return tsImportPath;
+  }
+
+  public Optional<String> getJavaQName() {
+    return javaQName;
+  }
 }
 

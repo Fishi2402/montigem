@@ -61,7 +61,6 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
   protected String curComp = "";
   protected String curArg = "";
   protected Optional<ASTGUINamedArg> lastArg = Optional.empty();
-  protected Optional<ASTCallExpression> lastCall = Optional.empty();
   protected Map<ASTGUIList, SymTypeExpression> listTypes = new HashMap<>();
 
   protected Map<ASTNode, Attribute> node2Attr = new HashMap<>();
@@ -98,7 +97,6 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
     curComp = "";
     curArg = "";
     lastArg = Optional.empty();
-    lastCall = Optional.empty();
     listTypes = new HashMap<>();
     node2Attr = new HashMap<>();
     node2Method = new HashMap<>();
@@ -172,20 +170,16 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
 
   @Override
   public void visit(ASTCallExpression node) {
-    lastCall = Optional.of(node);
-  }
-
-  @Override
-  public void visit(ASTNameExpression node) {
-    if (lastCall.isPresent() && lastCall.get().getExpression().equals(node)) {
-      if (!(node.getEnclosingScope() instanceof IOOSymbolsScope)) {
+    if (node.getExpression() instanceof ASTNameExpression) {
+      ASTNameExpression nameExp = (ASTNameExpression) node.getExpression();
+      if (!(nameExp.getEnclosingScope() instanceof IOOSymbolsScope)) {
         Log.error("0x0000C Attempted to resolve type of '"
-            + GUIGeneratorUtil.getInstance().print(node) + "' from outside of an OOSymbolsScope,"
+            + GUIGeneratorUtil.getInstance().print(nameExp) + "' from outside of an OOSymbolsScope,"
             + " but expression conversion is restricted to OOSymbols context.");
         return;
       }
-      IOOSymbolsScope scope = (IOOSymbolsScope) node.getEnclosingScope();
-      Optional<OOTypeSymbol> sym = scope.resolveOOType(node.getName());
+      IOOSymbolsScope scope = (IOOSymbolsScope) nameExp.getEnclosingScope();
+      Optional<OOTypeSymbol> sym = scope.resolveOOType(nameExp.getName());
 
       boolean isConstructor = false;
       // TODO AGe: use this code after bug in type check is fixed
@@ -201,41 +195,41 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
 
       // those conditions should always be both true or false
       if (sym.isPresent()) {
-        isConstructor = !sym.get().getMethodList(node.getName()).isEmpty();
+        isConstructor = !sym.get().getMethodList(nameExp.getName()).isEmpty();
       }
       if (isConstructor) {
         String name = curComp + StringTransformations.capitalize(curArg) + "_" + counter++;
         SymTypeExpression ste = SymTypeExpressionFactory.createTypeObject(sym.get());
-        Attribute attr = createAttribute(node, ste, name);
-        node2Attr.put(lastCall.get(), attr);
+        Attribute attr = createAttribute(nameExp, ste, name);
+        node2Attr.put(node, attr);
       }
-      else if (CallTypeDeriver.getInstance().hasReturnType(lastCall.get())) {
-        SymTypeExpression returnType = CallTypeDeriver.getInstance().getReturnType(lastCall.get());
+      else if (CallTypeDeriver.getInstance().hasReturnType(node)) {
+        SymTypeExpression returnType = CallTypeDeriver.getInstance().getReturnType(node);
         List<SymTypeExpression> paramTypes = new ArrayList<>();
-        for (ASTExpression exp : lastCall.get().getArguments().getExpressionList()) {
+        for (ASTExpression exp : node.getArguments().getExpressionList()) {
           SymTypeExpression argSTE = util.getType(exp);
           if (argSTE.isObscureType()) {
             Log.error("0x00015 Unable to derive the type of expression '"
-                + util.print(node)
-                + "' at " + node.get_SourcePositionStart().toString()
-                + " - " + node.get_SourcePositionEnd().toString()
+                + util.print(nameExp)
+                + "' at " + nameExp.get_SourcePositionStart().toString()
+                + " - " + nameExp.get_SourcePositionEnd().toString()
             );
           }
           paramTypes.add(argSTE);
         }
 
-        Method guiMethod = new Method(returnType, node.getName(), paramTypes);
+        Method guiMethod = new Method(returnType, nameExp.getName(), paramTypes);
         for (ASTNode n : node2Method.keySet()) {
           Method m = node2Method.get(n);
           if (guiMethod.getName().equals(m.getName())) {
             if (!guiMethod.compatibleParamTypes(m) && guiMethod.sameParamTypesErasure(m)) {
               Log.error("0x00018 Found methods with the same type erasure: '"
                   + util.print(n) + "' at " + n.get_SourcePositionStart().toString()
-                  + " - " + node.get_SourcePositionEnd().toString()
+                  + " - " + nameExp.get_SourcePositionEnd().toString()
                   + " and "
-                  + util.print(lastCall.get())
-                  + "' at " + lastCall.get().get_SourcePositionStart().toString()
-                  + " - " + lastCall.get().get_SourcePositionEnd().toString()
+                  + util.print(node)
+                  + "' at " + node.get_SourcePositionStart().toString()
+                  + " - " + node.get_SourcePositionEnd().toString()
                   + ". Please rename one of the methods."
               );
             }
@@ -246,23 +240,23 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
             else if (!guiMethod.compatibleReturnType(m) && guiMethod.compatibleParamTypes(m)) {
               Log.error("0x00019 Found methods with the same return types: '"
                   + util.print(n) + "' at " + n.get_SourcePositionStart().toString()
-                  + " - " + node.get_SourcePositionEnd().toString()
+                  + " - " + nameExp.get_SourcePositionEnd().toString()
                   + " and "
-                  + util.print(lastCall.get())
-                  + "' at " + lastCall.get().get_SourcePositionStart().toString()
-                  + " - " + lastCall.get().get_SourcePositionEnd().toString()
+                  + util.print(node)
+                  + "' at " + node.get_SourcePositionStart().toString()
+                  + " - " + node.get_SourcePositionEnd().toString()
                   + ". Please rename one of the methods."
               );
             }
           }
         }
-        node2Method.put(lastCall.get(), guiMethod);
+        node2Method.put(node, guiMethod);
       }
       else {
         Log.error("0x00014 Unable to derive the type of call "
-            + util.print(lastCall.get())
-            + "' at " + lastCall.get().get_SourcePositionStart().toString()
-            + " - " + lastCall.get().get_SourcePositionEnd().toString()
+            + util.print(node)
+            + "' at " + node.get_SourcePositionStart().toString()
+            + " - " + node.get_SourcePositionEnd().toString()
             + ". Please make sure that the call is simple, e.g., doStuff(),"
             + " a direct value of"
             + " a GUI component parameter, "

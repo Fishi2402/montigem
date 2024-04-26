@@ -1,14 +1,16 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("mcType", "name", "manager", "keys")}
 <#assign genHelper = glex.getGlobalVar("genHelper")>
+<#assign cdPrinter = glex.getGlobalVar("cdPrinter")>
 <#assign argsString = genHelper.variableSymbols2ArgsString(keys)>
 <#assign tmpVar = "tmp">
 
-${cd4c.method("public void sync${name?cap_first}(${argsString})")}
-if (${tc.includeArgs("umlp.gui2ts.GUI2TSStaticObjectSyncCheck", [keys])}) {
+${cd4c.method("public void init${name?cap_first}(${argsString})")}
+if (${tc.includeArgs("umlp.gui2java.GUI2JavaStaticObjectSyncCheck", [keys])}) {
   return;
 }
-${tc.includeArgs("umlp.gui2ts.GUI2TSBuilder", [mcType, tmpVar, manager])}
+${cdPrinter.printType(mcType)} ${tmpVar} = ${manager}.${type?uncap_first}Builder();
+
 <#list keys as key>
   <#assign i = key?index - 1>
   this.${name}
@@ -18,9 +20,9 @@ ${tc.includeArgs("umlp.gui2ts.GUI2TSBuilder", [mcType, tmpVar, manager])}
     </#list>
   </#if>
   <#if key?has_next>
-      .set(${key.getName()}, new Map());
+      .put(${key.getName()}, new HashMap<>());
   <#else>
-      .set(${key.getName()}, ${tmpVar});
+      .put(${key.getName()}, ${tmpVar});
   </#if>
 </#list>
 ;

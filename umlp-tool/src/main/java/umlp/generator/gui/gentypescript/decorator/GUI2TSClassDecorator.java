@@ -1,10 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui.gentypescript.decorator;
 
+import de.monticore.cd.facade.CDModifier;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import umlp.generator.gui.genjava.decorator.GUI2JavaClassDecorator;
+import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 
 /**
  * Turn a GUI AST into a CD AST containing one class. The class manages component state and
@@ -28,26 +31,34 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
         "cd2java.Package", new StringHookPoint(""));
     glex.replaceTemplate(
         "cd2java.Class", new TemplateHookPoint("umlp.gui2ts.TSClass"));
-    glex.replaceTemplate(
-        "umlp.gui2java.GUI2JavaBuilder", new TemplateHookPoint("umlp.gui2ts.GUI2TSBuilder"));
-    glex.replaceTemplate(
-        "umlp.gui2java.GUI2JavaList", new TemplateHookPoint("umlp.gui2ts.GUI2TSList"));
   }
 
   @Override
   protected void addDirectiveAnnotation() {
-    getCD4C().addImport(clazz, "umlp.jsweet.extension.annotation.Directive");
+    if (TypeScriptTypes.DIRECTIVE.getJavaQName().isPresent()) {
+      getCD4C().addImport(clazz, TypeScriptTypes.DIRECTIVE.getJavaQName().get());
+    }
     glex.replaceTemplate("umlp.gui2ts.TSAnnotations", clazz,
         new TemplateHookPoint("umlp.gui2ts.TSAnnotationDirective"));
   }
 
   @Override
-  protected String getStaticBuilderSyncTemplate() {
+  protected void addRouter() {
+    if (TypeScriptTypes.ROUTER.getJavaQName().isPresent()) {
+      getCD4C().addImport(clazz, TypeScriptTypes.ROUTER.getJavaQName().get());
+    }
+    ASTCDAttribute routerAttribute = getCDAttributeFacade().createAttribute(
+        CDModifier.PROTECTED.build(), "Router", "router");
+    clazz.addCDMember(routerAttribute);
+  }
+
+  @Override
+  protected String getStaticBuilderInitTemplate() {
     return "umlp.gui2ts.GUI2TSStaticBuilderSync";
   }
 
   @Override
-  protected String getStaticListSyncTemplate() {
+  protected String getStaticListInitTemplate() {
     return "umlp.gui2ts.GUI2TSStaticListSync";
   }
 }
