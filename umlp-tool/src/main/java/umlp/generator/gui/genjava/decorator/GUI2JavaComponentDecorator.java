@@ -25,6 +25,7 @@ import de.monticore.symboltable.IScope;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
+import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -42,6 +43,7 @@ import umlp.generator.util.PathUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -90,21 +92,19 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       // TODO AGe: all possible types
       if (util.isListType(paramSTE)) {
         SymTypeExpression innerType = util.getListInnerType(paramSTE).get();
-        if (!TypeScriptTypes.isDefault(paramSTE.printFullName())) {
-          if (!util.isDomainType(innerType)) {
-            if (!TypeScriptTypes.isDefault(innerType.print())
-              && !innerType.printFullName().equals("java.util.List.E")) {
-              getCD4C().addImport(decoratedClass, innerType.printFullName());
-            }
+        if (!util.isDomainType(innerType)) {
+          if (!TypeScriptTypes.isDefault(innerType.print())
+            && !innerType.print().equals("java.util.List.E")) {
+            getCD4C().addImport(decoratedClass, innerType.print());
+          }
+        } else {
+          Optional<String> domainQName = util.getMainDomainModelQName();
+          if (domainQName.isPresent()) {
+            getCD4C().addImport(decoratedClass, domainQName.get().toLowerCase() + "."
+                + Names.getSimpleName(util.getListInnerType(paramSTE).get().print()));
           } else {
-            Optional<String> domainQName = util.getMainDomainModelQName();
-            if (domainQName.isPresent()) {
-              getCD4C().addImport(decoratedClass, domainQName.get().toLowerCase() + "."
-                  + Names.getSimpleName(util.getListInnerType(paramSTE).get().print()));
-            } else {
-              Log.warn("0x0000A GUI Model " + this.guiAst.getComponentName()
-                  + " uses type '" + paramSTE.print() + "' that could not be resolved.");
-            }
+            Log.warn("0x0000A GUI Model " + this.guiAst.getComponentName()
+                + " uses type '" + paramSTE.print() + "' that could not be resolved.");
           }
         }
       }
@@ -158,50 +158,46 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
 
     if (namedArg.getGUIArgValue().isPresentGUIList()) {
       // TODO AGe: how to do that better?
-      // if List
-      if (namedArg.getGUIArgValue().isPresentGUIList()) {
-        List<ASTGUIArgValue> valueList = namedArg.getGUIArgValue().getGUIList().getGUIArgValueList();
+      List<ASTGUIArgValue> valueList = namedArg.getGUIArgValue().getGUIList().getGUIArgValueList();
 
-        String typeArg = unknownCollectionType();
-        boolean isPrimitive = false;
-        if (!valueList.isEmpty()) {
-          if (valueList.get(0).isPresentExpression()) {
-            if (valueList.get(0).getExpression() instanceof ASTLiteralExpression) {
-              isPrimitive = true;
-            }
-          }
-          else {
-            Log.error("0x00002 Cannot handle " + namedArg.getName()
-                + " of component " + guiComponent.getNameSymbol().getFullName()
-                + " yet: nested objects initialization");
+      boolean isPrimitive = false;
+      if (!valueList.isEmpty()) {
+        if (valueList.get(0).isPresentExpression()) {
+          if (valueList.get(0).getExpression() instanceof ASTLiteralExpression) {
+            isPrimitive = true;
           }
         }
-        ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
-            CDModifier.PROTECTED.build(),
-            MCTypeFacade.getInstance().createListTypeOf(typeArg),
-            util.gui2cdAttrName(guiComponent.getId().getName(), namedArg.getName()));
-        setDefaultListValue(attr);
-        decoratedClass.addCDMember(attr);
-
-        // TODO AGe: add this automatically
-        addGetComponentMethod(decoratedClass, getterName, paramType,
-            "this." + attr.getName(), iterItemArgs, "");
-        List<String> setterArgs = new ArrayList<>();
-        String argValueHolder = Expression2SetterPrinter.SETTER_PARAM;
-        setterArgs.add(paramType + " " + argValueHolder);
-        setterArgs.addAll(iterItemArgs);
-        addSetComponentMethod(getSetterTemplate(), decoratedClass, setterName, paramType,
-            attr.getName(), setterArgs, argValueHolder, "");
-
-        List<String> initValues = new ArrayList<>();
-        for (ASTGUIArgValue av : valueList) {
-          initValues.add(util.print(av.getExpression()));
+        else {
+          Log.error("0x00002 Cannot handle " + namedArg.getName()
+              + " of component " + guiComponent.getNameSymbol().getFullName()
+              + " yet: nested objects initialization");
         }
-        TemplateHookPoint hp = new TemplateHookPoint(
-            getInitListsTemplate(), attr.getName(), setterName, isPrimitive, initValues, iterItemArgs
-        );
-//        initHPs.add(hp); // MH TODO: wird irgendwie in andere Dateien injected, in welche es nicht gehört (replace Template)
       }
+      ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
+          CDModifier.PROTECTED.build(),
+          MCTypeFacade.getInstance().createListTypeOf(unknownCollectionType()),
+          util.gui2cdAttrName(guiComponent.getId().getName(), namedArg.getName()));
+      setDefaultListValue(attr);
+      decoratedClass.addCDMember(attr);
+
+      // TODO AGe: add this automatically
+      addGetComponentMethod(decoratedClass, getterName, paramType,
+          "this." + attr.getName(), iterItemArgs, "");
+      List<String> setterArgs = new ArrayList<>();
+      String argValueHolder = Expression2SetterPrinter.SETTER_PARAM;
+      setterArgs.add(paramType + " " + argValueHolder);
+      setterArgs.addAll(iterItemArgs);
+      addSetComponentMethod(getSetterTemplate(), decoratedClass, setterName, paramType,
+          attr.getName(), setterArgs, argValueHolder, "");
+
+      List<String> initValues = new ArrayList<>();
+      for (ASTGUIArgValue av : valueList) {
+        initValues.add(util.print(av.getExpression()));
+      }
+      TemplateHookPoint hp = new TemplateHookPoint(
+          getInitListsTemplate(), attr.getName(), setterName, isPrimitive, initValues, iterItemArgs
+      );
+      initHPs.add(hp); // MH TODO: wird irgendwie in andere Dateien injected, in welche es nicht gehört (replace Template)
     }
     else {
       IterationItemsFinder finder = new IterationItemsFinder();
