@@ -94,8 +94,8 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
         SymTypeExpression innerType = util.getListInnerType(paramSTE).get();
         if (!util.isDomainType(innerType)) {
           if (!TypeScriptTypes.isDefault(innerType.print())
-            && !innerType.print().equals("java.util.List.E")) {
-            getCD4C().addImport(decoratedClass, innerType.print());
+            && !innerType.printFullName().equals("java.util.List.E")) {
+            getCD4C().addImport(decoratedClass, innerType.printFullName());
           }
         } else {
           Optional<String> domainQName = util.getMainDomainModelQName();
@@ -104,7 +104,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
                 + Names.getSimpleName(util.getListInnerType(paramSTE).get().print()));
           } else {
             Log.warn("0x0000A GUI Model " + this.guiAst.getComponentName()
-                + " uses type '" + paramSTE.print() + "' that could not be resolved.");
+                + " uses type '" + paramSTE.printFullName() + "' that could not be resolved.");
           }
         }
       }
