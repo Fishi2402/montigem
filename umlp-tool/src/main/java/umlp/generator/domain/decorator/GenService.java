@@ -277,6 +277,10 @@ public class GenService {
     return false;
   }
 
+  public static boolean isBoolean(ASTMCType mcType) {
+    return mcType.printType().equals("java.lang.Boolean")
+        || mcType.printType().equals("boolean");
+  }
 
   public static boolean isVisible(ASTCDAssocSide attr) {
     return !attr.getModifier().isFinal()

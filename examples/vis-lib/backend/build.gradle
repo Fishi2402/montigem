@@ -71,6 +71,11 @@ generateUmlpBackend {
   symbolOutDir = file("${project.buildDir}/symbols")
   useSpring.set(true)
   useShell.set(true)
+
+  /*
+  debug = true
+  outputs.upToDateWhen { false }
+  /**/
 }
 
 task runServer {
