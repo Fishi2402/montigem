@@ -8,7 +8,6 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
-import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.types.check.SymTypeExpression;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.genjava.decorator.GUI2JavaComponentDecorator;
@@ -107,7 +106,7 @@ public class GUI2TypeScriptComponentDecorator extends GUI2JavaComponentDecorator
 
   @Override
   protected Function<String, String> dateToStringConversion() {
-    return s -> "Conversion.date2String(" + s + ")";
+    return s -> s + "?.toDateString()";
   }
 
   @Override
