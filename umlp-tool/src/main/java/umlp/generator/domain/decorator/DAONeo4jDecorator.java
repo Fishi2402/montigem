@@ -148,7 +148,7 @@ public class DAONeo4jDecorator extends DAODecorator {
     Map<String, String> assocToCorrectManagerMap =
         getAssocToSourceDefinitionCD(Stream.of(gemAssociationMap.values(), listAssociationMap.values()).flatMap(Collection::stream));
 
-    getCD4C().addMethod(daoClass, "umlp.dao.InsertInitNeo4j",
+    getCD4C().addMethod(daoClass, "umlp.dao.InsertInitNeo4j", domainClass.getName(),
         superTypeNamesInclSelf, attributes, optionalAttributes);
     getCD4C().addMethod(daoClass, "umlp.dao.Insert", domainClass.getName(), cdName, attributes,
         optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap, assocToCorrectManagerMap, neo4J_Template_SUFFIX);

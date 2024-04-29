@@ -4,10 +4,10 @@ ${tc.signature("tableName","attr", "innerType", "dbName")}
 ${cd4c.method("public void update${attrName}(long gemId, List<${innerType}> ${attrName?uncap_first})")}
 
   if(remove${attrName}Statement == null) {
-    remove${attrName}Statement = DatabaseAccessManager.prepareStatement("match(n:${typeName} {gemId: ?}) SET n.${attrName} = []");
+    remove${attrName}Statement = DatabaseAccessManager.prepareStatement("match(n:${attrName} {gemId: ?}) SET n.${attrName} = []");
   }
   if(update${attrName}Statement == null) {
-    update${attrName}Statement = DatabaseAccessManager.prepareStatement("match(n:${typeName} {gemId: ?}) SET n.${attrName} = n.${attrName} + ?");
+    update${attrName}Statement = DatabaseAccessManager.prepareStatement("match(n:${attrName} {gemId: ?}) SET n.${attrName} = n.${attrName} + ?");
   }
   try{
     remove${attrName}Statement.clearParameters();

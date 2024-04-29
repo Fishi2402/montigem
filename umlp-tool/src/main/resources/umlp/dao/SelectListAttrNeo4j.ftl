@@ -3,7 +3,7 @@ ${tc.signature("tableName", "attr", "innerType", "dbType")}
 <#assign attrName=attr.getName()?cap_first>
 ${cd4c.method("public List<${innerType}> select${attrName}(long gemId)")}
   if(select${attrName}Statement == null) {
-    select${attrName}Statement = DatabaseAccessManager.prepareStatement("match(n:${typeName} {gemId: ?}) UNWIND n.${attrName} AS ${attrName} return ${attrName}");
+    select${attrName}Statement = DatabaseAccessManager.prepareStatement("match(n:${attrName} {gemId: ?}) UNWIND n.${attrName} AS ${attrName} return ${attrName}");
   }
   try {
   select${attrName}Statement.clearParameters();
