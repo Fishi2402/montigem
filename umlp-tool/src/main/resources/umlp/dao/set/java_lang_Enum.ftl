@@ -1,4 +1,4 @@
-${signature("statement","attributeName", "index", "isOptional")}
+${signature("statement","columnName", "index", "isOptional")}
 <#if isOptional>
   if (${columnName}.isPresent()) {
     ${statement}.setString(${index}, ${columnName}.get().name());
