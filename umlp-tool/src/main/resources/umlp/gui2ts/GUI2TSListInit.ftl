@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("mcType", "name", "listItems")}
+${tc.signature("mcType", "name", "listItems", "initList")}
 <#assign genHelper = glex.getGlobalVar("genHelper")>
 <#assign cdPrinter = glex.getGlobalVar("cdPrinter")>
 <#assign tmpVar = "tmp">

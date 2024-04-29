@@ -114,9 +114,16 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
 
     addRouter();
 
-    StaticObjectsCollector.getInstance().init(gui.getGUIComponentDeclaration());
-    DependencyScopeTree.getInstance().init(gui.getGUIComponentDeclaration());
+    ASTGUIComponentDeclaration declaration = gui.getGUIComponentDeclaration();
+
+    StaticObjectsCollector.getInstance().init(declaration);
+    InitDependencyTree.getInstance().init(declaration);
     gui.accept(traverser);
+
+    Optional<InitDependency> root = InitDependencyTree.getInstance().getDependency(declaration);
+    if (root.isPresent()) {
+      addInitMethods(root.get());
+    }
 
     // constructor
     addConstructor();
@@ -184,20 +191,28 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     if (util.isDomainType(typeSTE)) {
       String manager = getAndImportManager();
       // add builder init
+      /*
       ASTCDMethodSignature builderInit = getCD4C().addMethod(
           clazz, getInitParamBuilderTemplate(),
           type, name, manager, initName
       );
+      /**/
 
+      Optional<InitDependency> scope = InitDependencyTree.getInstance()
+          .getDependency(node);
+      if (scope.isPresent()) {
+        scope.get().setInitMethod(new InitMethodTemplate(
+            getInitParamBuilderTemplate(), type, name, manager, initName
+        ));
+      }
+
+      /*
       // add builder init to class init
       glex.addAfterTemplate(
           getInitBodyHookpoint(),
           new TemplateHookPoint(getInitCallTemplate(), builderInit)
       );
-
-      Optional<DependencyScope> enclosing = DependencyScopeTree.getInstance()
-          .getEnclosingScope(node);
-      enclosing.ifPresent(s -> s.addInitMethod(builderInit));
+      /**/
     }
     // case 2: component Foo(List<Person> p)
     else if (util.getDomainListInnerType(typeSTE).isPresent()
@@ -205,19 +220,27 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
       String innerType = util.getDomainListInnerType(typeSTE).get().print();
       String manager = getAndImportManager();
       // add attr init
+      /*
       ASTCDMethodSignature attrInit = getCD4C().addMethod(
           clazz, getInitDomainListTemplate(), innerType, name, manager, initName
       );
+      /**/
+
+      Optional<InitDependency> scope = InitDependencyTree.getInstance()
+          .getDependency(node);
+      if (scope.isPresent()) {
+        scope.get().setInitMethod(new InitMethodTemplate(
+            getInitDomainListTemplate(), innerType, name, manager, initName
+        ));
+      }
 
       // add attr init to class init
+      /*
       glex.addAfterTemplate(
           getInitBodyHookpoint(),
           new TemplateHookPoint(getInitCallTemplate(), attrInit)
       );
-
-      Optional<DependencyScope> enclosing = DependencyScopeTree.getInstance()
-          .getEnclosingScope(node);
-      enclosing.ifPresent(s -> s.addInitMethod(attrInit));
+      /**/
     }
     // case 3: component Foo(String s, MyDomainEnum e)
     else {
@@ -443,17 +466,22 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
           listItems.add(getterPrinter.prettyprint(val));
         }
 
-        ASTCDMethodSignature attrInit = getCD4C().addMethod(clazz, getListInitTemplate(),
-            mcType, name, listItems
+        /*
+        ASTCDMethodSignature attrInit = getCD4C().addMethod(clazz,
+            getListInitTemplate(), mcType, name, listItems
         );
+        /**/
+
+        Optional<InitDependency> scope = InitDependencyTree.getInstance()
+            .getDependency(node);
+        if (scope.isPresent()) {
+          scope.get().setInitMethod(new InitMethodTemplate(
+              getListInitTemplate(), mcType, name, listItems
+          ));
+        }
 
         // add getter
-        getCD4C().addMethod(clazz, getGetterTemplate(),
-            type, name, attrInit);
-
-        Optional<DependencyScope> enclosing = DependencyScopeTree.getInstance()
-            .getEnclosingScope(node);
-        enclosing.ifPresent(s -> s.addInitMethod(attrInit));
+        getCD4C().addMethod(clazz, getGetterTemplate(), type, name);
       }
       else {
         for (VariableSymbol vs : iterateArgs) {
@@ -472,16 +500,22 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
           listItems.add(getterPrinter.prettyprint(val));
         }
 
+        /*
         ASTCDMethodSignature attrInit = getCD4C().addMethod(clazz, getStaticListInitTemplate(),
             mcType, name, listItems, iterateArgs);
+        /**/
+
+        Optional<InitDependency> scope = InitDependencyTree.getInstance()
+            .getDependency(node);
+        if (scope.isPresent()) {
+          scope.get().setInitMethod(new InitMethodTemplate(
+              getStaticListInitTemplate(), mcType, name, listItems, iterateArgs
+          ));
+        }
 
         // add getter
         getCD4C().addMethod(clazz, getStaticObjectGetterTemplate(),
-            type, name, attrInit, iterateArgs);
-
-        Optional<DependencyScope> enclosing = DependencyScopeTree.getInstance()
-            .getEnclosingScope(node);
-        enclosing.ifPresent(s -> s.addInitMethod(attrInit));
+            type, name, iterateArgs);
       }
     }
   }
@@ -536,18 +570,23 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
         String manager = getAndImportManager();
 
         // add builder init
+        /*
         ASTCDMethodSignature builderInit = getCD4C().addMethod(
             clazz, getBuilderInitTemplate(),
             mcType, name, manager
         );
+        /**/
+
+        Optional<InitDependency> scope = InitDependencyTree.getInstance()
+            .getDependency(node);
+        if (scope.isPresent()) {
+          scope.get().setInitMethod(new InitMethodTemplate(
+              getBuilderInitTemplate(), mcType, name, manager
+          ));
+        }
 
         // add getter
-        getCD4C().addMethod(clazz, getGetterTemplate(),
-            type, name, builderInit);
-
-        Optional<DependencyScope> enclosing = DependencyScopeTree.getInstance()
-            .getEnclosingScope(node);
-        enclosing.ifPresent(s -> s.addInitMethod(builderInit));
+        getCD4C().addMethod(clazz, getGetterTemplate(), type, name);
       }
       else {
         // calc iterate items as additional args
@@ -558,18 +597,24 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
         String manager = getAndImportManager();
 
         // add builder init
+        /*
         ASTCDMethodSignature builderInit = getCD4C().addMethod(
             clazz, getStaticBuilderInitTemplate(),
             mcType, name, manager, iterateArgs
         );
+        /**/
+
+        Optional<InitDependency> scope = InitDependencyTree.getInstance()
+            .getDependency(node);
+        if (scope.isPresent()) {
+          scope.get().setInitMethod(new InitMethodTemplate(
+              getStaticBuilderInitTemplate(), mcType, name, manager, iterateArgs
+          ));
+        }
 
         // add getter
         getCD4C().addMethod(clazz, getStaticObjectGetterTemplate(),
-            type, name, builderInit, iterateArgs);
-
-        Optional<DependencyScope> enclosing = DependencyScopeTree.getInstance()
-            .getEnclosingScope(node);
-        enclosing.ifPresent(s -> s.addInitMethod(builderInit));
+            type, name, iterateArgs);
       }
     }
     // a custom function or a predefined one, e.g.,
@@ -663,6 +708,27 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
    */
   protected ASTCDMethodSignature addInit() {
     return getCD4C().addMethod(clazz, "umlp.gui2java.GUI2JavaInit");
+  }
+
+  protected Collection<ASTCDMethodSignature> addInitMethods(InitDependency ds) {
+    Collection<ASTCDMethodSignature> res = new ArrayList<>();
+    if (ds.getInitMethod().isEmpty()) {
+      for (InitDependency sub : ds.getDependencyList()) {
+        res.addAll(addInitMethods(sub));
+      }
+    }
+    else {
+      InitMethodTemplate initMethod = ds.getInitMethod().get();
+
+      Collection<ASTCDMethodSignature> subInitList = new ArrayList<>();
+      for (InitDependency sub : ds.getDependencyList()) {
+        subInitList.addAll(addInitMethods(sub));
+      }
+      List<Object> args = initMethod.getArguments();
+      args.add(subInitList);
+      res.add(getCD4C().addMethod(clazz, initMethod.getTemplate(), args.toArray()));
+    }
+    return res;
   }
 
   /**

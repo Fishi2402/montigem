@@ -1,4 +1,4 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("type", "init", "setter")}
+${tc.signature("type", "init", "setter", "initList")}
 ${cd4c.method("protected void ${init}(${type} val)")}
 this.${setter}(val);

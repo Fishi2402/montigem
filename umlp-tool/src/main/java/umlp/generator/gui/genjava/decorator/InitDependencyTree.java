@@ -20,20 +20,20 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Stack;
 
-public class DependencyScopeTree implements GUIDSLVisitor2, CommonExpressionsVisitor2, ExpressionsBasisVisitor2 {
+public class InitDependencyTree implements GUIDSLVisitor2, CommonExpressionsVisitor2, ExpressionsBasisVisitor2 {
 
   protected GUIDSLTraverser traverser;
 
-  protected static DependencyScopeTree instance;
+  protected static InitDependencyTree instance;
 
-  protected Stack<DependencyScope> scopeStack = new Stack<>();
-  protected Optional<DependencyScope> reverseTreeRoot = Optional.empty();
-  protected Map<ASTNode, DependencyScope> scopeMap = new HashMap<>();
+  protected Stack<InitDependency> depStack = new Stack<>();
+  protected Optional<InitDependency> reverseTreeRoot = Optional.empty();
+  protected Map<ASTNode, InitDependency> nodeDepMap = new HashMap<>();
   protected Optional<ASTNode> jump;
 
-  public static DependencyScopeTree getInstance() {
+  public static InitDependencyTree getInstance() {
     if (instance == null) {
-      instance = new DependencyScopeTree();
+      instance = new InitDependencyTree();
     }
     return instance;
   }
@@ -42,7 +42,7 @@ public class DependencyScopeTree implements GUIDSLVisitor2, CommonExpressionsVis
     return traverser;
   }
 
-  private DependencyScopeTree() {
+  private InitDependencyTree() {
     traverser = GUIDSLMill.traverser();
     traverser.add4GUIDSL(this);
     traverser.add4CommonExpressions(this);
@@ -57,42 +57,35 @@ public class DependencyScopeTree implements GUIDSLVisitor2, CommonExpressionsVis
   public void reset() {
   }
 
-  public Optional<DependencyScope> getScope(ASTNode node) {
-    return Optional.ofNullable(scopeMap.get(node));
-  }
-
-  public Optional<DependencyScope> getEnclosingScope(ASTNode node) {
-    if (scopeMap.containsKey(node)) {
-      return Optional.ofNullable(scopeMap.get(node).getEnclosing());
-    }
-    return Optional.empty();
+  public Optional<InitDependency> getDependency(ASTNode node) {
+    return Optional.ofNullable(nodeDepMap.get(node));
   }
 
   @Override
   public void visit(ASTGUIComponentDeclaration node) {
-    DependencyScope scope = putScope(node);
+    InitDependency scope = putDependency(node);
     setReverseTreeRoot(scope);
   }
 
   @Override
   public void visit(ASTGUIBlock node) {
-    DependencyScope scope = putScope(node);
+    InitDependency scope = putDependency(node);
     setReverseTreeRoot(scope);
   }
 
   @Override
   public void endVisit(ASTGUIBlock node) {
-    popScope();
+    popDependency();
   }
 
   @Override
   public void visit(ASTGUIParam node) {
-    putScope(node);
+    putDependency(node);
   }
 
   @Override
   public void endVisit(ASTGUIParam node) {
-    popScope();
+    popDependency();
   }
 
   @Override
@@ -103,7 +96,7 @@ public class DependencyScopeTree implements GUIDSLVisitor2, CommonExpressionsVis
           + " is supported so far");
     }
     ASTGUIShortIterateControl control = (ASTGUIShortIterateControl) node.getIterateControl();
-    DependencyScope scope = putScope(control);
+    InitDependency scope = putDependency(control);
     setReverseTreeRoot(scope);
   }
 
@@ -114,7 +107,7 @@ public class DependencyScopeTree implements GUIDSLVisitor2, CommonExpressionsVis
           + " was not processed: only short version, such as '(Type item : list)',"
           + " is supported so far");
     }
-    popScope();
+    popDependency();
   }
 
   @Override
@@ -124,7 +117,7 @@ public class DependencyScopeTree implements GUIDSLVisitor2, CommonExpressionsVis
 
   @Override
   public void endVisit(ASTCallExpression node) {
-    putScope(node);
+    putDependency(node);
     maybeJumpScopeStack(node);
   }
 
@@ -135,44 +128,44 @@ public class DependencyScopeTree implements GUIDSLVisitor2, CommonExpressionsVis
 
   @Override
   public void endVisit(ASTGUIList node) {
-    putScope(node);
+    putDependency(node);
     maybeJumpScopeStack(node);
   }
 
-  protected DependencyScope putScope(ASTNode node) {
-    DependencyScope current = new DependencyScope(node);
-    if (!scopeStack.isEmpty()) {
-      DependencyScope enclosing = scopeStack.peek();
-      current.setEnclosing(enclosing);
+  protected InitDependency putDependency(ASTNode node) {
+    InitDependency current = new InitDependency();
+    if (!depStack.isEmpty()) {
+      InitDependency enclosing = depStack.peek();
+      current.setDependent(enclosing);
     }
-    scopeStack.push(current);
+    depStack.push(current);
     return current;
   }
 
-  public void setReverseTreeRoot(DependencyScope scope) {
+  public void setReverseTreeRoot(InitDependency scope) {
     this.reverseTreeRoot = Optional.of(scope);
   }
 
   public void rememberScopeStackJump(ASTNode node) {
-    if (reverseTreeRoot.isPresent() && reverseTreeRoot.get().equals(scopeStack.peek())) {
+    if (reverseTreeRoot.isPresent() && reverseTreeRoot.get().equals(depStack.peek())) {
       jump = Optional.of(node);
     }
   }
 
   public void maybeJumpScopeStack(ASTNode node) {
     if (jump.isPresent() && jump.get().equals(node)) {
-      while (!scopeStack.isEmpty()
-          || (reverseTreeRoot.isPresent() && !reverseTreeRoot.get().equals(scopeStack.peek()))) {
-        scopeStack.pop();
+      while (!depStack.isEmpty()
+          || (reverseTreeRoot.isPresent() && !reverseTreeRoot.get().equals(depStack.peek()))) {
+        depStack.pop();
       }
     }
   }
 
-  protected void popScope() {
-    if (scopeStack.isEmpty()) {
+  protected void popDependency() {
+    if (depStack.isEmpty()) {
       Log.error("0x0001C Unable to derive initialization dependencies.");
     }
-    scopeStack.pop();
+    depStack.pop();
   }
 
 }
