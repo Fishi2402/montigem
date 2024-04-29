@@ -28,12 +28,19 @@ page ComponentEdit(DemoRecComponent component) {
     title = "Edit component",
     component = @GemColumn(
         wrap="nowrap",
+        rowGap="5px",
         components=[
           @GemTextInput(labelText = "Component Name", inputType = "string", entry = component.name, disabled=true),
           @GemTextInput(labelText = "Component Condition", inputType = "string", entry = component.condition),
-          @GemTextInput(labelText = "X-Position", inputType = "number", entry = component.xPos),
-          @GemTextInput(labelText = "Y-Position", inputType = "number", entry = component.yPos),
-          @GemTextInput(labelText = "Z-Position", inputType = "number", entry = component.zPos),
+          @GemRow(
+            width="30em",
+            colGap="5px",
+            components=[
+              @GemTextInput(labelText = "X-Position", inputType = "number", entry = component.xPos),
+              @GemTextInput(labelText = "Y-Position", inputType = "number", entry = component.yPos),
+              @GemTextInput(labelText = "Z-Position", inputType = "number", entry = component.zPos)
+            ]
+          ),
           @GemButton(label = "Edit component kind", leftClick = editComponentKind),
           @PhotoDisplay(component=component),
           photoDragAndDrop@PhotoDragNDrop(attachedComponent = component)

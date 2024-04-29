@@ -7,6 +7,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
+import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.types.check.SymTypeExpression;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.genjava.decorator.GUI2JavaComponentDecorator;
@@ -27,6 +28,12 @@ public class GUI2TypeScriptComponentDecorator extends GUI2JavaComponentDecorator
 
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
+  }
+
+  @Override
+  public void transform(ASTCDClass decoratedClass, ASTGUIComponent guiComponent) {
+    addImport(decoratedClass, "mc.fenix.common.Conversion");
+    super.transform(decoratedClass, guiComponent);
   }
 
   // TODO AGe: error concept is not ready, leave that out for now
@@ -104,7 +111,7 @@ public class GUI2TypeScriptComponentDecorator extends GUI2JavaComponentDecorator
 
   @Override
   protected Function<String, String> stringToDateConversion() {
-    return s -> "new Date(" + s + ")";
+    return s -> "Conversion.string2Date(" + s + "); if (val == null) return";
   }
 
   @Override

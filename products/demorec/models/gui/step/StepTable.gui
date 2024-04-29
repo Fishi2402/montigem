@@ -1,0 +1,45 @@
+package gui.step;
+
+import DemoRec.Process;
+import DemoRec.ProcessStep;
+
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
+
+import gui.staticcontainer.HorizontalStatTable;
+import gui.staticcontainer.EvenlySpacedColumn;
+
+component StepTable(Process process) {
+
+  @GemColumn(
+    rowGap="5px",
+    components=[
+      tableHeader@HorizontalStatTable(rows = [
+        @EvenlySpacedColumn(element = @GemText(value="Edit")),
+        @EvenlySpacedColumn(element = @GemText(value = "Type")),
+        @EvenlySpacedColumn(element = @GemText(value = "Description")),
+        @EvenlySpacedColumn(element = @GemText(value = "Endeffector")),
+        @EvenlySpacedColumn(element = @GemText(value = "Duration")),
+        @EvenlySpacedColumn(element = @GemText(value = "Values Measured")),
+        @EvenlySpacedColumn(element = @GemText(value = "Join Connection"))
+      ]),
+      @iterate(ProcessStep step : getReverseProcessSteps()) {
+        @HorizontalStatTable(rows = [
+          @EvenlySpacedColumn(element=editStepButton@GemButton(label = "Edit Step " + step.index, leftClick = editStep(step))),
+          @EvenlySpacedColumn(element = @GemText(value = step.type)),
+          @EvenlySpacedColumn(element = @GemText(value = step.description)),
+          @EvenlySpacedColumn(element = @GemText(value = step.uses.name)),
+          @EvenlySpacedColumn(element = @GemText(value = step.timeConsumption + " seconds")),
+          @EvenlySpacedColumn(element = measuredValuesCount@GemText(value = null)),
+          stepHasJoinConnection@guard(true) {
+            @EvenlySpacedColumn(element = joinConnectionDescription@GemText(value = null));
+          }
+        ]);
+      }
+    ]
+  );
+}
+

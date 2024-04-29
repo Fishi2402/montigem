@@ -30,6 +30,7 @@ export class CreatePerson extends Mix(CreatePersonComponent) {
       this.foo();
       this.getPerson().setAddress1(this.getAddress());
       this.getPerson().setAboutMe1("none");
+      // this.person.setStocks1(new Set());
       DomainManager.addPerson(this.getPerson().build());
     }
   }

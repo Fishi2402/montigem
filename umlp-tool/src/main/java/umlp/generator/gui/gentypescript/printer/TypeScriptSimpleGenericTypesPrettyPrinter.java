@@ -21,10 +21,17 @@ public class TypeScriptSimpleGenericTypesPrettyPrinter extends MCSimpleGenericTy
 
     if (!node.getNameList().isEmpty()) {
       String last = node.getName(node.sizeNames() - 1);
-      if (last.equals(TypeScriptTypes.CONSUMER.getMCType())
-          || last.equals(TypeScriptTypes.EVENT.getMCType())
-      ) {
-        getPrinter().print("(arg: any) => void");
+      // java.util.Optional and java.util.List land here
+      if (!last.equals("Optional")) {
+        if (last.equals(TypeScriptTypes.CONSUMER.getMCType())
+            || last.equals(TypeScriptTypes.EVENT.getMCType())) {
+          getPrinter().print("(arg: any) => void");
+        }
+        else {
+          getPrinter().print(TypeScriptTypes.toTSType(last));
+          getPrinter().stripTrailing();
+          getPrinter().print("<");
+        }
       }
       if (!last.equals("Optional")
           && !last.equals(TypeScriptTypes.CONSUMER.getMCType())

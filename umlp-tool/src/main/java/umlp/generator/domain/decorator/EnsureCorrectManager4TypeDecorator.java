@@ -120,42 +120,49 @@ public class EnsureCorrectManager4TypeDecorator extends AbstractDecorator {
       makePublic(overriddenMethod);
 
       //method parameter imports
-      importParams:
       for (ASTCDParameter parameter : overriddenMethod.getCDParameterList()) {
         ASTMCType parameterType = parameter.getMCType();
         String typeName = parameterType.printType();
 
         //cut off generic part
-        if (typeName.contains("<")) typeName = typeName.substring(0, typeName.indexOf('<'));
-
-        //filter out already qualified types
-        if (typeName.contains(".")) continue;
-
-        String importSignature = dot.join(defaultPackage, typeName);
-
-        //ignore everything that is already imported
-        for (ASTMCImportStatement importStatement : cd4C.getImportList(res)) {
-          if (importStatement.getQName().equals(importSignature)) continue importParams;
-        }
-
-        //add an import for the parameter type, if it is part of the original or decorated class diagramm
-        Collection<ASTCDElement> cdElements = new ArrayList<>();
-        cdElements.addAll(origCD.getCDDefinition().getCDElementList());
-        cdElements.addAll(decoratedCD.getCDDefinition().getCDElementList());
-
-        for (ASTCDElement element : cdElements) {
-          if (!(element instanceof ASTCDType)) continue;
-
-          ASTCDType cdType = (ASTCDType) element;
-          if (!cdType.getName().equals(typeName)) continue;
-
-          cd4C.addImport(res, importSignature);
-          break;
+        if (typeName.contains("<")){
+          String outerType = typeName.substring(0, typeName.indexOf('<'));
+          doAddImport(origCD, decoratedCD, dot, defaultPackage, outerType, cd4C, res);
+          doAddImport(origCD, decoratedCD, dot, defaultPackage, GenService.getInnerType(parameterType), cd4C, res);
+        }else{
+          doAddImport(origCD, decoratedCD, dot, defaultPackage, parameterType.printType(), cd4C, res);
         }
       }
     }
 
     return res;
+  }
+
+  protected void doAddImport(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD, Joiner dot, String defaultPackage, String typeName, CD4C cd4C, ASTCDClass res) {
+    if(typeName.contains(".")){
+      return;
+    }
+    String importSignature = dot.join(defaultPackage, typeName);
+
+    //ignore everything that is already imported
+    for (ASTMCImportStatement importStatement : cd4C.getImportList(res)) {
+      if (importStatement.getQName().equals(importSignature)) return;
+    }
+
+    //add an import for the parameter type, if it is part of the original or decorated class diagramm
+    Collection<ASTCDElement> cdElements = new ArrayList<>();
+    cdElements.addAll(origCD.getCDDefinition().getCDElementList());
+    cdElements.addAll(decoratedCD.getCDDefinition().getCDElementList());
+
+    for (ASTCDElement element : cdElements) {
+      if (!(element instanceof ASTCDType)) continue;
+
+      ASTCDType cdType = (ASTCDType) element;
+      if (!cdType.getName().equals(typeName)) continue;
+
+      cd4C.addImport(res, importSignature);
+      break;
+    }
   }
 
   public Collection<GenerationSummary> getGenerationSummaries() {

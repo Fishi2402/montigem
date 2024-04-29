@@ -148,7 +148,7 @@ public class DAONeo4jDecorator extends DAODecorator {
     Map<String, String> assocToCorrectManagerMap =
         getAssocToSourceDefinitionCD(Stream.of(gemAssociationMap.values(), listAssociationMap.values()).flatMap(Collection::stream));
 
-    getCD4C().addMethod(daoClass, "umlp.dao.InsertInitNeo4j",
+    getCD4C().addMethod(daoClass, "umlp.dao.InsertInitNeo4j", domainClass.getName(),
         superTypeNamesInclSelf, attributes, optionalAttributes);
     getCD4C().addMethod(daoClass, "umlp.dao.Insert", domainClass.getName(), cdName, attributes,
         optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap, assocToCorrectManagerMap, neo4J_Template_SUFFIX);
@@ -196,8 +196,8 @@ public class DAONeo4jDecorator extends DAODecorator {
               String tableName = SQLSchemaGenerator.convertClassName(domainClass.getName(), SQLSchemaGenerator.AttributeType.PLAIN)+
                   "$"+SQLSchemaGenerator.convertAttributeName(attr.getName(), SQLSchemaGenerator.AttributeType.PLAIN);
               String dbType = GenService.getDBType(attr.getSymbol().getType());
-              getCD4C().addMethod(doaClass, "umlp.dao.UpdateListAttrNeo4j", tableName, attr, innerType, dbType);
-              getCD4C().addMethod(doaClass, "umlp.dao.SelectListAttrNeo4j", tableName, attr, innerType, dbType);
+              getCD4C().addMethod(doaClass, "umlp.dao.UpdateListAttrNeo4j", domainClass.getName(), tableName, attr, innerType, dbType);
+              getCD4C().addMethod(doaClass, "umlp.dao.SelectListAttrNeo4j", domainClass.getName(), tableName, attr, innerType, dbType);
             }
         );
   }

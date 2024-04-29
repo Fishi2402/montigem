@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("tableName", "attr", "innerType", "dbType")}
+${tc.signature("typeName", "tableName", "attr", "innerType", "dbType")}
 <#assign attrName=attr.getName()?cap_first>
 ${cd4c.method("public List<${innerType}> select${attrName}(long gemId)")}
   if(select${attrName}Statement == null) {
