@@ -14,4 +14,4 @@ return ${managerName}.get${clazz}Sure(-1)
 });
 </#if>
 
-//return new SimpleResult<>(getId(), ${managerName}.get${clazz}().get${attribute?cap_first}(), "${packagename}.${clazz}_${attribute?cap_first}");
+//return new SimpleResult<>(getId(), ${managerName}.get${clazz}().get${attribute?cap_first}(), "$x{packagename}.${clazz}_${attribute?cap_first}");
