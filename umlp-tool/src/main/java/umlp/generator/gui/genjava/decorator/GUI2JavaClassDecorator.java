@@ -122,7 +122,13 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
 
     Optional<InitDependency> root = InitDependencyTree.getInstance().getDependency(declaration);
     if (root.isPresent()) {
-      addInitMethods(root.get());
+      Collection<ASTCDMethodSignature> paramInit = addInitMethods(root.get());
+      for (ASTCDMethodSignature init : paramInit) {
+        glex.addAfterTemplate(
+            getInitBodyHookpoint(),
+            new TemplateHookPoint(getInitCallTemplate(), init)
+        );
+      }
     }
 
     // constructor
@@ -198,10 +204,10 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
       );
       /**/
 
-      Optional<InitDependency> scope = InitDependencyTree.getInstance()
+      Optional<InitDependency> dep = InitDependencyTree.getInstance()
           .getDependency(node);
-      if (scope.isPresent()) {
-        scope.get().setInitMethod(new InitMethodTemplate(
+      if (dep.isPresent()) {
+        dep.get().setInitMethod(new InitMethodTemplate(
             getInitParamBuilderTemplate(), type, name, manager, initName
         ));
       }
@@ -226,10 +232,10 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
       );
       /**/
 
-      Optional<InitDependency> scope = InitDependencyTree.getInstance()
+      Optional<InitDependency> dep = InitDependencyTree.getInstance()
           .getDependency(node);
-      if (scope.isPresent()) {
-        scope.get().setInitMethod(new InitMethodTemplate(
+      if (dep.isPresent()) {
+        dep.get().setInitMethod(new InitMethodTemplate(
             getInitDomainListTemplate(), innerType, name, manager, initName
         ));
       }
@@ -419,11 +425,28 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
       importAndPrintType(vs.getType());
     }
 
-    // add getter
     getCD4C().addMethod(
         clazz, getArgGetterTemplate(),
         type, name, nullCheck, getterValue, iterateArgs
     );
+
+    // add init
+    if (!control.getItem().isPresentSymbol()) {
+      Log.error("0x0000E Unable to find symbol for '" + control.getItem().getName()
+          + "' at " + control.getItem().get_SourcePositionStart().toString()
+          + " - " + control.getItem().get_SourcePositionEnd().toString()
+      );
+    }
+    SymTypeExpression itemTypeSTE = control.getItem().getSymbol().getType();
+    String itemType = importAndPrintType(itemTypeSTE);
+
+    Optional<InitDependency> dep = InitDependencyTree.getInstance()
+        .getDependency(node);
+    if (dep.isPresent()) {
+      dep.get().setInitMethod(new InitMethodTemplate(
+          getIterateInitTemplate(), itemType, name, getterValue, iterateArgs
+      ));
+    }
   }
 
   /**
@@ -472,10 +495,10 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
         );
         /**/
 
-        Optional<InitDependency> scope = InitDependencyTree.getInstance()
+        Optional<InitDependency> dep = InitDependencyTree.getInstance()
             .getDependency(node);
-        if (scope.isPresent()) {
-          scope.get().setInitMethod(new InitMethodTemplate(
+        if (dep.isPresent()) {
+          dep.get().setInitMethod(new InitMethodTemplate(
               getListInitTemplate(), mcType, name, listItems
           ));
         }
@@ -505,10 +528,10 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
             mcType, name, listItems, iterateArgs);
         /**/
 
-        Optional<InitDependency> scope = InitDependencyTree.getInstance()
+        Optional<InitDependency> dep = InitDependencyTree.getInstance()
             .getDependency(node);
-        if (scope.isPresent()) {
-          scope.get().setInitMethod(new InitMethodTemplate(
+        if (dep.isPresent()) {
+          dep.get().setInitMethod(new InitMethodTemplate(
               getStaticListInitTemplate(), mcType, name, listItems, iterateArgs
           ));
         }
@@ -577,10 +600,10 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
         );
         /**/
 
-        Optional<InitDependency> scope = InitDependencyTree.getInstance()
+        Optional<InitDependency> dep = InitDependencyTree.getInstance()
             .getDependency(node);
-        if (scope.isPresent()) {
-          scope.get().setInitMethod(new InitMethodTemplate(
+        if (dep.isPresent()) {
+          dep.get().setInitMethod(new InitMethodTemplate(
               getBuilderInitTemplate(), mcType, name, manager
           ));
         }
@@ -604,10 +627,10 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
         );
         /**/
 
-        Optional<InitDependency> scope = InitDependencyTree.getInstance()
+        Optional<InitDependency> dep = InitDependencyTree.getInstance()
             .getDependency(node);
-        if (scope.isPresent()) {
-          scope.get().setInitMethod(new InitMethodTemplate(
+        if (dep.isPresent()) {
+          dep.get().setInitMethod(new InitMethodTemplate(
               getStaticBuilderInitTemplate(), mcType, name, manager, iterateArgs
           ));
         }
@@ -713,7 +736,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
   protected Collection<ASTCDMethodSignature> addInitMethods(InitDependency ds) {
     Collection<ASTCDMethodSignature> res = new ArrayList<>();
     if (ds.getInitMethod().isEmpty()) {
-      for (InitDependency sub : ds.getDependencyList()) {
+      for (InitDependency sub : ds.getDependentList()) {
         res.addAll(addInitMethods(sub));
       }
     }
@@ -721,7 +744,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
       InitMethodTemplate initMethod = ds.getInitMethod().get();
 
       Collection<ASTCDMethodSignature> subInitList = new ArrayList<>();
-      for (InitDependency sub : ds.getDependencyList()) {
+      for (InitDependency sub : ds.getDependentList()) {
         subInitList.addAll(addInitMethods(sub));
       }
       List<Object> args = initMethod.getArguments();
@@ -861,6 +884,10 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
 
   protected String getListInitTemplate() {
     return "umlp.gui2java.GUI2JavaListInit";
+  }
+
+  protected String getIterateInitTemplate() {
+    return "umlp.gui2java.GUI2JavaIterateInit";
   }
 
   protected String getGetterTemplate() {

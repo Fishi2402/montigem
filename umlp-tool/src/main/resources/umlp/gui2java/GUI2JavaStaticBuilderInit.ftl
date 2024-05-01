@@ -4,12 +4,10 @@ ${tc.signature("mcType", "name", "manager", "keys", "initList")}
 <#assign cdPrinter = glex.getGlobalVar("cdPrinter")>
 <#assign argsString = genHelper.variableSymbols2ArgsString(keys)>
 <#assign tmpVar = "tmp">
+<#assign type = cdPrinter.printType(mcType)>
 
 ${cd4c.method("public void init${name?cap_first}(${argsString})")}
-if (${tc.includeArgs("umlp.gui2java.GUI2JavaStaticObjectSyncCheck", [keys])}) {
-  return;
-}
-${cdPrinter.printType(mcType)} ${tmpVar} = ${manager}.${type?uncap_first}Builder();
+${type} ${tmpVar} = ${manager}.${type?uncap_first}Builder();
 
 <#list keys as key>
   <#assign i = key?index - 1>

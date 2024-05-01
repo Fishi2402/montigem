@@ -5,21 +5,15 @@ import java.util.List;
 import java.util.Optional;
 
 public class InitDependency {
-  protected InitDependency dependent;
-  protected List<InitDependency> dependencyList = new ArrayList<>();
+  protected List<InitDependency> dependentList = new ArrayList<>();
   protected Optional<InitMethodTemplate> initMethod = Optional.empty();
 
-  public void setDependent(InitDependency dependent) {
-    this.dependent = dependent;
-    dependent.addDependency(this);
+  public void addDependent(InitDependency sub) {
+    this.dependentList.add(sub);
   }
 
-  public void addDependency(InitDependency sub) {
-    this.dependencyList.add(sub);
-  }
-
-  public List<InitDependency> getDependencyList() {
-    return dependencyList;
+  public List<InitDependency> getDependentList() {
+    return dependentList;
   }
 
   public void setInitMethod(InitMethodTemplate initMethod) {

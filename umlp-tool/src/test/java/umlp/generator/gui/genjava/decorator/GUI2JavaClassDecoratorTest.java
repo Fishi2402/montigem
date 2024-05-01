@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui.genjava.decorator;
 
+import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
@@ -9,12 +10,17 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
+import de.monticore.guidsl._ast.ASTGUIComponent;
+import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
+import de.monticore.guidsl._ast.ASTGUIGuard;
+import de.monticore.guidsl._ast.ASTGUIIterate;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import umlp.generator.gui.DomainGUITest;
+import umlp.generator.gui.GUIComponentStat;
 import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.genjava.GUI2CDTrafo;
 
@@ -22,12 +28,15 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@SuppressWarnings("unused")
 public class GUI2JavaClassDecoratorTest extends DomainGUITest {
 
   GlobalExtensionManagement glex;
@@ -43,6 +52,7 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     // set template path
     glex = createGlex();
     genSetup.setGlex(glex);
+    genSetup.getGlex().setGlobalValue("cdPrinter", new CdUtilsPrinter());
     CD4C.init(genSetup);
   }
 
@@ -71,10 +81,10 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
 
     assertAll(
         () -> assertTrue(Log.getFindings().isEmpty()),
-        () -> assertEquals(15, clazz.getCDAttributeList().size()),
-        () -> assertEquals(65, clazz.getCDMethodList().size()),
+        () -> assertEquals(16, clazz.getCDAttributeList().size()),
+        () -> assertEquals(68, clazz.getCDMethodList().size()),
         () -> assertEquals(1, clazz.getCDConstructorList().size()),
-        () -> assertEquals(11, imports.size())
+        () -> assertEquals(15, imports.size())
     );
   }
 
@@ -295,7 +305,7 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     ASTCDMethod calcStr = getMethod(methods, "calcStr");
     ASTCDMethod getCA = getMethod(methods, "getCA");
     ASTCDMethod getCA_0 = getMethod(methods, "getCA_0");
-    ASTCDMethod syncCA_0 = getMethod(methods, "syncCA_0");
+    ASTCDMethod initCA_0 = getMethod(methods, "initCA_0");
     ASTCDMethod getDI = getMethod(methods, "getDI");
     ASTCDMethod setDI = getMethod(methods, "setDI");
     ASTCDMethod getFI = getMethod(methods, "getFI");
@@ -306,7 +316,7 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     ASTCDMethod getKA = getMethod(methods, "getKA");
     ASTCDMethod getKS = getMethod(methods, "getKS");
     ASTCDMethod getKS_1 = getMethod(methods, "getKS_1");
-    ASTCDMethod syncKS_1 = getMethod(methods, "syncKS_1");
+    ASTCDMethod initKS_1 = getMethod(methods, "initKS_1");
     ASTCDMethod getKM = getMethod(methods, "getKM");
     ASTCDMethod getKM_2 = getMethod(methods, "getKM_2");
     ASTCDMethod initKM_2 = getMethod(methods, "getKM_2");
@@ -325,7 +335,7 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     assertions.add(() -> assertNotNull(calcStr));
     assertions.add(() -> assertNotNull(getCA));
     assertions.add(() -> assertNotNull(getCA_0));
-    assertions.add(() -> assertNotNull(syncCA_0));
+    assertions.add(() -> assertNotNull(initCA_0));
     assertions.add(() -> assertNotNull(getDI));
     assertions.add(() -> assertNotNull(setDI));
     assertions.add(() -> assertNotNull(getFI));
@@ -336,7 +346,7 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     assertions.add(() -> assertNotNull(getKA));
     assertions.add(() -> assertNotNull(getKS));
     assertions.add(() -> assertNotNull(getKS_1));
-    assertions.add(() -> assertNotNull(syncKS_1));
+    assertions.add(() -> assertNotNull(initKS_1));
     assertions.add(() -> assertNotNull(getKM));
     assertions.add(() -> assertNotNull(getKM_2));
     assertions.add(() -> assertNotNull(initKM_2));
@@ -344,6 +354,104 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     assertions.add(() -> assertNotNull(getMCondition));
     assertions.add(() -> assertNotNull(getNP));
     assertions.add(() -> assertNotNull(getPIterable));
+
+    assertAll(assertions);
+  }
+
+  @Test
+  public void testAddInitMethods() {
+    ASTGUICompilationUnit gui;
+    ASTCDCompilationUnit cd;
+
+    gui = processGUIModel(
+        "gui/genjava/decorator/GUI2JavaClassDecorator.gui",
+        "src/test/resources/gui",
+        "packaged/Domain.umlp"
+    );
+    ASTGUIComponentDeclaration decl = gui.getGUIComponentDeclaration();
+    cd = GUI2CDTrafo.createCDCompilationUnit(gui);
+
+    GUIGeneratorUtil.getInstance().init(
+        List.of("packaged.Domain"), List.of("genjava.GUI2JavaClassDecorator"));
+
+    GUI2JavaClassDecorator decorator = new GUI2JavaClassDecorator(glex);
+    decorator.transform(gui, cd);
+
+    // check what init methods will be added and their dependencies
+    Optional<InitDependency> root = InitDependencyTree.getInstance()
+        .getDependency(decl);
+
+    assertTrue(root.isPresent());
+
+    GUIComponentStat stat = GUIComponentStat.getInstance();
+
+    List<ASTGUIComponent> components;
+    List<ASTGUIGuard> guards;
+    List<ASTGUIIterate> iterates;
+
+    components = stat.getComponents(decl);
+    guards = stat.getGuards(decl);
+    iterates = stat.getIterates(decl);
+
+    ASTGUIIterate lNode = stat.getIterById(iterates, "l");
+    ASTGUIComponent qNode = stat.getCompById(components, "q");
+
+    List<Executable> assertions = new ArrayList<>();
+
+    // declaration block does not have explicit init
+    assertions.add(() -> assertFalse(root.get().getInitMethod().isPresent()));
+    // most GUIParam have init
+    for (int i = 0; i < root.get().getDependentList().size() - 1; i++) {
+      InitDependency id = root.get().getDependentList().get(i);
+      if (i != 8) {
+        assertions.add(() -> assertTrue(id.getInitMethod().isPresent()));
+        // GUIViewElement has no init
+      } else {
+        assertions.add(() -> assertFalse(id.getInitMethod().isPresent()));
+      }
+    }
+
+    InitDependency declBlock = root.get().getDependentList().get(10);
+    assertions.add(() -> assertFalse(declBlock.getInitMethod().isPresent()));
+
+    InitDependency cS = declBlock.getDependentList().get(0);
+    InitDependency cA = declBlock.getDependentList().get(1);
+    InitDependency gLgve = declBlock.getDependentList().get(2);
+    InitDependency jE = declBlock.getDependentList().get(3);
+    InitDependency kS = declBlock.getDependentList().get(4);
+    InitDependency kM = declBlock.getDependentList().get(5);
+    InitDependency l = declBlock.getDependentList().get(6);
+    InitDependency o = declBlock.getDependentList().get(7);
+
+    assertions.add(() -> assertFalse(cS.getInitMethod().isPresent()));
+    assertions.add(() -> assertTrue(cA.getInitMethod().isPresent()));
+    assertions.add(() -> assertFalse(gLgve.getInitMethod().isPresent()));
+    assertions.add(() -> assertFalse(jE.getInitMethod().isPresent()));
+    assertions.add(() -> assertTrue(kS.getInitMethod().isPresent()));
+    assertions.add(() -> assertTrue(l.getInitMethod().isPresent()));
+    assertions.add(() -> assertFalse(o.getInitMethod().isPresent()));
+
+    InitDependency oBlock = o.getDependentList().get(0);
+    InitDependency p = oBlock.getDependentList().get(0);
+    InitDependency pBlock = p.getDependentList().get(0);
+
+    assertions.add(() -> assertFalse(pBlock.getInitMethod().isPresent()));
+
+    InitDependency qConstructor = pBlock.getDependentList().get(0);
+
+    assertions.add(() -> assertTrue(qConstructor.getInitMethod().isPresent()));
+
+    InitDependency qInnerList = qConstructor.getDependentList().get(0);
+
+    assertions.add(() -> assertTrue(qInnerList.getInitMethod().isPresent()));
+
+    InitDependency qList = qInnerList.getDependentList().get(0);
+
+    assertions.add(() -> assertTrue(qList.getInitMethod().isPresent()));
+
+    InitDependency rList = pBlock.getDependentList().get(1);
+
+    assertions.add(() -> assertTrue(rList.getInitMethod().isPresent()));
 
     assertAll(assertions);
   }

@@ -54,11 +54,11 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
 
   @Override
   protected String getStaticBuilderInitTemplate() {
-    return "umlp.gui2ts.GUI2TSStaticBuilderSync";
+    return "umlp.gui2ts.GUI2TSStaticBuilderInit";
   }
 
   @Override
   protected String getStaticListInitTemplate() {
-    return "umlp.gui2ts.GUI2TSStaticListSync";
+    return "umlp.gui2ts.GUI2TSStaticListInit";
   }
 }

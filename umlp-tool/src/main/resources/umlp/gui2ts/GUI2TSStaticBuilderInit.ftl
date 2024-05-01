@@ -6,9 +6,6 @@ ${tc.signature("mcType", "name", "manager", "keys", "initList")}
 <#assign tmpVar = "tmp">
 
 ${cd4c.method("public void init${name?cap_first}(${argsString})")}
-if (${tc.includeArgs("umlp.gui2ts.GUI2TSStaticObjectSyncCheck", [keys])}) {
-  return;
-}
 ${manager}.${mcType.printType()?uncap_first}Builder().then((${tmpVar}: ${cdPrinter.printType(mcType)}) => {
   <#list keys as key>
     <#assign i = key?index - 1>

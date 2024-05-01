@@ -14,25 +14,25 @@ import util.E;
 
 // init
 page GUI2JavaClassDecorator(
-  // get + set + init(val) + init()
+  // get + set + init()
   Person person,
-  // get + set + init(val) + init()
+  // get + set + init()
   Person $per$son,
-  // get + set + init(val) + init()
+  // get + set + init()
   MaritalStatus status = MaritalStatus.SINGLE,
-  // get + set + init(val) + init()
+  // get + set + init()
   List<Address> la,
-  // get + set + init(val) + init()
+  // get + set + init()
   List<List<Address>> lla,
-  // get + set + init(val) + init()
+  // get + set + init()
   String s,
-  // get + set + init(val) + init()
+  // get + set + init()
   boolean b,
-  // get + set + init(val) + init()
+  // get + set + init()
   ?int i,
   //
   GUIViewElement v,
-  // get + set + init(val) + init()
+  // get + set + init()
   Event<Void> e
 ) {
   // getAP + getAM + getAS + getAB + getAA
@@ -132,6 +132,7 @@ page GUI2JavaClassDecorator(
   o@iterate(Person friend : person.friends) {
     p@iterate(Person contact : friend.friends) {
       q@L(lp = [[person, contact, Person()], friend.friends]);
+      r@L(lp = []);
     }
   }
 }

@@ -6,9 +6,6 @@ ${tc.signature("mcType", "name", "listItems", "keys", "initList")}
 <#assign tmpVar = "tmp">
 
 ${cd4c.method("public void init${name?cap_first}(${argsString})")}
-if (${tc.includeArgs("umlp.gui2java.GUI2JavaStaticObjectSyncCheck", [keys])}) {
-  return;
-}
 ${cdPrinter.printType(mcType)} ${tmpVar} = new ArrayList<>();
 <#list listItems as item>
 ${tmpVar}.add(${item});

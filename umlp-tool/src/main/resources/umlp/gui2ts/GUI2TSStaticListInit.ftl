@@ -6,9 +6,6 @@ ${tc.signature("mcType", "name", "listItems", "keys", "initList")}
 <#assign tmpVar = "tmp">
 
 ${cd4c.method("public void init${name?cap_first}(${argsString})")}
-if (${tc.includeArgs("umlp.gui2ts.GUI2TSStaticObjectSyncCheck", [keys])}) {
-  return;
-}
 const ${tmpVar}: ${cdPrinter.printType(mcType)} = [];
 <#list listItems as item>
 ${tmpVar}.push(${item});

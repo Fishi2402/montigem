@@ -2,6 +2,7 @@ package umlp.generator.gui.genjava.decorator;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
+import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor2;
 import de.monticore.guidsl.GUIDSLMill;
@@ -29,7 +30,7 @@ public class InitDependencyTree implements GUIDSLVisitor2, CommonExpressionsVisi
   protected Stack<InitDependency> depStack = new Stack<>();
   protected Optional<InitDependency> reverseTreeRoot = Optional.empty();
   protected Map<ASTNode, InitDependency> nodeDepMap = new HashMap<>();
-  protected Optional<ASTNode> jump;
+  protected Optional<ASTNode> jump = Optional.empty();
 
   public static InitDependencyTree getInstance() {
     if (instance == null) {
@@ -63,14 +64,19 @@ public class InitDependencyTree implements GUIDSLVisitor2, CommonExpressionsVisi
 
   @Override
   public void visit(ASTGUIComponentDeclaration node) {
-    InitDependency scope = putDependency(node);
-    setReverseTreeRoot(scope);
+    InitDependency dep = putDependency(node);
+    setReverseTreeRoot(dep);
+  }
+
+  @Override
+  public void endVisit(ASTGUIComponentDeclaration node) {
+    popDependency();
   }
 
   @Override
   public void visit(ASTGUIBlock node) {
-    InitDependency scope = putDependency(node);
-    setReverseTreeRoot(scope);
+    InitDependency dep = putDependency(node);
+    setReverseTreeRoot(dep);
   }
 
   @Override
@@ -80,12 +86,13 @@ public class InitDependencyTree implements GUIDSLVisitor2, CommonExpressionsVisi
 
   @Override
   public void visit(ASTGUIParam node) {
-    putDependency(node);
+    rememberDepStackJump(node);
   }
 
   @Override
   public void endVisit(ASTGUIParam node) {
-    popDependency();
+    putDependency(node);
+    maybeJumpDepStack(node);
   }
 
   @Override
@@ -96,8 +103,8 @@ public class InitDependencyTree implements GUIDSLVisitor2, CommonExpressionsVisi
           + " is supported so far");
     }
     ASTGUIShortIterateControl control = (ASTGUIShortIterateControl) node.getIterateControl();
-    InitDependency scope = putDependency(control);
-    setReverseTreeRoot(scope);
+    InitDependency dependency = putDependency(control);
+    setReverseTreeRoot(dependency);
   }
 
   @Override
@@ -112,52 +119,65 @@ public class InitDependencyTree implements GUIDSLVisitor2, CommonExpressionsVisi
 
   @Override
   public void visit(ASTCallExpression node) {
-    rememberScopeStackJump(node);
+    rememberDepStackJump(node);
   }
 
   @Override
   public void endVisit(ASTCallExpression node) {
     putDependency(node);
-    maybeJumpScopeStack(node);
+    maybeJumpDepStack(node);
+  }
+
+  @Override
+  public void visit(ASTFieldAccessExpression node) {
+    rememberDepStackJump(node);
+  }
+
+  @Override
+  public void endVisit(ASTFieldAccessExpression node) {
+    putDependency(node);
+    maybeJumpDepStack(node);
   }
 
   @Override
   public void visit(ASTGUIList node) {
-    rememberScopeStackJump(node);
+    rememberDepStackJump(node);
   }
 
   @Override
   public void endVisit(ASTGUIList node) {
     putDependency(node);
-    maybeJumpScopeStack(node);
+    maybeJumpDepStack(node);
   }
 
   protected InitDependency putDependency(ASTNode node) {
     InitDependency current = new InitDependency();
+    nodeDepMap.put(node, current);
     if (!depStack.isEmpty()) {
-      InitDependency enclosing = depStack.peek();
-      current.setDependent(enclosing);
+      InitDependency dependency = depStack.peek();
+      dependency.addDependent(current);
     }
     depStack.push(current);
     return current;
   }
 
-  public void setReverseTreeRoot(InitDependency scope) {
-    this.reverseTreeRoot = Optional.of(scope);
+  public void setReverseTreeRoot(InitDependency dep) {
+    this.reverseTreeRoot = Optional.of(dep);
   }
 
-  public void rememberScopeStackJump(ASTNode node) {
-    if (reverseTreeRoot.isPresent() && reverseTreeRoot.get().equals(depStack.peek())) {
+  public void rememberDepStackJump(ASTNode node) {
+    if (reverseTreeRoot.isPresent() && jump.isEmpty()) {
       jump = Optional.of(node);
     }
   }
 
-  public void maybeJumpScopeStack(ASTNode node) {
+  public void maybeJumpDepStack(ASTNode node) {
     if (jump.isPresent() && jump.get().equals(node)) {
       while (!depStack.isEmpty()
-          || (reverseTreeRoot.isPresent() && !reverseTreeRoot.get().equals(depStack.peek()))) {
+          && (reverseTreeRoot.isPresent() && !reverseTreeRoot.get().equals(depStack.peek()))) {
         depStack.pop();
       }
+      jump = Optional.empty();
     }
   }
 
