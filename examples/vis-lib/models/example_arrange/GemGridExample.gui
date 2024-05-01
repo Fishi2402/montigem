@@ -1,0 +1,27 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_arrange;
+
+import mc.fenix.arrange.GemGrid;
+import mc.fenix.basic.GemText;
+
+page GemGridExample() {
+  @GemGrid(
+    rows = [
+      [@GemText(value = "1, 1"), @GemText(value = "1, 2"), @GemText(value = "1, 3")],
+      [@GemText(value = "2, 1"), @GemText(value = "2, 2")]
+    ]
+  );
+
+  @GemGrid(
+    width = "500px",
+    height = "300px",
+    x = ["200px", "1fr", "auto"],
+    y = ["auto", "20px"],
+    rowGap = "10px",
+    colGap = "2px",
+    rows = [
+      [@GemText(value = "1, 1"), @GemText(value = "1, 2"), @GemText(value = "1, 3")],
+      [@GemText(value = "2, 1"), @GemText(value = "2, 2")]
+    ]
+  );
+}
