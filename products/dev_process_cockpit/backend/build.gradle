@@ -1,0 +1,52 @@
+/* (c) https://github.com/MontiCore/monticore */
+plugins {
+  id 'java' // Setup Java Compiler
+  id 'application'  // ensures that the JAR can be executed
+
+  id 'com.google.cloud.tools.jib' version '3.2.1'
+  // Spring Plugins
+  id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+  id 'org.springframework.boot' version "${spring_version}"
+
+  id 'de.rwth.se.umlp-tool-backend' // Makes the task-types `UMLPTask` and `UMLPMergeTask` available
+}
+
+description 'Development Process Cockpit'
+
+application {
+  // Set Entrypoint of Application
+  mainClass = 'devprocesscockpit.DevProcessCockpitServerApplication'
+}
+
+jib {
+  to {
+    image 'dev_process_cockpit'
+  }
+  // For Docker-Container
+  container.mainClass = application.mainClass.get()
+}
+
+dependencies {
+  implementation project(':umlp-rte')
+  implementation 'com.h2database:h2:2.1.214'  // In-Memory database written in java
+  implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
+
+  developmentOnly group: 'org.springframework.boot', name: 'spring-boot-devtools', version: spring_version  // Required for Hot-Reload
+  implementation group: 'org.springframework.shell', name: 'spring-shell-starter', version: spring_shell_version
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version
+  implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
+
+  implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
+}
+
+generateUmlpBackend {
+  input = file("../models/DevProcessCockpit.umlp")
+  symbolOutDir = file("${project.buildDir}/symbols")
+  useSpring = true
+}
+
+task runServer {
+  dependsOn(bootRun {
+    systemProperty "spring.shell.interactive.enabled", "false"
+  })
+}
