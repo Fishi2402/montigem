@@ -194,7 +194,6 @@ public class TestSetupDecorator extends AbstractDecorator {
     cd4C.addMethod(res, DB_TEMPLATE_PATH + "Cleanup", cdName);
     cd4C.addMethod(res, DB_TEMPLATE_PATH + "HasDatabase", cdName);
     cd4C.addMethod(res, DB_TEMPLATE_PATH + "Init", cdName);
-    cd4C.addMethod(res, DB_TEMPLATE_PATH + "LegacyCheck");
 
     addImports(origCD, res);
     return res;
@@ -220,7 +219,6 @@ public class TestSetupDecorator extends AbstractDecorator {
 
     // methods
     cd4C.addMethod(res, DB_TEMPLATE_PATH + "sql.Init", cdName);
-    cd4C.addMethod(res, DB_TEMPLATE_PATH + "LegacyCheckImpl");
 
     addImports(origCD, res);
     return res;
@@ -251,7 +249,6 @@ public class TestSetupDecorator extends AbstractDecorator {
 
     // methods
     cd4C.addMethod(res, DB_TEMPLATE_PATH + "neo4j.Init", cdName);
-    cd4C.addMethod(res, DB_TEMPLATE_PATH + "LegacyCheckImpl");
     cd4C.addMethod(res, DB_TEMPLATE_PATH + "neo4j.Neo4jCleanup", cdName);
 
     addImports(origCD, res);
