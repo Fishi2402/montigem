@@ -1,0 +1,116 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+plugins {
+  id "com.github.node-gradle.node" version "5.0.0"
+  id "de.rwth.se.umlp-tool-frontend"
+}
+
+def useCD2GUI = false
+
+dependencies {
+  guiTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
+}
+
+node {
+  // Whether to download and install a specific Node.js version or not
+  // If false, it will use the globally installed Node.js
+  // If true, it will download node using above parameters
+  // Note that npm is bundled with Node.js
+  download = true
+
+  // Version of node to download and install (only used if download is true)
+  // It will be unpacked in the workDir
+  version = "${node_version}"
+
+  // Whether the plugin automatically should add the proxy configuration to npm and yarn commands
+  // according the proxy configuration defined for Gradle
+  // Disable this option if you want to configure the proxy for npm or yarn on your own
+  // (in the .npmrc file for instance)
+  nodeProxySettings = ProxySettings.OFF
+
+  // The Node.js project directory location
+  // This is where the package.json file and node_modules directory are located
+  // By default it is at the root of the current project
+  nodeProjectDir = file("${buildDir}/frontendGen")
+}
+nodeSetup.dependsOn(frontendSetup)
+
+tasks.register('generateCDTOGUI', UMLPCdToGuiTask) {
+  enabled(useCD2GUI)
+  setGroup('build')
+  input = file("../models/DevProcessCockpit.umlp")
+  outputDir = layout.buildDirectory.dir("cd2gui")
+}
+
+tasks.register('guiVariability', GuiVariabilityHandlerTask) {
+  setGroup('build')
+  if (useCD2GUI) {
+    input.from(generateCDTOGUI.getOutputDir().dir("models"))
+  }
+  input.from(file("../models/gui"))
+  outputDir = layout.buildDirectory.dir("guiVariability")
+}
+
+genGUI {
+  dependsOn(
+      tasks.getByPath(":umlp-rte:client:createGuiSymbols"),
+      tasks.getByPath(":umlp-rte:client:createCDSymbols")
+  )
+  symbolDir = files(
+      project(":umlp-rte:client").tasks.createGuiSymbols.output,
+      project(":umlp-rte:client").tasks.createCDSymbols.output,
+  )
+  domainModels = ["DevProcessCockpit"]
+  guiCreateModels = []
+
+  /*
+  debug = true
+  outputs.upToDateWhen { false }
+  /**/
+}
+
+tasks.register('genGUI2', UMLPGuiGenTask) {
+  enabled(useCD2GUI)
+  setGroup('build')
+  dependsOn(genGUI, guiVariability)
+  input = file(guiVariability.getOutputDir().dir("cd2gui"))
+  symbolDir = files(
+      generateCDTOGUI.getOutputDir().file("symbols"),
+      project(":umlp-rte:client").tasks.createGuiSymbols.output
+  )
+  hwcDir = file("src/app/")
+  symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")
+  outputDir = layout.buildDirectory.dir("umlp/fe2")
+  domainModels = ["DevProcessCockpit"]
+  guiCreateModelsAsFile = file(generateCDTOGUI.getOutputDir().file("meta/guiCreateModels.txt"))
+}
+
+npmInstall.dependsOn(':umlp-rte:client:npmInstall')
+
+def prebuildTasks = [
+    npmInstall, generate, genGUI2
+]
+
+task buildApp(type: NpxTask) {
+  dependsOn(prebuildTasks)
+  command = "ng"
+  args = ["build"]
+
+}
+assemble.dependsOn(buildApp)
+
+task testApp(type: NpxTask) {
+  dependsOn(prebuildTasks)
+  command = "ng"
+  args = ["test"]
+}
+
+task runApp(type: NpxTask) {
+  dependsOn(prebuildTasks)
+  command = "ng"
+  args = ["serve"]
+}
+
+task run {
+  dependsOn(runApp)
+}

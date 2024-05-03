@@ -18,14 +18,10 @@ export class Create extends CreateComponent {
 
   public override create(): (arg: any) => void {
     return () => {
-      const addr = this.address.build();
-      this.person.address(addr).build();
-      DomainManager.addressBuilder().then(b => {
-        this.address = b;
-      });
-      DomainManager.personBuilder().then(b => {
-        this.person = b;
-      });
+      this.person.address(this.address).build();
+      this.person.stocks(new Set());
+      this.person.aboutMe("");
+      DomainManager.addPerson(this.person.build());
     }
   }
 

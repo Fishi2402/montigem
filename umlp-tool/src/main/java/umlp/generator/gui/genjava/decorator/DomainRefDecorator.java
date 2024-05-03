@@ -137,7 +137,10 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
         if (util.isDomainImport(i)) {
           getCD4C().addImport(decoratedClass, importStr);
         } else if (!util.isBuiltIn(i)) {
-          getCD4C().addImport(decoratedClass, qName);
+          Optional<TypeSymbol> typeSym = guiAst.getEnclosingScope().resolveType(qName);
+          if (typeSym.isPresent()) {
+            getCD4C().addImport(decoratedClass, typeSym.get().getFullName());
+          }
         }
       }
     }

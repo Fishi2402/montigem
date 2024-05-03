@@ -12,7 +12,8 @@ plugins {
   id "io.github.themrmilchmann.ecj" version "0.2.0"
 }
 
-def shouldBuildIntelliJPlugin = ("true").equals(getProperty('buildIntelliJPlugin')) || System.getenv("CI") == "true"
+def shouldBuildIntelliJPlugin = ("true").equals(getProperty('buildIntelliJPlugin'))
+def shouldBuildVscodePlugin = ("true").equals(getProperty('buildVscodePlugin'))
 
 if(shouldBuildIntelliJPlugin) {
   apply plugin: "org.jetbrains.intellij"
@@ -43,7 +44,7 @@ dependencies {
   implementation group: 'org.jsweet', name: 'jsweet-core', version: "6.3.0"
   implementation group: 'de.rwth.se.umlp.jsweet', name: 'jsweet-transpiler', version: '3.2.0-UMLP-SNAPSHOT'
 
-  implementation('com.google.cloud.tools:jib-core:0.21.0')
+  implementation('com.google.cloud.tools:jib-core:0.27.0')
 
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit_version
@@ -136,6 +137,9 @@ task autoconfigure(type: de.mclsg.task.AutoconfigureTask) {
     modelPath = ["$projectDir/src/main/grammars"]
     if(shouldBuildIntelliJPlugin) {
       including(de.mclsg.TaskTypes.INTELLIJ_PLUGIN)
+    }
+    if(shouldBuildVscodePlugin){
+      including(de.mclsg.TaskTypes.VSCODE_PLUGIN)
     }
   }
 }

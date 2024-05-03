@@ -4,5 +4,9 @@ package example_basic;
 import mc.fenix.basic.GemText;
 
 page GemTextExample() {
-  @GemText(value = "My text");
+  @GemText(
+    value = "My text",
+    color = "blue",
+    size = "1rem"
+  );
 }

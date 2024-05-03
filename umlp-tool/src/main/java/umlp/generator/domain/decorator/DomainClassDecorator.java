@@ -160,6 +160,8 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
         glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint(getInitialGemValue()));
       } else if (GenService.isList(attr)) {
         glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint(defaultListValue()));
+      } else if (GenService.isBoolean(attr.getMCType())) {
+        glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint(defaultBooleanValue()));
       }
     }
 
@@ -227,6 +229,10 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
 
   protected String defaultListValue() {
     return "= new ArrayList<>()";
+  }
+
+  protected String defaultBooleanValue() {
+    return "= false";
   }
 
   protected ASTCDInterfaceUsage getInterfaceUsage(ASTCDClass domainClass) {

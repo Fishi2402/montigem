@@ -21,7 +21,7 @@ page ProcessStepCreate(ProcessStep step, List<String> values, Event<ProcessStep>
   @GemCard(
       title = "New Step",
       component = @GemColumn(
-        colGap="10px",
+        rowGap="10px",
         components = [
           @GemRow(
             wrap="noWrap",

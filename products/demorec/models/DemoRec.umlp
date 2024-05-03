@@ -106,9 +106,12 @@ classdiagram DemoRec {
   class JoinConnection {
     double state; // TODO what kind of data type for state?
     JoinConnectionType joinConnectionType;
+    Optional<Double> xPos;
+    Optional<Double> yPos;
+    Optional<Double> zPos;
   }
 
-  association [*] DemoRecComponent -> (composedOf) JoinConnection [*];
+  association [0..1] DemoRecComponent (partOf) <-> (composedOf) JoinConnection [*];
 
   association [*] DemoRecComponent (connects) <-> (connectedBy) JoinConnection [*];  // TODO should be 2..* on left side
 

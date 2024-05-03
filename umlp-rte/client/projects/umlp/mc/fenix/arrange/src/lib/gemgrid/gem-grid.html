@@ -1,0 +1,17 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+
+<ng-container *ngIf="!rows.length && cols.length">
+  <ng-container *ngFor="let c of cols">
+    <ng-container *ngFor="let r of c">
+      <ng-container *ngTemplateOutlet="r"></ng-container>
+    </ng-container>
+  </ng-container>
+</ng-container>
+
+<ng-container *ngIf="rows.length">
+  <ng-container *ngFor="let r of rows">
+    <ng-container *ngFor="let c of r">
+      <ng-container *ngTemplateOutlet="c"></ng-container>
+    </ng-container>
+  </ng-container>
+</ng-container>

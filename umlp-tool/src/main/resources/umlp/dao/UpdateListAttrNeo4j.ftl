@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("tableName","attr", "innerType", "dbName")}
+${tc.signature("typeName", "tableName","attr", "innerType", "dbName")}
 <#assign attrName=attr.getName()?cap_first>
 ${cd4c.method("public void update${attrName}(long gemId, List<${innerType}> ${attrName?uncap_first})")}
 

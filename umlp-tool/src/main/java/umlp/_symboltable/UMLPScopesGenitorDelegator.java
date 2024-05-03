@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 public class UMLPScopesGenitorDelegator extends UMLPScopesGenitorDelegatorTOP {
 
+  @Override
   public IUMLPArtifactScope createFromAST(ASTCDCompilationUnit rootNode) {
     IUMLPArtifactScope as = super.createFromAST(rootNode);
     as.addAllImports(rootNode.getMCImportStatementList().stream()

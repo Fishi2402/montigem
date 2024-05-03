@@ -14,7 +14,7 @@ import gui.step.MeasuringValueCreate;
 
 page MeasuringValueEdit(ProcessStep step) {
   @GemCard(
-    title = "Edit Measuring Values",
+    title = "Edit Measured Values",
     component = @GemColumn(
       colGap="10px",
       components = [

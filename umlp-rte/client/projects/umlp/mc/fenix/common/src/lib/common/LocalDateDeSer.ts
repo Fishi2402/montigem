@@ -1,16 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { DeSer } from "../command/DeSer";
+import { Conversion } from "../util/DateFormat";
 
 // TODO AGe: moment
 export class LocalDateDeSer implements DeSer<Date> {
 
   public serialize(date: Date): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-
-    return `${year}-${month}-${day}`;
+    return Conversion.date2String(date);
   }
 
   public deserialize(str: string): Date {
