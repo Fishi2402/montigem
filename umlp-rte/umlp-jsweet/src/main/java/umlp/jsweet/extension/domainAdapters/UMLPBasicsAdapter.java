@@ -233,7 +233,8 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
   @Override
   public boolean substituteTypeCast(TypeCastElement castExpression) {
     if (castExpression.getExpression().toString().equals("this")) {
-      print("<").print(types().asElement(castExpression.getType()).getSimpleName().toString()).print(">");
+      PrinterAdapter print = print("<").print(
+          types().asElement(castExpression.getType()).getSimpleName().toString()).print(">");
       print("<unknown>").print(castExpression.getExpression());
       return true;
     }
