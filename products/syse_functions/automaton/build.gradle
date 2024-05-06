@@ -8,11 +8,11 @@ description 'Syse Functions'
 
 generateUmlpBackend {
   //configTemplate = "umlp.UMLP2JavaNeo4j"
-  modelDir.from(project(":products:syse_functions").projectDir.toPath().resolve("src").resolve("models").toFile())
+  modelDir.from(file("../models"))
 }
 
 dependencies {
-  implementation project(":products:syse_functions")
+  implementation project(":products:syse_functions:backend")
   implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
   implementation group: 'montiarc.languages', name: 'montiarc', version: ma_version
   implementation project(':umlp-rte')
