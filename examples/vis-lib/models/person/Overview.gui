@@ -12,7 +12,7 @@ import person.Row;
 import person.Create;
 import person.PieChart;
 
-page Overview(List<Person> persons) {
+page Overview(List<Person> persons, Event<Person> createPerson) {
   @GemColumn(rowGap = "10px", width = "50%", components = [
     @Create(),
     @iterate(Person p : persons) {

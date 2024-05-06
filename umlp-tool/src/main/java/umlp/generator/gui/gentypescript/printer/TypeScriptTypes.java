@@ -7,7 +7,7 @@ import umlp.generator.gui.GUIGeneratorUtil;
 
 public enum TypeScriptTypes {
   STRING("String", "string"),
-  EVENT("Event", "EventEmitter<any>"),
+  EVENT("Event", "EventEmitter"),
   TEMPLATE_REF("GUIViewElement", "TemplateRef<any>"),
   LIST("List", "Array"),
   COLLECTION("Collection", "Array"),
