@@ -8,8 +8,6 @@ import com.google.common.collect.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -27,9 +25,8 @@ public interface DbTypesTest extends AttributesTestSetup {
 
   @DisplayName("Neo4J-DbTypes")
   class Neo4JTestSuite extends AttributesNeo4JDBTestSetup implements DbTypesTest {
-    Neo4JTestSuite() throws IOException {
+    Neo4JTestSuite() {
       super(0);
-      dbStarter.start(Paths.get("build", "it-test"));
     }
   }
 

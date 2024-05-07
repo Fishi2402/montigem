@@ -28,8 +28,6 @@ public class TestSetupDecorator extends AbstractDecorator {
   public static final String DB_TEST_SETUP_SUFFIX = "DB" + SUFFIX;
   public static final String SQL_TEST_SETUP_SUFFIX = "SQL" + DB_TEST_SETUP_SUFFIX;
   public static final String NEO4J_TEST_SETUP_SUFFIX = "Neo4J" + DB_TEST_SETUP_SUFFIX;
-  private static final String COMMON_CUSTOM_TEMPLATE_PATH = "umlp.test_infrastructure.";
-  private static final String DB_TEMPLATE_PATH = COMMON_CUSTOM_TEMPLATE_PATH + "dbTestSetup.";
 
   private final ObserverDecorator observerDecorator;
   private final DiagramObserverDecorator diagramObserverDecorator;
@@ -127,7 +125,7 @@ public class TestSetupDecorator extends AbstractDecorator {
         "int numberOfClients").get();
 
     String basicTemplate = "umlp.common.BasicConstructor";
-    String numOfClientsTemplate = COMMON_CUSTOM_TEMPLATE_PATH + "NumberOfClientsConstructor";
+    String numOfClientsTemplate = "umlp.test_infrastructure.NumberOfClientsConstructor";
 
     cd4C.addConstructor(res, basicTemplate,
                         typeName,
@@ -137,10 +135,10 @@ public class TestSetupDecorator extends AbstractDecorator {
                         typeName, fakeNumberOfClientsAttr);
 
     // common methods
-    cd4C.addMethod(res, COMMON_CUSTOM_TEMPLATE_PATH + "GetClientName", cdName);
-    cd4C.addMethod(res, COMMON_CUSTOM_TEMPLATE_PATH + "GetNumberOfClients");
-    cd4C.addMethod(res, COMMON_CUSTOM_TEMPLATE_PATH + "Init", cdName);
-    cd4C.addMethod(res, COMMON_CUSTOM_TEMPLATE_PATH + "HasDatabase");
+    cd4C.addMethod(res, "umlp.test_infrastructure.GetClientName", cdName);
+    cd4C.addMethod(res, "umlp.test_infrastructure.GetNumberOfClients");
+    cd4C.addMethod(res, "umlp.test_infrastructure.Init", cdName);
+    cd4C.addMethod(res, "umlp.test_infrastructure.HasDatabase");
 
     addImports(origCD, res);
 
@@ -166,8 +164,8 @@ public class TestSetupDecorator extends AbstractDecorator {
     addSuperConstructors(res, parentClass);
 
     // methods
-    cd4C.addMethod(res, COMMON_CUSTOM_TEMPLATE_PATH + "mockTestSetup.Init", cdName);
-    cd4C.addMethod(res, COMMON_CUSTOM_TEMPLATE_PATH + "mockTestSetup.HasDatabase", cdName);
+    cd4C.addMethod(res, "umlp.test_infrastructure.mockTestSetup.Init", cdName);
+    cd4C.addMethod(res, "umlp.test_infrastructure.mockTestSetup.HasDatabase", cdName);
 
     addImports(origCD, res);
     return res;
@@ -191,9 +189,9 @@ public class TestSetupDecorator extends AbstractDecorator {
 
     // methods
     CD4C cd4C = getCD4C();
-    cd4C.addMethod(res, DB_TEMPLATE_PATH + "Cleanup", cdName);
-    cd4C.addMethod(res, DB_TEMPLATE_PATH + "HasDatabase", cdName);
-    cd4C.addMethod(res, DB_TEMPLATE_PATH + "Init", cdName);
+    cd4C.addMethod(res, "umlp.test_infrastructure.dbTestSetup.Cleanup", cdName);
+    cd4C.addMethod(res, "umlp.test_infrastructure.dbTestSetup.HasDatabase", cdName);
+    cd4C.addMethod(res, "umlp.test_infrastructure.dbTestSetup.Init", cdName);
 
     addImports(origCD, res);
     return res;
@@ -218,7 +216,7 @@ public class TestSetupDecorator extends AbstractDecorator {
     addSuperConstructors(res, parentClass);
 
     // methods
-    cd4C.addMethod(res, DB_TEMPLATE_PATH + "sql.Init", cdName);
+    cd4C.addMethod(res, "umlp.test_infrastructure.dbTestSetup.sql.Init", cdName);
 
     addImports(origCD, res);
     return res;
@@ -246,10 +244,12 @@ public class TestSetupDecorator extends AbstractDecorator {
     addAttribute(res, "protected Neo4jDatabaseStarter dbStarter", " = new Neo4jDatabaseStarter()");
     cd4C.addImport(res, "umlp.backendrte.common.Neo4jDatabaseStarter");
     cd4C.addImport(res, "java.nio.file.Paths");
+    cd4C.addImport(res, "java.nio.file.Path");
 
     // methods
-    cd4C.addMethod(res, DB_TEMPLATE_PATH + "neo4j.Init", cdName);
-    cd4C.addMethod(res, DB_TEMPLATE_PATH + "neo4j.Neo4jCleanup", cdName);
+    cd4C.addMethod(res, "umlp.test_infrastructure.dbTestSetup.neo4j.Init", cdName);
+    cd4C.addMethod(res, "umlp.test_infrastructure.dbTestSetup.neo4j.Neo4jCleanup", cdName);
+    cd4C.addMethod(res, "umlp.test_infrastructure.dbTestSetup.neo4j.GetDBPath", cdName);
 
     addImports(origCD, res);
     return res;

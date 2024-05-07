@@ -9,26 +9,33 @@ import org.neo4j.dbms.api.DatabaseManagementServiceBuilder;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.nio.file.Path;
+import java.util.function.Function;
 
 /**
  * Can be used to start a Neo4j instance from this program.
  * Should only be used for short-lived instances, like tests.
  * Permanent deployments should probably use a neo4j container
  */
-// TODO: current setup requires one db per project
 public class Neo4jDatabaseStarter {
   protected static DatabaseManagementService managementService;
+  protected static int port = -1;
 
-  public void start(Path dbBasePath) throws IOException {
+  public int start(Function<Integer, Path> portToDBBasePath) throws IOException {
     if (managementService != null) {
       managementService.database(GraphDatabaseSettings.DEFAULT_DATABASE_NAME);
-      return;
+      return port;
     }
-    managementService = new DatabaseManagementServiceBuilder(dbBasePath)
+    port = getFreePort();
+    managementService = new DatabaseManagementServiceBuilder(portToDBBasePath.apply(port))
         .setConfig(BoltConnector.enabled, true)
-        .setConfig(BoltConnector.listen_address, new SocketAddress("localhost", getFreePort())).build();
+        .setConfig(BoltConnector.listen_address, new SocketAddress("localhost", port)).build();
     registerShutdownHook(managementService);
     managementService.database(GraphDatabaseSettings.DEFAULT_DATABASE_NAME);
+    return port;
+  }
+
+  public int getPort(){
+    return port;
   }
 
   private int getFreePort() throws IOException {
@@ -43,13 +50,6 @@ public class Neo4jDatabaseStarter {
     // Registers a shutdown hook for the Neo4j instance so that it
     // shuts down nicely when the VM exits (even if you "Ctrl-C" the
     // running application).
-    Runtime.getRuntime().addShutdownHook( new Thread()
-    {
-      @Override
-      public void run()
-      {
-        managementService.shutdown();
-      }
-    } );
+    Runtime.getRuntime().addShutdownHook(new Thread(managementService::shutdown));
   }
 }

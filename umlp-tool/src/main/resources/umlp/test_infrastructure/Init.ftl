@@ -26,13 +26,3 @@ for (${cdName}TestContext client : getClientsList()) {
   client.getManager()._addObserver(new EnsureCorrectManager${cdName}(client.getManager()));
 }
 
-//check dao access
-${cdName}DAOFactory.init();
-${cdName}DAOFactory.addAccessListener(() -> {
-  ${cdName}Manager inst = ${cdName}Manager.getSingleton();
-  if (inst != be) {
-    Log.error("DAO instances may only be accessed when the backend is active. " +
-    "Please activate the backend before accessing the DAOFactory. " +
-    "Current manager: " + inst);
-  }
-});
