@@ -4,11 +4,12 @@ package flensburg.sync;
 import hardy.flensburg.FlensburgManager;
 import hardy.flensburg.HumanDAO;
 import hardy.flensburg.test_infrastructure.FlensburgDBTestSetup;
+import hardy.flensburg.test_infrastructure.FlensburgSQLDBTestSetup;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class HumanSyncDbTest extends FlensburgDBTestSetup {
+public class HumanSyncDbTest extends FlensburgSQLDBTestSetup {
   public HumanSyncDbTest() {
     super(1);
   }

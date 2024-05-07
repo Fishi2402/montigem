@@ -13,6 +13,7 @@ import de.monticore.cd.facade.CDStereotypeFacade;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._prettyprint.CD4CodeFullPrettyPrinter;
+import de.monticore.cd4codebasis._ast.ASTCDConstructor;
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdassociation._ast.ASTCDAssociation;
@@ -32,6 +33,8 @@ import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.TypeCheck;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.monticore.umlstereotype._ast.ASTStereoValueTOP;
 import de.se_rwth.commons.Joiners;
@@ -195,6 +198,57 @@ public abstract class AbstractDecorator {
                                                                            hookPoint));
 
     return attribute;
+  }
+
+  /**
+   * Adds constructors which delegate to {@code super()} for every constructor in the parent class. Logs an
+   * error when the target doesn't extend the parent class
+   *
+   * @param target      A class to add the super constructors to
+   * @param parentClass The parent class of the target class
+   * @return All added constructors
+   * @see Log#error(String)
+   */
+  @SuppressWarnings("UnusedReturnValue") //pretty sure someone will find this useful someday
+  protected Collection<ASTCDConstructor> addSuperConstructors(ASTCDClass target, ASTCDClass parentClass) {
+    //quick check that the target actually extends the parent class
+    String parentClassName = parentClass.getName();
+    String errorMessage = "Can't add super constructors: " + target.getName() + " doesn't extend " + parentClassName;
+    List<ASTMCObjectType> superclassList = target.getCDExtendUsage().getSuperclassList();
+    if (superclassList.isEmpty()) {
+      Log.error(errorMessage);
+      return List.of();
+    }
+    ASTMCObjectType superType = superclassList.get(0);
+    if (superType instanceof ASTMCQualifiedType) {
+      ASTMCQualifiedType qualifiedType = (ASTMCQualifiedType) superType;
+      String superTypeName = qualifiedType.getMCQualifiedName().getBaseName();
+      if (!superTypeName.equals(parentClassName)) {
+        Log.error(errorMessage);
+        return List.of();
+      }
+    } else {
+      Log.warn("Failed to ensure that " + target.getName() + " really extends " + parentClassName);
+    }
+
+    //fetch the constructors
+    List<ASTCDConstructor> constructors = parentClass.getCDMethodSignatureList()
+        .stream()
+        .filter(signature -> signature instanceof ASTCDConstructor)
+        .map(signature -> (ASTCDConstructor) signature)
+        .collect(Collectors.toList());
+
+    CD4C cd4C = getCD4C();
+    String typeName = target.getName();
+    Collection<ASTCDConstructor> addedConstructors = new ArrayList<>();
+    for (ASTCDConstructor constructor : constructors) {
+      ASTCDConstructor addedConstructor = (ASTCDConstructor) cd4C.addConstructor(target,
+                                                           "umlp.common.SuperConstructor",
+                                                           typeName,
+                                                           constructor.getCDParameterList());
+      addedConstructors.add(addedConstructor);
+    }
+    return addedConstructors;
   }
 
   /**

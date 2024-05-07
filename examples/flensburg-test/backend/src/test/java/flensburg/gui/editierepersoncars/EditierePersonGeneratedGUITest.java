@@ -5,17 +5,15 @@ package flensburg.gui.editierepersoncars;
 
 import de.se_rwth.commons.logging.Log;
 import flensburg.gui.AbstractGUITest;
-import flensburg.infrastructure.FlensburgManagerClientImplBuilder;
 import hardy.flensburg.Address;
 import hardy.flensburg.FlensburgManager;
 import hardy.flensburg.FlensburgMock;
-import hardy.flensburg.FlensburgTestContext;
 import hardy.flensburg.Person;
 import hardy.flensburg.PersonErrorCollector;
 import hardy.flensburg.PersonErrorObserver;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import stanley.personedit.PersonEdit;
+import umlp.backendrte.test_infrastructure.ClientSetup;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,10 +43,8 @@ page EditierePerson(Person p) {
 
 public class EditierePersonGeneratedGUITest extends AbstractGUITest {
 
-  @BeforeEach
-  public void clear() {
-    FlensburgTestContext.clear();
-    FlensburgMock.init();
+  public EditierePersonGeneratedGUITest() {
+    super(ClientSetup.of(2));
   }
 
   /**
@@ -85,26 +81,16 @@ public class EditierePersonGeneratedGUITest extends AbstractGUITest {
    */
   @Test
   public void observePersonGUITest() {
-    FlensburgTestContext backendContext = FlensburgTestContext.fromCurrentContext();
     // a - address, aGemId - gem id of address
     long aGemId = 1001L;
     // p - person, pGemId - gem id of person
     long pGemId = 1002L;
 
-    // simulate two different clients, which communicate with the same server
-    FlensburgTestContext clientContext1 = new FlensburgManagerClientImplBuilder()
-        .backendContext(backendContext).build().get();
-    FlensburgTestContext clientContext2 = new FlensburgManagerClientImplBuilder()
-        .backendContext(backendContext).build().get();
-
     // working with client 1
-    clientContext1.activate();
+    getClients(0).activate();
     // create initial person with an address
-    FlensburgMock.secretlyAdaptNextGemId(aGemId);
-    Address a = FlensburgMock.addressBuilder().city("Flensburg").build().get();
-    FlensburgMock.secretlyAdaptNextGemId(pGemId);
-    Person p1 = FlensburgMock
-        .personBuilder()
+    Address a = FlensburgManager.addressBuilderFromId(aGemId).city("Flensburg").build().get();
+    Person p1 = FlensburgManager.personBuilderFromId(pGemId)
         .age(24)
         .nickname("theo")
         .mainResidence(a)
@@ -114,7 +100,7 @@ public class EditierePersonGeneratedGUITest extends AbstractGUITest {
     PersonEdit e1 = new PersonEdit(p1);
 
     // working with client 2
-    clientContext2.activate();
+    getClients(1).activate();
     // check that person is also available for client 2
     Optional<Person> pClient2Opt = FlensburgManager.personOpt(pGemId);
     assertTrue(pClient2Opt.isPresent());
@@ -123,12 +109,12 @@ public class EditierePersonGeneratedGUITest extends AbstractGUITest {
     PersonEdit e2 = new PersonEdit(p2);
     // TODO AGe: strategy on input fields update, check current object/attribute status
 
-    clientContext1.activate();
+    getClients(0).activate();
     // check setting the age in GUI of client 1 changes the input value for GUI of client 2
     e1.setGemTextInput5Entry("33");
     assertEquals("33", e2.getGemTextInput5Entry());
 
-    clientContext2.activate();
+    getClients(1).activate();
     // check decrease button click in GUI of client 2 decreases age in GUI of client 1
     e2.gemButton6LeftClick(null);
     e2.gemButton6LeftClick(null);
@@ -144,39 +130,30 @@ public class EditierePersonGeneratedGUITest extends AbstractGUITest {
     Log.initDEBUG();
 
     // create initial person with an address
-    FlensburgTestContext backendContext = FlensburgTestContext.fromCurrentContext();
     long gemId = 1000L;
-    FlensburgMock.secretlyAdaptNextGemId(gemId);
-    Address a = FlensburgManager.addressBuilder().city("Flensburg").build().get();
+    Address a = FlensburgManager.addressBuilderFromId(gemId).city("Flensburg").build().get();
     gemId = 1001L;
-    FlensburgMock.secretlyAdaptNextGemId(gemId);
     FlensburgManager
-        .personBuilder()
+        .personBuilderFromId(gemId)
         .age(24)
         .nickname("theo")
         .mainResidence(a)
         .owns(Collections.emptySet())
         .build();
 
-    // simulate client which will communicate with server
-    FlensburgTestContext clientContext1 = new FlensburgManagerClientImplBuilder()
-        .backendContext(backendContext)
-        .build()
-        .get();
-
     // work on client
-    clientContext1.activate();
+    getClients(0).activate();
     Person p1001C1 = FlensburgManager.getPersonSure(gemId);
     PersonEdit e1 = new PersonEdit(p1001C1);
 
     // work on server
-    backendContext.activate();
+    getBackend().activate();
     Person p1001S = FlensburgManager.getPersonSure(gemId);
     // set invalid age
     p1001S.setAge(15);
     // TODO MB assertEquals(24, p1001S.getAge());
 
-    clientContext1.activate();
+    getClients(0).activate();
     // TODO MB assertEquals(24, p1001C1.getAge());
   }
 
@@ -187,15 +164,12 @@ public class EditierePersonGeneratedGUITest extends AbstractGUITest {
   public void observeClientToServerErrorTest() {
     Log.initDEBUG();
 
-    FlensburgTestContext backendContext = FlensburgTestContext.fromCurrentContext();
     // create initial person with an address
     long gemId = 1000L;
-    FlensburgMock.secretlyAdaptNextGemId(gemId);
-    Address a = FlensburgManager.addressBuilder().city("Flensburg").build().get();
+    Address a = FlensburgManager.addressBuilderFromId(gemId).city("Flensburg").build().get();
     gemId = 1001L;
-    FlensburgMock.secretlyAdaptNextGemId(gemId);
     FlensburgManager
-        .personBuilder()
+        .personBuilderFromId(gemId)
         .age(24)
         .nickname("theo")
         .mainResidence(a)
@@ -211,21 +185,15 @@ public class EditierePersonGeneratedGUITest extends AbstractGUITest {
       }
     });
 
-    // simulate client which will communicate with server
-    FlensburgTestContext clientContext1 = new FlensburgManagerClientImplBuilder()
-        .backendContext(backendContext)
-        .build()
-        .get();
-
     // work on client
-    clientContext1.activate();
+    getClients(0).activate();
     Person p1001C1 = FlensburgManager.getPersonSure(gemId);
     PersonEdit e1 = new PersonEdit(p1001C1);
     // put invalid value into input field
     e1.setGemTextInput5Entry("15");
 
     // work on server
-    backendContext.activate();
+    getBackend().activate();
     Person p1001S = FlensburgManager.getPersonSure(gemId);
     // invalid value is not propagated from client to server
     // TODO MB assertEquals(24, p1001S.getAge());

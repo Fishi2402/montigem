@@ -1,38 +1,43 @@
 /* (c) https://github.com/MontiCore/monticore */
-package associations2.test_infrastructure;
+package types.test_infrastructure;
 
-import associations2.Associations2Manager;
-import associations2.Associations2ManagerClientImpl;
-import associations2.Associations2ManagerImpl;
-import associations2.Associations2TestContext;
 import org.neo4j.configuration.GraphDatabaseSettings;
 import org.neo4j.configuration.connectors.BoltConnector;
 import org.neo4j.configuration.helpers.SocketAddress;
 import org.neo4j.dbms.api.DatabaseManagementService;
 import org.neo4j.dbms.api.DatabaseManagementServiceBuilder;
+import types.TypesManager;
+import types.TypesManagerClientImpl;
+import types.TypesManagerImpl;
+import types.TypesTestContext;
 import umlp.backendrte.command.CommandDirectCommunication;
 import umlp.backendrte.command.CommandManager;
 import umlp.backendrte.command.TestClientCommandManager;
 import umlp.backendrte.common.DatabaseAccessManager4Neo4j;
+import umlp.backendrte.test_infrastructure.ClientSetup;
 
 import java.nio.file.Paths;
 
-public class Associations2DBTestSetup extends associations2.test_infrastructure.Associations2DBTestSetupTOP {
+public abstract class TypesSQLDBTestSetup extends TypesSQLDBTestSetupTOP {
 
   protected String dbType = "SQL";
 
-  public final static int port = 7692;
+  public final static int port = 7691;
 
   protected static DatabaseManagementService managementService;
 
-  public Associations2DBTestSetup(int numberOfClients, String dbType) {
+  public TypesSQLDBTestSetup(int numberOfClients, String dbType) {
     super(numberOfClients);
     this.dbType = dbType;
   }
 
-  public Associations2DBTestSetup(int numberOfClients) {
+  public TypesSQLDBTestSetup(int numberOfClients) {
     super(numberOfClients);
     this.dbType = "SQL";
+  }
+
+  public TypesSQLDBTestSetup(ClientSetup clientSetup) {
+    super(clientSetup);
   }
 
   @Override
@@ -40,19 +45,20 @@ public class Associations2DBTestSetup extends associations2.test_infrastructure.
     if (dbType.equals("SQL")) {
       super._init();
     } else {
-      Associations2TestContext.clear();
+      TypesTestContext.clear();
+      TypesManagerImpl.init();
 
       DatabaseAccessManager4Neo4j.initBoltLocalhost(port, "neo4j", "");
-      Associations2ManagerImpl.initNeo4J();
+      TypesManagerImpl.initNeo4J();
 
-      backend = Associations2TestContext.fromCurrentContext();
+      backend = TypesTestContext.fromCurrentContext();
       for (int i = 0; i < getNumberOfClients(); i++) {
-        Associations2TestContext.clear();
-        Associations2Manager.initMe(new Associations2ManagerClientImpl());
+        TypesTestContext.clear();
+        TypesManager.initMe(new TypesManagerClientImpl());
         CommandDirectCommunication communication = new CommandDirectCommunication(backend);
         TestClientCommandManager clientCommandManager = new TestClientCommandManager(communication);
         CommandManager.initMe(clientCommandManager);
-        var client = Associations2TestContext.fromCurrentContext();
+        var client = TypesTestContext.fromCurrentContext();
         communication.setClientContext(client);
         clients.add(client);
       }
@@ -77,7 +83,7 @@ public class Associations2DBTestSetup extends associations2.test_infrastructure.
       managementService.database(GraphDatabaseSettings.DEFAULT_DATABASE_NAME);
       return;
     }
-    managementService = new DatabaseManagementServiceBuilder(Paths.get("build", "association2DbTest"))
+    managementService = new DatabaseManagementServiceBuilder(Paths.get("build", "typesDbTest"))
         .setConfig(BoltConnector.enabled, true)
         .setConfig(BoltConnector.listen_address, new SocketAddress("localhost", port)).build();
     registerShutdownHook(managementService);

@@ -2,20 +2,18 @@ package dtcockpit.test_infrastructure;
 
 import dtcockpit.DtcockpitManager;
 import dtcockpit.DtcockpitTestContext;
+import umlp.backendrte.test_infrastructure.ClientSetup;
 
 import java.util.List;
 
-public class DtcockpitDBTestSetup extends DtcockpitDBTestSetupTOP {
+public abstract class DtcockpitDBTestSetup extends DtcockpitDBTestSetupTOP {
+
+  public DtcockpitDBTestSetup(ClientSetup clientSetup) {
+    super(clientSetup);
+  }
+
   public DtcockpitDBTestSetup(int numberOfClients) {
     super(numberOfClients);
-  }
-
-  public DtcockpitDBTestSetup(int numberOfClients, List<String> clientNames) {
-    super(numberOfClients, clientNames);
-  }
-
-  public DtcockpitDBTestSetup(List<String> clientNames) {
-    super(clientNames);
   }
 
   public void registerAdmin(String userName) {

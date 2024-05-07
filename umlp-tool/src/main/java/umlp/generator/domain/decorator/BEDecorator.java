@@ -218,7 +218,6 @@ public class BEDecorator extends AbstractDecorator {
     Log.info("After decorator: TestContextDecorator", ShellAPIDecorator.class.getName());
 
     TestSetupDecorator testSetupDecorator = new TestSetupDecorator(glex,
-                                                                   neo4j,
                                                                    observerDecorator,
                                                                    diagramObserverDecorator);
     testSetupDecorator.transform(cdAST, decoratedAST);

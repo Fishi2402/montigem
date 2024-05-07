@@ -5,26 +5,33 @@ package flensburg.gui;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import hardy.flensburg.test_infrastructure.FlensburgMockTestSetup;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import umlp.backendrte.test_infrastructure.ClientSetup;
 
 /* Setup for the GUI (or later also E2E) tests
  */
-public abstract class AbstractGUITest {
+public abstract class AbstractGUITest extends FlensburgMockTestSetup {
 
   protected boolean logFailQuick;
 
-  // GUI never fails quick
-  @BeforeEach
-  public void setup() {
+  public AbstractGUITest(ClientSetup clientSetup) {
+    super(clientSetup);
+  }
+
+  @Override
+  public void _init() throws Exception {
+    super._init();
+    // GUI never fails quick
     logFailQuick = Log.isFailQuickEnabled();
     LogStub.init();
     Log.enableFailQuick(false);
   }
 
-  @AfterEach
-  public void reset() {
+  @Override
+  public void _cleanup() throws Exception {
+    super._cleanup();
     Log.enableFailQuick(logFailQuick);
   }
-
 }

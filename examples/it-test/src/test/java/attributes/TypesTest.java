@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package attributes;
 
-import attributes.test_infrastructure.AttributesDBTestSetup;
+import attributes.test_infrastructure.AttributesSQLDBTestSetup;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -12,7 +12,7 @@ import java.time.temporal.ChronoUnit;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 
-public class TypesTest extends AttributesDBTestSetup {
+public class TypesTest extends AttributesSQLDBTestSetup {
 
   public TypesTest() {
     super(0);

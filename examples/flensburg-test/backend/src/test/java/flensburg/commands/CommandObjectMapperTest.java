@@ -4,11 +4,10 @@ package flensburg.commands;
 import hardy.flensburg.Address;
 import hardy.flensburg.FlensburgCommandObjectMapper;
 import hardy.flensburg.FlensburgManager;
-import hardy.flensburg.FlensburgMock;
 import hardy.flensburg.Human;
 import hardy.flensburg.Person;
 import hardy.flensburg.commands.Human_get;
-import org.junit.jupiter.api.BeforeEach;
+import hardy.flensburg.test_infrastructure.FlensburgMockTestSetup;
 import org.junit.jupiter.api.Test;
 import umlp.backendrte.command.Command;
 import umlp.backendrte.command.CommandObjectMapper;
@@ -16,14 +15,21 @@ import umlp.backendrte.command.CommandResult;
 import umlp.backendrte.command.SimpleResult;
 import umlp.backendrte.common.Gem;
 import umlp.backendrte.common.LoadingState;
+import umlp.backendrte.test_infrastructure.ClientSetup;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CommandObjectMapperTest {
-  @BeforeEach
-  public void init(){
+public class CommandObjectMapperTest extends FlensburgMockTestSetup {
+
+  public CommandObjectMapperTest() {
+    super(ClientSetup.of(1));
+  }
+
+  @Override
+  public void _init() throws Exception {
+    super._init();
     FlensburgCommandObjectMapper.init();
   }
 
@@ -45,13 +51,10 @@ public class CommandObjectMapperTest {
 
   @Test
   public void testSimpleResultRoundtrip(){
-    FlensburgMock.init();
-
     int commandId = 1;
     int gemId = 1001;
-    FlensburgMock.secretlyAdaptNextGemId(gemId);
     int age = 20;
-    Human h1001 = FlensburgManager.humanBuilder().age(age).build().get();
+    Human h1001 = FlensburgManager.humanBuilderFromId(gemId).age(age).build().get();
 
     SimpleResult<Human> result = new SimpleResult<>(commandId, h1001, "hardy.flensburg.Human");
 
@@ -77,14 +80,12 @@ public class CommandObjectMapperTest {
 
   @Test
   public void testGemSerializedUnloaded(){
-    FlensburgMock.init();
 
     int commandId = 1;
     int gemId = 1001;
-    FlensburgMock.secretlyAdaptNextGemId(gemId);
     int age = 20;
 
-    Address a1001 = FlensburgManager.addressBuilder().city("Flensburg").build().get();
+    Address a1001 = FlensburgManager.addressBuilderFromId(gemId).city("Flensburg").build().get();
     Person p1002 = FlensburgManager
         .personBuilder()
         .age(age)

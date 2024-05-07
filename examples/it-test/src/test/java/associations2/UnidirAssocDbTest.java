@@ -1,8 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package associations2;
 
-import associations.BidirectionalAssocsDbTest;
-import associations2.test_infrastructure.Associations2DBTestSetup;
+import associations2.test_infrastructure.Associations2SQLDBTestSetup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +10,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public abstract class UnidirAssocDbTest extends Associations2DBTestSetup {
+public abstract class UnidirAssocDbTest extends Associations2SQLDBTestSetup {
 
   public UnidirAssocDbTest(String dbConnectionType) {
     super(1, dbConnectionType);
