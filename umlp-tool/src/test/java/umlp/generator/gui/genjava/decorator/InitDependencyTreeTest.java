@@ -58,58 +58,81 @@ public class InitDependencyTreeTest extends DomainGUITest {
 
     assertions.add(() -> assertTrue(Log.getFindings().isEmpty()));
     // 7 GUIParam, 1 GUIBlock
-    assertions.add(() -> assertEquals(8, root.get().getDependentList().size()));
-    // 6 GUIParam with no dependency
-    for (int i = 1; i < root.get().getDependentList().size() - 2; i++) {
+    assertEquals(8, root.get().getDependentList().size());
+    // 5 GUIParam with no dependency
+    for (int i = 2; i < root.get().getDependentList().size() - 2; i++) {
       InitDependency id = root.get().getDependentList().get(i);
       assertions.add(() -> assertEquals(0, id.getDependentList().size()));
     }
 
-    InitDependency personConstructor = root.get().getDependentList().get(0);
+    InitDependency personDefault = root.get().getDependentList().get(0);
 
-    assertions.add(() -> assertEquals(1, personConstructor.getDependentList().size()));
+    assertEquals(1, personDefault.getDependentList().size());
     assertions.add(() -> assertEquals(
         idt.getDependency(decl.getGUIParam(0).getDefault()).get(),
-        personConstructor
+        personDefault
     ));
 
-    InitDependency person = personConstructor.getDependentList().get(0);
+    InitDependency person = personDefault.getDependentList().get(0);
 
-    assertions.add(() -> assertEquals(0, person.getDependentList().size()));
+    assertEquals(0, person.getDependentList().size());
     assertions.add(() -> assertEquals(
         idt.getDependency(decl.getGUIParam(0)).get(),
         person
     ));
 
+    InitDependency statusDefault = root.get().getDependentList().get(1);
+
+    assertEquals(1, statusDefault.getDependentList().size());
+    assertions.add(() -> assertEquals(
+        idt.getDependency(decl.getGUIParam(1).getDefault()).get(),
+        statusDefault
+    ));
+
+    InitDependency status = statusDefault.getDependentList().get(0);
+
+    assertEquals(0, status.getDependentList().size());
+    assertions.add(() -> assertEquals(
+        idt.getDependency(decl.getGUIParam(1)).get(),
+        status
+    ));
+
     InitDependency declBlock = root.get().getDependentList().get(7);
-    assertions.add(() -> assertEquals(8, declBlock.getDependentList().size()));
+    assertEquals(9, declBlock.getDependentList().size());
 
-    InitDependency cS = declBlock.getDependentList().get(0);
-    InitDependency cA = declBlock.getDependentList().get(1);
-    InitDependency gLgve = declBlock.getDependentList().get(2);
-    InitDependency jE = declBlock.getDependentList().get(3);
-    InitDependency kS = declBlock.getDependentList().get(4);
-    InitDependency kM = declBlock.getDependentList().get(5);
-    InitDependency l = declBlock.getDependentList().get(6);
-    InitDependency o = declBlock.getDependentList().get(7);
+    InitDependency aA = declBlock.getDependentList().get(0);
+    InitDependency cS = declBlock.getDependentList().get(1);
+    InitDependency cA = declBlock.getDependentList().get(2);
+    InitDependency gLgve = declBlock.getDependentList().get(3);
+    InitDependency jE = declBlock.getDependentList().get(4);
+    InitDependency kS = declBlock.getDependentList().get(5);
+    InitDependency kM0 = declBlock.getDependentList().get(6);
+    InitDependency l = declBlock.getDependentList().get(7);
+    InitDependency o = declBlock.getDependentList().get(8);
 
-    assertions.add(() -> assertEquals(0, cS.getDependentList().size()));
-    assertions.add(() -> assertEquals(0, cA.getDependentList().size()));
-    assertions.add(() -> assertEquals(0, gLgve.getDependentList().size()));
-    assertions.add(() -> assertEquals(0, jE.getDependentList().size()));
-    assertions.add(() -> assertEquals(0, kS.getDependentList().size()));
-    assertions.add(() -> assertEquals(0, kM.getDependentList().size()));
-    assertions.add(() -> assertEquals(2, l.getDependentList().size()));
+    assertEquals(0, aA.getDependentList().size());
+    assertEquals(0, cS.getDependentList().size());
+    assertEquals(0, cA.getDependentList().size());
+    assertEquals(0, gLgve.getDependentList().size());
+    assertEquals(0, jE.getDependentList().size());
+    assertEquals(0, kS.getDependentList().size());
+    assertEquals(1, kM0.getDependentList().size());
+    assertEquals(1, kM0.getDependentList().size());
+    InitDependency kM1 = kM0.getDependentList().get(0);
+    assertEquals(1, kM1.getDependentList().size());
+    InitDependency kM = kM1.getDependentList().get(0);
+    assertEquals(0, kM.getDependentList().size());
+    assertEquals(2, l.getDependentList().size());
     assertions.add(() -> assertEquals(
         idt.getDependency(lNode.getIterateControl()).get(),
         l
     ));
-    assertions.add(() -> assertEquals(1, o.getDependentList().size()));
+    assertEquals(2, o.getDependentList().size());
 
     InitDependency lInnerConstructor = l.getDependentList().get(0);
     InitDependency lBlock = l.getDependentList().get(1);
 
-    assertions.add(() -> assertEquals(1, lInnerConstructor.getDependentList().size()));
+    assertEquals(1, lInnerConstructor.getDependentList().size());
     assertions.add(() -> assertEquals(
         idt.getDependency(((ASTCallExpression)
             ((ASTGUIShortIterateControl) lNode.getIterateControl()).getIterable())
@@ -119,30 +142,38 @@ public class InitDependencyTreeTest extends DomainGUITest {
 
     InitDependency lConstructor = lInnerConstructor.getDependentList().get(0);
 
-    assertions.add(() -> assertEquals(0, lConstructor.getDependentList().size()));
+    assertEquals(0, lConstructor.getDependentList().size());
     assertions.add(() -> assertEquals(
         idt.getDependency(((ASTGUIShortIterateControl) lNode.getIterateControl())
             .getIterable()).get(),
         lConstructor
     ));
 
-    assertions.add(() -> assertEquals(0, lBlock.getDependentList().size()));
+    assertEquals(0, lBlock.getDependentList().size());
 
-    InitDependency oBlock = o.getDependentList().get(0);
+    InitDependency oIterable = o.getDependentList().get(0);
 
-    assertions.add(() -> assertEquals(1, oBlock.getDependentList().size()));
+    assertEquals(0, oIterable.getDependentList().size());
+
+    InitDependency oBlock = o.getDependentList().get(1);
+
+    assertEquals(1, oBlock.getDependentList().size());
 
     InitDependency p = oBlock.getDependentList().get(0);
 
-    assertions.add(() -> assertEquals(1, p.getDependentList().size()));
+    assertEquals(2, p.getDependentList().size());
 
-    InitDependency pBlock = p.getDependentList().get(0);
+    InitDependency pIterable = p.getDependentList().get(0);
 
-    assertions.add(() -> assertEquals(2, pBlock.getDependentList().size()));
+    assertEquals(0, pIterable.getDependentList().size());
+
+    InitDependency pBlock = p.getDependentList().get(1);
+
+    assertEquals(2, pBlock.getDependentList().size());
 
     InitDependency qConstructor = pBlock.getDependentList().get(0);
 
-    assertions.add(() -> assertEquals(1, qConstructor.getDependentList().size()));
+    assertEquals(1, qConstructor.getDependentList().size());
     assertions.add(() -> assertEquals(
         idt.getDependency(qNode.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()
             .getGUIList().getGUIArgValue(0)
@@ -153,7 +184,7 @@ public class InitDependencyTreeTest extends DomainGUITest {
 
     InitDependency qInnerList = qConstructor.getDependentList().get(0);
 
-    assertions.add(() -> assertEquals(1, qInnerList.getDependentList().size()));
+    assertEquals(1, qInnerList.getDependentList().size());
     assertions.add(() -> assertEquals(
         idt.getDependency(qNode.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()
             .getGUIList().getGUIArgValue(0)
@@ -161,18 +192,32 @@ public class InitDependencyTreeTest extends DomainGUITest {
         qInnerList
     ));
 
-    InitDependency qList = qInnerList.getDependentList().get(0);
+    InitDependency qCall = qInnerList.getDependentList().get(0);
 
-    assertions.add(() -> assertEquals(0, qList.getDependentList().size()));
+    assertEquals(1, qCall.getDependentList().size());
+    assertions.add(() -> assertEquals(
+        idt.getDependency(qNode.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()
+            .getGUIList().getGUIArgValue(1)
+            .getExpression()).get(),
+        qCall
+    ));
+
+    InitDependency qList = qCall.getDependentList().get(0);
+
+    assertEquals(0, qList.getDependentList().size());
     assertions.add(() -> assertEquals(
         idt.getDependency(qNode.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()
             .getGUIList()).get(),
         qList
     ));
 
-    InitDependency rList = pBlock.getDependentList().get(1);
+    InitDependency rCall = pBlock.getDependentList().get(1);
 
-    assertions.add(() -> assertEquals(0, rList.getDependentList().size()));
+    assertEquals(1, rCall.getDependentList().size());
+
+    InitDependency rList = rCall.getDependentList().get(0);
+
+    assertEquals(0, rList.getDependentList().size());
 
     assertAll(assertions);
   }

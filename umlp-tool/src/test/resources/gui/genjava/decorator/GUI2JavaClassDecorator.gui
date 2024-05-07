@@ -35,7 +35,7 @@ page GUI2JavaClassDecorator(
   // get + set + init()
   Event<Void> e
 ) {
-  // getAP + getAM + getAS + getAB + getAA
+  // getAP + getAM + getAS + getAB + getAA + initAA_0
   a@P(p = person, m = status, s = s, b = b, a = person.address);
   /*
     this.getPerson();
@@ -44,7 +44,7 @@ page GUI2JavaClassDecorator(
     this.getB();
     this.getPerson().getAddress();
   */
-  // getCP + getCS + calcStr + getCA + getCA_0 + initCA_0
+  // getCP + getCS + calcStr + getCA + getCA_1 + initCA_1
   c@P(p = $per$son, s = calcStr(person), a = Address());
   /*
     this.get$per$son();
@@ -70,7 +70,7 @@ page GUI2JavaClassDecorator(
     this.getI();
     this.setI(val);
   */
-  // getFI + setFI
+  // getFI + setFI + initFI_2
   f@I(i = person.address.house);
   /*
     this.getPerson().getAddress().getHouse();
@@ -112,7 +112,7 @@ page GUI2JavaClassDecorator(
     List.of("a", "b");
     List.of(MaritalStatus.SINGLE, MaritalStatus.MARRIED);
   */
-  // getLIterate
+  // getLIterate + initLIterable_
   l@iterate(Person friend : person.friends) {
   /*
     this.getPerson().getFriends();

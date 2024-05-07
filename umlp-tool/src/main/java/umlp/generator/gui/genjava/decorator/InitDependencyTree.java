@@ -21,6 +21,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Stack;
 
+// TODO AGe: may have stricter dependencies than expected, e.g.,
+//  [[person, contact, Person()], friend.friends] -> friend.friends depends on
+//  [person, contact, Person()].
 public class InitDependencyTree implements GUIDSLVisitor2, CommonExpressionsVisitor2, ExpressionsBasisVisitor2 {
 
   protected GUIDSLTraverser traverser;

@@ -5,6 +5,7 @@ import de.monticore.cd.facade.CDAttributeFacade;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
+import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
@@ -169,6 +170,17 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
   }
 
   @Override
+  public void visit(ASTFieldAccessExpression node) {
+    SymTypeExpression ste = util.getType(node);
+    // single object assoc, e.g., @AddressForm(address = person.address)
+    if ((util.isDomainType(ste) || util.isDomainListType(ste)) && !util.isEnumType(ste)) {
+      String name = curComp + StringTransformations.capitalize(curArg) + "_" + counter++;
+      Attribute attr = createAttribute(node, ste, name);
+      node2Attr.put(node, attr);
+    }
+  }
+
+  @Override
   public void visit(ASTCallExpression node) {
     if (node.getExpression() instanceof ASTNameExpression) {
       ASTNameExpression nameExp = (ASTNameExpression) node.getExpression();
@@ -274,11 +286,12 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
     if (insideIterateControl) {
       scope = scope.getEnclosingScope();
     }
+    List<VariableSymbol> iterateArgs = util.findIterationItemSymbols(scope);
+
     Set<String> importSet = new HashSet<>();
     ASTMCType baseType = createTypeAndAddImports(ste, importSet);
     ASTMCType type = baseType;
 
-    List<VariableSymbol> iterateArgs = util.findIterationItemSymbols(scope);
     // given @iterate(Person p ...) { @itearte(Address a ...) { } }
     // build: Map<Person, Map<Address, SomeType>>
     if (!iterateArgs.isEmpty()) {

@@ -11,13 +11,13 @@ import java.util.List;
 public class Attribute {
   protected final ASTCDAttribute cdAttr;
   protected final ASTMCType baseType;
-  protected final Collection<VariableSymbol> iterateArgs;
+  protected final List<VariableSymbol> iterateArgs;
 
   protected final Collection<String> importList;
 
   public Attribute(
       ASTCDAttribute cdAttr, ASTMCType baseType,
-      Collection<VariableSymbol> iterateArgs, Collection<String> importList) {
+      List<VariableSymbol> iterateArgs, Collection<String> importList) {
     this.cdAttr = cdAttr;
     this.iterateArgs = iterateArgs;
     this.baseType = baseType;
@@ -32,7 +32,7 @@ public class Attribute {
     return baseType;
   }
 
-  public Collection<VariableSymbol> getIterateArgs() {
+  public List<VariableSymbol> getIterateArgs() {
     return iterateArgs;
   }
 

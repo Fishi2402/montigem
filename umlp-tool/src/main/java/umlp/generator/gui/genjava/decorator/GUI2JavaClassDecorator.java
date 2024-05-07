@@ -10,6 +10,7 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
+import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -32,6 +33,7 @@ import de.monticore.guidsl._visitor.GUIDSLVisitor2;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.monticore.symboltable.IScope;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -194,7 +196,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
 
     String initName = "init" + StringTransformations.capitalize(node.getName());
     // case 1: component Foo(Person p)
-    if (util.isDomainType(typeSTE)) {
+    if (util.isDomainType(typeSTE) && !util.isEnumType(typeSTE)) {
       String manager = getAndImportManager();
       // add builder init
       /*
@@ -255,15 +257,20 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
         value = Optional.of(util.print(node.getDefault()));
       }
       // add attr init
-      ASTCDMethodSignature attrInit = getCD4C().addMethod(
-          clazz, getInitDefaultParamTemplate(), name, value, initName, setterName
-      );
+      Optional<InitDependency> dep = InitDependencyTree.getInstance().getDependency(node);
+      if (dep.isPresent()) {
+        dep.get().setInitMethod(new InitMethodTemplate(
+            getInitDefaultParamTemplate(), name, value, initName, setterName
+        ));
+      }
 
       // add attr init to class init
+      /*
       glex.addAfterTemplate(
           getInitBodyHookpoint(),
           new TemplateHookPoint(getInitCallTemplate(), attrInit)
       );
+      /**/
     }
   }
 
@@ -440,8 +447,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     SymTypeExpression itemTypeSTE = control.getItem().getSymbol().getType();
     String itemType = importAndPrintType(itemTypeSTE);
 
-    Optional<InitDependency> dep = InitDependencyTree.getInstance()
-        .getDependency(node);
+    Optional<InitDependency> dep = InitDependencyTree.getInstance().getDependency(control);
     if (dep.isPresent()) {
       dep.get().setInitMethod(new InitMethodTemplate(
           getIterateInitTemplate(), itemType, name, getterValue, iterateArgs
@@ -473,7 +479,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
       clazz.addCDMember(attr);
 
       // calc iterate items as additional args
-      Collection<VariableSymbol> iterateArgs = attrWrapper.getIterateArgs();
+      List<VariableSymbol> iterateArgs = attrWrapper.getIterateArgs();
 
       ASTMCType mcType = attrWrapper.getBaseType();
       String type = mcType.printType();
@@ -583,7 +589,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
       clazz.addCDMember(attr);
 
       // calc iterate items as additional args
-      Collection<VariableSymbol> iterateArgs = attrWrapper.getIterateArgs();
+      List<VariableSymbol> iterateArgs = attrWrapper.getIterateArgs();
 
       ASTMCType mcType = attrWrapper.getBaseType();
       String type = mcType.printType();
@@ -690,6 +696,39 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
       }
     }
 
+  }
+
+  @Override
+  public void endVisit(ASTFieldAccessExpression node) {
+    Map<ASTNode, Attribute> node2Attr = StaticObjectsCollector.getInstance().getNode2Attr();
+    // a constructor call, e.g., @PersonForm(person = Person())
+    if (node2Attr.containsKey(node)) {
+      // get init method info
+      Attribute attrWrapper = node2Attr.get(node);
+      for (String qName : attrWrapper.getImportList()) {
+        getCD4C().addImport(clazz, qName);
+      }
+      ASTCDAttribute attr = attrWrapper.getCdAttr();
+
+      // calc iterate items as additional args
+      List<VariableSymbol> iterateArgs = attrWrapper.getIterateArgs();
+
+      ASTMCType mcType = attrWrapper.getBaseType();
+      String name = attr.getName();
+
+      for (VariableSymbol vs : iterateArgs) {
+        importAndPrintType(vs.getType());
+      }
+
+      // add assoc init
+      Optional<InitDependency> dep = InitDependencyTree.getInstance()
+          .getDependency(node);
+      if (dep.isPresent()) {
+        dep.get().setInitMethod(new InitMethodTemplate(
+            getAssocInitTemplate(), mcType, name, iterateArgs
+        ));
+      }
+    }
   }
 
   /**
@@ -908,6 +947,10 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
 
   protected String getStaticBuilderInitTemplate() {
     return "umlp.gui2java.GUI2JavaStaticBuilderInit";
+  }
+
+  protected String getAssocInitTemplate() {
+    return "umlp.gui2java.GUI2JavaAssocInit";
   }
 
   protected String getEmptyMethodTemplate() {
