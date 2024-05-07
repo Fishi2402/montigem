@@ -80,7 +80,9 @@ include ':examples:kitchencompanion:frontend'
 include ':examples:guidslpaper:backend'
 include ':examples:guidslpaper:frontend'
 
-include ':products:syse_functions'
+include ':products:syse_functions:backend'
+include ':products:syse_functions:frontend'
+include ':products:syse_functions:automaton'
 include ':products:demorec:backend'
 include ':products:demorec:frontend'
 include ':products:demo-recycling:frontend'
@@ -92,6 +94,6 @@ include ':products:dev_process_cockpit:frontend'
 include ':modules:login'
 include ':modules:sovd-gateway'
 include ':modules:sovd-gateway-it:backend'
-include 'products:syse_functions:automaton'
+
 findProject(':products:syse_functions:automaton')?.name = 'automaton'
 

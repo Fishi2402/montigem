@@ -1,0 +1,87 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+
+plugins {
+  id 'java'
+  id "com.github.node-gradle.node" version "5.0.0"
+  id 'de.rwth.se.umlp-tool-frontend'
+}
+
+repositories {
+  maven {
+    credentials.username mavenUser
+    credentials.password mavenPassword
+    url ma_repo
+  }
+}
+
+dependencies {
+  // a configuration containing the domain sources
+  domainSources project(":products:syse_functions:backend")
+
+  implementation project(":products:syse_functions:backend")
+
+  implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version
+
+  implementation group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.6_mail', version: '1.0.1'
+
+  testImplementation "de.monticore.lang:guidsl:${project.properties['mc_version']}"
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
+}
+
+node {
+  download = true
+  version = "${node_version}"
+  nodeProxySettings = ProxySettings.OFF
+  nodeProjectDir = file("${buildDir}/frontendGen")
+}
+nodeSetup.dependsOn(frontendSetup)
+
+genGUI {
+  domainModels = ["FunctionStructure4Fenix"]
+}
+
+translateJava2TSDomain {
+  domainModel = 'FunctionStructure4Fenix'
+  verbose = true
+}
+
+translateJava2TSGUI {
+  domainModel = 'FunctionStructure4Fenix'
+  verbose = true
+}
+
+nodeSetup.dependsOn(frontendSetup)
+npmInstall.dependsOn(nodeSetup, ':umlp-rte:client:npmInstall')
+
+def prebuildTasks = [
+    npmInstall, generate
+]
+
+task buildApp(type: NpxTask) {
+  dependsOn(prebuildTasks)
+  command = "ng"
+  args = ["build"]
+}
+assemble.dependsOn(buildApp)
+
+task testApp(type: NpxTask) {
+  dependsOn(prebuildTasks)
+  command = "ng"
+  args = ["test"]
+}
+
+task runApp(type: NpxTask) {
+  dependsOn(prebuildTasks)
+  command = "ng"
+  args = ["serve"]
+}
+
+test {
+  testLogging {
+    events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
+  }
+  useJUnitPlatform()
+}

@@ -29,8 +29,12 @@ public class TypeScriptBasicTypesPrettyPrinter extends MCBasicTypesPrettyPrinter
       // TODO AGe: underspecified List landed here, but not anymore.
       //  Wasn't pretty in the first place.
       else if (node.getBaseName().equals(TypeScriptTypes.LIST.getMCType())) {
-        getPrinter().print("Array<any>");
-      } else {
+        getPrinter().print(TypeScriptTypes.LIST.getTSType() + "<any>");
+      }
+      else if (node.getBaseName().equals(TypeScriptTypes.EVENT.getMCType())) {
+        getPrinter().print(TypeScriptTypes.EVENT.getTSType() + "<any>");
+      }
+      else {
         getPrinter().print(TypeScriptTypes.toTSType(node.getBaseName()));
       }
     }
@@ -50,7 +54,8 @@ public class TypeScriptBasicTypesPrettyPrinter extends MCBasicTypesPrettyPrinter
     if (node.getQName().equals(BuiltInTypes.EVENT.getQName())) {
       getPrinter().print("import { " + TypeScriptTypes.EVENT.getTSType()
           + " } from '@angular/core';");
-    } else {
+    }
+    else {
       getPrinter().print("import { ");
       node.getMCQualifiedName().accept(getTraverser());
       getPrinter().print(" }");
