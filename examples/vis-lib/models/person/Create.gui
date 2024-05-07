@@ -33,5 +33,5 @@ page Create(Person person, Address address) {
       ])
     ])
   );
-  @GemButton(label = "Create person", leftClick = create(person));
+  @GemButton(label = "Create person", leftClick = createPerson(person));
 }

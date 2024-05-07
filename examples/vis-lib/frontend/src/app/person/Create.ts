@@ -16,7 +16,7 @@ export class Create extends CreateComponent {
     return this.getPerson()?.getBirthday()?.toDateString();
   }
 
-  public override create(): (arg: any) => void {
+  public override createPerson(): (arg: any) => void {
     return () => {
       this.person.address(this.address).build();
       this.person.stocks(new Set());
