@@ -5,11 +5,10 @@ ${tc.signature("mcType", "name", "listItems", "initList")}
 <#assign tmpVar = "tmp">
 
 ${cd4c.method("protected void init${name?cap_first}()")}
-if (this.${name} == null) {
-  ${cdPrinter.printType(mcType)} ${tmpVar} = new ArrayList<>();
-  <#list listItems as item>
-  ${tmpVar}.add(${item});
-  </#list>
+${cdPrinter.printType(mcType)} ${tmpVar} = new ArrayList<>();
+<#list listItems as item>
+${tmpVar}.add(${item});
+</#list>
 
-  this.${name} = ${tmpVar};
-}
+this.${name} = ${tmpVar};
+${tc.includeArgs("umlp.gui2java.GUI2JavaInitBody", [initList])}

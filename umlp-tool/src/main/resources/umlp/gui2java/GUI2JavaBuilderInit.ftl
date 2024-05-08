@@ -6,8 +6,6 @@ ${tc.signature("mcType", "name", "manager", "initList")}
 <#assign type = cdPrinter.printType(mcType)>
 
 ${cd4c.method("protected void init${name?cap_first}()")}
-if (this.${name} == null) {
-  ${type} ${tmpVar} = ${manager}.${type?uncap_first}Builder();
-
-  this.${name} = ${tmpVar};
-}
+${type} ${tmpVar} = ${manager}.${type?uncap_first}Builder();
+this.${name} = ${tmpVar};
+${tc.includeArgs("umlp.gui2java.GUI2JavaInitBody", [initList])}

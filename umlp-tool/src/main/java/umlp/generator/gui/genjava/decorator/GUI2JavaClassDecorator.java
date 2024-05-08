@@ -90,8 +90,8 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
    * 1. create empty class
    * 2. add directive annotation
    * 3. traverse GUI AST and add class members in a reverse order
-   * 4. add constructor
-   * 5. add initialization method
+   * 4. add initialization methods
+   * 5. add constructor
    * Adding members includes adding initialization functions for the attributes. These functions
    * must be called in a specific order in the class initialization method, namely in reverse.
    *
@@ -122,6 +122,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     InitDependencyTree.getInstance().init(declaration);
     gui.accept(traverser);
 
+    // init
     Optional<InitDependency> root = InitDependencyTree.getInstance().getDependency(declaration);
     if (root.isPresent()) {
       Collection<ASTCDMethodSignature> paramInit = addInitMethods(root.get());
@@ -132,11 +133,10 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
         );
       }
     }
+    addInit();
 
     // constructor
     addConstructor();
-    // init
-    addInit();
   }
 
   /**
@@ -153,10 +153,9 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
    * - attribute
    * - getter
    * - setter
-   * - 2 init functions
-   * One init function does not require an input parameter and sets a default value of a parameter.
+   * - init function
+   * The init function does not require an input parameter and sets a default value of a parameter.
    * Input parameters representing domain objects receive a value loaded from a server.
-   * Another init function takes an argument and delegates to the setter.
    * `GUIViewElement` and its collections are not transformed, since they do not represent the state
    * of a component, but rather its appearance (useless in the context of HWC/testing)
    *
@@ -198,42 +197,22 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     // case 1: component Foo(Person p)
     if (util.isDomainType(typeSTE) && !util.isEnumType(typeSTE)) {
       String manager = getAndImportManager();
-      // add builder init
-      /*
-      ASTCDMethodSignature builderInit = getCD4C().addMethod(
-          clazz, getInitParamBuilderTemplate(),
-          type, name, manager, initName
-      );
-      /**/
 
-      Optional<InitDependency> dep = InitDependencyTree.getInstance()
-          .getDependency(node);
+      // add builder init
+      Optional<InitDependency> dep = InitDependencyTree.getInstance().getDependency(node);
       if (dep.isPresent()) {
         dep.get().setInitMethod(new InitMethodTemplate(
             getInitParamBuilderTemplate(), type, name, manager, initName
         ));
       }
-
-      /*
-      // add builder init to class init
-      glex.addAfterTemplate(
-          getInitBodyHookpoint(),
-          new TemplateHookPoint(getInitCallTemplate(), builderInit)
-      );
-      /**/
     }
     // case 2: component Foo(List<Person> p)
     else if (util.getDomainListInnerType(typeSTE).isPresent()
         && !util.isEnumType(util.getDomainListInnerType(typeSTE).get())) {
       String innerType = util.getDomainListInnerType(typeSTE).get().print();
       String manager = getAndImportManager();
-      // add attr init
-      /*
-      ASTCDMethodSignature attrInit = getCD4C().addMethod(
-          clazz, getInitDomainListTemplate(), innerType, name, manager, initName
-      );
-      /**/
 
+      // add attr init
       Optional<InitDependency> dep = InitDependencyTree.getInstance()
           .getDependency(node);
       if (dep.isPresent()) {
@@ -241,14 +220,6 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
             getInitDomainListTemplate(), innerType, name, manager, initName
         ));
       }
-
-      // add attr init to class init
-      /*
-      glex.addAfterTemplate(
-          getInitBodyHookpoint(),
-          new TemplateHookPoint(getInitCallTemplate(), attrInit)
-      );
-      /**/
     }
     // case 3: component Foo(String s, MyDomainEnum e)
     else {
@@ -263,14 +234,6 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
             getInitDefaultParamTemplate(), name, value, initName, setterName
         ));
       }
-
-      // add attr init to class init
-      /*
-      glex.addAfterTemplate(
-          getInitBodyHookpoint(),
-          new TemplateHookPoint(getInitCallTemplate(), attrInit)
-      );
-      /**/
     }
   }
 
@@ -495,12 +458,6 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
           listItems.add(getterPrinter.prettyprint(val));
         }
 
-        /*
-        ASTCDMethodSignature attrInit = getCD4C().addMethod(clazz,
-            getListInitTemplate(), mcType, name, listItems
-        );
-        /**/
-
         Optional<InitDependency> dep = InitDependencyTree.getInstance()
             .getDependency(node);
         if (dep.isPresent()) {
@@ -528,11 +485,6 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
         for (ASTGUIArgValue val : node.getGUIArgValueList()) {
           listItems.add(getterPrinter.prettyprint(val));
         }
-
-        /*
-        ASTCDMethodSignature attrInit = getCD4C().addMethod(clazz, getStaticListInitTemplate(),
-            mcType, name, listItems, iterateArgs);
-        /**/
 
         Optional<InitDependency> dep = InitDependencyTree.getInstance()
             .getDependency(node);
@@ -599,13 +551,6 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
         String manager = getAndImportManager();
 
         // add builder init
-        /*
-        ASTCDMethodSignature builderInit = getCD4C().addMethod(
-            clazz, getBuilderInitTemplate(),
-            mcType, name, manager
-        );
-        /**/
-
         Optional<InitDependency> dep = InitDependencyTree.getInstance()
             .getDependency(node);
         if (dep.isPresent()) {
@@ -626,13 +571,6 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
         String manager = getAndImportManager();
 
         // add builder init
-        /*
-        ASTCDMethodSignature builderInit = getCD4C().addMethod(
-            clazz, getStaticBuilderInitTemplate(),
-            mcType, name, manager, iterateArgs
-        );
-        /**/
-
         Optional<InitDependency> dep = InitDependencyTree.getInstance()
             .getDependency(node);
         if (dep.isPresent()) {
@@ -721,11 +659,19 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
       }
 
       // add assoc init
+      IterationItemsFinder finder = new IterationItemsFinder();
+      Collection<ASTExpression> iterateItems = new HashSet<>(finder.getItems(gui));
+
+      Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
+          new IndentPrinter(), false, iterateItems, iterateItems
+      );
+      String getter = getterPrinter.prettyprint(node);
+
       Optional<InitDependency> dep = InitDependencyTree.getInstance()
           .getDependency(node);
       if (dep.isPresent()) {
         dep.get().setInitMethod(new InitMethodTemplate(
-            getAssocInitTemplate(), mcType, name, iterateArgs
+            getAssocInitTemplate(), mcType, name, getter, iterateArgs
         ));
       }
     }

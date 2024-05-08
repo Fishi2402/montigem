@@ -10,6 +10,7 @@ const ${tmpVar}: ${cdPrinter.printType(mcType)} = [];
 <#list listItems as item>
 ${tmpVar}.push(${item});
 </#list>
+
 <#list keys as key>
   <#assign i = key?index - 1>
   this.${name}
@@ -25,3 +26,4 @@ ${tmpVar}.push(${item});
   </#if>
 </#list>
 ;
+${tc.includeArgs("umlp.gui2java.GUI2JavaInitBody", [initList])}

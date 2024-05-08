@@ -53,6 +53,21 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
   }
 
   @Override
+  protected String getInitDomainListTemplate() {
+    return "umlp.gui2ts.GUI2TSInitDomainList";
+  }
+
+  @Override
+  protected String getInitParamBuilderTemplate() {
+    return "umlp.gui2ts.GUI2TSInitParamBuilder";
+  }
+
+  @Override
+  protected String getIterateInitTemplate() {
+    return "umlp.gui2ts.GUI2TSIterateInit";
+  }
+
+  @Override
   protected String getStaticBuilderInitTemplate() {
     return "umlp.gui2ts.GUI2TSStaticBuilderInit";
   }

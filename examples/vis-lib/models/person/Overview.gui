@@ -23,7 +23,7 @@ page Overview(List<Person> persons) {
         col3 = @GemText(value = p.address.street + " " + p.address.house)
       );
       @CreatePerson(person = Person());
-      @HierarchicalList(list = [[Person()], persons, ["about", p.aboutMe]]);
+      @HierarchicalList(list = [[Person()], persons]);
     },
     @PieChart(persons = persons)
   ]);
