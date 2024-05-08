@@ -28,7 +28,7 @@ public class TestTagTypeSymbols {
     Assertions.assertTrue(opt.isPresent());
 
     IUMLPArtifactScope scope = UMLPMill.scopesGenitorDelegator().createFromAST(opt.get());
-    ASTTagUnit tags = TagRepository.loadTempTagModel("Test").get();
+    TagRepository.loadTempTagModel("Test").get();
 
     CDTypeSymbol c = scope.resolveCDType("Test.C").get();
     CDMethodSignatureSymbol m = scope.resolveCDMethodSignature("Test.C.sendIssueMail").get();
