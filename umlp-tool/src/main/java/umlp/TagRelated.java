@@ -120,6 +120,10 @@ public class TagRelated {
         Log.error("Failed to load tag file " + f.getName() + " :" + ioException.getMessage(), ioException);
       }
     }
+    System.out.println("Finished tag lookup: Loaded " + Iterables.size(TagRepository.getLoadedTagUnits())  + " tag units");
+    for (ASTTagUnit tagUnit : TagRepository.getLoadedTagUnits()) {
+      System.out.print(" - " + tagUnit.getName() + ": #" + tagUnit.getTagsList().size());
+    }
 
   }
 
