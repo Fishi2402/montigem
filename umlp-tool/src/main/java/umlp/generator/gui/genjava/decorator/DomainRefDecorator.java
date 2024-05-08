@@ -23,6 +23,7 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
+import de.monticore.types3.SymTypeRelations;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
@@ -223,6 +224,7 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
 
       domainAttributes.addAll(addDomainListAttributes(domainListParams, clazz));
 
+      List<String> params = new ArrayList<>();
       // attrs, getters
       if (util.isCreateModel(ast.getComponentQName())) {
         // Add Builder attributes and getter for domain type parameters
@@ -235,21 +237,20 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
         // Add attributes
         addAttributes(domainParams, clazz, domainAttributes);
 
-        List<ASTGUIParam> otherParams = domainClass.getGUIParamList().stream()
-            .filter(p -> !util.isDomainType(p) && !util.isDomainListType(p)).collect(Collectors.toList());
-        List<ASTCDAttribute> otherAttributes = new ArrayList<>();
-        for (ASTGUIParam p : otherParams) {
-          ASTCDAttribute cdAttr = addAttributForGUIParameter(clazz, p, CDModifier.PUBLIC.build());
-          addAnnotation(cdAttr);
-          otherAttributes.add(cdAttr);
-        }
-        List<String> params = new ArrayList<>();
         domainClass.forEachGUIParams(p -> params.add(
             getParam(p.getSymbol().getType(), p.getName())
         ));
-
-        addEditConstructor(clazz, params, domainAttributes, otherAttributes);
       }
+      List<ASTGUIParam> otherParams = domainClass.getGUIParamList().stream()
+          .filter(p -> !util.isDomainType(p) && !util.isDomainListType(p)).collect(Collectors.toList());
+      List<ASTCDAttribute> otherAttributes = new ArrayList<>();
+      for (ASTGUIParam p : otherParams) {
+        ASTCDAttribute cdAttr = addAttributForGUIParameter(clazz, p, CDModifier.PUBLIC.build());
+        addAnnotation(cdAttr);
+        otherAttributes.add(cdAttr);
+      }
+
+      addEditConstructor(clazz, params, domainAttributes, otherAttributes);
       // Add set_internal setters for the attribute
       for (ASTCDAttribute astcdAttribute : domainAttributes) {
         getCD4C().addMethod(clazz, getInternalSetterTemplate(), astcdAttribute.getName(), astcdAttribute.getMCType().printType());
@@ -441,6 +442,9 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
 
     // getter
     String getter = util.gui2cdAttrGetterName(astguiParam.getName());
+    if (astguiParam.isPresentSymbol() && SymTypeRelations.isBoolean(astguiParam.getSymbol().getType())) {
+      getter = util.gui2cdAttrBooleanGetterName(astguiParam.getName());
+    }
     ASTCDMethodSignature method = getCD4C().addMethod(clazz, getGetterParamTemplate(),
         getter, transformTypeForAttr(clazz, astguiParam).printType(), astguiParam.getName());
     addAnnotation(clazz, method);
