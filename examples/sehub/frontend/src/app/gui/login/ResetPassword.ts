@@ -28,7 +28,7 @@ export class ResetPassword extends ResetPasswordComponent {
       }
     }
 
-  public override resetPassword(event: any): void {
+  public override passwordReset(event: any): void {
     if (!this.user || !this.user.getPassword() || !this.user.getEmail()) {
       return;
     }

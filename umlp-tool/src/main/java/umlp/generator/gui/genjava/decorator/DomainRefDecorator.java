@@ -225,6 +225,15 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
       domainAttributes.addAll(addDomainListAttributes(domainListParams, clazz));
 
       List<String> params = new ArrayList<>();
+
+      List<ASTGUIParam> otherParams = domainClass.getGUIParamList().stream()
+          .filter(p -> !util.isDomainType(p) && !util.isDomainListType(p)).collect(Collectors.toList());
+      List<ASTCDAttribute> otherAttributes = new ArrayList<>();
+      for (ASTGUIParam p : otherParams) {
+        ASTCDAttribute cdAttr = addAttributForGUIParameter(clazz, p, CDModifier.PUBLIC.build());
+        addAnnotation(cdAttr);
+        otherAttributes.add(cdAttr);
+      }
       // attrs, getters
       if (util.isCreateModel(ast.getComponentQName())) {
         // Add Builder attributes and getter for domain type parameters
@@ -240,17 +249,9 @@ public class DomainRefDecorator extends GUIAbstractDecorator {
         domainClass.forEachGUIParams(p -> params.add(
             getParam(p.getSymbol().getType(), p.getName())
         ));
-      }
-      List<ASTGUIParam> otherParams = domainClass.getGUIParamList().stream()
-          .filter(p -> !util.isDomainType(p) && !util.isDomainListType(p)).collect(Collectors.toList());
-      List<ASTCDAttribute> otherAttributes = new ArrayList<>();
-      for (ASTGUIParam p : otherParams) {
-        ASTCDAttribute cdAttr = addAttributForGUIParameter(clazz, p, CDModifier.PUBLIC.build());
-        addAnnotation(cdAttr);
-        otherAttributes.add(cdAttr);
+        addEditConstructor(clazz, params, domainAttributes, otherAttributes);
       }
 
-      addEditConstructor(clazz, params, domainAttributes, otherAttributes);
       // Add set_internal setters for the attribute
       for (ASTCDAttribute astcdAttribute : domainAttributes) {
         getCD4C().addMethod(clazz, getInternalSetterTemplate(), astcdAttribute.getName(), astcdAttribute.getMCType().printType());

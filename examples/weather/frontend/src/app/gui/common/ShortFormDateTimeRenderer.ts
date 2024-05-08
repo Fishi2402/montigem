@@ -21,7 +21,7 @@ export  class ShortFormDateTimeRenderer extends ShortFormDateTimeRendererCompone
       return "???";
     }else{
       const hours = date.toLocaleTimeString("en-US", {hour: "2-digit"})
-      if(this.getReplaceToday()
+      if(this.isReplaceToday()
          && today.getFullYear() == date.getFullYear()
          && today.getMonth() == date.getMonth()
          && today.getDate() == date.getDate()

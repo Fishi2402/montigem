@@ -19,7 +19,7 @@ export  class ShortFormDateRenderer extends ShortFormDateRendererComponent {
     if(date == null){
       return "???";
     }else{
-      if(this.getReplaceToday()
+      if(this.isReplaceToday()
          && today.getFullYear() == date.getFullYear()
          && today.getMonth() == date.getMonth()
          && today.getDate() == date.getDate()
