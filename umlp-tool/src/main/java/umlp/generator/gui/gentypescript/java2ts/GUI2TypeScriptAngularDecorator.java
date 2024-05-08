@@ -293,7 +293,11 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
         List<ASTCDAttribute> otherAttributes = new ArrayList<>();
         for (ASTGUIParam p : otherParams) {
           ASTCDAttribute cdAttr = addAttributForGUIParameter(clazz, p, CDModifier.PUBLIC.build());
-          addAnnotation(cdAttr);
+          if (p.isPresentSymbol() && util.isEventArgument(p.getSymbol())) {
+            addOutputAnnotation(cdAttr);
+          } else {
+            addAnnotation(cdAttr);
+          }
           otherAttributes.add(cdAttr);
         }
         List<String> params = new ArrayList<>();
@@ -402,6 +406,14 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
         GUI2ComponentTemplates.ANNOTATIONS,
         attr,
         new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATION_INPUT)
+    );
+  }
+
+  protected void addOutputAnnotation(ASTCDAttribute attr) {
+    glex.replaceTemplate(
+        GUI2ComponentTemplates.ANNOTATIONS,
+        attr,
+        new StringHookPoint("@Output()")
     );
   }
 
