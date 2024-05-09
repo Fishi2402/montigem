@@ -640,6 +640,9 @@ public class UMLPTool extends UMLPToolTOP {
         for (String output : outputs) {
           Reporting.reportFileCreation(Paths.get(outDir.getPath(), output).toString());
         }
+
+        TagRelated.postInfo();
+
         Reporting.flush(new ASTGUICompilationUnit());
       }
     }

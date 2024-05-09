@@ -94,6 +94,13 @@ public class TagRelated {
   }
 
 
+  public static void postInfo() {
+    System.out.println("Finished usage of tags: Had " + Iterables.size(TagRepository.getLoadedTagUnits())  + " tag units");
+    for (ASTTagUnit tagUnit : TagRepository.getLoadedTagUnits()) {
+      System.out.println(" -tag: " + tagUnit.getName() + ": #" + tagUnit.getTagsList().size());
+    }
+  }
+
   public static void initLookup(MCPath importedSymbolPath) {
     System.out.println("Init tag lookup: " + importedSymbolPath.getEntries().size() + "(" + Iterables.size(TagRepository.getLoadedTagUnits()) + ") in " + importedSymbolPath.getEntries());
     Set<File> tagFiles = importedSymbolPath.getEntries().stream()
@@ -122,7 +129,7 @@ public class TagRelated {
     }
     System.out.println("Finished tag lookup: Loaded " + Iterables.size(TagRepository.getLoadedTagUnits())  + " tag units");
     for (ASTTagUnit tagUnit : TagRepository.getLoadedTagUnits()) {
-      System.out.print(" - " + tagUnit.getName() + ": #" + tagUnit.getTagsList().size());
+      System.out.println(" -tag: " + tagUnit.getName() + ": #" + tagUnit.getTagsList().size());
     }
 
   }
