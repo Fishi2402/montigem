@@ -103,6 +103,7 @@ public class TagRelated {
 
   public static void initLookup(MCPath importedSymbolPath) {
     System.out.println("Init tag lookup: " + importedSymbolPath.getEntries().size() + "(" + Iterables.size(TagRepository.getLoadedTagUnits()) + ") in " + importedSymbolPath.getEntries());
+    TagRepository.clearTags(); // Make sure to unload all previous tags from earlier runs
     Set<File> tagFiles = importedSymbolPath.getEntries().stream()
         .map(x -> x.toFile().listFiles(f -> f.getName().endsWith(".tags")))
         .filter(Objects::nonNull)
