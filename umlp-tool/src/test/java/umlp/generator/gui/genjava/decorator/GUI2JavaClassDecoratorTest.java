@@ -394,39 +394,54 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     iterates = stat.getIterates(decl);
 
     ASTGUIIterate lNode = stat.getIterById(iterates, "l");
+    ASTGUIIterate oNode = stat.getIterById(iterates, "o");
+    ASTGUIIterate pNode = stat.getIterById(iterates, "p");
     ASTGUIComponent qNode = stat.getCompById(components, "q");
+
 
     List<Executable> assertions = new ArrayList<>();
 
     // declaration block does not have explicit init
     assertions.add(() -> assertFalse(root.get().getInitMethod().isPresent()));
     // most GUIParam have init
-    assertions.add(() -> assertTrue(root.get().getDependentList().get(0).getInitMethod().isPresent()));
-    assertions.add(() -> assertTrue(root.get().getDependentList().get(1).getInitMethod().isPresent()));
+    InitDependency person = root.get().getDependentList().get(0);
+    assertions.add(() -> assertTrue(person.getInitMethod().isPresent()));
+    InitDependency $per$son = person.getDependentList().get(0);
+    assertions.add(() -> assertTrue($per$son.getInitMethod().isPresent()));
+    InitDependency statusDefault = $per$son.getDependentList().get(0);
+    assertions.add(() -> assertFalse(statusDefault.getInitMethod().isPresent()));
+    InitDependency status = statusDefault.getDependentList().get(0);
+    assertions.add(() -> assertTrue(status.getInitMethod().isPresent()));
     // param that has default value depends on the value
-    assertions.add(() -> assertTrue(root.get().getDependentList().get(2).getDependentList().get(0).getInitMethod().isPresent()));
-    assertions.add(() -> assertTrue(root.get().getDependentList().get(3).getInitMethod().isPresent()));
-    assertions.add(() -> assertTrue(root.get().getDependentList().get(4).getInitMethod().isPresent()));
-    assertions.add(() -> assertTrue(root.get().getDependentList().get(5).getInitMethod().isPresent()));
-    assertions.add(() -> assertTrue(root.get().getDependentList().get(6).getInitMethod().isPresent()));
-    assertions.add(() -> assertTrue(root.get().getDependentList().get(7).getInitMethod().isPresent()));
+    InitDependency la = status.getDependentList().get(0);
+    assertions.add(() -> assertTrue(la.getInitMethod().isPresent()));
+    InitDependency lla = la.getDependentList().get(0);
+    assertions.add(() -> assertTrue(lla.getInitMethod().isPresent()));
+    InitDependency s = lla.getDependentList().get(0);
+    assertions.add(() -> assertTrue(s.getInitMethod().isPresent()));
+    InitDependency b = s.getDependentList().get(0);
+    assertions.add(() -> assertTrue(b.getInitMethod().isPresent()));
+    InitDependency i = b.getDependentList().get(0);
+    assertions.add(() -> assertTrue(i.getInitMethod().isPresent()));
+    InitDependency v = i.getDependentList().get(0);
     // GUIViewElement has no init
-    assertions.add(() -> assertFalse(root.get().getDependentList().get(8).getInitMethod().isPresent()));
-    assertions.add(() -> assertTrue(root.get().getDependentList().get(9).getInitMethod().isPresent()));
+    assertions.add(() -> assertFalse(v.getInitMethod().isPresent()));
+    InitDependency e = v.getDependentList().get(0);
+    assertions.add(() -> assertTrue(e.getInitMethod().isPresent()));
 
-    InitDependency declBlock = root.get().getDependentList().get(10);
+    InitDependency declBlock = e.getDependentList().get(0);
     assertions.add(() -> assertFalse(declBlock.getInitMethod().isPresent()));
 
     InitDependency aA = declBlock.getDependentList().get(0);
-    InitDependency cS = declBlock.getDependentList().get(1);
-    InitDependency cA = declBlock.getDependentList().get(2);
-    InitDependency fI0 = declBlock.getDependentList().get(3);
-    InitDependency gLgve = declBlock.getDependentList().get(4);
-    InitDependency jE = declBlock.getDependentList().get(5);
-    InitDependency kS = declBlock.getDependentList().get(6);
-    InitDependency kM0 = declBlock.getDependentList().get(7);
-    InitDependency l = declBlock.getDependentList().get(8);
-    InitDependency o = declBlock.getDependentList().get(9);
+    InitDependency cS = aA.getDependentList().get(0);
+    InitDependency cA = cS.getDependentList().get(0);
+    InitDependency fI0 = cA.getDependentList().get(0);
+    InitDependency gLgve = fI0.getDependentList().get(0).getDependentList().get(0);
+    InitDependency jE = gLgve.getDependentList().get(0);
+    InitDependency kS = jE.getDependentList().get(0);
+    InitDependency kM0 = kS.getDependentList().get(0);
+    InitDependency kM1 = kM0.getDependentList().get(0);
+    InitDependency kM = kM1.getDependentList().get(0);
 
     assertions.add(() -> assertTrue(aA.getInitMethod().isPresent()));
     assertions.add(() -> assertFalse(cS.getInitMethod().isPresent()));
@@ -435,42 +450,39 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     assertions.add(() -> assertFalse(jE.getInitMethod().isPresent()));
     assertions.add(() -> assertTrue(kS.getInitMethod().isPresent()));
     assertions.add(() -> assertFalse(kM0.getInitMethod().isPresent()));
+    assertions.add(() -> assertFalse(kM1.getInitMethod().isPresent()));
+    assertions.add(() -> assertTrue(kM.getInitMethod().isPresent()));
+
+    InitDependency l = kM.getDependentList().get(0);
+    InitDependency lCall = l.getDependentList().get(0);
+    InitDependency lBlock = lCall.getDependentList().get(0);
+    InitDependency mCondition = lBlock.getDependentList().get(0);
+    InitDependency mBlock = mCondition.getDependentList().get(0);
+    InitDependency o = mBlock.getDependentList().get(0);
+
     assertions.add(() -> assertTrue(l.getInitMethod().isPresent()));
     assertions.add(() -> assertTrue(o.getInitMethod().isPresent()));
 
-    InitDependency kM1 = kM0.getDependentList().get(0);
-    assertions.add(() -> assertFalse(kM1.getInitMethod().isPresent()));
-    InitDependency kM = kM1.getDependentList().get(0);
-    assertions.add(() -> assertTrue(kM.getInitMethod().isPresent()));
-
     InitDependency oIterable = o.getDependentList().get(0);
     assertions.add(() -> assertTrue(oIterable.getInitMethod().isPresent()));
-    InitDependency oBlock = o.getDependentList().get(1);
+    InitDependency oBlock = oIterable.getDependentList().get(0);
+
     InitDependency p = oBlock.getDependentList().get(0);
     InitDependency pIterable = p.getDependentList().get(0);
     assertions.add(() -> assertTrue(pIterable.getInitMethod().isPresent()));
-    InitDependency pBlock = p.getDependentList().get(1);
-
+    InitDependency pBlock = pIterable.getDependentList().get(0);
     assertions.add(() -> assertFalse(pBlock.getInitMethod().isPresent()));
 
     InitDependency qConstructor = pBlock.getDependentList().get(0);
-
     assertions.add(() -> assertTrue(qConstructor.getInitMethod().isPresent()));
-
     InitDependency qInnerList = qConstructor.getDependentList().get(0);
-
     assertions.add(() -> assertTrue(qInnerList.getInitMethod().isPresent()));
-
     InitDependency qCall = qInnerList.getDependentList().get(0);
-
     assertions.add(() -> assertTrue(qCall.getInitMethod().isPresent()));
-
     InitDependency qList = qCall.getDependentList().get(0);
-
     assertions.add(() -> assertTrue(qList.getInitMethod().isPresent()));
 
-    InitDependency rList = pBlock.getDependentList().get(1);
-
+    InitDependency rList = qCall.getDependentList().get(0);
     assertions.add(() -> assertTrue(rList.getInitMethod().isPresent()));
 
     assertAll(assertions);

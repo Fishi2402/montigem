@@ -4,4 +4,4 @@ ${tc.signature("type", "name", "manager", "builder", "initList")}
 
 ${cd4c.method("protected void ${builder}()")}
 this.${name} = ${manager}.${type?uncap_first}Builder();
-${tc.includeArgs("umlp.gui2java.GUI2JavaInitBody", [initList])}
+${tc.includeArgs("umlp.gui2java.GUI2JavaCallInit", [initList])}

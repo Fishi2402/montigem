@@ -26,4 +26,4 @@ ${tmpVar}.add(${item});
   </#if>
 </#list>
 ;
-${tc.includeArgs("umlp.gui2java.GUI2JavaInitBody", [initList])}
+${tc.includeArgs("umlp.gui2java.GUI2JavaCallInit", [initList])}

@@ -24,4 +24,4 @@ ${type} ${tmpVar} = ${manager}.${type?uncap_first}Builder();
   </#if>
 </#list>
 ;
-${tc.includeArgs("umlp.gui2java.GUI2JavaInitBody", [initList])}
+${tc.includeArgs("umlp.gui2java.GUI2JavaCallInit", [initList])}

@@ -31,7 +31,6 @@ public class InitDependencyTree implements GUIDSLVisitor2, CommonExpressionsVisi
   protected static InitDependencyTree instance;
 
   protected Stack<InitDependency> depStack = new Stack<>();
-  protected Optional<InitDependency> reverseTreeRoot = Optional.empty();
   protected Map<ASTNode, InitDependency> nodeDepMap = new HashMap<>();
   protected Optional<ASTNode> jump = Optional.empty();
 
@@ -67,24 +66,12 @@ public class InitDependencyTree implements GUIDSLVisitor2, CommonExpressionsVisi
 
   @Override
   public void visit(ASTGUIComponentDeclaration node) {
-    InitDependency dep = putDependency(node);
-    setReverseTreeRoot(dep);
-  }
-
-  @Override
-  public void endVisit(ASTGUIComponentDeclaration node) {
-    popDependency();
+    putDependency(node);
   }
 
   @Override
   public void visit(ASTGUIBlock node) {
-    InitDependency dep = putDependency(node);
-    setReverseTreeRoot(dep);
-  }
-
-  @Override
-  public void endVisit(ASTGUIBlock node) {
-    popDependency();
+    putDependency(node);
   }
 
   @Override
@@ -106,18 +93,7 @@ public class InitDependencyTree implements GUIDSLVisitor2, CommonExpressionsVisi
           + " is supported so far");
     }
     ASTGUIShortIterateControl control = (ASTGUIShortIterateControl) node.getIterateControl();
-    InitDependency dependency = putDependency(control);
-    setReverseTreeRoot(dependency);
-  }
-
-  @Override
-  public void endVisit(ASTGUIIterate node) {
-    if (!(node.getIterateControl() instanceof ASTGUIShortIterateControl)) {
-      Log.error("0x00004 iterate construct " + node.getId().getName()
-          + " was not processed: only short version, such as '(Type item : list)',"
-          + " is supported so far");
-    }
-    popDependency();
+    putDependency(control);
   }
 
   @Override
@@ -164,12 +140,8 @@ public class InitDependencyTree implements GUIDSLVisitor2, CommonExpressionsVisi
     return current;
   }
 
-  public void setReverseTreeRoot(InitDependency dep) {
-    this.reverseTreeRoot = Optional.of(dep);
-  }
-
   public void rememberDepStackJump(ASTNode node) {
-    if (reverseTreeRoot.isPresent() && jump.isEmpty()) {
+    if (jump.isEmpty()) {
       jump = Optional.of(node);
     }
   }
@@ -177,7 +149,7 @@ public class InitDependencyTree implements GUIDSLVisitor2, CommonExpressionsVisi
   public void maybeJumpDepStack(ASTNode node) {
     if (jump.isPresent() && jump.get().equals(node)) {
       while (!depStack.isEmpty()
-          && (reverseTreeRoot.isPresent() && !reverseTreeRoot.get().equals(depStack.peek()))) {
+          && !nodeDepMap.get(jump.get()).equals(depStack.peek())) {
         depStack.pop();
       }
       jump = Optional.empty();

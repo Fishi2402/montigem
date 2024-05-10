@@ -11,4 +11,4 @@ ${tmpVar}.add(${item});
 </#list>
 
 this.${name} = ${tmpVar};
-${tc.includeArgs("umlp.gui2java.GUI2JavaInitBody", [initList])}
+${tc.includeArgs("umlp.gui2java.GUI2JavaCallInit", [initList])}
