@@ -14,17 +14,19 @@ import mc.fenix.input.GemCheckBoxInput;
 
 import person.Row;
 
-page Create(Person person, Address address) {
+page Create(Person person, Address address, boolean showEmployed = true) {
   @Row(
     col1 = bday@GemTextInput(labelText = "Birthday", entry = person.birthday, inputType = "date"),
     col2 = name@GemTextInput(labelText = "Name", entry = person.name),
     col3 = @GemRow(hAlign = "space-between", vAlign = "bottom", components = [
-      @GemColumn(width = "33%", components = [
-        employed@GemCheckBoxInput(
-          labelText = "Employed",
-          checked = person.employed
-        )
-      ]),
+      @guard(showEmployed) {
+        @GemColumn(width = "33%", components = [
+          employed@GemCheckBoxInput(
+            labelText = "Employed",
+            checked = person.employed
+          )
+        ]);
+      },
       @GemColumn(width = "33%", components = [
         street@GemTextInput(labelText = "Street", entry = address.street)
       ]),
@@ -33,5 +35,5 @@ page Create(Person person, Address address) {
       ])
     ])
   );
-  @GemButton(label = "Create person", leftClick = create(person));
+  @GemButton(label = "Create person", leftClick = createPerson(person));
 }

@@ -201,7 +201,12 @@ export class JoinConnectionEdit extends JoinConnectionEditComponent implements O
         console.debug("this.dummyComponents:", this.dummyComponents)
         console.debug(this.getConnection().removeConnects(this.dummyComponents[indexInDummyComps],
             NotificationScope.ALL))
-        this.getConnection().removeConnectsByIdSure(+gemIdOfComponent)
+        DemoRecManager.getDemoRecComponentSure(+gemIdOfComponent).then( c => {
+          console.log("Removing ",c)
+          this.getConnection().removeConnects2(c)
+        }
+
+        )
         console.debug(this.getConnection().getConnects().map(c => c.getGemId()))
         this.dummyComponentNames.splice(indexInDummyComps, 1)
         this.dummyComponents.splice(indexInDummyComps, 1)

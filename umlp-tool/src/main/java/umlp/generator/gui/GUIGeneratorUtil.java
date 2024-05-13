@@ -451,6 +451,10 @@ public class GUIGeneratorUtil {
     return "get" + StringTransformations.capitalize(domainParamName);
   }
 
+  public String gui2cdAttrBooleanGetterName(String domainParamName) {
+    return "is" + StringTransformations.capitalize(domainParamName);
+  }
+
   public String gui2cdAttrSetterName(String domainParamName) {
     return "set" + StringTransformations.capitalize(domainParamName);
   }

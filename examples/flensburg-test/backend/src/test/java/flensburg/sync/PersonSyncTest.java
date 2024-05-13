@@ -15,6 +15,7 @@ import hardy.flensburg.PersonBuilder;
 import hardy.flensburg.commands.GetFreeGemIdRequest;
 import hardy.flensburg.test_infrastructure.FlensburgDBTestSetup;
 import hardy.flensburg.test_infrastructure.FlensburgMockTestSetup;
+import hardy.flensburg.test_infrastructure.FlensburgSQLDBTestSetup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import umlp.backendrte.command.Command;
@@ -43,7 +44,7 @@ public interface PersonSyncTest extends TestSetup<FlensburgTestContext> {
     }
   }
 
-  class PersonSyncDBTest extends FlensburgDBTestSetup implements PersonSyncTest {
+  class PersonSyncDBTest extends FlensburgSQLDBTestSetup implements PersonSyncTest {
     public PersonSyncDBTest() {
       super(2);
     }

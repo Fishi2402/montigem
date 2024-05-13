@@ -3,10 +3,10 @@ package flensburg.commands;
 
 // HWC-T
 
-import hardy.flensburg.FlensburgMock;
-import org.junit.jupiter.api.BeforeEach;
+import hardy.flensburg.test_infrastructure.FlensburgMockTestSetup;
 import org.junit.jupiter.api.Test;
 import umlp.backendrte.common.BaseClassObjectMapper;
+import umlp.backendrte.test_infrastructure.ClientSetup;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -22,10 +22,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // Testet die per TOP-Mechanismus zu BaseClassObjectMapper hinzugefügte Basisklasse java.util.Date,
 // sowie die automatische Initialisierung zusammen mit dem FlensburgManager/Mock.
-public class FlensburgBaseClassObjectMapperTest {
-  @BeforeEach
-  public void init(){
-    FlensburgMock.init();
+public class FlensburgBaseClassObjectMapperTest extends FlensburgMockTestSetup {
+
+  public FlensburgBaseClassObjectMapperTest() {
+    super(ClientSetup.of(1));
   }
 
   @Test

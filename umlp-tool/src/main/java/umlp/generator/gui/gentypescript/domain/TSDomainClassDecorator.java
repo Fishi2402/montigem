@@ -63,6 +63,7 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
     getCD4C().addImport(cdType, PathUtil.getBackendRTECommonPath("Gem"));
     getCD4C().addImport(cdType, PathUtil.getBackendRTECommonPath("GemList"));
     getCD4C().addImport(cdType, PathUtil.getBackendRTECommonPath("GemBuildable"));
+    getCD4C().addImport(cdType, this.astcdPackage + "." + getCorrectManager(domainType));
     getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getName() + ObserverDecorator.SUFFIX);
     getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getName() + ErrorCollectorDecorator.SUFFIX);
     if (!domainType.getSuperclassList().isEmpty()) {

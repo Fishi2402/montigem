@@ -16,6 +16,11 @@ dependencies {
     implementation group: 'org.springframework.shell', name: 'spring-shell-starter', version: spring_shell_version
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: spring_version
 
+    // Compile only, such that we don't force the neo4j dependency into each product
+    compileOnly group: 'org.neo4j', name: 'neo4j-jdbc-driver', version: neo4j_jdbc_version
+    compileOnly "org.neo4j:neo4j:4.4.10"
+    compileOnly "org.neo4j.driver:neo4j-java-driver:$neo4jVersion"
+
     // Used for umlp.backendrte.test_infrastructure.TestSetup
     // Alternative: testing-rte + generate a testing module for each cd
     compileOnly 'org.junit.jupiter:junit-jupiter-api:5.9.2'

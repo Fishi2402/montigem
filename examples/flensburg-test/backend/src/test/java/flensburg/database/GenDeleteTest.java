@@ -20,30 +20,17 @@ import hardy.flensburg.PersonDAO;
 import hardy.flensburg.PersonDAOInterface;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import umlp.backendrte.test_infrastructure.ClientSetup;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public abstract class GenDeleteTest extends GenAbstractDBTest {
+public class GenDeleteTest extends GenAbstractDBTest {
 
-  @DisplayName("Neo4J Delete Tests")
-  public static class Neo4JTestSuite extends GenDeleteTest {
-    Neo4JTestSuite() {
-      super(DatabaseConnectionType.NEO4J);
-    }
-  }
-
-  @DisplayName("SQL Delete Tests")
-  public static class SQLTestSuite extends GenDeleteTest {
-    SQLTestSuite() {
-      super(DatabaseConnectionType.SQL);
-    }
-  }
-
-  public GenDeleteTest(DatabaseConnectionType dbConnectionType) {
-    super(dbConnectionType);
+  public GenDeleteTest() {
+    super(ClientSetup.of(1));
   }
 
   @Test

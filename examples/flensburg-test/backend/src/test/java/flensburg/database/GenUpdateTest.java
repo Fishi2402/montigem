@@ -16,6 +16,7 @@ import hardy.flensburg.PersonBuilder;
 import hardy.flensburg.PersonDAOInterface;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import umlp.backendrte.test_infrastructure.ClientSetup;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,26 +25,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public abstract class GenUpdateTest extends GenAbstractDBTest {
+public class GenUpdateTest extends GenAbstractDBTest {
 
-  @DisplayName("Neo4J Update Tests")
-  public static class Neo4JTestSuite extends GenUpdateTest {
-    Neo4JTestSuite() {
-      super(DatabaseConnectionType.NEO4J);
-    }
+  public GenUpdateTest() {
+    super(ClientSetup.of(1));
   }
-
-  @DisplayName("SQL Update Tests")
-  public static class SQLTestSuite extends GenUpdateTest {
-    SQLTestSuite() {
-      super(DatabaseConnectionType.SQL);
-    }
-  }
-
-  public GenUpdateTest(DatabaseConnectionType dbConnectionType) {
-    super(dbConnectionType);
-  }
-
 
   @Test
   public void testHumanDaoSetAge() {
