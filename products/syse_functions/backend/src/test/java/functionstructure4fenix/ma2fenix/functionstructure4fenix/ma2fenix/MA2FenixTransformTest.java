@@ -4,6 +4,7 @@ import functionstructure4fenix.Function;
 import functionstructure4fenix.FunctionStructure4FenixManager;
 import functionstructure4fenix.ma2fenix.MA2FenixTool;
 import functionstructure4fenix.test_infrastructure.FunctionStructure4FenixDBTestSetup;
+import functionstructure4fenix.test_infrastructure.FunctionStructure4FenixSQLDBTestSetup;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
@@ -12,7 +13,7 @@ import java.nio.file.Paths;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-public class MA2FenixTransformTest extends FunctionStructure4FenixDBTestSetup {
+public class MA2FenixTransformTest extends FunctionStructure4FenixSQLDBTestSetup {
   public MA2FenixTransformTest(){
     super(0);
   }
