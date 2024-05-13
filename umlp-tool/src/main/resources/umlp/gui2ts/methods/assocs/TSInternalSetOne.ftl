@@ -12,7 +12,7 @@ this._${name} = new Gem<${targetName}>().Gem2(o);
   o.${otherSideName}(<${sourceName}> <any> this, NotificationScope.MINIMAL);
   if(${managerName}.isLoaded${targetName}(oldValue)){
     <#if otherSideName?starts_with("set")>
-        ${managerName}.get${targetName}Sure(oldValue).${otherSideName}Gem(new Gem<>(), NotificationScope.MINIMAL);
+        ${managerName}.get${targetName}Sure(oldValue).then(x => x.${otherSideName}Gem(new Gem<>(), NotificationScope.MINIMAL));
     <#else>
         <#assign removeOtherSide=otherSideName?replace("add", "remove")>
         ${managerName}.get${targetName}Sure(oldValue).then(x => x.${removeOtherSide}(<${sourceName}> <any> this, NotificationScope.MINIMAL));
