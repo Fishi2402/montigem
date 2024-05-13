@@ -46,5 +46,22 @@ public class CarrentalServerApplication extends CarrentalServerApplicationTOP {
 
     }
 
-  }
+    if (CarrentalManager.getCustomerList().isEmpty()) {
+      CarrentalManager.customerBuilder()
+          .name("Ben")
+          .email("ben@example.org")
+          .build();
+      CarrentalManager.customerBuilder()
+          .name("Benjamin")
+          .email("benjamin@example.org")
+          .vIPStatusAdd( // TODO: [*] works with CD2GUI, [0..1] makes more sense
+              CarrentalManager.vIPStatusBuilder()
+                  .personalGreetingAtTheDesk("Hello there")
+                  .build().get()
+          )
+          .build();
+    }
+
+
+    }
 }
