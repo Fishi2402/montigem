@@ -27,6 +27,11 @@
     header @not-cachedFiles Cache-Control "no-cache"
 
 
+    # Drop Modified from the header. Due to the reproducible docker-build, this is _always_ set to 1970, so it just confuses the caches
+    header {
+      -Last-Modified
+    }
+
     try_files {path} /index.html # try to serve static files, otherwise fallback to index.html
     file_server
   }
