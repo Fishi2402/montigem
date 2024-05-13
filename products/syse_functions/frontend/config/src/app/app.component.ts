@@ -4,7 +4,7 @@ import {
   ClientCommandManager,
   ClientCommandWebsocketCommunication,
   CommandManager
-} from '@umlp/common';
+} from '@umlp/commonj2ts';
 import {FunctionStructure4FenixManagerClientImpl} from '@src/functionstructure4fenix/FunctionStructure4FenixManagerClientImpl';
 
 @Component({
