@@ -151,7 +151,7 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
       umlpTask.getOutputDir().set(getAppDomainPath(project).toFile());
 
       // Always create symbols & tag files
-      umlpTask.getSymbolOutDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols_gui_domain").toFile());
+      umlpTask.getSymbolOutDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols_gui_domain_domain__from_task_frontenddomain").toFile());
 
     });
   }
@@ -208,8 +208,8 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
       umlpTask.setGroup(UMLP_GROUP_NAME);
       umlpTask.dependsOn(frontendSetupTask.get());
       umlpTask.getInput().from(getModelsPath(project));
-      umlpTask.getSymbolOutDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols_gui_domain").toFile());
-      umlpTask.getOutputDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols_gui_domain").toFile());
+      umlpTask.getSymbolOutDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols_gui_domain__from_task_domainsymbol").toFile());
+      umlpTask.getOutputDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols_gui_domain__from_task_domainsymbol").toFile());
     });
   }
 
@@ -254,7 +254,7 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
           // Because the frontend uses relative paths to include HWC Code
           umlpTask.getOutputDir().set(getAppGuiPath(project).toFile());
           umlpTask.getSymbolOutDir()
-              .set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols_gui").toFile());
+              .set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols_gui_domain__from_task_frontendgui").toFile());
 
           umlpTask.getGuiGenJsweet().set(j2ts);
         });
