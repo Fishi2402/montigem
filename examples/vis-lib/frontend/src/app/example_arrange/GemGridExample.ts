@@ -12,8 +12,8 @@ import { Component } from '@angular/core';
 })
 export class GemGridExample extends GemGridExampleComponent {
 
-  protected override gemGrid6X: Array<any> = ["200px", "1fr", "auto"];
+  protected override gemGrid12X: Array<any> = ["200px", "1fr", "auto"];
 
-  protected override gemGrid6Y: Array<any> = ["auto", "20px"];
+  protected override gemGrid12Y: Array<any> = ["auto", "20px"];
 
 }

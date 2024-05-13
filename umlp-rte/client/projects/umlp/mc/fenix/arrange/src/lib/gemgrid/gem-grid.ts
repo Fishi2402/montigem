@@ -1,4 +1,4 @@
-import { Component, HostBinding, Input, TemplateRef } from "@angular/core";
+import { Component, HostBinding, Input, TemplateRef, ViewChild } from "@angular/core";
 
 @Component({
   selector: "gem-grid",
@@ -26,6 +26,9 @@ export class GemGrid {
   protected _gridTemplateCols: string = "1fr";
   protected _maxCols: number = 1;
 
+  @ViewChild('_gemGridEmpty', { static: true })
+  protected emptyTpl: TemplateRef<any>;
+
   public _x: string[] = [];
   public _y: string[] = [];
 
@@ -50,7 +53,21 @@ export class GemGrid {
     this._maxCols = max;
     this._maxRows = val.length;
     this.updateGridTemplateCols();
-    this._rows = val;
+
+    const res: TemplateRef<any>[][] = [];
+    for (let row of val) {
+      const r: TemplateRef<any>[] = [];
+      for (let col of row) {
+        r.push(col);
+      }
+      if (row.length < this._maxCols) {
+        for (let i = row.length; i < this._maxCols; ++i) {
+          r.push(this.emptyTpl);
+        }
+      }
+      res.push(r);
+    }
+    this._rows = res;
   }
 
   public get cols(): TemplateRef<any>[][] {
@@ -71,7 +88,22 @@ export class GemGrid {
     this._maxRows = max;
     this._maxCols = val.length;
     this.updateGridTemplateRows();
-    this._cols = val;
+
+    const res: TemplateRef<any>[][] = [];
+    for (let col of val) {
+      const c: TemplateRef<any>[] = [];
+      for (let row of col) {
+        c.push(row);
+      }
+      if (col.length < this._maxRows) {
+        for (let i = col.length; i < this._maxRows; ++i) {
+          c.push(this.emptyTpl);
+        }
+      }
+      res.push(c);
+    }
+    // transpose
+    this._cols = res[0].map((_, i) => res.map(row => row[i]));
   }
 
   @Input()
@@ -93,8 +125,8 @@ export class GemGrid {
       this._gridTemplateCols = this._x.join(" ");
     } else {
       this._gridTemplateCols = `repeat(${this._maxCols}, 1fr)`;
+      this._gridTemplateRows = `repeat(${this._maxRows}, 1fr)`;
     }
-    console.error(this._gridTemplateCols);
   }
 
   protected updateGridTemplateRows() {
@@ -102,6 +134,7 @@ export class GemGrid {
       this._gridTemplateRows = this._y.join(" ");
     } else {
       this._gridTemplateRows = `repeat(${this._maxRows}, 1fr)`;
+      this._gridTemplateCols = `repeat(${this._maxCols}, 1fr)`;
     }
   }
 
