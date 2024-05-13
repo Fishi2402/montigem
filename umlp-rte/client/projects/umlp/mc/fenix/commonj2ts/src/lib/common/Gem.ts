@@ -139,12 +139,12 @@ export class Gem<E extends GemIdentifiable> implements GemIdentifiable {
   }
 
   public async isPresent(): Promise<boolean> {
-    this.loadIfRequired();
+    await this.loadIfRequired();
     return this.loadingState === LoadingState.LOADED && this.object != null;
   }
 
   public async get(): Promise<E> {
-    this.loadIfRequired();
+    await this.loadIfRequired();
     if (!await this.isPresent()) {
       Log.error("0xE2921 Object was not loaded: " + LoadingState["_$wrappers"][this.loadingState].toString());
     }
@@ -161,7 +161,8 @@ export class Gem<E extends GemIdentifiable> implements GemIdentifiable {
 
   async loadIfRequired() {
     if (this.loadingState === LoadingState.NOT_YET_LOADED) {
-      const result: LoadResult<E> = (target => (typeof target === 'function') ? target() : (<any>target).get())(this.loadFunction);
+      const result: LoadResult<E> = await this.loadFunction();
+      // const result: LoadResult<E> = (target => (typeof target === 'function') ? target() : (<any>target).get())(this.loadFunction);
       if (result.isPresent()) {
         this.set(result.get());
       } else {
