@@ -15,6 +15,8 @@ import java.util.Set;
 // TODO: Brauchen wir hier Observer, oder werden die Observer eine ebene höher genutzt?
 // Sonst kann es zu Dopplung kommen, z.B. gibt es bei Person#addOwns die Methode PersonObserver#notifyAddOwns,
 // welche Überschnitt mit GemListObserver#notifyAddIDs hätte.
+// ALU: JA! Wir brauchen ein BehaviorSubject (angular-like observer),
+//   der von unseren Observern getriggert wird.
 
 // TODO JSweet: Sollte vielleicht besser den Arrayprototypen überschreiben
 // Array.prototype.remove = function (o) {
