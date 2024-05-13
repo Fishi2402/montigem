@@ -67,30 +67,40 @@ build_with_containers:
     # Weather Backend
     - "gradle :examples:weather:backend:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
       -Djib.from.image=registry.git.rwth-aachen.de/monticore/container-registry/eclipse-temurin:11-jre \
+      -Djib.from.auth.username=$CI_REGISTRY_USER  \
+      -Djib.from.auth.password=$CI_REGISTRY_PASSWORD \
       -Djib.to.image=$CI_REGISTRY_IMAGE/weather_backend:latest \
       -Djib.to.auth.username=$CI_REGISTRY_USER  \
       -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
     # SEHub Backend
     - "gradle :examples:sehub:backend:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
       -Djib.from.image=registry.git.rwth-aachen.de/monticore/container-registry/eclipse-temurin:11-jre \
+      -Djib.from.auth.username=$CI_REGISTRY_USER  \
+      -Djib.from.auth.password=$CI_REGISTRY_PASSWORD \
       -Djib.to.image=$CI_REGISTRY_IMAGE/sehub_backend:latest \
       -Djib.to.auth.username=$CI_REGISTRY_USER  \
       -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
     # Stat-Server
     - "gradle :examples:stat:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
       -Djib.from.image=registry.git.rwth-aachen.de/monticore/container-registry/eclipse-temurin:11-jre \
+      -Djib.from.auth.username=$CI_REGISTRY_USER  \
+      -Djib.from.auth.password=$CI_REGISTRY_PASSWORD \
       -Djib.to.image=$CI_REGISTRY_IMAGE/stat_backend:latest \
       -Djib.to.auth.username=$CI_REGISTRY_USER  \
       -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
     # DTCockpit Backend
     - "gradle :examples:dtcockpit:backend:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
       -Djib.from.image=registry.git.rwth-aachen.de/monticore/container-registry/eclipse-temurin:11-jre \
+      -Djib.from.auth.username=$CI_REGISTRY_USER  \
+      -Djib.from.auth.password=$CI_REGISTRY_PASSWORD \
       -Djib.to.image=$CI_REGISTRY_IMAGE/dtcockpit_backend:latest \
       -Djib.to.auth.username=$CI_REGISTRY_USER  \
       -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
     # DemoRec Application
     - "gradle :products:demorec:backend:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
       -Djib.from.image=registry.git.rwth-aachen.de/monticore/container-registry/eclipse-temurin:11-jre \
+      -Djib.from.auth.username=$CI_REGISTRY_USER  \
+      -Djib.from.auth.password=$CI_REGISTRY_PASSWORD \
       -Djib.to.image=$CI_REGISTRY_IMAGE/demorec_backend:latest \
       -Djib.to.auth.username=$CI_REGISTRY_USER  \
       -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
