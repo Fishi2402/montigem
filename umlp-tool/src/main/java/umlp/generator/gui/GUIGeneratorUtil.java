@@ -553,6 +553,9 @@ public class GUIGeneratorUtil {
         // ? => the backing gemList might be undefined until loaded
         // .subject => access the BehaviorSubject of the GemList
         expressionWithNullChecks = "( " + expressionWithNullChecks + "?.subject | async )";
+
+        //Alternative
+        // expressionWithNullChecks = "((" + expressionWithNullChecks + " | umlpToAsync | async ) | async)";
       }
       return expressionWithNullChecks;
     }

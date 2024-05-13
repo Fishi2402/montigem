@@ -110,7 +110,7 @@ public class GUIComponentAdapter extends PrinterAdapter {
       // handle Constrcuctor
       String cdName = getAnnotationPropertyValue(classElement, "cdName", String.class, "");
       String managerName = cdName + "Manager";
-      String pathToManager = "@src/" + StringUtils.uncapitalize(cdName) + "/" + managerName;
+      String pathToManager = "@src/" + StringUtils.lowerCase(cdName) + "/" + managerName;
       importFrom(managerName, pathToManager);
       printAdaptedConstructor(executable);
       return true;
