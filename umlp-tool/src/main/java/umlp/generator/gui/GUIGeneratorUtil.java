@@ -537,7 +537,22 @@ public class GUIGeneratorUtil {
       if (!UMLPGeneratorConfig.getInstance().isGenerateTypescript()) {
         // Use the async pipe: https://angular.io/api/common/AsyncPipe
         // This requires the iterated object to be Observeable<NGiterable>, Subscribeable<NGiterable>, ...
-        expressionWithNullChecks = "(" + expressionWithNullChecks + " | async )";
+        if (expressionWithNullChecks.contains("?")) {
+          // TODO: Due to getX() and getX(index) causing getX to be async (despite expecting a GemList)
+          // when is this really required - just having a "?" in the text can not be the answer
+          // wrapping this promise in an extra |async leads to unresponsive pages
+
+          Pattern pattern = Pattern.compile("(.*)\\.(get[a-zA-Z0-9]+)\\(\\)");
+          Matcher m = pattern.matcher(expressionWithNullChecks);
+
+          // Instead of the overloaded&async getX(int?) we call the _internal_getXGemList() method
+
+          expressionWithNullChecks = m.replaceAll("$1._internal_$2GemList()");
+
+        }
+        // ? => the backing gemList might be undefined until loaded
+        // .subject => access the BehaviorSubject of the GemList
+        expressionWithNullChecks = "( " + expressionWithNullChecks + "?.subject | async )";
       }
       return expressionWithNullChecks;
     }

@@ -7,29 +7,39 @@ import {LoadResult} from "../common/LoadResult";
 import {LoadingState} from "../common/LoadingState";
 import {IUMLPList} from "../common/IUMLPList";
 import {UMLPArrayList} from "../common/UMLPArrayList";
-import {Observer, Subscribable, Unsubscribable} from "rxjs";
+import {BehaviorSubject, Subscriber} from "rxjs";
 import {NgIterable} from "@angular/core";
 
-export abstract class GemList<E extends GemIdentifiable> implements GemBuildable, IUMLPList<E>,
-  Subscribable<NgIterable<E>> {
+
+/**
+ * Custom BehaviorSubject with support for lazy-loading
+ */
+class GemListBehaviorSubject<E> extends BehaviorSubject<E> {
+  // Callback
+  protected onSub: () => void;
+
+  constructor(value: E, onSub: () => void) {
+    super(value);
+    this.onSub = onSub;
+  }
+
+  // Be notified about subscription, so we can load on-demand
+  protected _innerSubscribe(subscriber: Subscriber<any>): Subscriber<any> {
+    this.onSub();
+    // @ts-ignore
+    return super["_innerSubscribe"](subscriber);
+  }
+}
+
+export abstract class GemList<E extends GemIdentifiable> implements GemBuildable, IUMLPList<E> {
   protected ids: Array<number> = [];
   protected asArray: Array<E> = null;
 
-  protected changeObservers: Partial<Observer<NgIterable<E>>>[] = [];
-  subscribe(observer: Partial<Observer<NgIterable<E>>>): Unsubscribable {
-    this.changeObservers.push(observer);
-    const outer = this;
-    // And push an initial value to the observer
-    observer.next(this.toArray());
+  // the state of loading this list
+  protected state: LoadingState = LoadingState.NOT_YET_LOADED;
 
-    // Ub-subscriber
-    return new class implements Unsubscribable {
-      unsubscribe(): void {
-        // remove observer
-        outer.changeObservers.splice(outer.changeObservers.indexOf(observer), 1);
-      }
-    }
-  }
+  // This has to be a member, due to forEach signatures of list and Subject colliding
+  public subject: GemListBehaviorSubject<NgIterable<E>>;
 
   /**
    * Notify about a change to the GemList (as seen by the toArray)
@@ -37,13 +47,14 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
   protected updateIds() {
     // Pass the toArray to all observers (but call toArray lazy)
     let lazy = undefined;
-    const getVar = () => lazy || (lazy = this.toArray());
-    this.changeObservers.forEach(value => value.next(getVar()));
+    this.subject.next(this.toArray());
   }
 
 
 
   public constructor(ids?: IUMLPList<number>) {
+    this.subject = new GemListBehaviorSubject(this.asArray, this._onSub.bind(this));
+    this.state = LoadingState.NOT_YET_LOADED;
     if (typeof ids !== 'undefined' && ids != null) {
       // ids.toArray().then(numbers => this.ids = [...numbers]);
       this.ids = [...ids.toArray()];
@@ -51,6 +62,30 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
       this.ids = [];
     }
   }
+
+  // Be notified about subscription, so we can load on-demand
+  protected _onSub() {
+    if (this.state == LoadingState.NOT_YET_LOADED) {
+      // if this was the first subscription, load the data
+      this.loadAll();
+    }
+  }
+
+  protected loadAll() {
+    this.state = LoadingState.LOADING;
+    this.loadObjects(new UMLPArrayList(this.ids)).then(value => {
+      this.state = LoadingState.LOADED;
+      this.asArray = [];
+      value.forEach(element => {
+        if (element.getLoadingState() == LoadingState.LOADED) {
+          this.asArray!.push(element.get());
+        }
+      })
+
+      this.updateIds();
+    })
+  }
+
 
   /* Default method injected from umlp.backendrte.common.GemBuildable */
   isBuildFinished(): boolean {
