@@ -5,7 +5,7 @@
     "@angular/core": "^17.0.7"
   },
   "name": "@umlp/arrange",
-  "version": "7.6.4",
+  "version": "7.6.5",
   "sideEffects": false,
   "dependencies": {"tslib": "^2.3.0"}
 }

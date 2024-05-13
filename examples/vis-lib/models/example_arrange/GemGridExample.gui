@@ -7,8 +7,15 @@ import mc.fenix.basic.GemText;
 page GemGridExample() {
   @GemGrid(
     rows = [
-      [@GemText(value = "1, 1"), @GemText(value = "1, 2"), @GemText(value = "1, 3")],
-      [@GemText(value = "2, 1"), @GemText(value = "2, 2")]
+      [@GemText(value = "1, 1"), @GemText(value = "1, 2")],
+      [@GemText(value = "2, 1"), @GemText(value = "2, 2"), @GemText(value = "2, 3")]
+    ]
+  );
+
+  @GemGrid(
+    cols = [
+      [@GemText(value = "1, 1"), @GemText(value = "1, 2")],
+      [@GemText(value = "2, 1"), @GemText(value = "2, 2"), @GemText(value = "2, 3")]
     ]
   );
 
