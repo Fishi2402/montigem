@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.jsweet.extension.domainAdapters;
 
+import standalone.com.sun.source.tree.ClassTree;
 import standalone.com.sun.source.tree.CompilationUnitTree;
 import standalone.com.sun.source.tree.EnhancedForLoopTree;
 import standalone.com.sun.source.tree.MethodInvocationTree;
@@ -57,6 +58,16 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
 
     return super.visitMethodInvocation(invocation, trees);
   }
+
+  @Override
+  public Void visitClass(ClassTree node, Trees trees) {
+    // Do not inspect any @Erased classes (and possible mark interfaces as async)
+    if (context.hasAnnotationType(Util.getElement(node), JSweetConfig.ANNOTATION_ERASED )){
+      return null;
+    }
+    return super.visitClass(node, trees);
+  }
+
 
   // Returns true for asynchronous method calls
   private boolean isUMLPRTEAsync(ExecutableElement method, MethodInvocationTree invocation) {

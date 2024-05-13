@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.jsweet.extension.util;
 
+import jsweet.lang.Erased;
 import org.jsweet.transpiler.JSweetContext;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.util.Util;
@@ -98,6 +99,10 @@ public class UMLPAdapterUtils {
 
   public static Set<String> listSuperTypes(TypeElement type, Util util, Types types) {
     Set<String> result = new HashSet<>();
+    if (type.getAnnotationsByType(Erased.class).length > 0) {
+      // Do not inspect @Erased classes (because they might be async)
+      return result;
+    }
     result.add(type.getQualifiedName().toString());
 
     for (TypeElement anInterface : util.getInterfaces(type)) {
