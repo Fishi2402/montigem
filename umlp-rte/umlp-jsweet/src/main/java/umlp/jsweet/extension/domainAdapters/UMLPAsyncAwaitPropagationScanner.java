@@ -135,6 +135,7 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
         switch (methodSimpleName) {
           case "build":
           case "loadIfRequired":
+          case "_internal_add":
             return true;
         }
         break;
