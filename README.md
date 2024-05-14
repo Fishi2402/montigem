@@ -15,7 +15,7 @@ code to meet your specific requirements.
 
 Make sure you have installed the following dependencies:
 - Java 11 (check it with `java -version`)
-- Gradle 7 (check it with `gradle --version`)
+- Gradle 7.6.4 (check it with `gradle --version`) older versions may lead to an error with the jackson dependency
 - Make sure there is a file `~/.gradle/gradle.properties` with your (SE RWTH) Nexus username and password. Example:
 ```
 mavenUser=johndoe
