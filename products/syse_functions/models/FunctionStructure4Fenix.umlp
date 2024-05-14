@@ -27,7 +27,7 @@ umlp FunctionStructure4Fenix {
       String name;
     }
 
-    association [0..1] Function (onwerIn) -> (in) Port [*];
+    association [0..1] Function (ownerIn) -> (in) Port [*];
     association [0..1] Function (ownerOut) -> (out) Port [*];
     association [*] Port <-> Channel [1];
 
