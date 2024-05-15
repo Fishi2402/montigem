@@ -18,11 +18,11 @@ protected  _style: string;
 
 @HostBinding("style.width")
 @Input()
-width: string = '100%';
+width: string = 'auto';
 
 @HostBinding("style.height")
 @Input()
-height: string = '100%';
+height: string = 'auto';
 
 @HostBinding("style.font-size")
 @Input()
