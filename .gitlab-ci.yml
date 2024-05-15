@@ -198,6 +198,15 @@ trigger-promo-db:
   only:
     - dev
 
+trigger-iop-datamodel-demonstrator:
+  stage: testDeployed
+  allow_failure: false # Failure is not an option
+  trigger:
+    project: monticore/umlp-anwendungen/iop-datamodel-demonstrator
+    branch: dev
+  only:
+    - dev
+
 checkMDLinks:
   stage: check
   script:
