@@ -23,6 +23,7 @@ component GemGrid(
     Gap between columns of elements in the container in `px`, `%`, `vh`, etc.
   */
   String colGap = "0",
-  List<GUIViewElement> rows,
-  List<GUIViewElement> cols
+  List<List<GUIViewElement>> rows,
+  List<List<GUIViewElement>> cols,
+  List<GUIViewElement> cells
 )

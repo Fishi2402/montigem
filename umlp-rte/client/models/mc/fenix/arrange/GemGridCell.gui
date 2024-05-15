@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.arrange;
+
+/**
+  GemGridCell controls dimensions that content should occupy within a GemGrid
+*/
+component GemGridCell(
+  List<Integer> a,
+  List<Integer> b,
+  GUIViewElement content
+)

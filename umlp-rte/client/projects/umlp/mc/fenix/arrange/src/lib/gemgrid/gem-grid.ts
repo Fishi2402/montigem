@@ -19,21 +19,24 @@ export class GemGrid {
   protected _colGap: string = "0";
 
   @HostBinding('style.grid-template-rows')
-  protected _gridTemplateRows: string = "1fr";
-  protected _maxRows: number = 1;
+  protected _gridTemplateRows: string = "auto";
+  protected _maxRows: number = 0;
 
   @HostBinding('style.grid-template-columns')
-  protected _gridTemplateCols: string = "1fr";
-  protected _maxCols: number = 1;
+  protected _gridTemplateCols: string = "auto";
+  protected _maxCols: number = 0;
 
   @ViewChild('_gemGridEmpty', { static: true })
-  protected emptyTpl: TemplateRef<any>;
+  public emptyTpl: TemplateRef<any>;
 
-  public _x: string[] = [];
-  public _y: string[] = [];
+  protected _x: string[];
+  protected _y: string[];
 
-  public _rows: TemplateRef<any>[][] = [];
-  public _cols: TemplateRef<any>[][] = [];
+  protected _rows: TemplateRef<any>[][] = [];
+  protected _cols: TemplateRef<any>[][] = [];
+  protected _cells: TemplateRef<any>[] = [];
+
+  public content: TemplateRef<any>[] = [];
 
   public get rows(): TemplateRef<any>[][] {
     return this._rows;
@@ -44,30 +47,8 @@ export class GemGrid {
     if (val == null) {
       return;
     }
-    let max: number = 1;
-    for (const v of val) {
-      if (v.length > max) {
-        max = v.length;
-      }
-    }
-    this._maxCols = max;
-    this._maxRows = val.length;
-    this.updateGridTemplateCols();
-
-    const res: TemplateRef<any>[][] = [];
-    for (let row of val) {
-      const r: TemplateRef<any>[] = [];
-      for (let col of row) {
-        r.push(col);
-      }
-      if (row.length < this._maxCols) {
-        for (let i = row.length; i < this._maxCols; ++i) {
-          r.push(this.emptyTpl);
-        }
-      }
-      res.push(r);
-    }
-    this._rows = res;
+    this._rows = val;
+    this.update();
   }
 
   public get cols(): TemplateRef<any>[][] {
@@ -76,66 +57,36 @@ export class GemGrid {
 
   @Input()
   public set cols(val: TemplateRef<any>[][]) {
+    if (val == null || this._cells.length > 0) {
+      return;
+    }
+    this._cols = val;
+    this.update();
+  }
+
+  public get cells(): TemplateRef<any>[] {
+    return this._cells;
+  }
+
+  @Input()
+  public set cells(val: TemplateRef<any>[]) {
     if (val == null) {
       return;
     }
-    let max: number = 1;
-    for (const v of val) {
-      if (v.length > max) {
-        max = v.length;
-      }
-    }
-    this._maxRows = max;
-    this._maxCols = val.length;
-    this.updateGridTemplateRows();
-
-    const res: TemplateRef<any>[][] = [];
-    for (let col of val) {
-      const c: TemplateRef<any>[] = [];
-      for (let row of col) {
-        c.push(row);
-      }
-      if (col.length < this._maxRows) {
-        for (let i = col.length; i < this._maxRows; ++i) {
-          c.push(this.emptyTpl);
-        }
-      }
-      res.push(c);
-    }
-    // transpose
-    this._cols = res[0].map((_, i) => res.map(row => row[i]));
+    this._cells = val;
+    this.update();
   }
 
   @Input()
   public set x(val: string[]) {
     this._x = val;
-    console.error(this._x)
-    this.updateGridTemplateCols();
+    this.update();
   }
 
   @Input()
   public set y(val: string[]) {
     this._y = val;
-    this.updateGridTemplateRows();
-  }
-
-
-  protected updateGridTemplateCols() {
-    if (this._x.length > 0) {
-      this._gridTemplateCols = this._x.join(" ");
-    } else {
-      this._gridTemplateCols = `repeat(${this._maxCols}, 1fr)`;
-      this._gridTemplateRows = `repeat(${this._maxRows}, 1fr)`;
-    }
-  }
-
-  protected updateGridTemplateRows() {
-    if (this._y.length > 0) {
-      this._gridTemplateRows = this._y.join(" ");
-    } else {
-      this._gridTemplateRows = `repeat(${this._maxRows}, 1fr)`;
-      this._gridTemplateCols = `repeat(${this._maxCols}, 1fr)`;
-    }
+    this.update();
   }
 
   public get height(): string {
@@ -172,6 +123,93 @@ export class GemGrid {
   @Input()
   public set colGap(val: string) {
     this._colGap = val;
+  }
+
+  update() {
+    if (this._x != null) {
+      this._maxCols = this._x.length;
+      this._gridTemplateCols = this._x.join(" ");
+    } else if (this._rows.length > 0) {
+      let maxCols: number = 1;
+      for (const v of this._rows) {
+        if (v.length > maxCols) {
+          maxCols = v.length;
+        }
+      }
+      this._maxCols = maxCols;
+    } else if (this._cols.length > 0) {
+      this._maxCols = this._cols.length;
+    }
+
+    if (this._y != null) {
+      this._maxRows = this._y.length;
+    } else if (this._rows.length > 0) {
+      this._maxRows = this._rows.length;
+    } else if (this._cols.length > 0) {
+      let maxRows: number = 1;
+      for (const v of this._cols) {
+        if (v.length > maxRows) {
+          maxRows = v.length;
+        }
+      }
+      this._maxRows = maxRows;
+    }
+
+    if (this._x != null) {
+      this._gridTemplateCols = this._x.join(" ");
+    } else {
+      this._gridTemplateCols = `repeat(${this._maxCols}, auto)`;
+    }
+
+    if (this._y != null) {
+      this._gridTemplateRows = this._y.join(" ");
+    } else {
+      this._gridTemplateRows = `repeat(${this._maxRows}, auto)`;
+    }
+
+    this.updateContent();
+  }
+
+  updateContent() {
+    this.content = [];
+    if (this._cells.length > 0) {
+      for (const c of this._cells) {
+        this.content.push(c);
+      }
+    }
+    if (this._rows.length > 0) {
+      const res: TemplateRef<any>[][] = [];
+      for (let row of this._rows) {
+        const r: TemplateRef<any>[] = [];
+        for (let col of row) {
+          r.push(col);
+        }
+        if (row.length < this._maxCols) {
+          for (let i = row.length; i < this._maxCols; ++i) {
+            r.push(this.emptyTpl);
+          }
+        }
+        res.push(r);
+      }
+      this.content = res.flat();
+    }
+    else if (this._cols.length > 0) {
+      const res: TemplateRef<any>[][] = [];
+      for (let col of this._cols) {
+        const c: TemplateRef<any>[] = [];
+        for (let row of col) {
+          c.push(row);
+        }
+        if (col.length < this._maxRows) {
+          for (let i = col.length; i < this._maxRows; ++i) {
+            c.push(this.emptyTpl);
+          }
+        }
+        res.push(c);
+      }
+      // transpose
+      this.content = res[0].map((_, i) => res.map(row => row[i])).flat();
+    }
   }
 
 }
