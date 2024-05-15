@@ -3,4 +3,4 @@ ${tc.signature("name", "valueExpression", "init", "setter", "initList")}
 
 ${cd4c.method("protected void ${init}()")}
 <#if valueExpression.isPresent()>this.${setter}(${valueExpression.get()});</#if>
-${tc.includeArgs("umlp.gui2java.GUI2JavaCallInit", [initList])}
+${tc.includeArgs("umlp.gui2java.GUI2JavaCallMethods", [initList])}

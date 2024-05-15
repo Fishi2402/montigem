@@ -22,5 +22,5 @@ ${manager}.${mcType.printType()?uncap_first}Builder().then((${tmpVar}: ${cdPrint
     </#if>
   </#list>
   ;
-  ${tc.includeArgs("umlp.gui2java.GUI2JavaCallInit", [initList])}
+  ${tc.includeArgs("umlp.gui2java.GUI2JavaCallMethods", [initList])}
 });

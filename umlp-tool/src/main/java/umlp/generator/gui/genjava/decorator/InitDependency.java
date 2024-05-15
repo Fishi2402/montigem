@@ -6,7 +6,8 @@ import java.util.Optional;
 
 public class InitDependency {
   protected List<InitDependency> dependentList = new ArrayList<>();
-  protected Optional<InitMethodTemplate> initMethod = Optional.empty();
+  protected Optional<MethodTemplate> initMethod = Optional.empty();
+  protected Optional<MethodTemplate> removeMethod = Optional.empty();
 
   public void addDependent(InitDependency sub) {
     this.dependentList.add(sub);
@@ -16,11 +17,19 @@ public class InitDependency {
     return dependentList;
   }
 
-  public void setInitMethod(InitMethodTemplate initMethod) {
+  public void setInitMethod(MethodTemplate initMethod) {
     this.initMethod = Optional.of(initMethod);
   }
 
-  public Optional<InitMethodTemplate> getInitMethod() {
+  public Optional<MethodTemplate> getInitMethod() {
     return initMethod;
+  }
+
+  public void setRemoveMethod(MethodTemplate removeMethod) {
+    this.removeMethod = Optional.of(removeMethod);
+  }
+
+  public Optional<MethodTemplate> getRemoveMethod() {
+    return removeMethod;
   }
 }

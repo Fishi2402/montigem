@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class InitMethodTemplate {
+public class MethodTemplate {
   protected final String template;
 
   protected final List<Object> arguments = new ArrayList<>();
 
-  public InitMethodTemplate(String template, Object... arguments) {
+  public MethodTemplate(String template, Object... arguments) {
     this.template = template;
     this.arguments.addAll(Arrays.asList(arguments));
   }

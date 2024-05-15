@@ -33,7 +33,7 @@ import de.monticore.guidsl._visitor.GUIDSLVisitor2;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
-import de.monticore.symboltable.IScope;
+import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -41,6 +41,7 @@ import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
 import umlp.generator.domain.decorator.ManagerDecorator;
+import umlp.generator.domain.decorator.ObserverDecorator;
 import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.genjava.prettyprinter.Expression2AccessorPrinter;
@@ -52,6 +53,7 @@ import umlp.generator.util.PathUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -72,6 +74,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
   protected ASTGUICompilationUnit gui;
 
   protected List<Method> addedMethods = new ArrayList<>();
+  protected Map<String, NotifyMethodTemplate> notifyDeleted = new HashMap<>();
 
   public GUI2JavaClassDecorator(final GlobalExtensionManagement glex) {
     super(glex);
@@ -132,8 +135,15 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
             new TemplateHookPoint(getInitCallTemplate(), init)
         );
       }
+
+      addRemoveMethods(root.get());
     }
     addInit();
+
+    // remove
+    for (NotifyMethodTemplate notifyDeleted : this.notifyDeleted.values()) {
+      getCD4C().addMethod(clazz, notifyDeleted.getTemplate(), notifyDeleted.getArguments().toArray());
+    }
 
     // constructor
     addConstructor();
@@ -201,7 +211,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
       // add builder init
       Optional<InitDependency> dep = InitDependencyTree.getInstance().getDependency(node);
       if (dep.isPresent()) {
-        dep.get().setInitMethod(new InitMethodTemplate(
+        dep.get().setInitMethod(new MethodTemplate(
             getInitParamBuilderTemplate(), type, name, manager, initName
         ));
       }
@@ -212,13 +222,35 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
       String innerType = util.getDomainListInnerType(typeSTE).get().print();
       String manager = getAndImportManager();
 
-      // add attr init
+      // add attr init, remove
       Optional<InitDependency> dep = InitDependencyTree.getInstance()
           .getDependency(node);
       if (dep.isPresent()) {
-        dep.get().setInitMethod(new InitMethodTemplate(
+        // add init
+        dep.get().setInitMethod(new MethodTemplate(
             getInitDomainListTemplate(), innerType, name, manager, initName
         ));
+
+        String removeName = "remove" + StringTransformations.capitalize(node.getName());
+        // add remove
+        dep.get().setRemoveMethod(new MethodTemplate(
+            getRemoveDomainListTemplate(), removeName, getterName
+        ));
+
+        // add list item observer
+        if (!clazz.isPresentCDInterfaceUsage()) {
+          clazz.setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder()
+              .setInterfaceList(new ArrayList<>()).build());
+        }
+        clazz.getInterfaceList().add(MCTypeFacade.getInstance()
+            .createQualifiedType(getAndImportDomainObserver()));
+
+        // TODO: simple name clash, e.g., foo.Person and bar.Person
+        // add notifyDeleted method
+        if (!notifyDeleted.containsKey(innerType)) {
+          notifyDeleted.put(innerType, new NotifyMethodTemplate(getNotifyDeletedTemplate(), innerType));
+        }
+        notifyDeleted.get(innerType).addCalledMethod(removeName);
       }
     }
     // case 3: component Foo(String s, MyDomainEnum e)
@@ -230,7 +262,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
       // add attr init
       Optional<InitDependency> dep = InitDependencyTree.getInstance().getDependency(node);
       if (dep.isPresent()) {
-        dep.get().setInitMethod(new InitMethodTemplate(
+        dep.get().setInitMethod(new MethodTemplate(
             getInitDefaultParamTemplate(), name, value, initName, setterName
         ));
       }
@@ -400,7 +432,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
         type, name, nullCheck, getterValue, iterateArgs
     );
 
-    // add init
+    // add init, remove
     if (!control.getItem().isPresentSymbol()) {
       Log.error("0x0000E Unable to find symbol for '" + control.getItem().getName()
           + "' at " + control.getItem().get_SourcePositionStart().toString()
@@ -412,8 +444,14 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
 
     Optional<InitDependency> dep = InitDependencyTree.getInstance().getDependency(control);
     if (dep.isPresent()) {
-      dep.get().setInitMethod(new InitMethodTemplate(
+      // add init
+      dep.get().setInitMethod(new MethodTemplate(
           getIterateInitTemplate(), itemType, name, getterValue, iterateArgs
+      ));
+
+      // add remove
+      dep.get().setRemoveMethod(new MethodTemplate(
+          getIterateRemoveTemplate(), itemType, name, getterValue, iterateArgs
       ));
     }
   }
@@ -449,7 +487,10 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
       String name = attr.getName();
 
       if (iterateArgs.isEmpty()) {
-        // add attr init
+        // add getter
+        ASTCDMethodSignature getter = getCD4C().addMethod(clazz, getGetterTemplate(), type, name);
+
+        // add attr init, remove
         Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
             new IndentPrinter(), false, new ArrayList<>(), new ArrayList<>()
         );
@@ -461,20 +502,27 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
         Optional<InitDependency> dep = InitDependencyTree.getInstance()
             .getDependency(node);
         if (dep.isPresent()) {
-          dep.get().setInitMethod(new InitMethodTemplate(
+          // add init
+          dep.get().setInitMethod(new MethodTemplate(
               getListInitTemplate(), mcType, name, listItems
           ));
-        }
 
-        // add getter
-        getCD4C().addMethod(clazz, getGetterTemplate(), type, name);
+          // add remove
+          dep.get().setRemoveMethod(new MethodTemplate(
+              getListRemoveTemplate(), name, getter.getName()
+          ));
+        }
       }
       else {
         for (VariableSymbol vs : iterateArgs) {
           importAndPrintType(vs.getType());
         }
 
-        // add attr init
+        // add getter
+        ASTCDMethodSignature getter = getCD4C().addMethod(clazz, getStaticObjectGetterTemplate(),
+            type, name, iterateArgs);
+
+        // add attr init, remove
         IterationItemsFinder finder = new IterationItemsFinder();
         Collection<ASTExpression> iterateItems = new HashSet<>(finder.getItems(gui));
 
@@ -489,14 +537,16 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
         Optional<InitDependency> dep = InitDependencyTree.getInstance()
             .getDependency(node);
         if (dep.isPresent()) {
-          dep.get().setInitMethod(new InitMethodTemplate(
+          // add init
+          dep.get().setInitMethod(new MethodTemplate(
               getStaticListInitTemplate(), mcType, name, listItems, iterateArgs
           ));
-        }
 
-        // add getter
-        getCD4C().addMethod(clazz, getStaticObjectGetterTemplate(),
-            type, name, iterateArgs);
+          // add remove
+          dep.get().setRemoveMethod(new MethodTemplate(
+              getStaticListRemoveTemplate(), name, getter.getName(), iterateArgs
+          ));
+        }
       }
     }
   }
@@ -550,17 +600,17 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
       if (iterateArgs.isEmpty()) {
         String manager = getAndImportManager();
 
+        // add getter
+        ASTCDMethodSignature getter = getCD4C().addMethod(clazz, getGetterTemplate(), type, name);
+
         // add builder init
         Optional<InitDependency> dep = InitDependencyTree.getInstance()
             .getDependency(node);
         if (dep.isPresent()) {
-          dep.get().setInitMethod(new InitMethodTemplate(
+          dep.get().setInitMethod(new MethodTemplate(
               getBuilderInitTemplate(), mcType, name, manager
           ));
         }
-
-        // add getter
-        getCD4C().addMethod(clazz, getGetterTemplate(), type, name);
       }
       else {
         // calc iterate items as additional args
@@ -568,20 +618,20 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
           importAndPrintType(vs.getType());
         }
 
+        // add getter
+        ASTCDMethodSignature getter = getCD4C().addMethod(clazz, getStaticObjectGetterTemplate(),
+            type, name, iterateArgs);
+
         String manager = getAndImportManager();
 
         // add builder init
         Optional<InitDependency> dep = InitDependencyTree.getInstance()
             .getDependency(node);
         if (dep.isPresent()) {
-          dep.get().setInitMethod(new InitMethodTemplate(
+          dep.get().setInitMethod(new MethodTemplate(
               getStaticBuilderInitTemplate(), mcType, name, manager, iterateArgs
           ));
         }
-
-        // add getter
-        getCD4C().addMethod(clazz, getStaticObjectGetterTemplate(),
-            type, name, iterateArgs);
       }
     }
     // a custom function or a predefined one, e.g.,
@@ -639,7 +689,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
   @Override
   public void endVisit(ASTFieldAccessExpression node) {
     Map<ASTNode, Attribute> node2Attr = StaticObjectsCollector.getInstance().getNode2Attr();
-    // a constructor call, e.g., @PersonForm(person = Person())
+    // an assoc access, e.g., @AddressForm(person = person.address)
     if (node2Attr.containsKey(node)) {
       // get init method info
       Attribute attrWrapper = node2Attr.get(node);
@@ -670,7 +720,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
       Optional<InitDependency> dep = InitDependencyTree.getInstance()
           .getDependency(node);
       if (dep.isPresent()) {
-        dep.get().setInitMethod(new InitMethodTemplate(
+        dep.get().setInitMethod(new MethodTemplate(
             getAssocInitTemplate(), mcType, name, getter, iterateArgs
         ));
       }
@@ -726,7 +776,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
       }
     }
     else {
-      InitMethodTemplate initMethod = ds.getInitMethod().get();
+      MethodTemplate initMethod = ds.getInitMethod().get();
 
       Collection<ASTCDMethodSignature> subInitList = new ArrayList<>();
       for (InitDependency sub : ds.getDependentList()) {
@@ -735,6 +785,27 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
       List<Object> args = initMethod.getArguments();
       args.add(subInitList);
       res.add(getCD4C().addMethod(clazz, initMethod.getTemplate(), args.toArray()));
+    }
+    return res;
+  }
+
+  protected Collection<ASTCDMethodSignature> addRemoveMethods(InitDependency ds) {
+    Collection<ASTCDMethodSignature> res = new ArrayList<>();
+    if (ds.getRemoveMethod().isEmpty()) {
+      for (InitDependency sub : ds.getDependentList()) {
+        res.addAll(addRemoveMethods(sub));
+      }
+    }
+    else {
+      MethodTemplate removeMethod = ds.getRemoveMethod().get();
+
+      Collection<ASTCDMethodSignature> subRemoveList = new ArrayList<>();
+      for (InitDependency sub : ds.getDependentList()) {
+        subRemoveList.addAll(addRemoveMethods(sub));
+      }
+      List<Object> args = removeMethod.getArguments();
+      args.add(subRemoveList);
+      res.add(getCD4C().addMethod(clazz, removeMethod.getTemplate(), args.toArray()));
     }
     return res;
   }
@@ -816,6 +887,18 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     return manager;
   }
 
+  protected String getAndImportDomainObserver() {
+    if (util.getMainDomainModelSimpleName().isEmpty() || util.getMainDomainModelQName().isEmpty()) {
+      Log.error("0x00007 Could not identify the manager name: domain class diagram is missing");
+    }
+    String observer = util.getMainDomainModelSimpleName().get() + ObserverDecorator.SUFFIX;
+    String qObserver = util.getMainDomainModelSimpleName().get() + ObserverDecorator.SUFFIX;
+    String domain = StringTransformations.uncapitalize(util.getMainDomainModelSimpleName().get()) + ".";
+
+    getCD4C().addImport(clazz, domainType2JavaQName(qObserver, domain));
+    return observer;
+  }
+
   protected String domainType2JavaQName(String qType, String insert) {
     String res = qType;
     int lastIndex = res.lastIndexOf('.');
@@ -837,6 +920,14 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
 
   protected String getInitDomainListTemplate() {
     return "umlp.gui2java.GUI2JavaInitDomainList";
+  }
+
+  protected String getRemoveDomainListTemplate() {
+    return "umlp.gui2java.GUI2JavaRemoveDomainList";
+  }
+
+  protected String getNotifyDeletedTemplate() {
+    return "umlp.gui2java.GUI2JavaNotifyDeleted";
   }
 
   protected String getInitParamBuilderTemplate() {
@@ -871,8 +962,16 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     return "umlp.gui2java.GUI2JavaListInit";
   }
 
+  protected String getListRemoveTemplate() {
+    return "umlp.gui2java.GUI2JavaListRemove";
+  }
+
   protected String getIterateInitTemplate() {
     return "umlp.gui2java.GUI2JavaIterateInit";
+  }
+
+  protected String getIterateRemoveTemplate() {
+    return "umlp.gui2java.GUI2JavaIterateRemove";
   }
 
   protected String getGetterTemplate() {
@@ -885,6 +984,10 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
 
   protected String getStaticListInitTemplate() {
     return "umlp.gui2java.GUI2JavaStaticListInit";
+  }
+
+  protected String getStaticListRemoveTemplate() {
+    return "umlp.gui2java.GUI2JavaStaticListRemove";
   }
 
   protected String getBuilderInitTemplate() {

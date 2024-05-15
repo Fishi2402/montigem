@@ -7,5 +7,5 @@ ${tc.signature("mcType", "name", "getterExpression", "keys", "initList")}
 
 ${cd4c.method("public void init${name?cap_first}(${argsString})")}
 ${getterExpression}.loadAll().then(${tmpVar} => {
-  ${tc.includeArgs("umlp.gui2java.GUI2JavaCallInit", [initList])}
+  ${tc.includeArgs("umlp.gui2java.GUI2JavaCallMethods", [initList])}
 });

@@ -5,5 +5,5 @@ ${tc.signature("type", "name", "manager", "init", "initList")}
 ${cd4c.method("protected void ${init}()")}
 ${manager}.get${type}List().then(${tmpVar} => {
   this.${name} = ${tmpVar};
-  ${tc.includeArgs("umlp.gui2java.GUI2JavaCallInit", [initList])}
+  ${tc.includeArgs("umlp.gui2java.GUI2JavaCallMethods", [initList])}
 });

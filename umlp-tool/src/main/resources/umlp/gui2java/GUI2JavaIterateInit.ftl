@@ -8,6 +8,6 @@ ${tc.signature("type", "name", "getterExpression", "keys", "initList")}
 ${cd4c.method("protected void init${name?cap_first}(${argsString})")}
 for (${type} ${tmpVar}: ${getterExpression}) {
   <#list initList as init>
-    this.${init.getName()}(<#list keys as key>${key}, </#list>${tmpVar});
+    this.${init.getName()}(<#list keys as key>${key.getName()}, </#list>${tmpVar});
   </#list>
 }

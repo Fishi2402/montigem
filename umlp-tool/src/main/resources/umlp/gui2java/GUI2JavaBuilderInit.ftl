@@ -8,4 +8,4 @@ ${tc.signature("mcType", "name", "manager", "initList")}
 ${cd4c.method("protected void init${name?cap_first}()")}
 ${type} ${tmpVar} = ${manager}.${type?uncap_first}Builder();
 this.${name} = ${tmpVar};
-${tc.includeArgs("umlp.gui2java.GUI2JavaCallInit", [initList])}
+${tc.includeArgs("umlp.gui2java.GUI2JavaCallMethods", [initList])}
