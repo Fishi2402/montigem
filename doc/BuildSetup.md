@@ -30,7 +30,26 @@ Rules:
   will not be triggered.
 
   Similar configuration must be done for every new subproject with an
-  `npmInstall` task.
+  `npmInstall` task. Otherwise, an error will appear:
+  ```
+  npm ERR! code 1
+  npm ERR! path /builds/monticore/umlp/examples/<my-project>/frontend/build/frontendGen/node_modules/puppeteer
+  npm ERR! command failed
+  npm ERR! command sh -c -- node install.mjs
+  npm ERR! chrome-headless-shell (121.0.6167.85) downloaded to /root/.cache/puppeteer/chrome-headless-shell/linux-121.0.6167.85
+  npm ERR! Error: ERROR: Failed to set up Chrome v121.0.6167.85! Set "PUPPETEER_SKIP_DOWNLOAD" env variable to skip download.
+  npm ERR!     at file:///builds/monticore/umlp/examples/<my-project>/frontend/build/frontendGen/node_modules/puppeteer/lib/esm/puppeteer/node/install.js:58:23
+  > Task :examples:selib:compileTestJava NO-SOURCE
+  > Task :examples:<my-project>:frontend:npmInstall
+  npm ERR!     at async Promise.all (index 0)
+  npm ERR!     at async downloadBrowser (file:///builds/monticore/umlp/examples/<my-project>/frontend/build/frontendGen/node_modules/puppeteer/lib/esm/puppeteer/node/install.js:87:9) {
+  npm ERR!   [cause]: Error: unexpected end of file
+  npm ERR!       at Zlib.zlibOnError [as onerror] (node:zlib:189:17) {
+  npm ERR!     errno: -5,
+  npm ERR!     code: 'Z_BUF_ERROR'
+  npm ERR!   }
+  npm ERR! }
+  ```
 
   Reason: `npmInstall` installs Chromium on a machine to be able to run frontend
   tests. If several tasks try to install Chromium, they may fail as they try to
