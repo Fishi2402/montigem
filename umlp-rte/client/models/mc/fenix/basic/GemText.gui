@@ -10,5 +10,9 @@ component GemText(
   String color,
   String size,
   /** **Deprecated.** */
-  String style = ""
+  String style = "",
+  /** Width of the input field. */
+  String width = "100%",
+  /** Height of the input field. */
+  String height = "100%"
 )

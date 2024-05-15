@@ -16,6 +16,13 @@ protected  _value: string;
 
 protected  _style: string;
 
+@HostBinding("style.width")
+@Input()
+width: string = '100%';
+
+@HostBinding("style.height")
+@Input()
+height: string = '100%';
 
 @HostBinding("style.font-size")
 @Input()
