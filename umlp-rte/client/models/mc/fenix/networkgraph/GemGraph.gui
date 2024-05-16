@@ -15,15 +15,15 @@ component GemGraph(
   boolean showSearchNode=true,
   boolean showControlButtons=true,
   boolean showInformation=true,
-  List<String> metricKeys
+  List<String> metricKeys,
+  Object initialLayout = null,           //@Input() initialLayout?: InitialGraphLayoutConfiguration | null;
+  Object complexLayout = null            //@Input() complexLayout?: ComplexGraphLayoutConfiguration | null;
+
   // TODO configure Layout from GUIDsl
 
   //@Input() customMetricsGenerator?: CustomMetricsGenerator;
-  //@Input() serializedGraph?: SerializedGraph<NodeAttributes, EdgeAttributes>;
   //@Input() cameraState?: CameraState;
   //@Input() settings?: Partial<GraphSettings>;
-  //@Input() initialLayout?: InitialGraphLayoutConfiguration | null;
-  //@Input() complexLayout?: ComplexGraphLayoutConfiguration | null;
   //@Input() cbExtendButtons?: ControlButton[];
   //@Input() cbRemoveButtons?: string[];
   //@Input() cbLayout?: ControlButtonsLayout;
