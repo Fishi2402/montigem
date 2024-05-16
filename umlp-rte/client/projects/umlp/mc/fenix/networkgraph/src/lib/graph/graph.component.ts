@@ -145,15 +145,7 @@ export class GemGraphComponent extends GraphBasisComponent implements OnChanges 
     @Input() initialLayout?: InitialGraphLayoutConfiguration | null = {mode: InitialGraphLayouts.RANDOM};
 
     /** Complex layout configuration for displaying the graph. */
-    @Input() complexLayout?: ComplexGraphLayoutConfiguration | null = {
-      mode: ComplexGraphLayouts.FORCEATLAS2,
-      maxIterations: 100,
-      parameters: {
-        settings: {
-          gravity: 1,
-          slowDown: 1.2
-        }
-      }};
+    @Input() complexLayout?: ComplexGraphLayoutConfiguration | null = this.exampleComplexLayout;
 
     /** Array of additional control buttons to be displayed. */
     @Input() cbExtendButtons?: ControlButton[] = [
@@ -163,7 +155,9 @@ export class GemGraphComponent extends GraphBasisComponent implements OnChanges 
           console.debug("Switch Layout")
           if(this.switchExtendedButton) {
             this.switchExtendedButton = !this.switchExtendedButton
-            graphManager.updateLayoutConfiguration(this.exampleComplexLayout,true)
+            if(this.complexLayout) {
+              graphManager.updateLayoutConfiguration(this.complexLayout,true)
+            }
           } else {
             this.switchExtendedButton = !this.switchExtendedButton
             graphManager.updateLayoutConfiguration(null,true)
