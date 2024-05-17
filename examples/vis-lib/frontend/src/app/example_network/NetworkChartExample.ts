@@ -18,7 +18,7 @@ export class NetworkChartExample extends NetworkChartExampleComponent {
     {"id": 1, "label": "Node 1", "group": "Cluster A", size: 35},
     {"id": 2, "label": "Node 2", "group": "Cluster A", size: 35},
     {"id": 3, "label": "Node 3", "group": "Cluster A", size: 44},
-    {"id": 4, "label": "Node 4", "group": "Cluster A", size: 55, hoverLabel: "another hover label!"},
+    {"id": 4, "label": "Node 4", "group": "Cluster A", size: 55, hoverLabel: "another hover label!", color: "#ffc0cb"},
     {"id": 5, "label": "Node 5", "group": "Cluster A", fixed: true, x: 0, y: 0, size: 54, tooltip: "custom Tooltip!"},
     {"id": 6, "label": "Node 6", "group": "Cluster B"},
     {"id": 7, "label": "Node 7", "group": "Cluster B"},

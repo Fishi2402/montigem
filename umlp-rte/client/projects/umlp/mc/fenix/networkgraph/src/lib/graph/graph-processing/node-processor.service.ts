@@ -125,7 +125,7 @@ export class NodeProcessorService<
         type: nodeProgram,
         group: group,
         image: imageLink ? PathUtil.join(this.graphSettings.getSetting("assetsPath"), imageLink) : undefined,
-        color: this.groupMapping.getColorForGroup(group, this.graphSettings.getSetting("defaultNodeColor")),
+        color: node.color? node.color : this.groupMapping.getColorForGroup(group, this.graphSettings.getSetting("defaultNodeColor")),
         fixed: ProcessorServiceTemplate.getAttribute(node, "fixed"),
         x: x,
         y: y,
