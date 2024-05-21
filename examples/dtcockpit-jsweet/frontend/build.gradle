@@ -78,3 +78,31 @@ test {
   }
   useJUnitPlatform()
 }
+
+
+// End 2 end testing using the build website + backend
+task installPlaywright(type: NpxTask){
+  dependsOn(npmInstall)
+  command = "playwright"
+  args = ["install"]
+}
+
+// TODO: Let those tasks use a shared service, as to stop gradle from executing them in parallel
+task e2eTestApp(type: NpmTask){
+  dependsOn(buildApp, installPlaywright, project(":examples:dtcockpit-jsweet:backend").tasks.e2eBootJar)
+  args = ["run", "e2e"]
+  enabled = false // TODO: ALu
+}
+
+task e2eTestAppDebug(type: NpmTask){
+  dependsOn(buildApp, installPlaywright, project(":examples:dtcockpit-jsweet:backend").tasks.e2eBootJar)
+  args = ["run", "e2e", "--", "--debug"]
+  enabled = false // TODO: ALu
+}
+
+task e2eRecordTest(type: NpmTask) {
+  // Note: Start a backend & frontend before running this command
+  dependsOn(installPlaywright)
+  args = ["run", "e2erecord"]
+  enabled = false // TODO: ALu
+}
