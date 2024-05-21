@@ -13,13 +13,19 @@ import FunctionStructure4Fenix.Port;
 import FunctionStructure4Fenix.Value;
 
 page FunctionDetail (Function f) {
-  @GemRow(width = "100%", components = [
+  @GemRow(width = "100%", hAlign = "space-evenly", vAlign = "space-evenly", components = [
     @Navigation(),
     @GemColumn(width = "100%", component =
       @GemCard(title = f.name, component =
         @GemRow(width = "100%", colGap="10px", components = [
+          @GemColumn(width = "150px",
+            component = @GemRow(components = [
+              // superFunctionText@GemText(value = "Owning Function "),
+              superFunction@GemButton(label = "Owning Function", leftClick = goToFunctionDetailsSuper(f))
+            ])
+          ),
           ports@GemColumn(width = "30%", components = [
-            @GemText(value = "Ports"),
+            @GemText(value = "Ports", size = "large"),
             @iterate(Port p : f.in) {
               @GemText(value = "Input Port " + p.channel.category.type.mctype + " " + p.name);
             },
@@ -28,7 +34,7 @@ page FunctionDetail (Function f) {
             }
           ]),
           channels@GemColumn(width = "40%", components = [
-            @GemText(value = "Channels"),
+            @GemText(value = "Channels", size = "large"),
             @iterate(Port p : f.in) {
               @GemRow(components = [
                 @GemText(value = p.name + " : "),
@@ -47,7 +53,7 @@ page FunctionDetail (Function f) {
             }
           ]),
           subFunctions@GemColumn(width = "15%", components = [
-            @GemText(value = "Sub Functions"),
+            @GemText(value = "Sub Functions", size = "large"),
             @iterate(Function sf : f.subFunction) {
               @GemRow(width = "auto", rowGap="10px", colGap="10px", components = [
                 @GemText(value = sf.name),

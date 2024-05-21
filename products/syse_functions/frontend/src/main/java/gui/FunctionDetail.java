@@ -6,6 +6,7 @@ import functionstructure4fenix.DoubleValue;
 import functionstructure4fenix.Function;
 import functionstructure4fenix.Port;
 import functionstructure4fenix.Value;
+import umlp.backendrte.common.Gem;
 import umlp.guiutil.Router;
 import umlp.jsweet.extension.annotation.Component;
 
@@ -22,10 +23,25 @@ public class FunctionDetail extends FunctionDetailTOP {
     return goToFunctionDetails(sf);
   }
 
-//  @Override
-  public Consumer<Object> goToFunctionDetailsSuper(Object sf) {
-    return goToFunctionDetails(sf);
+  @Override
+  public Consumer<Object> goToFunctionDetailsSuper(Object f) {
+    Gem<Function> ownerGem = getF().getOwnerGem();
+    if (ownerGem.isPresent()) {
+      return goToFunctionDetails(ownerGem.get());
+    } else {
+      return goToFunctionDetails(getF());
+    }
   }
+
+//  @Override
+//  public String getSuperFunctionLabel() {
+//    Gem<Function> ownerGem = getF().getOwnerGem();
+//    if (ownerGem.isPresent()) {
+//      return "Back to owning function: " + ownerGem.get().getName();
+//    } else {
+//      return "No owning function present";
+//    }
+//  }
 
   public Consumer<Object> goToFunctionDetails(Object sf) {
     return event -> {

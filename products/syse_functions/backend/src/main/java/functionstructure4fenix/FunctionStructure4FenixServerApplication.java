@@ -20,6 +20,8 @@ import java.util.Optional;
 @jsweet.lang.Erased
 public class FunctionStructure4FenixServerApplication extends FunctionStructure4FenixServerApplicationTOP {
 
+  private static final int RANDOM_VALUES = 5;
+
   @PostConstruct
   @Override
   public void init() throws IOException {
@@ -27,6 +29,7 @@ public class FunctionStructure4FenixServerApplication extends FunctionStructure4
 
     this.createCustomFunctions();
     this.importFunctions();
+    this.inventValues();
   }
 
   private void importFunctions() {
@@ -40,6 +43,29 @@ public class FunctionStructure4FenixServerApplication extends FunctionStructure4
         "-mp", input2.toAbsolutePath().toString(),
         "-main", "L"
     });
+  }
+
+  private void inventValues() {
+    for (Channel channel : FunctionStructure4FenixManager.getChannelList()) {
+      if (!channel.getFunctionStreamGem().isPresent()) {
+        channel.setFunctionStream(
+            FunctionStructure4FenixManager.functionStreamBuilder()
+                .category(channel.getCategory())
+                .build().get()
+        );
+      }
+
+      FunctionStream functionStream = channel.getFunctionStream();
+      if (functionStream.getValue().isEmpty()) {
+        for (int i = 0; i < RANDOM_VALUES; i++) {
+          functionStream.addValue(
+              FunctionStructure4FenixManager.doubleValueBuilder()
+                  .content(Math.round(Math.random() * 1000.0) / 10.0)
+                  .build().get()
+          );
+        }
+      }
+    }
   }
 
   private void createCustomFunctions() {
@@ -130,19 +156,19 @@ public class FunctionStructure4FenixServerApplication extends FunctionStructure4
         .name("AddWrapper")
         .inAdd(
             FunctionStructure4FenixManager.portBuilder()
-                .name("summand1")
+                .name("outerSummand1")
                 .channel(
                     subAdd.get().getInChannel("summand1").get()
                 ).build().get()
         ).inAdd(
             FunctionStructure4FenixManager.portBuilder()
-                .name("summand2")
+                .name("outerSummand2")
                 .channel(
                     subAdd.get().getInChannel("summand2").get()
                 ).build().get()
         ).outAdd(
             FunctionStructure4FenixManager.portBuilder()
-                .name("sum")
+                .name("outerSum")
                 .channel(
                     subAdd.get().getOutChannel("sum").get()
                 ).build().get()
