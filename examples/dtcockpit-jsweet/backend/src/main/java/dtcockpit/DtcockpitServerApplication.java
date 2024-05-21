@@ -33,12 +33,39 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
   public void init() throws IOException {
     super.init();
 
+    this.createInitialData();
+
+    try {
+      Server webServer = Server.createWebServer("-web", "-webAllowOthers").start();
+      Log.info(String.format("H2 Web Server started at: http://localhost:%s", webServer.getPort()), DtcockpitServerApplication.class.getName());
+      servers = Set.of(webServer);
+    }
+    catch (SQLException e) {
+      throw new IOException(e);
+    }
+  }
+
+  // For HotReload helpful. Otherwise the h2-webserverport is used when reloading
+  // ToDo: How to preserve the most data across reload? e.g. when dataschema is the same
+  @PreDestroy
+  public void onExit() {
+    Log.warn("PreDestroy: Closing DB Connection");
+    try {
+      DatabaseAccessManager.closeConnection();
+    } catch (SQLException ignored) {
+    }
+    for (Server server : servers) {
+      server.stop();
+    }
+  }
+
+  protected void createInitialData() {
     // Only create DummyData if database is empty
     if (DtcockpitManager.getUserList().isEmpty()) { // Is there a better way to check if dummy-data was already created?
       Log.println("Creating Dummy Data");
       DtcockpitManager.userBuilder()
           .username("MyUser")
-//          .password(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode("MyPasswort"))
+          //          .password(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode("MyPasswort"))
           .password("MyPasswort")
           .registrationDate(LocalDateTime.now())
           .email("unknown")
@@ -65,29 +92,5 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
       // TODO: App#getProject should contain all projects by default?
       DtcockpitManager.getApp().addProject(monticore);
     }
-
-    try {
-      Server webServer = Server.createWebServer("-web", "-webAllowOthers").start();
-      Log.info(String.format("H2 Web Server started at: http://localhost:%s", webServer.getPort()), DtcockpitServerApplication.class.getName());
-      servers = Set.of(webServer);
-    }
-    catch (SQLException e) {
-      throw new IOException(e);
-    }
   }
-
-  // For HotReload helpful. Otherwise the h2-webserverport is used when reloading
-  // ToDo: How to preserve the most data across reload? e.g. when dataschema is the same
-  @PreDestroy
-  public void onExit() {
-    Log.warn("PreDestroy: Closing DB Connection");
-    try {
-      DatabaseAccessManager.closeConnection();
-    } catch (SQLException ignored) {
-    }
-    for (Server server : servers) {
-      server.stop();
-    }
-  }
-
 }
