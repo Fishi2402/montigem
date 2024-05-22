@@ -144,6 +144,11 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
       getCD4C().addMethod(clazz, notifyDeleted.getTemplate(), notifyDeleted.getArguments().toArray());
     }
 
+    // add
+    for (NotifyMethodTemplate notifyAdded : this.notifyAdded.values()) {
+      getCD4C().addMethod(clazz, notifyAdded.getTemplate(), notifyAdded.getArguments().toArray());
+    }
+
     // constructor
     addConstructor();
   }
@@ -227,7 +232,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
 
       // add add
       ASTCDMethodSignature add = getCD4C().addMethod(
-          clazz, getAddDomainListTemplate(), node.getName(), getterName);
+          clazz, getAddDomainListTemplate(), innerType, node.getName(), getterName);
 
       // add list item observer
       extendDomainObserver();
