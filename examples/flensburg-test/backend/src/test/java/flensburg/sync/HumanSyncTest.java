@@ -13,6 +13,7 @@ import hardy.flensburg.HumanErrorCollector;
 import hardy.flensburg.HumanErrorObserver;
 import hardy.flensburg.test_infrastructure.FlensburgDBTestSetup;
 import hardy.flensburg.test_infrastructure.FlensburgMockTestSetup;
+import hardy.flensburg.test_infrastructure.FlensburgSQLDBTestSetup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,7 @@ public interface HumanSyncTest extends TestSetup<FlensburgTestContext> {
     }
   }
 
-  class HumanSyncDbTest extends FlensburgDBTestSetup implements HumanSyncTest {
+  class HumanSyncDbTest extends FlensburgSQLDBTestSetup implements HumanSyncTest {
     public HumanSyncDbTest() {
       super(2);
     }

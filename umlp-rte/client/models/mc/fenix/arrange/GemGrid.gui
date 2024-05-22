@@ -1,0 +1,29 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.arrange;
+
+/**
+  GemGrid is a container which arranges input elements in a grid pattern.
+*/
+component GemGrid(
+  /**
+    Height of the component in `px`, `%`, `vh`.
+  */
+  String height = "auto",
+  /**
+    Width of the component in `px`, `%`, `vh`.
+  */
+  String width = "auto",
+  List<String> x,
+  List<String> y,
+  /**
+    Gap between rows of elements in the container in `px`, `%`, `vh`, etc.
+  */
+  String rowGap = "0",
+  /**
+    Gap between columns of elements in the container in `px`, `%`, `vh`, etc.
+  */
+  String colGap = "0",
+  List<List<GUIViewElement>> rows,
+  List<List<GUIViewElement>> cols,
+  List<GUIViewElement> cells
+)

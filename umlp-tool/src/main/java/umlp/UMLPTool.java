@@ -18,7 +18,7 @@ import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl.GUIDSLTool;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
-import de.monticore.guidsl._cocos.GUIDSLCoCos;
+import de.monticore.guidsl._cocos.GUIDSLCoCoChecker;
 import de.monticore.guidsl._parser.GUIDSLParser;
 import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.guidsl._symboltable.GUIDSLSymbols2Json;
@@ -75,6 +75,7 @@ import umlp.generator.gui.guivariability.GUIVariabilityHandler;
 import umlp.generator.util.TagLookUp;
 import umlp.generator.util.UMLPSymbolTables;
 import umlp.generator.validator.ocl.OCLASTPreProcessor;
+import umlp.guidsl.additional_cocos.GUIParamDefaultOnlyLiteralCoCo;
 
 import java.io.File;
 import java.io.IOException;
@@ -643,6 +644,9 @@ public class UMLPTool extends UMLPToolTOP {
         for (String output : outputs) {
           Reporting.reportFileCreation(Paths.get(outDir.getPath(), output).toString());
         }
+
+        TagRelated.postInfo();
+
         Reporting.flush(new ASTGUICompilationUnit());
       }
     }
@@ -829,7 +833,8 @@ public class UMLPTool extends UMLPToolTOP {
   }
 
   protected void runDefaultCoCos(ASTGUICompilationUnit ast) {
-    GUIDSLCoCos checker = new GUIDSLCoCosForUMLP();
-    checker.createChecker().checkAll(ast);
+    GUIDSLCoCoChecker checker = new GUIDSLCoCosForUMLP().createChecker();
+    checker.addCoCo(new GUIParamDefaultOnlyLiteralCoCo());
+    checker.checkAll(ast);
   }
 }

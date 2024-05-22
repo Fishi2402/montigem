@@ -8,10 +8,13 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.monticore.guidsl._ast.ASTGUIParam;
@@ -39,12 +42,12 @@ import umlp.generator.util.TagLookUp;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
@@ -140,10 +143,10 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
   }
 
   protected ASTCDClass createClass(ASTGUICompilationUnit ast, String packageName) {
-    ASTGUIComponentDeclaration domainClass = ast.getGUIComponentDeclaration();
+    ASTGUIComponentDeclaration guiComp = ast.getGUIComponentDeclaration();
     // empty class
-    String className = domainClass.getName() + GUIAbstractDecorator.COMPONENT_SUFFIX;
-    String domainClassName = getDomainClassName(domainClass, ast);
+    String className = guiComp.getName() + GUIAbstractDecorator.COMPONENT_SUFFIX;
+    String domainClassName = getDomainClassName(guiComp, ast);
 
     ASTCDClass clazz = UMLPMill.cDClassBuilder()
         .setModifier(CDModifier.PUBLIC.build())
@@ -155,10 +158,10 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
     getCD4C().addImport(clazz, packageName + "." + domainClassName);
 
     // constructor, attrs, getters
-    if (!domainClass.getGUIParamList().isEmpty()) {
+    if (!guiComp.getGUIParamList().isEmpty()) {
       addInitMethod(clazz);
 
-      if (domainClass.isPage()) {
+      if (guiComp.isPage()) {
         // hookpoint template for page nginit
         glex.addAfterTemplate("umlp.gui2java.InitBody", new TemplateHookPoint(
             "umlp.gui2java.InitPageBody"));
@@ -166,7 +169,7 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
       }
 
       if (ast.getGUIComponentDeclaration().isPage()
-          && domainClass.getGUIParamList().stream().anyMatch(util::isDomainListType)) {
+          && guiComp.getGUIParamList().stream().anyMatch(util::isDomainListType)) {
         addDestroyMethod(clazz);
       }
 
@@ -175,10 +178,10 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
         addUpdateObserverAndUpdateMethods(clazz, ast);
       }
 
-      List<ASTGUIParam> domainParams = domainClass.getGUIParamList().stream()
+      List<ASTGUIParam> domainParams = guiComp.getGUIParamList().stream()
           .filter(p -> util.isDomainType(p))
           .collect(Collectors.toList());
-      List<ASTGUIParam> domainListParams = domainClass.getGUIParamList().stream()
+      List<ASTGUIParam> domainListParams = guiComp.getGUIParamList().stream()
           .filter(p -> util.isDomainListType(p))
           .collect(Collectors.toList());
       List<ASTCDAttribute> domainAttributes = new ArrayList<>();
@@ -218,6 +221,12 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
         getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandManager"));
       }
 
+      Map<String, Optional<String>> paramDefaultsValues = new TreeMap<>();
+      guiComp.forEachGUIParams(p -> paramDefaultsValues.put(
+          p.getName(),
+          printParamDefaultValue(p)
+      ));
+
       // attrs, getters
       if (util.isCreateModel(ast.getComponentQName())) {
         // Add Builder attributes and getter for domain type parameters
@@ -248,7 +257,7 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
         //        getCD4C().addMethod(clazz, "umlp.gui2ts.TSBuild", builders); // TODO entfernen
 
         // Add constructor
-        addBuilderConstructor(clazz, domainAttributes, ast.getComponentQName());
+        addBuilderConstructor(clazz, domainAttributes, ast.getComponentQName(), paramDefaultsValues);
       }
       else {
         // Add attributes
@@ -288,20 +297,24 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
         // fill init
         glex.setBeforeTemplate("umlp.gui2java.InitBody", hps);
 
-        List<ASTGUIParam> otherParams = domainClass.getGUIParamList().stream()
+        List<ASTGUIParam> otherParams = guiComp.getGUIParamList().stream()
             .filter(p -> !util.isDomainType(p) && !util.isDomainListType(p)).collect(Collectors.toList());
         List<ASTCDAttribute> otherAttributes = new ArrayList<>();
         for (ASTGUIParam p : otherParams) {
           ASTCDAttribute cdAttr = addAttributForGUIParameter(clazz, p, CDModifier.PUBLIC.build());
-          addAnnotation(cdAttr);
+          if (p.isPresentSymbol() && util.isEventArgument(p.getSymbol())) {
+            addOutputAnnotation(cdAttr);
+          } else {
+            addAnnotation(cdAttr);
+          }
           otherAttributes.add(cdAttr);
         }
         List<String> params = new ArrayList<>();
-        domainClass.forEachGUIParams(p -> params.add(
+        guiComp.forEachGUIParams(p -> params.add(
             getParam(p.getSymbol().getType(), p.getName())
         ));
 
-        addEditConstructor(clazz, params, domainAttributes, otherAttributes, ast);
+        addEditConstructor(clazz, params, paramDefaultsValues, domainAttributes, otherAttributes, ast);
       }
 
       // TODO AGe: readd error observers when error concept is realized
@@ -328,6 +341,20 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
     }
 
     return clazz;
+  }
+
+  protected Optional<String> printParamDefaultValue(ASTGUIParam p) {
+    if(!p.isPresentDefault()){
+      return Optional.empty();
+    }
+
+    ASTExpression def = p.getDefault();
+    if(def instanceof ASTLiteralExpression){
+      return Optional.ofNullable(GUIDSLMill.prettyPrint(def, false));
+    }else{
+      // Forbidden by GUIParamDefaultOnlyLiteralCoCo
+      return Optional.empty();
+    }
   }
 
   protected void addUpdateObserverAndUpdateMethods(ASTCDClass clazz, ASTGUICompilationUnit ast) {
@@ -405,6 +432,14 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
     );
   }
 
+  protected void addOutputAnnotation(ASTCDAttribute attr) {
+    glex.replaceTemplate(
+        GUI2ComponentTemplates.ANNOTATIONS,
+        attr,
+        new StringHookPoint("@Output()")
+    );
+  }
+
   @Override
   protected ASTMCType transformTypeForAttr(ASTCDClass clazz, ASTGUIParam param) {
     if (util.isDomainListType(param)) {
@@ -437,14 +472,14 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
   }
 
   protected void addBuilderConstructor(
-      ASTCDClass clazz, List<ASTCDAttribute> domainAttributes, String componentName
-  ) {
+      ASTCDClass clazz, List<ASTCDAttribute> domainAttributes, String componentName,
+      Map<String, Optional<String>> paramDefaultsValues) {
     Optional<String> domainQName = util.getMainDomainModelQName();
     if (domainQName.isPresent()) {
       String className = clazz.getName();
       glex.replaceTemplate("umlp.gui2ts.TSConstructor", clazz,
           new TemplateHookPoint("umlp.gui2ts.TSConstructorWithBuilder", domainQName.get(),
-              className, domainAttributes, guiDSLPrinter)
+              className, domainAttributes, guiDSLPrinter, paramDefaultsValues)
       );
       /*
       getCD4C().addConstructor(clazz, getConstructorWithBuilderTemplate(),
@@ -459,12 +494,12 @@ public class GUI2TypeScriptAngularDecorator extends GUIAbstractDecorator {
     }
   }
 
-  protected void addEditConstructor(ASTCDClass clazz, List<String> params,
+  protected void addEditConstructor(ASTCDClass clazz, List<String> params, Map<String, Optional<String>> paramValues,
       List<ASTCDAttribute> domainAttributes, List<ASTCDAttribute> otherAttributes,
       ASTGUICompilationUnit guiAst) {
     List<String> ids = util.getRoutingIds(guiAst);
     glex.replaceTemplate("umlp.gui2ts.TSConstructor", clazz,
-        new TemplateHookPoint("umlp.gui2ts.TSEditConstructor", ids));
+        new TemplateHookPoint("umlp.gui2ts.TSEditConstructor", ids, paramValues));
     for (String id : ids) {
       getCD4C().addAttribute(clazz, "public int " + id);
     }

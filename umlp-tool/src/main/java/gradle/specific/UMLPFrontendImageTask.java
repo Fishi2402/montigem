@@ -11,8 +11,10 @@ import com.google.cloud.tools.jib.api.LogEvent;
 import com.google.cloud.tools.jib.api.RegistryException;
 import com.google.cloud.tools.jib.api.RegistryImage;
 import com.google.cloud.tools.jib.api.buildplan.AbsoluteUnixPath;
+import com.google.cloud.tools.jib.api.buildplan.FileEntriesLayer;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.ConfigurableFileCollection;
+import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.provider.Property;
@@ -27,6 +29,7 @@ import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
@@ -39,7 +42,8 @@ public abstract class UMLPFrontendImageTask extends DefaultTask {
 
   @InputFiles
   @PathSensitive(PathSensitivity.RELATIVE)
-  public abstract ConfigurableFileCollection getServedFiles();
+  // Only a single directory. JIB is otherwise losing the hierarchy of nested files
+  public abstract DirectoryProperty getServedFiles();
 
   @Input
   public abstract Property<String> getFullImageName();
@@ -57,10 +61,8 @@ public abstract class UMLPFrontendImageTask extends DefaultTask {
 
   public UMLPFrontendImageTask() {
     getCaddyfile().convention(getProject().getLayout().file(getProject().provider(() -> getProject().getBuildDir().toPath().resolve("frontendGen").resolve("Caddyfile").toFile())));
-    getServedFiles().from(
-        getProject().provider(() ->
-            getProject().fileTree(getProject().getBuildDir().toPath().resolve("frontendGen").resolve("dist").resolve("client")).getFiles().stream().map(File::toPath).collect(Collectors.toList())
-        )
+    getServedFiles().convention(
+        getProject().getLayout().getBuildDirectory().dir("frontendGen/dist/client/")
     );
   }
 
@@ -109,6 +111,8 @@ public abstract class UMLPFrontendImageTask extends DefaultTask {
   protected JibContainerBuilder getBuilder() throws IOException, InvalidImageReferenceException {
     return Jib.from("caddy:2.7-alpine")
         .addLayer(List.of(getCaddyfile().get().getAsFile().toPath()), AbsoluteUnixPath.get("/etc/caddy/"))
-        .addLayer(getServedFiles().getFiles().stream().map(File::toPath).collect(Collectors.toList()), AbsoluteUnixPath.get("/srv"));
+        .addFileEntriesLayer(FileEntriesLayer.builder()
+            .addEntryRecursive(getServedFiles().get().getAsFile().toPath(), AbsoluteUnixPath.get("/srv/"))
+            .build());
   }
 }

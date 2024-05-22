@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package associations2;
 
-import associations2.test_infrastructure.Associations2DBTestSetup;
+import associations2.test_infrastructure.Associations2SQLDBTestSetup;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
@@ -9,7 +9,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class UpdateOptionalTest extends Associations2DBTestSetup {
+public class UpdateOptionalTest extends Associations2SQLDBTestSetup {
 
   public UpdateOptionalTest() {
     super(0);

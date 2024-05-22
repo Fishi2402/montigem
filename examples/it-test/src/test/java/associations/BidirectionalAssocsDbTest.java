@@ -1,10 +1,8 @@
 package associations;
 
-import associations.test_infrastructure.AssociationsDBTestSetup;
-import attributes.AttributesDAOFactory;
-import attributes.DbTypesTest;
-import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Disabled;
+import associations.test_infrastructure.AssociationsNeo4JDBTestSetup;
+import associations.test_infrastructure.AssociationsSQLDBTestSetup;
+import associations.test_infrastructure.AssociationsTestSetup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -15,30 +13,24 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public abstract class BidirectionalAssocsDbTest extends AssociationsDBTestSetup {
+public interface BidirectionalAssocsDbTest extends AssociationsTestSetup {
 
   @DisplayName("Neo4J-BidirectionalAssocs")
-  public static class
-  Neo4JTestSuite extends BidirectionalAssocsDbTest {
+  class Neo4JTestSuite extends AssociationsNeo4JDBTestSetup implements BidirectionalAssocsDbTest {
     Neo4JTestSuite() {
-      super("NEO4J");
-      setUpLocalNeo4jInstance();
+      super(0);
     }
   }
 
   @DisplayName("SQL-BidirectionalAssocs")
-  public static class SQLTestSuite extends BidirectionalAssocsDbTest {
+  class SQLTestSuite extends AssociationsSQLDBTestSetup implements BidirectionalAssocsDbTest {
     SQLTestSuite() {
-      super("SQL");
+      super(0);
     }
   }
 
-  public BidirectionalAssocsDbTest(String dbConnectionType) {
-    super(0, dbConnectionType);
-  }
-
   @Test
-  public void testSettingInBuildSyncs(){
+  default void testSettingInBuildSyncs(){
     OptToManyRhs rhs1 = AssociationsManager.optToManyRhsBuilder().build().get();
     OptToManyLhs lhs1 = AssociationsManager.optToManyLhsBuilder().optToManyRhs(Set.of(rhs1)).build().get();
 
@@ -60,7 +52,7 @@ public abstract class BidirectionalAssocsDbTest extends AssociationsDBTestSetup 
 
 
   @Test
-  public void testSettingAfterBuildSyncs(){
+  default void testSettingAfterBuildSyncs(){
     OptToManyRhs rhs1 = AssociationsManager.optToManyRhsBuilder().build().get();
     OptToManyLhs lhs1 = AssociationsManager.optToManyLhsBuilder().build().get();
 
@@ -84,7 +76,7 @@ public abstract class BidirectionalAssocsDbTest extends AssociationsDBTestSetup 
   }
 
   @Test
-  public void testSettingAfterBuild2Syncs(){
+  default void testSettingAfterBuild2Syncs(){
     OptToManyRhs rhs1 = AssociationsManager.optToManyRhsBuilder().build().get();
     OptToManyLhs lhs1 = AssociationsManager.optToManyLhsBuilder().build().get();
 
@@ -108,7 +100,7 @@ public abstract class BidirectionalAssocsDbTest extends AssociationsDBTestSetup 
   }
 
   @Test
-  public void testDeleteOptToManySyncs(){
+  default void testDeleteOptToManySyncs(){
     OptToManyRhs rhs1 = AssociationsManager.optToManyRhsBuilder().build().get();
     OptToManyLhs lhs1 = AssociationsManager.optToManyLhsBuilder().optToManyRhs(Set.of(rhs1)).build().get();
 
@@ -136,7 +128,7 @@ public abstract class BidirectionalAssocsDbTest extends AssociationsDBTestSetup 
   }
 
   @Test
-  public void testDeleteOptToOptSyncs(){
+  default void testDeleteOptToOptSyncs(){
     OptToOptRhs rhs1 = AssociationsManager.optToOptRhsBuilder().build().get();
     OptToOptLhs lhs1 = AssociationsManager.optToOptLhsBuilder().optToOptRhs(rhs1).build().get();
 
@@ -164,7 +156,7 @@ public abstract class BidirectionalAssocsDbTest extends AssociationsDBTestSetup 
   }
 
   @Test
-  public void testDeleteOptToOneSyncs(){
+  default void testDeleteOptToOneSyncs(){
     OptToOneRhs rhs1 = AssociationsManager.optToOneRhsBuilder().build().get();
     OptToOneLhs lhs1 = AssociationsManager.optToOneLhsBuilder().optToOneRhs(rhs1).build().get();
 
@@ -195,7 +187,7 @@ public abstract class BidirectionalAssocsDbTest extends AssociationsDBTestSetup 
   }
 
   @Test
-  public void testDeleteManyToManySyncs(){
+  default void testDeleteManyToManySyncs(){
     ManyToManyRhs rhs1 = AssociationsManager.manyToManyRhsBuilder().build().get();
     ManyToManyLhs lhs1 = AssociationsManager.manyToManyLhsBuilder().manyToManyRhs(Set.of(rhs1)).build().get();
 

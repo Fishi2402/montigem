@@ -66,29 +66,44 @@ build_with_containers:
     - "cd .."
     # Weather Backend
     - "gradle :examples:weather:backend:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
+      -Djib.from.image=registry.git.rwth-aachen.de/monticore/container-registry/eclipse-temurin:11-jre \
+      -Djib.from.auth.username=$CI_REGISTRY_USER  \
+      -Djib.from.auth.password=$CI_REGISTRY_PASSWORD \
       -Djib.to.image=$CI_REGISTRY_IMAGE/weather_backend:latest \
       -Djib.to.auth.username=$CI_REGISTRY_USER  \
       -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
     # SEHub Backend
     - "gradle :examples:sehub:backend:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
+      -Djib.from.image=registry.git.rwth-aachen.de/monticore/container-registry/eclipse-temurin:11-jre \
+      -Djib.from.auth.username=$CI_REGISTRY_USER  \
+      -Djib.from.auth.password=$CI_REGISTRY_PASSWORD \
       -Djib.to.image=$CI_REGISTRY_IMAGE/sehub_backend:latest \
       -Djib.to.auth.username=$CI_REGISTRY_USER  \
       -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
     # Stat-Server
     - "gradle :examples:stat:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
+      -Djib.from.image=registry.git.rwth-aachen.de/monticore/container-registry/eclipse-temurin:11-jre \
+      -Djib.from.auth.username=$CI_REGISTRY_USER  \
+      -Djib.from.auth.password=$CI_REGISTRY_PASSWORD \
       -Djib.to.image=$CI_REGISTRY_IMAGE/stat_backend:latest \
       -Djib.to.auth.username=$CI_REGISTRY_USER  \
       -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
     # DTCockpit Backend
     - "gradle :examples:dtcockpit:backend:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
-       -Djib.to.image=$CI_REGISTRY_IMAGE/dtcockpit_backend:latest \
-       -Djib.to.auth.username=$CI_REGISTRY_USER  \
-       -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
+      -Djib.from.image=registry.git.rwth-aachen.de/monticore/container-registry/eclipse-temurin:11-jre \
+      -Djib.from.auth.username=$CI_REGISTRY_USER  \
+      -Djib.from.auth.password=$CI_REGISTRY_PASSWORD \
+      -Djib.to.image=$CI_REGISTRY_IMAGE/dtcockpit_backend:latest \
+      -Djib.to.auth.username=$CI_REGISTRY_USER  \
+      -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
     # DemoRec Application
     - "gradle :products:demorec:backend:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
-       -Djib.to.image=$CI_REGISTRY_IMAGE/demorec_backend:latest \
-       -Djib.to.auth.username=$CI_REGISTRY_USER  \
-       -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
+      -Djib.from.image=registry.git.rwth-aachen.de/monticore/container-registry/eclipse-temurin:11-jre \
+      -Djib.from.auth.username=$CI_REGISTRY_USER  \
+      -Djib.from.auth.password=$CI_REGISTRY_PASSWORD \
+      -Djib.to.image=$CI_REGISTRY_IMAGE/demorec_backend:latest \
+      -Djib.to.auth.username=$CI_REGISTRY_USER  \
+      -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
 
     # Frontends
     - "gradle :examples:weather:frontend:deployImageCI :examples:sehub:frontend:deployImageCI :examples:dtcockpit:frontend:deployImageCI :products:demorec:frontend:deployImageCI -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
@@ -179,6 +194,15 @@ trigger-promo-db:
   allow_failure: false # Failure is not an option
   trigger:
     project: monticore/umlp-anwendungen/promodb
+    branch: dev
+  only:
+    - dev
+
+trigger-iop-datamodel-demonstrator:
+  stage: testDeployed
+  allow_failure: false # Failure is not an option
+  trigger:
+    project: monticore/umlp-anwendungen/iop-datamodel-demonstrator
     branch: dev
   only:
     - dev

@@ -4,26 +4,21 @@ package flensburg.gui.showcityinfo;
 // HW-T
 
 import flensburg.gui.AbstractGUITest;
-import hardy.flensburg.Address;
-import hardy.flensburg.CarBuilder;
-import hardy.flensburg.FlensburgManager;
-import hardy.flensburg.FlensburgMock;
-import hardy.flensburg.PersonBuilder;
 import org.junit.jupiter.api.Test;
-
-import java.util.Collections;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import umlp.backendrte.test_infrastructure.ClientSetup;
 
 /* Test GUI (or later also E2E) for city info
 */
 public class ShowCityInfoTest extends AbstractGUITest {
 
+  public ShowCityInfoTest() {
+    super(ClientSetup.of(1));
+  }
+
   @Test
   public void showCityInfoTest() {
     // eine Ausbaustufe wäre: einen Validator hinzufügen und wenn der failed,
     // zusaetlich eine Fehlermeldung anzeigen (die analog angezeigt wird)
-    FlensburgMock.init();
 
 /* TODO MB
   Address a = FlensburgManager.addressBuilder().city("Aachen").build().get();

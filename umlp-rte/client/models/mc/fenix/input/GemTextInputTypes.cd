@@ -35,6 +35,8 @@ classdiagram GemTextInputTypes {
     String value;
     /** Human-readable name representing the option. */
     String display;
+    +Option(String value);
+    +Option(String value, String display);
   }
 
 }

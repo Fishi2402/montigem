@@ -110,14 +110,16 @@ public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
         String msg = invocation.getArgumentCount() > 1 ? invocation.getArgument(1).toString() : "";
         this.print("/* requireNonNull */")
             .print(String.format(
-                "(obj => {if (obj == undefined || obj == null) { throw Object.defineProperty(new Error(%s), '__classes', { configurable: true, value: ['java.lang.Throwable','java.lang.Object','java.lang.RuntimeException','java.lang.NullPointerException','java.lang.Exception'] }) } else { return obj}}) (%s)",
-                msg, invocation.getArgument(0).toString()));
+                "(obj => {if (obj == undefined || obj == null) { throw Object.defineProperty(new Error(%s), '__classes', { configurable: true, value: ['java.lang.Throwable','java.lang.Object','java.lang.RuntimeException','java.lang.NullPointerException','java.lang.Exception'] }) } else { return obj}}) (",
+                msg))
+            .print(invocation.getArgument(0))
+            .print(")");
         return true;
       case "equals":
         this.print("/* equals */")
-            .print(
-                String.format("((a, b) => { return a === b; }) (%s, %s)",
-                    invocation.getArgument(0), invocation.getArgument(1)));
+            .print("((a, b) => { return a === b; }) (")
+            .printArgList(invocation.getArguments())
+            .print(")");
         return true;
     }
     return false;

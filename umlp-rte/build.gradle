@@ -1,4 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
+import gradle.specific.UMLPJava2TypeScriptTask
+
 plugins {
     id 'application'
     id 'maven-publish'
@@ -15,6 +17,11 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version
     implementation group: 'org.springframework.shell', name: 'spring-shell-starter', version: spring_shell_version
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: spring_version
+
+    // Compile only, such that we don't force the neo4j dependency into each product
+    compileOnly group: 'org.neo4j', name: 'neo4j-jdbc-driver', version: neo4j_jdbc_version
+    compileOnly "org.neo4j:neo4j:4.4.10"
+    compileOnly "org.neo4j.driver:neo4j-java-driver:$neo4jVersion"
 
     // Used for umlp.backendrte.test_infrastructure.TestSetup
     // Alternative: testing-rte + generate a testing module for each cd
@@ -41,3 +48,51 @@ publishing {
         url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
     }
 }
+
+
+////////// Transpile the (client) runtime
+// Note: This is currently purely to compare it by hand
+
+configurations {
+  jsweettranspilerRuntime {
+    extendsFrom(configurations.compileClasspath)
+  }
+}
+
+dependencies {
+  jsweettranspilerRuntime project(path: ":umlp-rte:umlp-jsweet")
+}
+
+tasks.register("transpileRuntime", UMLPJava2TypeScriptTask) {
+  getInput().setFrom(sourceSets.main.java)
+  getVerbose().set(true)
+  getOutputDir().set(project.layout.buildDirectory.dir("runtimeTS"))
+  getJSweetClassPath().from(configurations.jsweettranspilerRuntime)
+  getDomainModel().set("NYI")
+  getExcludeSource().add("glob:**/shellapi/*.java")
+  getExcludeSource().add("glob:**/test_infrastructure/*.java")
+  getExcludeSource().add("glob:**/common/DatabaseAccessManage*.java")
+  getExcludeSource().add("glob:**/common/Neo4jDatabaseStarter.java")
+  getExcludeSource().add("glob:**/common/GemIdManager4*.java")
+  getExcludeSource().add("glob:**/service/**.java")
+  getExcludeSource().add("glob:**/service2/**.java")
+}
+
+repositories {
+  // Only use jsweet repos for everything in org.jsweet*(excl jsweet-core which is in maven-central)
+  // since they throw 409 errors for dependencies in other groups
+  maven {
+    url "https://repository.jsweet.org/artifactory/libs-snapshot-local"
+    mavenContent {
+      includeModuleByRegex("org[.]jsweet.*", "(?!jsweet-core).*")
+    }
+  }
+  maven {
+    url "https://repository.jsweet.org/artifactory/libs-release-local"
+    mavenContent {
+      includeModuleByRegex("org[.]jsweet.*", "(?!jsweet-core).*")
+    }
+  }
+}
+
+// END Transpile runtime

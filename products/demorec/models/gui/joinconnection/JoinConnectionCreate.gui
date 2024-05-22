@@ -14,7 +14,7 @@ import gui.component.ComponentEdit;
 import gui.component.ComponentCreate;
 import gui.joinconnection.RemoveCompButton;
 
-component JoinConnectionCreate(JoinConnection connection, List<String> dummyComponents,  Event<JoinConnection> createJoinConnection) {
+component JoinConnectionCreate(JoinConnection connection, List dummyComponents,  Event<JoinConnection> createJoinConnection) {
   @GemRow(
     wrap="nowrap",
     components=[

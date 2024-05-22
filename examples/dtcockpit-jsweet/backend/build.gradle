@@ -127,3 +127,32 @@ sourceSets {
 
 compileJava.dependsOn(generateUmlpBackend, genTestGUI)
 //compileJava.dependsOn(generateUmlpBackend)
+
+// #############
+// Define a sourceset for e2e tests with a custom BootJar
+sourceSets {
+  e2esetup {
+    compileClasspath += sourceSets.main.output
+    runtimeClasspath += sourceSets.main.output
+  }
+}
+
+configurations {
+  e2esetupImplementation.extendsFrom implementation
+}
+
+tasks.register("e2eBootJar", org.springframework.boot.gradle.tasks.bundling.BootJar.class) {
+  var e2es = sourceSets.e2esetup;
+  classpath = project.provider({ e2es.getRuntimeClasspath()
+      .minus((configurations.developmentOnly.minus(configurations.productionRuntimeClasspath)))
+//      .minus((configurations.testAndDevelopmentOnly.minus(configurations.productionRuntimeClasspath)))
+      .filter(new gradle.common.SpringBootJarTypeFileSpec())})
+  mainClass = "e2e.E2EServerApplication"
+  archiveClassifier.set("e2esetup")
+}
+
+tasks.register("e2eRun", JavaExec.class) {
+  group = "application"
+  mainClass = "e2e.E2EServerApplication"
+  classpath = project.files().from(project.provider({tasks.e2eBootJar.classpath}))
+}

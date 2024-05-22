@@ -13,7 +13,7 @@ import person.HierarchicalList;
 import person.CreatePerson;
 import person.PieChart;
 
-page Overview(List<Person> persons) {
+page Overview(List<Person> persons, Event<Person> createPerson) {
   @GemColumn(rowGap = "10px", width = "50%", components = [
     @CreatePerson(),
     @iterate(Person p : persons) {

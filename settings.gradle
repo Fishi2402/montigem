@@ -52,8 +52,8 @@ include ":examples"
 include ':examples:selib'
 include ':examples:stat'
 // CD2GUI&JSweet example
-//include ':examples:carrental-tmp:backend'
-//include ':examples:carrental-tmp:frontend'
+include ':examples:carrental-tmp:backend'
+include ':examples:carrental-tmp:frontend'
 include ':examples:artifacts-test'
 include ':examples:artifacts-java'
 include ':examples:flensburg-test:backend'
@@ -80,15 +80,20 @@ include ':examples:kitchencompanion:frontend'
 include ':examples:guidslpaper:backend'
 include ':examples:guidslpaper:frontend'
 
-include ':products:syse_functions'
+include ':products:syse_functions:backend'
+include ':products:syse_functions:frontend'
+include ':products:syse_functions:automaton'
 include ':products:demorec:backend'
 include ':products:demorec:frontend'
 include ':products:demo-recycling:frontend'
 include ':products:kizam:backend'
 
+include ':products:dev_process_cockpit:backend'
+include ':products:dev_process_cockpit:frontend'
+
 include ':modules:login'
 include ':modules:sovd-gateway'
 include ':modules:sovd-gateway-it:backend'
-include 'products:syse_functions:automaton'
+
 findProject(':products:syse_functions:automaton')?.name = 'automaton'
 

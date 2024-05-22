@@ -126,7 +126,7 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements OnInit 
       return this.endEffectorEntry
     }
     else {
-      if(this.getStep()) {
+      if(this.getStep() && this.getStep().getUses()) {
         this.endEffectorEntry = this.getStep().getUses().getGemId() + ""
       }
       return this.endEffectorEntry

@@ -1,14 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { DemoRecManager } from '@src/demorec/DemoRecManager';
-
 import { DemoRecComponent } from '@src/demorec/DemoRecComponent';
 
 import { PhotoDragNDropComponent, config } from '../../../../build/frontendGen/build/appgui/gui/component/PhotoDragNDropComponent';
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-
-import { BatteryPackBuilder } from '@src/demorec/BatteryPackBuilder';
 
 import {
   Directive,

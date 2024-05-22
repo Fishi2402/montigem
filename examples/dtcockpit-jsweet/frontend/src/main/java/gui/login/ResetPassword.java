@@ -26,7 +26,7 @@ public class ResetPassword extends ResetPasswordTOP {
   private String error = "";
 
   @Override
-  public void resetPassword(Object event) {
+  public void passwordReset(Object event) {
     if (this.user == null || this.user.getPassword() == null || this.user.getEmail() == null) {
       return;
     }

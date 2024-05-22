@@ -36,7 +36,8 @@ public class GUIUtilAdapter extends UMLPAbstractAdapter {
       case "umlp.guiutil.Router":
         switch (methodName) {
           case "navigate":
-            this.print("this.router.navigate([").printArgList(invocation.getArguments()).print("])");
+            this.print("this.router.navigate([").printArgList(invocation.getArguments())
+                .print("]).then(() => { window.location.reload(); });");
             return true;
         }
       case "umlp.guiutil.Location":

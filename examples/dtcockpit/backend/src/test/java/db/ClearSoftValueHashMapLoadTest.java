@@ -8,6 +8,7 @@ import dtcockpit.DtcockpitManagerNoRoomDBImpl;
 import dtcockpit.DtcockpitTestContext;
 import dtcockpit.Room;
 import dtcockpit.test_infrastructure.DtcockpitDBTestSetup;
+import dtcockpit.test_infrastructure.DtcockpitSQLDBTestSetup;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ClearSoftValueHashMapLoadTest extends DtcockpitDBTestSetup {
+public class ClearSoftValueHashMapLoadTest extends DtcockpitSQLDBTestSetup {
   public ClearSoftValueHashMapLoadTest() {
     super(1);
   }

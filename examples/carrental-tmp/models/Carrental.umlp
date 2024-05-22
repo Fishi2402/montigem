@@ -14,10 +14,10 @@ umlp Carrental {
     boolean isAvailable();
   }
 
-  abstract class RentableItem implements Rentable {
+  abstract class RentableItem implements Rentable  {
     String name;
-    // TODO: Imports import mc.fenix.input.Option; (not existing)
- //   RentableStatus rentableStatus; // TODO: MUST NOT BE AN ASSOC
+    // TODO: java.util.List<capture#1 of ? extends java.lang.Object> cannot be converted to java.util.List<mc.fenix.input.Option>
+    //RentableStatus rentableStatus; // TODO: MUST NOT BE AN ASSOC
   }
 
 
@@ -32,7 +32,7 @@ umlp Carrental {
   enum RentableStatus {
     AVAILABLE, RENTED, MAINTENANCE; // EX: Add MAINTENANCE
  }
-//  association Car -> RentableStatus [1];
+//  association Car -> RentableStatus [1]; //  MUST NOT BE AN ASSOC
 
   class RentalTransaction {
     // We can also use Java types, such as LocalDateTime (which we have imported above)
@@ -41,13 +41,13 @@ umlp Carrental {
     float totalCost;
   }
   // TODO: MUSE BE -> (?)
-  association [1] RentalTransaction -> Customer [*];
+// TODO: Fails to compile? //  association [1] RentalTransaction -> Customer [*];
+  association [*] RentalTransaction <-> Customer [1];
 
    class Customer {
      String name;
      String email; //EX: Add E-Mail
    }
-
 
 
   <<singleton>>  // There only ever exists one instance of a singleton
@@ -57,7 +57,7 @@ umlp Carrental {
     void processPayment(RentalTransaction rentalTransaction);  // EX: add another command
   }
 
-   association [1] RentalService -> Rentable [*];
+   association [1] RentalService -> RentableItem [*]; // TODO: using the interface: 0xF737F given expression of type Rentable unable to derive the type of the access ".gemId"
    association [1] RentalService -> RentalTransaction [*]; // EX: Add assoc
 
 
@@ -66,7 +66,8 @@ umlp Carrental {
    class VIPStatus {
      String personalGreetingAtTheDesk;
    }
-   association Customer -> VIPStatus [0..1]; // EX: add Status
+   //association Customer -> VIPStatus [0..1]; // TODO: [0..1] no (CD2)GUI
+   association Customer -> VIPStatus [*]; // TODO: vIPStatus_VIPStatusList = CarrentalManager.gemList<VIPStatus>();
 
 
 
@@ -75,7 +76,8 @@ umlp Carrental {
       float mileage;
    }
    // To be able to create a histogram, the mileage is tracked along with the data entry date.
-   association [1] Car -> MileageDataPoint [*];
+   // TODO:  this.mileageDataPoint_MileageDataPointList = CarrentalManager.gemList<MileageDataPoint>();
+   //association [1] Car -> MileageDataPoint [*];
 
 
   // Derived classes are ethereal, not stored in the database and without an identifier

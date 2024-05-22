@@ -4,7 +4,7 @@ ${cd4c.method("public void notifyRemove${name?cap_first}(${otherType} o, ${type}
 
 <#if isBidirectional>
   <#if isLeft>
-  CommandManager.executeCommand(new ${assocName?cap_first}_remove(o.getGemId(), attr, idx, -1));
+  CommandManager.executeCommand(new ${assocName?cap_first}_remove(attr, o.getGemId(), idx, -1));
   <#else>
   CommandManager.executeCommand(new ${assocName?cap_first}_remove(o.getGemId(), attr, -1, idx));
   </#if>

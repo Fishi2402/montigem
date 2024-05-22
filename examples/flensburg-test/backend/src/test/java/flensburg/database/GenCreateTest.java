@@ -23,6 +23,7 @@ import hardy.flensburg.PersonDAOInterface;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import umlp.backendrte.test_infrastructure.ClientSetup;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -36,24 +37,10 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public abstract class GenCreateTest extends GenAbstractDBTest {
+public class GenCreateTest extends GenAbstractDBTest {
 
-  @DisplayName("Neo4J Create Tests")
-  public static class Neo4JTestSuite extends GenCreateTest {
-    Neo4JTestSuite() {
-      super(DatabaseConnectionType.NEO4J);
-    }
-  }
-
-  @DisplayName("SQL Create Tests")
-  public static class SQLTestSuite extends GenCreateTest {
-    SQLTestSuite() {
-      super(DatabaseConnectionType.SQL);
-    }
-  }
-
-  public GenCreateTest(DatabaseConnectionType dbConnectionType) {
-    super(dbConnectionType);
+  public GenCreateTest() {
+    super(ClientSetup.of(1));
   }
 
   @Disabled

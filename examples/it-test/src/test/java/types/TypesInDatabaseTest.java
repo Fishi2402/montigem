@@ -1,19 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
 package types;
 
-import associations.BidirectionalAssocsDbTest;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import types.test_infrastructure.TypesDBTestSetup;
+import types.test_infrastructure.TypesSQLDBTestSetup;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static types.test_infrastructure.TypesSQLDBTestSetup.setUpLocalNeo4jInstance;
 
-public abstract class TypesInDatabaseTest extends TypesDBTestSetup {
+public abstract class TypesInDatabaseTest extends TypesSQLDBTestSetup {
 
   @Disabled("The current Neo4J JDBC Driver does not support ResultSet.getObject(x, Float.class)")
   @DisplayName("Neo4J-TypesInDB")

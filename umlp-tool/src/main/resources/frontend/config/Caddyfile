@@ -17,6 +17,21 @@
     }
     header @cachedFiles Cache-Control "private, max-age=3600, must-revalidate"
 
+
+    # we need to _explicitely_ set the caching behaviour. Otherwise browsers might cache anyway.
+    # Especially important for "index.html"
+    # See also: https://elelad.medium.com/avoid-cache-trap-when-serving-angular-app-c5981653d156
+    @not-cachedFiles {
+        not path *.jpg *.jpeg *.png *.svg *.gif *.ico *.mp4 *.css *.js   # Is there a better way to negate matches?
+    }
+    header @not-cachedFiles Cache-Control "no-cache"
+
+
+    # Drop Modified from the header. Due to the reproducible docker-build, this is _always_ set to 1970, so it just confuses the caches
+    header {
+      -Last-Modified
+    }
+
     try_files {path} /index.html # try to serve static files, otherwise fallback to index.html
     file_server
   }

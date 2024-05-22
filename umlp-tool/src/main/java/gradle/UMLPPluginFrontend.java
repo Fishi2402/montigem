@@ -85,10 +85,12 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
     //Create Tasks
     TaskProvider<FrontendSetup> frontendSetupTask = createFrontendSetupTask(project);
 
-    TaskProvider<UMLPFrontendTask> frontendDomainTask = createFrontendDomainTask(project);
-    TaskProvider<UMLPJava2TypeScriptTask> frontendDomainJ2TSTask = createFrontendDomainJ2TSTask(project, j2ts, frontendDomainTask, local);
-
     TaskProvider<UMLPSymbolsTask> domainSymbolGenTask = createDomainSymbolGen(project, frontendSetupTask);
+
+    TaskProvider<UMLPFrontendTask> frontendDomainTask = createFrontendDomainTask(project);
+    TaskProvider<UMLPJava2TypeScriptTask> frontendDomainJ2TSTask = createFrontendDomainJ2TSTask(project,
+        frontendDomainTask, domainSymbolGenTask, j2ts, local);
+
     TaskProvider<UMLPGuiGenTask> frontendGuiTask = createFrontendGuiTask(project, j2ts, local, domainSymbolGenTask, frontendDomainTask);
     TaskProvider<UMLPJava2TypeScriptTask> frontendGUIJ2TSTask = createFrontendGUIJ2TSTask(project, j2ts, frontendDomainJ2TSTask, frontendGuiTask);
 
@@ -149,15 +151,17 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
       umlpTask.getOutputDir().set(getAppDomainPath(project).toFile());
 
       // Always create symbols & tag files
-      umlpTask.getSymbolOutDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols_gui_domain").toFile());
+      umlpTask.getSymbolOutDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols_gui_domain_domain__from_task_frontenddomain").toFile());
 
     });
   }
 
-  protected TaskProvider<UMLPJava2TypeScriptTask> createFrontendDomainJ2TSTask(final Project project,
-                                                                               boolean j2ts,
-                                                                               TaskProvider<UMLPFrontendTask> frontendDomainTask,
-                                                                               boolean local) {
+  protected TaskProvider<UMLPJava2TypeScriptTask> createFrontendDomainJ2TSTask(
+      final Project project,
+      TaskProvider<UMLPFrontendTask> frontendDomainTask,
+      TaskProvider<UMLPSymbolsTask> domainSymbolGenTask,
+      boolean j2ts,
+      boolean local) {
     TaskProvider<UMLPJava2TypeScriptTask> j2tsTask = project.getTasks()
         .register(UMLP_FRONTEND_DOMAIN_J2TS_TASK_NAME, UMLPJava2TypeScriptTask.class, umlpTask -> {
           umlpTask.setGroup(UMLP_GROUP_NAME);
@@ -175,6 +179,7 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
           umlpTask.getInput().from(frontendDomainTask);
           umlpTask.getOutputDir().set(
               getAppDomainPath(project).toFile());
+          umlpTask.dependsOn(domainSymbolGenTask.get());
         });
 
     if (local) {
@@ -203,8 +208,8 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
       umlpTask.setGroup(UMLP_GROUP_NAME);
       umlpTask.dependsOn(frontendSetupTask.get());
       umlpTask.getInput().from(getModelsPath(project));
-      umlpTask.getSymbolOutDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols_gui_domain").toFile());
-      umlpTask.getOutputDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols_gui_domain").toFile());
+      umlpTask.getSymbolOutDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols_gui_domain__from_task_domainsymbol").toFile());
+      umlpTask.getOutputDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols_gui_domain__from_task_domainsymbol").toFile());
     });
   }
 
@@ -249,7 +254,7 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
           // Because the frontend uses relative paths to include HWC Code
           umlpTask.getOutputDir().set(getAppGuiPath(project).toFile());
           umlpTask.getSymbolOutDir()
-              .set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols_gui").toFile());
+              .set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols_gui_domain__from_task_frontendgui").toFile());
 
           umlpTask.getGuiGenJsweet().set(j2ts);
         });

@@ -7,6 +7,7 @@ import dtcockpit.DtcockpitManager;
 import dtcockpit.DtcockpitManagerImpl;
 import dtcockpit.Room;
 import dtcockpit.test_infrastructure.DtcockpitDBTestSetup;
+import dtcockpit.test_infrastructure.DtcockpitSQLDBTestSetup;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ClearSoftValueHashMapTest extends DtcockpitDBTestSetup {
+public class ClearSoftValueHashMapTest extends DtcockpitSQLDBTestSetup {
   public ClearSoftValueHashMapTest() {
     super(1);
   }
