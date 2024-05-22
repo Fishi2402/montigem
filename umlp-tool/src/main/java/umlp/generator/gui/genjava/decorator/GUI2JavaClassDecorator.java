@@ -40,8 +40,8 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
+import umlp.generator.domain.decorator.DiagramObserverDecorator;
 import umlp.generator.domain.decorator.ManagerDecorator;
-import umlp.generator.domain.decorator.ObserverDecorator;
 import umlp.generator.gui.GUIAbstractDecorator;
 import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.genjava.prettyprinter.Expression2AccessorPrinter;
@@ -225,11 +225,11 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
           clazz, getRemoveDomainListTemplate(), node.getName(), getterName);
 
       // add list item observer
-      if (!clazz.isPresentCDInterfaceUsage()) {
-        clazz.setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder()
-            .setInterfaceList(new ArrayList<>()).build());
+      if (!clazz.isPresentCDExtendUsage()) {
+        clazz.setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder()
+            .setSuperclassList(new ArrayList<>()).build());
       }
-      clazz.getInterfaceList().add(MCTypeFacade.getInstance()
+      clazz.getSuperclassList().add(MCTypeFacade.getInstance()
           .createQualifiedType(getAndImportDomainObserver()));
 
       // TODO: simple name clash, e.g., foo.Person and bar.Person
@@ -790,9 +790,9 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
           && util.getMainDomainModelSimpleName().isPresent()
           && scope.getName().equals(util.getMainDomainModelSimpleName().get())) {
 
-        String domain = StringTransformations.uncapitalize(scope.getName()) + ".";
+        String domain = StringTransformations.uncapitalize(scope.getName());
         String qType = ste.asObjectType().printFullName();
-        getCD4C().addImport(clazz, domainType2JavaQName(qType, domain));
+        getCD4C().addImport(clazz, insertDomain2QType(qType, domain));
       }
       else {
         getCD4C().addImport(clazz, ste.printFullName());
@@ -842,9 +842,9 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     // append Manager and insert lowercase cd name (e.g., flensburg) to get the result
     String manager = ManagerDecorator.getClassName(util.getMainDomainModelSimpleName().get());
     String qManager = ManagerDecorator.getClassName(util.getMainDomainModelQName().get());
-    String domain = StringTransformations.uncapitalize(util.getMainDomainModelSimpleName().get()) + ".";
+    String domain = StringTransformations.uncapitalize(util.getMainDomainModelSimpleName().get());
 
-    getCD4C().addImport(clazz, domainType2JavaQName(qManager, domain));
+    getCD4C().addImport(clazz, insertDomain2QType(qManager, domain));
     return manager;
   }
 
@@ -852,15 +852,22 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     if (util.getMainDomainModelSimpleName().isEmpty() || util.getMainDomainModelQName().isEmpty()) {
       Log.error("0x00007 Could not identify the manager name: domain class diagram is missing");
     }
-    String observer = util.getMainDomainModelSimpleName().get() + ObserverDecorator.SUFFIX;
-    String qObserver = util.getMainDomainModelSimpleName().get() + ObserverDecorator.SUFFIX;
-    String domain = StringTransformations.uncapitalize(util.getMainDomainModelSimpleName().get()) + ".";
+    String observer = DiagramObserverDecorator.PREFIX
+        + util.getMainDomainModelSimpleName().get()
+        + DiagramObserverDecorator.SUFFIX;
+    String qObserver = observer;
+    int lastDotIdx = util.getMainDomainModelQName().get().lastIndexOf(".");
+    if (lastDotIdx > 0) {
+      qObserver = util.getMainDomainModelQName().get().substring(0, lastDotIdx) + "." + observer;
+    }
+    String domain = StringTransformations.uncapitalize(util.getMainDomainModelSimpleName().get());
 
-    getCD4C().addImport(clazz, domainType2JavaQName(qObserver, domain));
+    getCD4C().addImport(clazz, insertDomain2QType(qObserver, domain));
     return observer;
   }
 
-  protected String domainType2JavaQName(String qType, String insert) {
+  protected String insertDomain2QType(String qType, String domain) {
+    String insert = domain + ".";
     String res = qType;
     int lastIndex = res.lastIndexOf('.');
 
