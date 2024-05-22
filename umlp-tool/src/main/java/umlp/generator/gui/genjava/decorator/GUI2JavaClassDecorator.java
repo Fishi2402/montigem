@@ -75,6 +75,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
 
   protected List<Method> addedMethods = new ArrayList<>();
   protected Map<String, NotifyMethodTemplate> notifyDeleted = new HashMap<>();
+  protected Map<String, NotifyMethodTemplate> notifyAdded = new HashMap<>();
 
   public GUI2JavaClassDecorator(final GlobalExtensionManagement glex) {
     super(glex);
@@ -224,6 +225,10 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
       ASTCDMethodSignature remove = getCD4C().addMethod(
           clazz, getRemoveDomainListTemplate(), node.getName(), getterName);
 
+      // add add
+      ASTCDMethodSignature add = getCD4C().addMethod(
+          clazz, getAddDomainListTemplate(), node.getName(), getterName);
+
       // add list item observer
       extendDomainObserver();
 
@@ -234,6 +239,13 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
             new NotifyMethodTemplate(getNotifyDeletedTemplate(), innerType));
       }
       notifyDeleted.get(innerType).addCalledMethod(remove.getName());
+
+      // add notifyAdded method
+      if (!notifyAdded.containsKey(innerType)) {
+        notifyAdded.put(innerType,
+            new NotifyMethodTemplate(getNotifyAddedTemplate(), innerType));
+      }
+      notifyAdded.get(innerType).addCalledMethod(add.getName());
 
       // add attr init
       Optional<InitDependency> dep = InitDependencyTree.getInstance()
@@ -899,8 +911,16 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     return "umlp.gui2java.GUI2JavaRemoveDomainList";
   }
 
+  protected String getAddDomainListTemplate() {
+    return "umlp.gui2java.GUI2JavaAddDomainList";
+  }
+
   protected String getNotifyDeletedTemplate() {
     return "umlp.gui2java.GUI2JavaNotifyDeleted";
+  }
+
+  protected String getNotifyAddedTemplate() {
+    return "umlp.gui2java.GUI2JavaNotifyAdded";
   }
 
   protected String getInitParamBuilderTemplate() {
