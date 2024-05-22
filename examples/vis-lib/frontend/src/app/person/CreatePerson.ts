@@ -4,7 +4,7 @@ import { CreatePersonComponent, config } from '@src/person/CreatePersonComponent
 import { Component } from '@angular/core';
 import { DomainManager } from '@src/domain/DomainManager';
 
-function Mix<T extends new (...args: any[]) => {}>(base: T) {
+function Mix<T extends new (...args: any[]) => {}>(base: T = class {} as T) {
   return class extends base {
     foo() {
       alert('here');
