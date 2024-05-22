@@ -1,8 +1,16 @@
 import { Component, Input } from '@angular/core';
-import { ChartDataset, ChartOptions } from 'chart.js';
+import { ChartDataset, ChartOptions, TooltipItem } from 'chart.js';
 import { autoColors } from "../colors";
 import { GemScatterPlotData, GemScatterPlotAxis, GemScatterPlotSet, GemScatterPlotShape } from './gem-scatter-plot-types/gem-scatter-plot-types.types-gen';
 import { GemScatterPlot as GemScatterPlotTOP } from './gem-scatter-plot/gem-scatter-plot.component-gen';
+
+interface CustomTooltipItemPointWithLabel extends TooltipItem<'scatter'> {
+    raw: {
+      x: number,
+      y: number,
+      label: string,
+    }
+}
 
 @Component({
   selector: 'gem-scatter-plot',
@@ -70,6 +78,7 @@ export class GemScatterPlot extends GemScatterPlotTOP {
         points.push({
           x: point.x,
           y: point.y,
+          label: point.label
         });
       });
 
@@ -80,6 +89,7 @@ export class GemScatterPlot extends GemScatterPlotTOP {
         backgroundColor: set.color,
         hoverBackgroundColor: set.hoverColor,
         hoverBorderWidth: 2,
+        pointRadius: set.pointRadius
       };
 
       this.dataSets.push(entry);
@@ -179,8 +189,20 @@ export class GemScatterPlot extends GemScatterPlotTOP {
           }
         }
       },
+      plugins: {
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              let newContext = context as CustomTooltipItemPointWithLabel;
+              let label = newContext.raw.label;
+              return "coordinates: (" + newContext.raw.x + ", " + newContext.raw.y + ")" + ", label: " + label;
+            }
+          }
+        }
+      }
     }
   }
+
 
   public setLegendPosition(legendPosition: string) {
     this.legendPosition = legendPosition;
