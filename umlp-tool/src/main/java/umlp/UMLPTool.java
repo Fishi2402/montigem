@@ -66,11 +66,11 @@ import umlp.generator.gui.GUINodeIdTrafo;
 import umlp.generator.gui.coco.GUIDSLCoCosForUMLP;
 import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
 import umlp.generator.gui.genjava.GUI2JavaGenerator;
+import umlp.generator.gui.gentypescript.GUI2AngularGenerator;
 import umlp.generator.gui.gentypescript.GUI2TSGenerator;
 import umlp.generator.gui.gentypescript.config.GUI2TSConfigGenerator;
 import umlp.generator.gui.gentypescript.config.ModuleRoutingInfo;
 import umlp.generator.gui.gentypescript.domain.TSUMLPGenerator;
-import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentGenerator;
 import umlp.generator.gui.guivariability.GUIVariabilityHandler;
 import umlp.generator.util.TagLookUp;
 import umlp.generator.util.UMLPSymbolTables;
@@ -130,6 +130,7 @@ public class UMLPTool extends UMLPToolTOP {
   protected static final String DEFAULT_CONFIGTEMPLATE_GUI2JAVA = "umlp.GUI2Java";
   public static final String DEFAULT_CONFIGTEMPLATE_GUI2HTML = "umlp.GUI2Html";
   protected static final String DEFAULT_CONFIGTEMPLATE_GUI2TS = "umlp.GUI2TypeScript";
+  protected static final String DEFAULT_CONFIGTEMPLATE_GUI2ANGULAR = "umlp.GUI2Angular";
 
   private static final List<ASTOCLCompilationUnit> oclCompilationUnits = new ArrayList<>();
 
@@ -607,10 +608,8 @@ public class UMLPTool extends UMLPToolTOP {
           GUI2TSGenerator tsGenerator = new GUI2TSGenerator(genSetup);
           tsGenerator.generate(astGui, DEFAULT_CONFIGTEMPLATE_GUI2TS);
 
-          /*
-          GUI2ComponentGenerator componentGenerator = new GUI2ComponentGenerator(genSetup, viewComponents);
-          componentGenerator.generate(astGui, "umlp.GUI2Component");
-          /**/
+          GUI2AngularGenerator angularGenerator = new GUI2AngularGenerator(genSetup);
+          angularGenerator.generate(astGui, DEFAULT_CONFIGTEMPLATE_GUI2ANGULAR);
 
           GUI2HtmlGenerator htmlGenerator = new GUI2HtmlGenerator(genSetup);
           String htmlConfigTemplate = cmd.getOptionValue("ct_html", DEFAULT_CONFIGTEMPLATE_GUI2HTML);

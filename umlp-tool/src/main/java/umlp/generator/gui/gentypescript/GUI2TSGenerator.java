@@ -16,7 +16,6 @@ public class GUI2TSGenerator extends GUI2JavaGenerator {
 
   public GUI2TSGenerator(GeneratorSetup genSetup) {
     super(genSetup);
-    astPrinter = new TypeScriptTypesFullPrettyPrinter(new IndentPrinter());
     genSetup.getGlex().setGlobalValue("cdPrinter", new TSUtilsPrinter());
   }
 
