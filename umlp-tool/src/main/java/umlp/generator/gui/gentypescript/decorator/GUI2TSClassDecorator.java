@@ -2,12 +2,16 @@
 package umlp.generator.gui.gentypescript.decorator;
 
 import de.monticore.cd.facade.CDModifier;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.MCTypeFacade;
 import umlp.generator.gui.genjava.decorator.GUI2JavaClassDecorator;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
+
+import java.util.ArrayList;
 
 /**
  * Turn a GUI AST into a CD AST containing one class. The class manages component state and
@@ -50,6 +54,20 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
     ASTCDAttribute routerAttribute = getCDAttributeFacade().createAttribute(
         CDModifier.PROTECTED.build(), "Router", "router");
     clazz.addCDMember(routerAttribute);
+  }
+
+  @Override
+  protected void extendDomainObserver() {
+    glex.replaceTemplate("umlp.gui2ts.TSClassExtends",
+        clazz, new TemplateHookPoint("umlp.gui2ts.TSClassExtendsMixin"));
+
+    // add list item observer
+    if (!clazz.isPresentCDExtendUsage()) {
+      clazz.setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder()
+          .setSuperclassList(new ArrayList<>()).build());
+    }
+    clazz.getSuperclassList().add(MCTypeFacade.getInstance()
+        .createQualifiedType(getAndImportDomainObserver()));
   }
 
   @Override

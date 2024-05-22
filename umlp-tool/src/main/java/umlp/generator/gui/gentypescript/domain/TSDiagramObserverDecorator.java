@@ -6,6 +6,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.TemplateHookPoint;
 import umlp.generator.domain.decorator.DiagramObserverDecorator;
 import umlp.generator.util.PathUtil;
 
@@ -47,6 +48,7 @@ public class TSDiagramObserverDecorator extends DiagramObserverDecorator {
   @Override
   protected ASTCDClass createEmptyImpl(ASTCDCompilationUnit origCD, ASTCDInterface i) {
     ASTCDClass clazz = super.createEmptyImpl(origCD, i);
+    glex.replaceTemplate("umlp.gui2ts.TSClassDeclaration", clazz, new TemplateHookPoint("umlp.gui2ts.TSMixin"));
 
     // TODO: something like this:
     // Methods with default impl

@@ -225,12 +225,7 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
           clazz, getRemoveDomainListTemplate(), node.getName(), getterName);
 
       // add list item observer
-      if (!clazz.isPresentCDExtendUsage()) {
-        clazz.setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder()
-            .setSuperclassList(new ArrayList<>()).build());
-      }
-      clazz.getSuperclassList().add(MCTypeFacade.getInstance()
-          .createQualifiedType(getAndImportDomainObserver()));
+      extendDomainObserver();
 
       // TODO: simple name clash, e.g., foo.Person and bar.Person
       // add notifyDeleted method
@@ -769,6 +764,16 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
       res.add(getCD4C().addMethod(clazz, initMethod.getTemplate(), args.toArray()));
     }
     return res;
+  }
+
+  protected void extendDomainObserver() {
+    // add list item observer
+    if (!clazz.isPresentCDExtendUsage()) {
+      clazz.setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder()
+          .setSuperclassList(new ArrayList<>()).build());
+    }
+    clazz.getSuperclassList().add(MCTypeFacade.getInstance()
+        .createQualifiedType(getAndImportDomainObserver()));
   }
 
   /**
