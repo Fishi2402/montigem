@@ -135,8 +135,6 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
             new TemplateHookPoint(getInitCallTemplate(), init)
         );
       }
-
-      addRemoveMethods(root.get());
     }
     addInit();
 
@@ -769,27 +767,6 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
       List<Object> args = initMethod.getArguments();
       args.add(subInitList);
       res.add(getCD4C().addMethod(clazz, initMethod.getTemplate(), args.toArray()));
-    }
-    return res;
-  }
-
-  protected Collection<ASTCDMethodSignature> addRemoveMethods(InitDependency ds) {
-    Collection<ASTCDMethodSignature> res = new ArrayList<>();
-    if (ds.getRemoveMethod().isEmpty()) {
-      for (InitDependency sub : ds.getDependentList()) {
-        res.addAll(addRemoveMethods(sub));
-      }
-    }
-    else {
-      MethodTemplate removeMethod = ds.getRemoveMethod().get();
-
-      Collection<ASTCDMethodSignature> subRemoveList = new ArrayList<>();
-      for (InitDependency sub : ds.getDependentList()) {
-        subRemoveList.addAll(addRemoveMethods(sub));
-      }
-      List<Object> args = removeMethod.getArguments();
-      args.add(subRemoveList);
-      res.add(getCD4C().addMethod(clazz, removeMethod.getTemplate(), args.toArray()));
     }
     return res;
   }
