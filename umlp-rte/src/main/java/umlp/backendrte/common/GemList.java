@@ -36,7 +36,6 @@ public abstract class GemList<E extends GemIdentifiable>
   // Lokaler speicher für die gemIds der enthaltenen Objekte. Enthält alle IDs der Assoziation.
   protected List<Long> ids;
 
-  // TODO discuss: CBu -> wird für eine simple Spring-based DB Kommunikation benötigt
   public GemList(
       List<Long> ids
   ) {

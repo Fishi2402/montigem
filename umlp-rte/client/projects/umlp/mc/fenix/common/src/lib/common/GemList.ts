@@ -26,9 +26,8 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
   // Lokaler speicher für die gemIds der enthaltenen Objekte. Enthält alle IDs der Assoziation.
   public ids: Array<number>;
 
-  private values: Array<E> = [];
+  protected values: Array<E> = [];
 
-  // TODO discuss: CBu -> wird für eine simple Spring-based DB Kommunikation benötigt
   public GemList2(ids: Array<number>) {
     this.ids = [...ids];
     // TODO AGe: load at a later point and explicitely
