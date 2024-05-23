@@ -38,7 +38,7 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
   }
 
   @Override
-  protected void addDirectiveAnnotation() {
+  protected void addClassAnnotation() {
     if (TypeScriptTypes.DIRECTIVE.getJavaQName().isPresent()) {
       getCD4C().addImport(clazz, TypeScriptTypes.DIRECTIVE.getJavaQName().get());
     }
@@ -51,9 +51,9 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
     if (TypeScriptTypes.ROUTER.getJavaQName().isPresent()) {
       getCD4C().addImport(clazz, TypeScriptTypes.ROUTER.getJavaQName().get());
     }
-    ASTCDAttribute routerAttribute = getCDAttributeFacade().createAttribute(
+    ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
         CDModifier.PROTECTED.build(), "Router", "router");
-    clazz.addCDMember(routerAttribute);
+    clazz.addCDMember(attr);
   }
 
   @Override

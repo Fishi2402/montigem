@@ -66,7 +66,6 @@ import umlp.generator.gui.GUINodeIdTrafo;
 import umlp.generator.gui.coco.GUIDSLCoCosForUMLP;
 import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
 import umlp.generator.gui.genjava.GUI2JavaGenerator;
-import umlp.generator.gui.gentypescript.GUI2AngularGenerator;
 import umlp.generator.gui.gentypescript.GUI2TSGenerator;
 import umlp.generator.gui.gentypescript.config.GUI2TSConfigGenerator;
 import umlp.generator.gui.gentypescript.config.ModuleRoutingInfo;
@@ -607,9 +606,6 @@ public class UMLPTool extends UMLPToolTOP {
 
           GUI2TSGenerator tsGenerator = new GUI2TSGenerator(genSetup);
           tsGenerator.generate(astGui, DEFAULT_CONFIGTEMPLATE_GUI2TS);
-
-          GUI2AngularGenerator angularGenerator = new GUI2AngularGenerator(genSetup);
-          angularGenerator.generate(astGui, DEFAULT_CONFIGTEMPLATE_GUI2ANGULAR);
 
           GUI2HtmlGenerator htmlGenerator = new GUI2HtmlGenerator(genSetup);
           String htmlConfigTemplate = cmd.getOptionValue("ct_html", DEFAULT_CONFIGTEMPLATE_GUI2HTML);

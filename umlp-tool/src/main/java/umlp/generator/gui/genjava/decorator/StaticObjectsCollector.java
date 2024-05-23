@@ -163,10 +163,11 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
         recordTypes(node, ste);
       }
     }
-    String name = curComp + StringTransformations.capitalize(curArg) + "_" + counter++;
-    Attribute attr = createAttribute(node, listTypes.get(node), name);
-
-    node2Attr.put(node, attr);
+    if (listTypes.containsKey(node)) {
+      String name = curComp + StringTransformations.capitalize(curArg) + "_" + counter++;
+      Attribute attr = createAttribute(node, listTypes.get(node), name);
+      node2Attr.put(node, attr);
+    }
   }
 
   @Override

@@ -1,8 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("manager", "type")}
+${tc.signature("type")}
 <#assign param = "val">
 
-${cd4c.method("public void create(${type} ${param})")}
+${cd4c.method("public Consumer<Void> create(${type} ${param})")}
 return $ -> {
-  ${manager}.add${type}(${param}.build());
-};
+  ${param}.build();
+}

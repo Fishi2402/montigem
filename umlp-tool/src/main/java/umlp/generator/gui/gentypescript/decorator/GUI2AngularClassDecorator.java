@@ -2,43 +2,138 @@
 package umlp.generator.gui.gentypescript.decorator;
 
 import de.monticore.cd.facade.CDModifier;
-import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.MCTypeFacade;
-import umlp.generator.gui.genjava.decorator.GUI2JavaClassDecorator;
+import de.monticore.guidsl.GUIDSLMill;
+import de.monticore.guidsl._ast.ASTGUICompilationUnit;
+import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
+import de.monticore.guidsl._ast.ASTGUIParam;
+import de.monticore.guidsl._visitor.GUIDSLTraverser;
+import de.monticore.guidsl._visitor.GUIDSLVisitor2;
+import de.monticore.types.check.SymTypeExpression;
+import de.se_rwth.commons.StringTransformations;
+import de.se_rwth.commons.logging.Log;
+import umlp.UMLPMill;
+import umlp.generator.gui.GUI2ClassDecorator;
+import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentTemplates;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 
 import java.util.ArrayList;
+import java.util.List;
 
-/**
- * Turn a GUI AST into a CD AST containing one class. The class manages component state and
- * implements some logic, such as navigation to pages, creation of objects, etc.
- */
-public class GUI2AngularClassDecorator extends GUI2JavaClassDecorator {
+public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUIDSLVisitor2 {
+
+  protected GUIDSLTraverser traverser;
+
+  public static final String COMPONENT_SUFFIX = "Component";
+  protected List<String> extraImports = new ArrayList<>();
+  protected boolean removedObserver = false;
 
   public GUI2AngularClassDecorator(final GlobalExtensionManagement glex) {
     super(glex);
+    traverser = GUIDSLMill.traverser();
+    traverser.add4GUIDSL(this);
   }
 
-  /**
-   * Replace CD2Java generator and GUI2JavaClassDecorator templates with GUI2TS templates. The
-   * templates to be replaced here are independent of a specific AST node. Node-dependent templates
-   * have getters of form "public String get<template_name>Template()"
-   */
-  @Override
-  protected void replaceTemplates() {
-    super.replaceTemplates();
-    glex.replaceTemplate(
-        "cd2java.Package", new StringHookPoint(""));
-    glex.replaceTemplate(
-        "cd2java.Class", new TemplateHookPoint("umlp.gui2ts.TSClass"));
+  public void transform(ASTGUICompilationUnit gui, ASTCDCompilationUnit cd) {
+    super.transform(gui, cd);
+    gui.accept(traverser);
+    addRoute();
+    addRouter();
+    addSubscriptions();
+    addInit();
+    addDestroy();
+    addConstructor();
+    // must run last
+    addExtraImports();
   }
 
   @Override
-  protected void addDirectiveAnnotation() {
+  public void endVisit(ASTGUIParam node) {
+    // calc type
+    if (!node.isPresentSymbol()) {
+      Log.error("0x0000E Unable to find symbol for '" + node.getName()
+          + "' at " + node.get_SourcePositionStart().toString()
+          + " - " + node.get_SourcePositionEnd().toString()
+      );
+    }
+    SymTypeExpression typeSTE = node.getSymbol().getType();
+    // exclude GUIViewElement
+    if (util.isViewElement(typeSTE)
+        || util.isViewElementsCollection(typeSTE)) {
+      return;
+    }
+    String type = importAndPrintType(typeSTE);
+
+    // calc name
+    String name = "_" + node.getName();
+
+    String getterName = "get" + StringTransformations.capitalize(node.getName());
+    String setterName = "set" + StringTransformations.capitalize(node.getName());
+
+    // add attr
+    ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
+        CDModifier.PROTECTED.build(), type, name);
+    clazz.addCDMember(attr);
+
+    // attr overrides top class attr
+    glex.replaceTemplate("umlp.gui2ts.TSAttribute", attr,
+        new TemplateHookPoint("umlp.gui2ts.TSOverrideAttribute"));
+
+    // Event attr:
+    // @Output() public override _myEvent: EventEmitter<MyType> = new EventEmitter<MyType>();
+    if (util.isEventArgument(node.getSymbol())) {
+      glex.replaceTemplate(GUI2ComponentTemplates.ANNOTATIONS, attr,
+          new StringHookPoint("@Output()"));
+      glex.replaceTemplate("cd2java.Value", attr,
+          new StringHookPoint(" = new EventEmitter<any>()"));
+    }
+    // Normal attr:
+    // public override _myAttr: MyType;
+    else {
+      glex.replaceTemplate("umlp.Empty", attr,
+          new TemplateHookPoint("umlp.gui2ts.GUI2AngularAttrGetterSetter",
+              node.getMCType(), node.getName(), getterName, setterName));
+    }
+
+    if (util.getDomainListInnerType(typeSTE).isPresent()
+        && !util.isEnumType(util.getDomainListInnerType(typeSTE).get())) {
+      if (!removedObserver) {
+        removeObserver();
+        removedObserver = true;
+      }
+    }
+  }
+
+  @Override
+  protected ASTCDClass emptyClass(ASTGUICompilationUnit ast) {
+    ASTGUIComponentDeclaration domainClass = ast.getGUIComponentDeclaration();
+    String className = domainClass.getName() + COMPONENT_SUFFIX;
+    return UMLPMill.cDClassBuilder()
+        .setModifier(CDModifier.PUBLIC.build())
+        .setName(className)
+        .build();
+  }
+
+  @Override
+  protected void extendClass(ASTCDCompilationUnit cd) {
+    List<ASTCDClass> classes = cd.getCDDefinition().getCDClassesList();
+    if (classes.size() == 1) {
+      ASTCDClass superClass = classes.get(0);
+      clazz.setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(superClass.getName()));
+      String qName = cd.getMCPackageDeclaration().getMCQualifiedName().getQName()
+          + "." + superClass.getName();
+      getCD4C().addImport(clazz, qName);
+    }
+  }
+
+  @Override
+  protected void addClassAnnotation() {
     if (TypeScriptTypes.DIRECTIVE.getJavaQName().isPresent()) {
       getCD4C().addImport(clazz, TypeScriptTypes.DIRECTIVE.getJavaQName().get());
     }
@@ -51,52 +146,57 @@ public class GUI2AngularClassDecorator extends GUI2JavaClassDecorator {
     if (TypeScriptTypes.ROUTER.getJavaQName().isPresent()) {
       getCD4C().addImport(clazz, TypeScriptTypes.ROUTER.getJavaQName().get());
     }
-    ASTCDAttribute routerAttribute = getCDAttributeFacade().createAttribute(
-        CDModifier.PROTECTED.build(), "Router", "router");
-    clazz.addCDMember(routerAttribute);
+    ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
+        CDModifier.PROTECTED.build(), "Router", "_router");
+    clazz.addCDMember(attr);
   }
 
   @Override
-  protected void extendDomainObserver() {
-    glex.replaceTemplate("umlp.gui2ts.TSClassExtends",
-        clazz, new TemplateHookPoint("umlp.gui2ts.TSClassExtendsMixin"));
+  protected void addConstructor() {
+    List<String> ids = util.getRoutingIds(gui);
+    extraImports.add("import { inject } from '@angular/core';");
+    glex.replaceTemplate("umlp.gui2ts.TSConstructor", clazz,
+        new TemplateHookPoint("umlp.gui2ts.GUI2AngularConstructor", ids));
+  }
 
-    // add list item observer
-    if (!clazz.isPresentCDExtendUsage()) {
-      clazz.setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder()
-          .setSuperclassList(new ArrayList<>()).build());
-    }
-    clazz.getSuperclassList().add(MCTypeFacade.getInstance()
-        .createQualifiedType(getAndImportDomainObserver()));
+
+  protected void addRoute() {
+    extraImports.add("import { ActivatedRoute } from '@angular/Router';");
+    ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
+        CDModifier.PROTECTED.build(), "ActivatedRoute", "_route");
+
+    clazz.addCDMember(attr);
+  }
+
+  protected void addSubscriptions() {
+    extraImports.add("import { Subscription } from 'rxjs';");
+    ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
+        CDModifier.PROTECTED.build(), "Subscription[]", "_subscriptions");
+
+    glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint(" = []"));
+    clazz.addCDMember(attr);
   }
 
   @Override
-  protected String getInitDomainListTemplate() {
-    return "umlp.gui2ts.GUI2TSInitDomainList";
+  protected void addInit() {
+    getCD4C().addMethod(clazz, "umlp.gui2ts.GUI2AngularInit");
   }
 
-  @Override
-  protected String getInitParamBuilderTemplate() {
-    return "umlp.gui2ts.GUI2TSInitParamBuilder";
+  protected ASTCDMethodSignature addDestroy() {
+    return getCD4C().addMethod(clazz, "umlp.gui2ts.GUI2AngularDestroy",
+        getAndImportManager());
   }
 
-  @Override
-  protected String getIterateInitTemplate() {
-    return "umlp.gui2ts.GUI2TSIterateInit";
+  protected void removeObserver() {
+    glex.addAfterTemplate(
+        "umlp.gui2ts.GUI2AngularDestroyBody",
+        new TemplateHookPoint("umlp.gui2ts.GUI2AngularRemoveObserver", getAndImportManager())
+    );
   }
 
-  @Override
-  protected String getStaticBuilderInitTemplate() {
-    return "umlp.gui2ts.GUI2TSStaticBuilderInit";
+  protected void addExtraImports() {
+    glex.replaceTemplate("umlp.gui2ts.TSEmptyImports", clazz,
+        new StringHookPoint(String.join("\n", extraImports)));
   }
 
-  @Override
-  protected String getAssocInitTemplate() {
-    return "umlp.gui2ts.GUI2TSAssocInit";
-  }
-
-  @Override
-  protected String getStaticListInitTemplate() {
-    return "umlp.gui2ts.GUI2TSStaticListInit";
-  }
 }

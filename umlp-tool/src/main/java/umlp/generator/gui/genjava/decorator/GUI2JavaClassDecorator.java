@@ -6,9 +6,7 @@ import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
-import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;
@@ -31,31 +29,25 @@ import de.monticore.guidsl._symboltable.BuiltInTypes;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
-import umlp.UMLPMill;
-import umlp.generator.domain.decorator.DiagramObserverDecorator;
-import umlp.generator.domain.decorator.ManagerDecorator;
-import umlp.generator.gui.GUIAbstractDecorator;
-import umlp.generator.gui.GUIGeneratorUtil;
+import umlp.generator.gui.GUI2ClassDecorator;
 import umlp.generator.gui.genjava.prettyprinter.Expression2AccessorPrinter;
 import umlp.generator.gui.genjava.prettyprinter.Expression2MutatorPrinter;
 import umlp.generator.gui.genjava.prettyprinter.Expression2NullCheckPrinter;
 import umlp.generator.gui.genjava.prettyprinter.Expression2SetterPrinter;
 import umlp.generator.gui.genjava.prettyprinter.IterationItemsFinder;
+import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 import umlp.generator.util.PathUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -64,16 +56,15 @@ import java.util.Optional;
  * Turn a GUI AST into a CD AST containing one class. The class manages component state and
  * implements some logic, such as navigation to pages, creation of objects, etc.
  */
-public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUIDSLVisitor2, CommonExpressionsVisitor2 {
+public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSLVisitor2, CommonExpressionsVisitor2 {
 
   public static final String GUARD_ARG = "condition";
   public static final String ITERATE_ARG = "iterable";
 
-  protected ASTCDClass clazz;
   protected GUIDSLTraverser traverser;
-  protected ASTGUICompilationUnit gui;
 
   protected List<Method> addedMethods = new ArrayList<>();
+  protected boolean extendedDomainObserver = false;
   protected Map<String, NotifyMethodTemplate> notifyDeleted = new HashMap<>();
   protected Map<String, NotifyMethodTemplate> notifyAdded = new HashMap<>();
 
@@ -103,40 +94,15 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
    * @param cd  output CD AST
    */
   public void transform(ASTGUICompilationUnit gui, ASTCDCompilationUnit cd) {
-    this.gui = gui;
-    replaceTemplates();
-
-    // package
-    ASTCDPackage cdPackage = CD4CodeMill.cDPackageBuilder()
-        .setMCQualifiedName(gui.getMCPackageDeclaration().getMCQualifiedName())
-        .build();
-    cd.getCDDefinition().addCDElement(cdPackage);
-
-    // class
-    clazz = emptyClass(gui);
-    cdPackage.addCDElement(withOrigin(clazz));
-    // directive
-    addDirectiveAnnotation();
+    super.transform(gui, cd);
 
     addRouter();
 
     ASTGUIComponentDeclaration declaration = gui.getGUIComponentDeclaration();
-
     StaticObjectsCollector.getInstance().init(declaration);
     InitDependencyTree.getInstance().init(declaration);
     gui.accept(traverser);
 
-    // init
-    Optional<InitDependency> root = InitDependencyTree.getInstance().getDependency(declaration);
-    if (root.isPresent()) {
-      Collection<ASTCDMethodSignature> paramInit = addInitMethods(root.get());
-      for (ASTCDMethodSignature init : paramInit) {
-        glex.addAfterTemplate(
-            getInitBodyHookpoint(),
-            new TemplateHookPoint(getInitCallTemplate(), init)
-        );
-      }
-    }
     addInit();
 
     // remove
@@ -149,7 +115,6 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
       getCD4C().addMethod(clazz, notifyAdded.getTemplate(), notifyAdded.getArguments().toArray());
     }
 
-    // constructor
     addConstructor();
   }
 
@@ -186,8 +151,8 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
     }
     SymTypeExpression typeSTE = node.getSymbol().getType();
     // exclude GUIViewElement
-    if (GUIGeneratorUtil.getInstance().isViewElement(typeSTE)
-        || GUIGeneratorUtil.getInstance().isViewElementsCollection(typeSTE)) {
+    if (util.isViewElement(typeSTE)
+        || util.isViewElementsCollection(typeSTE)) {
       return;
     }
     String type = importAndPrintType(typeSTE);
@@ -235,22 +200,27 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
           clazz, getAddDomainListTemplate(), innerType, node.getName(), getterName);
 
       // add list item observer
-      extendDomainObserver();
+      if (gui.getGUIComponentDeclaration().isPage()) {
+        if (!extendedDomainObserver) {
+          extendDomainObserver();
+          extendedDomainObserver = true;
+        }
 
-      // TODO: simple name clash, e.g., foo.Person and bar.Person
-      // add notifyDeleted method
-      if (!notifyDeleted.containsKey(innerType)) {
-        notifyDeleted.put(innerType,
-            new NotifyMethodTemplate(getNotifyDeletedTemplate(), innerType));
-      }
-      notifyDeleted.get(innerType).addCalledMethod(remove.getName());
+        // TODO: simple name clash, e.g., foo.Person and bar.Person
+        // add notifyDeleted method
+        if (!notifyDeleted.containsKey(innerType)) {
+          notifyDeleted.put(innerType,
+              new NotifyMethodTemplate(getNotifyDeletedTemplate(), innerType));
+        }
+        notifyDeleted.get(innerType).addCalledMethod(remove.getName());
 
-      // add notifyAdded method
-      if (!notifyAdded.containsKey(innerType)) {
-        notifyAdded.put(innerType,
-            new NotifyMethodTemplate(getNotifyAddedTemplate(), innerType));
+        // add notifyAdded method
+        if (!notifyAdded.containsKey(innerType)) {
+          notifyAdded.put(innerType,
+              new NotifyMethodTemplate(getNotifyAddedTemplate(), innerType));
+        }
+        notifyAdded.get(innerType).addCalledMethod(add.getName());
       }
-      notifyAdded.get(innerType).addCalledMethod(add.getName());
 
       // add attr init
       Optional<InitDependency> dep = InitDependencyTree.getInstance()
@@ -302,8 +272,8 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
       }
       SymTypeExpression typeSTE = arg.getNameSymbol().getType();
       // exclude GUIViewElement
-      if (GUIGeneratorUtil.getInstance().isViewElement(typeSTE)
-          || GUIGeneratorUtil.getInstance().isViewElementsCollection(typeSTE)) {
+      if (util.isViewElement(typeSTE)
+          || util.isViewElementsCollection(typeSTE)) {
         return;
       }
       String type = importAndPrintType(typeSTE);
@@ -650,8 +620,9 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
                     + " at " + node.get_SourcePositionStart().toString()
                     + " - " + node.get_SourcePositionEnd().toString());
               }
+              getCD4C().addImport(clazz, TypeScriptTypes.CONSUMER.getMCType());
               getCD4C().addMethod(clazz, getCreateTemplate(),
-                  manager, method.getParamTypes().get(0).print());
+                  method.getParamTypes().get(0).print());
               break;
             case DELETE:
               getCD4C().addMethod(clazz, getDeleteTemplate(), manager);
@@ -722,22 +693,9 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
   }
 
   /**
-   * @param ast base GUI AST to create an empty class from
-   * @return empty class
-   */
-  protected ASTCDClass emptyClass(ASTGUICompilationUnit ast) {
-    ASTGUIComponentDeclaration domainClass = ast.getGUIComponentDeclaration();
-    String className = domainClass.getName();
-    return UMLPMill.cDClassBuilder()
-        .setModifier(CDModifier.PUBLIC.build())
-        .setName(className)
-        .build();
-  }
-
-  /**
    * Add directive to a Java class for further JSweet translation
    */
-  protected void addDirectiveAnnotation() {
+  protected void addClassAnnotation() {
     String domainModel = util.getMainDomainModelQName().orElse("");
     boolean isEmpty = gui.getGUIComponentDeclaration().getGUIParamList().isEmpty();
 
@@ -746,11 +704,8 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
         new TemplateHookPoint("umlp.gui2java.GUI2JavaDirectiveAnnotation", domainModel, isEmpty));
   }
 
-  protected void addRouter() {
-  }
-
-  protected ASTCDMethodSignature addConstructor() {
-    return getCD4C().addConstructor(clazz, "umlp.gui2java.GUI2JavaConstructor");
+  protected void addConstructor() {
+    getCD4C().addConstructor(clazz, "umlp.gui2java.GUI2JavaConstructor");
   }
 
   /**
@@ -758,8 +713,20 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
    *
    * @return class initialization method
    */
-  protected ASTCDMethodSignature addInit() {
-    return getCD4C().addMethod(clazz, "umlp.gui2java.GUI2JavaInit");
+  protected void addInit() {
+    Optional<InitDependency> root = InitDependencyTree.getInstance()
+        .getDependency(gui.getGUIComponentDeclaration());
+    if (root.isPresent()) {
+      Collection<ASTCDMethodSignature> paramInit = addInitMethods(root.get());
+      for (ASTCDMethodSignature init : paramInit) {
+        glex.addAfterTemplate(
+            getInitBodyHookpoint(),
+            new TemplateHookPoint(getInitCallTemplate(), init)
+        );
+      }
+    }
+
+    getCD4C().addMethod(clazz, "umlp.gui2java.GUI2JavaInit");
   }
 
   protected Collection<ASTCDMethodSignature> addInitMethods(InitDependency ds) {
@@ -784,124 +751,23 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
   }
 
   protected void extendDomainObserver() {
-    // add list item observer
+    // extend observer
     if (!clazz.isPresentCDExtendUsage()) {
       clazz.setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder()
           .setSuperclassList(new ArrayList<>()).build());
     }
     clazz.getSuperclassList().add(MCTypeFacade.getInstance()
         .createQualifiedType(getAndImportDomainObserver()));
-  }
 
-  /**
-   * Transform a GUI type into a Java type and add all necessary imports for its usage. For example,
-   * `List<Person>` is transformed into `GemList<Person>` and imports `umlp.backendrte.GemList`,
-   * `my.domain.Person` are added along the way.
-   *
-   * @param ste GUI type to be processed
-   * @return Java type that corresponds to the input GUI type
-   */
-  protected String importAndPrintType(SymTypeExpression ste) {
-    if (ste.isObjectType()) {
-      // given in GUI:
-      // import hardy.Domain.Person;
-      // the resolved type is `hardy.Person`
-      // but the CD Generator produces `hardy.domain.Person`, so calculate that instead
-      IBasicSymbolsScope scope = ste.getTypeInfo().getEnclosingScope();
-      if (scope.isPresentName()
-          && util.getMainDomainModelSimpleName().isPresent()
-          && scope.getName().equals(util.getMainDomainModelSimpleName().get())) {
+    // add observer init
+    glex.addAfterTemplate(
+        getInitBodyHookpoint(),
+        new TemplateHookPoint(getAddObserverTemplate(), getAndImportManager())
+    );
 
-        String domain = StringTransformations.uncapitalize(scope.getName());
-        String qType = ste.asObjectType().printFullName();
-        getCD4C().addImport(clazz, insertDomain2QType(qType, domain));
-      }
-      else {
-        getCD4C().addImport(clazz, ste.printFullName());
-      }
-    }
-    else if (ste.isGenericType()) {
-      SymTypeOfGenerics stog = ste.asGenericType();
-      // a List<Person> must be printed as GemList<Person>
-      // a List<String> as a List<String>
-      // a List<MyDomainEnum> as a List<MyDomainEnum>
-      if (util.getDomainListInnerType(ste).isPresent()
-          && !util.isEnumType(util.getDomainListInnerType(ste).get())) {
-        getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("GemList"));
-        StringBuilder sb = new StringBuilder("GemList");
-        sb.append("<");
-        Iterator<SymTypeExpression> steArgIter = stog.getArgumentList().iterator();
-        while (steArgIter.hasNext()) {
-          sb.append(importAndPrintType(steArgIter.next()));
-          if (steArgIter.hasNext()) {
-            sb.append(",");
-          }
-        }
-        sb.append(">");
-        return sb.toString();
-      }
-      getCD4C().addImport(clazz, stog.getTypeConstructorFullName());
-      for (SymTypeExpression steArg : stog.getArgumentList()) {
-        importAndPrintType(steArg);
-      }
-    }
-    else if (ste.isPrimitive()) {
-      return ste.asPrimitive().getBoxedPrimitiveName();
-    }
-    else if (!(ste.isNullType() || ste.isVoidType() || ste.isWildcard() || ste.isTypeVariable())) {
-      Log.error("0x00010 Encountered unsupported type in " + gui.getComponentQName()
-          + ": parameter type '" + ste.printFullName() + "'");
-    }
-    return ste.print();
-  }
-
-  protected String getAndImportManager() {
-    if (util.getMainDomainModelSimpleName().isEmpty() || util.getMainDomainModelQName().isEmpty()) {
-      Log.error("0x00007 Could not identify the manager name: domain class diagram is missing");
-    }
-    // We want to import java generated somepackage.flensburg.FlensburgManager;
-    // but the qualified name of domain is actually somepackage.Flensburg
-    // append Manager and insert lowercase cd name (e.g., flensburg) to get the result
-    String manager = ManagerDecorator.getClassName(util.getMainDomainModelSimpleName().get());
-    String qManager = ManagerDecorator.getClassName(util.getMainDomainModelQName().get());
-    String domain = StringTransformations.uncapitalize(util.getMainDomainModelSimpleName().get());
-
-    getCD4C().addImport(clazz, insertDomain2QType(qManager, domain));
-    return manager;
-  }
-
-  protected String getAndImportDomainObserver() {
-    if (util.getMainDomainModelSimpleName().isEmpty() || util.getMainDomainModelQName().isEmpty()) {
-      Log.error("0x00007 Could not identify the manager name: domain class diagram is missing");
-    }
-    String observer = DiagramObserverDecorator.PREFIX
-        + util.getMainDomainModelSimpleName().get()
-        + DiagramObserverDecorator.SUFFIX;
-    String qObserver = observer;
-    int lastDotIdx = util.getMainDomainModelQName().get().lastIndexOf(".");
-    if (lastDotIdx > 0) {
-      qObserver = util.getMainDomainModelQName().get().substring(0, lastDotIdx) + "." + observer;
-    }
-    String domain = StringTransformations.uncapitalize(util.getMainDomainModelSimpleName().get());
-
-    getCD4C().addImport(clazz, insertDomain2QType(qObserver, domain));
-    return observer;
-  }
-
-  protected String insertDomain2QType(String qType, String domain) {
-    String insert = domain + ".";
-    String res = qType;
-    int lastIndex = res.lastIndexOf('.');
-
-    if (lastIndex != -1) {
-      StringBuilder sb = new StringBuilder(res);
-      sb.insert(lastIndex + 1, insert);
-      res = sb.toString();
-    }
-    else {
-      res = insert + res;
-    }
-    return res;
+    // implement getScope method of observer
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
+    getCD4C().addMethod(clazz, getScopeTemplate());
   }
 
   protected String getInitDefaultParamTemplate() {
@@ -938,6 +804,10 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
 
   protected String getInitBodyHookpoint() {
     return "umlp.gui2java.GUI2JavaInitBody";
+  }
+
+  protected String getAddObserverTemplate() {
+    return "umlp.gui2java.GUI2JavaAddObserver";
   }
 
   protected String getParamGetterTemplate() {
@@ -1010,6 +880,10 @@ public class GUI2JavaClassDecorator extends GUIAbstractDecorator implements GUID
 
   protected String getAssocRemoveTemplate() {
     return "umlp.gui2java.predefined.GUI2JavaAssocRemove";
+  }
+
+  protected String getScopeTemplate() {
+    return "umlp.gui2java.GUI2JavaScope";
   }
 
 }

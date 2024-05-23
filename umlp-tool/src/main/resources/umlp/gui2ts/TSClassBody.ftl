@@ -2,10 +2,10 @@
 <#-- ASTCDClass ast -->
 
 <#assign cdPrinter = glex.getGlobalVar("cdPrinter")>
-${defineHookPoint("ClassContent:Elements")}
 
 <#list ast.getCDAttributeList() as attribute>
   ${tc.include("umlp.gui2ts.TSAttribute", attribute)}
+  ${tc.include("umlp.Empty", attribute)}
 </#list>
 
 ${tc.include("umlp.gui2ts.TSConstructor")}
