@@ -82,9 +82,9 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     assertAll(
         () -> assertTrue(Log.getFindings().isEmpty()),
         () -> assertEquals(16, clazz.getCDAttributeList().size()),
-        () -> assertEquals(77, clazz.getCDMethodList().size()),
+        () -> assertEquals(82, clazz.getCDMethodList().size()),
         () -> assertEquals(1, clazz.getCDConstructorList().size()),
-        () -> assertEquals(15, imports.size())
+        () -> assertEquals(17, imports.size())
     );
   }
 
@@ -207,7 +207,7 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     ASTCDMethod getS = getMethod(methods, "getS");
     ASTCDMethod setS = getMethod(methods, "setS");
     ASTCDMethod initS = getMethod(methods, "initS");
-    ASTCDMethod getB = getMethod(methods, "getB");
+    ASTCDMethod isB = getMethod(methods, "isB");
     ASTCDMethod setB = getMethod(methods, "setB");
     ASTCDMethod initB = getMethod(methods, "initB");
     ASTCDMethod getI = getMethod(methods, "getI");
@@ -235,7 +235,7 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     assertions.add(() -> assertNotNull(getS));
     assertions.add(() -> assertNotNull(setS));
     assertions.add(() -> assertNotNull(initS));
-    assertions.add(() -> assertNotNull(getB));
+    assertions.add(() -> assertNotNull(isB));
     assertions.add(() -> assertNotNull(setB));
     assertions.add(() -> assertNotNull(initB));
     assertions.add(() -> assertNotNull(getI));

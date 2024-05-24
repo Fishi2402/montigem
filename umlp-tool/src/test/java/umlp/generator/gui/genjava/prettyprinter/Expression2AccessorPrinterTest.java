@@ -318,22 +318,22 @@ public class Expression2AccessorPrinterTest extends DomainGUITest {
     String expect3 = removeSpaces("this.getCA_1()");
     String result3 = removeSpaces(printer.prettyprint(c.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
 
-    String expect4 = removeSpaces("this.getDLp_3()");
+    String expect4 = removeSpaces("this.getDLp_4()");
     String result4 = removeSpaces(printer.prettyprint(d.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
 
-    String expect5 = removeSpaces("this.getECondition_7().isEmployed()");
+    String expect5 = removeSpaces("this.getECondition_9().isEmployed()");
     String result5 = removeSpaces(printer.prettyprint(e.getCondition()));
 
-    String expect6 = removeSpaces("this.getFIterable_8(p).getFriends()");
+    String expect6 = removeSpaces("this.getFIterable_11(p).getFriends()");
     String result6 = removeSpaces(printer.prettyprint(((ASTGUIShortIterateControl) f.getIterateControl()).getIterable()));
 
-    String expect7 = removeSpaces("this.getGA_9(p2, p)");
+    String expect7 = removeSpaces("this.getGA_13(p2, p)");
     String result7 = removeSpaces(printer.prettyprint(g.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
 
-    String expect8 = removeSpaces("this.getHA_10(p2, p)");
+    String expect8 = removeSpaces("this.getHA_16(p2, p)");
     String result8 = removeSpaces(printer.prettyprint(h.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
 
-    String expect9 = removeSpaces("this.getIP_11(this.getPerson().getName(), p2, p)");
+    String expect9 = removeSpaces("this.getIP_19(this.getPerson().getName(), p2, p)");
     String result9 = removeSpaces(printer.prettyprint(i.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
 
     assertAll(
@@ -341,9 +341,7 @@ public class Expression2AccessorPrinterTest extends DomainGUITest {
         () -> assertEquals(expect2, result2),
         () -> assertEquals(expect3, result3),
         () -> assertEquals(expect4, result4),
-        // TODO: GUI DSL should interpret calls of form `Person()` as a constructor call with
-        //  return type Person
-        // () -> assertEquals(expect5, result5),
+        () -> assertEquals(expect5, result5),
         () -> assertEquals(expect6, result6),
         () -> assertEquals(expect7, result7),
         () -> assertEquals(expect8, result8),
