@@ -4,4 +4,4 @@ ${tc.signature("name", "callerExpression", "args")}
 <#assign argsString = genHelper.variableSymbols2ArgsString(args)>
 
 ${cd4c.method("public void ${name}(${argsString})")}
-${callerExpression}();
+${callerExpression}.accept(null);

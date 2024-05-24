@@ -33,6 +33,7 @@ import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUI2ClassDecorator;
@@ -51,6 +52,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * Turn a GUI AST into a CD AST containing one class. The class manages component state and
@@ -167,6 +169,9 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
     // add getter
     String getterName = "get" + StringTransformations.capitalize(node.getName());
+    if (SymTypeRelations.isBoolean(typeSTE)) {
+      getterName = "is" + StringTransformations.capitalize(node.getName());
+    }
     getCD4C().addMethod(clazz, getParamGetterTemplate(), type, name, getterName);
     // add setter
     String setterName = "set" + StringTransformations.capitalize(node.getName());
@@ -284,12 +289,13 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       // add getter
       IterationItemsFinder finder = new IterationItemsFinder();
       Collection<ASTExpression> iterateItems = new HashSet<>(finder.getItems(gui));
+      Collection<ASTExpression> nonClassMembers = new HashSet<>(iterateItems);
 
       Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
-          new IndentPrinter(), false, iterateItems, iterateItems
+          new IndentPrinter(), false, iterateItems, nonClassMembers
       );
       Expression2SetterPrinter setterPrinter = new Expression2MutatorPrinter(
-          new IndentPrinter(), false, iterateItems, iterateItems
+          new IndentPrinter(), false, iterateItems, nonClassMembers
       );
       Expression2NullCheckPrinter nullCheckPrinter = new Expression2NullCheckPrinter(getterPrinter);
 
@@ -345,9 +351,10 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     // add getter
     IterationItemsFinder finder = new IterationItemsFinder();
     Collection<ASTExpression> iterateItems = new HashSet<>(finder.getItems(gui));
+    Collection<ASTExpression> nonClassMembers = new HashSet<>(iterateItems);
 
     Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
-        new IndentPrinter(), false, iterateItems, iterateItems
+        new IndentPrinter(), false, iterateItems, nonClassMembers
     );
     Expression2NullCheckPrinter nullCheckPrinter = new Expression2NullCheckPrinter(getterPrinter);
 
@@ -391,9 +398,10 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     // add getter
     IterationItemsFinder finder = new IterationItemsFinder();
     Collection<ASTExpression> iterateItems = new HashSet<>(finder.getItems(gui));
+    Collection<ASTExpression> nonClassMembers = new HashSet<>(iterateItems);
 
     Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
-        new IndentPrinter(), false, iterateItems, iterateItems
+        new IndentPrinter(), false, iterateItems, nonClassMembers
     );
     Expression2NullCheckPrinter nullCheckPrinter = new Expression2NullCheckPrinter(getterPrinter);
 
@@ -494,9 +502,10 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         // add attr init
         IterationItemsFinder finder = new IterationItemsFinder();
         Collection<ASTExpression> iterateItems = new HashSet<>(finder.getItems(gui));
+        Collection<ASTExpression> nonClassMembers = new HashSet<>(iterateItems);
 
         Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
-            new IndentPrinter(), false, iterateItems, iterateItems
+            new IndentPrinter(), false, iterateItems, nonClassMembers
         );
         List<String> listItems = new ArrayList<>();
         for (ASTGUIArgValue val : node.getGUIArgValueList()) {
@@ -676,9 +685,10 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       // add assoc init
       IterationItemsFinder finder = new IterationItemsFinder();
       Collection<ASTExpression> iterateItems = new HashSet<>(finder.getItems(gui));
+      Collection<ASTExpression> nonClassMembers = new HashSet<>(iterateItems);
 
       Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
-          new IndentPrinter(), false, iterateItems, iterateItems
+          new IndentPrinter(), false, iterateItems, nonClassMembers
       );
       String getter = getterPrinter.prettyprint(node);
 

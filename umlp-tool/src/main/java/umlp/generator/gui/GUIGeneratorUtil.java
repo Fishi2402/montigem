@@ -330,9 +330,16 @@ public class GUIGeneratorUtil {
   }
 
   public final Optional<SymTypeExpression> getListInnerType(SymTypeExpression type) {
-    if (type.hasTypeInfo() && GenService.isList(type)) {
-      if (((SymTypeOfGenerics) type).sizeArguments() == 1) {
-        return Optional.of(((SymTypeOfGenerics) type).getArgument(0));
+    if (GenService.isList(type)) {
+      return getFirstInnerType(type);
+    }
+    return Optional.empty();
+  }
+
+  public Optional<SymTypeExpression> getFirstInnerType(SymTypeExpression type) {
+    if (type.isGenericType()) {
+      if (type.asGenericType().sizeArguments() > 0) {
+        return Optional.of(type.asGenericType().getArgument(0));
       }
     }
     return Optional.empty();

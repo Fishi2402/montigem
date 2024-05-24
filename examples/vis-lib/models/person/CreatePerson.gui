@@ -14,7 +14,7 @@ import mc.fenix.input.GemCheckBoxInput;
 
 import person.Row;
 
-page CreatePerson(Person person, Address address, boolean showEmployed = true) {
+page CreatePerson(Person person, Address address, boolean showEmployed = true, Event<Person> cancel) {
   @Row(
     col1 = bday@GemTextInput(labelText = "Birthday", entry = person.birthday, inputType = "date"),
     col2 = name@GemTextInput(labelText = "Name", entry = person.name),
@@ -36,4 +36,5 @@ page CreatePerson(Person person, Address address, boolean showEmployed = true) {
     ])
   );
   @GemButton(label = "Create person", leftClick = create(person));
+  @GemButton(label = "Cancel", leftClick = cancel);
 }

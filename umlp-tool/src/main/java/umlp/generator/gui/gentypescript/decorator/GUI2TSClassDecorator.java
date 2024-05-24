@@ -99,4 +99,9 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
   protected String getStaticListInitTemplate() {
     return "umlp.gui2ts.GUI2TSStaticListInit";
   }
+
+  @Override
+  protected String getEventCallerTemplate() {
+    return "umlp.gui2ts.GUI2TSEventCaller";
+  }
 }

@@ -16,6 +16,7 @@ import de.monticore.guidsl._ast.ASTGUIParam;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
@@ -25,6 +26,7 @@ import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUIDSLVisitor2 {
 
@@ -74,28 +76,62 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
     String name = "_" + node.getName();
 
     String getterName = "get" + StringTransformations.capitalize(node.getName());
+    if (SymTypeRelations.isBoolean(typeSTE)) {
+      getterName = "is" + StringTransformations.capitalize(node.getName());
+    }
     String setterName = "set" + StringTransformations.capitalize(node.getName());
 
-    // add attr
-    ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
-        CDModifier.PROTECTED.build(), type, name);
-    clazz.addCDMember(attr);
-
-    // attr overrides top class attr
-    glex.replaceTemplate("umlp.gui2ts.TSAttribute", attr,
-        new TemplateHookPoint("umlp.gui2ts.TSOverrideAttribute"));
-
-    // Event attr:
-    // @Output() public override _myEvent: EventEmitter<MyType> = new EventEmitter<MyType>();
+    // Event attr
     if (util.isEventArgument(node.getSymbol())) {
+      // @Output() public myEvent: EventEmitter<MyType> = new EventEmitter<MyType>();
+      Optional<SymTypeExpression> innerSTE = util.getFirstInnerType(typeSTE);
+      String innerType = TypeScriptTypes.VOID.getTSType();
+      if (innerSTE.isPresent()) {
+        innerType = importAndPrintType(innerSTE.get());
+      }
+      ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
+          CDModifier.PROTECTED.build(), "EventEmitter<" + innerType + ">", node.getName());
+      clazz.addCDMember(attr);
       glex.replaceTemplate(GUI2ComponentTemplates.ANNOTATIONS, attr,
           new StringHookPoint("@Output()"));
       glex.replaceTemplate("cd2java.Value", attr,
-          new StringHookPoint(" = new EventEmitter<any>()"));
+          new StringHookPoint(" = new EventEmitter<" + innerType + ">()"));
+
+      /*
+        public getMyEvent(): Event<MyType> {
+          const res = super.getMyEvent();
+          this.myEvent.emit(null);
+          return res;
+        }
+      */
+      glex.replaceTemplate("umlp.Empty", attr,
+          new TemplateHookPoint("umlp.gui2ts.GUI2AngularOverrideEventGetter",
+              type, attr.getName(), getterName));
     }
-    // Normal attr:
-    // public override _myAttr: MyType;
+    // Normal attr
     else {
+      /*
+        protected override _myAttr: MyType;
+
+        public get myAttr(): MyType {
+          return this.getMyAttr();
+        }
+
+        @Input()
+        public set myAttr(val: MyType) {
+          this.setMyAttr(val);
+        }
+      */
+      // add attr
+      ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
+          CDModifier.PROTECTED.build(), type, name);
+      clazz.addCDMember(attr);
+
+      // attr overrides top class attr
+      glex.replaceTemplate("umlp.gui2ts.TSAttribute", attr,
+          new TemplateHookPoint("umlp.gui2ts.TSOverrideAttribute"));
+
+      // setter + getter
       glex.replaceTemplate("umlp.Empty", attr,
           new TemplateHookPoint("umlp.gui2ts.GUI2AngularAttrGetterSetter",
               node.getMCType(), node.getName(), getterName, setterName));

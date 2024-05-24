@@ -10,8 +10,8 @@ import java.util.Optional;
 
 public enum TypeScriptTypes {
   STRING("String", "string"),
-  EVENT(BuiltInTypes.EVENT.getName(), "EventEmitter",
-      BuiltInTypes.EVENT.getQName(), "@angular/core"),
+  EVENT(BuiltInTypes.EVENT.getName(), "Event",
+      BuiltInTypes.EVENT.getQName(), "@umlp/common"),
   TEMPLATE_REF(BuiltInTypes.GUI_VIEW_ELEMENT.getName(), "TemplateRef",
       BuiltInTypes.GUI_VIEW_ELEMENT.getQName(), "@angular/core"),
   // TODO: set proper router service when implemented
