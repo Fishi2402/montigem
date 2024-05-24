@@ -26,6 +26,14 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
     }
   }
 
+  public override contains(gemID: number): boolean {
+    if(this.buildFinished) {
+      return super.contains(gemID)
+    } else {
+      return this.builderElemStorage.map(b => b.getID()).includes(gemID);
+    }
+  }
+
   public override loadAll(): Promise<Array<E>> {
     if(this.buildFinished) {
       return super.loadAll()
