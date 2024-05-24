@@ -1,7 +1,6 @@
 package umlp.generator.gui.genjava.prettyprinter;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.commonexpressions._prettyprint.CommonExpressionsPrettyPrinter;
@@ -12,8 +11,11 @@ import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.StringTransformations;
+import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.genjava.decorator.Attribute;
+import umlp.generator.gui.genjava.decorator.Method;
+import umlp.generator.gui.genjava.decorator.PredefinedFunction;
 import umlp.generator.gui.genjava.decorator.StaticObjectsCollector;
 
 import java.util.Collection;
@@ -34,16 +36,69 @@ public class FieldAccess2AccessorConverter extends CommonExpressionsPrettyPrinte
 
   @Override
   public void handle(ASTCallExpression node) {
+    // TODO AGe: better way to customize printing for corner cases
     Map<ASTNode, Attribute> node2Attr = StaticObjectsCollector.getInstance().getNode2Attr();
-    // a special case with builder
-    if (node2Attr.containsKey(node)) {
-      getPrinter().print("this.get" + StringTransformations.capitalize(
-          node2Attr.get(node).getCdAttr().getName()
-      ));
-
+    Map<ASTNode, Method> node2Method = StaticObjectsCollector.getInstance().getNode2Method();
+    // a special case with overloaded predefined method
+    if (node2Method.containsKey(node)) {
+      Method method = node2Method.get(node);
       if (this.isPrintComments()) {
         CommentPrettyPrinter.printPreComments(node, getPrinter());
       }
+
+      getPrinter().print("this." + method.getAlias());
+
+      // arguments start
+      if (this.isPrintComments()) {
+        CommentPrettyPrinter.printPreComments(node.getArguments(), getPrinter());
+      }
+      Iterator<ASTExpression> iter_expression = node.getArguments().getExpressionList().iterator();
+
+      getPrinter().stripTrailing();
+      getPrinter().print("(");
+
+      if (method.getPredefined().isPresent()
+          && (method.getPredefined().get().equals(PredefinedFunction.ASSOC_ADD)
+          || method.getPredefined().get().equals(PredefinedFunction.ASSOC_REMOVE))
+      ) {
+        if (node.getArguments().sizeExpressions() != 2) {
+          Log.error("0x0001E Functions 'assoc_add' and 'assoc_remove' expect 2 arguments"
+              + " at " + node.get_SourcePositionStart().toString()
+              + " - " + node.get_SourcePositionEnd().toString());
+        }
+        iter_expression.next();
+      }
+
+      if (iter_expression.hasNext()) {
+        iter_expression.next().accept(getTraverser());
+        while (iter_expression.hasNext()) {
+          getPrinter().stripTrailing();
+          getPrinter().print(",");
+          iter_expression.next().accept(getTraverser());
+        }
+      }
+
+      getPrinter().stripTrailing();
+      getPrinter().print(")");
+
+      if (this.isPrintComments()) {
+        CommentPrettyPrinter.printPostComments(node.getArguments(), getPrinter());
+      }
+      // arguments end
+
+      if (this.isPrintComments()) {
+        CommentPrettyPrinter.printPostComments(node, getPrinter());
+      }
+    }
+    // a special case with builder
+    if (node2Attr.containsKey(node)) {
+      if (this.isPrintComments()) {
+        CommentPrettyPrinter.printPreComments(node, getPrinter());
+      }
+
+      getPrinter().print("this.get" + StringTransformations.capitalize(
+          node2Attr.get(node).getCdAttr().getName()
+      ));
 
       // arguments start
       if (this.isPrintComments()) {

@@ -232,11 +232,20 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
         }
 
         Method guiMethod = new Method(returnType, nameExp.getName(), paramTypes);
+        boolean isPredefined = false;
+        for (PredefinedFunction fun : PredefinedFunction.values()) {
+          if (fun.getName().equals(nameExp.getName())) {
+            guiMethod.setPredefined(fun, nameExp.getName() + "_" + counter++);
+            isPredefined = true;
+            break;
+          }
+        }
         for (ASTNode n : node2Method.keySet()) {
           Method m = node2Method.get(n);
           if (guiMethod.getName().equals(m.getName())) {
             if (!guiMethod.compatibleParamTypes(m) && guiMethod.sameParamTypesErasure(m)) {
-              Log.error("0x00018 Found methods with the same type erasure: '"
+              Log.error("0x00018 Found methods with incompatible parameter types"
+                  + " but the same type erasure: '"
                   + util.print(n) + "' at " + n.get_SourcePositionStart().toString()
                   + " - " + nameExp.get_SourcePositionEnd().toString()
                   + " and "
@@ -247,11 +256,24 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
               );
             }
             else if (guiMethod.compatibleReturnType(m) && guiMethod.compatibleParamTypes(m)) {
+              if (!isPredefined && !(guiMethod.sameReturnType(m) && guiMethod.sameParamTypes(m))) {
+                Log.error("0x0001D Method overloading is not yet supported for non-predefined"
+                    + " functions: "
+                    + util.print(n) + "' at " + n.get_SourcePositionStart().toString()
+                    + " - " + nameExp.get_SourcePositionEnd().toString()
+                    + " and "
+                    + util.print(node)
+                    + "' at " + node.get_SourcePositionStart().toString()
+                    + " - " + node.get_SourcePositionEnd().toString()
+                    + ". Please rename one of the methods."
+                );
+              }
               guiMethod = m;
               break;
             }
             else if (!guiMethod.compatibleReturnType(m) && guiMethod.compatibleParamTypes(m)) {
-              Log.error("0x00019 Found methods with the same return types: '"
+              Log.error("0x00019 Found methods with compatible parameter types"
+                  + " but different return types: '"
                   + util.print(n) + "' at " + n.get_SourcePositionStart().toString()
                   + " - " + nameExp.get_SourcePositionEnd().toString()
                   + " and "

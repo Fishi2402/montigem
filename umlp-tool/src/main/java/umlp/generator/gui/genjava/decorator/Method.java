@@ -5,14 +5,18 @@ import de.monticore.types3.SymTypeRelations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Method {
   protected final String name;
   protected final SymTypeExpression returnType;
   protected final List<SymTypeExpression> paramTypes = new ArrayList<>();
+  protected Optional<PredefinedFunction> predefined = Optional.empty();
+  protected String alias = "";
 
   public Method(SymTypeExpression returnType, String name, List<SymTypeExpression> paramTypes) {
     this.name = name;
+    this.alias = name;
     this.returnType = returnType;
     this.paramTypes.addAll(paramTypes);
   }
@@ -27,6 +31,19 @@ public class Method {
 
   public List<SymTypeExpression> getParamTypes() {
     return paramTypes;
+  }
+
+  public void setPredefined(PredefinedFunction predefined, String alias) {
+    this.predefined = Optional.of(predefined);
+    this.alias = alias;
+  }
+
+  public Optional<PredefinedFunction> getPredefined() {
+    return predefined;
+  }
+
+  public String getAlias() {
+    return alias;
   }
 
   public boolean sameReturnType(Method m) {

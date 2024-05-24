@@ -52,7 +52,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 /**
  * Turn a GUI AST into a CD AST containing one class. The class manages component state and
@@ -625,7 +624,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
             case CREATE:
               if (method.getParamTypes().size() != 1
                   || !util.isDomainType(method.getParamTypes().get(0))) {
-                Log.error("0x0001A Function create expects a single domain type argument"
+                Log.error("0x0001A Function 'create' expects a single domain type argument"
                     + " at " + node.get_SourcePositionStart().toString()
                     + " - " + node.get_SourcePositionEnd().toString());
               }
@@ -634,14 +633,50 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
                   method.getParamTypes().get(0).print());
               break;
             case DELETE:
-              getCD4C().addMethod(clazz, getDeleteTemplate(), manager);
+              if (method.getParamTypes().size() != 1
+                  || !util.isDomainType(method.getParamTypes().get(0))) {
+                Log.error("0x0001A Function 'delete' expects a single domain type argument"
+                    + " at " + node.get_SourcePositionStart().toString()
+                    + " - " + node.get_SourcePositionEnd().toString());
+              }
+              getCD4C().addImport(clazz, TypeScriptTypes.CONSUMER.getMCType());
+              getCD4C().addMethod(clazz, getDeleteTemplate(),
+                  method.getParamTypes().get(0).print(), manager);
               break;
-            case ASSOC_ADD:
-              getCD4C().addMethod(clazz, getAssocAddTemplate(), manager);
+            case ASSOC_ADD: {
+              // TODO AGe: better "first arg is an assoc" check
+              if (method.getParamTypes().size() != 2
+                  || !util.isDomainType(method.getParamTypes().get(0))
+                  || node.getArguments().sizeExpressions() != 2
+                  || !(node.getArguments().getExpression(0) instanceof ASTFieldAccessExpression)
+                  || !util.isDomainType(method.getParamTypes().get(1))
+              ) {
+                Log.error("0x0001A Function 'assoc_add' expects 2 arguments:"
+                    + "an association and a domain object"
+                    + " at " + node.get_SourcePositionStart().toString()
+                    + " - " + node.get_SourcePositionEnd().toString());
+              }
+              getCD4C().addImport(clazz, TypeScriptTypes.CONSUMER.getMCType());
+              addAssocMethod(method, node, getAssocAddTemplate());
               break;
-            case ASSOC_REMOVE:
-              getCD4C().addMethod(clazz, getAssocRemoveTemplate(), manager);
+            }
+            case ASSOC_REMOVE: {
+              // TODO AGe: better "first arg is an assoc" check
+              if (method.getParamTypes().size() != 2
+                  || !util.isDomainType(method.getParamTypes().get(0))
+                  || node.getArguments().sizeExpressions() != 2
+                  || !(node.getArguments().getExpression(0) instanceof ASTFieldAccessExpression)
+                  || !util.isDomainType(method.getParamTypes().get(1))
+              ) {
+                Log.error("0x0001A Function 'assoc_remove' expects 2 arguments:"
+                    + "an association and a domain object"
+                    + " at " + node.get_SourcePositionStart().toString()
+                    + " - " + node.get_SourcePositionEnd().toString());
+              }
+              getCD4C().addImport(clazz, TypeScriptTypes.CONSUMER.getMCType());
+              addAssocMethod(method, node, getAssocRemoveTemplate());
               break;
+            }
           }
         }
         // custom function: @PersonForm(person = makePerson())
@@ -657,7 +692,6 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         }
       }
     }
-
   }
 
   @Override
@@ -778,6 +812,29 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     // implement getScope method of observer
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
     getCD4C().addMethod(clazz, getScopeTemplate());
+  }
+
+  protected void addAssocMethod(Method method, ASTCallExpression node, String template) {
+    String type = importAndPrintType(method.getParamTypes().get(0));
+
+    ASTExpression holder = ((ASTFieldAccessExpression) node.getArguments()
+        .getExpression(0)).getExpression();
+
+    IterationItemsFinder finder = new IterationItemsFinder();
+    Collection<ASTExpression> iterateItems = new HashSet<>(finder.getItems(gui));
+    Collection<ASTExpression> nonClassMembers = new HashSet<>(iterateItems);
+
+    Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
+        new IndentPrinter(), false, iterateItems, nonClassMembers
+    );
+    String getterValue = getterPrinter.prettyprint(holder);
+    boolean isList = util.isDomainListType(method.getParamTypes().get(0));
+
+    String assoc = ((ASTFieldAccessExpression) node.getArguments()
+        .getExpression(0)).getName();
+
+    getCD4C().addMethod(clazz, template,
+        type, getterValue, isList, assoc);
   }
 
   protected String getInitDefaultParamTemplate() {

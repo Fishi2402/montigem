@@ -6,7 +6,6 @@ import de.monticore.expressions.expressionsbasis._prettyprint.ExpressionsBasisPr
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
-import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.StringTransformations;
@@ -14,7 +13,6 @@ import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.Collection;
-import java.util.Optional;
 
 public class Name2AccessorConverter extends ExpressionsBasisPrettyPrinter {
 

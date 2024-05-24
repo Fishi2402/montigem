@@ -104,4 +104,24 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
   protected String getEventCallerTemplate() {
     return "umlp.gui2ts.GUI2TSEventCaller";
   }
+
+  @Override
+  protected String getCreateTemplate() {
+    return "umlp.gui2ts.predefined.GUI2TSCreate";
+  }
+
+  @Override
+  protected String getDeleteTemplate() {
+    return "umlp.gui2ts.predefined.GUI2TSDelete";
+  }
+
+  @Override
+  protected String getAssocAddTemplate() {
+    return "umlp.gui2ts.predefined.GUI2TSAssocAdd";
+  }
+
+  @Override
+  protected String getAssocRemoveTemplate() {
+    return "umlp.gui2ts.predefined.GUI2TSAssocRemove";
+  }
 }
