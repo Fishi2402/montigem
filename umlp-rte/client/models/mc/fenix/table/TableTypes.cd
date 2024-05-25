@@ -24,6 +24,8 @@ classdiagram TableTypes {
     String name;
 
     TableColumn(String prop, String name);
+    TableColumn(String prop);
+    TableColumn();
   }
 
 }

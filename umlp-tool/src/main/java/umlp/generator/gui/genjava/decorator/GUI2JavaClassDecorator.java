@@ -646,7 +646,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
             case ASSOC_ADD: {
               // TODO AGe: better "first arg is an assoc" check
               if (method.getParamTypes().size() != 2
-                  || !util.isDomainType(method.getParamTypes().get(0))
+                  || !util.isDomainListType(method.getParamTypes().get(0))
                   || node.getArguments().sizeExpressions() != 2
                   || !(node.getArguments().getExpression(0) instanceof ASTFieldAccessExpression)
                   || !util.isDomainType(method.getParamTypes().get(1))
@@ -663,7 +663,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
             case ASSOC_REMOVE: {
               // TODO AGe: better "first arg is an assoc" check
               if (method.getParamTypes().size() != 2
-                  || !util.isDomainType(method.getParamTypes().get(0))
+                  || !util.isDomainListType(method.getParamTypes().get(0))
                   || node.getArguments().sizeExpressions() != 2
                   || !(node.getArguments().getExpression(0) instanceof ASTFieldAccessExpression)
                   || !util.isDomainType(method.getParamTypes().get(1))
