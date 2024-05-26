@@ -91,7 +91,7 @@ public class FieldAccess2AccessorConverter extends CommonExpressionsPrettyPrinte
       }
     }
     // a special case with builder
-    if (node2Attr.containsKey(node)) {
+    else if (node2Attr.containsKey(node)) {
       if (this.isPrintComments()) {
         CommentPrettyPrinter.printPreComments(node, getPrinter());
       }

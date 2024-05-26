@@ -1,8 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("type", "getter", "isList", "assoc")}
+${tc.signature("name", "type", "getter", "isList", "assoc")}
 <#assign param = "val">
 
-${cd4c.method("public Consumer<Void> assoc_remove(${type} ${param})")}
+${cd4c.method("public Consumer<Void> ${name}(${type} ${param})")}
 return $ => {
   <#if isList>
     ${getter}.remove${assoc?cap_first}2(${param});

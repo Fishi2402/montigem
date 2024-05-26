@@ -2,7 +2,7 @@
 ${tc.signature("type", "addList")}
 <#assign arg = "val">
 
-${cd4c.method("protected void notify${type}Deleted(${type} ${arg})")}
+${cd4c.method("public void notify${type}Added(${type} ${arg})")}
 <#list addList as add>
 this.${add}(${arg});
 </#list>

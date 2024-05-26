@@ -4,3 +4,4 @@ ${tc.signature("type", "name", "argTypes")}
 <#assign argsString = genHelper.types2ArgsString(argTypes)>
 
 ${cd4c.method("public ${type} ${name}(${argsString})")}
+return null;

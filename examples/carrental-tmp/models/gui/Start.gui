@@ -14,5 +14,5 @@ page Start(List<Car> cars){
   @GemText(value = "---");
 
 
-  @GemButton(label = "AddAnotherCar", leftClick = addCar);
+  @GemButton(label = "AddAnotherCar", leftClick = addCar());
 }

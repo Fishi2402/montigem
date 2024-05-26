@@ -5,6 +5,6 @@ ${tc.signature("type", "name", "nullCheck", "setterExpression", "args")}
 
 ${cd4c.method("public void set${name?cap_first}(${argsString})")}
 if (${nullCheck}) {
-  return null;
+  return;
 }
-return ${setterExpression};
+${setterExpression};

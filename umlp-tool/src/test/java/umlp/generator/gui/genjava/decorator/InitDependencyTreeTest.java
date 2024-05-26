@@ -119,12 +119,7 @@ public class InitDependencyTreeTest extends DomainGUITest {
     InitDependency kM1 = kM0.getDependentList().get(0);
     InitDependency kM = kM1.getDependentList().get(0);
 
-    InitDependency l = kM.getDependentList().get(0);
-    assertEquals(
-        idt.getDependency(lNode.getIterateControl()).get(),
-        l
-    );
-    InitDependency lInnerConstructor = l.getDependentList().get(0);
+    InitDependency lInnerConstructor = kM.getDependentList().get(0);
     assertEquals(
         idt.getDependency(((ASTCallExpression)
             ((ASTGUIShortIterateControl) lNode.getIterateControl()).getIterable())
@@ -137,22 +132,27 @@ public class InitDependencyTreeTest extends DomainGUITest {
             .getIterable()).get(),
         lConstructor
     );
-    InitDependency lBlock = lConstructor.getDependentList().get(0);
+    InitDependency l = lConstructor.getDependentList().get(0);
+    assertEquals(
+        idt.getDependency(lNode.getIterateControl()).get(),
+        l
+    );
+    InitDependency lBlock = l.getDependentList().get(0);
     assertEquals(
         idt.getDependency(lNode.getGUIBlock()).get(),
         lBlock
     );
 
-    InitDependency o = lBlock.getDependentList().get(0);
-    InitDependency oIterable = o.getDependentList().get(0);
-    InitDependency oBlock = oIterable.getDependentList().get(0);
+    InitDependency oIterable = lBlock.getDependentList().get(0);
+    InitDependency o = oIterable.getDependentList().get(0);
+    InitDependency oBlock = o.getDependentList().get(0);
     assertEquals(
         idt.getDependency(oNode.getGUIBlock()).get(),
         oBlock
     );
-    InitDependency p = oBlock.getDependentList().get(0);
-    InitDependency pIterable = p.getDependentList().get(0);
-    InitDependency pBlock = pIterable.getDependentList().get(0);
+    InitDependency pIterable = oBlock.getDependentList().get(0);
+    InitDependency p = pIterable.getDependentList().get(0);
+    InitDependency pBlock = p.getDependentList().get(0);
     assertEquals(
         idt.getDependency(pNode.getGUIBlock()).get(),
         pBlock

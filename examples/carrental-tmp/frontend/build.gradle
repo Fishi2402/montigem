@@ -77,6 +77,11 @@ genGUI {
   modelDir = file(tasks.guiVariability.getOutputDir())
   domainModels = ["Carrental"]
   dependsOn(tasks.guiVariability)
+
+  /*
+  debug = true
+  outputs.upToDateWhen { false }
+  /**/
 }
 
 // TODO: For comparison: TS vs JSweet(Java)

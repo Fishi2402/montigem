@@ -117,6 +117,7 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
       // a List<Person> must be printed as GemList<Person>
       // a List<String> as a List<String>
       // a List<MyDomainEnum> as a List<MyDomainEnum>
+      /*
       if (util.getDomainListInnerType(ste).isPresent()
           && !util.isEnumType(util.getDomainListInnerType(ste).get())) {
         getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("GemList"));
@@ -132,6 +133,7 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
         sb.append(">");
         return sb.toString();
       }
+      /**/
       getCD4C().addImport(clazz, stog.getTypeConstructorFullName());
       for (SymTypeExpression steArg : stog.getArgumentList()) {
         importAndPrintType(steArg);

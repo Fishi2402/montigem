@@ -21,9 +21,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Stack;
 
-// TODO AGe: may have stricter dependencies than expected, e.g.,
-//  [[person, contact, Person()], friend.friends] -> friend.friends depends on
-//  [person, contact, Person()].
+// TODO AGe: currently has stricter dependencies than expected, e.g.,
+//  [[person, contact, Person()], friend.friends] ->
+//  friend.friends depends on [person, contact, Person()].
 public class InitDependencyTree implements GUIDSLVisitor2, CommonExpressionsVisitor2, ExpressionsBasisVisitor2 {
 
   protected GUIDSLTraverser traverser;
@@ -92,8 +92,21 @@ public class InitDependencyTree implements GUIDSLVisitor2, CommonExpressionsVisi
           + " was not processed: only short version, such as '(Type item : list)',"
           + " is supported so far");
     }
+    /*
     ASTGUIShortIterateControl control = (ASTGUIShortIterateControl) node.getIterateControl();
     putDependency(control);
+    */
+  }
+
+  @Override
+  public void visit(ASTGUIShortIterateControl node) {
+    rememberDepStackJump(node);
+  }
+
+  @Override
+  public void endVisit(ASTGUIShortIterateControl node) {
+    putDependency(node);
+    maybeJumpDepStack(node);
   }
 
   @Override
