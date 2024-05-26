@@ -193,7 +193,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       }
     }
     // case 2: component Foo(Person p)
-    if (util.isDomainType(typeSTE) && !util.isEnumType(typeSTE)) {
+    else if (util.isDomainType(typeSTE) && !util.isEnumType(typeSTE)) {
       String manager = getAndImportManager();
 
       // add builder init
@@ -1015,7 +1015,6 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
   protected String getInitParamSingletonTemplate() {
     return "umlp.gui2java.GUI2JavaInitParamSingleton";
   }
-
 
   protected String getInitParamBuilderTemplate() {
     return "umlp.gui2java.GUI2JavaInitParamBuilder";

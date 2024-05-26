@@ -312,6 +312,10 @@ public class UMLPTool extends UMLPToolTOP {
           extraOpts.add("-");
           extraOpts.add("ExcludeForm");
           extraOpts.add(singletonClass);
+
+          extraOpts.add("-");
+          extraOpts.add("NoOverview");
+          extraOpts.add(singletonClass);
         }
 
         CD2GUITool guiTool = new CD2GUITool(ast, outDir, hwcPath, extraOpts.toArray(new String[0]));
