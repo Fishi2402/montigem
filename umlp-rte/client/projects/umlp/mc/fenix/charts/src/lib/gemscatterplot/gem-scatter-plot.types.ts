@@ -37,15 +37,13 @@ export class GemScatterPlotSet implements GemScatterPlotSetI {
   points?: GemScatterPlotPoint[];
   color?: string;
   hoverColor?: string;
-  pointRadius?: number;
 
 
   constructor(label?: string,
       shape?: GemScatterPlotShape,
       points?: GemScatterPlotPoint[] | IUMLPList<GemScatterPlotPoint>,
       color?: string,
-      hoverColor?: string,
-      pointRadius?: number) {
+      hoverColor?: string) {
     this.label = label;
     this.shape = shape;
     if ("toArray" in points) {
@@ -55,7 +53,6 @@ export class GemScatterPlotSet implements GemScatterPlotSetI {
     }
     this.color = color;
     this.hoverColor = hoverColor;
-    this.pointRadius = pointRadius;
   }
 }
 
@@ -63,11 +60,13 @@ export class GemScatterPlotPoint implements GemScatterPlotPointI {
   x?: number;
   y?: number;
   label?: string;
+  pointRadius?: number;
 
-  constructor(x?: number, y?: number, label?: string) {
+  constructor(x?: number, y?: number, label?: string, pointRadius?: number) {
     this.x = x;
     this.y = y;
     this.label = label;
+    this.pointRadius = pointRadius;
   }
 }
 
