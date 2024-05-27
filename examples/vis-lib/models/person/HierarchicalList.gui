@@ -14,9 +14,5 @@ component HierarchicalList(List<List<Person>> list) {
     @iterate(Person p : sublist) {
       @GemText(value = p.name);
     }
-    @GemText(value = "About me infos:");
-    @iterate(Person p : sublist) {
-      @GemText(value = p.aboutMe);
-    }
   }
 }

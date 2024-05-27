@@ -12,6 +12,7 @@ import { Component } from '@angular/core';
 })
 export class GemGridExample extends GemGridExampleComponent {
 
+  /*
   protected override fixedGridX: Array<string> = ["200px", "1fr", "auto"];
 
   protected override fixedGridY: Array<string> = ["auto", "20px"];
@@ -26,5 +27,6 @@ export class GemGridExample extends GemGridExampleComponent {
 
   protected override cell3A: Array<number> = [2, 2];
   protected override cell3B: Array<number> = [4, 4];
+  /**/
 
 }

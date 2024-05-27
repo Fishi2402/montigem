@@ -1,5 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("type", "name", "getterName")}
+${tc.signature("mcType", "name", "getterName")}
+<#assign type = cdPrinter.printType(mcType)>
 
 public override ${getterName}(): ${type} {
   const res = super.${getterName}();

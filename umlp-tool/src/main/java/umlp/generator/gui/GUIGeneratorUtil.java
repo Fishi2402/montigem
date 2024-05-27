@@ -18,6 +18,7 @@ import de.monticore.guidsl._ast.ASTGUIArgValue;
 import de.monticore.guidsl._ast.ASTGUIBlockContent;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
+import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.monticore.guidsl._ast.ASTGUIIterate;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._ast.ASTGUIParam;
@@ -407,6 +408,10 @@ public class GUIGeneratorUtil {
 
   public final boolean isCreateModel(String componentQName) {
     return CREATE_MODELS.contains(componentQName);
+  }
+
+  public String getBaseClassName(ASTGUIComponentDeclaration decl) {
+    return decl.getName();
   }
 
   public boolean isInputComponent(ASTGUIComponent guiComponent) {
@@ -1167,9 +1172,9 @@ public class GUIGeneratorUtil {
   }
 
   public String variableSymbols2ArgsString(
-      String setterType, Collection<VariableSymbol> variableSymbols
+      String setterType, String arg, Collection<VariableSymbol> variableSymbols
   ) {
-    StringBuilder res = new StringBuilder(setterType + " " + Expression2SetterPrinter.SETTER_PARAM);
+    StringBuilder res = new StringBuilder(setterType + " " + arg);
     Iterator<VariableSymbol> iter = variableSymbols.iterator();
     while (iter.hasNext()) {
       res.append(",");

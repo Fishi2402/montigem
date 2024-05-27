@@ -10,8 +10,13 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
+import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericTypeBuilder;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
@@ -20,7 +25,10 @@ import umlp.generator.domain.decorator.DiagramObserverDecorator;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.util.PathUtil;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Set;
 
 public abstract class GUI2ClassDecorator extends AbstractDecorator {
 
@@ -46,7 +54,7 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
     cd.getCDDefinition().addCDElement(cdPackage);
 
     // class
-    clazz = emptyClass(gui);
+    clazz = emptyClass();
     extendClass(cd);
 
     cdPackage.addCDElement(withOrigin(clazz));
@@ -57,17 +65,16 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
   protected void replaceTemplates() {
   }
 
-  /**
-   * @param ast base GUI AST to create an empty class from
-   * @return empty class
-   */
-  protected ASTCDClass emptyClass(ASTGUICompilationUnit ast) {
-    ASTGUIComponentDeclaration domainClass = ast.getGUIComponentDeclaration();
-    String className = domainClass.getName();
+  public ASTCDClass emptyClass() {
+    String className = className();
     return UMLPMill.cDClassBuilder()
         .setModifier(CDModifier.PUBLIC.build())
         .setName(className)
         .build();
+  }
+
+  protected String className() {
+    return util.getBaseClassName(gui.getGUIComponentDeclaration());
   }
 
   protected void extendClass(ASTCDCompilationUnit cd) {
@@ -94,6 +101,8 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
    * @return Java type that corresponds to the input GUI type
    */
   protected String importAndPrintType(SymTypeExpression ste) {
+    return createTypeAndAddImports(ste).printType();
+    /*
     if (ste.isObjectType()) {
       // given in GUI:
       // import hardy.Domain.Person;
@@ -117,7 +126,6 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
       // a List<Person> must be printed as GemList<Person>
       // a List<String> as a List<String>
       // a List<MyDomainEnum> as a List<MyDomainEnum>
-      /*
       if (util.getDomainListInnerType(ste).isPresent()
           && !util.isEnumType(util.getDomainListInnerType(ste).get())) {
         getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("GemList"));
@@ -133,7 +141,6 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
         sb.append(">");
         return sb.toString();
       }
-      /**/
       getCD4C().addImport(clazz, stog.getTypeConstructorFullName());
       for (SymTypeExpression steArg : stog.getArgumentList()) {
         importAndPrintType(steArg);
@@ -147,6 +154,69 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
           + ": parameter type '" + ste.printFullName() + "'");
     }
     return ste.print();
+    /**/
+  }
+
+  protected ASTMCType createTypeAndAddImports(SymTypeExpression ste) {
+    if (!ste.hasTypeInfo()) {
+      Log.error("0x0001B Encountered a SymTypeExpression disconnected from a type symbol: "
+          + ste.printFullName());
+    }
+    if (ste.isObjectType()) {
+      // given in GUI:
+      // import hardy.Domain.Person;
+      // the resolved type is `hardy.Person`
+      // but the CD Generator produces `hardy.domain.Person`, so calculate that instead
+      IBasicSymbolsScope scope = ste.getTypeInfo().getEnclosingScope();
+      if (scope.isPresentName()
+          && util.getMainDomainModelSimpleName().isPresent()
+          && scope.getName().equals(util.getMainDomainModelSimpleName().get())) {
+
+        String insert = StringTransformations.uncapitalize(scope.getName()) + ".";
+        String type = ste.asObjectType().print();
+
+        int lastIndex = type.lastIndexOf('.');
+
+        if (lastIndex != -1) {
+          StringBuilder sb = new StringBuilder(type);
+          sb.insert(lastIndex + 1, insert);
+          type = sb.toString();
+        }
+        else {
+          type = insert + type;
+        }
+        getCD4C().addImport(clazz, type);
+      }
+      else {
+        getCD4C().addImport(clazz, ste.printFullName());
+      }
+    }
+    else if (ste.isGenericType()) {
+      SymTypeOfGenerics stog = ste.asGenericType();
+      String qType = stog.getTypeConstructorFullName();
+      getCD4C().addImport(clazz, qType);
+      String type = stog.getTypeInfo().getName();
+
+      ASTMCBasicGenericTypeBuilder genTypeBuilder = MCFullGenericTypesMill.mCBasicGenericTypeBuilder()
+          .setNamesList(new ArrayList<>(Arrays.asList(type)))
+          .setMCTypeArgumentsList(new ArrayList<>());
+      for (SymTypeExpression steArg : stog.getArgumentList()) {
+        genTypeBuilder.addMCTypeArgument(
+            MCSimpleGenericTypesMill.mCCustomTypeArgumentBuilder()
+                .setMCType(createTypeAndAddImports(steArg))
+                .build());
+      }
+      return genTypeBuilder.build();
+    }
+    else if (ste.isPrimitive()) {
+      return MCTypeFacade.getInstance().createQualifiedType(
+          ste.asPrimitive().getBoxedPrimitiveName());
+    }
+    else if (!(ste.isNullType() || ste.isVoidType() || ste.isWildcard() || ste.isTypeVariable())) {
+      Log.error("0x00010 Encountered unsupported type in a parameter: '"
+          + ste.printFullName() + "'");
+    }
+    return MCTypeFacade.getInstance().createQualifiedType(ste.printFullName());
   }
 
   protected String getAndImportManager() {

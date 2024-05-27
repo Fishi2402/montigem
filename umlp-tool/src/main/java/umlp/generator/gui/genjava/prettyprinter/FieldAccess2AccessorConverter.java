@@ -8,8 +8,6 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
-import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIGeneratorUtil;
@@ -162,11 +160,15 @@ public class FieldAccess2AccessorConverter extends CommonExpressionsPrettyPrinte
     getPrinter().stripTrailing();
     getPrinter().print(".");
 
-    if (ignore.contains(node)) {
+    var conversions = ExpressionPrinterConfig.getInstance().customConversions;
+    if (conversions.containsKey(node)) {
+      getPrinter().print(conversions.get(node).apply(node));
+    }
+    else if (ignore.contains(node)) {
       getPrinter().print(node.getName() + " ");
     }
     else {
-      getPrinter().print(attr2Getter(node) + " ");
+      getPrinter().print(attr2GetterCall(node) + " ");
     }
 
     if (this.isPrintComments()) {
@@ -175,16 +177,8 @@ public class FieldAccess2AccessorConverter extends CommonExpressionsPrettyPrinte
 
   }
 
-  protected String attr2Getter(ASTFieldAccessExpression node) {
-    if (GUIGeneratorUtil.getInstance().isEnumMember(node)) {
-      return node.getName();
-    }
-    SymTypeExpression ste = GUIGeneratorUtil.getInstance().getType(node);
-
-    if (SymTypeRelations.isBoolean(ste)) {
-      return "is" + StringTransformations.capitalize(node.getName()) + "()";
-    }
-    return "get" + StringTransformations.capitalize(node.getName()) + "()";
+  protected String attr2GetterCall(ASTFieldAccessExpression node) {
+    return ExpressionPrinterConfig.attr2Getter(node) + "()";
   }
 
 }

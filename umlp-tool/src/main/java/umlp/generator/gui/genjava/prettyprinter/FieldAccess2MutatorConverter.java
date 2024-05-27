@@ -69,7 +69,7 @@ public class FieldAccess2MutatorConverter extends FieldAccess2AccessorConverter 
         getPrinter().print(attr2Setter(node) + " ");
       }
       else {
-        getPrinter().print(attr2Getter(node) + " ");
+        getPrinter().print(attr2GetterCall(node) + " ");
       }
     }
 

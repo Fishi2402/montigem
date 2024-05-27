@@ -11,8 +11,20 @@ ${cdPrinter.printType(mcType)} ${tmpVar} = new ArrayList<>();
 ${tmpVar}.add(${item});
 </#list>
 
+if (this.${name} == null) {
+  this.${name} = new HashMap<>();
+}
 <#list keys as key>
   <#assign i = key?index - 1>
+  <#if key?has_next>
+    if (!this.${name}
+      <#if i gt -1>
+        <#list keys[0..i] as prev>
+          .get(${prev.getName()})
+        </#list>
+      </#if>
+          .containsKey(${key.getName()})) {
+  </#if>
   this.${name}
   <#if i gt -1>
     <#list keys[0..i] as prev>
@@ -21,6 +33,7 @@ ${tmpVar}.add(${item});
   </#if>
   <#if key?has_next>
       .put(${key.getName()}, new HashMap<>());
+  }
   <#else>
       .put(${key.getName()}, ${tmpVar});
   </#if>

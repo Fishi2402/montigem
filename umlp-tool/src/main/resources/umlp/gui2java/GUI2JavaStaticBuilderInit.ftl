@@ -9,8 +9,20 @@ ${tc.signature("mcType", "name", "manager", "keys", "initList")}
 ${cd4c.method("public void init${name?cap_first}(${argsString})")}
 ${type} ${tmpVar} = ${manager}.${type?uncap_first}Builder();
 
+if (this.${name} == null) {
+  this.${name} = new HashMap<>();
+}
 <#list keys as key>
   <#assign i = key?index - 1>
+  <#if key?has_next>
+    if (!this.${name}
+      <#if i gt -1>
+        <#list keys[0..i] as prev>
+          .get(${prev.getName()})
+        </#list>
+      </#if>
+          .containsKey(${key.getName()})) {
+  </#if>
   this.${name}
   <#if i gt -1>
     <#list keys[0..i] as prev>
@@ -19,6 +31,7 @@ ${type} ${tmpVar} = ${manager}.${type?uncap_first}Builder();
   </#if>
   <#if key?has_next>
       .put(${key.getName()}, new HashMap<>());
+  }
   <#else>
       .put(${key.getName()}, ${tmpVar});
   </#if>

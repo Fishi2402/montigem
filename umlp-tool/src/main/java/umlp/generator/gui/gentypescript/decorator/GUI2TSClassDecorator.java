@@ -4,14 +4,25 @@ package umlp.generator.gui.gentypescript.decorator;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.guidsl._ast.ASTGUICompilationUnit;
+import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.types.MCTypeFacade;
+import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeOfGenerics;
+import de.se_rwth.commons.StringTransformations;
+import de.se_rwth.commons.logging.Log;
+import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.gui.genjava.decorator.GUI2JavaClassDecorator;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
+import umlp.generator.util.PathUtil;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.function.Function;
 
 /**
  * Turn a GUI AST into a CD AST containing one class. The class manages component state and
@@ -21,6 +32,12 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
 
   public GUI2TSClassDecorator(final GlobalExtensionManagement glex) {
     super(glex);
+  }
+
+  public void transform(ASTGUICompilationUnit gui, ASTCDCompilationUnit cd) {
+    if (UMLPGeneratorConfig.getInstance().isGenerateTypescript()) {
+      super.transform(gui, cd);
+    }
   }
 
   /**
@@ -60,15 +77,60 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
   protected void extendDomainObserver() {
     glex.replaceTemplate("umlp.gui2ts.TSClassExtends",
         clazz, new TemplateHookPoint("umlp.gui2ts.TSClassExtendsMixin"));
-
-    // add list item observer
-    if (!clazz.isPresentCDExtendUsage()) {
-      clazz.setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder()
-          .setSuperclassList(new ArrayList<>()).build());
-    }
-    clazz.getSuperclassList().add(MCTypeFacade.getInstance()
-        .createQualifiedType(getAndImportDomainObserver()));
+    super.extendDomainObserver();
   }
+
+  @Override
+  protected Function<String, String> date2StringConversion() {
+    return s -> s + "?.toDateString()";
+  }
+
+  @Override
+  protected Function<String, String> string2DateConversion() {
+    getCD4C().addImport(clazz, "mc.fenix.common.Conversion");
+    return s -> "Conversion.string2Date(" + s + "); if (val == null) return";
+  }
+
+  @Override
+  protected Function<String, String> number2StringConversion() {
+    return s -> s + "+ ''";
+  }
+
+  @Override
+  protected Function<String, String> string2NumberConversion(String type) {
+    return s -> "+" + s;
+  }
+
+  @Override
+  protected Function<String, String> enum2StringConversion(String type) {
+    return s -> type + "[" + s + "]";
+  }
+
+  @Override
+  protected Function<String, String> string2EnumConversion(String type) {
+    return s -> type + "[" + s + " as keyof typeof " + type + "]";
+  }
+
+  @Override
+  protected Function<String, String> optionalNumber2StringConversion() {
+    return s -> s + " != null ? " + s + "+ ''" + " : ''";
+  }
+
+  @Override
+  protected Function<String, String> string2OptionalNumberConversion(String type) {
+    return s -> "!!" + s + " ? " + "+" + s + " : null";
+  }
+
+  @Override
+  protected Function<String, String> optionalEnum2StringConversion(String type) {
+    return s -> s + " != null ? " + type + "[" + s + "]" + " : ''";
+  }
+
+  @Override
+  protected Function<String, String> string2OptionalEnumConversion(String type) {
+    return s -> s + " in " + type + "? " + type + "[" + s + ".toUpperCase()] : null";
+  }
+
 
   @Override
   protected String getInitDomainListTemplate() {
@@ -76,8 +138,23 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
   }
 
   @Override
+  protected String getRemoveDomainListTemplate() {
+    return "umlp.gui2ts.GUI2TSRemoveDomainList";
+  }
+
+  @Override
+  protected String getAddDomainListTemplate() {
+    return "umlp.gui2ts.GUI2TSAddDomainList";
+  }
+
+  @Override
   protected String getInitParamBuilderTemplate() {
     return "umlp.gui2ts.GUI2TSInitParamBuilder";
+  }
+
+  @Override
+  protected String getListInitTemplate() {
+    return "umlp.gui2ts.GUI2TSListInit";
   }
 
   @Override
@@ -91,13 +168,28 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
   }
 
   @Override
-  protected String getAssocInitTemplate() {
-    return "umlp.gui2ts.GUI2TSAssocInit";
+  protected String getListAssocInitTemplate() {
+    return "umlp.gui2ts.GUI2TSListAssocInit";
+  }
+
+  @Override
+  protected String getObjectAssocInitTemplate() {
+    return "umlp.gui2ts.GUI2TSObjectAssocInit";
+  }
+
+  @Override
+  protected String getStaticObjectGetterTemplate() {
+    return "umlp.gui2ts.GUI2TSStaticObjectGetter";
   }
 
   @Override
   protected String getStaticListInitTemplate() {
     return "umlp.gui2ts.GUI2TSStaticListInit";
+  }
+
+  @Override
+  protected String getBuilderInitTemplate() {
+    return "umlp.gui2ts.GUI2TSBuilderInit";
   }
 
   @Override

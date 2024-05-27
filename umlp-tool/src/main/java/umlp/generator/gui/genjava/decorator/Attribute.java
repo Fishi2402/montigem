@@ -7,6 +7,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public class Attribute {
   protected final ASTCDAttribute cdAttr;
@@ -17,7 +18,8 @@ public class Attribute {
 
   public Attribute(
       ASTCDAttribute cdAttr, ASTMCType baseType,
-      List<VariableSymbol> iterateArgs, Collection<String> importList) {
+      List<VariableSymbol> iterateArgs, Collection<String> importList
+  ) {
     this.cdAttr = cdAttr;
     this.iterateArgs = iterateArgs;
     this.baseType = baseType;

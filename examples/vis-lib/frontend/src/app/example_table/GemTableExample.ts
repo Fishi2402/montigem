@@ -12,11 +12,4 @@ import { TableColumn } from '@umlp/table';
   styles: config.styles,
 })
 export class GemTableExample extends GemTableExampleComponent {
-  override init(): void {
-    /*
-    this.gemTable0Columns = [];
-    this.gemTable0Columns.push(new TableColumn("_name", "Name"));
-    this.gemTable0Columns.push(new TableColumn("_birthday", "Birthday"));
-    /**/
-  }
 }

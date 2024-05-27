@@ -315,7 +315,7 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
     ASTMCType baseType = createTypeAndAddImports(ste, importSet);
     ASTMCType type = baseType;
 
-    // given @iterate(Person p ...) { @itearte(Address a ...) { } }
+    // given @iterate(Person p ...) { @iterate(Address a ...) { } }
     // build: Map<Person, Map<Address, SomeType>>
     if (!iterateArgs.isEmpty()) {
       // SomeType

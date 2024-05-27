@@ -20,6 +20,11 @@ node {
 genGUI {
   domainModels = ["Domain"]
   guiCreateModels = ["person.CreatePerson"]
+
+  /*
+  debug = true
+  outputs.upToDateWhen { false }
+  /**/
 }
 
 translateJava2TSDomain {

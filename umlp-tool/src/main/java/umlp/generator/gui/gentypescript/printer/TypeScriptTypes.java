@@ -9,6 +9,7 @@ import umlp.generator.gui.GUIGeneratorUtil;
 import java.util.Optional;
 
 public enum TypeScriptTypes {
+  OBJECT("Object", "any", "java.lang.Object"),
   STRING("String", "string"),
   EVENT(BuiltInTypes.EVENT.getName(), "Event",
       BuiltInTypes.EVENT.getQName(), "@umlp/common"),
@@ -18,6 +19,7 @@ public enum TypeScriptTypes {
   ROUTER("RouterService", "Router",
       "RouterService", "@angular/router"),
   LIST("List", "Array", "java.util.List"),
+  ARRAY_LIST("ArrayList", "Array", "java.util.ArrayList"),
   COLLECTION("Collection", "Array", "java.util.Collection"),
   MAP("Map", "Map", "java.util.Map"),
   HASH_MAP("HashMap", "Map", "java.util.HashMap"),
@@ -39,7 +41,7 @@ public enum TypeScriptTypes {
   RUNNABLE("Runnable", "() => void", "java.lang.Runnable"),
   CONSUMER("Consumer", "(arg: any) => void", "java.util.function.Consumer"),
   DIRECTIVE("Directive", "Directive", "umlp.jsweet.extension.annotation.Directive", "@angular/core"),
-  GEM_LIST("GemList", "GemList", "umlp.backendrte.common.GemList", "@angular/core");
+  GEM_LIST("GemList", "GemList", "umlp.backendrte.common.GemList", "@umlp/common");
 
   private final String tsType;
   private final String mcType;
@@ -115,21 +117,7 @@ public enum TypeScriptTypes {
     return SymTypeRelations.isString(type) || SymTypeRelations.isChar(type);
   }
 
-  // TODO AGe: deprecated, unclean
   public static boolean isNumber(SymTypeExpression type) {
-    if (toTSType(type.print()).equals(INT.getTSType())) {
-      return true;
-    }
-    /*
-    TypeCalculator tc = new TypeCalculator(
-        new FullSynthesizeFromGUIDSL(), new FullDeriveFromGUIDSL()
-    );
-    return tc.isDouble(type)
-        || tc.isInt(type)
-        || tc.isFloat(type)
-        || tc.isLong(type)
-        || tc.isShort(type);
-        /**/
     return SymTypeRelations.isDouble(type)
         || SymTypeRelations.isInt(type)
         || SymTypeRelations.isFloat(type)
