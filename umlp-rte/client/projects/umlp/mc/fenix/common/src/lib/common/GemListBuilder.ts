@@ -115,6 +115,22 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
     }
   }
 
+  public override indexOfId(gemId: number): number {
+    if(this.buildFinished) {
+      return super.indexOfId(gemId)
+    } else {
+      const idxs = [];
+      for(const bElem of this.builderElemStorage) {
+        if(bElem.isPresentID()) {
+          idxs.push(bElem.getID())
+        } else {
+          idxs.push(-1)
+        }
+      }
+      return idxs.indexOf(gemId)
+    }
+  }
+
   public override _internal_set(idx: number, gemID: number): void {
     if (this.buildFinished) {
       super._internal_set(idx, gemID);
