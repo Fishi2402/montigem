@@ -13,9 +13,11 @@ try{
       </#if>
   ${assocsToDefinitionDiagramMap[assoc.getName()]}DAOFactory.getAssoc${assoc.getName()?cap_first}DAO().removeAllEntriesRelatedTo${otherSide?cap_first}(gemId);
   </#list>
-  delete${typeName}.clearParameters();
-  delete${typeName}.setLong(1, gemId);
-  delete${typeName}.executeUpdate();
+  synchronized(delete${typeName}){
+    delete${typeName}.clearParameters();
+    delete${typeName}.setLong(1, gemId);
+    delete${typeName}.executeUpdate();
+  }
 
   }catch (SQLException e){
   throw new RuntimeException(e);
