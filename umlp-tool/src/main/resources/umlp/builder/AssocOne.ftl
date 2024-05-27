@@ -3,4 +3,4 @@ ${tc.signature("name", "type", "builder")}
 ${cd4c.method("public ${builder} ${name}(${type} ${name})")}
 
 this._${name} = new Gem<${type}>(${name});
-return (${builder}) this;
+return this.realBuilder;
