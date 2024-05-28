@@ -39,7 +39,7 @@ public enum TypeScriptTypes {
   FLOAT("float", "number"),
   FLOAT_BOXED("Float", "number", "java.lang.Float"),
   RUNNABLE("Runnable", "() => void", "java.lang.Runnable"),
-  CONSUMER("Consumer", "(arg: any) => void", "java.util.function.Consumer"),
+  CONSUMER("Consumer", "Event", "java.util.function.Consumer", "@umlp/common"),
   DIRECTIVE("Directive", "Directive", "umlp.jsweet.extension.annotation.Directive", "@angular/core"),
   GEM_LIST("GemList", "GemList", "umlp.backendrte.common.GemList", "@umlp/common");
 
