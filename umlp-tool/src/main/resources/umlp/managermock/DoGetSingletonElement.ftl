@@ -9,5 +9,8 @@ if (${name?uncap_first}Instance.isEmpty()) {
   if (${name?uncap_first}Instance.isEmpty()) {
     throw new RuntimeException("Unable to create a new instance for ${name} - override its builder");
   }
+  if (!${name?uncap_first}Instance.get().containsObserver(the${name}CommandObserver)) {
+    ${name?uncap_first}Instance.get().addObserver(the${name}CommandObserver);
+  }
 };
 return ${name?uncap_first}Instance.get();
