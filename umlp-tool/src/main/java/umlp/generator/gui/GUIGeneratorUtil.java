@@ -790,6 +790,10 @@ public class GUIGeneratorUtil {
     return StringTransformations.capitalize(compName.toLowerCase()) + "Module";
   }
 
+  public String getRoutingId(ASTGUIParam p) {
+    return p.getName() + "RoutingId";
+  }
+
   public List<String> getRoutingIds(ASTGUICompilationUnit decoratedAst) {
     List<String> ids = new ArrayList<>();
     if (!isCreateModel(decoratedAst.getComponentQName())) {
@@ -798,7 +802,7 @@ public class GUIGeneratorUtil {
           if (!GenService.isList(p.getSymbol().getType()) && isDomainType(p) && !isDerived(p)
               && !TagLookUp.isSingleton(p.getSymbol().getType().getTypeInfo())
               && !TagLookUp.isDerived(p.getSymbol().getType().getTypeInfo())) {
-            ids.add(p.getName() + "RoutingId");
+            ids.add(getRoutingId(p));
           }
         }
         else {

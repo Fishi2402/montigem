@@ -12,19 +12,29 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIParam;
+import de.monticore.guidsl._symboltable.BuiltInTypes;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
 import de.monticore.io.paths.MCPath;
+import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
+import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericTypeBuilder;
 import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
+import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.gui.GUI2ClassDecorator;
 import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentTemplates;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -109,7 +119,7 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
         innerType = importAndPrintType(innerSTE.get());
       }
       ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
-          CDModifier.PROTECTED.build(), "EventEmitter<" + innerType + ">", node.getName());
+          CDModifier.PUBLIC.build(), "EventEmitter<" + innerType + ">", node.getName());
       clazz.addCDMember(attr);
       extraImports.add("import { Output } from '@angular/core';");
       glex.replaceTemplate(GUI2ComponentTemplates.ANNOTATIONS, attr,
@@ -146,7 +156,7 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
       */
       // add attr
       ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
-          CDModifier.PROTECTED.build(), mcType, name);
+          CDModifier.PUBLIC.build(), mcType, name);
       clazz.addCDMember(attr);
 
       // attr overrides top class attr
@@ -236,7 +246,8 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
 
   @Override
   protected void addInit() {
-    getCD4C().addMethod(clazz, "umlp.gui2ts.GUI2AngularInit");
+    List<String> ids = util.getRoutingIds(gui);
+    getCD4C().addMethod(clazz, "umlp.gui2ts.GUI2AngularInit", ids);
   }
 
   protected ASTCDMethodSignature addDestroy() {
@@ -256,6 +267,84 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
     extraImports.add("import { Component } from '@angular/core';");
     glex.replaceTemplate("umlp.gui2ts.TSEmptyImports", clazz,
         new StringHookPoint(String.join("\n", extraImports)));
+  }
+
+  @Override
+  protected ASTMCType createTypeAndAddImports(SymTypeExpression ste) {
+    if (!ste.hasTypeInfo()) {
+      Log.error("0x0001B Encountered a SymTypeExpression disconnected from a type symbol: "
+          + ste.printFullName());
+    }
+    if (ste.isObjectType()) {
+      // given in GUI:
+      // import hardy.Domain.Person;
+      // the resolved type is `hardy.Person`
+      // but the CD Generator produces `hardy.domain.Person`, so calculate that instead
+      IBasicSymbolsScope scope = ste.getTypeInfo().getEnclosingScope();
+      if (scope.isPresentName()
+          && util.getMainDomainModelSimpleName().isPresent()
+          && scope.getName().equals(util.getMainDomainModelSimpleName().get())) {
+
+        String insert = StringTransformations.uncapitalize(scope.getName()) + ".";
+        String type = ste.asObjectType().print();
+
+        int lastIndex = type.lastIndexOf('.');
+
+        if (lastIndex != -1) {
+          StringBuilder sb = new StringBuilder(type);
+          sb.insert(lastIndex + 1, insert);
+          type = sb.toString();
+        }
+        else {
+          type = insert + type;
+        }
+        getCD4C().addImport(clazz, type);
+      }
+      else {
+        getCD4C().addImport(clazz, ste.printFullName());
+      }
+    }
+    else if (ste.isGenericType()) {
+      SymTypeOfGenerics stog = ste.asGenericType();
+      String qType = stog.getTypeConstructorFullName();
+      String type = stog.getTypeInfo().getName();
+      if (qType.equals(BuiltInTypes.EVENT.getQName())) {
+        qType = TypeScriptTypes.CONSUMER.getJavaQName().get();
+        type = TypeScriptTypes.CONSUMER.getMCType();
+      }
+
+      // adaptation start
+      // JSweet uses IUMLPList instead of Array
+      if (UMLPGeneratorConfig.getInstance().isUseJsweet()
+          && qType.equals(BuiltInTypes.LIST.getQName())) {
+        type = "IUMLPList";
+        extraImports.add("import { IUMLPList } from '@umlp/commonj2ts';");
+      }
+      else {
+        getCD4C().addImport(clazz, qType);
+      }
+      // adaptation end
+
+      ASTMCBasicGenericTypeBuilder genTypeBuilder = MCFullGenericTypesMill.mCBasicGenericTypeBuilder()
+          .setNamesList(new ArrayList<>(Arrays.asList(type)))
+          .setMCTypeArgumentsList(new ArrayList<>());
+      for (SymTypeExpression steArg : stog.getArgumentList()) {
+        genTypeBuilder.addMCTypeArgument(
+            MCSimpleGenericTypesMill.mCCustomTypeArgumentBuilder()
+                .setMCType(createTypeAndAddImports(steArg))
+                .build());
+      }
+      return genTypeBuilder.build();
+    }
+    else if (ste.isPrimitive()) {
+      return MCTypeFacade.getInstance().createQualifiedType(
+          ste.asPrimitive().getBoxedPrimitiveName());
+    }
+    else if (!(ste.isNullType() || ste.isVoidType() || ste.isWildcard() || ste.isTypeVariable())) {
+      Log.error("0x00010 Encountered unsupported type in a parameter: '"
+          + ste.printFullName() + "'");
+    }
+    return MCTypeFacade.getInstance().createQualifiedType(ste.printFullName());
   }
 
 }

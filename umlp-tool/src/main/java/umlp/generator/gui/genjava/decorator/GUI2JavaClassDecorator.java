@@ -200,8 +200,9 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       // add builder init
       Optional<InitDependency> dep = InitDependencyTree.getInstance().getDependency(node);
       if (dep.isPresent()) {
+        String id = util.getRoutingId(node);
         dep.get().setInitMethod(new MethodTemplate(
-            getInitParamBuilderTemplate(), mcType, name, manager, initName
+            getInitDomainParamTemplate(), mcType, name, manager, id, initName
         ));
       }
     }
@@ -798,6 +799,11 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
    * @return class initialization method
    */
   protected void addInit() {
+    for (ASTGUIParam p : gui.getGUIComponentDeclaration().getGUIParamList()) {
+      String id = util.getRoutingId(p);
+      getCD4C().addAttribute(clazz, "public Integer " + id);
+    }
+
     Optional<InitDependency> root = InitDependencyTree.getInstance()
         .getDependency(gui.getGUIComponentDeclaration());
     if (root.isPresent()) {
@@ -1057,8 +1063,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     return "umlp.gui2java.GUI2JavaInitParamSingleton";
   }
 
-  protected String getInitParamBuilderTemplate() {
-    return "umlp.gui2java.GUI2JavaInitParamBuilder";
+  protected String getInitDomainParamTemplate() {
+    return "umlp.gui2java.GUI2JavaInitDomainParam";
   }
 
   protected String getInitCallTemplate() {

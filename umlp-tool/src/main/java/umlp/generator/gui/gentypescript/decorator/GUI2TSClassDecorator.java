@@ -148,8 +148,8 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
   }
 
   @Override
-  protected String getInitParamBuilderTemplate() {
-    return "umlp.gui2ts.GUI2TSInitParamBuilder";
+  protected String getInitDomainParamTemplate() {
+    return "umlp.gui2ts.GUI2TSInitDomainParam";
   }
 
   @Override

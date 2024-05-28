@@ -9,6 +9,7 @@ import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
+import de.monticore.guidsl._symboltable.BuiltInTypes;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
@@ -23,6 +24,7 @@ import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.DiagramObserverDecorator;
 import umlp.generator.domain.decorator.ManagerDecorator;
+import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 import umlp.generator.util.PathUtil;
 
 import java.util.ArrayList;
@@ -102,59 +104,6 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
    */
   protected String importAndPrintType(SymTypeExpression ste) {
     return createTypeAndAddImports(ste).printType();
-    /*
-    if (ste.isObjectType()) {
-      // given in GUI:
-      // import hardy.Domain.Person;
-      // the resolved type is `hardy.Person`
-      // but the CD Generator produces `hardy.domain.Person`, so calculate that instead
-      IBasicSymbolsScope scope = ste.getTypeInfo().getEnclosingScope();
-      if (scope.isPresentName()
-          && util.getMainDomainModelSimpleName().isPresent()
-          && scope.getName().equals(util.getMainDomainModelSimpleName().get())) {
-
-        String domain = StringTransformations.uncapitalize(scope.getName());
-        String qType = ste.asObjectType().printFullName();
-        getCD4C().addImport(clazz, insertDomain2QType(qType, domain));
-      }
-      else {
-        getCD4C().addImport(clazz, ste.printFullName());
-      }
-    }
-    else if (ste.isGenericType()) {
-      SymTypeOfGenerics stog = ste.asGenericType();
-      // a List<Person> must be printed as GemList<Person>
-      // a List<String> as a List<String>
-      // a List<MyDomainEnum> as a List<MyDomainEnum>
-      if (util.getDomainListInnerType(ste).isPresent()
-          && !util.isEnumType(util.getDomainListInnerType(ste).get())) {
-        getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("GemList"));
-        StringBuilder sb = new StringBuilder("GemList");
-        sb.append("<");
-        Iterator<SymTypeExpression> steArgIter = stog.getArgumentList().iterator();
-        while (steArgIter.hasNext()) {
-          sb.append(importAndPrintType(steArgIter.next()));
-          if (steArgIter.hasNext()) {
-            sb.append(",");
-          }
-        }
-        sb.append(">");
-        return sb.toString();
-      }
-      getCD4C().addImport(clazz, stog.getTypeConstructorFullName());
-      for (SymTypeExpression steArg : stog.getArgumentList()) {
-        importAndPrintType(steArg);
-      }
-    }
-    else if (ste.isPrimitive()) {
-      return ste.asPrimitive().getBoxedPrimitiveName();
-    }
-    else if (!(ste.isNullType() || ste.isVoidType() || ste.isWildcard() || ste.isTypeVariable())) {
-      Log.error("0x00010 Encountered unsupported type in " + gui.getComponentQName()
-          + ": parameter type '" + ste.printFullName() + "'");
-    }
-    return ste.print();
-    /**/
   }
 
   protected ASTMCType createTypeAndAddImports(SymTypeExpression ste) {
@@ -194,8 +143,12 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
     else if (ste.isGenericType()) {
       SymTypeOfGenerics stog = ste.asGenericType();
       String qType = stog.getTypeConstructorFullName();
-      getCD4C().addImport(clazz, qType);
       String type = stog.getTypeInfo().getName();
+      if (qType.equals(BuiltInTypes.EVENT.getQName())) {
+        qType = TypeScriptTypes.CONSUMER.getJavaQName().get();
+        type = TypeScriptTypes.CONSUMER.getMCType();
+      }
+      getCD4C().addImport(clazz, qType);
 
       ASTMCBasicGenericTypeBuilder genTypeBuilder = MCFullGenericTypesMill.mCBasicGenericTypeBuilder()
           .setNamesList(new ArrayList<>(Arrays.asList(type)))
