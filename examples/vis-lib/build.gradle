@@ -18,9 +18,9 @@ test {
   useJUnitPlatform()
 }
 
-project('frontend') {
-  sourceSets.main.java.srcDirs += ['../backend/src/main/java', '../backend/build/umlp/backend']
-}
+//project('frontend') {
+//  sourceSets.main.java.srcDirs += ['../backend/src/main/java', '../backend/build/umlp/backend']
+//}
 
 //project('frontend').translateTypeScript.dependsOn(project('backend').generateUmlpBackend)
 //project('frontend').getTasksByName('translateJava2TSDomain', true).forEach {a -> {

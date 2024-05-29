@@ -6,6 +6,7 @@ import gradle.specific.UMLPFrontendCIImageTask;
 import gradle.specific.UMLPFrontendLocalImageTask;
 import gradle.specific.UMLPFrontendTask;
 import gradle.specific.UMLPGuiGenTask;
+import gradle.specific.UMLPJava2TypeScriptAdditionalsTask;
 import gradle.specific.UMLPJava2TypeScriptConfigTask;
 import gradle.specific.UMLPJava2TypeScriptTask;
 import gradle.specific.UMLPSymbolsTask;
@@ -43,6 +44,7 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
   static final String UMLP_FRONTEND_DOMAIN_TASK_NAME = "genDomain";
   static final String UMLP_FRONTEND_DOMAIN_J2TS_TASK_NAME = "translateJava2TSDomain";
   static final String UMLP_FRONTEND_DOMAIN_J2TS_CONFIG_TASK_NAME = "genJava2TSConfig";
+  static final String UMLP_FRONTEND_DOMAIN_J2TS_ADDITIONALS_TASK_NAME = "genJava2TSAdditionals";
   static final String UMLP_FRONTEND_GUI_TASK_NAME = "genGUI";
   static final String UMLP_FRONTEND_GUI_J2TS_TASK_NAME = "translateJava2TSGUI";
   static final String UMLP_FRONTEND_BUILD_IMAGE_LOCAL = "buildImageLocal";
@@ -79,6 +81,8 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
 
     TaskProvider<UMLPGuiGenTask> frontendGuiTask = createFrontendGuiTask(project, j2ts, local);
     TaskProvider<UMLPJava2TypeScriptTask> frontendGUIJ2TSTask = createFrontendGUIJ2TSTask(project);
+    TaskProvider<UMLPJava2TypeScriptAdditionalsTask> java2TypeScriptAdditionals =
+        createFrontendJ2TSAdditionalsTask(project);
 
     // Sync Output of UMLP-Task to the correct directory. This done because "npm serve" cannot handle the intermediate state while the UMLPTasks are running
     // and Hot-Reload aborts
@@ -87,15 +91,11 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
 
     createInterTaskDependencies(project, frontendSetupTask, domainSymbolGenTask, frontendDomainTask,
         java2TypeScriptConfigTaskTask, syncJsweetConfigTask, frontendDomainJ2TSTask,
-        frontendGuiTask, frontendGUIJ2TSTask,
-//        java2TypeScriptAdditionals,
-        syncDomainTask,
+        frontendGuiTask, frontendGUIJ2TSTask, java2TypeScriptAdditionals,syncDomainTask,
         syncGuiTask, j2ts, local);
     disableUnusedTasks(project, frontendSetupTask, domainSymbolGenTask, frontendDomainTask,
         java2TypeScriptConfigTaskTask, syncJsweetConfigTask, frontendDomainJ2TSTask,
-        frontendGuiTask, frontendGUIJ2TSTask,
-//        java2TypeScriptAdditionals,
-        syncDomainTask,
+        frontendGuiTask, frontendGUIJ2TSTask, java2TypeScriptAdditionals, syncDomainTask,
         syncGuiTask, j2ts);
 
 
@@ -278,6 +278,24 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
         });
   }
 
+  private TaskProvider<UMLPJava2TypeScriptAdditionalsTask> createFrontendJ2TSAdditionalsTask(
+      Project project) {
+    TaskProvider<UMLPJava2TypeScriptAdditionalsTask> j2tsTask = project.getTasks()
+        .register(UMLP_FRONTEND_DOMAIN_J2TS_ADDITIONALS_TASK_NAME, UMLPJava2TypeScriptAdditionalsTask.class, umlpTask -> {
+          umlpTask.setGroup(UMLP_GROUP_NAME);
+          umlpTask.getInput().from(getModelsPath(project));
+          umlpTask.getOutputDir().set(getAppGuiJ2TSConfigPath(project).toFile());
+
+          // Always create symbols & tag files
+          umlpTask.getSymbolOutDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols_gui_domain_domain__from_task_frontenddomain").toFile());
+
+          setIfPathExists(x -> umlpTask.getHwcDir().from(x), Path.of(
+              project.getProjectDir().getAbsolutePath(), "src", "app"));
+        });
+
+    return j2tsTask;
+  }
+
   @NotNull
   private static TaskProvider<Sync> createSyncDomainTask(Project project,
       TaskProvider<FrontendSetup> frontendSetupTask) {
@@ -317,6 +335,7 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
       TaskProvider<UMLPJava2TypeScriptTask> frontendDomainJ2TSTask,
       TaskProvider<UMLPGuiGenTask> frontendGuiTask,
       TaskProvider<UMLPJava2TypeScriptTask> frontendGUIJ2TSTask,
+      TaskProvider<UMLPJava2TypeScriptAdditionalsTask> java2TypeScriptAdditionals,
       TaskProvider<Sync> syncDomainTask, TaskProvider<Sync> syncGuiTask, boolean j2ts) {
     if (j2ts) {
       frontendDomainTask.configure(umlpTask -> {
@@ -330,6 +349,9 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
         umlpTask.setEnabled(false);
       });
       frontendGUIJ2TSTask.configure(umlpTask -> {
+        umlpTask.setEnabled(false);
+      });
+      java2TypeScriptAdditionals.configure(umlpTask -> {
         umlpTask.setEnabled(false);
       });
       syncJsweetConfigTask.configure(umlpTask -> {
@@ -346,6 +368,7 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
       TaskProvider<UMLPJava2TypeScriptTask> frontendDomainJ2TSTask,
       TaskProvider<UMLPGuiGenTask> frontendGuiTask,
       TaskProvider<UMLPJava2TypeScriptTask> frontendGUIJ2TSTask,
+      TaskProvider<UMLPJava2TypeScriptAdditionalsTask> java2TypeScriptAdditionals,
       TaskProvider<Sync> syncDomainTask, TaskProvider<Sync> syncGuiTask, boolean j2ts, boolean local) {
     frontendSetupTask.configure(umlpTask -> { });
     domainSymbolGenTask.configure(umlpTask -> {
@@ -381,6 +404,7 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
       umlpTask.dependsOn(frontendGuiTask);
       umlpTask.dependsOn(syncJsweetConfigTask);
     });
+    java2TypeScriptAdditionals.configure(umlpTask -> { });
     syncDomainTask.configure(umlpTask -> {
       if (j2ts) {
         umlpTask.from(frontendDomainJ2TSTask.get().getOutputDir());
@@ -395,6 +419,7 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
       if (j2ts) {
         umlpTask.from(frontendGuiTask.get().getOutputDir());
         umlpTask.from(frontendGUIJ2TSTask.get().getOutputDir());
+        umlpTask.from(java2TypeScriptAdditionals.get().getOutputDir());
         umlpTask.dependsOn(frontendGUIJ2TSTask, frontendSetupTask);
       }
       else {

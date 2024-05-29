@@ -6,6 +6,7 @@ import {
   CommandManager
 } from '@umlp/commonj2ts';
 import {FunctionStructure4FenixManagerClientImpl} from '@src/functionstructure4fenix/FunctionStructure4FenixManagerClientImpl';
+import {FunctionStructure4FenixComponentObserverManager} from '@src/FunctionStructure4FenixComponentObserverManager';
 
 @Component({
   selector: 'app-root',
@@ -21,6 +22,7 @@ export class AppComponent {
       ws_protocol + '://' + document.location.host + '/umlp/api/command'
     ));
     CommandManager.initMe(cmdManager);
+    FunctionStructure4FenixComponentObserverManager.init();
   }
 
 

@@ -1,3 +1,4 @@
+export * from "./ComponentObserverManager";
 export * from "./LogUtil";
 export * from "./StringTransformations";
 export * from "./TestContext";
