@@ -96,16 +96,12 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
 
   /**
    * Transform a GUI type into a Java type and add all necessary imports for its usage. For example,
-   * `List<Person>` is transformed into `GemList<Person>` and imports `umlp.backendrte.GemList`,
-   * `my.domain.Person` are added along the way.
+   * `Event<Person>` is transformed into `Consumer<Person>` and imports
+   * `java.util.function.Consumer`, `my.domain.Person` are added along the way.
    *
    * @param ste GUI type to be processed
    * @return Java type that corresponds to the input GUI type
    */
-  protected String importAndPrintType(SymTypeExpression ste) {
-    return createTypeAndAddImports(ste).printType();
-  }
-
   protected ASTMCType createTypeAndAddImports(SymTypeExpression ste) {
     if (!ste.hasTypeInfo()) {
       Log.error("0x0001B Encountered a SymTypeExpression disconnected from a type symbol: "
@@ -121,23 +117,26 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
           && util.getMainDomainModelSimpleName().isPresent()
           && scope.getName().equals(util.getMainDomainModelSimpleName().get())) {
 
-        String insert = StringTransformations.uncapitalize(scope.getName()) + ".";
+        String insert = scope.getName().toLowerCase() + ".";
+        String qType = ste.asObjectType().printFullName();
         String type = ste.asObjectType().print();
 
         int lastIndex = type.lastIndexOf('.');
 
         if (lastIndex != -1) {
-          StringBuilder sb = new StringBuilder(type);
+          StringBuilder sb = new StringBuilder(qType);
           sb.insert(lastIndex + 1, insert);
-          type = sb.toString();
+          qType = sb.toString();
         }
         else {
-          type = insert + type;
+          qType = insert + qType;
         }
-        getCD4C().addImport(clazz, type);
+        getCD4C().addImport(clazz, qType);
+        return MCTypeFacade.getInstance().createQualifiedType(type);
       }
       else {
         getCD4C().addImport(clazz, ste.printFullName());
+        return MCTypeFacade.getInstance().createQualifiedType(ste.print());
       }
     }
     else if (ste.isGenericType()) {
