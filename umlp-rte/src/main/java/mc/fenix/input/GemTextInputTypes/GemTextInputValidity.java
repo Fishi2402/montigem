@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package mc.fenix.input;
+package mc.fenix.input.GemTextInputTypes;
 
 import java.util.Optional;
 

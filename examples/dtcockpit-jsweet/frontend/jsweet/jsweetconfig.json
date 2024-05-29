@@ -1,7 +1,7 @@
 {
   "adapters": [
     "umlp.jsweet.extension.UMLPJSweetAdapter",
-    "umlp.jsweet.extension.domainAdapters.DTCockpitImportAdapter"
+    "umlp.jsweet.extension.domainAdapters.DtcockpitImportAdapter"
   ],
   "@Replace('this.password = this.password;')": {
     "include": ["**.User_setPassword.init()"]

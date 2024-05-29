@@ -1,4 +1,4 @@
-package mc.fenix.charts;
+package mc.fenix.charts.GemBarChartTypes;
 
 import java.util.List;
 import java.util.Optional;
