@@ -23,13 +23,13 @@ project('frontend') {
 }
 
 //project('frontend').translateTypeScript.dependsOn(project('backend').generateUmlpBackend)
-project('frontend').getTasksByName('translateJava2TSDomain', true).forEach {a -> {
-  project('backend').getTasksByName('jar', true).forEach {b -> {
-    a.dependsOn(b)
-  }}
-}}
-project('frontend').getTasksByName('translateJava2TSGUI', true).forEach {a -> {
-  project('backend').getTasksByName('jar', true).forEach {b -> {
-    a.dependsOn(b)
-  }}
-}}
+//project('frontend').getTasksByName('translateJava2TSDomain', true).forEach {a -> {
+//  project('backend').getTasksByName('jar', true).forEach {b -> {
+//    a.dependsOn(b)
+//  }}
+//}}
+//project('frontend').getTasksByName('translateJava2TSGUI', true).forEach {a -> {
+//  project('backend').getTasksByName('jar', true).forEach {b -> {
+//    a.dependsOn(b)
+//  }}
+//}}

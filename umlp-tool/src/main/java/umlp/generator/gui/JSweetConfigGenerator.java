@@ -35,7 +35,7 @@ public class JSweetConfigGenerator {
     generatorEngine.generateNoA(
         "umlp.jsweetconfig.JSweetDomainImportAdapter",
         importAdapter.toPath(),
-        importAdapter.getName(),
+        importAdapter.getName().substring(0, importAdapter.getName().lastIndexOf(".java")),
         domainName);
   }
 
