@@ -192,6 +192,12 @@ public class BEDecorator extends AbstractDecorator {
     commandResultDeSerDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: CommandResultDeSerDecorator", BEDecorator.class.getName());
 
+    // ALLObserver
+    AllObserverDecorator allObserverDecorator= new AllObserverDecorator(glex);
+    allObserverDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: AllObserverDecorator", BEDecorator.class.getName());
+
+
     if (shell) {
       ShellAPIDecorator shellAPIDecorator = new ShellAPIDecorator(glex);
       shellAPIDecorator.transform(cdAST, decoratedAST);
