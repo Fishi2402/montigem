@@ -7,4 +7,4 @@ this._${name} = new ArrayList(${name});
 <#else>
 this._${name} = ${name};
 </#if>
-return (${builder}) this;
+return this.realBuilder;

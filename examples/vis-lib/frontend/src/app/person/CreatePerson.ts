@@ -20,6 +20,7 @@ export class CreatePerson extends CreatePersonComponent {
     this.getPerson().setAddress1(this.getAddress());
     this.getPerson().setAboutMe("");
     super.createButtonLeftClick();
+    this.newPerson.emit(this.getPerson());
   }
 
   foo() {

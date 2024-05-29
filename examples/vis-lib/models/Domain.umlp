@@ -19,10 +19,15 @@ classdiagram Domain {
     int price;
   }
 
+  class Club {
+    String name;
+  }
 
   association home [1] Person -> (address) Address [0..1];
 
   association friends [*] Person -> (friends) Person [*];
 
   association stocks [*] Person -> (stocks) Stock [*];
+
+  association [*] Club -> (members) Person [*];
 }

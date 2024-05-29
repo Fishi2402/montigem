@@ -2,6 +2,7 @@
 ${tc.signature("name", "assocToManagerMap", "initialAttributes")}
 ${cd4c.constructor("public ${name}Builder(long gemId)")}
 
+this.realBuilder = (${name}Builder) this;
 this.gemId = gemId;
 <#list assocToManagerMap as assoc, manager>
 <#assign assocName=assoc.getSymbol().getOtherSide().getType().print()+"_"+assoc.getName()?cap_first>

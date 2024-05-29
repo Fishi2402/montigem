@@ -3,10 +3,12 @@ ${tc.signature("assocSide")}
 ${cd4c.method("public void removeAllEntriesRelatedTo${assocSide?cap_first}(long gemId)")}
 
   ensureRemoveAllEntriesRelatedTo${assocSide?cap_first}Created();
-  try {
-    removeAllEntriesRelatedTo${assocSide?cap_first}.clearParameters();
-    removeAllEntriesRelatedTo${assocSide?cap_first}.setLong(1, gemId);
-    removeAllEntriesRelatedTo${assocSide?cap_first}.executeUpdate();
-  }catch (SQLException e){
-    throw new RuntimeException(e);
+  synchronized(removeAllEntriesRelatedTo${assocSide?cap_first}){
+    try {
+      removeAllEntriesRelatedTo${assocSide?cap_first}.clearParameters();
+      removeAllEntriesRelatedTo${assocSide?cap_first}.setLong(1, gemId);
+      removeAllEntriesRelatedTo${assocSide?cap_first}.executeUpdate();
+    }catch (SQLException e){
+      throw new RuntimeException(e);
+    }
   }

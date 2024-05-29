@@ -19,7 +19,7 @@ node {
 
 genGUI {
   domainModels = ["Domain"]
-  guiCreateModels = ["person.CreatePerson"]
+  guiCreateModels = ["person.Create", "person.CreatePersonWithFriends","person.CreateClubWithMembers"]
 
   /*
   debug = true

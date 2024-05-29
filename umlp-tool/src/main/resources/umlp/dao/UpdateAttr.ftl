@@ -5,13 +5,15 @@ ${cd4c.method("public void update${attributeName?cap_first}(long gemId, ${attrib
     update${attributeName?cap_first}Statement = DatabaseAccessManager.prepareStatement("UPDATE ${tableName} SET ${dbAttrName} = ? WHERE id = ?");
   }
 //${tableName}
-  try{
-    <#assign statement="update"+attributeName?cap_first+"Statement">
-    ${statement}.clearParameters();
-    ${includeArgs("umlp.dao.Set", statement, 1, dbType, attributeName, false,"")};
-    ${statement}.setLong(2, gemId);
-    ${statement}.executeUpdate();
+  synchronized(update${attributeName?cap_first}Statement){
+    try{
+      <#assign statement="update"+attributeName?cap_first+"Statement">
+      ${statement}.clearParameters();
+      ${includeArgs("umlp.dao.Set", statement, 1, dbType, attributeName, false,"")};
+      ${statement}.setLong(2, gemId);
+      ${statement}.executeUpdate();
 
-  } catch (SQLException e){
-    throw new RuntimeException(e);
+    } catch (SQLException e){
+      throw new RuntimeException(e);
+    }
   }

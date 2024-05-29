@@ -81,6 +81,7 @@ public class BuilderDecorator extends AbstractDecorator {
     // Attributes
     ASTCDAttribute finishedAttr = getCD4C().addAttribute(builderClass, "protected boolean buildFinished = false");
     ASTCDAttribute internalAttr = getCD4C().addAttribute(builderClass, "protected boolean INTERNAL_deser_mode = false");
+    getCD4C().addAttribute(builderClass, String.format("protected %s realBuilder;", className));
 
     // Methods
     MethodDecorator methodDecorator = new MethodDecorator(glex);

@@ -1,0 +1,25 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package person;
+
+import Domain.Person;
+
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.basic.GemText;
+
+import person.Row;
+import person.CreatePerson;
+import person.PieChart;
+
+page FriendsOf(Person person) {
+  @GemColumn(rowGap = "10px", width = "50%", components = [
+    @CreatePerson(newPerson = updateFriendsList()),
+    @iterate(Person p : person.friends) {
+        @Row(
+          col1 = @GemText(value = p.birthday),
+          col2 = @GemText(value = p.name)
+        );
+    }
+  ]);
+}

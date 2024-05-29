@@ -1,0 +1,30 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package person;
+
+import Domain.Person;
+import Domain.Club;
+
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
+import mc.fenix.input.GemTextInput;
+import mc.fenix.input.GemCheckBoxInput;
+
+import person.Row;
+import person.CreatePerson;
+
+page CreateClubWithMembers(Club club) {
+  @GemRow(component = clubname@GemTextInput(labelText = "Clubname", entry = club.name));
+  @GemButton(label="Add Alice as Builder", leftClick = createAlice());
+  @CreatePerson(newPerson = updateClubMembers());
+  @iterate(Person friend : club.members) {
+    @Row(
+      col1 = @GemText(value = friend.birthday),
+      col2 = @GemText(value = friend.name),
+      col3 = @GemText(value = friend.address.street + " " + friend.address.house)
+    );
+  };
+  @GemButton(label = "Create Club With Members", leftClick = createClub(club));
+}

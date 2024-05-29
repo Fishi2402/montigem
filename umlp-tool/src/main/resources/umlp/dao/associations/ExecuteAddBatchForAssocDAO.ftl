@@ -2,28 +2,30 @@
 ${tc.signature("association")}
 ${cd4c.method("public Boolean executeBatchAdd${association.getName()?cap_first}()")}
   ensureAdd${association.getName()?cap_first}Created();
-  try {
-    DatabaseAccessManager.getConnection().setAutoCommit(false);
-    add${association.getName()?cap_first}.executeBatch();
-    DatabaseAccessManager.getConnection().commit();
-    add${association.getName()?cap_first}.clearBatch();
-    return true;
-
-  } catch (SQLException e){
+  synchronized(add${association.getName()?cap_first}){
     try {
-      DatabaseAccessManager.getConnection().rollback();
-    } catch (SQLException ex) {
-      ex.printStackTrace();
+      DatabaseAccessManager.getConnection().setAutoCommit(false);
+      add${association.getName()?cap_first}.executeBatch();
+      DatabaseAccessManager.getConnection().commit();
+      add${association.getName()?cap_first}.clearBatch();
+      return true;
+
+    } catch (SQLException e){
+      try {
+        DatabaseAccessManager.getConnection().rollback();
+      } catch (SQLException ex) {
+        ex.printStackTrace();
+      }
+    e.printStackTrace();
+    return false;
     }
-  e.printStackTrace();
-  return false;
-  }
 
-  finally{
-    try {
-      DatabaseAccessManager.getConnection().setAutoCommit(true);
-    } catch (SQLException e) {
-      e.printStackTrace();
+    finally{
+      try {
+        DatabaseAccessManager.getConnection().setAutoCommit(true);
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
     }
   }
 

@@ -4,6 +4,7 @@ import { GemBuildable } from "./GemBuildable";
 import { GemIdentifiable } from "./GemIdentifiable";
 import { GemList } from "./GemList";
 import { IDOrBuilder } from "./IDOrBuilder";
+import {LoadingState} from "./LoadingState";
 
 // RTE-P
 
@@ -25,6 +26,32 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
     }
   }
 
+  public override contains(gemID: number): boolean {
+    if(this.buildFinished) {
+      return super.contains(gemID)
+    } else {
+      return this.builderElemStorage.map(b => b.getID()).includes(gemID);
+    }
+  }
+
+  public override loadAll(): Promise<Array<E>> {
+    if(this.buildFinished) {
+      return super.loadAll()
+    } else {
+      return Promise.all(this.loadObjects(this.builderElemStorage.filter(b => !b.isPresentBuilder()).map(b => b.getID()))).then(v => {
+        let res = [];
+        this.values = [];
+        for (let val of v) {
+          if (val.getLoadingState() === LoadingState.LOADED) {
+            res.push(val.get());
+            this.values.push(val.get());
+          }
+        }
+        return res;
+      })
+    }
+  }
+
   // TODO AGe: unclean
   public override build(): any {
     if (this.buildFinished) {
@@ -38,7 +65,7 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
 
     this.buildFinished = true;
     // TODO AGe: when to load?
-    this.loadAll();
+    super.loadAll();
 
     // Von hier an werden alle Element vom FlensburgManager geladen
     this.builderElemStorage = [];
@@ -72,6 +99,14 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
     }
   }
 
+  public override push(elem: E): void {
+    if(this.buildFinished) {
+      super.push(elem)
+    } else {
+      this.add(this.size(), elem)
+    }
+  }
+
   public override add(idx: number, elem: E): void {
     if (this.buildFinished) {
       super.add(idx, elem);
@@ -80,11 +115,28 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
     }
   }
 
+  public override indexOfId(gemId: number): number {
+    if(this.buildFinished) {
+      return super.indexOfId(gemId)
+    } else {
+      const idxs = [];
+      for(const bElem of this.builderElemStorage) {
+        if(bElem.isPresentID()) {
+          idxs.push(bElem.getID())
+        } else {
+          idxs.push(-1)
+        }
+      }
+      return idxs.indexOf(gemId)
+    }
+  }
+
   public override _internal_set(idx: number, gemID: number): void {
     if (this.buildFinished) {
       super._internal_set(idx, gemID);
     } else {
       this.builderElemStorage[idx] = new IDOrBuilder<E>().IDOrBuilder1(gemID);
+      this.loadAll()
     }
   }
 
@@ -98,6 +150,7 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
         newElems.push(eidOrBuilder);
       }
       this.builderElemStorage.splice(idx, 0, ...newElems);
+      this.loadAll()
     }
   }
 
@@ -113,6 +166,7 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
       for (let idx of idxsReversed) {
         this.builderElemStorage.splice(idx, 1);
       }
+      this.loadAll()
     }
   }
 

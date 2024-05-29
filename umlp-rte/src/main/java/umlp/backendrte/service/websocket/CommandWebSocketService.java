@@ -38,7 +38,9 @@ public class CommandWebSocketService extends TextWebSocketHandler implements Web
       subscriberId = CommandManager.register(participant);
       clientIds.put(session.getId(), subscriberId);
     }
-    session.sendMessage(new TextMessage(Long.toString(subscriberId)));
+    synchronized (session) {
+      session.sendMessage(new TextMessage(Long.toString(subscriberId)));
+    }
   }
 
   @Override
@@ -81,6 +83,7 @@ public class CommandWebSocketService extends TextWebSocketHandler implements Web
     System.out.println("Responding: " + returnResult);
     TextMessage msg = new TextMessage(returnResult);
     synchronized (session) {
+      System.out.println(session);
       session.sendMessage(msg);
     }
   }
