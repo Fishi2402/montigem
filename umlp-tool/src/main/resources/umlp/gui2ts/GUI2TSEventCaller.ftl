@@ -1,7 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("name", "callerExpression", "args")}
-<#assign genHelper = glex.getGlobalVar("genHelper")>
-<#assign argsString = genHelper.variableSymbols2ArgsString(args)>
+${tc.signature("name", "callerExpression", "params")}
+<#assign paramString = genHelper.params2String(params)>
 
-${cd4c.method("public void ${name}(${argsString})")}
+${cd4c.method("public void ${name}(${paramString})")}
 ${callerExpression}(null);

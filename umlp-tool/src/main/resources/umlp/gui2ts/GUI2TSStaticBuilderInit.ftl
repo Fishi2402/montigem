@@ -1,12 +1,9 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("mcType", "name", "manager", "keys", "initList")}
-<#assign genHelper = glex.getGlobalVar("genHelper")>
-<#assign cdPrinter = glex.getGlobalVar("cdPrinter")>
-<#assign argsString = genHelper.variableSymbols2ArgsString(keys)>
-<#assign type = cdPrinter.printType(mcType)>
+${tc.signature("type", "name", "manager", "keys", "initList")}
+<#assign paramString = genHelper.params2String(keys)>
 <#assign tmpVar = "tmp">
 
-${cd4c.method("public void init${name?cap_first}(${argsString})")}
+${cd4c.method("public void init${name?cap_first}(${paramString})")}
 if (this.${name} == null) {
   this.${name} = new Map();
 }

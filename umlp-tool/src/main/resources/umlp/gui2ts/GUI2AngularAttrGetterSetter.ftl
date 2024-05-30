@@ -1,6 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("mcType", "name", "getter", "setter")}
-<#assign cdPrinter = glex.getGlobalVar("cdPrinter")>
 <#assign arg = "val">
 <#assign type = cdPrinter.printType(mcType)>
 

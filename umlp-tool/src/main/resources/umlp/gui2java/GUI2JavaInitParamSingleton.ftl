@@ -1,8 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("mcType", "name", "manager", "init", "initList")}
-<#assign genHelper = glex.getGlobalVar("genHelper")>
-<#assign cdPrinter = glex.getGlobalVar("cdPrinter")>
-<#assign type = cdPrinter.printType(mcType)>
+${tc.signature("type", "name", "manager", "init", "initList")}
 
 ${cd4c.method("protected void ${init}()")}
 this.${name} = ${manager}.get${type}();

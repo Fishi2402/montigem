@@ -1,6 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#-- ASTCDAttribute ast -->
-<#assign cdPrinter = glex.getGlobalVar("cdPrinter")>
 
 ${tc.include("umlp.gui2ts.TSAnnotations")}
 ${cdPrinter.printSimpleModifier(ast.getModifier())} override ${ast.getName()}: ${cdPrinter.printType(ast.getMCType())}

@@ -3,6 +3,8 @@ package umlp.generator.gui.genjava.decorator;
 import de.monticore.ast.ASTNode;
 import de.monticore.cd.facade.CDAttributeFacade;
 import de.monticore.cd.facade.CDModifier;
+import de.monticore.cd.facade.CDParameterFacade;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
@@ -37,9 +39,12 @@ import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericTypeBuilder;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
+import de.se_rwth.commons.Joiners;
+import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIGeneratorUtil;
+import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -309,30 +314,34 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
     if (insideIterateControl) {
       scope = scope.getEnclosingScope();
     }
-    List<VariableSymbol> iterateArgs = util.findIterationItemSymbols(scope);
-
     Set<String> importSet = new HashSet<>();
+    List<ASTCDParameter> params = new ArrayList<>();
+    for (VariableSymbol vs : util.findIterationItemSymbols(scope)) {
+      ASTMCType paramType = createTypeAndAddImports(vs.getType(), importSet);
+      params.add(CDParameterFacade.getInstance().createParameter(paramType, vs.getName()));
+    }
+
     ASTMCType baseType = createTypeAndAddImports(ste, importSet);
     ASTMCType type = baseType;
 
     // given @iterate(Person p ...) { @iterate(Address a ...) { } }
     // build: Map<Person, Map<Address, SomeType>>
-    if (!iterateArgs.isEmpty()) {
+    if (!params.isEmpty()) {
       // SomeType
       ASTMCCustomTypeArgument typeArgument = MCSimpleGenericTypesMill.mCCustomTypeArgumentBuilder()
           .setMCType(type)
           .build();
       // first iteration -> second iteration:
       // Map<Address, SomeType> -> Map<Person, Map<Address, SomeType>>
-      for (int i = iterateArgs.size() - 1; i >= 0; --i) {
-        VariableSymbol vs = iterateArgs.get(i);
+      for (int i = params.size() - 1; i >= 0; --i) {
+        ASTCDParameter param = params.get(i);
         ASTMCBasicGenericType genType = MCFullGenericTypesMill.mCBasicGenericTypeBuilder()
             .setNamesList(new ArrayList<>(List.of("Map")))
             .setMCTypeArgumentsList(new ArrayList<>(List.of(
                 MCSimpleGenericTypesMill.mCCustomTypeArgumentBuilder()
                     .setMCType(MCTypeFacade.getInstance()
                         // Address -> Person
-                        .createQualifiedType(vs.getType().print())).build(),
+                        .createQualifiedType(param.getMCType().printType())).build(),
                 // SomeType -> Map<Address, SomeType>
                 typeArgument
             )))
@@ -352,7 +361,7 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
 
     ASTCDAttribute attr = CDAttributeFacade.getInstance()
         .createAttribute(CDModifier.PROTECTED.build(), type, name);
-    return new Attribute(attr, baseType, iterateArgs, importSet);
+    return new Attribute(attr, baseType, params, importSet);
   }
 
   protected void recordTypes(ASTGUIList node, SymTypeExpression ste) {
@@ -371,6 +380,8 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
     }
   }
 
+  // TODO AGe: should be removed after introducing block scopes in GUI DSL
+  @Deprecated
   protected ASTMCType createTypeAndAddImports(SymTypeExpression ste, Set<String> importSet) {
     if (!ste.hasTypeInfo()) {
       Log.error("0x0001B Encountered a SymTypeExpression disconnected from a type symbol: "
@@ -386,30 +397,32 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
           && util.getMainDomainModelSimpleName().isPresent()
           && scope.getName().equals(util.getMainDomainModelSimpleName().get())) {
 
-        String insert = StringTransformations.uncapitalize(scope.getName()) + ".";
+        String qType = ste.asObjectType().printFullName();
         String type = ste.asObjectType().print();
 
-        int lastIndex = type.lastIndexOf('.');
-
-        if (lastIndex != -1) {
-          StringBuilder sb = new StringBuilder(type);
-          sb.insert(lastIndex + 1, insert);
-          type = sb.toString();
+        List<String> parts = new ArrayList<>(Splitters.DOT.splitToList(qType));
+        if (parts.size() > 1) {
+          String domainPackage = parts.get(parts.size() - 2).toLowerCase();
+          parts.set(parts.size() - 2, domainPackage);
+          qType = Joiners.DOT.join(parts);
         }
-        else {
-          type = insert + type;
-        }
-        importSet.add(type);
+        importSet.add(qType);
+        return MCTypeFacade.getInstance().createQualifiedType(type);
       }
       else {
         importSet.add(ste.printFullName());
+        return MCTypeFacade.getInstance().createQualifiedType(ste.print());
       }
     }
     else if (ste.isGenericType()) {
       SymTypeOfGenerics stog = ste.asGenericType();
       String qType = stog.getTypeConstructorFullName();
-      importSet.add(qType);
       String type = stog.getTypeInfo().getName();
+      if (qType.equals(BuiltInTypes.EVENT.getQName())) {
+        qType = TypeScriptTypes.CONSUMER.getJavaQName().get();
+        type = TypeScriptTypes.CONSUMER.getMCType();
+      }
+      importSet.add(qType);
 
       ASTMCBasicGenericTypeBuilder genTypeBuilder = MCFullGenericTypesMill.mCBasicGenericTypeBuilder()
           .setNamesList(new ArrayList<>(Arrays.asList(type)))

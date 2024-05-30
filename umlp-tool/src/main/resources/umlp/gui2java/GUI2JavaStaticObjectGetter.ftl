@@ -1,9 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("type", "name", "keys")}
-<#assign genHelper = glex.getGlobalVar("genHelper")>
-<#assign argsString = genHelper.variableSymbols2ArgsString(keys)>
+<#assign paramString = genHelper.params2String(keys)>
 
-${cd4c.method("public ${type} get${name?cap_first}(${argsString})")}
+${cd4c.method("public ${type} get${name?cap_first}(${paramString})")}
 if (this.${name} == null
   <#list keys as key>
     <#assign i = key?index - 1>

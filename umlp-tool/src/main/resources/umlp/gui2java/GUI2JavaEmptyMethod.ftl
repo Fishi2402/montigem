@@ -1,7 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("type", "name", "argTypes")}
-<#assign genHelper = glex.getGlobalVar("genHelper")>
-<#assign argsString = genHelper.types2ArgsString(argTypes)>
+${tc.signature("type", "name", "params")}
+<#assign paramString = genHelper.params2String(params)>
 
-${cd4c.method("public ${type} ${name}(${argsString})")}
+${cd4c.method("public ${type} ${name}(${paramString})")}
 return null;

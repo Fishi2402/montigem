@@ -18,6 +18,8 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericTypeBuilder;
+import de.se_rwth.commons.Joiners;
+import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
@@ -30,6 +32,7 @@ import umlp.generator.util.PathUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 public abstract class GUI2ClassDecorator extends AbstractDecorator {
@@ -94,6 +97,10 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
   protected void addInit() {
   }
 
+  protected String importAndPrintType(SymTypeExpression ste) {
+    return createTypeAndAddImports(ste).printType();
+  }
+
   /**
    * Transform a GUI type into a Java type and add all necessary imports for its usage. For example,
    * `Event<Person>` is transformed into `Consumer<Person>` and imports
@@ -117,19 +124,14 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
           && util.getMainDomainModelSimpleName().isPresent()
           && scope.getName().equals(util.getMainDomainModelSimpleName().get())) {
 
-        String insert = scope.getName().toLowerCase() + ".";
         String qType = ste.asObjectType().printFullName();
         String type = ste.asObjectType().print();
 
-        int lastIndex = type.lastIndexOf('.');
-
-        if (lastIndex != -1) {
-          StringBuilder sb = new StringBuilder(qType);
-          sb.insert(lastIndex + 1, insert);
-          qType = sb.toString();
-        }
-        else {
-          qType = insert + qType;
+        List<String> parts = new ArrayList<>(Splitters.DOT.splitToList(qType));
+        if (parts.size() > 1) {
+          String domainPackage = parts.get(parts.size() - 2).toLowerCase();
+          parts.set(parts.size() - 2, domainPackage);
+          qType = Joiners.DOT.join(parts);
         }
         getCD4C().addImport(clazz, qType);
         return MCTypeFacade.getInstance().createQualifiedType(type);

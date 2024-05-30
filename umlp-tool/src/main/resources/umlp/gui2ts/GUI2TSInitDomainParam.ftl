@@ -1,6 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("mcType", "name", "manager", "id", "init", "initList")}
-<#assign type = cdPrinter.printType(mcType)>
+${tc.signature("type", "name", "manager", "id", "init", "initList")}
 <#assign tmpVar = "tmp">
 
 ${cd4c.method("protected void ${init}()")}

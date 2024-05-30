@@ -1,11 +1,9 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("mcType", "name", "listItems", "initList")}
-<#assign genHelper = glex.getGlobalVar("genHelper")>
-<#assign cdPrinter = glex.getGlobalVar("cdPrinter")>
+${tc.signature("type", "name", "listItems", "initList")}
 <#assign tmpVar = "tmp">
 
 ${cd4c.method("protected void init${name?cap_first}()")}
-const ${tmpVar}: ${cdPrinter.printType(mcType)} = [];
+const ${tmpVar}: ${type} = [];
 <#list listItems as item>
 ${tmpVar}.push(${item});
 </#list>

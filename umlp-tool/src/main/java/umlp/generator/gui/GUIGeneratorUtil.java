@@ -5,6 +5,7 @@ import com.google.common.base.CaseFormat;
 import de.monticore.ast.ASTNode;
 import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cd4code._prettyprint.CD4CodeFullPrettyPrinter;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
@@ -1190,4 +1191,31 @@ public class GUIGeneratorUtil {
     return res.toString();
   }
 
+  public String params2String(Collection<ASTCDParameter> params) {
+    StringBuilder res = new StringBuilder();
+    Iterator<ASTCDParameter> iter = params.iterator();
+    while (iter.hasNext()) {
+      ASTCDParameter param = iter.next();
+      res.append(param.getMCType().printType());
+      res.append(" ");
+      res.append(param.getName());
+      if (iter.hasNext()) {
+        res.append(",");
+      }
+    }
+    return res.toString();
+  }
+
+  public String params2String(String setterType, String arg, Collection<ASTCDParameter> params) {
+    StringBuilder res = new StringBuilder(setterType + " " + arg);
+    Iterator<ASTCDParameter> iter = params.iterator();
+    while (iter.hasNext()) {
+      res.append(",");
+      ASTCDParameter param = iter.next();
+      res.append(param.getMCType().printType());
+      res.append(" ");
+      res.append(param.getName());
+    }
+    return res.toString();
+  }
 }

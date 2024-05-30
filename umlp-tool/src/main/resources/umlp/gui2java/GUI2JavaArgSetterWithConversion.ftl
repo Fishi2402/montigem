@@ -1,9 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("type", "name", "nullCheck", "setterExpression", "conversion", "args")}
-<#assign genHelper = glex.getGlobalVar("genHelper")>
-<#assign argsString = genHelper.variableSymbols2ArgsString(type, "val_$", args)>
+${tc.signature("type", "name", "nullCheck", "setterExpression", "conversion", "params")}
+<#assign paramString = genHelper.params2String(type, "val_$", params)>
 
-${cd4c.method("public void set${name?cap_first}(${argsString})")}
+${cd4c.method("public void set${name?cap_first}(${paramString})")}
 if (${nullCheck}) {
   return;
 }

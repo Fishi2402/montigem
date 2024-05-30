@@ -1,27 +1,26 @@
 package umlp.generator.gui.genjava.decorator;
 
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 public class Attribute {
   protected final ASTCDAttribute cdAttr;
   protected final ASTMCType baseType;
-  protected final List<VariableSymbol> iterateArgs;
+  protected final List<ASTCDParameter> params;
 
   protected final Collection<String> importList;
 
   public Attribute(
       ASTCDAttribute cdAttr, ASTMCType baseType,
-      List<VariableSymbol> iterateArgs, Collection<String> importList
+      List<ASTCDParameter> params, Collection<String> importList
   ) {
     this.cdAttr = cdAttr;
-    this.iterateArgs = iterateArgs;
+    this.params = params;
     this.baseType = baseType;
     this.importList = importList;
   }
@@ -34,8 +33,8 @@ public class Attribute {
     return baseType;
   }
 
-  public List<VariableSymbol> getIterateArgs() {
-    return iterateArgs;
+  public List<ASTCDParameter> getParams() {
+    return params;
   }
 
   public Collection<String> getImportList() {
