@@ -1,8 +1,10 @@
-import {IUMLPList} from "../common/IUMLPList";
+import { NgIterable } from "@angular/core";
+import {GemListBehaviorSubject, IUMLPList} from "../common/IUMLPList";
 import {UMLPArrayListIterator} from "../common/UMLPArrayListIterator";
 
 export class UMLPArrayList<E> implements IUMLPList<E> {
 
+  subject: GemListBehaviorSubject<NgIterable<E>>;
 
   array: E[] = [];
 

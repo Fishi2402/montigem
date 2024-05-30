@@ -5,31 +5,9 @@ import {GemIdentifiable} from "../common/GemIdentifiable";
 import {GemBuildable} from "../common/GemBuildable";
 import {LoadResult} from "../common/LoadResult";
 import {LoadingState} from "../common/LoadingState";
-import {IUMLPList} from "../common/IUMLPList";
+import {GemListBehaviorSubject, IUMLPList} from "../common/IUMLPList";
 import {UMLPArrayList} from "../common/UMLPArrayList";
-import {BehaviorSubject, Subscriber} from "rxjs";
 import {NgIterable} from "@angular/core";
-
-
-/**
- * Custom BehaviorSubject with support for lazy-loading
- */
-class GemListBehaviorSubject<E> extends BehaviorSubject<E> {
-  // Callback
-  protected onSub: () => void;
-
-  constructor(value: E, onSub: () => void) {
-    super(value);
-    this.onSub = onSub;
-  }
-
-  // Be notified about subscription, so we can load on-demand
-  protected _innerSubscribe(subscriber: Subscriber<any>): Subscriber<any> {
-    this.onSub();
-    // @ts-ignore
-    return super["_innerSubscribe"](subscriber);
-  }
-}
 
 export abstract class GemList<E extends GemIdentifiable> implements GemBuildable, IUMLPList<E> {
   protected ids: Array<number> = [];
