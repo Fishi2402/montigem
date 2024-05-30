@@ -323,19 +323,6 @@ public class GUIComponentAdapter extends PrinterAdapter {
       // Print Nothing, probably an error
       return;
     } else if (isComponent(classElement)) {
-      print("public constructor(route: ActivatedRoute, protected router: Router) {");
-      startIndent();
-      Element parentClass = types().asElement(classElement.getSuperclass());
-      Optional<? extends Element> parentConstructor = parentClass.getEnclosedElements().stream()
-          .filter(s -> s.getKind().toString().equals("CONSTRUCTOR")).findAny();
-      if (getAnnotationPropertyValue(classElement, "isEmpty", Boolean.class, false)) {
-        println().printIndent().print("super(router)");
-      } else if (getAnnotationPropertyValue(classElement, "isCreate", Boolean.class, false)) {
-        println().printIndent().print("super(router);");
-      } else {
-        println().printIndent().print("super(route, router);");
-      }
-      endIndent().println().printIndent().print("}");
     }
   }
 
