@@ -171,7 +171,7 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     assertions.add(() -> assertEquals("Person", _person.getMCType().printType()));
     assertions.add(() -> assertEquals("Person", _$per$son.getMCType().printType()));
     assertions.add(() -> assertEquals("MaritalStatus", _status.getMCType().printType()));
-    assertions.add(() -> assertEquals("GemList<Address>", _la.getMCType().printType()));
+    assertions.add(() -> assertEquals("List<Address>", _la.getMCType().printType()));
     assertions.add(() -> assertEquals("List<List<Address>>", _lla.getMCType().printType()));
     assertions.add(() -> assertTrue(
         "java.lang.String".equals(_s.getMCType().printType())
@@ -185,7 +185,7 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
         "java.lang.Integer".equals(_i.getMCType().printType())
         || "Integer".equals(_i.getMCType().printType())
     ));
-    assertions.add(() -> assertEquals("Event<Void>", _e.getMCType().printType()));
+    assertions.add(() -> assertEquals("Consumer<Void>", _e.getMCType().printType()));
 
     List<ASTCDMethod> methods = clazz.getCDMethodList();
 
@@ -250,9 +250,8 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     ASTMCImportStatement personImport = getImport(imports, "packaged.domain.Person");
     ASTMCImportStatement maritalStatusImport = getImport(imports, "packaged.domain.MaritalStatus");
     ASTMCImportStatement listImport = getImport(imports, "java.util.List");
-    ASTMCImportStatement gemListImport = getImport(imports, "umlp.backendrte.common.GemList");
     ASTMCImportStatement addressImport = getImport(imports, "packaged.domain.Address");
-    ASTMCImportStatement eventImport = getImport(imports, "de.monticore.guidsl.types.Event");
+    ASTMCImportStatement consumerImport = getImport(imports, "java.util.function.Consumer");
     // optional imports, byproduct of type handling
     ASTMCImportStatement stringImport = getImport(imports, "java.lang.String");
     ASTMCImportStatement voidImport = getImport(imports, "java.lang.Void");
@@ -260,9 +259,8 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     assertions.add(() -> assertNotNull(personImport));
     assertions.add(() -> assertNotNull(maritalStatusImport));
     assertions.add(() -> assertNotNull(listImport));
-    assertions.add(() -> assertNotNull(gemListImport));
     assertions.add(() -> assertNotNull(addressImport));
-    assertions.add(() -> assertNotNull(eventImport));
+    assertions.add(() -> assertNotNull(consumerImport));
     assertions.add(() -> assertNotNull(stringImport));
     assertions.add(() -> assertNotNull(voidImport));
 
