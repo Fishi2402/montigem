@@ -1,9 +1,10 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("type", "name", "listItems", "initList")}
+<#assign javaType = cdPrinter.printType(type)>
 <#assign tmpVar = "tmp">
 
 ${cd4c.method("protected void init${name?cap_first}()")}
-${type} ${tmpVar} = new ArrayList<>();
+${javaType} ${tmpVar} = new ArrayList<>();
 <#list listItems as item>
 ${tmpVar}.add(${item});
 </#list>

@@ -17,6 +17,7 @@ import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.gui.genjava.decorator.GUI2JavaClassDecorator;
+import umlp.generator.gui.gentypescript.printer.TSUtilsPrinter;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 import umlp.generator.util.PathUtil;
 
@@ -131,6 +132,12 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
     return s -> s + " in " + type + "? " + type + "[" + s + ".toUpperCase()] : null";
   }
 
+  /*
+  @Override
+  protected String importAndPrintType(SymTypeExpression ste) {
+    return new TSUtilsPrinter().printType(createTypeAndAddImports(ste));
+  }
+  /**/
 
   @Override
   protected String getInitDomainListTemplate() {

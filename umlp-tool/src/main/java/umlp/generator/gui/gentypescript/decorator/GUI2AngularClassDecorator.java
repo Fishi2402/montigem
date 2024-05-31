@@ -25,13 +25,17 @@ import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericTypeBuilder;
 import de.monticore.types3.SymTypeRelations;
+import de.se_rwth.commons.Joiners;
+import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.gui.GUI2ClassDecorator;
 import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentTemplates;
+import umlp.generator.gui.gentypescript.printer.TSUtilsPrinter;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
+import umlp.generator.util.TagLookUp;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -116,7 +120,7 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
       Optional<SymTypeExpression> innerSTE = util.getFirstInnerType(typeSTE);
       String innerType = TypeScriptTypes.VOID.getTSType();
       if (innerSTE.isPresent()) {
-        innerType = importAndPrintType(innerSTE.get());
+        innerType = new TSUtilsPrinter().printType(createTypeAndAddImports(innerSTE.get()));
       }
       ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
           CDModifier.PUBLIC.build(), "EventEmitter<" + innerType + ">", node.getName());
@@ -159,11 +163,15 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
           CDModifier.PUBLIC.build(), mcType, name);
       clazz.addCDMember(attr);
 
-      // add attr id init
-      glex.addAfterTemplate(
-          "umlp.gui2ts.GUI2AngularInitBody",
-          new TemplateHookPoint("umlp.gui2ts.GUI2AngularInitId", util.getRoutingId(node))
-      );
+      if (util.isDomainType(typeSTE)
+          && !util.isEnumType(typeSTE)
+          && !TagLookUp.isSingleton(typeSTE.getTypeInfo())) {
+        // add attr id init
+        glex.addAfterTemplate(
+            "umlp.gui2ts.GUI2AngularInitBody",
+            new TemplateHookPoint("umlp.gui2ts.GUI2AngularInitId", util.getRoutingId(node))
+        );
+      }
 
       // attr overrides top class attr
       glex.replaceTemplate("umlp.gui2ts.TSAttribute", attr,
@@ -290,23 +298,21 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
           && util.getMainDomainModelSimpleName().isPresent()
           && scope.getName().equals(util.getMainDomainModelSimpleName().get())) {
 
-        String insert = StringTransformations.uncapitalize(scope.getName()) + ".";
+        String qType = ste.asObjectType().printFullName();
         String type = ste.asObjectType().print();
 
-        int lastIndex = type.lastIndexOf('.');
-
-        if (lastIndex != -1) {
-          StringBuilder sb = new StringBuilder(type);
-          sb.insert(lastIndex + 1, insert);
-          type = sb.toString();
+        List<String> parts = new ArrayList<>(Splitters.DOT.splitToList(qType));
+        if (parts.size() > 1) {
+          String domainPackage = parts.get(parts.size() - 2).toLowerCase();
+          parts.set(parts.size() - 2, domainPackage);
+          qType = Joiners.DOT.join(parts);
         }
-        else {
-          type = insert + type;
-        }
-        getCD4C().addImport(clazz, type);
+        getCD4C().addImport(clazz, qType);
+        return MCTypeFacade.getInstance().createQualifiedType(type);
       }
       else {
         getCD4C().addImport(clazz, ste.printFullName());
+        return MCTypeFacade.getInstance().createQualifiedType(ste.print());
       }
     }
     else if (ste.isGenericType()) {

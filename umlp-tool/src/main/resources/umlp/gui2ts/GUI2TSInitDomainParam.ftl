@@ -1,12 +1,13 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("type", "name", "manager", "id", "init", "initList")}
+<#assign tsType = cdPrinter.printType(type)>
 <#assign tmpVar = "tmp">
 
 ${cd4c.method("protected void ${init}()")}
   <#-- if attr set early (no/fast data loading) -->
   if (this.${name} == null) {
     if (this.${id} != null) {
-      ${manager}.get${type}Sure(this.${id}).then(${tmpVar} => {
+      ${manager}.get${tsType}Sure(this.${id}).then(${tmpVar} => {
         if (this.${name} == null) {
           this.${name} = ${tmpVar};
         }
@@ -14,7 +15,7 @@ ${cd4c.method("protected void ${init}()")}
       });
     }
     else {
-      ${manager}.${type?uncap_first}Builder().then(${tmpVar} => {
+      ${manager}.${tsType?uncap_first}Builder().then(${tmpVar} => {
         if (this.${name} == null) {
           this.${name} = ${tmpVar};
         }

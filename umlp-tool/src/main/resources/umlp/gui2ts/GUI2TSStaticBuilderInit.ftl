@@ -1,5 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("type", "name", "manager", "keys", "initList")}
+<#assign tsType = cdPrinter.printType(type)>
 <#assign paramString = genHelper.params2String(keys)>
 <#assign tmpVar = "tmp">
 
@@ -7,7 +8,7 @@ ${cd4c.method("public void init${name?cap_first}(${paramString})")}
 if (this.${name} == null) {
   this.${name} = new Map();
 }
-${manager}.${type?uncap_first}Builder().then((${tmpVar}: ${type}) => {
+${manager}.${tsType?uncap_first}Builder().then((${tmpVar}: ${tsType}) => {
   <#list keys as key>
     <#assign i = key?index - 1>
     <#if key?has_next>

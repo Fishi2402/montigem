@@ -11,9 +11,6 @@ import java.util.function.Consumer;
 
 @Component
 public class DtcockpitMainPage extends DtcockpitMainPageTOP {
-  public DtcockpitMainPage(GemList projects) {
-    super(projects);
-  }
 
   @Override
   public void init() {

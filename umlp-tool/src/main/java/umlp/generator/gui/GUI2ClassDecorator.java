@@ -97,9 +97,11 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
   protected void addInit() {
   }
 
+  /*
   protected String importAndPrintType(SymTypeExpression ste) {
     return createTypeAndAddImports(ste).printType();
   }
+  /**/
 
   /**
    * Transform a GUI type into a Java type and add all necessary imports for its usage. For example,

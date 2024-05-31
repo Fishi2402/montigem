@@ -1,10 +1,11 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("type", "name", "listItems", "keys", "initList")}
+<#assign tsType = cdPrinter.printType(type)>
 <#assign paramString = genHelper.params2String(keys)>
 <#assign tmpVar = "tmp">
 
 ${cd4c.method("public void init${name?cap_first}(${paramString})")}
-const ${tmpVar}: ${type} = [];
+const ${tmpVar}: ${tsType} = [];
 <#list listItems as item>
 ${tmpVar}.push(${item});
 </#list>

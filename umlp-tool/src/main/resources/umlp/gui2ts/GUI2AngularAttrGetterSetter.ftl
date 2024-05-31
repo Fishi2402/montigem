@@ -1,13 +1,13 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("mcType", "name", "getter", "setter")}
+${tc.signature("type", "name", "getter", "setter")}
+<#assign tsType = cdPrinter.printType(type)>
 <#assign arg = "val">
-<#assign type = cdPrinter.printType(mcType)>
 
-public get ${name}(): ${type} {
+public get ${name}(): ${tsType} {
   return this.${getter}();
 }
 
 @Input()
-public set ${name}(${arg}: ${type}) {
+public set ${name}(${arg}: ${tsType}) {
   this.${setter}(${arg});
 }

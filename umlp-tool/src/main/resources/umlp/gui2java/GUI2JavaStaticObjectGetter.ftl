@@ -1,8 +1,9 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("type", "name", "keys")}
+<#assign mcType = type.printType()>
 <#assign paramString = genHelper.params2String(keys)>
 
-${cd4c.method("public ${type} get${name?cap_first}(${paramString})")}
+${cd4c.method("public ${mcType} get${name?cap_first}(${paramString})")}
 if (this.${name} == null
   <#list keys as key>
     <#assign i = key?index - 1>

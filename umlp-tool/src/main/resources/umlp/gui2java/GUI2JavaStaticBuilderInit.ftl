@@ -1,10 +1,11 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("type", "name", "manager", "keys", "initList")}
+<#assign javaType = cdPrinter.printType(type)>
 <#assign paramString = genHelper.params2String(keys)>
 <#assign tmpVar = "tmp">
 
 ${cd4c.method("public void init${name?cap_first}(${paramString})")}
-${type} ${tmpVar} = ${manager}.${type?uncap_first}Builder();
+${javaType} ${tmpVar} = ${manager}.${javaType?uncap_first}Builder();
 
 if (this.${name} == null) {
   this.${name} = new HashMap<>();
