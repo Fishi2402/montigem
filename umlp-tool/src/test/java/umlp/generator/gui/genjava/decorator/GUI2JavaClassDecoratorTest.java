@@ -81,10 +81,10 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
 
     assertAll(
         () -> assertTrue(Log.getFindings().isEmpty()),
-        () -> assertEquals(16, clazz.getCDAttributeList().size()),
+        () -> assertEquals(18, clazz.getCDAttributeList().size()),
         () -> assertEquals(82, clazz.getCDMethodList().size()),
         () -> assertEquals(1, clazz.getCDConstructorList().size()),
-        () -> assertEquals(17, imports.size())
+        () -> assertEquals(14, imports.size())
     );
   }
 

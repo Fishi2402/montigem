@@ -159,6 +159,12 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
           CDModifier.PUBLIC.build(), mcType, name);
       clazz.addCDMember(attr);
 
+      // add attr id init
+      glex.addAfterTemplate(
+          "umlp.gui2ts.GUI2AngularInitBody",
+          new TemplateHookPoint("umlp.gui2ts.GUI2AngularInitId", util.getRoutingId(node))
+      );
+
       // attr overrides top class attr
       glex.replaceTemplate("umlp.gui2ts.TSAttribute", attr,
           new TemplateHookPoint("umlp.gui2ts.TSOverrideAttribute"));
@@ -246,8 +252,7 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
 
   @Override
   protected void addInit() {
-    List<String> ids = util.getRoutingIds(gui);
-    getCD4C().addMethod(clazz, "umlp.gui2ts.GUI2AngularInit", ids);
+    getCD4C().addMethod(clazz, "umlp.gui2ts.GUI2AngularInit");
   }
 
   protected ASTCDMethodSignature addDestroy() {

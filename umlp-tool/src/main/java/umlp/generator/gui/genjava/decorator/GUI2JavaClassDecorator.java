@@ -197,12 +197,14 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     }
     // case 2: component Foo(Person p)
     else if (util.isDomainType(typeSTE) && !util.isEnumType(typeSTE)) {
+      String id = util.getRoutingId(node);
+      getCD4C().addAttribute(clazz, "public Integer " + id);
+
       String manager = getAndImportManager();
 
       // add builder init
       Optional<InitDependency> dep = InitDependencyTree.getInstance().getDependency(node);
       if (dep.isPresent()) {
-        String id = util.getRoutingId(node);
         dep.get().setInitMethod(new MethodTemplate(
             getInitDomainParamTemplate(), type, name, manager, id, initName
         ));
@@ -776,11 +778,6 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
    * @return class initialization method
    */
   protected void addInit() {
-    for (ASTGUIParam p : gui.getGUIComponentDeclaration().getGUIParamList()) {
-      String id = util.getRoutingId(p);
-      getCD4C().addAttribute(clazz, "public Integer " + id);
-    }
-
     Optional<InitDependency> root = InitDependencyTree.getInstance()
         .getDependency(gui.getGUIComponentDeclaration());
     if (root.isPresent()) {

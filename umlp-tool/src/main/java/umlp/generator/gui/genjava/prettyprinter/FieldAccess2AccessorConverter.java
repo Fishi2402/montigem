@@ -5,9 +5,11 @@ import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.commonexpressions._prettyprint.CommonExpressionsPrettyPrinter;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIGeneratorUtil;
@@ -164,7 +166,7 @@ public class FieldAccess2AccessorConverter extends CommonExpressionsPrettyPrinte
     if (conversions.containsKey(node)) {
       getPrinter().print(conversions.get(node).apply(node));
     }
-    else if (ignore.contains(node)) {
+    else if (ignore.contains(node) || isEnum(node)) {
       getPrinter().print(node.getName() + " ");
     }
     else {
@@ -181,4 +183,7 @@ public class FieldAccess2AccessorConverter extends CommonExpressionsPrettyPrinte
     return ExpressionPrinterConfig.attr2Getter(node) + "()";
   }
 
+  protected boolean isEnum(ASTFieldAccessExpression node) {
+    return GUIGeneratorUtil.getInstance().isEnumMember(node);
+  }
 }
