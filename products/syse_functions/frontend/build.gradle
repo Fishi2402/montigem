@@ -18,7 +18,6 @@ repositories {
 dependencies {
   // a configuration containing the domain sources
   domainSources project(":products:syse_functions:backend")
-
   implementation project(":products:syse_functions:backend")
 
   implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version
@@ -44,13 +43,15 @@ genGUI {
 }
 
 translateJava2TSDomain {
-  domainModel = 'FunctionStructure4Fenix'
   verbose = true
 }
 
 translateJava2TSGUI {
-  domainModel = 'FunctionStructure4Fenix'
   verbose = true
+}
+
+genJava2TSConfig {
+  domainModel = 'FunctionStructure4Fenix'
 }
 
 nodeSetup.dependsOn(frontendSetup)
@@ -75,6 +76,11 @@ task testApp(type: NpxTask) {
 
 task runApp(type: NpxTask) {
   dependsOn(prebuildTasks)
+  command = "ng"
+  args = ["serve"]
+}
+
+task runAppNoBuild(type: NpxTask) {
   command = "ng"
   args = ["serve"]
 }

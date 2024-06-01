@@ -7,18 +7,3 @@ description = "I AM ONLY A COPY!!!"
 clean.dependsOn(subprojects.collect{it.getTasksByName("clean", false)})
 
 build.dependsOn(subprojects.collect{ it.getTasksByName("build", false)})
-
-project(path + ':frontend') {
-  sourceSets.main.java.srcDirs += ['../backend/src/main/java', '../backend/build/umlp/backend']
-}
-
-project(path +':frontend').getTasksByName('translateJava2TSDomain', true).forEach {a -> {
-  project(path +':backend').getTasksByName('jar', true).forEach {b -> {
-    a.dependsOn(b)
-  }}
-}}
-project(path +':frontend').getTasksByName('translateJava2TSGUI', true).forEach {a -> {
-  project(path +':backend').getTasksByName('jar', true).forEach {b -> {
-    a.dependsOn(b)
-  }}
-}}

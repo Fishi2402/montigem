@@ -5,8 +5,8 @@ import de.se_rwth.commons.logging.Log;
 import dtcockpit.PipelineStatistic;
 import dtcockpit.Project;
 import jsweet.lang.Replace;
-import mc.fenix.charts.GemBarChartData;
-import mc.fenix.charts.GemBarChartEntry;
+import mc.fenix.charts.GemBarChartTypes.GemBarChartData;
+import mc.fenix.charts.GemBarChartTypes.GemBarChartEntry;
 import umlp.jsweet.extension.annotation.Component;
 
 import java.sql.Date;

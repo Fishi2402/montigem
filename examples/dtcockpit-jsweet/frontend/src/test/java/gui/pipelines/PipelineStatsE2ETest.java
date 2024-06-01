@@ -3,8 +3,8 @@ package gui.pipelines;
 import dtcockpit.DtcockpitManager;
 import dtcockpit.Project;
 import dtcockpit.test_infrastructure.DtcockpitMockTestSetup;
-import mc.fenix.charts.GemBarChartData;
-import mc.fenix.charts.GemBarChartEntry;
+import mc.fenix.charts.GemBarChartTypes.GemBarChartData;
+import mc.fenix.charts.GemBarChartTypes.GemBarChartEntry;
 import org.junit.jupiter.api.Test;
 import umlp.backendrte.test_infrastructure.ClientSetup;
 

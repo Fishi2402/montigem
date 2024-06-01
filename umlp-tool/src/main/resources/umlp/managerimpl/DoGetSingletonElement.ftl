@@ -10,6 +10,9 @@ if (${name?uncap_first}Instance == null) { // Fetch from DAO
       if(!${name?uncap_first}Instance.containsObserver(the${name}DbObserver)){
         ${name?uncap_first}Instance.addObserver(the${name}DbObserver);
       }
+      if (!${name?uncap_first}Instance.containsObserver(the${name}CommandSendingObserver)) {
+        ${name?uncap_first}Instance.addObserver(the${name}CommandSendingObserver);
+      }
     }
   }
 }
@@ -20,6 +23,9 @@ if (${name?uncap_first}Instance == null) { // Init new object
   ${name?uncap_first}Instance = builder.build().get();
   if(!${name?uncap_first}Instance.containsObserver(the${name}DbObserver)){
     ${name?uncap_first}Instance.addObserver(the${name}DbObserver);
+  }
+  if (!${name?uncap_first}Instance.containsObserver(the${name}CommandSendingObserver)) {
+    ${name?uncap_first}Instance.addObserver(the${name}CommandSendingObserver);
   }
   ${managerName?uncap_first}Observers.forEach(obs -> obs.maybeNotify${name}Added(${name?uncap_first}Instance, NotificationScope.ALL));
 }

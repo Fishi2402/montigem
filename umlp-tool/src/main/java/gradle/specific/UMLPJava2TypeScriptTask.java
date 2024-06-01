@@ -66,9 +66,6 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
   @Optional
   public abstract Property<String> getNodeVersion();
 
-  @Input
-  public abstract Property<String> getDomainModel();
-
   @OutputDirectory
   public abstract DirectoryProperty getOutputDir();
 
@@ -103,7 +100,7 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
   @TaskAction
   public void run() throws IOException {
 
-    File baseDirectory = new File(this.getProject().getProjectDir(), "jsweet");
+    File baseDirectory = getProject().getLayout().getBuildDirectory().dir("jsweet").get().getAsFile();
     File workingDir = getJsweetWorkingDir().get().getAsFile();
     File jSweetDir = getJsweetDir().get().getAsFile();
     File candiesJsOut = getCandiesJsOutDir().get().getAsFile();
@@ -122,8 +119,6 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
     // classpath passed to jsweet
     List<String> classPath = new ArrayList<>();
     classPath.add(getProject().getConfigurations().getByName("runtimeClasspath").getAsPath());
-
-    generateJSweetConfig(jSweetDir, baseDirectory);
 
     // Prepare a WorkQueue in the jsweet class path
     WorkQueue workQueue = getWorkerExecutor().classLoaderIsolation(workerSpec -> {
@@ -178,20 +173,6 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
 
 
   private static final String SOURCE_FILE_EXTENSION = ".java";
-
-
-  /**
-   * Generates configuration files required for the JSweet transpilation.
-   *
-   * @param targetDir The target directory the config files are generated to.
-   */
-  protected void generateJSweetConfig(File targetDir, File hwcDir) {
-    GeneratorSetup gs = new GeneratorSetup();
-    gs.setOutputDirectory(targetDir);
-    gs.setHandcodedPath(new MCPath(hwcDir.toPath()));
-    JSweetConfigGenerator generator = new JSweetConfigGenerator(gs);
-    generator.generate(getDomainModel().get());
-  }
 
 
   protected Set<Path> walkAndCollectJavaFiles(Set<File> input) throws IOException {

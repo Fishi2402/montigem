@@ -22,13 +22,13 @@ classdiagram GemScatterPlotTypes {
     List<GemScatterPlotPoint> points;
     Optional<String> color;
     Optional<String> hoverColor;
-    Optional<Integer> pointRadius;
   }
 
   public class GemScatterPlotPoint {
     double x;
     double y;
     String label;
+    Optional<Integer> pointRadius;
   }
 
   public enum GemScatterPlotShape {

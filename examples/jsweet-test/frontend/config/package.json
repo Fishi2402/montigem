@@ -23,7 +23,8 @@
     "font-awesome": "4.7.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.14.0"
+    "zone.js": "~0.14.0",
+    "many-keys-map":"2.0.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^17.0.7",

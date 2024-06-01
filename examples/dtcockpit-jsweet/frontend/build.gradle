@@ -37,13 +37,15 @@ genGUI {
 }
 
 translateJava2TSDomain {
-  domainModel = 'Dtcockpit'
   verbose = false
 }
 
 translateJava2TSGUI {
-  domainModel = 'Dtcockpit'
   verbose = false
+}
+
+genJava2TSConfig {
+  domainModel = 'Dtcockpit'
 }
 
 nodeSetup.dependsOn(frontendSetup)

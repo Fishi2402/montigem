@@ -125,15 +125,17 @@ tasks.register("genGuiTS", UMLPGuiGenTask.class) {
 }
 
 translateJava2TSDomain {
-  domainModel = 'Carrental'
   verbose = true
   dependsOn(tasks.generateCDTOGUI, tasks.genGUI)
 }
 
 translateJava2TSGUI {
-  domainModel = 'Carrental'
   verbose = true
   dependsOn(tasks.generateCDTOGUI, tasks.genGUI)
+}
+
+genJava2TSConfig {
+  domainModel = 'Carrental'
 }
 
 nodeSetup.dependsOn(frontendSetup)

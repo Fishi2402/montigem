@@ -70,6 +70,7 @@ import umlp.generator.gui.gentypescript.GUI2TSGenerator;
 import umlp.generator.gui.gentypescript.config.GUI2TSConfigGenerator;
 import umlp.generator.gui.gentypescript.config.ModuleRoutingInfo;
 import umlp.generator.gui.gentypescript.domain.TSUMLPGenerator;
+import umlp.generator.gui.gentypescript.java2ts.ComponentObserverManagerGenerator;
 import umlp.generator.gui.guivariability.GUIVariabilityHandler;
 import umlp.generator.util.TagLookUp;
 import umlp.generator.util.UMLPSymbolTables;
@@ -101,6 +102,7 @@ import static umlp.UMLPToolOptions.FOR_CLIENT;
 import static umlp.UMLPToolOptions.GEN_SYMBOLS_ONLY;
 import static umlp.UMLPToolOptions.GUIVariability;
 import static umlp.UMLPToolOptions.GUI_CREATE;
+import static umlp.UMLPToolOptions.GUI_GEN_JSWEET;
 import static umlp.UMLPToolOptions.HELP;
 import static umlp.UMLPToolOptions.HWC_PATH;
 import static umlp.UMLPToolOptions.INPUT;
@@ -508,6 +510,10 @@ public class UMLPTool extends UMLPToolTOP {
           TSUMLPGenerator generator = new TSUMLPGenerator(genSetup, config);
           String configTemplate = cmd.getOptionValue("ct", DEFAULT_CONFIGTEMPLATE_GUI2JAVA2TS);
           generator.generate(ast, configTemplate);
+        }
+        else if (GUI_GEN_JSWEET.isSelected(cmd)) {
+          ComponentObserverManagerGenerator componentObserverManagerGenerator = new ComponentObserverManagerGenerator(genSetup);
+          componentObserverManagerGenerator.generate(ast);
         }
         else if (!GEN_SYMBOLS_ONLY.isSelected(cmd)) {
           // execute generator

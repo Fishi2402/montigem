@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package mc.fenix.charts;
+package mc.fenix.charts.GemBarChartTypes;
 
 import java.util.List;
 

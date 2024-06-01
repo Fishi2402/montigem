@@ -3,8 +3,8 @@ package umlp.jsweet.extension.domainAdapters;
 
 import org.jsweet.transpiler.extension.PrinterAdapter;
 
-public class DTCockpitImportAdapter extends DomainImportAdapter {
-  public DTCockpitImportAdapter(PrinterAdapter parentAdapter) {
+public class DtcockpitImportAdapter extends DomainImportAdapter {
+  public DtcockpitImportAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);
   }
 

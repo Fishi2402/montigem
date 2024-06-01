@@ -15,13 +15,13 @@ export interface GemScatterPlotSet {
   points?: GemScatterPlotPoint[];
   color?: string;
   hoverColor?: string;
-  pointRadius?: number;
 }
 
 export interface GemScatterPlotPoint {
   x?: number;
   y?: number;
   label?: string;
+  pointRadius?: number;
 }
 
 export enum GemScatterPlotShape {

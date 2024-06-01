@@ -74,13 +74,21 @@ export class GemScatterPlot extends GemScatterPlotTOP {
       }
 
       const points = [];
+      const pointRadiusArr = [];
       set.points.forEach((point) => {
         points.push({
           x: point.x,
           y: point.y,
           label: point.label
         });
+        if(!point.pointRadius){
+          //default radius
+          pointRadiusArr.push(3);
+        }else{
+          pointRadiusArr.push(point.pointRadius);
+        }
       });
+
 
       let entry: ChartDataset<'scatter'> = {
         label: set.label,
@@ -89,7 +97,7 @@ export class GemScatterPlot extends GemScatterPlotTOP {
         backgroundColor: set.color,
         hoverBackgroundColor: set.hoverColor,
         hoverBorderWidth: 2,
-        pointRadius: set.pointRadius
+        pointRadius: pointRadiusArr
       };
 
       this.dataSets.push(entry);

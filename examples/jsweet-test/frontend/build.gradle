@@ -28,13 +28,15 @@ genGUI {
 }
 
 translateJava2TSDomain {
-  domainModel = 'Jsweettest'
   verbose = true
 }
 
 translateJava2TSGUI {
-  domainModel = 'Jsweettest'
   verbose = true
+}
+
+genJava2TSConfig {
+  domainModel = 'Jsweettest'
 }
 
 nodeSetup.dependsOn(frontendSetup)

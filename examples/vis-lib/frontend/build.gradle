@@ -27,15 +27,17 @@ genGUI {
   /**/
 }
 
-translateJava2TSDomain {
-  domainModel = 'Domain'
-  verbose = true
-}
-
-translateJava2TSGUI {
-  domainModel = 'Domain'
-  verbose = true
-}
+//translateJava2TSDomain {
+//  verbose = true
+//}
+//
+//translateJava2TSGUI {
+//  verbose = true
+//}
+//
+//genJava2TSConfig {
+//  domainModel = 'Domain'
+//}
 
 nodeSetup.dependsOn(frontendSetup)
 npmInstall.dependsOn(':umlp-rte:client:npmInstall')

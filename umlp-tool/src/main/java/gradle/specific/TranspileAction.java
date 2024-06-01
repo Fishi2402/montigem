@@ -40,6 +40,7 @@ public abstract class TranspileAction implements WorkAction<TranspileAction.Para
     transpiler.setGenerateJsFiles(false);
     transpiler.setEcmaTargetVersion(EcmaScriptComplianceLevel.ES6);
     transpiler.setModuleKind(ModuleKind.commonjs);
+    transpiler.setGenerateSourceMaps(false);
     ProcessUtil.addExtraPath(".gradle/nodejs/node-v" + params.getNodeVersion().get() + "-win-x64");
 
     SourceFile[] sourceFiles = params.getInput().getFiles().stream()
