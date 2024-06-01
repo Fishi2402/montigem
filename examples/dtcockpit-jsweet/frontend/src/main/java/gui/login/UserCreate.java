@@ -7,6 +7,7 @@ import umlp.guiutil.Router;
 import umlp.jsweet.extension.annotation.Component;
 
 import java.time.LocalDateTime;
+import java.util.function.Consumer;
 
 @Component(
     // TODO Pfade
@@ -27,9 +28,9 @@ public class UserCreate extends UserCreateTOP {
     String errorMessage = this.validateUser();
     if (errorMessage == null || errorMessage.isBlank()) {
       //this.userBuilder.activated(ActivationStatus.AKTIVIERT);
-      super.newUser.registrationDate(LocalDateTime.now());
-      super.newUser.role(DtcockpitRole.USER);
-      this.build();
+      this.getNewUser().setRegistrationDate(LocalDateTime.now());
+      this.getNewUser().setRole(DtcockpitRole.USER);
+      this.getNewUser().build();
       Router.navigate("gui", "login");
     } else {
       this.error = errorMessage;
@@ -58,8 +59,8 @@ public class UserCreate extends UserCreateTOP {
     return res + (res.length() == 0 ? "" : " already being used!");
   }
 
-  public void navigateBack() {
-    Router.navigate("gui", "login");
+  public Consumer<Void> navigateBack() {
+    return $ -> Router.navigate("gui", "login");
   }
 
 

@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui.gentypescript.decorator;
 
+import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
@@ -13,6 +14,7 @@ import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.UMLPGeneratorConfig;
@@ -132,12 +134,10 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
     return s -> s + " in " + type + "? " + type + "[" + s + ".toUpperCase()] : null";
   }
 
-  /*
   @Override
-  protected String importAndPrintType(SymTypeExpression ste) {
-    return new TSUtilsPrinter().printType(createTypeAndAddImports(ste));
+  protected String printType(ASTMCType type) {
+    return new TSUtilsPrinter().printType(type);
   }
-  /**/
 
   @Override
   protected String getInitDomainListTemplate() {

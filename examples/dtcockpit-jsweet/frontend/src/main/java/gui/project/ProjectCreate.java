@@ -7,16 +7,20 @@ import dtcockpit.ProjectErrorCollector;
 import umlp.guiutil.Router;
 import umlp.jsweet.extension.annotation.Component;
 
+import java.util.function.Consumer;
+
 @Component
 public class ProjectCreate extends ProjectCreateTOP {
   private String error = "";
 
   @Override
-  public void createProject(Object event) {
-    if (!this.checkBuild()) return;
-    ProjectBuilder projectBuilder = DtcockpitManager.projectBuilder();
-    this.build();
-    this.project = projectBuilder;
+  public Consumer<Void> createProject() {
+    return $ -> {
+      if (!this.checkBuild()) return;
+      ProjectBuilder projectBuilder = DtcockpitManager.projectBuilder();
+      this.getProject().build();
+      this.setProject(projectBuilder);
+    };
   }
 
   protected boolean checkBuild() {
@@ -46,7 +50,7 @@ public class ProjectCreate extends ProjectCreateTOP {
   }
 
   @Override
-  public void navigateBack(Object event) {
-    Router.navigate("gui", "projects");
+  public Consumer<Void> navigateBack() {
+    return $ -> Router.navigate("gui", "projects");
   }
 }

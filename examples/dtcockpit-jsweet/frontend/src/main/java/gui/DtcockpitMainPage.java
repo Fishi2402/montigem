@@ -20,13 +20,14 @@ public class DtcockpitMainPage extends DtcockpitMainPageTOP {
   }
 
   @Override
-  public Consumer<Object> navigateToProject(Object p) {
+  public Consumer<Void> navigateToProject(Project p) {
 // TODO   Router.navigate("gui", "project", p.getName(), "show");
     return e -> { };
   }
 
-  public void navigateToNewProject(Object event) {
-    Router.navigate("gui", "project", "ProjectCreate");
+  @Override
+  public Consumer<Void> navigateToNewProject() {
+    return $ -> Router.navigate("gui", "project", "ProjectCreate");
   }
 
   @Override

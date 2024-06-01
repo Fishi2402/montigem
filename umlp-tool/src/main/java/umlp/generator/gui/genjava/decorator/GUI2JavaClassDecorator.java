@@ -2,6 +2,7 @@
 package umlp.generator.gui.genjava.decorator;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd.facade.CDParameterFacade;
 import de.monticore.cd4code.CD4CodeMill;
@@ -326,24 +327,32 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
       if (typeSTE.printFullName().startsWith(BuiltInTypes.EVENT.getQName())) {
         ASTMCType innerType;
-        if (typeSTE.isGenericType()) {
-          if (typeSTE.asGenericType().sizeArguments() != 1) {
-            Log.error("0x0001F Found Event-typed argument with multiple type parameters."
-                + " Event type expects a single type parameter, e.g. Event<Integer>."
-                + " At " + arg.get_SourcePositionStart().toString()
-                + " - " + arg.get_SourcePositionEnd().toString()
-            );
-            return;
-          }
+        if (typeSTE.isGenericType() && typeSTE.asGenericType().sizeArguments() == 1) {
           innerType = createTypeAndAddImports(typeSTE.asGenericType().getArgument(0));
         }
         else {
-          Log.warn("0x00020 Found argument with an underspecified Event type."
-              + " Interpreting as Event<Object>."
-              + " At " + arg.get_SourcePositionStart().toString()
-              + " - " + arg.get_SourcePositionEnd().toString()
-          );
-          innerType = MCTypeFacade.getInstance().createQualifiedType(BuiltInTypes.OBJECT.getName());
+          if (typeSTE.isObjectType()) {
+            Log.error("0x0001F Found Event -typed argument without type parameters"
+                + " (underspecified Event type)."
+                + " Event type expects exactly a single type parameter, e.g. Event<Integer>."
+                + " At " + arg.get_SourcePositionStart().toString()
+                + " - " + arg.get_SourcePositionEnd().toString()
+            );
+          }
+          else if (typeSTE.isGenericType() && typeSTE.asGenericType().sizeArguments() != 1) {
+            Log.error("0x0001F Found Event -typed argument with multiple type parameters."
+                + " Event type expects exactly a single type parameter, e.g. Event<Integer>."
+                + " At " + arg.get_SourcePositionStart().toString()
+                + " - " + arg.get_SourcePositionEnd().toString()
+            );
+          }
+          else {
+            Log.error("0x0002A Unknown error while processing an Event -typed argument "
+                + " at " + arg.get_SourcePositionStart().toString()
+                + " - " + arg.get_SourcePositionEnd().toString()
+            );
+          }
+          return;
         }
 
         // add event caller
@@ -354,13 +363,17 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       }
       else {
         String returnValue = Expression2SetterPrinter.SETTER_PARAM;
+        String conv = "";
+        if (arg.getGUIArgValue().isPresentExpression()) {
+          // example: `String val = date2String(this.getPerson().getBirthday())`
+          conv = printType(createTypeAndAddImports(typeSTE)) + " " + returnValue + " = "
+              + getConversion(typeSTE, util.getType(arg.getGUIArgValue().getExpression()))
+              .apply(getterValue);
+        }
         // add getter
         getCD4C().addMethod(
             clazz, getArgGetterWithConversionTemplate(),
-            type, name, nullCheck, returnValue,
-            getConversionStatement(
-                typeSTE, arg.getGUIArgValue(), true, getterValue, returnValue
-            ), params
+            type, name, nullCheck, returnValue, conv, params
         );
       }
 
@@ -369,12 +382,16 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         String setterValue = setterPrinter.prettyprint(arg.getGUIArgValue());
         String target = Expression2SetterPrinter.SETTER_PARAM + "_$";
         String value = Expression2SetterPrinter.SETTER_PARAM;
+        String conv = "";
+        if (arg.getGUIArgValue().isPresentExpression()) {
+          // example: `Date val_$ = string2Date(val)`
+          conv = printType(createTypeAndAddImports(typeSTE)) + " " + value + " = "
+              + getConversion(util.getType(arg.getGUIArgValue().getExpression()), typeSTE)
+              .apply(target);
+        }
         getCD4C().addMethod(
             clazz, getArgSetterWithConversionTemplate(),
-            type, name, nullCheck, setterValue,
-            getConversionStatement(
-                typeSTE, arg.getGUIArgValue(), false, target, value
-            ), params
+            type, name, nullCheck, setterValue, conv, params
         );
       }
     }
@@ -904,21 +921,6 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
   }
 
   // TODO AGe: replace with RTE functions and specific components
-  public String getConversionStatement(
-      SymTypeExpression left, ASTGUIArgValue right, boolean getter, String target, String param
-  ) {
-    Function<String, String> conv = s -> s;
-    if (right.isPresentExpression()) {
-      if (getter) {
-        conv = getConversion(left, util.getType(right.getExpression()));
-      }
-      else {
-        conv = getConversion(util.getType(right.getExpression()), left);
-      }
-    }
-    return "var " + param + " = " + conv.apply(target);
-  }
-
   public Function<String, String> getConversion(
       SymTypeExpression left, SymTypeExpression right
   ) {
@@ -1038,6 +1040,10 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
   protected Function<String, String> string2OptionalEnumConversion(String type) {
     return s -> "Optional.of(" + type + ".valueOf(" + s + ")" + ")";
+  }
+
+  protected String printType(ASTMCType type) {
+    return new CdUtilsPrinter().printType(type);
   }
 
   protected String getInitDefaultParamTemplate() {

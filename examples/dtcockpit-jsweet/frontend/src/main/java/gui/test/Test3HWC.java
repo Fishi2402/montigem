@@ -1,15 +1,14 @@
 package gui.test;
 
+import dtcockpit.Project;
 import umlp.backendrte.common.GemList;
 import umlp.jsweet.extension.annotation.Component;
-
-import dtcockpit.Project;
 
 
 @Component
 public class Test3HWC extends Test3HWCTOP {
-  public Test3HWC(GemList projects) {
-    super(projects);
+  public Test3HWC(GemList<Project> projects) {
+    setProjects(projects);
   }
 
   // TODO: https://git.rwth-aachen.de/monticore/monticore/-/issues/3971
@@ -21,12 +20,12 @@ public class Test3HWC extends Test3HWCTOP {
 //  }
 
   @Override
-  public int getInnerMaxValue() {
+  public Integer getInnerMaxValue() {
     return 42;
   }
 
   @Override
-  public int getInnerMinValue() {
+  public Integer getInnerMinValue() {
     return 42;
   }
 }
