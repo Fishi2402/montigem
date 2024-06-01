@@ -17,7 +17,6 @@ export class FriendsOf extends FriendsOfComponent {
 
   public override updateFriendsList(): Event<Person> {
     return newFriend => {
-      console.error(newFriend, this.getPerson())
       this.getPerson().addFriends2(newFriend)
     };
   }

@@ -325,10 +325,31 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       List<ASTCDParameter> params = getIterationItemParameters(arg);
 
       if (typeSTE.printFullName().startsWith(BuiltInTypes.EVENT.getQName())) {
+        ASTMCType innerType;
+        if (typeSTE.isGenericType()) {
+          if (typeSTE.asGenericType().sizeArguments() != 1) {
+            Log.error("0x0001F Found Event-typed argument with multiple type parameters."
+                + " Event type expects a single type parameter, e.g. Event<Integer>."
+                + " At " + arg.get_SourcePositionStart().toString()
+                + " - " + arg.get_SourcePositionEnd().toString()
+            );
+            return;
+          }
+          innerType = createTypeAndAddImports(typeSTE.asGenericType().getArgument(0));
+        }
+        else {
+          Log.warn("0x00020 Found argument with an underspecified Event type."
+              + " Interpreting as Event<Object>."
+              + " At " + arg.get_SourcePositionStart().toString()
+              + " - " + arg.get_SourcePositionEnd().toString()
+          );
+          innerType = MCTypeFacade.getInstance().createQualifiedType(BuiltInTypes.OBJECT.getName());
+        }
+
         // add event caller
         getCD4C().addMethod(
             clazz, getEventCallerTemplate(),
-            name, getterValue, params
+            innerType, name, getterValue, params
         );
       }
       else {

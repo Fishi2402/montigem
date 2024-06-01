@@ -36,5 +36,5 @@ page CreatePerson(Person person, Address address, boolean showEmployed = true, E
     ])
   );
   createButton@GemButton(label = "Create person", leftClick = create(person));
-  @GemButton(label = "Cancel", leftClick = cancel);
+  @GemButton(label = "Cancel", leftClick = doCancel());
 }

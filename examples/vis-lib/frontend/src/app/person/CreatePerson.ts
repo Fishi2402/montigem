@@ -2,6 +2,7 @@
 
 import { CreatePersonComponent, config } from '@src/person/CreatePersonComponent';
 import { Component } from '@angular/core';
+import { Event } from '@umlp/common';
 
 @Component({
   standalone: true,
@@ -21,6 +22,10 @@ export class CreatePerson extends CreatePersonComponent {
     this.getPerson().setAboutMe("");
     super.createButtonLeftClick();
     this.newPerson.emit(this.getPerson());
+  }
+
+  public override doCancel(): Event<void> {
+    return () => this.cancel.emit(this.getPerson());
   }
 
   foo() {

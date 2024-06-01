@@ -1,9 +1,11 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("type", "name", "getterName")}
 <#assign tsType = cdPrinter.printType(type)>
+<#assign tmpVar = "tmp_$">
 
 public override ${getterName}(): ${tsType} {
-  const res = super.${getterName}();
-  this.${name}.emit(null);
-  return res;
+  return ${tmpVar} => {
+    super.${getterName}();
+    this.${name}.emit(${tmpVar});
+  }
 }
