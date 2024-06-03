@@ -11,66 +11,73 @@ import gui.Navigation;
 import FunctionStructure4Fenix.Function;
 import FunctionStructure4Fenix.Port;
 import FunctionStructure4Fenix.Value;
+import FunctionStructure4Fenix.Channel;
 
 page FunctionDetail (Function f) {
-  @GemRow(width = "100%", hAlign = "space-evenly", vAlign = "space-evenly", components = [
+  @GemRow(width = "100%", colGap="10px", components = [
     @Navigation(),
     @GemColumn(width = "100%", component =
       @GemCard(title = f.name, component =
-        @GemRow(width = "100%", colGap="10px", components = [
-          @GemColumn(width = "150px",
-            component = @GemRow(components = [
-              // superFunctionText@GemText(value = "Owning Function "),
-              superFunction@GemButton(label = "Owning Function", leftClick = goToFunctionDetailsSuper(f))
+        @GemColumn(width = "100%", components = [
+          @guard(f.owner != null) {
+            @GemRow(components = [
+              owningFunctionButton@GemButton(label = "Back To Owning Function", leftClick = goToFunctionDetailsSuper(f)),
+              @GemText(value = f.owner.name),
+              @GemButton(label = "Change Name", leftClick = changeOwnerName(f))
+            ]);
+          },
+          @guard(f.owner == null) {
+            @GemRow(components = [
+              @GemText(value = "Owning Function: This is this outer-most function")
+            ]);
+          },
+          @GemRow(width = "100%", colGap="10px", components = [
+            ports@GemColumn(width = "auto", components = [
+              @GemText(value = "Ports", size = "large"),
+              @iterate(Port p : f.in) {
+                @GemText(value = "Input Port " + " " + p.name);
+              },
+              @iterate(Port p : f.out) {
+                @GemText(value = "Output Port " + p.name);
+              }
+            ]),
+            datatypes@GemColumn(width = "auto", components = [
+              @GemText(value = "Datatype", size = "large"),
+              @iterate(Port p : f.in) {
+                @GemText(value = p.channel.category.type.mctype);
+              },
+              @iterate(Port p : f.out) {
+                @GemText(value = p.channel.category.type.mctype);
+              }
+            ]),
+            channelValues@GemColumn(width = "auto", components = [
+              @GemText(value = "Values", size = "large"),
+              @iterate(Port p : f.in) {
+                @GemRow(components = [
+                  // @GemText(value = p.name + " : "),
+                  // Klappt noch nicht, weil immer Promises zurückgegeben werden
+                  //              @iterate(Value v : p.channel.functionStream.value) {
+                  //                valueText@GemText(value = "");
+                  //              }
+                  valueTextIn@GemText(value = "")
+                ]);
+              },
+              @iterate(Port p : f.out) {
+                @GemRow(components = [
+                  valueTextOut@GemText(value = "?")
+                ]);
+              }
+            ]),
+            subFunctions@GemColumn(width = "auto", components = [
+              @GemText(value = "Sub Functions", size = "large"),
+              @iterate(Function sf : f.subFunction) {
+                @GemRow(width = "auto", rowGap="10px", colGap="10px", components = [
+                  @GemText(value = sf.name),
+                  @GemButton(label = "Details", leftClick = goToFunctionDetailsSub(sf))
+                ]);
+              }
             ])
-          ),
-          ports@GemColumn(width = "30%", components = [
-            @GemText(value = "Ports", size = "large"),
-            @iterate(Port p : f.in) {
-              @GemText(value = "Input Port " + p.channel.category.type.mctype + " " + p.name);
-            },
-            @iterate(Port p : f.out) {
-              @GemText(value = "Output Port " + p.name);
-            }
-          ]),
-          channels@GemColumn(width = "40%", components = [
-            @GemText(value = "Channels", size = "large"),
-            @iterate(Port p : f.in) {
-              @GemRow(components = [
-                @GemText(value = p.name + " : "),
-                // Klappt noch nicht, weil immer Promises zurückgegeben werden
-                //              @iterate(Value v : p.channel.functionStream.value) {
-                //                valueText@GemText(value = "");
-                //              }
-                valueTextIn@GemText(value = "")
-              ]);
-            },
-            @iterate(Port p : f.out) {
-              @GemRow(components = [
-                @GemText(value = p.name + " : "),
-                valueTextOut@GemText(value = "")
-              ]);
-            }
-          ]),
-          subFunctions@GemColumn(width = "15%", components = [
-            @GemText(value = "Sub Functions", size = "large"),
-            @iterate(Function sf : f.subFunction) {
-              @GemRow(width = "auto", rowGap="10px", colGap="10px", components = [
-                @GemText(value = sf.name),
-                @GemButton(label = "Details", leftClick = goToFunctionDetailsSub(sf))
-              ]);
-            }
           ])
-          //,
-          //@guard(f.owner != null) {
-          //  superFunction@GemColumn(width = "15%", components = [
-          //    @GemText(value = "Super Function"),
-          //    @GemRow(width = "auto", rowGap="10px", colGap="10px", components = [
-          //      @GemText(value = f.owner.name),
-          //      @GemButton(label = "Details", leftClick = goToFunctionDetailsSuper(f.owner))
-          //    ])
-          //  ]);
-          //}
         ])
       )
     )
