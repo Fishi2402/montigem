@@ -138,17 +138,19 @@ export class Gem<E extends GemIdentifiable> implements GemIdentifiable {
     return this.loadingState;
   }
 
-  public async isPresent(): Promise<boolean> {
-    await this.loadIfRequired();
-    return this.loadingState === LoadingState.LOADED && this.object != null;
+  public isPresent(): Promise<boolean> {
+    return this.loadIfRequired().then(_ => {
+      return this.loadingState === LoadingState.LOADED && this.object != null
+    });
   }
 
-  public async get(): Promise<E> {
-    await this.loadIfRequired();
-    if (!await this.isPresent()) {
-      Log.error("0xE2921 Object was not loaded: " + LoadingState["_$wrappers"][this.loadingState].toString());
-    }
-    return this.object;
+  public get(): Promise<E> {
+    return this.loadIfRequired().then(_ => this.isPresent()).then((isPresent: boolean) => {
+      if (!isPresent) {
+        Log.error("0xE2921 Object was not loaded: " + this.loadingState.toString());
+      }
+      return this.object;
+    });
   }
 
   public set(object: E) {
@@ -159,16 +161,19 @@ export class Gem<E extends GemIdentifiable> implements GemIdentifiable {
     }
   }
 
-  async loadIfRequired() {
-    if (this.loadingState === LoadingState.NOT_YET_LOADED) {
-      const result: LoadResult<E> = await this.loadFunction();
-      // const result: LoadResult<E> = (target => (typeof target === 'function') ? target() : (<any>target).get())(this.loadFunction);
-      if (result.isPresent()) {
-        this.set(result.get());
-      } else {
-        this.loadingState = result.loadingState;
-      }
+  loadPromise: Promise<LoadResult<E>>;
+  loadIfRequired(): Promise<LoadResult<E>> {
+    if (this.loadPromise == undefined && this.loadingState === LoadingState.NOT_YET_LOADED) {
+      this.loadPromise = Promise.resolve(this.loadFunction()).then((result: LoadResult<E>) => {
+        if (result.isPresent()) {
+          this.set(result.get());
+        } else {
+          this.loadingState = result.loadingState;
+        }
+        return result;
+      });
     }
+    return this.loadPromise;
   }
 
   /**

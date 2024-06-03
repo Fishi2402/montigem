@@ -74,7 +74,7 @@ import java.util.stream.Collectors;
 
 public class GUIGeneratorUtil {
 
-  public static final String SYNCHRONIZED_SUFFIX = "_synchronized";
+  public static final String SYNCHRONIZED_SUFFIX = "__synchronized";
   public static final String NG_TEMPLATE_SUFFIX = "Tpl";
   public static final String NG_TEMPLATE_ELSE_BLOCK_SUFFIX = "Else";
   public static final String HTML_ITERATE_INDEX_PREFIX = "c";
@@ -495,8 +495,7 @@ public class GUIGeneratorUtil {
   @SuppressWarnings("unused") // Component.ftl
   @Deprecated(forRemoval = true)
   public String getIsSynchronizedSuffix() {
-    if (true)return ""; // no longer required due to | async
-    return UMLPGeneratorConfig.getInstance().isGenerateTypescript() ? SYNCHRONIZED_SUFFIX : "";
+    return UMLPGeneratorConfig.getInstance().isGenerateTypescript() ? "" : SYNCHRONIZED_SUFFIX;
   }
 
   public String gui2cdAttrSetterName(String componentId, String argName) {
