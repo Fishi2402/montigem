@@ -384,10 +384,10 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         String value = Expression2SetterPrinter.SETTER_PARAM;
         String conv = "";
         if (arg.getGUIArgValue().isPresentExpression()) {
+          SymTypeExpression left = util.getType(arg.getGUIArgValue().getExpression());
           // example: `Date val_$ = string2Date(val)`
-          conv = printType(createTypeAndAddImports(typeSTE)) + " " + value + " = "
-              + getConversion(util.getType(arg.getGUIArgValue().getExpression()), typeSTE)
-              .apply(target);
+          conv = printType(createTypeAndAddImports(left)) + " " + value + " = "
+              + getConversion(left, typeSTE).apply(target);
         }
         getCD4C().addMethod(
             clazz, getArgSetterWithConversionTemplate(),

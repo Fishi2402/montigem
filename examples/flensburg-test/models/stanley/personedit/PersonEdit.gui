@@ -43,7 +43,7 @@ page PersonEdit(Person p) {
           // In diesem Fall ist die Implementierung der Methode "decreaseAge" in "PersonEditGUI.java".
           // Manche Methoden brauchen Parameter, eine synthetische Methode wuerde nicht immer reichen,
           // deswegen wird eine Methode explizit importiert und aufgerufen
-          @GemButton(label = "Decrease", leftClick = decreaseAge),
+          @GemButton(label = "Decrease", leftClick = decreaseAge(p)),
 
           // Button mit Text "Ok" und Navigation auf eine andere Seite
           // (und die Logik dafür ist generiert und verfügbar)
