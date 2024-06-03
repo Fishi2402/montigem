@@ -187,7 +187,10 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
     if (util.getDomainListInnerType(typeSTE).isPresent()
         && !util.isEnumType(util.getDomainListInnerType(typeSTE).get())) {
       if (!removedObserver) {
-        removeObserver();
+        // TODO AGe: remove observer regardless
+        if (!UMLPGeneratorConfig.getInstance().isUseJsweet()) {
+          removeObserver();
+        }
         removedObserver = true;
       }
     }
