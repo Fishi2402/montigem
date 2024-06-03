@@ -10,7 +10,7 @@ import { SimpleResult } from "../../command/SimpleResult";
 import { LoadingState } from "../../common/LoadingState";
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { Result } from "../../common/Result";
-import { first, firstValueFrom, from, Subject, take } from "rxjs";
+import {first, firstValueFrom, from, retry, Subject, take, timer, BehaviorSubject, tap, filter, bufferWhen} from "rxjs";
 
 export class ClientCommandWebsocketCommunication implements ClientCommandCommunication {
   public static MAX_TRIES: number = 10;
@@ -30,6 +30,8 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
   private commandResultObserver: Array<CommandResultReceiveObserver> = [];
 
   private socket: WebSocketSubject<any>;
+  private outgoingMessages = new Subject<any>();
+  private connectionStatus = new BehaviorSubject<boolean>(false);
   private established: boolean = false;
 
   /*
@@ -108,14 +110,53 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
   }
 
   public init(): Promise<number> {
-    this.socket = webSocket(this.uri);
-    this.socket.subscribe({
-      next: msg => this.handleTextMessage(msg), 
-      error: err => console.log(err), 
-      complete: () => this.afterConnectionClosed() 
-    })
+    this.socket = webSocket({
+      url: this.uri,
+      openObserver: {
+        next: () => this.connectionStatus.next(true)
+      },
+      closeObserver: {
+        next: () => this.connectionStatus.next(false)
+      }
+    });
+    const retrySocket = this.socket.pipe(
+      retry({ // retry, but with back off of 2^n * backoffInterval (and at most 10s)
+        delay: (_, retryCount:number) => {
+          const backoffInterval = 400;
+          return timer(Math.min(10*1000, Math.pow(2, retryCount - 1) * backoffInterval));
+        }
+      })
+    );
 
-    return firstValueFrom(this.socket);
+    // Outgoing message queue
+    // Buffer messages when WebSocket is not connected, flushed when it reconnects
+    const bufferedMessages$ = this.outgoingMessages.pipe(
+      filter( () => !this.connectionStatus.value), // only if not connected
+      bufferWhen(() => this.connectionStatus.pipe(filter(isOpen => isOpen))) // flush them when it reconnects
+    );
+
+    // Subscription to send messages through the directly WebSocket only if it's open
+    this.outgoingMessages.pipe(
+      filter(() => this.connectionStatus.value), // Only if open
+      tap(message => {
+        this.socket.next(message);
+      })
+    ).subscribe();
+    // Subscribe to flush buffered messages when connection is re-established
+    bufferedMessages$.subscribe(messages => {
+      messages.forEach(message => {
+        this.socket.next(message);
+      });
+    });
+
+
+    retrySocket.subscribe({
+      next: msg => this.handleTextMessage(msg),
+      error: err => console.log(err),
+      complete: () => this.afterConnectionClosed()
+    });
+
+    return firstValueFrom(retrySocket);
   }
 
   // TODO AGe: any message
@@ -199,7 +240,7 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
     // while (tries < ClientCommandWebsocketCommunication.MAX_TRIES) {
     // TODO AGe: what?
     let payload = JSON.parse(message);
-    this.socket.next(payload);
+    this.outgoingMessages.next(payload);
     // }
 
     return true;
