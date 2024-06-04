@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { HostBinding, Output } from '@angular/core';
+import { HostBinding, Output, TemplateRef } from '@angular/core';
 import { Component } from '@angular/core';
 import { EventEmitter } from '@angular/core';
 import { Input } from '@angular/core';
@@ -54,6 +54,9 @@ export class GemButton {
   public set label(label: string) {
     this._label = label;
   }
+
+  @Input()
+  public content: TemplateRef<any>[];
 
   public get classes(): string[] {
     return this._classes;
