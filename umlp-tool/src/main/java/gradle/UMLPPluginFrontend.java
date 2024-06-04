@@ -88,20 +88,21 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
     // and Hot-Reload aborts
     TaskProvider<Sync> syncDomainTask = createSyncDomainTask(project, frontendSetupTask);
     TaskProvider<Sync> syncGuiTask = createSyncGuiTask(project, frontendSetupTask);
+    TaskProvider<Sync> syncTSHWC = createSyncTSHWC(project, frontendSetupTask);
 
     createInterTaskDependencies(project, frontendSetupTask, domainSymbolGenTask, frontendDomainTask,
         java2TypeScriptConfigTaskTask, syncJsweetConfigTask, frontendDomainJ2TSTask,
         frontendGuiTask, frontendGUIJ2TSTask, java2TypeScriptAdditionals,syncDomainTask,
-        syncGuiTask, j2ts, local);
+        syncGuiTask, syncTSHWC, j2ts, local);
     disableUnusedTasks(project, frontendSetupTask, domainSymbolGenTask, frontendDomainTask,
         java2TypeScriptConfigTaskTask, syncJsweetConfigTask, frontendDomainJ2TSTask,
         frontendGuiTask, frontendGUIJ2TSTask, java2TypeScriptAdditionals, syncDomainTask,
-        syncGuiTask, j2ts);
+        syncGuiTask, syncTSHWC, j2ts);
 
 
     // Lifecycle task "generate"
     Task generateTask = createGenerateTask(project, j2ts, frontendGUIJ2TSTask, syncDomainTask,
-        syncGuiTask, syncJsweetConfigTask, frontendGuiTask);
+        syncGuiTask, syncJsweetConfigTask, syncTSHWC, frontendGuiTask);
 
     // Lifecycle task "continuous". Intended use is with "--continuous" flag of gradle & HotReload
     createContinuousTask(project, generateTask);
@@ -319,6 +320,19 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
         });
   }
 
+  private TaskProvider<Sync> createSyncTSHWC(Project project,
+      TaskProvider<FrontendSetup> frontendSetupTask) {
+    return project.getTasks()
+        .register("SYNC_TSHWC", Sync.class, syncTask -> {
+          syncTask.from(new File(project.getProjectDir(), "src/main/ts"));
+          syncTask.into(
+              Path.of(frontendSetupTask.get().getOutput().getAsFile().get().getAbsolutePath(),
+                  "build", "appgui").toFile());
+          syncTask.exclude("**/*.java");
+          syncTask.getPreserve().include("**");
+        });
+  }
+
   private TaskProvider<Sync> createSyncJsweetConfigTask(Project project) {
     return project.getTasks()
         .register("SYNC_" + UMLP_FRONTEND_DOMAIN_J2TS_CONFIG_TASK_NAME, Sync.class, syncTask -> {
@@ -336,7 +350,8 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
       TaskProvider<UMLPGuiGenTask> frontendGuiTask,
       TaskProvider<UMLPJava2TypeScriptTask> frontendGUIJ2TSTask,
       TaskProvider<UMLPJava2TypeScriptAdditionalsTask> java2TypeScriptAdditionals,
-      TaskProvider<Sync> syncDomainTask, TaskProvider<Sync> syncGuiTask, boolean j2ts) {
+      TaskProvider<Sync> syncDomainTask, TaskProvider<Sync> syncGuiTask,
+      TaskProvider<Sync> syncTSHWC, boolean j2ts) {
     if (j2ts) {
       frontendDomainTask.configure(umlpTask -> {
         umlpTask.setEnabled(false);
@@ -369,7 +384,8 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
       TaskProvider<UMLPGuiGenTask> frontendGuiTask,
       TaskProvider<UMLPJava2TypeScriptTask> frontendGUIJ2TSTask,
       TaskProvider<UMLPJava2TypeScriptAdditionalsTask> java2TypeScriptAdditionals,
-      TaskProvider<Sync> syncDomainTask, TaskProvider<Sync> syncGuiTask, boolean j2ts, boolean local) {
+      TaskProvider<Sync> syncDomainTask, TaskProvider<Sync> syncGuiTask,
+      TaskProvider<Sync> syncTSHWC, boolean j2ts, boolean local) {
     frontendSetupTask.configure(umlpTask -> { });
     domainSymbolGenTask.configure(umlpTask -> {
       umlpTask.dependsOn(frontendSetupTask.get());
@@ -427,6 +443,9 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
         umlpTask.dependsOn(frontendGuiTask, frontendSetupTask);
       }
     });
+    syncTSHWC.configure(umlpTask -> {
+      umlpTask.dependsOn(syncGuiTask, frontendSetupTask);
+    });
   }
 
   private static void createContinuousTask(Project project, Task generateTask) {
@@ -437,12 +456,13 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
   @NotNull
   private static Task createGenerateTask(Project project, boolean j2ts,
       TaskProvider<?> frontendGUIJ2TSTask, TaskProvider<?> syncDomainTask,
-      TaskProvider<?> syncGuiTask, TaskProvider<?> syncJsweetConfigTask, TaskProvider<UMLPGuiGenTask> frontendGuiTask) {
+      TaskProvider<?> syncGuiTask, TaskProvider<?> syncJsweetConfigTask,
+      TaskProvider<Sync> syncTSHWC, TaskProvider<UMLPGuiGenTask> frontendGuiTask) {
     Task generateTask = project.getTasks().create("generate");
     if (j2ts) {
-      generateTask.dependsOn(frontendGUIJ2TSTask, syncDomainTask, syncGuiTask, syncJsweetConfigTask);
+      generateTask.dependsOn(frontendGUIJ2TSTask, syncDomainTask, syncGuiTask, syncTSHWC, syncJsweetConfigTask);
     } else {
-      generateTask.dependsOn(frontendGuiTask, syncDomainTask, syncGuiTask);
+      generateTask.dependsOn(frontendGuiTask, syncDomainTask, syncGuiTask, syncTSHWC);
     }
     return generateTask;
   }
