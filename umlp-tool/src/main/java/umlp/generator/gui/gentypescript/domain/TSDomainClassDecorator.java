@@ -138,13 +138,13 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
         mutatorDecorator, service);
     for (ASTCDAttribute attribute : attrList) {
       List<ASTCDMethod> methods;
-      if(attribute.getModifier().isDerived()) {
-        // Workaround: do not generate accessor at all
-        // JSweet will replace this entirely => minimal effort
-       methods = mutatorDecorator.decorate(attribute);
-      }else{
+//      if(attribute.getModifier().isDerived()) {
+//        // Workaround: do not generate accessor at all
+//        // JSweet will replace this entirely => minimal effort
+//       methods = mutatorDecorator.decorate(attribute);
+//      }else{
         methods = methodDecorator.decorate(attribute);
-      }
+//      }
       // methods.forEach(m -> m.getModifier().setAbstract(isInterface));
       //methods.forEach(m -> m.getModifier().setDerived(isInterface));
       // TODO AGe: why is it getting set to abstract?
