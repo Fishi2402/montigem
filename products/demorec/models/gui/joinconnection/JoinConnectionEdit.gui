@@ -53,8 +53,9 @@ page JoinConnectionEdit(Process p, ProcessStep step, JoinConnection connection, 
                       inputType = "dropdown",
                       options = null,
                       entry = null,
-                      keyRelease = tryToAddComponent),
-                  addComponent@GemButton(label = "Add Component", leftClick = connectSelectedComponent, disabled=false)
+                      keyRelease = tryToAddComponent()
+                  ),
+                  addComponent@GemButton(label = "Add Component", leftClick = connectSelectedComponent(), disabled=false)
                 ]
               ),
 
@@ -73,12 +74,12 @@ page JoinConnectionEdit(Process p, ProcessStep step, JoinConnection connection, 
               newCompGuard@guard(true) {
                 createComponentDialog@GemColumn(
                   components=[
-                    @ComponentCreate(createComponent=addNewComponent)
+                    @ComponentCreate(createComponent=addNewComponent())
                   ]
                 );
               },
 
-              @GemButton(label = "Back to Step Editing", leftClick = backToStepEditing)
+              @GemButton(label = "Back to Step Editing", leftClick = backToStepEditing())
             ]
         )
       )

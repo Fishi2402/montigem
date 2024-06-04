@@ -24,7 +24,7 @@ component Response(Post post){
           @GemRow(hAlign = "left", vAlign = "bottom", height = "100%" , components = [
             @GemRow(width = "640px", vAlign = "bottom", height = "100%" , hAlign = "left",  component = @GemText(value = "[ " + post.author.username + post.title )),
             @GemRow(width = "130px", vAlign = "bottom", height = "100%" ,colGap = "5px", hAlign = "right", components = [
-              @GemButton(label = "❌", leftClick = deletePost, disabled = false)
+              @GemButton(label = "❌", leftClick = deletePost(), disabled = false)
             ])
           ]),
 

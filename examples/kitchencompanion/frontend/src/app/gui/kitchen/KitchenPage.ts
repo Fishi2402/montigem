@@ -17,16 +17,6 @@ import {User} from '@src/kitchencompanion/User';
 })
 export class KitchenPage extends KitchenPageComponent  {
 
-  public ngOnInit(): void {
-
-    KitchenCompanionManager.getUserList().then(gemPromiseRes => {
-      this.users = gemPromiseRes;
-    });
-
-    super.ngOnInit();
-  }
-
-
 }
 
 

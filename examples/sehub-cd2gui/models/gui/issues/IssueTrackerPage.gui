@@ -27,7 +27,7 @@ page IssueTrackerPage(List<Issue> issues) {
             issues = issues,
             dropId = "todoList",
             canDropTo = ["doingList", "doneList"],
-            drop = updateIssue
+            drop = updateIssue()
           )
         ),
 
@@ -37,7 +37,7 @@ page IssueTrackerPage(List<Issue> issues) {
             issues = issues,
             dropId = "doingList",
             canDropTo = ["todoList", "doneList"],
-            drop = updateIssue
+            drop = updateIssue()
           )
         ),
 
@@ -47,7 +47,7 @@ page IssueTrackerPage(List<Issue> issues) {
             issues = issues,
             dropId = "doneList",
             canDropTo = ["todoList", "doingList"],
-            drop = updateIssue
+            drop = updateIssue()
           )
         )
       ])

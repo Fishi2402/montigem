@@ -28,10 +28,6 @@ export class UserSettings extends UserSettingsComponent {
     this.currentUser = SehubSecurityManager.getCurrentUser();
     this.currentUserRoutingId = SehubSecurityManager.getCurrentUserIdOrNull();
 
-    SehubManager.getUserList().then(gemPromiseRes => {
-      this.users = gemPromiseRes;
-    });
-
     super.ngOnInit();
   }
 
@@ -44,7 +40,7 @@ export class UserSettings extends UserSettingsComponent {
       return true;
     }
 
-    let curUser: User = this.getUsers().toArray().filter(user =>
+    let curUser: User = this.getUsers().filter(user =>
       !!user && this.getCurrentUser().getUsername() === user.getUsername())[0];
 
     if (!!curUser && (SehubRole[curUser.getRole()] === "OWNER" ||
@@ -63,19 +59,21 @@ export class UserSettings extends UserSettingsComponent {
     this.changePasswordValue = value;
   }
 
-  public  changePassword (event: any): void {
-    if(this.changePasswordValue === null || this.changePasswordValue === ""){
-      alert("Password can not be empty!");
-    }else{
-      let gemId = SehubSecurityManager.getCurrentUser().getGemId();
-      if(gemId >= 0){
-        CommandManager.executeCommand(new User_setPassword(gemId, this.changePasswordValue));
-        this.changePasswordValue = "";
+  public  changePassword (): (arg: void) => void {
+    return $ => {
+      if(this.changePasswordValue === null || this.changePasswordValue === ""){
+        alert("Password can not be empty!");
       }else{
-        console.error("Can not find gemId of current user!")
-        alert("Internal error. Please log out and log in again")
-      }
+        let gemId = SehubSecurityManager.getCurrentUser().getGemId();
+        if(gemId >= 0){
+          CommandManager.executeCommand(new User_setPassword(gemId, this.changePasswordValue));
+          this.changePasswordValue = "";
+        }else{
+          console.error("Can not find gemId of current user!")
+          alert("Internal error. Please log out and log in again")
+        }
 
-    }
+      }
+    };
   }
 }

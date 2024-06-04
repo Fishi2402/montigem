@@ -31,7 +31,7 @@ export class UserSettings extends UserSettingsComponent {
     super.ngOnInit();
   }
 
-  public inviteUserLeftClick() {
-    this.router.navigate(['gui/login/RegistrationPage']);
+  public inviteUserLeftClick(): (arg: void) => void {
+    return $ => this.router.navigate(['gui/login/RegistrationPage']);
   }
 }

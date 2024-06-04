@@ -84,12 +84,27 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
   }
 
   @Override
+  protected String getConvertedValueAssignment(String type, String varName, String value) {
+    return "const" + " " + varName + ": " + type + " = " + value;
+  }
+
+  @Override
   protected Function<String, String> date2StringConversion() {
-    return s -> s + "?.toDateString()";
+    return dateTime2StringConversion();
   }
 
   @Override
   protected Function<String, String> string2DateConversion() {
+    return string2DateTimeConversion();
+  }
+
+  @Override
+  protected Function<String, String> dateTime2StringConversion() {
+    return s -> s + "?.toDateString()";
+  }
+
+  @Override
+  protected Function<String, String> string2DateTimeConversion() {
     getCD4C().addImport(clazz, "mc.fenix.common.Conversion");
     return s -> "Conversion.string2Date(" + s + "); if (val == null) return";
   }
@@ -114,6 +129,7 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
     return s -> type + "[" + s + " as keyof typeof " + type + "]";
   }
 
+  /*
   @Override
   protected Function<String, String> optionalNumber2StringConversion() {
     return s -> s + " != null ? " + s + "+ ''" + " : ''";
@@ -132,6 +148,11 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
   @Override
   protected Function<String, String> string2OptionalEnumConversion(String type) {
     return s -> s + " in " + type + "? " + type + "[" + s + ".toUpperCase()] : null";
+  }
+  /**/
+
+  protected Function<String, String> optional2XConversion(Function<String, String> conv) {
+    return s -> s + " != null ? " + conv.apply(s) + " : null";
   }
 
   @Override
@@ -152,6 +173,11 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
   @Override
   protected String getAddDomainListTemplate() {
     return "umlp.gui2ts.GUI2TSAddDomainList";
+  }
+
+  @Override
+  protected String getInitParamSingletonTemplate() {
+    return "umlp.gui2ts.GUI2TSInitParamSingleton";
   }
 
   @Override

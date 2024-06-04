@@ -18,12 +18,12 @@ component IssueEntry(Issue issue) {
       @GemColumn(hAlign = "right", rowGap = "10px", components = [
         @GemRow(colGap = "7px", width = "100%", hAlign = "center", components = [
           @guard(issue.state != IssueState.UNASSIGNED) {
-            @GemButton(label = "<<<", leftClick = demote);
+            @GemButton(label = "<<<", leftClick = demote());
           },
-          @GemButton(label = "Edit", leftClick = editIssue),
-          @GemButton(label = "Delete", leftClick = deleteIssue),
+          @GemButton(label = "Edit", leftClick = editIssue()),
+          @GemButton(label = "Delete", leftClick = deleteIssue()),
           @guard(issue.state != IssueState.DONE) {
-            @GemButton(label = ">>>", leftClick = promote);
+            @GemButton(label = ">>>", leftClick = promote());
           }
         ]),
         @GemText(value = issue.description)

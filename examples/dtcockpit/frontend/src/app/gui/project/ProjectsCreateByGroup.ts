@@ -17,13 +17,14 @@ export class ProjectsCreateByGroup extends ProjectsCreateByGroupComponent {
 
   private error: string = "";
 
-  public createGroup(event: any): void {
-    if (!this.checkBuild()) return;
-    DtcockpitManager.groupBuilder().then(gemPromiseRes => {
-      this.build();
-      this.group = gemPromiseRes;
-    });
-
+  public createGroup(event: any): (arg: void) => void {
+    return $ => {
+      if (!this.checkBuild()) return;
+      DtcockpitManager.groupBuilder().then(gemPromiseRes => {
+        this.build();
+        this.group = gemPromiseRes;
+      });
+    }
   }
 
   protected checkBuild(): boolean {
@@ -67,7 +68,7 @@ export class ProjectsCreateByGroup extends ProjectsCreateByGroupComponent {
     return this.error;
   }
 
-  public override navigateBack(): void {
-    this.router.navigate(['gui', 'projects']);
+  public override navigateBack(): (arg: void) => void {
+    return $ => this.router.navigate(['gui', 'projects']);
   }
 }

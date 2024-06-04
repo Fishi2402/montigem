@@ -43,7 +43,7 @@ page Bingo(List<Message> messages, User user) {
           @iterate(Message m : messages){ messageEntry@GemText(value = m.text); }
         ]),
         newMessage@GemTextInput(labelText = "Add Text", inputType = "text"),
-        chat@GemButton(label = "Send", leftClick = addChat)
+        chat@GemButton(label = "Send", leftClick = addChat())
       ])
     )
   ]);

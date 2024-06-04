@@ -15,7 +15,7 @@ import { PersonOverviewComponent, config } from '@src/gui/person/PersonOverviewC
 export class PersonOverview extends PersonOverviewComponent {
 
   public override init() {
-    this.gemTable6Columns = <any[]>[
+    this.gemTable6Columns_0 = <any[]>[
       { prop: "_nachname", name: "Surname" },
       { prop: "_vorname", name: "Name" },
       {

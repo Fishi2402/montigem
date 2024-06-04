@@ -34,10 +34,10 @@ export class WeatherView extends WeatherViewComponent {
     if (!this.getForecasts()) {
       return null;
     }
-    let forecasts = this.getForecasts().toArray();
+    let forecasts = this.getForecasts();
 
     const list = forecasts.map(f => f.getDate()).sort((a, b) => a.getTime() - b.getTime());
-    const xAxis = Array.from(new Set(list.map(d => d.toDateString())));
+    const xAxis: string[] = Array.from(new Set(list.map(d => d.toDateString())));
 
     const m: Map<string, number[]> = new Map();
     for (const f of forecasts) {
@@ -76,7 +76,7 @@ export class WeatherView extends WeatherViewComponent {
       return null;
     }
 
-    const result = this.getForecasts().toArray();
+    const result = this.getForecasts();
     const hash = JSON.stringify(result);
     if (this.cache.table.hash != hash) {
       this.cache.table.hash = hash;
@@ -86,15 +86,15 @@ export class WeatherView extends WeatherViewComponent {
     return this.cache.table.data;
   }
 
-  public override navigateToUpdatePage(row: Forecast): void {
-    this.router.navigate(["..", "gui", "ForecastUpdate", row.getGemId()]);
+  public override navigateToUpdatePage(): (arg: Forecast) => void {
+    return (row: Forecast) => this.router.navigate(["..", "gui", "ForecastUpdate", row.getGemId()]);
   }
 
   public override getWindspeedData(): GemGaugeChartData {
     if (!this.getForecasts()) {
       return null;
     }
-    let forecasts = this.getForecasts().toArray();
+    let forecasts = this.getForecasts();
     const sum = forecasts.reduce((acc, cur) => acc + cur.getWindspeed(), 0);
 
     let entries = new GemGaugeChartEntry();
@@ -120,7 +120,7 @@ export class WeatherView extends WeatherViewComponent {
     if (!this.getForecasts()) {
       return null;
     }
-    let forecasts = this.getForecasts().toArray();
+    let forecasts = this.getForecasts();
     const sum = forecasts.reduce((acc, cur) => acc + cur.getRealtiveHumidity(), 0);
 
     let entries = new GemGaugeChartEntry();

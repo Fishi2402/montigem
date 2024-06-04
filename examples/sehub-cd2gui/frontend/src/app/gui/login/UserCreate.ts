@@ -23,17 +23,15 @@ export class UserCreate extends UserCreateComponent {
 
   private error: string = "";
 
-  protected users: GemList<User>;
+  protected users: User[];
 
   public static email: RegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
   private permutation : number[];
   private entries : BingoEntry[];
 
-  public constructor(
-      protected location: Location,
-      protected router: Router) {
-    super(router);
+  public constructor(protected location: Location) {
+    super();
   }
 
   public ngOnInit(): void {
@@ -47,31 +45,33 @@ export class UserCreate extends UserCreateComponent {
 
   }
 
-  public override createUser(event: any): void {
-    SehubManager.getBingoEntryList().then(entryList => {
-      entryList.loadAll().then(e => {
-        this.entries = e;
+  public override createUser(): (arg: void) => void {
+    return $ => {
+      SehubManager.getBingoEntryList().then(entryList => {
+        entryList.loadAll().then(e => {
+          this.entries = e;
 
-        this.error = "";
-        if (!this.getNewUser().getUsername() || !this.getNewUser().getPassword() || !this.getNewUser().getEmail()) {
-          return;
-        }
-        let errorMessage = this.validateUser();
-        if (!errorMessage) {
-          this.permutation = this.getBoardPermutation();
-          this.buildMapping().then(mapping => {
-          //this.user.activated(ActivationStatus.AKTIVIERT);
-          this.newUser.registrationDate(new Date());
-          this.newUser.role(SehubRole.DEVELOPER);
-          this.newUser.gridEntry(mapping);
-          this.build();
-          this.navigateBack();
-          });
-        } else {
-          this.error = errorMessage;
-        }
+          this.error = "";
+          if (!this.getNewUser().getUsername() || !this.getNewUser().getPassword() || !this.getNewUser().getEmail()) {
+            return;
+          }
+          let errorMessage = this.validateUser();
+          if (!errorMessage) {
+            this.permutation = this.getBoardPermutation();
+            this.buildMapping().then(mapping => {
+            //this.user.activated(ActivationStatus.AKTIVIERT);
+            this.newUser.registrationDate(new Date());
+            this.newUser.role(SehubRole.DEVELOPER);
+            this.newUser.gridEntry(mapping);
+            this.build();
+            this.navigateBack();
+            });
+          } else {
+            this.error = errorMessage;
+          }
+        });
       });
-    });
+    }
   }
 
   async buildMapping(): Promise<Set<BoardMapper>>  {
@@ -94,7 +94,6 @@ export class UserCreate extends UserCreateComponent {
     }
 
     await Promise.all(promises);
-    console.log(gridEntrySet)
     return gridEntrySet;
   }
 
@@ -131,8 +130,8 @@ export class UserCreate extends UserCreateComponent {
     return res + (res.length === 0? '': ' already being used!');
   }
 
-  public override navigateBack(): void {
-    this.router.navigate(['/login/LoginPage']);
+  public override navigateBack(): (arg: void) => void {
+    return $ => this.router.navigate(['/login/LoginPage']);
   }
 
 }

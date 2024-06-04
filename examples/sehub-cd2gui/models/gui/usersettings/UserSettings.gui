@@ -27,7 +27,7 @@ page UserSettings(User currentUser, List<User> users) {
       @GemColumn(width = "90vw", components = [
         @GemRow(height = "3rem", hAlign = "space-between", vAlign = "center", components = [
           projectmembers@GemText(value = "Project Members"),
-          inviteUser@GemButton(label = "Invite new member", leftClick = navigateToCreateNewUser)
+          inviteUser@GemButton(label = "Invite new member", leftClick = navigateToCreateNewUser())
         ]),
         @GemColumn(components = [
           @iterate(User user: users) {

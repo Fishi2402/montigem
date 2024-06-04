@@ -41,7 +41,7 @@ page ComponentEdit(DemoRecComponent component) {
               @GemTextInput(labelText = "Z-Position", inputType = "number", entry = component.zPos)
             ]
           ),
-          @GemButton(label = "Edit component kind", leftClick = editComponentKind),
+          @GemButton(label = "Edit component kind", leftClick = editComponentKind()),
           @PhotoDisplay(component=component),
           photoDragAndDrop@PhotoDragNDrop(attachedComponent = component)
       ])
@@ -64,7 +64,7 @@ page ComponentEdit(DemoRecComponent component) {
               @SubComponentView(subComponent=subComponent);
             }
           }/*,
-          buildConnection@GemButton(label = "Create new Connection.", leftClick = createNewConnection, disabled=true)/**/
+          buildConnection@GemButton(label = "Create new Connection.", leftClick = createNewConnection(), disabled=true)/**/
         ]
       )
   )]);

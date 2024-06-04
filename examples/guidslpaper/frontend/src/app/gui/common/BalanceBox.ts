@@ -20,7 +20,7 @@ export class BalanceBox extends BalanceBoxComponent {
   });
 
   @Input()
-  public override color: string = "blue";
+  public override _color: string = "blue";
 
   @HostBinding("class.green-box")
   public get green() {

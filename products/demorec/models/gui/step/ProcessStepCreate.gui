@@ -31,9 +31,9 @@ page ProcessStepCreate(ProcessStep step, List<String> values, Event<ProcessStep>
                 width="30%",
                 components = [
                   timerGuard@guard(true) {
-                    startTimerButton@GemButton(label = "Start", leftClick = startTimer, disabled=true);
+                    startTimerButton@GemButton(label = "Start", leftClick = startTimer(), disabled=true);
                   } else {
-                    stopTimerButton@GemButton(label = "Stop", leftClick = stopTimer, disabled=false);
+                    stopTimerButton@GemButton(label = "Stop", leftClick = stopTimer(), disabled=false);
                   }
                 ]
               ),
@@ -84,16 +84,16 @@ page ProcessStepCreate(ProcessStep step, List<String> values, Event<ProcessStep>
                 entry = null);
           },
           createNewJoinConnection@guard(true) {
-            @JoinConnectionCreate(createJoinConnection=addNewJoinConnection);
+            @JoinConnectionCreate(createJoinConnection = addNewJoinConnection());
           },
           @iterate(String val : values) {
             @GemText(value=val);
           },
-          @MeasuringValueCreate(measuringValueEvent = attachMeasuringValue)
+          @MeasuringValueCreate(measuringValueEvent = attachMeasuringValue())
         ]
       )
     ),
-    buildStep@GemButton(label = "Save Step", leftClick = createNewStep, disabled=true)
+    buildStep@GemButton(label = "Save Step", leftClick = createNewStep(), disabled=true)
   ]);
 
 }

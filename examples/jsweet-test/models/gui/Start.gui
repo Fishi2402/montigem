@@ -18,7 +18,7 @@ page Start(List<A> a) {
       components = [
         erster@GemText(value = "hi"),
         zweiter@GemText(value = "JSweet"),
-        buttonEins@GemButton(label = "Erzeuge B", leftClick = createB)
+        buttonEins@GemButton(label = "Erzeuge B", leftClick = createB())
       ]
     )
   );

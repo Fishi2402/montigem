@@ -28,8 +28,8 @@ component UserCreate(User newUser) {
         validity = newUser.validityEmail
       ),
       @GemRow(hAlign = "center", colGap = "10px", components = [
-        @GemButton(label = "Cancel", leftClick = navigateBack),
-        @GemButton(label = "Create account", leftClick = createUser)
+        @GemButton(label = "Cancel", leftClick = navigateBack()),
+        @GemButton(label = "Create account", leftClick = createUser())
       ]),
       error@GemText(value = "")
     ])

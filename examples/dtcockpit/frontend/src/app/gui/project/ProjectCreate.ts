@@ -18,13 +18,14 @@ export class ProjectCreate extends ProjectCreateComponent {
 
   private error: string = "";
 
-  public createProject(event: any): void {
-    if (!this.checkBuild()) return;
-    DtcockpitManager.projectBuilder().then(gemPromiseRes => {
-      this.build();
-      this.project = gemPromiseRes;
-    });
-
+  public createProject(): (arg: void) => void {
+    return $ => {
+      if (!this.checkBuild()) return;
+      DtcockpitManager.projectBuilder().then(gemPromiseRes => {
+        this.build();
+        this.project = gemPromiseRes;
+      });
+    }
   }
 
   protected checkBuild(): boolean {
@@ -68,7 +69,7 @@ export class ProjectCreate extends ProjectCreateComponent {
     return this.error;
   }
 
-  public override navigateBack(): void {
-    this.router.navigate(['gui', 'projects']);
+  public override navigateBack(): (arg: void) => void {
+    return $ => this.router.navigate(['gui', 'projects']);
   }
 }

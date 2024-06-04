@@ -22,15 +22,7 @@ public class TypeScriptSimpleGenericTypesPrettyPrinter extends MCSimpleGenericTy
     if (!node.getNameList().isEmpty()) {
       String last = node.getName(node.sizeNames() - 1);
       // java.util.Optional and java.util.List land here
-      /*
-      if (last.equals(TypeScriptTypes.CONSUMER.getMCType())) {
-        getPrinter().print("Event");
-      }
-
-       */
-      if (!last.equals("Optional")
-          // && !last.equals(TypeScriptTypes.CONSUMER.getMCType())
-      ) {
+      if (!last.equals("Optional")) {
         getPrinter().print(TypeScriptTypes.toTSType(last));
         getPrinter().stripTrailing();
         getPrinter().print("<");
@@ -44,6 +36,16 @@ public class TypeScriptSimpleGenericTypesPrettyPrinter extends MCSimpleGenericTy
         }
         getPrinter().stripTrailing();
         getPrinter().print(">");
+      }
+      else {
+        if (iter_mCTypeArgument.hasNext()) {
+          iter_mCTypeArgument.next().accept(getTraverser());
+          while (iter_mCTypeArgument.hasNext()) {
+            getPrinter().stripTrailing();
+            getPrinter().print(",");
+            iter_mCTypeArgument.next().accept(getTraverser());
+          }
+        }
       }
     }
     if (this.isPrintComments()) {

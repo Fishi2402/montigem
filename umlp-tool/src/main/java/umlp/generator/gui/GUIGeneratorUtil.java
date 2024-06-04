@@ -385,6 +385,10 @@ public class GUIGeneratorUtil {
     return type;
   }
 
+  public final boolean isOptional(SymTypeExpression type) {
+    return type.hasTypeInfo() && type.isGenericType() && GenService.isOptional(type);
+  }
+
   public final boolean isBuiltIn(ASTMCImportStatement i) {
     return isBuiltIn(i.getQName());
   }

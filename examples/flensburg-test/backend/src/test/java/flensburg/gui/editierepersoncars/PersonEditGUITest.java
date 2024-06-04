@@ -43,7 +43,8 @@ public class PersonEditGUITest extends AbstractGUITest {
         .nickname("theo")
         .mainResidence(a)
         .build().get();
-    PersonEdit e = new PersonEdit(p1);
+    PersonEdit e = new PersonEdit();
+    e.setP(p1);
 
     // Check GUI contains correct values
     assertEquals("theo", e.getGemTextInput4Entry());
@@ -82,7 +83,8 @@ public class PersonEditGUITest extends AbstractGUITest {
         .owns(Collections.emptySet())
         .build().get();
     // page opened by a user on client 1
-    PersonEdit e1 = new PersonEdit(p1);
+    PersonEdit e1 = new PersonEdit();
+    e1.setP(p1);
 
     // working with client 2
     getClients(1).activate();
@@ -91,7 +93,8 @@ public class PersonEditGUITest extends AbstractGUITest {
     assertTrue(pClient2Opt.isPresent());
     Person p2 = pClient2Opt.get();
     // page opened by a user on client 2
-    PersonEdit e2 = new PersonEdit(p2);
+    PersonEdit e2 = new PersonEdit();
+    e2.setP(p2);
     // TODO AGe: strategy on input fields update, check current object/attribute status
 
     getClients(0).activate();
@@ -129,7 +132,8 @@ public class PersonEditGUITest extends AbstractGUITest {
     // work on client
     getClients(0).activate();
     Person p1001C1 = FlensburgManager.getPersonSure(gemId);
-    PersonEdit e1 = new PersonEdit(p1001C1);
+    PersonEdit e1 = new PersonEdit();
+    e1.setP(p1001C1);
 
     // no error initially in the GUI of client
     // TODO MB assertEquals("", e1.getGemNumberInputComp2ValueError());
@@ -175,7 +179,8 @@ public class PersonEditGUITest extends AbstractGUITest {
     // work on client
     getClients(0).activate();
     Person p1001C1 = FlensburgManager.getPersonSure(gemId);
-    PersonEdit e1 = new PersonEdit(p1001C1);
+    PersonEdit e1 = new PersonEdit();
+    e1.setP(p1001C1);
     // put invalid value into input field
     e1.setGemTextInput5Entry("15");
 

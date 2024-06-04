@@ -97,6 +97,9 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
   protected void addInit() {
   }
 
+  protected void addDestroy() {
+  }
+
   /*
   protected String importAndPrintType(SymTypeExpression ste) {
     return createTypeAndAddImports(ste).printType();

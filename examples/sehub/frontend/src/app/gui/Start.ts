@@ -17,11 +17,6 @@ import {ActivatedRoute, Router} from '@angular/router';
 })
 export  class Start extends StartComponent {
 
-  public constructor(route: ActivatedRoute, protected router: Router) {
-    super(router);
-    this.router = router;
-  }
-
   ngOnInit(){
     if (!(SehubSecurityManager.isCurrentlyLoggingIn() || SehubSecurityManager.isSignedIn())) {
       this.router.navigate(['gui/login/LoginPage']);

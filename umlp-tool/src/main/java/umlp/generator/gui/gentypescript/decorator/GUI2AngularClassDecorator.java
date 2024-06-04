@@ -50,8 +50,6 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
 
   public static final String COMPONENT_SUFFIX = "Component";
   protected Set<String> extraImports = new HashSet<>();
-  protected boolean removedObserver = false;
-
   protected final MCPath hwPath;
 
   public GUI2AngularClassDecorator(final GlobalExtensionManagement glex, MCPath hwPath) {
@@ -108,7 +106,7 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
     if (util.isViewElement(typeSTE) || util.isViewElementsCollection(typeSTE)) {
       // add attr
       ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
-          CDModifier.PUBLIC.build(), "TemplateRef<any>", node.getName());
+          CDModifier.PUBLIC.build(), createTypeAndAddImports(typeSTE), node.getName());
       clazz.addCDMember(attr);
       extraImports.add("import { Input } from '@angular/core';");
       glex.replaceTemplate(GUI2ComponentTemplates.ANNOTATIONS, attr,
@@ -183,17 +181,6 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
           new TemplateHookPoint("umlp.gui2ts.GUI2AngularAttrGetterSetter",
               attr.getMCType(), node.getName(), getterName, setterName));
     }
-
-    if (util.getDomainListInnerType(typeSTE).isPresent()
-        && !util.isEnumType(util.getDomainListInnerType(typeSTE).get())) {
-      if (!removedObserver) {
-        // TODO AGe: remove observer regardless
-        if (!UMLPGeneratorConfig.getInstance().isUseJsweet()) {
-          removeObserver();
-        }
-        removedObserver = true;
-      }
-    }
   }
 
   @Override
@@ -266,16 +253,12 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
     getCD4C().addMethod(clazz, "umlp.gui2ts.GUI2AngularInit");
   }
 
-  protected ASTCDMethodSignature addDestroy() {
-    return getCD4C().addMethod(clazz, "umlp.gui2ts.GUI2AngularDestroy",
-        getAndImportManager());
+  @Override
+  protected void addDestroy() {
+    getCD4C().addMethod(clazz, "umlp.gui2ts.GUI2AngularDestroy", getAndImportManager());
   }
 
   protected void removeObserver() {
-    glex.addAfterTemplate(
-        "umlp.gui2ts.GUI2AngularDestroyBody",
-        new TemplateHookPoint("umlp.gui2ts.GUI2AngularRemoveObserver", getAndImportManager())
-    );
   }
 
   protected void addExtraImports() {

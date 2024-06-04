@@ -16,17 +16,6 @@ import {ActivatedRoute, Router} from '@angular/router';
 })
 export class ProjectFileView extends ProjectFileViewComponent {
 
-  public constructor(protected route: ActivatedRoute, protected router: Router) {
-    super(route, router);
-    route.paramMap.subscribe(map => {
-      console.warn("_________________________________________")
-      this.parentRoutingId = +map.get("parentRoutingId")
-      SehubManager.getDirectorySure(this.parentRoutingId).then(gemPromiseRes => {
-        this.parent = gemPromiseRes;
-      });
-    })
-  }
-
   public  getGemLink11Url (): string {
     if(this.parent.getContainedBy() != null){
       return "/gui/ProjectFileView/"+ this.parent.getContainedBy().getGemId()
@@ -34,10 +23,12 @@ export class ProjectFileView extends ProjectFileViewComponent {
     return ""
   }
 
-  public override goToArtifactsPage(event: any): void {
-    this.router.navigate(["..", "artifacts", "ProjectPage", this.parent.getGemId()]).then(() => {
-      window.location.reload();
-    });
+  public override goToArtifactsPage(event: any): (arg: void) => void {
+    return $ => {
+      this.router.navigate(["..", "artifacts", "ProjectPage", this.parent.getGemId()]).then(() => {
+        window.location.reload();
+      });
+    }
   }
 
   public override getParentDirGuardCondition(): boolean {

@@ -4,7 +4,7 @@ ${tc.signature("name", "type", "getter", "isList", "assoc")}
 <#assign param = "val">
 
 ${cd4c.method("public Consumer<Void> ${name}(${mcType} ${param})")}
-return $ -> {
+return $ => {
   <#if isList>
     ${getter}.add${assoc?cap_first}2(${param});
   <#else>

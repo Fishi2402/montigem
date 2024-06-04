@@ -16,10 +16,12 @@ import {SehubRole} from '@src/sehub/SehubRole';
 })
 export class Response extends ResponseComponent {
 
-  deletePost(event: any){
-    let parent: Post = this.getPost().getParent()
-    parent.removeResponses2(this.getPost())
-    SehubManager.deletePost(this.getPost().getGemId());
+  override deletePost(): (arg: void) => void {
+    return $ => {
+      let parent: Post = this.getPost().getParent()
+      parent.removeResponses2(this.getPost())
+      SehubManager.deletePost(this.getPost().getGemId());
+    };
   }
 
   public override getGemButton8Disabled (): boolean {

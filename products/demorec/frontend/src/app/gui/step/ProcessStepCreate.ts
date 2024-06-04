@@ -159,52 +159,54 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
     this.joinConnectionEntry = value;
   }
 
-  public override createNewStep(event: any): void {
-    console.debug("Clicked on Create Button")
-    const waitingFor = [];
-    waitingFor.push(DemoRecManager.getEndEffectorSure(+this.getSelectEndeffectorEntry())
-        .then((endEffector) => {
-          this.getStep().uses(endEffector)
-        }))
-    if (this.getSelectJoinConnectionEntry()) {
-      waitingFor.push(DemoRecManager.getJoinConnectionSure(+this.getSelectJoinConnectionEntry())
-          .then((joinConnection) => {
-            this.getStep().deconstructs(joinConnection)
+  public override createNewStep(): (arg: void) => void {
+    return $ => {
+      console.debug("Clicked on Create Button")
+      const waitingFor = [];
+      waitingFor.push(DemoRecManager.getEndEffectorSure(+this.getSelectEndeffectorEntry())
+          .then((endEffector) => {
+            this.getStep().uses(endEffector)
           }))
-    }
-    if (this.deconstructionVal === this.getSelectTypeEntry()) {
-      this.getStep().type(ProcessStepType.DECONSTRUCTION)
-    } else {
-      this.getStep().type(ProcessStepType.OTHER)
-    }
-    let i = 0
-    /*
-    if(this.getProcess().sizeConsistsOfs() > 0) {
-      i = this.getProcess().getConsistsOf1(this.getProcess().sizeConsistsOfs()-1).getIndex() +1;
-    }
-    /**/
-    this.getStep().index(i)
-    this.building = true;
-    Promise.all(waitingFor).then(x => {
-
-      if (this.getStep().isBuildable()) {
-        const step = this.getStep().build()
-        this.create.emit(step);
-
-        // Execute superNgOnit again i.e. get a new builder from the backend
-        DemoRecManager.processStepBuilder().then(gemPromiseRes => {
-          this.step = gemPromiseRes;
-          this.typeEntry = ""
-          this.endEffectorEntry = ""
-          this.joinConnectionEntry = ""
-          this.building = false;
-          this.values = []
-        })
-      } else {
-        this.building = false;
+      if (this.getSelectJoinConnectionEntry()) {
+        waitingFor.push(DemoRecManager.getJoinConnectionSure(+this.getSelectJoinConnectionEntry())
+            .then((joinConnection) => {
+              this.getStep().deconstructs(joinConnection)
+            }))
       }
-    })
-    /**/
+      if (this.deconstructionVal === this.getSelectTypeEntry()) {
+        this.getStep().type(ProcessStepType.DECONSTRUCTION)
+      } else {
+        this.getStep().type(ProcessStepType.OTHER)
+      }
+      let i = 0
+      /*
+      if(this.getProcess().sizeConsistsOfs() > 0) {
+        i = this.getProcess().getConsistsOf1(this.getProcess().sizeConsistsOfs()-1).getIndex() +1;
+      }
+      /**/
+      this.getStep().index(i)
+      this.building = true;
+      Promise.all(waitingFor).then(x => {
+
+        if (this.getStep().isBuildable()) {
+          const step = this.getStep().build()
+          this.create.emit(step);
+
+          // Execute superNgOnit again i.e. get a new builder from the backend
+          DemoRecManager.processStepBuilder().then(gemPromiseRes => {
+            this.step = gemPromiseRes;
+            this.typeEntry = ""
+            this.endEffectorEntry = ""
+            this.joinConnectionEntry = ""
+            this.building = false;
+            this.values = []
+          })
+        } else {
+          this.building = false;
+        }
+      })
+      /**/
+    }
   }
 
   public override getBuildStepDisabled(): boolean {
@@ -235,18 +237,22 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
     return !this.wasStarted;
   }
 
-  public override startTimer(event: any): void {
-    this.passedSeconds = 0
-    this.timerInterval = setInterval(() => {
-      this.passedSeconds = Number((this.passedSeconds+0.1).toFixed(1));
-    }, 100);
-    this.wasStarted = true;
+  public override startTimer(): (arg: void) => void {
+    return $ => {
+      this.passedSeconds = 0
+      this.timerInterval = setInterval(() => {
+        this.passedSeconds = Number((this.passedSeconds+0.1).toFixed(1));
+      }, 100);
+      this.wasStarted = true;
+    }
   }
 
-  public override stopTimer(event: any): void {
-    clearInterval(this.timerInterval);
-    this.setTimeConsumptionEntry(this.passedSeconds.toFixed(1))
-    this.wasStarted = false;
+  public override stopTimer(): (arg: void) => void {
+    return $ => {
+      clearInterval(this.timerInterval);
+      this.setTimeConsumptionEntry(this.passedSeconds.toFixed(1))
+      this.wasStarted = false;
+    }
   }
 
   public override getStartTimerButtonDisabled (): boolean {
@@ -262,17 +268,21 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
     return String(this.passedSeconds);
   }
 
-  public override attachMeasuringValue(val: MeasuringValue) {
-    this.getStep().addMeasured2(val);
-    this.values.push(val.getValue()+" "+val.getDimension().getUnit()+" "+val.getDimension().getName())
-    console.error("Works")
+  public override attachMeasuringValue(): (arg: MeasuringValue) => void {
+    return (val: MeasuringValue) => {
+      this.getStep().addMeasured2(val);
+      this.values.push(val.getValue()+" "+val.getDimension().getUnit()+" "+val.getDimension().getName())
+      console.error("Works")
+    }
   }
 
-  public override addNewJoinConnection(connection: JoinConnection) {
-    this.calculateDisplayValueOfJoinConnection(connection).then(
-      opt => this.joinConnectionOptions.push(opt)
-    )
-    this.setSelectJoinConnectionEntry(String(connection.getGemId()))
+  public override addNewJoinConnection(): (arg: JoinConnection) => void {
+    return (connection: JoinConnection) => {
+      this.calculateDisplayValueOfJoinConnection(connection).then(
+        opt => this.joinConnectionOptions.push(opt)
+      )
+      this.setSelectJoinConnectionEntry(String(connection.getGemId()))
+    }
   }
 
   values : string[] = []

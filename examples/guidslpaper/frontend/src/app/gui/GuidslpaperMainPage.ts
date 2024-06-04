@@ -22,16 +22,13 @@ export class GuidslpaperMainPage extends GuidslpaperMainPageComponent {
     super.ngOnInit();
   }
 
-
   public navigateToPerson(p: Person): (arg: any) => void {
-    this.router.navigate(['gui', 'person', p.getKuerzel(), 'show'])
-    return () => { }
+    return $ => this.router.navigate(['gui', 'person', p.getKuerzel(), 'show']);
   }
 
-  public navigateToNewPerson(event: any): void {
-    this.router.navigate(['gui', 'person', 'PersonCreate'])
+  public navigateToNewPerson(): (arg: void) => void {
+    return $ => this.router.navigate(['gui', 'person', 'PersonCreate']);
   }
-
 
   public getPButtonClasses(p: Person): Array<string> { // ALu: Workaround - discuss
     return ["person-dashboard-btn"];

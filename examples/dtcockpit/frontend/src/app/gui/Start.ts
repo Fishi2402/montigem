@@ -19,11 +19,6 @@ import {ActivatedRoute, Router} from '@angular/router';
 
 export  class Start extends StartComponent {
 
-  public constructor(route: ActivatedRoute, protected router: Router) {
-    super(route, router);
-    this.router = router;
-  }
-
   ngOnInit(){
     // Moved to the login module
     // if (!(DtcockpitSecurityManager.isCurrentlyLoggingIn() || DtcockpitSecurityManager.isSignedIn())) {

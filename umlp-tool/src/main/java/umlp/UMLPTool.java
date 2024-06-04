@@ -76,6 +76,8 @@ import umlp.generator.util.TagLookUp;
 import umlp.generator.util.UMLPSymbolTables;
 import umlp.generator.validator.ocl.OCLASTPreProcessor;
 import umlp.guidsl.additional_cocos.GUIParamDefaultOnlyLiteralCoCo;
+import umlp.guidsl.additional_cocos.GUIParamNoUnderspecifiedGenericsCoCo;
+import umlp.guidsl.additional_cocos.NameExpressionsSymbolBoundExceptCallsCoCo;
 
 import java.io.File;
 import java.io.IOException;
@@ -840,6 +842,8 @@ public class UMLPTool extends UMLPToolTOP {
   protected void runDefaultCoCos(ASTGUICompilationUnit ast) {
     GUIDSLCoCoChecker checker = new GUIDSLCoCosForUMLP().createChecker();
     checker.addCoCo(new GUIParamDefaultOnlyLiteralCoCo());
+    checker.addCoCo(new GUIParamNoUnderspecifiedGenericsCoCo());
+    checker.addCoCo(new NameExpressionsSymbolBoundExceptCallsCoCo());
     checker.checkAll(ast);
   }
 }

@@ -29,49 +29,53 @@ export class UserLogin extends UserLoginComponent {
 
   protected error: string = "";
 
-  public override loginOnEnter(event: KeyboardEvent): void {
-    if (event.key === "Enter") {
-      this.login();
+  public override loginOnEnter(): void {
+    return (event: KeyboardEvent) => {
+      if (event.key === "Enter") {
+        this.login();
+      }
     }
   }
 
-  public override login(): void {
-    if (!this.loginUser || !this.loginUser.getUsername() || !this.loginUser.getPassword()) {
-      return;
-    }
-
-    const form = new FormData();
-
-    form.append('username', this.loginUser.getUsername());
-    form.append('password', this.loginUser.getPassword());
-
-    const requestOptions: RequestInit = {
-      method: "POST",
-      body: form,
-      redirect: 'manual', // Otherwise the redirect to login?error is followed and 2xx is returned
-      headers: {
-        'Accept': 'application/json'
+  public override login(): (arg: void) => void {
+    return $ => {
+      if (!this.loginUser || !this.loginUser.getUsername() || !this.loginUser.getPassword()) {
+        return;
       }
-    };
 
-    fetch("/umlp/api/login", requestOptions)
-      .then(response => response.json())
-      .then(result => {
-        if (result.success) {
-          DtcockpitSecurityManager.setCurrentlyLoggingIng(true);
-          // Do NOT use router as otherwise the websocket is not refreshed!
-          // The AppComponent will initialize the websocket during reloading
-          window.location.href = '/gui/Start';
-        } else if (result.reason) {
-          alert("Login Failed: " + result.reason)
-        } else {
-          alert("Login Failed: Unknown")
+      const form = new FormData();
+
+      form.append('username', this.loginUser.getUsername());
+      form.append('password', this.loginUser.getPassword());
+
+      const requestOptions: RequestInit = {
+        method: "POST",
+        body: form,
+        redirect: 'manual', // Otherwise the redirect to login?error is followed and 2xx is returned
+        headers: {
+          'Accept': 'application/json'
         }
-      })
-      .catch(error => {
-        console.warn(error);
-        alert("Login Failed: Unable to communicate");
-      });
+      };
+
+      fetch("/umlp/api/login", requestOptions)
+        .then(response => response.json())
+        .then(result => {
+          if (result.success) {
+            DtcockpitSecurityManager.setCurrentlyLoggingIng(true);
+            // Do NOT use router as otherwise the websocket is not refreshed!
+            // The AppComponent will initialize the websocket during reloading
+            window.location.href = '/gui/Start';
+          } else if (result.reason) {
+            alert("Login Failed: " + result.reason)
+          } else {
+            alert("Login Failed: Unknown")
+          }
+        })
+        .catch(error => {
+          console.warn(error);
+          alert("Login Failed: Unable to communicate");
+        });
+    }
   }
 
   public override getErrorValue(): string {

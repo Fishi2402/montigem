@@ -24,14 +24,14 @@ export class UserDisplay extends UserDisplayComponent {
 
     for (let role of Object.values(SehubRole)) {
       if (isNaN(Number(role))) {
-        let value = this.enumToCapitalizedString(role + '')
+        let value = role + '';
         res.push({value: value, display: value});
       }
     }
     return res;
   }
 
-  public override removeUserLeftClick(event: any) {
+  public override removeUserButtonLeftClick(event: any) {
     let gemId = this.user.getGemId();
     if (gemId === 1 || (SehubSecurityManager.isSignedIn() && gemId === SehubSecurityManager.getCurrentUser().getGemId())) {
       console.log("Cannot remove main user");
@@ -44,7 +44,7 @@ export class UserDisplay extends UserDisplayComponent {
      return this.user.getValidityRole().status;
    }*/
 
-  public override getRemoveUserDisabled (): boolean {
+  public override getRemoveUserButtonDisabled (): boolean {
     let curUser: User = SehubSecurityManager.getCurrentUser();
     if (!!curUser && SehubRole[curUser.getRole()] === "OWNER") {
       return false;

@@ -18,8 +18,8 @@ page KontoCreate(Konto konto) {
       @GemCard(title = "New Konto", component =
         @GemColumn(width = "50vw", rowGap = "10px", components = [
           createPTitle@GemTextInput(labelText = "Konto Name", entry = konto.name, disabled = false),
-          @GemButton(label = "Create new konto", leftClick = createKonto, disabled = false),
-          @GemButton(label = "Abort", leftClick = navigateBack, disabled = false)
+          @GemButton(label = "Create new konto", leftClick = createKonto(), disabled = false),
+          @GemButton(label = "Abort", leftClick = navigateBack(), disabled = false)
         ])
       )
     )

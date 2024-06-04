@@ -4,4 +4,5 @@ ${cd4c.method("public void ngOnDestroy()")}
 for (const sub of this._subscriptions) {
   sub.unsubscribe();
 }
+this.destroy();
 ${tc.include("umlp.gui2ts.GUI2AngularDestroyBody")}

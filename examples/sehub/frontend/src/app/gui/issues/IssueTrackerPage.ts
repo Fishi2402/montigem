@@ -18,9 +18,9 @@ import {GemList} from '@umlp/common';
 })
 export class IssueTrackerPage extends IssueTrackerPageComponent {
 
-  protected todoList: GemList<Issue> = new IssueGemList([]).build();
-  protected doingList: GemList<Issue> = new IssueGemList([]).build();
-  protected doneList: GemList<Issue> = new IssueGemList([]).build();
+  protected todoList: Issue[] = [];
+  protected doingList: Issue[] = [];
+  protected doneList: Issue[] = [];
 
   public ngOnInit(): void {
     if (!SehubSecurityManager.isSignedIn()) {
@@ -29,7 +29,7 @@ export class IssueTrackerPage extends IssueTrackerPageComponent {
     super.ngOnInit();
   }
 
-  public override getTodoListIssues(): GemList<Issue> {
+  public override getTodoListIssues(): Issue[] {
     if (!this.getIssues()) {
       return this.todoList;
     }
@@ -39,8 +39,8 @@ export class IssueTrackerPage extends IssueTrackerPageComponent {
         tmp.push(i);
       }
     }
-    if (!this.equalIds(tmp.map(i => i.getGemId()), this.todoList.getIDs())) {
-      this.todoList = new IssueGemList([]).build();
+    if (!this.equalIds(tmp.map(i => i.getGemId()), this.todoList.map(v => v.getGemId()))) {
+      this.todoList = [];
       for (let i of tmp) {
         this.todoList.push(i);
       }
@@ -48,7 +48,7 @@ export class IssueTrackerPage extends IssueTrackerPageComponent {
     return this.todoList;
   }
 
-  public override getDoingListIssues(): GemList<Issue> {
+  public override getDoingListIssues(): Issue[] {
     if (!this.getIssues()) {
       return this.doingList;
     }
@@ -58,8 +58,8 @@ export class IssueTrackerPage extends IssueTrackerPageComponent {
         tmp.push(i);
       }
     }
-    if (!this.equalIds(tmp.map(i => i.getGemId()), this.doingList.getIDs())) {
-      this.doingList = new IssueGemList([]).build();
+    if (!this.equalIds(tmp.map(i => i.getGemId()), this.doingList.map(v => v.getGemId()))) {
+      this.doingList = [];
       for (let i of tmp) {
         this.doingList.push(i);
       }
@@ -67,7 +67,7 @@ export class IssueTrackerPage extends IssueTrackerPageComponent {
     return this.doingList;
   }
 
-  public override getDoneListIssues(): GemList<Issue> {
+  public override getDoneListIssues(): Issue[] {
     if (!this.getIssues()) {
       return this.doneList;
     }
@@ -77,8 +77,8 @@ export class IssueTrackerPage extends IssueTrackerPageComponent {
         tmp.push(i);
       }
     }
-    if (!this.equalIds(tmp.map(i => i.getGemId()), this.doneList.getIDs())) {
-      this.doneList = new IssueGemList([]).build();
+    if (!this.equalIds(tmp.map(i => i.getGemId()), this.doneList.map(v => v.getGemId()))) {
+      this.doneList = [];
       for (let i of tmp) {
         this.doneList.push(i);
       }
@@ -112,7 +112,7 @@ export class IssueTrackerPage extends IssueTrackerPageComponent {
 
   public override getTodoTitle(): string {
     let count = 0;
-    this.getIssues()?.toArray().forEach(i => {
+    this.getIssues().forEach(i => {
       if (i.getState() === IssueState.UNASSIGNED) count++
     })
     return super.getTodoTitle() + " (" + count + ")"
@@ -120,7 +120,7 @@ export class IssueTrackerPage extends IssueTrackerPageComponent {
 
   public override getDoingTitle(): string {
     let count = 0;
-    this.getIssues()?.toArray().forEach(i => {
+    this.getIssues().forEach(i => {
       if (i.getState() === IssueState.IN_PROGRESS) count++
     })
     return super.getDoingTitle() + " (" + count + ")"
@@ -128,7 +128,7 @@ export class IssueTrackerPage extends IssueTrackerPageComponent {
 
   public override getDoneTitle(): string {
     let count = 0;
-    this.getIssues()?.toArray().forEach(i => {
+    this.getIssues().forEach(i => {
       if (i.getState() === IssueState.DONE) count++
     })
     return super.getDoneTitle() + " (" + count + ")"

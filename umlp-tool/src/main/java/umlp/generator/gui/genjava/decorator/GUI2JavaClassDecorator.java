@@ -84,6 +84,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
   protected void resetHooks() {
     glex.setAfterTemplate(getInitBodyHookpoint(), new ArrayList<>());
+    glex.setAfterTemplate(getDestroyBodyHookpoint(), new ArrayList<>());
   }
 
   /**
@@ -111,6 +112,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     gui.accept(traverser);
 
     addInit();
+    addDestroy();
 
     // remove
     for (NotifyMethodTemplate notifyDeleted : this.notifyDeleted.values()) {
@@ -347,7 +349,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
             );
           }
           else {
-            Log.error("0x0002A Unknown error while processing an Event -typed argument "
+            Log.error("0x00020 Unknown error while processing an Event -typed argument "
                 + " at " + arg.get_SourcePositionStart().toString()
                 + " - " + arg.get_SourcePositionEnd().toString()
             );
@@ -366,9 +368,19 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         String conv = "";
         if (arg.getGUIArgValue().isPresentExpression()) {
           // example: `String val = date2String(this.getPerson().getBirthday())`
-          conv = printType(createTypeAndAddImports(typeSTE)) + " " + returnValue + " = "
-              + getConversion(typeSTE, util.getType(arg.getGUIArgValue().getExpression()))
-              .apply(getterValue);
+          conv = getConvertedValueAssignment(
+              printType(createTypeAndAddImports(typeSTE)),
+              returnValue,
+              getConversion(typeSTE, util.getType(arg.getGUIArgValue().getExpression()))
+                  .apply(getterValue)
+          );
+        }
+        else {
+          conv = getConvertedValueAssignment(
+              printType(createTypeAndAddImports(typeSTE)),
+              returnValue,
+              getterValue
+          );
         }
         // add getter
         getCD4C().addMethod(
@@ -385,9 +397,16 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         String conv = "";
         if (arg.getGUIArgValue().isPresentExpression()) {
           SymTypeExpression left = util.getType(arg.getGUIArgValue().getExpression());
+          String convType;
+          if (left.isNullType()) {
+            convType = "Object";
+          }
+          else {
+            convType = printType(createTypeAndAddImports(left));
+          }
           // example: `Date val_$ = string2Date(val)`
-          conv = printType(createTypeAndAddImports(left)) + " " + value + " = "
-              + getConversion(left, typeSTE).apply(target);
+          conv = getConvertedValueAssignment(
+              convType, value, getConversion(left, typeSTE).apply(target));
         }
         getCD4C().addMethod(
             clazz, getArgSetterWithConversionTemplate(),
@@ -792,6 +811,9 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         }
       }
     }
+    else if (util.isEnumMember(node)) {
+      createTypeAndAddImports(util.getType(node));
+    }
   }
 
   /**
@@ -828,7 +850,12 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       }
     }
 
-    getCD4C().addMethod(clazz, "umlp.gui2java.GUI2JavaInit");
+    getCD4C().addMethod(clazz, getInitTemplate());
+  }
+
+  @Override
+  protected void addDestroy() {
+    getCD4C().addMethod(clazz, getDestroyTemplate());
   }
 
   protected Collection<ASTCDMethodSignature> addInitMethods(InitDependency ds) {
@@ -865,6 +892,12 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     glex.addAfterTemplate(
         getInitBodyHookpoint(),
         new TemplateHookPoint(getAddObserverTemplate(), getAndImportManager())
+    );
+
+    // add observer destroy
+    glex.addAfterTemplate(
+        getDestroyBodyHookpoint(),
+        new TemplateHookPoint(getRemoveObserverTemplate(), getAndImportManager())
     );
 
     // implement getScope method of observer
@@ -920,16 +953,31 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     return params;
   }
 
+  protected String getConvertedValueAssignment(String type, String varName, String value) {
+    return type + " " + varName + " = " + value;
+  }
+
   // TODO AGe: replace with RTE functions and specific components
   public Function<String, String> getConversion(
       SymTypeExpression left, SymTypeExpression right
   ) {
     boolean leftIsString = SymTypeRelations.isString(left);
 
+    boolean rightIsOptional = util.isOptional(right);
+    if (rightIsOptional) {
+      return optional2XConversion(getConversion(left, util.getOptionalTypeArgument(right)));
+    }
+
     boolean rightIsDate = right.printFullName()
         .equals(TypeScriptTypes.LOCAL_DATE.getJavaQName().get());
     if (leftIsString && rightIsDate) {
       return date2StringConversion();
+    }
+
+    boolean rightIsDateTime = right.printFullName()
+        .equals(TypeScriptTypes.LOCAL_DATE_TIME.getJavaQName().get());
+    if (leftIsString && rightIsDateTime) {
+      return dateTime2StringConversion();
     }
 
     boolean rightIsNumber = TypeScriptTypes.isNumber(right);
@@ -942,29 +990,25 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       return enum2StringConversion(right.print());
     }
 
-    boolean rightIsOptionalEnum = util.isOptionalEnumType(right);
-    if (leftIsString && rightIsOptionalEnum) {
-      createTypeAndAddImports(right);
-      if (util.getFirstInnerType(right).isPresent()) {
-        return optionalEnum2StringConversion(util.getFirstInnerType(right).get().print());
-      }
-    }
-
-    boolean rightIsOptionalNumber = util.isOptionalNumberType(right);
-    if (leftIsString && rightIsOptionalNumber) {
-      createTypeAndAddImports(right);
-      if (util.getFirstInnerType(right).isPresent()) {
-        return optionalNumber2StringConversion();
-      }
-    }
-
     boolean rightIsString = SymTypeRelations.isString(right);
+
+    boolean leftIsOptional = util.isOptional(left);
+    if (leftIsOptional) {
+      return x2OptionalConversion(getConversion(util.getOptionalTypeArgument(left), right));
+    }
 
     boolean leftIsDate = left.printFullName()
         .equals(TypeScriptTypes.LOCAL_DATE.getJavaQName().get());
     if (rightIsString && leftIsDate) {
       createTypeAndAddImports(left);
       return string2DateConversion();
+    }
+
+    boolean leftIsDateTime = left.printFullName()
+        .equals(TypeScriptTypes.LOCAL_DATE_TIME.getJavaQName().get());
+    if (rightIsString && leftIsDateTime) {
+      createTypeAndAddImports(left);
+      return string2DateTimeConversion();
     }
 
     boolean leftIsNumber = TypeScriptTypes.isNumber(left);
@@ -979,24 +1023,6 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       return string2EnumConversion(type);
     }
 
-    boolean leftIsOptionalEnum = util.isOptionalEnumType(left);
-    if (rightIsString && leftIsOptionalEnum) {
-      createTypeAndAddImports(left);
-      if (util.getFirstInnerType(left).isPresent()) {
-        String type = util.getFirstInnerType(left).get().print();
-        return string2OptionalEnumConversion(type);
-      }
-    }
-
-    boolean leftIsOptionalNumber = util.isOptionalNumberType(left);
-    if (rightIsString && leftIsOptionalNumber) {
-      createTypeAndAddImports(left);
-      if (util.getFirstInnerType(left).isPresent()) {
-        String type = util.getFirstInnerType(left).get().print();
-        return string2OptionalNumberConversion(type);
-      }
-    }
-
     return s -> s;
   }
 
@@ -1006,6 +1032,14 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
   protected Function<String, String> string2DateConversion() {
     return s -> "LocalDate.parse(" + s + ")";
+  }
+
+  protected Function<String, String> dateTime2StringConversion() {
+    return s -> s + ".toString()";
+  }
+
+  protected Function<String, String> string2DateTimeConversion() {
+    return s -> "LocalDateTime.parse(" + s + ")";
   }
 
   protected Function<String, String> number2StringConversion() {
@@ -1025,6 +1059,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     return s -> type + ".valueOf(" + s + ")";
   }
 
+  /*
   protected Function<String, String> optionalNumber2StringConversion() {
     return s -> s + ".isPresent() ? " + "String.valueOf(" + s + ".get()" + ")" + " : \"\"";
   }
@@ -1040,6 +1075,15 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
   protected Function<String, String> string2OptionalEnumConversion(String type) {
     return s -> "Optional.of(" + type + ".valueOf(" + s + ")" + ")";
+  }
+  /**/
+
+  protected Function<String, String> optional2XConversion(Function<String, String> conv) {
+    return s -> s + ".isPresent() ? " + conv.apply(s + ".get()") + " : null";
+  }
+
+  protected Function<String, String> x2OptionalConversion(Function<String, String> conv) {
+    return s -> "Optional.of(" + conv.apply(s) + ")";
   }
 
   protected String printType(ASTMCType type) {
@@ -1082,12 +1126,28 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     return "umlp.gui2java.GUI2JavaInitCall";
   }
 
+  protected String getInitTemplate() {
+    return "umlp.gui2java.GUI2JavaInit";
+  }
+
   protected String getInitBodyHookpoint() {
     return "umlp.gui2java.GUI2JavaInitBody";
   }
 
+  protected String getDestroyTemplate() {
+    return "umlp.gui2java.GUI2JavaDestroy";
+  }
+
+  protected String getDestroyBodyHookpoint() {
+    return "umlp.gui2java.GUI2JavaDestroyBody";
+  }
+
   protected String getAddObserverTemplate() {
     return "umlp.gui2java.GUI2JavaAddObserver";
+  }
+
+  protected String getRemoveObserverTemplate() {
+    return "umlp.gui2java.GUI2JavaRemoveObserver";
   }
 
   protected String getParamGetterTemplate() {

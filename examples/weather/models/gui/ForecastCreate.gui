@@ -53,7 +53,7 @@ page ForecastCreate(Forecast f) {
           ),
         @GemRow(
           hAlign = "right",
-          component = @GemButton(label = "Save", leftClick = saveForecast)
+          component = @GemButton(label = "Save", leftClick = saveForecast())
         )
       ]
     )

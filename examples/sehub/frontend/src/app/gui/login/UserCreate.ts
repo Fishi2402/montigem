@@ -30,25 +30,19 @@ export class UserCreate extends UserCreateComponent {
   private permutation : number[];
   private entries : BingoEntry[];
 
-  public constructor(
-      protected location: Location,
-      protected router: Router) {
-    super(router);
+  public constructor(protected location: Location) {
+    super();
   }
 
-  public ngOnInit(): void {
-    SehubManager.userBuilder().then(gemPromiseRes => {
-      this.newUser = gemPromiseRes;
-    });
-
+  public override init(): void {
+    super.init();
     SehubManager.getUserList().then(gemPromiseRes => {
       this.users = gemPromiseRes;
     });
-
   }
 
-  public override createUser(event: any): void {
-    SehubManager.getBingoEntryList().then(entryList => {
+  public override createUser(): (arg: void) => void {
+    return $ => SehubManager.getBingoEntryList().then(entryList => {
       entryList.loadAll().then(e => {
         this.entries = e;
 
@@ -61,10 +55,10 @@ export class UserCreate extends UserCreateComponent {
           this.permutation = this.getBoardPermutation();
           this.buildMapping().then(mapping => {
           //this.user.activated(ActivationStatus.AKTIVIERT);
-          this.newUser.registrationDate(new Date());
-          this.newUser.role(SehubRole.DEVELOPER);
-          this.newUser.gridEntry(mapping);
-          this.build();
+          this.getNewUser().setRegistrationDate(new Date());
+          this.getNewUser().setRole(SehubRole.DEVELOPER);
+          // this.getNewUser().setGridEntry1(mapping);
+          this.getNewUser().build();
           this.router.navigate(['/Login']);
           });
         } else {
@@ -131,8 +125,8 @@ export class UserCreate extends UserCreateComponent {
     return res + (res.length === 0? '': ' already being used!');
   }
 
-  public override navigateBack(): void {
-    this.location.back();
+  public override navigateBack(): (arg: void) => void {
+    return $ => this.location.back();
   }
 
 }
