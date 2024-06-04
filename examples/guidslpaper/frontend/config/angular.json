@@ -80,7 +80,7 @@
           },
           "defaultConfiguration": "development",
           "options": {
-            "proxyConfig": "./proxy.conf.json"
+            "proxyConfig": "./proxy.conf.ts"
           }
         },
         "extract-i18n": {
