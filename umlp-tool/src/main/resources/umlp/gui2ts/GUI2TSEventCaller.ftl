@@ -5,4 +5,6 @@ ${tc.signature("type", "name", "callerExpression", "params")}
 <#assign paramString = genHelper.params2String(mcType, eventVar, params)>
 
 ${cd4c.method("public void ${name}(${paramString})")}
-${callerExpression}(${eventVar});
+if (${callerExpression} != null) {
+  ${callerExpression}(${eventVar});
+}

@@ -17,9 +17,7 @@ public class ProjectCreate extends ProjectCreateTOP {
   public Consumer<Void> createProject() {
     return $ -> {
       if (!this.checkBuild()) return;
-      ProjectBuilder projectBuilder = DtcockpitManager.projectBuilder();
       this.getProject().build();
-      this.setProject(projectBuilder);
     };
   }
 

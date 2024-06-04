@@ -20,21 +20,25 @@ public class UserCreate extends UserCreateTOP {
   // TODO
 //  public static Pattern email = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}$", Pattern.CASE_INSENSITIVE);
 
-  public void createUser(Object event) {
-    this.error = "";
-    if (this.getNewUser().getUsername() == null || this.getNewUser().getPassword() == null || this.getNewUser().getEmail() == null) {
-      return;
-    }
-    String errorMessage = this.validateUser();
-    if (errorMessage == null || errorMessage.isBlank()) {
-      //this.userBuilder.activated(ActivationStatus.AKTIVIERT);
-      this.getNewUser().setRegistrationDate(LocalDateTime.now());
-      this.getNewUser().setRole(DtcockpitRole.USER);
-      this.getNewUser().build();
-      Router.navigate("gui", "login");
-    } else {
-      this.error = errorMessage;
-    }
+  @Override
+  public Consumer<Void> createUser() {
+    return $ -> {
+      this.error = "";
+      if (this.getNewUser().getUsername() == null || this.getNewUser().getPassword() == null || this.getNewUser().getEmail() == null) {
+        return;
+      }
+      String errorMessage = this.validateUser();
+      if (errorMessage == null || errorMessage.isBlank()) {
+        //this.userBuilder.activated(ActivationStatus.AKTIVIERT);
+        this.getNewUser().setRegistrationDate(LocalDateTime.now());
+        this.getNewUser().setRole(DtcockpitRole.USER);
+        this.getNewUser().build();
+        Router.navigate("gui", "login");
+      }
+      else {
+        this.error = errorMessage;
+      }
+    };
   }
 
   public String getErrorValue() {
@@ -63,14 +67,4 @@ public class UserCreate extends UserCreateTOP {
     return $ -> Router.navigate("gui", "login");
   }
 
-
-  // UserCreateComponent
-
-  @Override
-  public void init() {
-    // TODO userBuilder ist hier nicht vorhanden
-//    DtcockpitManager.userBuilder().then(gemPromiseRes => {
-//        this.newUserBuilder = gemPromiseRes;
-//    });
-  }
 }
