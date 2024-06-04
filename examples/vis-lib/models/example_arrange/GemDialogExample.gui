@@ -1,0 +1,19 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_arrange;
+
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemDialog;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemLink;
+
+page GemDialogExample(?boolean dialogOpen = false) {
+  @GemButton(label = "Click Me!", leftClick = openDialog());
+  dialog@GemDialog(isOpen = null, component =
+    @GemCard(
+      title = "Info Text",
+      component = @GemText(value = "Some Text")
+    )
+  );
+
+}

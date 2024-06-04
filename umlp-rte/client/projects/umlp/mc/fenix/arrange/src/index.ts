@@ -1,5 +1,6 @@
 export * from "./lib/gemcard";
 export * from "./lib/gemdashboard";
+export * from "./lib/gemdialog";
 export * from "./lib/gemgrid";
 export * from "./lib/gemgridcell";
 export * from "./lib/gemrows";
