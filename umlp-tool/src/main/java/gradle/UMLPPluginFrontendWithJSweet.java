@@ -77,6 +77,10 @@ public abstract class UMLPPluginFrontendWithJSweet implements Plugin<Project> {
     this.addProjectDependencies(project, local);
 
     // dependencies
+    syncJsweetConfigTask.configure(umlpTask -> {
+      umlpTask.from(java2TypeScriptConfigTaskTask.get().getJsweetConfigOut().getAsFile());
+      umlpTask.dependsOn(java2TypeScriptConfigTaskTask);
+    });
     frontendDomainJ2TSTask.configure(umlpTask -> {
       umlpTask.dependsOn(syncJsweetConfigTask.get());
       umlpTask.dependsOn(domainSymbolGenTask);
