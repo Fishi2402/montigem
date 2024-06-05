@@ -13,9 +13,13 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.function.Consumer;
 
-/***
- * A opinionated plugin which handles frontend generation.
- * with only a single line "id 'de.rwth.se.umlp-tool-frontend'" in build.gradle some default-task for the frontend are created
+import static gradle.UMLPPluginFrontendBase.UMLP_FRONTEND_DOMAIN_TASK_NAME;
+import static gradle.UMLPPluginFrontendBase.UMLP_FRONTEND_GUI_TASK_NAME;
+import static gradle.UMLPPluginFrontendBase.UMLP_FRONTEND_SETUP_TASK_NAME;
+import static gradle.UMLPPluginFrontendBase.UMLP_GROUP_NAME;
+
+/**
+ * The specific gradle setup for non-jsweet projects
  */
 public abstract class UMLPPluginFrontendNonJSweet implements Plugin<Project> {
 
@@ -24,11 +28,11 @@ public abstract class UMLPPluginFrontendNonJSweet implements Plugin<Project> {
     project.getPluginManager().apply(UMLPPluginFrontendBase.class);
 
     TaskProvider<UMLPFrontendTask> frontendDomainTask = createFrontendDomainTask(project);
-    TaskProvider<UMLPGuiGenTask> frontendGuiTask = project.getTasks().named(UMLPPluginFrontendBase.UMLP_FRONTEND_GUI_TASK_NAME, UMLPGuiGenTask.class);
-    TaskProvider<Sync> syncDomainTask = project.getTasks().named("SYNC_" + UMLPPluginFrontendBase.UMLP_FRONTEND_DOMAIN_TASK_NAME, Sync.class);
-    TaskProvider<Sync> syncGuiTask = project.getTasks().named("SYNC_" + UMLPPluginFrontendBase.UMLP_FRONTEND_GUI_TASK_NAME, Sync.class);
+    TaskProvider<UMLPGuiGenTask> frontendGuiTask = project.getTasks().named(UMLP_FRONTEND_GUI_TASK_NAME, UMLPGuiGenTask.class);
+    TaskProvider<Sync> syncDomainTask = project.getTasks().named("SYNC_" + UMLP_FRONTEND_DOMAIN_TASK_NAME, Sync.class);
+    TaskProvider<Sync> syncGuiTask = project.getTasks().named("SYNC_" + UMLP_FRONTEND_GUI_TASK_NAME, Sync.class);
 
-    TaskProvider<FrontendSetup> frontendSetupTask = project.getTasks().named(UMLPPluginFrontendBase.UMLP_FRONTEND_SETUP_TASK_NAME, FrontendSetup.class);
+    TaskProvider<FrontendSetup> frontendSetupTask = project.getTasks().named(UMLP_FRONTEND_SETUP_TASK_NAME, FrontendSetup.class);
 
     frontendGuiTask.configure(umlpTask -> {
       setIfPathExists(x -> umlpTask.getHwcDir().from(x), Path.of(project.getProjectDir().getAbsolutePath(), "src", "app"));
@@ -58,8 +62,8 @@ public abstract class UMLPPluginFrontendNonJSweet implements Plugin<Project> {
   }
 
   protected TaskProvider<UMLPFrontendTask> createFrontendDomainTask(final Project project) {
-    return project.getTasks().register(UMLPPluginFrontendBase.UMLP_FRONTEND_DOMAIN_TASK_NAME, UMLPFrontendTask.class, umlpTask -> {
-      umlpTask.setGroup(UMLPPluginFrontendBase.UMLP_GROUP_NAME);
+    return project.getTasks().register(UMLP_FRONTEND_DOMAIN_TASK_NAME, UMLPFrontendTask.class, umlpTask -> {
+      umlpTask.setGroup(UMLP_GROUP_NAME);
       umlpTask.getInput().from(UMLPPluginFrontendBase.getModelsPath(project));
       umlpTask.getOcl().from(UMLPPluginFrontendBase.getOCLPath(project));
       setIfPathExists(x -> umlpTask.getHwcDir().from(x), Path.of(project.getProjectDir().getAbsolutePath(), "src", "app"));
