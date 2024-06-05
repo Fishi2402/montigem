@@ -38,6 +38,14 @@ export class ClientCommandManager extends CommandManager {
     return retPromise;
   }
 
+  public retryInitCommunicationImmediate() {
+    this.commandCommunication.retryImmediate();
+  }
+
+  public pauseRetryCommunication() {
+    this.commandCommunication.pauseRetry();
+  }
+
   public isInitSuccessFul(): boolean {
     return this.initSuccessFul;
   }

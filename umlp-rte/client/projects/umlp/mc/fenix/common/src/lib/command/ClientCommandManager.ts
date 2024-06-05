@@ -26,6 +26,14 @@ export class ClientCommandManager extends CommandManager {
     })
   }
 
+  public retryInitCommunicationImmediate() {
+    this.commandCommunication.retryImmediate();
+  }
+
+  public pauseRetryCommunication() {
+    this.commandCommunication.pauseRetry();
+  }
+
   protected override _executeCommand<T>(command: Command<T>): Promise<CommandResult<T>> {
     command.setParticipantId(this.participantId);
     return this.commandCommunication.sendCommandToServerAndReceiveResult(command);

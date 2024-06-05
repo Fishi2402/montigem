@@ -9,7 +9,20 @@ import {CommandResultReceiveObserver} from "../../command/CommandResultReceiveOb
 import {SimpleResult} from "../../command/SimpleResult";
 import {LoadingState} from "../../common/LoadingState";
 import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
-import {first, firstValueFrom, from, retry, Subject, take, timer, BehaviorSubject, tap, filter, bufferWhen} from "rxjs";
+import {
+  first,
+  firstValueFrom,
+  from,
+  retry,
+  Subject,
+  take,
+  timer,
+  BehaviorSubject,
+  tap,
+  filter,
+  bufferWhen,
+  ObservableInput, merge
+} from "rxjs";
 
 export class ClientCommandWebsocketCommunication implements ClientCommandCommunication {
   public static MAX_TRIES: number = 10;
@@ -32,6 +45,9 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
   private outgoingMessages = new Subject<any>();
   private connectionStatus = new BehaviorSubject<boolean>(false);
   private established: boolean = false;
+
+  private immediateRetry: Subject<any> = new Subject();
+  private retryCount: number = 0;
 
   /*
   executor: ExecutorService;
@@ -119,9 +135,17 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
     const retrySocket = this.socket.pipe(
       retry({ // retry, but with back off of 2^n * backoffInterval (and at most 10s)
         delay: (_, retryCount:number) => {
+          if (this.retryCount == -2) {
+            // disabled
+            return this.immediateRetry;
+          }
+          this.retryCount++;
+          if (retryCount < this.retryCount)
+            this.retryCount = retryCount;
           const backoffInterval = 400;
-          return timer(Math.min(10*1000, Math.pow(2, retryCount - 1) * backoffInterval));
-        }
+          return merge(this.immediateRetry, timer(Math.min(10*1000, Math.pow(2, this.retryCount - 1) * backoffInterval)));
+        },
+        resetOnSuccess: true,
       })
     );
 
@@ -244,5 +268,14 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
   protected expectInitMessage(): boolean {
     return !this.established;
     // return this.initLatch.getCount() > 0;
+  }
+
+  public retryImmediate() {
+    this.retryCount = 0;
+    this.immediateRetry.next(true);
+  }
+
+  public pauseRetry() {
+    this.retryCount = -2;
   }
 }

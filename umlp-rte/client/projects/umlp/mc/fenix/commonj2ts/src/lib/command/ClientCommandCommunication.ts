@@ -20,4 +20,8 @@ export interface ClientCommandCommunication {
   onCommandReceived(observer: CommandReceiveObserver): ClientCommandCommunication;
 
   onCommandResultReceived(observer: CommandResultReceiveObserver): ClientCommandCommunication;
+
+  retryImmediate(): void;
+
+  pauseRetry(): void;
 }
