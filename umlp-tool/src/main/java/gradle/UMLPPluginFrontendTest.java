@@ -18,8 +18,8 @@ public class UMLPPluginFrontendTest implements Plugin<Project> {
 
     // Frontend Domain Tasks:
     {
-      UMLPFrontendTask firstTask = (UMLPFrontendTask) project.getTasks().getByName(UMLPPluginFrontend.UMLP_FRONTEND_DOMAIN_TASK_NAME);
-      UMLPFrontendTask secondTask = project.getTasks().register("COMPARE_" + UMLPPluginFrontend.UMLP_FRONTEND_DOMAIN_TASK_NAME, UMLPFrontendTask.class, umlpTask -> {
+      UMLPFrontendTask firstTask = (UMLPFrontendTask) project.getTasks().getByName(UMLPPluginFrontendBase.UMLP_FRONTEND_DOMAIN_TASK_NAME);
+      UMLPFrontendTask secondTask = project.getTasks().register("COMPARE_" + UMLPPluginFrontendBase.UMLP_FRONTEND_DOMAIN_TASK_NAME, UMLPFrontendTask.class, umlpTask -> {
         // TODO: Is there a better way to copy _all_ properties from the tasks?
         umlpTask.getInput().setFrom(firstTask.getInput());
         umlpTask.getHwcDir().setFrom(firstTask.getHwcDir());
@@ -37,8 +37,8 @@ public class UMLPPluginFrontendTest implements Plugin<Project> {
 
     // Frontend GUI Tasks:
     {
-      UMLPGuiGenTask firstTask = (UMLPGuiGenTask) project.getTasks().getByName(UMLPPluginFrontend.UMLP_FRONTEND_GUI_TASK_NAME);
-      UMLPGuiGenTask secondTask = project.getTasks().register("COMPARE_" + UMLPPluginFrontend.UMLP_FRONTEND_GUI_TASK_NAME, UMLPGuiGenTask.class, umlpTask -> {
+      UMLPGuiGenTask firstTask = (UMLPGuiGenTask) project.getTasks().getByName(UMLPPluginFrontendBase.UMLP_FRONTEND_GUI_TASK_NAME);
+      UMLPGuiGenTask secondTask = project.getTasks().register("COMPARE_" + UMLPPluginFrontendBase.UMLP_FRONTEND_GUI_TASK_NAME, UMLPGuiGenTask.class, umlpTask -> {
         // TODO: Is there a better way to copy _all_ properties from the tasks?
         umlpTask.getInput().from(firstTask.getInput());
         umlpTask.getHwcDir().from(firstTask.getHwcDir());
@@ -59,7 +59,7 @@ public class UMLPPluginFrontendTest implements Plugin<Project> {
     }
   }
 
-  private TaskProvider<CheckDirEqualityTask> createCompareTask(Project project, DirectoryProperty dir1, DirectoryProperty dir2, String taskName){
+  private TaskProvider<CheckDirEqualityTask> createCompareTask(Project project, DirectoryProperty dir1, DirectoryProperty dir2, String taskName) {
     return project.getTasks().register(taskName, CheckDirEqualityTask.class, task -> {
       task.getDir1().set(dir1);
       task.getDir2().set(dir2);
