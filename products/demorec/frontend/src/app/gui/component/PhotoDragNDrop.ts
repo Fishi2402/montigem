@@ -31,9 +31,6 @@ export class PhotoDragNDrop extends PhotoDragNDropComponent {
     super();
   }
 
-  @Input()
-  public attachedComponent: DemoRecComponent;
-
   files: File[] = [];
   uploadFailureMessage : boolean = false;
   errorMessage : string = "";

@@ -145,8 +145,8 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements OnInit 
 
   // Edit JoinConnections
 
-  public override editJoinConnection(any): (arg: void) => void {
-    return $ => this.router.navigate(["gui/joinconnection/JoinConnectionEdit/"+this.getP().getGemId()+"/"+this.getStep().getGemId()+"/"+this.getStep().getDeconstructs().getGemId()])
+  public override editJoinConnection(): (arg: void) => void {
+    return $ => this._router.navigate(["gui/joinconnection/JoinConnectionEdit/"+this.getP().getGemId()+"/"+this.getStep().getGemId()+"/"+this.getStep().getDeconstructs().getGemId()])
   }
 
   public override getSelectJoinConnectionOptions(): Array<Option> {
@@ -264,7 +264,7 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements OnInit 
   }
 
   public override backToProcessOverview(): (arg: void) => void {
-    return $ => this.router.navigate(["gui/process/ProcessOverview/"+this.getP().getGemId()])
+    return $ => this._router.navigate(["gui/process/ProcessOverview/"+this.getP().getGemId()])
   }
 
 }

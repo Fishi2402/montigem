@@ -34,14 +34,16 @@ const newOption = "-- Create new --";
 })
 export  class ProcessOverview extends ProcessOverviewComponent {
 
-  public override attachStep(step: ProcessStep) {
-    const consistsOf = this.getP().getConsistsOf()
-    if(consistsOf.length == 0) {
-      step.setIndex(0)
-    } else {
-      step.setIndex(consistsOf[consistsOf.length - 1].getIndex() + 1)
+  public override attachStep(): (arg: ProcessStep) => void {
+    return (step: ProcessStep) => {
+      const consistsOf = this.getP().getConsistsOf()
+      if(consistsOf.length == 0) {
+        step.setIndex(0)
+      } else {
+        step.setIndex(consistsOf[consistsOf.length - 1].getIndex() + 1)
+      }
+      this.getP().addConsistsOf2(step);
     }
-    this.getP().addConsistsOf2(step);
   }
 
 }

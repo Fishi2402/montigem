@@ -40,7 +40,7 @@ page MeasuringValueEdit(ProcessStep step) {
           wrap="nowrap",
           colGap="5px",
           components=[
-            addNewMeasuringValue@MeasuringValueCreate(measuringValueEvent = attachMeasuringValue)
+            addNewMeasuringValue@MeasuringValueCreate(measuringValueEvent = attachMeasuringValue())
           ]
         )
       ]

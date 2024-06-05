@@ -21,7 +21,7 @@ export  class Start extends StartComponent {
 
   ngOnInit(){
     if (!(GuidslpaperSecurityManager.isCurrentlyLoggingIn() || GuidslpaperSecurityManager.isSignedIn())) {
-      this.router.navigate(['gui', 'login', 'LoginPage']);
+      this._router.navigate(['gui', 'login', 'LoginPage']);
       return;
     }
 

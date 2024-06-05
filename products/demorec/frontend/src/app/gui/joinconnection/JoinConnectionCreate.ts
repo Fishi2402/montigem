@@ -103,22 +103,22 @@ export class JoinConnectionCreate extends JoinConnectionCreateComponent {
     this.connectionTypeEntry = value;
     //
     if (JoinConnectionType.SCREW.toString() === this.getSelectTypeOfConnectionEntry()) {
-      this.getConnection().joinConnectionType(JoinConnectionType.SCREW)
+      this.getConnection().setJoinConnectionType(JoinConnectionType.SCREW)
     }
     if (JoinConnectionType.GLUE.toString() === this.getSelectTypeOfConnectionEntry()) {
-      this.getConnection().joinConnectionType(JoinConnectionType.GLUE)
+      this.getConnection().setJoinConnectionType(JoinConnectionType.GLUE)
     }
     if (JoinConnectionType.WELDING.toString() === this.getSelectTypeOfConnectionEntry()) {
-      this.getConnection().joinConnectionType(JoinConnectionType.WELDING)
+      this.getConnection().setJoinConnectionType(JoinConnectionType.WELDING)
     }
     if (JoinConnectionType.PLUG.toString() === this.getSelectTypeOfConnectionEntry()) {
-      this.getConnection().joinConnectionType(JoinConnectionType.PLUG)
+      this.getConnection().setJoinConnectionType(JoinConnectionType.PLUG)
     }
     if (JoinConnectionType.ELECTRICAL.toString() === this.getSelectTypeOfConnectionEntry()) {
-      this.getConnection().joinConnectionType(JoinConnectionType.ELECTRICAL)
+      this.getConnection().setJoinConnectionType(JoinConnectionType.ELECTRICAL)
     }
     if (JoinConnectionType.UNDEFINED.toString() === this.getSelectTypeOfConnectionEntry()) {
-      this.getConnection().joinConnectionType(JoinConnectionType.UNDEFINED)
+      this.getConnection().setJoinConnectionType(JoinConnectionType.UNDEFINED)
     }
   }
 
@@ -146,7 +146,7 @@ export class JoinConnectionCreate extends JoinConnectionCreateComponent {
 
   public override setSelectConnectsComponentEntry (value: string): void{
     this.connectsComponentEntry = value;
-    this.connectSelectedComponent(null)
+    this.connectSelectedComponent()();
   }
 
   public override getBuildConnectionDisabled (): boolean {
@@ -222,8 +222,8 @@ export class JoinConnectionCreate extends JoinConnectionCreateComponent {
       /*console.debug("Add Component to Connection")
       console.debug(comp)*/
       this.getConnection().build()
-      this.getConnection().connectsAdd(comp)
-      //this.getConnection().addConnects2(comp)
+      // this.getConnection().connectsAdd(comp)
+      this.getConnection().addConnects2(comp)
       /*console.debug("Connects List after adding Component: ", this.getConnection().getConnects())*/
       this.syncDummyComponentsWithBuilderObject(comp)
       setTimeout(() => console.debug("Connects List after adding Component: ", this.getConnection().getConnects()), 200)
@@ -231,7 +231,6 @@ export class JoinConnectionCreate extends JoinConnectionCreateComponent {
   }
 
   dummyComponentNames : string[] = []
-  dummyComponents : DemoRecComponent[] = []
 
   getDummyComponents() {
     return this.dummyComponentNames;
@@ -247,7 +246,7 @@ export class JoinConnectionCreate extends JoinConnectionCreateComponent {
       if(this.getSelectConnectsComponentEntry()) {
         DemoRecManager.getDemoRecComponentSure(+this.getSelectConnectsComponentEntry()).then(
             demoRecComponent => {
-              this.getConnection().connectsAdd(demoRecComponent)
+              this.getConnection().addConnects2(demoRecComponent)
               this.syncDummyComponentsWithBuilderObject(demoRecComponent)
             }
         )

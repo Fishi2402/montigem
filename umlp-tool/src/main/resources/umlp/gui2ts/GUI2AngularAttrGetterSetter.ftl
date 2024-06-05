@@ -1,7 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("type", "name", "getter", "setter")}
 <#assign tsType = cdPrinter.printType(type)>
-<#assign arg = "val">
+<#assign arg = "val_$">
 
 public get ${name}(): ${tsType} {
   return this.${getter}();

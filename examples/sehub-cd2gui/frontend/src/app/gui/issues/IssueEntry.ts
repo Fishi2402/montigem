@@ -21,7 +21,7 @@ export class IssueEntry extends IssueEntryComponent {
   public editIssue(): (arg: void) => void {
     return $ => {
       console.log(this.getIssue().getGemId())
-      this.router.navigate(['/gui/NotesPage/' + this.getIssue().getGemId()]);
+      this._router.navigate(['/gui/NotesPage/' + this.getIssue().getGemId()]);
     }
   }
 

@@ -16,9 +16,9 @@ import {BoardMapper} from "@src/sehub/BoardMapper";
 export class Bingo extends BingoComponent {
   ngOnInit() {
     if (!SehubSecurityManager.isSignedIn()) {
-      this.router.navigate(['/Login']);
+      this._router.navigate(['/Login']);
     } else {
-      this.router.navigate(['/Gui/Bingo/'+SehubSecurityManager.getCurrentUser().getGemId()])
+      this._router.navigate(['/Gui/Bingo/'+SehubSecurityManager.getCurrentUser().getGemId()])
     }
 
     super.ngOnInit();

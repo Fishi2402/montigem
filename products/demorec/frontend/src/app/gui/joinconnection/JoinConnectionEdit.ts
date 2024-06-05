@@ -42,11 +42,11 @@ export class JoinConnectionEdit extends JoinConnectionEditComponent implements O
   connectsComponentEntry : string = ""
 
   dummyComponents : DemoRecComponent[] = []
-  dummyComponentNames : string[] = []
 
 
   public override ngOnInit(){
     super.ngOnInit()
+    this.dummyComponentNames = [];
 
     // Initialize joinConnectionTypeOptions
     this.joinConnectionTypeOptions = [];
@@ -223,6 +223,6 @@ export class JoinConnectionEdit extends JoinConnectionEditComponent implements O
   }
 
   public override backToStepEditing(): (arg: void) => void {
-    return $ => this.router.navigate(["gui/step/ProcessStepEdit/"+this.getP().getGemId()+"/"+this.getStep().getGemId()]);
+    return $ => this._router.navigate(["gui/step/ProcessStepEdit/"+this.getP().getGemId()+"/"+this.getStep().getGemId()]);
   }
 }

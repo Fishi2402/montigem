@@ -23,7 +23,7 @@ export class UserSettings extends UserSettingsComponent {
 
   public ngOnInit(): void {
     if (!SehubSecurityManager.isSignedIn()) {
-      this.router.navigate(['gui/login/LoginPage']);
+      this._router.navigate(['gui/login/LoginPage']);
     }
     this.currentUser = SehubSecurityManager.getCurrentUser();
     this.currentUserRoutingId = SehubSecurityManager.getCurrentUserIdOrNull();
@@ -32,7 +32,7 @@ export class UserSettings extends UserSettingsComponent {
   }
 
   public inviteUserLeftClick() {
-    this.router.navigate(['gui/login/RegistrationPage']);
+    this._router.navigate(['gui/login/RegistrationPage']);
   }
 
   public override getInviteUserDisabled (): boolean {

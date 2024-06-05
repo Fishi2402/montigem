@@ -2,7 +2,7 @@
 ${tc.signature("type", "addList")}
 <#assign mcType = type.printType()>
 <#assign javaType = cdPrinter.printType(type)>
-<#assign arg = "val">
+<#assign arg = "val_$">
 
 ${cd4c.method("public void notify${javaType}Added(${mcType} ${arg})")}
 <#list addList as add>

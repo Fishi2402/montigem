@@ -59,7 +59,7 @@ export class UserCreate extends UserCreateComponent {
           this.getNewUser().setRole(SehubRole.DEVELOPER);
           // this.getNewUser().setGridEntry1(mapping);
           this.getNewUser().build();
-          this.router.navigate(['/Login']);
+          this._router.navigate(['/Login']);
           });
         } else {
           this.error = errorMessage;

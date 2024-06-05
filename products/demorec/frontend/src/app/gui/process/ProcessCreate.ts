@@ -46,11 +46,6 @@ export  class ProcessCreate extends ProcessCreateComponent {
 
   public oldDerivedPackname : string = ""
 
-  public constructor(protected router: Router) {
-    super(router);
-  }
-
-
   public ngOnInit(): void {
     super.ngOnInit()
     DemoRecManager.getBatteryPackList().then(gemPromiseRes => {
@@ -179,8 +174,8 @@ export  class ProcessCreate extends ProcessCreateComponent {
 
         pack = Promise.all([type, componentKind]).then( ([bPackType, kind ]) => {
           return new Promise((resolve, reject) => {
-            this.getPack().type(bPackType)
-            this.getPack().isA(kind)
+            this.getPack().setType1(bPackType)
+            this.getPack().setIsA1(kind)
             /*this.getPack().isDeconstructible(true)*/
             if(this.getPack().isBuildable()) {
               resolve(this.getPack().build())
@@ -192,14 +187,14 @@ export  class ProcessCreate extends ProcessCreateComponent {
       }
 
       pack.then(pack => {
-        this.getP().deconstructionOf(pack)
+        this.getP().setDeconstructionOf1(pack)
         this.getP().build()
-        this.router.navigate(["gui/process/ProcessOverview/"+this.getP().getGemId()])
+        this._router.navigate(["gui/process/ProcessOverview/"+this.getP().getGemId()])
       })
     };
   }
 
-  public override getPhotoDragAndDropAttachedComponent (): BatteryPackBuilder {
+  public override getPhotoDragAndDropAttachedComponent (): BatteryPack {
     return this.getPack();
   }
 
@@ -247,7 +242,7 @@ export  class ProcessCreate extends ProcessCreateComponent {
         return this.getPack().getName()
       }
       this.oldDerivedPackname = packName
-      this.getPack().name(packName)
+      this.getPack().setName(packName)
       return this.getPack().getName()
     }
   }

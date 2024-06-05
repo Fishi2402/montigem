@@ -52,7 +52,7 @@ export class UserCreate extends UserCreateComponent {
         this.newUser.registrationDate(new Date());
         this.newUser.role(DtcockpitRole.USER);
         this.build();
-        this.router.navigate(['gui', 'login']);
+        this._router.navigate(['gui', 'login']);
       } else {
         this.error = errorMessage;
       }

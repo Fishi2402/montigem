@@ -60,7 +60,7 @@ page ProcessStepEdit(Process p, ProcessStep step) {
                             options = null,
                             entry = null),
                         createNewJoinConnection@guard(true) {
-                          @JoinConnectionCreate(createJoinConnection=addNewJoinConnection);
+                          @JoinConnectionCreate(createJoinConnection=addNewJoinConnection());
                         }
                         else {
                           editJoinConnectionButton@GemButton(width = "auto", disabled = false, label = "Edit this Join Connection", leftClick = editJoinConnection());

@@ -18,7 +18,7 @@ export class CreateClubWithMembers extends CreateClubWithMembersComponent {
   public override createClub(): (arg: any) => void {
     return () => {
       this.getClub().build();
-      this.router.navigate(['/person/ClubMembers/'+this.getClub().getGemId()]);
+      this._router.navigate(['/person/ClubMembers/'+this.getClub().getGemId()]);
     }
   }
 

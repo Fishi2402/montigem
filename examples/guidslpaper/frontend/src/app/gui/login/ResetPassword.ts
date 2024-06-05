@@ -26,7 +26,7 @@ export class ResetPassword extends ResetPasswordComponent {
       this.users.filter(u => {
         if (!!u && !!this.user.getEmail() && this.user.getEmail() === u.getEmail()) {
           u.setPassword(this.user.getPassword());
-          this.router.navigate(['gui', 'login', 'LoginPage']);
+          this._router.navigate(['gui', 'login', 'LoginPage']);
         }
       });
       this.error = 'There is no user with the E-mail "' + this.user.getEmail() +'" !';
@@ -40,7 +40,7 @@ export class ResetPassword extends ResetPasswordComponent {
   }
 
   public override navigateBack(): (arg: void) => void {
-    return $ => this.router.navigate(['gui', 'login', 'LoginPage']);
+    return $ => this._router.navigate(['gui', 'login', 'LoginPage']);
   }
 
 }

@@ -75,7 +75,7 @@ export class MeasuringValueCreate extends MeasuringValueCreateComponent implemen
       const waitingFor = [];
       waitingFor.push(DemoRecManager.getDimensionSure(+this.getSelectDimensionUnitEntry())
           .then((dimension) => {
-            this.getMeasuringValue().dimension(dimension)
+            this.getMeasuringValue().setDimension1(dimension)
           }))
       this.building = true;
       Promise.all(waitingFor).then(x => {

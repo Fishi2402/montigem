@@ -131,7 +131,7 @@ export class UserCreate extends UserCreateComponent {
   }
 
   public override navigateBack(): (arg: void) => void {
-    return $ => this.router.navigate(['/login/LoginPage']);
+    return $ => this._router.navigate(['/login/LoginPage']);
   }
 
 }

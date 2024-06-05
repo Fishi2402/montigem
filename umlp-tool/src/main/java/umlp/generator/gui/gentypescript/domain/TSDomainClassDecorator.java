@@ -33,7 +33,9 @@ import umlp.generator.gui.gentypescript.method.TSSimpleMethodMutatorDecorator;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
@@ -262,6 +264,11 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
   @Override
   protected void createIsBuildFinishedMethod(ASTCDClass clazz) {
     getCD4C().addMethod(clazz, "umlp.gui2ts.domain.TSIsBuildFinishedI");
+  }
+
+  @Override
+  protected void createIsBuildableMethod(ASTCDClass clazz) {
+    getCD4C().addMethod(clazz, "umlp.gui2ts.domain.TSIsBuildable");
   }
 
   @Override

@@ -33,9 +33,9 @@ export class PipelineStats extends PipelineStatsComponent {
   }
 
   public ngOnInit() {
-    this.route.paramMap.subscribe(() => {
+    this._route.paramMap.subscribe(() => {
       this.projectDataCheck = { value: null, hash: null, calculating: false };
-      this.pRoutingId = +this.route.snapshot.paramMap.get("pRoutingId");
+      this.pRoutingId = +this._route.snapshot.paramMap.get("pRoutingId");
       this.p = null;
       super.ngOnInit();
     });

@@ -22,7 +22,7 @@ export class GemNavItem extends NavItemTOP {
   }
 
   ngOnInit() {
-    this.router.events.pipe(
+    this._router.events.pipe(
       filter(event => event instanceof Scroll)
     ).subscribe(event  => {
       if((event as Scroll).routerEvent instanceof NavigationEnd) {
@@ -34,7 +34,7 @@ export class GemNavItem extends NavItemTOP {
 
   public navigateOrAct() {
     if (this.target != null) {
-      this.router.navigate([this.target]);
+      this._router.navigate([this.target]);
     } else {
       this.leftClick.emit();
     }

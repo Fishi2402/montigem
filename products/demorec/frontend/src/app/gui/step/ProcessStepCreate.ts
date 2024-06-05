@@ -57,6 +57,7 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
 
   public override ngOnInit(): void {
     super.ngOnInit()
+    this.values = [];
 
     this.selectTypeOptions = [
       {value: this.deconstructionVal, display: "Deconstruction"},
@@ -165,18 +166,18 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
       const waitingFor = [];
       waitingFor.push(DemoRecManager.getEndEffectorSure(+this.getSelectEndeffectorEntry())
           .then((endEffector) => {
-            this.getStep().uses(endEffector)
+            this.getStep().setUses1(endEffector)
           }))
       if (this.getSelectJoinConnectionEntry()) {
         waitingFor.push(DemoRecManager.getJoinConnectionSure(+this.getSelectJoinConnectionEntry())
             .then((joinConnection) => {
-              this.getStep().deconstructs(joinConnection)
+              this.getStep().setDeconstructs1(joinConnection)
             }))
       }
       if (this.deconstructionVal === this.getSelectTypeEntry()) {
-        this.getStep().type(ProcessStepType.DECONSTRUCTION)
+        this.getStep().setType(ProcessStepType.DECONSTRUCTION)
       } else {
-        this.getStep().type(ProcessStepType.OTHER)
+        this.getStep().setType(ProcessStepType.OTHER)
       }
       let i = 0
       /*
@@ -184,7 +185,7 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
         i = this.getProcess().getConsistsOf1(this.getProcess().sizeConsistsOfs()-1).getIndex() +1;
       }
       /**/
-      this.getStep().index(i)
+      this.getStep().setIndex(i)
       this.building = true;
       Promise.all(waitingFor).then(x => {
 
@@ -285,9 +286,4 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
     }
   }
 
-  values : string[] = []
-
-  getValues() {
-    return this.values;
-  }
 }

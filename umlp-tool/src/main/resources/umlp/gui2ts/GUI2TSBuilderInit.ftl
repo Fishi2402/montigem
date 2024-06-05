@@ -1,7 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("type", "name", "manager", "initList")}
 <#assign tsType = cdPrinter.printType(type)>
-<#assign tmpVar = "tmp">
+<#assign tmpVar = "tmp_$">
 
 ${cd4c.method("protected void init${name?cap_first}()")}
 ${manager}.${tsType?uncap_first}Builder().then((${tmpVar}: ${tsType}) => {

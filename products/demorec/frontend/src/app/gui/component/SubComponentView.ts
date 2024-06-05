@@ -33,7 +33,7 @@ export  class SubComponentView extends SubComponentViewComponent {
   public override editSubcomponent(): (arg: void) => void {
     return $ => {
       console.debug("Click: ", this.getSubComponent().getGemId())
-      this.router.navigate(["/gui/component/ComponentEdit/"+this.getSubComponent().getGemId()])
+      this._router.navigate(["/gui/component/ComponentEdit/"+this.getSubComponent().getGemId()])
     };
   }
 

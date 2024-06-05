@@ -52,7 +52,7 @@ export class UserCreate extends UserCreateComponent {
         this.newUser.setRegistrationDate(new Date());
         this.newUser.setRole(Role.USER);
         this.newUser.build();
-        this.router.navigate(['gui', 'login']);
+        this._router.navigate(['gui', 'login']);
       } else {
         this.error = errorMessage;
       }

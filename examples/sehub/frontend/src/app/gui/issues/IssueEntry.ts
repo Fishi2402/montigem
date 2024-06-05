@@ -43,7 +43,7 @@ export class IssueEntry extends IssueEntryComponent {
   }
 
   public override navigate(): (arg: void) => void {
-    return $ => this.router.navigate(['gui', 'NotesPage', this.issue.getGemId()]);
+    return $ => this._router.navigate(['gui', 'NotesPage', this.issue.getGemId()]);
   }
 
   public override getDelButtonDisabled (): boolean {

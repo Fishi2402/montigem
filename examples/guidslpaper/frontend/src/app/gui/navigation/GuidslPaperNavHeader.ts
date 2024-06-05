@@ -24,7 +24,7 @@ export class GuidslPaperNavHeader extends GuidslPaperNavHeaderComponent {
   signOutCurrentUser(): void {
     fetch("/umlp/api/logout").finally(() => {
       GuidslpaperSecurityManager.signOut();
-      this.router.navigate(['gui', 'login', 'LoginPage']);
+      this._router.navigate(['gui', 'login', 'LoginPage']);
     });
   }
 

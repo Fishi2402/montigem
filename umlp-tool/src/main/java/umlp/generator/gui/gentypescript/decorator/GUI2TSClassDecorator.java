@@ -19,6 +19,7 @@ import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.gui.genjava.decorator.GUI2JavaClassDecorator;
+import umlp.generator.gui.genjava.prettyprinter.Expression2SetterPrinter;
 import umlp.generator.gui.gentypescript.printer.TSUtilsPrinter;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 import umlp.generator.util.PathUtil;
@@ -72,7 +73,7 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
       getCD4C().addImport(clazz, TypeScriptTypes.ROUTER.getJavaQName().get());
     }
     ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
-        CDModifier.PROTECTED.build(), "Router", "router");
+        CDModifier.PROTECTED.build(), "Router", "_router");
     clazz.addCDMember(attr);
   }
 
@@ -106,7 +107,8 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
   @Override
   protected Function<String, String> string2DateTimeConversion() {
     getCD4C().addImport(clazz, "mc.fenix.common.Conversion");
-    return s -> "Conversion.string2Date(" + s + "); if (val == null) return";
+    return s -> "Conversion.string2Date(" + s + ");"
+        + " if (" + Expression2SetterPrinter.SETTER_PARAM + "== null) return";
   }
 
   @Override
@@ -152,6 +154,10 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
   /**/
 
   protected Function<String, String> optional2XConversion(Function<String, String> conv) {
+    return s -> s + " != null ? " + conv.apply(s) + " : null";
+  }
+
+  protected Function<String, String> x2OptionalConversion(Function<String, String> conv) {
     return s -> s + " != null ? " + conv.apply(s) + " : null";
   }
 

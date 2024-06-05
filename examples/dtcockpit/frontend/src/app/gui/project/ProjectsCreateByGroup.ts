@@ -69,6 +69,6 @@ export class ProjectsCreateByGroup extends ProjectsCreateByGroupComponent {
   }
 
   public override navigateBack(): (arg: void) => void {
-    return $ => this.router.navigate(['gui', 'projects']);
+    return $ => this._router.navigate(['gui', 'projects']);
   }
 }

@@ -14,7 +14,7 @@ import {CommonModule} from '@angular/common';
 export class Navigation {
 
   public constructor(route: ActivatedRoute, protected router: Router) {
-    this.router = router;
+    this._router = router;
   }
 
   readonly items: { url: string, title: string }[] = [];
@@ -26,7 +26,7 @@ export class Navigation {
   signOutCurrentUser(): void {
     fetch("/umlp/api/logout").finally(() => {
       DtcockpitSecurityManager.signOut();
-      this.router.navigate(['gui', 'login', 'LoginPage']);
+      this._router.navigate(['gui', 'login', 'LoginPage']);
     });
   }
 

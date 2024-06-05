@@ -18,7 +18,7 @@ export class DtNavHeader extends DtNavHeaderComponent {
 
   public constructor(route: ActivatedRoute, protected router: Router) {
     super(router);
-    this.router = router;
+    this._router = router;
   }
 
   readonly items: { url: string, title: string }[] = [];
@@ -30,7 +30,7 @@ export class DtNavHeader extends DtNavHeaderComponent {
   signOutCurrentUser(): void {
     fetch("/umlp/api/logout").finally(() => {
       DtcockpitSecurityManager.signOut();
-      this.router.navigate(['gui', 'login', 'LoginPage']);
+      this._router.navigate(['gui', 'login', 'LoginPage']);
     });
   }
 

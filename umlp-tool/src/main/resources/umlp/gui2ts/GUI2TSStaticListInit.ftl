@@ -2,7 +2,7 @@
 ${tc.signature("type", "name", "listItems", "keys", "initList")}
 <#assign tsType = cdPrinter.printType(type)>
 <#assign paramString = genHelper.params2String(keys)>
-<#assign tmpVar = "tmp">
+<#assign tmpVar = "tmp_$">
 
 ${cd4c.method("public void init${name?cap_first}(${paramString})")}
 const ${tmpVar}: ${tsType} = [];

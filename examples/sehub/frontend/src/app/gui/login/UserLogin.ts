@@ -18,7 +18,7 @@ export class UserLogin extends UserLoginComponent {
   public ngOnInit(): void {
     super.ngOnInit();
     if (SehubSecurityManager.isSignedIn()) {
-      this.router.navigate(['gui/Start']);
+      this._router.navigate(['gui/Start']);
     }
 
     if (this.loginUser == null) {

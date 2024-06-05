@@ -87,7 +87,7 @@ export class WeatherView extends WeatherViewComponent {
   }
 
   public override navigateToUpdatePage(): (arg: Forecast) => void {
-    return (row: Forecast) => this.router.navigate(["..", "gui", "ForecastUpdate", row.getGemId()]);
+    return (row: Forecast) => this._router.navigate(["..", "gui", "ForecastUpdate", row.getGemId()]);
   }
 
   public override getWindspeedData(): GemGaugeChartData {

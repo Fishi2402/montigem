@@ -23,7 +23,7 @@ export class NotesPage extends NotesPageComponent {
   ngOnInit() {
     if (!SehubSecurityManager.isSignedIn()) {
       alert("No User Logged In")
-      this.router.navigate(['gui/login/LoginPage']);
+      this._router.navigate(['gui/login/LoginPage']);
     }
 
     super.ngOnInit();

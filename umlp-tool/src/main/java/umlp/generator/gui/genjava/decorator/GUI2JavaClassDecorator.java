@@ -392,7 +392,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       if (arg.getNameSymbol().isIsReference()) {
         // add setter
         String setterValue = setterPrinter.prettyprint(arg.getGUIArgValue());
-        String target = Expression2SetterPrinter.SETTER_PARAM + "_$";
+        String target = "conv_" + Expression2SetterPrinter.SETTER_PARAM;
         String value = Expression2SetterPrinter.SETTER_PARAM;
         String conv = "";
         if (arg.getGUIArgValue().isPresentExpression()) {
@@ -424,8 +424,16 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
   @Override
   public void endVisit(ASTGUIGuard node) {
     // calc type
-    SymTypeExpression typeSTE = util.getType(node.getCondition());
-    ASTMCType type = createTypeAndAddImports(typeSTE);
+    ASTMCType type;
+    // if the condition is a custom method
+    if (StaticObjectsCollector.getInstance().getNode2Method().containsKey(node.getCondition())) {
+      Method m = StaticObjectsCollector.getInstance().getNode2Method().get(node.getCondition());
+      type = createTypeAndAddImports(m.getReturnType());
+    }
+    else {
+      SymTypeExpression typeSTE = util.getType(node.getCondition());
+      type = createTypeAndAddImports(typeSTE);
+    }
 
     // calc name
     String name = node.getId().getName() + StringTransformations.capitalize(GUARD_ARG);
@@ -467,8 +475,16 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     }
     ASTGUIShortIterateControl control = (ASTGUIShortIterateControl) node.getIterateControl();
     // calc type
-    SymTypeExpression typeSTE = util.getType(control.getIterable());
-    ASTMCType type = createTypeAndAddImports(typeSTE);
+    ASTMCType type;
+    // if the iterable is a custom method
+    if (StaticObjectsCollector.getInstance().getNode2Method().containsKey(control.getIterable())) {
+      Method m = StaticObjectsCollector.getInstance().getNode2Method().get(control.getIterable());
+      type = createTypeAndAddImports(m.getReturnType());
+    }
+    else {
+      SymTypeExpression typeSTE = util.getType(control.getIterable());
+      type = createTypeAndAddImports(typeSTE);
+    }
 
     // calc name
     String name = node.getId().getName() + StringTransformations.capitalize(ITERATE_ARG);
@@ -987,7 +1003,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
     boolean rightIsEnum = util.isEnumType(right);
     if (leftIsString && rightIsEnum) {
-      return enum2StringConversion(right.print());
+      String type = createTypeAndAddImports(right).printType();
+      return enum2StringConversion(type);
     }
 
     boolean rightIsString = SymTypeRelations.isString(right);

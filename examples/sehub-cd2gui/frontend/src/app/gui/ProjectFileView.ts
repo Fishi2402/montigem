@@ -25,7 +25,7 @@ export class ProjectFileView extends ProjectFileViewComponent {
 
   public override goToArtifactsPage(event: any): (arg: void) => void {
     return $ => {
-      this.router.navigate(["..", "artifacts", "ProjectPage", this.parent.getGemId()]).then(() => {
+      this._router.navigate(["..", "artifacts", "ProjectPage", this.parent.getGemId()]).then(() => {
         window.location.reload();
       });
     }

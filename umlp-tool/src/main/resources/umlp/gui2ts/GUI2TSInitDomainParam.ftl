@@ -1,7 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("type", "name", "manager", "id", "init", "initList")}
 <#assign tsType = cdPrinter.printType(type)>
-<#assign tmpVar = "tmp">
+<#assign tmpVar = "tmp_$">
 
 ${cd4c.method("protected void ${init}()")}
   <#-- if attr set early (no/fast data loading) -->

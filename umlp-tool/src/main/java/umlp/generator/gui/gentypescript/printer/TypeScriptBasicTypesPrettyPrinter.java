@@ -41,6 +41,10 @@ public class TypeScriptBasicTypesPrettyPrinter extends MCBasicTypesPrettyPrinter
       de.monticore.prettyprint.CommentPrettyPrinter.printPreComments(node, getPrinter());
     }
     Optional<String> tsImportPath = TypeScriptTypes.getTsImportPath(node.getQName());
+    // Optional doesn't exist in TypeScript
+    if (node.getQName().equals("java.util.Optional")) {
+      return;
+    }
     if (tsImportPath.isPresent()) {
       getPrinter().print("import { " + TypeScriptTypes.toTSType(node.getQName())
           + " } from '" + tsImportPath.get() + "';");

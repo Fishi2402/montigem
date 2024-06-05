@@ -87,8 +87,8 @@ export class ComponentCreate extends ComponentCreateComponent {
       }
 
       kind.then(k => {
-        this.getComponent().isA(k)
-        if(this.getComponent()?.isBuildable() && !this.getComponent()?.isBuildFinished()) {
+        this.getComponent().setIsA1(k);
+        if(!this.getComponent()?.isBuildFinished()) {
           const component = this.getComponent().build()
           this.createComponent.emit(component)
           super.ngOnInit()

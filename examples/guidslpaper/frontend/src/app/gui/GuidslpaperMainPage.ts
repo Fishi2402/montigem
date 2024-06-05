@@ -17,17 +17,17 @@ import {GuidslpaperSecurityManager} from "../guidslpaper/GuidslpaperSecurityMana
 export class GuidslpaperMainPage extends GuidslpaperMainPageComponent {
   ngOnInit(){
     if (!GuidslpaperSecurityManager.isSignedIn()) {
-      this.router.navigate(['gui', 'login', 'LoginPage']);
+      this._router.navigate(['gui', 'login', 'LoginPage']);
     }
     super.ngOnInit();
   }
 
   public navigateToPerson(p: Person): (arg: any) => void {
-    return $ => this.router.navigate(['gui', 'person', p.getKuerzel(), 'show']);
+    return $ => this._router.navigate(['gui', 'person', p.getKuerzel(), 'show']);
   }
 
   public navigateToNewPerson(): (arg: void) => void {
-    return $ => this.router.navigate(['gui', 'person', 'PersonCreate']);
+    return $ => this._router.navigate(['gui', 'person', 'PersonCreate']);
   }
 
   public getPButtonClasses(p: Person): Array<string> { // ALu: Workaround - discuss
