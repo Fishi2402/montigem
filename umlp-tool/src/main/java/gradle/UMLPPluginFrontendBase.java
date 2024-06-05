@@ -36,7 +36,6 @@ import java.util.function.Consumer;
 
 /**
  * Common UMLP frontend setup.
- *
  * Specific tasks for JSweet or No-Jsweet are configured in the specific plugins
  */
 public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
