@@ -23,11 +23,12 @@ public class DerivedClassDecoratorTest extends DecoratorTest {
             () -> assertTrue(clazz.getModifier().isAbstract()),
             // check no of methods and attributes
             () -> assertEquals(0, clazz.getCDAttributeList().size(), "number of attributes"),
-            () -> assertEquals(2, clazz.getCDMethodList().size(), "number of methods"),
+            () -> assertEquals(3, clazz.getCDMethodList().size(), "number of methods"),
 
             // check methods
             () -> existsMethod(clazz, "init"),
-            () -> existsMethod(clazz, "getDFooAttr")
+            () -> existsMethod(clazz, "getDFooAttr"),
+            () -> existsMethod(clazz, "calcDFooAttr")
      );
   }
 

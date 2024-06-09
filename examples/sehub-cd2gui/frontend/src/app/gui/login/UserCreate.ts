@@ -23,7 +23,7 @@ export class UserCreate extends UserCreateComponent {
 
   private error: string = "";
 
-  protected users: User[];
+  protected users: GemList<User>;
 
   public static email: RegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
@@ -34,44 +34,38 @@ export class UserCreate extends UserCreateComponent {
     super();
   }
 
-  public ngOnInit(): void {
-    SehubManager.userBuilder().then(gemPromiseRes => {
-      this.newUser = gemPromiseRes;
-    });
-
+  public override init(): void {
+    super.init();
     SehubManager.getUserList().then(gemPromiseRes => {
       this.users = gemPromiseRes;
     });
-
   }
 
   public override createUser(): (arg: void) => void {
-    return $ => {
-      SehubManager.getBingoEntryList().then(entryList => {
-        entryList.loadAll().then(e => {
-          this.entries = e;
+    return $ => SehubManager.getBingoEntryList().then(entryList => {
+      entryList.loadAll().then(e => {
+        this.entries = e;
 
-          this.error = "";
-          if (!this.getNewUser().getUsername() || !this.getNewUser().getPassword() || !this.getNewUser().getEmail()) {
-            return;
-          }
-          let errorMessage = this.validateUser();
-          if (!errorMessage) {
-            this.permutation = this.getBoardPermutation();
-            this.buildMapping().then(mapping => {
-            //this.user.activated(ActivationStatus.AKTIVIERT);
-            this.newUser.registrationDate(new Date());
-            this.newUser.role(SehubRole.DEVELOPER);
-            this.newUser.gridEntry(mapping);
-            this.build();
-            this.navigateBack();
-            });
-          } else {
-            this.error = errorMessage;
-          }
-        });
+        this.error = "";
+        if (!this.getNewUser().getUsername() || !this.getNewUser().getPassword() || !this.getNewUser().getEmail()) {
+          return;
+        }
+        let errorMessage = this.validateUser();
+        if (!errorMessage) {
+          this.permutation = this.getBoardPermutation();
+          this.buildMapping().then(mapping => {
+          //this.user.activated(ActivationStatus.AKTIVIERT);
+          this.getNewUser().setRegistrationDate(new Date());
+          this.getNewUser().setRole(SehubRole.DEVELOPER);
+          // this.getNewUser().setGridEntry1(mapping);
+          this.getNewUser().build();
+          this._router.navigate(['/Login']);
+          });
+        } else {
+          this.error = errorMessage;
+        }
       });
-    }
+    });
   }
 
   async buildMapping(): Promise<Set<BoardMapper>>  {
@@ -94,6 +88,7 @@ export class UserCreate extends UserCreateComponent {
     }
 
     await Promise.all(promises);
+    console.log(gridEntrySet)
     return gridEntrySet;
   }
 
@@ -131,7 +126,7 @@ export class UserCreate extends UserCreateComponent {
   }
 
   public override navigateBack(): (arg: void) => void {
-    return $ => this._router.navigate(['/login/LoginPage']);
+    return $ => this.location.back();
   }
 
 }

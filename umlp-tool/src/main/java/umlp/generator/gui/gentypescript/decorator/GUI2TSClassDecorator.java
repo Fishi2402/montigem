@@ -187,6 +187,11 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
   }
 
   @Override
+  protected String getInitDerivedDomainParamTemplate() {
+    return "umlp.gui2ts.GUI2TSInitDerivedDomainParam";
+  }
+
+  @Override
   protected String getInitDomainParamTemplate() {
     return "umlp.gui2ts.GUI2TSInitDomainParam";
   }
@@ -199,11 +204,6 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
   @Override
   protected String getIterateInitTemplate() {
     return "umlp.gui2ts.GUI2TSIterateInit";
-  }
-
-  @Override
-  protected String getStaticBuilderInitTemplate() {
-    return "umlp.gui2ts.GUI2TSStaticBuilderInit";
   }
 
   @Override
@@ -227,8 +227,23 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
   }
 
   @Override
+  protected String getStaticBuilderInitTemplate() {
+    return "umlp.gui2ts.GUI2TSStaticBuilderInit";
+  }
+
+  @Override
+  protected String getStaticConstructorInitTemplate() {
+    return "umlp.gui2ts.GUI2TSStaticConstructorInit";
+  }
+
+  @Override
   protected String getBuilderInitTemplate() {
     return "umlp.gui2ts.GUI2TSBuilderInit";
+  }
+
+  @Override
+  protected String getConstructorInitTemplate() {
+    return "umlp.gui2ts.GUI2TSConstructorInit";
   }
 
   @Override

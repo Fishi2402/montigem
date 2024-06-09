@@ -55,7 +55,6 @@ page StaticObjectsCollector(Person person) {
       i@P(p = Person(person.name));
       j@L(v = [$2@iterate(Person p3 : person.friends) { $3@L(); }]);
 
-      /*
       k@T(
         md = MyData(InputStatus.WARNING),
         is = InputStatus.ERROR,
@@ -63,6 +62,7 @@ page StaticObjectsCollector(Person person) {
         lis = InputStatus.ERROR
       );
 
+      /*
       // String s
       l@P(s = InputStatus.ERROR);
 

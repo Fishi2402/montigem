@@ -90,7 +90,7 @@ public class FieldAccess2AccessorConverter extends CommonExpressionsPrettyPrinte
         CommentPrettyPrinter.printPostComments(node, getPrinter());
       }
     }
-    // a special case with builder
+    // a special case with builder or constructor
     else if (node2Attr.containsKey(node)) {
       if (this.isPrintComments()) {
         CommentPrettyPrinter.printPreComments(node, getPrinter());
@@ -104,25 +104,11 @@ public class FieldAccess2AccessorConverter extends CommonExpressionsPrettyPrinte
       if (this.isPrintComments()) {
         CommentPrettyPrinter.printPreComments(node.getArguments(), getPrinter());
       }
-      Iterator<ASTExpression> iter_expression = node.getArguments().getExpressionList().iterator();
-
       getPrinter().stripTrailing();
       getPrinter().print("(");
 
       Iterator<VariableSymbol> vs = GUIGeneratorUtil.getInstance()
           .findIterationItemSymbols(node.getEnclosingScope()).iterator();
-
-      if (iter_expression.hasNext()) {
-        iter_expression.next().accept(getTraverser());
-        while (iter_expression.hasNext()) {
-          getPrinter().stripTrailing();
-          getPrinter().print(",");
-          iter_expression.next().accept(getTraverser());
-        }
-        if (vs.hasNext()) {
-          getPrinter().print(",");
-        }
-      }
 
       if (vs.hasNext()) {
         getPrinter().print(vs.next().getName());

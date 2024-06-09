@@ -187,7 +187,7 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
     // append Manager and insert lowercase cd name (e.g., flensburg) to get the result
     String manager = ManagerDecorator.getClassName(util.getMainDomainModelSimpleName().get());
     String qManager = ManagerDecorator.getClassName(util.getMainDomainModelQName().get());
-    String domain = StringTransformations.uncapitalize(util.getMainDomainModelSimpleName().get());
+    String domain = util.getMainDomainModelSimpleName().get().toLowerCase();
 
     getCD4C().addImport(clazz, insertDomain2QType(qManager, domain));
     return manager;
@@ -205,7 +205,7 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
     if (lastDotIdx > 0) {
       qObserver = util.getMainDomainModelQName().get().substring(0, lastDotIdx) + "." + observer;
     }
-    String domain = StringTransformations.uncapitalize(util.getMainDomainModelSimpleName().get());
+    String domain = util.getMainDomainModelSimpleName().get().toLowerCase();
 
     getCD4C().addImport(clazz, insertDomain2QType(qObserver, domain));
     return observer;

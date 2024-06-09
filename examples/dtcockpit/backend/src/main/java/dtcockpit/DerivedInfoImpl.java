@@ -1,55 +1,54 @@
 package dtcockpit;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class DerivedInfoImpl extends DerivedInfoImplTOP {
   @Override
-  public int getSomeNumber() {
+  public int calcSomeNumber() {
     return 42;
   }
 
 
   @Override
-  public String getSomeString() {
+  public String calcSomeString() {
     return "None";
   }
 
 
   @Override
-  public List<String> getManyStrings() {
+  public List<String> calcManyStrings() {
     return Arrays.asList("a", "b", "c");
   }
 
   @Override
-  public MessageOfTheDay getRandomMSG() {
+  public MessageOfTheDay calcRandomMSG() {
     return DtcockpitManager.getMessageOfTheDayList().iterator().next();
   }
 
   @Override
-  public List<Meeting> getMonthlyMeetings() {
+  public List<Meeting> calcMonthlyMeetings() {
     return DtcockpitManager.getMeetingList();
   }
 
   @Override
-  public Meeting getImportantMeeting() {
+  public Meeting calcImportantMeeting() {
     return DtcockpitManager.getMeetingList().iterator().next();
   }
 
   @Override
-  public Meeting getRandomMeeting() {
+  public Meeting calcRandomMeeting() {
     return null;
   }
 
   @Override
-  public int sizeManyStrings() {
+  public int calcSizeManyStrings() {
     // TODO: Do we need this method?
-    return getManyStrings().size();
+    return calcManyStrings().size();
   }
 
   @Override
-  public int sizeMonthlyMeetings() {
+  public int calcSizeMonthlyMeetings() {
     // TODO: Do we need this method?
     return this.getMonthlyMeetings().size();
   }

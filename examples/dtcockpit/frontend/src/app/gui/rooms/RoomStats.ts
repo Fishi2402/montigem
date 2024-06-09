@@ -21,54 +21,54 @@ export class RoomStats extends RoomStatsComponent {
   temp4312 = "? °C";
 
   public override init(): void {
+    super.init();
     setTimeout(() => {
       if (this.getStats() == null) {
         return;
       }
-      for (let i = 0; i < this.getStats().ids.length; i++) {
-        this.getStats().get(i).then(room => {
-          if(room.getRoomNumber() == 4304){
-            room.addObserver(new class extends RoomObserver {
-              constructor(protected inst: RoomStats) {
-                super();
-              }
-              public override notifySetTemperature (room: Room,oldValue: number,o: number): void {
-                this.inst.temp4304 = o.toFixed(2) + " °C";
-              }
-              public override getScope(){
-                return NotificationScope.MINIMAL;
-              }
-            }(this))
-          }
+      for (let i = 0; i < this.getStats().length; i++) {
+        let room = this.getStats()[i];
+        if(room.getRoomNumber() == 4304){
+          room.addObserver(new class extends RoomObserver {
+            constructor(protected inst: RoomStats) {
+              super();
+            }
+            public override notifySetTemperature (room: Room,oldValue: number,o: number): void {
+              this.inst.temp4304 = o.toFixed(2) + " °C";
+            }
+            public override getScope(){
+              return NotificationScope.MINIMAL;
+            }
+          }(this))
+        }
 
-          if(room.getRoomNumber() == 4315){
-            room.addObserver(new class extends RoomObserver {
-              constructor(protected inst: RoomStats) {
-                super();
-              }
-              public override notifySetTemperature (room: Room,oldValue: number,o: number): void {
-                this.inst.temp4315 = o.toFixed(2) + " °C";
-              }
-              public override getScope(){
-                return NotificationScope.MINIMAL;
-              }
-            }(this))
-          }
+        if(room.getRoomNumber() == 4315){
+          room.addObserver(new class extends RoomObserver {
+            constructor(protected inst: RoomStats) {
+              super();
+            }
+            public override notifySetTemperature (room: Room,oldValue: number,o: number): void {
+              this.inst.temp4315 = o.toFixed(2) + " °C";
+            }
+            public override getScope(){
+              return NotificationScope.MINIMAL;
+            }
+          }(this))
+        }
 
-          if(room.getRoomNumber() == 4312){
-            room.addObserver(new class extends RoomObserver {
-              constructor(protected inst: RoomStats) {
-                super();
-              }
-              public override notifySetTemperature (room: Room,oldValue: number,o: number): void {
-                this.inst.temp4312 = o.toFixed(2) + " °C";
-              }
-              public override getScope(){
-                return NotificationScope.MINIMAL;
-              }
-            }(this))
-          }
-        })
+        if(room.getRoomNumber() == 4312){
+          room.addObserver(new class extends RoomObserver {
+            constructor(protected inst: RoomStats) {
+              super();
+            }
+            public override notifySetTemperature (room: Room,oldValue: number,o: number): void {
+              this.inst.temp4312 = o.toFixed(2) + " °C";
+            }
+            public override getScope(){
+              return NotificationScope.MINIMAL;
+            }
+          }(this))
+        }
       }
     }, 2000);
 

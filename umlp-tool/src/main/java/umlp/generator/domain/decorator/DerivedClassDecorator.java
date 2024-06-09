@@ -2,6 +2,7 @@
 package umlp.generator.domain.decorator;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
+import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
@@ -30,28 +31,58 @@ public class DerivedClassDecorator extends AbstractDecorator {
     ASTCDClass ast = UMLPMill.cDClassBuilder().setModifier(PUBLIC_ABSTRACT.build())
       .setName(classname).build();
 
-    getCD4C().addConstructor(ast, "umlp.derivedclass.Constructor", classname);
+    getCD4C().addConstructor(ast, getConstructorTemplate(), classname);
 
-    getCD4C().addMethod(ast, "umlp.derivedclass.Init", "NYI", "NYI", "NYI", "NYI");
+    getCD4C().addMethod(ast, getInitTemplate(), "NYI", "NYI", "NYI", "NYI");
 
     CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
       .filter(a -> !a.getModifier().isDerived())
-      .forEach(a -> getCD4C().addMethod(ast, "umlp.derivedclass.Get", a.getName(),
-        a.getSymbol().getType().print()));
+      .forEach(a -> {
+        ASTCDMethodSignature calc = getCD4C().addMethod(ast, getCalcTemplate(),
+            a.getName(), a.getSymbol().getType().print());
+        getCD4C().addMethod(ast, getGetTemplate(),
+            a.getName(), a.getSymbol().getType().print(), calc);
+      });
 
     CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
       .forEach(a -> {
         String type = a.getSymbol().getType().print();
         if (GenService.isList(a)) {
-          getCD4C().addMethod(ast, "umlp.derivedclass.Size", a.getName());
+          ASTCDMethodSignature calcSize = getCD4C().addMethod(ast, getCalcSizeTemplate(), a.getName());
+          getCD4C().addMethod(ast, getSizeTemplate(), a.getName(), calcSize);
           type = "List<" + type + ">";
         }
-        getCD4C().addMethod(ast, "umlp.derivedclass.Get", a.getName(), type);
+        ASTCDMethodSignature calc = getCD4C().addMethod(ast, getCalcTemplate(), a.getName(), type);
+        getCD4C().addMethod(ast, getGetTemplate(), a.getName(), type, calc);
       });
 
     addImports(domainClass, ast);
 
     return ast;
+  }
+
+  protected String getConstructorTemplate() {
+    return "umlp.derivedclass.Constructor";
+  }
+
+  protected String getInitTemplate() {
+    return "umlp.derivedclass.Init";
+  }
+
+  protected String getGetTemplate() {
+    return "umlp.derivedclass.Get";
+  }
+
+  protected String getSizeTemplate() {
+    return "umlp.derivedclass.Size";
+  }
+
+  protected String getCalcTemplate() {
+    return "umlp.derivedclass.Calc";
+  }
+
+  protected String getCalcSizeTemplate() {
+    return "umlp.derivedclass.CalcSize";
   }
 
   @Override

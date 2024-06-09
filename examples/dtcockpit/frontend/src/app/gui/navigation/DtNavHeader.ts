@@ -16,11 +16,6 @@ import {CommonModule} from '@angular/common';
 })
 export class DtNavHeader extends DtNavHeaderComponent {
 
-  public constructor(route: ActivatedRoute, protected router: Router) {
-    super(router);
-    this._router = router;
-  }
-
   readonly items: { url: string, title: string }[] = [];
 
   getCurrentUser(): User {

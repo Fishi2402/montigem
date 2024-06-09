@@ -1,6 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("name","typeParameter", "domainclass", "package")}
+${tc.signature("name", "typeParameter", "calcSize")}
+
 ${cd4c.method("public int size${name?cap_first}()")}
-
-throw new IllegalStateException("NYI");
-
+return this.${calcSize.getName()}();

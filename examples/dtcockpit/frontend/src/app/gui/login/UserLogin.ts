@@ -29,7 +29,7 @@ export class UserLogin extends UserLoginComponent {
 
   protected error: string = "";
 
-  public override loginOnEnter(): void {
+  public override loginOnEnter(): (event: KeyboardEvent) => void {
     return (event: KeyboardEvent) => {
       if (event.key === "Enter") {
         this.login();

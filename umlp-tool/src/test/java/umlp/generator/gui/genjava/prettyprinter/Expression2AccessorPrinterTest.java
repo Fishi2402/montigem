@@ -308,6 +308,7 @@ public class Expression2AccessorPrinterTest extends DomainGUITest {
     ASTGUIComponent g = stat.getCompById(components, "g");
     ASTGUIComponent h = stat.getCompById(components, "h");
     ASTGUIComponent i = stat.getCompById(components, "i");
+    ASTGUIComponent k = stat.getCompById(components, "k");
 
     String expect1 = removeSpaces("this.getPerson()");
     String result1 = removeSpaces(printer.prettyprint(a.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
@@ -333,8 +334,14 @@ public class Expression2AccessorPrinterTest extends DomainGUITest {
     String expect8 = removeSpaces("this.getHA_16(p2, p)");
     String result8 = removeSpaces(printer.prettyprint(h.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
 
-    String expect9 = removeSpaces("this.getIP_19(this.getPerson().getName(), p2, p)");
+    String expect9 = removeSpaces("this.getIP_19(p2, p)");
     String result9 = removeSpaces(printer.prettyprint(i.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+
+    String expect10 = removeSpaces("this.getKMd_21(p2, p)");
+    String result10 = removeSpaces(printer.prettyprint(k.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+
+    String expect11 = removeSpaces("this.getKLmd_22(p2, p)");
+    String result11 = removeSpaces(printer.prettyprint(k.getGUINamedArgs().getGUINamedArg(2).getGUIArgValue()));
 
     assertAll(
         () -> assertEquals(expect1, result1),
@@ -345,7 +352,9 @@ public class Expression2AccessorPrinterTest extends DomainGUITest {
         () -> assertEquals(expect6, result6),
         () -> assertEquals(expect7, result7),
         () -> assertEquals(expect8, result8),
-        () -> assertEquals(expect9, result9)
+        () -> assertEquals(expect9, result9),
+        () -> assertEquals(expect10, result10),
+        () -> assertEquals(expect11, result11)
     );
   }
 

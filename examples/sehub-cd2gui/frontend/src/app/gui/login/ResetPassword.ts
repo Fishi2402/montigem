@@ -17,23 +17,12 @@ export class ResetPassword extends ResetPasswordComponent {
 
   private error: string = "";
 
-  public ngOnInit(): void {
-    SehubManager.getUserList().then(gemPromiseRes => {
-      this.users = gemPromiseRes;
-      this.users.loadAll();
-    });
-
-    if (this.user == null) {
-      this.user = new User();
-    }
-  }
-
-  public override passwordReset(event: any): (arg: void) => void {
+  public override passwordReset(): (arg: void) => void {
     return $ => {
       if (!this.user || !this.user.getPassword() || !this.user.getEmail()) {
         return;
       }
-      this.users.toArray().filter(u => {
+      this.users.filter(u => {
         if (!!u && !!this.user.getEmail() && this.user.getEmail() === u.getEmail()) {
           u.setPassword(this.user.getPassword());
           this._router.navigate(['/login/LoginPage']);

@@ -24,10 +24,8 @@ export class UserCreate extends UserCreateComponent {
 
   public static email: RegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
-  public constructor(
-      protected location: Location,
-      protected router: Router) {
-    super(router);
+  public constructor(protected location: Location) {
+    super();
   }
 
   public ngOnInit(): void {
@@ -49,9 +47,9 @@ export class UserCreate extends UserCreateComponent {
       let errorMessage = this.validateUser();
       if (!errorMessage) {
         //this.user.activated(ActivationStatus.AKTIVIERT);
-        this.newUser.registrationDate(new Date());
-        this.newUser.role(DtcockpitRole.USER);
-        this.build();
+        this.newUser.setRegistrationDate(new Date());
+        this.newUser.setRole(DtcockpitRole.USER);
+        this.newUser.build();
         this._router.navigate(['gui', 'login']);
       } else {
         this.error = errorMessage;

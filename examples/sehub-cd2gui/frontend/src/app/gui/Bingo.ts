@@ -72,21 +72,14 @@ export class Bingo extends BingoComponent {
       this.messages.push(message);
       // Bad Workaround to reduce chats back to 40 if it managed to get somehow > 40
 
-      if(this.messages.size() > 31) {
-        this.messages.get(0).then(m => {
-          SehubManager.deleteMessage(m.getGemId());
-          this.messages.remove(0);
-          this.messages.get(0).then(m => {
-            SehubManager.deleteMessage(m.getGemId());
-            this.messages.remove(0);
-          })
-        })
-
-      } else if(this.messages.size() > 30) {
-        this.messages.get(0).then(m => {
-          SehubManager.deleteMessage(m.getGemId());
-          this.messages.remove(0);
-        })
+      if(this.messages.length > 31) {
+        let m = this.messages[0];
+        SehubManager.deleteMessage(m.getGemId());
+        m = this.messages[0]
+        SehubManager.deleteMessage(m.getGemId());
+      } else if(this.messages.length > 30) {
+        let m = this.messages[0]
+        SehubManager.deleteMessage(m.getGemId());
       }
     })
   }

@@ -22,7 +22,7 @@ export class ProjectCreate extends ProjectCreateComponent {
     return $ => {
       if (!this.checkBuild()) return;
       DtcockpitManager.projectBuilder().then(gemPromiseRes => {
-        this.build();
+        this.project.build();
         this.project = gemPromiseRes;
       });
     }

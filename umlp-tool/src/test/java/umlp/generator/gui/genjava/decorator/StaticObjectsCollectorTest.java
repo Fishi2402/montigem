@@ -65,7 +65,7 @@ public class StaticObjectsCollectorTest extends DomainGUITest {
 
     Map<ASTNode, Attribute> node2Attr = StaticObjectsCollector.getInstance().getNode2Attr();
 
-    assertions.add(() -> assertEquals(21, node2Attr.size()));
+    assertions.add(() -> assertEquals(24, node2Attr.size()));
 
     Attribute bP0Wrapper = node2Attr.get(
         stat.getArgByName(b, "p").getGUIArgValue().getExpression());

@@ -57,12 +57,12 @@ public class Expression2MutatorPrinterTest extends DomainGUITest {
     // there is only one iterate in Overview.gui
     ASTGUIIterate iterate = iterates.get(0);
     ASTGUIShortIterateControl control = ((ASTGUIShortIterateControl) iterate.getIterateControl());
-    String expect2 = removeSpaces("this.setPersons(val)");
+    String expect2 = removeSpaces("this.setPersons(val_$)");
     String result2 = removeSpaces(printer.prettyprint(control.getIterable()));
 
     // component with id gemText5
     ASTGUIComponent gemText5 = components.get(4);
-    String expect3 = removeSpaces("this.getP().setName(val)");
+    String expect3 = removeSpaces("this.getP().setName(val_$)");
     String result3 = removeSpaces(printer.prettyprint(
         gemText5.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
 
@@ -112,7 +112,7 @@ public class Expression2MutatorPrinterTest extends DomainGUITest {
     Log.clearFindings();
 
     // GemCheckBoxInput#checked
-    String expect2 = removeSpaces("this.getP().setEmployed(val)");
+    String expect2 = removeSpaces("this.getP().setEmployed(val_$)");
     String result2 = removeSpaces(printer.prettyprint(
         checkbox.getGUINamedArgs().getGUINamedArg(1).getGUIArgValue()));
 
@@ -236,7 +236,7 @@ public class Expression2MutatorPrinterTest extends DomainGUITest {
     String result7 = removeSpaces(Log.getFindings().get(0).getMsg());
     Log.clearFindings();
 
-    String expect8 = removeSpaces("this.getPersons().get(0).setStatus(val)");
+    String expect8 = removeSpaces("this.getPersons().get(0).setStatus(val_$)");
     String result8 = removeSpaces(printer.prettyprint(
         fieldCall5.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
 
@@ -296,12 +296,12 @@ public class Expression2MutatorPrinterTest extends DomainGUITest {
     // there is only one iterate in Overview.gui
     ASTGUIIterate iterate = iterates.get(0);
     ASTGUIShortIterateControl control = ((ASTGUIShortIterateControl) iterate.getIterateControl());
-    String expect2 = removeSpaces("this.setPersons(val)");
+    String expect2 = removeSpaces("this.setPersons(val_$)");
     String result2 = removeSpaces(printer.prettyprint(control.getIterable()));
 
     // component with id gemText5
     ASTGUIComponent gemText5 = components.get(4);
-    String expect3 = removeSpaces("p.setName(val)");
+    String expect3 = removeSpaces("p.setName(val_$)");
     String result3 = removeSpaces(printer.prettyprint(
         gemText5.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
 

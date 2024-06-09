@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gui;
 
-import de.se_rwth.commons.logging.Log;
 import functionstructure4fenix.DoubleValue;
 import functionstructure4fenix.Function;
 import functionstructure4fenix.Port;
@@ -15,16 +14,17 @@ import java.util.function.Consumer;
 @Component
 public class FunctionDetail extends FunctionDetailTOP {
   public FunctionDetail(Function f) {
-    super(f);
+    super();
+    setF(f);
   }
 
   @Override
-  public Consumer<Object> goToFunctionDetailsSub(Object sf) {
+  public Consumer<Void> goToFunctionDetailsSub(Function sf) {
     return goToFunctionDetails(sf);
   }
 
   @Override
-  public Consumer<Object> goToFunctionDetailsSuper(Object f) {
+  public Consumer<Void> goToFunctionDetailsSuper(Function f) {
     Gem<Function> ownerGem = getF().getOwnerGem();
     if (ownerGem.isPresent()) {
       return goToFunctionDetails(ownerGem.get());
@@ -43,11 +43,9 @@ public class FunctionDetail extends FunctionDetailTOP {
 //    }
 //  }
 
-  public Consumer<Object> goToFunctionDetails(Object sf) {
-    return event -> {
-      if (sf instanceof Function) {
-        Router.navigate("gui","FunctionDetail", "" + ((Function) sf).getGemId());
-      }
+  public Consumer<Void> goToFunctionDetails(Function sf) {
+    return $ -> {
+      Router.navigate("gui","FunctionDetail", "" + sf.getGemId());
     };
   }
 

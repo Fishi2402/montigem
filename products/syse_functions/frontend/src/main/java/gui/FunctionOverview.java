@@ -12,16 +12,15 @@ import java.util.function.Consumer;
 @Component
 public class FunctionOverview extends FunctionOverviewTOP {
 
-  public FunctionOverview(GemList functions) {
-    super(functions);
+  public FunctionOverview(GemList<Function> functions) {
+    super();
+    setFunctions(functions);
   }
 
   @Override
-  public Consumer<Object> goToFunctionDetails(Object f) {
-    return event -> {
-      if (f instanceof Function) {
-        Router.navigate("gui","FunctionDetail", "" + ((Function) f).getGemId());
-      }
+  public Consumer<Void> goToFunctionDetails(Function f) {
+    return $ -> {
+      Router.navigate("gui", "FunctionDetail", "" + f.getGemId());
     };
   }
 }

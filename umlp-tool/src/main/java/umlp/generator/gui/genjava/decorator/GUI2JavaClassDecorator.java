@@ -200,17 +200,27 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     }
     // case 2: component Foo(Person p)
     else if (util.isDomainType(typeSTE) && !util.isEnumType(typeSTE)) {
-      String id = util.getRoutingId(node);
-      getCD4C().addAttribute(clazz, "public Integer " + id);
-
       String manager = getAndImportManager();
+      if (typeSTE.hasTypeInfo() && TagLookUp.isDerived(typeSTE.getTypeInfo())) {
+        // add derived class init
+        Optional<InitDependency> dep = InitDependencyTree.getInstance().getDependency(node);
+        if (dep.isPresent()) {
+          dep.get().setInitMethod(new MethodTemplate(
+              getInitDerivedDomainParamTemplate(), type, name, manager, initName
+          ));
+        }
+      }
+      else {
+        String id = util.getRoutingId(node);
+        getCD4C().addAttribute(clazz, "public Integer " + id);
 
-      // add builder init
-      Optional<InitDependency> dep = InitDependencyTree.getInstance().getDependency(node);
-      if (dep.isPresent()) {
-        dep.get().setInitMethod(new MethodTemplate(
-            getInitDomainParamTemplate(), type, name, manager, id, initName
-        ));
+        // add builder init
+        Optional<InitDependency> dep = InitDependencyTree.getInstance().getDependency(node);
+        if (dep.isPresent()) {
+          dep.get().setInitMethod(new MethodTemplate(
+              getInitDomainParamTemplate(), type, name, manager, id, initName
+          ));
+        }
       }
     }
     // case 3: component Foo(List<Person> p)
@@ -639,12 +649,16 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     // a constructor call, e.g., @PersonForm(person = Person())
     if (node2Attr.containsKey(node)) {
       if (!node.getArguments().isEmptyExpressions()) {
-        Log.error("0x00016 Constructor with arguments '" + util.print(node)
-            + " at " + node.getArguments().get_SourcePositionStart().toString()
-            + " - " + node.getArguments().get_SourcePositionEnd().toString()
-            + ". Only constructors without arguments are supported so far. Please replace the call"
-            + " via a custom or a predefined function call."
-        );
+        SymTypeExpression ste = util.getType(node);
+        if (!(ste.isObjectType() || ste.isGenericType())) {
+          Log.error("0x00016 Constructor with arguments '" + util.print(node)
+              + "' at " + node.getArguments().get_SourcePositionStart().toString()
+              + " - " + node.getArguments().get_SourcePositionEnd().toString()
+              + ". Only constructors explicitly declared with matching parameters are supported"
+              + " so far. Please replace the call via a custom or a predefined function call,"
+              + " e.g. get" + util.print(node)
+          );
+        }
       }
 
       // add attr
@@ -661,9 +675,19 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       ASTMCType type = attrWrapper.getBaseType();
       String name = attr.getName();
 
-      if (params.isEmpty()) {
-        String manager = getAndImportManager();
+      IterationItemsFinder finder = new IterationItemsFinder();
+      Collection<ASTExpression> iterateItems = new HashSet<>(finder.getItems(gui));
+      Collection<ASTExpression> nonClassMembers = new HashSet<>(iterateItems);
 
+      Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
+          new IndentPrinter(), false, iterateItems, nonClassMembers
+      );
+      List<String> constructorArgs = new ArrayList<>();
+      for (ASTExpression val : node.getArguments().getExpressionList()) {
+        constructorArgs.add(getterPrinter.prettyprint(val));
+      }
+
+      if (params.isEmpty()) {
         // add getter
         ASTCDMethodSignature getter = getCD4C().addMethod(clazz, getGetterTemplate(), type, name);
 
@@ -671,17 +695,24 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         Optional<InitDependency> dep = InitDependencyTree.getInstance()
             .getDependency(node);
         if (dep.isPresent()) {
-          dep.get().setInitMethod(new MethodTemplate(
-              getBuilderInitTemplate(), type, name, manager
-          ));
+          if (constructorArgs.isEmpty()) {
+            String manager = getAndImportManager();
+
+            dep.get().setInitMethod(new MethodTemplate(
+                getBuilderInitTemplate(), type, name, manager
+            ));
+          }
+          else {
+            dep.get().setInitMethod(new MethodTemplate(
+                getConstructorInitTemplate(), type, name, constructorArgs
+            ));
+          }
         }
       }
       else {
         // add getter
         ASTCDMethodSignature getter = getCD4C().addMethod(clazz, getStaticObjectGetterTemplate(),
             type, name, params);
-
-        String manager = getAndImportManager();
 
         // add builder init
         Optional<InitDependency> dep = InitDependencyTree.getInstance()
@@ -690,9 +721,18 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
           if (TypeScriptTypes.HASH_MAP.getJavaQName().isPresent()) {
             getCD4C().addImport(clazz, TypeScriptTypes.HASH_MAP.getJavaQName().get());
           }
-          dep.get().setInitMethod(new MethodTemplate(
-              getStaticBuilderInitTemplate(), type, name, manager, params
-          ));
+          if (constructorArgs.isEmpty()) {
+            String manager = getAndImportManager();
+
+            dep.get().setInitMethod(new MethodTemplate(
+                getStaticBuilderInitTemplate(), type, name, manager, params
+            ));
+          }
+          else {
+            dep.get().setInitMethod(new MethodTemplate(
+                getStaticConstructorInitTemplate(), type, name, constructorArgs, params
+            ));
+          }
         }
       }
     }
@@ -782,11 +822,20 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
       String name = attr.getName();
 
-      if (util.isDomainListType(util.getType(node))) {
+      SymTypeExpression accessType = util.getType(node);
+      SymTypeExpression ownerType = util.getType(node.getExpression());
+      if (util.isDomainListType(accessType)) {
         // add assoc init
         IterationItemsFinder finder = new IterationItemsFinder();
-        ExpressionPrinterConfig.getInstance().customConversions.put(node,
-            n -> "_internal_" + ExpressionPrinterConfig.attr2Getter(node) + "GemList" + "()");
+
+        if (ownerType.hasTypeInfo() && TagLookUp.isDerived(ownerType.getTypeInfo())) {
+          ExpressionPrinterConfig.getInstance().customConversions.put(node,
+              n -> "calc" + StringTransformations.capitalize(node.getName()) + "()");
+        }
+        else {
+          ExpressionPrinterConfig.getInstance().customConversions.put(node,
+              n -> "_internal_" + ExpressionPrinterConfig.attr2Getter(node) + "GemList().loadAll()");
+        }
         Collection<ASTExpression> iterateItems = new HashSet<>(finder.getItems(gui));
         Collection<ASTExpression> nonClassMembers = new HashSet<>(iterateItems);
 
@@ -804,11 +853,18 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
           ));
         }
       }
-      else if (util.isDomainType(util.getType(node))) {
+      else if (util.isDomainType(accessType)) {
         // add assoc init
         IterationItemsFinder finder = new IterationItemsFinder();
-        ExpressionPrinterConfig.getInstance().customConversions.put(node,
-            n -> ExpressionPrinterConfig.attr2Getter(node) + "Gem" + "()");
+
+        if (ownerType.hasTypeInfo() && TagLookUp.isDerived(ownerType.getTypeInfo())) {
+          ExpressionPrinterConfig.getInstance().customConversions.put(node,
+              n -> "calc" + StringTransformations.capitalize(node.getName()) + "()");
+        }
+        else {
+          ExpressionPrinterConfig.getInstance().customConversions.put(node,
+              n -> ExpressionPrinterConfig.attr2Getter(node) + "Gem().load()");
+        }
         Collection<ASTExpression> iterateItems = new HashSet<>(finder.getItems(gui));
         Collection<ASTExpression> nonClassMembers = new HashSet<>(iterateItems);
 
@@ -1135,6 +1191,10 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     return "umlp.gui2java.GUI2JavaInitParamSingleton";
   }
 
+  protected String getInitDerivedDomainParamTemplate() {
+    return "umlp.gui2java.GUI2JavaInitDerivedDomainParam";
+  }
+
   protected String getInitDomainParamTemplate() {
     return "umlp.gui2java.GUI2JavaInitDomainParam";
   }
@@ -1215,8 +1275,16 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     return "umlp.gui2java.GUI2JavaBuilderInit";
   }
 
+  protected String getConstructorInitTemplate() {
+    return "umlp.gui2java.GUI2JavaConstructorInit";
+  }
+
   protected String getStaticBuilderInitTemplate() {
     return "umlp.gui2java.GUI2JavaStaticBuilderInit";
+  }
+
+  protected String getStaticConstructorInitTemplate() {
+    return "umlp.gui2java.GUI2JavaStaticConstructorInit";
   }
 
   protected String getListAssocInitTemplate() {

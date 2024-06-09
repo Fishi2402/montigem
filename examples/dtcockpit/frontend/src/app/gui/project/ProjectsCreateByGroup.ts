@@ -17,11 +17,11 @@ export class ProjectsCreateByGroup extends ProjectsCreateByGroupComponent {
 
   private error: string = "";
 
-  public createGroup(event: any): (arg: void) => void {
+  public createGroup(): (arg: void) => void {
     return $ => {
       if (!this.checkBuild()) return;
       DtcockpitManager.groupBuilder().then(gemPromiseRes => {
-        this.build();
+        this.group.build();
         this.group = gemPromiseRes;
       });
     }

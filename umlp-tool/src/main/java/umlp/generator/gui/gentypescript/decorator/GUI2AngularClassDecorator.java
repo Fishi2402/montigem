@@ -163,7 +163,9 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
 
       if (util.isDomainType(typeSTE)
           && !util.isEnumType(typeSTE)
-          && !TagLookUp.isSingleton(typeSTE.getTypeInfo())) {
+          && !TagLookUp.isSingleton(typeSTE.getTypeInfo())
+          && !TagLookUp.isDerived(typeSTE.getTypeInfo())
+      ) {
         // add attr id init
         glex.addAfterTemplate(
             "umlp.gui2ts.GUI2AngularInitBody",
@@ -224,10 +226,9 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
 
   @Override
   protected void addConstructor() {
-    List<String> ids = util.getRoutingIds(gui);
     extraImports.add("import { inject } from '@angular/core';");
     glex.replaceTemplate("umlp.gui2ts.TSConstructor", clazz,
-        new TemplateHookPoint("umlp.gui2ts.GUI2AngularConstructor", ids));
+        new TemplateHookPoint("umlp.gui2ts.GUI2AngularConstructor"));
   }
 
 

@@ -13,8 +13,7 @@ import {CommonModule} from '@angular/common';
 })
 export class Navigation {
 
-  public constructor(route: ActivatedRoute, protected router: Router) {
-    this._router = router;
+  public constructor(protected _router: Router) {
   }
 
   readonly items: { url: string, title: string }[] = [];

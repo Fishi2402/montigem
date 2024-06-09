@@ -38,12 +38,12 @@ public class FieldAccess2BuilderConverterTest extends DomainGUITest {
     ASTGUIComponent comp1 = components.get(5);
     ASTGUIComponent comp2 = components.get(6);
 
-    String expect1 = removeSpaces("name(val)");
+    String expect1 = removeSpaces("name(val_$)");
     String result1 = removeSpaces(conv.attr2Setter((ASTFieldAccessExpression)
         comp1.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression()
     ));
 
-    String expect2 = removeSpaces("employed(val)");
+    String expect2 = removeSpaces("employed(val_$)");
     String result2 = removeSpaces(conv.attr2Setter((ASTFieldAccessExpression)
         comp2.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression()
     ));
