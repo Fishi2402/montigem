@@ -1,0 +1,22 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package util.packaged;
+
+import packaged.Domain.Person;
+import packaged.Domain.MaritalStatus;
+import packaged.Domain.Address;
+
+component L(
+  List<GUIViewElement> v,
+  List<String> s,
+  List<Event<Void>> e,
+  List<Person> p,
+  List<MaritalStatus> m,
+  List<List<GUIViewElement>> lv,
+  List<List<String>> ls,
+  List<List<Event>> le,
+  List<List<Person>> lp,
+  List<List<MaritalStatus>> lm,
+  List u,
+  List<Address> a
+)

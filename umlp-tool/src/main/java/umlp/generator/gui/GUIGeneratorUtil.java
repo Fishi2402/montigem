@@ -5,6 +5,7 @@ import com.google.common.base.CaseFormat;
 import de.monticore.ast.ASTNode;
 import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cd4code._prettyprint.CD4CodeFullPrettyPrinter;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
@@ -18,6 +19,7 @@ import de.monticore.guidsl._ast.ASTGUIArgValue;
 import de.monticore.guidsl._ast.ASTGUIBlockContent;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
+import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.monticore.guidsl._ast.ASTGUIIterate;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._ast.ASTGUIParam;
@@ -54,6 +56,7 @@ import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.gui.genjava.prettyprinter.Expression2NullCheckAccessorPrinter;
+import umlp.generator.gui.genjava.prettyprinter.Expression2SetterPrinter;
 import umlp.generator.gui.genjava.prettyprinter.IterationItemsFinder;
 import umlp.generator.gui.gentypescript.config.GUI2TSConfigGenerator;
 import umlp.generator.gui.gentypescript.printer.TSBackendMap;
@@ -66,6 +69,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -179,8 +184,14 @@ public class GUIGeneratorUtil {
             .filter(p -> isDomainType(p)).findAny().isPresent();
   }
 
-  public final boolean isDomainType(ASTGUIParam astguiParam) {
-    return isDomainType(astguiParam.getSymbol().getType());
+  public final boolean isDomainType(ASTGUIParam param) {
+    if (!param.isPresentSymbol()) {
+      Log.error("0x0000E Unable to find symbol for '" + param.getName()
+          + "' at " + param.get_SourcePositionStart().toString()
+          + " - " + param.get_SourcePositionEnd().toString()
+      );
+    }
+    return isDomainType(param.getSymbol().getType());
   }
 
   public final boolean isDomainType(SymTypeExpression type) {
@@ -195,23 +206,29 @@ public class GUIGeneratorUtil {
     return DOMAIN_MODELS.contains(as.getFullName());
   }
 
-  public final boolean isDomainListType(ASTGUIParam astguiParam) {
-    SymTypeExpression type = astguiParam.getSymbol().getType();
+  public final boolean isDomainListType(ASTGUIParam param) {
+    SymTypeExpression type = param.getSymbol().getType();
     return isDomainListType(type);
   }
 
   public final boolean isDomainListType(SymTypeExpression type) {
+    return getDomainListInnerType(type).isPresent();
+  }
+
+  public Optional<SymTypeExpression> getDomainListInnerType(SymTypeExpression type) {
     if (type.hasTypeInfo() && GenService.isList(type)) {
       if (((SymTypeOfGenerics) type).sizeArguments() == 1) {
         SymTypeExpression inner = ((SymTypeOfGenerics) type).getArgument(0);
         TypeSymbol ts = inner.getTypeInfo();
         if (ts.getEnclosingScope() instanceof IGUIDSLArtifactScope) {
           IGUIDSLArtifactScope as = (IGUIDSLArtifactScope) ts.getEnclosingScope();
-          return DOMAIN_MODELS.contains(as.getFullName());
+          if (DOMAIN_MODELS.contains(as.getFullName())) {
+            return Optional.of(inner);
+          }
         }
       }
     }
-    return false;
+    return Optional.empty();
   }
 
   public boolean isEnum(String name, IOOSymbolsScope scope) {
@@ -315,9 +332,16 @@ public class GUIGeneratorUtil {
   }
 
   public final Optional<SymTypeExpression> getListInnerType(SymTypeExpression type) {
-    if (type.hasTypeInfo() && GenService.isList(type)) {
-      if (((SymTypeOfGenerics) type).sizeArguments() == 1) {
-        return Optional.of(((SymTypeOfGenerics) type).getArgument(0));
+    if (GenService.isList(type)) {
+      return getFirstInnerType(type);
+    }
+    return Optional.empty();
+  }
+
+  public Optional<SymTypeExpression> getFirstInnerType(SymTypeExpression type) {
+    if (type.isGenericType()) {
+      if (type.asGenericType().sizeArguments() > 0) {
+        return Optional.of(type.asGenericType().getArgument(0));
       }
     }
     return Optional.empty();
@@ -361,6 +385,10 @@ public class GUIGeneratorUtil {
     return type;
   }
 
+  public final boolean isOptional(SymTypeExpression type) {
+    return type.hasTypeInfo() && type.isGenericType() && GenService.isOptional(type);
+  }
+
   public final boolean isBuiltIn(ASTMCImportStatement i) {
     return isBuiltIn(i.getQName());
   }
@@ -385,6 +413,10 @@ public class GUIGeneratorUtil {
 
   public final boolean isCreateModel(String componentQName) {
     return CREATE_MODELS.contains(componentQName);
+  }
+
+  public String getBaseClassName(ASTGUIComponentDeclaration decl) {
+    return decl.getName();
   }
 
   public boolean isInputComponent(ASTGUIComponent guiComponent) {
@@ -496,6 +528,10 @@ public class GUIGeneratorUtil {
   @Deprecated(forRemoval = true)
   public String getIsSynchronizedSuffix() {
     return UMLPGeneratorConfig.getInstance().isGenerateTypescript() ? "" : SYNCHRONIZED_SUFFIX;
+    /*
+    if (true) return ""; // no longer required due to | async
+    return UMLPGeneratorConfig.getInstance().isGenerateTypescript() ? SYNCHRONIZED_SUFFIX : "";
+    /**/
   }
 
   public String gui2cdAttrSetterName(String componentId, String argName) {
@@ -525,7 +561,7 @@ public class GUIGeneratorUtil {
   public String getShortIteratorIterable(ASTGUIIterate iterate) {
     if (iterate.getIterateControl() instanceof ASTGUIShortIterateControl) {
       IterationItemsFinder finder = new IterationItemsFinder();
-      Collection<ASTExpression> iterationItems = finder.getItems(iterate);
+      Collection<ASTExpression> iterationItems = new HashSet<>(finder.getItems(iterate));
 
       Expression2NullCheckAccessorPrinter printer = new Expression2NullCheckAccessorPrinter(
           new IndentPrinter(), true, iterationItems, iterationItems
@@ -762,6 +798,10 @@ public class GUIGeneratorUtil {
     return StringTransformations.capitalize(compName.toLowerCase()) + "Module";
   }
 
+  public String getRoutingId(ASTGUIParam p) {
+    return p.getName() + "RoutingId";
+  }
+
   public List<String> getRoutingIds(ASTGUICompilationUnit decoratedAst) {
     List<String> ids = new ArrayList<>();
     if (!isCreateModel(decoratedAst.getComponentQName())) {
@@ -770,7 +810,7 @@ public class GUIGeneratorUtil {
           if (!GenService.isList(p.getSymbol().getType()) && isDomainType(p) && !isDerived(p)
               && !TagLookUp.isSingleton(p.getSymbol().getType().getTypeInfo())
               && !TagLookUp.isDerived(p.getSymbol().getType().getTypeInfo())) {
-            ids.add(p.getName() + "RoutingId");
+            ids.add(getRoutingId(p));
           }
         }
         else {
@@ -1112,4 +1152,77 @@ public class GUIGeneratorUtil {
     return findIterationItemSymbols(scope.getEnclosingScope(), symbols);
   }
 
+  public String types2ArgsString(Collection<String> types) {
+    StringBuilder res = new StringBuilder();
+    Iterator<String> iter = types.iterator();
+    int i = 0;
+    while (iter.hasNext()) {
+      String type = iter.next();
+      res.append(type);
+      res.append(" ");
+      res.append(Expression2SetterPrinter.SETTER_PARAM + i);
+      if (iter.hasNext()) {
+        res.append(",");
+      }
+    }
+    return res.toString();
+  }
+
+  public String variableSymbols2ArgsString(Collection<VariableSymbol> variableSymbols) {
+    StringBuilder res = new StringBuilder();
+    Iterator<VariableSymbol> iter = variableSymbols.iterator();
+    while (iter.hasNext()) {
+      VariableSymbol vs = iter.next();
+      res.append(vs.getType().printFullName());
+      res.append(" ");
+      res.append(vs.getName());
+      if (iter.hasNext()) {
+        res.append(",");
+      }
+    }
+    return res.toString();
+  }
+
+  public String variableSymbols2ArgsString(
+      String setterType, String arg, Collection<VariableSymbol> variableSymbols
+  ) {
+    StringBuilder res = new StringBuilder(setterType + " " + arg);
+    Iterator<VariableSymbol> iter = variableSymbols.iterator();
+    while (iter.hasNext()) {
+      res.append(",");
+      VariableSymbol vs = iter.next();
+      res.append(vs.getType().printFullName());
+      res.append(" ");
+      res.append(vs.getName());
+    }
+    return res.toString();
+  }
+
+  public String params2String(Collection<ASTCDParameter> params) {
+    StringBuilder res = new StringBuilder();
+    Iterator<ASTCDParameter> iter = params.iterator();
+    while (iter.hasNext()) {
+      ASTCDParameter param = iter.next();
+      res.append(param.getMCType().printType());
+      res.append(" ");
+      res.append(param.getName());
+      if (iter.hasNext()) {
+        res.append(",");
+      }
+    }
+    return res.toString();
+  }
+
+  public String params2String(String setterType, String arg, Collection<ASTCDParameter> params) {
+    StringBuilder res = new StringBuilder(setterType + " " + arg);
+    Iterator<ASTCDParameter> iter = params.iterator();
+    while (iter.hasNext()) {
+      res.append(",");
+      ASTCDParameter param = iter.next();
+      res.append(param.getMCType().printType());
+      res.append(" ");
+      res.append(param.getName());
+    }
+    return res.toString();
+  }
 }

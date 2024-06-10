@@ -18,8 +18,8 @@ page ProjectsCreateByGroup(Group group){
         createTitle@GemTextInput(labelText = "Group Title", entry = group.name, disabled = false),
         createGitID@GemTextInput(labelText = "Git", entry = group.git, disabled = false),
         error@GemText(value = ""),
-        @GemButton(label = "Create alle projects in group", leftClick = createGroup, disabled = false),
-        @GemButton(label = "Abort", leftClick = navigateBack, disabled = false)
+        @GemButton(label = "Create alle projects in group", leftClick = createGroup(), disabled = false),
+        @GemButton(label = "Abort", leftClick = navigateBack(), disabled = false)
       ])
     ) // end card
   ); // end column

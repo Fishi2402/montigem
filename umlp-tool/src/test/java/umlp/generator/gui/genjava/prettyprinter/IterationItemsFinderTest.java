@@ -14,6 +14,7 @@ import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -75,9 +76,9 @@ public class IterationItemsFinderTest extends DomainGUITest {
 
     List<Executable> assertions = new ArrayList<>();
 
-    Collection<ASTExpression> result1 = finder.getItems(w);
-    Collection<ASTExpression> result2 = finder.getItems(ac);
-    Collection<ASTExpression> result3 = finder.getItems(g);
+    Collection<ASTExpression> result1 = new HashSet<>(finder.getItems(w));
+    Collection<ASTExpression> result2 = new HashSet<>(finder.getItems(ac));
+    Collection<ASTExpression> result3 = new HashSet<>(finder.getItems(g));
 
     assertions.add(() -> assertEquals(0, result1.size()));
     assertions.add(() -> assertEquals(1, result2.size()));

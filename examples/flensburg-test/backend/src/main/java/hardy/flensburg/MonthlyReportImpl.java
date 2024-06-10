@@ -6,22 +6,22 @@ import java.util.List;
 public class MonthlyReportImpl extends MonthlyReportImplTOP {
 
   @Override
-  public int getMonth() {
+  public int calcMonth() {
     return 0;
   }
 
   @Override
-  public long getBalanceChange() {
+  public long calcBalanceChange() {
     return 0;
   }
 
   @Override
-  public int sizeMonthlyTransaction() {
+  public int calcSizeMonthlyTransaction() {
     return 0;
   }
 
   @Override
-  public List<Transaction> getMonthlyTransaction() {
+  public List<Transaction> calcMonthlyTransaction() {
     return null;
   }
 }

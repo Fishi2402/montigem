@@ -27,6 +27,7 @@ export * from './lib/common/BooleanDeSer';
 export * from './lib/common/ByteDeSer';
 export * from './lib/common/CharacterDeSer';
 export * from './lib/common/DoubleDeSer';
+export * from './lib/common/Event';
 export * from './lib/common/FloatDeSer';
 export * from './lib/common/Gem';
 export * from './lib/common/GemBuildable';

@@ -1,0 +1,38 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package genjava.decorator;
+
+import packaged.Domain.Person;
+import packaged.Domain.Address;
+import packaged.Domain.MaritalStatus;
+
+import util.packaged.P;
+import util.I;
+import util.V;
+import util.packaged.L;
+import util.E;
+
+page InitDependencyTree(
+  Person person = Person(),
+  MaritalStatus status = MaritalStatus.SINGLE,
+  List<List<Address>> lla,
+  String s,
+  ?int i,
+  GUIViewElement v,
+  Event<Void> e
+) {
+  a@P(p = person, m = status, s = s, b = b, a = person.address);
+  c@P(p = $per$son, s = calcStr(person), a = Address());
+  g@V(gve = v, lgve = [$1@V(), $2@P()]);
+  h@E(e = e);
+  j@E(e = action());
+  k@L(a = la, s = ["a", "b"], m = [MaritalStatus.SINGLE, MaritalStatus.MARRIED]);
+  l@iterate(Person friend : Person(Address())) {
+  }
+  o@iterate(Person friend : person.friends) {
+    p@iterate(Person contact : friend.friends) {
+      q@L(lp = [[person, contact, Person()], friend.friends]);
+      r@L(lp = [friend.friends]);
+    }
+  }
+}

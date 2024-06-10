@@ -45,7 +45,7 @@ public class IterationItemsFinder implements ExpressionsBasisVisitor2 {
 
   protected ExpressionsBasisTraverser traverser;
 
-  protected Collection<ASTExpression> ignore;
+  protected Collection<ASTNameExpression> items;
   protected final GUIGeneratorUtil util = GUIGeneratorUtil.getInstance();
 
   public IterationItemsFinder() {
@@ -56,14 +56,15 @@ public class IterationItemsFinder implements ExpressionsBasisVisitor2 {
   /**
    * Find all expressions in the given tree that reference iteration items defined in the enclosing
    * scopes for the expression including ancestor scopes.
+   *
    * @param tree AST to search expressions in.
    * @return A collection of expressions that must be ignored when printing expressions to use
    * accessors and mutators instead of direct attribute access.
    */
-  public Collection<ASTExpression> getItems(ASTNode tree) {
-    ignore = new HashSet<>();
+  public Collection<ASTNameExpression> getItems(ASTNode tree) {
+    items = new HashSet<>();
     tree.accept(traverser);
-    return ignore;
+    return new HashSet<>(items);
   }
 
   @Override
@@ -72,7 +73,7 @@ public class IterationItemsFinder implements ExpressionsBasisVisitor2 {
         node.getName(), node.getEnclosingScope()
     );
     if (vs.isPresent()) {
-      ignore.add(node);
+      items.add(node);
     }
   }
 

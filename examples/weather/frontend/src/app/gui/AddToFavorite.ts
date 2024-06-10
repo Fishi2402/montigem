@@ -25,8 +25,8 @@ export class AddToFavorite extends AddToFavoriteComponent {
     }
 
     WeatherManager.getCityList().then(gemPromiseRes => {
-      this.cities = gemPromiseRes;
-      this.cities.loadAll().then(() => {
+      gemPromiseRes.loadAll().then(val => {
+        this.cities = val;
         for (const city of this.cities) {
           let value = city.getName();
           this.options.push({value: value, display: value});

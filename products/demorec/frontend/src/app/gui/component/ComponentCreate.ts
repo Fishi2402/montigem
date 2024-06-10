@@ -67,32 +67,34 @@ export class ComponentCreate extends ComponentCreateComponent {
     this.kindEntry = value;
   }
 
-  public override createNewComponent(event: any): void {
-    /*if(this.getComponent()?.isBuildFinished()) {
-      this.createComponent.emit(this.getComponent())
-    }*/
-    let kind : Promise<ComponentKind>
-    if(this.getSelectComponentKindEntry() != newOption.value) {
-      kind=DemoRecManager.getComponentKindSure(+this.getSelectComponentKindEntry())
-    } else {
-      this.getComponentKind().build()
-      kind=new Promise((resolve, reject) => {
-        if(this.getComponentKind().isBuildFinished()) {
-          resolve(this.getComponentKind())
-        } else {
-          reject("Component kind could not be built.")
+  public override createNewComponent(): (arg: void) => void {
+    return $ => {
+      /*if(this.getComponent()?.isBuildFinished()) {
+        this.createComponent.emit(this.getComponent())
+      }*/
+      let kind : Promise<ComponentKind>
+      if(this.getSelectComponentKindEntry() != newOption.value) {
+        kind=DemoRecManager.getComponentKindSure(+this.getSelectComponentKindEntry())
+      } else {
+        this.getComponentKind().build()
+        kind=new Promise((resolve, reject) => {
+          if(this.getComponentKind().isBuildFinished()) {
+            resolve(this.getComponentKind())
+          } else {
+            reject("Component kind could not be built.")
+          }
+        })
+      }
+
+      kind.then(k => {
+        this.getComponent().setIsA1(k);
+        if(!this.getComponent()?.isBuildFinished()) {
+          const component = this.getComponent().build()
+          this.createComponent.emit(component)
+          super.ngOnInit()
         }
       })
     }
-
-    kind.then(k => {
-      this.getComponent().isA(k)
-      if(this.getComponent()?.isBuildable() && !this.getComponent()?.isBuildFinished()) {
-        const component = this.getComponent().build()
-        this.createComponent.emit(component)
-        super.ngOnInit()
-      }
-    })
   }
 
   public override getCreateComponentKindCondition (): boolean {

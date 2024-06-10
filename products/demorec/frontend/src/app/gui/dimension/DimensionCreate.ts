@@ -25,9 +25,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class DimensionCreate extends DimensionCreateComponent {
 
-  public override createDimension() {
-    this.getDimension().build();
-    super.ngOnInit();
+  public override createDimension(): (arg: void) => void {
+    return $ => {
+      this.getDimension().build();
+      super.ngOnInit();
+    }
   }
 }
 

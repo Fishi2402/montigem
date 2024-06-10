@@ -70,27 +70,29 @@ export class MeasuringValueCreate extends MeasuringValueCreateComponent implemen
     this.dimensionEntry = value;
   }
 
-  public override createNewMeasuringValue(event: any): void {
-    const waitingFor = [];
-    waitingFor.push(DemoRecManager.getDimensionSure(+this.getSelectDimensionUnitEntry())
-        .then((dimension) => {
-          this.getMeasuringValue().dimension(dimension)
-        }))
-    this.building = true;
-    Promise.all(waitingFor).then(x => {
+  public override createNewMeasuringValue(): (arg: void) => void {
+    return $ => {
+      const waitingFor = [];
+      waitingFor.push(DemoRecManager.getDimensionSure(+this.getSelectDimensionUnitEntry())
+          .then((dimension) => {
+            this.getMeasuringValue().setDimension1(dimension)
+          }))
+      this.building = true;
+      Promise.all(waitingFor).then(x => {
 
-      if (this.getMeasuringValue().isBuildable()) {
-        const measuringValue = this.getMeasuringValue().build()
-        this.measuringValueEvent.emit(measuringValue);
+        if (this.getMeasuringValue().isBuildable()) {
+          const measuringValue = this.getMeasuringValue().build()
+          this.measuringValueEvent.emit(measuringValue);
 
-        // Execute superNgOnit again i.e. get a new builder from the backend
-        DemoRecManager.measuringValueBuilder().then(gemPromiseRes => {
-          this.measuringValue = gemPromiseRes;
+          // Execute superNgOnit again i.e. get a new builder from the backend
+          DemoRecManager.measuringValueBuilder().then(gemPromiseRes => {
+            this.measuringValue = gemPromiseRes;
+            this.building = false;
+          })
+        } else {
           this.building = false;
-        })
-      } else {
-        this.building = false;
-      }
-    })
+        }
+      })
+    }
   }
 }

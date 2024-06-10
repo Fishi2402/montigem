@@ -8,10 +8,12 @@ import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
 import umlp.generator.domain.decorator.DerivedClassClientImplDecorator;
 import umlp.generator.domain.decorator.commands.DerivedClassCommandDecorator;
+import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentTemplates;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
@@ -29,6 +31,12 @@ public class TSDerivedClassClientImplDecorator extends DerivedClassClientImplDec
     this.astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE).getName();
     this.origCD = origCD;
     super.transform(origCD, decoratedCD);
+  }
+
+  @Override
+  protected void addConstructor(ASTCDClass ast, String classname) {
+    glex.replaceTemplate(GUI2ComponentTemplates.CONSTRUCTOR, ast,
+        new TemplateHookPoint(getConstructorTemplate()));
   }
 
   @Override
@@ -58,12 +66,25 @@ public class TSDerivedClassClientImplDecorator extends DerivedClassClientImplDec
     }
   }
 
+  @Override
+  protected String getConstructorTemplate() {
+    return "umlp.gui2ts.derivedclass.TSConstructor";
+  }
+
   protected String getGetTemplate() {
     return "umlp.gui2ts.derivedclass.TSGetClientImpl";
   }
 
   protected String getSizeTemplate() {
     return "umlp.gui2ts.derivedclass.TSGetSizeImpl";
+  }
+
+  protected String getCalcTemplate() {
+    return "umlp.gui2ts.derivedclass.TSCalcClientImpl";
+  }
+
+  protected String getCalcSizeTemplate() {
+    return "umlp.gui2ts.derivedclass.TSCalcSizeImpl";
   }
 
   @Override
@@ -82,10 +103,11 @@ public class TSDerivedClassClientImplDecorator extends DerivedClassClientImplDec
     // add an attribute, which contains the value (the value is fetched in the init)
 
     String attrType = type;
-    if (attrType.equals("Array<String>"))
+    if (attrType.equals("Array<String>")) {
       attrType = "Array<string>";
+    }
 
-    ast.addCDMember(getCDAttributeFacade().createAttribute(CDModifier.PROTECTED.build(), getMCTypeFacade().createQualifiedType(attrType), name));
+    getCD4C().addAttribute(ast, "protected " + attrType + " " + name);
 
     getCD4C().addImport(ast, Joiners.DOT.join(getPackageName(origCD, DerivedClassCommandDecorator.COMMAND_DERIVED_CLASS_PACKAGE),
         StringTransformations.capitalize(domainClass.getName()) + "_" + StringTransformations.capitalize(name) + "_get"));

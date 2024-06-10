@@ -20,5 +20,5 @@ page Test2(List<Project> projects) {
   @GemText(value = "---");
 
 
-  @GemButton(label = "AddProject", leftClick = addProject);
+  @GemButton(label = "AddProject", leftClick = addProject());
 }

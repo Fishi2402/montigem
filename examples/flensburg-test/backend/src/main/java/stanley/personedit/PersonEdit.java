@@ -4,15 +4,13 @@ package stanley.personedit;
 
 import hardy.flensburg.Person;
 
+import java.util.function.Consumer;
+
 public class PersonEdit extends PersonEditTOP {
 
-  public PersonEdit(Person p) {
-    super(p);
-  }
-
   @Override
-  public void decreaseAge(Object e) {
-    p.decreaseAge();
+  public Consumer<Void> decreaseAge(Person p) {
+    return $ -> p.decreaseAge();
   }
 
 }

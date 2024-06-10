@@ -18,7 +18,7 @@ component FavoriteItem(City fav) {
     @GemColumn(vAlign = "space-between", components = [
       @GemRow(hAlign = "space-between", vAlign = "center", components = [
         @GemText(value = fav.current.temperature + "°C"),
-        @GemButton(label = "x", leftClick = removeFavorite)
+        @GemButton(label = "x", leftClick = removeFavorite())
       ]),
       @GemRow(components = [
         @GemText(value = "H:" + fav.latitude + "°"),

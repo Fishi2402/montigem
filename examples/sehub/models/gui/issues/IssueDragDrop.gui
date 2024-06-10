@@ -7,5 +7,5 @@ component IssueDragDrop(
   List<Issue> issues,
   String dropId,
   List<String> canDropTo,
-  Event drop
+  Event<Object> drop
 )

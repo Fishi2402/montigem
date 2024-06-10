@@ -1,0 +1,138 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package genjava.decorator;
+
+import packaged.Domain.Person;
+import packaged.Domain.Address;
+import packaged.Domain.MaritalStatus;
+
+import util.packaged.P;
+import util.I;
+import util.V;
+import util.packaged.L;
+import util.E;
+
+// init
+page GUI2JavaClassDecorator(
+  // get + set + init()
+  Person person,
+  // get + set + init()
+  Person $per$son,
+  // get + set + init()
+  MaritalStatus status = MaritalStatus.SINGLE,
+  // get + set + init()
+  List<Address> la,
+  // get + set + init()
+  List<List<Address>> lla,
+  // get + set + init()
+  String s,
+  // get + set + init()
+  boolean b,
+  // get + set + init()
+  ?int i,
+  //
+  GUIViewElement v,
+  // get + set + init()
+  Event<Void> e
+) {
+  // getAP + getAM + getAS + getAB + getAA + initAA_0
+  a@P(p = person, m = status, s = s, b = b, a = person.address);
+  /*
+    this.getPerson();
+    this.getStatus();
+    this.getS();
+    this.getB();
+    this.getPerson().getAddress();
+  */
+  // getCP + getCS + calcStr + getCA + getCA_1 + initCA_1
+  c@P(p = $per$son, s = calcStr(person), a = Address());
+  /*
+    this.get$per$son();
+
+    cS() {
+      this.calcStr(this.getPerson())();
+    }
+
+    public abstract Consumer<Void> calcStr(Person arg0);
+
+    final cA1 = Manager.addressBuilder();
+    public Address getCA1() {
+      return this.cA1;
+    }
+
+    public Address getA() {
+      return this.getCA1();
+    }
+  */
+  // getDI + setDI
+  d@I(i = i);
+  /*
+    this.getI();
+    this.setI(val);
+  */
+  // getFI + setFI + initFI_2
+  f@I(i = person.address.house);
+  /*
+    this.getPerson().getAddress().getHouse();
+  */
+  //
+  g@V(gve = v, lgve = [$1@V(), $2@P()]);
+  /*
+    this.getV();
+    List.of(this.getV(), this.getP());
+  */
+  // hE
+  h@E(e = e);
+  /*
+    void hE() {
+      this.e()();
+    }
+
+    Consumer<Void> e = x -> {};
+
+    // TS:
+    this.e.emit();
+  */
+  // jE + action
+  j@E(e = action());
+  /*
+    void jE() {
+      this.action()();
+    }
+
+    abstract Consumer<Void> action();
+
+    // TS:
+    this.action()();
+  */
+  // getKA + getKS + getKS_2 + initKS_2 + getKM + getKM_3 + initKM_3
+  k@L(a = la, s = ["a", "b"], m = [MaritalStatus.SINGLE, MaritalStatus.MARRIED]);
+  /*
+    this.getLa();
+    List.of("a", "b");
+    List.of(MaritalStatus.SINGLE, MaritalStatus.MARRIED);
+  */
+  // getLIterate + initLIterable_
+  l@iterate(Person friend : person.friends) {
+  /*
+    this.getPerson().getFriends();
+  */
+    // getMCondition
+    m@guard(friend.employed) {
+    /*
+      friend.isEmployed();
+    */
+      // getNP
+      n@P(p = friend);
+      /*
+        friend
+      */
+    }
+  }
+  o@iterate(Person friend : person.friends) {
+    p@iterate(Person contact : friend.friends) {
+      q@L(lp = [[person, contact, Person()], friend.friends]);
+      r@L(lp = []);
+    }
+  }
+}

@@ -13,5 +13,8 @@ export class Option {
     if (!display) {
       this.display = value;
     }
+    else {
+      this.display = display;
+    }
   }
 }

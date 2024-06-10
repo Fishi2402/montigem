@@ -4,6 +4,7 @@ package gui;
 import de.se_rwth.commons.logging.Log;
 import dtcockpit.DtcockpitManager;
 import dtcockpit.DtcockpitSecurityManager;
+import dtcockpit.Project;
 import dtcockpit.User;
 import security.GetCurrentUserRequest;
 import umlp.backendrte.command.CommandManager;
@@ -14,8 +15,8 @@ import umlp.jsweet.extension.annotation.Component;
 
 @Component
 public class Start extends StartTOP {
-  public Start(GemList projects) {
-    super(projects);
+  public Start(GemList<Project> projects) {
+    setProjects(projects);
   }
 
   @Override

@@ -25,7 +25,7 @@ page DtcockpitMainPage(List<Group> groups, List<Project> projects) {
               // Note: the classes have to be overridden to be applied, as lists of literals is a WIP
               pButton@GemButton(label = p.name, leftClick = navigateToProject(p));
             },
-            newButton@GemButton(label = "+", leftClick = navigateToNewProject)
+            newButton@GemButton(label = "+", leftClick = navigateToNewProject())
           ]
         )
       )

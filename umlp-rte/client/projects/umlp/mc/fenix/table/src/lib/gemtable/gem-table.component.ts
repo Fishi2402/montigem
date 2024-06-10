@@ -1774,7 +1774,7 @@ export class GemTableComponent<
   // TODO: Needs to be globally defined. Could be used by other components
   /*
   private getPageUrl(): string {
-    return this.router.url.replace(new RegExp("[0-9]", "g"), "");
+    return this._router.url.replace(new RegExp("[0-9]", "g"), "");
   }
   /** */
 

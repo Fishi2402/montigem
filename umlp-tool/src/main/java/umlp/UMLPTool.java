@@ -66,16 +66,18 @@ import umlp.generator.gui.GUINodeIdTrafo;
 import umlp.generator.gui.coco.GUIDSLCoCosForUMLP;
 import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
 import umlp.generator.gui.genjava.GUI2JavaGenerator;
+import umlp.generator.gui.gentypescript.GUI2TSGenerator;
 import umlp.generator.gui.gentypescript.config.GUI2TSConfigGenerator;
 import umlp.generator.gui.gentypescript.config.ModuleRoutingInfo;
 import umlp.generator.gui.gentypescript.domain.TSUMLPGenerator;
 import umlp.generator.gui.gentypescript.java2ts.ComponentObserverManagerGenerator;
-import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentGenerator;
 import umlp.generator.gui.guivariability.GUIVariabilityHandler;
 import umlp.generator.util.TagLookUp;
 import umlp.generator.util.UMLPSymbolTables;
 import umlp.generator.validator.ocl.OCLASTPreProcessor;
 import umlp.guidsl.additional_cocos.GUIParamDefaultOnlyLiteralCoCo;
+import umlp.guidsl.additional_cocos.GUIParamNoUnderspecifiedGenericsCoCo;
+import umlp.guidsl.additional_cocos.NameExpressionsSymbolBoundExceptCallsCoCo;
 
 import java.io.File;
 import java.io.IOException;
@@ -132,6 +134,7 @@ public class UMLPTool extends UMLPToolTOP {
   protected static final String DEFAULT_CONFIGTEMPLATE_GUI2JAVA = "umlp.GUI2Java";
   public static final String DEFAULT_CONFIGTEMPLATE_GUI2HTML = "umlp.GUI2Html";
   protected static final String DEFAULT_CONFIGTEMPLATE_GUI2TS = "umlp.GUI2TypeScript";
+  protected static final String DEFAULT_CONFIGTEMPLATE_GUI2ANGULAR = "umlp.GUI2Angular";
 
   private static final List<ASTOCLCompilationUnit> oclCompilationUnits = new ArrayList<>();
 
@@ -314,6 +317,10 @@ public class UMLPTool extends UMLPToolTOP {
         for (String singletonClass : getSingletonClasses(ast)) {
           extraOpts.add("-");
           extraOpts.add("ExcludeForm");
+          extraOpts.add(singletonClass);
+
+          extraOpts.add("-");
+          extraOpts.add("NoOverview");
           extraOpts.add(singletonClass);
         }
 
@@ -587,6 +594,7 @@ public class UMLPTool extends UMLPToolTOP {
               .map(p -> p.toFile()).collect(Collectors.toList()));
           GlobalExtensionManagement glex = createGlex(getModuleConfigTemplates(cmd));
           genSetup.setGlex(glex);
+          CD4C.init(genSetup);
 
           List<String> domainModels = new ArrayList<>();
           if (DOMAIN.isSelected(cmd)) {
@@ -606,15 +614,12 @@ public class UMLPTool extends UMLPToolTOP {
           genSetup.getGlex().setGlobalValue("genHelper", GUIGeneratorUtil.getInstance());
           genSetup.getGlex().setGlobalValue("UMLPGeneratorConfig", UMLPGeneratorConfig.getInstance().initFromCmd(cmd));
 
-          GUI2JavaGenerator javaGenerator = new GUI2JavaGenerator(genSetup, viewComponents);
+          GUI2JavaGenerator javaGenerator = new GUI2JavaGenerator(genSetup);
           String javaConfigTemplate = cmd.getOptionValue("ct_java", DEFAULT_CONFIGTEMPLATE_GUI2JAVA);
           javaGenerator.generate(astGui, javaConfigTemplate);
 
-          GUI2ComponentGenerator componentGenerator = new GUI2ComponentGenerator(genSetup, viewComponents);
-          componentGenerator.generate(astGui, "umlp.GUI2Component");
-
-          //GUI2TypeScriptGenerator tsConfigGenerator = new GUI2TypeScriptGenerator(genSetup, hwcPath);
-          //String standaloneConfigPath=outDir + "/"+tsConfigGenerator.genStandaloneConfig(astGui);
+          GUI2TSGenerator tsGenerator = new GUI2TSGenerator(genSetup);
+          tsGenerator.generate(astGui, DEFAULT_CONFIGTEMPLATE_GUI2TS);
 
           GUI2HtmlGenerator htmlGenerator = new GUI2HtmlGenerator(genSetup);
           String htmlConfigTemplate = cmd.getOptionValue("ct_html", DEFAULT_CONFIGTEMPLATE_GUI2HTML);
@@ -839,6 +844,8 @@ public class UMLPTool extends UMLPToolTOP {
   protected void runDefaultCoCos(ASTGUICompilationUnit ast) {
     GUIDSLCoCoChecker checker = new GUIDSLCoCosForUMLP().createChecker();
     checker.addCoCo(new GUIParamDefaultOnlyLiteralCoCo());
+    checker.addCoCo(new GUIParamNoUnderspecifiedGenericsCoCo());
+    checker.addCoCo(new NameExpressionsSymbolBoundExceptCallsCoCo());
     checker.checkAll(ast);
   }
 }

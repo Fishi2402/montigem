@@ -58,7 +58,7 @@ genGUI {
   )
   symbolDir = files(
       project(":umlp-rte:client").tasks.createGuiSymbols.output,
-      project(":umlp-rte:client").tasks.createCDSymbols.output,
+      project(":umlp-rte:client").tasks.createCDSymbols.output
   )
   domainModels = ["DemoRec"]
   guiCreateModels = ["gui.pack.BatteryPackCreate",
@@ -83,7 +83,8 @@ tasks.register('genGUI2', UMLPGuiGenTask) {
   input = file(guiVariability.getOutputDir().dir("cd2gui"))
   symbolDir = files(
       generateCDTOGUI.getOutputDir().file("symbols"),
-      project(":umlp-rte:client").tasks.createGuiSymbols.output
+      project(":umlp-rte:client").tasks.createGuiSymbols.output,
+      project(":umlp-rte:client").tasks.createCDSymbols.output
   )
   hwcDir = file("src/app/")
   symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")

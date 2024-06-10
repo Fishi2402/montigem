@@ -14,6 +14,7 @@ import umlp.generator.gui.DomainGUITest;
 import umlp.generator.gui.GUIComponentStat;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -253,7 +254,7 @@ public class Expression2NullCheckPrinterTest extends DomainGUITest {
     ).getGUIComponentDeclaration();
 
     IterationItemsFinder finder = new IterationItemsFinder();
-    Collection<ASTExpression> iterationItems = finder.getItems(componentDecl);
+    Collection<ASTExpression> iterationItems = new HashSet<>(finder.getItems(componentDecl));
     Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
         new IndentPrinter(), true, iterationItems, iterationItems
     );

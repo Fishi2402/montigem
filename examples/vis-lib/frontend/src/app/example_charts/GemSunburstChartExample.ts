@@ -21,7 +21,7 @@ export class GemSunburstChartExample extends GemSunburstChartExampleComponent {
     let data: GemSunburstData = {
       entry: {
         label: "People separated in age groups",
-        value: this.persons.size(),
+        value: this.persons.length,
       },
       subEntries: [
         {

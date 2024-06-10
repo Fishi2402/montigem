@@ -170,6 +170,7 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
     createEqualsMethod(domainClass, clazz);
     getCD4C().addMethod(clazz, getBuildTemplate(), domainClass.getName());
     createIsBuildFinishedMethod(clazz);
+    createIsBuildableMethod(clazz);
 
     // Methods for class attributes
     createGetterSetterForAttrs(domainClass, clazz, filterDerivedAttributes(attributes.attrFields, false), false);
@@ -212,6 +213,9 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
   }
 
   protected void createIsBuildFinishedMethod(ASTCDClass clazz) {
+  }
+
+  protected void createIsBuildableMethod(ASTCDClass clazz) {
   }
 
   protected String getConstructorTemplate() {

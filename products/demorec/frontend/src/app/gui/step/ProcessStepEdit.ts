@@ -145,8 +145,8 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements OnInit 
 
   // Edit JoinConnections
 
-  public override editJoinConnection(any): void {
-    this.router.navigate(["gui/joinconnection/JoinConnectionEdit/"+this.getP().getGemId()+"/"+this.getStep().getGemId()+"/"+this.getStep().getDeconstructs().getGemId()])
+  public override editJoinConnection(): (arg: void) => void {
+    return $ => this._router.navigate(["gui/joinconnection/JoinConnectionEdit/"+this.getP().getGemId()+"/"+this.getStep().getGemId()+"/"+this.getStep().getDeconstructs().getGemId()])
   }
 
   public override getSelectJoinConnectionOptions(): Array<Option> {
@@ -238,15 +238,17 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements OnInit 
     return this.addJoinConnectionClicked
   }
 
-  public override addJoinConnection(any): void {
-    this.addJoinConnectionClicked = true
+  public override addJoinConnection(): (arg: void) => void {
+    return $ => this.addJoinConnectionClicked = true
   }
 
-  public override addNewJoinConnection(connection: JoinConnection) {
-    this.calculateDisplayValueOfJoinConnection(connection).then(
-      opt => this.joinConnectionOptions.push(opt)
-    )
-    this.setSelectJoinConnectionEntry(String(connection.getGemId()))
+  public override addNewJoinConnection(): (arg: JoinConnection) => void {
+    return (connection: JoinConnection) => {
+      this.calculateDisplayValueOfJoinConnection(connection).then(
+        opt => this.joinConnectionOptions.push(opt)
+      )
+      this.setSelectJoinConnectionEntry(String(connection.getGemId()))
+    }
   }
 
   public override getAddJoinConnectionButtonDisabled(): boolean {
@@ -261,9 +263,8 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements OnInit 
     return this.getEditJoinConnectionButtonDisabled()
   }
 
-
-  public override backToProcessOverview(any): void {
-    this.router.navigate(["gui/process/ProcessOverview/"+this.getP().getGemId()])
+  public override backToProcessOverview(): (arg: void) => void {
+    return $ => this._router.navigate(["gui/process/ProcessOverview/"+this.getP().getGemId()])
   }
 
 }

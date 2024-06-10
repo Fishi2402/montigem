@@ -25,7 +25,7 @@ page ProjectFileView(Directory parent) {
   fileViewColumn@GemColumn(
     rowGap="1px",
     components=[
-      @GemButton(label = "Go to Artifacts Page", leftClick = goToArtifactsPage),
+      @GemButton(label = "Go to Artifacts Page", leftClick = goToArtifactsPage()),
       @GemRow(
         height="20px", vAlign="center", width="100%",
         colGap="5px",

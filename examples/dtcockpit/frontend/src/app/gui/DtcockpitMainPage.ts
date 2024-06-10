@@ -16,12 +16,11 @@ import {Project} from '@src/dtcockpit/Project';
 export class DtcockpitMainPage extends DtcockpitMainPageComponent {
 
   public navigateToProject(p: Project): (arg: any) => void {
-    this.router.navigate(['gui', 'project', p.getName(), 'show'])
-    return () => { }
+    return $ => this._router.navigate(['gui', 'project', p.getName(), 'show']);
   }
 
-  public navigateToNewProject(event: any): void {
-    this.router.navigate(['gui', 'project', 'ProjectCreate'])
+  public navigateToNewProject(): (arg: void) => void {
+    return $ => this._router.navigate(['gui', 'project', 'ProjectCreate']);
   }
 
 

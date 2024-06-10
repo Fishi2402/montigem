@@ -17,38 +17,29 @@ export class ResetPassword extends ResetPasswordComponent {
 
   private error: string = "";
 
-    public ngOnInit(): void {
-      SehubManager.getUserList().then(gemPromiseRes => {
-        this.users = gemPromiseRes;
-        this.users.loadAll();
+  public override passwordReset(): (arg: void) => void {
+    return $ => {
+      if (!this.user || !this.user.getPassword() || !this.user.getEmail()) {
+        return;
+      }
+      this.users.filter(u => {
+        if (!!u && !!this.user.getEmail() && this.user.getEmail() === u.getEmail()) {
+          u.setPassword(this.user.getPassword());
+          this._router.navigate(['/login']);
+        }
       });
-
-      if (this.user == null) {
-        this.user = new User();
-      }
+      this.error = 'There is no user with the E-mail "' + this.user.getEmail() +'" !';
+      this.user.validityEmail = this.error;
+      this.user.statusEmail = 'Error';
     }
-
-  public override passwordReset(event: any): void {
-    if (!this.user || !this.user.getPassword() || !this.user.getEmail()) {
-      return;
-    }
-    this.users.toArray().filter(u => {
-      if (!!u && !!this.user.getEmail() && this.user.getEmail() === u.getEmail()) {
-        u.setPassword(this.user.getPassword());
-        this.router.navigate(['/login']);
-      }
-    });
-    this.error = 'There is no user with the E-mail "' + this.user.getEmail() +'" !';
-    this.user.validityEmail = this.error;
-    this.user.statusEmail = 'Error';
   }
 
   public override getErrorValue(): string {
     return this.error;
   }
 
-  public override navigateBack(): void {
-    this.router.navigate(['gui/login/LoginPage']);
+  public override navigateBack(): (arg: void) => void {
+    return $ => this._router.navigate(['gui/login/LoginPage']);
   }
 
 }

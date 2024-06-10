@@ -12,7 +12,7 @@ import java.util.function.Function;
 */
 component GemTable(
   /** List of objects displayed in a table. */
-  List rows,
+  List<Object> rows,
   /**
     Columns of the table. Each column defines header and what properties of rows
     are shown in each column.
@@ -22,16 +22,16 @@ component GemTable(
     Callback that is executed when a row is activated for editing (click on edit
     button).
   */
-  Event edit,
+  Event<Object> edit,
   /**
     Callback that is executed when a row is saved (click on save button).
   */
-  Event update,
+  Event<Object> update,
   /**
     Callback that is executed when the save is cancelled (click on cancel button
     for edited row).
   */
-  Event cancelUpdate,
+  Event<Object> cancelUpdate,
   /**
     Whenever user is able to delete a row, automatically set to true if an
     action for `delete` is defined.
@@ -40,7 +40,7 @@ component GemTable(
   /**
     Callback that is executed when a row is deleted (click on delete button).
   */
-  Event delete,
+  Event<Object> delete,
   /**
     Whenever user is able to create a new row, automatically set to true if an
     action for `create` is defined.
@@ -50,11 +50,11 @@ component GemTable(
     Callback that is executed when a new row is created (the save button is
     clicked in a create-row).
   */
-  Event create,
+  Event<Object> create,
   /**
     Callback that is executed when the cancel button is clicked in a create-row.
   */
-  Event cancelCreate,
+  Event<Object> cancelCreate,
 
   // TODO: add to the public API
   Function cellStyle = null,
@@ -65,12 +65,12 @@ component GemTable(
   Function activeRow = null,
   Object inactiveRowStyle = null,
   boolean isFilterable = false,
-  List sortDirection = null,
-  List selection = null,
+  List<Object> sortDirection = null,
+  List<Object> selection = null,
   Object selectionType = null,
   boolean batchMode = false,
-  Event batchModeToggle,
-  Event rowsSelect,
+  Event<Object> batchModeToggle,
+  Event<Object> rowsSelect,
   Object staticRow,
   Object extendableRow,
   Object groupClass,

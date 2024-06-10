@@ -12,8 +12,8 @@ import { ForecastCreateComponent,config } from '@src/gui/ForecastCreateComponent
   styleUrls: config.styleUrls
 })
 export class ForecastCreate extends ForecastCreateComponent {
-  public override saveForecast(event: any): void {
-    this.build();
+  public override saveForecast(): (arg: void) => void {
+    return $ => this.getF().build();
   }
 
   // TODO AGe: date formatting

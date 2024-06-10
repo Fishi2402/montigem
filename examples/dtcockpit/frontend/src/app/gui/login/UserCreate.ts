@@ -24,10 +24,8 @@ export class UserCreate extends UserCreateComponent {
 
   public static email: RegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
-  public constructor(
-      protected location: Location,
-      protected router: Router) {
-    super(router);
+  public constructor(protected location: Location) {
+    super();
   }
 
   public ngOnInit(): void {
@@ -36,26 +34,27 @@ export class UserCreate extends UserCreateComponent {
     });
   }
 
-  public override navigateBack(): void {
-    this.location.back();
+  public override navigateBack(): (arg: void) => void {
+    return $ => this.location.back();
   }
 
-  public override createUser(event: any): void {
-    this.error = "";
-    if (!this.getNewUser().getUsername() || !this.getNewUser().getPassword() || !this.getNewUser().getEmail()) {
-      return;
+  public override createUser(): (arg: void) => void {
+    return $ => {
+      this.error = "";
+      if (!this.getNewUser().getUsername() || !this.getNewUser().getPassword() || !this.getNewUser().getEmail()) {
+        return;
+      }
+      let errorMessage = this.validateUser();
+      if (!errorMessage) {
+        //this.user.activated(ActivationStatus.AKTIVIERT);
+        this.newUser.setRegistrationDate(new Date());
+        this.newUser.setRole(DtcockpitRole.USER);
+        this.newUser.build();
+        this._router.navigate(['gui', 'login']);
+      } else {
+        this.error = errorMessage;
+      }
     }
-    let errorMessage = this.validateUser();
-    if (!errorMessage) {
-      //this.user.activated(ActivationStatus.AKTIVIERT);
-      this.newUser.registrationDate(new Date());
-      this.newUser.role(DtcockpitRole.USER);
-      this.build();
-      this.router.navigate(['gui', 'login']);
-    } else {
-      this.error = errorMessage;
-    }
-
   }
 
   public override getErrorValue(): string {

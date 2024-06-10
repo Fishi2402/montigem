@@ -65,8 +65,8 @@ page PersonOverview(List<Person> ps) {
     text = "This is some important information that you should know.",
     color = "#8ebae5"
   );
-  b1@GemButton(label = "Button 1", leftClick = doSomething);
-  b2@GemButton(label = "Button 2 (the same clickMethod)", leftClick = doSomething);
+  b1@GemButton(label = "Button 1", leftClick = doSomething());
+  b2@GemButton(label = "Button 2 (the same clickMethod)", leftClick = doSomething());
   // TODO AGe: GemTable in Java requires TableColumn class
   /*
   @GemCard(

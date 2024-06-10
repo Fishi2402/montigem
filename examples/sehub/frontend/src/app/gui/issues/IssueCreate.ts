@@ -19,11 +19,11 @@ import {SehubRole} from '@src/sehub/SehubRole';
 })
 export class IssueCreate extends IssueCreateComponent {
 
-  public override createIssue(event: any): void {
-    SehubManager.issueBuilder().then(gemPromiseRes => {
-      this.issue.state(IssueState.UNASSIGNED);
-      this.build();
-      this.issue = gemPromiseRes;
+  public override createIssue(): (arg: void) => void {
+    return $ => SehubManager.issueBuilder().then(gemPromiseRes => {
+      this.getIssue().setState(IssueState.UNASSIGNED);
+      this.getIssue().build();
+      this.setIssue(gemPromiseRes);
     });
   }
 

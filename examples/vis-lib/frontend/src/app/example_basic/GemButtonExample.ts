@@ -2,6 +2,7 @@
 
 import { Component } from '@angular/core';
 import { GemButtonExampleComponent,config } from '@src/example_basic/GemButtonExampleComponent';
+import { Event } from '@umlp/common';
 
 @Component({
   standalone:true,
@@ -10,7 +11,7 @@ import { GemButtonExampleComponent,config } from '@src/example_basic/GemButtonEx
   templateUrl: config.templateUrl,
 })
 export class GemButtonExample extends GemButtonExampleComponent {
-  gemButton0LeftClick(event: MouseEvent): void {
-    alert('Hello')
+  public override alert(): Event<void> {
+    return () => alert('Hello');
   }
 }

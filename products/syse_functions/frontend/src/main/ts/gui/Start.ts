@@ -12,10 +12,6 @@ import {config, StartComponent} from '@src/gui/StartComponent';
   styleUrls: [...config.styleUrls]
 })
 export class Start extends StartComponent {
-  public constructor(route: ActivatedRoute, protected router: Router) {
-    super(router)
-  }
-
   public override getGemText3Value(): string {
     return "In diesem Projekt behandeln wir als Funktionen modellierte Systeme.";
   }

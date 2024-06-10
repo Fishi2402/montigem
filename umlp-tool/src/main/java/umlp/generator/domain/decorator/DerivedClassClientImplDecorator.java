@@ -2,6 +2,7 @@
 package umlp.generator.domain.decorator;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
+import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
@@ -45,8 +46,7 @@ public class DerivedClassClientImplDecorator extends AbstractDecorator {
 
     String packageName = getPackageName(origCD, DEFAULT_PACKAGE);
 
-    getCD4C().addConstructor(ast, "umlp.derivedclass.Constructor", classname);
-
+    addConstructor(ast, classname);
 
     if (!ast.isPresentCDExtendUsage())
       ast.setCDExtendUsage(UMLPMill.cDExtendUsageBuilder().build());
@@ -86,16 +86,28 @@ public class DerivedClassClientImplDecorator extends AbstractDecorator {
     return ast;
   }
 
+  protected void addConstructor(ASTCDClass ast, String classname) {
+    getCD4C().addConstructor(ast, getConstructorTemplate(), classname);
+  }
+
   protected String toList(String type) {
     return "List<" + type + ">";
   }
 
   protected void handleAttribute(ASTCDClass domainClass, String name, String type, ASTCDClass ast,
       String packageName, boolean isList) {
-    getCD4C().addMethod(ast, getGetTemplate(), name, type, domainClass.getName(), packageName, isList);
+    ASTCDMethodSignature calc = getCD4C().addMethod(ast, getCalcTemplate(),
+        name, type, domainClass.getName(), packageName, isList);
+    getCD4C().addMethod(ast, getGetTemplate(), name, type, calc);
     if (isList) {
-      getCD4C().addMethod(ast, getSizeTemplate(), name, type, domainClass.getName(), packageName);
+      ASTCDMethodSignature calcSize = getCD4C().addMethod(ast, getCalcSizeTemplate(),
+          name, type, domainClass.getName(), packageName);
+      getCD4C().addMethod(ast, getSizeTemplate(), name, type, calcSize);
     }
+  }
+
+  protected String getConstructorTemplate() {
+    return "umlp.derivedclass.Constructor";
   }
 
   protected String getGetTemplate() {
@@ -110,6 +122,13 @@ public class DerivedClassClientImplDecorator extends AbstractDecorator {
     return "umlp.derivedclass.Init";
   }
 
+  protected String getCalcTemplate() {
+    return "umlp.derivedclass.CalcClientImpl";
+  }
+
+  protected String getCalcSizeTemplate() {
+    return "umlp.derivedclass.CalcSizeImpl";
+  }
 
   @Override
   protected void addImports(ASTCDType domainType, ASTCDType cdType) {

@@ -6,7 +6,4 @@ import umlp.jsweet.extension.annotation.Component;
 
 @Component
 public class Start extends StartTOP {
-  protected Start(Router router) {
-    super(router);
-  }
 }

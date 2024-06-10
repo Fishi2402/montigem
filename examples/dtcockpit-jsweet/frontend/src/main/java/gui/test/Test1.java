@@ -1,21 +1,26 @@
 package gui.test;
 
 import dtcockpit.DtcockpitManager;
+import dtcockpit.Project;
 import umlp.backendrte.common.GemList;
 import umlp.jsweet.extension.annotation.Component;
+
+import java.util.function.Consumer;
 
 
 @Component
 public class Test1 extends Test1TOP {
-  public Test1(GemList projects) {
-    super(projects);
+  public Test1(GemList<Project> projects) {
+    setProjects(projects);
   }
 
   @Override
-  public void addProject(Object event) {
-    DtcockpitManager.projectBuilder()
-        .name("Test1")
-        .git("Test2")
-        .build();
+  public Consumer<Void> addProject() {
+    return $ -> {
+      DtcockpitManager.projectBuilder()
+          .name("Test1")
+          .git("Test2")
+          .build();
+    };
   }
 }

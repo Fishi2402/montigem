@@ -2,22 +2,22 @@
 package gui;
 
 import carrental.CarrentalManager;
-import umlp.backendrte.common.GemList;
+import de.monticore.guidsl.types.Event;
 import umlp.jsweet.extension.annotation.Component;
+
+import java.util.function.Consumer;
 
 @Component
 public class Start extends StartTOP {
-  public Start(GemList cars) {
-    super(cars);
-  }
 
   @Override
-  public void addCar(Object event) {
+  public Consumer<Void> addCar() {
     // Add a car
-    CarrentalManager.carBuilder()
+    return $ -> CarrentalManager.carBuilder()
         .model("Hello there")
         .name("H")
         .make("X")
         .build();
   }
+
 }

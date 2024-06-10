@@ -23,10 +23,12 @@ page PersonOverviewRef(List<Person> persons) {
     main = @GemTable(
       rows = persons,
       columns = [
+      /*
         TableColumn("name", "Name"),
         TableColumn("vorname", "Surname"),
         TableColumn("beschBeginn", "Contract start"),
         TableColumn("beschEnde", "Contract end")
+      /**/
       ]
     )
   );

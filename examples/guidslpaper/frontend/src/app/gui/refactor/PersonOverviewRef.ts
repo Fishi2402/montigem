@@ -15,7 +15,7 @@ import { PersonOverviewRefComponent, config } from '@src/gui/refactor/PersonOver
 export class PersonOverviewRef extends PersonOverviewRefComponent {
 
   public override init() {
-    this.gemTable3Columns = <any[]>[
+    this.gemTable3Columns_0 = <any[]>[
       { prop: "_nachname", name: "Surname" },
       { prop: "_vorname", name: "Name" },
       {

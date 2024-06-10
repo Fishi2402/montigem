@@ -17,7 +17,7 @@ component DtCockpitNavigation(String username, List<Project> projects) {
 @GemColumn(height="auto", components = [
   @guard(username != null){
     @GemRow(height="auto",components = [
-      @GemNavItem(title = username + " > Logout", leftClick = logout)
+      @GemNavItem(title = username + " > Logout", leftClick = logout())
     ]);
   },
   @GemRow(height="auto",components = [

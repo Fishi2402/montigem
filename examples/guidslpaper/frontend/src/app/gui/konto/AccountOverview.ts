@@ -21,7 +21,7 @@ export class AccountOverview extends AccountOverviewComponent {
   });
 
   public override init() {
-    this.gemTable6Columns = <any[]>[
+    this.gemTable6Columns_0 = <any[]>[
       { prop: "_name", name: "Name" },
       { prop: "_kontotyp", name: "Typ" },
       { prop: "_budgetRahmenCent", name: "Gesamtbudget", displayValue: v => this.formatter.format(v)  }

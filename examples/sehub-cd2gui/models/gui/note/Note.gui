@@ -20,10 +20,10 @@ component Note(Post post, Boolean showResponses){
           @GemRow(width = "450px", component = postTitle@GemTextInput(labelText = "", inputType = "string", entry = post.title)),
           @GemRow(width = "140px", height = "30px" , vAlign = "bottom", component = @GemText(size = "0.5rem", value = post.author.username)),
           @GemRow(width = "200px", height = "30px" , colGap = "5px",vAlign = "bottom", hAlign = "right", components = [
-            // @GemButton(label = "Bearbeiten", leftClick = editPost),
-            //toggleButton@GemButton(label = "📜", leftClick = toggleResponses ),
-            replybutton@GemButton(label = "↪️ Reply ", leftClick = answerPost),
-            @GemButton(label = "❌", leftClick = deletePost)
+            // @GemButton(label = "Bearbeiten", leftClick = editPost()),
+            //toggleButton@GemButton(label = "📜", leftClick = toggleResponses()),
+            replybutton@GemButton(label = "↪️ Reply ", leftClick = answerPost()),
+            @GemButton(label = "❌", leftClick = deletePost())
           ])
         ]),
         message@GemTextareaInput(

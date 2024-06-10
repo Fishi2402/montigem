@@ -7,8 +7,7 @@ import mc.fenix.basic.GemButton;
 
 component PhotoDragNDrop(DemoRecComponent attachedComponent) {
   @GemRow(components= [
-    upload@GemButton(label = "Upload Files", leftClick = uploadAllFiles),
-    cancel@GemButton(label = "Cancel Upload", leftClick = cancelUpload)
+    upload@GemButton(label = "Upload Files", leftClick = uploadAllFiles()),
+    cancel@GemButton(label = "Cancel Upload", leftClick = cancelUpload())
   ]);
-
 }

@@ -14,6 +14,7 @@ import umlp.generator.gui.genjava.prettyprinter.IterationItemsFinder;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 public class GUI2JavaGuardDecorator extends GUIAbstractDecorator {
@@ -28,7 +29,7 @@ public class GUI2JavaGuardDecorator extends GUIAbstractDecorator {
 
   public void transform(ASTCDClass decoratedClass, ASTGUIGuard guard) {
     IterationItemsFinder finder = new IterationItemsFinder();
-    Collection<ASTExpression> ignoreOnPrint = finder.getItems(guiAst);
+    Collection<ASTExpression> ignoreOnPrint = new HashSet<>(finder.getItems(guiAst));
 
     // replace field access with getters
     Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(

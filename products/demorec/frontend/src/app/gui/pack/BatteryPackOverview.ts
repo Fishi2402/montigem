@@ -42,8 +42,8 @@ export  class BatteryPackOverview extends BatteryPackOverviewComponent {
    }   */
   }
 
-  public override editPack (any): void {
-    this.router.navigate(["gui/component/ComponentEdit/"+this.getPack().getGemId()])
+  public override editPack(): (arg: void) => void {
+    return $ => this._router.navigate(["gui/component/ComponentEdit/"+this.getPack().getGemId()]);
   }
 
 }

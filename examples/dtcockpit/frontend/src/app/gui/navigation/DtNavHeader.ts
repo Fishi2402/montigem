@@ -16,11 +16,6 @@ import {CommonModule} from '@angular/common';
 })
 export class DtNavHeader extends DtNavHeaderComponent {
 
-  public constructor(route: ActivatedRoute, protected router: Router) {
-    super(router);
-    this.router = router;
-  }
-
   readonly items: { url: string, title: string }[] = [];
 
   getCurrentUser(): User {
@@ -30,7 +25,7 @@ export class DtNavHeader extends DtNavHeaderComponent {
   signOutCurrentUser(): void {
     fetch("/umlp/api/logout").finally(() => {
       DtcockpitSecurityManager.signOut();
-      this.router.navigate(['gui', 'login', 'LoginPage']);
+      this._router.navigate(['gui', 'login', 'LoginPage']);
     });
   }
 

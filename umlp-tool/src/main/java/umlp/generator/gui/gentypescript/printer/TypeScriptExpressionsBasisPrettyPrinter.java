@@ -23,13 +23,7 @@ public class TypeScriptExpressionsBasisPrettyPrinter extends ExpressionsBasisPre
     if (this.isPrintComments()) {
       de.monticore.prettyprint.CommentPrettyPrinter.printPreComments(node, getPrinter());
     }
-    // TODO AGe: GUIList is not an expression, cannot write e.g., MyType([1, 2])
-    if (node.getName().equals(TypeScriptTypes.LIST.getMCType())) {
-      getPrinter().print("new Array ");
-    }
-    else {
-      getPrinter().print(node.getName() + " ");
-    }
+    getPrinter().print(node.getName() + " ");
     if (this.isPrintComments()) {
       de.monticore.prettyprint.CommentPrettyPrinter.printPostComments(node, getPrinter());
     }

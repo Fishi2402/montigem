@@ -12,8 +12,12 @@ import de.monticore.prettyprint.IndentPrinter;
 import org.junit.jupiter.api.Test;
 import umlp.generator.gui.DomainGUITest;
 import umlp.generator.gui.GUIComponentStat;
+import umlp.generator.gui.GUIGeneratorUtil;
+import umlp.generator.gui.genjava.decorator.StaticObjectsCollector;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -149,6 +153,8 @@ public class Expression2AccessorPrinterTest extends DomainGUITest {
         "src/test/resources/gui"
     ).getGUIComponentDeclaration();
 
+    GUIGeneratorUtil.getInstance().init(List.of("Domain"), Collections.emptyList());
+
     components = stat.getComponents(componentDecl);
 
     ASTGUIComponent call = stat.getCompById(components, "call");
@@ -227,7 +233,7 @@ public class Expression2AccessorPrinterTest extends DomainGUITest {
     ).getGUIComponentDeclaration();
 
     IterationItemsFinder finder = new IterationItemsFinder();
-    Collection<ASTExpression> iterationItems = finder.getItems(componentDecl);
+    Collection<ASTExpression> iterationItems = new HashSet<>(finder.getItems(componentDecl));
     Expression2AccessorPrinter printer = new Expression2AccessorPrinter(
         new IndentPrinter(), true, iterationItems, iterationItems
     );
@@ -264,6 +270,91 @@ public class Expression2AccessorPrinterTest extends DomainGUITest {
         () -> assertEquals(expect2, result2),
         () -> assertEquals(expect3, result3),
         () -> assertEquals(expect4, result4)
+    );
+  }
+
+  @Test
+  public void testAccessorConversion6() {
+    ASTGUIComponentDeclaration componentDecl;
+    GUIComponentStat stat = GUIComponentStat.getInstance();
+
+    List<ASTGUIComponent> components;
+    List<ASTGUIGuard> guards;
+    List<ASTGUIIterate> iterates;
+
+    componentDecl = processGUIModel(
+        "gui/genjava/decorator/StaticObjectsCollector.gui",
+        "src/test/resources/gui"
+    ).getGUIComponentDeclaration();
+
+    StaticObjectsCollector.getInstance().init(componentDecl);
+
+    IterationItemsFinder finder = new IterationItemsFinder();
+    Collection<ASTExpression> iterationItems = new HashSet<>(finder.getItems(componentDecl));
+    Expression2AccessorPrinter printer = new Expression2AccessorPrinter(
+        new IndentPrinter(), true, iterationItems, iterationItems
+    );
+
+    components = stat.getComponents(componentDecl);
+    guards = stat.getGuards(componentDecl);
+    iterates = stat.getIterates(componentDecl);
+
+    ASTGUIComponent a = stat.getCompById(components, "a");
+    ASTGUIComponent b = stat.getCompById(components, "b");
+    ASTGUIComponent c = stat.getCompById(components, "c");
+    ASTGUIComponent d = stat.getCompById(components, "d");
+    ASTGUIGuard e = stat.getGuardById(guards, "e");
+    ASTGUIIterate f = stat.getIterById(iterates, "f");
+    ASTGUIComponent g = stat.getCompById(components, "g");
+    ASTGUIComponent h = stat.getCompById(components, "h");
+    ASTGUIComponent i = stat.getCompById(components, "i");
+    ASTGUIComponent k = stat.getCompById(components, "k");
+
+    String expect1 = removeSpaces("this.getPerson()");
+    String result1 = removeSpaces(printer.prettyprint(a.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+
+    String expect2 = removeSpaces("this.getBP_0()");
+    String result2 = removeSpaces(printer.prettyprint(b.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+
+    String expect3 = removeSpaces("this.getCA_1()");
+    String result3 = removeSpaces(printer.prettyprint(c.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+
+    String expect4 = removeSpaces("this.getDLp_4()");
+    String result4 = removeSpaces(printer.prettyprint(d.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+
+    String expect5 = removeSpaces("this.getECondition_9().isEmployed()");
+    String result5 = removeSpaces(printer.prettyprint(e.getCondition()));
+
+    String expect6 = removeSpaces("this.getFIterable_11(p).getFriends()");
+    String result6 = removeSpaces(printer.prettyprint(((ASTGUIShortIterateControl) f.getIterateControl()).getIterable()));
+
+    String expect7 = removeSpaces("this.getGA_13(p2, p)");
+    String result7 = removeSpaces(printer.prettyprint(g.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+
+    String expect8 = removeSpaces("this.getHA_16(p2, p)");
+    String result8 = removeSpaces(printer.prettyprint(h.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+
+    String expect9 = removeSpaces("this.getIP_19(p2, p)");
+    String result9 = removeSpaces(printer.prettyprint(i.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+
+    String expect10 = removeSpaces("this.getKMd_21(p2, p)");
+    String result10 = removeSpaces(printer.prettyprint(k.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+
+    String expect11 = removeSpaces("this.getKLmd_22(p2, p)");
+    String result11 = removeSpaces(printer.prettyprint(k.getGUINamedArgs().getGUINamedArg(2).getGUIArgValue()));
+
+    assertAll(
+        () -> assertEquals(expect1, result1),
+        () -> assertEquals(expect2, result2),
+        () -> assertEquals(expect3, result3),
+        () -> assertEquals(expect4, result4),
+        () -> assertEquals(expect5, result5),
+        () -> assertEquals(expect6, result6),
+        () -> assertEquals(expect7, result7),
+        () -> assertEquals(expect8, result8),
+        () -> assertEquals(expect9, result9),
+        () -> assertEquals(expect10, result10),
+        () -> assertEquals(expect11, result11)
     );
   }
 

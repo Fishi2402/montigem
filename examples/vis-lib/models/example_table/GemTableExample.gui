@@ -9,9 +9,9 @@ import Domain.Person;
 page GemTableExample(List<Person> persons) {
   @GemTable(
     rows = persons,
-    columns = [
+    columns = null/*[
       TableColumn("_name", "Name"),
       TableColumn("_birthday", "Birthday")
-    ]
+    ]*/
   );
 }

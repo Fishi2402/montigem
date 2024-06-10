@@ -17,7 +17,7 @@ export class UserLogin extends UserLoginComponent {
 
   public ngOnInit(): void {
     if (SehubSecurityManager.isSignedIn()) {
-      this.router.navigate(['gui/Start']);
+      this._router.navigate(['gui/Start']);
     }
 
     if (this.loginUser == null) {
@@ -27,47 +27,50 @@ export class UserLogin extends UserLoginComponent {
 
   protected error: string = "";
 
-  public override loginOnEnter(event: KeyboardEvent): void {
-    if (event.key === "Enter") {
-      this.login();
+  public override loginOnEnter(): (arg: KeyboardEvent) => void {
+    return (event: KeyboardEvent) => {
+      if (event.key === "Enter") {
+        this.login();
+      }
     }
   }
 
-  public override login(): void {
-    if (!this.loginUser || !this.loginUser.getUsername() || !this.loginUser.getPassword()) {
-      return;
-    }
+  public override login(): (arg: void) => void {
+    return $ => {
+      if (!this.loginUser || !this.loginUser.getUsername() || !this.loginUser.getPassword()) {
+        return;
+      }
 
-          const form = new FormData();
+            const form = new FormData();
 
-          form.append('username', this.loginUser.getUsername());
-          form.append('password', this.loginUser.getPassword());
+            form.append('username', this.loginUser.getUsername());
+            form.append('password', this.loginUser.getPassword());
 
-          const requestOptions: RequestInit = {
-            method: "POST",
-            body: form,
-            headers: {
-              'Accept': 'application/json'
-            }
-          };
-
-          fetch("/umlp/api/login", requestOptions)
-            .then(response => response.json())
-            .then(result => {
-              if (result.success) {
-                SehubSecurityManager.signIn(this.loginUser);
-                window.location.href = 'gui/Start';
-              }else if (result.reason) {
-                alert("Login Failed: " + result.reason)
-              }else{
-                alert("Login Failed: Unknown")
+            const requestOptions: RequestInit = {
+              method: "POST",
+              body: form,
+              headers: {
+                'Accept': 'application/json'
               }
-            })
-            .catch(error => {
-              console.warn(error);
-              alert("Login Failed: Unable to communicate");
-            });
+            };
 
+            fetch("/umlp/api/login", requestOptions)
+              .then(response => response.json())
+              .then(result => {
+                if (result.success) {
+                  SehubSecurityManager.signIn(this.loginUser);
+                  window.location.href = 'gui/Start';
+                }else if (result.reason) {
+                  alert("Login Failed: " + result.reason)
+                }else{
+                  alert("Login Failed: Unknown")
+                }
+              })
+              .catch(error => {
+                console.warn(error);
+                alert("Login Failed: Unable to communicate");
+              });
+    }
   }
 
   public override getErrorValue(): string {

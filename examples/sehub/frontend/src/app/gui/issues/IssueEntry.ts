@@ -18,28 +18,32 @@ import {SehubRole} from '@src/sehub/SehubRole';
 })
 export class IssueEntry extends IssueEntryComponent {
 
-  public promote(event: any): void {
-    if (this.getIssue().getState() === IssueState.UNASSIGNED) {
-      this.getIssue().setState(IssueState.IN_PROGRESS);
-    } else if (this.getIssue().getState() === IssueState.IN_PROGRESS) {
-      this.getIssue().setState(IssueState.DONE);
-    }
+  public promote(): (arg: void) => void {
+    return $ => {
+      if (this.getIssue().getState() === IssueState.UNASSIGNED) {
+        this.getIssue().setState(IssueState.IN_PROGRESS);
+      } else if (this.getIssue().getState() === IssueState.IN_PROGRESS) {
+        this.getIssue().setState(IssueState.DONE);
+      }
+    };
   }
 
-  public demote(event: any): void {
-    if (this.getIssue().getState() === IssueState.IN_PROGRESS) {
-      this.getIssue().setState(IssueState.UNASSIGNED);
-    } else if (this.getIssue().getState() === IssueState.DONE) {
-      this.getIssue().setState(IssueState.IN_PROGRESS);
-    }
+  public demote(): (arg: void) => void {
+    return $ => {
+      if (this.getIssue().getState() === IssueState.IN_PROGRESS) {
+        this.getIssue().setState(IssueState.UNASSIGNED);
+      } else if (this.getIssue().getState() === IssueState.DONE) {
+        this.getIssue().setState(IssueState.IN_PROGRESS);
+      }
+    };
   }
 
-  public override deleteIssue(event: any): void {
-    SehubManager.deleteIssue(this.getIssue().getGemId())
+  public override deleteIssue(): (arg: void) => void {
+    return $ => SehubManager.deleteIssue(this.getIssue().getGemId());
   }
 
-  public override navigate(): void {
-    this.router.navigate(['gui', 'NotesPage', this.issue.getGemId()]);
+  public override navigate(): (arg: void) => void {
+    return $ => this._router.navigate(['gui', 'NotesPage', this.issue.getGemId()]);
   }
 
   public override getDelButtonDisabled (): boolean {

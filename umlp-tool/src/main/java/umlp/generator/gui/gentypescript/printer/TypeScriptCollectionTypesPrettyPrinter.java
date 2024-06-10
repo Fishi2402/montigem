@@ -29,11 +29,6 @@ public class TypeScriptCollectionTypesPrettyPrinter extends MCCollectionTypesPre
     }
     node.getMCTypeArgument().accept(getTraverser());
     getPrinter().stripTrailing();
-    /*
-    if (!node.getMCTypeArgument().printType().startsWith("? extends")) {
-      getPrinter().print("?");
-    }
-    /**/
     if (this.isPrintComments()) {
       de.monticore.prettyprint.CommentPrettyPrinter.printPostComments(node, getPrinter());
     }

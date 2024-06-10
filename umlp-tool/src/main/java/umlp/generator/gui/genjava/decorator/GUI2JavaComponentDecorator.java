@@ -16,16 +16,12 @@ import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._symboltable.GUIComponentDeclarationSymbol;
 import de.monticore.guidsl._symboltable.GUIParamSymbol;
-import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
-import de.monticore.symboltable.IGlobalScope;
-import de.monticore.symboltable.IScope;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
-import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -43,7 +39,7 @@ import umlp.generator.util.PathUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -201,7 +197,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     }
     else {
       IterationItemsFinder finder = new IterationItemsFinder();
-      Collection<ASTExpression> iterateItems = finder.getItems(guiAst);
+      Collection<ASTExpression> iterateItems = new HashSet<>(finder.getItems(guiAst));
 
       // replace field access with getters
       Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(

@@ -73,8 +73,8 @@ export class MeasuringValueEdit extends MeasuringValueEditComponent implements O
     });
   }
 
-  public override deleteMeasuringValue(measuringValue: MeasuringValue): (measuringValue: MeasuringValue) => void {
-    return () => this.getStep().removeMeasured2(measuringValue)
+  public override deleteMeasuringValue(measuringValue: MeasuringValue): (arg: void) => void {
+    return $ => this.getStep().removeMeasured2(measuringValue)
   }
 
   // Display and change the dimension unit of a concrete existing measuring value
@@ -99,8 +99,8 @@ export class MeasuringValueEdit extends MeasuringValueEditComponent implements O
     })
   }
 
-  public override attachMeasuringValue(val: MeasuringValue) {
-    this.getStep().addMeasured2(val)
+  public override attachMeasuringValue(): (arg: MeasuringValue) => void {
+    return (val: MeasuringValue) => this.getStep().addMeasured2(val)
   }
 
 }

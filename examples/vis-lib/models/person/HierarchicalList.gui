@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package person;
+
+import Domain.Person;
+
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.basic.GemText;
+
+component HierarchicalList(List<List<Person>> list) {
+  @iterate(List<Person> sublist : list) {
+    @GemText(value = "Names:");
+    @iterate(Person p : sublist) {
+      @GemText(value = p.name);
+    }
+  }
+}
