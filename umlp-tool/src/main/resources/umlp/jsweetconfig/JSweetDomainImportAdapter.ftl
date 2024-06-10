@@ -6,7 +6,7 @@ package umlp.jsweet.extension.domainAdapters;
 
 import org.jsweet.transpiler.extension.PrinterAdapter;
 
-public class ${className} extends DomainImportAdapter {
+public class ${className} extends UMLPDomainImportAdapter {
   public ${className}(PrinterAdapter parentAdapter) {
     super(parentAdapter);
   }

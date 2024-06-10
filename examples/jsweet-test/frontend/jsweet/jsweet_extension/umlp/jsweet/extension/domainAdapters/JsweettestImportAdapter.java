@@ -9,7 +9,7 @@ import org.jsweet.transpiler.model.ImportElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 
-public class JsweettestImportAdapter extends DomainImportAdapter {
+public class JsweettestImportAdapter extends UMLPDomainImportAdapter {
 
   public JsweettestImportAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);

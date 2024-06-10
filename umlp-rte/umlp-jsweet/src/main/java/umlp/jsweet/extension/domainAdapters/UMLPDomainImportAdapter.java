@@ -2,7 +2,6 @@
 package umlp.jsweet.extension.domainAdapters;
 
 import com.google.common.collect.FluentIterable;
-import de.se_rwth.commons.Names;
 import de.se_rwth.commons.Splitters;
 import org.jsweet.transpiler.ModuleImportDescriptor;
 import org.jsweet.transpiler.extension.PrinterAdapter;
@@ -14,12 +13,12 @@ import javax.lang.model.element.TypeElement;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class DomainImportAdapter extends PrinterAdapter {
+public abstract class UMLPDomainImportAdapter extends PrinterAdapter {
   private static final String DOMAIN_LOCATION = "@src";
 
   private Set<String> domainNames = new HashSet<>();
 
-  public DomainImportAdapter(PrinterAdapter parentAdapter) {
+  public UMLPDomainImportAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);
     this.setDomainName();
   }
@@ -67,6 +66,6 @@ public abstract class DomainImportAdapter extends PrinterAdapter {
     }
   }
 
-  // Abstract method to set the domain name. This method must be implemented by all subclasses of DomainImportAdapter.
+  // Abstract method to set the domain name. This method must be implemented by all subclasses of UMLPDomainImportAdapter.
   protected abstract void setDomainName();
 }

@@ -5,7 +5,7 @@ package umlp.jsweet.extension.domainAdapters;
 
 import org.jsweet.transpiler.extension.PrinterAdapter;
 
-public class CarrentalImportAdapter extends DomainImportAdapter {
+public class CarrentalImportAdapter extends UMLPDomainImportAdapter {
   public CarrentalImportAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);
   }
