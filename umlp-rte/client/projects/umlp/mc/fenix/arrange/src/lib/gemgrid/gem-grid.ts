@@ -26,6 +26,13 @@ export class GemGrid {
   protected _gridTemplateCols: string = "auto";
   protected _maxCols: number = 0;
 
+  @HostBinding('style.justify-content')
+  protected _hAlign: string = "stretch";
+
+  @HostBinding('style.align-content')
+  @HostBinding('style.align-items')
+  protected _vAlign: string = "stretch";
+
   @ViewChild('_gemGridEmpty', { static: true })
   public emptyTpl: TemplateRef<any>;
 
@@ -105,6 +112,40 @@ export class GemGrid {
   @Input()
   public set width(val: string) {
     this._width = val;
+  }
+
+  public get hAlign(): string {
+    return this._hAlign;
+  }
+
+  @Input()
+  public set hAlign(hAlign: string) {
+    if (hAlign === 'left') {
+      this._hAlign = 'flex-start'
+    }
+    if (hAlign === 'right') {
+      this._hAlign = 'flex-end'
+    }
+    else {
+      this._hAlign = hAlign;
+    }
+  }
+
+  public get vAlign(): string {
+    return this._vAlign;
+  }
+
+  @Input()
+  public set vAlign(vAlign: string) {
+    if (vAlign === 'top') {
+      this._vAlign = 'flex-start'
+    }
+    if (vAlign === 'bottom') {
+      this._vAlign = 'flex-end'
+    }
+    else {
+      this._vAlign = vAlign;
+    }
   }
 
   public get rowGap(): string {

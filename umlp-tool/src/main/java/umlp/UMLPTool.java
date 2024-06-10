@@ -91,6 +91,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -248,7 +249,8 @@ public class UMLPTool extends UMLPToolTOP {
       Function<Path, Path> reportPathOutput;
       if (!report_base.isEmpty()) {
         Path base_dir = Paths.get(report_base).toAbsolutePath();
-        reportPathOutput = p -> base_dir.relativize(p.toAbsolutePath());
+        // Only relativize this path if both share a root
+        reportPathOutput = p -> Objects.equals(p.getRoot(), base_dir.getRoot()) ? base_dir.relativize(p.toAbsolutePath()) : p.toAbsolutePath();
       }
       else {
         reportPathOutput = Path::toAbsolutePath;

@@ -5,6 +5,9 @@ import {UserLoginComponent,config} from '@src/gui/login/UserLoginComponent';
 import {User} from '@src/dtcockpit/User';
 import {DtcockpitSecurityManager} from "../../dtcockpit/DtcockpitSecurityManager";
 
+import { ClientCommandManager, CommandManager } from '@umlp/common';
+
+
 // import { ActivatedRoute, Router } from '@angular/router';
 @Component({
   standalone:true,
@@ -21,6 +24,7 @@ export class UserLogin extends UserLoginComponent {
     if (DtcockpitSecurityManager.isSignedIn()) {
       this.router.navigate(['gui', 'Start']);
     }
+    (CommandManager.getInstance() as ClientCommandManager).pauseRetryCommunication();
 
     if (this.loginUser == null) {
       this.loginUser = new User();
@@ -59,9 +63,9 @@ export class UserLogin extends UserLoginComponent {
       .then(result => {
         if (result.success) {
           DtcockpitSecurityManager.setCurrentlyLoggingIng(true);
-          // Do NOT use router as otherwise the websocket is not refreshed!
-          // The AppComponent will initialize the websocket during reloading
-          window.location.href = '/gui/Start';
+          // As the WS is retrying, we only hav
+          (CommandManager.getInstance() as ClientCommandManager).retryInitCommunicationImmediate();
+          this.router.navigate(['gui', 'Start']);
         } else if (result.reason) {
           alert("Login Failed: " + result.reason)
         } else {

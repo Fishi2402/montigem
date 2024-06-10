@@ -7,6 +7,8 @@ package mc.fenix.basic;
 component GemButton(
   /** Button text. */
   String label = "",
+  /** Button content if a more complex element than text is required. */
+  List<GUIViewElement> content,
   /** If true, the button cannot be clicked. */
   boolean disabled = false,
   /** Callback that is executed when a button is clicked. */

@@ -9,5 +9,12 @@
   [disabled]="disabled ? 'disabled' : null"
   (click)="leftClick.emit($event)"
 >
-  {{ label }}
+  <ng-container *ngIf="content">
+    <ng-container *ngFor="let c of content">
+      <ng-container *ngTemplateOutlet="c"></ng-container>
+    </ng-container>
+  </ng-container>
+  <ng-container *ngIf="!content">
+    {{ label }}
+  </ng-container>
 </button>
