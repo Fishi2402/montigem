@@ -100,6 +100,10 @@ public class GUIComponentAdapter extends PrinterAdapter {
   @Override
   public boolean substituteVariable(VariableElement variable) {
     Element enclosingElement = variable.getEnclosingElement();
+    if (enclosingElement != null && (enclosingElement instanceof TypeElement) &&
+        util.isHWCofComponent((TypeElement) enclosingElement)) {
+      return super.substituteVariable(variable);
+    }
     if (enclosingElement == null || !(enclosingElement instanceof TypeElement) ||
         !util.isDirective((TypeElement) enclosingElement)) {
       return super.substituteVariable(variable);
@@ -599,7 +603,7 @@ public class GUIComponentAdapter extends PrinterAdapter {
       Optional<? extends Element> parentConstructor = parentClass.getEnclosedElements().stream()
           .filter(s -> s.getKind().toString().equals("CONSTRUCTOR")).findAny();
       if (util.getAnnotationPropertyValue(classElement, "isEmpty", Boolean.class, false)) {
-        println().printIndent().print("super(router)");
+        println().printIndent().print("super(router);");
       }
       else if (util.getAnnotationPropertyValue(classElement, "isCreate", Boolean.class, false)) {
         println().printIndent().print("super(router);");
