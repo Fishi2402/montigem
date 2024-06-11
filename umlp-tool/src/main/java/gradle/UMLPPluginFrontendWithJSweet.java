@@ -131,7 +131,11 @@ public abstract class UMLPPluginFrontendWithJSweet implements Plugin<Project> {
     return project.getTasks().register(UMLP_FRONTEND_DOMAIN_J2TS_CONFIG_TASK_NAME, UMLPJava2TypeScriptConfigTask.class, umlpTask -> {
       umlpTask.setGroup(UMLP_GROUP_NAME);
       umlpTask.getJsweetConfigOut().set(project.getLayout().getBuildDirectory().dir("jsweetGen/"));
-      setIfPathExists(x -> umlpTask.getHwcDir().set(x), Path.of(project.getProjectDir().getAbsolutePath(), "jsweet"));
+      if(Path.of(project.getProjectDir().getAbsolutePath(), "jsweet").toFile().exists()) {
+        umlpTask.getHwcDir().set(Path.of(project.getProjectDir().getAbsolutePath(), "jsweet").toFile());
+      } else {
+        umlpTask.getHwcDir().set(Path.of(project.getProjectDir().getAbsolutePath()).toFile());
+      }
     });
   }
 

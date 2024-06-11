@@ -30,11 +30,19 @@ public abstract class TranspileAction implements WorkAction<TranspileAction.Para
 
     JSweetFactory factory = new JSweetFactory();
 
-    JSweetTranspiler transpiler = new JSweetTranspiler(params.getBaseDirectory().getAsFile().get(), null, factory, params.getWorkingDirectory().getAsFile().get(), params.getOutputDir().getAsFile().get(), params.getOutputDir().getAsFile().get(), params.getExtractedCandiesJavascriptDir().getAsFile().get(), params.getClassPath().get());
+    JSweetTranspiler transpiler = new JSweetTranspiler(
+        params.getBaseDirectory().getAsFile().get(),
+        null,
+        factory,
+        params.getWorkingDirectory().getAsFile().get(),
+        params.getOutputDir().getAsFile().get(),
+        params.getOutputDir().getAsFile().get(),
+        params.getExtractedCandiesJavascriptDir().getAsFile().get(),
+        params.getClassPath().get());
 
     transpiler.setTscWatchMode(false);
     transpiler.setAutoPropagateAsyncAwaits(true);
-    transpiler.setVerbose(getParameters().getVerbose().get());
+    transpiler.setVerbose(params.getVerbose().getOrElse(false));
     transpiler.setEncoding("UTF-8");
     transpiler.setGenerateSourceMaps(true);
     transpiler.setGenerateJsFiles(false);
