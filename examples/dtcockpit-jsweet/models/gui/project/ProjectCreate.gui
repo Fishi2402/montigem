@@ -17,8 +17,8 @@ page ProjectCreate(Project project){
         createPTitle@GemTextInput(labelText = "Project Title", entry = project.name, disabled = false),
         createPGit@GemTextInput(labelText = "Git", entry = project.git, disabled = false),
         error@GemText(value = ""),
-        @GemButton(label = "Create new project", leftClick = createProject, disabled = false),
-        @GemButton(label = "Abort", leftClick = navigateBack, disabled = false)
+        @GemButton(label = "Create new project", leftClick = createProject(), disabled = false),
+        @GemButton(label = "Abort", leftClick = navigateBack(), disabled = false)
       ])
     ) // end card
   ); // end column

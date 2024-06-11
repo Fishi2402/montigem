@@ -33,7 +33,9 @@ import umlp.generator.gui.gentypescript.method.TSSimpleMethodMutatorDecorator;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
@@ -138,13 +140,13 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
         mutatorDecorator, service);
     for (ASTCDAttribute attribute : attrList) {
       List<ASTCDMethod> methods;
-      if(attribute.getModifier().isDerived()) {
-        // Workaround: do not generate accessor at all
-        // JSweet will replace this entirely => minimal effort
-       methods = mutatorDecorator.decorate(attribute);
-      }else{
+//      if(attribute.getModifier().isDerived()) {
+//        // Workaround: do not generate accessor at all
+//        // JSweet will replace this entirely => minimal effort
+//       methods = mutatorDecorator.decorate(attribute);
+//      }else{
         methods = methodDecorator.decorate(attribute);
-      }
+//      }
       // methods.forEach(m -> m.getModifier().setAbstract(isInterface));
       //methods.forEach(m -> m.getModifier().setDerived(isInterface));
       // TODO AGe: why is it getting set to abstract?
@@ -262,6 +264,11 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
   @Override
   protected void createIsBuildFinishedMethod(ASTCDClass clazz) {
     getCD4C().addMethod(clazz, "umlp.gui2ts.domain.TSIsBuildFinishedI");
+  }
+
+  @Override
+  protected void createIsBuildableMethod(ASTCDClass clazz) {
+    getCD4C().addMethod(clazz, "umlp.gui2ts.domain.TSIsBuildable");
   }
 
   @Override

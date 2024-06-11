@@ -19,8 +19,8 @@ page PersonCreate(Person person) {
       @GemCard(title = "New Person", component =
         @GemColumn(width = "50vw", rowGap = "10px", components = [
           createPTitle@GemTextInput(labelText = "Person Name", entry = person.kuerzel, disabled = false),
-          @GemButton(label = "Create new person", leftClick = createPerson, disabled = false),
-          @GemButton(label = "Abort", leftClick = navigateBack, disabled = false)
+          @GemButton(label = "Create new person", leftClick = createPerson(), disabled = false),
+          @GemButton(label = "Abort", leftClick = navigateBack(), disabled = false)
         ])
       )
     )

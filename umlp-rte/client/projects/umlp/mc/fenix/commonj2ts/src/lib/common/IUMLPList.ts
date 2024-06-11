@@ -1,4 +1,29 @@
+import { NgIterable } from "@angular/core";
+import { BehaviorSubject, Subscriber } from "rxjs";
+
+/**
+ * Custom BehaviorSubject with support for lazy-loading
+ */
+export class GemListBehaviorSubject<E> extends BehaviorSubject<E> {
+  // Callback
+  protected onSub: () => void;
+
+  constructor(value: E, onSub: () => void) {
+    super(value);
+    this.onSub = onSub;
+  }
+
+  // Be notified about subscription, so we can load on-demand
+  protected _innerSubscribe(subscriber: Subscriber<any>): Subscriber<any> {
+    this.onSub();
+    // @ts-ignore
+    return super["_innerSubscribe"](subscriber);
+  }
+}
+
 export interface IUMLPList<E> extends AsyncIterable<E> {
+  subject: GemListBehaviorSubject<NgIterable<E>>;
+
   add(indexOrElement: number | E, element?: E): Promise<boolean>;
 
   addAll(idxOrElems: number | IUMLPList<E> | Array<E>, elems?: IUMLPList<E>): Promise<boolean>;

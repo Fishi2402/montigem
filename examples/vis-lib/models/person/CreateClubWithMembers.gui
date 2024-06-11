@@ -13,12 +13,12 @@ import mc.fenix.input.GemTextInput;
 import mc.fenix.input.GemCheckBoxInput;
 
 import person.Row;
-import person.Create;
+import person.CreatePerson;
 
 page CreateClubWithMembers(Club club) {
   @GemRow(component = clubname@GemTextInput(labelText = "Clubname", entry = club.name));
-  @GemButton(label="Add Alice as Builder", leftClick=createAlice);
-  @Create(newPerson=updateClubMembers);
+  @GemButton(label="Add Alice as Builder", leftClick = createAlice());
+  @CreatePerson(newPerson = updateClubMembers());
   @iterate(Person friend : club.members) {
     @Row(
       col1 = @GemText(value = friend.birthday),

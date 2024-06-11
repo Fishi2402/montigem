@@ -1,6 +1,5 @@
 package gui.test;
 
-import dtcockpit.DtcockpitManager;
 import dtcockpit.Project;
 import umlp.backendrte.common.GemList;
 import umlp.jsweet.extension.annotation.Component;
@@ -8,11 +7,9 @@ import umlp.jsweet.extension.annotation.Component;
 
 @Component
 public class Test4 extends Test4TOP {
-  public Test4(GemList projects) {
-    super(projects);
+  public Test4(GemList<Project> projects) {
+    setProjects(projects);
   }
-
-
 
   @Override
   public String getPnameValue(Project p) {

@@ -4,6 +4,7 @@ import { Component } from '@angular/core';
 import { Person } from '@src/domain/Person';
 import { GemTreeviewExampleComponent, config } from '@src/example_basic/GemTreeviewExampleComponent';
 import { GemTreeviewEntry } from '@umlp/basic';
+import { Event } from '@umlp/common';
 
 @Component({
   standalone: true,
@@ -17,7 +18,7 @@ export class GemTreeviewExample extends GemTreeviewExampleComponent {
     = { value: [], hash: '' };
 
   public override getTreeItems(): GemTreeviewEntry[] {
-    const persons: Person[] = this.getPersons()?.toArray() || [];
+    const persons: Person[] = this.getPersons() || [];
     const result: GemTreeviewEntry[] = [];
 
     for (const p of persons) {
@@ -42,8 +43,8 @@ export class GemTreeviewExample extends GemTreeviewExampleComponent {
   }
 
 
-  public override sayHello(event: any): void {
-    alert("Hello");
+  public override sayHello(): Event<GemTreeviewEntry> {
+    return () => alert("Hello");
   }
 
 }

@@ -17,7 +17,7 @@ export  class Start extends StartComponent {
 
   ngOnInit(){
     if (!SehubSecurityManager.isSignedIn()) {
-      super.router.navigate(['gui/login/LoginPage']);
+      this._router.navigate(['gui/login/LoginPage']);
     }
   }
 

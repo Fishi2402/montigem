@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package util;
+
+import packaged.Types.MyData;
+import packaged.Types.MyEntry;
+import packaged.Types.InputStatus;
+
+component T(
+  MyData md,
+  MyEntry me,
+  InputStatus is,
+  List<MyData> lmd,
+  List<MyEntry> lme,
+  List<InputStatus> lis
+)

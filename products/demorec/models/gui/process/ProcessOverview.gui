@@ -35,7 +35,7 @@ page ProcessOverview(Process p) {
           component=@GemColumn(
             rowGap="15px",
             components = [
-              stepCreate@ProcessStepCreate(create = attachStep),
+              stepCreate@ProcessStepCreate(create = attachStep()),
               @StepTable(process=p)
             ]
           )

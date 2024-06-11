@@ -23,13 +23,9 @@ page WeatherView(List<Forecast> forecasts) {
       title = "Forecast data list",
       component = forecastsTable@GemTable(
         rows = forecasts,
-        columns = [
-          TableColumn("_temperature", "Temperature"),
-          TableColumn("_windspeed", "Wind speed"),
-          TableColumn("_realtiveHumidity", "Humidity")
-        ],
-        edit = navigateToUpdatePage,
-        update = log
+        columns = getColumns(),
+        edit = navigateToUpdatePage(),
+        update = log()
       )
     ),
     @GemCard(

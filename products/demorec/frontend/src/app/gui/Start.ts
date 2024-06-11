@@ -26,13 +26,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class Start extends StartComponent {
 
-  public constructor(protected route: ActivatedRoute, protected router : Router) {
-    super(route, router);
-  }
-
-
-  public override editProcess (p: Process): (p: Process) => void {
-    console.debug("Event: ", p)
-    return () => this.router.navigate(["gui/process/ProcessOverview/"+p.getGemId()])
+  public override editProcess(p: Process): (arg: void) => void {
+    return $ => this._router.navigate(["gui/process/ProcessOverview/"+p.getGemId()])
   }
 }

@@ -49,11 +49,18 @@ node {
 }
 nodeSetup.dependsOn(frontendSetup)
 
+tasks.register('copyTags', Copy) {
+  from(tasks.createDomainSymbols.getSymbolOutDir()) {
+    include '**/*.tags'
+  }
+  into("$buildDir/tags")
+}
 
 tasks.register('generateCDTOGUI', UMLPCdToGuiTask) {
   setGroup('build')
   input = file("../models/Carrental.umlp")
   outputDir = layout.buildDirectory.dir("cd2gui")
+  dependsOn(tasks.copyTags)
 }
 
 tasks.register('guiVariability', GuiVariabilityHandlerTask) {
@@ -71,12 +78,18 @@ genGUI {
   input.setFrom(file(tasks.guiVariability.getOutputDir()))
   // Use cd2gui symbols instead of cd2gui/symbols
   symbolDir += generateCDTOGUI.getOutputDir().file("symbols")
+  symbolDir += file("$buildDir/tags")
   // and exclude the createDomainSymbols symbols (without gemId)
   var toExclude = tasks.createDomainSymbols.getSymbolOutDir().get().asFile
   symbolDir.setFrom symbolDir.filter(f -> f != toExclude)
   modelDir = file(tasks.guiVariability.getOutputDir())
   domainModels = ["Carrental"]
   dependsOn(tasks.guiVariability)
+
+  /*
+  debug = true
+  outputs.upToDateWhen { false }
+  /**/
 }
 
 // TODO: For comparison: TS vs JSweet(Java)

@@ -1,0 +1,76 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package genjava.decorator;
+
+import Domain.Person;
+import Domain.Address;
+import Domain.MaritalStatus;
+import packaged.Types.MyData;
+import packaged.Types.InputStatus;
+
+import util.P;
+import util.L;
+import util.T;
+
+page StaticObjectsCollector(Person person) {
+  a@P(p = person);
+  b@P(p = Person());
+  c@L(a = [person.address, Address()]);
+  d@L(lp = [[person, Person()], [person.friends.get(0)]]);
+  // doesn't make sense but technically correct
+  e@guard(Person().employed) {}
+  f@iterate(Person p : Person().friends) {
+    $1@iterate(Person p2 : person.friends) {
+      g@L(a = [p.address, p2.address]);
+      h@L(a = [p2.address, p.address]);
+
+      /*
+      Map<Person, Map<Person, List<Address>>> hA = new HashMap<>();
+
+      List<Address> getHA(p, p2) {
+        if (hA.containsKey(p) && hA.get(p).containsKey(p2)) {
+          return hA.get(p).get(p2);
+        }
+        return null;
+      }
+
+      void addHA(p, p2) {
+        hA.get(p).put(p2, List.of(p2.address, p.address));
+      }
+
+      void removeHA(p, p2) {
+        hA.get(p).remove(p2);
+      }
+
+      void syncHA(p, p2) {
+        if (!ha.containsKey(p)) {
+          ha.put(p, new HashMap<>());
+        }
+        if (!ha.get(p).containsKey(p2)) {
+          ha.get(p).put(p2, List.of(p2.address, p.address));
+        }
+      }
+      */
+
+      i@P(p = Person(person.name));
+      j@L(v = [$2@iterate(Person p3 : person.friends) { $3@L(); }]);
+
+      k@T(
+        md = MyData(InputStatus.WARNING),
+        is = InputStatus.ERROR,
+        lmd = [MyData(InputStatus.SUCCESS)],
+        lis = InputStatus.ERROR
+      );
+
+      /*
+      // String s
+      l@P(s = InputStatus.ERROR);
+
+      // List<String> s
+      m@L(s = [InputStatus.ERROR, InputStatus.WARNING]);
+      // m@L(s = values(InputStatus));
+      /**/
+    }
+  }
+  // TODO: iterate and guard tests with lists. Lists are currently unsupported in guards and iterate
+}

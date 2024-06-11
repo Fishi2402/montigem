@@ -29,7 +29,7 @@ public class PipelineStats extends PipelineStatsTOP {
   private int maxValue = 0;
 
   public PipelineStats(Project p) {
-    super(p);
+    setP(p);
   }
 
   @Override

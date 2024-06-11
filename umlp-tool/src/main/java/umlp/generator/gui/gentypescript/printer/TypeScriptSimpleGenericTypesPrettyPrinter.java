@@ -1,7 +1,11 @@
 package umlp.generator.gui.gentypescript.printer;
 
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypes._prettyprint.MCSimpleGenericTypesPrettyPrinter;
+
+import java.util.Iterator;
 
 public class TypeScriptSimpleGenericTypesPrettyPrinter extends MCSimpleGenericTypesPrettyPrinter {
   public TypeScriptSimpleGenericTypesPrettyPrinter(IndentPrinter printer) {
@@ -9,35 +13,39 @@ public class TypeScriptSimpleGenericTypesPrettyPrinter extends MCSimpleGenericTy
   }
 
   @Override
-  public void handle(de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType node) {
+  public void handle(ASTMCBasicGenericType node) {
     if (this.isPrintComments()) {
       de.monticore.prettyprint.CommentPrettyPrinter.printPreComments(node, getPrinter());
     }
-    java.util.Iterator<de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument> iter_mCTypeArgument = node.getMCTypeArgumentList().iterator();
+    Iterator<ASTMCTypeArgument> iter_mCTypeArgument = node.getMCTypeArgumentList().iterator();
 
     if (!node.getNameList().isEmpty()) {
       String last = node.getName(node.sizeNames() - 1);
       // java.util.Optional and java.util.List land here
       if (!last.equals("Optional")) {
-        if (last.equals("Consumer")) {
-          getPrinter().print("(arg: any) => void");
-        } else {
-          getPrinter().print(TypeScriptTypes.toTSType(last));
-          getPrinter().stripTrailing();
-          getPrinter().print("<");
-        }
-      }
-      if (iter_mCTypeArgument.hasNext() && !last.equals("Consumer")) {
-        iter_mCTypeArgument.next().accept(getTraverser());
-        while (iter_mCTypeArgument.hasNext()) {
-          getPrinter().stripTrailing();
-          getPrinter().print(",");
+        getPrinter().print(TypeScriptTypes.toTSType(last));
+        getPrinter().stripTrailing();
+        getPrinter().print("<");
+        if (iter_mCTypeArgument.hasNext()) {
           iter_mCTypeArgument.next().accept(getTraverser());
+          while (iter_mCTypeArgument.hasNext()) {
+            getPrinter().stripTrailing();
+            getPrinter().print(",");
+            iter_mCTypeArgument.next().accept(getTraverser());
+          }
         }
-      }
-      getPrinter().stripTrailing();
-      if (!last.equals("Optional") && !last.equals("Consumer")) {
+        getPrinter().stripTrailing();
         getPrinter().print(">");
+      }
+      else {
+        if (iter_mCTypeArgument.hasNext()) {
+          iter_mCTypeArgument.next().accept(getTraverser());
+          while (iter_mCTypeArgument.hasNext()) {
+            getPrinter().stripTrailing();
+            getPrinter().print(",");
+            iter_mCTypeArgument.next().accept(getTraverser());
+          }
+        }
       }
     }
     if (this.isPrintComments()) {

@@ -53,6 +53,7 @@ public interface UserCreateE2ETest extends TestSetup<DtcockpitTestContext> {
     getClients(0).activate();
 
     UserCreate pageUnderTest = new UserCreate();
+    pageUnderTest.init();
     pageUnderTest.setGemTextInput2Entry(userName); //username
     pageUnderTest.setGemTextInput3Entry(password); //password
     pageUnderTest.setGemTextInput4Entry(eMail); //e-mail
@@ -88,6 +89,7 @@ public interface UserCreateE2ETest extends TestSetup<DtcockpitTestContext> {
     getClients(0).activate();
 
     UserCreate pageUnderTest = new UserCreate();
+    pageUnderTest.init();
     pageUnderTest.setGemTextInput2Entry(userName); //username
     pageUnderTest.setGemTextInput3Entry(password); //password
     pageUnderTest.setGemTextInput4Entry(eMail); //e-mail

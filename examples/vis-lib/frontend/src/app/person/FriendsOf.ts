@@ -4,6 +4,8 @@ import { FriendsOfComponent, config } from '@src/person/FriendsOfComponent';
 import { Person } from '@src/domain/Person';
 import { Component } from '@angular/core';
 import { DomainManager } from '@src/domain/DomainManager';
+import { Event } from '@umlp/common';
+
 @Component({
   standalone: true,
   imports: [...config.imports],
@@ -13,9 +15,10 @@ import { DomainManager } from '@src/domain/DomainManager';
 })
 export class FriendsOf extends FriendsOfComponent {
 
-  public override updateFriendsList(newFriend: Person): void {
-    console.warn("Add new Friend", newFriend.getGemId(), newFriend.getName())
-    this.getPerson().addFriends2(newFriend)
+  public override updateFriendsList(): Event<Person> {
+    return newFriend => {
+      this.getPerson().addFriends2(newFriend)
+    };
   }
 
 }

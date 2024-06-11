@@ -10,12 +10,12 @@ import mc.fenix.arrange.GemRow;
 import mc.fenix.basic.GemText;
 
 import person.Row;
-import person.Create;
+import person.CreatePerson;
 import person.PieChart;
 
 page ClubMembers(Club club) {
   @GemColumn(rowGap = "10px", width = "50%", components = [
-    @Create(newPerson=updateClubMembers),
+    @CreatePerson(newPerson = updateClubMembers()),
     @iterate(Person p : club.members) {
       @Row(
         col1 = @GemText(value = p.birthday),

@@ -7,7 +7,7 @@ import java.util.Collection;
 
 public abstract class Expression2SetterPrinter extends ExpressionPrinter {
 
-  public static final String SETTER_PARAM = "val";
+  public static final String SETTER_PARAM = "val_$";
   protected SharedBoolean lastFieldAccess;
 
   public Expression2SetterPrinter(IndentPrinter printer, boolean printComments) {

@@ -18,17 +18,17 @@ component UserLogin(List<User> users, User loginUser) {
         inputType = "text",
         entry = loginUser.username,
         validity = loginUser.validityUsername,
-        keyRelease = loginOnEnter
+        keyRelease = loginOnEnter()
       ),
       @GemTextInput(
         labelText = "Password",
         inputType = "password",
         entry = loginUser.password,
         validity = loginUser.validityPassword,
-        keyRelease = loginOnEnter
+        keyRelease = loginOnEnter()
       ),
-      // @GemButton(label = "Cancel", leftClick = navigateBack),
-      @GemButton(label = "Sign in", leftClick = login),
+      // @GemButton(label = "Cancel", leftClick = navigateBack()),
+      @GemButton(label = "Sign in", leftClick = login()),
       error@GemText(value = "")
     ])
   );

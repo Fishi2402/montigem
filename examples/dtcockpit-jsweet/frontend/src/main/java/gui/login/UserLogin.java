@@ -7,10 +7,13 @@ import umlp.backendrte.common.GemList;
 import umlp.guiutil.Router;
 import umlp.jsweet.extension.annotation.Component;
 
+import java.util.function.Consumer;
+
 @Component()
 public class UserLogin extends UserLoginTOP {
-  public UserLogin(GemList users, User loginUser) {
-    super(users, loginUser);
+  public UserLogin(GemList<User> users, User loginUser) {
+    this.setUsers(users);
+    this.setLoginUser(loginUser);
   }
 
   @Override
@@ -19,15 +22,16 @@ public class UserLogin extends UserLoginTOP {
       Router.navigate("gui", "Start");
     }
 
-    if (this.loginUser == null) {
-      this.loginUser = new User();
+    if (this.getLoginUser() == null) {
+      this.setLoginUser(new User());
     }
   }
 
   protected String error = "";
 
   @Override
-  public void loginOnEnter(Object event) {
+  public Consumer<Object> loginOnEnter() {
+    return $ -> {};
     // TODO give event 'key'
 //    if (event.key === "Enter") {
 //      this.login(null);
@@ -35,12 +39,13 @@ public class UserLogin extends UserLoginTOP {
   }
 
   @Override
-  public void login(Object event) {
-    if (this.loginUser == null || this.loginUser.getUsername() == null || this.loginUser.getPassword() == null) {
-      return;
-    }
+  public Consumer<Void> login() {
+    return $ -> {
+      if (this.getLoginUser() == null || this.getLoginUser().getUsername() == null || this.getLoginUser().getPassword() == null) {
+        return;
+      }
 
-    //TODO Ticket Das muss besser gehen!
+      //TODO Ticket Das muss besser gehen!
 //    const form = new FormData();
 //
 //    form.append('username', this.loginUser.getUsername());
@@ -74,6 +79,7 @@ public class UserLogin extends UserLoginTOP {
 //    alert("Login Failed: Unable to communicate");
 //      });
 
-    super.login(event);
+      super.login().accept(null);
+    };
   }
 }

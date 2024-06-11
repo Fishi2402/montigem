@@ -5,7 +5,7 @@ import { GemList } from '@umlp/common';
 
 import { Component, Input } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-import {config} from "@src/gui/widgets/CalendarComponent";
+import {config, CalendarComponent} from "@src/gui/widgets/CalendarComponent";
 interface CalendarBlock {
   x: number;
   y: number;
@@ -22,18 +22,7 @@ interface CalendarBlock {
   templateUrl: config.templateUrl,
   styleUrls: config.styleUrls
 })
-export class Calendar {
-
-  protected _meetings: GemList<Meeting>
-
-  @Input()
-  public set meetings(value: GemList<Meeting>) {
-    this._meetings = value;
-  }
-
-  public get meetings(): GemList<Meeting> {
-    return this._meetings;
-  }
+export class Calendar extends CalendarComponent {
 
   // in %
   stdEmptyBlockHeight: number;
@@ -64,7 +53,7 @@ export class Calendar {
       return null;
     }
 
-    const ms: Meeting[] = this.meetings.toArray();
+    const ms: Meeting[] = this.meetings;
     let cal: CalendarBlock[] = [];
     for (const m of ms) {
       for (let i = m.getStart().getDate(); i <= m.getEnd().getDate(); ++i) {
@@ -97,7 +86,7 @@ export class Calendar {
   }
 
   protected getMeetingAt(day: Date, hour: number): Meeting | null {
-    const ms = this.meetings.toArray();
+    const ms = this.meetings;
     for (const m of ms) {
       if (m.getStart().getFullYear() === day.getFullYear()
         && m.getStart().getMonth() === day.getMonth()

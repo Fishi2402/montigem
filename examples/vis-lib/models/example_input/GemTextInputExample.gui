@@ -23,7 +23,7 @@ page GemTextInputExample(List<Person> persons) {
       inputType = "dropdown",
       labelText = "Hobby:",
       entry = p.aboutMe,
-      options = [Option(""), Option("Tennis"), Option("Sleeping"), Option("Model-driven development")]
+      options = [/*Option(""), Option("Tennis"), Option("Sleeping"), Option("Model-driven development")*/]
     );
   }
 }

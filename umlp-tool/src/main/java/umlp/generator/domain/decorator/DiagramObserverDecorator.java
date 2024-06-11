@@ -24,6 +24,7 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC;
 public class DiagramObserverDecorator extends AbstractDecorator {
 
   public static final String SUFFIX = "Observer";
+  public static final String PREFIX = "Empty";
   public static final String NOTIFY_ADD_TEMPLATE = "umlp.diagram.NotifyAdd";
   public static final String NOTIFY_DELETE_TEMPLATE = "umlp.diagram.NotifyDelete";
   public static final String MAYBE_NOTIFY_ADD_TEMPLATE = "umlp.diagram.MaybeNotifyAdd";
@@ -87,7 +88,7 @@ public class DiagramObserverDecorator extends AbstractDecorator {
     ASTCDClass ast = UMLPMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
         .setCDInterfaceUsage(getInterfaceUsageFacade().createCDInterfaceUsage(i.getName()))
-        .setName("Empty" + i.getName()).build();
+        .setName(PREFIX + i.getName()).build();
 
     for (ASTCDMethod astcdMethod : i.getCDMethodList()) {
       if(astcdMethod.getName().startsWith("maybe") || astcdMethod.getName().equals("getScope")) {

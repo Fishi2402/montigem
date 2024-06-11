@@ -52,7 +52,7 @@ public abstract class GUIAbstractDecorator extends AbstractDecorator {
   }
 
   public static String getPackageName(ASTGUICompilationUnit guiAst, String subPackage) {
-    String origPackage = Names.constructQualifiedName(guiAst.getMCPackageDeclaration().getMCQualifiedName().getPartsList());
+    String origPackage = guiAst.getPackage();
     return (subPackage.isEmpty() ? origPackage : Joiners.DOT.join(origPackage, subPackage)).toLowerCase();
   }
 

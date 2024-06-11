@@ -60,14 +60,14 @@ page ProcessStepEdit(Process p, ProcessStep step) {
                             options = null,
                             entry = null),
                         createNewJoinConnection@guard(true) {
-                          @JoinConnectionCreate(createJoinConnection=addNewJoinConnection);
+                          @JoinConnectionCreate(createJoinConnection=addNewJoinConnection());
                         }
                         else {
-                          editJoinConnectionButton@GemButton(width = "auto", disabled = false, label = "Edit this Join Connection", leftClick = editJoinConnection);
+                          editJoinConnectionButton@GemButton(width = "auto", disabled = false, label = "Edit this Join Connection", leftClick = editJoinConnection());
                         }
                     ]);
                   } else {
-                    addJoinConnectionButton@GemButton(width = "auto", disabled = false, label = "Add Join Connection", leftClick = addJoinConnection);
+                    addJoinConnectionButton@GemButton(width = "auto", disabled = false, label = "Add Join Connection", leftClick = addJoinConnection());
                     addJoinConnectionClicked@guard(true) {
                       addJoinConnectionLabel@GemText(value = "Add Join Connection");
                       editJoinConnectionRow1@GemRow(
@@ -80,10 +80,10 @@ page ProcessStepEdit(Process p, ProcessStep step) {
                               options = null,
                               entry = null),
                           createNewJoinConnection1@guard(true) {
-                            @JoinConnectionCreate(createJoinConnection=addNewJoinConnection);
+                            @JoinConnectionCreate(createJoinConnection = addNewJoinConnection());
                           }
                           else {
-                            editJoinConnectionButton1@GemButton(width = "auto", disabled = false, label = "Edit this Join Connection", leftClick = editJoinConnection);
+                            editJoinConnectionButton1@GemButton(width = "auto", disabled = false, label = "Edit this Join Connection", leftClick = editJoinConnection());
                           }
                       ]);
                     }
@@ -92,7 +92,7 @@ page ProcessStepEdit(Process p, ProcessStep step) {
 
                 editMeasuringValuesCard@MeasuringValueEdit(step=step),
 
-                @GemButton(width = "auto", label = "Back to Process Overview", leftClick = backToProcessOverview)
+                @GemButton(width = "auto", label = "Back to Process Overview", leftClick = backToProcessOverview())
             ])
         )]
   );

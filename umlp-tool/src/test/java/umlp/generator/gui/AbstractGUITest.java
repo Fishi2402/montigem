@@ -19,6 +19,7 @@ public abstract class AbstractGUITest extends AbstractUMLPTest {
   public void guiSetup() {
     LogStub.init();
     Log.enableFailQuick(false);
+    Log.clearFindings();
     GUIDSLTool tool = new GUIDSLTool();
     tool.resetGSAndMill();
   }
@@ -28,6 +29,7 @@ public abstract class AbstractGUITest extends AbstractUMLPTest {
     glex.setBeforeTemplate("cd2java.Class", AbstractDecorator.getOriginHookPoint());
     glex.setBeforeTemplate("cd2java.Enum", AbstractDecorator.getOriginHookPoint());
     glex.setBeforeTemplate("cd2java.Interface", AbstractDecorator.getOriginHookPoint());
+    glex.setGlobalValue("genHelper", GUIGeneratorUtil.getInstance());
     return glex;
   }
 

@@ -4,6 +4,8 @@ import { ClubMembersComponent, config } from '@src/person/ClubMembersComponent';
 import { Person } from '@src/domain/Person';
 import { Component } from '@angular/core';
 import { DomainManager } from '@src/domain/DomainManager';
+import { Event } from '@umlp/common';
+
 @Component({
   standalone: true,
   imports: [...config.imports],
@@ -13,9 +15,8 @@ import { DomainManager } from '@src/domain/DomainManager';
 })
 export class ClubMembers extends ClubMembersComponent {
 
-  public override updateClubMembers(newMember: Person): void {
-    console.warn("Add new Club Member", newMember.getGemId(), newMember.getName())
-    this.getClub().addMembers2(newMember)
+  public override updateClubMembers(): Event<Person> {
+    return newMember => this.getClub().addMembers2(newMember);
   }
 
 }

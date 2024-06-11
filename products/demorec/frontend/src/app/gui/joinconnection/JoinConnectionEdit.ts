@@ -42,11 +42,11 @@ export class JoinConnectionEdit extends JoinConnectionEditComponent implements O
   connectsComponentEntry : string = ""
 
   dummyComponents : DemoRecComponent[] = []
-  dummyComponentNames : string[] = []
 
 
   public override ngOnInit(){
     super.ngOnInit()
+    this.dummyComponentNames = [];
 
     // Initialize joinConnectionTypeOptions
     this.joinConnectionTypeOptions = [];
@@ -161,21 +161,25 @@ export class JoinConnectionEdit extends JoinConnectionEditComponent implements O
     this.connectsComponentEntry = value
   }
 
-  public override connectSelectedComponent(event: any) {
-    if(this.getSelectConnectsComponentEntry()) {
-      DemoRecManager.getDemoRecComponentSure(+this.getSelectConnectsComponentEntry()).then(
-          demoRecComponent => {
-            this.getConnection().addConnects2(demoRecComponent)
-            this.syncDummyComponentsWithBuilderObject(demoRecComponent)
-          }
-      )
+  public override connectSelectedComponent(): (arg: void) => void {
+    return $ => {
+      if(this.getSelectConnectsComponentEntry()) {
+        DemoRecManager.getDemoRecComponentSure(+this.getSelectConnectsComponentEntry()).then(
+            demoRecComponent => {
+              this.getConnection().addConnects2(demoRecComponent)
+              this.syncDummyComponentsWithBuilderObject(demoRecComponent)
+            }
+        )
+      }
     }
   }
 
-  public override addNewComponent(comp: DemoRecComponent) {
-    this.getConnection().build()
-    this.getConnection().addConnects2(comp)
-    this.syncDummyComponentsWithBuilderObject(comp)
+  public override addNewComponent(): (arg: DemoRecComponent) => void {
+    return (comp: DemoRecComponent) => {
+      this.getConnection().build()
+      this.getConnection().addConnects2(comp)
+      this.syncDummyComponentsWithBuilderObject(comp)
+    }
   }
 
   addComponentName(comp: DemoRecComponent) {
@@ -218,7 +222,7 @@ export class JoinConnectionEdit extends JoinConnectionEditComponent implements O
     return this.getSelectConnectsComponentEntry() === newOption.value
   }
 
-  public override backToStepEditing(any): void {
-    this.router.navigate(["gui/step/ProcessStepEdit/"+this.getP().getGemId()+"/"+this.getStep().getGemId()])
+  public override backToStepEditing(): (arg: void) => void {
+    return $ => this._router.navigate(["gui/step/ProcessStepEdit/"+this.getP().getGemId()+"/"+this.getStep().getGemId()]);
   }
 }

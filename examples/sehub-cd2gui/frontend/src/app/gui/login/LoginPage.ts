@@ -15,11 +15,4 @@ import { SehubManager } from '@src/sehub/SehubManager';
 
 export class LoginPage extends LoginPageComponent {
 
-  public ngOnInit(): void {
-    SehubManager.getUserList().then(gemPromiseRes => {
-      this.users = gemPromiseRes;
-      this.users.loadAll();
-    });
-  }
-
 }

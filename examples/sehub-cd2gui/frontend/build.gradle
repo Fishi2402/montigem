@@ -91,6 +91,7 @@ task genGUI(type: UMLPGuiGenTask) {
   symbolDir = files(
       genDomainSymbols.symbolOutDir,
       project(":umlp-rte:client").tasks.createGuiSymbols.output,
+      project(":umlp-rte:client").tasks.createCDSymbols.output,
       configurations.guiDefaultTypes.files
   )
   domainModels = ["Sehub"]
@@ -105,6 +106,7 @@ tasks.register('genGUI2', UMLPGuiGenTask) {
   symbolDir = files(
       generateCDTOGUI.getOutputDir().file("symbols"),
       project(":umlp-rte:client").tasks.createGuiSymbols.output,
+      project(":umlp-rte:client").tasks.createCDSymbols.output,
       configurations.guiDefaultTypes.files
   )
   hwcDir = file("src/app/")

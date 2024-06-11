@@ -13,10 +13,6 @@ import { ComponentObserverManager } from '@umlp/commonj2ts';
   styleUrls: [...config.styleUrls]
 })
 export class Start extends StartComponent implements OnDestroy {
-  public constructor(route: ActivatedRoute, protected router: Router) {
-    super(router)
-  }
-
   public ngOnDestroy(): void {
     ComponentObserverManager.removeObservers("gui.Start");
   }

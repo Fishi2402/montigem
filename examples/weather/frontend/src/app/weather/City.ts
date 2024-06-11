@@ -47,7 +47,7 @@ export class City extends CityTOP {
   }
 
   public getNextHours(){
-    return this._nextHours;
+    return this._nextHours.toArray();
   }
 
   public getNextHoursList(){

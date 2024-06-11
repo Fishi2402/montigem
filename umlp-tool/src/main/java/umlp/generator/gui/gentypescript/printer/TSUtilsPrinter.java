@@ -88,7 +88,6 @@ public class TSUtilsPrinter extends CdUtilsPrinter {
     return type.printType().contains("? extends");
   }
 
-  // TODO AGe
   public boolean isAbstract(ASTCDClass type) {
     boolean res = false;
     for (ASTCDMethod m : type.getCDMethodList()) {

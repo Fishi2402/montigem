@@ -22,6 +22,6 @@ component IssueCreate(Issue issue){
       entry = issue.description,
       disabled = false
     ),
-    @GemButton(label = "Create new Issue", leftClick = createIssue, disabled = false)
+    @GemButton(label = "Create new Issue", leftClick = createIssue(), disabled = false)
   ]);
 }

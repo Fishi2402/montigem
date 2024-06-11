@@ -30,18 +30,8 @@ import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 })
 export  class ComponentEdit extends ComponentEditComponent {
 
-  public constructor(route: ActivatedRoute, protected router: Router) {
-    super(route, router);
-    this.router.events.subscribe((event) => {
-      if(event instanceof NavigationEnd) {
-        this.componentRoutingId = +route.snapshot.paramMap.get("componentRoutingId");
-        this.ngOnInit()
-      }
-    })
-  }
-
-  public editComponentKind (event: any): void {
-    this.router.navigateByUrl("gui/kind/Edit/"+this.getComponent().getIsA().getGemId())
+  public editComponentKind(): (arg: void) => void {
+    return $ => this._router.navigateByUrl("gui/kind/Edit/"+this.getComponent().getIsA().getGemId());
   }
 }
 

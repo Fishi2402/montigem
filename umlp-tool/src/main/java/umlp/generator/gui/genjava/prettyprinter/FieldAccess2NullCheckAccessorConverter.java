@@ -30,11 +30,11 @@ public class FieldAccess2NullCheckAccessorConverter extends FieldAccess2Accessor
     }
     getPrinter().print(".");
 
-    if (ignore.contains(node)) {
+    if (ignore.contains(node) || isEnum(node)) {
       getPrinter().print(node.getName() + " ");
     }
     else {
-      getPrinter().print(attr2Getter(node) + " ");
+      getPrinter().print(attr2GetterCall(node) + " ");
     }
 
     if (this.isPrintComments()) {

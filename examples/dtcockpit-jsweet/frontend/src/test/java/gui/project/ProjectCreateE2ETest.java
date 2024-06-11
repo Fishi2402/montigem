@@ -24,6 +24,7 @@ public class ProjectCreateE2ETest extends DtcockpitMockTestSetup {
     getClients(0).activate();
 
     ProjectCreate pageUnderTest = new ProjectCreate();
+    pageUnderTest.init();
     pageUnderTest.setCreatePTitleEntry(title);
     pageUnderTest.setCreatePGitEntry(git);
     pageUnderTest.gemButton3LeftClick(null);
@@ -57,6 +58,7 @@ public class ProjectCreateE2ETest extends DtcockpitMockTestSetup {
     assertTrue(getProjectByName(title).isEmpty(), "project already exists");
 
     ProjectCreate pageUnderTest = new ProjectCreate();
+    pageUnderTest.init();
     pageUnderTest.setCreatePTitleEntry(title);
     pageUnderTest.setCreatePGitEntry(git);
 

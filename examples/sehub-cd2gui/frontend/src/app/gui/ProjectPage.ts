@@ -23,7 +23,7 @@ export class ProjectPage extends ProjectPageComponent {
 
   ngOnInit(){
     if (!SehubSecurityManager.isSignedIn()) {
-      this.router.navigate(['gui/login/LoginPage']);
+      this._router.navigate(['gui/login/LoginPage']);
     }
     super.ngOnInit();
   }

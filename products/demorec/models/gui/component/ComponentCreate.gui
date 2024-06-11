@@ -55,7 +55,7 @@ component ComponentCreate(DemoRecComponent component, ComponentKind componentKin
           },
           @PhotoDisplay(component=component),
           photoDragAndDrop@PhotoDragNDrop(attachedComponent = component),
-          addComponent@GemButton(label = "Add Component", leftClick = createNewComponent, disabled=false)
+          addComponent@GemButton(label = "Add Component", leftClick = createNewComponent(), disabled=false)
       ])
   );
 }

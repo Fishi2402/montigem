@@ -25,9 +25,11 @@ page AccountOverview(List<Konto> accounts) {
     component = @GemTable(
       rows = accounts,
       columns = [
+        /*
         TableColumn("name", "Name"),
         TableColumn("kontotyp", "Typ"),
         TableColumn("budgetRahmenCent", "Gesamtbudget")
+        /**/
       ]
     )
   );

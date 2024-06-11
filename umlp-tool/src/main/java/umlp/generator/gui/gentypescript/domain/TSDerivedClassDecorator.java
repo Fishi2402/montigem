@@ -27,6 +27,26 @@ public class TSDerivedClassDecorator extends DerivedClassDecorator {
   }
 
   @Override
+  protected String getGetTemplate() {
+    return "umlp.gui2ts.derivedclass.TSGet";
+  }
+
+  @Override
+  protected String getSizeTemplate() {
+    return "umlp.gui2ts.derivedclass.TSSize";
+  }
+
+  @Override
+  protected String getCalcTemplate() {
+    return "umlp.gui2ts.derivedclass.TSCalc";
+  }
+
+  @Override
+  protected String getCalcSizeTemplate() {
+    return "umlp.gui2ts.derivedclass.TSCalcSize";
+  }
+
+  @Override
   protected void addImports(ASTCDType domainType, ASTCDType cdType) {
     if (!domainType.getSuperclassList().isEmpty()) {
       ASTCDCompilationUnit cdOfSuper = UMLPSymbolTables.getDiagramFor(domainType.getSuperclassList().get(0));

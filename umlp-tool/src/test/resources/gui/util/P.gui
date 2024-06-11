@@ -4,5 +4,6 @@ package util;
 
 import Domain.Person;
 import Domain.MaritalStatus;
+import Domain.Address;
 
-component P(Person p, boolean b, String s, MaritalStatus m)
+component P(Person p, boolean b, String s, MaritalStatus m, Address a)

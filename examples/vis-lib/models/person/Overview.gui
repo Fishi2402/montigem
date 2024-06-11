@@ -9,19 +9,22 @@ import mc.fenix.arrange.GemRow;
 import mc.fenix.basic.GemText;
 
 import person.Row;
-import person.Create;
+import person.HierarchicalList;
+import person.CreatePerson;
 import person.PieChart;
 
-page Overview(List<Person> persons, Event<Person> createPerson) {
+page Overview(List<Person> persons) {
   @GemColumn(rowGap = "10px", width = "50%", components = [
-    @Create(),
+    @CreatePerson(cancel = alertUser()),
     @iterate(Person p : persons) {
-        @Row(
-          col1 = @GemText(value = p.birthday),
-          col2 = @GemText(value = p.name),
-          col3 = @GemText(value = p.address.street + " " + p.address.house)
-        );
+      @Row(
+        col1 = @GemText(value = p.birthday),
+        col2 = @GemText(value = p.name),
+        col3 = @GemText(value = p.address.street + " " + p.address.house)
+      );
+      @HierarchicalList(list = [[Person()], persons, p.friends]);
     },
+    @CreatePerson(person = Person(), cancel = alertUser()),
     @PieChart(persons = persons)
   ]);
 }

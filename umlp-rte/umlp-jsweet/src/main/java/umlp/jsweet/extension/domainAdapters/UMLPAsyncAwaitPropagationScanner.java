@@ -4,6 +4,7 @@ package umlp.jsweet.extension.domainAdapters;
 import standalone.com.sun.source.tree.ClassTree;
 import standalone.com.sun.source.tree.CompilationUnitTree;
 import standalone.com.sun.source.tree.EnhancedForLoopTree;
+import standalone.com.sun.source.tree.LambdaExpressionTree;
 import standalone.com.sun.source.tree.MethodInvocationTree;
 import standalone.com.sun.source.tree.MethodTree;
 import standalone.com.sun.source.tree.Tree;
@@ -230,6 +231,7 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
     TypeMirror expressionType = Util.getType(node.getExpression());
     if (types().isSubtype(types().erasure(expressionType), types().erasure(util().getType(List.class)))) {
       addAsyncKeywordToMethod();
+      addAsyncKeyWordToLambda();
     }
     return super.visitEnhancedForLoop(node, trees);
   }
@@ -253,6 +255,13 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
   private void addAsyncKeywordToMethod() {
     MethodTree methodTree = getParent(MethodTree.class);
     addAsyncKeywordToMethod(methodTree);
+  }
+
+  private void addAsyncKeyWordToLambda() {
+    LambdaExpressionTree lambdaParent = getParent(LambdaExpressionTree.class);
+    if (lambdaParent != null) {
+      context.addAsyncLambda(lambdaParent);
+    }
   }
 
   // Adds the asynchronous keyword to the method, overloading methods, and other implementing classes

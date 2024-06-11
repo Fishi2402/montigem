@@ -5,6 +5,7 @@ import functionstructure4fenix.DoubleValue;
 import functionstructure4fenix.Function;
 import functionstructure4fenix.Port;
 import functionstructure4fenix.Value;
+import umlp.backendrte.common.Gem;
 import umlp.guiutil.Router;
 import umlp.jsweet.extension.annotation.Component;
 
@@ -15,39 +16,35 @@ import java.util.function.Consumer;
 public class FunctionDetail extends FunctionDetailTOP {
 
   public FunctionDetail(Function f) {
-    super(f);
+    super();
+    setF(f);
   }
 
   @Override
-  public Consumer<Object> changeOwnerName (Object f)
-  {
-    return event -> {
+  public Consumer<Void> changeOwnerName(Function f) {
+    return $ -> {
       this.getF().getOwner().setName("TES31231");
     };
   }
 
   //  @Override
-  public Consumer<Object> goToFunctionDetailsSub(Object sf) {
+  public Consumer<Void> goToFunctionDetailsSub(Function sf) {
     return goToFunctionDetails(sf);
   }
 
   @Override
-  public Consumer<Object> goToFunctionDetailsSuper(Object f) {
-    if (f instanceof Function && ((Function) f).getOwnerGem().isPresent()) {
-      return goToFunctionDetails(((Function) f).getOwner());
+  public Consumer<Void> goToFunctionDetailsSuper(Function f) {
+    if (getF().getOwnerGem().isPresent()) {
+      return goToFunctionDetails(getF().getOwnerGem().get());
     } else {
       return goToFunctionDetails(f);
     }
   }
 
 
-
-  //  @Override
-  public Consumer<Object> goToFunctionDetails(Object sf) {
-    return event -> {
-      if (sf instanceof Function) {
-        Router.navigate("gui","FunctionDetail", "" + ((Function) sf).getGemId());
-      }
+  public Consumer<Void> goToFunctionDetails(Function sf) {
+    return $ -> {
+      Router.navigate("gui","FunctionDetail", "" + sf.getGemId());
     };
   }
 

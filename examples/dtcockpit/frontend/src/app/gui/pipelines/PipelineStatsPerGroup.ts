@@ -161,8 +161,8 @@ export class PipelineStatsPerGroup extends PipelineStatsPerGroupComponent {
     this.maxDate = value
   }
 
-  public toggleStackedInfo(event: any): void {
-    this.stacked = !this.stacked
+  public toggleStackedInfo(): (arg: void) => void {
+    return $ => this.stacked = !this.stacked
   }
 
   public getStackedToggleLabel(): string {

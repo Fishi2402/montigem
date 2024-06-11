@@ -8,13 +8,11 @@ import jsweettest.A;
 import umlp.backendrte.common.GemList;
 import umlp.jsweet.extension.annotation.Component;
 
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Component()
 public class Start extends StartTOP {
-  public Start(GemList<A> a) {
-    super(a);
-  }
 
   @Override
   public String getErsterValue() {
@@ -40,8 +38,8 @@ public class Start extends StartTOP {
     return res;
   }
 
-  public void createB(Object event) {
-    JsweettestManager.bBuilder()
+  public Consumer<Void> createB() {
+    return $ -> JsweettestManager.bBuilder()
         .value("Das ist ein B")
         .build();
   }

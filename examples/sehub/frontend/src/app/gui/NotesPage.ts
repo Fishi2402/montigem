@@ -20,33 +20,31 @@ import {NotesPageComponent,config} from "../../../build/frontendGen/build/appgui
 })
 export class NotesPage extends NotesPageComponent {
 
-  public constructor(route: ActivatedRoute, protected router: Router) {
-    super(route, router);
-  }
-
   ngOnInit() {
     if (!SehubSecurityManager.isSignedIn()) {
       alert("No User Logged In")
-      this.router.navigate(['gui/login/LoginPage']);
+      this._router.navigate(['gui/login/LoginPage']);
     }
 
     super.ngOnInit();
   }
 
-  newPost(event: any) {
-    if (!SehubSecurityManager.isSignedIn()) {
-      alert("No User Logged In")
-    } else {
-      SehubManager.postBuilder().then(builder => {
-        let post = builder.responses(
-            new Set<Post>())
-            .author(SehubSecurityManager.getCurrentUser())
-            .title("")
-            .text("")
-            .issueGem(new Gem<Issue>().Gem2(this.getIssue()))
-            .build();
-        this.issue.addPosts2(post)
-      })
+  public override newPost(): (arg: void) => void {
+    return $ => {
+      if (!SehubSecurityManager.isSignedIn()) {
+        alert("No User Logged In")
+      } else {
+        SehubManager.postBuilder().then(builder => {
+          let post = builder.responses(
+              new Set<Post>())
+              .author(SehubSecurityManager.getCurrentUser())
+              .title("")
+              .text("")
+              .issueGem(new Gem<Issue>().Gem2(this.getIssue()))
+              .build();
+          this.issue.addPosts2(post)
+        })
+      }
     }
   }
 

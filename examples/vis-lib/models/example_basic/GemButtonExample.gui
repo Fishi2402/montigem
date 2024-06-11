@@ -4,6 +4,6 @@ package example_basic;
 import mc.fenix.basic.GemButton;
 
 page GemButtonExample() {
-  @GemButton(label = "windows alert", leftClick = alert);
+  @GemButton(label = "windows alert", leftClick = alert());
   @GemButton(label = "Cannot click me", disabled = true);
 }

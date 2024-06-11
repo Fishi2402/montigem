@@ -14,8 +14,7 @@ import {CommonModule} from '@angular/common';
 })
 export class Navigation {
 
-  public constructor(route: ActivatedRoute, protected router: Router) {
-    this.router = router;
+  public constructor(protected _router: Router) {
   }
 
   readonly items: { url: string, title: string }[] = [
@@ -30,7 +29,7 @@ export class Navigation {
   signOutCurrentUser(): void {
     fetch("/umlp/api/logout").finally(() => {
       SehubSecurityManager.signOut();
-      this.router.navigate(['gui/login/LoginPage']);
+      this._router.navigate(['gui/login/LoginPage']);
     });
   }
   isSignedIn(): boolean {

@@ -43,27 +43,27 @@ public class Name2MutatorConverterTest extends DomainGUITest {
     ASTGUIComponent comp4 = components.get(3);
     ASTGUIComponent comp5 = components.get(4);
 
-    String expect1 = removeSpaces("setPerson(val)");
+    String expect1 = removeSpaces("setPerson(val_$)");
     String result1 = removeSpaces(conv.attr2Setter((ASTNameExpression)
         comp1.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression()
     ));
 
-    String expect2 = removeSpaces("set$per$son(val)");
+    String expect2 = removeSpaces("set$per$son(val_$)");
     String result2 = removeSpaces(conv.attr2Setter((ASTNameExpression)
         comp2.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression()
     ));
 
-    String expect3 = removeSpaces("set_per_son(val)");
+    String expect3 = removeSpaces("set_per_son(val_$)");
     String result3 = removeSpaces(conv.attr2Setter((ASTNameExpression)
         comp3.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression()
     ));
 
-    String expect4 = removeSpaces("setTest1(val)");
+    String expect4 = removeSpaces("setTest1(val_$)");
     String result4 = removeSpaces(conv.attr2Setter((ASTNameExpression)
         comp4.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression()
     ));
 
-    String expect5 = removeSpaces("setTest2(val)");
+    String expect5 = removeSpaces("setTest2(val_$)");
     String result5 = removeSpaces(conv.attr2Setter((ASTNameExpression)
         comp5.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression()
     ));

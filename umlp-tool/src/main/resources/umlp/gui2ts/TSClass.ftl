@@ -1,37 +1,17 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
+<#-- ASTCDClass ast -->
 <#assign cdPrinter = glex.getGlobalVar("cdPrinter")>
-/* (c) https://github.com/MontiCore/monticore */
-<#assign isAbstract = cdPrinter.isAbstract(ast)>
 
+/* (c) https://github.com/MontiCore/monticore */
 ${defineHookPoint("ClassContent:addComment")}
 
 ${cdPrinter.printImportList(cd4c.getImportList(ast))}
-
 <#-- Imports hook -->
-${defineHookPoint("ClassContent:Imports")}
+${tc.include("umlp.gui2ts.TSEmptyImports", ast)}
 
 ${tc.include("umlp.gui2ts.TSAnnotations")}
 
 <#-- Annotations hook -->
 ${defineHookPoint("ClassContent:Annotations")}
 
-export <#if isAbstract>abstract</#if> class ${ast.getName()} <#rt><#lt>
-<#if ast.isPresentCDExtendUsage()>extends ${cdPrinter.printType(ast.getCDExtendUsage().getSuperclass(0))} </#if> <#rt><#lt>
-<#if ast.isPresentCDInterfaceUsage()>implements ${cdPrinter.printObjectTypeList(ast.getCDInterfaceUsage().getInterfaceList())} </#if>{
-
-<#-- Elements HOOK -->
-${defineHookPoint("ClassContent:Elements")}
-
-<#list ast.getCDAttributeList() as attribute>
-    ${tc.include("umlp.gui2ts.TSAttribute", attribute)}
-</#list>
-
-${tc.include("umlp.gui2ts.TSConstructor")}
-
-<#list ast.getCDMethodList() as method>
-    ${tc.include("umlp.gui2ts.TSMethod", method)}
-</#list>
-
-}
-
-
+${tc.include("umlp.gui2ts.TSClassDeclaration", ast)}

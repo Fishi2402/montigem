@@ -40,7 +40,7 @@ component UserDisplay(User user) {
       registration@GemText(value = user.registrationDate)
     ]),
     @GemColumn(width = "50px", component =
-      removeUser@GemButton(label = "x", leftClick = removeUser, disabled = false)
+      removeUserButton@GemButton(label = "x", leftClick = removeUser(), disabled = false)
     )
   ]);
 }

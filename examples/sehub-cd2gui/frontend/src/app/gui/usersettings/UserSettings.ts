@@ -19,19 +19,14 @@ export class UserSettings extends UserSettingsComponent {
 
   public ngOnInit(): void {
     if (!SehubSecurityManager.isSignedIn()) {
-      this.router.navigate(['gui/login/LoginPage']);
+      this._router.navigate(['gui/login/LoginPage']);
     }
-    this.currentUser = SehubSecurityManager.getCurrentUser();
     this.currentUserRoutingId = SehubSecurityManager.getCurrentUserIdOrNull();
-
-    SehubManager.getUserList().then(gemPromiseRes => {
-      this.users = gemPromiseRes;
-    });
 
     super.ngOnInit();
   }
 
-  public inviteUserLeftClick() {
-    this.router.navigate(['gui/login/RegistrationPage']);
+  public inviteUserLeftClick(): (arg: void) => void {
+    return $ => this._router.navigate(['gui/login/RegistrationPage']);
   }
 }

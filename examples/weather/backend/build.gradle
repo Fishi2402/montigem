@@ -88,6 +88,7 @@ task genTestGUI(type: UMLPGuiGenTask) {
   symbolDir = files(
       generateUmlpBackend.symbolOutDir,
       project(":umlp-rte:client").tasks.createGuiSymbols.output,
+      project(":umlp-rte:client").tasks.createCDSymbols.output,
       configurations.guiDefaultTypes.files
   )
   domainModels = ["Weather"]

@@ -27,12 +27,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class PhotoDragNDrop extends PhotoDragNDropComponent {
 
-  constructor(private http: HttpClient,route: ActivatedRoute, router: Router) {
-    super(route, router)
+  constructor(private http: HttpClient) {
+    super();
   }
-
-  @Input()
-  public attachedComponent: DemoRecComponent;
 
   files: File[] = [];
   uploadFailureMessage : boolean = false;
@@ -78,22 +75,22 @@ export class PhotoDragNDrop extends PhotoDragNDropComponent {
         });
   }
 
-  public override uploadAllFiles (event: any): void {
-    this.uploadFailureMessage = false;
-    const files = Array.from(this.files)
-    files.forEach(f =>
-      {
+  public override uploadAllFiles(): (arg: void) => void {
+    return $ => {
+      this.uploadFailureMessage = false;
+      const files = Array.from(this.files);
+      files.forEach(f => {
         const path = this.getAttachedComponent().getName().replace(" ","_")+"_"+this.getAttachedComponent().getGemId()
         this.uploadFile(f, path)
-      }
-    )
+      });
+    }
   }
 
-  public override cancelUpload (event: any): void {
-    this.files = []
+  public override cancelUpload(): (arg: void) => void {
+    return $ => this.files = [];
   }
 
-  public  getAttachedComponent (): DemoRecComponent {
+  public getAttachedComponent (): DemoRecComponent {
     return this.attachedComponent;
   }
 }

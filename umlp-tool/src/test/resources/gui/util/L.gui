@@ -4,6 +4,7 @@ package util;
 
 import Domain.Person;
 import Domain.MaritalStatus;
+import Domain.Address;
 
 component L(
   List<GUIViewElement> v,
@@ -16,5 +17,6 @@ component L(
   List<List<Event>> le,
   List<List<Person>> lp,
   List<List<MaritalStatus>> lm,
-  List u
+  List u,
+  List<Address> a
 )

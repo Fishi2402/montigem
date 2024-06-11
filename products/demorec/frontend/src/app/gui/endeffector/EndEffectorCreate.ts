@@ -25,9 +25,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class EndEffectorCreate extends EndEffectorCreateComponent {
 
-  public override createEndEffector() {
-    this.getEndEffector().build();
-    super.ngOnInit();
+  public override createEndEffector(): (arg: void) => void {
+    return $ => {
+      this.getEndEffector().build();
+      super.ngOnInit();
+    }
   }
 }
 

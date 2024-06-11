@@ -25,9 +25,11 @@ export class FavoriteItem extends FavoriteItemComponent {
     return (this.getFav()?.getCurrent()?.getTemperature() ?? '') + '';
   }
 
-  public override removeFavorite(event: any): void {
-  // TODO: why does this not work?
-    //this.getFav()?.removeFavorite();
+  public override removeFavorite(): (arg: void) => void {
+    return $ => {
+    // TODO: why does this not work?
+      //this.getFav()?.removeFavorite();
+    }
   }
 
 }

@@ -11,11 +11,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-// Implement the getters
+// Implement the calcters
 public class CityInfoImpl extends CityInfoImplTOP {
 
   @Override
-  public int getNumberOfCities() {
+  public int calcNumberOfCities() {
     long count = 0L;
     Set<String> uniqueValues = new HashSet<>();
     for (Address address : FlensburgManager
@@ -29,12 +29,12 @@ public class CityInfoImpl extends CityInfoImplTOP {
   }
 
   @Override
-  public int getTotalNumberOfCars() {
+  public int calcTotalNumberOfCars() {
     return FlensburgManager.getCarList().size();
   }
 
   @Override
-  public String getCityWithMostCars() {
+  public String calcCityWithMostCars() {
     Map<String, Integer> cityToCars = new HashMap<>();
     Collection<Person> persons = FlensburgManager.getPersonList();
 
@@ -64,7 +64,7 @@ public class CityInfoImpl extends CityInfoImplTOP {
   }
 
   @Override
-  public Person getPersonWithMostCars() {
+  public Person calcPersonWithMostCars() {
     Person result = null;
     int max = 0;
     for (Person person : FlensburgManager.getPersonList()) {
@@ -77,17 +77,17 @@ public class CityInfoImpl extends CityInfoImplTOP {
   }
 
   @Override
-  public int getAverageNumberOfCars() {
+  public int calcAverageNumberOfCars() {
     return FlensburgManager.getCarList().size() / FlensburgManager.getPersonList().size();
   }
 
   @Override
-  public  int sizeCities() {
-    return getNumberOfCities();
+  public  int calcSizeCities() {
+    return calcNumberOfCities();
   }
 
   @Override
-  public List<String> getCities() {
+  public List<String> calcCities() {
     List<String> list = new ArrayList<>();
     for (Address address : FlensburgManager
         .getAddressList()) {

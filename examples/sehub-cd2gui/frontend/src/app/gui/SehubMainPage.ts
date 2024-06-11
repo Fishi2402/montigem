@@ -18,7 +18,7 @@ export  class SehubMainPage extends SehubMainPageComponent {
 
   ngOnInit() {
     if (!SehubSecurityManager.isSignedIn()) {
-      this.router.navigate(['gui/login/LoginPage']);
+      this._router.navigate(['gui/login/LoginPage']);
     }
     super.ngOnInit();
   }
@@ -28,7 +28,7 @@ export  class SehubMainPage extends SehubMainPageComponent {
   }
 
   public override goToProjectPage (project: any): (arg: any) => void {
-    return event => this.router.navigate(["gui", "ProjectFileView", project.getRootArtifact()[0].getGemId()]);
+    return event => this._router.navigate(["gui", "ProjectFileView", project.getRootArtifact()[0].getGemId()]);
   }
 
 
