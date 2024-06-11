@@ -312,7 +312,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       // exclude GUIViewElement
       if (util.isViewElement(typeSTE)
           || util.isViewElementsCollection(typeSTE)) {
-        return;
+        continue;
       }
       ASTMCType type = createTypeAndAddImports(typeSTE);
 
