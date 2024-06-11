@@ -32,11 +32,11 @@ export class ${cdName}ComponentObserverManager extends ComponentObserverManager 
 </#list>
   }
 
-  protected getObserverFactory(): Map<string, any> {
+  protected getObserverFactory(): Map<string, ((update: () => void) => any)> {
     return this.observerFactory;
   }
 
-  protected getObjectGetterFactory(): Map<string, any> {
+  protected getObjectGetterFactory(): Map<string, ((gemId: number) => Promise<GemIdentifiable>)> {
     return this.objectGetterFactory;
   }
 }
