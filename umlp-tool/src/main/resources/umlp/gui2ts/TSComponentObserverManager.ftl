@@ -2,26 +2,41 @@
 <#-- Generates ComponentObserverManager for the current domain model -->
 ${tc.signature("AST", "cdName", "listDomainClassNames", "packageName")}
 
-import { ComponentObserverManager } from "@umlp/commonj2ts";
+import { ComponentObserverManager, GemIdentifiable } from "@umlp/commonj2ts";
+import { ${cdName}Manager } from "@src/${packageName}/${cdName}Manager";
 <#list listDomainClassNames as domainClassName>
 import { ${domainClassName}AllObserver } from "@src/${packageName}/${domainClassName}AllObserver";
 </#list>
 
 export class ${cdName}ComponentObserverManager extends ComponentObserverManager {
-  public static init() : void {
+
+  public static init(): void {
     ComponentObserverManager.initMe(new ${cdName}ComponentObserverManager());
   }
 
+  // Domain-specific mapping from a type name to a function that create an AllObserver for that type
+  private observerFactory: Map<string, ((update: () => void) => any)> = new Map;
+
+  // Domain-specific mapping from a type name to a function that gets an object of that type
+  private objectGetterFactory: Map<string, ((gemId: number) => Promise<GemIdentifiable>)> = new Map();
+
   constructor() {
     super();
+    // AllObserver factory
 <#list listDomainClassNames as domainClassName>
-  this.observerFactory.set("${domainClassName}", (update) => new ${domainClassName}AllObserver(update));
+    this.observerFactory.set("${domainClassName}", (update) => new ${domainClassName}AllObserver(update));
 </#list>
-
+    // domain object getter factory
+<#list listDomainClassNames as domainClassName>
+    this.objectGetterFactory.set("${domainClassName}", (gemId) => FunctionStructure4FenixManager.get${domainClassName}Sure(gemId));
+</#list>
   }
 
-  private observerFactory: Map<string, any> = new Map;
-    protected getObserverFactory(): Map<string, any> {
+  protected getObserverFactory(): Map<string, any> {
     return this.observerFactory;
+  }
+
+  protected getObjectGetterFactory(): Map<string, any> {
+    return this.objectGetterFactory;
   }
 }

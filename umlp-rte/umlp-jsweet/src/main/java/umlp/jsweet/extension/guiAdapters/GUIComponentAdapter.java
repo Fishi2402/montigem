@@ -11,7 +11,6 @@ import org.jsweet.transpiler.extension.AnnotationManager;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.ExtendedElement;
 import org.jsweet.transpiler.model.MethodInvocationElement;
-import org.jsweet.transpiler.model.VariableAccessElement;
 import org.jsweet.transpiler.util.Util;
 import standalone.com.sun.source.tree.MethodTree;
 import standalone.com.sun.source.tree.Tree;
@@ -35,28 +34,30 @@ import java.util.stream.Collectors;
 
 public class GUIComponentAdapter extends PrinterAdapter {
 
-  private GUIAdapterUtils util;
+  private static final String OBSERVER_FUNCTION_NAME = "__obs";
+
+  private GUIAdapterUtils guiAdapterUtils;
 
   public GUIComponentAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);
     addAnnotationManager(getRenamingUnsynchronizedAnnotationManager());
-    this.util = new GUIAdapterUtils(types(), context);
+    this.guiAdapterUtils = new GUIAdapterUtils(types(), context);
   }
 
   @Override
   public boolean substituteType(TypeElement classElement) {
-    if (util.isComponent(classElement)) {
-      Boolean standAlone = util.getAnnotationPropertyValue(classElement, "standalone", Boolean.class,
+    if (guiAdapterUtils.isComponent(classElement)) {
+      Boolean standAlone = guiAdapterUtils.getAnnotationPropertyValue(classElement, "standalone", Boolean.class,
           true);
-      String[] imports = util.getAnnotationPropertyValue(classElement, "imports",
+      String[] imports = guiAdapterUtils.getAnnotationPropertyValue(classElement, "imports",
           String[].class, new String[] { "...config.imports" });
-      String selector = util.getAnnotationPropertyValue(classElement, "selector", String.class,
+      String selector = guiAdapterUtils.getAnnotationPropertyValue(classElement, "selector", String.class,
           "config.selector");
-      String templateUrl = util.getAnnotationPropertyValue(classElement, "templateUrl", String.class,
+      String templateUrl = guiAdapterUtils.getAnnotationPropertyValue(classElement, "templateUrl", String.class,
           "config.templateUrl");
-      String styles = util.getAnnotationPropertyValue(classElement, "styles", String.class,
+      String styles = guiAdapterUtils.getAnnotationPropertyValue(classElement, "styles", String.class,
           "config.styles");
-      String[] styleUrls = util.getAnnotationPropertyValue(classElement, "styleUrls",
+      String[] styleUrls = guiAdapterUtils.getAnnotationPropertyValue(classElement, "styleUrls",
           String[].class, new String[] { "...config.styleUrls" });
       print("@Component({").println().startIndent().printIndent()
           .print("standalone: " + standAlone + ",").println().printIndent()
@@ -68,31 +69,56 @@ public class GUIComponentAdapter extends PrinterAdapter {
           .print("})").println().printIndent();
       importFromWithModule("Component", "@angular/core");
     }
-    else if (util.isHWCofComponent(classElement)) {
+    else if (guiAdapterUtils.isHWCofComponent(classElement)) {
       Log.error("0JSC003 " + classElement.getQualifiedName().toString()
           + " Handwritten Adaption of a GUI Component must be tagged with @Component()");
     }
-    else if (util.isDirective(classElement)) {
+    else if (guiAdapterUtils.isDirective(classElement)) {
       print("@Directive()").println().printIndent();
       importFromWithModule("Directive", "@angular/core");
     }
-    importFromWithModule("ActivatedRoute, Router", "@angular/router");
+    if (guiAdapterUtils.isDirective(classElement) || guiAdapterUtils.isComponent(classElement)) {
+      importFromWithModule("ActivatedRoute, Router", "@angular/router");
+      importFromWithModule("ComponentObserverManager", "@umlp/commonj2ts");
+    }
     return super.substituteType(classElement);
   }
 
   @Override
+  public boolean substituteImplements(TypeElement type) {
+    boolean res = super.substituteImplements(type);
+
+    if ((guiAdapterUtils.isComponent(type))) {
+      importFromWithModule("OnDestroy", "@angular/core");
+      if (util().getInterfaces(type).isEmpty()) {
+        print(" implements OnDestroy");
+      } else {
+        print(", OnDestroy");
+      }
+    }
+
+    return res;
+  }
+
+  @Override
   public void beforeTypeBody(TypeElement type) {
-    if (util.isDirective(type)) {
+    if (guiAdapterUtils.isDirective(type)) {
       println().printIndent().print("protected router: Router;").println().println();
       printWaitAllInited(type);
-      printNgOnDestroy();
+    }
+    if (guiAdapterUtils.isComponent(type) ||  guiAdapterUtils.isDirective(type) && !guiAdapterUtils.isTOPComponent(type)) {
+      printNgOnDestroy(type);
     }
     super.beforeTypeBody(type);
   }
 
-  private void printNgOnDestroy() {
-    print("public ngOnDestroy(): void {").println().startIndent().printIndent()
-        .print("ComponentObserverManager.removeObservers(this);")
+  private void printNgOnDestroy(TypeElement typeElement) {
+    String guiComponentName = "\"" + typeElement.getQualifiedName().toString() + "\"";
+    if (guiComponentName.endsWith("TOP\"") && guiAdapterUtils.isDirective(typeElement)) {
+      guiComponentName = guiComponentName.substring(0, guiComponentName.length() - 4) + "\"";
+    }
+    printIndent().print("public ngOnDestroy(): void {").println().startIndent().printIndent()
+        .print("ComponentObserverManager.removeObservers(" + guiComponentName + ");")
         .println().endIndent().printIndent().print("}")
         .println().println();
   }
@@ -101,11 +127,11 @@ public class GUIComponentAdapter extends PrinterAdapter {
   public boolean substituteVariable(VariableElement variable) {
     Element enclosingElement = variable.getEnclosingElement();
     if (enclosingElement != null && (enclosingElement instanceof TypeElement) &&
-        util.isHWCofComponent((TypeElement) enclosingElement)) {
+        guiAdapterUtils.isHWCofComponent((TypeElement) enclosingElement)) {
       return super.substituteVariable(variable);
     }
     if (enclosingElement == null || !(enclosingElement instanceof TypeElement) ||
-        !util.isDirective((TypeElement) enclosingElement)) {
+        !guiAdapterUtils.isDirective((TypeElement) enclosingElement)) {
       return super.substituteVariable(variable);
     }
 
@@ -127,13 +153,13 @@ public class GUIComponentAdapter extends PrinterAdapter {
         .println().printIndent();
 
     // Below is depricated, might be important in the future
-    if (util.isInput(variable)) {
+    if (guiAdapterUtils.isInput(variable)) {
       importFromWithModule("Input", "@angular/core");
       print("public ").print(variable.getSimpleName()).print("RoutingId : number;")
           .println().println().printIndent();
       print("@Input()").println().printIndent();
     }
-    if (util.isOutput(variable)) {
+    if (guiAdapterUtils.isOutput(variable)) {
       importFromWithModule("Output", "@angular/core");
       print("@Output()").println().printIndent();
     }
@@ -143,21 +169,21 @@ public class GUIComponentAdapter extends PrinterAdapter {
   @Override
   public boolean substituteExecutable(ExecutableElement executable) {
     TypeElement classElement = getParentElement(TypeElement.class);
-    if (util.isComponentConstructor(executable, classElement)) {
+    if (guiAdapterUtils.isComponentConstructor(executable, classElement)) {
       // handle Constrcuctor
-      String cdName = util.getAnnotationPropertyValue(classElement, "cdName", String.class, "");
+      String cdName = guiAdapterUtils.getAnnotationPropertyValue(classElement, "cdName", String.class, "");
       String managerName = cdName + "Manager";
       String pathToManager = "@src/" + StringUtils.lowerCase(cdName) + "/" + managerName;
       importFromWithModule(managerName, pathToManager);
       printAdaptedConstructor(executable);
       return true;
     }
-    else if (util.isSynchronizedMethod(executable, this) &&
+    else if (guiAdapterUtils.isSynchronizedMethod(executable, this) &&
         !context.hasAnnotationType(executable, Override.class.getName())) {
       //      printSynchronizedMethod(executable, false);
       printMyNewSynchronizedMethod(executable, false);
     }
-    if (util.isDirectiveMethod(executable, classElement, this)
+    if (guiAdapterUtils.isDirectiveMethod(executable, classElement, this)
     ) {
       if (executable.getSimpleName().contentEquals("init")) {
       }
@@ -188,7 +214,7 @@ public class GUIComponentAdapter extends PrinterAdapter {
   @Override
   public boolean substituteOverloadMethodBody(TypeElement parentTypeElement,
       OverloadScanner.Overload overload) {
-    if (util.isSynchronized(overload.getCoreMethodElement())) {
+    if (guiAdapterUtils.isSynchronized(overload.getCoreMethodElement())) {
       Set classOverloads = this.overloads.computeIfAbsent(
           parentTypeElement.getQualifiedName().toString(),
           a -> new HashSet<>());
@@ -204,7 +230,7 @@ public class GUIComponentAdapter extends PrinterAdapter {
         //        printSynchronizedMethod(overload.getCoreMethodElement(), true);
       }
     }
-    if (util.isDirective(type) && overloads.containsKey(type.getQualifiedName().toString())) {
+    if (guiAdapterUtils.isDirective(type) && overloads.containsKey(type.getQualifiedName().toString())) {
       for (OverloadScanner.Overload overload : overloads.get(type.getQualifiedName().toString())) {
         //        printInitPromiseMethod(overload.getCoreMethodElement(), true);
       }
@@ -235,7 +261,7 @@ public class GUIComponentAdapter extends PrinterAdapter {
     String methodName;
     if (!overloadMethod && context.isInvalidOverload(executable) && !util().hasTypeParameters(
         executable)) {
-      methodName = util.getOverloadMethodName(executable);
+      methodName = guiAdapterUtils.getOverloadMethodName(executable);
     }
     else {
       methodName = context.getActualName(executable);
@@ -332,7 +358,7 @@ public class GUIComponentAdapter extends PrinterAdapter {
     String methodName;
     if (!overloadMethod && context.isInvalidOverload(executable) && !util().hasTypeParameters(
         executable)) {
-      methodName = util.getOverloadMethodName(executable);
+      methodName = guiAdapterUtils.getOverloadMethodName(executable);
     } else {
       methodName = context.getActualName(executable);
     }
@@ -352,27 +378,27 @@ public class GUIComponentAdapter extends PrinterAdapter {
     print("): void {").println().startIndent().printIndent()
         .print("Promise.resolve(this." + methodName + "(");
     printArguments(executable);
-    print(")).then(__v => this." + methodName + util.SYNCHRONIZED_RESULT_SUFFIX);
+    print(")).then(__v => this." + methodName + guiAdapterUtils.SYNCHRONIZED_RESULT_SUFFIX);
     printResultCacheSetter(executable, "__v");
     print(");").println().endIndent().printIndent().print("}").println().println().printIndent();
   }
 
   private void printSynchronizerMethod(ExecutableElement executable, boolean overloadMethod, String methodName,
       Tree returnType) {
-    print("public " + methodName + util.SYNCHRONIZED_SUFFIX + "(");
-    printMethodParameters(executable, overloadMethod, util.SYNCHRONIZED_SUFFIX);
+    print("public " + methodName + guiAdapterUtils.SYNCHRONIZED_SUFFIX + "(");
+    printMethodParameters(executable, overloadMethod, guiAdapterUtils.SYNCHRONIZED_SUFFIX);
     print("): ").getPrinter().substituteAndPrintType(returnType)
         .print(" {").println().startIndent().printIndent()
-        .print("if (this." + methodName + util.SYNCHRONIZED_RESULT_SUFFIX);
+        .print("if (this." + methodName + guiAdapterUtils.SYNCHRONIZED_RESULT_SUFFIX);
     printResultCacheAccessor(executable);
     print(" === undefined) {").println().startIndent().printIndent()
-        .print("this." + methodName + util.SYNCHRONIZED_RESULT_SUFFIX);
+        .print("this." + methodName + guiAdapterUtils.SYNCHRONIZED_RESULT_SUFFIX);
     printResultCacheSetter(executable, "null");
     print(";").println().printIndent()
         .print("this.waitAllInited().then(_ => this." + methodName + GUIAdapterUtils.UPDATE_SUFFIX + "(");
     printArguments(executable);
     print("));").println().endIndent().printIndent().print("}").println().printIndent()
-        .print("return this." + methodName + util.SYNCHRONIZED_RESULT_SUFFIX);
+        .print("return this." + methodName + guiAdapterUtils.SYNCHRONIZED_RESULT_SUFFIX);
     printResultCacheAccessor(executable);
     print(";").println().endIndent().printIndent().print("}").println().println().printIndent();
   }
@@ -430,7 +456,7 @@ public class GUIComponentAdapter extends PrinterAdapter {
       Tree returnType) {
     // Print result cache
     print("private ");
-    print(methodName + util.SYNCHRONIZED_RESULT_SUFFIX + ": ");
+    print(methodName + guiAdapterUtils.SYNCHRONIZED_RESULT_SUFFIX + ": ");
     if (executable.getParameters().isEmpty()) {
       printType(returnType, "", "", overloadMethod)
           .print(" = undefined;");
@@ -445,17 +471,21 @@ public class GUIComponentAdapter extends PrinterAdapter {
 
   @Override
   public boolean substituteMethodBody(TypeElement parentTypeElement, ExecutableElement method) {
-    if (util.isSynchronized(method)) {
-      importFromWithModule("ComponentObserverManager", "@umlp/commonj2ts");
-      String updateName = method.getSimpleName().toString() + util.UPDATE_SUFFIX;
-      printIndent().print("let __obs = (obj: any) => ComponentObserverManager.addObserver(obj, ")
+    if (guiAdapterUtils.isSynchronized(method)) {
+      String updateName = method.getSimpleName().toString() + guiAdapterUtils.UPDATE_SUFFIX;
+      printIndent().print("let " + OBSERVER_FUNCTION_NAME
+              + " = (obj: any) => ComponentObserverManager.addObserver(obj, ")
           .print("() => this." + updateName)
           .print(".bind(this)(");
       printArguments(method);
-      print("), '" + updateName + "', this);").println();
+      String guiComponentName = "\"" + parentTypeElement.getQualifiedName().toString() + "\"";
+      if (guiComponentName.endsWith("TOP\"") && guiAdapterUtils.isDirective(parentTypeElement)) {
+        guiComponentName = guiComponentName.substring(0, guiComponentName.length() - 4) + "\"";
+      }
+      print("), '" + updateName + "', " + guiComponentName + ");").println();
 
       for (VariableElement parameter : method.getParameters()) {
-        printIndent().print("__obs(" + context.getActualName(parameter) + ");").println();
+        printIndent().print(OBSERVER_FUNCTION_NAME + "(" + context.getActualName(parameter) + ");").println();
       }
     }
     return super.substituteMethodBody(parentTypeElement, method);
@@ -468,7 +498,7 @@ public class GUIComponentAdapter extends PrinterAdapter {
     ExecutableElement surroundingMethod = null;
     surroundingMethod = Util.getElement(getPrinter().getParent(MethodTree.class));
 
-    if (surroundingMethod != null && util.isSynchronized(surroundingMethod)) {
+    if (surroundingMethod != null && guiAdapterUtils.isSynchronized(surroundingMethod)) {
       // targets invocated Element p.getBestFriend()...
       Element invocatedType = types().asElement(invocation.getType());
       if (invocatedType != null && invocatedType instanceof TypeElement &&
@@ -482,14 +512,14 @@ public class GUIComponentAdapter extends PrinterAdapter {
       //        Element targetType = types().asElement(invocation.getTargetType());
       //        if (targetType != null && targetType instanceof TypeElement &&
       //            UMLPAdapterUtils.isSubTypeOf((TypeElement) targetType,
-      //                RTEPathUtil.getBackendRTECommonPath("GemIdentifiable"), util(), types())) {
+      //                RTEPathUtil.getBackendRTECommonPath("GemIdentifiable"), guiAdapterUtils(), types())) {
       //          shouldPrintObs = true;
       //        }
       //      }
     }
 
     if (shouldPrintObs) {
-      print("__obs(");
+      print(OBSERVER_FUNCTION_NAME + "(");
     }
     boolean res = super.substituteMethodInvocation(invocation);
     if (shouldPrintObs) {
@@ -513,7 +543,7 @@ public class GUIComponentAdapter extends PrinterAdapter {
     String methodName;
     if (!overloadMethod && context.isInvalidOverload(executable) && !util().hasTypeParameters(
         executable)) {
-      methodName = util.getOverloadMethodName(executable);
+      methodName = guiAdapterUtils.getOverloadMethodName(executable);
     } else {
       methodName = context.getActualName(executable);
     }
@@ -592,20 +622,20 @@ public class GUIComponentAdapter extends PrinterAdapter {
   private void printAdaptedConstructor(ExecutableElement executable) {
     TypeElement classElement = getParentElement(TypeElement.class);
 
-    if (util.isDirective(classElement)) {
+    if (guiAdapterUtils.isDirective(classElement)) {
       // Print Nothing, probably an error
       return;
     }
-    else if (util.isComponent(classElement)) {
+    else if (guiAdapterUtils.isComponent(classElement)) {
       print("public constructor(route: ActivatedRoute, protected router: Router) {");
       startIndent();
       Element parentClass = types().asElement(classElement.getSuperclass());
       Optional<? extends Element> parentConstructor = parentClass.getEnclosedElements().stream()
           .filter(s -> s.getKind().toString().equals("CONSTRUCTOR")).findAny();
-      if (util.getAnnotationPropertyValue(classElement, "isEmpty", Boolean.class, false)) {
+      if (guiAdapterUtils.getAnnotationPropertyValue(classElement, "isEmpty", Boolean.class, false)) {
         println().printIndent().print("super(router);");
       }
-      else if (util.getAnnotationPropertyValue(classElement, "isCreate", Boolean.class, false)) {
+      else if (guiAdapterUtils.getAnnotationPropertyValue(classElement, "isCreate", Boolean.class, false)) {
         println().printIndent().print("super(router);");
       }
       else {
@@ -618,7 +648,7 @@ public class GUIComponentAdapter extends PrinterAdapter {
   @Override
   public void afterType(TypeElement type) {
     // Remove standard constructor
-    if (util.isDirective(type) || util.isComponent(type) || util.isHWCofComponent(type)) {
+    if (guiAdapterUtils.isDirective(type) || guiAdapterUtils.isComponent(type) || guiAdapterUtils.isHWCofComponent(type)) {
       int publicConstructor = getPrinter().getOutput().lastIndexOf("constructor()");
       if (publicConstructor < 0) {
         return;
@@ -633,7 +663,7 @@ public class GUIComponentAdapter extends PrinterAdapter {
 
   @Override
   public boolean substituteExtends(TypeElement type) {
-    if (util.isHWCofComponent(type)) {
+    if (guiAdapterUtils.isHWCofComponent(type)) {
       String componentName = type.getSimpleName().toString() + "Component";
       print(" extends " + componentName);
       String path = type.getQualifiedName().toString().replace(".", "/");
@@ -677,7 +707,7 @@ public class GUIComponentAdapter extends PrinterAdapter {
             element.getKind().toString().equals("METHOD") &&
             element.getSimpleName().toString().startsWith("get") &&
             !((Symbol.MethodSymbol) element).getReturnType().getKind().equals(TypeKind.VOID) &&
-            util.isMethodOfComponent(element) ?
+            guiAdapterUtils.isMethodOfComponent(element) ?
             Action.ADD :
             Action.VOID;
       }

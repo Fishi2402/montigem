@@ -1,3 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+import {GemIdentifiable} from "../common";
+
 export abstract class ComponentObserverManager {
 
   private static instance: ComponentObserverManager;
@@ -8,10 +12,9 @@ export abstract class ComponentObserverManager {
 
   protected abstract getObserverFactory(): Map<string, any>;
 
-                     // component, DomainObject, MethodenName, Observer
-  public componentObservers: Map<any, Map<any, Map<string, any>>> = new Map();
+  protected abstract getObjectGetterFactory(): Map<string, any>;
 
-  public static addObserver<T>(obj: T, update: () => void, updateName: string, component: any): T {
+  public static addObserver<T extends GemIdentifiable>(obj: T, update: () => void, updateName: string, component: any): T {
     if (obj === undefined || obj === null) {
       return null;
     }
@@ -22,32 +25,40 @@ export abstract class ComponentObserverManager {
     return ComponentObserverManager.instance.__removeObservers(component);
   }
 
-  public __addObserver<T>(obj: T, update: () => void, updateName: string, component: any): T {
-    if (!this.componentObservers.has(component)) {
-      this.componentObservers.set(component, new Map<any, Map<string, any>>());
+  // GUI Component Name, Domain Object GemId, Method Name, AllObserver
+  public componentObservers: Map<string, Map<number, Map<string, any>>> = new Map();
+  public objectTypes: Map<number, string> = new Map();
+
+  public __addObserver<T extends GemIdentifiable>(obj: T, update: () => void, updateName: string, componentName: string): T {
+    if (!this.componentObservers.has(componentName)) {
+      this.componentObservers.set(componentName, new Map<any, Map<string, any>>());
     }
-    let updateObservers = this.componentObservers.get(component);
-    if (!updateObservers.has(obj)) {
-      updateObservers.set(obj, new Map<string, any>());
+    let updateObservers = this.componentObservers.get(componentName);
+    if (!updateObservers.has(obj.getGemId())) {
+      updateObservers.set(obj.getGemId(), new Map<string, any>());
     }
-    if (!updateObservers.get(obj).has(updateName)) {
+    if (!updateObservers.get(obj.getGemId()).has(updateName)) {
       let protoName = ComponentObserverManager.getPrototypeName(obj);
       let observer = this.getObserverFactory().get(protoName)(update);
-      updateObservers.get(obj).set(updateName, observer);
+      updateObservers.get(obj.getGemId()).set(updateName, observer);
       (<any> obj).addObserver(observer)
+
+      if (!this.objectTypes.has(obj.getGemId())) {
+        this.objectTypes.set(obj.getGemId(), protoName);
+      }
     }
     return obj;
   }
 
-  public __removeObservers(component: any) {
-    if (this.componentObservers.has(component)) {
-      this.componentObservers.get(component).forEach((update, obj) => {
-        update.forEach((observer, name) => {
-          obj.removeObserver(observer);
+  public __removeObservers(componentName: string) {
+    if (this.componentObservers.has(componentName)) {
+      this.componentObservers.get(componentName).forEach((updates, gemId) => {
+        updates.forEach((observer, name) => {
+          this.getObjectGetterFactory().get(this.objectTypes.get(gemId))(gemId).then((obj: any) => obj.removeObserver(observer));
         });
-        update.clear();
+        updates.clear();
       });
-      this.componentObservers.delete(component);
+      this.componentObservers.delete(componentName);
     }
   }
 

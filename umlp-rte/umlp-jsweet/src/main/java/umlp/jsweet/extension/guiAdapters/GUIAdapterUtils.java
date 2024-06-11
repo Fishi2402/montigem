@@ -71,6 +71,11 @@ public class GUIAdapterUtils {
         && context.hasAnnotationType(superType, GUIAdapterUtils.DIRECTIVE_ANNOTATION);
   }
 
+  public boolean isTOPComponent(TypeElement classElement) {
+    return isDirective(classElement) && !isHWCofComponent(classElement) &&
+        classElement.getSimpleName().toString().endsWith("TOP");
+  }
+
   public boolean isMethodOfComponent(Element element) {
     return element.getEnclosingElement() instanceof TypeElement &&
         (isComponent((TypeElement) element.getEnclosingElement()) ||
