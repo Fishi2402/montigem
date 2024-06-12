@@ -43,6 +43,16 @@ export  class ProcessOverview extends ProcessOverviewComponent {
         step.setIndex(consistsOf[consistsOf.length - 1].getIndex() + 1)
       }
       this.getP().addConsistsOf2(step);
+
+      step.getDeconstructsGem().isPresent().then(b => {
+        if(b) {
+          this.getP().getDeconstructionOf().addAllConnections2(step.getDeconstructs())
+
+          step.getDeconstructs().getConnects().forEach(comp => {
+            this.getP().getDeconstructionOf().addAllComponents2(comp)
+          })
+        }
+      })
     }
   }
 

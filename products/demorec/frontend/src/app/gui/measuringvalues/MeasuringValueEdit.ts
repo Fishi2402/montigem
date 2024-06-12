@@ -4,7 +4,7 @@ import {DemoRecManager} from '@src/demorec/DemoRecManager'
 
 import {MeasuringValue} from '@src/demorec/MeasuringValue'
 
-import {MeasuringValueEditComponent, config} from '../../../../build/frontendGen/build/appgui/gui/step/MeasuringValueEditComponent';
+import {MeasuringValueEditComponent, config} from '../../../../build/frontendGen/build/appgui/gui/measuringvalues/MeasuringValueEditComponent';
 
 import {
   Component,
@@ -74,7 +74,11 @@ export class MeasuringValueEdit extends MeasuringValueEditComponent implements O
   }
 
   public override deleteMeasuringValue(measuringValue: MeasuringValue): (arg: void) => void {
-    return $ => this.getStep().removeMeasured2(measuringValue)
+    return () => {
+      this.getStep().removeMeasured2(measuringValue)
+      DemoRecManager.deleteMeasuringValue(measuringValue.getGemId())
+    }
+
   }
 
   // Display and change the dimension unit of a concrete existing measuring value

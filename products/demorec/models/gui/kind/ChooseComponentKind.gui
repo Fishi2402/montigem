@@ -1,0 +1,27 @@
+package gui.kind;
+
+import DemoRec.ComponentKind;
+
+import mc.fenix.input.GemTextInput;
+import mc.fenix.arrange.GemColumn;
+
+import gui.kind.CreateComponentKind;
+
+page ChooseComponentKind(ComponentKind currentKind, Event<ComponentKind> chosenKind) {
+
+  @GemColumn(
+    rowGap="5px",
+    components=[
+      selectComponentKind@GemTextInput(
+          labelText = "Component Kind",
+          inputType = "dropdown",
+          options = null,
+          entry = null
+        ),
+        createComponentKind@guard(true) {
+          @CreateComponentKind(newKind=addNewComponentKind);
+        }
+    ]
+  );
+
+}

@@ -2,11 +2,9 @@
 
 import { DemoRecManager } from '@src/demorec/DemoRecManager';
 
-import { JoinConnectionType } from '@src/demorec/JoinConnectionType';
 import { JoinConnection } from '@src/demorec/JoinConnection';
-import { NotificationScope } from '@umlp/common';
-
-import { DemoRecComponent } from '@src/demorec/DemoRecComponent';
+import { State } from '@src/demorec/State';
+import { BatteryPack } from '@src/demorec/BatteryPack';
 
 import { JoinConnectionCreateComponent, config } from '../../../../build/frontendGen/build/appgui/gui/joinconnection/JoinConnectionCreateComponent';
 
@@ -16,9 +14,8 @@ import {
   EventEmitter,
 } from '@angular/core';
 
-import { Option } from '@umlp/input';
-
-const newOption: Option = { value: "NEW", display: "NEW" };
+import {BatteryPackService} from "../../BatteryPackService";
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   standalone:true,
@@ -30,279 +27,48 @@ const newOption: Option = { value: "NEW", display: "NEW" };
 })
 export class JoinConnectionCreate extends JoinConnectionCreateComponent {
 
-  superComponentsOptions: Option[] =  []
-  componentOptions : Option[] = [newOption]
-  joinConnectionTypeOptions : Option[] = []
-  blueprintOptions : Option[] = []
-  joinConnections : JoinConnection[] = []
-
-  superComponentEntry : string = "";
-  connectsComponentEntry : string = "";
-  connectionTypeEntry : string = "";
-  blueprintEntry : string = "";
+  protected currentPack : BatteryPack;
 
   @Output()
   public createJoinConnection: EventEmitter<JoinConnection> = new EventEmitter<JoinConnection>();
 
-  public override ngOnInit(){
-    super.ngOnInit()
-
-    this.joinConnectionTypeOptions = [];
-    Object.keys(JoinConnectionType).filter(s => !isNaN(+s)).forEach(key => {
-      this.joinConnectionTypeOptions.push({value: key, display: JoinConnectionType[key]});
+  public constructor(protected packService: BatteryPackService) {
+    super();
+    this.packService.currentPack.subscribe(p => {
+      this.currentPack = p
     })
+  }
 
-    DemoRecManager.getDemoRecComponentList().then(componentList => {
+  public override ngOnInit(){
 
-      const components = componentList;
-      components.loadAll().then(() => {
-        console.debug(components)
-        this.superComponentsOptions = []
-        this.componentOptions = [newOption]
-        for (const component of components) {
-          console.debug("Refill Join Connection Options")
-          let value = component.getGemId() + "";
-          this.componentOptions.push({value: value, display: component.getName()+" "+value});
-          this.superComponentsOptions.push({value: value, display: component.getName()+" "+value});
-        }
-        this.componentOptions = this.componentOptions.slice();
-        this.superComponentsOptions = this.superComponentsOptions.slice();
-      });
+    DemoRecManager.joinConnectionBuilder().then(gemPromiseRes => {
+      this.connection = gemPromiseRes;
+      this.connection.condition(State.HEALTHY)
     });
 
-    DemoRecManager.getJoinConnectionList().then(joinConnectionList => {
-      console.warn("Connections ", joinConnectionList)
-
-      const joinConnections = joinConnectionList;
-      joinConnections.loadAll().then(() => {
-        console.warn("Loaded all", joinConnections)
-        const blueprintOptionPromises : Promise<Option>[]  = []
-        for (const jc of joinConnections) {
-          this.joinConnections.push(jc)
-          let value = jc.getGemId() + "";
-          blueprintOptionPromises.push(this.calculateDisplayValueOfJoinConnection(jc))
-        }
-        this.joinConnections = this.joinConnections.slice()
-        // Get newest JoinConnections -> Ordered by GemID Descending
-        Promise.all(blueprintOptionPromises).then(results =>
-            this.blueprintOptions = results.sort((l,r) => Number(r.value)-Number(l.value)))
-      });
-    });
-  }
-
-  // Select Type of connection
-  public override getSelectTypeOfConnectionOptions (): Array<Option> {
-    return this.joinConnectionTypeOptions;
-  }
-
-  public override getSelectTypeOfConnectionEntry (): string {
-    return this.connectionTypeEntry;
-  }
-
-  public override setSelectTypeOfConnectionEntry (value: string): void {
-    this.connectionTypeEntry = value;
-    //
-    if (JoinConnectionType.SCREW.toString() === this.getSelectTypeOfConnectionEntry()) {
-      this.getConnection().setJoinConnectionType(JoinConnectionType.SCREW)
-    }
-    if (JoinConnectionType.GLUE.toString() === this.getSelectTypeOfConnectionEntry()) {
-      this.getConnection().setJoinConnectionType(JoinConnectionType.GLUE)
-    }
-    if (JoinConnectionType.WELDING.toString() === this.getSelectTypeOfConnectionEntry()) {
-      this.getConnection().setJoinConnectionType(JoinConnectionType.WELDING)
-    }
-    if (JoinConnectionType.PLUG.toString() === this.getSelectTypeOfConnectionEntry()) {
-      this.getConnection().setJoinConnectionType(JoinConnectionType.PLUG)
-    }
-    if (JoinConnectionType.ELECTRICAL.toString() === this.getSelectTypeOfConnectionEntry()) {
-      this.getConnection().setJoinConnectionType(JoinConnectionType.ELECTRICAL)
-    }
-    if (JoinConnectionType.UNDEFINED.toString() === this.getSelectTypeOfConnectionEntry()) {
-      this.getConnection().setJoinConnectionType(JoinConnectionType.UNDEFINED)
-    }
-  }
-
-  // Select Super component
-  public override getSelectSuperComponentOptions (): Array<Option> {
-    return this.superComponentsOptions;
-  }
-
-  public override getSelectSuperComponentEntry (): string {
-    return this.superComponentEntry;
-  }
-
-  public override setSelectSuperComponentEntry (value: string): void {
-    this.superComponentEntry = value;
-  }
-
-  // Select Connected Components
-  public override getSelectConnectsComponentOptions (): Array<Option>{
-    return this.componentOptions;
-  }
-
-  public override getSelectConnectsComponentEntry (): string{
-    return this.connectsComponentEntry;
-  }
-
-  public override setSelectConnectsComponentEntry (value: string): void{
-    this.connectsComponentEntry = value;
-    this.connectSelectedComponent()();
+    this.init();
   }
 
   public override getBuildConnectionDisabled (): boolean {
-    let sameAsTemplate : boolean = true
-    if(this.blueprintEntry) {
-      const template : JoinConnection = this.getJoinConnectionDataTemplate(+this.blueprintEntry)
-      sameAsTemplate = sameAsTemplate && (this.getConnection().getXPos() == template.getXPos())
-      sameAsTemplate = sameAsTemplate && (this.getConnection().getYPos() == template.getYPos())
-      sameAsTemplate = sameAsTemplate && (this.getConnection().getZPos() == template.getZPos())
-      sameAsTemplate = sameAsTemplate && (this.getConnection().getJoinConnectionType() == template.getJoinConnectionType())
-    }
-    console.warn("Same as Template", sameAsTemplate)
-    console.warn("Same as Template", this.getConnection().getJoinConnectionType())
-    console.warn("Or Not Buildable", sameAsTemplate || !this.getConnection()?.isBuildable())
-    return sameAsTemplate || !this.getConnection()?.isBuildable();
+    return false || !this.getConnection()?.isBuildable();
   }
 
-  // Select JoinConnection Blueprint
-  public override getBlueprintOptions (): Array<Option>{
-    return this.blueprintOptions;
-  }
-
-  public override getBlueprintEntry (): string{
-    return this.blueprintEntry;
-  }
-
-  public override setBlueprintEntry (value: string): void{
-    this.blueprintEntry = value;
-    console.warn(this.joinConnections)
-    const jC : JoinConnection = this.getJoinConnectionDataTemplate(+value)
-
-    this.setSelectTypeOfConnectionEntry(jC.getJoinConnectionType().valueOf()+"")
-    jC.getConnects().forEach(c =>
-      this.setSelectConnectsComponentEntry(c.getGemId()+"")
-    )
-    if(jC.getPartOfGem().isPresent()) {
-      this.setSelectSuperComponentEntry(jC.getPartOf().getGemId()+"")
-    }
-    if(jC.getXPos()) {
-      this.setXPosEntry(jC.getXPos()+"")
-    }
-    if(jC.getYPos()) {
-      this.setYPosEntry(jC.getYPos()+"")
-    }
-    if(jC.getZPos()) {
-      this.setZPosEntry(jC.getZPos()+"")
-    }
-    if(jC.getState()) {
-      this.setStateEntry(jC.getState()+"")
-    }
-  }
-
-
-  public override createNewConnection(): (arg: void) => void {
-    return $ => {
-      if(this.getConnection().isBuildable()) {
-        console.debug("New Connection is buildable")
-        const joinConnection = this.getConnection().build()
-        DemoRecManager.getDemoRecComponentSure(+this.superComponentEntry).then(comp => {
-            comp.addComposedOf2(joinConnection)
-        })
-        this.createJoinConnection.emit(joinConnection)
-
+  public override createNewConnection (event: any): void {
+    if(this.getConnection().isBuildable()) {
+      if(this.currentPack) {
+        this.getConnection().setBatteryPack1(this.currentPack)
       } else {
-        console.debug("New Connection is not buildable")
-        this.getConnection().build()
+        console.warn("No Pack available for Connection")
       }
-    }
-  }
 
-  public override addNewComponent(): (arg: DemoRecComponent) => void {
-    return (comp: DemoRecComponent) => {
-      /*console.debug("Add Component to Connection")
-      console.debug(comp)*/
+      console.debug("New Connection is buildable")
+      const joinConnection = this.getConnection().build()
+      this.createJoinConnection.emit(joinConnection)
+
+    } else {
+      console.debug("New Connection is not buildable")
       this.getConnection().build()
-      // this.getConnection().connectsAdd(comp)
-      this.getConnection().addConnects2(comp)
-      /*console.debug("Connects List after adding Component: ", this.getConnection().getConnects())*/
-      this.syncDummyComponentsWithBuilderObject(comp)
-      setTimeout(() => console.debug("Connects List after adding Component: ", this.getConnection().getConnects()), 200)
     }
-  }
-
-  dummyComponentNames : string[] = []
-
-  getDummyComponents() {
-    return this.dummyComponentNames;
-  }
-
-  syncDummyComponentsWithBuilderObject(comp: DemoRecComponent) {
-    this.dummyComponentNames.push(comp.getName()+":"+comp.getGemId());
-    this.dummyComponents.push(comp);
-  }
-
-  public connectSelectedComponent(): (arg: void) => void {
-    return $ => {
-      if(this.getSelectConnectsComponentEntry()) {
-        DemoRecManager.getDemoRecComponentSure(+this.getSelectConnectsComponentEntry()).then(
-            demoRecComponent => {
-              this.getConnection().addConnects2(demoRecComponent)
-              this.syncDummyComponentsWithBuilderObject(demoRecComponent)
-            }
-        )
-      }
-    }
-  }
-
-  public override getNewCompGuardCondition() :boolean {
-    return this.getSelectConnectsComponentEntry() === newOption.value
-  }
-
-  public override removeSelectedComponent(i: string): (arg: any) => void {
-    return event => {
-      const nameSplitByDoubleColon = i.split(":")
-      const len = nameSplitByDoubleColon.length
-      if(len > 0) {
-        const gemIdOfComponent = nameSplitByDoubleColon[len-1]
-        const indexInDummyComps = this.dummyComponentNames.indexOf(i)
-        console.debug("Removing Component from Connects by Id ", gemIdOfComponent)
-        console.debug(this.getConnection().removeConnects(this.dummyComponents[indexInDummyComps],
-            NotificationScope.ALL))
-        this.getConnection().removeConnectsByIdSure(+gemIdOfComponent)
-        console.debug(this.getConnection().getConnects().map(c => c.getGemId()))
-
-        this.dummyComponentNames.splice(indexInDummyComps, 1)
-        this.dummyComponents.splice(indexInDummyComps, 1)
-      }
-    };
-  }
-
-  // Copy from ProcessStepCreate
-  private calculateDisplayValueOfJoinConnection(connection : JoinConnection) : Promise<Option> {
-    return connection._internal_getConnectsGemList().loadAll().then(
-        list => {
-          console.debug("Connects: " + list.map(c => c.getName()))
-          console.debug(connection._internal_getConnectsGemList().toArray())
-
-          const connectionTypeString : string = JoinConnectionType[connection.getJoinConnectionType()]
-          const correctCase : string = connectionTypeString.charAt(0)+connectionTypeString.slice(1).toLowerCase()
-
-          let value = connection.getGemId() + "";
-          const displayValue = correctCase+"("+list.map(c => c.getName()?
-                  c.getName()+":"+c.getGemId() :
-                  ":"+c.getGemId()).join(" - ")+"):"+connection.getGemId()
-          return new Promise<Option>((resolve, reject) => {
-                resolve({value: value, display: displayValue})
-              }
-          )
-        }
-    )
-  }
-
-  private getJoinConnectionDataTemplate(gemId : number) : JoinConnection {
-    return this.joinConnections.filter(c => c.getGemId() == gemId)[0]
   }
 
 }
-
-

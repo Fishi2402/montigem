@@ -2,59 +2,24 @@ package gui.component;
 
 import DemoRec.DemoRecComponent;
 import DemoRec.ComponentKind;
+import DemoRec.BatteryPack;
 
-import mc.fenix.arrange.GemRow;
 import mc.fenix.arrange.GemColumn;
 import mc.fenix.arrange.GemCard;
-import mc.fenix.basic.GemText;
-import mc.fenix.basic.GemLink;
 import mc.fenix.basic.GemButton;
-import mc.fenix.input.GemTextInput;
-import mc.fenix.input.GemCheckBoxInput;
 
 import gui.component.PhotoDisplay;
 import gui.component.PhotoDragNDrop;
+import gui.component.ComponentEdit;
 
-component ComponentCreate(DemoRecComponent component, ComponentKind componentKind, Event<DemoRecComponent> createComponent) {
+component ComponentCreate(DemoRecComponent component, Event<DemoRecComponent> createComponent) {
   @GemCard(
     title = "Specify Component",
     component = @GemColumn(
+        rowGap="5px",
         wrap="nowrap",
         components=[
-          @GemTextInput(labelText = "Component Name", inputType = "string", entry = component.name),
-          @GemTextInput(labelText = "Component Condition", inputType = "string", entry = component.condition),
-          @GemRow(
-            width="30em",
-            colGap="5px",
-            components=[
-              @GemTextInput(labelText = "X-Position", inputType = "number", entry = component.xPos),
-              @GemTextInput(labelText = "Y-Position", inputType = "number", entry = component.yPos),
-              @GemTextInput(labelText = "Z-Position", inputType = "number", entry = component.zPos)
-            ]
-          ),
-          selectComponentKind@GemTextInput(
-            labelText = "Component Kind",
-            inputType = "dropdown",
-            options = null,
-            entry = null
-          ),
-          createComponentKind@guard(true) {
-            @GemTextInput(labelText = "Component Kind Name", inputType = "string", entry = componentKind.name);
-            @GemTextInput(labelText = "OE-Number", inputType = "string", entry = componentKind.oENumber);
-            @GemTextInput(labelText = "Description for human identification", inputType = "string", entry = componentKind.humanDescription);
-            @GemRow(
-              width="30em",
-              colGap="5px",
-              components=[
-                @GemTextInput(labelText = "Width (mm)", inputType = "number", entry = componentKind.width),
-                @GemTextInput(labelText = "Length (mm)", inputType = "number", entry = componentKind.length),
-                @GemTextInput(labelText = "Height (mm)", inputType = "number", entry = componentKind.height)
-              ]
-            );
-            @GemTextInput(labelText = "Weight (kg)", inputType = "number", entry = componentKind.weight);
-          },
-          @PhotoDisplay(component=component),
-          photoDragAndDrop@PhotoDragNDrop(attachedComponent = component),
+          @ComponentEdit(component=component,showOptionalValues=false, editButton=false),
           addComponent@GemButton(label = "Add Component", leftClick = createNewComponent(), disabled=false)
       ])
   );

@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { DemoRecComponent } from '@src/demorec/DemoRecComponent';
+import { DemoRecManager } from '@src/demorec/DemoRecManager';
+import { Photo } from '@src/demorec/Photo';
 
 import { PhotoDragNDropComponent, config } from '../../../../build/frontendGen/build/appgui/gui/component/PhotoDragNDropComponent';
 
@@ -31,7 +33,13 @@ export class PhotoDragNDrop extends PhotoDragNDropComponent {
     super();
   }
 
-  files: File[] = [];
+
+  @Output()
+  public createPhoto : EventEmitter<Photo> = new EventEmitter<Photo>();
+
+  public stateUploading : boolean = false;
+
+  public files: File[] = [];
   uploadFailureMessage : boolean = false;
   errorMessage : string = "";
 
@@ -56,43 +64,50 @@ export class PhotoDragNDrop extends PhotoDragNDropComponent {
     event.stopPropagation();
   }
 
-  public uploadFile(file: File, path :string ): void{
+  public uploadFile(file: File, name :string ): void {
     const formData: FormData = new FormData();
     formData.append('file', file, file.name);
 
     const headers = new HttpHeaders({
-      'PATH': path,
+      'name': name,
     });
     console.debug("Trying to sending image "+ file.name+ " to server.")
     this.http.post(`/umlp/api/blob`, formData, { headers }).subscribe(
-        (response) => {
-          const index = this.files.indexOf(file)
-          this.files = this.files.splice(index, 1)
-        },
-        (error) => {
-          this.uploadFailureMessage = true
-          this.errorMessage = error.error
-        });
+    (response) => {
+      DemoRecManager.getPhotoSure(response['gemId']).then((photo : Photo) => {
+        console.debug("Retrieved Photo Created in Backend with GemId: ", response)
+        this.createPhoto.emit(photo)
+      })
+      console.warn(this.files)
+      const index = this.files.indexOf(file)
+      console.warn(index)
+      this.files.splice(index, 1)
+      console.warn(this.files)
+      if(this.files.length === 0) {
+        this.stateUploading = false;
+      }
+    },
+    (error) => {
+      this.uploadFailureMessage = true
+      this.errorMessage = error.error
+    });
   }
 
-  public override uploadAllFiles(): (arg: void) => void {
-    return $ => {
-      this.uploadFailureMessage = false;
-      const files = Array.from(this.files);
-      files.forEach(f => {
-        const path = this.getAttachedComponent().getName().replace(" ","_")+"_"+this.getAttachedComponent().getGemId()
-        this.uploadFile(f, path)
-      });
-    }
+  public override uploadAllFiles(event: any): void {
+    this.uploadFailureMessage = false;
+    this.stateUploading = true;
+    const files = Array.from(this.files)
+    files.forEach(f =>
+      {
+        const name = this.getAttachedComponent().replace(" ","_")
+        this.uploadFile(f, name)
+      }
+    )
   }
+
 
   public override cancelUpload(): (arg: void) => void {
     return $ => this.files = [];
   }
 
-  public getAttachedComponent (): DemoRecComponent {
-    return this.attachedComponent;
-  }
 }
-
-

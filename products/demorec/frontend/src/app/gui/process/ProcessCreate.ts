@@ -1,15 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-
-import { BatteryPackBuilder } from '@src/demorec/BatteryPackBuilder';
-
 import { DemoRecManager } from '@src/demorec/DemoRecManager';
 
 import { BatteryPackType } from '@src/demorec/BatteryPackType';
 
 import { BatteryPack } from '@src/demorec/BatteryPack';
-
-import { ComponentKind } from '@src/demorec/ComponentKind';
 
 import { ProcessCreateComponent,config } from '@src/gui/process/ProcessCreateComponent';
 
@@ -30,16 +25,10 @@ const newOption: Option = { value: "NEW", display: "NEW" };
   styles: config.styles,
   styleUrls: config.styleUrls
 })
-export  class ProcessCreate extends ProcessCreateComponent {
+export class ProcessCreate extends ProcessCreateComponent {
 
   public bPackEntry: string = "";
   public bPackOptions: Option[] = [newOption];
-
-  public bPackTypeEntry: string = "";
-  public bPackTypeOptions: Option[] = [newOption];
-
-  public kindEntry: string = "";
-  public kindOptions: Option[] = [newOption];
 
   public typeHash = -1
   public lastType : BatteryPackType;
@@ -47,11 +36,22 @@ export  class ProcessCreate extends ProcessCreateComponent {
   public oldDerivedPackname : string = ""
 
   public ngOnInit(): void {
-    super.ngOnInit()
+    DemoRecManager.processBuilder().then(gemPromiseRes => {
+      this.p = gemPromiseRes;
+      if(!this.p.getStartedAt()){
+        console.warn("Updating Set Started At")
+        this.getP().startedAt(new Date())
+      } else {
+        console.warn("Nothing happens")
+      }
+    });
+    DemoRecManager.batteryPackBuilder().then(gemPromiseRes => {
+      this.pack = gemPromiseRes;
+    });
+    this.init();
     DemoRecManager.getBatteryPackList().then(gemPromiseRes => {
       const bPacks = gemPromiseRes;
       bPacks.loadAll().then(() => {
-        console.error(bPacks)
         for (const bPack of bPacks) {
           let value = bPack.getGemId() + "";
           this.bPackOptions.push({value: value, display: bPack.getName()});
@@ -60,47 +60,9 @@ export  class ProcessCreate extends ProcessCreateComponent {
       });
     });
 
-    DemoRecManager.getComponentKindList().then(gemPromiseRes => {
-      const kinds = gemPromiseRes
-      kinds.loadAll().then(() => {
-        for (const kind of kinds) {
-          // TODO filter so that only PackKind Options remain
-          let kindValue = kind.getGemId()+"";
-          this.kindOptions.push({value: kindValue, display: kind.getName()})
-        }
-      })
-    })
-
-    DemoRecManager.getBatteryPackTypeList().then(gemPromiseRes => {
-      const bPackTypes = gemPromiseRes;
-      bPackTypes.loadAll().then(() => {
-        console.error(bPackTypes)
-        for (const bPackType of bPackTypes) {
-          let value = bPackType.getGemId() + "";
-          this.bPackTypeOptions.push({value: value, display: bPackType.getCarBrand()+" "+bPackType.getCarModel()+" "+bPackType.getCarYear()});
-        }
-        this.bPackOptions = this.bPackOptions.slice();
-      });
-    });
   }
 
-  public override getSelectComponentKindOptions(): Array<Option> {
-    return this.kindOptions;
-  }
-
-  public override getSelectComponentKindEntry(): string {
-    return this.kindEntry;
-  }
-
-  public override setSelectComponentKindEntry(value: string): void {
-    this.kindEntry = value;
-  }
-
-  public override getCreateKindCondition (): boolean {
-    return this.getSelectComponentKindEntry()==newOption.value
-  }
-
-  public override getSelectBPackOptions(): Array<Option> {
+   public override getSelectBPackOptions(): Array<Option> {
     return this.bPackOptions;
   }
 
@@ -116,137 +78,29 @@ export  class ProcessCreate extends ProcessCreateComponent {
     return this.getSelectBPackEntry() === newOption.value;
   }
 
-  public override getSelectBPackTypeOptions(): Array<Option> {
-    return this.bPackTypeOptions;
-  }
-
-  public override getSelectBPackTypeEntry(): string {
-    return this.bPackTypeEntry;
-  }
-
-  public override setSelectBPackTypeEntry(value: string): void {
-    this.bPackTypeEntry = value;
-  }
-
-  public override getGuardBPackTypeCondition(): boolean {
-    return this.getSelectBPackTypeEntry() === newOption.value;
-  }
-
-
   public override sendEverything(): (arg: void) => void {
     return $ => {
-      let type : Promise<BatteryPackType>
-      let componentKind : Promise<ComponentKind>
       let pack : Promise<BatteryPack>
 
       if(this.getSelectBPackEntry() != newOption.value) {
         pack = DemoRecManager.getBatteryPackSure(+this.getSelectBPackEntry())
-        type = new Promise((resolve, reject) => {
-          resolve(DemoRecManager.batteryPackTypeBuilder())
-        })
       } else {
-        if((this.getSelectBPackTypeEntry() != newOption.value)) {
-          type = DemoRecManager.getBatteryPackTypeSure(+this.getSelectBPackTypeEntry())
-        } else {
-          this.getType().build()
-          type = new Promise((resolve, reject) => {
-            if(this.getType().isBuildFinished()) {
-              resolve(this.getType())
-            } else {
-              reject("Type could not be built.")
-            }
-          })
-        }
-
-        if((this.getSelectComponentKindEntry() != newOption.value)) {
-          componentKind = DemoRecManager.getComponentKindSure(+this.getSelectComponentKindEntry())
-        } else {
-          this.getComponentKind().build()
-          componentKind = new Promise((resolve, reject) => {
-            if(this.getComponentKind().isBuildFinished()) {
-              resolve(this.getComponentKind())
-            } else {
-              reject("Component Kind could not be built.")
-            }
-          })
-        }
-
-
-        pack = Promise.all([type, componentKind]).then( ([bPackType, kind ]) => {
-          return new Promise((resolve, reject) => {
-            this.getPack().setType1(bPackType)
-            this.getPack().setIsA1(kind)
-            /*this.getPack().isDeconstructible(true)*/
+        pack =
+          new Promise((resolve, reject) => {
             if(this.getPack().isBuildable()) {
               resolve(this.getPack().build())
             } else {
               reject("Pack could not be built.")
             }
           })
-        })
       }
 
       pack.then(pack => {
-        this.getP().setDeconstructionOf1(pack)
+        this.getP().deconstructionOf(pack)
         this.getP().build()
-        this._router.navigate(["gui/process/ProcessOverview/"+this.getP().getGemId()])
+        this.router.navigate(["gui/process/ProcessOverview/"+this.getP().getGemId()])
       })
-    };
-  }
-
-  public override getPhotoDragAndDropAttachedComponent (): BatteryPack {
-    return this.getPack();
-  }
-
-  public override getPackNameEntry (): string {
-    //console.debug("Is Called")
-
-    let packNameStart : string = ""
-    let packNameMiddle: string = ""
-    let packNameEnd: string = ""
-
-    if(this.getP().getStartedAt()) {
-
-      const chosenDate = this.getP().getStartedAt()
-      packNameStart = chosenDate.getFullYear()+"_"+(chosenDate.getMonth()+1)+"_"+chosenDate.getDate()
-
-      if(this.getType()?.getCarBrand() && this.getType().getCarModel()) {
-        packNameMiddle = "_"+this.getType().getCarBrand().trim().replaceAll(" ", "_")
-        packNameMiddle += "_"+this.getType().getCarModel().trim().replaceAll(" ", "_")
-      } else if(this.getSelectBPackTypeEntry()) {
-        const bTypeId = this.getSelectBPackTypeEntry()
-        if(this.typeHash == Number(bTypeId)) {
-          packNameMiddle = "_"+this.lastType?.getCarBrand().trim().replaceAll(" ", "_")
-          packNameMiddle += "_"+this.getType().getCarModel().trim().replaceAll(" ", "_")
-        } else if(Number.isInteger(Number(bTypeId))) {
-          this.typeHash = Number(bTypeId)
-          DemoRecManager.getBatteryPackTypeSure(Number(this.getSelectBPackTypeEntry())).then(
-              (bType : BatteryPackType)  => {
-                this.lastType = bType
-          });
-        }
-
-      }
-    }
-    if(this.getPack()) {
-      packNameEnd = ":"+this.getPack().getGemId()
-    }
-
-    if (this.getPack()==null) {
-      return null;
-    } else {
-      const packName = packNameStart+packNameMiddle+packNameEnd
-      console.debug(packName)
-      if(this.getPack().getName() && (this.getPack().getName() != this.oldDerivedPackname)) {
-        // This means the user has manually edited the description field
-        return this.getPack().getName()
-      }
-      this.oldDerivedPackname = packName
-      this.getPack().setName(packName)
-      return this.getPack().getName()
     }
   }
 
 }
-
-

@@ -67,8 +67,10 @@ genGUI {
                      "gui.joinconnection.JoinConnectionCreate",
                      "gui.endeffector.EndEffectorCreate",
                      "gui.dimension.DimensionCreate",
-                     "gui.step.MeasuringValueCreate",
-                     "gui.component.ComponentCreate"]
+                     "gui.measuringvalues.MeasuringValueCreate",
+                     "gui.component.ComponentCreate",
+                     "gui.kind.CreateComponentKind",
+                     "gui.pack.PackTypeCreate"]
 
   /*
   debug = true

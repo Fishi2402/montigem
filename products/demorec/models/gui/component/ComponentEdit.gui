@@ -2,6 +2,7 @@ package gui.component;
 
 import DemoRec.BatteryPack;
 import DemoRec.DemoRecComponent;
+import DemoRec.ComponentKind;
 import DemoRec.JoinConnection;
 
 import mc.fenix.arrange.GemRow;
@@ -16,56 +17,45 @@ import mc.fenix.input.GemTextInput;
 import gui.component.PhotoDisplay;
 import gui.component.PhotoDragNDrop;
 import gui.component.SubComponentView;
+import gui.kind.ChooseComponentKind;
 import gui.staticcontainer.NavContainer;
 import gui.staticcontainer.StatTable;
 import gui.staticcontainer.StatTableRow;
 
-page ComponentEdit(DemoRecComponent component) {
+page ComponentEdit(DemoRecComponent component, boolean showOptionalValues=true, boolean editButton=true) {
 
-  @NavContainer(
-      content=[
-  @GemCard(
-    title = "Edit component",
-    component = @GemColumn(
-        wrap="nowrap",
-        rowGap="5px",
+  @GemColumn(
+    wrap="nowrap",
+    rowGap="5px",
+    components=[
+      @GemRow(
+        colGap="5px",
         components=[
-          @GemTextInput(labelText = "Component Name", inputType = "string", entry = component.name, disabled=true),
-          @GemTextInput(labelText = "Component Condition", inputType = "string", entry = component.condition),
-          @GemRow(
-            width="30em",
-            colGap="5px",
-            components=[
-              @GemTextInput(labelText = "X-Position", inputType = "number", entry = component.xPos),
-              @GemTextInput(labelText = "Y-Position", inputType = "number", entry = component.yPos),
-              @GemTextInput(labelText = "Z-Position", inputType = "number", entry = component.zPos)
-            ]
-          ),
-          @GemButton(label = "Edit component kind", leftClick = editComponentKind()),
-          @PhotoDisplay(component=component),
-          photoDragAndDrop@PhotoDragNDrop(attachedComponent = component)
-      ])
-  ),
-  @GemCard(
-    title = "Subparts of component",
-    component =
-      @GemColumn(
-        components=[
-          @iterate(JoinConnection conn : component.composedOf) {
-            @GemRow(
-              wrap="nowrap",
-              components=[
-                @StatTable(width="100%", rows = [
-                  @StatTableRow(left = @GemText(value = "Type of Connection"), right = @GemText(value = conn.joinConnectionType)),
-                  @StatTableRow(left = @GemText(value = "State of Connection"), right = @GemText(value = conn.state))
-                ])
-            ]);
-            @iterate(DemoRecComponent subComponent : conn.connects) {
-              @SubComponentView(subComponent=subComponent);
-            }
-          }/*,
-          buildConnection@GemButton(label = "Create new Connection.", leftClick = createNewConnection(), disabled=true)/**/
+          @ChooseComponentKind(currentKind= component.isA,chosenKind=changeToKind),
+          @guard(editButton) {
+            @GemButton(label = "Edit component kind", leftClick = editComponentKind());
+          }
         ]
-      )
-  )]);
+      ),
+      @GemTextInput(labelText = "Component Name", inputType = "string", entry = component.name),
+      @guard(showOptionalValues) {
+        condition@GemTextInput(
+          labelText = "Component Condition",
+          inputType = "dropdown",
+          options = null,
+          entry = component.condition);
+        @GemRow(
+          width="30em",
+          colGap="5px",
+          components=[
+            @GemTextInput(labelText = "X-Position", inputType = "number", entry = component.xPos),
+            @GemTextInput(labelText = "Y-Position", inputType = "number", entry = component.yPos),
+            @GemTextInput(labelText = "Z-Position", inputType = "number", entry = component.zPos)
+          ]
+        );
+        @PhotoDisplay(component=component);
+        photoDragAndDrop@PhotoDragNDrop(createPhoto=addPhoto, attachedComponent = component.name);
+      }
+
+  ]);
 }

@@ -43,7 +43,7 @@ export  class BatteryPackOverview extends BatteryPackOverviewComponent {
   }
 
   public override editPack(): (arg: void) => void {
-    return $ => this._router.navigate(["gui/component/ComponentEdit/"+this.getPack().getGemId()]);
+    return $ => this._router.navigate(["gui/pack/PackEditPage/"+this.getPack().getGemId()]);
   }
 
 }

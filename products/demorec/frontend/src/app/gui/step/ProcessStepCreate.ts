@@ -5,8 +5,9 @@ import {DemoRecManager} from '@src/demorec/DemoRecManager';
 
 import {ProcessStepType} from '@src/demorec/ProcessStepType';
 import {ProcessStep} from '@src/demorec/ProcessStep'
+import {Process} from '@src/demorec/Process'
+import {DemoRecComponent} from '@src/demorec/DemoRecComponent'
 
-import {MeasuringValue} from '@src/demorec/MeasuringValue'
 import {JoinConnectionType} from '@src/demorec/JoinConnectionType'
 import {JoinConnection} from '@src/demorec/JoinConnection'
 
@@ -50,6 +51,10 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
 
   private deconstructionVal = ProcessStepType.DECONSTRUCTION.toString();
   private otherVal = ProcessStepType.OTHER.toString();
+
+  private inputStep : number = 1
+
+  private amountOfSteps :number = 1
 
   @Output()
   public create: EventEmitter<ProcessStep> = new EventEmitter<ProcessStep>();
@@ -104,9 +109,8 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
           const correctCase : string = connectionTypeString.charAt(0)+connectionTypeString.slice(1).toLowerCase()
 
           let value = connection.getGemId() + "";
-          const displayValue = correctCase+"("+list.map(c => c.getName()?
-              c.getName()+":"+c.getGemId() :
-              ":"+c.getGemId()).join(" - ")+"):"+connection.getGemId()
+          const displayValue = correctCase+"("+list.map(c =>
+              c.getName()? c.getName() : ":"+c.getGemId()).join(" - ")+")"
           return new Promise<Option>((resolve, reject) => {
                 resolve({value: value, display: displayValue})
               }
@@ -126,6 +130,11 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
 
   public override setSelectTypeEntry(value: string): void {
     this.typeEntry = value;
+    if(value === this.otherVal){
+      this.inputStep += 2
+    } else {
+      this.inputStep += 1
+    }
   }
 
   // Select End Effectors
@@ -138,9 +147,6 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
   }
 
   public override setSelectEndeffectorEntry(value: string): void {
-    /*if(ProcessStepType.DECONSTRCUTION.toString() == value) {
-      this.typeEntry = ProcessStepType.DECONSTRCUTION
-    }*/
     this.endEffectorEntry = value;
   }
 
@@ -154,25 +160,31 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
   }
 
   public override setSelectJoinConnectionEntry(value: string): void {
-    /*if(ProcessStepType.DECONSTRCUTION.toString() == value) {
-      this.typeEntry = ProcessStepType.DECONSTRCUTION
-    }*/
     this.joinConnectionEntry = value;
+    if(this.inputStep === 2) {
+      this.inputStep += 1
+    }
   }
 
-  public override createNewStep(): (arg: void) => void {
-    return $ => {
-      console.debug("Clicked on Create Button")
-      const waitingFor = [];
-      waitingFor.push(DemoRecManager.getEndEffectorSure(+this.getSelectEndeffectorEntry())
-          .then((endEffector) => {
-            this.getStep().setUses1(endEffector)
-          }))
-      if (this.getSelectJoinConnectionEntry()) {
-        waitingFor.push(DemoRecManager.getJoinConnectionSure(+this.getSelectJoinConnectionEntry())
-            .then((joinConnection) => {
-              this.getStep().setDeconstructs1(joinConnection)
-            }))
+  public override createNewStep(event: any): void {
+    console.debug("Clicked on Create Button", this.amountOfSteps)
+    const waitingFor = [];
+    let joinConnection
+    let endEffector
+    waitingFor.push(DemoRecManager.getEndEffectorSure(+this.getSelectEndeffectorEntry())
+        .then((endEffectorFromManager) => {
+          if(endEffectorFromManager) {
+            endEffector = endEffectorFromManager
+            this.getStep().uses(endEffector)
+          }
+        }))
+    if (this.getSelectJoinConnectionEntry()) {
+      waitingFor.push(DemoRecManager.getJoinConnectionSure(+this.getSelectJoinConnectionEntry())
+          .then((joinConnectionFromManager) => {
+            if(joinConnectionFromManager) {
+              joinConnection = joinConnectionFromManager
+              this.getStep().deconstructs(joinConnection)
+            }
       }
       if (this.deconstructionVal === this.getSelectTypeEntry()) {
         this.getStep().setType(ProcessStepType.DECONSTRUCTION)
@@ -210,6 +222,34 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
     }
   }
 
+  private createCopyOfConnectionAndStep(connection: JoinConnection, step : ProcessStep) {
+    DemoRecManager.joinConnectionBuilder().then(builder => {
+      const connectionCopy= builder.condition(connection.getCondition())
+          .joinConnectionType(connection.getJoinConnectionType())
+          .xPos(connection.getXPos())
+          .yPos(connection.getYPos())
+          .zPos(connection.getZPos())
+          .conditionDescription(connection.getConditionDescription())
+          .connects(new Set<DemoRecComponent>(connection.getConnects()))
+          .batteryPack(connection.getBatteryPack())
+          .build()
+      return new Promise((resolve, reject) => {
+        resolve(connectionCopy)
+      })
+    }).then((connectionCopy : JoinConnection) => {
+      DemoRecManager.processStepBuilder().then(builder => {
+        const processStepCopy = builder
+            .uses(step.getUses())
+            .timeConsumption(step.getTimeConsumption())
+            .type(step.getType())
+            .deconstructs(connectionCopy)
+            .index(0)
+            .build()
+        this.create.emit(processStepCopy);
+      })
+    })
+  }
+
   public override getBuildStepDisabled(): boolean {
     //console.debug(this.getStep())
     if (!this.getStep() || this.building) {
@@ -226,8 +266,6 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
     return this.getIsDeconstructionCondition() &&
         (this.getSelectJoinConnectionEntry() === "NEW")
   }
-
-
 
   // Timer
   private wasStarted = false;
@@ -269,21 +307,36 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
     return String(this.passedSeconds);
   }
 
-  public override attachMeasuringValue(): (arg: MeasuringValue) => void {
-    return (val: MeasuringValue) => {
-      this.getStep().addMeasured2(val);
-      this.values.push(val.getValue()+" "+val.getDimension().getUnit()+" "+val.getDimension().getName())
-      console.error("Works")
-    }
+  public override addNewJoinConnection(connection: JoinConnection) {
+    this.calculateDisplayValueOfJoinConnection(connection).then(
+      opt =>  {
+        this.joinConnectionOptions.push(opt)
+        this.setSelectJoinConnectionEntry(String(connection.getGemId()))
+      }
+    )
   }
 
-  public override addNewJoinConnection(): (arg: JoinConnection) => void {
-    return (connection: JoinConnection) => {
-      this.calculateDisplayValueOfJoinConnection(connection).then(
-        opt => this.joinConnectionOptions.push(opt)
-      )
-      this.setSelectJoinConnectionEntry(String(connection.getGemId()))
-    }
+  public override getDeconstructionGuardCondition() : boolean {
+    return true;
+    //return this.inputStep === 1;
+  }
+
+  public override getStepChooseJoinConnectionCondition() : boolean {
+    return true
+    //return this.inputStep === 2;
+  }
+
+  public override getStepProcessStepRelatedCondition() : boolean{
+    return true
+    //return this.inputStep === 3;
+  }
+
+  public override getAmountOfConnsAndStepsEntry (): string {
+    return this.amountOfSteps+""
+  }
+
+  public override setAmountOfConnsAndStepsEntry (amount: string): void {
+    this.amountOfSteps = Number(amount)
   }
 
 }

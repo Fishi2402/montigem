@@ -14,4 +14,13 @@
   > gem-button.editStepButton {
     margin-top:.5rem;
   }
+
+
+}
+
+:host ::ng-deep gem-card.stepCreationCard {
+  .gem-card-header, .gem-card-body {
+    background-color: white;
+    padding: 0.5rem 0;
+  }
 }

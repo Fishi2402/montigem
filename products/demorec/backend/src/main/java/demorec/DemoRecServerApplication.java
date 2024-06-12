@@ -22,20 +22,7 @@ public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
   public  void init () throws IOException
   {
 
-    Log.enableFailQuick(false);
-    Log.info("I AM ALIVE!", this.getClass().getName());
-
-    DatabaseAccessManager4SQL.init();
-    DemoRecManagerImpl.init();
-
-    Optional<URL> optionalURL = Optional.ofNullable(DemoRecServerApplication.class.getResource("/DemoRec.sql"));
-    if(optionalURL.isEmpty()) {
-      Log.error("0xAAAAAA Could not find schema for database.");
-    }
-    String schema = FileReaderWriter.readFromFile(optionalURL.get());
-    Log.info("Loading schema: " + schema, this.getClass().getName());
-    DatabaseAccessManager4SQL.initSchema(schema);
-
+    super.init();
 
     setBlobStorageLocation();
 
@@ -56,25 +43,58 @@ public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
 
       BatteryPack pack = DemoRecManager.batteryPackBuilder()
           .name("Demontage gestartet am 24.01.29")
-          .condition(Optional.of("Sieht gut aus."))
-          .xPos(0.0)
-          .yPos(0.0)
-          .zPos(0.0)
+          .condition(State.OTHER)
+          .conditionDescription(Optional.of("Unfall Pack"))
+          .xPos(Optional.of(0.0))
+          .yPos(Optional.of(0.0))
+          .zPos(Optional.of(0.0))
           .isA(
               DemoRecManager.componentKindBuilder()
                   .name("VW Pack")
-                  .oENumber("27347239")
+                  .oENumber(Optional.of("27347239"))
                   .humanDescription(Optional.of("Ganzes Pack"))
-                  .width(200.0)
-                  .length(300.2)
-                  .height(52.8)
-                  .weight(1556.5)
+                  .width(Optional.of(200.0))
+                  .length(Optional.of(300.2))
+                  .height(Optional.of(52.8))
+                  .weight(Optional.of(1556.5))
                   .build().get()
           )
           .stateOfCharge(0.00)
           .health(Optional.of(70.00))
           .type(type)
+          .build().get();
 
+      BatteryPackType type2 = DemoRecManager.batteryPackTypeBuilder()
+          .capacity(200.00)
+          .voltage(230.00)
+          .bmsLocation("Motorraum")
+          .vin("4652134")
+          .carBrand(Optional.of("Renault"))
+          .carModel(Optional.of("Zoe"))
+          .carYear(Optional.of("2019"))
+          .build().get();
+
+      BatteryPack pack2 = DemoRecManager.batteryPackBuilder()
+          .name("Zoe Pack")
+          .condition(State.HEALTHY)
+          .conditionDescription(Optional.empty())
+          .xPos(Optional.of(1.0))
+          .yPos(Optional.of(0.0))
+          .zPos(Optional.of(2.0))
+          .isA(
+              DemoRecManager.componentKindBuilder()
+                  .name("Zoe Pack")
+                  .oENumber(Optional.of("5462138"))
+                  .humanDescription(Optional.of("Zoe Pack"))
+                  .width(Optional.of(230.0))
+                  .length(Optional.of(800.2))
+                  .height(Optional.of(25.8))
+                  .weight(Optional.of(450.5))
+                  .build().get()
+          )
+          .stateOfCharge(0.00)
+          .health(Optional.of(98.00))
+          .type(type2)
           .build().get();
 
       Process process = DemoRecManager.processBuilder()
@@ -82,46 +102,55 @@ public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
           .deconstructionOf(pack)
           .build().get();
 
+      Process process2 = DemoRecManager.processBuilder()
+          .startedAt(LocalDate.now())
+          .deconstructionOf(pack2)
+          .build().get();
+
       DemoRecComponent component = DemoRecManager.demoRecComponentBuilder()
           .name("Deckel_1")
-          .condition(Optional.of("Sieht gut aus."))
-          .xPos(0.5)
-          .yPos(15.0)
-          .zPos(21.2)
+          .condition(State.HEALTHY)
+          .xPos(Optional.of(0.5))
+          .yPos(Optional.of(15.0))
+          .zPos(Optional.of(21.2))
           .isA(
               DemoRecManager.componentKindBuilder()
                   .name("Deckel")
-                  .oENumber("27347239")
+                  .oENumber(Optional.of("27347239"))
                   .humanDescription(Optional.of("Deckel"))
-                  .width(200.0)
-                  .length(150.2)
-                  .height(52.8)
-                  .weight(1056.5)
+                  .width(Optional.of(200.0))
+                  .length(Optional.of(150.2))
+                  .height(Optional.of(52.8))
+                  .weight(Optional.of(1056.5))
                   .build().get()
           )
           .build().get();
 
       DemoRecComponent component2 = DemoRecManager.demoRecComponentBuilder()
           .name("PackUnterteil_1")
-          .condition(Optional.of("Top"))
-          .xPos(1.0)
-          .yPos(187.0)
-          .zPos(25.2)
+          .condition(State.HEALTHY)
+          .xPos(Optional.of(1.0))
+          .yPos(Optional.of(187.0))
+          .zPos(Optional.of(25.2))
           .isA(
               DemoRecManager.componentKindBuilder()
                   .name("PackUnterteil")
-                  .oENumber("27347239")
+                  .oENumber(Optional.of("27347239"))
                   .humanDescription(Optional.of("Pack nach Deckelentfernung"))
-                  .width(2123.0)
-                  .length(150.425)
-                  .height(52.234)
-                  .weight(19132.5)
+                  .width(Optional.of(2123.0))
+                  .length(Optional.of(150.425))
+                  .height(Optional.of(52.234))
+                  .weight(Optional.of(19132.5))
                   .build().get()
           )
           .build().get();
 
+      pack.addAllComponents(component);
+      pack.addAllComponents(component2);
+
       JoinConnection connection = DemoRecManager.joinConnectionBuilder()
-          .state(78.5)
+          .condition(State.OTHER)
+          .conditionDescription(Optional.of("Korrodiert"))
           .xPos(Optional.of(65.8))
           .yPos(Optional.of(5.1))
           .zPos(Optional.of(-89.5622))
@@ -130,9 +159,7 @@ public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
       connection.addConnects(component);
       connection.addConnects(component2);
 
-      pack.addComposedOf(connection);
-
-      pack.addComposedOf(connection);
+      pack.addAllConnections(connection);
 
       EndEffector endEffector = DemoRecManager.endEffectorBuilder()
           .name("Screwdriver")

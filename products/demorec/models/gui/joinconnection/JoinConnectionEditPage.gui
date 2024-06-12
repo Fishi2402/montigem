@@ -1,0 +1,19 @@
+package gui.joinconnection;
+
+import DemoRec.JoinConnection;
+import DemoRec.DemoRecComponent;
+
+import gui.pack.ComponentsOfPack;
+import gui.staticcontainer.NavContainer;
+import gui.joinconnection.JoinConnectionEdit;
+
+page JoinConnectionEditPage(JoinConnection connection) {
+  @NavContainer(
+    content=[
+      @JoinConnectionEdit(connection=connection, showOptionalAttributes=true)
+    ],
+    leftSideBar=[
+      @ComponentsOfPack(pack=connection.batteryPack)
+    ]
+  );
+}

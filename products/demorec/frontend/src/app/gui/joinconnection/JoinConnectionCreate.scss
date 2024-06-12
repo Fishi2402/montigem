@@ -1,17 +1,20 @@
 :host ::ng-deep .removeComponent > button.gem-button::before {
   content: '\00D7'; /* Unicode for the "x" character */
   font-family: 'FontAwesome'; /* Font family to render the content as an icon */
-  font-size: 30px;
   margin-right: 5px; /* Adjust spacing between the icon and existing content */
+  font-weight: bold;
 }
 
 
 :host ::ng-deep .removeComponent > button.gem-button {
-  background-color: #ff6666;
+  background-color: #B22222; //ff6666;
   color: #fff;
-  border: none;
+  border: 2px solid #696969;
   cursor: pointer;
-  display: flex;
+  display: inline-block;
   align-self: flex-start;
   align-items: center;
+  border-radius: 10px;
+  width: fit-content;
+  height: fit-content;
 }
