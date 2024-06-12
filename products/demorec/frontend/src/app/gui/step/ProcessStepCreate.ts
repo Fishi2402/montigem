@@ -178,75 +178,75 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
               this.getStep().setUses1(endEffector)
             }
           }))
-      if (this.getSelectJoinConnectionEntry()) {
-        waitingFor.push(
-            DemoRecManager.getJoinConnectionSure(+this.getSelectJoinConnectionEntry())
-                .then((joinConnectionFromManager) => {
-                  if(joinConnectionFromManager) {
-                    joinConnection = joinConnectionFromManager
-                    this.getStep().setDeconstructs1(joinConnection)
-                  }
-                })
-        )
-        if (this.deconstructionVal === this.getSelectTypeEntry()) {
-          this.getStep().setType(ProcessStepType.DECONSTRUCTION)
-        } else {
-          this.getStep().setType(ProcessStepType.OTHER)
-        }
-        let i = 0
-        /*
-        if(this.getProcess().sizeConsistsOfs() > 0) {
-          i = this.getProcess().getConsistsOf1(this.getProcess().sizeConsistsOfs()-1).getIndex() +1;
-        }
-        /**/
-        this.getStep().setIndex(i)
-        this.building = true;
-        Promise.all(waitingFor).then(x => {
-
-          if (this.getStep().isBuildable()) {
-            const step = this.getStep().build()
-            this.create.emit(step);
-
-            // Execute superNgOnit again i.e. get a new builder from the backend
-            DemoRecManager.processStepBuilder().then(gemPromiseRes => {
-              this.step = gemPromiseRes;
-              this.typeEntry = ""
-              this.endEffectorEntry = ""
-              this.joinConnectionEntry = ""
-              this.building = false;
-            })
-          } else {
-            this.building = false;
-          }
-        })
-        /**/
+      waitingFor.push(
+          DemoRecManager.getJoinConnectionSure(+this.getSelectJoinConnectionEntry())
+              .then((joinConnectionFromManager) => {
+                if(joinConnectionFromManager) {
+                  joinConnection = joinConnectionFromManager
+                  this.getStep().setDeconstructs1(joinConnection)
+                }
+              })
+      )
+      if (this.deconstructionVal === this.getSelectTypeEntry()) {
+        this.getStep().setType(ProcessStepType.DECONSTRUCTION)
+      } else {
+        this.getStep().setType(ProcessStepType.OTHER)
       }
+      // Will be set in ProcessOverview
+      this.getStep().setIndex(0)
+      this.building = true;
+      Promise.all(waitingFor).then(x => {
+        if (this.getStep().isBuildable()) {
+          const step = this.getStep().build()
+          this.create.emit(step);
+          if(this.amountOfSteps > 1) {
+            for(let i = 0; i < this.amountOfSteps-1; i++) {
+              this.createCopyOfConnectionAndStep(joinConnection, step)
+            }
+          }
+          // Execute superNgOnit again i.e. get a new builder from the backend
+          DemoRecManager.processStepBuilder().then(gemPromiseRes => {
+            this.step = gemPromiseRes;
+            this.typeEntry = ""
+            this.endEffectorEntry = ""
+            this.joinConnectionEntry = ""
+            this.building = false;
+          })
+        } else {
+          this.building = false;
+        }
+      })
     }
   }
 
   private createCopyOfConnectionAndStep(connection: JoinConnection, step : ProcessStep) {
     DemoRecManager.joinConnectionBuilder().then(builder => {
-      const connectionCopy= builder.condition(connection.getCondition())
-          .joinConnectionType(connection.getJoinConnectionType())
-          .xPos(connection.getXPos())
-          .yPos(connection.getYPos())
-          .zPos(connection.getZPos())
-          .conditionDescription(connection.getConditionDescription())
-          .connects(new Set<DemoRecComponent>(connection.getConnects()))
-          .batteryPack(connection.getBatteryPack())
-          .build()
+      let connectionCopy
+      if(connection) {
+        connectionCopy= builder.condition(connection.getCondition())
+            .joinConnectionType(connection.getJoinConnectionType())
+            .xPos(connection.getXPos())
+            .yPos(connection.getYPos())
+            .zPos(connection.getZPos())
+            .conditionDescription(connection.getConditionDescription())
+            .connects(new Set<DemoRecComponent>(connection.getConnects()))
+            .batteryPack(connection.getBatteryPack())
+            .build()
+      }
       return new Promise((resolve, reject) => {
         resolve(connectionCopy)
       })
     }).then((connectionCopy : JoinConnection) => {
       DemoRecManager.processStepBuilder().then(builder => {
-        const processStepCopy = builder
+        builder
             .uses(step.getUses())
             .timeConsumption(step.getTimeConsumption())
             .type(step.getType())
-            .deconstructs(connectionCopy)
             .index(0)
-            .build()
+        if(connectionCopy) {
+          builder.deconstructs(connectionCopy)
+        }
+        const processStepCopy = builder.build()
         this.create.emit(processStepCopy);
       })
     })
