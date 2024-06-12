@@ -40,7 +40,7 @@ export class LoadResult<E> {
 
   public get(): E {
     if (!this.isPresent()) {
-      Log.error("0xE2921 Object was not loaded: " + LoadingState["_$wrappers"][this.loadingState].toString());
+      Log.error("0xE2921 Object was not loaded: " + LoadingState["_$wrappers"][this.loadingState]?.toString());
     }
     return this.obj;
   }

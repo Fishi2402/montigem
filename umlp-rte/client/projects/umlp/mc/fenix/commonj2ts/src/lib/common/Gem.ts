@@ -147,7 +147,7 @@ export class Gem<E extends GemIdentifiable> implements GemIdentifiable {
   public get(): Promise<E> {
     return this.loadIfRequired().then(_ => this.isPresent()).then((isPresent: boolean) => {
       if (!isPresent) {
-        Log.error("0xE2921 Object was not loaded: " + this.loadingState.toString());
+        Log.error("0xE2921 Object was not loaded: " + this.loadingState?.toString());
       }
       return this.object;
     });

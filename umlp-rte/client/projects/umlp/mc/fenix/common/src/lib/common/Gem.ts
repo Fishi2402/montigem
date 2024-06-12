@@ -93,7 +93,7 @@ export class Gem<E extends GemIdentifiable> implements GemIdentifiable {
   public async load(): Promise<E> {
     const present = await this.isPresent();
     if (!present) {
-      console.error("0xE2921 this.object was not loaded: " + this.loadingState.toString());
+      console.error("0xE2921 this.object was not loaded: " + this.loadingState?.toString());
       // todo: wir müssen allgemein mal über den Umgang mit fatalen Fehlern reden
       // und was wir daraus machen. Ein Websystem ist ja was anderes als ein Batch-Generator
     }

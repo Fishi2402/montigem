@@ -45,7 +45,7 @@ export class LoadResult<E> {
 
   public get(): E {
     if (!this.isPresent()) {
-      console.error("0xE2921 Object was not loaded: " + this.loadingState.toString());
+      console.error("0xE2921 Object was not loaded: " + this.loadingState?.toString());
     }
     return this.obj;
   }
