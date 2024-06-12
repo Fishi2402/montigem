@@ -45,8 +45,8 @@ export  class ComponentsOfPack extends ComponentsOfPackComponent {
   protected alreadyUpdatePack : boolean = false
   protected lastPack : BatteryPack
 
-  public constructor(route : ActivatedRoute, router :Router, protected packService: BatteryPackService) {
-    super(route, router);
+  public constructor( protected packService: BatteryPackService) {
+    super();
     this.packService.currentPack.subscribe(pack => {
       if(pack) {
         this.lastPack = pack
@@ -54,10 +54,12 @@ export  class ComponentsOfPack extends ComponentsOfPackComponent {
     })
   }
 
-  public override navigateToComponent(event) {
-    console.warn(event)
-    if(event.value != unroutable) {
-      this.router.navigate(["gui/component/ComponentEditPage/"+event.value])
+  public override navigateToComponent() : (arg) => void  {
+    return (event) => {
+      console.warn(event)
+      if(event.value != unroutable) {
+        this._router.navigate(["gui/component/ComponentEditPage/"+event.value])
+      }
     }
   }
 
@@ -87,9 +89,11 @@ export  class ComponentsOfPack extends ComponentsOfPackComponent {
     return components
   }
 
-  public override navigateToConnection(event) {
-    console.warn(event)
-    this.router.navigate(["gui/joinconnection/JoinConnectionEditPage/"+event.value])
+  public override navigateToConnection() : (arg) => void  {
+    return (event) => {
+      console.warn(event)
+      this._router.navigate(["gui/joinconnection/JoinConnectionEditPage/"+event.value])
+    }
   }
 
   public override getConnectionsItems(): GemTreeviewEntry[] {
@@ -147,8 +151,8 @@ export  class ComponentsOfPack extends ComponentsOfPackComponent {
     return this.treeConnectionItems.value
   }
 
-  public override navigateToPackEdit() : void {
-    this.router.navigate(["gui/pack/PackEditPage/"+this.getPack().getGemId()])
+  public override navigateToPackEdit() : (arg) =>  void {
+    return $ => this._router.navigate(["gui/pack/PackEditPage/"+this.getPack().getGemId()])
   }
 }
 

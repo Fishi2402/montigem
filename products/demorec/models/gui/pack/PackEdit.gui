@@ -33,8 +33,8 @@ page PackEdit(BatteryPack pack) {
         @GemRow(
           colGap="5px",
           components=[
-            @ChoosePackType(currentType=pack.type, chosenType=changePackType),
-            @GemButton(label = "Edit batterypack type", leftClick = editBatteryPackType)
+            @ChoosePackType(currentType=pack.type, chosenType=changePackType()),
+            @GemButton(label = "Edit batterypack type", leftClick = editBatteryPackType())
           ]
         ),
         @ComponentEdit(component=pack)

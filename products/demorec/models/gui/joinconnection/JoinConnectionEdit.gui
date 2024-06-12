@@ -42,8 +42,8 @@ page JoinConnectionEdit(JoinConnection connection, boolean showOptionalAttribute
               inputType = "dropdown",
               options = null,
               entry = null,
-              keyRelease = tryToAddComponent),
-          addComponent@GemButton(label = "Add Component", leftClick = connectSelectedComponent, disabled=false)
+              keyRelease = tryToAddComponent()),
+          addComponent@GemButton(label = "Add Component", leftClick = connectSelectedComponent(), disabled=false)
         ]
       ),
 
@@ -60,7 +60,7 @@ page JoinConnectionEdit(JoinConnection connection, boolean showOptionalAttribute
       newCompGuard@guard(true) {
         createComponentDialog@GemColumn(
           components=[
-            @ComponentCreate(createComponent=addNewComponent)
+            @ComponentCreate(createComponent=addNewComponent())
           ]
         );
       },

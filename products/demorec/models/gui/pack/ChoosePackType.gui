@@ -15,7 +15,7 @@ page ChoosePackType(BatteryPackType currentType, Event<BatteryPackType> chosenTy
     entry = null
   );
   createPackType@guard(true) {
-    @PackTypeCreate(newType=addNewBatteryPackType);
+    @PackTypeCreate(newType=addNewBatteryPackType());
   }
 
 }

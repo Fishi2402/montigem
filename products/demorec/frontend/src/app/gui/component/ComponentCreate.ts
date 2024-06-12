@@ -37,8 +37,8 @@ export class ComponentCreate extends ComponentCreateComponent {
   @Output()
   public createComponent: EventEmitter<DemoRecComponent> = new EventEmitter<DemoRecComponent>();
 
-  public constructor(router: Router, protected packService: BatteryPackService) {
-    super(router);
+  public constructor(protected packService: BatteryPackService) {
+    super();
     this.packService.currentPack.subscribe(p => {
       this.currentPack = p
     })
@@ -47,23 +47,24 @@ export class ComponentCreate extends ComponentCreateComponent {
   public override ngOnInit(): void {
     DemoRecManager.demoRecComponentBuilder().then(gemPromiseRes => {
       this.component = gemPromiseRes;
-      this.getComponent().condition(State.HEALTHY)
+      this.getComponent().setCondition(State.HEALTHY)
     });
 
     this.init();
   }
 
-  public override createNewComponent(event: any): void {
-
-    if(this.getComponent()?.isBuildable() && !this.getComponent()?.isBuildFinished()) {
-      if(this.currentPack) {
-        this.getComponent().setBatteryPack1(this.currentPack)
-      } else {
-        console.warn("No Pack available for Component")
+  public override createNewComponent(): (arg: void) => void {
+    return $ => {
+      if(!this.getComponent()?.isBuildFinished()) {
+        if(this.currentPack) {
+          this.getComponent().setBatteryPack1(this.currentPack)
+        } else {
+          console.warn("No Pack available for Component")
+        }
+        const component = this.getComponent().build()
+        this.createComponent.emit(component)
+        super.ngOnInit()
       }
-      const component = this.getComponent().build()
-      this.createComponent.emit(component)
-      super.ngOnInit()
     }
   }
 

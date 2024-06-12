@@ -53,11 +53,11 @@ export class StepTable extends StepTableComponent {
   }
 
   public override editStep(step: ProcessStep): (arg: void) => void {
-    return () => this.router.navigate(["gui/step/ProcessStepEdit/"+this.getProcess().getGemId()+"/"+step.getGemId()])
+    return () => this._router.navigate(["gui/step/ProcessStepEdit/"+this.getProcess().getGemId()+"/"+step.getGemId()])
   }
 
-  public override deleteStep(step: ProcessStep) : (step: ProcessStep) => void {
-    return () => {
+  public override deleteStep(step: ProcessStep) : (arg) => void {
+    return (step: ProcessStep) => {
       if(this.getProcess().removeConsistsOf2(step)) {
         DemoRecManager.deleteProcessStep(step.getGemId())
       }

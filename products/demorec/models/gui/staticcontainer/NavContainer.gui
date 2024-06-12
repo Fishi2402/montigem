@@ -21,7 +21,7 @@ component NavContainer(List<GUIViewElement> content, List<GUIViewElement> leftSi
             x=["20rem", "70rem", "20rem"],
             cols=[
               [@GemColumn(rowGap= "5px", components=[
-                  @GemButton(label="Toggle SideBar", leftClick=toggleSideBar),
+                  @GemButton(label="Toggle SideBar", leftClick=toggleSideBar()),
                   @GemColumn(components=leftSideBar)
               ])],
               [@GemColumn(rowGap = "5px", components = [

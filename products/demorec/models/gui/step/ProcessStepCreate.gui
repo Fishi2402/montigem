@@ -39,7 +39,7 @@ page ProcessStepCreate(ProcessStep step, Event<ProcessStep> create) {
                   entry = null);
             }
             createNewJoinConnection@guard(true) {
-              @JoinConnectionCreate(createJoinConnection=addNewJoinConnection);
+              @JoinConnectionCreate(createJoinConnection=addNewJoinConnection());
             }
           },
           stepProcessStepRelated@guard(true) {

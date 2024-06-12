@@ -27,12 +27,6 @@ export class PackEdit extends PackEditComponent {
   private lastType : BatteryPackType
   private oldDerivedPackname : string = ""
 
-  public constructor(route: ActivatedRoute, protected router : Router) {
-    super(route, router);
-
-  }
-
-
   // TODO think about how to derive names
   public getPackNameEntry (): string {
     let packNameStart : string = ""
@@ -76,7 +70,10 @@ export class PackEdit extends PackEditComponent {
     }
   }
 
-  public override editBatteryPackType() : void {
-    this.router.navigate(["gui/pack/PackTypeEdit/"+this.getPack().getType().getGemId()])
+  public override editBatteryPackType() : (arg) => void {
+    return $ => {
+      this._router.navigate(["gui/pack/PackTypeEdit/"+this.getPack().getType().getGemId()])
+    }
+
   }
 }

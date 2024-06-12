@@ -19,13 +19,13 @@ import {JoinConnection} from "../../demorec/JoinConnection";
 export  class ComponentEditPage extends ComponentEditPageComponent {
 
 
-  public constructor(route: ActivatedRoute, protected router: Router) {
-    super(route, router);
+  public constructor() {
+    super();
 
-    router.events.subscribe((val) => {
+    this._router.events.subscribe((val) => {
       if(val instanceof NavigationEnd) {
-        if(route.snapshot.paramMap.get("componentRoutingId") != null) {
-          this.componentRoutingId = +route.snapshot.paramMap.get("componentRoutingId");
+        if(this._route.snapshot.paramMap.get("componentRoutingId") != null) {
+          this.componentRoutingId = +this._route.snapshot.paramMap.get("componentRoutingId");
           this.ngOnInit()
         }
       }

@@ -93,16 +93,18 @@ export class PhotoDragNDrop extends PhotoDragNDropComponent {
     });
   }
 
-  public override uploadAllFiles(event: any): void {
-    this.uploadFailureMessage = false;
-    this.stateUploading = true;
-    const files = Array.from(this.files)
-    files.forEach(f =>
-      {
-        const name = this.getAttachedComponent().replace(" ","_")
-        this.uploadFile(f, name)
-      }
-    )
+  public override uploadAllFiles(): (arg: void) => void  {
+    return $ =>  {
+      this.uploadFailureMessage = false;
+      this.stateUploading = true;
+      const files = Array.from(this.files)
+      files.forEach(f =>
+          {
+            const name = this.getAttachedComponent().replace(" ","_")
+            this.uploadFile(f, name)
+          }
+      )
+    }
   }
 
 

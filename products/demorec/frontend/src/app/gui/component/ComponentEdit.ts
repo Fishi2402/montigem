@@ -41,8 +41,8 @@ export  class ComponentEdit extends ComponentEditComponent {
 
   conditionOptions : Option[] = []
 
-  public constructor(route: ActivatedRoute, protected router: Router) {
-    super(route, router);
+  public constructor() {
+    super();
 
     this.conditionOptions = []
     Object.keys(State).filter(s => !isNaN(+s)).forEach(key => {
@@ -60,10 +60,10 @@ export  class ComponentEdit extends ComponentEditComponent {
       });
     });
 
-    router.events.subscribe((val) => {
+    this._router.events.subscribe((val) => {
       if(val instanceof NavigationEnd) {
-        if(route.snapshot.paramMap.get("componentRoutingId") != null) {
-          this.componentRoutingId = +route.snapshot.paramMap.get("componentRoutingId");
+        if(this._route.snapshot.paramMap.get("componentRoutingId") != null) {
+          this.componentRoutingId = +this._route.snapshot.paramMap.get("componentRoutingId");
           this.ngOnInit()
         }
       }
@@ -74,12 +74,17 @@ export  class ComponentEdit extends ComponentEditComponent {
     return $ => this._router.navigateByUrl("gui/kind/Edit/"+this.getComponent().getIsA().getGemId());
   }
 
-  public override addPhoto(photo : Photo) : void {
-    this.getComponent().addPhoto2(photo)
+  public override addPhoto() : (arg : Photo) => void {
+    return (photo : Photo) => {
+      this.getComponent().addPhoto2(photo)
+    }
+
   }
 
-  public override changeToKind(kind : ComponentKind)  {
-    this.getComponent().setIsA1(kind)
+  public override changeToKind() : (arg : ComponentKind) => void  {
+    return (kind : ComponentKind) => {
+      this.getComponent().setIsA1(kind)
+    }
   }
 
   // Select condition of connection

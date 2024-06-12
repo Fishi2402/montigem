@@ -31,7 +31,7 @@ page ComponentEdit(DemoRecComponent component, boolean showOptionalValues=true, 
       @GemRow(
         colGap="5px",
         components=[
-          @ChooseComponentKind(currentKind= component.isA,chosenKind=changeToKind),
+          @ChooseComponentKind(currentKind= component.isA,chosenKind=changeToKind()),
           @guard(editButton) {
             @GemButton(label = "Edit component kind", leftClick = editComponentKind());
           }
@@ -54,7 +54,7 @@ page ComponentEdit(DemoRecComponent component, boolean showOptionalValues=true, 
           ]
         );
         @PhotoDisplay(component=component);
-        photoDragAndDrop@PhotoDragNDrop(createPhoto=addPhoto, attachedComponent = component.name);
+        photoDragAndDrop@PhotoDragNDrop(createPhoto=addPhoto(), attachedComponent = component.name);
       }
 
   ]);

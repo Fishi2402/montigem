@@ -39,18 +39,18 @@ export class JoinConnectionEdit extends JoinConnectionEditComponent implements O
 
   currentPack : BatteryPack
 
-  public constructor(route :ActivatedRoute, router: Router, protected packService: BatteryPackService) {
-    super(route, router);
+  public constructor(protected packService: BatteryPackService) {
+    super();
     this.packService.currentPack.subscribe(p => {
       this.currentPack = p
       this.filteredComponentOptions = [newOption].concat(
           this.componentOptions.filter(opt => this.getCurrentPackComponents().has(opt.value)))
     })
 
-    router.events.subscribe((val) => {
+    this._router.events.subscribe((val) => {
       if(val instanceof NavigationEnd) {
-        if(route.snapshot.paramMap.get("connectionRoutingId") != null) {
-          this.connectionRoutingId = +route.snapshot.paramMap.get("connectionRoutingId");
+        if(this._route.snapshot.paramMap.get("connectionRoutingId") != null) {
+          this.connectionRoutingId = +this._route.snapshot.paramMap.get("connectionRoutingId");
           this.ngOnInit()
         }
       }
@@ -68,7 +68,6 @@ export class JoinConnectionEdit extends JoinConnectionEditComponent implements O
 
   public override ngOnInit(){
     super.ngOnInit()
-    this.dummyComponentNames = [];
 
     // Initialize joinConnectionTypeOptions
     this.joinConnectionTypeOptions = [];
@@ -160,7 +159,7 @@ export class JoinConnectionEdit extends JoinConnectionEditComponent implements O
     this.connectsComponentEntry = value
   }
 
-  public override connectSelectedComponent((): (arg: void) => void {
+  public override connectSelectedComponent(): (arg: void) => void {
     return $ => {
       if(this.getSelectConnectsComponentEntry()) {
         DemoRecManager.getDemoRecComponentSure(+this.getSelectConnectsComponentEntry()).then(
@@ -168,12 +167,14 @@ export class JoinConnectionEdit extends JoinConnectionEditComponent implements O
               this.getConnection().addConnects2(demoRecComponent)
             }
         )
-      }  
+      }
     }
   }
 
-  public override addNewComponent(comp: DemoRecComponent) {
-    this.getConnection().addConnects2(comp)
+  public override addNewComponent(): (comp: DemoRecComponent) => void {
+    return (comp: DemoRecComponent) => {
+      this.getConnection().addConnects2(comp)
+    }
   }
 
   public override removeSelectedComponent(componentToRemove: DemoRecComponent): (arg: any) => void {

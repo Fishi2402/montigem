@@ -62,7 +62,6 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
 
   public override ngOnInit(): void {
     super.ngOnInit()
-    this.values = [];
 
     this.selectTypeOptions = [
       {value: this.deconstructionVal, display: "Deconstruction"},
@@ -166,59 +165,62 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
     }
   }
 
-  public override createNewStep(event: any): void {
-    console.debug("Clicked on Create Button", this.amountOfSteps)
-    const waitingFor = [];
-    let joinConnection
-    let endEffector
-    waitingFor.push(DemoRecManager.getEndEffectorSure(+this.getSelectEndeffectorEntry())
-        .then((endEffectorFromManager) => {
-          if(endEffectorFromManager) {
-            endEffector = endEffectorFromManager
-            this.getStep().uses(endEffector)
-          }
-        }))
-    if (this.getSelectJoinConnectionEntry()) {
-      waitingFor.push(DemoRecManager.getJoinConnectionSure(+this.getSelectJoinConnectionEntry())
-          .then((joinConnectionFromManager) => {
-            if(joinConnectionFromManager) {
-              joinConnection = joinConnectionFromManager
-              this.getStep().deconstructs(joinConnection)
+  public override createNewStep(): (arg) =>  void {
+    return $ => {
+      console.debug("Clicked on Create Button", this.amountOfSteps)
+      const waitingFor = [];
+      let joinConnection
+      let endEffector
+      waitingFor.push(DemoRecManager.getEndEffectorSure(+this.getSelectEndeffectorEntry())
+          .then((endEffectorFromManager) => {
+            if(endEffectorFromManager) {
+              endEffector = endEffectorFromManager
+              this.getStep().setUses1(endEffector)
             }
-      }
-      if (this.deconstructionVal === this.getSelectTypeEntry()) {
-        this.getStep().setType(ProcessStepType.DECONSTRUCTION)
-      } else {
-        this.getStep().setType(ProcessStepType.OTHER)
-      }
-      let i = 0
-      /*
-      if(this.getProcess().sizeConsistsOfs() > 0) {
-        i = this.getProcess().getConsistsOf1(this.getProcess().sizeConsistsOfs()-1).getIndex() +1;
-      }
-      /**/
-      this.getStep().setIndex(i)
-      this.building = true;
-      Promise.all(waitingFor).then(x => {
-
-        if (this.getStep().isBuildable()) {
-          const step = this.getStep().build()
-          this.create.emit(step);
-
-          // Execute superNgOnit again i.e. get a new builder from the backend
-          DemoRecManager.processStepBuilder().then(gemPromiseRes => {
-            this.step = gemPromiseRes;
-            this.typeEntry = ""
-            this.endEffectorEntry = ""
-            this.joinConnectionEntry = ""
-            this.building = false;
-            this.values = []
-          })
+          }))
+      if (this.getSelectJoinConnectionEntry()) {
+        waitingFor.push(
+            DemoRecManager.getJoinConnectionSure(+this.getSelectJoinConnectionEntry())
+                .then((joinConnectionFromManager) => {
+                  if(joinConnectionFromManager) {
+                    joinConnection = joinConnectionFromManager
+                    this.getStep().setDeconstructs1(joinConnection)
+                  }
+                })
+        )
+        if (this.deconstructionVal === this.getSelectTypeEntry()) {
+          this.getStep().setType(ProcessStepType.DECONSTRUCTION)
         } else {
-          this.building = false;
+          this.getStep().setType(ProcessStepType.OTHER)
         }
-      })
-      /**/
+        let i = 0
+        /*
+        if(this.getProcess().sizeConsistsOfs() > 0) {
+          i = this.getProcess().getConsistsOf1(this.getProcess().sizeConsistsOfs()-1).getIndex() +1;
+        }
+        /**/
+        this.getStep().setIndex(i)
+        this.building = true;
+        Promise.all(waitingFor).then(x => {
+
+          if (this.getStep().isBuildable()) {
+            const step = this.getStep().build()
+            this.create.emit(step);
+
+            // Execute superNgOnit again i.e. get a new builder from the backend
+            DemoRecManager.processStepBuilder().then(gemPromiseRes => {
+              this.step = gemPromiseRes;
+              this.typeEntry = ""
+              this.endEffectorEntry = ""
+              this.joinConnectionEntry = ""
+              this.building = false;
+            })
+          } else {
+            this.building = false;
+          }
+        })
+        /**/
+      }
     }
   }
 
@@ -307,13 +309,15 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
     return String(this.passedSeconds);
   }
 
-  public override addNewJoinConnection(connection: JoinConnection) {
-    this.calculateDisplayValueOfJoinConnection(connection).then(
-      opt =>  {
-        this.joinConnectionOptions.push(opt)
-        this.setSelectJoinConnectionEntry(String(connection.getGemId()))
-      }
-    )
+  public override addNewJoinConnection(): (arg: JoinConnection) => void {
+    return (connection: JoinConnection) => {
+      this.calculateDisplayValueOfJoinConnection(connection).then(
+          opt =>  {
+            this.joinConnectionOptions.push(opt)
+            this.setSelectJoinConnectionEntry(String(connection.getGemId()))
+          }
+      )
+    }
   }
 
   public override getDeconstructionGuardCondition() : boolean {

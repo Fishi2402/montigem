@@ -31,11 +31,13 @@ export class Start extends StartComponent {
     return $ => this._router.navigate(["gui/process/ProcessOverview/"+p.getGemId()])
   }
 
-  public override deleteProcess (p: Process) : (p: Process) => void {
-    if(p.sizeConsistsOfs() === 0) {
-      console.warn("Deleting Process")
-      return () => DemoRecManager.deleteProcess(p.getGemId());
+  public override deleteProcess(p: Process): (arg: void) => void {
+    return $ => {
+      if(p.sizeConsistsOfs() === 0) {
+        console.warn("Deleting Process")
+        DemoRecManager.deleteProcess(p.getGemId());
+      }
+      console.error("Delete all Process Steps first.")
     }
-    return () => console.error("Delete all Process Steps first.")
   }
 }

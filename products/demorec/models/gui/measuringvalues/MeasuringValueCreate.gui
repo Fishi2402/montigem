@@ -22,7 +22,7 @@ page MeasuringValueCreate(MeasuringValue measuringValue, Event<MeasuringValue> m
         options = null,
         entry = null
       ),
-      addMeasuringValue@GemButton(label = "Add Value", leftClick = createNewMeasuringValue, disabled=false)
+      addMeasuringValue@GemButton(label = "Add Value", leftClick = createNewMeasuringValue(), disabled=false)
     ]
   );
 }

@@ -19,7 +19,7 @@ page ChooseComponentKind(ComponentKind currentKind, Event<ComponentKind> chosenK
           entry = null
         ),
         createComponentKind@guard(true) {
-          @CreateComponentKind(newKind=addNewComponentKind);
+          @CreateComponentKind(newKind=addNewComponentKind());
         }
     ]
   );

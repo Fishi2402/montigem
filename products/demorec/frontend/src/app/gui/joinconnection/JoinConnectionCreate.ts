@@ -43,7 +43,7 @@ export class JoinConnectionCreate extends JoinConnectionCreateComponent {
 
     DemoRecManager.joinConnectionBuilder().then(gemPromiseRes => {
       this.connection = gemPromiseRes;
-      this.connection.condition(State.HEALTHY)
+      this.connection.setCondition(State.HEALTHY)
     });
 
     this.init();
@@ -53,21 +53,23 @@ export class JoinConnectionCreate extends JoinConnectionCreateComponent {
     return false || !this.getConnection()?.isBuildable();
   }
 
-  public override createNewConnection (event: any): void {
-    if(this.getConnection().isBuildable()) {
-      if(this.currentPack) {
-        this.getConnection().setBatteryPack1(this.currentPack)
+  public override createNewConnection(): (arg: void) => void  {
+    return $ => {
+      if(this.getConnection().isBuildable()) {
+        if(this.currentPack) {
+          this.getConnection().setBatteryPack1(this.currentPack)
+        } else {
+          console.warn("No Pack available for Connection")
+        }
+
+        console.debug("New Connection is buildable")
+        const joinConnection = this.getConnection().build()
+        this.createJoinConnection.emit(joinConnection)
+
       } else {
-        console.warn("No Pack available for Connection")
+        console.debug("New Connection is not buildable")
+        this.getConnection().build()
       }
-
-      console.debug("New Connection is buildable")
-      const joinConnection = this.getConnection().build()
-      this.createJoinConnection.emit(joinConnection)
-
-    } else {
-      console.debug("New Connection is not buildable")
-      this.getConnection().build()
     }
   }
 

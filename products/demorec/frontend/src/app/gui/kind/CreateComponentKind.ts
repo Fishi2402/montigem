@@ -32,13 +32,11 @@ export class CreateComponentKind extends CreateComponentKindComponent {
   @Output()
   public newKind : EventEmitter<ComponentKind> = new EventEmitter<ComponentKind>()
 
-  public constructor(protected router: Router) {
-    super(router);
-  }
-
-  public override createNewComponentKind() {
-    if(this.getKind().isBuildable()) {
-      this.newKind.emit(this.getKind().build())
+  public override createNewComponentKind(): (arg: void) => void {
+    return $ => {
+      if(this.getKind().isBuildable()) {
+        this.newKind.emit(this.getKind().build())
+      }
     }
   }
 

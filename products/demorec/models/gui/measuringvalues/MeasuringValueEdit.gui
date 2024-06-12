@@ -18,7 +18,7 @@ page MeasuringValueEdit(ProcessStep step) {
     component = @GemColumn(
       colGap="10px",
       components = [
-        addNewMeasuringValue@MeasuringValueCreate(measuringValueEvent = attachMeasuringValue),
+        addNewMeasuringValue@MeasuringValueCreate(measuringValueEvent = attachMeasuringValue()),
         @iterate(MeasuringValue measuringValue : step.measured) {
           displayedMeasuringValueRow@GemRow(
             wrap="nowrap",

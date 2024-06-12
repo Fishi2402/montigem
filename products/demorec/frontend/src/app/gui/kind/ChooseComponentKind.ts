@@ -38,13 +38,13 @@ export class ChooseComponentKind extends ChooseComponentKindComponent {
   @Output()
   public chosenKind : EventEmitter<ComponentKind> = new EventEmitter<ComponentKind>()
 
-  public constructor(route: ActivatedRoute, protected router: Router) {
-    super(route, router);
+  public constructor() {
+    super();
 
-    router.events.subscribe((val) => {
+    this._router.events.subscribe((val) => {
       if(val instanceof NavigationEnd) {
-        if(route.snapshot.paramMap.get("currentKindRoutingId") != null) {
-          this.currentKindRoutingId = +route.snapshot.paramMap.get("currentKindRoutingId");
+        if(this._route.snapshot.paramMap.get("currentKindRoutingId") != null) {
+          this.currentKindRoutingId = +this._route.snapshot.paramMap.get("currentKindRoutingId");
           this.ngOnInit()
           this.chosenKindNotLoaded=true
           this.kindEntry = ""
@@ -98,9 +98,11 @@ export class ChooseComponentKind extends ChooseComponentKindComponent {
     }
   }
 
-  public override addNewComponentKind(kind : ComponentKind) : void {
-    this.kindOptions.push({value: kind.getGemId()+"", display: kind.getName()})
-    this.setSelectComponentKindEntry(kind.getGemId()+"")
+  public override addNewComponentKind(): (arg : ComponentKind) => void {
+    return (kind : ComponentKind) => {
+      this.kindOptions.push({value: kind.getGemId()+"", display: kind.getName()})
+      this.setSelectComponentKindEntry(kind.getGemId()+"")
+    }
   }
 
 

@@ -40,7 +40,7 @@ export class ProcessCreate extends ProcessCreateComponent {
       this.p = gemPromiseRes;
       if(!this.p.getStartedAt()){
         console.warn("Updating Set Started At")
-        this.getP().startedAt(new Date())
+        this.getP().setStartedAt(new Date())
       } else {
         console.warn("Nothing happens")
       }
@@ -96,9 +96,9 @@ export class ProcessCreate extends ProcessCreateComponent {
       }
 
       pack.then(pack => {
-        this.getP().deconstructionOf(pack)
+        this.getP().setDeconstructionOf1(pack)
         this.getP().build()
-        this.router.navigate(["gui/process/ProcessOverview/"+this.getP().getGemId()])
+        this._router.navigate(["gui/process/ProcessOverview/"+this.getP().getGemId()])
       })
     }
   }

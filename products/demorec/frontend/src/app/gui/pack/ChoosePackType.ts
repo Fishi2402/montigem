@@ -41,10 +41,6 @@ export class ChoosePackType extends ChoosePackTypeComponent {
   @Output()
   public chosenType = new EventEmitter<BatteryPackType>
 
-  public constructor(route: ActivatedRoute, protected router: Router) {
-    super(route, router);
-  }
-
   public override ngOnInit() {
 
     if(this.currentTypeRoutingId != null && ((this.currentType == null) || (this.currentType.getGemId() != this.currentTypeRoutingId))) {

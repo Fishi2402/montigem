@@ -13,7 +13,7 @@ page CreateComponentKind(ComponentKind kind, Event<ComponentKind> newKind) {
     rowGap="5px",
     components=[
       @EditComponentKind(componentKind=kind,showOptionalValues=false),
-      @GemButton(label="Add ComponentKind", leftClick=createNewComponentKind, disabled=false)
+      @GemButton(label="Add ComponentKind", leftClick=createNewComponentKind(), disabled=false)
     ]
   );
 
