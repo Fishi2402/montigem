@@ -16,12 +16,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class UMLAssocToAttrTrafoTest extends AbstractUMLPTest {
 
   private static Stream<String> transformAssocs(){
-    return Stream.of("trafo/EnumAssocOne.umlp", "trafo/EnumAssocOpt.umlp", "trafo/EnumAssocMult.umlp");
+    return Stream.of("trafo/EnumAssocOne.umlp", "trafo/EnumAssocOpt.umlp", "trafo/EnumAssocMult.umlp",
+        "trafo/JavaAssocOne.umlp", "trafo/JavaAssocOpt.umlp", "trafo/JavaAssocMult.umlp");
   }
 
   @ParameterizedTest
   @MethodSource("transformAssocs")
-  public void testEnum(String modelName) {
+  public void testAssocTrafo(String modelName) {
     Log.init();
     ASTCDCompilationUnit ast = parse("src/test/resources", modelName);
     createSymTab(ast);
