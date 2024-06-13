@@ -1,0 +1,24 @@
+package gui.pack;
+
+import DemoRec.BatteryPack;
+
+import mc.fenix.basic.GemText;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.basic.GemTreeview;
+import mc.fenix.basic.GemButton;
+
+page ComponentsOfPack(BatteryPack pack) {
+
+  @GemCard(
+    title="BatteryPack",
+    component=packNav@GemButton(label=pack.name, leftClick=navigateToPackEdit())
+  );
+  @GemCard(
+    title="Components",
+    component=components@GemTreeview(items=null, leftClick=navigateToComponent())
+  );
+  @GemCard(
+    title="Join Connections",
+    component=connections@GemTreeview(items=null, leftClick=navigateToConnection())
+  );
+}

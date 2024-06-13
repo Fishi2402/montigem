@@ -1,0 +1,15 @@
+package gui.pack;
+
+import DemoRec.BatteryPackType;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.input.GemTextInput;
+
+import gui.pack.PackTypeEdit;
+
+page PackTypeCreate(BatteryPackType type, Event<BatteryPackType> newType) {
+
+  @PackTypeEdit(type=type);
+  @GemButton(label="Add BatteryPackType", leftClick=createNewBatteryPackType(), disabled=false);
+
+}

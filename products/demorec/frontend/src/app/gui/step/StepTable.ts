@@ -30,7 +30,7 @@ import { Option } from '@umlp/input';
   styles: config.styles,
   styleUrls: config.styleUrls
 })
-export  class StepTable extends StepTableComponent {
+export class StepTable extends StepTableComponent {
 
   public getReverseProcessSteps(): Array<ProcessStep> {
     let stepsCopy = []
@@ -52,20 +52,15 @@ export  class StepTable extends StepTableComponent {
     return step.getMeasured().length + ""
   }
 
-  public override getStepHasJoinConnectionCondition(step: ProcessStep): boolean {
-    return step.getDeconstructs() !== null
-  }
-
-  public override getJoinConnectionDescriptionValue(step: ProcessStep): string {
-    if (step.getDeconstructs()) {
-      return "Available"
-    }
-    else {
-      return "Not available"
-    }
-  }
-
   public override editStep(step: ProcessStep): (arg: void) => void {
     return () => this._router.navigate(["gui/step/ProcessStepEdit/"+this.getProcess().getGemId()+"/"+step.getGemId()])
+  }
+
+  public override deleteStep(step: ProcessStep) : (arg) => void {
+    return (step: ProcessStep) => {
+      if(this.getProcess().removeConsistsOf2(step)) {
+        DemoRecManager.deleteProcessStep(step.getGemId())
+      }
+    }
   }
 }

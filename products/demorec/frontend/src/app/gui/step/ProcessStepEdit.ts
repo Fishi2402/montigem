@@ -146,7 +146,7 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements OnInit 
   // Edit JoinConnections
 
   public override editJoinConnection(): (arg: void) => void {
-    return $ => this._router.navigate(["gui/joinconnection/JoinConnectionEdit/"+this.getP().getGemId()+"/"+this.getStep().getGemId()+"/"+this.getStep().getDeconstructs().getGemId()])
+    return $ => this._router.navigate(["gui/joinconnection/JoinConnectionEditPage/"+this.getStep().getDeconstructs().getGemId()])
   }
 
   public override getSelectJoinConnectionOptions(): Array<Option> {

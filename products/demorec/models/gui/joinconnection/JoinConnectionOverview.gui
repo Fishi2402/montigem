@@ -5,6 +5,6 @@ import DemoRec.JoinConnection;
 import mc.fenix.basic.GemText;
 
 component JoinConnectionOverview(JoinConnection connection) {
-  @GemText(value=connection.state);
+  @GemText(value=connection.condition);
   @GemText(value=connection.joinConnectionType);
 }

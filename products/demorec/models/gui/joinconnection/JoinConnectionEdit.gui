@@ -1,7 +1,5 @@
 package gui.joinconnection;
 
-import DemoRec.Process;
-import DemoRec.ProcessStep;
 import DemoRec.JoinConnection;
 import DemoRec.DemoRecComponent;
 
@@ -13,76 +11,70 @@ import mc.fenix.arrange.GemRow;
 import mc.fenix.input.GemTextInput;
 
 import gui.component.ComponentCreate;
-
+import gui.pack.ComponentsOfPack;
 import gui.staticcontainer.NavContainer;
 
-page JoinConnectionEdit(Process p, ProcessStep step, JoinConnection connection, List<String> dummyComponentNames) {
-  @NavContainer(
-    content=[
-      joinConnectionEditGemCard@GemCard(
-        title = "",
+page JoinConnectionEdit(JoinConnection connection, boolean showOptionalAttributes=true) {
 
-        component = @GemColumn(
-            wrap="nowrap",
-            components=[
-              @GemTextInput(
-                labelText = "State of Connection (%)",
-                inputType = "number",
-                placeholder = connection.state,
-                entry = connection.state),
+  @GemColumn(
+    wrap="nowrap",
+    rowGap="5px",
+    components=[
+      condition@GemTextInput(
+        labelText = "Condition of Connection",
+        inputType = "dropdown",
+        options = null,
+        entry = connection.condition),
 
-              selectTypeOfConnection@GemTextInput(
-                labelText = "Type of Connection",
-                inputType = "dropdown",
-                options = null,
-                entry = connection.joinConnectionType),
+      selectTypeOfConnection@GemTextInput(
+        labelText = "Type of Connection",
+        inputType = "dropdown",
+        options = null,
+        entry = connection.joinConnectionType),
 
-              selectSuperComponent@GemTextInput(
-                labelText = "Part of Component",
-                inputType = "dropdown",
-                options = null,
-                entry = null),
+      @GemRow(
+        wrap="nowrap",
+        vAlign="center",
+        hAlign="center",
+        components= [
+          selectConnectsComponent@GemTextInput(
+              labelText = "Components connected by this connection",
+              inputType = "dropdown",
+              options = null,
+              entry = null,
+              keyRelease = tryToAddComponent()),
+          addComponent@GemButton(label = "Add Component", leftClick = connectSelectedComponent(), disabled=false)
+        ]
+      ),
 
-              @GemRow(
-                wrap="nowrap",
-                vAlign="center",
-                hAlign="center",
-                components= [
-                  selectConnectsComponent@GemTextInput(
-                      labelText = "Components connected by this connection",
-                      inputType = "dropdown",
-                      options = null,
-                      entry = null,
-                      keyRelease = tryToAddComponent()
-                  ),
-                  addComponent@GemButton(label = "Add Component", leftClick = connectSelectedComponent(), disabled=false)
-                ]
-              ),
+      @GemRow(
+        wrap="nowrap",
+        colGap="5px",
+        components = [
+          @iterate(DemoRecComponent component : connection.connects){
+            removeComponent@GemButton(label=component.name, leftClick=removeSelectedComponent(component), disabled=false);
+          }
+        ]
+      ),
 
-              addedComponentsRow@GemRow(
-                wrap="nowrap",
-                colGap="5px",
-                components = [
-                  @iterate(String dummyComponentName : dummyComponentNames){
-                    @GemColumn(
-                      components = [removeComponent@GemButton(label = dummyComponentName, leftClick = removeSelectedComponent(dummyComponentName), disabled = false)]
-                    );
-                  }
-                ]
-              ),
-
-              newCompGuard@guard(true) {
-                createComponentDialog@GemColumn(
-                  components=[
-                    @ComponentCreate(createComponent=addNewComponent())
-                  ]
-                );
-              },
-
-              @GemButton(label = "Back to Step Editing", leftClick = backToStepEditing())
-            ]
-        )
-      )
+      newCompGuard@guard(true) {
+        createComponentDialog@GemColumn(
+          components=[
+            @ComponentCreate(createComponent=addNewComponent())
+          ]
+        );
+      },
+      optionalPos@guard(showOptionalAttributes) {
+        @GemRow(
+          width="30em",
+          colGap="5px",
+          components=[
+            xPos@GemTextInput(labelText = "X-Position", inputType = "number", entry = connection.xPos),
+            yPos@GemTextInput(labelText = "Y-Position", inputType = "number", entry = connection.yPos),
+            zPos@GemTextInput(labelText = "Z-Position", inputType = "number", entry = connection.zPos)
+          ]
+        );
+      }
     ]
   );
 }

@@ -12,88 +12,107 @@ import DemoRec.Process;
 import DemoRec.MeasuringValue;
 
 import gui.joinconnection.JoinConnectionCreate;
-import gui.step.MeasuringValueCreate;
+import gui.measuringvalues.MeasuringValueEdit;
 
-page ProcessStepCreate(ProcessStep step, List<String> values, Event<ProcessStep> create) {
+page ProcessStepCreate(ProcessStep step, Event<ProcessStep> create) {
   @GemColumn(
     rowGap="5px",
     components=[
-  @GemCard(
+  stepCreationCard@GemCard(
       title = "New Step",
       component = @GemColumn(
         rowGap="10px",
         components = [
-          @GemRow(
-            wrap="noWrap",
-            colGap="5%",
-            components = [
-              @GemColumn(
-                width="30%",
-                components = [
-                  timerGuard@guard(true) {
-                    startTimerButton@GemButton(label = "Start", leftClick = startTimer(), disabled=true);
-                  } else {
-                    stopTimerButton@GemButton(label = "Stop", leftClick = stopTimer(), disabled=false);
-                  }
-                ]
-              ),
-              @GemColumn(
-                hAlign="center",
-                vAlign="center",
-                width="10%",
-                components = [
-                  passedTime@GemText(value="override")
-                ]
-              ),
-              @GemColumn(
-                width="50%",
-                components = [
-                  timeConsumption@GemTextInput(
-                    labelText = "Time Consumption in seconds",
-                    inputType = "number",
-                    entry = step.timeConsumption
-                  )
-                ]
-              )
-            ]
-          ),
-          @GemTextInput(
-              labelText = "Description (optional)",
-              inputType = "text",
-              entry = step.description),
+          deconstructionGuard@guard(true) {
+            selectType@GemTextInput(
+              labelText = "Step type",
+              inputType = "dropdown",
+              options = null,
+              entry = null);
+          },
+          stepChooseJoinConnection@guard(true){
+            isDeconstruction@guard(true) {
+              selectJoinConnection@GemTextInput(
+                  labelText = "Deconstructing Join Connection",
+                  inputType = "dropdown",
+                  options = null,
+                  entry = null);
+            }
+            createNewJoinConnection@guard(true) {
+              @JoinConnectionCreate(createJoinConnection=addNewJoinConnection());
+            }
+          },
+          stepProcessStepRelated@guard(true) {
+            @GemRow(
+              colGap="5px",
+              components= [
+                @GemColumn(
+                  components=[
+                    @GemRow(
+                      wrap="noWrap",
+                      colGap="5%",
+                      components = [
+                        @GemColumn(
+                          width="30%",
+                          components = [
+                            timerGuard@guard(true) {
+                              startTimerButton@GemButton(label = "Start", leftClick = startTimer(), disabled=true);
+                            } else {
+                              stopTimerButton@GemButton(label = "Stop", leftClick = stopTimer(), disabled=false);
+                            }
+                          ]
+                        ),
+                        @GemColumn(
+                          hAlign="center",
+                          vAlign="center",
+                          width="10%",
+                          components = [
+                            passedTime@GemText(value="override")
+                          ]
+                        ),
+                        @GemColumn(
+                          width="50%",
+                          components = [
+                            timeConsumption@GemTextInput(
+                              labelText = "Time Consumption in seconds",
+                              inputType = "number",
+                              entry = step.timeConsumption
+                            )
+                          ]
+                        )
+                      ]
+                    ),
+                    @GemTextInput(
+                        labelText = "Description (optional)",
+                        inputType = "text",
+                        entry = step.description),
+                    selectEndeffector@GemTextInput(
+                        labelText = "Used Endeffector in this step",
+                        inputType = "dropdown",
+                        options = null,
+                        entry = null)
+                  ]
+                ),
+                @GemColumn(
+                  components=[@MeasuringValueEdit(step = step)]
+                )
+              ]
+            );
+          },
           @GemRow(
             colGap="5px",
             components=[
-              selectEndeffector@GemTextInput(
-                  labelText = "Used Endeffector in this step",
-                  inputType = "dropdown",
-                  options = null,
-                  entry = null),
-              selectType@GemTextInput(
-                  labelText = "Step type",
-                  inputType = "dropdown",
-                  options = null,
-                  entry = null)
+              amountOfConnsAndSteps@GemTextInput(
+                  labelText="Number of Connection/Step Copies",
+                  inputType = "number",
+                  entry=null
+              ),
+              buildStep@GemButton(label = "Save Steps", leftClick = createNewStep(), disabled=true)
             ]
-          ),
-          isDeconstruction@guard(true) {
-            selectJoinConnection@GemTextInput(
-                labelText = "Deconstructing Join Connection",
-                inputType = "dropdown",
-                options = null,
-                entry = null);
-          },
-          createNewJoinConnection@guard(true) {
-            @JoinConnectionCreate(createJoinConnection = addNewJoinConnection());
-          },
-          @iterate(String val : values) {
-            @GemText(value=val);
-          },
-          @MeasuringValueCreate(measuringValueEvent = attachMeasuringValue())
+          )
         ]
       )
-    ),
-    buildStep@GemButton(label = "Save Step", leftClick = createNewStep(), disabled=true)
+    )
   ]);
 
 }

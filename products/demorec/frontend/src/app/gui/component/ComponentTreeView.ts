@@ -31,7 +31,7 @@ export  class ComponentTreeView extends ComponentTreeViewComponent {
 
   seenCompsRecursionState : Set<number> = new Set<number>()
 
-  public override getHierarchicalComponentsItems (): Array<GemTreeviewEntry> {
+/*  public override getHierarchicalComponentsItems (): Array<GemTreeviewEntry> {
     console.debug("Create Hierarchical Component")
     if(!(this.getComponent())) {
       return [];
@@ -71,7 +71,7 @@ export  class ComponentTreeView extends ComponentTreeViewComponent {
       })
     })
     return children
-  }
+  }*/
 }
 
 

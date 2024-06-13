@@ -55,16 +55,19 @@ public class UMLAssocToAttrTrafo implements CDBasisVisitor2, CDAssociationVisito
 
   @Override
   public void visit(ASTCDAssociation assoc) {
-    if (!assoc.getLeft().isPresentSymbol() || !assoc.getRight().isPresentSymbol()) {
+    if (!assoc.getLeft().isPresentSymbol() || !assoc.getRight().isPresentSymbol() ||
+    assoc.getModifier().isDerived()) {
       // new created association (see UMLAttrToAssocTrafo)
       return;
     }
     ASTCDAssocSide assocSide;
     SymTypeExpression classType;
-    if (GenService.isCDEnum(assoc.getLeft().getSymbol().getType())) {
+    if (GenService.isCDEnum(assoc.getLeft().getSymbol().getType()) ||
+        GenService.isJavaType(assoc.getLeft().getSymbol().getType())) {
       assocSide = assoc.getLeft();
       classType = assoc.getRight().getSymbol().getType();
-    } else if (GenService.isCDEnum(assoc.getRight().getSymbol().getType())) {
+    } else if (GenService.isCDEnum(assoc.getRight().getSymbol().getType()) ||
+        GenService.isJavaType(assoc.getRight().getSymbol().getType())) {
       assocSide = assoc.getRight();
       classType = assoc.getLeft().getSymbol().getType();
     } else {
@@ -80,7 +83,7 @@ public class UMLAssocToAttrTrafo implements CDBasisVisitor2, CDAssociationVisito
       attrType = MCTypeFacade.getInstance().createQualifiedType(enumType.print());
     }
     ASTCDAttribute attr = CD4CodeMill.cDAttributeBuilder().
-        setModifier(assocSide.getModifier().deepClone()).
+        setModifier(assoc.getModifier().deepClone()).
         setName(assocSide.getCDRole().getName()).
         setMCType(attrType).build();
     Optional<CDTypeSymbol> cdType = assoc.getEnclosingScope().resolveCDType(classType.printFullName());

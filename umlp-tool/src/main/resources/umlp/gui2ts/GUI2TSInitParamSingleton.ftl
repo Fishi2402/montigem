@@ -4,7 +4,14 @@ ${tc.signature("type", "name", "manager", "init", "initList")}
 <#assign tmpVar = "tmp_$">
 
 ${cd4c.method("protected void ${init}()")}
-${manager}.get${javaType}().then(${tmpVar} => {
-  this.${name} = ${tmpVar};
+if (this.${name} === undefined) {
+  ${manager}.get${javaType}().then(${tmpVar} => {
+    if (this.${name} === undefined) {
+      this.${name} = ${tmpVar};
+    }
+    ${tc.includeArgs("umlp.gui2java.GUI2JavaCallMethods", [initList])}
+  });
+}
+else {
   ${tc.includeArgs("umlp.gui2java.GUI2JavaCallMethods", [initList])}
-});
+}

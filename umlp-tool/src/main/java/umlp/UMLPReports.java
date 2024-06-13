@@ -37,7 +37,7 @@ public class UMLPReports implements ReportManager.ReportManagerFactory {
   /**
    * Constructor for de.monticore.MontiCoreReports
    */
-  protected UMLPReports(
+  public UMLPReports(
       String outputDirectory,
       String reportDirectory,
       Function<Path, Path> reportPathOutput,

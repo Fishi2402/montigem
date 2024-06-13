@@ -36,7 +36,7 @@ public class GUIDSLReports implements ReportManager.ReportManagerFactory {
   /**
    * Constructor for de.monticore.MontiCoreReports
    */
-  protected GUIDSLReports(
+  public GUIDSLReports(
       String outputDirectory,
       String reportDirectory,
       Function<Path, Path> reportPathOutput,

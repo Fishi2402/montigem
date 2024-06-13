@@ -13,7 +13,7 @@ import mc.fenix.basic.GemCheckbox;
 import mc.fenix.basic.GemButton;
 import mc.fenix.input.GemTextInput;
 
-import gui.step.MeasuringValueEdit;
+import gui.measuringvalues.MeasuringValueEdit;
 
 import gui.component.SubComponentView;
 import gui.staticcontainer.NavContainer;

@@ -1,4 +1,4 @@
-package gui.step;
+package gui.measuringvalues;
 
 import mc.fenix.basic.GemText;
 import mc.fenix.input.GemTextInput;
@@ -10,15 +10,15 @@ import mc.fenix.arrange.GemRow;
 import DemoRec.ProcessStep;
 import DemoRec.MeasuringValue;
 
-import gui.step.MeasuringValueCreate;
+import gui.measuringvalues.MeasuringValueCreate;
 
 page MeasuringValueEdit(ProcessStep step) {
   @GemCard(
-    title = "Edit Measured Values",
+    title = "Measured Values",
     component = @GemColumn(
       colGap="10px",
       components = [
-
+        addNewMeasuringValue@MeasuringValueCreate(measuringValueEvent = attachMeasuringValue()),
         @iterate(MeasuringValue measuringValue : step.measured) {
           displayedMeasuringValueRow@GemRow(
             wrap="nowrap",
@@ -34,15 +34,7 @@ page MeasuringValueEdit(ProcessStep step) {
               displayedMeasuringValueDeleteButton@GemButton(label = "Delete Value", leftClick = deleteMeasuringValue(measuringValue))
             ]
           );
-        },
-
-        @GemRow(
-          wrap="nowrap",
-          colGap="5px",
-          components=[
-            addNewMeasuringValue@MeasuringValueCreate(measuringValueEvent = attachMeasuringValue())
-          ]
-        )
+        }
       ]
     )
   );

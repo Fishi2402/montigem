@@ -280,7 +280,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       Optional<InitDependency> dep = InitDependencyTree.getInstance().getDependency(node);
       if (dep.isPresent()) {
         dep.get().setInitMethod(new MethodTemplate(
-            getInitDefaultParamTemplate(), name, value, initName, setterName
+            getInitDefaultParamTemplate(), name, value, initName, getterName, setterName
         ));
       }
     }
@@ -312,7 +312,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       // exclude GUIViewElement
       if (util.isViewElement(typeSTE)
           || util.isViewElementsCollection(typeSTE)) {
-        return;
+        continue;
       }
       ASTMCType type = createTypeAndAddImports(typeSTE);
 

@@ -1,0 +1,21 @@
+package gui.pack;
+
+import DemoRec.BatteryPackType;
+
+import mc.fenix.input.GemTextInput;
+
+import gui.pack.PackTypeCreate;
+
+page ChoosePackType(BatteryPackType currentType, Event<BatteryPackType> chosenType) {
+
+  selectPackType@GemTextInput(
+    labelText = "Pack Type",
+    inputType = "dropdown",
+    options = null,
+    entry = null
+  );
+  createPackType@guard(true) {
+    @PackTypeCreate(newType=addNewBatteryPackType());
+  }
+
+}

@@ -5,11 +5,14 @@ ${tc.signature("type", "name", "manager", "init", "initList")}
 
 ${cd4c.method("protected void ${init}()")}
   <#-- if attr set early (no/fast data loading) -->
-  if (this.${name} == null) {
+  if (this.${name} === undefined) {
     ${manager}.get${tsType}Sure(-1).then(${tmpVar} => {
-      if (this.${name} == null) {
+      if (this.${name} === undefined) {
         this.${name} = ${tmpVar};
       }
       ${tc.includeArgs("umlp.gui2java.GUI2JavaCallMethods", [initList])}
     });
+  }
+  else {
+    ${tc.includeArgs("umlp.gui2java.GUI2JavaCallMethods", [initList])}
   }

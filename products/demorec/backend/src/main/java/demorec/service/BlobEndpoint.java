@@ -4,6 +4,7 @@ import de.se_rwth.commons.logging.Log;
 import demorec.DemoRecComponent;
 import demorec.DemoRecManager;
 import demorec.DemoRecServerApplication;
+import demorec.Photo;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,7 +26,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Optional;
 
 @RestController
@@ -34,83 +38,72 @@ public class BlobEndpoint {
   @PostMapping(
       value="/blob")
   public ResponseEntity<String> storeBlob(@RequestPart("file") MultipartFile file,
-                                          @RequestHeader("PATH") String path) {
+                                          @RequestHeader("name") String name) {
+    Log.info("Received Image", this.getClass().getName());
     if (file.isEmpty()) {
       return ResponseEntity.badRequest().body("Please provide a file to upload");
     }
-    Optional<DemoRecComponent> component = resolveDemoRecComponent(path);
 
-    if(component.isEmpty()) {
-      return ResponseEntity.badRequest().body("Please save the component before uploading a file.");
-    }
+    Optional<Photo> photoOpt = Optional.empty();
 
     try {
       // Get the bytes from the MultipartFile
       byte[] fileBytes = file.getBytes();
 
       // Specify the file path where you want to save the uploaded file
-      String givenPath;
-      if(path.startsWith("/")) {
-        givenPath = path.replaceFirst("/", "");
-      } else {
-        givenPath = path;
-      }
-      if(!givenPath.endsWith("/")) {
-        givenPath= givenPath+"/";
-      }
-      String photoLocation = givenPath+file.getOriginalFilename();
-      photoLocation = photoLocation.replaceAll("[^\\w.-]", "_");
-      String pathOnFS = DemoRecServerApplication.blobStorageLocation + photoLocation;
+      File imageOnServerFileSystem;
+      String fileName;
 
-      File image = Paths.get(pathOnFS).toFile();
+      // Avoid double file names
+      do {
+        fileName = calculateSystemInternalFileName();
+        imageOnServerFileSystem = Paths.get( DemoRecServerApplication.blobStorageLocation + "/" + fileName).toFile();
+      } while(imageOnServerFileSystem.exists());
 
-      if(image.exists() && !image.isDirectory()) {
-        Log.info("Name Clash "+photoLocation, this.getClass().getName());
-        if(checkIfFileAlreadyExists(file, image.getPath())) {
-          Log.info("File '"+photoLocation+"' was uploaded beforehand.", this.getClass().getName());
-          // TODO -> do not store the file on the system again, but add it to the component if it was not added before
-          if(!component.get().getPhotoLocationsList().contains(photoLocation)) {
-            Log.info("Adding '"+photoLocation+"' to "+component.get().getGemId(), this.getClass().getName());
-            component.get().addPhotoLocations(component.get().sizePhotoLocations(), photoLocation);
-          }
-          return ResponseEntity.status(400).body("File "+path+" was already uploaded.");
-        } else { // Avoid name clashes by postfixing current time to the fileName
-          String namePostFix = "_"+ java.time.LocalDateTime.now();
-          image = Paths.get(pathOnFS+namePostFix).toFile();
-          photoLocation += namePostFix;
-        }
+      synchronized (BlobEndpoint.class) {
+        photoOpt = DemoRecManager.photoBuilder()
+            .name(name)
+            .filename(fileName)
+            .size((long) fileBytes.length).build();
       }
 
-      Log.info(image.getAbsolutePath(), this.getClass().getName());
-      image.getParentFile().mkdirs();
-      image.createNewFile();
-      image.setWritable(true);
+      if(photoOpt.isEmpty()) {
+        return ResponseEntity.status(500).body("Internal Server Error: Upload failed " +name);
+      }
+
+      Log.info(imageOnServerFileSystem.getAbsolutePath(), this.getClass().getName());
+      imageOnServerFileSystem.getParentFile().mkdirs();
+      imageOnServerFileSystem.createNewFile();
+      imageOnServerFileSystem.setWritable(true);
 
       // Write the bytes to the file
-      try (FileOutputStream fos = new FileOutputStream(image)) {
+      try (FileOutputStream fos = new FileOutputStream(imageOnServerFileSystem)) {
         fos.write(fileBytes);
-        component.get().addPhotoLocations(component.get().sizePhotoLocations(), photoLocation);
-        Log.info(String.join(", ",component.get().getPhotoLocationsList()), this.getClass().getSimpleName());
-        Log.info(photoLocation, this.getClass().getSimpleName());
+        fos.flush();
+        fos.close();
+        Log.info("Created "+fileName +" on Server.", this.getClass().getSimpleName());
       }
-      return ResponseEntity.ok(null);
-    } catch (IOException e) {
+      return ResponseEntity.ok("{\"gemId\": " + photoOpt.get().getGemId() + "}");
+    } catch (IOException | NoSuchAlgorithmException e) {
       // Handle exceptions (e.g., IOException) and return an error response
       Log.warn("Failed to upload the file because of exception: ", e);
-      return ResponseEntity.status(500).body("Internal Server Error: Failed to upload " +path);
+      return ResponseEntity.status(500).body("Internal Server Error: Failed to upload " +name);
     }
   }
 
-  private Optional<DemoRecComponent> resolveDemoRecComponent(String originalFileName) {
-    Log.info(originalFileName, this.getClass().getSimpleName());
-    String[] splitArray = originalFileName.split("_");
-    String gemIdStringRepr = splitArray[splitArray.length-1];
-    Log.info(gemIdStringRepr, this.getClass().getSimpleName());
-    try{
-      return DemoRecManager.demoRecComponentOpt(Long.parseLong(gemIdStringRepr));
-    } catch(NumberFormatException e) {
-      return Optional.empty();
-    }
+  /**
+   * Calculate random hash for Resource Download Link
+   * @return Random Hash used for the download link.
+   * @throws NoSuchAlgorithmException
+   */
+  private String calculateSystemInternalFileName() throws NoSuchAlgorithmException {
+    SecureRandom random = new SecureRandom();
+    byte[] randBytes = new byte[64];
+    random.nextBytes(randBytes);
+    MessageDigest md = MessageDigest.getInstance("SHA-512");
+    md.update(randBytes);
+    byte[] hash = md.digest(randBytes);
+    return Base64.getUrlEncoder().encodeToString(hash);
   }
 
   @GetMapping(value="/images/**")

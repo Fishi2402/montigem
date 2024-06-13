@@ -24,7 +24,7 @@ component StepTable(Process process) {
         @EvenlySpacedColumn(element = @GemText(value = "Endeffector")),
         @EvenlySpacedColumn(element = @GemText(value = "Duration")),
         @EvenlySpacedColumn(element = @GemText(value = "Values Measured")),
-        @EvenlySpacedColumn(element = @GemText(value = "Join Connection"))
+        @EvenlySpacedColumn(element = @GemText(value = "Deletion"))
       ]),
       @iterate(ProcessStep step : getReverseProcessSteps()) {
         @HorizontalStatTable(rows = [
@@ -34,9 +34,7 @@ component StepTable(Process process) {
           @EvenlySpacedColumn(element = @GemText(value = step.uses.name)),
           @EvenlySpacedColumn(element = @GemText(value = step.timeConsumption + " seconds")),
           @EvenlySpacedColumn(element = measuredValuesCount@GemText(value = null)),
-          stepHasJoinConnection@guard(true) {
-            @EvenlySpacedColumn(element = joinConnectionDescription@GemText(value = null));
-          }
+          @EvenlySpacedColumn(element = deleteProcessStep@GemButton(label="Delete Step", leftClick=deleteStep(step), disabled=false))
         ]);
       }
     ]

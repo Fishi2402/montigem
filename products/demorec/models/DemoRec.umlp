@@ -15,6 +15,9 @@ classdiagram DemoRec {
 
   //association [1] BatteryPack -> (consistsOf) DemoRecComponent [*]; Replaced by composedOf
 
+  association [0..1] BatteryPack <-> (allComponents) DemoRecComponent [*];
+  association [0..1] BatteryPack <-> (allConnections) JoinConnection [*];
+
   class BatteryPackType {
     double capacity;
     double voltage;
@@ -31,7 +34,7 @@ classdiagram DemoRec {
     LocalDate startedAt;
   }
 
-  association [*] Process -> (deconstructionOf) BatteryPack [1];
+  association [*] Process <-> (deconstructionOf) BatteryPack [1];
 
   class ProcessStep {
     double timeConsumption;
@@ -68,50 +71,45 @@ classdiagram DemoRec {
 
   class ComponentKind {
     String name;
-    String oENumber;
+    Optional<String> oENumber;
     Optional<String> humanDescription;
 
-    double width;
-    double length;
-    double height;
-    double weight;
+    Optional<double> width;
+    Optional<double> length;
+    Optional<double> height;
+    Optional<double> weight;
   }
 
   class DemoRecComponent {
     String name;
-    //String uniqueId; 1.1 removed because we have gemID
-    //String oENumber; 1.2 moved to ComponentKind
-    //String manufacturer; 1.1 removed because it is implied by oeNumber
 
-    Optional<String> condition;
-    // Optional<String> humanDescription; 1.2 moved to ComponentKind
-    double xPos;
-    double yPos;
-    double zPos;
+    State condition;
+    Optional<String> conditionDescription;
 
-    //double width; 1.2 moved to ComponentKind
-    //double length; 1.2 moved to ComponentKind
-    //double height; 1.2 moved to ComponentKind
+    Optional<double> xPos;
+    Optional<double> yPos;
+    Optional<double> zPos;
+  }
 
-    //double weight; 1.2 moved to ComponentKind
+  association [*] DemoRecComponent -> Photo [*];
 
-    //boolean isDeconstructible; removed because it is already implied composedOf
-
-    List<String> photoLocations;
-    List<String> threeDFileLocations;
+  class Photo {
+    String filename;
+    String name;
+    Long size;
   }
 
   association [*] DemoRecComponent <-> (isA) ComponentKind [1]; // 1.2
 
   class JoinConnection {
-    double state; // TODO what kind of data type for state?
+    State condition;
+    Optional<String> conditionDescription;
+
     JoinConnectionType joinConnectionType;
     Optional<Double> xPos;
     Optional<Double> yPos;
     Optional<Double> zPos;
   }
-
-  association [0..1] DemoRecComponent (partOf) <-> (composedOf) JoinConnection [*];
 
   association [*] DemoRecComponent (connects) <-> (connectedBy) JoinConnection [*];  // TODO should be 2..* on left side
 
@@ -122,5 +120,10 @@ classdiagram DemoRec {
     PLUG,
     ELECTRICAL,
     UNDEFINED;
+  }
+
+  enum State {
+    HEALTHY,
+    OTHER;
   }
 }

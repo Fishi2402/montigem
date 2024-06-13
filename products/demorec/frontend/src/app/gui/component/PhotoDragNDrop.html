@@ -6,7 +6,10 @@
     (dragenter)="preventDefault($event)"
 >
   <p>Drag and drop files here, or click to select files</p>
-  <input type="file" (change)="onFileSelected($event)" multiple />
+  <div  *ngIf="!stateUploading">
+    <input type="file" (change)="onFileSelected($event)" multiple />
+  </div>
+  <div class="uploading" *ngIf="stateUploading"></div>
   <div *ngIf="uploadFailureMessage">
     <div style="color: red;">{{errorMessage}}</div>
   </div>
@@ -17,10 +20,13 @@
   <div *ngFor="let file of files">
     {{ file.name }}
   </div>
-  <gem-row class="gemRow0"
-           [components] = '[uploadTPL, cancelTPL, ]'
-  >
-  </gem-row>
+
+  <div *ngIf='!stateUploading'>
+    <gem-row *ngIf='!stateUploading' class="gemRow0"
+             [components] = '[uploadTPL, cancelTPL, ]'
+    >
+    </gem-row>
+  </div>
 
   <ng-template #uploadTPL>
     <gem-button class="upload"
