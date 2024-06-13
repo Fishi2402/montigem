@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+package trafo;
+
+import java.time.LocalDate;
+
+umlp JavaAssocMult {
+  class Foo;
+
+  association bla Foo (f) -> (ld) LocalDate [*] ;
+
+}
