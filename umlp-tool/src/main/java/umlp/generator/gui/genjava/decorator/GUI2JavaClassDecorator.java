@@ -218,7 +218,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         Optional<InitDependency> dep = InitDependencyTree.getInstance().getDependency(node);
         if (dep.isPresent()) {
           dep.get().setInitMethod(new MethodTemplate(
-              getInitDomainParamTemplate(), type, name, manager, id, initName
+              getInitDomainParamTemplate(), type, name, manager, id, initName, util.isAbstractDomainType(typeSTE)
           ));
         }
       }

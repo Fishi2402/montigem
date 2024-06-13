@@ -1225,4 +1225,15 @@ public class GUIGeneratorUtil {
     }
     return res.toString();
   }
+
+  public boolean isAbstractDomainType(SymTypeExpression typeSTE){
+    boolean isAbstract = false;
+    if(isDomainType(typeSTE)) {
+      TypeSymbol typeSymbol = typeSTE.asObjectType().getTypeInfo();
+      if(GUIDSLMill.typeDispatcher().isOOSymbolsOOType(typeSymbol)){
+        isAbstract = GUIDSLMill.typeDispatcher().asOOSymbolsOOType(typeSymbol).isIsAbstract();
+      }
+    }
+    return isAbstract;
+  }
 }

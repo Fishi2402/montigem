@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("type", "name", "manager", "id", "init", "initList")}
+${tc.signature("type", "name", "manager", "id", "init", "isAbstract", "initList")}
 <#assign tsType = cdPrinter.printType(type)>
 <#assign tmpVar = "tmp_$">
 
@@ -14,6 +14,7 @@ ${cd4c.method("protected void ${init}()")}
         ${tc.includeArgs("umlp.gui2java.GUI2JavaCallMethods", [initList])}
       });
     }
+  <#if !isAbstract>
     else {
       ${manager}.${tsType?uncap_first}Builder().then(${tmpVar} => {
         if (this.${name} === undefined) {
@@ -22,6 +23,7 @@ ${cd4c.method("protected void ${init}()")}
         ${tc.includeArgs("umlp.gui2java.GUI2JavaCallMethods", [initList])}
       });
     }
+    </#if>
   }
   else {
     ${tc.includeArgs("umlp.gui2java.GUI2JavaCallMethods", [initList])}
