@@ -71,7 +71,7 @@ export  class ComponentEdit extends ComponentEditComponent {
   }
 
   public editComponentKind(): (arg: void) => void {
-    return $ => this._router.navigateByUrl("gui/kind/Edit/"+this.getComponent().getIsA().getGemId());
+    return $ => this._router.navigateByUrl("gui/kind/EditComponentKindPage/"+this.getComponent().getIsA().getGemId());
   }
 
   public override addPhoto() : (arg : Photo) => void {
