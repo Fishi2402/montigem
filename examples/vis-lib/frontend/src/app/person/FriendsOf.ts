@@ -21,4 +21,24 @@ export class FriendsOf extends FriendsOfComponent {
     };
   }
 
+  public override navigateNext(): Event<void> {
+    return $ => {
+      if (this.getPersons() != null) {
+        for (let i = 0; i < this.getPersons().length; ++i) {
+          const p = this.getPersons()[i];
+          if (p.getGemId() === this.personRoutingId) {
+            let id: number;
+            if (i + 1 < this.getPersons().length) {
+              id = this.getPersons()[i + 1].getGemId();
+            }
+            else {
+              id = this.getPersons()[0].getGemId();
+            }
+            this._router.navigate(['person', 'FriendsOf', id]);
+          }
+        }
+      }
+    }
+  }
+
 }
