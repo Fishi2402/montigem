@@ -26,15 +26,15 @@ export abstract class ComponentObserverManager {
   // Domain-specific mapping from a type name to a function that gets an object of that type
   protected abstract getObjectGetterFactory(): Map<string, ((gemId: number) => Promise<GemIdentifiable>)>;
 
-  public static addObserver<T extends GemIdentifiable>(obj: T, update: () => void, updateName: string, component: any): T {
+  public static addObserver<T extends GemIdentifiable>(obj: T, update: () => void, updateName: string, componentName: string): T {
     if (obj === undefined || obj === null) {
       return null;
     }
-    return ComponentObserverManager.getInstance().__addObserver(obj, update, updateName, component);
+    return ComponentObserverManager.getInstance().__addObserver(obj, update, updateName, componentName);
   }
 
-  public static removeObservers(component: any) {
-    return ComponentObserverManager.getInstance().__removeObservers(component);
+  public static removeObservers(componentName: string) {
+    return ComponentObserverManager.getInstance().__removeObservers(componentName);
   }
 
   // GUI Component Name, Domain Object GemId, Method Name, AllObserver

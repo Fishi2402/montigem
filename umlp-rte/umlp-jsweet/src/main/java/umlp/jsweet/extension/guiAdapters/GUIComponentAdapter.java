@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -105,11 +104,27 @@ public class GUIComponentAdapter extends PrinterAdapter {
     if (guiAdapterUtils.isDirective(type)) {
       println().printIndent().print("protected router: Router;").println().println();
       printWaitAllInited(type);
+      printGetObs(type);
     }
     if (guiAdapterUtils.isComponent(type) ||  guiAdapterUtils.isDirective(type) && !guiAdapterUtils.isTOPComponent(type)) {
       printNgOnDestroy(type);
     }
     super.beforeTypeBody(type);
+  }
+
+  private void printGetObs(TypeElement type) {
+    String guiComponentName = "\"" + type.getQualifiedName().toString() + "\"";
+    if (guiComponentName.endsWith("TOP\"") && guiAdapterUtils.isDirective(type)) {
+      guiComponentName = guiComponentName.substring(0, guiComponentName.length() - 4) + "\"";
+    }
+    print("protected getObs<T extends GemIdentifiable>(updateName: string, update: (() => void)): <T extends GemIdentifiable>(obj: T) => T {")
+        .println().startIndent().printIndent()
+        .print(
+            "return (obj: T) => ComponentObserverManager.addObserver(obj, update.bind(this), updateName, "
+                + guiComponentName + ");")
+        .println().endIndent().printIndent().print("}").println().println();
+
+    importFromWithModule("GemIdentifiable", "@umlp/commonj2ts");
   }
 
   private void printNgOnDestroy(TypeElement typeElement) {
@@ -473,16 +488,20 @@ public class GUIComponentAdapter extends PrinterAdapter {
   public boolean substituteMethodBody(TypeElement parentTypeElement, ExecutableElement method) {
     if (guiAdapterUtils.isSynchronized(method)) {
       String updateName = method.getSimpleName().toString() + guiAdapterUtils.UPDATE_SUFFIX;
-      printIndent().print("let " + OBSERVER_FUNCTION_NAME
-              + " = (obj: any) => ComponentObserverManager.addObserver(obj, ")
-          .print("() => this." + updateName)
-          .print(".bind(this)(");
+      printIndent().print("let " + OBSERVER_FUNCTION_NAME + " = this.getObs('" + updateName + "', ")
+              .print("() => this." + updateName + "(");
       printArguments(method);
-      String guiComponentName = "\"" + parentTypeElement.getQualifiedName().toString() + "\"";
-      if (guiComponentName.endsWith("TOP\"") && guiAdapterUtils.isDirective(parentTypeElement)) {
-        guiComponentName = guiComponentName.substring(0, guiComponentName.length() - 4) + "\"";
-      }
-      print("), '" + updateName + "', " + guiComponentName + ");").println();
+      print("));").println();
+//      printIndent().print("let " + OBSERVER_FUNCTION_NAME
+//              + " = (obj: any) => ComponentObserverManager.addObserver(obj, ")
+//          .print("() => this." + updateName)
+//          .print(".bind(this)(");
+//      printArguments(method);
+//      String guiComponentName = "\"" + parentTypeElement.getQualifiedName().toString() + "\"";
+//      if (guiComponentName.endsWith("TOP\"") && guiAdapterUtils.isDirective(parentTypeElement)) {
+//        guiComponentName = guiComponentName.substring(0, guiComponentName.length() - 4) + "\"";
+//      }
+//      print("), '" + updateName + "', " + guiComponentName + ");").println();
 
       for (VariableElement parameter : method.getParameters()) {
         printIndent().print(OBSERVER_FUNCTION_NAME + "(" + context.getActualName(parameter) + ");").println();
