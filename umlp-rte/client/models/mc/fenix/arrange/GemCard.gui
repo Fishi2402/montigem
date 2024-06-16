@@ -9,7 +9,9 @@ import mc.fenix.arrange.GemColumn;
   any elements, such as button, inputs, charts, etc.
 */
 component GemCard(
-  /** **Deprecated.** Text displayed at the top of the card. */
+  String width = "auto",
+  String height = "auto",
+  /** Text displayed at the top of the card. */
   String title = "",
   /**
     A component displayed at the top of the card. If `titleComponent` and

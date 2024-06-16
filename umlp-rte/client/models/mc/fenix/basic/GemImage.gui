@@ -14,6 +14,8 @@ component GemImage(
     The text that is shown if image could not be loaded.
   */
   String alt = "",
+  String width = "auto",
+  String height = "auto",
   /** **Deprecated.** */
   String style = ""
 )
