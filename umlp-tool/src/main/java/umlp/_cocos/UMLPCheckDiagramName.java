@@ -16,10 +16,10 @@ public class UMLPCheckDiagramName implements CDBasisASTCDDefinitionCoCo {
     String diagramName = node.getName();
     node.getCDClassesList().stream()
         .filter(c -> diagramName.equals(c.getName()))
-        .findAny().ifPresent(c -> Log.error(String.format(ERROR_CODE+ ERROR_MSG_FORMAT, diagramName, c.get_SourcePositionStart())));
+        .findAny().ifPresent(c -> Log.error(String.format(ERROR_CODE+ ERROR_MSG_FORMAT, diagramName), c.get_SourcePositionStart()));
     node.getCDInterfacesList().stream()
         .filter(c -> diagramName.equals(c.getName()))
-        .findAny().ifPresent(c -> Log.error(String.format(ERROR_CODE+ ERROR_MSG_FORMAT, diagramName, c.get_SourcePositionStart())));
+        .findAny().ifPresent(c -> Log.error(String.format(ERROR_CODE+ ERROR_MSG_FORMAT, diagramName), c.get_SourcePositionStart()));
   }
 
 }
