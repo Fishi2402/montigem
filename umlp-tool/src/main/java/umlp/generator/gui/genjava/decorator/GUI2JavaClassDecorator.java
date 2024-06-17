@@ -9,7 +9,6 @@ import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
-import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
@@ -38,7 +37,6 @@ import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types3.SymTypeRelations;
-import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUI2ClassDecorator;
@@ -172,7 +170,9 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     String name = "_" + node.getName();
 
     // add attr
-    ASTCDAttribute attr = addAttr(CDModifier.PROTECTED.build(), type, name);
+    ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
+        CDModifier.PROTECTED.build(), type, name);
+    clazz.addCDMember(attr);
 
     // add getter
     String getterName = "get" + StringTransformations.capitalize(node.getName());
@@ -556,10 +556,11 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     if (node2Attr.containsKey(node)) {
       // add attr
       Attribute attrWrapper = node2Attr.get(node);
+      ASTCDAttribute attr = attrWrapper.getCdAttr();
       for (String qName : attrWrapper.getImportList()) {
         getCD4C().addImport(clazz, qName);
       }
-      ASTCDAttribute attr = addAttr(attrWrapper.getCdAttr());
+      clazz.addCDMember(attr);
 
       // calc iterate items as additional args
       List<ASTCDParameter> params = attrWrapper.getParams();
@@ -665,7 +666,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       for (String qName : attrWrapper.getImportList()) {
         getCD4C().addImport(clazz, qName);
       }
-      ASTCDAttribute attr = addAttr(attrWrapper.getCdAttr());
+      ASTCDAttribute attr = attrWrapper.getCdAttr();
+      clazz.addCDMember(attr);
 
       // calc iterate items as additional args
       List<ASTCDParameter> params = attrWrapper.getParams();
@@ -813,7 +815,6 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       for (String qName : attrWrapper.getImportList()) {
         getCD4C().addImport(clazz, qName);
       }
-      // only used to carry information, no attribute is added to the class
       ASTCDAttribute attr = attrWrapper.getCdAttr();
 
       // calc iterate items as additional args
@@ -901,17 +902,6 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
   protected void addConstructor() {
     getCD4C().addConstructor(clazz, "umlp.gui2java.GUI2JavaConstructor");
-  }
-
-  protected ASTCDAttribute addAttr(ASTModifier modifier, ASTMCType type, String name) {
-    ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
-        modifier, type, name);
-    return addAttr(attr);
-  }
-
-  protected ASTCDAttribute addAttr(ASTCDAttribute attr) {
-    clazz.addCDMember(attr);
-    return attr;
   }
 
   /**

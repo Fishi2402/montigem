@@ -15,7 +15,6 @@ import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.UMLPGeneratorConfig;
@@ -76,16 +75,6 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
     ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
         CDModifier.PROTECTED.build(), "Router", "_router");
     clazz.addCDMember(attr);
-  }
-
-  @Override
-  protected ASTCDAttribute addAttr(ASTCDAttribute attr) {
-    ASTCDAttribute a = super.addAttr(attr);
-    glex.addAfterTemplate(
-        getResetHookpoint(),
-        new TemplateHookPoint(getResetAttrTemplate(), a)
-    );
-    return a;
   }
 
   @Override
@@ -178,19 +167,6 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
   @Override
   protected String printType(ASTMCType type) {
     return new TSUtilsPrinter().printType(type);
-  }
-
-  protected String getResetHookpoint() {
-    return "umlp.gui2ts.GUI2TSReset";
-  }
-
-  protected String getResetAttrTemplate() {
-    return "umlp.gui2ts.GUI2TSResetAttr";
-  }
-
-  @Override
-  protected String getInitTemplate() {
-    return "umlp.gui2ts.GUI2TSInit";
   }
 
   @Override
