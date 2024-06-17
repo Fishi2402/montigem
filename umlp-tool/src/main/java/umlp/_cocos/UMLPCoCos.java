@@ -30,5 +30,6 @@ public class UMLPCoCos {
     checker.addCoCo(new UMLPAssociationQualifierByType());
     checker.addCoCo(new UMLPAssociationQualifierByAttributeName());
     checker.addCoCo(new UMLPCheckAttributeModifier());
+    checker.addCoCo(new UMLPCheckOutgoingAssociation());
   }
 }
