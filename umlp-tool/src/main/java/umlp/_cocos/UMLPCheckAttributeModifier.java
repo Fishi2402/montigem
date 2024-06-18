@@ -14,7 +14,7 @@ public class UMLPCheckAttributeModifier implements CDBasisASTCDAttributeCoCo {
   @Override
   public void check(ASTCDAttribute attr) {
     if (attr.getModifier().isPrivate()) {
-      Log.error(String.format(ERROR_CODE+ ERROR_MSG_FORMAT, attr.getName(), attr.get_SourcePositionStart()));
+      Log.error(String.format(ERROR_CODE+ ERROR_MSG_FORMAT, attr.getName()), attr.get_SourcePositionStart());
     }
   }
 

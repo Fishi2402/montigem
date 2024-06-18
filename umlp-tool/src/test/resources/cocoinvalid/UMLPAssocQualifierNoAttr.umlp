@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 umlp UMLPAssocQualifierNoAttr {
   class A {
     C a;

@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+import java.time.LocalDateTime;
+umlp UMLPCheckOutgoingAssociation {
+  class Foo;
+
+  enum EnumClass;
+
+  association a1 LocalDateTime -> Foo;
+
+  association a2 EnumClass -> Foo;
+}

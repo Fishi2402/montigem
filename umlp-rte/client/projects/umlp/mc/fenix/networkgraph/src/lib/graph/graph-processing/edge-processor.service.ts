@@ -122,7 +122,7 @@ export class EdgeProcessorService<
   private createEdge(key: string, edge: GraphEdge): SerializedEdge<E> {
     const isUndirected: boolean = this.isEdgeUndirected(edge);
     const group: string | undefined = this.groupMapping.getEdgeGroup(edge);
-    let color: Color = ColorUtil.lightenColor(
+    let color: Color = edge.color? edge.color : ColorUtil.lightenColor(
       this.groupMapping.getColorForGroup(group, this.graphSettings.getSetting("defaultEdgeColor")),
       5
     );

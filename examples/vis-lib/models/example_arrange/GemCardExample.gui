@@ -13,6 +13,8 @@ page GemCardExample() {
   );
 
   @GemCard(
+    width = "50%",
+    height = "500px",
     titleComponent = @GemLink(url = "https://www.google.com/", text = "Google link"),
     component = @GemButton(label = "A button")
   );

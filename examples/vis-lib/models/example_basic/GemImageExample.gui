@@ -2,9 +2,31 @@
 package example_basic;
 
 import mc.fenix.basic.GemImage;
+import mc.fenix.arrange.GemCard;
 
 page GemImageExample() {
+  @GemCard(component =
+    @GemImage(
+      source = "assets/images/World.png",
+      alt = "Image of the Earth"
+    )
+  );
+
   @GemImage(
+    width = "300px",
+    source = "assets/images/World.png",
+    alt = "Image of the Earth"
+  );
+
+  @GemImage(
+    height = "300px",
+    source = "assets/images/World.png",
+    alt = "Image of the Earth"
+  );
+
+  @GemImage(
+    width = "30px",
+    height = "30px",
     source = "assets/images/World.png",
     alt = "Image of the Earth"
   );

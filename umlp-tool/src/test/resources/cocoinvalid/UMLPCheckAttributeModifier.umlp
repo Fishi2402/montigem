@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 umlp UMLPCheckAttributeModifier {
   class UMLPCheckDiagramName {
     private int invalidAttr;
