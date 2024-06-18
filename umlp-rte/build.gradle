@@ -1,5 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 import gradle.specific.UMLPJava2TypeScriptTask
+import gradle.specific.pojo.CD2POJOTask
 
 plugins {
     id 'application'
@@ -29,6 +30,24 @@ dependencies {
 
     implementation("com.hivemq:hivemq-mqtt-client:1.3.0")
 }
+
+// POJOs
+task generateGuiComponentPOJOs(type: CD2POJOTask) {
+  input = file("client/models/")
+  output = project.layout.buildDirectory.dir("guiComponentTypes")
+}
+
+//task guiComponentTypesJar(type: Jar) {
+//  from generateGuiComponentPOJOs.output
+//  archiveClassifier = "guiComponentTypes"
+//}
+
+sourceSets {
+  main {
+    java.srcDirs += [generateGuiComponentPOJOs.output]
+  }
+}
+//guiComponentTypesJar.dependsOn compileJava
 
 /////////////////////////   Deployment  //////////////////////////////////
 
