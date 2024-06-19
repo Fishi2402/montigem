@@ -35,8 +35,6 @@ dependencies {
 task generateGuiComponentPOJOs(type: CD2POJOTask) {
   input = file("client/models/")
   outputDir = project.layout.buildDirectory.dir("guiComponentTypes")
-
-  debug=true
 }
 
 //task guiComponentTypesJar(type: Jar) {

@@ -63,4 +63,13 @@ public abstract class CD2POJOTask extends MCSingleFileTask {
   protected Class<? extends AToolAction> getToolAction() {
     return CDAction.class;
   }
+
+  @Override
+  protected void checkParameters() throws IllegalArgumentException {
+    super.checkParameters();
+    if(this.getDebug().get()){
+      throw new IllegalArgumentException("Debugging is not allowed for this task. Further attempts will be logged.");
+      // Because the CDTool does not support the "-d" flag
+    }
+  }
 }
