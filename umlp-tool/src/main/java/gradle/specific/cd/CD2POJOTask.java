@@ -1,0 +1,66 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gradle.specific.cd;
+
+import de.monticore.gradle.common.AToolAction;
+import de.monticore.gradle.common.MCSingleFileTask;
+import de.monticore.gradle.internal.isolation.CachedIsolation;
+import de.se_rwth.commons.logging.Log;
+import gradle.common.UMLPAction;
+import gradle.common.UMLPToolInvoker;
+import org.gradle.api.DefaultTask;
+import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.tasks.InputDirectory;
+import org.gradle.api.tasks.OutputDirectory;
+import org.gradle.api.tasks.PathSensitive;
+import org.gradle.api.tasks.PathSensitivity;
+import org.gradle.api.tasks.TaskAction;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+public abstract class CD2POJOTask extends MCSingleFileTask {
+
+  public CD2POJOTask() {
+    super("CD2PojoTask", null);
+  }
+
+  @Override
+  public boolean isInputFile(File f){
+    return f.getName().endsWith(".cd");
+  }
+
+  @Override
+  protected List<String> createArgList(Path filePath, Function<Path, String> handlePath) {
+    List<String> result = super.createArgList(filePath, handlePath);
+
+    {
+      result.add("--input");
+      result.add(handlePath.apply(filePath));
+    }
+    {
+      result.add("--output");
+      result.add(handlePath.apply(getOutputDir().get().getAsFile().toPath()));
+    }
+
+    result.add("-c2mc");
+
+    return result;
+  }
+
+
+  @Override
+  protected Consumer<String[]> getRunMethod() {
+    return CDToolInvoker::run;
+  }
+
+  @Override
+  protected Class<? extends AToolAction> getToolAction() {
+    return CDAction.class;
+  }
+}

@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 import gradle.specific.UMLPJava2TypeScriptTask
-import gradle.specific.pojo.CD2POJOTask
+import gradle.specific.cd.CD2POJOTask
 
 plugins {
     id 'application'
@@ -34,7 +34,9 @@ dependencies {
 // POJOs
 task generateGuiComponentPOJOs(type: CD2POJOTask) {
   input = file("client/models/")
-  output = project.layout.buildDirectory.dir("guiComponentTypes")
+  outputDir = project.layout.buildDirectory.dir("guiComponentTypes")
+
+  debug=true
 }
 
 //task guiComponentTypesJar(type: Jar) {
@@ -44,7 +46,7 @@ task generateGuiComponentPOJOs(type: CD2POJOTask) {
 
 sourceSets {
   main {
-    java.srcDirs += [generateGuiComponentPOJOs.output]
+    java.srcDirs += [generateGuiComponentPOJOs.outputDir]
   }
 }
 //guiComponentTypesJar.dependsOn compileJava
