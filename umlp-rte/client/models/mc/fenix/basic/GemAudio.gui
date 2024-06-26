@@ -6,6 +6,11 @@ package mc.fenix.basic;
 */
 component GemAudio(
   /**
+    Width of the component in `px`, `%`, `vh`. By default takes up all available
+    space.
+  */
+  String width = "auto",
+  /**
     The path to the audio file. It can be a URL or a relative path.
     The relative path starts from the root folder (typically `src/`).
   */
