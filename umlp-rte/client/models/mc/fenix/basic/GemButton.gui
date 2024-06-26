@@ -2,20 +2,29 @@
 package mc.fenix.basic;
 
 /**
-  Button enables user interaction through simple clicks or taps, triggering actions or tasks.
+  Button enables user interaction through simple clicks or taps, triggering
+  actions or tasks.
 */
 component GemButton(
+  /**
+    Height of the component in `px`, `%`, `vh`. By default collapses to a
+    minimal possible height with respect to content.
+  */
+  String height = "auto",
+  /**
+    Width of the component in `px`, `%`, `vh`. By default collapses to a
+    minimal possible width or takes up all available space depending on context.
+  */
+  String width = "auto",
   /** Button text. */
   String label = "",
-  /** Button content if a more complex element than text is required. */
+  /**
+    Button content if a more complex element than text is required.
+    If label and content are both set, only content is shown.
+  */
   List<GUIViewElement> content,
   /** If true, the button cannot be clicked. */
   boolean disabled = false,
   /** Callback that is executed when a button is clicked. */
-  Event<Void> leftClick,
-
-  /** Width of the button. */
-  String width = "auto",
-  /** Height of the button. */
-  String height = "auto"
+  Event<Void> leftClick
 )
