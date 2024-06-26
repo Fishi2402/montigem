@@ -8,7 +8,7 @@ package mc.fenix.basic;
 component GemButton(
   /**
     Height of the component in `px`, `%`, `vh`. By default collapses to a
-    minimal possible height with respect to content.
+    minimal possible height or takes up all available space depending on context.
   */
   String height = "auto",
   /**
