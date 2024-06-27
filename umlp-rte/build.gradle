@@ -33,7 +33,7 @@ dependencies {
 
 // POJOs
 task generateGuiComponentPOJOs(type: CD2POJOTask) {
-  handWrittenCodeDir = project.layout.files("src/main/java")
+  hwcDir = project.layout.files("src/main/java")
   input = file("client/models/")
   outputDir = project.layout.buildDirectory.dir("guiComponentTypes")
 }
