@@ -9,6 +9,14 @@ import java.net.ServerSocket;
 
 @UsePlaywright
 public abstract class AbstractPlaywrightE2ETest {
+  /**
+   * Checks whether the current operating system is Windows
+   *
+   * @return {@code true} if the current OS is Windows, else {@code false}
+   */
+  public static boolean environmentIsWindows() {
+    return System.getProperty("os.name").startsWith("Windows");
+  }
 
   protected static int getFreePort() {
     try {
