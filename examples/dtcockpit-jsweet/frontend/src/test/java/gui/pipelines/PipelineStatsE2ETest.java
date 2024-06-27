@@ -109,25 +109,25 @@ public class PipelineStatsE2ETest extends DtcockpitMockTestSetup {
     assertEquals(2, entries.size());
 
     GemBarChartEntry entry1 = entries.get(0);
-    Optional<String> optLabel1 = entry1.getLabel();
-    assertTrue(optLabel1.isPresent());
-    assertEquals("Unsuccessful", optLabel1.get());
-    assertTrue(entry1.getStack().isEmpty());
+    String optLabel1 = entry1.getLabel();
+    assertTrue(entry1.isPresentLabel());
+    assertEquals("Unsuccessful", optLabel1);
+    assertTrue(!entry1.isPresentStack());
     assertEquals(List.of(1, 0, 1), entry1.getData());
-    Optional<String> optBackgroundColor1 = entry1.getBackgroundColor();
-    assertTrue(optBackgroundColor1.isPresent());
-    assertEquals("#cc071e", optBackgroundColor1.get());
-    assertTrue(entry1.getHoverBackgroundColor().isEmpty());
+    String optBackgroundColor1 = entry1.getBackgroundColor();
+    assertTrue(entry1.isPresentBackgroundColor());
+    assertEquals("#cc071e", optBackgroundColor1);
+    assertTrue(!entry1.isPresentHoverBackgroundColor());
 
     GemBarChartEntry entry2 = entries.get(1);
-    Optional<String> optLabel2 = entry2.getLabel();
-    assertTrue(optLabel2.isPresent());
-    assertEquals("Successful", optLabel2.get());
-    assertTrue(entry2.getStack().isEmpty());
+    String optLabel2 = entry2.getLabel();
+    assertTrue(entry2.isPresentBackgroundColor());
+    assertEquals("Successful", optLabel2);
+    assertTrue(!entry2.isPresentStack());
     assertEquals(List.of(2, 1, 0), entry2.getData());
-    Optional<String> optBackgroundColor2 = entry2.getBackgroundColor();
-    assertTrue(optBackgroundColor2.isPresent());
-    assertEquals("#57ab27", optBackgroundColor2.get());
-    assertTrue(entry2.getHoverBackgroundColor().isEmpty());
+    String optBackgroundColor2 = entry2.getBackgroundColor();
+    assertTrue(entry2.isPresentBackgroundColor());
+    assertEquals("#57ab27", optBackgroundColor2);
+    assertTrue(!entry2.isPresentHoverBackgroundColor());
   }
 }

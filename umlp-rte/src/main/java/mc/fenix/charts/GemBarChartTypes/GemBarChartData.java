@@ -3,34 +3,21 @@ package mc.fenix.charts.GemBarChartTypes;
 
 import java.util.List;
 
-public class GemBarChartData {
+public class GemBarChartData extends GemBarChartDataTOP {
 
-  private List<GemBarChartEntry> entries;
-  private List<String> labels;
+  public GemBarChartData() {
+  }
 
   public GemBarChartData(List<GemBarChartEntry> entries, List<String> labels) {
     this.entries = entries;
     this.labels = labels;
   }
 
-  public List<GemBarChartEntry> getEntries() {
-    return entries;
-  }
-
-  public void setEntries(List<GemBarChartEntry> entries) {
-    this.entries = entries;
-  }
-
   public List<String> getLabels() {
-    return labels;
+    return this.getLabelsList();
   }
 
-  public void setLabels(List<String> labels) {
-    this.labels = labels;
-  }
-
-  @Override
-  public String toString() {
-    return "GemBarChartData{" + "entries=" + entries + ", labels=" + labels + '}';
+  public List<GemBarChartEntry> getEntries() {
+    return this.getEntriesList();
   }
 }

@@ -30,6 +30,12 @@ public abstract class CD2POJOTask extends MCSingleFileTask {
     super("CD2PojoTask", null);
   }
 
+  @InputDirectory
+  @org.gradle.api.tasks.Optional
+  @PathSensitive(PathSensitivity.RELATIVE)
+  // No @Incremental, changes of the Symbols lead to full rebuild
+  public abstract DirectoryProperty getTemplatePath();
+
   @Override
   public boolean isInputFile(File f){
     return f.getName().endsWith(".cd");
@@ -46,6 +52,14 @@ public abstract class CD2POJOTask extends MCSingleFileTask {
     {
       result.add("--output");
       result.add(handlePath.apply(getOutputDir().get().getAsFile().toPath()));
+    }
+    if (!getHandWrittenCodeDir().isEmpty()) {
+      result.add("--handwrittencode");
+      result.add(handlePath.apply(getHandWrittenCodeDir().getSingleFile().toPath()));
+    }
+    if (getTemplatePath().isPresent()) {
+      result.add("--template");
+      result.add(handlePath.apply(getTemplatePath().get().getAsFile().toPath()));
     }
 
     result.add("-c2mc");
