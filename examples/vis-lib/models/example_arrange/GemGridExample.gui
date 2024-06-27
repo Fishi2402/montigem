@@ -5,6 +5,25 @@ import mc.fenix.arrange.GemGrid;
 import mc.fenix.arrange.GemGridCell;
 import mc.fenix.basic.GemText;
 
+/**
+  Following example shows 4 grids.
+  
+  Grid 1 and 2 show simple cases. If a row contains less items than a maximum
+  length row, the row is filled with empty cells to match the longest row.
+
+  Grid 3 (`fixedGrid`) defines fixed width and height for the entire grid.
+  Additionally, property `x` is set to specify widths of columns and implicetly
+  defines how many columns (3) there are in the grid:
+  - First column is `200px` wide.
+  - Second column is `1fr` wide, i.e. `1 / amout_of_columns * grid_width` (1/3).
+  - Third column has an automatic width (takes available space).
+
+  Property `y` defines the rows of the grid accordingly.
+
+  Grid 4 (`spanningGrid`) defines grid dimensions via properties `x` and `y`.
+  The grid specifies cells using `GemGridCell` component that specifies start
+  and end coordinates of the cell rectangle in the grid.
+*/
 page GemGridExample() {
   @GemGrid(
     rows = [
