@@ -4,5 +4,8 @@ package example_basic;
 import mc.fenix.basic.GemAudio;
 
 page GemAudioExample() {
-  @GemAudio(source = "assets/audio/audio.mp3");
+  @GemAudio(
+    width = "300px",
+    source = "assets/audio/audio.mp3"
+  );
 }

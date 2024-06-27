@@ -9,8 +9,16 @@ import mc.fenix.arrange.GemColumn;
   any elements, such as button, inputs, charts, etc.
 */
 component GemCard(
-  String width = "auto",
+  /**
+    Height of the component in `px`, `%`, `vh`. By default collapses to a
+    minimal possible height with respect to content.
+  */
   String height = "auto",
+  /**
+    Width of the component in `px`, `%`, `vh`. By default collapses to a
+    minimal possible width with respect to content.
+  */
+  String width = "auto",
   /** Text displayed at the top of the card. */
   String title = "",
   /**

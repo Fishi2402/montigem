@@ -218,7 +218,7 @@ export class GemGrid {
         this.content.push(c);
       }
     }
-    if (this._rows.length > 0) {
+    else if (this._rows.length > 0) {
       const res: TemplateRef<any>[][] = [];
       for (let row of this._rows) {
         const r: TemplateRef<any>[] = [];
