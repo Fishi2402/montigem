@@ -87,7 +87,7 @@ public class E2ETestDecorator extends AbstractDecorator {
                                                         " * Waits until all commands have reached the backend and should have been processed.\n" +
                                                         " */"));
 
-    //TODO getFrontendServerPort method
+    cd4C.addMethod(res, "umlp.test_infrastructure.e2e.GetFrontendServerPort");
 
 
     return res;
