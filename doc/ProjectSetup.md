@@ -175,6 +175,12 @@ The application also needs AppModule (`AppGemModuleConfig.ts`), which imports ot
 
 Icons, images and videos must be stored in the `config/src/assets` folder.
 
+Frontend may additionally include `tsconfig.json` file alongside `build.gradle` with following content:
+```json
+{ "extends": "./build/frontendGen/tsconfig.json" }
+```
+This file provides a hint for IDEs to look for the root TypeScript configuration file in the build folder.
+
 ## 5. How to start the application
 
 The project is built using Gradle.  
