@@ -1,5 +1,6 @@
 package umlp.generator.domain.decorator;
 
+import de.monticore.ast.Comment;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -81,7 +82,10 @@ public class E2ETestDecorator extends AbstractDecorator {
     //TODO reuseBackend/Frontend -> bool methods
     //TODO setup and teardown methods which start and stop backend/frontend if needed
 
-    //TODO waitForBackend method
+    var waitForBackendMethod = cd4C.addMethod(res, "umlp.test_infrastructure.e2e.WaitForBackend");
+    waitForBackendMethod.add_PreComment(new Comment("/**\n" +
+                                                        " * Waits until all commands have reached the backend and should have been processed.\n" +
+                                                        " */"));
 
     //TODO getFrontendServerPort method
 
@@ -99,18 +103,15 @@ public class E2ETestDecorator extends AbstractDecorator {
 
     CD4C cd4C = getCD4C();
     cd4C.addImport(res, "org.springframework.boot.web.server.WebServerFactoryCustomizer");
-    cd4C.addImport(res, "org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory");
+    cd4C.addImport(res,
+                   "org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory");
 
     //add component annotation
     cd4C.addImport(res, "org.springframework.stereotype.Component");
 
-    glex.replaceTemplate("cd2java.Annotations",
-                         res,
-                         new StringHookPoint("@Component"));
+    glex.replaceTemplate("cd2java.Annotations", res, new StringHookPoint("@Component"));
 
-    cd4C.addMethod(res,
-                   "umlp.test_infrastructure.e2e.PortConfig_customize",
-                   e2eTestClassName);
+    cd4C.addMethod(res, "umlp.test_infrastructure.e2e.PortConfig_customize", e2eTestClassName);
 
     return res;
   }
