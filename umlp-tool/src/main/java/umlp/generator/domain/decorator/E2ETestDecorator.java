@@ -73,6 +73,18 @@ public class E2ETestDecorator extends AbstractDecorator {
                                                portConfigClassName));
 
     addAttribute(res, "static int backendServerPort", "getFreePort()");
+    addAttribute(res, "static int frontendServerPort", "getFreePort()");
+    addAttribute(res, "static Optional<Process> frontendProcess", "Optional.empty()");
+    addAttribute(res, "static Optional<Process> backendProcess", "Optional.empty()");
+
+    //TODO start/stop frontend/backend methods
+    //TODO reuseBackend/Frontend -> bool methods
+    //TODO setup and teardown methods which start and stop backend/frontend if needed
+
+    //TODO waitForBackend method
+
+    //TODO getFrontendServerPort method
+
 
     return res;
   }

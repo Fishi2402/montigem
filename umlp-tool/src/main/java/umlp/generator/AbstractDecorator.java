@@ -142,6 +142,22 @@ public abstract class AbstractDecorator {
   }
 
   /**
+   * Adds an attribute to the given {@link ASTCDType} without adding getters, setters or any initial value.
+   *
+   * @param target      Where to define the attribute
+   * @param declaration The declaration code of the attribute
+   * @return The added {@link ASTCDAttribute}
+   * @see #addAttribute(ASTCDType, String, String)
+   */
+  protected ASTCDAttribute addAttribute(ASTCDType target, String declaration) {
+    return addAttribute(target,
+                        false,
+                        false,
+                        declaration,
+                        Optional.empty());
+  }
+
+  /**
    * Adds an attribute with an initial value to the given {@link ASTCDType} without adding getters nor setters.
    *
    * @param target       Where to define the attribute
