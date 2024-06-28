@@ -79,7 +79,10 @@ public class E2ETestDecorator extends AbstractDecorator {
     addAttribute(res, "static Optional<Process> backendProcess", "Optional.empty()");
 
     //TODO start/stop frontend/backend methods
-    //TODO reuseBackend/Frontend -> bool methods
+
+    cd4C.addMethod(res, "umlp.test_infrastructure.e2e.ReuseBackend");
+    cd4C.addMethod(res, "umlp.test_infrastructure.e2e.ReuseFrontend");
+
     //TODO setup and teardown methods which start and stop backend/frontend if needed
 
     var waitForBackendMethod = cd4C.addMethod(res, "umlp.test_infrastructure.e2e.WaitForBackend");
