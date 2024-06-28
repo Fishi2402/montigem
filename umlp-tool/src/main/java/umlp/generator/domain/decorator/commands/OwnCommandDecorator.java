@@ -12,8 +12,11 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.umlstereotype._ast.ASTStereotypeBuilder;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
@@ -101,7 +104,7 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
     AccessorDecorator accessor = DecoratorUtil.streamlessListAcessor(glex);
     attrList.forEach(a -> ast.addAllCDMembers(accessor.decorate(a)));
 
-    getCD4C().addMethod(ast, getDoActionTemplate(), buildReturnType(meth, ast));
+    getCD4C().addMethod(ast, getDoActionTemplate(), buildReturnType(meth, ast).printType());
 
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList());
 
@@ -159,7 +162,7 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
     }
   }
 
-  protected String extendedClass(ASTCDMethod command, ASTCDClass ast) {
+  protected ASTMCObjectType extendedClass(ASTCDMethod command, ASTCDClass ast) {
     SymTypeExpression returnTypeSymbol = command.getSymbol().getType();
     if (returnTypeSymbol.isVoidType()) {
       return buildExtendedCommandType("Void");

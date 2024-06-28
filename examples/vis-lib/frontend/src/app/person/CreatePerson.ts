@@ -2,7 +2,8 @@
 
 import { CreatePersonComponent, config } from '@src/person/CreatePersonComponent';
 import { Component } from '@angular/core';
-import { Event } from '@umlp/common';
+import { CommandManager, Event } from '@umlp/common';
+import { IsOld } from '@src/domain/commands/IsOld';
 
 @Component({
   standalone: true,

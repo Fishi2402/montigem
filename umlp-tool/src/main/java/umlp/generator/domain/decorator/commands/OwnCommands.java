@@ -4,14 +4,22 @@ import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
+import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericTypeBuilder;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.util.PathUtil;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static de.monticore.types.check.SymTypePrimitive.box;
 
@@ -23,11 +31,11 @@ public interface OwnCommands {
   String SIMPLE_RESULT = "SimpleResult";
   String LIST_RESULT = "ListResult";
 
-  default String buildReturnType(ASTCDMethod command, ASTCDClass ast) {
+  default ASTMCObjectType buildReturnType(ASTCDMethod command, ASTCDClass ast) {
     ASTMCReturnType retType = command.getMCReturnType();
     if (retType.isPresentMCVoidType()) {
       CD4C.getInstance().addImport(ast, PathUtil.getBackendRTECommandPath(STATUS_RESULT));
-      return STATUS_RESULT;
+      return MCTypeFacade.getInstance().createQualifiedType(STATUS_RESULT);
     }
     else if (retType.isPresentMCType()) {
       ASTMCType mcType = retType.getMCType();
@@ -43,21 +51,39 @@ public interface OwnCommands {
     return buildSimpleResult("Object", ast);
   }
 
-  default String buildExtendedCommandType(String typeParam) {
-    return new StringBuilder(StringTransformations.capitalize(REQUEST)).append("<")
-               .append(box(typeParam)).append(">").toString();
+  default ASTMCObjectType buildExtendedCommandType(String typeParam) {
+    String type = StringTransformations.capitalize(REQUEST);
+    ASTMCType param = MCTypeFacade.getInstance().createQualifiedType(box(typeParam));
+    return buildGeneric(type, param);
   }
 
-  default String buildSimpleResult(String typeParam, ASTCDClass ast) {
+  default ASTMCObjectType buildSimpleResult(String typeParam, ASTCDClass ast) {
     CD4C.getInstance().addImport(ast, PathUtil.getBackendRTECommandPath(SIMPLE_RESULT));
-    return new StringBuilder(SIMPLE_RESULT).append("<").append(box(typeParam)).append(">").toString();
+    String type = StringTransformations.capitalize(SIMPLE_RESULT);
+    ASTMCType param = MCTypeFacade.getInstance().createQualifiedType(box(typeParam));
+    return buildGeneric(type, param);
   }
 
-  default String buildListResult(String typeParam, ASTCDClass ast) {
+  default ASTMCObjectType buildListResult(String typeParam, ASTCDClass ast) {
     CD4C.getInstance().addImport(ast, PathUtil.getBackendRTECommandPath(LIST_RESULT));
     CD4C.getInstance().addImport(ast, "java.util.List");
-    return new StringBuilder(LIST_RESULT).append("<").append(box(typeParam)).append(", List<")
-               .append(box(typeParam)).append(">>").toString();
+    String type = StringTransformations.capitalize(LIST_RESULT);
+    ASTMCType param = MCTypeFacade.getInstance().createQualifiedType(box(typeParam));
+    return buildGeneric(type, param, buildGeneric("List", param));
+  }
+
+  default ASTMCObjectType buildGeneric(String type, ASTMCType... params) {
+    ASTMCBasicGenericTypeBuilder genTypeBuilder = MCFullGenericTypesMill.mCBasicGenericTypeBuilder()
+        .setNamesList(new ArrayList<>(Arrays.asList(type)))
+        .setMCTypeArgumentsList(new ArrayList<>());
+
+    for (ASTMCType param : params) {
+      genTypeBuilder.addMCTypeArgument(
+          MCSimpleGenericTypesMill.mCCustomTypeArgumentBuilder()
+              .setMCType(param)
+              .build());
+    }
+    return genTypeBuilder.build();
   }
 
   default boolean isGem(SymTypeExpression type) {
