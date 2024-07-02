@@ -92,9 +92,11 @@ public class E2ETestDecorator extends AbstractDecorator {
     cd4C.addImport(res, "java.nio.file.Path");
     cd4C.addImport(res, "java.nio.file.Paths");
     cd4C.addImport(res, "java.nio.file.Files");
+    cd4C.addImport(res, "java.io.File");
 
     //TODO split start frontend in smaller overridable methods
     cd4C.addMethod(res, "umlp.test_infrastructure.e2e.GetNpmPath");
+    cd4C.addMethod(res, "umlp.test_infrastructure.e2e.StartNpmProcess");
     var stopFrontendMethod = cd4C.addMethod(res, "umlp.test_infrastructure.e2e.StopFrontend");
     setAnnotations(stopFrontendMethod, new StringHookPoint("@AfterAll"));
     var cleanupBackendMethod = cd4C.addMethod(res, "umlp.test_infrastructure.e2e.CleanupBackend");
@@ -104,7 +106,6 @@ public class E2ETestDecorator extends AbstractDecorator {
     waitForBackendMethod.add_PreComment(new Comment("/**\n" + " * Waits until all commands have reached the backend and should have been processed.\n" + " */"));
 
     cd4C.addMethod(res, "umlp.test_infrastructure.e2e.GetFrontendServerPort");
-
 
     return res;
   }
