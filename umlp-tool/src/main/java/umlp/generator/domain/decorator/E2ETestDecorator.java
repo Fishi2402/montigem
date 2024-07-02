@@ -88,14 +88,18 @@ public class E2ETestDecorator extends AbstractDecorator {
     cd4C.addImport(res, "org.junit.jupiter.api.AfterEach");
     cd4C.addImport(res, "org.junit.jupiter.api.AfterAll");
     cd4C.addImport(res, "umlp.backendrte.common.DatabaseAccessManager");
+    cd4C.addImport(res, "java.io.IOException");
     cd4C.addImport(res, "java.util.Comparator");
+    cd4C.addImport(res, "java.nio.file.Path");
+    cd4C.addImport(res, "java.nio.file.Paths");
+    cd4C.addImport(res, "java.nio.file.Files");
 
     //TODO split start frontend in smaller overridable methods
     cd4C.addMethod(res, "umlp.test_infrastructure.e2e.GetNpmPath");
-    cd4C.addMethod(res, "umlp.test_infrastructure.e2e.StopFrontend");
-    glex.replaceTemplate("cd2java.Annotations", res, new StringHookPoint("@AfterAll"));
-    cd4C.addMethod(res, "umlp.test_infrastructure.e2e.CleanupBackend");
-    glex.replaceTemplate("cd2java.Annotations", res, new StringHookPoint("@AfterEach"));
+    var stopFrontendMethod = cd4C.addMethod(res, "umlp.test_infrastructure.e2e.StopFrontend");
+    glex.replaceTemplate("cd2java.Annotations", stopFrontendMethod, new StringHookPoint("@AfterAll"));
+    var cleanupBackendMethod = cd4C.addMethod(res, "umlp.test_infrastructure.e2e.CleanupBackend");
+    glex.replaceTemplate("cd2java.Annotations", cleanupBackendMethod, new StringHookPoint("@AfterEach"));
 
     var waitForBackendMethod = cd4C.addMethod(res, "umlp.test_infrastructure.e2e.WaitForBackend");
     waitForBackendMethod.add_PreComment(new Comment("/**\n" +
