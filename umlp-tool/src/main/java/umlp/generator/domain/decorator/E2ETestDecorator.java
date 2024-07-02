@@ -80,7 +80,7 @@ public class E2ETestDecorator extends AbstractDecorator {
     addAttribute(res, "static Optional<Process> frontendProcess", "Optional.empty()");
 
     //TODO reuse frontend, always restart backend -> Add docs on how to change the later behaviour
-    //TODO split start frontend in smaller overridable methods
+
 
     //setup/tearDown methods
     cd4C.addImport(res, "org.junit.jupiter.api.BeforeAll");
@@ -89,6 +89,8 @@ public class E2ETestDecorator extends AbstractDecorator {
     cd4C.addImport(res, "org.junit.jupiter.api.AfterAll");
     cd4C.addImport(res, "umlp.backendrte.common.DatabaseAccessManager");
 
+    //TODO split start frontend in smaller overridable methods
+    cd4C.addMethod(res, "umlp.test_infrastructure.e2e.GetNpmPath");
     cd4C.addMethod(res, "umlp.test_infrastructure.e2e.StopFrontend");
     cd4C.addMethod(res, "umlp.test_infrastructure.e2e.CleanupBackend");
 
