@@ -66,6 +66,7 @@ public class E2ETestDecorator extends AbstractDecorator {
     //add spring boot annotations
     cd4C.addImport(res, "org.springframework.boot.test.context.SpringBootTest");
     cd4C.addImport(res, "org.springframework.context.annotation.Import");
+    cd4C.addImport(res, "org.springframework.test.annotation.DirtiesContext");
 
     glex.replaceTemplate("cd2java.Annotations",
                          res,
@@ -73,17 +74,23 @@ public class E2ETestDecorator extends AbstractDecorator {
                                                cdName,
                                                portConfigClassName));
 
+    //attributes
     addAttribute(res, "static int backendServerPort", "getFreePort()");
     addAttribute(res, "static int frontendServerPort", "getFreePort()");
     addAttribute(res, "static Optional<Process> frontendProcess", "Optional.empty()");
-    addAttribute(res, "static Optional<Process> backendProcess", "Optional.empty()");
 
-    //TODO start/stop frontend/backend methods
+    //TODO reuse frontend, always restart backend -> Add docs on how to change the later behaviour
+    //TODO split start frontend in smaller overridable methods
 
-    cd4C.addMethod(res, "umlp.test_infrastructure.e2e.ReuseBackend");
-    cd4C.addMethod(res, "umlp.test_infrastructure.e2e.ReuseFrontend");
+    //setup/tearDown methods
+    cd4C.addImport(res, "org.junit.jupiter.api.BeforeAll");
+    cd4C.addImport(res, "org.junit.jupiter.api.BeforeEach");
+    cd4C.addImport(res, "org.junit.jupiter.api.AfterEach");
+    cd4C.addImport(res, "org.junit.jupiter.api.AfterAll");
+    cd4C.addImport(res, "umlp.backendrte.common.DatabaseAccessManager");
 
-    //TODO setup and teardown methods which start and stop backend/frontend if needed
+    cd4C.addMethod(res, "umlp.test_infrastructure.e2e.StopFrontend");
+    cd4C.addMethod(res, "umlp.test_infrastructure.e2e.CleanupBackend");
 
     var waitForBackendMethod = cd4C.addMethod(res, "umlp.test_infrastructure.e2e.WaitForBackend");
     waitForBackendMethod.add_PreComment(new Comment("/**\n" +
