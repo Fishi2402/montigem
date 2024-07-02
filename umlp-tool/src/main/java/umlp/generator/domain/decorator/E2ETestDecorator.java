@@ -68,11 +68,10 @@ public class E2ETestDecorator extends AbstractDecorator {
     cd4C.addImport(res, "org.springframework.context.annotation.Import");
     cd4C.addImport(res, "org.springframework.test.annotation.DirtiesContext");
 
-    glex.replaceTemplate("cd2java.Annotations",
-                         res,
-                         new TemplateHookPoint("umlp.test_infrastructure.e2e.SpringAnnotations",
-                                               cdName,
-                                               portConfigClassName));
+    setAnnotations(res,
+                   new TemplateHookPoint("umlp.test_infrastructure.e2e.SpringAnnotations",
+                                         cdName,
+                                         portConfigClassName));
 
     //attributes
     addAttribute(res, "static int backendServerPort", "getFreePort()");
@@ -97,14 +96,12 @@ public class E2ETestDecorator extends AbstractDecorator {
     //TODO split start frontend in smaller overridable methods
     cd4C.addMethod(res, "umlp.test_infrastructure.e2e.GetNpmPath");
     var stopFrontendMethod = cd4C.addMethod(res, "umlp.test_infrastructure.e2e.StopFrontend");
-    glex.replaceTemplate("cd2java.Annotations", stopFrontendMethod, new StringHookPoint("@AfterAll"));
+    setAnnotations(stopFrontendMethod, new StringHookPoint("@AfterAll"));
     var cleanupBackendMethod = cd4C.addMethod(res, "umlp.test_infrastructure.e2e.CleanupBackend");
-    glex.replaceTemplate("cd2java.Annotations", cleanupBackendMethod, new StringHookPoint("@AfterEach"));
+    setAnnotations(cleanupBackendMethod, new StringHookPoint("@AfterEach"));
 
     var waitForBackendMethod = cd4C.addMethod(res, "umlp.test_infrastructure.e2e.WaitForBackend");
-    waitForBackendMethod.add_PreComment(new Comment("/**\n" +
-                                                        " * Waits until all commands have reached the backend and should have been processed.\n" +
-                                                        " */"));
+    waitForBackendMethod.add_PreComment(new Comment("/**\n" + " * Waits until all commands have reached the backend and should have been processed.\n" + " */"));
 
     cd4C.addMethod(res, "umlp.test_infrastructure.e2e.GetFrontendServerPort");
 

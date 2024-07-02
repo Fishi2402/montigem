@@ -217,6 +217,21 @@ public abstract class AbstractDecorator {
   }
 
   /**
+   * Set the annotations for an {@link ASTNode} via {@link HookPoint}
+   * <p>
+   * <strong>Example</strong>
+   * <pre>{@code
+   * setAnnotations(method, new StringHookPoint("@AfterEach"));
+   * }</pre>
+   *
+   * @param node      The {@link ASTNode} to set the annotations of
+   * @param hookPoint The {@link HookPoint} generating the annotations
+   */
+  protected void setAnnotations(ASTNode node, HookPoint hookPoint) {
+    glex.replaceTemplate("cd2java.Annotations", node, hookPoint);
+  }
+
+  /**
    * Adds constructors which delegate to {@code super()} for every constructor in the parent class. Logs an
    * error when the target doesn't extend the parent class
    *
