@@ -88,6 +88,7 @@ public class E2ETestDecorator extends AbstractDecorator {
     cd4C.addImport(res, "org.junit.jupiter.api.AfterEach");
     cd4C.addImport(res, "org.junit.jupiter.api.AfterAll");
     cd4C.addImport(res, "umlp.backendrte.common.DatabaseAccessManager");
+    cd4C.addImport(res, "java.util.Comparator");
 
     //TODO split start frontend in smaller overridable methods
     cd4C.addMethod(res, "umlp.test_infrastructure.e2e.GetNpmPath");
