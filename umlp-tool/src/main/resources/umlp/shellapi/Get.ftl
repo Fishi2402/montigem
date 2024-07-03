@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("cdName", "className")}
-<#--${cd4c.method("public void ${className?uncap_first}Get (@ShellOption(value = \"--id\") long id)")}-->
+<#--${cd4c.method("public void ${className?uncap_first}Get (@ShellOption(__val = \"--id\") long id)")}-->
 ${cd4c.method("public void ${className?uncap_first}Get (long id)")}
   Optional<${className}> ${className?uncap_first} = ${cdName}Manager.${className?uncap_first}Opt(id);
   if (${className?uncap_first}.isPresent()) {
