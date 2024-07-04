@@ -67,7 +67,7 @@ public class E2ETestDecorator extends AbstractDecorator {
     cd4C.addImport(res, "org.springframework.boot.test.context.SpringBootTest");
     cd4C.addImport(res, "org.springframework.context.annotation.Import");
     cd4C.addImport(res, "org.springframework.test.annotation.DirtiesContext");
-    cd4C.addMethod(res, "org.junit.jupyter.api.TestInstance");
+    cd4C.addImport(res, "org.junit.jupyter.api.TestInstance");
 
     setAnnotations(res,
                    new TemplateHookPoint("umlp.test_infrastructure.e2e.SpringAnnotations",
