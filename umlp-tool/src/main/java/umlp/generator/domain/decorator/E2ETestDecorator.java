@@ -98,6 +98,7 @@ public class E2ETestDecorator extends AbstractDecorator {
     cd4C.addMethod(res, "umlp.test_infrastructure.e2e.GetNpmPath");
     cd4C.addMethod(res, "umlp.test_infrastructure.e2e.GetFrontendGenDirectory");
     cd4C.addMethod(res, "umlp.test_infrastructure.e2e.StartNpmProcess");
+    cd4C.addMethod(res, "umlp.test_infrastructure.e2e.WaitForFrontend");
 
     var stopFrontendMethod = cd4C.addMethod(res, "umlp.test_infrastructure.e2e.StopFrontend");
     setAnnotations(stopFrontendMethod, new StringHookPoint("@AfterAll"));
