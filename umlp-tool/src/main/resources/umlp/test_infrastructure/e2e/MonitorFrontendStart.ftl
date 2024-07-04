@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature()}
-${cd4c.method("protected void monitorFrontendStart(Process frontendProcess)")}
+${cd4c.method("protected void monitorFrontendStart(Process frontendProcess) throws IOException")}
 
 boolean available = false;
 
