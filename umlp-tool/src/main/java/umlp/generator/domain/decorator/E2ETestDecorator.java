@@ -67,7 +67,7 @@ public class E2ETestDecorator extends AbstractDecorator {
     cd4C.addImport(res, "org.springframework.boot.test.context.SpringBootTest");
     cd4C.addImport(res, "org.springframework.context.annotation.Import");
     cd4C.addImport(res, "org.springframework.test.annotation.DirtiesContext");
-    cd4C.addImport(res, "org.junit.jupyter.api.TestInstance");
+    cd4C.addImport(res, "org.junit.jupiter.api.TestInstance");
 
     setAnnotations(res,
                    new TemplateHookPoint("umlp.test_infrastructure.e2e.Annotations",
@@ -75,10 +75,9 @@ public class E2ETestDecorator extends AbstractDecorator {
                                          portConfigClassName));
 
     //attributes
-    addAttribute(res, "private static int backendServerPort", "getFreePort()");
-    addAttribute(res, "private static int frontendServerPort", "getFreePort()");
+    addAttribute(res, "static int backendServerPort", "getFreePort()");
+    addAttribute(res, "static int frontendServerPort", "getFreePort()");
     addAttribute(res, "private static Optional<Process> frontendProcess", "Optional.empty()");
-    addAttribute(res, "private static Optional<" + className + "> instance", "Optional.empty()");
 
     //TODO reuse frontend, always restart backend -> Add docs on how to change the later behaviour
 
