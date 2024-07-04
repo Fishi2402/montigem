@@ -96,7 +96,9 @@ public class E2ETestDecorator extends AbstractDecorator {
 
     //TODO split start frontend in smaller overridable methods
     cd4C.addMethod(res, "umlp.test_infrastructure.e2e.GetNpmPath");
+    cd4C.addMethod(res, "umlp.test_infrastructure.e2e.GetFrontendGenDirectory");
     cd4C.addMethod(res, "umlp.test_infrastructure.e2e.StartNpmProcess");
+
     var stopFrontendMethod = cd4C.addMethod(res, "umlp.test_infrastructure.e2e.StopFrontend");
     setAnnotations(stopFrontendMethod, new StringHookPoint("@AfterAll"));
     var cleanupBackendMethod = cd4C.addMethod(res, "umlp.test_infrastructure.e2e.CleanupBackend");
