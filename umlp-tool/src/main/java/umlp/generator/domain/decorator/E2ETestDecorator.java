@@ -89,7 +89,7 @@ public class E2ETestDecorator extends AbstractDecorator {
     //attributes
     addAttribute(res, "static int backendServerPort", "getFreePort()");
     addAttribute(res, "static int frontendServerPort", "getFreePort()");
-    addAttribute(res, "private static Optional<Process> frontendProcess", "Optional.empty()");
+    addAttribute(res, "protected Optional<Process> frontendProcess", "Optional.empty()");
 
     //setup/tearDown methods
     cd4C.addImport(res, "org.junit.jupiter.api.BeforeAll");

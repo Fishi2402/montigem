@@ -42,3 +42,5 @@ if (!available) {
 
   throw new IllegalStateException("Frontend server can not be started");
 }
+
+System.out.println("Frontend started successfully");
