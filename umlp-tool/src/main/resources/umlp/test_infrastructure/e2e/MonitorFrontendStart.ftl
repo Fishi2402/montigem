@@ -1,14 +1,14 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature()}
-${cd4c.method("protected void waitForFrontend(Process frontend)")}
+${cd4c.method("protected void monitorFrontendStart(Process frontendProcess)")}
 
 boolean available = false;
 
 long start = System.currentTimeMillis();
 List<String> lines = new ArrayList<>();
-BufferedReader stdOutreader = new BufferedReader(new InputStreamReader(frontend.getInputStream()));
-BufferedReader stderrReader = new BufferedReader(new InputStreamReader(frontend.getErrorStream()));
-while (frontend.isAlive()) {
+BufferedReader stdOutreader = new BufferedReader(new InputStreamReader(frontendProcess.getInputStream()));
+BufferedReader stderrReader = new BufferedReader(new InputStreamReader(frontendProcess.getErrorStream()));
+while (frontendProcess.isAlive()) {
   if ((System.currentTimeMillis() - start > 1000 * 60)) {
     System.out.println("Frontend not available after 60 seconds. Aborting.");
     break;
