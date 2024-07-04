@@ -23,6 +23,11 @@ classdiagram Domain {
     String name;
   }
 
+  <<singleton>>
+  class App {
+    Boolean isOld(Person p);
+  }
+
   association home [1] Person -> (address) Address [0..1];
 
   association friends [*] Person -> (friends) Person [*];

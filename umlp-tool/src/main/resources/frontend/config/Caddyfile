@@ -4,6 +4,8 @@
 
 {$UMLP_DEPLOYED_DOMAIN:http://localhost} {
 
+  import Caddyfile_hw_start*  # can be used to set basicauth (or other custom config)
+
   handle /umlp/api/* {
     reverse_proxy backend:8081
   }

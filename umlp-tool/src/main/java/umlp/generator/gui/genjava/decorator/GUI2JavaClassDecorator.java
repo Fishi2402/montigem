@@ -778,11 +778,19 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
                   method.getAlias(), createTypeAndAddImports(method.getParamTypes().get(0)), manager);
               break;
             case ASSOC_ADD: {
-              addAssocMethod(method, node, getAssocAddTemplate());
+              addAssocListMethod(method, node, getAssocAddTemplate());
               break;
             }
             case ASSOC_REMOVE: {
-              addAssocMethod(method, node, getAssocRemoveTemplate());
+              addAssocListMethod(method, node, getAssocRemoveTemplate());
+              break;
+            }
+            case ASSOC_SET: {
+              addAssocListMethod(method, node, getAssocSetTemplate());
+              break;
+            }
+            case ASSOC_SET_ABSENT: {
+              addAssocMethod(method, node, getAssocSetAbsentTemplate());
               break;
             }
           }
@@ -977,10 +985,10 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     getCD4C().addMethod(clazz, getScopeTemplate());
   }
 
-  protected void addAssocMethod(Method method, ASTCallExpression node, String template) {
+  protected void addAssocListMethod(Method method, ASTCallExpression node, String template) {
     // TODO AGe: better "first arg is an assoc" check
     if (method.getParamTypes().size() != 2
-        || !util.isDomainListType(method.getParamTypes().get(0))
+        || (!util.isDomainListType(method.getParamTypes().get(0)) && !util.isDomainType(method.getParamTypes().get(0)))
         || node.getArguments().sizeExpressions() != 2
         || !(node.getArguments().getExpression(0) instanceof ASTFieldAccessExpression)
         || !util.isDomainType(method.getParamTypes().get(1))
@@ -1004,6 +1012,42 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     );
     String getterValue = getterPrinter.prettyprint(holder);
     boolean isList = util.isDomainListType(method.getParamTypes().get(0));
+
+    String assoc = ((ASTFieldAccessExpression) node.getArguments()
+        .getExpression(0)).getName();
+
+    if (TypeScriptTypes.CONSUMER.getJavaQName().isPresent()) {
+      getCD4C().addImport(clazz, TypeScriptTypes.CONSUMER.getJavaQName().get());
+    }
+    getCD4C().addMethod(clazz, template,
+        method.getAlias(), type, getterValue, isList, assoc);
+  }
+
+  protected void addAssocMethod(Method method, ASTCallExpression node, String template) {
+    if (method.getParamTypes().size() != 1
+        || node.getArguments().sizeExpressions() != 1
+        || !(node.getArguments().getExpression(0) instanceof ASTFieldAccessExpression)
+        || !util.isDomainType(method.getParamTypes().get(0))
+    ) {
+      Log.error("0x0001A Functions 'assoc_add' and 'assoc_remove' expect 2 arguments:"
+          + "an association and a domain object"
+          + " at " + node.get_SourcePositionStart().toString()
+          + " - " + node.get_SourcePositionEnd().toString());
+    }
+    ASTMCType type = createTypeAndAddImports(method.getParamTypes().get(0));
+
+    ASTExpression holder = ((ASTFieldAccessExpression) node.getArguments()
+        .getExpression(0)).getExpression();
+
+    IterationItemsFinder finder = new IterationItemsFinder();
+    Collection<ASTExpression> iterateItems = new HashSet<>(finder.getItems(gui));
+    Collection<ASTExpression> nonClassMembers = new HashSet<>(iterateItems);
+
+    Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
+        new IndentPrinter(), false, iterateItems, nonClassMembers
+    );
+    String getterValue = getterPrinter.prettyprint(holder);
+    boolean isList = false;
 
     String assoc = ((ASTFieldAccessExpression) node.getArguments()
         .getExpression(0)).getName();
@@ -1316,6 +1360,14 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
   }
 
   protected String getAssocRemoveTemplate() {
+    return "umlp.gui2java.predefined.GUI2JavaAssocRemove";
+  }
+
+  protected String getAssocSetTemplate() {
+    return "umlp.gui2java.predefined.GUI2JavaAssocAdd";
+  }
+
+  protected String getAssocSetAbsentTemplate() {
     return "umlp.gui2java.predefined.GUI2JavaAssocRemove";
   }
 

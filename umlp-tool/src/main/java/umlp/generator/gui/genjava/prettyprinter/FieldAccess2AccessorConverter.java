@@ -59,7 +59,8 @@ public class FieldAccess2AccessorConverter extends CommonExpressionsPrettyPrinte
 
       if (method.getPredefined().isPresent()
           && (method.getPredefined().get().equals(PredefinedFunction.ASSOC_ADD)
-          || method.getPredefined().get().equals(PredefinedFunction.ASSOC_REMOVE))
+          || method.getPredefined().get().equals(PredefinedFunction.ASSOC_REMOVE)
+          || method.getPredefined().get().equals(PredefinedFunction.ASSOC_SET))
       ) {
         if (node.getArguments().sizeExpressions() != 2) {
           Log.error("0x0001E Functions 'assoc_add' and 'assoc_remove' expect 2 arguments"

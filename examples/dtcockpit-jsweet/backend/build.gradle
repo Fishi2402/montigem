@@ -101,6 +101,7 @@ task genTestGUI(type: UMLPGuiGenTask) {
   domainModels = ["Dtcockpit"]
   guiCreateModels = ["gui.UserCreate"]
 
+  /*
   debug = true
   outputs.upToDateWhen { false }
   /**/
