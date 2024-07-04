@@ -1,5 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature()}
-${cd4c.method("static void startFrontend() throws IOException")}
+${cd4c.method("protected void startFrontend() throws IOException")}
 
-_startFrontend();
+String npmPath = getNpmPath();
+File frontendGenDirectory = getFrontendGenDirectory();
+Process process = startNpmProcess(npmPath, frontendServerPort, frontendGenDirectory);
+monitorFrontendStart(process);

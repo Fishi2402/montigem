@@ -67,6 +67,7 @@ public class E2ETestDecorator extends AbstractDecorator {
     cd4C.addImport(res, "org.springframework.boot.test.context.SpringBootTest");
     cd4C.addImport(res, "org.springframework.context.annotation.Import");
     cd4C.addImport(res, "org.springframework.test.annotation.DirtiesContext");
+    cd4C.addMethod(res, "org.junit.jupyter.api.TestInstance");
 
     setAnnotations(res,
                    new TemplateHookPoint("umlp.test_infrastructure.e2e.SpringAnnotations",
@@ -74,12 +75,12 @@ public class E2ETestDecorator extends AbstractDecorator {
                                          portConfigClassName));
 
     //attributes
-    addAttribute(res, "static int backendServerPort", "getFreePort()");
-    addAttribute(res, "static int frontendServerPort", "getFreePort()");
-    addAttribute(res, "static Optional<Process> frontendProcess", "Optional.empty()");
+    addAttribute(res, "private static int backendServerPort", "getFreePort()");
+    addAttribute(res, "private static int frontendServerPort", "getFreePort()");
+    addAttribute(res, "private static Optional<Process> frontendProcess", "Optional.empty()");
+    addAttribute(res, "private static Optional<" + className + "> instance", "Optional.empty()");
 
     //TODO reuse frontend, always restart backend -> Add docs on how to change the later behaviour
-
 
     //setup/tearDown methods
     cd4C.addImport(res, "org.junit.jupiter.api.BeforeAll");
@@ -93,16 +94,16 @@ public class E2ETestDecorator extends AbstractDecorator {
     cd4C.addImport(res, "java.nio.file.Paths");
     cd4C.addImport(res, "java.nio.file.Files");
     cd4C.addImport(res, "java.io.File");
+    cd4C.addImport(res, "java.io.BufferedReader");
+    cd4C.addImport(res, "java.io.InputStreamReader");
 
     cd4C.addMethod(res, "umlp.test_infrastructure.e2e.GetNpmPath");
     cd4C.addMethod(res, "umlp.test_infrastructure.e2e.GetFrontendGenDirectory");
     cd4C.addMethod(res, "umlp.test_infrastructure.e2e.StartNpmProcess");
     cd4C.addMethod(res, "umlp.test_infrastructure.e2e.MonitorFrontendStart");
-    cd4C.addMethod(res, "umlp.test_infrastructure.e2e._StartFrontend");
     var startFrontendMethod = cd4C.addMethod(res, "umlp.test_infrastructure.e2e.StartFrontend");
     setAnnotations(startFrontendMethod, new StringHookPoint("@BeforeAll"));
 
-    cd4C.addMethod(res, "umlp.test_infrastructure.e2e._StopFrontend");
     var stopFrontendMethod = cd4C.addMethod(res, "umlp.test_infrastructure.e2e.StopFrontend");
     setAnnotations(stopFrontendMethod, new StringHookPoint("@AfterAll"));
 
@@ -110,7 +111,7 @@ public class E2ETestDecorator extends AbstractDecorator {
     setAnnotations(cleanupBackendMethod, new StringHookPoint("@AfterEach"));
 
     var waitForBackendMethod = cd4C.addMethod(res, "umlp.test_infrastructure.e2e.WaitForBackend");
-    waitForBackendMethod.add_PreComment(new Comment("/**\n" + " * Waits until all commands have reached the backend and should have been processed.\n" + " */"));
+    waitForBackendMethod.add_PreComment(new Comment("/**\n" + " * Waits until all commands have reached the backend and should have been processed.\n" + " */")); //TODO docs don't work that way
 
     cd4C.addMethod(res, "umlp.test_infrastructure.e2e.GetFrontendServerPort");
 
