@@ -70,7 +70,7 @@ public class E2ETestDecorator extends AbstractDecorator {
     cd4C.addImport(res, "org.junit.jupyter.api.TestInstance");
 
     setAnnotations(res,
-                   new TemplateHookPoint("umlp.test_infrastructure.e2e.SpringAnnotations",
+                   new TemplateHookPoint("umlp.test_infrastructure.e2e.Annotations",
                                          cdName,
                                          portConfigClassName));
 
