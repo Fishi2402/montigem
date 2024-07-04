@@ -1,6 +1,5 @@
 package umlp.generator.domain.decorator;
 
-import de.monticore.ast.Comment;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -13,6 +12,7 @@ import de.se_rwth.commons.Joiners;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 
+import static de.monticore.cd.codegen.CD2JavaTemplates.JAVADOC;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 
@@ -58,6 +58,18 @@ public class E2ETestDecorator extends AbstractDecorator {
         .setName(className)
         .build();
 
+    glex.replaceTemplate(JAVADOC, res, new StringHookPoint(
+        //@formatter:off
+        "/**\n" +
+        " * Can be extended by E2E Tests.\n" +
+        " * <p>\n" +
+        " * Please note that the Frontend will not be restarted in between the tests, but the \n" +
+        " * backend will be restarted before every test.\n" +
+        " * In order to change the latter adjust the {@link DirtiesContext} annotation.\n" +
+        " */"
+        //@formatter:on
+    ));
+
     CD4C cd4C = getCD4C();
 
     cd4C.addImport(res, "umlp.backendrte.test_infrastructure.playwright.AbstractPlaywrightE2ETest");
@@ -78,8 +90,6 @@ public class E2ETestDecorator extends AbstractDecorator {
     addAttribute(res, "static int backendServerPort", "getFreePort()");
     addAttribute(res, "static int frontendServerPort", "getFreePort()");
     addAttribute(res, "private static Optional<Process> frontendProcess", "Optional.empty()");
-
-    //TODO reuse frontend, always restart backend -> Add docs on how to change the later behaviour
 
     //setup/tearDown methods
     cd4C.addImport(res, "org.junit.jupiter.api.BeforeAll");
@@ -110,7 +120,13 @@ public class E2ETestDecorator extends AbstractDecorator {
     setAnnotations(cleanupBackendMethod, new StringHookPoint("@AfterEach"));
 
     var waitForBackendMethod = cd4C.addMethod(res, "umlp.test_infrastructure.e2e.WaitForBackend");
-    waitForBackendMethod.add_PreComment(new Comment("/**\n" + " * Waits until all commands have reached the backend and should have been processed.\n" + " */")); //TODO docs don't work that way
+    glex.replaceTemplate(JAVADOC, waitForBackendMethod, new StringHookPoint(
+        //@formatter:off
+        "/**\n" +
+        " * Waits until all commands have reached the backend and should have been processed.\n" +
+        " */"
+        //@formatter:on
+    ));
 
     cd4C.addMethod(res, "umlp.test_infrastructure.e2e.GetFrontendServerPort");
 
