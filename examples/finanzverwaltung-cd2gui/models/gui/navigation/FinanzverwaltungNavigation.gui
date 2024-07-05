@@ -1,0 +1,19 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui.navigation;
+
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
+import mc.fenix.navigation.GemNavItem;
+import mc.fenix.navigation.GemNavList;
+
+import gui.navigation.FinanzverwaltungNavHeader;
+
+// The parent component should be styled like `styles: [":host{ display: flex; flex-direction: row }"]`
+component FinanzverwaltungNavigation() {
+  @GemNavList(components = [
+    @FinanzverwaltungNavHeader(),
+    @GemNavItem(title = "Home", target = "/gui/Start")
+  ]);
+}
