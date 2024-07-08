@@ -22,7 +22,7 @@ public class GUIDSLScopeManager4Aggr extends GUIDSLScopeManager {
     cd4aTypeResolver = (foundSymbols, name, modifier, predicate) -> {
       try(var context = this.umlpLanguageServerContext.open()) {
         //noinspect globalScopeAccess
-        return primitiveTypes.contains(name) ? List.of() : CD4AnalysisMill.globalScope().resolveTypeMany(foundSymbols, name, modifier, predicate);
+        return primitiveTypes.contains(name) ? List.of() : CDTypeAsTypeAdapter.from(CD4AnalysisMill.globalScope().resolveCDTypeMany(foundSymbols, name, modifier, cdts -> predicate.test(new CDTypeAsTypeAdapter(cdts))));
       }
     };
     cd4aFieldResolver = (foundSymbols, name, modifier, predicate) -> {
