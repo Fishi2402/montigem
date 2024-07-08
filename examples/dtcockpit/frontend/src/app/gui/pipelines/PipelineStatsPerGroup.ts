@@ -42,7 +42,7 @@ export class PipelineStatsPerGroup extends PipelineStatsPerGroupComponent {
     let entries : Map<string,number[]> = new Map()
     entries.set("Successful", [])
     entries.set("Unsuccessful", [])
-    this.getG().getStatistics().filter(stat => {
+    this.getG().getStatisticsList().filter(stat => {
       const isGreaterMin = ((new Date(this.minDate)) <= stat.getTime())
       const isSmallerMax = ((new Date(this.maxDate)) >= stat.getTime())
       if(this.minDate && this.maxDate) {
@@ -86,7 +86,7 @@ export class PipelineStatsPerGroup extends PipelineStatsPerGroupComponent {
       entries.get("Successful").push(0)
       entries.get("Unsuccessful").push(0)
     })
-    this.getG().getStatistics().forEach((stat ) => {
+    this.getG().getStatisticsList().forEach((stat ) => {
       const label = stat.getTime().toLocaleString("de-DE", this.dateOptions)
       let index = labels.indexOf(label)
       if(!(index === -1)) {

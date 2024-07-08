@@ -181,10 +181,10 @@ public class Expression2NullCheckPrinterTest extends DomainGUITest {
         call.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
 
     String expect2 = removeSpaces("false"
-        + " || this.getP() == null || this.getP().getFriends() == null"
-        + " || this.getP() == null || this.getP().getFriends() == null"
-        + " || this.getP() == null || this.getP().getFriends() == null"
-        + " || this.getP().getFriends().get(this.getP().getFriends().size() - 1) == null");
+        + " || this.getP() == null || this.getP().getFriendsList() == null"
+        + " || this.getP() == null || this.getP().getFriendsList() == null"
+        + " || this.getP() == null || this.getP().getFriendsList() == null"
+        + " || this.getP().getFriendsList().get(this.getP().getFriendsList().size() - 1) == null");
     String result2 = removeSpaces(printer.prettyprint(
         ternary.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
 
@@ -195,8 +195,8 @@ public class Expression2NullCheckPrinterTest extends DomainGUITest {
 
     String expect4 = removeSpaces("false"
         + " || this.getP() == null"
-        + " || this.getP().getFriends() == null"
-        + " || this.getP().getFriends().get(0) == null");
+        + " || this.getP().getFriendsList() == null"
+        + " || this.getP().getFriendsList().get(0) == null");
     String result4 = removeSpaces(printer.prettyprint(
         fieldCall2.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
 

@@ -64,8 +64,8 @@ public class PipelineInformationExtractor {
 
   private void createAggregatedPipelineStatistic(Group g) {
     Map<LocalDate, int[]> dateToRuns = new HashMap<>();
-    for (Project p :g.getSubProjects()) {
-      for (PipelineStatistic stat :  p.getPStatistics()) {
+    for (Project p :g.getSubProjectsList()) {
+      for (PipelineStatistic stat :  p.getPStatisticsList()) {
         if(!dateToRuns.containsKey(stat.getTime())) {
           dateToRuns.put(stat.getTime(), new int[]{0,0});
         }
@@ -97,7 +97,7 @@ public class PipelineInformationExtractor {
     try{
       Pager<Pipeline> pipelinePager = api.getPipelineApi().getPipelines(project.getGit(), 100);
 
-      List<Long> knownPipelines = project.getPStatistics().stream()
+      List<Long> knownPipelines = project.getPStatisticsList().stream()
           .map(PipelineStatistic::getGitlabId).collect(Collectors.toList());
 
       // TODO for now maximum at 100 pipelines if all pipelines wanted replace if with while
@@ -130,7 +130,7 @@ public class PipelineInformationExtractor {
         }
       }
       Log.info("Finished to extract Pipeline data for "+api.getGitLabServerUrl()+"/"+project.getGit()+
-          ". Number of extracted Pipelines is:"+project.getPStatistics().size(), "GitAPI Extraction Debugger");
+          ". Number of extracted Pipelines is:"+project.getPStatisticsList().size(), "GitAPI Extraction Debugger");
     } catch (GitLabApiException exceptione) {
       Log.warn("Could not extract Pipeline data for "+
           api.getGitLabServerUrl()+"/"+project.getGit()+" with the given apiToken.");

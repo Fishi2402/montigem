@@ -54,10 +54,10 @@ export class GemLineChartExample extends GemLineChartExampleComponent {
     for (const [groupName, groupArr] of Object.entries(ageGroups)) {
       let stocks = [0, 0, 0, 0, 0];
       for (let person of groupArr) {
-        if (person.getStocks().length === 0) {
+        if (person.getStocksList().length === 0) {
           continue;
         }
-        for (let stock of person.getStocks()) {
+        for (let stock of person.getStocksList()) {
           switch (stock.getDate().toDateString().substring(8, 10)) {
             case "01": {
               stocks[0] += stock.getPrice();

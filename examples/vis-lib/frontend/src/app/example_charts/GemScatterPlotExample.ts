@@ -25,7 +25,7 @@ export class GemScatterPlotExample extends GemScatterPlotExampleComponent {
     for (const person of this.persons) {
       //no idea why that works, I copied it from GemBarChartExample
       let yearOfBirth = Number(person?.getBirthday()?.toDateString().substring(11, 15));
-      let numberOfFriends = person.getFriends().length;
+      let numberOfFriends = person.getFriendsList().length;
       if (personsPerYear.has(yearOfBirth)) {
         personsPerYear.set(yearOfBirth, personsPerYear.get(yearOfBirth) + 1);
       } else {

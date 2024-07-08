@@ -56,7 +56,7 @@ public class WeatherServerApplication extends WeatherServerApplicationTOP {
       System.out.println("State " + day.getWeatherState());
       System.out.println("Forecasts");
 
-      for (Forecast dailyForecast : day.getDailyForecasts()) {
+      for (Forecast dailyForecast : day.getDailyForecastsList()) {
         System.out.println(forecastDeSer.serialize(dailyForecast));
       }
     });

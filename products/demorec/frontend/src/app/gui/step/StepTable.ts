@@ -36,7 +36,7 @@ export class StepTable extends StepTableComponent {
     let stepsCopy = []
 
     if (this.getProcess()) {
-      const steps = this.getProcess().getConsistsOf()
+      const steps = this.getProcess().getConsistsOfList()
 
       for (let i = 0; i < steps.length; i++) {
         stepsCopy[i] = steps[i];
@@ -49,7 +49,7 @@ export class StepTable extends StepTableComponent {
   }
 
   public override getMeasuredValuesCountValue(step: ProcessStep): string {
-    return step.getMeasured().length + ""
+    return step.getMeasuredList().length + ""
   }
 
   public override editStep(step: ProcessStep): (arg: void) => void {

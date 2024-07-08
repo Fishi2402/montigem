@@ -52,7 +52,7 @@ export class IssueEntry extends IssueEntryComponent {
   public getIssueCardTitle (): string {
     let postCounter = 0;
 
-    this.getIssue().getPosts().forEach(p => { postCounter = postCounter + 1 + p.getResponses().length})
+    this.getIssue().getPostsList().forEach(p => { postCounter = postCounter + 1 + p.getResponsesList().length})
 
     return super.getIssueCardTitle() + " (" + postCounter + ")"
   }

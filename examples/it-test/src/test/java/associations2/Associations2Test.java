@@ -49,7 +49,7 @@ public class Associations2Test extends Associations2MockTestSetup {
 
     DleftToRight rs = Associations2Manager.dleftToRightBuilder().build().get();
     CleftToRight ls = Associations2Manager.cleftToRightBuilder().dleftToRightAdd(rs).build().get();
-    assertTrue(ls.getDleftToRight().contains(rs));
+    assertTrue(ls.getDleftToRightList().contains(rs));
 
     Associations2Manager.deleteDleftToRight(rs.getGemId());
     assertFalse(Associations2Manager.isLoadedDleftToRight(rs.gemId));
@@ -64,7 +64,7 @@ public class Associations2Test extends Associations2MockTestSetup {
     GleftToRight ls = Associations2Manager.gleftToRightBuilder().build().get();
     HleftToRight rs = Associations2Manager.hleftToRightBuilder().build().get();
     ls.addHleftToRight(rs);
-    assertTrue(ls.getHleftToRight().contains(rs));
+    assertTrue(ls.getHleftToRightList().contains(rs));
 
     Associations2Manager.deleteHleftToRight(rs.getGemId());
     // TODO

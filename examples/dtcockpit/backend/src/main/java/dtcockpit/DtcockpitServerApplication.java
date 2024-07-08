@@ -96,12 +96,12 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
       MontiVerseLite montiVerseLite = MontiVerseLite.getInstance();
       Project montiVerse = montiVerseLite.createProjects();
       extractor.extractPipelineDataOf("https://git.rwth-aachen.de/", montiVerse);
-      for (Project project: montiVerse.getDependentProjects()) {
+      for (Project project: montiVerse.getDependentProjectsList()) {
         montiVerseLite.createBranches(project);
       }
     }
 
-    if(app.getMontiCoreProjects().isEmpty()){
+    if(app.getMontiCoreProjectsList().isEmpty()){
       List<String> projectNames = List.of("monticore", "umlp"); // TODO: all
 
       for (Project project : DtcockpitManager.getProjectList()) {
@@ -175,9 +175,9 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
   private static void updateMontiCorePipelines(PipelineInformationExtractor extractor, App app) {
     List<String> devBranchNames = List.of("dev", "develop");
 
-    for (Project montiCoreProject : app.getMontiCoreProjects()) {
+    for (Project montiCoreProject : app.getMontiCoreProjectsList()) {
       extractor.extractPipelineDataOf("https://git.rwth-aachen.de/", montiCoreProject);
-      Optional<PipelineStatistic> last = montiCoreProject.getPStatistics().stream()
+      Optional<PipelineStatistic> last = montiCoreProject.getPStatisticsList().stream()
           .filter(it -> devBranchNames.contains(it.getReference()))
           .max(Comparator.comparing(PipelineStatistic::getTime)
                          .thenComparing(PipelineStatistic::getGitlabId)

@@ -47,13 +47,15 @@ public class DerivedClassDecorator extends AbstractDecorator {
     CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
       .forEach(a -> {
         String type = a.getSymbol().getType().print();
+        String name = a.getName();
         if (GenService.isList(a)) {
           ASTCDMethodSignature calcSize = getCD4C().addMethod(ast, getCalcSizeTemplate(), a.getName());
           getCD4C().addMethod(ast, getSizeTemplate(), a.getName(), calcSize);
           type = "List<" + type + ">";
+          name += "List";
         }
         ASTCDMethodSignature calc = getCD4C().addMethod(ast, getCalcTemplate(), a.getName(), type);
-        getCD4C().addMethod(ast, getGetTemplate(), a.getName(), type, calc);
+        getCD4C().addMethod(ast, getGetTemplate(), name, type, calc);
       });
 
     addImports(domainClass, ast);

@@ -6,7 +6,7 @@ import { WeatherState } from "@src/weather/WeatherState";
 export class DailyForecast extends DailyForecastTOP {
   public override getMinimumTemperature (): number {
     let min = NaN;
-    for (let forecast of this.getDailyForecasts()) {
+    for (let forecast of this.getDailyForecastsList()) {
       let cur = forecast.getTemperature();
       if(isNaN(min)){
         min = cur;
@@ -19,7 +19,7 @@ export class DailyForecast extends DailyForecastTOP {
 
   public override getMaximumTemperature (): number {
     let max = NaN;
-    for (let forecast of this.getDailyForecasts()) {
+    for (let forecast of this.getDailyForecastsList()) {
       let cur = forecast.getTemperature();
       if(isNaN(max)){
         max = cur;
@@ -33,7 +33,7 @@ export class DailyForecast extends DailyForecastTOP {
   public override getWeatherState (): WeatherState {
     let counts = [0, 0, 0, 0];
 
-    for (let forecast of this.getDailyForecasts()) {
+    for (let forecast of this.getDailyForecastsList()) {
       let i: number = forecast.getWeatherState();
       counts[i] = counts[i] + 1;
     }

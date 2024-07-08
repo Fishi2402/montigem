@@ -26,9 +26,9 @@ export class GemVennDiagramExample extends GemVennDiagramExampleComponent {
       let node = {
         label: person.getName(),
         sets: [`${person.getName()}`],
-        size: person.getFriends().length
+        size: person.getFriendsList().length
       };
-      mapOfriends.set(person.getName(), person.getFriends());
+      mapOfriends.set(person.getName(), person.getFriendsList());
       entries.push(node);
 
     }
