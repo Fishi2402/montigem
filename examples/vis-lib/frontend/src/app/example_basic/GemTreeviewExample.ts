@@ -27,7 +27,7 @@ export class GemTreeviewExample extends GemTreeviewExampleComponent {
 
       entry.name = p.getName();
       entry.children = [];
-      for (const f of p.getFriends()) {
+      for (const f of p.getFriendsList()) {
         const friend = new GemTreeviewEntry();
         friend.name = f.getName();
         entry.children.push(friend);

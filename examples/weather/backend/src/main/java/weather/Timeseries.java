@@ -9,7 +9,7 @@ public class Timeseries extends TimeseriesTOP {
   public double getMinimumTemperature() {
     boolean seen = false;
     Double best = null;
-    for (DailyForecast containedDay : getContainedDays()) {
+    for (DailyForecast containedDay : getContainedDaysList()) {
       Double minimumTemperature = containedDay.getMinimumTemperature();
       if (!seen || minimumTemperature.compareTo(best) < 0) {
         seen = true;
@@ -23,7 +23,7 @@ public class Timeseries extends TimeseriesTOP {
   public double getMaximumTemperature() {
     boolean seen = false;
     Double best = null;
-    for (DailyForecast containedDay : getContainedDays()) {
+    for (DailyForecast containedDay : getContainedDaysList()) {
       Double maximumTemperature = containedDay.getMaximumTemperature();
       if (!seen || maximumTemperature.compareTo(best) > 0) {
         seen = true;

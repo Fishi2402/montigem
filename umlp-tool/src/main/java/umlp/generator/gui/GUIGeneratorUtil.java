@@ -577,7 +577,7 @@ public class GUIGeneratorUtil {
           // when is this really required - just having a "?" in the text can not be the answer
           // wrapping this promise in an extra |async leads to unresponsive pages
 
-          Pattern pattern = Pattern.compile("(.*)\\.(get[a-zA-Z0-9]+)\\(\\)");
+          Pattern pattern = Pattern.compile("(.*)\\.(get[a-zA-Z0-9]+)(List)\\(\\)");
           Matcher m = pattern.matcher(expressionWithNullChecks);
 
           // Instead of the overloaded&async getX(int?) we call the _internal_getXGemList() method

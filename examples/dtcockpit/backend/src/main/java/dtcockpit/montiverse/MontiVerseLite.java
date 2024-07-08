@@ -97,7 +97,7 @@ public class MontiVerseLite {
   public static void createPipeline(Project project) {
     try (GitLabApi ciApi = new GitLabApi(HOST_URL, System.getenv(GIT_API_ACCESS_TOKEN_TRIGGER_CI))) {
       Map<String,  String> variableMap = Maps.newHashMap();
-      project.getDependentProjects().forEach(element ->
+      project.getDependentProjectsList().forEach(element ->
           variableMap.put(element.getCiInfos().getVariableName(), element.getCiInfos().getBranchName()));
       PipelineApi pipelineApi = new PipelineApi(ciApi);
       try {

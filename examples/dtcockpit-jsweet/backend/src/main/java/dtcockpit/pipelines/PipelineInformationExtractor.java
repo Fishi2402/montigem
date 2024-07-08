@@ -75,7 +75,7 @@ public class PipelineInformationExtractor {
         }
       }
       Log.info("Finished to extract Pipeline data for "+hostURL+"/"+project.getGit()+
-          ". Number of extracted Pipelines is:"+project.getPStatistics().size(), "GitAPI Extraction Debugger");
+          ". Number of extracted Pipelines is:"+project.getPStatisticsList().size(), "GitAPI Extraction Debugger");
     } catch (GitLabApiException exceptione) {
       Log.warn("Could not extract Pipeline data for "+
           hostURL+"/"+project.getGit()+" with the given apiToken.");

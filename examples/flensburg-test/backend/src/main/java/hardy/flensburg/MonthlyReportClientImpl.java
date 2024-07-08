@@ -12,7 +12,7 @@ public class MonthlyReportClientImpl extends MonthlyReportClientImplTOP {
   }
 
   @Override
-  public List<Transaction> getMonthlyTransaction() {
+  public List<Transaction> getMonthlyTransactionList() {
     return null;
   }
 }

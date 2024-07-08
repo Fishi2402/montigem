@@ -73,7 +73,7 @@ export  class ComponentsOfPack extends ComponentsOfPackComponent {
     }
 
     const components = []
-    this.getPack().getAllComponents().forEach(comp => {
+    this.getPack().getAllComponentsList().forEach(comp => {
 
       const entry = new GemTreeviewEntry();
       entry.name=comp.getName()
@@ -107,7 +107,7 @@ export  class ComponentsOfPack extends ComponentsOfPackComponent {
 
     const nameToConnections : Map<string, string[]> = new Map()
 
-    this.getPack().getAllConnections().forEach(conn => {
+    this.getPack().getAllConnectionsList().forEach(conn => {
         const name = conn.getNameAfterLoad()
         const id = conn.getGemId()+""
         if(nameToConnections.has(name)) {

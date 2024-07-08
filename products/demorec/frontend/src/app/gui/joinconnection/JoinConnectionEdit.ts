@@ -60,7 +60,7 @@ export class JoinConnectionEdit extends JoinConnectionEditComponent implements O
 
   private getCurrentPackComponents() : Set<string> {
     if(this.currentPack) {
-      return new Set<string>(this.currentPack.getAllComponents().map(comp => comp.getGemId()+""))
+      return new Set<string>(this.currentPack.getAllComponentsList().map(comp => comp.getGemId()+""))
     } else {
       return null
     }

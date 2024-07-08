@@ -33,7 +33,7 @@ export class GemBarChartExample extends GemBarChartExampleComponent {
 
     for (const person of this.persons) {
       let birthday = Number(person?.getBirthday()?.toDateString().substring(11, 15));
-      let numberFriends = person.getFriends().length;
+      let numberFriends = person.getFriendsList().length;
       if (birthday < 1993) {
         if (numberFriends <= 2) {
           dataEntries[0].data[0] += 1;

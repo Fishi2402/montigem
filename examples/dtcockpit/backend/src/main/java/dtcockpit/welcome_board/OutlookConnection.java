@@ -68,7 +68,7 @@ public class OutlookConnection {
     Log.info("Updating displayedMeetings", "OutlookConnection");
     LocalDateTime now = LocalDateTime.now();
     App app = DtcockpitManager.getApp();
-    app.getDisplayedMeetings().clear();
+    app.getDisplayedMeetingsList().clear();
 
     List<Meeting> displayedMeetings = DtcockpitManager.getMeetingList().stream()
         .filter(it -> !it.isEmptyCategories())
@@ -77,7 +77,7 @@ public class OutlookConnection {
         .filter(it -> it.getEnd().isAfter(now))
         .collect(Collectors.toList());
 
-    app.getDisplayedMeetings().addAll(displayedMeetings);
+    app.getDisplayedMeetingsList().addAll(displayedMeetings);
     Log.info(displayedMeetings.size() + " meetings will be displayed", "OutlookConnection");
   }
 

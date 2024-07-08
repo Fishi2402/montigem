@@ -10,7 +10,7 @@ return ${managerName}.get${clazz}Sure(-1)
 <#else>
 return ${managerName}.get${clazz}Sure(-1)
 .then(der => {
-  return ListResult.of(this.getId(), der.get${attribute?cap_first}(), "${returnedtype}");
+  return ListResult.of(this.getId(), der.get${attribute?cap_first}List(), "${returnedtype}");
 });
 </#if>
 

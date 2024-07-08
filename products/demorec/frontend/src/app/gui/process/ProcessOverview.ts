@@ -36,7 +36,7 @@ export  class ProcessOverview extends ProcessOverviewComponent {
 
   public override attachStep(): (arg: ProcessStep) => void {
     return (step: ProcessStep) => {
-      const consistsOf = this.getP().getConsistsOf()
+      const consistsOf = this.getP().getConsistsOfList()
       if(consistsOf.length == 0) {
         step.setIndex(0)
       } else {
@@ -48,7 +48,7 @@ export  class ProcessOverview extends ProcessOverviewComponent {
         if(b) {
           this.getP().getDeconstructionOf().addAllConnections2(step.getDeconstructs())
 
-          step.getDeconstructs().getConnects().forEach(comp => {
+          step.getDeconstructs().getConnectsList().forEach(comp => {
             this.getP().getDeconstructionOf().addAllComponents2(comp)
           })
         }

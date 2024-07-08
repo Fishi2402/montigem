@@ -56,7 +56,7 @@ public class FunctionStructure4FenixServerApplication extends FunctionStructure4
       }
 
       FunctionStream functionStream = channel.getFunctionStream();
-      if (functionStream.getValue().isEmpty()) {
+      if (functionStream.getValueList().isEmpty()) {
         for (int i = 0; i < RANDOM_VALUES; i++) {
           functionStream.addValue(
               FunctionStructure4FenixManager.doubleValueBuilder()

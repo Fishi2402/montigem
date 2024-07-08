@@ -9,7 +9,7 @@ public class DailyForecast extends DailyForecastTOP{
   @Override
   public double getMinimumTemperature() {
     double min = Double.NaN;
-    for (Forecast forecast : getDailyForecasts()) {
+    for (Forecast forecast : getDailyForecastsList()) {
       Double cur = forecast.getTemperature();
       if(Double.isNaN(min)){
         min = cur;
@@ -23,7 +23,7 @@ public class DailyForecast extends DailyForecastTOP{
   @Override
   public double getMaximumTemperature() {
     double max = Double.NaN;
-    for (Forecast forecast : getDailyForecasts()) {
+    for (Forecast forecast : getDailyForecastsList()) {
       Double cur = forecast.getTemperature();
       if(Double.isNaN(max)){
         max = cur;
@@ -42,7 +42,7 @@ public class DailyForecast extends DailyForecastTOP{
       counts.add(0);
     }
 
-    for (Forecast forecast : getDailyForecasts()) {
+    for (Forecast forecast : getDailyForecastsList()) {
       int i = forecast.getWeatherState().ordinal();
       counts.set(i, counts.get(i) + 1);
     }

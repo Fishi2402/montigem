@@ -41,12 +41,12 @@ export class GemHeatmapChartExample extends GemHeatmapChartExampleComponent {
       }
     ];
     for (const person of this.persons) {
-      if (person.getStocks().length === 0) {
+      if (person.getStocksList().length === 0) {
         continue;
       }
       let birthday = Number(person?.getBirthday()?.toDateString().substring(11, 15));
       let sumStocks: number = 0;
-      for (let stock of person.getStocks()) {
+      for (let stock of person.getStocksList()) {
         sumStocks += stock.getPrice();
       }
       if (birthday < 1992) {

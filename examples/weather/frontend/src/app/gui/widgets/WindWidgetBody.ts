@@ -17,8 +17,8 @@ export class WindWidgetBody extends WindWidgetBodyComponent {
     if (this.getTimeseries() == null) {
       return "";
     }
-    let curDay = this.getTimeseries().getContainedDays()[0];
-    let curForecast = curDay?.getDailyForecasts()[0];
+    let curDay = this.getTimeseries().getContainedDaysList()[0];
+    let curForecast = curDay?.getDailyForecastsList()[0];
     let speed = curForecast?.getWindspeed();
     return "" + speed ?? "";
   }

@@ -33,7 +33,7 @@ export class PhotoDisplay extends PhotoDisplayComponent {
       //console.debug(this.getComponent().getPhotoLocations())
       // Timeout so the Server has time to store the Picture
       //const photos: string[] = []
-      return this.getComponent().getPhoto()
+      return this.getComponent().getPhotoList()
 
           //.forEach(photo => {
         //photos.push("umlp/api/images/" + photo.getFilename())
