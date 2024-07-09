@@ -23,6 +23,7 @@ dependencies {
 }
 
 test {
+  dependsOn(":examples:vis-lib:frontend:buildApp")
   useJUnitPlatform()
   testLogging.showStandardStreams = true
 }
