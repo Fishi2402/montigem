@@ -1,0 +1,39 @@
+plugins {
+  id 'java-library'
+  id 'application'
+  id 'org.springframework.boot' version "${spring_version}"
+}
+
+repositories {
+  if (("true").equals(getProperty('useLocalRepo'))) {
+    mavenLocal()
+  }
+  maven {
+    credentials.username mavenUser
+    credentials.password mavenPassword
+    url repo
+  }
+
+  mavenCentral()
+}
+
+def withoutSpringLogging = {
+  exclude module: 'spring-boot-starter-logging'
+  exclude module: 'logback-classic'
+  exclude module: 'log4j-to-slf4j'
+}
+
+
+dependencies {
+  implementation project(":examples:vis-lib:backend")
+  implementation 'org.slf4j:slf4j-api:1.7.36'
+  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
+  testImplementation group: 'org.springframework.security', name: 'spring-security-test', version: "5.7.3", withoutSpringLogging
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
+}
+
+test {
+  useJUnitPlatform()
+  testLogging.showStandardStreams = true
+}
