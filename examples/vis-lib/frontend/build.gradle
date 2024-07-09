@@ -63,10 +63,6 @@ task buildApp(type: NpxTask) {
 }
 assemble.dependsOn(buildApp)
 
-task e2eTestApp() {
-  dependsOn test
-}
-
 task runApp(type: NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"

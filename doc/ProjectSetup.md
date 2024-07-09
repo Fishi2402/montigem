@@ -189,10 +189,6 @@ dependencies {
   testImplementation 'com.microsoft.playwright:playwright:1.44.0'
 }
 
-task e2eTestApp() {
-  dependsOn test
-}
-
 test {
   dependsOn buildApp
   useJUnitPlatform()
