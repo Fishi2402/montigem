@@ -107,23 +107,20 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
     // Only create DummyData if database is empty
     if (DtcockpitManager.getUserList().isEmpty()) { // Is there a better way to check if dummy-data was already created?
       Log.println("Creating Dummy Data");
-      DtcockpitManager.userBuilder()
-          .username("MyUser")
-          .password(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode("MyPasswort"))
-          ...
+      DtcockpitManager.userBuilder().username("MyUser").password(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode("MyPasswort"))
+          //...
           .build();
     }
-    ...
+    //...
     try {
       Server webServer = Server.createWebServer("-web", "-webAllowOthers").start();
       Log.info(String.format("H2 Web Server started at: http://localhost:%s", webServer.getPort()), DtcockpitServerApplication.class.getName());
-      ...
-    }
-    catch (SQLException e) {
+      //...
+    } catch (SQLException e) {
       throw new IOException(e);
     }
   }
-    
+}    
 
 ```
 
