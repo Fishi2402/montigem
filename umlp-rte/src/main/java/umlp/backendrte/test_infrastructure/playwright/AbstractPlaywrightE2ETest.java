@@ -7,6 +7,11 @@ import com.microsoft.playwright.junit.UsePlaywright;
 
 import java.net.ServerSocket;
 
+/**
+ * An abstract base for end-to-end tests which use playwright. When using this class it is
+ * important that at the end of your constructor in {@code app.component.ts} there is the line
+ * <pre>{@code (<any>window).websocket_connected = true;}</pre>
+ */
 @UsePlaywright
 public abstract class AbstractPlaywrightE2ETest {
   /**
@@ -18,6 +23,12 @@ public abstract class AbstractPlaywrightE2ETest {
     return System.getProperty("os.name").startsWith("Windows");
   }
 
+  /**
+   * Gets an unbound port from the os
+   *
+   * @return The free port
+   * @throws RuntimeException If no free port was found for whatever reason
+   */
   protected static int getFreePort() {
     try {
       ServerSocket socket = new ServerSocket(0);
@@ -47,6 +58,19 @@ public abstract class AbstractPlaywrightE2ETest {
     //@formatter:on
   }
 
+  /**
+   * Waits until the web socket of the application has connected.
+   * <p>
+   * <strong>ATTENTION: </strong>
+   * <p>Calling this method requires the {@code app.component.ts} to
+   * have the following line of code at the end of the constructor:
+   * <pre>{@code
+   * (<any>window).websocket_connected = true;
+   * }</pre>
+   * Otherwise, this method can potentially never return!
+   *
+   * @param page The current {@link Page}
+   */
   protected void waitForWebsocket(Page page) {
     long start = System.currentTimeMillis();
 
@@ -70,6 +94,11 @@ public abstract class AbstractPlaywrightE2ETest {
     System.out.println("Waiting for websocket took " + (System.currentTimeMillis() - start) + "ms");
   }
 
+  /**
+   * Waits until the page is fully loaded. Has the same requirements as {@link #waitForWebsocket(Page)}
+   *
+   * @param page The {@link Page}
+   */
   protected void waitRdy(Page page) {
     waitForAngular(page);
     waitForWebsocket(page);
@@ -94,6 +123,19 @@ public abstract class AbstractPlaywrightE2ETest {
     return getUrlBase().endsWith("/") ? getUrlBase() : getUrlBase() + "/";
   }
 
+  /**
+   * Navigates to a new route and waits for the website to reload.
+   * <p>
+   * Has the same requirements as {@link #waitRdy(Page)}!
+   * <p>
+   * <strong>Example</strong>
+   * <pre>{@code
+   * navAndWait(page, "/person/Overview");
+   * }</pre>
+   *
+   * @param page  The {@link Page}
+   * @param route Where to navigate
+   */
   protected void navAndWait(Page page, String route) {
     page.navigate(getSaveUrlBase() + route.replaceAll("^/*", ""));
     waitRdy(page);
