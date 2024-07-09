@@ -57,7 +57,7 @@ BE requires specific configuration files, which must be placed in the *backend/s
 The configuration includes `database.properties` and several other optional files such as `application.properties`, `logback.xml`.
 
 Examples for `database.properties`, depending on which database is used:
-```java
+```properties
 jdbc_driver=org.h2.Driver
 database_url=jdbc:h2:mem:umlpdb
 user=...
@@ -72,7 +72,7 @@ password=...
 ```
 
 Here is an example for `application.properties`:
-```java
+```properties
 server.servlet.context-path=/umlp/api
 server.port=${PORT:8081}
 umlp.service.websocket.impl=auth
