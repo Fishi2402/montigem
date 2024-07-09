@@ -30,9 +30,9 @@ export class GemGraphChartExample extends GemGraphChartExampleComponent {
         id: `${nodeId}`,
         color: "Red",
         label: person.getName(),
-        mass: person.getFriends().length,
+        mass: person.getFriendsList().length,
       };
-      mapOfriends.set(nodeId, person.getFriends());
+      mapOfriends.set(nodeId, person.getFriendsList());
       mapOfPersons.set(person, nodeId);
       nodeId++;
       nodes.push(node);

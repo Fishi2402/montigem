@@ -13,7 +13,9 @@ public enum PredefinedFunction {
   DELETE("delete"),
   CREATE("create"),
   ASSOC_ADD("assoc_add"),
-  ASSOC_REMOVE("assoc_remove");
+  ASSOC_REMOVE("assoc_remove"),
+  ASSOC_SET("assoc_set"),
+  ASSOC_SET_ABSENT("assoc_setabsent");
 
   private final String name;
 

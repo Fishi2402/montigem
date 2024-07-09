@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("cdName", "className", "parameters", "domainAttributNames", "deserAttributeNamesAndDeSer", "assocNames")}
-<#--${cd4c.method("public void ${className?uncap_first}Get (@ShellOption(value = \"--id\") long id)")}-->
+<#--${cd4c.method("public void ${className?uncap_first}Get (@ShellOption(__val = \"--id\") long id)")}-->
 ${cd4c.method("public void ${className?uncap_first}Create (${parameters})")}
   Optional<${className?cap_first}> ${className?uncap_first} = ${cdName}Manager.${className?uncap_first}Builder()
   <#list domainAttributNames as domainAttribute>

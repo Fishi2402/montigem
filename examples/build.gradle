@@ -38,6 +38,9 @@ gradle.projectsEvaluated {
       project(":examples:weather:frontend").tasks.npmInstall
   )
   project(":examples:weather:frontend").tasks.npmInstall.mustRunAfter(
+      project(":examples:finanzverwaltung-cd2gui:frontend").tasks.npmInstall
+  )
+  project(":examples:finanzverwaltung-cd2gui:frontend").tasks.npmInstall.mustRunAfter(
       project(":products:demorec:frontend").tasks.npmInstall
   )
 }

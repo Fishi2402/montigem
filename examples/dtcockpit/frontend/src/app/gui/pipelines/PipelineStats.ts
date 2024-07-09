@@ -45,7 +45,7 @@ export class PipelineStats extends PipelineStatsComponent {
     let entries: Map<string, number[]> = new Map()
     entries.set("Successful", [])
     entries.set("Unsuccessful", [])
-    this.getP().getPStatistics().forEach((stat: PipelineStatistic) => {
+    this.getP().getPStatisticsList().forEach((stat: PipelineStatistic) => {
       const label = stat.getTime().toLocaleString("de-DE", this.dateOptions)
       let index = labels.indexOf(label)
       if (index === -1) {

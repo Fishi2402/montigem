@@ -7,7 +7,7 @@ export class Timeseries extends TimeseriesTOP {
   public override getMinimumTemperature() {
     let seen = false;
     let best = 0;
-    for (const containedDay of this.getContainedDays()) {
+    for (const containedDay of this.getContainedDaysList()) {
       const minimumTemperature = containedDay.getMinimumTemperature();
       if (!seen || minimumTemperature < best) {
         seen = true;
@@ -20,7 +20,7 @@ export class Timeseries extends TimeseriesTOP {
   public override getMaximumTemperature() {
     let seen = false;
     let best = 0;
-    for (const containedDay of this.getContainedDays()) {
+    for (const containedDay of this.getContainedDaysList()) {
       const maximumTemperature = containedDay.getMaximumTemperature();
       if (!seen || maximumTemperature > best) {
         seen = true;

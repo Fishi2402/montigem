@@ -10,8 +10,10 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.Names;
@@ -68,7 +70,7 @@ public class TSOwnCommandDecorator extends OwnCommandDecorator {
     TSAccessorDecorator accessor = new TSAccessorDecorator(glex);
     attrList.forEach(a -> ast.addAllCDMembers(accessor.decorate(a)));
 
-    getCD4C().addMethod(ast, getDoActionTemplate(), buildReturnType(meth, ast));
+    getCD4C().addMethod(ast, getDoActionTemplate(), buildReturnType(meth, ast).printType());
     addConstructor(ast, classname, getPackageName(origCD, COMMAND_PACKAGE), attrList);
     // getCD4C().addConstructor(ast, getConstructorTemplate(), classname, getPackageName(origCD, COMMAND_PACKAGE), attrList);
     // getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList());
@@ -135,7 +137,7 @@ public class TSOwnCommandDecorator extends OwnCommandDecorator {
   }
 
   @Override
-  protected String extendedClass(ASTCDMethod command, ASTCDClass ast) {
+  protected ASTMCObjectType extendedClass(ASTCDMethod command, ASTCDClass ast) {
     ASTMCReturnType retType = command.getMCReturnType();
     SymTypeExpression returnTypeSymbol = command.getSymbol().getType();
     if (returnTypeSymbol.isVoidType()) {
@@ -155,11 +157,11 @@ public class TSOwnCommandDecorator extends OwnCommandDecorator {
   }
 
   @Override
-  public String buildReturnType(ASTCDMethod command, ASTCDClass ast) {
+  public ASTMCObjectType buildReturnType(ASTCDMethod command, ASTCDClass ast) {
     ASTMCReturnType retType = command.getMCReturnType();
     if (retType.isPresentMCVoidType()) {
       getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath(STATUS_RESULT));
-      return buildPromise(STATUS_RESULT);
+      return buildPromise(MCTypeFacade.getInstance().createQualifiedType(STATUS_RESULT));
     }
     else if (retType.isPresentMCType()) {
       ASTMCType mcType = retType.getMCType();
@@ -174,8 +176,8 @@ public class TSOwnCommandDecorator extends OwnCommandDecorator {
     return buildPromise(buildSimpleResult("Object", ast));
   }
 
-  protected String buildPromise(String type) {
-    return new StringBuilder("Promise").append("<").append(type).append(">").toString();
+  protected ASTMCObjectType buildPromise(ASTMCObjectType type) {
+    return buildGeneric("Promise", type);
   }
 
   @Override
@@ -196,19 +198,6 @@ public class TSOwnCommandDecorator extends OwnCommandDecorator {
   @Override
   protected String getCheckAccessPolicyTemplate() {
     return "umlp.gui2ts.commands.own.TSCheckAccessPolicy";
-  }
-
-  @Override
-  public String buildSimpleResult(String typeParam, ASTCDClass ast) {
-    getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath(SIMPLE_RESULT));
-    return new StringBuilder(SIMPLE_RESULT).append("<").append(box(typeParam)).append(">").toString();
-  }
-
-  @Override
-  public String buildListResult(String typeParam, ASTCDClass ast) {
-    getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath(LIST_RESULT));
-    return new StringBuilder(LIST_RESULT).append("<").append(box(typeParam)).append(", List<")
-               .append(box(typeParam)).append(">>").toString();
   }
 
   @Override

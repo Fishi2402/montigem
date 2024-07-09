@@ -83,7 +83,7 @@ public abstract class UnidirAssocDbTest extends Associations2SQLDBTestSetup {
     var clone = dao.selectCleftToRight(rhs.gemId).get();
 
     assertEquals(rhs.gemId, clone.gemId);
-    assertEquals(rhs.getDleftToRight(), rhs.getDleftToRight());
+    assertEquals(rhs.getDleftToRightList(), rhs.getDleftToRightList());
   }
 
   @Test
@@ -104,6 +104,6 @@ public abstract class UnidirAssocDbTest extends Associations2SQLDBTestSetup {
     var clone = dao.selectCleftToRight(rhs.gemId).get();
 
     assertEquals(rhs.gemId, clone.gemId);
-    assertEquals(rhs.getDleftToRight(), rhs.getDleftToRight());
+    assertEquals(rhs.getDleftToRightList(), rhs.getDleftToRightList());
   }
 }

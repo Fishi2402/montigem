@@ -11,7 +11,7 @@ public class Person extends PersonTOP {
   @Override
   public GemList<BookDescription> getRentedBookDescriptionsDerivedGemList() {
     return new BookDescriptionGemList(
-        this.getRentedBooks().stream()
+        this.getRentedBooksList().stream()
             .map(BookTOP::getDescription)
             .map(BookDescription::getGemId)
             .collect(Collectors.toList())

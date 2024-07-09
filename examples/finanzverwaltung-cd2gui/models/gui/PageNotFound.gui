@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui;
+
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.basic.GemText;
+import mc.fenix.arrange.GemRow;
+
+page PageNotFound() {
+  @GemColumn(hAlign = "center", rowGap = "20px", components = [
+    @GemCard(title = "SE Hub | 404", component =
+      @GemColumn(width = "800px", hAlign = "center", components = [
+        @GemText(value = "Oh no something went wrong - please fix it!")
+      ])
+    )
+  ]);
+}

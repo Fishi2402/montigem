@@ -4,7 +4,7 @@ import java.util.Optional;
 
 public class Function extends FunctionTOP {
   public Optional<Channel> getInChannel(String name){
-    for (Port p : getIn()) {
+    for (Port p : getInList()) {
       if (p.getName().equals(name)) {
         Channel channel = p.getChannel();
         return Optional.of(channel);
@@ -14,7 +14,7 @@ public class Function extends FunctionTOP {
   }
 
   public Optional<Channel> getOutChannel(String name){
-    for (Port p : getOut()) {
+    for (Port p : getOutList()) {
       if (p.getName().equals(name)) {
         Channel channel = p.getChannel();
         return Optional.of(channel);

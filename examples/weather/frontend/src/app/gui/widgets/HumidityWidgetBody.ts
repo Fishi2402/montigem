@@ -15,8 +15,8 @@ import {HumidityWidgetBodyComponent,config} from "@src/gui/widgets/HumidityWidge
 export class HumidityWidgetBody extends HumidityWidgetBodyComponent {
 
   public override getGemText1Value (): string {
-    let cur_day = this.getTimeseries()?.getContainedDays()[0];
-    let cur_forecast = cur_day?.getDailyForecasts()[0];
+    let cur_day = this.getTimeseries()?.getContainedDaysList()[0];
+    let cur_forecast = cur_day?.getDailyForecastsList()[0];
     let humidity = cur_forecast?.getRealtiveHumidity();
     return "" + humidity ?? "" + "%";
   }

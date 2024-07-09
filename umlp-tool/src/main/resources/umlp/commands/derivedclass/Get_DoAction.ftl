@@ -11,5 +11,5 @@ ${cd4c.method("public CommandResult<" + returntype + "> doAction()")}
     return new SimpleResult<>(getId(), obj, "${returnedtype}");
   }
 <#else>
-  return ListResult.of(getId(), ${managerName}.get${clazz}().get${attribute?cap_first}(), "${returnedtype}");
+  return ListResult.of(getId(), ${managerName}.get${clazz}().get${attribute?cap_first}List(), "${returnedtype}");
 </#if>

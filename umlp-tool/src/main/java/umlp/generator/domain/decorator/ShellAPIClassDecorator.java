@@ -73,6 +73,7 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
       addCreateMethod(cdName, originalClassName, shellapiClass, domainAttributes, assocs);
     }
     addGetMethod(cdName, originalClassName, shellapiClass);
+    addGetAllMethod(cdName, originalClassName, shellapiClass);
     if (!isSingleton) {
       addDeleteMethod(cdName, originalClassName, shellapiClass);
     }
@@ -166,6 +167,13 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
         StringTransformations.uncapitalize(originalClassName), originalClassName);
     glex.replaceTemplate("cd2java.Annotations", m, new StringHookPoint(annotation));
     addAnnotationToParameters(m, "@ShellOption(value = \"--id\")");
+  }
+
+  private void addGetAllMethod(String cdName, String originalClassName, ASTCDClass api) {
+    ASTCDMethodSignature m = getCD4C().addMethod(api, "umlp.shellapi.GetAll", cdName, originalClassName);
+    String annotation = String.format("@ShellMethod(key = \"%s-get-all\", value = \"Get all %ss\") @ShellMethodAvailability(\"isConnected\")",
+        StringTransformations.uncapitalize(originalClassName), originalClassName);
+    glex.replaceTemplate("cd2java.Annotations", m, new StringHookPoint(annotation));
   }
 
   private void addDeleteMethod(String cdName, String originalClassName, ASTCDClass api) {

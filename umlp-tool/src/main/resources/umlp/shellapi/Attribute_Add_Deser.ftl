@@ -1,7 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("cdName", "className", "fieldName", "fieldType", "isAssoc")}
-${cd4c.method("public void ${className?uncap_first}Add${fieldName?cap_first} (long id, String value)")}
+${cd4c.method("public void ${className?uncap_first}Add${fieldName?cap_first} (long id, String __val)")}
 Optional<${className}> ${className?uncap_first} = ${cdName}Manager.${className?uncap_first}Opt(id);
 if(${className?uncap_first}.isPresent()){
-  ${className?uncap_first}.get().add${fieldName?cap_first}(new ${fieldType?split(".")?last}DeSer().deserialize(value).get());
+  ${className?uncap_first}.get().add${fieldName?cap_first}(new ${fieldType?split(".")?last}DeSer().deserialize(__val).get());
 }

@@ -98,7 +98,7 @@ public class DerivedClassClientImplDecorator extends AbstractDecorator {
       String packageName, boolean isList) {
     ASTCDMethodSignature calc = getCD4C().addMethod(ast, getCalcTemplate(),
         name, type, domainClass.getName(), packageName, isList);
-    getCD4C().addMethod(ast, getGetTemplate(), name, type, calc);
+    getCD4C().addMethod(ast, getGetTemplate(), name, type, calc, isList);
     if (isList) {
       ASTCDMethodSignature calcSize = getCD4C().addMethod(ast, getCalcSizeTemplate(),
           name, type, domainClass.getName(), packageName);

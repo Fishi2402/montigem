@@ -1,0 +1,21 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui;
+
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemImage;
+
+import gui.navigation.FinanzverwaltungNavigation;
+
+import Finanzverwaltung.App;
+
+page Start(
+  App app
+) {
+  @FinanzverwaltungNavigation();
+
+  @GemRow(width = "100%", rowGap = "10px", colGap = "10px", hAlign = "center", components = [
+  ]);
+}

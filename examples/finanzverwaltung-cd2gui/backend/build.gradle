@@ -1,0 +1,119 @@
+plugins {
+  id 'java'
+  id 'de.rwth.se.umlp-tool-backend'
+
+  id 'application'
+  id 'com.google.cloud.tools.jib' version '3.2.1'
+  id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+  id 'org.springframework.boot' version "${spring_version}"
+}
+
+repositories {
+  if (("true").equals(getProperty('useLocalRepo'))) {
+    mavenLocal()
+  }
+  maven {
+    credentials.username mavenUser
+    credentials.password mavenPassword
+    url repo
+  }
+  mavenCentral()
+}
+
+configurations {
+  guiDefaultTypes
+}
+
+dependencies {
+  umlpModules(project(path: ":modules:login", configuration: "moduleGenTime"))
+}
+
+application {
+  mainClass = 'FinanzverwaltungServerApplication'
+}
+
+jib {
+  container.mainClass = application.mainClass.get()
+}
+
+dependencies {
+  def withoutSpringLogging = {
+    exclude module: 'spring-boot-starter-logging'
+    exclude module: 'logback-classic'
+    exclude module: 'log4j-to-slf4j'
+  }
+
+  implementation group: 'umlp', name: 'umlp-rte', version: mc_version, {
+    exclude group: "org.slf4j", module: "slf4j-simple"
+  }
+
+  implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
+  implementation 'com.h2database:h2:2.1.214'
+
+  // Spring Boot Dependencies
+  compileOnly group: 'org.springframework.boot', name: 'spring-boot-devtools', version: spring_version, withoutSpringLogging
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version, withoutSpringLogging
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version, withoutSpringLogging
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: spring_version
+  implementation group: 'org.springframework.shell', name: 'spring-shell-starter', version: spring_shell_version
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version
+  developmentOnly("org.springframework.boot:spring-boot-devtools:$spring_version")  // Used for Hot Reload!
+
+  implementation group: 'org.slf4j', name: 'slf4j-simple', version: "1.7.10"
+
+  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
+
+  implementation "org.eclipse.jgit:org.eclipse.jgit:5.2.2.201904231744-r"
+
+  implementation group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.6_mail', version: '1.0.1'
+  implementation group: 'com.sun.activation', name: 'javax.activation', version: '1.2.0'
+
+  implementation("com.hivemq:hivemq-mqtt-client:1.3.0")
+
+  implementation group: 'org.gitlab4j', name: 'gitlab4j-api', version: '5.3.0'
+
+  // Welcome board
+  implementation("com.microsoft.ews-java-api:ews-java-api:2.0") // Exchange api for calendar
+  implementation("org.jsoup:jsoup:1.17.1") // HTML of outlook appointment body to readable text
+}
+
+generateUmlpBackend {
+  input = file("../models/Finanzverwaltung.umlp")
+  symbolOutDir = file("${project.buildDir}/symbols")
+  useSpring = true
+  useShell = false
+}
+
+task runServer {
+  dependsOn(bootRun {
+    systemProperty "spring.shell.interactive.enabled", "false"
+  })
+}
+
+task runShellApi(type: org.springframework.boot.gradle.tasks.run.BootRun) {
+  classpath = sourceSets.main.runtimeClasspath
+  mainClass = 'guidslpaper.GuidslpaperShellAPIApplication'
+  standardInput = System.in
+}
+
+test {
+  testLogging {
+    events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
+  }
+  useJUnitPlatform()
+}
+
+sourceSets {
+  main {
+    //java.srcDirs += [layout.buildDirectory.dir("testgui")]
+    //java.srcDirs += [layout.buildDirectory.dir("umlp/fe2")]
+    // main.resources.srcDirs += generateUmlpBackend.getOutputDir().dir("resources")  // Add generated resources (e.g. html & sql files) to JAR
+  }
+  test {
+    java {
+      exclude '**/gui/**'
+    }
+  }
+}
+
+compileJava.dependsOn(generateUmlpBackend)

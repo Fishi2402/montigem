@@ -29,6 +29,7 @@ import de.monticore.types.check.TypeCheckResult;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.monticore.umlstereotype._ast.ASTStereotypeBuilder;
@@ -328,7 +329,7 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
     String params = Joiners.COMMA.join(adjustedParameters.stream().map(p ->
             UMLPMill.prettyPrint(p.getMCType(), false) + " " + p.getName()).collect(Collectors.toList()));
     String call = Joiners.COMMA.join(adjustedParameters.stream().map(p -> p.getName()).collect(Collectors.toList()));
-    String returnType = buildReturnType(command, clazz);
+    String returnType = buildReturnType(command, clazz).printType();
     String asType = returnType.contains("<")? returnType.substring(0, returnType.indexOf("<")): returnType;
     getCD4C().addMethod(clazz, getExecuteCommandTemplate(), StringTransformations.capitalize(command.getName()),
         params, returnType, call, asType);
