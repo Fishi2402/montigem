@@ -1,4 +1,4 @@
-package domain_e2e;
+package e2e;
 
 import com.microsoft.playwright.Page;
 import domain.test_infrastructure.AbstractDomainE2ETest;
