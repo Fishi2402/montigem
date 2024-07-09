@@ -50,7 +50,7 @@ export class ProjectPage extends ProjectPageComponent {
   private getEdgesFromArtifacts(artifacts: Artifact[]): GemNetworkEdge[] {
     let edges: GemNetworkEdge[] = [];
     artifacts.filter(a => a instanceof Directory).forEach((dir: Directory) => {
-      dir.getContains().forEach(a => edges.push(this.createEdge(dir.getFullName(), a.getFullName())))
+      dir.getContainsList().forEach(a => edges.push(this.createEdge(dir.getFullName(), a.getFullName())))
     })
     return edges;
   }
@@ -69,7 +69,7 @@ export class ProjectPage extends ProjectPageComponent {
 
   private getAllArtifactsFromDir(art: Artifact, artifacts: Artifact[]): Artifact[] {
     if (art instanceof Directory) {
-      (art as Directory).getContains().forEach(a => this.getAllArtifactsFromDir(a, artifacts))
+      (art as Directory).getContainsList().forEach(a => this.getAllArtifactsFromDir(a, artifacts))
     }
     artifacts.push(art)
     return artifacts;
@@ -101,7 +101,7 @@ export class ProjectPage extends ProjectPageComponent {
   private recursivelyFillGemTreeviewItems(artifact: Artifact): GemTreeviewEntry {
     let curViewEntry: GemTreeviewEntry = this.createGemTreeviewEntryFromArtifact(artifact)
     if (artifact instanceof Directory) {
-      (artifact as Directory).getContains().forEach(art => curViewEntry.children.push(this.recursivelyFillGemTreeviewItems(art)))
+      (artifact as Directory).getContainsList().forEach(art => curViewEntry.children.push(this.recursivelyFillGemTreeviewItems(art)))
     }
     return curViewEntry;
   }

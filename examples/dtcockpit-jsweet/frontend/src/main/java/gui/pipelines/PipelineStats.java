@@ -56,7 +56,7 @@ public class PipelineStats extends PipelineStatsTOP {
     entries.put("Successful", successful);
     entries.put("Unsuccessful", unsuccessful);
 
-    for (PipelineStatistic stat : project.getPStatistics()) {
+    for (PipelineStatistic stat : project.getPStatisticsList()) {
       String label = formatDate(stat.getTime());
       int index = labels.indexOf(label);
       if (index == -1) {

@@ -229,7 +229,7 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
             .yPos(connection.getYPos())
             .zPos(connection.getZPos())
             .conditionDescription(connection.getConditionDescription())
-            .connects(new Set<DemoRecComponent>(connection.getConnects()))
+            .connects(new Set<DemoRecComponent>(connection.getConnectsList()))
             .batteryPack(connection.getBatteryPack())
             .build()
       }

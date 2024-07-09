@@ -29,7 +29,7 @@ export class Note extends NoteComponent {
   public  getReplybuttonLabel (): string
 
   {
-    return "↪️ Reply (" + this.getPost().getResponses().length + ")";
+    return "↪️ Reply (" + this.getPost().getResponsesList().length + ")";
   }
 
   override answerPost(): (arg: void) => void {
@@ -68,7 +68,7 @@ export class Note extends NoteComponent {
         SehubManager.deletePost(this.getPost().getGemId());
       })
 
-      console.log("Removing... " + this.post.getResponses())
+      console.log("Removing... " + this.post.getResponsesList())
     };
   }
 

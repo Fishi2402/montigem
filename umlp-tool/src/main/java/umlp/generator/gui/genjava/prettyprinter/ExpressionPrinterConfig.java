@@ -5,6 +5,7 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.StringTransformations;
+import umlp.generator.domain.decorator.GenService;
 import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.HashMap;
@@ -35,6 +36,8 @@ public class ExpressionPrinterConfig {
 
     if (SymTypeRelations.isBoolean(ste)) {
       return "is" + StringTransformations.capitalize(node.getName());
+    } else if (GenService.isList(ste)) {
+      return "get" + StringTransformations.capitalize(node.getName())+"List";
     }
     return "get" + StringTransformations.capitalize(node.getName());
   }

@@ -59,11 +59,11 @@ public class FunctionDetail extends FunctionDetailTOP {
   }
   //
   private String getPortStringValue(Port p) {
-    if (p.getChannel().getFunctionStream().getValue() == null) {
+    if (p.getChannel().getFunctionStream().getValueList() == null) {
       return null;
     }
     String res = "";
-    for (Value value : p.getChannel().getFunctionStream().getValue()) {
+    for (Value value : p.getChannel().getFunctionStream().getValueList()) {
       if (value instanceof DoubleValue) {
         if (value instanceof DoubleValue) {
           res += ((DoubleValue) value).getContent() + ", ";

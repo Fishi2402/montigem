@@ -50,10 +50,6 @@ export class City extends CityTOP {
     return this._nextHours.toArray();
   }
 
-  public getNextHoursList(){
-    return this._nextHours;
-  }
-
   public async calcNextDays() {
     if (this.original.nextDays.calculating || this.original.nextDays.hash != null) {
       return;
@@ -167,7 +163,7 @@ export class City extends CityTOP {
   public async isFavorite(): Promise<boolean> {
     const appGemList: GemList<App> = await WeatherManager.getAppList();
     const app: App = await appGemList.get(0);
-    for (const fav of app.getFavorite()) {
+    for (const fav of app.getFavoriteList()) {
       if (fav.getGemId() === this.getGemId()) {
         return true;
       }

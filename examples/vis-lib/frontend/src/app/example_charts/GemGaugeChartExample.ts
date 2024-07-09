@@ -44,14 +44,14 @@ export class GemGaugeChartExample extends GemGaugeChartExampleComponent {
     for (const person of this.persons) {
       let birthday = Number(person?.getBirthday()?.toDateString().substring(11, 15));
       if (birthday < 1993) {
-        numberFriendsGroup1 += person.getFriends().length;
+        numberFriendsGroup1 += person.getFriendsList().length;
         numberPeopleInGroup1++;
       } else if (birthday >= 1993 && birthday <= 1998) {
-        numberFriendsGroup2 += person.getFriends().length;
+        numberFriendsGroup2 += person.getFriendsList().length;
         numberPeopleInGroup2++;
       }
       else {
-        numberFriendsGroup3 += person.getFriends().length;
+        numberFriendsGroup3 += person.getFriendsList().length;
         numberPeopleInGroup3++;
       }
     }

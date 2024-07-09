@@ -171,8 +171,8 @@ public class Expression2AccessorPrinterTest extends DomainGUITest {
     String result1 = removeSpaces(printer.prettyprint(
         call.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
 
-    String expect2 = removeSpaces("this.getP().getFriends().size() > 0"
-        + " ? this.getP().getFriends().get(this.getP().getFriends().size() - 1).getAge()"
+    String expect2 = removeSpaces("this.getP().getFriendsList().size() > 0"
+        + " ? this.getP().getFriendsList().get(this.getP().getFriendsList().size() - 1).getAge()"
         + " : \"no friends\"");
     String result2 = removeSpaces(printer.prettyprint(
         ternary.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
@@ -181,7 +181,7 @@ public class Expression2AccessorPrinterTest extends DomainGUITest {
     String result3 = removeSpaces(printer.prettyprint(
         fieldCall1.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
 
-    String expect4 = removeSpaces("this.getP().getFriends().get(0).getAge()");
+    String expect4 = removeSpaces("this.getP().getFriendsList().get(0).getAge()");
     String result4 = removeSpaces(printer.prettyprint(
         fieldCall2.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
 
@@ -325,7 +325,7 @@ public class Expression2AccessorPrinterTest extends DomainGUITest {
     String expect5 = removeSpaces("this.getECondition_9().isEmployed()");
     String result5 = removeSpaces(printer.prettyprint(e.getCondition()));
 
-    String expect6 = removeSpaces("this.getFIterable_11(p).getFriends()");
+    String expect6 = removeSpaces("this.getFIterable_11(p).getFriendsList()");
     String result6 = removeSpaces(printer.prettyprint(((ASTGUIShortIterateControl) f.getIterateControl()).getIterable()));
 
     String expect7 = removeSpaces("this.getGA_13(p2, p)");

@@ -50,6 +50,6 @@ public class DerivedInfoImpl extends DerivedInfoImplTOP {
   @Override
   public int calcSizeMonthlyMeetings() {
     // TODO: Do we need this method?
-    return this.getMonthlyMeetings().size();
+    return this.getMonthlyMeetingsList().size();
   }
 }

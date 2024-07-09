@@ -1,0 +1,11 @@
+/* You can add global styles to this file, and also import other style files */
+@import "variables";
+@import "../../../../../../umlp-rte/client/projects/umlp/mc/fenix/theme/theme";
+
+@include montigem-theme();
+
+gem-button > button {
+  height: 23px;
+  padding: 0 10px;
+  border-radius: 4px;
+}

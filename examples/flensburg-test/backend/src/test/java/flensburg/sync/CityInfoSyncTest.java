@@ -54,7 +54,7 @@ public class CityInfoSyncTest extends FlensburgMockTestSetup {
     assertEquals(p1, cityInfo.getPersonWithMostCars());
     assertEquals(2, cityInfo.getAverageNumberOfCars());
 
-    List<String> cities = cityInfo.getCities();
+    List<String> cities = cityInfo.getCitiesList();
     assertEquals(2, cities.size());
     assertTrue(cities.contains("Aachen"));
     assertTrue(cities.contains("Flensburg"));
@@ -89,7 +89,7 @@ public class CityInfoSyncTest extends FlensburgMockTestSetup {
     assertEquals(p1.getGemId(), cityInfo.getPersonWithMostCars().getGemId());
     assertEquals(2, cityInfo.getAverageNumberOfCars());
 
-    List<String> cities = cityInfo.getCities();
+    List<String> cities = cityInfo.getCitiesList();
     assertEquals(2, cities.size());
     assertTrue(cities.contains("Aachen"));
     assertTrue(cities.contains("Flensburg"));

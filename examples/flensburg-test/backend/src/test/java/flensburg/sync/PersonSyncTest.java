@@ -13,7 +13,6 @@ import hardy.flensburg.FlensburgTestContext;
 import hardy.flensburg.Person;
 import hardy.flensburg.PersonBuilder;
 import hardy.flensburg.commands.GetFreeGemIdRequest;
-import hardy.flensburg.test_infrastructure.FlensburgDBTestSetup;
 import hardy.flensburg.test_infrastructure.FlensburgMockTestSetup;
 import hardy.flensburg.test_infrastructure.FlensburgSQLDBTestSetup;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,8 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -127,7 +126,7 @@ public interface PersonSyncTest extends TestSetup<FlensburgTestContext> {
     getBackend().activate();
     Person p1001Server = FlensburgManager.getPersonSure(startGemId);
     assertNotSame(p1001, p1001Server);
-    assertTrue(p1001Server.getOwns().isEmpty());
+    assertTrue(p1001Server.getOwnsList().isEmpty());
 
     for(int i = 0; i < 10; i++) {
       Log.info("Add Car " + i + " from Client", "PersonSyncTest");
@@ -159,12 +158,12 @@ public interface PersonSyncTest extends TestSetup<FlensburgTestContext> {
     PersonBuilder pb1001 = FlensburgManager.personBuilderFromId(startGemId);
     Address addr = FlensburgManager.addressBuilder().city("Flensburg").build().get();
     Person p1001 = pb1001.mainResidence(addr).age(20).nickname("Smith").build().get();
-    List<Car> p1001Owns = p1001.getOwns();
+    List<Car> p1001Owns = p1001.getOwnsList();
 
     Log.info("Check owns is empty in Server", "PersonSyncTest");
     getBackend().activate();
     Person p1001Server = FlensburgManager.getPersonSure(startGemId);
-    List<Car> p1001ServerOwns = p1001Server.getOwns();
+    List<Car> p1001ServerOwns = p1001Server.getOwnsList();
     assertNotSame(p1001, p1001Server);
     assertNotSame(p1001Owns, p1001ServerOwns);
     assertTrue(p1001ServerOwns.isEmpty());
@@ -204,7 +203,7 @@ public interface PersonSyncTest extends TestSetup<FlensburgTestContext> {
     getBackend().activate();
     Person p1001Server = FlensburgManager.getPersonSure(startGemId);
     assertNotSame(p1001, p1001Server);
-    assertTrue(p1001Server.getOwns().isEmpty());
+    assertTrue(p1001Server.getOwnsList().isEmpty());
 
     for (int i = 0; i < 10; i++) {
       Log.info("Add Car " + i + " from Server", "PersonSyncTest");
@@ -231,12 +230,12 @@ public interface PersonSyncTest extends TestSetup<FlensburgTestContext> {
     PersonBuilder pb1001 = FlensburgManager.personBuilderFromId(startGemId);
     Address addr = FlensburgManager.addressBuilder().city("Flensburg").build().get();
     Person p1001 = pb1001.mainResidence(addr).age(20).nickname("Smith").build().get();
-    List<Car> p1001Owns = p1001.getOwns();
+    List<Car> p1001Owns = p1001.getOwnsList();
 
     Log.info("Check owns is empty in Server", "PersonSyncTest");
     getBackend().activate();
     Person p1001Server = FlensburgManager.getPersonSure(startGemId);
-    List<Car> p1001ServerOwns = p1001Server.getOwns();
+    List<Car> p1001ServerOwns = p1001Server.getOwnsList();
     assertNotSame(p1001, p1001Server);
     assertTrue(p1001ServerOwns.isEmpty());
 
@@ -248,7 +247,7 @@ public interface PersonSyncTest extends TestSetup<FlensburgTestContext> {
 
       Log.info("Check it is synced to the client", "PersonSyncTest");
       getClients(0).activate();
-      assertEquals(i + 1, p1001.getOwns().size());
+      assertEquals(i + 1, p1001.getOwnsList().size());
       Car c_i_client = p1001Owns.get(i);
       assertNotNull(c_i_client);
       assertNotSame(c_i_server, c_i_client);
@@ -406,13 +405,13 @@ public interface PersonSyncTest extends TestSetup<FlensburgTestContext> {
     PersonBuilder pb1001 = FlensburgManager.personBuilderFromId(startGemId);
     Address addr = FlensburgManager.addressBuilder().city("Flensburg").build().get();
     Car c = FlensburgManager.carBuilder().wheelLeft(true).build().get();
-    pb1001.getOwns().add(c);
+    pb1001.getOwnsList().add(c);
     Person p1001 = pb1001.mainResidence(addr).age(20).nickname("Smith").build().get();
-    List<Car> p1001Owns = p1001.getOwns();
+    List<Car> p1001Owns = p1001.getOwnsList();
 
     getClients(0).activate();
     Person p1001Client = FlensburgManager.getPersonSure(startGemId);
-    List<Car> p1001ClientOwns = p1001Client.getOwns();
+    List<Car> p1001ClientOwns = p1001Client.getOwnsList();
     assertNotSame(p1001Owns, p1001ClientOwns);
     assertEquals(1, p1001ClientOwns.size());
 
@@ -456,13 +455,13 @@ public interface PersonSyncTest extends TestSetup<FlensburgTestContext> {
     PersonBuilder pb1001 = FlensburgManager.personBuilderFromId(startGemId);
     Address addr = FlensburgManager.addressBuilder().city("Flensburg").build().get();
     Car c = FlensburgManager.carBuilder().wheelLeft(true).build().get();
-    pb1001.getOwns().add(c);
+    pb1001.getOwnsList().add(c);
     Person p1001 = pb1001.mainResidence(addr).age(20).nickname("Smith").build().get();
-    List<Car> p1001Owns = p1001.getOwns();
+    List<Car> p1001Owns = p1001.getOwnsList();
 
     getClients(0).activate();
     Person p1001Client = FlensburgManager.getPersonSure(startGemId);
-    List<Car> p1001ClientOwns = p1001Client.getOwns();
+    List<Car> p1001ClientOwns = p1001Client.getOwnsList();
     assertNotSame(p1001Owns, p1001ClientOwns);
     assertEquals(1, p1001ClientOwns.size());
 
@@ -523,14 +522,14 @@ public interface PersonSyncTest extends TestSetup<FlensburgTestContext> {
         .age(20)
         .nickname("Test")
         .mainResidence(a1);
-    pb1001Client.getVisited().addAll(List.of(a1, a2));
+    pb1001Client.getVisitedList().addAll(List.of(a1, a2));
     Person p1001Client = pb1001Client.build().get();
 
     Log.info("Checking it is available in the Server", "PersonSyncTest");
     getBackend().activate();
     Person p1001Server = FlensburgManager.getPersonSure(1001);
-    List<Address> p1001ServerVisited = p1001Server.getVisited();
-    assertNotSame(p1001ServerVisited, p1001Client.getVisited());
+    List<Address> p1001ServerVisited = p1001Server.getVisitedList();
+    assertNotSame(p1001ServerVisited, p1001Client.getVisitedList());
     assertEquals(2, p1001ServerVisited.size());
 
     Address visited1 = p1001ServerVisited.get(0);
@@ -538,8 +537,8 @@ public interface PersonSyncTest extends TestSetup<FlensburgTestContext> {
     assertEquals(200, visited1.getGemId());
     assertEquals(201, visited2.getGemId());
 
-    assertEquals(1, visited1.getVisitor().size());
-    assertEquals(1, visited2.getVisitor().size());
+    assertEquals(1, visited1.getVisitorList().size());
+    assertEquals(1, visited2.getVisitorList().size());
   }
 
   @Test
@@ -600,28 +599,28 @@ public interface PersonSyncTest extends TestSetup<FlensburgTestContext> {
         .build().get();
 
     Log.info("Adding address 1", "PersonSyncTest");
-    p1001Client.getVisited().add(a1);
+    p1001Client.getVisitedList().add(a1);
 
     Log.info("Checking it is available in the Server", "PersonSyncTest");
     getBackend().activate();
     Person p1001Server = FlensburgManager.getPersonSure(1001);
     assertNotSame(p1001Server, p1001Client);
     System.out.println("Checking for person " + p1001Server);
-    assertEquals(1, p1001Server.getVisited().size());
+    assertEquals(1, p1001Server.getVisitedList().size());
 
-    Address visited1 = p1001Server.getVisited().get(0);
+    Address visited1 = p1001Server.getVisitedList().get(0);
     assertEquals(200, visited1.getGemId());
-    assertEquals(1, visited1.getVisitor().size());
+    assertEquals(1, visited1.getVisitorList().size());
 
     Log.info("Adding address 2", "PersonSyncTest");
     getClients(0).activate();
-    p1001Client.getVisited().add(a2);
+    p1001Client.getVisitedList().add(a2);
 
     Log.info("Checking it is available in the Server", "PersonSyncTest");
     getBackend().activate();
-    Address visited2 = p1001Server.getVisited().get(1);
+    Address visited2 = p1001Server.getVisitedList().get(1);
     assertEquals(201, visited2.getGemId());
-    assertEquals(1, visited2.getVisitor().size());
+    assertEquals(1, visited2.getVisitorList().size());
   }
 
   @Test

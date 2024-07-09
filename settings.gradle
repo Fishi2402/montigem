@@ -80,6 +80,8 @@ include ':examples:kitchencompanion:backend'
 include ':examples:kitchencompanion:frontend'
 include ':examples:guidslpaper:backend'
 include ':examples:guidslpaper:frontend'
+include ':examples:finanzverwaltung-cd2gui:backend'
+include ':examples:finanzverwaltung-cd2gui:frontend'
 
 include ':products:syse_functions:backend'
 include ':products:syse_functions:frontend'

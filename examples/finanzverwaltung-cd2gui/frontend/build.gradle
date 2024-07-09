@@ -1,0 +1,145 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+import java.nio.file.Paths
+
+
+plugins {
+  id "com.github.node-gradle.node" version "5.0.0"
+  id 'de.rwth.se.umlp-tool'
+}
+
+def useCD2GUI = true
+
+configurations {
+  guiDefaultTypes
+}
+
+dependencies {
+  guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
+}
+
+task generateNPMAuth(type: NPMAuthCreate){
+  npmrcFile = file("config/.npmrc")
+}
+
+// Add Frontend-Config Files from UMLP-Tool Resources.
+task frontendSetup(type: FrontendSetup){
+  input = file("config/")   // Can be used to add or replace files
+  dependsOn(generateNPMAuth)
+  output = layout.buildDir.dir("frontendGen/")
+}
+
+node {
+  // Whether to download and install a specific Node.js version or not
+  // If false, it will use the globally installed Node.js
+  // If true, it will download node using above parameters
+  // Note that npm is bundled with Node.js
+  download = true
+
+  // Version of node to download and install (only used if download is true)
+  // It will be unpacked in the workDir
+  version = "${node_version}"
+
+  // Whether the plugin automatically should add the proxy configuration to npm and yarn commands
+  // according the proxy configuration defined for Gradle
+  // Disable this option if you want to configure the proxy for npm or yarn on your own
+  // (in the .npmrc file for instance)
+  nodeProxySettings = ProxySettings.OFF
+
+  // The Node.js project directory location
+  // This is where the package.json file and node_modules directory are located
+  // By default it is at the root of the current project
+  nodeProjectDir = file("${buildDir}/frontendGen")
+}
+nodeSetup.dependsOn(frontendSetup)
+
+tasks.register('generateCDTOGUI', UMLPCdToGuiTask) {
+  enabled(useCD2GUI)
+  setGroup('build')
+  input = file("../models/Finanzverwaltung.umlp")
+  outputDir = layout.buildDirectory.dir("cd2gui")
+}
+
+task guiVariability(type: GuiVariabilityHandlerTask) {
+  if(useCD2GUI) {
+    input.from(generateCDTOGUI.getOutputDir())
+  }
+  input.from(file("../models/gui"))
+  outputDir = layout.buildDirectory.dir("guiVariability")
+}
+
+task genDomain(type: UMLPFrontendTask) {
+  dependsOn(frontendSetup)
+  input = file("../models/Finanzverwaltung.umlp")
+  symbolOutDir = file("${project.buildDir}/symbols")
+  outputDir = frontendSetup.getOutput().dir("build/appdomain")
+  hwcDir = file("src/app/")
+}
+
+task genDomainSymbols(type: UMLPSymbolsTask) {
+  dependsOn(frontendSetup)
+  input = layout.projectDirectory.dir("../models")
+  symbolOutDir = file("${project.buildDir}/symbols")
+  outputDir = file("${project.buildDir}/symbols")
+}
+
+task genGUI(type: UMLPGuiGenTask) {
+  dependsOn(genDomain, guiVariability, genDomainSymbols)
+  input = file(guiVariability.getOutputDir().dir("gui"))
+  outputDir = frontendSetup.getOutput().dir("build/appgui")
+  hwcDir = file("src/app/")
+  modelDir = layout.projectDirectory.dir("../models")
+  symbolDir = files(
+      genDomainSymbols.symbolOutDir,
+      project(":umlp-rte:client").tasks.createGuiSymbols.output,
+      project(":umlp-rte:client").tasks.createCDSymbols.output,
+      configurations.guiDefaultTypes.files
+  )
+  domainModels = ["Finanzverwaltung"]
+  guiCreateModels = ["gui.login.UserCreate", "gui.issues.IssueCreate"]
+}
+
+tasks.register('genGUI2', UMLPGuiGenTask) {
+  enabled(useCD2GUI)
+  setGroup('build')
+  dependsOn(genGUI, guiVariability, generateCDTOGUI)
+  input = file(guiVariability.getOutputDir())
+  symbolDir = files(
+      generateCDTOGUI.getOutputDir().file("symbols"),
+      project(":umlp-rte:client").tasks.createGuiSymbols.output,
+      project(":umlp-rte:client").tasks.createCDSymbols.output,
+      configurations.guiDefaultTypes.files
+  )
+  hwcDir = file("src/app/")
+  symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")
+  outputDir = layout.buildDirectory.dir("umlp/fe2")
+  modelDir = file(guiVariability.getOutputDir())
+  domainModels = ["Finanzverwaltung"]
+  // Note: on windows its Finanzverwaltung, ob *nix its finanzverwaltung (lowercase)
+  guiCreateModelsAsFile = file(generateCDTOGUI.getOutputDir().file("meta/finanzverwaltung/guiCreateTextModels"))
+}
+
+npmInstall.dependsOn(':umlp-rte:client:npmInstall')
+
+def prebuildTasks = [
+    npmInstall, genGUI2
+]
+
+task buildApp(type: NpxTask) {
+  dependsOn(prebuildTasks)
+  command = "ng"
+  args = ["build"]
+}
+assemble.dependsOn(buildApp)
+
+task testApp(type: NpxTask) {
+  dependsOn(prebuildTasks)
+  command = "ng"
+  args = ["test"]
+}
+
+task runApp(type: NpxTask) {
+  dependsOn(prebuildTasks)
+  command = "ng"
+  args = ["serve"]
+}

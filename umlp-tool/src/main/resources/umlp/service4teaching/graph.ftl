@@ -16,7 +16,7 @@ ${cdName}Manager.get${c.getName()}List()
         <#assign side=entry.getValue()>
         <#if genService.isList(side)>
         <#-- List -->
-        for(var other : obj.get${side.name?cap_first}()){
+        for(var other : obj.get${side.name?cap_first}List()){
           if(obj.getGemId() >= 0 && other.getGemId() >= 0){
             links.add("{\"source\":" + obj.getGemId() + ",\"target\":"+other.getGemId() + "}");
           }
