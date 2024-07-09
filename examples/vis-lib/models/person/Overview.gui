@@ -15,7 +15,7 @@ import person.PieChart;
 
 page Overview(List<Person> persons) {
   @GemColumn(rowGap = "10px", width = "50%", components = [
-    @CreatePerson(cancel = alertUser()),
+    createPerson@CreatePerson(cancel = alertUser()),
     @iterate(Person p : persons) {
       @Row(
         col1 = @GemText(value = p.birthday),
