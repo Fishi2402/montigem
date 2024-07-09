@@ -20,10 +20,10 @@ dependencies {
   implementation project(":examples:vis-lib:backend")
   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
+  testImplementation 'com.microsoft.playwright:playwright:1.44.0'
 }
 
 test {
-  dependsOn(":examples:vis-lib:frontend:buildApp")
+  dependsOn ':examples:vis-lib:frontend:buildApp'
   useJUnitPlatform()
-  testLogging.showStandardStreams = true
 }

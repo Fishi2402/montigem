@@ -12,7 +12,7 @@ public class ExampleE2ETest extends AbstractDomainE2ETest {
   @BeforeEach
   void init(Page page) {
     page.onConsoleMessage(cm -> System.out.println("[BROWSER] " + cm.text()));
-    navAndWait(page, "/person/Overview");
+    navAndWait(page, "/person/Overview"); //go to page we want to test
   }
 
   @Test
