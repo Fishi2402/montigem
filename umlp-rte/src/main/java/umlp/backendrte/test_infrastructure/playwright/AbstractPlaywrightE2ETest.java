@@ -30,11 +30,8 @@ public abstract class AbstractPlaywrightE2ETest {
    * @throws RuntimeException If no free port was found for whatever reason
    */
   protected static int getFreePort() {
-    try {
-      ServerSocket socket = new ServerSocket(0);
-      int port = socket.getLocalPort();
-      socket.close();
-      return port;
+    try (ServerSocket socket = new ServerSocket(0)) {
+      return socket.getLocalPort();
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
