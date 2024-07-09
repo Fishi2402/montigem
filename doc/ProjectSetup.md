@@ -6,7 +6,6 @@ Each exemplary project has the following folder structure:
 
 - Backend
 - Frontend
-- Backend-end2end-tests
 - Models
 
 ## 1. Models
@@ -179,22 +178,31 @@ Frontend may additionally include `tsconfig.json` file alongside `build.gradle` 
 ```
 This file provides a hint for IDEs to look for the root TypeScript configuration file in the build folder.
 
-## 5. Backend-e2e
+### 4.1 E2E-Tests
 
-End-to-end tests are written as Java-UnitTests and require the playwright dependency:
+Playwright end-to-end tests can be put into the `src/java/test` folder of the frontend module. 
+Additionally, a dependency on playwright and the backend is needed:
+
 ```groovy
 dependencies {
   implementation project(":backend")
-  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
-  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
   testImplementation 'com.microsoft.playwright:playwright:1.44.0'
 }
 
+task e2eTestApp() {
+  dependsOn test
+}
+
 test {
-  dependsOn ':frontend:buildApp'
+  dependsOn buildApp
   useJUnitPlatform()
 }
 ```
+
+## 5. Backend-e2e
+
+End-to-end tests are written as Java-UnitTests and require the playwright dependency:
+
 
 ## 6. How to start the application
 
