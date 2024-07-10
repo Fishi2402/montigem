@@ -1,0 +1,29 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+
+<div style="margin-bottom: 5px">
+  <chart-options>
+    <li *ngIf="displayLegend === true">
+      <h3>Legend Position</h3>
+      <div class="legendButtons">
+        <button (click)="setLegendPosition('left')">Left</button>
+        <button (click)="setLegendPosition('top')">Top</button>
+        <button (click)="setLegendPosition('bottom')">Bottom</button>
+        <button (click)="setLegendPosition('right')">Right</button>
+      </div>
+    </li>
+  </chart-options>
+</div>
+<div id="boxplot"></div>
+<div [ngClass]="changeContainer()">
+
+  <gem-chart-legend
+    [labels]="legendLabels"
+    [colors]="legendColors"
+    [displayLegend]="displayLegend"
+    >
+  </gem-chart-legend>
+</div>
+
+<ng-template #elseBlock>
+  <p>No data available</p>
+</ng-template>
