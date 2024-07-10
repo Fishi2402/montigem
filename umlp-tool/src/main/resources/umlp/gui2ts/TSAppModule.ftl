@@ -5,7 +5,7 @@ ${tc.signature("existedModuleConfig","existHWCRoutes","pathHWRoutes","pathModule
 //always imported
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { RouterModule } from '@angular/router';
+import { RouterModule, RouteReuseStrategy, BaseRouteReuseStrategy } from '@angular/router';
 import { CommonModule } from "@angular/common"
 <#if existedModuleConfig >
 import { config } from '${pathModuleConfig}';
@@ -37,6 +37,10 @@ imports: [
 </#if>
 ],
 providers: [
+  {
+    provide: RouteReuseStrategy,
+    useClass: class extends BaseRouteReuseStrategy { shouldReuseRoute() { return false; } }
+  },
 <#if existedModuleConfig >
   ... config.providers
 </#if>
