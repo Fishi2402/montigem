@@ -120,11 +120,13 @@ public abstract class UMLPSingleFileTask extends MCSingleFileTask implements Gra
 
   @Override
   protected Consumer<String[]> getRunMethod() {
+    // The run method is directly invoked when debugging
     return UMLPToolInvoker::run;
   }
 
   @Override
   protected Class<? extends AToolAction> getToolAction() {
+    // The WorkAction respresentation when using a Gradle WorkQueue
     return UMLPAction.class;
   }
 

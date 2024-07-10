@@ -26,18 +26,15 @@ import static umlp.UMLPToolOptions.REPORTS;
 import static umlp.UMLPToolOptions.REPORT_BASE;
 import static umlp.UMLPToolOptions.TMPL_PATH;
 
+/**
+ * Set-up for the tool-pipeline.
+ * The options CD2GUI, GuiVar, UMLP (from a .umlp file), and GUI are moved into separate pipelines
+ * (each defined in their own files)
+ */
 public class UMLPToolPipelineSetup {
 
   // A reuseable operation, showing the help
-  final IOperation<UMLPPipelineData> showHelp = data -> {
-    if (data.getCmd() == null || !data.getCmd().getArgList().isEmpty() || HELP.isSelected(data.getCmd())) {
-      org.apache.commons.cli.HelpFormatter formatter = new org.apache.commons.cli.HelpFormatter();
-      formatter.setWidth(80);
-      formatter.printHelp("UMLPTool", data.getCmdOptions());
-      return false;
-    }
-    return true;
-  };
+  final IOperation<UMLPPipelineData> showHelp;
 
   // a reuseable operation, setting up the UMLPReports
   final IOperation<UMLPPipelineData> setupUMLPReports = data -> {
@@ -88,9 +85,18 @@ public class UMLPToolPipelineSetup {
   final Pipeline<UMLPPipelineData> main;
 
   public UMLPToolPipelineSetup() {
+    // Define the "main" pipeline (which is followed for every tool-run)
     main = new Pipeline<>();
-
-    main.register(showHelp);
+    // A reuseable operation, showing the help and exiting
+    main.register(showHelp = data -> {
+      if (data.getCmd() == null || !data.getCmd().getArgList().isEmpty() || HELP.isSelected(data.getCmd())) {
+        org.apache.commons.cli.HelpFormatter formatter = new org.apache.commons.cli.HelpFormatter();
+        formatter.setWidth(80);
+        formatter.printHelp("UMLPTool", data.getCmdOptions());
+        return false; // abort
+      }
+      return true;
+    });
     main.register(initLog = data -> {
       // set desired log level without modifying the "failQuick" option
       boolean enableFailQuick = Log.isFailQuickEnabled();
@@ -173,6 +179,7 @@ public class UMLPToolPipelineSetup {
         ))
     );
 
+    // Next, actually populate the individual pipelines of the options
     cd2GUIPipelineSetup = new CD2GUIPipelineSetup();
     cd2GUIPipelineSetup.createCD2GUI(this);
 
@@ -184,7 +191,7 @@ public class UMLPToolPipelineSetup {
     guiPipelineSetup = new GuiPipelineSetup();
     guiPipelineSetup.createGui(this);
 
-    // Finally, close report managers
+    // Finally (for every option), close report managers
     main.addFinally(data -> {
       if (data.umlp_reportManagerFactory != null) {
         data.umlp_reportManagerFactory.close();

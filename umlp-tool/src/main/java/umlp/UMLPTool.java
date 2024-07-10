@@ -168,12 +168,12 @@ public class UMLPTool extends UMLPToolTOP {
       CommandLineParser parser = new DefaultParser();
       CommandLine cmd = parser.parse(options, args);
 
+      // Due to its size, we define the Pipeline of the UMLP Tool in a separate class (UMLPToolPipelineSetup)
       UMLPToolPipelineSetup pipeline = new UMLPToolPipelineSetup();
 
       Pipeline<UMLPPipelineData> main = pipeline.getMain();
 
-      // Here we could modify the Pipeline
-
+      // Here we could further modify the Pipeline
       UMLPPipelineData data = new UMLPPipelineData(cmd, options, this);
       main.doWork(data);
     }
