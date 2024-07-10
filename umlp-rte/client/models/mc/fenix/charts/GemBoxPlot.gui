@@ -1,0 +1,32 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.charts;
+
+import mc.fenix.charts.GemBoxPlotTypes.GemBoxPlotEntry;
+
+/**
+ A BoxPlot presents a set of two dimensional data with a number of rectangular boxes + whiskers that represent max, min,
+ median and upper and lower quantiles. The chart itself visualizes categories (given as Strings) on one axis and
+ scalar values on the other as size of the boxes.
+
+ Additionally, the exact data points can be visualized to get a better idea of the distribution.
+*/
+
+component GemBoxPlot(
+  /** Each entry corresponds to one box in the diagram */
+  List<GemBoxPlotEntry> entries,
+
+  /** Sometimes a boxplot can be misleading. Displaying the data points of the underlying data can help with that. */
+  boolean showDataPoints = true,
+
+  /** Overall minimum value for the axis. Default is null i.e. automatically calculated.  */
+  Double min,
+
+  /** Overall maximum value for the axis. Default is null i.e. automatically calculated. */
+  Double max,
+
+  /** SVG width. */
+  Integer width = 400,
+
+  /** SVG height. */
+  Integer height = 400
+)

@@ -10,3 +10,4 @@ export * from "./lib/gemsunburstchart";
 export * from "./lib/gemnetworkgraph";
 export * from "./lib/gemchartlegend";
 export * from "./lib/gemscatterplot"
+export * from "./lib/gemboxplot"
