@@ -78,28 +78,11 @@ public class E2ETestDecorator extends AbstractDecorator {
     //add spring boot annotations
     cd4C.addImport(res, "org.springframework.boot.test.context.SpringBootTest");
     cd4C.addImport(res, "org.springframework.context.annotation.Import");
-    cd4C.addImport(res, "org.springframework.test.annotation.DirtiesContext");
-    cd4C.addImport(res, "org.junit.jupiter.api.TestInstance");
 
     setAnnotations(res,
                    new TemplateHookPoint("umlp.test_infrastructure.e2e.Annotations",
                                          cdName,
                                          portConfigClassName));
-
-    //setup/tearDown methods
-    cd4C.addImport(res, "org.junit.jupiter.api.BeforeAll");
-    cd4C.addImport(res, "org.junit.jupiter.api.BeforeEach");
-    cd4C.addImport(res, "org.junit.jupiter.api.AfterEach");
-    cd4C.addImport(res, "org.junit.jupiter.api.AfterAll");
-    cd4C.addImport(res, "umlp.backendrte.common.DatabaseAccessManager");
-    cd4C.addImport(res, "java.io.IOException");
-    cd4C.addImport(res, "java.util.Comparator");
-    cd4C.addImport(res, "java.nio.file.Path");
-    cd4C.addImport(res, "java.nio.file.Paths");
-    cd4C.addImport(res, "java.nio.file.Files");
-    cd4C.addImport(res, "java.io.File");
-    cd4C.addImport(res, "java.io.BufferedReader");
-    cd4C.addImport(res, "java.io.InputStreamReader");
 
     var waitForBackendMethod = cd4C.addMethod(res, "umlp.test_infrastructure.e2e.WaitForBackend", cdName);
     glex.replaceTemplate(JAVADOC, waitForBackendMethod, new StringHookPoint(
