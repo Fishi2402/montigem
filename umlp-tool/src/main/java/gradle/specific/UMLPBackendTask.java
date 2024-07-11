@@ -76,6 +76,10 @@ public abstract class UMLPBackendTask extends UMLPSingleFileTask {
   }
 
   /**
+   * Adds additional arguments for calling the UMLPTool#run method.
+   * To allow parallel execution using a WorkQueue, {@link this#getToolAction()} is used to
+   * invoke the UMLPTool
+   *
    * @param filePath Path of InputFile
    * @return Arguments that can be used to start CLI-Tool
    */

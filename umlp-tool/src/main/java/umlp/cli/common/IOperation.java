@@ -18,4 +18,18 @@ public interface IOperation<T> {
       return true;
     }
   }
+
+  // IOperation without data, useable for lambdas
+  interface ISimpleOperation2<T> extends IOperation<T> {
+    void doSimpleWork();
+
+    @Override
+    default boolean doWork(T data) {
+      this.doSimpleWork();
+      return true;
+    }
+  }
+
+
+
 }

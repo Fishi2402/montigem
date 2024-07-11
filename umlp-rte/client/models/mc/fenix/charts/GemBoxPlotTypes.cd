@@ -1,0 +1,24 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.charts;
+import java.util.List;
+import java.util.Optional;
+
+classdiagram GemBoxPlotTypes {
+
+  public class GemBoxPlotEntry {
+    String group;
+    GemBoxPlotBox box;
+
+    List<Double> points;
+    Optional<String> color;
+  }
+
+  public class GemBoxPlotBox {
+    Double median;
+    Double lowerQuantile;
+    Double upperQuantile;
+    Double lowerExtreme;
+    Double upperExtreme;
+  }
+
+}

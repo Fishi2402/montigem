@@ -53,6 +53,7 @@ public class UMLPFilePipelineSetup {
 
 
   final IOperation<UMLPPipelineData> init;
+  final IOperation.ISimpleOperation2<UMLPPipelineData> addBuiltInTypes;
 
   Pipeline<ModelPathData> loadModelPathPipe;
   final IOperation<UMLPPipelineData> loadModelpath;
@@ -77,10 +78,10 @@ public class UMLPFilePipelineSetup {
         TagsMill.init(); // instead we only support generic tagging models
       }
       UMLPMill.init();
-      BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope(), false);
       UMLPMill.globalScope().setSymbolPath(data.importedSymbolPath);
       return true;
     });
+    umlpPipeline.umlp.register(addBuiltInTypes = this::addBuiltInTypes);
     umlpPipeline.umlp.register(loadModelpath = data -> {
       String report_on = data.inputFile.getName().replace(".", "__");   // TODO: Is this name unique? Should it be unique?
 
@@ -302,6 +303,10 @@ public class UMLPFilePipelineSetup {
     public void setSymbolTable(IUMLPArtifactScope symbolTable) {
       this.symbolTable = symbolTable;
     }
+  }
+
+  void addBuiltInTypes() {
+    BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope(), false);
   }
 
 

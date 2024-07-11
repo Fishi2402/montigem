@@ -57,12 +57,12 @@ component GemTable(
   Event<Object> cancelCreate,
 
   // TODO: add to the public API
-  Function cellStyle = null,
+  Function<Object,Object> cellStyle = null,
   Object tableContainerStyle = null,
   boolean compactStyle = false,
   boolean hasColumnFooter = false,
   GUIViewElement footerTemplate = null,
-  Function activeRow = null,
+  Function<Object,Object> activeRow = null,
   Object inactiveRowStyle = null,
   boolean isFilterable = false,
   List<Object> sortDirection = null,

@@ -56,6 +56,7 @@ export * from './lib/request/Request';
 
 export * from './lib/service/websocket/ClientCommandWebsocketCommunication';
 
+export * from './lib/util/DataUtil';
 export * from './lib/util/LogUtil';
 export * from './lib/util/DateFormat';
 

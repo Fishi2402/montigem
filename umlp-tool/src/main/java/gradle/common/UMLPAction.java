@@ -5,7 +5,8 @@ import de.monticore.gradle.common.AToolAction;
 import de.monticore.gradle.internal.isolation.CachedIsolation;
 
 /**
- * Isolated?/Parallel? Execution of UMLPTool
+ * (classpath isolated) execution of the UMLPTool for a Gradle WorkAction.
+ * This indirect calling is required to allow for parallel execution despite static usages (e.g., Mills)
  */
 public abstract class UMLPAction extends AToolAction {
 
