@@ -40,8 +40,8 @@ import java.util.Optional;
 // restart backend for every method
 public abstract class AbstractPlaywrightE2ETest {
 
-  protected static int frontendServerPort = getFreePort();
-  protected static int backendServerPort = getFreePort();
+  public static final int frontendServerPort = getFreePort();
+  public static final int backendServerPort = getFreePort();
   protected Optional<Process> frontendProcess = Optional.empty();
 
   /**
