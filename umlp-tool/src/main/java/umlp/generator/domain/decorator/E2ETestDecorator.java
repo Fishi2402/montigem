@@ -86,11 +86,6 @@ public class E2ETestDecorator extends AbstractDecorator {
                                          cdName,
                                          portConfigClassName));
 
-    //attributes
-    addAttribute(res, "static int backendServerPort", "getFreePort()");
-    addAttribute(res, "static int frontendServerPort", "getFreePort()");
-    addAttribute(res, "protected Optional<Process> frontendProcess", "Optional.empty()");
-
     //setup/tearDown methods
     cd4C.addImport(res, "org.junit.jupiter.api.BeforeAll");
     cd4C.addImport(res, "org.junit.jupiter.api.BeforeEach");
@@ -106,20 +101,7 @@ public class E2ETestDecorator extends AbstractDecorator {
     cd4C.addImport(res, "java.io.BufferedReader");
     cd4C.addImport(res, "java.io.InputStreamReader");
 
-    cd4C.addMethod(res, "umlp.test_infrastructure.e2e.GetNpmPath");
-    cd4C.addMethod(res, "umlp.test_infrastructure.e2e.GetFrontendGenDirectory");
-    cd4C.addMethod(res, "umlp.test_infrastructure.e2e.StartNpmProcess");
-    cd4C.addMethod(res, "umlp.test_infrastructure.e2e.MonitorFrontendStart");
-    var startFrontendMethod = cd4C.addMethod(res, "umlp.test_infrastructure.e2e.StartFrontend");
-    setAnnotations(startFrontendMethod, new StringHookPoint("@BeforeAll"));
-
-    var stopFrontendMethod = cd4C.addMethod(res, "umlp.test_infrastructure.e2e.StopFrontend");
-    setAnnotations(stopFrontendMethod, new StringHookPoint("@AfterAll"));
-
-    var cleanupBackendMethod = cd4C.addMethod(res, "umlp.test_infrastructure.e2e.CleanupBackend");
-    setAnnotations(cleanupBackendMethod, new StringHookPoint("@AfterEach"));
-
-    var waitForBackendMethod = cd4C.addMethod(res, "umlp.test_infrastructure.e2e.WaitForBackend");
+    var waitForBackendMethod = cd4C.addMethod(res, "umlp.test_infrastructure.e2e.WaitForBackend", cdName);
     glex.replaceTemplate(JAVADOC, waitForBackendMethod, new StringHookPoint(
         //@formatter:off
         "/**\n" +
@@ -127,8 +109,6 @@ public class E2ETestDecorator extends AbstractDecorator {
         " */"
         //@formatter:on
     ));
-
-    cd4C.addMethod(res, "umlp.test_infrastructure.e2e.GetFrontendServerPort");
 
     return res;
   }

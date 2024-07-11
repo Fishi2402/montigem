@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature()}
+${tc.signature("cdName")}
 ${cd4c.method("protected void waitForBackend()")}
 
 try {
