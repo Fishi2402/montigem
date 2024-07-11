@@ -24,9 +24,17 @@ public enum ComponentKind implements ComponentKindLike {
    */
   GemCheckbox("input"),
   /**
+   * Can be used for normal text input and date input. Date has to be in format
+   * {@code yyyy-MM-dd}
+   * <p>
    * <strong>Example</strong>
    * <pre>{@code
    * locator(page, ".firstnameInput", GemTextInput).fill("Charlie");
+   * }</pre>
+   * <strong>Date example</strong>
+   * <pre>{@code
+   * //set the 07.05.2024
+   * locator(page, ".birthday", GemTextInput).fill("2024-05-07");
    * }</pre>
    */
   GemTextInput("input"),

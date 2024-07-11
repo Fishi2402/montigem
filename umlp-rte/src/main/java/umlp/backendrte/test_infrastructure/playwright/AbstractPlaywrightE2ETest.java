@@ -11,6 +11,10 @@ import java.net.ServerSocket;
  * An abstract base for end-to-end tests which use playwright. When using this class it is
  * important that at the end of your constructor in {@code app.component.ts} there is the line
  * <pre>{@code (<any>window).websocket_connected = true;}</pre>
+ * <p>
+ * <strong>Debugging</strong>
+ * <p>Playwright tests can be debugged by modifying the run configuration of the test to use the
+ * environment variable {@code PWDEBUG=1}
  */
 @UsePlaywright
 public abstract class AbstractPlaywrightE2ETest {

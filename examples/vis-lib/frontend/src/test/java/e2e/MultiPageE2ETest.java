@@ -2,14 +2,13 @@ package e2e;
 
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.Page;
-import com.microsoft.playwright.assertions.LocatorAssertions;
 import domain.test_infrastructure.AbstractDomainE2ETest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static umlp.backendrte.test_infrastructure.playwright.ComponentKind.*;
+import static umlp.backendrte.test_infrastructure.playwright.ComponentKind.GemButton;
+import static umlp.backendrte.test_infrastructure.playwright.ComponentKind.GemTextInput;
 
 public class MultiPageE2ETest extends AbstractDomainE2ETest {
 
@@ -33,6 +32,10 @@ public class MultiPageE2ETest extends AbstractDomainE2ETest {
   void testSync() {
     var createPerson = page1.locator(".createPerson");
     locator(createPerson, ".name", GemTextInput).fill("Abby");
+    locator(createPerson, ".bday", GemTextInput).fill("2024-05-07");
+    locator(createPerson, ".street", GemTextInput).fill("Cherrystr.");
+    locator(createPerson, ".house", GemTextInput).fill("2");
+
     locator(createPerson, ".createButton", GemButton).click();
 
     waitForBackend(); //give commands time to reach backend
@@ -40,6 +43,6 @@ public class MultiPageE2ETest extends AbstractDomainE2ETest {
     page2.reload();
     waitRdy(page2);
 
-    assertThat(page2.getByText("Abby")).isVisible(); //TODO debug
+    assertThat(page2.getByText("Abby").first()).isVisible();
   }
 }
