@@ -50,11 +50,13 @@ public abstract class UMLPPluginFrontendWithJSweet implements Plugin<Project> {
     boolean local = UMLPPluginFrontendBase.getBooleanProjectProperty(project, "useLocalDependencies");
     setUpJSweetClassPath(project, local);
 
+    TaskProvider<FrontendSetup> frontendSetupTask = project.getTasks().named(UMLP_FRONTEND_SETUP_TASK_NAME, FrontendSetup.class);
+
     TaskProvider<UMLPGuiGenTask> frontendGuiTask = project.getTasks().named(UMLP_FRONTEND_GUI_TASK_NAME, UMLPGuiGenTask.class);
     TaskProvider<Sync> syncDomainTask = project.getTasks().named("SYNC_" + UMLP_FRONTEND_DOMAIN_TASK_NAME, Sync.class);
     TaskProvider<Sync> syncGuiTask = project.getTasks().named("SYNC_" + UMLP_FRONTEND_GUI_TASK_NAME, Sync.class);
+    TaskProvider<Sync> syncTSHWC = createSyncTSHWC(project, frontendSetupTask);
 
-    TaskProvider<FrontendSetup> frontendSetupTask = project.getTasks().named(UMLP_FRONTEND_SETUP_TASK_NAME, FrontendSetup.class);
     TaskProvider<UMLPSymbolsTask> domainSymbolGenTask = project.getTasks().named(CREATE_DOMAIN_SYMBOLS_TASK_NAME, UMLPSymbolsTask.class);
 
     frontendGuiTask.configure(umlpTask -> {
@@ -106,8 +108,12 @@ public abstract class UMLPPluginFrontendWithJSweet implements Plugin<Project> {
       umlpTask.dependsOn(frontendGUIJ2TSTask, frontendSetupTask);
     });
 
+    syncTSHWC.configure(umlpTask -> {
+      umlpTask.dependsOn(syncGuiTask, frontendSetupTask);
+    });
+
     project.getTasks().named("generate").configure(generateTask -> {
-      generateTask.dependsOn(frontendGUIJ2TSTask, syncJsweetConfigTask);
+      generateTask.dependsOn(frontendGUIJ2TSTask, syncJsweetConfigTask, syncTSHWC);
     });
   }
 
@@ -184,6 +190,15 @@ public abstract class UMLPPluginFrontendWithJSweet implements Plugin<Project> {
     return project.getTasks().register("SYNC_" + UMLP_FRONTEND_DOMAIN_J2TS_CONFIG_TASK_NAME, Sync.class, syncTask -> {
       syncTask.into(project.getLayout().getBuildDirectory().dir("jsweet/"));
       syncTask.from(new File(project.getProjectDir(), "jsweet"));
+    });
+  }
+
+  private TaskProvider<Sync> createSyncTSHWC(Project project, TaskProvider<FrontendSetup> frontendSetupTask) {
+    return project.getTasks().register("SYNC_TSHWC", Sync.class, syncTask -> {
+      syncTask.from(new File(project.getProjectDir(), "src/main/ts"));
+      syncTask.into(Path.of(frontendSetupTask.get().getOutput().getAsFile().get().getAbsolutePath(), "build", "appgui").toFile());
+      syncTask.exclude("**/*.java");
+      syncTask.getPreserve().include("**");
     });
   }
 
