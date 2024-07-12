@@ -114,6 +114,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     addInit();
     addDestroy();
 
+    getCD4C().addImport(clazz, "java.util.ArrayList");
+
     // remove
     for (NotifyMethodTemplate notifyDeleted : this.notifyDeleted.values()) {
       getCD4C().addMethod(clazz, notifyDeleted.getTemplate(), notifyDeleted.getArguments().toArray());
