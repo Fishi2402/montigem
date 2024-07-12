@@ -171,6 +171,7 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
             return true;
         }
       case "umlp.backendrte.common.AggregatedCommandDeSer":
+      case "umlp.backendrte.common.BaseClassObjectMapper":
       case "umlp.backendrte.common.BooleanDeSer":
       case "umlp.backendrte.common.ByteDeSer":
       case "umlp.backendrte.common.CharacterDeSer":
