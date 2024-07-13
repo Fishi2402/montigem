@@ -16,6 +16,7 @@ import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
@@ -168,9 +169,17 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
     // handle associations
     for (ASTCDAssocSide assocSide : associations) {
       String type = assocSide.getSymbol().getType().print();
+      ASTMCType mcType;
+      if(GenService.isList(assocSide)) {
+        mcType = getMCTypeFacade().createBasicGenericTypeOf("List", type);
+      } else if(GenService.isOptional(assocSide)) {
+        mcType = getMCTypeFacade().createBasicGenericTypeOf("Optional", type);
+      } else {
+        mcType = assocSide.getMCQualifiedType();
+      }
       ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(
           PROTECTED.build(),
-          getMCTypeFacade().createBasicGenericTypeOf(GenService.isList(assocSide) ? "GemList" : "Gem", type),
+          mcType,
           GenService.createName(assocSide.getName())
       );
       if (GenService.isSymbolDerived(assocSide)) {
@@ -182,7 +191,6 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
           addStereotype(attribute.getModifier(), STEREOTYPE_OTHERSIDE_ISLIST, "");
         }
       }
-      addStereotype(attribute.getModifier(), STEREOTYPE_MANAGER, getCorrectManager(assocSide));
       attrList.add(attribute);
     }
     return attrList;
@@ -223,12 +231,12 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
     return "umlp.domain.DeepEquals";
   }
 
-  protected static class AttributesTuple {
-    final List<ASTCDAttribute> attrFields;
-    final List<ASTCDAttribute> attrAssocs;
-    final List<ASTCDAttribute> attrList;
+  public static class AttributesTuple {
+    public final List<ASTCDAttribute> attrFields;
+    public final List<ASTCDAttribute> attrAssocs;
+    public final List<ASTCDAttribute> attrList;
 
-    protected AttributesTuple(List<ASTCDAttribute> attrFields, List<ASTCDAttribute> attrAssocs) {
+    public AttributesTuple(List<ASTCDAttribute> attrFields, List<ASTCDAttribute> attrAssocs) {
       this.attrFields = attrFields;
       this.attrAssocs = attrAssocs;
       attrList = new ArrayList<>(attrAssocs);

@@ -7,7 +7,7 @@ public class GemTextInputValidity extends GemTextInputValidityTOP {
   }
 
   public GemTextInputValidity(String status, String message) {
-    this.status = status;
-    this.message = message;
+    this._status = status;
+    this._message = message;
   }
 }

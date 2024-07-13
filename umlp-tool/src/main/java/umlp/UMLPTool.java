@@ -80,6 +80,7 @@ public class UMLPTool extends UMLPToolTOP {
   public static final String DEFAULT_CONFIGTEMPLATE_GUI2JAVA = "umlp.GUI2Java";
   public static final String DEFAULT_CONFIGTEMPLATE_GUI2HTML = "umlp.GUI2Html";
   public static final String DEFAULT_CONFIGTEMPLATE_GUI2TS = "umlp.GUI2TypeScript";
+  public static final String DEFAULT_CONFIGTEMPLATE_RTE2JAVA = "umlp.RTE2Java";
   public static final String DEFAULT_CONFIGTEMPLATE_GUI2ANGULAR = "umlp.GUI2Angular";
 
   private static final List<ASTOCLCompilationUnit> oclCompilationUnits = new ArrayList<>();

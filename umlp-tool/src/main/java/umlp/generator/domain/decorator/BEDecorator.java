@@ -47,9 +47,16 @@ public class BEDecorator extends AbstractDecorator {
 
   private void initExtraDeSers() {
     // TODO: Why is there another set in CommandDecorator?
-    supportedDesers.add("java.time.LocalDate");
-    supportedDesers.add("java.time.LocalDateTime");
-    supportedDesers.add("java.time.LocalTime");
+    supportedDesers.addAll(getStandardSupportedDeSers());
+  }
+
+  public static Set<String> getStandardSupportedDeSers() {
+    Set<String> standardSupportedDeSers = new HashSet<>();
+
+    standardSupportedDeSers.add("java.time.LocalDate");
+    standardSupportedDeSers.add("java.time.LocalDateTime");
+    standardSupportedDeSers.add("java.time.LocalTime");
+    return standardSupportedDeSers;
   }
 
   @Override

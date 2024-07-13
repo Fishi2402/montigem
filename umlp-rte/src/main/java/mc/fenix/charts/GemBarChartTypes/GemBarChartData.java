@@ -1,5 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
-package mc.fenix.charts.GemBarChartTypes;
+package mc.fenix.charts.gembarcharttypes;
+
+
+import mc.fenix.charts.GemBarChartTypes.GemBarChartEntry;
 
 import java.util.List;
 
@@ -9,15 +12,8 @@ public class GemBarChartData extends GemBarChartDataTOP {
   }
 
   public GemBarChartData(List<GemBarChartEntry> entries, List<String> labels) {
-    this.entries = entries;
-    this.labels = labels;
+    this._entries = entries;
+    this._labels = labels;
   }
 
-  public List<String> getLabels() {
-    return this.getLabelsList();
-  }
-
-  public List<GemBarChartEntry> getEntries() {
-    return this.getEntriesList();
-  }
 }

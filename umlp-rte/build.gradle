@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 import gradle.specific.UMLPJava2TypeScriptTask
-import gradle.specific.cd.CD2POJOTask
+import gradle.specific.cd.GUITypes2JavaTask
 
 plugins {
     id 'application'
@@ -40,8 +40,11 @@ dependencies {
     implementation("com.hivemq:hivemq-mqtt-client:1.3.0")
 }
 
+// TODO: umlpModules config is added elsewhere  by the umlp plugin
+configurations {umlpModules{}}
+
 // POJOs
-task generateGuiComponentPOJOs(type: CD2POJOTask) {
+task generateGuiComponentJava(type: GUITypes2JavaTask) {
   hwcDir = project.layout.files("src/main/java")
   input = file("client/models/")
   outputDir = project.layout.buildDirectory.dir("guiComponentTypes")
@@ -54,7 +57,7 @@ task generateGuiComponentPOJOs(type: CD2POJOTask) {
 
 sourceSets {
   main {
-    java.srcDirs += [generateGuiComponentPOJOs.outputDir]
+    java.srcDirs += [generateGuiComponentJava.outputDir]
   }
 }
 //guiComponentTypesJar.dependsOn compileJava

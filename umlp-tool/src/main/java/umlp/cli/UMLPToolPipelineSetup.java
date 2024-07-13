@@ -15,6 +15,7 @@ import java.util.Objects;
 
 import static umlp.UMLPToolOptions.CD2GUI;
 import static umlp.UMLPToolOptions.DEBUG;
+import static umlp.UMLPToolOptions.GUIRTETypes;
 import static umlp.UMLPToolOptions.GUIVariability;
 import static umlp.UMLPToolOptions.HELP;
 import static umlp.UMLPToolOptions.HWC_PATH;
@@ -71,6 +72,7 @@ public class UMLPToolPipelineSetup {
   final Pipeline<UMLPPipelineData> guiVar;
   final Pipeline<UMLPPipelineData> umlp;
   final Pipeline<UMLPPipelineData> gui;
+  final Pipeline<UMLPPipelineData> guiRTETypes;
 
 
   // Specific separate workflows are defined in individual classes
@@ -81,6 +83,7 @@ public class UMLPToolPipelineSetup {
   GuiVarPipelineSetup guiVarPipelineSetup;
   UMLPFilePipelineSetup umlpFilePipelineSetup;
   GuiPipelineSetup guiPipelineSetup;
+  RTEDataPipelineSetup gUIRTEDataPipelineSetup;
 
   final Pipeline<UMLPPipelineData> main;
 
@@ -161,22 +164,29 @@ public class UMLPToolPipelineSetup {
     });
 
     // Register the 4 alternatives: CD2GUI, GuiVar, UMLP or GUI
-
-    main.register(new IfElseOp<>(
-        data -> CD2GUI.isSelected(data.cmd), // if
-        (cd2Gui = new Pipeline<>()), // then
-        // else:
-        new IfElseOp<>(data -> GUIVariability.isSelected(data.cmd), //if
-            (guiVar = new Pipeline<>()), // then
-            // else:
-            new IfElseOp<>(data -> data.inputFile.getName().endsWith(".umlp"), //if
-                (umlp = new Pipeline<>()), // then
-                new IfElseOp<>(data -> data.inputFile.getName().endsWith(".gui"),
-                    (gui = new Pipeline<>()), // then
-                    data -> {Log.error("Unhandled input file"); return true;}
+    main.register(
+        new IfElseOp<>(data -> GUIRTETypes.isSelected(data.cmd), // if
+            (guiRTETypes = new Pipeline<>()), // then
+            new IfElseOp<>(
+                data -> CD2GUI.isSelected(data.cmd), // if
+                (cd2Gui = new Pipeline<>()), // then
+                // else:
+                new IfElseOp<>(data -> GUIVariability.isSelected(data.cmd), //if
+                    (guiVar = new Pipeline<>()), // then
+                    // else:
+                    new IfElseOp<>(data -> data.inputFile.getName().endsWith(".umlp"), //if
+                        (umlp = new Pipeline<>()), // then
+                        new IfElseOp<>(data -> data.inputFile.getName().endsWith(".gui"),
+                            (gui = new Pipeline<>()), // then
+                            data -> {
+                              Log.error("Unhandled input file");
+                              return true;
+                            }
+                        )
+                    )
                 )
             )
-        ))
+        )
     );
 
     // Next, actually populate the individual pipelines of the options
@@ -190,6 +200,9 @@ public class UMLPToolPipelineSetup {
 
     guiPipelineSetup = new GuiPipelineSetup();
     guiPipelineSetup.createGui(this);
+
+    gUIRTEDataPipelineSetup = new RTEDataPipelineSetup();
+    gUIRTEDataPipelineSetup.createGUIRTETypes(this);
 
     // Finally (for every option), close report managers
     main.addFinally(data -> {
