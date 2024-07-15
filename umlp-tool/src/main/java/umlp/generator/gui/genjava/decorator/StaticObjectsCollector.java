@@ -317,6 +317,7 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
     Set<String> importSet = new HashSet<>();
     List<ASTCDParameter> params = new ArrayList<>();
     for (VariableSymbol vs : util.findIterationItemSymbols(scope)) {
+      System.out.println(vs.getType().print());
       ASTMCType paramType = createTypeAndAddImports(vs.getType(), importSet);
       params.add(CDParameterFacade.getInstance().createParameter(paramType, vs.getName()));
     }
@@ -392,27 +393,20 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
       // import hardy.Domain.Person;
       // the resolved type is `hardy.Person`
       // but the CD Generator produces `hardy.domain.Person`, so calculate that instead
-      IBasicSymbolsScope scope = ste.getTypeInfo().getEnclosingScope();
-      if (scope.isPresentName()
-          && util.getMainDomainModelSimpleName().isPresent()
-          && scope.getName().equals(util.getMainDomainModelSimpleName().get())) {
+      //IBasicSymbolsScope scope = ste.getTypeInfo().getEnclosingScope();
 
-        String qType = ste.asObjectType().printFullName();
-        String type = ste.asObjectType().print();
+      String qType = ste.asObjectType().printFullName();
+      String type = ste.asObjectType().print();
 
-        List<String> parts = new ArrayList<>(Splitters.DOT.splitToList(qType));
-        if (parts.size() > 1) {
-          String domainPackage = parts.get(parts.size() - 2).toLowerCase();
-          parts.set(parts.size() - 2, domainPackage);
-          qType = Joiners.DOT.join(parts);
-        }
-        importSet.add(qType);
-        return MCTypeFacade.getInstance().createQualifiedType(type);
+      List<String> parts = new ArrayList<>(Splitters.DOT.splitToList(qType));
+      if (parts.size() > 1) {
+        String domainPackage = parts.get(parts.size() - 2).toLowerCase();
+        parts.set(parts.size() - 2, domainPackage);
+        qType = Joiners.DOT.join(parts);
       }
-      else {
-        importSet.add(ste.printFullName());
-        return MCTypeFacade.getInstance().createQualifiedType(ste.print());
-      }
+      importSet.add(qType);
+      return MCTypeFacade.getInstance().createQualifiedType(type);
+
     }
     else if (ste.isGenericType()) {
       SymTypeOfGenerics stog = ste.asGenericType();
