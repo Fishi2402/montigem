@@ -2,6 +2,7 @@ package umlp.generator.rte.data;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.facade.CDModifier;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameterBuilder;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
@@ -227,11 +228,17 @@ public class RTEDeSerDecorator extends AbstractDecorator {
       jsonStr = GenService.calculateJSon(attr.getSymbol().getType());
       useDeSer = supportedDesers.contains(attr.getSymbol().getPackageName().toLowerCase()+"."
           +attr.getSymbol().getType().print());
+      innerTypeFull =type;
+      type = getMCTypeFacade().createBasicGenericTypeOf("List",
+          GenService.createType(attr.getSymbol().getType()).printType()).printType();
     } else  if (GenService.isOptional(attr)) {
       isOptional = true;
       jsonStr = GenService.calculateJSon(attr.getSymbol().getType());
       useDeSer = supportedDesers.contains(attr.getSymbol().getPackageName().toLowerCase()+"."
           +attr.getSymbol().getType().print());
+      innerTypeFull =type;
+      type = getMCTypeFacade().createBasicGenericTypeOf("Optional",
+          GenService.createType(attr.getSymbol().getType()).printType()).printType();
     } else {
       jsonStr = GenService.calculateJSon(attr.getSymbol().getType());
       useDeSer = supportedDesers.contains(attr.getSymbol().getPackageName().toLowerCase()+"."+type);

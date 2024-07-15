@@ -136,28 +136,20 @@ public class RTEBuilderDecorator extends AbstractDecorator {
           false);
     }
     for (ASTCDAssocSide assoc : assocList) {
-      getCD4C().addMethod(builderClass, "umlp.builder.CheckAssoc",
-          assoc.getName(), domainClass.getName(),
-          !(GenService.isOptional(assoc) || GenService.isList(assoc)), GenService.isList(assoc));
-      if (GenService.isList(assoc)) {
-        if (!GenService.isSymbolDerived(assoc)) {
-          for(String tmplt : List.of(
-              "umlp.builder.AssocAdd",
-              "umlp.builder.AssocList"
-          )){
-            getCD4C().addMethod(builderClass, tmplt,
-                assoc.getName(), GenService.getType(assoc.getSymbol().getType()),
-                getClassName(domainClass.getName()));
-          }
-        }
-      } else {
-        getCD4C().addMethod(builderClass, "umlp.builder.AssocOne",
-            assoc.getName(), GenService.getType(assoc.getSymbol().getType()),
-            getClassName(domainClass.getName()));
-        getCD4C().addMethod(builderClass, "umlp.builder.AssocOneGem",
-            assoc.getName(), GenService.getType(assoc.getSymbol().getType()),
-            getClassName(domainClass.getName()));
+      boolean isList = GenService.isList(assoc);
+      String type = GenService.getType(assoc.getSymbol().getType());
+      String fullType = type;
+      if(GenService.isList(assoc)) {
+        fullType = getMCTypeFacade().createBasicGenericTypeOf("List",type).printType();
+      } else if(GenService.isOptional(assoc)) {
+        fullType = getMCTypeFacade().createBasicGenericTypeOf("Optional",type).printType();
       }
+      getCD4C().addMethod(builderClass, "umlp.builder.Attr",
+          assoc.getName(), fullType,
+          getClassName(domainClass.getName()), isList);
+      getCD4C().addMethod(builderClass, "umlp.builder.CheckAttr",
+          assoc.getName(), domainClass.getName(),
+          false);
     }
   }
 
