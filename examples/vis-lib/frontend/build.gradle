@@ -6,11 +6,11 @@ plugins {
 }
 
 dependencies {
-  implementation project(":examples:dtcockpit-jsweet:backend")
+  implementation project(":examples:vis-lib:backend")
   implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version
 
-  testImplementation project(":examples:vis-lib:backend")
   testImplementation 'com.microsoft.playwright:playwright:1.44.0'
+  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version
 }
 
 node {

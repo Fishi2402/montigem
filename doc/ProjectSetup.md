@@ -8,7 +8,7 @@ Each exemplary project has the following folder structure:
 - Frontend
 - Models
 
-## 1. Models
+## 1. Models
 
 All models are located in the `models` directory. 
 The domain model (for example, `Dtcockpit.umlp`) is placed in the main directory, and it is recommended to put all GUI models in the `gui` subdirectory.
@@ -21,7 +21,7 @@ For example, the import statement in the GUI model for the class `User` defined 
 ```java
 import Dtcockpit.User;
 ```
-## 2. HWC and configuration
+## 2. HWC and configuration
 
 The folders *backend/src/main/java* **(BE)** und *frontend/src/app* **(FE)** are where you can override - if necessary - all generated classes using the TOP mechanism.   
 Most commonly, it's domain classes and commands that are overridden. It can also be deserializers or managers or something else, depending on the project's requirements and design.
@@ -50,7 +50,7 @@ paths:
 - examples/dtcockpit/frontend/build/frontendGen/.dockerignore
 ```
 
-## 3. BE
+## 3. BE
 
 BE requires specific configuration files, which must be placed in the *backend/src/main/resources* directory.  
 The configuration includes `database.properties` and several other optional files such as `application.properties`, `logback.xml`.
@@ -123,7 +123,7 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
 
 ```
 
-## 4. FE
+## 4. FE
 
 In the FE source directory, besides generated domain classes, can also generated components be overridden as well, for example if GUI actions must be defined.  
 Here is an example for the `UserCreateComponent.ts`:
@@ -179,14 +179,26 @@ Frontend may additionally include `tsconfig.json` file alongside `build.gradle` 
 This file provides a hint for IDEs to look for the root TypeScript configuration file in the build folder.
 
 ### 4.1 E2E-Tests
+In the backend, additional playwright e2e test infrastructure can be generated.
+Only works if spring is selected.
+
+```gradle
+generateUmlpBackend {
+  ...
+  useSpring.set(true)
+  usePlaywright.set(true)
+  ...
+}
+```
 
 Playwright end-to-end tests can be put into the `src/java/test` folder of the frontend module. 
-Additionally, a dependency on playwright and the backend is needed:
+Additionally, a dependency on playwright, spring-boot-starter-test, and the backend is needed:
 
 ```groovy
 dependencies {
   implementation project(":backend")
   testImplementation 'com.microsoft.playwright:playwright:1.44.0'
+  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version
 }
 
 test {
@@ -195,25 +207,30 @@ test {
 }
 ```
 
-## 5. Backend-e2e
+Also make sure, that `app.component.ts` sets the variable `window.websocket_connected = true`, once the CommandManager is initialized:
+```typescript
+constructor() {
+  ...
+  CommandManager.initMe(cmdManager);
+  // Add:
+  (<any>window).websocket_connected = true;
+}
+```
 
-End-to-end tests are written as Java-UnitTests and require the playwright dependency:
-
-
-## 6. How to start the application
+## 5. How to start the application
 
 The project is built using Gradle.  
 
 - To start the local server (using the DTCockpit project as an example), use the following command:
 ```
-gradle :examples:dtcockpit:backend:runServer
+gradle :examples:dtcockpit:backend:runServer
 ```
 - To start the client, use the following command:
 ```
-gradle :examples:dtcockpit:frontend:runApp
+gradle :examples:dtcockpit:frontend:runApp
 ```
 
 Before starting the client, it is advisable to stop any running Node processes. Use the following command:
 ```
-taskkill /f /im node.exe ;  gradle:examples:dtcockpit:frontend:runApp
+taskkill /f /im node.exe ;  gradle:examples:dtcockpit:frontend:runApp
 ```
