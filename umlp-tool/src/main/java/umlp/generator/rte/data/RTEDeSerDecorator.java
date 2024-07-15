@@ -3,6 +3,7 @@ package umlp.generator.rte.data;
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDParameterBuilder;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDAttributeTOP;
@@ -79,22 +80,55 @@ public class RTEDeSerDecorator extends AbstractDecorator {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(),
         getMCTypeFacade().createBasicGenericTypeOf("Map", "String", "JsonDeSer"),
         "getDeSerMap");
-    getCD4C().addMethod(deSerRepo,getDeSerMapMethod(), classes.stream().map(c -> c.getSymbol().getPackageName().toLowerCase()+"."+c.getName()).collect(Collectors.toList()));
     glex.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return this._"+attr.getName()));
 
-    ASTCDMethod getInstance = getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), deSerRepo.getName(), "getInstance");
+
+    List<String> classNames = classes.stream().map(c -> c.getSymbol().getPackageName().toLowerCase()+"."+c.getName()).collect(Collectors.toList());
+
+    getCD4C().addMethod(deSerRepo,getDeSerMapMethod(), classNames);
+
     getCD4C().addMethod(deSerRepo, getInstaceMethod(), deSerRepo.getName());
+/*
+    ASTCDMethod staticSerialize = getCDMethodFacade().createMethod(PUBLIC_STATIC.build(),
+        getMCTypeFacade().createBasicGenericTypeOf("Optional", "String"),
+        "serialize",
+        getCDParameterFacade().createParameter("Object", "o"),
+        getCDParameterFacade().createParameter("String", "className"));
+    glex.replaceTemplate(EMPTY_BODY, staticSerialize, new StringHookPoint("return getInstance()._serialize(o, className);"));
+    deSerRepo.addCDMember(staticSerialize);
+
+    getCD4C().addMethod(deSerRepo, getObjectMapperSerialize());
+
+    ASTCDMethod staticDeserialize = getCDMethodFacade().createMethod(PUBLIC_STATIC.build(),
+        getMCTypeFacade().createBasicGenericTypeOf("Optional", "T"),
+        "deserialize",
+        getCDParameterFacade().createParameter("String", "s"),
+        getCDParameterFacade().createParameter("String", "className"));
+    glex.replaceTemplate(EMPTY_BODY, staticDeserialize, new StringHookPoint("return getInstance()._deserialize(s, className);"));
+    deSerRepo.addCDMember(staticDeserialize);
+
+    getCD4C().addMethod(deSerRepo, getObjectMapperDeserialize(), classNames);*/
 
     glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint(" = new HashMap<String, JsonDeSer>();"));
 
     getCD4C().addImport(deSerRepo, "rte.deser.DeSerRepository");
     getCD4C().addImport(deSerRepo, "umlp.backendrte.command.JsonDeSer");
+    getCD4C().addImport(deSerRepo, "de.se_rwth.commons.logging.Log");
+    getCD4C().addImport(deSerRepo, "umlp.backendrte.common.BaseClassObjectMapper");
 
     return deSerRepo;
   }
 
   protected String getDeSerMapMethod() {
     return "rte.deser.GetDeSerMap";
+  }
+
+  protected String getObjectMapperSerialize() {
+    return "rte.deser.ObjectMapperSerialize";
+  }
+
+  protected String getObjectMapperDeserialize() {
+    return "rte.deser.ObjectMapperDeserialize";
   }
 
   protected String getInstaceMethod() {
@@ -138,8 +172,8 @@ public class RTEDeSerDecorator extends AbstractDecorator {
     );
 
     getCD4C().addMethod(deSer, getFromJsonTemplate(), originalClassName);
-
     addImports(cdClass, deSer);
+    getCD4C().addImport(deSer, "umlp.backendrte.common.BaseClassObjectMapper");
     assocs.forEach(assocSide -> addCorrectMangerImportForTargetType(origCD.getCDDefinition(), deSer, assocSide.getSymbol().getType()));
 
     return deSer;
@@ -171,10 +205,10 @@ public class RTEDeSerDecorator extends AbstractDecorator {
 
     getCD4C().addMethod(deSer, getSerializeSimpleFieldTemplate(),
         originalClassName, attr, type, jsonStr, isList, innerTypeFull, isOptional,
-        useDeSer, cdName + BaseClassObjectMapperDecorator.SUFFIX);
+        useDeSer, BaseClassObjectMapperDecorator.SUFFIX);
     getCD4C().addMethod(deSer, getDeserializeSimpleFieldTemplate(),
         originalClassName, attr, type, jsonStr, isList, innerTypeFull, isOptional,
-        useDeSer, cdName + BaseClassObjectMapperDecorator.SUFFIX);
+        useDeSer, BaseClassObjectMapperDecorator.SUFFIX);
 
     if (makeAbstract) {
       deSer.setModifier(PUBLIC_ABSTRACT.build());
@@ -207,10 +241,10 @@ public class RTEDeSerDecorator extends AbstractDecorator {
 
     getCD4C().addMethod(deSer, getSerializeSimpleFieldTemplate(),
         originalClassName, attr, type, jsonStr, isList, innerTypeFull, isOptional,
-        useDeSer, cdName + BaseClassObjectMapperDecorator.SUFFIX);
+        useDeSer, BaseClassObjectMapperDecorator.SUFFIX);
     getCD4C().addMethod(deSer, getDeserializeSimpleFieldTemplate(),
         originalClassName, attr, type, jsonStr, isList, innerTypeFull, isOptional,
-        useDeSer, cdName + BaseClassObjectMapperDecorator.SUFFIX);
+        useDeSer, BaseClassObjectMapperDecorator.SUFFIX);
 
     if (makeAbstract) {
       deSer.setModifier(PUBLIC_ABSTRACT.build());

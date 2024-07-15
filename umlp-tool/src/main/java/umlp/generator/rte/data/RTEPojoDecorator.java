@@ -122,9 +122,6 @@ public class RTEPojoDecorator extends DomainTypeDecorator {
     //Build class
     ASTCDClass clazz = builder.build();
 
-    // Constructors
-    getCD4C().addConstructor(clazz, getConstructorTemplate(), domainClass.getName());
-
     // Attributes
     DomainTypeDecorator.AttributesTuple attributes = getAllAttributes(domainClass, false, origCD);
 
@@ -149,6 +146,12 @@ public class RTEPojoDecorator extends DomainTypeDecorator {
     createGetterSetterForAttrs(domainClass, clazz, derivedAttribFields, false);
 
     createGetterSetterForAttrs(domainClass, clazz,  attributes.attrAssocs, false);
+
+    // Constructors
+    getCD4C().addConstructor(clazz, getConstructorTemplate(), domainClass.getName(), nonDerivedAttrs);
+
+    // Constructors
+    getCD4C().addConstructor(clazz, getBuilderConstructorTemplate(), domainClass.getName());
 
     // Imports
     addExtendedImport(origCD, clazz);
@@ -180,6 +183,10 @@ public class RTEPojoDecorator extends DomainTypeDecorator {
   }
 
   protected String getConstructorTemplate() {
+    return "rte.data.Constructor";
+  }
+
+  protected String getBuilderConstructorTemplate() {
     return "umlp.domain.Constructor";
   }
 

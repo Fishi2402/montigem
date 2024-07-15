@@ -6,7 +6,9 @@ package umlp.backendrte.common;
 import de.se_rwth.commons.logging.Log;
 import umlp.backendrte.command.DeSer;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -38,6 +40,12 @@ public class BaseClassObjectMapper {
     baseDeSers.put("java.time.LocalDate", new LocalDateDeSer());
     baseDeSers.put("java.time.LocalDateTime", new LocalDateTimeDeSer());
     baseDeSers.put("java.time.LocalTime", new LocalTimeDeSer());
+  }
+
+  public static void addDeSers(Collection<Map.Entry<String, DeSer>> addedDeSers) {
+    addedDeSers.forEach(deser -> {
+      getInstance().baseDeSers.put(deser.getKey(), deser.getValue());
+    });
   }
 
   public static Optional<String> serialize(Object o, String className) {
