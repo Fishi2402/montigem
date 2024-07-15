@@ -133,7 +133,7 @@ public class RTEBuilderDecorator extends AbstractDecorator {
           getClassName(domainClass.getName()), GenService.isList(attribute));
       getCD4C().addMethod(builderClass, "umlp.builder.CheckAttr",
           attribute.getName(), domainClass.getName(),
-          !GenService.isList(attribute) && !GenService.isOptional(attribute));
+          false);
     }
     for (ASTCDAssocSide assoc : assocList) {
       getCD4C().addMethod(builderClass, "umlp.builder.CheckAssoc",

@@ -149,9 +149,9 @@ public class RTEPojoDecorator extends DomainTypeDecorator {
 
     // Constructors
     getCD4C().addConstructor(clazz, getConstructorTemplate(), domainClass.getName(), nonDerivedAttrs);
-
-    // Constructors
     getCD4C().addConstructor(clazz, getBuilderConstructorTemplate(), domainClass.getName());
+
+    createCheckMethods(domainClass, clazz);
 
     // Imports
     addExtendedImport(origCD, clazz);
@@ -285,5 +285,33 @@ public class RTEPojoDecorator extends DomainTypeDecorator {
       attrList.add(attribute);
     }
     return attrList;
+  }
+
+  protected void createCheckMethods(ASTCDClass domainClass, ASTCDClass clazz) {
+    for (ASTCDAttribute attr : CDSymbolTables.getAttributesInHierarchy(domainClass)
+        .stream().filter(GenService::isVisibleNotDerived).collect(Collectors.toList())) {
+      getCD4C().addMethod(clazz, "umlp.domain.Check",
+          domainClass.getName(), attr.getName(),
+          false,
+          false
+      );
+    }
+    for (ASTCDAssocSide assoc : CDSymbolTables.getAssociationsInHierarchy(domainClass)) {
+      if (GenService.isAStLeastOne(assoc)) {
+        getCD4C().addMethod(clazz, "umlp.domain.CheckCard",
+            domainClass.getName(),
+            assoc.getName(),
+            false,
+            GenService.isList(assoc)
+        );
+      } else {
+        getCD4C().addMethod(clazz, "umlp.domain.Check",
+            domainClass.getName(),
+            assoc.getName(),
+            false,
+            GenService.isList(assoc)
+        );
+      }
+    }
   }
 }

@@ -18,8 +18,7 @@ if (!buildFinished) {
       </#if>
   </#list>
 
-}
-buildFinished = true;
+  buildFinished = true;
 }
 
 return Optional.of(this);
