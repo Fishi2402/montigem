@@ -50,6 +50,9 @@ task generateGuiComponentJava(type: GUITypes2JavaTask) {
   outputDir = project.layout.buildDirectory.dir("guiComponentTypes")
 }
 
+// Let RTE assemble depend on the generation
+assemble.dependsOn generateGuiComponentJava
+
 //task guiComponentTypesJar(type: Jar) {
 //  from generateGuiComponentPOJOs.output
 //  archiveClassifier = "guiComponentTypes"
