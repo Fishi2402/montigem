@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package dtcockpit;
 
-import mc.fenix.input.GemTextInputTypes.GemTextInputValidity;
+import mc.fenix.input.gemtextinputtypes.GemTextInputValidity;
 
 public class User extends UserTOP {
 
