@@ -169,17 +169,9 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
     // handle associations
     for (ASTCDAssocSide assocSide : associations) {
       String type = assocSide.getSymbol().getType().print();
-      ASTMCType mcType;
-      if(GenService.isList(assocSide)) {
-        mcType = getMCTypeFacade().createBasicGenericTypeOf("List", type);
-      } else if(GenService.isOptional(assocSide)) {
-        mcType = getMCTypeFacade().createBasicGenericTypeOf("Optional", type);
-      } else {
-        mcType = assocSide.getMCQualifiedType();
-      }
       ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(
           PROTECTED.build(),
-          mcType,
+          getMCTypeFacade().createBasicGenericTypeOf(GenService.isList(assocSide) ? "GemList" : "Gem", type),
           GenService.createName(assocSide.getName())
       );
       if (GenService.isSymbolDerived(assocSide)) {
