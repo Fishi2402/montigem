@@ -75,5 +75,18 @@ task run {
 
 test {
   dependsOn buildApp
-  useJUnitPlatform()
+  useJUnitPlatform(){
+    excludeTags "SlowTest"
+  }
 }
+
+tasks.register("slowtest", Test) {
+  testLogging {
+    events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
+  }
+  useJUnitPlatform {
+    includeTags "SlowTest"
+  }
+  shouldRunAfter test
+}
+
