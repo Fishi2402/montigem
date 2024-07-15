@@ -16,7 +16,6 @@ import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
@@ -183,6 +182,7 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
           addStereotype(attribute.getModifier(), STEREOTYPE_OTHERSIDE_ISLIST, "");
         }
       }
+      addStereotype(attribute.getModifier(), STEREOTYPE_MANAGER, getCorrectManager(assocSide));
       attrList.add(attribute);
     }
     return attrList;
