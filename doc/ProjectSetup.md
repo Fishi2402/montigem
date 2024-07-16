@@ -213,7 +213,7 @@ test {
 // backend/build.gradle
 
 dependencies {
-  compileOnly group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version
+  compileOnlyApi group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version
 }
 ```
 
