@@ -195,6 +195,8 @@ Playwright end-to-end tests can be put into the `src/java/test` folder of the fr
 Additionally, a dependency on playwright, spring-boot-starter-test, and the backend is needed:
 
 ```groovy
+// frontend/build.gradle
+
 dependencies {
   implementation project(":backend")
   testImplementation 'com.microsoft.playwright:playwright:1.44.0'
@@ -207,8 +209,18 @@ test {
 }
 ```
 
+```groovy
+// backend/build.gradle
+
+dependencies {
+  compileOnly group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version
+}
+```
+
 Also make sure, that `app.component.ts` sets the variable `window.websocket_connected = true`, once the CommandManager is initialized:
 ```typescript
+// frontend/config/src/app/app.component.ts
+
 constructor() {
   ...
   CommandManager.initMe(cmdManager);
