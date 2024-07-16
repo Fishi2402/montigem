@@ -244,7 +244,7 @@ public abstract class AbstractPlaywrightE2ETest {
    * @see #getNodeJSDirectory()
    */
   protected String getNpmPath() throws IOException, NoSuchElementException {
-    try (var stream = Files.walk(getNodeJSDirectory().toPath())) {
+    try (var stream = Files.walk(getNodeJSDirectory().toPath().toAbsolutePath().normalize())) {
       return stream.filter(p -> p.toFile()
               .getName()
               .equals(environmentIsWindows() ? "npm.cmd" : "npm"))
