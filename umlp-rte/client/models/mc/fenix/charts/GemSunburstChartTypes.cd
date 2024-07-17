@@ -14,7 +14,7 @@ classdiagram GemSunburstChartTypes {
   }
 
   public class GemSDNshort {
-    List c;
+    List<String> c;
     List<GemSDNshort> sN;
   }
 

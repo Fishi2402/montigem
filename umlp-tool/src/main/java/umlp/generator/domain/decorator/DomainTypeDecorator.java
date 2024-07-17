@@ -223,12 +223,12 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
     return "umlp.domain.DeepEquals";
   }
 
-  protected static class AttributesTuple {
-    final List<ASTCDAttribute> attrFields;
-    final List<ASTCDAttribute> attrAssocs;
-    final List<ASTCDAttribute> attrList;
+  public static class AttributesTuple {
+    public final List<ASTCDAttribute> attrFields;
+    public final List<ASTCDAttribute> attrAssocs;
+    public final List<ASTCDAttribute> attrList;
 
-    protected AttributesTuple(List<ASTCDAttribute> attrFields, List<ASTCDAttribute> attrAssocs) {
+    public AttributesTuple(List<ASTCDAttribute> attrFields, List<ASTCDAttribute> attrAssocs) {
       this.attrFields = attrFields;
       this.attrAssocs = attrAssocs;
       attrList = new ArrayList<>(attrAssocs);

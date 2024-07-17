@@ -12,6 +12,8 @@ public enum UMLPToolOptions {
 
   CD2GUI("cdt", "cdtogui", "runs cd2gui to generate gui files from the input"),
 
+  GUIRTETypes("rte", "rteTypes", "creates simple Java Types from GUI RTE types"),
+
   GUIVariability("gv", "guivariability", "Alterates guiFiles from the gp options with the guivariability files there and writes them to the outDir"),
 
   // with one arg

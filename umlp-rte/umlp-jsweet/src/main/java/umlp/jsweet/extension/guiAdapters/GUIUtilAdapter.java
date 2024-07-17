@@ -6,6 +6,7 @@ import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.CompilationUnitElement;
 import org.jsweet.transpiler.model.ImportElement;
 import org.jsweet.transpiler.model.MethodInvocationElement;
+import org.jsweet.transpiler.model.NewClassElement;
 import umlp.jsweet.extension.UMLPAbstractAdapter;
 
 import javax.lang.model.element.PackageElement;
@@ -79,5 +80,22 @@ public class GUIUtilAdapter extends UMLPAbstractAdapter {
       }
     }
     return super.getModuleImportDescriptor(currentCompilationUnit, importedName, importedClass);
+  }
+
+  // TODO Migrate to new RTE TS Types Adapter
+
+  @Override
+  public boolean substituteNewClass(NewClassElement newClass) {
+    switch (newClass.getTypeAsElement().toString()) {
+      case "mc.fenix.input.gemtextinputtypes.GemTextInputValidity":
+        if (newClass.getArgumentCount() == 2) {
+          print("{status: ").print(newClass.getArgument(0)).print(", message: ").print(newClass.getArgument(1)).print("}");
+          return true;
+        } else if (newClass.getArgumentCount() == 0) {
+          print("{status: null, message: null}");
+          return true;
+      }
+    }
+    return super.substituteNewClass(newClass);
   }
 }
