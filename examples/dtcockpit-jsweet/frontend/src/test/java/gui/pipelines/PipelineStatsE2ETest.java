@@ -3,8 +3,8 @@ package gui.pipelines;
 import dtcockpit.DtcockpitManager;
 import dtcockpit.Project;
 import dtcockpit.test_infrastructure.DtcockpitMockTestSetup;
-import mc.fenix.charts.GemBarChartTypes.GemBarChartData;
-import mc.fenix.charts.GemBarChartTypes.GemBarChartEntry;
+import mc.fenix.charts.gembarcharttypes.GemBarChartData;
+import mc.fenix.charts.gembarcharttypes.GemBarChartEntry;
 import org.junit.jupiter.api.Test;
 import umlp.backendrte.test_infrastructure.ClientSetup;
 
@@ -103,31 +103,31 @@ public class PipelineStatsE2ETest extends DtcockpitMockTestSetup {
     PipelineStats pageUnderTest = new PipelineStats(projectInClient);
     GemBarChartData data = pageUnderTest.getBarChartForPipelineRunsData();
 
-    assertEquals(List.of(date1Str, date2Str, date3Str), data.getLabels());
+    assertEquals(List.of(date1Str, date2Str, date3Str), data.getLabelsList());
 
-    List<GemBarChartEntry> entries = data.getEntries();
+    List<GemBarChartEntry> entries = data.getEntriesList();
     assertEquals(2, entries.size());
 
     GemBarChartEntry entry1 = entries.get(0);
-    String optLabel1 = entry1.getLabel();
-    assertTrue(entry1.isPresentLabel());
-    assertEquals("Unsuccessful", optLabel1);
-    assertTrue(!entry1.isPresentStack());
-    assertEquals(List.of(1, 0, 1), entry1.getData());
-    String optBackgroundColor1 = entry1.getBackgroundColor();
-    assertTrue(entry1.isPresentBackgroundColor());
-    assertEquals("#cc071e", optBackgroundColor1);
-    assertTrue(!entry1.isPresentHoverBackgroundColor());
+    Optional<String> optLabel1 = entry1.getLabel();
+    assertTrue(entry1.getLabel().isPresent());
+    assertEquals("Unsuccessful", optLabel1.get());
+    assertTrue(entry1.getStack().isEmpty());
+    assertEquals(List.of(1, 0, 1), entry1.getDataList());
+    Optional<String> optBackgroundColor1 = entry1.getBackgroundColor();
+    assertTrue(entry1.getBackgroundColor().isPresent());
+    assertEquals("#cc071e", optBackgroundColor1.get());
+    assertTrue(entry1.getHoverBackgroundColor().isEmpty());
 
     GemBarChartEntry entry2 = entries.get(1);
-    String optLabel2 = entry2.getLabel();
-    assertTrue(entry2.isPresentBackgroundColor());
-    assertEquals("Successful", optLabel2);
-    assertTrue(!entry2.isPresentStack());
-    assertEquals(List.of(2, 1, 0), entry2.getData());
-    String optBackgroundColor2 = entry2.getBackgroundColor();
-    assertTrue(entry2.isPresentBackgroundColor());
-    assertEquals("#57ab27", optBackgroundColor2);
-    assertTrue(!entry2.isPresentHoverBackgroundColor());
+    Optional<String> optLabel2 = entry2.getLabel();
+    assertTrue(entry2.getBackgroundColor().isPresent());
+    assertEquals("Successful", optLabel2.get());
+    assertTrue(entry2.getStack().isEmpty());
+    assertEquals(List.of(2, 1, 0), entry2.getDataList());
+    Optional<String> optBackgroundColor2 = entry2.getBackgroundColor();
+    assertTrue(entry2.getBackgroundColor().isPresent());
+    assertEquals("#57ab27", optBackgroundColor2.get());
+    assertTrue(entry2.getHoverBackgroundColor().isEmpty());
   }
 }
