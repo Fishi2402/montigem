@@ -55,7 +55,7 @@ publishing {
   }
 }
 
-tasks.register('printStuff')(){
+tasks.register('printStuff'){
   doLast{
     println("Files")
     sourceSets.moduleGenTime.output.files.each {

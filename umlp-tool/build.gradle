@@ -131,7 +131,9 @@ compileJava {
   options.warnings = false
 }
 
-tasks.register('autoconfigure', AutoconfigureTask) {
+//can not be registered lazy because then everything breaks
+//noinspection ConfigurationAvoidance
+task autoconfigure(type: AutoconfigureTask) {
   mclsgAggregation {
     languageAggregationName = "UMLPWithGUI"
     targetPackage = "umlp_with_gui"
