@@ -186,6 +186,15 @@ export type RawEdgeAttributes = Attributes &
   RawEdgeSpecificAttributes;
 
 /**
+ * Graph representation.
+ * Aggregation of nodes and edges.
+ */
+export type Graph = {
+  nodes: GraphNode[];
+  edges: GraphEdge[];
+}
+
+/**
  * Graph node representation.
  *
  * @remarks
