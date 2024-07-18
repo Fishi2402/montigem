@@ -91,7 +91,7 @@ repositories { // required to resolve the ecj dependency, including the whole ch
 
 build.dependsOn(gradle.includedBuild("umlp-tool").task(":build"))
 
-task umlp_check_report
+tasks.register('umlp_check_report')
 build.dependsOn(umlp_check_report)
 
 /*subprojects {

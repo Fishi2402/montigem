@@ -70,11 +70,11 @@ generateUmlpBackend {
   symbolOutDir = file("${project.buildDir}/symbols")
 }
 
-task runServer {
+tasks.register('runServer') {
   dependsOn(bootRun)
 }
 
-task genTestGUI(type: UMLPGuiGenTask) {
+tasks.register('genTestGUI', UMLPGuiGenTask) {
   dependsOn(generateUmlpBackend)
   input = file("../models")
   outputDir = file("$project.buildDir/testgui")

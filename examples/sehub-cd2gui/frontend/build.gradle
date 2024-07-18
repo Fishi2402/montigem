@@ -18,12 +18,12 @@ dependencies {
   guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
 }
 
-task generateNPMAuth(type: NPMAuthCreate){
+tasks.register('generateNPMAuth', NPMAuthCreate){
   npmrcFile = file("config/.npmrc")
 }
 
 // Add Frontend-Config Files from UMLP-Tool Resources.
-task frontendSetup(type: FrontendSetup){
+tasks.register('frontendSetup', FrontendSetup){
   input = file("config/")   // Can be used to add or replace files
   dependsOn(generateNPMAuth)
   output = layout.buildDir.dir("frontendGen/")
@@ -60,7 +60,7 @@ tasks.register('generateCDTOGUI', UMLPCdToGuiTask) {
   outputDir = layout.buildDirectory.dir("cd2gui")
 }
 
-task guiVariability(type: GuiVariabilityHandlerTask) {
+tasks.register('guiVariability', GuiVariabilityHandlerTask) {
   if(useCD2GUI) {
     input.from(generateCDTOGUI.getOutputDir())
   }
@@ -68,21 +68,21 @@ task guiVariability(type: GuiVariabilityHandlerTask) {
   outputDir = layout.buildDirectory.dir("guiVariability")
 }
 
-task genDomain(type: UMLPFrontendTask) {
+tasks.register('genDomain', UMLPFrontendTask) {
   dependsOn(frontendSetup)
   input = file("../models/Sehub.umlp")
   outputDir = frontendSetup.getOutput().dir("build/appdomain")
   hwcDir = file("src/app/")
 }
 
-task genDomainSymbols(type: UMLPSymbolsTask) {
+tasks.register('genDomainSymbols', UMLPSymbolsTask) {
   dependsOn(frontendSetup)
   input = layout.projectDirectory.dir("../models")
   symbolOutDir = file("${project.buildDir}/symbols")
   outputDir = file("${project.buildDir}/symbols")
 }
 
-task genGUI(type: UMLPGuiGenTask) {
+tasks.register('genGUI', UMLPGuiGenTask) {
   dependsOn(genDomain, guiVariability, genDomainSymbols)
   input = file(guiVariability.getOutputDir().dir("gui"))
   outputDir = frontendSetup.getOutput().dir("build/appgui")
@@ -124,20 +124,20 @@ def prebuildTasks = [
     npmInstall, genGUI2
 ]
 
-task buildApp(type: NpxTask) {
+tasks.register('buildApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["build"]
 }
 assemble.dependsOn(buildApp)
 
-task testApp(type: NpxTask) {
+tasks.register('testApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["test"]
 }
 
-task runApp(type: NpxTask) {
+tasks.register('runApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["serve"]

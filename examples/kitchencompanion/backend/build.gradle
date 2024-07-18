@@ -80,13 +80,13 @@ generateUmlpBackend {
   useShell.set(true)
 }
 
-task runServer {
+tasks.register('runServer') {
   dependsOn(bootRun {
     systemProperty "spring.shell.interactive.enabled", "false"
   })
 }
 
-task genTestGUI(type: UMLPGuiGenTask) {
+tasks.register('genTestGUI', UMLPGuiGenTask) {
   dependsOn(generateUmlpBackend, tasks.getByPath(":umlp-rte:client:createGuiSymbols"))
   input = file("../models")
   outputDir = file("$project.buildDir/testgui")
@@ -102,7 +102,7 @@ task genTestGUI(type: UMLPGuiGenTask) {
   guiCreateModels = ["gui.UserCreate"]
 }
 
-task genTestData(type: UMLPOD2DataTask) {
+tasks.register('genTestData', UMLPOD2DataTask) {
   dependsOn(generateUmlpBackend)
   input = file("../models/Example.od")
   outputDir = file("$project.buildDir/testdata")
