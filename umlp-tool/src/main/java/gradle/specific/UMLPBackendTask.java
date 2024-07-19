@@ -52,11 +52,16 @@ public abstract class UMLPBackendTask extends UMLPSingleFileTask {
   @org.gradle.api.tasks.Optional
   public abstract Property<Boolean> getUseShell();
 
+  @Input
+  @org.gradle.api.tasks.Optional
+  public abstract Property<Boolean> getUsePlaywright();
+
   public UMLPBackendTask() {
     super("UMLPBackendTask", null);
 
     getUseSpring().convention(false);
     getUseShell().convention(false);
+    getUsePlaywright().convention(false);
 
     getModelDir().from(getModules());
   }
@@ -115,6 +120,10 @@ public abstract class UMLPBackendTask extends UMLPSingleFileTask {
 
     if(this.getUseShell().get()){
       result.add("-" + UMLPToolOptions.USE_SHELL.getCMD());
+    }
+
+    if(this.getUsePlaywright().get()){
+      result.add("-" + UMLPToolOptions.USE_PLAYWRIGHT.getCMD());
     }
 
     return result;

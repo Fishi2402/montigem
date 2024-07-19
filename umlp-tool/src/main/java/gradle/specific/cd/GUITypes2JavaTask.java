@@ -3,31 +3,24 @@ package gradle.specific.cd;
 
 import de.monticore.gradle.common.AToolAction;
 import de.monticore.gradle.common.MCSingleFileTask;
-import de.monticore.gradle.internal.isolation.CachedIsolation;
-import de.se_rwth.commons.logging.Log;
 import gradle.common.UMLPAction;
+import gradle.common.UMLPSingleFileTask;
 import gradle.common.UMLPToolInvoker;
-import org.gradle.api.DefaultTask;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.tasks.InputDirectory;
-import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.PathSensitive;
 import org.gradle.api.tasks.PathSensitivity;
-import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
-public abstract class CD2POJOTask extends MCSingleFileTask {
+public abstract class GUITypes2JavaTask extends UMLPSingleFileTask {
 
-  public CD2POJOTask() {
-    super("CD2PojoTask", null);
+  public GUITypes2JavaTask() {
+    super("GUITypes2JavaTask", null);
   }
 
   @InputDirectory
@@ -50,40 +43,20 @@ public abstract class CD2POJOTask extends MCSingleFileTask {
       result.add(handlePath.apply(filePath));
     }
     {
-      result.add("--output");
+      result.add("--out");
       result.add(handlePath.apply(getOutputDir().get().getAsFile().toPath()));
     }
     if (!getHandWrittenCodeDir().isEmpty()) {
-      result.add("--handwrittencode");
+      result.add("-hwc");
       result.add(handlePath.apply(getHandWrittenCodeDir().getSingleFile().toPath()));
     }
     if (getTemplatePath().isPresent()) {
-      result.add("--template");
+      result.add("--templatePath");
       result.add(handlePath.apply(getTemplatePath().get().getAsFile().toPath()));
     }
 
-    result.add("-c2mc");
+    result.add("-rte");
 
     return result;
-  }
-
-
-  @Override
-  protected Consumer<String[]> getRunMethod() {
-    return CDToolInvoker::run;
-  }
-
-  @Override
-  protected Class<? extends AToolAction> getToolAction() {
-    return CDAction.class;
-  }
-
-  @Override
-  protected void checkParameters() throws IllegalArgumentException {
-    super.checkParameters();
-    if(this.getDebug().get()){
-      throw new IllegalArgumentException("Debugging is not allowed for this task. Further attempts will be logged.");
-      // Because the CDTool does not support the "-d" flag
-    }
   }
 }

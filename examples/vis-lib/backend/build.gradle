@@ -59,6 +59,7 @@ dependencies {
 
   implementation group: 'org.slf4j', name: 'slf4j-simple', version: "1.7.10"
 
+  compileOnly group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2', withoutSpringLogging
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2', withoutSpringLogging
@@ -71,6 +72,7 @@ generateUmlpBackend {
   symbolOutDir = file("${project.buildDir}/symbols")
   useSpring.set(true)
   useShell.set(true)
+  usePlaywright.set(true)
 
   /*
   debug = true

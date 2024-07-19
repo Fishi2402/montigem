@@ -1,0 +1,21 @@
+/* (c) https://github.com/MontiCore/monticore */
+package rte;
+import java.util.List;
+import java.util.Optional;
+
+classdiagram ExampleData {
+
+  public class GemBarChartData {
+    List<GemBarChartEntry> entries;
+    List<String> labels;
+  }
+
+  public class GemBarChartEntry {
+    Optional<String> label;
+    Optional<String> stack;
+    List<Integer> data;
+    Optional<String> backgroundColor;
+    Optional<String> hoverBackgroundColor;
+  }
+
+}

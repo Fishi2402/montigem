@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gradle.specific.merge;
 
-import de.monticore.gradle.common.CommonMCTask;
 import de.se_rwth.commons.logging.Log;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.Property;
@@ -14,8 +13,9 @@ import org.gradle.workers.WorkerExecutor;
 
 import javax.inject.Inject;
 
+// TODO: Move to MCAllFilesTask
 public abstract class UMLPMergeTask extends SourceTask {
-
+  final static String TASK_DEBUG = "de.monticore.gradle.debug";
   @OutputFile
   public abstract RegularFileProperty getOutputFile();
 
@@ -27,7 +27,7 @@ public abstract class UMLPMergeTask extends SourceTask {
   abstract public WorkerExecutor getWorkerExecutor();
 
   public UMLPMergeTask() {
-    CommonMCTask.setDebugConvention(getProject(), getDebug());
+    getDebug().convention(getProject().hasProperty(TASK_DEBUG) && "true".equals(getProject().property(TASK_DEBUG)));
   }
 
   @TaskAction

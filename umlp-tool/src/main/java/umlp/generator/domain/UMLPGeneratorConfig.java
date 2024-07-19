@@ -5,6 +5,7 @@ import org.apache.commons.cli.CommandLine;
 
 import static umlp.UMLPToolOptions.GUI_GEN_JSWEET;
 import static umlp.UMLPToolOptions.GUI_GEN_TS_FUNC;
+import static umlp.UMLPToolOptions.USE_PLAYWRIGHT;
 import static umlp.UMLPToolOptions.USE_SHELL;
 import static umlp.UMLPToolOptions.USE_SPRING;
 
@@ -15,6 +16,7 @@ public class UMLPGeneratorConfig {
   private static final String GUI_GEN_JSWEET_DEFAULT = "false";
 
   private boolean useSpring;
+  private boolean usePlaywright;
   private boolean useShell;
 
   private boolean generateTypescript = true;
@@ -37,6 +39,15 @@ public class UMLPGeneratorConfig {
 
   public UMLPGeneratorConfig setUseSpring(boolean useSpring) {
     this.useSpring = useSpring;
+    return this;
+  }
+
+  public boolean isUsePlaywright() {
+    return usePlaywright;
+  }
+
+  public UMLPGeneratorConfig setUsePlaywright(boolean usePlaywright){
+    this.usePlaywright = usePlaywright;
     return this;
   }
 
@@ -72,6 +83,7 @@ public class UMLPGeneratorConfig {
     return this.setUseSpring(USE_SPRING.isSelected(cmd))
         .setUseShell(USE_SHELL.isSelected(cmd))
         .setGenerateTypescript(Boolean.parseBoolean(GUI_GEN_TS_FUNC.getValue(cmd, GUI_GEN_TS_FUNC_DEFAULT)))
-        .setUseJsweet(Boolean.parseBoolean(GUI_GEN_JSWEET.getValue(cmd, GUI_GEN_JSWEET_DEFAULT)));
+        .setUseJsweet(Boolean.parseBoolean(GUI_GEN_JSWEET.getValue(cmd, GUI_GEN_JSWEET_DEFAULT)))
+        .setUsePlaywright(USE_PLAYWRIGHT.isSelected(cmd));
   }
 }

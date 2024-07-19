@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 import gradle.specific.UMLPJava2TypeScriptTask
-import gradle.specific.cd.CD2POJOTask
+import gradle.specific.cd.GUITypes2JavaTask
 
 plugins {
     id 'application'
@@ -11,6 +11,12 @@ plugins {
 
 group = "umlp"
 description = "UMLP RTE"
+
+def withoutSpringLogging = {
+  exclude module: 'spring-boot-starter-logging'
+  exclude module: 'logback-classic'
+  exclude module: 'log4j-to-slf4j'
+}
 
 dependencies {
     api group: 'de.monticore', name: 'monticore-runtime', version: mc_version
@@ -27,16 +33,25 @@ dependencies {
     // Used for umlp.backendrte.test_infrastructure.TestSetup
     // Alternative: testing-rte + generate a testing module for each cd
     compileOnly 'org.junit.jupiter:junit-jupiter-api:5.9.2'
+    // Used for umlp.backendrte.test_infrastructure.playwright.AbstractPlaywrightE2ETest
+    compileOnly 'com.microsoft.playwright:playwright:1.44.0'
+    compileOnly group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
 
     implementation("com.hivemq:hivemq-mqtt-client:1.3.0")
 }
 
+// TODO: umlpModules config is added elsewhere  by the umlp plugin
+configurations {umlpModules{}}
+
 // POJOs
-task generateGuiComponentPOJOs(type: CD2POJOTask) {
+task generateGuiComponentJava(type: GUITypes2JavaTask) {
   hwcDir = project.layout.files("src/main/java")
   input = file("client/models/")
   outputDir = project.layout.buildDirectory.dir("guiComponentTypes")
 }
+
+// Let RTE assemble depend on the generation
+assemble.dependsOn generateGuiComponentJava
 
 //task guiComponentTypesJar(type: Jar) {
 //  from generateGuiComponentPOJOs.output
@@ -45,7 +60,7 @@ task generateGuiComponentPOJOs(type: CD2POJOTask) {
 
 sourceSets {
   main {
-    java.srcDirs += [generateGuiComponentPOJOs.outputDir]
+    java.srcDirs += [generateGuiComponentJava.outputDir]
   }
 }
 //guiComponentTypesJar.dependsOn compileJava

@@ -21,8 +21,7 @@ public class BEDecorator extends AbstractDecorator {
 
   boolean spring = false;
   boolean shell = false;
-
-
+  boolean playwright = false;
 
   protected MCPath hwPath;
 
@@ -37,6 +36,7 @@ public class BEDecorator extends AbstractDecorator {
     if(glex.hasGlobalVar("UMLPGeneratorConfig")){
       spring = UMLPGeneratorConfig.getInstance().isUseSpring();
       shell = UMLPGeneratorConfig.getInstance().isUseShell();
+      playwright = UMLPGeneratorConfig.getInstance().isUsePlaywright();
     }
   }
 
@@ -47,9 +47,16 @@ public class BEDecorator extends AbstractDecorator {
 
   private void initExtraDeSers() {
     // TODO: Why is there another set in CommandDecorator?
-    supportedDesers.add("java.time.LocalDate");
-    supportedDesers.add("java.time.LocalDateTime");
-    supportedDesers.add("java.time.LocalTime");
+    supportedDesers.addAll(getStandardSupportedDeSers());
+  }
+
+  public static Set<String> getStandardSupportedDeSers() {
+    Set<String> standardSupportedDeSers = new HashSet<>();
+
+    standardSupportedDeSers.add("java.time.LocalDate");
+    standardSupportedDeSers.add("java.time.LocalDateTime");
+    standardSupportedDeSers.add("java.time.LocalTime");
+    return standardSupportedDeSers;
   }
 
   @Override
@@ -216,6 +223,13 @@ public class BEDecorator extends AbstractDecorator {
       ShellApplicationDecorator shellApplicationDecorator = new ShellApplicationDecorator(glex);
       shellApplicationDecorator.transform(cdAST, decoratedAST);
       Log.info("After decorator: ShellApplicationDecorator", BEDecorator.class.getName());
+
+      // TODO: We might move this into frontend generator, since it is not used in backend only tests
+      if(playwright) {
+        E2ETestDecorator e2ETestDecorator = new E2ETestDecorator(glex);
+        e2ETestDecorator.transform(cdAST, decoratedAST);
+        Log.info("After decorator: E2ETestDecorator", BEDecorator.class.getName());
+      }
     }
 
 

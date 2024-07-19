@@ -12,6 +12,8 @@ public enum UMLPToolOptions {
 
   CD2GUI("cdt", "cdtogui", "runs cd2gui to generate gui files from the input"),
 
+  GUIRTETypes("rte", "rteTypes", "creates simple Java Types from GUI RTE types"),
+
   GUIVariability("gv", "guivariability", "Alterates guiFiles from the gp options with the guivariability files there and writes them to the outDir"),
 
   // with one arg
@@ -57,7 +59,8 @@ public enum UMLPToolOptions {
   GUI_GEN_JSWEET(Option.builder("jsweet").longOpt("guiGenJsweet").hasArgs()
       .desc("Flag which determines whether TS code should be transpiled instead of generated from GUI models directly").build()),
   USE_SPRING(Option.builder("use_spring").desc("If the backend is generated, generate additional spring classes").build()),
-  USE_SHELL(Option.builder("use_shell").desc("If the backend is generated, generate additional sping shell classes").build());
+  USE_SHELL(Option.builder("use_shell").desc("If the backend is generated, generate additional spring shell classes").build()),
+  USE_PLAYWRIGHT(Option.builder("use_playwright").desc("If spring classes are generated, generate additional playwright e2e infrastructure").build());
 
   UMLPToolOptions(Option option) {
     this.option = option;

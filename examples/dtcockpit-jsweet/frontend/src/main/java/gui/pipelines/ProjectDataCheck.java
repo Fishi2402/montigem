@@ -1,6 +1,6 @@
 package gui.pipelines;
 
-import mc.fenix.charts.GemBarChartTypes.GemBarChartData;
+import mc.fenix.charts.gembarcharttypes.GemBarChartData;
 
 class ProjectDataCheck {
   private GemBarChartData value;
