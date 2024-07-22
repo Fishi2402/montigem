@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.fenix.networkgraph;
 import java.util.List;
+import java.util.Optional;
 
 classdiagram NetworkGraphTypes {
 
@@ -16,6 +17,7 @@ classdiagram NetworkGraphTypes {
     Integer size;
     String color;
     String group;
+    Optional<String> vertexShape; // Allowed values are triangle, square, circle defaul is circle
   }
 
   public class GraphEdge {

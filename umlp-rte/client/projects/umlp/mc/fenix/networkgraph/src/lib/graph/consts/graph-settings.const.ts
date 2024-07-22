@@ -6,6 +6,8 @@ import { prettyLabelRenderer } from "../renderers/pretty-label.renderer";
 //import EdgeLineProgram from "sigma/rendering/programs/edge-line";
 import {NodeLabelDrawingFunction} from "sigma/rendering/node-labels";
 import {NodeHoverDrawingFunction} from "sigma/rendering/node-hover";
+import NodeTriangleProgram from "../custom-programs/node-triangle/NodeTriangle";
+import NodeSquareProgram from "../custom-programs/node-square/NodeSquare";
 
 /**
  * Function to construct and return new default graph settings object. The use of a function rather than one `settings
@@ -48,6 +50,8 @@ export function getDefaultGraphSettings(): GraphSettings {
     nodeProgramClasses: {
       ...DEFAULT_NODE_PROGRAM_CLASSES,
       image: NodeCircleProgram,
+      triangle: NodeTriangleProgram,
+      square: NodeSquareProgram
     },
     edgeProgramClasses: {
       ...DEFAULT_EDGE_PROGRAM_CLASSES
