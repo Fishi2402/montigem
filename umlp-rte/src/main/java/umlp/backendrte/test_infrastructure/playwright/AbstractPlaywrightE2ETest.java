@@ -225,16 +225,26 @@ public abstract class AbstractPlaywrightE2ETest {
   }
 
   /**
+   * Gets the folder where the gradle node plugin installed node
+   *
+   * @return A {@link File} denoting the nodejs folder
+   */
+  protected File getNodeJSDirectory() {
+    return new File(".gradle/nodejs");
+  }
+
+  /**
    * Gets the path where the npm binary/executable is located.
    *
-   * <p>By default this method attempts to grab the executable from the {@code .gradle/nodejs} folder
+   * <p>By default this method attempts to find the executable in the {@code nodejs} folder
    *
    * @return The found path string
    * @throws IOException            When the mentioned directories can't be searched
    * @throws NoSuchElementException When the npm executable was not found
+   * @see #getNodeJSDirectory()
    */
   protected String getNpmPath() throws IOException, NoSuchElementException {
-    try (var stream = Files.walk(Paths.get(".gradle/nodejs/").toAbsolutePath().normalize())) {
+    try (var stream = Files.walk(getNodeJSDirectory().toPath().toAbsolutePath().normalize())) {
       return stream.filter(p -> p.toFile()
               .getName()
               .equals(environmentIsWindows() ? "npm.cmd" : "npm"))
