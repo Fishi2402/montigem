@@ -17,7 +17,11 @@ classdiagram NetworkGraphTypes {
     Integer size;
     String color;
     String group;
-    Optional<String> vertexShape; // Allowed values are triangle, square, circle defaul is circle
+
+    /**
+     * In which shapes should nodes be drawn. Allowed values are triangle, square, circle. Default is circle.
+     */
+    Optional<String> nodeProgram;
   }
 
   public class GraphEdge {
