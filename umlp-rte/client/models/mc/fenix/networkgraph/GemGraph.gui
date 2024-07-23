@@ -17,8 +17,8 @@ component GemGraph(
   boolean showInformation=true,
   List<String> metricKeys,
   Object initialLayout = null,           //@Input() initialLayout?: InitialGraphLayoutConfiguration | null;
-  Object complexLayout = null            //@Input() complexLayout?: ComplexGraphLayoutConfiguration | null;
-  Event<Integer> layoutIteration;
+  Object complexLayout = null,            //@Input() complexLayout?: ComplexGraphLayoutConfiguration | null;
+  Event<Integer> layoutIteration
   // TODO configure Layout from GUIDsl
 
   //@Input() customMetricsGenerator?: CustomMetricsGenerator;
