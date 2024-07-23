@@ -29,4 +29,7 @@ component GemBoxPlot(
 
   /** SVG height. */
   Integer height = 400
+
+  /** Direction of the boxes (diagram as a whole).  */
+  boolean horizontal = true;
 )
