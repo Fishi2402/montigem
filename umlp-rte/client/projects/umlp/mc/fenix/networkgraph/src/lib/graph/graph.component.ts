@@ -152,7 +152,6 @@ export class GemGraphComponent extends GraphBasisComponent implements OnChanges 
       {
         key: "continueLayout",
         actionFn: (button: ControlButton, graphManager: GraphManagerService): void => {
-          console.debug("Switch Layout")
           if(this.switchExtendedButton) {
             this.switchExtendedButton = !this.switchExtendedButton
             if(this.complexLayout) {
