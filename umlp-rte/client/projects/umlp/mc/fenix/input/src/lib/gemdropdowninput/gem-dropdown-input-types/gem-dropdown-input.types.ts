@@ -1,4 +1,4 @@
-export class GemDropdownOption {
+export class Option {
   value: string;
   display: string;
 

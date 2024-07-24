@@ -5,7 +5,7 @@ import {
   Input,
   Output,
 } from "@angular/core";
-import {GemDropdownOption} from "./gem-dropdown-input-types/gem-dropdown-input.types";
+import {Option} from "./gem-dropdown-input-types/gem-dropdown-input.types";
 import {GemTextInputValidity} from "../gemtextinput";
 
 @Component({
@@ -26,7 +26,7 @@ export class GemDropdownInput {
   @Input() labelText: string;
   @Input() entry: string;
   @Input() disabled: boolean = false;
-  @Input() options: GemDropdownOption[];
+  @Input() options: Option[];
   @Input() validity: GemTextInputValidity;
 
   @Output() public entryChange: EventEmitter<string> = new EventEmitter<string>();

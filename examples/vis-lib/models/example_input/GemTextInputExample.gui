@@ -5,7 +5,7 @@ import Domain.Person;
 
 import mc.fenix.input.GemTextInput;
 import mc.fenix.input.GemDropdownInput;
-import mc.fenix.input.GemDropdownInputTypes.GemDropdownOption;
+import mc.fenix.input.GemDropdownInputTypes.Option;
 
 page GemTextInputExample(List<Person> persons) {
   @iterate(Person p : persons) {
@@ -24,10 +24,10 @@ page GemTextInputExample(List<Person> persons) {
       labelText = "Hobby:",
       entry = p.aboutMe,
       options = [
-        GemDropdownOption(""),
-        GemDropdownOption("Tennis"),
-        GemDropdownOption("Sleeping"),
-        GemDropdownOption("Model-driven development")
+        Option(""),
+        Option("Tennis"),
+        Option("Sleeping"),
+        Option("Model-driven development")
       ]
     );
 

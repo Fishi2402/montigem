@@ -9,7 +9,7 @@ classdiagram GemDropdownInputTypes {
   /**
     An object representing a dropdown option.
   */
-  public class GemDropdownOption {
+  public class Option {
     /**
       Value behind the option in a dropdown. An option typically represents an
       object, e.g. person, via human-readable name. The value is an identifier
@@ -18,8 +18,8 @@ classdiagram GemDropdownInputTypes {
     String value;
     /** Human-readable name representing the option. */
     String display;
-    +GemDropdownOption(String value);
-    +GemDropdownOption(String value, String display);
+    +Option(String value);
+    +Option(String value, String display);
   }
 
 }

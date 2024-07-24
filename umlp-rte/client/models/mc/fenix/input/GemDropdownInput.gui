@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.fenix.input;
 
-import mc.fenix.input.GemDropdownInputTypes.GemDropdownOption;
+import mc.fenix.input.GemDropdownInputTypes.Option;
 import mc.fenix.input.GemTextInputTypes.GemTextInputValidity;
 
 /**
@@ -14,7 +14,7 @@ component GemDropdownInput(
   /** Text describing the input field. */
   String labelText = "",
   /** A list of options for the `"dropdown"` input type. */
-  List<GemDropdownOption> options,
+  List<Option> options,
   /**
     The input field's value. If it is linked to a variable, the value of the
     variable will change when the user enters a new value.
