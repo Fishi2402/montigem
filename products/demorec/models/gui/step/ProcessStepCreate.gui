@@ -2,6 +2,7 @@ package gui.step;
 
 import mc.fenix.basic.GemText;
 import mc.fenix.input.GemTextInput;
+import mc.fenix.input.GemDropdownInput;
 import mc.fenix.basic.GemButton;
 import mc.fenix.arrange.GemCard;
 import mc.fenix.arrange.GemColumn;
@@ -24,17 +25,15 @@ page ProcessStepCreate(ProcessStep step, Event<ProcessStep> create) {
         rowGap="10px",
         components = [
           deconstructionGuard@guard(true) {
-            selectType@GemTextInput(
+            selectType@GemDropdownInput(
               labelText = "Step type",
-              inputType = "dropdown",
               options = null,
               entry = null);
           },
           stepChooseJoinConnection@guard(true){
             isDeconstruction@guard(true) {
-              selectJoinConnection@GemTextInput(
+              selectJoinConnection@GemDropdownInput(
                   labelText = "Deconstructing Join Connection",
-                  inputType = "dropdown",
                   options = null,
                   entry = null);
             }
@@ -86,9 +85,8 @@ page ProcessStepCreate(ProcessStep step, Event<ProcessStep> create) {
                         labelText = "Description (optional)",
                         inputType = "text",
                         entry = step.description),
-                    selectEndeffector@GemTextInput(
+                    selectEndeffector@GemDropdownInput(
                         labelText = "Used Endeffector in this step",
-                        inputType = "dropdown",
                         options = null,
                         entry = null)
                   ]

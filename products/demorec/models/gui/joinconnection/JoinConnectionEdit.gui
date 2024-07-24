@@ -9,6 +9,7 @@ import mc.fenix.arrange.GemCard;
 import mc.fenix.arrange.GemColumn;
 import mc.fenix.arrange.GemRow;
 import mc.fenix.input.GemTextInput;
+import mc.fenix.input.GemDropdownInput;
 
 import gui.component.ComponentCreate;
 import gui.pack.ComponentsOfPack;
@@ -20,15 +21,13 @@ page JoinConnectionEdit(JoinConnection connection, boolean showOptionalAttribute
     wrap="nowrap",
     rowGap="5px",
     components=[
-      condition@GemTextInput(
+      condition@GemDropdownInput(
         labelText = "Condition of Connection",
-        inputType = "dropdown",
         options = null,
         entry = connection.condition),
 
-      selectTypeOfConnection@GemTextInput(
+      selectTypeOfConnection@GemDropdownInput(
         labelText = "Type of Connection",
-        inputType = "dropdown",
         options = null,
         entry = connection.joinConnectionType),
 
@@ -37,9 +36,8 @@ page JoinConnectionEdit(JoinConnection connection, boolean showOptionalAttribute
         vAlign="center",
         hAlign="center",
         components= [
-          selectConnectsComponent@GemTextInput(
+          selectConnectsComponent@GemDropdownInput(
               labelText = "Components connected by this connection",
-              inputType = "dropdown",
               options = null,
               entry = null,
               keyRelease = tryToAddComponent()),

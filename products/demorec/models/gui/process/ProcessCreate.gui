@@ -2,6 +2,7 @@ package gui.process;
 
 import mc.fenix.basic.GemText;
 import mc.fenix.input.GemTextInput;
+import mc.fenix.input.GemDropdownInput;
 import mc.fenix.basic.GemButton;
 import mc.fenix.arrange.GemCard;
 import mc.fenix.arrange.GemColumn;
@@ -27,9 +28,8 @@ page ProcessCreate(Process p, BatteryPack pack) {
             inputType = "date",
             entry = p.startedAt
             ),
-        selectBPack@GemTextInput(
+        selectBPack@GemDropdownInput(
           labelText = "Battery Pack",
-          inputType = "dropdown",
           options = null,
           entry = null
         )
