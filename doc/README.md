@@ -195,7 +195,7 @@ zu nennen:
 
 ## Grundregeln des Entwickelns:
 
-1. Wir halten uns an die Regeln des SE (Einrückung, KOmmentierung etc.)
+1. Wir halten uns an die Regeln des SE (Einrückung, Kommentierung etc.)
 1. Da wir hier exemplarisch Code schreiben sind bestimmte Entscheidungen
    noch besonders zu kommentieren.
 1. Alle sind für alles gemeinschaftlich verantwortlich. Und wir nehmen das auch ernst!

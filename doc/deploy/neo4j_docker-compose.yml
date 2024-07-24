@@ -1,0 +1,60 @@
+# (c) https://github.com/MontiCore/monticore
+#
+# Example Docker-Compose for the deployment _on the server_
+# Look for the comment "CHANGE ME" to see what needs to be modified on other deployments
+#
+# Also see "deploy.md"
+#
+version: "2.1"
+services:
+  db:
+    image: neo4j:5.10.0-community
+    environment:
+      - NEO4J_AUTH=<ChangeThisPassword_PLEASE>
+    restart: "unless-stopped"
+    healthcheck:
+      test: [ "CMD", "/var/lib/neo4j/bin/cypher-shell", "-u", "neo4j", "-p", "<ChangeThisPassword_PLEASE>", "MATCH () RETURN count(*) as count" ]
+      interval: 10s
+      timeout: 10s
+      retries: 20
+    expose:
+      - 7474
+# CHANGE ME: Comment in!
+#    volumes:
+#      - './db_data:/var/lib/neo4j/data/'      # Persist Data
+
+  backend:
+    image: registry.git.rwth-aachen.de/monticore/umlp/corerequirements # CHANGE ME: use your own backend-image
+    environment:
+      # CHANGE ME: your own domain, where the website should be available from
+      # - UMLP_DEPLOYED_DOMAIN=https://<DOMAIN>  # Required for Allowed Origins
+
+      - jdbc_driver=org.neo4j.jdbc.bolt.BoltDriver
+      - database_url=jdbc:neo4j:bolt://db:7687/?flatten=1
+      - password=<ChangeThisPassword_PLEASE>    # CHANGE ME: !!!!
+      - user=neo4j
+    restart: "unless-stopped"
+    links:
+      - db
+    depends_on:
+      db:
+        condition: service_healthy
+    expose:
+      - 8081/tcp
+
+  frontend:  # Static Caddy Server with Proxy to backend
+    image: registry.git.rwth-aachen.de/monticore/umlp/corerequirements_frontend        # CHANGE ME: use your own frontend-image
+# CHANGE ME: Comment in!
+#    environment:
+      # CHANGE ME: your own domain, where the website should be available from
+    # - UMLP_DEPLOYED_DOMAIN=<DOMAIN>   # Required for SSL certificate
+    restart: "unless-stopped"
+# CHANGE ME: Comment in!
+#    ports:
+#      - '443:443'
+#      - '80:80'
+    links:
+      - backend
+# CHANGE ME: Comment in!
+#    volumes:
+#      - './caddy_secret_data:/data/'                         # Persist certificates, otherwise a new certificate might be created for every start

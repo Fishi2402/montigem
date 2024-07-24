@@ -52,6 +52,11 @@ paths:
 
 ## 3. BE
 
+The BE either uses a Neo4j or a SQL database. SQL is default and does not require any changes.
+Neo4j DAO classes are always generated in parallel to SQL DAO classes. To use a neo4j database, 
+`DAOAFactory.initNeo4J()` and `<DomainModel>ManagerImpl.initNeo4J()` have to be called when starting 
+the application and the properties files have to be adapted (see below).
+
 BE requires specific configuration files, which must be placed in the *backend/src/main/resources* directory.  
 The configuration includes `database.properties` and several other optional files such as `application.properties`, `logback.xml`.
 
