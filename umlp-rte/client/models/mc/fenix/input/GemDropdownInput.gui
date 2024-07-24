@@ -1,0 +1,35 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.input;
+
+import mc.fenix.input.GemDropdownInputTypes.GemDropdownOption;
+import mc.fenix.input.GemTextInputTypes.GemTextInputValidity;
+
+/**
+  The component is a dropdown field with an optional label. It is used whenever a
+  user input is required, in which the user selects one from multiple options
+*/
+component GemDropdownInput(
+  /** Can be set to ensure the list of options is specific to the input field. */
+  String id,
+  /** Text describing the input field. */
+  String labelText = "",
+  /** A list of options for the `"dropdown"` input type. */
+  List<GemDropdownOption> options,
+  /**
+    The input field's value. If it is linked to a variable, the value of the
+    variable will change when the user enters a new value.
+  */
+  ?String entry,
+  /** Whether the input field is disabled. */
+  boolean disabled = false,
+  /** Width of the input field. */
+  String width = "100%",
+  /** Height of the input field. */
+  String height = "100%",
+  /** Callback that is executed when a key is released. */
+  Event<Object> keyRelease,
+  /** Callback that is executed when a key is pressed. */
+  Event<Object> keyPress,
+  /** An object representing the validation status of the field. */
+  GemTextInputValidity validity
+)

@@ -34,6 +34,7 @@ export class Navigation {
     { url: '/example_arrange/GemRowExample2', title: 'Row2' },
     { url: '/example_arrange/GemGridExample', title: 'Grid' },
     { url: '/example_input/GemTextInputExample', title: 'TextInput' },
+    { url: '/example_input/GemDropdownInputExample', title: 'DropdownInput' },
     { url: '/example_input/GemTextareaInputExample', title: 'TextareaInput' },
     { url: '/example_input/GemCheckBoxInputExample', title: 'CheckBoxInput' },
     /*

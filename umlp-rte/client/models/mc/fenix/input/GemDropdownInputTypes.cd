@@ -1,0 +1,25 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.input;
+
+/**
+  Types used in a GemDropdownInput component.
+*/
+classdiagram GemDropdownInputTypes {
+
+  /**
+    An object representing a dropdown option.
+  */
+  public class GemDropdownOption {
+    /**
+      Value behind the option in a dropdown. An option typically represents an
+      object, e.g. person, via human-readable name. The value is an identifier
+      that represents the object in the logic implementation.
+    */
+    String value;
+    /** Human-readable name representing the option. */
+    String display;
+    +GemDropdownOption(String value);
+    +GemDropdownOption(String value, String display);
+  }
+
+}

@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_input;
+
+import mc.fenix.input.GemDropdownInput;
+import mc.fenix.input.GemDropdownInputTypes.GemDropdownOption;
+
+page GemDropdownInputExample() {
+  @GemDropdownInput(
+    labelText = "Hobby:",
+    options = [
+      GemDropdownOption(""),
+      GemDropdownOption("Tennis"),
+      GemDropdownOption("Sleeping"),
+      GemDropdownOption("Model-driven development")
+    ]
+  );
+}
