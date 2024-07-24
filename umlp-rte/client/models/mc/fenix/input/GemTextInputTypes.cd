@@ -23,4 +23,20 @@ classdiagram GemTextInputTypes {
     String message;
   }
 
+  /**
+    An object representing a dropdown option.
+  */
+  public class Option {
+    /**
+      Value behind the option in a dropdown. An option typically represents an
+      object, e.g. person, via human-readable name. The value is an identifier
+      that represents the object in the logic implementation.
+    */
+    String value;
+    /** Human-readable name representing the option. */
+    String display;
+    +Option(String value);
+    +Option(String value, String display);
+  }
+
 }

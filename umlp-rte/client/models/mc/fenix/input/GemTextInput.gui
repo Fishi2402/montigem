@@ -29,6 +29,8 @@ component GemTextInput(
     `"password"`: Field hiding the input string.
   */
   String inputType = "text",
+  /** A list of options for the `"dropdown"` input type. */
+  List<Option> options,
   /**
     The input field's value. If it is linked to a variable, the value of the
     variable will change when the user enters a new value.

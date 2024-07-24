@@ -1,24 +1,53 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
 <label class="gem-label-text-input" [for]="id + 'Input'">{{ labelText }}</label>
-<input
-  class="gem-text-input"
-  [matTooltip]="
+<ng-container *ngIf="!isDropdown">
+  <input
+    class="gem-text-input"
+    [matTooltip]="
       validity?.status === 'Error' || validity?.status === 'Warning'
         ? validity.message
         : null
     "
-  matTooltipPosition="after"
-  [inputmode]="isNumeric ? 'numeric' : null"
-  [class.gem-input-error]="validity?.status === 'Error'"
-  [class.gem-input-warning]="validity?.status === 'Warning'"
-  [type]="inputType"
-  [id]="id + 'Input'"
-  [attr.list]="id + 'List'"
-  [ngModel]="entry"
-  [disabled]="disabled"
-  [placeholder]="placeholder"
-  (ngModelChange)="onEntryChange($event)"
-  (keyup)="keyRelease.emit($event)"
-  (keydown)="keyPress.emit($event)"
-/>
+    matTooltipPosition="after"
+    [inputmode]="isNumeric ? 'numeric' : null"
+    [class.gem-input-error]="validity?.status === 'Error'"
+    [class.gem-input-warning]="validity?.status === 'Warning'"
+    [type]="inputType"
+    [id]="id + 'Input'"
+    [attr.list]="id + 'List'"
+    [ngModel]="entry"
+    [disabled]="disabled"
+    [placeholder]="placeholder"
+    (ngModelChange)="onEntryChange($event)"
+    (keyup)="keyRelease.emit($event)"
+    (keydown)="keyPress.emit($event)"
+  />
+</ng-container>
+<ng-container *ngIf="isDropdown">
+  <select
+    class="gem-text-input"
+    [matTooltip]="
+      validity?.status === 'Error' || validity?.status === 'Warning'
+        ? validity.message
+        : null
+    "
+    matTooltipPosition="after"
+    [class.gem-input-error]="validity?.status === 'Error'"
+    [class.gem-input-warning]="validity?.status === 'Warning'"
+    [id]="id + 'Input'"
+    [attr.list]="id + 'List'"
+    [ngModel]="entry"
+    [disabled]="disabled"
+    (ngModelChange)="onEntryChange($event)"
+    (keyup)="keyRelease.emit($event)"
+    (keydown)="keyPress.emit($event)"
+  >
+    <option *ngFor="let option of options" [value]="option.value">{{option.display}}</option>
+  </select>
+</ng-container>
+<!--
+<datalist *ngIf="isDropdown" [id]="id + 'List'">
+  <option *ngFor="let option of options" [value]="option.value"></option>
+</datalist>
+-->
