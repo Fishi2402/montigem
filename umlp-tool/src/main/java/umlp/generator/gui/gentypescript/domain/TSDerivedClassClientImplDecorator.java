@@ -17,6 +17,8 @@ import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentTemplates;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
+//Derived classes are no longer supported
+@Deprecated
 public class TSDerivedClassClientImplDecorator extends DerivedClassClientImplDecorator {
 
   protected String astcdPackage;

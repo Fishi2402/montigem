@@ -10,6 +10,10 @@ umlp Valid {
     boolean isTrue;
   }
 
+  interface I;
+
+  enum E;
+
   association [*] A -> B [0..1];
   association [1] B -> A;
   association A [String] -> B [*];
