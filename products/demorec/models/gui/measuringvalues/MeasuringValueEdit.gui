@@ -2,6 +2,7 @@ package gui.measuringvalues;
 
 import mc.fenix.basic.GemText;
 import mc.fenix.input.GemTextInput;
+import mc.fenix.input.GemDropdownInput;
 import mc.fenix.basic.GemButton;
 import mc.fenix.arrange.GemCard;
 import mc.fenix.arrange.GemColumn;
@@ -25,9 +26,8 @@ page MeasuringValueEdit(ProcessStep step) {
             colGap="5px",
             components=[
               displayedMeasuringValue@GemTextInput(labelText = "Value", inputType = "string", entry = measuringValue.value),
-              displayedMeasuringValueDimensionUnit@GemTextInput(
+              displayedMeasuringValueDimensionUnit@GemDropdownInput(
                 labelText = "Unit",
-                inputType = "dropdown",
                 options = null,
                 entry = null
               ),

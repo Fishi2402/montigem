@@ -11,7 +11,7 @@ import mc.fenix.arrange.GemCard;
 import mc.fenix.arrange.GemColumn;
 import mc.fenix.arrange.GemRow;
 import mc.fenix.basic.GemText;
-import mc.fenix.input.GemTextInput;
+import mc.fenix.input.GemDropdownInput;
 import mc.fenix.input.GemTextareaInput;
 
 page OverviewPage(Project project, List<Group> groups, List<Project> projects) {
@@ -21,8 +21,7 @@ page OverviewPage(Project project, List<Group> groups, List<Project> projects) {
       component = @GemColumn(hAlign = "left", rowGap = "15px", components = [
         projectList@GemRow(rowGap = "10px", colGap = "15px", wrap = "wrap", components = [
           @iterate(Project dependentProject : project.dependentProjects) {
-            branchDropdown@GemTextInput(
-              inputType = "dropdown",
+            branchDropdown@GemDropdownInput(
               labelText = dependentProject.name,
               options = null, // via TOP
               entry = dependentProject.ciInfos.branchName,

@@ -13,6 +13,7 @@ import mc.fenix.basic.GemLink;
 import mc.fenix.basic.GemCheckbox;
 import mc.fenix.basic.GemButton;
 import mc.fenix.input.GemTextInput;
+import mc.fenix.input.GemDropdownInput;
 
 import gui.component.PhotoDisplay;
 import gui.component.PhotoDragNDrop;
@@ -39,9 +40,8 @@ page ComponentEdit(DemoRecComponent component, boolean showOptionalValues=true, 
       ),
       @GemTextInput(labelText = "Component Name", inputType = "string", entry = component.name),
       @guard(showOptionalValues) {
-        condition@GemTextInput(
+        condition@GemDropdownInput(
           labelText = "Component Condition",
-          inputType = "dropdown",
           options = null,
           entry = component.condition);
         @GemRow(

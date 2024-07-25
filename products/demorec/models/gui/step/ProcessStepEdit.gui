@@ -12,6 +12,7 @@ import mc.fenix.basic.GemLink;
 import mc.fenix.basic.GemCheckbox;
 import mc.fenix.basic.GemButton;
 import mc.fenix.input.GemTextInput;
+import mc.fenix.input.GemDropdownInput;
 
 import gui.measuringvalues.MeasuringValueEdit;
 
@@ -31,17 +32,15 @@ page ProcessStepEdit(Process p, ProcessStep step) {
               wrap="nowrap",
               components=[
 
-                selectType@GemTextInput(
+                selectType@GemDropdownInput(
                   labelText = "Type",
-                  inputType = "dropdown",
                   options = null,
                   entry = step.type),
 
                 @GemTextInput(labelText = "Description", inputType = "string", placeholder = step.description, entry = step.description),
 
-                selectEndeffector@GemTextInput(
+                selectEndeffector@GemDropdownInput(
                   labelText = "Endeffector",
-                  inputType = "dropdown",
                   options = null,
                   entry = null),
 
@@ -54,9 +53,8 @@ page ProcessStepEdit(Process p, ProcessStep step) {
                       wrap="nowrap",
                       colGap="5px",
                       components=[
-                        selectJoinConnection@GemTextInput(
+                        selectJoinConnection@GemDropdownInput(
                             labelText = "Deconstructing Join Connection",
-                            inputType = "dropdown",
                             options = null,
                             entry = null),
                         createNewJoinConnection@guard(true) {
@@ -74,9 +72,8 @@ page ProcessStepEdit(Process p, ProcessStep step) {
                         wrap="nowrap",
                         colGap="5px",
                         components=[
-                          selectJoinConnection1@GemTextInput(
+                          selectJoinConnection1@GemDropdownInput(
                               labelText = "Deconstructing Join Connection",
-                              inputType = "dropdown",
                               options = null,
                               entry = null),
                           createNewJoinConnection1@guard(true) {

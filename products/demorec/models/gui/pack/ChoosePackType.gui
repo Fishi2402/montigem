@@ -2,15 +2,14 @@ package gui.pack;
 
 import DemoRec.BatteryPackType;
 
-import mc.fenix.input.GemTextInput;
+import mc.fenix.input.GemDropdownInput;
 
 import gui.pack.PackTypeCreate;
 
 page ChoosePackType(BatteryPackType currentType, Event<BatteryPackType> chosenType) {
 
-  selectPackType@GemTextInput(
+  selectPackType@GemDropdownInput(
     labelText = "Pack Type",
-    inputType = "dropdown",
     options = null,
     entry = null
   );

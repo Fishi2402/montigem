@@ -2,7 +2,7 @@
 package mc.fenix.input;
 
 import mc.fenix.input.GemTextInputTypes.GemTextInputValidity;
-import mc.fenix.input.GemTextInputTypes.Option;
+import mc.fenix.input.GemDropdownInputTypes.Option;
 
 /**
   The component is an input field with an optional label. It is used whenever a
