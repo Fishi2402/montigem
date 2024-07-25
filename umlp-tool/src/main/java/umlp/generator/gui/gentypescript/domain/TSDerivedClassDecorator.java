@@ -10,6 +10,8 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import umlp.generator.domain.decorator.DerivedClassDecorator;
 import umlp.generator.util.UMLPSymbolTables;
 
+//Derived classes are no longer supported
+@Deprecated
 public class TSDerivedClassDecorator extends DerivedClassDecorator {
 
   protected String astcdPackage;

@@ -12,9 +12,8 @@ import java.util.Map;
 import java.util.Set;
 
 // Implement the calcters
-public class CityInfoImpl extends CityInfoImplTOP {
+public class CityInfo {
 
-  @Override
   public int calcNumberOfCities() {
     long count = 0L;
     Set<String> uniqueValues = new HashSet<>();
@@ -28,12 +27,10 @@ public class CityInfoImpl extends CityInfoImplTOP {
     return (int) count;
   }
 
-  @Override
   public int calcTotalNumberOfCars() {
     return FlensburgManager.getCarList().size();
   }
 
-  @Override
   public String calcCityWithMostCars() {
     Map<String, Integer> cityToCars = new HashMap<>();
     Collection<Person> persons = FlensburgManager.getPersonList();
@@ -63,7 +60,6 @@ public class CityInfoImpl extends CityInfoImplTOP {
     return cityWithMostCars;
   }
 
-  @Override
   public Person calcPersonWithMostCars() {
     Person result = null;
     int max = 0;
@@ -76,17 +72,14 @@ public class CityInfoImpl extends CityInfoImplTOP {
     return result;
   }
 
-  @Override
   public int calcAverageNumberOfCars() {
     return FlensburgManager.getCarList().size() / FlensburgManager.getPersonList().size();
   }
 
-  @Override
   public  int calcSizeCities() {
     return calcNumberOfCities();
   }
 
-  @Override
   public List<String> calcCities() {
     List<String> list = new ArrayList<>();
     for (Address address : FlensburgManager

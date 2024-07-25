@@ -23,6 +23,8 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC;
 /**
  * The generated ClientImpl sends requests to the backend
  */
+//Derived classes are no longer supported
+@Deprecated
 public class DerivedClassClientImplDecorator extends AbstractDecorator {
 
   public DerivedClassClientImplDecorator(GlobalExtensionManagement glex) {

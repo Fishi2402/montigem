@@ -132,19 +132,6 @@ public class BEDecorator extends AbstractDecorator {
     accessDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: AccessPolicyDecorator", BEDecorator.class.getName());
 
-    DerivedClassDecorator derivedClassDecorator= new DerivedClassDecorator(glex);
-    derivedClassDecorator.transform(cdAST, decoratedAST);
-    Log.info("After decorator: DerivedClassDecorator", BEDecorator.class.getName());
-
-    DerivedClassClientImplDecorator derivedClassClientImplDecorator = new DerivedClassClientImplDecorator(glex);
-    derivedClassClientImplDecorator.transform(cdAST, decoratedAST);
-    Log.info("After decorator: DerivedClassClientImplDecorator", BEDecorator.class.getName());
-
-    DerivedClassImplDecorator derivedClassImplDecorator = new DerivedClassImplDecorator(glex);
-    derivedClassImplDecorator.transform(cdAST, decoratedAST);
-    Log.info("After decorator: DerivedClassImplDecorator", BEDecorator.class.getName());
-
-
     // Generate DiagramObserver classes
     DiagramObserverDecorator diagramObserverDecorator = new DiagramObserverDecorator(glex);
     diagramObserverDecorator.transform(cdAST, decoratedAST);

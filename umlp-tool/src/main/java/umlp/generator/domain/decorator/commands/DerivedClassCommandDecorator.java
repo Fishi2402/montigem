@@ -25,6 +25,8 @@ import static umlp.generator.domain.decorator.commands.CommandDecorator.DE_SER;
 /**
  * Commands to request data from derived classes
  */
+//Derived classes are no longer supported
+@Deprecated
 public class DerivedClassCommandDecorator extends AbstractDeSerDecorator {
 
   public static final String COMMAND_DERIVED_CLASS_PACKAGE = COMMAND_PACKAGE + ".derivedclass";

@@ -45,16 +45,16 @@ public class CityInfoSyncTest extends FlensburgMockTestSetup {
     p2.addOwns(c4);
 
 
-    CityInfo cityInfo = FlensburgManager.getCityInfo();
+    CityInfo cityInfo = new CityInfo();
     assertNotNull(cityInfo);
 
-    assertEquals(2, cityInfo.getNumberOfCities());
-    assertEquals(4, cityInfo.getTotalNumberOfCars());
-    assertEquals("Flensburg", cityInfo.getCityWithMostCars());
-    assertEquals(p1, cityInfo.getPersonWithMostCars());
-    assertEquals(2, cityInfo.getAverageNumberOfCars());
+    assertEquals(2, cityInfo.calcNumberOfCities());
+    assertEquals(4, cityInfo.calcTotalNumberOfCars());
+    assertEquals("Flensburg", cityInfo.calcCityWithMostCars());
+    assertEquals(p1, cityInfo.calcPersonWithMostCars());
+    assertEquals(2, cityInfo.calcAverageNumberOfCars());
 
-    List<String> cities = cityInfo.getCitiesList();
+    List<String> cities = cityInfo.calcCities();
     assertEquals(2, cities.size());
     assertTrue(cities.contains("Aachen"));
     assertTrue(cities.contains("Flensburg"));
@@ -80,16 +80,16 @@ public class CityInfoSyncTest extends FlensburgMockTestSetup {
     p2.addOwns(c4);
 
     getClients(0).activate();
-    CityInfo cityInfo = FlensburgManager.getCityInfo();
+    CityInfo cityInfo = new CityInfo();
     assertNotNull(cityInfo);
 
-    assertEquals(2, cityInfo.getNumberOfCities());
-    assertEquals(4, cityInfo.getTotalNumberOfCars());
-    assertEquals("Flensburg", cityInfo.getCityWithMostCars());
-    assertEquals(p1.getGemId(), cityInfo.getPersonWithMostCars().getGemId());
-    assertEquals(2, cityInfo.getAverageNumberOfCars());
+    assertEquals(2, cityInfo.calcNumberOfCities());
+    assertEquals(4, cityInfo.calcTotalNumberOfCars());
+    assertEquals("Flensburg", cityInfo.calcCityWithMostCars());
+    assertEquals(p1.getGemId(), cityInfo.calcPersonWithMostCars().getGemId());
+    assertEquals(2, cityInfo.calcAverageNumberOfCars());
 
-    List<String> cities = cityInfo.getCitiesList();
+    List<String> cities = cityInfo.calcCities();
     assertEquals(2, cities.size());
     assertTrue(cities.contains("Aachen"));
     assertTrue(cities.contains("Flensburg"));

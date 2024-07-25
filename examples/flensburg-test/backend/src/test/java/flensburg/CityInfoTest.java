@@ -49,13 +49,13 @@ public class CityInfoTest extends FlensburgMockTestSetup {
     p1.ownsAdd(c1).ownsAdd(c2).build().get();
     p2.ownsAdd(c3).ownsAdd(c4).ownsAdd(c5).ownsAdd(c6).build().get();
 
-    CityInfo cityInfo = FlensburgManager.getCityInfo();
+    CityInfo cityInfo = new CityInfo();
 
     assertNotNull(cityInfo);
-    assertEquals(2, cityInfo.getNumberOfCities());
-    assertEquals(6, cityInfo.getTotalNumberOfCars());
-    assertEquals("Flensburg", cityInfo.getCityWithMostCars());
-    assertEquals(p2, cityInfo.getPersonWithMostCars());
-    assertEquals(3, cityInfo.getAverageNumberOfCars());
+    assertEquals(2, cityInfo.calcNumberOfCities());
+    assertEquals(6, cityInfo.calcTotalNumberOfCars());
+    assertEquals("Flensburg", cityInfo.calcCityWithMostCars());
+    assertEquals(p2, cityInfo.calcPersonWithMostCars());
+    assertEquals(3, cityInfo.calcAverageNumberOfCars());
   }
 }

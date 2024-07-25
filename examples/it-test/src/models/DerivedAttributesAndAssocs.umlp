@@ -1,13 +1,22 @@
+import java.lang.*;
+
 umlp DerivedAttributesAndAssocs{
 
   class Foo {
     / int a;
     / String b;
     / List<java.lang.String> c;
-    // / Optional<java.lang.String> d;
+    / Optional<java.lang.String> d;
   }
 
   class Bar;
 
-  / association Foo -> (bar) Bar [*];
+  / association Foo -> (bar1) Bar [*];
+  / association Foo -> (bar2) Bar [0..1];
+  / association Foo -> (bar3) Bar [1];
+
+  / association Foo -> (str1) String [*];
+  / association Foo -> (str2) String [0..1];
+  / association Foo -> (str3) String [1];
+
 }
