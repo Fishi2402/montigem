@@ -12,7 +12,6 @@
   [class.gem-input-error]="validity?.status === 'Error'"
   [class.gem-input-warning]="validity?.status === 'Warning'"
   [id]="id + 'Dropdown'"
-  [attr.list]="id + 'List'"
   [ngModel]="entry"
   [disabled]="disabled"
   (ngModelChange)="onEntryChange($event)"

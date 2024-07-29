@@ -1,7 +1,7 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
 <label class="gem-label-text-input" [for]="id + 'Input'">{{ labelText }}</label>
-<select
+<input
   class="gem-text-input"
   [matTooltip]="
     validity?.status === 'Error' || validity?.status === 'Warning'
@@ -11,14 +11,16 @@
   matTooltipPosition="after"
   [class.gem-input-error]="validity?.status === 'Error'"
   [class.gem-input-warning]="validity?.status === 'Warning'"
-  [id]="id + 'Dropdown'"
+  [id]="id + 'Input'"
   [attr.list]="id + 'List'"
   [ngModel]="entry"
   [disabled]="disabled"
+  [placeholder]="placeholder"
   (ngModelChange)="onEntryChange($event)"
   (keyup)="keyRelease.emit($event)"
   (keydown)="keyPress.emit($event)"
->
+/>
+<datalist [id]="id + 'List'">
   <option *ngFor="let option of options" [value]="option.value">{{ option.display }}</option>
-</select>
+</datalist>
 

@@ -28,6 +28,7 @@ export class GemAutocompleteInput {
   @Input() disabled: boolean = false;
   @Input() options: Option[];
   @Input() validity: GemTextInputValidity;
+  @Input() placeholder: string;
 
   @Output() public entryChange: EventEmitter<string> = new EventEmitter<string>();
   @Output() public keyRelease: EventEmitter<KeyboardEvent> = new EventEmitter<KeyboardEvent>();
