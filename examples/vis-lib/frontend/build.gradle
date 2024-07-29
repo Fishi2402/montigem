@@ -18,7 +18,21 @@ node {
   version = "${node_version}"
   nodeProxySettings = ProxySettings.OFF
   nodeProjectDir = file("${buildDir}/frontendGen")
+//  workDir = file("${rootDir}/.gradle/nodejs/")
+//  npmWorkDir = file("${rootDir}/.gradle/nodejs/")
 }
+
+//tasks.withType(NpxTask).configureEach {
+//  execOverrides {
+//    setExecutable("${rootDir}/.gradle/nodejs/node-v18.13.0-linux-x64/bin/npx")
+//  }
+//}
+//
+//tasks.withType(NpmTask).configureEach {
+//  execOverrides {
+//    setExecutable("${rootDir}/.gradle/nodejs/node-v18.13.0-linux-x64/bin/npm")
+//  }
+//}
 
 genGUI {
   domainModels = ["Domain"]
@@ -46,7 +60,7 @@ nodeSetup.dependsOn(frontendSetup)
 npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 
 def prebuildTasks = [
-    npmInstall,
+    "npmInstall",
     generate
 ]
 

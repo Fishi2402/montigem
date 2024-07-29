@@ -96,6 +96,7 @@ include ':products:dev_process_cockpit:frontend'
 include ':modules:login'
 include ':modules:sovd-gateway'
 include ':modules:sovd-gateway-it:backend'
+include 'download-node'
 
 findProject(':products:syse_functions:automaton')?.name = 'automaton'
 

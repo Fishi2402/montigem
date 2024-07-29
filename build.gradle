@@ -7,6 +7,15 @@ plugins {
   id 'base'
   id 'de.rwth.se.umlp-tool' // See "umlp-tool/src/main/java/gradle"
   id "io.github.themrmilchmann.ecj" version "0.2.0"
+  id "com.github.node-gradle.node" version "5.0.0"
+}
+
+node {
+  download = true
+  version = "${node_version}"
+  nodeProxySettings = ProxySettings.OFF
+  workDir = file('.gradle/nodejs')
+  npmWorkDir = file('.gradle/nodejs')
 }
 
 subprojects {
@@ -23,6 +32,25 @@ subprojects {
       languageVersion = JavaLanguageVersion.of(11)
     }
   }
+
+//  tasks.withType(NpxTask).configureEach {
+//    execOverrides {
+//      setExecutable("${rootDir}/.gradle/nodejs/node-v18.13.0-linux-x64/bin/npx")
+//    }
+//  }
+//
+//  tasks.withType(NpmTask).configureEach {
+//    execOverrides {
+//      setExecutable("${rootDir}/.gradle/nodejs/node-v18.13.0-linux-x64/bin/npm")
+//    }
+//  }
+//
+//  //noinspection ConfigurationAvoidance
+//  def npmInstallTask = tasks.findByName('npmInstall')
+//  if (npmInstallTask) {
+//    npmInstallTask.enabled = false
+//  }
+
 
   test {
     useJUnitPlatform()
