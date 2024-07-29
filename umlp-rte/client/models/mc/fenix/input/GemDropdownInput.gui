@@ -13,7 +13,7 @@ component GemDropdownInput(
   String id,
   /** Text describing the input field. */
   String labelText = "",
-  /** A list of options for the `"dropdown"` input type. */
+  /** A list of options for the dropdown. */
   List<Option> options,
   /**
     The input field's value. If it is linked to a variable, the value of the

@@ -13,8 +13,4 @@ import { MatTooltipModule } from "@angular/material/tooltip";
   ],
   exports: [GemDropdownInput]
 })
-export class GemdropdowninputModule  {
-
-
-
-}
+export class GemdropdowninputModule  {}

@@ -5,5 +5,6 @@ export * from "./lib/gemcheckboxinput";
 export * from "./lib/gemrangeinput";
 export * from "./lib/gemdualrangeinput";
 export * from "./lib/gemdropdowninput";
+export * from "./lib/gemautocompleteinput";
 
 
