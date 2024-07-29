@@ -13,9 +13,13 @@ plugins {
 node {
   download = true
   version = "${node_version}"
-  nodeProxySettings = ProxySettings.OFF
-  workDir = file('.gradle/nodejs')
-  npmWorkDir = file('.gradle/nodejs')
+}
+
+def getNodeDir() {
+  def nodejs_dir = file("${rootDir}/.gradle/nodejs/")
+  def node_dir = nodejs_dir.listFiles().find { it.isDirectory() }
+  assert node_dir != null : "Can't find node installation"
+  return node_dir
 }
 
 subprojects {
@@ -33,24 +37,23 @@ subprojects {
     }
   }
 
-//  tasks.withType(NpxTask).configureEach {
-//    execOverrides {
-//      setExecutable("${rootDir}/.gradle/nodejs/node-v18.13.0-linux-x64/bin/npx")
-//    }
-//  }
-//
-//  tasks.withType(NpmTask).configureEach {
-//    execOverrides {
-//      setExecutable("${rootDir}/.gradle/nodejs/node-v18.13.0-linux-x64/bin/npm")
-//    }
-//  }
-//
-//  //noinspection ConfigurationAvoidance
-//  def npmInstallTask = tasks.findByName('npmInstall')
-//  if (npmInstallTask) {
-//    npmInstallTask.enabled = false
-//  }
+  tasks.withType(NpxTask).configureEach {
+    dependsOn rootProject.tasks.npmInstall
+    execOverrides {
+      setExecutable "${getNodeDir()}/bin/npx"
+      def nodeBinDir = file("${getNodeDir()}/bin")
+      environment 'PATH', "${nodeBinDir}${System.getProperty('path.separator')}${System.getenv('PATH')}"
+    }
+  }
 
+  tasks.withType(NpmTask).configureEach {
+    dependsOn rootProject.tasks.npmInstall
+    execOverrides {
+      setExecutable "${get_node_bin_dir()}/bin/npm"
+      def nodeBinDir = file("${getNodeDir()}/bin")
+      environment 'PATH', "${nodeBinDir}${System.getProperty('path.separator')}${System.getenv('PATH')}"
+    }
+  }
 
   test {
     useJUnitPlatform()
