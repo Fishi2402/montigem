@@ -14,7 +14,6 @@ import { GemTextInput as GemTextInputTOP } from "./gem-text-input/gem-text-input
 })
 export class GemTextInput extends GemTextInputTOP implements OnInit {
   isNumeric: boolean = false;
-  isDropdown: boolean = false;
 
   @HostBinding("attr.id") componentId: string;
 
@@ -39,9 +38,6 @@ export class GemTextInput extends GemTextInputTOP implements OnInit {
     if (inputType === "numericText") {
       this._inputType = "text";
       this.isNumeric = true;
-    } else if (inputType === "dropdown") {
-      this._inputType = "text";
-      this.isDropdown = true;
     } else {
       this._inputType = inputType;
     }
