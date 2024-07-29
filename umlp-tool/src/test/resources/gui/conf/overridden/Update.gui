@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package conf.overridden;
+
+import Domain.Person;
+
+page Update(Person person)

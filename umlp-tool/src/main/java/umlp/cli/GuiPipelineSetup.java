@@ -21,8 +21,8 @@ import umlp.generator.gui.GUINodeIdTrafo;
 import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
 import umlp.generator.gui.genjava.GUI2JavaGenerator;
 import umlp.generator.gui.gentypescript.GUI2TSGenerator;
-import umlp.generator.gui.gentypescript.config.GUI2TSConfigGenerator;
-import umlp.generator.gui.gentypescript.config.ModuleRoutingInfo;
+import umlp.generator.gui.gentypescript.config.GUI2ConfigGenerator;
+import umlp.generator.gui.gentypescript.config.PackageRoute;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -35,13 +35,16 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static umlp.UMLPToolOptions.*;
+import static umlp.UMLPToolOptions.DOMAIN;
+import static umlp.UMLPToolOptions.GUI_CREATE;
+import static umlp.UMLPToolOptions.INPUT;
+import static umlp.UMLPToolOptions.SYMTAB;
 
 public class GuiPipelineSetup {
 
   // TODO: Split this further into pipelines - right now the entire GUI workflow is a single op
   final IOperation<UMLPPipelineData> gui = data -> {
-    Map<String, ModuleRoutingInfo> routesMap = new LinkedHashMap<>();
+    Map<String, PackageRoute> routeMap = new LinkedHashMap<>();
 
     // Prepare the SingletonLookup
     TagRelated.initLookup(data.importedSymbolPath);
@@ -64,11 +67,6 @@ public class GuiPipelineSetup {
 
       IGUIDSLArtifactScope symbolTable = data.tool.createSymbolTable(astGui, Optional.of(guiModel), data.importedSymbolPath);
       data.tool.runDefaultCoCos(astGui);
-
-      if (!routesMap.containsKey(astGui.getPackage())) {
-        routesMap.put(astGui.getPackage(), new ModuleRoutingInfo(astGui.getMCPackageDeclaration().getMCQualifiedName().getPartsList()));
-      }
-      routesMap.get(astGui.getPackage()).add(astGui);
 
       // print or store symbol table
       if (SYMTAB.isSelected(data.cmd)) {
@@ -127,6 +125,17 @@ public class GuiPipelineSetup {
       String htmlConfigTemplate = data.cmd.getOptionValue("ct_html", UMLPTool.DEFAULT_CONFIGTEMPLATE_GUI2HTML);
       htmlGenerator.generate(astGui, htmlConfigTemplate);
 
+      // each package containing a page represents one URL routing configuration
+      // each page contributes to a URL routing configuration
+      if (astGui.getGUIComponentDeclaration().isPage()) {
+        if (!routeMap.containsKey(astGui.getPackage())) {
+          routeMap.put(astGui.getPackage(), new PackageRoute(
+              astGui.getMCPackageDeclaration().getMCQualifiedName().getPartsList()
+          ));
+        }
+        routeMap.get(astGui.getPackage()).add(astGui);
+      }
+
       // write reports
       Reporting.flush(astGui);
       //Reporting.reportFileCreation(standaloneConfigPath);
@@ -144,13 +153,9 @@ public class GuiPipelineSetup {
     genSetup.setGlex(glex);
     genSetup.getGlex().setGlobalValue("genHelper", GUIGeneratorUtil.getInstance());
     genSetup.setTracing(false);
-    GUI2TSConfigGenerator tsConfigGenerator = new GUI2TSConfigGenerator(genSetup, data.hwcPath);
+    GUI2ConfigGenerator configGenerator = new GUI2ConfigGenerator(genSetup);
 
-    for (Map.Entry<String, ModuleRoutingInfo> packageInfo : routesMap.entrySet()) {
-      String output = tsConfigGenerator.generateComponentsRouting(packageInfo, routesMap);
-      Reporting.reportFileCreation(Paths.get(data.outDir.getPath(), output).toString());
-    }
-    List<String> outputs = tsConfigGenerator.generateAppConfigFiles();
+    List<String> outputs = configGenerator.generateConfig(routeMap.values());
     for (String output : outputs) {
       Reporting.reportFileCreation(Paths.get(data.outDir.getPath(), output).toString());
     }
