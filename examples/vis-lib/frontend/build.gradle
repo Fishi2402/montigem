@@ -39,7 +39,7 @@ nodeSetup.dependsOn(frontendSetup)
 npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 
 def prebuildTasks = [
-    "npmInstall",
+    npmInstall,
     generate
 ]
 

@@ -73,7 +73,7 @@ yarn_upgrade.dependsOn(yarn_install)
 npmInstall.dependsOn(generateNPMAuth, ':umlp-rte:client:npmInstall')
 
 def prebuildTasks = [
-  "npmInstall", genDomain
+  npmInstall, genDomain
 ]
 
 /*
