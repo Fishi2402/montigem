@@ -125,7 +125,7 @@ public class GUI2ConfigGeneratorTest extends DomainGUITest {
     assertAll(
         () -> assertTrue(update_cr.getHasIds()),
         () -> assertEquals("Update", update_cr.getImportedSymbolName()),
-        () -> assertEquals("overridden/Update/:personRoutingId", update_cr.getUrl()),
+        () -> assertEquals("overridden/Update/:conf_overridden_Update_person_RoutingId", update_cr.getUrl()),
         () -> assertEquals("overridden", update_cr.getUrlPrefix()),
         // from build folder to resources folder
         () -> assertEquals(

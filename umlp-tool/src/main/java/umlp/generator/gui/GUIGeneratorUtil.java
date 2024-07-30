@@ -799,7 +799,10 @@ public class GUIGeneratorUtil {
   }
 
   public String getRoutingId(ASTGUIParam p) {
-    return p.getName() + "RoutingId";
+    if (p.isPresentSymbol()) {
+      return p.getSymbol().getFullName().replace(".", "_") + "_RoutingId";
+    }
+    return p.getName() + "_RoutingId";
   }
 
   public List<String> getRoutingIds(ASTGUICompilationUnit decoratedAst) {
