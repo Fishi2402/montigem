@@ -10,7 +10,7 @@ import {GemTextInputValidity} from "../gemtextinput";
 
 @Component({
   selector: "gem-dropdown-input",
-  templateUrl: "./gem-dropdown-input.component.html",
+  templateUrl: "./gem-dropdown-input.component.html"
 })
 export class GemDropdownInput {
 
