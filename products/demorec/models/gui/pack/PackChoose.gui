@@ -1,0 +1,22 @@
+package gui.pack;
+
+import DemoRec.BatteryPack;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.input.GemDropdownInput;
+
+import gui.pack.PackCreate;
+
+page PackChoose(BatteryPack pack, Event<BatteryPack> chosenPack) {
+
+  selectPack@GemDropdownInput(
+    labelText = "Pack",
+    options = null,
+    entry = null,
+    width="15rem"
+  );
+  createPack@guard(true) {
+    @PackCreate(newPack=addNewBatteryPack());
+  }
+
+}

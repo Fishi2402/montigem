@@ -148,18 +148,22 @@ public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
       pack.addAllComponents(component);
       pack.addAllComponents(component2);
 
+      JoinConnectionKind kind = DemoRecManager.joinConnectionKindBuilder()
+          .joinConnectionType(JoinConnectionType.SCREW)
+          .connectsAdd(component)
+          .connectsAdd(component2)
+          .build().get();
+
       JoinConnection connection = DemoRecManager.joinConnectionBuilder()
           .condition(State.OTHER)
           .conditionDescription(Optional.of("Korrodiert"))
           .xPos(Optional.of(65.8))
           .yPos(Optional.of(5.1))
           .zPos(Optional.of(-89.5622))
-          .joinConnectionType(JoinConnectionType.SCREW)
+          .joinConnectionKind(kind)
           .build().get();
-      connection.addConnects(component);
-      connection.addConnects(component2);
 
-      pack.addAllConnections(connection);
+      pack.addAllConnections(kind);
 
       EndEffector endEffector = DemoRecManager.endEffectorBuilder()
           .name("Screwdriver")

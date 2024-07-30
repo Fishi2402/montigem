@@ -2,7 +2,6 @@
 package mc.fenix.input;
 
 import mc.fenix.input.GemTextInputTypes.GemTextInputValidity;
-import mc.fenix.input.GemTextInputTypes.Option;
 
 /**
   The component is an input field with an optional label. It is used whenever a
@@ -10,10 +9,7 @@ import mc.fenix.input.GemTextInputTypes.Option;
   etc.
 */
 component GemTextInput(
-  /**
-    In context of a `"dropdown"` input type id can be set to ensure the list of
-    options is specific to the input field.
-  */
+  /** The component's id; used to configure the styles. */
   String id,
   /** Text describing the input field. */
   String labelText = "",
@@ -23,14 +19,11 @@ component GemTextInput(
     are defined by the browser/platform implementing the input fields.
     Commonly used types:
     `"text"`: Accept any input string.
-    `"dropdown"`: Input field turns into a dropdown.
     `"number"`: Accept numbers.
     `"date"`: Date input with a calender selection.
     `"password"`: Field hiding the input string.
   */
   String inputType = "text",
-  /** A list of options for the `"dropdown"` input type. */
-  List<Option> options,
   /**
     The input field's value. If it is linked to a variable, the value of the
     variable will change when the user enters a new value.

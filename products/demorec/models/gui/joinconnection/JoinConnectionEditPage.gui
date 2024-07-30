@@ -10,10 +10,10 @@ import gui.joinconnection.JoinConnectionEdit;
 page JoinConnectionEditPage(JoinConnection connection) {
   @NavContainer(
     content=[
-      @JoinConnectionEdit(connection=connection, showOptionalAttributes=true)
+      @JoinConnectionEdit(connection=connection)
     ],
     leftSideBar=[
-      @ComponentsOfPack(pack=connection.batteryPack)
+      @ComponentsOfPack(pack=connection.joinConnectionKind.batteryPack)
     ]
   );
 }

@@ -27,9 +27,6 @@ const newOption: Option = { value: "NEW", display: "NEW" };
 })
 export class ProcessCreate extends ProcessCreateComponent {
 
-  public bPackEntry: string = "";
-  public bPackOptions: Option[] = [newOption];
-
   public typeHash = -1
   public lastType : BatteryPackType;
 
@@ -45,61 +42,18 @@ export class ProcessCreate extends ProcessCreateComponent {
         console.warn("Nothing happens")
       }
     });
-    DemoRecManager.batteryPackBuilder().then(gemPromiseRes => {
-      this.pack = gemPromiseRes;
-    });
     this.init();
-    DemoRecManager.getBatteryPackList().then(gemPromiseRes => {
-      const bPacks = gemPromiseRes;
-      bPacks.loadAll().then(() => {
-        for (const bPack of bPacks) {
-          let value = bPack.getGemId() + "";
-          this.bPackOptions.push({value: value, display: bPack.getName()});
-        }
-        this.bPackOptions = this.bPackOptions.slice();
-      });
-    });
 
   }
 
-   public override getSelectBPackOptions(): Array<Option> {
-    return this.bPackOptions;
-  }
-
-  public override getSelectBPackEntry(): string {
-    return this.bPackEntry;
-  }
-
-  public override setSelectBPackEntry(value: string): void {
-    this.bPackEntry = value;
-  }
-
-  public override getGuardBPackCondition(): boolean {
-    return this.getSelectBPackEntry() === newOption.value;
+  public override changePack() {
+    return (pack) => this.getP().setDeconstructionOf1(pack)
   }
 
   public override sendEverything(): (arg: void) => void {
     return $ => {
-      let pack : Promise<BatteryPack>
-
-      if(this.getSelectBPackEntry() != newOption.value) {
-        pack = DemoRecManager.getBatteryPackSure(+this.getSelectBPackEntry())
-      } else {
-        pack =
-          new Promise((resolve, reject) => {
-            if(this.getPack().isBuildable()) {
-              resolve(this.getPack().build())
-            } else {
-              reject("Pack could not be built.")
-            }
-          })
-      }
-
-      pack.then(pack => {
-        this.getP().setDeconstructionOf1(pack)
-        this.getP().build()
-        this._router.navigate(["gui/process/ProcessOverview/"+this.getP().getGemId()])
-      })
+      this.getP().build()
+      this._router.navigate(["gui/process/ProcessOverview/"+this.getP().getGemId()])
     }
   }
 

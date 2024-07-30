@@ -42,7 +42,7 @@ genGUI {
       project(":umlp-rte:client").tasks.createCDSymbols.output
   )
   domainModels = ["DemoRec"]
-  guiCreateModels = ["gui.pack.BatteryPackCreate",
+  guiCreateModels = ["gui.pack.PackCreate",
                      "gui.process.ProcessCreate",
                      "gui.step.ProcessStepCreate",
                      "gui.joinconnection.JoinConnectionCreate",

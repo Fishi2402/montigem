@@ -44,6 +44,7 @@ docker build .  -t <imageNameOfFrontend>
 
 ### Deploy on Server
 * copy the `docker-compose.yml` file on the server
+  * to use a neo4j database in deployment you can use the `neo4j_docker-compose.yml` 
   * e.g. ``scp ./docker-compose.yml <user<@<domain.de<:~/<folder>`` 
   * Modify the file according to comments
 * In gitlab create login token with read access to package registry

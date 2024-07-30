@@ -10,7 +10,7 @@ import mc.fenix.arrange.GemColumn;
 import mc.fenix.basic.GemButton;
 import mc.fenix.basic.GemText;
 import mc.fenix.basic.GemImage;
-import mc.fenix.input.GemTextInput;
+import mc.fenix.input.GemDropdownInput;
 import mc.fenix.table.GemTable;
 
 component UserDisplay(User user) {
@@ -25,9 +25,8 @@ component UserDisplay(User user) {
         errorrole@GemText(value = "")
       ),
       @GemColumn(width = "80%", component =
-        role@GemTextInput(
+        role@GemDropdownInput(
           labelText = "Role",
-          inputType = "dropdown",
           options = null,
           entry = user.role,
           validity = user.validityRole,

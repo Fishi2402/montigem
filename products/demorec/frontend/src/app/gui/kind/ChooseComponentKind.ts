@@ -76,7 +76,7 @@ export class ChooseComponentKind extends ChooseComponentKindComponent {
   }
 
   public override getCreateComponentKindCondition (): boolean {
-    return this.getSelectComponentKindEntry()==newOption.value
+    return this.getSelectComponentKindEntry()===newOption.value
   }
 
   public override getSelectComponentKindOptions(): Array<Option> {
@@ -84,6 +84,9 @@ export class ChooseComponentKind extends ChooseComponentKindComponent {
   }
 
   public override getSelectComponentKindEntry(): string {
+    if(this.kindEntry===newOption.value) {
+      return this.kindEntry;
+    }
     if(this.getCurrentKind() && (this.chosenKindNotLoaded || ((this.getCurrentKind().getGemId()+"") != this.kindEntry)) ) {
       this.chosenKindNotLoaded = false;
       this.kindEntry = this.getCurrentKind().getGemId()+""

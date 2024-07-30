@@ -1,0 +1,27 @@
+package gui.connectionkind;
+
+import DemoRec.JoinConnectionKind;
+import DemoRec.DemoRecComponent;
+
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.input.GemTextInput;
+
+import gui.component.ComponentCreate;
+import gui.connectionkind.JoinConnectionKindEdit;
+
+component JoinConnectionKindCreate(JoinConnectionKind connectionKind, Event<JoinConnectionKind> createJoinConnectionKind) {
+  @GemCard(
+    title = "Specify Connection",
+    component = @GemColumn(
+      rowGap="5px",
+      components = [
+        @JoinConnectionKindEdit(connectionKind=connectionKind, showOptionalAttributes=false),
+        buildConnection@GemButton(label = "Save ConnectionKind", leftClick = createNewConnectionKind(), disabled=true, width="var(--smallDropDownWidth)")
+      ]
+    )
+  );
+}

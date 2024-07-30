@@ -46,9 +46,9 @@ export  class ProcessOverview extends ProcessOverviewComponent {
 
       step.getDeconstructsGem().isPresent().then(b => {
         if(b) {
-          this.getP().getDeconstructionOf().addAllConnections2(step.getDeconstructs())
+          //this.getP().getDeconstructionOf().addAllConnections2(step.getDeconstructs())
 
-          step.getDeconstructs().getConnectsList().forEach(comp => {
+          step.getDeconstructs().getJoinConnectionKind().getConnectsList().forEach(comp => {
             this.getP().getDeconstructionOf().addAllComponents2(comp)
           })
         }

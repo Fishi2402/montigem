@@ -1,4 +1,4 @@
-# (c) https://github.com/MontiCore/monticore  
+# (c) https://github.com/MontiCore/monticore
 #
 # Example Docker-Compose for the deployment _on the server_
 # Look for the comment "CHANGE ME" to see what needs to be modified on other deployments
@@ -46,7 +46,7 @@ services:
     expose:
       - 8081/tcp
 
-  frontend:  # Static Apache Server with Proxy to backend
+  frontend:  # Static Caddy Server with Proxy to backend
     image: registry.git.rwth-aachen.de/monticore/umlp/corerequirements_frontend        # CHANGE ME: use your own frontend-image
 # CHANGE ME: Comment in!
 #    environment:

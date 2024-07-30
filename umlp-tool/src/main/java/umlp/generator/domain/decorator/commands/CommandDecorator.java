@@ -76,11 +76,6 @@ public class CommandDecorator extends AbstractDecorator {
     addedDeSers.addAll(assocCommandDecorator.getAddedDeSers());
     Log.info("After decorator: AssocCommandDecorator", CommandDecorator.class.getName());
 
-    DerivedClassCommandDecorator derivedClassCommandDecorator = new DerivedClassCommandDecorator(glex);
-    derivedClassCommandDecorator.transform(cdAST, decoratedAST);
-    addedDeSers.addAll(derivedClassCommandDecorator.getAddedDeSers());
-    Log.info("After decorator: DerivedClassCommandDecorator", CommandDecorator.class.getName());
-
     ManagerSubscriptionDecorator managerSubscriptionDecorator = new ManagerSubscriptionDecorator(glex);
     managerSubscriptionDecorator.transform(cdAST, decoratedAST);
     addedDeSers.addAll(managerSubscriptionDecorator.getAddedDeSers());

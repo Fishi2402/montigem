@@ -1,14 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
-
-import { ProcessBuilder } from '@src/demorec/ProcessBuilder';
-
 import { DemoRecManager } from '@src/demorec/DemoRecManager';
 
 import { StepTableComponent,config } from '@src/gui/step/StepTableComponent';
 
 import {ProcessStep} from '@src/demorec/ProcessStep'
-
-import {Process} from '@src/demorec/Process'
 
 import {
   Directive,
@@ -18,9 +13,6 @@ import {
   EventEmitter,
   TemplateRef,
 } from '@angular/core';
-
-import { ActivatedRoute, Router } from '@angular/router';
-import { Option } from '@umlp/input';
 
 @Component({
   standalone:true,
@@ -57,7 +49,7 @@ export class StepTable extends StepTableComponent {
   }
 
   public override deleteStep(step: ProcessStep) : (arg) => void {
-    return (step: ProcessStep) => {
+    return $ => {
       if(this.getProcess().removeConsistsOf2(step)) {
         DemoRecManager.deleteProcessStep(step.getGemId())
       }

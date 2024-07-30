@@ -148,10 +148,11 @@ classdiagram Dtcockpit {
     String message;
   }
 
- / class DerivedInfo {
-    int someNumber;
-    String someString;
-    MessageOfTheDay randomMSG;
+  // TODO: Do not persist!
+  class DerivedInfo {
+    / int someNumber;
+    / String someString;
+    / MessageOfTheDay randomMSG;
   }
 
   / association DerivedInfo -> (manyStrings) java.lang.String [*];

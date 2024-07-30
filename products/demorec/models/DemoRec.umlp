@@ -16,7 +16,7 @@ classdiagram DemoRec {
   //association [1] BatteryPack -> (consistsOf) DemoRecComponent [*]; Replaced by composedOf
 
   association [0..1] BatteryPack <-> (allComponents) DemoRecComponent [*];
-  association [0..1] BatteryPack <-> (allConnections) JoinConnection [*];
+  association [0..1] BatteryPack <-> (allConnections) JoinConnectionKind [*];
 
   class BatteryPackType {
     double capacity;
@@ -105,13 +105,21 @@ classdiagram DemoRec {
     State condition;
     Optional<String> conditionDescription;
 
-    JoinConnectionType joinConnectionType;
     Optional<Double> xPos;
     Optional<Double> yPos;
     Optional<Double> zPos;
   }
 
-  association [*] DemoRecComponent (connects) <-> (connectedBy) JoinConnection [*];  // TODO should be 2..* on left side
+  /**
+   * Class representing the connection type, holding the connected components
+   */
+  class JoinConnectionKind {
+    JoinConnectionType joinConnectionType;
+  }
+
+  association [*] DemoRecComponent (connects) <-> (connectedBy) JoinConnectionKind [*];  // TODO should be 2..* on left side
+
+  association [*] JoinConnection <->  JoinConnectionKind [1];
 
   enum JoinConnectionType {
     SCREW,

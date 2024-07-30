@@ -13,6 +13,8 @@ import umlp.generator.AbstractDecorator;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 
+//Derived classes are no longer supported
+@Deprecated
 public class DerivedClassDecorator extends AbstractDecorator {
 
   public DerivedClassDecorator(GlobalExtensionManagement glex) {

@@ -6,7 +6,6 @@ import { BatteryPackType } from '@src/demorec/BatteryPackType';
 import { State } from '@src/demorec/State';
 
 import { BatteryPack } from '@src/demorec/BatteryPack';
-import { JoinConnection } from '@src/demorec/JoinConnection';
 import { ComponentKind } from '@src/demorec/ComponentKind';
 import { Photo } from '@src/demorec/Photo';
 import { Option } from '@umlp/input';
@@ -71,7 +70,17 @@ export  class ComponentEdit extends ComponentEditComponent {
   }
 
   public editComponentKind(): (arg: void) => void {
-    return $ => this._router.navigateByUrl("gui/kind/EditComponentKindPage/"+this.getComponent().getIsA().getGemId());
+
+    return $ => {
+      let packId;
+      if(this.getComponent() instanceof BatteryPack) {
+        packId = this.getComponent().getGemId()
+      } else {
+        packId = this.getComponent().getBatteryPack().getGemId()
+      }
+      this._router.navigateByUrl("gui/kind/EditComponentKindPage/"+packId
+          +"/"+this.getComponent().getIsA().getGemId());
+    }
   }
 
   public override addPhoto() : (arg : Photo) => void {

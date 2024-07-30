@@ -8,7 +8,7 @@ import { BatteryPack } from '@src/demorec/BatteryPack';
 
 import { JoinConnectionType } from '@src/demorec/JoinConnectionType';
 
-import { JoinConnectionEditComponent, config } from '../../../../build/frontendGen/build/appgui/gui/joinconnection/JoinConnectionEditComponent';
+import { JoinConnectionEditComponent, config } from '@src/gui/joinconnection/JoinConnectionEditComponent';
 
 import {
   Component,
@@ -101,24 +101,6 @@ export class JoinConnectionEdit extends JoinConnectionEditComponent implements O
     });
   }
 
-
-  // Select Type of connection
-  public override getSelectTypeOfConnectionOptions (): Array<Option> {
-    return this.joinConnectionTypeOptions
-  }
-
-  public override getSelectTypeOfConnectionEntry (): string {
-    return this.getConnection()?.getJoinConnectionType()?.toString()
-  }
-
-  public override setSelectTypeOfConnectionEntry (value: string): void {
-    Object.keys(JoinConnectionType).filter((v) => isNaN(Number(v))).forEach((key, index) => {
-      if (+value === index) {
-        this.getConnection().setJoinConnectionType(JoinConnectionType[key])
-      }
-    })
-  }
-
   // Select condition of connection
   public override getConditionOptions (): Array<Option> {
     return this.conditionOptions;
@@ -136,55 +118,11 @@ export class JoinConnectionEdit extends JoinConnectionEditComponent implements O
     })
   }
 
-  // Select Connected Components
-  public override getAddComponentDisabled(): boolean {
-    return (this.getSelectConnectsComponentEntry() === newOption["value"])
-  }
-
-  public override getSelectConnectsComponentOptions(): Array<Option>{
-    console.warn(this.getCurrentPackComponents())
-    const filteredOptions = [newOption].concat(
-        this.componentOptions.filter(opt => this.getCurrentPackComponents().has(opt.value)))
-    if(filteredOptions === this.filteredComponentOptions) {
-      this.filteredComponentOptions = filteredOptions
+/*  public override changeChosenKind() {
+    return (jCKind) => {
+      this.getConnection().setJoinConnectionKind1(jCKind)
     }
-    return this.filteredComponentOptions
-  }
+  }*/
 
-  public override getSelectConnectsComponentEntry(): string{
-    return this.connectsComponentEntry
-  }
-
-  public override setSelectConnectsComponentEntry(value: string): void{
-    this.connectsComponentEntry = value
-  }
-
-  public override connectSelectedComponent(): (arg: void) => void {
-    return $ => {
-      if(this.getSelectConnectsComponentEntry()) {
-        DemoRecManager.getDemoRecComponentSure(+this.getSelectConnectsComponentEntry()).then(
-            demoRecComponent => {
-              this.getConnection().addConnects2(demoRecComponent)
-            }
-        )
-      }
-    }
-  }
-
-  public override addNewComponent(): (comp: DemoRecComponent) => void {
-    return (comp: DemoRecComponent) => {
-      this.getConnection().addConnects2(comp)
-    }
-  }
-
-  public override removeSelectedComponent(componentToRemove: DemoRecComponent): (arg: any) => void {
-    return () => {
-      this.getConnection().removeConnects2(componentToRemove)
-    }
-  }
-
-  public override getNewCompGuardCondition() :boolean {
-    return this.getSelectConnectsComponentEntry() === newOption.value
-  }
 
 }

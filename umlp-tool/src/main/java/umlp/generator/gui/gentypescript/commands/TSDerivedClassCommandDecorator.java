@@ -10,6 +10,8 @@ import umlp.generator.domain.decorator.commands.DerivedClassCommandDecorator;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentTemplates;
 import umlp.generator.util.PathUtil;
 
+//Derived classes are no longer supported
+@Deprecated
 public class TSDerivedClassCommandDecorator extends DerivedClassCommandDecorator {
 
   public TSDerivedClassCommandDecorator(GlobalExtensionManagement glex) {

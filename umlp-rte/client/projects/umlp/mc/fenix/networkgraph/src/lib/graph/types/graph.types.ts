@@ -130,7 +130,7 @@ export type RawEdgeDirectionAttributes = {
 export type EdgePrograms = "line" | "arrow" | "fastLine";
 
 /** Supported node program types */
-export type NodePrograms = "circle" | "image";
+export type NodePrograms = "circle" | "image" | "triangle" | "square";
 
 /** Node-specific attributes. */
 export type RawNodeSpecificAttributes = {

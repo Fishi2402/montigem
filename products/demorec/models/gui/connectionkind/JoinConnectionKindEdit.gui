@@ -1,0 +1,55 @@
+package gui.connectionkind;
+
+import DemoRec.JoinConnectionKind;
+import DemoRec.DemoRecComponent;
+
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.input.GemDropdownInput;
+
+import gui.component.ComponentCreate;
+import gui.pack.ComponentsOfPack;
+import gui.staticcontainer.NavContainer;
+
+page JoinConnectionKindEdit(JoinConnectionKind connectionKind, boolean showOptionalAttributes=true) {
+
+  @GemColumn(
+    wrap="nowrap",
+    rowGap="5px",
+    components=[
+      selectTypeOfConnection@GemDropdownInput(
+        labelText = "Type of Connection",
+        options = null,
+        entry = connectionKind.joinConnectionType,
+        width="var(--smallDropDownWidth)"),
+
+      selectConnectsComponent@GemDropdownInput(
+        labelText = "Components connected by this connection",
+        options = null,
+        entry = null,
+        keyPress = tryToAddComponent(),
+        width="var(--largeDropDownWidth)"),
+
+      @GemRow(
+        wrap="nowrap",
+        colGap="5px",
+        components = [
+          @iterate(DemoRecComponent component : connectionKind.connects){
+            removeComponent@GemButton(label=component.name, leftClick=removeSelectedComponent(component), disabled=false);
+          }
+        ]
+      ),
+
+      newCompGuard@guard(true) {
+        createComponentDialog@GemColumn(
+          components=[
+            @ComponentCreate(createComponent=addNewComponent())
+          ]
+        );
+      }
+    ]
+  );
+}
