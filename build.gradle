@@ -49,7 +49,7 @@ subprojects {
   tasks.withType(NpmTask).configureEach {
     dependsOn rootProject.tasks.npmInstall
     execOverrides {
-      setExecutable "${get_node_bin_dir()}/bin/npm"
+      setExecutable "${getNodeDir()}/bin/npm"
       def nodeBinDir = file("${getNodeDir()}/bin")
       environment 'PATH', "${nodeBinDir}${System.getProperty('path.separator')}${System.getenv('PATH')}"
     }
