@@ -43,6 +43,7 @@ page ComponentEdit(DemoRecComponent component, boolean showOptionalValues=true, 
         labelText = "Component Name",
         inputType = "string",
         entry = component.name,
+        validity = checkComponentName(),
         width="var(--textWidth)"),
       @guard(showOptionalValues) {
         condition@GemDropdownInput(

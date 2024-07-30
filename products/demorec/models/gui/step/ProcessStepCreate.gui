@@ -15,7 +15,8 @@ import DemoRec.MeasuringValue;
 import gui.connectionkind.JoinConnectionKindCreate;
 import gui.measuringvalues.MeasuringValueEdit;
 
-page ProcessStepCreate(ProcessStep step, Event<ProcessStep> create) {
+page ProcessStepCreate(ProcessStep step, Event<ProcessStep> create,
+    List<EndEffector> endEffectors) {
   @GemColumn(
     rowGap="5px",
     components=[
@@ -29,6 +30,7 @@ page ProcessStepCreate(ProcessStep step, Event<ProcessStep> create) {
               labelText = "Step type",
               options = null,
               entry = null,
+              validity=checkStepTypeSet(),
               width="var(--smallDropDownWidth)");
           },
           stepChooseJoinConnectionKind@guard(true){
@@ -37,6 +39,7 @@ page ProcessStepCreate(ProcessStep step, Event<ProcessStep> create) {
                   labelText = "Deconstructing Join Connection",
                   options = null,
                   entry = null,
+                  validity=checkJoinConnectionKind(),
                   width="var(--largeDropDownWidth)");
             }
             createNewJoinConnection@guard(true) {
@@ -59,6 +62,7 @@ page ProcessStepCreate(ProcessStep step, Event<ProcessStep> create) {
                           labelText = "Time Consumption (s)",
                           inputType = "number",
                           entry = step.timeConsumption,
+                          validity= checkTimeConsumptionSet(),
                           width="var(--smallDropDownWidth)"
                         )
                       ]
@@ -92,7 +96,8 @@ page ProcessStepCreate(ProcessStep step, Event<ProcessStep> create) {
                     labelText = "Used Endeffector in this step",
                     options = null,
                     entry = null,
-                    width="var(--smallDropDownWidth)"),
+                    width="var(--smallDropDownWidth)",
+                    validity= checkEndEffectorSet()),
                 @MeasuringValueEdit(step = step)
               ]
             );

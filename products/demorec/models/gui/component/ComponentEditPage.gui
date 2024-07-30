@@ -32,21 +32,12 @@ page ComponentEditPage(DemoRecComponent component) {
         components=[
           tableHeader@HorizontalStatTable(rows = [
             @EvenlySpacedColumn(element = @GemText(value = "Connection")),
-            @EvenlySpacedColumn(element = @GemText(value = "Connection Condition")),
-            @EvenlySpacedColumn(element = @GemText(value = "X")),
-            @EvenlySpacedColumn(element = @GemText(value = "Y")),
-            @EvenlySpacedColumn(element = @GemText(value = "Z"))
+            @EvenlySpacedColumn(element = @GemText(value = "Edit"))
           ]),
           @iterate(JoinConnectionKind connectionKind : component.connectedBy) {
             @HorizontalStatTable(rows = [
-              @EvenlySpacedColumn(element = connectionName@GemText(value = null))
-
-              /*,
-              @EvenlySpacedColumn(element = @GemText(value = connectionKind.condition)),
-              @EvenlySpacedColumn(element = @GemTextInput(labelText = "X-Position", inputType = "number", entry = connection.xPos)),
-              @EvenlySpacedColumn(element = @GemTextInput(labelText = "Y-Position", inputType = "number", entry = connection.yPos)),
-              @EvenlySpacedColumn(element = @GemTextInput(labelText = "Z-Position", inputType = "number", entry = connection.zPos))
-              */
+              @EvenlySpacedColumn(element = connectionName@GemText(value = null)),
+              @EvenlySpacedColumn(element = @GemButton(label = "Edit", leftClick=navigateToConnectionKind(connectionKind)))
             ]);
           }
         ]

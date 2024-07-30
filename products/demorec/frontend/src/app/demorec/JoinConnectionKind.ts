@@ -23,9 +23,9 @@ export class JoinConnectionKind extends JoinConnectionKindTOP {
   }
 
   public getNameAfterLoadPromise() : Promise<string> {
-    if(this.calculatedName !== "") {
+/*    if(this.calculatedName !== "") {
       return new Promise<string>((resolve) => this.calculatedName)
-    }
+    }*/
     return this._internal_getConnectsGemList().loadAll().then(
         list => {
           const connectionTypeString : string = JoinConnectionType[this.getJoinConnectionType()]

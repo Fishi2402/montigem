@@ -8,7 +8,7 @@ import { State } from '@src/demorec/State';
 import { BatteryPack } from '@src/demorec/BatteryPack';
 import { ComponentKind } from '@src/demorec/ComponentKind';
 import { Photo } from '@src/demorec/Photo';
-import { Option } from '@umlp/input';
+import {GemTextInputValidity, Option} from '@umlp/input';
 
 import { ComponentEditComponent, config } from '../../../../build/frontendGen/build/appgui/gui/component/ComponentEditComponent';
 
@@ -111,6 +111,18 @@ export  class ComponentEdit extends ComponentEditComponent {
         this.getComponent()?.setCondition(State[key])
       }
     })
+  }
+
+  public override checkComponentName() :GemTextInputValidity {
+    if(this.getComponent()) {
+      if(this.getComponent().getName()) {
+        return {status: "Success"}
+      }
+      // TODO check if the name already exists
+      return {status: "Error", message: "Please enter a name."}
+    } else {
+      return {status: "Warning", message: "Wait for initialization."}
+    }
   }
 
 }

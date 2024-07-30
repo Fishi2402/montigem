@@ -1,6 +1,6 @@
 :host ::ng-deep .startTimerButton > button.gem-button {
   display: inline-block;
-  padding: 15px 30px;
+  //padding: 15px 30px;
   font-size: 16px;
   font-weight: bold;
   text-align: center;
@@ -18,7 +18,7 @@
 
 :host ::ng-deep .stopTimerButton > button.gem-button {
   display: inline-block;
-  padding: 15px 30px;
+  //padding: 15px 30px;
   font-size: 16px;
   font-weight: bold;
   text-align: center;
@@ -34,10 +34,6 @@
   background-color: #f44336;
 }
 
-:host ::ng-deep button.gem-button  {
-  font-size: 20px;
-  padding: 10px 10px;
-}
 
 :host ::ng-deep .passedTime {
   font-size: 20px;

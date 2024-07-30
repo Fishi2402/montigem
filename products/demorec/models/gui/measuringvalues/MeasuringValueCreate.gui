@@ -11,7 +11,8 @@ import mc.fenix.arrange.GemRow;
 import DemoRec.MeasuringValue;
 import DemoRec.Dimension;
 
-page MeasuringValueCreate(MeasuringValue measuringValue, Event<MeasuringValue> measuringValueEvent) {
+page MeasuringValueCreate(MeasuringValue measuringValue, Event<MeasuringValue> measuringValueEvent,
+    List<Dimension> dimensions) {
   @GemRow(
     wrap="nowrap",
     colGap="5px",

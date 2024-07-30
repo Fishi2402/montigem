@@ -119,7 +119,7 @@ export  class ComponentsOfPack extends ComponentsOfPackComponent {
         const topLevelEntry = new GemTreeviewEntry();
         topLevelEntry.name=connections.length+
             "x "+name
-        topLevelEntry.value=unroutable
+        topLevelEntry.value=connections[0]
         topLevelEntry.children = []
 
         connections.forEach(c => {

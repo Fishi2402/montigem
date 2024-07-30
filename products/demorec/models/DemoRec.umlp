@@ -115,6 +115,7 @@ classdiagram DemoRec {
    */
   class JoinConnectionKind {
     JoinConnectionType joinConnectionType;
+    //Optional<String> name; TODO later
   }
 
   association [*] DemoRecComponent (connects) <-> (connectedBy) JoinConnectionKind [*];  // TODO should be 2..* on left side

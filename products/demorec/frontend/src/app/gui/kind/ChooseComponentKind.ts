@@ -3,7 +3,7 @@
 import { DemoRecManager } from '@src/demorec/DemoRecManager';
 
 import { ComponentKind } from '@src/demorec/ComponentKind';
-import { Option } from '@umlp/input';
+import {GemTextInputValidity, Option} from '@umlp/input';
 
 import { ChooseComponentKindComponent, config } from '../../../../build/frontendGen/build/appgui/gui/kind/ChooseComponentKindComponent';
 
@@ -108,6 +108,15 @@ export class ChooseComponentKind extends ChooseComponentKindComponent {
     }
   }
 
+  public override checkKindChoice() : GemTextInputValidity {
+    if(this.kindEntry) {
+      if(this.kindEntry === newOption.value) {
+        return {status: "Error", message: "Please save the new component kind or choose another one."}
+      }
+      return {status: "Success"}
+    }
+    return {status: "Error", message: "Please enter a valid component kind."}
+  }
 
 }
 

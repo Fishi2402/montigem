@@ -16,6 +16,7 @@ page ChooseComponentKind(ComponentKind currentKind, Event<ComponentKind> chosenK
           labelText = "Component Kind",
           options = null,
           entry = null,
+          validity = checkKindChoice(),
           width="var(--smallDropDownWidth)"
         ),
         createComponentKind@guard(true) {

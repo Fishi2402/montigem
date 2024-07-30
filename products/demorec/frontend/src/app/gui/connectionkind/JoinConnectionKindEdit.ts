@@ -15,7 +15,7 @@ import {
   OnInit
 } from '@angular/core';
 
-import { Option } from '@umlp/input';
+import {GemTextInputValidity, Option} from '@umlp/input';
 import {BatteryPackService} from "../../BatteryPackService";
 import { NavigationEnd,ActivatedRoute, Router } from '@angular/router';
 
@@ -88,7 +88,7 @@ export class JoinConnectionKindEdit extends JoinConnectionKindEditComponent impl
         this.componentOptions = [newOption]
         for (const component of components) {
           if(!(component instanceof BatteryPack)) {
-            console.debug("Refill Join Connection Options")
+            console.debug("Refill Component Options for Join Connection Kinds")
             const value = component.getGemId() + "";
             const display = component.getName()? component.getName() : value
             this.componentOptions.push({value: value, display: display});
@@ -125,7 +125,6 @@ export class JoinConnectionKindEdit extends JoinConnectionKindEditComponent impl
   }*/
 
   public override getSelectConnectsComponentOptions(): Array<Option>{
-    console.warn(this.getCurrentPackComponents())
     const filteredOptions = [newOption].concat(
         this.componentOptions.filter(opt => this.getCurrentPackComponents().has(opt.value)))
     if(filteredOptions === this.filteredComponentOptions) {
@@ -174,6 +173,26 @@ export class JoinConnectionKindEdit extends JoinConnectionKindEditComponent impl
 
   public override getNewCompGuardCondition() :boolean {
     return this.getSelectConnectsComponentEntry() === newOption.value
+  }
+
+  public checkConnectionType() : GemTextInputValidity {
+    if(this.getConnectionKind()) {
+      if(this.getConnectionKind().getJoinConnectionType()) {
+        return {status: "Success"}
+      }
+      return {status: "Error", message: "Please choose a connection type."}
+    }
+    return {status: "Warning", message: "Wait for page init."}
+  }
+
+  public checkChosenComponents() : GemTextInputValidity {
+    if(this.getConnectionKind()) {
+      if(this.getConnectionKind().getConnectsList().length >= 2) {
+        return {status: "Success"}
+      }
+      return {status: "Warning", message: "Later on, you should specify at least 2 connected components."}
+    }
+    return {status: "Warning", message: "Wait for page init."}
   }
 
 }

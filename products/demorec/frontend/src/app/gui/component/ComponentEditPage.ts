@@ -36,4 +36,8 @@ export  class ComponentEditPage extends ComponentEditPageComponent {
     return connection.getNameAfterLoad()
   }
 
+  public override navigateToConnectionKind(kind) {
+    return $ => this._router.navigate(["gui/connectionkind/JoinConnectionKindEditPage/"+kind.getGemId()])
+  }
+
 }

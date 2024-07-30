@@ -24,6 +24,7 @@ page JoinConnectionKindEdit(JoinConnectionKind connectionKind, boolean showOptio
         labelText = "Type of Connection",
         options = null,
         entry = connectionKind.joinConnectionType,
+        validity = checkConnectionType(),
         width="var(--smallDropDownWidth)"),
 
       selectConnectsComponent@GemDropdownInput(
@@ -31,6 +32,7 @@ page JoinConnectionKindEdit(JoinConnectionKind connectionKind, boolean showOptio
         options = null,
         entry = null,
         keyPress = tryToAddComponent(),
+        validity = checkChosenComponents(),
         width="var(--largeDropDownWidth)"),
 
       @GemRow(

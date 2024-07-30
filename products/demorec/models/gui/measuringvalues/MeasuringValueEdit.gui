@@ -26,7 +26,11 @@ page MeasuringValueEdit(ProcessStep step) {
             colGap="5px",
             vAlign="bottom",
             components=[
-              displayedMeasuringValue@GemTextInput(labelText = "Value", inputType = "string", entry = measuringValue.value),
+              displayedMeasuringValue@GemTextInput(
+                labelText = "Value",
+                inputType = "string",
+                entry = measuringValue.value,
+                width="var(--smallDropDownWidth)"),
               displayedMeasuringValueDimensionUnit@GemDropdownInput(
                 labelText = "Unit",
                 options = null,

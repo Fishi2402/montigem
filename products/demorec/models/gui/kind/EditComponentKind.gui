@@ -26,7 +26,12 @@ page EditComponentKind(ComponentKind componentKind, boolean showOptionalValues=t
       rowGap="5px",
       wrap="nowrap",
       components=[
-      @GemTextInput(labelText = "Component Kind Name", inputType = "string", entry = componentKind.name),
+      @GemTextInput(
+        labelText = "Component Kind Name",
+        inputType = "string",
+        entry = componentKind.name,
+        validity = checkKindName(),
+        width="var(--textWidth)"),
       @guard(showOptionalValues) {
         @GemTextInput(labelText = "OE-Number", inputType = "string", entry = componentKind.oENumber);
         @GemTextInput(labelText = "Description for human identification", inputType = "string", entry = componentKind.humanDescription);
