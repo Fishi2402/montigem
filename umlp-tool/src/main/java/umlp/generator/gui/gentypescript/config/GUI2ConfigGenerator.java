@@ -25,7 +25,7 @@ public class GUI2ConfigGenerator {
   public final static String TS_FILE_EXTENSION = "ts";
 
   public final static String APP_ROUTE_FILE = APP_FILE_PREFIX + ROUTE_FILE_SUFFIX + "." + TS_FILE_EXTENSION;
-  public final static String APP_ROUTE_TOP_FILE = APP_FILE_PREFIX + ROUTE_FILE_SUFFIX + "Top" + "." + TS_FILE_EXTENSION;
+  public final static String APP_ROUTE_TOP_FILE = APP_FILE_PREFIX + ROUTE_FILE_SUFFIX + "TOP" + "." + TS_FILE_EXTENSION;
 
   protected static final GUIGeneratorUtil util = GUIGeneratorUtil.getInstance();
   protected final GeneratorEngine generatorEngine;
