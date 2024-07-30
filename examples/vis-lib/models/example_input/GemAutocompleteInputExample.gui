@@ -1,0 +1,20 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_input;
+
+import mc.fenix.input.GemAutocompleteInput;
+import mc.fenix.input.GemDropdownInputTypes.Option;
+
+page GemAutocompleteInputExample() {
+  @GemAutocompleteInput(
+    id = "searchEngines",
+    labelText = "Search engine:",
+    placeholder = "Type here ...",
+    options = [
+      Option("DuckDuckGo"),
+      Option("Ecosia"),
+      Option("Bing"),
+      Option("Google"),
+      Option("Baidu")
+    ]
+  );
+}
