@@ -38,27 +38,9 @@ export class ChooseComponentKind extends ChooseComponentKindComponent {
   @Output()
   public chosenKind : EventEmitter<ComponentKind> = new EventEmitter<ComponentKind>()
 
-  public constructor() {
-    super();
-
-    this._router.events.subscribe((val) => {
-      if(val instanceof NavigationEnd) {
-        if(this._route.snapshot.paramMap.get("currentKindRoutingId") != null) {
-          this.currentKindRoutingId = +this._route.snapshot.paramMap.get("currentKindRoutingId");
-          this.ngOnInit()
-          this.chosenKindNotLoaded=true
-          this.kindEntry = ""
-        }
-      }
-    });
-  }
-
-  public override ngOnInit() {
-    if(this.currentKindRoutingId != null && ((this.currentKind == null) || (this.currentKind.getGemId() != this.currentKindRoutingId))) {
-      DemoRecManager.getComponentKindSure(this.currentKindRoutingId).then(gemPromiseRes => {
-        this.currentKind = gemPromiseRes;
-      });
-    }
+  public init(): void {
+    this.chosenKindNotLoaded = true;
+    this.kindEntry = "";
 
     DemoRecManager.getComponentKindList().then(gemPromiseRes => {
       const kinds = gemPromiseRes;
@@ -72,7 +54,7 @@ export class ChooseComponentKind extends ChooseComponentKindComponent {
       });
     });
 
-    this.init();
+    super.init();
   }
 
   public override getCreateComponentKindCondition (): boolean {

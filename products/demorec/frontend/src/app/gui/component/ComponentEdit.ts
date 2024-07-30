@@ -41,9 +41,7 @@ export  class ComponentEdit extends ComponentEditComponent {
 
   conditionOptions : Option[] = []
 
-  public constructor() {
-    super();
-
+  public init(): void {
     this.conditionOptions = []
     Object.keys(State).filter(s => !isNaN(+s)).forEach(key => {
       this.conditionOptions.push({value: key, display: State[key]});
@@ -60,14 +58,7 @@ export  class ComponentEdit extends ComponentEditComponent {
       });
     });
 
-    this._router.events.subscribe((val) => {
-      if(val instanceof NavigationEnd) {
-        if(this._route.snapshot.paramMap.get("componentRoutingId") != null) {
-          this.componentRoutingId = +this._route.snapshot.paramMap.get("componentRoutingId");
-          this.ngOnInit()
-        }
-      }
-    });
+    super.init();
   }
 
   public editComponentKind(): (arg: void) => void {
