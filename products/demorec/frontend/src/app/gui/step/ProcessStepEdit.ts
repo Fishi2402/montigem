@@ -216,16 +216,16 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements OnInit 
   }
 
   private calculateDisplayValueOfJoinConnection(connection : JoinConnection) : Promise<Option> {
-    return connection._internal_getConnectsGemList().loadAll().then(
+    return connection.getJoinConnectionKind()._internal_getConnectsGemList().loadAll().then(
         list => {
           console.debug("Connects: " + list.map(c => c.getName()))
-          console.debug(connection._internal_getConnectsGemList().toArray())
+          console.debug(connection.getJoinConnectionKind()._internal_getConnectsGemList().toArray())
 
           let value = connection.getGemId() + "";
           const displayValue = list.map(c => c.getName()?
                   c.getName()+":"+c.getGemId() :
                   ":"+c.getGemId()).join("_")+
-              "_"+JoinConnectionType[connection.getJoinConnectionType()]
+              "_"+JoinConnectionType[connection.getJoinConnectionKind().getJoinConnectionType()]
           return new Promise<Option>((resolve, reject) => {
                 resolve({value: value, display: displayValue})
               }

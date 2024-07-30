@@ -15,14 +15,16 @@ page MeasuringValueCreate(MeasuringValue measuringValue, Event<MeasuringValue> m
   @GemRow(
     wrap="nowrap",
     colGap="5px",
+    vAlign="bottom",
     components=[
-      @GemTextInput(labelText = "Value", inputType = "string", entry = measuringValue.value),
+      @GemTextInput(labelText = "Value", inputType = "string", entry = measuringValue.value, width="var(--smallDropDownWidth)"),
       selectDimensionUnit@GemDropdownInput(
         labelText = "Unit",
         options = null,
-        entry = null
+        entry = null,
+        width="var(--verySmallDropDownWidth)"
       ),
-      addMeasuringValue@GemButton(label = "Add Value", leftClick = createNewMeasuringValue(), disabled=false)
+      addMeasuringValue@GemButton(label = "Add", leftClick = createNewMeasuringValue(), disabled=false, height="var(--gemButtonHeightAdjustedToInput)")
     ]
   );
 }

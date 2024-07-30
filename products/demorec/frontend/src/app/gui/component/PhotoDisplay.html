@@ -6,3 +6,10 @@
   >
   </gem-button>
 </div>
+
+<div *ngIf="getPhotos() && getPhotos().length === 0">
+  <div>
+    No photo uploaded yet.
+  </div>
+  <img style="max-width:100px" src="assets/missingPhoto.png" alt="No photo uploaded yet.">
+</div>

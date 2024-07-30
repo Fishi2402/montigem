@@ -42,7 +42,6 @@ export class MeasuringValueCreate extends MeasuringValueCreateComponent implemen
     DemoRecManager.getDimensionList().then(gemPromiseRes => {
       const dimensions = gemPromiseRes;
       dimensions.loadAll().then(() => {
-        console.debug(dimensions)
         this.dimensionOptions = []
         for (const dimension of dimensions) {
           let value = dimension.getGemId() + "";

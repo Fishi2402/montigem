@@ -11,7 +11,8 @@ page ChoosePackType(BatteryPackType currentType, Event<BatteryPackType> chosenTy
   selectPackType@GemDropdownInput(
     labelText = "Pack Type",
     options = null,
-    entry = null
+    entry = null,
+    width="var(--smallDropDownWidth)"
   );
   createPackType@guard(true) {
     @PackTypeCreate(newType=addNewBatteryPackType());

@@ -1,0 +1,28 @@
+package gui.connectionkind;
+
+import DemoRec.JoinConnectionKind;
+
+import mc.fenix.input.GemTextInput;
+import mc.fenix.arrange.GemColumn;
+
+import gui.connectionkind.JoinConnectionKindCreate;
+
+page ChooseJoinConnectionKind(JoinConnectionKind currentKind, Event<JoinConnectionKind> chosenKind) {
+
+  @GemColumn(
+    rowGap="5px",
+    components=[
+      selectJoinConnectionKind@GemTextInput(
+          labelText = "JoinConnection Kind",
+          inputType = "dropdown",
+          options = null,
+          entry = null,
+          width="var(--largeDropDownWidth)"
+        ),
+        createJoinConnectionKind@guard(true) {
+          @JoinConnectionKindCreate(createJoinConnectionKind=addNewJoinConnectionKind());
+        }
+    ]
+  );
+
+}

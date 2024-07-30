@@ -15,7 +15,8 @@ page ChooseComponentKind(ComponentKind currentKind, Event<ComponentKind> chosenK
       selectComponentKind@GemDropdownInput(
           labelText = "Component Kind",
           options = null,
-          entry = null
+          entry = null,
+          width="var(--smallDropDownWidth)"
         ),
         createComponentKind@guard(true) {
           @CreateComponentKind(newKind=addNewComponentKind());

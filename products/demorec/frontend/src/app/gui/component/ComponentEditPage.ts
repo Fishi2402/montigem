@@ -1,12 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
-import { ComponentEditPageComponent, config } from '../../../../build/frontendGen/build/appgui/gui/component/ComponentEditPageComponent';
+import { ComponentEditPageComponent, config } from '@src/gui/component/ComponentEditPageComponent';
 
 import {
   Component,
 } from '@angular/core';
 
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
-import {JoinConnection} from "../../demorec/JoinConnection";
+import {JoinConnectionKind} from "@src/demorec/JoinConnectionKind";
 
 @Component({
   standalone:true,
@@ -32,7 +32,7 @@ export  class ComponentEditPage extends ComponentEditPageComponent {
     });
   }
 
-  public override getConnectionNameValue (connection: JoinConnection): string {
+  public override getConnectionNameValue (connection: JoinConnectionKind): string {
     return connection.getNameAfterLoad()
   }
 

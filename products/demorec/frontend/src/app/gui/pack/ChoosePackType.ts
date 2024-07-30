@@ -4,9 +4,7 @@ import { DemoRecManager } from '@src/demorec/DemoRecManager';
 
 import { BatteryPackType } from '@src/demorec/BatteryPackType';
 
-import { BatteryPack } from '@src/demorec/BatteryPack';
-
-import { ChoosePackTypeComponent ,config} from '../../../../build/frontendGen/build/appgui/gui/pack/ChoosePackTypeComponent';
+import { ChoosePackTypeComponent ,config} from '@src/gui/pack/ChoosePackTypeComponent';
 
 import { Option } from '@umlp/input';
 
@@ -85,6 +83,14 @@ export class ChoosePackType extends ChoosePackTypeComponent {
    public override getCreatePackTypeCondition(): boolean {
      return this.getSelectPackTypeEntry() === newOption.value;
    }
+
+  public override addNewBatteryPackType(){
+    return (type) => {
+      this.bPackTypeOptions.push({value: type.getGemId(), display: type.getCarBrand()+" "+type.getCarModel()+" "+type.getCarYear()})
+      this.bPackTypeEntry = type.getGemId();
+      this.chosenType.emit(type)
+    }
+  }
 }
 
 

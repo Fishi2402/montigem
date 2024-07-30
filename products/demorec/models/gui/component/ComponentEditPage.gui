@@ -2,7 +2,7 @@ package gui.component;
 
 import DemoRec.BatteryPack;
 import DemoRec.DemoRecComponent;
-import DemoRec.JoinConnection;
+import DemoRec.JoinConnectionKind;
 
 import mc.fenix.arrange.GemRow;
 import mc.fenix.arrange.GemColumn;
@@ -37,13 +37,16 @@ page ComponentEditPage(DemoRecComponent component) {
             @EvenlySpacedColumn(element = @GemText(value = "Y")),
             @EvenlySpacedColumn(element = @GemText(value = "Z"))
           ]),
-          @iterate(JoinConnection connection : component.connectedBy) {
+          @iterate(JoinConnectionKind connectionKind : component.connectedBy) {
             @HorizontalStatTable(rows = [
-              @EvenlySpacedColumn(element = connectionName@GemText(value = null)),
-              @EvenlySpacedColumn(element = @GemText(value = connection.condition)),
+              @EvenlySpacedColumn(element = connectionName@GemText(value = null))
+
+              /*,
+              @EvenlySpacedColumn(element = @GemText(value = connectionKind.condition)),
               @EvenlySpacedColumn(element = @GemTextInput(labelText = "X-Position", inputType = "number", entry = connection.xPos)),
               @EvenlySpacedColumn(element = @GemTextInput(labelText = "Y-Position", inputType = "number", entry = connection.yPos)),
               @EvenlySpacedColumn(element = @GemTextInput(labelText = "Z-Position", inputType = "number", entry = connection.zPos))
+              */
             ]);
           }
         ]

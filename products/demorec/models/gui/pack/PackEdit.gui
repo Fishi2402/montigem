@@ -32,9 +32,10 @@ page PackEdit(BatteryPack pack) {
         ),
         @GemRow(
           colGap="5px",
+          vAlign="bottom",
           components=[
             @ChoosePackType(currentType=pack.type, chosenType=changePackType()),
-            @GemButton(label = "Edit batterypack type", leftClick = editBatteryPackType())
+            @GemButton(label = "Edit batterypack type", leftClick = editBatteryPackType(), height = "var(--gemButtonHeightAdjustedToInput)")
           ]
         ),
         @ComponentEdit(component=pack)

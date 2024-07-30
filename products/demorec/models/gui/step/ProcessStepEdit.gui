@@ -20,7 +20,6 @@ import gui.component.SubComponentView;
 import gui.staticcontainer.NavContainer;
 
 import gui.joinconnection.JoinConnectionCreate;
-import gui.joinconnection.JoinConnectionEdit;
 
 page ProcessStepEdit(Process p, ProcessStep step) {
   @NavContainer(

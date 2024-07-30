@@ -1,0 +1,23 @@
+package gui.connectionkind;
+
+import DemoRec.JoinConnectionKind;
+import DemoRec.DemoRecComponent;
+
+import gui.pack.ComponentsOfPack;
+import gui.staticcontainer.NavContainer;
+import gui.connectionkind.JoinConnectionKindEdit;
+import gui.joinconnection.JoinConnectionEdit;
+
+page JoinConnectionKindEditPage(JoinConnectionKind connectionKind) {
+  @NavContainer(
+    content=[
+      @JoinConnectionKindEdit(connectionKind=connectionKind, showOptionalAttributes=true),
+      @iterate(JoinConnection connection : connectionKind.joinConnection) {
+        @JoinConnectionEdit(connection = connection);
+      }
+    ],
+    leftSideBar=[
+      @ComponentsOfPack(pack=connectionKind.batteryPack)
+    ]
+  );
+}

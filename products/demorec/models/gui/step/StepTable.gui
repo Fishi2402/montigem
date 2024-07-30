@@ -22,19 +22,19 @@ component StepTable(Process process) {
         @EvenlySpacedColumn(element = @GemText(value = "Type")),
         @EvenlySpacedColumn(element = @GemText(value = "Description")),
         @EvenlySpacedColumn(element = @GemText(value = "Endeffector")),
-        @EvenlySpacedColumn(element = @GemText(value = "Duration")),
-        @EvenlySpacedColumn(element = @GemText(value = "Values Measured")),
+        @EvenlySpacedColumn(element = @GemText(value = "Duration (s)")),
+        @EvenlySpacedColumn(element = @GemText(value = "Values")),
         @EvenlySpacedColumn(element = @GemText(value = "Deletion"))
       ]),
       @iterate(ProcessStep step : getReverseProcessSteps()) {
         @HorizontalStatTable(rows = [
-          @EvenlySpacedColumn(element=editStepButton@GemButton(label = "Edit Step " + step.index, leftClick = editStep(step))),
+          @EvenlySpacedColumn(element=editStepButton@GemButton(label = "Edit " + step.index, leftClick = editStep(step))),
           @EvenlySpacedColumn(element = @GemText(value = step.type)),
           @EvenlySpacedColumn(element = @GemText(value = step.description)),
           @EvenlySpacedColumn(element = @GemText(value = step.uses.name)),
-          @EvenlySpacedColumn(element = @GemText(value = step.timeConsumption + " seconds")),
+          @EvenlySpacedColumn(element = @GemText(value = step.timeConsumption)),
           @EvenlySpacedColumn(element = measuredValuesCount@GemText(value = null)),
-          @EvenlySpacedColumn(element = deleteProcessStep@GemButton(label="Delete Step", leftClick=deleteStep(step), disabled=false))
+          @EvenlySpacedColumn(element = deleteProcessStep@GemButton(label="Delete", leftClick=deleteStep(step), disabled=false))
         ]);
       }
     ]
