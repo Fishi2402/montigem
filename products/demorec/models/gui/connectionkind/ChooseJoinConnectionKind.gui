@@ -2,7 +2,7 @@ package gui.connectionkind;
 
 import DemoRec.JoinConnectionKind;
 
-import mc.fenix.input.GemTextInput;
+import mc.fenix.input.GemDropdownInput;
 import mc.fenix.arrange.GemColumn;
 
 import gui.connectionkind.JoinConnectionKindCreate;
@@ -12,9 +12,8 @@ page ChooseJoinConnectionKind(JoinConnectionKind currentKind, Event<JoinConnecti
   @GemColumn(
     rowGap="5px",
     components=[
-      selectJoinConnectionKind@GemTextInput(
+      selectJoinConnectionKind@GemDropdownInput(
           labelText = "JoinConnection Kind",
-          inputType = "dropdown",
           options = null,
           entry = null,
           width="var(--largeDropDownWidth)"

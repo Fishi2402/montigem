@@ -26,8 +26,6 @@ page JoinConnectionEdit(JoinConnection connection) {
       condition@GemDropdownInput(
         labelText = "Condition of Connection",
         options = null,
-        inputType = "dropdown",
-        options = null,
         entry = connection.condition,
         width="var(--smallNumberWidth)"),
 
@@ -43,9 +41,8 @@ page JoinConnectionEdit(JoinConnection connection) {
       @GemTextInput(
         labelText = "Condition Description",
         inputType = "text",
-        options = null,
         entry = connection.conditionDescription,
-        width="var(--textWidth)")
+        width="var(--textWidth)"
       )
     ]
   );

@@ -33,7 +33,7 @@ page ProcessStepCreate(ProcessStep step, Event<ProcessStep> create) {
           },
           stepChooseJoinConnectionKind@guard(true){
             isDeconstruction@guard(true) {
-              selectJoinConnection@GemDropdownInput(
+              selectJoinConnectionKind@GemDropdownInput(
                   labelText = "Deconstructing Join Connection",
                   options = null,
                   entry = null,
