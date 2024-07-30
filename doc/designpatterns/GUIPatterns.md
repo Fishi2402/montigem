@@ -1,13 +1,13 @@
-# GUI Design Patterns for MontiGem Development 
+# GUI-Model and Code Design Patterns for Developing Webapplications with MontiGem 
 
 **WARNING** These patterns originated in a time when MontiGem was still volatile and the development
 of a new MontiGem App was partly constrained by technical issues. 
 As such the used examples may become out of date and in the future as MontiGem evolves there may be 
-other more elegant ways to implement your wanted functionality.
+other more elegant ways to implement the desired functionality.
 
 It is recommended to use the following patterns in combination as they built upon each other.
-All of these pattern have in common that they try to minimize code duplication while also maintaining
-high reusability
+All of these patterns have in common that they define a methodology for minimizing code duplication 
+while also maintaining high reusability.
 
 
 ## Component and Page Pattern
@@ -114,7 +114,7 @@ page PackCreate(BatteryPack pack) {
   }
 ``` 
 
-## Creating new instances where they have to be used
+## Inplace instantiation pattern
 
 Sometimes we want to create a new instances of a class on page where it should be directly used.
 One example is we want to be able to choose a specific `BatteryPack` in a dropdown menu. The dropdown
@@ -166,10 +166,11 @@ page UsingPackCreate() {
   }
 ```
 
-## Form for Required Relationships: Choose-Create-Edit Pattern
+## Choose-Create-Edit Forms Pattern 
 
 This design pattern is intended to be used when you have to create a form for a class which has a
-required association as e.g. `BatteryPack` in the following CD (simplified version of the DemoRec cd):
+required association (can be extended to other cardinalities) as e.g. `BatteryPack` in the following 
+CD (simplified version of the DemoRec cd):
 
 ```cd
 
@@ -193,15 +194,73 @@ Creating a form for `BatteryPack` is a bit tricky here. There are a few thing to
 - the form should be reusable for creating new instances and editing existing ones
 - the required `type` association must always be set
 - it is annoying for a user to have to criss-cross navigate between pages for `BatteryPack` and 
-  `BatteryPackType` and it may also pose technical challenges like keeping data entry in a form when
+  `BatteryPackType` and it may also pose technical challenges like keeping data entries in a form when
   reloading the page, if the object was not yet built (sent to the backend) 
-- we already made use of the `Edit and Creation Page Pattern` from above to implement the forms for
-  `BatteryPackType` and have a `BatteryPackTypeCreate` and a `BatteryPackTypeEdit` GUI component
+- we already made use of the `Edit and Creation Page Pattern`  and the `Inplace instantiation Pattern` 
+  from above to implement the forms for `BatteryPackType` and have a `BatteryPackTypeCreate` and 
+  a `BatteryPackTypeEdit` GUI component
 
 The solution to our problem is implementing a third GUI component for `BatteryPackType` which we 
 call `BatteryPackTypeChoose`. The component has a dropdown menu to choose from already existing 
-`BatteryPackTypes` and additionally there is an option `NEW` which unhides 
+`BatteryPackTypes` and additionally there is an option `NEW` which unhides an instance of the 
+`BatteryPackTypeCreate` page.
 
+```guidsl
 
+page BatteryPackTypeChoose(List<BatteryPackType> typesForChoosing, BatteryPackType currentType
+    Event<BatteryPackType> chosenType) {
 
+  selectPackType@GemTextInput(
+    labelText = "Pack Type",
+    inputType = "dropdown",
+    options = null,
+    entry = null
+  );
+  @guard(newOptionWasChosen()) {
+    @BatteryPackTypeCreate(newType=addNewBatteryPackType());
+  }
+}
 
+```
+
+The `BatteryPackTypeChoose` component gets a list of `BatteryPackTypes` as argument for the available
+options. Additionally, it gets a `BatteryPackType` as argument to display the current choice. This 
+parameter can be null, if no `BatteryPackType` was chosen yet (in the case when a new `BatteryPack`
+is instantiated).
+
+To notify any page embedding `BatteryPackTypeChoose` about the chosen `BatteryPackType`, the 
+`BatteryPackTypeChoose` component emits an Event as soon as a type was chosen from the dropdown.
+
+Because we used the `Inplace instantiation Pattern` we can use the Event which is emitted by the 
+`BatteryPackTypeCreate` page to update our options and hide the `BatteryPackTypeCreate` component again
+once the user finished the instantiation of a new `BatteryPackType`. 
+
+To use the `BatteryPackChoose` component in the `BatteryPackEdit` page we can simply add it like this:
+
+```guidsl
+
+page PackEdit(BatteryPack pack) {
+
+  ...
+  @BatteryPackTypeChoose(currentType=pack.type, chosenType=changePackType());
+}
+
+```
+
+```typescript
+
+public override changePackType() {
+  return (type) => {
+    this.getPack().setType1(type)
+  }
+}
+
+```
+
+What makes this pattern so beautiful is that the `BatteryPackTypeChoose` component only depends on 
+`BatteryPackType` and as such it is easily reusable for other associations unrelated to `BatteryPack`. 
+
+At last, you may want to enable editing the `BatteryPackType` on the same page as the `BatteryPack`. 
+For this you could simply add a Toggle Button to the `BatteryPackTypeChoose` component which toggles
+between hiding and unhiding an embedded `BatteryPackTypeEdit` component, but you would have to ensure
+that this toggle is not activated when a new `BatteryPackType` is created.
