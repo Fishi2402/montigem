@@ -75,13 +75,13 @@ generateUmlpBackend {
   useShell.set(true)
 }
 
-task runServer {
+tasks.register('runServer') {
   dependsOn(bootRun {
     systemProperty "spring.shell.interactive.enabled", "false"
   })
 }
 
-task genTestGUI(type: UMLPGuiGenTask) {
+tasks.register('genTestGUI', UMLPGuiGenTask) {
   dependsOn(generateUmlpBackend)
   input = file("../models")
   outputDir = file("$project.buildDir/testgui")

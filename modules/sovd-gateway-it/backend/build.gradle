@@ -73,7 +73,7 @@ generateUmlpBackend {
   useShell.set(true)
 }
 
-task runServer {
+tasks.register('runServer') {
   dependsOn(bootRun {
     systemProperty "spring.shell.interactive.enabled", "false"
   })

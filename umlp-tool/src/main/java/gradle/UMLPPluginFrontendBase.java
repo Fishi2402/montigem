@@ -12,25 +12,15 @@ import gradle.specific.UMLPJava2TypeScriptTask;
 import gradle.specific.UMLPSymbolsTask;
 import gradle.specific.serialize.SerializeCDSymbolsTask;
 import gradle.specific.serialize.SerializeGUISymbolsTask;
-import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
-import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
-import org.gradle.api.artifacts.repositories.MavenRepositoryContentDescriptor;
-import org.gradle.api.attributes.Bundling;
-import org.gradle.api.attributes.VerificationType;
-import org.gradle.api.plugins.JavaPluginExtension;
-import org.gradle.api.tasks.SourceSet;
-import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.Sync;
 import org.gradle.api.tasks.TaskProvider;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -88,11 +78,11 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
     //
 
     // Lifecycle task "generate"
-    Task generateTask = project.getTasks().create("generate");
-    generateTask.dependsOn(syncDomainTask, syncGuiTask, syncTSHWC);
+    var generateTask = project.getTasks().register("generate", task -> task.dependsOn(syncDomainTask, syncGuiTask, syncTSHWC));
+
 
     // Lifecycle task "continuous". Intended use is with "--continuous" flag of gradle & HotReload
-    createContinuousTask(project, generateTask);
+    registerContinuousTask(project, generateTask);
 
     // Docker images
     createBuildImageLocalTask(project);
@@ -222,9 +212,8 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
     }
   }
 
-  private static void createContinuousTask(Project project, Task generateTask) {
-    Task continuousTask = project.getTasks().create("continuous");
-    continuousTask.dependsOn(generateTask);
+  private static void registerContinuousTask(Project project, Object generateTask) {
+    project.getTasks().register("continuous", task -> task.dependsOn(generateTask));
   }
 
   private void addProjectDependencies(Project project, boolean local) {
@@ -243,11 +232,11 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
     }
 
     // Configurations
-    project.getConfigurations().create(GUI_TYPES_NAME);
+    project.getConfigurations().register(GUI_TYPES_NAME);
     project.getDependencies().add(GUI_TYPES_NAME, "de.monticore.lang:guidsl:" + getStringProjectProperty(project, "mc_version", "") + ":default-types");
 
     if (!local) {
-      project.getConfigurations().create(GUI_LIB_NAME);
+      project.getConfigurations().register(GUI_LIB_NAME);
       project.getDependencies().add(GUI_LIB_NAME, "umlp.umlp-rte:client:" + getStringProjectProperty(project, "mc_version", ""));
     }
   }

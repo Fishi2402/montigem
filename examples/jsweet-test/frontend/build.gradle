@@ -60,20 +60,20 @@ def prebuildTasks = [
     npmInstall, generate
 ]
 
-task buildApp(type: NpxTask) {
+tasks.register('buildApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["build"]
 }
 assemble.dependsOn(buildApp)
 
-task testApp(type: NpxTask) {
+tasks.register('testApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["test"]
 }
 
-task runApp(type: NpxTask) {
+tasks.register('runApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["serve"]

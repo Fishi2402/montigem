@@ -1,3 +1,5 @@
+import org.springframework.boot.gradle.tasks.run.BootRun
+
 plugins {
   id 'de.rwth.se.umlp-tool-backend-test' // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
 
@@ -72,13 +74,13 @@ generateUmlpBackend {
   useShell = true
 }
 
-task runServer {
+tasks.register('runServer') {
   dependsOn(bootRun {
     systemProperty "spring.shell.interactive.enabled", "false"
   })
 }
 
-task runShellApi(type: org.springframework.boot.gradle.tasks.run.BootRun) {
+tasks.register('runShellApi', BootRun) {
   classpath = sourceSets.main.runtimeClasspath
   mainClass = 'dtcockpit.DtcockpitShellAPIApplication'
   standardInput = System.in

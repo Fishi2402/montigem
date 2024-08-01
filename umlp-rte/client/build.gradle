@@ -41,13 +41,13 @@ dependencies {
   guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
 }
 
-task createCDSymbols(type: SerializeCDSymbolsTask) {
+tasks.register('createCDSymbols', SerializeCDSymbolsTask) {
   input = file("models/")
   // symbolPath = file("models/")
   output = layout.buildDirectory.dir("CDSymbols")
 }
 
-task createGuiSymbols(type: SerializeGUISymbolsTask) {
+tasks.register('createGuiSymbols', SerializeGUISymbolsTask) {
   input = file("models/")
   symbolDir = files(createCDSymbols.getOutput(), configurations.guiDefaultTypes.files)
   output = layout.buildDirectory.dir("GuiSymbols")
@@ -205,7 +205,7 @@ sourceSets {
   }
 }
 
-task symbolJar(type: Jar) {
+tasks.register('symbolJar', Jar) {
   from sourceSets.symbols.output
   includeEmptyDirs = false
 }

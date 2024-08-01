@@ -25,7 +25,7 @@ sourceSets {
 
 def moduleClassifier = "module-generator-time"
 
-task moduleJar(type: Jar){
+tasks.register('moduleJar', Jar){
   from("src/models"){
     include "**/*.*"
   }
