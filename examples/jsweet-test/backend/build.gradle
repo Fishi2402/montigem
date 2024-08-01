@@ -61,6 +61,10 @@ dependencies {
 
   implementation group: 'org.slf4j', name: 'slf4j-simple', version: "1.7.10"
 
+  // to compile the (playwright=true) AbstractJsweettestE2ETest
+  compileOnly group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
+
+
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2', withoutSpringLogging
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2', withoutSpringLogging
@@ -76,6 +80,7 @@ generateUmlpBackend {
   input = file("../models/Jsweettest.umlp")
   symbolOutDir = file("${symPath}")
   useSpring.set(true)
+  usePlaywright.set(true)
 }
 
 task runServer {

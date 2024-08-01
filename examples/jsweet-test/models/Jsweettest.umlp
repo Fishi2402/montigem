@@ -10,4 +10,38 @@ classdiagram Jsweettest {
   }
 
   association [1] A -> B [*];
+
+  <<singleton>> class TestDataManager {
+    void resetTestData();
+  }
+
+
+
+  class C1 {
+    String string;
+    int int1;
+    Integer int2;
+    C2 c2Req;
+
+    long hwGemId;
+  }
+
+  association C1 -> (c2opt) C2 [0..1];
+  association C1 -> (c2mult) C2 [*];
+
+  class C2 {
+    String string;
+    int int1;
+    Integer int2;
+  }
+
+  association C2 -> (c3opt) C3 [0..1];
+  association C2 -> (c3mult) C3 [*];
+
+  class C3 {
+    String string;
+    int int1;
+    Integer int2;
+  }
+
 }
