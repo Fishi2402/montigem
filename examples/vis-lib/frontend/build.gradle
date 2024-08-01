@@ -88,5 +88,6 @@ tasks.register("slowtest", Test) {
     includeTags "SlowTest"
   }
   shouldRunAfter test
+  dependsOn npmInstall
 }
 

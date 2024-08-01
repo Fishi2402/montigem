@@ -323,14 +323,28 @@ public abstract class AbstractPlaywrightE2ETest {
         break;
       }
 
-      String line = stdOutreader.readLine();
-      lines.add(line);
-      System.out.println("[FRONTEND SERVER] " + line);
-      if (line != null && line.contains("localhost:" + frontendServerPort)) {
-        available = true;
-        break;
-      } else if (line != null && line.contains("already in use")) {
-        break;
+      // Useful when debugging angular
+//      if (stderrReader.ready()) {
+//        System.err.println("[FS] " + stderrReader.readLine());
+//      }
+
+      if (stdOutreader.ready()) {
+        String line = stdOutreader.readLine();
+        lines.add(line);
+        System.out.println("[FRONTEND SERVER] " + line);
+        if (line != null && line.contains("localhost:" + frontendServerPort)) {
+          available = true;
+          break;
+        } else if (line != null && line.contains("already in use")) {
+          break;
+        }
+      } else {
+        // No new input available -> Do not block until there is (as we might wait until eternity)
+        try {
+          Thread.sleep(1000);
+        } catch (InterruptedException e) {
+          break;
+        }
       }
     }
 
@@ -340,12 +354,18 @@ public abstract class AbstractPlaywrightE2ETest {
       for (String s : lines) {
         System.out.println(s);
       }
-      while ((line = stdOutreader.readLine()) != null) {
+      if (!stdOutreader.ready()) {
+        System.out.println("<<out stream not ready>>");
+      }
+      while (stdOutreader.ready() && (line = stdOutreader.readLine()) != null) {
         System.out.println(line);
       }
 
       System.out.println("NPM stderr was:");
-      while ((line = stderrReader.readLine()) != null) {
+      if (!stderrReader.ready()) {
+        System.out.println("<<error stream not ready>>");
+      }
+      while (stderrReader.ready() && (line = stderrReader.readLine()) != null) {
         System.out.println(line);
       }
 
