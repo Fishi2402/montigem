@@ -30,9 +30,6 @@ dependencies {
 }
 
 node {
-  download = true
-  version = "${node_version}"
-  nodeProxySettings = ProxySettings.OFF
   nodeProjectDir = file("${buildDir}/frontendGen")
 }
 nodeSetup.dependsOn(frontendSetup)
