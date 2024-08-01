@@ -59,6 +59,7 @@ subprojects {
       } else {
         setExecutable "${getNodeDir()}/bin/npm"
         environment 'PATH', "${getNodeDir()}/bin${System.getProperty('path.separator')}${System.getenv('PATH')}"
+      }
     }
   }
 
