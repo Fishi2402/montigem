@@ -15,6 +15,8 @@ node {
   version = "${node_version}"
 }
 
+def isWindows = System.getProperty("os.name").toLowerCase().startsWith("win")
+
 def getNodeDir() {
   def nodejs_dir = file("${rootDir}/.gradle/nodejs/")
   def node_dir = nodejs_dir.listFiles().find { it.isDirectory() }
@@ -40,18 +42,22 @@ subprojects {
   tasks.withType(NpxTask).configureEach {
     dependsOn rootProject.tasks.npmInstall
     execOverrides {
-      setExecutable "${getNodeDir()}/bin/npx"
-      def nodeBinDir = file("${getNodeDir()}/bin")
-      environment 'PATH', "${nodeBinDir}${System.getProperty('path.separator')}${System.getenv('PATH')}"
+      if(isWindows){
+        setExecutable "${getNodeDir()}/npx.cmd"
+      } else {
+        setExecutable "${getNodeDir()}/bin/npx"
+      }
     }
   }
 
   tasks.withType(NpmTask).configureEach {
     dependsOn rootProject.tasks.npmInstall
     execOverrides {
-      setExecutable "${getNodeDir()}/bin/npm"
-      def nodeBinDir = file("${getNodeDir()}/bin")
-      environment 'PATH', "${nodeBinDir}${System.getProperty('path.separator')}${System.getenv('PATH')}"
+      if(isWindows){
+        setExecutable "${getNodeDir()}/npm.cmd"
+      } else {
+        setExecutable "${getNodeDir()}/bin/npm"
+      }
     }
   }
 
