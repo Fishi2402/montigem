@@ -10,6 +10,7 @@ import de.monticore.guidsl._symboltable.GUIDSLSymbols2Json;
 import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.se_rwth.commons.Names;
+import de.se_rwth.commons.logging.Log;
 import umlp.GUIDSLReports;
 import umlp.TagRelated;
 import umlp.UMLPTool;
@@ -29,6 +30,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +52,15 @@ public class GuiPipelineSetup {
     // Prepare the SingletonLookup
     TagRelated.initLookup(data.importedSymbolPath);
 
-    for (String guiPathString : data.cmd.getOptionValues(INPUT.getCMD())) {
+    // check same file names
+    List<Path> modelPaths = new ArrayList<>();
+    String[] modelPathStrings = data.cmd.getOptionValues(INPUT.getCMD());
+    for (String guiPathString : modelPathStrings) {
+      modelPaths.add(Paths.get(guiPathString));
+    }
+    checkSameFilenames(modelPaths);
+
+    for (String guiPathString : modelPathStrings) {
       Path guiModel = Paths.get(guiPathString);
       data.guidsl_reportManagerFactory = new GUIDSLReports(data.outDir.getPath(), data.reportDir.getPath(), data.reportPathOutput, data.hwcPath);
 
@@ -168,6 +179,45 @@ public class GuiPipelineSetup {
 
   void createGui(UMLPToolPipelineSetup umlpPipeline) {
     umlpPipeline.gui.register(gui);
+  }
+
+  /**
+   * Check if a collection of paths has files with same names and report them as an error.
+   * Models of MC languages generally require that the symbol declaration closest to a global scope
+   * has the same name as the file. This means that files with the same name have symbols with the
+   * same name. This can cause problems if the symbols represent GUI components, as current
+   * generator implementation does not allow the same name for components. E.g. foo.bar.MyPage and
+   * other.MyPage may result in routing collisions or component usage collisions, depending on the
+   * situation.
+   * @param paths Paths to check for duplicates.
+   */
+  protected void checkSameFilenames(Collection<Path> paths) {
+    Map<String, List<Path>> filenameMap = new HashMap<>();
+    for (Path path : paths) {
+      String filename = path.getFileName().toString();
+      int lastDotIndex = filename.lastIndexOf('.');
+      String filenameNoExt = (lastDotIndex == -1) ? filename : filename.substring(0, lastDotIndex);
+      filenameMap.computeIfAbsent(filenameNoExt, x -> new ArrayList<>()).add(path);
+    }
+
+    StringBuilder sb = new StringBuilder("0x00023 Found files with the same names,"
+        + " which is likely to cause issues:\n");
+    boolean error = false;
+    for (Map.Entry<String, List<Path>> entry : filenameMap.entrySet()) {
+      if (entry.getValue().size() > 1) {
+        error = true;
+        for (Path p : entry.getValue()) {
+          sb.append(p.toString());
+          sb.append("\n");
+        }
+        sb.append("\n");
+      }
+    }
+    if (error) {
+      sb.append("Please check if files were named properly, rename the files and"
+          + " set matching component names.");
+      Log.error(sb.toString());
+    }
   }
 
 }
