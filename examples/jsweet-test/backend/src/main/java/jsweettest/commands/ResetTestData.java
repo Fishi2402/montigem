@@ -9,6 +9,7 @@ public class ResetTestData extends ResetTestDataTOP  {
   @Override
   @BackendOnly(BackendOnlyModes.THROW_ERROR)
   public StatusResult doAction() {
+    System.err.println("Resetting test data by command");
     JsweettestServerApplication.resetTestData();
     return StatusResult.ok(this.getId());
   }
