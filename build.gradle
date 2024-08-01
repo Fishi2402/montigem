@@ -44,8 +44,10 @@ subprojects {
     execOverrides {
       if(isWindows){
         setExecutable "${getNodeDir()}/npx.cmd"
+        environment 'PATH', "${getNodeDir()}${System.getProperty('path.separator')}${System.getenv('PATH')}"
       } else {
         setExecutable "${getNodeDir()}/bin/npx"
+        environment 'PATH', "${getNodeDir()}/bin${System.getProperty('path.separator')}${System.getenv('PATH')}"
       }
     }
   }
