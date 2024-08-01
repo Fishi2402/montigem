@@ -7,7 +7,7 @@ ${tc.signature("type", "name", "args", "keys", "initList")}
 ${cd4c.method("public void init${name?cap_first}(${paramString})")}
 const ${tmpVar}: ${tsType} = new ${tsType}(<#list args as arg>${arg}<#sep>, </#list>);
 
-if (this.${name} == null) {
+if (this.${name} === undefined) {
   this.${name} = new Map();
 }
 <#list keys as key>

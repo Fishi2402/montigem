@@ -1,30 +1,31 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-<#-- Generates a routes file from the given model -->
-${tc.signature("packageComponentRoutings", "defaultRouting", "subRoutes")}
+<#-- Generates a routes file from a given package -->
+${tc.signature("packageRoute", "componentRoutes", "defaultRoute")}
+<#assign subRoutes = packageRoute.getChildren()>
 import { Route } from "@angular/router";
-<#list packageComponentRoutings as routing>
-  import { ${routing.getImportedSymbolName()} } from "${routing.getImportPath()}";
+<#list componentRoutes as route>
+  import { ${route.getImportedSymbolName()} } from "${route.getImportPathNoExt()}";
 </#list>
 
-<#list subRoutes?keys as key>
-  import { routes as ${key} } from "${subRoutes[key]}";
+<#list subRoutes as route>
+  import { routes as ${route.getAlias()} } from "${route.getImportPath()}";
 </#list>
 
 export const routes: Route[] = [
-<#if defaultRouting??>
+<#if defaultRoute.isPresent()>
   {
-    path: "${defaultRouting.getUrlPrefix()}",
+    path: "<#if packageRoute.getParent().isPresent()>${defaultRoute.get().getUrlPrefix()}</#if>",
     pathMatch: "full",
-    redirectTo: "${defaultRouting.getUrl()}"
+    redirectTo: "${defaultRoute.get().getUrl()}"
   },
 </#if>
-<#list subRoutes?keys as key>
-  ...${key},
+<#list subRoutes as route>
+  ...${route.getAlias()},
 </#list>
-<#list packageComponentRoutings as routing>
+<#list componentRoutes as route>
   {
-    path: "${routing.getUrl()}",
-    component: ${routing.getImportedSymbolName()}
+    path: "${route.getUrl()}",
+    component: ${route.getImportedSymbolName()}
   },
 </#list>
 ]

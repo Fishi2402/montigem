@@ -36,14 +36,7 @@ export class ChooseJoinConnectionKind extends ChooseJoinConnectionKindComponent 
   @Output()
   public chosenKind: EventEmitter<JoinConnectionKind> = new EventEmitter<JoinConnectionKind>();
 
-  public override ngOnInit(){
-
-    if(this.currentKindRoutingId != null && ((this.currentKind == null) || (this.currentKind.getGemId() != this.currentKindRoutingId))) {
-      DemoRecManager.getJoinConnectionKindSure(this.currentKindRoutingId).then(gemPromiseRes => {
-        this.currentKind = gemPromiseRes;
-      });
-    }
-
+  public override init() {
     DemoRecManager.getJoinConnectionKindList().then(gemPromiseRes => {
       const jCKinds = gemPromiseRes;
       jCKinds.loadAll().then(() => {
@@ -58,6 +51,7 @@ export class ChooseJoinConnectionKind extends ChooseJoinConnectionKindComponent 
       });
     });
 
+    super.init();
   }
 
   public override getSelectJoinConnectionKindOptions() : Array<Option> {

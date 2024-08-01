@@ -5,7 +5,7 @@ ${tc.signature("type", "name", "manager", "keys", "initList")}
 <#assign tmpVar = "tmp_$">
 
 ${cd4c.method("public void init${name?cap_first}(${paramString})")}
-if (this.${name} == null) {
+if (this.${name} === undefined) {
   this.${name} = new Map();
 }
 ${manager}.${tsType?uncap_first}Builder().then((${tmpVar}: ${tsType}) => {

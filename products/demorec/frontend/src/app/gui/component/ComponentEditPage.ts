@@ -18,20 +18,6 @@ import {JoinConnectionKind} from "@src/demorec/JoinConnectionKind";
 })
 export  class ComponentEditPage extends ComponentEditPageComponent {
 
-
-  public constructor() {
-    super();
-
-    this._router.events.subscribe((val) => {
-      if(val instanceof NavigationEnd) {
-        if(this._route.snapshot.paramMap.get("componentRoutingId") != null) {
-          this.componentRoutingId = +this._route.snapshot.paramMap.get("componentRoutingId");
-          this.ngOnInit()
-        }
-      }
-    });
-  }
-
   public override getConnectionNameValue (connection: JoinConnectionKind): string {
     return connection.getNameAfterLoad()
   }
