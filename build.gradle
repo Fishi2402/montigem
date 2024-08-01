@@ -10,6 +10,7 @@ plugins {
   id "com.github.node-gradle.node" version "5.0.0"
 }
 
+// Download node once for all subprojects
 node {
   download = true
   version = "${node_version}"
@@ -39,6 +40,7 @@ subprojects {
     }
   }
 
+  // Use downloaded node for all subprojects
   tasks.withType(NpxTask).configureEach {
     dependsOn rootProject.tasks.npmInstall
     execOverrides {
