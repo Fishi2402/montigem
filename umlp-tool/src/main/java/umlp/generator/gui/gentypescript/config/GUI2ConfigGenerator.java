@@ -3,10 +3,13 @@ package umlp.generator.gui.gentypescript.config;
 
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
+import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.io.paths.MCPath;
 import umlp.generator.gui.GUIGeneratorUtil;
 
+import java.io.File;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -109,19 +112,9 @@ public class GUI2ConfigGenerator {
         defaultRouting = r.getURLSegment();
       }
     }
-    Map<String, PackageRoute> routeMap = new HashMap<>();
-    for (PackageRoute route : routes) {
-      String relativePath = "./" + route.getPathFromRoot();
-      Optional<String> hwPath = util.getRelativeImportPath(
-          hwcPath, setup.getOutputDirectory().toPath(), route.getPathFromRoot());
-      if (hwPath.isPresent()) {
-        relativePath = hwPath.get();
-      }
-      routeMap.put(util.removeExtension(relativePath), route);
-    }
     Path genAppRoutePath = Paths.get(existHWRoute ? APP_ROUTE_TOP_FILE : APP_ROUTE_FILE);
-    genEngine.generateNoA("umlp.gui2ts.TSAppRoutes", genAppRoutePath,
-        routeMap, defaultRouting);
+    genEngine.generateNoA("umlp.gui2ts.TSAppRoutes",
+        genAppRoutePath, getAppPath2RouteMap(routes), defaultRouting);
 
     Path generatedModuleFiles = Paths.get(APP_FILE_PREFIX + MODULE_FILE_SUFFIX + "." + TS_FILE_EXTENSION);
 
@@ -203,6 +196,38 @@ public class GUI2ConfigGenerator {
       }
     }
     return routes;
+  }
+
+  protected Map<String, PackageRoute> getAppPath2RouteMap(Collection<PackageRoute> routes) {
+    Map<String, PackageRoute> routeMap = new HashMap<>();
+    for (PackageRoute route : routes) {
+      String relativePath = "./" + route.getPathFromRoot();
+      Path appRouteFolder = setup.getOutputDirectory().toPath();
+      String hwFile = route.getPathFromRoot();
+
+      Optional<URL> hwFilePath = hwcPath.find(hwFile);
+      Optional<String> res = Optional.empty();
+      if (hwFilePath.isPresent()) {
+        Optional<Path> hwPath = MCPath.toPath(hwFilePath.get());
+        if (hwPath.isPresent()) {
+          res = Optional.of(appRouteFolder
+              .toAbsolutePath()
+              .normalize()
+              .relativize(hwPath.get().toAbsolutePath())
+              .toString()
+              .replaceAll("\\\\", "/"));
+
+          Reporting.reportUseHandwrittenCodeFile(hwPath.get(), Paths.get(hwFile));
+        }
+      }
+      Reporting.reportHWCExistenceCheck(hwcPath, Paths.get(hwFile), hwFilePath);
+
+      if (res.isPresent()) {
+        relativePath = res.get();
+      }
+      routeMap.put(util.removeExtension(relativePath), route);
+    }
+    return routeMap;
   }
 
 }

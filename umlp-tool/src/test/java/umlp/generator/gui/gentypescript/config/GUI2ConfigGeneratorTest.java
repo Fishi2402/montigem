@@ -32,6 +32,7 @@ public class GUI2ConfigGeneratorTest extends DomainGUITest {
   private ASTGUICompilationUnit dummy4;
   private ASTGUICompilationUnit dummy5;
   private ASTGUICompilationUnit dummy6;
+  private ASTGUICompilationUnit dummy7;
   private ASTGUICompilationUnit dashboard;
   private ASTGUICompilationUnit update;
 
@@ -213,6 +214,7 @@ public class GUI2ConfigGeneratorTest extends DomainGUITest {
     PackageRoute conf_nested = ast2PackageRoute(dummy4);
     PackageRoute conf_nested_deep_deep_deep = ast2PackageRoute(dummy5);
     PackageRoute other_deep_nested = ast2PackageRoute(dummy6);
+    PackageRoute overridden = ast2PackageRoute(dummy7);
     PackageRoute conf = ast2PackageRoute(dashboard);
     PackageRoute conf_overridden = ast2PackageRoute(update);
 
@@ -223,6 +225,7 @@ public class GUI2ConfigGeneratorTest extends DomainGUITest {
         conf_nested,
         conf_nested_deep_deep_deep,
         other_deep_nested,
+        overridden,
         conf,
         conf_overridden
     );
@@ -231,12 +234,65 @@ public class GUI2ConfigGeneratorTest extends DomainGUITest {
     configGenerator.addExtraInfo(routes);
     List<PackageRoute> topRoutes = configGenerator.findTopMostRoutes(routes);
 
-    assertEquals(2, topRoutes.size());
+    assertEquals(3, topRoutes.size());
     PackageRoute pr1 = topRoutes.stream().filter(pr -> pr.getURLSegment().equals("conf")).findFirst().get();
     PackageRoute pr2 = topRoutes.stream().filter(pr -> pr.getURLSegment().equals("other")).findFirst().get();
+    PackageRoute pr3 = topRoutes.stream().filter(pr -> pr.getURLSegment().equals("overridden")).findFirst().get();
 
     assertEquals(conf, pr1);
     assertEquals(other_deep_nested, pr2);
+    assertEquals(overridden, pr3);
+  }
+
+  @Test
+  public void testGetAppPath2RouteMap() {
+    prepareModels();
+    GUIGeneratorUtil.getInstance().init(List.of("Domain"), Collections.emptyList());
+
+    PackageRoute conf_route = ast2PackageRoute(dummy);
+    PackageRoute conf_routelonger = ast2PackageRoute(dummy2);
+    PackageRoute conf_nested_route = ast2PackageRoute(dummy3);
+    PackageRoute conf_nested = ast2PackageRoute(dummy4);
+    PackageRoute conf_nested_deep_deep_deep = ast2PackageRoute(dummy5);
+    PackageRoute other_deep_nested = ast2PackageRoute(dummy6);
+    PackageRoute overridden = ast2PackageRoute(dummy7);
+    PackageRoute conf = ast2PackageRoute(dashboard);
+    PackageRoute conf_overridden = ast2PackageRoute(update);
+
+    List<PackageRoute> routes = List.of(
+        conf_route,
+        conf_routelonger,
+        conf_nested_route,
+        conf_nested,
+        conf_nested_deep_deep_deep,
+        other_deep_nested,
+        overridden,
+        conf,
+        conf_overridden
+    );
+
+    GUI2ConfigGenerator configGenerator = createGenerator();
+    configGenerator.addExtraInfo(routes);
+    List<PackageRoute> topRoutes = configGenerator.findTopMostRoutes(routes);
+    Map<String, PackageRoute> path2RouteMap = configGenerator.getAppPath2RouteMap(topRoutes);
+
+    assertEquals(3, path2RouteMap.size());
+
+    String p1 = "./conf/ConfGemRouting";
+    String p2 = "./other/deep/nested/NestedGemRouting";
+    String p3 = "../../../src/test/resources/gui/overridden/OverriddenGemRouting";
+
+    assertTrue(path2RouteMap.containsKey(p1));
+    assertTrue(path2RouteMap.containsKey(p2));
+    assertTrue(path2RouteMap.containsKey(p3));
+
+    PackageRoute pr1 = path2RouteMap.get(p1);
+    PackageRoute pr2 = path2RouteMap.get(p2);
+    PackageRoute pr3 = path2RouteMap.get(p3);
+
+    assertEquals(conf, pr1);
+    assertEquals(other_deep_nested, pr2);
+    assertEquals(overridden, pr3);
   }
 
   @Test
@@ -250,6 +306,7 @@ public class GUI2ConfigGeneratorTest extends DomainGUITest {
     PackageRoute conf_nested = ast2PackageRoute(dummy4);
     PackageRoute conf_nested_deep_deep_deep = ast2PackageRoute(dummy5);
     PackageRoute other_deep_nested = ast2PackageRoute(dummy6);
+    PackageRoute overridden = ast2PackageRoute(dummy7);
     PackageRoute conf = ast2PackageRoute(dashboard);
     PackageRoute conf_overridden = ast2PackageRoute(update);
 
@@ -260,6 +317,7 @@ public class GUI2ConfigGeneratorTest extends DomainGUITest {
         conf_nested,
         conf_nested_deep_deep_deep,
         other_deep_nested,
+        overridden,
         conf,
         conf_overridden
     );
@@ -292,6 +350,7 @@ public class GUI2ConfigGeneratorTest extends DomainGUITest {
     dummy4 = processGUIModel("gui/conf/nested/Dummy4.gui", "src/test/resources/gui");
     dummy5 = processGUIModel("gui/conf/nested/deep/deep/deep/Dummy5.gui", "src/test/resources/gui");
     dummy6 = processGUIModel("gui/other/deep/nested/Dummy6.gui", "src/test/resources/gui");
+    dummy7 = processGUIModel("gui/overridden/Dummy7.gui", "src/test/resources/gui");
     dashboard = processGUIModel("gui/conf/Dashboard.gui", "src/test/resources/gui");
     update = processGUIModel("gui/conf/overridden/Update.gui", "src/test/resources/gui");
   }
