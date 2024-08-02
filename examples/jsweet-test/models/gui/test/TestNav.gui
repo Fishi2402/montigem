@@ -9,9 +9,8 @@ component TestNav() {
   @GemNavItem(title = "1 (static list)", target = "/gui/test/Test1");
   @GemNavItem(title = "2 (list dynamic)", target = "/gui/test/Test2");
 
-  @GemNavItem(title = "C1 Entry", target = "/gui/test/TestC1List");
+  @GemNavItem(title = "C1-C2-C3 assoc", target = "/gui/test/TestC1List");
 
-  @GemText(value = "--");
   @GemButton(label = "Reset Data", leftClick = resetData());
 
   @GemText(value = "... navigation ends here...");
