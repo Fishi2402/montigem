@@ -93,31 +93,6 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements OnInit 
     })
   }
 
-  protected override initP (): void {
-    if (this._p === undefined) {
-      if (this.pRoutingId != null) {
-        DemoRecManager.getProcessSure(this.pRoutingId).then(tmp_$ => {
-          if (this._p === undefined) {
-            this._p = tmp_$;
-            this.initOptions()
-          }
-          this.initStep();
-        });
-      }
-      else {
-        DemoRecManager.processBuilder().then(tmp_$ => {
-          if (this._p === undefined) {
-            this._p = tmp_$;
-          }
-          this.initStep();
-        });
-      }
-    }
-    else {
-      this.initStep();
-    }
-  }
-
   // Select Types
   public override getSelectTypeOptions(): Array<Option> {
     return this.selectTypeOptions
