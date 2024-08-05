@@ -28,7 +28,6 @@ export class GemDropdownInput implements OnInit {
   @Input() disabled: boolean = false;
   @Input() options: Option[] = [];
   @Input() validity: GemTextInputValidity;
-  @Input() placeholder: string;
   @Input() searchEnabled: boolean;
 
   @Output() public entryChange: EventEmitter<string> = new EventEmitter<string>();

@@ -2,16 +2,35 @@
 <div class="gem-dropdown-container">
   <label class="gem-label-text-input" [for]="id + 'Input'">{{ labelText }}</label>
   <input
-    class="gem-text-input gem-dropdown-button"
+    class="gem-dropdown-input gem-text-input"
     [id]="id + 'Input'"
-    type="button"
-    [value]="entry"
-    (click)="toggleDropdown()"
+    [ngModel]="entry"
+    (ngModelChange)="onEntryChange($event)"
+    (click)="showDropdown()"
+    [disabled]="disabled"
+    [placeholder]="placeholder"
+    [matTooltip]="
+        validity?.status === 'Error' || validity?.status === 'Warning'
+          ? validity.message
+          : null
+      "
+    matTooltipPosition="after"
+    [class.gem-input-error]="validity?.status === 'Error'"
+    [class.gem-input-warning]="validity?.status === 'Warning'"
+    autocomplete="off"
   />
-  <div #content class="gem-dropdown-content">
-    <div *ngFor="let option of options" (click)="selectOption()">{{ option.display }}</div>
+  <div class="gem-dropdown-content" [class.show-dropdown-content]="isContentShown">
+    <div
+      *ngFor="let option of options"
+      class="gem-dropdown-option"
+      (click)="selectOption(option)"
+    >
+      {{ option.display }}
+    </div>
   </div>
 </div>
+
+
 
 <!--
 <label class="gem-label-text-input" [for]="id + 'Input'">{{ labelText }}</label>

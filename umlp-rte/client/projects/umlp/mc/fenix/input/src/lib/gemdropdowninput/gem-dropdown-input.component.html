@@ -1,5 +1,4 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
-
 <div class="gem-dropdown-container">
   <label class="gem-label-text-input" [for]="id + 'Input'">{{ labelText }}</label>
   <div class="gem-dropdown-input-container" (click)="toggleDropdown()">
@@ -9,7 +8,6 @@
       type="button"
       [(ngModel)]="entry"
       [disabled]="disabled"
-      [placeholder]="placeholder"
       [matTooltip]="
         validity?.status === 'Error' || validity?.status === 'Warning'
           ? validity.message
