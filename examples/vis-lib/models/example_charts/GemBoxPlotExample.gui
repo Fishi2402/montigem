@@ -7,7 +7,7 @@ page GemBoxPlotExample()
 {
   boxplot@GemBoxPlot(
     entries = getBoxPlotData(),
-    min = -5,
+    min = -5.0,
     width = getBoxPlotWidth(),
     height = getBoxPlotHeight()
   );
