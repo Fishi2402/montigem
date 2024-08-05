@@ -19,17 +19,15 @@ component GemDropdownInput(
     The input field's value. If it is linked to a variable, the value of the
     variable will change when the user enters a new value.
   */
-  ?String entry,
+  ?Option selectedOption,
   /** Whether the input field is disabled. */
   boolean disabled = false,
   /** Width of the input field. */
   String width = "100%",
   /** Height of the input field. */
   String height = "100%",
-  /** Callback that is executed when a key is released. */
-  Event<Object> keyRelease,
-  /** Callback that is executed when a key is pressed. */
-  Event<Object> keyPress,
   /** An object representing the validation status of the field. */
-  GemTextInputValidity validity
+  GemTextInputValidity validity,
+  /** Whether a search input to filter the options shows up on top of the list of options */
+  boolean searchEnabled = false
 )

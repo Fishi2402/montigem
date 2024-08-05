@@ -1,5 +1,19 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
+<div class="gem-dropdown-container">
+  <label class="gem-label-text-input" [for]="id + 'Input'">{{ labelText }}</label>
+  <input
+    class="gem-text-input gem-dropdown-button"
+    [id]="id + 'Input'"
+    type="button"
+    [value]="entry"
+    (click)="toggleDropdown()"
+  />
+  <div #content class="gem-dropdown-content">
+    <div *ngFor="let option of options" (click)="selectOption()">{{ option.display }}</div>
+  </div>
+</div>
 
+<!--
 <label class="gem-label-text-input" [for]="id + 'Input'">{{ labelText }}</label>
 <input
   class="gem-text-input"
@@ -23,4 +37,5 @@
 <datalist [id]="id + 'List'">
   <option *ngFor="let option of options" [value]="option.value">{{ option.display }}</option>
 </datalist>
+-->
 

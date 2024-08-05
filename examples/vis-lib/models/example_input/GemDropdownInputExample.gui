@@ -6,12 +6,14 @@ import mc.fenix.input.GemDropdownInputTypes.Option;
 
 page GemDropdownInputExample() {
   @GemDropdownInput(
+    width = "50%",
     labelText = "Hobby:",
     options = [
       Option(""),
       Option("Tennis"),
       Option("Sleeping"),
       Option("Model-driven development")
-    ]
+    ],
+    searchEnabled = true
   );
 }

@@ -1,23 +1,50 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
-<label class="gem-label-text-input" [for]="id + 'Input'">{{ labelText }}</label>
-<select
-  class="gem-text-input"
-  [matTooltip]="
-    validity?.status === 'Error' || validity?.status === 'Warning'
-      ? validity.message
-      : null
-  "
-  matTooltipPosition="after"
-  [class.gem-input-error]="validity?.status === 'Error'"
-  [class.gem-input-warning]="validity?.status === 'Warning'"
-  [id]="id + 'Dropdown'"
-  [ngModel]="entry"
-  [disabled]="disabled"
-  (ngModelChange)="onEntryChange($event)"
-  (keyup)="keyRelease.emit($event)"
-  (keydown)="keyPress.emit($event)"
->
-  <option *ngFor="let option of options" [value]="option.value">{{ option.display }}</option>
-</select>
+<div class="gem-dropdown-container">
+  <label class="gem-label-text-input" [for]="id + 'Input'">{{ labelText }}</label>
+  <div class="gem-dropdown-input-container" (click)="toggleDropdown()">
+    <input
+      class="gem-dropdown-input gem-text-input"
+      [id]="id + 'Input'"
+      type="button"
+      [ngModel]="selectedOption?.display"
+      (ngModelChange)="onSelectedOptionChange()"
+      [disabled]="disabled"
+      [placeholder]="placeholder"
+      [matTooltip]="
+        validity?.status === 'Error' || validity?.status === 'Warning'
+          ? validity.message
+          : null
+      "
+      matTooltipPosition="after"
+      [class.gem-input-error]="validity?.status === 'Error'"
+      [class.gem-input-warning]="validity?.status === 'Warning'"
+    />
+    <button class="gem-dropdown-button" [disabled]="disabled">
+      <mat-icon [fontIcon]="isContentShown ? 'arrow_drop_up' : 'arrow_drop_down'"></mat-icon>
+    </button>
+  </div>
+  <div class="gem-dropdown-content" [class.show-dropdown-content]="isContentShown">
+    <div class="gem-search-input-container">
+      <div class="gem-search-icon">
+        <mat-icon fontIcon="search"></mat-icon>
+      </div>
+      <input
+        *ngIf="searchEnabled"
+        class="gem-text-input gem-search-input"
+        type="text"
+        placeholder="Search ..."
+        [(ngModel)]="filterString"
+        (keyup)="filterOptions()"
+      >
+    </div>
+    <div
+      *ngFor="let option of options"
+      class="gem-dropdown-option"
+      (click)="selectOption(option)"
+    >
+      {{ option.display }}
+    </div>
+  </div>
+</div>
 
