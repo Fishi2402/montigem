@@ -8,15 +8,23 @@ import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
+import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
-import org.gradle.work.InputChanges;
 import umlp.generator.gui.JSweetConfigGenerator;
 
 public abstract class UMLPJava2TypeScriptConfigTask extends DefaultTask {
 
   @Input
   public abstract Property<String> getDomainModel();
+
+  @Input
+  @Optional
+  public abstract Property<Boolean> getGenerateForDomain();
+
+  @Input
+  @Optional
+  public abstract Property<Boolean> getGenerateForGui();
 
   @OutputDirectory
   public abstract DirectoryProperty getJsweetConfigOut();
@@ -37,6 +45,6 @@ public abstract class UMLPJava2TypeScriptConfigTask extends DefaultTask {
     gs.setOutputDirectory(getJsweetConfigOut().get().getAsFile());
     gs.setHandcodedPath(new MCPath(getHwcDir().get().getAsFile().toPath()));
     JSweetConfigGenerator generator = new JSweetConfigGenerator(gs);
-    generator.generate(getDomainModel().get());
+    generator.generate(getDomainModel().get(), getGenerateForDomain().getOrElse(!getGenerateForGui().getOrElse(true)));
   }
 }

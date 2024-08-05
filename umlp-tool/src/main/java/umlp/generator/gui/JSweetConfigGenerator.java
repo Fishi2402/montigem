@@ -14,6 +14,10 @@ import java.util.Optional;
 
 public class JSweetConfigGenerator {
 
+  private static final String DOMAIN_CONFIG_FILE = "umlp.jsweetconfig.JSweetConfigDomainJSON";
+
+  private static final String GUI_CONFIG_FILE = "umlp.jsweetconfig.JSweetConfigGUIJSON";
+
   protected GeneratorSetup generatorSetup;
   protected GeneratorEngine generatorEngine;
 
@@ -23,11 +27,12 @@ public class JSweetConfigGenerator {
     generatorSetup.setTracing(false);
   }
 
-  public void generate(String domainName) {
+  public void generate(String domainName, boolean forDomain) {
 
     File jsweetConfig = calcTOPFile("jsweetconfig", "json");
+    String configFile = forDomain ? DOMAIN_CONFIG_FILE : GUI_CONFIG_FILE;
     generatorEngine.generateNoA(
-        "umlp.jsweetconfig.JSweetConfigJSON",
+        configFile,
         jsweetConfig.toPath(),
         domainName);
 
