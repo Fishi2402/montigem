@@ -2,7 +2,8 @@
 
 import { DemoRecManager } from '@src/demorec/DemoRecManager';
 
-import { BatteryPackType } from '@src/demorec/BatteryPackType';
+import { ComponentKind } from '@src/demorec/ComponentKind';
+import { DemoRecComponent } from '@src/demorec/DemoRecComponent';
 
 import { BatteryPack } from '@src/demorec/BatteryPack';
 
@@ -13,7 +14,7 @@ import {
   Component,
 } from '@angular/core';
 
-import {BatteryPackService} from "../../BatteryPackService";
+import {BatteryPackService} from "@src/BatteryPackService";
 
 const unroutable : string = "Not clickable yet."
 
@@ -46,10 +47,11 @@ export  class ComponentsOfPack extends ComponentsOfPackComponent {
   }
 
   public override navigateToComponent() : (arg) => void  {
-    return (event) => {
-      console.warn(event)
-      if(event.value != unroutable) {
-        this._router.navigate(["gui/component/ComponentEditPage/"+event.value])
+    return (entry) => {
+      if(entry.children) {
+        this._router.navigate(["gui/kind/EditComponentKindPage/"+this.getPack().getGemId()+"/"+entry.value])
+      } else if(entry.value != unroutable) {
+        this._router.navigate(["gui/component/ComponentEditPage/"+entry.value])
       }
     }
   }
@@ -62,22 +64,43 @@ export  class ComponentsOfPack extends ComponentsOfPackComponent {
       console.warn("Hits", this.getPack())
       this.packService.updateBatteryPack(this.getPack())
     }
+    const entries =[]
+    const kindToComponents : Map<ComponentKind, DemoRecComponent[]> = new Map()
 
-    const components = []
-    this.getPack().getAllComponentsList().forEach(comp => {
+    this.getPack().getAllComponentsList().forEach(c => {
+      if(c.getIsA()) {
+        if(kindToComponents.has(c.getIsA())) {
+          kindToComponents.get(c.getIsA()).push(c)
+        } else {
+          kindToComponents.set(c.getIsA(), [c])
+        }
+      }
+    });
 
-      const entry = new GemTreeviewEntry();
-      entry.name=comp.getName()
-      entry.value=comp.getGemId()+""
-      components.push(entry);
-    })
-    const newHash = JSON.stringify(components);
-    if (newHash !== this.treeComponentItems.hash) {
-      this.treeComponentItems.value = components;
-      this.treeComponentItems.hash = newHash;
+    const keys = [...kindToComponents.keys()];
+    if(keys.length>0) {
+      keys.sort((l,r) => l.getName().localeCompare(r.getName())).forEach(
+          kind => {
+            const entry = new GemTreeviewEntry();
+            entry.name=kind.getName();
+            entry.value=String(kind.getGemId())
+            entry.children = kindToComponents.get(kind).sort((l,r) => l.getName().localeCompare(r.getName())).map(comp =>
+                {return {
+                  name: comp.getName(),
+                  value: String(comp.getGemId())
+                }}
+            )
+            entries.push(entry)
+          }
+      )
     }
 
-    return components
+    const newHash = JSON.stringify(entries);
+    if (newHash !== this.treeComponentItems.hash) {
+      this.treeComponentItems.value = entries;
+      this.treeComponentItems.hash = newHash;
+    }
+    return this.treeComponentItems.value
   }
 
   public override navigateToConnection() : (arg) => void  {

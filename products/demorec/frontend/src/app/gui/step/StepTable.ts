@@ -45,7 +45,7 @@ export class StepTable extends StepTableComponent {
   }
 
   public override editStep(step: ProcessStep): (arg: void) => void {
-    return () => this._router.navigate(["gui/step/ProcessStepEdit/"+this.getProcess().getGemId()+"/"+step.getGemId()])
+    return () => this._router.navigate(["gui/step/ProcessStepEditPage/"+this.getProcess().getGemId()+"/"+step.getGemId()])
   }
 
   public override deleteStep(step: ProcessStep) : (arg) => void {

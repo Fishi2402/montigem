@@ -122,7 +122,7 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
     }
     const calcRes : Option[] = this.getEndEffectors()
         .map(e => { return {value: String(e.getGemId()), display: e.getName()} })
-        .sort((l,r) => Number(r.value)-Number(l.value));
+        .sort((l,r) => l.display.localeCompare(r.display));
     if(JSON.stringify(calcRes) !== JSON.stringify(this.endEffectorOptions)) {
       this.endEffectorOptions=calcRes
     }

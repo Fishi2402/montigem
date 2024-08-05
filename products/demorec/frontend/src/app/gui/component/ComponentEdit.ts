@@ -10,7 +10,7 @@ import { ComponentKind } from '@src/demorec/ComponentKind';
 import { Photo } from '@src/demorec/Photo';
 import {GemTextInputValidity, Option} from '@umlp/input';
 
-import { ComponentEditComponent, config } from '../../../../build/frontendGen/build/appgui/gui/component/ComponentEditComponent';
+import { ComponentEditComponent, config } from '@src/gui/component/ComponentEditComponent';
 
 import {
   Directive,
@@ -35,9 +35,6 @@ const newOption: Option = { value: "NEW", display: "NEW" };
 })
 export  class ComponentEdit extends ComponentEditComponent {
 
-  public kindEntry: string = "";
-  public kindOptions: Option[] = [newOption];
-
   conditionOptions : Option[] = []
 
   public init(): void {
@@ -45,17 +42,6 @@ export  class ComponentEdit extends ComponentEditComponent {
     Object.keys(State).filter(s => !isNaN(+s)).forEach(key => {
       this.conditionOptions.push({value: key, display: State[key]});
     })
-
-    DemoRecManager.getComponentKindList().then(gemPromiseRes => {
-      const kinds = gemPromiseRes;
-      kinds.loadAll().then(() => {
-        for (const kind of kinds) {
-          let value = kind.getGemId() + "";
-          this.kindOptions.push({value: value, display: kind.getName()});
-        }
-        this.kindOptions = this.kindOptions.slice();
-      });
-    });
 
     super.init();
   }
@@ -78,7 +64,6 @@ export  class ComponentEdit extends ComponentEditComponent {
     return (photo : Photo) => {
       this.getComponent().addPhoto2(photo)
     }
-
   }
 
   public override changeToKind() : (arg : ComponentKind) => void  {
@@ -117,5 +102,3 @@ export  class ComponentEdit extends ComponentEditComponent {
   }
 
 }
-
-
