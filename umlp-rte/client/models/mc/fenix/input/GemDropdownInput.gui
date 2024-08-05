@@ -19,7 +19,7 @@ component GemDropdownInput(
     The input field's value. If it is linked to a variable, the value of the
     variable will change when the user enters a new value.
   */
-  ?Option selectedOption,
+  ?String entry,
   /** Whether the input field is disabled. */
   boolean disabled = false,
   /** Width of the input field. */

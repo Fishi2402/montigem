@@ -24,14 +24,14 @@ export class GemDropdownInput implements OnInit {
   @Input() height: string = '100%';
 
   @Input() labelText: string;
-  @Input() selectedOption: Option;
+  @Input() entry: string = "";
   @Input() disabled: boolean = false;
-  @Input() options: Option[];
+  @Input() options: Option[] = [];
   @Input() validity: GemTextInputValidity;
   @Input() placeholder: string;
   @Input() searchEnabled: boolean;
 
-  @Output() public selectedOptionChange: EventEmitter<Option> = new EventEmitter<Option>();
+  @Output() public entryChange: EventEmitter<string> = new EventEmitter<string>();
 
   isContentShown: boolean = false;
   filterString: string = "";
@@ -49,10 +49,6 @@ export class GemDropdownInput implements OnInit {
     }
   }
 
-  onSelectedOptionChange(): void {
-    this.selectedOptionChange.emit(this.selectedOption);
-  }
-
   toggleDropdown(): void {
     if (!this.isContentShown && this.options.length > 0) {
       this.showDropdown();
@@ -63,7 +59,8 @@ export class GemDropdownInput implements OnInit {
   }
 
   selectOption(option: Option): void {
-    this.selectedOption = option;
+    this.entry = option.value;
+    this.entryChange.emit(this.entry);
   }
 
   filterOptions(): void {
