@@ -318,8 +318,8 @@ public abstract class AbstractPlaywrightE2ETest {
     BufferedReader stdOutreader = new BufferedReader(new InputStreamReader(frontendProcess.getInputStream()));
     BufferedReader stderrReader = new BufferedReader(new InputStreamReader(frontendProcess.getErrorStream()));
     while (frontendProcess.isAlive()) {
-      if ((System.currentTimeMillis() - start > 1000 * 60)) {
-        System.out.println("Frontend not available after 60 seconds. Aborting.");
+      if ((System.currentTimeMillis() - start > 1000 * 120)) {
+        System.out.println("Frontend not available after 120 seconds. Aborting.");
         break;
       }
 
