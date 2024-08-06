@@ -64,6 +64,8 @@ export interface IUMLPList<E> extends AsyncIterable<E> {
 
   toArray(startIndex?: number, endIndex?: number): Array<E>;
 
+  toArrayDeep(startIndex?: number, endIndex?: number): Array<any>;
+
   // sort(c: java.util.Comparator<any>): any;
   [Symbol.asyncIterator](): AsyncIterator<E>;
 

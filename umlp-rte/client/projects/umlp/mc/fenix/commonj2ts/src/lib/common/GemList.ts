@@ -477,6 +477,10 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     return this.asArray;
   }
 
+  toArrayDeep(startIndex?: number, endIndex?: number): Array<E> {
+    return this.toArray(startIndex, endIndex);
+  }
+
   async forEach(consumer: (element: E) => void): Promise<void> {
     for await (const e of this) {
       consumer(e);

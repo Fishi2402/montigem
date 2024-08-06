@@ -28,7 +28,7 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
     getTypeMirrorMappings().add(0, computeMCJSonTypeMapping());
   }
 
-  public static Function<TypeMirror, String> computeMCJSonTypeMapping() {
+  public Function<TypeMirror, String> computeMCJSonTypeMapping() {
     return (TypeMirror type) -> {
       if (type.toString().equals("de.monticore.symboltable.serialization.json.JsonObject")) {
         return "any";
