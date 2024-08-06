@@ -53,7 +53,10 @@ public abstract class UMLPPluginFrontendWithJSweet implements Plugin<Project> {
     project.getPluginManager().apply(UMLPPluginFrontendBase.class);
 
     boolean local = UMLPPluginFrontendBase.getBooleanProjectProperty(project, "useLocalDependencies");
-    String domainModel = getStringProjectProperty(project, "domainModel", "").replace("''", "");
+    String domainModel = getStringProjectProperty(project, "domainModel", "")
+        .replace("'", "")
+        .replace("\"", "")
+        .strip();
     if (domainModel.equals("")) {
       Log.warn("0JSB001 Could not identify the domain model. Please set the `domainModel` property in your `gradle.poperties` file.");
     }

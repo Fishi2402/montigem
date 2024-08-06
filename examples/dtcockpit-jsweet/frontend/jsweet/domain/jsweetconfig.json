@@ -1,8 +1,7 @@
-
 {
   "adapters": [
-    "umlp.jsweet.extension.UMLPJSweetAdapter",
-    "umlp.jsweet.extension.domainAdapters.CarrentalImportAdapter"
+    "umlp.jsweet.extension.UMLPJSweetDomainAdapter",
+    "umlp.jsweet.extension.domainAdapters.DtcockpitImportAdapter"
   ],
   "@Replace('this.password = this.password;')": {
     "include": ["**.User_setPassword.init()"]
@@ -13,5 +12,5 @@
       "**.PipelineInformationExtractor.extractPipelineDataOf(..)"
     ]
   },
-  "domainName": "Carrental"
+  "domainName": "Dtcockpit"
 }

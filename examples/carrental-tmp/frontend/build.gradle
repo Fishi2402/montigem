@@ -134,7 +134,8 @@ translateJava2TSGUI {
 nodeSetup.dependsOn(frontendSetup)
 
 def prebuildTasks = [
-    npmInstall, generate, translateJava2TSGUI
+    npmInstall, generate,
+//    translateJava2TSGUI
 ]
 
 tasks.register('buildApp', NpxTask) {

@@ -1,6 +1,6 @@
 {
   "adapters": [
-    "umlp.jsweet.extension.UMLPJSweetAdapter",
+    "umlp.jsweet.extension.UMLPJSweetGUIAdapter",
     "umlp.jsweet.extension.domainAdapters.DtcockpitImportAdapter"
   ],
   "@Replace('this.password = this.password;')": {

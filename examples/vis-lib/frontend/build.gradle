@@ -21,12 +21,21 @@ dependencies {
 
 genGUI {
   domainModels = ["Domain"]
-  guiCreateModels = ["person.CreatePerson", "person.CreatePersonWithFriends","person.CreateClubWithMembers"]
+  guiCreateModels = ["person.CreatePerson", "person.CreatePersonWithFriends", "person.CreateClubWithMembers"]
 
   /*
   debug = true
   outputs.upToDateWhen { false }
   /**/
+}
+
+sourceSets {
+  main {
+    java {
+      // Remove 'src/main/java' from the sources
+      srcDirs = []
+    }
+  }
 }
 
 //translateJava2TSDomain {
@@ -71,7 +80,7 @@ tasks.register('run') {
 
 test {
   dependsOn buildApp
-  useJUnitPlatform(){
+  useJUnitPlatform() {
     excludeTags "SlowTest"
   }
 }
