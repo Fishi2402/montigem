@@ -12,7 +12,7 @@
     [id]="id + 'Input'"
     [ngModel]="entry"
     (ngModelChange)="onEntryChange($event)"
-    (focus)="showDropdown()"
+    (focus)="toggleDropdown()"
     [disabled]="disabled"
     [placeholder]="placeholder"
     [matTooltip]="
@@ -24,44 +24,16 @@
     [class.gem-input-error]="validity?.status === 'Error'"
     [class.gem-input-warning]="validity?.status === 'Warning'"
   />
-  <div class="gem-dropdown-content" [class.show-dropdown-content]="isContentShown">
+  <div *ngIf="isContentShown" class="gem-dropdown-content">
     <div
       *ngFor="let option of filteredOptions; let i = index"
       class="gem-dropdown-option"
       [class.highlight-option]="highlightIdx == i"
-      (click)="selectOption(option)"
+      (click)="selectOption(option.value)"
       (mouseover)="setHighlightIdx(i)"
     >
       {{ option.display }}
     </div>
   </div>
 </div>
-
-
-
-<!--
-<label class="gem-label-text-input" [for]="id + 'Input'">{{ labelText }}</label>
-<input
-  class="gem-text-input"
-  [matTooltip]="
-    validity?.status === 'Error' || validity?.status === 'Warning'
-      ? validity.message
-      : null
-  "
-  matTooltipPosition="after"
-  [class.gem-input-error]="validity?.status === 'Error'"
-  [class.gem-input-warning]="validity?.status === 'Warning'"
-  [id]="id + 'Input'"
-  [attr.list]="id + 'List'"
-  [ngModel]="entry"
-  [disabled]="disabled"
-  [placeholder]="placeholder"
-  (ngModelChange)="onEntryChange($event)"
-  (keyup)="keyRelease.emit($event)"
-  (keydown)="keyPress.emit($event)"
-/>
-<datalist [id]="id + 'List'">
-  <option *ngFor="let option of options" [value]="option.value">{{ option.display }}</option>
-</datalist>
--->
 

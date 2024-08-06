@@ -1,10 +1,10 @@
 import {
-  Component, ElementRef,
+  Component,
   EventEmitter,
   HostBinding,
   Input,
   OnInit,
-  Output, QueryList, ViewChildren,
+  Output,
 } from "@angular/core";
 import { Option } from "../gemdropdowninput";
 import { GemTextInputValidity } from "../gemtextinput";
@@ -51,9 +51,7 @@ export class GemAutocompleteInput implements OnInit {
   }
 
   onEntryChange(entry: string): void {
-    this.entry = entry;
-    this.entryChange.emit(this.entry);
-    this.filterOptions();
+    this.selectOption(entry);
     this.showDropdown();
   }
 
@@ -63,13 +61,18 @@ export class GemAutocompleteInput implements OnInit {
     }
   }
 
-  selectOption(option: Option): void {
-    this.entry = option.value;
+  selectOption(entry: string): void {
+    this.entry = entry;
     this.entryChange.emit(this.entry);
+    this.filterOptions();
   }
 
-  selectWithEnter() {
-    this.selectOption(this.filteredOptions[this.highlightIdx]);
+  selectWithEnter(): void {
+    if (this.highlightIdx < 0) {
+      this.showDropdown();
+      return;
+    }
+    this.selectOption(this.filteredOptions[this.highlightIdx].value);
     this.hideDropdown();
   }
 
@@ -80,7 +83,7 @@ export class GemAutocompleteInput implements OnInit {
 
   focusUp(): void {
     const newIdx = this.highlightIdx - 1;
-    this.highlightIdx = newIdx >= 0 ? newIdx : 0;
+    this.highlightIdx = newIdx >= -1 ? newIdx : -1;
   }
 
   setHighlightIdx(idx: number): void {
@@ -93,8 +96,22 @@ export class GemAutocompleteInput implements OnInit {
     );
   }
 
+  toggleDropdown(): void {
+    if (!this.isContentShown && this.filteredOptions.length > 0) {
+      this.showDropdown();
+    }
+    else {
+      this.hideDropdown();
+    }
+  }
+
   private hideDropdown(): void {
     this.isContentShown = false;
+    this.resetHighlightIdx();
+  }
+
+  private resetHighlightIdx() {
+    this.highlightIdx = -1;
   }
 
 }

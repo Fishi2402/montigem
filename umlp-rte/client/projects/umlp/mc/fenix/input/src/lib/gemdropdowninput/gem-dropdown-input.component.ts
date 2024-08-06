@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   HostBinding,
@@ -26,7 +27,7 @@ export class GemDropdownInput implements OnInit {
   @Input() labelText: string;
   @Input() entry: string = "";
   @Input() disabled: boolean = false;
-  @Input() options: Option[] = [];
+  @Input() options: Option[];
   @Input() validity: GemTextInputValidity;
   @Input() searchEnabled: boolean;
 
@@ -34,13 +35,19 @@ export class GemDropdownInput implements OnInit {
 
   isContentShown: boolean = false;
   filterString: string = "";
+  filteredOptions: Option[] = [];
+  highlightIdx: number = -1;
+
+  constructor(private cdRef: ChangeDetectorRef) {}
 
   ngOnInit(): void {
+    this.filteredOptions = this.options;
     window.onclick = (event) => {
       if (
         !event.target.matches(".gem-text-input") &&
         !event.target.matches(".mat-icon") &&
         !event.target.matches(".gem-dropdown-input") &&
+        !event.target.matches(".gem-dropdown-button") &&
         this.isContentShown
       ) {
         this.hideDropdown();
@@ -49,7 +56,7 @@ export class GemDropdownInput implements OnInit {
   }
 
   toggleDropdown(): void {
-    if (!this.isContentShown && this.options.length > 0) {
+    if (!this.isContentShown && this.filteredOptions.length > 0) {
       this.showDropdown();
     }
     else {
@@ -62,25 +69,66 @@ export class GemDropdownInput implements OnInit {
     this.entryChange.emit(this.entry);
   }
 
-  filterOptions(): void {
-    const dropdownOptions=
-      document.getElementsByClassName("gem-dropdown-option") as HTMLCollectionOf<HTMLElement>;
-    for (let i = 0; i < dropdownOptions.length; i++) {
-      const textValue: string = dropdownOptions[i].textContent || dropdownOptions[i].innerText;
-      if (textValue.toUpperCase().indexOf(this.filterString.toUpperCase()) > -1) {
-        dropdownOptions[i].style.display = "block";
-      } else {
-        dropdownOptions[i].style.display = "none";
-      }
+  selectWithEnter(event: any): void {
+    event.preventDefault();
+    if (this.highlightIdx < 0) {
+      this.toggleDropdown();
+      return;
     }
+    this.selectOption(this.filteredOptions[this.highlightIdx]);
+    this.hideDropdown();
+  }
+
+  focusDown(): void {
+    const newIdx = this.highlightIdx + 1;
+    this.highlightIdx = newIdx < this.filteredOptions.length ? newIdx : this.filteredOptions.length - 1;
+  }
+
+  focusUp(): void {
+    const newIdx = this.highlightIdx - 1;
+    this.highlightIdx = newIdx >= -1 ? newIdx : -1;
+  }
+
+  setHighlightIdx(idx: number): void {
+    this.highlightIdx = idx;
+  }
+
+  filterOptions(): void {
+    this.filteredOptions = this.options.filter(option =>
+      option.value.toUpperCase().indexOf(this.filterString.toUpperCase()) > -1
+    );
+  }
+
+  getInputId(): string {
+    return this.id + "Input"
   }
 
   private showDropdown(): void {
     this.isContentShown = true;
+    this.toggleFocus();
   }
 
   private hideDropdown(): void {
     this.isContentShown = false;
+    this.resetHighlightIdx();
+    this.toggleFocus();
+  }
+
+  private resetHighlightIdx() {
+    this.highlightIdx = -1;
+  }
+
+  private toggleFocus(): void {
+    if (!this.searchEnabled) {
+      return;
+    }
+    this.cdRef.detectChanges();
+    if (this.isContentShown) {
+      document.getElementById("searchInput").focus();
+    }
+    else {
+      document.getElementById(this.getInputId()).focus();
+    }
   }
 
 }
