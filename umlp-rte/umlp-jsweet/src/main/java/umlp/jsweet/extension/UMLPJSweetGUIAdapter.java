@@ -11,24 +11,27 @@ import umlp.jsweet.extension.domainAdapters.UMLPRTEImportAdapter;
 import umlp.jsweet.extension.guiAdapters.BackendOnlyAdapter;
 import umlp.jsweet.extension.guiAdapters.GUIComponentAdapter;
 import umlp.jsweet.extension.guiAdapters.GUIImportAdapter;
+import umlp.jsweet.extension.guiAdapters.GUITypeAccessorAdapter;
 import umlp.jsweet.extension.guiAdapters.GUIUtilAdapter;
 import umlp.jsweet.extension.guiAdapters.TSTypesAdapter;
 
-public class UMLPJSweetAdapter extends PrinterAdapter {
-  public UMLPJSweetAdapter(PrinterAdapter parentAdapter) {
+public class UMLPJSweetGUIAdapter extends PrinterAdapter {
+  public UMLPJSweetGUIAdapter(PrinterAdapter parentAdapter) {
     super(
         new ImportExcludeAdapter(
-            new UMLPCollectionsAdapter(
-                new UMLPJavaBasicsAdapter(
-                    new UMLPRTEImportAdapter(
-                        new UMLPBasicsAdapter(
-                            new JavaRTEMethodsAdapter(
-                                new GUIComponentAdapter(
-                                    new GUIImportAdapter(
-                                        new TSTypesAdapter(
-                                            new GUIUtilAdapter(
-                                                new BackendOnlyAdapter(
-                                                    parentAdapter
+            new GUITypeAccessorAdapter(
+//                new UMLPCollectionsAdapter(
+                    new UMLPJavaBasicsAdapter(
+                        new UMLPRTEImportAdapter(
+                            new UMLPBasicsAdapter(
+                                new JavaRTEMethodsAdapter(
+                                    new GUIComponentAdapter(
+                                        new GUIImportAdapter(
+                                            new TSTypesAdapter(
+                                                new GUIUtilAdapter(
+                                                    new BackendOnlyAdapter(
+                                                        parentAdapter
+                                                    )
                                                 )
                                             )
                                         )
@@ -37,7 +40,7 @@ public class UMLPJSweetAdapter extends PrinterAdapter {
                             )
                         )
                     )
-                )
+//                )
             )
         )
     );
