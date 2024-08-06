@@ -47,6 +47,12 @@ public class GUIUtilAdapter extends UMLPAbstractAdapter {
             this.print("this.location.back()");
             return true;
         }
+      case "umlp.guiutil.HTMLUtils":
+        switch (methodName) {
+        case "alert":
+          this.print("alert(").printArgList(invocation.getArguments()).print(")");
+          return true;
+      }
     }
 
     return super.substituteMethodInvocation(invocation);
