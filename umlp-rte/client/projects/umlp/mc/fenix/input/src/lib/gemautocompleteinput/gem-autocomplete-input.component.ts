@@ -1,10 +1,10 @@
 import {
-  Component,
+  Component, ElementRef,
   EventEmitter,
   HostBinding,
   Input,
   OnInit,
-  Output,
+  Output, QueryList, ViewChildren,
 } from "@angular/core";
 import { Option } from "../gemdropdowninput";
 import { GemTextInputValidity } from "../gemtextinput";
@@ -32,9 +32,12 @@ export class GemAutocompleteInput implements OnInit {
 
   @Output() public entryChange: EventEmitter<string> = new EventEmitter<string>();
 
+  filteredOptions: Option[] = [];
   isContentShown: boolean = false;
+  highlightIdx: number = -1;
 
   ngOnInit(): void {
+    this.filteredOptions = this.options;
     window.onclick = (event) => {
       if (
         !event.target.matches(".gem-text-input") &&
@@ -42,7 +45,6 @@ export class GemAutocompleteInput implements OnInit {
         !event.target.matches(".gem-dropdown-input") &&
         this.isContentShown
       ) {
-        console.log("Click outside content", event.target);
         this.hideDropdown();
       }
     }
@@ -52,10 +54,11 @@ export class GemAutocompleteInput implements OnInit {
     this.entry = entry;
     this.entryChange.emit(this.entry);
     this.filterOptions();
+    this.showDropdown();
   }
 
   showDropdown(): void {
-    if (!this.isContentShown && this.options.length > 0) {
+    if (!this.isContentShown && this.filteredOptions.length > 0) {
       this.isContentShown = true;
     }
   }
@@ -65,17 +68,29 @@ export class GemAutocompleteInput implements OnInit {
     this.entryChange.emit(this.entry);
   }
 
+  selectWithEnter() {
+    this.selectOption(this.filteredOptions[this.highlightIdx]);
+    this.hideDropdown();
+  }
+
+  focusDown(): void {
+    const newIdx = this.highlightIdx + 1;
+    this.highlightIdx = newIdx < this.filteredOptions.length ? newIdx : this.filteredOptions.length - 1;
+  }
+
+  focusUp(): void {
+    const newIdx = this.highlightIdx - 1;
+    this.highlightIdx = newIdx >= 0 ? newIdx : 0;
+  }
+
+  setHighlightIdx(idx: number): void {
+    this.highlightIdx = idx;
+  }
+
   private filterOptions(): void {
-    const dropdownOptions=
-      document.getElementsByClassName("gem-dropdown-option") as HTMLCollectionOf<HTMLElement>;
-    for (let i = 0; i < dropdownOptions.length; i++) {
-      const textValue: string = dropdownOptions[i].textContent || dropdownOptions[i].innerText;
-      if (textValue.toUpperCase().indexOf(this.entry.toUpperCase()) > -1) {
-        dropdownOptions[i].style.display = "block";
-      } else {
-        dropdownOptions[i].style.display = "none";
-      }
-    }
+    this.filteredOptions = this.options.filter(option =>
+      option.value.toUpperCase().indexOf(this.entry.toUpperCase()) > -1
+    );
   }
 
   private hideDropdown(): void {

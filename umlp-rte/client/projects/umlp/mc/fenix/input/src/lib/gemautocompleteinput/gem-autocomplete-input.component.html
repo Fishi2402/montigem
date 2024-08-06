@@ -1,12 +1,18 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
-<div class="gem-dropdown-container">
+<div
+  class="gem-dropdown-container"
+  (keydown.arrowDown)="focusDown()"
+  (keydown.arrowUp)="focusUp()"
+  (keydown.enter)="selectWithEnter()"
+>
   <label class="gem-label-text-input" [for]="id + 'Input'">{{ labelText }}</label>
   <input
     class="gem-dropdown-input gem-text-input"
+    autocomplete="off"
     [id]="id + 'Input'"
     [ngModel]="entry"
     (ngModelChange)="onEntryChange($event)"
-    (click)="showDropdown()"
+    (focus)="showDropdown()"
     [disabled]="disabled"
     [placeholder]="placeholder"
     [matTooltip]="
@@ -17,13 +23,14 @@
     matTooltipPosition="after"
     [class.gem-input-error]="validity?.status === 'Error'"
     [class.gem-input-warning]="validity?.status === 'Warning'"
-    autocomplete="off"
   />
   <div class="gem-dropdown-content" [class.show-dropdown-content]="isContentShown">
     <div
-      *ngFor="let option of options"
+      *ngFor="let option of filteredOptions; let i = index"
       class="gem-dropdown-option"
+      [class.highlight-option]="highlightIdx == i"
       (click)="selectOption(option)"
+      (mouseover)="setHighlightIdx(i)"
     >
       {{ option.display }}
     </div>
