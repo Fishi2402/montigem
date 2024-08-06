@@ -4,7 +4,7 @@ import inheritance.test_infrastructure.InheritanceDBTestSetup;
 import inheritance.test_infrastructure.InheritanceMockTestSetup;
 import inheritance.test_infrastructure.InheritanceSQLDBTestSetup;
 import org.junit.jupiter.api.Test;
-import umlp.backendrte.test_infrastructure.TestSetup;
+import umlp.test_rte.TestSetup;
 
 import java.util.List;
 

@@ -72,7 +72,7 @@ public class E2ETestDecorator extends AbstractDecorator {
 
     CD4C cd4C = getCD4C();
 
-    cd4C.addImport(res, "umlp.backendrte.test_infrastructure.playwright.AbstractPlaywrightE2ETest");
+    cd4C.addImport(res, "umlp.test_rte.playwright.AbstractPlaywrightE2ETest");
     cd4C.addImport(res, Joiners.DOT.join(packageName, cdName + "ServerApplication"));
 
     //add spring boot annotations
@@ -105,7 +105,7 @@ public class E2ETestDecorator extends AbstractDecorator {
         .build();
 
     CD4C cd4C = getCD4C();
-    cd4C.addImport(res, "umlp.backendrte.test_infrastructure.playwright.AbstractPlaywrightE2ETest");
+    cd4C.addImport(res, "umlp.test_rte.playwright.AbstractPlaywrightE2ETest");
     cd4C.addImport(res, "org.springframework.boot.web.server.WebServerFactoryCustomizer");
     cd4C.addImport(res,
                    "org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory");

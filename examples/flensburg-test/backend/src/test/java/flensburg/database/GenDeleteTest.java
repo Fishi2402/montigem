@@ -18,9 +18,8 @@ import hardy.flensburg.Person;
 import hardy.flensburg.PersonBuilder;
 import hardy.flensburg.PersonDAO;
 import hardy.flensburg.PersonDAOInterface;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import umlp.backendrte.test_infrastructure.ClientSetup;
+import umlp.test_rte.ClientSetup;
 
 import java.util.Optional;
 

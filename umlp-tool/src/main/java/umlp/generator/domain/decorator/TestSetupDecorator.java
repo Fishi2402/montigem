@@ -72,7 +72,7 @@ public class TestSetupDecorator extends AbstractDecorator {
     ASTCDType res = UMLPMill.cDInterfaceBuilder()
         .setModifier(PUBLIC_ABSTRACT.build())
         .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(Joiners.DOT.join(
-            PathUtil.getBackendRTETestInfrastructurePath(),
+            PathUtil.getTestInfrastructurePath(),
             "TestSetup<" + cdName + "TestContext>")))
         .setName(cdName + SUFFIX)
         .build();
@@ -262,7 +262,7 @@ public class TestSetupDecorator extends AbstractDecorator {
     Joiner dot = Joiners.DOT;
     String backendRTECommandPath = PathUtil.getBackendRTECommandPath();
     String backendRTECommonPath = PathUtil.getBackendRTECommonPath();
-    String backendRTETestInfrastructurePath = PathUtil.getBackendRTETestInfrastructurePath();
+    String backendRTETestInfrastructurePath = PathUtil.getTestInfrastructurePath();
     String packageName = getPackageName(origCD, DEFAULT_PACKAGE);
 
     cd4C.addImport(type, dot.join(backendRTECommandPath, "CommandManager"));

@@ -1,4 +1,4 @@
-package umlp.backendrte.test_infrastructure.playwright;
+package umlp.test_rte.playwright;
 
 import com.microsoft.playwright.Dialog;
 import com.microsoft.playwright.Locator;

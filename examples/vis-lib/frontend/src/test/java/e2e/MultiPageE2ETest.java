@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static umlp.backendrte.test_infrastructure.playwright.ComponentKind.GemButton;
-import static umlp.backendrte.test_infrastructure.playwright.ComponentKind.GemTextInput;
+import static umlp.test_rte.playwright.ComponentKind.GemButton;
+import static umlp.test_rte.playwright.ComponentKind.GemTextInput;
 
 @Tag("SlowTest")
 public class MultiPageE2ETest extends AbstractDomainE2ETest {
