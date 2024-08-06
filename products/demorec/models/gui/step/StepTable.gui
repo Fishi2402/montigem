@@ -6,6 +6,7 @@ import DemoRec.ProcessStep;
 import mc.fenix.arrange.GemRow;
 import mc.fenix.arrange.GemCard;
 import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemGrid;
 import mc.fenix.basic.GemText;
 import mc.fenix.basic.GemButton;
 
@@ -14,29 +15,34 @@ import gui.staticcontainer.EvenlySpacedColumn;
 
 component StepTable(Process process) {
 
-  @GemColumn(
+  @GemGrid(
     rowGap="5px",
-    components=[
-      tableHeader@HorizontalStatTable(rows = [
-        @EvenlySpacedColumn(element = @GemText(value="Edit")),
-        @EvenlySpacedColumn(element = @GemText(value = "Type")),
-        @EvenlySpacedColumn(element = @GemText(value = "Description")),
-        @EvenlySpacedColumn(element = @GemText(value = "Endeffector")),
-        @EvenlySpacedColumn(element = @GemText(value = "Duration (s)")),
-        @EvenlySpacedColumn(element = @GemText(value = "Values")),
-        @EvenlySpacedColumn(element = @GemText(value = "Deletion"))
-      ]),
-      @iterate(ProcessStep step : getReverseProcessSteps()) {
-        @HorizontalStatTable(rows = [
-          @EvenlySpacedColumn(element=editStepButton@GemButton(label = "Edit " + step.index, leftClick = editStep(step))),
-          @EvenlySpacedColumn(element = @GemText(value = step.type)),
-          @EvenlySpacedColumn(element = @GemText(value = step.description)),
-          @EvenlySpacedColumn(element = @GemText(value = step.uses.name)),
-          @EvenlySpacedColumn(element = @GemText(value = step.timeConsumption)),
-          @EvenlySpacedColumn(element = measuredValuesCount@GemText(value = null)),
-          @EvenlySpacedColumn(element = deleteProcessStep@GemButton(label="Delete", leftClick=deleteStep(step), disabled=false))
-        ]);
+    x=["4rem","8rem","8rem","8rem","6rem","8rem","8rem","8rem","4rem"],
+    rows=[
+      [
+        @GemText(value = "Edit"),
+        @GemText(value = "Type"),
+        @GemText(value = "Description"),
+        @GemText(value = "Endeffector"),
+        @GemText(value = "Duration (s)"),
+        @GemText(value = "Values"),
+        @GemText(value = "Connection"),
+        @GemText(value = "Components"),
+        @GemText(value = "Deletion")
+      ],
+      [
+        @iterate(ProcessStep step : getReverseProcessSteps()) {
+          editStepButton@GemButton(label = "Edit " + step.index, leftClick = editStep(step));
+          @GemText(value = step.type);
+          @GemText(value = step.description);
+          @GemText(value = step.uses.name);
+          @GemText(value = step.timeConsumption);
+          measuredValuesCount@GemText(value = null);
+          @GemText(value = getConnectionType(step));
+          @GemText(value = getComponents(step));
+          deleteProcessStep@GemButton(label="Delete", leftClick=deleteStep(step), disabled=false);
       }
+      ]
     ]
   );
 }

@@ -5,21 +5,15 @@ import { DemoRecComponent } from '@src/demorec/DemoRecComponent';
 import { BatteryPack } from '@src/demorec/BatteryPack';
 import { State } from '@src/demorec/State';
 
-import { ComponentCreateComponent, config } from '../../../../build/frontendGen/build/appgui/gui/component/ComponentCreateComponent';
+import { ComponentCreateComponent, config } from '@src/gui/component/ComponentCreateComponent';
 
 import {
-  Directive,
   Component,
-  Input,
   Output,
   EventEmitter,
-  TemplateRef,
 } from '@angular/core';
 
-import { ActivatedRoute, Router } from '@angular/router';
-import { Photo } from '@src/demorec/Photo';
-import {BatteryPackService} from "../../BatteryPackService";
-import {BatteryPackOverview} from "../pack/BatteryPackOverview";
+import {BatteryPackService} from "@src/BatteryPackService";
 
 
 @Component({
@@ -48,6 +42,7 @@ export class ComponentCreate extends ComponentCreateComponent {
     DemoRecManager.demoRecComponentBuilder().then(gemPromiseRes => {
       this.component = gemPromiseRes;
       this.getComponent().setCondition(State.HEALTHY)
+      this.getComponent().setBatteryPack1(this.currentPack)
     });
 
     this.init();
@@ -56,7 +51,7 @@ export class ComponentCreate extends ComponentCreateComponent {
   public override createNewComponent(): (arg: void) => void {
     return $ => {
       if(!this.getComponent()?.isBuildFinished()) {
-        if(this.currentPack) {
+        if(this.currentPack && !this.getComponent().getBatteryPack()) {
           this.getComponent().setBatteryPack1(this.currentPack)
         } else {
           console.warn("No Pack available for Component")

@@ -61,7 +61,6 @@ export  class ComponentsOfPack extends ComponentsOfPackComponent {
       return []
     }
     if(this.lastPack != this.getPack()) {
-      console.warn("Hits", this.getPack())
       this.packService.updateBatteryPack(this.getPack())
     }
     const entries =[]
