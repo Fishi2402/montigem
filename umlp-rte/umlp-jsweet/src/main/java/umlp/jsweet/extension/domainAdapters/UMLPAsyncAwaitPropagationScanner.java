@@ -53,6 +53,47 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
         context.addAwaitInvocation(invocation);
         addAsyncKeywordToMethod();
       }
+
+      else if (context.hasAnnotationType(method, JSweetConfig.ANNOTATION_ASYNC)
+          && "void".equals(method.getReturnType().toString())) {
+        MethodTree parent = getParent(MethodTree.class);
+        if (parent != null) {
+          ExecutableElement parentMethodElement = Util.getElement(parent);
+          if (!context.hasAnnotationType(parentMethodElement, JSweetConfig.ANNOTATION_ASYNC)) {
+            context.addExtraAnnotationType(parentMethodElement, JSweetConfig.ANNOTATION_ASYNC);
+
+            if (context.isInvalidOverload(parentMethodElement)) {
+              OverloadScanner.Overload overload = context.getOverload(
+                  (TypeElement) parentMethodElement.getEnclosingElement(), parentMethodElement);
+
+              for (OverloadScanner.OverloadMethodEntry overloadEntry : overload.getEntries()) {
+                context.addExtraAnnotationType(overloadEntry.methodElement,
+                    JSweetConfig.ANNOTATION_ASYNC);
+              }
+            }
+            List<ExecutableElement> candidates = new ArrayList<>();
+            util().collectMatchingMethodDeclarationsInType(
+                (TypeElement) parentMethodElement.getEnclosingElement(), parent.getName().toString(),
+                (ExecutableType) parentMethodElement.asType(), true, candidates);
+            for (ExecutableElement candidate : candidates) {
+              context.addExtraAnnotationType(candidate, JSweetConfig.ANNOTATION_ASYNC);
+            }
+
+            stillWorking = true;
+          }
+        }
+        LambdaExpressionTree lambdaParent = getParent(LambdaExpressionTree.class);
+        if (lambdaParent != null) {
+          context.addAsyncLambda(lambdaParent);
+        }
+        Tree directParent = getParent();
+        if (!(context.isAwaitInvocation(invocation) || (directParent instanceof MethodInvocationTree
+            && (directParent.toString().equals("await") || directParent.toString().endsWith(".await"))))) {
+
+          context.addAwaitInvocation(invocation);
+          stillWorking = true;
+        }
+      }
     } catch (Exception e) {
       e.printStackTrace();
     }
