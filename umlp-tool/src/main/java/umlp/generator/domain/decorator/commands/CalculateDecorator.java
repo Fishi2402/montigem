@@ -138,7 +138,7 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
     }else if(type.isGenericType()){
       var genType = (SymTypeOfGenerics)type;
 
-      if(GenService.isList(type)){
+      if(GenService.isList(type) || GenService.isOptional(type)){
         SymTypeExpression inner = genType.getArgument(0);
         if(inner.isPrimitive()){
           t = SymTypePrimitive.box(inner.print());

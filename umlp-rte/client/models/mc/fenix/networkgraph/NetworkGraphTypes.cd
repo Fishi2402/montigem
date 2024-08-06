@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.fenix.networkgraph;
 import java.util.List;
+import java.util.Optional;
 
 classdiagram NetworkGraphTypes {
 
@@ -16,6 +17,11 @@ classdiagram NetworkGraphTypes {
     Integer size;
     String color;
     String group;
+
+    /**
+     * In which shapes should nodes be drawn. Allowed values are triangle, square, circle. Default is circle.
+     */
+    Optional<String> nodeProgram;
   }
 
   public class GraphEdge {

@@ -26,24 +26,6 @@ dependencies {
   implementation project(':umlp-rte')
 }
 
-node {
-  // Whether to download and install a specific Node.js version or not
-  // If false, it will use the globally installed Node.js
-  // If true, it will download node using above parameters
-  // Note that npm is bundled with Node.js
-  download = true
-
-  // Version of node to download and install (only used if download is true)
-  // It will be unpacked in the workDir
-  version = "${node_version}"
-
-  // Whether the plugin automatically should add the proxy configuration to npm and yarn commands
-  // according the proxy configuration defined for Gradle
-  // Disable this option if you want to configure the proxy for npm or yarn on your own
-  // (in the .npmrc file for instance)
-  nodeProxySettings = ProxySettings.OFF
-}
-
 // TODO AGe: don't know if that is needed
 // TODO CD2GUI
 //task generateCDTOGUI(type: UMLPCdToGuiTask) {
@@ -51,20 +33,20 @@ node {
 //  outputDir = layout.buildDirectory.dir("cd2gui")
 //}
 
-task guiVariability(type: GuiVariabilityHandlerTask) {
+tasks.register('guiVariability', GuiVariabilityHandlerTask) {
   //input.from(generateCDTOGUI.getOutputDir().dir("models"))
   input.from(file("../models/stanley"))
   outputDir = layout.buildDirectory.dir("guiVariability")
 }
 
-task genDomain(type: UMLPFrontendTask) {
+tasks.register('genDomain', UMLPFrontendTask) {
   input = file("../models/hardy/Flensburg.umlp")
   outputDir = file("$project.buildDir/appdomain")
   symbolOutDir = file("${project.buildDir}/symbols")
   hwcDir = file("$projectDir/src/app")
 }
 
-task genGUI(type: UMLPGuiGenTask) {
+tasks.register('genGUI', UMLPGuiGenTask) {
   dependsOn(genDomain)
   input = file("../models")
   outputDir = file("$project.buildDir/appgui")
@@ -81,7 +63,7 @@ task genGUI(type: UMLPGuiGenTask) {
 }
 
 
-task generateNPMAuth(type: NPMAuthCreate)
+tasks.register('generateNPMAuth', NPMAuthCreate)
 
 /*
 yarn_install.dependsOn(generateNPMAuth, genGUI)
@@ -91,14 +73,14 @@ yarn_upgrade.dependsOn(yarn_install)
 npmInstall.dependsOn(generateNPMAuth, ':umlp-rte:client:npmInstall')
 
 def prebuildTasks = [
-    npmInstall, genDomain
+  npmInstall, genDomain
 ]
 
 /*
-task buildApp(type: YarnTask) {
+tasks.register('buildApp', YarnTask) {
   dependsOn('genDomain', yarn_upgrade)
 /**/
-task buildApp(type: NpxTask) {
+tasks.register('buildApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["build"]
@@ -109,10 +91,10 @@ task buildApp(type: NpxTask) {
 }
 
 /*
-task testApp(type: YarnTask) {
+tasks.register('testApp', YarnTask) {
   dependsOn('genDomain', yarn_upgrade)
 /**/
-task testApp(type: NpxTask) {
+tasks.register('testApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["test"]
@@ -123,10 +105,10 @@ task testApp(type: NpxTask) {
 }
 
 /*
-task runApp(type: YarnTask) {
+tasks.register('runApp', YarnTask) {
   dependsOn('genDomain', yarn_upgrade)
 /**/
-task runApp(type: NpxTask) {
+tasks.register('runApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["serve"]

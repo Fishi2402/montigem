@@ -12,13 +12,24 @@ dependencies {
   //  domainSources project(":examples:jsweet-test:backend")
 
   implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version
+  // TODO: NO Security, as otherwise HTTP Auth is required
+//  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version
+
+  testImplementation 'com.microsoft.playwright:playwright:1.44.0'
+  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version
+
+  // to compile the (playwright=true) AbstractJsweettestE2ETest
+  def withoutSpringLogging = {
+    exclude module: 'spring-boot-starter-logging'
+    exclude module: 'logback-classic'
+    exclude module: 'log4j-to-slf4j'
+  }
+  // TODO: compileOnly? => transpile failes - maybe only add it to the jsweet-compile config?
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
+
 }
 
 node {
-  download = true
-  version = "${node_version}"
-  nodeProxySettings = ProxySettings.OFF
   nodeProjectDir = file("${buildDir}/frontendGen")
 }
 nodeSetup.dependsOn(frontendSetup)
@@ -42,21 +53,40 @@ def prebuildTasks = [
     npmInstall, generate
 ]
 
-task buildApp(type: NpxTask) {
+tasks.register('buildApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["build"]
 }
 assemble.dependsOn(buildApp)
 
-task testApp(type: NpxTask) {
+tasks.register('testApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["test"]
 }
 
-task runApp(type: NpxTask) {
+tasks.register('runApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["serve"]
 }
+
+test {
+  dependsOn buildApp
+  useJUnitPlatform(){
+    excludeTags "SlowTest"
+  }
+}
+
+tasks.register("slowtest", Test) {
+  testLogging {
+    events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
+  }
+  useJUnitPlatform {
+    includeTags "SlowTest"
+  }
+  shouldRunAfter test
+  dependsOn npmInstall
+}
+

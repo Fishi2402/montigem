@@ -74,6 +74,11 @@ export class PackEdit extends PackEditComponent {
     return $ => {
       this._router.navigate(["gui/pack/PackTypeEdit/"+this.getPack().getType().getGemId()])
     }
+  }
 
+  public override changePackType() {
+    return (type) => {
+      this.getPack().setType1(type)
+    }
   }
 }

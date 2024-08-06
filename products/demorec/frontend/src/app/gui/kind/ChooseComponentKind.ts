@@ -3,9 +3,9 @@
 import { DemoRecManager } from '@src/demorec/DemoRecManager';
 
 import { ComponentKind } from '@src/demorec/ComponentKind';
-import { Option } from '@umlp/input';
+import {GemTextInputValidity, Option} from '@umlp/input';
 
-import { ChooseComponentKindComponent, config } from '../../../../build/frontendGen/build/appgui/gui/kind/ChooseComponentKindComponent';
+import { ChooseComponentKindComponent, config } from '@src/gui/kind/ChooseComponentKindComponent';
 
 import {
   Directive,
@@ -32,62 +32,51 @@ const newOption: Option = { value: "NEW", display: "NEW" };
 export class ChooseComponentKind extends ChooseComponentKindComponent {
 
   public kindEntry: string = "";
-  public kindOptions: Option[] = [newOption];
+  public kindOptionsHash = {value: [], hash: ""}
   private chosenKindNotLoaded: boolean = true
 
   @Output()
   public chosenKind : EventEmitter<ComponentKind> = new EventEmitter<ComponentKind>()
 
-  public constructor() {
-    super();
+  public init(): void {
+    this.chosenKindNotLoaded = true;
+    this.kindEntry = "";
 
-    this._router.events.subscribe((val) => {
-      if(val instanceof NavigationEnd) {
-        if(this._route.snapshot.paramMap.get("currentKindRoutingId") != null) {
-          this.currentKindRoutingId = +this._route.snapshot.paramMap.get("currentKindRoutingId");
-          this.ngOnInit()
-          this.chosenKindNotLoaded=true
-          this.kindEntry = ""
+    // Copied from initAvailableKinds
+    DemoRecManager.getComponentKindList().then(tmp_$ => {
+      tmp_$.loadAll().then(tmp_$1 => {
+        if (!this._availableKinds) {
+          this._availableKinds = tmp_$1;
         }
-      }
-    });
-  }
-
-  public override ngOnInit() {
-    if(this.currentKindRoutingId != null && ((this.currentKind == null) || (this.currentKind.getGemId() != this.currentKindRoutingId))) {
-      DemoRecManager.getComponentKindSure(this.currentKindRoutingId).then(gemPromiseRes => {
-        this.currentKind = gemPromiseRes;
-      });
-    }
-
-    DemoRecManager.getComponentKindList().then(gemPromiseRes => {
-      const kinds = gemPromiseRes;
-      kinds.loadAll().then(() => {
-        for (const kind of kinds) {
-          let value = kind.getGemId() + "";
-          this.kindOptions.push({value: value, display: kind.getName()});
-        }
-        this.kindOptions = this.kindOptions.slice();
-        this.kindEntry = this.getCurrentKind()? this.getCurrentKind().getGemId()+"" : newOption.value
       });
     });
 
-    this.init();
+    super.init();
   }
 
   public override getCreateComponentKindCondition (): boolean {
-    return this.getSelectComponentKindEntry()==newOption.value
+    return this.getSelectComponentKindEntry()===newOption.value
   }
 
   public override getSelectComponentKindOptions(): Array<Option> {
-    return this.kindOptions;
+    if(this.getAvailableKinds()) {
+      let opts = []
+      for (const kind of this.getAvailableKinds()) {
+        let value = kind.getGemId() + "";
+        opts.push({value: value, display: kind.getName()});
+      }
+      opts = [newOption].concat(opts.sort((a,b) => {return a.value.localeCompare(b.value)}).slice());
+      const hash = JSON.stringify(opts)
+      if(this.kindOptionsHash.hash != hash) {
+        this.kindOptionsHash.hash = hash
+        this.kindOptionsHash.value = opts
+        this.kindEntry = this.getCurrentKind() ? this.getCurrentKind().getGemId() + "" : newOption.value
+      }
+    }
+    return this.kindOptionsHash.value;
   }
 
   public override getSelectComponentKindEntry(): string {
-    if(this.getCurrentKind() && (this.chosenKindNotLoaded || ((this.getCurrentKind().getGemId()+"") != this.kindEntry)) ) {
-      this.chosenKindNotLoaded = false;
-      this.kindEntry = this.getCurrentKind().getGemId()+""
-    }
     return this.kindEntry;
   }
 
@@ -98,13 +87,23 @@ export class ChooseComponentKind extends ChooseComponentKindComponent {
     }
   }
 
+  // TODO
   public override addNewComponentKind(): (arg : ComponentKind) => void {
     return (kind : ComponentKind) => {
-      this.kindOptions.push({value: kind.getGemId()+"", display: kind.getName()})
+      this.kindOptionsHash.value.push({value: kind.getGemId()+"", display: kind.getName()})
       this.setSelectComponentKindEntry(kind.getGemId()+"")
     }
   }
 
+  public override checkKindChoice() : GemTextInputValidity {
+    if(this.kindEntry) {
+      if(this.kindEntry === newOption.value) {
+        return {status: "Error", message: "Please save the new component kind or choose another one."}
+      }
+      return {status: "Success"}
+    }
+    return {status: "Error", message: "Please enter a valid component kind."}
+  }
 
 }
 

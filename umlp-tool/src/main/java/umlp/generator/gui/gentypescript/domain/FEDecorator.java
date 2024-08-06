@@ -13,14 +13,11 @@ import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.domain.decorator.CommandObjectMapperDecorator;
 import umlp.generator.domain.decorator.CommandObserverDecorator;
 import umlp.generator.domain.decorator.CommandResultDeSerDecorator;
-import umlp.generator.domain.decorator.CommandSendingObserverDecorator;
 import umlp.generator.domain.decorator.DeSerBuilderDecorator;
 import umlp.generator.domain.decorator.DeSerDecorator;
-import umlp.generator.domain.decorator.DerivedClassDecorator;
 import umlp.generator.domain.decorator.DiagramObserverDecorator;
 import umlp.generator.domain.decorator.DomainClassDecorator;
 import umlp.generator.domain.decorator.DomainInterfaceDecorator;
-import umlp.generator.domain.decorator.DummyProviderDecorator;
 import umlp.generator.domain.decorator.ErrorCollectorDecorator;
 import umlp.generator.domain.decorator.ErrorObserverDecorator;
 import umlp.generator.domain.decorator.GemListAssocDecorator;
@@ -109,14 +106,6 @@ public class FEDecorator extends BEDecorator {
     CommandObserverDecorator cmdDecorator = new TSCommandObserverDecorator(glex);
     cmdDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: CommandObserverDecorator", FEDecorator.class.getName());
-
-    TSDerivedClassClientImplDecorator derivedClassClientImplDecorator = new TSDerivedClassClientImplDecorator(glex);
-    derivedClassClientImplDecorator.transform(cdAST, decoratedAST);
-    Log.info("After decorator: TSDerivedClassClientImplDecorator", FEDecorator.class.getName());
-
-    DerivedClassDecorator derivedClassDecorator = new TSDerivedClassDecorator(glex);
-    derivedClassDecorator.transform(cdAST, decoratedAST);
-    Log.info("After decorator: DerivedClassDecorator", FEDecorator.class.getName());
 
     // Generate DiagramObserver classes
     DiagramObserverDecorator diagramObserverDecorator = new TSDiagramObserverDecorator(glex);

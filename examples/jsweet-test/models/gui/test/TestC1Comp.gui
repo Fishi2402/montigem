@@ -1,0 +1,32 @@
+package gui.test;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemText;
+import mc.fenix.navigation.GemNavItem;
+
+import gui.test.TestNav;
+import gui.test.TestC2Comp;
+
+import Jsweettest.C1;
+import Jsweettest.C2;
+
+component TestC1Comp(C1 c1) {
+  @GemText(value = "String: " + c1.string);
+
+  @TestC2Comp(c2 = c1.c2Req);
+
+  @GemText(value = "Optional:");
+  @guard(c1.c2opt != null) { // TODO: This guard might kill the performance
+    @TestC2Comp(c2 = c1.c2opt);
+    @GemButton(label = "Remove optional", leftClick = deleteC2Opt());
+  }
+
+  @GemText(value = "Mult:");
+  @iterate(C2 c2 : c1.c2mult) {
+    @GemText(value = "C2 Mult:");
+    @TestC2Comp(c2 = c2);
+    @GemButton(label = "Remove assoc", leftClick = deleteC2MultAssoc(c2));
+    @GemButton(label = "Set C2 as optional (above)", leftClick = setC2OptFromAssoc(c2));
+  }
+
+}

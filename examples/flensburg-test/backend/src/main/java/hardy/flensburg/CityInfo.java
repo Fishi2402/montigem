@@ -1,0 +1,92 @@
+/* (c) https://github.com/MontiCore/monticore */
+package hardy.flensburg;
+
+// HWC-P
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+// Implement the calcters
+public class CityInfo {
+
+  public int calcNumberOfCities() {
+    long count = 0L;
+    Set<String> uniqueValues = new HashSet<>();
+    for (Address address : FlensburgManager
+        .getAddressList()) {
+      String city = address.getCity();
+      if (uniqueValues.add(city)) {
+        count++;
+      }
+    }
+    return (int) count;
+  }
+
+  public int calcTotalNumberOfCars() {
+    return FlensburgManager.getCarList().size();
+  }
+
+  public String calcCityWithMostCars() {
+    Map<String, Integer> cityToCars = new HashMap<>();
+    Collection<Person> persons = FlensburgManager.getPersonList();
+
+    for (Person person : persons) {
+      int curOwns = person.sizeOwnss();
+      if (person.checkMainResidence()) {
+        String curCity = person.getMainResidence().getCity();
+        cityToCars.put(curCity, curOwns + cityToCars.getOrDefault(curCity, 0));
+      } else {
+        // TODO: error handling
+      }
+    }
+
+    String cityWithMostCars = null;
+    int cityWithMostCarsValue = Integer.MIN_VALUE;
+
+    for (Map.Entry<String, Integer> entry : cityToCars.entrySet()) {
+      String city = entry.getKey();
+      Integer cars = entry.getValue();
+      if (cars > cityWithMostCarsValue) {
+        cityWithMostCarsValue = cars;
+        cityWithMostCars = city;
+      }
+    }
+
+    return cityWithMostCars;
+  }
+
+  public Person calcPersonWithMostCars() {
+    Person result = null;
+    int max = 0;
+    for (Person person : FlensburgManager.getPersonList()) {
+      if (person.sizeOwnss() > max) {
+        max = person.sizeOwnss();
+        result = person;
+      }
+    }
+    return result;
+  }
+
+  public int calcAverageNumberOfCars() {
+    return FlensburgManager.getCarList().size() / FlensburgManager.getPersonList().size();
+  }
+
+  public  int calcSizeCities() {
+    return calcNumberOfCities();
+  }
+
+  public List<String> calcCities() {
+    List<String> list = new ArrayList<>();
+    for (Address address : FlensburgManager
+        .getAddressList()) {
+      String city = address.getCity();
+      list.add(city);
+    }
+    return list;
+  }
+}

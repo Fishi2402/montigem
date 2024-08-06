@@ -8,13 +8,12 @@ import mc.fenix.arrange.GemColumn;
 import mc.fenix.arrange.GemRow;
 
 import gui.staticcontainer.NavContainer;
-import gui.pack.PackEdit;
+import gui.pack.PackChoose;
 
-import DemoRec.BatteryPack;
 import DemoRec.Process;
 import DemoRec.BatteryPackType;
 
-page ProcessCreate(Process p, BatteryPack pack) {
+page ProcessCreate(Process p) {
   @NavContainer(
     content=[
   @GemCard(
@@ -27,18 +26,10 @@ page ProcessCreate(Process p, BatteryPack pack) {
             inputType = "date",
             entry = p.startedAt
             ),
-        selectBPack@GemTextInput(
-          labelText = "Battery Pack",
-          inputType = "dropdown",
-          options = null,
-          entry = null
-        )
+        @PackChoose(pack=p.deconstructionOf, chosenPack=changePack())
       ]
     )
   ),
-  guardBPack@guard(true) {
-    @PackEdit(pack=pack);
-  },
   @GemButton(label = "Start Process", leftClick = sendEverything())
   ]);
 }

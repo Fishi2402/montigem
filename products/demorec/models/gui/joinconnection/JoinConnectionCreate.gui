@@ -11,7 +11,6 @@ import mc.fenix.arrange.GemRow;
 import mc.fenix.input.GemTextInput;
 
 import gui.component.ComponentCreate;
-import gui.joinconnection.RemoveCompButton;
 import gui.joinconnection.JoinConnectionEdit;
 
 component JoinConnectionCreate(JoinConnection connection, Event<JoinConnection> createJoinConnection) {
@@ -20,8 +19,8 @@ component JoinConnectionCreate(JoinConnection connection, Event<JoinConnection> 
     component = @GemColumn(
       rowGap="5px",
       components = [
-        @JoinConnectionEdit(connection=connection, showOptionalAttributes=false),
-        buildConnection@GemButton(label = "Save Connection", leftClick = createNewConnection(), disabled=true)
+        @JoinConnectionEdit(connection=connection),
+        buildConnection@GemButton(label = "Save Connection", leftClick = createNewConnection(), disabled=true, width="var(--smallDropDownWidth)")
       ]
     )
   );

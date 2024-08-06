@@ -7,7 +7,7 @@
 >
   <p>Drag and drop files here, or click to select files</p>
   <div  *ngIf="!stateUploading">
-    <input type="file" (change)="onFileSelected($event)" multiple />
+    <input class="browserSpecificFileUpload" type="file" (change)="onFileSelected($event)" multiple />
   </div>
   <div class="uploading" *ngIf="stateUploading"></div>
   <div *ngIf="uploadFailureMessage">
@@ -32,6 +32,7 @@
     <gem-button class="upload"
                 [label] = 'getUploadLabel()'
                 (leftClick) = 'uploadLeftClick.bind(this)($event)'
+                [disabled] = 'getUploadDisabled()'
     >
     </gem-button>
   </ng-template>

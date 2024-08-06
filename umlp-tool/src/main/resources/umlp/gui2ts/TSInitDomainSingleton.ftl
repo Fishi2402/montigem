@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("domainVar", "domainVarType", "manager")}
-if(this.${domainVar} == null) {
+if(this.${domainVar} === undefined) {
 console.log("Fetching ${domainVar}")
   ${manager}.get${domainVarType}List().then(gemPromiseRes => {
 console.log("Got " + gemPromiseRes);

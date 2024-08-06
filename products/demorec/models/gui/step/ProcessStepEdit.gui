@@ -12,6 +12,7 @@ import mc.fenix.basic.GemLink;
 import mc.fenix.basic.GemCheckbox;
 import mc.fenix.basic.GemButton;
 import mc.fenix.input.GemTextInput;
+import mc.fenix.input.GemDropdownInput;
 
 import gui.measuringvalues.MeasuringValueEdit;
 
@@ -19,82 +20,75 @@ import gui.component.SubComponentView;
 import gui.staticcontainer.NavContainer;
 
 import gui.joinconnection.JoinConnectionCreate;
-import gui.joinconnection.JoinConnectionEdit;
 
 page ProcessStepEdit(Process p, ProcessStep step) {
-  @NavContainer(
-      content=[
-        @GemCard(
-          title = "Edit Step " + step.index,
-          component = @GemColumn(
-              rowGap="5px",
-              wrap="nowrap",
-              components=[
 
-                selectType@GemTextInput(
-                  labelText = "Type",
-                  inputType = "dropdown",
-                  options = null,
-                  entry = step.type),
+  @GemCard(
+    title = "Edit Step " + step.index,
+    component = @GemColumn(
+        rowGap="5px",
+        wrap="nowrap",
+        components=[
 
-                @GemTextInput(labelText = "Description", inputType = "string", placeholder = step.description, entry = step.description),
+          selectType@GemDropdownInput(
+            labelText = "Type",
+            options = null,
+            entry = step.type),
 
-                selectEndeffector@GemTextInput(
-                  labelText = "Endeffector",
-                  inputType = "dropdown",
-                  options = null,
-                  entry = null),
+          @GemTextInput(labelText = "Description", inputType = "string", placeholder = step.description, entry = step.description),
 
-                @GemTextInput(labelText = "Duration in seconds", inputType = "number", placeholder = step.timeConsumption, entry = step.timeConsumption),
+          selectEndeffector@GemDropdownInput(
+            labelText = "Endeffector",
+            options = null,
+            entry = null),
 
-                isDeconstruction@guard(true) {
-                  hasJoinConnection@guard(true) {
-                    editJoinConnectionLabel@GemText(value = "Edit Join Connection");
-                    editJoinConnectionRow@GemRow(
-                      wrap="nowrap",
-                      colGap="5px",
-                      components=[
-                        selectJoinConnection@GemTextInput(
-                            labelText = "Deconstructing Join Connection",
-                            inputType = "dropdown",
-                            options = null,
-                            entry = null),
-                        createNewJoinConnection@guard(true) {
-                          @JoinConnectionCreate(createJoinConnection=addNewJoinConnection());
-                        }
-                        else {
-                          editJoinConnectionButton@GemButton(width = "auto", disabled = false, label = "Edit this Join Connection", leftClick = editJoinConnection());
-                        }
-                    ]);
-                  } else {
-                    addJoinConnectionButton@GemButton(width = "auto", disabled = false, label = "Add Join Connection", leftClick = addJoinConnection());
-                    addJoinConnectionClicked@guard(true) {
-                      addJoinConnectionLabel@GemText(value = "Add Join Connection");
-                      editJoinConnectionRow1@GemRow(
-                        wrap="nowrap",
-                        colGap="5px",
-                        components=[
-                          selectJoinConnection1@GemTextInput(
-                              labelText = "Deconstructing Join Connection",
-                              inputType = "dropdown",
-                              options = null,
-                              entry = null),
-                          createNewJoinConnection1@guard(true) {
-                            @JoinConnectionCreate(createJoinConnection = addNewJoinConnection());
-                          }
-                          else {
-                            editJoinConnectionButton1@GemButton(width = "auto", disabled = false, label = "Edit this Join Connection", leftClick = editJoinConnection());
-                          }
-                      ]);
-                    }
+          @GemTextInput(labelText = "Duration in seconds", inputType = "number", placeholder = step.timeConsumption, entry = step.timeConsumption),
+
+          isDeconstruction@guard(true) {
+            hasJoinConnection@guard(true) {
+              editJoinConnectionLabel@GemText(value = "Edit Join Connection");
+              editJoinConnectionRow@GemRow(
+                wrap="nowrap",
+                colGap="5px",
+                components=[
+                  selectJoinConnection@GemDropdownInput(
+                      labelText = "Deconstructing Join Connection",
+                      options = null,
+                      entry = null),
+                  createNewJoinConnection@guard(true) {
+                    @JoinConnectionCreate(createJoinConnection=addNewJoinConnection());
                   }
-                },
+                  else {
+                    editJoinConnectionButton@GemButton(width = "auto", disabled = false, label = "Edit this Join Connection", leftClick = editJoinConnection());
+                  }
+              ]);
+            } else {
+              addJoinConnectionButton@GemButton(width = "auto", disabled = false, label = "Add Join Connection", leftClick = addJoinConnection());
+              addJoinConnectionClicked@guard(true) {
+                addJoinConnectionLabel@GemText(value = "Add Join Connection");
+                editJoinConnectionRow1@GemRow(
+                  wrap="nowrap",
+                  colGap="5px",
+                  components=[
+                    selectJoinConnection1@GemDropdownInput(
+                        labelText = "Deconstructing Join Connection",
+                        options = null,
+                        entry = null),
+                    createNewJoinConnection1@guard(true) {
+                      @JoinConnectionCreate(createJoinConnection = addNewJoinConnection());
+                    }
+                    else {
+                      editJoinConnectionButton1@GemButton(width = "auto", disabled = false, label = "Edit this Join Connection", leftClick = editJoinConnection());
+                    }
+                ]);
+              }
+            }
+          },
 
-                editMeasuringValuesCard@MeasuringValueEdit(step=step),
+          editMeasuringValuesCard@MeasuringValueEdit(step=step),
 
-                @GemButton(width = "auto", label = "Back to Process Overview", leftClick = backToProcessOverview())
-            ])
-        )]
+          @GemButton(width = "auto", label = "Back to Process Overview", leftClick = backToProcessOverview())
+      ])
   );
 
 }

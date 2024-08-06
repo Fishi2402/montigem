@@ -27,17 +27,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class JoinConnectionCreate extends JoinConnectionCreateComponent {
 
-  protected currentPack : BatteryPack;
-
   @Output()
   public createJoinConnection: EventEmitter<JoinConnection> = new EventEmitter<JoinConnection>();
-
-  public constructor(protected packService: BatteryPackService) {
-    super();
-    this.packService.currentPack.subscribe(p => {
-      this.currentPack = p
-    })
-  }
 
   public override ngOnInit(){
 
@@ -56,12 +47,6 @@ export class JoinConnectionCreate extends JoinConnectionCreateComponent {
   public override createNewConnection(): (arg: void) => void  {
     return $ => {
       if(this.getConnection().isBuildable()) {
-        if(this.currentPack) {
-          this.getConnection().setBatteryPack1(this.currentPack)
-        } else {
-          console.warn("No Pack available for Connection")
-        }
-
         console.debug("New Connection is buildable")
         const joinConnection = this.getConnection().build()
         this.createJoinConnection.emit(joinConnection)

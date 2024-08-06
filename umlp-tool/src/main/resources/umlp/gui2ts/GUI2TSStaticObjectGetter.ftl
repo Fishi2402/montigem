@@ -4,7 +4,7 @@ ${tc.signature("type", "name", "keys")}
 <#assign paramString = genHelper.params2String(keys)>
 
 ${cd4c.method("public ${mcType} get${name?cap_first}(${paramString})")}
-if (this.${name} == null
+if (this.${name} === undefined
   <#list keys as key>
     <#assign i = key?index - 1>
     || !this.${name}

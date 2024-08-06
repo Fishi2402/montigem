@@ -28,7 +28,7 @@ plugins {
 description 'SE Bib Example'
 
 
-task mergeUMLPModels(type: UMLPMergeTask){
+tasks.register('mergeUMLPModels', UMLPMergeTask){
   // One way to define input: List files manually
   source = files("src/models/AMergeTest.umlp", "src/models/SELib.umlp")
 
@@ -42,7 +42,7 @@ task mergeUMLPModels(type: UMLPMergeTask){
   outputFile = layout.buildDirectory.file("SELib.umlp")  // buildDirectory = "build/"
 }
 
-task generateJavaCode(type: UMLPBackendTask) {
+tasks.register('generateJavaCode', UMLPBackendTask) {
   input = mergeUMLPModels.outputFile  // when the input is defined like this, gradle automatically runs the task "mergeUMLPModels" before this task
 
   // Other way to define inputs:
@@ -82,7 +82,7 @@ application {
 }
 
 
-task runShellApi(type: org.springframework.boot.gradle.tasks.run.BootRun) {
+tasks.register('runShellApi', org.springframework.boot.gradle.tasks.run.BootRun) {
   classpath = sourceSets.main.runtimeClasspath
   mainClass = 'selib.SELibShellAPIApplication'
   standardInput = System.in

@@ -1,19 +1,19 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#-- Generates a routes file from the given model -->
-${tc.signature("existedModuleConfig","existHWCRoutes","pathHWRoutes","pathModuleConfig")}
+${tc.signature("existModuleConfig","existHWRoutes","pathHWRoutes","pathModuleConfig")}
 
 //always imported
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, RouteReuseStrategy, BaseRouteReuseStrategy } from '@angular/router';
 import { CommonModule } from "@angular/common"
-<#if existedModuleConfig >
+<#if existModuleConfig >
 import { config } from '${pathModuleConfig}';
 </#if>
-<#if existHWCRoutes >
+<#if existHWRoutes >
 import { routes } from '${pathHWRoutes}';
 </#if>
-<#if !existHWCRoutes >
+<#if !existHWRoutes >
 import { routes } from './AppGemRouting';
 </#if>
 import { AppComponent } from '@src/app.component';
@@ -22,8 +22,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 @NgModule({
 declarations: [
   AppComponent,
-<#if existedModuleConfig >
-  ... config.declarations,
+<#if existModuleConfig>
+  ...config.declarations,
 </#if>
 ],
 imports: [
@@ -31,9 +31,8 @@ imports: [
     RouterModule.forRoot(routes),
     CommonModule,
     BrowserAnimationsModule,
-
-<#if existedModuleConfig >
-  ... config.imports
+<#if existModuleConfig>
+  ...config.imports
 </#if>
 ],
 providers: [
@@ -41,8 +40,8 @@ providers: [
     provide: RouteReuseStrategy,
     useClass: class extends BaseRouteReuseStrategy { shouldReuseRoute() { return false; } }
   },
-<#if existedModuleConfig >
-  ... config.providers
+<#if existModuleConfig >
+  ...config.providers
 </#if>
 ],
 bootstrap: [AppComponent],

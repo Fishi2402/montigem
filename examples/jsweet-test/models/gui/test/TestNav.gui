@@ -1,0 +1,17 @@
+package gui.test;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemText;
+import mc.fenix.navigation.GemNavItem;
+
+component TestNav() {
+  @GemNavItem(title = "0 (static)", target = "/gui/test/Test0");
+  @GemNavItem(title = "1 (static list)", target = "/gui/test/Test1");
+  @GemNavItem(title = "2 (list dynamic)", target = "/gui/test/Test2");
+
+  @GemNavItem(title = "C1-C2-C3 assoc", target = "/gui/test/TestC1List");
+
+  @GemButton(label = "Reset Data", leftClick = resetData());
+
+  @GemText(value = "... navigation ends here...");
+}

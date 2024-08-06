@@ -55,8 +55,7 @@ public class UMLAssocToAttrTrafo implements CDBasisVisitor2, CDAssociationVisito
 
   @Override
   public void visit(ASTCDAssociation assoc) {
-    if (!assoc.getLeft().isPresentSymbol() || !assoc.getRight().isPresentSymbol() ||
-    assoc.getModifier().isDerived()) {
+    if (!assoc.getLeft().isPresentSymbol() || !assoc.getRight().isPresentSymbol()) {
       // new created association (see UMLAttrToAssocTrafo)
       return;
     }

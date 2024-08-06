@@ -52,6 +52,11 @@ paths:
 
 ## 3. BE
 
+The BE either uses a Neo4j or a SQL database. SQL is default and does not require any changes.
+Neo4j DAO classes are always generated in parallel to SQL DAO classes. To use a neo4j database, 
+`DAOAFactory.initNeo4J()` and `<DomainModel>ManagerImpl.initNeo4J()` have to be called when starting 
+the application and the properties files have to be adapted (see below).
+
 BE requires specific configuration files, which must be placed in the *backend/src/main/resources* directory.  
 The configuration includes `database.properties` and several other optional files such as `application.properties`, `logback.xml`.
 
@@ -195,6 +200,8 @@ Playwright end-to-end tests can be put into the `src/java/test` folder of the fr
 Additionally, a dependency on playwright, spring-boot-starter-test, and the backend is needed:
 
 ```groovy
+// frontend/build.gradle
+
 dependencies {
   implementation project(":backend")
   testImplementation 'com.microsoft.playwright:playwright:1.44.0'
@@ -207,8 +214,18 @@ test {
 }
 ```
 
+```groovy
+// backend/build.gradle
+
+dependencies {
+  compileOnlyApi group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version
+}
+```
+
 Also make sure, that `app.component.ts` sets the variable `window.websocket_connected = true`, once the CommandManager is initialized:
 ```typescript
+// frontend/config/src/app/app.component.ts
+
 constructor() {
   ...
   CommandManager.initMe(cmdManager);

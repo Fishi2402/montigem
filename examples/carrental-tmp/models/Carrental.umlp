@@ -80,11 +80,4 @@ umlp Carrental {
    //association [1] Car -> MileageDataPoint [*];
 
 
-  // Derived classes are ethereal, not stored in the database and without an identifier
-  derived class CarRecommendation {
-    String salesPitch;
-    float estimatedCostPerMile;
-  }
-
-
 }

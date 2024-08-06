@@ -6,12 +6,11 @@ import { BatteryPackType } from '@src/demorec/BatteryPackType';
 import { State } from '@src/demorec/State';
 
 import { BatteryPack } from '@src/demorec/BatteryPack';
-import { JoinConnection } from '@src/demorec/JoinConnection';
 import { ComponentKind } from '@src/demorec/ComponentKind';
 import { Photo } from '@src/demorec/Photo';
-import { Option } from '@umlp/input';
+import {GemTextInputValidity, Option} from '@umlp/input';
 
-import { ComponentEditComponent, config } from '../../../../build/frontendGen/build/appgui/gui/component/ComponentEditComponent';
+import { ComponentEditComponent, config } from '@src/gui/component/ComponentEditComponent';
 
 import {
   Directive,
@@ -36,49 +35,35 @@ const newOption: Option = { value: "NEW", display: "NEW" };
 })
 export  class ComponentEdit extends ComponentEditComponent {
 
-  public kindEntry: string = "";
-  public kindOptions: Option[] = [newOption];
-
   conditionOptions : Option[] = []
 
-  public constructor() {
-    super();
-
+  public init(): void {
     this.conditionOptions = []
     Object.keys(State).filter(s => !isNaN(+s)).forEach(key => {
       this.conditionOptions.push({value: key, display: State[key]});
     })
 
-    DemoRecManager.getComponentKindList().then(gemPromiseRes => {
-      const kinds = gemPromiseRes;
-      kinds.loadAll().then(() => {
-        for (const kind of kinds) {
-          let value = kind.getGemId() + "";
-          this.kindOptions.push({value: value, display: kind.getName()});
-        }
-        this.kindOptions = this.kindOptions.slice();
-      });
-    });
-
-    this._router.events.subscribe((val) => {
-      if(val instanceof NavigationEnd) {
-        if(this._route.snapshot.paramMap.get("componentRoutingId") != null) {
-          this.componentRoutingId = +this._route.snapshot.paramMap.get("componentRoutingId");
-          this.ngOnInit()
-        }
-      }
-    });
+    super.init();
   }
 
   public editComponentKind(): (arg: void) => void {
-    return $ => this._router.navigateByUrl("gui/kind/EditComponentKindPage/"+this.getComponent().getIsA().getGemId());
+
+    return $ => {
+      let packId;
+      if(this.getComponent() instanceof BatteryPack) {
+        packId = this.getComponent().getGemId()
+      } else {
+        packId = this.getComponent().getBatteryPack().getGemId()
+      }
+      this._router.navigateByUrl("gui/kind/EditComponentKindPage/"+packId
+          +"/"+this.getComponent().getIsA().getGemId());
+    }
   }
 
   public override addPhoto() : (arg : Photo) => void {
     return (photo : Photo) => {
       this.getComponent().addPhoto2(photo)
     }
-
   }
 
   public override changeToKind() : (arg : ComponentKind) => void  {
@@ -104,6 +89,16 @@ export  class ComponentEdit extends ComponentEditComponent {
     })
   }
 
+  public override checkComponentName() :GemTextInputValidity {
+    if(this.getComponent()) {
+      if(this.getComponent().getName()) {
+        return {status: "Success"}
+      }
+      // TODO check if the name already exists
+      return {status: "Error", message: "Please enter a name."}
+    } else {
+      return {status: "Warning", message: "Wait for initialization."}
+    }
+  }
+
 }
-
-

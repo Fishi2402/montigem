@@ -44,12 +44,10 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
     addToSourceSet(project, umlpTask.get());
 
     // Lifecycle task "generate" which depends on Backend-Creation
-    Task generateTask = project.getTasks().create("generate");
-    generateTask.dependsOn(umlpTask);
+    project.getTasks().register("generate", task -> task.dependsOn(umlpTask));
 
     // Lifecycle task "continuous". Intended use is with "--continuous" flag of gradle & HotReload
-    Task continuousTask = project.getTasks().create("continuous");
-    continuousTask.dependsOn(project.getTasks().withType(Jar.class));
+    project.getTasks().register("continuous", task -> task.dependsOn(project.getTasks().withType(Jar.class)));
 
     // Add dependency to jsweet-core, to import the annotations (such as @Erased)
     // Only during compilation of the backend

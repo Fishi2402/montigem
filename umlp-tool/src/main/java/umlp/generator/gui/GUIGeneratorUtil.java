@@ -58,7 +58,7 @@ import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.gui.genjava.prettyprinter.Expression2NullCheckAccessorPrinter;
 import umlp.generator.gui.genjava.prettyprinter.Expression2SetterPrinter;
 import umlp.generator.gui.genjava.prettyprinter.IterationItemsFinder;
-import umlp.generator.gui.gentypescript.config.GUI2TSConfigGenerator;
+import umlp.generator.gui.gentypescript.config.GUI2ConfigGenerator;
 import umlp.generator.gui.gentypescript.printer.TSBackendMap;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
@@ -790,7 +790,7 @@ public class GUIGeneratorUtil {
     for (int index = 0; index < temp.size() - 1; index++) {
       path += temp.get(index) + "/";
     }
-    path += moduleName + GUI2TSConfigGenerator.MODULES_FILE;
+    path += moduleName + GUI2ConfigGenerator.MODULE_FILE_SUFFIX;
     return path;
   }
 
@@ -799,7 +799,10 @@ public class GUIGeneratorUtil {
   }
 
   public String getRoutingId(ASTGUIParam p) {
-    return p.getName() + "RoutingId";
+    if (p.isPresentSymbol()) {
+      return p.getSymbol().getFullName().replace(".", "_") + "_RoutingId";
+    }
+    return p.getName() + "_RoutingId";
   }
 
   public List<String> getRoutingIds(ASTGUICompilationUnit decoratedAst) {
@@ -911,19 +914,25 @@ public class GUIGeneratorUtil {
   public Optional<String> getRelativeImportPath(
       MCPath imported, Path importer, String qualifiedName, String fileExtension) {
     String hwFile = Names.getPathFromPackage(qualifiedName) + "." + fileExtension;
+    return getRelativeImportPath(imported, importer, hwFile);
+  }
+
+  public Optional<String> getRelativeImportPath(
+      MCPath imported, Path importer, String hwFile) {
     Optional<URL> hwFilePath = imported.find(hwFile);
     Optional<String> res = Optional.empty();
     if (hwFilePath.isPresent()) {
       Optional<Path> hwPath = MCPath.toPath(hwFilePath.get());
-      res = Optional.of(importer.resolve(hwFile).getParent()
-          .toAbsolutePath()
-          .normalize()
-          .relativize(hwPath.get().toAbsolutePath())
-          .toString()
-          .replaceAll("\\\\", "/"));
+      if (hwPath.isPresent()) {
+        res = Optional.of(importer.resolve(hwFile).getParent()
+            .toAbsolutePath()
+            .normalize()
+            .relativize(hwPath.get().toAbsolutePath())
+            .toString()
+            .replaceAll("\\\\", "/"));
 
-      hwPath.ifPresent(path -> Reporting.reportUseHandwrittenCodeFile(path,
-          Paths.get(hwFile)));
+        Reporting.reportUseHandwrittenCodeFile(hwPath.get(), Paths.get(hwFile));
+      }
     }
     Reporting.reportHWCExistenceCheck(imported, Paths.get(hwFile), hwFilePath);
     return res;
@@ -1226,11 +1235,11 @@ public class GUIGeneratorUtil {
     return res.toString();
   }
 
-  public boolean isAbstractDomainType(SymTypeExpression typeSTE){
+  public boolean isAbstractDomainType(SymTypeExpression typeSTE) {
     boolean isAbstract = false;
-    if(isDomainType(typeSTE)) {
+    if (isDomainType(typeSTE)) {
       TypeSymbol typeSymbol = typeSTE.asObjectType().getTypeInfo();
-      if(GUIDSLMill.typeDispatcher().isOOSymbolsOOType(typeSymbol)){
+      if (GUIDSLMill.typeDispatcher().isOOSymbolsOOType(typeSymbol)) {
         isAbstract = GUIDSLMill.typeDispatcher().asOOSymbolsOOType(typeSymbol).isIsAbstract();
       }
     }

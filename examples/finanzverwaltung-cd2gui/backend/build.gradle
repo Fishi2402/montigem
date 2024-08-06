@@ -84,13 +84,13 @@ generateUmlpBackend {
   useShell = false
 }
 
-task runServer {
+tasks.register('runServer') {
   dependsOn(bootRun {
     systemProperty "spring.shell.interactive.enabled", "false"
   })
 }
 
-task runShellApi(type: org.springframework.boot.gradle.tasks.run.BootRun) {
+tasks.register('runShellApi', org.springframework.boot.gradle.tasks.run.BootRun) {
   classpath = sourceSets.main.runtimeClasspath
   mainClass = 'guidslpaper.GuidslpaperShellAPIApplication'
   standardInput = System.in

@@ -21,7 +21,7 @@ export class UserSettings extends UserSettingsComponent {
     if (!SehubSecurityManager.isSignedIn()) {
       this._router.navigate(['gui/login/LoginPage']);
     }
-    this.currentUserRoutingId = SehubSecurityManager.getCurrentUserIdOrNull();
+    this.gui_usersettings_UserSettings_currentUser_RoutingId = SehubSecurityManager.getCurrentUserIdOrNull();
 
     super.ngOnInit();
   }

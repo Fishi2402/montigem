@@ -13,6 +13,7 @@ import mc.fenix.basic.GemLink;
 import mc.fenix.basic.GemCheckbox;
 import mc.fenix.basic.GemButton;
 import mc.fenix.input.GemTextInput;
+import mc.fenix.input.GemDropdownInput;
 
 import gui.component.PhotoDisplay;
 import gui.component.PhotoDragNDrop;
@@ -30,20 +31,26 @@ page ComponentEdit(DemoRecComponent component, boolean showOptionalValues=true, 
     components=[
       @GemRow(
         colGap="5px",
+        vAlign="bottom",
         components=[
           @ChooseComponentKind(currentKind= component.isA,chosenKind=changeToKind()),
           @guard(editButton) {
-            @GemButton(label = "Edit component kind", leftClick = editComponentKind());
+            @GemButton(label = "Edit component kind", leftClick = editComponentKind(), height = "var(--gemButtonHeightAdjustedToInput)");
           }
         ]
       ),
-      @GemTextInput(labelText = "Component Name", inputType = "string", entry = component.name),
+      @GemTextInput(
+        labelText = "Component Name",
+        inputType = "string",
+        entry = component.name,
+        validity = checkComponentName(),
+        width="var(--textWidth)"),
       @guard(showOptionalValues) {
-        condition@GemTextInput(
+        condition@GemDropdownInput(
           labelText = "Component Condition",
-          inputType = "dropdown",
           options = null,
-          entry = component.condition);
+          entry = component.condition,
+          width="var(--smallDropDownWidth)");
         @GemRow(
           width="30em",
           colGap="5px",

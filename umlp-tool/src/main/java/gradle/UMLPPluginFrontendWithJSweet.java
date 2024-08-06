@@ -9,6 +9,7 @@ import gradle.specific.UMLPJava2TypeScriptConfigTask;
 import gradle.specific.UMLPJava2TypeScriptTask;
 import gradle.specific.UMLPSymbolsTask;
 import org.gradle.api.Action;
+import org.gradle.api.NamedDomainObjectProvider;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
@@ -275,21 +276,25 @@ public abstract class UMLPPluginFrontendWithJSweet implements Plugin<Project> {
   }
 
   void setUpJSweetClassPath(Project project, boolean local) {
-    Configuration domainSources = project.getConfigurations().create("domainSources");
-    domainSources.setTransitive(false);
-    domainSources.attributes(at -> {
-      at.attribute(VerificationType.VERIFICATION_TYPE_ATTRIBUTE, project.getObjects().named(VerificationType.class, VerificationType.MAIN_SOURCES));
-      at.attribute(Bundling.BUNDLING_ATTRIBUTE, project.getObjects().named(Bundling.class, Bundling.EXTERNAL));
+    project.getConfigurations().register("domainSources", configuration -> {
+      configuration.setTransitive(false);
+      configuration.attributes(at -> {
+        at.attribute(VerificationType.VERIFICATION_TYPE_ATTRIBUTE,
+                     project.getObjects()
+                         .named(VerificationType.class, VerificationType.MAIN_SOURCES));
+        at.attribute(Bundling.BUNDLING_ATTRIBUTE,
+                     project.getObjects().named(Bundling.class, Bundling.EXTERNAL));
+      });
     });
 
     // Configuration containing the compile/transpile dependencies (for running jsweet)
-    Configuration jsweettranspiler = project.getConfigurations().create("jsweettranspiler");
-    jsweettranspiler.extendsFrom(project.getConfigurations().getByName("compileClasspath"));
+    project.getConfigurations().register("jsweettranspiler", configuration -> {
+      configuration.extendsFrom(project.getConfigurations().getByName("compileClasspath"));
+    });
 
     if (local) {
       project.getDependencies().add("jsweettranspiler", project.getDependencies().project(Map.of("path", ":umlp-rte:umlp-jsweet")));
-    }
-    else {
+    } else {
       project.getDependencies().add("jsweettranspiler", project.getDependencies().create("umlp:umlp-jsweet:" + project.getVersion()));
     }
   }

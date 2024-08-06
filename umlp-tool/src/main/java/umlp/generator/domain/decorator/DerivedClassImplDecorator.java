@@ -18,6 +18,8 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
  * The derived-Impl class should be extended using the TOP mechanism
  * and implement the various getters
  */
+//Derived classes are no longer supported
+@Deprecated
 public class DerivedClassImplDecorator extends AbstractDecorator {
 
   public DerivedClassImplDecorator(GlobalExtensionManagement glex) {

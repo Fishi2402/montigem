@@ -1,0 +1,15 @@
+package gui.test;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemText;
+import mc.fenix.navigation.GemNavItem;
+
+import gui.test.TestNav;
+
+
+import Jsweettest.C1;
+import Jsweettest.C2;
+
+component TestC2Comp(C2 c2) {
+  @GemText(value = "C2 String: " + c2.string);
+}

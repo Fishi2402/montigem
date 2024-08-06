@@ -44,6 +44,7 @@ export class PhotoDragNDrop extends PhotoDragNDropComponent {
   errorMessage : string = "";
 
   onFileDropped(event: any): void {
+    event.preventDefault()
     const files = event.dataTransfer.files;
     this.addFiles(files);
   }
@@ -107,6 +108,12 @@ export class PhotoDragNDrop extends PhotoDragNDropComponent {
     }
   }
 
+  public getUploadDisabled() : boolean {
+    if(this.files.length >= 1) {
+      return false;
+    }
+    return true;
+  }
 
   public override cancelUpload(): (arg: void) => void {
     return $ => this.files = [];

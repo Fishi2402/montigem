@@ -1,0 +1,21 @@
+package gui.test;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemText;
+import mc.fenix.navigation.GemNavItem;
+
+import gui.test.TestNav;
+
+import Jsweettest.C2;
+
+page Test2(List<C2> c2s) {
+  @TestNav();
+
+  @GemText(value = "Show the string of every item in a list");
+
+  @iterate(C2 c : c2s) {
+    @GemText(value = "Got a C2: " + c.string);
+  }
+
+  @GemButton(label = "AddC2", leftClick = addC2() );
+}

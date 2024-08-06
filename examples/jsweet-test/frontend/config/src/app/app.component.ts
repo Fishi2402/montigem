@@ -21,6 +21,8 @@ export class AppComponent {
       ws_protocol + '://' + document.location.host + '/umlp/api/command'
     ));
     CommandManager.initMe(cmdManager);
+    // for playwright tests
+    (<any>window).websocket_connected = true;
   }
 
 

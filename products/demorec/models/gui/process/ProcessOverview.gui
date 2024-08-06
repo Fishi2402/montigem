@@ -24,13 +24,13 @@ page ProcessOverview(Process p) {
 
   @NavContainer(
       content=[
-        @GemCard(
-          title="Deconstruction Process of Pack",
-          component=@BatteryPackOverview(pack=p.deconstructionOf)
-        ),
         @GemColumn(
           rowGap="15px",
           components = [
+            @GemCard(
+              title="Deconstruction Process of Pack",
+              component=@BatteryPackOverview(pack=p.deconstructionOf)
+            ),
             stepCreate@ProcessStepCreate(create = attachStep()),
             @StepTable(process=p)
           ]

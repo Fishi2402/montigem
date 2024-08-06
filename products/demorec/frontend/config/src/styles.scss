@@ -7,7 +7,16 @@
   width: 100%;
 }
 
-.gemCard {
-  padding-bottom: 2px;
-  padding-top: 2px;
+.gem-card {
+  box-shadow: none;
+}
+
+:root {
+  --gemButtonTextSize: 15rem;
+  --verySmallDropDownWidth: 10rem;
+  --smallDropDownWidth: 15rem;
+  --largeDropDownWidth: 20rem;
+  --textWidth: 20rem;
+  --gemButtonHeightAdjustedToInput: 3.6ch;
+  --smallNumberWidth: 5rem;
 }

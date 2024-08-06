@@ -23,7 +23,7 @@ ${tc.signature("className", "attr", "fieldType", "jsonStr", "isList", "innerType
       }
       return result;
     <#elseif isOptional>
-      if(json["${fieldName}"]){
+      if(json["${fieldName}"] !== undefined){
       <#if useDeSer>
       let value: any = json["${fieldName}"];
       return ${objectMapperName}.deserialize(value, "${innerType}");

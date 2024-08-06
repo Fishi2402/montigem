@@ -15,7 +15,9 @@ import { GraphEdge, GraphNode } from '@umlp/networkgraph';
 export class NetworkChartExample extends NetworkChartExampleComponent {
 
   protected nodes: GraphNode[] = [
-    {"id": 1, "label": "Node 1", "group": "Cluster A", size: 35},
+    {"id": 1, "label": "Node 1", "group": "Cluster A", size: 100, nodeProgram: "triangle"},
+    {"id": 12, "label": "Node 1", "group": "Cluster A", size: 100, nodeProgram: "square"},
+    {"id": 13, "label": "Node 1", "group": "Cluster A", size: 100, nodeProgram: "circle"},
     {"id": 2, "label": "Node 2", "group": "Cluster A", size: 35},
     {"id": 3, "label": "Node 3", "group": "Cluster A", size: 44},
     {"id": 4, "label": "Node 4", "group": "Cluster A", size: 55, hoverLabel: "another hover label!", color: "#ffc0cb"},

@@ -30,14 +30,11 @@ build_no_containers:
     - "gradle buildPlugin packageUMLPWithGUIVscodePlugin -P buildIntelliJPlugin=true -P buildVscodePlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
   cache:
     paths:
+      - .gradle/nodejs
       - examples/weather/frontend/build/frontendGen/node_modules
-      - examples/weather/frontend/.gradle/nodejs
       - examples/sehub/frontend/build/frontendGen/node_modules
-      - examples/sehub/frontend/.gradle/nodejs
       - examples/dtcockpit/frontend/build/frontendGen/node_modules
-      - examples/dtcockpit/frontend/.gradle/nodejs
       - products/demorec/frontend/build/frontendGen/node_modules
-      - products/demorec/frontend/.gradle/nodejs
   artifacts:
     paths:
       - examples/weather/frontend/build/frontendGen/**
@@ -109,14 +106,11 @@ build_with_containers:
     - "gradle :examples:weather:frontend:deployImageCI :examples:sehub:frontend:deployImageCI :examples:dtcockpit:frontend:deployImageCI :products:demorec:frontend:deployImageCI -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
   cache:
     paths:
+      - .gradle/nodejs
       - examples/weather/frontend/build/frontendGen/node_modules
-      - examples/weather/frontend/.gradle/nodejs
       - examples/sehub/frontend/build/frontendGen/node_modules
-      - examples/sehub/frontend/.gradle/nodejs
       - examples/dtcockpit/frontend/build/frontendGen/node_modules
-      - examples/dtcockpit/frontend/.gradle/nodejs
       - products/demorec/frontend/build/frontendGen/node_modules
-      - products/demorec/frontend/.gradle/nodejs
   artifacts:
     paths:
       - examples/weather/frontend/build/frontendGen/**

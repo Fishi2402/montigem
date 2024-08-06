@@ -3,6 +3,13 @@
 Only big changes are listed. Since there is no semantic versioning for Fenix,
 the changes are tagged with a date.
 
+## 2024-07-24
+
+### Additions
+
+- added generator for GUI RTE types, which can now be used backend-side to create gui data.
+  Documentation can be found in `rte/RTETypesGenerator.md`.
+
 ## 2024-06-10
 
 ### Additions 

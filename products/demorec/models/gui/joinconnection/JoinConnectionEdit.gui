@@ -1,6 +1,7 @@
 package gui.joinconnection;
 
 import DemoRec.JoinConnection;
+import DemoRec.JoinConnectionKind;
 import DemoRec.DemoRecComponent;
 
 import mc.fenix.basic.GemText;
@@ -9,72 +10,40 @@ import mc.fenix.arrange.GemCard;
 import mc.fenix.arrange.GemColumn;
 import mc.fenix.arrange.GemRow;
 import mc.fenix.input.GemTextInput;
+import mc.fenix.input.GemDropdownInput;
 
 import gui.component.ComponentCreate;
 import gui.pack.ComponentsOfPack;
 import gui.staticcontainer.NavContainer;
+import gui.connectionkind.ChooseJoinConnectionKind;
 
-page JoinConnectionEdit(JoinConnection connection, boolean showOptionalAttributes=true) {
+page JoinConnectionEdit(JoinConnection connection) {
 
-  @GemColumn(
+  @GemRow(
     wrap="nowrap",
-    rowGap="5px",
+    colGap="5px",
     components=[
-      condition@GemTextInput(
+      condition@GemDropdownInput(
         labelText = "Condition of Connection",
-        inputType = "dropdown",
         options = null,
-        entry = connection.condition),
-
-      selectTypeOfConnection@GemTextInput(
-        labelText = "Type of Connection",
-        inputType = "dropdown",
-        options = null,
-        entry = connection.joinConnectionType),
+        entry = connection.condition,
+        width="var(--smallNumberWidth)"),
 
       @GemRow(
-        wrap="nowrap",
-        vAlign="center",
-        hAlign="center",
-        components= [
-          selectConnectsComponent@GemTextInput(
-              labelText = "Components connected by this connection",
-              inputType = "dropdown",
-              options = null,
-              entry = null,
-              keyRelease = tryToAddComponent()),
-          addComponent@GemButton(label = "Add Component", leftClick = connectSelectedComponent(), disabled=false)
-        ]
-      ),
-
-      @GemRow(
-        wrap="nowrap",
+        width="30em",
         colGap="5px",
-        components = [
-          @iterate(DemoRecComponent component : connection.connects){
-            removeComponent@GemButton(label=component.name, leftClick=removeSelectedComponent(component), disabled=false);
-          }
-        ]
+        components=[
+            xPos@GemTextInput(labelText = "X-Position", inputType = "number", entry = connection.xPos, width="var(--smallNumberWidth)"),
+            yPos@GemTextInput(labelText = "Y-Position", inputType = "number", entry = connection.yPos, width="var(--smallNumberWidth)"),
+            zPos@GemTextInput(labelText = "Z-Position", inputType = "number", entry = connection.zPos, width="var(--smallNumberWidth)")
+          ]
       ),
-
-      newCompGuard@guard(true) {
-        createComponentDialog@GemColumn(
-          components=[
-            @ComponentCreate(createComponent=addNewComponent())
-          ]
-        );
-      },
-      optionalPos@guard(showOptionalAttributes) {
-        @GemRow(
-          width="30em",
-          colGap="5px",
-          components=[
-            xPos@GemTextInput(labelText = "X-Position", inputType = "number", entry = connection.xPos),
-            yPos@GemTextInput(labelText = "Y-Position", inputType = "number", entry = connection.yPos),
-            zPos@GemTextInput(labelText = "Z-Position", inputType = "number", entry = connection.zPos)
-          ]
-        );
-      }
+      @GemTextInput(
+        labelText = "Condition Description",
+        inputType = "text",
+        entry = connection.conditionDescription,
+        width="var(--textWidth)"
+      )
     ]
   );
 }

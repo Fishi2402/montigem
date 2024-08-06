@@ -1,3 +1,6 @@
+import de.mclsg.TaskTypes
+import de.mclsg.task.AutoconfigureTask
+
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
@@ -114,7 +117,7 @@ java {
 
 description = 'UML/P Language and Tool'
 
-task generateUMLP(type: MCTask) {
+tasks.register('generateUMLP', MCTask) {
   grammar = file "$grammarDir/UMLP.mc4"
   outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
   def uptoDate = incCheck("UMLP.mc4")
@@ -128,7 +131,9 @@ compileJava {
   options.warnings = false
 }
 
-task autoconfigure(type: de.mclsg.task.AutoconfigureTask) {
+//can not be registered lazy because then everything breaks
+//noinspection ConfigurationAvoidance
+task autoconfigure(type: AutoconfigureTask) {
   mclsgAggregation {
     languageAggregationName = "UMLPWithGUI"
     targetPackage = "umlp_with_gui"
@@ -136,14 +141,14 @@ task autoconfigure(type: de.mclsg.task.AutoconfigureTask) {
     member("de.monticore.GUIDSL", "gui", false)
     modelPath = ["$projectDir/src/main/grammars"]
     if(shouldBuildIntelliJPlugin) {
-      including(de.mclsg.TaskTypes.INTELLIJ_PLUGIN)
+      including(TaskTypes.INTELLIJ_PLUGIN)
     }
     if(shouldBuildVscodePlugin){
-      including(de.mclsg.TaskTypes.VSCODE_PLUGIN)
+      including(TaskTypes.VSCODE_PLUGIN)
     }
   }
 }
-tasks.build.dependsOn autoconfigure
+tasks.build.dependsOn tasks.named('autoconfigure')
 
 if(shouldBuildIntelliJPlugin) {
   def lspWorkdir = file("../examples/sehub/models").getAbsolutePath()
@@ -152,7 +157,7 @@ if(shouldBuildIntelliJPlugin) {
     args += lspWorkdir
   }
 
-  task runLsp(type: JavaExec) {
+tasks.register('runLsp', JavaExec) {
     classpath tasks.packUMLPWithGUILanguageServer.archiveFile.get().asFile
     args("-port", "3000", "-r", "-mp", lspWorkdir)
     environment("LSP_SYSTEM_EXIT", "false")
@@ -163,13 +168,13 @@ if(shouldBuildIntelliJPlugin) {
 ///////////////////////// Building Jars //////////////////////////////////
 
 // build sources jar with handwritten + generated sources
-task sourcesJar(type: Jar) {
+tasks.register('sourcesJar', Jar) {
   archiveClassifier = 'sources'
   from(sourceSets.main.allJava)
 }
 
 sourcesJar.dependsOn project.collect { it.tasks.withType(MCTask) }
-sourcesJar.dependsOn generateUMLPWithGUILanguageServer
+sourcesJar.dependsOn tasks.named('generateUMLPWithGUILanguageServer')
 
 
 shadowJar { // all in one jar

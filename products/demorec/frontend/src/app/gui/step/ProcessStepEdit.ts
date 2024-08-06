@@ -4,13 +4,7 @@ import { DemoRecManager } from '@src/demorec/DemoRecManager'
 
 import { ProcessStepType } from '@src/demorec/ProcessStepType'
 
-import { Process } from '@src/demorec/Process'
-
-import { ProcessStep } from '@src/demorec/ProcessStep'
-
-import { ProcessStepEditComponent, config } from '../../../../build/frontendGen/build/appgui/gui/step/ProcessStepEditComponent'
-
-import { JoinConnectionType } from '@src/demorec/JoinConnectionType'
+import { ProcessStepEditComponent, config } from '@src/gui/step/ProcessStepEditComponent'
 
 import { JoinConnection } from '@src/demorec/JoinConnection'
 
@@ -18,16 +12,10 @@ import { MeasuringValue } from '@src/demorec/MeasuringValue'
 
 
 import {
-  Directive,
   Component,
-  Input,
-  Output,
-  EventEmitter,
-  OnInit,
-  TemplateRef
+  OnInit
 } from '@angular/core';
 
-import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { Option } from '@umlp/input';
 
 const newOption: Option = { value: "NEW", display: "NEW" };
@@ -62,7 +50,7 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements OnInit 
     // Initialize selectTypeOptions
     Object.keys(ProcessStepType).filter((v) => isNaN(Number(v))).forEach((key, index) => {
        this.selectTypeOptions.push({value: index.toString(), display: key})
-    }),
+    })
 
     // Initialize endEffectorOptions
     DemoRecManager.getEndEffectorList().then(gemPromiseRes => {
@@ -77,24 +65,35 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements OnInit 
         this.endEffectorOptions = this.endEffectorOptions.slice();
       });
     });
+  }
 
+  public initOptions() {
     // Initialize joinConnectionOptions
-    DemoRecManager.getJoinConnectionList().then(gemPromiseRes => {
-      const joinConnections = gemPromiseRes;
-      joinConnections.loadAll().then(() => {
-        console.debug(joinConnections)
-        this.joinConnectionOptions = [noneOption, newOption]
-        for (const joinConnection of joinConnections) {
-          this.calculateDisplayValueOfJoinConnection(joinConnection).then(opt =>
-          this.joinConnectionOptions.push(opt))
-        }
-        this.joinConnectionOptions = this.joinConnectionOptions.slice();
-      });
-    });
+    this.getP()?.getDeconstructionOfGem().load().then(pack => {
+      pack._internal_getAllConnectionsGemList().loadAll().then(kinds => {
+        const kindNames = kinds.map(k => k.getNameAfterLoadPromise())
+        Promise.all(kindNames).then(x => {
+          const connections = kinds.map(kind => kind._internal_getJoinConnectionGemList().loadAll())
+          Promise.all(connections).then(_ => {
+            for (const kind of kinds) {
+                kind.getNameAfterLoadPromise().then(name => {
+                  const connections = [].concat(kind.getJoinConnectionList()
+                      .map(c => {
+                        return {
+                          value: c.getGemId(),
+                          display: name + "_" + c.getGemId()
+                        }
+                      }))
+                  this.joinConnectionOptions = this.joinConnectionOptions.concat(connections);
+                })
+            }
+          })
+        })
+      })
+    })
   }
 
   // Select Types
-
   public override getSelectTypeOptions(): Array<Option> {
     return this.selectTypeOptions
   }
@@ -216,22 +215,16 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements OnInit 
   }
 
   private calculateDisplayValueOfJoinConnection(connection : JoinConnection) : Promise<Option> {
-    return connection._internal_getConnectsGemList().loadAll().then(
-        list => {
-          console.debug("Connects: " + list.map(c => c.getName()))
-          console.debug(connection._internal_getConnectsGemList().toArray())
-
-          let value = connection.getGemId() + "";
-          const displayValue = list.map(c => c.getName()?
-                  c.getName()+":"+c.getGemId() :
-                  ":"+c.getGemId()).join("_")+
-              "_"+JoinConnectionType[connection.getJoinConnectionType()]
-          return new Promise<Option>((resolve, reject) => {
-                resolve({value: value, display: displayValue})
-              }
-          )
-        }
-    )
+    return connection.getJoinConnectionKindGem().load().then(kind =>
+        kind.getNameAfterLoadPromise().then(
+            name => {
+              let value = connection.getGemId() + "";
+              return new Promise<Option>((resolve, reject) => {
+                    resolve({value: value, display: name+value})
+                  }
+              )
+            }
+        ))
   }
 
   public override getAddJoinConnectionClickedCondition(): boolean {

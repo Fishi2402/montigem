@@ -28,7 +28,7 @@ sourceSets {
 
 def moduleClassifier = "module-generator-time"
 
-task moduleJar(type: Jar){
+tasks.register('moduleJar', Jar){
   from("src/models"){
     include "**/*.*"
   }
@@ -55,7 +55,7 @@ publishing {
   }
 }
 
-task printStuff(){
+tasks.register('printStuff'){
   doLast{
     println("Files")
     sourceSets.moduleGenTime.output.files.each {
