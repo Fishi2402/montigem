@@ -134,10 +134,6 @@ translateJava2TSGUI {
   dependsOn(tasks.generateCDTOGUI, tasks.genGUI)
 }
 
-genJava2TSConfig {
-  domainModel = 'Carrental'
-}
-
 nodeSetup.dependsOn(frontendSetup)
 
 def prebuildTasks = [

@@ -35,10 +35,6 @@ translateJava2TSGUI {
   verbose = true
 }
 
-genJava2TSConfig {
-  domainModel = 'Jsweettest'
-}
-
 nodeSetup.dependsOn(frontendSetup)
 npmInstall.dependsOn(nodeSetup, ':umlp-rte:client:npmInstall')
 

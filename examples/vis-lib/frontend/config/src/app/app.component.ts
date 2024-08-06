@@ -1,6 +1,10 @@
 import { Component } from '@angular/core';
 import { DomainManagerClientImpl } from '@src/domain/DomainManagerClientImpl';
-import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from '@umlp/common';
+// JSweet
+// import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from '@umlp/commonj2ts';
+// import { DomainComponentObserverManager } from '@src/DomainComponentObserverManager'
+// Non-JSweet
+import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from '@umlp/commonj2ts';
 
 @Component({
   selector: 'app-root',
@@ -16,5 +20,7 @@ export class AppComponent {
     ));
     CommandManager.initMe(cmdManager);
     (<any>window).websocket_connected = true;
+    // JSweet
+    // DomainComponentObserverManager.init();
   }
 }

@@ -11,6 +11,8 @@ dependencies {
 
   testImplementation 'com.microsoft.playwright:playwright:1.44.0'
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version
+// JSweet
+//  domainSources project(":examples:vis-lib:backend")
 }
 
 node {
@@ -37,10 +39,7 @@ genGUI {
 //translateJava2TSGUI {
 //  verbose = true
 //}
-//
-//genJava2TSConfig {
-//  domainModel = 'Domain'
-//}
+// End JSweet
 
 nodeSetup.dependsOn(frontendSetup)
 npmInstall.dependsOn(':umlp-rte:client:npmInstall')
@@ -90,3 +89,8 @@ tasks.register("slowtest", Test) {
   shouldRunAfter test
 }
 
+
+task runAppNoBuild(type: NpxTask) {
+  command = "ng"
+  args = ["serve"]
+}
