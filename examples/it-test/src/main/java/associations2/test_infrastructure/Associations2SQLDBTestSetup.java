@@ -15,13 +15,27 @@ import umlp.backendrte.command.CommandManager;
 import umlp.backendrte.command.TestClientCommandManager;
 import umlp.backendrte.common.DatabaseAccessManager4Neo4j;
 
+import java.io.IOException;
+import java.net.ServerSocket;
 import java.nio.file.Paths;
 
 public class Associations2SQLDBTestSetup extends Associations2SQLDBTestSetupTOP {
 
   protected String dbType = "SQL";
 
-  public final static int port = 7692;
+  public final static int port = getFreePort();
+
+  private static int getFreePort() {
+    ServerSocket socket = null;
+    try {
+      socket = new ServerSocket(0);
+      int port = socket.getLocalPort();
+      socket.close();
+      return port;
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
   protected static DatabaseManagementService managementService;
 
