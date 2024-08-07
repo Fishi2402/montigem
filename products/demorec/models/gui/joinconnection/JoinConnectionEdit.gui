@@ -24,14 +24,14 @@ page JoinConnectionEdit(JoinConnection connection) {
     colGap="5px",
     components=[
       condition@GemDropdownInput(
-        labelText = "Condition of Connection",
+        labelText = "Condition",
         options = null,
         entry = connection.condition,
-        width="var(--smallNumberWidth)"),
+        width="var(--verySmallDropDownWidth)"),
 
       @GemRow(
-        width="30em",
-        colGap="5px",
+        width="var(--coordinateWidth)",
+        colGap="1rem",
         components=[
             xPos@GemTextInput(labelText = "X-Position", inputType = "number", entry = connection.xPos, width="var(--smallNumberWidth)"),
             yPos@GemTextInput(labelText = "Y-Position", inputType = "number", entry = connection.yPos, width="var(--smallNumberWidth)"),

@@ -14,20 +14,33 @@ classdiagram NetworkGraphTypes {
     String id;
     Integer value;
     String label;
-    Integer size;
-    String color;
-    String group;
+    Optional<Integer> size;
+    Optional<String> color;
+    Optional<String> group;
+
+    /**
+     *  Whether the position of the node is fixed or may change during layout.
+     */
+    Optional<Boolean> fixed;
+    Optional<Double> x;
+    Optional<Double> y;
 
     /**
      * In which shapes should nodes be drawn. Allowed values are triangle, square, circle. Default is circle.
      */
     Optional<String> nodeProgram;
+    Optional<String> hoverLabel;
+    Optional<String> hover;
+    Optional<String> tooltip;
   }
 
   public class GraphEdge {
-    String from;
-    String to;
-    Integer weight;
+    String id;
+    String source;
+    String target;
+    Optional<Integer> size;
+    Optional<Boolean> directed;
+    Optional<String> color;
   }
 
 }
