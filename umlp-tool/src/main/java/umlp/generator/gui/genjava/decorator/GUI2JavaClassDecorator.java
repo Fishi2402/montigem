@@ -39,6 +39,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
+import umlp.generator.domain.decorator.commands.ManagerSubscriptionDecorator;
 import umlp.generator.gui.GUI2ClassDecorator;
 import umlp.generator.gui.genjava.prettyprinter.Expression2AccessorPrinter;
 import umlp.generator.gui.genjava.prettyprinter.Expression2MutatorPrinter;
@@ -57,6 +58,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 
 /**
@@ -72,6 +74,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
   protected List<Method> addedMethods = new ArrayList<>();
   protected boolean extendedDomainObserver = false;
+  protected Set<String> subscribedManagerEvents = new HashSet<>();
   protected Map<String, NotifyMethodTemplate> notifyDeleted = new HashMap<>();
   protected Map<String, NotifyMethodTemplate> notifyAdded = new HashMap<>();
 
@@ -241,6 +244,18 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         if (!extendedDomainObserver) {
           extendDomainObserver();
           extendedDomainObserver = true;
+        }
+        if (!subscribedManagerEvents.contains(innerType.printType())) {
+          subscribedManagerEvents.add(innerType.printType());
+          getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandManager"));
+          importCommand(innerType.printType());
+          /*
+            CommandManager.executeCommand(new Person_subscribeManagerEvents());
+           */
+          glex.addAfterTemplate(
+              getInitBodyHookpoint(),
+              new TemplateHookPoint(getSubscribeManagerEventsTemplate(), innerType)
+          );
         }
 
         // TODO: simple name clash, e.g., foo.Person and bar.Person
@@ -1248,6 +1263,10 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
   protected String getDestroyBodyHookpoint() {
     return "umlp.gui2java.GUI2JavaDestroyBody";
+  }
+
+  protected String getSubscribeManagerEventsTemplate() {
+    return "umlp.gui2java.GUI2JavaSubscribeManagerEvents";
   }
 
   protected String getAddObserverTemplate() {

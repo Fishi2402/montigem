@@ -1,10 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { Person_subscribeManagerEvents } from '@src/domain/commands/Person_subscribeManagerEvents';
 import { Person } from '@src/domain/Person';
 import { config, SimpleOverviewComponent } from '@src/person/SimpleOverviewComponent';
-import { CommandManager, previousIfUnchanged } from '@umlp/common';
+import { previousIfUnchanged } from '@umlp/common';
 import { Option } from '@umlp/input';
 
 @Component({
@@ -15,11 +14,6 @@ import { Option } from '@umlp/input';
   styleUrls: config.styleUrls
 })
 export class SimpleOverview extends SimpleOverviewComponent {
-
-  public init(): void {
-    CommandManager.executeCommand(new Person_subscribeManagerEvents());
-    super.init();
-  }
 
   public getPersonOptions(): Array<Option> {
     const opts: Option[] = [];
