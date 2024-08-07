@@ -29,5 +29,9 @@ component GemDropdownInput(
   /** An object representing the validation status of the field. */
   GemTextInputValidity validity,
   /** Whether a search input to filter the options shows up on top of the list of options */
-  boolean searchEnabled = false
+  boolean searchEnabled = false,
+  /** Callback that is executed when a key is released. */
+  Event<Object> keyRelease,
+  /** Callback that is executed when a key is pressed. */
+  Event<Object> keyPress
 )

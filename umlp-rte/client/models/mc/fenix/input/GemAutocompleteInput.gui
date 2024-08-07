@@ -29,5 +29,9 @@ component GemAutocompleteInput(
   /** An object representing the validation status of the field. */
   GemTextInputValidity validity,
   /** Text displayed when the field is empty. */
-  String placeholder = ""
+  String placeholder = "",
+  /** Callback that is executed when a key is released. */
+  Event<Object> keyRelease,
+  /** Callback that is executed when a key is pressed. */
+  Event<Object> keyPress
 )

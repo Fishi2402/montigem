@@ -3,9 +3,9 @@ import {
   Component,
   EventEmitter,
   HostBinding,
-  Input,
+  Input, OnChanges,
   OnInit,
-  Output
+  Output, SimpleChanges
 } from "@angular/core";
 import {GemTextInputValidity} from "../gemtextinput";
 import {Option} from "./gem-dropdown-input-types/gem-dropdown-input.types";
@@ -14,7 +14,7 @@ import {Option} from "./gem-dropdown-input-types/gem-dropdown-input.types";
   selector: "gem-dropdown-input",
   templateUrl: "./gem-dropdown-input.component.html",
 })
-export class GemDropdownInput implements OnInit {
+export class GemDropdownInput implements OnInit, OnChanges {
   @HostBinding("attr.id")
   @Input() id: string;
 
@@ -32,6 +32,8 @@ export class GemDropdownInput implements OnInit {
   @Input() searchEnabled: boolean;
 
   @Output() public entryChange: EventEmitter<string> = new EventEmitter<string>();
+  @Output() public keyPress: EventEmitter<KeyboardEvent> = new EventEmitter<KeyboardEvent>;
+  @Output() public keyRelease: EventEmitter<KeyboardEvent> = new EventEmitter<KeyboardEvent>;
 
   isContentShown: boolean = false;
   filterString: string = "";
@@ -41,6 +43,7 @@ export class GemDropdownInput implements OnInit {
   constructor(private cdRef: ChangeDetectorRef) {}
 
   ngOnInit(): void {
+    this.searchEnabled = false;
     this.filteredOptions = this.options;
     window.onclick = (event) => {
       if (
@@ -53,6 +56,20 @@ export class GemDropdownInput implements OnInit {
         this.hideDropdown();
       }
     }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes["options"]) {
+      this.filteredOptions = changes["options"].currentValue;
+    }
+  }
+
+  onKeyPress(event: KeyboardEvent): void {
+    this.keyPress.emit(event);
+  }
+
+  onKeyRelease(event: KeyboardEvent): void {
+    this.keyRelease.emit(event);
   }
 
   toggleDropdown(): void {

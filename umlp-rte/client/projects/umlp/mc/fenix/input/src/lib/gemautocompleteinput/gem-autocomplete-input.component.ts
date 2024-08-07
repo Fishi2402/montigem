@@ -2,9 +2,9 @@ import {
   Component,
   EventEmitter,
   HostBinding,
-  Input,
+  Input, OnChanges,
   OnInit,
-  Output,
+  Output, SimpleChanges,
 } from "@angular/core";
 import { Option } from "../gemdropdowninput";
 import { GemTextInputValidity } from "../gemtextinput";
@@ -13,7 +13,7 @@ import { GemTextInputValidity } from "../gemtextinput";
   selector: "gem-autocomplete-input",
   templateUrl: "./gem-autocomplete-input.component.html",
 })
-export class GemAutocompleteInput implements OnInit {
+export class GemAutocompleteInput implements OnInit, OnChanges {
   @HostBinding("attr.id")
   @Input() id: string;
 
@@ -31,6 +31,8 @@ export class GemAutocompleteInput implements OnInit {
   @Input() placeholder: string;
 
   @Output() public entryChange: EventEmitter<string> = new EventEmitter<string>();
+  @Output() public keyPress: EventEmitter<KeyboardEvent> = new EventEmitter<KeyboardEvent>;
+  @Output() public keyRelease: EventEmitter<KeyboardEvent> = new EventEmitter<KeyboardEvent>;
 
   filteredOptions: Option[] = [];
   isContentShown: boolean = false;
@@ -50,10 +52,25 @@ export class GemAutocompleteInput implements OnInit {
     }
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes["options"]) {
+      this.filteredOptions = changes["options"].currentValue;
+    }
+  }
+
   onEntryChange(entry: string): void {
     this.selectOption(entry);
     this.showDropdown();
   }
+
+  onKeyPress(event: KeyboardEvent): void {
+    this.keyPress.emit(event);
+  }
+
+  onKeyRelease(event: KeyboardEvent): void {
+    this.keyRelease.emit(event);
+  }
+
 
   showDropdown(): void {
     if (!this.isContentShown && this.filteredOptions.length > 0) {
