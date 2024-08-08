@@ -1,4 +1,4 @@
-package umlp.generator.domain.decorator;
+package umlp.generator.test_infrastructure.domain.decorator;
 
 import com.google.common.base.Joiner;
 import de.monticore.cd.methodtemplates.CD4C;
@@ -13,6 +13,16 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.se_rwth.commons.Joiners;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.domain.decorator.DAOFactoryDecorator;
+import umlp.generator.domain.decorator.DbObserverDecorator;
+import umlp.generator.domain.decorator.DiagramObserverDecorator;
+import umlp.generator.domain.decorator.EnsureCorrectManager4DiagrammDecorator;
+import umlp.generator.domain.decorator.EnsureCorrectManager4TypeDecorator;
+import umlp.generator.domain.decorator.ManagerClientImplDecorator;
+import umlp.generator.domain.decorator.ManagerDecorator;
+import umlp.generator.domain.decorator.ManagerImplDecorator;
+import umlp.generator.domain.decorator.ManagerMockDecorator;
+import umlp.generator.domain.decorator.ObserverDecorator;
 import umlp.generator.util.PathUtil;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package umlp.generator.domain.decorator;
+package umlp.generator.test_infrastructure.domain.decorator;
 
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cdbasis._ast.ASTCDClass;
