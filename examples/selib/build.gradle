@@ -66,6 +66,7 @@ sourceSets {
 
 dependencies {
   implementation project(':umlp-rte')
+  implementation project(':umlp-test-rte')
   implementation 'com.h2database:h2:2.1.214'  // In-Memory database written in java
 
   compileOnly group: 'org.springframework.boot', name: 'spring-boot-devtools', version: spring_version  // Required for Hot-Reload
