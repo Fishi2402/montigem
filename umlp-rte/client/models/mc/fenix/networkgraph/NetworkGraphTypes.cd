@@ -12,7 +12,7 @@ classdiagram NetworkGraphTypes {
 
   public class GraphNode {
     String id;
-    Integer value;
+    Optional<Integer> value;
     String label;
     Optional<Integer> size;
     Optional<String> color;
