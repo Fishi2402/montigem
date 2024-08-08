@@ -18,6 +18,7 @@ dependencies {
   moduleGenTimeCompileOnly group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
   moduleGenTimeCompileOnly group: 'de.monticore', name: 'monticore-runtime', version: mc_version
   moduleGenTimeCompileOnly group: 'de.monticore', name: 'monticore-grammar', version: mc_version
+  implementation project(':umlp-test-rte')
 }
 
 sourceSets {

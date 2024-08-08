@@ -28,6 +28,7 @@ jib {
 
 dependencies {
   implementation project(':umlp-rte')
+  implementation project(':umlp-test-rte')
   implementation 'com.h2database:h2:2.1.214'  // In-Memory database written in java
   implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
 
