@@ -2,26 +2,18 @@
 
 package umlp.generator.gui.gentypescript.domain;
 
-import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
+import de.monticore.cdbasis._symboltable.CDTypeSymbol;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.SymTypeOfGenerics;
-import umlp.UMLPMill;
-import umlp.generator.domain.decorator.GenService;
+import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.se_rwth.commons.Joiners;
 import umlp.generator.domain.decorator.ObserverDecorator;
-import umlp.generator.util.PathUtil;
-import umlp.generator.util.UMLPSymbolTables;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static umlp.generator.domain.decorator.GenService.createType;
+import java.util.ArrayList;
 
 public class TSObserverDecorator extends ObserverDecorator {
 
@@ -33,89 +25,34 @@ public class TSObserverDecorator extends ObserverDecorator {
 
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
+    this.generationDetails = new ArrayList<>();
+
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     this.astcdPackage = astcdPackage.getName();
-    getNonDerivedDomainClasses(origCD).forEach(c -> astcdPackage.addCDElement(withOrigin(createClass(c))));
-
-    getNonDerivedDomainInterfaces(origCD).forEach(c -> astcdPackage.addCDElement(withOrigin(
-        createClass(c))));
-  }
-
-  protected ASTCDClass createClass(ASTCDType domainClass) {
-    String className = domainClass.getName();
-    ASTCDClass ast = UMLPMill.cDClassBuilder()
-      .setModifier(PUBLIC.build())
-      .setName(className + SUFFIX).build();
-    List<SymTypeExpression> superTypes = domainClass.getSymbol().getSuperTypesList();
-    if (!superTypes.isEmpty()) {
-      ast.setCDExtendUsage(getExtendUsageFacade()
-              .createCDExtendUsage(superTypes.stream().map(a -> a.print()+SUFFIX).toArray(String[]::new)));
+    for (ASTCDClass c : getNonDerivedDomainClasses(origCD)) {
+      ASTCDInterface i = createInterface(c);
+      glex.replaceTemplate("umlp.gui2ts.TSInterfaceDeclaration",
+          i, new TemplateHookPoint("umlp.gui2ts.TSInterface2Mixin"));
+      astcdPackage.addCDElement(withOrigin(i));
     }
 
-    Set<SymTypeExpression> additionalImports = new HashSet<>();
-    // Add Notify for attributes
-    domainClass.getCDAttributeList().stream()
-      .filter(a -> !a.getModifier().isDerived())
-      .forEach(a -> {
-        if(GenService.isList(a)) {
-          String innerType = GenService.getInnerType(a.getMCType());
-          getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSNotifyAdd", a.getName(), className, innerType);
-          getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSMaybeNotifyAdd", a.getName(), className, innerType);
-          getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSNotifyRemove", a.getName(), className, innerType);
-          getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSMaybeNotifyRemove", a.getName(), className, innerType);
-        }
-
-        if (GenService.isCDType(a.getSymbol().getType())) {
-          additionalImports.add(a.getSymbol().getType());
-        } else if (GenService.isInnerCDEnum(a.getSymbol().getType())) {
-          additionalImports.add(((SymTypeOfGenerics) a.getSymbol().getType()).getArgument(0));
-        }
-
-        String fullType = getCDPrinter().prettyprint(createType(a));
-        getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSNotify", a.getName(), className, fullType, false);
-        getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSMaybeNotify", a.getName(), className, fullType, false);
-      });
-
-    // Add Notify for list associations
-    CDSymbolTables.getAssociations(domainClass).stream()
-            .filter(a -> !a.getSymbol().getAssoc().getAssociation().getAstNode().getModifier().isDerived())
-            .filter(a -> GenService.isList(a))
-            .forEach(a -> {
-              getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSNotifyAdd", a.getName(), className, "long");
-              getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSMaybeNotifyAdd", a.getName(), className, "long");
-              getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSNotifyRemove", a.getName(), className, "long");
-              getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSMaybeNotifyRemove", a.getName(), className, "long");
-              getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSNotify", a.getName(), className, "long", true);
-              getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSMaybeNotify", a.getName(), className, "long", true);
-              if (GenService.isInnerCDEnum(a.getSymbol().getType())) {
-                additionalImports.add(((SymTypeOfGenerics) a.getSymbol().getType()).getArgument(0));
-              }
-            });
-
-    // Add Notify for associations
-    CDSymbolTables.getAssociations(domainClass).stream()
-            .filter(a -> !a.getSymbol().getAssoc().getAssociation().getAstNode().getModifier().isDerived())
-            .filter(a -> !GenService.isList(a))
-            .forEach(a -> {
-              getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSNotify", a.getName(), className, "long", false);
-              getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSMaybeNotify", a.getName(), className, "long", false);
-              if (GenService.isCDEnum(a.getSymbol().getType())) {
-                additionalImports.add(a.getSymbol().getType());
-              }
-            });
-
-    getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSGetScope");
-    getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSNotifyBuild", className);
-    getCD4C().addMethod(ast, "umlp.gui2ts.observer.TSMaybeNotifyBuild", className);
-
-    getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
-    getCD4C().addImport(ast, this.astcdPackage + "." + domainClass.getName());
-    if (!domainClass.getSuperclassList().isEmpty()) {
-      ASTCDCompilationUnit cdOfSuper = UMLPSymbolTables.getDiagramFor(domainClass.getSuperclassList().get(0));
-      getCD4C().addImport(ast, getPackageName(cdOfSuper, DEFAULT_PACKAGE) + "." + domainClass.getSuperclassList().get(0).printType() + "Observer");
+    for (ASTCDInterface c : getNonDerivedDomainInterfaces(origCD)) {
+      ASTCDInterface i = createInterface(c);
+      glex.replaceTemplate("umlp.gui2ts.TSInterfaceDeclaration",
+          i, new TemplateHookPoint("umlp.gui2ts.TSInterface2Mixin"));
+      astcdPackage.addCDElement(withOrigin(i));
     }
-    additionalImports.forEach(e -> getCD4C().addImport(ast, e.getTypeInfo().getFullName()));
-
-    return ast;
   }
+
+  @Override
+  protected void addImports(ASTCDType domainType, ASTCDType cdType) {
+    super.addImports(domainType, cdType);
+
+    if (domainType.isPresentSymbol()) {
+      CDTypeSymbol symbol = domainType.getSymbol();
+      getCD4C().addImport(cdType,
+          Joiners.DOT.join(symbol.getPackageName().toLowerCase(), symbol.getName()));
+    }
+  }
+
 }

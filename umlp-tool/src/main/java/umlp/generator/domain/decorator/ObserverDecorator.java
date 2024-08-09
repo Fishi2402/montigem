@@ -35,7 +35,7 @@ public class ObserverDecorator extends AbstractDecorator {
   public static final String NOTIFY_TEMPLATE = "umlp.observer.Notify";
   public static final String MAYBE_NOTIFY_TEMPLATE = "umlp.observer.MaybeNotify";
 
-  private Collection<GenerationSummary> generationDetails = List.of();
+  protected Collection<GenerationSummary> generationDetails = List.of();
 
   public ObserverDecorator(final GlobalExtensionManagement glex) {
     super(glex);
@@ -170,7 +170,7 @@ public class ObserverDecorator extends AbstractDecorator {
 
     cd4C.addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
     addImportForImportedObservers(domainClass, ast);
-    super.addImports(domainClass, ast);
+    addImports(domainClass, ast);
 
     return ast;
   }

@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-<#-- ASTCDClass ast -->
+<#-- ASTCDType ast -->
 
 <#assign cdPrinter = glex.getGlobalVar("cdPrinter")>
 
