@@ -219,7 +219,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     }
   }
 
-  protected loadSingleObject(id: number): Promise<LoadResult<E>> {
+  public loadSingleObject(id: number): Promise<LoadResult<E>> {
     let res: Array<Promise<LoadResult<E>>> = this.loadObjects([id]);
     if (res.length === 0) {
       return Promise.resolve(new LoadResult<E>().LoadResult2(LoadingState.FAILED_TO_LOAD));

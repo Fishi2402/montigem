@@ -1,5 +1,4 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-<#assign cdPrinter = glex.getGlobalVar("cdPrinter")>
 <#-- ASTCDInterface ast -->
 
 export interface ${ast.getName()} <#rt><#lt>

@@ -1,31 +1,24 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui.gentypescript.decorator;
 
-import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.facade.CDModifier;
-import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
-import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
-import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.se_rwth.commons.StringTransformations;
-import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.UMLPGeneratorConfig;
+import umlp.generator.domain.decorator.ObserverDecorator;
 import umlp.generator.gui.genjava.decorator.GUI2JavaClassDecorator;
 import umlp.generator.gui.genjava.prettyprinter.Expression2SetterPrinter;
+import umlp.generator.gui.gentypescript.domain.TSObserverDecorator;
 import umlp.generator.gui.gentypescript.printer.TSUtilsPrinter;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
-import umlp.generator.util.PathUtil;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.function.Function;
 
 /**
@@ -33,6 +26,8 @@ import java.util.function.Function;
  * implements some logic, such as navigation to pages, creation of objects, etc.
  */
 public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
+
+  protected boolean extendedMixin = false;
 
   public GUI2TSClassDecorator(final GlobalExtensionManagement glex) {
     super(glex);
@@ -79,9 +74,41 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
 
   @Override
   protected void extendDomainObserver() {
-    glex.replaceTemplate("umlp.gui2ts.TSClassExtends",
+    if (!extendedMixin) {
+      extendMixin();
+      extendedMixin = true;
+    }
+    glex.addBeforeTemplate("umlp.gui2ts.TSEmptyMixin",
+        clazz, new StringHookPoint(getAndImportDomainObserver() + "("));
+    glex.addAfterTemplate("umlp.gui2ts.TSEmptyMixin",
+        clazz, new StringHookPoint(")"));
+
+    // add observer init
+    glex.addAfterTemplate(
+        getInitBodyHookpoint(),
+        new TemplateHookPoint(getAddObserverTemplate(), getAndImportManager())
+    );
+  }
+
+  @Override
+  protected void extendAssocObserver(SymTypeExpression ownerType, ASTFieldAccessExpression assoc) {
+    if (!extendedMixin) {
+      extendMixin();
+      extendedMixin = true;
+    }
+    String qObserverMixin = ownerType.printFullName() + ObserverDecorator.SUFFIX + "Mixin";
+    String observerMixin = ownerType.print() + ObserverDecorator.SUFFIX + "Mixin";
+    getCD4C().addImport(clazz, qObserverMixin);
+
+    glex.addBeforeTemplate("umlp.gui2ts.TSEmptyMixin",
+        clazz, new StringHookPoint(observerMixin + "("));
+    glex.addAfterTemplate("umlp.gui2ts.TSEmptyMixin",
+        clazz, new StringHookPoint(")"));
+  }
+
+  protected void extendMixin() {
+    glex.addAfterTemplate("umlp.gui2ts.TSClassExtends",
         clazz, new TemplateHookPoint("umlp.gui2ts.TSClassExtendsMixin"));
-    super.extendDomainObserver();
   }
 
   @Override
@@ -280,8 +307,12 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
   }
 
   @Override
-  protected String getAssocSetTemplate() { return "umlp.gui2ts.predefined.GUI2TSAssocAdd"; }
+  protected String getAssocSetTemplate() {
+    return "umlp.gui2ts.predefined.GUI2TSAssocAdd";
+  }
 
   @Override
-  protected String getAssocSetAbsentTemplate() { return "umlp.gui2ts.predefined.GUI2TSAssocRemove"; }
+  protected String getAssocSetAbsentTemplate() {
+    return "umlp.gui2ts.predefined.GUI2TSAssocRemove";
+  }
 }

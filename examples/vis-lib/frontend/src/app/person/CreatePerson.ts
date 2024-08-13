@@ -21,6 +21,7 @@ export class CreatePerson extends CreatePersonComponent {
   }
 
   public override createButtonLeftClick(): void {
+    this.address.build();
     this.getPerson().setAddress1(this.getAddress());
     this.getPerson().setAboutMe("");
     super.createButtonLeftClick();

@@ -83,7 +83,11 @@ public class FEDecorator extends BEDecorator {
 
     ObserverDecorator observerDecorator = new TSObserverDecorator(glex);
     observerDecorator.transform(cdAST, decoratedAST);
-    Log.info("After decorator: ObserverDecorator", FEDecorator.class.getName());
+    Log.info("After decorator: TSObserverDecorator", FEDecorator.class.getName());
+
+    ObserverDecorator observerMixinDecorator = new TSObserverMixinDecorator(glex);
+    observerMixinDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: TSObserverMixinDecorator", FEDecorator.class.getName());
 
     TSAccessPolicyDecorator tsAccessPolicyDecorator = new TSAccessPolicyDecorator(glex);
     tsAccessPolicyDecorator.transform(cdAST, decoratedAST);

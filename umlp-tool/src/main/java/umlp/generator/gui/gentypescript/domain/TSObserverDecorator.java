@@ -31,15 +31,21 @@ public class TSObserverDecorator extends ObserverDecorator {
     this.astcdPackage = astcdPackage.getName();
     for (ASTCDClass c : getNonDerivedDomainClasses(origCD)) {
       ASTCDInterface i = createInterface(c);
+      /*
+      ASTCDInterface mixin = createInterface(c);
       glex.replaceTemplate("umlp.gui2ts.TSInterfaceDeclaration",
-          i, new TemplateHookPoint("umlp.gui2ts.TSInterface2Mixin"));
+          mixin, new TemplateHookPoint("umlp.gui2ts.TSInterface2Mixin"));
+      /**/
       astcdPackage.addCDElement(withOrigin(i));
     }
 
     for (ASTCDInterface c : getNonDerivedDomainInterfaces(origCD)) {
       ASTCDInterface i = createInterface(c);
+      /*
+      ASTCDInterface mixin = createInterface(c);
       glex.replaceTemplate("umlp.gui2ts.TSInterfaceDeclaration",
-          i, new TemplateHookPoint("umlp.gui2ts.TSInterface2Mixin"));
+          mixin, new TemplateHookPoint("umlp.gui2ts.TSInterface2Mixin"));
+      /**/
       astcdPackage.addCDElement(withOrigin(i));
     }
   }
