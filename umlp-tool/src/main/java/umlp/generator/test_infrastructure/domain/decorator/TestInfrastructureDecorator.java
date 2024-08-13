@@ -28,14 +28,16 @@ public class TestInfrastructureDecorator extends BEDecorator {
 
     // START ARTIFACT PROVIDER
     //we need the artifacts of the following observers. The simplest approach is to just call them
-    //again
+    //again and throw away the created classes
+    var dummyAST = new ASTCDCompilationUnit();
+
     ObserverDecorator observerDecorator = new ObserverDecorator(glex);
-    observerDecorator.transform(cdAST, decoratedAST);
+    observerDecorator.transform(cdAST, dummyAST);
 
     Log.info("After decorator: ObserverDecorator", logName);
 
     DiagramObserverDecorator diagramObserverDecorator = new DiagramObserverDecorator(glex);
-    diagramObserverDecorator.transform(cdAST, decoratedAST);
+    diagramObserverDecorator.transform(cdAST, dummyAST);
     Log.info("After decorator: DiagramObserverDecorator", logName);
 
     // END ARTIFACT PROVIDER
