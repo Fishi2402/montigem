@@ -86,7 +86,6 @@ public class UMLPToolPipelineSetup {
   UMLPFilePipelineSetup umlpFilePipelineSetup;
   GuiPipelineSetup guiPipelineSetup;
   RTEDataPipelineSetup gUIRTEDataPipelineSetup;
-  TestInfrastructurePipelineSetup testInfrastructurePipelineSetup;
 
   final Pipeline<UMLPPipelineData> main;
 
@@ -212,9 +211,6 @@ public class UMLPToolPipelineSetup {
 
     gUIRTEDataPipelineSetup = new RTEDataPipelineSetup();
     gUIRTEDataPipelineSetup.createGUIRTETypes(this);
-
-    testInfrastructurePipelineSetup = new TestInfrastructurePipelineSetup();
-    testInfrastructurePipelineSetup.createTestInfrastructure(this);
 
     // Finally (for every option), close report managers
     main.addFinally(data -> {
