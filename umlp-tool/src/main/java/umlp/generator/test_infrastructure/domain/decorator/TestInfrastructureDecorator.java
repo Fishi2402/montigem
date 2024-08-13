@@ -34,11 +34,11 @@ public class TestInfrastructureDecorator extends BEDecorator {
     ObserverDecorator observerDecorator = new ObserverDecorator(glex);
     observerDecorator.transform(cdAST, dummyAST);
 
-    Log.info("After decorator: ObserverDecorator", logName);
+    Log.info("After artifact providing decorator: ObserverDecorator", logName);
 
     DiagramObserverDecorator diagramObserverDecorator = new DiagramObserverDecorator(glex);
     diagramObserverDecorator.transform(cdAST, dummyAST);
-    Log.info("After decorator: DiagramObserverDecorator", logName);
+    Log.info("After artifact providing decorator: DiagramObserverDecorator", logName);
 
     // END ARTIFACT PROVIDER
 
