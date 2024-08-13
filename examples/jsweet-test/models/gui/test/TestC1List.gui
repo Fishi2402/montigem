@@ -13,6 +13,13 @@ import Jsweettest.C2;
 
 page TestC1List(List<C1> c1s) {
   @TestNav();
+  @GemText(value = "Page: TestC1List");
+
+  @GemText(value = "First, a list of all IDs:");
+  @iterate (C1 c : c1s) {
+    @GemText(value="C1 " + c.hwGemId);
+  }
+  @GemText(value = "Next, a NavList to each TestC1 page:");
 
   @GemNavList ( components = [
     @iterate (C1 c1 : c1s) {

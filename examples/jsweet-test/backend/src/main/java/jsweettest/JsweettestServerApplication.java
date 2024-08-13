@@ -28,9 +28,20 @@ public class JsweettestServerApplication extends JsweettestServerApplicationTOP 
   }
 
   public static void resetTestData() {
+    // TODO: THe following #clears to not work
     JsweettestManager.getC1List().clear();
     JsweettestManager.getC2List().clear();
     JsweettestManager.getC3List().clear();
+
+    while (!JsweettestManager.getC1List().isEmpty()) {
+      JsweettestManager.deleteC1(JsweettestManager.getC1List().iterator().next().getGemId());
+    }
+    while (!JsweettestManager.getC2List().isEmpty()) {
+      JsweettestManager.deleteC1(JsweettestManager.getC2List().iterator().next().getGemId());
+    }
+    while (!JsweettestManager.getC3List().isEmpty()) {
+      JsweettestManager.deleteC1(JsweettestManager.getC3List().iterator().next().getGemId());
+    }
 
     C1 c1 = JsweettestManager.c1Builder()
         // strings
