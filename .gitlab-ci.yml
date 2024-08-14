@@ -131,7 +131,7 @@ build_with_containers:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
     expire_in: 1 week
-  only:
+  only: # This job is deploying docker-containers... this should _really_ only happen from the `dev` branch
     refs:
       - dev
 
