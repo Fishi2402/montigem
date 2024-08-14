@@ -91,7 +91,7 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
   }
 
   @Override
-  protected void extendAssocObserver(SymTypeExpression ownerType, ASTFieldAccessExpression assoc) {
+  protected void implementAssocObserver(SymTypeExpression ownerType, ASTFieldAccessExpression assoc) {
     if (!extendedMixin) {
       extendMixin();
       extendedMixin = true;

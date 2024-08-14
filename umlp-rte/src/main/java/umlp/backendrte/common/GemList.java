@@ -179,7 +179,7 @@ public abstract class GemList<E extends GemIdentifiable>
     }
   }
 
-  protected LoadResult<E> loadSingleObject(long id) {
+  public LoadResult<E> loadSingleObject(long id) {
     List<LoadResult<E>> res = loadObjects(Collections.singletonList(id));
     if (res.isEmpty()) {
       return new LoadResult<>(LoadingState.FAILED_TO_LOAD);

@@ -37,6 +37,8 @@ import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types3.SymTypeRelations;
+import de.se_rwth.commons.Joiners;
+import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.decorator.ObserverDecorator;
@@ -74,6 +76,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
   protected List<Method> addedMethods = new ArrayList<>();
   protected boolean extendedDomainObserver = false;
+  protected Set<String> implementedAssocObservers = new HashSet<>();
   protected Set<String> subscribedManagerEvents = new HashSet<>();
   protected Map<String, NotifyMethodTemplate> notifyDeleted = new HashMap<>();
   protected Map<String, NotifyMethodTemplate> notifyAdded = new HashMap<>();
@@ -996,29 +999,39 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     if (!extendedDomainObserver) {
       extendDomainObserver();
       extendedDomainObserver = true;
+      // add observer init
+      glex.addAfterTemplate(
+          getInitBodyHookpoint(),
+          new TemplateHookPoint(getAddObserverTemplate(), getAndImportManager())
+      );
+
+      // add observer destroy
+      glex.addAfterTemplate(
+          getDestroyBodyHookpoint(),
+          new TemplateHookPoint(getRemoveObserverTemplate(), getAndImportManager())
+      );
+
+      // implement getScope method of observer
+      getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
+      getCD4C().addMethod(clazz, getScopeTemplate());
     }
-    // add observer init
-    glex.addAfterTemplate(
-        getInitBodyHookpoint(),
-        new TemplateHookPoint(getAddObserverTemplate(), getAndImportManager())
-    );
-
-    // add observer destroy
-    glex.addAfterTemplate(
-        getDestroyBodyHookpoint(),
-        new TemplateHookPoint(getRemoveObserverTemplate(), getAndImportManager())
-    );
-
-    // implement getScope method of observer
-    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
-    getCD4C().addMethod(clazz, getScopeTemplate());
   }
 
-  protected void extendAssocObserver(SymTypeExpression ownerType, ASTFieldAccessExpression assoc) {
-    // extend observer
-    String qObserver = ownerType.printFullName() + ObserverDecorator.SUFFIX;
-    String observer = ownerType.print() + ObserverDecorator.SUFFIX;
+  protected void implementAssocObserver(SymTypeExpression ownerType, ASTFieldAccessExpression assoc) {
+    // the CD Generator produces `hardy.domain.Person`, instead of `hardy.Domain.Person`, calculate
+    String qType = ownerType.printFullName();
+    String type = ownerType.print();
+    List<String> parts = new ArrayList<>(Splitters.DOT.splitToList(qType));
+    if (parts.size() > 1) {
+      String domainPackage = parts.get(parts.size() - 2).toLowerCase();
+      parts.set(parts.size() - 2, domainPackage);
+      qType = Joiners.DOT.join(parts);
+    }
+
+    String qObserver = qType + ObserverDecorator.SUFFIX;
+    String observer = type + ObserverDecorator.SUFFIX;
     getCD4C().addImport(clazz, qObserver);
+    // implement observer
     if (!clazz.isPresentCDInterfaceUsage()) {
       clazz.setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder()
           .setInterfaceList(new ArrayList<>()).build());
@@ -1028,11 +1041,14 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
   }
 
   protected void addAssocObserverMethods(SymTypeExpression ownerType, ASTFieldAccessExpression assoc) {
-    extendAssocObserver(ownerType, assoc);
-    ASTMCType type = createTypeAndAddImports(ownerType);
-    // add observer init
-    getCD4C().addMethod(clazz, getNotifyAssocAddedTemplate(),
-        type, assoc.getName());
+    if (!implementedAssocObservers.contains(ownerType.printFullName())) {
+      implementAssocObserver(ownerType, assoc);
+      ASTMCType type = createTypeAndAddImports(ownerType);
+      // add observer init
+      getCD4C().addMethod(clazz, getNotifyAssocAddedTemplate(),
+          type, assoc.getName());
+      implementedAssocObservers.add(ownerType.printFullName());
+    }
   }
 
   protected void addAssocListMethod(Method method, ASTCallExpression node, String template) {

@@ -6,7 +6,7 @@
     "@angular/material": "^17.0.7"
   },
   "name": "@umlp/common",
-  "version": "7.6.5",
+  "version": "7.6.6",
   "sideEffects": false,
   "dependencies": {"tslib": "^2.3.0"}
 }
