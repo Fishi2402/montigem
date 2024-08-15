@@ -20,7 +20,7 @@ public class TagLookUp {
   private final static String COMMAND = "command";
   private final static String DERIVED = "derived";
 
-  protected static SimpleSymbolTagger simpleSymbolTagger = new SimpleSymbolTagger(TagRepository::getLoadedTagUnits);
+  protected static SimpleSymbolTagger simpleSymbolTagger = new UMLPSimpleSymbolTagger(TagRepository::getLoadedTagUnits);
   // Consider caching this within the taggers?
   protected static LoadingCache<TypeSymbol, Boolean> isSingletonCacheSymbol = CacheBuilder.newBuilder()
       .build(new CacheLoader<>() {
