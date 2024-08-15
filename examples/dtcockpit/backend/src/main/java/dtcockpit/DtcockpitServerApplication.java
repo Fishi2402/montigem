@@ -5,6 +5,7 @@ import de.se_rwth.commons.logging.Log;
 import dtcockpit.montiverse.MontiVerseLite;
 import dtcockpit.pipelines.PipelineInformationExtractor;
 import dtcockpit.welcome_board.OutlookConnection;
+import loginmodule.LoginModule4DtcockpitManagerImpl;
 import org.h2.tools.Server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -53,6 +54,8 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
   @PostConstruct
   @Override
   public void init() throws IOException {
+    // TODO: Move this line into the generated DtcockpitManagerImpl
+    LoginModule4DtcockpitManagerImpl.init();
     super.init();
 
     // Only create DummyData if database is empty

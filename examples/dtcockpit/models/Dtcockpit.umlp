@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 import mc.fenix.input.GemTextInputTypes.GemTextInputValidity;
+import LoginModule.*;
 
+<<extends="LoginModule">>
 classdiagram Dtcockpit {
 
   <<singleton>>
@@ -10,9 +12,7 @@ classdiagram Dtcockpit {
     long getCurrentUserRequest();
   }
 
-  // Singleton-Type used instead of stereotypes/annotations
-  <<singleton>>
-  class DoesNotRequireLogin {}
+
 
   association [1] App -> User [*];
   association [1] App -> Room [*];
@@ -20,18 +20,21 @@ classdiagram Dtcockpit {
   association [1] App -> Group [*];
   association [1] App -> (dashboardGroup) Group [0..1];
 
-  class User {
-    <<dbColumn = "unique=true">>
-    String username;
-    String password;
-    java.time.LocalDateTime registrationDate;
+  // TODO: Decide on a stereotype for concretizing extends for modules
+  <<ConcretizeModule>>
+  class User extends LoginModuleUser {
+  // MOVED TO MODULE
+    //<<dbColumn = "unique=true">>
+    //String username;
+    //String password;
+ //   java.time.LocalDateTime registrationDate;
    // ActivationStatus activated;
     <<dbColumn = "unique=true">>
     String email;
     DtcockpitRole role;
-    String validityUsername();
-    String validityEmail();
-    String validityPassword();
+ //   String validityUsername();
+ //   String validityEmail();
+ //   String validityPassword();
   }
 
   enum ActivationStatus {
