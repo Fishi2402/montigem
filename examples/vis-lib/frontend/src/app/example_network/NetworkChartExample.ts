@@ -62,6 +62,12 @@ export class NetworkChartExample extends NetworkChartExampleComponent {
     return this.nodes
   }
 
+  public override getPositions() {
+    return (nodePos) => {
+      console.debug(nodePos)
+    }
+  }
+
 
 }
 

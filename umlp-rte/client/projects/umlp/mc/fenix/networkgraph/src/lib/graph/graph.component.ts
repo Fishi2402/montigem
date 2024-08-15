@@ -13,7 +13,13 @@ import {
 } from "@angular/core";
 import {CommonModule} from "@angular/common";
 import {SerializedGraph} from "graphology-types";
-import {/*CustomMetricsGenerator,*/ EdgeAttributes, GraphEdge, GraphNode, NodeAttributes} from "./types/graph.types";
+import {/*CustomMetricsGenerator,*/
+  EdgeAttributes,
+  GraphEdge,
+  GraphNode,
+  NodeAttributes,
+  NodePos
+} from "./types/graph.types";
 import {
   ComplexGraphLayoutConfiguration,
   ComplexGraphLayouts,
@@ -369,6 +375,12 @@ export class GemGraphComponent extends GraphBasisComponent implements OnChanges 
     @Output() hoveredEdgeChange: EventEmitter<string | null> = new EventEmitter<string | null>();
 
     // ========================================================================================
+    // Layout Event
+    // ========================================================================================
+    /** Event emitted when layouting has finished */
+    @Output() nodePositionsAfterLayout : EventEmitter<NodePos> = new EventEmitter<NodePos>()
+
+    // ========================================================================================
     // View Child References
     // ========================================================================================
     /** Reference to the HTML container element for the Sigma.js graph. */
@@ -384,6 +396,15 @@ export class GemGraphComponent extends GraphBasisComponent implements OnChanges 
         effect(() => this.isDraggingChange.emit(this.graphManager.graphData.isDragging));
         effect(() => this.hoveredNodeChange.emit(this.graphManager.graphData.hoveredNode));
         effect(() => this.hoveredEdgeChange.emit(this.graphManager.graphData.hoveredEdge));
+        this.graphManager.layoutService.finishedLayouting.subscribe(x => {
+          this.nodePositionsAfterLayout.emit(this.graphManager.graphData.getGraphData().nodes?.map(n => {
+            return {
+              id: n.key,
+              x: n.attributes?.x,
+              y: n.attributes?.y
+            }
+          }))
+        })
 
         // Subscribe to chart init event
         this.graphManager.graphInitialized$.subscribe((graph: Sigma) => {

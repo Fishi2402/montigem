@@ -34,6 +34,15 @@ classdiagram NetworkGraphTypes {
     Optional<String> tooltip;
   }
 
+  /**
+   *  Class for Layout Event
+   */
+  public class NodePos {
+    String id;
+    Optional<Double> x;
+    Optional<Double> y;
+  }
+
   public class GraphEdge {
     String id;
     String source;

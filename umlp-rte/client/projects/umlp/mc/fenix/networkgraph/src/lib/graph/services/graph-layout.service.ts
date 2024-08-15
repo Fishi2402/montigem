@@ -1,4 +1,4 @@
-import { Injectable, NgZone, OnDestroy } from "@angular/core";
+import {EventEmitter, Injectable, NgZone, OnDestroy} from "@angular/core";
 import { COMPLEX_LAYOUT_MAPPING, INITIAL_LAYOUT_MAPPING, Layout } from "../consts/graph.const";
 import { ComplexGraphLayoutConfiguration, InitialGraphLayoutConfiguration } from "../types/graph-layout.types";
 import { BehaviorSubject, Observable } from "rxjs";
@@ -23,6 +23,9 @@ export class GraphLayoutService<N extends NodeAttributes, E extends EdgeAttribut
 
   /** Observable for layout iteration count */
   public iterationCount$: Observable<number> = this._iterationCount.asObservable();
+
+  /** Event once the layout service has been stopped */
+  public finishedLayouting: EventEmitter<any> = new EventEmitter<any>();
 
   /** The Starting time for layouting */
   private elapsedLayoutTime: number = 0;
@@ -134,6 +137,8 @@ export class GraphLayoutService<N extends NodeAttributes, E extends EdgeAttribut
       window.cancelAnimationFrame(this.frameID);
       this.frameID = null;
     }
+
+    this.finishedLayouting.emit()
   }
 
   /** Reset the service to its initial state. */
