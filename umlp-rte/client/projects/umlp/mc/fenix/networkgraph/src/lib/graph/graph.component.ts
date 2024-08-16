@@ -378,7 +378,7 @@ export class GemGraphComponent extends GraphBasisComponent implements OnChanges 
     // Layout Event
     // ========================================================================================
     /** Event emitted when layouting has finished */
-    @Output() nodePositionsAfterLayout : EventEmitter<NodePos> = new EventEmitter<NodePos>()
+    @Output() nodePositionsAfterLayout : EventEmitter<NodePos[]> = new EventEmitter<NodePos[]>()
 
     // ========================================================================================
     // View Child References
