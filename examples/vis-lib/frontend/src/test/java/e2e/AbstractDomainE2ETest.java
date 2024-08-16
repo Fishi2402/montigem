@@ -1,4 +1,4 @@
-package domain.test_infrastructure;
+package e2e;
 
 import java.io.File;
 

@@ -3,6 +3,7 @@
 plugins {
   id "com.github.node-gradle.node" version "5.0.0"
   id "de.rwth.se.umlp-tool-frontend"
+  id 'de.rwth.se.umlp-tool-testing'
 }
 
 node {
@@ -12,8 +13,6 @@ node {
 dependencies {
   implementation project(":examples:vis-lib:backend")
   implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version
-
-  testImplementation project(':umlp-test-rte')
 }
 
 genGUI {
@@ -24,6 +23,10 @@ genGUI {
   debug = true
   outputs.upToDateWhen { false }
   /**/
+}
+
+generateTestInfrastructure {
+  usePlaywright.set(true)
 }
 
 //translateJava2TSDomain {
@@ -70,7 +73,7 @@ tasks.register('run') {
 }
 
 test {
-  dependsOn buildApp
+  dependsOn generateTestInfrastructure
   useJUnitPlatform(){
     excludeTags "SlowTest"
   }

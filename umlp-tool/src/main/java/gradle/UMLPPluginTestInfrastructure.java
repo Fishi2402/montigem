@@ -3,11 +3,16 @@ package gradle;
 import gradle.specific.UMLPTestInfrastructureTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.artifacts.dsl.DependencyHandler;
+import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.plugins.PluginManager;
+import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskProvider;
+import org.gradle.api.tasks.compile.AbstractCompile;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
@@ -27,6 +32,7 @@ public abstract class UMLPPluginTestInfrastructure implements Plugin<Project> {
 
   protected static final String UMLP_TEST_INFRASTRUCTURE_TASK_NAME = "generateTestInfrastructure";
   protected static final String UMLP_GROUP_NAME = "umlp";
+  protected static final String TEST_IMPLEMENTATION = "testImplementation";
 
   @Override
   public void apply(Project project) {
@@ -36,13 +42,36 @@ public abstract class UMLPPluginTestInfrastructure implements Plugin<Project> {
     pluginManager.apply("java");
 
     var umlpTestInfrastructureTask = createUmlpTestInfrastructureTask(project);
-    //TODO remaining setup - see UMLPPluginBackend
+    //generate test infrastructure must run before compiling the tests
+    project.getTasks()
+        .withType(AbstractCompile.class)
+        .configureEach(testTask -> testTask.dependsOn(umlpTestInfrastructureTask));
+
+    //add generated source files to source set
+    JavaPluginConvention javaConvention = project.getConvention().getPlugin(JavaPluginConvention.class);
+    SourceSet mainSourceSet = javaConvention.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
+    mainSourceSet.getJava().srcDir(umlpTestInfrastructureTask.get().getOutputDir());
+
+    //dependencies
+    DependencyHandler dependencies = project.getDependencies();
+
+    //umlp-test-rte
+    Project umlpTestRte = project.findProject(":umlp-test-rte");
+    Objects.requireNonNull(umlpTestRte, "Failed to find project ':umlp-test-rte'");
+    dependencies.add(TEST_IMPLEMENTATION, umlpTestRte);
+
+    //playwright
+    dependencies.add(TEST_IMPLEMENTATION, "com.microsoft.playwright:playwright:" + project.property("playwright_version"));
   }
 
-  protected TaskProvider<UMLPTestInfrastructureTask> createUmlpTestInfrastructureTask(Project project) {
+  public static TaskProvider<UMLPTestInfrastructureTask> createUmlpTestInfrastructureTask(Project project) {
     return project.getTasks()
         .register(UMLP_TEST_INFRASTRUCTURE_TASK_NAME, UMLPTestInfrastructureTask.class, task -> {
           task.setGroup(UMLP_GROUP_NAME);
+
+          if (project.getTasks().findByName(UMLPPluginBackend.UMLP_BACKEND_TASK_NAME) != null) {
+            task.dependsOn(UMLPPluginBackend.UMLP_BACKEND_TASK_NAME);
+          }
 
           String projectDirPath = project.getProjectDir().getAbsolutePath();
           String buildDirPath = project.getBuildDir().getAbsolutePath();

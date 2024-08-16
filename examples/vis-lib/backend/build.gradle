@@ -1,6 +1,7 @@
 plugins {
   id 'java-library'
   id 'de.rwth.se.umlp-tool-backend'
+  id 'de.rwth.se.umlp-tool-testing'
 
   id 'application'
   id 'com.google.cloud.tools.jib' version '3.2.1'
@@ -63,7 +64,6 @@ dependencies {
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2', withoutSpringLogging
 
   implementation project(':umlp-rte')
-  implementation project(':umlp-test-rte')
 }
 
 generateUmlpBackend {
@@ -71,12 +71,15 @@ generateUmlpBackend {
   symbolOutDir = file("${project.buildDir}/symbols")
   useSpring.set(true)
   useShell.set(true)
-  usePlaywright.set(true)
 
   /*
   debug = true
   outputs.upToDateWhen { false }
   /**/
+}
+
+generateTestInfrastructure {
+  usePlaywright.set(false)
 }
 
 tasks.register('runServer') {

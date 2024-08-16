@@ -26,6 +26,8 @@ public class TestInfrastructureDecorator extends BEDecorator {
   public void transform(ASTCDCompilationUnit cdAST, ASTCDCompilationUnit decoratedAST) {
     String logName = TestInfrastructureDecorator.class.getName();
 
+    if (true) throw new RuntimeException("Debug :P");
+
     // START ARTIFACT PROVIDER
     //we need the artifacts of the following observers. The simplest approach is to just call them
     //again and throw away the created classes
