@@ -3,6 +3,7 @@ package mc.fenix.networkgraph;
 
 import mc.fenix.networkgraph.NetworkGraphTypes.GraphNode;
 import mc.fenix.networkgraph.NetworkGraphTypes.GraphEdge;
+import mc.fenix.networkgraph.NetworkGraphTypes.NodePos;
 
 //NetworkGraph is a graphical representation of a network. It is composed of nodes and edges.
 //Nodes are the entities of the network, and edges are the relationships between the nodes.
