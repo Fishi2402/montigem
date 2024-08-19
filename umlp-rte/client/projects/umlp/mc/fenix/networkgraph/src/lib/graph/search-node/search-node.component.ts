@@ -18,7 +18,7 @@ import { MultiSelectModule } from "primeng/multiselect";
  */
 @Component({
   selector: "graph-search-node",
-  /*standalone: true,
+  standalone: true,
   imports: [
     CommonModule,
     DropdownModule,
@@ -28,8 +28,7 @@ import { MultiSelectModule } from "primeng/multiselect";
     ButtonModule,
     ListboxModule,
     MultiSelectModule,
-  ],*/
-
+  ],
   templateUrl: "./search-node.component.html",
   styleUrls: ["./search-node.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -44,6 +44,10 @@ import {GraphEvent, MouseEvent, TouchEvent} from "./types/graph-events.types";
 import { Sigma } from "sigma";
 import Graph from "graphology";
 import {TooltipOptions} from "primeng/api";
+import {SearchNodeComponent} from "./search-node/search-node.component";
+import {FilterGroupComponent} from "./filter-group/filter-group.component";
+import {ControlButtonsComponent} from "./control-buttons/control-buttons.component";
+import {MetricInformationComponent} from "./metric-information/metric-information.component";
 
 /**
  * `NetworkGraphComponent` is the core component that serves as the container for the entire graph rendering, user
@@ -70,26 +74,30 @@ import {TooltipOptions} from "primeng/api";
  * @see {@link GraphBasisComponent} for common graph-related functionalities.
  */
 @Component({
-    selector: "gem-graph",
-    /*standalone: true,
-    imports: [
-        CommonModule,
-    ],
-    providers: [
-        GraphDataService,
-        GraphManagerService,
-        GraphProcessorService,
-        GroupMappingService,
-        EdgeProcessorService,
-        NodeProcessorService,
-        SigmaGraphService,
-        GraphLayoutService,
-        GraphMetricsService,
-        GraphSettingsService,
-    ],*/
-    templateUrl: "./graph.component.html",
-    styleUrls: ["./graph.component.scss"],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: "gem-graph",
+  standalone: true,
+  imports: [
+    CommonModule,
+    SearchNodeComponent,
+    FilterGroupComponent,
+    ControlButtonsComponent,
+    MetricInformationComponent,
+  ],
+  providers: [
+    GraphDataService,
+    GraphManagerService,
+    GraphProcessorService,
+    GroupMappingService,
+    EdgeProcessorService,
+    NodeProcessorService,
+    SigmaGraphService,
+    GraphLayoutService,
+    GraphMetricsService,
+    GraphSettingsService,
+  ],
+  templateUrl: "./graph.component.html",
+  styleUrls: ["./graph.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 @AutoUnsubscribe()
 export class GemGraphComponent extends GraphBasisComponent implements OnChanges {

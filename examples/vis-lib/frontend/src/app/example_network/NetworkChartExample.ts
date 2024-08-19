@@ -3,10 +3,13 @@
 import { Component } from '@angular/core';
 import { NetworkChartExampleComponent ,config} from '@src/example_network/NetworkChartExampleComponent';
 import { GraphEdge, GraphNode } from '@umlp/networkgraph';
+import { GemGraphComponent } from '@umlp/networkgraph';
 
 @Component({
   standalone:true,
-  imports:[...config.imports],
+  imports:[...config.imports,
+    GemGraphComponent
+  ],
   selector: config.selector,
   templateUrl: config.templateUrl,
   styles: config.styles,
