@@ -91,6 +91,5 @@ export class SearchNodeComponent {
     this.visibleSearchNodes = this.searchNodes.filter(
       (node: SearchInformation) => !this.graphManager.graph?.getNodeAttribute(node.nodeKey, "hidden")
     );
-    console.debug(this.searchNodes, this.visibleSearchNodes)
   }
 }

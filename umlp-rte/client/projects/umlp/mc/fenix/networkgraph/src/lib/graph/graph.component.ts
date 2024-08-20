@@ -194,6 +194,13 @@ export class GemGraphComponent extends GraphBasisComponent implements OnChanges 
     /** Configuration options for tooltips. */
     @Input() tooltipOptions?: TooltipOptions = {showDelay: 100};
 
+    /** If this is not set, the bounding box will be calculated based on the maxima and minima for x and y coordinates
+     *  in the graph. Use it to ensure that different graphs have the default Zoom.
+     *  The customBoundinBox should not be calculated based on the graph nodes position. This default behavior is handled
+     *  by Sigma and will break layout algorithms if used in our graph component.
+     * */
+    @Input() customBoundingBox?: {x:[number,number], y:[number,number] };
+
     // ========================================================================================
     // Output Events - Graph Interaction Events
     // ========================================================================================
@@ -468,6 +475,10 @@ export class GemGraphComponent extends GraphBasisComponent implements OnChanges 
         if (this.hasChanged(changes, "complexLayout")) {
             this.graphManager.updateLayoutConfiguration(this.complexLayout || null);
             shouldRefresh = true;
+        }
+        if (this.hasChanged(changes, "customBoundingBox")) {
+          this.graphManager.updateCustomBoundingBox(this.customBoundingBox || null);
+          shouldRefresh = true;
         }
         /*if (this.hasChanged(changes, "customMetricsGenerator") && this.customMetricsGenerator) {
             // No need to refresh here

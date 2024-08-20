@@ -17,6 +17,19 @@ import { GemGraphComponent } from '@umlp/networkgraph';
 })
 export class NetworkChartExample extends NetworkChartExampleComponent {
 
+  boundingBox :{x:[number,number], y:[number,number] };
+
+  public override getPersonGraphCustomBoundingBox() :{x:[number,number], y:[number,number] } {
+    if(this.boundingBox) {
+      console.debug("Returning bounding box:", this.boundingBox)
+      return this.boundingBox
+    }
+    return {
+      x:[-50,50],
+      y:[-50,50]
+    }
+  }
+
   protected nodes: GraphNode[] = [
     {"id": "1", "label": "Node 1", "group": "Cluster A", size: 100, nodeProgram: "triangle"},
     {"id": "12", "label": "Node 1", "group": "Cluster A", size: 100, nodeProgram: "square"},
@@ -67,7 +80,22 @@ export class NetworkChartExample extends NetworkChartExampleComponent {
 
   public override getPositions() {
     return (nodePos) => {
-      console.debug(nodePos)
+      console.warn(nodePos)
+      const xMin = nodePos.map(n => n.x).reduce((a, b)=>Math.min(a, b));
+      const xMax = nodePos.map(n => n.x).reduce((a, b)=>Math.max(a, b));
+
+      const yMin = nodePos.map(n => n.y).reduce((a, b)=>Math.min(a, b));
+      const yMax = nodePos.map(n => n.y).reduce((a, b)=>Math.max(a, b));
+
+      const newBoundingBox :  {x:[number,number], y:[number,number] } = {
+        x:[xMin, xMax],
+        y:[yMin, yMax]
+      }
+
+      if(!this.boundingBox) {
+        console.debug("New bounding box:", newBoundingBox)
+        this.boundingBox = newBoundingBox
+      }
     }
   }
 
