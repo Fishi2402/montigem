@@ -176,4 +176,8 @@ public class InitDependencyTree implements GUIDSLVisitor2, CommonExpressionsVisi
     depStack.pop();
   }
 
+  public static void cleanUp() {
+    instance = null;
+  }
+
 }

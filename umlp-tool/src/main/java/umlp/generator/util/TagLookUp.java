@@ -101,4 +101,14 @@ public class TagLookUp {
     return false;
   }
 
+  public static void cleanUp() {
+    simpleSymbolTagger = null;
+    isSingletonCacheSymbol.invalidateAll();
+    isSingletonCacheSymbol.cleanUp();
+    isCommandCacheSymbol.invalidateAll();
+    isCommandCacheSymbol.cleanUp();
+    isDerivedCacheSymbol.invalidateAll();
+    isDerivedCacheSymbol.cleanUp();
+    TagRepository.clearTags();
+  }
 }
