@@ -174,15 +174,22 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
         );
       }
 
+      //      boolean replaceByUMLPArrayList = UMLPGeneratorConfig.getInstance().isUseJsweet() && util.isListType(typeSTE);
+      boolean replaceByUMLPArrayList = false;
+
       // attr overrides top class attr
       glex.replaceTemplate("umlp.gui2ts.TSAttribute", attr,
           new TemplateHookPoint("umlp.gui2ts.TSOverrideAttribute"));
 
       extraImports.add("import { Input } from '@angular/core';");
       // setter + getter
+      if (UMLPGeneratorConfig.getInstance().isUseJsweet()) {
+        getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("UMLPArrayList"));
+        mcType = createTypeAndAddImports(typeSTE, true);
+      }
       glex.replaceTemplate("umlp.Empty", attr,
           new TemplateHookPoint("umlp.gui2ts.GUI2AngularAttrGetterSetter",
-              attr.getMCType(), node.getName(), getterName, setterName));
+              mcType, node.getName(), getterName, setterName, replaceByUMLPArrayList));
     }
   }
 
@@ -318,8 +325,9 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
 
       // adaptation start
       // JSweet uses IUMLPList instead of Array
-      if (!ignoreJsweet && UMLPGeneratorConfig.getInstance().isUseJsweet()
-          && qType.equals(BuiltInTypes.LIST.getQName())) {
+//      if (!ignoreJsweet && UMLPGeneratorConfig.getInstance().isUseJsweet()
+//          && qType.equals(BuiltInTypes.LIST.getQName())) {
+      if (false) {
         type = "IUMLPList";
         extraImports.add("import { IUMLPList } from '@umlp/commonj2ts';");
       }

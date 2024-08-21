@@ -402,7 +402,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         String value = Expression2SetterPrinter.SETTER_PARAM;
         String conv = "";
         Optional<String> setterValue = Optional.ofNullable(setterPrinter.prettyprint(arg.getGUIArgValue()));
-        if (setterValue.isEmpty() || "null".equals(setterValue.get())) {
+        if (this.getClass().getSimpleName().equals("GUI2JavaClassDecorator") && (setterValue.isEmpty() || "null".equals(setterValue.get()))) {
           setterValue = Optional.of(value + " = " + value);
         }
         if (arg.getGUIArgValue().isPresentExpression()) {
@@ -419,7 +419,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         }
         getCD4C().addMethod(
             clazz, getArgSetterWithConversionTemplate(),
-            type, name, nullCheck, setterValue.get(), conv, params
+            type, name, nullCheck, setterValue.orElse(null), conv, params
         );
       }
     }

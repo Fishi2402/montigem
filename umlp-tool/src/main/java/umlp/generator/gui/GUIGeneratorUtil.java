@@ -592,12 +592,12 @@ public class GUIGeneratorUtil {
 
           // Instead of the overloaded&async getX(int?) we call the _internal_getXGemList() method
 
-          expressionWithNullChecks = m.replaceAll("$1._internal_$2GemList()");
+//          expressionWithNullChecks = m.replaceAll("$1._internal_$2GemList()");
 
         }
         // ? => the backing gemList might be undefined until loaded
         // .subject => access the BehaviorSubject of the GemList
-        expressionWithNullChecks = "( " + expressionWithNullChecks + "?.subject | async )";
+//        expressionWithNullChecks = "( " + expressionWithNullChecks + "?.subject | async )";
 
         //Alternative
         // expressionWithNullChecks = "((" + expressionWithNullChecks + " | umlpToAsync | async ) | async)";

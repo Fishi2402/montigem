@@ -448,12 +448,14 @@ public class GUIComponentAdapter extends PrinterAdapter {
   @Override
   public boolean substituteMethodInvocation(MethodInvocationElement invocation) {
     boolean shouldPrintObs = false;
+    boolean shouldPrintToArray = false;
     ExecutableElement surroundingMethod = null;
     surroundingMethod = Util.getElement(getPrinter().getParent(MethodTree.class));
 
+    Element invocatedType = types().asElement(invocation.getType());
+
     if (surroundingMethod != null && guiAdapterUtils.isSynchronized(surroundingMethod)) {
       // targets invocated Element p.getBestFriend()...
-      Element invocatedType = types().asElement(invocation.getType());
       if (invocatedType != null && invocatedType instanceof TypeElement &&
           UMLPAdapterUtils.isSubTypeOf((TypeElement) invocatedType,
               RTEPathUtil.getBackendRTECommonPath("GemIdentifiable"), util(), types())) {
@@ -471,10 +473,23 @@ public class GUIComponentAdapter extends PrinterAdapter {
       //      }
     }
 
+    if (invocatedType != null && invocatedType instanceof TypeElement &&
+        UMLPAdapterUtils.isSubTypeOf((TypeElement) invocatedType, "java.util.List", util(), types())) {
+      shouldPrintToArray = true;
+    }
+
     if (shouldPrintObs) {
       print(OBSERVER_FUNCTION_NAME + "(");
     }
+    if (shouldPrintToArray) {
+      print("((__var: any) => __var instanceof Array ? __var : __var.toArray())(");
+    }
+
     boolean res = super.substituteMethodInvocation(invocation);
+
+    if (shouldPrintToArray) {
+      print(")");
+    }
     if (shouldPrintObs) {
       print(")");
     }
