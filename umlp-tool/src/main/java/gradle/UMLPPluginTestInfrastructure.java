@@ -48,8 +48,10 @@ public abstract class UMLPPluginTestInfrastructure implements Plugin<Project> {
         .configureEach(testTask -> testTask.dependsOn(umlpTestInfrastructureTask));
 
     //add generated source files to source set
-    JavaPluginConvention javaConvention = project.getConvention().getPlugin(JavaPluginConvention.class);
-    SourceSet mainSourceSet = javaConvention.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
+    JavaPluginConvention javaConvention = project.getConvention()
+        .getPlugin(JavaPluginConvention.class);
+    SourceSet mainSourceSet = javaConvention.getSourceSets()
+        .getByName(SourceSet.MAIN_SOURCE_SET_NAME);
     mainSourceSet.getJava().srcDir(umlpTestInfrastructureTask.get().getOutputDir());
 
     //dependencies
@@ -61,7 +63,8 @@ public abstract class UMLPPluginTestInfrastructure implements Plugin<Project> {
     dependencies.add(TEST_IMPLEMENTATION, umlpTestRte);
 
     //playwright
-    dependencies.add(TEST_IMPLEMENTATION, "com.microsoft.playwright:playwright:" + project.property("playwright_version"));
+    dependencies.add(TEST_IMPLEMENTATION,
+                     "com.microsoft.playwright:playwright:" + project.property("playwright_version"));
   }
 
   public static TaskProvider<UMLPTestInfrastructureTask> createUmlpTestInfrastructureTask(Project project) {

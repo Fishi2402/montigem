@@ -10,10 +10,10 @@ import umlp.UMLPMill;
 import umlp.UMLPTool;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.UMLPGeneratorConfig;
-import umlp.generator.test_infrastructure.domain.decorator.TestInfrastructureDecorator;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class BEDecorator extends AbstractDecorator {
@@ -60,6 +60,8 @@ public class BEDecorator extends AbstractDecorator {
 
   @Override
   public void transform(ASTCDCompilationUnit cdAST, ASTCDCompilationUnit decoratedAST) {
+    usedDecorators.clear();
+
     DomainClassDecorator domainClassDecorator;
 
     domainClassDecorator = new DomainClassDecorator(glex, hwPath);
@@ -107,7 +109,7 @@ public class BEDecorator extends AbstractDecorator {
     errorCollectorDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ErrorCollectorDecorator", BEDecorator.class.getName());
 
-    ObserverDecorator observerDecorator = new ObserverDecorator(glex);
+    ObserverDecorator observerDecorator = remember(new ObserverDecorator(glex));
     observerDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ObserverDecorator", BEDecorator.class.getName());
 
@@ -132,7 +134,7 @@ public class BEDecorator extends AbstractDecorator {
     Log.info("After decorator: AccessPolicyDecorator", BEDecorator.class.getName());
 
     // Generate DiagramObserver classes
-    DiagramObserverDecorator diagramObserverDecorator = new DiagramObserverDecorator(glex);
+    DiagramObserverDecorator diagramObserverDecorator = remember(new DiagramObserverDecorator(glex));
     diagramObserverDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: DiagramObserverDecorator", BEDecorator.class.getName());
 

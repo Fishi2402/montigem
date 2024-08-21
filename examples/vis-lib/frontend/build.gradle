@@ -26,7 +26,13 @@ genGUI {
 }
 
 generateTestInfrastructure {
+  input = file("../models/Domain.umlp")
   usePlaywright.set(true)
+
+  /*
+  debug = true
+  outputs.upToDateWhen { false }
+  /**/
 }
 
 //translateJava2TSDomain {
