@@ -1,6 +1,6 @@
 import {DateDeSer} from "../deser/DateDeser";
 import {Log} from "../logging";
-import { Conversion } from "@umlp/common";
+import {Conversion} from "../util/Conversion";
 
 export class LocalDateDeSer extends DateDeSer {
 
