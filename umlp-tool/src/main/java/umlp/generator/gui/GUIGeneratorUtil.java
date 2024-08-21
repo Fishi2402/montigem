@@ -173,6 +173,15 @@ public class GUIGeneratorUtil {
     return printer.prettyprint(node);
   }
 
+  public final String print(ASTNode node, boolean syncedOpt) {
+    printer.setPrintComments(false);
+    String res = printer.prettyprint(node);
+    if (syncedOpt && UMLPGeneratorConfig.getInstance().isUseJsweet()) {
+      res += SYNCHRONIZED_SUFFIX;
+    }
+    return res;
+  }
+
   // TODO AGe: unreliable
   public final boolean isTop(String name) {
     return name.endsWith(TopDecorator.TOP_SUFFIX);
@@ -505,7 +514,8 @@ public class GUIGeneratorUtil {
     return "get"
         + StringTransformations.capitalize(componentId)
         + StringTransformations.capitalize(namedArg.getName())
-        + (UMLPGeneratorConfig.getInstance().isGenerateTypescript() || isList(namedArg)
+        + ((UMLPGeneratorConfig.getInstance().isGenerateTypescript() || isList(namedArg))
+         && !UMLPGeneratorConfig.getInstance().isUseJsweet()
         ? ""
         : SYNCHRONIZED_SUFFIX // in case the actual method does not have to be async,
         // the synchronized method might just call the original method

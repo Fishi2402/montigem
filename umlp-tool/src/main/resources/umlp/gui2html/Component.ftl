@@ -20,7 +20,7 @@
     <#else>
       <#-- TODO AGe: iterator index -->
       <#-- [${namedArg.getName()}] = '${genHelper.gui2cdAttrGetterName(ast, namedArg.getName())}()' -->
-      [${namedArg.getName()}] = '${genHelper.print(namedArg.getGUIArgValue())}(
+      [${namedArg.getName()}] = '${genHelper.print(namedArg.getGUIArgValue(), true)}(
         <#list extraArgs as arg>${arg.getName()}<#if !arg?is_last>,</#if></#list>)'
     </#if>
   </#list>

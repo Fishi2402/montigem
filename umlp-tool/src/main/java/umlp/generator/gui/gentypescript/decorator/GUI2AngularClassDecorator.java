@@ -35,6 +35,7 @@ import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentTemplates;
 import umlp.generator.gui.gentypescript.printer.TSUtilsPrinter;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
+import umlp.generator.util.PathUtil;
 import umlp.generator.util.TagLookUp;
 
 import java.util.ArrayList;
@@ -271,6 +272,10 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
 
   @Override
   protected ASTMCType createTypeAndAddImports(SymTypeExpression ste) {
+    return createTypeAndAddImports(ste, false);
+  }
+
+  protected ASTMCType createTypeAndAddImports(SymTypeExpression ste, boolean ignoreJsweet) {
     if (!ste.hasTypeInfo()) {
       Log.error("0x0001B Encountered a SymTypeExpression disconnected from a type symbol: "
           + ste.printFullName());
@@ -313,7 +318,7 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
 
       // adaptation start
       // JSweet uses IUMLPList instead of Array
-      if (UMLPGeneratorConfig.getInstance().isUseJsweet()
+      if (!ignoreJsweet && UMLPGeneratorConfig.getInstance().isUseJsweet()
           && qType.equals(BuiltInTypes.LIST.getQName())) {
         type = "IUMLPList";
         extraImports.add("import { IUMLPList } from '@umlp/commonj2ts';");
@@ -329,7 +334,7 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
       for (SymTypeExpression steArg : stog.getArgumentList()) {
         genTypeBuilder.addMCTypeArgument(
             MCSimpleGenericTypesMill.mCCustomTypeArgumentBuilder()
-                .setMCType(createTypeAndAddImports(steArg))
+                .setMCType(createTypeAndAddImports(steArg, ignoreJsweet))
                 .build());
       }
       return genTypeBuilder.build();

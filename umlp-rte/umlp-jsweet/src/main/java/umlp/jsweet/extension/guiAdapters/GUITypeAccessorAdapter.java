@@ -48,7 +48,6 @@ public class GUITypeAccessorAdapter extends UMLPAbstractAdapter {
         return true;
       }
     }
-    System.out.println(targetType);
 
     return super.substituteMethodInvocation(invocation);
   }

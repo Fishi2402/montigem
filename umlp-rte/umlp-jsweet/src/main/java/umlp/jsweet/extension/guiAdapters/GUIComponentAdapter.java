@@ -2,6 +2,7 @@
 package umlp.jsweet.extension.guiAdapters;
 
 import de.se_rwth.commons.logging.Log;
+import def.js.Array;
 import org.apache.commons.lang3.StringUtils;
 import org.jsweet.JSweetConfig;
 import org.jsweet.transpiler.Java2TypeScriptTranslator;
@@ -12,9 +13,11 @@ import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.ExtendedElement;
 import org.jsweet.transpiler.model.MethodInvocationElement;
 import org.jsweet.transpiler.util.Util;
+import standalone.com.sun.source.tree.ClassTree;
 import standalone.com.sun.source.tree.MethodTree;
 import standalone.com.sun.source.tree.Tree;
 import standalone.com.sun.tools.javac.code.Symbol;
+import standalone.com.sun.tools.javac.tree.JCTree;
 import umlp.jsweet.extension.util.RTEPathUtil;
 import umlp.jsweet.extension.util.UMLPAdapterUtils;
 
@@ -22,14 +25,16 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class GUIComponentAdapter extends PrinterAdapter {
 
@@ -103,7 +108,7 @@ public class GUIComponentAdapter extends PrinterAdapter {
   public void beforeTypeBody(TypeElement type) {
     if (guiAdapterUtils.isDirective(type)) {
       println().printIndent().print("protected router: Router;").println().println();
-      printWaitAllInited(type);
+//      printWaitAllInited(type);
       printGetObs(type);
     }
     if (guiAdapterUtils.isComponent(type) ||  guiAdapterUtils.isDirective(type) && !guiAdapterUtils.isTOPComponent(type)) {
@@ -117,11 +122,18 @@ public class GUIComponentAdapter extends PrinterAdapter {
     if (guiComponentName.endsWith("TOP\"") && guiAdapterUtils.isDirective(type)) {
       guiComponentName = guiComponentName.substring(0, guiComponentName.length() - 4) + "\"";
     }
-    print("protected getObs<T extends GemIdentifiable>(updateName: string, update: (() => void)): <T extends GemIdentifiable>(obj: T) => T {")
+    printIndent().print("protected getObs<T extends GemIdentifiable>(updateName: string, update: (() => void)): <T extends GemIdentifiable>(obj: T) => T {")
         .println().startIndent().printIndent()
-        .print(
-            "return (obj: T) => ComponentObserverManager.addObserver(obj, update.bind(this), updateName, "
+        .print("return (obj: T) => {").println().startIndent().printIndent()
+//        .print("console.log(obj, updateName);").println().printIndent()
+        .print("if (obj != undefined && obj != null) {").println().startIndent().printIndent()
+        .print("return ComponentObserverManager.addObserver(obj, update.bind(this), updateName, "
                 + guiComponentName + ");")
+        .println().endIndent().printIndent().print("}")
+        .print("else {").println().startIndent().printIndent()
+        .print("return null;")
+        .println().endIndent().printIndent().print("}")
+        .println().endIndent().printIndent().print("}")
         .println().endIndent().printIndent().print("}").println().println();
 
     importFromWithModule("GemIdentifiable", "@umlp/commonj2ts");
@@ -197,9 +209,9 @@ public class GUIComponentAdapter extends PrinterAdapter {
         !context.hasAnnotationType(executable, Override.class.getName())) {
       //      printSynchronizedMethod(executable, false);
       printMyNewSynchronizedMethod(executable, false);
+//      context.addExtraAnnotationType(executable, JSweetConfig.ANNOTATION_ASYNC);
     }
-    if (guiAdapterUtils.isDirectiveMethod(executable, classElement, this)
-    ) {
+    if (guiAdapterUtils.isDirectiveMethod(executable, classElement, this)) {
       if (executable.getSimpleName().contentEquals("init")) {
       }
       else {
@@ -255,109 +267,6 @@ public class GUIComponentAdapter extends PrinterAdapter {
 
   Set<String> visitedMethods = new HashSet<>();
 
-  private void printSynchronizedMethod(ExecutableElement executable, boolean overloadMethod) {
-    // IsList
-    boolean isList = false;
-    String optionalArrayStart = "";
-    String optionalArrayEnd = "";
-    String initializer = "null";
-    Tree returnType = trees().getTree(executable).getReturnType();
-    if (types().isSubtype(executable.getReturnType(),
-        types().erasure(util().getType(List.class)))) {
-      isList = true;
-      returnType = null;
-      optionalArrayStart = "Array<";
-      optionalArrayEnd = ">";
-      initializer = "[]";
-      return; // TODO: Do not do stuff for GemLists - they are Observeable by default
-    }
-
-    // MethodName
-    String methodName;
-    if (!overloadMethod && context.isInvalidOverload(executable) && !util().hasTypeParameters(
-        executable)) {
-      methodName = guiAdapterUtils.getOverloadMethodName(executable);
-    }
-    else {
-      methodName = context.getActualName(executable);
-    }
-
-    // Duplicated Print
-    if (!overloadMethod && visitedMethods.contains(
-        getParentElement().toString() + "." + methodName)) {
-      return;
-    }
-    visitedMethods.add(getParentElement().toString() + "." + methodName);
-
-    // Private fieldName
-    String fieldName = methodName + GUIAdapterUtils.SYNCHRONIZED_RESULT_SUFFIX;
-    print("protected " + fieldName + ": ");
-    printType(returnType, optionalArrayStart, optionalArrayEnd, overloadMethod)
-        .print(" = undefined;").println().printIndent();
-
-    // Method Header
-    print("public ").print(methodName + GUIAdapterUtils.SYNCHRONIZED_SUFFIX).print("(");
-    boolean isAsyncE = context.hasAnnotationType(executable, JSweetConfig.ANNOTATION_ASYNC);
-    printMethodParameters(executable, overloadMethod, GUIAdapterUtils.SYNCHRONIZED_SUFFIX);
-    print("): ");
-    printType(returnType, optionalArrayStart, optionalArrayEnd, overloadMethod)
-        .print(" {").println().startIndent().printIndent();
-
-    // Method Body
-    if (isAsyncE) {
-      print("// TODO: make me properly!");
-      print("/* Printed by ").print(getClass().getName()).print(" */").println();
-      print("if (this." + fieldName + " === undefined) {").startIndent().println().printIndent();
-      print("this." + fieldName + " = " + initializer + ";").println().printIndent();
-      // TODO: Add this to the set{fieldName?cap_first}_internal method too?
-      print("new Promise<");
-      printType(returnType, optionalArrayStart, optionalArrayEnd, overloadMethod);
-      print(">(async resolve => {").println().startIndent().printIndent();
-      print("resolve(");
-      if (isList) {
-        importFromWithModule("GemListUtil", "@umlp/commonj2ts");
-        print("GemListUtil.toArray(");
-      }
-      print("(");
-      if (context.hasAnnotationType(executable, JSweetConfig.ANNOTATION_ASYNC)) {
-        print("await ");
-      }
-      print("this.").print(executable.getSimpleName()).print("(");
-      if (executable.getParameters().size() > 0) {
-        print(executable.getParameters().stream().map(p -> p.getSimpleName().toString()).collect(
-            Collectors.joining(", ")));
-      }
-      print("))");
-      if (isList) {
-        //        .printArgList((List<? extends ExtendedElement>) executable.getParameters())
-        print(")");
-      }
-      print(");").println().endIndent().printIndent();
-      print("}).then(val => { this." + fieldName + " = val; });").println().endIndent()
-          .printIndent();
-      print("}").println().printIndent();
-      print("return this." + fieldName + ";");
-    }
-    else {
-      print("//Simply delegate without additional sync").println();
-      print("return this." + methodName + "(");
-      if (executable.getParameters().size() >= 1 && executable.getParameters()
-          .get(0) instanceof ExtendedElement) {
-        throw new IllegalStateException("TODO");
-      }
-      else if (executable.getParameters().size() > 0) {
-        for (VariableElement parameter : executable.getParameters()) {
-          String paramName = context.getActualName(parameter);
-          print(paramName);
-          print(", ");
-        }
-        getPrinter().removeLastChars(2);
-      }
-      print(");");
-    }
-    endIndent().println().printIndent().print("}").println().println().printIndent();
-  }
-
   private void printMyNewSynchronizedMethod(ExecutableElement executable, boolean overloadMethod) {
     if (executable.getReturnType().toString().equals("void")) {
       return;
@@ -391,10 +300,19 @@ public class GUIComponentAdapter extends PrinterAdapter {
     print("public " + methodName + GUIAdapterUtils.UPDATE_SUFFIX + "(");
     printMethodParameters(executable, overloadMethod, GUIAdapterUtils.UPDATE_SUFFIX);
     print("): void {").println().startIndent().printIndent()
+//        .print("console.log(\"" + methodName + GUIAdapterUtils.UPDATE_SUFFIX + "\");")
+        .println().printIndent()
         .print("Promise.resolve(this." + methodName + "(");
     printArguments(executable);
     print(")).then(__v => this." + methodName + guiAdapterUtils.SYNCHRONIZED_RESULT_SUFFIX);
-    printResultCacheSetter(executable, "__v");
+    String arg = "__v === undefined ? null : __v";
+    if (UMLPAdapterUtils.isSubTypeOf((TypeElement) types().asElement(executable.getReturnType()),
+        "java.util.List", util(), types())) {
+      arg = arg
+//          + ".toArrayDeep()"
+      ;
+    }
+    printResultCacheSetter(executable, arg);
     print(");").println().endIndent().printIndent().print("}").println().println().printIndent();
   }
 
@@ -402,7 +320,8 @@ public class GUIComponentAdapter extends PrinterAdapter {
       Tree returnType) {
     print("public " + methodName + guiAdapterUtils.SYNCHRONIZED_SUFFIX + "(");
     printMethodParameters(executable, overloadMethod, guiAdapterUtils.SYNCHRONIZED_SUFFIX);
-    print("): ").getPrinter().substituteAndPrintType(returnType)
+    print("): ");
+    printType(returnType, overloadMethod, true)
         .print(" {").println().startIndent().printIndent()
         .print("if (this." + methodName + guiAdapterUtils.SYNCHRONIZED_RESULT_SUFFIX);
     printResultCacheAccessor(executable);
@@ -410,9 +329,11 @@ public class GUIComponentAdapter extends PrinterAdapter {
         .print("this." + methodName + guiAdapterUtils.SYNCHRONIZED_RESULT_SUFFIX);
     printResultCacheSetter(executable, "null");
     print(";").println().printIndent()
-        .print("this.waitAllInited().then(_ => this." + methodName + GUIAdapterUtils.UPDATE_SUFFIX + "(");
+//        .print("this.waitAllInited().then(_ => this." + methodName + GUIAdapterUtils.UPDATE_SUFFIX + "(");
+        .print("this." + methodName + GUIAdapterUtils.UPDATE_SUFFIX + "(");
     printArguments(executable);
-    print("));").println().endIndent().printIndent().print("}").println().printIndent()
+//    print("));").println().endIndent().printIndent().print("}").println().printIndent()
+    print(");").println().endIndent().printIndent().print("}").println().printIndent()
         .print("return this." + methodName + guiAdapterUtils.SYNCHRONIZED_RESULT_SUFFIX);
     printResultCacheAccessor(executable);
     print(";").println().endIndent().printIndent().print("}").println().println().printIndent();
@@ -473,12 +394,12 @@ public class GUIComponentAdapter extends PrinterAdapter {
     print("private ");
     print(methodName + guiAdapterUtils.SYNCHRONIZED_RESULT_SUFFIX + ": ");
     if (executable.getParameters().isEmpty()) {
-      printType(returnType, "", "", overloadMethod)
+      printType(returnType, overloadMethod, true)
           .print(" = undefined;");
     } else {
       importFromWithoutModule("ManyKeysMap", "many-keys-map");
       print("ManyKeysMap<any, ");
-      getPrinter().substituteAndPrintType(returnType).print(">");
+      printType(returnType, overloadMethod, true).print(">");
       print(" = new ManyKeysMap()");
     }
     println().printIndent();
@@ -504,7 +425,20 @@ public class GUIComponentAdapter extends PrinterAdapter {
 //      print("), '" + updateName + "', " + guiComponentName + ");").println();
 
       for (VariableElement parameter : method.getParameters()) {
-        printIndent().print(OBSERVER_FUNCTION_NAME + "(" + context.getActualName(parameter) + ");").println();
+        if (UMLPAdapterUtils.isSubTypeOf(Util.getElement(parameter.asType()),
+            RTEPathUtil.getBackendRTECommonPath("GemIdentifiable"), util(), types())) {
+          printIndent().print(
+              OBSERVER_FUNCTION_NAME + "(" + context.getActualName(parameter) + ");").println();
+        }
+//        else if (UMLPAdapterUtils.isSubTypeOf(Util.getElement(parameter.asType()),
+//            "java.util.List", util(), types())) {
+//          Type innerType = ((Type.ClassType) parameter.asType()).allparams().get(0);
+//          if (UMLPAdapterUtils.isSubTypeOf(Util.getElement(innerType),
+//              RTEPathUtil.getBackendRTECommonPath("GemIdentifiable"), util(), types())) {
+//            printIndent().print("for await (const __v of ").print(context.getActualName(parameter))
+//                    .print(") { ").print(OBSERVER_FUNCTION_NAME + "(__v); }").println();
+//          }
+//        }
       }
     }
     return super.substituteMethodBody(parentTypeElement, method);
@@ -552,10 +486,6 @@ public class GUIComponentAdapter extends PrinterAdapter {
       return;
     }
 
-    boolean isList = false;
-    String optionalArrayStart = "";
-    String optionalArrayEnd = "";
-    String initializer = "null";
     Tree returnType = trees().getTree(executable).getReturnType();
 
     // MethodName
@@ -577,14 +507,14 @@ public class GUIComponentAdapter extends PrinterAdapter {
     // Private fieldName
     String fieldName = methodName + GUIAdapterUtils.INIT_PROMISE_RESULT_SUFFIX;
     print("protected " + fieldName + ": Promise<");
-    printType(returnType, optionalArrayStart, optionalArrayEnd, overloadMethod)
+    printType(returnType, overloadMethod, false)
         .print("> = undefined;").println().printIndent();
 
     // Method Header
     print("public ").print(methodName + GUIAdapterUtils.INIT_PROMISE_SUFFIX).print("(");
     printMethodParameters(executable, overloadMethod, GUIAdapterUtils.INIT_PROMISE_SUFFIX);
     print("): Promise<");
-    printType(returnType, optionalArrayStart, optionalArrayEnd, overloadMethod)
+    printType(returnType, overloadMethod, false)
         .print("> {").println().startIndent().printIndent();
     print("if (this." + fieldName + " == undefined) {").println().startIndent().printIndent()
         .print("this." + fieldName + " = this.waitAllInited().then(() => Promise.resolve(this."
@@ -621,21 +551,48 @@ public class GUIComponentAdapter extends PrinterAdapter {
     }
   }
 
-  private GUIComponentAdapter printType(Tree returnType, String optionalArrayStart,
-      String optionalArrayEnd, boolean overloadMethod) {
+  private GUIComponentAdapter printType(Tree returnType, boolean overloadMethod,
+      boolean replaceListByArray) {
     if (overloadMethod) {
       print("any");
       return this;
     }
     else if (returnType == null) {
-      print(optionalArrayStart + "any" + optionalArrayEnd);
+      print("any");
       return this;
     }
     else {
-      print(optionalArrayStart).getPrinter().substituteAndPrintType(returnType)
-          .print(optionalArrayEnd);
+      TypeMirror typeType = Util.getType(returnType);
+//      if (replaceListByArray && UMLPAdapterUtils.isSubTypeOf((TypeElement) types().asElement(typeType),
+//          "java.util.List", util(), types())) {
+      if (false) {
+        standalone.com.sun.tools.javac.util.List<JCTree.JCExpression> typeArguments = ((JCTree.JCTypeApply) returnType).getTypeArguments();
+        if (typeArguments.size() > 0) {
+          printType(typeArguments.get(0), overloadMethod, replaceListByArray);
+        }
+        print("[]");
+      } else {
+        getPrinter().substituteAndPrintType(returnType);
+      }
       return this;
     }
+  }
+
+  private TypeMirror mapListToArray(TypeMirror type) {
+    if (types().isSubtype(types().erasure(type), types().erasure(util().getType(List.class)))
+        && type instanceof DeclaredType) {
+      List<? extends TypeMirror> typeArgs = ((DeclaredType) type).getTypeArguments();
+      if (typeArgs.size() > 0) {
+        TypeMirror backingType = typeArgs.get(0);
+        if (backingType.getKind() == TypeKind.DECLARED) {
+          TypeMirror mappedBackingType = mapListToArray(backingType);
+          DeclaredType result = types().getDeclaredType(
+              Util.getElement(util().getType(Array.class)), mappedBackingType);
+          return result;
+        }
+      }
+    }
+    return type;
   }
 
   private void printAdaptedConstructor(ExecutableElement executable) {
