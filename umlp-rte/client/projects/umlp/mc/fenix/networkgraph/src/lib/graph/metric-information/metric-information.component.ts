@@ -13,10 +13,10 @@ import { GraphManagerService } from "../data/graph-manager.service";
 /** MetricInformationComponent displays metric information in an overlay panel. */
 @Component({
   selector: "graph-metric-information",
-  /*standalone: true,*/
+  standalone: true,
   templateUrl: "./metric-information.component.html",
   styleUrls: ["./metric-information.component.scss"],
-  /*imports: [CommonModule, ButtonModule, OverlayPanelModule, FormatValuePipe, ObjectKeysPipePipe, TooltipModule],*/
+  imports: [CommonModule, ButtonModule, OverlayPanelModule, FormatValuePipe, ObjectKeysPipePipe, TooltipModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MetricInformationComponent {

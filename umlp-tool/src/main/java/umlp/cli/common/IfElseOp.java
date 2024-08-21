@@ -7,8 +7,10 @@ import java.util.function.Predicate;
 /**
  * Guarded operation, with an optional else operation
  *
+ * @deprecated  unreadable
  * @param <T>
  */
+@Deprecated
 public class IfElseOp<T> implements IOperation<T> {
   protected final Predicate<T> guard;
   protected final IOperation<T> if_op;

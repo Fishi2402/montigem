@@ -1,29 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
-
-import { DemoRecManager } from '@src/demorec/DemoRecManager';
-
-import { BatteryPackType } from '@src/demorec/BatteryPackType';
 import { State } from '@src/demorec/State';
 
 import { BatteryPack } from '@src/demorec/BatteryPack';
 import { ComponentKind } from '@src/demorec/ComponentKind';
 import { Photo } from '@src/demorec/Photo';
+import { DemoRecManager } from '@src/demorec/DemoRecManager';
 import {GemTextInputValidity, Option} from '@umlp/input';
 
 import { ComponentEditComponent, config } from '@src/gui/component/ComponentEditComponent';
 
 import {
-  Directive,
   Component,
-  Input,
-  Output,
-  EventEmitter,
-  TemplateRef
 } from '@angular/core';
-
-import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
-
-const newOption: Option = { value: "NEW", display: "NEW" };
+import {GemList} from "@umlp/common";
 
 @Component({
   standalone:true,
@@ -36,12 +25,17 @@ const newOption: Option = { value: "NEW", display: "NEW" };
 export  class ComponentEdit extends ComponentEditComponent {
 
   conditionOptions : Option[] = []
+  allComponentKinds : ComponentKind[]= []
 
   public init(): void {
     this.conditionOptions = []
     Object.keys(State).filter(s => !isNaN(+s)).forEach(key => {
       this.conditionOptions.push({value: key, display: State[key]});
     })
+
+    DemoRecManager.getComponentKindList()
+        .then(l => {return l.loadAll()})
+        .then( l => this.allComponentKinds = l)
 
     super.init();
   }
@@ -101,4 +95,14 @@ export  class ComponentEdit extends ComponentEditComponent {
     }
   }
 
+  public override getAvailableKinds(): ComponentKind[] {
+    if(this.getComponent()) {
+      if(this.getComponent().getBatteryPack()) {
+        return this.getComponent().getBatteryPack().getAllKindsList()
+      } else {
+        return this.allComponentKinds
+      }
+    }
+    return []
+  }
 }

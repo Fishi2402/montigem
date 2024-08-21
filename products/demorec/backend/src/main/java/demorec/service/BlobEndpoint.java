@@ -5,6 +5,7 @@ import demorec.DemoRecComponent;
 import demorec.DemoRecManager;
 import demorec.DemoRecServerApplication;
 import demorec.Photo;
+import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -146,6 +147,7 @@ public class BlobEndpoint {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.IMAGE_JPEG); // adjust the media type based on your image type
     headers.setContentDispositionFormData("attachment", imagePath);
+    headers.setContentDisposition(ContentDisposition.inline().build());
 
     // Return the image bytes and headers as a ResponseEntity
     return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);

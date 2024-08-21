@@ -1,0 +1,36 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+
+
+//<<module>>
+umlp LoginModule {
+
+
+
+    <<requiresImplementation>> // Require an implementing class in the final model using this
+
+    // TODO: Move requiresImplementation to extends
+
+    class LoginModuleUser {
+      <<dbColumn = "unique=true">>
+      String username;
+      String password;
+      java.time.LocalDateTime registrationDate;
+
+      String validityUsername();
+      String validityEmail();
+      String validityPassword();
+    }
+
+     // Singleton-Type used instead of stereotypes/annotations
+    <<singleton>>
+    class DoesNotRequireLogin {}
+
+    <<singleton>>
+    class LoginSecManager {
+        <<command>>
+        long getCurrentUserRequest();
+    }
+    association LoginSecManager -> (signedInUser) LoginModuleUser [0..1];
+
+}

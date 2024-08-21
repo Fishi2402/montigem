@@ -7,10 +7,11 @@ import {Directory} from '@src/sehub/Directory';
 import { SehubSecurityManager } from "../sehub/SehubSecurityManager";
 import {Component} from '@angular/core';
 
-import { GraphNode, GraphEdge } from '@umlp/networkgraph';
+import { GraphNode, GraphEdge, GemGraphComponent } from '@umlp/networkgraph';
 @Component({
   standalone:true,
-  imports:[...config.imports],
+  imports:[...config.imports,
+    GemGraphComponent],
   selector: config.selector,
   templateUrl: config.templateUrl,
   styles: config.styles,

@@ -11,6 +11,8 @@ page NetworkChartExample() {
     showFilterGroup=true,
     showSearchNode=true,
     showControlButtons=true,
-    showInformation=true
+    showInformation=true,
+    nodePositionsAfterLayout=getPositions(),
+    customBoundingBox = null
   );
 }

@@ -5,13 +5,10 @@ import { StepTableComponent,config } from '@src/gui/step/StepTableComponent';
 
 import {ProcessStep} from '@src/demorec/ProcessStep'
 
+import {JoinConnectionType} from '@src/demorec/JoinConnectionType'
+
 import {
-  Directive,
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  TemplateRef,
+  Component
 } from '@angular/core';
 
 @Component({
@@ -54,5 +51,14 @@ export class StepTable extends StepTableComponent {
         DemoRecManager.deleteProcessStep(step.getGemId())
       }
     }
+  }
+
+  public override getConnectionType(step: ProcessStep) :string {
+    return JoinConnectionType[step.getDeconstructs()?.getJoinConnectionKind()?.getJoinConnectionType()]
+  }
+
+  public override getComponents(step: ProcessStep) :string {
+    return step.getDeconstructs()?.getJoinConnectionKind()?.getConnectsList()
+        .map(comp => comp.getName()).join(", ")
   }
 }

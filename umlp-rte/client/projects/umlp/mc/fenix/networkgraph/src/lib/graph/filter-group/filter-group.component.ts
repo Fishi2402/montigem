@@ -15,8 +15,8 @@ import { AutoUnsubscribe } from "../../shared/decorators/auto-unsubscribe.decora
  */
 @Component({
   selector: "graph-filter-group",
- /* standalone: true,
-  imports: [CommonModule, MultiSelectModule, FormsModule, DropdownModule, CapitalizeFirstLetterPipe],*/
+  standalone: true,
+  imports: [CommonModule, MultiSelectModule, FormsModule, DropdownModule, CapitalizeFirstLetterPipe],
   templateUrl: "./filter-group.component.html",
   styleUrls: ["./filter-group.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,

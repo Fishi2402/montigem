@@ -33,7 +33,7 @@ page ComponentEdit(DemoRecComponent component, boolean showOptionalValues=true, 
         colGap="5px",
         vAlign="bottom",
         components=[
-          @ChooseComponentKind(currentKind= component.isA,chosenKind=changeToKind()),
+          @ChooseComponentKind(availableKinds=getAvailableKinds(),currentKind= component.isA,chosenKind=changeToKind()),
           @guard(editButton) {
             @GemButton(label = "Edit component kind", leftClick = editComponentKind(), height = "var(--gemButtonHeightAdjustedToInput)");
           }

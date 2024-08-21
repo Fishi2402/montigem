@@ -26,7 +26,11 @@
       "dom"
     ],
     "paths": {
-      "@src/*": ["build/appdomain/*", "build/appgui/*", "src/app/*", "../../src/app/*"],
+      "@src/*": ["build/appdomain/*", "build/appgui/*", "src/app/*", "../../src/app/*",
+        "../../../../../modules/login/frontendTS/build/frontendGen/build/appdomain/*",
+        "../../../../../modules/login/frontendTS/build/frontendGen/build/appgui/*",
+        "../../../../../modules/login/frontendTS/src/app/*"
+      ],
       "@angular/*": ["node_modules/@angular/*"],
       "@gitlab/svgs/*": ["node_modules/@gitlab/svgs/*"],
       "@umlp/arrange": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/arrange/src"],

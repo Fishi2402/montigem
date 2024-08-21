@@ -2,7 +2,6 @@ import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
   id 'de.rwth.se.umlp-tool-backend-test' // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
-
   id 'application'
   id 'com.google.cloud.tools.jib' version '3.2.1'
   id 'io.spring.dependency-management' version '1.0.15.RELEASE'
@@ -11,6 +10,7 @@ plugins {
 
 dependencies {
   umlpModules(project(path: ":modules:login", configuration: "moduleGenTime"))
+  implementation(project(path: ":modules:login:backend")) // TODO: improve
 }
 
 
@@ -28,9 +28,7 @@ dependencies {
     exclude module: 'log4j-to-slf4j'
   }
 
-  implementation group: 'umlp', name: 'umlp-rte', version: mc_version, {
-    exclude group: "org.slf4j", module: "slf4j-simple"
-  }
+  implementation project(':umlp-rte')
 
   implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
   implementation 'com.h2database:h2:2.1.214'
@@ -72,7 +70,15 @@ generateUmlpBackend {
   input = file("../models/Dtcockpit.umlp")
   useSpring = true
   useShell = true
+
+  // TODO: Move to plugin
+  // TODO: Include umlp in module jar
+  modelDir.from(project(":modules:login").layout.getProjectDirectory().dir("models"))
 }
+
+//COMPARE_generateUmlpBackend {
+//  modelDir.from(project(":modules:login").layout.getProjectDirectory().dir("models"))
+//}
 
 tasks.register('runServer') {
   dependsOn(bootRun {
@@ -104,4 +110,12 @@ tasks.register("slowtest", Test) {
     includeTags "SlowTest"
   }
   shouldRunAfter test
+}
+
+
+tasks.withType(Zip).all {
+  duplicatesStrategy = DuplicatesStrategy.WARN
+}
+tasks.withType(Tar).all {
+  duplicatesStrategy = DuplicatesStrategy.WARN
 }

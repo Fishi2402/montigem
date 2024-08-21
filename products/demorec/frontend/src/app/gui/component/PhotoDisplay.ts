@@ -53,4 +53,8 @@ export class PhotoDisplay extends PhotoDisplayComponent {
     return "umlp/api/images/"+photo.getFilename()
   }
 
+  public openImageInNewTab(photo: Photo) {
+    window.open(this.getPhotoPath(photo), '_blank')
+  }
+
 }

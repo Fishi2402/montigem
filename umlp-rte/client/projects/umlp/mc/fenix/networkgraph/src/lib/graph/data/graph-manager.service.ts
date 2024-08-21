@@ -368,6 +368,17 @@ export class GraphManagerService<
   }
 
   /**
+   * Updates the custom bounding box.
+   *
+   * @param {{x:[number,number], y:[number,number] } | null} customBBox - The custom bounding box.
+   * @param {boolean} [reload] - Whether to reload the graph after updating. Default is `true`
+   */
+  public updateCustomBoundingBox(customBBox: {x:[number,number], y:[number,number] } | null, reload: boolean = true): void {
+    this.renderer?.setCustomBBox(customBBox);
+    if (reload) this.reload();
+  }
+
+  /**
    * Sets the container in which the graph should be positioned.
    *
    * @param {HTMLDivElement} container - Container element for the graph.

@@ -13,7 +13,13 @@ import {
 } from "@angular/core";
 import {CommonModule} from "@angular/common";
 import {SerializedGraph} from "graphology-types";
-import {/*CustomMetricsGenerator,*/ EdgeAttributes, GraphEdge, GraphNode, NodeAttributes} from "./types/graph.types";
+import {/*CustomMetricsGenerator,*/
+  EdgeAttributes,
+  GraphEdge,
+  GraphNode,
+  NodeAttributes,
+  NodePos
+} from "./types/graph.types";
 import {
   ComplexGraphLayoutConfiguration,
   ComplexGraphLayouts,
@@ -38,6 +44,10 @@ import {GraphEvent, MouseEvent, TouchEvent} from "./types/graph-events.types";
 import { Sigma } from "sigma";
 import Graph from "graphology";
 import {TooltipOptions} from "primeng/api";
+import {SearchNodeComponent} from "./search-node/search-node.component";
+import {FilterGroupComponent} from "./filter-group/filter-group.component";
+import {ControlButtonsComponent} from "./control-buttons/control-buttons.component";
+import {MetricInformationComponent} from "./metric-information/metric-information.component";
 
 /**
  * `NetworkGraphComponent` is the core component that serves as the container for the entire graph rendering, user
@@ -64,26 +74,30 @@ import {TooltipOptions} from "primeng/api";
  * @see {@link GraphBasisComponent} for common graph-related functionalities.
  */
 @Component({
-    selector: "gem-graph",
-    /*standalone: true,
-    imports: [
-        CommonModule,
-    ],
-    providers: [
-        GraphDataService,
-        GraphManagerService,
-        GraphProcessorService,
-        GroupMappingService,
-        EdgeProcessorService,
-        NodeProcessorService,
-        SigmaGraphService,
-        GraphLayoutService,
-        GraphMetricsService,
-        GraphSettingsService,
-    ],*/
-    templateUrl: "./graph.component.html",
-    styleUrls: ["./graph.component.scss"],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: "gem-graph",
+  standalone: true,
+  imports: [
+    CommonModule,
+    SearchNodeComponent,
+    FilterGroupComponent,
+    ControlButtonsComponent,
+    MetricInformationComponent,
+  ],
+  providers: [
+    GraphDataService,
+    GraphManagerService,
+    GraphProcessorService,
+    GroupMappingService,
+    EdgeProcessorService,
+    NodeProcessorService,
+    SigmaGraphService,
+    GraphLayoutService,
+    GraphMetricsService,
+    GraphSettingsService,
+  ],
+  templateUrl: "./graph.component.html",
+  styleUrls: ["./graph.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 @AutoUnsubscribe()
 export class GemGraphComponent extends GraphBasisComponent implements OnChanges {
@@ -179,6 +193,13 @@ export class GemGraphComponent extends GraphBasisComponent implements OnChanges 
 
     /** Configuration options for tooltips. */
     @Input() tooltipOptions?: TooltipOptions = {showDelay: 100};
+
+    /** If this is not set, the bounding box will be calculated based on the maxima and minima for x and y coordinates
+     *  in the graph. Use it to ensure that different graphs have the default Zoom.
+     *  The customBoundinBox should not be calculated based on the graph nodes position. This default behavior is handled
+     *  by Sigma and will break layout algorithms if used in our graph component.
+     * */
+    @Input() customBoundingBox?: {x:[number,number], y:[number,number] };
 
     // ========================================================================================
     // Output Events - Graph Interaction Events
@@ -369,6 +390,12 @@ export class GemGraphComponent extends GraphBasisComponent implements OnChanges 
     @Output() hoveredEdgeChange: EventEmitter<string | null> = new EventEmitter<string | null>();
 
     // ========================================================================================
+    // Layout Event
+    // ========================================================================================
+    /** Event emitted when layouting has finished */
+    @Output() nodePositionsAfterLayout : EventEmitter<NodePos[]> = new EventEmitter<NodePos[]>()
+
+    // ========================================================================================
     // View Child References
     // ========================================================================================
     /** Reference to the HTML container element for the Sigma.js graph. */
@@ -384,6 +411,15 @@ export class GemGraphComponent extends GraphBasisComponent implements OnChanges 
         effect(() => this.isDraggingChange.emit(this.graphManager.graphData.isDragging));
         effect(() => this.hoveredNodeChange.emit(this.graphManager.graphData.hoveredNode));
         effect(() => this.hoveredEdgeChange.emit(this.graphManager.graphData.hoveredEdge));
+        this.graphManager.layoutService.finishedLayouting.subscribe(x => {
+          this.nodePositionsAfterLayout.emit(this.graphManager.graphData.getGraphData().nodes?.map(n => {
+            return {
+              id: n.key,
+              x: n.attributes?.x,
+              y: n.attributes?.y
+            }
+          }))
+        })
 
         // Subscribe to chart init event
         this.graphManager.graphInitialized$.subscribe((graph: Sigma) => {
@@ -439,6 +475,10 @@ export class GemGraphComponent extends GraphBasisComponent implements OnChanges 
         if (this.hasChanged(changes, "complexLayout")) {
             this.graphManager.updateLayoutConfiguration(this.complexLayout || null);
             shouldRefresh = true;
+        }
+        if (this.hasChanged(changes, "customBoundingBox")) {
+          this.graphManager.updateCustomBoundingBox(this.customBoundingBox || null);
+          shouldRefresh = true;
         }
         /*if (this.hasChanged(changes, "customMetricsGenerator") && this.customMetricsGenerator) {
             // No need to refresh here
