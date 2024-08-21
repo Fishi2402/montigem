@@ -4,7 +4,7 @@ import { DomainManagerClientImpl } from '@src/domain/DomainManagerClientImpl';
 // import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from '@umlp/commonj2ts';
 // import { DomainComponentObserverManager } from '@src/DomainComponentObserverManager'
 // Non-JSweet
-import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from '@umlp/commonj2ts';
+import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from '@umlp/common';
 
 @Component({
   selector: 'app-root',
