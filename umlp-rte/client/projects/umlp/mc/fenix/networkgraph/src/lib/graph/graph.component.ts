@@ -178,6 +178,13 @@ export class GemGraphComponent extends GraphBasisComponent implements OnChanges 
         },
         tooltip: "Switch Layout",
         icon: "pi pi-arrow-right-arrow-left",
+      }, {
+        key: "downloadGraph",
+        actionFn: (button: ControlButton, graphManager : GraphManagerService) : void => {
+          this.downloadAsPNG(new Date().toISOString()+"Graph.png")
+        },
+        tooltip: "Download Graph",
+        icon: "pi pi-file-export",
       }
 
     ];
