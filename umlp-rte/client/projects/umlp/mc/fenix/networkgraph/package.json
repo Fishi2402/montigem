@@ -1,7 +1,7 @@
 {
   "publishConfig": {"@monticore:registry": "https://nexus.se.rwth-aachen.de/repository/montigem-frontendrte-snapshots/"},
   "name": "@umlp/networkgraph",
-  "version": "7.6.7",
+  "version": "7.6.8",
   "peerDependencies": {
     "@angular/animations": "^17.0.7",
     "@angular/common": "^17.0.7",
