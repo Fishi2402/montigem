@@ -1,0 +1,17 @@
+.wrapper {
+  position: absolute;
+  border: 2px solid black;
+  z-index: 1000;
+}
+
+.content {
+  position: absolute;
+  background-color: lightblue;
+  overflow: auto;
+}
+
+.contentTopBar {
+  width: 100%;
+  height: 20px;
+  background-color: black;
+}
