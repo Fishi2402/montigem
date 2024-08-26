@@ -685,7 +685,9 @@ export class GraphManagerService<
       this.sigmaGraph.createRenderer(graph, this.container!, this.graphSettings.getSettings() as Settings);
       if (this.renderer) {
         this.sigmaInitialized.next(this.renderer);
-        this.renderer.setCustomBBox(this.customBoundingBox)
+      }
+      if(this.sigmaGraph.renderer) {
+        this.sigmaGraph.renderer.setCustomBBox(this.customBoundingBox)
       }
       this.subscribeToGraphEvents();
     }
