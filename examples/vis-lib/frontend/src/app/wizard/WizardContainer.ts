@@ -17,6 +17,7 @@ import {CommonModule, KeyValuePipe, NgComponentOutlet, NgFor, NgIf, AsyncPipe} f
 import "@angular/compiler";
 import {InspectorService} from "@src/wizard/InspectorService";
 import {Observable} from "rxjs";
+import {WIZARD_DATA} from "@src/wizard/WizardData";
 
 
 /**
@@ -56,8 +57,8 @@ import {Observable} from "rxjs";
               <ng-container *ngComponentOutlet="i.type; inputs: i.inputs" />  <!--and a delegated/ngComponentOutlet of the real component -->
                 <!--    Followed by some controls -->
                 <div *ngIf="showControlsObsv|async">
-                  <button (click)="move(-1, i.index, i.listName)"  *ngIf="i.index>0 && this.innerNames[i.listName] != -1"  title="Move up">&uarr;</button>
-                  <button (click)="move(1, i.index, i.listName)"  *ngIf="this.innerNames[i.listName] != -1 && i.index+1<getCompsLength(i.listName)"   title="Move down">&darr;</button>
+                  <button (click)="move(-1, i.index, i.listName)"  *ngIf="i.index>0 && this.innerNames[i.listName] != 1"  title="Move up">&uarr;</button>
+                  <button (click)="move(1, i.index, i.listName)"  *ngIf="this.innerNames[i.listName] != 1 && i.index+1<getCompsLength(i.listName)"   title="Move down">&darr;</button>
                   <button (click)="inspect(i.index, i.listName)" title="Inspect">[i]</button>
                   <button (click)="remove(i.index, i.listName)" title="Remove">X</button>
                 </div>
@@ -68,6 +69,7 @@ import {Observable} from "rxjs";
 })
 export class WizardContainer implements AfterViewInit, OnInit {
 
+  @Input()
   templateContainers: { index: number, listName: string, type: any, inputs: any }[] = [  ];
 
   constructor(private viewContainerRef: ViewContainerRef, private inspectorService: InspectorService) {
@@ -190,12 +192,47 @@ export class WizardContainer implements AfterViewInit, OnInit {
       if (clazz) {
         this.templateContainers.push({
           listName: componentName, index: this.getCompsLength(componentName),
-          type: clazz, inputs: inputs
+          type: clazz, // copy the class
+          inputs: inputs(), // and invoke the inputs method (to create a copy)
         })
         this.updateComps()
       }
     })
 
+  }
+
+  constructStuff(o: {type: string, params: {[key:string]:any}, components: { [key:string]:any}}) {
+    let inputs: any = {...o.params};
+    let clazz: any = WIZARD_DATA[o.type].new[0];
+    if (clazz === WizardContainer) {
+      inputs = WIZARD_DATA[o.type].new[1]();
+      for (let p in o.params)
+        inputs.containerInputs[p] = o.params[p];
+      let map = {};
+      inputs.templateContainers = [];
+      for (let c in o.components) {
+        for (let x of o.components[c]) {
+          const inner = this.constructStuff(x);
+          inputs.templateContainers.push(
+            {
+              listName: c, index: (map.hasOwnProperty(c) ? ++map[c] : map[c] = 0),
+              type: inner.type, // copy the class
+              inputs: inner.inputs, // and invoke the inputs method (to create a copy)
+            });
+        }
+      }
+    }
+    return {type: clazz, inputs: inputs};
+  }
+
+  addInner(componentName: string, o: {type: string, params: {[key:string]:any}, components: { [key:string]:any}}) {
+    const x = this.constructStuff(o);
+    console.log(x);
+    this.templateContainers.push({
+      listName: componentName, index: this.getCompsLength(componentName),
+      type: x.type,
+      inputs: x.inputs,
+    })
   }
 
   updateComps() {
@@ -233,9 +270,11 @@ export class WizardContainer implements AfterViewInit, OnInit {
       if (e.listName == componentName && e.index == pos) {
         if (e.type == WizardContainer) {
           // Delegate to the real component contained within the WizardContainer
-          this.inspectorService.emitInspect({type: e.inputs.containerType, inputs: e.inputs.containerInputs})
+          this.inspectorService.emitInspect({type: e.inputs.containerType, inputs: e.inputs.containerInputs});
+          console.log("inspect wc", e, e.inputs.containerInputs)
         } else {
-          this.inspectorService.emitInspect({type: e.type, inputs: e.inputs})
+          this.inspectorService.emitInspect({type: e.type, inputs: e.inputs});
+          console.log("inspect wc", e, e.inputs.containerInputs)
         }
         return;
       }

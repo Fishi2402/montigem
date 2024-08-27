@@ -22,7 +22,7 @@ export class InspectorService {
   }
 
 
-  public requestNewElem(callback: ((clazz: any, inputs: any) => void)) {
+  public requestNewElem(callback: ((clazz: any, inputs: ()=>any) => void)) {
     this.newElementRequester.next(callback);
   }
 
