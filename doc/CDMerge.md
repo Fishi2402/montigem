@@ -20,8 +20,6 @@ the **[cd4analysis]** project.
 Click [here](https://www.monticore.de/download/MCCD.jar) to download the CD Tool
 JAR containing the CDMerge implementation.
 
-
-
 ## Gradle Task
 For convenient usage of CDMerge, the UMLP to provides the gradle task 
 `UMLPMergeTask`. This task parses the specified input-files as class
@@ -67,3 +65,16 @@ the build-script of the frontend, as well.
 
 A small example can be found in the **[selib]** subproject.
 For a larger example refer to the **[Car Rental]** project.
+
+## CLI Command
+
+CDMerge can also be executed via CLI with the `UMLPTool`. 
+By using the option `-mrg` or `--merge` one can specify multiple files
+containing class diagrams. These will be merged with the input model specified
+via `-i` or `--input`. If the merge is successful, the merged CD replaces the
+original input CD in memory. Further operations will therefore be executed
+on the merged model, e.g.:
+
+```
+java -jar $dir/UMLPTool.jar -i $srcDir/$CD1.umlp -mrg $srcDir/$CD2.umlp, $srcDir/$CD3.umlp -pp $tgtDir/$MergedCD.umlp 
+```

@@ -4,6 +4,7 @@ import de.monticore.cd._symboltable.BuiltInTypes;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code._symboltable.ICD4CodeArtifactScope;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdmerge.CDMerge;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.io.paths.MCPath;
@@ -38,13 +39,18 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static umlp.UMLPToolOptions.FOR_CLIENT;
 import static umlp.UMLPToolOptions.GEN_SYMBOLS_ONLY;
 import static umlp.UMLPToolOptions.GUI_GEN_JSWEET;
+import static umlp.UMLPToolOptions.MERGE;
 import static umlp.UMLPToolOptions.OCL;
 import static umlp.UMLPToolOptions.PRETTYPRINT;
 import static umlp.UMLPToolOptions.SYMTAB;
@@ -108,7 +114,30 @@ public class UMLPFilePipelineSetup {
       // parse, create symbol table, check all cocos
       ASTCDCompilationUnit ast = data.tool.parse(data.inputFile.getPath());
       Reporting.reportParseInputFile(data.inputFile.toPath().toAbsolutePath(), report_on); // TODO: causes NullPointerException
+      if (MERGE.isSelected(data.cmd)){
+        Set<ASTCDCompilationUnit> mergeSet = new LinkedHashSet<>();
+        mergeSet.add(ast);
+        Arrays.stream(data.cmd.getOptionValues("mrg")).forEach(f -> mergeSet.add(data.tool.parse(f)));
 
+        String cdName = "Merge";
+        if (PRETTYPRINT.isSelected(data.cmd)
+            && PRETTYPRINT.getValue(data.cmd) != null ){
+          cdName = Path.of(PRETTYPRINT.getValue(data.cmd)).getFileName().toString();
+          if (PRETTYPRINT.getValue(data.cmd).endsWith(".cd")){
+            cdName = cdName.substring(0, cdName.length() - 3);
+          } else if (PRETTYPRINT.getValue(data.cmd).endsWith(".umlp")) {
+            cdName = cdName.substring(0, cdName.length() - 5);
+          } else {
+            cdName = "Merge";
+          }
+        }
+        ASTCDCompilationUnit merge = CDMerge.merge(mergeSet, cdName, new HashSet<>());
+        if (merge != null){
+          ast = merge;
+        } else {
+          Log.warn("Merge was unsuccessful; proceed with the model at INPUT.");
+        }
+      }
       astPipe.doWork(new Data(data, ast));
     });
     // Pipeline for dealing with loaded
