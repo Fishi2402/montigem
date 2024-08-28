@@ -17,6 +17,10 @@ or aspects of the system into a complete domain model on demand.
 The operator is described in [[LRRS23]] and its implementation can be found in 
 the **[cd4analysis]** project.
 
+Click [here](https://www.monticore.de/download/MCCD.jar) to download the CD Tool
+JAR containing the CDMerge implementation.
+
+
 
 ## Gradle Task
 For convenient usage of CDMerge, the UMLP to provides the gradle task 
