@@ -1,14 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {config, WizardComponent} from "@src/wizard/WizardComponent";
-import {Component, ViewChild, ViewContainerRef} from "@angular/core";
+import {Component, ViewChild, ViewContainerRef, AfterViewInit} from "@angular/core";
 import {KeyValuePipe, NgComponentOutlet} from "@angular/common";
 
-
+import {GET_WIZARD_DATA_BY_CLASS, WIZARD_DATA} from "@src/wizard/WizardData";
 import {WizardContainer} from "@src/wizard/WizardContainer";
 import {InspectorService} from "@src/wizard/InspectorService";
 import {WizardModal} from "@src/wizard/WizardModal";
-import {WIZARD_DATA} from "@src/wizard/WizardData";
 
 /**
  * A simple GUI-Wizard  allowing WYSIWYG GUI Design.
@@ -33,6 +32,8 @@ import {WIZARD_DATA} from "@src/wizard/WizardData";
     <div style="position: sticky; bottom: 0; left: 50px; height: 20px; width: 100px; z-index: 999">
         <button (click)="toggleOrder()">Show Controls</button>
         <button (click)="export()">Export</button>
+        <button (click)="store()">save as default</button>
+        <button (click)="restore()">restore default</button>
     </div>
 
 
@@ -54,7 +55,7 @@ import {WIZARD_DATA} from "@src/wizard/WizardData";
   styles: config.styles,
   styleUrls: config.styleUrls
 })
-export class Wizard extends WizardComponent {
+export class Wizard extends WizardComponent implements AfterViewInit {
 
   wizard_keys = Object.keys(WIZARD_DATA);
 
@@ -96,6 +97,88 @@ export class Wizard extends WizardComponent {
 
   export(): void {
     prompt("Result", this.makeString(this.wizardContainer));
+    console.log("res", this.makeObj(this.wizardContainer));
+    console.log(this.wizardContainer)
+  }
+
+  store() {
+    window.localStorage.setItem("gui_wizard", JSON.stringify(this.makeObj(this.wizardContainer)))
+  }
+
+  ngAfterViewInit(): void {
+    this.restore()
+  }
+
+  restore() {
+
+    let d = {
+      "components": [
+        {
+          "type": "GemText",
+          "params": {
+            "value": "Page Title of the GUI wizard"
+          }
+        },
+        {
+          "type": "GemCard",
+          "params": {
+            "title": "Test"
+          },
+          "components": {
+            "titleComponent": [
+              {
+                "type": "GemText",
+                "params": {
+                  "value": "This is the title of a card."
+                }
+              }
+            ],
+            "component": [
+              {
+                "type": "GemColumn",
+                "params": {},
+                "components": {
+                  "components": [
+                    {
+                      "type": "GemRow",
+                      "params": { },
+                      "components": {
+                        components: [{
+                          "type": "GemText",
+                          "params": {
+                            "value": "By pressing show controls, you can toggle the control buttons"
+                          }
+                        }]
+                      }
+                    },
+                    {
+                      "type": "GemRow",
+                      "params": { },
+                      "components": {
+                        components: [{
+                          "type": "GemText",
+                          "params": {
+                            "value": "The arrows move an item up/down [i] allows changing the params. Hover over the buttons for additional info"
+                          }
+                        }]
+                      }
+                    },
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+    if (localStorage.getItem('gui_wizard'))
+      d = JSON.parse(localStorage.getItem('gui_wizard'))
+    for (let component of d.components) {
+      this.wizardContainer.addInner('components', component);
+
+      this.wizardContainer.updateComps();
+    }
+
   }
 
 
@@ -119,7 +202,7 @@ export class Wizard extends WizardComponent {
       return "Missing templateContainers?";
     }
 
-    ret += "@" + e.containerType.name + " {\n";
+    ret += "@" + GET_WIZARD_DATA_BY_CLASS(e.containerType).componentName + " {\n";
     let first = true;
     // Start with simple literal-values
     for (let k in e.containerInputs) {
@@ -151,6 +234,46 @@ export class Wizard extends WizardComponent {
     return ret;
   }
 
+  makeObj(e, knowntype?: any): {} {
+    if (e instanceof WizardContainer) {
+      if (!e.containerType) {
+        let ret = {components: []};
+        let sorted = this.sortTemplateContains(e.templateContainers);
+        for (let cd of sorted['components']) {
+          ret.components.push(this.makeObjTC(e, cd));
+        }
+        return ret;
+      }
+    }
+
+    if (e.templateContainers === undefined) {
+      console.trace("Missing", e)
+      return "Missing templateContainers?";
+    }
+
+    let ret = {
+      type: GET_WIZARD_DATA_BY_CLASS(e.containerType).componentName,
+      params: {},
+      components: {}
+    };
+    // Start with simple literal-values
+    for (let k in e.containerInputs) {
+      console.log("inputs", k)
+      if (k in e.innerNames) continue;
+      ret.params[k] = e.containerInputs[k];
+    }
+    // followed by inner components
+    let sorted = this.sortTemplateContains(e.templateContainers);
+    for (let key in sorted) {
+      ret.components[key] = [];
+      for (let entryIndexs in (sorted[key])) {
+        let entryIndex = entryIndexs as unknown as number;
+        ret.components[key].push(this.makeObjTC(e, sorted[key][entryIndex]))
+      }
+    }
+    return ret;
+  }
+
   sortTemplateContains(d: { index: number, listName: string, type: any, inputs: any }[]): {
     [listName: string]: { index: number, listName: string, type: any, inputs: any }[]
   } {
@@ -164,7 +287,12 @@ export class Wizard extends WizardComponent {
   }
 
 
-  makeStringTC(outer: WizardContainer, e: { index: number, listName: string, type: any, inputs: any }) {
+  makeStringTC(outer: WizardContainer, e: {
+    index: number,
+    listName: string,
+    type: any,
+    inputs: any
+  }) {
     if (e.type == WizardContainer) {
       // Next, convert the object of data to the Real thingy
       let index = 0, foundIndex = -1;
@@ -180,7 +308,7 @@ export class Wizard extends WizardComponent {
       // and try again
       return this.makeString(outer.ngComponentOutlet.get(foundIndex + diff)['_componentRef']['instance'], t);
     }
-    let ret = '@' + e.type.name;
+    let ret = '@' + GET_WIZARD_DATA_BY_CLASS(e.type).componentName;
 
     ret += "(";
 
@@ -198,6 +326,34 @@ export class Wizard extends WizardComponent {
     return ret;
   }
 
+  makeObjTC(outer: WizardContainer, e: {
+    index: number,
+    listName: string,
+    type: any,
+    inputs: any
+  }) {
+    if (e.type == WizardContainer) {
+      // Next, convert the object of data to the Real thingy
+      let index = 0, foundIndex = -1;
+      for (let entry of outer.templateContainers) {
+        if (entry === e) {
+          foundIndex = index;
+          break;
+        }
+        index++;
+      }
+      let diff = outer.ngComponentOutlet.length - outer.templateContainers.length;
+      const t = e.inputs.containerType;
+      // and try again
+      return this.makeObj(outer.ngComponentOutlet.get(foundIndex + diff)['_componentRef']['instance'], t);
+    }
+    let ret = {type: GET_WIZARD_DATA_BY_CLASS(e.type).componentName, params: {}};
+    for (let iKey in e.inputs) {
+      ret.params[iKey] = e.inputs[iKey];
+    }
+    return ret;
+  }
+
 
   // Change a property in inspect view
   changeProp(prop: string): void {
@@ -211,19 +367,20 @@ export class Wizard extends WizardComponent {
   // Handle inspect request
   inspect(e: { type: any, inputs: any }) {
     this.currentEditing = e;
-    if (e.type.name in WIZARD_DATA) {
+    let data = GET_WIZARD_DATA_BY_CLASS(e.type);
+    if (data) {
       let doShow = {}
-      for (let prop in WIZARD_DATA[e.type.name].inspect) {
-        let i = WIZARD_DATA[e.type.name].inspect[prop];
+      for (let prop in data.inspect) {
+        let i = data.inspect[prop];
         doShow[prop] = {value: e.inputs[prop], format: i.format};
       }
       this.currentEditingInfo = doShow;
-    }else {
-      this.currentEditingInfo = {
-        'ERROR': {
-          value: 'ERROR',
-          format: "ERROR - unknown component " + e.type.name
-        }
+      return;
+    }
+    this.currentEditingInfo = {
+      'ERROR': {
+        value: 'ERROR',
+        format: "ERROR - unknown component " + e.type.name
       }
     }
   }

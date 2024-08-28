@@ -7,7 +7,7 @@ import {GemCard, GemColumn, GemRow} from "@umlp/arrange";
 import {WizardContainer} from "@src/wizard/WizardContainer";
 
 interface InspectData {
-  [key:string]: {
+  [key: string]: {
     format: string,
     description?: string
   }
@@ -15,12 +15,14 @@ interface InspectData {
 
 export interface WizData {
   inspect: InspectData;
-  new: [any, {[key:string]:any}] // constructor
+  new: [any, () =>  { [key: string]: any }]; // constructor
+  componentName: string;
 }
 
 
-export const WIZARD_DATA: {[name:string]: WizData} = {
+export const WIZARD_DATA: { [name: string]: WizData } = {
   'GemText': {
+    componentName: 'GemText',
     inspect: {
       value: {format: "string"},
       color: {format: "string"},
@@ -31,18 +33,24 @@ export const WIZARD_DATA: {[name:string]: WizData} = {
       width: {format: "string"},
       height: {format: "string"},
     },
-    new: [GemText, {value: 'Hello there'}]
+    new: [GemText, () => {
+      return {value: 'Hello there'}
+    }]
   },
   'GemButton': {
+    componentName: 'GemButton',
     inspect: {
       height: {format: "string"},
       width: {format: "string"},
       label: {format: "string"}, // content skipped
       disabled: {format: "boolean"},
     },
-    new: [GemButton, {value: 'GemButton'}]
+    new: [GemButton, () => {
+      return {value: 'GemButton'}
+    }]
   },
   'GemRow': {
+    componentName: 'GemRow',
     inspect: {
       height: {format: "string"},
       width: {format: "string"},
@@ -52,13 +60,16 @@ export const WIZARD_DATA: {[name:string]: WizData} = {
       colGap: {format: "string"},
       wrap: {format: "string"},
     },
-    new: [WizardContainer, {
-      containerType: GemRow,
-      humanReadableName: "GemRow",
-      containerInputs: {},
+    new: [WizardContainer, () => {
+      return {
+        containerType: GemRow,
+        humanReadableName: "GemRow",
+        containerInputs: {},
+      };
     }]
   },
   'GemColumn': {
+    componentName: 'GemColumn',
     inspect: {
       height: {format: "string"},
       width: {format: "string"},
@@ -68,22 +79,38 @@ export const WIZARD_DATA: {[name:string]: WizData} = {
       colGap: {format: "string"},
       wrap: {format: "string"},
     },
-    new: [WizardContainer, {
-      containerType: GemColumn,
-      humanReadableName: "GemColumn",
-      containerInputs: {},
+    new: [WizardContainer, () => {
+      return {
+        containerType: GemColumn,
+        humanReadableName: "GemColumn",
+        containerInputs: {},
+      };
     }]
   },
   'GemCard': {
+    componentName: 'GemCard',
     inspect: {
       height: {format: "string"},
       width: {format: "string"},
     },
-    new: [WizardContainer, {
-      containerType: GemCard,
-      humanReadableName: "GemCard",
-      containerInputs: {'title': 'Test'},
-      innerNames: {"titleComponent": 1, "component": 1}
+    new: [WizardContainer, () => {
+      return {
+        containerType: GemCard,
+        humanReadableName: "GemCard",
+        containerInputs: {'title': 'Test'},
+        innerNames: {"titleComponent": 1, "component": 1}
+      };
     }]
   },
+}
+
+export function GET_WIZARD_DATA_BY_CLASS (clazz: any) : WizData {
+  for (let key in WIZARD_DATA) {
+    if (WIZARD_DATA[key].new[0] == WizardContainer && WIZARD_DATA[key].new[1]()['containerType'] == clazz) {
+      return WIZARD_DATA[key];
+    }
+    if (WIZARD_DATA[key].new[0] === clazz)
+      return WIZARD_DATA[key];
+  }
+  return undefined;
 }
