@@ -50,7 +50,7 @@ genDomain {
 }
 
 genGUI {
-  domainModels = ["Dtcockpit"]
+  domainModels = ["Dtcockpit", "LoginModule"]
   guiCreateModels = ["gui.login.UserCreate", "gui.project.ProjectCreate", "gui.project.ProjectsCreateByGroup"]
 
   // TODO: Gradle Setup for modules
