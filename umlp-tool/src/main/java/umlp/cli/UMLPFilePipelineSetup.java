@@ -66,6 +66,7 @@ public class UMLPFilePipelineSetup {
   Pipeline<Data> astPipe;
   final IOperation.ISimpleOperation<UMLPPipelineData> loadAST;
 
+  final IOperation<Data> mergeAST;
   final IOperation.ISimpleOperation<Data> storeSymbols;
 
   final IOperation.ISimpleOperation<Data> writeSymbolsToSTD;
@@ -114,18 +115,30 @@ public class UMLPFilePipelineSetup {
       // parse, create symbol table, check all cocos
       ASTCDCompilationUnit ast = data.tool.parse(data.inputFile.getPath());
       Reporting.reportParseInputFile(data.inputFile.toPath().toAbsolutePath(), report_on); // TODO: causes NullPointerException
-      if (MERGE.isSelected(data.cmd)){
+      astPipe.doWork(new Data(data, ast));
+    });
+    // Pipeline for dealing with parsed ASTs
+    astPipe = createPipe(Data.class);
+    astPipe.register(mergeAST = data -> {
+      // First step of an AST: If --merge was provided, override AST with merged AST
+      if (MERGE.isSelected(data.data.cmd)){
         Set<ASTCDCompilationUnit> mergeSet = new LinkedHashSet<>();
-        mergeSet.add(ast);
-        Arrays.stream(data.cmd.getOptionValues("mrg")).forEach(f -> mergeSet.add(data.tool.parse(f)));
-
+        mergeSet.add(data.ast);
+        // Parse and report parsing of merge-inputs
+        for (String mergeFile : data.data.cmd.getOptionValues("mrg")) {
+          File inputMergeFile = new File(mergeFile);
+          mergeSet.add(data.data.tool.parse(inputMergeFile.getAbsolutePath()));
+          // Note: Do NOT use reportParseInputFile, as it resets it. Instead, use reportOpenInputFile
+          Reporting.reportOpenInputFile(inputMergeFile.toPath().toAbsolutePath().toString());
+        }
+        // Construct a name for the merged file
         String cdName = "Merge";
-        if (PRETTYPRINT.isSelected(data.cmd)
-            && PRETTYPRINT.getValue(data.cmd) != null ){
-          cdName = Path.of(PRETTYPRINT.getValue(data.cmd)).getFileName().toString();
-          if (PRETTYPRINT.getValue(data.cmd).endsWith(".cd")){
+        if (PRETTYPRINT.isSelected(data.data.cmd)
+            && PRETTYPRINT.getValue(data.data.cmd) != null ){
+          cdName = Path.of(PRETTYPRINT.getValue(data.data.cmd)).getFileName().toString();
+          if (PRETTYPRINT.getValue(data.data.cmd).endsWith(".cd")){
             cdName = cdName.substring(0, cdName.length() - 3);
-          } else if (PRETTYPRINT.getValue(data.cmd).endsWith(".umlp")) {
+          } else if (PRETTYPRINT.getValue(data.data.cmd).endsWith(".umlp")) {
             cdName = cdName.substring(0, cdName.length() - 5);
           } else {
             cdName = "Merge";
@@ -133,15 +146,16 @@ public class UMLPFilePipelineSetup {
         }
         ASTCDCompilationUnit merge = CDMerge.merge(mergeSet, cdName, new HashSet<>());
         if (merge != null){
-          ast = merge;
+          // Continue with the merged AST
+          data.setAst(merge);
         } else {
-          Log.warn("Merge was unsuccessful; proceed with the model at INPUT.");
+          // Abort (return false) and report error on unsuccessful merge
+          Log.error("Merge was unsuccessful");
+          return false;
         }
       }
-      astPipe.doWork(new Data(data, ast));
+      return true;
     });
-    // Pipeline for dealing with loaded
-    astPipe = createPipe(Data.class);
     astPipe.register(storeSymbols = data -> {
       if (SYMTAB.isSelected(data.data.cmd) && SYMTAB.getValue(data.data.cmd) != null) {
         String s = SYMTAB.getValue(data.data.cmd);
@@ -307,7 +321,7 @@ public class UMLPFilePipelineSetup {
 
   static class Data implements DataWithCDASTAndTool {
     final UMLPPipelineData data;
-    final ASTCDCompilationUnit ast;
+    ASTCDCompilationUnit ast;
 
     public Data(UMLPPipelineData data, ASTCDCompilationUnit ast) {
       this.data = data;
@@ -326,6 +340,10 @@ public class UMLPFilePipelineSetup {
     @Override
     public UMLPTool getTool() {
       return this.data.tool;
+    }
+
+    public void setAst(ASTCDCompilationUnit ast) {
+      this.ast = ast;
     }
 
     @Override
