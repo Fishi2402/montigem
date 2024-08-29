@@ -33,6 +33,7 @@ public abstract class UMLPPluginTestInfrastructure implements Plugin<Project> {
   protected static final String UMLP_TEST_INFRASTRUCTURE_TASK_NAME = "generateTestInfrastructure";
   protected static final String UMLP_GROUP_NAME = "umlp";
   protected static final String TEST_IMPLEMENTATION = "testImplementation";
+  protected static final String COMPILE_ONLY = "compileOnly";
 
   @Override
   public void apply(Project project) {
@@ -60,6 +61,7 @@ public abstract class UMLPPluginTestInfrastructure implements Plugin<Project> {
     //umlp-test-rte
     Project umlpTestRte = project.findProject(":umlp-test-rte");
     Objects.requireNonNull(umlpTestRte, "Failed to find project ':umlp-test-rte'");
+    dependencies.add(COMPILE_ONLY, umlpTestRte);
     dependencies.add(TEST_IMPLEMENTATION, umlpTestRte);
 
     //playwright
