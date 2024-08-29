@@ -31,6 +31,10 @@ public abstract class UMLPTestInfrastructureTask extends UMLPBackendTask {
     result.add("-" + UMLPToolOptions.CFGTMPL.getCMD());
     result.add(CT_PATH);
 
+    if (getUsePlaywright().get()) {
+      result.add("-" + UMLPToolOptions.USE_PLAYWRIGHT.getCMD());
+    }
+
     return result;
   }
 }

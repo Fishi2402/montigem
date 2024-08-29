@@ -69,7 +69,7 @@ public abstract class UMLPPluginTestInfrastructure implements Plugin<Project> {
                      "com.microsoft.playwright:playwright:" + project.property("playwright_version"));
 
     //jsweet - annotations like erased
-    dependencies.add("compileOnly", "org.jsweet:jsweet-core:" + project.property("jsweet_version"));
+    dependencies.add(COMPILE_ONLY, "org.jsweet:jsweet-core:" + project.property("jsweet_version"));
   }
 
   public static TaskProvider<UMLPTestInfrastructureTask> createUmlpTestInfrastructureTask(Project project) {
