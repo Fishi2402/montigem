@@ -17,7 +17,7 @@ ${includeArgs("umlp.generator.hook.InitModules", glex)}
 ${includeArgs("umlp.generator.hook.BeforeTransformTestInfrastructure", decoratedAST, glex, hwPath, testInfrastructureDecorator, topDecorator)}
 
 ${testInfrastructureDecorator.transform(ast, decoratedAST)}
-${topDecorator.decorate(ast)}
+${topDecorator.decorate(decoratedAST)}
 
 ${includeArgs("umlp.generator.hook.AfterTransformTestInfrastructure", decoratedAST, glex, hwPath, testInfrastructureDecorator, topDecorator)}
 

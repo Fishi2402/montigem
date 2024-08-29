@@ -27,6 +27,7 @@ genGUI {
 
 generateTestInfrastructure {
   input = file("../models/Domain.umlp")
+  symbolOutDir = file("${project.buildDir}/symbols")
   usePlaywright.set(true)
 
   /*
