@@ -123,7 +123,7 @@ public class UMLPFilePipelineSetup {
       // First step of an AST: If --merge was provided, override AST with merged AST
       if (MERGE.isSelected(data.data.cmd)){
         Set<ASTCDCompilationUnit> mergeSet = new LinkedHashSet<>();
-        mergeSet.add(data.ast);
+        mergeSet.add(data.data.tool.parse(data.data.inputFile.getPath()));
         // Parse and report parsing of merge-inputs
         for (String mergeFile : data.data.cmd.getOptionValues("mrg")) {
           File inputMergeFile = new File(mergeFile);
