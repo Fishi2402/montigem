@@ -1,0 +1,9 @@
+package wizard;
+
+import mc.fenix.basic.GemText;
+
+import gui.navigation.NavContainer;
+
+page Wizard() {
+  // Content is entirely done via HWC!
+}

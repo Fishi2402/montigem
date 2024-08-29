@@ -1,0 +1,49 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package person;
+
+import Domain.Person;
+
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
+import mc.fenix.input.GemDropdownInput;
+
+import person.Row;
+import person.HierarchicalList;
+import person.CreatePerson;
+import person.PieChart;
+
+page SimpleOverview(List<Person> persons, ?int personId, ?int friendId) {
+  @GemColumn(rowGap = "10px", width = "50%", components = [
+    @CreatePerson(),
+    @GemDropdownInput(
+      labelText = "Person",
+      entry = personId,
+      options = getPersonOptions()
+    ),
+    @GemDropdownInput(
+      labelText = "New friend",
+      entry = friendId,
+      options = getPotentialFriends()
+    ),
+    @GemButton(
+      label = "Add new friend to person",
+      leftClick = addFriend(personId, friendId)
+    ),
+    @iterate(Person p : persons) {
+      @GemText(value = "-----------");
+      @GemText(value = "Person: " + p.name
+        + "; Address: " + p.address.street + " " + p.address.house);
+      @GemText(value = "Friends:");
+      @GemColumn(components = [
+        @iterate(Person f : p.friends) {
+          @GemText(value = f.name
+            + "; Address: " + f.address.street + " " + f.address.house);
+        }
+      ]);
+    }
+  ]);
+
+}

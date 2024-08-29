@@ -10,32 +10,54 @@ dependencies {
 }
 
 node {
-  // Whether to download and install a specific Node.js version or not
-  // If false, it will use the globally installed Node.js
-  // If true, it will download node using above parameters
-  // Note that npm is bundled with Node.js
-  download = true
-
-  // Version of node to download and install (only used if download is true)
-  // It will be unpacked in the workDir
-  version = "${node_version}"
-
-  // Whether the plugin automatically should add the proxy configuration to npm and yarn commands
-  // according the proxy configuration defined for Gradle
-  // Disable this option if you want to configure the proxy for npm or yarn on your own
-  // (in the .npmrc file for instance)
-  nodeProxySettings = ProxySettings.OFF
-
-  // The Node.js project directory location
-  // This is where the package.json file and node_modules directory are located
-  // By default it is at the root of the current project
   nodeProjectDir = file("${buildDir}/frontendGen")
+}
+
+createDomainSymbols {
+  // TODO: Gradle setup
+  modelDir.from(project(":modules:login").layout.getProjectDirectory().dir("models"))
+//  modelDir.from(project(":examples:dtcockpit").layout.getProjectDirectory().dir("models"))
+
+}
+
+genDomain {
+  // TODO: Gradle setup
+//  symbolPath.from(project(":modules:login").layout.getProjectDirectory().dir("models"))
+  /*
+  genDomain with A extends B (where B is only a symbol import)
+   0xA7003x57269 get for AstNode can't return a value. Attribute is empty.
+
+	at de.monticore.cdbasis._symboltable.CDTypeSymbolTOP.getAstNode(CDTypeSymbolTOP.java:1)
+	at de.monticore.cd._symboltable.CDSymbolTables.getTransitiveSuperTypes(CDSymbolTables.java:86)
+//  symbolPath.from(() -> project(":modules:login:frontendTS").tasks.named("createDomainSymbols").get().outputs) */
+
+//  symbolPath.from(() -> project(":modules:login:frontendTS").tasks.named("createDomainSymbols").get().outputs)
+
+  // Alternative: Generate the module-frontend-domain too
+  input = file("../models/Dtcockpit.umlp")
+  modelDir.from(project(":modules:login").layout.getProjectDirectory().dir("models"))
+
+  // TODO: tsconfig path
+  /*
+      "paths": {
+      "@src/*": ["build/appdomain/*", "build/appgui/*", "src/app/*", "../../src/app/*",
+        "../../../../../modules/login/frontendsTS/build/frontendGen/build/appdomain/*",
+        "../../../../../modules/login/frontendsTS/src/app/*",
+      ],
+
+   */
+
 }
 
 genGUI {
   domainModels = ["Dtcockpit"]
   guiCreateModels = ["gui.login.UserCreate", "gui.project.ProjectCreate", "gui.project.ProjectsCreateByGroup"]
 
+  // TODO: Gradle Setup for modules
+//  symbolDir.from(project(":modules:login:frontendTS").tasks.createDomainSymbols.getOutputDir())
+  symbolDir.from(() -> tasks.named("createDomainSymbols").get().outputs)
+  symbolDir.from(() -> project(":modules:login:frontendTS").tasks.named("createDomainSymbols").get().outputs)
+  outputs.upToDateWhen { false }
   /*
   debug = true
   outputs.upToDateWhen { false }
@@ -46,27 +68,28 @@ npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 
 def prebuildTasks = [
     npmInstall,
-    generate  // Created from UMLP-Frontend Plugin.
+    generate,  // Created from UMLP-Frontend Plugin.
+    providers.provider { project(":modules:login:frontendTS").tasks.named("generate")}
 ]
 
-task buildApp(type: NpxTask) {
+tasks.register('buildApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["build"]
 }
 assemble.dependsOn(buildApp)
 
-task testApp(type: NpxTask) {
+tasks.register('testApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["test"]
 }
 
-task runApp(type: NpxTask) {
+tasks.register('runApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["serve"]
 }
-task run {
+tasks.register('run') {
   dependsOn(runApp)
 }

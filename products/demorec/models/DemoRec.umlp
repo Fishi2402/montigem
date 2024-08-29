@@ -18,6 +18,9 @@ classdiagram DemoRec {
   association [0..1] BatteryPack <-> (allComponents) DemoRecComponent [*];
   association [0..1] BatteryPack <-> (allConnections) JoinConnectionKind [*];
 
+  // Probably not clean, because a ComponentKind should be connected to the BatteryPackType
+  association [0..1] BatteryPack <-> (allKinds) ComponentKind [*];
+
   class BatteryPackType {
     double capacity;
     double voltage;
@@ -128,6 +131,8 @@ classdiagram DemoRec {
     WELDING,
     PLUG,
     ELECTRICAL,
+    CLIP,
+    RIVET,
     UNDEFINED;
   }
 

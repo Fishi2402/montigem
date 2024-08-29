@@ -1,0 +1,20 @@
+package gui.test;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemText;
+import mc.fenix.navigation.GemNavItem;
+
+import gui.test.TestNav;
+import gui.test.TestC1Comp;
+
+import Jsweettest.C1;
+import Jsweettest.C2;
+
+page TestC1(C1 c1) {
+  @TestNav();
+
+  @GemText(value = "Test page for C1: " + c1.string);
+
+  @TestC1Comp(c1=c1);
+
+}

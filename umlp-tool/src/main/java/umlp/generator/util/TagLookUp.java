@@ -16,11 +16,21 @@ import org.jetbrains.annotations.NotNull;
 
 public class TagLookUp {
 
+  // TODO: Turn this into a real singleton?
+
   private final static String SINGLETON = "singleton";
   private final static String COMMAND = "command";
   private final static String DERIVED = "derived";
 
-  protected static SimpleSymbolTagger simpleSymbolTagger = new SimpleSymbolTagger(TagRepository::getLoadedTagUnits);
+  protected static SimpleSymbolTagger _simpleSymbolTagger;
+
+  protected static SimpleSymbolTagger getSimpleSymbolTagger() {
+    if (_simpleSymbolTagger == null) {
+      _simpleSymbolTagger = new UMLPSimpleSymbolTagger(TagRepository::getLoadedTagUnits);
+    }
+    return _simpleSymbolTagger;
+  }
+
   // Consider caching this within the taggers?
   protected static LoadingCache<TypeSymbol, Boolean> isSingletonCacheSymbol = CacheBuilder.newBuilder()
       .build(new CacheLoader<>() {
@@ -70,15 +80,15 @@ public class TagLookUp {
   }
 
   protected static Boolean _isSingleton(TypeSymbol typeSymbol) {
-    return simpleSymbolTagger.getTags(typeSymbol).stream().anyMatch(TagLookUp::isSingleton);
+    return getSimpleSymbolTagger().getTags(typeSymbol).stream().anyMatch(TagLookUp::isSingleton);
   }
 
   protected static boolean _isCommand(CDMethodSignatureSymbol symbol) {
-    return simpleSymbolTagger.getTags(symbol).stream().anyMatch(TagLookUp::isCommand);
+    return getSimpleSymbolTagger().getTags(symbol).stream().anyMatch(TagLookUp::isCommand);
   }
 
   public static boolean _isDerived(TypeSymbol typeSymbol) {
-    return simpleSymbolTagger.getTags(typeSymbol).stream().anyMatch(TagLookUp::isDerived);
+    return getSimpleSymbolTagger().getTags(typeSymbol).stream().anyMatch(TagLookUp::isDerived);
   }
 
 
@@ -101,4 +111,14 @@ public class TagLookUp {
     return false;
   }
 
+  public static void cleanUp() {
+    _simpleSymbolTagger = null;
+    isSingletonCacheSymbol.invalidateAll();
+    isSingletonCacheSymbol.cleanUp();
+    isCommandCacheSymbol.invalidateAll();
+    isCommandCacheSymbol.cleanUp();
+    isDerivedCacheSymbol.invalidateAll();
+    isDerivedCacheSymbol.cleanUp();
+    TagRepository.clearTags();
+  }
 }

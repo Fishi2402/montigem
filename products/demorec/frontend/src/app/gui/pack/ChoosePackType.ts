@@ -39,14 +39,7 @@ export class ChoosePackType extends ChoosePackTypeComponent {
   @Output()
   public chosenType = new EventEmitter<BatteryPackType>
 
-  public override ngOnInit() {
-
-    if(this.currentTypeRoutingId != null && ((this.currentType == null) || (this.currentType.getGemId() != this.currentTypeRoutingId))) {
-      DemoRecManager.getBatteryPackTypeSure(this.currentTypeRoutingId).then(gemPromiseRes => {
-        this.currentType = gemPromiseRes;
-      });
-    }
-
+  public init(): void {
     DemoRecManager.getBatteryPackTypeList().then(gemPromiseRes => {
       const types = gemPromiseRes;
       types.loadAll().then(() => {
@@ -59,7 +52,7 @@ export class ChoosePackType extends ChoosePackTypeComponent {
       });
     });
 
-    this.init();
+    super.init();
   }
 
    public override getSelectPackTypeOptions(): Array<Option> {

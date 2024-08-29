@@ -16,24 +16,6 @@ repositories {
   mavenCentral()
 }
 
-node {
-  // Whether to download and install a specific Node.js version or not
-  // If false, it will use the globally installed Node.js
-  // If true, it will download node using above parameters
-  // Note that npm is bundled with Node.js
-  download = true
-
-  // Version of node to download and install (only used if download is true)
-  // It will be unpacked in the workDir
-  version = "${node_version}"
-
-  // Whether the plugin automatically should add the proxy configuration to npm and yarn commands
-  // according the proxy configuration defined for Gradle
-  // Disable this option if you want to configure the proxy for npm or yarn on your own
-  // (in the .npmrc file for instance)
-  nodeProxySettings = ProxySettings.OFF
-}
-
 configurations {
   guiDefaultTypes
 }
@@ -41,13 +23,13 @@ dependencies {
   guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
 }
 
-task createCDSymbols(type: SerializeCDSymbolsTask) {
+tasks.register('createCDSymbols', SerializeCDSymbolsTask) {
   input = file("models/")
   // symbolPath = file("models/")
   output = layout.buildDirectory.dir("CDSymbols")
 }
 
-task createGuiSymbols(type: SerializeGUISymbolsTask) {
+tasks.register('createGuiSymbols', SerializeGUISymbolsTask) {
   input = file("models/")
   symbolDir = files(createCDSymbols.getOutput(), configurations.guiDefaultTypes.files)
   output = layout.buildDirectory.dir("GuiSymbols")
@@ -205,7 +187,7 @@ sourceSets {
   }
 }
 
-task symbolJar(type: Jar) {
+tasks.register('symbolJar', Jar) {
   from sourceSets.symbols.output
   includeEmptyDirs = false
 }

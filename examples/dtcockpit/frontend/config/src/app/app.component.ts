@@ -6,6 +6,7 @@ import {
   CommandManager
 } from '@umlp/common';
 import {DtcockpitManagerClientImpl} from '@src/dtcockpit/DtcockpitManagerClientImpl';
+import {LoginModule4DtcockpitManagerClientImpl} from "@src/loginmodule/LoginModule4DtcockpitManagerClientImpl";
 
 @Component({
   selector: 'app-root',
@@ -14,6 +15,9 @@ import {DtcockpitManagerClientImpl} from '@src/dtcockpit/DtcockpitManagerClientI
 })
 export class AppComponent {
   constructor() {
+    // TODO: The delegate mus be first
+    LoginModule4DtcockpitManagerClientImpl.init(); // TODO: Include me within DtcockpitManagerClientImpl
+
     DtcockpitManagerClientImpl.init();
     const ws_protocol = document.location.protocol == "https:" ? "wss": "ws";
     // TODO: ClientCommandManager can fail async, but we need to check if the websocket is working

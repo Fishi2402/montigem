@@ -1,8 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { EndEffector } from '@src/demorec/EndEffector';
+import {DemoRecManager} from '@src/demorec/DemoRecManager';
 
-import { EndEffectorCreateComponent, config } from '../../../../build/frontendGen/build/appgui/gui/endeffector/EndEffectorCreateComponent';
+import {
+  EndEffectorCreateComponent,
+  config
+} from '@src/gui/endeffector/EndEffectorCreateComponent';
 
 import {
   Directive,
@@ -13,11 +16,11 @@ import {
   TemplateRef,
 } from '@angular/core';
 
-import { ActivatedRoute, Router } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
-  standalone:true,
-  imports:[...config.imports],
+  standalone: true,
+  imports: [...config.imports],
   selector: config.selector,
   templateUrl: config.templateUrl,
   styles: config.styles,
@@ -28,7 +31,9 @@ export class EndEffectorCreate extends EndEffectorCreateComponent {
   public override createEndEffector(): (arg: void) => void {
     return $ => {
       this.getEndEffector().build();
-      super.ngOnInit();
+      DemoRecManager.endEffectorBuilder().then(tmp_$ => {
+        this._endEffector = tmp_$
+      });
     }
   }
 }

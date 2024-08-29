@@ -10,6 +10,7 @@ import de.monticore.guidsl._symboltable.GUIDSLSymbols2Json;
 import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.se_rwth.commons.Names;
+import de.se_rwth.commons.logging.Log;
 import umlp.GUIDSLReports;
 import umlp.TagRelated;
 import umlp.UMLPTool;
@@ -21,32 +22,45 @@ import umlp.generator.gui.GUINodeIdTrafo;
 import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
 import umlp.generator.gui.genjava.GUI2JavaGenerator;
 import umlp.generator.gui.gentypescript.GUI2TSGenerator;
-import umlp.generator.gui.gentypescript.config.GUI2TSConfigGenerator;
-import umlp.generator.gui.gentypescript.config.ModuleRoutingInfo;
+import umlp.generator.gui.gentypescript.config.GUI2ConfigGenerator;
+import umlp.generator.gui.gentypescript.config.PackageRoute;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static umlp.UMLPToolOptions.*;
+import static umlp.UMLPToolOptions.DOMAIN;
+import static umlp.UMLPToolOptions.GUI_CREATE;
+import static umlp.UMLPToolOptions.INPUT;
+import static umlp.UMLPToolOptions.SYMTAB;
 
 public class GuiPipelineSetup {
 
   // TODO: Split this further into pipelines - right now the entire GUI workflow is a single op
   final IOperation<UMLPPipelineData> gui = data -> {
-    Map<String, ModuleRoutingInfo> routesMap = new LinkedHashMap<>();
+    Map<String, PackageRoute> routeMap = new LinkedHashMap<>();
 
     // Prepare the SingletonLookup
     TagRelated.initLookup(data.importedSymbolPath);
 
-    for (String guiPathString : data.cmd.getOptionValues(INPUT.getCMD())) {
+    // check same file names
+    List<Path> modelPaths = new ArrayList<>();
+    String[] modelPathStrings = data.cmd.getOptionValues(INPUT.getCMD());
+    for (String guiPathString : modelPathStrings) {
+      modelPaths.add(Paths.get(guiPathString));
+    }
+    checkSameFilenames(modelPaths);
+
+    for (String guiPathString : modelPathStrings) {
       Path guiModel = Paths.get(guiPathString);
       data.guidsl_reportManagerFactory = new GUIDSLReports(data.outDir.getPath(), data.reportDir.getPath(), data.reportPathOutput, data.hwcPath);
 
@@ -64,11 +78,6 @@ public class GuiPipelineSetup {
 
       IGUIDSLArtifactScope symbolTable = data.tool.createSymbolTable(astGui, Optional.of(guiModel), data.importedSymbolPath);
       data.tool.runDefaultCoCos(astGui);
-
-      if (!routesMap.containsKey(astGui.getPackage())) {
-        routesMap.put(astGui.getPackage(), new ModuleRoutingInfo(astGui.getMCPackageDeclaration().getMCQualifiedName().getPartsList()));
-      }
-      routesMap.get(astGui.getPackage()).add(astGui);
 
       // print or store symbol table
       if (SYMTAB.isSelected(data.cmd)) {
@@ -127,6 +136,17 @@ public class GuiPipelineSetup {
       String htmlConfigTemplate = data.cmd.getOptionValue("ct_html", UMLPTool.DEFAULT_CONFIGTEMPLATE_GUI2HTML);
       htmlGenerator.generate(astGui, htmlConfigTemplate);
 
+      // each package containing a page represents one URL routing configuration
+      // each page contributes to a URL routing configuration
+      if (astGui.getGUIComponentDeclaration().isPage()) {
+        if (!routeMap.containsKey(astGui.getPackage())) {
+          routeMap.put(astGui.getPackage(), new PackageRoute(
+              astGui.getMCPackageDeclaration().getMCQualifiedName().getPartsList()
+          ));
+        }
+        routeMap.get(astGui.getPackage()).add(astGui);
+      }
+
       // write reports
       Reporting.flush(astGui);
       //Reporting.reportFileCreation(standaloneConfigPath);
@@ -144,13 +164,9 @@ public class GuiPipelineSetup {
     genSetup.setGlex(glex);
     genSetup.getGlex().setGlobalValue("genHelper", GUIGeneratorUtil.getInstance());
     genSetup.setTracing(false);
-    GUI2TSConfigGenerator tsConfigGenerator = new GUI2TSConfigGenerator(genSetup, data.hwcPath);
+    GUI2ConfigGenerator configGenerator = new GUI2ConfigGenerator(genSetup);
 
-    for (Map.Entry<String, ModuleRoutingInfo> packageInfo : routesMap.entrySet()) {
-      String output = tsConfigGenerator.generateComponentsRouting(packageInfo, routesMap);
-      Reporting.reportFileCreation(Paths.get(data.outDir.getPath(), output).toString());
-    }
-    List<String> outputs = tsConfigGenerator.generateAppConfigFiles();
+    List<String> outputs = configGenerator.generateConfig(routeMap.values());
     for (String output : outputs) {
       Reporting.reportFileCreation(Paths.get(data.outDir.getPath(), output).toString());
     }
@@ -163,6 +179,45 @@ public class GuiPipelineSetup {
 
   void createGui(UMLPToolPipelineSetup umlpPipeline) {
     umlpPipeline.gui.register(gui);
+  }
+
+  /**
+   * Check if a collection of paths has files with same names and report them as an error.
+   * Models of MC languages generally require that the symbol declaration closest to a global scope
+   * has the same name as the file. This means that files with the same name have symbols with the
+   * same name. This can cause problems if the symbols represent GUI components, as current
+   * generator implementation does not allow the same name for components. E.g. foo.bar.MyPage and
+   * other.MyPage may result in routing collisions or component usage collisions, depending on the
+   * situation.
+   * @param paths Paths to check for duplicates.
+   */
+  protected void checkSameFilenames(Collection<Path> paths) {
+    Map<String, List<Path>> filenameMap = new HashMap<>();
+    for (Path path : paths) {
+      String filename = path.getFileName().toString();
+      int lastDotIndex = filename.lastIndexOf('.');
+      String filenameNoExt = (lastDotIndex == -1) ? filename : filename.substring(0, lastDotIndex);
+      filenameMap.computeIfAbsent(filenameNoExt, x -> new ArrayList<>()).add(path);
+    }
+
+    StringBuilder sb = new StringBuilder("0x00023 Found files with the same names,"
+        + " which is likely to cause issues:\n");
+    boolean error = false;
+    for (Map.Entry<String, List<Path>> entry : filenameMap.entrySet()) {
+      if (entry.getValue().size() > 1) {
+        error = true;
+        for (Path p : entry.getValue()) {
+          sb.append(p.toString());
+          sb.append("\n");
+        }
+        sb.append("\n");
+      }
+    }
+    if (error) {
+      sb.append("Please check if files were named properly, rename the files and"
+          + " set matching component names.");
+      Log.error(sb.toString());
+    }
   }
 
 }

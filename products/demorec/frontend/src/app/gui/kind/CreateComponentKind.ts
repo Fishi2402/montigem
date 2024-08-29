@@ -1,23 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { DemoRecManager } from '@src/demorec/DemoRecManager';
-
 import { ComponentKind } from '@src/demorec/ComponentKind';
-import { Option } from '@umlp/input';
+import { BatteryPack } from '@src/demorec/BatteryPack';
 
-import { CreateComponentKindComponent, config } from '../../../../build/frontendGen/build/appgui/gui/kind/CreateComponentKindComponent';
+import { CreateComponentKindComponent, config } from '@src/gui/kind/CreateComponentKindComponent';
 
 import {
-  Directive,
   Component,
-  Input,
   Output,
-  EventEmitter,
-  TemplateRef
+  EventEmitter
 } from '@angular/core';
 
-import { Router } from '@angular/router';
-import {ComponentEdit} from "../component/ComponentEdit";
+import {BatteryPackService} from "@src/BatteryPackService";
 
 @Component({
   standalone:true,
@@ -29,13 +23,27 @@ import {ComponentEdit} from "../component/ComponentEdit";
 })
 export class CreateComponentKind extends CreateComponentKindComponent {
 
+  protected currentPack : BatteryPack;
+
   @Output()
   public newKind : EventEmitter<ComponentKind> = new EventEmitter<ComponentKind>()
 
+  public constructor(protected packService: BatteryPackService) {
+    super();
+    this.packService.currentPack.subscribe(p => {
+      this.currentPack = p
+    })
+  }
+
   public override createNewComponentKind(): (arg: void) => void {
     return $ => {
-      if(this.getKind().isBuildable()) {
-        this.newKind.emit(this.getKind().build())
+      if(!this.getKind().isBuildFinished()) {
+        if(this.currentPack) {
+          this.getKind().setBatteryPack1(this.currentPack)
+        }
+        if(this.getKind().isBuildable()) {
+          this.newKind.emit(this.getKind().build())
+        }
       }
     }
   }

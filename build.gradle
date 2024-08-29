@@ -1,9 +1,28 @@
+import gradle.specific.UMLPFrontendCIImageTask
+import gradle.specific.UMLPFrontendLocalImageTask
+
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
   id 'base'
   id 'de.rwth.se.umlp-tool' // See "umlp-tool/src/main/java/gradle"
   id "io.github.themrmilchmann.ecj" version "0.2.0"
+  id "com.github.node-gradle.node" version "5.0.0"
+}
+
+// Download node once for all subprojects
+node {
+  download = true
+  version = "${node_version}"
+}
+
+def isWindows = System.getProperty("os.name").toLowerCase().startsWith("win")
+
+def getNodeDir() {
+  def nodejs_dir = file("${rootDir}/.gradle/nodejs/")
+  def node_dir = nodejs_dir.listFiles().find { it.isDirectory() }
+  assert node_dir != null : "Can't find node installation"
+  return node_dir
 }
 
 subprojects {
@@ -18,6 +37,33 @@ subprojects {
   java {
     toolchain {
       languageVersion = JavaLanguageVersion.of(11)
+    }
+  }
+
+  // Use downloaded node for all subprojects
+  tasks.withType(NpxTask).configureEach {
+    dependsOn rootProject.tasks.npmInstall
+    execOverrides {
+      if(isWindows){
+        setExecutable "${getNodeDir()}/npx.cmd"
+        environment 'PATH', "${getNodeDir()}${System.getProperty('path.separator')}${System.getenv('PATH')}"
+      } else {
+        setExecutable "${getNodeDir()}/bin/npx"
+        environment 'PATH', "${getNodeDir()}/bin${System.getProperty('path.separator')}${System.getenv('PATH')}"
+      }
+    }
+  }
+
+  tasks.withType(NpmTask).configureEach {
+    dependsOn rootProject.tasks.npmInstall
+    execOverrides {
+      if(isWindows){
+        setExecutable "${getNodeDir()}/npm.cmd"
+        environment 'PATH', "${getNodeDir()}${System.getProperty('path.separator')}${System.getenv('PATH')}"
+      } else {
+        setExecutable "${getNodeDir()}/bin/npm"
+        environment 'PATH', "${getNodeDir()}/bin${System.getProperty('path.separator')}${System.getenv('PATH')}"
+      }
     }
   }
 
@@ -52,7 +98,7 @@ subprojects {
   }
 
   configurations {
-    all {
+    configureEach {
       exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
       exclude group: 'ch.qos.logback', module: 'logback-classic'
       exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
@@ -60,7 +106,7 @@ subprojects {
   }
 
   afterEvaluate {
-    tasks.withType(gradle.specific.UMLPFrontendCIImageTask.class).each {
+    tasks.withType(UMLPFrontendCIImageTask.class).each {
       it.getFullImageName().set(project.provider {
         String imgBase = Objects.requireNonNull(System.getenv("CI_REGISTRY_IMAGE"), "CI_REGISTRY_IMAGE not set")
         String parentName = project.parent.name
@@ -68,7 +114,7 @@ subprojects {
       })
     }
 
-    tasks.withType(gradle.specific.UMLPFrontendLocalImageTask.class).each {
+    tasks.withType(UMLPFrontendLocalImageTask.class).each {
       it.getFullImageName().set(getProject().provider(() ->
           (getProject().getParent() != null ? getProject().getParent().getName() : getProject().getName()) + "/frontend"
       ))
@@ -91,7 +137,7 @@ repositories { // required to resolve the ecj dependency, including the whole ch
 
 build.dependsOn(gradle.includedBuild("umlp-tool").task(":build"))
 
-task umlp_check_report
+tasks.register('umlp_check_report')
 build.dependsOn(umlp_check_report)
 
 /*subprojects {

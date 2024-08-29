@@ -188,7 +188,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
     // case 1: component Foo(App app)
     if (typeSTE.isObjectType() && TagLookUp.isSingleton(typeSTE.getTypeInfo())) {
-      String manager = getAndImportManager();
+      // Use thhe manager corresponding (when importing from extended CDs)
+      String manager = getAndImportManager(typeSTE.asObjectType());
 
       // add builder init
       Optional<InitDependency> dep = InitDependencyTree.getInstance().getDependency(node);

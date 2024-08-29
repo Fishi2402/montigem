@@ -5,19 +5,16 @@ plugins {
   id "de.rwth.se.umlp-tool-frontend"
 }
 
+node {
+  nodeProjectDir = file("${buildDir}/frontendGen")
+}
+
 dependencies {
   implementation project(":examples:vis-lib:backend")
   implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version
 
   testImplementation 'com.microsoft.playwright:playwright:1.44.0'
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version
-}
-
-node {
-  download = true
-  version = "${node_version}"
-  nodeProxySettings = ProxySettings.OFF
-  nodeProjectDir = file("${buildDir}/frontendGen")
 }
 
 genGUI {
@@ -50,26 +47,26 @@ def prebuildTasks = [
     generate
 ]
 
-task testApp(type: NpxTask) {
+tasks.register('testApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["test"]
 }
 
-task buildApp(type: NpxTask) {
+tasks.register('buildApp', NpxTask) {
   dependsOn(testApp)
   command = "ng"
   args = ["build"]
 }
 assemble.dependsOn(buildApp)
 
-task runApp(type: NpxTask) {
+tasks.register('runApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["serve"]
 }
 
-task run {
+tasks.register('run') {
   dependsOn(runApp)
 }
 
@@ -88,5 +85,6 @@ tasks.register("slowtest", Test) {
     includeTags "SlowTest"
   }
   shouldRunAfter test
+  dependsOn npmInstall
 }
 

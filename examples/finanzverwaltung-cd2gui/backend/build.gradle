@@ -43,9 +43,7 @@ dependencies {
     exclude module: 'log4j-to-slf4j'
   }
 
-  implementation group: 'umlp', name: 'umlp-rte', version: mc_version, {
-    exclude group: "org.slf4j", module: "slf4j-simple"
-  }
+  implementation project(':umlp-rte')
 
   implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
   implementation 'com.h2database:h2:2.1.214'
@@ -84,13 +82,13 @@ generateUmlpBackend {
   useShell = false
 }
 
-task runServer {
+tasks.register('runServer') {
   dependsOn(bootRun {
     systemProperty "spring.shell.interactive.enabled", "false"
   })
 }
 
-task runShellApi(type: org.springframework.boot.gradle.tasks.run.BootRun) {
+tasks.register('runShellApi', org.springframework.boot.gradle.tasks.run.BootRun) {
   classpath = sourceSets.main.runtimeClasspath
   mainClass = 'guidslpaper.GuidslpaperShellAPIApplication'
   standardInput = System.in

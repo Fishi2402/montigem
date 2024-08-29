@@ -44,7 +44,7 @@ dependencies {
 configurations {umlpModules{}}
 
 // POJOs
-task generateGuiComponentJava(type: GUITypes2JavaTask) {
+tasks.register('generateGuiComponentJava', GUITypes2JavaTask) {
   hwcDir = project.layout.files("src/main/java")
   input = file("client/models/")
   outputDir = project.layout.buildDirectory.dir("guiComponentTypes")

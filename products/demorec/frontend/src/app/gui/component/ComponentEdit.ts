@@ -1,29 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
-
-import { DemoRecManager } from '@src/demorec/DemoRecManager';
-
-import { BatteryPackType } from '@src/demorec/BatteryPackType';
 import { State } from '@src/demorec/State';
 
 import { BatteryPack } from '@src/demorec/BatteryPack';
 import { ComponentKind } from '@src/demorec/ComponentKind';
 import { Photo } from '@src/demorec/Photo';
+import { DemoRecManager } from '@src/demorec/DemoRecManager';
 import {GemTextInputValidity, Option} from '@umlp/input';
 
-import { ComponentEditComponent, config } from '../../../../build/frontendGen/build/appgui/gui/component/ComponentEditComponent';
+import { ComponentEditComponent, config } from '@src/gui/component/ComponentEditComponent';
 
 import {
-  Directive,
   Component,
-  Input,
-  Output,
-  EventEmitter,
-  TemplateRef
 } from '@angular/core';
-
-import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
-
-const newOption: Option = { value: "NEW", display: "NEW" };
+import {GemList} from "@umlp/common";
 
 @Component({
   standalone:true,
@@ -35,38 +24,20 @@ const newOption: Option = { value: "NEW", display: "NEW" };
 })
 export  class ComponentEdit extends ComponentEditComponent {
 
-  public kindEntry: string = "";
-  public kindOptions: Option[] = [newOption];
-
   conditionOptions : Option[] = []
+  allComponentKinds : ComponentKind[]= []
 
-  public constructor() {
-    super();
-
+  public init(): void {
     this.conditionOptions = []
     Object.keys(State).filter(s => !isNaN(+s)).forEach(key => {
       this.conditionOptions.push({value: key, display: State[key]});
     })
 
-    DemoRecManager.getComponentKindList().then(gemPromiseRes => {
-      const kinds = gemPromiseRes;
-      kinds.loadAll().then(() => {
-        for (const kind of kinds) {
-          let value = kind.getGemId() + "";
-          this.kindOptions.push({value: value, display: kind.getName()});
-        }
-        this.kindOptions = this.kindOptions.slice();
-      });
-    });
+    DemoRecManager.getComponentKindList()
+        .then(l => {return l.loadAll()})
+        .then( l => this.allComponentKinds = l)
 
-    this._router.events.subscribe((val) => {
-      if(val instanceof NavigationEnd) {
-        if(this._route.snapshot.paramMap.get("componentRoutingId") != null) {
-          this.componentRoutingId = +this._route.snapshot.paramMap.get("componentRoutingId");
-          this.ngOnInit()
-        }
-      }
-    });
+    super.init();
   }
 
   public editComponentKind(): (arg: void) => void {
@@ -87,7 +58,6 @@ export  class ComponentEdit extends ComponentEditComponent {
     return (photo : Photo) => {
       this.getComponent().addPhoto2(photo)
     }
-
   }
 
   public override changeToKind() : (arg : ComponentKind) => void  {
@@ -125,6 +95,14 @@ export  class ComponentEdit extends ComponentEditComponent {
     }
   }
 
+  public override getAvailableKinds(): ComponentKind[] {
+    if(this.getComponent()) {
+      if(this.getComponent().getBatteryPack()) {
+        return this.getComponent().getBatteryPack().getAllKindsList()
+      } else {
+        return this.allComponentKinds
+      }
+    }
+    return []
+  }
 }
-
-

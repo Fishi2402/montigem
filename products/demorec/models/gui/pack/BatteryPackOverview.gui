@@ -41,13 +41,5 @@ component BatteryPackOverview(BatteryPack pack) {
           @PackTypeOverview(type=pack.type)
         ]
       )
-      /*
-      @GemColumn(
-        width="20%",
-        components=[
-          tree@ComponentTreeView(component=pack)
-        ]
-      )
-      /**/
   ]);
 }

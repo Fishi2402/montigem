@@ -7,17 +7,17 @@ The input must adhere to the data structures defined
 by the domain model (i.e., class diagram).
 
 ## Gradle Task
-For conviniant usage, the UMLP to provides the gradle 
+For convenient usage, the UMLP to provides the gradle 
 tasks `UMLPOD2DataTask`. The task generates an 
 infrastructure for instantiating the modeled object
 structure. 
 This comprises an `Instantiator` class, which, when 
 called via its `instantiate` method, create the 
-corrsonding object instances. 
+corresponding object instances. 
 It also returns these objects. 
 However, as the UMLP infrastructure typically 
 automatically adds them to the database when created,
-it ususally suffices instantiating the object structure
+it usually suffices instantiating the object structure
 in this context.
 
 ### Input configuration

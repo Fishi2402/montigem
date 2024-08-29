@@ -17,7 +17,7 @@ configurations {
 def modelsDir = projectDir.toPath().resolve("src").resolve("models")
 def scOutDir = buildDir.toPath().resolve("sc")
 
-task genSc(type: JavaExec) {
+tasks.register('genSc', JavaExec) {
   classpath configurations.scGenerator
   mainClass = "de.monticore.umlstatecharts.UMLStatechartsTool"
 

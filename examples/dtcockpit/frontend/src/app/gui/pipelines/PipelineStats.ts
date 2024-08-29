@@ -28,13 +28,9 @@ export class PipelineStats extends PipelineStatsComponent {
 
   projectDataCheck = { value: null, hash: null, calculating: false };
 
-  public ngOnInit() {
-    this._route.paramMap.subscribe(() => {
-      this.projectDataCheck = { value: null, hash: null, calculating: false };
-      this.pRoutingId = +this._route.snapshot.paramMap.get("pRoutingId");
-      this.p = null;
-      super.ngOnInit();
-    });
+  public init() {
+    this.projectDataCheck = { value: null, hash: null, calculating: false };
+    super.init();
   }
 
   public getBarChartForPipelineRunsData(): GemBarChartData {

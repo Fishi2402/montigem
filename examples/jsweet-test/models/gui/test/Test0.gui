@@ -1,0 +1,16 @@
+package gui.test;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemText;
+import mc.fenix.navigation.GemNavItem;
+
+import gui.test.TestNav;
+
+import Jsweettest.C2;
+
+page Test0() {
+  @TestNav();
+  @GemText(value = "Page: Test0");
+
+  @GemText(value = "Show some static text");
+}

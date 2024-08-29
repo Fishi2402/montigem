@@ -34,7 +34,7 @@ export class GemBarChart extends GemBarChartTOP {
   public _stacked: boolean;
 
   /** adds by the desire of the user additional symbols to the values  */
-  public _displayValue: (value: number) => string;
+  public _displayValue: (value: number) => string = (v) => String(v);
 
   /**labels for chart legend */
   public legendLabels: string[] = [];
@@ -63,7 +63,7 @@ export class GemBarChart extends GemBarChartTOP {
   }
 
   /** setter that processes the data to be shown correctly by the chart and the legend.
-   * Also sets the colors for each entry when no color is given as it uses the provided colors service 
+   * Also sets the colors for each entry when no color is given as it uses the provided colors service
    */
   @Input()
   public set data(data: GemBarChartData) {
@@ -123,7 +123,7 @@ export class GemBarChart extends GemBarChartTOP {
     this.saveAllOptionsChanges();
     this.setData();
   }
-  
+
   constructor() {
     super();
   }
@@ -133,7 +133,7 @@ export class GemBarChart extends GemBarChartTOP {
   }
 
   /**
-   * handles a problem connected with different order of variables in the input 
+   * handles a problem connected with different order of variables in the input
    */
   public setData(): void {
     if (this._stacked && this.rawData != undefined) {

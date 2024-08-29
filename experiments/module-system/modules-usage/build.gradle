@@ -7,7 +7,7 @@ dependencies {
   umlpModules(project(path: ":experiments:module-system:module-definition", configuration: "moduleGenTime"))
 }
 
-task printUmlpModules(){
+tasks.register('printUmlpModules')(){
   doLast{
     println("Files in umlpModules")
     configurations.umlpModules.files.each {

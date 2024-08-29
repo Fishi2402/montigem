@@ -1,5 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
+import { inject } from '@angular/core';
 import { DemoRecManager } from '@src/demorec/DemoRecManager';
 
 import { DemoRecComponent } from '@src/demorec/DemoRecComponent';
@@ -38,24 +39,21 @@ export class JoinConnectionKindEdit extends JoinConnectionKindEditComponent impl
   conditionOptions : Option[] = []
 
   currentPack : BatteryPack
+  packService: BatteryPackService
 
-  public constructor(protected packService: BatteryPackService) {
+  public constructor() {
     super();
+    this.packService = inject(BatteryPackService);
+  }
+
+  public init(): void {
     this.packService.currentPack.subscribe(p => {
       this.currentPack = p
       this.filteredComponentOptions = [newOption].concat(
           this.componentOptions.filter(opt => this.getCurrentPackComponents().has(opt.value)))
     })
 
-    this._router.events.subscribe((val) => {
-      if(val instanceof NavigationEnd) {
-        if(this._route.snapshot.paramMap.get("connectionRoutingId") != null) {
-          this.connectionKindRoutingId = +this._route.snapshot.paramMap.get("connectionRoutingId");
-          this.ngOnInit()
-        }
-      }
-    });
-
+    super.init();
   }
 
   private getCurrentPackComponents() : Set<string> {
@@ -94,9 +92,13 @@ export class JoinConnectionKindEdit extends JoinConnectionKindEditComponent impl
             this.componentOptions.push({value: value, display: display});
           }
         }
-        this.componentOptions = this.componentOptions.slice();
+        this.componentOptions = this.componentOptions.sort(
+            (a,b) => {return a.display.localeCompare(b.display)}
+        ).slice();
         this.filteredComponentOptions = [newOption].concat(
-            this.componentOptions.filter(opt => this.getCurrentPackComponents().has(opt.value)))
+            this.componentOptions.filter(opt => this.getCurrentPackComponents().has(opt.value)).sort(
+                (a,b) => {return a.display.localeCompare(b.display)}
+            ))
       });
     });
   }
@@ -126,7 +128,10 @@ export class JoinConnectionKindEdit extends JoinConnectionKindEditComponent impl
 
   public override getSelectConnectsComponentOptions(): Array<Option>{
     const filteredOptions = [newOption].concat(
-        this.componentOptions.filter(opt => this.getCurrentPackComponents().has(opt.value)))
+        this.componentOptions.filter(opt => this.getCurrentPackComponents().has(opt.value)).sort(
+            (a,b) => {return a.value.localeCompare(b.display)}
+        ))
+    console.debug(filteredOptions)
     if(filteredOptions === this.filteredComponentOptions) {
       this.filteredComponentOptions = filteredOptions
     }

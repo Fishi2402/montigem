@@ -5,41 +5,21 @@ import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 
 import java.util.List;
 
-public class ComponentRouting {
-  protected final String importPath;
+public class ComponentRoute {
+  protected final String importPathNoExt;
   protected final String importedSymbolName;
   protected final String urlPrefix;
   protected final String url;
   protected final boolean hasIds;
 
-  public String getImportedSymbolName() {
-    return importedSymbolName;
-  }
-
-  public String getImportPath() {
-    return importPath;
-  }
-
-  public String getUrlPrefix() {
-    return urlPrefix;
-  }
-
-  public String getUrl() {
-    return url;
-  }
-
-  public boolean getHasIds() {
-    return hasIds;
-  }
-
-  public ComponentRouting(
+  public ComponentRoute(
       ASTGUICompilationUnit ast,
       boolean existsHWC,
       List<String> ids,
-      String importPath,
+      String importPathNoExt,
       String urlPrefix
   ) {
-    this.importPath = importPath;
+    this.importPathNoExt = importPathNoExt;
     this.urlPrefix = urlPrefix;
 
     String importedSymbolName = ast.getComponentName();
@@ -60,4 +40,25 @@ public class ComponentRouting {
 
     this.hasIds = !ids.isEmpty();
   }
+
+  public String getImportedSymbolName() {
+    return importedSymbolName;
+  }
+
+  public String getImportPathNoExt() {
+    return importPathNoExt;
+  }
+
+  public String getUrlPrefix() {
+    return urlPrefix;
+  }
+
+  public String getUrl() {
+    return url;
+  }
+
+  public boolean getHasIds() {
+    return hasIds;
+  }
+
 }

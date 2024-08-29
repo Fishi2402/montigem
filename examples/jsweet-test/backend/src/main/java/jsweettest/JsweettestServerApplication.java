@@ -26,4 +26,62 @@ public class JsweettestServerApplication extends JsweettestServerApplicationTOP 
     JsweettestManager.aBuilder().value("Malte").build();
     JsweettestManager.aBuilder().value("Alex").build();
   }
+
+  public static void resetTestData() {
+    // TODO: THe following #clears to not work
+    JsweettestManager.getC1List().clear();
+    JsweettestManager.getC2List().clear();
+    JsweettestManager.getC3List().clear();
+
+    while (!JsweettestManager.getC1List().isEmpty()) {
+      JsweettestManager.deleteC1(JsweettestManager.getC1List().iterator().next().getGemId());
+    }
+    while (!JsweettestManager.getC2List().isEmpty()) {
+      JsweettestManager.deleteC1(JsweettestManager.getC2List().iterator().next().getGemId());
+    }
+    while (!JsweettestManager.getC3List().isEmpty()) {
+      JsweettestManager.deleteC1(JsweettestManager.getC3List().iterator().next().getGemId());
+    }
+
+    C1 c1 = JsweettestManager.c1Builder()
+        // strings
+        .string("C1#1")
+        // ints
+        .int1(1)
+        .int2(2)
+        .hwGemId(-1L)
+        .c2Req(randomC2(1))
+        .build().get();
+    c1.setHwGemId(c1.getGemId());
+
+    c1.getC2Req().addC3mult(randomC3(1));
+    c1.getC2Req().addC3mult(randomC3(2));
+
+    c1.setC2opt(randomC2(2));
+
+    c1.addC2mult(c1.getC2Req());
+    c1.addC2mult(randomC2(3));
+    c1.addC2mult(randomC2(4));
+    c1.addC2mult(randomC2(5));
+  }
+
+  protected static C3 randomC3(int i) {
+    return JsweettestManager.c3Builder()
+        // strings
+        .string("C3#" + i)
+        // ints
+        .int1(100 + i)
+        .int2(200 + i)
+        .build().get();
+  }
+
+  protected static C2 randomC2(int i) {
+    return JsweettestManager.c2Builder()
+        // strings
+        .string("C2#" + i)
+        // ints
+        .int1(10 + i)
+        .int2(20 + i)
+        .build().get();
+  }
 }

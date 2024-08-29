@@ -28,7 +28,7 @@ export class ${cdName}ComponentObserverManager extends ComponentObserverManager 
 </#list>
     // domain object getter factory
 <#list listDomainClassNames as domainClassName>
-    this.objectGetterFactory.set("${domainClassName}", (gemId) => FunctionStructure4FenixManager.get${domainClassName}Sure(gemId));
+    this.objectGetterFactory.set("${domainClassName}", (gemId) => ${cdName}Manager.get${domainClassName}Sure(gemId));
 </#list>
   }
 

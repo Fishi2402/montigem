@@ -147,6 +147,8 @@ public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
 
       pack.addAllComponents(component);
       pack.addAllComponents(component2);
+      pack.addAllKinds(component.getIsA());
+      pack.addAllKinds(component2.getIsA());
 
       JoinConnectionKind kind = DemoRecManager.joinConnectionKindBuilder()
           .joinConnectionType(JoinConnectionType.SCREW)

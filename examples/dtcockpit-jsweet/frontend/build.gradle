@@ -24,9 +24,6 @@ dependencies {
 }
 
 node {
-  download = true
-  version = "${node_version}"
-  nodeProxySettings = ProxySettings.OFF
   nodeProjectDir = file("${buildDir}/frontendGen")
 }
 nodeSetup.dependsOn(frontendSetup)
@@ -55,20 +52,20 @@ def prebuildTasks = [
     npmInstall, generate
 ]
 
-task buildApp(type: NpxTask) {
+tasks.register('buildApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["build"]
 }
 assemble.dependsOn(buildApp)
 
-task testApp(type: NpxTask) {
+tasks.register('testApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["test"]
 }
 
-task runApp(type: NpxTask) {
+tasks.register('runApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["serve"]
@@ -83,26 +80,26 @@ test {
 
 
 // End 2 end testing using the build website + backend
-task installPlaywright(type: NpxTask){
+tasks.register('installPlaywright', NpxTask){
   dependsOn(npmInstall)
   command = "playwright"
   args = ["install"]
 }
 
 // TODO: Let those tasks use a shared service, as to stop gradle from executing them in parallel
-task e2eTestApp(type: NpmTask){
+tasks.register('e2eTestApp', NpmTask){
   dependsOn(buildApp, installPlaywright, project(":examples:dtcockpit-jsweet:backend").tasks.e2eBootJar)
   args = ["run", "e2e"]
   enabled = false // TODO: ALu
 }
 
-task e2eTestAppDebug(type: NpmTask){
+tasks.register('e2eTestAppDebug', NpmTask){
   dependsOn(buildApp, installPlaywright, project(":examples:dtcockpit-jsweet:backend").tasks.e2eBootJar)
   args = ["run", "e2e", "--", "--debug"]
   enabled = false // TODO: ALu
 }
 
-task e2eRecordTest(type: NpmTask) {
+tasks.register('e2eRecordTest', NpmTask) {
   // Note: Start a backend & frontend before running this command
   dependsOn(installPlaywright)
   args = ["run", "e2erecord"]

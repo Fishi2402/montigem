@@ -114,6 +114,9 @@ export class GraphManagerService<
   /** Represents the container element for the graph. */
   private container: HTMLDivElement | null = null;
 
+  /** Reprensents the custom bounding box */
+  private customBoundingBox : {x:[number,number], y:[number,number] }| null = null;
+
   constructor(
     private ngZone: NgZone,
     public sigmaGraph: SigmaGraphService<N, E, G>,
@@ -364,6 +367,18 @@ export class GraphManagerService<
    */
   public updateNodes(newNodes: GraphNode[], reload: boolean = false): void {
     this.graphProcessor.setNodeData(newNodes);
+    if (reload) this.reload();
+  }
+
+  /**
+   * Updates the custom bounding box.
+   *
+   * @param {{x:[number,number], y:[number,number] } | null} customBBox - The custom bounding box.
+   * @param {boolean} [reload] - Whether to reload the graph after updating. Default is `true`
+   */
+  public updateCustomBoundingBox(customBBox: {x:[number,number], y:[number,number] } | null, reload: boolean = true): void {
+    this.customBoundingBox = customBBox
+    this.renderer?.setCustomBBox(customBBox);
     if (reload) this.reload();
   }
 
@@ -663,9 +678,17 @@ export class GraphManagerService<
     this.layoutService.reset();
     if (this.renderer) {
       this.sigmaGraph.setGraph(graph);
+      if(this.customBoundingBox) {
+        this.renderer.setCustomBBox(this.customBoundingBox)
+      }
     } else {
       this.sigmaGraph.createRenderer(graph, this.container!, this.graphSettings.getSettings() as Settings);
-      if (this.renderer) this.sigmaInitialized.next(this.renderer);
+      if (this.renderer) {
+        this.sigmaInitialized.next(this.renderer);
+      }
+      if(this.sigmaGraph.renderer) {
+        this.sigmaGraph.renderer.setCustomBBox(this.customBoundingBox)
+      }
       this.subscribeToGraphEvents();
     }
   }
@@ -726,7 +749,7 @@ export class GraphManagerService<
   /**
    * Creates a new graph instance with the proper settings and returns it.
    *
-   * @returns {Graph} - Creates a new Graph instance.
+   * @returns {Graph} - Creates a new Graph instance.F
    */
   private createGraph(): Graph<N, E, G> {
     return new Graph<N, E, G>({

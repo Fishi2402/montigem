@@ -7,7 +7,7 @@ import mc.fenix.arrange.GemColumn;
 
 import gui.kind.CreateComponentKind;
 
-page ChooseComponentKind(ComponentKind currentKind, Event<ComponentKind> chosenKind) {
+page ChooseComponentKind(List<ComponentKind> availableKinds, ComponentKind currentKind, Event<ComponentKind> chosenKind) {
 
   @GemColumn(
     rowGap="5px",

@@ -46,13 +46,13 @@ dependencies {
     //symbol "de.monticore:frontend-rte:$mc_version"
 }
 
-task runServer {
+tasks.register('runServer') {
     dependsOn(bootRun)
 }
 
 
 String diff_location="diff_store"
-task copyGeneratedFiles(type: Sync) {
+tasks.register('copyGeneratedFiles', Sync) {
   group = "diff"
   from generateUmlpBackend.getOutputDir()
   into layout.buildDirectory.dir(diff_location)
@@ -62,7 +62,7 @@ generateUmlpBackend {
   configTemplate = "umlp.UMLP2JavaNeo4j"
 }
 
-task diff(type: Exec){
+tasks.register('diff', Exec){
   group = "diff"
   dependsOn(generateUmlpBackend)
   commandLine 'cmd', '/c', 'git', 'diff', '--no-index', layout.buildDirectory.dir(diff_location).get().getAsFile().toPath(), generateUmlpBackend.getOutputDir().get().getAsFile().toPath()
@@ -70,6 +70,6 @@ task diff(type: Exec){
 }
 
 
-task generateNPMAuth(type: NPMAuthCreate){
+tasks.register('generateNPMAuth', NPMAuthCreate){
   gitignore = project.getRootProject().file(".gitignore") // Task reads gitignore to ensure <.npmrc> is not committed
 }

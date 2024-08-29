@@ -6,6 +6,7 @@ import {
   CommandManager
 } from '@umlp/commonj2ts';
 import {JsweettestManagerClientImpl} from '@src/jsweettest/JsweettestManagerClientImpl';
+import {JsweettestComponentObserverManager} from '@src/JsweettestComponentObserverManager';
 
 @Component({
   selector: 'app-root',
@@ -21,6 +22,9 @@ export class AppComponent {
       ws_protocol + '://' + document.location.host + '/umlp/api/command'
     ));
     CommandManager.initMe(cmdManager);
+    JsweettestComponentObserverManager.init();
+    // for playwright tests
+    (<any>window).websocket_connected = true;
   }
 
 

@@ -46,7 +46,7 @@ public class TSTopDecorator extends TopDecorator {
       }
       if (existsHw && !GUIGeneratorUtil.getInstance().isComponent(cdClass)) {
         if (importHW && !GUIGeneratorUtil.getInstance().isCommand(cdClass)) {
-          CD4C.getInstance().addImport(cdClass, GUIGeneratorUtil.getInstance().getPackageName(compUnit) + "." + cdClass.getName());
+          CD4C.getInstance().addImport(cdClass, nameMap.get(cdClass) + "." + cdClass.getName());
         }
         applyTopMechanism(cdClass);
       }

@@ -24,7 +24,7 @@ dependencies {
     exclude module: 'log4j-to-slf4j'
   }
 
-  api group: 'umlp', name: 'umlp-rte', version: mc_version, {
+  api project(':umlp-rte'), {
     exclude group: "org.slf4j", module: "slf4j-simple"
   }
 
@@ -45,7 +45,6 @@ dependencies {
   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2', withoutSpringLogging
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2', withoutSpringLogging
 
-  implementation project(':umlp-rte')
   implementation "org.eclipse.jgit:org.eclipse.jgit:5.2.2.201904231744-r"
 
   implementation group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.6_mail', version: '1.0.1'
@@ -67,7 +66,7 @@ generateUmlpBackend {
   useShell.set(false)
 }
 
-task runServer {
+tasks.register('runServer') {
   dependsOn(bootRun {
     systemProperty "spring.shell.interactive.enabled", "false"
   })

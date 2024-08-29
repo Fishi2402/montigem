@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { Dimension } from '@src/demorec/Dimension';
+import { DemoRecManager } from '@src/demorec/DemoRecManager';
 
-import { DimensionCreateComponent, config } from '../../../../build/frontendGen/build/appgui/gui/dimension/DimensionCreateComponent';
+import { DimensionCreateComponent, config } from '@src/gui/dimension/DimensionCreateComponent';
 
 import {
   Directive,
@@ -28,7 +28,10 @@ export class DimensionCreate extends DimensionCreateComponent {
   public override createDimension(): (arg: void) => void {
     return $ => {
       this.getDimension().build();
-      super.ngOnInit();
+
+      DemoRecManager.dimensionBuilder().then(tmp_$ => {
+        this._dimension = tmp_$
+      });
     }
   }
 }

@@ -10,7 +10,7 @@ const ${tmpVar}: ${tsType} = [];
 ${tmpVar}.push(${item});
 </#list>
 
-if (this.${name} == null) {
+if (this.${name} === undefined) {
   this.${name} = new Map();
 }
 <#list keys as key>
