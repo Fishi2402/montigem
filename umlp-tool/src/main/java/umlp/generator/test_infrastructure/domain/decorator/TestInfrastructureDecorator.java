@@ -1,10 +1,10 @@
 package umlp.generator.test_infrastructure.domain.decorator;
 
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdbasis._ast.ASTCDCompilationUnitBuilder;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
+import umlp.generator.domain.UMLPGenerator;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.BEDecorator;
 import umlp.generator.domain.decorator.DiagramObserverDecorator;
@@ -31,8 +31,7 @@ public class TestInfrastructureDecorator extends BEDecorator {
     usedDecorators.clear();
 
     //we don't want to regenerate the classes, so we use a new decorated ast and throw it away afterward
-    ASTCDCompilationUnit dummyAST = new ASTCDCompilationUnitBuilder().setCDDefinition(cdAST.getCDDefinition())
-        .build();
+    ASTCDCompilationUnit dummyAST = UMLPGenerator.createNewCompilationUnit(cdAST);
 
     //we need some information from the backend generation - so we just do it again
     super.transform(cdAST, dummyAST);
