@@ -29,8 +29,8 @@ import {WizardModal} from "@src/wizard/WizardModal";
 
     <hr/>
 
-    <div style="position: sticky; bottom: 0; left: 50px; height: 20px; width: 100px; z-index: 999">
-        <button (click)="toggleOrder()">Show Controls</button>
+    <div style="position: sticky; bottom: 0; left: 50px; height: 20px; wxidth: 200px; z-index: 999; display: flex">
+        <button (click)="toggleOrder()">Toggle Controls</button>
         <button (click)="export()">Export</button>
         <button (click)="store()">save as default</button>
         <button (click)="restore()">restore default</button>
@@ -44,11 +44,9 @@ import {WizardModal} from "@src/wizard/WizardModal";
         </ng-container>
     </wizard-modal>
 
-    <wizard-modal [open]="this.newElemCallback !== undefined">
-        <h3>New Element:</h3>
-
-        <button *ngFor="let k of wizard_keys" (click)="addElemClb(k)">{{k}}</button>
-        <button (click)="addElemClb(undefined)">Abort</button>
+    <wizard-modal [open]="true">
+        <h5>New Element: <small>Drag & drop a component from here onto the page</small></h5>
+        <button *ngFor="let k of wizard_keys"   (dragstart)="addElemDragStart(k, $event)" draggable="true" title="Drag me">{{k}}</button>
 
     </wizard-modal>
   `,
@@ -109,6 +107,22 @@ export class Wizard extends WizardComponent implements AfterViewInit {
     this.restore()
   }
 
+  addElemDragStart(key: string, $event: DragEvent) {
+    const dragEnd = (e) => {
+      $event.target.removeEventListener('dragend', dragEnd);
+      this.inspectorService.showDropZone.next(false);
+    }
+    $event.target.addEventListener('dragend', dragEnd);
+    $event.dataTransfer.dropEffect = 'copy';
+
+    setTimeout(() =>     this.inspectorService.showDropZone.next(true), 100);
+    $event.dataTransfer.effectAllowed = "copy";
+    this.inspectorService.draggedObject = {
+      newType: key
+    }
+
+  }
+
   restore() {
 
     let d = {
@@ -146,7 +160,7 @@ export class Wizard extends WizardComponent implements AfterViewInit {
                         components: [{
                           "type": "GemText",
                           "params": {
-                            "value": "By pressing show controls, you can toggle the control buttons"
+                            "value": "By pressing toggle controls, you can hide/show the control buttons"
                           }
                         }]
                       }
@@ -158,7 +172,7 @@ export class Wizard extends WizardComponent implements AfterViewInit {
                         components: [{
                           "type": "GemText",
                           "params": {
-                            "value": "The arrows move an item up/down [i] allows changing the params. Hover over the buttons for additional info"
+                            "value": "You can inspect, delete, and move elements using the controls. Hover over the buttons for additional info"
                           }
                         }]
                       }
