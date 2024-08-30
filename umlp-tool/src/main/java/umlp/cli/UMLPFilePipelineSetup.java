@@ -4,6 +4,7 @@ import de.monticore.cd._symboltable.BuiltInTypes;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code._symboltable.ICD4CodeArtifactScope;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdmerge.CDMerge;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.io.paths.MCPath;
@@ -38,13 +39,18 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static umlp.UMLPToolOptions.FOR_CLIENT;
 import static umlp.UMLPToolOptions.GEN_SYMBOLS_ONLY;
 import static umlp.UMLPToolOptions.GUI_GEN_JSWEET;
+import static umlp.UMLPToolOptions.MERGE;
 import static umlp.UMLPToolOptions.OCL;
 import static umlp.UMLPToolOptions.PRETTYPRINT;
 import static umlp.UMLPToolOptions.SYMTAB;
@@ -60,6 +66,7 @@ public class UMLPFilePipelineSetup {
   Pipeline<Data> astPipe;
   final IOperation.ISimpleOperation<UMLPPipelineData> loadAST;
 
+  final IOperation<Data> mergeAST;
   final IOperation.ISimpleOperation<Data> storeSymbols;
 
   final IOperation.ISimpleOperation<Data> writeSymbolsToSTD;
@@ -108,11 +115,48 @@ public class UMLPFilePipelineSetup {
       // parse, create symbol table, check all cocos
       ASTCDCompilationUnit ast = data.tool.parse(data.inputFile.getPath());
       Reporting.reportParseInputFile(data.inputFile.toPath().toAbsolutePath(), report_on); // TODO: causes NullPointerException
-
       astPipe.doWork(new Data(data, ast));
     });
-    // Pipeline for dealing with loaded
+    // Pipeline for dealing with parsed ASTs
     astPipe = createPipe(Data.class);
+    // Insert merge operation at the front of the ast pipeline
+    astPipe.registerFirst(mergeAST = data -> {
+      // First step of an AST: If --merge was provided, override AST with merged AST
+      if (MERGE.isSelected(data.data.cmd)){
+        Set<ASTCDCompilationUnit> mergeSet = new LinkedHashSet<>();
+        mergeSet.add(data.data.tool.parse(data.data.inputFile.getPath()));
+        // Parse and report parsing of merge-inputs
+        for (String mergeFile : data.data.cmd.getOptionValues("mrg")) {
+          File inputMergeFile = new File(mergeFile);
+          mergeSet.add(data.data.tool.parse(inputMergeFile.getAbsolutePath()));
+          // Note: Do NOT use reportParseInputFile, as it resets it. Instead, use reportOpenInputFile
+          Reporting.reportOpenInputFile(inputMergeFile.toPath().toAbsolutePath().toString());
+        }
+        // Construct a name for the merged file
+        String cdName = "Merge";
+        if (PRETTYPRINT.isSelected(data.data.cmd)
+            && PRETTYPRINT.getValue(data.data.cmd) != null ){
+          cdName = Path.of(PRETTYPRINT.getValue(data.data.cmd)).getFileName().toString();
+          if (PRETTYPRINT.getValue(data.data.cmd).endsWith(".cd")){
+            cdName = cdName.substring(0, cdName.length() - 3);
+          } else if (PRETTYPRINT.getValue(data.data.cmd).endsWith(".umlp")) {
+            cdName = cdName.substring(0, cdName.length() - 5);
+          } else {
+            cdName = "Merge";
+          }
+        }
+        ASTCDCompilationUnit merge = CDMerge.merge(mergeSet, cdName, new HashSet<>());
+        if (merge != null){
+          // Continue with the merged AST
+          data.setAst(merge);
+        } else {
+          // Abort (return false) and report error on unsuccessful merge
+          Log.error("Merge was unsuccessful");
+          return false;
+        }
+      }
+      return true;
+    });
     astPipe.register(storeSymbols = data -> {
       if (SYMTAB.isSelected(data.data.cmd) && SYMTAB.getValue(data.data.cmd) != null) {
         String s = SYMTAB.getValue(data.data.cmd);
@@ -278,7 +322,7 @@ public class UMLPFilePipelineSetup {
 
   static class Data implements DataWithCDASTAndTool {
     final UMLPPipelineData data;
-    final ASTCDCompilationUnit ast;
+    ASTCDCompilationUnit ast;
 
     public Data(UMLPPipelineData data, ASTCDCompilationUnit ast) {
       this.data = data;
@@ -297,6 +341,10 @@ public class UMLPFilePipelineSetup {
     @Override
     public UMLPTool getTool() {
       return this.data.tool;
+    }
+
+    public void setAst(ASTCDCompilationUnit ast) {
+      this.ast = ast;
     }
 
     @Override
