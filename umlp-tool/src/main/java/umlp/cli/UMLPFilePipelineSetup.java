@@ -2,9 +2,9 @@ package umlp.cli;
 
 import de.monticore.cd._symboltable.BuiltInTypes;
 import de.monticore.cd.methodtemplates.CD4C;
-import de.monticore.cd4code._symboltable.ICD4CodeArtifactScope;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdmerge.CDMerge;
+import de.monticore.cdmerge.config.MergeParameter;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.io.paths.MCPath;
@@ -39,8 +39,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
@@ -145,7 +143,8 @@ public class UMLPFilePipelineSetup {
             cdName = "Merge";
           }
         }
-        ASTCDCompilationUnit merge = CDMerge.merge(mergeSet, cdName, new HashSet<>());
+        ASTCDCompilationUnit merge = CDMerge.merge(mergeSet, cdName,
+            Set.of(MergeParameter.FAIL_AMBIGUOUS));
         if (merge != null){
           // Continue with the merged AST
           data.setAst(merge);
