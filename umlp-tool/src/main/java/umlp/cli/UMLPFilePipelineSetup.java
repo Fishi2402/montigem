@@ -119,7 +119,8 @@ public class UMLPFilePipelineSetup {
     });
     // Pipeline for dealing with parsed ASTs
     astPipe = createPipe(Data.class);
-    astPipe.register(mergeAST = data -> {
+    // Insert merge operation at the front of the ast pipeline
+    astPipe.registerFirst(mergeAST = data -> {
       // First step of an AST: If --merge was provided, override AST with merged AST
       if (MERGE.isSelected(data.data.cmd)){
         Set<ASTCDCompilationUnit> mergeSet = new LinkedHashSet<>();
