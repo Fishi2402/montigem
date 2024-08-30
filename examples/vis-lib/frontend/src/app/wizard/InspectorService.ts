@@ -27,6 +27,10 @@ export class InspectorService {
   }
 
   public showControls: BehaviorSubject<boolean> = new BehaviorSubject(true);
+  public showDropZone: BehaviorSubject<boolean> = new BehaviorSubject(false);
+
+  // Element which is currently dragged (either to be moved or added somewhere)
+  public draggedObject: any = undefined;
 
 }
 
