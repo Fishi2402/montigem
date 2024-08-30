@@ -36,11 +36,12 @@
         <mat-icon fontIcon="search"></mat-icon>
       </div>
       <input
-        id="searchInput"
+        [id]="getSearchInputId()"
         class="gem-text-input gem-search-input"
         type="text"
         placeholder="Search ..."
         tabindex="0"
+        autocomplete="off"
         [(ngModel)]="filterString"
         (keyup)="filterOptions()"
       >

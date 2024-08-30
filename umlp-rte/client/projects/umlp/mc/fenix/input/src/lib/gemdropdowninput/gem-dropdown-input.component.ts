@@ -1,11 +1,11 @@
 import {
   ChangeDetectorRef,
-  Component,
+  Component, ElementRef,
   EventEmitter,
-  HostBinding,
+  HostBinding, HostListener,
   Input, OnChanges,
   OnInit,
-  Output, SimpleChanges
+  Output, SimpleChanges, ViewChild
 } from "@angular/core";
 import {GemTextInputValidity} from "../gemtextinput";
 import {Option} from "./gem-dropdown-input-types/gem-dropdown-input.types";
@@ -24,12 +24,26 @@ export class GemDropdownInput implements OnInit, OnChanges {
   @HostBinding("style.height")
   @Input() height: string = '100%';
 
+  @HostListener('document:click', ['$event'])
+  clickOutside(event: any): void {
+    if (!this.componentRef.nativeElement.contains(event.target)) {
+      this.hideDropdown();
+    }
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  enterOutside(event: any): void {
+    if (event.key === "Enter" && !this.componentRef.nativeElement.contains(event.target)) {
+      this.hideDropdown();
+    }
+  }
+
   @Input() labelText: string;
   @Input() entry: string = "";
   @Input() disabled: boolean = false;
   @Input() options: Option[];
   @Input() validity: GemTextInputValidity;
-  @Input() searchEnabled: boolean;
+  @Input() searchEnabled: boolean = false;
 
   @Output() public entryChange: EventEmitter<string> = new EventEmitter<string>();
   @Output() public keyPress: EventEmitter<KeyboardEvent> = new EventEmitter<KeyboardEvent>;
@@ -40,22 +54,10 @@ export class GemDropdownInput implements OnInit, OnChanges {
   filteredOptions: Option[] = [];
   highlightIdx: number = -1;
 
-  constructor(private cdRef: ChangeDetectorRef) {}
+  constructor(private cdRef: ChangeDetectorRef, private componentRef: ElementRef) {}
 
   ngOnInit(): void {
-    this.searchEnabled = false;
     this.filteredOptions = this.options;
-    window.onclick = (event) => {
-      if (
-        !event.target.matches(".gem-text-input") &&
-        !event.target.matches(".mat-icon") &&
-        !event.target.matches(".gem-dropdown-input") &&
-        !event.target.matches(".gem-dropdown-button") &&
-        this.isContentShown
-      ) {
-        this.hideDropdown();
-      }
-    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -84,6 +86,7 @@ export class GemDropdownInput implements OnInit, OnChanges {
   selectOption(option: Option): void {
     this.entry = option.value;
     this.entryChange.emit(this.entry);
+    this.hideDropdown();
   }
 
   selectWithEnter(event: any): void {
@@ -93,17 +96,18 @@ export class GemDropdownInput implements OnInit, OnChanges {
       return;
     }
     this.selectOption(this.filteredOptions[this.highlightIdx]);
-    this.hideDropdown();
   }
 
   focusDown(): void {
     const newIdx = this.highlightIdx + 1;
     this.highlightIdx = newIdx < this.filteredOptions.length ? newIdx : this.filteredOptions.length - 1;
+    console.log("Focus down", this.highlightIdx);
   }
 
   focusUp(): void {
     const newIdx = this.highlightIdx - 1;
     this.highlightIdx = newIdx >= -1 ? newIdx : -1;
+    console.log("Focus up", this.highlightIdx);
   }
 
   setHighlightIdx(idx: number): void {
@@ -117,7 +121,11 @@ export class GemDropdownInput implements OnInit, OnChanges {
   }
 
   getInputId(): string {
-    return this.id + "Input"
+    return this.componentRef.nativeElement.getAttribute('class') + "Input";
+  }
+
+  getSearchInputId(): string {
+    return this.componentRef.nativeElement.getAttribute('class') + "Search";
   }
 
   private showDropdown(): void {
@@ -127,24 +135,26 @@ export class GemDropdownInput implements OnInit, OnChanges {
 
   private hideDropdown(): void {
     this.isContentShown = false;
-    this.resetHighlightIdx();
+    this.highlightIdx = -1;
+    this.filterString = "";
+    this.filteredOptions = this.options;
     this.toggleFocus();
   }
 
-  private resetHighlightIdx() {
-    this.highlightIdx = -1;
-  }
-
   private toggleFocus(): void {
-    if (!this.searchEnabled) {
-      return;
-    }
-    this.cdRef.detectChanges();
-    if (this.isContentShown) {
-      document.getElementById("searchInput").focus();
-    }
-    else {
-      document.getElementById(this.getInputId()).focus();
+    const activeElementId = document.activeElement.id;
+    if (this.getInputId() === activeElementId) {
+      // Focus search input if enabled
+      if (!this.searchEnabled) {
+        return;
+      }
+      this.cdRef.detectChanges();
+      if (this.isContentShown) {
+        document.getElementById(this.getSearchInputId()).focus();
+      }
+      else {
+        document.getElementById(this.getInputId()).focus();
+      }
     }
   }
 
