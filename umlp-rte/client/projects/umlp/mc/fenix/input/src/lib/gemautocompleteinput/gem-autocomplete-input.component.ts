@@ -1,7 +1,7 @@
 import {
-  Component,
+  Component, ElementRef,
   EventEmitter,
-  HostBinding,
+  HostBinding, HostListener,
   Input, OnChanges,
   OnInit,
   Output, SimpleChanges,
@@ -23,12 +23,29 @@ export class GemAutocompleteInput implements OnInit, OnChanges {
   @HostBinding("style.height")
   @Input() height: string = '100%';
 
+  @HostListener('document:click', ['$event'])
+  clickOutside(event: any): void {
+    if (!this.componentRef.nativeElement.contains(event.target)) {
+      this.hideDropdown();
+    }
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  enterOutside(event: any): void {
+    if (
+      (event.key === "Enter" && !this.componentRef.nativeElement.contains(event.target)) ||
+      event.key === "Tab"
+    ) {
+      this.hideDropdown();
+    }
+  }
+
   @Input() labelText: string;
   @Input() entry: string;
   @Input() disabled: boolean = false;
   @Input() options: Option[];
   @Input() validity: GemTextInputValidity;
-  @Input() placeholder: string;
+  @Input() placeholder: string = "";
 
   @Output() public entryChange: EventEmitter<string> = new EventEmitter<string>();
   @Output() public keyPress: EventEmitter<KeyboardEvent> = new EventEmitter<KeyboardEvent>;
@@ -38,18 +55,10 @@ export class GemAutocompleteInput implements OnInit, OnChanges {
   isContentShown: boolean = false;
   highlightIdx: number = -1;
 
+  constructor(private componentRef: ElementRef) {}
+
   ngOnInit(): void {
     this.filteredOptions = this.options;
-    window.onclick = (event) => {
-      if (
-        !event.target.matches(".gem-text-input") &&
-        !event.target.matches(".mat-icon") &&
-        !event.target.matches(".gem-dropdown-input") &&
-        this.isContentShown
-      ) {
-        this.hideDropdown();
-      }
-    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -71,7 +80,6 @@ export class GemAutocompleteInput implements OnInit, OnChanges {
     this.keyRelease.emit(event);
   }
 
-
   showDropdown(): void {
     if (!this.isContentShown && this.filteredOptions.length > 0) {
       this.isContentShown = true;
@@ -82,6 +90,7 @@ export class GemAutocompleteInput implements OnInit, OnChanges {
     this.entry = entry;
     this.entryChange.emit(this.entry);
     this.filterOptions();
+    this.hideDropdown();
   }
 
   selectWithEnter(): void {
@@ -90,27 +99,28 @@ export class GemAutocompleteInput implements OnInit, OnChanges {
       return;
     }
     this.selectOption(this.filteredOptions[this.highlightIdx].value);
-    this.hideDropdown();
   }
 
   focusDown(): void {
     const newIdx = this.highlightIdx + 1;
     this.highlightIdx = newIdx < this.filteredOptions.length ? newIdx : this.filteredOptions.length - 1;
+    if (this.isOverflown()) {
+      this.automaticScrollDown();
+    }
   }
 
   focusUp(): void {
     const newIdx = this.highlightIdx - 1;
     this.highlightIdx = newIdx >= -1 ? newIdx : -1;
+    if (this.isOverflown()) {
+      this.automaticScrollUp();
+    }
   }
 
   setHighlightIdx(idx: number): void {
-    this.highlightIdx = idx;
-  }
-
-  private filterOptions(): void {
-    this.filteredOptions = this.options.filter(option =>
-      option.value.toUpperCase().indexOf(this.entry.toUpperCase()) > -1
-    );
+    if (idx != this.highlightIdx) {
+      this.highlightIdx = idx;
+    }
   }
 
   toggleDropdown(): void {
@@ -122,6 +132,22 @@ export class GemAutocompleteInput implements OnInit, OnChanges {
     }
   }
 
+  getOptionsId(): string {
+    return this.componentRef.nativeElement.getAttribute('class') + "Options";
+  }
+
+  private filterOptions(): void {
+    this.filteredOptions = this.options.filter(option =>
+      option.value.toUpperCase().indexOf(this.entry.toUpperCase()) > -1
+    );
+    if (this.filteredOptions.length == 1) {
+      this.highlightIdx = 0;
+    }
+    else {
+      this.resetHighlightIdx();
+    }
+  }
+
   private hideDropdown(): void {
     this.isContentShown = false;
     this.resetHighlightIdx();
@@ -129,6 +155,29 @@ export class GemAutocompleteInput implements OnInit, OnChanges {
 
   private resetHighlightIdx() {
     this.highlightIdx = -1;
+  }
+
+  private isOverflown(): boolean {
+    const element: HTMLElement = document.getElementById(this.getOptionsId());
+    return element.scrollHeight > element.clientHeight;
+  }
+
+  private automaticScrollDown(): void {
+    const element: HTMLElement = document.getElementById(this.getOptionsId());
+    const highlightOption: HTMLElement = element.querySelector(".highlight-option");
+    const optionHeight: number = highlightOption?.offsetHeight;
+    if (highlightOption?.offsetTop + optionHeight >= element.clientHeight) {
+      element.scrollTop += optionHeight;
+    }
+  }
+
+  private automaticScrollUp(): void {
+    const element: HTMLElement = document.getElementById(this.getOptionsId());
+    const highlightOption: HTMLElement = element.querySelector(".highlight-option");
+    const optionHeight: number = highlightOption?.offsetHeight;
+    if (highlightOption?.offsetTop - optionHeight < element.scrollTop) {
+      element.scrollTop -= optionHeight;
+    }
   }
 
 }

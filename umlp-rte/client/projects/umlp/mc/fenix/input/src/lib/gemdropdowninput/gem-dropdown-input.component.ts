@@ -101,17 +101,23 @@ export class GemDropdownInput implements OnInit, OnChanges {
   focusDown(): void {
     const newIdx = this.highlightIdx + 1;
     this.highlightIdx = newIdx < this.filteredOptions.length ? newIdx : this.filteredOptions.length - 1;
-    console.log("Focus down", this.highlightIdx);
+    if (this.isOverflown()) {
+      this.automaticScrollDown();
+    }
   }
 
   focusUp(): void {
     const newIdx = this.highlightIdx - 1;
     this.highlightIdx = newIdx >= -1 ? newIdx : -1;
-    console.log("Focus up", this.highlightIdx);
+    if (this.isOverflown()) {
+      this.automaticScrollUp();
+    }
   }
 
   setHighlightIdx(idx: number): void {
-    this.highlightIdx = idx;
+    if (idx != this.highlightIdx) {
+      this.highlightIdx = idx;
+    }
   }
 
   filterOptions(): void {
@@ -126,6 +132,10 @@ export class GemDropdownInput implements OnInit, OnChanges {
 
   getSearchInputId(): string {
     return this.componentRef.nativeElement.getAttribute('class') + "Search";
+  }
+
+  getOptionsId(): string {
+    return this.componentRef.nativeElement.getAttribute('class') + "Options";
   }
 
   private showDropdown(): void {
@@ -155,6 +165,31 @@ export class GemDropdownInput implements OnInit, OnChanges {
       else {
         document.getElementById(this.getInputId()).focus();
       }
+    }
+  }
+
+  private isOverflown(): boolean {
+    const element: HTMLElement = document.getElementById(this.getOptionsId());
+    return element.scrollHeight > element.clientHeight;
+  }
+
+  private automaticScrollDown(): void {
+    const element: HTMLElement = document.getElementById(this.getOptionsId());
+    const highlightOption: HTMLElement = element.querySelector(".highlight-option");
+    const optionHeight: number = highlightOption?.offsetHeight;
+    const optionOffset: number = this.searchEnabled ? 0 : optionHeight;
+    if (highlightOption?.offsetTop + optionOffset >= element.clientHeight) {
+      element.scrollTop += optionHeight;
+    }
+  }
+
+  private automaticScrollUp(): void {
+    const element: HTMLElement = document.getElementById(this.getOptionsId());
+    const highlightOption: HTMLElement = element.querySelector(".highlight-option");
+    const optionHeight: number = highlightOption?.offsetHeight;
+    const optionOffset: number = this.searchEnabled ? optionHeight * 2 : optionHeight;
+    if (highlightOption?.offsetTop - optionOffset < element.scrollTop) {
+      element.scrollTop -= optionHeight;
     }
   }
 

@@ -14,7 +14,7 @@
     [id]="id + 'Input'"
     [ngModel]="entry"
     (ngModelChange)="onEntryChange($event)"
-    (focus)="toggleDropdown()"
+    (click)="toggleDropdown()"
     [disabled]="disabled"
     [placeholder]="placeholder"
     [matTooltip]="
@@ -26,13 +26,17 @@
     [class.gem-input-error]="validity?.status === 'Error'"
     [class.gem-input-warning]="validity?.status === 'Warning'"
   />
-  <div *ngIf="isContentShown" class="gem-dropdown-content">
+  <div
+    *ngIf="isContentShown"
+    [id]="getOptionsId()"
+    class="gem-dropdown-content gem-dropdown-options"
+  >
     <div
       *ngFor="let option of filteredOptions; let i = index"
       class="gem-dropdown-option"
       [class.highlight-option]="highlightIdx == i"
       (click)="selectOption(option.value)"
-      (mouseover)="setHighlightIdx(i)"
+      (mousemove)="setHighlightIdx(i)"
     >
       {{ option.display }}
     </div>

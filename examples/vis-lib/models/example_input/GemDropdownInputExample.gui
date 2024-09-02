@@ -11,14 +11,12 @@ page GemDropdownInputExample() {
   @GemRow(
     components = [
       @GemDropdownInput(
-        id = "myDropdown1",
         width = "50%",
-        labelText = "Hobby:",
+        labelText = "Academic degree:",
         options = [
-          Option(""),
-          Option("Tennis"),
-          Option("Sleeping"),
-          Option("Model-driven development")
+          Option("Bachelor"),
+          Option("Master"),
+          Option("PhD")
         ]
       )
     ]
@@ -29,20 +27,33 @@ page GemDropdownInputExample() {
       @GemRow(
         components = [
           @GemDropdownInput(
-            id = "myDropdown2",
             width = "50%",
             labelText = "Hobby:",
             options = [
-              Option(""),
               Option("Tennis"),
               Option("Sleeping"),
               Option("Model-driven development"),
-              Option("Tennis"),
-              Option("Sleeping"),
-              Option("Model-driven development"),
-              Option("Tennis"),
-              Option("Sleeping"),
-              Option("Model-driven development")
+              Option("Video gaming"),
+              Option("Photographing"),
+              Option("Bouldering"),
+              Option("Football"),
+              Option("Drawing"),
+              Option("Social Media"),
+              Option("Knitting"),
+              Option("Volleyball"),
+              Option("Running"),
+              Option("Swimming"),
+              Option("Reading"),
+              Option("Music"),
+              Option("Movies"),
+              Option("Hiking"),
+              Option("Climbing"),
+              Option("Travelling"),
+              Option("Scuba diving"),
+              Option("Hacking"),
+              Option("Cooking"),
+              Option("Gardening"),
+              Option("Other")
             ],
             searchEnabled = true
           )
@@ -51,14 +62,15 @@ page GemDropdownInputExample() {
       @GemRow(
         components = [
           @GemDropdownInput(
-            id = "myDropdown3",
             width = "50%",
-            labelText = "Hobby:",
+            labelText = "How often do you attend your Hobby?",
             options = [
-              Option(""),
-              Option("Tennis"),
-              Option("Sleeping"),
-              Option("Model-driven development")
+              Option("Once a year"),
+              Option("Once a month"),
+              Option("Once a week"),
+              Option("Three times a week"),
+              Option("Everyday"),
+              Option("More than once a day")
             ]
           )
         ]
