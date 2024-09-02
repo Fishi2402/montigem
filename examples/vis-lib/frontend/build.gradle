@@ -29,6 +29,7 @@ generateTestInfrastructure {
   input = file("../models/Domain.umlp")
   symbolOutDir = file("${project.buildDir}/symbols")
   usePlaywright.set(true)
+  hwcDir = [file("$projectDir/src/main/java"), file("$projectDir/src/test/java")]
 
   /*
   debug = true

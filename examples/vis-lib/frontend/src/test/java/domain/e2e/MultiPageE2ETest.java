@@ -1,7 +1,8 @@
-package e2e;
+package domain.e2e;
 
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.Page;
+import domain.test_infrastructure.AbstractDomainE2ETest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
