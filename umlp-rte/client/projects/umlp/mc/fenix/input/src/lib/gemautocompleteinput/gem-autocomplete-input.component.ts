@@ -68,7 +68,9 @@ export class GemAutocompleteInput implements OnInit, OnChanges {
   }
 
   onEntryChange(entry: string): void {
-    this.selectOption(entry);
+    this.entry = entry;
+    this.entryChange.emit(this.entry);
+    this.filterOptions();
     this.showDropdown();
   }
 
@@ -87,9 +89,7 @@ export class GemAutocompleteInput implements OnInit, OnChanges {
   }
 
   selectOption(entry: string): void {
-    this.entry = entry;
-    this.entryChange.emit(this.entry);
-    this.filterOptions();
+    this.onEntryChange(entry);
     this.hideDropdown();
   }
 
@@ -99,6 +99,7 @@ export class GemAutocompleteInput implements OnInit, OnChanges {
       return;
     }
     this.selectOption(this.filteredOptions[this.highlightIdx].value);
+    this.hideDropdown();
   }
 
   focusDown(): void {

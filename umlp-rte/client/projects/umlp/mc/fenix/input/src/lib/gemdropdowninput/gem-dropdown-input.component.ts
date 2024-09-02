@@ -5,7 +5,7 @@ import {
   HostBinding, HostListener,
   Input, OnChanges,
   OnInit,
-  Output, SimpleChanges, ViewChild
+  Output, SimpleChanges
 } from "@angular/core";
 import {GemTextInputValidity} from "../gemtextinput";
 import {Option} from "./gem-dropdown-input-types/gem-dropdown-input.types";
