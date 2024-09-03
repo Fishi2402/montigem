@@ -14,7 +14,7 @@ from a domain model.
 To allow for a more modular approach to domain modeling, the merge operator 
 CDMerge can be used to compose multiple class diagrams modeling specific parts
 or aspects of the system into a complete domain model on demand.
-The operator is described in [[LRRS23]] and its implementation can be found in 
+The operator is described in **[LRRS23]** and its implementation can be found in 
 the **[cd4analysis]** project.
 
 Click [here](https://www.monticore.de/download/MCCD.jar) to download the CD Tool
