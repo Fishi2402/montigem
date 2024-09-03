@@ -2,23 +2,17 @@
 package flensburg.database;
 
 import hardy.flensburg.Address;
-import hardy.flensburg.AddressDAO;
 import hardy.flensburg.AddressDAOInterface;
-import hardy.flensburg.AssocPerson_person_mainResidence_AddressDAO;
-import hardy.flensburg.AssocPerson_person_mainResidence_AddressDAOInterface;
-import hardy.flensburg.AssocVisitsDAO;
+import hardy.flensburg.AssocPerson_person_mainResidence_addressDAOInterface;
 import hardy.flensburg.AssocVisitsDAOInterface;
 import hardy.flensburg.FlensburgDAOFactory;
 import hardy.flensburg.FlensburgManager;
 import hardy.flensburg.Human;
 import hardy.flensburg.HumanBuilder;
-import hardy.flensburg.HumanDAO;
 import hardy.flensburg.HumanDAOInterface;
 import hardy.flensburg.Person;
 import hardy.flensburg.PersonBuilder;
-import hardy.flensburg.PersonDAO;
 import hardy.flensburg.PersonDAOInterface;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import umlp.backendrte.test_infrastructure.ClientSetup;
 
@@ -101,7 +95,7 @@ public class GenDeleteTest extends GenAbstractDBTest {
     PersonDAOInterface personDAO = FlensburgDAOFactory.getPersonDAO();
     assertTrue(personDAO.selectPerson(personId).isPresent());
 
-    AssocPerson_person_mainResidence_AddressDAOInterface assocPerson_person_mainResidence_addressDAO = FlensburgDAOFactory.getAssocPerson_person_mainResidence_AddressDAO();
+    AssocPerson_person_mainResidence_addressDAOInterface assocPerson_person_mainResidence_addressDAO = FlensburgDAOFactory.getAssocPerson_person_mainResidence_addressDAO();
     assertFalse(assocPerson_person_mainResidence_addressDAO.selectMainResidenceIdForPerson(personId).isEmpty());
 
     AssocVisitsDAOInterface assocVisitsDAO = FlensburgDAOFactory.getAssocVisitsDAO();
