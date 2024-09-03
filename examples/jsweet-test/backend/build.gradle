@@ -3,6 +3,7 @@
 plugins {
   id 'java-library'
   id 'de.rwth.se.umlp-tool-backend'
+  id 'de.rwth.se.umlp-tool-testing'
 
   id 'application'
   id 'com.google.cloud.tools.jib' version '3.2.1'
@@ -79,6 +80,12 @@ generateUmlpBackend {
   input = file("../models/Jsweettest.umlp")
   symbolOutDir = file("${symPath}")
   useSpring.set(true)
+  usePlaywright.set(true)
+}
+
+generateTestInfrastructure {
+  input = file("../models/Jsweettest.umlp")
+  symbolOutDir = file("${symPath}")
   usePlaywright.set(true)
 }
 
