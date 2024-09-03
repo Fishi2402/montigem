@@ -45,7 +45,8 @@ public abstract class AggregatedCommandDeSer {
 
     String commandType = jsonObject.getStringMember("commandType");
     if(!deSerMap.containsKey(commandType)){
-      Log.warn("Can not find deSer for commandType " + commandType);
+      // Do not warn here, as we might try multiple CommandDeSer
+      // Instead, the CommandObjectMapper CAN log a warning
       return Optional.empty();
     }
 

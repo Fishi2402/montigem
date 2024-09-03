@@ -54,7 +54,7 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
         .build();
 
     // methods
-    getCD4C().addMethod(managerClass, getInitTemplate(), name, name + ManagerDecorator.SUFFIX);
+    getCD4C().addMethod(managerClass, getInitTemplate(), name, name + SUFFIX);
     getCD4C().addMethod(managerClass, getConstructorTemplate(), name + SUFFIX);
     getCD4C().addMethod(managerClass, getDoGetFreeGemIdTemplate());
     getCD4C().addMethod(managerClass, getErrorNotificationScopeTemplate());

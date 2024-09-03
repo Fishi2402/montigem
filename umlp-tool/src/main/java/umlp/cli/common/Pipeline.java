@@ -16,6 +16,13 @@ public class Pipeline<T> implements IOperation<T> {
   }
 
   /**
+   * Add a new operation step at the front of this pipeline
+   */
+  public void registerFirst(IOperation<T> newStep) {
+    this.steps.add(0, newStep);
+  }
+
+  /**
    * Insert another operation step after the position
    * Does not work recursively
    */

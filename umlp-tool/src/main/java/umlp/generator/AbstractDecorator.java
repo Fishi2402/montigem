@@ -59,6 +59,7 @@ import java.util.stream.Collectors;
 // TODO refactor this class
 public abstract class AbstractDecorator {
 
+  // TODO: Why are these static?
   protected static Map<ASTNode, String> origins = new LinkedHashMap<>();
 
   protected static HookPoint originHookPoint = new OriginHookPoint(origins);
@@ -67,6 +68,11 @@ public abstract class AbstractDecorator {
     return originHookPoint;
   }
 
+  public static void cleanUp() {
+    origins.clear();
+    origins = new LinkedHashMap<>();
+    originHookPoint = new OriginHookPoint(origins);
+  }
 
   public AbstractDecorator(GlobalExtensionManagement glex) {
     this.glex = glex;

@@ -3,6 +3,11 @@ package gui.connectionkind;
 import DemoRec.JoinConnectionKind;
 import DemoRec.DemoRecComponent;
 
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.basic.GemButton;
+
 import gui.pack.ComponentsOfPack;
 import gui.staticcontainer.NavContainer;
 import gui.connectionkind.JoinConnectionKindEdit;
@@ -12,9 +17,23 @@ page JoinConnectionKindEditPage(JoinConnectionKind connectionKind) {
   @NavContainer(
     content=[
       @JoinConnectionKindEdit(connectionKind=connectionKind, showOptionalAttributes=true),
-      @iterate(JoinConnection connection : connectionKind.joinConnection) {
-        @JoinConnectionEdit(connection = connection);
-      }
+      @GemCard(
+        title="Connections",
+        component=@GemColumn(
+          rowGap="5px",
+          components=[
+            @iterate(JoinConnection connection : connectionKind.joinConnection) {
+              @GemRow(
+                colGap="5px",
+                components=[
+                  @JoinConnectionEdit(connection = connection),
+                  @GemButton(label="Delete", leftClick=deleteConnection(connection), disabled=true)
+                ]
+              );
+            }
+          ]
+        )
+      )
     ],
     leftSideBar=[
       @ComponentsOfPack(pack=connectionKind.batteryPack)

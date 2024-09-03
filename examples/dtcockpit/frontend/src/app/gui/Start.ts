@@ -7,6 +7,7 @@ import {DtcockpitSecurityManager} from "../dtcockpit/DtcockpitSecurityManager";
 import {GetCurrentUserRequest} from '@src/dtcockpit/commands/GetCurrentUserRequest';
 import {CommandManager} from '@umlp/common';
 import {ActivatedRoute, Router} from '@angular/router';
+import {LoginSecManager} from "@src/loginmodule/LoginSecManager";
 
 @Component({
   standalone:true,
@@ -20,11 +21,10 @@ import {ActivatedRoute, Router} from '@angular/router';
 export  class Start extends StartComponent {
 
   ngOnInit(){
-    // Moved to the login module
-    // if (!(DtcockpitSecurityManager.isCurrentlyLoggingIn() || DtcockpitSecurityManager.isSignedIn())) {
-    //   this._router.navigate(['gui', 'login', 'LoginPage']);
-    //   return;
-    // }
+    // TODO: Move to the login module
+    if (LoginSecManager.shouldAbortOnInit(this._router, this._route)) {
+      return;
+    }
 
     CommandManager.executeCommand(new GetCurrentUserRequest()).then(res => {
       let sr = res.asSimpleResult();

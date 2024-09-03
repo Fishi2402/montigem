@@ -95,6 +95,10 @@ include ':products:dev_process_cockpit:backend'
 include ':products:dev_process_cockpit:frontend'
 
 include ':modules:login'
+include ':modules:login:backend'
+include ':modules:login:frontendTS'
+include ':modules:login:frontendJSweet'
+
 include ':modules:sovd-gateway'
 include ':modules:sovd-gateway-it:backend'
 

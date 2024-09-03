@@ -65,6 +65,12 @@ export type LabelAttribute = {
   label?: IdentifierType;
 };
 
+export type NodePos = {
+  id: string,
+  x?: number,
+  y?: number
+}
+
 /** Common attributes shared by nodes and edges. */
 export type CommonRawAttributes = Identifier &
   LabelAttribute &

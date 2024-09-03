@@ -4,6 +4,8 @@ package gradle.specific.merge;
 import com.google.common.collect.Sets;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdmerge.CDMerge;
+import de.monticore.cdmerge.config.MergeParameter;
+import de.se_rwth.commons.logging.Log;
 import org.gradle.internal.FileUtils;
 import org.gradle.workers.WorkAction;
 import umlp.UMLPTool;
@@ -17,6 +19,8 @@ import java.nio.file.Path;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.gradle.internal.impldep.org.junit.Assert.fail;
+
 public abstract class MergeAction implements WorkAction<MergeActionParameter> {
   @Override
   public void execute() {
@@ -25,23 +29,37 @@ public abstract class MergeAction implements WorkAction<MergeActionParameter> {
 
   public static void umlpMerge(Set<File> inputFiles, File outputFile){
 
-    // Parse and convert to CDCompilationUnit
-    Set<ASTCDCompilationUnit> models = inputFiles.stream()
-        .map(File::toPath)
-        .map(Path::toAbsolutePath)
-        .map(MergeAction::parseAndCheck)
-        .collect(Collectors.toSet());
+    try {
 
-    String outputModelName = FileUtils.removeExtension(outputFile.getName());
-    ASTCDCompilationUnit merge = CDMerge.merge(models, outputModelName, Sets.newHashSet());
-    UMLPFullPrettyPrinter printer = new UMLPFullPrettyPrinter();
-    merge.accept(printer.getTraverser());
+      // Parse and convert to CDCompilationUnit
+      Set<ASTCDCompilationUnit> models = inputFiles.stream()
+          .map(File::toPath)
+          .map(Path::toAbsolutePath)
+          .map(MergeAction::parseAndCheck)
+          .collect(Collectors.toSet());
+
+      String outputModelName = FileUtils.removeExtension(outputFile.getName());
+      ASTCDCompilationUnit merge = CDMerge.merge(models, outputModelName,
+          Set.of(MergeParameter.FAIL_AMBIGUOUS));
+
+      if (merge == null) {
+        Log.error("Merge was unsuccessful");
+        fail("Merge was unsuccessful");
+        return;
+      }
+
+      UMLPFullPrettyPrinter printer = new UMLPFullPrettyPrinter();
+      merge.accept(printer.getTraverser());
 
 
-    try (PrintWriter out = new PrintWriter(new FileOutputStream(outputFile), true)) {
-      out.println(printer.getPrinter().getContent());
-    } catch (FileNotFoundException e) {
-      throw new RuntimeException(e);
+      try (PrintWriter out = new PrintWriter(new FileOutputStream(outputFile), true)) {
+        out.println(printer.getPrinter().getContent());
+      } catch (FileNotFoundException e) {
+        throw new RuntimeException(e);
+      }
+    } finally {
+      // https://github.com/gradle/gradle/issues/18313 - Gradle is memory hungry
+      UMLPTool.cleanUpAfterMemoryLeakingSingletons();
     }
   }
 

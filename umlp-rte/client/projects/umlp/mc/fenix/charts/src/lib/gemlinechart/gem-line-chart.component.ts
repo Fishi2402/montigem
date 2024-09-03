@@ -30,7 +30,7 @@ export class GemLineChart extends GemLineChartTOP {
   public _minValue = undefined;
 
   /**can add symbols to the values of the entries */
-  public _displayValue: (value: number) => string;
+  public _displayValue: (value: number) => string = (v) => String(v);
 
   /**labels for chart legend */
   public legendLabels: string[] = [];
@@ -92,10 +92,10 @@ export class GemLineChart extends GemLineChartTOP {
         data: data.entries[i].data,
         label: data.entries[i].label,
         borderColor: data.entries[i].borderColor,
-        backgroundColor: data.entries[i].borderColor + "30", 
+        backgroundColor: data.entries[i].borderColor + "30",
         pointBackgroundColor: data.entries[i].borderColor
       }
-      
+
       // TODO: option to fill background
       entry.fill = false;
       labels.push(entry.label);
@@ -124,7 +124,7 @@ export class GemLineChart extends GemLineChartTOP {
   }
 
   /**
-   * The function saves the data for all variables with settings for the variable options 
+   * The function saves the data for all variables with settings for the variable options
    * that are not reset in the specific setter
    */
   public saveAllOptionsChanges() {

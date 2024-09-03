@@ -78,6 +78,7 @@ public abstract class AbstractUMLPTest {
   public ASTOCLCompilationUnit parseOCL(String testPath, String model, ASTCDCompilationUnit cdAst) {
     Path m = Paths.get(testPath, model);
     assertTrue(m.toFile().exists());
+    OCLMill.init();
     try {
       Optional<ASTOCLCompilationUnit> ast = OCLMill.parser().parse(m.toString());
       assertTrue(ast.isPresent());

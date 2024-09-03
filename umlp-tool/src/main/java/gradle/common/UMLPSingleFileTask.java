@@ -49,7 +49,7 @@ public abstract class UMLPSingleFileTask extends MCSingleFileTask implements Gra
 
     getModuleConfigTemplates().convention(getProject().provider(() -> {
       List<String> res = new ArrayList<>();
-      for (TaskModuleMetadata taskMetadata : getMetadataForThisTask()) {
+      for (TaskModuleMetadata taskMetadata : ModuleSystemUtil.getMetadataForThisTask(this, getModules(), type)) {
         res.addAll(taskMetadata.getAdditionalConfigs());
       }
       return res;
@@ -71,52 +71,6 @@ public abstract class UMLPSingleFileTask extends MCSingleFileTask implements Gra
     return result;
   }
 
-
-  @Internal
-  protected List<ModuleMetadata> getModuleMetadataList(){
-    List<ModuleMetadata> res = new ArrayList<>();
-
-    for (File file : getModules().getFiles()) {
-      res.add(ModuleMetadata.fromJson(readModuleMetadata(file)));
-    }
-    return res;
-  }
-
-  protected String readModuleMetadata(File file) {
-    try(var zf = new ZipFile(file)){
-      Enumeration<? extends ZipEntry> entries = zf.entries();
-      ZipEntry entry;
-      while((entry = entries.nextElement()) != null){
-        if(entry.getName().matches("[^/]+[.]metadata[.](json)")){
-          break;
-        }
-      }
-      if(entry != null){
-        try(var is = zf.getInputStream(entry)){
-          return IOUtils.toString(is, StandardCharsets.UTF_8);
-        }
-      }
-    }catch (IOException e){
-      throw new RuntimeException("Error loading metadata of module " + file, e);
-    }
-
-    throw new IllegalStateException("Can not find metadata of module "  + file);
-  }
-
-  @Internal
-  protected List<TaskModuleMetadata> getMetadataForThisTask(){
-    List<TaskModuleMetadata> res = new ArrayList<>();
-
-    for (ModuleMetadata moduleMetadata : getModuleMetadataList()) {
-      for (TaskModuleMetadata taskModuleMetadata : moduleMetadata.getTasks()) {
-        if(taskModuleMetadata.getType().equals(type)){
-          getLogger().info("Adding module " + moduleMetadata.getName(), this.getName());
-          res.add(taskModuleMetadata);
-        }
-      }
-    }
-    return res;
-  }
 
   @Override
   protected Consumer<String[]> getRunMethod() {

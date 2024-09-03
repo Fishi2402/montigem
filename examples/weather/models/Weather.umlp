@@ -2,6 +2,8 @@
 classdiagram Weather {
   <<singleton>> class App {
     String appName = "MyFancyWeatherApp";
+    String compareCurrentDate(Optional<java.time.LocalDateTime> date);
+
   }
 
   association currentCity [1] App -> (currentCity) City [0..1];

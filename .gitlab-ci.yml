@@ -101,9 +101,17 @@ build_with_containers:
       -Djib.to.image=$CI_REGISTRY_IMAGE/demorec_backend:latest \
       -Djib.to.auth.username=$CI_REGISTRY_USER  \
       -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
+    # Vis-Lib Application
+    - "gradle :examples:vis-lib:backend:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
+      -Djib.from.image=registry.git.rwth-aachen.de/monticore/container-registry/eclipse-temurin:11-jre \
+      -Djib.from.auth.username=$CI_REGISTRY_USER  \
+      -Djib.from.auth.password=$CI_REGISTRY_PASSWORD \
+      -Djib.to.image=$CI_REGISTRY_IMAGE/vis-lib_backend:latest \
+      -Djib.to.auth.username=$CI_REGISTRY_USER  \
+      -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
 
     # Frontends
-    - "gradle :examples:weather:frontend:deployImageCI :examples:sehub:frontend:deployImageCI :examples:dtcockpit:frontend:deployImageCI :products:demorec:frontend:deployImageCI -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
+    - "gradle :examples:weather:frontend:deployImageCI :examples:sehub:frontend:deployImageCI :examples:dtcockpit:frontend:deployImageCI :products:demorec:frontend:deployImageCI :examples:vis-lib:frontend:deployImageCI -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
   cache:
     paths:
       - .gradle/nodejs
@@ -123,7 +131,7 @@ build_with_containers:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
     expire_in: 1 week
-  only:
+  only: # This job is deploying docker-containers... this should _really_ only happen from the `dev` branch
     refs:
       - dev
 
