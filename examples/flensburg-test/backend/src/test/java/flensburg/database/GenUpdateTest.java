@@ -14,7 +14,6 @@ import hardy.flensburg.HumanDAOInterface;
 import hardy.flensburg.Person;
 import hardy.flensburg.PersonBuilder;
 import hardy.flensburg.PersonDAOInterface;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import umlp.backendrte.test_infrastructure.ClientSetup;
 
@@ -198,7 +197,7 @@ public class GenUpdateTest extends GenAbstractDBTest {
 
     p.setBestFriend(p2);
 
-    var idOpt = FlensburgDAOFactory.getAssocPerson_person_bestFriend_PersonDAO().selectBestFriendIdForPerson(p.getGemId());
+    var idOpt = FlensburgDAOFactory.getAssocPerson_person_bestFriend_personDAO().selectBestFriendIdForPerson(p.getGemId());
     assertTrue(idOpt.isPresent());
 
     assertEquals(0, Log.getErrorCount(),
