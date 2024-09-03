@@ -81,7 +81,7 @@ tasks.register('run') {
 }
 
 test {
-  dependsOn generateTestInfrastructure
+  dependsOn generateTestInfrastructure, npmInstall
   useJUnitPlatform(){
     excludeTags "SlowTest"
   }
