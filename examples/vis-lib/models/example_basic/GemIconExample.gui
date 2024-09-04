@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_basic;
+
+import mc.fenix.basic.GemIcon;
+
+page GemIconExample() {
+  @GemIcon(
+    name = "search",
+    color = "blue",
+    size = "1rem"
+  );
+}

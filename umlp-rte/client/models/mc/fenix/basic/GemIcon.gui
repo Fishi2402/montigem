@@ -7,19 +7,5 @@ package mc.fenix.basic;
 component GemIcon(
   String name,
   String color,
-  String size,
-  /**
-    Font style. Can be `"normal"`, `"italic"`, `"oblique <deg>"`, or have a universal value
-  */
-  String fontStyle = "unset",
-  /**
-    Font weight. Can be `"normal"`, `"bold"`, `"lighter"`, `"<number>"`, or have a universal value
-  */
-  String weight = "unset",
-  /** Font family. Example: `"Gill Sans", sans-serif` */
-  String fontFamily = "unset",
-  /** Width of the input field. */
-  String width = "100%",
-  /** Height of the input field. */
-  String height = "100%"
+  String size
 )
