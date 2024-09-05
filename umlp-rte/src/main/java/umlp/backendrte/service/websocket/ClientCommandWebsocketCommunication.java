@@ -146,13 +146,11 @@ public class ClientCommandWebsocketCommunication extends TextWebSocketHandler im
       // Fall initialisierung der Verbindung
       try {
         this.participantId = Optional.of(Long.parseLong(message.getPayload()));
-      }
-      catch (NumberFormatException e) {
+      } catch (NumberFormatException e) {
         this.participantId = Optional.empty();
       }
       initLatch.countDown();
-    }
-    else {
+    } else {
       // Fall Antwort eines Requests, oder Erhalt eines weitergeleiteten Commands zur
       // Datensynchronisierung.
       Optional<CommandResult<?>> commandResultOptional
@@ -184,7 +182,6 @@ public class ClientCommandWebsocketCommunication extends TextWebSocketHandler im
             notify();
           }
         }
-      }
       }
     }
   }
