@@ -1,5 +1,7 @@
 package umlp.cli.common;
 
+import de.se_rwth.commons.logging.Log;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -41,7 +43,7 @@ public class Pipeline<T> implements IOperation<T> {
   public boolean doWork(T data) {
     try {
       for (IOperation<T> step : this.steps) {
-        if (!step.doWork(data)) {
+        if (!step.doWork(data) || this.isFailed()) {
           return false;
         }
       }
@@ -49,7 +51,12 @@ public class Pipeline<T> implements IOperation<T> {
       // Finally, execute the finally steps
       this.finallySteps.forEach(tConsumer -> tConsumer.accept(data));
     }
-    return true;
+    // Continue, unless failed
+    return !this.isFailed();
+  }
+
+  protected boolean isFailed() {
+    return Log.getErrorCount() > 0;
   }
 
 }
