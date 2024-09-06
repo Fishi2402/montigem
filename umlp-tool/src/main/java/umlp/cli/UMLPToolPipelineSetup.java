@@ -39,9 +39,7 @@ public class UMLPToolPipelineSetup {
   // a reuseable operation, setting up the UMLPReports
   final IOperation<UMLPPipelineData> setupUMLPReports = data -> {
     data.umlp_reportManagerFactory = new UMLPReports(data.outDir.getPath(), data.reportDir.getPath(), data.reportPathOutput, data.hwcPath, data.tool.buildJsonData(data.cmd));
-    boolean hasFailQuick = Log.isFailQuickEnabled();
     Reporting.init(data.outDir.getPath(), data.reportDir.getPath(), data.umlp_reportManagerFactory);
-    Log.enableFailQuick(hasFailQuick); // TODO: Workaround for fail-quick
     String report_on = data.inputFile.getName().replace(".", "__");   // TODO: Is this name unique? Should it be unique?
     Reporting.on(report_on);
     return true;

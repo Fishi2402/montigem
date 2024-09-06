@@ -112,8 +112,6 @@ public class UMLPFilePipelineSetup {
 
       // parse, create symbol table, check all cocos
       ASTCDCompilationUnit ast = data.tool.parse(data.inputFile.getPath());
-      if (Log.getErrorCount() > 0)
-        return;
       Reporting.reportParseInputFile(data.inputFile.toPath().toAbsolutePath(), report_on); // TODO: causes NullPointerException
       astPipe.doWork(new Data(data, ast));
     });

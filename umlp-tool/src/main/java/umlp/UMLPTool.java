@@ -139,22 +139,10 @@ public class UMLPTool extends UMLPToolTOP {
     return null;
   }
 
-  /**
-   * @deprecated
-   */
-  @Deprecated
   public static void main(String[] args) {
     Log.ensureInitialization(); // by default, don't use SLF4J log
     UMLPTool tool = new UMLPTool();
     tool.run(args);
-  }
-
-  public static int mainRet(String[] args) {
-    Log.ensureInitialization(); // by default, don't use SLF4J log
-    Log.enableFailQuick(false); // Do not fail quick, the pipeline pattern allows us to exit gracefully
-    UMLPTool tool = new UMLPTool();
-    tool.run(args);
-    return Log.getErrorCount() == 0 ? 0 : -1;
   }
 
   public static ASTOCLCompilationUnit parseOCL(String model) {
@@ -205,12 +193,12 @@ public class UMLPTool extends UMLPToolTOP {
       UMLPMill.globalScope().clear();
       GUIDSLMill.globalScope().clear();
       Reporting.off();
+      cleanUpAfterMemoryLeakingSingletons();
     }
   }
 
-  // TODO: Disabled due to logger changes
   public static void cleanUpAfterMemoryLeakingSingletons() {
-    // Gradle (nor se-commons-gradle) does not drop an isolated classloaders content:
+    // Gradle (nor se-commonds-gradle) does not drop an isolated classloaders content:
     // https://github.com/gradle/gradle/issues/18313
 
     // Fix some memory leaks (singletons with a List/Map/Caches... storing ASTNodes/Symbols/... )
