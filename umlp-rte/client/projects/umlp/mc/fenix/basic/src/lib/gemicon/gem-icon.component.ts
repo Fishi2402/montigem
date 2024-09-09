@@ -5,7 +5,8 @@ import {
 
 @Component({
   selector: "gem-icon",
-  templateUrl: "./gem-icon.component.html"
+  templateUrl: "./gem-icon.component.html",
+  styleUrl: "./gem-icon.component.scss"
 })
 export class GemIcon {
   @Input() name: string;
