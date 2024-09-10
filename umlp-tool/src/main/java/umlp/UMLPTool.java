@@ -218,7 +218,6 @@ public class UMLPTool extends UMLPToolTOP {
 
     // The SummaryReporter -> ReportingRepository#table is rooted in the Log instance
     destroySingletonInstance(Log.class, "log", null);
-    destroySingletonInstance(Reporting.class, "singleton", null);
   }
 
   /**
