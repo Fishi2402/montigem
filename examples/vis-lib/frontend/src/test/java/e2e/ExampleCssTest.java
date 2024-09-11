@@ -4,9 +4,11 @@ import com.microsoft.playwright.ElementHandle;
 import com.microsoft.playwright.Page;
 import domain.test_infrastructure.AbstractDomainE2ETest;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static umlp.backendrte.test_infrastructure.playwright.ComponentKind.GemText;
+
 
 public class ExampleCssTest extends AbstractDomainE2ETest {
 
@@ -25,7 +27,7 @@ public class ExampleCssTest extends AbstractDomainE2ETest {
 
   @Test
   void testStyles(Page page) {
-    ElementHandle element = locator(page, ".testText", GemText).elementHandle();
+    ElementHandle element = page.locator(".testText").first().elementHandle();
     System.out.printf("Element: %s%n", element);
 
     String textAlign = CssUtil.getTextAlign(page, element);

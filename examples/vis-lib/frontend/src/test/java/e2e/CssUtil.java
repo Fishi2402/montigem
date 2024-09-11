@@ -72,24 +72,24 @@ public class CssUtil {
     return page.evaluate(boxShadowScript, elementHandle).toString();
   }
 
-  public static Object getDimensions(Page page, ElementHandle elementHandle) {
-    return page.evaluate(dimensionsScript, elementHandle);
+  public static String getDimensions(Page page, ElementHandle elementHandle) {
+    return page.evaluate(dimensionsScript, elementHandle).toString();
   }
 
   public static String getDisplay(Page page, ElementHandle elementHandle) {
     return page.evaluate(displayScript, elementHandle).toString();
   }
 
-  public static Object getMargin(Page page, ElementHandle elementHandle) {
-    return page.evaluate(marginScript, elementHandle);
+  public static String getMargin(Page page, ElementHandle elementHandle) {
+    return page.evaluate(marginScript, elementHandle).toString();
   }
 
   public static String getOpacity(Page page, ElementHandle elementHandle) {
     return page.evaluate(opacityScript, elementHandle).toString();
   }
 
-  public static Object getPadding(Page page, ElementHandle elementHandle) {
-    return page.evaluate(paddingScript, elementHandle);
+  public static String getPadding(Page page, ElementHandle elementHandle) {
+    return page.evaluate(paddingScript, elementHandle).toString();
   }
 
   public static String getPosition(Page page, ElementHandle elementHandle) {
