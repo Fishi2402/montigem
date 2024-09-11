@@ -16,6 +16,13 @@ public class ExampleCssTest extends AbstractDomainE2ETest {
     navAndWait(page, "/example_basic/CssStyleTestExample"); //go to page we want to test
   }
 
+  @Disabled
+  @Test
+  void testGemTextComponentKindLocator(Page page) {
+    ElementHandle element = locator(page, ".testText", GemText).elementHandle();
+    System.out.printf("Element: %s%n", element);
+  }
+
   @Test
   void testStyles(Page page) {
     ElementHandle element = locator(page, ".testText", GemText).elementHandle();
