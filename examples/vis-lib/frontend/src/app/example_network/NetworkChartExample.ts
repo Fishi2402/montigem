@@ -25,8 +25,8 @@ export class NetworkChartExample extends NetworkChartExampleComponent {
       return this.boundingBox
     }
     return {
-      x:[-50,50],
-      y:[-50,50]
+      x:[-1,1],
+      y:[-1,1]
     }
   }
 
@@ -94,7 +94,8 @@ export class NetworkChartExample extends NetworkChartExampleComponent {
 
       if(!this.boundingBox) {
         console.debug("New bounding box:", newBoundingBox)
-        this.boundingBox = newBoundingBox
+        console.debug("Bounding box:", this.getPersonGraphCustomBoundingBox())
+        //this.boundingBox = newBoundingBox
       }
     }
   }

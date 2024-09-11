@@ -3,6 +3,8 @@ package umlp;
 
 import de.monticore.cd._parser.CDAfterParseHelper;
 import de.monticore.cd._symboltable.BuiltInTypes;
+import de.monticore.cd._symboltable.CDDeSerHelper;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
@@ -50,12 +52,17 @@ import umlp.generator.domain.UMLAttrToAssocTrafo;
 import umlp.generator.domain.UMLImportTrafo;
 import umlp.generator.domain.UMLSetDefaultsTrafo;
 import umlp.generator.gui.coco.GUIDSLCoCosForUMLP;
+import umlp.generator.gui.genjava.decorator.CallTypeDeriver;
+import umlp.generator.gui.genjava.decorator.InitDependencyTree;
+import umlp.generator.gui.genjava.decorator.StaticObjectsCollector;
 import umlp.generator.util.TagLookUp;
 import umlp.guidsl.additional_cocos.GUIParamDefaultOnlyLiteralCoCo;
 import umlp.guidsl.additional_cocos.GUIParamNoUnderspecifiedGenericsCoCo;
 import umlp.guidsl.additional_cocos.NameExpressionsSymbolBoundExceptCallsCoCo;
+import umlp.guidsl.additional_cocos.SymbolBoundNameExpressionsFinder;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -184,7 +191,62 @@ public class UMLPTool extends UMLPToolTOP {
     }
     finally {
       UMLPMill.globalScope().clear();
+      GUIDSLMill.globalScope().clear();
       Reporting.off();
+      cleanUpAfterMemoryLeakingSingletons();
+    }
+  }
+
+  public static void cleanUpAfterMemoryLeakingSingletons() {
+    // Gradle (nor se-commonds-gradle) does not drop an isolated classloaders content:
+    // https://github.com/gradle/gradle/issues/18313
+
+    // Fix some memory leaks (singletons with a List/Map/Caches... storing ASTNodes/Symbols/... )
+    InitDependencyTree.cleanUp();
+    destroySingletonInstance(SymbolBoundNameExpressionsFinder.class, "instance", SymbolBoundNameExpressionsFinder.getInstance());
+    destroySingletonInstance(CDDeSerHelper.class, "INSTANCE", CDDeSerHelper.getInstance());
+    destroySingletonInstance(StaticObjectsCollector.class, "instance", StaticObjectsCollector.getInstance());
+    destroySingletonInstance(CallTypeDeriver.class, "instance", CallTypeDeriver.getInstance());
+
+    AbstractDecorator.cleanUp();
+    TagLookUp.cleanUp();
+    CD4C.reset();
+
+    // Also reset the mills
+    UMLPMill.reset();
+    GUIDSLMill.reset();
+
+    // The SummaryReporter -> ReportingRepository#table is rooted in the Log instance
+    destroySingletonInstance(Log.class, "log", null);
+    // TODO: Turn this into a Reporting.reset method?
+    // Make sure to remove all ReportHooks, as otherwise e.g. an
+    // UMLP SummaryReporter is still present when we now work on GUI models next turn
+    try {
+      Field intanceField = Reporting.class.getDeclaredField("reportHooks");
+      // we simply set the (not accessible/protected/private) instance field
+      intanceField.setAccessible(true);
+      // to null, allowing the GC to reap the singleton instance, as well as its lists/maps/caches/...
+      intanceField.set(null, new ArrayList<>());
+    } catch (ReflectiveOperationException e) {
+      throw new RuntimeException("Failed to reset reporting reportHooks ", e);
+    }
+  }
+
+  /**
+   * Used to cleanup singletons which do not clean up after themselves
+   * @param instanceToMakeSure to fail compilation when the fields change
+   */
+  protected static <T> void destroySingletonInstance(Class<T> clazz, String field, T instanceToMakeSure) {
+    // The (static) INSTANCEs of singletons prevents the GC from freeing memory,
+    // resulting in entire ASTs being present in memory until the process terminates
+    try {
+      Field intanceField = clazz.getDeclaredField(field);
+      // we simply set the (not accessible/protected/private) instance field
+      intanceField.setAccessible(true);
+      // to null, allowing the GC to reap the singleton instance, as well as its lists/maps/caches/...
+      intanceField.set(null, null);
+    } catch (ReflectiveOperationException e) {
+      throw new RuntimeException("Failed to cleanup after singleton " + clazz.getName() + "#" + field + ":" + e.getMessage(), e);
     }
   }
 

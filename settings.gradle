@@ -19,18 +19,19 @@ pluginManagement {
     // TODO: Publish jsweet dependency in nexus, so that this is _not_ required!!!!!
     // Only use jsweet repos for everything in org.jsweet*(excl jsweet-core which is in maven-central)
     // since they throw 409 errors for dependencies in other groups
-    maven {
-      url "https://repository.jsweet.org/artifactory/libs-snapshot-local"
-      mavenContent {
-        includeModuleByRegex("org[.]jsweet.*", "(?!jsweet-core).*")
-      }
-    }
-    maven {
-      url "https://repository.jsweet.org/artifactory/libs-release-local"
-      mavenContent {
-        includeModuleByRegex("org[.]jsweet.*", "(?!jsweet-core).*")
-      }
-    }
+//    maven {
+//      url "https://repository.jsweet.org/artifactory/libs-snapshot-local"
+//      mavenContent {
+//        includeModuleByRegex("org[.]jsweet.*", "(?!jsweet-core).*")
+//      }
+//    }
+//    maven {
+//      url "https://repository.jsweet.org/artifactory/libs-release-local"
+//      mavenContent {
+//        includeModuleByRegex("org[.]jsweet.*", "(?!jsweet-core).*")
+//      }
+//    }
+    // ALU here: jsweet was quickly mirrored to the se-nexus
   }
 }
 
@@ -51,9 +52,6 @@ include ":experiments:module-system:routes-usage"
 include ":examples"
 include ':examples:selib'
 include ':examples:stat'
-// CD2GUI&JSweet example
-include ':examples:carrental-tmp:backend'
-include ':examples:carrental-tmp:frontend'
 include ':examples:artifacts-test'
 include ':examples:artifacts-java'
 include ':examples:flensburg-test:backend'

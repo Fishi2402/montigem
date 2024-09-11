@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package Person;
+umlp C {
+	class Person implements Living {
+		int height;
+	}
+	class Office;
+	interface Living;
+	association employment Person -> Office [1];
+	class Customer extends Male;
+	class Male extends Person;
+}

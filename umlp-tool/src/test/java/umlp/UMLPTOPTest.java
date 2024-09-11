@@ -72,6 +72,7 @@ public class UMLPTOPTest {
         Assert.assertEquals(1, getCheckCount("Class1", checkedGenEngineFiles));
         Assert.assertEquals(1, getCheckCount("Class1", checkedGuiGenUtilFiles));
 
+        Log.setErrorHook(() -> {throw new MCFatalError("msg");});
         Assert.assertThrows("0xC0FFEE00: Missing Class2", MCFatalError.class, () -> {
           tsTopDecorator.decorate(make(needsTop(newClass("Class2"), "Missing %s")));
         });

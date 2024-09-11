@@ -19,7 +19,8 @@ import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.Stack;
 
-// Add the imports to the SecManager
+// Add the SecManager to the imports
+@SuppressWarnings("unused") // called from ftl
 public class SecurityManagerImportDecorator  {
 
   public SecurityManagerImportDecorator(GlobalExtensionManagement glex) {
@@ -48,8 +49,9 @@ public class SecurityManagerImportDecorator  {
 
         if (classSearcher.candidate != null) {
           // And if found: Add the Import
-          String secManager = String.join(".", getPackageName(), "login.LoginSecManager");
-          CD4C.getInstance().addImport(classSearcher.candidate, secManager);
+          String secManager = String.join(".", getPackageName(), "loginmodule.LoginSecManager");
+//          String secManager = String.join(".", getPackageName(), "login.LoginSecManager");
+          CD4C.getInstance().addImport(classSearcher.candidate, "loginmodule.LoginSecManager");
           // not finding a class might be caused by other modules/TOP
         }
       }

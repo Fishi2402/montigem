@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+umlp AssocTest {
+
+  class Foo;
+  class Bar;
+
+  package foobar{
+    class FooBar;
+  }
+
+  association Foo -> Bar;
+  association Foo -> foobar.FooBar;
+
+}

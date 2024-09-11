@@ -42,7 +42,8 @@
       "@umlp/navigation": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/navigation/src"],
       "@umlp/table": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/table/src"],
       "@umlp/*": ["node_modules/@umlp/*"],
-      "tslib": ["node_modules/tslib"]
+      "tslib": ["node_modules/tslib"],
+      "rxjs": ["node_modules/rxjs"], // required due to: error TS2307: Cannot find module 'rxjs' or its corresponding type declarations - TODO: #4257
     }
   },
   "angularCompilerOptions": {

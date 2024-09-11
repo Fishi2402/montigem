@@ -178,6 +178,13 @@ export class GemGraphComponent extends GraphBasisComponent implements OnChanges 
         },
         tooltip: "Switch Layout",
         icon: "pi pi-arrow-right-arrow-left",
+      }, {
+        key: "downloadGraph",
+        actionFn: (button: ControlButton, graphManager : GraphManagerService) : void => {
+          this.downloadAsPNG(new Date().toISOString()+"Graph.png")
+        },
+        tooltip: "Download Graph",
+        icon: "pi pi-file-export",
       }
 
     ];
@@ -195,7 +202,7 @@ export class GemGraphComponent extends GraphBasisComponent implements OnChanges 
     @Input() tooltipOptions?: TooltipOptions = {showDelay: 100};
 
     /** If this is not set, the bounding box will be calculated based on the maxima and minima for x and y coordinates
-     *  in the graph. Use it to ensure that different graphs have the default Zoom.
+     *  in the graph. Use it to ensure that different graphs have the same zoom.
      *  The customBoundinBox should not be calculated based on the graph nodes position. This default behavior is handled
      *  by Sigma and will break layout algorithms if used in our graph component.
      * */
