@@ -9,6 +9,7 @@ import com.microsoft.playwright.Page;
  * <p>Primarily intended for usage in the {@link AbstractPlaywrightE2ETest#locator(Page, String, ComponentKindLike)} method.
  */
 public enum ComponentKind implements ComponentKindLike {
+  GemText("gem-text"),
   /**
    * <strong>Example</strong>
    * <pre>{@code
