@@ -218,7 +218,18 @@ public class UMLPTool extends UMLPToolTOP {
 
     // The SummaryReporter -> ReportingRepository#table is rooted in the Log instance
     destroySingletonInstance(Log.class, "log", null);
-    destroySingletonInstance(Reporting.class, "singleton", null);
+    // TODO: Turn this into a Reporting.reset method?
+    // Make sure to remove all ReportHooks, as otherwise e.g. an
+    // UMLP SummaryReporter is still present when we now work on GUI models next turn
+    try {
+      Field intanceField = Reporting.class.getDeclaredField("reportHooks");
+      // we simply set the (not accessible/protected/private) instance field
+      intanceField.setAccessible(true);
+      // to null, allowing the GC to reap the singleton instance, as well as its lists/maps/caches/...
+      intanceField.set(null, new ArrayList<>());
+    } catch (ReflectiveOperationException e) {
+      throw new RuntimeException("Failed to reset reporting reportHooks ", e);
+    }
   }
 
   /**

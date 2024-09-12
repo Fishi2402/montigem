@@ -197,7 +197,7 @@ public class GenUpdateTest extends GenAbstractDBTest {
 
     p.setBestFriend(p2);
 
-    var idOpt = FlensburgDAOFactory.getAssocPerson_person_bestFriend_PersonDAO().selectBestFriendIdForPerson(p.getGemId());
+    var idOpt = FlensburgDAOFactory.getAssocPerson_person_bestFriend_personDAO().selectBestFriendIdForPerson(p.getGemId());
     assertTrue(idOpt.isPresent());
 
     assertEquals(0, Log.getErrorCount(),

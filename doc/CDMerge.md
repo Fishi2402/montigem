@@ -14,7 +14,7 @@ from a domain model.
 To allow for a more modular approach to domain modeling, the merge operator 
 CDMerge can be used to compose multiple class diagrams modeling specific parts
 or aspects of the system into a complete domain model on demand.
-The operator is described in [[LRRS23]] and its implementation can be found in 
+The operator is described in **[LRRS23]** and its implementation can be found in 
 the **[cd4analysis]** project.
 
 Click [here](https://www.monticore.de/download/MCCD.jar) to download the CD Tool
@@ -68,10 +68,17 @@ For a larger example refer to the **[Car Rental]** project.
 
 ## CLI Command
 
-CDMerge can also be executed via CLI with the `UMLPTool`. 
+CDMerge can also be executed via CLI with the `UMLPTool`.
+To build the tool execute the following command:
+
+```
+gradle :umlp-tool:shadowJar
+```
+
+Afterward, the tool can  be found at `umlp-tool/build/libs`.
 By using the option `-mrg` or `--merge` one can specify multiple files
-containing class diagrams. These will be merged with the input model specified
-via `-i` or `--input`. If the merge is successful, the merged CD replaces the
+containing class diagrams. These will be parsed and the class diagrams will then be merged with the input model specified
+via the option `-i` or `--input`. If the merge is successful, the merged CD replaces the
 original input CD in memory. Further operations will therefore be executed
 on the merged model, e.g.:
 

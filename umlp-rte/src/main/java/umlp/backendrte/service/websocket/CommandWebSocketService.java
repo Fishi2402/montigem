@@ -12,6 +12,7 @@ import umlp.backendrte.command.CommandObjectMapper;
 import umlp.backendrte.command.CommandResult;
 import umlp.backendrte.command.Participant;
 import umlp.backendrte.command.StatusResult;
+import umlp.backendrte.util.LogUtil;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -46,7 +47,7 @@ public class CommandWebSocketService extends TextWebSocketHandler implements Web
   @Override
   public void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
     String payload = message.getPayload();
-    System.out.println("Received:\t" + payload);
+    System.out.println("Received:\t" + LogUtil.concealSensitives(payload));
     String returnResult = "";
     try {
       Optional<Command<Object>> commandOptional = CommandObjectMapper.deserializeCommand(payload);
@@ -80,7 +81,7 @@ public class CommandWebSocketService extends TextWebSocketHandler implements Web
       Log.error("Command could not be parsed:\n"+ payload, e);
       returnResult = CommandObjectMapper.serializeResponse(StatusResult.error(commandId));
     }
-    System.out.println("Responding: " + returnResult);
+    System.out.println("Responding: " + LogUtil.concealSensitives(returnResult));
     TextMessage msg = new TextMessage(returnResult);
     synchronized (session) {
       System.out.println(session);
