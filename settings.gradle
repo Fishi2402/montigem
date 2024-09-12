@@ -85,7 +85,6 @@ include ':products:syse_functions:frontend'
 include ':products:syse_functions:automaton'
 include ':products:demorec:backend'
 include ':products:demorec:frontend'
-include ':products:demo-recycling:frontend'
 include ':products:kizam:backend'
 
 include ':products:dev_process_cockpit:backend'
