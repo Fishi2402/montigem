@@ -200,10 +200,10 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
     // append Manager and insert lowercase cd name (e.g., flensburg) to get the result
     String packageName = domainType.getTypeInfo().getPackageName();
     int dotIx = packageName.lastIndexOf('.');
-    String domainSimple = dotIx == -1? packageName : packageName.substring(dotIx);
+    String domainSimple = dotIx == -1? packageName : packageName.substring(dotIx+1);
 
     String manager = ManagerDecorator.getClassName(domainSimple);
-    String domain = domainSimple.toLowerCase();
+    String domain = packageName.toLowerCase();
 
     getCD4C().addImport(clazz, insertDomain2QType(manager, domain));
 

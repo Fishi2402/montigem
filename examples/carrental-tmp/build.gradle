@@ -1,9 +1,0 @@
-plugins {
-  id 'base'
-}
-
-description = "I AM ONLY A COPY!!!"
-
-clean.dependsOn(subprojects.collect{it.getTasksByName("clean", false)})
-
-build.dependsOn(subprojects.collect{ it.getTasksByName("build", false)})

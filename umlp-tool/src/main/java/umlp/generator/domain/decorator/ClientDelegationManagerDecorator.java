@@ -89,6 +89,8 @@ public class ClientDelegationManagerDecorator extends ManagerDecorator {
 
     addImportsForGivenTypes(delegationManagerClass, superTypesToTypes.keySet());
     getCD4C().addImport(delegationManagerClass, Joiners.DOT.join(parentCD.getName().toLowerCase(),
+        parentCD.getName()+SUFFIX));
+    getCD4C().addImport(delegationManagerClass, Joiners.DOT.join(parentCD.getName().toLowerCase(),
         parentCD.getName()+SUFFIX+CLIENT_IMPL_SUFFIX));
 
     extendingCDs.forEach(extendingCD -> {

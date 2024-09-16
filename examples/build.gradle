@@ -10,9 +10,6 @@ subprojects {
 // Make buildApp tasks sequential. Doesn't seem to lose time compared to a parallel build,
 // but makes build process more stable
 gradle.projectsEvaluated {
-  project(":examples:carrental-tmp:frontend").tasks.npmInstall.mustRunAfter(
-      project(":examples:dtcockpit:frontend").tasks.npmInstall
-  )
   project(":examples:dtcockpit:frontend").tasks.npmInstall.mustRunAfter(
       project(":examples:dtcockpit-jsweet:frontend").tasks.npmInstall
   )

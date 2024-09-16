@@ -4,6 +4,8 @@ package gradle.specific.merge;
 import com.google.common.collect.Sets;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdmerge.CDMerge;
+import de.monticore.cdmerge.config.MergeParameter;
+import de.se_rwth.commons.logging.Log;
 import org.gradle.internal.FileUtils;
 import org.gradle.workers.WorkAction;
 import umlp.UMLPTool;
@@ -16,6 +18,8 @@ import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static org.gradle.internal.impldep.org.junit.Assert.fail;
 
 public abstract class MergeAction implements WorkAction<MergeActionParameter> {
   @Override
@@ -35,7 +39,15 @@ public abstract class MergeAction implements WorkAction<MergeActionParameter> {
           .collect(Collectors.toSet());
 
       String outputModelName = FileUtils.removeExtension(outputFile.getName());
-      ASTCDCompilationUnit merge = CDMerge.merge(models, outputModelName, Sets.newHashSet());
+      ASTCDCompilationUnit merge = CDMerge.merge(models, outputModelName,
+          Set.of(MergeParameter.FAIL_AMBIGUOUS));
+
+      if (merge == null) {
+        Log.error("Merge was unsuccessful");
+        fail("Merge was unsuccessful");
+        return;
+      }
+
       UMLPFullPrettyPrinter printer = new UMLPFullPrettyPrinter();
       merge.accept(printer.getTraverser());
 

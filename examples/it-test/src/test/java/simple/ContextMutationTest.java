@@ -3,6 +3,7 @@ package simple;
 import context.ContextManager;
 import context.Person;
 import context.test_infrastructure.ContextMockTestSetup;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.MCFatalError;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,9 @@ public class ContextMutationTest extends ContextMockTestSetup {
 
     //getter is okay
     Assertions.assertDoesNotThrow(user::getName);
+
     //mutator shouldn't be
+    Log.setErrorHook(() -> {throw new MCFatalError("");});
     assertThrows(MCFatalError.class, () -> user.setName("Bobbera"));
   }
 }
