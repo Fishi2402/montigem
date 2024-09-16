@@ -198,15 +198,15 @@ public class UMLPTool extends UMLPToolTOP {
   }
 
   public static void cleanUpAfterMemoryLeakingSingletons() {
-    // Gradle (nor se-commonds-gradle) does not drop an isolated classloaders content:
+    // Gradle (nor se-commons-gradle) does not drop an isolated classloaders content:
     // https://github.com/gradle/gradle/issues/18313
 
     // Fix some memory leaks (singletons with a List/Map/Caches... storing ASTNodes/Symbols/... )
     InitDependencyTree.cleanUp();
-    destroySingletonInstance(SymbolBoundNameExpressionsFinder.class, "instance", SymbolBoundNameExpressionsFinder.getInstance());
-    destroySingletonInstance(CDDeSerHelper.class, "INSTANCE", CDDeSerHelper.getInstance());
-    destroySingletonInstance(StaticObjectsCollector.class, "instance", StaticObjectsCollector.getInstance());
-    destroySingletonInstance(CallTypeDeriver.class, "instance", CallTypeDeriver.getInstance());
+    SymbolBoundNameExpressionsFinder.unsetInstance();
+    destroySingletonInstance(CDDeSerHelper.class, "INSTANCE", CDDeSerHelper.getInstance()); // TODO: Fix in CD4A
+    StaticObjectsCollector.unsetInstance();
+    CallTypeDeriver.unsetInstance();
 
     AbstractDecorator.cleanUp();
     TagLookUp.cleanUp();
@@ -217,8 +217,8 @@ public class UMLPTool extends UMLPToolTOP {
     GUIDSLMill.reset();
 
     // The SummaryReporter -> ReportingRepository#table is rooted in the Log instance
-    destroySingletonInstance(Log.class, "log", null);
-    // TODO: Turn this into a Reporting.reset method?
+    destroySingletonInstance(Log.class, "log", null); // TODO: Fix in se-commons
+    // TODO: Turn this into a Reporting.reset method
     // Make sure to remove all ReportHooks, as otherwise e.g. an
     // UMLP SummaryReporter is still present when we now work on GUI models next turn
     try {

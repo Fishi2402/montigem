@@ -37,6 +37,10 @@ public class CallTypeDeriver implements GUIDSLVisitor2 {
     return instance;
   }
 
+  public static void unsetInstance() {
+    instance = null;
+  }
+
   public GUIDSLTraverser getTraverser() {
     return traverser;
   }
