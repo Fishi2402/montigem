@@ -75,17 +75,8 @@ public class ClientCommandWebsocketCommunication extends TextWebSocketHandler im
       if (messages.containsKey(command.getId())) {
         CommandResult<?> response = messages.get(command.getId());
         messages.remove(command.getId());
-        // Stelle sicher, dass der Typ auch nach dem Deserialisieren gesichert ist
-        if (((ParameterizedType) command.getClass()
-            .getGenericSuperclass()).getActualTypeArguments()[0].getTypeName()
-            .equals(response.getTypeParameter())) {
-          result = (CommandResult<T>) response;
-          Log.info(String.format("Received answer from server for command with id %s: %s", command.getId(), CommandObjectMapper.serializeResponse(result)), this.getClass().getName());
-        }
-        else {
-          warnCouldNotReceive(command);
-          return new SimpleResult<>(command.getId(), LoadingState.FAILED_TO_LOAD, command.getCommandType());
-        }
+        result = (CommandResult<T>) response;
+        Log.info(String.format("Received answer from server for command with id %s: %s", command.getId(), CommandObjectMapper.serializeResponse(result)), this.getClass().getName());
       } else {
         warnCouldNotReceive(command);
         return new SimpleResult<>(command.getId(), LoadingState.FAILED_TO_LOAD, command.getCommandType());

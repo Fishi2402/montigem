@@ -42,6 +42,13 @@ task genTestData(type: UMLPOD2DataTask) {
   hwcDir = file("$projectDir/src/main/java")
   symbolDir = files(generateUmlpBackend.symbolOutDir)
 }
+
+sourceSets {
+  main {
+    java.srcDirs += [genTestData.outputDir]
+  }
+}
+
 ```
 
 An example can be found in the kitchen companion project:

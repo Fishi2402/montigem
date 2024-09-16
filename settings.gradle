@@ -19,18 +19,19 @@ pluginManagement {
     // TODO: Publish jsweet dependency in nexus, so that this is _not_ required!!!!!
     // Only use jsweet repos for everything in org.jsweet*(excl jsweet-core which is in maven-central)
     // since they throw 409 errors for dependencies in other groups
-    maven {
-      url "https://repository.jsweet.org/artifactory/libs-snapshot-local"
-      mavenContent {
-        includeModuleByRegex("org[.]jsweet.*", "(?!jsweet-core).*")
-      }
-    }
-    maven {
-      url "https://repository.jsweet.org/artifactory/libs-release-local"
-      mavenContent {
-        includeModuleByRegex("org[.]jsweet.*", "(?!jsweet-core).*")
-      }
-    }
+//    maven {
+//      url "https://repository.jsweet.org/artifactory/libs-snapshot-local"
+//      mavenContent {
+//        includeModuleByRegex("org[.]jsweet.*", "(?!jsweet-core).*")
+//      }
+//    }
+//    maven {
+//      url "https://repository.jsweet.org/artifactory/libs-release-local"
+//      mavenContent {
+//        includeModuleByRegex("org[.]jsweet.*", "(?!jsweet-core).*")
+//      }
+//    }
+    // ALU here: jsweet was quickly mirrored to the se-nexus
   }
 }
 
@@ -84,7 +85,6 @@ include ':products:syse_functions:frontend'
 include ':products:syse_functions:automaton'
 include ':products:demorec:backend'
 include ':products:demorec:frontend'
-include ':products:demo-recycling:frontend'
 include ':products:kizam:backend'
 
 include ':products:dev_process_cockpit:backend'
