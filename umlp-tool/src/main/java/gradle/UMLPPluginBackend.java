@@ -29,7 +29,6 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
   public void apply(Project project) {
     project.getPluginManager().apply(UMLPPluginBase.class);
     project.getPluginManager().apply("java");
-    project.getPluginManager().apply("de.rwth.se.umlp-tool-testing");
 
     TaskProvider<UMLPBackendTask> umlpTask = createUMLPBackendTask(project, UMLP_BACKEND_TASK_NAME);
     // Generate Backend must run before JavaCompile
@@ -53,6 +52,9 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
     // Only during compilation of the backend
     // TODO: Use constant for jsweet-core
     project.getDependencies().add("compileOnly", "org.jsweet:jsweet-core:6.3.0");
+
+    // apply last, since the test infrastructure tasks import properties from backend tasks
+    project.getPluginManager().apply("de.rwth.se.umlp-tool-testing");
   }
 
   // Add generated files to SourceSets
