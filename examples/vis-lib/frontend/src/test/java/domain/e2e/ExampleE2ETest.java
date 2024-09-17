@@ -17,33 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Tag("SlowTest")
 public class ExampleE2ETest extends AbstractDomainE2ETest {
 
-  private FrontendServer4Test frontendHost = new FrontendServer4Test(
-      new File("./build/frontendGen/dist/client/"),
-      "http://localhost:" + getBackendServerPort(), getFrontendServerPort()
-  );
-
-  @BeforeAll
-  @Override
-  protected void startFrontend() throws IOException {
-      try {
-        System.out.println("Starting frontend on " + getFrontendServerPort() + " and backend on " + getBackendServerPort());
-          frontendHost.start();
-      } catch (Exception e) {
-          throw new IOException(e);
-      }
-  }
-
-  @AfterAll
-  @Override
-  protected void stopFrontend() {
-      try {
-        System.out.println("Stopping frontend");
-          frontendHost.stop();
-      } catch (Exception e) {
-          throw new RuntimeException(e);
-      }
-  }
-
   @BeforeEach
   void init(Page page) {
     page.onConsoleMessage(cm -> System.out.println("[BROWSER] " + cm.text()));

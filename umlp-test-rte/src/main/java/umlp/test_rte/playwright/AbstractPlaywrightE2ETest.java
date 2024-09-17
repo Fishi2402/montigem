@@ -66,12 +66,12 @@ public abstract class AbstractPlaywrightE2ETest implements PlaywrightUtils {
   /**
    * Gets the directory to which the frontend app has been build to.
    *
-   * <p>By default this directory is assumed to be {@code build/frontendGen/dist}
+   * <p>By default this directory is assumed to be {@code build/frontendGen/dist/client}
    *
    * @return The {@link File} denoting the frontendGen directory
    */
   protected File getFrontendDistDirectory() {
-    return new File("build/frontendGen/dist");
+    return new File("build/frontendGen/dist/client");
   }
 
   /**
@@ -86,7 +86,7 @@ public abstract class AbstractPlaywrightE2ETest implements PlaywrightUtils {
         "http://localhost:" + getBackendServerPort(),
         getFrontendServerPort()
     );
-
+    frontendServer.start();
   }
 
   /**

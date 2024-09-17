@@ -20,15 +20,20 @@ public class FrontendServer4Test {
   private final int port;
   private final File distDir;
   private final String backendAddress;
+  private final Undertow server;
 
   public FrontendServer4Test(File distDir, String backendAddress, int port) {
     this.port = port;
     this.distDir = distDir;
     this.backendAddress = backendAddress;
+
+    server = Undertow.builder()
+        .addHttpListener(port, "0.0.0.0")
+        .setHandler(createPathHandler(distDir, backendAddress))
+        .build();
   }
 
   private HttpHandler createPathHandler(final File distDir, final String proxyTo) {
-
     PathResourceManager resourceManager = new PathResourceManager(distDir.toPath());
     ResourceHandler resourceHandler = Handlers.resource(
         resourceManager
@@ -46,17 +51,7 @@ public class FrontendServer4Test {
                   resourceManager.getResource("index.html").serve(
                       exchange.getResponseSender(),
                       exchange,
-                      new IoCallback() {
-                        @Override
-                        public void onComplete(HttpServerExchange exchange, Sender sender) {
-
-                        }
-
-                        @Override
-                        public void onException(HttpServerExchange exchange, Sender sender, IOException exception) {
-
-                        }
-                      }
+                      IoCallback.END_EXCHANGE
                   );
                 }
 
@@ -67,19 +62,10 @@ public class FrontendServer4Test {
   }
 
   public void start() {
-    Undertow server = Undertow.builder()
-        .addHttpListener(port, "0.0.0.0")
-        .setHandler(createPathHandler(distDir, backendAddress))
-        .build();
     server.start();
   }
 
   public void stop() {
-
-  }
-
-  public static void main(String[] args) {
-    FrontendServer4Test host = new FrontendServer4Test(new File("."), "http://httpbin.org/get", 8082);
-    host.start();
+    server.stop();
   }
 }
