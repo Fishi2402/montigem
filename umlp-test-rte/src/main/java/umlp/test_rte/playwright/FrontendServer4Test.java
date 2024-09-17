@@ -1,4 +1,4 @@
-package domain.e2e;
+package umlp.test_rte.playwright;
 
 import io.undertow.Handlers;
 import io.undertow.Undertow;
@@ -16,15 +16,15 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
-public class UndertowFrontendHost {
+public class FrontendServer4Test {
   private final int port;
   private final File distDir;
-  private final String proxyTo;
+  private final String backendAddress;
 
-  public UndertowFrontendHost(File distDir, String target, int port) {
+  public FrontendServer4Test(File distDir, String backendAddress, int port) {
     this.port = port;
     this.distDir = distDir;
-    this.proxyTo = target;
+    this.backendAddress = backendAddress;
   }
 
   private HttpHandler createPathHandler(final File distDir, final String proxyTo) {
@@ -69,7 +69,7 @@ public class UndertowFrontendHost {
   public void start() {
     Undertow server = Undertow.builder()
         .addHttpListener(port, "0.0.0.0")
-        .setHandler(createPathHandler(distDir, proxyTo))
+        .setHandler(createPathHandler(distDir, backendAddress))
         .build();
     server.start();
   }
@@ -79,7 +79,7 @@ public class UndertowFrontendHost {
   }
 
   public static void main(String[] args) {
-    UndertowFrontendHost host = new UndertowFrontendHost(new File("."), "http://httpbin.org/get", 8082);
+    FrontendServer4Test host = new FrontendServer4Test(new File("."), "http://httpbin.org/get", 8082);
     host.start();
   }
 }
