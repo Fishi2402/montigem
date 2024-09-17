@@ -3,7 +3,6 @@
 plugins {
   id "com.github.node-gradle.node" version "5.0.0"
   id "de.rwth.se.umlp-tool-frontend"
-  id 'de.rwth.se.umlp-tool-testing'
 }
 
 node {
@@ -13,26 +12,12 @@ node {
 dependencies {
   implementation project(":examples:vis-lib:backend")
   implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version
-
-  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version
-  testImplementation("io.undertow:undertow-core:2.3.17.Final")
+  testImplementation project(':umlp-test-rte')
 }
 
 genGUI {
   domainModels = ["Domain"]
   guiCreateModels = ["person.CreatePerson", "person.CreatePersonWithFriends","person.CreateClubWithMembers"]
-
-  /*
-  debug = true
-  outputs.upToDateWhen { false }
-  /**/
-}
-
-generateTestInfrastructure {
-  input = file("../models/Domain.umlp")
-  symbolOutDir = file("${project.buildDir}/symbols")
-  usePlaywright.set(true)
-  hwcDir = [file("$projectDir/src/main/java"), file("$projectDir/src/test/java")]
 
   /*
   debug = true
@@ -84,7 +69,7 @@ tasks.register('run') {
 }
 
 test {
-  dependsOn generateTestInfrastructure, npmInstall
+  dependsOn npmInstall
   useJUnitPlatform(){
     excludeTags "SlowTest"
   }

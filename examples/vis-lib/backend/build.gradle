@@ -1,7 +1,6 @@
 plugins {
   id 'java-library'
   id 'de.rwth.se.umlp-tool-backend'
-  id 'de.rwth.se.umlp-tool-testing'
 
   id 'application'
   id 'com.google.cloud.tools.jib' version '3.2.1'
@@ -79,9 +78,7 @@ generateUmlpBackend {
 }
 
 generateTestInfrastructure {
-  input = file("../models/Domain.umlp")
-  symbolOutDir = file("${project.buildDir}/symbols")
-  usePlaywright.set(false)
+  usePlaywright.set(true)
 }
 
 tasks.register('runServer') {
