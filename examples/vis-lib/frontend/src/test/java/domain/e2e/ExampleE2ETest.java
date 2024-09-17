@@ -14,7 +14,6 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Tag("SlowTest")
 public class ExampleE2ETest extends AbstractDomainE2ETest {
 
   @BeforeEach

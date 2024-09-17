@@ -11,7 +11,6 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 import static umlp.test_rte.playwright.ComponentKind.GemButton;
 import static umlp.test_rte.playwright.ComponentKind.GemTextInput;
 
-@Tag("SlowTest")
 public class MultiPageE2ETest extends AbstractDomainE2ETest {
 
   Page page1, page2;
