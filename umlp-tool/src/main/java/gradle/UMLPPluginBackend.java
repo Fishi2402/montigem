@@ -29,6 +29,7 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
   public void apply(Project project) {
     project.getPluginManager().apply(UMLPPluginBase.class);
     project.getPluginManager().apply("java");
+    project.getPluginManager().apply("de.rwth.se.umlp-tool-testing");
 
     TaskProvider<UMLPBackendTask> umlpTask = createUMLPBackendTask(project, UMLP_BACKEND_TASK_NAME);
     // Generate Backend must run before JavaCompile

@@ -1,5 +1,6 @@
 package gradle;
 
+import gradle.specific.UMLPBackendTask;
 import gradle.specific.UMLPTestInfrastructureTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -19,6 +20,8 @@ import java.util.function.Consumer;
  * Plugin which handles test infrastructure generation.
  *
  * <p><strong>Usage</strong>
+ * Will be automatically applied if {@link  UMLPPluginBackend} is used.
+ * Alternatively:
  * <pre>{@code
  * //build.gradle
  *
@@ -77,24 +80,30 @@ public abstract class UMLPPluginTestInfrastructure implements Plugin<Project> {
         .register(UMLP_TEST_INFRASTRUCTURE_TASK_NAME, UMLPTestInfrastructureTask.class, task -> {
           task.setGroup(UMLP_GROUP_NAME);
 
-          if (project.getTasks().findByName(UMLPPluginBackend.UMLP_BACKEND_TASK_NAME) != null) {
+          UMLPBackendTask backendTask = (UMLPBackendTask) project.getTasks().findByName(
+              UMLPPluginBackend.UMLP_BACKEND_TASK_NAME
+          );
+
+          String buildDirPath = project.getBuildDir().getAbsolutePath();
+          if (backendTask != null) {
             task.dependsOn(UMLPPluginBackend.UMLP_BACKEND_TASK_NAME);
+
+            task.getInput().from(backendTask.getInput());
+            task.getHandWrittenCodeDir().from(backendTask.getHandWrittenCodeDir());
+            task.getTmplDir().convention(backendTask.getTmplDir());
+            task.getModelDir().from(backendTask.getModelDir());
+          }else {
+            String projectDirPath = project.getProjectDir().getAbsolutePath();
+
+            setIfPathExists(task::setInput, Path.of(projectDirPath, "src", "models"));
+            setIfPathExists(path -> task.getHandWrittenCodeDir().from(path),
+                Path.of(projectDirPath, "src", "main", "java"));
+            setIfPathExists(path -> task.getTmplDir().set(path),
+                Path.of(projectDirPath, "src", "templates"));
           }
 
-          String projectDirPath = project.getProjectDir().getAbsolutePath();
-          String buildDirPath = project.getBuildDir().getAbsolutePath();
-
-          setIfPathExists(task::setInput, Path.of(projectDirPath, "src", "models"));
-          setIfPathExists(path -> task.getHandWrittenCodeDir().from(path),
-                          Path.of(projectDirPath, "src", "main", "java"));
-          setIfPathExists(path -> task.getTmplDir().set(path),
-                          Path.of(projectDirPath, "src", "templates"));
-
-          // Always set output dir (Gradle creates it, if not already exists)
-          task.getOutputDir().set(Path.of(buildDirPath, "umlp", "backend").toFile());
-
-          // Always create symbols
-          task.getSymbolOutDir().set(Path.of(buildDirPath, "umlp", "backend_symbols").toFile());
+          task.getOutputDir().set(Path.of(buildDirPath, "umlp", "backend_test").toFile());
+          task.getSymbolOutDir().set(Path.of(buildDirPath, "umlp", "backend_test_symbols").toFile());
         });
   }
 
