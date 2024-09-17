@@ -27,7 +27,7 @@ dependencies {
   api project(':umlp-rte'), {
     exclude group: "org.slf4j", module: "slf4j-simple"
   }
-  implementation project(':umlp-test-rte')
+  testImplementation project(':umlp-test-rte')
 
   implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
   api 'com.h2database:h2:2.1.214'

@@ -51,7 +51,7 @@ dependencies {
   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2', withoutSpringLogging
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2', withoutSpringLogging
 
-  implementation project(':umlp-test-rte')
+  testImplementation project(':umlp-test-rte')
 
   // native image
   // Exclude logback
