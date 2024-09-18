@@ -7,6 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static umlp.backendrte.test_infrastructure.playwright.ComponentKind.GemText;
 
 
@@ -28,60 +30,66 @@ public class ExampleCssTest extends AbstractDomainE2ETest {
   @Test
   void testStyles(Page page) {
     ElementHandle element = page.locator(".testText").first().elementHandle();
-    System.out.printf("Element: %s%n", element);
 
     String textAlign = CssUtil.getTextAlign(page, element);
-    System.out.printf("Text align: %s%n", textAlign);
+    assertEquals(textAlign, "start");
 
     String textColor = CssUtil.getTextColor(page, element);
-    System.out.printf("Text color: %s%n", textColor);
+    assertEquals(textColor, "rgb(0, 0, 255)");
 
     String fontFamily = CssUtil.getFontFamily(page, element);
-    System.out.printf("Font family: %s%n", fontFamily);
+    assertEquals(fontFamily, "\"Lucida Console\", Courier, monospace");
 
     String fontSize = CssUtil.getFontSize(page, element);
-    System.out.printf("Font size: %s%n", fontSize);
+    assertEquals(fontSize, "16px");
 
     String fontStyle = CssUtil.getFontStyle(page, element);
-    System.out.printf("Font style: %s%n", fontStyle);
+    assertEquals(fontStyle, "oblique 12deg");
 
     String fontWeight = CssUtil.getFontWeight(page, element);
-    System.out.printf("Font weight: %s%n", fontWeight);
+    assertEquals(fontWeight, "200");
 
     String lineHeight = CssUtil.getLineHeight(page, element);
-    System.out.printf("Line height: %s%n", lineHeight);
+    assertEquals(lineHeight, "normal");
 
     String background = CssUtil.getBackground(page, element);
-    System.out.printf("Background: %s%n", background);
+    assertTrue(background.contains("rgba(0, 0, 0, 0)"));
 
     String borderColor = CssUtil.getBorderColor(page, element);
-    System.out.printf("Border color: %s%n", borderColor);
+    assertEquals(borderColor, "rgb(0, 0, 255)");
 
     String borderRadius = CssUtil.getBorderRadius(page, element);
-    System.out.printf("Border radius: %s%n", borderRadius);
+    assertEquals(borderRadius, "0px");
 
     String boxShadow = CssUtil.getBoxShadow(page, element);
-    System.out.printf("Box shadow: %s%n", boxShadow);
+    assertEquals(boxShadow, "none");
 
-    Object dimensions = CssUtil.getDimensions(page, element);
-    System.out.printf("Dimensions: %s%n", dimensions);
+    String dimensions = CssUtil.getDimensions(page, element);
+    assertTrue(dimensions.contains("width=200px"));
+    assertTrue(dimensions.contains("height=48px"));
 
     String display = CssUtil.getDisplay(page, element);
-    System.out.printf("Display: %s%n", display);
+    assertEquals(display, "flex");
 
-    Object margin = CssUtil.getMargin(page, element);
-    System.out.printf("Margin: %s%n", margin);
+    String margin = CssUtil.getMargin(page, element);
+    assertTrue(margin.contains("top=0px"));
+    assertTrue(margin.contains("right=0px"));
+    assertTrue(margin.contains("bottom=0px"));
+    assertTrue(margin.contains("left=0px"));
 
     String opacity = CssUtil.getOpacity(page, element);
-    System.out.printf("Opacity: %s%n", opacity);
+    assertEquals(opacity, "1");
 
-    Object padding = CssUtil.getPadding(page, element);
-    System.out.printf("Padding: %s%n", padding);
+    String padding = CssUtil.getPadding(page, element);
+    assertTrue(padding.contains("top=0px"));
+    assertTrue(padding.contains("right=0px"));
+    assertTrue(padding.contains("bottom=0px"));
+    assertTrue(padding.contains("left=0px"));
 
     String position = CssUtil.getPosition(page, element);
-    System.out.printf("Position: %s%n", position);
+    assertEquals(position, "static");
 
     String zIndex = CssUtil.getZIndex(page, element);
-    System.out.printf("Z index: %s%n", zIndex);
+    assertEquals(zIndex, "auto");
   }
 }
