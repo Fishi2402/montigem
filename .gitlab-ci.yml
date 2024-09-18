@@ -209,6 +209,15 @@ trigger-iop-datamodel-demonstrator:
   only:
     - dev
 
+trigger-wirca-demonstrator:
+  stage: testDeployed
+  allow_failure: false # Failure is not an option
+  trigger:
+    project: monticore/umlp-anwendungen/wirca-demonstrator
+    branch: dev
+  only:
+    - dev
+
 checkMDLinks:
   stage: check
   script:
