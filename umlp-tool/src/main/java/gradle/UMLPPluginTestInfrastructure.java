@@ -62,17 +62,25 @@ public abstract class UMLPPluginTestInfrastructure implements Plugin<Project> {
     DependencyHandler dependencies = project.getDependencies();
 
     //umlp-test-rte
+    // TODO: only works within this project!
     Project umlpTestRte = project.findProject(":umlp-test-rte");
     Objects.requireNonNull(umlpTestRte, "Failed to find project ':umlp-test-rte'");
+
+    // Adding the dependencies to compileOnly and testImplementation is a tradeoff to using
+    // the java-test-fixtures plugin, which would force the developers to TOP in the src/textFixtures/java
+    // dir, which is very gradle specific and weird.
     dependencies.add(COMPILE_ONLY, umlpTestRte);
     dependencies.add(TEST_IMPLEMENTATION, umlpTestRte);
 
     //playwright
+    dependencies.add(COMPILE_ONLY,
+        "com.microsoft.playwright:playwright:" + project.property("playwright_version"));
     dependencies.add(TEST_IMPLEMENTATION,
                      "com.microsoft.playwright:playwright:" + project.property("playwright_version"));
 
     //jsweet - annotations like erased
     dependencies.add(COMPILE_ONLY, "org.jsweet:jsweet-core:" + project.property("jsweet_version"));
+    dependencies.add(TEST_IMPLEMENTATION, "org.jsweet:jsweet-core:" + project.property("jsweet_version"));
   }
 
   public static TaskProvider<UMLPTestInfrastructureTask> createUmlpTestInfrastructureTask(Project project) {
@@ -85,23 +93,22 @@ public abstract class UMLPPluginTestInfrastructure implements Plugin<Project> {
           );
 
           String buildDirPath = project.getBuildDir().getAbsolutePath();
+          String projectDirPath = project.getProjectDir().getAbsolutePath();
+
           if (backendTask != null) {
             task.dependsOn(UMLPPluginBackend.UMLP_BACKEND_TASK_NAME);
 
             task.getInput().from(backendTask.getInput());
-            task.getHandWrittenCodeDir().from(backendTask.getHandWrittenCodeDir());
             task.getTmplDir().convention(backendTask.getTmplDir());
             task.getModelDir().from(backendTask.getModelDir());
           }else {
-            String projectDirPath = project.getProjectDir().getAbsolutePath();
-
             setIfPathExists(task::setInput, Path.of(projectDirPath, "src", "models"));
-            setIfPathExists(path -> task.getHandWrittenCodeDir().from(path),
-                Path.of(projectDirPath, "src", "main", "java"));
+
             setIfPathExists(path -> task.getTmplDir().set(path),
                 Path.of(projectDirPath, "src", "templates"));
           }
-
+          setIfPathExists(path -> task.getHandWrittenCodeDir().from(path),
+              Path.of(projectDirPath, "src", "main", "java"));
           task.getOutputDir().set(Path.of(buildDirPath, "umlp", "backend_test").toFile());
           task.getSymbolOutDir().set(Path.of(buildDirPath, "umlp", "backend_test_symbols").toFile());
         });
