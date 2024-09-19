@@ -61,16 +61,16 @@ public abstract class UMLPPluginTestInfrastructure implements Plugin<Project> {
     //dependencies
     DependencyHandler dependencies = project.getDependencies();
 
-    //umlp-test-rte
-    // TODO: only works within this project!
-    Project umlpTestRte = project.findProject(":umlp-test-rte");
-    Objects.requireNonNull(umlpTestRte, "Failed to find project ':umlp-test-rte'");
-
     // Adding the dependencies to compileOnly and testImplementation is a tradeoff to using
     // the java-test-fixtures plugin, which would force the developers to TOP in the src/textFixtures/java
     // dir, which is very gradle specific and weird.
-    dependencies.add(COMPILE_ONLY, umlpTestRte);
-    dependencies.add(TEST_IMPLEMENTATION, umlpTestRte);
+
+    //umlp-test-rte
+    Project umlpTestRte = project.findProject(":umlp-test-rte");
+    if(umlpTestRte != null){
+      dependencies.add(COMPILE_ONLY, umlpTestRte);
+      dependencies.add(TEST_IMPLEMENTATION, umlpTestRte);
+    }
 
     //playwright
     dependencies.add(COMPILE_ONLY,
