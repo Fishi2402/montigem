@@ -5,14 +5,12 @@ import de.monticore.cd.codegen.CDGenerator;
 import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd4code.CD4CodeMill;
-import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.se_rwth.commons.logging.Log;
-import umlp.UMLPMill;
 import umlp.generator.db.sql.SQLSchemaGenerator;
 import umlp.generator.domain.decorator.GenService;
 
@@ -59,16 +57,20 @@ public class UMLPGenerator {
   }
 
   public ASTCDCompilationUnit createCompilationUnit(ASTCDCompilationUnit cd) {
+    return createNewCompilationUnit(cd);
+  }
+
+  public static ASTCDCompilationUnit createNewCompilationUnit(ASTCDCompilationUnit cd) {
     // create an empty CD definition
     ASTCDDefinition cdDef = CD4CodeMill.cDDefinitionBuilder()
-            .setName(cd.getCDDefinition().getName())
-            .setModifier(CDModifier.PUBLIC.build())
-            .build();
+        .setName(cd.getCDDefinition().getName())
+        .setModifier(CDModifier.PUBLIC.build())
+        .build();
 
     // ... and add it to a new CD compilation unit
     ASTCDCompilationUnit newCD = CD4CodeMill.cDCompilationUnitBuilder()
-            .setCDDefinition(cdDef)
-            .build();
+        .setCDDefinition(cdDef)
+        .build();
 
     // set the package
     if (cd.isPresentMCPackageDeclaration()) {

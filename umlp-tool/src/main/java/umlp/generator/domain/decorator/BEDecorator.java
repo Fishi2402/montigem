@@ -13,6 +13,7 @@ import umlp.generator.domain.UMLPGeneratorConfig;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class BEDecorator extends AbstractDecorator {
@@ -21,7 +22,6 @@ public class BEDecorator extends AbstractDecorator {
 
   boolean spring = false;
   boolean shell = false;
-  boolean playwright = false;
 
   protected MCPath hwPath;
 
@@ -36,7 +36,6 @@ public class BEDecorator extends AbstractDecorator {
     if(glex.hasGlobalVar("UMLPGeneratorConfig")){
       spring = UMLPGeneratorConfig.getInstance().isUseSpring();
       shell = UMLPGeneratorConfig.getInstance().isUseShell();
-      playwright = UMLPGeneratorConfig.getInstance().isUsePlaywright();
     }
   }
 
@@ -61,6 +60,8 @@ public class BEDecorator extends AbstractDecorator {
 
   @Override
   public void transform(ASTCDCompilationUnit cdAST, ASTCDCompilationUnit decoratedAST) {
+    usedDecorators.clear();
+
     DomainClassDecorator domainClassDecorator;
 
     domainClassDecorator = new DomainClassDecorator(glex, hwPath);
@@ -108,7 +109,7 @@ public class BEDecorator extends AbstractDecorator {
     errorCollectorDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ErrorCollectorDecorator", BEDecorator.class.getName());
 
-    ObserverDecorator observerDecorator = new ObserverDecorator(glex);
+    ObserverDecorator observerDecorator = remember(new ObserverDecorator(glex));
     observerDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ObserverDecorator", BEDecorator.class.getName());
 
@@ -133,7 +134,7 @@ public class BEDecorator extends AbstractDecorator {
     Log.info("After decorator: AccessPolicyDecorator", BEDecorator.class.getName());
 
     // Generate DiagramObserver classes
-    DiagramObserverDecorator diagramObserverDecorator = new DiagramObserverDecorator(glex);
+    DiagramObserverDecorator diagramObserverDecorator = remember(new DiagramObserverDecorator(glex));
     diagramObserverDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: DiagramObserverDecorator", BEDecorator.class.getName());
 
@@ -210,25 +211,7 @@ public class BEDecorator extends AbstractDecorator {
       ShellApplicationDecorator shellApplicationDecorator = new ShellApplicationDecorator(glex);
       shellApplicationDecorator.transform(cdAST, decoratedAST);
       Log.info("After decorator: ShellApplicationDecorator", BEDecorator.class.getName());
-
-      // TODO: We might move this into frontend generator, since it is not used in backend only tests
-      if(playwright) {
-        E2ETestDecorator e2ETestDecorator = new E2ETestDecorator(glex);
-        e2ETestDecorator.transform(cdAST, decoratedAST);
-        Log.info("After decorator: E2ETestDecorator", BEDecorator.class.getName());
-      }
     }
-
-
-    TestContextDecorator testContextDecorator = new TestContextDecorator(glex);
-    testContextDecorator.transform(cdAST, decoratedAST);
-    Log.info("After decorator: TestContextDecorator", ShellAPIDecorator.class.getName());
-
-    TestSetupDecorator testSetupDecorator = new TestSetupDecorator(glex,
-                                                                   observerDecorator,
-                                                                   diagramObserverDecorator);
-    testSetupDecorator.transform(cdAST, decoratedAST);
-    Log.info("After decorator: TestContextDecorator", TestSetupDecorator.class.getName());
 
     if(hasOCL) {
       ValidatorDecorator validatorDecorator = new ValidatorDecorator(glex);
@@ -244,7 +227,6 @@ public class BEDecorator extends AbstractDecorator {
       // OCLMill was used in the decorators. To assure UMLP functionality initialize the UMLP-Mill
       UMLPMill.init();
     }
-
 
     glex.replaceTemplate("cd2java.Imports", new TemplateHookPoint("umlp.Imports"));
   }

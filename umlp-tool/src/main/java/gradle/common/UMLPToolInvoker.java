@@ -2,6 +2,7 @@ package gradle.common;
 
 import de.monticore.AmbiguityException;
 import de.monticore.generating.templateengine.freemarker.MontiCoreFreeMarkerException;
+import de.monticore.gradle.common.GradleLog;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPTool;
 
@@ -9,6 +10,7 @@ import java.util.Arrays;
 
 public class UMLPToolInvoker {
   public static void run(String[] args){
+    GradleLog.init();
     Log.info("Starting UMLPTool: \n" +
         "\t  java -jar UMLPTool.jar " + Arrays.toString(args), UMLPAction.class.getName());
     try {

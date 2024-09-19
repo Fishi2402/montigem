@@ -1,4 +1,4 @@
-package umlp.backendrte.test_infrastructure.playwright;
+package umlp.test_rte.playwright;
 
 /**
  * Describes objects, which can be selected as locators, but which require further selection for underlying html

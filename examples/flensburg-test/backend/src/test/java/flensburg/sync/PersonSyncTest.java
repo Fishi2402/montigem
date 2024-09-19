@@ -22,7 +22,7 @@ import umlp.backendrte.command.CommandDirectCommunication;
 import umlp.backendrte.command.CommandResult;
 import umlp.backendrte.command.TestClientCommandManager;
 import umlp.backendrte.common.GemList;
-import umlp.backendrte.test_infrastructure.TestSetup;
+import umlp.test_rte.TestSetup;
 
 import java.util.ArrayList;
 import java.util.List;

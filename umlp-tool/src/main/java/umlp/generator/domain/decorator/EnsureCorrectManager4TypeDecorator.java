@@ -19,6 +19,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.Joiners;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.test_infrastructure.domain.decorator.TestSetupDecorator;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -3,7 +3,7 @@ package gui.project;
 import dtcockpit.Project;
 import dtcockpit.test_infrastructure.DtcockpitMockTestSetup;
 import org.junit.jupiter.api.Test;
-import umlp.backendrte.test_infrastructure.ClientSetup;
+import umlp.test_rte.ClientSetup;
 
 import java.util.Optional;
 

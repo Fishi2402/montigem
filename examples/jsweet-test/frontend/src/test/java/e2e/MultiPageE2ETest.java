@@ -1,15 +1,12 @@
 package e2e;
 
-import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.Page;
 import jsweettest.test_infrastructure.AbstractJsweettestE2ETest;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static umlp.backendrte.test_infrastructure.playwright.ComponentKind.GemButton;
-import static umlp.backendrte.test_infrastructure.playwright.ComponentKind.GemTextInput;
+import static umlp.test_rte.playwright.ComponentKind.GemButton;
+import static umlp.test_rte.playwright.ComponentKind.GemTextInput;
 
 @Tag("SlowTest")
 public class MultiPageE2ETest extends AbstractJsweettestE2ETest {

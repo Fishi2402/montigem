@@ -1,4 +1,4 @@
-package umlp.generator.domain.decorator;
+package umlp.generator.test_infrastructure.domain.decorator;
 
 import com.google.common.base.Joiner;
 import de.monticore.cd.methodtemplates.CD4C;
@@ -13,6 +13,16 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.se_rwth.commons.Joiners;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.domain.decorator.DAOFactoryDecorator;
+import umlp.generator.domain.decorator.DbObserverDecorator;
+import umlp.generator.domain.decorator.DiagramObserverDecorator;
+import umlp.generator.domain.decorator.EnsureCorrectManager4DiagrammDecorator;
+import umlp.generator.domain.decorator.EnsureCorrectManager4TypeDecorator;
+import umlp.generator.domain.decorator.ManagerClientImplDecorator;
+import umlp.generator.domain.decorator.ManagerDecorator;
+import umlp.generator.domain.decorator.ManagerImplDecorator;
+import umlp.generator.domain.decorator.ManagerMockDecorator;
+import umlp.generator.domain.decorator.ObserverDecorator;
 import umlp.generator.util.PathUtil;
 
 import java.util.List;
@@ -72,7 +82,7 @@ public class TestSetupDecorator extends AbstractDecorator {
     ASTCDType res = UMLPMill.cDInterfaceBuilder()
         .setModifier(PUBLIC_ABSTRACT.build())
         .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(Joiners.DOT.join(
-            PathUtil.getBackendRTETestInfrastructurePath(),
+            PathUtil.getTestInfrastructurePath(),
             "TestSetup<" + cdName + "TestContext>")))
         .setName(cdName + SUFFIX)
         .build();
@@ -262,7 +272,7 @@ public class TestSetupDecorator extends AbstractDecorator {
     Joiner dot = Joiners.DOT;
     String backendRTECommandPath = PathUtil.getBackendRTECommandPath();
     String backendRTECommonPath = PathUtil.getBackendRTECommonPath();
-    String backendRTETestInfrastructurePath = PathUtil.getBackendRTETestInfrastructurePath();
+    String backendRTETestInfrastructurePath = PathUtil.getTestInfrastructurePath();
     String packageName = getPackageName(origCD, DEFAULT_PACKAGE);
 
     cd4C.addImport(type, dot.join(backendRTECommandPath, "CommandManager"));

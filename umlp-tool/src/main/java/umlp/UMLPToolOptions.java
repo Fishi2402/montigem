@@ -16,6 +16,8 @@ public enum UMLPToolOptions {
 
   GUIVariability("gv", "guivariability", "Alterates guiFiles from the gp options with the guivariability files there and writes them to the outDir"),
 
+  TEST_INFRASTRUCTURE("ti", "testInfrastructure", "Generate infrastructure for unit- and e2e-tests"),
+
   // with one arg
   INPUT("i", "input", "Reads the source file (mandatory) and parses the contents", "file"),
   OCL("ocl", "ocl", "Reads an ocl file (optional) and parses the contents", "file"),

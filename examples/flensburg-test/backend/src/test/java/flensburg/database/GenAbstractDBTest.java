@@ -3,7 +3,7 @@ package flensburg.database;
 
 import hardy.flensburg.HumanBuilder;
 import hardy.flensburg.test_infrastructure.FlensburgSQLDBTestSetup;
-import umlp.backendrte.test_infrastructure.ClientSetup;
+import umlp.test_rte.ClientSetup;
 
 // Note: see TestDatabaseAccessManager.openWebServer to inspect the in-memory db for SQL
 public abstract class GenAbstractDBTest extends FlensburgSQLDBTestSetup {

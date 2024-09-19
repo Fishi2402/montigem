@@ -5,7 +5,7 @@ package flensburg.gui.showcityinfo;
 
 import flensburg.gui.AbstractGUITest;
 import org.junit.jupiter.api.Test;
-import umlp.backendrte.test_infrastructure.ClientSetup;
+import umlp.test_rte.ClientSetup;
 
 /* Test GUI (or later also E2E) for city info
 */

@@ -8,7 +8,7 @@ import hardy.flensburg.FlensburgManager;
 import hardy.flensburg.PersonBuilder;
 import hardy.flensburg.test_infrastructure.FlensburgMockTestSetup;
 import org.junit.jupiter.api.Test;
-import umlp.backendrte.test_infrastructure.ClientSetup;
+import umlp.test_rte.ClientSetup;
 
 import java.util.ArrayList;
 
