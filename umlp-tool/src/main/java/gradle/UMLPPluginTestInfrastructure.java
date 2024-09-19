@@ -73,14 +73,18 @@ public abstract class UMLPPluginTestInfrastructure implements Plugin<Project> {
     }
 
     //playwright
-    dependencies.add(COMPILE_ONLY,
-        "com.microsoft.playwright:playwright:" + project.property("playwright_version"));
-    dependencies.add(TEST_IMPLEMENTATION,
-                     "com.microsoft.playwright:playwright:" + project.property("playwright_version"));
+    if(project.hasProperty("playwright_version")) {
+      dependencies.add(COMPILE_ONLY,
+          "com.microsoft.playwright:playwright:" + project.property("playwright_version"));
+      dependencies.add(TEST_IMPLEMENTATION,
+          "com.microsoft.playwright:playwright:" + project.property("playwright_version"));
+    }
 
     //jsweet - annotations like erased
-    dependencies.add(COMPILE_ONLY, "org.jsweet:jsweet-core:" + project.property("jsweet_version"));
-    dependencies.add(TEST_IMPLEMENTATION, "org.jsweet:jsweet-core:" + project.property("jsweet_version"));
+    if(project.hasProperty("jsweet_version")) {
+      dependencies.add(COMPILE_ONLY, "org.jsweet:jsweet-core:" + project.property("jsweet_version"));
+      dependencies.add(TEST_IMPLEMENTATION, "org.jsweet:jsweet-core:" + project.property("jsweet_version"));
+    }
   }
 
   public static TaskProvider<UMLPTestInfrastructureTask> createUmlpTestInfrastructureTask(Project project) {
