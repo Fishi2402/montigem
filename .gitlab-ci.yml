@@ -3,6 +3,7 @@ image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:7-chromiu
 
 variables:
   GRADLE_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
+  FF_TIMESTAMPS: true
 
 cache:
   paths:
@@ -160,7 +161,7 @@ slowtest:
 deployRTE:
   stage: deploy
   script:
-    - "gradle :umlp-tool:publish :umlp-rte:publish :umlp-rte:umlp-jsweet:publish :umlp-rte:client:publish -P mavenPassword=$pass -P mavenUser=$user"
+    - "gradle :umlp-tool:publish :umlp-rte:publish :umlp-test-rte:publish :umlp-rte:umlp-jsweet:publish :umlp-rte:client:publish -P mavenPassword=$pass -P mavenUser=$user"
   only:
     - dev
 
