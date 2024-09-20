@@ -1,4 +1,4 @@
-package umlp.generator.domain.decorator;
+package umlp.generator.test_infrastructure.domain.decorator;
 
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -8,6 +8,8 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.domain.decorator.ErrorCollectorDecorator;
+import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.util.PathUtil;
 
 import java.util.List;

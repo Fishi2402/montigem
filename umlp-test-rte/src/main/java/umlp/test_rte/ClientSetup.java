@@ -1,4 +1,4 @@
-package umlp.backendrte.test_infrastructure;
+package umlp.test_rte;
 
 import java.util.List;
 import java.util.Objects;

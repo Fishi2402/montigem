@@ -15,8 +15,7 @@ dependencies {
   // TODO: NO Security, as otherwise HTTP Auth is required
 //  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version
 
-  testImplementation 'com.microsoft.playwright:playwright:1.44.0'
-  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version
+  testImplementation project(':umlp-test-rte')
 
   // to compile the (playwright=true) AbstractJsweettestE2ETest
   def withoutSpringLogging = {

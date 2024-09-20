@@ -6,6 +6,7 @@ import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDExtendUsage;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
@@ -46,25 +47,28 @@ public class ObserverDecorator extends AbstractDecorator {
     this.generationDetails = new ArrayList<>();
 
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
+
     getNonDerivedDomainClasses(origCD)
-        .forEach(c -> astcdPackage.addCDElement(withOrigin(createInterface(c))));
+        .forEach(c -> astcdPackage.addCDElement(withOrigin(createObserverInterface(c))));
 
     getNonDerivedDomainInterfaces(origCD)
-        .forEach(c -> astcdPackage.addCDElement(withOrigin(createInterface(c))));
+        .forEach(c -> astcdPackage.addCDElement(withOrigin(createObserverInterface(c))));
   }
 
-  protected ASTCDInterface createInterface(ASTCDType domainClass) {
+  protected ASTCDInterface createObserverInterface(ASTCDType domainClass) {
     String className = domainClass.getName();
-    ASTCDInterface ast = UMLPMill.cDInterfaceBuilder()
+    ASTCDInterface observerInterface = UMLPMill.cDInterfaceBuilder()
         .setModifier(PUBLIC.build())
-        .setName(className + SUFFIX).build();
+        .setName(className + SUFFIX)
+        .build();
     List<SymTypeExpression> superTypes = domainClass.getSymbol().getSuperTypesList();
     if (!superTypes.isEmpty()) {
-      ast.setCDExtendUsage(getExtendUsageFacade()
-          .createCDExtendUsage(superTypes.stream().map(a -> a.print() + SUFFIX).toArray(String[]::new)));
+      String[] superTypeObserverNames = superTypes.stream().map(a -> a.print() + SUFFIX).toArray(String[]::new);
+      ASTCDExtendUsage cdExtendUsage = getExtendUsageFacade().createCDExtendUsage(superTypeObserverNames);
+      observerInterface.setCDExtendUsage(cdExtendUsage);
     }
     GenerationSummary generationSummary = new GenerationSummary(domainClass,
-                                                                ast,
+                                                                observerInterface,
                                                                 new ArrayList<>());
     this.generationDetails.add(generationSummary);
 
@@ -77,22 +81,22 @@ public class ObserverDecorator extends AbstractDecorator {
           String attributeName = a.getName();
           if (GenService.isList(a)) {
             String innerType = GenService.getInnerType(a.getMCType());
-            generationSummary.addSignature(cd4C.addMethod(ast,
+            generationSummary.addSignature(cd4C.addMethod(observerInterface,
                                                           NOTIFY_ADD_TEMPLATE,
                                                           attributeName,
                                                           className,
                                                           innerType), NOTIFY_ADD_TEMPLATE);
-            generationSummary.addSignature(cd4C.addMethod(ast,
+            generationSummary.addSignature(cd4C.addMethod(observerInterface,
                                                           MAYBE_NOTIFY_ADD_TEMPLATE,
                                                           attributeName,
                                                           className,
                                                           innerType), MAYBE_NOTIFY_ADD_TEMPLATE);
-            generationSummary.addSignature(cd4C.addMethod(ast,
+            generationSummary.addSignature(cd4C.addMethod(observerInterface,
                                                           NOTIFY_REMOVE_TEMPLATE,
                                                           attributeName,
                                                           className,
                                                           innerType), NOTIFY_REMOVE_TEMPLATE);
-            generationSummary.addSignature(cd4C.addMethod(ast,
+            generationSummary.addSignature(cd4C.addMethod(observerInterface,
                                                           MAYBE_NOTIFY_REMOVE_TEMPLATE,
                                                           attributeName,
                                                           className,
@@ -100,13 +104,13 @@ public class ObserverDecorator extends AbstractDecorator {
           }
 
           String fullType = getCDPrinter().prettyprint(createType(a));
-          generationSummary.addSignature(cd4C.addMethod(ast,
+          generationSummary.addSignature(cd4C.addMethod(observerInterface,
                                                         NOTIFY_TEMPLATE,
                                                         attributeName,
                                                         className,
                                                         fullType,
                                                         false), NOTIFY_TEMPLATE);
-          generationSummary.addSignature(cd4C.addMethod(ast,
+          generationSummary.addSignature(cd4C.addMethod(observerInterface,
                                                         MAYBE_NOTIFY_TEMPLATE,
                                                         attributeName,
                                                         className,
@@ -119,33 +123,33 @@ public class ObserverDecorator extends AbstractDecorator {
         .filter(Predicate.not(GenService::isSymbolDerived))
         .filter(GenService::isList)
         .forEach(a -> {
-          generationSummary.addSignature(cd4C.addMethod(ast,
+          generationSummary.addSignature(cd4C.addMethod(observerInterface,
                                                         NOTIFY_ADD_TEMPLATE,
                                                         a.getName(),
                                                         className,
                                                         "long"), NOTIFY_ADD_TEMPLATE);
-          generationSummary.addSignature(cd4C.addMethod(ast,
+          generationSummary.addSignature(cd4C.addMethod(observerInterface,
                                                         MAYBE_NOTIFY_ADD_TEMPLATE,
                                                         a.getName(),
                                                         className,
                                                         "long"), MAYBE_NOTIFY_ADD_TEMPLATE);
-          generationSummary.addSignature(cd4C.addMethod(ast,
+          generationSummary.addSignature(cd4C.addMethod(observerInterface,
                                                         NOTIFY_REMOVE_TEMPLATE,
                                                         a.getName(),
                                                         className,
                                                         "long"), NOTIFY_REMOVE_TEMPLATE);
-          generationSummary.addSignature(cd4C.addMethod(ast,
+          generationSummary.addSignature(cd4C.addMethod(observerInterface,
                                                         MAYBE_NOTIFY_REMOVE_TEMPLATE,
                                                         a.getName(),
                                                         className,
                                                         "long"), MAYBE_NOTIFY_REMOVE_TEMPLATE);
-          generationSummary.addSignature(cd4C.addMethod(ast,
+          generationSummary.addSignature(cd4C.addMethod(observerInterface,
                                                         NOTIFY_TEMPLATE,
                                                         a.getName(),
                                                         className,
                                                         "long",
                                                         true), NOTIFY_TEMPLATE);
-          generationSummary.addSignature(cd4C.addMethod(ast,
+          generationSummary.addSignature(cd4C.addMethod(observerInterface,
                                                         MAYBE_NOTIFY_TEMPLATE,
                                                         a.getName(),
                                                         className,
@@ -158,21 +162,21 @@ public class ObserverDecorator extends AbstractDecorator {
         .filter(Predicate.not(GenService::isSymbolDerived))
         .filter(Predicate.not(GenService::isList))
         .forEach(a -> {
-          generationSummary.addSignature(cd4C.addMethod(ast, NOTIFY_TEMPLATE, a.getName(), className, "long", false),
+          generationSummary.addSignature(cd4C.addMethod(observerInterface, NOTIFY_TEMPLATE, a.getName(), className, "long", false),
                                          NOTIFY_TEMPLATE);
-          generationSummary.addSignature(cd4C.addMethod(ast, MAYBE_NOTIFY_TEMPLATE, a.getName(), className, "long", false),
+          generationSummary.addSignature(cd4C.addMethod(observerInterface, MAYBE_NOTIFY_TEMPLATE, a.getName(), className, "long", false),
                                          MAYBE_NOTIFY_TEMPLATE);
         });
 
-    cd4C.addMethod(ast, "umlp.observer.GetScope");
-    cd4C.addMethod(ast, "umlp.observer.NotifyBuild", className);
-    cd4C.addMethod(ast, "umlp.observer.MaybeNotifyBuild", className);
+    cd4C.addMethod(observerInterface, "umlp.observer.GetScope");
+    cd4C.addMethod(observerInterface, "umlp.observer.NotifyBuild", className);
+    cd4C.addMethod(observerInterface, "umlp.observer.MaybeNotifyBuild", className);
 
-    cd4C.addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
-    addImportForImportedObservers(domainClass, ast);
-    super.addImports(domainClass, ast);
+    cd4C.addImport(observerInterface, PathUtil.getBackendRTECommonPath("NotificationScope"));
+    addImportForImportedObservers(domainClass, observerInterface);
+    super.addImports(domainClass, observerInterface);
 
-    return ast;
+    return observerInterface;
   }
 
   private void addImportForImportedObservers(ASTCDType domainClass, ASTCDType observerType) {

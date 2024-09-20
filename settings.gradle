@@ -42,6 +42,7 @@ includeBuild "umlp-rte/umlp-jsweet"
 include ":umlp-rte"
 include ":umlp-rte:client"
 include ":umlp-rte:umlp-jsweet"
+include 'umlp-test-rte'
 
 include ":experiments"
 include ":experiments:dbPerformance"
@@ -85,7 +86,6 @@ include ':products:syse_functions:frontend'
 include ':products:syse_functions:automaton'
 include ':products:demorec:backend'
 include ':products:demorec:frontend'
-include ':products:demo-recycling:frontend'
 include ':products:kizam:backend'
 
 include ':products:dev_process_cockpit:backend'

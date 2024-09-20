@@ -16,6 +16,7 @@ dependencies {
   implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
   implementation group: 'montiarc.languages', name: 'montiarc', version: ma_version
   implementation project(':umlp-rte')
+  testImplementation project(':umlp-test-rte')
   testImplementation "com.h2database:h2:${h2_database}"
 }
 

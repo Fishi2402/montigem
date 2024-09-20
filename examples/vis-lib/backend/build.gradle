@@ -70,12 +70,15 @@ generateUmlpBackend {
   symbolOutDir = file("${project.buildDir}/symbols")
   useSpring.set(true)
   useShell.set(true)
-  usePlaywright.set(true)
 
   /*
   debug = true
   outputs.upToDateWhen { false }
   /**/
+}
+
+generateTestInfrastructure {
+  usePlaywright.set(true)
 }
 
 tasks.register('runServer') {
