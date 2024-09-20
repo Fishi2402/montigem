@@ -1,4 +1,4 @@
-package e2e;
+package domain.e2e;
 
 import com.microsoft.playwright.ElementHandle;
 import com.microsoft.playwright.Page;

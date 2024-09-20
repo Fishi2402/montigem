@@ -1,4 +1,4 @@
-package e2e;
+package domain.e2e;
 
 import com.microsoft.playwright.ElementHandle;
 import com.microsoft.playwright.Page;
@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static umlp.backendrte.test_infrastructure.playwright.ComponentKind.GemText;
+import static umlp.test_rte.playwright.ComponentKind.GemText;
 
 
 public class ExampleCssTest extends AbstractDomainE2ETest {
