@@ -30,9 +30,9 @@ dependencies {
   compileOnly "org.neo4j:neo4j:4.4.10"
   compileOnly "org.neo4j.driver:neo4j-java-driver:$neo4jVersion"
 
-  // Used for umlp.backendrte.test_infrastructure.TestSetup
+  // Used for umlp.test_rte.TestSetup
   compileOnly 'org.junit.jupiter:junit-jupiter-api:5.9.2'
-  // Used for umlp.backendrte.test_infrastructure.playwright.AbstractPlaywrightE2ETest
+  // Used for umlp.test_rte.playwright.AbstractPlaywrightE2ETest
   api "com.microsoft.playwright:playwright:$playwright_version"
   api group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
   api group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version, withoutSpringLogging
