@@ -34,7 +34,7 @@ public abstract class MergeAction implements WorkAction<MergeActionParameter> {
 
       // Parse and convert to CDCompilationUnit
       List<ASTCDCompilationUnit> models = inputFiles.stream()
-          .sorted((f1, f2) -> f1.getName().compareTo(f2.getName()))
+          .sorted((f1, f2) -> f2.getName().compareTo(f1.getName()))
           .map(File::toPath)
           .map(Path::toAbsolutePath)
           .map(MergeAction::parseAndCheck)
