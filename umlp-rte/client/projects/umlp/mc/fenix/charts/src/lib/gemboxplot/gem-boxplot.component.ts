@@ -82,6 +82,12 @@ export class GemBoxPlot {
   }
 
   @Input()
+  public set horizontal(horizontal :boolean) {
+    this._horizontal = horizontal
+    this.updateValues()
+  }
+
+  @Input()
   public set entries(entries: GemBoxPlotEntry[]) {
     if (!entries) {
       return;
