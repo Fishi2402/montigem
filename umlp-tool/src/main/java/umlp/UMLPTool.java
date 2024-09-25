@@ -60,6 +60,7 @@ import umlp.generator.util.TagLookUp;
 import umlp.guidsl.additional_cocos.GUIParamDefaultOnlyLiteralCoCo;
 import umlp.guidsl.additional_cocos.GUIParamNoUnderspecifiedGenericsCoCo;
 import umlp.guidsl.additional_cocos.NameExpressionsSymbolBoundExceptCallsCoCo;
+import umlp.guidsl.additional_cocos.RefGUIArgIncompatibleWithDerivedCoCo;
 import umlp.guidsl.additional_cocos.SymbolBoundNameExpressionsFinder;
 
 import java.io.File;
@@ -398,6 +399,7 @@ public class UMLPTool extends UMLPToolTOP {
     checker.addCoCo(new GUIParamDefaultOnlyLiteralCoCo());
     checker.addCoCo(new GUIParamNoUnderspecifiedGenericsCoCo());
     checker.addCoCo(new NameExpressionsSymbolBoundExceptCallsCoCo());
+    checker.addCoCo(new RefGUIArgIncompatibleWithDerivedCoCo());
     checker.checkAll(ast);
   }
 }
