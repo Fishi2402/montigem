@@ -18,6 +18,7 @@ import org.gradle.work.Incremental;
 import org.gradle.work.InputChanges;
 import umlp.UMLPToolOptions;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
@@ -52,12 +53,21 @@ public abstract class UMLPBackendTask extends UMLPSingleFileTask {
   @org.gradle.api.tasks.Optional
   public abstract Property<Boolean> getUseShell();
 
+  /**
+   * @deprecated in favor of {@link UMLPTestInfrastructureTask#getUsePlaywright()}
+   */
+  @Deprecated
   @Input
   @org.gradle.api.tasks.Optional
   public abstract Property<Boolean> getUsePlaywright();
 
+  @Inject
   public UMLPBackendTask() {
-    super("UMLPBackendTask", null);
+    this("UMLPBackendTask");
+  }
+
+  public UMLPBackendTask(String type) {
+    super(type, null);
 
     getUseSpring().convention(false);
     getUseShell().convention(false);
@@ -120,10 +130,6 @@ public abstract class UMLPBackendTask extends UMLPSingleFileTask {
 
     if(this.getUseShell().get()){
       result.add("-" + UMLPToolOptions.USE_SHELL.getCMD());
-    }
-
-    if(this.getUsePlaywright().get()){
-      result.add("-" + UMLPToolOptions.USE_PLAYWRIGHT.getCMD());
     }
 
     return result;

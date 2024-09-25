@@ -15,7 +15,7 @@ import umlp.backendrte.command.CommandResult;
 import umlp.backendrte.command.SimpleResult;
 import umlp.backendrte.common.Gem;
 import umlp.backendrte.common.LoadingState;
-import umlp.backendrte.test_infrastructure.ClientSetup;
+import umlp.test_rte.ClientSetup;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;

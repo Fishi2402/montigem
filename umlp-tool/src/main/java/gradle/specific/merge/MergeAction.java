@@ -16,6 +16,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,11 +33,12 @@ public abstract class MergeAction implements WorkAction<MergeActionParameter> {
     try {
 
       // Parse and convert to CDCompilationUnit
-      Set<ASTCDCompilationUnit> models = inputFiles.stream()
+      List<ASTCDCompilationUnit> models = inputFiles.stream()
+          .sorted((f1, f2) -> f2.getName().compareTo(f1.getName()))
           .map(File::toPath)
           .map(Path::toAbsolutePath)
           .map(MergeAction::parseAndCheck)
-          .collect(Collectors.toSet());
+          .collect(Collectors.toList());
 
       String outputModelName = FileUtils.removeExtension(outputFile.getName());
       ASTCDCompilationUnit merge = CDMerge.merge(models, outputModelName,

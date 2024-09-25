@@ -39,7 +39,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.LinkedHashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -121,7 +121,7 @@ public class UMLPFilePipelineSetup {
     astPipe.registerFirst(mergeAST = data -> {
       // First step of an AST: If --merge was provided, override AST with merged AST
       if (MERGE.isSelected(data.data.cmd)){
-        Set<ASTCDCompilationUnit> mergeSet = new LinkedHashSet<>();
+        List<ASTCDCompilationUnit> mergeSet = new ArrayList<>();
         mergeSet.add(data.data.tool.parse(data.data.inputFile.getPath()));
         // Parse and report parsing of merge-inputs
         for (String mergeFile : data.data.cmd.getOptionValues("mrg")) {

@@ -30,10 +30,10 @@ dependencies {
     compileOnly "org.neo4j:neo4j:4.4.10"
     compileOnly "org.neo4j.driver:neo4j-java-driver:$neo4jVersion"
 
-    // Used for umlp.backendrte.test_infrastructure.TestSetup
+    // Used for umlp._infrastructure.TestSetup
     // Alternative: testing-rte + generate a testing module for each cd
     compileOnly 'org.junit.jupiter:junit-jupiter-api:5.9.2'
-    // Used for umlp.backendrte.test_infrastructure.playwright.AbstractPlaywrightE2ETest
+    // Used for AbstractPlaywrightE2ETest
     compileOnly 'com.microsoft.playwright:playwright:1.44.0'
     compileOnly group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
 

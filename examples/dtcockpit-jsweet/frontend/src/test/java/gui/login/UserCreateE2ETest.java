@@ -4,15 +4,13 @@ import dtcockpit.DtcockpitManager;
 import dtcockpit.DtcockpitRole;
 import dtcockpit.DtcockpitTestContext;
 import dtcockpit.User;
-import dtcockpit.test_infrastructure.DtcockpitDBTestSetup;
 import dtcockpit.test_infrastructure.DtcockpitMockTestSetup;
 import dtcockpit.test_infrastructure.DtcockpitSQLDBTestSetup;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import umlp.backendrte.test_infrastructure.ClientSetup;
-import umlp.backendrte.test_infrastructure.TestSetup;
+import umlp.test_rte.ClientSetup;
+import umlp.test_rte.TestSetup;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

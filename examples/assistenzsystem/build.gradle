@@ -5,3 +5,7 @@ plugins {
 }
 
 description 'Assistenzsystem'
+
+dependencies {
+  testImplementation project(':umlp-test-rte')
+}

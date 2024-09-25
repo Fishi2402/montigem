@@ -4,7 +4,7 @@ package assocsfromandtointerface;
 import assocsfromandtointerface.test_infrastructure.AssocsFromAndToInterfaceDBTestSetup;
 import assocsfromandtointerface.test_infrastructure.AssocsFromAndToInterfaceMockTestSetup;
 import assocsfromandtointerface.test_infrastructure.AssocsFromAndToInterfaceSQLDBTestSetup;
-import umlp.backendrte.test_infrastructure.TestSetup;
+import umlp.test_rte.TestSetup;
 
 public interface AdaptedTestSetup extends TestSetup<AssocsFromAndToInterfaceTestContext> {
   default void clearCaches(){

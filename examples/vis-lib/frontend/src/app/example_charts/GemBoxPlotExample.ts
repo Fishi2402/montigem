@@ -20,11 +20,39 @@ export class GemBoxPlotExample extends GemBoxPlotExampleComponent {
     return this.data.length*150
   }
 
+  public override getSecondBoxplotWidth(): number {
+    return this.secondData.length*150
+  }
+
+  public override getSecondBoxplotHeight(): number {
+    return this.secondData.length*150
+  }
+
+  public override getSecondBoxPlotData(): GemBoxPlotEntry[] {
+
+    return this.secondData;
+  }
+
   public override getBoxplotEntries(): GemBoxPlotEntry[] {
 
     return this.data;
   }
 
+  // Dummy data
+  secondData1 :GemBoxPlotEntry ={
+    group: "Test A",
+    color: "#69b3a2",
+    points: [0,19,11,13,12,22,13,4,15,16,],
+    box: {
+      median: 13,
+      lowerQuantile: 11,
+      upperQuantile: 18,
+      lowerExtreme: 0,
+      upperExtreme: 22
+    }
+  }
+
+  secondData = [this.secondData1]
 
   // Dummy data
   data1 :GemBoxPlotEntry ={
