@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input,ElementRef, Output, EventEmitter } from '@angular/core';
 import * as d3 from 'd3';
 import { autoColors } from "../colors";
 import {GemBoxPlotEntry, GemBoxPlotBox} from './gem-boxplot.types';
@@ -104,6 +104,8 @@ export class GemBoxPlot {
     this.updateValues();
   }
 
+  constructor(private componentRef : ElementRef) {}
+
   public colorScheme = {
     domain: this.getColors()
   };
@@ -126,7 +128,8 @@ export class GemBoxPlot {
       return
     }
 
-    let div = d3.select("#boxplot");
+    const element = this.componentRef.nativeElement
+    let div = d3.select(element).select("#boxplot");
     let tooltip = d3.select("body").append("div").attr("class", "tooltip");
 
     const margin = {top: 10, right: 30, bottom: 30, left: 40};
