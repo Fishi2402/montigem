@@ -24,6 +24,7 @@ import static umlp.UMLPToolOptions.OUTPUT;
 import static umlp.UMLPToolOptions.PATH;
 import static umlp.UMLPToolOptions.REPORTS;
 import static umlp.UMLPToolOptions.REPORT_BASE;
+import static umlp.UMLPToolOptions.TEST_INFRASTRUCTURE;
 import static umlp.UMLPToolOptions.TMPL_PATH;
 
 /**
@@ -68,6 +69,7 @@ public class UMLPToolPipelineSetup {
   final IOperation<UMLPPipelineData> loadTmplPath;
 
   final Pipeline<UMLPPipelineData> cd2Gui;
+  final Pipeline<UMLPPipelineData> testInfrastructure;
   final Pipeline<UMLPPipelineData> guiVar;
   final Pipeline<UMLPPipelineData> umlp;
   final Pipeline<UMLPPipelineData> gui;
@@ -162,18 +164,21 @@ public class UMLPToolPipelineSetup {
       return true;
     });
 
-    // Register the 4 alternatives: CD2GUI, GuiVar, UMLP or GUI
+    // Register the 5 alternatives: CD2GUI, GuiVar, UMLP or GUI or TEST_INFRASTRUCTURE
     guiRTETypes = new Pipeline<>();
     cd2Gui = new Pipeline<>();
     guiVar = new Pipeline<>();
     umlp = new Pipeline<>();
     gui = new Pipeline<>();
+    testInfrastructure = new Pipeline<>();
     main.register(data -> {
       if (GUIRTETypes.isSelected(data.cmd)) {
         return guiRTETypes.doWork(data);
       }else  if (CD2GUI.isSelected(data.cmd)) {
         return cd2Gui.doWork(data);
-      }else if (GUIVariability.isSelected(data.cmd)) {
+      } else if (TEST_INFRASTRUCTURE.isSelected(data.cmd)) {
+        return testInfrastructure.doWork(data);
+      } else if (GUIVariability.isSelected(data.cmd)) {
         return guiVar.doWork(data);
       } else if (data.inputFile.getName().endsWith(".umlp")) {
         return umlp.doWork(data);

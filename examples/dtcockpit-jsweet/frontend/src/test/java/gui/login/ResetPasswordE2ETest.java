@@ -6,7 +6,7 @@ import dtcockpit.User;
 import dtcockpit.UserBuilder;
 import dtcockpit.test_infrastructure.DtcockpitMockTestSetup;
 import org.junit.jupiter.api.Test;
-import umlp.backendrte.test_infrastructure.ClientSetup;
+import umlp.test_rte.ClientSetup;
 
 import java.time.LocalDateTime;
 

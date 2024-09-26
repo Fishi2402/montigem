@@ -6,9 +6,7 @@ package flensburg.gui;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import hardy.flensburg.test_infrastructure.FlensburgMockTestSetup;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import umlp.backendrte.test_infrastructure.ClientSetup;
+import umlp.test_rte.ClientSetup;
 
 /* Setup for the GUI (or later also E2E) tests
  */

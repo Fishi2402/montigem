@@ -6,7 +6,7 @@ package flensburg.commands;
 import hardy.flensburg.test_infrastructure.FlensburgMockTestSetup;
 import org.junit.jupiter.api.Test;
 import umlp.backendrte.common.BaseClassObjectMapper;
-import umlp.backendrte.test_infrastructure.ClientSetup;
+import umlp.test_rte.ClientSetup;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

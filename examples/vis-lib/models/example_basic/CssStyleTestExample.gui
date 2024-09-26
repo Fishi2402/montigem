@@ -1,0 +1,16 @@
+package example_basic;
+
+import mc.fenix.basic.GemText;
+
+page CssStyleTestExample() {
+  testText@GemText(
+    value = "My text",
+    color = "blue",
+    size = "1rem",
+    fontFamily = "'Lucida Console', Courier, monospace",
+    fontStyle = "oblique 12deg",
+    weight = "200",
+    width = "200px",
+    height = "3rem"
+  );
+}
