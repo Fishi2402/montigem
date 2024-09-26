@@ -32,8 +32,8 @@ public class ModuleSystemUtil {
   protected static String readModuleMetadata(File file) {
     try(var zf = new ZipFile(file)){
       Enumeration<? extends ZipEntry> entries = zf.entries();
-      ZipEntry entry;
-      while((entry = entries.nextElement()) != null){
+      ZipEntry entry = null;
+      while(entries.hasMoreElements() && (entry = entries.nextElement()) != null){
         if(entry.getName().matches("[^/]+[.]metadata[.](json)")){
           break;
         }
