@@ -6,7 +6,7 @@ import dtcockpit.test_infrastructure.DtcockpitMockTestSetup;
 import mc.fenix.charts.gembarcharttypes.GemBarChartData;
 import mc.fenix.charts.gembarcharttypes.GemBarChartEntry;
 import org.junit.jupiter.api.Test;
-import umlp.backendrte.test_infrastructure.ClientSetup;
+import umlp.test_rte.ClientSetup;
 
 import java.time.LocalDate;
 import java.util.List;

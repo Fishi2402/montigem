@@ -1,17 +1,23 @@
 package umlp.generator.gui.gentypescript.java2ts;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
+import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.io.paths.MCPath;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import umlp.generator.domain.UMLPGeneratorConfig;
+import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +36,7 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
     this.outPath = outPath;
   }
 
-  public void transform(ASTCDCompilationUnit ast, ASTGUICompilationUnit astGui) {
+  public void transform(ASTCDCompilationUnit ast, ASTGUICompilationUnit astGui, GUIComponentsVisitor viewComponents) {
     for (ASTCDClass clazz : ast.getCDDefinition().getCDClassesList()) {
       String originalName = GUIGeneratorUtil.getInstance().getOriginalName(clazz);
       String qName = ast.getMCPackageDeclaration().getMCQualifiedName().getQName()
@@ -87,10 +93,14 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
           }
         }
         String selector = GUIGeneratorUtil.getInstance().pascal2KebabCase(originalName);
+        HashSet<String> importedCompoments = Sets.newHashSet();
+        for (ASTGUIComponent component: viewComponents.getComponents()) {
+          importedCompoments.add(component.getNameSymbol().getFullName());
+        }
         glex.replaceTemplate(
             GUI2ComponentTemplates.ANNOTATIONS,
             clazz,
-            new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATION_STANDALONECONFIG_COMPONENT, htmlPath, scssPaths, selector, astGui, hwPath, generateAnnotation)
+            new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATION_STANDALONECONFIG_COMPONENT, htmlPath, scssPaths, selector, importedCompoments, hwPath, generateAnnotation)
         );
       }
     }

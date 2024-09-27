@@ -2,7 +2,7 @@
 <#--
   This config template does the default UMLP2Java generation.
 
-  Call it using the CLI: .. -ct umlp.UMLP2Java
+  Call it using the CLI: .. -ct umlp.UMLP2Java2TS
 
 -->
 ${tc.signature("decoratedAST", "glex", "hwPath", "cdGenerator", "schemaGenerator")}

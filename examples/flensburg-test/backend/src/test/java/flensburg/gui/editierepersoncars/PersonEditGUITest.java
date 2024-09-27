@@ -13,7 +13,7 @@ import hardy.flensburg.PersonErrorCollector;
 import hardy.flensburg.PersonErrorObserver;
 import org.junit.jupiter.api.Test;
 import stanley.personedit.PersonEdit;
-import umlp.backendrte.test_infrastructure.ClientSetup;
+import umlp.test_rte.ClientSetup;
 
 import java.util.ArrayList;
 import java.util.Collections;

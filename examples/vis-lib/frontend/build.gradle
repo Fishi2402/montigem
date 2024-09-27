@@ -12,9 +12,7 @@ node {
 dependencies {
   implementation project(":examples:vis-lib:backend")
   implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version
-
-  testImplementation 'com.microsoft.playwright:playwright:1.44.0'
-  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version
+  testImplementation project(':umlp-test-rte')
 }
 
 genGUI {
@@ -71,7 +69,7 @@ tasks.register('run') {
 }
 
 test {
-  dependsOn buildApp
+  dependsOn npmInstall
   useJUnitPlatform(){
     excludeTags "SlowTest"
   }

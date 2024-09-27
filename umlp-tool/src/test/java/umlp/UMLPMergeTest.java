@@ -8,14 +8,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import umlp._cocos.UMLPCoCos;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UMLPMergeTest extends AbstractUMLPTest {
 
   @Test
   public void testMerge() {
-    Set<ASTCDCompilationUnit> models = new HashSet<>();
+    List<ASTCDCompilationUnit> models = new ArrayList<>();
     models.add(parse("de/monticore/Driver.umlp"));
     models.add(parse("de/monticore/Employment.umlp"));
 

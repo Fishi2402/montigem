@@ -27,4 +27,15 @@ public class ModuleController {
       Log.error("Error in addModuleToHookpoint for " + hookpointName + ", " + template, e);
     }
   }
+
+  public void addModuleBeforeHookpoint(String hookpointName, String template){
+    try {
+      glex.addBeforeTemplate(hookpointName, new ComposedHookPoint(
+          new TemplateStringHookPoint("${tc.warn(\"[" + hookpointName + "] Executing module config template " + template + "\")}"),
+          new TemplateHookPoint(template)
+      ));
+    } catch (IOException e) {
+      Log.error("Error in addModuleBeforeHookpoint for " + hookpointName + ", " + template, e);
+    }
+  }
 }

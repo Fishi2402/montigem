@@ -68,6 +68,7 @@ dependencies {
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2', withoutSpringLogging
 
   implementation project(':umlp-rte')
+  testImplementation project(':umlp-test-rte')
   implementation "org.eclipse.jgit:org.eclipse.jgit:5.2.2.201904231744-r"
 }
 
@@ -78,6 +79,10 @@ generateUmlpBackend {
   input = file("../models/Jsweettest.umlp")
   symbolOutDir = file("${symPath}")
   useSpring.set(true)
+  usePlaywright.set(true)
+}
+
+generateTestInfrastructure {
   usePlaywright.set(true)
 }
 
