@@ -8,3 +8,4 @@ ${bindHookPoint("component.InitPageBody", tc.instantiate("de.monticore.generatin
 
 
 ${mod.addModuleToHookpoint("umlp.generator.hook.AfterTransformGui2C",  "login_module.frontend.LoginFrontend_AfterTransformGui2C")}
+${mod.addModuleBeforeHookpoint("umlp.gui2ts.TSPackageRoutes",  "login_module.frontend.LoginFrontend_Routes_Package")}

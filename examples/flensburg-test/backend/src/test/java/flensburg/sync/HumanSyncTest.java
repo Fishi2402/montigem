@@ -17,7 +17,7 @@ import hardy.flensburg.test_infrastructure.FlensburgSQLDBTestSetup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import umlp.backendrte.test_infrastructure.TestSetup;
+import umlp.test_rte.TestSetup;
 
 import java.util.ArrayList;
 import java.util.List;

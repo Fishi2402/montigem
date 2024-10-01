@@ -14,7 +14,7 @@ import umlp.backendrte.command.CommandDirectCommunication;
 import umlp.backendrte.command.CommandManager;
 import umlp.backendrte.command.TestClientCommandManager;
 import umlp.backendrte.common.DatabaseAccessManager4Neo4j;
-import umlp.backendrte.test_infrastructure.ClientSetup;
+import umlp.test_rte.ClientSetup;
 
 import java.nio.file.Paths;
 

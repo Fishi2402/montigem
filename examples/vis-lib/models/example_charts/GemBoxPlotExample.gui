@@ -5,6 +5,14 @@ import mc.fenix.charts.GemBoxPlot;
 
 page GemBoxPlotExample()
 {
+
+  secondBoxplot@GemBoxPlot(
+    entries = getSecondBoxPlotData(),
+    min = 0,
+    width = getSecondBoxPlotWidth(),
+    height = getSecondBoxPlotHeight(),
+    horizontal=false
+  );
   boxplot@GemBoxPlot(
     entries = getBoxPlotData(),
     min = -5.0,

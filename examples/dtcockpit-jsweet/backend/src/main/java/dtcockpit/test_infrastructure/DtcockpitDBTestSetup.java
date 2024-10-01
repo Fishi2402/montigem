@@ -2,9 +2,7 @@ package dtcockpit.test_infrastructure;
 
 import dtcockpit.DtcockpitManager;
 import dtcockpit.DtcockpitTestContext;
-import umlp.backendrte.test_infrastructure.ClientSetup;
-
-import java.util.List;
+import umlp.test_rte.ClientSetup;
 
 public abstract class DtcockpitDBTestSetup extends DtcockpitDBTestSetupTOP {
 

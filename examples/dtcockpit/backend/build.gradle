@@ -10,6 +10,8 @@ plugins {
 
 dependencies {
   umlpModules(project(path: ":modules:login", configuration: "moduleGenTime"))
+//  umlpModules(project(path: ":modules:login", configuration: "umlpOutgoingModels")) // TODO: consume via custom config
+  // TODO: adding it directly to the umlpModules failes due to missing module metadata
   implementation(project(path: ":modules:login:backend")) // TODO: improve
 }
 

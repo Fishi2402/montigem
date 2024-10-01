@@ -44,6 +44,7 @@ dependencies {
   }
 
   implementation project(':umlp-rte')
+  testImplementation project(':umlp-test-rte')
 
   implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
   implementation 'com.h2database:h2:2.1.214'

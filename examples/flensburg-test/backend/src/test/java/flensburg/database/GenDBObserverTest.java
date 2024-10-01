@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package flensburg.database;
 
-import umlp.backendrte.test_infrastructure.ClientSetup;
+import umlp.test_rte.ClientSetup;
 
 public class GenDBObserverTest extends GenAbstractDBTest {
   public GenDBObserverTest() {
