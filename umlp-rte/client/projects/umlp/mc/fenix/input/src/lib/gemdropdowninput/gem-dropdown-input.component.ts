@@ -9,6 +9,7 @@ import {
 } from "@angular/core";
 import {GemTextInputValidity} from "../gemtextinput";
 import {Option} from "./gem-dropdown-input-types/gem-dropdown-input.types";
+import {IdUtil} from "../../../../common/src/lib/util/IdUtil";
 
 @Component({
   selector: "gem-dropdown-input",
@@ -49,6 +50,7 @@ export class GemDropdownInput implements OnInit, OnChanges {
   @Output() public keyPress: EventEmitter<KeyboardEvent> = new EventEmitter<KeyboardEvent>;
   @Output() public keyRelease: EventEmitter<KeyboardEvent> = new EventEmitter<KeyboardEvent>;
 
+  elementId: string = IdUtil.getUniqueId();
   isContentShown: boolean = false;
   filterString: string = "";
   filteredOptions: Option[] = [];
@@ -58,6 +60,9 @@ export class GemDropdownInput implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.filteredOptions = this.options;
+    if (this.filteredOptions.length > 0) {
+      this.selectOption(this.filteredOptions[0]);
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -127,15 +132,15 @@ export class GemDropdownInput implements OnInit, OnChanges {
   }
 
   getInputId(): string {
-    return this.componentRef.nativeElement.getAttribute('class') + "Input";
+    return this.elementId + "Input";
   }
 
   getSearchInputId(): string {
-    return this.componentRef.nativeElement.getAttribute('class') + "Search";
+    return this.elementId + "Search";
   }
 
   getOptionsId(): string {
-    return this.componentRef.nativeElement.getAttribute('class') + "Options";
+    return this.elementId + "Options";
   }
 
   private showDropdown(): void {

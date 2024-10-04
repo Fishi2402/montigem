@@ -26,7 +26,7 @@
       [class.gem-input-warning]="validity?.status === 'Warning'"
       (click)="toggleDropdown()"
     />
-    <button class="gem-dropdown-button" [disabled]="disabled" (click)="toggleDropdown()">
+    <button class="gem-dropdown-button" [id]="getInputId()" [disabled]="disabled" (click)="toggleDropdown()">
       <mat-icon [fontIcon]="isContentShown ? 'arrow_drop_up' : 'arrow_drop_down'"></mat-icon>
     </button>
   </div>
