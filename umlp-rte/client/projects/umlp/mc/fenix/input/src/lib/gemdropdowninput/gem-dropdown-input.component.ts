@@ -143,16 +143,16 @@ export class GemDropdownInput implements OnInit, OnChanges {
     return this.elementId + "Options";
   }
 
-  private showDropdown(): void {
-    this.isContentShown = true;
-    this.toggleFocus();
-  }
-
-  private hideDropdown(): void {
+  hideDropdown(): void {
     this.isContentShown = false;
     this.highlightIdx = -1;
     this.filterString = "";
     this.filteredOptions = this.options;
+    this.toggleFocus();
+  }
+
+  private showDropdown(): void {
+    this.isContentShown = true;
     this.toggleFocus();
   }
 
