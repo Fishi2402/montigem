@@ -138,7 +138,8 @@ umlp FunctionStructure {
     über den Qualifikator. Das heißt also, dass ein Channel
     von verschiedenen Funktionen verschieden benannt sein kann.
 
-    Die Rollennamen auf der Funktionsseite werden in OCL Invarianten genutzt, da sonst der implizite
+    Die Rollennamen auf der Funktionsseite werden in OCL-Invarianten
+    genutzt, da sonst der implizite
     Rollenname nicht eindeutig ist.
   */
   association [*] Function [String] (parentIn) -> (in) Channel [1];
