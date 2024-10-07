@@ -34,7 +34,7 @@ public class UMLAssocToAttrTrafoTest extends AbstractUMLPTest {
             c -> assertEquals(0, c.sizeCDMembers()))
     );
 
-    UMLAssocToAttrTrafo trafo = new UMLAssocToAttrTrafo(CD4CodeMill.traverser());
+    UMLAssocToAttrTrafo trafo = new UMLAssocToAttrTrafo(CD4CodeMill.inheritanceTraverser());
     trafo.transform(ast);
 
     // After

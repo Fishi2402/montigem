@@ -110,7 +110,7 @@ public abstract class AbstractUMLPTest {
     CD4CodeAfterParseTrafo.init(new CDAfterParseHelper(), trav);
     node.accept(trav);
 
-    UMLImportTrafo importTrafo = new UMLImportTrafo(CD4CodeMill.traverser());
+    UMLImportTrafo importTrafo = new UMLImportTrafo(CD4CodeMill.inheritanceTraverser());
     importTrafo.transform(node);
   }
 
@@ -165,13 +165,13 @@ public abstract class AbstractUMLPTest {
   }
 
   public void runDefaultTrafos(ASTCDCompilationUnit node) {
-    UMLAttrToAssocTrafo assocTrafo = new UMLAttrToAssocTrafo(CD4CodeMill.traverser());
+    UMLAttrToAssocTrafo assocTrafo = new UMLAttrToAssocTrafo(CD4CodeMill.inheritanceTraverser());
     assocTrafo.transform(node);
 
-    UMLSetDefaultsTrafo assocNameTrafo = new UMLSetDefaultsTrafo(CD4CodeMill.traverser());
+    UMLSetDefaultsTrafo assocNameTrafo = new UMLSetDefaultsTrafo(CD4CodeMill.inheritanceTraverser());
     assocNameTrafo.transform(node);
 
-    UMLAssocToAttrTrafo assoc2Trafo = new UMLAssocToAttrTrafo(CD4CodeMill.traverser());
+    UMLAssocToAttrTrafo assoc2Trafo = new UMLAssocToAttrTrafo(CD4CodeMill.inheritanceTraverser());
     assoc2Trafo.transform(node);
   }
 
