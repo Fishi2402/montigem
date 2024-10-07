@@ -32,7 +32,7 @@ public class SecurityManagerImportDecorator  {
     GUIDSLTraverser traverser = GUIDSLMill.traverser();
 
     // "Fun" fact: There exists no symbol table, thus we have to "resolve" on our own
-    CDBasisTraverser cdBasisTraverser = UMLPMill.traverser();
+    CDBasisTraverser cdBasisTraverser = UMLPMill.inheritanceTraverser();
     ClassSearcher classSearcher = new ClassSearcher();
     cdBasisTraverser.setCDBasisHandler(classSearcher);
 

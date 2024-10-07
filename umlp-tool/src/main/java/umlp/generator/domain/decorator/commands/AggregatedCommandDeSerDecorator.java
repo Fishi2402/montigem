@@ -45,7 +45,7 @@ public class AggregatedCommandDeSerDecorator extends AbstractDecorator {
     List<String> commandList = new ArrayList<>();
 
     // No Symbol table available
-    UMLPTraverser t = UMLPMill.traverser();
+    UMLPTraverser t = UMLPMill.inheritanceTraverser();
     t.add4CDBasis(new CDBasisVisitor2() {
       ASTCDPackage p = null;
       public void visit(ASTCDPackage node) { p = node; }

@@ -106,7 +106,7 @@ public abstract class AbstractUMLPTest {
   }
 
   protected void runAfterParseTrafo(ASTCDCompilationUnit node){
-    UMLPTraverser trav = UMLPMill.traverser();
+    UMLPTraverser trav = UMLPMill.inheritanceTraverser();
     CD4CodeAfterParseTrafo.init(new CDAfterParseHelper(), trav);
     node.accept(trav);
 
@@ -115,7 +115,7 @@ public abstract class AbstractUMLPTest {
   }
 
   protected void runAfterParseTrafoForMerge(ASTCDCompilationUnit node){
-    UMLPTraverser trav = UMLPMill.traverser();
+    UMLPTraverser trav = UMLPMill.inheritanceTraverser();
     CDMergeAfterParseTrafo.init(new CDAfterParseHelper(), trav);
     node.accept(trav);
   }

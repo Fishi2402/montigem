@@ -240,7 +240,7 @@ public class UMLPTool extends UMLPToolTOP {
         }
       }
     };
-    UMLPTraverser t = UMLPMill.traverser();
+    UMLPTraverser t = UMLPMill.inheritanceTraverser();
     t.add4CDBasis(v);
     ast.accept(t);
 
@@ -304,7 +304,7 @@ public class UMLPTool extends UMLPToolTOP {
   }
 
   public void runAfterParseTrafo(ASTCDCompilationUnit node) {
-    UMLPTraverser trav = UMLPMill.traverser();
+    UMLPTraverser trav = UMLPMill.inheritanceTraverser();
     CD4CodeAfterParseTrafo.init(new CDAfterParseHelper(), trav);
     node.accept(trav);
 
