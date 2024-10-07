@@ -14,7 +14,7 @@ public class UMLPToolInvoker {
     Log.info("Starting UMLPTool: \n" +
         "\t  java -jar UMLPTool.jar " + Arrays.toString(args), UMLPAction.class.getName());
     try {
-      UMLPTool.main(args);
+      UMLPTool.gradleMain(args);
     }catch (final AmbiguityException | MontiCoreFreeMarkerException e){
       RuntimeException newThrow = e;
       if(e.getCause() instanceof AmbiguityException){ // Freemarker adds special Freemarker Exceptions
