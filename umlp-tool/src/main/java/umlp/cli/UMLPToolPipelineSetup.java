@@ -107,7 +107,7 @@ public class UMLPToolPipelineSetup {
       if (DEBUG.isSelected(data.getCmd())) {
         Log.initDEBUG();
       } else {
-        Log.initWARN();
+//        Log.initWARN(); // TODO: modify, not init! (ErrorHook/System#exit behavior) - monticore/monticore#4317
       }
       Log.enableFailQuick(enableFailQuick);
       return true;

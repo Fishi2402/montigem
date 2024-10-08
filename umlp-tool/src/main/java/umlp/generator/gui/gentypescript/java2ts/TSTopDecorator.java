@@ -32,7 +32,7 @@ public class TSTopDecorator extends TopDecorator {
   public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit compUnit, boolean importHW) {
 
     // Ensure determineQualifiedName works by filling the nameMap
-    CD4CodeTraverser traverser = CD4CodeMill.traverser();
+    CD4CodeTraverser traverser = CD4CodeMill.inheritanceTraverser();
     DetermineNameVisitor nameVisitor = new DetermineNameVisitor();
     traverser.add4CDBasis(nameVisitor);
     traverser.add4CDInterfaceAndEnum(nameVisitor);

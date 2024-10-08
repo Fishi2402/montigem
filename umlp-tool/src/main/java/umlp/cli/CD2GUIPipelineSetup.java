@@ -58,7 +58,7 @@ public class CD2GUIPipelineSetup {
 
     // TODO (MB): Ist diese Lösung okay?
     // Create a customized symbol table for the generated GUI-models
-    new UMLAddGemIdTrafo(UMLPMill.traverser()).transform(ast);
+    new UMLAddGemIdTrafo(UMLPMill.inheritanceTraverser()).transform(ast);
     IUMLPArtifactScope symbolTable = data.tool.recreateSymbolTable(ast);
     Path symbolPath = Paths.get(data.outDir.getPath() + File.separator + "symbols" + File.separator + Names.getPathFromPackage(symbolTable.getPackageName()) + File.separator + symbolTable.getName() + ".umlpsym");
     JsonPrinter.disableIndentation();

@@ -52,15 +52,15 @@ public class TSUMLPGenerator extends UMLPGenerator {
   }
 
   public void generate(ASTCDCompilationUnit cdAST, String configTemplate) {
-    UMLAttrToAssocTrafo assocTrafo = new UMLAttrToAssocTrafo(CD4CodeMill.traverser());
+    UMLAttrToAssocTrafo assocTrafo = new UMLAttrToAssocTrafo(CD4CodeMill.inheritanceTraverser());
     assocTrafo.transform(cdAST);
     logTrafoExec("UMLAttrToAssocTrafo", cdAST);
 
-    UMLSetDefaultsTrafo assocNameTrafo = new UMLSetDefaultsTrafo(CD4CodeMill.traverser());
+    UMLSetDefaultsTrafo assocNameTrafo = new UMLSetDefaultsTrafo(CD4CodeMill.inheritanceTraverser());
     assocNameTrafo.transform(cdAST);
     logTrafoExec("UMLSetDefaultsTrafo", cdAST);
 
-    UMLAssocToAttrTrafo assoc2Trafo = new UMLAssocToAttrTrafo(CD4CodeMill.traverser());
+    UMLAssocToAttrTrafo assoc2Trafo = new UMLAssocToAttrTrafo(CD4CodeMill.inheritanceTraverser());
     assoc2Trafo.transform(cdAST);
     logTrafoExec("UMLAssocToAttrTrafo", cdAST);
 
