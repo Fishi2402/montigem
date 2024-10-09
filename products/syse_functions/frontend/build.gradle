@@ -27,6 +27,7 @@ dependencies {
 
   testImplementation "de.monticore.lang:guidsl:${project.properties['mc_version']}"
   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
+  testImplementation project(':umlp-test-rte')
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
 }
 
