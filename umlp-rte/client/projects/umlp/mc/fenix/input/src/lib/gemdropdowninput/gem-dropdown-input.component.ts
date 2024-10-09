@@ -9,7 +9,6 @@ import {
 } from "@angular/core";
 import {GemTextInputValidity} from "../gemtextinput";
 import {Option} from "./gem-dropdown-input-types/gem-dropdown-input.types";
-import {IdUtil} from "../../../../common/src/lib/util/IdUtil";
 
 @Component({
   selector: "gem-dropdown-input",
@@ -50,7 +49,7 @@ export class GemDropdownInput implements OnInit, OnChanges {
   @Output() public keyPress: EventEmitter<KeyboardEvent> = new EventEmitter<KeyboardEvent>;
   @Output() public keyRelease: EventEmitter<KeyboardEvent> = new EventEmitter<KeyboardEvent>;
 
-  elementId: string = IdUtil.getUniqueId();
+  elementId: string = Math.random() + '';
   isContentShown: boolean = false;
   filterString: string = "";
   filteredOptions: Option[] = [];

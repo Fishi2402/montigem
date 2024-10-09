@@ -8,7 +8,6 @@ import {
 } from "@angular/core";
 import { Option } from "../gemdropdowninput";
 import { GemTextInputValidity } from "../gemtextinput";
-import {IdUtil} from "../../../../common/src/lib/util/IdUtil";
 
 @Component({
   selector: "gem-autocomplete-input",
@@ -52,7 +51,7 @@ export class GemAutocompleteInput implements OnInit, OnChanges {
   @Output() public keyPress: EventEmitter<KeyboardEvent> = new EventEmitter<KeyboardEvent>;
   @Output() public keyRelease: EventEmitter<KeyboardEvent> = new EventEmitter<KeyboardEvent>;
 
-  elementId: string = IdUtil.getUniqueId();
+  elementId: string = Math.random() + '';
   filteredOptions: Option[] = [];
   isContentShown: boolean = false;
   highlightIdx: number = -1;
