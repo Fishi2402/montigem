@@ -23,6 +23,7 @@ export class Navigation {
     { url: '/example_basic/GemImageExample', title: 'Image' },
     { url: '/example_basic/GemLinkExample', title: 'Link' },
     { url: '/example_basic/GemTextExample', title: 'Text' },
+    { url: '/example_basic/GemIconExample', title: 'Icon' },
     { url: '/example_basic/GemTreeviewExample', title: 'Treeview' },
     { url: '/example_basic/GemVideoExample', title: 'Video' },
     { url: '/example_table/GemTableExample', title: 'Table' },
