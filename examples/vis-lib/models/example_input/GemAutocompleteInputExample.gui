@@ -3,18 +3,64 @@ package example_input;
 
 import mc.fenix.input.GemAutocompleteInput;
 import mc.fenix.input.GemDropdownInputTypes.Option;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
 
 page GemAutocompleteInputExample() {
-  @GemAutocompleteInput(
-    id = "searchEngines",
-    labelText = "Search engine:",
-    placeholder = "Type here ...",
-    options = [
-      Option("DuckDuckGo"),
-      Option("Ecosia"),
-      Option("Bing"),
-      Option("Google"),
-      Option("Baidu")
+  @GemRow(
+    components = [
+      @GemAutocompleteInput(
+        id = "searchEngines",
+        width = "50%",
+        labelText = "Search engine:",
+        placeholder = "Type here ...",
+        options = [
+          Option("DuckDuckGo"),
+          Option("Ecosia"),
+          Option("Bing"),
+          Option("Google"),
+          Option("Baidu")
+        ]
+      )
+    ]
+  );
+  @GemColumn(
+    rowGap = "15px",
+    components = [
+      @GemRow(
+        components = [
+          @GemAutocompleteInput(
+            width = "50%",
+            labelText = "Hobby:",
+            options = [
+              Option("Tennis"),
+              Option("Sleeping"),
+              Option("Model-driven development"),
+              Option("Video gaming"),
+              Option("Photographing"),
+              Option("Bouldering"),
+              Option("Football"),
+              Option("Drawing"),
+              Option("Social Media"),
+              Option("Knitting"),
+              Option("Volleyball"),
+              Option("Running"),
+              Option("Swimming"),
+              Option("Reading"),
+              Option("Music"),
+              Option("Movies"),
+              Option("Hiking"),
+              Option("Climbing"),
+              Option("Travelling"),
+              Option("Scuba diving"),
+              Option("Hacking"),
+              Option("Cooking"),
+              Option("Gardening"),
+              Option("Other")
+            ]
+          )
+        ]
+      )
     ]
   );
 }

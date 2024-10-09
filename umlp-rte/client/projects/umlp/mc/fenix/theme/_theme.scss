@@ -34,6 +34,7 @@
 @import "./src/gem-nav-list.component";
 @import "./src/dialog.component";
 @import "./src/gem-dual-range-input.component";
+@import "./src/gem-dropdown-input.component";
 
 * {
   font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
@@ -97,6 +98,7 @@
     $rwth-blue,
     $montigem-white
   );
+  @include dropdown-input-theme();
 
   @if $horizontal-layout {
     @include gem-main();
