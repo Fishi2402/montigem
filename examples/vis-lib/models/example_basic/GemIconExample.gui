@@ -1,0 +1,40 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_basic;
+
+import mc.fenix.basic.GemIcon;
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemRow;
+
+
+page GemIconExample() {
+  @GemRow(
+    colGap = "15px",
+    components = [
+      @GemIcon(
+        name = "add",
+        color = "blue",
+        size = "1rem"
+      ),
+      @GemIcon(
+        name = "edit",
+        color = "rgb(95,99,104)",
+        size = "24px"
+      ),
+      @GemIcon(
+        name = "delete",
+        color = "#ff0000",
+        size = "2cm"
+      )
+    ]
+  );
+  @GemButton(
+    width = "fit-content",
+    content = [
+      @GemIcon(
+        name = "home",
+        color = "white",
+        size = "30px"
+      )
+    ]
+  );
+}

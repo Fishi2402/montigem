@@ -1,23 +1,63 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
-
-<label class="gem-label-text-input" [for]="id + 'Input'">{{ labelText }}</label>
-<select
-  class="gem-text-input"
-  [matTooltip]="
-    validity?.status === 'Error' || validity?.status === 'Warning'
-      ? validity.message
-      : null
-  "
-  matTooltipPosition="after"
-  [class.gem-input-error]="validity?.status === 'Error'"
-  [class.gem-input-warning]="validity?.status === 'Warning'"
-  [id]="id + 'Dropdown'"
-  [ngModel]="entry"
-  [disabled]="disabled"
-  (ngModelChange)="onEntryChange($event)"
-  (keyup)="keyRelease.emit($event)"
-  (keydown)="keyPress.emit($event)"
+<div
+  class="gem-dropdown-container"
+  (keydown.arrowDown)="focusDown()"
+  (keydown.arrowUp)="focusUp()"
+  (keydown.enter)="selectWithEnter($event)"
+  (keydown.escape)="hideDropdown()"
+  (keydown)="onKeyPress($event)"
+  (keyup)="onKeyRelease($event)"
 >
-  <option *ngFor="let option of options" [value]="option.value">{{ option.display }}</option>
-</select>
+  <label class="gem-label-text-input" [for]="id + 'Input'">{{ labelText }}</label>
+  <div class="gem-dropdown-input-container">
+    <input
+      class="gem-dropdown-input gem-text-input"
+      tabindex="0"
+      [id]="getInputId()"
+      type="button"
+      [(ngModel)]="entry"
+      [disabled]="disabled"
+      [matTooltip]="
+        validity?.status === 'Error' || validity?.status === 'Warning'
+          ? validity.message
+          : null
+      "
+      matTooltipPosition="after"
+      [class.gem-input-error]="validity?.status === 'Error'"
+      [class.gem-input-warning]="validity?.status === 'Warning'"
+      (click)="toggleDropdown()"
+    />
+    <button class="gem-dropdown-button" [id]="getInputId()" [disabled]="disabled" (click)="toggleDropdown()">
+      <mat-icon [fontIcon]="isContentShown ? 'arrow_drop_up' : 'arrow_drop_down'"></mat-icon>
+    </button>
+  </div>
+  <div *ngIf="isContentShown" class="gem-dropdown-content">
+    <div *ngIf="searchEnabled" class="gem-search-input-container">
+      <div class="gem-search-icon">
+        <mat-icon fontIcon="search"></mat-icon>
+      </div>
+      <input
+        [id]="getSearchInputId()"
+        class="gem-text-input gem-search-input"
+        type="text"
+        placeholder="Search ..."
+        tabindex="0"
+        autocomplete="off"
+        [(ngModel)]="filterString"
+        (keyup)="filterOptions()"
+      >
+    </div>
+    <div [id]="getOptionsId()" class="gem-dropdown-options">
+      <div
+        *ngFor="let option of filteredOptions; let i = index"
+        class="gem-dropdown-option"
+        [class.highlight-option]="highlightIdx == i"
+        (click)="selectOption(option)"
+        (mousemove)="setHighlightIdx(i)"
+      >
+        {{ option.display }}
+      </div>
+    </div>
+  </div>
+</div>
 
