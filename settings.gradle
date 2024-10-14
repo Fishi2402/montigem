@@ -81,6 +81,9 @@ include ':examples:guidslpaper:frontend'
 include ':examples:finanzverwaltung-cd2gui:backend'
 include ':examples:finanzverwaltung-cd2gui:frontend'
 
+include ':examples:loading-test:backend'
+include ':examples:loading-test:frontend'
+
 include ':products:syse_functions:backend'
 include ':products:syse_functions:frontend'
 include ':products:syse_functions:automaton'
