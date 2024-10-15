@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+package subproject1.complex;
+
+import subproject1.simple.Card;
+import subproject1.atomic.Text;
+import subproject1.Domain.Room;
+
+/** Room details page, where access to a class field is done via association
+*/
+page RoomPersonDetails(Room room) {
+  @Card(
+    header = "Test card",
+    body = @Text(value = room.Person.nickname)
+  );
+}
