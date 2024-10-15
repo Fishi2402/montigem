@@ -1,0 +1,24 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example;
+
+/** Class diagram, which defines classes for GUI model examples
+*/
+classdiagram Domain {
+
+  class Room {
+    +String name;
+    +Boolean occupied;
+    +Long capacity;
+  }
+
+  +association [1] Room -> Person [0..*];
+
+  class Human {
+    +int age;
+  }
+
+  class Person extends Human {
+    +String nickname;
+  }
+
+}

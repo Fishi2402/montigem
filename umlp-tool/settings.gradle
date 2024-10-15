@@ -14,6 +14,7 @@ pluginManagement {
     }
 }
 
+
 boolean isCi = System.getenv().containsKey("CI")
 
 String myGetProperty(String key){
