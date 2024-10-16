@@ -7,7 +7,7 @@ import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.CompilationUnitElement;
 import org.jsweet.transpiler.model.ImportElement;
 import umlp.jsweet.extension.UMLPAbstractAdapter;
-import umlp.jsweet.extension.guiAdapters.GUIAdapterUtils;
+import umlp.jsweet.extension.util.GUIAdapterUtils;
 import umlp.jsweet.extension.util.UMLPAdapterUtils;
 import umlp.jsweet.extension.util.RTEPathUtil;
 
@@ -29,8 +29,11 @@ public class UMLPRTEImportAdapter extends UMLPAbstractAdapter {
 
   private static final String ANGULAR_CORE_PATH = "@angular/core";
 
+  protected final UMLPAdapterUtils adapterUtils;
+
   public UMLPRTEImportAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);
+    this.adapterUtils = new UMLPAdapterUtils(this, types(), context, util());
   }
 
   @Override
@@ -82,11 +85,11 @@ public class UMLPRTEImportAdapter extends UMLPAbstractAdapter {
     // Add default method implementation for interfaces defined in the RTE (JSweet does not find those)
 
     boolean buildFinishedAdded = false;
-    if (UMLPAdapterUtils.isSubTypeOf(type, RTEPathUtil.getBackendRTECommonPath("GemBuildable"), util(), types())) {
+    if (adapterUtils.isSubTypeOf(type, RTEPathUtil.getBackendRTECommonPath("GemBuildable"))) {
       addIsBuildFinished(type);
       buildFinishedAdded = true;
     }
-    if (!buildFinishedAdded && UMLPAdapterUtils.isSubTypeOf(type, RTEPathUtil.getBackendRTECommonPath("GemListBuilder"), util(), types())) {
+    if (!buildFinishedAdded && adapterUtils.isSubTypeOf(type, RTEPathUtil.getBackendRTECommonPath("GemListBuilder"))) {
       addIsBuildFinished(type);
       buildFinishedAdded = true;
     }

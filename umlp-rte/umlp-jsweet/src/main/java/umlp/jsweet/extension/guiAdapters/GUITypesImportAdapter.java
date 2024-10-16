@@ -10,12 +10,14 @@ import umlp.jsweet.extension.util.UMLPAdapterUtils;
 
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.type.TypeMirror;
 import java.util.function.Function;
 
-public class GUIImportAdapter extends UMLPAbstractAdapter {
-  public GUIImportAdapter(PrinterAdapter parentAdapter) {
+/**
+ * Adapter for delegating GUI type imports to the correct package.
+ */
+public class GUITypesImportAdapter extends UMLPAbstractAdapter {
+  public GUITypesImportAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);
     initTypeMappings();
   }
@@ -28,7 +30,7 @@ public class GUIImportAdapter extends UMLPAbstractAdapter {
     return (TypeMirror type) -> {
       for (TSImportMap value : TSImportMap.values()) {
         if (type.toString().startsWith(value.getJavaPackage())) {
-          return UMLPAdapterUtils.getSimpleName(type.toString());
+          return UMLPAdapterUtils.getSimpleNameOfFQN(type.toString());
         }
       }
       return null;

@@ -170,6 +170,12 @@ public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
           this.print("StringHelper.format(").printArgList(invocation.getArguments()).print(")");
           return true;
         }
+      case "isBlank": {
+        print("(");
+        print(invocation.getTargetExpression());
+        print(".trim().length === 0)");
+        return true;
+      }
     }
     return false;
   }

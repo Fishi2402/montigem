@@ -46,7 +46,7 @@ public abstract class UMLPAbstractAdapter extends PrinterAdapter {
     if (staticLibrary.containsKey(fqn)) {
       String staticClass = staticLibrary.get(fqn);
       return new ModuleImportDescriptor(false, (PackageElement) importedClass.getEnclosingElement(),
-          UMLPAdapterUtils.getSimpleName(staticClass), getLibraryLocation(), importedClass);
+          UMLPAdapterUtils.getSimpleNameOfFQN(staticClass), getLibraryLocation(), importedClass);
     }
     return super.getModuleImportDescriptor(currentCompilationUnit, importedName, importedClass);
   }

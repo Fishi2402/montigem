@@ -14,14 +14,17 @@ import java.util.function.Function;
 
 /**
  * This adapter is responsible to correctly map Elements from the MontiCore world to correct
- *  TS implementaitons.
+ * TS implementaitons.
  * This is done mainly for de.monticore.symboltable.serialization.json.* and de.se_rwth.commons.logging.Log
  */
 public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
 
+  private final UMLPAdapterUtils adapterUtils;
+
   public UMLPBasicsAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);
     initTypeMappings();
+    this.adapterUtils = new UMLPAdapterUtils(this, types(), context, util());
   }
 
   private void initTypeMappings() {
@@ -94,23 +97,23 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
   private boolean substituteJsonElementMethods(MethodInvocationElement invocation, String methodName) {
     switch (methodName) {
       case "isJsonObject":
-        UMLPAdapterUtils.printMacroName(this, methodName);
+        adapterUtils.printMacroName(methodName);
         this.print("(typeof ").print(invocation.getTargetExpression()).print(" == \"object\")");
         return true;
       case "isJsonArray":
-        UMLPAdapterUtils.printMacroName(this, methodName);
+        adapterUtils.printMacroName(methodName);
         this.print("(Array.isArray(").print(invocation.getTargetExpression()).print("))");
         return true;
       case "isJsonBoolean":
-        UMLPAdapterUtils.printMacroName(this, methodName);
+        adapterUtils.printMacroName(methodName);
         this.print("(typeof ").print(invocation.getTargetExpression()).print(" == \"boolean\")");
         return true;
       case "isJsonString":
-        UMLPAdapterUtils.printMacroName(this, methodName);
+        adapterUtils.printMacroName(methodName);
         this.print("(typeof ").print(invocation.getTargetExpression()).print(" == \"string\")");
         return true;
       case "isJsonNumber":
-        UMLPAdapterUtils.printMacroName(this, methodName);
+        adapterUtils.printMacroName(methodName);
         this.print("(typeof ").print(invocation.getTargetExpression()).print(" == \"number\")");
         return true;
       //          case "isJsonNull":
@@ -129,7 +132,7 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
         //          case "removeMember":
         //          case "getMemberNames":
       case "toString":
-        UMLPAdapterUtils.printMacroName(this, methodName);
+        adapterUtils.printMacroName(methodName);
         this.print(invocation.getTargetExpression());
         return true;
       //          case "getMembers":
@@ -137,29 +140,29 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
       //          case "sizeMembers":
       //          case "hasMembers":
       case "hasMember":
-        UMLPAdapterUtils.printMacroName(this, methodName);
+        adapterUtils.printMacroName(methodName);
         this.print("(").print(invocation.getTargetExpression()).print("[")
             .printArgList(invocation.getArguments()).print("] != undefined && ")
             .print(invocation.getTargetExpression()).print("[")
             .printArgList(invocation.getArguments()).print("] != null)");
         return true;
       case "hasStringMember":
-        UMLPAdapterUtils.printMacroName(this, methodName);
+        adapterUtils.printMacroName(methodName);
         this.print("(typeof ").print(invocation.getTargetExpression()).print("[").printArgList(
             invocation.getArguments()).print("] == \"string\")");
         return true;
       case "hasArrayMember":
-        UMLPAdapterUtils.printMacroName(this, methodName);
+        adapterUtils.printMacroName(methodName);
         this.print("(Array.isArray(").print(invocation.getTargetExpression()).print("[").printArgList(
             invocation.getArguments()).print("]))");
         return true;
       case "hasBooleanMember":
-        UMLPAdapterUtils.printMacroName(this, methodName);
+        adapterUtils.printMacroName(methodName);
         this.print("(typeof ").print(invocation.getTargetExpression()).print("[").printArgList(
             invocation.getArguments()).print("] == \"boolean\")");
         return true;
       case "hasObjectMember":
-        UMLPAdapterUtils.printMacroName(this, methodName);
+        adapterUtils.printMacroName(methodName);
         this.print("(typeof ").print(invocation.getTargetExpression()).print("[").printArgList(
             invocation.getArguments()).print("] == \"object\")");
         return true;
@@ -167,7 +170,7 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
       case "hasDoubleMember":
       case "hasFloatMember":
       case "hasLongMember":
-        UMLPAdapterUtils.printMacroName(this, methodName);
+        adapterUtils.printMacroName(methodName);
         this.print("(typeof ").print(invocation.getTargetExpression()).print("[").printArgList(
             invocation.getArguments()).print("] == \"number\")");
         return true;
@@ -188,7 +191,7 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
       case "getLongMember":
       case "getLongMemberOpt":
       case "getMember":
-        UMLPAdapterUtils.printMacroName(this, methodName);
+        adapterUtils.printMacroName(methodName);
         this.print(invocation.getTargetExpression()).print("[").printArgList(invocation.getArguments()).print("]");
         return true;
     }
@@ -234,7 +237,7 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
   @Override
   public boolean substituteTypeCast(TypeCastElement castExpression) {
     if (castExpression.getExpression().toString().equals("this")) {
-      PrinterAdapter print = print("<").print(
+      print("<").print(
           types().asElement(castExpression.getType()).getSimpleName().toString()).print(">");
       print("<unknown>").print(castExpression.getExpression());
       return true;
