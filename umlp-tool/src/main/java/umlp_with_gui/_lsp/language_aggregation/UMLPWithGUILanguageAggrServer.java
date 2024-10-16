@@ -11,7 +11,10 @@ public class UMLPWithGUILanguageAggrServer extends UMLPWithGUILanguageAggrServer
     super(path);
   }
 
+  @Override
   protected GUIDSLLanguageServer initGUIDSLLanguageServer(MCPath path){
-    return new GUIDSLLanguageServer(documentManager, path, new GUIDSLScopeManager4Aggr(this.uMLPLanguageServer.getContext()), symbolUsageResolutionProvider);
+    GUIDSLLanguageServer server = new GUIDSLLanguageServer(documentManager, path, new GUIDSLScopeManager4Aggr(this.uMLPLanguageServer.getContext()), symbolUsageResolutionProvider);
+    server.getContext().noLockClose(); // initializing a subserver leaves its context open, so close
+    return server;
   }
 }

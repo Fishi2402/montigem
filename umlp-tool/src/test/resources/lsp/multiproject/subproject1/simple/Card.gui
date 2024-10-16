@@ -1,0 +1,24 @@
+/* (c) https://github.com/MontiCore/monticore */
+package subproject1.simple;
+
+import subproject1.atomic.Text;
+import subproject1.atomic.Column;
+import subproject1.atomic.Row;
+
+/** Card component definition. Uses built-in GUIComponent type to define a
+    component as an input parameter, which is further instantiated in the body
+    of the card. Example of creating a layout template
+*/
+component Card(
+  String header = "",
+  GUIViewElement body
+) {
+
+  @Column(width = "30%", components = [
+    @Row(vAlign = "center", hAlign = "spaceBetween", style = "card-header", components = [
+      @Text(value = header, color = "white")
+    ]),
+    @Column(vAlign = "center", hAlign = "center", style = "card-body", component = body)
+  ]);
+
+}

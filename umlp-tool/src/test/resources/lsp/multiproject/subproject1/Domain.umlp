@@ -1,0 +1,26 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package subproject1;
+
+/** Class diagram, which defines classes for GUI model examples
+*/
+umlp Domain {
+
+  entity Room {
+    String name;
+    Boolean occupied;
+    Long capacity;
+  }
+
+  association [1] Room -> Person [0..1];
+  association [*] Human (humans) <- Room [1];
+
+  entity Human {
+    int age;
+  }
+
+  entity Person extends Human {
+    String nickname;
+  }
+
+}

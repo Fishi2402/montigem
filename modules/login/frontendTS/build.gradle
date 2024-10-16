@@ -24,7 +24,7 @@ genDomain {
 }
 
 generate {
-  println("ADDING GENERATE")
+  //println("ADDING GENERATE")
 }
 
 
