@@ -5,11 +5,12 @@
   (keydown.arrowUp)="focusUp()"
   (keydown.enter)="selectWithEnter($event)"
   (keydown.escape)="hideDropdown()"
+  (keydown.tab)="tabOut()"
   (keydown)="onKeyPress($event)"
   (keyup)="onKeyRelease($event)"
 >
-  <label class="gem-label-text-input" [for]="id + 'Input'">{{ labelText }}</label>
-  <div class="gem-dropdown-input-container">
+  <label class="gem-label-text-input" [for]="getInputId()">{{ labelText }}</label>
+  <div class="gem-dropdown-input-container" (click)="toggleDropdown()">
     <input
       class="gem-dropdown-input gem-text-input"
       tabindex="0"
@@ -25,9 +26,8 @@
       matTooltipPosition="after"
       [class.gem-input-error]="validity?.status === 'Error'"
       [class.gem-input-warning]="validity?.status === 'Warning'"
-      (click)="toggleDropdown()"
     />
-    <button class="gem-dropdown-button" [id]="getInputId()" [disabled]="disabled" (click)="toggleDropdown()">
+    <button class="gem-dropdown-button" [disabled]="disabled" tabindex="-1">
       <mat-icon [fontIcon]="isContentShown ? 'arrow_drop_up' : 'arrow_drop_down'"></mat-icon>
     </button>
   </div>
