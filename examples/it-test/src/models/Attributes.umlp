@@ -11,11 +11,26 @@ umlp Attributes {
     int bar_int;
     java.lang.Integer bar_int2;
     Integer bar_int3;
-
     List<int> bar_list_int;
     List<java.lang.Integer> bar_list_int2;
     Optional<int> bar_opt_int;
     Optional<java.lang.Integer> bar_opt_int2;
+
+    byte bar_byte;
+    java.lang.Byte bar_byte2;
+    Byte bar_byte3;
+    List<byte> bar_list_byte;
+    List<java.lang.Byte> bar_list_byte2;
+    Optional<byte> bar_opt_byte;
+    Optional<java.lang.Byte> bar_opt_byte2;
+
+    short bar_short;
+    java.lang.Short bar_short2;
+    Short bar_short3;
+    List<short> bar_list_short;
+    List<java.lang.Short> bar_list_short2;
+    Optional<short> bar_opt_short;
+    Optional<java.lang.Short> bar_opt_short2;
 
     float bar_float;
     java.lang.Float bar_float2;
