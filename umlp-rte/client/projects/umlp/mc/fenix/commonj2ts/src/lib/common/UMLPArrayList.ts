@@ -164,6 +164,13 @@ export class UMLPArrayList<E> implements IUMLPList<E> {
     }
   }
 
+  async toArraySync(startIndex?: number, endIndex?: number): Promise<Array<E>> {
+    return Promise.resolve(this.toArray(startIndex, endIndex));
+  }
+
+  async toArrayDeepSync(startIndex?: number, endIndex?: number): Promise<Array<any>> {
+    return Promise.resolve(this.toArrayDeep(startIndex, endIndex));
+  }
 
   [Symbol.asyncIterator](): AsyncIterator<E> {
     return new UMLPArrayListIterator(this.array);
