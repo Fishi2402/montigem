@@ -3,6 +3,7 @@ package umlp.test_rte.playwright;
 import com.microsoft.playwright.Dialog;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.LoadState;
 
 public interface PlaywrightUtils {
   default void waitForAngular(Page page) {
@@ -65,6 +66,7 @@ public interface PlaywrightUtils {
   default void waitRdy(Page page) {
     waitForAngular(page);
     waitForWebsocket(page);
+    page.waitForLoadState(LoadState.NETWORKIDLE);
   }
 
   /**
