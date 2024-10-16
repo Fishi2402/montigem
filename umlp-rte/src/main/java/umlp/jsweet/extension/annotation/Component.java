@@ -13,4 +13,5 @@ public @interface Component {
   String styles() default "config.styles";
   String selector() default "config.selector";
   String cdName() default "";
+  String[] tsImports() default {};
 }
