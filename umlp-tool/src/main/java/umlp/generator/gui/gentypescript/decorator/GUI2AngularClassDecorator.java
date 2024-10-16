@@ -174,9 +174,6 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
         );
       }
 
-      //      boolean replaceByUMLPArrayList = UMLPGeneratorConfig.getInstance().isUseJsweet() && util.isListType(typeSTE);
-      boolean replaceByUMLPArrayList = false;
-
       // attr overrides top class attr
       glex.replaceTemplate("umlp.gui2ts.TSAttribute", attr,
           new TemplateHookPoint("umlp.gui2ts.TSOverrideAttribute"));
@@ -184,12 +181,12 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
       extraImports.add("import { Input } from '@angular/core';");
       // setter + getter
       if (UMLPGeneratorConfig.getInstance().isUseJsweet()) {
-        getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("UMLPArrayList"));
-        mcType = createTypeAndAddImports(typeSTE, true);
+//        getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("UMLPArrayList"));
+        mcType = createTypeAndAddImports(typeSTE);
       }
       glex.replaceTemplate("umlp.Empty", attr,
           new TemplateHookPoint("umlp.gui2ts.GUI2AngularAttrGetterSetter",
-              mcType, node.getName(), getterName, setterName, replaceByUMLPArrayList));
+              mcType, node.getName(), getterName, setterName));
     }
   }
 
@@ -279,10 +276,6 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
 
   @Override
   protected ASTMCType createTypeAndAddImports(SymTypeExpression ste) {
-    return createTypeAndAddImports(ste, false);
-  }
-
-  protected ASTMCType createTypeAndAddImports(SymTypeExpression ste, boolean ignoreJsweet) {
     if (!ste.hasTypeInfo()) {
       Log.error("0x0001B Encountered a SymTypeExpression disconnected from a type symbol: "
           + ste.printFullName());
@@ -323,18 +316,7 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
         type = TypeScriptTypes.CONSUMER.getMCType();
       }
 
-      // adaptation start
-      // JSweet uses IUMLPList instead of Array
-//      if (!ignoreJsweet && UMLPGeneratorConfig.getInstance().isUseJsweet()
-//          && qType.equals(BuiltInTypes.LIST.getQName())) {
-      if (false) {
-        type = "IUMLPList";
-        extraImports.add("import { IUMLPList } from '@umlp/commonj2ts';");
-      }
-      else {
-        getCD4C().addImport(clazz, qType);
-      }
-      // adaptation end
+      getCD4C().addImport(clazz, qType);
 
       ASTMCBasicGenericTypeBuilder genTypeBuilder = MCFullGenericTypesMill.mCBasicGenericTypeBuilder()
           .setNamesList(new ArrayList<>(Arrays.asList(type)))
@@ -342,7 +324,7 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
       for (SymTypeExpression steArg : stog.getArgumentList()) {
         genTypeBuilder.addMCTypeArgument(
             MCSimpleGenericTypesMill.mCCustomTypeArgumentBuilder()
-                .setMCType(createTypeAndAddImports(steArg, ignoreJsweet))
+                .setMCType(createTypeAndAddImports(steArg))
                 .build());
       }
       return genTypeBuilder.build();

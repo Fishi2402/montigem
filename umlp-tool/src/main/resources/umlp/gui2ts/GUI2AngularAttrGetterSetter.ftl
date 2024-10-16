@@ -1,13 +1,13 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("type", "name", "getter", "setter", "replaceByUMLPArrayList")}
+${tc.signature("type", "name", "getter", "setter")}
 <#assign tsType = cdPrinter.printType(type)>
 <#assign arg = "val_$">
 
 public get ${name}(): ${tsType} {
-  return this.${getter}()<#if replaceByUMLPArrayList>.toArrayDeep()</#if>;
+  return this.${getter}();
 }
 
 @Input()
 public set ${name}(${arg}: ${tsType}) {
-  this.${setter}(<#if replaceByUMLPArrayList>new UMLPArrayList(</#if>${arg}<#if replaceByUMLPArrayList>).transformInternalArrays()</#if>);
+  this.${setter}(${arg});
 }

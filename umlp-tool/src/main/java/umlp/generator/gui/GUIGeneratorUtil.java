@@ -173,6 +173,7 @@ public class GUIGeneratorUtil {
     return printer.prettyprint(node);
   }
 
+  // At some places there must be generated the __synchronized suffix for JSweet generated code
   public final String print(ASTNode node, boolean syncedOpt) {
     printer.setPrintComments(false);
     String res = printer.prettyprint(node);
@@ -517,8 +518,7 @@ public class GUIGeneratorUtil {
         + ((UMLPGeneratorConfig.getInstance().isGenerateTypescript() || isList(namedArg))
          && !UMLPGeneratorConfig.getInstance().isUseJsweet()
         ? ""
-        : SYNCHRONIZED_SUFFIX // in case the actual method does not have to be async,
-        // the synchronized method might just call the original method
+        : SYNCHRONIZED_SUFFIX // JSweet method to synchronize async callbacks
     );
   }
 
@@ -598,6 +598,7 @@ public class GUIGeneratorUtil {
         // ? => the backing gemList might be undefined until loaded
         // .subject => access the BehaviorSubject of the GemList
 //        expressionWithNullChecks = "( " + expressionWithNullChecks + "?.subject | async )";
+        expressionWithNullChecks = "toArray(" + expressionWithNullChecks + ")";
 
         //Alternative
         // expressionWithNullChecks = "((" + expressionWithNullChecks + " | umlpToAsync | async ) | async)";
