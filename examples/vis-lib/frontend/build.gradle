@@ -15,7 +15,7 @@ dependencies {
   testImplementation project(':umlp-test-rte')
 
 // JSweet
-//  domainSources project(":examples:vis-lib:backend")
+  domainSources project(":examples:vis-lib:backend")
 }
 
 genGUI {
@@ -32,18 +32,18 @@ sourceSets {
   main {
     java {
       // Remove 'src/main/java' from the sources
-      srcDirs = []
+//      srcDirs = []
     }
   }
 }
 
-//translateJava2TSDomain {
-//  verbose = true
-//}
-//
-//translateJava2TSGUI {
-//  verbose = true
-//}
+translateJava2TSDomain {
+  verbose = true
+}
+
+translateJava2TSGUI {
+  verbose = true
+}
 // End JSweet
 
 nodeSetup.dependsOn(frontendSetup)

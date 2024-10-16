@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package person;
 
+import domain.DomainManager;
 import domain.Person;
 import umlp.guiutil.HTMLUtils;
 import umlp.jsweet.extension.annotation.Component;
@@ -22,15 +23,13 @@ public class CreatePerson extends CreatePersonTOP {
   @Override
   public void createButtonLeftClick(Void event) {
     Person person = this.getPerson();
+    person.setAboutMe("");
     person.setAddress(this.getAddress());
-    if (person != null) {
-      person.getAddress();
-      person.setAddress(this.getAddress());
-      person.setAboutMe("");
-      super.createButtonLeftClick(event);
+    super.createButtonLeftClick(event);
+    this.setPerson(DomainManager.personBuilder());
+    this.setAddress(DomainManager.addressBuilder());
 //      this.newPerson.emit(person);
       // MH TODO: Wie soll das hier funktionieren?
-    }
   }
 
   // The doCancel method cannot exactly be translated into Java as it requires to return a lambda function which behaves differently in TypeScript, as Event<void> does not have a direct Java counterpart.

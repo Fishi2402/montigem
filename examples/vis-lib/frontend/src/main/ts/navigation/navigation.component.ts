@@ -17,7 +17,7 @@ export class Navigation {
   }
 
   readonly items: { url: string, title: string }[] = [
-    { url: '/person/Overview', title: 'Overview' },
+    { url: '/person/SimpleOverview', title: 'Overview' },
     { url: '/example_basic/GemAudioExample', title: 'Audio' },
     { url: '/example_basic/GemButtonExample', title: 'Button' },
     { url: '/example_basic/GemImageExample', title: 'Image' },
@@ -34,6 +34,8 @@ export class Navigation {
     { url: '/example_arrange/GemRowExample2', title: 'Row2' },
     { url: '/example_arrange/GemGridExample', title: 'Grid' },
     { url: '/example_input/GemTextInputExample', title: 'TextInput' },
+    { url: '/example_input/GemDropdownInputExample', title: 'DropdownInput' },
+    { url: '/example_input/GemAutocompleteInputExample', title: 'AutocompleteInput' },
     { url: '/example_input/GemTextareaInputExample', title: 'TextareaInput' },
     { url: '/example_input/GemCheckBoxInputExample', title: 'CheckBoxInput' },
     /*
@@ -41,6 +43,7 @@ export class Navigation {
     { url: '/example_input/GemRadioInputExample', title: 'RadioInput' },
     */
     { url: '/example_charts/GemBarChartExample', title: 'BarChart' },
+    { url: '/example_charts/GemBoxPlotExample', title: 'BoxPlot' },
     { url: '/example_charts/GemBulletChartExample', title: 'BulletChart' },
     { url: '/example_charts/GemCandlestickChartExample', title: 'CandlestickChart' },
     { url: '/example_charts/GemGaugeChartExample', title: 'GaugeChart' },

@@ -1,15 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package example_basic;
 
-import def.js.Array;
 import domain.Person;
 import mc.fenix.basic.gemtreeviewtypes.GemTreeviewEntry;
-import umlp.guiutil.UMLPGuiArray;
+import umlp.guiutil.HTMLUtils;
 import umlp.jsweet.extension.annotation.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.function.Consumer;
 
 @Component
 public class GemTreeviewExample extends GemTreeviewExampleTOP {
@@ -27,7 +26,7 @@ public class GemTreeviewExample extends GemTreeviewExampleTOP {
       result.add(entry);
 
       entry.setName(p.getName());
-      entry.setChildrenList(new UMLPGuiArray<>());
+      entry.setChildrenList(new ArrayList<>());
 
       for (Person f : p.getFriendsList()) {
         GemTreeviewEntry friend = new GemTreeviewEntry();
@@ -39,4 +38,8 @@ public class GemTreeviewExample extends GemTreeviewExampleTOP {
     return result;
   }
 
+  @Override
+  public Consumer<GemTreeviewEntry> sayHello() {
+    return (Void) -> HTMLUtils.alert("hello");
+  }
 }

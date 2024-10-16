@@ -1,13 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package example_charts;
 
-import def.js.Array;
-import def.js.Array;
 import domain.Person;
 import mc.fenix.charts.gembarcharttypes.GemBarChartData;
 import mc.fenix.charts.gembarcharttypes.GemBarChartEntry;
-import org.checkerframework.checker.units.qual.A;
-import umlp.guiutil.UMLPGuiArray;
 import umlp.jsweet.extension.annotation.Component;
 
 import java.util.ArrayList;
@@ -51,11 +47,11 @@ public class GemBarChartExample extends GemBarChartExampleTOP {
       }
     }
 
-    return new GemBarChartData(new UMLPGuiArray<>(dataEntries), labels);
+    return new GemBarChartData(dataEntries, labels);
   }
 
   private static void incrementFirstDataValue(List<GemBarChartEntry> dataEntries, int index1, int index2) {
 
-    ((UMLPGuiArray<Integer>) dataEntries.get(index1).getDataList()).set(index2, ((UMLPGuiArray<Integer>) dataEntries.get(index1).getDataList()).get(index2) + 1);
+    dataEntries.get(index1).getDataList().set(index2, dataEntries.get(index1).getDataList().get(index2) + 1);
   }
 }

@@ -1,6 +1,7 @@
 package domain.e2e;
 
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.LoadState;
 import domain.test_infrastructure.AbstractDomainE2ETest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -24,6 +25,7 @@ public class ExampleE2ETest extends AbstractDomainE2ETest {
 
   @Test
   void testOverview(Page page) {
+    waitRdy(page);
     assertTrue(page.getByText("Alice").first().isVisible());
   }
 }
