@@ -1,18 +1,22 @@
 /* (c) https://github.com/MontiCore/monticore */
-package umlp.jsweet.extension.guiAdapters;
+package umlp.jsweet.extension.util;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsweet.transpiler.JSweetContext;
 import org.jsweet.transpiler.OverloadScanner;
+import org.jsweet.transpiler.extension.PrinterAdapter;
+import org.jsweet.transpiler.model.MethodInvocationElement;
+import org.jsweet.transpiler.util.Util;
+import umlp.jsweet.extension.guiAdapters.GUIComponentObserverPatternAdapter;
 
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.Types;
 
-public class GUIAdapterUtils {
+public class GUIAdapterUtils extends UMLPAdapterUtils {
   public static final String COMPONENT_ANNOTATION = "umlp.jsweet.extension.annotation.Component";
 
   public static final String DIRECTIVE_ANNOTATION = "umlp.jsweet.extension.annotation.Directive";
@@ -25,25 +29,29 @@ public class GUIAdapterUtils {
 
   public static final String ERASED_ANNOTATION = "jsweet.lang.Replace";
 
-  public static final String ONINIT_ANNOTATION = "umlp.jsweet.extension.annotation.OnInit";
-
   public static final String SYNCHRONIZED_SUFFIX = "__synchronized";
 
   public static final String SYNCHRONIZED_RESULT_SUFFIX = "__SynchronizedResult";
 
-  public static final String INIT_PROMISE_RESULT_SUFFIX = "__InitedResult";
+  public static final String UPDATE_SUFFIX = "__update";
 
-  public static final String INIT_PROMISE_SUFFIX = "__Inited";
+  public static final String UMLP_COMMON_POINTER = "@umlp/commonj2ts";
 
-  static final String UPDATE_SUFFIX = "__update";
+  public static final String STATEVAR_PREFIX = "_";
 
-  private final Types types;
+  public GUIAdapterUtils(PrinterAdapter adapter, Types types, JSweetContext context, Util util) {
+    super(adapter, types, context, util);
+  }
 
-  private final JSweetContext context;
+  public GUIAdapterUtils(Types types, JSweetContext context, Util util) {
+    super(null, types, context, util);
+  }
 
-  public GUIAdapterUtils(Types types, JSweetContext context) {
-    this.types = types;
-    this.context = context;
+  public static String getMethodNameWithoutGetIs(MethodInvocationElement invocation) {
+    String methodName = invocation.getMethodName().toString();
+    return methodName.startsWith("get") ?
+        StringUtils.uncapitalize(methodName.substring(3)) :
+        StringUtils.uncapitalize(methodName.substring(2));
   }
 
   public boolean isOutput(VariableElement variable) {
@@ -83,6 +91,12 @@ public class GUIAdapterUtils {
             isDirective((TypeElement) element.getEnclosingElement()));
   }
 
+  public boolean isMethodOfDirective(Element element) {
+    return element.getEnclosingElement() instanceof TypeElement &&
+        (isDirective((TypeElement) element.getEnclosingElement()) &&
+            !isHWCofComponent((TypeElement) element.getEnclosingElement()));
+  }
+
   public boolean isSynchronized(ExecutableElement executable) {
     if (context.hasAnnotationType(executable, SYNCRHONIZED_ANNOTATION)) {
       return true;
@@ -105,27 +119,30 @@ public class GUIAdapterUtils {
     return false;
   }
 
-  public String getOverloadMethodName(ExecutableElement method) {
-    if (method.getKind() == ElementKind.CONSTRUCTOR) {
-      return "constructor";
-    }
-    StringBuilder nameBuilder = new StringBuilder(method.getSimpleName().toString());
-    nameBuilder.append("$");
-    for (VariableElement paramElement : method.getParameters()) {
-      nameBuilder.append(
-          types.erasure(paramElement.asType()).toString().replace('.', '_').replace("[]", "_A"));
-      nameBuilder.append("$");
-    }
-    if (!method.getParameters().isEmpty()) {
-      nameBuilder.deleteCharAt(nameBuilder.length() - 1);
-    }
-    return nameBuilder.toString();
+  boolean isDirectiveMethod(ExecutableElement executable, TypeElement classElement) {
+    return isDirective(classElement) &&
+        executable.getKind().toString().equals("METHOD") &&
+        !util.isInterface(adapter.getParentElement(TypeElement.class)) &&
+        !executable.getModifiers().contains(Modifier.ABSTRACT) &&
+        !executable.getModifiers().contains(Modifier.STATIC) &&
+        !executable.getModifiers().contains(Modifier.DEFAULT);
+  }
+
+  public boolean isSynchronizedMethod(ExecutableElement executable,
+      GUIComponentObserverPatternAdapter guiComponentAdapter) {
+    return isSynchronized(executable) &&
+        !guiComponentAdapter.util().isInterface(guiComponentAdapter.getParentElement(TypeElement.class)) &&
+        !executable.getModifiers().contains(Modifier.ABSTRACT) &&
+        !executable.getModifiers().contains(Modifier.STATIC) &&
+        !executable.getModifiers().contains(Modifier.DEFAULT);
   }
 
   public <T> T getAnnotationPropertyValue(TypeElement classElement, String annotationProperty,
       Class<T> propertyClass, T defaultValue) {
     if (isComponent(classElement) || isDirective(classElement)) {
-      String annotation = isDirective(classElement) ? GUIAdapterUtils.DIRECTIVE_ANNOTATION : GUIAdapterUtils.COMPONENT_ANNOTATION;
+      String annotation = isDirective(classElement) ?
+          GUIAdapterUtils.DIRECTIVE_ANNOTATION :
+          GUIAdapterUtils.COMPONENT_ANNOTATION;
       T value = context.getAnnotationValue(classElement, annotation, annotationProperty,
           propertyClass, null);
       if (value != null) {
@@ -140,33 +157,36 @@ public class GUIAdapterUtils {
         return value;
       }
     }
-    //    Log.error("0JSC002 Cannot find " + annotationProperty + " of classElement " + classElement.getSimpleName().toString());
+    //    Log.error("0JSC002 Cannot find " + annotationProperty + " of classElement " + classElement.getSimpleNameOfFQN().toString());
     return defaultValue;
   }
 
-  boolean isDirectiveMethod(ExecutableElement executable, TypeElement classElement,
-      GUIComponentAdapter guiComponentAdapter) {
-    return isDirective(classElement) &&
-        executable.getKind().toString().equals("METHOD") &&
-        !guiComponentAdapter.util().isInterface(guiComponentAdapter.getParentElement(TypeElement.class)) &&
-        !executable.getModifiers().contains(Modifier.ABSTRACT) &&
-        !executable.getModifiers().contains(Modifier.STATIC) &&
-        !executable.getModifiers().contains(Modifier.DEFAULT);
-  }
-
-  boolean isSynchronizedMethod(ExecutableElement executable,
-      GUIComponentAdapter guiComponentAdapter) {
-    return isSynchronized(executable) &&
-        !guiComponentAdapter.util().isInterface(guiComponentAdapter.getParentElement(TypeElement.class)) &&
-        !executable.getModifiers().contains(Modifier.ABSTRACT) &&
-        !executable.getModifiers().contains(Modifier.STATIC) &&
-        !executable.getModifiers().contains(Modifier.DEFAULT);
-  }
-
-  boolean isComponentConstructor(ExecutableElement executable, TypeElement classElement) {
+  public boolean isComponentConstructor(ExecutableElement executable, TypeElement classElement) {
     return
         (isDirective(classElement) || isComponent(classElement) || isHWCofComponent(
             classElement))
             && executable.getKind().toString().equals("CONSTRUCTOR");
+  }
+
+  public boolean isInitMethod(ExecutableElement executable, TypeElement classElement) {
+    return isDirectiveMethod(executable, classElement) &&
+        executable.getSimpleName().toString().equals("init");
+  }
+
+  SunTypesHelper sunTypesHelper = new SunTypesHelper();
+  public standalone.com.sun.tools.javac.tree.JCTree.JCVariableDecl getNewParameter(String variableName) {
+    return sunTypesHelper.getNewParameter(variableName);
+  }
+
+  public boolean isStateVarGetter(MethodInvocationElement invocation,
+      Element parentElement, GUIComponentObserverPatternAdapter guiComponentObserverPatternAdapter) {
+    return invocation.getMethodName().startsWith("get") &&
+        guiComponentObserverPatternAdapter.util().getAllMembers((TypeElement) guiComponentObserverPatternAdapter.types().asElement(parentElement.asType())).stream()
+            .anyMatch(m -> m.getSimpleName().toString().equalsIgnoreCase(
+                STATEVAR_PREFIX + invocation.getMethodName().substring(3))) ||
+        invocation.getMethodName().startsWith("is") &&
+            guiComponentObserverPatternAdapter.util().getAllMembers((TypeElement) guiComponentObserverPatternAdapter.types().asElement(parentElement.asType())).stream()
+                .anyMatch(m -> m.getSimpleName().toString().equalsIgnoreCase(
+                    STATEVAR_PREFIX + invocation.getMethodName().substring(2)));
   }
 }
