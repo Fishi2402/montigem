@@ -27,7 +27,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 import static gradle.UMLPPluginFrontendBase.CREATE_DOMAIN_SYMBOLS_TASK_NAME;
@@ -104,6 +103,7 @@ public abstract class UMLPPluginFrontendWithJSweet implements Plugin<Project> {
       umlpTask.dependsOn(domainSymbolGenTask);
       if (local) {
         umlpTask.dependsOn(project.findProject(":umlp-rte").getTasks().getByName("jar"));
+        umlpTask.dependsOn(project.findProject(":umlp-test-rte").getTasks().getByName("jar"));
         umlpTask.dependsOn(project.findProject(":umlp-rte:umlp-jsweet").getTasks().getByName("jar"));
       }
     });
@@ -152,6 +152,7 @@ public abstract class UMLPPluginFrontendWithJSweet implements Plugin<Project> {
       // Required due to "imports cannot use * wildcards when using modules"
       umlpTask.getExcludeSource().add("glob:**/shellapi/*ShellAPI.java"); // via @Erased
       umlpTask.getExcludeSource().add("glob:**/Abstract*E2ETest*.java"); // via @Erased
+      umlpTask.getExcludeSource().add("glob:**/test_infrastructure/*.java"); // via @Erased
 
       umlpTask.getOutputDir().set(UMLPPluginFrontendBase.getAppDomainPath(project).toFile());
     });
@@ -226,6 +227,7 @@ public abstract class UMLPPluginFrontendWithJSweet implements Plugin<Project> {
       // Required due to "imports cannot use * wildcards when using modules"
       umlpTask.getExcludeSource().add("glob:**/shellapi/*ShellAPI.java"); // via @Erased
       umlpTask.getExcludeSource().add("glob:**/Abstract*E2ETest*.java"); // via @Erased
+      umlpTask.getExcludeSource().add("glob:**/test_infrastructure/*.java"); // via @Erased
 
     });
   }

@@ -27,6 +27,8 @@ public class JSweetConfigGenerator {
     generatorSetup.setTracing(false);
   }
 
+  // forDomain differentiates between the config file generated for the Domain JSweet Task and the
+  //   GUI JSweet task
   public void generate(String domainName, boolean forDomain) {
 
     File jsweetConfig = calcTOPFile("jsweetconfig", "json");
