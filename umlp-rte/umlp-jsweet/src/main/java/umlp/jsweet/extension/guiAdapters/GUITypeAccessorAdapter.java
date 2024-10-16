@@ -52,11 +52,6 @@ public class GUITypeAccessorAdapter extends UMLPAbstractAdapter {
     return super.substituteMethodInvocation(invocation);
   }
 
-  @Override
-  public TypeMirror mapType(TypeMirror type) {
-    return super.mapType(type);
-  }
-
   private static boolean isGuiComponentType(String targetType) {
     String[] parts = targetType.split("\\.");
     if (parts.length >= 4 && (parts[0] + "." + parts[1]).equals("mc.fenix")) {

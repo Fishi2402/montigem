@@ -5,9 +5,12 @@ import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.MethodInvocationElement;
 import standalone.com.sun.source.tree.Tree;
 import umlp.jsweet.extension.util.GUIAdapterUtils;
+import umlp.jsweet.extension.util.RTEPathUtil;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
+import java.util.Optional;
 
 public class DelegateGemListToArrayAdapter extends PrinterAdapter {
   private final GUIAdapterUtils adapterUtils;
@@ -15,6 +18,14 @@ public class DelegateGemListToArrayAdapter extends PrinterAdapter {
   public DelegateGemListToArrayAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);
     this.adapterUtils = new GUIAdapterUtils(this, types(), context, util());
+  }
+
+  @Override
+  public TypeMirror mapType(TypeMirror type) {
+    if(types().erasure(type).toString().equals(RTEPathUtil.getBackendRTECommonPath("GemList"))) {
+      return this.util().getType(java.util.List.class);
+    }
+    return super.mapType(type);
   }
 
   @Override

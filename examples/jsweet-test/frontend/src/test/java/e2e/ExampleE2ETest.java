@@ -30,10 +30,10 @@ public class ExampleE2ETest extends AbstractJsweettestE2ETest {
     navAndWait(page, "/gui/test/Test0"); //go to page we want to test
     assertTrue(page.getByText("Page: Test0").first().isVisible(), "Failed to load Page 0");
     page.getByText("1 (static list)").click();
+    waitRdy(page);
     assertTrue(page.getByText("Page: Test1").first().isVisible(), "Failed to switch and load Page 1");
   }
 
-  @Disabled("Fails with: this.getObserverFactory(...).get(...) is not a function")
   @Test
   void test1StaticList(Page page) {
     navAndWait(page, "/gui/test/Test1"); //go to page we want to test
