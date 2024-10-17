@@ -7,6 +7,7 @@ import {
   Output, SimpleChanges
 } from "@angular/core";
 import {Option} from "./gem-dropdown-input-types/gem-dropdown-input.types";
+import { GemTextInputValidity } from "../gemtextinput";
 
 @Component({
   selector: "gem-dropdown-input",
@@ -40,6 +41,7 @@ export class GemDropdownInput implements OnInit, OnChanges {
   @Input() entry: string;
   @Input() disabled: boolean = false;
   @Input() options: Option[];
+  @Input() validity: GemTextInputValidity;
   @Input() searchEnabled: boolean = false;
 
   @Output() public entryChange: EventEmitter<string> = new EventEmitter<string>();

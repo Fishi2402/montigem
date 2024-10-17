@@ -2,6 +2,7 @@
 package mc.fenix.input;
 
 import mc.fenix.input.GemDropdownInputTypes.Option;
+import mc.fenix.input.GemTextInputTypes.GemTextInputValidity;
 
 /**
   The component is a dropdown field with an optional label. It is used whenever a
@@ -25,6 +26,8 @@ component GemDropdownInput(
   String width = "100%",
   /** Height of the input field. */
   String height = "100%",
+  /** An object representing the validation status of the field. */
+  GemTextInputValidity validity,
   /** Whether a search input to filter the options shows up on top of the list of options */
   boolean searchEnabled = false,
   /** Callback that is executed when a key is released. */

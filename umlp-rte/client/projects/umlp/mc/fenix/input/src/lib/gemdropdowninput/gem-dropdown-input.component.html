@@ -16,6 +16,14 @@
     [id]="getInputId()"
     [disabled]="disabled"
     (click)="toggleDropdown()"
+    [matTooltip]="
+        validity?.status === 'Error' || validity?.status === 'Warning'
+          ? validity.message
+          : null
+      "
+    matTooltipPosition="after"
+    [class.gem-input-error]="validity?.status === 'Error'"
+    [class.gem-input-warning]="validity?.status === 'Warning'"
   >
     <div class="gem-dropdown-text">{{ entry }}</div>
     <mat-icon class="gem-dropdown-icon" [fontIcon]="isContentShown ? 'arrow_drop_up' : 'arrow_drop_down'"></mat-icon>
