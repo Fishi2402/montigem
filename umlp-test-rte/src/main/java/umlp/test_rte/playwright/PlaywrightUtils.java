@@ -11,12 +11,14 @@ public interface PlaywrightUtils {
     page.evaluate("async () => {" +
                   "  if (window.getAllAngularTestabilities) {\n" +
                   "    // @ts-expect-error\n" +
-                  "    await Promise.all(window.getAllAngularTestabilities().map(whenStable));\n" +
-                  "    \n" +
-                  "    // @ts-expect-error\n" +
                   "    async function whenStable(testability) {\n" +
+                  "      console.log('I was here');\n" +
                   "      return new Promise(res => testability.whenStable(res));\n" +
                   "    }\n" +
+                  "    \n" +
+                  "    // @ts-expect-error\n" +
+                  "    await Promise.all(window.getAllAngularTestabilities().map(whenStable));\n" +
+                  "    \n" +
                   "  }\n" +
                   "}");
     //@formatter:on
