@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static loadingtests.e2e.E2EUtil.createDummyData;
+import static loadingtests.e2e.E2EUtil.isLoadedPersonFunction;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static umlp.test_rte.playwright.ComponentKind.GemButton;
 import static umlp.test_rte.playwright.ComponentKind.GemText;
@@ -62,7 +63,7 @@ public class TestUpdate extends AbstractLoadingTestsE2ETest {
 
     // PlayWright cannot handle long values as args
     personGemIds.forEach(id ->
-        assertEquals(Boolean.TRUE,page.evaluate("arg => window.LoadingTestsManager.isLoadedPerson(arg)", id.intValue()))
+        assertEquals(Boolean.TRUE,page.evaluate(isLoadedPersonFunction, id.intValue()))
     );
 
     // Assert that all person names are displayed on page

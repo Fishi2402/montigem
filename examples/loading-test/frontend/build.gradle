@@ -58,7 +58,7 @@ tasks.register('run') {
 }
 
 test {
-  dependsOn npmInstall
+  dependsOn npmInstall, buildApp
   useJUnitPlatform(){
     excludeTags "SlowTest"
   }

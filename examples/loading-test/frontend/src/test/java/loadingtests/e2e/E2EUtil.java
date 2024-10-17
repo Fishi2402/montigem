@@ -10,6 +10,10 @@ import java.util.Set;
 
 public class E2EUtil {
 
+  public static final String isLoadedFoodFunction = "arg => window.LoadingTestsManager.isLoadedFood(arg)";
+  public static final String isLoadedAnimalFunction = "arg => window.LoadingTestsManager.isLoadedAnimal(arg)";
+  public static final String isLoadedPersonFunction = "arg => window.LoadingTestsManager.isLoadedPerson(arg)";
+
   public static void createDummyData(List<Long> personGemIds, List<Long> animalGemIds, List<Long> foodGemIds) {
 
     Food fA = createFood("a");

@@ -1,19 +1,15 @@
 package testUpdateOfBuilder;
 
 import mc.fenix.input.GemDropdownInput;
-import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
 
 import LoadingTests.Food;
 import LoadingTests.Animal;
 
-page AnimalCreate(Animal animal, List<Food> allFood) {
+import testUpdateOfBuilder.AnimalAddFood;
 
-  chooseFoodToAdd@GemDropdownInput(
-    labelText = "Eats",
-    options = null,
-    entry = null
-  );
-  @iterate(Food f : animal.food) {
-    @GemText(value=f.name);
-  }
+page AnimalCreate(Animal animal) {
+
+  @AnimalAddFood(animal=animal);
+  @GemButton(label="Create Animal", leftClick = create(animal));
 }
