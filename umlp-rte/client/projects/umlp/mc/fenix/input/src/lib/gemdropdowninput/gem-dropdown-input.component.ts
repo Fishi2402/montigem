@@ -37,7 +37,7 @@ export class GemDropdownInput implements OnInit, OnChanges {
   }
 
   @Input() labelText: string;
-  @Input() entry: string = "";
+  @Input() entry: string;
   @Input() disabled: boolean = false;
   @Input() options: Option[];
   @Input() searchEnabled: boolean = false;
