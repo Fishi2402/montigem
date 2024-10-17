@@ -26,11 +26,12 @@ public class GUIComponentBasicsAdapter extends PrinterAdapter {
     if (adapterUtils.isDirective(type)) {
       println().printIndent().print("protected router: Router;").println().println();
     }
-
-    String cdName = adapterUtils.getAnnotationPropertyValue(type, "cdName", String.class, "");
-    String managerName = cdName + "Manager";
-    String pathToManager = "@src/" + StringUtils.lowerCase(cdName) + "/" + managerName;
-    adapterUtils.importFromWithModule(managerName, pathToManager);
+    if (adapterUtils.isDirective(type) || adapterUtils.isComponent(type) || adapterUtils.isHWCofComponent(type)) {
+      String cdName = adapterUtils.getAnnotationPropertyValue(type, "cdName", String.class, "");
+      String managerName = cdName + "Manager";
+      String pathToManager = "@src/" + StringUtils.lowerCase(cdName) + "/" + managerName;
+      adapterUtils.importFromWithModule(managerName, pathToManager);
+    }
 
     super.beforeTypeBody(type);
   }

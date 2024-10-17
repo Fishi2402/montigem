@@ -1,14 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.jsweet.extension.domainAdapters;
 
+import org.jsweet.transpiler.ModuleImportDescriptor;
 import org.jsweet.transpiler.extension.PrinterAdapter;
+import org.jsweet.transpiler.model.CompilationUnitElement;
 import org.jsweet.transpiler.model.ExtendedElement;
+import org.jsweet.transpiler.model.ImportElement;
 import org.jsweet.transpiler.model.MethodInvocationElement;
 import org.jsweet.transpiler.model.NewClassElement;
 import org.jsweet.transpiler.model.TypeCastElement;
 import umlp.jsweet.extension.UMLPAbstractAdapter;
 import umlp.jsweet.extension.util.UMLPAdapterUtils;
 
+import javax.lang.model.element.PackageElement;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import java.util.function.Function;
 
@@ -218,6 +223,7 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
       case "mc.fenix.input.GemTextInputValidity":
       case "input.src.lib.gemtextinput.GemTextInputTypes.GemTextInputValidity":
       case "mc.fenix.input.GemTextInputTypes.GemTextInputValidity":
+      case "mc.fenix.input.gemtextinputtypes.GemTextInputValidity":
         if (newClass.getArguments().size() == 0) {
           print("{}");
           return true;
@@ -232,6 +238,37 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
     }
 
     return super.substituteNewClass(newClass);
+  }
+
+  @Override
+  public String needsImport(ImportElement importElement, String qualifiedName) {
+    switch (qualifiedName) {
+      case "input.GemTextInputValidity":
+      case "mc.fenix.input.GemTextInputValidity":
+      case "input.src.lib.gemtextinput.GemTextInputTypes.GemTextInputValidity":
+      case "mc.fenix.input.GemTextInputTypes.GemTextInputValidity":
+      case "mc.fenix.input.gemtextinputtypes.GemTextInputValidity":
+        return getRootRelativeName(importElement.getImportedType());
+    }
+    return super.needsImport(importElement, qualifiedName);
+  }
+
+  @Override
+  public ModuleImportDescriptor getModuleImportDescriptor(
+      CompilationUnitElement currentCompilationUnit, String importedName,
+      TypeElement importedClass) {
+    String fqn = importedClass.getQualifiedName().toString();
+    switch (fqn) {
+      case "input.GemTextInputValidity":
+      case "mc.fenix.input.GemTextInputValidity":
+      case "input.src.lib.gemtextinput.GemTextInputTypes.GemTextInputValidity":
+      case "mc.fenix.input.GemTextInputTypes.GemTextInputValidity":
+      case "mc.fenix.input.gemtextinputtypes.GemTextInputValidity":
+        return new ModuleImportDescriptor(false, (PackageElement) importedClass.getEnclosingElement(),
+            "GemTextInputValidity", "@umlp/input", importedClass);
+
+    }
+    return super.getModuleImportDescriptor(currentCompilationUnit, importedName, importedClass);
   }
 
   @Override
