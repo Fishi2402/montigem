@@ -1,5 +1,4 @@
 import {
-  ChangeDetectorRef,
   Component, ElementRef,
   EventEmitter,
   HostBinding, HostListener,
@@ -7,7 +6,6 @@ import {
   OnInit,
   Output, SimpleChanges
 } from "@angular/core";
-import {GemTextInputValidity} from "../gemtextinput";
 import {Option} from "./gem-dropdown-input-types/gem-dropdown-input.types";
 
 @Component({
@@ -42,7 +40,6 @@ export class GemDropdownInput implements OnInit, OnChanges {
   @Input() entry: string = "";
   @Input() disabled: boolean = false;
   @Input() options: Option[];
-  @Input() validity: GemTextInputValidity;
   @Input() searchEnabled: boolean = false;
 
   @Output() public entryChange: EventEmitter<string> = new EventEmitter<string>();

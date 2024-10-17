@@ -10,27 +10,16 @@
   (keyup)="onKeyRelease($event)"
 >
   <label class="gem-label-text-input" [for]="getInputId()">{{ labelText }}</label>
-  <div class="gem-dropdown-input-container" (click)="toggleDropdown()">
-    <input
-      class="gem-dropdown-input gem-text-input"
-      tabindex="0"
-      [id]="getInputId()"
-      type="button"
-      [(ngModel)]="entry"
-      [disabled]="disabled"
-      [matTooltip]="
-        validity?.status === 'Error' || validity?.status === 'Warning'
-          ? validity.message
-          : null
-      "
-      matTooltipPosition="after"
-      [class.gem-input-error]="validity?.status === 'Error'"
-      [class.gem-input-warning]="validity?.status === 'Warning'"
-    />
-    <button class="gem-dropdown-button" [disabled]="disabled" tabindex="-1">
-      <mat-icon [fontIcon]="isContentShown ? 'arrow_drop_up' : 'arrow_drop_down'"></mat-icon>
-    </button>
-  </div>
+  <button
+    class="gem-dropdown-input"
+    tabindex="0"
+    [id]="getInputId()"
+    [disabled]="disabled"
+    (click)="toggleDropdown()"
+  >
+    <div class="gem-dropdown-text">{{ entry }}</div>
+    <mat-icon class="gem-dropdown-icon" [fontIcon]="isContentShown ? 'arrow_drop_up' : 'arrow_drop_down'"></mat-icon>
+  </button>
   <div *ngIf="isContentShown" class="gem-dropdown-content">
     <div *ngIf="searchEnabled" class="gem-search-input-container">
       <div class="gem-search-icon">
