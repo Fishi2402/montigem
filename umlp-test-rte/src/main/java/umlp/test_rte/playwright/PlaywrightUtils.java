@@ -65,7 +65,7 @@ public interface PlaywrightUtils {
         "async () => { \n" +
             "    const startTime = new Date().getTime(); \n" +
             "    while (true) { \n" +
-            "        if (window.allVarsInited && window.allVarsInited2[\"" + pageComponentName + "\"]) { \n" +
+            "        if (window.allVarsInited2 && window.allVarsInited2[\"" + pageComponentName + "\"]) { \n" +
             "            console.log(\"all variables are initialized\"); \n" +
             "            return true; \n" +
             "        } \n" +
