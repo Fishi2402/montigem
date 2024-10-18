@@ -5,6 +5,10 @@ plugins {
   id "de.rwth.se.umlp-tool-frontend"
 }
 
+if (project.hasProperty('j2ts_vislib') && j2ts_vislib == true) {
+  project.ext.j2ts = 'desiredValue'
+}
+
 node {
   nodeProjectDir = file("${buildDir}/frontendGen")
 }
@@ -15,7 +19,9 @@ dependencies {
   testImplementation project(':umlp-test-rte')
 
 // JSweet
-  domainSources project(":examples:vis-lib:backend")
+  if (project.hasProperty('j2ts') && j2ts == true) {
+    domainSources project(":examples:vis-lib:backend")
+  }
 }
 
 genGUI {
@@ -28,21 +34,29 @@ genGUI {
   /**/
 }
 
-sourceSets {
-  main {
-    java {
-      // Remove 'src/main/java' from the sources
-//      srcDirs = []
-    }
+if (!project.hasProperty('j2ts') || j2ts != true) {
+  apply plugin: 'java'
+  tasks.withType(JavaCompile) {
+    enabled = false
+  }
+  sourceSets.main.java.srcDirs = []
+}
+
+if (project.hasProperty('j2ts') && j2ts == true) {
+  translateJava2TSDomain {
+    verbose = true
+  }
+
+  translateJava2TSGUI {
+    verbose = true
   }
 }
 
-translateJava2TSDomain {
-  verbose = true
-}
-
-translateJava2TSGUI {
-  verbose = true
+task copyAppJsweet(type: Copy) {
+  onlyIf { project.hasProperty('j2ts') && project.j2ts.toString().toBoolean() }
+  dependsOn()
+  from 'config/src/appjsweet'
+  into 'build/appjsweet'
 }
 // End JSweet
 
@@ -51,7 +65,8 @@ npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 
 def prebuildTasks = [
     npmInstall,
-    generate
+    generate,
+    copyAppJsweet
 ]
 
 tasks.register('testApp', NpxTask) {

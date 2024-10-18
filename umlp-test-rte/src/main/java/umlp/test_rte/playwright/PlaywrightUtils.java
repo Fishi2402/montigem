@@ -11,14 +11,12 @@ public interface PlaywrightUtils {
     page.evaluate("async () => {" +
                   "  if (window.getAllAngularTestabilities) {\n" +
                   "    // @ts-expect-error\n" +
-                  "    async function whenStable(testability) {\n" +
-                  "      console.log('I was here');\n" +
-                  "      return new Promise(res => testability.whenStable(res));\n" +
-                  "    }\n" +
-                  "    \n" +
-                  "    // @ts-expect-error\n" +
                   "    await Promise.all(window.getAllAngularTestabilities().map(whenStable));\n" +
                   "    \n" +
+                  "    // @ts-expect-error\n" +
+                  "    async function whenStable(testability) {\n" +
+                  "      return new Promise(res => testability.whenStable(res));\n" +
+                  "    }\n" +
                   "  }\n" +
                   "}");
     //@formatter:on
@@ -58,6 +56,28 @@ public interface PlaywrightUtils {
         , null, options);
 
     System.out.println("Waiting for websocket took " + (System.currentTimeMillis() - start) + "ms");
+  }
+
+  default boolean waitInit(Page page, String pageName) {
+    String pageComponentName = pageName.endsWith("Component") ? pageName : pageName + "Component";
+    //@formatter:off
+    String command =
+        "async () => { \n" +
+            "    const startTime = new Date().getTime(); \n" +
+            "    while (true) { \n" +
+            "        if (window.allVarsInited && window.allVarsInited2[\"" + pageComponentName + "\"]) { \n" +
+            "            console.log(\"all variables are initialized\"); \n" +
+            "            return true; \n" +
+            "        } \n" +
+            "        if (new Date().getTime() - startTime > 10000) { \n" +
+            "            console.log('Timed out waiting for allVarsInited'); \n"
+            + "          return false; \n" +
+            "        } \n" +
+            "        await new Promise(resolve => setTimeout(resolve, 100)); \n" +
+            "    } \n" +
+            "} \n";
+    return Boolean.parseBoolean(page.evaluate(command).toString());
+    //@formatter:on
   }
 
   /**

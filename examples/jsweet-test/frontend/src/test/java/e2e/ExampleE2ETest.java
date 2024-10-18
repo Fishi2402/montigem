@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ExampleE2ETest extends AbstractJsweettestE2ETest {
@@ -31,7 +32,9 @@ public class ExampleE2ETest extends AbstractJsweettestE2ETest {
     assertTrue(page.getByText("Page: Test0").first().isVisible(), "Failed to load Page 0");
     page.getByText("1 (static list)").click();
     waitRdy(page);
-    assertTrue(page.getByText("Page: Test1").first().isVisible(), "Failed to switch and load Page 1");
+    assertTrue(waitInit(page, "Test1"), "Page Test 1 did not init");
+    assertTrue(page.getByText("Page: Test1").first().isVisible(),
+        "Failed to switch and load Page 1");
   }
 
   @Test

@@ -473,7 +473,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
           String annotationType, String propertyName,
           Class<T> propertyClass, T defaultValue) {
         if (isInit(element, annotationType)) {
-          return propertyClass.cast("{{body}}\n{{baseIndent}}this.allVarsInited = true;");
+          return propertyClass.cast("{{body}}{{baseIndent}}this.allVarsInited = true;");
         } else {
           return null;
         }
