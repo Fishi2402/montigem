@@ -2,21 +2,39 @@
 package example_input;
 
 import mc.fenix.input.GemRadioInput;
+import mc.fenix.basic.GemText;
 
 page GemRadioInputExample() {
+  @GemText(value="Group 1");
   @GemRadioInput(
     id = "genderMale",
     labelText = "Male",
-    value = "male"
+    value = "male",
+    group = "first"
   );
   @GemRadioInput(
     id = "genderFemale",
     labelText = "Female",
-    value = "female"
+    value = "female",
+    group = "first"
   );
   @GemRadioInput(
     id = "genderOther",
     labelText = "Other",
-    value = "other"
+    value = "other",
+    group = "first"
+  );
+  @GemText(value="Group 2");
+  @GemRadioInput(
+    id = "a",
+    labelText = "A",
+    value = "valueA",
+    group = "second"
+  );
+  @GemRadioInput(
+    id = "b",
+    labelText = "B",
+    value = "valueB",
+    group = "second"
   );
 }
