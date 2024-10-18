@@ -3,6 +3,7 @@ package umlp.test_rte.playwright;
 import com.microsoft.playwright.Dialog;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.LoadState;
 
 public interface PlaywrightUtils {
   default void waitForAngular(Page page) {
@@ -57,6 +58,28 @@ public interface PlaywrightUtils {
     System.out.println("Waiting for websocket took " + (System.currentTimeMillis() - start) + "ms");
   }
 
+  default boolean waitInit(Page page, String pageName) {
+    String pageComponentName = pageName.endsWith("Component") ? pageName : pageName + "Component";
+    //@formatter:off
+    String command =
+        "async () => { \n" +
+            "    const startTime = new Date().getTime(); \n" +
+            "    while (true) { \n" +
+            "        if (window.allVarsInited2 && window.allVarsInited2[\"" + pageComponentName + "\"]) { \n" +
+            "            console.log(\"all variables are initialized\"); \n" +
+            "            return true; \n" +
+            "        } \n" +
+            "        if (new Date().getTime() - startTime > 10000) { \n" +
+            "            console.log('Timed out waiting for allVarsInited'); \n"
+            + "          return false; \n" +
+            "        } \n" +
+            "        await new Promise(resolve => setTimeout(resolve, 100)); \n" +
+            "    } \n" +
+            "} \n";
+    return Boolean.parseBoolean(page.evaluate(command).toString());
+    //@formatter:on
+  }
+
   /**
    * Waits until the page is fully loaded. Has the same requirements as {@link #waitForWebsocket(Page)}
    *
@@ -65,6 +88,7 @@ public interface PlaywrightUtils {
   default void waitRdy(Page page) {
     waitForAngular(page);
     waitForWebsocket(page);
+    page.waitForLoadState(LoadState.NETWORKIDLE);
   }
 
   /**

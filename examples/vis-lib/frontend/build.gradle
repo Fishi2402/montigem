@@ -5,6 +5,10 @@ plugins {
   id "de.rwth.se.umlp-tool-frontend"
 }
 
+if (project.hasProperty('j2ts_vislib') && j2ts_vislib == true) {
+  project.ext.j2ts = 'desiredValue'
+}
+
 node {
   nodeProjectDir = file("${buildDir}/frontendGen")
 }
@@ -13,11 +17,16 @@ dependencies {
   implementation project(":examples:vis-lib:backend")
   implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version
   testImplementation project(':umlp-test-rte')
+
+// JSweet
+  if (project.hasProperty('j2ts') && j2ts == true) {
+    domainSources project(":examples:vis-lib:backend")
+  }
 }
 
 genGUI {
   domainModels = ["Domain"]
-  guiCreateModels = ["person.CreatePerson", "person.CreatePersonWithFriends","person.CreateClubWithMembers"]
+  guiCreateModels = ["person.CreatePerson", "person.CreatePersonWithFriends", "person.CreateClubWithMembers"]
 
   /*
   debug = true
@@ -25,24 +34,39 @@ genGUI {
   /**/
 }
 
-//translateJava2TSDomain {
-//  verbose = true
-//}
-//
-//translateJava2TSGUI {
-//  verbose = true
-//}
-//
-//genJava2TSConfig {
-//  domainModel = 'Domain'
-//}
+if (!project.hasProperty('j2ts') || j2ts != true) {
+  apply plugin: 'java'
+  tasks.withType(JavaCompile) {
+    enabled = false
+  }
+  sourceSets.main.java.srcDirs = []
+}
+
+if (project.hasProperty('j2ts') && j2ts == true) {
+  translateJava2TSDomain {
+    verbose = true
+  }
+
+  translateJava2TSGUI {
+    verbose = true
+  }
+}
+
+task copyAppJsweet(type: Copy) {
+  onlyIf { project.hasProperty('j2ts') && project.j2ts.toString().toBoolean() }
+  dependsOn()
+  from 'config/src/appjsweet'
+  into 'build/appjsweet'
+}
+// End JSweet
 
 nodeSetup.dependsOn(frontendSetup)
 npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 
 def prebuildTasks = [
     npmInstall,
-    generate
+    generate,
+    copyAppJsweet
 ]
 
 tasks.register('testApp', NpxTask) {
@@ -70,7 +94,7 @@ tasks.register('run') {
 
 test {
   dependsOn npmInstall
-  useJUnitPlatform(){
+  useJUnitPlatform() {
     excludeTags "SlowTest"
   }
 }
@@ -86,3 +110,8 @@ tasks.register("slowtest", Test) {
   dependsOn npmInstall
 }
 
+
+task runAppNoBuild(type: NpxTask) {
+  command = "ng"
+  args = ["serve"]
+}

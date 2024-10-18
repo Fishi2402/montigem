@@ -15,6 +15,7 @@ import org.jsweet.transpiler.OverloadScanner;
 import org.jsweet.transpiler.model.MethodInvocationElement;
 import org.jsweet.transpiler.util.AbstractTreeScanner;
 import org.jsweet.transpiler.util.Util;
+import umlp.jsweet.extension.util.GUIAdapterUtils;
 import umlp.jsweet.extension.util.UMLPAdapterUtils;
 
 import javax.lang.model.element.Element;
@@ -34,11 +35,14 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
 
   private boolean stillWorking = false;
 
+  private GUIAdapterUtils adapterUtils;
+
   /**
    * Creates a new global scanner.
    */
   public UMLPAsyncAwaitPropagationScanner(JSweetContext context) {
     super(null, context, null);
+    this.adapterUtils = new GUIAdapterUtils(types(), context, util());
   }
 
   @Override
@@ -53,11 +57,32 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
         context.addAwaitInvocation(invocation);
         addAsyncKeywordToMethod();
       }
+
+      else if ((adapterUtils.isComponent(Util.getElement(getParent(ClassTree.class)))
+          || adapterUtils.isDirective(Util.getElement(getParent(ClassTree.class)))) &&
+          isInvocatedGemListAccessor(invocation, trees)) {
+        context.addAwaitInvocation(invocation);
+        addAsyncKeywordToMethod();
+      }
+
+      else if (context.hasAnnotationType(method, JSweetConfig.ANNOTATION_ASYNC)
+          && "void".equals(method.getReturnType().toString())) {
+        addAsyncKeywordToVoid(invocation);
+      }
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     return super.visitMethodInvocation(invocation, trees);
+  }
+
+  private boolean isInvocatedGemListAccessor(MethodInvocationTree invocation, Trees trees) {
+    Element invocatedType = types().asElement(Util.getType(invocation));
+    if (invocatedType != null && invocatedType instanceof TypeElement &&
+        adapterUtils.isSubTypeOf((TypeElement) invocatedType, "java.util.List")) {
+      return true;
+    }
+    return false;
   }
 
   @Override
@@ -171,6 +196,7 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
             return true;
         }
       case "umlp.backendrte.common.AggregatedCommandDeSer":
+      case "umlp.backendrte.common.BaseClassObjectMapper":
       case "umlp.backendrte.common.BooleanDeSer":
       case "umlp.backendrte.common.ByteDeSer":
       case "umlp.backendrte.common.CharacterDeSer":
@@ -242,7 +268,7 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
     Element element = Util.getElement(getParent());
     if (element instanceof TypeElement) {
       TypeElement parentElement = (TypeElement) element;
-      for (String superType : UMLPAdapterUtils.listSuperTypes(parentElement, util(), types())) {
+      for (String superType : adapterUtils.listSuperTypes(parentElement)) {
         if (isRTEAsyncMethod(superType, node.getName().toString())) {
           addAsyncKeywordToMethod(node);
           break;
@@ -290,6 +316,46 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
         }
         stillWorking = true;
       }
+    }
+  }
+
+  private void addAsyncKeywordToVoid(MethodInvocationTree invocation) {
+    MethodTree parent = getParent(MethodTree.class);
+    if (parent != null) {
+      ExecutableElement parentMethodElement = Util.getElement(parent);
+      if (!context.hasAnnotationType(parentMethodElement, JSweetConfig.ANNOTATION_ASYNC)) {
+        context.addExtraAnnotationType(parentMethodElement, JSweetConfig.ANNOTATION_ASYNC);
+
+        if (context.isInvalidOverload(parentMethodElement)) {
+          OverloadScanner.Overload overload = context.getOverload(
+              (TypeElement) parentMethodElement.getEnclosingElement(), parentMethodElement);
+
+          for (OverloadScanner.OverloadMethodEntry overloadEntry : overload.getEntries()) {
+            context.addExtraAnnotationType(overloadEntry.methodElement,
+                JSweetConfig.ANNOTATION_ASYNC);
+          }
+        }
+        List<ExecutableElement> candidates = new ArrayList<>();
+        util().collectMatchingMethodDeclarationsInType(
+            (TypeElement) parentMethodElement.getEnclosingElement(), parent.getName().toString(),
+            (ExecutableType) parentMethodElement.asType(), true, candidates);
+        for (ExecutableElement candidate : candidates) {
+          context.addExtraAnnotationType(candidate, JSweetConfig.ANNOTATION_ASYNC);
+        }
+
+        stillWorking = true;
+      }
+    }
+    LambdaExpressionTree lambdaParent = getParent(LambdaExpressionTree.class);
+    if (lambdaParent != null) {
+      context.addAsyncLambda(lambdaParent);
+    }
+    Tree directParent = getParent();
+    if (!(context.isAwaitInvocation(invocation) || (directParent instanceof MethodInvocationTree
+        && (directParent.toString().equals("await") || directParent.toString().endsWith(".await"))))) {
+
+      context.addAwaitInvocation(invocation);
+      stillWorking = true;
     }
   }
 

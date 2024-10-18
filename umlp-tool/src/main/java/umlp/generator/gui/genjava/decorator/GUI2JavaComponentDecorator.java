@@ -153,6 +153,7 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     List<String> iterItemArgs = getArgs(iterItemSymbols);
 
     if (namedArg.getGUIArgValue().isPresentGUIList()) {
+      getCD4C().addImport(decoratedClass, "java.util.ArrayList");
       // TODO AGe: how to do that better?
       List<ASTGUIArgValue> valueList = namedArg.getGUIArgValue().getGUIList().getGUIArgValueList();
 

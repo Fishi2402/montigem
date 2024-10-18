@@ -21,11 +21,6 @@ import { RouterModule } from "@angular/router";
   </#if>
 </#list>
 
-<#if glex.getGlobalVar("UMLPGeneratorConfig").useJsweet>
-  import { UmlpToAsyncPipe } from "@umlp/commonj2ts";
-</#if>
-
-
 export const config = {
 imports: [    CommonModule,
 <#list importedComponents as imp>
@@ -42,10 +37,6 @@ imports: [    CommonModule,
     ${genHelper.getModuleClassName(simpleName)},
   </#if>
 </#list>
-
-<#if glex.getGlobalVar("UMLPGeneratorConfig").useJsweet>
-  UmlpToAsyncPipe,
-</#if>
 ],
 
 selector:'${selector}',

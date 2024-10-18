@@ -7,11 +7,11 @@ import mc.fenix.table.TableTypes.TableColumn;
 import Domain.Person;
 
 page GemTableExample(List<Person> persons) {
-  @GemTable(
-    rows = persons,
-    columns = null/*[
-      TableColumn("_name", "Name"),
-      TableColumn("_birthday", "Birthday")
-    ]*/
-  );
+  //@GemTable(
+  //  rows = persons,
+  //  columns = null/*[
+  //    TableColumn("_name", "Name"),
+  //    TableColumn("_birthday", "Birthday")
+  //  ]*/
+  //);
 }

@@ -25,6 +25,7 @@ public class UserLogin extends UserLoginTOP {
     if (this.getLoginUser() == null) {
       this.setLoginUser(new User());
     }
+    super.init();
   }
 
   protected String error = "";

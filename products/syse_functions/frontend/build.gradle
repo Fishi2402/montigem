@@ -48,10 +48,6 @@ translateJava2TSGUI {
   verbose = true
 }
 
-genJava2TSConfig {
-  domainModel = 'FunctionStructure4Fenix'
-}
-
 nodeSetup.dependsOn(frontendSetup)
 npmInstall.dependsOn(nodeSetup, ':umlp-rte:client:npmInstall')
 

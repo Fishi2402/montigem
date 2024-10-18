@@ -42,10 +42,6 @@ translateJava2TSGUI {
   verbose = false
 }
 
-genJava2TSConfig {
-  domainModel = 'Dtcockpit'
-}
-
 nodeSetup.dependsOn(frontendSetup)
 npmInstall.dependsOn(nodeSetup, ':umlp-rte:client:npmInstall')
 

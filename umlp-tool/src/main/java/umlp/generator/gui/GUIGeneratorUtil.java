@@ -173,6 +173,16 @@ public class GUIGeneratorUtil {
     return printer.prettyprint(node);
   }
 
+  // At some places there must be generated the __synchronized suffix for JSweet generated code
+  public final String print(ASTNode node, boolean syncedOpt) {
+    printer.setPrintComments(false);
+    String res = printer.prettyprint(node);
+    if (syncedOpt && UMLPGeneratorConfig.getInstance().isUseJsweet()) {
+      res += SYNCHRONIZED_SUFFIX;
+    }
+    return res;
+  }
+
   // TODO AGe: unreliable
   public final boolean isTop(String name) {
     return name.endsWith(TopDecorator.TOP_SUFFIX);
@@ -505,10 +515,10 @@ public class GUIGeneratorUtil {
     return "get"
         + StringTransformations.capitalize(componentId)
         + StringTransformations.capitalize(namedArg.getName())
-        + (UMLPGeneratorConfig.getInstance().isGenerateTypescript() || isList(namedArg)
+        + ((UMLPGeneratorConfig.getInstance().isGenerateTypescript() || isList(namedArg))
+         && !UMLPGeneratorConfig.getInstance().isUseJsweet()
         ? ""
-        : SYNCHRONIZED_SUFFIX // in case the actual method does not have to be async,
-        // the synchronized method might just call the original method
+        : SYNCHRONIZED_SUFFIX // JSweet method to synchronize async callbacks
     );
   }
 
@@ -582,12 +592,13 @@ public class GUIGeneratorUtil {
 
           // Instead of the overloaded&async getX(int?) we call the _internal_getXGemList() method
 
-          expressionWithNullChecks = m.replaceAll("$1._internal_$2GemList()");
+//          expressionWithNullChecks = m.replaceAll("$1._internal_$2GemList()");
 
         }
         // ? => the backing gemList might be undefined until loaded
         // .subject => access the BehaviorSubject of the GemList
-        expressionWithNullChecks = "( " + expressionWithNullChecks + "?.subject | async )";
+//        expressionWithNullChecks = "( " + expressionWithNullChecks + "?.subject | async )";
+        expressionWithNullChecks = "toArray(" + expressionWithNullChecks + ")";
 
         //Alternative
         // expressionWithNullChecks = "((" + expressionWithNullChecks + " | umlpToAsync | async ) | async)";

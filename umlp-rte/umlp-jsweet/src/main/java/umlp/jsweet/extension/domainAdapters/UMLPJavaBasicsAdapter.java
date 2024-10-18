@@ -1,7 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.jsweet.extension.domainAdapters;
 
+import org.jsweet.transpiler.ModuleImportDescriptor;
 import org.jsweet.transpiler.extension.PrinterAdapter;
+import org.jsweet.transpiler.model.ExtendedElement;
 import org.jsweet.transpiler.model.MethodInvocationElement;
 import umlp.jsweet.extension.UMLPAbstractAdapter;
 
@@ -100,6 +102,26 @@ public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
       case "now":
         print("new Date()");
         return true;
+      case "parse":
+        print("Conversion.string2Date(").printArgList(invocation.getArguments()).print(")");
+        getPrinter().useModule(
+            new ModuleImportDescriptor("Conversion", "@umlp/common"));
+        return true;
+      case "isAfter":
+        print(invocation.getTargetExpression()).print(" > ").printArgList(invocation.getArguments());
+        return true;
+      case "isBefore":
+        print(invocation.getTargetExpression()).print(" < ").printArgList(invocation.getArguments());
+        return true;
+      case "getYear":
+        print(invocation.getTargetExpression()).print(".getFullYear(").printArgList(invocation.getArguments()).print(")");
+        return true;
+      case "getMonthValue":
+        print(invocation.getTargetExpression()).print(".getMonth(").printArgList(invocation.getArguments()).print(")");
+        return true;
+      case "getDayOfMonth":
+        print(invocation.getTargetExpression()).print(".getDate(").printArgList(invocation.getArguments()).print(")");
+        return true;
     }
     return false;
   }
@@ -116,10 +138,26 @@ public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
             .print(")");
         return true;
       case "equals":
-        this.print("/* equals */")
-            .print("((a, b) => { return a === b; }) (")
-            .printArgList(invocation.getArguments())
-            .print(")");
+        boolean isDate = false;
+        for (ExtendedElement argument : invocation.getArguments()) {
+          switch (argument.getType().toString()) {
+            case "java.time.LocalDateTime":
+            case "java.time.LocalDate":
+            case "java.util.Date":
+              isDate = true;
+          }
+        }
+        if (isDate) {
+          this.print("/* equals */")
+              .print("((a, b) => { return a.getTime() === b.getTime(); }) (")
+              .printArgList(invocation.getArguments())
+              .print(")");
+        } else {
+          this.print("/* equals */")
+              .print("((a, b) => { return a === b; }) (")
+              .printArgList(invocation.getArguments())
+              .print(")");
+        }
         return true;
     }
     return false;
@@ -132,6 +170,12 @@ public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
           this.print("StringHelper.format(").printArgList(invocation.getArguments()).print(")");
           return true;
         }
+      case "isBlank": {
+        print("(");
+        print(invocation.getTargetExpression());
+        print(".trim().length === 0)");
+        return true;
+      }
     }
     return false;
   }

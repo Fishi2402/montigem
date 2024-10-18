@@ -43,4 +43,4 @@ testem.log
 .DS_Store
 Thumbs.db
 /jsweet_extension/umlp/jsweet/extension/domainAdapters/DTCockpitImportAdapter.class
-/jsweet/jsweet_extension/umlp/jsweet/extension/domainAdapters/DTCockpitImportAdapter.class
+/jsweet/gui/jsweet_extension/umlp/jsweet/extension/domainAdapters/DTCockpitImportAdapter.class

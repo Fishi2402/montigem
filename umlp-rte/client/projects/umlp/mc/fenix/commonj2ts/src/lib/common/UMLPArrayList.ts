@@ -1,6 +1,8 @@
 import { NgIterable } from "@angular/core";
 import {GemListBehaviorSubject, IUMLPList} from "../common/IUMLPList";
 import {UMLPArrayListIterator} from "../common/UMLPArrayListIterator";
+import {GemList} from "./GemList";
+import {Gem} from "./Gem";
 
 export class UMLPArrayList<E> implements IUMLPList<E> {
 
@@ -17,6 +19,16 @@ export class UMLPArrayList<E> implements IUMLPList<E> {
         // elemenets.toArray().then(numbers => this.array = numbers);
       }
     }
+  }
+
+  public transformInternalArrays(): UMLPArrayList<any> {
+    if (this.array.length == 0) {
+      return this;
+    }
+    if (this.array[0] instanceof Array) {
+      return new UMLPArrayList<any>(this.array.map((arr: E) => new UMLPArrayList(<Array<any>>arr)));
+    }
+    return this;
   }
 
   add(indexOrElement: number | E, elem?: E): Promise<boolean> {
@@ -141,6 +153,24 @@ export class UMLPArrayList<E> implements IUMLPList<E> {
     return this.array;
   }
 
+  toArrayDeep(startIndex?: number, endIndex?: number): any {
+    if (this.array.length == 0) {
+      return this.toArray(startIndex, endIndex);
+    } else if (this.array[0] instanceof GemList || this.array[0] instanceof UMLPArrayList) {
+      return this.toArray(startIndex, endIndex).map(
+        (v: E) => (v as unknown as IUMLPList<any>).toArrayDeep());
+    } else {
+      return this.toArray(startIndex, endIndex);
+    }
+  }
+
+  async toArraySync(startIndex?: number, endIndex?: number): Promise<Array<E>> {
+    return Promise.resolve(this.toArray(startIndex, endIndex));
+  }
+
+  async toArrayDeepSync(startIndex?: number, endIndex?: number): Promise<Array<any>> {
+    return Promise.resolve(this.toArrayDeep(startIndex, endIndex));
+  }
 
   [Symbol.asyncIterator](): AsyncIterator<E> {
     return new UMLPArrayListIterator(this.array);

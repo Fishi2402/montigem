@@ -58,7 +58,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
         if (element.getLoadingState() == LoadingState.LOADED) {
           this.asArray!.push(element.get());
         }
-      })
+      });
 
       this.updateIds();
     })
@@ -475,6 +475,32 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
       });
     }
     return this.asArray;
+  }
+
+  async toArraySync(startIndex?: number, endIndex?: number): Promise<Array<E>> {
+    // TODO Beachtung von startIndex und endIndex
+    // if (startIndex !== undefined && startIndex !== unll && endIndex !== undefined && endIndex !== null) {
+    //   if (asArrayMap[{startIndex, endIndex} == null]) {
+    //
+    //   }
+    //   return asArrayMap[{startIndex, endIndex}];
+    // }
+    if (this.asArray == null) {
+      this.asArray = [];
+      await this.loadObjects(new UMLPArrayList(this.ids));
+      for await (let gemListElement of this) {
+        this.asArray.push(gemListElement);
+      }
+    }
+    return this.asArray;
+  }
+
+  toArrayDeep(startIndex?: number, endIndex?: number): Array<E> {
+    return this.toArray(startIndex, endIndex);
+  }
+
+  async toArrayDeepSync(startIndex?: number, endIndex?: number): Promise<Array<any>> {
+    return this.toArraySync(startIndex, endIndex);
   }
 
   async forEach(consumer: (element: E) => void): Promise<void> {

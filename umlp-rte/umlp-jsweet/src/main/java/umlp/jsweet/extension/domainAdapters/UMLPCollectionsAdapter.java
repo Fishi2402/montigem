@@ -28,9 +28,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Function;
 
 public class UMLPCollectionsAdapter extends UMLPAbstractAdapter {
   public static final String CustomUMLPListInterfaceName = "IUMLPList";
@@ -40,6 +42,16 @@ public class UMLPCollectionsAdapter extends UMLPAbstractAdapter {
   public UMLPCollectionsAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);
     super.addTypeMappings(getStaticLibrary());
+    getTypeMirrorMappings().add(0, computeUMLPGuiArrayTypeMapping());
+  }
+
+  public Function<TypeMirror, String> computeUMLPGuiArrayTypeMapping() {
+    return (TypeMirror type) -> {
+      if (type.toString().equals("umlp.guiutil.UMLPGuiArray")) {
+        return "Array";
+      }
+      return null;
+    };
   }
 
   @Override
@@ -92,10 +104,26 @@ public class UMLPCollectionsAdapter extends UMLPAbstractAdapter {
         case "com.google.common.collect.Sets":
           if (substituteSetsInvocations(invocation, targetMethodName))
             return true;
+        case "umlp.guiutil.UMLPGuiArray":
+          if (substituteUMLPGuiArrayInvocations(invocation, targetMethodName))
+            return true;
       }
     }
 
     return super.substituteMethodInvocation(invocation);
+  }
+
+  private boolean substituteUMLPGuiArrayInvocations(MethodInvocationElement invocation,
+      String targetMethodName) {
+    switch (targetMethodName) {
+      case "set":
+        print(invocation.getTargetExpression()).print("[").print(invocation.getArgument(0)).print("] = ").print(invocation.getArgument(1));
+        return true;
+      case "get":
+        print(invocation.getTargetExpression()).print("[").print(invocation.getArgument(0)).print("]");
+        return true;
+    }
+    return false;
   }
 
   private boolean substituteSetsInvocations(MethodInvocationElement invocation, String targetMethodName) {
@@ -218,6 +246,15 @@ public class UMLPCollectionsAdapter extends UMLPAbstractAdapter {
           }
         }
         getPrinter().useModule(new ModuleImportDescriptor("UMLPArrayList", getLibraryLocation()));
+        return true;
+      case "umlp.guiutil.UMLPGuiArray":
+        if (newClass.getArgumentCount() == 0) {
+          print("[]");
+        } else if (newClass.getArgumentCount() == 1){
+          printArgList(newClass.getArguments()).print(".toArray()");
+        } else {
+          Log.warn("Did not implement new UMLPGuiArray with more than one parameters");
+        }
         return true;
     }
 

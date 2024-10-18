@@ -56,31 +56,31 @@ export class BaseClassObjectMapper {
     return BaseClassObjectMapper.instance_$LI$();
   }
 
-  public static serialize(o: any, className: string): string {
-    return BaseClassObjectMapper.getInstance()._serialize(o, className);
+  public static async serialize(o: any, className: string): Promise<string> {
+    return await BaseClassObjectMapper.getInstance()._serialize(o, className);
   }
 
-  public static deserialize<T>(s: string, className: string): T {
-    return BaseClassObjectMapper.getInstance()._deserialize<any>(s, className);
+  public static async deserialize<T>(s: string, className: string): Promise<T> {
+    return await BaseClassObjectMapper.getInstance()._deserialize<any>(s, className);
   }
 
   public static canDeSer(className: string): boolean {
     return BaseClassObjectMapper.getInstance()._canDeSer(className);
   }
 
-  public _serialize(o: any, className: string): string {
+  public async _serialize(o: any, className: string): Promise<string> {
     if (!/* containsKey */this.baseDeSers.hasOwnProperty(className)) {
       return null;
     }
-    return /* get */((m, k) => m[k] === undefined ? null : m[k])(this.baseDeSers, className).serialize(o);
+    return await /* get */((m, k) => m[k] === undefined ? null : m[k])(this.baseDeSers, className).serialize(o);
   }
 
-  public _deserialize<T>(s: string, className: string): T {
+  public async _deserialize<T>(s: string, className: string): Promise<T> {
     if (!/* containsKey */this.baseDeSers.hasOwnProperty(className)) {
       return null;
     }
     try {
-      return <T>/* get */((m, k) => m[k] === undefined ? null : m[k])(this.baseDeSers, className).deserialize(s);
+      return await <T>/* get */((m, k) => m[k] === undefined ? null : m[k])(this.baseDeSers, className).deserialize(s);
     } catch (ex) {
       Log.error("Wrong return type of base class deser: \'" + className + "\'");
       return null;

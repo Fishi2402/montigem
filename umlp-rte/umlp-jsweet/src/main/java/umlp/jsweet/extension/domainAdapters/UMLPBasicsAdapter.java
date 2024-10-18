@@ -1,34 +1,42 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.jsweet.extension.domainAdapters;
 
+import org.jsweet.transpiler.ModuleImportDescriptor;
 import org.jsweet.transpiler.extension.PrinterAdapter;
+import org.jsweet.transpiler.model.CompilationUnitElement;
 import org.jsweet.transpiler.model.ExtendedElement;
+import org.jsweet.transpiler.model.ImportElement;
 import org.jsweet.transpiler.model.MethodInvocationElement;
 import org.jsweet.transpiler.model.NewClassElement;
 import org.jsweet.transpiler.model.TypeCastElement;
 import umlp.jsweet.extension.UMLPAbstractAdapter;
 import umlp.jsweet.extension.util.UMLPAdapterUtils;
 
+import javax.lang.model.element.PackageElement;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import java.util.function.Function;
 
 /**
  * This adapter is responsible to correctly map Elements from the MontiCore world to correct
- *  TS implementaitons.
+ * TS implementaitons.
  * This is done mainly for de.monticore.symboltable.serialization.json.* and de.se_rwth.commons.logging.Log
  */
 public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
 
+  private final UMLPAdapterUtils adapterUtils;
+
   public UMLPBasicsAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);
     initTypeMappings();
+    this.adapterUtils = new UMLPAdapterUtils(this, types(), context, util());
   }
 
   private void initTypeMappings() {
     getTypeMirrorMappings().add(0, computeMCJSonTypeMapping());
   }
 
-  public static Function<TypeMirror, String> computeMCJSonTypeMapping() {
+  public Function<TypeMirror, String> computeMCJSonTypeMapping() {
     return (TypeMirror type) -> {
       if (type.toString().equals("de.monticore.symboltable.serialization.json.JsonObject")) {
         return "any";
@@ -94,23 +102,23 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
   private boolean substituteJsonElementMethods(MethodInvocationElement invocation, String methodName) {
     switch (methodName) {
       case "isJsonObject":
-        UMLPAdapterUtils.printMacroName(this, methodName);
+        adapterUtils.printMacroName(methodName);
         this.print("(typeof ").print(invocation.getTargetExpression()).print(" == \"object\")");
         return true;
       case "isJsonArray":
-        UMLPAdapterUtils.printMacroName(this, methodName);
+        adapterUtils.printMacroName(methodName);
         this.print("(Array.isArray(").print(invocation.getTargetExpression()).print("))");
         return true;
       case "isJsonBoolean":
-        UMLPAdapterUtils.printMacroName(this, methodName);
+        adapterUtils.printMacroName(methodName);
         this.print("(typeof ").print(invocation.getTargetExpression()).print(" == \"boolean\")");
         return true;
       case "isJsonString":
-        UMLPAdapterUtils.printMacroName(this, methodName);
+        adapterUtils.printMacroName(methodName);
         this.print("(typeof ").print(invocation.getTargetExpression()).print(" == \"string\")");
         return true;
       case "isJsonNumber":
-        UMLPAdapterUtils.printMacroName(this, methodName);
+        adapterUtils.printMacroName(methodName);
         this.print("(typeof ").print(invocation.getTargetExpression()).print(" == \"number\")");
         return true;
       //          case "isJsonNull":
@@ -129,7 +137,7 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
         //          case "removeMember":
         //          case "getMemberNames":
       case "toString":
-        UMLPAdapterUtils.printMacroName(this, methodName);
+        adapterUtils.printMacroName(methodName);
         this.print(invocation.getTargetExpression());
         return true;
       //          case "getMembers":
@@ -137,29 +145,29 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
       //          case "sizeMembers":
       //          case "hasMembers":
       case "hasMember":
-        UMLPAdapterUtils.printMacroName(this, methodName);
+        adapterUtils.printMacroName(methodName);
         this.print("(").print(invocation.getTargetExpression()).print("[")
             .printArgList(invocation.getArguments()).print("] != undefined && ")
             .print(invocation.getTargetExpression()).print("[")
             .printArgList(invocation.getArguments()).print("] != null)");
         return true;
       case "hasStringMember":
-        UMLPAdapterUtils.printMacroName(this, methodName);
+        adapterUtils.printMacroName(methodName);
         this.print("(typeof ").print(invocation.getTargetExpression()).print("[").printArgList(
             invocation.getArguments()).print("] == \"string\")");
         return true;
       case "hasArrayMember":
-        UMLPAdapterUtils.printMacroName(this, methodName);
+        adapterUtils.printMacroName(methodName);
         this.print("(Array.isArray(").print(invocation.getTargetExpression()).print("[").printArgList(
             invocation.getArguments()).print("]))");
         return true;
       case "hasBooleanMember":
-        UMLPAdapterUtils.printMacroName(this, methodName);
+        adapterUtils.printMacroName(methodName);
         this.print("(typeof ").print(invocation.getTargetExpression()).print("[").printArgList(
             invocation.getArguments()).print("] == \"boolean\")");
         return true;
       case "hasObjectMember":
-        UMLPAdapterUtils.printMacroName(this, methodName);
+        adapterUtils.printMacroName(methodName);
         this.print("(typeof ").print(invocation.getTargetExpression()).print("[").printArgList(
             invocation.getArguments()).print("] == \"object\")");
         return true;
@@ -167,7 +175,7 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
       case "hasDoubleMember":
       case "hasFloatMember":
       case "hasLongMember":
-        UMLPAdapterUtils.printMacroName(this, methodName);
+        adapterUtils.printMacroName(methodName);
         this.print("(typeof ").print(invocation.getTargetExpression()).print("[").printArgList(
             invocation.getArguments()).print("] == \"number\")");
         return true;
@@ -188,7 +196,7 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
       case "getLongMember":
       case "getLongMemberOpt":
       case "getMember":
-        UMLPAdapterUtils.printMacroName(this, methodName);
+        adapterUtils.printMacroName(methodName);
         this.print(invocation.getTargetExpression()).print("[").printArgList(invocation.getArguments()).print("]");
         return true;
     }
@@ -215,6 +223,7 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
       case "mc.fenix.input.GemTextInputValidity":
       case "input.src.lib.gemtextinput.GemTextInputTypes.GemTextInputValidity":
       case "mc.fenix.input.GemTextInputTypes.GemTextInputValidity":
+      case "mc.fenix.input.gemtextinputtypes.GemTextInputValidity":
         if (newClass.getArguments().size() == 0) {
           print("{}");
           return true;
@@ -232,9 +241,40 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
   }
 
   @Override
+  public String needsImport(ImportElement importElement, String qualifiedName) {
+    switch (qualifiedName) {
+      case "input.GemTextInputValidity":
+      case "mc.fenix.input.GemTextInputValidity":
+      case "input.src.lib.gemtextinput.GemTextInputTypes.GemTextInputValidity":
+      case "mc.fenix.input.GemTextInputTypes.GemTextInputValidity":
+      case "mc.fenix.input.gemtextinputtypes.GemTextInputValidity":
+        return getRootRelativeName(importElement.getImportedType());
+    }
+    return super.needsImport(importElement, qualifiedName);
+  }
+
+  @Override
+  public ModuleImportDescriptor getModuleImportDescriptor(
+      CompilationUnitElement currentCompilationUnit, String importedName,
+      TypeElement importedClass) {
+    String fqn = importedClass.getQualifiedName().toString();
+    switch (fqn) {
+      case "input.GemTextInputValidity":
+      case "mc.fenix.input.GemTextInputValidity":
+      case "input.src.lib.gemtextinput.GemTextInputTypes.GemTextInputValidity":
+      case "mc.fenix.input.GemTextInputTypes.GemTextInputValidity":
+      case "mc.fenix.input.gemtextinputtypes.GemTextInputValidity":
+        return new ModuleImportDescriptor(false, (PackageElement) importedClass.getEnclosingElement(),
+            "GemTextInputValidity", "@umlp/input", importedClass);
+
+    }
+    return super.getModuleImportDescriptor(currentCompilationUnit, importedName, importedClass);
+  }
+
+  @Override
   public boolean substituteTypeCast(TypeCastElement castExpression) {
     if (castExpression.getExpression().toString().equals("this")) {
-      PrinterAdapter print = print("<").print(
+      print("<").print(
           types().asElement(castExpression.getType()).getSimpleName().toString()).print(">");
       print("<unknown>").print(castExpression.getExpression());
       return true;

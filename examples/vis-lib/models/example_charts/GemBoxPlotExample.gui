@@ -8,14 +8,14 @@ page GemBoxPlotExample()
 
   secondBoxplot@GemBoxPlot(
     entries = getSecondBoxPlotData(),
-    min = 0,
+    min = 0.0,
     width = getSecondBoxPlotWidth(),
     height = getSecondBoxPlotHeight(),
     horizontal=false
   );
   boxplot@GemBoxPlot(
     entries = getBoxPlotData(),
-    min = -5,
+    min = -5.0,
     width = getBoxPlotWidth(),
     height = getBoxPlotHeight()
   );
