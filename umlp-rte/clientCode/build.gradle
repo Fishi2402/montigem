@@ -1,0 +1,59 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+plugins {
+  id "com.github.node-gradle.node" version "5.0.0"
+  id "de.rwth.se.umlp-tool-frontend"
+}
+
+dependencies {
+  implementation project(":umlp-rte")
+
+  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version
+// JSweet
+//  domainSources files(project(":umlp-rte").buildDir, "guiComponentTypes")
+}
+
+node {
+  download = true
+  version = "${node_version}"
+  nodeProxySettings = ProxySettings.OFF
+  nodeProjectDir = file("${buildDir}/frontendGen")
+}
+
+translateJava2TSDomain {
+  verbose = true
+  File projectBase = project(':umlp-rte').projectDir
+  File srcDir = new File(projectBase, "src/main/java")
+
+  def hwcFiles = []
+  srcDir.traverse(type: groovy.io.FileType.FILES) { file ->
+    if (file.getPath().startsWith(srcDir.getPath() + File.separator + "mc" + File.separator + "fenix") ||
+        file.getPath().startsWith(srcDir.getPath() + File.separator + "rte" + File.separator + "deser")) {
+      hwcFiles << file
+    }
+  }
+  input.from(hwcFiles)
+  input.from(files(project(":umlp-rte").buildDir, "guiComponentTypes"))
+
+  outputDir.set(new File(project.buildDir, "guiComponentTypes"))
+}
+
+createDomainSymbols {
+  enabled = false
+}
+
+frontendSetup {
+  enabled = false
+}
+
+genJava2TSGUIConfig {
+  enabled = false
+}
+
+genJava2TSDomainConfig {
+  enabled = false
+}
+
+translateJava2TSGUI {
+  enabled = false
+}

@@ -33,6 +33,8 @@ import java.util.List;
  */
 public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
 
+  private final boolean isAsyncList;
+
   private boolean stillWorking = false;
 
   private GUIAdapterUtils adapterUtils;
@@ -40,9 +42,10 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
   /**
    * Creates a new global scanner.
    */
-  public UMLPAsyncAwaitPropagationScanner(JSweetContext context) {
+  public UMLPAsyncAwaitPropagationScanner(JSweetContext context, boolean isAsyncList) {
     super(null, context, null);
     this.adapterUtils = new GUIAdapterUtils(types(), context, util());
+    this.isAsyncList = isAsyncList;
   }
 
   @Override
@@ -102,10 +105,19 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
     String methodSimpleName = method.getSimpleName().toString();
     String targetClassName = method.getEnclosingElement().toString();
 
-    if (isRTEAsyncMethod(targetClassName, methodSimpleName))
+    if (isRTEAsyncMethod(targetClassName, methodSimpleName)) {
       return true;
+    }
 
     // Lists
+    if (isAsyncList && isListAsyncMethod(targetType, methodSimpleName)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  private boolean isListAsyncMethod(TypeMirror targetType, String methodSimpleName) {
     try {
       if (targetType != null && types().isSubtype(types().erasure(targetType),
           types().erasure(util().getType(java.util.List.class)))) {
@@ -127,10 +139,10 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
           return true;
         }
       }
-    } catch (Exception e) {
+    }
+    catch (Exception e) {
       return false;
     }
-
     return false;
   }
 

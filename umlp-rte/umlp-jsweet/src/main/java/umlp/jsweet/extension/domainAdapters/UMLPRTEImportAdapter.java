@@ -69,6 +69,9 @@ public class UMLPRTEImportAdapter extends UMLPAbstractAdapter {
   }
 
   private boolean isRTEIncluded(String fullyQualifiedName) {
+    if (isSpecificRTEClass(fullyQualifiedName)) {
+      return true;
+    }
     if (!fullyQualifiedName.startsWith(RTEPathUtil.getBackendRTEPath())) {
       return false;
     }
@@ -78,6 +81,15 @@ public class UMLPRTEImportAdapter extends UMLPAbstractAdapter {
       }
     }
     return true;
+  }
+
+  private boolean isSpecificRTEClass(String fullyQualifiedName) {
+    switch (fullyQualifiedName) {
+      case "rte.deser.DeSerRepository":
+        return true;
+      default:
+        return false;
+    }
   }
 
   @Override
@@ -115,7 +127,10 @@ public class UMLPRTEImportAdapter extends UMLPAbstractAdapter {
 
   @Override
   public void onTranspilationStarted() {
-    new UMLPAsyncAwaitPropagationScanner(context).process(getContext().compilationUnits, getContext().trees);
+    if (rte.equals(RTE_OPTION.COMMONJ2TS_RTE)) {
+      new UMLPAsyncAwaitPropagationScanner(context, isAsyncList).process(
+          getContext().compilationUnits, getContext().trees);
+    }
     new AsyncAwaitPropagationScanner(context).process(getContext().compilationUnits, getContext().trees);
 
     super.onTranspilationStarted();

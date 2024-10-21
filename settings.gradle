@@ -42,6 +42,7 @@ includeBuild "umlp-rte/umlp-jsweet"
 include ":umlp-rte"
 include ":umlp-rte:client"
 include ":umlp-rte:umlp-jsweet"
+include ":umlp-rte:clientCode"
 include 'umlp-test-rte'
 
 include ":experiments"

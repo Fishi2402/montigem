@@ -19,13 +19,26 @@ import java.util.HashMap;
  * This class uses a "static library" to remap types and import from the rte
  */
 public abstract class UMLPAbstractAdapter extends PrinterAdapter {
-  private static final String UMLP_COMMON_RTE_POINTER = "@umlp/commonj2ts";
+  private static final String UMLP_COMMONJ2TS_RTE_POINTER = "@umlp/commonj2ts";
+  private static final String UMLP_COMMON_RTE_POINTER = "@umlp/common";
 
   private HashMap<String, String> staticLibrary = new HashMap<>();
+
+  protected boolean isAsyncList = true;
+  protected RTE_OPTION rte = RTE_OPTION.COMMONJ2TS_RTE;
 
   public UMLPAbstractAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);
     initStaticLibrary();
+
+    Object asyncList = context.options.getConfiguration().get("asyncList");
+    if (asyncList != null && "false".equals(asyncList.toString())) {
+      isAsyncList = false;
+    }
+    Object rteUse = context.options.getConfiguration().get("rte");
+    if (rteUse != null && "common".equals(rteUse.toString())) {
+      rte = RTE_OPTION.COMMON_RTE;
+    }
   }
 
   protected void initStaticLibrary() {}
@@ -67,7 +80,20 @@ public abstract class UMLPAbstractAdapter extends PrinterAdapter {
   }
 
   protected String getLibraryLocation() {
+    switch (rte) {
+      case COMMON_RTE:
+        return UMLP_COMMON_RTE_POINTER;
+      case COMMONJ2TS_RTE:
+        return UMLP_COMMONJ2TS_RTE_POINTER;
+      default:
+        Log.error("0JSA003 Unknown RTE option: " + rte);
+    }
     return UMLP_COMMON_RTE_POINTER;
+  }
+
+  public enum RTE_OPTION {
+    COMMON_RTE,
+    COMMONJ2TS_RTE
   }
 
   @Override
