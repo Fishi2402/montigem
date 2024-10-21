@@ -10,6 +10,7 @@ plugins {
   id 'maven-publish'
   id 'com.diffplug.spotless' version '6.19.0'
   id "com.github.node-gradle.node" version "5.0.0"
+  id "de.rwth.se.umlp-tool-frontend"
 }
 
 repositories {
@@ -21,6 +22,7 @@ configurations {
 }
 dependencies {
   guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
+  implementation project(":umlp-rte")
 }
 
 tasks.register('createCDSymbols', SerializeCDSymbolsTask) {
@@ -218,4 +220,62 @@ publishing {
     def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-snapshots/"
     url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
   }
+}
+
+
+// JSweet
+translateJava2TSDomain {
+  verbose = true
+  File projectBase = project(':umlp-rte').projectDir
+  File srcDir = new File(projectBase, "src/main/java")
+
+  def hwcFiles = []
+  srcDir.traverse(type: groovy.io.FileType.FILES) { file ->
+    if (file.getPath().startsWith(srcDir.getPath() + File.separator + "mc" + File.separator + "fenix") ||
+      file.getPath().startsWith(srcDir.getPath() + File.separator + "rte" + File.separator + "deser")) {
+      hwcFiles << file
+    }
+  }
+  input.from(hwcFiles)
+  input.from(files(project(":umlp-rte").buildDir, "guiComponentTypes"))
+
+  outputDir.set(new File(project.buildDir, "guiComponentTypes"))
+}
+
+def copyTaskPrefix = "copy_"
+def copyTaskPostFix = "Types"
+
+libs.each {
+  def libName = it
+  def copyTaskName = "${copyTaskPrefix}${libName}${copyTaskPostFix}"
+  def sourceDir = "build/guiComponentTypes/mc/fenix/${libName}"
+  def targetDir = "projects/umlp/mc/fenix/${libName}/src/lib/gen"
+  def buildTaskName = "${buildTaskPrefix}${libName}"
+
+  task "${copyTaskName}"(type: Copy) {
+    from "${sourceDir}"
+    into "${targetDir}"
+  }
+
+  tasks[buildTaskName].dependsOn tasks[copyTaskName]
+}
+
+createDomainSymbols {
+  enabled = false
+}
+
+frontendSetup {
+  enabled = false
+}
+
+genJava2TSGUIConfig {
+  enabled = false
+}
+
+genJava2TSDomainConfig {
+  enabled = false
+}
+
+translateJava2TSGUI {
+  enabled = false
 }
