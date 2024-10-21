@@ -2,7 +2,12 @@
 
 import { PipelineStatistic } from '@src/dtcockpit/PipelineStatistic';
 import { PipelineStatsComponent,config } from '@src/gui/pipelines/PipelineStatsComponent';
-import { GemBarChartData, GemBarChartEntry } from '@umlp/charts';
+import {
+  GemBarChartData,
+  GemBarChartDataBuilder,
+  GemBarChartEntry,
+  GemBarChartEntryBuilder
+} from '@umlp/charts';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -73,16 +78,17 @@ export class PipelineStats extends PipelineStatsComponent {
     }
     let barChartEntries: GemBarChartEntry[] = []
     entries.forEach((data, label) => {
-      barChartEntries.push({
-        label: label,
-        data: data,
-        backgroundColor: (label==="Successful")? '#57ab27' : '#cc071e'
-      })
+      barChartEntries.push(
+          new GemBarChartEntryBuilder()
+              .label(label)
+              .data(data)
+              .backgroundColor((label==="Successful")? '#57ab27' : '#cc071e')
+              .build())
     })
-    const data: GemBarChartData = {
-      labels: labels,
-      entries: barChartEntries
-    }
+    const data: GemBarChartData = new GemBarChartDataBuilder()
+        .labels(labels)
+        .entries(barChartEntries)
+        .build();
     const newHash = JSON.stringify(data);
     if (this.projectDataCheck.hash !== newHash) {
       this.projectDataCheck.hash = newHash;

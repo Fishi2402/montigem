@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 import {Component} from '@angular/core';
-import { GemBarChartData } from '@umlp/charts';
+import {GemBarChartData, GemBarChartDataBuilder, GemBarChartEntryBuilder} from '@umlp/charts';
 import { GemBarChartEntry } from '@umlp/charts';
 import { PipelineStatsPerGroupComponent,config } from '@src/gui/pipelines/PipelineStatsPerGroupComponent';
 
@@ -112,16 +112,16 @@ export class PipelineStatsPerGroup extends PipelineStatsPerGroupComponent {
     }
 
     entries.forEach((data, label) => {
-      barChartEntries.push({
-        label:label,
-        data:data,
-        backgroundColor: (label==="Successful")? '#57ab27' : '#cc071e'
-      })
+      barChartEntries.push(
+          new GemBarChartEntryBuilder()
+              .label(label)
+              .data(data)
+              .build())
     })
-    const data : GemBarChartData = {
-      labels: labels,
-      entries: barChartEntries
-    }
+    const data : GemBarChartData = new GemBarChartDataBuilder()
+        .labels(labels)
+        .entries(barChartEntries)
+        .build();
     const newHash = JSON.stringify(data);
     if(this.projectDataCheck.hash !== newHash) {
       this.projectDataCheck.hash = newHash;
