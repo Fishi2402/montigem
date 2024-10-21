@@ -5,8 +5,9 @@ plugins {
   id "de.rwth.se.umlp-tool-frontend"
 }
 
-if (project.hasProperty('j2ts_vislib') && j2ts_vislib == true) {
-  project.ext.j2ts = 'desiredValue'
+if (project.hasProperty('j2ts_vislib') && j2ts_vislib.toString().toBoolean()) {
+  project.ext.j2ts = true
+  println("j2ts value is: ${project.hasProperty('j2ts') ? j2ts : 'j2ts is not set'}")
 }
 
 node {
@@ -19,7 +20,7 @@ dependencies {
   testImplementation project(':umlp-test-rte')
 
 // JSweet
-  if (project.hasProperty('j2ts') && j2ts == true) {
+  if (project.hasProperty('j2ts') && j2ts.toString().toBoolean()) {
     domainSources project(":examples:vis-lib:backend")
   }
 }
@@ -34,15 +35,16 @@ genGUI {
   /**/
 }
 
-if (!project.hasProperty('j2ts') || j2ts != true) {
+if (!project.hasProperty('j2ts') || !j2ts.toString().toBoolean()) {
   apply plugin: 'java'
+  println("j2ts value is: ${project.hasProperty('j2ts') ? j2ts : 'j2ts is not set'}")
   tasks.withType(JavaCompile) {
     enabled = false
   }
   sourceSets.main.java.srcDirs = []
 }
 
-if (project.hasProperty('j2ts') && j2ts == true) {
+if (project.hasProperty('j2ts') && j2ts.toString().toBoolean()) {
   translateJava2TSDomain {
     verbose = true
   }
@@ -54,9 +56,9 @@ if (project.hasProperty('j2ts') && j2ts == true) {
 
 task copyAppJsweet(type: Copy) {
   onlyIf { project.hasProperty('j2ts') && project.j2ts.toString().toBoolean() }
-  dependsOn()
+  dependsOn(SYNC_TSHWC)
   from 'config/src/appjsweet'
-  into 'build/appjsweet'
+  into 'build/frontendGen/src/app/'
 }
 // End JSweet
 
