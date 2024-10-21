@@ -260,6 +260,10 @@ libs.each {
   tasks[buildTaskName].dependsOn tasks[copyTaskName]
 }
 
+genGUI {
+  enabled = false
+}
+
 createDomainSymbols {
   enabled = false
 }
