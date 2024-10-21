@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { ChartDataset, ChartOptions } from 'chart.js';
 import { autoColors } from "../colors";
-import { GemBarChartData } from './gem-bar-chart-types/gem-bar-chart-types.types-gen';
+import { GemBarChartData } from '../gen/gembarcharttypes/GemBarChartData';
 import { GemBarChart as GemBarChartTOP } from './gem-bar-chart/gem-bar-chart.component-gen';
 
 @Component({
@@ -75,19 +75,18 @@ export class GemBarChart extends GemBarChartTOP {
     const labels = [];
     let pointerAutoColors = 0;
     let autocolors = this.getColors();
-    this.labels = data.labels;
+    this.labels = data.getLabelsList();
 
-    for (let i = 0; i < data.entries.length; i++) {
-      if (!CSS.supports('color', data.entries[i].backgroundColor)) {
-        data.entries[i].backgroundColor = autocolors[pointerAutoColors++];
+    for (let i = 0; i < data.getEntriesList().length; i++) {
+      if (!CSS.supports('color', data.getEntries(i).getBackgroundColor())) {
+        data.getEntries(i).setBackgroundColor(autocolors[pointerAutoColors++]);
       }
 
       let entry: ChartDataset<'bar'> = {
-        data: data.entries[i].data,
-        label: data.entries[i].label,
-        stack: data.entries[i].stack,
-        backgroundColor: data.entries[i].backgroundColor,
-        hoverBackgroundColor: data.entries[i].backgroundColor,
+        data: data.getEntries(i).getDataList(),
+        label: data.getEntries(i).getLabel(),
+        backgroundColor: data.getEntries(i).getBackgroundColor(),
+        hoverBackgroundColor: data.getEntries(i).getBackgroundColor(),
         hoverBorderWidth: 2,
       };
 
@@ -138,7 +137,7 @@ export class GemBarChart extends GemBarChartTOP {
   public setData(): void {
     if (this._stacked && this.rawData != undefined) {
       for (let i = 0; i < this.dataSets.length; i++) {
-        this.dataSets[i].stack = this.rawData.entries[i].stack;
+        this.dataSets[i].stack = this.rawData.getEntries(i).stack;
       }
     }
     else if (!this._stacked && this.rawData != undefined) {
