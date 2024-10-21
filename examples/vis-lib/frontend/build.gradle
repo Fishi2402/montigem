@@ -7,7 +7,6 @@ plugins {
 
 if (project.hasProperty('j2ts_vislib') && j2ts_vislib.toString().toBoolean()) {
   project.ext.j2ts = true
-  println("j2ts value is: ${project.hasProperty('j2ts') ? j2ts : 'j2ts is not set'}")
 }
 
 node {
@@ -37,7 +36,6 @@ genGUI {
 
 if (!project.hasProperty('j2ts') || !j2ts.toString().toBoolean()) {
   apply plugin: 'java'
-  println("j2ts value is: ${project.hasProperty('j2ts') ? j2ts : 'j2ts is not set'}")
   tasks.withType(JavaCompile) {
     enabled = false
   }
@@ -56,7 +54,9 @@ if (project.hasProperty('j2ts') && j2ts.toString().toBoolean()) {
 
 task copyAppJsweet(type: Copy) {
   onlyIf { project.hasProperty('j2ts') && project.j2ts.toString().toBoolean() }
-  dependsOn(SYNC_TSHWC)
+  if (project.hasProperty('j2ts') && j2ts.toString().toBoolean()) {
+    dependsOn(SYNC_TSHWC)
+  }
   from 'config/src/appjsweet'
   into 'build/frontendGen/src/app/'
 }
