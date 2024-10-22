@@ -31,7 +31,7 @@ public class UMLAttrToAssocTrafoTest extends AbstractUMLPTest {
         () -> assertEquals(0, ast.getCDDefinition().getCDAssociationsList().size())
     );
 
-    UMLAttrToAssocTrafo trafo = new UMLAttrToAssocTrafo(CD4CodeMill.traverser());
+    UMLAttrToAssocTrafo trafo = new UMLAttrToAssocTrafo(CD4CodeMill.inheritanceTraverser());
     trafo.transform(ast);
 
     // After
@@ -48,7 +48,7 @@ public class UMLAttrToAssocTrafoTest extends AbstractUMLPTest {
     ASTCDCompilationUnit ast = parse("src/test/resources", "trafo/NoTransformation.umlp");
     createSymTab(ast);
 
-    UMLAttrToAssocTrafo trafo = new UMLAttrToAssocTrafo(CD4CodeMill.traverser());
+    UMLAttrToAssocTrafo trafo = new UMLAttrToAssocTrafo(CD4CodeMill.inheritanceTraverser());
     trafo.transform(ast);
 
     assertEquals(0, ast.getCDDefinition().getCDAssociationsList().size());
@@ -61,7 +61,7 @@ public class UMLAttrToAssocTrafoTest extends AbstractUMLPTest {
     ASTCDCompilationUnit ast = parse("src/test/resources", "trafo/MultipleUsesOfDomainClass.umlp");
     createSymTab(ast);
 
-    UMLAttrToAssocTrafo trafo = new UMLAttrToAssocTrafo(CD4CodeMill.traverser());
+    UMLAttrToAssocTrafo trafo = new UMLAttrToAssocTrafo(CD4CodeMill.inheritanceTraverser());
     trafo.transform(ast);
 
     assertEquals(2, ast.getCDDefinition().getCDAssociationsList().size());

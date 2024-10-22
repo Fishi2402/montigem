@@ -88,7 +88,7 @@ public class GUIGeneratorUtil {
   protected GUIDSLFullPrettyPrinter printer;
   protected static CD4CodeFullPrettyPrinter cdPrinter;
   // Fully qualified Name of the classdiagram, e.g. "hardy.Flensburg"
-  private List<String> DOMAIN_MODELS;
+  private List<String> DOMAIN_AND_MODULE_MODELS;
   // Fully qualified Name of a gui model, e.g. "stanley.PersonCreate"
   private List<String> CREATE_MODELS;
 
@@ -164,13 +164,23 @@ public class GUIGeneratorUtil {
   }
 
   public void init(List<String> domainModels, List<String> createModels) {
-    DOMAIN_MODELS = domainModels;
+    DOMAIN_AND_MODULE_MODELS = domainModels;
     CREATE_MODELS = createModels;
   }
 
   public final String print(ASTNode node) {
     printer.setPrintComments(false);
     return printer.prettyprint(node);
+  }
+
+  // At some places there must be generated the __synchronized suffix for JSweet generated code
+  public final String print(ASTNode node, boolean syncedOpt) {
+    printer.setPrintComments(false);
+    String res = printer.prettyprint(node);
+    if (syncedOpt && UMLPGeneratorConfig.getInstance().isUseJsweet()) {
+      res += SYNCHRONIZED_SUFFIX;
+    }
+    return res;
   }
 
   // TODO AGe: unreliable
@@ -203,7 +213,7 @@ public class GUIGeneratorUtil {
       return false;
     }
     IGUIDSLArtifactScope as = (IGUIDSLArtifactScope) ts.getEnclosingScope();
-    return DOMAIN_MODELS.contains(as.getFullName());
+    return DOMAIN_AND_MODULE_MODELS.contains(as.getFullName());
   }
 
   public final boolean isDomainListType(ASTGUIParam param) {
@@ -222,7 +232,7 @@ public class GUIGeneratorUtil {
         TypeSymbol ts = inner.getTypeInfo();
         if (ts.getEnclosingScope() instanceof IGUIDSLArtifactScope) {
           IGUIDSLArtifactScope as = (IGUIDSLArtifactScope) ts.getEnclosingScope();
-          if (DOMAIN_MODELS.contains(as.getFullName())) {
+          if (DOMAIN_AND_MODULE_MODELS.contains(as.getFullName())) {
             return Optional.of(inner);
           }
         }
@@ -276,7 +286,7 @@ public class GUIGeneratorUtil {
     if (symb.isPresent()) {
       if (symb.get().getEnclosingScope() instanceof IGUIDSLArtifactScope) {
         IGUIDSLArtifactScope as = (IGUIDSLArtifactScope) symb.get().getEnclosingScope();
-        boolean isDomain = DOMAIN_MODELS.contains(as.getFullName());
+        boolean isDomain = DOMAIN_AND_MODULE_MODELS.contains(as.getFullName());
         if (isDomain && OOSymbolsMill.typeDispatcher().isOOSymbolsOOType(symb.get())) {
           return OOSymbolsMill.typeDispatcher().asOOSymbolsOOType(symb.get()).isIsEnum();
         }
@@ -348,7 +358,7 @@ public class GUIGeneratorUtil {
   }
 
   public final boolean isDomainImport(ASTMCImportStatement i) {
-    for (String cd : DOMAIN_MODELS) {
+    for (String cd : DOMAIN_AND_MODULE_MODELS) {
       if (i.getQName().startsWith(cd)) {
         return true;
       }
@@ -395,8 +405,8 @@ public class GUIGeneratorUtil {
 
   // TODO AGe: indicator of "main" model after cdmerge is built in
   public final Optional<String> getMainDomainModelQName() {
-    if (!DOMAIN_MODELS.isEmpty()) {
-      return Optional.of(DOMAIN_MODELS.get(0));
+    if (!DOMAIN_AND_MODULE_MODELS.isEmpty()) {
+      return Optional.of(DOMAIN_AND_MODULE_MODELS.get(0));
     }
     return Optional.empty();
   }
@@ -505,10 +515,10 @@ public class GUIGeneratorUtil {
     return "get"
         + StringTransformations.capitalize(componentId)
         + StringTransformations.capitalize(namedArg.getName())
-        + (UMLPGeneratorConfig.getInstance().isGenerateTypescript() || isList(namedArg)
+        + ((UMLPGeneratorConfig.getInstance().isGenerateTypescript() || isList(namedArg))
+         && !UMLPGeneratorConfig.getInstance().isUseJsweet()
         ? ""
-        : SYNCHRONIZED_SUFFIX // in case the actual method does not have to be async,
-        // the synchronized method might just call the original method
+        : SYNCHRONIZED_SUFFIX // JSweet method to synchronize async callbacks
     );
   }
 
@@ -582,12 +592,13 @@ public class GUIGeneratorUtil {
 
           // Instead of the overloaded&async getX(int?) we call the _internal_getXGemList() method
 
-          expressionWithNullChecks = m.replaceAll("$1._internal_$2GemList()");
+//          expressionWithNullChecks = m.replaceAll("$1._internal_$2GemList()");
 
         }
         // ? => the backing gemList might be undefined until loaded
         // .subject => access the BehaviorSubject of the GemList
-        expressionWithNullChecks = "( " + expressionWithNullChecks + "?.subject | async )";
+//        expressionWithNullChecks = "( " + expressionWithNullChecks + "?.subject | async )";
+        expressionWithNullChecks = "toArray(" + expressionWithNullChecks + ")";
 
         //Alternative
         // expressionWithNullChecks = "((" + expressionWithNullChecks + " | umlpToAsync | async ) | async)";

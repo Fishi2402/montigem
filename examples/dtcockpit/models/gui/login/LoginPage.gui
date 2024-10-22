@@ -3,7 +3,7 @@ package gui.login;
 
 import gui.login.UserLogin;
 import gui.login.LoginContainer;
-import Dtcockpit.DoesNotRequireLogin;
+import LoginModule.DoesNotRequireLogin;
 
 import mc.fenix.arrange.GemColumn;
 import mc.fenix.basic.GemLink;

@@ -17,12 +17,14 @@ export class Navigation {
   }
 
   readonly items: { url: string, title: string }[] = [
+    { url: '/example_input/GemChatExample', title: 'Chat' },
     { url: '/person/SimpleOverview', title: 'Overview' },
     { url: '/example_basic/GemAudioExample', title: 'Audio' },
     { url: '/example_basic/GemButtonExample', title: 'Button' },
     { url: '/example_basic/GemImageExample', title: 'Image' },
     { url: '/example_basic/GemLinkExample', title: 'Link' },
     { url: '/example_basic/GemTextExample', title: 'Text' },
+    { url: '/example_basic/GemIconExample', title: 'Icon' },
     { url: '/example_basic/GemTreeviewExample', title: 'Treeview' },
     { url: '/example_basic/GemVideoExample', title: 'Video' },
     { url: '/example_table/GemTableExample', title: 'Table' },
@@ -38,6 +40,7 @@ export class Navigation {
     { url: '/example_input/GemAutocompleteInputExample', title: 'AutocompleteInput' },
     { url: '/example_input/GemTextareaInputExample', title: 'TextareaInput' },
     { url: '/example_input/GemCheckBoxInputExample', title: 'CheckBoxInput' },
+
     /*
     { url: '/example_input/GemRangeInputExample', title: 'RangeInput' },
     { url: '/example_input/GemRadioInputExample', title: 'RadioInput' },

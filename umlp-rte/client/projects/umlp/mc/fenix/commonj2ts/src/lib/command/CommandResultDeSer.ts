@@ -17,7 +17,7 @@ export class CommandResultDeSer implements JsonDeSer<CommandResult<any>> {
     return Promise.resolve(printer.getContent());
   }
 
-  public buildJson$umlp_backendrte_command_CommandResult$de_monticore_symboltable_serialization_JsonPrinter(result: CommandResult<any>, printer: JsonPrinter) {
+  public async buildJson$umlp_backendrte_command_CommandResult$de_monticore_symboltable_serialization_JsonPrinter(result: CommandResult<any>, printer: JsonPrinter) {
     printer.member("commandId", result.getCommandId());
     const tp: string = result.getTypeParameter();
     printer.member("typeParameter", tp);
@@ -29,7 +29,7 @@ export class CommandResultDeSer implements JsonDeSer<CommandResult<any>> {
     } else {
       printer.member("successful", result.isSuccessful());
       if (BaseClassObjectMapper.canDeSer(tp)) {
-        const v: string = BaseClassObjectMapper.serialize(result.asSimpleResult().get(), tp);
+        const v: string = await BaseClassObjectMapper.serialize(result.asSimpleResult().get(), tp);
         if (/* isPresent */(v != null)) {
           printer.memberJson("value", /* get */(v => {
             if (v == null) throw new Error('value is null');

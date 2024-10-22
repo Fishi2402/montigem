@@ -120,6 +120,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     addInit();
     addDestroy();
 
+    getCD4C().addImport(clazz, "java.util.ArrayList");
+
     // remove
     for (NotifyMethodTemplate notifyDeleted : this.notifyDeleted.values()) {
       getCD4C().addMethod(clazz, notifyDeleted.getTemplate(), notifyDeleted.getArguments().toArray());
@@ -194,7 +196,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
     // case 1: component Foo(App app)
     if (typeSTE.isObjectType() && TagLookUp.isSingleton(typeSTE.getTypeInfo())) {
-      String manager = getAndImportManager();
+      // Use the manager corresponding (when importing from extended CDs)
+      String manager = getAndImportManager(typeSTE.asObjectType());
 
       // add builder init
       Optional<InitDependency> dep = InitDependencyTree.getInstance().getDependency(node);
@@ -206,7 +209,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     }
     // case 2: component Foo(Person p)
     else if (util.isDomainType(typeSTE) && !util.isEnumType(typeSTE)) {
-      String manager = getAndImportManager();
+      String manager = getAndImportManager(typeSTE.asObjectType());
       if (typeSTE.hasTypeInfo() && TagLookUp.isDerived(typeSTE.getTypeInfo())) {
         // add derived class init
         Optional<InitDependency> dep = InitDependencyTree.getInstance().getDependency(node);
@@ -233,7 +236,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     else if (util.getDomainListInnerType(typeSTE).isPresent()
         && !util.isEnumType(util.getDomainListInnerType(typeSTE).get())) {
       ASTMCType innerType = createTypeAndAddImports(util.getDomainListInnerType(typeSTE).get());
-      String manager = getAndImportManager();
+      String manager = getAndImportManager(util.getDomainListInnerType(typeSTE).get().asObjectType());
 
       // add remove
       ASTCDMethodSignature remove = getCD4C().addMethod(
@@ -416,10 +419,13 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
       if (arg.getNameSymbol().isIsReference()) {
         // add setter
-        String setterValue = setterPrinter.prettyprint(arg.getGUIArgValue());
         String target = "conv_" + Expression2SetterPrinter.SETTER_PARAM;
         String value = Expression2SetterPrinter.SETTER_PARAM;
         String conv = "";
+        Optional<String> setterValue = Optional.ofNullable(setterPrinter.prettyprint(arg.getGUIArgValue()));
+        if (this.getClass().getSimpleName().equals("GUI2JavaClassDecorator") && (setterValue.isEmpty() || "null".equals(setterValue.get()))) {
+          setterValue = Optional.of(value + " = " + value);
+        }
         if (arg.getGUIArgValue().isPresentExpression()) {
           SymTypeExpression left = util.getType(arg.getGUIArgValue().getExpression());
           String convType;
@@ -435,7 +441,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         }
         getCD4C().addMethod(
             clazz, getArgSetterWithConversionTemplate(),
-            type, name, nullCheck, setterValue, conv, params
+            type, name, nullCheck, setterValue.orElse(null), conv, params
         );
       }
     }

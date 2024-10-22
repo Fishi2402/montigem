@@ -1,0 +1,17 @@
+{
+  "adapters": [
+    "umlp.jsweet.extension.domainAdapters.UMLPRTEImportAdapter",
+    "umlp.jsweet.extension.domainAdapters.UMLPBasicsAdapter",
+    "umlp.jsweet.extension.domainAdapters.UMLPJavaBasicsAdapter"
+  ],
+  "@Erased": {
+    "include": [
+      "**.spliterator*()",
+      "**.stream*()",
+      "**.parallelStream*()"
+    ]
+  },
+  "asyncList": false,
+  "rte": "commonj2ts",
+  "domainName": "dummy"
+}

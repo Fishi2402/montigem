@@ -1,0 +1,70 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+plugins {
+  id "com.github.node-gradle.node" version "5.0.0"
+  // TODO: -test
+  id "de.rwth.se.umlp-tool-frontend"  // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
+//  id "de.rwth.se.umlp-tool-frontend-test"  // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
+}
+
+node {
+  nodeProjectDir = file("${buildDir}/frontendGen")
+}
+
+createDomainSymbols {
+  // TODO: Gradle setup
+//  modelDir.from(project(":modules:login").layout.getProjectDirectory().dir("models"))
+
+}
+
+genDomain {
+  // TODO: Gradle setup
+//  modelDir.from(project(":modules:login").layout.getProjectDirectory().dir("models"))
+
+}
+
+generate {
+  //println("ADDING GENERATE")
+}
+
+
+genGUI {
+  domainModels = ["LoginModule"]
+//  guiCreateModels = ["gui.login.UserCreate", "gui.project.ProjectCreate", "gui.project.ProjectsCreateByGroup"]
+
+//  symbolDir.from(project(":modules:login").layout.getProjectDirectory().dir("models"))
+
+  /*
+  debug = true
+  outputs.upToDateWhen { false }
+  /**/
+}
+nodeSetup.dependsOn(frontendSetup)
+npmInstall.dependsOn(':umlp-rte:client:npmInstall')
+
+def prebuildTasks = [
+    npmInstall,
+    generate  // Created from UMLP-Frontend Plugin.
+]
+
+tasks.register('buildApp', NpxTask) {
+  dependsOn(prebuildTasks)
+  command = "ng"
+  args = ["build"]
+}
+assemble.dependsOn(buildApp)
+
+tasks.register('testApp', NpxTask) {
+  dependsOn(prebuildTasks)
+  command = "ng"
+  args = ["test"]
+}
+
+tasks.register('runApp', NpxTask) {
+  dependsOn(prebuildTasks)
+  command = "ng"
+  args = ["serve"]
+}
+tasks.register('run') {
+  dependsOn(runApp)
+}

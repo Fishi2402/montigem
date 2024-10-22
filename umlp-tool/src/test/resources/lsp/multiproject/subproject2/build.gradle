@@ -1,0 +1,8 @@
+plugins {
+  id "de.rwth.se.umlp-tool-frontend"
+}
+
+genGUI {
+  domainModels = ["Domain"]
+  guiCreateModels = ["complex.RoomPersonDetails"]
+}

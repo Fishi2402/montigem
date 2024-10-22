@@ -183,11 +183,11 @@ public class RTEPojoDecorator extends DomainTypeDecorator {
   }
 
   protected String getConstructorTemplate() {
-    return "rte.data.Constructor";
+    return "rte.data.PublicConstructorWithParameters";
   }
 
   protected String getBuilderConstructorTemplate() {
-    return "umlp.domain.Constructor";
+    return "rte.data.PublicConstructor";
   }
 
   protected String getBuildTemplate() {

@@ -81,6 +81,10 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
     return instance;
   }
 
+  public static void unsetInstance() {
+    instance = null;
+  }
+
   public GUIDSLTraverser getTraverser() {
     return traverser;
   }
@@ -317,7 +321,6 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
     Set<String> importSet = new HashSet<>();
     List<ASTCDParameter> params = new ArrayList<>();
     for (VariableSymbol vs : util.findIterationItemSymbols(scope)) {
-      System.out.println(vs.getType().print());
       ASTMCType paramType = createTypeAndAddImports(vs.getType(), importSet);
       params.add(CDParameterFacade.getInstance().createParameter(paramType, vs.getName()));
     }

@@ -32,7 +32,7 @@ public class TSTopDecorator extends TopDecorator {
   public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit compUnit, boolean importHW) {
 
     // Ensure determineQualifiedName works by filling the nameMap
-    CD4CodeTraverser traverser = CD4CodeMill.traverser();
+    CD4CodeTraverser traverser = CD4CodeMill.inheritanceTraverser();
     DetermineNameVisitor nameVisitor = new DetermineNameVisitor();
     traverser.add4CDBasis(nameVisitor);
     traverser.add4CDInterfaceAndEnum(nameVisitor);
@@ -46,7 +46,7 @@ public class TSTopDecorator extends TopDecorator {
       }
       if (existsHw && !GUIGeneratorUtil.getInstance().isComponent(cdClass)) {
         if (importHW && !GUIGeneratorUtil.getInstance().isCommand(cdClass)) {
-          CD4C.getInstance().addImport(cdClass, GUIGeneratorUtil.getInstance().getPackageName(compUnit) + "." + cdClass.getName());
+          CD4C.getInstance().addImport(cdClass, nameMap.get(cdClass) + "." + cdClass.getName());
         }
         applyTopMechanism(cdClass);
       }

@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui.loginmodule;
+
+import gui.loginmodule.UserLogin;
+import gui.loginmodule.LoginContainer;
+import LoginModule.DoesNotRequireLogin;
+
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemLink;
+
+page LoginPage(DoesNotRequireLogin doesNotRequireLogin) {
+  @LoginContainer(component =
+    @GemColumn(width = "400px", rowGap = "20px", hAlign = "center", components = [
+      @UserLogin()
+    ])
+  );
+}

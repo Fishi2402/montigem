@@ -9,14 +9,13 @@ dependencies {
   implementation project(":examples:jsweet-test:backend")
   // a configuration containing the domain sources
   // causes configuration errors?
-  //  domainSources project(":examples:jsweet-test:backend")
+  domainSources project(":examples:jsweet-test:backend")
 
   implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version
   // TODO: NO Security, as otherwise HTTP Auth is required
 //  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version
 
-  testImplementation 'com.microsoft.playwright:playwright:1.44.0'
-  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version
+  testImplementation project(':umlp-test-rte')
 
   // to compile the (playwright=true) AbstractJsweettestE2ETest
   def withoutSpringLogging = {
@@ -44,10 +43,6 @@ translateJava2TSDomain {
 
 translateJava2TSGUI {
   verbose = true
-}
-
-genJava2TSConfig {
-  domainModel = 'Jsweettest'
 }
 
 nodeSetup.dependsOn(frontendSetup)

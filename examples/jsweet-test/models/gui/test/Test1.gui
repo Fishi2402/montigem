@@ -10,6 +10,7 @@ import Jsweettest.C2;
 
 page Test1(List<C2> c2s) {
   @TestNav();
+  @GemText(value = "Page: Test1");
 
   @GemText(value = "Show the same static text for every item in a list");
 

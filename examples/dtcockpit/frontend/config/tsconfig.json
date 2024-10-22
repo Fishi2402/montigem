@@ -26,7 +26,11 @@
       "dom"
     ],
     "paths": {
-      "@src/*": ["build/appdomain/*", "build/appgui/*", "src/app/*", "../../src/app/*"],
+      "@src/*": ["build/appdomain/*", "build/appgui/*", "src/app/*", "../../src/app/*",
+        "../../../../../modules/login/frontendTS/build/frontendGen/build/appdomain/*",
+        "../../../../../modules/login/frontendTS/build/frontendGen/build/appgui/*",
+        "../../../../../modules/login/frontendTS/src/app/*"
+      ],
       "@angular/*": ["node_modules/@angular/*"],
       "@gitlab/svgs/*": ["node_modules/@gitlab/svgs/*"],
       "@umlp/arrange": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/arrange/src"],
@@ -38,7 +42,8 @@
       "@umlp/navigation": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/navigation/src"],
       "@umlp/table": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/table/src"],
       "@umlp/*": ["node_modules/@umlp/*"],
-      "tslib": ["node_modules/tslib"]
+      "tslib": ["node_modules/tslib"],
+      "rxjs": ["node_modules/rxjs"], // required due to: error TS2307: Cannot find module 'rxjs' or its corresponding type declarations - TODO: #4257
     }
   },
   "angularCompilerOptions": {

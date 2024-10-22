@@ -62,7 +62,7 @@ abstract public class DecoratorTest extends AbstractUMLPTest {
     (new CD4CodeAfterParseTrafo()).transform(cdAST);
 
     // Give default name to anonymous associations
-    new UMLSetDefaultsTrafo(CD4CodeMill.traverser()).transform(cdAST);
+    new UMLSetDefaultsTrafo(CD4CodeMill.inheritanceTraverser()).transform(cdAST);
 
     // Create scopes and symbols
     umlp._symboltable.IUMLPArtifactScope symTab = UMLPMill.scopesGenitorDelegator().createFromAST(cdAST);

@@ -1,0 +1,24 @@
+:host {
+  gem-text {
+    border: 1px solid black;
+  }
+
+  row-gap: 50px;
+  display: flex;
+  flex-direction: column;
+}
+
+.cell1 {
+  background-color: lightblue;
+  border: 2px solid lightblue;
+}
+
+.cell2 {
+  background-color: lightcoral;
+  border: 2px solid lightcoral;
+}
+
+.cell3 {
+  background-color: #00000055;
+  border: 2px solid #00000055;
+}

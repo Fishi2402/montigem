@@ -9,7 +9,7 @@ import mc.fenix.basic.GemLink;
 
 page GemDialogExample(?boolean dialogOpen = false) {
   @GemButton(label = "Click Me!", leftClick = openDialog());
-  dialog@GemDialog(isOpen = null, component =
+  dialog@GemDialog(isOpen = dialogOpen, component =
     @GemCard(
       title = "Info Text",
       component = @GemText(value = "Some Text")

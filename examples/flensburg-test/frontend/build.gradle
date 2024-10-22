@@ -24,6 +24,7 @@ dependencies {
   guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
 
   implementation project(':umlp-rte')
+  testImplementation project(':umlp-test-rte')
 }
 
 // TODO AGe: don't know if that is needed

@@ -48,6 +48,7 @@ import umlp.generator.util.UMLPSymbolTables;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +59,7 @@ import java.util.stream.Collectors;
 // TODO refactor this class
 public abstract class AbstractDecorator {
 
+  // TODO: Why are these static?
   protected static Map<ASTNode, String> origins = new LinkedHashMap<>();
 
   protected static HookPoint originHookPoint = new OriginHookPoint(origins);
@@ -66,6 +68,11 @@ public abstract class AbstractDecorator {
     return originHookPoint;
   }
 
+  public static void cleanUp() {
+    origins.clear();
+    origins = new LinkedHashMap<>();
+    originHookPoint = new OriginHookPoint(origins);
+  }
 
   public AbstractDecorator(GlobalExtensionManagement glex) {
     this.glex = glex;
@@ -88,6 +95,70 @@ public abstract class AbstractDecorator {
   protected final CD4CodeFullPrettyPrinter printer = new CD4CodeFullPrettyPrinter(new IndentPrinter(), false);
 
   protected TypeCheck typeCheck;
+
+  /**
+   * A {@link Map} <strong>possibly</strong> containing other decorators, which have been used
+   * during the last {@link #transform(ASTCDCompilationUnit, ASTCDCompilationUnit)} call.
+   *
+   * <p>There is no guarantee that decorators which have been used are actually added to this map,
+   * since there is currently no use for that. However, it can be used to pass meta information
+   * out of a {@link #transform(ASTCDCompilationUnit, ASTCDCompilationUnit)} call.
+   *
+   * <p><strong>Adding decorators</strong>
+   * <p>You should probably never directly add a decorator to this map, but use
+   * {@link #remember(AbstractDecorator)} instead.
+   *
+   * <p><strong>Retrieving decorators</strong>
+   * <p>In order to retrieve a used decorator by type, it is recommended to use
+   * {@link #getUsedDecorator(Class)}.
+   *
+   * <p>It is highly recommended to clear this map on the start of a new
+   * {@link #transform(ASTCDCompilationUnit, ASTCDCompilationUnit)} call
+   *
+   * @see #getUsedDecorator(Class)
+   * @see #remember(AbstractDecorator)
+   * @see Map#clear()
+   */
+  protected final Map<Class<?>, AbstractDecorator> usedDecorators = new HashMap<>();
+
+  /**
+   * Adds an {@link AbstractDecorator} to {@link #usedDecorators} and returns it again for further
+   * usage.
+   *
+   * <p><strong>Example</strong>
+   * <pre>{@code
+   * ObserverDecorator observerDecorator = remember(new ObserverDecorator(glex));
+   * observerDecorator.transform(cdAST, decoratedAST);
+   * }</pre>
+   *
+   * @param decorator The decorator to add
+   * @see #usedDecorators
+   * @see #getUsedDecorator(Class)
+   */
+  protected <T extends AbstractDecorator> T remember(T decorator) {
+    usedDecorators.put(decorator.getClass(), decorator);
+    return decorator;
+  }
+
+  /**
+   * Attempt to retrieve another decorator which was used during the latest
+   * {@link #transform(ASTCDCompilationUnit, ASTCDCompilationUnit)} call.
+   *
+   * <p>Decorators sometimes store additional information about the types they generate and this
+   * method provides a way to access that information.
+   *
+   * @param decoratorType The {@link Class} of the decorator to get
+   * @return The instance of the decorator, if it was used and stored in the last
+   * {@link #transform(ASTCDCompilationUnit, ASTCDCompilationUnit)} call
+   * @param <T> The type of the decorator to retrieve
+   */
+  public <T extends AbstractDecorator> Optional<T> getUsedDecorator(Class<T> decoratorType) {
+    return Optional.ofNullable(usedDecorators.get(decoratorType))
+        .map(decorator -> {
+          //noinspection unchecked
+          return (T) decorator;
+        });
+  }
 
   protected GlobalExtensionManagement getGlex() {
     return glex;
@@ -391,8 +462,11 @@ public abstract class AbstractDecorator {
 
   protected ASTCDPackage getPackage(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD, String packageName) {
     String completeName = getPackageName(origCD, packageName);
-    Optional<ASTCDPackage> astCDPackage = decoratedCD.getCDDefinition().getCDPackagesList().stream()
-        .filter(p -> p.getName().equals(completeName)).findFirst();
+    Optional<ASTCDPackage> astCDPackage = decoratedCD.getCDDefinition()
+        .getCDPackagesList()
+        .stream()
+        .filter(p -> p.getName().equals(completeName))
+        .findFirst();
     if (astCDPackage.isPresent()) {
       return astCDPackage.get();
     } else {

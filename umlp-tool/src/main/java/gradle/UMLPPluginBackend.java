@@ -4,7 +4,6 @@ package gradle;
 import gradle.specific.UMLPBackendTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskProvider;
@@ -53,6 +52,9 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
     // Only during compilation of the backend
     // TODO: Use constant for jsweet-core
     project.getDependencies().add("compileOnly", "org.jsweet:jsweet-core:6.3.0");
+
+    // apply last, since the test infrastructure tasks import properties from backend tasks
+    project.getPluginManager().apply("de.rwth.se.umlp-tool-testing");
   }
 
   // Add generated files to SourceSets

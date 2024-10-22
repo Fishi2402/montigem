@@ -35,6 +35,7 @@ import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentTemplates;
 import umlp.generator.gui.gentypescript.printer.TSUtilsPrinter;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
+import umlp.generator.util.PathUtil;
 import umlp.generator.util.TagLookUp;
 
 import java.util.ArrayList;
@@ -179,9 +180,13 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
 
       extraImports.add("import { Input } from '@angular/core';");
       // setter + getter
+      if (UMLPGeneratorConfig.getInstance().isUseJsweet()) {
+//        getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("UMLPArrayList"));
+        mcType = createTypeAndAddImports(typeSTE);
+      }
       glex.replaceTemplate("umlp.Empty", attr,
           new TemplateHookPoint("umlp.gui2ts.GUI2AngularAttrGetterSetter",
-              attr.getMCType(), node.getName(), getterName, setterName));
+              mcType, node.getName(), getterName, setterName));
     }
   }
 
@@ -251,12 +256,12 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
 
   @Override
   protected void addInit() {
-    getCD4C().addMethod(clazz, "umlp.gui2ts.GUI2AngularInit");
+    getCD4C().addMethod(clazz, "umlp.gui2ts.GUI2AngularInit", clazz.getName());
   }
 
   @Override
   protected void addDestroy() {
-    getCD4C().addMethod(clazz, "umlp.gui2ts.GUI2AngularDestroy", getAndImportManager());
+    getCD4C().addMethod(clazz, "umlp.gui2ts.GUI2AngularDestroy", getAndImportManager(), clazz.getName());
   }
 
   protected void removeObserver() {
@@ -311,17 +316,7 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
         type = TypeScriptTypes.CONSUMER.getMCType();
       }
 
-      // adaptation start
-      // JSweet uses IUMLPList instead of Array
-      if (UMLPGeneratorConfig.getInstance().isUseJsweet()
-          && qType.equals(BuiltInTypes.LIST.getQName())) {
-        type = "IUMLPList";
-        extraImports.add("import { IUMLPList } from '@umlp/commonj2ts';");
-      }
-      else {
-        getCD4C().addImport(clazz, qType);
-      }
-      // adaptation end
+      getCD4C().addImport(clazz, qType);
 
       ASTMCBasicGenericTypeBuilder genTypeBuilder = MCFullGenericTypesMill.mCBasicGenericTypeBuilder()
           .setNamesList(new ArrayList<>(Arrays.asList(type)))

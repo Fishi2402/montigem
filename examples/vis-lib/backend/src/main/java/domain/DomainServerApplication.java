@@ -29,6 +29,23 @@ public class DomainServerApplication extends domain.DomainServerApplicationTOP {
   }
 
   public void createDummyData() {
+
+    Conversation c0 = addConversation("id0");
+
+
+    Message m0 = addMessage("Hi! I am a simple Chatbot ... Just kidding, i'm jst a mockup message ;(", Role.ASSISTANT, Role.USER, LocalDateTime.now());
+    c0.addMessages(m0);
+    Message m1 = addMessage("This could be a user input", Role.USER, Role.ASSISTANT, LocalDateTime.now());
+    c0.addMessages(m1);
+    Message m2 = addMessage("This would be the Response from the chatbot...",Role.ASSISTANT, Role.USER, LocalDateTime.now());
+    c0.addMessages(m2);
+    Message m3 = addMessage("This could be a user input",Role.USER, Role.ASSISTANT, LocalDateTime.now());
+    c0.addMessages(m3);
+    Message m4 = addMessage("This would be the Response from the chatbot...",Role.ASSISTANT, Role.USER, LocalDateTime.now());
+    c0.addMessages(m4);
+
+
+
     Address a;
     a = addAddress("Berlin", "Gitschiner Str.", 9);
     Person alice = addPerson(
@@ -224,6 +241,23 @@ public class DomainServerApplication extends domain.DomainServerApplicationTOP {
 
   protected Person addPerson(String name, LocalDate birthday, Address address) {
     return addPerson(name, birthday, "", false, address);
+  }
+
+  protected Message addMessage(String content, Role sender, Role receiver, LocalDateTime timestamp) {
+    return DomainManager.messageBuilder()
+        .content(content)
+        .sender(sender)
+        .receiver(receiver)
+        .timestamp(timestamp)
+        .build()
+        .get();
+  }
+
+  protected Conversation addConversation(String conversationId) {
+    return DomainManager.conversationBuilder()
+        .conversationid(conversationId)
+        .build()
+        .get();
   }
 
 }

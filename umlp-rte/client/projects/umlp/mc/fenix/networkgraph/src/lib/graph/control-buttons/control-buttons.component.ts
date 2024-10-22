@@ -33,8 +33,8 @@ import {
   templateUrl: "./control-buttons.component.html",
   styleUrls: ["./control-buttons.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  /*standalone: true,
-  imports: [CommonModule, ButtonModule, TooltipModule, SpeedDialModule],*/
+  standalone: true,
+  imports: [CommonModule, ButtonModule, TooltipModule, SpeedDialModule],
 })
 export class ControlButtonsComponent implements OnInit {
   /** Event emitter for group selection change. */

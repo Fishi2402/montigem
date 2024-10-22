@@ -1,0 +1,23 @@
+package example_input;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.input.GemTextareaInput;
+import Domain.Message;
+
+
+component GemChat(List<Message> messages) {
+
+  @GemCard(title="Chat with me :)",component=
+    @GemColumn(components=[
+      @iterate(Message msg : messages) {
+        @GemRow(components = [
+          @GemText(value=msg.content)]);
+    },@GemRow(components=[
+        @GemColumn(width="80%",components=[@GemTextareaInput(placeholder="Start Chatting :)")]),
+        @GemColumn(width="20%",components=[@GemButton(leftClick=sendMessage(),label="send")])])
+    ])
+  );
+}

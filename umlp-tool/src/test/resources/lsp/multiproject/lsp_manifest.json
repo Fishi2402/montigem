@@ -1,0 +1,14 @@
+{
+  "subprojects": [
+    {
+      "name": "subproject1"
+    },
+    {
+      "name": "subproject2"
+    }
+  ],
+  "ignoredDirectories": [
+    "build",
+    "node_modules"
+  ]
+}

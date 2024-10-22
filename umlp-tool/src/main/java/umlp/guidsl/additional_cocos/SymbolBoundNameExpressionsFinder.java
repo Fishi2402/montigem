@@ -30,6 +30,10 @@ public class SymbolBoundNameExpressionsFinder implements GUIDSLVisitor2, CommonE
     return instance;
   }
 
+  public static void unsetInstance() {
+    instance = null;
+  }
+
   public GUIDSLTraverser getTraverser() {
     return traverser;
   }

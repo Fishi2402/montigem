@@ -22,7 +22,7 @@ public class UpdateOptionalTest extends Associations2SQLDBTestSetup {
 
     EleftToRight e = Associations2Manager.eleftToRightBuilder().fleftToRight(f1).build().get();
 
-    var dao = new AssocEleftToRight_eleftToRight_fleftToRight_FleftToRightDAO();
+    var dao = new AssocEleftToRight_eleftToRight_fleftToRight_fleftToRightDAO();
 
     long fIdFromDb1 = dao.selectFleftToRightIdForEleftToRight(e.getGemId()).get();
     assertEquals(f1.getGemId(), fIdFromDb1);
@@ -39,7 +39,7 @@ public class UpdateOptionalTest extends Associations2SQLDBTestSetup {
 
     EleftToRight e = Associations2Manager.eleftToRightBuilder().build().get();
 
-    var dao = new AssocEleftToRight_eleftToRight_fleftToRight_FleftToRightDAO();
+    var dao = new AssocEleftToRight_eleftToRight_fleftToRight_fleftToRightDAO();
 
     Optional<Long> res = dao.selectFleftToRightIdForEleftToRight(e.getGemId());
     assertTrue(res.isEmpty());

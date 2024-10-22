@@ -12,6 +12,7 @@ import de.monticore.guidsl._symboltable.BuiltInTypes;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
+import de.monticore.types.check.SymTypeOfObject;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
@@ -191,6 +192,31 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
     String domain = util.getMainDomainModelSimpleName().get().toLowerCase();
 
     getCD4C().addImport(clazz, insertDomain2QType(qManager, domain));
+    return manager;
+  }
+
+  /**
+   * Constructs and imports the Manager of a domain object
+   * @param domainType
+   * @return
+   */
+  protected String getAndImportManager(SymTypeOfObject domainType) {
+    // TODO: Right now only really useful for objects from extended CDs
+    // By default, the getAndImportManager() should be used
+    // Right now this is only used for singletons
+
+    // We want to import java generated somepackage.flensburg.FlensburgManager;
+    // but the qualified name of domain is actually somepackage.Flensburg
+    // append Manager and insert lowercase cd name (e.g., flensburg) to get the result
+    String packageName = domainType.getTypeInfo().getPackageName();
+    int dotIx = packageName.lastIndexOf('.');
+    String domainSimple = dotIx == -1? packageName : packageName.substring(dotIx+1);
+
+    String manager = ManagerDecorator.getClassName(domainSimple);
+    String domain = packageName.toLowerCase();
+
+    getCD4C().addImport(clazz, insertDomain2QType(manager, domain));
+
     return manager;
   }
 

@@ -57,7 +57,7 @@ public class UMLPSymbolTables {
         }
       }
     };
-    UMLPTraverser traverser = UMLPMill.traverser();
+    UMLPTraverser traverser = UMLPMill.inheritanceTraverser();
     traverser.add4CDBasis(visitor);
     origCD.accept(traverser);
 

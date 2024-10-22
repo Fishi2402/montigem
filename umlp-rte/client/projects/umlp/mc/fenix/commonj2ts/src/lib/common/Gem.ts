@@ -139,6 +139,9 @@ export class Gem<E extends GemIdentifiable> implements GemIdentifiable {
   }
 
   public isPresent(): Promise<boolean> {
+    if (this.loadingState === LoadingState.EMPTY) {
+      return Promise.resolve(false);
+    }
     return this.loadIfRequired().then(_ => {
       return this.loadingState === LoadingState.LOADED && this.object != null
     });
@@ -163,7 +166,13 @@ export class Gem<E extends GemIdentifiable> implements GemIdentifiable {
 
   loadPromise: Promise<LoadResult<E>>;
   loadIfRequired(): Promise<LoadResult<E>> {
-    if (this.loadPromise == undefined && this.loadingState === LoadingState.NOT_YET_LOADED) {
+    if (this.loadPromise === undefined && this.object !== undefined && this.object !== null) {
+      this.loadPromise = Promise.resolve(new LoadResult(this.object));
+    }
+    else if (this.loadingState === LoadingState.EMPTY) {
+      this.loadPromise = Promise.resolve(new LoadResult(LoadingState.EMPTY));
+    }
+    else if (this.loadPromise === undefined && this.loadingState === LoadingState.NOT_YET_LOADED) {
       this.loadPromise = Promise.resolve(this.loadFunction()).then((result: LoadResult<E>) => {
         if (result.isPresent()) {
           this.set(result.get());

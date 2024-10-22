@@ -12,6 +12,7 @@ import de.monticore.cdassociation._visitor.CDAssociationVisitor2;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._visitor.CDBasisVisitor2;
+import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 
 /*
@@ -39,10 +40,14 @@ public class UMLSetDefaultsTrafo implements CDAssociationVisitor2, CDBasisVisito
       return;
     }
 
-    String name = UMLPMill.prettyPrint(ast.getLeft().getMCQualifiedType(), false) +
-            "_" + ast.getLeft().getName().replace(".", "_") +
-            "_" + ast.getRight().getName().replace(".", "_") +
-            "_" + UMLPMill.prettyPrint(ast.getRight().getMCQualifiedType(), false);
+    String name = StringTransformations.uncapitalize(
+        UMLPMill.prettyPrint(ast.getLeft().getMCQualifiedType(), false)
+            .replace(".", "_")) +
+        "_" + ast.getLeft().getName().replace(".", "_") +
+        "_" + ast.getRight().getName().replace(".", "_") +
+        "_" + StringTransformations.uncapitalize(
+            UMLPMill.prettyPrint(ast.getRight().getMCQualifiedType(), false)
+                    .replace(".", "_"));
     ast.setName(name);
   }
 

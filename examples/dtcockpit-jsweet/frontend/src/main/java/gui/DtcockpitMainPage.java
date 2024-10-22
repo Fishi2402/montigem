@@ -17,6 +17,7 @@ public class DtcockpitMainPage extends DtcockpitMainPageTOP {
     if (!DtcockpitSecurityManager.isSignedIn()) {
       Router.navigate("gui", "login", "LoginPage");
     }
+    super.init();
   }
 
   @Override

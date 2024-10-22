@@ -9,6 +9,7 @@
     [value]="value"
     [ngModel]="selectedValue"
     [disabled]="disabled"
+    [name]="group"
     (ngModelChange)="onSelectedValueChange($event)"
   />
   <span *ngIf="rightPosition">{{ labelText }}</span>

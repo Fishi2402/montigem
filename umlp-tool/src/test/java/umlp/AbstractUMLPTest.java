@@ -78,6 +78,7 @@ public abstract class AbstractUMLPTest {
   public ASTOCLCompilationUnit parseOCL(String testPath, String model, ASTCDCompilationUnit cdAst) {
     Path m = Paths.get(testPath, model);
     assertTrue(m.toFile().exists());
+    OCLMill.init();
     try {
       Optional<ASTOCLCompilationUnit> ast = OCLMill.parser().parse(m.toString());
       assertTrue(ast.isPresent());
@@ -105,16 +106,16 @@ public abstract class AbstractUMLPTest {
   }
 
   protected void runAfterParseTrafo(ASTCDCompilationUnit node){
-    UMLPTraverser trav = UMLPMill.traverser();
+    UMLPTraverser trav = UMLPMill.inheritanceTraverser();
     CD4CodeAfterParseTrafo.init(new CDAfterParseHelper(), trav);
     node.accept(trav);
 
-    UMLImportTrafo importTrafo = new UMLImportTrafo(CD4CodeMill.traverser());
+    UMLImportTrafo importTrafo = new UMLImportTrafo(CD4CodeMill.inheritanceTraverser());
     importTrafo.transform(node);
   }
 
   protected void runAfterParseTrafoForMerge(ASTCDCompilationUnit node){
-    UMLPTraverser trav = UMLPMill.traverser();
+    UMLPTraverser trav = UMLPMill.inheritanceTraverser();
     CDMergeAfterParseTrafo.init(new CDAfterParseHelper(), trav);
     node.accept(trav);
   }
@@ -164,13 +165,13 @@ public abstract class AbstractUMLPTest {
   }
 
   public void runDefaultTrafos(ASTCDCompilationUnit node) {
-    UMLAttrToAssocTrafo assocTrafo = new UMLAttrToAssocTrafo(CD4CodeMill.traverser());
+    UMLAttrToAssocTrafo assocTrafo = new UMLAttrToAssocTrafo(CD4CodeMill.inheritanceTraverser());
     assocTrafo.transform(node);
 
-    UMLSetDefaultsTrafo assocNameTrafo = new UMLSetDefaultsTrafo(CD4CodeMill.traverser());
+    UMLSetDefaultsTrafo assocNameTrafo = new UMLSetDefaultsTrafo(CD4CodeMill.inheritanceTraverser());
     assocNameTrafo.transform(node);
 
-    UMLAssocToAttrTrafo assoc2Trafo = new UMLAssocToAttrTrafo(CD4CodeMill.traverser());
+    UMLAssocToAttrTrafo assoc2Trafo = new UMLAssocToAttrTrafo(CD4CodeMill.inheritanceTraverser());
     assoc2Trafo.transform(node);
   }
 

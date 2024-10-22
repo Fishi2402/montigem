@@ -1,15 +1,19 @@
-project('frontend') {
-  sourceSets.main.java.srcDirs += ['../backend/src/main/java', '../backend/build/umlp/backend']
+plugins {
+  id 'java'
 }
 
-//project('frontend').translateTypeScript.dependsOn(project('backend').generateUmlpBackend)
-project('frontend').getTasksByName('translateJava2TSDomain', true).forEach {a -> {
-  project('backend').getTasksByName('generateUmlpBackend', true).forEach {b -> {
-    a.dependsOn(b)
-  }}
-}}
-project('frontend').getTasksByName('translateJava2TSGUI', true).forEach {a -> {
-  project('backend').getTasksByName('generateUmlpBackend', true).forEach {b -> {
-    a.dependsOn(b)
-  }}
-}}
+group 'org.example'
+version '7.7.0-SNAPSHOT'
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+test {
+  useJUnitPlatform()
+}

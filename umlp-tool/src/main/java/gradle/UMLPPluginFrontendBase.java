@@ -63,7 +63,6 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
     // and Hot-Reload aborts
     TaskProvider<Sync> syncDomainTask = createSyncDomainTask(project, frontendSetupTask);
     TaskProvider<Sync> syncGuiTask = createSyncGuiTask(project, frontendSetupTask);
-    TaskProvider<Sync> syncTSHWC = createSyncTSHWC(project, frontendSetupTask);
 
     domainSymbolGenTask.configure(umlpTask -> {
       umlpTask.dependsOn(frontendSetupTask.get());
@@ -72,14 +71,10 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
       umlpTask.getSymbolDir().from(domainSymbolGenTask.get().getSymbolOutDir());
       umlpTask.dependsOn(domainSymbolGenTask);
     });
-    syncTSHWC.configure(umlpTask -> {
-      umlpTask.dependsOn(syncGuiTask, frontendSetupTask);
-    });
     //
 
     // Lifecycle task "generate"
-    var generateTask = project.getTasks().register("generate", task -> task.dependsOn(syncDomainTask, syncGuiTask, syncTSHWC));
-
+    TaskProvider generateTask = project.getTasks().register("generate", task -> task.dependsOn(syncDomainTask, syncGuiTask));
 
     // Lifecycle task "continuous". Intended use is with "--continuous" flag of gradle & HotReload
     registerContinuousTask(project, generateTask);
@@ -167,15 +162,6 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
     return project.getTasks().register("SYNC_" + UMLP_FRONTEND_GUI_TASK_NAME, Sync.class, syncTask -> {
       syncTask.into(Path.of(frontendSetupTask.get().getOutput().getAsFile().get().getAbsolutePath(), "build", "appgui").toFile());
       syncTask.exclude("**/*.java");
-    });
-  }
-
-  private TaskProvider<Sync> createSyncTSHWC(Project project, TaskProvider<FrontendSetup> frontendSetupTask) {
-    return project.getTasks().register("SYNC_TSHWC", Sync.class, syncTask -> {
-      syncTask.from(new File(project.getProjectDir(), "src/main/ts"));
-      syncTask.into(Path.of(frontendSetupTask.get().getOutput().getAsFile().get().getAbsolutePath(), "build", "appgui").toFile());
-      syncTask.exclude("**/*.java");
-      syncTask.getPreserve().include("**");
     });
   }
 

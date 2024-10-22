@@ -1,0 +1,16 @@
+{
+  "adapters": [
+    "umlp.jsweet.extension.UMLPJSweetDomainAdapter",
+    "umlp.jsweet.extension.domainAdapters.CarrentalImportAdapter"
+  ],
+  "@Replace('this.password = this.password;')": {
+    "include": ["**.User_setPassword.init()"]
+  },
+  "@Replace('//Do nothing);')": {
+    "include": [
+      "**.PipelineInformationExtractor.init()",
+      "**.PipelineInformationExtractor.extractPipelineDataOf(..)"
+    ]
+  },
+  "domainName": "Carrental"
+}

@@ -5,7 +5,6 @@ import de.se_rwth.commons.logging.Log;
 import umlp.UMLPReports;
 import umlp.UMLPTool;
 import umlp.cli.common.IOperation;
-import umlp.cli.common.IfElseOp;
 import umlp.cli.common.Pipeline;
 
 import java.io.File;
@@ -25,6 +24,7 @@ import static umlp.UMLPToolOptions.OUTPUT;
 import static umlp.UMLPToolOptions.PATH;
 import static umlp.UMLPToolOptions.REPORTS;
 import static umlp.UMLPToolOptions.REPORT_BASE;
+import static umlp.UMLPToolOptions.TEST_INFRASTRUCTURE;
 import static umlp.UMLPToolOptions.TMPL_PATH;
 
 /**
@@ -69,6 +69,7 @@ public class UMLPToolPipelineSetup {
   final IOperation<UMLPPipelineData> loadTmplPath;
 
   final Pipeline<UMLPPipelineData> cd2Gui;
+  final Pipeline<UMLPPipelineData> testInfrastructure;
   final Pipeline<UMLPPipelineData> guiVar;
   final Pipeline<UMLPPipelineData> umlp;
   final Pipeline<UMLPPipelineData> gui;
@@ -106,7 +107,7 @@ public class UMLPToolPipelineSetup {
       if (DEBUG.isSelected(data.getCmd())) {
         Log.initDEBUG();
       } else {
-        Log.initWARN();
+//        Log.initWARN(); // TODO: modify, not init! (ErrorHook/System#exit behavior) - monticore/monticore#4317
       }
       Log.enableFailQuick(enableFailQuick);
       return true;
@@ -163,31 +164,31 @@ public class UMLPToolPipelineSetup {
       return true;
     });
 
-    // Register the 4 alternatives: CD2GUI, GuiVar, UMLP or GUI
-    main.register(
-        new IfElseOp<>(data -> GUIRTETypes.isSelected(data.cmd), // if
-            (guiRTETypes = new Pipeline<>()), // then
-            new IfElseOp<>(
-                data -> CD2GUI.isSelected(data.cmd), // if
-                (cd2Gui = new Pipeline<>()), // then
-                // else:
-                new IfElseOp<>(data -> GUIVariability.isSelected(data.cmd), //if
-                    (guiVar = new Pipeline<>()), // then
-                    // else:
-                    new IfElseOp<>(data -> data.inputFile.getName().endsWith(".umlp"), //if
-                        (umlp = new Pipeline<>()), // then
-                        new IfElseOp<>(data -> data.inputFile.getName().endsWith(".gui"),
-                            (gui = new Pipeline<>()), // then
-                            data -> {
-                              Log.error("Unhandled input file");
-                              return true;
-                            }
-                        )
-                    )
-                )
-            )
-        )
-    );
+    // Register the 5 alternatives: CD2GUI, GuiVar, UMLP or GUI or TEST_INFRASTRUCTURE
+    guiRTETypes = new Pipeline<>();
+    cd2Gui = new Pipeline<>();
+    guiVar = new Pipeline<>();
+    umlp = new Pipeline<>();
+    gui = new Pipeline<>();
+    testInfrastructure = new Pipeline<>();
+    main.register(data -> {
+      if (GUIRTETypes.isSelected(data.cmd)) {
+        return guiRTETypes.doWork(data);
+      }else  if (CD2GUI.isSelected(data.cmd)) {
+        return cd2Gui.doWork(data);
+      } else if (TEST_INFRASTRUCTURE.isSelected(data.cmd)) {
+        return testInfrastructure.doWork(data);
+      } else if (GUIVariability.isSelected(data.cmd)) {
+        return guiVar.doWork(data);
+      } else if (data.inputFile.getName().endsWith(".umlp")) {
+        return umlp.doWork(data);
+      } else if (data.inputFile.getName().endsWith(".gui")) {
+        return gui.doWork(data);
+      } else {
+        Log.error("Unhandled input file");
+        return true;
+      }
+    });
 
     // Next, actually populate the individual pipelines of the options
     cd2GUIPipelineSetup = new CD2GUIPipelineSetup();

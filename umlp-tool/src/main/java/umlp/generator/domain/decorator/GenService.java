@@ -81,6 +81,10 @@ public class GenService {
     String json = "";
     if (typeCheck.isBoolean(type)) {
       json = "getAsJsonBoolean().getValue()";
+    } else if (typeCheck.isShort(type)) {
+      json = "getAsJsonNumber().getNumberAsShort()";
+    } else if (typeCheck.isByte(type)) {
+      json = "getAsJsonNumber().getNumberAsByte()";
     } else if (typeCheck.isInt(type)) {
       json = "getAsJsonNumber().getNumberAsInteger()";
     } else if (typeCheck.isFloat(type)) {
@@ -459,6 +463,10 @@ public class GenService {
       return "Short";
     } else if (TypeCheck.isInt(type)) {
       return "Integer";
+    } else if(TypeCheck.isByte(type)) {
+      return "Byte";
+    } else if(TypeCheck.isShort(type)) {
+      return "Short";
     } else if (TypeCheck.isLong(type)) {
       return "Long";
     } else if (TypeCheck.isFloat(type)) {

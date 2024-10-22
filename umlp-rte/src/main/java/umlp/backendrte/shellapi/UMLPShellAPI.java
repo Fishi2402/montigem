@@ -2,7 +2,6 @@
 package umlp.backendrte.shellapi;
 
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.MCFatalError;
 import org.springframework.shell.Availability;
 import org.springframework.web.socket.WebSocketHttpHeaders;
 import umlp.backendrte.command.ClientCommandManager;

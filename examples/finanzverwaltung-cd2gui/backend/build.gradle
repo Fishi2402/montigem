@@ -43,9 +43,8 @@ dependencies {
     exclude module: 'log4j-to-slf4j'
   }
 
-  implementation group: 'umlp', name: 'umlp-rte', version: mc_version, {
-    exclude group: "org.slf4j", module: "slf4j-simple"
-  }
+  implementation project(':umlp-rte')
+  testImplementation project(':umlp-test-rte')
 
   implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
   implementation 'com.h2database:h2:2.1.214'

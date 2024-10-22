@@ -2,6 +2,7 @@ package simple;
 
 import context.ContextDAOFactory;
 import context.test_infrastructure.ContextSQLDBTestSetup;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.MCFatalError;
 import org.junit.jupiter.api.Test;
 
@@ -21,6 +22,7 @@ public class DAOAccessTest extends ContextSQLDBTestSetup {
 
     //clients may not
     getClients(0).activate();
+    Log.setErrorHook(() -> {throw new MCFatalError("msg");});
     assertThrows(MCFatalError.class, ContextDAOFactory::getPersonDAO);
   }
 }

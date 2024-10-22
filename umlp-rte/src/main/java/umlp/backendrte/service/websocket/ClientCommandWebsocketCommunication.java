@@ -2,7 +2,6 @@
 package umlp.backendrte.service.websocket;
 
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.MCFatalError;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketHttpHeaders;
@@ -76,17 +75,8 @@ public class ClientCommandWebsocketCommunication extends TextWebSocketHandler im
       if (messages.containsKey(command.getId())) {
         CommandResult<?> response = messages.get(command.getId());
         messages.remove(command.getId());
-        // Stelle sicher, dass der Typ auch nach dem Deserialisieren gesichert ist
-        if (((ParameterizedType) command.getClass()
-            .getGenericSuperclass()).getActualTypeArguments()[0].getTypeName()
-            .equals(response.getTypeParameter())) {
-          result = (CommandResult<T>) response;
-          Log.info(String.format("Received answer from server for command with id %s: %s", command.getId(), CommandObjectMapper.serializeResponse(result)), this.getClass().getName());
-        }
-        else {
-          warnCouldNotReceive(command);
-          return new SimpleResult<>(command.getId(), LoadingState.FAILED_TO_LOAD, command.getCommandType());
-        }
+        result = (CommandResult<T>) response;
+        Log.info(String.format("Received answer from server for command with id %s: %s", command.getId(), CommandObjectMapper.serializeResponse(result)), this.getClass().getName());
       } else {
         warnCouldNotReceive(command);
         return new SimpleResult<>(command.getId(), LoadingState.FAILED_TO_LOAD, command.getCommandType());
@@ -147,28 +137,15 @@ public class ClientCommandWebsocketCommunication extends TextWebSocketHandler im
       // Fall initialisierung der Verbindung
       try {
         this.participantId = Optional.of(Long.parseLong(message.getPayload()));
-      }
-      catch (NumberFormatException e) {
+      } catch (NumberFormatException e) {
         this.participantId = Optional.empty();
       }
       initLatch.countDown();
-    }
-    else {
+    } else {
       // Fall Antwort eines Requests, oder Erhalt eines weitergeleiteten Commands zur
       // Datensynchronisierung.
-      // TODO AHe, MH: Wasteful way of distinguishing commands and results
-      Optional<CommandResult<?>> commandResultOptional = Optional.empty();
-      try {
-        commandResultOptional = CommandObjectMapper.deserializeResponse(message.getPayload());
-      } catch (MCFatalError ex) {
-
-      }
-      Optional<Command<Object>> commandOptional = Optional.empty();
-      try {
-        commandOptional = CommandObjectMapper.deserializeCommand(message.getPayload());
-      } catch (MCFatalError ex) {
-
-      }
+      Optional<CommandResult<?>> commandResultOptional
+          = CommandObjectMapper.deserializeResponse(message.getPayload());
 
       if (commandResultOptional.isPresent()) { // TODO MH: Need to check for participantId
         // Fall Antwort eines Requests
@@ -180,19 +157,21 @@ public class ClientCommandWebsocketCommunication extends TextWebSocketHandler im
         synchronized (this) {
           notify();
         }
-      }
-      else if (commandOptional.isPresent()) {
-        //Fall Antwort eines Erhalt eines weitergeleiteten Commands zur Datensynchronisierung
-        Optional<Command<Object>> finalCommandOptional = commandOptional;
-        executor.submit(() -> {
-          for (Consumer<Command<Object>> consumer : commandObserver) {
-            consumer.accept(finalCommandOptional.get());
+      } else {
+        Optional<Command<Object>> commandOptional
+            = CommandObjectMapper.deserializeCommand(message.getPayload());
+
+        if (commandOptional.isPresent()) {
+          //Fall Antwort eines Erhalt eines weitergeleiteten Commands zur Datensynchronisierung
+          executor.submit(() -> {
+            for (Consumer<Command<Object>> consumer : commandObserver) {
+              consumer.accept(commandOptional.get());
+            }
+          });
+        } else {
+          synchronized (this) {
+            notify();
           }
-        });
-      }
-      else {
-        synchronized (this) {
-          notify();
         }
       }
     }

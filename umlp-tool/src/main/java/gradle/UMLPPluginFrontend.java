@@ -46,10 +46,12 @@ public abstract class UMLPPluginFrontend implements Plugin<Project> {
     project.getPluginManager().apply("base");
 
     boolean j2ts = getBooleanProjectProperty(project, "j2ts");
+    // only temporarily
+    boolean j2ts_vislib = getBooleanProjectProperty(project, "j2ts_vislib");
 
     // This plugin either applies the With or Non JSweet variant
 
-    if (j2ts) {
+    if (j2ts || j2ts_vislib) {
       project.getPluginManager().apply(UMLPPluginFrontendWithJSweet.class);
     }
     else {

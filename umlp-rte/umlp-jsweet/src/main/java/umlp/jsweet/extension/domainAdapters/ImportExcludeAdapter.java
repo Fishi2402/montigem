@@ -14,6 +14,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+/**
+ * This adapter excludes every class, which are not transpiled, from getting imported.
+ * E.g., DAO classes
+ */
 public class ImportExcludeAdapter extends PrinterAdapter {
   public ImportExcludeAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);

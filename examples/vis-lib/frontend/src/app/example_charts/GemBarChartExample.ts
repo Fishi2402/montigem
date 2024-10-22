@@ -2,7 +2,12 @@
 
 import { Component } from '@angular/core';
 import { GemBarChartExampleComponent, config } from '@src/example_charts/GemBarChartExampleComponent';
-import { GemBarChartData, GemBarChartEntry } from '@umlp/charts';
+import {
+  GemBarChartData,
+  GemBarChartDataBuilder,
+  GemBarChartEntry,
+  GemBarChartEntryBuilder
+} from '@umlp/charts';
 
 @Component({
   standalone: true,
@@ -21,14 +26,14 @@ export class GemBarChartExample extends GemBarChartExampleComponent {
     let labels: string[] = ["People born before 1993", "People born between 1993 and 1998", "People born after 1998"];
 
     let dataEntries: GemBarChartEntry[] = [
-      {
-        label: "People with less than 2 friends",
-        data: [0, 0, 0],
-      },
-      {
-        label: "People with more than 2 friends",
-        data: [0, 0, 0],
-      },
+      new GemBarChartEntryBuilder()
+          .label("People with less than 2 friends")
+          .data([0, 0, 0])
+          .build(),
+      new GemBarChartEntryBuilder()
+          .label("People with more than 2 friends")
+          .data([0, 0, 0])
+          .build()
     ];
 
     for (const person of this.persons) {
@@ -36,35 +41,52 @@ export class GemBarChartExample extends GemBarChartExampleComponent {
       let numberFriends = person.getFriendsList().length;
       if (birthday < 1993) {
         if (numberFriends <= 2) {
-          dataEntries[0].data[0] += 1;
+          dataEntries[0]._data[0] += 1;
         } else {
-          dataEntries[1].data[0] += 1;
+          dataEntries[1]._data[0] += 1;
         }
       } else if (birthday >= 1993 && birthday <= 1998) {
         if (numberFriends <= 2) {
-          dataEntries[0].data[1] += 1;
+          dataEntries[0]._data[1] += 1;
         } else {
-          dataEntries[1].data[1] += 1;
+          dataEntries[1]._data[1] += 1;
         }
       } else {
         if (numberFriends <= 2) {
-          dataEntries[0].data[2] += 1;
+          dataEntries[0]._data[2] += 1;
         } else {
-          dataEntries[1].data[2] += 1;
+          dataEntries[1]._data[2] += 1;
         }
       }
     }
 
-    let data: GemBarChartData = {
-      labels: labels,
-      entries: dataEntries
-    }
+    let data = new GemBarChartDataBuilder()
+        .labels(labels)
+        .entries(dataEntries)
+        .build();
 
-    if (JSON.stringify(data) === this.chartDataHash && this.chartData) {
+    let dataString = JSON.stringify(data, (key, value) => {
+      if (key == "realBuilder") {
+        return undefined;
+      }
+      else {
+        return value;
+      }
+    });
+    if (dataString === this.chartDataHash && this.chartData) {
       return this.chartData;
     }
     this.chartData = data;
-    this.chartDataHash = JSON.stringify(this.chartData);
+
+    let chartDataString = JSON.stringify(this.chartData, (key, value) => {
+      if (key == "realBuilder") {
+        return undefined;
+      }
+      else {
+        return value;
+      }
+    });
+    this.chartDataHash = chartDataString;
     return this.chartData;
   }
 

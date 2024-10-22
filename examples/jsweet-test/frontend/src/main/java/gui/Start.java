@@ -8,6 +8,7 @@ import jsweettest.A;
 import umlp.backendrte.common.GemList;
 import umlp.jsweet.extension.annotation.Component;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -17,7 +18,7 @@ public class Start extends StartTOP {
   @Override
   public String getErsterValue() {
     String res = "A: ";
-    for (A a : JsweettestManager.getAList()) {
+    for (A a : ((List<A>) JsweettestManager.getAList())) {
       res += a.getValue() + ", ";
     }
     if (res.length() > 3) {
@@ -29,7 +30,7 @@ public class Start extends StartTOP {
   @Override
   public String getZweiterValue() {
     String res = "B: ";
-    for (B b : JsweettestManager.getBList()) {
+    for (B b : (List<B>) JsweettestManager.getBList()) {
       res += b.getValue() + " id: " +b.getGemId() + ", ";
     }
     if (res.length() > 3) {

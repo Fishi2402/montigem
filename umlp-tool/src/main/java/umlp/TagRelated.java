@@ -44,7 +44,7 @@ public class TagRelated {
     // Extract singleton stereotypes and store them ina
     ASTTagUnit tagUnit = TagRepository.loadTempTagModel(ast.getCDDefinition().getName()).get();
     boolean[] hasTags = new boolean[1];
-    UMLPTraverser traverser = UMLPMill.traverser();
+    UMLPTraverser traverser = UMLPMill.inheritanceTraverser();
     SimpleSymbolTagger tagger = new SimpleSymbolTagger(() -> Collections.singleton(tagUnit));
     traverser.add4CDBasis(new CDBasisVisitor2() {
       @Override

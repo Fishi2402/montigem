@@ -5,7 +5,7 @@ package flensburg.gui.neuepersonanlegen;
 
 import flensburg.gui.AbstractGUITest;
 import org.junit.jupiter.api.Test;
-import umlp.backendrte.test_infrastructure.ClientSetup;
+import umlp.test_rte.ClientSetup;
 
 /* Test GUI (also E2E) for creation of Person using generated java-gui from this gui-model:
 package stanley.neuepersonanlegen;

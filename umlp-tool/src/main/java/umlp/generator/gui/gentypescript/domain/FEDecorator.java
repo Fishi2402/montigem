@@ -10,6 +10,7 @@ import umlp.UMLPMill;
 import umlp.generator.domain.decorator.BEDecorator;
 import umlp.generator.domain.decorator.BaseClassObjectMapperDecorator;
 import umlp.generator.domain.decorator.BuilderDecorator;
+import umlp.generator.domain.decorator.ClientDelegationManagerDecorator;
 import umlp.generator.domain.decorator.CommandObjectMapperDecorator;
 import umlp.generator.domain.decorator.CommandObserverDecorator;
 import umlp.generator.domain.decorator.CommandResultDeSerDecorator;
@@ -130,6 +131,10 @@ public class FEDecorator extends BEDecorator {
     ManagerClientImplDecorator managerClientImplDecorator = new TSManagerClientImplDecorator(glex);
     managerClientImplDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ManagerClientImplDecorator", FEDecorator.class.getName());
+
+    ClientDelegationManagerDecorator clientDelegationManagerDecorator = new ClientDelegationManagerDecorator(glex);
+    clientDelegationManagerDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: ClientDelegationManagerDecorator", FEDecorator.class.getName());
 
     ManagerMockDecorator managerMockDecorator = new TSManagerMockDecorator(glex);
     managerMockDecorator.transform(cdAST, decoratedAST);

@@ -3,6 +3,8 @@ package umlp;
 
 import de.monticore.cd._parser.CDAfterParseHelper;
 import de.monticore.cd._symboltable.BuiltInTypes;
+import de.monticore.cd._symboltable.CDDeSerHelper;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
@@ -12,6 +14,7 @@ import de.monticore.cdbasis._visitor.CDBasisVisitor2;
 import de.monticore.class2mc.OOClass2MCResolver;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.gradle.common.GradleLog;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl.GUIDSLTool;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
@@ -50,10 +53,14 @@ import umlp.generator.domain.UMLAttrToAssocTrafo;
 import umlp.generator.domain.UMLImportTrafo;
 import umlp.generator.domain.UMLSetDefaultsTrafo;
 import umlp.generator.gui.coco.GUIDSLCoCosForUMLP;
+import umlp.generator.gui.genjava.decorator.CallTypeDeriver;
+import umlp.generator.gui.genjava.decorator.InitDependencyTree;
+import umlp.generator.gui.genjava.decorator.StaticObjectsCollector;
 import umlp.generator.util.TagLookUp;
 import umlp.guidsl.additional_cocos.GUIParamDefaultOnlyLiteralCoCo;
 import umlp.guidsl.additional_cocos.GUIParamNoUnderspecifiedGenericsCoCo;
 import umlp.guidsl.additional_cocos.NameExpressionsSymbolBoundExceptCallsCoCo;
+import umlp.guidsl.additional_cocos.SymbolBoundNameExpressionsFinder;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -138,6 +145,12 @@ public class UMLPTool extends UMLPToolTOP {
     tool.run(args);
   }
 
+  public static void gradleMain(String[] args) {
+    GradleLog.init(); // by default, don't use SLF4J log
+    UMLPTool tool = new UMLPTool();
+    tool.run(args);
+  }
+
   public static ASTOCLCompilationUnit parseOCL(String model) {
     try {
       OCLParser parser = new OCLParser();
@@ -184,9 +197,38 @@ public class UMLPTool extends UMLPToolTOP {
     }
     finally {
       UMLPMill.globalScope().clear();
+      GUIDSLMill.globalScope().clear();
       Reporting.off();
+      cleanUpAfterMemoryLeakingSingletons();
     }
   }
+
+  public static void cleanUpAfterMemoryLeakingSingletons() {
+    // Gradle (nor se-commons-gradle) does not drop an isolated classloaders content:
+    // https://github.com/gradle/gradle/issues/18313
+
+    // Fix some memory leaks (singletons with a List/Map/Caches... storing ASTNodes/Symbols/... )
+    InitDependencyTree.cleanUp();
+    SymbolBoundNameExpressionsFinder.unsetInstance();
+    CDDeSerHelper.reset(); // This https://git.rwth-aachen.de/monticore/monticore/-/issues/4306
+    StaticObjectsCollector.unsetInstance();
+    CallTypeDeriver.unsetInstance();
+
+    AbstractDecorator.cleanUp();
+    TagLookUp.cleanUp();
+    CD4C.reset();
+
+    // Also reset the mills
+    UMLPMill.reset();
+    GUIDSLMill.reset();
+
+    // The SummaryReporter -> ReportingRepository#table is rooted in the Log instance
+    Log.internalRemove();
+    // Make sure to remove all ReportHooks, as otherwise e.g. an
+    // UMLP SummaryReporter is still present when we now work on GUI models next turn
+    Reporting.clearReportHooks();
+  }
+
 
   public static List<String> getSingletonClasses(ASTCDCompilationUnit ast) {
     List<String> singletonClasses = new ArrayList<>();
@@ -198,7 +240,7 @@ public class UMLPTool extends UMLPToolTOP {
         }
       }
     };
-    UMLPTraverser t = UMLPMill.traverser();
+    UMLPTraverser t = UMLPMill.inheritanceTraverser();
     t.add4CDBasis(v);
     ast.accept(t);
 
@@ -262,29 +304,29 @@ public class UMLPTool extends UMLPToolTOP {
   }
 
   public void runAfterParseTrafo(ASTCDCompilationUnit node) {
-    UMLPTraverser trav = UMLPMill.traverser();
+    UMLPTraverser trav = UMLPMill.inheritanceTraverser();
     CD4CodeAfterParseTrafo.init(new CDAfterParseHelper(), trav);
     node.accept(trav);
 
-    UMLImportTrafo importTrafo = new UMLImportTrafo(CD4CodeMill.traverser());
+    UMLImportTrafo importTrafo = new UMLImportTrafo(CD4CodeMill.inheritanceTraverser());
     importTrafo.transform(node);
     logTrafoExec("UMLImportTrafo", node);
   }
 
   public void runDefaultTrafos(ASTCDCompilationUnit node) {
-    UMLAttrToAssocTrafo assocTrafo = new UMLAttrToAssocTrafo(CD4CodeMill.traverser());
+    UMLAttrToAssocTrafo assocTrafo = new UMLAttrToAssocTrafo(CD4CodeMill.inheritanceTraverser());
     assocTrafo.transform(node);
     logTrafoExec("UMLAttrToAssocTrafo", node);
 
-    UMLAssocToAttrTrafo assoc2Trafo = new UMLAssocToAttrTrafo(CD4CodeMill.traverser());
+    UMLAssocToAttrTrafo assoc2Trafo = new UMLAssocToAttrTrafo(CD4CodeMill.inheritanceTraverser());
     assoc2Trafo.transform(node);
     logTrafoExec("UMLAssocToAttrTrafo", node);
 
-    UMLSetDefaultsTrafo assocNameTrafo = new UMLSetDefaultsTrafo(CD4CodeMill.traverser());
+    UMLSetDefaultsTrafo assocNameTrafo = new UMLSetDefaultsTrafo(CD4CodeMill.inheritanceTraverser());
     assocNameTrafo.transform(node);
     logTrafoExec("UMLSetDefaultsTrafo", node);
 
-    UMLAddCommentTrafo commentTrafo = new UMLAddCommentTrafo(CD4CodeMill.traverser());
+    UMLAddCommentTrafo commentTrafo = new UMLAddCommentTrafo(CD4CodeMill.inheritanceTraverser());
     commentTrafo.transform(node);
     logTrafoExec("UMLAddCommentTrafo", node);
 

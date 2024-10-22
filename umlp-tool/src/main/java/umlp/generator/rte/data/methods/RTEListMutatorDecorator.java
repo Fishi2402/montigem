@@ -33,16 +33,26 @@ public class RTEListMutatorDecorator extends ListMutatorDecorator {
     List<ASTCDMethod> methodList = Lists.newArrayList();
     if (!ast.getModifier().isDerived() && !ast.getModifier().isReadonly()) {
       List<ASTCDMethod> setters = createSetter(ast);
-      glex.replaceTemplate(EMPTY_BODY, setters.get(0), new TemplateHookPoint(getAddSetterTemplate(),
+      glex.replaceTemplate(EMPTY_BODY, setters.get(0), new TemplateHookPoint(
+          getAddSetterTemplate(),
           service.getNativeAttributeName(ast.getName()), setters.get(0)));
 
-      glex.replaceTemplate(EMPTY_BODY, setters.get(1), new TemplateHookPoint(getRemoveSetterTemplate(),
+      glex.replaceTemplate(EMPTY_BODY, setters.get(1), new TemplateHookPoint(
+          getAddIndexSetterTemplate(),
           service.getNativeAttributeName(ast.getName()), setters.get(1)));
+
+      glex.replaceTemplate(EMPTY_BODY, setters.get(2), new TemplateHookPoint(getRemoveSetterTemplate(),
+          service.getNativeAttributeName(ast.getName()), setters.get(2)));
 
       methodList.addAll(setters);
 
+      methodList.add(createSetListMethod(ast));
     }
     return methodList;
+  }
+
+  protected String getAddIndexSetterTemplate() {
+    return "rte.methods.lists.AddIndexSetter";
   }
 
   protected String getAddSetterTemplate() {
@@ -56,6 +66,7 @@ public class RTEListMutatorDecorator extends ListMutatorDecorator {
   @Override
   protected List<String> getMethodSignatures() {
     return Arrays.asList(
+        String.format(ADD, capitalizedAttributeNameWithOutS, attributeType),
         String.format(ADD_, capitalizedAttributeNameWithOutS, attributeType),
         String.format(REMOVE_, attributeType, capitalizedAttributeNameWithOutS));
   }

@@ -67,9 +67,12 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements OnInit 
     });
   }
 
-  public initOptions() {
+  // hacky way to ensure that initP already happened
+  public override initStep() {
+    super.initStep();
+
     // Initialize joinConnectionOptions
-    this.getP()?.getDeconstructionOfGem().load().then(pack => {
+    this.getP().getDeconstructionOfGem().load().then(pack => {
       pack._internal_getAllConnectionsGemList().loadAll().then(kinds => {
         const kindNames = kinds.map(k => k.getNameAfterLoadPromise())
         Promise.all(kindNames).then(x => {
@@ -157,7 +160,7 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements OnInit 
   }
 
   public override getSelectJoinConnectionEntry(): string {
-    if (this.joinConnectionEntry) {
+    if (this.joinConnectionEntry && this.joinConnectionEntry != "") {
       return this.joinConnectionEntry
     }
     else {

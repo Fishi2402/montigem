@@ -5,6 +5,10 @@ plugins {
   id "de.rwth.se.umlp-tool-frontend"
 }
 
+if (project.hasProperty('j2ts_vislib') && j2ts_vislib.toString().toBoolean()) {
+  project.ext.j2ts = true
+}
+
 node {
   nodeProjectDir = file("${buildDir}/frontendGen")
 }
@@ -12,14 +16,17 @@ node {
 dependencies {
   implementation project(":examples:vis-lib:backend")
   implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version
+  testImplementation project(':umlp-test-rte')
 
-  testImplementation 'com.microsoft.playwright:playwright:1.44.0'
-  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version
+// JSweet
+  if (project.hasProperty('j2ts') && j2ts.toString().toBoolean()) {
+    domainSources project(":examples:vis-lib:backend")
+  }
 }
 
 genGUI {
   domainModels = ["Domain"]
-  guiCreateModels = ["person.CreatePerson", "person.CreatePersonWithFriends","person.CreateClubWithMembers"]
+  guiCreateModels = ["person.CreatePerson", "person.CreatePersonWithFriends", "person.CreateClubWithMembers"]
 
   /*
   debug = true
@@ -27,41 +34,58 @@ genGUI {
   /**/
 }
 
-//translateJava2TSDomain {
-//  verbose = true
-//}
-//
-//translateJava2TSGUI {
-//  verbose = true
-//}
-//
-//genJava2TSConfig {
-//  domainModel = 'Domain'
-//}
+if (!project.hasProperty('j2ts') || !j2ts.toString().toBoolean()) {
+  apply plugin: 'java'
+  tasks.withType(JavaCompile) {
+    enabled = false
+  }
+  sourceSets.main.java.srcDirs = []
+}
+
+if (project.hasProperty('j2ts') && j2ts.toString().toBoolean()) {
+  translateJava2TSDomain {
+    verbose = true
+  }
+
+  translateJava2TSGUI {
+    verbose = true
+  }
+}
+
+task copyAppJsweet(type: Copy) {
+  onlyIf { project.hasProperty('j2ts') && project.j2ts.toString().toBoolean() }
+  if (project.hasProperty('j2ts') && j2ts.toString().toBoolean()) {
+    dependsOn(SYNC_TSHWC)
+  }
+  from 'config/src/appjsweet'
+  into 'build/frontendGen/src/app/'
+}
+// End JSweet
 
 nodeSetup.dependsOn(frontendSetup)
 npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 
 def prebuildTasks = [
     npmInstall,
-    generate
+    generate,
+    copyAppJsweet
 ]
 
 tasks.register('testApp', NpxTask) {
-  dependsOn(prebuildTasks)
+  dependsOn(prebuildTasks, project(":umlp-rte:client").tasks.matching { it.name.startsWith("copy_") })
   command = "ng"
   args = ["test"]
 }
 
 tasks.register('buildApp', NpxTask) {
-  dependsOn(testApp)
+  dependsOn(testApp, project(":umlp-rte:client").tasks.matching { it.name.startsWith("copy_") })
   command = "ng"
   args = ["build"]
 }
 assemble.dependsOn(buildApp)
 
 tasks.register('runApp', NpxTask) {
-  dependsOn(prebuildTasks)
+  dependsOn(prebuildTasks, project(":umlp-rte:client").tasks.matching { it.name.startsWith("copy_") })
   command = "ng"
   args = ["serve"]
 }
@@ -71,8 +95,8 @@ tasks.register('run') {
 }
 
 test {
-  dependsOn buildApp
-  useJUnitPlatform(){
+  dependsOn npmInstall
+  useJUnitPlatform() {
     excludeTags "SlowTest"
   }
 }
@@ -88,3 +112,8 @@ tasks.register("slowtest", Test) {
   dependsOn npmInstall
 }
 
+
+task runAppNoBuild(type: NpxTask) {
+  command = "ng"
+  args = ["serve"]
+}

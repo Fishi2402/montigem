@@ -58,7 +58,7 @@ public class GuiPipelineSetup {
     for (String guiPathString : modelPathStrings) {
       modelPaths.add(Paths.get(guiPathString));
     }
-    checkSameFilenames(modelPaths);
+    // checkSameFilenames(modelPaths);
 
     for (String guiPathString : modelPathStrings) {
       Path guiModel = Paths.get(guiPathString);

@@ -18,7 +18,7 @@ import { MultiSelectModule } from "primeng/multiselect";
  */
 @Component({
   selector: "graph-search-node",
-  /*standalone: true,
+  standalone: true,
   imports: [
     CommonModule,
     DropdownModule,
@@ -28,8 +28,7 @@ import { MultiSelectModule } from "primeng/multiselect";
     ButtonModule,
     ListboxModule,
     MultiSelectModule,
-  ],*/
-
+  ],
   templateUrl: "./search-node.component.html",
   styleUrls: ["./search-node.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -92,6 +91,5 @@ export class SearchNodeComponent {
     this.visibleSearchNodes = this.searchNodes.filter(
       (node: SearchInformation) => !this.graphManager.graph?.getNodeAttribute(node.nodeKey, "hidden")
     );
-    console.debug(this.searchNodes, this.visibleSearchNodes)
   }
 }

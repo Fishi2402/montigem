@@ -91,18 +91,11 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
   @Inject
   abstract public WorkerExecutor getWorkerExecutor();
 
-  public UMLPJava2TypeScriptTask() {
-    getJsweetDir().convention(getProject().getLayout().getBuildDirectory().dir("jsweet/" + getName()));
-    getJsweetWorkingDir().convention(getProject().getLayout().getBuildDirectory().dir("jsweetWorkingDir/" + getName()));
-    getCandiesJsOutDir().convention(getJsweetWorkingDir().dir("candies/" + getName()));
-  }
-
   @TaskAction
   public void run() throws IOException {
 
-    File baseDirectory = getProject().getLayout().getBuildDirectory().dir("jsweet").get().getAsFile();
+    File baseDirectory = getJsweetDir().get().getAsFile();
     File workingDir = getJsweetWorkingDir().get().getAsFile();
-    File jSweetDir = getJsweetDir().get().getAsFile();
     File candiesJsOut = getCandiesJsOutDir().get().getAsFile();
 
     File outputDir = getOutputDir().get().getAsFile();

@@ -1,5 +1,5 @@
 <div style="border: 2px solid #000; padding: 10px; flex-direction: row" *ngFor="let photo of getPhotos()">
-  <img style="max-width:100px" [src]='getPhotoPath(photo)' alt="Error trying to display {{photo.getFilename()}}.">
+  <img style="max-width:100px" [src]='getPhotoPath(photo)' alt="Error trying to display {{photo.getFilename()}}." (click)="openImageInNewTab(photo)">
   <gem-button class='deletePhoto'
               label = "Delete Photo"
               (leftClick) = 'deletePhoto(photo)'

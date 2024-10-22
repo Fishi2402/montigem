@@ -53,7 +53,8 @@ dependencies {
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit_version
   testImplementation group: 'com.github.javaparser', name: 'javaparser-symbol-solver-core', version: javaparser_version
   testImplementation group: 'org.mockito', name: 'mockito-inline', version: mockito_version
-  testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+  testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.11.2")
+  testRuntimeOnly gradleApi()
 
   grammar("de.monticore.lang:cd4analysis:$mc_version:grammars")
   grammar("de.monticore:monticore-grammar:$mc_version") {
@@ -78,21 +79,7 @@ repositories {
   if(shouldBuildIntelliJPlugin) {
     maven { url 'https://www.jitpack.io' }
   }
-  // Only use jsweet repos for everything in org.jsweet*(excl jsweet-core which is in maven-central)
-  // since they throw 409 errors for dependencies in other groups
-  maven {
-    url "https://repository.jsweet.org/artifactory/libs-snapshot-local"
-    mavenContent {
-      includeModuleByRegex("org[.]jsweet.*", "(?!jsweet-core).*")
-    }
-  }
-  maven {
-    url "https://repository.jsweet.org/artifactory/libs-release-local"
-    mavenContent {
-      includeModuleByRegex("org[.]jsweet.*", "(?!jsweet-core).*")
-    }
-  }
-}
+ }
 
 test {
   systemProperty 'guidsl-default-types', configurations.guiDefaultTypes.asPath
@@ -151,17 +138,58 @@ task autoconfigure(type: AutoconfigureTask) {
 tasks.build.dependsOn tasks.named('autoconfigure')
 
 if(shouldBuildIntelliJPlugin) {
-  def lspWorkdir = file("../examples/sehub/models").getAbsolutePath()
+  def lspWorkdir = file("../examples/").getAbsolutePath()
 
   runIde {
+    environment.put("LSP_PORT", "3000")
     args += lspWorkdir
   }
 
 tasks.register('runLsp', JavaExec) {
     classpath tasks.packUMLPWithGUILanguageServer.archiveFile.get().asFile
-    args("-port", "3000", "-r", "-mp", lspWorkdir)
+    args("-port", "3000", "-r", "-mp", lspWorkdir, "-mup")
     environment("LSP_SYSTEM_EXIT", "false")
     dependsOn tasks.packUMLPWithGUILanguageServer
+  }
+}
+
+if(shouldBuildVscodePlugin) {
+  task runVscodePluginMultiproject(type: JavaExec) {
+    def generatorDirConfig = generateUMLPWithGUILanguageServer.getMclsgPluginAggregationExtension()
+    def lspWorkDir = project.getProjectDir().toPath().getParent().resolve("examples").toAbsolutePath().toString()
+    classpath(packUMLPWithGUILanguageServer.archiveFile.get())
+    environment(generatorDirConfig.getSimpleName().toUpperCase() + "_LSP_PORT", "3000");
+    args("-sock", "-port", "3000", "-mp", lspWorkDir, "-mup");
+
+    doFirst {
+      def timerTask = new TimerTask() {
+        private final String langName = generatorDirConfig.getSimpleName()
+        private final String genDir = generatorDirConfig.getFullVscodePluginDir()
+
+        @Override
+        void run() {
+          def processBuilder
+          if (System.getProperty("os.name").toLowerCase().contains("win")) {
+            processBuilder = new ProcessBuilder("cmd.exe", "/c", "code", "--extensionDevelopmentPath", genDir, lspWorkDir
+            )
+          } else {
+            processBuilder = new ProcessBuilder("code", "--extensionDevelopmentPath", genDir, lspWorkDir)
+          }
+
+          processBuilder.environment().put("UMLPWITHGUI_LSP_PORT", "3000")
+
+          try {
+            processBuilder.start()
+          } catch (IOException e) {
+            throw new RuntimeException(e)
+          }
+        }
+      }
+
+      new Timer().schedule(timerTask, 2000)
+    }
+    dependsOn packUMLPWithGUILanguageServer
+    dependsOn buildUMLPWithGUIVscodePlugin
   }
 }
 
@@ -205,6 +233,10 @@ gradlePlugin {
       id = "de.rwth.se.umlp-tool-backend-test"
       implementationClass = "gradle.UMLPPluginBackendTest"
     }
+    umlpplugin_testing {
+      id = "de.rwth.se.umlp-tool-testing"
+      implementationClass = "gradle.UMLPPluginTestInfrastructure"
+    }
     umlpplugin_frontend {
       id = "de.rwth.se.umlp-tool-frontend"
       implementationClass = "gradle.UMLPPluginFrontend"
@@ -212,6 +244,10 @@ gradlePlugin {
     umlpplugin_frontend_test {
       id = "de.rwth.se.umlp-tool-frontend-test"
       implementationClass = "gradle.UMLPPluginFrontendTest"
+    }
+    umlpplugin_module_models {
+      id = "de.rwth.se.umlp-tool-module-models"
+      implementationClass = "gradle.module.UMLPPluginModule"
     }
   }
 }

@@ -3,6 +3,7 @@ image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:7-chromiu
 
 variables:
   GRADLE_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
+  FF_TIMESTAMPS: true
 
 cache:
   paths:
@@ -24,6 +25,7 @@ build_no_containers:
   script:
     - "gradle --version"
     - "gradle build --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
+    - "gradle :examples:vis-lib:frontend:build -Dj2ts_vislib=true"
     # add one of the downloaded nodejs distributions to PATH, so we can build the vscode plugin
     - export PATH="$PATH:$(dirname $(find $(pwd) -type f -name "node" -print -quit))"
     - "cd umlp-tool"
@@ -37,10 +39,6 @@ build_no_containers:
       - products/demorec/frontend/build/frontendGen/node_modules
   artifacts:
     paths:
-      - examples/weather/frontend/build/frontendGen/**
-      - examples/sehub/frontend/build/frontendGen/**
-      - examples/dtcockpit/frontend/build/frontendGen/**
-      - products/demorec/frontend/build/frontendGen/**
       - umlp-tool/build/distributions/**
       - umlp-tool/build/generated-sources/UMLPWithGUI/**/*.vsix
     reports:
@@ -51,16 +49,22 @@ build_no_containers:
     refs:
       - dev
 
-build_with_containers:
+build_with_deploy:
   stage: build
   script:
+    # Build project + examples
     - "gradle --version"
     - "gradle build --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
+    - "gradle :examples:vis-lib:frontend:build -Dj2ts_vislib=true"
+    # Deploy RTEs
+    - "gradle :umlp-tool:publish :umlp-rte:publish :umlp-test-rte:publish :umlp-rte:umlp-jsweet:publish :umlp-rte:client:publish -P mavenPassword=$pass -P mavenUser=$user"
+    # Build editor plugin
     # add one of the downloaded nodejs distributions to PATH, so we can build the vscode plugin
     - export PATH="$PATH:$(dirname $(find $(pwd) -type f -name "node" -print -quit))"
     - "cd umlp-tool"
     - "gradle buildPlugin packageUMLPWithGUIVscodePlugin -P buildIntelliJPlugin=true -P buildVscodePlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
     - "cd .."
+    # Build containers
     # Weather Backend
     - "gradle :examples:weather:backend:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
       -Djib.from.image=registry.git.rwth-aachen.de/monticore/container-registry/eclipse-temurin:11-jre \
@@ -101,9 +105,17 @@ build_with_containers:
       -Djib.to.image=$CI_REGISTRY_IMAGE/demorec_backend:latest \
       -Djib.to.auth.username=$CI_REGISTRY_USER  \
       -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
+    # Vis-Lib Application
+    - "gradle :examples:vis-lib:backend:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
+      -Djib.from.image=registry.git.rwth-aachen.de/monticore/container-registry/eclipse-temurin:11-jre \
+      -Djib.from.auth.username=$CI_REGISTRY_USER  \
+      -Djib.from.auth.password=$CI_REGISTRY_PASSWORD \
+      -Djib.to.image=$CI_REGISTRY_IMAGE/vis-lib_backend:latest \
+      -Djib.to.auth.username=$CI_REGISTRY_USER  \
+      -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
 
     # Frontends
-    - "gradle :examples:weather:frontend:deployImageCI :examples:sehub:frontend:deployImageCI :examples:dtcockpit:frontend:deployImageCI :products:demorec:frontend:deployImageCI -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
+    - "gradle :examples:weather:frontend:deployImageCI :examples:sehub:frontend:deployImageCI :examples:dtcockpit:frontend:deployImageCI :products:demorec:frontend:deployImageCI :examples:vis-lib:frontend:deployImageCI -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
   cache:
     paths:
       - .gradle/nodejs
@@ -113,17 +125,13 @@ build_with_containers:
       - products/demorec/frontend/build/frontendGen/node_modules
   artifacts:
     paths:
-      - examples/weather/frontend/build/frontendGen/**
-      - examples/sehub/frontend/build/frontendGen/**
-      - examples/dtcockpit/frontend/build/frontendGen/**
-      - products/demorec/frontend/build/frontendGen/**
       - umlp-tool/build/distributions/**
       - umlp-tool/build/generated-sources/UMLPWithGUI/**/*.vsix
     reports:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
     expire_in: 1 week
-  only:
+  only: # This job is deploying docker-containers... this should _really_ only happen from the `dev` branch
     refs:
       - dev
 
@@ -148,13 +156,6 @@ slowtest:
       # Lets gitlab render infos about failed tests
       junit: "**/slowtest/**/TEST-*.xml"
     expire_in: 1 week
-
-deployRTE:
-  stage: deploy
-  script:
-    - "gradle :umlp-tool:publish :umlp-rte:publish :umlp-rte:umlp-jsweet:publish :umlp-rte:client:publish -P mavenPassword=$pass -P mavenUser=$user"
-  only:
-    - dev
 
 trigger-doppelkopf:
   stage: testDeployed
@@ -197,6 +198,15 @@ trigger-iop-datamodel-demonstrator:
   allow_failure: false # Failure is not an option
   trigger:
     project: monticore/umlp-anwendungen/iop-datamodel-demonstrator
+    branch: dev
+  only:
+    - dev
+
+trigger-wirca-demonstrator:
+  stage: testDeployed
+  allow_failure: false # Failure is not an option
+  trigger:
+    project: monticore/umlp-anwendungen/wirca-demonstrator
     branch: dev
   only:
     - dev
