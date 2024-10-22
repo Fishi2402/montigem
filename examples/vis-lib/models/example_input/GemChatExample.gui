@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_input;
+import example_input.GemChat;
+import Domain.Message;
+import mc.fenix.arrange.GemColumn;
+
+page GemChatExample(List<Message> messages) {
+  @GemColumn(width="50%",components =[@GemChat(messages=messages)])
+  ;
+}

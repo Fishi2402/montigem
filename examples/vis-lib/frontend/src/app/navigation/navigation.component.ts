@@ -17,6 +17,7 @@ export class Navigation {
   }
 
   readonly items: { url: string, title: string }[] = [
+    { url: '/example_input/GemChatExample', title: 'Chat' },
     { url: '/person/SimpleOverview', title: 'Overview' },
     { url: '/example_basic/GemAudioExample', title: 'Audio' },
     { url: '/example_basic/GemButtonExample', title: 'Button' },
@@ -39,6 +40,7 @@ export class Navigation {
     { url: '/example_input/GemAutocompleteInputExample', title: 'AutocompleteInput' },
     { url: '/example_input/GemTextareaInputExample', title: 'TextareaInput' },
     { url: '/example_input/GemCheckBoxInputExample', title: 'CheckBoxInput' },
+
     /*
     { url: '/example_input/GemRangeInputExample', title: 'RangeInput' },
     { url: '/example_input/GemRadioInputExample', title: 'RadioInput' },

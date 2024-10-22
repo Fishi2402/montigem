@@ -1,6 +1,25 @@
 /* (c) https://github.com/MontiCore/monticore */
+import java.time.LocalDateTime;
 
 classdiagram Domain {
+
+  class Conversation {
+    String conversationid;
+  }
+
+  class Message {
+    String content;
+    Role sender;
+    Role receiver;
+    LocalDateTime timestamp;
+
+  }
+
+  enum Role {
+    SYSTEM, USER, ASSISTANT, TOOL;
+  }
+
+
   class Person {
     java.time.LocalDate birthday;
     String name;
@@ -35,4 +54,7 @@ classdiagram Domain {
   association stocks [*] Person -> (stocks) Stock [*];
 
   association [*] Club -> (members) Person [*];
+
+  association [1] Conversation -> (messages) Message[*];
+
 }
