@@ -5,6 +5,7 @@ package umlp.generator.domain.decorator;
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
@@ -100,6 +101,7 @@ public class ObserverDecorator extends AbstractDecorator {
           }
 
           String fullType = getCDPrinter().prettyprint(createType(a));
+          addImport(ast, a);
           generationSummary.addSignature(cd4C.addMethod(ast,
                                                         NOTIFY_TEMPLATE,
                                                         attributeName,
@@ -173,6 +175,9 @@ public class ObserverDecorator extends AbstractDecorator {
     addImports(domainClass, ast);
 
     return ast;
+  }
+
+  protected void addImport(ASTCDType observerType, ASTCDAttribute attr) {
   }
 
   private void addImportForImportedObservers(ASTCDType domainClass, ASTCDType observerType) {

@@ -2,18 +2,19 @@
 
 package umlp.generator.gui.gentypescript.domain;
 
-import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
-import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeOfGenerics;
 import de.se_rwth.commons.Joiners;
+import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ObserverDecorator;
 
-import java.util.ArrayList;
+import java.util.Optional;
 
 public class TSObserverDecorator extends ObserverDecorator {
 
@@ -25,29 +26,32 @@ public class TSObserverDecorator extends ObserverDecorator {
 
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
-    this.generationDetails = new ArrayList<>();
-
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     this.astcdPackage = astcdPackage.getName();
-    for (ASTCDClass c : getNonDerivedDomainClasses(origCD)) {
-      ASTCDInterface i = createInterface(c);
-      /*
-      ASTCDInterface mixin = createInterface(c);
-      glex.replaceTemplate("umlp.gui2ts.TSInterfaceDeclaration",
-          mixin, new TemplateHookPoint("umlp.gui2ts.TSInterface2Mixin"));
-      /**/
-      astcdPackage.addCDElement(withOrigin(i));
-    }
+    super.transform(origCD, decoratedCD);
+  }
 
-    for (ASTCDInterface c : getNonDerivedDomainInterfaces(origCD)) {
-      ASTCDInterface i = createInterface(c);
-      /*
-      ASTCDInterface mixin = createInterface(c);
-      glex.replaceTemplate("umlp.gui2ts.TSInterfaceDeclaration",
-          mixin, new TemplateHookPoint("umlp.gui2ts.TSInterface2Mixin"));
-      /**/
-      astcdPackage.addCDElement(withOrigin(i));
+  @Override
+  protected void addImport(ASTCDType observerType, ASTCDAttribute attr) {
+    if (attr.isPresentSymbol()) {
+      Optional<SymTypeExpression> ste = getImportedType(attr.getSymbol().getType());
+      if (ste.isPresent()) {
+        getCD4C().addImport(observerType, Joiners.DOT.join(astcdPackage, ste.get().print()));
+      }
     }
+  }
+
+  protected Optional<SymTypeExpression> getImportedType(SymTypeExpression ste) {
+    if (ste.isGenericType()) {
+      SymTypeOfGenerics genericType = ste.asGenericType();
+      if (genericType.sizeArguments() == 1) {
+        return getImportedType(genericType.getArgument(0));
+      }
+    }
+    if (ste.isObjectType() && GenService.isCDType(ste)) {
+      return Optional.of(ste);
+    }
+    return Optional.empty();
   }
 
   @Override
