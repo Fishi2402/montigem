@@ -82,12 +82,6 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
         clazz, new StringHookPoint(getAndImportDomainObserver() + "("));
     glex.addAfterTemplate("umlp.gui2ts.TSEmptyMixin",
         clazz, new StringHookPoint(")"));
-
-    // add observer init
-    glex.addAfterTemplate(
-        getInitBodyHookpoint(),
-        new TemplateHookPoint(getAddObserverTemplate(), getAndImportManager())
-    );
   }
 
   @Override

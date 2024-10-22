@@ -38,13 +38,13 @@ public class TSObserverMixinDecorator extends TSObserverDecorator {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     this.astcdPackage = astcdPackage.getName();
     for (ASTCDClass c : getNonDerivedDomainClasses(origCD)) {
-      ASTCDInterface i = createInterface(c);
+      ASTCDInterface i = createObserverInterface(c);
       interface2Mixin(i);
       astcdPackage.addCDElement(withOrigin(i));
     }
 
     for (ASTCDInterface c : getNonDerivedDomainInterfaces(origCD)) {
-      ASTCDInterface i = createInterface(c);
+      ASTCDInterface i = createObserverInterface(c);
       interface2Mixin(i);
       astcdPackage.addCDElement(withOrigin(i));
     }

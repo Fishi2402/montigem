@@ -46,8 +46,6 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
   }
 
-  ;
-
   public void transform(ASTGUICompilationUnit gui, ASTCDCompilationUnit cd) {
     this.gui = gui;
     replaceTemplates();
