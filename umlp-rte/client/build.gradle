@@ -248,11 +248,12 @@ def copyTaskPostFix = "Types"
 libs.each {
   def libName = it
   def copyTaskName = "${copyTaskPrefix}${libName}${copyTaskPostFix}"
-  def sourceDir = "build/guiComponentTypes/mc/fenix/${libName}"
+  def sourceDir = "${project.buildDir}/guiComponentTypes/mc/fenix/${libName}"
   def targetDir = "projects/umlp/mc/fenix/${libName}/src/lib/gen"
   def buildTaskName = "${buildTaskPrefix}${libName}"
 
   task "${copyTaskName}"(type: Copy) {
+    dependsOn translateJava2TSDomain
     from "${sourceDir}"
     into "${targetDir}"
   }

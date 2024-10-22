@@ -72,20 +72,20 @@ def prebuildTasks = [
 ]
 
 tasks.register('testApp', NpxTask) {
-  dependsOn(prebuildTasks)
+  dependsOn(prebuildTasks, project(":umlp-rte:client").tasks.matching { it.name.startsWith("copy_") })
   command = "ng"
   args = ["test"]
 }
 
 tasks.register('buildApp', NpxTask) {
-  dependsOn(testApp)
+  dependsOn(testApp, project(":umlp-rte:client").tasks.matching { it.name.startsWith("copy_") })
   command = "ng"
   args = ["build"]
 }
 assemble.dependsOn(buildApp)
 
 tasks.register('runApp', NpxTask) {
-  dependsOn(prebuildTasks)
+  dependsOn(prebuildTasks, project(":umlp-rte:client").tasks.matching { it.name.startsWith("copy_") })
   command = "ng"
   args = ["serve"]
 }
