@@ -2,7 +2,8 @@
 
 import { Component } from '@angular/core';
 import { GemGaugeChartExampleComponent, config } from '@src/example_charts/GemGaugeChartExampleComponent';
-import { GemGaugeChartData, GemGaugeChartEntry } from '@umlp/charts';
+import { GemGaugeChartData, GemGaugeChartDataBuilder, GemGaugeChartEntry, GemGaugeChartEntryBuilder } from '@umlp/charts';
+import {StringifyForBuilder} from "@umlp/commonj2ts";
 
 @Component({
   standalone: true,
@@ -19,21 +20,21 @@ export class GemGaugeChartExample extends GemGaugeChartExampleComponent {
       return null;
     }
     let entries: GemGaugeChartEntry[] = [
-      {
-        name: "People born before 1993",
-        value: 0,
-        type: '#friends'
-      },
-      {
-        name: "People born between 1993 and 1998",
-        value: 0,
-        type: '#friends'
-      },
-      {
-        name: "People born after 1998",
-        value: 0,
-        type: '#friends'
-      }
+        new GemGaugeChartEntryBuilder()
+            .name("People born before 1993")
+            .value(0)
+            .type( '#friends')
+            .build(),
+        new GemGaugeChartEntryBuilder()
+            .name("People born between 1993 and 1998")
+            .value(0)
+            .type( '#friends')
+            .build(),
+        new GemGaugeChartEntryBuilder()
+            .name("People born after 1998")
+            .value(0)
+            .type( '#friends')
+            .build()
     ];
     let numberFriendsGroup1 = 0;
     let numberPeopleInGroup1 = 0;
@@ -56,17 +57,17 @@ export class GemGaugeChartExample extends GemGaugeChartExampleComponent {
       }
     }
 
-    entries[0].value = Math.round(numberFriendsGroup1 / numberPeopleInGroup1) * 10;
-    entries[1].value = Math.round(numberFriendsGroup2 / numberPeopleInGroup2) * 10;
-    entries[2].value = Math.round(numberFriendsGroup3 / numberPeopleInGroup3) * 10;
+    entries[0].setValue(Math.round(numberFriendsGroup1 / numberPeopleInGroup1) * 10)
+    entries[1].setValue(Math.round(numberFriendsGroup2 / numberPeopleInGroup2) * 10);
+    entries[2].setValue(Math.round(numberFriendsGroup3 / numberPeopleInGroup3) * 10);
 
-    let data: GemGaugeChartData = { entries: entries };
+    let data: GemGaugeChartData = new GemGaugeChartDataBuilder().entries(entries).build();
 
-    if (JSON.stringify(data) === this.chartDataHash && this.chartData) {
+    if (StringifyForBuilder(data) === this.chartDataHash && this.chartData) {
       return this.chartData;
     }
     this.chartData = data;
-    this.chartDataHash = JSON.stringify(this.chartData);
+    this.chartDataHash = StringifyForBuilder(this.chartData);
     return this.chartData;
   }
 

@@ -8,6 +8,7 @@ import {
   GemBarChartEntry,
   GemBarChartEntryBuilder
 } from '@umlp/charts';
+import {StringifyForBuilder} from "@umlp/commonj2ts";
 
 @Component({
   standalone: true,
@@ -65,27 +66,13 @@ export class GemBarChartExample extends GemBarChartExampleComponent {
         .entries(dataEntries)
         .build();
 
-    let dataString = JSON.stringify(data, (key, value) => {
-      if (key == "realBuilder") {
-        return undefined;
-      }
-      else {
-        return value;
-      }
-    });
+    let dataString =StringifyForBuilder(data)
     if (dataString === this.chartDataHash && this.chartData) {
       return this.chartData;
     }
     this.chartData = data;
 
-    let chartDataString = JSON.stringify(this.chartData, (key, value) => {
-      if (key == "realBuilder") {
-        return undefined;
-      }
-      else {
-        return value;
-      }
-    });
+    let chartDataString = StringifyForBuilder(this.chartData);
     this.chartDataHash = chartDataString;
     return this.chartData;
   }

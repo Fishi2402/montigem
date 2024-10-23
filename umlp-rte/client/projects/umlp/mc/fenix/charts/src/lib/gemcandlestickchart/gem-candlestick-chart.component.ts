@@ -1,6 +1,6 @@
 import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { GemCandlestickChart as GemCandlestickChartTOP } from './gem-candlestick-chart/gem-candlestick-chart.component-gen';
-import { GemData2CandlestickChart } from './gem-candlestick-chart-types/gem-candlestick-chart-types.types-gen';
+import { GemData2CandlestickChart } from '../gen/gemcandlestickcharttypes/GemData2CandlestickChart';
 import * as moment from 'moment';
 
 @Component({
@@ -370,11 +370,11 @@ export class GemCandlestickChart extends GemCandlestickChartTOP {
     }
     //this.layout(null, null);
     for (let index = 0; index < data.length; index++) {
-      this._data[0].x.push(data[index].label);
-      this._data[0].open.push(data[index].value[0]);
-      this._data[0].high.push(data[index].value[1]);
-      this._data[0].low.push(data[index].value[2]);
-      this._data[0].close.push(data[index].value[3]);
+      this._data[0].x.push(data[index].getLabel());
+      this._data[0].open.push(data[index].getValue(0));
+      this._data[0].high.push(data[index].getValue(1));
+      this._data[0].low.push(data[index].getValue(2));
+      this._data[0].close.push(data[index].getValue(3));
     }
   }
 
