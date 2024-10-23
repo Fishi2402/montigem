@@ -2,7 +2,13 @@
 
 import { Component } from '@angular/core';
 import { GemGraphChartExampleComponent, config } from '@src/example_charts/GemGraphChartExampleComponent';
-import { GemNetworkData, GemNetworkEdge, GemNetworkNode } from '@umlp/charts';
+import {
+  GemNetworkData, GemNetworkDataBuilder,
+  GemNetworkEdge,
+  GemNetworkEdgeBuilder,
+  GemNetworkNode,
+  GemNetworkNodeBuilder
+} from '@umlp/charts';
 import { Person } from '@src/domain/Person';
 
 @Component({
@@ -26,12 +32,12 @@ export class GemGraphChartExample extends GemGraphChartExampleComponent {
     let mapOfriends = new Map<number, Person[]>;
 
     for (const person of this.persons) {
-      let node = {
-        id: `${nodeId}`,
-        color: "Red",
-        label: person.getName(),
-        mass: person.getFriendsList().length,
-      };
+      let node = new GemNetworkNodeBuilder()
+          .id(`${nodeId}`)
+          .color("Red")
+          .label(person.getName())
+          .mass(person.getFriendsList().length)
+          .build();
       mapOfriends.set(nodeId, person.getFriendsList());
       mapOfPersons.set(person, nodeId);
       nodeId++;
@@ -40,18 +46,18 @@ export class GemGraphChartExample extends GemGraphChartExampleComponent {
 
     mapOfriends.forEach((friends, nodeId) => {
       for (let friend of friends) {
-        let edge = {
-          from: `${nodeId}`,
-          to: `${mapOfPersons.get(friend)}`,
-          length: 200
-        }
+        let edge = new GemNetworkEdgeBuilder()
+            .from(`${nodeId}`)
+            .to(`${mapOfPersons.get(friend)}`)
+            .length(200)
+            .build();
         edges.push(edge);
       }
     })
-    let data: GemNetworkData = {
-      nodes: nodes,
-      edges: edges
-    }
+    let data = new GemNetworkDataBuilder()
+        .nodes(nodes)
+        .edges(edges)
+        .build();
 
     if (JSON.stringify(data) === this.chartDataHash && this.chartData) {
       return this.chartData;
