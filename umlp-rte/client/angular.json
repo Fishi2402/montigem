@@ -302,6 +302,39 @@
         }
       }
     },
+    "@umlp/functiondisplay": {
+      "projectType": "library",
+      "root": "projects/umlp/mc/fenix/functiondisplay",
+      "sourceRoot": "projects/umlp/mc/fenix/functiondisplay/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/umlp/mc/fenix/functiondisplay/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/umlp/mc/fenix/functiondisplay/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/umlp/mc/fenix/functiondisplay/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "tsConfig": "projects/umlp/mc/fenix/functiondisplay/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
     "@umlp/navigation": {
       "projectType": "library",
       "root": "projects/umlp/mc/fenix/navigation",
