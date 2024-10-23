@@ -1,4 +1,4 @@
-package testUpdateOfBuilder;
+package test_update_of_builder;
 
 import mc.fenix.input.GemDropdownInput;
 import mc.fenix.basic.GemText;

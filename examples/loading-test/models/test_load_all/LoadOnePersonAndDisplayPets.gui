@@ -1,12 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
-package testLoadAll;
+package test_load_all;
 
 import mc.fenix.basic.GemText;
 
 import LoadingTests.Person;
 import LoadingTests.Animal;
 
-import testLoadAll.DisplayAnimals;
+import test_load_all.DisplayAnimals;
 
 page LoadOnePersonAndDisplayPets(Person p) {
   @DisplayAnimals(animals = p.pet);

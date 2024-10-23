@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 import { Component } from '@angular/core';
-import { PersonBuilderComponent,config } from '@src/testUpdateAfterBuild/PersonBuilderComponent';
+import { PersonsInBuilderPageComponent,config } from '@src/test_update_after_build/composed_in_builder_page/PersonsInBuilderPageComponent';
 
 
 @Component({
@@ -9,7 +9,7 @@ import { PersonBuilderComponent,config } from '@src/testUpdateAfterBuild/PersonB
   selector: config.selector,
   templateUrl: config.templateUrl,
 })
-export class PersonBuilder extends PersonBuilderComponent {
+export class PersonsInBuilderPage extends PersonsInBuilderPageComponent {
   public override buildPerson() {
     return () => {
       // Default Age

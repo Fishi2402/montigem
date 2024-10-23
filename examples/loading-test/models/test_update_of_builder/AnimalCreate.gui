@@ -1,4 +1,4 @@
-package testUpdateOfBuilder;
+package test_update_of_builder;
 
 import mc.fenix.input.GemDropdownInput;
 import mc.fenix.basic.GemButton;
@@ -6,7 +6,7 @@ import mc.fenix.basic.GemButton;
 import LoadingTests.Food;
 import LoadingTests.Animal;
 
-import testUpdateOfBuilder.AnimalAddFood;
+import test_update_of_builder.AnimalAddFood;
 
 page AnimalCreate(Animal animal) {
 

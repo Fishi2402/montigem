@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package testLoadAll;
+package test_load_all;
 
 import LoadingTests.Person;
 

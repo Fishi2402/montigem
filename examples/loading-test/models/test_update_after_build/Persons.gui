@@ -1,4 +1,4 @@
-package testUpdateAfterBuild;
+package test_update_after_build;
 
 import mc.fenix.input.GemTextInput;
 import mc.fenix.basic.GemButton;

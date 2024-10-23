@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 import { Component } from '@angular/core';
-import { AnimalCreateComponent,config } from '@src/testUpdateOfBuilder/AnimalCreateComponent';
+import { AnimalCreateComponent,config } from '@src/test_update_of_builder/AnimalCreateComponent';
 import {Option} from "@umlp/input";
 import {LoadingTestsManager} from "@src/loadingtests/LoadingTestsManager";
 
