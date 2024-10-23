@@ -35,7 +35,7 @@ public class TestUpdate extends AbstractLoadingTestsE2ETest {
   @Disabled
   @Test
   void testUpdateOnOnePage(Page page) {
-    navAndWait(page, "/testUpdateAfterBuild/onePage/PersonsAndBuilderInOnePage"); //go to page we want to test
+    navAndWait(page, "/test_update_after_build/one_page/PersonsAndBuilderInOnePage"); //go to page we want to test
     // We need this to ensure that all Client Request were answered from the Backend
     testUpdateFunctionality(page);
   }
@@ -43,21 +43,21 @@ public class TestUpdate extends AbstractLoadingTestsE2ETest {
   @Disabled
   @Test
   void testUpdateOnPersonsInBuilderPage(Page page) {
-    navAndWait(page, "/testUpdateAfterBuild/composedInBuilderPage/ComposedPersonsInBuilderPage"); //go to page we want to test
+    navAndWait(page, "/test_update_after_build/composed_in_builder_page/ComposedPersonsInBuilderPage"); //go to page we want to test
     testUpdateFunctionality(page);
   }
 
   @Disabled
   @Test
   void testUpdateOnBuilderInPersonsPage(Page page) {
-    navAndWait(page, "/testUpdateAfterBuild/composedInPersonsPage/ComposedBuilderInPersonsPage"); //go to page we want to test
+    navAndWait(page, "/test_update_after_build/composed_in_persons_page/ComposedBuilderInPersonsPage"); //go to page we want to test
     testUpdateFunctionality(page);
   }
 
   @Disabled
   @Test
   void testUpdateOnComposedPage(Page page) {
-    navAndWait(page, "/testUpdateAfterBuild/composed/ComposedPersonsAndBuilder"); //go to page we want to test
+    navAndWait(page, "/test_update_after_build/composed/ComposedPersonsAndBuilder"); //go to page we want to test
     testUpdateFunctionality(page);
   }
 
