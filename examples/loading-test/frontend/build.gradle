@@ -18,12 +18,10 @@ dependencies {
 genGUI {
   domainModels = ["LoadingTests"]
   guiCreateModels = [
-                     "testUpdateAfterBuild.onePage.PersonsAndBuilderInOnePage",
-                     "testUpdateOfBuilder.AnimalCreate",
-                     "testUpdateAfterBuild.composedInBuilderPage.PersonsInBuilderPage",
-                     "testUpdateAfterBuild.PersonBuilder",
-                     "testBuilder.AnimalCreate",
-                     "testBuilder.PersonCreate"]
+                     "test_update_of_builder.AnimalCreate",
+                     "test_update_after_build.one_page.PersonsAndBuilderInOnePage",
+                     "test_update_after_build.composed_in_builder_page.PersonsInBuilderPage",
+                     "test_update_after_build.PersonBuilder"]
 }
 
 nodeSetup.dependsOn(frontendSetup)

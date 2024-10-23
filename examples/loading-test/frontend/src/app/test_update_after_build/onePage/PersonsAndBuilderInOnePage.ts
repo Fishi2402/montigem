@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 import { Component } from '@angular/core';
-import { PersonsAndBuilderInOnePageComponent,config } from '@src/testUpdateAfterBuild/onePage/PersonsAndBuilderInOnePageComponent';
+import { PersonsAndBuilderInOnePageComponent,config } from '@src/test_update_after_build/one_page/PersonsAndBuilderInOnePageComponent';
 
 
 @Component({

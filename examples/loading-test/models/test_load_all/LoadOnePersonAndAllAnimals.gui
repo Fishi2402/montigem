@@ -1,13 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
-package testLoadAll;
+package test_load_all;
 
 import mc.fenix.basic.GemText;
 
 import LoadingTests.Person;
 import LoadingTests.Animal;
 
-page DisplayAnimals(List<Animal> animals) {
-  @iterate(Animal a : animals) {
+page LoadOnePersonAndAllAnimals(Person person) {
+  @iterate(Animal a : person.pet) {
     @GemText(value=a.name);
   }
 }

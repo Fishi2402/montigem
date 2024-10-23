@@ -39,7 +39,7 @@ public class TestBuilder extends AbstractLoadingTestsE2ETest {
    */
   @Test
   void testUpdateWithBuilder(Page page) {
-    navAndWait(page, "/testUpdateOfBuilder/AnimalCreate"); //go to page we want to test
+    navAndWait(page, "/test_update_of_builder/AnimalCreate"); //go to page we want to test
 
    testUpdateOfPage(page);
   }
@@ -52,7 +52,7 @@ public class TestBuilder extends AbstractLoadingTestsE2ETest {
     // Assert that inspected animal has no food at the start
     assertTrue(LoadingTestsManager.getAnimalSure(gemIdOfAnimal).getFoodList().isEmpty());
 
-    navAndWait(page, "/testUpdateOfBuilder/AnimalCreate/"+gemIdOfAnimal); //go to page we want to test
+    navAndWait(page, "/test_update_of_builder/AnimalCreate/"+gemIdOfAnimal); //go to page we want to test
 
     testUpdateOfPage(page);
   }

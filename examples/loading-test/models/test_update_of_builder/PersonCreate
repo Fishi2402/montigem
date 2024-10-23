@@ -1,4 +1,4 @@
-package testUpdateAfterBuild.onePage;
+package test_update_of_builder;
 
 import mc.fenix.input.GemTextInput;
 import mc.fenix.basic.GemButton;
@@ -7,12 +7,11 @@ import mc.fenix.basic.GemText;
 import LoadingTests.Person;
 import LoadingTests.Animal;
 
+page PersonCreate(Person p, List<Animal> animals) {
 
-page PersonsAndBuilderInOnePage(List<Person> allPersons, Person person) {
-
-  @iterate(Person p : allPersons){
-    @GemText(value=p.name);
-  }
   @GemTextInput(labelText = "Name", entry = person.name);
+  @iterate(Animal a : p.pet){
+    @GemText(value=a.name);
+  }
   @GemButton(label="Build Person", leftClick=buildPerson());
 }
