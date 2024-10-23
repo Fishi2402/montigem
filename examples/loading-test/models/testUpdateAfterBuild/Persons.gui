@@ -1,0 +1,16 @@
+package testUpdateAfterBuild;
+
+import mc.fenix.input.GemTextInput;
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemText;
+
+import LoadingTests.Person;
+import LoadingTests.Animal;
+
+
+page Persons(List<Person> allPersons) {
+
+  @iterate(Person p : allPersons){
+    @GemText(value=p.name);
+  }
+}

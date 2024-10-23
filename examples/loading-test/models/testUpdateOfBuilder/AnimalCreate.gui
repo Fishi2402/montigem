@@ -1,0 +1,15 @@
+package testUpdateOfBuilder;
+
+import mc.fenix.input.GemDropdownInput;
+import mc.fenix.basic.GemButton;
+
+import LoadingTests.Food;
+import LoadingTests.Animal;
+
+import testUpdateOfBuilder.AnimalAddFood;
+
+page AnimalCreate(Animal animal) {
+
+  @AnimalAddFood(animal=animal);
+  @GemButton(label="Create Animal", leftClick = create(animal));
+}
