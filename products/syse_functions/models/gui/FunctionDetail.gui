@@ -13,10 +13,16 @@ import FunctionStructure4Fenix.Port;
 import FunctionStructure4Fenix.Value;
 import FunctionStructure4Fenix.Channel;
 
+import mc.fenix.functiondisplay.FunctionDisplay;
+import mc.fenix.functiondisplay.FunctionStructure4Fenix.Funktion4Display;
+
 page FunctionDetail (Function f) {
   @GemRow(width = "100%", colGap="10px", components = [
     @Navigation(),
-    @GemColumn(width = "100%", component =
+    @GemColumn(width = "80%", component =
+      @FunctionDisplay(data = transformData(f))
+    ),
+    @GemColumn(width = "20%", component =
       @GemCard(title = f.name, component =
         @GemColumn(width = "100%", components = [
           @guard(f.owner != null) {
