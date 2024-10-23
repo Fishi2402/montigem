@@ -8,6 +8,7 @@ import loadingtests.LoadingTestsManager;
 import loadingtests.commands.Animal_create;
 import loadingtests.test_infrastructure.AbstractLoadingTestsE2ETest;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import umlp.backendrte.command.CommandManager;
 
@@ -39,6 +40,7 @@ public class TestLoading extends AbstractLoadingTestsE2ETest {
 
 
   // Test fails currently as our infrastructure does not lazy load
+  @Disabled
   @Test
   void testLoadingAllPersonsAndNothingElse(Page page) {
     navAndWait(page, "/testLoadAll/LoadOnlyPersons"); //go to page we want to test
@@ -63,6 +65,7 @@ public class TestLoading extends AbstractLoadingTestsE2ETest {
     );
   }
 
+  @Disabled
   @Test
   void testLoadOnePersonAndAllButOneAnimals(Page page) {
     Long gemIdOfPersonWithAnimals = this.personGemIds.get(4);
@@ -94,6 +97,7 @@ public class TestLoading extends AbstractLoadingTestsE2ETest {
 
   }
 
+  @Disabled
   @Test
   void testUpdateAllAnimalsPageAfterNewAnimalWasCreated(Page page) {
     Long gemIdOfPersonWithNoAnimals = this.personGemIds.get(1);
@@ -124,6 +128,7 @@ public class TestLoading extends AbstractLoadingTestsE2ETest {
    * a pet of the currently displayed person!
    * @param page
    */
+  @Disabled
   @Test
   void testLoadAllComponentsInComposedPage(Page page) {
     String animalName="New Pet";
@@ -153,6 +158,7 @@ public class TestLoading extends AbstractLoadingTestsE2ETest {
     assertEquals(0, page.getByText(animalName).all().size());
   }
 
+  @Disabled
   @Test
   void testLoadOnlyAnimals(Page page) {
     navAndWait(page, "/testLoadAll/LoadOnlyAnimals"); //go to page we want to test

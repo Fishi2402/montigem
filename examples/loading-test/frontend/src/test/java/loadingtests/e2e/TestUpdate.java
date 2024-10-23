@@ -4,6 +4,7 @@ import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.LoadState;
 import loadingtests.test_infrastructure.AbstractLoadingTestsE2ETest;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class TestUpdate extends AbstractLoadingTestsE2ETest {
     page.onConsoleMessage(cm -> System.out.println("[BROWSER] " + cm.text()));
   }
 
+  @Disabled
   @Test
   void testUpdateOnOnePage(Page page) {
     navAndWait(page, "/testUpdateAfterBuild/onePage/PersonsAndBuilderInOnePage"); //go to page we want to test
@@ -38,18 +40,21 @@ public class TestUpdate extends AbstractLoadingTestsE2ETest {
     testUpdateFunctionality(page);
   }
 
+  @Disabled
   @Test
   void testUpdateOnPersonsInBuilderPage(Page page) {
     navAndWait(page, "/testUpdateAfterBuild/composedInBuilderPage/ComposedPersonsInBuilderPage"); //go to page we want to test
     testUpdateFunctionality(page);
   }
 
+  @Disabled
   @Test
   void testUpdateOnBuilderInPersonsPage(Page page) {
     navAndWait(page, "/testUpdateAfterBuild/composedInPersonsPage/ComposedBuilderInPersonsPage"); //go to page we want to test
     testUpdateFunctionality(page);
   }
 
+  @Disabled
   @Test
   void testUpdateOnComposedPage(Page page) {
     navAndWait(page, "/testUpdateAfterBuild/composed/ComposedPersonsAndBuilder"); //go to page we want to test

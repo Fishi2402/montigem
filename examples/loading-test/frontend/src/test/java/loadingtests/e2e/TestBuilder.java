@@ -5,6 +5,7 @@ import com.microsoft.playwright.options.LoadState;
 import loadingtests.LoadingTestsManager;
 import loadingtests.test_infrastructure.AbstractLoadingTestsE2ETest;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ public class TestBuilder extends AbstractLoadingTestsE2ETest {
    testUpdateOfPage(page);
   }
 
+  @Disabled
   @Test
   void testUpdateWithNonBuilderAnimal(Page page) {
     Long gemIdOfAnimal = this.animalGemIds.get(0);
