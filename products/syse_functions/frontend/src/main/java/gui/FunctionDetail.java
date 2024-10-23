@@ -31,13 +31,6 @@ public class FunctionDetail extends FunctionDetailTOP {
   }
 
   @Override
-  public Consumer<Void> changeOwnerName(Function f) {
-    return $ -> {
-      this.getF().getOwner().setName("TES31231");
-    };
-  }
-
-  //  @Override
   public Consumer<Void> goToFunctionDetailsSub(Function sf) {
     return goToFunctionDetails(sf);
   }

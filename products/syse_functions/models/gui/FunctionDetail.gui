@@ -19,22 +19,13 @@ import mc.fenix.functiondisplay.FunctionStructure4Fenix.Funktion4Display;
 page FunctionDetail (Function f) {
   @GemRow(width = "100%", colGap="10px", components = [
     @Navigation(),
-    @GemColumn(width = "80%", component =
-      @FunctionDisplay(data = transformData(f))
-    ),
-    @GemColumn(width = "20%", component =
+    @GemColumn(width = "50%", component =
       @GemCard(title = f.name, component =
         @GemColumn(width = "100%", components = [
           @guard(f.owner != null) {
             @GemRow(components = [
-              owningFunctionButton@GemButton(label = "Back To Owning Function", leftClick = goToFunctionDetailsSuper(f)),
-              @GemText(value = f.owner.name),
-              @GemButton(label = "Change Name", leftClick = changeOwnerName(f))
-            ]);
-          },
-          @guard(f.owner == null) {
-            @GemRow(components = [
-              @GemText(value = "Owning Function: This is this outer-most function")
+              owningFunctionButton@GemButton(label = "Back To Owning Function \"" + f.owner.name + "\"",
+              leftClick = goToFunctionDetailsSuper(f))
             ]);
           },
           @GemRow(width = "100%", colGap="10px", components = [
@@ -61,7 +52,7 @@ page FunctionDetail (Function f) {
               @iterate(Port p : f.in) {
                 @GemRow(components = [
                   // @GemText(value = p.name + " : "),
-                  // Klappt noch nicht, weil immer Promises zurückgegeben werden
+                  // Klappt noch nicht, weil im genererierten HTML Promises zurückgegeben werden
                   //              @iterate(Value v : p.channel.functionStream.value) {
                   //                valueText@GemText(value = "");
                   //              }
@@ -86,6 +77,9 @@ page FunctionDetail (Function f) {
           ])
         ])
       )
+    ),
+    @GemColumn(width = "50%", component =
+      @FunctionDisplay(data = transformData(f))
     )
   ]);
 }
