@@ -2,7 +2,12 @@
 
 import { Component } from '@angular/core';
 import { GemVennDiagramExampleComponent, config } from '@src/example_charts/GemVennDiagramExampleComponent';
-import { GemVennDiagramData, GemVennDiagramEntry } from '@umlp/charts';
+import {
+  GemVennDiagramData,
+  GemVennDiagramDataBuilder,
+  GemVennDiagramEntry,
+  GemVennDiagramEntryBuilder
+} from '@umlp/charts';
 import { Person } from '@src/domain/Person';
 
 @Component({
@@ -23,11 +28,11 @@ export class GemVennDiagramExample extends GemVennDiagramExampleComponent {
     let mapOfriends = new Map<string, Person[]>;
 
     for (const person of this.persons) {
-      let node = {
-        label: person.getName(),
-        sets: [`${person.getName()}`],
-        size: person.getFriendsList().length
-      };
+      let node = new GemVennDiagramEntryBuilder()
+          .label(person.getName())
+          .sets([`${person.getName()}`])
+          .size(person.getFriendsList.length)
+          .build();
       mapOfriends.set(person.getName(), person.getFriendsList());
       entries.push(node);
 
@@ -36,17 +41,16 @@ export class GemVennDiagramExample extends GemVennDiagramExampleComponent {
     mapOfriends.forEach((friends, person) => {
       for (let friend of friends) {
         if (mapOfriends.has(friend.getName())) {
-          let node = {
-            sets: [`${person}`, `${friend.getName()}`],
-            size: 1
-          };
+          let node = new GemVennDiagramEntryBuilder()
+              .sets([`${person}`, `${friend.getName()}`])
+              .size(1)
+              .build();
           entries.push(node);
         }
       }
-    })
-    let data: GemVennDiagramData = {
-      entries: entries,
-    }
+    });
+    let data = new GemVennDiagramDataBuilder()
+        .entries(entries).build();
 
     if (JSON.stringify(data) === this.chartDataHash && this.chartData) {
       return this.chartData;
