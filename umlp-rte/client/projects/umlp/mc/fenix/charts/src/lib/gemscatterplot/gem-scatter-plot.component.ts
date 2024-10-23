@@ -1,7 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { ChartDataset, ChartOptions, TooltipItem } from 'chart.js';
 import { autoColors } from "../colors";
-import { GemScatterPlotData, GemScatterPlotAxis, GemScatterPlotSet, GemScatterPlotShape } from './gem-scatter-plot-types/gem-scatter-plot-types.types-gen';
+import { GemScatterPlotData} from '../gen/gemscatterplottypes/GemScatterPlotData';
+import { GemScatterPlotAxis } from '../gen/gemscatterplottypes/GemScatterPlotAxis';
+import { GemScatterPlotSet } from '../gen/gemscatterplottypes/GemScatterPlotSet';
+import { GemScatterPlotShape } from '../gen/gemscatterplottypes/GemScatterPlotShape';
 import { GemScatterPlot as GemScatterPlotTOP } from './gem-scatter-plot/gem-scatter-plot.component-gen';
 
 interface CustomTooltipItemPointWithLabel extends TooltipItem<'scatter'> {
@@ -23,8 +26,8 @@ export class GemScatterPlot extends GemScatterPlotTOP {
   public dataSets: ChartDataset<'scatter'>[] = [];
 
   //stuff that has to be used when changing the options
-  public _xAxis: GemScatterPlotAxis = {};
-  public _yAxis: GemScatterPlotAxis = {};
+  public _xAxis: GemScatterPlotAxis = new GemScatterPlotAxis();
+  public _yAxis: GemScatterPlotAxis = new GemScatterPlotAxis();
 
   /**colors for chart legend */
   public legendColors: string[] = [];
@@ -64,38 +67,38 @@ export class GemScatterPlot extends GemScatterPlotTOP {
     let pointerAutoColors = 0;
     let autocolors = this.getColors();
 
-    for (let i = 0; i < data.sets.length; i++) {
-      const set = data.sets[i];
-      if (!CSS.supports('color', set.color)) {
-        set.color = autocolors[pointerAutoColors++];
+    for (let i = 0; i < data.getSetsList().length; i++) {
+      const set = data.getSets(i);
+      if (!CSS.supports('color', set.getColor())) {
+        set.setColor(autocolors[pointerAutoColors++]);
       }
-      if (!CSS.supports('color', set.hoverColor)) {
-        set.hoverColor = autocolors[pointerAutoColors++];
+      if (!CSS.supports('color', set.getHoverColor())) {
+        set.setHoverColor(autocolors[pointerAutoColors++]);
       }
 
       const points = [];
       const pointRadiusArr = [];
-      set.points.forEach((point) => {
+      set.getPointsList().forEach((point) => {
         points.push({
-          x: point.x,
-          y: point.y,
-          label: point.label
+          x: point.getX(),
+          y: point.getY(),
+          label: point.getLabel()
         });
-        if(!point.pointRadius){
+        if(!point.getPointRadius()){
           //default radius
           pointRadiusArr.push(3);
         }else{
-          pointRadiusArr.push(point.pointRadius);
+          pointRadiusArr.push(point.getPointRadius());
         }
       });
 
 
       let entry: ChartDataset<'scatter'> = {
-        label: set.label,
-        pointStyle: this.getPointStyle(set.shape),
+        label: set.getLabel(),
+        pointStyle: this.getPointStyle(set.getShape()),
         data: points,
-        backgroundColor: set.color,
-        hoverBackgroundColor: set.hoverColor,
+        backgroundColor: set.getColor(),
+        hoverBackgroundColor: set.getHoverColor(),
         hoverBorderWidth: 2,
         pointRadius: pointRadiusArr
       };
@@ -168,32 +171,32 @@ export class GemScatterPlot extends GemScatterPlotTOP {
       scales: {
         x: {
           title: {
-            display: this._xAxis.label !== null,
-            text: this._xAxis.label,
+            display: this._xAxis.getLabel() !== null,
+            text: this._xAxis.getLabel(),
           },
-          min: this._xAxis.minValue,
-          max: this._xAxis.maxValue,
+          min: this._xAxis.getMinValue(),
+          max: this._xAxis.getMaxValue(),
           grid: {
             color: '#888',
           },
           ticks: {
             color: '#888',
-            stepSize: this._xAxis.stepWidth,
+            stepSize: this._xAxis.getStepWidth(),
           }
         },
         y: {
           title: {
-            display: this._yAxis.label !== null,
-            text: this._yAxis.label,
+            display: this._yAxis.getLabel() !== null,
+            text: this._yAxis.getLabel(),
           },
-          min: this._yAxis.minValue,
-          max: this._yAxis.maxValue,
+          min: this._yAxis.getMinValue(),
+          max: this._yAxis.getMaxValue(),
           grid: {
             color: '#888',
           },
           ticks: {
             color: '#888',
-            stepSize: this._yAxis.stepWidth,
+            stepSize: this._yAxis.getStepWidth(),
           }
         }
       },
