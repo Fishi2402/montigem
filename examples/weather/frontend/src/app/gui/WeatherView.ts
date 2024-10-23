@@ -4,6 +4,7 @@ import { Component } from '@angular/core';
 import { GemGaugeChartData, GemGaugeChartEntry, GemLineChartData, GemLineChartEntry } from '@umlp/charts';
 import { WeatherViewComponent,config } from '@src/gui/WeatherViewComponent';
 import { Forecast } from '@src/weather/Forecast';
+import {StringifyForBuilder} from "@umlp/commonj2ts";
 @Component({
   standalone:true,
   imports: [ ...config.imports],
@@ -58,12 +59,12 @@ export class WeatherView extends WeatherViewComponent {
     const chartEntries = [];
     for (const [key, value] of m) {
       let entry = new GemLineChartEntry();
-      entry.data = value;
-      entry.label = key;
+      entry.setDataList(value);
+      entry.setLabel(key);
       chartEntries.push(entry);
     }
     const result = new GemLineChartData(chartEntries, xAxis);
-    const hash = JSON.stringify(result);
+    const hash = StringifyForBuilder(result);
     if (this.cache.chart.hash != hash) {
       this.cache.chart.hash = hash;
       this.cache.chart.data = result;
@@ -100,15 +101,15 @@ export class WeatherView extends WeatherViewComponent {
     let entries = new GemGaugeChartEntry();
     let pp = +(sum / forecasts.length).toFixed(2);
 
-    entries.name = "windspeed";
-    entries.type = "Wind speed"
-    entries.value = pp;
+    entries.setName("windspeed");
+    entries.setType("Wind speed")
+    entries.setValue(pp);
     if (Number.isNaN(pp)) {
       return null;
     }
 
     const result = new GemGaugeChartData([entries]);
-    const hash = JSON.stringify(result);
+    const hash = StringifyForBuilder(result);
     if (this.cache.windspeed.hash != hash) {
       this.cache.windspeed.hash = hash;
       this.cache.windspeed.data = result;
@@ -129,12 +130,12 @@ export class WeatherView extends WeatherViewComponent {
       return null;
     }
 
-    entries.name = "humidity";
-    entries.type = "Humidity";
-    entries.value = pp;
+    entries.setName("humidity");
+    entries.setType("Humidity");
+    entries.setValue(pp);
 
     const result = new GemGaugeChartData([entries]);
-    const hash = JSON.stringify(result);
+    const hash = StringifyForBuilder(result);
     if (this.cache.humidity.hash != hash) {
       this.cache.humidity.hash = hash;
       this.cache.humidity.data = result;
