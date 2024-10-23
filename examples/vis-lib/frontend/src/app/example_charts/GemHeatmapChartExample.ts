@@ -2,7 +2,12 @@
 
 import { Component } from '@angular/core';
 import { GemHeatmapChartExampleComponent, config } from '@src/example_charts/GemHeatmapChartExampleComponent';
-import { GemHeatmapChartData, GemHeatmapChartEntry } from '@umlp/charts';
+import {
+  GemHeatmapChartData,
+  GemHeatmapChartDataBuilder,
+  GemHeatmapChartEntry, GemHeatmapChartEntryBuilder
+} from '@umlp/charts';
+import {StringifyForBuilder} from "@umlp/commonj2ts";
 
 @Component({
   standalone: true,
@@ -11,7 +16,7 @@ import { GemHeatmapChartData, GemHeatmapChartEntry } from '@umlp/charts';
   templateUrl: config.templateUrl,
 })
 export class GemHeatmapChartExample extends GemHeatmapChartExampleComponent {
-  private chartData;
+  private chartData : GemHeatmapChartData;
   private chartDataHash: string;
 
   public override getGemHeatmapChart0Data(): GemHeatmapChartData {
@@ -22,23 +27,12 @@ export class GemHeatmapChartExample extends GemHeatmapChartExampleComponent {
       name: string,
       value: number
     }
-    let entries: Entry[] = [
-      {
-        name: "Older than 32",
-        value: 0
-      }, {
-        name: "Between 30 and 32",
-        value: 0
-      }, {
-        name: "Between 28 and 29",
-        value: 0
-      }, {
-        name: "Between 27 and 23",
-        value: 0
-      }, {
-        name: "Younger than 23",
-        value: 0
-      }
+    let entries: GemHeatmapChartEntry[] = [
+        new GemHeatmapChartEntryBuilder().name("Older than 32").timestamp(0).build(),
+        new GemHeatmapChartEntryBuilder().name("Between 30 and 32").timestamp(0).build(),
+        new GemHeatmapChartEntryBuilder().name("Between 28 and 29").timestamp(0).build(),
+        new GemHeatmapChartEntryBuilder().name("Between 27 and 23").timestamp(0).build(),
+        new GemHeatmapChartEntryBuilder().name("Younger than 23").timestamp(0).build()
     ];
     for (const person of this.persons) {
       if (person.getStocksList().length === 0) {
@@ -50,26 +44,25 @@ export class GemHeatmapChartExample extends GemHeatmapChartExampleComponent {
         sumStocks += stock.getPrice();
       }
       if (birthday < 1992) {
-        entries[0].value += sumStocks;
+        entries[0].setTimestamp(entries[0].getTimestamp() + sumStocks);
       } else if (birthday < 1995) {
-        entries[1].value += sumStocks;
+        entries[1].setTimestamp(entries[1].getTimestamp() + sumStocks);
       } else if (birthday < 1997) {
-        entries[2].value += sumStocks;
+        entries[2].setTimestamp(entries[2].getTimestamp() + sumStocks);
       } else if (birthday < 2002) {
-        entries[3].value += sumStocks;
+        entries[3].setTimestamp(entries[3].getTimestamp() + sumStocks);
       } else {
-        entries[4].value += sumStocks;
+        entries[4].setTimestamp(entries[4].getTimestamp() + sumStocks);
       }
     }
-    let data = {
-      entries: entries
-    }
+    let data = new GemHeatmapChartDataBuilder().entries(entries).build()
 
-    if (JSON.stringify(data) === this.chartDataHash && this.chartData) {
+
+    if (StringifyForBuilder(data) === this.chartDataHash && this.chartData) {
       return this.chartData;
     }
     this.chartData = data;
-    this.chartDataHash = JSON.stringify(this.chartData);
+    this.chartDataHash = StringifyForBuilder(this.chartData);
     return this.chartData;
   }
 

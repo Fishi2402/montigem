@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 import { Component, Input, SimpleChanges } from '@angular/core';
 import { ScaleType } from '@swimlane/ngx-charts';
-import { GemHeatmapChartData } from './gem-heatmap-chart-types/gem-heatmap-chart-types.types-gen';
+import { GemHeatmapChartData } from "../gen/gemheatmapcharttypes/GemHeatmapChartData";
 import { GemHeatmapChart as GemHeatmapChartTOP } from './gem-heatmap-chart/gem-heatmap-chart.component-gen';
 
 /**
@@ -38,7 +38,9 @@ export class GemHeatmapChart extends GemHeatmapChartTOP {
       if (changes.hasOwnProperty(propName)) {
         switch (propName) {
           case 'data': {
-            if (this.data) this.computed_data = this.rearrange_array(this.data.entries);
+            if (this.data) this.computed_data = this.rearrange_array(this.data.getEntriesList().map(
+              e => {return {name: e.getName(), value: e.getTimestamp()}}
+            ));
             break;
           }
           case 'timestampdata': {
@@ -212,7 +214,7 @@ export class GemHeatmapChart extends GemHeatmapChartTOP {
       if (value < this.min_num_seperations) { this.num_seperations = this.min_num_seperations; }
       else if (value > this.max_num_seperations) { this.num_seperations = this.max_num_seperations; }
     } else { this.num_seperations = +value; }
-    if (this.data) this.computed_data = this.rearrange_array(this.data.entries);
+    if (this.data) this.computed_data = this.rearrange_array(this.data.getEntriesList());
   }
 
   /**
@@ -224,7 +226,7 @@ export class GemHeatmapChart extends GemHeatmapChartTOP {
       if (value < 2) this.loop_factor = 2;
     }
     else this.loop_factor = +value;
-    if (this.data) this.computed_data = this.rearrange_array(this.data.entries);
+    if (this.data) this.computed_data = this.rearrange_array(this.data.getEntriesList());
   }
 
   /**
@@ -233,7 +235,7 @@ export class GemHeatmapChart extends GemHeatmapChartTOP {
    */
   enter_pretty_date(value) {
     this.prettyprint_timestamps = value;
-    if (this.data) this.computed_data = this.rearrange_array(this.data.entries);
+    if (this.data) this.computed_data = this.rearrange_array(this.data.getEntriesList());
   }
 
   /**
@@ -242,7 +244,7 @@ export class GemHeatmapChart extends GemHeatmapChartTOP {
    */
   enter_loop_days(value) {
     this.loop_days = value;
-    if (this.data) this.computed_data = this.rearrange_array(this.data.entries);
+    if (this.data) this.computed_data = this.rearrange_array(this.data.getEntriesList());
   }
 
 
