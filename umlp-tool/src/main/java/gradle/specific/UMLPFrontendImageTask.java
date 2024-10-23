@@ -109,7 +109,7 @@ public abstract class UMLPFrontendImageTask extends DefaultTask {
 
   @Internal
   protected JibContainerBuilder getBuilder() throws IOException, InvalidImageReferenceException {
-    return Jib.from("caddy:2.7-alpine")
+    return Jib.from("caddy:2.8-alpine")
         .addLayer(List.of(getCaddyfile().get().getAsFile().toPath()), AbsoluteUnixPath.get("/etc/caddy/"))
         .addFileEntriesLayer(FileEntriesLayer.builder()
             .addEntryRecursive(getServedFiles().get().getAsFile().toPath(), AbsoluteUnixPath.get("/srv/"))
