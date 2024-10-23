@@ -10,6 +10,7 @@ import {
   GemNetworkNodeBuilder
 } from '@umlp/charts';
 import { Person } from '@src/domain/Person';
+import {stringifyWithoutRealBuilder} from "@src/StringifyWithoutRealBuilder";
 
 @Component({
   standalone: true,
@@ -59,11 +60,11 @@ export class GemGraphChartExample extends GemGraphChartExampleComponent {
         .edges(edges)
         .build();
 
-    if (JSON.stringify(data) === this.chartDataHash && this.chartData) {
+    if (stringifyWithoutRealBuilder(data) === this.chartDataHash && this.chartData) {
       return this.chartData;
     }
     this.chartData = data;
-    this.chartDataHash = JSON.stringify(this.chartData);
+    this.chartDataHash = stringifyWithoutRealBuilder(this.chartData);
     return this.chartData;
   }
 

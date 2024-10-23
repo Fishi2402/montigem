@@ -4,6 +4,7 @@ import { Network, Options, DataView, DataSet } from 'vis-network/standalone';
 import { GemNetworkGraph as GemNetworkGraphTOP } from './gem-network-graph/gem-network-graph.component-gen';
 import {GemNetworkData} from "../gen/gemnetworkgraphtypes/GemNetworkData";
 import {GemNetworkDataBuilder} from "../gen/gemnetworkgraphtypes/GemNetworkDataBuilder";
+import {GemNetworkNodeBuilder} from "../gen/gemnetworkgraphtypes/GemNetworkNodeBuilder";
 
 @Component({
   selector: 'gem-network-graph',
@@ -54,13 +55,29 @@ export class GemNetworkGraph extends GemNetworkGraphTOP {
     this._nodes = new DataSet();
 
     if (!this._labelEqualsID) {
-      this._nodes.add(data.getNodesList());
+      this._nodes.add(data.getNodesList().map(n => ({
+        id: n.getId(),
+        value: n.getValue(),
+        label: n.getLabel(),
+        mass: n.getMass(),
+        color: n.getColor(),
+        group: n.getGroup(),
+        year: n.getYear()
+      })));
     } else {
       for (let elem of data.getNodesList()) {
         if (typeof elem.getId() === "string") {
           elem.setLabel(elem.getId());
         }
-        this._nodes.add(elem);
+        this._nodes.add({
+          id: elem.getId(),
+          value: elem.getValue(),
+          label: elem.getLabel(),
+          mass: elem.getMass(),
+          color: elem.getColor(),
+          group: elem.getGroup(),
+          year: elem.getYear()
+        });
       }
     }
 
@@ -126,7 +143,17 @@ export class GemNetworkGraph extends GemNetworkGraphTOP {
         });
         this._data.setNodesList(this.nodesView);
       } else {
-        this._data.setNodesList(this._nodes);
+        this._data.setNodesList(this._nodes.map(n => new GemNetworkNodeBuilder()
+          .id(n.id)
+          .year(n.year)
+          .value(n.value)
+          .label(n.label)
+          .mass(n.mass)
+          .color(n.color)
+          .group(n.group)
+          .year(n.year)
+          .build()
+        ));
       }
     }
   }
