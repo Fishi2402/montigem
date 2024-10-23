@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { ChartDataset, ChartOptions } from 'chart.js';
 import { autoColors } from "../colors";
-import { GemLineChartData } from './gem-line-chart-types/gem-line-chart-types.types-gen';
+import { GemLineChartData } from "../gen/gemlinecharttypes/GemLineChartData";
 import { GemLineChart as GemLineChartTOP } from './gem-line-chart/gem-line-chart.component-gen';
 
 @Component({
@@ -79,21 +79,21 @@ export class GemLineChart extends GemLineChartTOP {
     this.dataSets = [];
     const colors = [];
     const labels = [];
-    this.labels = data.labels;
+    this.labels = data.getLabelsList();
     let autocolors = this.getColors();
     let pointerAutoColors = 0;
 
-    for (let i = 0; i < data.entries.length; i++) {
-      if (!CSS.supports('color', data.entries[i].borderColor)) {
-          data.entries[i].borderColor = autocolors[pointerAutoColors++];
+    for (let i = 0; i < data.getEntriesList().length; i++) {
+      if (!CSS.supports('color', data.getEntries(i).getBorderColor())) {
+          data.getEntries(i).setBorderColor(autocolors[pointerAutoColors++]);
       }
       // TODO: apply alpha value to color string support
       let entry: ChartDataset<'line'> = {
-        data: data.entries[i].data,
-        label: data.entries[i].label,
-        borderColor: data.entries[i].borderColor,
-        backgroundColor: data.entries[i].borderColor + "30",
-        pointBackgroundColor: data.entries[i].borderColor
+        data: data.getEntries(i).getDataList(),
+        label: data.getEntries(i).getLabel(),
+        borderColor: data.getEntries(i).getBorderColor(),
+        backgroundColor: data.getEntries(i).getBackgroundColor() + "30",
+        pointBackgroundColor: data.getEntries(i).getPointBackgroundColor()
       }
 
       // TODO: option to fill background

@@ -2,9 +2,15 @@
 
 import { Component } from '@angular/core';
 import { GemLineChartExampleComponent, config } from '@src/example_charts/GemLineChartExampleComponent';
-import { GemLineChartData, GemLineChartEntry } from '@umlp/charts';
+import {
+  GemLineChartData,
+  GemLineChartDataBuilder,
+  GemLineChartEntry,
+  GemLineChartEntryBuilder
+} from '@umlp/charts';
 import { Stock } from '@src/domain/Stock';
 import { Person } from '@src/domain/Person';
+import {StringifyForBuilder} from "@umlp/commonj2ts";
 
 @Component({
   standalone: true,
@@ -83,22 +89,19 @@ export class GemLineChartExample extends GemLineChartExampleComponent {
         }
       }
       let ageGroupname: String = groupName.replace(/_/g, " ");
-      let entry = {
-        data: stocks,
-        label: `Stocks bought by people born ${ageGroupname}`
-      }
+      let entry = new GemLineChartEntryBuilder()
+          .data(stocks)
+          .label(`Stocks bought by people born ${ageGroupname}`)
+          .build()
       entries.push(entry);
     }
-    let data: GemLineChartData = {
-      labels: labels,
-      entries: entries
-    }
+    let data: GemLineChartData = new GemLineChartDataBuilder().labels(labels).entries(entries).build()
 
-    if (JSON.stringify(data) === this.chartDataHash && this.chartData) {
+    if (StringifyForBuilder(data) === this.chartDataHash && this.chartData) {
       return this.chartData;
     }
     this.chartData = data;
-    this.chartDataHash = JSON.stringify(this.chartData);
+    this.chartDataHash = StringifyForBuilder(this.chartData);
     return this.chartData;
   }
 
