@@ -1,0 +1,13 @@
+package testUpdateAfterBuild;
+
+import mc.fenix.input.GemTextInput;
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemText;
+
+import LoadingTests.Person;
+import LoadingTests.Animal;
+
+page PersonBuilder(Person person) {
+  @GemTextInput(labelText = "Name", entry = person.name);
+  @GemButton(label="Build Person", leftClick=buildPerson());
+}

@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.functiondisplay;
+
+//import mc.fenix.functiondisplay.FunctionDisplayTypes.Function;
+import mc.fenix.functiondisplay.FunctionStructure4Fenix.Function4Display;
+
+
+component FunctionDisplay(
+  Function4Display data
+)

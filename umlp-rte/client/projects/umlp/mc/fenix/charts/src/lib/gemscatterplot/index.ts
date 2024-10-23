@@ -1,4 +1,11 @@
 export * from "./gemscatterplot.module-gen";
 export * from "./gem-scatter-plot.component";
-// export * from "./gem-bar-chart-types/gem-bar-chart-types.types-gen";
-export * from "./gem-scatter-plot.types";
+export * from "../gen/gemscatterplottypes/GemScatterPlotData";
+export * from "../gen/gemscatterplottypes/GemScatterPlotDataBuilder";
+export * from "../gen/gemscatterplottypes/GemScatterPlotAxis";
+export * from "../gen/gemscatterplottypes/GemScatterPlotAxisBuilder";
+export * from "../gen/gemscatterplottypes/GemScatterPlotSet";
+export * from "../gen/gemscatterplottypes/GemScatterPlotSetBuilder";
+export * from "../gen/gemscatterplottypes/GemScatterPlotPoint";
+export * from "../gen/gemscatterplottypes/GemScatterPlotPointBuilder";
+export * from "../gen/gemscatterplottypes/GemScatterPlotShape";

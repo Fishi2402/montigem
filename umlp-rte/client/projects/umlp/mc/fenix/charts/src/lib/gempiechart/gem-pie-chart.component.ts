@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { ChartDataset, ChartOptions } from "chart.js";
 import { autoColors } from "../colors";
-import { GemPieChartData } from './gem-pie-chart-types/gem-pie-chart-types.types-gen';
+import { GemPieChartData } from '../gen/gempiecharttypes/GemPieChartData';
 import { GemPieChart as GemPieChartTOP } from './gem-pie-chart/gem-pie-chart.component-gen';
 
 @Component({
@@ -52,25 +52,25 @@ export class GemPieChart extends GemPieChartTOP {
     if (!data) {
       return;
     }
-    this.labels = data.entries.map(entry => entry.label);
+    this.labels = data.getEntriesList().map(entry => entry.getLabel());
     const colors = [];
     const labels = [];
     let autocolors = this.getColors();
     let pointerAutoColors = 0;
 
-    for (let i = 0; i < data.entries.length; i++) {
-      if (!CSS.supports('color', data.entries[i].backgroundColor)) {
-        data.entries[i].backgroundColor = autocolors[pointerAutoColors++];
+    for (let i = 0; i < data.getEntriesList().length; i++) {
+      if (!CSS.supports('color', data.getEntries(i).getBackgroundColor())) {
+        data.getEntries(i).setBackgroundColor(autocolors[pointerAutoColors++]);
       }
-      const bgrColor = data.entries[i].backgroundColor;
-      const label = data.entries[i].label;
+      const bgrColor = data.getEntries(i).getBackgroundColor();
+      const label = data.getEntries(i).getLabel();
 
       labels.push(label);
       colors.push(bgrColor);
     }
 
     this.dataSets = [{
-      data: data.entries.map(entry => entry.value),
+      data: data.getEntriesList().map(entry => entry.getValue()),
       backgroundColor: colors
     }];
 

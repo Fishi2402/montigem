@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+package testLoadAll;
+
+import mc.fenix.basic.GemText;
+
+import LoadingTests.Person;
+import LoadingTests.Animal;
+
+import testLoadAll.DisplayAnimals;
+
+page LoadOnePersonAndDisplayPets(Person p) {
+  @DisplayAnimals(animals = p.pet);
+}

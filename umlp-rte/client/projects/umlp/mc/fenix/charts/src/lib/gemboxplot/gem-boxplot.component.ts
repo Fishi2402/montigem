@@ -1,7 +1,7 @@
 import { Component, Input,ElementRef, Output, EventEmitter } from '@angular/core';
 import * as d3 from 'd3';
 import { autoColors } from "../colors";
-import {GemBoxPlotEntry, GemBoxPlotBox} from './gem-boxplot.types';
+import {GemBoxPlotEntry} from  '../gen/gemboxplottypes/GemBoxPlotEntry';
 
 @Component({
   selector: 'gem-box-plot',
@@ -148,10 +148,10 @@ export class GemBoxPlot {
 
 
     const boxes = this._entries.map(e => {
-      const interQuantileRange = e.box.upperQuantile - e.box.lowerQuantile
-      const boxColor = e.color? e.color : "#FFFFFF";
-      return({key: e.group, boxColor: boxColor, value:
-          {lowerQuantile: e.box.lowerQuantile, median: e.box.median, upperQuantile: e.box.upperQuantile, interQuantileRange: interQuantileRange, min: e.box.lowerExtreme, max:  e.box.upperExtreme}})
+      const interQuantileRange = e.getBox().getUpperQuantile() - e.getBox().getLowerQuantile()
+      const boxColor = e.getColor()? e.getColor() : "#FFFFFF";
+      return({key: e.getGroup(), boxColor: boxColor, value:
+          {lowerQuantile: e.getBox().getLowerQuantile(), median: e.getBox().getMedian(), upperQuantile: e.getBox().getUpperQuantile(), interQuantileRange: interQuantileRange, min: e.getBox().getLowerExtreme(), max:  e.getBox().getUpperExtreme()}})
     })
 
     if(this._horizontal) {
@@ -165,7 +165,7 @@ export class GemBoxPlot {
     // Show the X scale
     var ordinalAxis = d3.scaleBand()
       .range([ margin.left, width+margin.left ])
-      .domain(this._entries.map(e => e.group))
+      .domain(this._entries.map(e => e.getGroup()))
       .paddingInner(1)
       .paddingOuter(.5)
 
@@ -254,7 +254,7 @@ export class GemBoxPlot {
         .selectAll("indPoints")
         .data(this._entries.reduce((arraySoFar:[string, number][], currentValue : GemBoxPlotEntry) =>
         {
-          currentValue.points.map(v => [currentValue.group, v]).forEach((e:[string,number]) => arraySoFar.push(e))
+          currentValue.getPointsList().map(v => [currentValue.getGroup(), v]).forEach((e:[string,number]) => arraySoFar.push(e))
           return arraySoFar
         }, [] as [string, number][]))
         .enter()
@@ -271,7 +271,7 @@ export class GemBoxPlot {
     // Show the X scale
     var ordinalAxis = d3.scaleBand()
       .range([ margin.top, height+margin.top ])
-      .domain(this._entries.map(e => e.group))
+      .domain(this._entries.map(e => e.getGroup()))
       .paddingInner(1)
       .paddingOuter(.5)
 
@@ -360,7 +360,7 @@ export class GemBoxPlot {
         .selectAll("indPoints")
         .data(this._entries.reduce((arraySoFar:[string, number][], currentValue : GemBoxPlotEntry) =>
         {
-          currentValue.points.map(v => [currentValue.group, v]).forEach((e:[string,number]) => arraySoFar.push(e))
+          currentValue.getPointsList().map(v => [currentValue.getGroup(), v]).forEach((e:[string,number]) => arraySoFar.push(e))
           return arraySoFar
         }, [] as [string, number][]))
         .enter()

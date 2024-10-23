@@ -18,6 +18,9 @@
       "@umlp/charts": [
         "../dist/umlp/mc/fenix/charts"
       ],
+      "@umlp/functiondisplay": [
+        "../dist/umlp/mc/fenix/functiondisplay"
+      ],
       "@umlp/input": [
         "../dist/umlp/mc/fenix/input"
       ],

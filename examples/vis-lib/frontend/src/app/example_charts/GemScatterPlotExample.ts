@@ -2,7 +2,15 @@
 
 import { Component } from '@angular/core';
 import { GemScatterPlotExampleComponent, config } from '@src/example_charts/GemScatterPlotExampleComponent';
-import { GemScatterPlotData, GemScatterPlotAxis, GemScatterPlotSet, GemScatterPlotPoint, GemScatterPlotShape } from '@umlp/charts';
+import {
+  GemScatterPlotData,
+  GemScatterPlotAxis,
+  GemScatterPlotSet,
+  GemScatterPlotPoint,
+  GemScatterPlotShape,
+  GemScatterPlotPointBuilder, GemScatterPlotSetBuilder, GemScatterPlotDataBuilder
+} from '@umlp/charts';
+import {StringifyForBuilder} from "@umlp/commonj2ts";
 
 @Component({
   standalone: true,
@@ -16,37 +24,24 @@ export class GemScatterPlotExample extends GemScatterPlotExampleComponent {
   private simpleDataHash: string;
 
   public override getSimpleData() : GemScatterPlotData {
-    let greenSet: GemScatterPlotSet = {
-      label: "Green data",
-      color: "green",
-      points: [{
-        x: 7,
-        y: 5
-      },
-      {
-        x: 9,
-        y: 6
-      },
-      {
-        x: 10,
-        y: 7
-      }]
-    }
+    let greenSet: GemScatterPlotSet = new GemScatterPlotSetBuilder()
+        .label( "Green data")
+        .color( "green")
+        .points( [
+          new GemScatterPlotPointBuilder().x(7).y(5).build(),
+          new GemScatterPlotPointBuilder().x(9).y(6).build(),
+          new GemScatterPlotPointBuilder().x(10).y(7).build()])
+        .build()
 
-    let blueSet: GemScatterPlotSet = {
-      label: "Blue data",
-      color: "blue",
-      points: [{
-        x: 3,
-        y: 3
-      }]
-    }
+    let blueSet: GemScatterPlotSet = new GemScatterPlotSetBuilder()
+        .label("Blue data")
+        .color( "blue")
+        .points([new GemScatterPlotPointBuilder().x(3).y(3).build()])
+        .build()
 
-    let data: GemScatterPlotData = {
-      sets: [greenSet, blueSet]
-    }
+    let data: GemScatterPlotData = new GemScatterPlotDataBuilder().sets([greenSet, blueSet]).build()
 
-    let hash: string = JSON.stringify(data);
+    let hash: string = StringifyForBuilder(data);
     if (this.simpleData && this.simpleDataHash === hash) {
       return this.simpleData;
     }
