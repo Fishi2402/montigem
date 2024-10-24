@@ -6,7 +6,9 @@ import de.monticore.cd.codegen.methods.AbstractMethodDecorator;
 import de.monticore.cd.codegen.methods.AccessorDecorator;
 import de.monticore.cd.codegen.methods.accessor.ListAccessorDecorator;
 import de.monticore.cd.codegen.methods.accessor.MandatoryAccessorDecorator;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import umlp.generator.domain.decorator.GenService;
 
 public class TSAccessorDecorator extends AccessorDecorator {
 
@@ -23,7 +25,7 @@ public class TSAccessorDecorator extends AccessorDecorator {
         glex,
         new MandatoryAccessorDecorator(glex, service),
         new TSOptionalAccessorDecorator(glex, service),
-        new ListAccessorDecorator(glex, service));
+        new TSListAccessorDecorator(glex, service));
   }
 
   public TSAccessorDecorator(
@@ -33,4 +35,15 @@ public class TSAccessorDecorator extends AccessorDecorator {
       final AbstractMethodDecorator listMethodDecorator) {
     super(glex, mandatoryMethodDecorator, optionalMethodDecorator, listMethodDecorator);
   }
+
+  @Override
+  protected AbstractMethodDecorator determineMethodDecoratorStrategy(ASTCDAttribute ast) {
+    if (GenService.isList(ast)) {
+      return listMethodDecorator;
+    } else if (GenService.isOptional(ast)) {
+      return optionalMethodDecorator;
+    }
+    return mandatoryMethodDecorator;
+  }
+
 }
