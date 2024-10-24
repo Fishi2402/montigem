@@ -10,6 +10,7 @@ import mc.fenix.charts.GemSunburstChartTypes.GemSDNshort;
 
 component GemSunburstChart (
   GemSunburstData data,
+  // Deprecated
   GemSDNshort dataShort,
   List<String> colors,
   Boolean ignoreError

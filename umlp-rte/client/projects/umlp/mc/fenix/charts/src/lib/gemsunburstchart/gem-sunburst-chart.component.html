@@ -14,7 +14,7 @@
   </chart-options>
 </div>
 
-<div class="chartTitle" style="font-size: {{(20 * scaler) + 'px'}};"> {{entry.label}} </div>
+<div class="chartTitle" style="font-size: {{(20 * scaler) + 'px'}};"> {{entry.getLabel()}} </div>
 
 <div [ngClass]="changeContainer()" *ngIf="hasData; else elseBlock">
 	<div class="wholeChartContainer">

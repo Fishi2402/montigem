@@ -1,8 +1,7 @@
-import {
-  GemSunburstData as GemSunburstDataI,
-  GemSDNshort as GemSDNshortI,
-  GemSunburstEntry as GemSunburstEntryI
-} from './gem-sunburst-chart-types/gem-sunburst-chart-types.types-gen';
+import {GemSunburstData} from "../gen/gemsunburstcharttypes/GemSunburstData";
+import {GemSDNshort} from "../gen/gemsunburstcharttypes/GemSDNshort";
+import {GemSunburstDataBuilder} from "../gen/gemsunburstcharttypes/GemSunburstDataBuilder";
+import {GemSunburstEntryBuilder} from "../gen/gemsunburstcharttypes/GemSunburstEntryBuilder";
 
 
 // Checks if the given object is of type SDNshort (and not SunburstDataNode)
@@ -13,45 +12,27 @@ export function gemInstanceOfSDNshort(object: any): object is GemSDNshort {
 // Converts a given SDNshort node to SunburstDataNode node
 export function gemSdnShortToSDN(node: GemSDNshort): GemSunburstData {
   // Report error if SDNshort node has a wrong notation
-  if (node.c == null || node.c.length !== 2 || (typeof node.c[0] !== typeof "String") || (typeof node.c[1] !== typeof 0)) {
-    console.error("Data can not be read, because of wrong format." + node.c);
-    return { entry: { label: '', value: 0, } };
+  if (node.getCList() == null || node.getCList().length !== 2 || (typeof node.getC(0) !== typeof "String") || (typeof node.getC(1) !== typeof 0)) {
+    console.error("Data can not be read, because of wrong format." + node.getCList());
+    return new GemSunburstDataBuilder()
+      .entry(
+        new GemSunburstEntryBuilder().label('').value(0).build()
+      ).build()
   }
   else {
     // Create SunburstDataNode node with content from SDNshort node and empty subNodes[]
-    let sdnNode: GemSunburstData = { entry: { label: node.c[0], value: node.c[1], }, subEntries: [] };
+    let sdnNode: GemSunburstData = new GemSunburstDataBuilder()
+      .entry(
+        new GemSunburstEntryBuilder().label(node.getC(0)).value(Number(node.getC(1))).build()
+      )
+      .subEntries([]).build()
     // If SDNshort node has subNodes
-    if (node.sN != null && node.sN.length > 0) {
-      for (let i = 0; i < node.sN.length; i++) {
+    if (node.getSNList() != null && node.getSNList().length > 0) {
+      for (let i = 0; i < node.getSNList().length; i++) {
         // For every subNode call this method recursively and append as subNode to the SunburstDataNode node created before
-        sdnNode.subEntries.push(gemSdnShortToSDN(node.sN[i]));
+        sdnNode.getSubEntriesList().push(gemSdnShortToSDN(node.getSNList()[i]));
       }
     }
     return sdnNode;
-  }
-}
-
-export class GemSunburstData implements GemSunburstDataI {
-  entry?: GemSunburstEntry;
-  subEntries?: GemSunburstData[];
-  constructor(entry?: GemSunburstEntry, subEntries?: GemSunburstData[]) {
-    this.entry = entry;
-    this.subEntries = subEntries;
-  }
-}
-export class GemSunburstEntry implements GemSunburstEntryI {
-  label?: string;
-  value?: number;
-  constructor(label?: string, value?: number) {
-    this.label = label;
-    this.value = value;
-  }
-}
-export class GemSDNshort implements GemSDNshortI {
-  c?: any[];
-  sN?: GemSDNshort[];
-  constructor(c?: any[], sN?: GemSDNshort[]) {
-    this.c = c;
-    this.sN = sN;
   }
 }
