@@ -8,9 +8,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TypesTest extends AttributesSQLDBTestSetup {
 
@@ -53,6 +55,12 @@ public class TypesTest extends AttributesSQLDBTestSetup {
     assertEquals(minimalJavaTime.getBar_local_time().truncatedTo(ChronoUnit.MILLIS), minimalJavaTime2.getBar_local_time().truncatedTo(ChronoUnit.MILLIS));
     assertEquals(minimalJavaTime.getBar_local_date_time().truncatedTo(ChronoUnit.MILLIS), minimalJavaTime2.getBar_local_date_time().truncatedTo(ChronoUnit.MILLIS));
     assertEquals(minimalJavaTime.getBar_local_date(), minimalJavaTime2.getBar_local_date());
+  }
+
+  @Test
+  public void testDefaultValues() {
+    Optional<ClassWithDefaults> clazz= AttributesManager.classWithDefaultsBuilder().build();
+    assertTrue(clazz.isPresent());
   }
 
 }
