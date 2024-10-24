@@ -251,6 +251,12 @@ translateJava2TSDomain {
   outputDir.set(new File(project.buildDir, "guiComponentTypes"))
 }
 
+gradle.projectsEvaluated {
+  translateJava2TSDomain.configure {task ->
+    task.dependsOn(project(":umlp-rte").tasks["generateGuiComponentJava"])
+  }
+}
+
 def copyTaskPrefix = "copy_"
 def copyTaskPostFix = "Types"
 

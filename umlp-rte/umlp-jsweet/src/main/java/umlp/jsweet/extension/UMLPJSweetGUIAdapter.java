@@ -22,21 +22,17 @@ public class UMLPJSweetGUIAdapter extends PrinterAdapter {
   public UMLPJSweetGUIAdapter(PrinterAdapter parentAdapter) {
     super(
         new ImportExcludeAdapter(
-            new GUITypeAccessorAdapter(
-//                new UMLPCollectionsAdapter(
-                    new UMLPJavaBasicsAdapter(
-                        new UMLPRTEImportAdapter(
-                            new UMLPBasicsAdapter(
-                                new GUIComponentObserverPatternAdapter(
-                                    new DelegateGemListToArrayAdapter(
-                                        new GUIComponentBasicsAdapter(
-                                            new GUITypesImportAdapter(
-                                                new TSTypesAdapter(
-                                                    new GUIUtilAdapter(
-                                                        new BackendOnlyAdapter(
-                                                            parentAdapter
-                                                        )
-                                                    )
+            new UMLPJavaBasicsAdapter(
+                new UMLPRTEImportAdapter(
+                    new UMLPBasicsAdapter(
+                        new GUIComponentObserverPatternAdapter(
+                            new DelegateGemListToArrayAdapter(
+                                new GUIComponentBasicsAdapter(
+                                    new GUITypesImportAdapter(
+                                        new TSTypesAdapter(
+                                            new GUIUtilAdapter(
+                                                new BackendOnlyAdapter(
+                                                    parentAdapter
                                                 )
                                             )
                                         )
@@ -45,7 +41,7 @@ public class UMLPJSweetGUIAdapter extends PrinterAdapter {
                             )
                         )
                     )
-//                )
+                )
             )
         )
     );

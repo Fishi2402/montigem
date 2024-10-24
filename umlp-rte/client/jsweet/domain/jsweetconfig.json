@@ -1,8 +1,6 @@
 {
   "adapters": [
-    "umlp.jsweet.extension.domainAdapters.UMLPRTEImportAdapter",
-    "umlp.jsweet.extension.domainAdapters.UMLPBasicsAdapter",
-    "umlp.jsweet.extension.domainAdapters.UMLPJavaBasicsAdapter"
+    "umlp.jsweet.extension.UMLPGuiTypesAdapter"
   ],
   "@Erased": {
     "include": [
