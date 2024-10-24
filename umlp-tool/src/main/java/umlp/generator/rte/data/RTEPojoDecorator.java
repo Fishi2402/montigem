@@ -33,6 +33,8 @@ import umlp.generator.domain.decorator.methods.UMLPAccessorDecorator;
 import umlp.generator.domain.decorator.methods.UMLPMutatorDecorator;
 import umlp.generator.rte.data.methods.RTEListMutatorDecorator;
 import umlp.generator.rte.data.methods.RTEMandatoryMutatorDecorator;
+import umlp.generator.util.PathUtil;
+import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.List;
 import java.util.Optional;
@@ -312,6 +314,31 @@ public class RTEPojoDecorator extends DomainTypeDecorator {
             GenService.isList(assoc)
         );
       }
+    }
+  }
+
+  @Override
+  protected void addImports(ASTCDType domainType, ASTCDType cdType) {
+    CDSymbolTables.getAttributesInHierarchy(domainType).forEach(a -> addJavaImport(cdType, a.getSymbol().getType()));
+    CDSymbolTables.getAssociationsInHierarchy(domainType).forEach(assocSide -> {
+      getPackageFromFQNString(assocSide.getSymbol().getType().printFullName())
+          .ifPresent(cdPackage ->
+              getCD4C().addImport(cdType, Joiners.DOT.join(cdPackage.toLowerCase(),
+                  getTypeFromFQNString(assocSide.getSymbol().getType().printFullName()))));
+    });
+    domainType.getInterfaceList().forEach(cdInterface ->
+        cdInterface.getDefiningSymbol().ifPresent(definingSymbol ->
+            getCD4C().addImport(cdType, Joiners.DOT.join(definingSymbol.getPackageName().toLowerCase(),
+                definingSymbol.getName()))));
+    domainType.getSuperclassList().forEach(cdExtension ->
+        cdExtension.getDefiningSymbol().ifPresent(definingSymbol ->
+            getCD4C().addImport(cdType, Joiners.DOT.join(definingSymbol.getPackageName().toLowerCase(),
+                definingSymbol.getName()))));
+
+    addDBAnnotationInfo(cdType);
+    if (cdType.getModifier().isPresentStereotype()&& cdType.getModifier().getStereotype().contains(DomainTypeDecorator.STEREOTYPE_MANAGER)) {
+      getCD4C().addImport(cdType, getPackageName(UMLPSymbolTables.getDiagramFor(domainType), DEFAULT_PACKAGE+"."
+          +cdType.getModifier().getStereotype().getValue(DomainTypeDecorator.STEREOTYPE_MANAGER)));
     }
   }
 }
