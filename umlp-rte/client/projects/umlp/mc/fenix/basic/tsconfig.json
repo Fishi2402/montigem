@@ -4,7 +4,7 @@
     "useDefineForClassFields": false,
     "forceConsistentCasingInFileNames": true,
     "strict": false,
-    "noImplicitOverride": false, // TODO translate Override Annotation with JSweet
+    "noImplicitOverride": false,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": false
