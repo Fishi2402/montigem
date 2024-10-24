@@ -110,16 +110,16 @@ export class ProjectPage extends ProjectPageComponent {
   private recursivelyFillGemTreeviewItems(artifact:Artifact): GemTreeviewEntry {
     let curViewEntry : GemTreeviewEntry = this.createGemTreeviewEntryFromArtifact(artifact)
     if(artifact instanceof Directory) {
-      (artifact as Directory).getContainsList().forEach(art => curViewEntry.children.push(this.recursivelyFillGemTreeviewItems(art)))
+      (artifact as Directory).getContainsList().forEach(art => curViewEntry.addChildren(this.recursivelyFillGemTreeviewItems(art)))
     }
     return curViewEntry;
   }
 
   private createGemTreeviewEntryFromArtifact(artifact:Artifact): GemTreeviewEntry {
     const viewEntry = new GemTreeviewEntry();
-    viewEntry.expanded = true
-    viewEntry.children = []
-    viewEntry.name = artifact.getName()
+    viewEntry.setExpanded(true)
+    viewEntry.setChildrenList([]);
+    viewEntry.setName(artifact.getName());
 
     return viewEntry
   }

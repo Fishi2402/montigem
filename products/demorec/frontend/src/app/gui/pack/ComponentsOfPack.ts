@@ -8,7 +8,7 @@ import { DemoRecComponent } from '@src/demorec/DemoRecComponent';
 import { BatteryPack } from '@src/demorec/BatteryPack';
 
 import { ComponentsOfPackComponent ,config} from '@src/gui/pack/ComponentsOfPackComponent';
-import { GemTreeviewEntry } from '@umlp/basic';
+import {GemTreeviewEntry, GemTreeviewEntryBuilder} from '@umlp/basic';
 
 import {
   Component,
@@ -81,14 +81,15 @@ export  class ComponentsOfPack extends ComponentsOfPackComponent {
       keys.sort((l,r) => l.getName().localeCompare(r.getName())).forEach(
           kind => {
             const entry = new GemTreeviewEntry();
-            entry.name=kind.getName();
-            entry.value=String(kind.getGemId())
-            entry.children = kindToComponents.get(kind).sort((l,r) => l.getName().localeCompare(r.getName())).map(comp =>
-                {return {
-                  name: comp.getName(),
-                  value: String(comp.getGemId())
-                }}
-            )
+            entry.setName(kind.getName());
+            entry.setValue(String(kind.getGemId()))
+            entry.setChildrenList(kindToComponents.get(kind).sort((l,r) => l.getName().localeCompare(r.getName())).map(comp =>
+                {return new GemTreeviewEntryBuilder()
+                    .name(comp.getName())
+                    .value(String(comp.getGemId()))
+                    .build();
+                }
+            ))
             entries.push(entry)
           }
       )
@@ -133,22 +134,21 @@ export  class ComponentsOfPack extends ComponentsOfPackComponent {
     for (const [name, connections] of nameToConnections) {
       if(connections.length === 1) {
         const entry = new GemTreeviewEntry();
-        entry.name=name
-        entry.value=connections[0]
+        entry.setName(name);
+        entry.setValue(connections[0]);
         connectionEntries.push(entry);
       } else {
 
         const topLevelEntry = new GemTreeviewEntry();
-        topLevelEntry.name=connections.length+
-            "x "+name
-        topLevelEntry.value=connections[0]
-        topLevelEntry.children = []
+        topLevelEntry.setName(connections.length + "x "+name)
+        topLevelEntry.setValue(connections[0])
+        topLevelEntry.setChildrenList([]);
 
         connections.forEach(c => {
           const secondLevelEntry = new GemTreeviewEntry();
-          secondLevelEntry.name = c
-          secondLevelEntry.value = c
-          topLevelEntry.children.push(secondLevelEntry)
+          secondLevelEntry.setName(c);
+          secondLevelEntry.setValue(c);
+          topLevelEntry.addChildren(secondLevelEntry)
         })
 
         connectionEntries.push(topLevelEntry);
