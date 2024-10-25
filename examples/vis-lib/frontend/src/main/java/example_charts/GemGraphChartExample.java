@@ -49,7 +49,7 @@ public class GemGraphChartExample extends GemGraphChartExampleTOP {
     mapOfriends.entrySet().forEach(e -> {
       for (Person friend : e.getValue()) {
         Optional<GemNetworkEdge> edge = new GemNetworkEdgeBuilder()
-            .from(nodeIdVlue.toString())
+            .from(e.getKey().toString())
             .to(mapOfPersons.get(friend).toString())
             .length(200).build();
         edge.ifPresent(obj -> edges.add(obj));
