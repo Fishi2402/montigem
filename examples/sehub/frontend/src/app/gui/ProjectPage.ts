@@ -7,7 +7,13 @@ import {Directory} from '@src/sehub/Directory';
 import { SehubSecurityManager } from "../sehub/SehubSecurityManager";
 import {Component} from '@angular/core';
 
-import { GraphNode, GraphEdge, GemGraphComponent } from '@umlp/networkgraph';
+import {
+  GraphNode,
+  GraphEdge,
+  GemGraphComponent,
+  GraphEdgeBuilder,
+  GraphNodeBuilder
+} from '@umlp/networkgraph';
 @Component({
   standalone:true,
   imports:[...config.imports,
@@ -66,10 +72,7 @@ export class ProjectPage extends ProjectPageComponent {
   }
 
   private createEdge(start : string, end: string): GraphEdge {
-    return {
-      from: start,
-      to: end
-    }
+    return new GraphEdgeBuilder().source(start).target(end).build();
   }
 
   private getNodesFromArtifacts(artifacts:Artifact[]): GraphNode[] {
@@ -85,12 +88,11 @@ export class ProjectPage extends ProjectPageComponent {
   }
 
   private getNodeFromArtifact(art : Artifact): GraphNode {
-    return {
-      id : art.getFullName(),
-      color : (art instanceof Directory)? "#a9dcd8" : "#c2f8cd",
-      mass : 50,
-      label : art.getName()
-    }
+    return new GraphNodeBuilder()
+        .id(art.getFullName())
+        .color((art instanceof Directory)? "#a9dcd8" : "#c2f8cd")
+        .size(50)
+        .label(art.getName()).build();
   }
 
   public getFilesItems(): Array<GemTreeviewEntry> {
