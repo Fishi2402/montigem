@@ -15,10 +15,10 @@ import {CommonModule} from "@angular/common";
 import {SerializedGraph} from "graphology-types";
 import {/*CustomMetricsGenerator,*/
   EdgeAttributes,
-  GraphEdge,
-  GraphNode,
+  Internal_GraphEdge,
+  Internal_GraphNode,
   NodeAttributes,
-  NodePos
+  Internal_NodePos, getNodeProgramOfString
 } from "./types/graph.types";
 import {
   ComplexGraphLayoutConfiguration,
@@ -48,6 +48,10 @@ import {SearchNodeComponent} from "./search-node/search-node.component";
 import {FilterGroupComponent} from "./filter-group/filter-group.component";
 import {ControlButtonsComponent} from "./control-buttons/control-buttons.component";
 import {MetricInformationComponent} from "./metric-information/metric-information.component";
+import {GraphNode} from "../gen/networkgraphtypes/GraphNode";
+import {GraphEdge} from "../gen/networkgraphtypes/GraphEdge";
+import {NodePos} from "../gen/networkgraphtypes/NodePos";
+import {NodePosBuilder} from "../gen/networkgraphtypes/NodePosBuilder";
 
 /**
  * `NetworkGraphComponent` is the core component that serves as the container for the entire graph rendering, user
@@ -149,10 +153,46 @@ export class GemGraphComponent extends GraphBasisComponent implements OnChanges 
     @Input() settings?: Partial<GraphSettings>;
 
     /** Array of nodes to be displayed in the graph. */
-    @Input() nodes?: GraphNode[];
+    @Input({
+      transform: (externalGraphNodes: GraphNode[])  => {
+        return externalGraphNodes.map(n =>  {
+          return {
+            id: n.getId(),
+            value: n.getValue(),
+            label: n.getLabel(),
+            size: n.getSize(),
+            color: n.getColor(),
+            group: n.getGroup(),
+            fixed: n.getFixed(),
+            x: n.getX(),
+            y: n.getY(),
+            nodeProgram: getNodeProgramOfString(n.getNodeProgram()),
+            hoverLabel: n.getHoverLabel(),
+            hover: n.getHover(),
+            tooltip: n.getTooltip()
+          }
+        })
+      }
+    })
+    nodes? : Internal_GraphNode[];
 
     /** Array of edges to be displayed in the graph. */
-    @Input() edges?: GraphEdge[];
+    @Input({
+      transform: (externalEdges: GraphEdge[]) => {
+        return externalEdges.map(e => {
+          return {
+            id: e.getId(),
+            source: e.getSource(),
+            target: e.getTarget(),
+            name: e.getName(),
+            size: e.getSize(),
+            directed: e.getDirected(),
+            color: e.getColor()
+          }
+        })
+      }
+    })
+    edges?: Internal_GraphEdge[];
 
     // TODO make Layouts configurable in GUIDSL Model/ in GUI component itself
     /** Initial layout configuration for displaying the graph. */
@@ -420,11 +460,14 @@ export class GemGraphComponent extends GraphBasisComponent implements OnChanges 
         effect(() => this.hoveredEdgeChange.emit(this.graphManager.graphData.hoveredEdge));
         this.graphManager.layoutService.finishedLayouting.subscribe(x => {
           this.nodePositionsAfterLayout.emit(this.graphManager.graphData.getGraphData().nodes?.map(n => {
-            return {
-              id: n.key,
-              x: n.attributes?.x,
-              y: n.attributes?.y
+            const nodePosBuilder = new NodePosBuilder().id(n.key);
+            if(n.attributes?.x) {
+              nodePosBuilder.x(n.attributes?.x)
             }
+            if(n.attributes?.y) {
+              nodePosBuilder.y(n.attributes?.y)
+            }
+            return nodePosBuilder.build()
           }))
         })
 

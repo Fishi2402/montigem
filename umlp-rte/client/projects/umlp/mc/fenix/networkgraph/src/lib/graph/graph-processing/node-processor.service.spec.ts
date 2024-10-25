@@ -3,7 +3,7 @@ import { NodeProcessorService } from "./node-processor.service";
 import { GroupMappingService } from "./group-mapping.service";
 import { GraphDataService } from "../data/graph-data.service";
 import { GraphSettingsService } from "../services/graph-settings.service";
-import { GraphNode } from "../types/graph.types";
+import { Internal_GraphNode } from "../types/graph.types";
 import { SigmaGraphService } from "../data/sigma-graph.service";
 
 describe("NodeProcessorService", () => {
@@ -199,7 +199,7 @@ describe("NodeProcessorService", () => {
   describe("createNode", () => {
     it("should create a node", () => {
       const key = "key1";
-      const node: GraphNode = {
+      const node: Internal_GraphNode = {
         id: "1",
         label: "Node 1",
         size: 20,
