@@ -18,9 +18,11 @@ import org.jsweet.transpiler.model.MethodInvocationElement;
 import org.jsweet.transpiler.model.NewClassElement;
 import org.jsweet.transpiler.util.Util;
 import umlp.jsweet.extension.UMLPAbstractAdapter;
+import umlp.jsweet.extension.guiAdapters.UMLPGUICollectionsAdapter;
 
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
 import java.util.AbstractList;
@@ -43,12 +45,44 @@ public class UMLPCollectionsAdapter extends UMLPAbstractAdapter {
     super(parentAdapter);
     super.addTypeMappings(getStaticLibrary());
     getTypeMirrorMappings().add(0, computeUMLPGuiArrayTypeMapping());
+    getTypeMirrorMappings().add(0, computeMapTypeMapping());
   }
 
   public Function<TypeMirror, String> computeUMLPGuiArrayTypeMapping() {
     return (TypeMirror type) -> {
       if (type.toString().equals("umlp.guiutil.UMLPGuiArray")) {
         return "Array";
+      }
+      return null;
+    };
+  }
+
+  @Override
+  public TypeMirror mapType(TypeMirror type) {
+    if (this.types().isSubtype(this.types().erasure(type), this.types().erasure(
+        this.util().getType(Map.class)))
+        && type instanceof DeclaredType) {
+      return type;
+    }
+    return super.mapType(type);
+  }
+
+  public Function<TypeMirror, String> computeMapTypeMapping() {
+    return (TypeMirror type) -> {
+      if (this.types().isSubtype(this.types().erasure(type), this.types().erasure(
+          this.util().getType(Map.class)))) {
+        StringBuilder result = new StringBuilder();
+        result.append("Map<");
+        List<? extends TypeMirror> typeArgs = ((DeclaredType) type).getTypeArguments();
+        for (int i = 0; i < typeArgs.size(); i++) {
+          String qualifiedTypeName = getMappedType(typeArgs.get(i));
+          result.append(qualifiedTypeName);
+          if (i < typeArgs.size() - 1) {
+            result.append(", ");
+          }
+        }
+        result.append(">");
+        return result.toString();
       }
       return null;
     };
@@ -107,6 +141,24 @@ public class UMLPCollectionsAdapter extends UMLPAbstractAdapter {
         case "umlp.guiutil.UMLPGuiArray":
           if (substituteUMLPGuiArrayInvocations(invocation, targetMethodName))
             return true;
+        case "java.util.Map":
+        case "java.util.AbstractMap":
+        case "java.util.HashMap":
+        case "java.util.NavigableMap":
+        case "java.util.TreeMap":
+        case "java.util.Hashtable":
+        case "java.util.WeakHashMap":
+        case "java.util.LinkedHashMap":
+          if (substituteMapInvocations(invocation, targetMethodName)) {
+            return true;
+          }
+          else {
+            return false;
+          }
+        case "java.util.Map.Entry":
+          if (substituteMapEntryInvocations(invocation, targetMethodName)) {
+            return true;
+          }
       }
     }
 
@@ -152,7 +204,12 @@ public class UMLPCollectionsAdapter extends UMLPAbstractAdapter {
     switch (targetMethodName) {
       case "newArrayList":
         String msg = invocation.getArgumentCount() > 1 ? invocation.getArgument(1).toString() : "";
-        print("new " + UMLPCollectionsAdapter.CustomUMLPListImplementationName + "(" + msg + ")");
+        print("new " + UMLPCollectionsAdapter.CustomUMLPListImplementationName);
+        if (invocation.getArgumentCount() > 1) {
+          print("(").print(invocation.getArgument(1)).print(")");
+        } else {
+          print("())");
+        }
         getPrinter().useModule(new ModuleImportDescriptor("UMLPArrayList", getLibraryLocation()));
         return true;
     }
@@ -321,5 +378,90 @@ public class UMLPCollectionsAdapter extends UMLPAbstractAdapter {
       return true;
     }
     return super.substituteInstanceof(exprStr, expr, type);
+  }
+
+  private boolean substituteMapInvocations(MethodInvocationElement invocation,
+      String targetMethodName) {
+    switch (targetMethodName) {
+      case "put":
+        printMacroName(targetMethodName);
+        print(invocation.getTargetExpression()).print(".set(")
+            .printArgList(invocation.getArguments())
+            .print(")");
+        return true;
+      case "get":
+        printMacroName(targetMethodName);
+        print(invocation.getTargetExpression()).print(".get(")
+            .printArgList(invocation.getArguments())
+            .print(")");
+        return true;
+      case "containsKey":
+        printMacroName(targetMethodName);
+        print(invocation.getTargetExpression()).print(".has(")
+            .printArgList(invocation.getArguments())
+            .print(")");
+        return true;
+      case "keySet":
+        printMacroName(targetMethodName);
+        print(invocation.getTargetExpression()).print(".keys()");
+        return true;
+      case "values":
+        printMacroName(targetMethodName);
+        print(invocation.getTargetExpression()).print(".values()");
+        return true;
+      case "size":
+        printMacroName(targetMethodName);
+        print(invocation.getTargetExpression()).print(".size");
+        return true;
+      case "isEmpty":
+        printMacroName(targetMethodName);
+        print("(").print(invocation.getTargetExpression()).print(".size === 0)");
+        return true;
+      case "remove":
+        printMacroName(targetMethodName);
+        print(invocation.getTargetExpression()).print(".delete(")
+            .printArgList(invocation.getArguments())
+            .print(")");
+        return true;
+      case "clear":
+        printMacroName(targetMethodName);
+        print(invocation.getTargetExpression()).print(".clear()");
+        return true;
+      case "entrySet":
+        printMacroName(targetMethodName);
+        print("([...").print(invocation.getTargetExpression()).print(".entries()").print("])");
+        return true;
+      case "clone":
+        printMacroName(targetMethodName);
+        print("(o => { let c = {}; for (let k in Object.keys(o)){ c[k] = o[k] } return c; })(");
+        printTargetForParameter(invocation.getTargetExpression()).print(")");
+        return true;
+    }
+
+    return false;
+  }
+
+  private boolean substituteMapEntryInvocations(MethodInvocationElement invocation,
+      String targetMethodName) {
+    switch (targetMethodName) {
+      case "getValue":
+        printMacroName(targetMethodName);
+        print(invocation.getTargetExpression()).print("[1]");
+        return true;
+      case "getKey":
+        printMacroName(targetMethodName);
+        print(invocation.getTargetExpression()).print("[0]");
+        return true;
+    }
+    return false;
+  }
+
+  protected UMLPCollectionsAdapter printTargetForParameter(ExtendedElement expression) {
+    if (expression != null && expression.toString().equals("super")) {
+      getPrinter().print("this");
+      return this;
+    }
+    print(expression);
+    return this;
   }
 }

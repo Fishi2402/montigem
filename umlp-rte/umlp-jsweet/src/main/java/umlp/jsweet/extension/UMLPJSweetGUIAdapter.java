@@ -10,10 +10,10 @@ import umlp.jsweet.extension.domainAdapters.BackendOnlyAdapter;
 import umlp.jsweet.extension.guiAdapters.GUIComponentObserverPatternAdapter;
 import umlp.jsweet.extension.guiAdapters.GUIComponentBasicsAdapter;
 import umlp.jsweet.extension.guiAdapters.GUITypesImportAdapter;
-import umlp.jsweet.extension.guiAdapters.GUITypeAccessorAdapter;
 import umlp.jsweet.extension.guiAdapters.GUIUtilAdapter;
 import umlp.jsweet.extension.guiAdapters.DelegateGemListToArrayAdapter;
 import umlp.jsweet.extension.guiAdapters.TSTypesAdapter;
+import umlp.jsweet.extension.guiAdapters.UMLPGUICollectionsAdapter;
 
 /**
  * This adapter combines the adapters for GUI transpilation
@@ -23,16 +23,18 @@ public class UMLPJSweetGUIAdapter extends PrinterAdapter {
     super(
         new ImportExcludeAdapter(
             new UMLPJavaBasicsAdapter(
-                new UMLPRTEImportAdapter(
-                    new UMLPBasicsAdapter(
-                        new GUIComponentObserverPatternAdapter(
-                            new DelegateGemListToArrayAdapter(
-                                new GUIComponentBasicsAdapter(
-                                    new GUITypesImportAdapter(
-                                        new TSTypesAdapter(
-                                            new GUIUtilAdapter(
-                                                new BackendOnlyAdapter(
-                                                    parentAdapter
+                new UMLPGUICollectionsAdapter(
+                    new UMLPRTEImportAdapter(
+                        new UMLPBasicsAdapter(
+                            new GUIComponentObserverPatternAdapter(
+                                new DelegateGemListToArrayAdapter(
+                                    new GUIComponentBasicsAdapter(
+                                        new GUITypesImportAdapter(
+                                            new TSTypesAdapter(
+                                                new GUIUtilAdapter(
+                                                    new BackendOnlyAdapter(
+                                                        parentAdapter
+                                                    )
                                                 )
                                             )
                                         )
