@@ -307,6 +307,16 @@ public class UMLPCollectionsAdapter extends UMLPAbstractAdapter {
           Log.warn("Did not implement new UMLPGuiArray with more than one parameters");
         }
         return true;
+      case "java.util.Map":
+      case "java.util.AbstractMap":
+      case "java.util.HashMap":
+      case "java.util.NavigableMap":
+      case "java.util.TreeMap":
+      case "java.util.Hashtable":
+      case "java.util.WeakHashMap":
+      case "java.util.LinkedHashMap":
+        print("new Map()");
+        return true;
     }
 
 //    if (UMLPAdapterUtils.isSubTypeOf(newClass.getType(), "umlp.backendrte.common.GemListBuilder",

@@ -1,19 +1,19 @@
 import {JsonPrinter} from '../mcjson/JsonPrinter';
 import {Log} from '../logging/Log';
 import {Command} from '../command/Command';
+import {CommandDeSer} from "../command";
 
 export abstract class AggregatedCommandDeSer {
-  deSerMap: any;
+  deSerMap: Map<String, CommandDeSer<any>> = new Map();
 
   constructor() {
-    this.deSerMap = <any>({});
+    this.deSerMap = new Map();
   }
 
   public buildJson(command: Command<any>, printer: JsonPrinter) {
     const commandType: string = command.getCommandType();
-    if (/* containsKey */this.deSerMap.hasOwnProperty(commandType)) {
-      /* get */
-      ((m, k) => m[k] === undefined ? null : m[k])(this.deSerMap, commandType).buildJson(command, printer);
+    if (this.deSerMap.has(commandType)) {
+      this.deSerMap.get(commandType).buildJson(command, printer);
     } else {
       Log.error("Can not find deSer for commandType " + commandType);
     }
@@ -21,14 +21,13 @@ export abstract class AggregatedCommandDeSer {
 
   public async serialize(command: Command<any>): Promise<string | null> {
     const commandType: string = command.getCommandType();
-
-    if (!this.deSerMap.hasOwnProperty(commandType)) {
+    if (!this.deSerMap.has(commandType)) {
       return Promise.resolve(null);
     }
 
     const printer: JsonPrinter = new JsonPrinter(true);
     printer.beginObject();
-    await this.deSerMap[commandType].buildJson(command, printer);
+    await this.deSerMap.get(commandType).buildJson(command, printer);
     printer.endObject();
 
     return Promise.resolve(printer.toString());
@@ -43,11 +42,11 @@ export abstract class AggregatedCommandDeSer {
       return null;
     }
     const commandType: string = jsonObject["commandType"];
-    if (!/* containsKey */this.deSerMap.hasOwnProperty(commandType)) {
+    if (!this.deSerMap.has(commandType)) {
       Log.error("Can not find deSer for commandType " + commandType);
       return null;
     }
-    return await /* get */((m, k) => m[k] === undefined ? null : m[k])(this.deSerMap, commandType).fromJson(jsonObject);
+    return await this.deSerMap.get(commandType).fromJson(jsonObject);
   }
 }
 
