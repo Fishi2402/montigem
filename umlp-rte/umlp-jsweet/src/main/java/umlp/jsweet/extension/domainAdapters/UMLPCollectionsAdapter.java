@@ -152,9 +152,6 @@ public class UMLPCollectionsAdapter extends UMLPAbstractAdapter {
           if (substituteMapInvocations(invocation, targetMethodName)) {
             return true;
           }
-          else {
-            return false;
-          }
         case "java.util.Map.Entry":
           if (substituteMapEntryInvocations(invocation, targetMethodName)) {
             return true;
@@ -193,7 +190,7 @@ public class UMLPCollectionsAdapter extends UMLPAbstractAdapter {
         printMacroName(targetMethodName);
         print("new ").print(UMLPCollectionsAdapter.CustomUMLPListImplementationName).print("([")
             .printArgList(invocation.getArguments()).print("])");
-        getPrinter().useModule(new ModuleImportDescriptor("UMLPArrayList", getLibraryLocation()));
+        getPrinter().useModule(new ModuleImportDescriptor(UMLPCollectionsAdapter.CustomUMLPListImplementationName, getLibraryLocation()));
         return true;
       }
     }
@@ -203,14 +200,15 @@ public class UMLPCollectionsAdapter extends UMLPAbstractAdapter {
   private boolean substituteCommonListsInvocations(MethodInvocationElement invocation, String targetMethodName) {
     switch (targetMethodName) {
       case "newArrayList":
-        String msg = invocation.getArgumentCount() > 1 ? invocation.getArgument(1).toString() : "";
         print("new " + UMLPCollectionsAdapter.CustomUMLPListImplementationName);
         if (invocation.getArgumentCount() > 1) {
-          print("(").print(invocation.getArgument(1)).print(")");
+          print("(").printArgList(invocation.getArguments()).print(")");
+        } else if (invocation.getArgumentCount() > 0) {
+          print("([").printArgList(invocation.getArguments()).print("])");
         } else {
           print("())");
         }
-        getPrinter().useModule(new ModuleImportDescriptor("UMLPArrayList", getLibraryLocation()));
+        getPrinter().useModule(new ModuleImportDescriptor(UMLPCollectionsAdapter.CustomUMLPListImplementationName, getLibraryLocation()));
         return true;
     }
     return false;
@@ -221,7 +219,7 @@ public class UMLPCollectionsAdapter extends UMLPAbstractAdapter {
       case "emptyList":
         printMacroName(targetMethodName);
         print("new " + UMLPCollectionsAdapter.CustomUMLPListImplementationName + "()");
-        getPrinter().useModule(new ModuleImportDescriptor("UMLPArrayList", getLibraryLocation()));
+        getPrinter().useModule(new ModuleImportDescriptor(UMLPCollectionsAdapter.CustomUMLPListImplementationName, getLibraryLocation()));
         return true;
       //        case "emptySet":
       //          printMacroName(adapter, targetMethodName);
@@ -234,17 +232,13 @@ public class UMLPCollectionsAdapter extends UMLPAbstractAdapter {
         printMacroName(targetMethodName);
         print("new " + UMLPCollectionsAdapter.CustomUMLPListImplementationName + "(")
             .printArgList(invocation.getArguments()).print(")");
-        getPrinter().useModule(new ModuleImportDescriptor("UMLPArrayList", getLibraryLocation()));
+        getPrinter().useModule(new ModuleImportDescriptor(UMLPCollectionsAdapter.CustomUMLPListImplementationName, getLibraryLocation()));
         return true;
-      //        case "singleton":
-      //          printMacroName(adapter, targetMethodName);
-      //          adapter.print("new ArrayList([").print(invocation.getArgument(0)).print("])");
-      //          return true;
       case "singletonList":
         printMacroName(targetMethodName);
         print("new " + UMLPCollectionsAdapter.CustomUMLPListImplementationName + "([")
             .print(invocation.getArgument(0)).print("])");
-        getPrinter().useModule(new ModuleImportDescriptor("UMLPArrayList", getLibraryLocation()));
+        getPrinter().useModule(new ModuleImportDescriptor(UMLPCollectionsAdapter.CustomUMLPListImplementationName, getLibraryLocation()));
         return true;
     }
     return false;

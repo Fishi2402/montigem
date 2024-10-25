@@ -147,7 +147,7 @@ public class UMLPGUICollectionsAdapter extends PrinterAdapter {
       String targetMethodName) {
     switch (targetMethodName) {
       case "newArrayList":
-        if (invocation.getArgumentCount() > 1) {
+        if (invocation.getArgumentCount() > 0) {
           print("[").printArgList(invocation.getArguments()).print("]");
         }
         else {
