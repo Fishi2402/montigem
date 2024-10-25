@@ -155,6 +155,9 @@ export class GemGraphComponent extends GraphBasisComponent implements OnChanges 
     /** Array of nodes to be displayed in the graph. */
     @Input({
       transform: (externalGraphNodes: GraphNode[])  => {
+        if (!externalGraphNodes) {
+          return [];
+        }
         return externalGraphNodes.map(n =>  {
           return {
             id: n.getId(),
@@ -179,6 +182,9 @@ export class GemGraphComponent extends GraphBasisComponent implements OnChanges 
     /** Array of edges to be displayed in the graph. */
     @Input({
       transform: (externalEdges: GraphEdge[]) => {
+        if (!externalEdges) {
+          return [];
+        }
         return externalEdges.map(e => {
           return {
             id: e.getId(),
