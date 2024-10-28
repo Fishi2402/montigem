@@ -95,7 +95,7 @@ export  class ComponentsOfPack extends ComponentsOfPackComponent {
       )
     }
 
-    const newHash = JSON.stringify(entries);
+    const newHash = StringifyForBuilder(entries);
     if (newHash !== this.treeComponentItems.hash) {
       this.treeComponentItems.value = entries;
       this.treeComponentItems.hash = newHash;
@@ -155,7 +155,7 @@ export  class ComponentsOfPack extends ComponentsOfPackComponent {
       }
     }
 
-    const newHash = JSON.stringify(connectionEntries);
+    const newHash = StringifyForBuilder(connectionEntries);
     if (newHash !== this.treeConnectionItems.hash) {
       this.treeConnectionItems.value = connectionEntries;
       this.treeConnectionItems.hash = newHash;
