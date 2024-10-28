@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { DemoRecManager } from '@src/demorec/DemoRecManager';
-
+import {StringifyForBuilder} from '@umlp/commonj2ts'
 import { ComponentKind } from '@src/demorec/ComponentKind';
 import { DemoRecComponent } from '@src/demorec/DemoRecComponent';
 
