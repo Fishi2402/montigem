@@ -100,6 +100,9 @@ sourceSets {
 
 java {
   registerFeature('grammars') { usingSourceSet(sourceSets.grammars) }
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(11)
+  }
 }
 
 description = 'UML/P Language and Tool'
