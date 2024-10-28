@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.charts;
+
+import mc.fenix.charts.GemRadarChartTypes.GemRadarChartData;
+import java.util.Optional;
+
+// TODO Doku
+
+component GemRadarChart(
+    GemRadarChartData data,
+    Optional<Integer> borderWidth,
+    Optional<Boolean> fill,
+    Optional<Double> min,
+    Optional<Double> max,
+    Optional<Double> stepSize
+)

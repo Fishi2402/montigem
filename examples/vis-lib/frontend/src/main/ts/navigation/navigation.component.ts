@@ -50,6 +50,7 @@ export class Navigation {
     { url: '/example_charts/GemLineChartExample', title: 'LineChart' },
     { url: '/example_charts/GemHeatmapChartExample', title: 'HeatmapChart' },
     { url: '/example_charts/GemPieChartExample', title: 'PieChart' },
+    { url: '/example_charts/GemRadarChartExample', title: 'RadarChart' },
     { url: '/example_charts/GemSunburstChartExample', title: 'SunburstChart' },
     { url: '/example_charts/GemVennDiagramExample', title: 'VennDiagram' },
     { url: '/example_charts/GemGraphChartExample', title: 'NetworkChart' },

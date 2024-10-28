@@ -1,0 +1,11 @@
+<h3 style="text-align:center;">Radar Chart</h3>
+<div class="gem-radar-chart">
+  <canvas baseChart
+          [datasets]="_dataSets"
+          [labels]="_labels"
+          [type]="'radar'"
+          [options]="options"
+          (chartHover)="chartHovered($event)"
+          (chartClick)="chartClicked($event)">
+  </canvas>
+</div>
