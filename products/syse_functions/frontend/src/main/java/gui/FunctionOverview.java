@@ -12,11 +12,6 @@ import java.util.function.Consumer;
 @Component
 public class FunctionOverview extends FunctionOverviewTOP {
 
-  public FunctionOverview(GemList<Function> functions) {
-    super();
-    setFunctions(functions);
-  }
-
   @Override
   public Consumer<Void> goToFunctionDetails(Function f) {
     return $ -> {
