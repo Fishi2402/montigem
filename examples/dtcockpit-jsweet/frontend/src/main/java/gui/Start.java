@@ -15,9 +15,6 @@ import umlp.jsweet.extension.annotation.Component;
 
 @Component
 public class Start extends StartTOP {
-  public Start(GemList<Project> projects) {
-    setProjects(projects);
-  }
 
   @Override
   public void init() {

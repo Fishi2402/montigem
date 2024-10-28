@@ -28,10 +28,6 @@ public class PipelineStats extends PipelineStatsTOP {
   // TODO: JSweet initial value missing (=0  !== undefined)
   private int maxValue = 0;
 
-  public PipelineStats(Project p) {
-    setP(p);
-  }
-
   @Override
   public String getGemCard0Title() {
     if (getP() == null) return "Loading... (project is null)";
