@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 public class Answer extends AnswerTOP{
+
   public Answer(long mGemId) {
     super(mGemId);
   }
@@ -19,6 +20,6 @@ public class Answer extends AnswerTOP{
     Optional<Message> msg = DomainManager.messageBuilder().content("Mockup fom Backend Service :)").sender(Role.ASSISTANT).receiver(Role.USER).timestamp(LocalDateTime.now()).build();
 
 
-    return new SimpleResult<>(this.mGemId, msg.get(), "domain.Message");
+    return new SimpleResult<>(this.getId(), msg.get(), "domain.Message");
   }
 }
