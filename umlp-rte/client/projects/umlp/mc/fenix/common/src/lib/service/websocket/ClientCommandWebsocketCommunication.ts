@@ -22,13 +22,25 @@ import {
   tap,
   filter,
   bufferWhen,
-  merge, ObservableInput
+  merge, ObservableInput, Observable, combineLatestAll, combineLatest, bufferToggle, buffer, map
 } from "rxjs";
+
+type QueueProcessResult = {
+  processedTicket: number;
+  resultProcessCommand: CommandResult<any>;
+};
+
+type QueuePosition = {
+  waitingTicket : number;
+  command: Command<any>;
+}
 
 export class ClientCommandWebsocketCommunication implements ClientCommandCommunication {
   public static MAX_TRIES: number = 10;
   private maxWaitingTime: number = 6000; // 6 seconds
   private participantId: number = -1;
+
+  private participantIdSubject: BehaviorSubject<number>= new BehaviorSubject<number>(-1);
   // TODO AGe: any
   private session: WebSocketSubject<any>;
   // TODO AGe: URI
@@ -36,6 +48,11 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
 
   // not necessary?
   // private headers: WebSocketHttpHeaders;
+
+  private commandQueue : BehaviorSubject<QueuePosition>
+    = new BehaviorSubject({waitingTicket: 0, command: undefined});
+  private processedCommandsQueue : BehaviorSubject<QueueProcessResult>
+    = new BehaviorSubject<QueueProcessResult>({processedTicket:0, resultProcessCommand:undefined})
 
   private messages: Map<number, Subject<CommandResult<any>>> = new Map();
 
@@ -60,65 +77,97 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
   }
 
   public sendCommandToServerAndReceiveResult<T>(command: Command<T>): Promise<CommandResult<T>> {
+
+    // Draw a waiting ticket
+    const currentWaitingNumber = this.commandQueue.value.waitingTicket +1;
+
+    // queue up in line -> this will possibly be buffered if we are waiting for a participantId from the server
+    const positionAndCommand: QueuePosition = {
+      waitingTicket : currentWaitingNumber,
+      command: command
+    }
+
+    // Nur hier darf man sich anstellen!
+    console.debug("Add command to queue:", currentWaitingNumber, command, positionAndCommand)
+    this.commandQueue.next(positionAndCommand)
+
+    // Wait until your ticket was processed, i.e. Command was executed waitingTicket == processedTicket
+    const nextOneIsOurCommand = firstValueFrom(this.processedCommandsQueue.pipe(
+      filter(queuePlace => queuePlace.processedTicket===currentWaitingNumber)))
+      .then(commandQueuePlace => {
+        console.debug("Received result of command", currentWaitingNumber)
+        return commandQueuePlace.resultProcessCommand
+      }
+    )
+    return nextOneIsOurCommand
+  }
+
+  /**
+   * We need a Command Queue, so we can buffer commands while waiting for our participant ID
+   * @private
+   */
+  private subscribeToCommandQueue() {
+    console.debug("Initial subscription to command buffer.");
+
+    // This observable emits a value when a new command is sent, ONLY when the participantId at this time is not -1
+    // And also when the participantId gets updated i.e. we established a connection
+    const commandsCanBeBeSent =
+      combineLatest([
+        this.participantIdSubject,
+        this.commandQueue]
+      ).pipe(filter(val => val[0]!=-1 || this.participantId!==-1))
+
+    this.commandQueue.pipe(
+      // Buffer Commands as long as they cannot be sent
+      buffer(commandsCanBeBeSent)
+    ).subscribe(commandsBuffer => {
+      console.debug("Clearing Command Buffer", commandsBuffer)
+      // Take a Command execute(process) it and put the result into the processedCommandsQueue
+      commandsBuffer.forEach(queuePos => {
+
+        // First command is undefined, and we do not want to send this
+        if(queuePos.command) {
+          console.debug("Sending command from buffer", queuePos.command)
+          this.processIndividualCommand(queuePos.command).then(res => {
+            this.processedCommandsQueue.next({
+              processedTicket:  queuePos.waitingTicket,
+              resultProcessCommand: res
+            })
+          })
+        }
+      })
+    })
+  }
+
+  private processIndividualCommand<T>(command : Command<T>) {
     command.setParticipantId(this.participantId);
     // let result: CommandResult<T>;
     // try {
-      let payload: string = CommandObjectMapper.serializeCommand(command);
-      console.info(`Sending message to server: ${payload}`, this.constructor.name);
-      let sendingSuccessful: boolean = this.sendMessage(payload);
-      if (!sendingSuccessful) {
-        ClientCommandWebsocketCommunication.warnCouldNotReceive(command);
-        return Promise.resolve(new SimpleResult<T>().SimpleResult2(
-          command.getId(), LoadingState.FAILED_TO_LOAD, command.getCommandType()
-        ));
-      }
-      const resultSubject = new Subject<CommandResult<T>>();
-      this.messages.set(command.getId(), resultSubject);
-      const result = new Promise<CommandResult<T>>((resolve, reject) => {
-        from(resultSubject).pipe(first(), take(1)).subscribe(v => {
-          resolve(v);
-          /*
-          resolve(new SimpleResult<T>().SimpleResult1(
-              command.getId(), v, command.getCommandType()
-          ));
-          /**/
-        });
-        // TODO AGe when reject?
-      });
-      result.then(() => this.messages.delete(command.getId()));
-
-      return result;
-
-      /*
-
-      if (this.messages.has(command.getId())) {
-        let response: Promise<CommandResult<any>> = this.messages.get(command.getId());
-        response
-        .then(value => {
-          this.messages.delete(command.getId());
-          result = <CommandResult<T>>value;
-          console.info(`
-            Received answer from server for command with id
-            ${command.getId()}: ${CommandObjectMapper.serializeResponse(result)}
-          `, this.constructor.name);
-        })
-        .catch(() => {
-          ClientCommandWebsocketCommunication.warnCouldNotReceive(command);
-          return new SimpleResult<T>().SimpleResult2(
-            command.getId(), LoadingState.FAILED_TO_LOAD, command.getCommandType()
-          );
-        });
-      }
-    }
-    catch (e: any) {
+    let payload: string = CommandObjectMapper.serializeCommand(command);
+    console.info(`Sending message to server: ${payload}`, this.constructor.name);
+    let sendingSuccessful: boolean = this.sendMessage(payload);
+    if (!sendingSuccessful) {
       ClientCommandWebsocketCommunication.warnCouldNotReceive(command);
-      // e.printStackTrace();
-      return new SimpleResult<T>().SimpleResult2(
+      return Promise.resolve(new SimpleResult<T>().SimpleResult2(
         command.getId(), LoadingState.FAILED_TO_LOAD, command.getCommandType()
-      );
+      ));
     }
+    const resultSubject = new Subject<CommandResult<T>>();
+    this.messages.set(command.getId(), resultSubject);
+    const result = new Promise<CommandResult<T>>((resolve, reject) => {
+      from(resultSubject).pipe(first(), take(1)).subscribe(v => {
+        resolve(v);
+        /*
+        resolve(new SimpleResult<T>().SimpleResult1(
+            command.getId(), v, command.getCommandType()
+        ));
+        /**/
+      });
+      // TODO AGe when reject?
+    });
+    result.then(() => this.messages.delete(command.getId()));
+
     return result;
-    /**/
   }
 
   private static warnCouldNotReceive<T>(command: Command<T>): void {
@@ -126,6 +175,8 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
   }
 
   public init(): Promise<number> {
+    this.subscribeToCommandQueue()
+
     this.socket = webSocket({
       url: this.uri,
       openObserver: {
@@ -188,9 +239,12 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
     if (this.expectInitMessage()) {
       this.established = true;
       // Fall initialisierung der Verbindung
+      console.warn("Connection established")
       this.participantId = JSON.parse(message);
       if (Number.isNaN(this.participantId)) {
         this.participantId = null;
+      } else {
+        this.participantIdSubject.next(this.participantId)
       }
     }
     else {

@@ -1,0 +1,21 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+classdiagram LoadingTests {
+
+  class Person {
+    String name;
+    int age;
+  }
+
+  class Animal {
+    String name;
+    int legs;
+  }
+
+  class Food {
+    String name;
+  }
+
+  association [*] Person (owner) <-> (pet) Animal [*];
+  association [*] Animal -> Food [*];
+}

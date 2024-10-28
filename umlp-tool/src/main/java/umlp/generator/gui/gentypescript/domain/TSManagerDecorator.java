@@ -145,6 +145,7 @@ public class TSManagerDecorator extends ManagerDecorator {
         if (isSingleton) {
           // methods that throw errors when invoked
           getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSAddSingletonElement", name);
+          getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSAddWithScopeSingletonElement", name);
           getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSDeleteWithScopeSingletonElement", name);
         } else {
           getCD4C().addMethod(managerClass, "umlp.gui2ts.manager.TSBuilder", name, true, managerClass.getName());

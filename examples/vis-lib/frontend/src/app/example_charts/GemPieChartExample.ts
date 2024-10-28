@@ -2,8 +2,9 @@
 
 import { GemPieChartExampleComponent, config } from '@src/example_charts/GemPieChartExampleComponent';
 import { Component } from '@angular/core';
-import { GemPieChartData } from '@umlp/charts';
+import {GemPieChartData, GemPieChartDataBuilder, GemPieChartEntryBuilder} from '@umlp/charts';
 import { GemPieChartEntry } from '@umlp/charts';
+import {StringifyForBuilder} from "@umlp/commonj2ts";
 
 @Component({
   standalone: true,
@@ -20,14 +21,8 @@ export class GemPieChartExample extends GemPieChartExampleComponent {
       return null;
     }
     let dataEntries: GemPieChartEntry[] = [
-      {
-        label: "People born before 1993",
-        value: 0,
-      },
-      {
-        label: "People born in and after 1993",
-        value: 0,
-      },
+        new GemPieChartEntryBuilder().label("People born before 1993").value(0).build(),
+        new GemPieChartEntryBuilder().label("People born in and after 1993").value(0).build()
     ];
 
     let group1 = 0;
@@ -41,16 +36,14 @@ export class GemPieChartExample extends GemPieChartExampleComponent {
         group2++;
       }
     }
-    dataEntries[0].value = group1;
-    dataEntries[1].value = group2;
-    const newGraphData = {
-      entries: dataEntries
-    }
-    if (JSON.stringify(newGraphData) === this.chartDataHash && this.chartData) {
+    dataEntries[0].setValue(group1);
+    dataEntries[1].setValue(group2);
+    const newGraphData = new GemPieChartDataBuilder().entries(dataEntries).build()
+    if (StringifyForBuilder(newGraphData) === this.chartDataHash && this.chartData) {
       return this.chartData;
     }
     this.chartData = newGraphData;
-    this.chartDataHash = JSON.stringify(this.chartData);
+    this.chartDataHash = StringifyForBuilder(this.chartData);
     return this.chartData;
   }
 }

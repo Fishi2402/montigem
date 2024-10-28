@@ -4,6 +4,7 @@ package example_charts;
 import domain.Person;
 import mc.fenix.charts.gembarcharttypes.GemBarChartData;
 import mc.fenix.charts.gembarcharttypes.GemBarChartEntry;
+import mc.fenix.charts.gembarcharttypes.GemBarChartEntryBuilder;
 import umlp.jsweet.extension.annotation.Component;
 
 import java.util.ArrayList;
@@ -18,10 +19,14 @@ public class GemBarChartExample extends GemBarChartExampleTOP {
     List<String> labels = Arrays.asList("People born before 1993", "People born between 1993 and 1998", "People born after 1998");
 
     List<GemBarChartEntry> dataEntries = new ArrayList<>();
-    dataEntries.add(new GemBarChartEntry(Optional.of("People with less than 2 friends"), Optional.empty(),
-        Arrays.asList(0, 0, 0), Optional.empty(), Optional.empty()));
-    dataEntries.add(new GemBarChartEntry(Optional.of("People with more than 2 friends"), Optional.empty(),
-        Arrays.asList(0, 0, 0), Optional.empty(), Optional.empty()));
+    dataEntries.add(new GemBarChartEntryBuilder()
+        .label(Optional.of("People with less than 2 friends"))
+        .data(Arrays.asList(0, 0, 0))
+        .build().get());
+    dataEntries.add(new GemBarChartEntryBuilder()
+        .label(Optional.of("People with more than 2 friends"))
+        .data(Arrays.asList(0, 0, 0))
+        .build().get());
 
     for (Person person : this.getPersons()) {
       int birthday = person.getBirthday().getYear();

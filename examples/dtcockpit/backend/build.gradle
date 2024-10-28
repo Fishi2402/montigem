@@ -3,7 +3,7 @@ import org.springframework.boot.gradle.tasks.run.BootRun
 plugins {
   id 'de.rwth.se.umlp-tool-backend-test' // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
   id 'application'
-  id 'com.google.cloud.tools.jib' version '3.2.1'
+  id 'com.google.cloud.tools.jib' version '3.4.4'
   id 'io.spring.dependency-management' version '1.0.15.RELEASE'
   id 'org.springframework.boot' version "${spring_version}"
 }

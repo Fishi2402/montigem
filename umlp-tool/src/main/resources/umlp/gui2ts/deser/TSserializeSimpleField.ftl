@@ -10,15 +10,15 @@
     <#if isList>
       printer["${fieldName}"] = [];
       <#if useDeSer>
-      for (const e of obj.get${fieldName?cap_first}()) {
+      for (const e of obj.get${fieldName?cap_first}List()) {
         printer["${fieldName}"].push(${objectMapperName}.serialize(e, "${innerType}"));
       }
       <#elseif genService.isInnerCDEnum(attr.getSymbol().getType())>
-      for (let e of obj.get${fieldName?cap_first}()) {
+      for (let e of obj.get${fieldName?cap_first}List()) {
         printer["${fieldName}"].push(${attr.getSymbol().getType().getArgument(0).print()}[e]);
       }
       <#else>
-      for (let e of obj.get${fieldName?cap_first}()) {
+      for (let e of obj.get${fieldName?cap_first}List()) {
         printer["${fieldName}"].push(e);
       }
       </#if>

@@ -1,8 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { ScaleType } from '@swimlane/ngx-charts';
 import { autoColors } from "../colors";
-import { GemGaugeChartData, GemGaugeChartEntry } from './gem-gauge-chart-types/gem-gauge-chart-types.types-gen';
+import { GemGaugeChartData } from '../gen/gemgaugecharttypes/GemGaugeChartData';
+import { GemGaugeChartEntry } from '../gen/gemgaugecharttypes/GemGaugeChartEntry';
 import { GemGaugeChart as GemGaugeChartTOP } from './gem-gauge-chart/gem-gauge-chart.component-gen';
+import {GemGaugeChartEntryBuilder} from "../gen/gemgaugecharttypes/GemGaugeChartEntryBuilder";
 
 @Component({
   selector: 'gem-gauge-chart',
@@ -97,24 +99,25 @@ export class GemGaugeChart extends GemGaugeChartTOP {
     if (!data) {
       return;
     }
-    this.labels = data.entries.map(entry => entry.name);
+    this.labels = data.getEntriesList().map(entry => entry.getName());
     this.dataSets = [];
     const colors = [];
     const labels = [];
     let autocolors = this.getColors();
     let pointerAutoColors = 0;
 
-    for (let i = 0; i < data.entries.length; i++) {
-      if (!CSS.supports('color', data.entries[i].backgroundColor)) {
-        data.entries[i].backgroundColor = autocolors[pointerAutoColors++];
+    for (let i = 0; i < data.getEntriesList().length; i++) {
+      if (!CSS.supports('color', data.getEntries(i).getBackgroundColor())) {
+        data.getEntries(i).setBackgroundColor(autocolors[pointerAutoColors++]);
       }
+      // Used library expects these fields, so we cannot use our generated datatypes
       let entry = {
-        value: data.entries[i].value,
-        name: data.entries[i].name,
-        type: data.entries[i].type,
-        backgroundColor: data.entries[i].backgroundColor
+        value: data.getEntries(i).getValue(),
+        name: data.getEntries(i).getName(),
+        type: data.getEntries(i).getType(),
+        backgroundColor: data.getEntries(i).getBackgroundColor()
       };
-      
+
       labels.push(entry.name);
       colors.push(entry.backgroundColor);
       this.dataSets.push(entry);
@@ -126,7 +129,7 @@ export class GemGaugeChart extends GemGaugeChartTOP {
     let t = this;
 
     // Rename Sensor 1 to CO2 and Sensor 2 to Temperature
-    this.dataSets.forEach(function (entry: GemGaugeChartEntry) {
+    this.dataSets.forEach(function (entry) {
       if (entry.name == "1") {
         entry.name = "CO2";
       } else if (entry.name == "2") {
@@ -134,7 +137,7 @@ export class GemGaugeChart extends GemGaugeChartTOP {
       }
     });
 
-    this.dataSets.forEach(function (entry: GemGaugeChartEntry) {
+    this.dataSets.forEach(function (entry) {
       if (entry.value < t._min) {
         // Round down to whole tens
         t._min = Math.floor(entry.value / 10) * 10;
@@ -147,7 +150,7 @@ export class GemGaugeChart extends GemGaugeChartTOP {
       }
 
     });
-    
+
     this.updateSelectedDataset();
   }
 
@@ -203,7 +206,7 @@ export class GemGaugeChart extends GemGaugeChartTOP {
     this._textValue = this._sensorType;
 
     let t = this;
-    
+
     this.dataSets.forEach(function (entry: any) {
       if (t._sensorType.toLowerCase() == "all"
         || entry.type.toLowerCase() == t._sensorType.toLowerCase()) {
@@ -235,13 +238,13 @@ export class GemGaugeChart extends GemGaugeChartTOP {
   /** changes container style depending on legend position */
   public changeContainer() {
     switch(this.legendPosition) {
-      case 'left': 
+      case 'left':
         return 'wholeChartWithLegendLeftContainer';
-      case 'top': 
+      case 'top':
         return 'wholeChartWithLegendTopContainer';
-      case 'bottom': 
+      case 'bottom':
         return 'wholeChartWithLegendBottomContainer';
-      case 'right': 
+      case 'right':
         return 'wholeChartWithLegendRightContainer';
       default:
         return 'wholeChartWithLegendBottomContainer';

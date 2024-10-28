@@ -3,7 +3,7 @@ import * as venn from 'venn.js';
 import * as d3 from 'd3';
 import { autoColors } from "../colors";
 import { GemVennDiagram as GemVennDiagramTOP } from './gem-venn-diagram/gem-venn-diagram.component-gen';
-import { GemVennDiagramData } from './gem-venn-diagram-types/gem-venn-diagram-types.types-gen';
+import {GemVennDiagramData} from "../gen/gemvenndiagramtypes/GemVennDiagramData";
 
 @Component({
   selector: 'gem-venn-diagram',
@@ -39,14 +39,14 @@ export class GemVennDiagram extends GemVennDiagramTOP {
   public getColors() {
     return autoColors;
   }
-  
+
   @Input()
   public set data(data: GemVennDiagramData) {
     if (!data) {
       return;
     }
     const bgrColor = this.colorScheme.domain.map(x => x + "70");
-    this.labels = data.entries.map(entry => entry.label);
+    this.labels = data.getEntriesList().map(entry => entry.getLabel());
     this._data = data;
 
     this.legendLabels = this.labels.filter(entry => {
@@ -61,8 +61,8 @@ export class GemVennDiagram extends GemVennDiagramTOP {
     domain: this.getColors()
   };
 
-  constructor() { 
-    super(); 
+  constructor() {
+    super();
   }
 
   ngOnInit() {
@@ -80,7 +80,14 @@ export class GemVennDiagram extends GemVennDiagramTOP {
 
   private updateValues() {
     let div = d3.select("#venn");
-    div.datum(this._data.entries).call(this._chart);
+    let transformedData = {
+      entries: this._data.getEntriesList().map(e => ({
+        sets: e.getSetsList(),
+        label: e.getLabel(),
+        size: e.getSize()
+      }))
+    };
+    div.datum(transformedData.entries).call(this._chart);
 
     let tooltip = d3.select("body").append("div").attr("class", "tooltip");
 
@@ -132,17 +139,17 @@ export class GemVennDiagram extends GemVennDiagramTOP {
   /** changes container style depending on legend position */
   public changeContainer() {
     switch(this.legendPosition) {
-      case 'left': 
+      case 'left':
         return 'wholeChartWithLegendLeftContainer';
-      case 'top': 
+      case 'top':
         return 'wholeChartWithLegendTopContainer';
-      case 'bottom': 
+      case 'bottom':
         return 'wholeChartWithLegendBottomContainer';
-      case 'right': 
+      case 'right':
         return 'wholeChartWithLegendRightContainer';
       default:
         return 'wholeChartWithLegendRightContainer';
     }
   }
-  
+
 }

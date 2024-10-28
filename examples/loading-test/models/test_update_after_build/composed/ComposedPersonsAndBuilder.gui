@@ -1,0 +1,17 @@
+package test_update_after_build.composed;
+
+import mc.fenix.input.GemTextInput;
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemText;
+
+import LoadingTests.Person;
+import LoadingTests.Animal;
+
+import test_update_after_build.Persons;
+import test_update_after_build.PersonBuilder;
+
+page ComposedPersonsAndBuilder() {
+
+  @Persons();
+  @PersonBuilder();
+}

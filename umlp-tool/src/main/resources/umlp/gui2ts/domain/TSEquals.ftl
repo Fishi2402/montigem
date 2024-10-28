@@ -11,9 +11,9 @@ if (o instanceof ${className?cap_first}) {
     this._${primitive?uncap_first} === ${className?uncap_first}.get${primitive?cap_first}() &&
   </#list>
   <#list objects as object>
-    (this._${object?uncap_first} === ${className?uncap_first}.get${object?cap_first}()
+    (this._${object?uncap_first} === ${className?uncap_first}._${object?uncap_first}
      || this._${object?uncap_first} != null
-     && this._${object?uncap_first} === ${className?uncap_first}.get${object?cap_first}()) &&
+     && this._${object?uncap_first} === ${className?uncap_first}._${object?uncap_first}) &&
   </#list>
   <#list primitiveBooleans as bool>
     this._${bool?uncap_first} === ${className?uncap_first}.is${bool?cap_first}() &&

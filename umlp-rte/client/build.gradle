@@ -43,6 +43,7 @@ def libs = [
     "charts",
     "common",
     "commonj2ts",
+    "functiondisplay",
     "input",
     "navigation",
     "table",
@@ -149,6 +150,7 @@ abstract class IncrementalReverseTask extends DefaultTask {
         "charts",
         "common",
         "commonj2ts",
+        "functiondisplay",
         "table",
         "input",
         "arrange",
@@ -226,7 +228,7 @@ publishing {
 // JSweet
 translateJava2TSDomain {
   verbose = true
-  File projectBase = project(':umlp-rte').projectDir
+  File projectBase = parent.projectDir
   File srcDir = new File(projectBase, "src/main/java")
 
   def hwcFiles = []
@@ -239,7 +241,20 @@ translateJava2TSDomain {
   input.from(hwcFiles)
   input.from(files(project(":umlp-rte").buildDir, "guiComponentTypes"))
 
+/*
+  parent.tasks.named('generateGuiComponentJava').configure{
+    task -> task.doLast {
+      input.from(files(task.outputDir))
+    }
+  }
+*/
   outputDir.set(new File(project.buildDir, "guiComponentTypes"))
+}
+
+gradle.projectsEvaluated {
+  translateJava2TSDomain.configure {task ->
+    task.dependsOn(project(":umlp-rte").tasks["generateGuiComponentJava"])
+  }
 }
 
 def copyTaskPrefix = "copy_"

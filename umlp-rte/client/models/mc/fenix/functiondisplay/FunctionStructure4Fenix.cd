@@ -1,0 +1,37 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.functiondisplay;
+
+import java.time.LocalDate;
+
+/**
+  Version of FunctionStructure.umlp where some details are adapted for usage within Fenix.
+ */
+classdiagram FunctionStructure4Fenix {
+    class Function4Display {
+      String name;
+    }
+
+    class Channel4Display;
+
+    /**
+     Since Fenix currently does not support qualified associations, we emulate them using the `Port`
+     class:
+     For each qualifier from `Function4Display` to a Channel in the original model, here the `Function4Display`
+     contains an instance of port, which contains the relevant name qualifing the channel from the
+     function.
+
+     We adapted `Function4Display` with the handwritten methods `String getInChannel(String name)` and
+     `String getOutChannel(String name)`, such that it can be used as if the associations are
+     qualified.
+    */
+    class Port4Display {
+      String name;
+    }
+
+    association [0..1] Function4Display (onwerIn) -> (in) Port4Display [*];
+    association [0..1] Function4Display (ownerOut) -> (out) Port4Display [*];
+    association [*] Port4Display <-> Channel4Display [1];
+
+    composition [0..1] Function4Display (owner) <-> (subFunction) Function4Display [*];
+
+}

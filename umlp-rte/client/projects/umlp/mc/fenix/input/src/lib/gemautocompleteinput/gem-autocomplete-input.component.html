@@ -4,12 +4,13 @@
   (keydown.arrowDown)="focusDown()"
   (keydown.arrowUp)="focusUp()"
   (keydown.enter)="selectWithEnter()"
+  (keydown.escape)="hideDropdown()"
   (keydown)="onKeyPress($event)"
   (keyup)="onKeyRelease($event)"
 >
   <label class="gem-label-text-input" [for]="id + 'Input'">{{ labelText }}</label>
   <input
-    class="gem-dropdown-input gem-text-input"
+    class="gem-text-input"
     autocomplete="off"
     [id]="id + 'Input'"
     [ngModel]="entry"

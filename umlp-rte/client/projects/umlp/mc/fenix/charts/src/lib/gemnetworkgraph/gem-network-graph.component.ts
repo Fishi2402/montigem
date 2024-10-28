@@ -1,8 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Network, Options, DataView, DataSet } from 'vis-network/standalone';
-import { GemNetworkData } from './gem-network-graph-types/gem-network-graph-types.types-gen';
 import { GemNetworkGraph as GemNetworkGraphTOP } from './gem-network-graph/gem-network-graph.component-gen';
+import {GemNetworkData} from "../gen/gemnetworkgraphtypes/GemNetworkData";
+import {GemNetworkDataBuilder} from "../gen/gemnetworkgraphtypes/GemNetworkDataBuilder";
+import {GemNetworkNodeBuilder} from "../gen/gemnetworkgraphtypes/GemNetworkNodeBuilder";
 
 @Component({
   selector: 'gem-network-graph',
@@ -11,7 +13,7 @@ import { GemNetworkGraph as GemNetworkGraphTOP } from './gem-network-graph/gem-n
 })
 export class GemNetworkGraph extends GemNetworkGraphTOP {
   /**contains the data for each entry */
-  public _data: GemNetworkData = { nodes: [], edges: [] };
+  public _data: GemNetworkData = new GemNetworkDataBuilder();
 
   /**labels for chart legend */
   public legendLabels: string[];
@@ -49,21 +51,37 @@ export class GemNetworkGraph extends GemNetworkGraphTOP {
     if (!data) {
       return;
     }
-    this._data.edges = data.edges;
+    this._data.setEdgesList(data.getEdgesList());
     this._nodes = new DataSet();
 
     if (!this._labelEqualsID) {
-      this._nodes.add(data.nodes);
+      this._nodes.add(data.getNodesList().map(n => ({
+        id: n.getId(),
+        value: n.getValue(),
+        label: n.getLabel(),
+        mass: n.getMass(),
+        color: n.getColor(),
+        group: n.getGroup(),
+        year: n.getYear()
+      })));
     } else {
-      for (let elem of data.nodes) {
-        if (typeof elem.id === "string") {
-          elem.label = elem.id;
+      for (let elem of data.getNodesList()) {
+        if (typeof elem.getId() === "string") {
+          elem.setLabel(elem.getId());
         }
-        this._nodes.add(elem);
+        this._nodes.add({
+          id: elem.getId(),
+          value: elem.getValue(),
+          label: elem.getLabel(),
+          mass: elem.getMass(),
+          color: elem.getColor(),
+          group: elem.getGroup(),
+          year: elem.getYear()
+        });
       }
     }
 
-    let nodeColors = data.nodes.map(entry => entry.color);
+    let nodeColors = data.getNodesList().map(entry => entry.getColor());
     const bgrColor = [...new Set(nodeColors)];
 
     this.legendColors = bgrColor;
@@ -123,16 +141,42 @@ export class GemNetworkGraph extends GemNetworkGraphTOP {
         this.filterEvents.subscribe(() => {
           this.nodesView.refresh();
         });
-        this._data.nodes = this.nodesView;
+        this._data.setNodesList(this.nodesView);
       } else {
-        this._data.nodes = this._nodes;
+        this._data.setNodesList(this._nodes.map(n => new GemNetworkNodeBuilder()
+          .id(n.id)
+          .year(n.year)
+          .value(n.value)
+          .label(n.label)
+          .mass(n.mass)
+          .color(n.color)
+          .group(n.group)
+          .year(n.year)
+          .build()
+        ));
       }
     }
   }
 
   private redrawGraph() {
     const container = document.getElementById("network");
-    this._network = new Network(container, this._data, this._options);
+    let data = {
+      nodes: this._data.getNodesList().map(n => ({
+        id: n.getId(),
+        value: n.getValue(),
+        label: n.getLabel(),
+        mass: n.getMass(),
+        color: n.getColor(),
+        group: n.getGroup(),
+        year: n.getYear(),
+      })),
+      edges: this._data.getEdgesList().map(e => ({
+        from: e.getFrom(),
+        to: e.getTo(),
+        length: e.getLength()
+      }))
+    };
+    this._network = new Network(container, data, this._options);
     if (this.hasData()) {
       this._network.on("stabilizationProgress", (params) => {
         let networkheight = container.offsetHeight;
@@ -164,7 +208,7 @@ export class GemNetworkGraph extends GemNetworkGraphTOP {
   }
 
   public hasData(): boolean {
-    return !!this._data.nodes && this._data.nodes.length != 0;
+    return !!this._data.getNodesList() && this._data.getNodesList().length != 0;
   }
 
   public setLegendPosition(legendPosition: string) {

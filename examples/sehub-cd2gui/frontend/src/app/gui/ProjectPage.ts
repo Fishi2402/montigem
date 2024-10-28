@@ -36,8 +36,8 @@ export class ProjectPage extends ProjectPageComponent {
 
     const artifacts: Artifact[] = this.getAllArtifactsFromDir(this.project, []);
 
-    networkData.nodes = this.getNodesFromArtifacts(artifacts);
-    networkData.edges = this.getEdgesFromArtifacts(artifacts);
+    networkData.setNodesList(this.getNodesFromArtifacts(artifacts));
+    networkData.setEdgesList(this.getEdgesFromArtifacts(artifacts));
     const newHash = JSON.stringify(networkData);
     if (this.networkDataCheck.hash !== newHash) {
       this.networkDataCheck.hash = newHash;
@@ -57,9 +57,9 @@ export class ProjectPage extends ProjectPageComponent {
 
   private createEdge(start: string, end: string): GemNetworkEdge {
     const edge = new GemNetworkEdge();
-    edge.from = start;
-    edge.to = end;
-    edge.length = 1.0;
+    edge.setFrom(start);
+    edge.setTo(end);
+    edge.setLength(1.0);
     return edge;
   }
 
@@ -77,9 +77,9 @@ export class ProjectPage extends ProjectPageComponent {
 
   private getNodeFromArtifact(art: Artifact): GemNetworkNode {
     let node: GemNetworkNode = new GemNetworkNode();
-    node.id = art.getFullName()
-    node.color = (art instanceof Directory) ? "#FFFF00" : "#FF00BF";
-    node.mass = 1.0;
+    node.setColor(art.getFullName());
+    node.setColor((art instanceof Directory) ? "#FFFF00" : "#FF00BF");
+    node.setMass(1.0);
 
     return node;
   }
@@ -101,16 +101,16 @@ export class ProjectPage extends ProjectPageComponent {
   private recursivelyFillGemTreeviewItems(artifact: Artifact): GemTreeviewEntry {
     let curViewEntry: GemTreeviewEntry = this.createGemTreeviewEntryFromArtifact(artifact)
     if (artifact instanceof Directory) {
-      (artifact as Directory).getContainsList().forEach(art => curViewEntry.children.push(this.recursivelyFillGemTreeviewItems(art)))
+      (artifact as Directory).getContainsList().forEach(art => curViewEntry.addChildren(this.recursivelyFillGemTreeviewItems(art)))
     }
     return curViewEntry;
   }
 
   private createGemTreeviewEntryFromArtifact(artifact: Artifact): GemTreeviewEntry {
     const viewEntry = new GemTreeviewEntry();
-    viewEntry.expanded = true
-    viewEntry.children = []
-    viewEntry.name = artifact.getName()
+    viewEntry.setExpanded(true)
+    viewEntry.setChildrenList([]);
+    viewEntry.setName(artifact.getName());
 
     return viewEntry
   }
