@@ -2,6 +2,8 @@ import {Log} from "../logging";
 
 export class JsonPrinter {
   res = null;
+
+  // Is a queue
   currElements = [];
 
   constructor(b: boolean) {
@@ -76,6 +78,25 @@ export class JsonPrinter {
 
   value(value: any) {
     // TODO
+  }
+
+  valueJson( value : string) : void {
+    this.internalStringValue(value);
+  }
+
+  internalStringValue(value : string) : void {
+    if (!(this.currElements.length === 0) && this.currElements[0] instanceof Array) {
+      const parent = this.currElements[0];
+      parent.push(JSON.stringify(value))
+    }
+    else if (!(this.currElements.length === 0) && this.currElements[0].isJsonObject()) {
+      Log.error("0xA0603 JsonPrinter detected an invalid nesting of Json. "
+        + "Cannot add a String value `" + value + "` to the JSON object: `"
+        + toString() + "`");
+    }
+    else {
+      this.currElements.push(JSON.stringify(value));
+    }
   }
 
   toString(): string {

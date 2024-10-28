@@ -10,9 +10,6 @@ import java.util.function.Consumer;
 
 @Component
 public class Test2 extends Test2TOP {
-  public Test2(GemList<Project> projects) {
-    setProjects(projects);
-  }
 
   @Override
   public Consumer<Void> addProject() {

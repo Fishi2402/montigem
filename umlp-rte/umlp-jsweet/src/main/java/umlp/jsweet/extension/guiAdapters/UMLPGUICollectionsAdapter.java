@@ -11,6 +11,7 @@ import org.jsweet.transpiler.model.MethodInvocationElement;
 import org.jsweet.transpiler.model.NewClassElement;
 import umlp.jsweet.extension.domainAdapters.UMLPCollectionsAdapter;
 import umlp.jsweet.extension.util.GUIAdapterUtils;
+import umlp.jsweet.extension.util.RTEPathUtil;
 
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -30,6 +31,7 @@ public class UMLPGUICollectionsAdapter extends PrinterAdapter {
     super(parentAdapter);
     this.adapterUtils = new GUIAdapterUtils(this, types(), context, util());
     getTypeMirrorMappings().add(0, computeMapTypeMapping());
+    addTypeMapping(RTEPathUtil.getBackendRTECommonPath("GemList"), "Array");
   }
 
   public Function<TypeMirror, String> computeMapTypeMapping() {

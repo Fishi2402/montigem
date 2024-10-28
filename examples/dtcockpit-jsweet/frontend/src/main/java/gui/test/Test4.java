@@ -7,9 +7,6 @@ import umlp.jsweet.extension.annotation.Component;
 
 @Component
 public class Test4 extends Test4TOP {
-  public Test4(GemList<Project> projects) {
-    setProjects(projects);
-  }
 
   @Override
   public String getPnameValue(Project p) {

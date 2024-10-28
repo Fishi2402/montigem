@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { DemoRecManager } from '@src/demorec/DemoRecManager';
-
+import {StringifyForBuilder} from '@umlp/commonj2ts'
 import { ComponentKind } from '@src/demorec/ComponentKind';
 import { DemoRecComponent } from '@src/demorec/DemoRecComponent';
 
@@ -95,7 +95,7 @@ export  class ComponentsOfPack extends ComponentsOfPackComponent {
       )
     }
 
-    const newHash = JSON.stringify(entries);
+    const newHash = StringifyForBuilder(entries);
     if (newHash !== this.treeComponentItems.hash) {
       this.treeComponentItems.value = entries;
       this.treeComponentItems.hash = newHash;
@@ -155,7 +155,7 @@ export  class ComponentsOfPack extends ComponentsOfPackComponent {
       }
     }
 
-    const newHash = JSON.stringify(connectionEntries);
+    const newHash = StringifyForBuilder(connectionEntries);
     if (newHash !== this.treeConnectionItems.hash) {
       this.treeConnectionItems.value = connectionEntries;
       this.treeConnectionItems.hash = newHash;
