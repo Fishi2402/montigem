@@ -13,6 +13,8 @@ dependencies {
   implementation project(":examples:loading-test:backend")
   implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version
   testImplementation project(':umlp-test-rte')
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version
+  implementation("org.springframework.boot:spring-boot-starter-tomcat:$spring_version")
 }
 
 genGUI {
@@ -22,6 +24,15 @@ genGUI {
                      "test_update_after_build.one_page.PersonsAndBuilderInOnePage",
                      "test_update_after_build.composed_in_builder_page.PersonsInBuilderPage",
                      "test_update_after_build.PersonBuilder"]
+}
+
+configurations {
+  testImplementation.exclude group: 'org.json', module: 'json'
+}
+
+configurations {
+  testRuntimeClasspath.exclude group: 'de.monticore.language-server', module:'monticore-language-server-runtime'
+
 }
 
 nodeSetup.dependsOn(frontendSetup)
