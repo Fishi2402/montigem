@@ -1,0 +1,19 @@
+package test_update_of_builder;
+
+import mc.fenix.input.GemDropdownInput;
+import mc.fenix.basic.GemText;
+
+import LoadingTests.Food;
+import LoadingTests.Animal;
+
+page AnimalAddFood(Animal animal, List<Food> allFood) {
+
+  chooseFoodToAdd@GemDropdownInput(
+    labelText = "Eats",
+    options = null,
+    entry = null
+  );
+  @iterate(Food f : animal.food) {
+    @GemText(value=f.name);
+  }
+}

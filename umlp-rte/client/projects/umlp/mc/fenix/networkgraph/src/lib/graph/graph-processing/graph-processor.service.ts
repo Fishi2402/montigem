@@ -1,4 +1,4 @@
-import { EdgeAttributes, GraphEdge, GraphNode, NodeAttributes } from "../types/graph.types";
+import { EdgeAttributes, Internal_GraphEdge, Internal_GraphNode, NodeAttributes } from "../types/graph.types";
 import { Attributes } from "graphology-types";
 import { Injectable, NgZone } from "@angular/core";
 import { EdgeProcessorService } from "./edge-processor.service";
@@ -29,18 +29,18 @@ export class GraphProcessorService<N extends NodeAttributes, E extends EdgeAttri
   /**
    * Method to set the raw node data for the graph.
    *
-   * @param {GraphNode[]} nodes - Array of raw node data.
+   * @param {Internal_GraphNode[]} nodes - Array of raw node data.
    */
-  public setNodeData(nodes: GraphNode[]): void {
+  public setNodeData(nodes: Internal_GraphNode[]): void {
     this.nodeProcessor.rawNodeData = nodes;
   }
 
   /**
    * Method to set the raw edge data for the graph.
    *
-   * @param {GraphEdge[]} edges - Array of raw edge data.
+   * @param {Internal_GraphEdge[]} edges - Array of raw edge data.
    */
-  public setEdgeData(edges: GraphEdge[]): void {
+  public setEdgeData(edges: Internal_GraphEdge[]): void {
     this.edgeProcessor.rawEdgeData = edges;
   }
 

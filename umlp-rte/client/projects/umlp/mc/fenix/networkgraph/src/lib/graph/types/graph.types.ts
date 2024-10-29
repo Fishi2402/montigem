@@ -2,6 +2,7 @@ import { Attributes } from "graphology-types";
 import { Color } from "../../shared/utils/color.util";
 import { EdgeDisplayData, NodeDisplayData, PartialButFor } from "sigma/types";
 import { AnimateOptions } from "sigma/utils/animate";
+import {NodeProgram} from "sigma/rendering";
 
 /** Represents a value that can be a number, string, or boolean */
 export type MetricValueType = number | string | boolean;
@@ -65,7 +66,7 @@ export type LabelAttribute = {
   label?: IdentifierType;
 };
 
-export type NodePos = {
+export type Internal_NodePos = {
   id: string,
   x?: number,
   y?: number
@@ -138,6 +139,19 @@ export type EdgePrograms = "line" | "arrow" | "fastLine";
 /** Supported node program types */
 export type NodePrograms = "circle" | "image" | "triangle" | "square";
 
+export function getNodeProgramOfString(input : string) : NodePrograms {
+  if(input === "image") {
+    return "image"
+  }
+  if(input === "triangle") {
+    return "triangle"
+  }
+  if(input === "square") {
+    return "square"
+  }
+  return "circle"
+}
+
 /** Node-specific attributes. */
 export type RawNodeSpecificAttributes = {
   /** X-coordinate for the node. */
@@ -195,9 +209,9 @@ export type RawEdgeAttributes = Attributes &
  * Graph representation.
  * Aggregation of nodes and edges.
  */
-export type Graph = {
-  nodes: GraphNode[];
-  edges: GraphEdge[];
+export type Internal_Graph = {
+  nodes: Internal_GraphNode[];
+  edges: Internal_GraphEdge[];
 }
 
 /**
@@ -206,7 +220,7 @@ export type Graph = {
  * @remarks
  *   Attributes can be either passed in directly, or within an "attributes" object.
  */
-export type GraphNode = RawNodeAttributes & {
+export type Internal_GraphNode = RawNodeAttributes & {
   /** Attributes specific to this node. */
   attributes?: RawNodeAttributes;
 };
@@ -217,7 +231,7 @@ export type GraphNode = RawNodeAttributes & {
  * @remarks
  *   Attributes can be either passed in directly, or within an "attributes" object.
  */
-export type GraphEdge = RawEdgeAttributes & {
+export type Internal_GraphEdge = RawEdgeAttributes & {
   /** Attributes specific to this edge. */
   attributes?: RawEdgeAttributes;
 };

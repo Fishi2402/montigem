@@ -1,5 +1,6 @@
 package umlp.generator.rte.data;
 
+import de.monticore.ast.ASTNode;
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.codegen.methods.MethodDecorator;
 import de.monticore.cd4code.CD4CodeMill;
@@ -11,6 +12,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.GenService;
@@ -26,6 +28,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static org.jsweet.transpiler.ModuleResolution.node;
 import static umlp.generator.domain.decorator.GenService.createType;
 
 public class RTEBuilderDecorator extends AbstractDecorator {
@@ -84,11 +87,12 @@ public class RTEBuilderDecorator extends AbstractDecorator {
     MethodDecorator methodDecorator = new MethodDecorator(glex);
     builderClass.addAllCDMembers(methodDecorator.decorate(finishedAttr));
     createSetAndCheckMethods(domainClass, builderClass, attrFields, attrAssocs);
-    getCD4C().addMethod(builderClass, getBuildTemplate(),
+    ASTNode buildMethod = getCD4C().addMethod(builderClass, getBuildTemplate(),
         domainClass.getName(),
         attrAssocLists,
         TagLookUp.isSingleton(domainClass)
     );
+    setAnnotations(buildMethod, new StringHookPoint("@Override"));
     // TODO: filter by mandatory
     List<String> mandatoryAttrList = new ArrayList<>();
     attrFields.forEach(it -> mandatoryAttrList.add(it.getName()));
@@ -157,7 +161,5 @@ public class RTEBuilderDecorator extends AbstractDecorator {
     super.addImports(domainType, clazz);
     getCD4C().addImport(clazz, "java.util.List");
     getCD4C().addImport(clazz, "java.util.Optional");
-    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
-    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("Gem"));
   }
 }

@@ -5,6 +5,7 @@ import { Person } from '@src/domain/Person';
 import { GemTreeviewExampleComponent, config } from '@src/example_basic/GemTreeviewExampleComponent';
 import { GemTreeviewEntry } from '@umlp/basic';
 import { Event } from '@umlp/common';
+import {stringifyWithoutRealBuilder} from "@src/StringifyWithoutRealBuilder";
 
 @Component({
   standalone: true,
@@ -25,15 +26,15 @@ export class GemTreeviewExample extends GemTreeviewExampleComponent {
       const entry = new GemTreeviewEntry();
       result.push(entry);
 
-      entry.name = p.getName();
-      entry.children = [];
+      entry.setName(p.getName());
+      entry.setChildrenList([]);
       for (const f of p.getFriendsList()) {
         const friend = new GemTreeviewEntry();
-        friend.name = f.getName();
-        entry.children.push(friend);
+        friend.setName(f.getName());
+        entry.addChildren(friend);
       }
     }
-    const newHash = JSON.stringify(result);
+    const newHash = stringifyWithoutRealBuilder(result);
     if (newHash !== this.treeItems.hash) {
       this.treeItems.value = result;
       this.treeItems.hash = newHash;

@@ -5,32 +5,29 @@
   (keydown.arrowUp)="focusUp()"
   (keydown.enter)="selectWithEnter($event)"
   (keydown.escape)="hideDropdown()"
+  (keydown.tab)="tabOut()"
   (keydown)="onKeyPress($event)"
   (keyup)="onKeyRelease($event)"
 >
-  <label class="gem-label-text-input" [for]="id + 'Input'">{{ labelText }}</label>
-  <div class="gem-dropdown-input-container">
-    <input
-      class="gem-dropdown-input gem-text-input"
-      tabindex="0"
-      [id]="getInputId()"
-      type="button"
-      [(ngModel)]="entry"
-      [disabled]="disabled"
-      [matTooltip]="
+  <label class="gem-label-text-input" [for]="getInputId()">{{ labelText }}</label>
+  <button
+    class="gem-dropdown-input"
+    tabindex="0"
+    [id]="getInputId()"
+    [disabled]="disabled"
+    (click)="toggleDropdown()"
+    [matTooltip]="
         validity?.status === 'Error' || validity?.status === 'Warning'
           ? validity.message
           : null
       "
-      matTooltipPosition="after"
-      [class.gem-input-error]="validity?.status === 'Error'"
-      [class.gem-input-warning]="validity?.status === 'Warning'"
-      (click)="toggleDropdown()"
-    />
-    <button class="gem-dropdown-button" [id]="getInputId()" [disabled]="disabled" (click)="toggleDropdown()">
-      <mat-icon [fontIcon]="isContentShown ? 'arrow_drop_up' : 'arrow_drop_down'"></mat-icon>
-    </button>
-  </div>
+    matTooltipPosition="after"
+    [class.gem-input-error]="validity?.status === 'Error'"
+    [class.gem-input-warning]="validity?.status === 'Warning'"
+  >
+    <div class="gem-dropdown-text">{{ entry }}</div>
+    <mat-icon class="gem-dropdown-icon" [fontIcon]="isContentShown ? 'arrow_drop_up' : 'arrow_drop_down'"></mat-icon>
+  </button>
   <div *ngIf="isContentShown" class="gem-dropdown-content">
     <div *ngIf="searchEnabled" class="gem-search-input-container">
       <div class="gem-search-icon">

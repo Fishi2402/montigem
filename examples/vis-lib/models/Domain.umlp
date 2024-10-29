@@ -47,6 +47,11 @@ classdiagram Domain {
     Boolean isOld(Person p);
   }
 
+  <<singleton>>
+  class AiService {
+    Message answer(Message m);
+  }
+
   association home [1] Person -> (address) Address [0..1];
 
   association friends [*] Person -> (friends) Person [*];

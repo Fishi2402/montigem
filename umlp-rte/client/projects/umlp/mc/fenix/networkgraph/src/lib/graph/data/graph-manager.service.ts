@@ -4,8 +4,8 @@ import {
   AnimateZoomOptions,
   EdgeAttributes,
   GenerateMetricsFunction,
-  GraphEdge,
-  GraphNode,
+  Internal_GraphEdge,
+  Internal_GraphNode,
   NodeAttributes,
 } from "../types/graph.types";
 import { Attributes, GraphType, SerializedGraph } from "graphology-types";
@@ -362,10 +362,10 @@ export class GraphManagerService<
   /**
    * Updates the internal graph node data with the provided new nodes and optionally reloads the graph.
    *
-   * @param {GraphNode[]} newNodes - The new nodes to be added.
+   * @param {Internal_GraphNode[]} newNodes - The new nodes to be added.
    * @param {boolean} [reload] - Whether to reload the graph after updating. Default is `false`
    */
-  public updateNodes(newNodes: GraphNode[], reload: boolean = false): void {
+  public updateNodes(newNodes: Internal_GraphNode[], reload: boolean = false): void {
     this.graphProcessor.setNodeData(newNodes);
     if (reload) this.reload();
   }
@@ -464,10 +464,10 @@ export class GraphManagerService<
   /**
    * Updates the internal graph node data with the provided new edges and optionally reloads the graph.
    *
-   * @param {GraphEdge[]} newEdges - The new edges to be added.
+   * @param {Internal_GraphEdge[]} newEdges - The new edges to be added.
    * @param {boolean} [reload] - Whether to reload the graph after updating. Default is `false`
    */
-  public updateEdges(newEdges: GraphEdge[], reload: boolean = false): void {
+  public updateEdges(newEdges: Internal_GraphEdge[], reload: boolean = false): void {
     this.graphProcessor.setEdgeData(newEdges);
     if (reload) this.reload();
   }

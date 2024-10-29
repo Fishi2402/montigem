@@ -1,9 +1,11 @@
 import { Component, Input } from "@angular/core";
 import { ChartDataset, ChartOptions } from "chart.js";
 import { autoColors } from "../colors";
-import { GemSDNshort, GemSunburstData, GemSunburstEntry } from "./gem-sunburst-chart-types/gem-sunburst-chart-types.types-gen";
-import { gemInstanceOfSDNshort, gemSdnShortToSDN } from "./gem-sunburst-chart.types";
+import { GemSunburstData } from "../gen/gemsunburstcharttypes/GemSunburstData";
+import { GemSunburstEntry } from "../gen/gemsunburstcharttypes/GemSunburstEntry";
 import { GemSunburstChart as GemSunburstChartTOP } from "./gem-sunburst-chart/gem-sunburst-chart.component-gen";
+import {GemSunburstEntryBuilder} from "../gen/gemsunburstcharttypes/GemSunburstEntryBuilder";
+import {GemSunburstDataBuilder} from "../gen/gemsunburstcharttypes/GemSunburstDataBuilder";
 
 @Component({
   selector: "gem-sunburst-chart",
@@ -16,10 +18,7 @@ export class GemSunburstChart extends GemSunburstChartTOP {
   public newData: GemSunburstData;
 
   // Placeholder values
-  public entry: GemSunburstEntry = {
-    label: "",
-    value: 0,
-  }
+  public entry: GemSunburstEntry = new GemSunburstEntryBuilder().label("").value(0).build()
   public subEntries: GemSunburstData[] = [];
 
   // Standard value scale
@@ -67,10 +66,10 @@ export class GemSunburstChart extends GemSunburstChartTOP {
       if (this.newData != null) {
         this.hasData = true;
         // If newData equals a placeholder set in set data instead of real data update hasData to false
-        if (this.newData.subEntries == null
-          || (this.newData.subEntries.length == 0
-            && this.newData.entry.label == ""
-            && this.newData.entry.value == 0)) {
+        if (this.newData.getSubEntriesList() == null
+          || (this.newData.getSubEntriesList().length == 0
+            && this.newData.getEntry().getLabel() == ""
+            && this.newData.getEntry().getValue() == 0)) {
           this.hasData = false;
         }
         // call updateData to finish data calculations that were interrupted by hasData == false
@@ -93,27 +92,27 @@ export class GemSunburstChart extends GemSunburstChartTOP {
   public set data(data: any) {
     if (data != null) {
       // Initialize newData as placeholder
-      this.newData = { entry: this.entry, subEntries: this.subEntries };
+      this.newData = new GemSunburstDataBuilder().entry(this.entry).subEntries(this.subEntries).build()
       // Check if data is an instance of GemSDNshort
-      if (gemInstanceOfSDNshort(data)) {
+/*      if (gemInstanceOfSDNshort(data)) {
         // Set newData as the GemSunburstData that is equal to data in GemSDNshort notation
         this.newData = gemSdnShortToSDN(data as GemSDNshort);
       }
-      else {
+      else {*/
         // Set newData as data which is in GemSunburstData notation
         this.newData = data as GemSunburstData;
-      }
+/*      }*/
       // Update placeholders
-      this.entry = this.newData.entry;
-      this.subEntries = this.newData.subEntries;
+      this.entry = this.newData.getEntry();
+      this.subEntries = this.newData.getSubEntriesList();
 
       // There is data
       this.hasData = true;
       // If data has no subEntries or is just the placeholder -> No data for chart
-      if (this.newData.subEntries == null
-        || (this.newData.subEntries.length == 0
-          && this.newData.entry.label == ""
-          && this.newData.entry.value == 0)) {
+      if (this.newData.getSubEntriesList() == null
+        || (this.newData.getSubEntriesList().length == 0
+          && this.newData.getEntry().getLabel() == ""
+          && this.newData.getEntry().getValue() == 0)) {
         this.hasData = false;
       }
 
@@ -128,10 +127,10 @@ export class GemSunburstChart extends GemSunburstChartTOP {
     if (this.ignoreErrorInput) {
       // Count the values of the subEntries and update the total value of the parentNode accordingly
       let total = 0;
-      for (let i = 0; this.newData.subEntries != null && i < this.newData.subEntries.length; i++) {
-        total += this.newData.subEntries[i].entry.value;
+      for (let i = 0; this.newData.getSubEntriesList() != null && i < this.newData.getSubEntriesList().length; i++) {
+        total += this.newData.getSubEntries(i).getEntry().getValue();
       }
-      this.newData.entry.value = total;
+      this.newData.getEntry().setValue(total);
     }
     setTimeout(() => {
       // Check if data has right syntax
@@ -152,38 +151,39 @@ export class GemSunburstChart extends GemSunburstChartTOP {
   // Check the data for correct format
   public check(node: GemSunburstData): void {
     // If data has no subEntries or hasData is already false there is nothing to check
-    if (this.hasData && node.subEntries != null && node.subEntries.length > 0) {
+    if (this.hasData && node.getSubEntriesList() != null && node.getSubEntriesList().length > 0) {
       // cur is value of current node
-      let cur = node.entry.value;
-      for (let i = 0; i < node.subEntries.length; i++) {
+      let cur = node.getEntry().getValue();
+      for (let i = 0; i < node.getSubEntriesList().length; i++) {
         // Substract value of every subNode from cur
-        cur -= node.subEntries[i].entry.value;
+        cur -= node.getSubEntries(i).getEntry().getValue();
         // Go into every subNode of cur to check it recursively
-        this.check(node.subEntries[i]);
+        this.check(node.getSubEntries(i));
       }
       // If values of subEntries does not have to sum up to value of parentNode
       if (this.ignoreErrorInput) {
         // If there is a part of the parentNode that is not filled by the subEntries
         if (cur > 0) {
           // Add empty node that fills the gap
-          node.subEntries.push({ entry: { label: "", value: cur, } });
+          node.getSubEntriesList().push(
+            new GemSunburstDataBuilder().entry(new GemSunburstEntryBuilder().label("").value(cur).build()).build());
         }
-        // If the sum of the values of the subEntries is higher than the parent node's value -> Error and has no Data 
+        // If the sum of the values of the subEntries is higher than the parent node's value -> Error and has no Data
         if (cur < 0) {
           this.errorMessage = `
             Data doesn't sum up to the total value of a node.
-            (subEntries of: ${node.entry.label}, ${node.entry.value})
+            (subEntries of: ${node.getEntry().getLabel()}, ${node.getEntry().getValue()})
           `;
           this.hasData = false;
         }
       }
       // If values of subEntries have to sum up to value of parentNode
       else {
-        // If the sum of the values of the subEntries does not equal the parent node's value -> Error and has no Data 
+        // If the sum of the values of the subEntries does not equal the parent node's value -> Error and has no Data
         if (cur !== 0) {
           this.errorMessage = `
             Data doesn't sum up to the total value of a node.
-            (subEntries of: ${node.entry.label}, ${node.entry.value}).
+            (subEntries of: ${node.getEntry().getLabel()}, ${node.getEntry().getValue()}).
             Option: "[ignoreError] = true" if this should be ignored.
           `;
           this.hasData = false;
@@ -195,13 +195,13 @@ export class GemSunburstChart extends GemSunburstChartTOP {
   // Calculates the depth of the data tree from given node
   public getDepth(node: GemSunburstData): number {
     // If node has subEntries
-    if (node.subEntries != null && node.subEntries.length > 0) {
+    if (node.getSubEntriesList() != null && node.getSubEntriesList().length > 0) {
       // First get depth of first child node
-      let cur = this.getDepth(node.subEntries[0]);
+      let cur = this.getDepth(node.getSubEntries(0));
       // For every other child node
-      for (let i = 1; i < node.subEntries.length; i++) {
+      for (let i = 1; i < node.getSubEntriesList().length; i++) {
         // Get depth of current child node
-        let newCur = this.getDepth(node.subEntries[i]);
+        let newCur = this.getDepth(node.getSubEntries(i));
         // If depth of current child node is greater than the current maximum -> update maximum
         if (newCur > cur) cur = newCur;
       }
@@ -228,15 +228,17 @@ export class GemSunburstChart extends GemSunburstChartTOP {
     this.legendColors = definedColors;
 
     // curNodes are all subEntries of this data
-    let curNodes: (GemSunburstData & { color: string })[] = [];
-    for (let i = 0; i < data.subEntries.length; ++i) {
+    let curNodes = [];
+    for (let i = 0; i < data.getSubEntriesList().length; ++i) {
+      console.warn("Entry is", data.getSubEntries(i).getEntry())
       curNodes.push({
-        ...data.subEntries[i],
+        entry: data.getSubEntries(i).getEntry(),
+        subEntries: data.getSubEntries(i).getSubEntriesList(),
         color: definedColors[i]
       })
     }
     // Initialize as empty
-    let nextNodes: (GemSunburstData & { color: string })[] = [];
+    let nextNodes = [];
     let curDatas: { value: number, color: string }[] = [];
     let curLabels: string[] = [];
     let sunburstDatasTemp: { value: number, color: string }[][] = [];
@@ -248,22 +250,25 @@ export class GemSunburstChart extends GemSunburstChartTOP {
       // For every node in curNodes (for all current nodes)
       for (let i = 0; curNodes != null && i < curNodes.length; i++) {
         // Push value and label of current node to current data and current labels
+        console.warn("Current node:", curNodes[i])
+        console.warn("Current node Entry:", curNodes[i].entry)
         curDatas.push({
-          value: curNodes[i].entry.value,
+          value: curNodes[i].entry.getValue(),
           color: curNodes[i].color
         });
-        curLabels.push(curNodes[i].entry.label);
+        curLabels.push(curNodes[i].entry.getLabel());
         // If current node has no subEntries
         if (curNodes[i].subEntries == null || curNodes[i].subEntries.length == 0) {
           // Push an empty node into the nextNodes (-> next cycle will deal with this subEntries as one empty node)
-          nextNodes.push({ entry: { label: "", value: curNodes[i].entry.value, }, subEntries: [], color: '#00000000' });
+          nextNodes.push({ entry: { label: "", value: curNodes[i].entry.getValue(), }, subEntries: [], color: '#00000000' });
         }
         // If current node has subEntries
         else {
           // Push every subNode of current node into the nextNodes (-> next cycle will deal with every subNode)
           for (let k = 0; k < curNodes[i].subEntries.length; k++) {
             nextNodes.push({
-              ...curNodes[i].subEntries[k],
+              entry: curNodes[i].subEntries[k].getEntry(),
+              subEntries: curNodes[i].subEntries[k].getSubEntriesList(),
               color: curNodes[i].color
             });
           }

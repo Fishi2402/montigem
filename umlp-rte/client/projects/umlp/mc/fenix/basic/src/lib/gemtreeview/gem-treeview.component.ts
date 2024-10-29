@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { GemTreeviewEntry } from "./gem-treeview-types.types";
+import { GemTreeviewEntry } from "../gen/gemtreeviewtypes/GemTreeviewEntry";
 
 @Component({
   selector: "gem-treeview",
@@ -41,9 +41,9 @@ export class GemTreeview {
       return;
     }
     for (const item of items) {
-      if (item.children) {
-        item.expanded = this.allExpanded;
-        this.updateExpanded(item.children);
+      if (item.getChildrenList()) {
+        item.setExpanded(this.allExpanded);
+        this.updateExpanded(item.getChildrenList());
       }
     }
   }
@@ -59,14 +59,14 @@ export class GemTreeview {
   }
 
   onExpand(item: GemTreeviewEntry) {
-    if (item.expanded) {
-      item.expanded = !item.expanded;
+    if (item.isExpanded()) {
+      item.setExpanded(!item.isExpanded());
     } else {
-      if (item.children) {
-        if (item.children.length > 0) {
-          item.expanded = true;
+      if (item.getChildrenList()) {
+        if (item.getChildrenList().length > 0) {
+          item.setExpanded(true);
         } else {
-          item.expanded = false;
+          item.setExpanded(false);
         }
       }
     }

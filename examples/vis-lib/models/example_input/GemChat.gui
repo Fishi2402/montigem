@@ -8,7 +8,7 @@ import mc.fenix.input.GemTextareaInput;
 import Domain.Message;
 
 
-component GemChat(List<Message> messages) {
+component GemChat(List<Message> messages, Message userMsg) {
 
   @GemCard(title="Chat with me :)",component=
     @GemColumn(components=[
@@ -16,8 +16,8 @@ component GemChat(List<Message> messages) {
         @GemRow(components = [
           @GemText(value=msg.content)]);
     },@GemRow(components=[
-        @GemColumn(width="80%",components=[@GemTextareaInput(placeholder="Start Chatting :)")]),
-        @GemColumn(width="20%",components=[@GemButton(leftClick=sendMessage(),label="send")])])
+        @GemColumn(width="80%",components=[userInput@GemTextareaInput(placeholder="Start Chatting :)",entry=userMsg.content)]),
+        @GemColumn(width="20%",components=[@GemButton(leftClick=sendMessage(userMsg),label="send")])])
     ])
   );
 }

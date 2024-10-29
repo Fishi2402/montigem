@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test_load_all;
+
+import LoadingTests.Person;
+
+page LoadOnlyPersons(List<Person> persons) {
+
+}
