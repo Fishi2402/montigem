@@ -15,7 +15,6 @@ import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.ObserverDecorator;
 import umlp.generator.gui.genjava.decorator.GUI2JavaClassDecorator;
 import umlp.generator.gui.genjava.prettyprinter.Expression2SetterPrinter;
-import umlp.generator.gui.gentypescript.domain.TSObserverDecorator;
 import umlp.generator.gui.gentypescript.printer.TSUtilsPrinter;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 
@@ -28,6 +27,7 @@ import java.util.function.Function;
 public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
 
   protected boolean extendedMixin = false;
+  protected boolean addedRxjsImports = false;
 
   public GUI2TSClassDecorator(final GlobalExtensionManagement glex) {
     super(glex);
@@ -60,6 +60,19 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
     }
     glex.replaceTemplate("umlp.gui2ts.TSAnnotations", clazz,
         new TemplateHookPoint("umlp.gui2ts.TSAnnotationDirective"));
+  }
+
+  @Override
+  protected String addWaitAttr(String attrName) {
+    String waitName = attrName + "Wait";
+    if (!addedRxjsImports) {
+      glex.addAfterTemplate("umlp.gui2ts.TSEmptyImports", clazz,
+          new StringHookPoint("import { Subject, firstValueFrom } from 'rxjs';"));
+      addedRxjsImports = true;
+    }
+    glex.addAfterTemplate("TSClassContent:Elements", clazz, new StringHookPoint(
+        "public " + waitName + " : Subject<void> = new Subject<void>();\n"));
+    return waitName;
   }
 
   @Override
@@ -188,6 +201,10 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
   @Override
   protected String printType(ASTMCType type) {
     return new TSUtilsPrinter().printType(type);
+  }
+
+  protected String getParamSetterTemplate() {
+    return "umlp.gui2ts.GUI2TSParamSetter";
   }
 
   @Override

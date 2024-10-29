@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("type", "name", "setter", "setExternally")}
+${tc.signature("type", "name", "setter", "setExternally", "wait")}
 <#assign mcType = type.printType()>
 
 ${cd4c.method("public void ${setter}(${mcType} val)")}

@@ -10,7 +10,6 @@ import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
 import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;
@@ -32,13 +31,12 @@ import de.monticore.guidsl._ast.ASTGUIShortIterateControl;
 import de.monticore.guidsl._symboltable.BuiltInTypes;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
-import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
-import de.monticore.literals.mccommonliterals._ast.ASTConstantsMCCommonLiterals;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
 import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Splitters;
@@ -196,9 +194,12 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     String setExternName = name + "SetExternally";
     getCD4C().addAttribute(clazz, "public boolean " + setExternName + " = false");
 
+    // add wait external value attr
+    String waitName = addWaitAttr(name);
+
     // add setter
     String setterName = "set" + StringTransformations.capitalize(node.getName());
-    getCD4C().addMethod(clazz, getParamSetterTemplate(), type, name, setterName, setExternName);
+    getCD4C().addMethod(clazz, getParamSetterTemplate(), type, name, setterName, setExternName, waitName);
 
     String initName = "init" + StringTransformations.capitalize(node.getName());
 
@@ -235,7 +236,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         Optional<InitDependency> dep = InitDependencyTree.getInstance().getDependency(node);
         if (dep.isPresent()) {
           dep.get().setInitMethod(new MethodTemplate(
-              getInitDomainParamTemplate(), type, name, manager, id, initName, setExternName, util.isAbstractDomainType(typeSTE)
+              getInitDomainParamTemplate(), type, name, manager, id,
+              initName, setExternName, waitName, util.isAbstractDomainType(typeSTE)
           ));
         }
       }
@@ -310,6 +312,10 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         ));
       }
     }
+  }
+
+  protected String addWaitAttr(String attrName) {
+    return "";
   }
 
   /**
