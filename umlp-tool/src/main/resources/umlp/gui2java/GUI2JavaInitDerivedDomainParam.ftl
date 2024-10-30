@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("type", "name", "manager", "init", "setExternally", "initList")}
+${tc.signature("type", "name", "manager", "init", "setExternally", "wait", "initList")}
 <#assign javaType = cdPrinter.printType(type)>
 
 ${cd4c.method("protected void ${init}()")}

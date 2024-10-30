@@ -199,7 +199,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
     // add setter
     String setterName = "set" + StringTransformations.capitalize(node.getName());
-    getCD4C().addMethod(clazz, getParamSetterTemplate(), type, name, setterName, setExternName, waitName);
+    getCD4C().addMethod(clazz, getParamSetterTemplate(), type, name, setterName,
+        setExternName, waitName);
 
     String initName = "init" + StringTransformations.capitalize(node.getName());
 
@@ -212,7 +213,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       Optional<InitDependency> dep = InitDependencyTree.getInstance().getDependency(node);
       if (dep.isPresent()) {
         dep.get().setInitMethod(new MethodTemplate(
-            getInitParamSingletonTemplate(), type, name, manager, initName, setExternName
+            getInitParamSingletonTemplate(), type, name, manager,
+            initName, setExternName, waitName
         ));
       }
     }
@@ -224,7 +226,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         Optional<InitDependency> dep = InitDependencyTree.getInstance().getDependency(node);
         if (dep.isPresent()) {
           dep.get().setInitMethod(new MethodTemplate(
-              getInitDerivedDomainParamTemplate(), type, name, manager, initName, setExternName
+              getInitDerivedDomainParamTemplate(), type, name, manager,
+              initName, setExternName, waitName
           ));
         }
       }
@@ -294,7 +297,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       if (dep.isPresent()) {
         // add init
         dep.get().setInitMethod(new MethodTemplate(
-            getInitDomainListTemplate(), innerType, name, manager, initName, setExternName
+            getInitDomainListTemplate(), innerType, name, manager,
+            initName, setExternName, waitName
         ));
       }
     }
@@ -308,7 +312,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       Optional<InitDependency> dep = InitDependencyTree.getInstance().getDependency(node);
       if (dep.isPresent()) {
         dep.get().setInitMethod(new MethodTemplate(
-            getInitDefaultParamTemplate(), name, value, initName, setExternName, getterName, setterName
+            getInitDefaultParamTemplate(), name, value,
+            initName, setExternName, waitName, getterName, setterName
         ));
       }
     }
