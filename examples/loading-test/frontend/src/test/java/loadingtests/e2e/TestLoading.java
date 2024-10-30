@@ -97,7 +97,6 @@ public class TestLoading extends AbstractLoadingTestsE2ETest {
 
   }
 
-  @Disabled
   @Test
   void testUpdateAllAnimalsPageAfterNewAnimalWasCreated(Page page) {
     Long gemIdOfPersonWithNoAnimals = this.personGemIds.get(1);
@@ -143,7 +142,7 @@ public class TestLoading extends AbstractLoadingTestsE2ETest {
         gemIdOfPersonWithNoAnimals.intValue()));
 
     // Assert there is no animal on the page
-    assertEquals(0, page.locator(animalName).all().size());
+    assertEquals(0, page.getByText(animalName).all().size());
 
     // Assert that no animal was loaded since we do not need it on the page
     Log.info("Building new animal now.", this.getClass().getName());

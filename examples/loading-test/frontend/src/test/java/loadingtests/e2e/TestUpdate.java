@@ -32,7 +32,6 @@ public class TestUpdate extends AbstractLoadingTestsE2ETest {
     page.onConsoleMessage(cm -> System.out.println("[BROWSER] " + cm.text()));
   }
 
-  @Disabled
   @Test
   void testUpdateOnOnePage(Page page) {
     navAndWait(page, "/test_update_after_build/one_page/PersonsAndBuilderInOnePage"); //go to page we want to test
@@ -40,21 +39,18 @@ public class TestUpdate extends AbstractLoadingTestsE2ETest {
     testUpdateFunctionality(page);
   }
 
-  @Disabled
   @Test
   void testUpdateOnPersonsInBuilderPage(Page page) {
-    navAndWait(page, "/test_update_after_build/composed_in_builder_page/ComposedPersonsInBuilderPage"); //go to page we want to test
+    navAndWait(page, "/test_update_after_build/composed_in_builder_page/PersonsInBuilderPage"); //go to page we want to test
     testUpdateFunctionality(page);
   }
 
-  @Disabled
   @Test
   void testUpdateOnBuilderInPersonsPage(Page page) {
-    navAndWait(page, "/test_update_after_build/composed_in_persons_page/ComposedBuilderInPersonsPage"); //go to page we want to test
+    navAndWait(page, "/test_update_after_build/composed_in_persons_page/BuilderInPersonsPage"); //go to page we want to test
     testUpdateFunctionality(page);
   }
 
-  @Disabled
   @Test
   void testUpdateOnComposedPage(Page page) {
     navAndWait(page, "/test_update_after_build/composed/ComposedPersonsAndBuilder"); //go to page we want to test
