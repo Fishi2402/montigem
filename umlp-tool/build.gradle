@@ -20,7 +20,12 @@ def shouldBuildVscodePlugin = ("true").equals(getProperty('buildVscodePlugin'))
 
 if(shouldBuildIntelliJPlugin) {
   apply plugin: "org.jetbrains.intellij"
-  intellij.version = "2022.2"
+  intellij.version = "2023.2"
+
+  intellij {
+    plugins.set(["com.redhat.devtools.lsp4ij:0.7.0"])
+  }
+
 }
 
 configurations {
