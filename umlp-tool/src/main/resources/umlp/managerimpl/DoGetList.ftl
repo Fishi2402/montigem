@@ -6,4 +6,4 @@ List<Long> ids = new ArrayList<>();
   ids.addAll(${cdName}DAOFactory.get${subclass.name?cap_first}DAO().selectAllIds${subclass.name?cap_first}());
 </#list>
 GemListBuilder<${name}> list = new ${name?cap_first}GemList(ids);
-return list.build().get();
+return new umlp.backendrte.common.ReadOnlyGemList<>(list.build().get());
