@@ -35,7 +35,7 @@ public class TestAtomicUpdate extends AbstractLoadingTestsE2ETest {
 
   /**
    * Test if the backend (or another client) can add & remove an element from the same list
-   * See https://git.rwth-aachen.de/monticore/monticore/-/issues/4378
+   * See <a href="https://git.rwth-aachen.de/monticore/monticore/-/issues/4378">#4378</a>
    * <p/>
    * [BROWSER] Exec command 3 loadingtests.commands.ReplaceFoodItem from 1 Client 1
    * [BROWSER] {"id":3,"commandType":"loadingtests.commands.ReplaceFoodItem","participantId":1,"aGemId":15} Client 1
@@ -75,8 +75,6 @@ public class TestAtomicUpdate extends AbstractLoadingTestsE2ETest {
    * at u.invoke (http://localhost:53738/polyfills.5692fea145d372a2.js:1:19080)
    */
   @Test
-  @Disabled
-  // TODO: https://git.rwth-aachen.de/monticore/monticore/-/issues/4378
   void testAtomicUpdate(Page page) throws Exception {
     navAndWait(page, "/test_update_list/TestAtomicUpdate"); //go to page we want to test
 
