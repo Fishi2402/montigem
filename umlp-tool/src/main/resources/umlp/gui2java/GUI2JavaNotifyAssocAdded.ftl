@@ -7,4 +7,6 @@ ${tc.signature("type", "assoc")}
 <#assign arg3 = "val_$3">
 
 ${cd4c.method("public void notifyAdd${assoc?cap_first}(${mcType} ${arg}, long ${arg2}, int ${arg3})")}
+/*
 ${arg}._internal_get${assoc?cap_first}GemList().loadSingleObject(${arg2});
+*/

@@ -127,7 +127,6 @@ public class TestLoading extends AbstractLoadingTestsE2ETest {
    * a pet of the currently displayed person!
    * @param page
    */
-  @Disabled
   @Test
   void testLoadAllComponentsInComposedPage(Page page) {
     String animalName="New Pet";

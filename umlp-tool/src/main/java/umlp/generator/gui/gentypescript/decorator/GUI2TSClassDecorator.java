@@ -116,6 +116,8 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
   protected void extendMixin() {
     glex.addAfterTemplate("umlp.gui2ts.TSClassExtends",
         clazz, new TemplateHookPoint("umlp.gui2ts.TSClassExtendsMixin"));
+    glex.addAfterTemplate("umlp.gui2ts.TSEmptyMixin",
+        clazz, new StringHookPoint("Object"));
   }
 
   @Override

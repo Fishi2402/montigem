@@ -48,15 +48,13 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
 
   public loadAll(): Promise<Array<E>> {
     return Promise.all(this.loadObjects(this.ids)).then(v => {
-      let res = [];
-      this.values = [];
+      this.values.length = 0;
       for (let val of v) {
         if (val.getLoadingState() === LoadingState.LOADED) {
-          res.push(val.get());
           this.values.push(val.get());
         }
       }
-      return res;
+      return this.values;
     })
   }
 

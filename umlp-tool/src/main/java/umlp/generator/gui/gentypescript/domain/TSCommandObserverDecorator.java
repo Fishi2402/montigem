@@ -26,6 +26,9 @@ public class TSCommandObserverDecorator extends CommandObserverDecorator {
     // replace interface via mixin
     glex.replaceTemplate("umlp.gui2ts.TSClassImplements",
         emptyClass, new TemplateHookPoint("umlp.gui2ts.TSClassExtendsMixin"));
+    glex.addAfterTemplate("umlp.gui2ts.TSEmptyMixin",
+        emptyClass, new StringHookPoint("Object"));
+
     glex.addBeforeTemplate("umlp.gui2ts.TSEmptyMixin",
         emptyClass, new StringHookPoint(
             domainClass.getName() + ObserverDecorator.SUFFIX + TSObserverMixinDecorator.SUFFIX + "("

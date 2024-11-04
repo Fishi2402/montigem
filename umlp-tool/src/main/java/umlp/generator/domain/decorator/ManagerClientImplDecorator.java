@@ -12,6 +12,7 @@ import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
@@ -110,13 +111,14 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
         managerClass.addCDMember(getSingletonAttribute(domainClass));
       }else {
         managerClass.addCDMember(getCacheAttribute(domainClass));
+        managerClass.addCDMember(getLoadedAttribute(domainClass));
       }
       managerClass.addCDMember(getCommandObserverAttribute(domainClass));
     }
 
     List<ASTCDType> concreteSubclassesOrderedByDistance = concreteSubclassesOrderedByDistance(origCD, domainClass);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSure", name);
-    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoGetList", name, false);
+    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoGetList", name, isSingleton);
 
     if (isSingleton) {
       getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoOptSingletonElement", name);
@@ -207,6 +209,16 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
         StringTransformations.uncapitalize("known" + domainClass.getName() + "s"));
     getGlex().replaceTemplate("cd2java.Value", domainClassDaoAttr, new StringHookPoint(defaultMapValue()));
     return domainClassDaoAttr;
+  }
+
+  protected ASTCDAttribute getLoadedAttribute(ASTCDType domainClass) {
+    return getCDAttributeFacade().createAttribute(PROTECTED.build(),
+        getMCTypeFacade().createBasicGenericTypeOf("Optional",
+            MCFullGenericTypesMill.mCCustomTypeArgumentBuilder().setMCType(
+                getMCTypeFacade().createBasicGenericTypeOf("GemList", domainClass.getName())
+            ).build()
+        ),
+        StringTransformations.uncapitalize("loaded" + domainClass.getName() + "List"));
   }
 
   protected String defaultMapValue() {

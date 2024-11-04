@@ -12,6 +12,7 @@ import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
 import umlp.generator.domain.decorator.BaseClassObjectMapperDecorator;
@@ -139,6 +140,7 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
         managerClass.addCDMember(getSingletonAttribute(domainClass));
       } else {
         managerClass.addCDMember(getCacheAttribute(domainClass));
+        managerClass.addCDMember(getLoadedAttribute(domainClass));
       }
       managerClass.addCDMember(getCommandObserverAttribute(domainClass));
     }
@@ -228,6 +230,17 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
         StringTransformations.uncapitalize("known" + domainClass.getName() + "s"));
     getGlex().replaceTemplate("cd2java.Value", domainClassDaoAttr, new StringHookPoint(defaultMapValue()));
     return domainClassDaoAttr;
+  }
+
+  @Override
+  protected ASTCDAttribute getLoadedAttribute(ASTCDType domainClass) {
+    return getCDAttributeFacade().createAttribute(PROTECTED.build(),
+        getMCTypeFacade().createBasicGenericTypeOf("Promise",
+            MCFullGenericTypesMill.mCCustomTypeArgumentBuilder().setMCType(
+                getMCTypeFacade().createBasicGenericTypeOf("GemList", domainClass.getName())
+            ).build()
+        ),
+        StringTransformations.uncapitalize("loaded" + domainClass.getName() + "List"));
   }
 
   @Override

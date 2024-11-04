@@ -16,6 +16,11 @@ return res.then(b => {
   if(b){
     // TODO: error handling
     this.known${name}s.delete(gemId);
+    if (this.loaded${name}List) {
+      this.loaded${name}List.then(tmp_$ => {
+        tmp_$.removeIdSure(gemId);
+      });
+    }
     this.${managerName?uncap_first}Observers.forEach(obs => obs.maybeNotify${name}Deleted(gemId, scope));
     return true;
   }else{
