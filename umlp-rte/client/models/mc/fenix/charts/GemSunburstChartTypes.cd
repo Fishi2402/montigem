@@ -8,13 +8,20 @@ classdiagram GemSunburstChartTypes {
     List<GemSunburstData> subEntries;
   }
 
+  public class GemSunburstDataHelper {
+    GemSunburstEntry entry;
+    List<GemSunburstData> subEntries;
+    String color;
+  }
+
   public class GemSunburstEntry {
     String label;
     Integer value;
   }
 
+  // Deprecated
   public class GemSDNshort {
-    List<String> c;
+    List<String> c; // In the hwc typescript it was any[]
     List<GemSDNshort> sN;
   }
 

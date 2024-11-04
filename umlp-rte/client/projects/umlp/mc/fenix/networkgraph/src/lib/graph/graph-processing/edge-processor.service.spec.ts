@@ -4,7 +4,7 @@ import { GroupMappingService } from "./group-mapping.service";
 import { GraphDataService } from "../data/graph-data.service";
 import { GraphSettingsService } from "../services/graph-settings.service";
 import { Attributes } from "graphology-types";
-import { EdgeAttributes, GraphEdge, NodeAttributes } from "../types/graph.types";
+import { EdgeAttributes, Internal_GraphEdge, NodeAttributes } from "../types/graph.types";
 import { SigmaGraphService } from "../data/sigma-graph.service";
 
 describe("EdgeProcessorService", () => {
@@ -151,7 +151,7 @@ describe("EdgeProcessorService", () => {
   describe("createEdge", () => {
     it("should create an edge", () => {
       const key = "key1";
-      const edge: GraphEdge = {
+      const edge: Internal_GraphEdge = {
         source: "1",
         target: "2",
         weight: 3,

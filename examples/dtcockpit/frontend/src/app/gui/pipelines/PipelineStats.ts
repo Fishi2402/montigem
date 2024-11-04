@@ -10,6 +10,7 @@ import {
 } from '@umlp/charts';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import {StringifyForBuilder} from "@umlp/commonj2ts";
 
 @Component({
   standalone:true,
@@ -89,7 +90,7 @@ export class PipelineStats extends PipelineStatsComponent {
         .labels(labels)
         .entries(barChartEntries)
         .build();
-    const newHash = JSON.stringify(data);
+    const newHash = StringifyForBuilder(data);
     if (this.projectDataCheck.hash !== newHash) {
       this.projectDataCheck.hash = newHash;
       this.projectDataCheck.value = data;

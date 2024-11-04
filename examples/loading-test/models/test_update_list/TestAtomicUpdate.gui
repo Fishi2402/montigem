@@ -1,0 +1,16 @@
+package test_update_list;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemText;
+import mc.fenix.input.GemDropdownInput;
+
+import LoadingTests.Food;
+import LoadingTests.Animal;
+import LoadingTests.UpdateListHelper;
+
+page TestAtomicUpdate(UpdateListHelper ulh) {
+  @iterate(Food f : ulh.testAnimal.food) {
+    @GemText(value=f.name);
+  }
+  @GemButton(label = "Replace first food item", leftClick = replaceFirst());
+}

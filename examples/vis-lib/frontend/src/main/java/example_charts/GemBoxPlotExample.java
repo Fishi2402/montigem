@@ -53,7 +53,7 @@ public class GemBoxPlotExample extends GemBoxPlotExampleTOP {
     return new GemBoxPlotEntryBuilder()
         .group("Test A")
         .color(Optional.of("#69b3a2"))
-        .points(Arrays.asList(12d,19d,11d,13d,12d,22d,13d,4d,15d,16d,18d,19d,20d,12d,11d,9d))
+        .points(Arrays.asList(12.0, 19.0, 11.0, 13.0, 12.0, 22.0, 13.0, 4.0, 15.0, 16.0, 18.0, 19.0, 20.0, 12.0, 11.0, 9.0))
         .box(new GemBoxPlotBoxBuilder()
             .median(13d)
             .lowerQuantile(11d)
@@ -68,7 +68,7 @@ public class GemBoxPlotExample extends GemBoxPlotExampleTOP {
     return new GemBoxPlotEntryBuilder()
         .group("Test B")
         .color(Optional.of("#BFFFF4"))
-        .points(Arrays.asList(12d,19d,11d,13d,12d,22d,13d,4d,12d,11d,41d))
+        .points(Arrays.asList(12.0, 19.0, 11.0, 13.0, 12.0, 22.0, 13.0, 4.0, 12.0, 11.0, 41.0))
         .box(new GemBoxPlotBoxBuilder()
             .median(12d)
             .lowerQuantile(12d)
@@ -96,7 +96,7 @@ public class GemBoxPlotExample extends GemBoxPlotExampleTOP {
   private GemBoxPlotEntry getData4() {
     return new GemBoxPlotEntryBuilder()
         .group("Data 4")
-        .points(Arrays.asList(0d,1d,2d,3d,4d,5d,6d,7d,7d,8d,9d,20d,9d,9d,9d))
+        .points(Arrays.asList(0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 7.0, 8.0, 9.0, 20.0, 9.0, 9.0, 9.0))
         .box(new GemBoxPlotBoxBuilder()
             .median(7d)
             .lowerQuantile(3d)
@@ -110,7 +110,7 @@ public class GemBoxPlotExample extends GemBoxPlotExampleTOP {
   private GemBoxPlotEntry getData5() {
     return new GemBoxPlotEntryBuilder()
         .group("Data 5")
-        .points(Arrays.asList(0d,1d,2d,3d,4d,5d,6d,7d,7d,8d,9d,20d,9d,9d,9d))
+        .points(Arrays.asList(0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 7.0, 8.0, 9.0, 20.0, 9.0, 9.0, 9.0))
         .box(new GemBoxPlotBoxBuilder()
             .median(7d)
             .lowerQuantile(3d)
@@ -124,7 +124,7 @@ public class GemBoxPlotExample extends GemBoxPlotExampleTOP {
   private GemBoxPlotEntry getData6() {
     return new GemBoxPlotEntryBuilder()
         .group("Data 6")
-        .points(Arrays.asList(0d,1d,2d,3d,4d,5d,6d,7d,7d,8d,9d,20d,9d,9d,9d))
+        .points(Arrays.asList(0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 7.0, 8.0, 9.0, 20.0, 9.0, 9.0, 9.0))
         .box(new GemBoxPlotBoxBuilder()
             .median(7d)
             .lowerQuantile(3d)
@@ -138,7 +138,7 @@ public class GemBoxPlotExample extends GemBoxPlotExampleTOP {
   private GemBoxPlotEntry getData7() {
     return new GemBoxPlotEntryBuilder()
         .group("Data 7")
-        .points(Arrays.asList(0d,1d,2d,3d,4d,5d,6d,7d,7d,8d,9d,20d,9d,9d,9d))
+        .points(Arrays.asList(0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 7.0, 8.0, 9.0, 20.0, 9.0, 9.0, 9.0))
         .box(new GemBoxPlotBoxBuilder()
             .median(7d)
             .lowerQuantile(3d)
@@ -152,7 +152,7 @@ public class GemBoxPlotExample extends GemBoxPlotExampleTOP {
   private GemBoxPlotEntry getData8() {
     return new GemBoxPlotEntryBuilder()
         .group("Data 8")
-        .points(Arrays.asList(0d,1d,2d,3d,4d,5d,6d,7d,7d,8d,9d,20d,9d,9d,9d))
+        .points(Arrays.asList(0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 7.0, 8.0, 9.0, 20.0, 9.0, 9.0, 9.0))
         .box(new GemBoxPlotBoxBuilder()
             .median(7d)
             .lowerQuantile(3d)

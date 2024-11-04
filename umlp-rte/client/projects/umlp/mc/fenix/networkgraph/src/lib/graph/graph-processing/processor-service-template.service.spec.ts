@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing";
 import { GraphDataService } from "../data/graph-data.service";
 import { GraphSettingsService } from "../services/graph-settings.service";
 import { ProcessorServiceTemplate } from "./processor-service-template.service";
-import { GraphNode } from "../types/graph.types";
+import { Internal_GraphNode } from "../types/graph.types";
 import { SigmaGraphService } from "../data/sigma-graph.service";
 
 describe("ProcessorServiceTemplate", () => {
@@ -21,7 +21,7 @@ describe("ProcessorServiceTemplate", () => {
 
   describe("getAttribute", () => {
     it("should return the correct attribute value", () => {
-      const node: GraphNode = {
+      const node: Internal_GraphNode = {
         id: "node1",
         label: "Node 1",
         attributes: {
@@ -33,7 +33,7 @@ describe("ProcessorServiceTemplate", () => {
     });
 
     it("should return undefined for non-existing attributes", () => {
-      const node: GraphNode = {
+      const node: Internal_GraphNode = {
         id: "node1",
         label: "Node 1",
         attributes: {

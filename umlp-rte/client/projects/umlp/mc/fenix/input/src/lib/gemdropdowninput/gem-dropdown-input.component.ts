@@ -1,5 +1,4 @@
 import {
-  ChangeDetectorRef,
   Component, ElementRef,
   EventEmitter,
   HostBinding, HostListener,
@@ -7,8 +6,8 @@ import {
   OnInit,
   Output, SimpleChanges
 } from "@angular/core";
-import {GemTextInputValidity} from "../gemtextinput";
 import {Option} from "./gem-dropdown-input-types/gem-dropdown-input.types";
+import { GemTextInputValidity } from "../gemtextinput";
 
 @Component({
   selector: "gem-dropdown-input",
@@ -39,7 +38,7 @@ export class GemDropdownInput implements OnInit, OnChanges {
   }
 
   @Input() labelText: string;
-  @Input() entry: string = "";
+  @Input() entry: string;
   @Input() disabled: boolean = false;
   @Input() options: Option[];
   @Input() validity: GemTextInputValidity;
@@ -55,7 +54,7 @@ export class GemDropdownInput implements OnInit, OnChanges {
   filteredOptions: Option[] = [];
   highlightIdx: number = -1;
 
-  constructor(private cdRef: ChangeDetectorRef, private componentRef: ElementRef) {}
+  constructor(private componentRef: ElementRef) {}
 
   ngOnInit(): void {
     this.filteredOptions = this.options;
@@ -147,29 +146,16 @@ export class GemDropdownInput implements OnInit, OnChanges {
     this.highlightIdx = -1;
     this.filterString = "";
     this.filteredOptions = this.options;
-    this.toggleFocus();
+  }
+
+  tabOut(): void {
+    if (this.isContentShown) {
+      this.hideDropdown();
+    }
   }
 
   private showDropdown(): void {
     this.isContentShown = true;
-    this.toggleFocus();
-  }
-
-  private toggleFocus(): void {
-    const activeElementId = document.activeElement.id;
-    if (this.getInputId() === activeElementId) {
-      // Focus search input if enabled
-      if (!this.searchEnabled) {
-        return;
-      }
-      this.cdRef.detectChanges();
-      if (this.isContentShown) {
-        document.getElementById(this.getSearchInputId()).focus();
-      }
-      else {
-        document.getElementById(this.getInputId()).focus();
-      }
-    }
   }
 
   private isOverflown(): boolean {

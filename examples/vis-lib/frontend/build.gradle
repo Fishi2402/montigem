@@ -24,6 +24,10 @@ dependencies {
   }
 }
 
+configurations {
+  testRuntimeClasspath.exclude group: 'de.monticore.language-server', module:'monticore-language-server-runtime'
+}
+
 genGUI {
   domainModels = ["Domain"]
   guiCreateModels = ["person.CreatePerson", "person.CreatePersonWithFriends", "person.CreateClubWithMembers"]

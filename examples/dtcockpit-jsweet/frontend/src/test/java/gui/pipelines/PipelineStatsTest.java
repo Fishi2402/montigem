@@ -13,7 +13,7 @@ class PipelineStatsTest {
 
   @BeforeEach
   void setUp() {
-    pipelineStats = new PipelineStats(null); //"mocking" the project should be fine
+    pipelineStats = new PipelineStats(); //"mocking" the project should be fine
   }
 
   @Test

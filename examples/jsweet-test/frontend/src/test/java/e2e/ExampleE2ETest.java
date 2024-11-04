@@ -2,14 +2,12 @@ package e2e;
 
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
+import com.microsoft.playwright.options.LoadState;
 import jsweettest.test_infrastructure.AbstractJsweettestE2ETest;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ExampleE2ETest extends AbstractJsweettestE2ETest {
@@ -19,6 +17,7 @@ public class ExampleE2ETest extends AbstractJsweettestE2ETest {
     page.onConsoleMessage(cm -> System.out.println("[BROWSER] " + cm.text()));
     navAndWait(page, "/gui/test/Test0"); //go to page we want to test
     page.getByText("Reset Data").click();
+    page.waitForLoadState(LoadState.NETWORKIDLE);
   }
 
   @Test

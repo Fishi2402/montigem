@@ -3,6 +3,7 @@ import {Component} from '@angular/core';
 import {GemBarChartData, GemBarChartDataBuilder, GemBarChartEntryBuilder} from '@umlp/charts';
 import { GemBarChartEntry } from '@umlp/charts';
 import { PipelineStatsPerGroupComponent,config } from '@src/gui/pipelines/PipelineStatsPerGroupComponent';
+import {StringifyForBuilder} from "@umlp/commonj2ts";
 
 @Component({
   standalone:true,
@@ -122,7 +123,7 @@ export class PipelineStatsPerGroup extends PipelineStatsPerGroupComponent {
         .labels(labels)
         .entries(barChartEntries)
         .build();
-    const newHash = JSON.stringify(data);
+    const newHash = StringifyForBuilder(data);
     if(this.projectDataCheck.hash !== newHash) {
       this.projectDataCheck.hash = newHash;
       this.projectDataCheck.value = data;

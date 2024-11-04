@@ -11,10 +11,6 @@ import java.util.function.Consumer;
 
 @Component()
 public class UserLogin extends UserLoginTOP {
-  public UserLogin(GemList<User> users, User loginUser) {
-    this.setUsers(users);
-    this.setLoginUser(loginUser);
-  }
 
   @Override
   public void init() {

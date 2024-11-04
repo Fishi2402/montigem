@@ -79,7 +79,7 @@ public class TestBuilder extends AbstractLoadingTestsE2ETest {
   }
 
   public void pickAFoodOptionForAnimalBuilder(Page page, Long gemIdOfFood) {
-    page.locator("input").click();
+    page.locator(".gem-dropdown-input").click();
     page.locator(".gem-dropdown-options")
         .getByText(LoadingTestsManager.getFoodSure(gemIdOfFood).getName()).all().get(0
         ).click();

@@ -16,7 +16,6 @@ import org.jsweet.transpiler.model.MethodInvocationElement;
 import org.jsweet.transpiler.util.AbstractTreeScanner;
 import org.jsweet.transpiler.util.Util;
 import umlp.jsweet.extension.util.GUIAdapterUtils;
-import umlp.jsweet.extension.util.UMLPAdapterUtils;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
@@ -78,6 +77,8 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
 
     return super.visitMethodInvocation(invocation, trees);
   }
+
+
 
   private boolean isInvocatedGemListAccessor(MethodInvocationTree invocation, Trees trees) {
     Element invocatedType = types().asElement(Util.getType(invocation));
@@ -274,16 +275,36 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
     return super.visitEnhancedForLoop(node, trees);
   }
 
-  // Methods overriding async methods from the RTE must be async again
   @Override
   public Void visitMethod(MethodTree node, Trees trees) {
-    Element element = Util.getElement(getParent());
-    if (element instanceof TypeElement) {
-      TypeElement parentElement = (TypeElement) element;
-      for (String superType : adapterUtils.listSuperTypes(parentElement)) {
+    Element elementOfMethod = Util.getElement(node);
+    Element elementOfParent = Util.getElement(getParent());
+    if (context.hasAnnotationType(elementOfMethod)) {
+      return super.visitMethod(node, trees);
+    }
+
+    // Methods overriding async methods from the RTE must be async again
+    if (elementOfParent instanceof TypeElement) {
+      TypeElement parentElement = (TypeElement) elementOfParent;
+      for (String superType : adapterUtils.listSuperTypesNames(parentElement)) {
         if (isRTEAsyncMethod(superType, node.getName().toString())) {
           addAsyncKeywordToMethod(node);
           break;
+        }
+      }
+    }
+
+    // Also methods which are void and overriding any async methods must be async again
+    if (elementOfMethod instanceof ExecutableElement && elementOfParent instanceof TypeElement) {
+      TypeElement parentElement = (TypeElement) elementOfParent;
+      ExecutableElement methodElement = (ExecutableElement) elementOfMethod;
+
+      if ("void".equals(methodElement.getReturnType().toString())) {
+        for (ExecutableElement superMethodElement : adapterUtils.listMatchingSuperMethods(
+            parentElement, methodElement)) {
+          if (context.hasAnnotationType(superMethodElement, JSweetConfig.ANNOTATION_ASYNC)) {
+            addAsyncKeywordToMethod(node);
+          }
         }
       }
     }
@@ -306,13 +327,13 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
   // Copied from JSweet Core
   private void addAsyncKeywordToMethod(MethodTree methodTree) {
     if (methodTree != null) {
-      ExecutableElement parentMethodElement = Util.getElement(methodTree);
-      if (!context.hasAnnotationType(parentMethodElement, JSweetConfig.ANNOTATION_ASYNC)) {
-        context.addExtraAnnotationType(parentMethodElement, JSweetConfig.ANNOTATION_ASYNC);
+      ExecutableElement methodElement = Util.getElement(methodTree);
+      if (!context.hasAnnotationType(methodElement, JSweetConfig.ANNOTATION_ASYNC)) {
+        context.addExtraAnnotationType(methodElement, JSweetConfig.ANNOTATION_ASYNC);
 
-        if (context.isInvalidOverload(parentMethodElement)) {
+        if (context.isInvalidOverload(methodElement)) {
           OverloadScanner.Overload overload = context.getOverload(
-              (TypeElement) parentMethodElement.getEnclosingElement(), parentMethodElement);
+              (TypeElement) methodElement.getEnclosingElement(), methodElement);
 
           for (OverloadScanner.OverloadMethodEntry overloadEntry : overload.getEntries()) {
             context.addExtraAnnotationType(overloadEntry.methodElement,
@@ -321,8 +342,8 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
         }
         List<ExecutableElement> candidates = new ArrayList<>();
         util().collectMatchingMethodDeclarationsInType(
-            (TypeElement) parentMethodElement.getEnclosingElement(), methodTree.getName().toString(),
-            (ExecutableType) parentMethodElement.asType(), true, candidates);
+            (TypeElement) methodElement.getEnclosingElement(), methodTree.getName().toString(),
+            (ExecutableType) methodElement.asType(), true, candidates);
         for (ExecutableElement candidate : candidates) {
           context.addExtraAnnotationType(candidate, JSweetConfig.ANNOTATION_ASYNC);
         }

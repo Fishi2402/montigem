@@ -47,6 +47,7 @@ classdiagram NetworkGraphTypes {
     String id;
     String source;
     String target;
+    Optional<String> name;
     Optional<Integer> size;
     Optional<Boolean> directed;
     Optional<String> color;
