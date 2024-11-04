@@ -30,12 +30,11 @@ import umlp.generator.gui.gentypescript.method.TSAssocMutatorDecorator;
 import umlp.generator.gui.gentypescript.method.TSListMutatorDecorator;
 import umlp.generator.gui.gentypescript.method.TSOptionalMutatorDecorator;
 import umlp.generator.gui.gentypescript.method.TSSimpleMethodMutatorDecorator;
+import umlp.generator.gui.gentypescript.printer.TSUtilsPrinter;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
@@ -209,8 +208,12 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
       /**/
       if (GenService.isOptional(visibleAttribute)) {
         glex.replaceTemplate("cd2java.Value", attribute, new StringHookPoint(" = null"));
-      }
+      } else if (visibleAttribute.isPresentInitial()) {
+      glex.replaceTemplate("cd2java.Value", attribute,
+          new StringHookPoint(" = " + (new TSUtilsPrinter()).printExpression(visibleAttribute.getInitial())));
     }
+
+  }
     return attributesList;
   }
 
