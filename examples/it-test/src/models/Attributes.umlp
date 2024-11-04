@@ -130,4 +130,19 @@ umlp Attributes {
   class ListOfBooleans{
     List<boolean> bVals;
   }
+
+  class ClassWithDefaults{
+    int i = 0;
+    MaritalStatus status = MaritalStatus.SINGLE;
+  }
+
+  enum MaritalStatus {
+    MARRIED,
+    SINGLE,
+    DIVORCED,
+    WIDOWED;
+  }
+
 }
+
+
