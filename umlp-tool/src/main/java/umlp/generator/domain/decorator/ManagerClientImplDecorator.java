@@ -118,7 +118,7 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
 
     List<ASTCDType> concreteSubclassesOrderedByDistance = concreteSubclassesOrderedByDistance(origCD, domainClass);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSure", name);
-    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoGetList", name, isSingleton);
+    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoGetList", name, isSingleton, domainClass.getModifier().isAbstract());
 
     if (isSingleton) {
       getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoOptSingletonElement", name);
@@ -179,7 +179,7 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
     List<ASTCDType> concreteSubclassesOrderedByDistance = concreteSubclassesOrderedByDistance(origCD, domainInterface);
     getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoOpt", name, concreteSubclassesOrderedByDistance);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSure", name);
-    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoGetList", name, true);
+    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoGetList", name, true, true);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name, concreteSubclassesOrderedByDistance);
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainInterface.getName() + "_get"));
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainInterface.getName() + "_get_filtered"));
