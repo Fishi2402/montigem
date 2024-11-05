@@ -212,13 +212,15 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
   }
 
   protected ASTCDAttribute getLoadedAttribute(ASTCDType domainClass) {
-    return getCDAttributeFacade().createAttribute(PROTECTED.build(),
+    ASTCDAttribute attr = getCDAttributeFacade().createAttribute(PROTECTED.build(),
         getMCTypeFacade().createBasicGenericTypeOf("Optional",
             MCFullGenericTypesMill.mCCustomTypeArgumentBuilder().setMCType(
                 getMCTypeFacade().createBasicGenericTypeOf("GemList", domainClass.getName())
             ).build()
         ),
         StringTransformations.uncapitalize("loaded" + domainClass.getName() + "List"));
+    getGlex().replaceTemplate("cd2java.Value", attr, new StringHookPoint(" = Optional.empty()"));
+    return attr;
   }
 
   protected String defaultMapValue() {
