@@ -18,8 +18,8 @@ test {
   useJUnitPlatform()
 }
 
-task runAll {
-  dependsOn ":examples:vis-lib:frontend:runApp", ':examples:vis-lib:backend:run'
+task run {
+  dependsOn ":examples:vis-lib:frontend:run", ':examples:vis-lib:backend:run'
 }
 
 //project('frontend') {
