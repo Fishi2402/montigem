@@ -51,22 +51,26 @@ public class TSObserverMixinDecorator extends TSObserverDecorator {
 
   protected ASTCDInterface interface2Mixin(ASTCDType c) {
     ASTCDInterface i = createObserverInterface(c);
-    List<SymTypeExpression> superTypes = c.getSymbol().getSuperTypesList();
-    for (SymTypeExpression ste : superTypes) {
-      String extendedMixin = ste.print() + ObserverDecorator.SUFFIX + SUFFIX;
-      glex.addBeforeTemplate("TSMixinExtend:start", i,
-          new StringHookPoint(extendedMixin + "("));
-      glex.addAfterTemplate("TSMixinExtend:end", i,
-          new StringHookPoint(")"));
-
-      getCD4C().addImport(i, astcdPackage + "." + extendedMixin);
+    if (c.isPresentSymbol()) {
+      List<SymTypeExpression> superTypes = c.getSymbol().getSuperTypesList();
+      for (SymTypeExpression ste : superTypes) {
+        String extendedMixin = ste.print() + ObserverDecorator.SUFFIX + SUFFIX;
+        glex.addBeforeTemplate("TSMixinExtend:start", i,
+            new StringHookPoint(extendedMixin + "("));
+        glex.addAfterTemplate("TSMixinExtend:end", i,
+            new StringHookPoint(")"));
+      }
+      c.getSuperclassList().forEach(cdExtension ->
+          cdExtension.getDefiningSymbol().ifPresent(definingSymbol ->
+              getCD4C().addImport(i, Joiners.DOT.join(definingSymbol.getPackageName().toLowerCase(),
+                  definingSymbol.getName() + ObserverDecorator.SUFFIX + SUFFIX))));
+      i.setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder()
+          .setSuperclassList(List.of(MCTypeFacade.getInstance()
+              .createQualifiedType(i.getName()))).build());
+      i.setName(i.getName() + SUFFIX);
+      glex.replaceTemplate("umlp.gui2ts.TSInterfaceDeclaration",
+          i, new TemplateHookPoint("umlp.gui2ts.TSInterface2Mixin"));
     }
-    i.setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder()
-        .setSuperclassList(List.of(MCTypeFacade.getInstance()
-            .createQualifiedType(i.getName()))).build());
-    i.setName(i.getName() + SUFFIX);
-    glex.replaceTemplate("umlp.gui2ts.TSInterfaceDeclaration",
-        i, new TemplateHookPoint("umlp.gui2ts.TSInterface2Mixin"));
     return i;
   }
 
@@ -76,7 +80,6 @@ public class TSObserverMixinDecorator extends TSObserverDecorator {
 
     String obs = domainType.getName() + ObserverDecorator.SUFFIX;
     getCD4C().addImport(cdType, astcdPackage + "." + obs);
-
   }
 
 }
