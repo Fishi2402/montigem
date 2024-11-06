@@ -2,7 +2,8 @@
 
 import { Component } from '@angular/core';
 import { GemSunburstChartExampleComponent, config } from '@src/example_charts/GemSunburstChartExampleComponent';
-import { GemSunburstData } from '@umlp/charts';
+import {GemSunburstData, GemSunburstDataBuilder, GemSunburstEntryBuilder} from '@umlp/charts';
+import {StringifyForBuilder} from "@umlp/commonj2ts";
 
 @Component({
   standalone: true,
@@ -18,129 +19,129 @@ export class GemSunburstChartExample extends GemSunburstChartExampleComponent {
     if (!this.persons) {
       return null;
     }
-    let data: GemSunburstData = {
-      entry: {
-        label: "People separated in age groups",
-        value: this.persons.length,
-      },
-      subEntries: [
-        {
-          entry: {
-            label: "Number of people born before 1993",
-            value: 0,
-          },
-          subEntries: [
-            {
-              entry: {
-                label: "Number of people born before 1987",
-                value: 0,
-              },
-            },
-            {
-              entry: {
-                label: "Number of people born between 1987 and 1991",
-                value: 0,
-              },
-            },
-            {
-              entry: {
-                label: "Number of people after 1991",
-                value: 0,
-              }
-            },
-          ]
-        },
-        {
-          entry: {
-            label: "People born between 1993 and 1998",
-            value: 0,
-          },
-          subEntries: [
-            {
-              entry: {
-                label: "Number of people born before 1995",
-                value: 0,
-              },
-            },
-            {
-              entry: {
-                label: "Number of people born between 1995 and 1997",
-                value: 0,
-              },
-            },
-            {
-              entry: {
-                label: "Number of people born after 1997",
-                value: 0,
-              }
-            },
-          ]
-        },
-        {
-          entry: {
-            label: "People born after 1998",
-            value: 0,
-          },
-          subEntries: [
-            {
-              entry: {
-                label: "Number of people born before 2001",
-                value: 0,
-              },
-            },
-            {
-              entry: {
-                label: "Number of people born between 2001 and 2002",
-                value: 0,
-              },
-            },
-            {
-              entry: {
-                label: "Number of people born after 2002",
-                value: 0,
-              }
-            },
-          ],
-        },
-      ],
-    };
+    let data: GemSunburstData =
+        new GemSunburstDataBuilder()
+            .entry(
+                new GemSunburstEntryBuilder().label("People separated in age groups").value(this.persons.length).build()
+            )
+            .subEntries( [
+                new GemSunburstDataBuilder()
+                    .entry(
+                        new GemSunburstEntryBuilder().label("Number of people born before 1993").value(0).build()
+                    )
+                    .subEntries([
+                      new GemSunburstDataBuilder()
+                          .entry(
+                              new GemSunburstEntryBuilder().label("Number of people born before 1987").value(0).build()
+                          )
+                          .build(),
+                      new GemSunburstDataBuilder()
+                          .entry(
+                              new GemSunburstEntryBuilder().label("Number of people born between 1987 and 1991").value(0).build()
+                          )
+                          .build(),
+                      new GemSunburstDataBuilder()
+                          .entry(
+                              new GemSunburstEntryBuilder().label("Number of people after 1991").value(0).build()
+                          )
+                          .build(),
+                    ])
+                    .build(),
+                new GemSunburstDataBuilder()
+                    .entry(
+                        new GemSunburstEntryBuilder().label("People born between 1993 and 1998").value(0).build()
+                    )
+                    .subEntries([
+                      new GemSunburstDataBuilder()
+                          .entry(
+                              new GemSunburstEntryBuilder().label( "Number of people born before 1995").value(0).build()
+                          )
+                          .build(),
+                      new GemSunburstDataBuilder()
+                          .entry(
+                              new GemSunburstEntryBuilder().label("Number of people born between 1995 and 1997").value(0).build()
+                          )
+                          .build(),
+                      new GemSunburstDataBuilder()
+                          .entry(
+                              new GemSunburstEntryBuilder().label("Number of people born after 1997").value(0).build()
+                          )
+                          .build(),
+                    ])
+                    .build(),
+                new GemSunburstDataBuilder()
+                    .entry(
+                        new GemSunburstEntryBuilder().label("People born after 1998").value(0).build()
+                    )
+                    .subEntries([
+                      new GemSunburstDataBuilder()
+                          .entry(
+                              new GemSunburstEntryBuilder().label( "Number of people born before 2001").value(0).build()
+                          )
+                          .build(),
+                      new GemSunburstDataBuilder()
+                          .entry(
+                              new GemSunburstEntryBuilder().label("Number of people born between 2001 and 2002").value(0).build()
+                          )
+                          .build(),
+                      new GemSunburstDataBuilder()
+                          .entry(
+                              new GemSunburstEntryBuilder().label("Number of people born after 2002").value(0).build()
+                          )
+                          .build(),
+                    ])
+                    .build()
+            ])
+            .build()
 
     for (const person of this.persons) {
       let birthday = Number(person?.getBirthday()?.toDateString().substring(11, 15));
       if (birthday < 1993) {
-        data.subEntries[0].entry.value++;
+        const entry = data.getSubEntries(0).getEntry()
+        entry.setValue(entry.getValue()+1);
         if (birthday < 1987) {
-          data.subEntries[0].subEntries[0].entry.value++;
+          const entry = data.getSubEntries(0).getSubEntries(0).getEntry()
+          entry.setValue(entry.getValue()+1);
         } else if (birthday < 1992) {
-          data.subEntries[0].subEntries[1].entry.value++;
+          const entry = data.getSubEntries(0).getSubEntries(1).getEntry();
+          entry.setValue(entry.getValue()+1);
         } else {
-          data.subEntries[0].subEntries[2].entry.value++;
+          const entry = data.getSubEntries(0).getSubEntries(2).getEntry()
+          entry.setValue(entry.getValue()+1);
         }
       } else if (birthday >= 1993 && birthday <= 1998) {
-        data.subEntries[1].entry.value++;
+        const entry = data.getSubEntries(1).getEntry()
+        entry.setValue(entry.getValue()+1);
         if (birthday < 1995) {
-          data.subEntries[1].subEntries[0].entry.value++;
+          const entry = data.getSubEntries(1).getSubEntries(0).getEntry()
+          entry.setValue(entry.getValue()+1);
         } else if (birthday < 1998) {
-          data.subEntries[1].subEntries[1].entry.value++;
+          const entry = data.getSubEntries(1).getSubEntries(1).getEntry()
+          entry.setValue(entry.getValue()+1);
         } else {
-          data.subEntries[1].subEntries[2].entry.value++;
+          const entry = data.getSubEntries(1).getSubEntries(2).getEntry()
+          entry.setValue(entry.getValue()+1);
         }
       } else {
-        data.subEntries[2].entry.value++;
+        const entry = data.getSubEntries(2).getEntry()
+        entry.setValue(entry.getValue()+1);
         if (birthday < 2001) {
-          data.subEntries[2].subEntries[0].entry.value++;
+          const entry = data.getSubEntries(2).getSubEntries(0).getEntry()
+          entry.setValue(entry.getValue()+1);
         } else if (birthday < 2003) {
-          data.subEntries[2].subEntries[1].entry.value++;
+          const entry = data.getSubEntries(2).getSubEntries(1).getEntry()
+          entry.setValue(entry.getValue()+1);
         } else {
-          data.subEntries[2].subEntries[2].entry.value++;
+          const entry = data.getSubEntries(2).getSubEntries(2).getEntry()
+          entry.setValue(entry.getValue()+1);
         }
       }
     }
-    if (JSON.stringify(data) === this.chartDataHash && this.chartData) {
+    if (StringifyForBuilder(data) === this.chartDataHash && this.chartData) {
       return this.chartData;
     }
     this.chartData = data;
-    this.chartDataHash = JSON.stringify(this.chartData);
+    this.chartDataHash = StringifyForBuilder(this.chartData);
     return this.chartData;
   }
 

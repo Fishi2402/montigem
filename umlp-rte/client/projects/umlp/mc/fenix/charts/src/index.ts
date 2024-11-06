@@ -1,6 +1,7 @@
 export * from "./lib/gemlinechart";
 export * from "./lib/gembarchart";
 export * from "./lib/gempiechart";
+export * from "./lib/gemradarchart";
 //export * from "./lib/gembulletchart";
 //export * from "./lib/gemcandlestickchart";
 export * from "./lib/gemgaugechart";

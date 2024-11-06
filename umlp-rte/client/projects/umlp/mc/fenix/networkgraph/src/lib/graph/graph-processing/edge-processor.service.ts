@@ -1,4 +1,4 @@
-import { EdgeAttributes, GraphEdge, NodeAttributes } from "../types/graph.types";
+import { EdgeAttributes, Internal_GraphEdge, NodeAttributes } from "../types/graph.types";
 import { Attributes, SerializedEdge } from "graphology-types";
 import { Injectable } from "@angular/core";
 import { ProcessorServiceTemplate } from "./processor-service-template.service";
@@ -28,7 +28,7 @@ export class EdgeProcessorService<
    * Holds the raw edge data received as input. The data format is adapted to allow for flexibility in the naming
    * conventions and structure of graphs.
    */
-  public rawEdgeData: GraphEdge[] | null = null;
+  public rawEdgeData: Internal_GraphEdge[] | null = null;
 
   /** Counter utilized for generating unique identifiers for edges. */
   private edgeIdCounter: number = 0;
@@ -40,20 +40,20 @@ export class EdgeProcessorService<
   /**
    * Retrieves the identifier of the source node for a given edge.
    *
-   * @param {GraphEdge} edge - The edge whose source node identifier is to be retrieved.
+   * @param {Internal_GraphEdge} edge - The edge whose source node identifier is to be retrieved.
    * @returns {string} - The identifier of the source node of the given edge.
    */
-  public static getSourceId(edge: GraphEdge): string {
+  public static getSourceId(edge: Internal_GraphEdge): string {
     return String(ProcessorServiceTemplate.getAttribute(edge, "source", "from"));
   }
 
   /**
    * Retrieves the identifier of the target node for a given edge.
    *
-   * @param {GraphEdge} edge - The edge whose target node identifier is to be retrieved.
+   * @param {Internal_GraphEdge} edge - The edge whose target node identifier is to be retrieved.
    * @returns {string} - The identifier of the target node of the given edge.
    */
-  public static getTargetId(edge: GraphEdge): string {
+  public static getTargetId(edge: Internal_GraphEdge): string {
     return String(ProcessorServiceTemplate.getAttribute(edge, "target", "to"));
   }
 
@@ -98,10 +98,10 @@ export class EdgeProcessorService<
   /**
    * Generates a unique identifier for a given edge.
    *
-   * @param {GraphEdge} edge - The edge for which a unique identifier is to be generated.
+   * @param {Internal_GraphEdge} edge - The edge for which a unique identifier is to be generated.
    * @returns {string} - A unique identifier for the given edge.
    */
-  private generateEdgeIdentifier(edge: GraphEdge): string {
+  private generateEdgeIdentifier(edge: Internal_GraphEdge): string {
     const [identifier, newCounter] = ProcessorServiceTemplate.generateIdentifier(
       this.edgeIdCounter,
       this.data.uniqueEdgeKeySet,
@@ -113,13 +113,13 @@ export class EdgeProcessorService<
   }
 
   /**
-   * Converts a given edge of type {@link GraphEdge} into a {@link SerializedEdge} suitable for use with `SigmaJS`.
+   * Converts a given edge of type {@link Internal_GraphEdge} into a {@link SerializedEdge} suitable for use with `SigmaJS`.
    *
    * @param {string} key - The key of the edge
-   * @param {GraphEdge} edge - The edge to construct a graph edge from.
+   * @param {Internal_GraphEdge} edge - The edge to construct a graph edge from.
    * @returns {SerializedEdge} - The constructed edge.
    */
-  private createEdge(key: string, edge: GraphEdge): SerializedEdge<E> {
+  private createEdge(key: string, edge: Internal_GraphEdge): SerializedEdge<E> {
     const isUndirected: boolean = this.isEdgeUndirected(edge);
     const group: string | undefined = this.groupMapping.getEdgeGroup(edge);
     let color: Color = edge.color? edge.color : ColorUtil.lightenColor(
@@ -152,7 +152,7 @@ export class EdgeProcessorService<
   /**
    * Processes a single edge and updates tracking variables.
    *
-   * @param {GraphEdge} edge - The raw edge data to be processed.
+   * @param {Internal_GraphEdge} edge - The raw edge data to be processed.
    * @param {Set<string>} sourceTargetSet - A set to track source and target pairs.
    * @param {string[]} duplicatedEdgesKeys - A list to track duplicated edge keys.
    * @param {string[]} duplicatedEdges - A list to track duplicated edges.
@@ -163,7 +163,7 @@ export class EdgeProcessorService<
    * @param {boolean} shouldIgnoreDuplicatedEdges - A flag to determine whether duplicated edges should be ignored.
    */
   private processIndividualEdge(
-    edge: GraphEdge,
+    edge: Internal_GraphEdge,
     sourceTargetSet: Set<string>,
     duplicatedEdgesKeys: string[],
     duplicatedEdges: string[],
@@ -271,10 +271,10 @@ export class EdgeProcessorService<
   /**
    * Determines whether a given edge is undirected.
    *
-   * @param {GraphEdge} edge - The edge to be checked.
+   * @param {Internal_GraphEdge} edge - The edge to be checked.
    * @returns {boolean} - Returns true if the edge is undirected; otherwise, returns false.
    */
-  private isEdgeUndirected(edge: GraphEdge): boolean {
+  private isEdgeUndirected(edge: Internal_GraphEdge): boolean {
     const graphType: string = this.graphSettings.getSetting("graphType");
     if (graphType !== "mixed") return graphType === "undirected";
     const directedAttribute = ProcessorServiceTemplate.getAttribute(edge, "directed");

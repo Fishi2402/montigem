@@ -18,4 +18,11 @@ classdiagram LoadingTests {
 
   association [*] Person (owner) <-> (pet) Animal [*];
   association [*] Animal -> Food [*];
+
+  <<singleton>>
+  class UpdateListHelper {
+    <<command>>
+    void replaceFoodItem(Animal a);
+  }
+  association UpdateListHelper -> (testAnimal) Animal [0..1];
 }

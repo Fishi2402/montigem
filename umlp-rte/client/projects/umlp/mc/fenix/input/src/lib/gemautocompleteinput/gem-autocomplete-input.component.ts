@@ -134,6 +134,11 @@ export class GemAutocompleteInput implements OnInit, OnChanges {
     }
   }
 
+  hideDropdown(): void {
+    this.isContentShown = false;
+    this.resetHighlightIdx();
+  }
+
   getOptionsId(): string {
     return this.elementId + "Options";
   }
@@ -148,11 +153,6 @@ export class GemAutocompleteInput implements OnInit, OnChanges {
     else {
       this.resetHighlightIdx();
     }
-  }
-
-  private hideDropdown(): void {
-    this.isContentShown = false;
-    this.resetHighlightIdx();
   }
 
   private resetHighlightIdx() {

@@ -11,10 +11,6 @@ import java.util.function.Consumer;
 
 @Component
 public class ResetPassword extends ResetPasswordTOP {
-  public ResetPassword(GemList<User> users, User user) {
-    setUsers(users);
-    setUser(user);
-  }
 
   @Override
   public void init() {

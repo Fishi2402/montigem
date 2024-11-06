@@ -10,6 +10,8 @@ import {FloatDeSer} from "../common/FloatDeSer";
 import {DoubleDeSer} from "../common/DoubleDeSer";
 import {StringDeSer} from "../common/StringDeSer";
 import {LocalDateDeSer} from "../deser";
+import {LocalDateTimeDeSer} from "../deser/LocalDateTimeDeSer";
+import {DeSer} from "../command";
 
 /**
  * (De)serializer for base classes from java.lang
@@ -19,30 +21,22 @@ import {LocalDateDeSer} from "../deser";
  */
 export class BaseClassObjectMapper {
   static instance: BaseClassObjectMapper;
-  baseDeSers: any;
+
+  protected baseDeSers: Map<string, DeSer<any>> = new Map();
 
   public constructor() {
-    this.baseDeSers = <any>({});
-    /* put */
-    (this.baseDeSers["java.lang.Boolean"] = new BooleanDeSer());
-    /* put */
-    (this.baseDeSers["java.lang.Short"] = new ShortDeSer());
-    /* put */
-    (this.baseDeSers["java.lang.Character"] = new CharacterDeSer());
-    /* put */
-    (this.baseDeSers["java.lang.Long"] = new LongDeSer());
-    /* put */
-    (this.baseDeSers["java.lang.Integer"] = new IntegerDeSer());
-    /* put */
-    (this.baseDeSers["java.lang.Byte"] = new ByteDeSer());
-    /* put */
-    (this.baseDeSers["java.lang.Float"] = new FloatDeSer());
-    /* put */
-    (this.baseDeSers["java.lang.Double"] = new DoubleDeSer());
-    /* put */
-    (this.baseDeSers["java.lang.String"] = new StringDeSer());
-    /* put */
-    (this.baseDeSers["java.time.LocalDate"] = new LocalDateDeSer());
+    this.baseDeSers.set("java.lang.Boolean", new BooleanDeSer());
+    this.baseDeSers.set("java.lang.Short", new ShortDeSer());
+    this.baseDeSers.set("java.lang.Character", new CharacterDeSer());
+    this.baseDeSers.set("java.lang.Long", new LongDeSer());
+    this.baseDeSers.set("java.lang.Integer", new IntegerDeSer());
+    this.baseDeSers.set("java.lang.Byte", new ByteDeSer());
+    this.baseDeSers.set("java.lang.Float", new FloatDeSer());
+    this.baseDeSers.set("java.lang.Double", new DoubleDeSer());
+    this.baseDeSers.set("java.lang.String", new StringDeSer());
+
+    this.baseDeSers.set("java.time.LocalDate", new LocalDateDeSer());
+    this.baseDeSers.set("java.time.LocalDateTime", new LocalDateTimeDeSer());
   }
 
   public static instance_$LI$(): BaseClassObjectMapper {
@@ -69,18 +63,18 @@ export class BaseClassObjectMapper {
   }
 
   public async _serialize(o: any, className: string): Promise<string> {
-    if (!/* containsKey */this.baseDeSers.hasOwnProperty(className)) {
+    if (!this.baseDeSers.has(className)) {
       return null;
     }
-    return await /* get */((m, k) => m[k] === undefined ? null : m[k])(this.baseDeSers, className).serialize(o);
+    return await this.baseDeSers.get(className).serialize(o);
   }
 
   public async _deserialize<T>(s: string, className: string): Promise<T> {
-    if (!/* containsKey */this.baseDeSers.hasOwnProperty(className)) {
+    if (!this.baseDeSers.has(className)) {
       return null;
     }
     try {
-      return await <T>/* get */((m, k) => m[k] === undefined ? null : m[k])(this.baseDeSers, className).deserialize(s);
+      return await <T>this.baseDeSers.get(className).deserialize(s);
     } catch (ex) {
       Log.error("Wrong return type of base class deser: \'" + className + "\'");
       return null;
@@ -88,7 +82,7 @@ export class BaseClassObjectMapper {
   }
 
   public _canDeSer(className: string): boolean {
-    return /* containsKey */this.baseDeSers.hasOwnProperty(className);
+    return this.baseDeSers.has(className);
   }
 }
 

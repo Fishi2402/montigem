@@ -29,7 +29,7 @@ build_no_containers:
     # add one of the downloaded nodejs distributions to PATH, so we can build the vscode plugin
     - export PATH="$PATH:$(dirname $(find $(pwd) -type f -name "node" -print -quit))"
     - "cd umlp-tool"
-    - "gradle buildPlugin packageUMLPWithGUIVscodePlugin -P buildIntelliJPlugin=true -P buildVscodePlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
+    - "gradle packageUMLPWithGUIVscodePlugin -P buildVscodePlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
   cache:
     paths:
       - .gradle/nodejs
@@ -62,7 +62,7 @@ build_with_deploy:
     # add one of the downloaded nodejs distributions to PATH, so we can build the vscode plugin
     - export PATH="$PATH:$(dirname $(find $(pwd) -type f -name "node" -print -quit))"
     - "cd umlp-tool"
-    - "gradle buildPlugin packageUMLPWithGUIVscodePlugin -P buildIntelliJPlugin=true -P buildVscodePlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
+    - "gradle packageUMLPWithGUIVscodePlugin -P buildVscodePlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
     - "cd .."
     # Build containers
     # Weather Backend

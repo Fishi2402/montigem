@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { EdgeAttributes, GraphNode, NodeAttributes, NodePrograms } from "../types/graph.types";
+import { EdgeAttributes, Internal_GraphNode, NodeAttributes, NodePrograms } from "../types/graph.types";
 import { Attributes, SerializedNode } from "graphology-types";
 import { ColorUtil, HEX } from "../../shared/utils/color.util";
 import { GroupInformation } from "../types/filter-group.type";
@@ -28,7 +28,7 @@ export class NodeProcessorService<
    * Holds the raw edge data received as input. The data format is adapted to allow for flexibility in the naming
    * conventions and structure of graphs.
    */
-  public rawNodeData: GraphNode[] | null = null;
+  public rawNodeData: Internal_GraphNode[] | null = null;
 
   /** Counter utilized for generating unique identifiers for edges. */
   private nodeIdCounter: number = 0;
@@ -85,10 +85,10 @@ export class NodeProcessorService<
   /**
    * Generates a unique identifier for a given node.
    *
-   * @param {GraphNode} node - The node for which a unique identifier is to be generated.
+   * @param {Internal_GraphNode} node - The node for which a unique identifier is to be generated.
    * @returns {string} - A unique identifier for the given node.
    */
-  private generateNodeIdentifier(node: GraphNode): string {
+  private generateNodeIdentifier(node: Internal_GraphNode): string {
     const [identifier, newCounter] = ProcessorServiceTemplate.generateIdentifier(
       this.nodeIdCounter,
       this.data.uniqueNodeKeySet,
@@ -100,13 +100,13 @@ export class NodeProcessorService<
   }
 
   /**
-   * Converts a node of type {@link GraphNode} into a {@link SerializedNode} that is suitable for `SigmaJS`.
+   * Converts a node of type {@link Internal_GraphNode} into a {@link SerializedNode} that is suitable for `SigmaJS`.
    *
    * @param {string} key - The key of the node
-   * @param {GraphNode} node - The node to construct a graph node from.
+   * @param {Internal_GraphNode} node - The node to construct a graph node from.
    * @returns {SerializedNode} - The constructed node.
    */
-  private createNode(key: string, node: GraphNode): SerializedNode<N> {
+  private createNode(key: string, node: Internal_GraphNode): SerializedNode<N> {
     const imageLink: string | undefined = ProcessorServiceTemplate.getAttribute(node, "image");
     const nodeProgram: NodePrograms | undefined =
       ProcessorServiceTemplate.getAttribute(node, "nodeProgram") ??

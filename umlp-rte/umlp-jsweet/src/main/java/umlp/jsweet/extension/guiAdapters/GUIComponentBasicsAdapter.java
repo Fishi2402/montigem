@@ -102,27 +102,27 @@ public class GUIComponentBasicsAdapter extends PrinterAdapter {
 
   @Override
   public boolean substituteExecutable(ExecutableElement executable) {
-    TypeElement classElement = getParentElement(TypeElement.class);
-    if (adapterUtils.isComponentConstructor(executable, classElement)) {
-      // Don't print the constructor
-      return true;
-    }
+//    TypeElement classElement = getParentElement(TypeElement.class);
+//    if (adapterUtils.isComponentConstructor(executable, classElement)) {
+//      // Don't print the constructor
+//      return true;
+//    }
     return super.substituteExecutable(executable);
   }
 
   @Override
   public void afterType(TypeElement type) {
     // Remove standard constructor
-    if (adapterUtils.isDirective(type) || adapterUtils.isComponent(type) || adapterUtils.isHWCofComponent(type)) {
-      int publicConstructor = getPrinter().getOutput().lastIndexOf("constructor()");
-      if (publicConstructor < 0) {
-        return;
-      }
-      int length = getPrinter().getOutput().length();
-      getPrinter().removeLastChars(length - publicConstructor);
-      println().print("}").println();
-      print(type.getSimpleName()).print("[\"__class\"] = \"").print(type.getQualifiedName())
-          .print("\";");
-    }
+//    if (adapterUtils.isDirective(type) || adapterUtils.isComponent(type) || adapterUtils.isHWCofComponent(type)) {
+//      int publicConstructor = getPrinter().getOutput().lastIndexOf("constructor()");
+//      if (publicConstructor < 0) {
+//        return;
+//      }
+//      int length = getPrinter().getOutput().length();
+//      getPrinter().removeLastChars(length - publicConstructor);
+//      println().print("}").println();
+//      print(type.getSimpleName()).print("[\"__class\"] = \"").print(type.getQualifiedName())
+//          .print("\";");
+//    }
   }
 }

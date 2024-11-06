@@ -2,8 +2,8 @@ import { Injectable } from "@angular/core";
 import {
   ArrayColorMap,
   EdgeAttributes,
-  GraphEdge,
-  GraphNode,
+  Internal_GraphEdge,
+  Internal_GraphNode,
   GroupColor,
   GroupColorMap,
   NodeAttributes,
@@ -56,10 +56,10 @@ export class GroupMappingService<
   /**
    * Determines the group of a node based on specified attributes.
    *
-   * @param {GraphNode} node - The node to determine the group for.
+   * @param {Internal_GraphNode} node - The node to determine the group for.
    * @returns {string} - The group the node belongs to.
    */
-  public getNodeGroup(node: GraphNode): string {
+  public getNodeGroup(node: Internal_GraphNode): string {
     return (
       ProcessorServiceTemplate.toStringIfDefined(
         ProcessorServiceTemplate.getAttribute(node, "group", "category", "cluster", "type", "tag")
@@ -70,9 +70,9 @@ export class GroupMappingService<
   /**
    * Assigns colors to groups based on the graph nodes and settings.
    *
-   * @param {GraphNode[]} nodes - The list of nodes to create a mapping for.
+   * @param {Internal_GraphNode[]} nodes - The list of nodes to create a mapping for.
    */
-  public assignGroupColors(nodes: GraphNode[]): void {
+  public assignGroupColors(nodes: Internal_GraphNode[]): void {
     this.groupColorMapping.clear();
     const colorMap: ArrayColorMap | GroupColorMap = this.graphSettings.getSetting("colorMap");
     this.groupColorMapping.set(
@@ -92,10 +92,10 @@ export class GroupMappingService<
   /**
    * Determines the group of an edge.
    *
-   * @param {GraphEdge} edge - The edge to determine the group for.
+   * @param {Internal_GraphEdge} edge - The edge to determine the group for.
    * @returns {string} - The group the edge belongs to.
    */
-  public getEdgeGroup(edge: GraphEdge): string {
+  public getEdgeGroup(edge: Internal_GraphEdge): string {
     const node: string =
       this.graphSettings.getSetting("colorEdgeMode") === "bySource"
         ? EdgeProcessorService.getSourceId(edge)
@@ -134,12 +134,12 @@ export class GroupMappingService<
    * with the determined colors.
    *
    * @param {ArrayColorMap} colorMap - An array of colors as HEX strings.
-   * @param {GraphNode[]} nodes - An array of GraphNode objects used to identify distinct groups.
+   * @param {Internal_GraphNode[]} nodes - An array of GraphNode objects used to identify distinct groups.
    */
-  private populateDistinctGroupColors(colorMap: ArrayColorMap, nodes: GraphNode[]): void {
+  private populateDistinctGroupColors(colorMap: ArrayColorMap, nodes: Internal_GraphNode[]): void {
     // Identify distinct groups from the nodes
     const distinctGroups: Set<string> = new Set();
-    nodes.forEach((node: GraphNode): void => {
+    nodes.forEach((node: Internal_GraphNode): void => {
       const group: string = this.getNodeGroup(node);
       if (!this.isGroupUnknown(group)) distinctGroups.add(group);
     });

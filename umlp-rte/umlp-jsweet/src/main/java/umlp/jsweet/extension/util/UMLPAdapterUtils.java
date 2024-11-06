@@ -6,6 +6,7 @@ import jsweet.lang.Erased;
 import org.jsweet.transpiler.JSweetContext;
 import org.jsweet.transpiler.Java2TypeScriptTranslator;
 import org.jsweet.transpiler.ModuleImportDescriptor;
+import org.jsweet.transpiler.OverloadScanner;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.util.Util;
 
@@ -19,6 +20,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class UMLPAdapterUtils {
 
@@ -115,13 +117,14 @@ public class UMLPAdapterUtils {
     return false;
   }
 
-  public Set<String> listSuperTypes(TypeElement type) {
-    Set<String> result = new HashSet<>();
+  public Set<TypeElement> listSuperTypes(TypeElement type) {
+    Set<TypeElement> result = new HashSet<>();
+
     if (type.getAnnotationsByType(Erased.class).length > 0) {
       // Do not inspect @Erased classes (because they might be async)
       return result;
     }
-    result.add(type.getQualifiedName().toString());
+    result.add(type);
 
     for (TypeElement anInterface : util.getInterfaces(type)) {
       result.addAll(listSuperTypes(anInterface));
@@ -130,6 +133,26 @@ public class UMLPAdapterUtils {
       result.addAll(listSuperTypes((TypeElement) types.asElement(type.getSuperclass())));
     }
 
+    return result;
+  }
+
+  public Set<String> listSuperTypesNames(TypeElement type) {
+    return listSuperTypes(type).stream()
+        .map(t -> t.getQualifiedName().toString())
+        .collect(Collectors.toSet());
+  }
+
+  public Set<ExecutableElement> listMatchingSuperMethods(TypeElement typeElement,
+      ExecutableElement methodElement) {
+    Set<ExecutableElement> result = new HashSet<>();
+    for (TypeElement superType : listSuperTypes(typeElement)) {
+      OverloadScanner.Overload overload = context.getOverload(superType, methodElement);
+      if (overload != null) {
+        for (OverloadScanner.OverloadMethodEntry overloadEntry : overload.getEntries()) {
+          result.add(overloadEntry.methodElement);
+        }
+      }
+    }
     return result;
   }
 

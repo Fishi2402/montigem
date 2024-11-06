@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test_load_all;
+
+import LoadingTests.Animal;
+
+page LoadOnlyAnimals(List<Animal> animals) {
+
+}

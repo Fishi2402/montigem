@@ -80,7 +80,14 @@ export class GemVennDiagram extends GemVennDiagramTOP {
 
   private updateValues() {
     let div = d3.select("#venn");
-    div.datum(this._data.getEntriesList()).call(this._chart);
+    let transformedData = {
+      entries: this._data.getEntriesList().map(e => ({
+        sets: e.getSetsList(),
+        label: e.getLabel(),
+        size: e.getSize()
+      }))
+    };
+    div.datum(transformedData.entries).call(this._chart);
 
     let tooltip = d3.select("body").append("div").attr("class", "tooltip");
 

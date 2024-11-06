@@ -7,9 +7,6 @@ import umlp.jsweet.extension.annotation.Component;
 
 @Component
 public class Test3HWC extends Test3HWCTOP {
-  public Test3HWC(GemList<Project> projects) {
-    setProjects(projects);
-  }
 
   // TODO: https://git.rwth-aachen.de/monticore/monticore/-/issues/3971
   // Error: build/appgui/gui/test/Test3HWC.ts:41:9 - error TS7030: Not all code paths return a value.

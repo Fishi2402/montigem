@@ -43,7 +43,7 @@ public class TestLoading extends AbstractLoadingTestsE2ETest {
   @Disabled
   @Test
   void testLoadingAllPersonsAndNothingElse(Page page) {
-    navAndWait(page, "/testLoadAll/LoadOnlyPersons"); //go to page we want to test
+    navAndWait(page, "/test_load_all/LoadOnlyPersons"); //go to page we want to test
     // We need this to ensure that all Client Request were answered from the Backend
     page.waitForLoadState(LoadState.NETWORKIDLE);
 
@@ -71,7 +71,7 @@ public class TestLoading extends AbstractLoadingTestsE2ETest {
     Long gemIdOfPersonWithAnimals = this.personGemIds.get(4);
     Long gemIdOfAnimalThatIsNotAttachedToAPerson = this.animalGemIds.get(4);
 
-    navAndWait(page, "/testLoadAll/LoadOnePersonAndAllAnimals/"+gemIdOfPersonWithAnimals); //go to page we want to test
+    navAndWait(page, "/test_load_all/LoadOnePersonAndAllAnimals/"+gemIdOfPersonWithAnimals); //go to page we want to test
     // We need this to ensure that all Client Request were answered from the Backend
     page.waitForLoadState(LoadState.NETWORKIDLE);
 
@@ -101,7 +101,7 @@ public class TestLoading extends AbstractLoadingTestsE2ETest {
   @Test
   void testUpdateAllAnimalsPageAfterNewAnimalWasCreated(Page page) {
     Long gemIdOfPersonWithNoAnimals = this.personGemIds.get(1);
-    navAndWait(page, "/testLoadAll/DisplayAnimals");
+    navAndWait(page, "/test_load_all/DisplayAnimals");
     page.waitForLoadState(LoadState.NETWORKIDLE);
 
     // Assert animals were loaded
@@ -134,7 +134,7 @@ public class TestLoading extends AbstractLoadingTestsE2ETest {
     String animalName="New Pet";
     Long gemIdOfPersonWithNoAnimals = this.personGemIds.get(1);
 
-    navAndWait(page, "/testLoadAll/LoadOnePersonAndDisplayPets/"+gemIdOfPersonWithNoAnimals); //go to page we want to test
+    navAndWait(page, "/test_load_all/LoadOnePersonAndDisplayPets/"+gemIdOfPersonWithNoAnimals); //go to page we want to test
     // We need this to ensure that all Client Request were answered from the Backend
     page.waitForLoadState(LoadState.NETWORKIDLE);
 
@@ -161,7 +161,7 @@ public class TestLoading extends AbstractLoadingTestsE2ETest {
   @Disabled
   @Test
   void testLoadOnlyAnimals(Page page) {
-    navAndWait(page, "/testLoadAll/LoadOnlyAnimals"); //go to page we want to test
+    navAndWait(page, "/test_load_all/LoadOnlyAnimals"); //go to page we want to test
     // We need this to ensure that all Client Request were answered from the Backend
     page.waitForLoadState(LoadState.NETWORKIDLE);
 

@@ -1,7 +1,7 @@
 import {
   EdgeAttributes,
-  GraphEdge,
-  GraphNode,
+  Internal_GraphEdge,
+  Internal_GraphNode,
   NodeAttributes,
   RawEdgeAttributes,
   RawNodeAttributes,
@@ -35,12 +35,12 @@ export abstract class ProcessorServiceTemplate<
    * @param {U} data - The object to get the attribute from.
    * @param {T[]} attributes - The attribute to try to get. The first non-null attribute will be used and the value will
    *   be returned accordingly.
-   * @returns {U extends GraphNode ? GraphNode[T] : GraphEdge[T]} - The value of the specified attribute.
+   * @returns {U extends Internal_GraphNode ? Internal_GraphNode[T] : Internal_GraphEdge[T]} - The value of the specified attribute.
    */
-  protected static getAttribute<T extends keyof GraphNode | keyof GraphEdge, U extends GraphNode | GraphEdge>(
+  protected static getAttribute<T extends keyof Internal_GraphNode | keyof Internal_GraphEdge, U extends Internal_GraphNode | Internal_GraphEdge>(
     data: U,
     ...attributes: T[]
-  ): U extends GraphNode ? GraphNode[T] : GraphEdge[T] {
+  ): U extends Internal_GraphNode ? Internal_GraphNode[T] : Internal_GraphEdge[T] {
     for (const attribute of attributes) {
       const value: (RawNodeAttributes | RawEdgeAttributes)[T] = data?.[attribute] ?? data.attributes?.[attribute];
       if (value != null) return value;
@@ -64,7 +64,7 @@ export abstract class ProcessorServiceTemplate<
    *
    * @param {number} counter - The current counter value to ensure uniqueness.
    * @param {Set<string>} keySet - Set of existing unique identifiers.
-   * @param {GraphNode | GraphEdge} entity - The entity for which to generate the identifier.
+   * @param {Internal_GraphNode | Internal_GraphEdge} entity - The entity for which to generate the identifier.
    * @param {string} counterPrefix - Prefix for the counter-based identifier.
    * @param {string[]} [attributes] - Array of attributes to consider for generating the identifier.
    * @returns {[string, number]} - A tuple containing the unique identifier and the updated counter value.
@@ -72,7 +72,7 @@ export abstract class ProcessorServiceTemplate<
   protected static generateIdentifier(
     counter: number,
     keySet: Set<string>,
-    entity: GraphNode | GraphEdge,
+    entity: Internal_GraphNode | Internal_GraphEdge,
     counterPrefix: string,
     attributes: string[] = ["key", "id"]
   ): [string, number] {
@@ -104,13 +104,13 @@ export abstract class ProcessorServiceTemplate<
    * Extracts common properties from a given graph entity (either a node or an edge), and returns them in a structured
    * format.
    *
-   * @param {GraphNode | GraphEdge} data - The graph entity to analyze.
+   * @param {Internal_GraphNode | Internal_GraphEdge} data - The graph entity to analyze.
    * @param {string} fallbackLabel - The key that is used as a fallback label if none was provided
    * @returns {PartialButFor<N | E, "hidden" | "tooltip" | "label">} A structured representation of the common
    *   properties of the graph entity.
    */
   protected getCommonProperties(
-    data: GraphNode | GraphEdge,
+    data: Internal_GraphNode | Internal_GraphEdge,
     fallbackLabel: string
   ): PartialButFor<N | E, "hidden" | "tooltip" | "label"> {
     return {

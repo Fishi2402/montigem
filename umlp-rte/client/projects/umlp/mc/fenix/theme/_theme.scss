@@ -98,7 +98,7 @@
     $rwth-blue,
     $montigem-white
   );
-  @include dropdown-input-theme();
+  @include dropdown-input-theme(1px solid);
 
   @if $horizontal-layout {
     @include gem-main();

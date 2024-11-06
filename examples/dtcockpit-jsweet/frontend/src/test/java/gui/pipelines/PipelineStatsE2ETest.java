@@ -35,7 +35,8 @@ public class PipelineStatsE2ETest extends DtcockpitMockTestSetup {
     getClients(0).activate();
     dtcockpit.Project projectInClient = DtcockpitManager.getProjectSure(id);
 
-    PipelineStats pageUnderTest = new PipelineStats(projectInClient);
+    PipelineStats pageUnderTest = new PipelineStats();
+    pageUnderTest.setP(projectInClient);
 
     assertEquals("Pipeline dashboard for " + projectName, pageUnderTest.getGemCard0Title());
   }
@@ -100,7 +101,8 @@ public class PipelineStatsE2ETest extends DtcockpitMockTestSetup {
     getClients(0).activate();
     Project projectInClient = DtcockpitManager.getProjectSure(id);
 
-    PipelineStats pageUnderTest = new PipelineStats(projectInClient);
+    PipelineStats pageUnderTest = new PipelineStats();
+    pageUnderTest.setP(projectInClient);
     GemBarChartData data = pageUnderTest.getBarChartForPipelineRunsData();
 
     assertEquals(List.of(date1Str, date2Str, date3Str), data.getLabelsList());

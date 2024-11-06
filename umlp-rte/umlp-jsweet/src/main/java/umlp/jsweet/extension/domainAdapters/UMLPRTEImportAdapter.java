@@ -75,7 +75,7 @@ public class UMLPRTEImportAdapter extends UMLPAbstractAdapter {
     if (!fullyQualifiedName.startsWith(RTEPathUtil.getBackendRTEPath())) {
       return false;
     }
-    for (Pattern exclude : excludes) {
+    for (Pattern exclude : getExcludes()) {
       if (exclude.matcher(fullyQualifiedName).matches()) {
         return false;
       }
@@ -134,6 +134,10 @@ public class UMLPRTEImportAdapter extends UMLPAbstractAdapter {
     new AsyncAwaitPropagationScanner(context).process(getContext().compilationUnits, getContext().trees);
 
     super.onTranspilationStarted();
+  }
+
+  protected List<Pattern> getExcludes() {
+    return excludes;
   }
 
   private static final List<Pattern> excludes = Arrays.asList(
