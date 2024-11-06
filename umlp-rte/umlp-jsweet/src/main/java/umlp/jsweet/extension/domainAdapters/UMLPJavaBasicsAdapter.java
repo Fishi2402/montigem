@@ -4,9 +4,13 @@ package umlp.jsweet.extension.domainAdapters;
 import org.jsweet.transpiler.ModuleImportDescriptor;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.ExtendedElement;
+import org.jsweet.transpiler.model.ExtendedElementFactory;
 import org.jsweet.transpiler.model.MethodInvocationElement;
+import standalone.com.sun.source.tree.LambdaExpressionTree;
+import standalone.com.sun.source.tree.Tree;
 import umlp.jsweet.extension.UMLPAbstractAdapter;
 
+import javax.lang.model.element.Modifier;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
@@ -94,7 +98,47 @@ public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
         }
     }
 
+    String targetClassName = invocation.getMethod().getEnclosingElement().toString();
+    ExtendedElement targetExpression = invocation.getTargetExpression();
+    if (targetExpression != null && targetExpression.getTypeAsElement() != null) {
+      targetClassName = targetExpression.getTypeAsElement().toString();
+    }
+    if (targetClassName != null
+        && (targetExpression != null || invocation.getMethod().getModifiers().contains(
+        Modifier.STATIC))) {
+      switch (targetClassName) {
+        case "java.util.Optional":
+          if (substituteMethodInvocation_Optional(invocation)) {
+            return true;
+          }
+      }
+    }
+
     return super.substituteMethodInvocation(invocation);
+  }
+
+  private boolean substituteMethodInvocation_Optional(MethodInvocationElement invocation) {
+    switch (invocation.getMethodName()) {
+      case "or":
+        Tree argumentTree = ExtendedElementFactory.toTree(invocation.getArgument(0));
+        boolean isAsync = argumentTree instanceof LambdaExpressionTree &&
+            context.isAsyncLambda((LambdaExpressionTree) argumentTree);
+        printMacroName(invocation.getMethodName());
+        if (isAsync) {
+          print("(await ");
+        }
+        print("((v, get) => v == null ? get() : v)(").print(invocation.getTargetExpression())
+            .print(",");
+//        if (isAsync) {
+//          print("async ");
+//        }
+        print(invocation.getArgument(0)).print(")");
+        if (isAsync) {
+          print(")");
+        }
+        return true;
+    }
+    return false;
   }
 
   private boolean substituteMethodInvocation_Date(MethodInvocationElement invocation) {
@@ -108,19 +152,24 @@ public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
             new ModuleImportDescriptor("Conversion", "@umlp/common"));
         return true;
       case "isAfter":
-        print(invocation.getTargetExpression()).print(" > ").printArgList(invocation.getArguments());
+        print(invocation.getTargetExpression()).print(" > ")
+            .printArgList(invocation.getArguments());
         return true;
       case "isBefore":
-        print(invocation.getTargetExpression()).print(" < ").printArgList(invocation.getArguments());
+        print(invocation.getTargetExpression()).print(" < ")
+            .printArgList(invocation.getArguments());
         return true;
       case "getYear":
-        print(invocation.getTargetExpression()).print(".getFullYear(").printArgList(invocation.getArguments()).print(")");
+        print(invocation.getTargetExpression()).print(".getFullYear(")
+            .printArgList(invocation.getArguments()).print(")");
         return true;
       case "getMonthValue":
-        print(invocation.getTargetExpression()).print(".getMonth(").printArgList(invocation.getArguments()).print(")");
+        print(invocation.getTargetExpression()).print(".getMonth(")
+            .printArgList(invocation.getArguments()).print(")");
         return true;
       case "getDayOfMonth":
-        print(invocation.getTargetExpression()).print(".getDate(").printArgList(invocation.getArguments()).print(")");
+        print(invocation.getTargetExpression()).print(".getDate(")
+            .printArgList(invocation.getArguments()).print(")");
         return true;
     }
     return false;
@@ -152,7 +201,8 @@ public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
               .print("((a, b) => { return a.getTime() === b.getTime(); }) (")
               .printArgList(invocation.getArguments())
               .print(")");
-        } else {
+        }
+        else {
           this.print("/* equals */")
               .print("((a, b) => { return a === b; }) (")
               .printArgList(invocation.getArguments())
@@ -191,6 +241,5 @@ public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
     addToStaticLibrary("java.util.Random");
     putToStaticLibrary("java.lang.String", "StringHelper");
   }
-
 
 }

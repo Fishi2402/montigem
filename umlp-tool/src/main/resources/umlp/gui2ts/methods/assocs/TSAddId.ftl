@@ -6,5 +6,5 @@ if (o == null) {
   console.error("0x50004 Null argument not allowed here");
 }
 if (!this._${name}.contains(o.getGemId())) {
-  this._internal_add${name?cap_first}2(index, [o.getGemId()]);
+  this._internal_add${name?cap_first}(index, [o.getGemId()], scope);
 }
