@@ -149,8 +149,11 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
           createType(visibleAttribute), GenService.createName(visibleAttribute.getName()));
       attribute.getModifier().setDerived(visibleAttribute.getModifier().isDerived());
       attributesList.add(attribute);
-      if (GenService.isOptional(visibleAttribute)) {
+      if (!visibleAttribute.isPresentInitial() && GenService.isOptional(visibleAttribute)) {
         glex.replaceTemplate("cd2java.Value", attribute, new StringHookPoint(" = Optional.empty()"));
+      } else if (visibleAttribute.isPresentInitial()) {
+        glex.replaceTemplate("cd2java.Value", attribute,
+            new StringHookPoint(" = " + CD4CodeMill.prettyPrint(visibleAttribute.getInitial(), false)));
       }
     }
     return attributesList;
