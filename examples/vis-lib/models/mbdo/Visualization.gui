@@ -1,0 +1,56 @@
+package mbdo;
+
+import Domain.App;
+import mbdo.components.VacuumGripper;
+
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.input.GemRangeInput;
+import mc.fenix.input.GemCheckBoxInput;
+
+page Visualization(App app){
+  @GemColumn(
+    rowGap = "15px",
+    components = [
+      @GemRangeInput(
+        id="rotation-degree",
+        labelText="Rotation: ",
+        vertical=false,
+        step=1,
+        minValue=1,
+        maxValue=360,
+        value=app.rotationDeg
+      ),
+      @GemRangeInput(
+        id="vertical-percentage",
+        labelText="Höhe:",
+        vertical=false,
+        step=1,
+        minValue=1,
+        maxValue=100,
+        value=app.verticalPercentage
+      ),
+      @GemRangeInput(
+        id="hotizontal-percentage",
+        labelText="Tiefe:",
+        vertical=false,
+        step=1,
+        minValue=1,
+        maxValue=100,
+        value=app.horizontalPercentage
+      ),
+      @GemCheckBoxInput(
+        id="pump-running",
+        labelText="Pumpe läuft",
+        checked=app.pumpRunning
+      )
+    ]
+  );
+
+  @VacuumGripper(
+    rotationDeg=app.rotationDeg,
+    verticalPercentage=app.verticalPercentage,
+    horizontalPercentage=app.horizontalPercentage,
+    pumpRunning=app.pumpRunning
+  );
+}
+
