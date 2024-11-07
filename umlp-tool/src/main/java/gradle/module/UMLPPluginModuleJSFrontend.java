@@ -31,6 +31,9 @@ public class UMLPPluginModuleJSFrontend implements Plugin<Project> {
     });
    project.getTasks().named(BasePlugin.ASSEMBLE_TASK_NAME).configure(it->it.dependsOn(jarTask));
 
+   // Add createDomainSymbolsJar-jar as artifact to the config
+   project.getArtifacts().add(outgoingModels.getName(), jarTask);
+
   }
 
   public static void addDomainSymbolsJarAttributes(Configuration config, Project project) {

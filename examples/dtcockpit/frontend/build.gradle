@@ -34,6 +34,7 @@ genDomain {
 
 	at de.monticore.cdbasis._symboltable.CDTypeSymbolTOP.getAstNode(CDTypeSymbolTOP.java:1)
 	at de.monticore.cd._symboltable.CDSymbolTables.getTransitiveSuperTypes(CDSymbolTables.java:86)
+   */
 
   // Alternative: Generate the module-frontend-domain too
   input = file("../models/Dtcockpit.umlp")
