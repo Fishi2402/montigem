@@ -22,7 +22,7 @@ public class UMLPPluginModuleJSFrontend implements Plugin<Project> {
     outgoingModels.setCanBeResolved(false);
     outgoingModels.setDescription("Published domain Symbols of the module");
 
-    addModelsJarAttributes(outgoingModels, project);
+    addDomainSymbolsJarAttributes(outgoingModels, project);
 
     TaskProvider<Jar> jarTask = project.getTasks().register("createDomainSymbolsJar", Jar.class, jar -> {
       jar.setGroup("umlp");
@@ -33,7 +33,7 @@ public class UMLPPluginModuleJSFrontend implements Plugin<Project> {
 
   }
 
-  public static void addModelsJarAttributes(Configuration config, Project project) {
+  public static void addDomainSymbolsJarAttributes(Configuration config, Project project) {
     config.attributes( it -> {
       it.attribute(Category.CATEGORY_ATTRIBUTE, project.getObjects().named(Category.class, Category.LIBRARY));
       it.attribute(Usage.USAGE_ATTRIBUTE, project.getObjects().named(Usage.class, "montigem-module-domain-symbols"));
