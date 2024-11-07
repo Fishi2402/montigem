@@ -9,6 +9,7 @@ import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdbasis._ast.ASTCDTypeTOP;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.se_rwth.commons.Joiners;
 import umlp.UMLPMill;
@@ -73,6 +74,8 @@ public class DelegationManagerDecorator extends ManagerDecorator {
         .setCDExtendUsage(getExtendUsageFacade()
             .createCDExtendUsage(parentCD.getName()+ManagerDecorator.SUFFIX+"Impl"))
         .build();
+    glex.replaceTemplate("cd2java.Annotations", delegationManagerClass,
+        new StringHookPoint("@jsweet.lang.Erased"));
 
     addManagerInit(delegationManagerClass, parentCD.getName(), delegationManagerName);
     addManagerInitNeo4J(delegationManagerClass, parentCD.getName(), delegationManagerName);

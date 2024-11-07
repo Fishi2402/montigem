@@ -132,7 +132,7 @@ public class FEDecorator extends BEDecorator {
     managerClientImplDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ManagerClientImplDecorator", FEDecorator.class.getName());
 
-    ClientDelegationManagerDecorator clientDelegationManagerDecorator = new ClientDelegationManagerDecorator(glex);
+    TSClientDelegationManagerDecorator clientDelegationManagerDecorator = new TSClientDelegationManagerDecorator(glex);
     clientDelegationManagerDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ClientDelegationManagerDecorator", FEDecorator.class.getName());
 
