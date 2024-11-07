@@ -23,7 +23,6 @@ export class CreatePerson extends CreatePersonComponent {
   public override createButtonLeftClick(): void {
     // TODO should this happen inside the person build call?
     this.getAddress().build()
-
     this.getPerson().setAddress1(this.getAddress());
     this.getPerson().setAboutMe("");
     super.createButtonLeftClick();

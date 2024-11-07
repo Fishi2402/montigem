@@ -2,7 +2,7 @@
 
 import {RoomStatsComponent,config} from '@src/gui/rooms/RoomStatsComponent';
 
-import {RoomObserver} from '@src/dtcockpit/RoomObserver';
+import {RoomObserverMixin} from '@src/dtcockpit/RoomObserverMixin';
 import {Room} from '@src/dtcockpit/Room';
 import {NotificationScope} from '@umlp/common';
 import { Component } from '@angular/core';
@@ -29,7 +29,7 @@ export class RoomStats extends RoomStatsComponent {
       for (let i = 0; i < this.getStats().length; i++) {
         let room = this.getStats()[i];
         if(room.getRoomNumber() == 4304){
-          room.addObserver(new class extends RoomObserver {
+          room.addObserver(new class extends RoomObserverMixin(Object) {
             constructor(protected inst: RoomStats) {
               super();
             }
@@ -43,7 +43,7 @@ export class RoomStats extends RoomStatsComponent {
         }
 
         if(room.getRoomNumber() == 4315){
-          room.addObserver(new class extends RoomObserver {
+          room.addObserver(new class extends RoomObserverMixin(Object) {
             constructor(protected inst: RoomStats) {
               super();
             }
@@ -57,7 +57,7 @@ export class RoomStats extends RoomStatsComponent {
         }
 
         if(room.getRoomNumber() == 4312){
-          room.addObserver(new class extends RoomObserver {
+          room.addObserver(new class extends RoomObserverMixin(Object) {
             constructor(protected inst: RoomStats) {
               super();
             }
