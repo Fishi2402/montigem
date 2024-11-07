@@ -58,7 +58,11 @@ genGUI {
 
   // TODO: Gradle Setup for modules
   symbolDir.from(() -> tasks.named("createDomainSymbols").get().outputs)
-  symbolDir.from(configurations.umlpModulesDomainSymbols)
+
+  // TODO: FIX ALu
+  symbolDir.from(() -> project(":modules:login:frontendTS").tasks.named("createDomainSymbols").get().outputs)
+
+
   outputs.upToDateWhen { false }
   /*
   debug = true
