@@ -264,5 +264,7 @@ public class ReadOnlyGemList<E extends GemIdentifiable> extends GemList<E> {
     throw new UnsupportedOperationException("The global GemList is read only");
   }
 
-
+  public GemList<E> getRealList() {
+    return realList;
+  }
 }
