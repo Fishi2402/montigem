@@ -59,7 +59,7 @@ if (project.hasProperty('j2ts') && j2ts.toString().toBoolean()) {
 task copyAppJsweet(type: Copy) {
   onlyIf { project.hasProperty('j2ts') && project.j2ts.toString().toBoolean() }
   if (project.hasProperty('j2ts') && j2ts.toString().toBoolean()) {
-    dependsOn(SYNC_TSHWC)
+    dependsOn(SYNC_TSGuiHWC)
   }
   from 'config/src/appjsweet'
   into 'build/frontendGen/src/app/'

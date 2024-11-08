@@ -262,6 +262,19 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
     return UMLPPluginFrontend.getStringProjectProperty(project, propertyName, defaultValue);
   }
 
+  public static String getStringProjectPropertyStrip(Project project, String propertyName, String defaultValue) {
+    String stringProjectProperty = UMLPPluginFrontend.getStringProjectProperty(project,
+        propertyName, defaultValue);
+    if (stringProjectProperty == null) {
+      return null;
+    } else {
+      return stringProjectProperty
+          .replace("'", "")
+          .replace("\"", "")
+          .strip();
+    }
+  }
+
   @NotNull
   public static Boolean getBooleanProjectProperty(Project project, String propertyName) {
     return UMLPPluginFrontend.getBooleanProjectProperty(project, propertyName);

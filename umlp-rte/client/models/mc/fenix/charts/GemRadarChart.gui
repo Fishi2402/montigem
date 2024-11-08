@@ -9,8 +9,9 @@ import java.util.Optional;
 component GemRadarChart(
     GemRadarChartData data,
     Optional<Integer> borderWidth,
-    Optional<Boolean> fill,
+    Boolean fill = false,
     Optional<Double> min,
     Optional<Double> max,
-    Optional<Double> stepSize
+    Optional<Double> stepSize,
+    Boolean showConfig = true
 )
