@@ -3,15 +3,20 @@
 package example_table;
 
 import mc.fenix.table.GemTable;
-import mc.fenix.table.TableTypes.TableColumn;
+import mc.fenix.table.GemTableHeader;
+import mc.fenix.table.GemTableRow;
+import mc.fenix.basic.GemText;
 import Domain.Person;
 
 page GemTableExample(List<Person> persons) {
-  //@GemTable(
-  //  rows = persons,
-  //  columns = null/*[
-  //    TableColumn("_name", "Name"),
-  //    TableColumn("_birthday", "Birthday")
-  //  ]*/
-  //);
+  @GemTable(
+    width = "50%",
+    header = @GemTableHeader(cols = ["Name", "Birthday"]),
+    body = @iterate(Person p : persons) {
+      @GemTableRow(cells = [
+        @GemText(value = p.name), @GemText(value = p.birthday)
+      ]);
+    },
+    caption = "Birthday list"
+  );
 }

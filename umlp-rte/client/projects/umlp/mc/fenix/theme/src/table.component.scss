@@ -1,0 +1,31 @@
+/* (c) https://github.com/MontiCore/monticore */
+@import "../variables";
+@import "../mixins";
+
+@mixin table-theme($border-color, $header-background-color, $row-background-color) {
+  .gem-table-style {
+    border: 2px solid $border-color;
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+
+  .gem-table-cell {
+    border: 1px solid $border-color;
+    padding: 4px 6px;
+  }
+
+  .gem-table-row:nth-of-type(even) {
+    background-color: $row-background-color;
+  }
+
+  .gem-table-header {
+    background-color: $header-background-color;
+    border-bottom: 2px solid $border-color;
+  }
+
+  .gem-table-caption {
+    caption-side: bottom;
+    padding: 10px;
+    font-weight: bold;
+  }
+}

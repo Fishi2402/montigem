@@ -1,84 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 package mc.fenix.table;
 
-import mc.fenix.table.TableTypes.TableColumn;
-import java.util.function.Function;
-
-// TODO: precise types
 /**
   A table organizes and displays data in rows and columns.
   Allows input, edit, and manipulation of data, such as sorting and filtering.
 */
 component GemTable(
-  /** List of objects displayed in a table. */
-  List<Object> rows,
-  /**
-    Columns of the table. Each column defines header and what properties of rows
-    are shown in each column.
-  */
-  List<TableColumn> columns,
-  /**
-    Callback that is executed when a row is activated for editing (click on edit
-    button).
-  */
-  Event<Object> edit,
-  /**
-    Callback that is executed when a row is saved (click on save button).
-  */
-  Event<Object> update,
-  /**
-    Callback that is executed when the save is cancelled (click on cancel button
-    for edited row).
-  */
-  Event<Object> cancelUpdate,
-  /**
-    Whenever user is able to delete a row, automatically set to true if an
-    action for `delete` is defined.
-  */
-  boolean canDelete,
-  /**
-    Callback that is executed when a row is deleted (click on delete button).
-  */
-  Event<Object> delete,
-  /**
-    Whenever user is able to create a new row, automatically set to true if an
-    action for `create` is defined.
-  */
-  boolean canCreate,
-  /**
-    Callback that is executed when a new row is created (the save button is
-    clicked in a create-row).
-  */
-  Event<Object> create,
-  /**
-    Callback that is executed when the cancel button is clicked in a create-row.
-  */
-  Event<Object> cancelCreate,
-
-  // TODO: add to the public API
-  Function<Object,Object> cellStyle = null,
-  Object tableContainerStyle = null,
-  boolean compactStyle = false,
-  boolean hasColumnFooter = false,
-  GUIViewElement footerTemplate = null,
-  Function<Object,Object> activeRow = null,
-  Object inactiveRowStyle = null,
-  boolean isFilterable = false,
-  List<Object> sortDirection = null,
-  List<Object> selection = null,
-  Object selectionType = null,
-  boolean batchMode = false,
-  Event<Object> batchModeToggle,
-  Event<Object> rowsSelect,
-  Object staticRow,
-  Object extendableRow,
-  Object groupClass,
-  Object groupTooltip,
-  Object rowClass,
-  GUIViewElement filterTemplate,
-  boolean canHideColumns,
-  boolean isGroupable,
-  boolean hasShowInactiveBtn,
-  boolean alwaysEdit
+  String id,
+  String width = "100%",
+  GUIViewElement header,
+  GUIViewElement body,
+  String caption = ""
 )

@@ -1,0 +1,9 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+<ng-template #tableRowTemplate>
+  <tr class="gem-table-row">
+    <td *ngFor="let cell of cells" class="gem-table-cell">
+      <ng-container *ngTemplateOutlet="cell"></ng-container>
+    </td>
+  </tr>
+</ng-template>
+

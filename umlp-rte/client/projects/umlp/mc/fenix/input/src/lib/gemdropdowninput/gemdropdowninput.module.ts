@@ -8,13 +8,13 @@ import {MatIconModule} from "@angular/material/icon";
 
 @NgModule({
   declarations: [GemDropdownInput],
-    imports: [
-      CommonModule,
-      MatTooltipModule,
-      FormsModule,
-      InputModeModule,
-      MatIconModule
-    ],
+  imports: [
+    CommonModule,
+    MatTooltipModule,
+    FormsModule,
+    InputModeModule,
+    MatIconModule
+  ],
   exports: [GemDropdownInput]
 })
 export class GemdropdowninputModule  {}
