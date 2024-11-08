@@ -5,8 +5,15 @@ plugins {
   id "de.rwth.se.umlp-tool-frontend-test"  // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
 }
 
+configurations {
+  umlpModulesDomainSymbols
+  umlpModulesModels
+}
+
 dependencies {
-  umlpModules(project(path: ":modules:login", configuration: "moduleGenTime"))
+  umlpModules(project(path: ":modules:login", configuration: "moduleGenTime")) // Load generator modifications
+  umlpModulesDomainSymbols(project(path: ":modules:login:frontendTS", configuration: "umlpOutgoingDomainSymbols")) // frontend domain symbols
+  umlpModulesModels(project(path: ":modules:login", configuration: "umlpOutgoingModels")) // and models itself
 }
 
 node {
@@ -14,28 +21,24 @@ node {
 }
 
 createDomainSymbols {
-  // TODO: Gradle setup
-  modelDir.from(project(":modules:login").layout.getProjectDirectory().dir("models"))
-//  modelDir.from(project(":examples:dtcockpit").layout.getProjectDirectory().dir("models"))
+  // TODO: via resolveable configs
+  modelDir.from(configurations.umlpModulesModels)
 
 }
 
 genDomain {
   // TODO: Gradle setup
-//  symbolPath.from(project(":modules:login").layout.getProjectDirectory().dir("models"))
   /*
   genDomain with A extends B (where B is only a symbol import)
    0xA7003x57269 get for AstNode can't return a value. Attribute is empty.
 
 	at de.monticore.cdbasis._symboltable.CDTypeSymbolTOP.getAstNode(CDTypeSymbolTOP.java:1)
 	at de.monticore.cd._symboltable.CDSymbolTables.getTransitiveSuperTypes(CDSymbolTables.java:86)
-//  symbolPath.from(() -> project(":modules:login:frontendTS").tasks.named("createDomainSymbols").get().outputs) */
-
-//  symbolPath.from(() -> project(":modules:login:frontendTS").tasks.named("createDomainSymbols").get().outputs)
+   */
 
   // Alternative: Generate the module-frontend-domain too
   input = file("../models/Dtcockpit.umlp")
-  modelDir.from(project(":modules:login").layout.getProjectDirectory().dir("models"))
+  modelDir.from(configurations.umlpModulesModels)
 
   // TODO: tsconfig path
   /*
@@ -54,9 +57,12 @@ genGUI {
   guiCreateModels = ["gui.login.UserCreate", "gui.project.ProjectCreate", "gui.project.ProjectsCreateByGroup"]
 
   // TODO: Gradle Setup for modules
-//  symbolDir.from(project(":modules:login:frontendTS").tasks.createDomainSymbols.getOutputDir())
   symbolDir.from(() -> tasks.named("createDomainSymbols").get().outputs)
+
+  // TODO: FIX ALu
   symbolDir.from(() -> project(":modules:login:frontendTS").tasks.named("createDomainSymbols").get().outputs)
+
+
   outputs.upToDateWhen { false }
   /*
   debug = true

@@ -4,6 +4,11 @@ ${cd4c.method("public Promise<Void> _doAdd${name}2(${name} o, NotificationScope 
   console.debug("Adding known ${name?uncap_first} " + o.getGemId());
   console.trace();
   this.known${name}s.set(o.getGemId(), Promise.resolve(o));
+  if (this.loaded${name}List) {
+    this.loaded${name}List.then(tmp_$ => {
+      tmp_$.push(o);
+    });
+  }
   if (!o.containsObserver(this.the${name}CommandObserver)) {
     o.addObserver(this.the${name}CommandObserver);
   }

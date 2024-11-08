@@ -7,6 +7,9 @@ ${cd4c.method("protected void _doAdd${name}(${name} o, NotificationScope scope)"
   // TODO: Error handling
   Log.trace("Adding known ${name?uncap_first} " + o.getGemId(), LogUtil.getLoggerName());
   known${name}s.put(o.getGemId(), o);
+  if (this.loaded${name}List.isPresent()) {
+    this.loaded${name}List.get().add(o);
+  }
   if (!o.containsObserver(the${name}CommandObserver)) {
     o.addObserver(the${name}CommandObserver);
   }

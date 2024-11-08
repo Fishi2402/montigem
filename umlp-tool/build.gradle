@@ -246,6 +246,14 @@ gradlePlugin {
       id = "de.rwth.se.umlp-tool-module-models"
       implementationClass = "gradle.module.UMLPPluginModule"
     }
+    umlpplugin_module_backend {
+      id = "de.rwth.se.umlp-tool-module-backend"
+      implementationClass = "gradle.module.UMLPPluginModuleBackend"
+    }
+    umlpplugin_module_jsfrontend {
+      id = "de.rwth.se.umlp-tool-module-jsfrontend"
+      implementationClass = "gradle.module.UMLPPluginModuleJSFrontend"
+    }
   }
 }
 

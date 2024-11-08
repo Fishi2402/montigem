@@ -8,11 +8,15 @@ plugins {
   id 'org.springframework.boot' version "${spring_version}"
 }
 
+configurations {
+  umlpModulesModels // ToDo: Define this via the plugin & combine via one config
+}
+
 dependencies {
   umlpModules(project(path: ":modules:login", configuration: "moduleGenTime"))
-//  umlpModules(project(path: ":modules:login", configuration: "umlpOutgoingModels")) // TODO: consume via custom config
   // TODO: adding it directly to the umlpModules failes due to missing module metadata
   implementation(project(path: ":modules:login:backend")) // TODO: improve
+  umlpModulesModels(project(path: ":modules:login", configuration: "umlpOutgoingModels")) // and models itself
 }
 
 
@@ -73,9 +77,7 @@ generateUmlpBackend {
   useSpring = true
   useShell = true
 
-  // TODO: Move to plugin
-  // TODO: Include umlp in module jar
-  modelDir.from(project(":modules:login").layout.getProjectDirectory().dir("models"))
+  modelDir.from(configurations.umlpModulesModels)
 }
 
 //COMPARE_generateUmlpBackend {

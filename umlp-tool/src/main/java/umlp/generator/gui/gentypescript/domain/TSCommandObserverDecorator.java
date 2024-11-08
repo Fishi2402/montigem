@@ -6,13 +6,12 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import umlp.UMLPMill;
+import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.generating.templateengine.TemplateHookPoint;
 import umlp.generator.domain.decorator.CommandObserverDecorator;
 import umlp.generator.domain.decorator.ObserverDecorator;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
-
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 public class TSCommandObserverDecorator extends CommandObserverDecorator {
 
@@ -22,11 +21,22 @@ public class TSCommandObserverDecorator extends CommandObserverDecorator {
 
   @Override
   protected ASTCDClass createEmptyClass(ASTCDClass domainClass, String classname) {
-    return UMLPMill.cDClassBuilder()
-        .setModifier(PUBLIC.build())
-        .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(domainClass.getName() + "Observer"))
-        .setName(classname)
-        .build();
+    ASTCDClass emptyClass = super.createEmptyClass(domainClass, classname);
+
+    // replace interface via mixin
+    glex.replaceTemplate("umlp.gui2ts.TSClassImplements",
+        emptyClass, new TemplateHookPoint("umlp.gui2ts.TSClassExtendsMixin"));
+    glex.addAfterTemplate("umlp.gui2ts.TSEmptyMixin",
+        emptyClass, new StringHookPoint("Object"));
+
+    glex.addBeforeTemplate("umlp.gui2ts.TSEmptyMixin",
+        emptyClass, new StringHookPoint(
+            domainClass.getName() + ObserverDecorator.SUFFIX + TSObserverMixinDecorator.SUFFIX + "("
+        ));
+    glex.addAfterTemplate("umlp.gui2ts.TSEmptyMixin",
+        emptyClass, new StringHookPoint(")"));
+
+    return emptyClass;
   }
 
   @Override
@@ -44,7 +54,8 @@ public class TSCommandObserverDecorator extends CommandObserverDecorator {
       getCD4C().addImport(clazz, getPackageName(def, DEFAULT_PACKAGE) + "." + t.getName());
     }
 
-    getCD4C().addImport(clazz, getPackageName(origCD, DEFAULT_PACKAGE) + "." + domainClass.getName() + ObserverDecorator.SUFFIX);
+    String obs = domainClass.getName() + ObserverDecorator.SUFFIX + TSObserverMixinDecorator.SUFFIX;
+    getCD4C().addImport(clazz, getPackageName(origCD, DEFAULT_PACKAGE) + "." + obs);
   }
 
 }

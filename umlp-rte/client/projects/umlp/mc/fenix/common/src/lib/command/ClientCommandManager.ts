@@ -1,10 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { Result } from "../common/Result";
-import { ClientCommandCommunication } from "./ClientCommandCommunication";
-import { Command } from "./Command";
-import { CommandManager } from "./CommandManager";
-import { CommandResult } from "./CommandResult";
+import {ClientCommandCommunication} from "./ClientCommandCommunication";
+import {Command} from "./Command";
+import {CommandManager} from "./CommandManager";
+import {CommandResult} from "./CommandResult";
 
 export class ClientCommandManager extends CommandManager {
 
@@ -12,9 +11,21 @@ export class ClientCommandManager extends CommandManager {
 
   protected commandCommunication: ClientCommandCommunication;
 
+  // A lock/mutex on this command manager state,
+  // to ensure, that commands are run in the order they arrive in
+  protected commandMutex: CommandMutex;
+
   public constructor(commandCommunication: ClientCommandCommunication) {
     super();
-    this.commandCommunication = commandCommunication.onCommandReceived(cmd => cmd.doRun());
+    this.commandMutex = new CommandMutex();
+    this.commandCommunication = commandCommunication.onCommandReceived(cmd => {
+      this.commandMutex.acquireLock().then(releaseLock => {
+        cmd.doRun().finally(() => {
+          releaseLock(); // Release the lock again
+        })
+      });
+
+    });
     commandCommunication.init().then(res => {
       let initResult: number = res;
       if (!Number.isNaN(initResult)) {
@@ -42,4 +53,53 @@ export class ClientCommandManager extends CommandManager {
   public isInitSuccessFul(): boolean {
     return this.initSuccessFul;
   }
+
+  // A chained-queue like data structure
+  private globalLock: {
+    waitFor: (resolve: () => void) => void
+  } = {
+    "waitFor": (r) => r()
+  };
+
+}
+
+// The mutex is required due to https://git.rwth-aachen.de/monticore/monticore/-/issues/4378
+class CommandMutex {
+  private _queue: {
+    resolve: (release: () => void) => void
+  }[] = [];
+
+  private _locked = false;
+
+  /**
+   * Acquire a new lock on a resource (the global state of the command manager).
+   *
+   * The promised callback MUST be called to indicate, that the resource is free again.
+   *
+   */
+  acquireLock() {
+    return new Promise<() => void>((resolve) => {
+      this._queue.push({resolve});
+      this._dispatch();
+    });
+  }
+
+  private _dispatch(ignoreLocked = false) {
+    if (this._locked || ignoreLocked) return; // Do nothing, as we are still waiting - the release function will invoke dispatch again
+    this._locked = true;
+    const nextCommand = this._queue.shift();
+    if (!nextCommand) {
+      this._locked = false;
+      return;
+    }
+
+    // We have a new contender and the lock is available
+    this._locked = true; // Lock the lock
+    // and give the next command access
+    nextCommand.resolve(() => {
+      // Once the command is done, this callback MUST be invoked
+      this._dispatch(true);
+    });
+  }
+
 }

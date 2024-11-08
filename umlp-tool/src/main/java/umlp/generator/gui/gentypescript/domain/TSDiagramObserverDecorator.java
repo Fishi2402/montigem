@@ -48,7 +48,7 @@ public class TSDiagramObserverDecorator extends DiagramObserverDecorator {
   @Override
   protected ASTCDClass createEmptyImpl(ASTCDCompilationUnit origCD, ASTCDInterface i) {
     ASTCDClass clazz = super.createEmptyImpl(origCD, i);
-    glex.replaceTemplate("umlp.gui2ts.TSClassDeclaration", clazz, new TemplateHookPoint("umlp.gui2ts.TSMixin"));
+    glex.replaceTemplate("umlp.gui2ts.TSClassDeclaration", clazz, new TemplateHookPoint("umlp.gui2ts.TSClass2Mixin"));
 
     // TODO: something like this:
     // Methods with default impl

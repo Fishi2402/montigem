@@ -32,6 +32,7 @@ public abstract class UMLPJava2TypeScriptAdditionalsTask extends UMLPSingleFileT
   @OutputDirectory
   public abstract DirectoryProperty getJsweetConfigOut();
 
+  // TODO MH remove if unnecessary
   @OutputDirectory
   @org.gradle.api.tasks.Optional
   public abstract DirectoryProperty getSymbolOutDir();
@@ -62,6 +63,13 @@ public abstract class UMLPJava2TypeScriptAdditionalsTask extends UMLPSingleFileT
     if (this.getSymbolOutDir().isPresent()) {
       result.add("-s");
       result.add(handlePath.apply(getSymbolOutDir().getAsFile().get().toPath()));
+    }
+    if(!this.getModelDir().isEmpty()) {
+      for (File file : this.getModelDir()) {
+        result.add("-mp");
+        result.add(handlePath.apply(file.toPath()));
+        System.out.println("WORKSSS"+file.getAbsolutePath());
+      }
     }
 
     return result;

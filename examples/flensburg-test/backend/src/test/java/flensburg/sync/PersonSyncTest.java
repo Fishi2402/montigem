@@ -252,6 +252,9 @@ public interface PersonSyncTest extends TestSetup<FlensburgTestContext> {
       assertNotNull(c_i_client);
       assertNotSame(c_i_server, c_i_client);
       assertEquals(c_i_server.getGemId(), c_i_client.getGemId());
+
+      assertTrue(p1001Server.getOwnsList().contains(c_i_server));
+      assertTrue(p1001.getOwnsList().contains(c_i_client));
     }
   }
 

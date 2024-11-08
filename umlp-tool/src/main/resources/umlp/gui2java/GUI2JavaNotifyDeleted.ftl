@@ -4,6 +4,8 @@ ${tc.signature("type", "removeList")}
 <#assign idVar = "gemId_$">
 
 ${cd4c.method("public void notify${mcType}Deleted(long ${idVar})")}
+/*
 <#list removeList as remove>
 this.${remove}(${idVar});
 </#list>
+*/
