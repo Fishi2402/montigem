@@ -59,7 +59,10 @@ genGUI {
   // TODO: Gradle Setup for modules
   symbolDir.from(() -> tasks.named("createDomainSymbols").get().outputs)
 
-  symbolDir.from(configurations.umlpModulesDomainSymbols)
+  //  symbolDir.from(configurations.umlpModulesDomainSymbols)
+  // TODO: When using the .jar - the .tags files are not found by TagRelated#initLookup
+  symbolDir.from(() -> project(":modules:login:frontendTS").tasks.named("createDomainSymbols").get().outputs)
+
 
   outputs.upToDateWhen { false }
   /*
