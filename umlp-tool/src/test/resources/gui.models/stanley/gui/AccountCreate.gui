@@ -7,13 +7,20 @@ import mc.fenix.basic.GemText;
 import mc.fenix.basic.GemButton;
 import mc.fenix.input.GemTextInput;
 import mc.fenix.table.GemTable;
+import mc.fenix.table.GemTableRow;
 
 // import stanley.my.CustomAccountView;
 
 page AccountCreate(Account acc) {
   @GemText(value = "New Account");
   @GemTextInput(entry = acc.name);
-  @GemTable(rows = acc.budget);
+  @GemTable(
+    body = @iterate(Budget b : acc.budget) {
+      @GemTableRow(cells = [
+        @GemText(value = b.name), @GemText(value = b.balance)
+      ]);
+    }
+  );
   @GemButton(label = "Save");
   // @CustomAccountView(acc = acc);
 }

@@ -6,6 +6,7 @@ import mc.fenix.table.GemTable;
 import mc.fenix.table.GemTableHeader;
 import mc.fenix.table.GemTableRow;
 import mc.fenix.basic.GemText;
+import mc.fenix.input.GemTextInput;
 import Domain.Person;
 
 page GemTableExample(List<Person> persons) {
@@ -14,7 +15,11 @@ page GemTableExample(List<Person> persons) {
     header = @GemTableHeader(cols = ["Name", "Birthday"]),
     body = @iterate(Person p : persons) {
       @GemTableRow(cells = [
-        @GemText(value = p.name), @GemText(value = p.birthday)
+        @GemText(value = p.name),
+        @GemTextInput(
+          inputType = "date",
+          entry = p.birthday
+        )
       ]);
     },
     caption = "Birthday list"
