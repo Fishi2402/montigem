@@ -15,18 +15,26 @@ import mc.fenix.arrange.GemColumn;
 import mc.fenix.charts.GemLineChart;
 import mc.fenix.charts.GemGaugeChart;
 import mc.fenix.table.GemTable;
-import mc.fenix.table.TableTypes.TableColumn;
+import mc.fenix.table.GemTableHeader;
+import mc.fenix.table.GemTableRow;
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemText;
 
 page WeatherView(List<Forecast> forecasts) {
   @GemRow(colGap = "5px", height = "initial", components = [
     @GemCard(
       title = "Forecast data list",
-      component = forecastsTable@GemTable(
-        rows = forecasts,
-        columns = getColumns(),
-        edit = navigateToUpdatePage(),
-        update = log()
-      )
+      component =
+        forecastsTable@GemTable(
+          header = @GemTableHeader(cols = ["", "Date", "Temp."]),
+          body = @iterate(Forecast fc : forecasts) {
+            @GemTableRow(cells = [
+              @GemButton(label = "Edit", leftClick = navigateToUpdatePage(fc)),
+              @GemText(value = fc.date),
+              @GemText(value = fc.temperature)
+            ]);
+          }
+        )
     ),
     @GemCard(
       title = "Forecast Temperature (Avg./day)",
