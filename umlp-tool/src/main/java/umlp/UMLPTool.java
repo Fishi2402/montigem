@@ -110,6 +110,8 @@ public class UMLPTool extends UMLPToolTOP {
     ModuleController mod = new ModuleController(glex);
     glex.defineGlobalVar("mod", mod);
 
+    System.out.println("Creating glex with " + moduleConfigTemplates);
+
     for (String moduleConfigTemplate : moduleConfigTemplates) {
       // Arguments are the same as original include call
       mod.addModuleToHookpoint("umlp.generator.hook.InitModules", moduleConfigTemplate);
