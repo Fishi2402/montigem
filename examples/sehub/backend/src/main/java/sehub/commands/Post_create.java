@@ -15,7 +15,7 @@ public class Post_create extends Post_createTOP {
 
   @Override
   public StatusResult doAction() {
-    SehubManager.addPost(post, NotificationScope.LOCAL);
+    SehubManager.addWithScopePost(post, NotificationScope.LOCAL);
     return StatusResult.ok(getId());
   }
 
