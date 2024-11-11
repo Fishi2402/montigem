@@ -166,6 +166,11 @@ public class GuiPipelineSetup {
     genSetup.setTracing(false);
     GUI2ConfigGenerator configGenerator = new GUI2ConfigGenerator(genSetup);
 
+    // Report InitModules
+    genSetup.getNewTemplateController("umlp.generator.hook.InitModules")
+        .includeArgs("umlp.generator.hook.InitModules", GUIDSLMill.stringLiteralBuilder().setSource("GuiPipelineSetup#configs").build(),
+            Arrays.asList(glex));
+
     List<String> outputs = configGenerator.generateConfig(routeMap.values());
     for (String output : outputs) {
       Reporting.reportFileCreation(Paths.get(data.outDir.getPath(), output).toString());
