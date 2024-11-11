@@ -26,7 +26,7 @@ public class User_create extends User_createTOP {
 
     UserAccessPolicy accessPolicy = new UserAccessPolicy();
     if (accessPolicy.checkCreatePermission(this)) {
-      DtcockpitManager.addUserWithScope(user, NotificationScope.LOCAL);
+      DtcockpitManager.addWithScopeUser(user, NotificationScope.LOCAL);
       return sendMail();
     } else {
       return StatusResult.error(getId());
