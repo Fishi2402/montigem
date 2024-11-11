@@ -5,6 +5,7 @@ import mc.fenix.arrange.GemColumn;
 import mc.fenix.arrange.GemCard;
 import mc.fenix.input.GemTextInput;
 import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemText;
 import mc.fenix.table.GemTable;
 import mc.fenix.table.GemTableHeader;
 import mc.fenix.table.GemTableRow;
