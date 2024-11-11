@@ -27,8 +27,8 @@ page PersonOverview(List<Person> persons) {
         @GemTableRow(cells = [
           @GemText(value = p.vorname),
           @GemText(value = p.nachname),
-          @GemText(value = p.beschBeginn),
-          @GemText(value = p.beschEnde)
+          @GemText(value = formatDate(p.beschBeginn)),
+          @GemText(value = formatDate(p.beschEnde))
         ]);
       }
     )

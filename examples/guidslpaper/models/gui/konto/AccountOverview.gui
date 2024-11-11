@@ -29,7 +29,7 @@ page AccountOverview(List<Konto> accounts) {
         @GemTableRow(cells = [
           @GemText(value = k.name),
           @GemText(value = k.kontotyp),
-          @GemText(value = k.budgetRahmenCent)
+          @GemText(value = formatCurrency(k.budgetRahmenCent))
         ]);
       }
     )

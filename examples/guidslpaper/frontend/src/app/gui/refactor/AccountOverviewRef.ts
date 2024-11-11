@@ -1,6 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { TableColumn } from '@umlp/table';
 import { Component } from '@angular/core';
 import { AccountOverviewRefComponent, config } from '@src/gui/refactor/AccountOverviewRefComponent';
 
@@ -20,14 +19,9 @@ export class AccountOverviewRef extends AccountOverviewRefComponent {
     minimumFractionDigits: 2
   });
 
-  public override init() {
-    this.gemTable3Columns_0 = <any[]>[
-      { prop: "_name", name: "Name" },
-      { prop: "_kontotyp", name: "Typ" },
-      { prop: "_budgetRahmenCent", name: "Gesamtbudget", displayValue: v => this.formatter.format(v)  }
-    ];
+  public override formatCurrency(value: number): string {
+    return this.formatter.format(value);
   }
-
 }
 
 
