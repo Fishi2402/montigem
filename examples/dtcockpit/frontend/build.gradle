@@ -56,13 +56,15 @@ genGUI {
   domainModels = ["Dtcockpit", "LoginModule"]
   guiCreateModels = ["gui.login.UserCreate", "gui.project.ProjectCreate", "gui.project.ProjectsCreateByGroup"]
 
+  println("#####symbol dir###")
+  symbolDir.forEach {println(it)}
+  println()
+
   // TODO: Gradle Setup for modules
   symbolDir.from(() -> tasks.named("createDomainSymbols").get().outputs)
 
-  //  symbolDir.from(configurations.umlpModulesDomainSymbols)
-  // TODO: When using the .jar - the .tags files are not found by TagRelated#initLookup
-  symbolDir.from(() -> project(":modules:login:frontendTS").tasks.named("createDomainSymbols").get().outputs)
-
+  // Load the symbols from the .jars in the domain symbols path
+  symbolDir.from(configurations.umlpModulesDomainSymbols)
 
   outputs.upToDateWhen { false }
   /*
