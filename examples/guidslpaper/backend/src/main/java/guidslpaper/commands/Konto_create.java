@@ -13,7 +13,7 @@ public class Konto_create extends Konto_createTOP {
   }
 
   public StatusResult doAction () {
-    GuidslpaperManager.addKonto(konto, NotificationScope.LOCAL);
+    GuidslpaperManager.addWithScopeKonto(konto, NotificationScope.LOCAL);
     Log.info("Created new konto. Start extraction of PipelineAnalysisData","Konto_create");
 
     return StatusResult.ok(getId());

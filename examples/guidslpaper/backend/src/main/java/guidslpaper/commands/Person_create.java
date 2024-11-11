@@ -14,7 +14,7 @@ public class Person_create extends Person_createTOP {
   }
 
   public StatusResult doAction () {
-    GuidslpaperManager.addPerson(person, NotificationScope.LOCAL);
+    GuidslpaperManager.addWithScopePerson(person, NotificationScope.LOCAL);
     Log.info("Created new person. Start extraction of PipelineAnalysisData","Person_create");
 
     return StatusResult.ok(getId());

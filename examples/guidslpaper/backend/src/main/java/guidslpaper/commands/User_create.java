@@ -26,7 +26,7 @@ public class User_create extends User_createTOP {
 
     UserAccessPolicy accessPolicy = new UserAccessPolicy();
     if (accessPolicy.checkCreatePermission(this)) {
-      GuidslpaperManager.addUser(user, NotificationScope.LOCAL);
+      GuidslpaperManager.addWithScopeUser(user, NotificationScope.LOCAL);
       return sendMail();
     }
     return StatusResult.error(getId());
