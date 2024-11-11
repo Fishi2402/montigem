@@ -30,7 +30,7 @@ public class User_create extends User_createTOP {
 
     UserAccessPolicy accessPolicy = new UserAccessPolicy();
     if (accessPolicy.checkCreatePermission(this)) {
-      SehubManager.addUser(user, NotificationScope.LOCAL);
+      SehubManager.addUserWithScope(user, NotificationScope.LOCAL);
       return sendMail();
     } else {
       return StatusResult.error(getId());
