@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package stanley.gui;
 
-import hardy.Flensburg.Account;
+import hardy.Flensburg.*;
 
 import mc.fenix.basic.GemText;
 import mc.fenix.basic.GemButton;

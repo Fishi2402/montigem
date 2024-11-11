@@ -25,8 +25,8 @@ page PersonOverviewRef(List<Person> persons) {
       header = @GemTableHeader(cols = ["Name", "Surname", "Contract start", "Contract end"]),
       body = @iterate(Person p : persons) {
         @GemTableRow(cells = [
-          @GemText(value = p.name),
           @GemText(value = p.vorname),
+          @GemText(value = p.nachname),
           @GemText(value = p.beschBeginn),
           @GemText(value = p.beschEnde)
         ]);
