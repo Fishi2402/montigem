@@ -33,16 +33,16 @@ public class DomainServerApplication extends domain.DomainServerApplicationTOP {
     Conversation c0 = addConversation("id0");
 
 
-    Message m0 = addMessage("Hi! I am a simple Chatbot ... Just kidding, i'm jst a mockup message ;(", Role.ASSISTANT, Role.USER, LocalDateTime.now());
+    Message m0 = addMessage("Hi! I am a simple Chatbot ... Just kidding, it's jst a mockup message :P", Role.ASSISTANT, Role.USER, LocalDateTime.now());
     c0.addMessages(m0);
-    Message m1 = addMessage("This could be a user input", Role.USER, Role.ASSISTANT, LocalDateTime.now());
+    /*Message m1 = addMessage("This could be a user input", Role.USER, Role.ASSISTANT, LocalDateTime.now());
     c0.addMessages(m1);
     Message m2 = addMessage("This would be the Response from the chatbot...",Role.ASSISTANT, Role.USER, LocalDateTime.now());
     c0.addMessages(m2);
     Message m3 = addMessage("This could be a user input",Role.USER, Role.ASSISTANT, LocalDateTime.now());
     c0.addMessages(m3);
     Message m4 = addMessage("This would be the Response from the chatbot...",Role.ASSISTANT, Role.USER, LocalDateTime.now());
-    c0.addMessages(m4);
+    c0.addMessages(m4);*/
 
 
 

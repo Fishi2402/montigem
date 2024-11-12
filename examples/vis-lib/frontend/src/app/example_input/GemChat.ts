@@ -30,12 +30,15 @@ export class GemChat extends GemChatComponent {
     msg.build();
     this._userMsg = await DomainManager.messageBuilder();
 
-    let answer = await CommandManager.executeCommand(new Answer(msg.getGemId()))
-    console.log(answer)
-
-    //CommandManager.executeCommand(new Answer(msg.getGemId())).then((answer: CommandResult<string>) => {
-    //  console.log(answer);
+    console.log("Before Call!")
+    //CommandManager.executeCommand(new Answer(msg.getGemId())).then((answer: CommandResult<Message>) => {
+    //  console.log("XXXXXX");
     //})
+    let answer = await CommandManager.executeCommand(new Answer(msg.getGemId()));
+
+    this.addMessages(answer.asSimpleResult().get());
+
+
 
 
   }
