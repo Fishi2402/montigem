@@ -14,7 +14,7 @@ public class Group_create extends Group_createTOP {
   }
 
   public StatusResult doAction () {
-    DtcockpitManager.addGroup(group, NotificationScope.LOCAL);
+    DtcockpitManager.addWithScopeGroup(group, NotificationScope.LOCAL);
     Log.info("Created new group. Start extraction of PipelineAnalysisData","Group_create");
     PipelineInformationExtractor extractor = new PipelineInformationExtractor();
     // This mehtod creates a dtcockpit.Project for each project in the group

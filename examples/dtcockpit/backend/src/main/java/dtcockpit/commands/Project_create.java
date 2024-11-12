@@ -14,7 +14,7 @@ public class Project_create extends Project_createTOP {
   }
 
   public StatusResult doAction () {
-    DtcockpitManager.addProject(project, NotificationScope.LOCAL);
+    DtcockpitManager.addWithScopeProject(project, NotificationScope.LOCAL);
     Log.info("Created new project. Start extraction of PipelineAnalysisData","Project_create");
     PipelineInformationExtractor extractor = new PipelineInformationExtractor();
     extractor.extractPipelineDataOf("https://git.rwth-aachen.de",
