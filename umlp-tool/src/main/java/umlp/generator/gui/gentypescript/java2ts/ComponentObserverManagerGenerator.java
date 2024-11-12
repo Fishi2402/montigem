@@ -39,7 +39,7 @@ public class ComponentObserverManagerGenerator {
   }
 
   protected List<ASTCDClass> getConcreteDomainClasses(ASTCDCompilationUnit cd) {
-    return getDomainClasses(cd, Filter.DERIVED.or(Filter.ABSTRACT).negate());
+    return getDomainClasses(cd, Filter.DERIVED.negate());
   }
 
   protected List<ASTCDClass> getDomainClasses(
