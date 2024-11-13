@@ -1,0 +1,114 @@
+/* (c) https://github.com/MontiCore/monticore */
+plugins {
+  id "base"
+  id "com.github.node-gradle.node" version "5.0.0"
+  id 'de.rwth.se.umlp-tool-frontend'
+}
+
+configurations {
+  guiLib
+  guiDefaultTypes
+}
+
+dependencies {
+  domainSources project(":examples:artifacts-java:backend")
+  domainSources project(":examples:artifacts-test")
+  implementation project(":examples:artifacts-java:backend")
+  implementation project(":examples:artifacts-test")
+
+  //guiDefaultTypes "de.monticore.lang:guidsl:${mc_version}:default-types"
+}
+
+
+node {
+  download = true
+  version = "${node_version}"
+  nodeProxySettings = ProxySettings.OFF
+  nodeProjectDir = layout.buildDir.dir("frontendGen/")
+}
+
+createDomainSymbols {
+  modelDir.from(project(":examples:artifacts-test").projectDir.toPath().resolve("models").toFile())
+}
+
+genGUI {
+  hwcDir.from(project.projectDir.toPath().resolve("src/main/java").toFile())
+  modelDir = layout.projectDirectory.dir("../models")
+  symbolDir = files(
+      layout.buildDirectory.getAsFile().get().toPath().resolve("symbols_gui_domain__from_task_domainsymbol"),
+      layout.buildDirectory.getAsFile().get().toPath().resolve("symbols_gui_domain__from_task_frontendgui"),
+      configurations.guiLib.files,
+      configurations.guiDefaultTypes.files
+  )
+  domainModels = ["JavaProject"]
+}
+
+genJava2TSAdditionals {
+  modelDir.from(files(
+      project(':examples:artifacts-test').getProjectDir().toPath().resolve("src/models").toFile()
+  ))
+}
+
+
+
+tasks.register('runAppNoBuild', NpxTask) {
+  command = "ng"
+  args = ["serve"]
+}
+
+translateJava2TSDomain {
+  excludeSource = [
+      "glob:**/visitor/*",
+      "glob:**/utilities/*",
+      "glob:**/analysis/**",
+      "glob:**/de/**",
+      "glob:**/extractor/*",
+      "glob:**/generator/**"
+  ]
+  verbose = true
+  // TODO: why is this unset?
+  jsweetDir.set(project.buildDir.toPath().resolve("jsweet").toFile())
+}
+
+
+translateJava2TSGUI {
+  verbose = true
+}
+
+genJava2TSGUIConfig.dependsOn(frontendSetup, createDomainSymbols, genGUI)
+
+genJava2TSDomainConfig.dependsOn(frontendSetup, createDomainSymbols)
+
+
+task generateNPMAuth(type: NPMAuthCreate){
+  npmrcFile = frontendSetup.getOutput().file(".npmrc")
+}
+
+
+npm_install.dependsOn(generateNPMAuth, genGUI, frontendSetup)
+// TODO AGe: npm_update too slow - strategy to make occasional checks
+npm_update.dependsOn(npm_install)
+
+def prebuildTasks = [
+    generate
+]
+
+task buildApp(type: NpxTask) {
+  dependsOn(npm_update, prebuildTasks)
+  command = "ng"
+  args = ["build"]
+}
+assemble.dependsOn(buildApp)
+
+task testApp(type: NpxTask) {
+  dependsOn(npm_update, prebuildTasks)
+  command = "ng"
+  args = ["test"]
+}
+
+task runApp(type: NpxTask) {
+  dependsOn(npm_update, prebuildTasks)
+  command = "ng"
+  args = ["serve"]
+}
+

@@ -1,11 +1,14 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#-- Generates ComponentObserverManager for the current domain model -->
-${tc.signature("AST", "cdName", "listDomainClassNames", "packageName")}
+${tc.signature("AST", "cdName", "cDNames", "domainClassNamesCDMap")}
 
 import { ComponentObserverManager, GemIdentifiable } from "@umlp/commonj2ts";
-import { ${cdName}Manager } from "@src/${packageName}/${cdName}Manager";
-<#list listDomainClassNames as domainClassName>
-import { ${domainClassName}AllObserver } from "@src/${packageName}/${domainClassName}AllObserver";
+<#list cDNames as specificCDName>
+  import { ${specificCDName}Manager } from "@src/${specificCDName?lower_case}/${specificCDName}Manager";
+</#list>
+
+<#list domainClassNamesCDMap as domainClassName, package>
+import { ${domainClassName}AllObserver } from "@src/${package?lower_case}/${domainClassName}AllObserver";
 </#list>
 
 export class ${cdName}ComponentObserverManager extends ComponentObserverManager {
@@ -23,12 +26,12 @@ export class ${cdName}ComponentObserverManager extends ComponentObserverManager 
   constructor() {
     super();
     // AllObserver factory
-<#list listDomainClassNames as domainClassName>
+<#list domainClassNamesCDMap as domainClassName, package>
     this.observerFactory.set("${domainClassName}", (update) => new ${domainClassName}AllObserver(update));
 </#list>
     // domain object getter factory
-<#list listDomainClassNames as domainClassName>
-    this.objectGetterFactory.set("${domainClassName}", (gemId) => ${cdName}Manager.get${domainClassName}Sure(gemId));
+<#list domainClassNamesCDMap as domainClassName, package>
+    this.objectGetterFactory.set("${domainClassName}", (gemId) => ${package}Manager.get${domainClassName}Sure(gemId));
 </#list>
   }
 
