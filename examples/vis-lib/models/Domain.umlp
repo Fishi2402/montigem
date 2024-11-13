@@ -45,9 +45,9 @@ classdiagram Domain {
   <<singleton>>
   class App {
     Boolean isOld(Person p);
-    float rotationDeg = 0;
-    float verticalPercentage = 0;
-    float horizontalPercentage = 0;
+    int rotationDeg = 0;
+    int verticalPercentage = 0;
+    int horizontalPercentage = 0;
     boolean pumpRunning = false;
   }
 

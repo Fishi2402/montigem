@@ -1,4 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 1184 643">
+  <style>
+    :host {
+      --pumpIndicatorOpacity: 0;
+      --rotationDeg: 0;
+      --verticalPercentage: 0;
+      --horizontalPercentage: 0;
+    }
+  </style>
   <defs>
     <linearGradient id="a" x1="592.31" x2="592.31" y1="-102.5" y2="842"
                     gradientUnits="userSpaceOnUse">
@@ -32,7 +40,8 @@
     </linearGradient>
   </defs>
   <path fill="url(#a)" d="M0 0h1184v643H0z"/>
-  <ellipse id="pump-indicator" [attr.fill]="pumpRunning ? '#e09400' : 'none'"
+  <ellipse id="pump-indicator"
+           style="fill: #e09400; opacity: var(--pumpIndicatorOpacity, 1);"
            cx="1042.963" cy="164.981"
            paint-order="stroke fill markers" rx="31.058"
            ry="31.016"/>
@@ -90,15 +99,18 @@
       </tspan>
     </text>
   </g>
-  <ellipse id="vertical-indicator" [attr.transform]="'translateY(calc(' + verticalPercentage + ' * 3.26px - 163px))'"
+  <ellipse id="vertical-indicator"
+           style="transform: translateY(calc(var(--verticalPercentage, 0) * 3.26px - 163px));"
            cx="831.602" cy="364.028" fill="#e09400"
            paint-order="stroke fill markers" rx="15.008"
            ry="14.967"/>
-  <ellipse id="rotation-indicator" [attr.transform]="'rotate(' + rotationDeg + 'deg)'" cx="218.014" cy="205.403" fill="#e09400"
-           style="transform-origin: 218px 356px;"
+  <ellipse id="rotation-indicator"
+           style="transform: rotate(calc(var(--rotationDeg, 0) * 1deg)); transform-origin: 218px 356px;"
+           cx="218.014" cy="205.403" fill="#e09400"
            paint-order="stroke fill markers" rx="15.008" ry="14.967"
   />
-  <ellipse id="horizontal-indicator" [attr.transform]="'translateX(calc(' + horizontalPercentage + ' * 1.82px - 91px))'"
+  <ellipse id="horizontal-indicator"
+           style="transform: translateX(calc(var(--horizontalPercentage, 0) * 1.82px - 91px));"
            cx="634.757" cy="205.474" fill="#e09400"
            paint-order="stroke fill markers" rx="15.008"
            ry="14.967"/>

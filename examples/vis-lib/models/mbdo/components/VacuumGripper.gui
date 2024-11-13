@@ -1,5 +1,5 @@
 package mbdo.components;
 
-component VacuumGripper(float rotationDeg, float verticalPercentage, float horizontalPercentage, boolean pumpRunning){
+component VacuumGripper(int rotationDeg, int verticalPercentage, int horizontalPercentage, boolean pumpRunning){
 
 }
