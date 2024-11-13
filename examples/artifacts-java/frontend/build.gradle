@@ -28,7 +28,7 @@ node {
 }
 
 createDomainSymbols {
-  modelDir.from(project(":examples:artifacts-test").projectDir.toPath().resolve("models").toFile())
+  modelDir.from(project(":examples:artifacts-test").projectDir.toPath().resolve("src/models").toFile())
 }
 
 genGUI {

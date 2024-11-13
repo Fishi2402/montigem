@@ -7,6 +7,7 @@ description 'artifacts example'
 
 generateUmlpBackend {
   //configTemplate = "umlp.UMLP2JavaNeo4j"
+  input = file("../models/JavaProject.umlp")
   modelDir.from(project(":examples:artifacts-test").projectDir.toPath().resolve("src").resolve("models").toFile())
 }
 
