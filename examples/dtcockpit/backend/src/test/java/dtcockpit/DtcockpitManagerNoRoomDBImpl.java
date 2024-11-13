@@ -6,7 +6,7 @@ import java.util.Optional;
 public class DtcockpitManagerNoRoomDBImpl extends DtcockpitManagerImpl {
 
   @Override
-  protected  void _doAddRoom (Room o, NotificationScope scope) {
+  protected  void _doAddWithScopeRoom (Room o, NotificationScope scope) {
     knownRooms.put(o.getGemId(), o);
   }
 

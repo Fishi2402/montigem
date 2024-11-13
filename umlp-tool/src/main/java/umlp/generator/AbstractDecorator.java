@@ -196,7 +196,7 @@ public abstract class AbstractDecorator {
     return CDStereotypeFacade.getInstance();
   }
 
-  protected CD4C getCD4C() {
+  protected static CD4C getCD4C() {
     return CD4C.getInstance();
   }
 
@@ -561,31 +561,31 @@ public abstract class AbstractDecorator {
   abstract public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD);
 
 
-  protected String getCorrectManager(ASTCDAssociation assoc) {
+  public static String getCorrectManager(ASTCDAssociation assoc) {
     return UMLPSymbolTables.getDiagramFor(assoc).getCDDefinition().getName() + ManagerDecorator.SUFFIX;
   }
 
-  protected String getCorrectManager(ASTCDType type) {
+  public static String getCorrectManager(ASTCDType type) {
     return UMLPSymbolTables.getDiagramFor(type).getCDDefinition().getName() + ManagerDecorator.SUFFIX;
   }
 
-  protected String getCorrectManager(ASTCDAssocSide assocSide) {
+  public static String getCorrectManager(ASTCDAssocSide assocSide) {
     return UMLPSymbolTables.getDiagramFor(assocSide.getSymbol().getType().getTypeInfo().getAstNode()).getCDDefinition().getName() + ManagerDecorator.SUFFIX;
   }
 
-  protected String getCorrectManagerOfTargetType(ASTCDAssocSide assocSideTarget) {
+  public static String getCorrectManagerOfTargetType(ASTCDAssocSide assocSideTarget) {
     return getCorrectManagerFromSymTypeExpression(assocSideTarget.getSymbol().getType());
   }
 
-  protected String getCorrectManager(ASTCDAttribute attribute) {
+  public static String getCorrectManager(ASTCDAttribute attribute) {
     return attribute.getSymbol().getPackageName() + ManagerDecorator.SUFFIX;
   }
 
-  protected void addCorrectMangerImportForTargetType(ASTCDDefinition origCD, ASTCDType ast, SymTypeExpression type) {
+  public static void addCorrectMangerImportForTargetType(ASTCDDefinition origCD, ASTCDType ast, SymTypeExpression type) {
     addImportForCorrectedPackage(origCD, ast, type, ManagerDecorator.SUFFIX);
   }
 
-  protected void addImportForCorrectedPackage(ASTCDDefinition origCD, ASTCDType ast, SymTypeExpression type, String suffix){
+  public static void addImportForCorrectedPackage(ASTCDDefinition origCD, ASTCDType ast, SymTypeExpression type, String suffix){
     String[] fullName = type.printFullName().split("\\.");
     if (fullName.length <= 1) {
       return;
@@ -606,7 +606,7 @@ public abstract class AbstractDecorator {
     }
   }
 
-  protected String getCorrectManagerFromSymTypeExpression(SymTypeExpression type) {
+  protected static String getCorrectManagerFromSymTypeExpression(SymTypeExpression type) {
     String[] fullName = type.printFullName().split("\\.");
     if (fullName.length <= 1) {
       Log.error("Managername cannot be calculated. SymTypeExpression: '" + type + "'. Does not belong to a package defined by a Class Diagram.");

@@ -112,7 +112,7 @@ page GUI2JavaClassDecorator(
     List.of("a", "b");
     List.of(MaritalStatus.SINGLE, MaritalStatus.MARRIED);
   */
-  // getLIterate + initLIterable_
+  // getLIterate + initLIterable_ + notifyPerson
   l@iterate(Person friend : person.friends) {
   /*
     this.getPerson().getFriends();

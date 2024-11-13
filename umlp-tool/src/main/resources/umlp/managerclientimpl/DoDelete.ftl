@@ -9,5 +9,8 @@ ${cd4c.method("protected boolean _doDelete${name}(Long gemId, NotificationScope 
   }
   // TODO: error handling
   known${name}s.remove(gemId);
+  if (this.loaded${name}List.isPresent()) {
+    this.loaded${name}List.get().removeIdSure(gemId);
+  }
   ${managerName?uncap_first}Observers.forEach(obs -> obs.notify${name}Deleted(gemId));
   return true;

@@ -1,5 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("package")}
+<#-- ASTCDInterface ast -->
 /* (c) https://github.com/MontiCore/monticore */
 <#assign cdPrinter = glex.getGlobalVar("cdPrinter")>
 
@@ -15,17 +16,4 @@ ${tc.include("cd2java.Annotations")}
 <#-- Annotations hook -->
 ${defineHookPoint("InterfaceContent:Annotations")}
 
-export interface ${ast.getName()} <#rt><#lt>
-<#if ast.isPresentCDExtendUsage()>extends ${cdPrinter.printObjectTypeList(ast.getCDExtendUsage().getSuperclassList())} </#if> { <#rt><#lt>
-
-<#-- Elements HOOK -->
-${defineHookPoint("InterfaceContent:Elements")}
-
-<#list ast.getCDAttributeList() as attribute>
-    ${tc.include("umlp.gui2ts.TSAttribute", attribute)}
-</#list>
-
-<#list ast.getCDMethodList() as method>
-    ${tc.include("umlp.gui2ts.TSInterfaceMethod", method)}
-</#list>
-}
+${tc.include("umlp.gui2ts.TSInterfaceDeclaration", ast)}

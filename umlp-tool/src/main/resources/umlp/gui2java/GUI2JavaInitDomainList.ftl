@@ -1,7 +1,9 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("type", "name", "manager", "init", "initList")}
+${tc.signature("type", "name", "manager", "init", "setExternally", "wait", "initList")}
 <#assign javaType = cdPrinter.printType(type)>
 
 ${cd4c.method("protected void ${init}()")}
-this.${name} = ${manager}.get${javaType}List();
+if (!this.${setExternally}) {
+  this.${name} = ${manager}.get${javaType}List();
+}
 ${tc.includeArgs("umlp.gui2java.GUI2JavaCallMethods", [initList])}

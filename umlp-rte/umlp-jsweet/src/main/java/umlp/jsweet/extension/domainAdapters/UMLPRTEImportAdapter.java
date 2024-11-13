@@ -132,6 +132,11 @@ public class UMLPRTEImportAdapter extends UMLPAbstractAdapter {
           getContext().compilationUnits, getContext().trees);
     }
     new AsyncAwaitPropagationScanner(context).process(getContext().compilationUnits, getContext().trees);
+    if (rte.equals(RTE_OPTION.COMMONJ2TS_RTE)) {
+      new UMLPAsyncAwaitPropagationScanner(context, isAsyncList).process(
+          getContext().compilationUnits, getContext().trees);
+      new AsyncAwaitPropagationScanner(context).process(getContext().compilationUnits, getContext().trees);
+    }
 
     super.onTranspilationStarted();
   }

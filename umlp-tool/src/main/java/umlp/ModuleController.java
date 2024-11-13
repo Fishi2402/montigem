@@ -31,7 +31,7 @@ public class ModuleController {
   public void addModuleBeforeHookpoint(String hookpointName, String template){
     try {
       glex.addBeforeTemplate(hookpointName, new ComposedHookPoint(
-          new TemplateStringHookPoint("${tc.warn(\"[" + hookpointName + "] Executing module config template " + template + "\")}"),
+          new TemplateStringHookPoint("${tc.warn(\"[" + hookpointName + "] Executing module config template (before) " + template + "\")}"),
           new TemplateHookPoint(template)
       ));
     } catch (IOException e) {

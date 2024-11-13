@@ -55,9 +55,25 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
         return null;
       }
 
-      if (isUMLPRTEAsync(method, invocation)) {
+      boolean isAsyncFromSuper = false;
+      // Methods overriding async methods from the RTE must be async again
+      Element typeElement = method.getEnclosingElement();
+      if (typeElement instanceof TypeElement) {
+        TypeElement parentElement = (TypeElement) typeElement;
+        for (String superType : adapterUtils.listSuperTypesNames(parentElement)) {
+          if (isRTEAsyncMethod(superType, invocation.toString())) {
+            isAsyncFromSuper = true;
+            break;
+          }
+        }
+      }
+
+      boolean isAsync = false;
+
+      if (isAsyncFromSuper || isUMLPRTEAsync(method, invocation)) {
         context.addAwaitInvocation(invocation);
         addAsyncKeywordToMethod();
+        isAsync = true;
       }
 
       else if ((adapterUtils.isComponent(Util.getElement(getParent(ClassTree.class)))
@@ -65,11 +81,20 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
           isInvocatedGemListAccessor(invocation, trees)) {
         context.addAwaitInvocation(invocation);
         addAsyncKeywordToMethod();
+        isAsync = true;
       }
 
       else if (context.hasAnnotationType(method, JSweetConfig.ANNOTATION_ASYNC)
           && "void".equals(method.getReturnType().toString())) {
         addAsyncKeywordToVoid(invocation);
+        isAsync = true;
+      }
+
+      if (isAsync) {
+        LambdaExpressionTree lambdaParent = getParent(LambdaExpressionTree.class);
+        if (lambdaParent != null) {
+          context.addAsyncLambda(lambdaParent);
+        }
       }
     } catch (Exception e) {
       e.printStackTrace();

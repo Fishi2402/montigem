@@ -43,7 +43,7 @@ public class ManagerMockDecoratorTest extends DecoratorTest {
             () -> existsMethod(clazz, "_doFooDeSerBuilder"),
             () -> existsMethod(clazz, "_doFooOpt"),
             () -> existsMethod(clazz, "_doGetFooSure"),
-            () -> existsMethod(clazz, "_doAddFoo"),
+            () -> existsMethod(clazz, "_doAddWithScopeFoo"),
             () -> existsMethod(clazz, "_doGetFooList"),
             () -> existsMethod(clazz, "_doDeleteFoo"),
             () -> existsMethod(clazz, "_isLoadedFoo")

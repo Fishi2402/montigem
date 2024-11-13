@@ -8,9 +8,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
-import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.monticore.guidsl._symboltable.BuiltInTypes;
-import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
@@ -21,20 +19,18 @@ import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericTypeBuilder;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Splitters;
-import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.DiagramObserverDecorator;
 import umlp.generator.domain.decorator.ManagerDecorator;
+import umlp.generator.domain.decorator.ObserverDecorator;
+import umlp.generator.domain.decorator.commands.ManagerSubscriptionDecorator;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
-import umlp.generator.util.PathUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 public abstract class GUI2ClassDecorator extends AbstractDecorator {
 
@@ -47,7 +43,8 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
     super(glex);
   }
 
-  public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {};
+  public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
+  }
 
   public void transform(ASTGUICompilationUnit gui, ASTCDCompilationUnit cd) {
     this.gui = gui;
@@ -168,6 +165,17 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
           + ste.printFullName() + "'");
     }
     return MCTypeFacade.getInstance().createQualifiedType(ste.printFullName());
+  }
+
+  protected void importCommand(String domainClassName) {
+    if (util.getMainDomainModelSimpleName().isEmpty() || util.getMainDomainModelQName().isEmpty()) {
+      Log.error("0x00007 Could not identify the manager name: domain class diagram is missing");
+    }
+    String domainQName = util.getMainDomainModelQName().get();
+    String commandQName = Joiners.DOT.join(domainQName.toLowerCase(), COMMAND_PACKAGE,
+        domainClassName + ManagerSubscriptionDecorator.SUFFIX);
+
+    getCD4C().addImport(clazz, commandQName);
   }
 
   protected String getAndImportManager() {

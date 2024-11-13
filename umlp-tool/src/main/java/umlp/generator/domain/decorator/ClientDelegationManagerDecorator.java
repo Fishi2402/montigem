@@ -171,15 +171,15 @@ public class ClientDelegationManagerDecorator extends ManagerDecorator {
   }
 
   protected String getInitTemplate() {
-    return "umlp.gui2ts.managerclientimpl.TSInit";
+    return "umlp.managerclientimpl.Init";
   }
 
   protected String getDelegatedOptTemplate() {
-    return "umlp.gui2ts.delegationmanager.DelegatedOpt";
+    return "umlp.delegationmanager.DelegatedOpt";
   }
 
   protected String getDelegatedGetListTemplate() {
-    return "umlp.gui2ts.delegationmanager.DelegatedGetList";
+    return "umlp.delegationmanager.DelegatedGetList";
   }
 
 }
