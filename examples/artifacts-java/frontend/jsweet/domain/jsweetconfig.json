@@ -1,0 +1,17 @@
+{
+  "adapters": [
+    "umlp.jsweet.extension.UMLPJSweetDomainAdapter",
+    "umlp.jsweet.extension.domainAdapters.JavaProjectImportAdapter"
+  ],
+  "domainName": "Dtmm",
+  "@Erased": {
+    "include": [
+      "**.spliterator*()",
+      "**.stream*()",
+      "**.parallelStream*()",
+      "**.toArray*(*)",
+      "**.hashCode*()",
+      "**.equals*(*)"
+    ]
+  }
+}
