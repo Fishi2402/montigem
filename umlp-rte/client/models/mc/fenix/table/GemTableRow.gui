@@ -2,5 +2,6 @@
 package mc.fenix.table;
 
 component GemTableRow(
+  List<GUIViewElement> cols,
   List<GUIViewElement> cells
 )

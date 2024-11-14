@@ -110,7 +110,7 @@
   }
 
   @include dialog-theme($rwth-blue-2, $rwth-black, $rwth-black-4);
-  @include table-theme($rwth-black-3, $rwth-blue-3, $rwth-black-5);
+  @include table-theme($rwth-black-3);
 }
 
 body {

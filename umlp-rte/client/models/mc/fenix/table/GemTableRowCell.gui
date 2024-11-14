@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.table;
+
+component GemTableRowCell(
+  int colSpan = 1,
+  int rowSpan = 1,
+  GUIViewElement content
+)

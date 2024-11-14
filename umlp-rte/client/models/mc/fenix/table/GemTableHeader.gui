@@ -2,5 +2,6 @@
 package mc.fenix.table;
 
 component GemTableHeader(
-  List<String> cols
+  List<GUIViewElement> cols,
+  List<GUIViewElement> cells
 )

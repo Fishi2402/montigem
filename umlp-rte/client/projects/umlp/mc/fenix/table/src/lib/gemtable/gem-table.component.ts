@@ -5,14 +5,17 @@ import {Component, HostBinding, Input, TemplateRef} from "@angular/core";
 @Component({
   selector: "gem-table",
   templateUrl: "./gem-table.component.html",
-  styleUrls: ["./gem-table.component.scss"],
 })
 export class GemTable {
-  @HostBinding("attr.id")
-  @Input() id: string;
+  @HostBinding("style.width")
+  @Input() width: string;
 
-  @Input() width: string = "100%";
-  @Input() header: TemplateRef<any>;
-  @Input() body: TemplateRef<any>;
-  @Input() caption: string;
+  @HostBinding("style.height")
+  @Input() height: string;
+
+  @HostBinding("style.overflow")
+  overflow: string = "auto";
+
+  @Input() headers: TemplateRef<any>[];
+  @Input() body: TemplateRef<any>[];
 }

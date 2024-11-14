@@ -3,12 +3,10 @@ package mc.fenix.table;
 
 /**
   A table organizes and displays data in rows and columns.
-  Allows input, edit, and manipulation of data, such as sorting and filtering.
 */
 component GemTable(
-  String id,
-  String width = "100%",
-  GUIViewElement header,
-  GUIViewElement body,
-  String caption = ""
+  String width = "auto",
+  String height = "auto",
+  List<GUIViewElement> headers,
+  List<GUIViewElement> body
 )

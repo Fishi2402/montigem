@@ -1,8 +1,15 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
-<table class="gem-table-style" [style.width]="width">
-  <caption *ngIf="caption?.length > 0" class="gem-table-caption">{{ caption }}</caption>
-  <ng-container *ngTemplateOutlet="header"></ng-container>
-  <tbody>
-    <ng-container *ngTemplateOutlet="body"></ng-container>
-  </tbody>
-</table>
+<div class="gem-table-border" >
+  <table class="gem-table-style">
+    <thead>
+    <ng-container *ngFor="let header of headers">
+      <ng-container *ngTemplateOutlet="header"></ng-container>
+    </ng-container>
+    </thead>
+    <tbody>
+    <ng-container *ngFor="let b of body">
+      <ng-container *ngTemplateOutlet="b"></ng-container>
+    </ng-container>
+    </tbody>
+  </table>
+</div>
