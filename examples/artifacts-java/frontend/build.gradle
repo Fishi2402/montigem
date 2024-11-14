@@ -15,6 +15,7 @@ dependencies {
   domainSources project(":examples:artifacts-test")
   implementation project(":examples:artifacts-java:backend")
   implementation project(":examples:artifacts-test")
+  testImplementation project(':umlp-test-rte')
 
   //guiDefaultTypes "de.monticore.lang:guidsl:${mc_version}:default-types"
 }
