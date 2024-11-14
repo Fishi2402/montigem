@@ -15,11 +15,11 @@ page AccountCreate(Account acc) {
   @GemText(value = "New Account");
   @GemTextInput(entry = acc.name);
   @GemTable(
-    body = @iterate(Budget b : acc.budget) {
-      @GemTableRow(cells = [
+    body = [@iterate(Budget b : acc.budget) {
+      @GemTableRow(cols = [
         @GemText(value = b.name), @GemText(value = b.balance)
       ]);
-    }
+    }]
   );
   @GemButton(label = "Save");
   // @CustomAccountView(acc = acc);

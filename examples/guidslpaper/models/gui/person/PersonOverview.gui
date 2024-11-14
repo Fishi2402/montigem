@@ -22,15 +22,20 @@ page PersonOverview(List<Person> persons) {
       ])
     ]),
     component = @GemTable(
-      header = @GemTableHeader(cols = ["Name", "Surname", "Contract start", "Contract end"]),
-      body = @iterate(Person p : persons) {
-        @GemTableRow(cells = [
+      headers = [@GemTableHeader(cols = [
+        @GemText(value = "Name"),
+        @GemText(value = "Surname"),
+        @GemText(value = "Contract start"),
+        @GemText(value = "Contract end")
+      ])],
+      body = [@iterate(Person p : persons) {
+        @GemTableRow(cols = [
           @GemText(value = p.vorname),
           @GemText(value = p.nachname),
           @GemText(value = formatDate(p.beschBeginn)),
           @GemText(value = formatDate(p.beschEnde))
         ]);
-      }
+      }]
     )
   );
 }

@@ -24,14 +24,18 @@ page AccountOverviewRef(List<Konto> accounts) {
       @GemButton(label = "?")
     ],
     main = @GemTable(
-      header = @GemTableHeader(cols = ["Name", "Typ", "Gesamtbudget"]),
-      body = @iterate(Konto k : accounts) {
-        @GemTableRow(cells = [
+      headers = [@GemTableHeader(cols = [
+        @GemText(value = "Name"),
+        @GemText(value = "Typ"),
+        @GemText(value = "Gesamtbudget")
+      ])],
+      body = [@iterate(Konto k : accounts) {
+        @GemTableRow(cols = [
           @GemText(value = k.name),
           @GemText(value = k.kontotyp),
           @GemText(value = formatCurrency(k.budgetRahmenCent))
         ]);
-      }
+      }]
     )
   );
 }

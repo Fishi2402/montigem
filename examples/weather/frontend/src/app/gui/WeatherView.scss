@@ -1,18 +1,7 @@
-:host ::ng-deep .gem-table-style {
+:host ::ng-deep .gem-table-border {
   border: none;
-  background: none;
 }
 
 :host ::ng-deep .gem-table-cell {
-  border: none;
-  background: none;
-}
-
-:host ::ng-deep .gem-table-row {
-  background: none;
-}
-
-:host ::ng-deep .gem-table-header {
-  background: none;
   border: none;
 }

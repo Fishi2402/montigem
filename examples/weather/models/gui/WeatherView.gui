@@ -26,14 +26,18 @@ page WeatherView(List<Forecast> forecasts) {
       title = "Forecast data list",
       component =
         forecastsTable@GemTable(
-          header = @GemTableHeader(cols = ["", "Date", "Temp."]),
-          body = @iterate(Forecast fc : forecasts) {
-            @GemTableRow(cells = [
+          headers = [@GemTableHeader(cols = [
+            @GemText(value = ""),
+            @GemText(value = "Date"),
+            @GemText(value = "Temp.")
+          ])],
+          body = [@iterate(Forecast fc : forecasts) {
+            @GemTableRow(cols = [
               @GemButton(label = "Edit", leftClick = navigateToUpdatePage(fc)),
               @GemText(value = fc.date),
               @GemText(value = fc.temperature)
             ]);
-          }
+          }]
         )
     ),
     @GemCard(
