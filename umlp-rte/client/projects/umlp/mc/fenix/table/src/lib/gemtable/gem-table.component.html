@@ -1,6 +1,6 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 <div class="gem-table-border" >
-  <table class="gem-table-style">
+  <table class="gem-table-style" [style.table-layout]="tableLayout">
     <thead>
     <ng-container *ngFor="let header of headers">
       <ng-container *ngTemplateOutlet="header"></ng-container>

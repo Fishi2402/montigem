@@ -5,8 +5,28 @@ package mc.fenix.table;
   A table organizes and displays data in rows and columns.
 */
 component GemTable(
+  /**
+    Width of the component in `px`, `%`, `vh`. By default collapses to a
+    minimal possible height with respect to content.
+  */
   String width = "auto",
+  /**
+    Height of the component in `px`, `%`, `vh`. By default collapses to a
+    minimal possible height with respect to content.
+  */
   String height = "auto",
+  /**
+    Table layout of the table. Commonly used layouts:
+    `"auto"`: The width of the columns is adjusted to fit its content (default).
+    `"fixed"`: The width of the columns is evenly spread.
+  */
+  String tableLayout = "auto",
+  /**
+    Header(s) of a table. Normally set to a list of `GemTableHeader`.
+  */
   List<GUIViewElement> headers,
+  /**
+    Body of a table. Normally set to a list of `GemTableRow`.
+  */
   List<GUIViewElement> body
 )

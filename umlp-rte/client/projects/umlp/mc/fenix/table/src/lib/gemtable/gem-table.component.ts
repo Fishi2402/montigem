@@ -16,6 +16,7 @@ export class GemTable {
   @HostBinding("style.overflow")
   overflow: string = "auto";
 
+  @Input() tableLayout: string;
   @Input() headers: TemplateRef<any>[];
   @Input() body: TemplateRef<any>[];
 }

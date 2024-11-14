@@ -32,10 +32,11 @@ page GemTableExample(List<Person> persons) {
       }]
     ),
     @GemTable(
+      tableLayout = "fixed",
       headers = [
         @GemTableHeader(cells = [
           @GemTableHeaderCell(rowSpan = 2, content = @GemText(value = "Name")),
-          @GemTableHeaderCell(colSpan = 2, content = @GemText(value = "Adress"))
+          @GemTableHeaderCell(colSpan = 2, content = @GemText(value = "Address"))
         ]),
         @GemTableHeader(cols = [
           @GemText(value = "Street"),

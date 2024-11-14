@@ -1,8 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.fenix.table;
 
+/**
+  GemTableRowCell controls dimensions that content should occupy within a GemTable's body.
+*/
 component GemTableRowCell(
+  /**
+    Number of collumns a cell should cover
+  */
   int colSpan = 1,
+  /**
+    Number of rows a cell should cover
+  */
   int rowSpan = 1,
   GUIViewElement content
 )

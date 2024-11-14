@@ -1,7 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.fenix.table;
 
+/**
+  A table row that is part of the body of the table.
+*/
 component GemTableRow(
+  /**
+    Columns of a table row.
+  */
   List<GUIViewElement> cols,
+  /**
+    Cells of a table row. Normally set to a list of `GemTableRowCell` component that can specify
+    if a cell spans over multiple columns or rows.
+    If `cells` and `cols` are defined, `cells` are used.
+  */
   List<GUIViewElement> cells
 )
