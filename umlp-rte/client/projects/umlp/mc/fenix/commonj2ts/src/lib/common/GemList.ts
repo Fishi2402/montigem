@@ -487,10 +487,11 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     // }
     if (this.asArray == null) {
       await this.loadObjects(new UMLPArrayList(this.ids));
-      this.asArray = [];
+      const arr = [];
       for await (let gemListElement of this) {
-        this.asArray.push(gemListElement);
+        arr.push(gemListElement);
       }
+      this.asArray = arr
     }
     return this.asArray;
   }
