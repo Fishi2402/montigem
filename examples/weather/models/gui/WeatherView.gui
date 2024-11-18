@@ -27,9 +27,7 @@ page WeatherView(List<Forecast> forecasts) {
       component =
         forecastsTable@GemTable(
           headers = [@GemTableHeader(cols = [
-            @GemText(value = ""),
-            @GemText(value = "Date"),
-            @GemText(value = "Temp.")
+            "", "Date", "Temp."
           ])],
           body = [@iterate(Forecast fc : forecasts) {
             @GemTableRow(cols = [

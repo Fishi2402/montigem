@@ -25,9 +25,7 @@ page AccountOverview(List<Konto> accounts) {
     ]),
     component = @GemTable(
       headers = [@GemTableHeader(cols = [
-        @GemText(value = "Name"),
-        @GemText(value = "Typ"),
-        @GemText(value = "Gesamtbudget")
+        "Name", "Typ", "Gesamtbudget"
       ])],
       body = [@iterate(Konto k : accounts) {
         @GemTableRow(cols = [
