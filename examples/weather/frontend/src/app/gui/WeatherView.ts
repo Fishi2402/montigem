@@ -5,6 +5,8 @@ import { GemGaugeChartData, GemGaugeChartEntry, GemLineChartData, GemLineChartEn
 import { WeatherViewComponent,config } from '@src/gui/WeatherViewComponent';
 import { Forecast } from '@src/weather/Forecast';
 import {StringifyForBuilder} from "@umlp/commonj2ts";
+import { Event } from '@umlp/common';
+
 @Component({
   standalone:true,
   imports: [ ...config.imports],
@@ -72,7 +74,7 @@ export class WeatherView extends WeatherViewComponent {
     return this.cache.chart.data;
   }
 
-  public override getForecastsTableRows(): Array<any> {
+  public getForecastsTableRows(): Array<any> {
     if (!this.getForecasts()) {
       return null;
     }
@@ -87,8 +89,8 @@ export class WeatherView extends WeatherViewComponent {
     return this.cache.table.data;
   }
 
-  public override navigateToUpdatePage(): (arg: Forecast) => void {
-    return (row: Forecast) => this._router.navigate(["..", "gui", "ForecastUpdate", row.getGemId()]);
+  public override navigateToUpdatePage(fc: Forecast): () => void {
+    return () => this._router.navigate(["..", "gui", "ForecastUpdate", fc.getGemId()]);
   }
 
   public override getWindspeedData(): GemGaugeChartData {

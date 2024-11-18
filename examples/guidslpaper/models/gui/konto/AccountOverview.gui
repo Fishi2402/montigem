@@ -7,7 +7,8 @@ import mc.fenix.input.GemTextInput;
 import mc.fenix.basic.GemButton;
 import mc.fenix.basic.GemText;
 import mc.fenix.table.GemTable;
-import mc.fenix.table.TableTypes.TableColumn;
+import mc.fenix.table.GemTableHeader;
+import mc.fenix.table.GemTableRow;
 
 import gui.common.BalanceBox;
 
@@ -23,14 +24,16 @@ page AccountOverview(List<Konto> accounts) {
       ])
     ]),
     component = @GemTable(
-      rows = accounts,
-      columns = [
-        /*
-        TableColumn("name", "Name"),
-        TableColumn("kontotyp", "Typ"),
-        TableColumn("budgetRahmenCent", "Gesamtbudget")
-        /**/
-      ]
+      headers = [@GemTableHeader(cols = [
+        "Name", "Typ", "Gesamtbudget"
+      ])],
+      body = [@iterate(Konto k : accounts) {
+        @GemTableRow(cols = [
+          @GemText(value = k.name),
+          @GemText(value = k.kontotyp),
+          @GemText(value = formatCurrency(k.budgetRahmenCent))
+        ]);
+      }]
     )
   );
 }
