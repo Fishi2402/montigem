@@ -16,11 +16,11 @@ component GemTable(
   */
   String height = "auto",
   /**
-    Table layout of the table. Commonly used layouts:
+    Table layout. Commonly used layouts:
     `"auto"`: The width of the columns is adjusted to fit its content (default).
     `"fixed"`: The width of the columns is evenly spread.
   */
-  String tableLayout = "auto",
+  String layout = "auto",
   /**
     Header(s) of a table. Normally set to a list of `GemTableHeader`.
   */

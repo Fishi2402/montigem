@@ -9,10 +9,10 @@ import {Component, Input, OnInit, TemplateRef, ViewChild, ViewContainerRef} from
 export class GemTableHeader implements OnInit {
   @ViewChild('tableHeaderTemplate', { static: true }) tableHeaderTemplate: TemplateRef<any>;
 
-  protected _cols: TemplateRef<any>[];
+  protected _cols: string[];
   protected _cells: TemplateRef<any>[];
 
-  public get cols(): TemplateRef<any>[] {
+  public get cols(): string[] {
     return this._cols;
   }
 
@@ -20,12 +20,11 @@ export class GemTableHeader implements OnInit {
     return this._cells;
   }
 
-  @Input() set cols(value: TemplateRef<any>[]) {
+  @Input() set cols(value: string[]) {
     if (value == null) {
       return;
     }
     this._cols = value;
-    this.update();
   }
 
   @Input() set cells(value: TemplateRef<any>[]) {
@@ -33,10 +32,7 @@ export class GemTableHeader implements OnInit {
       return;
     }
     this._cells = value;
-    this.update();
   }
-
-  public content: TemplateRef<any>[] = [];
 
   constructor(private viewContainerRef: ViewContainerRef) {}
 
@@ -46,12 +42,4 @@ export class GemTableHeader implements OnInit {
     this.viewContainerRef.element.nativeElement.remove();
   }
 
-  private update(): void {
-    if (this._cells != null) {
-      this.content = this._cells;
-    }
-    else if (this._cols != null) {
-      this.content = this._cols;
-    }
-  }
 }

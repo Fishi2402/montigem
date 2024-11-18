@@ -1,15 +1,15 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 <ng-template #tableHeaderTemplate>
   <tr class="gem-table-row">
-    <ng-container *ngFor="let c of content">
-      <ng-container *ngIf="cells != null; else tableHeaderCols">
+    <ng-container *ngIf="cells != null; else tableHeaderCols">
+      <ng-container *ngFor="let c of cells">
         <ng-container *ngTemplateOutlet="c"></ng-container>
       </ng-container>
-      <ng-template #tableHeaderCols>
-        <th class="gem-table-cell">
-          <ng-container *ngTemplateOutlet="c"></ng-container>
-        </th>
-      </ng-template>
     </ng-container>
+    <ng-template #tableHeaderCols>
+      <ng-container *ngFor="let c of cols">
+        <th class="gem-table-cell">{{c}}</th>
+      </ng-container>
+    </ng-template>
   </tr>
 </ng-template>

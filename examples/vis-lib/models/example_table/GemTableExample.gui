@@ -16,10 +16,7 @@ page GemTableExample(List<Person> persons) {
   @GemColumn(rowGap = "20px", width = "50%", components = [
     @GemTable(
       headers = [
-        @GemTableHeader(cols = [
-          @GemText(value = "Name"),
-          @GemText(value = "Birthday")
-        ])
+        @GemTableHeader(cols = ["Name", "Birthday"])
       ],
       body = [@iterate(Person p : persons) {
         @GemTableRow(cols = [
@@ -32,16 +29,13 @@ page GemTableExample(List<Person> persons) {
       }]
     ),
     @GemTable(
-      tableLayout = "fixed",
+      layout = "fixed",
       headers = [
         @GemTableHeader(cells = [
           @GemTableHeaderCell(rowSpan = 2, content = @GemText(value = "Name")),
           @GemTableHeaderCell(colSpan = 2, content = @GemText(value = "Address"))
         ]),
-        @GemTableHeader(cols = [
-          @GemText(value = "Street"),
-          @GemText(value = "House")
-        ])
+        @GemTableHeader(cols = ["Street", "House"])
       ],
       body = [
         @GemTableRow(cells = [
