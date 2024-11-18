@@ -1,0 +1,38 @@
+.wholeChartContainer {
+  width: 500px;
+  height: auto;
+}
+
+.wholeChartWithLegendLeftContainer {
+  width: 500px;
+  height: fit-content;
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.wholeChartWithLegendTopContainer {
+  width: 500px;
+  height: fit-content;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.wholeChartWithLegendBottomContainer {
+  width: 500px;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+}
+
+.wholeChartWithLegendRightContainer {
+  width: 500px;
+  height: fit-content;
+  display: flex;
+  flex-direction: row;
+}
+
+.legendButtons {
+  display: flex;
+  column-gap: 10px;
+  justify-content: space-between;
+}

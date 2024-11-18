@@ -25,11 +25,6 @@ import java.util.function.Consumer;
 @Component
 public class FunctionDetail extends FunctionDetailTOP {
 
-  public FunctionDetail(Function f) {
-    super();
-    setF(f);
-  }
-
   @Override
   public Consumer<Void> goToFunctionDetailsSub(Function sf) {
     return goToFunctionDetails(sf);

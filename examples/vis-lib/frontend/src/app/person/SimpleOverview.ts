@@ -1,10 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { Person_subscribeManagerEvents } from '@src/domain/commands/Person_subscribeManagerEvents';
 import { Person } from '@src/domain/Person';
 import { config, SimpleOverviewComponent } from '@src/person/SimpleOverviewComponent';
-import { CommandManager, previousIfUnchanged } from '@umlp/common';
+import { Event, previousIfUnchanged } from '@umlp/common';
 import { Option } from '@umlp/input';
 
 @Component({
@@ -16,12 +15,7 @@ import { Option } from '@umlp/input';
 })
 export class SimpleOverview extends SimpleOverviewComponent {
 
-  public init(): void {
-    CommandManager.executeCommand(new Person_subscribeManagerEvents());
-    super.init();
-  }
-
-  public getPersonOptions(): Array<Option> {
+  public override getPersonOptions(): Array<Option> {
     const opts: Option[] = [];
     if (this.getPersons()) {
       for (const p of this.getPersons()) {
@@ -31,7 +25,7 @@ export class SimpleOverview extends SimpleOverviewComponent {
     return previousIfUnchanged(this.getPersonOptions, opts);
   }
 
-  public getPotentialFriends(): Array<Option> {
+  public override getPotentialFriends(): Array<Option> {
     const opts: Option[] = [];
     let person: Person;
     for (const p of this.getPersons() ?? []) {
@@ -53,6 +47,16 @@ export class SimpleOverview extends SimpleOverviewComponent {
       }
     }
     return previousIfUnchanged(this.getPotentialFriends, opts);
+  }
+
+  public override addFriend(personId: number, friendId: number): Event<void> {
+    return () => {
+      const p = this.getPersons().find(p => p.getGemId() === personId);
+      const f = this.getPersons().find(p => p.getGemId() === friendId);
+      if (p && f) {
+        p.addFriends2(f);
+      }
+    }
   }
 
 }

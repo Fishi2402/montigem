@@ -37,6 +37,12 @@ genGUI {
   domainModels = ["Jsweettest"]
 }
 
+configurations {
+  // json is a duplicate somehow
+  testImplementation.exclude group: 'org.json', module: 'json'
+  testRuntimeClasspath.exclude group: 'de.monticore.language-server', module:'monticore-language-server-runtime'
+}
+
 translateJava2TSDomain {
   verbose = true
 }
@@ -72,7 +78,7 @@ tasks.register('runApp', NpxTask) {
 }
 
 test {
-  dependsOn buildApp
+  dependsOn npmInstall, buildApp
   useJUnitPlatform(){
     excludeTags "SlowTest"
   }

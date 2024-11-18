@@ -18,6 +18,10 @@ test {
   useJUnitPlatform()
 }
 
+task run {
+  dependsOn ":examples:vis-lib:frontend:run", ':examples:vis-lib:backend:run'
+}
+
 //project('frontend') {
 //  sourceSets.main.java.srcDirs += ['../backend/src/main/java', '../backend/build/umlp/backend']
 //}

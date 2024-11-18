@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("name", "managerName", "assocs", "assocsSideToManager")}
-${cd4c.method("protected void _doAdd${name}(${name} o, NotificationScope scope)")}
+${cd4c.method("protected void _doAddWithScope${name}(${name} o, NotificationScope scope)")}
   known${name}s.put(o.getGemId(), o);
   if(!o.containsObserver(the${name}DbObserver)){
     o.addObserver(the${name}DbObserver);

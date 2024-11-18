@@ -36,6 +36,10 @@ public class E2EUtil {
     Person dick = createPerson("dick", 3, Set.of(aA,aB,aC));
     Person epsilon = createPerson("epsilon", 4, Set.of(aA,aB,aC,aD));
     personGemIds.addAll(List.of(alice.getGemId(), bob.getGemId(), charles.getGemId(),dick.getGemId(),epsilon.getGemId()));
+
+    Animal tango = createAnimal("tango", 2, Set.of(fA));
+    animalGemIds.add(tango.getGemId());
+    LoadingTestsManager.getUpdateListHelper().setTestAnimal(tango);
   }
 
   public static Person createPerson(String name, int age, Set<Animal> animalSet) {

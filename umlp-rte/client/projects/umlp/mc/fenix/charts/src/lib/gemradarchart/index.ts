@@ -1,0 +1,6 @@
+export * from "./gemradarchart.module-gen";
+export * from "./gem-radar-chart.component";
+export * from "../gen/gemradarcharttypes/GemRadarChartData";
+export * from "../gen/gemradarcharttypes/GemRadarChartDataBuilder";
+export * from "../gen/gemradarcharttypes/GemRadarChartDataSet";
+export * from "../gen/gemradarcharttypes/GemRadarChartDataSetBuilder";

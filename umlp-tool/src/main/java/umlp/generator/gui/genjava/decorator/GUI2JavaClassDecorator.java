@@ -36,9 +36,13 @@ import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
 import de.monticore.types3.SymTypeRelations;
+import de.se_rwth.commons.Joiners;
+import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
+import umlp.generator.domain.decorator.ObserverDecorator;
 import umlp.generator.gui.GUI2ClassDecorator;
 import umlp.generator.gui.genjava.prettyprinter.Expression2AccessorPrinter;
 import umlp.generator.gui.genjava.prettyprinter.Expression2MutatorPrinter;
@@ -57,6 +61,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 
 /**
@@ -72,6 +77,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
   protected List<Method> addedMethods = new ArrayList<>();
   protected boolean extendedDomainObserver = false;
+  protected Set<String> implementedAssocObservers = new HashSet<>();
+  protected Set<String> subscribedManagerEvents = new HashSet<>();
   protected Map<String, NotifyMethodTemplate> notifyDeleted = new HashMap<>();
   protected Map<String, NotifyMethodTemplate> notifyAdded = new HashMap<>();
 
@@ -182,9 +189,18 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       getterName = "is" + StringTransformations.capitalize(node.getName());
     }
     getCD4C().addMethod(clazz, getParamGetterTemplate(), type, name, getterName);
+
+    // add set externally check attr
+    String setExternName = name + "SetExternally";
+    getCD4C().addAttribute(clazz, "public boolean " + setExternName + " = false");
+
+    // add wait external value attr
+    String waitName = addWaitAttr(name);
+
     // add setter
     String setterName = "set" + StringTransformations.capitalize(node.getName());
-    getCD4C().addMethod(clazz, getParamSetterTemplate(), type, name, setterName);
+    getCD4C().addMethod(clazz, getParamSetterTemplate(), type, name, setterName,
+        setExternName, waitName);
 
     String initName = "init" + StringTransformations.capitalize(node.getName());
 
@@ -193,11 +209,12 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       // Use the manager corresponding (when importing from extended CDs)
       String manager = getAndImportManager(typeSTE.asObjectType());
 
-      // add builder init
+      // add init
       Optional<InitDependency> dep = InitDependencyTree.getInstance().getDependency(node);
       if (dep.isPresent()) {
         dep.get().setInitMethod(new MethodTemplate(
-            getInitParamSingletonTemplate(), type, name, manager, initName
+            getInitParamSingletonTemplate(), type, name, manager,
+            initName, setExternName, waitName
         ));
       }
     }
@@ -209,10 +226,12 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         Optional<InitDependency> dep = InitDependencyTree.getInstance().getDependency(node);
         if (dep.isPresent()) {
           dep.get().setInitMethod(new MethodTemplate(
-              getInitDerivedDomainParamTemplate(), type, name, manager, initName
+              getInitDerivedDomainParamTemplate(), type, name, manager,
+              initName, setExternName, waitName
           ));
         }
-      } else {
+      }
+      else {
         String id = util.getRoutingId(node);
         getCD4C().addAttribute(clazz, "public Integer " + id);
 
@@ -220,7 +239,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         Optional<InitDependency> dep = InitDependencyTree.getInstance().getDependency(node);
         if (dep.isPresent()) {
           dep.get().setInitMethod(new MethodTemplate(
-              getInitDomainParamTemplate(), type, name, manager, id, initName, util.isAbstractDomainType(typeSTE)
+              getInitDomainParamTemplate(), type, name, manager, id,
+              initName, setExternName, waitName, util.isAbstractDomainType(typeSTE)
           ));
         }
       }
@@ -241,9 +261,18 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
       // add list item observer
       if (gui.getGUIComponentDeclaration().isPage()) {
-        if (!extendedDomainObserver) {
-          extendDomainObserver();
-          extendedDomainObserver = true;
+        addDomainObserverMethods();
+        if (!subscribedManagerEvents.contains(innerType.printType())) {
+          subscribedManagerEvents.add(innerType.printType());
+          getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandManager"));
+          importCommand(innerType.printType());
+          /*
+            CommandManager.executeCommand(new Person_subscribeManagerEvents());
+           */
+          glex.addAfterTemplate(
+              getInitBodyHookpoint(),
+              new TemplateHookPoint(getSubscribeManagerEventsTemplate(), innerType)
+          );
         }
 
         // TODO: simple name clash, e.g., foo.Person and bar.Person
@@ -268,7 +297,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       if (dep.isPresent()) {
         // add init
         dep.get().setInitMethod(new MethodTemplate(
-            getInitDomainListTemplate(), innerType, name, manager, initName
+            getInitDomainListTemplate(), innerType, name, manager,
+            initName, setExternName, waitName
         ));
       }
     }
@@ -282,10 +312,15 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       Optional<InitDependency> dep = InitDependencyTree.getInstance().getDependency(node);
       if (dep.isPresent()) {
         dep.get().setInitMethod(new MethodTemplate(
-            getInitDefaultParamTemplate(), name, value, initName, getterName, setterName
+            getInitDefaultParamTemplate(), name, value,
+            initName, setExternName, waitName, getterName, setterName
         ));
       }
     }
+  }
+
+  protected String addWaitAttr(String attrName) {
+    return "";
   }
 
   /**
@@ -343,7 +378,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         ASTMCType innerType;
         if (typeSTE.isGenericType() && typeSTE.asGenericType().sizeArguments() == 1) {
           innerType = createTypeAndAddImports(typeSTE.asGenericType().getArgument(0));
-        } else {
+        }
+        else {
           if (typeSTE.isObjectType()) {
             Log.error("0x0001F Found Event -typed argument without type parameters"
                 + " (underspecified Event type)."
@@ -351,13 +387,15 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
                 + " At " + arg.get_SourcePositionStart().toString()
                 + " - " + arg.get_SourcePositionEnd().toString()
             );
-          } else if (typeSTE.isGenericType() && typeSTE.asGenericType().sizeArguments() != 1) {
+          }
+          else if (typeSTE.isGenericType() && typeSTE.asGenericType().sizeArguments() != 1) {
             Log.error("0x0001F Found Event -typed argument with multiple type parameters."
                 + " Event type expects exactly a single type parameter, e.g. Event<Integer>."
                 + " At " + arg.get_SourcePositionStart().toString()
                 + " - " + arg.get_SourcePositionEnd().toString()
             );
-          } else {
+          }
+          else {
             Log.error("0x00020 Unknown error while processing an Event -typed argument "
                 + " at " + arg.get_SourcePositionStart().toString()
                 + " - " + arg.get_SourcePositionEnd().toString()
@@ -371,7 +409,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
             clazz, getEventCallerTemplate(),
             innerType, name, getterValue, params
         );
-      } else {
+      }
+      else {
         String returnValue = Expression2SetterPrinter.SETTER_PARAM;
         String conv = "";
         if (arg.getGUIArgValue().isPresentExpression()) {
@@ -382,7 +421,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
               getConversion(typeSTE, util.getType(arg.getGUIArgValue().getExpression()))
                   .apply(getterValue)
           );
-        } else {
+        }
+        else {
           conv = getConvertedValueAssignment(
               printType(createTypeAndAddImports(typeSTE)),
               returnValue,
@@ -410,7 +450,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
           String convType;
           if (left.isNullType()) {
             convType = "Object";
-          } else {
+          }
+          else {
             convType = printType(createTypeAndAddImports(left));
           }
           // example: `Date val_$ = string2Date(val)`
@@ -438,7 +479,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     if (StaticObjectsCollector.getInstance().getNode2Method().containsKey(node.getCondition())) {
       Method m = StaticObjectsCollector.getInstance().getNode2Method().get(node.getCondition());
       type = createTypeAndAddImports(m.getReturnType());
-    } else {
+    }
+    else {
       SymTypeExpression typeSTE = util.getType(node.getCondition());
       type = createTypeAndAddImports(typeSTE);
     }
@@ -488,7 +530,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     if (StaticObjectsCollector.getInstance().getNode2Method().containsKey(control.getIterable())) {
       Method m = StaticObjectsCollector.getInstance().getNode2Method().get(control.getIterable());
       type = createTypeAndAddImports(m.getReturnType());
-    } else {
+    }
+    else {
       SymTypeExpression typeSTE = util.getType(control.getIterable());
       type = createTypeAndAddImports(typeSTE);
     }
@@ -589,7 +632,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
               getListInitTemplate(), type, name, listItems
           ));
         }
-      } else {
+      }
+      else {
         // add getter
         ASTCDMethodSignature getter = getCD4C().addMethod(clazz, getStaticObjectGetterTemplate(),
             type, name, params);
@@ -697,13 +741,15 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
             dep.get().setInitMethod(new MethodTemplate(
                 getBuilderInitTemplate(), type, name, manager
             ));
-          } else {
+          }
+          else {
             dep.get().setInitMethod(new MethodTemplate(
                 getConstructorInitTemplate(), type, name, constructorArgs
             ));
           }
         }
-      } else {
+      }
+      else {
         // add getter
         ASTCDMethodSignature getter = getCD4C().addMethod(clazz, getStaticObjectGetterTemplate(),
             type, name, params);
@@ -721,7 +767,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
             dep.get().setInitMethod(new MethodTemplate(
                 getStaticBuilderInitTemplate(), type, name, manager, params
             ));
-          } else {
+          }
+          else {
             dep.get().setInitMethod(new MethodTemplate(
                 getStaticConstructorInitTemplate(), type, name, constructorArgs, params
             ));
@@ -825,22 +872,27 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
       SymTypeExpression accessType = util.getType(node);
       SymTypeExpression ownerType = util.getType(node.getExpression());
+      // a domain list, e.g., @FriendsOverview(persons = person.friends)
       if (util.isDomainListType(accessType)) {
         // add assoc init
-        IterationItemsFinder finder = new IterationItemsFinder();
-
         if (ownerType.hasTypeInfo() && TagLookUp.isDerived(ownerType.getTypeInfo())) {
           ExpressionPrinterConfig.getInstance().customConversions.put(node,
               n -> "calc" + StringTransformations.capitalize(node.getName()) + "()");
-        } else {
+        }
+        else {
           String tmpName = ExpressionPrinterConfig.attr2Getter(node);
           if (tmpName.endsWith("List")) {
-            tmpName = tmpName.substring(0, tmpName.length()-4) + "GemList";
+            tmpName = tmpName.substring(0, tmpName.length() - 4) + "GemList";
           }
           final String exprName = tmpName;
           ExpressionPrinterConfig.getInstance().customConversions.put(node,
               n -> "_internal_" + exprName + "().loadAll()");
+
+          // extends PersonObserverMixin
+          addAssocObserverMethods(ownerType, node);
         }
+
+        IterationItemsFinder finder = new IterationItemsFinder();
         Collection<ASTExpression> iterateItems = new HashSet<>(finder.getItems(gui));
         Collection<ASTExpression> nonClassMembers = new HashSet<>(iterateItems);
 
@@ -849,22 +901,26 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         );
         String getter = getterPrinter.prettyprint(node);
         ExpressionPrinterConfig.getInstance().customConversions.remove(node);
+        String ownerGetter = getterPrinter.prettyprint(node.getExpression());
 
         Optional<InitDependency> dep = InitDependencyTree.getInstance()
             .getDependency(node);
         if (dep.isPresent()) {
           dep.get().setInitMethod(new MethodTemplate(
-              getListAssocInitTemplate(), name, getter, params
+              getListAssocInitTemplate(), name, getter, ownerGetter, params
           ));
         }
-      } else if (util.isDomainType(accessType)) {
+      }
+      // a domain object, e.g., @AddressForm(person = person.address)
+      else if (util.isDomainType(accessType)) {
         // add assoc init
         IterationItemsFinder finder = new IterationItemsFinder();
 
         if (ownerType.hasTypeInfo() && TagLookUp.isDerived(ownerType.getTypeInfo())) {
           ExpressionPrinterConfig.getInstance().customConversions.put(node,
               n -> "calc" + StringTransformations.capitalize(node.getName()) + "()");
-        } else {
+        }
+        else {
           ExpressionPrinterConfig.getInstance().customConversions.put(node,
               n -> ExpressionPrinterConfig.attr2Getter(node) + "Gem().load()");
         }
@@ -885,7 +941,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
           ));
         }
       }
-    } else if (util.isEnumMember(node)) {
+    }
+    else if (util.isEnumMember(node)) {
       createTypeAndAddImports(util.getType(node));
     }
   }
@@ -938,7 +995,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       for (InitDependency sub : ds.getDependentList()) {
         res.addAll(addInitMethods(sub));
       }
-    } else {
+    }
+    else {
       MethodTemplate initMethod = ds.getInitMethod().get();
 
       Collection<ASTCDMethodSignature> subInitList = new ArrayList<>();
@@ -960,22 +1018,62 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     }
     clazz.getSuperclassList().add(MCTypeFacade.getInstance()
         .createQualifiedType(getAndImportDomainObserver()));
+  }
 
-    // add observer init
-    glex.addAfterTemplate(
-        getInitBodyHookpoint(),
-        new TemplateHookPoint(getAddObserverTemplate(), getAndImportManager())
-    );
+  protected void addDomainObserverMethods() {
+    if (!extendedDomainObserver) {
+      extendDomainObserver();
+      extendedDomainObserver = true;
+      // add observer init
+      glex.addAfterTemplate(
+          getInitBodyHookpoint(),
+          new TemplateHookPoint(getAddObserverTemplate(), getAndImportManager())
+      );
 
-    // add observer destroy
-    glex.addAfterTemplate(
-        getDestroyBodyHookpoint(),
-        new TemplateHookPoint(getRemoveObserverTemplate(), getAndImportManager())
-    );
+      // add observer destroy
+      glex.addAfterTemplate(
+          getDestroyBodyHookpoint(),
+          new TemplateHookPoint(getRemoveObserverTemplate(), getAndImportManager())
+      );
 
-    // implement getScope method of observer
-    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
-    getCD4C().addMethod(clazz, getScopeTemplate());
+      // implement getScope method of observer
+      getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
+      getCD4C().addMethod(clazz, getScopeTemplate());
+    }
+  }
+
+  protected void implementAssocObserver(SymTypeExpression ownerType, ASTFieldAccessExpression assoc) {
+    // the CD Generator produces `hardy.domain.Person`, instead of `hardy.Domain.Person`, calculate
+    String qType = ownerType.printFullName();
+    String type = ownerType.print();
+    List<String> parts = new ArrayList<>(Splitters.DOT.splitToList(qType));
+    if (parts.size() > 1) {
+      String domainPackage = parts.get(parts.size() - 2).toLowerCase();
+      parts.set(parts.size() - 2, domainPackage);
+      qType = Joiners.DOT.join(parts);
+    }
+
+    String qObserver = qType + ObserverDecorator.SUFFIX;
+    String observer = type + ObserverDecorator.SUFFIX;
+    getCD4C().addImport(clazz, qObserver);
+    // implement observer
+    if (!clazz.isPresentCDInterfaceUsage()) {
+      clazz.setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder()
+          .setInterfaceList(new ArrayList<>()).build());
+    }
+    clazz.getInterfaceList().add(MCTypeFacade.getInstance()
+        .createQualifiedType(observer));
+  }
+
+  protected void addAssocObserverMethods(SymTypeExpression ownerType, ASTFieldAccessExpression assoc) {
+    if (!implementedAssocObservers.contains(ownerType.printFullName())) {
+      implementAssocObserver(ownerType, assoc);
+      ASTMCType type = createTypeAndAddImports(ownerType);
+      // add observer init
+      getCD4C().addMethod(clazz, getNotifyAssocAddedTemplate(),
+          type, assoc.getName());
+      implementedAssocObservers.add(ownerType.printFullName());
+    }
   }
 
   protected void addAssocListMethod(Method method, ASTCallExpression node, String template) {
@@ -1224,6 +1322,10 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     return "umlp.gui2java.GUI2JavaNotifyAdded";
   }
 
+  protected String getNotifyAssocAddedTemplate() {
+    return "umlp.gui2java.GUI2JavaNotifyAssocAdded";
+  }
+
   protected String getInitParamSingletonTemplate() {
     return "umlp.gui2java.GUI2JavaInitParamSingleton";
   }
@@ -1254,6 +1356,10 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
   protected String getDestroyBodyHookpoint() {
     return "umlp.gui2java.GUI2JavaDestroyBody";
+  }
+
+  protected String getSubscribeManagerEventsTemplate() {
+    return "umlp.gui2java.GUI2JavaSubscribeManagerEvents";
   }
 
   protected String getAddObserverTemplate() {

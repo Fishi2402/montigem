@@ -180,6 +180,13 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
 
     // Methods for class assocs
     createGetterSetterForAssocs(domainClass, clazz, attributes.attrAssocs, false);
+    createIsPresentForOptionalAssocs(
+        domainClass,
+        clazz,
+        attributes.attrAssocs.stream().filter(attr -> attr.getModifier().isPresentStereotype()
+            && attr.getModifier().getStereotype().streamValues().anyMatch(v -> v.getName().equals("Optional")))
+            .collect(Collectors.toList())
+    );
 
     if (TagLookUp.isSingleton(domainClass)) {
       domainClass.getCDMethodList().forEach(m -> createExeceuteCommandMethod(domainClass, clazz, m));
@@ -190,6 +197,12 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
     addExtendedImport(origCD, clazz);
     addImportsForCommands(domainClass, clazz);
     return clazz;
+  }
+
+  protected void createIsPresentForOptionalAssocs(ASTCDClass domainClass, ASTCDClass clazz, List<ASTCDAttribute> optionalAttrs) {
+    for (ASTCDAttribute optionalAttr : optionalAttrs) {
+      getCD4C().addMethod(clazz, "umlp.domain.IsPresentOptional", optionalAttr.getName().substring(1));
+    }
   }
 
   protected void addExtendedImport(ASTCDCompilationUnit origCD, ASTCDType ast) {
