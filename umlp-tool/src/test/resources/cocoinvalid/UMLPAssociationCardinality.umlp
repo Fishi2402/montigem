@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+umlp UMLPAssociationCardinality {
+  class Foo;
+  class Bar;
+  association Assoc [2] Foo (foo) -> (bar) Bar [3..*];
+  association Assoc1 [0..2] Foo (foo) -> (bar) Bar [1..2];
+}
