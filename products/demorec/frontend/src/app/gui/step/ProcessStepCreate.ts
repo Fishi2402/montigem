@@ -25,7 +25,7 @@ import {GemTextInputValidity, Option} from '@umlp/input';
 import {JoinConnectionKind} from "@src/demorec/JoinConnectionKind";
 import {BatteryPackService} from "@src/BatteryPackService";
 
-const newOption: Option = { value: "NEW", display: "NEW" };
+const newOption: Option = new Option("NEW");
 
 @Component({
   standalone: true,
@@ -72,8 +72,8 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
     super.ngOnInit()
 
     this.selectTypeOptions = [
-      {value: this.deconstructionVal, display: "Deconstruction"},
-      {value: this.otherVal, display: "Other"},
+        new Option(this.deconstructionVal, "Deconstruction"),
+        new Option(this.otherVal,  "Other")
     ];
 
     DemoRecManager.getJoinConnectionKindList().then(gemPromiseRes => {
@@ -85,13 +85,13 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
           // Only add Options for this current pack!
           if(kind.getBatteryPackGem().getGemId() === this.currentPack.getGemId()) {
             options.push(kind.getNameAfterLoadPromise().then(name => {
-              return ({value: String(kind.getGemId()), display: name})
+              return (new Option(String(kind.getGemId()), name))
             }))
           }
         }
         // Get newest JoinConnectionKinds -> Ordered by GemID Descending
         Promise.all(options).then(results => {
-          this.joinConnectionKindOptions = this.joinConnectionKindOptions.concat(results.sort((l,r) => Number(r.value)-Number(l.value)))
+          this.joinConnectionKindOptions = this.joinConnectionKindOptions.concat(results.sort((l,r) => Number(r.getValue())-Number(l.getValue())))
         })
       });
     });
@@ -121,8 +121,8 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
       return []
     }
     const calcRes : Option[] = this.getEndEffectors()
-        .map(e => { return {value: String(e.getGemId()), display: e.getName()} })
-        .sort((l,r) => l.display.localeCompare(r.display));
+        .map(e => { return new Option(String(e.getGemId()), e.getName())})
+        .sort((l,r) => l.getDisplay().localeCompare(r.getDisplay()));
     if(JSON.stringify(calcRes) !== JSON.stringify(this.endEffectorOptions)) {
       this.endEffectorOptions=calcRes
     }
@@ -165,7 +165,7 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
           }))
       if (this.deconstructionVal === this.getSelectTypeEntry()) {
         this.getStep().setType(ProcessStepType.DECONSTRUCTION)
-        if(this.getSelectJoinConnectionKindEntry() !== newOption.value) {
+        if(this.getSelectJoinConnectionKindEntry() !== newOption.getValue()) {
           waitingFor.push(
               DemoRecManager.getJoinConnectionKindSure(+this.getSelectJoinConnectionKindEntry()).then(
                   (kind) => {
@@ -314,7 +314,7 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
   public override addNewJoinConnectionKind(): (arg: JoinConnectionKind) => void {
     return (connectionKind: JoinConnectionKind) => {
       connectionKind.getNameAfterLoadPromise().then(name => {
-        this.joinConnectionKindOptions.push({value: connectionKind.getGemId()+"", display: name})
+        this.joinConnectionKindOptions.push(new Option(connectionKind.getGemId()+"", name))
         this.setSelectJoinConnectionKindEntry(String(connectionKind.getGemId()))
       })
     }
@@ -378,7 +378,7 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
 
   public override checkJoinConnectionKind(): GemTextInputValidity {
     if(this.joinConnectionKindEntry) {
-      if(this.joinConnectionKindEntry === newOption.value) {
+      if(this.joinConnectionKindEntry === newOption.getValue()) {
         return {status: "Error", message: "Please Save the new Connection."};
       }
       return {status: "Success"};

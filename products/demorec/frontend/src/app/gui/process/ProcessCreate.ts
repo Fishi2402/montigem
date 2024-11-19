@@ -13,9 +13,6 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Option } from '@umlp/input';
-
-const newOption: Option = { value: "NEW", display: "NEW" };
 
 @Component({
   standalone:true,
