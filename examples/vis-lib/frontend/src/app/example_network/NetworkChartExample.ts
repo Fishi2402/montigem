@@ -2,7 +2,7 @@
 
 import { Component } from '@angular/core';
 import { NetworkChartExampleComponent ,config} from '@src/example_network/NetworkChartExampleComponent';
-import {GraphEdge, GraphEdgeBuilder, GraphNode, GraphNodeBuilder} from '@umlp/networkgraph';
+import {Graph, GraphBuilder, GraphEdge, GraphEdgeBuilder, GraphNode, GraphNodeBuilder} from '@umlp/networkgraph';
 import { GemGraphComponent } from '@umlp/networkgraph';
 
 @Component({
@@ -73,12 +73,19 @@ export class NetworkChartExample extends NetworkChartExampleComponent {
       new GraphEdgeBuilder().id("21").source("9").target("6").name("Edge 9-6").build()
   ]
 
-  public override getPersonGraphEdges (): Array<GraphEdge> {
+  public getPersonGraphEdges (): Array<GraphEdge> {
     return this.edges
   }
 
-  public override getPersonGraphNodes (): Array<GraphNode> {
+  public getPersonGraphNodes (): Array<GraphNode> {
     return this.nodes
+  }
+
+  public getPersonGraphGraph (): Graph {
+    return new GraphBuilder()
+    .edges(this.getPersonGraphEdges())
+    .nodes(this.getPersonGraphNodes())
+    .build();
   }
 
   public override getPositions() {
