@@ -18,7 +18,9 @@ import {/*CustomMetricsGenerator,*/
   Internal_GraphEdge,
   Internal_GraphNode,
   NodeAttributes,
-  Internal_NodePos, getNodeProgramOfString
+  Internal_NodePos,
+  getNodeProgramOfString,
+  Internal_Graph
 } from "./types/graph.types";
 import {
   ComplexGraphLayoutConfiguration,
@@ -50,6 +52,7 @@ import {ControlButtonsComponent} from "./control-buttons/control-buttons.compone
 import {MetricInformationComponent} from "./metric-information/metric-information.component";
 import {GraphNode} from "../gen/networkgraphtypes/GraphNode";
 import {GraphEdge} from "../gen/networkgraphtypes/GraphEdge";
+import {Graph as GUIGraph} from "../gen/networkgraphtypes/Graph"
 import {NodePos} from "../gen/networkgraphtypes/NodePos";
 import {NodePosBuilder} from "../gen/networkgraphtypes/NodePosBuilder";
 
@@ -152,53 +155,43 @@ export class GemGraphComponent extends GraphBasisComponent implements OnChanges 
     /** Partial configuration settings for the graph. */
     @Input() settings?: Partial<GraphSettings>;
 
-    /** Array of nodes to be displayed in the graph. */
-    @Input({
-      transform: (externalGraphNodes: GraphNode[])  => {
-        if (!externalGraphNodes) {
-          return [];
-        }
-        return externalGraphNodes.map(n =>  {
-          return {
-            id: n.getId(),
-            value: n.getValue(),
-            label: n.getLabel(),
-            size: n.getSize(),
-            color: n.getColor(),
-            group: n.getGroup(),
-            fixed: n.getFixed(),
-            x: n.getX(),
-            y: n.getY(),
-            nodeProgram: getNodeProgramOfString(n.getNodeProgram()),
-            hoverLabel: n.getHoverLabel(),
-            hover: n.getHover(),
-            tooltip: n.getTooltip()
-          }
-        })
-      }
-    })
-    nodes? : Internal_GraphNode[];
 
-    /** Array of edges to be displayed in the graph. */
     @Input({
-      transform: (externalEdges: GraphEdge[]) => {
-        if (!externalEdges) {
-          return [];
+      transform: (graph: GUIGraph) => {
+        return {
+          nodes: graph._nodes.map(n =>  {
+                                            return {
+                                              id: n.getId(),
+                                              value: n.getValue(),
+                                              label: n.getLabel(),
+                                              size: n.getSize(),
+                                              color: n.getColor(),
+                                              group: n.getGroup(),
+                                              fixed: n.getFixed(),
+                                              x: n.getX(),
+                                              y: n.getY(),
+                                              nodeProgram: getNodeProgramOfString(n.getNodeProgram()),
+                                              hoverLabel: n.getHoverLabel(),
+                                              hover: n.getHover(),
+                                              tooltip: n.getTooltip()
+                                            }
+                                          }),
+
+          edges: graph._edges.map(e => {
+                                      return {
+                                        id: e.getId(),
+                                        source: e.getSource(),
+                                        target: e.getTarget(),
+                                        name: e.getName(),
+                                        size: e.getSize(),
+                                        directed: e.getDirected(),
+                                        color: e.getColor()
+                                      }
+                                    })
+          };
         }
-        return externalEdges.map(e => {
-          return {
-            id: e.getId(),
-            source: e.getSource(),
-            target: e.getTarget(),
-            name: e.getName(),
-            size: e.getSize(),
-            directed: e.getDirected(),
-            color: e.getColor()
-          }
-        })
-      }
-    })
-    edges?: Internal_GraphEdge[];
+      })
+    graph?: Internal_Graph;
 
     // TODO make Layouts configurable in GUIDSL Model/ in GUI component itself
     /** Initial layout configuration for displaying the graph. */
@@ -516,12 +509,8 @@ export class GemGraphComponent extends GraphBasisComponent implements OnChanges 
             this.graphManager.updateSettings(this.settings);
             shouldRefresh = true;
         }
-        if (this.hasChanged(changes, "nodes") && this.nodes) {
-            this.graphManager.updateNodes(this.nodes);
-            shouldRefresh = true;
-        }
-        if (this.hasChanged(changes, "edges") && this.edges) {
-            this.graphManager.updateEdges(this.edges);
+        if (this.hasChanged(changes, "graph") && this.graph) {
+            this.graphManager.updateGraph(this.graph);
             shouldRefresh = true;
         }
         if (this.hasChanged(changes, "initialLayout")) {
