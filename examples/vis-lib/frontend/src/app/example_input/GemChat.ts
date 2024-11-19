@@ -1,5 +1,5 @@
 import {GemChatComponent, config} from "@src/example_input/GemChatComponent";
-import {Component} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {Message} from "@src/domain/Message";
 import {Role} from '@src/domain/Role';
 import {DomainManager} from "@src/domain/DomainManager";
@@ -22,23 +22,40 @@ export class GemChat extends GemChatComponent {
 
   }
 
-  public async sendMessageHandler(msg: Message) {
 
+  // Works in call, not in init
+  sortMessages() {
+    this.messages = this.messages.sort((a,b) => a.getTimestamp().getTime()-b.getTimestamp().getTime());
+  }
+
+  public async sendMessageHandler(msg: Message) {
+    if (msg.getContent() == undefined) {
+      // Handle Empty user input
+      return;
+    }
+
+    // build new message
     msg.setSender(Role.USER);
     msg.setReceiver(Role.SYSTEM);
     msg.setTimestamp(new Date());
     msg.build();
+
+    // reset UI message
     this._userMsg = await DomainManager.messageBuilder();
 
-    let answer = await CommandManager.executeCommand(new Answer(msg.getGemId()))
-    console.log(answer)
+
+    // get answer from backend Service
+    let answer = await CommandManager.executeCommand(new Answer(msg.getGemId()));
+
 
     //CommandManager.executeCommand(new Answer(msg.getGemId())).then((answer: CommandResult<string>) => {
     //  console.log(answer);
     //})
 
+  //  this._messagesSetExternally = false;
+  //  this.initMessages();
     this.addMessages(answer.asSimpleResult().get());
-
+    this.sortMessages();
 
 
 
