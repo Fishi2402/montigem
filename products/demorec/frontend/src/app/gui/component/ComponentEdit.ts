@@ -27,7 +27,9 @@ export  class ComponentEdit extends ComponentEditComponent {
   conditionOptions : Option[] = []
   allComponentKinds : ComponentKind[]= []
 
-  public init(): void {
+  public override init(): void {
+    super.init();
+
     this.conditionOptions = []
     Object.keys(State).filter(s => !isNaN(+s)).forEach(key => {
       this.conditionOptions.push(
@@ -37,8 +39,6 @@ export  class ComponentEdit extends ComponentEditComponent {
     DemoRecManager.getComponentKindList()
         .then(l => {return l.loadAll()})
         .then( l => this.allComponentKinds = l)
-
-    super.init();
   }
 
   public editComponentKind(): (arg: void) => void {

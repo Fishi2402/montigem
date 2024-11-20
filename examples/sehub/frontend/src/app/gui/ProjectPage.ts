@@ -12,7 +12,9 @@ import {
   GraphEdge,
   GemGraphComponent,
   GraphEdgeBuilder,
-  GraphNodeBuilder
+  GraphNodeBuilder,
+  Graph,
+  GraphBuilder,
 } from '@umlp/networkgraph';
 @Component({
   standalone:true,
@@ -35,13 +37,20 @@ export class ProjectPage extends ProjectPageComponent {
     super.ngOnInit();
   }
 
-  public override getGemGraph1Edges() : GraphEdge[] {
+  public getGemGraph1Edges() : GraphEdge[] {
     return this.calculateNetwork().edges
   }
 
 
-  public override getGemGraph1Nodes(): GraphNode[] {
+  public getGemGraph1Nodes(): GraphNode[] {
     return this.calculateNetwork().nodes
+  }
+
+  public override getGemGraph1Graph(): Graph {
+    return new GraphBuilder()
+    .edges(this.getGemGraph1Edges())
+    .nodes(this.getGemGraph1Nodes())
+    .build();
   }
 
   public calculateNetwork(): {nodes: GraphNode[], edges:GraphEdge[]}  {

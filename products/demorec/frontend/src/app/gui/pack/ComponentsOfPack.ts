@@ -48,10 +48,10 @@ export  class ComponentsOfPack extends ComponentsOfPackComponent {
 
   public override navigateToComponent() : (arg) => void  {
     return (entry) => {
-      if(entry.children) {
-        this._router.navigate(["gui/kind/EditComponentKindPage/"+this.getPack().getGemId()+"/"+entry.value])
-      } else if(entry.value != unroutable) {
-        this._router.navigate(["gui/component/ComponentEditPage/"+entry.value])
+      if(entry.getChildren()) {
+        this._router.navigate(["gui/kind/EditComponentKindPage/"+this.getPack().getGemId()+"/"+entry.getValue()])
+      } else if(entry.getValue() != unroutable) {
+        this._router.navigate(["gui/component/ComponentEditPage/"+entry.getValue()])
       }
     }
   }
@@ -106,7 +106,7 @@ export  class ComponentsOfPack extends ComponentsOfPackComponent {
   public override navigateToConnection() : (arg) => void  {
     return (event) => {
       console.warn(event)
-      this._router.navigate(["gui/connectionkind/JoinConnectionKindEditPage/"+event.value])
+      this._router.navigate(["gui/connectionkind/JoinConnectionKindEditPage/"+event.getValue()])
     }
   }
 
