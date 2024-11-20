@@ -85,7 +85,7 @@ class CommandMutex {
   }
 
   private _dispatch(ignoreLocked = false) {
-    if (this._locked || ignoreLocked) return; // Do nothing, as we are still waiting - the release function will invoke dispatch again
+    if (this._locked && !ignoreLocked) return; // Do nothing, as we are still waiting - the release function will invoke dispatch again
     this._locked = true;
     const nextCommand = this._queue.shift();
     if (!nextCommand) {
