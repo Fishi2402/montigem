@@ -20,7 +20,7 @@ import {GemTextInputValidity, Option} from '@umlp/input';
 import {BatteryPackService} from "../../BatteryPackService";
 import { NavigationEnd,ActivatedRoute, Router } from '@angular/router';
 
-const newOption: Option = { value: "NEW", display: "NEW" };
+const newOption: Option = new Option("NEW");
 
 @Component({
   standalone:true,
@@ -50,7 +50,7 @@ export class JoinConnectionKindEdit extends JoinConnectionKindEditComponent impl
     this.packService.currentPack.subscribe(p => {
       this.currentPack = p
       this.filteredComponentOptions = [newOption].concat(
-          this.componentOptions.filter(opt => this.getCurrentPackComponents().has(opt.value)))
+          this.componentOptions.filter(opt => this.getCurrentPackComponents().has(opt.getValue())))
     })
 
     super.init();
@@ -70,12 +70,12 @@ export class JoinConnectionKindEdit extends JoinConnectionKindEditComponent impl
     // Initialize joinConnectionTypeOptions
     this.joinConnectionTypeOptions = [];
     Object.keys(JoinConnectionType).filter(s => !isNaN(+s)).forEach(key => {
-      this.joinConnectionTypeOptions.push({value: key, display: JoinConnectionType[key]});
+      this.joinConnectionTypeOptions.push(new Option(key, JoinConnectionType[key]));
     })
 
     this.conditionOptions = []
     Object.keys(State).filter(s => !isNaN(+s)).forEach(key => {
-      this.conditionOptions.push({value: key, display: State[key]});
+      this.conditionOptions.push(new Option(key, State[key]));
     })
 
     // Initialize componentOptions and superComponentsOptions
@@ -89,15 +89,15 @@ export class JoinConnectionKindEdit extends JoinConnectionKindEditComponent impl
             console.debug("Refill Component Options for Join Connection Kinds")
             const value = component.getGemId() + "";
             const display = component.getName()? component.getName() : value
-            this.componentOptions.push({value: value, display: display});
+            this.componentOptions.push(new Option(value, display));
           }
         }
         this.componentOptions = this.componentOptions.sort(
-            (a,b) => {return a.display.localeCompare(b.display)}
+            (a,b) => {return a.getDisplay().localeCompare(b.getDisplay())}
         ).slice();
         this.filteredComponentOptions = [newOption].concat(
-            this.componentOptions.filter(opt => this.getCurrentPackComponents().has(opt.value)).sort(
-                (a,b) => {return a.display.localeCompare(b.display)}
+            this.componentOptions.filter(opt => this.getCurrentPackComponents().has(opt.getValue())).sort(
+                (a,b) => {return a.getDisplay().localeCompare(b.getDisplay())}
             ))
       });
     });
@@ -128,8 +128,8 @@ export class JoinConnectionKindEdit extends JoinConnectionKindEditComponent impl
 
   public override getSelectConnectsComponentOptions(): Array<Option>{
     const filteredOptions = [newOption].concat(
-        this.componentOptions.filter(opt => this.getCurrentPackComponents().has(opt.value)).sort(
-            (a,b) => {return a.value.localeCompare(b.display)}
+        this.componentOptions.filter(opt => this.getCurrentPackComponents().has(opt.getValue())).sort(
+            (a,b) => {return a.getValue().localeCompare(b.getDisplay())}
         ))
     console.debug(filteredOptions)
     if(filteredOptions === this.filteredComponentOptions) {
@@ -150,7 +150,7 @@ export class JoinConnectionKindEdit extends JoinConnectionKindEditComponent impl
 
   public connectSelectedComponent(): (arg: void) => void {
     return $ => {
-      if(this.getSelectConnectsComponentEntry() === newOption.value) {
+      if(this.getSelectConnectsComponentEntry() === newOption.getValue()) {
         return;
       }
       if(this.getSelectConnectsComponentEntry()) {
@@ -165,7 +165,7 @@ export class JoinConnectionKindEdit extends JoinConnectionKindEditComponent impl
 
   public override addNewComponent(): (comp: DemoRecComponent) => void {
     return (comp: DemoRecComponent) => {
-      this.componentOptions.push({value: comp.getGemId()+"", display: comp.getName()})
+      this.componentOptions.push(new Option(comp.getGemId()+"", comp.getName()))
       this.setSelectConnectsComponentEntry(comp.getGemId()+"")
     }
   }
@@ -177,7 +177,7 @@ export class JoinConnectionKindEdit extends JoinConnectionKindEditComponent impl
   }
 
   public override getNewCompGuardCondition() :boolean {
-    return this.getSelectConnectsComponentEntry() === newOption.value
+    return this.getSelectConnectsComponentEntry() === newOption.getValue()
   }
 
   public checkConnectionType() : GemTextInputValidity {

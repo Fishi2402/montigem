@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { DomainManagerClientImpl } from '@src/domain/DomainManagerClientImpl';
+import { JavaProjectManagerClientImpl } from '@src/javaproject/JavaProjectManagerClientImpl';
 // JSweet
 import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from '@umlp/commonj2ts';
-import { DomainComponentObserverManager } from '@src/DomainComponentObserverManager'
+import { JavaProjectComponentObserverManager } from '@src/JavaProjectComponentObserverManager'
 // Non-JSweet
 
 @Component({
@@ -12,14 +12,14 @@ import { DomainComponentObserverManager } from '@src/DomainComponentObserverMana
 })
 export class AppComponent {
   constructor() {
-    DomainManagerClientImpl.init();
+    JavaProjectManagerClientImpl.init();
     const ws_protocol = document.location.protocol == "https:" ? "wss" : "ws";
     const cmdManager = new ClientCommandManager(new ClientCommandWebsocketCommunication(
-      ws_protocol + '://' + document.location.host + '/umlp/api/command'
+        ws_protocol + '://' + document.location.host + '/umlp/api/command'
     ));
     CommandManager.initMe(cmdManager);
     (<any>window).websocket_connected = true;
     // JSweet
-    DomainComponentObserverManager.init();
+    JavaProjectComponentObserverManager.init();
   }
 }

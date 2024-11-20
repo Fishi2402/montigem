@@ -6,8 +6,7 @@ import mc.fenix.networkgraph.GemGraph;
 page NetworkChartExample() {
 
   personGraph@GemGraph(
-    edges=null,
-    nodes=null,
+    graph=null,
     showFilterGroup=true,
     showSearchNode=true,
     showControlButtons=true,

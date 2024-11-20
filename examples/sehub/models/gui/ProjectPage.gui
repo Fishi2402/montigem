@@ -17,8 +17,7 @@ page ProjectPage(Directory project) {
     component = files@GemTreeview(items = null, allExpanded = false)
   );
   @GemGraph(
-    nodes = null,
-    edges = null
+    graph=null
   );
 
 }

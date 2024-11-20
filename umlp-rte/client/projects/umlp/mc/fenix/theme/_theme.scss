@@ -35,6 +35,7 @@
 @import "./src/dialog.component";
 @import "./src/gem-dual-range-input.component";
 @import "./src/gem-dropdown-input.component";
+@import "./src/table.component";
 
 * {
   font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
@@ -98,7 +99,7 @@
     $rwth-blue,
     $montigem-white
   );
-  @include dropdown-input-theme(1px solid);
+  @include dropdown-input-theme($gray-dark, $rwth-black-3, $rwth-black-5, $rwth-black-4);
 
   @if $horizontal-layout {
     @include gem-main();
@@ -108,8 +109,8 @@
     @include sidebar-theme($primary-color, $secondary-color, 100%, row);
   }
 
-  // Dialog
   @include dialog-theme($rwth-blue-2, $rwth-black, $rwth-black-4);
+  @include table-theme($rwth-black-3);
 }
 
 body {

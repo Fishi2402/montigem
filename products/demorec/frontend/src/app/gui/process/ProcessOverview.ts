@@ -19,10 +19,6 @@ import {
   TemplateRef,
 } from '@angular/core';
 
-import { ActivatedRoute, Router } from '@angular/router';
-import { Option } from '@umlp/input';
-
-const newOption = "-- Create new --";
 
 @Component({
   standalone:true,

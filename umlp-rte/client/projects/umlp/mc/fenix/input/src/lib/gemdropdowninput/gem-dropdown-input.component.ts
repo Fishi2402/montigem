@@ -6,7 +6,7 @@ import {
   OnInit,
   Output, SimpleChanges
 } from "@angular/core";
-import {Option} from "./gem-dropdown-input-types/gem-dropdown-input.types";
+import {Option} from "../gen/gemdropdowninputtypes/Option";
 import { GemTextInputValidity } from "../gemtextinput";
 
 @Component({
@@ -87,7 +87,7 @@ export class GemDropdownInput implements OnInit, OnChanges {
   }
 
   selectOption(option: Option): void {
-    this.entry = option.value;
+    this.entry = option.getValue();
     this.entryChange.emit(this.entry);
     this.hideDropdown();
   }
@@ -125,7 +125,7 @@ export class GemDropdownInput implements OnInit, OnChanges {
 
   filterOptions(): void {
     this.filteredOptions = this.options.filter(option =>
-      option.value.toUpperCase().indexOf(this.filterString.toUpperCase()) > -1
+      option.getValue().toUpperCase().indexOf(this.filterString.toUpperCase()) > -1
     );
   }
 

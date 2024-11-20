@@ -23,7 +23,7 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import {Option} from "@umlp/input";
 
-const newOption: Option = { value: "NEW", display: "NEW" };
+const newOption: Option = new Option("NEW");
 
 @Component({
   standalone:true,
@@ -46,7 +46,7 @@ export class PackChoose extends PackChooseComponent {
       bPacks.loadAll().then(() => {
         for (const bPack of bPacks) {
           let value = bPack.getGemId() + "";
-          this.bPackOptions.push({value: value, display: bPack.getName()});
+          this.bPackOptions.push(new Option(value, bPack.getName()));
         }
         this.bPackOptions = this.bPackOptions.slice();
       });
@@ -69,13 +69,13 @@ export class PackChoose extends PackChooseComponent {
   }
 
   public override getCreatePackCondition(): boolean {
-    return this.getSelectPackEntry() === newOption.value;
+    return this.getSelectPackEntry() === newOption.getValue();
   }
 
   public override addNewBatteryPack() {
     return (pack) => {
       //this.pack.build()
-      this.bPackOptions.push({value: pack.getGemId(), display: pack.getName()})
+      this.bPackOptions.push(new Option(pack.getGemId(), pack.getName()))
       this.setSelectPackEntry(pack.getGemId())
     }
   }

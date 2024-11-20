@@ -1,0 +1,49 @@
+{
+  "name": "client",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test"
+  },
+  "private": true,
+  "dependencies": {
+    "d3": "^7.8.2",
+    "@angular/animations": "^17.0.7",
+    "@angular/cdk": "^17.0.7",
+    "@angular/common": "^17.0.7",
+    "@angular/compiler": "^17.0.7",
+    "@angular/core": "^17.0.7",
+    "@angular/forms": "^17.0.7",
+    "@angular/material": "^17.0.7",
+    "@angular/platform-browser": "^17.0.7",
+    "@angular/platform-browser-dynamic": "^17.0.7",
+    "@angular/router": "^17.0.7",
+    "@umlp/charts": "^7.6.0",
+    "@umlp/networkgraph": "^7.6.9",
+    "@umlp/table": "^7.6.0",
+    "@umlp/input": "^7.6.0",
+    "prismjs": "^1.28.0",
+    "@umlp/arrange": "^7.6.0",
+    "@umlp/navigation": "^7.6.0",
+    "@umlp/common": "^7.6.0",
+    "@umlp/commonj2ts": "^7.6.0",
+    "@umlp/basic": "^7.6.0",
+    "@umlp/theme": "^7.6.0",
+    "font-awesome": "4.7.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.14.0",
+    "primeng": "^17.0.7",
+    "primeicons": "^6.0.1",
+    "many-keys-map":"2.0.1"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^17.0.7",
+    "@angular/cli": "~17.0.7",
+    "@angular/compiler-cli": "^17.0.7",
+    "typescript": "~5.2.2"
+  }
+}

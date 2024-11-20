@@ -3,15 +3,60 @@
 package example_table;
 
 import mc.fenix.table.GemTable;
-import mc.fenix.table.TableTypes.TableColumn;
-import Domain.Person;
+import mc.fenix.table.GemTableHeader;
+import mc.fenix.table.GemTableHeaderCell;
+import mc.fenix.table.GemTableRow;
+import mc.fenix.table.GemTableRowCell;
+import mc.fenix.basic.GemText;
+import mc.fenix.input.GemTextInput;
+import Domain.*;
+import mc.fenix.arrange.GemColumn;
 
 page GemTableExample(List<Person> persons) {
-  //@GemTable(
-  //  rows = persons,
-  //  columns = null/*[
-  //    TableColumn("_name", "Name"),
-  //    TableColumn("_birthday", "Birthday")
-  //  ]*/
-  //);
+  @GemColumn(rowGap = "20px", width = "50%", components = [
+    @GemTable(
+      headers = [
+        @GemTableHeader(cols = ["Name", "Birthday"])
+      ],
+      body = [@iterate(Person p : persons) {
+        @GemTableRow(cols = [
+          @GemText(value = p.name),
+          @GemTextInput(
+            inputType = "date",
+            entry = p.birthday
+          )
+        ]);
+      }]
+    ),
+    @GemTable(
+      layout = "fixed",
+      headers = [
+        @GemTableHeader(cells = [
+          @GemTableHeaderCell(rowSpan = 2, content = @GemText(value = "Name")),
+          @GemTableHeaderCell(colSpan = 2, content = @GemText(value = "Address"))
+        ]),
+        @GemTableHeader(cols = ["Street", "House"])
+      ],
+      body = [
+        @GemTableRow(cells = [
+          @GemTableRowCell(content = @GemText(value = "Emma")),
+          @GemTableRowCell(content = @GemText(value = "Oak Str.")),
+          @GemTableRowCell(content = @GemText(value = "29"))
+        ]),
+        @GemTableRow(cells = [
+          @GemTableRowCell(content = @GemText(value = "Alice")),
+          @GemTableRowCell(rowSpan = 2, content = @GemText(value = "Gitschiner Str.")),
+          @GemTableRowCell(rowSpan = 2, content = @GemText(value = "9"))
+        ]),
+        @GemTableRow(cells = [
+          @GemTableRowCell(content = @GemText(value = "Olivia"))
+        ]),
+        @GemTableRow(cells = [
+          @GemTableRowCell(content = @GemText(value = "Isabella")),
+          @GemTableRowCell(content = @GemText(value = "Pine")),
+          @GemTableRowCell(content = @GemText(value = "Rd."))
+        ])
+      ]
+    )
+  ]);
 }

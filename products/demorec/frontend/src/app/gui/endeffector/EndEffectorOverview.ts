@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { EndEffector } from '@src/demorec/EndEffector';
-import { TableColumn } from '@umlp/table';
 import { EndEffectorOverviewComponent, config } from '../../../../build/frontendGen/build/appgui/gui/endeffector/EndEffectorOverviewComponent';
 
 import {

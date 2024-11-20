@@ -42,7 +42,7 @@ public class ComponentObserverManagerGenerator {
     HashMap<String, String> domainClassNamesToPackageMap = new HashMap<String, String>();
 
     getConcreteDomainClasses(ast.getCDDefinition()).forEach(domainClass ->
-        domainClassNamesToPackageMap.put(domainClass.getName(), AbstractDecorator.getCorrectManager(domainClass)));
+        domainClassNamesToPackageMap.put(domainClass.getName(), getCorrectPackage(domainClass)));
 
     var extensionDiamond = UMLPSymbolTables.getExtensionDiamond(ast.getCDDefinition().getSymbol());
     HashSet<DiagramSymbol> allParentDiagrams = extensionDiamond.values().stream().reduce(new LinkedHashSet<>(),
