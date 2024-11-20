@@ -32,7 +32,7 @@ const newOption: Option = new Option("NEW");
 export class ChooseComponentKind extends ChooseComponentKindComponent {
 
   public kindEntry: string = "";
-  public kindOptionsHash = {value: [], hash: ""}
+  public kindOptionsHash:{value: Option[], hash: string} = {value: [], hash: ""}
   private chosenKindNotLoaded: boolean = true
 
   @Output()
@@ -65,7 +65,7 @@ export class ChooseComponentKind extends ChooseComponentKindComponent {
         let value = kind.getGemId() + "";
         opts.push(new Option(value, kind.getName()));
       }
-      opts = [newOption].concat(opts.sort((a,b) => {return a.value.localeCompare(b.value)}).slice());
+      opts = [newOption].concat(opts.sort((a,b) => {return a.getValue().localeCompare(b.getValue())}).slice());
       const hash = JSON.stringify(opts)
       if(this.kindOptionsHash.hash != hash) {
         this.kindOptionsHash.hash = hash
@@ -90,7 +90,7 @@ export class ChooseComponentKind extends ChooseComponentKindComponent {
   // TODO
   public override addNewComponentKind(): (arg : ComponentKind) => void {
     return (kind : ComponentKind) => {
-      this.kindOptionsHash.value.push({value: kind.getGemId()+"", display: kind.getName()})
+      this.kindOptionsHash.value.push(new Option(kind.getGemId()+"", kind.getName()))
       this.setSelectComponentKindEntry(kind.getGemId()+"")
     }
   }
