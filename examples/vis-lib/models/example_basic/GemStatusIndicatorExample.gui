@@ -1,0 +1,65 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_basic;
+
+import Domain.Service;
+
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemStatusIndicator;
+import mc.fenix.basic.GemStatusIndicatorTypes.GemStatus;
+import mc.fenix.basic.GemText;
+import mc.fenix.input.GemTextInput;
+import mc.fenix.input.GemDropdownInput;
+
+page GemStatusIndicatorExample(List<Service> services, ?String dropdownEntry, ?String inputEntry) {
+  @GemColumn(width = "50%", rowGap = "20px", components = [
+    @GemRow(colGap = "50px", components = [
+      @iterate(Service s : services) {
+        @GemColumn(rowGap = "20px", hAlign = "center", components = [
+          @GemText(value = s.name),
+          @GemStatusIndicator(
+            width = "100px",
+            possibleStates = getPossibleStates(),
+            statusId = s.status
+          ),
+          @GemDropdownInput(
+            entry = s.status,
+            options = getStatusOptions()
+          )
+        ]);
+      }
+    ]),
+    @GemRow(colGap = "50px", components = [
+      @iterate(Service s : services) {
+        @GemColumn(rowGap = "20px", hAlign = "center", components = [
+          @GemText(value = s.name),
+          @GemStatusIndicator(
+            width = "100px",
+            possibleStates = getPossibleStates(),
+            statusValue = s.temperature
+          ),
+          @GemTextInput(
+            inputType = "number",
+            entry = s.temperature
+          )
+        ]);
+      }
+    ]),
+    @GemRow(colGap = "50px", components = [
+      @iterate(Service s : services) {
+        @GemColumn(rowGap = "20px", hAlign = "center", components = [
+          @GemText(value = s.name),
+          @GemStatusIndicator(
+            width = "100px",
+            currentStatus = changeStatus(s.temperature)
+          ),
+          @GemTextInput(
+            inputType = "number",
+            entry = s.temperature
+          )
+        ]);
+      }
+    ])
+  ]);
+}

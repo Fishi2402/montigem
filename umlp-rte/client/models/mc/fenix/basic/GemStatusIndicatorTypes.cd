@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.basic;
+
+import java.util.List;
+
+classdiagram GemStatusIndicatorTypes {
+
+  public class GemStatus {
+    int statusId;
+    String imageSource;
+    String label;
+    double threshold;
+    +GemStatus(int statusId, double threshold, String imageSource);
+    +GemStatus(int statusId, double threshold, String imageSource, String label);
+  }
+
+}

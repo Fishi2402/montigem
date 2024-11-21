@@ -7,3 +7,5 @@ export * from "./lib/gemaudio";
 export * from "./lib/gemcheckbox";
 export * from "./lib/gemtreeview";
 export * from "./lib/gemicon";
+export * from "./lib/gemstatusindicator";
+

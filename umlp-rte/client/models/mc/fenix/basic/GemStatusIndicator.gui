@@ -1,0 +1,33 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.basic;
+
+import mc.fenix.basic.GemStatusIndicatorTypes.GemStatus;
+
+/**
+  A status indicator that provides visual representation of different states
+*/
+component GemStatusIndicator(
+  String width = "100%",
+  String height = "100%",
+  /**
+    Possible states the indicator can take
+  */
+  List<GemStatus> possibleStates,
+  /**
+    Current status that is displayed
+  */
+  GemStatus currentStatus,
+  /**
+    Callback that is executed when the status changes.
+    Emits the ne status.
+  */
+  Event<GemStatus> onStatusChange,
+  /**
+    Value that is used to determine if a certain threshold is reached that leads to a status change
+  */
+  double statusValue,
+  /**
+    Id that is used to determine if a certain status with the same id is selected
+  */
+  int statusId
+)
