@@ -1,0 +1,55 @@
+package umlp.guidsl.additional_cocos;
+
+import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
+import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;
+import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
+import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor2;
+import de.monticore.guidsl.GUIDSLMill;
+import de.monticore.guidsl._visitor.GUIDSLTraverser;
+import de.monticore.guidsl._visitor.GUIDSLVisitor2;
+
+import java.util.Optional;
+
+public class ClosestNameOrFieldAccessFinder
+    implements GUIDSLVisitor2, CommonExpressionsVisitor2, ExpressionsBasisVisitor2 {
+
+  protected GUIDSLTraverser traverser;
+
+  protected boolean stopChecking = false;
+  protected Optional<ASTNameExpression> nameExp = Optional.empty();
+  protected Optional<ASTFieldAccessExpression> fieldAccessExp = Optional.empty();
+
+  public GUIDSLTraverser getTraverser() {
+    return traverser;
+  }
+
+  public ClosestNameOrFieldAccessFinder() {
+    traverser = GUIDSLMill.traverser();
+    traverser.add4CommonExpressions(this);
+    traverser.add4ExpressionsBasis(this);
+  }
+
+  public Optional<ASTFieldAccessExpression> getFieldAccessExp() {
+    return fieldAccessExp;
+  }
+
+  public Optional<ASTNameExpression> getNameExp() {
+    return nameExp;
+  }
+
+  @Override
+  public void visit(ASTNameExpression node) {
+    if (!stopChecking) {
+      this.nameExp = Optional.of(node);
+      stopChecking = true;
+    }
+  }
+
+  @Override
+  public void visit(ASTFieldAccessExpression node) {
+    if (!stopChecking) {
+      this.fieldAccessExp = Optional.of(node);
+      stopChecking = true;
+    }
+  }
+}

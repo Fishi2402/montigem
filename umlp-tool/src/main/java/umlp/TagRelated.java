@@ -3,6 +3,7 @@ package umlp;
 
 import com.google.common.collect.Iterables;
 import de.monticore.ast.Comment;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._visitor.CDBasisVisitor2;
@@ -63,6 +64,15 @@ public class TagRelated {
             hasTags[0] = true;
           });
         }
+        if (node.getModifier().isDerived()) {
+          ASTTag astTag = TagsMill.simpleTagBuilder().setName("derived").build();
+          hasTags[0] = true;
+          tagger.addTag(node.getSymbol(), astTag);
+        }
+      }
+
+      @Override
+      public void visit(ASTCDAttribute node) {
         if (node.getModifier().isDerived()) {
           ASTTag astTag = TagsMill.simpleTagBuilder().setName("derived").build();
           hasTags[0] = true;

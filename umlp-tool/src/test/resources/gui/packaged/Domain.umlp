@@ -8,6 +8,7 @@ umlp Domain {
     boolean employed;
     MaritalStatus status;
     / int getAge();
+    / int friendsNumber;
     void eat();
   }
 
