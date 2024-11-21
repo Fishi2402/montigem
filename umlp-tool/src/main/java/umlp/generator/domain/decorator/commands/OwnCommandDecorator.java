@@ -192,7 +192,7 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
     getCD4C().addImport(ast, PathUtil.getBackendRTEUtilPath("LogUtil"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("GeneralErrorCollector"));
-    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("LoadingState"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("LoadingState"));
     getCD4C().addImport(ast, "com.google.common.collect.Sets");
     getCD4C().addImport(ast, "java.util.ListIterator");
     getCD4C().addImport(ast, "java.util.Spliterator");
