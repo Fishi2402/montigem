@@ -16,7 +16,7 @@ component GemChat(List<Message> messages, Message userMsg) {
         @GemRow(components = [
           @GemText(value=msg.content)]);
     },@GemRow(components=[
-        @GemColumn(width="80%",components=[userInput@GemTextareaInput(placeholder="Start Chatting :)",entry=userMsg.content)]),
+        @GemColumn(width="80%",components=[userInput@GemTextareaInput(placeholder="Start Chatting :)",entry=userMsg.content,resize="none")]),
         @GemColumn(width="20%",components=[@GemButton(leftClick=sendMessage(userMsg),label="send")])])
     ])
   );

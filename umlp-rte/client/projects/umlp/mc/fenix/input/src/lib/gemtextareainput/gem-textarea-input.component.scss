@@ -9,6 +9,8 @@
   padding: 6px;
   border: 1px solid #bcc0c4;
   border-radius: 1px;
+  //can be none, both, horizontal, vertical, block, inline
+  resize:none;
 }
 
 .gem-label-textarea {

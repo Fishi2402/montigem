@@ -22,11 +22,19 @@ export class GemChat extends GemChatComponent {
 
   }
 
-
   // Works in call, not in init
   sortMessages() {
     this.messages = this.messages.sort((a,b) => a.getTimestamp().getTime()-b.getTimestamp().getTime());
   }
+
+
+  override ngOnInit() {
+    this.init();
+    this.sortMessages();
+  }
+
+
+
 
   public async sendMessageHandler(msg: Message) {
     if (msg.getContent() == undefined) {
@@ -54,7 +62,7 @@ export class GemChat extends GemChatComponent {
 
   //  this._messagesSetExternally = false;
   //  this.initMessages();
-    this.addMessages(answer.asSimpleResult().get());
+   // this.addMessages(answer.asSimpleResult().get());
     this.sortMessages();
 
 

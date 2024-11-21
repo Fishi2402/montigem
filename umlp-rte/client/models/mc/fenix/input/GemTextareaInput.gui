@@ -31,5 +31,8 @@ component GemTextareaInput(
   /** Callback that is executed when a key is released. */
   Event<Object> keyRelease,
   /** Callback that is executed when a key is pressed. */
-  Event<Object> keyPress
+  Event<Object> keyPress,
+
+  //TODO OT Define!
+  String resize ="auto"
 )
