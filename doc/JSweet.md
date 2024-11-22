@@ -197,12 +197,11 @@ Als letztes muss in Java der nutzenden Komponente ein import hinzugefügt werden
   tsImports = {"MyUtil, @src/def/foo/MyUtil"}
 )
 public class MyPage{
-
+  @Replace("new MyUtil().foo();")
   public void bar(){
-    new MyUtil().foo();
+    System.out.println("Mock of MyUtil#foo");
   }
 }
 ```
 
-Ggf. lohnt sich eine weitere Indirektion bzw. das Abfangen des `UnsatisfiedLinkError` um die Komponente weiterhin in Java testbar zu halten, ohne das `foo` ausgeführt wird.
-
+Durch die `@Replace` Annotation ist die Komponente weiterhin in Java testbar, ohne das `foo` ausgeführt wird.
