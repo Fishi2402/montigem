@@ -101,7 +101,6 @@ public class TagRelated {
         TagRepository.loadTagModel(tagPath.toFile());
       } catch (IOException ignored) {}
     } else {
-      System.out.println(TagsMill.prettyPrint(tagUnit, true));
       if (hasTags[0])
         Log.warn("0x00027 Tag information will not be stored. If you require the tag"
             + " information, please specify the symboltable option via command if you use a command"
