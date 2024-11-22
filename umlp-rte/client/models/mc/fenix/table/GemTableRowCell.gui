@@ -6,7 +6,7 @@ package mc.fenix.table;
 */
 component GemTableRowCell(
   /**
-    Number of collumns a cell should cover
+    Number of columns a cell should cover
   */
   int colSpan = 1,
   /**
