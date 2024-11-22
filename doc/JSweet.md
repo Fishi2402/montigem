@@ -197,11 +197,15 @@ Als letztes muss in Java der nutzenden Komponente ein import hinzugefügt werden
   tsImports = {"MyUtil, @src/def/foo/MyUtil"}
 )
 public class MyPage{
-  @Replace("new MyUtil().foo();")
+  @Replace("this._bar();")
   public void bar(){
     System.out.println("Mock of MyUtil#foo");
+  }
+
+  public void _bar(){
+    new MyUtil().foo();
   }
 }
 ```
 
-Durch die `@Replace` Annotation ist die Komponente weiterhin in Java testbar, ohne das `foo` ausgeführt wird.
+Durch die Indirektion und die `@Replace` Annotation ist die Komponente weiterhin in Java testbar, ohne das `foo` ausgeführt wird.
