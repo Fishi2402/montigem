@@ -1,0 +1,68 @@
+.chatRow {
+  display: inline-block; /* Ensures the bubble fits the text */
+  color: white; /* Text color */
+  background-color: #9daefa; /* Chat bubble color */
+  padding: 10px 15px; /* Adds space inside the bubble */
+  border-radius: 15px; /* Rounded corners for the bubble effect */
+  min-width: 0%;
+  max-width: 70%; /* Optional: limit width for long messages */
+  word-wrap: break-word; /* Ensures long text wraps inside the bubble */
+  position: relative; /* Required for the tail positioning */
+  font-family: Arial, sans-serif; /* Optional: change the font */
+  margin-bottom: 2px;
+  margin-top: 2px;
+  margin-left: 20px;
+}
+
+.chatRow::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 0;
+  height: 0;
+  border: 20px solid transparent;
+  border-right-color: #9daefa;
+  border-left: 0;
+  border-top: 0;
+  margin-top: -10px;
+  margin-left: -10px;
+}
+
+// the same, but on the right and withou tail
+.chatRowUser {
+  display: inline-block; /* Ensures the bubble fits the text */
+  color: white; /* Text color */
+  background-color: #9daefa; /* Chat bubble color */
+  padding: 10px 15px; /* Adds space inside the bubble */
+  border-radius: 15px; /* Rounded corners for the bubble effect */
+  min-width: 0%;
+  max-width: 70%; /* Optional: limit width for long messages */
+  word-wrap: break-word; /* Ensures long text wraps inside the bubble */
+  position: relative; /* Required for the tail positioning */
+  font-family: Arial, sans-serif; /* Optional: change the font */
+  margin-bottom: 2px;
+  margin-top: 2px;
+  margin-left: auto;
+  margin-right: 20px;
+}
+
+/* Add a "tail" to the bubble using a pseudo-element */
+.chatRowUser::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 0;
+  height: 0;
+  border: 20px solid transparent;
+  border-left-color: #9daefa;
+  border-right: 0;
+  border-top: 0;
+  margin-top: -10px;
+  margin-right: -10px;
+}
+
+.clearButton {
+  color: grey;
+}

@@ -6,6 +6,7 @@ import mc.fenix.arrange.GemColumn;
 import mc.fenix.arrange.GemRow;
 import mc.fenix.input.GemTextareaInput;
 import Domain.Message;
+import Domain.Role;
 
 
 component GemChat(List<Message> messages, Message userMsg) {
@@ -13,11 +14,15 @@ component GemChat(List<Message> messages, Message userMsg) {
   @GemCard(title="Chat with me :)",component=
     @GemColumn(components=[
       @iterate(Message msg : messages) {
-        @GemRow(components = [
-          @GemText(value=msg.content)]);
-    },@GemRow(components=[
+        @guard(msg.sender == Role.USER){@GemRow(components = [
+                                                              chatRowUser@GemText(value=msg.content)]);
+        }
+        @guard(msg.sender != Role.USER) {@GemRow(components = [
+                                     chatRow@GemText(value=msg.content)]);
+        }
+    },@GemRow(rowGap = 5 ,components=[
         @GemColumn(width="80%",components=[userInput@GemTextareaInput(placeholder="Start Chatting :)",entry=userMsg.content,resize="none")]),
-        @GemColumn(width="20%",components=[@GemButton(leftClick=sendMessage(userMsg),label="send")])])
+        @GemColumn(rowGap ="1px" ,width="20%",components=[sendButton@GemButton(leftClick=sendMessage(userMsg),label="send"),clearButton@GemButton(leftClick=clearMessages(),label="clear")])])
     ])
   );
 }

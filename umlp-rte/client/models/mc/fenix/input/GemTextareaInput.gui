@@ -33,6 +33,6 @@ component GemTextareaInput(
   /** Callback that is executed when a key is pressed. */
   Event<Object> keyPress,
 
-  //TODO OT Define!
+  /** Option how to let the user resize the InputArea. Possible options: none,both,horizontal,vertical,initial,inherit */
   String resize ="auto"
 )

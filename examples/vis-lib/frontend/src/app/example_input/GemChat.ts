@@ -22,16 +22,25 @@ export class GemChat extends GemChatComponent {
 
   }
 
+  public override clearMessages(): (arg: any) => void {
+    for (var message of this.getMessages()) {
+      DomainManager.deleteMessage(message.getGemId());
+      console.log(message.getGemId()); // prints values: 10, 20, 30, 40
+    }
+
+    // refresh here?!
+    return null;
+
+  }
+
+
   // Works in call, not in init
+  // TODO call this in init!
   sortMessages() {
     this.messages = this.messages.sort((a,b) => a.getTimestamp().getTime()-b.getTimestamp().getTime());
   }
 
 
-  override ngOnInit() {
-    this.init();
-    this.sortMessages();
-  }
 
 
 
