@@ -6,12 +6,12 @@ import mc.fenix.basic.GemText;
 import LoadingTests.Food;
 import LoadingTests.Animal;
 
-page AnimalAddFood(Animal animal, List<Food> allFood) {
+page AnimalAddFood(Animal animal, List<Food> allFood, String foodEntry) {
 
   chooseFoodToAdd@GemDropdownInput(
     labelText = "Eats",
-    options = null,
-    entry = null
+    options = getOptions(),
+    entry = foodEntry
   );
   @iterate(Food f : animal.food) {
     @GemText(value=f.name);
