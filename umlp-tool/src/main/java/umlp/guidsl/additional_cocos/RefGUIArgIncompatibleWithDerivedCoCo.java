@@ -23,15 +23,15 @@ public class RefGUIArgIncompatibleWithDerivedCoCo implements GUIDSLASTGUINamedAr
         var expFinder = new ClosestNameOrFieldAccessFinder();
         node.accept(expFinder.getTraverser());
         if (expFinder.getNameExp().isPresent() && expFinder.getNameExp().get().equals(exp)) {
-          SymTypeExpression ste = GUIGeneratorUtil.getInstance().getType(exp);
+          SymTypeExpression ste = GUIGeneratorUtil.getInstance().getType(expFinder.getNameExp().get());
           if (ste.getSourceInfo().getSourceSymbol().isPresent()) {
-            if (ste.getSourceInfo().getSourceSymbol().get() instanceof GUIParamSymbol
-                && !((GUIParamSymbol) ste.getSourceInfo().getSourceSymbol().get()).isIsReference()) {
+            if (ste.getSourceInfo().getSourceSymbol().get() instanceof VariableSymbol
+                && TagLookUp.isDerived((VariableSymbol) ste.getSourceInfo().getSourceSymbol().get())) {
               Log.error("0x00024 Attempted to bind a reference argument '" + node.getName()
-                      + "' with a non-reference variable '"
+                      + "' with a derived variable '"
                       + expStr
                       + "'. Reference arguments are objects whose value can be set.\n"
-                      + " Consider binding to a reference variable or use a different component,"
+                      + " Consider using a normal variable or use a different component,"
                       + " for example, `@GemText(value = " + expStr + ")`",
                   node.get_SourcePositionStart(), node.get_SourcePositionEnd());
             }
@@ -52,7 +52,7 @@ public class RefGUIArgIncompatibleWithDerivedCoCo implements GUIDSLASTGUINamedAr
             }
           }
         }
-        else {
+        else if (!(expFinder.getNullExp().isPresent() && expFinder.getNullExp().get().equals(exp))) {
           Log.error("0x00026 Attempted to set value of a reference argument '" + node.getName()
                   + "' to an incompatible expression '"
                   + expStr

@@ -58,12 +58,7 @@ public class RefGUIArgIncompatibleWithDerivedCoCoTest extends DomainGUITest {
     checker.addCoCo(new RefGUIArgIncompatibleWithDerivedCoCo());
     checker.checkAll(gui);
 
-    assertFalse(Log.getFindings().isEmpty());
-
-    String expect = "0x00024";
-    String result = Log.getFindings().get(0).getMsg();
-
-    assertTrue(result.contains(expect));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
