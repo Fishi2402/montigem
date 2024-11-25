@@ -21,19 +21,15 @@ export class StringDeSer implements DeSer<string> {
   }
 
   /**
-   *
+   * Simply return the string as in Common
    * @param {string} str
    * @return {Optional}
    */
   public async deserialize(str: string): Promise<string> {
-    const e: any = JSON.parse(str);
-    if (typeof e != 'string') {
-      return null;
-    }
     return (v => {
       if (v == null) throw new Error('value is null');
       return v;
-    })(e);
+    })(str);
   }
 }
 
