@@ -7,8 +7,10 @@ import org.jsweet.transpiler.ModuleImportDescriptor;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.extension.RemoveJavaDependenciesAdapter;
 import org.jsweet.transpiler.model.ExtendedElement;
+import org.jsweet.transpiler.model.ForeachLoopElement;
 import org.jsweet.transpiler.model.MethodInvocationElement;
 import org.jsweet.transpiler.model.NewClassElement;
+import org.jsweet.transpiler.util.Util;
 import umlp.jsweet.extension.domainAdapters.UMLPCollectionsAdapter;
 import umlp.jsweet.extension.util.GUIAdapterUtils;
 import umlp.jsweet.extension.util.RTEPathUtil;
@@ -18,6 +20,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -282,6 +285,12 @@ public class UMLPGUICollectionsAdapter extends PrinterAdapter {
         return true;
     }
     return super.substituteNewClass(newClass);
+  }
+
+  @Override
+  public boolean substituteForEachLoop(ForeachLoopElement foreachLoop, boolean targetHasLength,
+      String indexVarName) {
+    return false;
   }
 
   @Override

@@ -1,8 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
+
+// Solely used in GemListBuilder
+// SumType of a domain-objects GemID and builder
+// as the builder may not have an ID that can be used to get the element from the manager
 export class IDOrBuilder<E extends GemIdentifiable & GemBuildable> {
   gemIDOpt: number;
 
-  builderOpt: E;
+  builderOpt: E = null;
 
   public constructor(gemIdOrBuilder: number | E) {
     this.gemIDOpt = null;
@@ -12,12 +16,18 @@ export class IDOrBuilder<E extends GemIdentifiable & GemBuildable> {
         if (v == null) throw new Error('value is null');
         return v;
       })(gemIdOrBuilder);
-      this.builderOpt = null;
     } else {
-      this.builderOpt = (v => {
-        if (v == null) throw new Error('value is null');
-        return v;
-      })(gemIdOrBuilder);
+      if (gemIdOrBuilder.isBuildFinished()) {
+        this.gemIDOpt = (v => {
+          if (v == null) throw new Error('value is null');
+          return v.getGemId();
+        })(gemIdOrBuilder);
+      } else {
+        this.builderOpt = (v => {
+          if (v == null) throw new Error('value is null');
+          return v;
+        })(gemIdOrBuilder);
+      }
     }
   }
 

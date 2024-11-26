@@ -30,10 +30,13 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
 
 
 
-  public constructor(ids?: IUMLPList<number>) {
+  public constructor(ids?: Array<number> | IUMLPList<number>) {
     this.subject = new GemListBehaviorSubject(this.asArray, this._onSub.bind(this));
     this.state = LoadingState.NOT_YET_LOADED;
-    if (typeof ids !== 'undefined' && ids != null) {
+    if (ids instanceof Array) {
+      this.ids = ids;
+    }
+    else if (typeof ids !== 'undefined' && ids != null) {
       // ids.toArray().then(numbers => this.ids = [...numbers]);
       this.ids = [...ids.toArray()];
     } else if (typeof ids === 'undefined') {
@@ -132,6 +135,29 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
       }
     }
     return true;
+  }
+
+  public async equals(o: any): Promise<boolean> {
+    if (!(o instanceof GemList)) {
+      return false;
+    }
+    if (this.size() != o.size()) {
+      return false;
+    }
+    for (let i = 0; i < this.size(); i++) {
+      if ((await this.get(i)).getGemId() !== (await o.get(i)).getGemId()) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  public async hashCode(): Promise<number> {
+    let hashCode: number = 1;
+    for await (const element of this) {
+      hashCode = 31*hashCode + (!element ? 0 : element.getGemId());
+    }
+    return hashCode;
   }
 
   /**
