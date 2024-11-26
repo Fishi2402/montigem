@@ -1,27 +1,26 @@
-/* (c) https://github.com/MontiCore/monticore */
-package mc.fenix.basic;
+package gui.components;
 
-import mc.fenix.basic.GemStatusIndicatorTypes.GemStatus;
+import AutoTechAgil.Status;
 
 /**
   A status indicator that provides visual representation of different states
 */
-component GemStatusIndicator(
+component StatusIndicator(
   String width = "100%",
   String height = "100%",
   /**
     Possible states the indicator can take
   */
-  List<GemStatus> possibleStates,
+  List<Status> possibleStates,
   /**
     Current status that is displayed
   */
-  GemStatus currentStatus,
+  Status currentStatus,
   /**
     Callback that is executed when the status changes.
     Emits the ne status.
   */
-  Event<GemStatus> onStatusChange,
+  Event<Status> onStatusChange,
   /**
     Value that is used to determine if a certain threshold is reached that leads to a status change
   */
