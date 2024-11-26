@@ -33,7 +33,7 @@ class BaseClassObjectMapperTest {
       assertEquals(i, BaseClassObjectMapper.<Character>deserialize(Integer.toString(i), "java.lang.Character").get());
     }
   }
-  
+
   @Test
   public void testShortSer(){
     for(short i = -1000; i < 1000; i++){
@@ -47,7 +47,7 @@ class BaseClassObjectMapperTest {
       assertEquals(i, BaseClassObjectMapper.<Short>deserialize(Short.toString(i), "java.lang.Short").get());
     }
   }
-  
+
   @Test
   public void testIntegerSer(){
     for(int i = -1000; i < 1000; i++){
@@ -112,7 +112,7 @@ class BaseClassObjectMapperTest {
 
   @Test
   public void testStringDeser(){
-     assertEquals("Test", BaseClassObjectMapper.<Double>deserialize("\"Test\"", "java.lang.String").get());
+     assertEquals("Test", BaseClassObjectMapper.<Double>deserialize("Test", "java.lang.String").get());
      assertEquals("", BaseClassObjectMapper.<Double>deserialize("\"\"", "java.lang.String").get());
   }
 }

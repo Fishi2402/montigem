@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package coco;
+
+import packaged.Domain.Person;
+import util.I;
+
+component RefGUIArgIncompatibleWithDerivedCoCo2(Person p, int foo) {
+  @I(i = p.friendsNumber);
+}
