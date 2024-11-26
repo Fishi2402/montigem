@@ -13,9 +13,12 @@ public class StringDeSer implements DeSer<String> {
     return "\"" + obj + "\"";
   }
 
+  /*
+    Assuming that this is normal String, we need to wrap it in <"> for the JSON Parser.
+   */
   @Override
   public Optional<String> deserialize(String str) {
-    JsonElement e = JsonParser.parse(str);
+    JsonElement e = JsonParser.parse('"'+str+'"');
     if(!e.isJsonString()) {
       return Optional.empty();
     }
