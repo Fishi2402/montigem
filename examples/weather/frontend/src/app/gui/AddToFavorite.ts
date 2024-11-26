@@ -29,7 +29,7 @@ export class AddToFavorite extends AddToFavoriteComponent {
         this.cities = val;
         for (const city of this.cities) {
           let value = city.getName();
-          this.options.push({value: value, display: value});
+          this.options.push(new Option(value));
         }
         this.options = this.options.slice();
       });

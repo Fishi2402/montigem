@@ -5,6 +5,7 @@ package umlp.generator.domain.decorator;
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDExtendUsage;
 import de.monticore.cdbasis._ast.ASTCDPackage;
@@ -36,7 +37,7 @@ public class ObserverDecorator extends AbstractDecorator {
   public static final String NOTIFY_TEMPLATE = "umlp.observer.Notify";
   public static final String MAYBE_NOTIFY_TEMPLATE = "umlp.observer.MaybeNotify";
 
-  private Collection<GenerationSummary> generationDetails = List.of();
+  protected Collection<GenerationSummary> generationDetails = List.of();
 
   public ObserverDecorator(final GlobalExtensionManagement glex) {
     super(glex);
@@ -104,6 +105,7 @@ public class ObserverDecorator extends AbstractDecorator {
           }
 
           String fullType = getCDPrinter().prettyprint(createType(a));
+          addImport(observerInterface, a);
           generationSummary.addSignature(cd4C.addMethod(observerInterface,
                                                         NOTIFY_TEMPLATE,
                                                         attributeName,
@@ -174,9 +176,12 @@ public class ObserverDecorator extends AbstractDecorator {
 
     cd4C.addImport(observerInterface, PathUtil.getBackendRTECommonPath("NotificationScope"));
     addImportForImportedObservers(domainClass, observerInterface);
-    super.addImports(domainClass, observerInterface);
+    addImports(domainClass, observerInterface);
 
     return observerInterface;
+  }
+
+  protected void addImport(ASTCDType observerType, ASTCDAttribute attr) {
   }
 
   private void addImportForImportedObservers(ASTCDType domainClass, ASTCDType observerType) {

@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("name", "managerName", "assocs")}
-${cd4c.method("protected void _doAdd${name}(${name} o, NotificationScope scope)")}
+${cd4c.method("protected void _doAddWithScope${name}(${name} o, NotificationScope scope)")}
 
 ${name?uncap_first}s.put(o.getGemId(), o);
 ${name?uncap_first}GemList.add(o);

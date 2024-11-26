@@ -15,6 +15,7 @@ import gradle.specific.serialize.SerializeGUISymbolsTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.artifacts.ModuleDependency;
 import org.gradle.api.tasks.Sync;
 import org.gradle.api.tasks.TaskProvider;
 import org.jetbrains.annotations.NotNull;
@@ -219,7 +220,10 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
 
     // Configurations
     project.getConfigurations().register(GUI_TYPES_NAME);
-    project.getDependencies().add(GUI_TYPES_NAME, "de.monticore.lang:guidsl:" + getStringProjectProperty(project, "mc_version", "") + ":default-types");
+    // Add the guidsl dependency as non-transitive (while we use the default-types jar, the
+    // dependencies are the main guidsl dependencies)
+    project.getDependencies().add(GUI_TYPES_NAME, ((ModuleDependency) project.getDependencies().module("de.monticore.lang:guidsl:" + getStringProjectProperty(project, "mc_version", "") + ":default-types")).
+        setTransitive(false));
 
     if (!local) {
       project.getConfigurations().register(GUI_LIB_NAME);
@@ -260,6 +264,19 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
 
   public static String getStringProjectProperty(Project project, String propertyName, String defaultValue) {
     return UMLPPluginFrontend.getStringProjectProperty(project, propertyName, defaultValue);
+  }
+
+  public static String getStringProjectPropertyStrip(Project project, String propertyName, String defaultValue) {
+    String stringProjectProperty = UMLPPluginFrontend.getStringProjectProperty(project,
+        propertyName, defaultValue);
+    if (stringProjectProperty == null) {
+      return null;
+    } else {
+      return stringProjectProperty
+          .replace("'", "")
+          .replace("\"", "")
+          .strip();
+    }
   }
 
   @NotNull

@@ -186,6 +186,11 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
         }
       }
       addStereotype(attribute.getModifier(), STEREOTYPE_MANAGER, getCorrectManager(assocSide));
+
+      if(GenService.isOptional(assocSide)){
+        addStereotype(attribute.getModifier(), "Optional", "");
+      }
+
       attrList.add(attribute);
     }
     return attrList;
@@ -201,6 +206,7 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
         .getStereotype()
         .addValues(CD4CodeMill.stereoValueBuilder().setName(name).setText(text).setContent(value).build());
   }
+
   protected AttributesTuple getAllAttributes(ASTCDType domainType, boolean isInterface, ASTCDCompilationUnit cd) {
     return new AttributesTuple(
         getAttributesForFields(domainType),

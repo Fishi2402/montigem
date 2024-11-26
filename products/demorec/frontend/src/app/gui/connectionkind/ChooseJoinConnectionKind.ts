@@ -17,7 +17,7 @@ import {
 
 import {Option} from "@umlp/input";
 
-const newOption: Option = { value: "NEW", display: "NEW" };
+const newOption: Option = new Option("NEW");
 
 @Component({
   standalone:true,
@@ -43,7 +43,7 @@ export class ChooseJoinConnectionKind extends ChooseJoinConnectionKindComponent 
         for (const jCKind of jCKinds) {
           let value = jCKind.getGemId() + "";
           jCKind.getNameAfterLoadPromise().then(name =>
-              this.connectionKindOptions.push({value: value, display: name})
+              this.connectionKindOptions.push(new Option(value, name))
           )
           ;
         }
@@ -75,13 +75,13 @@ export class ChooseJoinConnectionKind extends ChooseJoinConnectionKindComponent 
   }
 
   public override getCreateJoinConnectionKindCondition(): boolean {
-    return this.getSelectJoinConnectionKindEntry() === newOption.value;
+    return this.getSelectJoinConnectionKindEntry() === newOption.getValue();
   }
 
   public override addNewJoinConnectionKind() {
     return (newConnectionKind) => {
       newConnectionKind.getNameAfterLoadPromise().then(name => {
-        this.connectionKindOptions.push({value: newConnectionKind.getGemId(), display:name})
+        this.connectionKindOptions.push(new Option(newConnectionKind.getGemId(), name))
       })
       this.setSelectJoinConnectionKindEntry(newConnectionKind.getGemId())
     }

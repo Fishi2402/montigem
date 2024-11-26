@@ -10,7 +10,6 @@ public class Option extends OptionTOP {
   }
 
   public Option(String _value) {
-    super();
-    this._value = _value;
+    super(_value, _value);
   }
 }

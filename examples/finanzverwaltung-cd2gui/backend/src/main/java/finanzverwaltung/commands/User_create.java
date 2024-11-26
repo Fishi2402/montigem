@@ -26,7 +26,7 @@ public class User_create extends User_createTOP {
 
     UserAccessPolicy accessPolicy = new UserAccessPolicy();
     if (accessPolicy.checkCreatePermission(this)) {
-      FinanzverwaltungManager.addUser(user, NotificationScope.LOCAL);
+      FinanzverwaltungManager.addWithScopeUser(user, NotificationScope.LOCAL);
       return sendMail();
     }
     return StatusResult.error(getId());

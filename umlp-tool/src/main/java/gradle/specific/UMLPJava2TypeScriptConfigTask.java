@@ -29,6 +29,7 @@ public abstract class UMLPJava2TypeScriptConfigTask extends DefaultTask {
   @OutputDirectory
   public abstract DirectoryProperty getJsweetConfigOut();
 
+  @Optional
   @InputDirectory
   public abstract DirectoryProperty getHwcDir();
 
@@ -43,7 +44,9 @@ public abstract class UMLPJava2TypeScriptConfigTask extends DefaultTask {
   protected void generateJSweetConfig() {
     GeneratorSetup gs = new GeneratorSetup();
     gs.setOutputDirectory(getJsweetConfigOut().get().getAsFile());
-    gs.setHandcodedPath(new MCPath(getHwcDir().get().getAsFile().toPath()));
+    if (getHwcDir().isPresent()) {
+      gs.setHandcodedPath(new MCPath(getHwcDir().get().getAsFile().toPath()));
+    }
     JSweetConfigGenerator generator = new JSweetConfigGenerator(gs);
     generator.generate(getDomainModel().get(), getGenerateForDomain().getOrElse(!getGenerateForGui().getOrElse(true)));
   }

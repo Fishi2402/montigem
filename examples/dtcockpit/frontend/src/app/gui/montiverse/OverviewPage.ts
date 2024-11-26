@@ -27,7 +27,7 @@ export  class OverviewPage extends OverviewPageComponent {
   }
 
    public override getBranchDropdownOptions (dependentProject: Project): Array<Option> {
-    return dependentProject.getBranchesList().map(it => ({ value: it.getName(), display: it.getName() }));
+    return dependentProject.getBranchesList().map(it => (new Option(it.getName())));
   }
 }
 

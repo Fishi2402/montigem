@@ -3,15 +3,23 @@ package umlp.generator.gui.gentypescript.java2ts;
 
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.symbols.basicsymbols._ast.ASTDiagram;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import umlp.generator.AbstractDecorator;
 import umlp.generator.Filter;
-import umlp.generator.gui.GUIGeneratorUtil;
+import umlp.generator.util.UMLPSymbolTables;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -31,21 +39,52 @@ public class ComponentObserverManagerGenerator {
     Reporting.off();
     String cdName = ast.getCDDefinition().getName();
     Path targetPath = Paths.get(cdName + "ComponentObserverManager.ts");
-    List<String> domainClasses = getConcreteDomainClasses(ast).stream().map(domainClass -> domainClass.getName()).collect(Collectors.toList());
-    generatorEngine.generateNoA("umlp.gui2ts.TSComponentObserverManager", targetPath, ast, cdName, domainClasses, cdName.toLowerCase());
+    HashMap<String, String> domainClassNamesToPackageMap = new HashMap<String, String>();
+
+    getConcreteDomainClasses(ast.getCDDefinition()).forEach(domainClass ->
+        domainClassNamesToPackageMap.put(domainClass.getName(), getCorrectPackage(domainClass)));
+
+    var extensionDiamond = UMLPSymbolTables.getExtensionDiamond(ast.getCDDefinition().getSymbol());
+    HashSet<DiagramSymbol> allParentDiagrams = extensionDiamond.values().stream().reduce(new LinkedHashSet<>(),
+        (acc, set) -> {
+          acc.addAll(set); return acc;
+    });
+
+    allParentDiagrams.stream().map(parentD ->  {
+      // Get all concrete Domain Classes of all parent CDs
+      ASTDiagram astDiagram = parentD.getAstNode();
+      if(astDiagram instanceof ASTCDDefinition) {
+        return getConcreteDomainClasses((ASTCDDefinition)astDiagram);
+      } else {
+        return new ArrayList<ASTCDClass>();
+      }
+    }).forEach(l -> l.forEach(
+        domainClassOfParentDiag -> {
+          domainClassNamesToPackageMap.put(domainClassOfParentDiag.getName(),
+              getCorrectPackage(domainClassOfParentDiag));
+        }
+    ));
+
+    List<String> names = new ArrayList<>(new HashSet<>(domainClassNamesToPackageMap.values()));
+
+    generatorEngine.generateNoA("umlp.gui2ts.TSComponentObserverManager", targetPath, ast,
+        cdName, names, domainClassNamesToPackageMap);
 
     Reporting.on(cdName);
     Reporting.reportFileCreation(targetPath.toString());
   }
 
-  protected List<ASTCDClass> getConcreteDomainClasses(ASTCDCompilationUnit cd) {
-    return getDomainClasses(cd, Filter.DERIVED.or(Filter.ABSTRACT).negate());
+  protected List<ASTCDClass> getConcreteDomainClasses(ASTCDDefinition cd) {
+    return getDomainClasses(cd, Filter.DERIVED.negate());
+  }
+
+  protected String getCorrectPackage(ASTCDType type) {
+    return UMLPSymbolTables.getDiagramFor(type).getCDDefinition().getName();
   }
 
   protected List<ASTCDClass> getDomainClasses(
-      ASTCDCompilationUnit cd, Predicate<Filter.Wrapper> filter) {
-    return cd.getCDDefinition()
-        .getCDClassesList()
+      ASTCDDefinition cd, Predicate<Filter.Wrapper> filter) {
+    return cd.getCDClassesList()
         .stream()
         .filter(c -> filter.test(Filter.Wrapper.wrap(c)))
         .collect(Collectors.toList());

@@ -9,5 +9,5 @@ ${cd4c.method("public StatusResult doAction()")}
     return new ValidationResult(getId(), validationResult, "sehub.${classname}ValidationResult");
   }
 </#if>
-${managerName}.add${classname}(${classname?uncap_first}, NotificationScope.LOCAL);
+${managerName}.addWithScope${classname}(${classname?uncap_first}, NotificationScope.LOCAL);
 return StatusResult.ok(getId());

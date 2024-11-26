@@ -53,7 +53,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     this.state = LoadingState.LOADING;
     this.loadObjects(new UMLPArrayList(this.ids)).then(value => {
       this.state = LoadingState.LOADED;
-      this.asArray = [];
+      this.asArray.length = 0;
       value.forEach(element => {
         if (element.getLoadingState() == LoadingState.LOADED) {
           this.asArray!.push(element.get());
@@ -179,8 +179,8 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
   }
 
   public async add(idxOrElem: number | E, elem?: E): Promise<boolean> {
-    if (elem === undefined || elem === null) {
-      await this._internal_addAndSync(this.size(), new UMLPArrayList([elem.getGemId()]));
+    if ((elem === undefined || elem === null) && (<E>idxOrElem).getGemId) {
+      await this._internal_addAndSync(this.size(), new UMLPArrayList([(<E>idxOrElem).getGemId()]));
     } else if (typeof idxOrElem === 'number') {
       await this._internal_addAndSync(idxOrElem, new UMLPArrayList([elem.getGemId()]));
     }
@@ -486,11 +486,12 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     //   return asArrayMap[{startIndex, endIndex}];
     // }
     if (this.asArray == null) {
-      this.asArray = [];
       await this.loadObjects(new UMLPArrayList(this.ids));
+      const arr = [];
       for await (let gemListElement of this) {
-        this.asArray.push(gemListElement);
+        arr.push(gemListElement);
       }
+      this.asArray = arr
     }
     return this.asArray;
   }

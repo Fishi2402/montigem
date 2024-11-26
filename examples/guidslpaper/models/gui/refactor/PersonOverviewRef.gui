@@ -5,8 +5,10 @@ import mc.fenix.arrange.GemColumn;
 import mc.fenix.arrange.GemCard;
 import mc.fenix.input.GemTextInput;
 import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemText;
 import mc.fenix.table.GemTable;
-import mc.fenix.table.TableTypes.TableColumn;
+import mc.fenix.table.GemTableHeader;
+import mc.fenix.table.GemTableRow;
 
 import gui.common.Header;
 import gui.refactor.Overview;
@@ -21,15 +23,17 @@ page PersonOverviewRef(List<Person> persons) {
       @GemButton(label = "?")
     ],
     main = @GemTable(
-      rows = persons,
-      columns = [
-      /*
-        TableColumn("name", "Name"),
-        TableColumn("vorname", "Surname"),
-        TableColumn("beschBeginn", "Contract start"),
-        TableColumn("beschEnde", "Contract end")
-      /**/
-      ]
+      headers = [@GemTableHeader(cols = [
+        "Name", "Surname", "Contract start", "Contract end"
+      ])],
+      body = [@iterate(Person p : persons) {
+        @GemTableRow(cols = [
+          @GemText(value = p.vorname),
+          @GemText(value = p.nachname),
+          @GemText(value = formatDate(p.beschBeginn)),
+          @GemText(value = formatDate(p.beschEnde))
+        ]);
+      }]
     )
   );
 }

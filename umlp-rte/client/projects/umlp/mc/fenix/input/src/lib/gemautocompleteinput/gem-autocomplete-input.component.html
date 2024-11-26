@@ -36,10 +36,10 @@
       *ngFor="let option of filteredOptions; let i = index"
       class="gem-dropdown-option"
       [class.highlight-option]="highlightIdx == i"
-      (click)="selectOption(option.value)"
+      (click)="selectOption(option.getValue())"
       (mousemove)="setHighlightIdx(i)"
     >
-      {{ option.display }}
+      {{ option.getDisplay() }}
     </div>
   </div>
 </div>

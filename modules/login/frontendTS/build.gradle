@@ -5,6 +5,7 @@ plugins {
   // TODO: -test
   id "de.rwth.se.umlp-tool-frontend"  // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
 //  id "de.rwth.se.umlp-tool-frontend-test"  // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
+  id 'de.rwth.se.umlp-tool-module-jsfrontend' // create domainSymbols-jar
 }
 
 node {

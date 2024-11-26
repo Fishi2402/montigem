@@ -7,6 +7,7 @@ import com.google.common.cache.LoadingCache;
 import de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.tagging.SimpleSymbolTagger;
 import de.monticore.tagging.TagRepository;
 import de.monticore.tagging.tags._ast.ASTSimpleTag;
@@ -56,6 +57,14 @@ public class TagLookUp {
         }
       });
 
+  protected static LoadingCache<VariableSymbol, Boolean> isDerivedAttrCacheSymbol = CacheBuilder.newBuilder()
+      .build(new CacheLoader<>() {
+        @Override
+        public @NotNull Boolean load(@NotNull VariableSymbol key) {
+          return _isDerived(key);
+        }
+      });
+
   public static boolean isSingleton(TypeSymbol typeSymbol) {
     return isSingletonCacheSymbol.getUnchecked(typeSymbol);
   }
@@ -79,6 +88,10 @@ public class TagLookUp {
     return isDerivedCacheSymbol.getUnchecked(typeSymbol);
   }
 
+  public static boolean isDerived(VariableSymbol fieldSymbol) {
+    return isDerivedAttrCacheSymbol.getUnchecked(fieldSymbol);
+  }
+
   protected static Boolean _isSingleton(TypeSymbol typeSymbol) {
     return getSimpleSymbolTagger().getTags(typeSymbol).stream().anyMatch(TagLookUp::isSingleton);
   }
@@ -88,6 +101,10 @@ public class TagLookUp {
   }
 
   public static boolean _isDerived(TypeSymbol typeSymbol) {
+    return getSimpleSymbolTagger().getTags(typeSymbol).stream().anyMatch(TagLookUp::isDerived);
+  }
+
+  public static boolean _isDerived(VariableSymbol typeSymbol) {
     return getSimpleSymbolTagger().getTags(typeSymbol).stream().anyMatch(TagLookUp::isDerived);
   }
 
@@ -119,6 +136,8 @@ public class TagLookUp {
     isCommandCacheSymbol.cleanUp();
     isDerivedCacheSymbol.invalidateAll();
     isDerivedCacheSymbol.cleanUp();
+    isDerivedAttrCacheSymbol.invalidateAll();
+    isDerivedAttrCacheSymbol.cleanUp();
     TagRepository.clearTags();
   }
 }
