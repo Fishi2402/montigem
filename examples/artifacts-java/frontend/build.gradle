@@ -67,7 +67,7 @@ translateJava2TSDomain {
   ]
   verbose = true
   // TODO: why is this unset?
-  jsweetDir.set(project.buildDir.toPath().resolve("jsweet").toFile())
+//  jsweetDir.set(project.buildDir.toPath().resolve("jsweet").toFile())
 }
 
 
