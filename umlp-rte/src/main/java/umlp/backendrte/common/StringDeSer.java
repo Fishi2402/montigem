@@ -14,7 +14,9 @@ public class StringDeSer implements DeSer<String> {
   }
 
   /*
-    Assuming that this is normal String, we need to wrap it in <"> for the JSON Parser.
+    Assuming that this is a normal String, we need to wrap it in <"> for the JSON Parser.
+    de.monticore.symboltable.serialization.json.JsonString has a weird toString() implementation
+    which strips away quotation marks.
    */
   @Override
   public Optional<String> deserialize(String str) {
