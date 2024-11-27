@@ -69,3 +69,5 @@ tasks.register('runApp', NpxTask) {
 tasks.register('run') {
   dependsOn(runApp)
 }
+
+// TODO: publish?

@@ -6,7 +6,7 @@ plugins {
   id 'io.spring.dependency-management' version '1.0.15.RELEASE'
   id 'org.springframework.boot' version "${spring_version}"
   id 'de.rwth.se.umlp-tool-module-backend' // TODO
-
+  id 'maven-publish'
 }
 
 dependencies {
@@ -16,6 +16,7 @@ dependencies {
     exclude module: 'log4j-to-slf4j'
   }
   implementation project(':umlp-rte')
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version
 
 }
 
@@ -25,4 +26,26 @@ generateUmlpBackend {
 
 application { // Set Main-Class for "run" task
   mainClass = 'loginmodule.LoginModuleServerApplication'
+}
+
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      from components.java
+    }
+  }
+  // TODO: correct repo
+  repositories {
+    maven {
+      url "file://${project.buildDir}/repo"
+    }
+    maven {
+      credentials.username mavenUser
+      credentials.password mavenPassword
+
+      def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-releases/"
+      def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-snapshots/"
+      url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+    }
+  }
 }
