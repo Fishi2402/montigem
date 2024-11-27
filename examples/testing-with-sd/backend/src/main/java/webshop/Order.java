@@ -3,7 +3,7 @@ package webshop;
 public class Order extends OrderTOP {
   @Override
   public int getTotal() {
-    return getItemsList().stream()
+    return getItemList().stream()
         .mapToInt(item -> item.getAmount() * item.getPerUnitCost())
         .sum();
   }

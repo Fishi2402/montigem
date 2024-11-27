@@ -8,5 +8,5 @@ classdiagram Webshop {
     int perUnitCost;
   }
 
-  association [1] Order -> (items) Item [*];
+  association [1] Order -> (item) Item [*];
 }

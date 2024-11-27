@@ -1,0 +1,9 @@
+sequencediagram TotalTest {
+  o:Order;
+
+  assert o.getTotal() == 0;
+
+  o.addItem(WebshopManager.itemBuilder().amount(2).perUnitCost(3).build());
+
+  assert o.getTotal() == 6;
+}
