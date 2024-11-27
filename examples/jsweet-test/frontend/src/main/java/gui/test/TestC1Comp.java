@@ -6,11 +6,6 @@ import umlp.jsweet.extension.annotation.Directive;
 
 import java.util.function.Consumer;
 
-@Directive(
-    cdName = "Jsweettest",
-    isEmpty = false,
-    isCreate = false
-)
 @Component
 public class TestC1Comp extends TestC1CompTOP {
   @Override

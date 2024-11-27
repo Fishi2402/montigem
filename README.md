@@ -41,8 +41,8 @@ You can try UMLP using the [SELib Example](./examples/selib).
 
 ## Editor plugins
 - Download Latest Plugin
-  - [IntelliJ](https://git.rwth-aachen.de/monticore/umlp/-/jobs/artifacts/dev/raw/umlp-tool/build/distributions/umlp-tool-7.7.0-SNAPSHOT.zip?job=build_with_containers)
-  - [Visual Studio Code](https://git.rwth-aachen.de/monticore/umlp/-/jobs/artifacts/dev/raw/umlp-tool/build/generated-sources/UMLPWithGUI/plugins/umlpwithgui-vscode-plugin/umlpwithgui-lsp-7.7.0-SNAPSHOT.vsix?job=build_with_containers)
+  - [IntelliJ](https://git.rwth-aachen.de/monticore/umlp/-/jobs/artifacts/dev/raw/umlp-tool/build/distributions/umlp-tool-7.7.0-SNAPSHOT.zip?job=build_with_deploy)
+  - [Visual Studio Code](https://git.rwth-aachen.de/monticore/umlp/-/jobs/artifacts/dev/raw/umlp-tool/build/generated-sources/UMLPWithGUI/plugins/umlpwithgui-vscode-plugin/umlpwithgui-lsp-7.7.0-SNAPSHOT.vsix?job=build_with_deploy)
 - Install it
   - IntelliJ: https://www.jetbrains.com/help/idea/managing-plugins.html#install_plugin_from_disk
   - VSCode: https://code.visualstudio.com/docs/editor/extension-marketplace#_install-from-a-vsix

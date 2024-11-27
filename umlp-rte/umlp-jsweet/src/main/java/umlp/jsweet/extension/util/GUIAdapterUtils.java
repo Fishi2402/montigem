@@ -54,14 +54,6 @@ public class GUIAdapterUtils extends UMLPAdapterUtils {
         StringUtils.uncapitalize(methodName.substring(2));
   }
 
-  public boolean isOutput(VariableElement variable) {
-    return context.hasAnnotationType(variable, OUTPUT_ANNOTATION);
-  }
-
-  public boolean isInput(VariableElement variable) {
-    return context.hasAnnotationType(variable, INPUT_ANNOTATION);
-  }
-
   public boolean isComponent(TypeElement type) {
     return context.hasAnnotationType(type, COMPONENT_ANNOTATION);
   }

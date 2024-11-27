@@ -98,7 +98,7 @@ public abstract class UMLPPluginFrontendWithJSweet implements Plugin<Project> {
     syncJsweetDomainConfigTask.configure(umlpTask -> {
       umlpTask.from(java2TypeScriptDomainConfigTask.get().getJsweetConfigOut().getAsFile());
       umlpTask.dependsOn(java2TypeScriptDomainConfigTask);
-      umlpTask.into(frontendDomainJ2TSTask.get().getJsweetDir());
+      umlpTask.into(this.jsweetBuildDomainDir);
       if (java2TypeScriptDomainConfigTask.get().getHwcDir().isPresent()) {
         umlpTask.from(java2TypeScriptDomainConfigTask.get().getHwcDir());
       }
@@ -106,7 +106,7 @@ public abstract class UMLPPluginFrontendWithJSweet implements Plugin<Project> {
     syncJsweetGUIConfigTask.configure(umlpTask -> {
       umlpTask.from(java2TypeScriptGUIConfigTask.get().getJsweetConfigOut().getAsFile());
       umlpTask.dependsOn(java2TypeScriptGUIConfigTask);
-      umlpTask.into(frontendGUIJ2TSTask.get().getJsweetDir());
+      umlpTask.into(this.jsweetBuildGUIDir);
       if (java2TypeScriptGUIConfigTask.get().getHwcDir().isPresent()) {
         umlpTask.from(java2TypeScriptGUIConfigTask.get().getHwcDir());
       }

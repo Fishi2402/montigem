@@ -8,6 +8,7 @@ import hardy.flensburg.Human;
 import hardy.flensburg.Person;
 import hardy.flensburg.commands.Human_get;
 import hardy.flensburg.test_infrastructure.FlensburgMockTestSetup;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.junit.jupiter.api.Test;
 import umlp.backendrte.command.Command;
 import umlp.backendrte.command.CommandObjectMapper;
@@ -76,6 +77,34 @@ public class CommandObjectMapperTest extends FlensburgMockTestSetup {
 
     assertEquals(gemId, h1001deserialized.getGemId());
     assertEquals(age, h1001deserialized.getAge());
+  }
+
+  @Test
+  public void testSimpleStringResultRoundtrip(){
+    int commandId = 1;
+
+    String myString = "My Special String";
+
+    SimpleResult<String> result = new SimpleResult<>(commandId, StringEscapeUtils.escapeJson(myString), "java.lang.String");
+
+    String resultStr = CommandObjectMapper.serializeResponse(result);
+
+    CommandResult<?> unknownResult = CommandObjectMapper.deserializeResponse(resultStr).get();
+
+    assertEquals(commandId, unknownResult.getCommandId());
+    assertTrue(unknownResult.isSimpleResult());
+    assertTrue(unknownResult instanceof SimpleResult);
+
+    SimpleResult<?> resp = unknownResult.asSimpleResult();
+
+    assertEquals(LoadingState.LOADED, resp.getLoadingState());
+    Object obj = resp.get();
+
+    assertTrue(obj instanceof String);
+    String deserializedString = (String) obj;
+    System.out.println(myString);
+    System.out.println(deserializedString);
+    assertEquals(myString, deserializedString);
   }
 
   @Test

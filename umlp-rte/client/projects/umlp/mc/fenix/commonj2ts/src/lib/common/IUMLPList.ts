@@ -34,6 +34,8 @@ export interface IUMLPList<E> extends AsyncIterable<E> {
 
   containsAll(c: IUMLPList<any> | Array<any>): Promise<boolean>;
 
+  equals(o: any): Promise<boolean>;
+
   forEach(consumer: (element: E) => void): Promise<void>;
 
   get(index: number): Promise<E>;
