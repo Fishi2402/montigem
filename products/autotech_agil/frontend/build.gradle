@@ -1,0 +1,63 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+
+plugins {
+  id 'java'
+  id "com.github.node-gradle.node" version "5.0.0"
+  id 'de.rwth.se.umlp-tool-frontend'
+}
+
+repositories {
+  maven {
+    credentials.username mavenUser
+    credentials.password mavenPassword
+    url ma_repo
+  }
+}
+
+node {
+  nodeProjectDir = file("${buildDir}/frontendGen")
+}
+nodeSetup.dependsOn(frontendSetup)
+
+genGUI {
+  domainModels = ["AutoTechAgil"]
+}
+
+nodeSetup.dependsOn(frontendSetup)
+npmInstall.dependsOn(nodeSetup, ':umlp-rte:client:npmInstall')
+
+def prebuildTasks = [
+    npmInstall, generate
+]
+
+tasks.register('buildApp', NpxTask) {
+  dependsOn(prebuildTasks)
+  command = "ng"
+  args = ["build"]
+}
+assemble.dependsOn(buildApp)
+
+tasks.register('testApp', NpxTask) {
+  dependsOn(prebuildTasks)
+  command = "ng"
+  args = ["test"]
+}
+
+tasks.register('runApp', NpxTask) {
+  dependsOn(prebuildTasks)
+  command = "ng"
+  args = ["serve"]
+}
+
+tasks.register('runAppNoBuild', NpxTask) {
+  command = "ng"
+  args = ["serve"]
+}
+
+test {
+  testLogging {
+    events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
+  }
+  useJUnitPlatform()
+}
