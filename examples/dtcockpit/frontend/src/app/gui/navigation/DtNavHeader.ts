@@ -7,6 +7,7 @@ import { DtNavHeaderComponent ,config} from '@src/gui/navigation/DtNavHeaderComp
 
 import { RouterModule } from '@angular/router';
 import {CommonModule} from '@angular/common';
+import {LoginSecManager} from "@src/dtcockpit/login/LoginSecManager";
 @Component({
   standalone:true,
   imports:[...config.imports,RouterModule,CommonModule],
@@ -19,7 +20,7 @@ export class DtNavHeader extends DtNavHeaderComponent {
   readonly items: { url: string, title: string }[] = [];
 
   getCurrentUser(): User {
-    return DtcockpitSecurityManager.getCurrentUser();
+    return LoginSecManager.getCurrentUser();
   }
 
   signOutCurrentUser(): void {
