@@ -1,9 +1,11 @@
 sequencediagram TotalTest {
   o:Order;
 
-  assert o.getTotal() == 0;
+  assert o.total == 0;
 
+  //TODO use od lang for that -> public on github
+  //TODO o.item += ... might work too
   o.addItem(WebshopManager.itemBuilder().amount(2).perUnitCost(3).build());
 
-  assert o.getTotal() == 6;
+  assert o.total == 6;
 }
