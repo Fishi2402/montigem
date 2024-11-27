@@ -7,6 +7,8 @@ import org.gradle.api.attributes.Bundling;
 import org.gradle.api.attributes.Category;
 import org.gradle.api.attributes.LibraryElements;
 import org.gradle.api.attributes.Usage;
+import org.gradle.api.component.AdhocComponentWithVariants;
+import org.gradle.api.component.ConfigurationVariantDetails;
 import org.gradle.api.plugins.BasePlugin;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.bundling.Jar;
@@ -17,12 +19,12 @@ public class UMLPPluginModuleJSFrontend implements Plugin<Project> {
   public void apply(Project project) {
     // Create the models jar
 
-    Configuration outgoingModels = project.getConfigurations().create("umlpOutgoingDomainSymbols");
-    outgoingModels.setCanBeConsumed(true);
-    outgoingModels.setCanBeResolved(false);
-    outgoingModels.setDescription("Published domain Symbols of the module");
+    Configuration outgoingDomainSymbols = project.getConfigurations().create("umlpOutgoingDomainSymbols");
+    outgoingDomainSymbols.setCanBeConsumed(true);
+    outgoingDomainSymbols.setCanBeResolved(false);
+    outgoingDomainSymbols.setDescription("Published domain Symbols of the module");
 
-    addDomainSymbolsJarAttributes(outgoingModels, project);
+    addDomainSymbolsJarAttributes(outgoingDomainSymbols, project);
 
     TaskProvider<Jar> jarTask = project.getTasks().register("createDomainSymbolsJar", Jar.class, jar -> {
       jar.setGroup("umlp");
@@ -32,7 +34,10 @@ public class UMLPPluginModuleJSFrontend implements Plugin<Project> {
    project.getTasks().named(BasePlugin.ASSEMBLE_TASK_NAME).configure(it->it.dependsOn(jarTask));
 
    // Add createDomainSymbolsJar-jar as artifact to the config
-   project.getArtifacts().add(outgoingModels.getName(), jarTask);
+   project.getArtifacts().add(outgoingDomainSymbols.getName(), jarTask);
+   var javaComponent = (AdhocComponentWithVariants)project.getComponents().getByName("java");
+   javaComponent.addVariantsFromConfiguration(outgoingDomainSymbols, ConfigurationVariantDetails::mapToOptional);
+
 
   }
 

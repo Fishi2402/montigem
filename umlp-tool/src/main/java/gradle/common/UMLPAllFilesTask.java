@@ -39,6 +39,7 @@ abstract public class UMLPAllFilesTask extends MCAllFilesTask implements GradleT
     super(type, null);
 
     getModules().from(getProject().getConfigurations().getByName(UMLPPluginBase.UMLP_MODULES_CONFIG));
+    getModules().from(getProject().getConfigurations().getByName(UMLPPluginBase.UMLP_MODULES_GEN_CONFIG));
 
     getModuleConfigTemplates().convention(getProject().provider(() -> {
       List<String> res = new ArrayList<>();

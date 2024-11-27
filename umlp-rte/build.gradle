@@ -41,7 +41,10 @@ dependencies {
 }
 
 // TODO: umlpModules config is added elsewhere  by the umlp plugin
-configurations {umlpModules{}}
+configurations {
+  umlpModules
+  umlpModulesGen
+}
 
 // POJOs
 tasks.register('generateGuiComponentJava', GUITypes2JavaTask) {
