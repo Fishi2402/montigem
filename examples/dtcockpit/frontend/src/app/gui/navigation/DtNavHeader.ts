@@ -24,10 +24,7 @@ export class DtNavHeader extends DtNavHeaderComponent {
   }
 
   signOutCurrentUser(): void {
-    fetch("/umlp/api/logout").finally(() => {
-      DtcockpitSecurityManager.signOut();
-      this._router.navigate(['gui', 'loginmodule', 'LoginPage']);
-    });
+    DtcockpitSecurityManager.signOut(this._router)
   }
 
   isSignedIn(): boolean {
