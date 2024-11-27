@@ -15,19 +15,21 @@ import { MatTooltipModule } from "@angular/material/tooltip";
   styles: config.styles,
   styleUrls: config.styleUrls
 })
-export class StatusIndicator extends StatusIndicatorComponent{
+export class StatusIndicator extends StatusIndicatorComponent {
 
-  public override setStatusValue(value: number): void {
+  public override setStatusTriggerValue(value: number): void {
     this.setCurrentStatus(
-        this.getPossibleStates().find(status => value >= status.getThreshold()) ||
-      this.possibleStates[this.possibleStates.length - 1]
+        this.getPossibleStatuses().find(status => value >= status.getThreshold()) ||
+      this.possibleStatuses[this.possibleStatuses.length - 1]
     );
+    this.onStatusChange.emit(this.getCurrentStatus());
   }
 
   public override setStatusId(value : number): void {
     this.setCurrentStatus(
-        this.possibleStates.find(status => status.getStatusId() == value)
+        this.possibleStatuses.find(status => status.getStatusId() == value)
     );
+    this.onStatusChange.emit(this.getCurrentStatus());
   }
 
 }

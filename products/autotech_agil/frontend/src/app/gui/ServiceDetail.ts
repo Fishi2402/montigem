@@ -27,7 +27,6 @@ export class ServiceDetail extends ServiceDetailComponent {
 
   public override init(): void {
     super.init();
-    console.log("Service", this.service);
     const statusRed: Status = new Status();
     statusRed.setStatusId(ServiceStatus.RED);
     statusRed.setImageSource("assets/images/traffic-light-red.png");
@@ -46,10 +45,9 @@ export class ServiceDetail extends ServiceDetailComponent {
     statusGreen.setLabel("Green");
     statusGreen.setThreshold(0.0);
     this.possibleStates.push(statusGreen);
-    console.log("Possible states", this.possibleStates);
   }
 
-  public override getPossibleStates(): Array<Status> {
+  public override getPossibleStatuses(): Array<Status> {
     return this.possibleStates;
   }
 

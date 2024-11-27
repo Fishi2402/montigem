@@ -18,7 +18,7 @@ page ServiceDetail(Service service) {
     @GemColumn(rowGap = "20px", hAlign = "center", components = [
       @StatusIndicator(
         width = "100px",
-        possibleStates = getPossibleStates(),
+        possibleStatuses = getPossibleStatuses(),
         statusId = service.status
       ),
       @GemDropdownInput(
@@ -29,8 +29,8 @@ page ServiceDetail(Service service) {
     @GemColumn(rowGap = "20px", hAlign = "center", components = [
       @StatusIndicator(
         width = "100px",
-        possibleStates = getPossibleStates(),
-        statusValue = service.temperature
+        possibleStatuses = getPossibleStatuses(),
+        statusTriggerValue = service.temperature
       ),
       @GemTextInput(
         inputType = "number",
