@@ -72,8 +72,8 @@ export class LoginSecManager extends LoginSecManagerTOP {
 
 
   public redirectToLoginPage(router: Router, route?: ActivatedRoute): void {
-    console.log("was on ", route)
-    console.log(LoginSecManager.getInstance().getSignedInUser());
+    console.log("[LoginSecManager] RedirectingToLoginPage, was on ", route)
+    console.log("user:", LoginSecManager.getInstance().getSignedInUser());
     if (route)
       console.log("-> ", route.snapshot.url);
     localStorage.removeItem(LoginSecManager.LS_KEY);
