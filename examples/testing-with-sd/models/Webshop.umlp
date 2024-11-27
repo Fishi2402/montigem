@@ -1,4 +1,12 @@
 classdiagram Webshop {
   class Order {
+    /int total;
   }
+
+  class Item {
+    int amount;
+    int perUnitCost;
+  }
+
+  association [1] Order -> (items) Item [*];
 }
