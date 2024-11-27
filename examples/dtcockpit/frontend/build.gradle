@@ -27,9 +27,7 @@ node {
 }
 
 createDomainSymbols {
-  // TODO: via resolveable configs
-  modelDir.from(configurations.umlpModulesModels)
-
+  modelDir.from(configurations.umlpModulesModels) // TODO: Move this module logic into the plugin
 }
 
 genDomain {
@@ -44,9 +42,9 @@ genDomain {
 
   // Alternative: Generate the module-frontend-domain too
   input = file("../models/Dtcockpit.umlp")
-  modelDir.from(configurations.umlpModulesModels)
+  modelDir.from(configurations.umlpModulesModels) // TODO: Move this module logic into the plugin
 
-  // TODO: tsconfig path
+  // TODO: The module has to be added to the tsconfig path
   /*
       "paths": {
       "@src/*": ["build/appdomain/*", "build/appgui/*", "src/app/*", "../../src/app/*",
@@ -66,7 +64,7 @@ genGUI {
   symbolDir.from(() -> tasks.named("createDomainSymbols").get().outputs)
 
   // Load the symbols from the .jars in the domain symbols path
-  symbolDir.from(configurations.umlpModulesDomainSymbols)
+  symbolDir.from(configurations.umlpModulesDomainSymbols) // TODO: Move this module logic into the plugin
 
   outputs.upToDateWhen { false }
   /*

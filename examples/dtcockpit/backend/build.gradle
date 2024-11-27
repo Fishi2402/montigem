@@ -8,10 +8,6 @@ plugins {
   id 'org.springframework.boot' version "${spring_version}"
 }
 
-configurations {
-  umlpModulesModels // ToDo: Define this via the plugin & combine via one config
-}
-
 dependencies {
   umlpModulesGen("umlp.modules:login:$version")
   // TODO: adding it directly to the umlpModules failes due to missing module metadata
@@ -86,7 +82,7 @@ generateUmlpBackend {
   useSpring = true
   useShell = true
 
-  modelDir.from(configurations.umlpModulesModels)
+  modelDir.from(configurations.umlpModulesModels) // TODO: Move this module logic into the plugin
 }
 
 //COMPARE_generateUmlpBackend {
