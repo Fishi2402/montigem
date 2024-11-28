@@ -22,7 +22,11 @@ component GemChat(List<Message> messages, Message userMsg) {
         }
     },@GemRow(rowGap = 5 ,components=[
         @GemColumn(width="80%",components=[userInput@GemTextareaInput(placeholder="Start Chatting :)",entry=userMsg.content,resize="none")]),
-        @GemColumn(rowGap ="1px" ,width="20%",components=[sendButton@GemButton(leftClick=sendMessage(userMsg),label="send"),clearButton@GemButton(leftClick=clearMessages(),label="clear")])])
+        @GemColumn(height="100%",rowGap ="1px" ,width="20%",components=[sendButton@GemButton(leftClick=sendMessage(userMsg),label="send"),clearButton@GemButton(leftClick=clearMessages(),label="clear")])])
     ])
+
+    //  |||| || btn
+    //  |||| || btn2
+
   );
 }
