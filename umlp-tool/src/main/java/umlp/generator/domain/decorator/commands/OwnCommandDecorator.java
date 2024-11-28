@@ -17,9 +17,12 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.monticore.umlstereotype._ast.ASTStereotypeBuilder;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
+import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
 import umlp.generator.Filter;
 import umlp.generator.domain.decorator.AccessPolicyDecorator;
@@ -104,7 +107,57 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
     AccessorDecorator accessor = DecoratorUtil.streamlessListAcessor(glex);
     attrList.forEach(a -> ast.addAllCDMembers(accessor.decorate(a)));
 
-    getCD4C().addMethod(ast, getDoActionTemplate(), buildReturnType(meth, ast).printType());
+    String returnType = buildReturnType(meth, ast).printType();
+    getCD4C().addMethod(ast, getDoActionTemplate(), returnType);
+
+    // Add reply methods
+    if (meth.getMCReturnType().isPresentMCVoidType()) {
+      getCD4C().addMethod(ast, getReplySuccessStatusTemplate());
+      getCD4C().addMethod(ast, getReplyFailStatusTemplate());
+    } else if (meth.getMCReturnType().isPresentMCType()){
+      ASTMCType paramTypeSym = meth.getMCReturnType().getMCType();
+      String paramType = paramTypeSym.printType();
+
+      if (GenService.isList(paramTypeSym)) {
+        paramType = ((ASTMCListType)paramTypeSym).getMCTypeArgumentList().get(0).printType();
+        var symbol = meth.getEnclosingScope().resolveType(paramType);
+        if (symbol.isEmpty())
+          Log.error("Unable to resolve Optional inner type " + paramType, meth.get_SourcePositionStart());
+        String paramFQN = StringTransformations.uncapitalize(symbol.get().getFullName());
+        // Handle native types
+        if (DerivedClassCommandDecorator.nativeTypes.contains(paramFQN) || DerivedClassCommandDecorator.nativeTypes.contains(boxType(paramFQN)))
+          paramFQN = "java.lang." + boxType(paramFQN);
+        getCD4C().addMethod(ast, getReplySuccessListTemplate(), returnType, paramType, paramFQN);
+        getCD4C().addMethod(ast, getReplyFailListTemplate(), returnType, paramFQN);
+      } else {
+        String paramFQN;
+        boolean isOptional = GenService.isOptional(paramTypeSym);
+        if (isOptional) {
+          paramType = ((ASTMCOptionalType)paramTypeSym).getMCTypeArgumentList().get(0).printType();
+          var symbol = meth.getEnclosingScope().resolveType(paramType);
+          if (symbol.isEmpty())
+            Log.error("Unable to resolve Optional inner type " + paramType, meth.get_SourcePositionStart());
+          paramFQN = StringTransformations.uncapitalize(symbol.get().getFullName());
+        } else if (paramTypeSym.getDefiningSymbol().isPresent()) {
+          paramFQN = StringTransformations.uncapitalize(paramTypeSym.getDefiningSymbol().get().getFullName());
+        } else {
+          Log.error("Unable to detect type from command ", meth.get_SourcePositionStart());
+          paramFQN = "Object";
+        }
+
+        // Handle native types
+        if (DerivedClassCommandDecorator.nativeTypes.contains(paramFQN) || DerivedClassCommandDecorator.nativeTypes.contains(boxType(paramFQN)))
+          paramFQN = "java.lang." + boxType(paramFQN);
+
+        getCD4C().addMethod(ast, getReplySuccessTemplate(), returnType, paramType, paramFQN);
+        getCD4C().addMethod(ast, getReplyFailTemplate(), returnType, paramFQN);
+
+        if (isOptional) {
+          getCD4C().addMethod(ast, getReplyEmptyTemplate(), returnType);
+        }
+
+      }
+    }
 
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList());
 
@@ -139,6 +192,7 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
     getCD4C().addImport(ast, PathUtil.getBackendRTEUtilPath("LogUtil"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("GeneralErrorCollector"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("LoadingState"));
     getCD4C().addImport(ast, "com.google.common.collect.Sets");
     getCD4C().addImport(ast, "java.util.ListIterator");
     getCD4C().addImport(ast, "java.util.Spliterator");
@@ -190,6 +244,34 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
 
   protected String getDoActionTemplate() {
     return "umlp.commands.own.DoAction";
+  }
+
+  protected String getReplySuccessTemplate() {
+    return "umlp.commands.own.ReplySuccess";
+  }
+
+  protected String getReplyFailTemplate() {
+    return "umlp.commands.own.ReplyFail";
+  }
+
+  protected String getReplyEmptyTemplate() {
+    return "umlp.commands.own.ReplyEmpty";
+  }
+
+  protected String getReplySuccessListTemplate() {
+    return "umlp.commands.own.ReplySuccessList";
+  }
+
+  protected String getReplyFailListTemplate() {
+    return "umlp.commands.own.ReplyFailList";
+  }
+
+  protected String getReplySuccessStatusTemplate() {
+    return "umlp.commands.own.ReplySuccessStatus";
+  }
+
+  protected String getReplyFailStatusTemplate() {
+    return "umlp.commands.own.ReplyFailStatus";
   }
 
   protected String getCheckAccessPolicyTemplate() {
@@ -301,6 +383,26 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
     else if (GenService.isJavaType(innerType)) {
       getCD4C().addImport(ast, innerType.printFullName());
     }
+  }
+
+  protected String boxType(String type) {
+    if (type.equals("int"))
+      type = "Integer";
+    else if (type.equals("boolean"))
+      type = "Boolean";
+    else if (type.equals("char"))
+      type = "Character";
+    else if (type.equals("byte"))
+      type = "Byte";
+    else if (type.equals("short"))
+      type = "Short";
+    else if (type.equals("long"))
+      type = "Long";
+    else if (type.equals("float"))
+      type = "Float";
+    else if (type.equals("double"))
+      type = "Double";
+    return type;
   }
 
 }

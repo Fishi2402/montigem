@@ -56,10 +56,6 @@ genGUI {
   domainModels = ["Dtcockpit", "LoginModule"]
   guiCreateModels = ["gui.login.UserCreate", "gui.project.ProjectCreate", "gui.project.ProjectsCreateByGroup"]
 
-  println("#####symbol dir###")
-  symbolDir.forEach {println(it)}
-  println()
-
   // TODO: Gradle Setup for modules
   symbolDir.from(() -> tasks.named("createDomainSymbols").get().outputs)
 

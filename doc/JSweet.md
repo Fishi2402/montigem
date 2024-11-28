@@ -163,3 +163,49 @@ z.B.
 #### Adapter
 Adapter können die Transpilierung grundlegend verändern. Zahlreiche Beispiele 
 finden sich im Projekt `:umlp:umlp-rte:umlp-jsweet`
+
+## TypeScript Code einbinden
+Manchmal ist es hilfreich TypeScript Code direkt einzubinden, z.B. wenn eine TS Library wiederverwendet werden soll(z.B. für highlighting von Code Blöcken).
+
+**ACHTUNG: Der entstehende Code ist nicht in Java testbar, daher sollte kein Verhalten so implementiert werden!**
+
+Als erstes muss in Java die Signatur in einem Subpackage von `def` angelegt werden:
+
+`frontend/src/main/java/def/foo/MyUtil.java`
+```
+public class MyUtil {
+  public native void foo();
+}
+```
+darauf hin erstellt JSweet eine entsprechene `d.ts` Header Datei im generierten Code.
+
+Dann wird die Methode in TS implementiert:
+`frontend/src/main/ts/gui/def/foo/MyUtil.ts`
+```
+export class MyUtil{
+  public foo(){
+    console.log("Hello World!");
+  }
+}
+
+```
+
+Als letztes muss in Java der nutzenden Komponente ein import hinzugefügt werden und der Code wird aufgerufen:
+
+```
+@Component(
+  tsImports = {"MyUtil, @src/def/foo/MyUtil"}
+)
+public class MyPage{
+  @Replace("this._bar();")
+  public void bar(){
+    System.out.println("Mock of MyUtil#foo");
+  }
+
+  public void _bar(){
+    new MyUtil().foo();
+  }
+}
+```
+
+Durch die Indirektion und die `@Replace` Annotation ist die Komponente weiterhin in Java testbar, ohne das `foo` ausgeführt wird.

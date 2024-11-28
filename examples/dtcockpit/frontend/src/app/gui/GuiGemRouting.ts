@@ -4,5 +4,5 @@ import { routes as LoginmoduleRoutes } from "@src/gui/loginmodule/LoginmoduleGem
 
 export const routes: Route[] = [
   ...routesTOP,
-  ...LoginmoduleRoutes, // TODO: Merge this frm the module system?
+  // ...LoginmoduleRoutes, // This route is now added by the LoginFrontend_Routes_Package.ftl
 ]
