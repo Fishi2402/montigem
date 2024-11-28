@@ -118,7 +118,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     }
     guiComponentName = guiComponentName + " + this.uniqueIdentifier";
     printIndent().print("protected " + GET_DOMAIN_OBS
-            + "<T extends GemIdentifiable>(updateName: string, update: (() => void)): (obj: T, type: string) => T {")
+            + "<T extends GemIdentifiable>(updateName: string, update: (() => void)):  <T extends GemIdentifiable>(obj: T, type: string) => T {")
         .println().startIndent().printIndent()
         .print("return (obj: T, type: string) => {").println().startIndent().printIndent()
         .print("if (obj != undefined && obj != null) {").println().startIndent().printIndent()
@@ -150,9 +150,11 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
       guiComponentName = guiComponentName.substring(0, guiComponentName.length() - 4) + "\"";
     }
     guiComponentName = guiComponentName + " + this.uniqueIdentifier";
-    printIndent().print("public ngOnDestroy(): void {").println().startIndent().printIndent()
-        .print("super.ngOnDestroy();").println().printIndent()
-        .print("ComponentObserverManager.removeObservers(" + guiComponentName + ");")
+    printIndent().print("public ngOnDestroy(): void {").println().startIndent().printIndent();
+    if (adapterUtils.isHWCofComponent(typeElement)) {
+      print("super.ngOnDestroy();").println().printIndent();
+    }
+    print("ComponentObserverManager.removeObservers(" + guiComponentName + ");")
         .println().endIndent().printIndent().print("}")
         .println().println();
   }
