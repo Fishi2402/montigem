@@ -43,6 +43,8 @@ def libs = [
     "charts",
     "common",
     "commonj2ts",
+    "composite",
+    "experimental",
     "functiondisplay",
     "input",
     "navigation",
@@ -93,6 +95,14 @@ tasks.register('buildAll') {
 tasks.register('publishAll') {
   dependsOn tasks.findAll { it.name.startsWith(publishTaskPrefix) }
 }
+
+build.dependsOn(buildAll)
+
+publish.dependsOn(publishAll)
+
+tasks.build_charts.dependsOn(tasks.build_commonj2ts)
+tasks.build_composite.dependsOn(tasks.build_arrange)
+tasks.build_experimental.dependsOn(tasks.build_composite)
 
 dependencies {
 }
@@ -201,12 +211,6 @@ jar.dependsOn(symbolJar)
 artifacts {
   archives symbolJar
 }
-
-build.dependsOn(buildAll)
-
-publish.dependsOn(publishAll)
-
-tasks.build_charts.dependsOn(tasks.build_commonj2ts)
 
 publishing {
   publications {

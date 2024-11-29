@@ -4,34 +4,37 @@
   "compilerOptions": {
     "paths": {
       "@umlp/common": [
-        "../dist/umlp/mc/fenix/common"
+        "./projects/umlp/mc/fenix/common/src"
       ],
       "@umlp/commonj2ts": [
-        "../dist/umlp/mc/fenix/commonj2ts"
+        "./projects/umlp/mc/fenix/commonj2ts/src"
       ],
       "@umlp/arrange": [
-        "../dist/umlp/mc/fenix/arrange"
+        "./projects/umlp/mc/fenix/arrange/src"
       ],
       "@umlp/basic": [
-        "../dist/umlp/mc/fenix/basic"
+        "./projects/umlp/mc/fenix/basic/src"
       ],
       "@umlp/charts": [
-        "../dist/umlp/mc/fenix/charts"
+        "./projects/umlp/mc/fenix/charts/src"
       ],
-      "@umlp/functiondisplay": [
-        "../dist/umlp/mc/fenix/functiondisplay"
+      "@umlp/composite": [
+        "./projects/umlp/mc/fenix/composite/src"
+      ],
+      "@umlp/experimental": [
+        "./projects/umlp/mc/fenix/experimental/src"
       ],
       "@umlp/input": [
-        "../dist/umlp/mc/fenix/input"
+        "./projects/umlp/mc/fenix/input/src"
       ],
       "@umlp/table": [
-        "../dist/umlp/mc/fenix/table"
+        "./projects/umlp/mc/fenix/table/src"
       ],
       "@umlp/theme": [
-        "../dist/umlp/mc/fenix/theme"
+        "./projects/umlp/mc/fenix/theme/src"
       ],
       "@umlp/networkgraph": [
-        "../dist/umlp/mc/fenix/networkgraph"
+        "./projects/umlp/mc/fenix/networkgraph/src"
       ]
     },
     "baseUrl": "./",
@@ -42,6 +45,7 @@
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": false,
+    "noUnusedLocals": false,
     "sourceMap": true,
     "declaration": false,
     "downlevelIteration": true,

@@ -1,0 +1,24 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
+{
+  "extends": ["./tsconfig.app.json"],
+  "compilerOptions": {
+    "paths": {
+      "@src/*": ["build/appdomain/*", "build/appgui/*", "src/app/*", "../../src/app/*"],
+      "@angular/*": ["node_modules/@angular/*"],
+      "@umlp/arrange": ["../../../../../umlp-rte/client/build/dist/umlp/mc/fenix/arrange"],
+      "@umlp/basic": ["../../../../../umlp-rte/client/build/dist/umlp/mc/fenix/basic"],
+      "@umlp/charts": ["../../../../../umlp-rte/client/build/dist/umlp/mc/fenix/charts"],
+      "@umlp/common": ["../../../../../umlp-rte/client/build/dist/umlp/mc/fenix/common"],
+      "@umlp/commonj2ts": ["../../../../../umlp-rte/client/build/dist/umlp/mc/fenix/commonj2ts"],
+      "@umlp/composite": ["../../../../../umlp-rte/client/build/dist/umlp/composite"],
+      "@umlp/experimental": ["../../../../../umlp-rte/client/build/dist/umlp/experimental"],
+      "@umlp/input": ["../../../../../umlp-rte/client/build/dist/umlp/mc/fenix/input"],
+      "@umlp/navigation": ["../../../../../umlp-rte/client/build/dist/umlp/mc/fenix/navigation"],
+      "@umlp/table": ["../../../../../umlp-rte/client/build/dist/umlp/mc/fenix/table"],
+      "@umlp/networkgraph": ["../../../../../umlp-rte/client/build/dist/umlp/mc/fenix/networkgraph"],
+      "@umlp/*": ["node_modules/@umlp/*"],
+      "tslib": ["node_modules/tslib"],
+      "rxjs": ["node_modules/rxjs"]
+    }
+  }
+}

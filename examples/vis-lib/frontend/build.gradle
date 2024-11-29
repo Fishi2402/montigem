@@ -76,7 +76,11 @@ def prebuildTasks = [
 ]
 
 tasks.register('testApp', NpxTask) {
-  dependsOn(prebuildTasks, project(":umlp-rte:client").tasks.matching { it.name.startsWith("copy_") })
+  dependsOn(
+      prebuildTasks,
+      project(":umlp-rte:client").tasks.matching { it.name.startsWith("copy_") },
+      project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") }
+  )
   command = "ng"
   args = ["test"]
 }

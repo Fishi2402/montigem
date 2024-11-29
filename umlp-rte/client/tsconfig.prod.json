@@ -1,0 +1,41 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@umlp/arrange": [
+        "./build/dist/umlp/mc/fenix/arrange"
+      ],
+      "@umlp/basic": [
+        "./build/dist/umlp/mc/fenix/basic"
+      ],
+      "@umlp/charts": [
+        "./build/dist/umlp/mc/fenix/charts"
+      ],
+      "@umlp/common": [
+        "./build/dist/umlp/mc/fenix/common"
+      ],
+      "@umlp/commonj2ts": [
+        "./build/dist/umlp/mc/fenix/commonj2ts"
+      ],
+      "@umlp/composite": [
+        "./build/dist/umlp/composite"
+      ],
+      "@umlp/experimental": [
+        "./build/dist/umlp/experimental"
+      ],
+      "@umlp/input": [
+        "./build/dist/umlp/mc/fenix/input"
+      ],
+      "@umlp/table": [
+        "./build/dist/umlp/mc/fenix/table"
+      ],
+      "@umlp/theme": [
+        "./build/dist/umlp/mc/fenix/theme"
+      ],
+      "@umlp/networkgraph": [
+        "./build/dist/umlp/mc/fenix/networkgraph"
+      ]
+    }
+  }
+}
