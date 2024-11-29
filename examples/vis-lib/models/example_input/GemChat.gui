@@ -7,26 +7,27 @@ import mc.fenix.arrange.GemRow;
 import mc.fenix.input.GemTextareaInput;
 import Domain.Message;
 import Domain.Role;
+component GemChat(List<Message>messages,Message userMsg){
+  @GemCard(title="Chat with me :)",component=@GemColumn(components=[@iterate(Message msg:messages){
+    @guard(msg.sender==Role.USER){
+      chatRowUser@GemText(value=msg.content);
 
+    }
+    else {
+      chatRow@GemText(value=msg.content);
 
-component GemChat(List<Message> messages, Message userMsg) {
+    }
 
-  @GemCard(title="Chat with me :)",component=
-    @GemColumn(components=[
-      @iterate(Message msg : messages) {
-        @guard(msg.sender == Role.USER){@GemRow(components = [
-                                                              chatRowUser@GemText(value=msg.content)]);
-        }
-        @guard(msg.sender != Role.USER) {@GemRow(components = [
-                                     chatRow@GemText(value=msg.content)]);
-        }
-    },@GemRow(rowGap = 5 ,components=[
-        @GemColumn(width="80%",components=[userInput@GemTextareaInput(placeholder="Start Chatting :)",entry=userMsg.content,resize="none")]),
-        @GemColumn(height="100%",rowGap ="1px" ,width="20%",components=[sendButton@GemButton(leftClick=sendMessage(userMsg),label="send"),clearButton@GemButton(leftClick=clearMessages(),label="clear")])])
-    ])
+  }
+  ,
+  @GemRow(rowGap=5,components=
+    [@GemColumn(width="80%",components=
+      [userInput@GemTextareaInput(placeholder="Start Chatting :)",entry=userMsg.content,resize="none")])
+      ,@GemColumn(height="100%",rowGap="1px",width="20%",components=[sendButton@GemButton(leftClick=sendMessage(userMsg),label="send")
+      ,clearButton@GemButton(leftClick=clearMessages(),label="clear")])])]));
 
-    //  |||| || btn
-    //  |||| || btn2
-
-  );
 }
+
+
+
+
