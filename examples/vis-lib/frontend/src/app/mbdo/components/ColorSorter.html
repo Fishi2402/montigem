@@ -7,6 +7,15 @@
     id="svg229"
     xmlns="http://www.w3.org/2000/svg"
 >
+  <style>
+    :root {
+      --pumpIndicatorOpacity: 0;
+      --pusherIndicator1Opacity: 0;
+      --pusherIndicator2Opacity: 0;
+      --pusherIndicator3Opacity: 0;
+      --speedIndicatorPosition: 0;
+    }
+  </style>
   <defs>
     <linearGradient
         id="paint0_linear_1_98"
@@ -58,24 +67,22 @@
   <!-- TODO: replace indicator paths with ellipsis -->
   <path
       d="m 188.78238,77.168542 c 3.67297,6.780869 1.14507,15.286795 -5.6358,18.960698 -6.78087,3.672971 -15.24577,1.121753 -18.91874,-5.659116 -3.6739,-6.78087 -1.14506,-15.286796 5.6358,-18.960699 6.78087,-3.672971 15.2868,-1.145064 18.9607,5.635805 z"
-      fill="#e09400"
+      style="fill: #e09400; opacity: var(--pusherIndicator1Opacity, 1);"
       id="pusherIndicator1"
-      style="stroke-width:0.932463"/>
+     />
   <path
       d="m 152.71398,76.573523 c 3.67297,6.780869 1.14507,15.286795 -5.6358,18.960698 -6.78087,3.672971 -15.24577,1.121753 -18.91874,-5.659116 -3.6739,-6.78087 -1.14506,-15.286796 5.6358,-18.960699 6.78087,-3.672971 15.2868,-1.145064 18.9607,5.635805 z"
-      fill="#e09400"
+      style="fill: #e09400; opacity: var(--pusherIndicator2Opacity, 1);"
       id="pusherIndicator2"
-      style="stroke-width:0.932463"/>
+      />
   <path
       d="m 116.59348,76.573523 c 3.67297,6.780869 1.14507,15.286795 -5.6358,18.960698 -6.78087,3.672971 -15.245764,1.121753 -18.918734,-5.659116 -3.6739,-6.78087 -1.14506,-15.286796 5.63579,-18.960699 6.780874,-3.672971 15.286804,-1.145064 18.960704,5.635805 z"
-      fill="#e09400"
-      id="pusherIndicator3"
-      style="stroke-width:0.932463"/>
+      style="fill: #e09400; opacity: var(--pusherIndicator3Opacity, 1);"
+      id="pusherIndicator3"/>
   <path
       d="m 500.17833,86.134235 c 8.26705,15.262235 2.5773,34.407185 -12.68494,42.676335 -15.26223,8.26705 -34.31484,2.52481 -42.58189,-12.73742 -8.26913,-15.26224 -2.57727,-34.407193 12.68494,-42.676335 15.26224,-8.267045 34.4072,-2.577285 42.67634,12.684949 z"
-      fill="#e09400"
-      id="pumpIndicator"
-      style="stroke-width:2.09877"/>
+      style="fill: #e09400; opacity: var(--pumpIndicatorOpacity, 1);"
+      id="pumpIndicator"/>
 
   <g>
     <text
