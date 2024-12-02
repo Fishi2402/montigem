@@ -19,10 +19,10 @@
         "./build/dist/umlp/mc/fenix/commonj2ts"
       ],
       "@umlp/composite": [
-        "./build/dist/umlp/composite"
+        "./build/dist/umlp/mc/fenix/composite"
       ],
       "@umlp/experimental": [
-        "./build/dist/umlp/experimental"
+        "./build/dist/umlp/mc/fenix/experimental"
       ],
       "@umlp/input": [
         "./build/dist/umlp/mc/fenix/input"
