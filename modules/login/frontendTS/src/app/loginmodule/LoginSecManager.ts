@@ -5,7 +5,7 @@ import {LoginModuleManager} from '@src/loginmodule/LoginModuleManager';
 import {LoginSecManagerTOP} from '@src/loginmodule/LoginSecManagerTOP';
 
 import {ActivatedRoute, Router} from "@angular/router";
-import {CommandManager} from "@umlp/common";
+import {CommandManager, NotificationScope} from "@umlp/common";
 import {GetCurrentUserRequest} from '@src/loginmodule/commands/GetCurrentUserRequest';
 
 export enum LAZY_LOGIN_STATE {
@@ -72,12 +72,19 @@ export class LoginSecManager extends LoginSecManagerTOP {
 
 
   public redirectToLoginPage(router: Router, route?: ActivatedRoute): void {
-    console.log("was on ", route)
-    console.log(LoginSecManager.getInstance().getSignedInUser());
+    console.log("[LoginSecManager] RedirectingToLoginPage, was on ", route)
+    console.log("user:", LoginSecManager.getInstance().getSignedInUser());
     if (route)
       console.log("-> ", route.snapshot.url);
     localStorage.removeItem(LoginSecManager.LS_KEY);
     router.navigate(['gui', 'loginmodule', 'LoginPage']); // TODO: Store path in global var
+  }
+
+  public signOutCurrentUser(router: Router): void {
+    fetch("/umlp/api/logout").finally(() => {
+      LoginSecManager.getInstance().setSignedInUserAbsent(NotificationScope.LOCAL);
+      router.navigate(['gui', 'loginmodule', 'LoginPage']); // TODO: Store path in global var
+    });
   }
 
   /**

@@ -66,6 +66,19 @@ export class UMLPArrayList<E> implements IUMLPList<E> {
     return true;
   }
 
+  public async equals(o: any): Promise<boolean> {
+    if (!(o instanceof UMLPArrayList) && !(o instanceof Array)) {
+      return false;
+    }
+    let other: Array<any>;
+    if (o instanceof Array) {
+      other = o;
+    } else if (o instanceof UMLPArrayList) {
+      other = o.array;
+    }
+    return JSON.stringify(other) === JSON.stringify(this.array);
+  }
+
   async forEach(consumer: (element: E) => void): Promise<void> {
     this.array.forEach(consumer);
   }

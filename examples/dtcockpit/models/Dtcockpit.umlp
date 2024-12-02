@@ -23,18 +23,8 @@ classdiagram Dtcockpit {
   // TODO: Decide on a stereotype for concretizing extends for modules
   <<ConcretizeModule>>
   class User extends LoginModuleUser {
-  // MOVED TO MODULE
-    //<<dbColumn = "unique=true">>
-    //String username;
-    //String password;
- //   java.time.LocalDateTime registrationDate;
-   // ActivationStatus activated;
-    <<dbColumn = "unique=true">>
-    String email;
+    // username, password, registrationDate, and email defined within the LoginModuleUser
     DtcockpitRole role;
- //   String validityUsername();
- //   String validityEmail();
- //   String validityPassword();
   }
 
   enum ActivationStatus {
