@@ -4,50 +4,52 @@
   "compilerOptions": {
     "paths": {
       "@umlp/common": [
-        "./projects/umlp/mc/fenix/common/src"
+        "./projects/umlp/common/src"
       ],
       "@umlp/commonj2ts": [
-        "./projects/umlp/mc/fenix/commonj2ts/src"
+        "./projects/umlp/commonj2ts/src"
       ],
       "@umlp/arrange": [
-        "./projects/umlp/mc/fenix/arrange/src"
+        "./projects/umlp/arrange/src"
       ],
       "@umlp/basic": [
-        "./projects/umlp/mc/fenix/basic/src"
+        "./projects/umlp/basic/src"
       ],
       "@umlp/charts": [
-        "./projects/umlp/mc/fenix/charts/src"
+        "./projects/umlp/charts/src"
       ],
       "@umlp/composite": [
-        "./projects/umlp/mc/fenix/composite/src"
+        "./projects/umlp/composite/src"
       ],
       "@umlp/experimental": [
-        "./projects/umlp/mc/fenix/experimental/src"
+        "./projects/umlp/experimental/src"
       ],
       "@umlp/input": [
-        "./projects/umlp/mc/fenix/input/src"
+        "./projects/umlp/input/src"
       ],
       "@umlp/table": [
-        "./projects/umlp/mc/fenix/table/src"
+        "./projects/umlp/table/src"
       ],
       "@umlp/theme": [
-        "./projects/umlp/mc/fenix/theme/src"
+        "./projects/umlp/theme/src"
       ],
       "@umlp/networkgraph": [
-        "./projects/umlp/mc/fenix/networkgraph/src"
+        "./projects/umlp/networkgraph/src"
       ]
     },
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
     "strict": false,
-    "noImplicitOverride": true,
+    "noImplicitOverride": false,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": false,
     "noUnusedLocals": false,
     "sourceMap": true,
-    "declaration": false,
+    "declaration": true,
+    "declarationMap": true,
+    "inlineSources": true,
     "downlevelIteration": true,
     "experimentalDecorators": true,
     "moduleResolution": "node",
@@ -60,6 +62,9 @@
       "dom"
     ]
   },
+  "exclude": [
+    "**/*.spec.ts"
+  ],
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,

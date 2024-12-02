@@ -14,14 +14,24 @@ and you make changes to the table library, running `gradle build`
 will upgrade the version from 7.5.4 to 7.5.5, as defined in the
 gradle script.
 -->
-# Example setup
+# Add library
+
+You may use Angular CLI tool to setup a new library but this requires several
+manual changes. You may use an Angular-compatible Node.js version
+https://angular.dev/reference/versions .
+1. Run following command in `umlp-rte/client` folder:
+```
+ng generate library @umlp/experimental --project-root projects/umlp/experimental
+```
+
+# Updating a library
+
+Example setup
 
 - Example library: [arrange](projects/umlp/mc/fenix/arrange). `arrange` (full name: `@umlp/arrange`) can be
   replaced with any other library name in this instruction.
 - [Full library list](./projects/umlp)
 - [Project root](./). Will be referred to as "root" in this instruction.
-
-# Updating a library
 
 Whenever changes are made to a library, the version needs to be updated in the `package.json` file
 of the library. Example (all references to the `arrange` example should be replaced with your own
@@ -40,6 +50,8 @@ library):
 - Commit and push changes
 
 # Using a library
+
+Example setup: see [Updating a library](#updating-a-library).
 
 - add dependency to the library in your project's `package.json` file:
   ```

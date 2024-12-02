@@ -61,13 +61,13 @@ libs.each {
   def buildTaskName = "${buildTaskPrefix}${libName}"
   def genNpmrcTaskName = "gen_npmrc_${libName}"
   def publishTaskName = "${publishTaskPrefix}${libName}"
-  def npmOutput = "dist/umlp/mc/fenix/${libName}"
+  def npmOutput = "dist/umlp/${libName}"
 
   // task `build_<lib_name>` that runs `npm run build @umlp/<lib_name>`
   task "${buildTaskName}"(type: NpmTask) {
     dependsOn tasks.npmInstall
     args = ["run", "build", "@umlp/${libName}"]
-    inputs.dir(project.fileTree("projects/umlp/mc/fenix/${libName}/")
+    inputs.dir(project.fileTree("projects/umlp/${libName}/")
         .exclude("**/*.spec.ts", "**/*.md"))
     inputs.files("angular.json", "tsconfig.base.json", "package-lock.json")
     outputs.dir("${project.buildDir}/${npmOutput}")
@@ -271,7 +271,7 @@ libs.each {
   def libName = it
   def copyTaskName = "${copyTaskPrefix}${libName}${copyTaskPostFix}"
   def sourceDir = "${project.buildDir}/guiComponentTypes/mc/fenix/${libName}"
-  def targetDir = "projects/umlp/mc/fenix/${libName}/src/lib/gen"
+  def targetDir = "projects/umlp/${libName}/src/lib/gen"
   def buildTaskName = "${buildTaskPrefix}${libName}"
 
   task "${copyTaskName}"(type: Copy) {
