@@ -10,8 +10,6 @@
       "@umlp/charts": ["../../../../../umlp-rte/client/build/dist/umlp/charts"],
       "@umlp/common": ["../../../../../umlp-rte/client/build/dist/umlp/common"],
       "@umlp/commonj2ts": ["../../../../../umlp-rte/client/build/dist/umlp/commonj2ts"],
-      "@umlp/composite": ["../../../../../umlp-rte/client/build/dist/umlp/composite"],
-      "@umlp/experimental": ["../../../../../umlp-rte/client/build/dist/umlp/experimental"],
       "@umlp/input": ["../../../../../umlp-rte/client/build/dist/umlp/input"],
       "@umlp/navigation": ["../../../../../umlp-rte/client/build/dist/umlp/navigation"],
       "@umlp/table": ["../../../../../umlp-rte/client/build/dist/umlp/table"],

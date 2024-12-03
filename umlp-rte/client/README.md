@@ -142,6 +142,63 @@ To create a library:
     If you introduce a circular dependency, you need to reconsider your library
     structure.
 
+# Remove library
+
+Example setup: see [Add library](#add-library).
+
+To remove a library:
+1.  Remove folder `umlp/experimental`.
+2.  Remove following entry from `"projects"` object in `angular.json` file in
+    root folder:
+    ```json
+    "@umlp/experimental": {
+      "projectType": "library",
+      "root": "projects/umlp/experimental",
+      "sourceRoot": "projects/umlp/experimental/src",
+      "prefix": "gem",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/umlp/experimental/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "tsconfig.prod.json"
+            },
+            "development": {
+              "tsConfig": "tsconfig.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "tsConfig": "tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    }
+    ```
+3.  Remove the library from the list of libraries in `build.gradle` file in the
+    root:
+    ```diff
+    def libs = [
+      ...,
+    - "experimental"
+    ]
+    ```
+
+    Remove any library-related dependencies:
+    ```diff
+    - tasks.build_experimental.inputs.files(tasks.build_arrange.outputs.files.singleFile)
+    - tasks.build_experimental.dependsOn(tasks.build_arrange)
+    ```
 
 # Updating a library
 
