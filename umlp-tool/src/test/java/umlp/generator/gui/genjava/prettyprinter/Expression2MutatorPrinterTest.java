@@ -64,7 +64,7 @@ public class Expression2MutatorPrinterTest extends DomainGUITest {
     ASTGUIComponent gemText5 = components.get(4);
     String expect3 = removeSpaces("this.getP().setName(val_$)");
     String result3 = removeSpaces(printer.prettyprint(
-        gemText5.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+        gemText5.getGUINamedArgs().getGUINamedArg(0).getExpression()));
 
     // GemText component showing address in form: "<street> <house>"
     ASTGUIComponent address = components.get(5);
@@ -114,7 +114,7 @@ public class Expression2MutatorPrinterTest extends DomainGUITest {
     // GemCheckBoxInput#checked
     String expect2 = removeSpaces("this.getP().setEmployed(val_$)");
     String result2 = removeSpaces(printer.prettyprint(
-        checkbox.getGUINamedArgs().getGUINamedArg(1).getGUIArgValue()));
+        checkbox.getGUINamedArgs().getGUINamedArg(1).getExpression()));
 
     assertAll(
         () -> assertEquals(expect1, result1),
@@ -238,7 +238,7 @@ public class Expression2MutatorPrinterTest extends DomainGUITest {
 
     String expect8 = removeSpaces("this.getPersons().get(0).setStatus(val_$)");
     String result8 = removeSpaces(printer.prettyprint(
-        fieldCall5.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+        fieldCall5.getGUINamedArgs().getGUINamedArg(0).getExpression()));
 
     String expect9 = removeSpaces("0x0000B Expected a mutable value, but got "
         + "MaritalStatus.MARRIED");
@@ -303,7 +303,7 @@ public class Expression2MutatorPrinterTest extends DomainGUITest {
     ASTGUIComponent gemText5 = components.get(4);
     String expect3 = removeSpaces("p.setName(val_$)");
     String result3 = removeSpaces(printer.prettyprint(
-        gemText5.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+        gemText5.getGUINamedArgs().getGUINamedArg(0).getExpression()));
 
     // GemText component showing address in form: "<street> <house>"
     ASTGUIComponent address = components.get(5);

@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui.genhtml;
 
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUIBlock;
 import de.monticore.guidsl._ast.ASTGUIBlockContent;
@@ -51,10 +52,10 @@ public class HTMLHelper implements GUIDSLVisitor2 {
   protected Map<ASTGUIBlock, Set<ASTGUIBlockContent>> ngTemplates = new LinkedHashMap();
   protected Stack<ASTGUIBlock> holderStack = new Stack<>();
 
-  protected Optional<ASTGUIComponent> currentComp = Optional.empty();
+  protected Optional<ASTExpression> currentComp = Optional.empty();
   protected Optional<ASTGUIGuard> currentGuard = Optional.empty();
   protected Optional<ASTGUIIterate> currentIterate = Optional.empty();
-  protected Set<ASTGUIDSLNode> currentBlocks = new HashSet<>();
+  protected Set<ASTExpression> currentBlocks = new HashSet<>();
 
   public HTMLHelper(ASTGUICompilationUnit ast) {
     traverser = GUIDSLMill.traverser();
@@ -101,7 +102,7 @@ public class HTMLHelper implements GUIDSLVisitor2 {
     // `@guard(...) { } else { }` or `@iterate(...) { }`
     else if (!currentBlocks.contains(node)) {
       ASTGUIBlockContent content = GUIDSLMill.gUIBlockContentBuilder()
-          .setGUIComponent(node)
+          .setExpression(node)
           .build();
       addNgTemplate(content);
     }
@@ -164,8 +165,8 @@ public class HTMLHelper implements GUIDSLVisitor2 {
   }
 
   protected void addToCurrentBlocks(ASTGUIBlockContent block) {
-    if (block.isPresentGUIComponent()) {
-      currentBlocks.add(block.getGUIComponent());
+    if (block.isPresentExpression() && GUIDSLMill.typeDispatcher().isGUIDSLASTGUIComponent(block.getExpression())) {
+      currentBlocks.add(block.getExpression());
     }
     if (block.isPresentGUIGuard()) {
       currentBlocks.add(block.getGUIGuard());
@@ -176,8 +177,8 @@ public class HTMLHelper implements GUIDSLVisitor2 {
   }
 
   protected void removeFromCurrentBlocks(ASTGUIBlockContent block) {
-    if (block.isPresentGUIComponent()) {
-      currentBlocks.remove(block.getGUIComponent());
+    if (block.isPresentExpression() && GUIDSLMill.typeDispatcher().isGUIDSLASTGUIComponent(block.getExpression())) {
+      currentBlocks.remove(block.getExpression());
     }
     if (block.isPresentGUIGuard()) {
       currentBlocks.remove(block.getGUIGuard());

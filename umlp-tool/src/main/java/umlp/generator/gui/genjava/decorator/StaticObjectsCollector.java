@@ -13,17 +13,18 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor2;
 import de.monticore.guidsl.GUIDSLMill;
-import de.monticore.guidsl._ast.ASTGUIArgValue;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.monticore.guidsl._ast.ASTGUIGuard;
 import de.monticore.guidsl._ast.ASTGUIIterate;
-import de.monticore.guidsl._ast.ASTGUIList;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._ast.ASTGUIShortIterateControl;
 import de.monticore.guidsl._symboltable.BuiltInTypes;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
+import de.monticore.ocl.setexpressions._ast.ASTSetCollectionItem;
+import de.monticore.ocl.setexpressions._ast.ASTSetEnumeration;
+import de.monticore.ocl.setexpressions._visitor.SetExpressionsVisitor2;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
@@ -55,7 +56,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressionsVisitor2, ExpressionsBasisVisitor2 {
+public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressionsVisitor2, ExpressionsBasisVisitor2,
+    SetExpressionsVisitor2 {
 
   protected GUIDSLTraverser traverser;
 
@@ -67,7 +69,7 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
   protected String curComp = "";
   protected String curArg = "";
   protected Optional<ASTGUINamedArg> lastArg = Optional.empty();
-  protected Map<ASTGUIList, SymTypeExpression> listTypes = new HashMap<>();
+  protected Map<ASTSetEnumeration, SymTypeExpression> listTypes = new HashMap<>();
 
   protected Map<ASTNode, Attribute> node2Attr = new HashMap<>();
   protected Map<ASTNode, Method> node2Method = new HashMap<>();
@@ -94,6 +96,7 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
     traverser.add4GUIDSL(this);
     traverser.add4CommonExpressions(this);
     traverser.add4ExpressionsBasis(this);
+    traverser.add4SetExpressions(this);
   }
 
   public void init(ASTGUIComponentDeclaration node) {
@@ -154,7 +157,7 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
   }
 
   @Override
-  public void visit(ASTGUIList node) {
+  public void visit(ASTSetEnumeration node) {
     // given an argument with a nested list type, e.g., val = [[1]], "peel off" and record types
     // of the list layers one by one.
     if (!listTypes.containsKey(node) && lastArg.isPresent()) {
@@ -167,8 +170,8 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
       if (GUIGeneratorUtil.getInstance().isViewElementsCollection(ste)) {
         return;
       }
-      if (lastArg.get().getGUIArgValue().isPresentGUIList()
-          && lastArg.get().getGUIArgValue().getGUIList().equals(node)) {
+      if (GUIDSLMill.typeDispatcher().isSetExpressionsASTSetEnumeration(lastArg.get().getExpression())
+          && lastArg.get().getExpression().equals(node)) {
         recordTypes(node, ste);
       }
     }
@@ -368,18 +371,19 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
     return new Attribute(attr, baseType, params, importSet);
   }
 
-  protected void recordTypes(ASTGUIList node, SymTypeExpression ste) {
+  protected void recordTypes(ASTSetEnumeration node, SymTypeExpression ste) {
     if (!listTypes.containsKey(node)) {
       listTypes.put(node, ste);
     }
-    for (ASTGUIArgValue val : node.getGUIArgValueList()) {
-      if (val.isPresentGUIList()) {
+    for (ASTSetCollectionItem val : node.getSetCollectionItemList()) {
+      ASTExpression valueItem = GUIDSLMill.typeDispatcher().asSetExpressionsASTSetValueItem(val).getExpression();
+      if (GUIDSLMill.typeDispatcher().isSetExpressionsASTSetEnumeration(valueItem)) {
         if (!ste.isGenericType()
             || !ste.asGenericType().getTypeConstructorFullName().equals(BuiltInTypes.LIST.getQName())) {
           Log.error("0x00013 Unexpected non-generic type for a list '" + util.print(node) + "'.");
           return;
         }
-        recordTypes(val.getGUIList(), ste.asGenericType().getArgument(0));
+        recordTypes(GUIDSLMill.typeDispatcher().asSetExpressionsASTSetEnumeration(valueItem), ste.asGenericType().getArgument(0));
       }
     }
   }

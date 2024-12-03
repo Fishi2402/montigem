@@ -16,8 +16,8 @@ public class RefGUIArgIncompatibleWithDerivedCoCo implements GUIDSLASTGUINamedAr
   public void check(ASTGUINamedArg node) {
     if (node.isPresentNameSymbol()) {
       GUIParamSymbol sym = node.getNameSymbol();
-      if (sym.isIsReference() && node.getGUIArgValue().isPresentExpression()) {
-        ASTExpression exp = node.getGUIArgValue().getExpression();
+      if (sym.isIsReference()) {
+        ASTExpression exp = node.getExpression();
         String expStr = GUIGeneratorUtil.getInstance().print(exp);
         // a very roundabout way of calling instanceof, without actually writing instanceof
         var expFinder = new ClosestNameOrFieldAccessFinder();

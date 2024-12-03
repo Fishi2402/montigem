@@ -46,32 +46,32 @@ public class Name2AccessorConverterTest extends DomainGUITest {
 
     String expect1 = removeSpaces("getPerson()");
     String result1 = removeSpaces(conv.attr2Getter((ASTNameExpression)
-        comp1.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression()
+        comp1.getGUINamedArgs().getGUINamedArg(0).getExpression()
     ));
 
     String expect2 = removeSpaces("get$per$son()");
     String result2 = removeSpaces(conv.attr2Getter((ASTNameExpression)
-        comp2.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression()
+        comp2.getGUINamedArgs().getGUINamedArg(0).getExpression()
     ));
 
     String expect3 = removeSpaces("get_per_son()");
     String result3 = removeSpaces(conv.attr2Getter((ASTNameExpression)
-        comp3.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression()
+        comp3.getGUINamedArgs().getGUINamedArg(0).getExpression()
     ));
 
     String expect4 = removeSpaces("isTest1()");
     String result4 = removeSpaces(conv.attr2Getter((ASTNameExpression)
-        comp4.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression()
+        comp4.getGUINamedArgs().getGUINamedArg(0).getExpression()
     ));
 
     String expect5 = removeSpaces("isTest2()");
     String result5 = removeSpaces(conv.attr2Getter((ASTNameExpression)
-        comp5.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression()
+        comp5.getGUINamedArgs().getGUINamedArg(0).getExpression()
     ));
 
     String expect6 = removeSpaces("MaritalStatus");
     String result6 = removeSpaces(conv.attr2Getter((ASTNameExpression)
-        ((ASTFieldAccessExpression) comp6.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()
+        ((ASTFieldAccessExpression) comp6.getGUINamedArgs().getGUINamedArg(0)
             .getExpression()).getExpression()
     ));
     assertAll(

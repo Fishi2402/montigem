@@ -45,80 +45,79 @@ public class EventDecorator extends GUI2JavaComponentDecorator {
   public void transform(ASTCDClass decoratedClass, ASTGUIComponent guiComponent) {
     for (ASTGUINamedArg event : util.getEventArguments(guiComponent)) {
       // TODO AGe: remove restrictions
-      if (event.getGUIArgValue().isPresentExpression()) {
-        if (event.getGUIArgValue().getExpression() instanceof ASTNameExpression) {
-          String methodName = ((ASTNameExpression) event.getGUIArgValue().getExpression()).getName();
+      if (event.getExpression() instanceof ASTNameExpression) {
+        String methodName = ((ASTNameExpression) event.getExpression()).getName();
 
-          getCD4C().addMethod(decoratedClass, getEventTemplate(),
-              util.gui2cdEventCallName(guiComponent, event.getName()), methodName);
+        getCD4C().addMethod(decoratedClass, getEventTemplate(),
+            util.gui2cdEventCallName(guiComponent, event.getName()), methodName);
 
-          Optional<ASTCDMethodSignature> methodSignature = getCD4C().createMethod(decoratedClass, getEventTemplate(), methodName, "");
-          if (methodSignature.isPresent() && !GenService.containsMethod(decoratedClass, methodSignature.get())) {
-            getCD4C().addMethod(decoratedClass, getEventTemplate(), methodName, "");
-          }
-        }
-        if (event.getGUIArgValue().getExpression() instanceof ASTCallExpression
-            && ((ASTCallExpression) event.getGUIArgValue().getExpression()).getExpression() instanceof ASTNameExpression) {
-          ASTCallExpression call = (ASTCallExpression) event.getGUIArgValue().getExpression();
-          ASTNameExpression callName = (ASTNameExpression) call.getExpression();
-
-          String methodName = callName.getName();
-
-          // Check if event is special case
-          Optional<EventType> eventTypeRes = Optional.empty();
-          Optional<SymTypeExpression> teOpt = Optional.empty();
-          if (!call.getArguments().getExpressionList().isEmpty()) {
-            Type4Ast type4Ast = new Type4Ast();
-            GUIDSLTraverser traverser = GUIDSLTypeTraverserFactory.getInstance()
-                .createTraverserForOO(type4Ast);
-            call.getArguments().getExpression(0).accept(traverser);
-            SymTypeExpression te = type4Ast.getTypeOfExpression(call.getArguments().getExpression(0));
-            teOpt = Optional.of(te);
-            if(te.hasTypeInfo() && (util.isDomainType(te) || util.isDomainListType(te))) {
-              for (EventType eventType : EventType.values()) {
-                if (methodName.equals(eventType.eventName)) {
-                  eventTypeRes = Optional.of(eventType);
-                }
-              }
-            }
-          }
-
-          // Assoc related buildins need special parameter/arg handling
-          EventArgAndParamResult res;
-          List<EventType> assocEvents = List.of(EventType.ASSOC_ADD, EventType.ASSOC_REMOVE);
-          if(eventTypeRes.isPresent() && assocEvents.contains(eventTypeRes.get())) {
-            res = convertEventArgsAndParams4Assocs(call);
-          }else{
-            res = convertEventArgsAndParams(call);
-          }
-
-          // Assoc related methods need to have a unique name for TS gen
-          String methodNamePostfix = res.referencedAssoc.map(r -> "_" + r.getRoleName()).orElse("");
-          String fullMethodName = methodName + methodNamePostfix;
-
-          getCD4C().addMethod(decoratedClass, getEventArgCallbackTemplate(),
-              util.gui2cdEventCallName(guiComponent, event.getName()), fullMethodName, res.argCallbackArgs, res.argCallbackParams);
-
-          Optional<ASTCDMethodSignature> methodSignature = getCD4C().createMethod(decoratedClass,
-              getEventCallbackTemplate(), fullMethodName, res.callbackArgs, res.callbackParams);
-          if (methodSignature.isPresent() && !GenService.containsMethod(decoratedClass, methodSignature.get())) {
-            decoratedClass.addCDMember(methodSignature.get());
-
-            if(eventTypeRes.isPresent()) {
-              if(res.referencedAssoc.isEmpty()) {
-                glex.replaceTemplate(EMPTY_BODY, methodSignature.get(), new TemplateHookPoint(getEventTypeTemplate(eventTypeRes.get()),
-                    util.getMainDomainModelSimpleName().get(), teOpt.get().print(), res.argCallbackArgs.get(0)));
-              }else{
-                glex.replaceTemplate(EMPTY_BODY, methodSignature.get(), new TemplateHookPoint(getEventTypeTemplate(eventTypeRes.get()),
-                    util.getMainDomainModelSimpleName().get(), teOpt.get().print(), res.argCallbackArgs.get(0), res.referencedAssoc.get()));
-              }
-            }
-          }
-          if (UMLPGeneratorConfig.getInstance().isUseJsweet()) {
-            addImport(decoratedClass, "java.util.function.Consumer");
-          }
+        Optional<ASTCDMethodSignature> methodSignature = getCD4C().createMethod(decoratedClass, getEventTemplate(), methodName, "");
+        if (methodSignature.isPresent() && !GenService.containsMethod(decoratedClass, methodSignature.get())) {
+          getCD4C().addMethod(decoratedClass, getEventTemplate(), methodName, "");
         }
       }
+      if (event.getExpression() instanceof ASTCallExpression
+          && ((ASTCallExpression) event.getExpression()).getExpression() instanceof ASTNameExpression) {
+        ASTCallExpression call = (ASTCallExpression) event.getExpression();
+        ASTNameExpression callName = (ASTNameExpression) call.getExpression();
+
+        String methodName = callName.getName();
+
+        // Check if event is special case
+        Optional<EventType> eventTypeRes = Optional.empty();
+        Optional<SymTypeExpression> teOpt = Optional.empty();
+        if (!call.getArguments().getExpressionList().isEmpty()) {
+          Type4Ast type4Ast = new Type4Ast();
+          GUIDSLTraverser traverser = GUIDSLTypeTraverserFactory.getInstance()
+              .createTraverserForOO(type4Ast);
+          call.getArguments().getExpression(0).accept(traverser);
+          SymTypeExpression te = type4Ast.getTypeOfExpression(call.getArguments().getExpression(0));
+          teOpt = Optional.of(te);
+          if(te.hasTypeInfo() && (util.isDomainType(te) || util.isDomainListType(te))) {
+            for (EventType eventType : EventType.values()) {
+              if (methodName.equals(eventType.eventName)) {
+                eventTypeRes = Optional.of(eventType);
+              }
+            }
+          }
+        }
+
+        // Assoc related buildins need special parameter/arg handling
+        EventArgAndParamResult res;
+        List<EventType> assocEvents = List.of(EventType.ASSOC_ADD, EventType.ASSOC_REMOVE);
+        if(eventTypeRes.isPresent() && assocEvents.contains(eventTypeRes.get())) {
+          res = convertEventArgsAndParams4Assocs(call);
+        }else{
+          res = convertEventArgsAndParams(call);
+        }
+
+        // Assoc related methods need to have a unique name for TS gen
+        String methodNamePostfix = res.referencedAssoc.map(r -> "_" + r.getRoleName()).orElse("");
+        String fullMethodName = methodName + methodNamePostfix;
+
+        getCD4C().addMethod(decoratedClass, getEventArgCallbackTemplate(),
+            util.gui2cdEventCallName(guiComponent, event.getName()), fullMethodName, res.argCallbackArgs, res.argCallbackParams);
+
+        Optional<ASTCDMethodSignature> methodSignature = getCD4C().createMethod(decoratedClass,
+            getEventCallbackTemplate(), fullMethodName, res.callbackArgs, res.callbackParams);
+        if (methodSignature.isPresent() && !GenService.containsMethod(decoratedClass, methodSignature.get())) {
+          decoratedClass.addCDMember(methodSignature.get());
+
+          if(eventTypeRes.isPresent()) {
+            if(res.referencedAssoc.isEmpty()) {
+              glex.replaceTemplate(EMPTY_BODY, methodSignature.get(), new TemplateHookPoint(getEventTypeTemplate(eventTypeRes.get()),
+                  util.getMainDomainModelSimpleName().get(), teOpt.get().print(), res.argCallbackArgs.get(0)));
+            }else{
+              glex.replaceTemplate(EMPTY_BODY, methodSignature.get(), new TemplateHookPoint(getEventTypeTemplate(eventTypeRes.get()),
+                  util.getMainDomainModelSimpleName().get(), teOpt.get().print(), res.argCallbackArgs.get(0), res.referencedAssoc.get()));
+            }
+          }
+        }
+        if (UMLPGeneratorConfig.getInstance().isUseJsweet()) {
+          addImport(decoratedClass, "java.util.function.Consumer");
+        }
+      }
+
     }
   }
 

@@ -9,7 +9,7 @@
     <#if genHelper.isEventArgument(namedArg)>
       (${namedArg.getName()}) = '${genHelper.gui2cdEventCallName(ast, namedArg.getName())}.bind(this)($event<#list extraArgs as arg>, ${arg.getName()}</#list>)'
     <#elseif genHelper.isViewElement(ast, namedArg) || genHelper.isViewElementsCollection(ast, namedArg)>
-      [${namedArg.getName()}] = '${genHelper.gui2htmlArgValue(namedArg.getGUIArgValue())}'
+      [${namedArg.getName()}] = '${genHelper.gui2htmlArgValue(namedArg.getExpression())}'
     <#elseif genHelper.hasGetter(ast, namedArg)>
       [${namedArg.getName()}] = '${genHelper.gui2cdAttrGetterNameTS(ast.getId().getName(), namedArg)}(
         <#list extraArgs as arg>${arg.getName()}<#if !arg?is_last>,</#if></#list>)'
@@ -20,7 +20,7 @@
     <#else>
       <#-- TODO AGe: iterator index -->
       <#-- [${namedArg.getName()}] = '${genHelper.gui2cdAttrGetterName(ast, namedArg.getName())}()' -->
-      [${namedArg.getName()}] = '${genHelper.print(namedArg.getGUIArgValue(), true)}(
+      [${namedArg.getName()}] = '${genHelper.print(namedArg.getExpression(), true)}(
         <#list extraArgs as arg>${arg.getName()}<#if !arg?is_last>,</#if></#list>)'
     </#if>
   </#list>

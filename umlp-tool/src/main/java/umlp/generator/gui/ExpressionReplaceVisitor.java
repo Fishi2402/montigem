@@ -25,7 +25,6 @@ import de.monticore.expressions.commonexpressions._ast.ASTPlusPrefixExpression;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.guidsl.GUIDSLMill;
-import de.monticore.guidsl._ast.ASTGUIArgValue;
 import de.monticore.guidsl._ast.ASTGUIBlockContent;
 import de.monticore.guidsl._ast.ASTGUIGuard;
 import de.monticore.guidsl._ast.ASTGUIRangeIterateControl;
@@ -59,12 +58,6 @@ public class ExpressionReplaceVisitor implements GUIDSLVisitor2, CommonExpressio
     holder.accept(getTraverser());
   }
 
-  @Override
-  public void endVisit(ASTGUIArgValue node) {
-    if (node.equals(holder)) {
-      node.setExpression(newValue.get());
-    }
-  }
 
   @Override
   public void endVisit(ASTGUIBlockContent node) {

@@ -2,6 +2,7 @@
 package umlp.generator.gui.genhtml;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUIBlock;
 import de.monticore.guidsl._ast.ASTGUIBlockContent;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
@@ -9,6 +10,7 @@ import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.monticore.guidsl._ast.ASTGUIGuard;
 import de.monticore.guidsl._ast.ASTGUIIterate;
+import de.monticore.guidsl._util.GUIDSLTypeDispatcher;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import umlp.generator.gui.DomainGUITest;
@@ -99,7 +101,7 @@ public class HTMLHelperTest extends DomainGUITest {
 
     // component declaration block
 
-    Set<ASTGUIComponent> comp1 = new HashSet<>();
+    Set<ASTExpression> comp1 = new HashSet<>();
     Set<ASTGUIGuard> guard1 = new HashSet<>();
     Set<ASTGUIIterate> iter1 = new HashSet<>();
     Set<ASTExpression> exp1 = new HashSet<>();
@@ -107,8 +109,8 @@ public class HTMLHelperTest extends DomainGUITest {
     result = finder.getNgTemplates(decl.getGUIBlock());
 
     for (ASTGUIBlockContent content : result) {
-      if (content.isPresentGUIComponent()) {
-        comp1.add(content.getGUIComponent());
+      if (content.isPresentExpression() && GUIDSLMill.typeDispatcher().isGUIDSLASTGUIComponent(content.getExpression())) {
+        comp1.add(content.getExpression());
       }
       if (content.isPresentGUIGuard()) {
         guard1.add(content.getGUIGuard());
@@ -116,7 +118,7 @@ public class HTMLHelperTest extends DomainGUITest {
       if (content.isPresentGUIIterate()) {
         iter1.add(content.getGUIIterate());
       }
-      if (content.isPresentExpression()) {
+      if (content.isPresentExpression() && !GUIDSLMill.typeDispatcher().isGUIDSLASTGUIComponent(content.getExpression())) {
         exp1.add(content.getExpression());
       }
     }
@@ -141,7 +143,7 @@ public class HTMLHelperTest extends DomainGUITest {
 
     // iterate block e
 
-    Set<ASTGUIComponent> comp3 = new HashSet<>();
+    Set<ASTExpression> comp3 = new HashSet<>();
     Set<ASTGUIGuard> guard3 = new HashSet<>();
     Set<ASTGUIIterate> iter3 = new HashSet<>();
     Set<ASTExpression> exp3 = new HashSet<>();
@@ -149,8 +151,8 @@ public class HTMLHelperTest extends DomainGUITest {
     result = finder.getNgTemplates(e.getGUIBlock());
 
     for (ASTGUIBlockContent content : result) {
-      if (content.isPresentGUIComponent()) {
-        comp3.add(content.getGUIComponent());
+      if (content.isPresentExpression() && GUIDSLMill.typeDispatcher().isGUIDSLASTGUIComponent(content.getExpression())) {
+        comp3.add(content.getExpression());
       }
       if (content.isPresentGUIGuard()) {
         guard3.add(content.getGUIGuard());
@@ -158,7 +160,7 @@ public class HTMLHelperTest extends DomainGUITest {
       if (content.isPresentGUIIterate()) {
         iter3.add(content.getGUIIterate());
       }
-      if (content.isPresentExpression()) {
+      if (content.isPresentExpression() && !GUIDSLMill.typeDispatcher().isGUIDSLASTGUIComponent(content.getExpression())) {
         exp3.add(content.getExpression());
       }
     }
@@ -190,7 +192,7 @@ public class HTMLHelperTest extends DomainGUITest {
 
     // iterate block ad
 
-    Set<ASTGUIComponent> comp4 = new HashSet<>();
+    Set<ASTExpression> comp4 = new HashSet<>();
     Set<ASTGUIGuard> guard4 = new HashSet<>();
     Set<ASTGUIIterate> iter4 = new HashSet<>();
     Set<ASTExpression> exp4 = new HashSet<>();
@@ -198,8 +200,8 @@ public class HTMLHelperTest extends DomainGUITest {
     result = finder.getNgTemplates(ad.getGUIBlock());
 
     for (ASTGUIBlockContent content : result) {
-      if (content.isPresentGUIComponent()) {
-        comp4.add(content.getGUIComponent());
+      if (content.isPresentExpression() && GUIDSLMill.typeDispatcher().isGUIDSLASTGUIComponent(content.getExpression())) {
+        comp4.add(content.getExpression());
       }
       if (content.isPresentGUIGuard()) {
         guard4.add(content.getGUIGuard());
