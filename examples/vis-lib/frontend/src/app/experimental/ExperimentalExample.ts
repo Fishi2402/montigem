@@ -1,15 +1,14 @@
 import { Component } from '@angular/core';
-import { ExperimentalComponent } from '@umlp/experimental';
+import { foo } from '@umlp/experimental';
 
 @Component({
   selector: 'experimental-example',
   standalone: true,
-  imports: [ExperimentalComponent],
   template: `
-    <gem-experimental [title]="'heh'">
-    </gem-experimental>
+    {{ test }}
   `,
   styles: ``
 })
 export class ExperimentalExample {
+  test = foo
 }

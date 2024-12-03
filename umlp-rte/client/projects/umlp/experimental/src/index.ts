@@ -1,5 +1,1 @@
-/*
- * Public API Surface of experimental
- */
-
-export * from './lib/experimental.component';
+export * from './lib/MyComp';

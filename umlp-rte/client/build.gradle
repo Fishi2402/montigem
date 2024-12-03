@@ -92,8 +92,8 @@ tasks.build_charts.inputs.files(tasks.build_commonj2ts.outputs.files.singleFile)
 tasks.build_charts.dependsOn(tasks.build_commonj2ts)
 tasks.build_composite.inputs.files(tasks.build_arrange.outputs.files.singleFile)
 tasks.build_composite.dependsOn(tasks.build_arrange)
-tasks.build_experimental.inputs.files(tasks.build_composite.outputs.files.singleFile)
-tasks.build_experimental.dependsOn(tasks.build_composite)
+tasks.build_experimental.inputs.files(tasks.build_arrange.outputs.files.singleFile)
+tasks.build_experimental.dependsOn(tasks.build_arrange)
 
 tasks.register('buildAll') {
   dependsOn tasks.findAll { it.name.startsWith(buildTaskPrefix) }
