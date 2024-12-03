@@ -12,7 +12,6 @@ import {StringDeSer} from "../common/StringDeSer";
 import {LocalDateDeSer} from "../deser";
 import {LocalDateTimeDeSer} from "../deser/LocalDateTimeDeSer";
 import {DeSer, JsonDeSer} from "../command";
-import {value} from "lodash.isequal";
 
 /**
  * (De)serializer for base classes from java.lang
