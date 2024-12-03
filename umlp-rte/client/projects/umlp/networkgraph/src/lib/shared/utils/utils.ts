@@ -1,7 +1,6 @@
+import { cloneDeepWith, isEqual } from "lodash-es";
 import { TypeCheckerUtil } from "./type-checker.util";
 
-const isEqual = require("lodash.isequal");
-const cloneDeepWith = require("lodash.clonedeepwith");
 /**
  * Utility class with static helper methods.
  *
