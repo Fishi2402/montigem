@@ -69,7 +69,7 @@ public class RTEDeSerDecorator extends AbstractDecorator {
         .build();
 
     ASTCDAttribute attr = getCDAttributeFacade().createAttribute(PROTECTED.build(),
-        getMCTypeFacade().createBasicGenericTypeOf("Map", "String", "JsonDeSer"),
+        getMCTypeFacade().createBasicGenericTypeOf("Map", "String", "JsonDeSer<?>"),
         StringTransformations.uncapitalize("deSers"));
     deSerRepo.addCDMember(attr);
 
@@ -89,28 +89,8 @@ public class RTEDeSerDecorator extends AbstractDecorator {
     getCD4C().addMethod(deSerRepo,getDeSerMapMethod(), classNames);
 
     getCD4C().addMethod(deSerRepo, getInstaceMethod(), deSerRepo.getName());
-/*
-    ASTCDMethod staticSerialize = getCDMethodFacade().createMethod(PUBLIC_STATIC.build(),
-        getMCTypeFacade().createBasicGenericTypeOf("Optional", "String"),
-        "serialize",
-        getCDParameterFacade().createParameter("Object", "o"),
-        getCDParameterFacade().createParameter("String", "className"));
-    glex.replaceTemplate(EMPTY_BODY, staticSerialize, new StringHookPoint("return getInstance()._serialize(o, className);"));
-    deSerRepo.addCDMember(staticSerialize);
 
-    getCD4C().addMethod(deSerRepo, getObjectMapperSerialize());
-
-    ASTCDMethod staticDeserialize = getCDMethodFacade().createMethod(PUBLIC_STATIC.build(),
-        getMCTypeFacade().createBasicGenericTypeOf("Optional", "T"),
-        "deserialize",
-        getCDParameterFacade().createParameter("String", "s"),
-        getCDParameterFacade().createParameter("String", "className"));
-    glex.replaceTemplate(EMPTY_BODY, staticDeserialize, new StringHookPoint("return getInstance()._deserialize(s, className);"));
-    deSerRepo.addCDMember(staticDeserialize);
-
-    getCD4C().addMethod(deSerRepo, getObjectMapperDeserialize(), classNames);*/
-
-    glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint(" = new HashMap<String, JsonDeSer>();"));
+    glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint(" = new HashMap<String, JsonDeSer<?>>();"));
 
     getCD4C().addImport(deSerRepo, "rte.deser.DeSerRepository");
     getCD4C().addImport(deSerRepo, "umlp.backendrte.command.JsonDeSer");
