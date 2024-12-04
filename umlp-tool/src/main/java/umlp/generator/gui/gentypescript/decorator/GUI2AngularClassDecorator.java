@@ -261,7 +261,7 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
 
   @Override
   protected void addDestroy() {
-    getCD4C().addMethod(clazz, "umlp.gui2ts.GUI2AngularDestroy", getAndImportManager(), clazz.getName());
+    getCD4C().addMethod(clazz, "umlp.gui2ts.GUI2AngularDestroy", clazz.getName());
   }
 
   protected void removeObserver() {

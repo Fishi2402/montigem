@@ -365,7 +365,7 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
 
     ASTCDAttribute attr = CDAttributeFacade.getInstance()
         .createAttribute(CDModifier.PROTECTED.build(), type, name);
-    return new Attribute(attr, baseType, params, importSet);
+    return new Attribute(attr, baseType, params, importSet, ste);
   }
 
   protected void recordTypes(ASTGUIList node, SymTypeExpression ste) {

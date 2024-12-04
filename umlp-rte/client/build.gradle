@@ -49,6 +49,7 @@ def libs = [
 def buildTaskPrefix = "build_"
 def publishTaskPrefix = "publish_"
 def copyTaskPrefix = "copy_types_"
+def cleanTaskPrefix = "clean_"
 
 libs.each {
   def libName = it
@@ -87,8 +88,12 @@ libs.each {
 
   task "${copyTaskName}"(type: Copy) {
     dependsOn translateJava2TSDomain
-    from "${sourceDir}"
-    into "${targetDir}"
+    from sourceDir
+    into targetDir
+  }
+
+  clean {
+    delete targetDir
   }
 
   tasks[buildTaskName].dependsOn tasks[copyTaskName]
@@ -189,9 +194,11 @@ gradle.projectsEvaluated {
 
 genGUI {
   // enabled = false
+  dependsOn(createCDSymbols)
   input = layout.projectDirectory.dir("models")
   modelDir = layout.projectDirectory.dir("models")
   hwcDir = layout.projectDirectory.files("projects/umlp/arrange")
+  symbolDir = files(createCDSymbols.getOutput(), configurations.guiDefaultTypes.files)
   outputDir = layout.projectDirectory.dir("projects/umlp/arrange/build")
   guiGenJsweet = false
 }

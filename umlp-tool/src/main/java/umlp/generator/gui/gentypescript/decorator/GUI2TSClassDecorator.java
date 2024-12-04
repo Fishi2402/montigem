@@ -280,6 +280,11 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
   }
 
   @Override
+  protected String getStaticBuilderViaConstructorInitTemplate() {
+    return "umlp.gui2ts.GUI2TSStaticBuilderViaConstructorInit";
+  }
+
+  @Override
   protected String getStaticConstructorInitTemplate() {
     return "umlp.gui2ts.GUI2TSStaticConstructorInit";
   }
@@ -287,6 +292,11 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
   @Override
   protected String getBuilderInitTemplate() {
     return "umlp.gui2ts.GUI2TSBuilderInit";
+  }
+
+  @Override
+  protected String getBuilderViaConstructorInitTemplate() {
+    return "umlp.gui2ts.GUI2TSBuilderViaConstructorInit";
   }
 
   @Override

@@ -42,6 +42,7 @@ import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
+import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.domain.decorator.ObserverDecorator;
 import umlp.generator.gui.GUI2ClassDecorator;
 import umlp.generator.gui.genjava.prettyprinter.Expression2AccessorPrinter;
@@ -205,7 +206,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     String initName = "init" + StringTransformations.capitalize(node.getName());
 
     // case 1: component Foo(App app)
-    if (typeSTE.isObjectType() && TagLookUp.isSingleton(typeSTE.getTypeInfo())) {
+    if (util.isDomainType(typeSTE) && typeSTE.isObjectType() && TagLookUp.isSingleton(typeSTE.getTypeInfo())) {
       // Use the manager corresponding (when importing from extended CDs)
       String manager = getAndImportManager(typeSTE.asObjectType());
 
@@ -713,6 +714,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       List<ASTCDParameter> params = attrWrapper.getParams();
 
       ASTMCType type = attrWrapper.getBaseType();
+      SymTypeExpression ste = attrWrapper.getSourceType();
       String name = attr.getName();
 
       IterationItemsFinder finder = new IterationItemsFinder();
@@ -736,12 +738,23 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
             .getDependency(node);
         if (dep.isPresent()) {
           if (constructorArgs.isEmpty()) {
-            String manager = getAndImportManager();
+            // a call that maps to a domain builder, e.g., @PersonForm(person = Person())
+            if (util.isDomainType(ste)) {
+              String manager = getAndImportManager();
 
-            dep.get().setInitMethod(new MethodTemplate(
-                getBuilderInitTemplate(), type, name, manager
-            ));
+              dep.get().setInitMethod(new MethodTemplate(
+                  getBuilderInitTemplate(), type, name, manager
+              ));
+            }
+            // a call that maps to a non-domain builder, e.g., @GemDropdown(options = [Option()])
+            else {
+              getCD4C().addImport(clazz, BuilderDecorator.getClassName(ste.printFullName()));
+              dep.get().setInitMethod(new MethodTemplate(
+                  getBuilderViaConstructorInitTemplate(), type, name
+              ));
+            }
           }
+          // a call that maps to a constructor, e.g., @GemDropdown(options = [Option("foo")])
           else {
             dep.get().setInitMethod(new MethodTemplate(
                 getConstructorInitTemplate(), type, name, constructorArgs
@@ -762,11 +775,21 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
             getCD4C().addImport(clazz, TypeScriptTypes.HASH_MAP.getJavaQName().get());
           }
           if (constructorArgs.isEmpty()) {
-            String manager = getAndImportManager();
+            // a call that maps to a domain builder, e.g., @PersonForm(person = Person())
+            if (util.isDomainType(ste)) {
+              String manager = getAndImportManager();
 
-            dep.get().setInitMethod(new MethodTemplate(
-                getStaticBuilderInitTemplate(), type, name, manager, params
-            ));
+              dep.get().setInitMethod(new MethodTemplate(
+                  getStaticBuilderInitTemplate(), type, name, manager, params
+              ));
+            }
+            // a call that maps to a non-domain builder, e.g., @GemDropdown(options = [Option()])
+            else {
+              getCD4C().addImport(clazz, BuilderDecorator.getClassName(ste.printFullName()));
+              dep.get().setInitMethod(new MethodTemplate(
+                  getStaticBuilderViaConstructorInitTemplate(), type, name
+              ));
+            }
           }
           else {
             dep.get().setInitMethod(new MethodTemplate(
@@ -1418,12 +1441,20 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     return "umlp.gui2java.GUI2JavaBuilderInit";
   }
 
+  protected String getBuilderViaConstructorInitTemplate() {
+    return "umlp.gui2java.GUI2JavaBuilderViaConstructorInit";
+  }
+
   protected String getConstructorInitTemplate() {
     return "umlp.gui2java.GUI2JavaConstructorInit";
   }
 
   protected String getStaticBuilderInitTemplate() {
     return "umlp.gui2java.GUI2JavaStaticBuilderInit";
+  }
+
+  protected String getStaticBuilderViaConstructorInitTemplate() {
+    return "umlp.gui2java.GUI2JavaStaticBuilderViaConstructorInit";
   }
 
   protected String getStaticConstructorInitTemplate() {
