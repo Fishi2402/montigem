@@ -33,6 +33,6 @@ public class RTEDataDecorator extends AbstractDecorator {
     RTEDeSerDecorator RTEDeSerDecorator;
     RTEDeSerDecorator = new RTEDeSerDecorator(glex, BEDecorator.getStandardSupportedDeSers());
     RTEDeSerDecorator.transform(origCD, decoratedCD);
-    Log.info("After decorator: DeSerDecorator", RTEDataDecorator.class.getName());
+    Log.info("After decorator: RTEDeSerDecorator", RTEDataDecorator.class.getName());
   }
 }

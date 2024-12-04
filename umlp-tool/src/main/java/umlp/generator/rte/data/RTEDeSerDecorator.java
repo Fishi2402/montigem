@@ -15,6 +15,7 @@ import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
@@ -75,18 +76,18 @@ public class RTEDeSerDecorator extends AbstractDecorator {
 
     ASTCDAttribute attrInstance = getCDAttributeFacade().createAttribute(PROTECTED_STATIC.build(),
         deSerRepo.getName(),
-        "_"+StringTransformations.uncapitalize(deSerRepo.getName()));
+        "_" + StringTransformations.uncapitalize(deSerRepo.getName()));
     deSerRepo.addCDMember(attrInstance);
 
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(),
         getMCTypeFacade().createBasicGenericTypeOf("Map", "String", "JsonDeSer"),
         "getDeSerMap");
-    glex.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return this._"+attr.getName()));
+    glex.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return this._" + attr.getName()));
 
 
-    List<String> classNames = classes.stream().map(c -> c.getSymbol().getPackageName().toLowerCase()+"."+c.getName()).collect(Collectors.toList());
+    List<String> classNames = classes.stream().map(c -> c.getSymbol().getPackageName().toLowerCase() + "." + c.getName()).collect(Collectors.toList());
 
-    getCD4C().addMethod(deSerRepo,getDeSerMapMethod(), classNames);
+    getCD4C().addMethod(deSerRepo, getDeSerMapMethod(), classNames);
 
     getCD4C().addMethod(deSerRepo, getInstaceMethod(), deSerRepo.getName());
 
@@ -166,7 +167,6 @@ public class RTEDeSerDecorator extends AbstractDecorator {
     boolean useDeSer = false;
     String type = GenService.createType(attr.getSymbol().getType()).printType();
     String innerTypeFull = "";
-    String innerType = "";
     String jsonStr = "";
     if (GenService.isList(attr)) {
       isList = true;
@@ -200,23 +200,23 @@ public class RTEDeSerDecorator extends AbstractDecorator {
     boolean isList = false;
     boolean isOptional = false;
     boolean useDeSer;
-    String type = GenService.createType(attr.getSymbol().getType()).printType();
+    String type = attr.getSymbol().getType().print();
     String innerTypeFull = "";
     String jsonStr = "";
     if (GenService.isList(attr)) {
       isList = true;
       jsonStr = GenService.calculateJSon(attr.getSymbol().getType());
-      useDeSer = supportedDesers.contains(attr.getSymbol().getPackageName().toLowerCase()+"."
-          +attr.getSymbol().getType().print());
-      innerTypeFull =type;
+      innerTypeFull = attr.getSymbol().getPackageName().toLowerCase()+"."
+          +attr.getSymbol().getType().print();
+      useDeSer = supportedDesers.contains(innerTypeFull);
       type = getMCTypeFacade().createBasicGenericTypeOf("List",
           GenService.createType(attr.getSymbol().getType()).printType()).printType();
-    } else  if (GenService.isOptional(attr)) {
+    } else if (GenService.isOptional(attr)) {
       isOptional = true;
       jsonStr = GenService.calculateJSon(attr.getSymbol().getType());
-      useDeSer = supportedDesers.contains(attr.getSymbol().getPackageName().toLowerCase()+"."
-          +attr.getSymbol().getType().print());
-      innerTypeFull =type;
+      innerTypeFull = attr.getSymbol().getPackageName().toLowerCase()+"."
+          +attr.getSymbol().getType().print();
+      useDeSer = supportedDesers.contains(innerTypeFull);
       type = getMCTypeFacade().createBasicGenericTypeOf("Optional",
           GenService.createType(attr.getSymbol().getType()).printType()).printType();
     } else {
