@@ -694,8 +694,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
           Log.error("0x00016 Constructor with arguments '" + util.print(node)
               + "' at " + node.getArguments().get_SourcePositionStart().toString()
               + " - " + node.getArguments().get_SourcePositionEnd().toString()
-              + ". Only constructors explicitly declared with matching parameters are supported"
-              + " so far. Please replace the call via a custom or a predefined function call,"
+              + ". Only constructors explicitly declared with matching parameters are supported."
+              + " Please replace the call via a custom or a predefined function call,"
               + " e.g. get" + util.print(node)
           );
         }
