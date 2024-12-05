@@ -107,6 +107,7 @@ tasks.register('genTestData', UMLPOD2DataTask) {
   outputDir = file("$project.buildDir/testdata")
   hwcDir = file("$projectDir/src/main/java")
   symbolDir = files(generateUmlpBackend.symbolOutDir)
+  symbolOutDir = file("$project.buildDir/testdata/symtab")
 }
 
 test {

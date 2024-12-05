@@ -4,12 +4,14 @@ package gradle.specific;
 import de.monticore.od4development.OD4DevelopmentTool;
 import gradle.common.UMLPSingleFileTask;
 import org.gradle.api.file.ConfigurableFileCollection;
+import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.tasks.*;
 import org.gradle.work.InputChanges;
 import standalone.com.sun.tools.sjavac.Log;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -22,6 +24,7 @@ public abstract class UMLPOD2DataTask extends UMLPSingleFileTask {
 
 
   private final ConfigurableFileCollection symbolDir = getProject().getObjects().fileCollection();
+  private final DirectoryProperty symbolOutDir = getProject().getObjects().directoryProperty();
 
   @InputFiles
   public ConfigurableFileCollection getSymbolDir() {
@@ -39,6 +42,12 @@ public abstract class UMLPOD2DataTask extends UMLPSingleFileTask {
     symbolDir.from(paths);
   }
 
+  @OutputDirectory
+  @org.gradle.api.tasks.Optional
+  public DirectoryProperty getSymbolOutDir() {
+    return symbolOutDir;
+  }
+
   @Override
   @TaskAction
   public void run(InputChanges inputChanges) {
@@ -49,11 +58,22 @@ public abstract class UMLPOD2DataTask extends UMLPSingleFileTask {
     Log.debug("Input file: " + getInput().getAsPath());
     Log.debug("Symbol path: " + getSymbolDir().getAsPath());
     Log.debug("Output directory: " + getOutputDir().get());
+    if(getSymbolOutDir().isPresent()) {
+      Log.debug("Symbol output directory: " + getSymbolOutDir().get());
+    }
 
-    String[] args = {"-i", getInput().getAsPath(),
-                     "-s", getSymbolDir().getAsPath(),
-                     "-o", getOutputDir().get().toString()};
-    OD4DevelopmentTool.main(args);
+    List<String> args = new ArrayList<>();
+    args.add("-i");
+    args.add(getInput().getAsPath());
+    args.add("-path");
+    args.add(getSymbolDir().getAsPath());
+    args.add("-o");
+    args.add(getOutputDir().get().toString());
+    if(getSymbolOutDir().isPresent()) {
+      args.add("-s");
+      args.add(getSymbolOutDir().get().toString());
+    }
+    OD4DevelopmentTool.main(args.toArray(new String[0]));
   }
 
   /**
