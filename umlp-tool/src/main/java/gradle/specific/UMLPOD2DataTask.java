@@ -4,12 +4,14 @@ package gradle.specific;
 import de.monticore.od4development.OD4DevelopmentTool;
 import gradle.common.UMLPSingleFileTask;
 import org.gradle.api.file.ConfigurableFileCollection;
-import org.gradle.api.tasks.*;
+import org.gradle.api.tasks.InputFiles;
+import org.gradle.api.tasks.TaskAction;
 import org.gradle.work.InputChanges;
 import standalone.com.sun.tools.sjavac.Log;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -46,14 +48,24 @@ public abstract class UMLPOD2DataTask extends UMLPSingleFileTask {
 
     Log.info("Starting data generation from object diagram.");
 
-    Log.debug("Input file: " + getInput().getAsPath());
-    Log.debug("Symbol path: " + getSymbolDir().getAsPath());
-    Log.debug("Output directory: " + getOutputDir().get());
+    var args = new ArrayList<String>(6);
 
-    String[] args = {"-i", getInput().getAsPath(),
-                     "-s", getSymbolDir().getAsPath(),
-                     "-o", getOutputDir().get().toString()};
-    OD4DevelopmentTool.main(args);
+    var inputPath = getInput().getAsPath();
+    Log.debug("Input file: " + inputPath);
+    args.addAll(List.of("-i", inputPath));
+
+    var symbolPath = getSymbolDir().getAsPath();
+    Log.debug("Symbol path: " + symbolPath);
+    args.addAll(List.of("-s", symbolPath));
+
+    var outputDirProperty = getOutputDir();
+    if (outputDirProperty.isPresent()) {
+      var outputDirectory = outputDirProperty.get().toString();
+      Log.debug("Output directory: " + outputDirectory);
+      args.addAll(List.of("-o", outputDirectory));
+    }
+
+    OD4DevelopmentTool.main(args.toArray(new String[0]));
   }
 
   /**

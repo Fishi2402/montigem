@@ -1,4 +1,4 @@
-import org.springframework.boot.gradle.tasks.run.BootRun
+import gradle.specific.UMLPOD2DataTask
 
 plugins {
   id 'de.rwth.se.umlp-tool-backend-test' // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
@@ -40,4 +40,10 @@ dependencies {
 generateUmlpBackend {
   input = file("../models/Webshop.umlp")
   useSpring = true
+}
+
+tasks.register('parseOD', UMLPOD2DataTask) {
+  input = file('../models/TotalTest.od')
+  outputDir = file("${project.buildDir}/od")
+  dependsOn generateUmlpBackend
 }
