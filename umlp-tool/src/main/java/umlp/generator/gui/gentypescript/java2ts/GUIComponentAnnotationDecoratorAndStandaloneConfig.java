@@ -37,10 +37,10 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
   }
 
   public void transform(ASTCDCompilationUnit ast, ASTGUICompilationUnit astGui, GUIComponentsVisitor viewComponents) {
+    String qName = ast.getMCPackageDeclaration().getMCQualifiedName().getQName();
     for (ASTCDClass clazz : ast.getCDDefinition().getCDClassesList()) {
       String originalName = GUIGeneratorUtil.getInstance().getOriginalName(clazz);
-      String qName = ast.getMCPackageDeclaration().getMCQualifiedName().getQName()
-          + "." + originalName;
+      String qClassName = qName + "." + originalName;
       if (!GUIGeneratorUtil.getInstance().isComponent(clazz)) {
         glex.replaceTemplate(
             GUI2ComponentTemplates.ANNOTATIONS,
@@ -56,25 +56,25 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
 
         if (generateAnnotation) {
           Optional<String> hwHtmlPath = util.getRelativeImportPath(
-              hwPath, outPath, qName, "html");
+              hwPath, outPath, qClassName, "html");
           if (hwHtmlPath.isPresent()) {
             htmlPath = hwHtmlPath.get();
           }
           Optional<String> hwScssPath = util.getRelativeImportPath(
-              hwPath, outPath, qName, "scss");
+              hwPath, outPath, qClassName, "scss");
           if (hwScssPath.isPresent()) {
             scssPaths.add(hwScssPath.get());
           }
         }
         else if (!UMLPGeneratorConfig.getInstance().isUseJsweet()){
           Optional<String> hwHtmlPath = util.getRelativeImportPath(
-              hwPath, outPath, qName, "html");
+              hwPath, outPath, qClassName, "html");
           if (!hwHtmlPath.isPresent()) {
             htmlPath = util.getRelativeImportPathForAnnotation(
-                outPath.toString(), new ArrayList<>(hwPath.getEntries()).get(0).toString(), qName).get();
+                outPath.toString(), new ArrayList<>(hwPath.getEntries()).get(0).toString(), qClassName).get();
           }
           Optional<String> hwScssPath = util.getRelativeImportPath(
-              hwPath, outPath, qName, "scss");
+              hwPath, outPath, qClassName, "scss");
           if (hwScssPath.isPresent()) {
             scssPaths.add("./" + originalName + ".scss");
           }
@@ -82,25 +82,25 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
         else {
           // TODO #3768
           Optional<String> hwHtmlPath = util.getRelativeImportPath(
-              hwPath, outPath, qName, "html");
+              hwPath, outPath, qClassName, "html");
           if (hwHtmlPath.isPresent()) {
             htmlPath = hwHtmlPath.get();
           }
           Optional<String> hwScssPath = util.getRelativeImportPath(
-              hwPath, outPath, qName, "scss");
+              hwPath, outPath, qClassName, "scss");
           if (hwScssPath.isPresent()) {
             scssPaths.add("./" + originalName + ".scss");
           }
         }
         String selector = GUIGeneratorUtil.getInstance().pascal2KebabCase(originalName);
-        HashSet<String> importedCompoments = Sets.newHashSet();
+        HashSet<String> importedComponents = Sets.newHashSet();
         for (ASTGUIComponent component: viewComponents.getComponents()) {
-          importedCompoments.add(component.getNameSymbol().getFullName());
+          importedComponents.add(component.getNameSymbol().getFullName());
         }
         glex.replaceTemplate(
             GUI2ComponentTemplates.ANNOTATIONS,
             clazz,
-            new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATION_STANDALONECONFIG_COMPONENT, htmlPath, scssPaths, selector, importedCompoments, hwPath, generateAnnotation)
+            new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATION_STANDALONECONFIG_COMPONENT, htmlPath, scssPaths, selector, importedComponents, hwPath, generateAnnotation)
         );
       }
     }
