@@ -10,6 +10,7 @@ import gradle.specific.UMLPCdToGuiTask;
 import gradle.specific.UMLPFrontendTask;
 import gradle.specific.UMLPGuiGenTask;
 import gradle.specific.UMLPOD2DataTask;
+import gradle.specific.UMLPSD2DataTask;
 import gradle.specific.UMLPSymbolsTask;
 import gradle.specific.merge.UMLPMergeTask;
 import gradle.specific.serialize.SerializeCDSymbolsTask;
@@ -42,6 +43,7 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
       project.getExtensions().getExtraProperties().set("SerializeCDSymbolsTask", SerializeCDSymbolsTask.class);
       project.getExtensions().getExtraProperties().set("CheckDirEqualityTask", CheckDirEqualityTask.class);
       project.getExtensions().getExtraProperties().set("UMLPOD2DataTask", UMLPOD2DataTask.class);
+      project.getExtensions().getExtraProperties().set("UMLPSD2DataTask", UMLPSD2DataTask.class);
 
       // Module system
       project.getConfigurations().maybeCreate(UMLP_MODULES_CONFIG);
