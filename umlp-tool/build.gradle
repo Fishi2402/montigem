@@ -41,7 +41,7 @@ dependencies {
   implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version, classifier: 'language-server'
   implementation group: 'de.se_rwth.commons', name: 'se-commons-gradle', version: mc_version
   implementation group: 'de.monticore.lang', name: 'od', version: mc_version
-  implementation group: 'de.monticore.lang', name: 'sd', version: mc_version
+  implementation group: 'de.monticore.lang', name: 'sd-language', version: mc_version
 
   implementation group: "org.yaml", name: "snakeyaml", version: "$snake_yaml_version"
 

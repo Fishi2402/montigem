@@ -1,6 +1,6 @@
 package gradle.specific;
 
-import de.monticore.od4development.OD4DevelopmentTool;
+import de.monticore.lang.sd4development.SD4DevelopmentTool;
 import gradle.common.UMLPSingleFileTask;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.tasks.InputFiles;
@@ -63,8 +63,7 @@ public abstract class UMLPSD2DataTask extends UMLPSingleFileTask {
       args.addAll(List.of("-o", outputDirectory));
     }
 
-    //TODO use SD4DevelopementTool
-    OD4DevelopmentTool.main(args.toArray(new String[0]));
+    SD4DevelopmentTool.main(args.toArray(new String[0]));
   }
 
   /**
