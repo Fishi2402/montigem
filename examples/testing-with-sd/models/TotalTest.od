@@ -1,0 +1,8 @@
+import webshop.*;
+
+objectdiagram TotalTest {
+  item:Item {
+    amount = 2;
+    perUnitCost = 3;
+  };
+}

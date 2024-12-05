@@ -80,8 +80,6 @@ public abstract class UMLPOD2DataTask extends UMLPSingleFileTask {
       }
     }
 
-
-
     return result;
   }
 }
