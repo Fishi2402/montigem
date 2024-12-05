@@ -1,0 +1,34 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_arrange;
+
+import Domain.Person;
+
+import mc.fenix.arrange.GemTreeNode;
+import mc.fenix.basic.GemText;
+import mc.fenix.input.GemCheckBoxInput;
+
+page GemTreeViewExample(List<Person> persons) {
+  @GemTreeNode(children = [
+    @iterate(Person p : persons) {
+      @GemTreeNode(
+        parent = @GemText(value = p.name),
+        children = [
+          @iterate(Person f : p.friends) {
+            @GemTreeNode(
+              parent = @GemText(value = f.name),
+              children = [
+                @iterate(Person ff : f.friends) {
+                  @GemCheckBoxInput(
+                    labelText = ff.name + " is employed",
+                    checked = ff.employed
+                  );
+                }
+              ]
+            );
+          }
+        ],
+        onClick = sayHello(p.name)
+      );
+    }
+  ]);
+}

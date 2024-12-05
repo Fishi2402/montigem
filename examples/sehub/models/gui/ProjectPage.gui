@@ -8,15 +8,18 @@ import mc.fenix.table.GemTable;
 import mc.fenix.table.TableTypes.TableColumn;
 import mc.fenix.networkgraph.GemGraph;
 import mc.fenix.arrange.GemCard;
-import mc.fenix.basic.GemTreeview;
+
+import gui.DirNode;
 
 page ProjectPage(Directory project) {
 
   @GemCard(
     title = "Files",
-    component = files@GemTreeview(items = null, allExpanded = false)
+    component = @iterate(Artifact art :  project.contains) {
+      @DirNode(artifact = art);
+    }
   );
-  @GemGraph(
+  projectGraph@GemGraph(
     graph=null
   );
 

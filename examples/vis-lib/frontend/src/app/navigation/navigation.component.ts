@@ -17,7 +17,6 @@ export class Navigation {
   }
 
   readonly items: { url: string, title: string }[] = [
-    { url: '/example_basic/GemStatusIndicatorExample', title: 'StatusIndicator' },
     { url: '/example_input/GemChatExample', title: 'Chat' },
     { url: '/person/SimpleOverview', title: 'Overview' },
     { url: '/example_basic/GemAudioExample', title: 'Audio' },
@@ -26,7 +25,6 @@ export class Navigation {
     { url: '/example_basic/GemLinkExample', title: 'Link' },
     { url: '/example_basic/GemTextExample', title: 'Text' },
     { url: '/example_basic/GemIconExample', title: 'Icon' },
-    { url: '/example_basic/GemTreeviewExample', title: 'Treeview' },
     { url: '/example_basic/GemVideoExample', title: 'Video' },
     { url: '/example_table/GemTableExample', title: 'Table' },
     { url: '/example_arrange/GemDialogExample', title: 'Dialog' },
@@ -36,6 +34,7 @@ export class Navigation {
     { url: '/example_arrange/GemRowExample', title: 'Row' },
     { url: '/example_arrange/GemRowExample2', title: 'Row2' },
     { url: '/example_arrange/GemGridExample', title: 'Grid' },
+    { url: '/example_arrange/GemTreeViewExample', title: 'TreeView' },
     { url: '/example_input/GemTextInputExample', title: 'TextInput' },
     { url: '/example_input/GemDropdownInputExample', title: 'DropdownInput' },
     { url: '/example_input/GemAutocompleteInputExample', title: 'AutocompleteInput' },

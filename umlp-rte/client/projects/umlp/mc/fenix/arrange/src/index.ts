@@ -9,3 +9,5 @@ export * from "./lib/gemcolumn";
 export * from "./lib/gemcolumns";
 export * from "./lib/gemoverlay";
 export * from "./lib/gemoverlayitem";
+export * from "./lib/gemtreenode";
+

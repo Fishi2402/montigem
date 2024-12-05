@@ -1,6 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {GemTreeviewEntry} from '@umlp/basic';
 import {ProjectPageComponent,config} from '@src/gui/ProjectPageComponent';
 import {Artifact} from '@src/sehub/Artifact';
 import {Directory} from '@src/sehub/Directory';
@@ -37,19 +36,19 @@ export class ProjectPage extends ProjectPageComponent {
     super.ngOnInit();
   }
 
-  public getGemGraph1Edges() : GraphEdge[] {
+  public getGemGraphEdges() : GraphEdge[] {
     return this.calculateNetwork().edges
   }
 
 
-  public getGemGraph1Nodes(): GraphNode[] {
+  public getGemGraphNodes(): GraphNode[] {
     return this.calculateNetwork().nodes
   }
 
-  public override getGemGraph1Graph(): Graph {
+  public override getProjectGraphGraph(): Graph {
     return new GraphBuilder()
-    .edges(this.getGemGraph1Edges())
-    .nodes(this.getGemGraph1Nodes())
+    .edges(this.getGemGraphEdges())
+    .nodes(this.getGemGraphNodes())
     .build();
   }
 
@@ -104,36 +103,6 @@ export class ProjectPage extends ProjectPageComponent {
         .label(art.getName()).build();
   }
 
-  public getFilesItems(): Array<GemTreeviewEntry> {
-    if(!(this.project)) {
-      return [];
-    }
-    const treeViewEntries = [this.recursivelyFillGemTreeviewItems(this.project)]
-
-    const newHash = JSON.stringify(treeViewEntries);
-    if(this.treeViewDataCheck.hash !== newHash) {
-      this.treeViewDataCheck.hash = newHash;
-      this.treeViewDataCheck.value = treeViewEntries;
-    }
-    return this.treeViewDataCheck.value
-  }
-
-  private recursivelyFillGemTreeviewItems(artifact:Artifact): GemTreeviewEntry {
-    let curViewEntry : GemTreeviewEntry = this.createGemTreeviewEntryFromArtifact(artifact)
-    if(artifact instanceof Directory) {
-      (artifact as Directory).getContainsList().forEach(art => curViewEntry.addChildren(this.recursivelyFillGemTreeviewItems(art)))
-    }
-    return curViewEntry;
-  }
-
-  private createGemTreeviewEntryFromArtifact(artifact:Artifact): GemTreeviewEntry {
-    const viewEntry = new GemTreeviewEntry();
-    viewEntry.setExpanded(true)
-    viewEntry.setChildrenList([]);
-    viewEntry.setName(artifact.getName());
-
-    return viewEntry
-  }
 }
 
 

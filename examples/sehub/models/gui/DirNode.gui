@@ -1,0 +1,20 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui;
+
+import mc.fenix.arrange.GemTreeNode;
+import mc.fenix.basic.GemText;
+
+import Sehub.Artifact;
+
+component DirNode(Artifact artifact) {
+  @GemTreeNode(
+    parent = @GemText(value = artifact.name),
+    children = [
+      isDirectory@guard(true) {
+        @iterate(Artifact childArt : getChildren(artifact)) {
+          @DirNode(artifact = childArt);
+        }
+      }
+    ]
+  );
+}

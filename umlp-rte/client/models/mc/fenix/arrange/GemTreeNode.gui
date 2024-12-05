@@ -1,0 +1,26 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.arrange;
+
+component GemTreeNode(
+  /**
+    Whether subtree of this node is expanded
+  */
+  boolean isExpanded = false,
+  /**
+    Content of this node
+  */
+  GUIViewElement parent,
+  /**
+    Tree nodes. Each node defines a root of a subtree and its children.
+    Normally set to a list of `GemTreeNode`.
+  */
+  List<GUIViewElement> children,
+  /**
+    Callback that is executed when the node is clicked.
+  */
+  Event<Void> onClick,
+  /**
+    Callback that is executed when the expand/collapse icon is clicked.
+  */
+  Event<Void> onExpand
+)

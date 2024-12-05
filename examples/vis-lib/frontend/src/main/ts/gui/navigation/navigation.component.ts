@@ -24,7 +24,7 @@ export class Navigation {
     { url: '/example_basic/GemImageExample', title: 'Image' },
     { url: '/example_basic/GemLinkExample', title: 'Link' },
     { url: '/example_basic/GemTextExample', title: 'Text' },
-    { url: '/example_basic/GemTreeviewExample', title: 'Treeview' },
+    { url: '/example_basic/GemTreeViewExample', title: 'TreeView' },
     { url: '/example_basic/GemVideoExample', title: 'Video' },
     { url: '/example_table/GemTableExample', title: 'Table' },
     { url: '/example_arrange/GemDialogExample', title: 'Dialog' },
