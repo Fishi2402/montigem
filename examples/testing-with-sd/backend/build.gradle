@@ -1,4 +1,5 @@
 import gradle.specific.UMLPOD2DataTask
+import gradle.specific.UMLPSD2DataTask
 
 plugins {
   id 'de.rwth.se.umlp-tool-backend-test' // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
@@ -43,7 +44,16 @@ generateUmlpBackend {
 }
 
 tasks.register('parseOD', UMLPOD2DataTask) {
-  input = file('../models/TotalTest.od')
+  input = file('../test-models/TotalTest.od')
+  symbolDir = file("${project.buildDir}/umlp/backend_symbols")
   outputDir = file("${project.buildDir}/od")
   dependsOn generateUmlpBackend
 }
+
+tasks.register('parseSD', UMLPSD2DataTask) {
+  input = file('../test-models/TotalTest.sd')
+  outputDir = file("${project.buildDir}/sd")
+  dependsOn parseOD
+}
+
+tasks.test.dependsOn parseSD

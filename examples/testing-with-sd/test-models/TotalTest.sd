@@ -1,11 +1,12 @@
-import webshop.*;
+import Webshop.*;
 
 sequencediagram TotalTest {
+  t:TotalTest;
   o:Order;
 
   assert o.total == 0;
 
-  o += item;
+  t -> o : addItem(item);
 
   assert o.total == 6;
 }

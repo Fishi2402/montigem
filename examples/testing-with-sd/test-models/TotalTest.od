@@ -1,4 +1,4 @@
-import webshop.*;
+import Webshop.*;
 
 objectdiagram TotalTest {
   item:Item {
