@@ -46,12 +46,14 @@ generateUmlpBackend {
 tasks.register('parseOD', UMLPOD2DataTask) {
   input = file('../test-models/TotalTest.od')
   symbolDir = file("${project.buildDir}/umlp/backend_symbols")
-  outputDir = file("${project.buildDir}/od")
+  symbolOutDir = file("${project.buildDir}/umlp/test_symbols")
+  outputDir = file("${project.buildDir}/umlp/backend")
   dependsOn generateUmlpBackend
 }
 
 tasks.register('parseSD', UMLPSD2DataTask) {
   input = file('../test-models/TotalTest.sd')
+  symbolDir = files("${project.buildDir}/umlp/backend_symbols", "${project.buildDir}/od")
   outputDir = file("${project.buildDir}/sd")
   dependsOn parseOD
 }

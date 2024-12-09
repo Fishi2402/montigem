@@ -22,6 +22,9 @@ public abstract class UMLPSD2DataTask extends UMLPSingleFileTask {
     super("UMLPSD2DataTask", null);
   }
 
+  /**
+   * The artifact path for imported symbols
+   */
   @InputFiles
   public ConfigurableFileCollection getSymbolDir() {
     return symbolDir;
@@ -50,17 +53,18 @@ public abstract class UMLPSD2DataTask extends UMLPSingleFileTask {
 
     var inputPath = getInput().getAsPath();
     Log.debug("Input file: " + inputPath);
-    args.addAll(List.of("-i", inputPath));
+    args.addAll(List.of("--input", inputPath));
 
     var symbolPath = getSymbolDir().getAsPath();
     Log.debug("Symbol path: " + symbolPath);
-    args.addAll(List.of("-s", symbolPath));
+    args.addAll(List.of("-path", symbolPath));
 
     var outputDirProperty = getOutputDir();
     if (outputDirProperty.isPresent()) {
       var outputDirectory = outputDirProperty.get().toString();
       Log.debug("Output directory: " + outputDirectory);
-      args.addAll(List.of("-o", outputDirectory));
+      args.addAll(List.of("--output", outputDirectory));
+      args.addAll(List.of("--symboltable", outputDirectory));
     }
 
     SD4DevelopmentTool.main(args.toArray(new String[0]));
