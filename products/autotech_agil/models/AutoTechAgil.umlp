@@ -1,0 +1,24 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+import java.time.LocalDate;
+
+classdiagram AutoTechAgil {
+  class Service {
+    String name;
+    ServiceStatus status;
+    double temperature;
+  }
+
+  enum ServiceStatus {
+    GREEN, YELLOW, RED;
+  }
+
+  public class Status {
+    int statusId;
+    String imageSource;
+    String label;
+    double threshold;
+    Status(int statusId, double threshold, String imageSource);
+    Status(int statusId, double threshold, String imageSource, String label);
+  }
+}

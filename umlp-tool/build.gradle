@@ -200,7 +200,11 @@ tasks.register('sourcesJar', Jar) {
 }
 
 sourcesJar.dependsOn project.collect { it.tasks.withType(MCTask) }
-//sourcesJar.dependsOn tasks.named('generateUMLPWithGUILanguageServer')
+sourcesJar.dependsOn tasks.named('generateUMLPWithGUILanguageServer')
+
+// Caused by mcTask.getHandWrittenCodeDir().setFrom(sourceSet.getJava().getSrcDirs());
+// https://github.com/MontiCore/monticore/blob/dev/monticore-generator/src/main/java/de/monticore/gradle/MCGeneratorPlugin.java#L83C7-L83C80
+generateMCGrammars.dependsOn tasks.named('generateUMLPWithGUILanguageServer')
 
 
 shadowJar { // all in one jar

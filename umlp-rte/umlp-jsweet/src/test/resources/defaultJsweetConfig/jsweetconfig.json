@@ -1,0 +1,8 @@
+
+{
+  "adapters": [
+    "umlp.jsweet.extension.UMLPJSweetDomainAdapter",
+    "umlp.jsweet.extension.domainAdapters.BaseArtifactModelImportAdapter"
+  ],
+  "domainName": "BaseArtifactModel"
+}

@@ -8,15 +8,20 @@ plugins {
   id 'org.springframework.boot' version "${spring_version}"
 }
 
-configurations {
-  umlpModulesModels // ToDo: Define this via the plugin & combine via one config
+dependencies {
+  umlpModulesGen("umlp.modules:login:$version")
+  // TODO: adding it directly to the umlpModules failes due to missing module metadata
+  implementation("umlp.modules.login:backend:$version")
+  umlpModulesModels("umlp.modules:login:$version") // and models itself
 }
 
-dependencies {
-  umlpModules(project(path: ":modules:login", configuration: "moduleGenTime"))
-  // TODO: adding it directly to the umlpModules failes due to missing module metadata
-  implementation(project(path: ":modules:login:backend")) // TODO: improve
-  umlpModulesModels(project(path: ":modules:login", configuration: "umlpOutgoingModels")) // and models itself
+// ALus local gradle is apparently unaware of these versions?
+// Explicitly use the local login module
+configurations.all {
+  resolutionStrategy.dependencySubstitution {
+    substitute module("umlp.modules:login") using project(":modules:login")
+    substitute module("umlp.modules.login:backend") using project(":modules:login:backend")
+  }
 }
 
 
@@ -77,7 +82,7 @@ generateUmlpBackend {
   useSpring = true
   useShell = true
 
-  modelDir.from(configurations.umlpModulesModels)
+  modelDir.from(configurations.umlpModulesModels) // TODO: Move this module logic into the plugin
 }
 
 //COMPARE_generateUmlpBackend {

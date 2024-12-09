@@ -14,9 +14,8 @@ export class AnimalAddFood extends AnimalAddFoodComponent {
 
   private requestedBackend : boolean = false;
   private foodOptions: Option[] = [];
-  private foodEntry = "";
 
-  public override getChooseFoodToAddOptions(): Array<Option> {
+  public override getOptions(): Array<Option> {
     if(!this.requestedBackend) {
       console.warn("Requesting Options")
       LoadingTestsManager.getFoodList().then(foods => {
@@ -33,11 +32,8 @@ export class AnimalAddFood extends AnimalAddFoodComponent {
     return this.foodOptions;
   }
 
-  public override getChooseFoodToAddEntry(): string {
-    return this.foodEntry;
-  }
-
-  public override setChooseFoodToAddEntry(value: string) {
+  public override setFoodEntry(value: string) {
+    super.setFoodEntry(value);
     LoadingTestsManager.getFoodSure(Number(value)).then(f =>
     {
       this.getAnimal().addFood2(f)

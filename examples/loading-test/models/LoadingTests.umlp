@@ -25,4 +25,16 @@ classdiagram LoadingTests {
     void replaceFoodItem(Animal a);
   }
   association UpdateListHelper -> (testAnimal) Animal [0..1];
+
+  class CommandTest {
+    Animal getAnimal();
+    Long getLong();
+    long getLongPrimitive();
+    String getString();
+    Optional<Animal> getOptAnimal();
+    Optional<Long> getOptLong();
+    List<Animal> getListAnimals();
+    List<Long> getListLong();
+    void doAction();
+  }
 }

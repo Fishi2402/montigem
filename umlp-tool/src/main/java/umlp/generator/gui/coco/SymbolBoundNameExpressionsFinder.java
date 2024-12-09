@@ -1,4 +1,4 @@
-package umlp.guidsl.additional_cocos;
+package umlp.generator.gui.coco;
 
 import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;

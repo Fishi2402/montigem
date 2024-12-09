@@ -1,0 +1,24 @@
+package gui;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemText;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+
+import gui.Navigation;
+
+import AutoTechAgil.Service;
+
+page ServiceOverview (List<Service> services) {
+  @GemRow(components = [
+    @Navigation(),
+    @GemColumn(components = [
+      @iterate(Service s : services) {
+        @GemRow(width = "auto", rowGap="10px", colGap="10px", components = [
+          @GemText(value = s.name),
+          @GemButton(label = "Details", leftClick = goToServiceDetails(s))
+        ]);
+      }
+    ])
+  ]);
+}

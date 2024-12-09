@@ -5,7 +5,7 @@ import mc.fenix.arrange.GemRow;
 import mc.fenix.basic.GemText;
 import mc.fenix.input.GemTextInput;
 
-
+// TODO: Deprecated?
 page SimpleLoginPage(String username, String password) {
   @GemRow(
     components = [

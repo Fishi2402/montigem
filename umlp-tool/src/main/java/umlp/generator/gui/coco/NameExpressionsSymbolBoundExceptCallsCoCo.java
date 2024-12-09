@@ -1,4 +1,4 @@
-package umlp.guidsl.additional_cocos;
+package umlp.generator.gui.coco;
 
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._cocos.GUIDSLASTGUICompilationUnitCoCo;

@@ -13,9 +13,14 @@ public class StringDeSer implements DeSer<String> {
     return "\"" + obj + "\"";
   }
 
+  /*
+    Assuming that this is a normal String, we need to wrap it in <"> for the JSON Parser.
+    de.monticore.symboltable.serialization.json.JsonString has a weird toString() implementation
+    which strips away quotation marks.
+   */
   @Override
   public Optional<String> deserialize(String str) {
-    JsonElement e = JsonParser.parse(str);
+    JsonElement e = JsonParser.parse('"'+str+'"');
     if(!e.isJsonString()) {
       return Optional.empty();
     }
