@@ -1,5 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
-package gui.gentypescript.standalone_config;
+package gentypescript.standalone_config;
+
+import mc.fenix.basic.GemText;
 
 component DirNode() {
   @DirNode();

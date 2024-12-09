@@ -93,10 +93,7 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
           }
         }
         String selector = GUIGeneratorUtil.getInstance().pascal2KebabCase(originalName);
-        HashSet<String> importedComponents = Sets.newHashSet();
-        for (ASTGUIComponent component: viewComponents.getComponents()) {
-          importedComponents.add(component.getNameSymbol().getFullName());
-        }
+        HashSet<String> importedComponents = calculateImports(viewComponents.getComponents());
         glex.replaceTemplate(
             GUI2ComponentTemplates.ANNOTATIONS,
             clazz,
@@ -106,4 +103,14 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
     }
   }
 
+  protected HashSet<String> calculateImports(List<ASTGUIComponent> guiComponents) {
+    HashSet<String> importedComponents = Sets.newHashSet();
+    for (ASTGUIComponent component: guiComponents) {
+      if (component.getName().equals(component.getEnclosingScope().getName())) {
+       continue;
+      }
+      importedComponents.add(component.getNameSymbol().getFullName());
+    }
+    return importedComponents;
+  }
 }
