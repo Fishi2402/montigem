@@ -47,7 +47,7 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
         );
       }
       else {
-        boolean generateAnnotation = !GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, qName);
+        boolean generateAnnotation = !GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, qClassName);
         String htmlFileName = originalName + ".html";
         String htmlPath = "./" + htmlFileName;
         List<String> scssPaths = new ArrayList<>();
