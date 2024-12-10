@@ -1,18 +1,13 @@
 package umlp.generator.gui.gentypescript.java2ts;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
-import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
-import de.monticore.guidsl._symboltable.IGUIDSLScope;
 import de.monticore.io.paths.MCPath;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
@@ -95,7 +90,7 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
           }
         }
         String selector = GUIGeneratorUtil.getInstance().pascal2KebabCase(originalName);
-        HashSet<String> importedComponents = calculateImports(viewComponents.getComponents());
+        HashSet<String> importedComponents = calculateImports(astGui.getComponentQName(), viewComponents.getComponents());
         glex.replaceTemplate(
             GUI2ComponentTemplates.ANNOTATIONS,
             clazz,
@@ -105,15 +100,11 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
     }
   }
 
-  protected HashSet<String> calculateImports(List<ASTGUIComponent> guiComponents) {
+  protected HashSet<String> calculateImports(String componentQName, List<ASTGUIComponent> guiComponents) {
     HashSet<String> importedComponents = Sets.newHashSet();
     for (ASTGUIComponent component: guiComponents) {
       // Avoid circular import dependencies for recursive component calls
-      IGUIDSLScope enclosingScope = component.getEnclosingScope();
-      while (!(enclosingScope instanceof IGUIDSLArtifactScope)) {
-        enclosingScope = enclosingScope.getEnclosingScope();
-      }
-      if (enclosingScope.getName().equals(component.getName())) {
+      if (component.isPresentNameSymbol() && component.getNameSymbol().getName().equals(componentQName)) {
         continue;
       }
       importedComponents.add(component.getNameSymbol().getFullName());
