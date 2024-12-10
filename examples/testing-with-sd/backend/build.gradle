@@ -59,4 +59,4 @@ tasks.register('parseSD', UMLPSD2DataTask) {
   dependsOn parseOD
 }
 
-tasks.test.dependsOn parseSD
+tasks.test.dependsOn parseOD

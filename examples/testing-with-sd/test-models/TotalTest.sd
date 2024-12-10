@@ -6,7 +6,9 @@ sequencediagram TotalTest {
 
   assert o.total == 0;
 
-  t -> o : addItem(item);
+  t -> o : addItem(item) {
+    o -> t : return;
+  }
 
   assert o.total == 6;
 }
