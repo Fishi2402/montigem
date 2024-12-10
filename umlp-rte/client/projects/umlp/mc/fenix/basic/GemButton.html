@@ -1,0 +1,18 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+
+<button
+  type="button"
+  role="button"
+  class="gem-button"
+  [disabled]="isDisabled() ? 'disabled' : null"
+  (click)="getLeftClick()($event)"
+>
+  <ng-container *ngIf="content">
+    <ng-container *ngFor="let c of content">
+      <ng-container *ngTemplateOutlet="c"></ng-container>
+    </ng-container>
+  </ng-container>
+  <ng-container *ngIf="!content">
+    {{ label }}
+  </ng-container>
+</button>

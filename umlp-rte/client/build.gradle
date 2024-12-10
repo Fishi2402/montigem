@@ -88,7 +88,7 @@ libs.each {
 
   def copyTaskName = "${copyTaskPrefix}${libName}"
   def sourceDir = "${project.buildDir}/guiComponentTypes/mc/fenix/${libName}"
-  def genDir = "projects/umlp/mc/fenix/${libName}/src/build"
+  def genDir = "projects/umlp/mc/fenix/${libName}/build"
   buildFolders << genDir
   def targetDir = "${genDir}/cd"
 
@@ -106,7 +106,7 @@ libs.each {
       dependsOn(createCDSymbols)
       input = layout.projectDirectory.dir("models/mc/fenix/${libName}")
       modelDir = layout.projectDirectory.dir("models")
-      hwcDir = layout.projectDirectory.files("projects/umlp/mc/fenix/${libName}/src/lib")
+      hwcDir = layout.projectDirectory.files("projects/umlp")
       symbolDir = files(createCDSymbols.getOutput(), configurations.guiDefaultTypes.files)
       outputDir = layout.projectDirectory.dir("${genDir}/gui")
       guiGenJsweet = false
@@ -123,6 +123,8 @@ clean.doLast {
   }
 }
 
+tasks.build_basic.inputs.files(tasks.build_common.outputs.files.singleFile)
+tasks.build_basic.dependsOn(tasks.build_common)
 tasks.build_charts.inputs.files(tasks.build_commonj2ts.outputs.files.singleFile)
 tasks.build_charts.dependsOn(tasks.build_commonj2ts)
 
