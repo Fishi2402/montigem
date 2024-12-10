@@ -103,8 +103,12 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
   protected HashSet<String> calculateImports(String componentQName, List<ASTGUIComponent> guiComponents) {
     HashSet<String> importedComponents = Sets.newHashSet();
     for (ASTGUIComponent component: guiComponents) {
+      if (!component.isPresentNameSymbol()) {
+        throw new RuntimeException("Name symbol of " + component.getName() + " not present.");
+      }
+
       // Avoid circular import dependencies for recursive component calls
-      if (component.isPresentNameSymbol() && component.getNameSymbol().getName().equals(componentQName)) {
+      if (component.getNameSymbol().getName().equals(componentQName)) {
         continue;
       }
       importedComponents.add(component.getNameSymbol().getFullName());
