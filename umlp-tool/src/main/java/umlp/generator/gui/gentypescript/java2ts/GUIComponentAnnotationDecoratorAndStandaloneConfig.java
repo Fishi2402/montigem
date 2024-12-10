@@ -9,6 +9,8 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
+import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
+import de.monticore.guidsl._symboltable.IGUIDSLScope;
 import de.monticore.io.paths.MCPath;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import umlp.generator.domain.UMLPGeneratorConfig;
@@ -106,8 +108,13 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
   protected HashSet<String> calculateImports(List<ASTGUIComponent> guiComponents) {
     HashSet<String> importedComponents = Sets.newHashSet();
     for (ASTGUIComponent component: guiComponents) {
-      if (component.getName().equals(component.getEnclosingScope().getName())) {
-       continue;
+      // Avoid circular import dependencies for recursive component calls
+      IGUIDSLScope enclosingScope = component.getEnclosingScope();
+      while (!(enclosingScope instanceof IGUIDSLArtifactScope)) {
+        enclosingScope = enclosingScope.getEnclosingScope();
+      }
+      if (enclosingScope.getName().equals(component.getName())) {
+        continue;
       }
       importedComponents.add(component.getNameSymbol().getFullName());
     }
