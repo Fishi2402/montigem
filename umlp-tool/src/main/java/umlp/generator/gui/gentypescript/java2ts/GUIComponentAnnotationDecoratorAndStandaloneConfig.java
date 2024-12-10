@@ -8,6 +8,7 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.io.paths.MCPath;
+import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
@@ -104,7 +105,7 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
     HashSet<String> importedComponents = Sets.newHashSet();
     for (ASTGUIComponent component: guiComponents) {
       if (!component.isPresentNameSymbol()) {
-        throw new RuntimeException("Name symbol of " + component.getName() + " not present.");
+        Log.error("Name symbol of " + component.getName() + " not present.");
       }
 
       // Avoid circular import dependencies for recursive component calls
