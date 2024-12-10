@@ -1,6 +1,7 @@
 package webshop;
 
 import org.junit.jupiter.api.Test;
+import totaltest.TotalTestInstantiator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -8,9 +9,8 @@ public class TotalTest {
 
   @Test
   void matchVisible() {
-    //TODO use objects from generated instantiator
     Order o = WebshopManager.orderBuilder().build().orElseThrow();
-    Item item = WebshopManager.itemBuilder().amount(2).perUnitCost(3).build().orElseThrow();
+    Item item = new TotalTestInstantiator().instantiateItem();
 
     assertEquals(0, o.getTotal());
 
