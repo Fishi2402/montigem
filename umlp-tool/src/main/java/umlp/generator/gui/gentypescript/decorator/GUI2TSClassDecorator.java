@@ -1,8 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui.gentypescript.decorator;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -13,11 +17,17 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.ObserverDecorator;
+import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.genjava.decorator.GUI2JavaClassDecorator;
 import umlp.generator.gui.genjava.prettyprinter.Expression2SetterPrinter;
+import umlp.generator.gui.gentypescript.printer.TSImportMap;
 import umlp.generator.gui.gentypescript.printer.TSUtilsPrinter;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 
 /**
@@ -28,6 +38,7 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
 
   protected boolean extendedMixin = false;
   protected boolean addedRxjsImports = false;
+  protected Set<String> importSet = new HashSet<>();
 
   public GUI2TSClassDecorator(final GlobalExtensionManagement glex) {
     super(glex);
@@ -56,7 +67,7 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
   @Override
   protected void addClassAnnotation() {
     if (TypeScriptTypes.DIRECTIVE.getJavaQName().isPresent()) {
-      getCD4C().addImport(clazz, TypeScriptTypes.DIRECTIVE.getJavaQName().get());
+      addImport(TypeScriptTypes.DIRECTIVE.getJavaQName().get());
     }
     glex.replaceTemplate("umlp.gui2ts.TSAnnotations", clazz,
         new TemplateHookPoint("umlp.gui2ts.TSAnnotationDirective"));
@@ -78,7 +89,7 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
   @Override
   protected void addRouter() {
     if (TypeScriptTypes.ROUTER.getJavaQName().isPresent()) {
-      getCD4C().addImport(clazz, TypeScriptTypes.ROUTER.getJavaQName().get());
+      addImport(TypeScriptTypes.ROUTER.getJavaQName().get());
     }
     ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
         CDModifier.PROTECTED.build(), "Router", "_router");
@@ -105,7 +116,7 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
     }
     String qObserverMixin = ownerType.printFullName() + ObserverDecorator.SUFFIX + "Mixin";
     String observerMixin = ownerType.print() + ObserverDecorator.SUFFIX + "Mixin";
-    getCD4C().addImport(clazz, qObserverMixin);
+    addImport(qObserverMixin);
 
     glex.addBeforeTemplate("umlp.gui2ts.TSEmptyMixin",
         clazz, new StringHookPoint(observerMixin + "("));
@@ -142,7 +153,7 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
 
   @Override
   protected Function<String, String> string2DateTimeConversion() {
-    getCD4C().addImport(clazz, "mc.fenix.common.Conversion");
+    addImport("mc.fenix.common.Conversion");
     return s -> "Conversion.string2Date(" + s + ");"
         + " if (" + Expression2SetterPrinter.SETTER_PARAM + "== null) return";
   }
@@ -198,6 +209,63 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
 
   protected Function<String, String> x2OptionalConversion(Function<String, String> conv) {
     return s -> s + " != null ? " + conv.apply(s) + " : null";
+  }
+
+  @Override
+  protected void addImport(String qType) {
+    Optional<String> tsImportPath = TypeScriptTypes.getTsImportPath(qType);
+    // Optional doesn't exist in TypeScript
+    if (qType.equals("java.util.Optional") || qType.isBlank()) {
+      return;
+    }
+    if (tsImportPath.isPresent()) {
+      String importStr = "import { " + TypeScriptTypes.toTSType(qType)
+          + " } from '" + tsImportPath.get() + "';";
+      addImportString(importStr);
+    }
+    else if (!TypeScriptTypes.isDefault(qType)) {
+      StringBuilder importBuilder = new StringBuilder();
+      importBuilder.append("import { ");
+
+      List<String> parts = Lists.newArrayList(Splitter.on('.').split(qType));
+      String baseName = Iterables.getLast(Splitter.on('.').split(qType), qType);
+      importBuilder.append(baseName);
+      if (TypeScriptTypes.TEMPLATE_REF.getMCType().equals(qType)) {
+        // GUIViewElement is TemplateRef<any>
+        importBuilder.append("<any>");
+      }
+
+      importBuilder.append(" }");
+      importBuilder.append(" from '");
+
+      // generated path doesn't match package for domain classes
+      // hardy.Flensburg.Human -> hardy/flensburg/Human
+      int index = parts.size() - 2;
+      if (index >= 0) {
+        parts.set(index, parts.get(index).toLowerCase());
+      }
+      // case: a component in an app imports a component from the app
+      String from = "@src/" + GUIGeneratorUtil.getInstance().qName2path(String.join(".", parts));
+      tsImportPath = TSImportMap.getTSPackage(qType);
+      Optional<String> componentImportPath = TSImportMap.getTSPackage(gui.getPackage());
+      if (tsImportPath.isPresent() &&
+          (componentImportPath.isEmpty() || !componentImportPath.get().equals(tsImportPath.get()))) {
+        from = tsImportPath.get();
+      }
+      importBuilder.append(from);
+
+      importBuilder.append("';");
+
+      addImportString(importBuilder.toString());
+    }
+  }
+
+  protected void addImportString(String importStr) {
+    if (!importSet.contains(importStr)) {
+      importSet.add(importStr);
+      glex.addAfterTemplate("umlp.gui2ts.TSEmptyImports", clazz,
+          new StringHookPoint(importStr));
+    }
   }
 
   @Override

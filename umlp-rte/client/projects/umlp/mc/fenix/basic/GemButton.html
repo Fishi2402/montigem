@@ -5,7 +5,7 @@
   role="button"
   class="gem-button"
   [disabled]="isDisabled() ? 'disabled' : null"
-  (click)="getLeftClick()($event)"
+  (click)="getLeftClick()()"
 >
   <ng-container *ngIf="content">
     <ng-container *ngFor="let c of content">

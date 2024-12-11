@@ -367,7 +367,11 @@ public class GUIGeneratorUtil {
   }
 
   public final boolean isGuiImport(ASTMCImportStatement i) {
-    return GUIDSLMill.globalScope().resolveGUIComponentDeclaration(i.getQName()).isPresent();
+    return isGuiImport(i.getQName());
+  }
+
+  public final boolean isGuiImport(String qName) {
+    return GUIDSLMill.globalScope().resolveGUIComponentDeclaration(qName).isPresent();
   }
 
   public final boolean isBuiltIn(String qName) {

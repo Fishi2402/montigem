@@ -3,6 +3,11 @@
   "compileOnSave": false,
   "compilerOptions": {
     "paths": {
+      "@src/*": [
+        "./projects/umlp/mc/fenix/basic/*",
+        "./projects/umlp/mc/fenix/basic/build/gui/*",
+        "./projects/umlp/mc/fenix/basic/build/cd/*"
+      ],
       "@umlp/common": [
         "./projects/umlp/common/src"
       ],

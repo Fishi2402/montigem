@@ -90,7 +90,7 @@ libs.each {
   def sourceDir = "${project.buildDir}/guiComponentTypes/mc/fenix/${libName}"
   def genDir = "projects/umlp/mc/fenix/${libName}/build"
   buildFolders << genDir
-  def targetDir = "${genDir}/cd"
+  def targetDir = "${genDir}/cd/mc/fenix/${libName}"
 
   task "${copyTaskName}"(type: Copy) {
     dependsOn translateJava2TSDomain

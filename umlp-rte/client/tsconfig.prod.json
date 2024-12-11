@@ -4,40 +4,46 @@
   "compilerOptions": {
     "declarationMap": false,
     "paths": {
+      "@src/*": [
+        "./projects/umlp/mc/fenix/basic/*",
+        "./projects/umlp/mc/fenix/basic/build/gui/*",
+        "./projects/umlp/mc/fenix/basic/build/cd/*"
+      ],
       "@umlp/arrange": [
-        "./build/dist/umlp/arrange"
+        "./build/dist/umlp/mc/fenix/arrange"
       ],
       "@umlp/basic": [
-        "./build/dist/umlp/basic"
+        "./build/dist/umlp/mc/fenix/basic"
       ],
       "@umlp/charts": [
-        "./build/dist/umlp/charts"
+        "./build/dist/umlp/mc/fenix/charts"
       ],
       "@umlp/common": [
-        "./build/dist/umlp/common"
+        "./build/dist/umlp/mc/fenix/common"
       ],
       "@umlp/commonj2ts": [
-        "./build/dist/umlp/commonj2ts"
+        "./build/dist/umlp/mc/fenix/commonj2ts"
       ],
       "@umlp/composite": [
-        "./build/dist/umlp/composite"
+        "./build/dist/umlp/mc/fenix/composite"
       ],
       "@umlp/experimental": [
-        "./build/dist/umlp/experimental"
+        "./build/dist/umlp/mc/fenix/experimental"
       ],
       "@umlp/input": [
-        "./build/dist/umlp/input"
+        "./build/dist/umlp/mc/fenix/input"
       ],
       "@umlp/table": [
-        "./build/dist/umlp/table"
+        "./build/dist/umlp/mc/fenix/table"
       ],
       "@umlp/theme": [
-        "./build/dist/umlp/theme"
+        "./build/dist/umlp/mc/fenix/theme"
       ],
       "@umlp/networkgraph": [
-        "./build/dist/umlp/networkgraph"
+        "./build/dist/umlp/mc/fenix/networkgraph"
       ]
-    }
+    },
+    "baseUrl": "./"
   },
   "angularCompilerOptions": {
     "compilationMode": "partial"
