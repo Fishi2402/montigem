@@ -31,7 +31,7 @@ export class ${cdName}ComponentObserverManager extends ComponentObserverManager 
 </#list>
     // domain object getter factory
 <#list domainClassNamesCDMap as domainClassName, package>
-    this.objectGetterFactory.set("${domainClassName}", (gemId) => ${package}Manager.get${domainClassName}Sure(gemId));
+    this.objectGetterFactory.set("${domainClassName}", (gemId) => Promise.resolve(${package}Manager.get${domainClassName}Sure(gemId)));
 </#list>
   }
 
