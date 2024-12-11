@@ -57,11 +57,15 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
 
     // class
     clazz = emptyClass();
-    extendClass(cd);
-
     cdPackage.addCDElement(withOrigin(clazz));
-    // directive
+
+    init();
+
+    extendClass(cd);
     addClassAnnotation();
+  }
+
+  protected void init() {
   }
 
   protected void replaceTemplates() {

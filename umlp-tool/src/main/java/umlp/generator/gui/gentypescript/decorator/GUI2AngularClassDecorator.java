@@ -54,8 +54,8 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
   protected GUIDSLTraverser traverser;
 
   public static final String COMPONENT_SUFFIX = "Component";
-  protected Set<String> importSet = new HashSet<>();
   protected final MCPath hwPath;
+  protected GUIImportHelper importHelper;
 
   public GUI2AngularClassDecorator(final GlobalExtensionManagement glex, MCPath hwPath) {
     super(glex);
@@ -73,8 +73,11 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
     addInit();
     addDestroy();
     addConstructor();
-    // must run last
-    addExtraImports();
+  }
+
+  @Override
+  protected void init() {
+    this.importHelper = new GUIImportHelper(glex, clazz, gui.getPackage());
   }
 
   @Override
@@ -107,15 +110,20 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
     }
     String setterName = "set" + StringTransformations.capitalize(node.getName());
 
+
     // GUIViewElement or List<List< ... List<GUIViewElement> ... >>
     if (util.isViewElement(typeSTE) || util.isViewElementsCollection(typeSTE)) {
       // add attr
       ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
-          CDModifier.PUBLIC.build(), createTypeAndAddImports(typeSTE), node.getName());
+          CDModifier.PUBLIC.build(), createTypeAndAddImports(typeSTE), name);
       clazz.addCDMember(attr);
       addImportString("import { Input } from '@angular/core';");
       glex.replaceTemplate(GUI2ComponentTemplates.ANNOTATIONS, attr,
           new StringHookPoint("@Input()"));
+
+      glex.replaceTemplate("umlp.Empty", attr,
+          new TemplateHookPoint("umlp.gui2ts.GUI2AngularAttrSimpleGetterSetter",
+              mcType, node.getName(), name));
     }
     // Event attr
     else if (util.isEventArgument(node.getSymbol())) {
@@ -215,15 +223,6 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
   }
 
   @Override
-  protected void addClassAnnotation() {
-    if (TypeScriptTypes.DIRECTIVE.getJavaQName().isPresent()) {
-      addImport(TypeScriptTypes.DIRECTIVE.getJavaQName().get());
-    }
-    glex.replaceTemplate("umlp.gui2ts.TSAnnotations", clazz,
-        new TemplateHookPoint("umlp.gui2ts.TSAnnotationDirective"));
-  }
-
-  @Override
   protected void addRouter() {
     if (TypeScriptTypes.ROUTER.getJavaQName().isPresent()) {
       addImport(TypeScriptTypes.ROUTER.getJavaQName().get());
@@ -269,11 +268,6 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
   }
 
   protected void removeObserver() {
-  }
-
-  protected void addExtraImports() {
-    // TODO AGe: should be added by component annotation decorator
-    addImportString("import { Component } from '@angular/core';");
   }
 
   @Override
@@ -344,59 +338,10 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
 
   @Override
   protected void addImport(String qType) {
-    Optional<String> tsImportPath = TypeScriptTypes.getTsImportPath(qType);
-    // Optional doesn't exist in TypeScript
-    if (qType.equals("java.util.Optional")) {
-      return;
-    }
-    if (tsImportPath.isPresent()) {
-      String importStr = "import { " + TypeScriptTypes.toTSType(qType)
-          + " } from '" + tsImportPath.get() + "';";
-      addImportString(importStr);
-    }
-    else if (!TypeScriptTypes.isDefault(qType)) {
-      StringBuilder importBuilder = new StringBuilder();
-      importBuilder.append("import { ");
-
-      List<String> parts = Lists.newArrayList(Splitter.on('.').split(qType));
-      String baseName = Iterables.getLast(Splitter.on('.').split(qType), "");
-      if (!baseName.isBlank()) {
-        importBuilder.append(baseName);
-        if (TypeScriptTypes.TEMPLATE_REF.getMCType().equals(qType)) {
-          // GUIViewElement is TemplateRef<any>
-          importBuilder.append("<any>");
-        }
-      }
-
-      importBuilder.append(" }");
-      importBuilder.append(" from '");
-
-      // generated path doesn't match package for domain classes
-      // hardy.Flensburg.Human -> hardy/flensburg/Human
-      int index = parts.size() - 2;
-      if (index >= 0) {
-        parts.set(index, parts.get(index).toLowerCase());
-      }
-      String from = "@src/" + GUIGeneratorUtil.getInstance().qName2path(String.join(".", parts));
-      tsImportPath = TSImportMap.getTSPackage(qType);
-      Optional<String> componentImportPath = TSImportMap.getTSPackage(gui.getPackage());
-      if (tsImportPath.isPresent() &&
-          (componentImportPath.isEmpty() || !componentImportPath.get().equals(tsImportPath.get()))) {
-        from = tsImportPath.get();
-      }
-      importBuilder.append(from);
-
-      importBuilder.append("';");
-
-      addImportString(importBuilder.toString());
-    }
+    importHelper.addImport(qType);
   }
 
   protected void addImportString(String importStr) {
-    if (!importSet.contains(importStr)) {
-      importSet.add(importStr);
-      glex.addAfterTemplate("umlp.gui2ts.TSEmptyImports", clazz,
-          new StringHookPoint(importStr));
-    }
+    importHelper.addImportString(importStr);
   }
 }

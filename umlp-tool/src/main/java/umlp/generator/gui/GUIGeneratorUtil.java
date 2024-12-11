@@ -898,7 +898,7 @@ public class GUIGeneratorUtil {
   }
 
   public String java2tsModule(String javaPackage) {
-    String res = "@src/" + qName2path(javaPackage) + "Module";
+    String res = "@src/" + qName2path(javaPackage);
 
     for (TSImportMap type : TSImportMap.values()) {
       if (javaPackage.startsWith(type.getJavaPackage())) {

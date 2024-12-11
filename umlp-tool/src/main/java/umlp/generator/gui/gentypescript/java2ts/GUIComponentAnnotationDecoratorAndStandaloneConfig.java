@@ -1,8 +1,6 @@
 package umlp.generator.gui.gentypescript.java2ts;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -10,10 +8,10 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.io.paths.MCPath;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
+import umlp.generator.gui.gentypescript.decorator.GUIImportHelper;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -36,8 +34,9 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
     this.outPath = outPath;
   }
 
-  public void transform(ASTCDCompilationUnit ast, ASTGUICompilationUnit astGui, GUIComponentsVisitor viewComponents) {
+  public void transform(ASTCDCompilationUnit ast, ASTGUICompilationUnit gui, GUIComponentsVisitor viewComponents) {
     for (ASTCDClass clazz : ast.getCDDefinition().getCDClassesList()) {
+      GUIImportHelper importHelper = new GUIImportHelper(glex, clazz, gui.getPackage());
       String originalName = GUIGeneratorUtil.getInstance().getOriginalName(clazz);
       String qName = ast.getMCPackageDeclaration().getMCQualifiedName().getQName()
           + "." + originalName;
@@ -49,12 +48,13 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
         );
       }
       else {
-        boolean generateAnnotation = !GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, qName);
+        boolean noHWC = !GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, qName);
         String htmlFileName = originalName + ".html";
         String htmlPath = "./" + htmlFileName;
         List<String> scssPaths = new ArrayList<>();
 
-        if (generateAnnotation) {
+        if (noHWC) {
+          importHelper.addImportString("import { Component } from '@angular/core';");
           Optional<String> hwHtmlPath = util.getRelativeImportPath(
               hwPath, outPath, qName, "html");
           if (hwHtmlPath.isPresent()) {
@@ -66,7 +66,8 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
             scssPaths.add(hwScssPath.get());
           }
         }
-        else if (!UMLPGeneratorConfig.getInstance().isUseJsweet()){
+        else if (!UMLPGeneratorConfig.getInstance().isUseJsweet()) {
+          importHelper.addImportString("import { Directive } from '@angular/core';");
           Optional<String> hwHtmlPath = util.getRelativeImportPath(
               hwPath, outPath, qName, "html");
           if (!hwHtmlPath.isPresent()) {
@@ -80,6 +81,7 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
           }
         }
         else {
+          importHelper.addImportString("import { Component } from '@angular/core';");
           // TODO #3768
           Optional<String> hwHtmlPath = util.getRelativeImportPath(
               hwPath, outPath, qName, "html");
@@ -94,13 +96,14 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
         }
         String selector = GUIGeneratorUtil.getInstance().pascal2KebabCase(originalName);
         HashSet<String> importedCompoments = Sets.newHashSet();
-        for (ASTGUIComponent component: viewComponents.getComponents()) {
+        for (ASTGUIComponent component : viewComponents.getComponents()) {
+          importHelper.addImport(component.getNameSymbol().getFullName());
           importedCompoments.add(component.getNameSymbol().getFullName());
         }
         glex.replaceTemplate(
             GUI2ComponentTemplates.ANNOTATIONS,
             clazz,
-            new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATION_STANDALONECONFIG_COMPONENT, htmlPath, scssPaths, selector, importedCompoments, hwPath, generateAnnotation)
+            new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATION_STANDALONECONFIG_COMPONENT, htmlPath, scssPaths, selector, importedCompoments, hwPath, noHWC)
         );
       }
     }
