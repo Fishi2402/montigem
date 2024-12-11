@@ -6,7 +6,7 @@ import { BatteryPackType } from '@src/demorec/BatteryPackType';
 
 import { ChoosePackTypeComponent ,config} from '@src/gui/pack/ChoosePackTypeComponent';
 
-import { Option } from '@umlp/input';
+import { Option, OptionBuilder } from '@umlp/input';
 
 
 import {
@@ -20,7 +20,7 @@ import {
 
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 
-const newOption: Option = { value: "NEW", display: "NEW" };
+const newOption: Option = new Option("NEW");
 
 @Component({
   standalone:true,
@@ -45,10 +45,10 @@ export class ChoosePackType extends ChoosePackTypeComponent {
       types.loadAll().then(() => {
         for (const type of types) {
           let value = type.getGemId() + "";
-          this.bPackTypeOptions.push({value: value, display: type.getCarBrand()+" "+type.getCarModel()+" "+type.getCarYear() });
+          this.bPackTypeOptions.push(new Option(value, type.getCarBrand()+" "+type.getCarModel()+" "+type.getCarYear()));
         }
         this.bPackTypeOptions = this.bPackTypeOptions.slice();
-        this.bPackTypeEntry = this.getCurrentType()? this.getCurrentType().getGemId()+"" : newOption.value
+        this.bPackTypeEntry = this.getCurrentType()? this.getCurrentType().getGemId()+"" : newOption.getValue()
       });
     });
 
@@ -74,12 +74,13 @@ export class ChoosePackType extends ChoosePackTypeComponent {
    }
 
    public override getCreatePackTypeCondition(): boolean {
-     return this.getSelectPackTypeEntry() === newOption.value;
+     return this.getSelectPackTypeEntry() === newOption.getValue();
    }
 
   public override addNewBatteryPackType(){
     return (type) => {
-      this.bPackTypeOptions.push({value: type.getGemId(), display: type.getCarBrand()+" "+type.getCarModel()+" "+type.getCarYear()})
+      this.bPackTypeOptions.push(
+          new Option(type.getGemId(), type.getCarBrand()+" "+type.getCarModel()+" "+type.getCarYear()))
       this.bPackTypeEntry = type.getGemId();
       this.chosenType.emit(type)
     }

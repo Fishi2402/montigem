@@ -57,10 +57,11 @@ import umlp.generator.gui.genjava.decorator.CallTypeDeriver;
 import umlp.generator.gui.genjava.decorator.InitDependencyTree;
 import umlp.generator.gui.genjava.decorator.StaticObjectsCollector;
 import umlp.generator.util.TagLookUp;
-import umlp.guidsl.additional_cocos.GUIParamDefaultOnlyLiteralCoCo;
-import umlp.guidsl.additional_cocos.GUIParamNoUnderspecifiedGenericsCoCo;
-import umlp.guidsl.additional_cocos.NameExpressionsSymbolBoundExceptCallsCoCo;
-import umlp.guidsl.additional_cocos.SymbolBoundNameExpressionsFinder;
+import umlp.generator.gui.coco.GUIParamDefaultOnlyLiteralCoCo;
+import umlp.generator.gui.coco.GUIParamNoUnderspecifiedGenericsCoCo;
+import umlp.generator.gui.coco.NameExpressionsSymbolBoundExceptCallsCoCo;
+import umlp.generator.gui.coco.RefGUIArgIncompatibleWithDerivedCoCo;
+import umlp.generator.gui.coco.SymbolBoundNameExpressionsFinder;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -109,8 +110,6 @@ public class UMLPTool extends UMLPToolTOP {
 
     ModuleController mod = new ModuleController(glex);
     glex.defineGlobalVar("mod", mod);
-
-    System.out.println("Creating glex with " + moduleConfigTemplates);
 
     for (String moduleConfigTemplate : moduleConfigTemplates) {
       // Arguments are the same as original include call
@@ -397,9 +396,6 @@ public class UMLPTool extends UMLPToolTOP {
 
   public void runDefaultCoCos(ASTGUICompilationUnit ast) {
     GUIDSLCoCoChecker checker = new GUIDSLCoCosForUMLP().createChecker();
-    checker.addCoCo(new GUIParamDefaultOnlyLiteralCoCo());
-    checker.addCoCo(new GUIParamNoUnderspecifiedGenericsCoCo());
-    checker.addCoCo(new NameExpressionsSymbolBoundExceptCallsCoCo());
     checker.checkAll(ast);
   }
 }

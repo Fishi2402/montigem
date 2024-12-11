@@ -123,6 +123,16 @@ public class TestAtomicUpdate extends AbstractLoadingTestsE2ETest {
     // Assert, that a different food is displayed
     assertThat(page.locator(GemText.selector()).last()).hasText("a#");
 
+    // Do the entire thing again, to test if the next command works / lock is freed
+    // Click "replace first food item"
+    page.locator(GemButton.selector()).click();
+    // Let frontend communicate with backend and wait for response
+    page.waitForLoadState(LoadState.NETWORKIDLE);
+    Thread.sleep(200);
+    assertThat(page.locator(GemText.selector())).hasCount(2); // TODO: 1
+    assertThat(page.locator(GemText.selector()).first()).hasText("a#"); // todo: remove
+    assertThat(page.locator(GemText.selector()).last()).hasText("a##");
+
   }
 
   // Retry for about 20 seconds

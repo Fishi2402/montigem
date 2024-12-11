@@ -5,6 +5,7 @@ import com.google.common.collect.Sets;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdmerge.CDMerge;
 import de.monticore.cdmerge.config.MergeParameter;
+import de.monticore.gradle.common.GradleLog;
 import de.se_rwth.commons.logging.Log;
 import org.gradle.internal.FileUtils;
 import org.gradle.workers.WorkAction;
@@ -29,7 +30,7 @@ public abstract class MergeAction implements WorkAction<MergeActionParameter> {
   }
 
   public static void umlpMerge(Set<File> inputFiles, File outputFile){
-
+    GradleLog.init();
     try {
 
       // Parse and convert to CDCompilationUnit

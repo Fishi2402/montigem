@@ -16,8 +16,6 @@ import {
 
 import { Option } from '@umlp/input';
 
-const newOption: Option = { value: "NEW", display: "NEW" };
-
 @Component({
   standalone: true,
   imports: [...config.imports],
@@ -51,7 +49,7 @@ export class MeasuringValueEdit extends MeasuringValueEditComponent implements O
         this.dimensionOptionsForNewMeasuringValue = []
         for (const dimension of dimensions) {
           let value = dimension.getGemId() + "";
-          this.dimensionOptionsForNewMeasuringValue.push({value: value, display: dimension.getName()+" ("+dimension.getUnit()+")"});
+          this.dimensionOptionsForNewMeasuringValue.push(new Option(value, dimension.getName()+" ("+dimension.getUnit()+")"));
         }
         this.dimensionOptionsForNewMeasuringValue = this.dimensionOptionsForNewMeasuringValue.slice();
       });
@@ -65,7 +63,7 @@ export class MeasuringValueEdit extends MeasuringValueEditComponent implements O
         this.dimensionOptions = []
         for (const dimension of dimensions) {
           let value = dimension.getGemId() + "";
-          this.dimensionOptions.push({value: value, display: dimension.getName()});
+          this.dimensionOptions.push(new Option(value, dimension.getName()));
         }
         this.dimensionOptions = this.dimensionOptions.slice();
       });

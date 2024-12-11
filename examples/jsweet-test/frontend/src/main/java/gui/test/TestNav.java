@@ -6,11 +6,6 @@ import umlp.jsweet.extension.annotation.Directive;
 
 import java.util.function.Consumer;
 
-@Directive(
-    cdName = "Jsweettest",
-    isEmpty = true,
-    isCreate = false
-)
 @Component
 public class TestNav extends TestNavTOP {
   public Consumer<Void> resetData() {

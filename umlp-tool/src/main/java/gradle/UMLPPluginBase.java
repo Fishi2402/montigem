@@ -1,7 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gradle;
 
+import de.monticore.gradle.common.GradleErrorHook;
 import gradle.common.CheckDirEqualityTask;
+import gradle.module.UMLPPluginModule;
+import gradle.module.UMLPPluginModuleJSFrontend;
 import gradle.specific.FrontendSetup;
 import gradle.specific.GuiVariabilityHandlerTask;
 import gradle.specific.NPMAuthCreate;
@@ -15,8 +18,11 @@ import gradle.specific.merge.UMLPMergeTask;
 import gradle.specific.serialize.SerializeCDSymbolsTask;
 import gradle.specific.serialize.SerializeGUISymbolsTask;
 import gradle.stat.StatisticListener;
+import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+
+import java.util.Arrays;
 
 /**
  * Base Plugin. Only adds the Tasks and the StatisticListener.
@@ -25,6 +31,10 @@ import org.gradle.api.Project;
 public abstract class UMLPPluginBase implements Plugin<Project> {
 
   public static final String UMLP_MODULES_CONFIG = "umlpModules";
+  // The following configs are all defined with filtering attributes
+  public static final String UMLP_MODULES_GEN_CONFIG = "umlpModulesGen";
+  public static final String UMLP_MODULES_MODELS_CONFIG = "umlpModulesModels";
+  public static final String UMLP_MODULES_DOMAIN_SYMBOLS_CONFIG = "umlpModulesDomainSymbols";
 
   @Override
     public void apply(Project project) {
@@ -44,8 +54,38 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
       project.getExtensions().getExtraProperties().set("UMLPOD2DataTask", UMLPOD2DataTask.class);
 
       // Module system
-      project.getConfigurations().maybeCreate(UMLP_MODULES_CONFIG);
+      var umlpModulesC = project.getConfigurations().maybeCreate(UMLP_MODULES_CONFIG);
+      var umlpModulesGenC = project.getConfigurations().maybeCreate(UMLP_MODULES_GEN_CONFIG);
+      UMLPPluginModule.addModuleGenJarJarAttributes(umlpModulesGenC, project);
+      UMLPPluginModule.addModelsJarAttributes(project.getConfigurations().maybeCreate(UMLP_MODULES_MODELS_CONFIG), project);
+
+      var umlpModulesDSC = project.getConfigurations().maybeCreate(UMLP_MODULES_DOMAIN_SYMBOLS_CONFIG);
+      umlpModulesDSC.setCanBeConsumed(false);
+      UMLPPluginModuleJSFrontend.addDomainSymbolsJarAttributes(umlpModulesDSC, project);
 
       StatisticListener.registerOnce(project);
+
+      this.failIfMontiCorePresent(project);
+    }
+
+    protected void failIfMontiCorePresent(Project project) {
+      // If a plugin with one of MontiCores IDs is already present -> fail
+      if (project.getPlugins().hasPlugin("de.monticore.generator") || project.getPlugins().hasPlugin("de.monticore.generator-withtr") || project.getPlugins().hasPlugin("monticore")) {
+        doFailBecauseMontiCorePresent();
+      }
+
+      project.getPlugins().whenPluginAdded(plugin -> {
+        // When a plugin with one of MontiCores Plugin-Classnames is added -> fail
+        if (Arrays.asList("de.monticore.MCPlugin", "de.monticore.gradle.MCGeneratorPlugin", "de.monticore.gradle.MCGeneratorWithTRPlugin").contains(plugin.getClass().getName())) {
+          doFailBecauseMontiCorePresent();
+        }
+      });
+    }
+
+    protected void doFailBecauseMontiCorePresent() {
+      // The incompatibility stems from us using the monticore-runtime in two different versions!
+      // (for example, the TemplateController has changed, resulting in NoSuchMethodErrors etc.)
+      throw new GradleException("The MontiCore Generator & MontiGem Plugins are not compatible. \n" +
+          "Please use the MontiCore plugin in a separate subproject and use that as a dependency.");
     }
 }

@@ -29,11 +29,14 @@ public class UMLPCoCos {
     checker.addCoCo(new UMLPCheckDiagramName());
     checker.addCoCo(new UMLPAssociationQualifierByType());
     checker.addCoCo(new UMLPAssociationQualifierByAttributeName());
+    checker.addCoCo(new UMLPAssociationCardinality());
     checker.addCoCo(new UMLPCheckAttributeModifier());
+    checker.addCoCo(new UMLPCheckDerivedAttribute());
     checker.addCoCo(new UMLPCheckOutgoingAssociation());
     checker.addCoCo(new UMLPNotAllCollectionsImplemented());
     checker.addCoCo(new UMLPCheckCDClassModifier());
     checker.addCoCo(new UMLPCheckCDInterfaceModifier());
     checker.addCoCo(new UMLPCheckCDEnumModifier());
+
   }
 }

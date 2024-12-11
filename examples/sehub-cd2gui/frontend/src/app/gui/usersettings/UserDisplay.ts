@@ -25,7 +25,7 @@ export class UserDisplay extends UserDisplayComponent {
     for (let role of Object.values(SehubRole)) {
       if (isNaN(Number(role))) {
         let value = role + '';
-        res.push({value: value, display: value});
+        res.push(new Option(value));
       }
     }
     return res;

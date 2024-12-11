@@ -3,6 +3,16 @@ import java.time.LocalDateTime;
 
 classdiagram Domain {
 
+  class Service {
+    String name;
+    ServiceStatus status;
+    double temperature;
+  }
+
+  enum ServiceStatus {
+    GREEN, YELLOW, RED;
+  }
+
   class Conversation {
     String conversationid;
   }
@@ -12,13 +22,11 @@ classdiagram Domain {
     Role sender;
     Role receiver;
     LocalDateTime timestamp;
-
   }
 
   enum Role {
     SYSTEM, USER, ASSISTANT, TOOL;
   }
-
 
   class Person {
     java.time.LocalDate birthday;

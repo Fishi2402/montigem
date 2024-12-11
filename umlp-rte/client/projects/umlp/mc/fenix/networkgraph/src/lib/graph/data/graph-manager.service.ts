@@ -4,6 +4,7 @@ import {
   AnimateZoomOptions,
   EdgeAttributes,
   GenerateMetricsFunction,
+  Internal_Graph,
   Internal_GraphEdge,
   Internal_GraphNode,
   NodeAttributes,
@@ -359,13 +360,18 @@ export class GraphManagerService<
     if (reload && wasUpdated) this.reload();
   }
 
+  public updateGraph(graph: Internal_Graph, reload: boolean = false) : void {
+    this.updateNodes(graph.nodes, false);
+    this.updateEdges(graph.edges, reload)
+  }
+
   /**
    * Updates the internal graph node data with the provided new nodes and optionally reloads the graph.
    *
    * @param {Internal_GraphNode[]} newNodes - The new nodes to be added.
    * @param {boolean} [reload] - Whether to reload the graph after updating. Default is `false`
    */
-  public updateNodes(newNodes: Internal_GraphNode[], reload: boolean = false): void {
+  private updateNodes(newNodes: Internal_GraphNode[], reload: boolean = false): void {
     this.graphProcessor.setNodeData(newNodes);
     if (reload) this.reload();
   }
@@ -467,7 +473,7 @@ export class GraphManagerService<
    * @param {Internal_GraphEdge[]} newEdges - The new edges to be added.
    * @param {boolean} [reload] - Whether to reload the graph after updating. Default is `false`
    */
-  public updateEdges(newEdges: Internal_GraphEdge[], reload: boolean = false): void {
+  private updateEdges(newEdges: Internal_GraphEdge[], reload: boolean = false): void {
     this.graphProcessor.setEdgeData(newEdges);
     if (reload) this.reload();
   }

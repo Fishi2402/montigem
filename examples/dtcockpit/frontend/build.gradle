@@ -5,25 +5,29 @@ plugins {
   id "de.rwth.se.umlp-tool-frontend-test"  // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
 }
 
-configurations {
-  umlpModulesDomainSymbols
-  umlpModulesModels
-}
 
 dependencies {
-  umlpModules(project(path: ":modules:login", configuration: "moduleGenTime")) // Load generator modifications
-  umlpModulesDomainSymbols(project(path: ":modules:login:frontendTS", configuration: "umlpOutgoingDomainSymbols")) // frontend domain symbols
-  umlpModulesModels(project(path: ":modules:login", configuration: "umlpOutgoingModels")) // and models itself
+  umlpModulesGen("umlp.modules:login:$version") // Load generator modifications
+  umlpModulesDomainSymbols("umlp.modules.login:frontendTS:$version") // frontend domain symbols
+  umlpModulesModels("umlp.modules:login:$version") // and models itself
 }
+
+// ALus local gradle is apparently unaware of these versions?
+// Explicitly use the local login module
+configurations.all {
+  resolutionStrategy.dependencySubstitution {
+    substitute module("umlp.modules:login") using project(":modules:login")
+    substitute module("umlp.modules.login:frontendTS") using project(":modules:login:frontendTS")
+  }
+}
+
 
 node {
   nodeProjectDir = file("${buildDir}/frontendGen")
 }
 
 createDomainSymbols {
-  // TODO: via resolveable configs
-  modelDir.from(configurations.umlpModulesModels)
-
+  modelDir.from(configurations.umlpModulesModels) // TODO: Move this module logic into the plugin
 }
 
 genDomain {
@@ -38,9 +42,9 @@ genDomain {
 
   // Alternative: Generate the module-frontend-domain too
   input = file("../models/Dtcockpit.umlp")
-  modelDir.from(configurations.umlpModulesModels)
+  modelDir.from(configurations.umlpModulesModels) // TODO: Move this module logic into the plugin
 
-  // TODO: tsconfig path
+  // TODO: The module has to be added to the tsconfig path
   /*
       "paths": {
       "@src/*": ["build/appdomain/*", "build/appgui/*", "src/app/*", "../../src/app/*",
@@ -56,15 +60,11 @@ genGUI {
   domainModels = ["Dtcockpit", "LoginModule"]
   guiCreateModels = ["gui.login.UserCreate", "gui.project.ProjectCreate", "gui.project.ProjectsCreateByGroup"]
 
-  println("#####symbol dir###")
-  symbolDir.forEach {println(it)}
-  println()
-
   // TODO: Gradle Setup for modules
   symbolDir.from(() -> tasks.named("createDomainSymbols").get().outputs)
 
   // Load the symbols from the .jars in the domain symbols path
-  symbolDir.from(configurations.umlpModulesDomainSymbols)
+  symbolDir.from(configurations.umlpModulesDomainSymbols) // TODO: Move this module logic into the plugin
 
   outputs.upToDateWhen { false }
   /*

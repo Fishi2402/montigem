@@ -18,4 +18,5 @@ dependencies {
   implementation "org.neo4j.driver:neo4j-java-driver:$neo4jVersion"
   implementation "com.github.javaparser:javaparser-symbol-solver-core:3.25.1"
   testImplementation project(':umlp-test-rte')
+  implementation project(':umlp-rte')
 }

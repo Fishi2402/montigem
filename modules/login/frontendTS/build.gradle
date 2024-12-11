@@ -5,6 +5,7 @@ plugins {
   // TODO: -test
   id "de.rwth.se.umlp-tool-frontend"  // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
 //  id "de.rwth.se.umlp-tool-frontend-test"  // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
+  id 'maven-publish'
   id 'de.rwth.se.umlp-tool-module-jsfrontend' // create domainSymbols-jar
 }
 
@@ -68,4 +69,36 @@ tasks.register('runApp', NpxTask) {
 }
 tasks.register('run') {
   dependsOn(runApp)
+}
+
+// We do not have main java soures => Remove .jar from outgoing artifacts
+tasks.named('jar') {
+  enabled = false
+}
+configurations{
+  [apiElements, runtimeElements].each {
+    it.outgoing.artifacts.removeIf { it.buildDependencies.getDependencies(null).contains(jar) }
+  }
+}
+
+// Publish
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      from components.java
+    }
+  }
+  repositories {
+    maven {
+      url "file://${project.buildDir}/repo"
+    }
+    maven {
+      credentials.username mavenUser
+      credentials.password mavenPassword
+
+      def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-releases/"
+      def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-snapshots/"
+      url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+    }
+  }
 }

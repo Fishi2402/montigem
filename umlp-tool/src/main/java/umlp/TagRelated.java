@@ -3,6 +3,7 @@ package umlp;
 
 import com.google.common.collect.Iterables;
 import de.monticore.ast.Comment;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._visitor.CDBasisVisitor2;
@@ -69,6 +70,15 @@ public class TagRelated {
           tagger.addTag(node.getSymbol(), astTag);
         }
       }
+
+      @Override
+      public void visit(ASTCDAttribute node) {
+        if (node.getModifier().isDerived()) {
+          ASTTag astTag = TagsMill.simpleTagBuilder().setName("derived").build();
+          hasTags[0] = true;
+          tagger.addTag(node.getSymbol(), astTag);
+        }
+      }
     });
     ast.accept(traverser);
 
@@ -91,9 +101,16 @@ public class TagRelated {
         TagRepository.loadTagModel(tagPath.toFile());
       } catch (IOException ignored) {}
     } else {
-      System.out.println(TagsMill.prettyPrint(tagUnit, true));
       if (hasTags[0])
-        Log.error("symboltable option is required to store tag information");
+        Log.warn("0x00027 Tag information will not be stored. If you require the tag"
+            + " information, please specify the symboltable option via command if you use a command"
+            + " line tool, for example:\n"
+            + "-s path/to/output/symbols/folder\n"
+            + "\nor apply a plugin that adds this option by default if you use gradle, for example:\n"
+            + "\nplugins {\n"
+            + "  id 'de.rwth.se.umlp-tool-frontend'\n"
+            + "}\n"
+        );
     }
   }
 

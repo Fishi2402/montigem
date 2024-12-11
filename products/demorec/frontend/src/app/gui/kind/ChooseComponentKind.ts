@@ -19,7 +19,7 @@ import {
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import {ComponentEdit} from "../component/ComponentEdit";
 
-const newOption: Option = { value: "NEW", display: "NEW" };
+const newOption: Option = new Option("NEW");
 
 @Component({
   standalone:true,
@@ -32,7 +32,7 @@ const newOption: Option = { value: "NEW", display: "NEW" };
 export class ChooseComponentKind extends ChooseComponentKindComponent {
 
   public kindEntry: string = "";
-  public kindOptionsHash = {value: [], hash: ""}
+  public kindOptionsHash:{value: Option[], hash: string} = {value: [], hash: ""}
   private chosenKindNotLoaded: boolean = true
 
   @Output()
@@ -55,7 +55,7 @@ export class ChooseComponentKind extends ChooseComponentKindComponent {
   }
 
   public override getCreateComponentKindCondition (): boolean {
-    return this.getSelectComponentKindEntry()===newOption.value
+    return this.getSelectComponentKindEntry()===newOption.getValue()
   }
 
   public override getSelectComponentKindOptions(): Array<Option> {
@@ -63,14 +63,14 @@ export class ChooseComponentKind extends ChooseComponentKindComponent {
       let opts = []
       for (const kind of this.getAvailableKinds()) {
         let value = kind.getGemId() + "";
-        opts.push({value: value, display: kind.getName()});
+        opts.push(new Option(value, kind.getName()));
       }
-      opts = [newOption].concat(opts.sort((a,b) => {return a.value.localeCompare(b.value)}).slice());
+      opts = [newOption].concat(opts.sort((a,b) => {return a.getValue().localeCompare(b.getValue())}).slice());
       const hash = JSON.stringify(opts)
       if(this.kindOptionsHash.hash != hash) {
         this.kindOptionsHash.hash = hash
         this.kindOptionsHash.value = opts
-        this.kindEntry = this.getCurrentKind() ? this.getCurrentKind().getGemId() + "" : newOption.value
+        this.kindEntry = this.getCurrentKind() ? this.getCurrentKind().getGemId() + "" : newOption.getValue()
       }
     }
     return this.kindOptionsHash.value;
@@ -82,7 +82,7 @@ export class ChooseComponentKind extends ChooseComponentKindComponent {
 
   public override setSelectComponentKindEntry(value: string): void {
     this.kindEntry = value;
-    if(value != newOption.value) {
+    if(value != newOption.getValue()) {
       DemoRecManager.getComponentKindSure(+this.getSelectComponentKindEntry()).then(kind => this.chosenKind.emit(kind))
     }
   }
@@ -90,14 +90,14 @@ export class ChooseComponentKind extends ChooseComponentKindComponent {
   // TODO
   public override addNewComponentKind(): (arg : ComponentKind) => void {
     return (kind : ComponentKind) => {
-      this.kindOptionsHash.value.push({value: kind.getGemId()+"", display: kind.getName()})
+      this.kindOptionsHash.value.push(new Option(kind.getGemId()+"", kind.getName()))
       this.setSelectComponentKindEntry(kind.getGemId()+"")
     }
   }
 
   public override checkKindChoice() : GemTextInputValidity {
     if(this.kindEntry) {
-      if(this.kindEntry === newOption.value) {
+      if(this.kindEntry === newOption.getValue()) {
         return {status: "Error", message: "Please save the new component kind or choose another one."}
       }
       return {status: "Success"}

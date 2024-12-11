@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+umlp UMLPCheckDerivedAttribute {
+
+  class Foo {
+    /String derivedAttr;
+  }
+
+  class Bar extends Foo {
+    String derivedAttr;
+  }
+
+}

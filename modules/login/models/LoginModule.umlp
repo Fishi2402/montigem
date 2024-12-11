@@ -16,6 +16,8 @@ umlp LoginModule {
       String username;
       String password;
       java.time.LocalDateTime registrationDate;
+      <<dbColumn = "unique=true">>
+      String email;
 
       String validityUsername();
       String validityEmail();
@@ -31,6 +33,7 @@ umlp LoginModule {
         <<command>>
         long getCurrentUserRequest();
     }
+
     association LoginSecManager -> (signedInUser) LoginModuleUser [0..1];
 
 }

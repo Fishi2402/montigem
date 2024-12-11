@@ -15,7 +15,8 @@ dependencies {
   domainSources project(":examples:artifacts-test")
   implementation project(":examples:artifacts-java:backend")
   implementation project(":examples:artifacts-test")
-
+  testImplementation project(':umlp-test-rte')
+  implementation project(':umlp-rte')
   //guiDefaultTypes "de.monticore.lang:guidsl:${mc_version}:default-types"
 }
 
@@ -49,8 +50,6 @@ genJava2TSAdditionals {
   ))
 }
 
-
-
 tasks.register('runAppNoBuild', NpxTask) {
   command = "ng"
   args = ["serve"]
@@ -63,11 +62,12 @@ translateJava2TSDomain {
       "glob:**/analysis/**",
       "glob:**/de/**",
       "glob:**/extractor/*",
-      "glob:**/generator/**"
+      "glob:**/generator/**",
+      "glob:**/test_infrastructure/**"
   ]
   verbose = true
   // TODO: why is this unset?
-  jsweetDir.set(project.buildDir.toPath().resolve("jsweet").toFile())
+//  jsweetDir.set(project.buildDir.toPath().resolve("jsweet").toFile())
 }
 
 

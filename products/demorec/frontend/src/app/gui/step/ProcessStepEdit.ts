@@ -18,8 +18,8 @@ import {
 
 import { Option } from '@umlp/input';
 
-const newOption: Option = { value: "NEW", display: "NEW" };
-const noneOption: Option = { value: "NONE", display: "NONE" };
+const newOption: Option = new Option("NEW")
+const noneOption: Option = new Option("NONE")
 
 @Component({
   standalone:true,
@@ -49,7 +49,7 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements OnInit 
 
     // Initialize selectTypeOptions
     Object.keys(ProcessStepType).filter((v) => isNaN(Number(v))).forEach((key, index) => {
-       this.selectTypeOptions.push({value: index.toString(), display: key})
+       this.selectTypeOptions.push(new Option(index.toString(), key))
     })
 
     // Initialize endEffectorOptions
@@ -60,7 +60,7 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements OnInit 
         this.endEffectorOptions = []
         for (const endEffector of endEffectors) {
           let gemId = endEffector.getGemId() + "";
-          this.endEffectorOptions.push({value: gemId, display: endEffector.getName()});
+          this.endEffectorOptions.push(new Option(gemId, endEffector.getName()));
         }
         this.endEffectorOptions = this.endEffectorOptions.slice();
       });
@@ -82,10 +82,7 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements OnInit 
                 kind.getNameAfterLoadPromise().then(name => {
                   const connections = [].concat(kind.getJoinConnectionList()
                       .map(c => {
-                        return {
-                          value: c.getGemId(),
-                          display: name + "_" + c.getGemId()
-                        }
+                        return new Option(c.getGemId(), name + "_" + c.getGemId())
                       }))
                   this.joinConnectionOptions = this.joinConnectionOptions.concat(connections);
                 })
@@ -223,7 +220,7 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements OnInit 
             name => {
               let value = connection.getGemId() + "";
               return new Promise<Option>((resolve, reject) => {
-                    resolve({value: value, display: name+value})
+                    resolve(new Option(value, name+value))
                   }
               )
             }

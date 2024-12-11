@@ -5,7 +5,7 @@ import { BatteryPack } from '@src/demorec/BatteryPack';
 import { ComponentKind } from '@src/demorec/ComponentKind';
 import { Photo } from '@src/demorec/Photo';
 import { DemoRecManager } from '@src/demorec/DemoRecManager';
-import {GemTextInputValidity, Option} from '@umlp/input';
+import {GemTextInputValidity, Option, OptionBuilder} from '@umlp/input';
 
 import { ComponentEditComponent, config } from '@src/gui/component/ComponentEditComponent';
 
@@ -27,17 +27,18 @@ export  class ComponentEdit extends ComponentEditComponent {
   conditionOptions : Option[] = []
   allComponentKinds : ComponentKind[]= []
 
-  public init(): void {
+  public override init(): void {
+    super.init();
+
     this.conditionOptions = []
     Object.keys(State).filter(s => !isNaN(+s)).forEach(key => {
-      this.conditionOptions.push({value: key, display: State[key]});
+      this.conditionOptions.push(
+          new Option(key, State[key]));
     })
 
     DemoRecManager.getComponentKindList()
         .then(l => {return l.loadAll()})
         .then( l => this.allComponentKinds = l)
-
-    super.init();
   }
 
   public editComponentKind(): (arg: void) => void {

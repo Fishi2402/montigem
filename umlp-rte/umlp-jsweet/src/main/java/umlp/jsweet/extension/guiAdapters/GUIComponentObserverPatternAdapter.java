@@ -53,6 +53,8 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
   @Override
   public void beforeTypeBody(TypeElement type) {
     if (adapterUtils.isDirective(type)) {
+      printUniqueIds(type);
+      printHashes(type);
       printGetObs(type);
     }
     if (adapterUtils.isComponent(type) ||  adapterUtils.isDirective(type) && !adapterUtils.isTOPComponent(type)) {
@@ -78,13 +80,45 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     return res;
   }
 
+  private void printUniqueIds(TypeElement type) {
+    String guiComponentName = type.getSimpleName().toString();
+    printIndent().print("private static nextId: number = 0;").println()
+        .printIndent().print("protected uniqueIdentifier:number = " + guiComponentName + ".nextId++;")
+        .println().println();
+  }
+
+  private void printHashes(TypeElement type) {
+    adapterUtils.importFromWithoutModule("ManyKeysMap", "many-keys-map");
+    String guiComponentName = type.getSimpleName().toString();
+    printIndent().print("private static nextHash: number = 0;").println();
+    printIndent().print("protected hashes: ManyKeysMap<any, number> = new ManyKeysMap();").println();
+    printIndent().print("protected computeHash(objs: any[]): number {").println();
+    startIndent().printIndent().print("let key = [];").println();
+    printIndent().print("for (const obj of objs) {").println();
+    startIndent().printIndent().print("if (typeof obj.getGemId === 'function') {").println();
+    startIndent().printIndent().print("key.push(obj.getGemId());").println();
+    endIndent().printIndent().print("} else {").println();
+    startIndent().printIndent().print("key.push(obj);").println();
+    endIndent().printIndent().print("}").println();
+    endIndent().printIndent().print("}").println();
+    printIndent().print("if (this.hashes.has(key)) {").println();
+    startIndent().printIndent().print("return this.hashes.get(key);").println();
+    endIndent().printIndent().print("} else {").println();
+    startIndent().printIndent().print("let hash: number = " + guiComponentName + ".nextHash++;").println();
+    printIndent().print("this.hashes.set(key, hash);").println();
+    printIndent().print("return hash;").println();
+    endIndent().printIndent().print("}").println();
+    endIndent().printIndent().print("}").println().println();
+  }
+
   private void printGetObs(TypeElement type) {
     String guiComponentName = "\"" + type.getQualifiedName().toString() + "\"";
     if (guiComponentName.endsWith("TOP\"") && adapterUtils.isDirective(type)) {
       guiComponentName = guiComponentName.substring(0, guiComponentName.length() - 4) + "\"";
     }
+    guiComponentName = guiComponentName + " + this.uniqueIdentifier";
     printIndent().print("protected " + GET_DOMAIN_OBS
-            + "<T extends GemIdentifiable>(updateName: string, update: (() => void)): <T extends GemIdentifiable>(obj: T, type: string) => T {")
+            + "<T extends GemIdentifiable>(updateName: string, update: (() => void)):  <T extends GemIdentifiable>(obj: T, type: string) => T {")
         .println().startIndent().printIndent()
         .print("return (obj: T, type: string) => {").println().startIndent().printIndent()
         .print("if (obj != undefined && obj != null) {").println().startIndent().printIndent()
@@ -115,8 +149,12 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     if (guiComponentName.endsWith("TOP\"") && adapterUtils.isDirective(typeElement)) {
       guiComponentName = guiComponentName.substring(0, guiComponentName.length() - 4) + "\"";
     }
-    printIndent().print("public ngOnDestroy(): void {").println().startIndent().printIndent()
-        .print("ComponentObserverManager.removeObservers(" + guiComponentName + ");")
+    guiComponentName = guiComponentName + " + this.uniqueIdentifier";
+    printIndent().print("public ngOnDestroy(): void {").println().startIndent().printIndent();
+    if (adapterUtils.isHWCofComponent(typeElement)) {
+      print("super.ngOnDestroy();").println().printIndent();
+    }
+    print("ComponentObserverManager.removeObservers(" + guiComponentName + ");")
         .println().endIndent().printIndent().print("}")
         .println().println();
   }
@@ -126,8 +164,10 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     if (variable.getSimpleName().toString().equals(DOMAIN_OBSERVER_FUNCTION_NAME)) {
       Symbol.MethodSymbol method = getParentElement(Symbol.MethodSymbol.class);
       String updateName = method.getSimpleName().toString() + adapterUtils.UPDATE_SUFFIX;
-      print(DOMAIN_OBSERVER_FUNCTION_NAME + " = this." + GET_DOMAIN_OBS + "('" + updateName + "', ")
-          .print("() => this." + updateName + "(");
+      print(DOMAIN_OBSERVER_FUNCTION_NAME + " = this." + GET_DOMAIN_OBS + "('" + updateName + "'")
+          .print(" + this.computeHash([");
+      printArguments(method);
+      print("]), () => this." + updateName + "(");
       printArguments(method);
       print("))");
       return true;
@@ -136,8 +176,10 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     if (variable.getSimpleName().toString().equals(STATEVAR_OBSERVER_FUNCTION_NAME)) {
       Symbol.MethodSymbol method = getParentElement(Symbol.MethodSymbol.class);
       String updateName = method.getSimpleName().toString() + adapterUtils.UPDATE_SUFFIX;
-      print(STATEVAR_OBSERVER_FUNCTION_NAME + " = this." + GET_STATEVAR_OBS + "('" + updateName + "', ")
-          .print("() => this." + updateName + "(");
+      print(STATEVAR_OBSERVER_FUNCTION_NAME + " = this." + GET_STATEVAR_OBS + "('" + updateName + "'")
+          .print(" + this.computeHash([");
+      printArguments(method);
+      print("]), () => this." + updateName + "(");
       printArguments(method);
       print("))");
       return true;
@@ -361,7 +403,9 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
       // targets invocated Element p.getBestFriend()...
       if (invocatedType != null && invocatedType instanceof TypeElement &&
           adapterUtils.isSubTypeOf((TypeElement) invocatedType,
-              RTEPathUtil.getBackendRTECommonPath("GemIdentifiable"))) {
+              RTEPathUtil.getBackendRTECommonPath("GemIdentifiable")) &&
+          adapterUtils.isSubTypeOf((TypeElement) invocatedType,
+              RTEPathUtil.getBackendRTECommonPath("GemBuildable"))) {
         shouldPrintDomainObs = true;
       }
     }
@@ -449,7 +493,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
       public Action manageAnnotation(Element element, String annotationType) {
         return GUIAdapterUtils.SYNCRHONIZED_ANNOTATION.equals(annotationType) &&
             element.getKind().toString().equals("METHOD") &&
-            element.getSimpleName().toString().startsWith("get") &&
+            (element.getSimpleName().toString().startsWith("get") || element.getSimpleName().toString().startsWith("is")) &&
             !((Symbol.MethodSymbol) element).getReturnType().getKind().equals(TypeKind.VOID) &&
             adapterUtils.isMethodOfComponent(element) ?
             Action.ADD :
@@ -511,7 +555,9 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
           }
           return propertyClass.cast(
               "{{body}}\n{{baseIndent}}ComponentObserverManager.callStateVariableObserver(\""
-                  + stateVarName + "\", \"" + fqn + "\");");
+                  + stateVarName + "\", \"" + fqn + "\" + this.uniqueIdentifier);\n"
+                  + "{{baseIndent}}this." + computeIsGetterFromSetter(element) +
+                  GUIAdapterUtils.UPDATE_SUFFIX + "();");
         } else {
           return null;
         }
@@ -540,6 +586,16 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
       private String getPropertyWithoutSetter(Element element) {
         return GUIAdapterUtils.STATEVAR_PREFIX + StringUtils.uncapitalize(
             element.getSimpleName().toString().substring(3));
+      }
+
+      private String computeIsGetterFromSetter(Element element) {
+        ExecutableElement method = (ExecutableElement) element;
+        boolean isBooleanParameter =
+            types().erasure(method.getParameters().get(0).asType()).toString().equals("boolean") ||
+                types().erasure(method.getParameters().get(0).asType()).toString()
+                    .equals("java.lang.Boolean");
+        String substring = method.getSimpleName().toString().substring(3);
+        return isBooleanParameter ? "is" + substring : "get" + substring;
       }
     };
   }

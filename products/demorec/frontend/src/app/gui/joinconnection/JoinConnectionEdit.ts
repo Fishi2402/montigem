@@ -20,7 +20,7 @@ import { Option } from '@umlp/input';
 import {BatteryPackService} from "../../BatteryPackService";
 import { NavigationEnd,ActivatedRoute, Router } from '@angular/router';
 
-const newOption: Option = { value: "NEW", display: "NEW" };
+const newOption: Option = new Option("NEW");
 
 @Component({
   standalone:true,
@@ -50,7 +50,7 @@ export class JoinConnectionEdit extends JoinConnectionEditComponent implements O
     this.packService.currentPack.subscribe(p => {
       this.currentPack = p
       this.filteredComponentOptions = [newOption].concat(
-          this.componentOptions.filter(opt => this.getCurrentPackComponents().has(opt.value)))
+          this.componentOptions.filter(opt => this.getCurrentPackComponents().has(opt.getValue())))
     });
 
     super.init();
@@ -70,12 +70,12 @@ export class JoinConnectionEdit extends JoinConnectionEditComponent implements O
     // Initialize joinConnectionTypeOptions
     this.joinConnectionTypeOptions = [];
     Object.keys(JoinConnectionType).filter(s => !isNaN(+s)).forEach(key => {
-      this.joinConnectionTypeOptions.push({value: key, display: JoinConnectionType[key]});
+      this.joinConnectionTypeOptions.push(new Option(key,  JoinConnectionType[key]));
     })
 
     this.conditionOptions = []
     Object.keys(State).filter(s => !isNaN(+s)).forEach(key => {
-      this.conditionOptions.push({value: key, display: State[key]});
+      this.conditionOptions.push(new Option(key, State[key]));
     })
 
     // Initialize componentOptions and superComponentsOptions
@@ -89,12 +89,12 @@ export class JoinConnectionEdit extends JoinConnectionEditComponent implements O
             console.debug("Refill Join Connection Options")
             const value = component.getGemId() + "";
             const display = component.getName()? component.getName() : value
-            this.componentOptions.push({value: value, display: display});
+            this.componentOptions.push(new Option(value, display));
           }
         }
         this.componentOptions = this.componentOptions.slice();
         this.filteredComponentOptions = [newOption].concat(
-            this.componentOptions.filter(opt => this.getCurrentPackComponents().has(opt.value)))
+            this.componentOptions.filter(opt => this.getCurrentPackComponents().has(opt.getValue())))
       });
     });
   }

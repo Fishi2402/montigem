@@ -6,4 +6,8 @@ export class StringHelper {
     }
     return res;
   }
+
+  public static join(delimiter: string, strs: string[]): string {
+    return strs.join(delimiter);
+  }
 }

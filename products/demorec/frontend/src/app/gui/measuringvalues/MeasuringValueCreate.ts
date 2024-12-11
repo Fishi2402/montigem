@@ -16,8 +16,6 @@ import {
 
 import { Option } from '@umlp/input';
 
-const newOption: Option = { value: "NEW", display: "NEW" };
-
 @Component({
   standalone: true,
   imports: [...config.imports],
@@ -45,7 +43,7 @@ export class MeasuringValueCreate extends MeasuringValueCreateComponent implemen
         this.dimensionOptions = []
         for (const dimension of dimensions) {
           let value = dimension.getGemId() + "";
-          this.dimensionOptions.push({value: value, display: dimension.getName()+" ("+dimension.getUnit()+")"});
+          this.dimensionOptions.push(new Option(value, dimension.getName()+" ("+dimension.getUnit()+")"));
         }
         this.dimensionOptions = this.dimensionOptions.slice();
       });
