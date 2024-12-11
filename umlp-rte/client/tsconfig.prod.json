@@ -5,9 +5,18 @@
     "declarationMap": false,
     "paths": {
       "@src/*": [
-        "./projects/umlp/mc/fenix/basic/*",
+        "./projects/umlp/*",
+        "./projects/umlp/mc/fenix/arrange/build/gui/*",
+        "./projects/umlp/mc/fenix/arrange/build/cd/*",
+
         "./projects/umlp/mc/fenix/basic/build/gui/*",
-        "./projects/umlp/mc/fenix/basic/build/cd/*"
+        "./projects/umlp/mc/fenix/basic/build/cd/*",
+
+        "./projects/umlp/mc/fenix/charts/build/gui/*",
+        "./projects/umlp/mc/fenix/charts/build/cd/*",
+
+        "./projects/umlp/mc/fenix/common/build/gui/*",
+        "./projects/umlp/mc/fenix/common/build/cd/*"
       ],
       "@umlp/arrange": [
         "./build/dist/umlp/mc/fenix/arrange"

@@ -12,11 +12,9 @@ import { config, GemImageComponent } from '@src/mc/fenix/basic/GemImageComponent
 })
 export class GemImage extends GemImageComponent {
   @HostBinding("style.width")
-  @Input()
   _width: string = 'auto';
 
   @HostBinding("style.height")
-  @Input()
   _height: string = 'auto';
 
 }

@@ -1,0 +1,12 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+
+<div class="gem-overlay-container">
+  <ng-template [ngTemplateOutlet]="background">
+  </ng-template>
+  <div class="gem-overlay">
+    <ng-container *ngFor="let item of components">
+      <ng-template [ngTemplateOutlet]="item">
+      </ng-template>
+    </ng-container>
+  </div>
+</div>

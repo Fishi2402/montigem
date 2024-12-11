@@ -12,30 +12,23 @@ import { config, GemTextComponent } from '@src/mc/fenix/basic/GemTextComponent';
 })
 export class GemText extends GemTextComponent {
   @HostBinding("style.font-style")
-  @Input()
-  public _fontStyle: string = 'unset';
+  _fontStyle: string = 'unset';
 
   @HostBinding("style.width")
-  @Input()
   _width: string = 'auto';
 
   @HostBinding("style.height")
-  @Input()
   _height: string = 'auto';
 
   @HostBinding("style.font-weight")
-  @Input()
   _weight: string = 'unset';
 
   @HostBinding("style.font-family")
-  @Input()
   _fontFamily: string = 'unset';
 
   @HostBinding("style.font-size")
-  @Input()
   _size: string;
 
   @HostBinding("style.color")
-  @Input()
   _color: string;
 }
