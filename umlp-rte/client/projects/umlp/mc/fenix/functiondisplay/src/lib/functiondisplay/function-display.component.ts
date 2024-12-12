@@ -87,7 +87,7 @@ export  class FunctionDisplay {
 
   private funk2elkfunk(funk: Function4Display): Funktion4Elk {
     let ret : Funktion4Elk = {name: funk.getName(), parts: null, connections: null, ports:null, self:funk};
-    let ports = this.getTransformedPorts(funk, ret);
+    let ports: Port4Elk[] = this.getTransformedPorts(funk, ret);
 
     let subports : Port4Elk[] = [];
     let subfunkElks : Funktion4Elk[] = [];
