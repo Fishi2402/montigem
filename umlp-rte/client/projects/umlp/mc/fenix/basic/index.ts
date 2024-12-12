@@ -5,5 +5,5 @@ export * from "./GemImage";
 export * from "./build/gui/mc/fenix/basic/GemLink";
 export * from "./GemText";
 export * from "./GemTreeview";
-export * from "./build/cd/gemtreeviewtypes/GemTreeviewEntry";
+export * from "./build/cd/mc/fenix/basic/gemtreeviewtypes/GemTreeviewEntry";
 export * from "./build/gui/mc/fenix/basic/GemVideo";

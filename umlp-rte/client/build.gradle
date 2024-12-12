@@ -188,8 +188,7 @@ translateJava2TSDomain {
 
   def hwcFiles = []
   srcDir.traverse(type: groovy.io.FileType.FILES) { file ->
-    if (file.getPath().startsWith(srcDir.getPath() + File.separator + "mc" + File.separator + "fenix") ||
-      file.getPath().startsWith(srcDir.getPath() + File.separator + "rte" + File.separator + "deser")) {
+    if (file.getPath().startsWith(srcDir.getPath() + File.separator + "mc" + File.separator + "fenix")) {
       hwcFiles << file
     }
   }

@@ -1,4 +1,4 @@
-package rte.deser;
+package mc.fenix.commonj2ts.deser;
 
 import de.se_rwth.commons.logging.Log;
 import umlp.backendrte.command.JsonDeSer;
