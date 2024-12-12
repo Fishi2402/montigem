@@ -2,6 +2,9 @@
 ${tc.signature("association")}
 ${cd4c.method("public Boolean addMany${association.getName()?cap_first}(Map<Long, List<Long>> ${association.getName()?cap_first}s)")}
   ensureAdd${association.getName()?cap_first}Created();
+  if(${association.getName()?cap_first}s.entrySet().isEmpty()) {
+    return true;
+  }
   synchronized(add${association.getName()?cap_first}){
     try {
       DatabaseAccessManager.getConnection().setAutoCommit(false);
