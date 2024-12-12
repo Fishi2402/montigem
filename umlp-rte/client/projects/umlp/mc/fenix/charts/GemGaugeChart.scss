@@ -1,0 +1,54 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+.wholeChartContainer {
+  width: auto;
+  height: 100%;
+}
+
+.wholeChartWithLegendLeftContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.wholeChartWithLegendTopContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.wholeChartWithLegendBottomContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.wholeChartWithLegendRightContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.legendButtons {
+  display: flex;
+  column-gap: 10px;
+  justify-content: space-between;
+}
+
+.numberInput {
+  width: 50px;
+}
+
+.textInput {
+  width: 150px;
+}
+
+.grayout {
+  opacity: 0.5;
+  filter: alpha(opacity = 50);
+  pointer-events: none;
+}
