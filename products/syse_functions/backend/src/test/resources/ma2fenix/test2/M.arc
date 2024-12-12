@@ -2,7 +2,11 @@
 import package1.*;
 
 component M {
-  port in int b, out int f, out boolean g, out boolean h;
+  port
+    in int b,
+    out int f,
+    out boolean g,
+    out boolean h;
 
   N n1, n2;
 
