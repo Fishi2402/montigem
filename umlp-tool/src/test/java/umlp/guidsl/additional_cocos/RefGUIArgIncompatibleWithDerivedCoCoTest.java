@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import umlp.generator.gui.DomainGUITest;
 import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.coco.GUIDSLCoCosForUMLP;
+import umlp.generator.gui.coco.RefGUIArgIncompatibleWithDerivedCoCo;
 
 import java.io.File;
 import java.util.Collections;
@@ -20,7 +21,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static umlp.generator.gui.TestUtils.removeSpaces;
 
 public class RefGUIArgIncompatibleWithDerivedCoCoTest extends DomainGUITest {
 

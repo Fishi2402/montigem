@@ -1,6 +1,8 @@
   /* (c) https://github.com/MontiCore/monticore */
   package example_network;
 
+  import mc.fenix.networkgraph.networkgraphtypes.Graph;
+  import mc.fenix.networkgraph.networkgraphtypes.GraphBuilder;
   import mc.fenix.networkgraph.networkgraphtypes.GraphEdge;
   import mc.fenix.networkgraph.networkgraphtypes.GraphEdgeBuilder;
   import mc.fenix.networkgraph.networkgraphtypes.GraphNode;
@@ -142,4 +144,11 @@
           .build();
     }
 
+    @Override
+    public Graph getPersonGraphGraph() {
+      return new GraphBuilder()
+          .edges(this.getPersonGraphEdges())
+          .nodes(this.getPersonGraphNodes())
+          .build().get();
+    }
   }

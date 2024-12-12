@@ -77,6 +77,7 @@ public abstract class UMLPPluginFrontendWithJSweet implements Plugin<Project> {
 
     frontendGuiTask.configure(umlpTask -> {
       setIfPathExists(x -> umlpTask.getHwcDir().from(x), this.jsweetJavaHWCDir);
+      setIfPathExists(x -> umlpTask.getHwcDir().from(x), this.jsweetTSGUIHWCDir);
 
       umlpTask.getGuiGenTSFuncionality().set(false);
       umlpTask.getGuiGenJsweet().set(true);
@@ -240,7 +241,7 @@ public abstract class UMLPPluginFrontendWithJSweet implements Plugin<Project> {
       // Always create symbols & tag files
       umlpTask.getSymbolOutDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols_gui_domain_domain__from_task_frontenddomain").toFile());
 
-      setIfPathExists(x -> umlpTask.getHwcDir().from(x), Path.of(project.getProjectDir().getAbsolutePath(), "src", "app"));
+      setIfPathExists(x -> umlpTask.getHwcDir().from(x), this.jsweetTSGUIHWCDir);
     });
   }
 

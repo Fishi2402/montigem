@@ -97,6 +97,7 @@ include ':products:autotech_agil:frontend'
 include ':products:dev_process_cockpit:backend'
 include ':products:dev_process_cockpit:frontend'
 
+include ':modules'
 include ':modules:login'
 include ':modules:login:backend'
 include ':modules:login:frontendTS'

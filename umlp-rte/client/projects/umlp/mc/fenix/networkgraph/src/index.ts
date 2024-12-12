@@ -1,6 +1,7 @@
 export * from "./lib/graph/";
 export * from "./lib/graph/graph.component";
 export * from "./lib/gen/networkgraphtypes/Graph"
+export * from "./lib/gen/networkgraphtypes/NetworkGraphTypesDeSer"
 export * from "./lib/gen/networkgraphtypes/GraphDeSer"
 export * from "./lib/gen/networkgraphtypes/GraphBuilder"
 export * from "./lib/gen/networkgraphtypes/GraphEdge"
