@@ -2,7 +2,8 @@
   "peerDependencies": {
     "@angular/common": "^17.0.7",
     "@angular/core": "^17.0.7",
-    "@umlp/commonj2ts": "^7.6.0"
+    "@umlp/commonj2ts": "^7.6.0",
+    "rxjs": "~7.8.0"
   },
   "name": "@umlp/charts",
   "version": "7.6.2",

@@ -127,6 +127,10 @@ tasks.build_basic.inputs.files(tasks.build_common.outputs.files.singleFile)
 tasks.build_basic.dependsOn(tasks.build_common)
 tasks.build_charts.inputs.files(tasks.build_commonj2ts.outputs.files.singleFile)
 tasks.build_charts.dependsOn(tasks.build_commonj2ts)
+tasks.build_input.inputs.files(tasks.build_commonj2ts.outputs.files.singleFile)
+tasks.build_input.dependsOn(tasks.build_commonj2ts)
+tasks.build_networkgraph.inputs.files(tasks.build_commonj2ts.outputs.files.singleFile)
+tasks.build_networkgraph.dependsOn(tasks.build_commonj2ts)
 
 tasks.register('buildAll') {
   dependsOn tasks.findAll { it.name.startsWith(buildTaskPrefix) }

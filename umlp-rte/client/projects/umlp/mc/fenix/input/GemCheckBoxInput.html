@@ -1,0 +1,14 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+
+<label class="gem-label-checkbox" [for]="id + 'Checkbox'">
+  <span *ngIf="!rightPosition">{{ labelText }}</span>
+  <input
+    type="checkbox"
+    class="gem-checkbox"
+    [id]="id + 'Checkbox'"
+    [ngModel]="checked"
+    [disabled]="disabled"
+    (ngModelChange)="onCheckedChange($event)"
+  />
+  <span *ngIf="rightPosition">{{ labelText }}</span>
+</label>

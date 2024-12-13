@@ -15,7 +15,25 @@
         "./projects/umlp/mc/fenix/charts/build/cd/*",
 
         "./projects/umlp/mc/fenix/common/build/gui/*",
-        "./projects/umlp/mc/fenix/common/build/cd/*"
+        "./projects/umlp/mc/fenix/common/build/cd/*",
+
+        "./projects/umlp/mc/fenix/commonj2ts/build/gui/*",
+        "./projects/umlp/mc/fenix/commonj2ts/build/cd/*",
+
+        "./projects/umlp/mc/fenix/functiondisplay/build/gui/*",
+        "./projects/umlp/mc/fenix/functiondisplay/build/cd/*",
+
+        "./projects/umlp/mc/fenix/input/build/gui/*",
+        "./projects/umlp/mc/fenix/input/build/cd/*",
+
+        "./projects/umlp/mc/fenix/navigation/build/gui/*",
+        "./projects/umlp/mc/fenix/navigation/build/cd/*",
+
+        "./projects/umlp/mc/fenix/networkgraph/build/gui/*",
+        "./projects/umlp/mc/fenix/networkgraph/build/cd/*",
+
+        "./projects/umlp/mc/fenix/table/build/gui/*",
+        "./projects/umlp/mc/fenix/table/build/cd/*"
       ],
       "@umlp/common": [
         "./projects/umlp/common/src"
