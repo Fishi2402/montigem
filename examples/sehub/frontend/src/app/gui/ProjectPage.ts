@@ -45,12 +45,14 @@ export class ProjectPage extends ProjectPageComponent {
     return this.calculateNetwork().nodes
   }
 
+
   public override getProjectGraphGraph(): Graph {
     return new GraphBuilder()
     .edges(this.getGemGraphEdges())
     .nodes(this.getGemGraphNodes())
     .build();
   }
+
 
   public calculateNetwork(): {nodes: GraphNode[], edges:GraphEdge[]}  {
     if(!(this.project)) {

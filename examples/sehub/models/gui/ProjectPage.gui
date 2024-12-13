@@ -8,6 +8,7 @@ import mc.fenix.table.GemTable;
 import mc.fenix.table.TableTypes.TableColumn;
 import mc.fenix.networkgraph.GemGraph;
 import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemTreeNode;
 
 import gui.DirNode;
 
@@ -15,12 +16,16 @@ page ProjectPage(Directory project) {
 
   @GemCard(
     title = "Files",
-    component = @iterate(Artifact art :  project.contains) {
-      @DirNode(artifact = art);
-    }
+    component = @GemTreeNode(children = [
+      @iterate(Artifact art : project.contains) {
+        @DirNode(artifact = art);
+      }
+    ])
   );
+
   projectGraph@GemGraph(
     graph=null
   );
+
 
 }

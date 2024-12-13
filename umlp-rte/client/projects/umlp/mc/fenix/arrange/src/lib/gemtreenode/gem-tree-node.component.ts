@@ -32,5 +32,4 @@ export class GemTreeNode implements OnInit {
       this.onExpand.emit();
     }
   }
-
 }
