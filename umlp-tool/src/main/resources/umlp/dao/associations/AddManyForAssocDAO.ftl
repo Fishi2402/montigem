@@ -19,6 +19,7 @@ ${cd4c.method("public Boolean addMany${association.getName()?cap_first}(Map<Long
       }
       add${association.getName()?cap_first}.executeBatch();
       DatabaseAccessManager.getConnection().commit();
+      DatabaseAccessManager.getConnection().setAutoCommit(true);
       return true;
 
     } catch (SQLException e){
