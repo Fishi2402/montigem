@@ -28,14 +28,14 @@
     "paths": {
       "@src/*": ["build/appdomain/*", "build/appgui/*", "../umlp/fe2/*", "src/app/*", "../../src/app/*"],
       "@angular/*": ["node_modules/@angular/*"],
-      "@umlp/arrange": ["../../../../../umlp-rte/client/projects/umlp/arrange/src"],
-      "@umlp/basic": ["../../../../../umlp-rte/client/projects/umlp/basic/src"],
-      "@umlp/charts": ["../../../../../umlp-rte/client/projects/umlp/charts/src"],
-      "@umlp/common": ["../../../../../umlp-rte/client/projects/umlp/common/src"],
-      "@umlp/commonj2ts": ["../../../../../umlp-rte/client/projects/umlp/commonj2ts/src"],
-      "@umlp/input": ["../../../../../umlp-rte/client/projects/umlp/input/src"],
-      "@umlp/navigation": ["../../../../../umlp-rte/client/projects/umlp/navigation/src"],
-      "@umlp/table": ["../../../../../umlp-rte/client/projects/umlp/table/src"],
+      "@umlp/arrange": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/arrange"],
+      "@umlp/basic": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/basic"],
+      "@umlp/charts": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/charts"],
+      "@umlp/common": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/common"],
+      "@umlp/commonj2ts": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/commonj2ts"],
+      "@umlp/input": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/input"],
+      "@umlp/navigation": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/navigation"],
+      "@umlp/table": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/table"],
       "@umlp/*": ["node_modules/@umlp/*"],
       "tslib": ["node_modules/tslib"]
     }
