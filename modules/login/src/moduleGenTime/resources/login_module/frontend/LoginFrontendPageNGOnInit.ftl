@@ -7,7 +7,8 @@
  Define a singleton type and add it as a parameter to your page named "doesNotRequireLogin"
  - we check for the existence of a getDoesNotRequireLogin property
 */
-if (!('getDoesNotRequireLogin' in this) && LoginSecManager.shouldAbortOnInit(this._router, this._route)) {
+var loginPageThat = this;
+if (!('getDoesNotRequireLogin' in this) && LoginSecManager.shouldAbortOnInit(loginPageThat._router, loginPageThat._route)) {
   return;
 }
 // end login module system

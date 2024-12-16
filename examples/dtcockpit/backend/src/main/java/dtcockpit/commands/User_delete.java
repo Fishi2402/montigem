@@ -6,6 +6,7 @@ import dtcockpit.UserAccessPolicy;
 import umlp.backendrte.command.StatusResult;
 import umlp.backendrte.common.NotificationScope;
 
+// TODO: Module System: User_create and LoginModuleUser_create have no relation at all
 public class User_delete extends User_deleteTOP {
 
   public User_delete(long gemId) {

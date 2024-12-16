@@ -912,7 +912,7 @@ public class GUIGeneratorUtil {
     return res;
   }
 
-  public Optional<String> getRelativeImportPathForAnnotation(
+  public String getRelativeImportPathForAnnotation(
       String path, String base, String qualifiedName) {
     path = path + "/" + Names.getPathFromPackage(qualifiedName) + ".html";
     base = base + "/" + Names.getPathFromPackage(qualifiedName) + ".ts";
@@ -923,7 +923,7 @@ public class GUIGeneratorUtil {
         .toString()
         .replaceAll("\\\\", "/");
 
-    return Optional.of(relative);
+    return relative;
   }
 
   public Optional<String> getRelativeImportPath(

@@ -2,6 +2,8 @@
 
 import {User} from '@src/dtcockpit/User';
 import {LoginSecManager} from "./login/LoginSecManager";
+import {LoginSecManager as LoginModuleSecManager} from "@src/loginmodule/LoginSecManager";
+import {Router} from "@angular/router";
 
 // Now delegated to the login-modules SecurityManager
 export class DtcockpitSecurityManager {
@@ -30,8 +32,9 @@ export class DtcockpitSecurityManager {
     LoginSecManager.signIn(value);
   }
 
-  public static signOut() {
-    LoginSecManager.signOut()
+  public static signOut(router: Router) {
+    LoginSecManager.signOut();
+    LoginModuleSecManager.getInstance().signOutCurrentUser(router);
   }
 
   public static isSignedIn(): boolean {

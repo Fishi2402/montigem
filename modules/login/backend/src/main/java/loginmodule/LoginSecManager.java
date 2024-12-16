@@ -18,4 +18,5 @@ public class LoginSecManager extends LoginSecManagerTOP {
   public void setSignedInUser(LoginModuleUser _signedInUser, NotificationScope scope) {
     throw new IllegalStateException("ONLY AVAILABLE IN FRONTEND!");
   }
+
 }

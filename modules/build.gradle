@@ -1,0 +1,9 @@
+
+// Aggregate tasks for all subprojects' publishing tasks
+tasks.register("publishModulesToMavenLocal") {
+  dependsOn(*subprojects.collect { sp -> sp.tasks.findAll {t->t.name.equals("publishToMavenLocal")}})
+}
+
+tasks.register("publishModules") {
+  dependsOn(*subprojects.collect { sp -> sp.tasks.findAll {t->t.name.equals("publish")}})
+}
