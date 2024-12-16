@@ -2,10 +2,12 @@ package gui.component;
 
 import DemoRec.DemoRecComponent;
 
-import mc.fenix.basic.GemTreeview;
+// import mc.fenix.basic.GemTreeview;
 
 component ComponentTreeView(DemoRecComponent component) {
+  /* TODO: If used, replace with mc.fenix.arrange.GemTreeNode
   hierarchicalComponents@GemTreeview(
     items=null
   );
+  */
 }

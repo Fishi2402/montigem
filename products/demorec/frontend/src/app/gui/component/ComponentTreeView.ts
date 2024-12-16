@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { GemTreeviewEntry } from '@umlp/basic';
+//import { GemTreeviewEntry } from '@umlp/basic';
 import { DemoRecComponent } from '@src/demorec/DemoRecComponent';
 
 
