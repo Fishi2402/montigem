@@ -30,10 +30,6 @@ public class DomainServerApplication extends domain.DomainServerApplicationTOP {
 
   public void createDummyData() {
 
-    Service cameraService = addService("Camera", ServiceStatus.GREEN, 20.0);
-    Service lidarService = addService("LIDAR Sensor", ServiceStatus.GREEN, 20.0);
-    Service steeringService = addService("Steering", ServiceStatus.GREEN, 20.0);
-
     Conversation c0 = addConversation("id0");
 
     Message m0 = addMessage("Hi! I am a simple Chatbot ... Just kidding, i'm jst a mockup message ;(", Role.ASSISTANT, Role.USER, LocalDateTime.now());
@@ -257,15 +253,6 @@ public class DomainServerApplication extends domain.DomainServerApplicationTOP {
   protected Conversation addConversation(String conversationId) {
     return DomainManager.conversationBuilder()
         .conversationid(conversationId)
-        .build()
-        .get();
-  }
-
-  protected Service addService(String serviceName, ServiceStatus initialStatus, double initialTemp) {
-    return DomainManager.serviceBuilder()
-        .name(serviceName)
-        .status(initialStatus)
-        .temperature(initialTemp)
         .build()
         .get();
   }

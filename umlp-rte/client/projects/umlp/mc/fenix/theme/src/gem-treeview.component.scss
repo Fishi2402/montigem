@@ -5,15 +5,16 @@
   * {
     box-sizing: border-box;
     list-style-type: none;
-    margin: 0;
   }
 
   .gem-tree-root {
     padding-left: 0;
+    margin: 0;
   }
 
   .gem-sub-tree-root {
     padding-left: 20px;
+    margin: 0;
   }
 
   .gem-tree-node {

@@ -3,16 +3,6 @@ import java.time.LocalDateTime;
 
 classdiagram Domain {
 
-  class Service {
-    String name;
-    ServiceStatus status;
-    double temperature;
-  }
-
-  enum ServiceStatus {
-    GREEN, YELLOW, RED;
-  }
-
   class Conversation {
     String conversationid;
   }

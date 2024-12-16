@@ -1,6 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {GemTreeviewEntry} from '@umlp/basic';
 import {GemNetworkData, GemNetworkEdge, GemNetworkNode} from '@umlp/charts';
 import {ProjectPageComponent,config} from '@src/gui/ProjectPageComponent';
 import {Artifact} from '@src/sehub/Artifact';
@@ -84,36 +83,6 @@ export class ProjectPage extends ProjectPageComponent {
     return node;
   }
 
-  public getFilesItems(): Array<GemTreeviewEntry> {
-    if (!(this.project)) {
-      return [];
-    }
-    const treeViewEntries = [this.recursivelyFillGemTreeviewItems(this.project)]
-
-    const newHash = JSON.stringify(treeViewEntries);
-    if (this.treeViewDataCheck.hash !== newHash) {
-      this.treeViewDataCheck.hash = newHash;
-      this.treeViewDataCheck.value = treeViewEntries;
-    }
-    return this.treeViewDataCheck.value
-  }
-
-  private recursivelyFillGemTreeviewItems(artifact: Artifact): GemTreeviewEntry {
-    let curViewEntry: GemTreeviewEntry = this.createGemTreeviewEntryFromArtifact(artifact)
-    if (artifact instanceof Directory) {
-      (artifact as Directory).getContainsList().forEach(art => curViewEntry.addChildren(this.recursivelyFillGemTreeviewItems(art)))
-    }
-    return curViewEntry;
-  }
-
-  private createGemTreeviewEntryFromArtifact(artifact: Artifact): GemTreeviewEntry {
-    const viewEntry = new GemTreeviewEntry();
-    viewEntry.setExpanded(true)
-    viewEntry.setChildrenList([]);
-    viewEntry.setName(artifact.getName());
-
-    return viewEntry
-  }
 }
 
 
