@@ -49,7 +49,7 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
         );
       }
       else {
-        boolean noHWC = !GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, qName);
+        boolean noHWC = !GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, qClassName);
         String htmlFileName = originalName + ".html";
         String htmlPath = "./" + htmlFileName;
         List<String> scssPaths = new ArrayList<>();
