@@ -513,7 +513,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
       }
       this.asArray = arr
     }
-    return [...this.asArray];
+    return this.asArray;
   }
 
   toArrayDeep(startIndex?: number, endIndex?: number): Array<E> {
