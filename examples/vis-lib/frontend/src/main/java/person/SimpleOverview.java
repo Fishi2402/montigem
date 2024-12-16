@@ -1,12 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 package person;
 
+import domain.DomainManager;
 import domain.Person;
 import mc.fenix.input.gemdropdowninputtypes.Option;
 import umlp.jsweet.extension.annotation.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 @Component
 public class SimpleOverview extends SimpleOverviewTOP {
@@ -45,5 +48,16 @@ public class SimpleOverview extends SimpleOverviewTOP {
       }
     }
     return opts;
+  }
+
+  @Override
+  public Consumer<Void> addFriend(Integer personId, Integer friendId) {
+    return Void -> {
+      Optional<Person> person = DomainManager.personOpt(personId);
+      Optional<Person> friend = DomainManager.personOpt(friendId);
+      if (person.isPresent() && friend.isPresent()) {
+        person.get().addFriends(friend.get());
+      }
+    };
   }
 }

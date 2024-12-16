@@ -11,7 +11,7 @@ import {DoubleDeSer} from "../common/DoubleDeSer";
 import {StringDeSer} from "../common/StringDeSer";
 import {LocalDateDeSer} from "../deser";
 import {LocalDateTimeDeSer} from "../deser/LocalDateTimeDeSer";
-import {DeSer} from "../command";
+import {DeSer, JsonDeSer} from "../command";
 
 /**
  * (De)serializer for base classes from java.lang
@@ -37,6 +37,12 @@ export class BaseClassObjectMapper {
 
     this.baseDeSers.set("java.time.LocalDate", new LocalDateDeSer());
     this.baseDeSers.set("java.time.LocalDateTime", new LocalDateTimeDeSer());
+  }
+
+  public static addDeSers(addedDeSers : Map<string, JsonDeSer<any>>) : void {
+    for (const [deSerTypeName,deSer] of addedDeSers) {
+      this.getInstance().baseDeSers.set(deSerTypeName, deSer)
+    }
   }
 
   public static instance_$LI$(): BaseClassObjectMapper {

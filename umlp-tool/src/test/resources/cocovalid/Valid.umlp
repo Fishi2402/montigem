@@ -8,6 +8,11 @@ umlp Valid {
 
   class B {
     boolean isTrue;
+    /String derivedAttr;
+  }
+
+  class C extends B {
+    /String derivedAttr;
   }
 
   interface I;

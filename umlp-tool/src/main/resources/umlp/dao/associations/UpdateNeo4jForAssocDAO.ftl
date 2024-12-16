@@ -7,7 +7,7 @@ try {
   update${assocEnd?cap_first}.setLong(1, ${assocStart}GemId); // previous_start_id
   update${assocEnd?cap_first}.setLong(2, old${assocEnd?cap_first}GemId); // previous_end_id
   update${assocEnd?cap_first}.setLong(3, updated${assocEnd?cap_first}GemId); // new_end_id
-  update${assocEnd?cap_first}.execute();
+  update${assocEnd?cap_first}.executeUpdate();
 }catch (SQLException e){
   throw new RuntimeException(e);
 }

@@ -37,4 +37,20 @@ classdiagram LoadingTests {
     List<Long> getListLong();
     void doAction();
   }
+
+  // From the loading-inner example
+  public class Player {
+      + String name;
+      + boolean isActive;
+      + int points;
+    }
+
+    public class Game {
+      + int currentTurn;
+      + long currentPlayerIndex;
+      + boolean votingPhase;
+    }
+
+    composition [1] Game -> Player [*];
+
 }

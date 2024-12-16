@@ -25,13 +25,13 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
   protected updateIds() {
     // Pass the toArray to all observers (but call toArray lazy)
     let lazy = undefined;
-    this.subject.next(this.toArray());
+    // this.subject.next(this.toArray());
   }
 
 
 
   public constructor(ids?: Array<number> | IUMLPList<number>) {
-    this.subject = new GemListBehaviorSubject(this.asArray, this._onSub.bind(this));
+    // this.subject = new GemListBehaviorSubject(this.asArray, this._onSub.bind(this));
     this.state = LoadingState.NOT_YET_LOADED;
     if (ids instanceof Array) {
       this.ids = ids;
@@ -56,7 +56,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     this.state = LoadingState.LOADING;
     this.loadObjects(new UMLPArrayList(this.ids)).then(value => {
       this.state = LoadingState.LOADED;
-      this.asArray.length = 0;
+      this.asArray = [];
       value.forEach(element => {
         if (element.getLoadingState() == LoadingState.LOADED) {
           this.asArray!.push(element.get());
@@ -492,15 +492,8 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     //   }
     //   return asArrayMap[{startIndex, endIndex}];
     // }
-    if (this.asArray == null) {
-      this.asArray = [];
-      this.loadObjects(new UMLPArrayList(this.ids)).then(async _ => {
-        for await (let gemListElement of this) {
-          this.asArray.push(gemListElement);
-        }
-      });
-    }
-    return this.asArray;
+    this.toArraySync(startIndex, endIndex);
+    return this.asArray == null ? [] : [...this.asArray];
   }
 
   async toArraySync(startIndex?: number, endIndex?: number): Promise<Array<E>> {
@@ -512,8 +505,9 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     //   return asArrayMap[{startIndex, endIndex}];
     // }
     if (this.asArray == null) {
-      await this.loadObjects(new UMLPArrayList(this.ids));
+      this.asArray = [];
       const arr = [];
+      await this.loadObjects(new UMLPArrayList(this.ids));
       for await (let gemListElement of this) {
         arr.push(gemListElement);
       }

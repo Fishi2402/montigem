@@ -1,4 +1,4 @@
-package umlp.guidsl.additional_cocos;
+package umlp.generator.gui.coco;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
