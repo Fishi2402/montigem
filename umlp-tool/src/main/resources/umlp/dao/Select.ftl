@@ -6,11 +6,14 @@ ${cd4c.method("public Optional<${typeName}> select${typeName}(long gemId)")}
     try{
       select${typeName}.clearParameters();
       select${typeName}.setLong(1, gemId);
-      ResultSet res = select${typeName}.executeQuery();
-      if(res.next()){
-        return unpack${typeName}(res);
-      }else{
-        return Optional.empty();
+      try(ResultSet res = select${typeName}.executeQuery()) {
+        if(res.next()){
+          return unpack${typeName}(res);
+        }else{
+          return Optional.empty();
+        }
+      } catch (SQLException e){
+        throw new RuntimeException(e);
       }
     }catch (SQLException e){
       throw new RuntimeException(e);
