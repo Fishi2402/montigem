@@ -20,7 +20,7 @@ public class TotalTest extends WebshopSQLDBTestSetup {
   @Test
   void matchVisible() {
     Order o = WebshopManager.orderBuilder().build().orElseThrow();
-    Item item = new TotalTestInstantiator().instantiateItem();
+    Item item = new TotalTestInstantiator().instantiateItem().build().orElseThrow();
 
     assertEquals(0, o.getTotal());
 
