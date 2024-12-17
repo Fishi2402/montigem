@@ -1,26 +1,27 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {Component} from '@angular/core';
-import {UserCreateComponent,config} from '@src/gui/login/UserCreateComponent';
-import {DtcockpitRole} from '@src/dtcockpit/DtcockpitRole';
-import {User} from "@src/dtcockpit/User";
-import {GemList} from '@umlp/common';
-import {DtcockpitManager} from '@src/dtcockpit/DtcockpitManager';
 import {Location} from '@angular/common';
-import {Router} from '@angular/router';
+import {config, UserCreateComponent} from '@src/gui/loginmodule/comp/UserCreateComponent';
+import {LoginModuleManager} from '@src/loginmodule/LoginModuleManager';
+import {LoginModuleUser} from '@src/loginmodule/LoginModuleUser';
+import {ClientCommandManager, CommandManager, GemList} from '@umlp/common';
+import {LoginSecManager} from "@src/loginmodule/LoginSecManager";
+
+
+// import { ActivatedRoute, Router } from '@angular/router';
 @Component({
-  standalone:true,
-  imports:[...config.imports],
+  standalone: true,
+  imports: [...config.imports],
   selector: config.selector,
   templateUrl: config.templateUrl,
   styles: config.styles,
-  styleUrls: ["./Login.scss"]
+  // styleUrls: ["./Login.scss"]
+  styleUrls: config.styleUrls,
 })
+
 export class UserCreate extends UserCreateComponent {
-
   private error: string = "";
-
-  protected users: GemList<User>;
 
   public static email: RegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
@@ -29,7 +30,7 @@ export class UserCreate extends UserCreateComponent {
   }
 
   public ngOnInit(): void {
-    DtcockpitManager.userBuilder().then(gemPromiseRes => {
+    LoginModuleManager.loginModuleUserBuilder().then(gemPromiseRes => {
       this.newUser = gemPromiseRes;
     });
   }
@@ -48,9 +49,9 @@ export class UserCreate extends UserCreateComponent {
       if (!errorMessage) {
         //this.user.activated(ActivationStatus.AKTIVIERT);
         this.newUser.setRegistrationDate(new Date());
-        this.newUser.setRole(DtcockpitRole.USER);
+        // this.newUser.setRole(DtcockpitRole.USER);
         this.newUser.build();
-        this._router.navigate(['gui', 'login']);
+        this._router.navigate(['gui', 'loginmodule', 'LoginPage']);
       } else {
         this.error = errorMessage;
       }
@@ -69,7 +70,7 @@ export class UserCreate extends UserCreateComponent {
     }
 
     // Check if user is unique
-    this.users.toArray().filter(user => {
+    this.users.filter(user => {
       if (this.getNewUser().getUsername() === user.getUsername()) {
         res += ' Account "' + this.getNewUser().getUsername() + '"';
       }
