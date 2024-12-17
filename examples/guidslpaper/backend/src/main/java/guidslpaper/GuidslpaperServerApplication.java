@@ -15,6 +15,7 @@ import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
 
@@ -41,7 +42,7 @@ public class GuidslpaperServerApplication extends guidslpaper.GuidslpaperServerA
       GuidslpaperManager.userBuilder()
           .username("MyUser")
           .password(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode("MyPasswort"))
-          .registrationDate(LocalDate.now())
+          .registrationDate(LocalDateTime.now())
           .email("unknown")
           .role(Role.ADMIN)
           .build();

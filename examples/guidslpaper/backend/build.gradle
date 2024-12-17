@@ -11,6 +11,22 @@ dependencies {
   umlpModulesGen(project(path: ":modules:login", configuration: "moduleGenTime"))
 }
 
+dependencies {
+  umlpModulesGen("umlp.modules:login:$version")
+  // TODO: adding it directly to the umlpModules failes due to missing module metadata
+  implementation("umlp.modules.login:backend:$version")
+  umlpModulesModels("umlp.modules:login:$version") // and models itself
+}
+
+// ALus local gradle is apparently unaware of these versions?
+// Explicitly use the local login module
+configurations.configureEach {
+  resolutionStrategy.dependencySubstitution {
+    substitute module("umlp.modules:login") using project(":modules:login")
+    substitute module("umlp.modules.login:backend") using project(":modules:login:backend")
+  }
+}
+
 application { // Set Main-Class for "run" task
   mainClass = 'guidslpaper.GuidslpaperServerApplication'
 }
@@ -73,4 +89,11 @@ tasks.register('runShellApi', org.springframework.boot.gradle.tasks.run.BootRun)
   classpath = sourceSets.main.runtimeClasspath
   mainClass = 'guidslpaper.GuidslpaperShellAPIApplication'
   standardInput = System.in
+}
+
+tasks.withType(Zip).all {
+  duplicatesStrategy = DuplicatesStrategy.WARN
+}
+tasks.withType(Tar).all {
+  duplicatesStrategy = DuplicatesStrategy.WARN
 }
