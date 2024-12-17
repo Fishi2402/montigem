@@ -14,7 +14,11 @@ public class CD2UMLPPrettyPrinter extends CDBasisPrettyPrinter {
 
   @Override
     public void handle(ASTCDDefinition node) {
-            getPrinter().print("umlp");
+        // Print the stereotype
+        if (node.getModifier().isPresentStereotype())
+          node.getModifier().getStereotype().accept(getTraverser());
+
+        getPrinter().print("umlp");
 
         getPrinter().print(" ");
         getPrinter().print(node.getName());
