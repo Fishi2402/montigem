@@ -6,6 +6,7 @@ import java.nio.file.Paths
 plugins {
   id "com.github.node-gradle.node" version "5.0.0"
   id 'de.rwth.se.umlp-tool'
+  // TODO: Why is the frontend plugin not used here?
 }
 
 def useCD2GUI = true
@@ -17,6 +18,22 @@ configurations {
 dependencies {
   guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
 }
+
+dependencies {
+  umlpModulesGen("umlp.modules:login:$version") // Load generator modifications
+  umlpModulesDomainSymbols("umlp.modules.login:frontendTS:$version") // frontend domain symbols
+  umlpModulesModels("umlp.modules:login:$version") // and models itself
+}
+
+// ALus local gradle is apparently unaware of these versions?
+// Explicitly use the local login module
+configurations.all {
+  resolutionStrategy.dependencySubstitution {
+    substitute module("umlp.modules:login") using project(":modules:login")
+    substitute module("umlp.modules.login:frontendTS") using project(":modules:login:frontendTS")
+  }
+}
+
 
 tasks.register('generateNPMAuth', NPMAuthCreate){
   npmrcFile = file("config/.npmrc")
@@ -39,6 +56,8 @@ tasks.register('generateCDTOGUI', UMLPCdToGuiTask) {
   setGroup('build')
   input = file("../models/Finanzverwaltung.umlp")
   outputDir = layout.buildDirectory.dir("cd2gui")
+  // TODO: symbolpath to modules is missing/not supported
+  enabled = false
 }
 
 tasks.register('guiVariability', GuiVariabilityHandlerTask) {
@@ -55,6 +74,7 @@ tasks.register('genDomain', UMLPFrontendTask) {
   symbolOutDir = file("${project.buildDir}/symbols")
   outputDir = frontendSetup.getOutput().dir("build/appdomain")
   hwcDir = file("src/app/")
+  modelDir.from(configurations.umlpModulesModels)
 }
 
 tasks.register('genDomainSymbols', UMLPSymbolsTask) {
@@ -62,6 +82,7 @@ tasks.register('genDomainSymbols', UMLPSymbolsTask) {
   input = layout.projectDirectory.dir("../models")
   symbolOutDir = file("${project.buildDir}/symbols")
   outputDir = file("${project.buildDir}/symbols")
+  modelDir.from(configurations.umlpModulesModels)
 }
 
 tasks.register('genGUI', UMLPGuiGenTask) {
@@ -70,12 +91,12 @@ tasks.register('genGUI', UMLPGuiGenTask) {
   outputDir = frontendSetup.getOutput().dir("build/appgui")
   hwcDir = file("src/app/")
   modelDir = layout.projectDirectory.dir("../models")
-  symbolDir = files(
-      genDomainSymbols.symbolOutDir,
-      project(":umlp-rte:client").tasks.createGuiSymbols.output,
-      project(":umlp-rte:client").tasks.createCDSymbols.output,
-      configurations.guiDefaultTypes.files
-  )
+  symbolDir.setFrom(genDomainSymbols.symbolOutDir)
+  symbolDir.from(project(":umlp-rte:client").tasks.createGuiSymbols.output)
+  symbolDir.from(project(":umlp-rte:client").tasks.createCDSymbols.output)
+  symbolDir.from(configurations.guiDefaultTypes)
+  symbolDir.from(configurations.umlpModulesDomainSymbols)
+
   domainModels = ["Finanzverwaltung"]
   guiCreateModels = ["gui.login.UserCreate", "gui.issues.IssueCreate"]
 }
@@ -98,6 +119,8 @@ tasks.register('genGUI2', UMLPGuiGenTask) {
   domainModels = ["Finanzverwaltung"]
   // Note: on windows its Finanzverwaltung, ob *nix its finanzverwaltung (lowercase)
   guiCreateModelsAsFile = file(generateCDTOGUI.getOutputDir().file("meta/finanzverwaltung/guiCreateTextModels"))
+  // TODO: generateCDTOGUI is skipped due to module path
+  enabled = false
 }
 
 npmInstall.dependsOn(':umlp-rte:client:npmInstall')
@@ -124,3 +147,4 @@ tasks.register('runApp', NpxTask) {
   command = "ng"
   args = ["serve"]
 }
+

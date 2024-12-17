@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 import java.time.LocalDate;
+import LoginModule.LoginModuleUser;
 
+<<extends="LoginModule">>
 classdiagram Finanzverwaltung {
 
    enum Role {
@@ -8,17 +10,8 @@ classdiagram Finanzverwaltung {
      ADMIN;
    }
 
-   class User {
-     <<dbColumn = "unique=true">>
-     String username;
-     String password;
-     LocalDate registrationDate;
-     <<dbColumn = "unique=true">>
-     String email;
+   class User extends LoginModuleUser {
      Role role;
-     String validityUsername();
-     String validityEmail();
-     String validityPassword();
    }
 
    <<singleton>>

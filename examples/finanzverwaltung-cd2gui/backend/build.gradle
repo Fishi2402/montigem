@@ -25,7 +25,17 @@ configurations {
 }
 
 dependencies {
-  umlpModulesGen(project(path: ":modules:login", configuration: "moduleGenTime"))
+  umlpModulesGen("umlp.modules:login:$version")
+  implementation("umlp.modules.login:backend:$version")
+  umlpModulesModels("umlp.modules:login:$version") // and models itself
+}
+// ALus local gradle is apparently unaware of these versions?
+// Explicitly use the local login module
+configurations.configureEach {
+  resolutionStrategy.dependencySubstitution {
+    substitute module("umlp.modules:login") using project(":modules:login")
+    substitute module("umlp.modules.login:backend") using project(":modules:login:backend")
+  }
 }
 
 application {
@@ -55,7 +65,6 @@ dependencies {
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version, withoutSpringLogging
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: spring_version
   implementation group: 'org.springframework.shell', name: 'spring-shell-starter', version: spring_shell_version
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version
   developmentOnly("org.springframework.boot:spring-boot-devtools:$spring_version")  // Used for Hot Reload!
 
   implementation group: 'org.slf4j', name: 'slf4j-simple', version: "1.7.10"
@@ -116,3 +125,10 @@ sourceSets {
 }
 
 compileJava.dependsOn(generateUmlpBackend)
+
+tasks.withType(Tar).configureEach {
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+tasks.withType(Zip).configureEach {
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
