@@ -65,9 +65,6 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
     loginModuleRestService.onSignupAdditionals.add((jsonObject, uB) -> {
       ((LoginModuleUser4UserBuilder)uB).delegate.role(DtcockpitRole.USER);
     });
-
-    // TODO: Move this line into the generated DtcockpitManagerImpl
-    LoginModule4DtcockpitManagerImpl.init();
     super.init();
 
     // Only create DummyData if database is empty

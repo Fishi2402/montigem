@@ -16,6 +16,7 @@ import umlp.UMLPMill;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -77,7 +78,11 @@ public class DelegationManagerDecorator extends ManagerDecorator {
     glex.replaceTemplate("cd2java.Annotations", delegationManagerClass,
         new StringHookPoint("@jsweet.lang.Erased"));
 
-    addManagerInit(delegationManagerClass, parentCD.getName(), delegationManagerName);
+    // Build manager adapter/delegators
+    List<String> superDelegateManagerNames = new ArrayList<>();
+    // TODO: What do we have to for RegMod extend LogMod?
+
+    addManagerInit(delegationManagerClass, parentCD.getName(), delegationManagerName, superDelegateManagerNames);
     addManagerInitNeo4J(delegationManagerClass, parentCD.getName(), delegationManagerName);
 
     LinkedHashMap<ASTCDType, LinkedHashSet<ASTCDType>> superTypesToTypes =
@@ -100,8 +105,8 @@ public class DelegationManagerDecorator extends ManagerDecorator {
     return delegationManagerClass;
   }
 
-  protected void addManagerInit(ASTCDClass delegationManagerClass, String extendedCDName, String delegationManagerName) {
-    getCD4C().addMethod(delegationManagerClass, "umlp.managerimpl.Init", extendedCDName, delegationManagerName);
+  protected void addManagerInit(ASTCDClass delegationManagerClass, String extendedCDName, String delegationManagerName, List<String> superDelegateManagerNames) {
+    getCD4C().addMethod(delegationManagerClass, "umlp.managerimpl.Init", extendedCDName, delegationManagerName, superDelegateManagerNames);
   }
 
   protected void addManagerInitNeo4J(ASTCDClass delegationManagerClass, String extendedCDName, String delegationManagerName) {
