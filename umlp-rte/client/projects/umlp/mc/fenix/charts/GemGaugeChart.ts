@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component, Input } from '@angular/core';
-import { config, GemGaugeChartComponent } from '@src/mc/fenix/charts/GemGaugeChartComponent';
+import { config, GemGaugeChartComponent } from './build/gui/mc/fenix/charts/GemGaugeChartComponent';
 import { NgxChartsModule, ScaleType } from "@swimlane/ngx-charts";
 import { autoColors, GemChartLegend, GemChartOptions, GemGaugeChartData } from ".";
 

@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component, HostBinding } from '@angular/core';
-import { config, GemCardComponent } from '@src/mc/fenix/arrange/GemCardComponent';
+import { config, GemCardComponent } from './build/gui/mc/fenix/arrange/GemCardComponent';
 
 @Component({
   standalone: true,

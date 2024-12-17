@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component, Input } from '@angular/core';
-import { config, GemSunburstChartComponent } from '@src/mc/fenix/charts/GemSunburstChartComponent';
+import { config, GemSunburstChartComponent } from './build/gui/mc/fenix/charts/GemSunburstChartComponent';
 import { ChartDataset, ChartOptions } from "chart.js";
 import { NgChartsModule } from 'ng2-charts';
 import {

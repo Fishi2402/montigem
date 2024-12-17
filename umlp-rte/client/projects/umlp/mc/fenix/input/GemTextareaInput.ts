@@ -3,7 +3,7 @@
 import { Component, EventEmitter, HostBinding, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { config, GemTextareaInputComponent } from '@src/mc/fenix/input/GemTextareaInputComponent';
+import { config, GemTextareaInputComponent } from './build/gui/mc/fenix/input/GemTextareaInputComponent';
 
 @Component({
   standalone: true,

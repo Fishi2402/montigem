@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component, Input, SimpleChanges } from '@angular/core';
-import { config, GemHeatmapChartComponent } from '@src/mc/fenix/charts/GemHeatmapChartComponent';
+import { config, GemHeatmapChartComponent } from './build/gui/mc/fenix/charts/GemHeatmapChartComponent';
 import { NgxChartsModule, ScaleType } from "@swimlane/ngx-charts";
 import { GemChartOptions, GemHeatmapChartData } from ".";
 

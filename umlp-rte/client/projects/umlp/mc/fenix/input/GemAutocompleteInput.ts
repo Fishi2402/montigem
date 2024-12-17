@@ -3,7 +3,7 @@
 import { Component, ElementRef, EventEmitter, HostBinding, HostListener, Output, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { config, GemAutocompleteInputComponent } from '@src/mc/fenix/input/GemAutocompleteInputComponent';
+import { config, GemAutocompleteInputComponent } from './build/gui/mc/fenix/input/GemAutocompleteInputComponent';
 import { Option } from ".";
 
 @Component({

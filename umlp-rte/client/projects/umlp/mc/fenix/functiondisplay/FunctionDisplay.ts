@@ -2,7 +2,7 @@
 
 import { Component, Input } from "@angular/core";
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { config, FunctionDisplayComponent } from '@src/mc/fenix/functiondisplay/FunctionDisplayComponent';
+import { config, FunctionDisplayComponent } from './build/gui/mc/fenix/functiondisplay/FunctionDisplayComponent';
 import ELK from 'elkjs/lib/elk.bundled';
 import { Function4Display, Function4DisplayBuilder, Funktion4Elk, Port4Display, Port4Elk } from ".";
 

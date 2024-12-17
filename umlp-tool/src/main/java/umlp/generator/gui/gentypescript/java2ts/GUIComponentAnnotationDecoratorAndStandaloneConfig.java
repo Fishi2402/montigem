@@ -12,7 +12,7 @@ import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
-import umlp.generator.gui.gentypescript.decorator.GUIImportHelper;
+import umlp.generator.gui.gentypescript.decorator.TSImportHelper;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
   public void transform(ASTCDCompilationUnit ast, ASTGUICompilationUnit gui, GUIComponentsVisitor viewComponents) {
     String qName = ast.getMCPackageDeclaration().getMCQualifiedName().getQName();
     for (ASTCDClass clazz : ast.getCDDefinition().getCDClassesList()) {
-      GUIImportHelper importHelper = new GUIImportHelper(glex, clazz, gui.getPackage());
+      TSImportHelper importHelper = new TSImportHelper(glex, clazz, hwPath, outPath);
       String originalName = GUIGeneratorUtil.getInstance().getOriginalName(clazz);
       String qClassName = qName + "." + originalName;
       if (!GUIGeneratorUtil.getInstance().isComponent(clazz)) {
@@ -106,7 +106,7 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
     }
   }
 
-  protected HashSet<String> calculateImports(String componentQName, List<ASTGUIComponent> guiComponents, GUIImportHelper importHelper) {
+  protected HashSet<String> calculateImports(String componentQName, List<ASTGUIComponent> guiComponents, TSImportHelper importHelper) {
     HashSet<String> importedComponents = Sets.newHashSet();
     for (ASTGUIComponent component: guiComponents) {
       if (!component.isPresentNameSymbol()) {
@@ -115,7 +115,7 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
 
       // Avoid circular import dependencies for recursive component calls
       if (!component.getNameSymbol().getName().equals(componentQName)) {
-        importHelper.addImport(component.getNameSymbol().getFullName());
+        importHelper.addImport(component.getNameSymbol().getFullName(), componentQName);
         importedComponents.add(component.getNameSymbol().getFullName());
       }
     }

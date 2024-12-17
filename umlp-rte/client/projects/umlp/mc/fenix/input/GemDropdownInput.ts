@@ -4,7 +4,7 @@ import { Component, ElementRef, EventEmitter, HostBinding, HostListener, Output,
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { config, GemDropdownInputComponent } from '@src/mc/fenix/input/GemDropdownInputComponent';
+import { config, GemDropdownInputComponent } from './build/gui/mc/fenix/input/GemDropdownInputComponent';
 import { Option } from ".";
 
 @Component({

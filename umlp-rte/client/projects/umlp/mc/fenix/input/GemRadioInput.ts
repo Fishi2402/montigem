@@ -2,7 +2,7 @@
 
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { config, GemRadioInputComponent } from '@src/mc/fenix/input/GemRadioInputComponent';
+import { config, GemRadioInputComponent } from './build/gui/mc/fenix/input/GemRadioInputComponent';
 
 @Component({
   standalone: true,

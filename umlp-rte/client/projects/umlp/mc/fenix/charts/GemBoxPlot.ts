@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component, ElementRef, Input } from '@angular/core';
-import { config, GemBoxPlotComponent } from '@src/mc/fenix/charts/GemBoxPlotComponent';
+import { config, GemBoxPlotComponent } from './build/gui/mc/fenix/charts/GemBoxPlotComponent';
 import * as d3 from 'd3';
 import { NgChartsModule } from 'ng2-charts';
 import { autoColors, GemBoxPlotEntry, GemChartLegend, GemChartOptions } from '.';

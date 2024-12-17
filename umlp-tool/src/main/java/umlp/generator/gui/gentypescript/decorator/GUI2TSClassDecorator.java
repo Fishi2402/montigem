@@ -9,6 +9,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
+import de.monticore.io.paths.MCPath;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import umlp.generator.domain.UMLPGeneratorConfig;
@@ -18,6 +19,7 @@ import umlp.generator.gui.genjava.prettyprinter.Expression2SetterPrinter;
 import umlp.generator.gui.gentypescript.printer.TSUtilsPrinter;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 
+import java.nio.file.Path;
 import java.util.function.Function;
 
 /**
@@ -28,10 +30,14 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
 
   protected boolean extendedMixin = false;
   protected boolean addedRxjsImports = false;
-  protected GUIImportHelper importHelper;
+  protected final MCPath hwPath;
+  protected final Path outPath;
+  protected TSImportHelper importHelper;
 
-  public GUI2TSClassDecorator(final GlobalExtensionManagement glex) {
+  public GUI2TSClassDecorator(final GlobalExtensionManagement glex, MCPath hwPath, Path outPath) {
     super(glex);
+    this.hwPath = hwPath;
+    this.outPath = outPath;
   }
 
   @Override
@@ -43,7 +49,7 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
 
   @Override
   protected void init() {
-    importHelper = new GUIImportHelper(glex, clazz, gui.getPackage());
+    importHelper = new TSImportHelper(glex, clazz, hwPath, outPath);
   }
 
   /**
@@ -209,7 +215,7 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
 
   @Override
   protected void addImport(String qType) {
-    importHelper.addImport(qType);
+    importHelper.addImport(qType, gui.getComponentQName());
   }
 
   @Override

@@ -520,7 +520,7 @@ public class GUIGeneratorUtil {
         + StringTransformations.capitalize(componentId)
         + StringTransformations.capitalize(namedArg.getName())
         + ((UMLPGeneratorConfig.getInstance().isGenerateTypescript() || isList(namedArg))
-         && !UMLPGeneratorConfig.getInstance().isUseJsweet()
+        && !UMLPGeneratorConfig.getInstance().isUseJsweet()
         ? ""
         : SYNCHRONIZED_SUFFIX // JSweet method to synchronize async callbacks
     );
@@ -951,6 +951,37 @@ public class GUIGeneratorUtil {
     }
     Reporting.reportHWCExistenceCheck(imported, Paths.get(hwFile), hwFilePath);
     return res;
+  }
+
+  public String getRelativeImportPathForComponent(
+      MCPath hwPath, Path outPath, String importerQName, String importedQName) {
+    String imported = Names.getPathFromPackage(importedQName) + ".ts";
+    Optional<String> hwRelativePath = getRelativeImportPath(hwPath, outPath, imported);
+    String relativePath;
+    // if TOP is used, use relative path to HW file
+    if (hwRelativePath.isPresent()) {
+      relativePath = hwRelativePath.get();
+    }
+    else {
+      Path fromPath = outPath.resolve(importerQName.replace('.', '/') + ".ts");
+      Path toPath = outPath.resolve(importedQName.replace('.', '/') + ".ts");
+
+      // Calculate the relative path
+      relativePath = fromPath.getParent()
+          .normalize()
+          .relativize(toPath)
+          .toString()
+          .replaceAll("\\\\", "/");
+    }
+    if (!relativePath.contains("/")) {
+      // Same folder, prepend "./"
+      relativePath = "./" + relativePath;
+    }
+    if (relativePath.endsWith(".ts")) {
+      // Remove file extension
+      relativePath = relativePath.replace(".ts", "");
+    }
+    return relativePath;
   }
 
   public Optional<String> getRelativeImportPathForClass(MCPath imported, Path importer, String qualifiedName) {

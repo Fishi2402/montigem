@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component, HostBinding, Input, TemplateRef } from "@angular/core";
-import { config, GemOverlayItemComponent } from '@src/mc/fenix/arrange/GemOverlayItemComponent';
+import { config, GemOverlayItemComponent } from './build/gui/mc/fenix/arrange/GemOverlayItemComponent';
 
 @Component({
   standalone: true,

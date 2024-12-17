@@ -1,12 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui.gentypescript.decorator;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cd.facade.CDModifier;
-import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -36,18 +32,15 @@ import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.gui.GUI2ClassDecorator;
 import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentTemplates;
-import umlp.generator.gui.gentypescript.printer.TSImportMap;
 import umlp.generator.gui.gentypescript.printer.TSUtilsPrinter;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
-import umlp.generator.util.PathUtil;
 import umlp.generator.util.TagLookUp;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUIDSLVisitor2 {
 
@@ -55,13 +48,15 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
 
   public static final String COMPONENT_SUFFIX = "Component";
   protected final MCPath hwPath;
-  protected GUIImportHelper importHelper;
+  protected final Path outPath;
+  protected TSImportHelper importHelper;
 
-  public GUI2AngularClassDecorator(final GlobalExtensionManagement glex, MCPath hwPath) {
+  public GUI2AngularClassDecorator(final GlobalExtensionManagement glex, MCPath hwPath, Path outPath) {
     super(glex);
     traverser = GUIDSLMill.traverser();
     traverser.add4GUIDSL(this);
     this.hwPath = hwPath;
+    this.outPath = outPath;
   }
 
   public void transform(ASTGUICompilationUnit gui, ASTCDCompilationUnit cd) {
@@ -77,7 +72,7 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
 
   @Override
   protected void init() {
-    this.importHelper = new GUIImportHelper(glex, clazz, gui.getPackage());
+    importHelper = new TSImportHelper(glex, clazz, hwPath, outPath);
   }
 
   @Override
@@ -338,7 +333,7 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
 
   @Override
   protected void addImport(String qType) {
-    importHelper.addImport(qType);
+    importHelper.addImport(qType, gui.getComponentQName());
   }
 
   protected void addImportString(String importStr) {

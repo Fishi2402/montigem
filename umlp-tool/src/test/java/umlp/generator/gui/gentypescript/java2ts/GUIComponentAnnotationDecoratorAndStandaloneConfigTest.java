@@ -6,7 +6,7 @@ import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import org.junit.jupiter.api.Test;
 import umlp.generator.gui.DomainGUITest;
 import umlp.generator.gui.GUIComponentStat;
-import umlp.generator.gui.gentypescript.decorator.GUIImportHelperMock;
+import umlp.generator.gui.gentypescript.decorator.TSImportHelperDummy;
 
 import java.util.HashSet;
 import java.util.List;
@@ -26,7 +26,7 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfigTest extends Doma
     GUIComponentStat stat = GUIComponentStat.getInstance();
     List<ASTGUIComponent> components = stat.getComponents(decl);
 
-    HashSet<String> calculatedImports = generator.calculateImports("DirNode", components, new GUIImportHelperMock());
+    HashSet<String> calculatedImports = generator.calculateImports("DirNode", components, new TSImportHelperDummy());
 
     assertFalse(calculatedImports.stream().anyMatch(s -> s.endsWith("DirNode")));
   }

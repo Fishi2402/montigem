@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
-import { config, GemTableHeaderCellComponent } from '@src/mc/fenix/table/GemTableHeaderCellComponent';
+import { config, GemTableHeaderCellComponent } from './build/gui/mc/fenix/table/GemTableHeaderCellComponent';
 
 @Component({
   standalone: true,

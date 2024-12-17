@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component, Input } from '@angular/core';
-import { config, GemPieChartComponent } from '@src/mc/fenix/charts/GemPieChartComponent';
+import { config, GemPieChartComponent } from './build/gui/mc/fenix/charts/GemPieChartComponent';
 import { ChartDataset, ChartOptions } from "chart.js";
 import { NgChartsModule } from 'ng2-charts';
 import { autoColors, GemChartLegend, GemChartOptions, GemPieChartData } from ".";

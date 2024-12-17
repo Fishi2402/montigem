@@ -2,7 +2,7 @@
 
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { GemTreeviewEntry } from '.';
-import { config, GemTreeviewComponent } from '@src/mc/fenix/basic/GemTreeviewComponent';
+import { config, GemTreeviewComponent } from './build/gui/mc/fenix/basic/GemTreeviewComponent';
 
 @Component({
   standalone: true,
