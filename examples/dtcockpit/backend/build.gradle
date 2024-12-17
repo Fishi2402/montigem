@@ -81,8 +81,6 @@ generateUmlpBackend {
   input = file("../models/Dtcockpit.umlp")
   useSpring = true
   useShell = true
-
-  modelDir.from(configurations.umlpModulesModels) // TODO: Move this module logic into the plugin
 }
 
 //COMPARE_generateUmlpBackend {

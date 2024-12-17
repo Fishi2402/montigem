@@ -86,6 +86,9 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
       umlpTask.getSymbolOutDir().set(Path.of(
           project.getBuildDir().getAbsolutePath(), "umlp", "backend_symbols").toFile());
 
+      // Include umlpModulesModels
+      umlpTask.getModelDir().from(project.getConfigurations().getByName("umlpModulesModels"));
+
     });
     return result;
   }
