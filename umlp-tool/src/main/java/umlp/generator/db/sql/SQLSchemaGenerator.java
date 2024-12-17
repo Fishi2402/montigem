@@ -141,7 +141,11 @@ public class SQLSchemaGenerator {
                   generateAssociationSchema(((ASTCDDefinition) symbOpt.get().getAstNode()), association, p);
                 }
               }
+            } else {
+              Log.error("0xTODO Unable to resolve CD for " + extendedCD.get());
             }
+          } else {
+            Log.error("0xTODO Unable to find CD for " + astStereoValue.getValue() + " - did you import a class from it? e.g. import " + astStereoValue.getValue() + ".*;");
           }
         }
       });
