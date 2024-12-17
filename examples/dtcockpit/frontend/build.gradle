@@ -50,7 +50,7 @@ genDomain {
 }
 
 genGUI {
-  domainModels = ["Dtcockpit", "LoginModule"]
+  domainModels = ["Dtcockpit"] // "LoginModule" is included via the modGen (or not required?)
   guiCreateModels = ["gui.login.UserCreate", "gui.project.ProjectCreate", "gui.project.ProjectsCreateByGroup"]
 
   // TODO: Gradle Setup for modules

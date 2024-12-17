@@ -25,7 +25,7 @@ configurations {
 }
 
 dependencies {
-  umlpModules(project(path: ":modules:login", configuration: "moduleGenTime"))
+  umlpModulesGen(project(path: ":modules:login", configuration: "moduleGenTime"))
 }
 
 application {

@@ -60,7 +60,7 @@ dependencies {
   implementation group: 'com.sun.activation', name: 'javax.activation', version: '1.2.0'
 
   // Module under test
-  umlpModules(project(path: ":modules:sovd-gateway", configuration: "moduleGenTime"))
+  umlpModulesGen(project(path: ":modules:sovd-gateway", configuration: "moduleGenTime"))
 }
 
 generateUmlpBackend {
