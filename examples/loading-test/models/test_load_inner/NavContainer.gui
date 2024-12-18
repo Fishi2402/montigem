@@ -1,0 +1,32 @@
+package test_load_inner;
+
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+
+import mc.fenix.navigation.GemNavItem;
+import mc.fenix.navigation.GemNavList;
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemGrid;
+
+import LoadingTests.Game;
+import LoadingTests.Player;
+
+component NavContainer(GUIViewElement content, Game game, Player player, boolean collapsed) {
+  @GemColumn(hAlign = "center", height = "94vh", components = [
+    @GemRow(
+     width = "100%",
+     height = "100%",
+     components = [
+      @PlayerList(game = game, player = player, selectedPlayer = player, collapsed = collapsed, displayed = false),
+      content
+     ]
+    )
+  ]);
+  @GemColumn(rowGap = "10px", height = "13vh", components = [
+    nav@GemNavList(width = "100%", height = "12vh", components = [
+      nav1@GemNavItem(title = "Dashboard", target = getDashboardTarget()),
+      nav2@GemNavItem(title = "Rules", target = getRulesTarget())
+      // other items
+    ])
+  ]);
+}
