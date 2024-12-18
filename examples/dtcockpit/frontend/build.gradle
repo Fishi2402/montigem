@@ -27,22 +27,15 @@ node {
 }
 
 createDomainSymbols {
-  modelDir.from(configurations.umlpModulesModels) // TODO: Move this module logic into the plugin
 }
 
 genDomain {
   // TODO: Gradle setup
-  /*
-  genDomain with A extends B (where B is only a symbol import)
-   0xA7003x57269 get for AstNode can't return a value. Attribute is empty.
 
-	at de.monticore.cdbasis._symboltable.CDTypeSymbolTOP.getAstNode(CDTypeSymbolTOP.java:1)
-	at de.monticore.cd._symboltable.CDSymbolTables.getTransitiveSuperTypes(CDSymbolTables.java:86)
-   */
 
   // Alternative: Generate the module-frontend-domain too
   input = file("../models/Dtcockpit.umlp")
-  modelDir.from(configurations.umlpModulesModels) // TODO: Move this module logic into the plugin
+//  modelDir.from(configurations.umlpModulesModels) // TODO: Move this module logic into the plugin
 
   // TODO: The module has to be added to the tsconfig path
   /*
@@ -64,9 +57,9 @@ genGUI {
   symbolDir.from(() -> tasks.named("createDomainSymbols").get().outputs)
 
   // Load the symbols from the .jars in the domain symbols path
-  symbolDir.from(configurations.umlpModulesDomainSymbols) // TODO: Move this module logic into the plugin
+//  symbolDir.from(configurations.umlpModulesDomainSymbols) // TODO: Move this module logic into the plugin
 
-  outputs.upToDateWhen { false }
+//  outputs.upToDateWhen { false }
   /*
   debug = true
   outputs.upToDateWhen { false }

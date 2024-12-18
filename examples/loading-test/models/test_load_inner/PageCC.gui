@@ -1,0 +1,24 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test_load_inner;
+
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.table.GemTable;
+import mc.fenix.table.GemTableHeader;
+import mc.fenix.table.GemTableHeaderCell;
+import mc.fenix.table.GemTableRow;
+import mc.fenix.table.GemTableRowCell;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
+import mc.fenix.input.GemTextInput;
+import LoadingTests.Game;
+import LoadingTests.Player;
+
+page PageCC(Game game, Player player) {
+ @NavContainer(
+     content =       @GemText(value="PCC"),
+     game = game,
+     player = player,
+     collapsed = true
+    );
+   }

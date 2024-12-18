@@ -1,7 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package gui.loginmodule;
-
-import LoginModule.User;
+package gui.loginmodule.comp;
 
 import mc.fenix.arrange.GemRow;
 import mc.fenix.arrange.GemColumn;

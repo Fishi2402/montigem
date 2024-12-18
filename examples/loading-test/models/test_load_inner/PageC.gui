@@ -1,0 +1,27 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test_load_inner;
+
+import mc.fenix.basic.GemText;
+
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.table.GemTable;
+import mc.fenix.table.GemTableHeader;
+import mc.fenix.table.GemTableHeaderCell;
+import mc.fenix.table.GemTableRow;
+import mc.fenix.table.GemTableRowCell;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
+import mc.fenix.input.GemTextInput;
+
+import LoadingTests.Game;
+import LoadingTests.Player;
+
+page PageC(Game game, Player player) {
+ @NavContainer(
+     content =             @GemText(value = "Hey there,     the P1 should be at the bottom <pre>document.querySelector('.playerContainer gem-grid').style.gridTemplateRows</pre> should be <pre>1fr auto</pre> and not <pre>repeat(2, auto)</pre>\n Click P1 (and possible reload) to correct the mistake after clicking the Dashboard/Rules navigation below."),
+     game = game,
+     player = player,
+     collapsed = true
+    );
+   }
