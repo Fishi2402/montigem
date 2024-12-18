@@ -21,7 +21,7 @@ public class SDParserExperiment {
     ISD4DevelopmentGlobalScope globalScope = SD4DevelopmentMill.globalScope();
     var symbolPath = new MCPath(List.of(Path.of("examples/testing-with-sd/build/umlp/backend_symbols"),
         Path.of("examples/testing-with-sd/build/umlp/test_symbols")));
-    globalScope.symsetSymbolPath(symbolPath);
+    globalScope.setSymbolPath(symbolPath);
     tool.createSymbolTable(model);
 
     //make sure model is valid

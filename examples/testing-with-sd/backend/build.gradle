@@ -40,6 +40,7 @@ dependencies {
   //TODO only here for experimenting with the parser
   implementation group: 'de.monticore.lang', name: 'sd-language', version: mc_version
   implementation "de.monticore:monticore-runtime:${mc_version}"
+  implementation "de.monticore:monticore-grammar:${mc_version}"
 }
 
 generateUmlpBackend {
