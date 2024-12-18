@@ -1,0 +1,16 @@
+umlp Builder {
+  class Person {
+    String name;
+  }
+
+  class Car {
+    String model;
+  }
+
+  class Address {
+    String streetName;
+  }
+
+  association [1] Person -> (car) Car [*];
+  association [1] Person -> (mainResidence) Address [1];
+}
