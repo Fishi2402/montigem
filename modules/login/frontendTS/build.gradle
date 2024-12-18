@@ -55,6 +55,31 @@ tasks.register('buildApp', NpxTask) {
   args = ["build"]
 }
 assemble.dependsOn(buildApp)
+//// task `gen_npmrc_<lib_name>` that creates .npmrc file for publishing
+task "gen_npmrc_frontend"(type: NPMAuthCreate) {
+  dependsOn "buildApp"
+  npmrcFile = file("${project.buildDir}/frontendGen/dist/client/.npmrc")
+  unscoped = true
+}
+
+tasks.register('packApp', NpxTask) {
+  dependsOn(prebuildTasks)
+  inputs.dir(project.fileTree("src/") // TODO: Properly include src?
+      .exclude("**/*.spec.ts", "**/*.md"))
+  dependsOn "buildApp"
+  command = "npm"
+  args = ["pack"]
+}
+
+tasks.register('publishApp', NpxTask) {
+  dependsOn(prebuildTasks)
+  dependsOn "gen_npmrc_frontend"
+  command = "npm"
+  args = ["publish", "--verbose"]
+}
+
+publish.dependsOn("publishApp")
+
 
 tasks.register('testApp', NpxTask) {
   dependsOn(prebuildTasks)
