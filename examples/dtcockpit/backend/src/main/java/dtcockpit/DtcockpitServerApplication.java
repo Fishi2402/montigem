@@ -6,12 +6,15 @@ import dtcockpit.montiverse.MontiVerseLite;
 import dtcockpit.pipelines.PipelineInformationExtractor;
 import dtcockpit.welcome_board.OutlookConnection;
 import loginmodule.LoginModule4DtcockpitManagerImpl;
+import loginmodule.LoginModuleManager;
 import org.h2.tools.Server;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import security.LoginModuleRestService;
 import umlp.backendrte.common.DatabaseAccessManager;
 import umlp.backendrte.service.mqtt.MqttService;
 
@@ -31,10 +34,13 @@ import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication(
     exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class},
-    scanBasePackages = {"umlp.backendrte.service.websocket", "umlp.backendrte.service.rest", "dtcockpit.service", "security"}
+    scanBasePackages = {"umlp.backendrte.service.websocket", "umlp.backendrte.service.rest", "dtcockpit.service", "security"} // TODO: security
 )
 public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplicationTOP {
   private static Set<Server> servers;
+
+  @Autowired
+  protected LoginModuleRestService loginModuleRestService;
 
   public static void main(String[] args) {
     SpringApplication.run(DtcockpitServerApplication.class, args);
@@ -54,6 +60,12 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
   @PostConstruct
   @Override
   public void init() throws IOException {
+
+    // For the public Sign up: Ensure the role is set to a default value of USER
+    loginModuleRestService.onSignupAdditionals.add((jsonObject, uB) -> {
+      ((LoginModuleUser4UserBuilder)uB).delegate.role(DtcockpitRole.USER);
+    });
+
     // TODO: Move this line into the generated DtcockpitManagerImpl
     LoginModule4DtcockpitManagerImpl.init();
     super.init();
@@ -173,6 +185,10 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
         .build();
 
     createDummyMessageOfTheDay();
+
+    // TODO: Load from OD?
+    LoginModuleManager.getLoginSecManager().setAllowPublicSignUp(true);
+    LoginModuleManager.getLoginSecManager().setAllowPasswordReset(true);
   }
 
   private static void updateMontiCorePipelines(PipelineInformationExtractor extractor, App app) {
