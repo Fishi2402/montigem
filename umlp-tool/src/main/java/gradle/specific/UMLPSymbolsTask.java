@@ -62,6 +62,14 @@ public abstract class UMLPSymbolsTask extends UMLPSingleFileTask {
       }
     }
 
+    System.out.println("Symbol path is " + this.getSymbolPath().getFiles());
+    if(!this.getSymbolPath().isEmpty()) {
+      for (File file : this.getSymbolPath()) {
+        result.add("-path");
+        result.add(handlePath.apply(file.toPath()));
+      }
+    }
+
     return result;
   }
 

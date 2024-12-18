@@ -8,9 +8,12 @@ import gradle.specific.UMLPJava2TypeScriptAdditionalsTask;
 import gradle.specific.UMLPJava2TypeScriptConfigTask;
 import gradle.specific.UMLPJava2TypeScriptTask;
 import gradle.specific.UMLPSymbolsTask;
+import gradle.specific.serialize.SerializeCDSymbolsTask;
+import gradle.specific.serialize.SerializeGUISymbolsTask;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
 import org.gradle.api.artifacts.repositories.MavenRepositoryContentDescriptor;
 import org.gradle.api.attributes.Bundling;
@@ -28,6 +31,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import static gradle.UMLPPluginFrontendBase.CREATE_DOMAIN_SYMBOLS_TASK_NAME;
+import static gradle.UMLPPluginFrontendBase.GUI_LIB_NAME;
 import static gradle.UMLPPluginFrontendBase.UMLP_FRONTEND_DOMAIN_TASK_NAME;
 import static gradle.UMLPPluginFrontendBase.UMLP_FRONTEND_GUI_TASK_NAME;
 import static gradle.UMLPPluginFrontendBase.UMLP_FRONTEND_SETUP_TASK_NAME;
@@ -84,7 +88,7 @@ public abstract class UMLPPluginFrontendWithJSweet implements Plugin<Project> {
     });
 
     TaskProvider<UMLPJava2TypeScriptTask> frontendGUIJ2TSTask = createFrontendGUIJ2TSTask(project);
-    TaskProvider<UMLPJava2TypeScriptAdditionalsTask> java2TypeScriptAdditionals = createFrontendJ2TSAdditionalsTask(project);
+    TaskProvider<UMLPJava2TypeScriptAdditionalsTask> java2TypeScriptAdditionals = createFrontendJ2TSAdditionalsTask(project, local);
 
     TaskProvider<UMLPJava2TypeScriptConfigTask> java2TypeScriptDomainConfigTask = createFrontendJ2TSDomainConfigTask(project, domainModel);
     TaskProvider<Sync> syncJsweetDomainConfigTask = createSyncJsweetDomainConfigTask(project);
@@ -232,8 +236,8 @@ public abstract class UMLPPluginFrontendWithJSweet implements Plugin<Project> {
     });
   }
 
-  private TaskProvider<UMLPJava2TypeScriptAdditionalsTask> createFrontendJ2TSAdditionalsTask(Project project) {
-    return project.getTasks().register(UMLP_FRONTEND_DOMAIN_J2TS_ADDITIONALS_TASK_NAME, UMLPJava2TypeScriptAdditionalsTask.class, umlpTask -> {
+  private TaskProvider<UMLPJava2TypeScriptAdditionalsTask> createFrontendJ2TSAdditionalsTask(Project project, boolean local) {
+    TaskProvider<UMLPJava2TypeScriptAdditionalsTask> additionalsTask = project.getTasks().register(UMLP_FRONTEND_DOMAIN_J2TS_ADDITIONALS_TASK_NAME, UMLPJava2TypeScriptAdditionalsTask.class, umlpTask -> {
       umlpTask.setGroup(UMLP_GROUP_NAME);
       umlpTask.getInput().from(UMLPPluginFrontendBase.getModelsPath(project));
       umlpTask.getOutputDir().set(jsweetGUIAdditionalsOutDir.toFile());
@@ -243,6 +247,22 @@ public abstract class UMLPPluginFrontendWithJSweet implements Plugin<Project> {
 
       setIfPathExists(x -> umlpTask.getHwcDir().from(x), this.jsweetTSGUIHWCDir);
     });
+    if (local) {
+      Project umlpRteClientProject = project.findProject(":umlp-rte:client");
+      boolean createGuiSymbolsPresent = !umlpRteClientProject.getTasksByName("createGuiSymbols", false).isEmpty();
+      boolean createCDSymbolsPresent = !umlpRteClientProject.getTasksByName("createCDSymbols", false).isEmpty();
+      if (createCDSymbolsPresent && createGuiSymbolsPresent) {
+        SerializeGUISymbolsTask createGuiSymbols = (SerializeGUISymbolsTask) umlpRteClientProject.getTasks().getByName("createGuiSymbols");
+        SerializeCDSymbolsTask createCDSymbols = (SerializeCDSymbolsTask) umlpRteClientProject.getTasks().getByName("createCDSymbols");
+        additionalsTask.get().dependsOn(createGuiSymbols, createCDSymbols);
+        additionalsTask.get().getSymbolPath().from(createGuiSymbols.getOutput(), createCDSymbols.getOutput());
+      }
+    }
+    else {
+      Configuration guiLib = project.getConfigurations().getByName(GUI_LIB_NAME);
+      additionalsTask.get().getSymbolPath().from(guiLib.getFiles());
+    }
+    return additionalsTask;
   }
 
   private TaskProvider<Sync> createSyncJsweetDomainConfigTask(Project project) {

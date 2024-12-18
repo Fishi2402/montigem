@@ -20,6 +20,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.monticore.umlstereotype._ast.ASTStereotypeBuilder;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -199,20 +200,27 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
   }
 
   protected void addImport(SymTypeExpression type, ASTCDClass ast) {
-    if (GenService.isCDType(type)) {
+    if(type.getTypeInfo().isPresentAstNode()) {
       ASTCDCompilationUnit typeCD = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
-      getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print());
-      if (!GenService.isCDEnum(type)) {
-        getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print()
-                                     + AccessPolicyDecorator.SUFFIX);
+      if (GenService.isCDType(type)) {
+        getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print());
+        if (!GenService.isCDEnum(type)) {
+          getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print()
+              + AccessPolicyDecorator.SUFFIX);
+        }
       }
-    }
-    else if (GenService.isCDEnum(type)) {
-      ASTCDCompilationUnit typeCD = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
-      getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print());
-    }
-    else if (GenService.isJavaType(type)) {
-      addJavaImport(ast, type);
+      else if (GenService.isCDEnum(type)) {
+        getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print());
+      }
+      else if (GenService.isJavaType(type)) {
+        addJavaImport(ast, type);
+      }
+    } else {
+      // Assume guiLib Import?
+      if(GenService.isCDType(type) && type.getTypeInfo().getFullName().startsWith("mc.fenix")) {
+        System.out.println(type.getTypeInfo().getFullName());
+        getCD4C().addImport(ast, Joiners.DOT.join(type.getTypeInfo().getPackageName().toLowerCase(), type.print()));
+      }
     }
   }
 
