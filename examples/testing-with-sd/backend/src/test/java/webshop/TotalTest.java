@@ -19,8 +19,9 @@ public class TotalTest extends WebshopSQLDBTestSetup {
 
   @Test
   void matchVisible() {
+    var testInstances = new TotalTestInstantiator().instantiate();
     Order o = WebshopManager.orderBuilder().build().orElseThrow();
-    Item item = new TotalTestInstantiator().instantiateItem().build().orElseThrow();
+    Item item = testInstances.getItem();
 
     assertEquals(0, o.getTotal());
 

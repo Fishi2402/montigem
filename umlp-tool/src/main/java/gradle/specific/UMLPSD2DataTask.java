@@ -1,6 +1,5 @@
 package gradle.specific;
 
-import de.monticore.lang.sd4development.SD4DevelopmentMill;
 import de.monticore.lang.sd4development.SD4DevelopmentTool;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.work.InputChanges;
@@ -26,7 +25,6 @@ public abstract class UMLPSD2DataTask extends UMLPExternalToolTask {
 
     var args = prepareToolArgumentList();
 
-    SD4DevelopmentMill.init();
     SD4DevelopmentTool.main(args.toArray(new String[0]));
   }
 

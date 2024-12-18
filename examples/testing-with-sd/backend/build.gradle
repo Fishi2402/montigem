@@ -36,6 +36,10 @@ dependencies {
   implementation group: 'org.slf4j', name: 'slf4j-simple', version: "1.7.10"
 
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
+
+  //TODO only here for experimenting with the parser
+  implementation group: 'de.monticore.lang', name: 'sd-language', version: mc_version
+  implementation "de.monticore:monticore-runtime:${mc_version}"
 }
 
 generateUmlpBackend {
@@ -47,13 +51,13 @@ tasks.register('parseOD', UMLPOD2DataTask) {
   input = file('../test-models/TotalTest.od')
   symbolDir = file("${project.buildDir}/umlp/backend_symbols")
   symbolOutDir = file("${project.buildDir}/umlp/test_symbols")
-  outputDir = file("${project.buildDir}/umlp/backend")
+  outputDir = file("${project.buildDir}/umlp/backend_test")
   dependsOn generateUmlpBackend
 }
 
 tasks.register('parseSD', UMLPSD2DataTask) {
   input = file('../test-models/TotalTest.sd')
-  symbolDir = files("${project.buildDir}/umlp/backend_symbols", "${project.buildDir}/umlp_test_symbols")
+  symbolDir = files("${project.buildDir}/umlp/backend_symbols", "${project.buildDir}/umlp/test_symbols")
   symbolOutDir = file("${project.buildDir}/umlp/test_symbols")
   outputDir = file("${project.buildDir}/sd")
   dependsOn parseOD
