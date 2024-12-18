@@ -17,7 +17,7 @@ dependencies {
 
 // ALus local gradle is apparently unaware of these versions?
 // Explicitly use the local login module
-configurations.all {
+configurations.configureEach {
   resolutionStrategy.dependencySubstitution {
     substitute module("umlp.modules:login") using project(":modules:login")
     substitute module("umlp.modules.login:backend") using project(":modules:login:backend")
@@ -81,8 +81,6 @@ generateUmlpBackend {
   input = file("../models/Dtcockpit.umlp")
   useSpring = true
   useShell = true
-
-  modelDir.from(configurations.umlpModulesModels) // TODO: Move this module logic into the plugin
 }
 
 //COMPARE_generateUmlpBackend {
