@@ -9,7 +9,7 @@ component GemTreeNode(
   /**
     Content of this node
   */
-  GUIViewElement parent,
+  GUIViewElement content,
   /**
     Tree nodes. Each node defines a root of a subtree and its children.
     Normally set to a list of `GemTreeNode`.

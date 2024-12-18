@@ -1,11 +1,11 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 <ng-template #treeNodeTemplate>
-  <ng-container *ngIf="!parent">
+  <ng-container *ngIf="!content">
     <ng-container *ngTemplateOutlet="childrenTemplate"></ng-container>
   </ng-container>
-  <ng-container *ngIf="parent">
+  <ng-container *ngIf="content">
     <li>
-      <ng-container *ngTemplateOutlet="parentTemplate"></ng-container>
+      <ng-container *ngTemplateOutlet="nodeTemplate"></ng-container>
       <ng-container *ngIf="children && isExpanded">
         <ng-container *ngTemplateOutlet="childrenTemplate"></ng-container>
       </ng-container>
@@ -13,18 +13,18 @@
   </ng-container>
 </ng-template>
 
-<ng-template #parentTemplate>
+<ng-template #nodeTemplate>
   <div class="gem-tree-node">
     <mat-icon class="gem-tree-item-icon" fontIcon="chevron_right" *ngIf="children && !isExpanded" (click)="expand()"></mat-icon>
     <mat-icon class="gem-tree-item-icon" fontIcon="keyboard_arrow_down" *ngIf="children && isExpanded" (click)="expand()"></mat-icon>
     <div (click)="leftClick()">
-      <ng-container *ngTemplateOutlet="parent"></ng-container>
+      <ng-container *ngTemplateOutlet="content"></ng-container>
     </div>
   </div>
 </ng-template>
 
 <ng-template #childrenTemplate>
-  <ul [ngClass]="parent ? 'gem-sub-tree-root' : 'gem-tree-root'" *ngFor="let child of children">
+  <ul [ngClass]="content ? 'gem-sub-tree-root' : 'gem-tree-root'" *ngFor="let child of children">
     <ng-container *ngTemplateOutlet="child"></ng-container>
   </ul>
 </ng-template>

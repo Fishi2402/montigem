@@ -26,7 +26,7 @@ export class Navigation {
     { url: '/example_basic/GemTextExample', title: 'Text' },
     { url: '/example_basic/GemVideoExample', title: 'Video' },
     { url: '/example_table/GemTableExample', title: 'Table' },
-    { url: '/example_arrange/GemTreeViewExample', title: 'TreeView' },
+    { url: '/example_arrange/GemTreeNodeExample', title: 'TreeNode' },
     { url: '/example_arrange/GemDialogExample', title: 'Dialog' },
     { url: '/example_arrange/GemCardExample', title: 'Card' },
     { url: '/example_arrange/GemColumnExample', title: 'Column' },

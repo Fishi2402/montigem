@@ -18,11 +18,11 @@ page ComponentsOfPack(BatteryPack pack) {
     component = components@GemTreeNode(children = [
       @iterate(ComponentKind kind : pack.allKinds) {
         @GemTreeNode(
-          parent = @GemText(value = kind.name),
+          content = @GemText(value = kind.name),
           children = [
             @iterate(DemoRecComponent c : kind.demoRecComponent) {
               @GemTreeNode(
-                parent = @GemText(value = c.name),
+                content = @GemText(value = c.name),
                 onClick = navigateToComponent(c)
               );
             }
@@ -38,11 +38,11 @@ page ComponentsOfPack(BatteryPack pack) {
     component=connections@GemTreeNode(children = [
       @iterate(JoinConnectionKind connKind : pack.allConnections) {
         @GemTreeNode(
-          parent = @GemText(value = getConnectionKindName(connKind)),
+          content = @GemText(value = getConnectionKindName(connKind)),
           children = [
             @iterate(JoinConnection conn : connKind.joinConnection) {
               @GemTreeNode(
-                parent = @GemText(value = getConnectionName(conn)),
+                content = @GemText(value = getConnectionName(conn)),
                 onClick = navigateToConnection(conn)
               );
             }

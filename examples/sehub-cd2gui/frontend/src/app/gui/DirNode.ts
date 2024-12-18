@@ -10,11 +10,7 @@ import { CommonModule } from "@angular/common";
 
 @Component({
   standalone:true,
-  imports: [
-      CommonModule,
-  GemtreenodeModule,
-  GemtextModule,
-],
+  imports: [...config.imports],
   selector: config.selector,
   templateUrl: config.templateUrl,
   styles: config.styles,
@@ -22,7 +18,7 @@ import { CommonModule } from "@angular/common";
 })
 export class DirNode extends DirNodeComponent {
 
-  public override getIsDirectoryCondition(): boolean {
+  public override isDirectory(): boolean {
     return this.getArtifact() instanceof Directory;
   }
 

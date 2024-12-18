@@ -23,9 +23,10 @@ page ProjectPage(Directory project) {
     ])
   );
 
+  /*
   projectGraph@GemGraph(
     graph=null
   );
-
+  */
 
 }

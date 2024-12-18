@@ -10,7 +10,7 @@ import { Component } from '@angular/core';
   templateUrl: config.templateUrl,
   styleUrls: config.styleUrls
 })
-export class GemTreeViewExample extends GemTreeViewExampleComponent {
+export class GemTreeNodeExample extends GemTreeViewExampleComponent {
   public override sayHello(name: string): (arg: void) => void {
     return () => alert("Hello " + name);
   }

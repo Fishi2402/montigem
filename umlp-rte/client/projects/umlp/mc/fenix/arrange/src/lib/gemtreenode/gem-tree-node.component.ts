@@ -8,7 +8,7 @@ export class GemTreeNode implements OnInit {
   @ViewChild('treeNodeTemplate', { static: true }) treeNodeTemplate: TemplateRef<any>;
 
   @Input() isExpanded = false;
-  @Input() parent: TemplateRef<any>;
+  @Input() content: TemplateRef<any>;
   @Input() children: TemplateRef<any>[];
 
   @Output() onClick: EventEmitter<void> = new EventEmitter();
