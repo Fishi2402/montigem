@@ -1,6 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.fenix.arrange;
 
+/**
+  Combine multiple tree nodes to a tree. A tree displays hierarchical data. It provides a visual representation of
+  parent-child relationships, allowing users to navigate and interact with a hierarchical dataset.
+*/
 component GemTreeNode(
   /**
     Whether subtree of this node is expanded
