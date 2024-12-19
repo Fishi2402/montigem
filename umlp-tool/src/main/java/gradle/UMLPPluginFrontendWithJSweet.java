@@ -260,7 +260,9 @@ public abstract class UMLPPluginFrontendWithJSweet implements Plugin<Project> {
     }
     else {
       Configuration guiLib = project.getConfigurations().getByName(GUI_LIB_NAME);
-      additionalsTask.get().getSymbolPath().from(guiLib.getFiles());
+      additionalsTask.get().getSymbolPath().from(
+          project.provider(() -> guiLib.getFiles())
+      );
     }
     return additionalsTask;
   }

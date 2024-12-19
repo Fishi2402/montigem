@@ -38,6 +38,12 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
 
     boolean local = getBooleanProjectProperty(project, "useLocalDependencies");
 
+    if (!local) {
+      project.getConfigurations().register(GUI_LIB_NAME);
+      project.getDependencies().add(GUI_LIB_NAME, "umlp.umlp-rte:client:" +
+          UMLPPluginFrontendBase.getStringProjectProperty(project, "mc_version", ""));
+    }
+
     TaskProvider<UMLPBackendTask> umlpTask = createUMLPBackendTask(project, UMLP_BACKEND_TASK_NAME, local);
     // Generate Backend must run before JavaCompile
     project.getTasks().withType(AbstractCompile.class).configureEach(compile -> {
@@ -63,12 +69,6 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
 
     // apply last, since the test infrastructure tasks import properties from backend tasks
     project.getPluginManager().apply("de.rwth.se.umlp-tool-testing");
-
-    if (!local) {
-      project.getConfigurations().register(GUI_LIB_NAME);
-      project.getDependencies().add(GUI_LIB_NAME, "umlp.umlp-rte:client:" +
-          UMLPPluginFrontendBase.getStringProjectProperty(project, "mc_version", ""));
-    }
   }
 
   // Add generated files to SourceSets
@@ -118,7 +118,9 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
     }
     else {
       Configuration guiLib = project.getConfigurations().getByName(GUI_LIB_NAME);
-      result.get().getSymbolPath().from(guiLib.getFiles());
+      result.get().getSymbolPath().from(
+          project.provider(() -> guiLib.getFiles())
+      );
     }
     return result;
   }

@@ -139,7 +139,9 @@ public abstract class UMLPPluginTestInfrastructure implements Plugin<Project> {
     }
     else {
       Configuration guiLib = project.getConfigurations().getByName(GUI_LIB_NAME);
-      testInfrastructureTask.get().getSymbolPath().from(guiLib.getFiles());
+      testInfrastructureTask.get().getSymbolPath().from(
+          project.provider(() -> guiLib.getFiles())
+      );
     }
 
     return testInfrastructureTask;

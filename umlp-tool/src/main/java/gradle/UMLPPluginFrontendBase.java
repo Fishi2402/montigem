@@ -125,7 +125,9 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
     }
     else {
       Configuration guiLib = project.getConfigurations().getByName(GUI_LIB_NAME);
-      createDomainSymbolsTask.get().getSymbolPath().from(guiLib.getFiles());
+      createDomainSymbolsTask.get().getSymbolPath().from(
+          project.provider(() -> guiLib.getFiles())
+      );
     }
     return createDomainSymbolsTask;
   }
@@ -164,7 +166,9 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
     }
     else {
       Configuration guiLib = project.getConfigurations().getByName(GUI_LIB_NAME);
-      guiGenTask.get().getSymbolDir().from(guiLib.getFiles());
+      guiGenTask.get().getSymbolPath().from(
+          project.provider(() -> guiLib.getFiles())
+      );
     }
 
     return guiGenTask;
