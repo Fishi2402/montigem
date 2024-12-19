@@ -143,6 +143,67 @@ Due to the relative template paths, the actual sources are two levels further do
  with the templates also being present in the *umlp_modules/loginmodule-ts/build* directory.
 It may be cursed, but it works (we should improve on this, but for now enough time was spent between multiple persons on npm).
 
+### Configuring the Module
+
+Depending on the module, they can be configured in various ways.
+For example, the login module can provide public password resets and signups,
+ which are disabled by default.
+
+In the case of the login module,
+ its `LoginSecManager` class exposes two boolean attributes: 
+ `allowPasswordReset` and `allowPublicSignUp`.
+
+
+(Although for now, the email part is not yet implemented.)
+
+### Using the Modules Domain
+
+We can now simply show the current users username by using it within the gui models:
+```gui
+import LoginModule.LoginSecManager;
+
+component NavContainer(..., LoginSecManager loginsecmanager) {
+  ...
+        @GemNavItem(title = "Home ( " + loginsecmanager.signedInUser.username + ")", target = "/gui/Start"),
+```
+
+### Extend the Modules Domain
+
+We can simply extend the classes of a module and re-use their definitions.
+
+```cd
+  class SecondUserClass extends LoginModuleUser {
+    String nickname;
+  }
+```
+
+Do note: This results in both classes being present.
+Thus, instances of both classes are possible.
+
+Instead, we can also replace/"delegate away" all uses of the *LoginModuleUser* class
+ using the `<<ConcretizeModule>>` stereotype:
+
+```cd
+  <<ConcretizeModule>>
+  class User extends LoginModuleUser {
+    String nickname;
+  }
+```
+
+This results in calls to `LoginModuleManager.loginModuleUserBuilder()` actually returning builders of the new `User` class.
+
+Behind the magic, an adapter Builder class `LoginModuleUser4UserDelegatedBuilder extends LoginModuleUserBuilder` is generated.
+(Unfortunately, the class inheritance is not translated onto MontiGem builder)
+
+
+### Extend the Modules GUI
+Further work has to be made to extend GUI Pages.
+
+For now, it is only possible to re-use the gui components (Such as UserCreate, etc.) of the module.
+In the case, that non-conservative extensions to a class are made (such as a required phone number),
+ the creators (such as the SignUp page) has to be adapted too,
+ which currently means a CTRL+C/CTRL+V of the modules gui definitions.
+
 
  TODOS:
   * ToDo: Configure Module via public things (module-specific)
