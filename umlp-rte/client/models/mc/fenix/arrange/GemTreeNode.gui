@@ -7,12 +7,14 @@ component GemTreeNode(
   */
   boolean isExpanded = false,
   /**
-    Content of this node
+    Content of this node.
+    If not set, the node is expected to be the root of the tree.
   */
   GUIViewElement content,
   /**
     Tree nodes. Each node defines a root of a subtree and its children.
     Normally set to a list of `GemTreeNode`.
+    If not set or empty, the node is expected to be a leaf of the tree.
   */
   List<GUIViewElement> children,
   /**
@@ -21,6 +23,7 @@ component GemTreeNode(
   Event<Void> onClick,
   /**
     Callback that is executed when the expand/collapse icon is clicked.
+    Returns `true` if the subtree is expanded, otherwise `false`.
   */
-  Event<Void> onExpand
+  Event<boolean> onToggle
 )

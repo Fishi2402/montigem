@@ -23,7 +23,10 @@ export class DirNode extends DirNodeComponent {
   }
 
   public override getChildren(art: Artifact): Array<Artifact> {
-    return (art as Directory).getContainsList();
+    if (this.isDirectory()) {
+      return (art as Directory).getContainsList();
+    }
+    return null;
   }
 
 }

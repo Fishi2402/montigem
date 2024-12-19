@@ -12,7 +12,7 @@ export class GemTreeNode implements OnInit {
   @Input() children: TemplateRef<any>[];
 
   @Output() onClick: EventEmitter<void> = new EventEmitter();
-  @Output() onExpand: EventEmitter<void> = new EventEmitter();
+  @Output() onToggle: EventEmitter<boolean> = new EventEmitter();
 
   constructor(private viewContainerRef: ViewContainerRef) {}
 
@@ -29,7 +29,7 @@ export class GemTreeNode implements OnInit {
   expand() {
     if (this.children) {
       this.isExpanded = !this.isExpanded;
-      this.onExpand.emit();
+      this.onToggle.emit(this.isExpanded);
     }
   }
 }
