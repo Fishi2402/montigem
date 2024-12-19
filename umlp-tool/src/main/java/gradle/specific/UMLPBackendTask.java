@@ -35,6 +35,7 @@ public abstract class UMLPBackendTask extends UMLPSingleFileTask {
   @Incremental  // This Annotation requires custom java-logic to run correctly. See "getStreamOfChanges()"
   public abstract ConfigurableFileCollection getModelDir();
 
+  @Deprecated() // MCSingleFileTask already defines the symbolPath Property
   @InputDirectory
   @org.gradle.api.tasks.Optional
   @PathSensitive(PathSensitivity.RELATIVE)
@@ -102,9 +103,17 @@ public abstract class UMLPBackendTask extends UMLPSingleFileTask {
   protected List<String> createArgList(Path filePath, Function<Path, String> handlePath) {
     List<String> result = super.createArgList(filePath, handlePath);
 
+    // Remove when we remove symbolDir
     if(this.getSymbolDir().isPresent()) {
       result.add("-path");
       result.add(handlePath.apply(getSymbolDir().getAsFile().get().toPath()));
+    }
+
+    if (!this.getSymbolPath().isEmpty()) {
+      for (var symDir : this.getSymbolPath()) {
+        result.add("-path");
+        result.add(symDir.getAbsolutePath());
+      }
     }
 
     if(!this.getModelDir().isEmpty()) {

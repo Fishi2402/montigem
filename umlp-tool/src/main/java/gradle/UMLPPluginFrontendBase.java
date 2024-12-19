@@ -56,7 +56,7 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
     //Create Tasks
     TaskProvider<FrontendSetup> frontendSetupTask = createFrontendSetupTask(project);
 
-    TaskProvider<UMLPSymbolsTask> domainSymbolGenTask = createDomainSymbolGen(project);
+    TaskProvider<UMLPSymbolsTask> domainSymbolGenTask = createDomainSymbolGen(project, local);
 
     TaskProvider<UMLPGuiGenTask> frontendGuiTask = createFrontendGuiTask(project, local);
 
@@ -102,8 +102,8 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
 
   }
 
-  private TaskProvider<UMLPSymbolsTask> createDomainSymbolGen(Project project) {
-    return project.getTasks().register(CREATE_DOMAIN_SYMBOLS_TASK_NAME, UMLPSymbolsTask.class, umlpTask -> {
+  private TaskProvider<UMLPSymbolsTask> createDomainSymbolGen(Project project, boolean local) {
+    TaskProvider<UMLPSymbolsTask> createDomainSymbolsTask = project.getTasks().register(CREATE_DOMAIN_SYMBOLS_TASK_NAME, UMLPSymbolsTask.class, umlpTask -> {
       umlpTask.setGroup(UMLP_GROUP_NAME);
       umlpTask.getInput().from(getModelsPath(project));
       umlpTask.getSymbolOutDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols_gui_domain__from_task_domainsymbol").toFile());
@@ -111,6 +111,23 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
 
       umlpTask.getModelDir().from(project.getConfigurations().getByName("umlpModulesModels"));
     });
+
+    if (local) {
+      Project umlpRteClientProject = project.findProject(":umlp-rte:client");
+      boolean createGuiSymbolsPresent = !umlpRteClientProject.getTasksByName("createGuiSymbols", false).isEmpty();
+      boolean createCDSymbolsPresent = !umlpRteClientProject.getTasksByName("createCDSymbols", false).isEmpty();
+      if (createCDSymbolsPresent && createGuiSymbolsPresent) {
+        SerializeGUISymbolsTask createGuiSymbols = (SerializeGUISymbolsTask) umlpRteClientProject.getTasks().getByName("createGuiSymbols");
+        SerializeCDSymbolsTask createCDSymbols = (SerializeCDSymbolsTask) umlpRteClientProject.getTasks().getByName("createCDSymbols");
+        createDomainSymbolsTask.get().dependsOn(createGuiSymbols, createCDSymbols);
+        createDomainSymbolsTask.get().getSymbolPath().from(createGuiSymbols.getOutput(), createCDSymbols.getOutput());
+      }
+    }
+    else {
+      Configuration guiLib = project.getConfigurations().getByName(GUI_LIB_NAME);
+      createDomainSymbolsTask.get().getSymbolPath().from(guiLib.getFiles());
+    }
+    return createDomainSymbolsTask;
   }
 
   private TaskProvider<UMLPGuiGenTask> createFrontendGuiTask(final Project project, boolean local) {

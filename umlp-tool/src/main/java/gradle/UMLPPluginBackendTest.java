@@ -21,6 +21,7 @@ public class UMLPPluginBackendTest implements Plugin<Project> {
       umlpTask.getInput().setFrom(firstTask.getInput());
       umlpTask.getHandWrittenCodeDir().setFrom(firstTask.getHandWrittenCodeDir());
       umlpTask.getSymbolDir().set(firstTask.getSymbolDir());
+      umlpTask.getSymbolPath().from(firstTask.getSymbolPath());
       umlpTask.getUseSpring().set(firstTask.getUseSpring());
       umlpTask.getUseShell().set(firstTask.getUseShell());
       umlpTask.getModelDir().setFrom(firstTask.getModelDir());
