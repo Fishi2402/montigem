@@ -63,7 +63,7 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
 
     // For the public Sign up: Ensure the role is set to a default value of USER
     loginModuleRestService.onSignupAdditionals.add((jsonObject, uB) -> {
-      ((LoginModuleUser4UserBuilder)uB).delegate.role(DtcockpitRole.USER);
+      ((LoginModuleUser4UserDelegatedBuilder)uB).delegate.role(DtcockpitRole.USER);
     });
     super.init();
 
