@@ -34,6 +34,8 @@ public abstract class UMLPPluginFrontendNonJSweet implements Plugin<Project> {
 
     TaskProvider<FrontendSetup> frontendSetupTask = project.getTasks().named(UMLP_FRONTEND_SETUP_TASK_NAME, FrontendSetup.class);
 
+    TaskProvider<Sync> unpackModulesTask = createUnpackModuleTask(project);
+
     frontendGuiTask.configure(umlpTask -> {
       setIfPathExists(x -> umlpTask.getHwcDir().from(x), Path.of(project.getProjectDir().getAbsolutePath(), "src", "app"));
       umlpTask.getGuiGenJsweet().set(false);
@@ -60,6 +62,7 @@ public abstract class UMLPPluginFrontendNonJSweet implements Plugin<Project> {
 
     project.getTasks().named("generate").configure(generateTask -> {
       generateTask.dependsOn(frontendGuiTask);
+      generateTask.dependsOn(unpackModulesTask);
     });
 
   }
@@ -87,6 +90,22 @@ public abstract class UMLPPluginFrontendNonJSweet implements Plugin<Project> {
        */
       umlpTask.getModelDir().from(project.getConfigurations().getByName("umlpModulesModels"));
     });
+  }
+
+
+  protected TaskProvider<Sync> createUnpackModuleTask(final Project project) {
+    // Download the frontends code and extract it into a dir
+    // Make sure to add "umlp_modules/loginmodule-ts/template_placeholder/src/*" as a path to the tsconfig
+    var conf = project.getConfigurations().getByName("umlpModuleFrontend");
+    var t = project.getTasks().register("unpackModule", Sync.class);
+    t.configure(task -> {
+      task.setGroup("umlp");
+      task.setDescription("Unpacks all umlp modules");
+      for (var file : conf.getFiles())
+        task.from(project.zipTree(file));
+      task.into(project.getLayout().getBuildDirectory().dir("frontendGen/umlp_modules"));
+    });
+    return t;
   }
 
   private void setIfPathExists(Consumer<File> add, Path path) {

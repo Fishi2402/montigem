@@ -22,6 +22,7 @@ import umlp.generator.util.PathUtil;
 import umlp.generator.util.TagLookUp;
 import umlp.generator.util.UMLPSymbolTables;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.List;
@@ -59,10 +60,18 @@ public class ManagerImplDecorator extends AbstractDecorator {
     glex.replaceTemplate("cd2java.Annotations", managerClass,
         new StringHookPoint("@jsweet.lang.Erased"));
 
+    // Build manager adaper/delegators
+    List<String> superDelegateManagerNames = new ArrayList<>();
+    for (var ex : this.getExtendedDefinitions(origCD)) {
+      List<String> exFQN = new ArrayList<>(ex.getCDPackageList());
+      exFQN.add(ex.getCDDefinition().getName().toLowerCase());
+      exFQN.add(ex.getCDDefinition().getName() + "4" + origCD.getCDDefinition().getName() +ManagerDecorator.SUFFIX + "Impl");
+      superDelegateManagerNames.add(String.join(".", exFQN));
+    }
 
     // methods
     getCD4C().addMethod(managerClass, "umlp.managerimpl.Constructor", name + SUFFIX, name);
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.Init", name, name + ManagerDecorator.SUFFIX + "Impl");
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.Init", name, name + ManagerDecorator.SUFFIX + "Impl", superDelegateManagerNames);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.InitNeo4J", name, name + ManagerDecorator.SUFFIX + "Impl");
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetFreeGemId");
     getCD4C().addMethod(managerClass, "umlp.managerimpl.ErrorNotificationScope");

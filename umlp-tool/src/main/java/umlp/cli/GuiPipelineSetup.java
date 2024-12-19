@@ -117,6 +117,9 @@ public class GuiPipelineSetup {
         createModels.addAll(Arrays.asList(data.cmd.getOptionValues(GUI_CREATE.getCMD())));
       }
 
+      // TODO: hook point
+      // TODO: Convert gui to pipeline and allow module to hook into
+
       GUIGeneratorUtil.getInstance().init(domainModels, createModels);
 
       // Get all ASTGUIComponents

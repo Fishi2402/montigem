@@ -56,6 +56,125 @@ tasks.register('buildApp', NpxTask) {
 }
 assemble.dependsOn(buildApp)
 
+//// This task copies the hwc in src/app into a distapp dir within the build dir
+//// This dir is NOT referenced by the tsconfig (to run/build this app), instead only by the package.json (to export these files)
+//// This was required as the "../../src/app" tsconfig-path is not liked at all by a npm pack/publish
+//tasks.register('syncHWCApp', Sync) {
+//  from 'src/app'
+//  into "${project.buildDir}/frontendGen/distapp/abc"
+//}
+//
+//// TODO: Version?
+//tasks.register('packApp', NpxTask) {
+//  dependsOn(prebuildTasks, syncHWCApp)
+//  inputs.dir(project.fileTree("src/") // TODO: Properly include src? a different way than syncHWCApp
+//      .exclude("**/*.spec.ts", "**/*.md"))
+//  dependsOn "buildApp"
+//  command = "npm"
+//  args = ["pack"]
+//}
+
+tasks.register('syncLibConfig', Sync) {
+  dependsOn(nodeSetup)
+  from 'config/projects'
+  into "${project.buildDir}/frontendGen/projects"
+  outputs.upToDateWhen {false}
+}
+
+// Prepare the frontend as a lib
+tasks.register('syncLib', Sync) {
+  dependsOn(frontendSetup, SYNC_genDomain, SYNC_genGUI, syncLibConfig)
+  from "src/app"
+  from "${project.buildDir}/frontendGen/build/appdomain/"
+  from "${project.buildDir}/frontendGen/build/appgui/"
+  into "${project.buildDir}/frontendGen/projects/loginmodule-ts/src/"
+  outputs.upToDateWhen {false}
+  preserve {
+    include 'public-api.ts'
+  }
+}
+//tasks.register('syncLibloginmoduleSRC', Sync) {
+//  from "src/app/loginmodule"
+//  from "${project.buildDir}/frontendGen/build/appdomain/loginmodule"
+//  into "${project.buildDir}/frontendGen/projects/loginmodule-ts/loginmodule/src"
+//  // non recursive:
+//  include "*.*"
+//  outputs.upToDateWhen {false}
+//  filter { line ->  line.replaceAll('@src/loginmodule/commands/[a-zA-Z0-9_]+', 'loginmodule-ts/loginmodule/commands')
+//  }
+//  outputs.upToDateWhen {false}
+//
+//}
+
+//tasks.register('syncLibloginmoduleCommands', Sync) {
+//  dependsOn(frontendSetup, SYNC_genDomain, SYNC_genGUI, syncLibloginmoduleGUI)
+//  from 'config/projects/loginmodule-ts/loginmodule/commands'
+//  into "${project.buildDir}/frontendGen/projects/loginmodule-ts/loginmodule/commands"
+//  outputs.upToDateWhen {false}
+//  finalizedBy(tasks.syncLibloginmoduleCommandsSRC) // replace @src in commands afterwards
+//}
+//
+//tasks.register('syncLibloginmoduleCommandsSRC', Sync) {
+//  dependsOn(frontendSetup, SYNC_genDomain, SYNC_genGUI, syncLibloginmoduleGUI)
+//  from "src/app/loginmodule/commands"
+//  from "${project.buildDir}/frontendGen/build/appdomain/loginmodule/commands"
+//  into "${project.buildDir}/frontendGen/projects/loginmodule-ts/loginmodule/commands/src"
+//  filter { line -> line.contains("@src/loginmodule/commands")?line
+//      : line.replaceAll('@src/loginmodule/[a-zA-Z0-9_]+', 'loginmodule-ts/loginmodule')
+//  }
+//  include "*.*"
+//  outputs.upToDateWhen {false}
+//}
+
+
+//tasks.register('syncLibloginmoduleGUI', Sync) {
+//  dependsOn(frontendSetup, SYNC_genDomain, SYNC_genGUI, syncLibFilesI)
+//  from "src/app/gui"
+//  from 'config/projects/loginmodule-ts/gui'
+//  from "${project.buildDir}/frontendGen/build/appgui/gui"
+////  from "${project.buildDir}/frontendGen/build/appgui/loginmodule"
+//  into "${project.buildDir}/frontendGen/projects/loginmodule-ts/gui/"
+//  // TODO: Replace @src with precise path
+//  filter { line -> line.replaceAll('@src/loginmodule/[a-zA-Z0-9_]+', 'loginmodule-ts/loginmodule') }
+//  outputs.upToDateWhen {false}
+//}
+
+//
+//// Hackaround for templatePaths
+//tasks.register('syncLibFilesI', Sync) {
+//  dependsOn(frontendSetup, SYNC_genDomain, SYNC_genGUI)
+//  from ("${project.buildDir}/frontendGen/build/appgui") {
+//    include '**/*.html' // only html files
+//  }
+////  include '**/*.html' // TODO: Only use .html files
+//  into "${project.buildDir}/frontendGen/projects/build/umlp_frontend/intermediate/appgui"
+//}
+
+
+// Lets do this without npm, I guess
+// We might be able to do this without syncLib?
+packFrontendAsZip { // AbstractCopy Task
+  dependsOn(syncLib)
+  from ("${project.buildDir}/frontendGen/projects/loginmodule-ts/src") {
+    into 'loginmodule-ts/template_placeholder/src/'
+  }
+  // Hackaround to include the html template files at the correct relative location
+  from ("${project.buildDir}/frontendGen/build/appgui") {
+    include '**/*.html' // only html files (aka the template path)
+    into 'loginmodule-ts/build/umlp_frontend/intermediate/appgui\\'
+  }
+//  archiveName 'LoginModuleFrontend.zip'
+  setArchiveClassifier("bundlejs")
+}
+
+//artifacts.add("umlpOutgoingFrontendBundle", packFrontendAsZip) {
+//  type = "zip"
+//}
+//project.components.java.addVariantsFromConfiguration(configurations.umlpOutgoingFrontendBundle) {
+//  it.mapToOptional()
+//}
+// End of js bundle
+
 tasks.register('testApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"

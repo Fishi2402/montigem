@@ -16,7 +16,7 @@ dependencies {
     exclude module: 'log4j-to-slf4j'
   }
   implementation project(':umlp-rte')
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version
+  api group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version
 
 }
 

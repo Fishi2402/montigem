@@ -40,6 +40,7 @@ publishing {
       from components.java
       // The plugin publishes moduleGenTime & the models jar
     }
+    mavenJava(MavenPublication)
   }
   // TODO: correct repo
   repositories {
