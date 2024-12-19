@@ -2,6 +2,7 @@ package loginmodule;
 
 import dtcockpit.DtcockpitManager;
 import dtcockpit.LoginModuleUser4UserBuilder;
+import dtcockpit.LoginModuleUser4UserDelegatedBuilder;
 
 public class LoginModule4DtcockpitManagerImpl extends LoginModule4DtcockpitManagerImplTOP {
   public static void init() {
@@ -10,7 +11,7 @@ public class LoginModule4DtcockpitManagerImpl extends LoginModule4DtcockpitManag
 
   @Override
   protected LoginModuleUserBuilder _doLoginModuleUserBuilderFromId(long gemId) {
-    return new LoginModuleUser4UserBuilder(DtcockpitManager.userBuilder());
+    return new LoginModuleUser4UserDelegatedBuilder(DtcockpitManager.userBuilder());
   }
 
   @Override
