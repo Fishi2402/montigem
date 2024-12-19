@@ -142,10 +142,10 @@ public class SQLSchemaGenerator {
                 }
               }
             } else {
-              Log.error("0xTODO Unable to resolve CD for " + extendedCD.get());
+              Log.error("0xTODO Unable to resolve CD for " + extendedCD.get(), astStereoValue.get_SourcePositionStart());
             }
           } else {
-            Log.error("0xTODO Unable to find CD for " + astStereoValue.getValue() + " - did you import a class from it? e.g. import " + astStereoValue.getValue() + ".*;");
+            Log.error("0xTODO Unable to find CD for " + astStereoValue.getValue() + " - did you import a class from it? e.g. import " + astStereoValue.getValue() + ".*; and added it to the symbolpath?", astStereoValue.get_SourcePositionStart());
           }
         }
       });
