@@ -111,11 +111,11 @@ Similar to the backend, we also have to add the login module to the frontend as 
 ```
 // frontend/build.gradle
 dependencies {
-  umlpModulesGen("umlp.modules:login:$version") // Load generator modifications
-  umlpModulesDomainSymbols("umlp.modules.login:frontendTS:$version") // frontend domain symbols
-  umlpModulesModels("umlp.modules:login:$version") // and models itself
+  umlpModulesGen("umlp.modules:login:$mc_version") // Load generator modifications
+  umlpModulesDomainSymbols("umlp.modules.login:frontendTS:$mc_version") // frontend domain symbols
+  umlpModulesModels("umlp.modules:login:$mc_version") // and models itself
   
-  umlpModuleFrontend("umlp.modules.login:frontendTS:$version") // And the generated files of the frontend
+  umlpModuleFrontend("umlp.modules.login:frontendTS:$mc_version") // And the generated files of the frontend
 }
 ```
 
