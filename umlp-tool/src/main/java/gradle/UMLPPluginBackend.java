@@ -63,6 +63,12 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
 
     // apply last, since the test infrastructure tasks import properties from backend tasks
     project.getPluginManager().apply("de.rwth.se.umlp-tool-testing");
+
+    if (!local) {
+      project.getConfigurations().register(GUI_LIB_NAME);
+      project.getDependencies().add(GUI_LIB_NAME, "umlp.umlp-rte:client:" +
+          UMLPPluginFrontendBase.getStringProjectProperty(project, "mc_version", ""));
+    }
   }
 
   // Add generated files to SourceSets
