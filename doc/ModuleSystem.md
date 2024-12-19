@@ -114,6 +114,8 @@ dependencies {
   umlpModulesGen("umlp.modules:login:$version") // Load generator modifications
   umlpModulesDomainSymbols("umlp.modules.login:frontendTS:$version") // frontend domain symbols
   umlpModulesModels("umlp.modules:login:$version") // and models itself
+  
+  umlpModuleFrontend("umlp.modules.login:frontendTS:$version") // And the generated files of the frontend
 }
 ```
 
@@ -121,15 +123,25 @@ dependencies {
  those lines SHOULD NOT be added after the `genGUI` definition,
 as otherwise gradle MIGHT complain about already resolved configurations.)
 
-In addition, the typescript dependency (similar to the backends *implementation* dependency) has to be added:
+In addition, the typescript dependency (similar to the backends *implementation* dependency) has to be added.
+For a landslide of reasons we are unable to package our frontends as an angular slide (or ALU was just not able to.)
+Instead, copy them over using the *umlpModuleFrontend* configuration.
+The angular/TS compiler now has to be aware of where to find the login modules sources,
+ which we can do by adding it as a path to the tsconfig
 
 ```json
-// frontend/config/package.json
- "dependencies": {
-   ...
-   "@umlp/login": "^7.6.1"
-  }
+// frontend/config/tsconfig.json
+"paths": {
+ "@src/*": ["build/appdomain/*", "build/appgui/*", "src/app/*", "../../src/app/*", "../umlp/fe2/*",
+ "umlp_modules/loginmodule-ts/template_placeholder/src/*"
+],
 ```
+
+*Technical note:* We bundle the frontend files as a zip and extract them
+ into the `umlp_modules/loginmodule-ts` directory.
+Due to the relative template paths, the actual sources are two levels further down (*template_placeholder/src*),
+ with the templates also being present in the *umlp_modules/loginmodule-ts/build* directory.
+It may be cursed, but it works (we should improve on this, but for now enough time was spent between multiple persons on npm).
 
 
  TODOS:
@@ -137,3 +149,12 @@ In addition, the typescript dependency (similar to the backends *implementation*
     * OD?
   * Extend the Module-User via extends
   
+
+
+## A quick note on the frontend deployment:
+* We are unable to publish it as an angular library due to ambiguity: 
+> projects/loginmodule-ts/src/public-api.ts:102:1 - error TS2308: Module './gui/loginmodule/comp/LoginContainerComponent' has already exported a member named 'config'. Consider explicitly re-exporting to resolve the ambiguity.
+
+* Using subproject (for each file) also does not work due to circular dependencies
+
+* ?
