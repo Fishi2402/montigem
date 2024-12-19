@@ -1,9 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui.coco;
 
+import com.google.common.collect.Lists;
 import de.monticore.expressions.cocos.ExpressionValid;
 import de.monticore.expressions.commonexpressions.types3.util.CommonExpressionsLValueRelations;
 import de.monticore.guidsl._cocos.GUIComponentDeclarationIsPresent;
+import de.monticore.guidsl._cocos.GUIComponentDeclNameFits;
 import de.monticore.guidsl._cocos.GUIDSLCoCoChecker;
 import de.monticore.guidsl._cocos.GUIDSLCoCos;
 import de.monticore.guidsl._cocos.GUIMultipleNameArgs;
@@ -32,6 +34,7 @@ public class GUIDSLCoCosForUMLP extends GUIDSLCoCos {
     checker.addCoCo(new GUIMultipleNameArgs());
     checker.addCoCo(new GUIComponentDeclarationIsPresent());
     checker.addCoCo(new GUIShortIterateCheckIterable());
+    checker.addCoCo(new GUIComponentDeclNameFits(Lists.newArrayList("forms", "form", "template")));
 
     checker.addCoCo(new GuiNoSingletonList());
     checker.addCoCo(new GUIParamDefaultOnlyLiteralCoCo());
