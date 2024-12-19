@@ -29,10 +29,14 @@ tasks.named('jar') {
   enabled = false
 }
 
+
 publishing {
   publications {
     mavenJava(MavenPublication) {
       from components.java
+      artifacts.removeIf {
+        return it.classifier == null // remove the default jar (as it is skipped and otherwise an error is thrown during publishing)
+      }
       // The plugin publishes moduleGenTime & the models jar
     }
   }
