@@ -49,9 +49,13 @@ public class SecurityManagerImportDecorator  {
 
         if (classSearcher.candidate != null) {
           // And if found: Add the Import
-          String secManager = String.join(".", getPackageName(), "loginmodule.LoginSecManager");
+//          String secManager = String.join(".", getPackageName(), "loginmodule.LoginSecManager");
 //          String secManager = String.join(".", getPackageName(), "login.LoginSecManager");
-          CD4C.getInstance().addImport(classSearcher.candidate, "loginmodule.LoginSecManager");
+          // Only import the LoginSecManager if not yet present
+          if (CD4C.getInstance().getImportList(classSearcher.candidate).stream().noneMatch(
+              f -> f.printType().equals("loginmodule.LoginSecManager")
+          ))
+            CD4C.getInstance().addImport(classSearcher.candidate, "loginmodule.LoginSecManager");
           // not finding a class might be caused by other modules/TOP
         }
       }
