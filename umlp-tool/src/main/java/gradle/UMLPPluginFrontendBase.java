@@ -109,7 +109,7 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
       umlpTask.getSymbolOutDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols_gui_domain__from_task_domainsymbol").toFile());
       umlpTask.getOutputDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols_gui_domain__from_task_domainsymbol").toFile());
 
-      umlpTask.getModelDir().from(project.getConfigurations().getByName("umlpModulesModels"));
+      umlpTask.getModelDir().from(project.getConfigurations().getByName(UMLPPluginBase.UMLP_MODULES_MODELS_CONFIG));
     });
 
     if (local) {

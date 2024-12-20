@@ -58,15 +58,27 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
       var umlpModulesC = project.getConfigurations().maybeCreate(UMLP_MODULES_CONFIG);
       var umlpModulesGenC = project.getConfigurations().maybeCreate(UMLP_MODULES_GEN_CONFIG);
       UMLPPluginModule.addModuleGenJarJarAttributes(umlpModulesGenC, project);
-      UMLPPluginModule.addModelsJarAttributes(project.getConfigurations().maybeCreate(UMLP_MODULES_MODELS_CONFIG), project);
+      umlpModulesGenC.extendsFrom(umlpModulesC);
+      var umlpModulesModelsC = project.getConfigurations().maybeCreate(UMLP_MODULES_MODELS_CONFIG);
+      UMLPPluginModule.addModelsJarAttributes(umlpModulesModelsC, project);
+      umlpModulesModelsC.extendsFrom(umlpModulesC);
 
       var umlpModulesDSC = project.getConfigurations().maybeCreate(UMLP_MODULES_DOMAIN_SYMBOLS_CONFIG);
       umlpModulesDSC.setCanBeConsumed(false);
       UMLPPluginModuleJSFrontend.addDomainSymbolsJarAttributes(umlpModulesDSC, project);
+      umlpModulesDSC.extendsFrom(umlpModulesC);
 
       var umlpModuleFrontend = project.getConfigurations().maybeCreate(UMLP_MODULES_FRONTEND_CONFIG);
       umlpModuleFrontend.setCanBeConsumed(false);
       UMLPPluginModuleJSFrontend.addBundledJSJarAttributes(umlpModuleFrontend, project);
+      umlpModuleFrontend.extendsFrom(umlpModulesC);
+
+      project.getPlugins().withId("java", plugin -> {
+        project.getConfigurations().getByName("implementation").extendsFrom(umlpModulesC);
+      });
+      project.getPlugins().withId("java-library", plugin -> {
+        project.getConfigurations().getByName("api").extendsFrom(umlpModulesC);
+      });
 
 
       StatisticListener.registerOnce(project);

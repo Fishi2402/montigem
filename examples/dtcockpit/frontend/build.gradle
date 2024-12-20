@@ -7,9 +7,10 @@ plugins {
 
 
 dependencies {
-  umlpModulesGen("umlp.modules:login:$version") // Load generator modifications
-  umlpModulesDomainSymbols("umlp.modules.login:frontendTS:$version") // frontend domain symbols
-  umlpModulesModels("umlp.modules:login:$version") // and models itself
+  umlpModules("umlp.modules:login:$version") // Load generator modifications
+//  umlpModulesGen("umlp.modules:login:$version") // Load generator modifications
+//  umlpModulesDomainSymbols("umlp.modules:login:$version") // frontend domain symbols
+//  umlpModulesModels("umlp.modules:login:$version") // and models itself
 }
 
 // ALus local gradle is apparently unaware of these versions?

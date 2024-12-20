@@ -88,7 +88,7 @@ public abstract class UMLPPluginFrontendNonJSweet implements Plugin<Project> {
       at de.monticore.cdbasis._symboltable.CDTypeSymbolTOP.getAstNode(CDTypeSymbolTOP.java:1)
       at de.monticore.cd._symboltable.CDSymbolTables.getTransitiveSuperTypes(CDSymbolTables.java:86)
        */
-      umlpTask.getModelDir().from(project.getConfigurations().getByName("umlpModulesModels"));
+      umlpTask.getModelDir().from(project.getConfigurations().getByName(UMLPPluginBase.UMLP_MODULES_MODELS_CONFIG));
     });
   }
 

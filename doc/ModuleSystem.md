@@ -19,22 +19,65 @@ For these purposes, modules "publish" (a subset of) the following artifacts, whi
 ## Login Module Example
 
 In the following, we will install the Login Module into our Car-Rental application.
+The login module provides the following class diagram:
+
+```mermaid
+classDiagram
+  class LoginModuleUser {
+    String username;
+    String password;
+    String email;
+  }
+  
+  class DoesNotRequireLogin
+  note for DoesNotRequireLogin "When present as a page argument, this page does not require login"
+  
+  class LoginSecManager {
+    boolean allowPasswordReset
+    boolean allowPublicSignup
+  }
+  LoginSecManager --> "0..1" LoginModuleUser
+  <<singleton>> LoginSecManager
+```
+
+And once added & configured,
+ access to any data/endpoint requires previous login.
+(*Note*: pages with the `DoesNotRequireLogin` parameter still won't be able to load data.
+ Users will just not be redirected to the login page)
 
 We start by adding the login module to the backend:
-```
+```groovy
 // backend/build.gradle
 dependencies {
-  
-  // TODO: NYI -  umlpModules("umlp.modules:login:${version}") // load the login module, consisting of models, config template tool adaption, and implementation/backend dependencies
-  
-  // Which resolves to the following individual dependencies in various configurations
-
-  umlpModulesModels("umlp.modules:login:${version}") // load the login models
-  umlpModulesGen("umlp.modules:login:${version}") // modify the MontiGem tool
-  implementation("umlp.modules.login:backend:${version}") // add the login-backend to the classpath, as well as its dependencies
+  umlpModules("umlp.modules:login:${mc_version}") // load the login module, consisting of models, config template tool adaption, and implementation/backend dependencies
 }
 ```
-(Note: The three dependencies will be merged into a single dependency at some point)
+
+The following diagram gives a brief overview of the various Gradle configurations effected by modules.
+For example, the domain symbols are loaded as a dependency into the *umlpModulesDomainSymbols* config,
+ which is then used within the GUI generator:
+````mermaid
+classDiagram
+  class umlpModules
+  note for umlpModules  "General definition for a module" 
+  class umlpModulesModels
+  umlpModules <|-- umlpModulesModels
+  note for umlpModulesModels "Contains the models itself -> genDomain"
+  class umlpModulesGen
+  umlpModules <|-- umlpModulesGen
+  note for umlpModulesGen "Contains the modifications for the MontiGem tool -> genGui & genDomain"
+  class implementation
+  umlpModules <|-- implementation
+  note for implementation "Contains the compiled backend code -> java"
+  class umlpModulesDomainSymbols
+  umlpModules <|-- umlpModulesDomainSymbols
+  note for umlpModulesDomainSymbols "Contains the domain symbols -> genGUI"
+  class umlpModulesFrontendCodeTS
+  umlpModules <|-- umlpModulesFrontendCodeTS
+  note for umlpModulesFrontendCodeTS "Contains bundles JS-frontend code -> angular"
+
+````
+
 
 
 We also have modeled, that the domain classdiagram extends the login module's classdiagram, 
@@ -87,6 +130,7 @@ umlp.service.websocket.impl=auth
 ```
 
 ### Backend Tool Modification
+(The code/templates of this section can be found within the login module definition)
 The login module causes the backend generation to run with the *login_module.backend.LoginBackendConfig.ftl* template:
 
 ```ftl
@@ -111,11 +155,7 @@ Similar to the backend, we also have to add the login module to the frontend as 
 ```
 // frontend/build.gradle
 dependencies {
-  umlpModulesGen("umlp.modules:login:$mc_version") // Load generator modifications
-  umlpModulesDomainSymbols("umlp.modules.login:frontendTS:$mc_version") // frontend domain symbols
-  umlpModulesModels("umlp.modules:login:$mc_version") // and models itself
-  
-  umlpModuleFrontend("umlp.modules.login:frontendTS:$mc_version") // And the generated files of the frontend
+  umlpModules("umlp.modules:login:$mc_version") // Load generator modifications, domain symbols, models, and the generates frontend ts-files
 }
 ```
 
@@ -125,9 +165,9 @@ as otherwise gradle MIGHT complain about already resolved configurations.)
 
 In addition, the typescript dependency (similar to the backends *implementation* dependency) has to be added.
 For a landslide of reasons we are unable to package our frontends as an angular slide (or ALU was just not able to.)
-Instead, copy them over using the *umlpModuleFrontend* configuration.
-The angular/TS compiler now has to be aware of where to find the login modules sources,
- which we can do by adding it as a path to the tsconfig
+Instead, they are implicitly copied over using the *umlpModulesFrontendCodeTS* configuration.
+The angular/TS compiler now has to be made aware of where to find the login module's sources,
+ which we can do by adding it as a path to the tsconfig:
 
 ```json
 // frontend/config/tsconfig.json
@@ -137,11 +177,12 @@ The angular/TS compiler now has to be aware of where to find the login modules s
 ],
 ```
 
-*Technical note:* We bundle the frontend files as a zip and extract them
+*Technical note:* We bundle the frontend files as a zip and extract them via Gradle
  into the `umlp_modules/loginmodule-ts` directory.
 Due to the relative template paths, the actual sources are two levels further down (*template_placeholder/src*),
  with the templates also being present in the *umlp_modules/loginmodule-ts/build* directory.
 It may be cursed, but it works (we should improve on this, but for now enough time was spent between multiple persons on npm).
+
 
 ### Configuring the Module
 
@@ -153,6 +194,12 @@ In the case of the login module,
  its `LoginSecManager` class exposes two boolean attributes: 
  `allowPasswordReset` and `allowPublicSignUp`.
 
+```java
+ @PostConstruct
+@Override
+public void init() throws IOException {
+  LoginModuleManager.getLoginSecManager().setAllowPublicSignUp(true);
+```
 
 (Although for now, the email part is not yet implemented.)
 
@@ -195,6 +242,56 @@ This results in calls to `LoginModuleManager.loginModuleUserBuilder()` actually 
 Behind the magic, an adapter Builder class `LoginModuleUser4UserDelegatedBuilder extends LoginModuleUserBuilder` is generated.
 (Unfortunately, the class inheritance is not translated onto MontiGem builder)
 
+```mermaid
+classDiagram
+    class LoginModuleUser
+    class User
+    class LoginModuleUserBuilder 
+    LoginModuleUser <|-- LoginModuleUserBuilder
+    class UserBuilder
+    User <|-- UserBuilder
+    User <|-- LoginModuleUser
+    class LoginModuleUser4UserDelegatedBuilder
+    LoginModuleUser4UserDelegatedBuilder --> "adaptee" UserBuilder
+    LoginModuleUser4UserDelegatedBuilder <|-- LoginModuleUserBuilder
+
+```
+
+The login module provides additional hookpoints,
+ in case non-optional attributes are added in a non-conservative way,
+ resulting in `LoginModuleUser4UserDelegatedBuilder.build()` to fail:
+
+
+````java
+public class CarRentalServerApplication extends carrental.CarRentalServerApplicationTOP {
+  @Autowired
+  protected LoginModuleRestService loginModuleRestService;
+
+  @PostConstruct
+  @Override
+  public void init() throws IOException {
+
+    // For the public Sign up: Ensure the role is set to a default value of USER
+    loginModuleRestService.onSignupAdditionals.add((jsonObject, uB) -> {
+      ((LoginModuleUser4UserDelegatedBuilder)uB).adaptee.role(DtcockpitRole.USER);
+    });
+    super.init();
+    ...
+
+````
+
+Please note: This functionality must be included by the module developers.
+
+### CD-Merge / CD Concretization
+
+A CD-Merge / CD-Concretization approach was considered as an alternative, but not suitable due to the code adaption:
+ 1. trace relocations (e.g., loginModule.User -> autovermietung.Benutzer)
+ 2. adapt hand-written models (e.g., GUI pages or transitive module usages with their domain models)
+    * Concretization of GUI models to CDs 
+ 3. adapt hand-written GUI-TS/Java Code (e.g., the login page)
+ 4. include relocation-information within templates (e.g., redirect if not logged in)
+ 5. Concretization Completitin is also in development.
+
 
 ### Extend the Modules GUI
 Further work has to be made to extend GUI Pages.
@@ -205,11 +302,6 @@ In the case, that non-conservative extensions to a class are made (such as a req
  which currently means a CTRL+C/CTRL+V of the modules gui definitions.
 
 
- TODOS:
-  * ToDo: Configure Module via public things (module-specific)
-    * OD?
-  * Extend the Module-User via extends
-  
 
 
 ## A quick note on the frontend deployment:
@@ -218,4 +310,4 @@ In the case, that non-conservative extensions to a class are made (such as a req
 
 * Using subproject (for each file) also does not work due to circular dependencies
 
-* ?
+* Instead, we distribute the packaged genDomain/genGui outpu
