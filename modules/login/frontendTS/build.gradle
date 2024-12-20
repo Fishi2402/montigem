@@ -161,7 +161,7 @@ packFrontendAsZip { // AbstractCopy Task
   // Hackaround to include the html template files at the correct relative location
   from ("${project.buildDir}/frontendGen/build/appgui") {
     include '**/*.html' // only html files (aka the template path)
-    into 'loginmodule-ts/build/umlp_frontend/intermediate/appgui\\'
+    into 'loginmodule-ts/build/umlp_frontend/intermediate/appgui'
   }
 //  archiveName 'LoginModuleFrontend.zip'
   setArchiveClassifier("bundlejs")
