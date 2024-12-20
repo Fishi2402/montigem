@@ -11,8 +11,8 @@ They are able to accomplish this via the following four pillars:
 
 For these purposes, modules "publish" (a subset of) the following artifacts, which are consumed by certain Gradle configurations:
 * A generation-time artifact.jar (`umlpModulesGen` configuration / via the `--module-config` CLI option)
-* A domain-symbols.jar (`umlpModulesDomainSymbols` configuration / via the `--path` symbolpath CLI option), containing the CD-symbols to be used with the Gui Generator
 * A models.jar (`umlpModulesModels` configuration/ via the `--modelPath` CLI option), containing the original .cd models to be used with the Domain Generator
+* A domain-symbols.jar (`umlpModulesDomainSymbols` configuration / via the `--path` symbolpath CLI option), containing the CD-symbols to be used with the Gui Generator
 * A backend.jar (`implementation` configuration / added to the java classpath), containing the compiled backend sources 
 * A ts-module, containing the typescript frontend sources
 
@@ -37,7 +37,7 @@ dependencies {
 (Note: The three dependencies will be merged into a single dependency at some point)
 
 
-We also have model, that the domain classdiagram extends the login module's classdiagram, 
+We also have modeled, that the domain classdiagram extends the login module's classdiagram, 
  which we can accomplish by means of the `<<extends>>` stereotype and a corresponding import:
 
 ```cd
@@ -80,7 +80,7 @@ For example, we add a default user on startup:
 Thus, the modules managers do not have to be initialized explicitly.)
 
 ### Manual Backend changes
-The *src/main/resources/application.properties* files has to be changed by hand, such as `noAuth` becomes `auth`:
+To enable authentication, when using the Login Module, the *src/main/resources/application.properties* files still have to be changed by hand, such as `noAuth` becomes `auth`:
 ```
 // backend/src/main/resources/application.properties
 umlp.service.websocket.impl=auth
@@ -158,7 +158,7 @@ In the case of the login module,
 
 ### Using the Modules Domain
 
-We can now simply show the current users username by using it within the gui models:
+We can now simply show the current user's username by using it within the gui models:
 ```gui
 import LoginModule.LoginSecManager;
 
