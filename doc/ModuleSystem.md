@@ -59,7 +59,8 @@ For example, the domain symbols are loaded as a dependency into the *umlpModules
 ````mermaid
 classDiagram
   class umlpModules
-  note for umlpModules  "General definition for a module" 
+  <<unresolveable>> umlpModules
+  note for umlpModules  "General definition for a module, can not be directly resolved" 
   class umlpModulesModels
   umlpModules <|-- umlpModulesModels
   note for umlpModulesModels "Contains the models itself -> genDomain"

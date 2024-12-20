@@ -56,6 +56,7 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
 
       // Module system
       var umlpModulesC = project.getConfigurations().maybeCreate(UMLP_MODULES_CONFIG);
+      umlpModulesC.setCanBeResolved(false);
       var umlpModulesGenC = project.getConfigurations().maybeCreate(UMLP_MODULES_GEN_CONFIG);
       UMLPPluginModule.addModuleGenJarJarAttributes(umlpModulesGenC, project);
       umlpModulesGenC.extendsFrom(umlpModulesC);
