@@ -10,8 +10,11 @@ import org.gradle.api.tasks.Sync;
 import org.gradle.api.tasks.TaskProvider;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import static gradle.UMLPPluginFrontendBase.UMLP_FRONTEND_DOMAIN_TASK_NAME;
 import static gradle.UMLPPluginFrontendBase.UMLP_FRONTEND_GUI_TASK_NAME;
@@ -101,8 +104,11 @@ public abstract class UMLPPluginFrontendNonJSweet implements Plugin<Project> {
     t.configure(task -> {
       task.setGroup("umlp");
       task.setDescription("Unpacks all umlp modules");
-      for (var file : conf.getFiles())
-        task.from(project.zipTree(file));
+      // Make sure to provide a lazy-provider to #from
+      task.from(project.provider(
+          // And expand the zipfile
+          () -> conf.getFiles().stream().map(project::zipTree).collect(Collectors.toList())
+      ));
       task.into(project.getLayout().getBuildDirectory().dir("frontendGen/umlp_modules"));
     });
     return t;

@@ -96,3 +96,8 @@ tasks.register('runApp', NpxTask) {
 tasks.register('run') {
   dependsOn(runApp)
 }
+
+// Avoid a pesky org.gradle.api.InvalidUserDataException: Cannot expand ZIP 'bundle.jar' as it does not exist
+unpackModule {
+  dependsOn(":modules:login:frontendTS:packFrontendAsZip")
+}

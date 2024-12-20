@@ -19,6 +19,8 @@ For these purposes, modules "publish" (a subset of) the following artifacts, whi
 ## Login Module Example
 
 In the following, we will install the Login Module into our Car-Rental application.
+The result of this tutorial can be found [online](https://git.rwth-aachen.de/monticore/umlp-anwendungen/car-rental/-/compare?from=main&to=login-example).
+
 The login module provides the following class diagram:
 
 ```mermaid
