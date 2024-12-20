@@ -96,7 +96,7 @@ public abstract class UMLPPluginFrontendNonJSweet implements Plugin<Project> {
   protected TaskProvider<Sync> createUnpackModuleTask(final Project project) {
     // Download the frontends code and extract it into a dir
     // Make sure to add "umlp_modules/loginmodule-ts/template_placeholder/src/*" as a path to the tsconfig
-    var conf = project.getConfigurations().getByName("umlpModuleFrontend");
+    var conf = project.getConfigurations().getByName(UMLPPluginBase.UMLP_MODULES_FRONTEND_CONFIG);
     var t = project.getTasks().register("unpackModule", Sync.class);
     t.configure(task -> {
       task.setGroup("umlp");

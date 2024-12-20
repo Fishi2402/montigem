@@ -35,7 +35,7 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
   public static final String UMLP_MODULES_GEN_CONFIG = "umlpModulesGen";
   public static final String UMLP_MODULES_MODELS_CONFIG = "umlpModulesModels";
   public static final String UMLP_MODULES_DOMAIN_SYMBOLS_CONFIG = "umlpModulesDomainSymbols";
-  public static final String UMLP_MODULES_FRONTEND_CONFIG = "umlpModuleFrontend";
+  public static final String UMLP_MODULES_FRONTEND_CONFIG = "umlpModulesFrontend";
 
   @Override
     public void apply(Project project) {
