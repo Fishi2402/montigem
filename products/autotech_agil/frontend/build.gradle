@@ -24,6 +24,14 @@ genGUI {
   domainModels = ["AutoTechAgil"]
 }
 
+SYNC_genDomain {
+  filter { line -> line.replaceAll('../../../build/umlp_frontend/intermediate/', '../../../build/frontendGen/build/') }
+}
+SYNC_genGUI {
+  filter { line -> line.replaceAll('../../../build/umlp_frontend/intermediate/', '../../../build/frontendGen/build/') }
+}
+
+
 nodeSetup.dependsOn(frontendSetup)
 npmInstall.dependsOn(nodeSetup, ':umlp-rte:client:npmInstall')
 

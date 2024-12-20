@@ -3,12 +3,6 @@
 import java.time.LocalDate;
 
 classdiagram AutoTechAgil {
-  class Service {
-    String name;
-    ServiceStatus status;
-    double temperature;
-  }
-
   enum ServiceStatus {
     GREEN, YELLOW, RED;
   }
@@ -21,4 +15,32 @@ classdiagram AutoTechAgil {
     Status(int statusId, double threshold, String imageSource);
     Status(int statusId, double threshold, String imageSource, String label);
   }
+
+  /*----------------------------------------------------------------------------------------------*
+    Function Structure Model
+   *----------------------------------------------------------------------------------------------*/
+
+  class Service {
+    String name;
+  }
+
+  class Channel;
+
+  /**
+   Since Fenix currently does not support qualified associations, we emulate them using the `Port`
+   class:
+   For each qualifier from `Function` to a Channel in the original model, here the `Function`
+   contains an instance of port, which contains the relevant name qualifing the channel from the
+   function.
+
+   We adapted `Function` with the handwritten methods `String getInChannel(String name)` and
+   `String getOutChannel(String name)`, such that it can be used as if the associations are
+   qualified.
+  */
+  class Port {
+    String name;
+  }
+
+  association [0..1] Service (ownerIn) -> (in) Port [*];
+  association [0..1] Service (ownerOut) -> (out) Port [*];
 }

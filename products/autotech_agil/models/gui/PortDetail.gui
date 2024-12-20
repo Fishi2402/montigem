@@ -9,10 +9,12 @@ import mc.fenix.input.GemDropdownInput;
 
 import gui.components.StatusIndicator;
 
-import AutoTechAgil.Service;
+import AutoTechAgil.Port;
 import AutoTechAgil.Status;
 
-page ServiceDetail(Service service) {
+component PortDetail(Port port) {
+  @GemText(value = port.name);
+  /*
   @GemText(value = service.name);
   @GemRow(colGap = "50px", components = [
     @GemColumn(rowGap = "20px", hAlign = "center", components = [
@@ -48,4 +50,5 @@ page ServiceDetail(Service service) {
       )
     ])
   ]);
+  */
 }
