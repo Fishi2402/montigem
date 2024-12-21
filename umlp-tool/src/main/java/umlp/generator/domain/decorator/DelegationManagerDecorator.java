@@ -51,6 +51,11 @@ public class DelegationManagerDecorator extends ManagerDecorator {
                 extensionDiamond.get(possibleChild).contains(symbol)).collect(Collectors.toList()
         ))));
 
+    List<ASTCDClass> builderDelegates = new ArrayList<>();
+    for (var cl : origCD.getCDDefinition().getCDClassesList()) {
+      if (cl.getModifier().isPresentStereotype() && cl.getModifier().getStereotype().contains("ConcretizeModule"))
+        builderDelegates.add(cl);
+    }
 
     parentToChildDiamond.keySet().forEach(diagramSymbol -> {
 
@@ -61,11 +66,11 @@ public class DelegationManagerDecorator extends ManagerDecorator {
       String packageNameWithCD = packageName.map(s -> Joiners.DOT.join(s, extendedCDName))
           .orElseGet(() -> extendedCDName);
       ASTCDPackage astcdPackage = getCorrectPackage(packageNameWithCD.toLowerCase(), decoratedCD);
-      astcdPackage.addCDElement(withOrigin(createManagerClasses(diagramSymbol, parentToChildDiamond.get(diagramSymbol))));
+      astcdPackage.addCDElement(withOrigin(createManagerClasses(diagramSymbol, parentToChildDiamond.get(diagramSymbol), builderDelegates)));
     });
   }
 
-  protected ASTCDClass createManagerClasses(DiagramSymbol parentCD, LinkedHashSet<DiagramSymbol> extendingCDs) {
+  protected ASTCDClass createManagerClasses(DiagramSymbol parentCD, LinkedHashSet<DiagramSymbol> extendingCDs, List<ASTCDClass> builderDelegates) {
 
     String delegationManagerName = parentCD.getName() +"4"+this.origCDName+ SUFFIX+"Impl";
 
@@ -89,6 +94,20 @@ public class DelegationManagerDecorator extends ManagerDecorator {
         getSuperToTypes(parentCD, extendingCDs);
 
     addDelegationGetters(delegationManagerClass, superTypesToTypes);
+
+    for (var c : builderDelegates) {
+      var ti =  c.getSymbol().getSuperClass().asObjectType().getTypeInfo();
+      if (ti.getPackageName().equals(parentCD.getName())) {
+        // <LoginModule>.LoginModuleUser == LoginModule
+        // this manager actually is responsible for the given builder-class
+        // TODO: Check if this works with module hierarchies
+        getCD4C().addImport(delegationManagerClass, ti.getPackageName().toLowerCase() + "." + ti.getName() + "Builder");
+        getCD4C().addImport(delegationManagerClass, origCDName.toLowerCase() + "." + ti.getName() + "4" + c.getName() + "DelegatedBuilder");
+
+        getCD4C().addMethod(delegationManagerClass, "umlp.delegationmanager.DelegatedBuilder", ti.getName(), c.getName(), origCDName + "Manager");
+        getCD4C().addMethod(delegationManagerClass, "umlp.delegationmanager.DelegatedDeSerBuilder", ti.getName(), c.getName(), origCDName + "Manager");
+      }
+    }
 
     addImportsForDelegationManager(delegationManagerClass);
     addImportsFromCDForDelegationManager(delegationManagerClass, superTypesToTypes.values().stream()

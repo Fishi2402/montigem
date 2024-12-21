@@ -260,10 +260,10 @@ classDiagram
 
 ```
 
-The login module provides additional hookpoints,
- in case non-optional attributes are added in a non-conservative way,
- resulting in `LoginModuleUser4UserDelegatedBuilder.build()` to fail:
-
+The login module provides additional hookpoints to "complete" a builder,
+ as in case of non-optional attributes added in a non-conservative way,
+  `LoginModuleUser4UserDelegatedBuilder.build()` would fail.
+For example, 
 
 ````java
 public class CarRentalServerApplication extends carrental.CarRentalServerApplicationTOP {
@@ -285,7 +285,10 @@ public class CarRentalServerApplication extends carrental.CarRentalServerApplica
 
 Please note: This functionality must be included by the module developers.
 
-### CD-Merge / CD Concretization
+The delegated/adapted builders are currently only generated in the backend
+ and have to be manually TOPed in the frontend.
+
+### Notes on CD-Merge / CD Concretization
 
 A CD-Merge / CD-Concretization approach was considered as an alternative, but not suitable due to the code adaption:
  1. trace relocations (e.g., loginModule.User -> autovermietung.Benutzer)
