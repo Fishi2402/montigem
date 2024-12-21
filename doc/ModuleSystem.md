@@ -19,7 +19,7 @@ For these purposes, modules "publish" (a subset of) the following artifacts, whi
 ## Login Module Example
 
 In the following, we will install the Login Module into our Car-Rental application.
-The result of this tutorial can be found [online](https://git.rwth-aachen.de/monticore/umlp-anwendungen/car-rental/-/compare?from=main&to=login-example).
+The result of this tutorial can be found [online](https://git.rwth-aachen.de/monticore/umlp-anwendungen/car-rental/-/compare/main...login-example).
 
 The login module provides the following class diagram:
 
@@ -32,7 +32,7 @@ classDiagram
   }
   
   class DoesNotRequireLogin
-  note for DoesNotRequireLogin "When present as a page argument, this page does not require login"
+  note for DoesNotRequireLogin "When present as a page argument, this page does not redirect to the login page"
   
   class LoginSecManager {
     boolean allowPasswordReset
@@ -108,8 +108,8 @@ For example, the `LoginSecManager.getCurrentUserRequest()` command is already im
 To actually use domain objects of an extended classdiagram, we have to use that diagrams manager:
 For example, we add a default user on startup:
 
-```
-// CarRentalServerApplication.ftl
+```java
+// CarRentalServerApplication.java
   public void init() throws IOException {
     // ...
     if (LoginModuleManager.getLoginModuleUserList().isEmpty()) {
@@ -155,7 +155,7 @@ This results in the generated *build/umlp/backend/carrental/service/CarRentalSec
 ### Adding the Login-Module to the Frontend:
 Similar to the backend, we also have to add the login module to the frontend as a dependency:
 
-```
+```groovy
 // frontend/build.gradle
 dependencies {
   umlpModules("umlp.modules:login:$mc_version") // Load generator modifications, domain symbols, models, and the generates frontend ts-files
@@ -198,7 +198,7 @@ In the case of the login module,
  `allowPasswordReset` and `allowPublicSignUp`.
 
 ```java
- @PostConstruct
+@PostConstruct
 @Override
 public void init() throws IOException {
   LoginModuleManager.getLoginSecManager().setAllowPublicSignUp(true);
