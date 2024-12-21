@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package security;
+package service;
 
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonObject;
@@ -130,5 +130,11 @@ public class LoginModuleRestService {
 
   public interface OnSignup {
     ResponseEntity<String> publicSignup(de.monticore.symboltable.serialization.json.JsonObject jsonObject);
+  }
+
+  @GetMapping(value = "/loginmodule/public/config", produces = APPLICATION_JSON_VALUE)
+  @CrossOrigin
+  public ResponseEntity<String> getConfig() {
+    return ResponseEntity.ok("{\"signup\":" + LoginModuleManager.getLoginSecManager().isAllowPublicSignUp() + ", \"reset\":" + LoginModuleManager.getLoginSecManager().isAllowPasswordReset() + "}");
   }
 }
