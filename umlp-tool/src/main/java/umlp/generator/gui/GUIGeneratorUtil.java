@@ -134,14 +134,11 @@ public class GUIGeneratorUtil {
         if(guiParamOpt.isPresent()) {
           if(guiParamOpt.get().getType().getTypeInfo() instanceof OOTypeSymbol) {
             OOTypeSymbol typeSymbol = (OOTypeSymbol) guiParamOpt.get().getType().getTypeInfo();
-
-            /*
-             For now: Assume that every method call is a Command Execution Call, since stereotypes
-             are not part of the symbol table we cannot check for singleton here
+             /*
+             For now: Assume that every method call of a singleton is a Command Execution Call
+             since taggin look up does not allow to search for method symbols
              */
-            if(typeSymbol.getSpannedScope().resolveMethod(fieldAccessExpression.getName()).isPresent()) {
-              return true;
-            }
+            return TagLookUp.isSingleton(typeSymbol);
           }
         }
 
