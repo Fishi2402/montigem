@@ -2,11 +2,14 @@
 package example_charts;
 
 import mc.fenix.charts.GemBarChart;
+import mc.fenix.input.GemTextInput;
 
-page GemBarChartFromCommand()
+import Domain.App;
+
+page GemBarChartFromCommand(App app)
 {
   barchart@GemBarChart(
-    data = null,
+    data = app.getBarChart(),
     stacked = false,
     maxValue = 10,
     minValue = null

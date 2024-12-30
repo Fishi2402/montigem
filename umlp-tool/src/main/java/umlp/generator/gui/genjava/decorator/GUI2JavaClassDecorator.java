@@ -783,9 +783,27 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       String name = method.getName();
       if (!addedMethods.contains(method)) {
         addedMethods.add(method);
+        if(util.isCommandCall(this.gui, node)) {
+          getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandResult"));
+          getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandManager"));
+          ASTMCType type = createTypeAndAddImports(method.getReturnType());
+          String cmdQPath = Joiners.DOT.join(util.getMainDomainModelSimpleName().get().toLowerCase(),
+              "commands",StringTransformations.capitalize(method.getName()));
+          getCD4C().addImport(clazz, cmdQPath);
 
+          List<ASTCDParameter> params = new ArrayList<>();
+          for (int i = 0; i < method.getParamTypes().size(); ++i) {
+
+            SymTypeExpression argSTE = method.getParamTypes().get(i);
+            params.add(CDParameterFacade.getInstance().createParameter(
+                createTypeAndAddImports(argSTE),
+                Expression2SetterPrinter.SETTER_PARAM + "_$" + i
+            ));
+          }
+          getCD4C().addMethod(clazz, getCommandExecutionTemplate(), type, name, params);
+        }
         // predefined function: @PersonForm(buttonClick = create(person))
-        if (PredefinedFunction.getMember(name).isPresent()) {
+        else if (PredefinedFunction.getMember(name).isPresent()) {
           // TODO AGe: check type correctness
           PredefinedFunction fun = PredefinedFunction.getMember(name).get();
           String manager = getAndImportManager();
@@ -1472,5 +1490,9 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
   protected String getScopeTemplate() {
     return "umlp.gui2java.GUI2JavaScope";
+  }
+
+  protected String getCommandExecutionTemplate() {
+    return "umlp.gui2java.GUI2JavaExecuteCommandMethod";
   }
 }

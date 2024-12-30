@@ -194,122 +194,134 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
   public void visit(ASTCallExpression node) {
     if (node.getExpression() instanceof ASTNameExpression) {
       ASTNameExpression nameExp = (ASTNameExpression) node.getExpression();
-      if (!(nameExp.getEnclosingScope() instanceof IOOSymbolsScope)) {
-        Log.error("0x0000C Attempted to resolve type of '"
-            + GUIGeneratorUtil.getInstance().print(nameExp) + "' from outside of an OOSymbolsScope,"
-            + " but expression conversion is restricted to OOSymbols context.");
-        return;
+      addMethodExpressionToMap(nameExp, node, nameExp.getName());
+    }
+    else if (node.getExpression() instanceof  ASTFieldAccessExpression) {
+      // Method Call, i.e. Command Call of a Singleton for now "app.doSomething()"
+      ASTFieldAccessExpression fieldAccessExpression = (ASTFieldAccessExpression) node.getExpression();
+      if(fieldAccessExpression.getExpression() instanceof ASTNameExpression) {
+        addMethodExpressionToMap((ASTNameExpression) fieldAccessExpression.getExpression(), node,
+            fieldAccessExpression.getName());
       }
-      IOOSymbolsScope scope = (IOOSymbolsScope) nameExp.getEnclosingScope();
-      Optional<OOTypeSymbol> sym = scope.resolveOOType(nameExp.getName());
+    }
+  }
 
-      boolean isConstructor = false;
-      // TODO AGe: use this code after bug in type check is fixed
-      /*
-      SymTypeExpression ste = util.getType(node);
-      // those conditions should always be both true or false
-      if (sym.isPresent() && ste.isFunctionType()) {
-        isConstructor = !sym.get().getMethodList(node.getName()).isEmpty();
-        SymTypeOfFunction stof = ste.asFunctionType();
-        ste = stof.getType();
-      }
-      /**/
+  private void addMethodExpressionToMap(ASTExpression expression, ASTCallExpression node, String expressionName) {
+    if (!(expression.getEnclosingScope() instanceof IOOSymbolsScope)) {
+      Log.error("0x0000C Attempted to resolve type of '"
+          + GUIGeneratorUtil.getInstance().print(expression) + "' from outside of an OOSymbolsScope,"
+          + " but expression conversion is restricted to OOSymbols context.");
+      return;
+    }
+    IOOSymbolsScope scope = (IOOSymbolsScope) expression.getEnclosingScope();
+    Optional<OOTypeSymbol> sym = scope.resolveOOType(expressionName);
 
-      // those conditions should always be both true or false
-      if (sym.isPresent()) {
-        isConstructor = !sym.get().getMethodList(nameExp.getName()).isEmpty();
+    boolean isConstructor = false;
+    // TODO AGe: use this code after bug in type check is fixed
+    /*
+    SymTypeExpression ste = util.getType(node);
+    // those conditions should always be both true or false
+    if (sym.isPresent() && ste.isFunctionType()) {
+      isConstructor = !sym.get().getMethodList(node.getName()).isEmpty();
+      SymTypeOfFunction stof = ste.asFunctionType();
+      ste = stof.getType();
+    }
+    /**/
+
+    // those conditions should always be both true or false
+    if (sym.isPresent()) {
+      isConstructor = !sym.get().getMethodList(expressionName).isEmpty();
+    }
+    if (isConstructor) {
+      String name = curComp + StringTransformations.capitalize(curArg) + "_" + counter++;
+      SymTypeExpression ste = SymTypeExpressionFactory.createTypeObject(sym.get());
+      Attribute attr = createAttribute(expression, ste, name);
+      node2Attr.put(node, attr);
+    }
+    else if (CallTypeDeriver.getInstance().hasReturnType(node)) {
+      SymTypeExpression returnType = CallTypeDeriver.getInstance().getReturnType(node);
+      List<SymTypeExpression> paramTypes = new ArrayList<>();
+      for (ASTExpression exp : node.getArguments().getExpressionList()) {
+        SymTypeExpression argSTE = util.getType(exp);
+        if (argSTE.isObscureType()) {
+          Log.error("0x00015 Unable to derive the type of expression '"
+              + util.print(expression)
+              + "' at " + expression.get_SourcePositionStart().toString()
+              + " - " + expression.get_SourcePositionEnd().toString()
+          );
+        }
+        paramTypes.add(argSTE);
       }
-      if (isConstructor) {
-        String name = curComp + StringTransformations.capitalize(curArg) + "_" + counter++;
-        SymTypeExpression ste = SymTypeExpressionFactory.createTypeObject(sym.get());
-        Attribute attr = createAttribute(nameExp, ste, name);
-        node2Attr.put(node, attr);
+
+      Method guiMethod = new Method(returnType, expressionName, paramTypes);
+      boolean isPredefined = false;
+      for (PredefinedFunction fun : PredefinedFunction.values()) {
+        if (fun.getName().equals(expressionName)) {
+          guiMethod.setPredefined(fun, expressionName + "_" + counter++);
+          isPredefined = true;
+          break;
+        }
       }
-      else if (CallTypeDeriver.getInstance().hasReturnType(node)) {
-        SymTypeExpression returnType = CallTypeDeriver.getInstance().getReturnType(node);
-        List<SymTypeExpression> paramTypes = new ArrayList<>();
-        for (ASTExpression exp : node.getArguments().getExpressionList()) {
-          SymTypeExpression argSTE = util.getType(exp);
-          if (argSTE.isObscureType()) {
-            Log.error("0x00015 Unable to derive the type of expression '"
-                + util.print(nameExp)
-                + "' at " + nameExp.get_SourcePositionStart().toString()
-                + " - " + nameExp.get_SourcePositionEnd().toString()
+      for (ASTNode n : node2Method.keySet()) {
+        Method m = node2Method.get(n);
+        if (guiMethod.getName().equals(m.getName())) {
+          if (!guiMethod.compatibleParamTypes(m) && guiMethod.sameParamTypesErasure(m)) {
+            Log.error("0x00018 Found methods with incompatible parameter types"
+                + " but the same type erasure: '"
+                + util.print(n) + "' at " + n.get_SourcePositionStart().toString()
+                + " - " + expression.get_SourcePositionEnd().toString()
+                + " and "
+                + util.print(node)
+                + "' at " + node.get_SourcePositionStart().toString()
+                + " - " + node.get_SourcePositionEnd().toString()
+                + ". Please rename one of the methods."
             );
           }
-          paramTypes.add(argSTE);
-        }
-
-        Method guiMethod = new Method(returnType, nameExp.getName(), paramTypes);
-        boolean isPredefined = false;
-        for (PredefinedFunction fun : PredefinedFunction.values()) {
-          if (fun.getName().equals(nameExp.getName())) {
-            guiMethod.setPredefined(fun, nameExp.getName() + "_" + counter++);
-            isPredefined = true;
+          else if (guiMethod.compatibleReturnType(m) && guiMethod.compatibleParamTypes(m)) {
+            if (!isPredefined && !(guiMethod.sameReturnType(m) && guiMethod.sameParamTypes(m))) {
+              Log.error("0x0001D Method overloading is not yet supported for non-predefined"
+                  + " functions: "
+                  + util.print(n) + "' at " + n.get_SourcePositionStart().toString()
+                  + " - " + expression.get_SourcePositionEnd().toString()
+                  + " and "
+                  + util.print(node)
+                  + "' at " + node.get_SourcePositionStart().toString()
+                  + " - " + node.get_SourcePositionEnd().toString()
+                  + ". Please rename one of the methods."
+              );
+            }
+            guiMethod = m;
             break;
           }
-        }
-        for (ASTNode n : node2Method.keySet()) {
-          Method m = node2Method.get(n);
-          if (guiMethod.getName().equals(m.getName())) {
-            if (!guiMethod.compatibleParamTypes(m) && guiMethod.sameParamTypesErasure(m)) {
-              Log.error("0x00018 Found methods with incompatible parameter types"
-                  + " but the same type erasure: '"
-                  + util.print(n) + "' at " + n.get_SourcePositionStart().toString()
-                  + " - " + nameExp.get_SourcePositionEnd().toString()
-                  + " and "
-                  + util.print(node)
-                  + "' at " + node.get_SourcePositionStart().toString()
-                  + " - " + node.get_SourcePositionEnd().toString()
-                  + ". Please rename one of the methods."
-              );
-            }
-            else if (guiMethod.compatibleReturnType(m) && guiMethod.compatibleParamTypes(m)) {
-              if (!isPredefined && !(guiMethod.sameReturnType(m) && guiMethod.sameParamTypes(m))) {
-                Log.error("0x0001D Method overloading is not yet supported for non-predefined"
-                    + " functions: "
-                    + util.print(n) + "' at " + n.get_SourcePositionStart().toString()
-                    + " - " + nameExp.get_SourcePositionEnd().toString()
-                    + " and "
-                    + util.print(node)
-                    + "' at " + node.get_SourcePositionStart().toString()
-                    + " - " + node.get_SourcePositionEnd().toString()
-                    + ". Please rename one of the methods."
-                );
-              }
-              guiMethod = m;
-              break;
-            }
-            else if (!guiMethod.compatibleReturnType(m) && guiMethod.compatibleParamTypes(m)) {
-              Log.error("0x00019 Found methods with compatible parameter types"
-                  + " but different return types: '"
-                  + util.print(n) + "' at " + n.get_SourcePositionStart().toString()
-                  + " - " + nameExp.get_SourcePositionEnd().toString()
-                  + " and "
-                  + util.print(node)
-                  + "' at " + node.get_SourcePositionStart().toString()
-                  + " - " + node.get_SourcePositionEnd().toString()
-                  + ". Please rename one of the methods."
-              );
-            }
+          else if (!guiMethod.compatibleReturnType(m) && guiMethod.compatibleParamTypes(m)) {
+            Log.error("0x00019 Found methods with compatible parameter types"
+                + " but different return types: '"
+                + util.print(n) + "' at " + n.get_SourcePositionStart().toString()
+                + " - " + expression.get_SourcePositionEnd().toString()
+                + " and "
+                + util.print(node)
+                + "' at " + node.get_SourcePositionStart().toString()
+                + " - " + node.get_SourcePositionEnd().toString()
+                + ". Please rename one of the methods."
+            );
           }
         }
-        node2Method.put(node, guiMethod);
       }
-      else {
-        Log.error("0x00014 Unable to derive the type of call "
-            + util.print(node)
-            + "' at " + node.get_SourcePositionStart().toString()
-            + " - " + node.get_SourcePositionEnd().toString()
-            + ". Please make sure that the call is simple, e.g., doStuff(),"
-            + " a direct value of"
-            + " a GUI component parameter, "
-            + " a GUI component argument, "
-            + " a guard, "
-            + " an iterable item, "
-            + " or is inside a block."
-        );
-      }
+      node2Method.put(node, guiMethod);
+    }
+    else {
+      Log.error("0x00014 Unable to derive the type of call "
+          + util.print(node)
+          + "' at " + node.get_SourcePositionStart().toString()
+          + " - " + node.get_SourcePositionEnd().toString()
+          + ". Please make sure that the call is simple, e.g., doStuff(),"
+          + " a direct value of"
+          + " a GUI component parameter, "
+          + " a GUI component argument, "
+          + " a guard, "
+          + " an iterable item, "
+          + " or is inside a block."
+      );
     }
   }
 

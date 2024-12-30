@@ -37,10 +37,8 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
     project.getPluginManager().apply("java");
 
     boolean local = getBooleanProjectProperty(project, "useLocalDependencies");
-    System.out.println("useLocalDependencies is"+local);
     if (!local) {
       project.getConfigurations().register(GUI_LIB_NAME);
-      System.out.println("Registered Configuration!");
       project.getDependencies().add(GUI_LIB_NAME, "umlp.umlp-rte:client:" +
           UMLPPluginFrontendBase.getStringProjectProperty(project, "mc_version", ""));
     }
@@ -118,7 +116,6 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
       }
     }
     else {
-      System.out.println("Trying to access guiLib config");
       Configuration guiLib = project.getConfigurations().getByName(GUI_LIB_NAME);
       result.get().getSymbolPath().from(
           project.provider(() -> guiLib.getFiles())
