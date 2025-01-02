@@ -6,10 +6,10 @@ import mc.fenix.input.GemTextInput;
 
 import Domain.App;
 
-page GemBarChartFromCommand(App app)
+page GemBarChartFromCommand(App app, String myStringValue = "default")
 {
   barchart@GemBarChart(
-    data = app.getBarChart(),
+    data = app.getBarChart(myStringValue),
     stacked = false,
     maxValue = 10,
     minValue = null

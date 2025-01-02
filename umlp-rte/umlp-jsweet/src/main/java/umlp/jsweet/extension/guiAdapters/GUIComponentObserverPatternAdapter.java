@@ -8,9 +8,12 @@ import org.jsweet.transpiler.OverloadScanner;
 import org.jsweet.transpiler.extension.AnnotationManager;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.ExtendedElement;
+import org.jsweet.transpiler.model.ExtendedElementFactory;
 import org.jsweet.transpiler.model.MethodInvocationElement;
+import org.jsweet.transpiler.model.support.MethodInvocationElementSupport;
 import org.jsweet.transpiler.util.Util;
 import standalone.com.sun.source.tree.ClassTree;
+import standalone.com.sun.source.tree.MethodInvocationTree;
 import standalone.com.sun.source.tree.MethodTree;
 import standalone.com.sun.source.tree.Tree;
 import standalone.com.sun.source.tree.VariableTree;
@@ -29,6 +32,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static umlp.jsweet.extension.guiAdapters.DelegateGemListToArrayAdapter.shouldPrintToArray;
 
 public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
 
@@ -431,8 +436,21 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     boolean res = super.substituteMethodInvocation(invocation);
 
     if (shouldAddObservers) {
+      MethodInvocationTree methodInvocationTree = ExtendedElementFactory.toTree(invocation);
+      boolean removeBracketFromAwaitInvocation =
+          context.isAwaitInvocation(methodInvocationTree) &&
+
+              // only in this case the await is wrapped in brackets
+              (getParentElement() instanceof MethodInvocationTree) ||
+              (getParentElement() instanceof MethodInvocationElementSupport) ||
+              shouldPrintToArray(invocatedType,getPrinter(),adapterUtils);
+
       int parenthesisCount = 0;
-      while (getPrinter().getOutput().endsWith(")")) {
+      if (getPrinter().getOutput().endsWith(")")) {
+        parenthesisCount++;
+        getPrinter().removeLastChar();
+      }
+      if (removeBracketFromAwaitInvocation && getPrinter().getOutput().endsWith(")")) {
         parenthesisCount++;
         getPrinter().removeLastChar();
       }

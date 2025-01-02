@@ -12,6 +12,10 @@ import java.util.Optional;
 
 public class GetBarChart extends GetBarChartTOP {
 
+  public GetBarChart(String val) {
+    super(val);
+  }
+
   @BackendOnly(value = BackendOnlyModes.THROW_ERROR)
   @Override
   public SimpleResult<GemBarChartData> doAction() {

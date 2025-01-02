@@ -44,7 +44,7 @@ classdiagram Domain {
   <<singleton>>
   class App {
     Boolean isOld(Person p);
-    GemBarChartData getBarChart();
+    GemBarChartData getBarChart(String date);
   }
 
   <<singleton>>
