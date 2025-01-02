@@ -4,6 +4,7 @@ package umlp.generator.gui.gentypescript.decorator;
 import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -30,7 +31,6 @@ import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.gui.GUI2ClassDecorator;
-import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentTemplates;
 import umlp.generator.gui.gentypescript.printer.TSUtilsPrinter;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
@@ -49,14 +49,16 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
   public static final String COMPONENT_SUFFIX = "Component";
   protected final MCPath hwPath;
   protected final Path outPath;
+  protected final MCPath importsPath;
   protected TSImportHelper importHelper;
 
-  public GUI2AngularClassDecorator(final GlobalExtensionManagement glex, MCPath hwPath, Path outPath) {
+  public GUI2AngularClassDecorator(final GlobalExtensionManagement glex, MCPath hwPath, Path outPath, MCPath importsPath) {
     super(glex);
     traverser = GUIDSLMill.traverser();
     traverser.add4GUIDSL(this);
     this.hwPath = hwPath;
     this.outPath = outPath;
+    this.importsPath = importsPath;
   }
 
   public void transform(ASTGUICompilationUnit gui, ASTCDCompilationUnit cd) {
@@ -72,7 +74,7 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
 
   @Override
   protected void init() {
-    importHelper = new TSImportHelper(glex, clazz, hwPath, outPath);
+    importHelper = new TSImportHelper(glex, clazz, hwPath, outPath, importsPath);
   }
 
   @Override
@@ -203,18 +205,27 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
   }
 
   @Override
+  public ASTCDClass emptyClass() {
+    ASTCDClass res = super.emptyClass();
+    if (!util.existsHandwrittenClass(hwPath, gui.getComponentQName())) {
+      glex.replaceTemplate("umlp.gui2ts.TSClassName", res, new StringHookPoint(super.className()));
+    }
+    return res;
+  }
+
+  @Override
   protected void extendClass(ASTCDCompilationUnit cd) {
     String superClass = util.getBaseClassName(gui.getGUIComponentDeclaration());
     String qName = cd.getMCPackageDeclaration().getMCQualifiedName().getQName()
         + "." + superClass;
-    boolean existsHw = GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, qName);
-    if (existsHw) {
-      superClass += TopDecorator.TOP_SUFFIX;
-      qName += TopDecorator.TOP_SUFFIX;
+    superClass += TopDecorator.TOP_SUFFIX;
+    if (util.existsHandwrittenClass(hwPath, qName)) {
+      addImport(qName + TopDecorator.TOP_SUFFIX);
     }
-
+    else {
+      addImport(qName, superClass);
+    }
     clazz.setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(superClass));
-    addImport(qName);
   }
 
   @Override
@@ -329,6 +340,10 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
           + ste.printFullName() + "'");
     }
     return MCTypeFacade.getInstance().createQualifiedType(ste.printFullName());
+  }
+
+  protected void addImport(String qType, String as) {
+    importHelper.addImport(qType, Optional.of(as), gui.getComponentQName());
   }
 
   @Override

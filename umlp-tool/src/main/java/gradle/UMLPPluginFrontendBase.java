@@ -14,9 +14,11 @@ import gradle.specific.serialize.SerializeCDSymbolsTask;
 import gradle.specific.serialize.SerializeGUISymbolsTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ModuleDependency;
 import org.gradle.api.tasks.Sync;
+import org.gradle.api.tasks.TaskCollection;
 import org.gradle.api.tasks.TaskProvider;
 import org.jetbrains.annotations.NotNull;
 
@@ -141,6 +143,10 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
         SerializeCDSymbolsTask createCDSymbols = (SerializeCDSymbolsTask) umlpRteClientProject.getTasks().getByName("createCDSymbols");
         guiGenTask.get().dependsOn(createGuiSymbols, createCDSymbols);
         guiGenTask.get().getSymbolDir().from(createGuiSymbols.getOutput(), createCDSymbols.getOutput());
+
+        TaskCollection<Task> rteGenTasks = umlpRteClientProject.getTasks().matching(t -> t.getName().startsWith("gen_"));
+        TaskCollection<Task> rteCopyTasks = umlpRteClientProject.getTasks().matching(t -> t.getName().startsWith("copy_"));
+        guiGenTask.get().dependsOn(rteGenTasks, rteCopyTasks);
       }
     }
     else {

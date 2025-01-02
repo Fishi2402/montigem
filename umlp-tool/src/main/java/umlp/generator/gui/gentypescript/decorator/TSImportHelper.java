@@ -24,22 +24,28 @@ public class TSImportHelper {
   protected final ASTCDClass clazz;
   protected final MCPath hwPath;
   protected final Path outPath;
+  protected final MCPath importsPath;
 
-  public TSImportHelper(GlobalExtensionManagement glex, ASTCDClass clazz, MCPath hwPath, Path outPath) {
+  public TSImportHelper(GlobalExtensionManagement glex, ASTCDClass clazz, MCPath hwPath, Path outPath, MCPath importsPath) {
     this.glex = glex;
     this.clazz = clazz;
     this.hwPath = hwPath;
     this.outPath = outPath;
+    this.importsPath = importsPath;
   }
 
-  public void addImport(String qType, String importerQName) {
+  public void addImport(String qType, Optional<String> as, String importerQName) {
+    String alias = "";
+    if (as.isPresent()) {
+      alias = " as " + as.get();
+    }
     Optional<String> tsImportPath = TypeScriptTypes.getTsImportPath(qType);
     // Optional doesn't exist in TypeScript
     if (qType.equals("java.util.Optional") || qType.isBlank()) {
       return;
     }
     if (tsImportPath.isPresent()) {
-      String importStr = "import { " + TypeScriptTypes.toTSType(qType)
+      String importStr = "import { " + TypeScriptTypes.toTSType(qType) + alias
           + " } from '" + tsImportPath.get() + "';";
       addImportString(importStr);
     }
@@ -50,10 +56,7 @@ public class TSImportHelper {
       List<String> parts = Lists.newArrayList(Splitter.on('.').split(qType));
       String baseName = Iterables.getLast(Splitter.on('.').split(qType), qType);
       importBuilder.append(baseName);
-      if (TypeScriptTypes.TEMPLATE_REF.getMCType().equals(qType)) {
-        // GUIViewElement is TemplateRef<any>
-        importBuilder.append("<any>");
-      }
+      importBuilder.append(alias);
 
       importBuilder.append(" }");
       importBuilder.append(" from '");
@@ -65,9 +68,12 @@ public class TSImportHelper {
         parts.set(index, parts.get(index).toLowerCase());
       }
       // case: a component in an app imports a component from the app
-      String from = GUIGeneratorUtil.getInstance()
-          .getRelativeImportPathForComponent(hwPath, outPath, importerQName, qType);
-      // String from = "@src/" + GUIGeneratorUtil.getInstance().qName2path(String.join(".", parts));
+      String from = "@src/" + GUIGeneratorUtil.getInstance().qName2path(String.join(".", parts));
+      Optional<String> relativeFrom = GUIGeneratorUtil.getInstance()
+          .getRelativeImportPathForComponent(hwPath, outPath, importsPath, importerQName, qType);
+      if (relativeFrom.isPresent()) {
+        from = relativeFrom.get();
+      }
       tsImportPath = TSImportMap.getTSPackage(qType);
 
       int lastDotIndex = importerQName.lastIndexOf('.');
@@ -83,6 +89,10 @@ public class TSImportHelper {
 
       addImportString(importBuilder.toString());
     }
+  }
+
+  public void addImport(String qType, String importerQName) {
+    addImport(qType, Optional.empty(), importerQName);
   }
 
   public void addImportString(String importStr) {

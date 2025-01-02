@@ -75,14 +75,6 @@ public abstract class UMLPPluginFrontendWithJSweet implements Plugin<Project> {
 
     TaskProvider<UMLPSymbolsTask> domainSymbolGenTask = project.getTasks().named(CREATE_DOMAIN_SYMBOLS_TASK_NAME, UMLPSymbolsTask.class);
 
-    frontendGuiTask.configure(umlpTask -> {
-      setIfPathExists(x -> umlpTask.getHwcDir().from(x), this.jsweetJavaHWCDir);
-      setIfPathExists(x -> umlpTask.getHwcDir().from(x), this.jsweetTSGUIHWCDir);
-
-      umlpTask.getGuiGenTSFuncionality().set(false);
-      umlpTask.getGuiGenJsweet().set(true);
-    });
-
     TaskProvider<UMLPJava2TypeScriptTask> frontendGUIJ2TSTask = createFrontendGUIJ2TSTask(project);
     TaskProvider<UMLPJava2TypeScriptAdditionalsTask> java2TypeScriptAdditionals = createFrontendJ2TSAdditionalsTask(project);
 
@@ -96,6 +88,15 @@ public abstract class UMLPPluginFrontendWithJSweet implements Plugin<Project> {
     this.addProjectDependencies(project, local);
 
     // dependencies
+    frontendGuiTask.configure(umlpTask -> {
+      setIfPathExists(x -> umlpTask.getHwcDir().from(x), this.jsweetJavaHWCDir);
+      setIfPathExists(x -> umlpTask.getHwcDir().from(x), this.jsweetTSGUIHWCDir);
+      umlpTask.getImportsDir().from(frontendDomainJ2TSTask.get().getOutputDir());
+      umlpTask.dependsOn(frontendDomainJ2TSTask);
+
+      umlpTask.getGuiGenTSFuncionality().set(false);
+      umlpTask.getGuiGenJsweet().set(true);
+    });
     syncJsweetDomainConfigTask.configure(umlpTask -> {
       umlpTask.from(java2TypeScriptDomainConfigTask.get().getJsweetConfigOut().getAsFile());
       umlpTask.dependsOn(java2TypeScriptDomainConfigTask);

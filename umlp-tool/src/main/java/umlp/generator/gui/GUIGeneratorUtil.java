@@ -2,6 +2,8 @@
 package umlp.generator.gui;
 
 import com.google.common.base.CaseFormat;
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import de.monticore.ast.ASTNode;
 import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cd4code._prettyprint.CD4CodeFullPrettyPrinter;
@@ -933,46 +935,95 @@ public class GUIGeneratorUtil {
   }
 
   public Optional<String> getRelativeImportPath(
-      MCPath imported, Path importer, String hwFile) {
-    Optional<URL> hwFilePath = imported.find(hwFile);
+      MCPath hwPath, Path outPath, String hwFile) {
+    Optional<URL> hwFilePath = hwPath.find(hwFile);
     Optional<String> res = Optional.empty();
     if (hwFilePath.isPresent()) {
-      Optional<Path> hwPath = MCPath.toPath(hwFilePath.get());
-      if (hwPath.isPresent()) {
-        res = Optional.of(importer.resolve(hwFile).getParent()
+      Optional<Path> hw = MCPath.toPath(hwFilePath.get());
+      if (hw.isPresent()) {
+        res = Optional.of(outPath.resolve(hwFile).getParent()
             .toAbsolutePath()
             .normalize()
-            .relativize(hwPath.get().toAbsolutePath())
+            .relativize(hw.get().toAbsolutePath())
             .toString()
             .replaceAll("\\\\", "/"));
 
-        Reporting.reportUseHandwrittenCodeFile(hwPath.get(), Paths.get(hwFile));
+        Reporting.reportUseHandwrittenCodeFile(hw.get(), Paths.get(hwFile));
       }
     }
-    Reporting.reportHWCExistenceCheck(imported, Paths.get(hwFile), hwFilePath);
+    Reporting.reportHWCExistenceCheck(hwPath, Paths.get(hwFile), hwFilePath);
     return res;
   }
 
-  public String getRelativeImportPathForComponent(
-      MCPath hwPath, Path outPath, String importerQName, String importedQName) {
-    String imported = Names.getPathFromPackage(importedQName) + ".ts";
-    Optional<String> hwRelativePath = getRelativeImportPath(hwPath, outPath, imported);
-    String relativePath;
-    // if TOP is used, use relative path to HW file
-    if (hwRelativePath.isPresent()) {
-      relativePath = hwRelativePath.get();
+  public Optional<String> getRelativeImportPathForComponent(
+      MCPath hwPath, Path outPath, MCPath importsPath, String importerQName, String importedQName) {
+    String importedQualifier = Names.getQualifier(importedQName);
+    String importedSimpleName = Names.getSimpleName(importedQName);
+    String importedMaybeCD;
+
+    if (!importedQualifier.isBlank()) {
+      List<String> parts = Splitter.on('.').splitToList(importedQualifier);
+      // Lowercase the last part
+      int lastIndex = parts.size() - 1;
+      String lastPart = parts.get(lastIndex).toLowerCase();
+      // Rejoin the parts with the modified last part
+      importedMaybeCD = Joiner.on('/').join(parts.subList(0, lastIndex))
+          + (lastIndex > 0 ? "/" : "") + lastPart
+          + "/" + importedSimpleName + ".ts";
     }
     else {
-      Path fromPath = outPath.resolve(importerQName.replace('.', '/') + ".ts");
-      Path toPath = outPath.resolve(importedQName.replace('.', '/') + ".ts");
-
-      // Calculate the relative path
-      relativePath = fromPath.getParent()
-          .normalize()
-          .relativize(toPath)
-          .toString()
-          .replaceAll("\\\\", "/");
+      importedMaybeCD = importedQualifier + ".ts";
     }
+
+    String imported = Names.getPathFromPackage(importedQName) + ".ts";
+    String importer = Names.getPathFromPackage(importerQName) + ".ts";
+    // case: TOP is used, use relative path to HW file, e.g.,
+    // "gen/gui/ExampleComponent.ts" imports "hw/gui/Example.ts" -> "../../hw/gui/Example"
+    Optional<URL> hwFilePath = hwPath.find(imported);
+    if (hwFilePath.isPresent()) {
+      Optional<Path> hw = MCPath.toPath(hwFilePath.get());
+      if (hw.isPresent()) {
+        return Optional.of(path2TSImport(outPath.resolve(importer).getParent()
+            .toAbsolutePath()
+            .normalize()
+            .relativize(hw.get().toAbsolutePath())
+            .toString()
+            .replaceAll("\\\\", "/")));
+      }
+    }
+    else {
+      Optional<URL> importedURLOpt = importsPath.find(imported);
+      Optional<URL> importedMaybeCDURLOpt = importsPath.find(importedMaybeCD);
+      // case: external (generated) file must be imported, e.g.,
+      // "gen/gui/Example.ts" imports "gen/cd/fetypes/Option.ts" -> "../cd/fetypes/Option"
+      if (importedURLOpt.isPresent() || importedMaybeCDURLOpt.isPresent()) {
+        Optional<Path> importedPath;
+        // prefer "maybe CD" option
+        if (importedMaybeCDURLOpt.isPresent()) {
+          importedPath = MCPath.toPath(importedMaybeCDURLOpt.get());
+        } else {
+          importedPath = MCPath.toPath(importedURLOpt.get());
+        }
+        if (importedPath.isPresent()) {
+          Path fromPath = outPath.resolve(importer);
+          // Calculate the relative path
+          return Optional.of(path2TSImport(fromPath.getParent()
+              .normalize()
+              .relativize(importedPath.get())
+              .toString()
+              .replaceAll("\\\\", "/")));
+        }
+      }
+      // case: a component imports currently generated other component, e.g.
+      // "gen/gui/ExampleComponent.ts" imports "gen/gui/Example.ts" -> "./Example"
+      else if (Names.getQualifier(importerQName).equals(Names.getQualifier(importedQName))) {
+        return Optional.of("./" + Names.getSimpleName(importedQName));
+      }
+    }
+    return Optional.empty();
+  }
+
+  protected String path2TSImport(String relativePath) {
     if (!relativePath.contains("/")) {
       // Same folder, prepend "./"
       relativePath = "./" + relativePath;

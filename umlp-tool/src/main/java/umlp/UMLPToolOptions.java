@@ -44,6 +44,8 @@ public enum UMLPToolOptions {
       .desc("Fully qualified names of the domain models, space separated").build()),
   MODEl_PATH(Option.builder("mp").longOpt("modelPath").hasArgs()
       .desc("Sets the artifact path for imported models, space separated").build()),
+  IMPORTS_PATH(Option.builder("ip").longOpt("importsPath").hasArgs()
+      .desc("Sets the artifact path for files that are imported by the generated artifacts, space separated").build()),
   MODULE_CONFIG(Option.builder("m").longOpt("module-config").hasArgs()
       .desc("Fully qualified name(s) of config template(s) for added modules").build()),
   MERGE(Option.builder("mrg").longOpt("merge").hasArgs().desc("Parses the files as additional CDs" +

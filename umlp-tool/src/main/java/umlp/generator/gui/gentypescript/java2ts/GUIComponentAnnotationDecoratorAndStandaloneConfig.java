@@ -27,18 +27,20 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
   protected final GlobalExtensionManagement glex;
   protected final MCPath hwPath;
   protected final Path outPath;
+  protected final MCPath importsPath;
 
   public GUIComponentAnnotationDecoratorAndStandaloneConfig(
-      final GlobalExtensionManagement glex, MCPath hwPath, Path outPath) {
+      final GlobalExtensionManagement glex, MCPath hwPath, Path outPath, MCPath importsPath) {
     this.glex = glex;
     this.hwPath = hwPath;
     this.outPath = outPath;
+    this.importsPath = importsPath;
   }
 
   public void transform(ASTCDCompilationUnit ast, ASTGUICompilationUnit gui, GUIComponentsVisitor viewComponents) {
     String qName = ast.getMCPackageDeclaration().getMCQualifiedName().getQName();
     for (ASTCDClass clazz : ast.getCDDefinition().getCDClassesList()) {
-      TSImportHelper importHelper = new TSImportHelper(glex, clazz, hwPath, outPath);
+      TSImportHelper importHelper = new TSImportHelper(glex, clazz, hwPath, outPath, importsPath);
       String originalName = GUIGeneratorUtil.getInstance().getOriginalName(clazz);
       String qClassName = qName + "." + originalName;
       if (!GUIGeneratorUtil.getInstance().isComponent(clazz)) {
@@ -108,7 +110,7 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
 
   protected HashSet<String> calculateImports(String componentQName, List<ASTGUIComponent> guiComponents, TSImportHelper importHelper) {
     HashSet<String> importedComponents = Sets.newHashSet();
-    for (ASTGUIComponent component: guiComponents) {
+    for (ASTGUIComponent component : guiComponents) {
       if (!component.isPresentNameSymbol()) {
         Log.error("0x0008B Name symbol of " + component.getName() + " not present.");
       }

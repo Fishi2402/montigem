@@ -2,15 +2,15 @@
 <#--
   This config template does the default GUI2TypeScript generation.
 -->
-${tc.signature("decoratedAST", "glex", "hwPath", "outPath", "generator")}
+${tc.signature("decoratedAST", "glex", "hwPath", "outPath", "importsPath", "generator")}
 
 <#-- Initialize all modules, adding their templates to the other hookpoints, e.g., BeforeTransform -->
 ${includeArgs("umlp.generator.hook.InitModules", glex)}
 
 <#-- Decorators -->
-<#assign guiDecorator = tc.instantiate("umlp.generator.gui.gentypescript.decorator.GUI2TSClassDecorator", [glex, hwPath, outPath])>
-<#assign angularDecorator = tc.instantiate("umlp.generator.gui.gentypescript.decorator.GUI2AngularClassDecorator", [glex, hwPath, outPath])>
-<#assign annotationDecorator = tc.instantiate("umlp.generator.gui.gentypescript.java2ts.GUIComponentAnnotationDecoratorAndStandaloneConfig", [glex, hwPath, outPath])>
+<#assign guiDecorator = tc.instantiate("umlp.generator.gui.gentypescript.decorator.GUI2TSClassDecorator", [glex, hwPath, outPath, importsPath])>
+<#assign angularDecorator = tc.instantiate("umlp.generator.gui.gentypescript.decorator.GUI2AngularClassDecorator", [glex, hwPath, outPath, importsPath])>
+<#assign annotationDecorator = tc.instantiate("umlp.generator.gui.gentypescript.java2ts.GUIComponentAnnotationDecoratorAndStandaloneConfig", [glex, hwPath, outPath, importsPath])>
 <#assign topDecorator = tc.instantiate("umlp.generator.gui.gentypescript.java2ts.TSTopDecorator", [hwPath])>
 <#assign viewComponents = glex.getGlobalVar("viewComponents")>
 

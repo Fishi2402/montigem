@@ -31,7 +31,11 @@ public class UMLPPipelineData {
   File inputFile, outDir, reportDir;
   Function<Path, Path> reportPathOutput;
 
-  MCPath importedSymbolPath = new MCPath(), modelPath = new MCPath(), hwcPath = new MCPath(), fpPath = new MCPath();
+  MCPath importedSymbolPath = new MCPath(),
+      modelPath = new MCPath(),
+      hwcPath = new MCPath(),
+      fpPath = new MCPath(),
+      importsPath = new MCPath();
 
   public UMLPReports umlp_reportManagerFactory = null;
   public GUIDSLReports guidsl_reportManagerFactory = null;

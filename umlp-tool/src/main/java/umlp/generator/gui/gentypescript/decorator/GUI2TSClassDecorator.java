@@ -32,12 +32,15 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
   protected boolean addedRxjsImports = false;
   protected final MCPath hwPath;
   protected final Path outPath;
+  protected final MCPath importsPath;
   protected TSImportHelper importHelper;
 
-  public GUI2TSClassDecorator(final GlobalExtensionManagement glex, MCPath hwPath, Path outPath) {
+  public GUI2TSClassDecorator(
+      final GlobalExtensionManagement glex, MCPath hwPath, Path outPath, MCPath importsPath) {
     super(glex);
     this.hwPath = hwPath;
     this.outPath = outPath;
+    this.importsPath = importsPath;
   }
 
   @Override
@@ -49,7 +52,7 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
 
   @Override
   protected void init() {
-    importHelper = new TSImportHelper(glex, clazz, hwPath, outPath);
+    importHelper = new TSImportHelper(glex, clazz, hwPath, outPath, importsPath);
   }
 
   /**

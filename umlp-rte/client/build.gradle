@@ -90,7 +90,8 @@ libs.each {
   def sourceDir = "${project.buildDir}/guiComponentTypes/mc/fenix/${libName}"
   def genDir = "projects/umlp/mc/fenix/${libName}/build"
   buildFolders << genDir
-  def targetDir = "${genDir}/cd/mc/fenix/${libName}"
+  def targetRoot = "${genDir}/cd"
+  def targetDir = "${targetRoot}/mc/fenix/${libName}"
 
   task "${copyTaskName}"(type: Copy) {
     dependsOn translateJava2TSDomain
@@ -103,12 +104,13 @@ libs.each {
 
   if (libName in componentLibs) {
     task "${genTaskName}"(type: UMLPGuiGenTask) {
-      dependsOn(createCDSymbols)
+      dependsOn(createCDSymbols, tasks[copyTaskName])
       input = layout.projectDirectory.dir("models/mc/fenix/${libName}")
       modelDir = layout.projectDirectory.dir("models")
-      hwcDir = layout.projectDirectory.files("projects/umlp")
+      hwcDir = file(layout.projectDirectory.dir("projects/umlp"))
       symbolDir = files(createCDSymbols.getOutput(), configurations.guiDefaultTypes.files)
       outputDir = layout.projectDirectory.dir("${genDir}/gui")
+      importsDir = files(targetRoot)
       guiGenJsweet = false
       guiGenTSFuncionality = true
     }

@@ -11,8 +11,6 @@ imports: [
   <#assign simpleName = genHelper.getModuleName(imp)>
   <#if genHelper.existsHandwrittenClass(hwcPath,imp)>
     ${simpleName},
-  <#else>
-    ${simpleName}Component,
   </#if>
 </#list>
 ],
