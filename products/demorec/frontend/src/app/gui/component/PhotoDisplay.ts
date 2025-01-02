@@ -3,7 +3,7 @@ import { DemoRecManager } from '@src/demorec/DemoRecManager';
 import { BatteryPack } from '@src/demorec/BatteryPack';
 import { Photo } from '@src/demorec/Photo';
 
-import { GembuttonModule } from "@umlp/basic";
+import { GemButton } from "@umlp/basic";
 
 import { PhotoDisplayComponent, config } from '../../../../build/frontendGen/build/appgui/gui/component/PhotoDisplayComponent';
 
@@ -20,7 +20,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   standalone:true,
-  imports:[...config.imports, GembuttonModule],
+  imports:[...config.imports, GemButton],
   selector: config.selector,
   templateUrl: config.templateUrl,
   styles: [":host{ display: flex; flex-direction: row }"],
