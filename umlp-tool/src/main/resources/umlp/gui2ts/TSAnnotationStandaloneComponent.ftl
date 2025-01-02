@@ -9,9 +9,7 @@ imports: [
   CommonModule,
 <#list importedComponents as imp>
   <#assign simpleName = genHelper.getModuleName(imp)>
-  <#if genHelper.existsHandwrittenClass(hwcPath,imp)>
-    ${simpleName},
-  </#if>
+  ${simpleName},
 </#list>
 ],
 selector: '${selector}',
