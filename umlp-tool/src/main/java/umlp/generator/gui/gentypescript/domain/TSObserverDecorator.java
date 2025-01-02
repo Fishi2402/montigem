@@ -62,6 +62,10 @@ public class TSObserverDecorator extends ObserverDecorator {
       CDTypeSymbol symbol = domainType.getSymbol();
       getCD4C().addImport(cdType,
           Joiners.DOT.join(symbol.getPackageName().toLowerCase(), symbol.getName()));
+
+      for (var superType : symbol.getSuperTypesList()) {
+        getCD4C().addImport(cdType, Joiners.DOT.join(symbol.getPackageName().toLowerCase(), superType.print() + SUFFIX));
+      }
     }
   }
 

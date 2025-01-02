@@ -80,6 +80,10 @@ public class TSObserverMixinDecorator extends TSObserverDecorator {
 
     String obs = domainType.getName() + ObserverDecorator.SUFFIX;
     getCD4C().addImport(cdType, astcdPackage + "." + obs);
+
+    for (var superType : domainType.getSymbol().getSuperTypesList()) {
+      getCD4C().addImport(cdType, Joiners.DOT.join(astcdPackage, superType.print() + ObserverDecorator.SUFFIX + SUFFIX));
+    }
   }
 
 }

@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui.gentypescript.domain;
 
+import com.google.common.collect.Iterables;
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.methodtemplates.CD4CTemplateHelper;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
@@ -8,6 +9,7 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.MCPath;
 import umlp.generator.domain.decorator.BaseClassObjectMapperDecorator;
@@ -120,6 +122,9 @@ public class TSDeSerDecorator extends DeSerDecorator {
       }
     }
     for (ASTCDEnum c : this.origCD.getCDDefinition().getCDEnumsList()) {
+      getCD4C().addImport(clazz, this.astcdPackage + "." + c.getName());
+    }
+    for (ASTCDInterface c : this.origCD.getCDDefinition().getCDInterfacesList()) {
       getCD4C().addImport(clazz, this.astcdPackage + "." + c.getName());
     }
 
