@@ -4,70 +4,51 @@
   "compilerOptions": {
     "declarationMap": false,
     "paths": {
-      "@src/*": [
-        "./projects/umlp/*",
-        "./projects/umlp/mc/fenix/arrange/build/gui/*",
-        "./projects/umlp/mc/fenix/arrange/build/cd/*",
-
-        "./projects/umlp/mc/fenix/basic/build/gui/*",
-        "./projects/umlp/mc/fenix/basic/build/cd/*",
-
-        "./projects/umlp/mc/fenix/charts/build/gui/*",
-        "./projects/umlp/mc/fenix/charts/build/cd/*",
-
-        "./projects/umlp/mc/fenix/common/build/gui/*",
-        "./projects/umlp/mc/fenix/common/build/cd/*",
-
-        "./projects/umlp/mc/fenix/commonj2ts/build/gui/*",
-        "./projects/umlp/mc/fenix/commonj2ts/build/cd/*",
-
-        "./projects/umlp/mc/fenix/functiondisplay/build/gui/*",
-        "./projects/umlp/mc/fenix/functiondisplay/build/cd/*",
-
-        "./projects/umlp/mc/fenix/input/build/gui/*",
-        "./projects/umlp/mc/fenix/input/build/cd/*",
-
-        "./projects/umlp/mc/fenix/navigation/build/gui/*",
-        "./projects/umlp/mc/fenix/navigation/build/cd/*",
-
-        "./projects/umlp/mc/fenix/networkgraph/build/gui/*",
-        "./projects/umlp/mc/fenix/networkgraph/build/cd/*",
-
-        "./projects/umlp/mc/fenix/table/build/gui/*",
-        "./projects/umlp/mc/fenix/table/build/cd/*"
+      "*": [
+        "./projects/common/*",
+        "./projects/commonj2ts/*",
+        "./projects/arrange/*",
+        "./projects/basic/*",
+        "./projects/charts/*",
+        "./projects/composite/*",
+        "./projects/experimental/*",
+        "./projects/input/*",
+        "./projects/table/*",
+        "./projects/theme/*",
+        "./projects/networkgraph/*"
       ],
       "@umlp/arrange": [
-        "./build/dist/umlp/mc/fenix/arrange"
+        "./build/dist/arrange/mc/fenix/arrange"
       ],
       "@umlp/basic": [
-        "./build/dist/umlp/mc/fenix/basic"
+        "./build/dist/basic/mc/fenix/basic"
       ],
       "@umlp/charts": [
-        "./build/dist/umlp/mc/fenix/charts"
+        "./build/dist/charts/mc/fenix/charts"
       ],
       "@umlp/common": [
-        "./build/dist/umlp/mc/fenix/common"
+        "./build/dist/common/mc/fenix/common"
       ],
       "@umlp/commonj2ts": [
-        "./build/dist/umlp/mc/fenix/commonj2ts"
+        "./build/dist/commonj2ts/mc/fenix/commonj2ts"
       ],
       "@umlp/composite": [
-        "./build/dist/umlp/mc/fenix/composite"
+        "./build/dist/composite/mc/fenix/composite"
       ],
       "@umlp/experimental": [
-        "./build/dist/umlp/mc/fenix/experimental"
+        "./build/dist/experimental/mc/fenix/experimental"
       ],
       "@umlp/input": [
-        "./build/dist/umlp/mc/fenix/input"
+        "./build/dist/input/mc/fenix/input"
       ],
       "@umlp/table": [
-        "./build/dist/umlp/mc/fenix/table"
+        "./build/dist/table/mc/fenix/table"
       ],
       "@umlp/theme": [
-        "./build/dist/umlp/mc/fenix/theme"
+        "./build/dist/theme/mc/fenix/theme"
       ],
       "@umlp/networkgraph": [
-        "./build/dist/umlp/mc/fenix/networkgraph"
+        "./build/dist/networkgraph/mc/fenix/networkgraph"
       ]
     },
     "baseUrl": "./"

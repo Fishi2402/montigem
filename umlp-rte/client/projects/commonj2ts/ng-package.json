@@ -1,0 +1,7 @@
+{
+  "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "../../build/dist/commonj2ts/mc/fenix/commonj2ts",
+  "lib": {
+    "entryFile": "index.ts"
+  }
+}

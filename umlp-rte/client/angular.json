@@ -11,14 +11,14 @@
   "projects": {
     "@umlp/basic": {
       "projectType": "library",
-      "root": "projects/umlp/mc/fenix/basic",
-      "sourceRoot": "projects/umlp/mc/fenix/basic/src",
+      "root": "projects/basic",
+      "sourceRoot": "projects/basic",
       "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/umlp/mc/fenix/basic/ng-package.json"
+            "project": "projects/basic/ng-package.json"
           },
           "configurations": {
             "production": {
@@ -44,14 +44,14 @@
     },
     "@umlp/charts": {
       "projectType": "library",
-      "root": "projects/umlp/mc/fenix/charts",
-      "sourceRoot": "projects/umlp/mc/fenix/charts/src",
+      "root": "projects/charts",
+      "sourceRoot": "projects/charts",
       "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/umlp/mc/fenix/charts/ng-package.json"
+            "project": "projects/charts/ng-package.json"
           },
           "configurations": {
             "production": {
@@ -77,14 +77,14 @@
     },
     "@umlp/networkgraph": {
       "projectType": "library",
-      "root": "projects/umlp/mc/fenix/networkgraph",
-      "sourceRoot": "projects/umlp/mc/fenix/networkgraph/src",
+      "root": "projects/networkgraph",
+      "sourceRoot": "projects/networkgraph",
       "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/umlp/mc/fenix/networkgraph/ng-package.json"
+            "project": "projects/networkgraph/ng-package.json"
           },
           "configurations": {
             "production": {
@@ -110,14 +110,14 @@
     },
     "@umlp/table": {
       "projectType": "library",
-      "root": "projects/umlp/mc/fenix/table",
-      "sourceRoot": "projects/umlp/mc/fenix/table/src",
+      "root": "projects/table",
+      "sourceRoot": "projects/table",
       "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/umlp/mc/fenix/table/ng-package.json"
+            "project": "projects/table/ng-package.json"
           },
           "configurations": {
             "production": {
@@ -141,17 +141,16 @@
         }
       }
     },
-
     "@umlp/theme": {
       "projectType": "library",
-      "root": "projects/umlp/mc/fenix/theme",
-      "sourceRoot": "projects/umlp/mc/fenix/theme/src",
+      "root": "projects/theme",
+      "sourceRoot": "projects/theme",
       "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/umlp/mc/fenix/theme/ng-package.json"
+            "project": "projects/theme/ng-package.json"
           },
           "configurations": {
             "production": {
@@ -177,14 +176,14 @@
     },
     "@umlp/input": {
       "projectType": "library",
-      "root": "projects/umlp/mc/fenix/input",
-      "sourceRoot": "projects/umlp/mc/fenix/input/src",
+      "root": "projects/input",
+      "sourceRoot": "projects/input",
       "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/umlp/mc/fenix/input/ng-package.json"
+            "project": "projects/input/ng-package.json"
           },
           "configurations": {
             "production": {
@@ -210,14 +209,14 @@
     },
     "@umlp/arrange": {
       "projectType": "library",
-      "root": "projects/umlp/mc/fenix/arrange",
-      "sourceRoot": "projects/umlp/mc/fenix/arrange/src",
+      "root": "projects/arrange",
+      "sourceRoot": "projects/arrange",
       "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/umlp/mc/fenix/arrange/ng-package.json"
+            "project": "projects/arrange/ng-package.json"
           },
           "configurations": {
             "production": {
@@ -243,14 +242,14 @@
     },
     "@umlp/common": {
       "projectType": "library",
-      "root": "projects/umlp/mc/fenix/common",
-      "sourceRoot": "projects/umlp/mc/fenix/common/src",
+      "root": "projects/common",
+      "sourceRoot": "projects/common",
       "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/umlp/mc/fenix/common/ng-package.json"
+            "project": "projects/common/ng-package.json"
           },
           "configurations": {
             "production": {
@@ -276,14 +275,14 @@
     },
     "@umlp/commonj2ts": {
       "projectType": "library",
-      "root": "projects/umlp/mc/fenix/commonj2ts",
-      "sourceRoot": "projects/umlp/mc/fenix/commonj2ts/src",
+      "root": "projects/commonj2ts",
+      "sourceRoot": "projects/commonj2ts",
       "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/umlp/mc/fenix/commonj2ts/ng-package.json"
+            "project": "projects/commonj2ts/ng-package.json"
           },
           "configurations": {
             "production": {
@@ -309,14 +308,14 @@
     },
     "@umlp/functiondisplay": {
       "projectType": "library",
-      "root": "projects/umlp/mc/fenix/functiondisplay",
-      "sourceRoot": "projects/umlp/mc/fenix/functiondisplay/src",
+      "root": "projects/functiondisplay",
+      "sourceRoot": "projects/functiondisplay",
       "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/umlp/mc/fenix/functiondisplay/ng-package.json"
+            "project": "projects/functiondisplay/ng-package.json"
           },
           "configurations": {
             "production": {
@@ -342,14 +341,14 @@
     },
     "@umlp/navigation": {
       "projectType": "library",
-      "root": "projects/umlp/mc/fenix/navigation",
-      "sourceRoot": "projects/umlp/mc/fenix/navigation/src",
+      "root": "projects/navigation",
+      "sourceRoot": "projects/navigation",
       "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/umlp/mc/fenix/navigation/ng-package.json"
+            "project": "projects/navigation/ng-package.json"
           },
           "configurations": {
             "production": {

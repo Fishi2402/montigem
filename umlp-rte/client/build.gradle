@@ -60,21 +60,24 @@ libs.each {
   def buildTaskName = "${buildTaskPrefix}${libName}"
   def genNpmrcTaskName = "gen_npmrc_${libName}"
   def publishTaskName = "${publishTaskPrefix}${libName}"
-  def npmOutput = "dist/umlp/mc/fenix/${libName}"
+  def npmOutput = "dist/${libName}/mc/fenix/${libName}"
 
   // task `build_<lib_name>` that runs `npm run build @umlp/<lib_name>`
   task "${buildTaskName}"(type: NpmTask) {
     dependsOn tasks.npmInstall
     args = ["run", "build", "@umlp/${libName}"]
-    inputs.dir(project.fileTree("projects/umlp/mc/fenix/${libName}/")
+    // e.g. `projects/basic/src/mc/fenix/basic/`
+    inputs.dir(project.fileTree("projects/${libName}/src/mc/fenix/${libName}/")
         .exclude("**/*.spec.ts", "**/*.md"))
     inputs.files("angular.json", "tsconfig.base.json", "package-lock.json")
+    // e.g. `build/dist/basic/mc/fenix/basic/`
     outputs.dir("${project.buildDir}/${npmOutput}")
   }
 
   // task `gen_npmrc_<lib_name>` that creates .npmrc file for publishing
   task "${genNpmrcTaskName}"(type: NPMAuthCreate) {
     dependsOn "${buildTaskName}"
+    // e.g. `build/dist/basic/mc/fenix/basic/.npmrc`
     npmrcFile = file("${project.buildDir}/${npmOutput}/.npmrc")
     unscoped = true
   }
@@ -82,20 +85,23 @@ libs.each {
   // task `publish_<lib_name>` that runs `npm publish <lib_name>`
   task "${publishTaskName}"(type: NpmTask) {
     dependsOn "${genNpmrcTaskName}"
+    // e.g. `build/dist/basic/mc/fenix/basic/`
     workingDir = file("${project.buildDir}/${npmOutput}")
     args = ["publish"]
   }
 
   def copyTaskName = "${copyTaskPrefix}${libName}"
   def sourceDir = "${project.buildDir}/guiComponentTypes/mc/fenix/${libName}"
-  def genDir = "projects/umlp/mc/fenix/${libName}/build"
+  def genDir = "projects/${libName}/build"
   buildFolders << genDir
   def targetRoot = "${genDir}/cd"
   def targetDir = "${targetRoot}/mc/fenix/${libName}"
 
   task "${copyTaskName}"(type: Copy) {
     dependsOn translateJava2TSDomain
+    // e.g. `build/guiComponentTypes/mc/fenix/basic/`
     from sourceDir
+    // e.g. `projects/basic/build/cd/mc/fenix/basic/`
     into targetDir
   }
 
@@ -107,7 +113,7 @@ libs.each {
       dependsOn(createCDSymbols, tasks[copyTaskName])
       input = layout.projectDirectory.dir("models/mc/fenix/${libName}")
       modelDir = layout.projectDirectory.dir("models")
-      hwcDir = file(layout.projectDirectory.dir("projects/umlp"))
+      hwcDir = file(layout.projectDirectory.dir("projects/${libName}/src"))
       symbolDir = files(createCDSymbols.getOutput(), configurations.guiDefaultTypes.files)
       outputDir = layout.projectDirectory.dir("${genDir}/gui")
       importsDir = files(targetRoot)

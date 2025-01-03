@@ -3,70 +3,51 @@
   "compileOnSave": false,
   "compilerOptions": {
     "paths": {
-      "@src/*": [
-        "./projects/umlp/*",
-        "./projects/umlp/mc/fenix/arrange/build/gui/*",
-        "./projects/umlp/mc/fenix/arrange/build/cd/*",
-
-        "./projects/umlp/mc/fenix/basic/build/gui/*",
-        "./projects/umlp/mc/fenix/basic/build/cd/*",
-
-        "./projects/umlp/mc/fenix/charts/build/gui/*",
-        "./projects/umlp/mc/fenix/charts/build/cd/*",
-
-        "./projects/umlp/mc/fenix/common/build/gui/*",
-        "./projects/umlp/mc/fenix/common/build/cd/*",
-
-        "./projects/umlp/mc/fenix/commonj2ts/build/gui/*",
-        "./projects/umlp/mc/fenix/commonj2ts/build/cd/*",
-
-        "./projects/umlp/mc/fenix/functiondisplay/build/gui/*",
-        "./projects/umlp/mc/fenix/functiondisplay/build/cd/*",
-
-        "./projects/umlp/mc/fenix/input/build/gui/*",
-        "./projects/umlp/mc/fenix/input/build/cd/*",
-
-        "./projects/umlp/mc/fenix/navigation/build/gui/*",
-        "./projects/umlp/mc/fenix/navigation/build/cd/*",
-
-        "./projects/umlp/mc/fenix/networkgraph/build/gui/*",
-        "./projects/umlp/mc/fenix/networkgraph/build/cd/*",
-
-        "./projects/umlp/mc/fenix/table/build/gui/*",
-        "./projects/umlp/mc/fenix/table/build/cd/*"
+      "*": [
+        "./projects/common/*",
+        "./projects/commonj2ts/*",
+        "./projects/arrange/*",
+        "./projects/basic/*",
+        "./projects/charts/*",
+        "./projects/composite/*",
+        "./projects/experimental/*",
+        "./projects/input/*",
+        "./projects/table/*",
+        "./projects/theme/*",
+        "./projects/networkgraph/*"
       ],
       "@umlp/common": [
-        "./projects/umlp/common/src"
+        "./projects/common"
       ],
       "@umlp/commonj2ts": [
-        "./projects/umlp/commonj2ts/src"
+        "./projects/commonj2ts"
       ],
       "@umlp/arrange": [
-        "./projects/umlp/arrange/src"
+        "./projects/arrange"
       ],
       "@umlp/basic": [
-        "./projects/umlp/basic/src"
+        "./projects/basic"
       ],
       "@umlp/charts": [
-        "./projects/umlp/charts/src"
+        "./projects/charts"
       ],
       "@umlp/composite": [
-        "./projects/umlp/composite/src"
+        "./projects/composite"
       ],
       "@umlp/experimental": [
-        "./projects/umlp/experimental/src"
+        "./projects/experimental"
       ],
       "@umlp/input": [
-        "./projects/umlp/input/src"
+        "./projects/input"
       ],
       "@umlp/table": [
-        "./projects/umlp/table/src"
+        "./projects/table"
       ],
       "@umlp/theme": [
-        "./projects/umlp/theme/src"
+        "./projects/theme"
       ],
       "@umlp/networkgraph": [
-        "./projects/umlp/networkgraph/src"
+        "./projects/networkgraph"
       ]
     },
     "baseUrl": "./",
