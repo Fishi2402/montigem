@@ -13,6 +13,7 @@ import de.monticore.types.check.SymTypeOfGenerics;
 import de.se_rwth.commons.Joiners;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ObserverDecorator;
+import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.Optional;
 
@@ -64,7 +65,8 @@ public class TSObserverDecorator extends ObserverDecorator {
           Joiners.DOT.join(symbol.getPackageName().toLowerCase(), symbol.getName()));
 
       for (var superType : symbol.getSuperTypesList()) {
-        getCD4C().addImport(cdType, Joiners.DOT.join(symbol.getPackageName().toLowerCase(), superType.print() + SUFFIX));
+        ASTCDCompilationUnit scCD = UMLPSymbolTables.getDiagramFor((ASTCDType) superType.getTypeInfo().getAstNode());
+        getCD4C().addImport(cdType, Joiners.DOT.join(getPackageName(scCD, DEFAULT_PACKAGE), superType.print() + SUFFIX));
       }
     }
   }

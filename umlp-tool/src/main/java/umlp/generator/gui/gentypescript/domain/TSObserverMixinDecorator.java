@@ -60,10 +60,9 @@ public class TSObserverMixinDecorator extends TSObserverDecorator {
         glex.addAfterTemplate("TSMixinExtend:end", i,
             new StringHookPoint(")"));
       }
-      c.getSuperclassList().forEach(cdExtension ->
-          cdExtension.getDefiningSymbol().ifPresent(definingSymbol ->
-              getCD4C().addImport(i, Joiners.DOT.join(definingSymbol.getPackageName().toLowerCase(),
-                  definingSymbol.getName() + ObserverDecorator.SUFFIX + SUFFIX))));
+      c.getSymbol().getSuperTypesList().forEach(symTypeExpression ->
+              getCD4C().addImport(i, Joiners.DOT.join(symTypeExpression.getTypeInfo().getPackageName().toLowerCase(),
+                  symTypeExpression.getTypeInfo().getName() + ObserverDecorator.SUFFIX + SUFFIX)));
       i.setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder()
           .setSuperclassList(List.of(MCTypeFacade.getInstance()
               .createQualifiedType(i.getName()))).build());
@@ -80,10 +79,6 @@ public class TSObserverMixinDecorator extends TSObserverDecorator {
 
     String obs = domainType.getName() + ObserverDecorator.SUFFIX;
     getCD4C().addImport(cdType, astcdPackage + "." + obs);
-
-    for (var superType : domainType.getSymbol().getSuperTypesList()) {
-      getCD4C().addImport(cdType, Joiners.DOT.join(astcdPackage, superType.print() + ObserverDecorator.SUFFIX + SUFFIX));
-    }
   }
 
 }
