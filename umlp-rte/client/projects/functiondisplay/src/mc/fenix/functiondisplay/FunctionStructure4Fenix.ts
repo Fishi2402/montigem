@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { Function4Display, Port4Display } from ".";
+import { Function4Display } from "mc/fenix/functiondisplay/functionstructure4fenix/Function4Display";
+import { Port4Display } from "mc/fenix/functiondisplay/functionstructure4fenix/Port4Display";
 
 export interface Funktion4Elk {
   name: string;

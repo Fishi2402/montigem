@@ -71,7 +71,7 @@ export class AutoUnsubscriber {
  * Decorator to automatically unsubscribe from Subscriptions in a class when a lifecycle hook is called.
  *
  * This function was inspired by the implementation found in
- * [ngx-auto-unsubscribe](https://github.com/NetanelBasal/ngx-auto-unsubscribe/blob/01db5af64116b0e415388ef7079f8e53434e6ac6/src/auto-unsubscribe.ts)
+ * [ngx-auto-unsubscribe](https://github.com/NetanelBasal/ngx-auto-unsubscribe/blob/01db5af64116b0e415388ef7079f8e53434e6ac6/auto-unsubscribe.ts)
  *
  * @param {string[] | null} blacklist - An optional array of property names to ignore when searching for unsubscribable
  *   properties.

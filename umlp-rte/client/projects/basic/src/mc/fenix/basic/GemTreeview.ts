@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { GemTreeviewEntry } from '.';
-import { config, GemTreeviewComponent } from '/build/gui/mc/fenix/basic/GemTreeviewComponent';
+import { config, GemTreeviewComponent } from 'mc/fenix/basic/GemTreeviewComponent';
+import { GemTreeviewEntry } from 'mc/fenix/basic/gemtreeviewtypes/GemTreeviewEntry';
 
 @Component({
   standalone: true,

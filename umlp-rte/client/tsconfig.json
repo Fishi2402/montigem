@@ -3,19 +3,6 @@
   "compileOnSave": false,
   "compilerOptions": {
     "paths": {
-      "*": [
-        "./projects/common/*",
-        "./projects/commonj2ts/*",
-        "./projects/arrange/*",
-        "./projects/basic/*",
-        "./projects/charts/*",
-        "./projects/composite/*",
-        "./projects/experimental/*",
-        "./projects/input/*",
-        "./projects/table/*",
-        "./projects/theme/*",
-        "./projects/networkgraph/*"
-      ],
       "@umlp/common": [
         "./projects/common"
       ],
@@ -31,12 +18,6 @@
       "@umlp/charts": [
         "./projects/charts"
       ],
-      "@umlp/composite": [
-        "./projects/composite"
-      ],
-      "@umlp/experimental": [
-        "./projects/experimental"
-      ],
       "@umlp/input": [
         "./projects/input"
       ],
@@ -46,8 +27,48 @@
       "@umlp/theme": [
         "./projects/theme"
       ],
+      "@umlp/navigation": [
+        "./projects/networkgraph"
+      ],
       "@umlp/networkgraph": [
         "./projects/networkgraph"
+      ],
+      "*": [
+        "./projects/common/src/*",
+        "./projects/commonj2ts/src/*",
+        "./projects/functiondisplay/src/*",
+        "./projects/arrange/src/*",
+        "./projects/basic/src/*",
+        "./projects/charts/src/*",
+        "./projects/input/src/*",
+        "./projects/table/src/*",
+        "./projects/theme/src/*",
+        "./projects/navigation/src/*",
+        "./projects/networkgraph/src/*",
+
+        "./projects/common/build/gui/*",
+        "./projects/commonj2ts/build/gui/*",
+        "./projects/functiondisplay/build/gui/*",
+        "./projects/arrange/build/gui/*",
+        "./projects/basic/build/gui/*",
+        "./projects/charts/build/gui/*",
+        "./projects/input/build/gui/*",
+        "./projects/table/build/gui/*",
+        "./projects/theme/build/gui/*",
+        "./projects/navigation/build/gui/*",
+        "./projects/networkgraph/build/gui/*",
+
+        "./projects/common/build/cd/*",
+        "./projects/commonj2ts/build/cd/*",
+        "./projects/functiondisplay/build/cd/*",
+        "./projects/arrange/build/cd/*",
+        "./projects/basic/build/cd/*",
+        "./projects/charts/build/cd/*",
+        "./projects/input/build/cd/*",
+        "./projects/table/build/cd/*",
+        "./projects/theme/build/cd/*",
+        "./projects/navigation/build/cd/*",
+        "./projects/networkgraph/build/cd/*"
       ]
     },
     "baseUrl": "./",

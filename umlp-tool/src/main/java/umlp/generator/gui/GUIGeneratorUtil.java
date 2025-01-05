@@ -955,7 +955,7 @@ public class GUIGeneratorUtil {
     return res;
   }
 
-  public Optional<String> getRelativeImportPathForComponent(
+  public Optional<String> getSourceRootImportPathForComponent(
       MCPath hwPath, Path outPath, MCPath importsPath, String importerQName, String importedQName) {
     String importedQualifier = Names.getQualifier(importedQName);
     String importedSimpleName = Names.getSimpleName(importedQName);
@@ -981,6 +981,8 @@ public class GUIGeneratorUtil {
     // "gen/gui/ExampleComponent.ts" imports "hw/gui/Example.ts" -> "../../hw/gui/Example"
     Optional<URL> hwFilePath = hwPath.find(imported);
     if (hwFilePath.isPresent()) {
+      return Optional.of(path2TSImport(imported));
+      /*
       Optional<Path> hw = MCPath.toPath(hwFilePath.get());
       if (hw.isPresent()) {
         return Optional.of(path2TSImport(outPath.resolve(importer).getParent()
@@ -990,6 +992,7 @@ public class GUIGeneratorUtil {
             .toString()
             .replaceAll("\\\\", "/")));
       }
+      /**/
     }
     else {
       Optional<URL> importedURLOpt = importsPath.find(imported);
@@ -1001,9 +1004,12 @@ public class GUIGeneratorUtil {
         // prefer "maybe CD" option
         if (importedMaybeCDURLOpt.isPresent()) {
           importedPath = MCPath.toPath(importedMaybeCDURLOpt.get());
+          return Optional.of(path2TSImport(importedMaybeCD));
         } else {
           importedPath = MCPath.toPath(importedURLOpt.get());
+          return Optional.of(path2TSImport(imported));
         }
+        /*
         if (importedPath.isPresent()) {
           Path fromPath = outPath.resolve(importer);
           // Calculate the relative path
@@ -1013,6 +1019,7 @@ public class GUIGeneratorUtil {
               .toString()
               .replaceAll("\\\\", "/")));
         }
+        /**/
       }
       // case: a component imports currently generated other component, e.g.
       // "gen/gui/ExampleComponent.ts" imports "gen/gui/Example.ts" -> "./Example"
@@ -1024,15 +1031,17 @@ public class GUIGeneratorUtil {
   }
 
   protected String path2TSImport(String relativePath) {
+    /*
     if (!relativePath.contains("/")) {
       // Same folder, prepend "./"
       relativePath = "./" + relativePath;
     }
+    /**/
     if (relativePath.endsWith(".ts")) {
       // Remove file extension
       relativePath = relativePath.replace(".ts", "");
     }
-    return relativePath;
+    return relativePath.replaceAll("\\\\", "/");
   }
 
   public Optional<String> getRelativeImportPathForClass(MCPath imported, Path importer, String qualifiedName) {

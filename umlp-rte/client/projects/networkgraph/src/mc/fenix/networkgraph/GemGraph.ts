@@ -16,10 +16,12 @@ import {
 } from "@angular/core";
 import Graph from "graphology";
 import { SerializedGraph } from "graphology-types";
+import { Graph as GUIGraph } from "mc/fenix/networkgraph/networkgraphtypes/Graph";
+import { NodePos } from "mc/fenix/networkgraph/networkgraphtypes/NodePos";
+import { NodePosBuilder } from "mc/fenix/networkgraph/networkgraphtypes/NodePosBuilder";
 import { TooltipOptions } from "primeng/api";
 import { Sigma } from "sigma";
 import { CameraState } from "sigma/types";
-import { Graph as GUIGraph, NodePos, NodePosBuilder } from ".";
 import { ControlButtonsComponent } from "./control-buttons/control-buttons.component";
 import { GraphDataService } from "./data/graph-data.service";
 import { GraphManagerService } from "./data/graph-manager.service";

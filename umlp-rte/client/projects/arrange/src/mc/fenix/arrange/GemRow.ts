@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component, HostBinding, Input } from '@angular/core';
-import { config, GemRowComponent } from '/build/gui/mc/fenix/arrange/GemRowComponent';
+import { config, GemRowComponent } from 'mc/fenix/arrange/GemRowComponent';
 
 @Component({
   standalone: true,

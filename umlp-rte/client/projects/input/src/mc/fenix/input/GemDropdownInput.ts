@@ -4,8 +4,8 @@ import { Component, ElementRef, EventEmitter, HostBinding, HostListener, Output,
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { config, GemDropdownInputComponent } from '/build/gui/mc/fenix/input/GemDropdownInputComponent';
-import { Option } from ".";
+import { config, GemDropdownInputComponent } from 'mc/fenix/input/GemDropdownInputComponent';
+import { Option } from 'mc/fenix/input/gemdropdowninputtypes/Option';
 
 @Component({
   standalone: true,

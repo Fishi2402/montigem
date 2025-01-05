@@ -68,9 +68,9 @@ public class TSImportHelper {
         parts.set(index, parts.get(index).toLowerCase());
       }
       // case: a component in an app imports a component from the app
-      String from = "@src/" + GUIGeneratorUtil.getInstance().qName2path(String.join(".", parts));
+      String from = GUIGeneratorUtil.getInstance().qName2path(String.join(".", parts));
       Optional<String> relativeFrom = GUIGeneratorUtil.getInstance()
-          .getRelativeImportPathForComponent(hwPath, outPath, importsPath, importerQName, qType);
+          .getSourceRootImportPathForComponent(hwPath, outPath, importsPath, importerQName, qType);
       if (relativeFrom.isPresent()) {
         from = relativeFrom.get();
       }

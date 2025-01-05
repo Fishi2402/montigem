@@ -1,10 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component, Input } from '@angular/core';
-import { config, GemRadarChartComponent } from '/build/gui/mc/fenix/charts/GemRadarChartComponent';
+import { config, GemRadarChartComponent } from 'mc/fenix/charts/GemRadarChartComponent';
 import { ChartEvent, ChartOptions } from "chart.js";
 import { NgChartsModule } from 'ng2-charts';
-import { autoColors, GemChartLegend, GemChartOptions, GemRadarChartData, GemRadarChartDataSet } from ".";
+import { GemRadarChartData } from 'mc/fenix/charts/gemradarcharttypes/GemRadarChartData';
+import { GemRadarChartDataSet } from 'mc/fenix/charts/gemradarcharttypes/GemRadarChartDataSet';
+import { autoColors } from './colors';
+import { GemChartLegend } from './GemChartLegend';
+import { GemChartOptions } from './GemChartOptions';
 
 @Component({
   standalone: true,

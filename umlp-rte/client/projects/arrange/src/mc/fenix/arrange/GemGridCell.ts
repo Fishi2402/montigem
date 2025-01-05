@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component, HostBinding, Input, TemplateRef } from "@angular/core";
-import { config, GemGridCellComponent } from '/build/gui/mc/fenix/arrange/GemGridCellComponent';
+import { config, GemGridCellComponent } from 'mc/fenix/arrange/GemGridCellComponent';
 
 @Component({
   standalone: true,

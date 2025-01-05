@@ -1,10 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component, Input } from '@angular/core';
-import { config, GemPieChartComponent } from '/build/gui/mc/fenix/charts/GemPieChartComponent';
+import { config, GemPieChartComponent } from 'mc/fenix/charts/GemPieChartComponent';
 import { ChartDataset, ChartOptions } from "chart.js";
 import { NgChartsModule } from 'ng2-charts';
-import { autoColors, GemChartLegend, GemChartOptions, GemPieChartData } from ".";
+import { GemPieChartData } from 'mc/fenix/charts/gempiecharttypes/GemPieChartData';
+import { autoColors } from './colors';
+import { GemChartLegend } from './GemChartLegend';
+import { GemChartOptions } from './GemChartOptions';
 
 @Component({
   standalone: true,
@@ -128,7 +131,7 @@ export class GemPieChart extends GemPieChartComponent {
     };
   }
 
-  changeInnerRadius(innerRadius: number){
+  changeInnerRadius(innerRadius: number) {
     this._innerRadius = innerRadius;
     this.saveAllOptionsChanges();
   }
