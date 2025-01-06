@@ -43,6 +43,8 @@ import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
+import standalone.com.sun.tools.javac.jvm.Gen;
+import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ObserverDecorator;
 import umlp.generator.gui.GUI2ClassDecorator;
 import umlp.generator.gui.genjava.prettyprinter.Expression2AccessorPrinter;
@@ -59,6 +61,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -790,21 +793,20 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         if(util.isCommandCall(this.gui, node)) {
           getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandResult"));
           getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandManager"));
+          getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("UMLPArrayList"));
           ASTMCType type = createTypeAndAddImports(method.getReturnType());
           String cmdQPath = Joiners.DOT.join(util.getMainDomainModelSimpleName().get().toLowerCase(),
               "commands",StringTransformations.capitalize(method.getName()));
           getCD4C().addImport(clazz, cmdQPath);
 
-          List<ASTCDParameter> params = new ArrayList<>();
+          LinkedHashMap<ASTCDParameter, SymTypeExpression> argumentParams = new LinkedHashMap<>();
           for (int i = 0; i < method.getParamTypes().size(); ++i) {
-
             SymTypeExpression argSTE = method.getParamTypes().get(i);
-            params.add(CDParameterFacade.getInstance().createParameter(
-                createTypeAndAddImports(argSTE),
-                Expression2SetterPrinter.SETTER_PARAM + "_$" + i
-            ));
+            argumentParams.put(CDParameterFacade.getInstance().createParameter(
+                createTypeAndAddImports(argSTE),Expression2SetterPrinter.SETTER_PARAM + "_$" + i),
+                argSTE);
           }
-          getCD4C().addMethod(clazz, getCommandExecutionTemplate(), type, name, params);
+          getCD4C().addMethod(clazz, getCommandExecutionTemplate(), type, name, argumentParams);
         }
         // predefined function: @PersonForm(buttonClick = create(person))
         else if (PredefinedFunction.getMember(name).isPresent()) {

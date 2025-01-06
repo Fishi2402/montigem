@@ -76,6 +76,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -1240,6 +1241,24 @@ public class GUIGeneratorUtil {
       res.append(vs.getType().printFullName());
       res.append(" ");
       res.append(vs.getName());
+    }
+    return res.toString();
+  }
+
+  public String params2String(Map<ASTCDParameter, SymTypeExpression> params) {
+    if(params == null) {
+      return "";
+    }
+    StringBuilder res = new StringBuilder();
+    Iterator<ASTCDParameter> iter = params.keySet().iterator();
+    while (iter.hasNext()) {
+      ASTCDParameter param = iter.next();
+      res.append(param.getMCType().printType());
+      res.append(" ");
+      res.append(param.getName());
+      if (iter.hasNext()) {
+        res.append(",");
+      }
     }
     return res.toString();
   }

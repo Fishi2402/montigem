@@ -64,6 +64,7 @@ public class DelegateGemListToArrayAdapter extends PrinterAdapter {
   public static boolean shouldPrintToArray(Element invocatedType, AbstractTreePrinter printer, GUIAdapterUtils adapterUtils) {
     return invocatedType != null && invocatedType instanceof TypeElement &&
         adapterUtils.isSubTypeOf((TypeElement) invocatedType, "java.util.List") &&
+        !adapterUtils.isSubTypeOf((TypeElement) invocatedType, "umlp.backendrte.common.UMLPArrayList") &&
         !printer.getParent().getKind().equals(Tree.Kind.EXPRESSION_STATEMENT);
   }
 }
