@@ -3,7 +3,7 @@ ${tc.signature("attrName", "type", "typeName", "isCDEnum", "json", "useDeSer", "
 <#if useDeSer>
   jsonPrinter.memberJson("${attrName}", ${objectMapperName}.serialize(command.${genService.getGetterName(attrName, type)}(), "${typeName}").orElseThrow());
 <#else>
-  <#if genService.isList(type)>
+  <#if genService.isListOfGemIdentifiable(type)>
   jsonPrinter.beginArray("${attrName}");
   for(long gemId : command.${genService.getGetterName(attrName, type)}()) {
     jsonPrinter.value(gemId);
