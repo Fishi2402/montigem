@@ -91,7 +91,7 @@ public class BuilderDecorator extends AbstractDecorator {
     getCD4C().addMethod(builderClass, getBuildTemplate(),
         domainClass.getName(),
         managerName,
-        attrAssocLists,
+        attrAssocs,
         TagLookUp.isSingleton(domainClass)
     );
     // TODO: filter by mandatory
@@ -173,6 +173,7 @@ public class BuilderDecorator extends AbstractDecorator {
     getCD4C().addImport(clazz, "java.util.Optional");
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("Gem"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("GemBuildable"));
   }
 
 }
