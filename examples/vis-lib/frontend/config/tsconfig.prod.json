@@ -3,20 +3,23 @@
   "extends": ["./tsconfig.app.json"],
   "compilerOptions": {
     "paths": {
-      "@src/*": ["build/appdomain/*", "build/appgui/*", "src/app/*", "../../src/app/*"],
-      "@angular/*": ["node_modules/@angular/*"],
-      "@umlp/arrange": ["../../../../../umlp-rte/client/build/dist/umlp/arrange"],
-      "@umlp/basic": ["../../../../../umlp-rte/client/build/dist/umlp/basic"],
-      "@umlp/charts": ["../../../../../umlp-rte/client/build/dist/umlp/charts"],
-      "@umlp/common": ["../../../../../umlp-rte/client/build/dist/umlp/common"],
-      "@umlp/commonj2ts": ["../../../../../umlp-rte/client/build/dist/umlp/commonj2ts"],
-      "@umlp/input": ["../../../../../umlp-rte/client/build/dist/umlp/input"],
-      "@umlp/navigation": ["../../../../../umlp-rte/client/build/dist/umlp/navigation"],
-      "@umlp/table": ["../../../../../umlp-rte/client/build/dist/umlp/table"],
-      "@umlp/networkgraph": ["../../../../../umlp-rte/client/build/dist/umlp/networkgraph"],
-      "@umlp/*": ["node_modules/@umlp/*"],
-      "tslib": ["node_modules/tslib"],
-      "rxjs": ["node_modules/rxjs"]
+      "@umlp/arrange": ["../../../../../umlp-rte/client/build/dist/arrange"],
+      "@umlp/basic": ["../../../../../umlp-rte/client/build/dist/basic"],
+      "@umlp/charts": ["../../../../../umlp-rte/client/build/dist/charts"],
+      "@umlp/common": ["../../../../../umlp-rte/client/build/dist/common"],
+      "@umlp/commonj2ts": ["../../../../../umlp-rte/client/build/dist/commonj2ts"],
+      "@umlp/input": ["../../../../../umlp-rte/client/build/dist/input"],
+      "@umlp/navigation": ["../../../../../umlp-rte/client/build/dist/navigation"],
+      "@umlp/table": ["../../../../../umlp-rte/client/build/dist/table"],
+      "@umlp/networkgraph": ["../../../../../umlp-rte/client/build/dist/networkgraph"],
+      "*": [
+        "node_modules/*",
+        "build/appdomain/*",
+        "build/appgui/*",
+        "../umlp/fe2/*",
+        "src/app/*",
+        "../../src/app/*"
+      ]
     }
   }
 }

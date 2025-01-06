@@ -53,12 +53,13 @@ def buildTaskPrefix = "build_"
 def publishTaskPrefix = "publish_"
 def copyTaskPrefix = "copy_types_"
 def genTaskPrefix = "gen_"
+def genNpmrcTaskPrefix = "npmrc_"
 def buildFolders = []
 
 libs.each {
   def libName = it
   def buildTaskName = "${buildTaskPrefix}${libName}"
-  def genNpmrcTaskName = "gen_npmrc_${libName}"
+  def genNpmrcTaskName = "${genNpmrcTaskPrefix}${libName}"
   def publishTaskName = "${publishTaskPrefix}${libName}"
   def npmOutput = "dist/${libName}"
 
@@ -67,14 +68,15 @@ libs.each {
     dependsOn tasks.npmInstall
     args = ["run", "build", "@umlp/${libName}"]
     // e.g. `projects/basic/src/mc/fenix/basic/`
-    inputs.dir(project.fileTree("projects/${libName}/src/mc/fenix/${libName}/")
+    inputs.dir(project.fileTree("projects/${libName}")
+        .exclude("**/build/**")
         .exclude("**/*.spec.ts", "**/*.md"))
     inputs.files("angular.json", "tsconfig.json", "tsconfig.prod.json", "package.json")
     // e.g. `build/dist/basic/`
     outputs.dir("${project.buildDir}/${npmOutput}")
   }
 
-  // task `gen_npmrc_<lib_name>` that creates .npmrc file for publishing
+  // task `npmrc_<lib_name>` that creates .npmrc file for publishing
   task "${genNpmrcTaskName}"(type: NPMAuthCreate) {
     dependsOn "${buildTaskName}"
     // e.g. `build/dist/basic/.npmrc`

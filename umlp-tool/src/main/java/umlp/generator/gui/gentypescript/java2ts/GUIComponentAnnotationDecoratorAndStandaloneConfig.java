@@ -84,7 +84,7 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
           }
         }
         else {
-          importHelper.addImportString("import { Component } from '@angular/core';");
+          importHelper.addImportString("import { Directive } from '@angular/core';");
           // TODO #3768
           Optional<String> hwHtmlPath = util.getRelativeImportPath(
               hwPath, outPath, qClassName, "html");

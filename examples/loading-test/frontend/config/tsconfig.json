@@ -1,4 +1,3 @@
-/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
   "compileOnSave": false,
   "compilerOptions": {
@@ -21,27 +20,29 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
-    "allowSyntheticDefaultImports": true,
     "useDefineForClassFields": false,
     "lib": [
       "ES2022",
       "dom"
     ],
     "paths": {
-      "@src/*": ["build/appdomain/*", "build/appgui/*", "src/app/*", "../../src/app/*"],
-      "@angular/*": ["node_modules/@angular/*"],
-      "@umlp/arrange": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/arrange"],
-      "@umlp/basic": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/basic"],
-      "@umlp/charts": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/charts"],
-      "@umlp/common": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/common"],
-      "@umlp/commonj2ts": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/commonj2ts"],
-      "@umlp/input": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/input"],
-      "@umlp/navigation": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/navigation"],
-      "@umlp/table": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/table"],
-      "@umlp/networkgraph": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/networkgraph"],
-      "@umlp/*": ["node_modules/@umlp/*"],
-      "tslib": ["node_modules/tslib"],
-      "rxjs": ["node_modules/rxjs"], // required due to: error TS2307: Cannot find module 'rxjs' or its corresponding type declarations
+      "@umlp/arrange": ["../../../../../umlp-rte/client/projects/arrange"],
+      "@umlp/basic": ["../../../../../umlp-rte/client/projects/basic"],
+      "@umlp/charts": ["../../../../../umlp-rte/client/projects/charts"],
+      "@umlp/common": ["../../../../../umlp-rte/client/projects/common"],
+      "@umlp/commonj2ts": ["../../../../../umlp-rte/client/projects/commonj2ts"],
+      "@umlp/input": ["../../../../../umlp-rte/client/projects/input"],
+      "@umlp/navigation": ["../../../../../umlp-rte/client/projects/navigation"],
+      "@umlp/networkgraph": ["../../../../../umlp-rte/client/projects/networkgraph"],
+      "@umlp/table": ["../../../../../umlp-rte/client/projects/table"],
+      "*": [
+        "node_modules/*",
+        "build/appdomain/*",
+        "build/appgui/*",
+        "../umlp/fe2/*",
+        "src/app/*",
+        "../../src/app/*"
+      ]
     }
   },
   "angularCompilerOptions": {

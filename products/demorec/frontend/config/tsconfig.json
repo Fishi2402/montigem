@@ -33,6 +33,7 @@
       "@umlp/commonj2ts": ["../../../../../umlp-rte/client/projects/commonj2ts"],
       "@umlp/input": ["../../../../../umlp-rte/client/projects/input"],
       "@umlp/navigation": ["../../../../../umlp-rte/client/projects/navigation"],
+      "@umlp/networkgraph": ["../../../../../umlp-rte/client/projects/networkgraph"],
       "@umlp/table": ["../../../../../umlp-rte/client/projects/table"],
       "*": [
         "node_modules/*",

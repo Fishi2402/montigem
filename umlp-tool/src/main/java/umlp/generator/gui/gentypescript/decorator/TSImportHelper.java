@@ -77,7 +77,7 @@ public class TSImportHelper {
         from += "Component";
       }
       Optional<String> relativeFrom = getImportPathForComponent(
-          hwPath, outPath, importsPath, importerQName, qType, importIntermediateAngularClass);
+          hwPath, outPath, importsPath, importerQName, qType);
       if (relativeFrom.isPresent()) {
         from = relativeFrom.get();
       }
@@ -111,7 +111,7 @@ public class TSImportHelper {
   }
 
   protected Optional<String> getImportPathForComponent(
-      MCPath hwPath, Path outPath, MCPath importsPath, String importerQName, String importedQName, boolean importIntermediateAngularClass) {
+      MCPath hwPath, Path outPath, MCPath importsPath, String importerQName, String importedQName) {
     String importedQualifier = Names.getQualifier(importedQName);
     String importedSimpleName = Names.getSimpleName(importedQName);
     String importedMaybeCD;
@@ -124,14 +124,26 @@ public class TSImportHelper {
       // Rejoin the parts with the modified last part
       importedMaybeCD = Joiner.on('/').join(parts.subList(0, lastIndex))
           + (lastIndex > 0 ? "/" : "") + lastPart
-          + "/" + importedSimpleName + ".ts";
+          + "/" + importedSimpleName;
     }
     else {
-      importedMaybeCD = importedQualifier + ".ts";
+      importedMaybeCD = importedQualifier;
     }
 
-    String imported = Names.getPathFromPackage(importedQName) + ".ts";
-    String importer = Names.getPathFromPackage(importerQName) + ".ts";
+    String imported = Names.getPathFromPackage(importedQName);
+    String importer = Names.getPathFromPackage(importerQName);
+
+    if (UMLPGeneratorConfig.getInstance().isUseJsweet()) {
+      importedMaybeCD += ".java";
+      imported += ".java";
+      importer += ".java";
+    }
+    else {
+      importedMaybeCD += ".ts";
+      imported += ".ts";
+      importer += ".ts";
+    }
+
     // case: TOP is used, use path to HW file, e.g.,
     // "gen/gui/ExampleComponent.ts" imports "hw/gui/Example.ts" -> "../../hw/gui/Example"
     Optional<URL> hwFilePath = hwPath.find(imported);
@@ -206,6 +218,10 @@ public class TSImportHelper {
     if (rootPath.endsWith(".ts")) {
       // Remove file extension
       rootPath = rootPath.replace(".ts", "");
+    }
+    if (rootPath.endsWith(".java")) {
+      // Remove file extension
+      rootPath = rootPath.replace(".java", "");
     }
     return rootPath.replaceAll("\\\\", "/");
   }
