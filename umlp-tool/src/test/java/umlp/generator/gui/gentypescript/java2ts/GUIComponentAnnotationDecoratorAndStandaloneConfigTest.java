@@ -17,7 +17,9 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfigTest extends Doma
 
   @Test
   public void testRecursiveComponentImportsStandaloneConfig() {
-    GUIComponentAnnotationDecoratorAndStandaloneConfig generator = new GUIComponentAnnotationDecoratorAndStandaloneConfig(null, null, null);
+    GUIComponentAnnotationDecoratorAndStandaloneConfig generator = new GUIComponentAnnotationDecoratorAndStandaloneConfig(
+        null, null, null, null
+    );
     ASTGUICompilationUnit ast = processGUIModel(
         "gui/gentypescript/java2ts/DirNode.gui",
         "src/test/resources/gui"

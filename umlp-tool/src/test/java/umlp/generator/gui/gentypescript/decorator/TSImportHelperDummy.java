@@ -3,7 +3,7 @@ package umlp.generator.gui.gentypescript.decorator;
 public class TSImportHelperDummy extends TSImportHelper {
 
   public TSImportHelperDummy() {
-    super(null, null);
+    super(null, null, null, null, null);
   }
 
   @Override

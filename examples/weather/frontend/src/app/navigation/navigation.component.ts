@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 import { Component } from "@angular/core";
-import { FavoriteListComponent } from 'gui/widgets/navigation/FavoriteListComponent';
+import { FavoriteList } from 'gui/widgets/navigation/FavoriteListComponent';
 import { RouterModule } from '@angular/router';
 import {CommonModule} from '@angular/common';
 @Component({
   standalone:true,
-  imports:[FavoriteListComponent,RouterModule,CommonModule],
+  imports:[FavoriteList,RouterModule,CommonModule],
   selector: "navigation",
   templateUrl: "./navigation.component.html",
   styleUrls: ["./navigation.component.scss"]
