@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component, Input } from '@angular/core';
-import { config, GemChartLegendComponent } from 'mc/fenix/charts/GemChartLegendComponent';
+import { config, GemChartLegendComponent } from '../../../../build/gui/mc/fenix/charts/GemChartLegendComponent';
 
 @Component({
   standalone: true,

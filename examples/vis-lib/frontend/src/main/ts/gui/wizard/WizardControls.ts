@@ -16,7 +16,7 @@ import {
 } from "@angular/common";
 
 import "@angular/compiler";
-import {InspectorService} from "@src/wizard/InspectorService";
+import {InspectorService} from "wizard/InspectorService";
 import {Observable} from "rxjs";
 
 

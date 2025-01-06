@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component, Input } from '@angular/core';
-import { config, GemBulletChartComponent } from 'mc/fenix/charts/GemBulletChartComponent';
+import { config, GemBulletChartComponent } from '../../../../build/gui/mc/fenix/charts/GemBulletChartComponent';
 import { PlotlyViaCDNModule } from "angular-plotly.js";
 
 @Component({

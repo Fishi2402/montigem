@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { OverviewPageComponent, config } from '@src/gui/montiverse/OverviewPageComponent';
-import { Project } from '@src/dtcockpit/Project';
+import { OverviewPageComponent, config } from 'gui/montiverse/OverviewPageComponent';
+import { Project } from 'dtcockpit/Project';
 import { Option } from '@umlp/input';
 import { CommandManager } from '@umlp/common';
-import { StartMontiVerseLitePipeline } from '@src/dtcockpit/commands/StartMontiVerseLitePipeline';
+import { StartMontiVerseLitePipeline } from 'dtcockpit/commands/StartMontiVerseLitePipeline';
 
 import {
   Component

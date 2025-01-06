@@ -26,14 +26,14 @@
       "dom"
     ],
     "paths": {
-      "@umlp/arrange": ["../../../../../umlp-rte/client/build/dist/arrange"],
-      "@umlp/basic": ["../../../../../umlp-rte/client/build/dist/basic"],
-      "@umlp/charts": ["../../../../../umlp-rte/client/build/dist/charts"],
-      "@umlp/common": ["../../../../../umlp-rte/client/build/dist/common"],
-      "@umlp/commonj2ts": ["../../../../../umlp-rte/client/build/dist/commonj2ts"],
-      "@umlp/input": ["../../../../../umlp-rte/client/build/dist/input"],
-      "@umlp/navigation": ["../../../../../umlp-rte/client/build/dist/navigation"],
-      "@umlp/table": ["../../../../../umlp-rte/client/build/dist/table"],
+      "@umlp/arrange": ["../../../../../umlp-rte/client/projects/arrange"],
+      "@umlp/basic": ["../../../../../umlp-rte/client/projects/basic"],
+      "@umlp/charts": ["../../../../../umlp-rte/client/projects/charts"],
+      "@umlp/common": ["../../../../../umlp-rte/client/projects/common"],
+      "@umlp/commonj2ts": ["../../../../../umlp-rte/client/projects/commonj2ts"],
+      "@umlp/input": ["../../../../../umlp-rte/client/projects/input"],
+      "@umlp/navigation": ["../../../../../umlp-rte/client/projects/navigation"],
+      "@umlp/table": ["../../../../../umlp-rte/client/projects/table"],
       "*": [
         "node_modules/*",
         "build/appdomain/*",

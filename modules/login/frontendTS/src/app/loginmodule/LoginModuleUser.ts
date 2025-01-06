@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {LoginModuleUserTOP} from '@src/loginmodule/LoginModuleUserTOP';
+import {LoginModuleUserTOP} from 'loginmodule/LoginModuleUserTOP';
 
 export class LoginModuleUser extends LoginModuleUserTOP {
   protected _statusUsername = '';

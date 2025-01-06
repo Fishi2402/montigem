@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 import { Component } from '@angular/core';
-import { NextHoursForecastComponent,config } from "@src/gui/next_hours_forecast/NextHoursForecastComponent";
+import { NextHoursForecastComponent,config } from "gui/next_hours_forecast/NextHoursForecastComponent";
 
 @Component({
   standalone:true,

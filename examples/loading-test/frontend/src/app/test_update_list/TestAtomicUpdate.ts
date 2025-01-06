@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 import {Component} from '@angular/core';
-import {config, TestAtomicUpdateComponent} from '@src/test_update_list/TestAtomicUpdateComponent';
-import {ReplaceFoodItem} from '@src/loadingtests/commands/ReplaceFoodItem';
+import {config, TestAtomicUpdateComponent} from 'test_update_list/TestAtomicUpdateComponent';
+import {ReplaceFoodItem} from 'loadingtests/commands/ReplaceFoodItem';
 import {CommandManager, Event} from "@umlp/common";
 
 @Component({

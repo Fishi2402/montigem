@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-import {ProjectFileViewLinkComponent,config} from '@src/gui/artifacts/ProjectFileViewLinkComponent';
+import {ProjectFileViewLinkComponent,config} from 'gui/artifacts/ProjectFileViewLinkComponent';
 
 import {Component,} from '@angular/core';
 

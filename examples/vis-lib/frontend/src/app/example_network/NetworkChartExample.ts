@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { NetworkChartExampleComponent ,config} from '@src/example_network/NetworkChartExampleComponent';
+import { NetworkChartExampleComponent ,config} from 'example_network/NetworkChartExampleComponent';
 import {Graph, GraphBuilder, GraphEdge, GraphEdgeBuilder, GraphNode, GraphNodeBuilder} from '@umlp/networkgraph';
 import { GemGraphComponent } from '@umlp/networkgraph';
 

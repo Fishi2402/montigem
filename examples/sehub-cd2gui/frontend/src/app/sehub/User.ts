@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {UserTOP} from '@src/sehub/UserTOP';
-import { SehubRole } from '@src/sehub/SehubRole';
+import {UserTOP} from 'sehub/UserTOP';
+import { SehubRole } from 'sehub/SehubRole';
 
 export class User extends UserTOP {
 

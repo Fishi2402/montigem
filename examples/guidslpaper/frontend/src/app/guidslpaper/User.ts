@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {UserTOP} from '@src/guidslpaper/UserTOP';
-import {Role} from '@src/guidslpaper/Role';
+import {UserTOP} from 'guidslpaper/UserTOP';
+import {Role} from 'guidslpaper/Role';
 
 export class User extends UserTOP {
 

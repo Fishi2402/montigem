@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {Component} from '@angular/core';
-import {ResetPasswordComponent,config} from '@src/gui/login/ResetPasswordComponent';
-import {User} from '@src/guidslpaper//User';
-import {GuidslpaperManager} from '@src/guidslpaper/GuidslpaperManager';
+import {ResetPasswordComponent,config} from 'gui/login/ResetPasswordComponent';
+import {User} from 'guidslpaper//User';
+import {GuidslpaperManager} from 'guidslpaper/GuidslpaperManager';
 
 @Component({
   standalone:true,

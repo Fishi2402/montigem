@@ -2,7 +2,7 @@
 
 import { Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { config, GemCheckBoxInputComponent } from 'mc/fenix/input/GemCheckBoxInputComponent';
+import { config, GemCheckBoxInputComponent } from '../../../../build/gui/mc/fenix/input/GemCheckBoxInputComponent';
 
 @Component({
   standalone: true,

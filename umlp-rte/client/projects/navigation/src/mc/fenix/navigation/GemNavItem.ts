@@ -2,7 +2,7 @@
 
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, Scroll } from "@angular/router";
-import { config, GemNavItemComponent } from 'mc/fenix/navigation/GemNavItemComponent';
+import { config, GemNavItemComponent } from '../../../../build/gui/mc/fenix/navigation/GemNavItemComponent';
 import { filter } from 'rxjs/operators';
 
 @Component({

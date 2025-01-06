@@ -28,11 +28,11 @@ export class EditComponentKind extends EditComponentKindComponent {
   public override checkKindName(): GemTextInputValidity {
     if(this.getComponentKind()) {
       if(this.getComponentKind().getName()) {
-        return {status: "Success"}
+        return new GemTextInputValidity("Success")
       }
-      return {status: "Error", message: "Enter a name."}
+      return new GemTextInputValidity("Error", "Enter a name.");
     }
-    return {status: "Warning", message: "Wait for page init."}
+    return new GemTextInputValidity("Warning", "Wait for page init.");
   }
 
 }

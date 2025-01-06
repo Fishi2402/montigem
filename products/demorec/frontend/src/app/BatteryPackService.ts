@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from "node_modules/rxjs";
+import { BehaviorSubject, Observable, of } from "rxjs";
 import { BatteryPack } from 'demorec/BatteryPack';
 
 @Injectable({

@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component, Input } from '@angular/core';
-import { config, GemNetworkGraphComponent } from 'mc/fenix/charts/GemNetworkGraphComponent';
-import { GemNetworkData } from 'mc/fenix/charts/gemnetworkgraphtypes/GemNetworkData';
-import { GemNetworkDataBuilder } from 'mc/fenix/charts/gemnetworkgraphtypes/GemNetworkDataBuilder';
-import { GemNetworkNodeBuilder } from 'mc/fenix/charts/gemnetworkgraphtypes/GemNetworkNodeBuilder';
+import { config, GemNetworkGraphComponent } from '../../../../build/gui/mc/fenix/charts/GemNetworkGraphComponent';
+import { GemNetworkData } from '../../../../build/cd/mc/fenix/charts/gemnetworkgraphtypes/GemNetworkData';
+import { GemNetworkDataBuilder } from '../../../../build/cd/mc/fenix/charts/gemnetworkgraphtypes/GemNetworkDataBuilder';
+import { GemNetworkNodeBuilder } from '../../../../build/cd/mc/fenix/charts/gemnetworkgraphtypes/GemNetworkNodeBuilder';
 import { Observable } from 'rxjs';
 import { DataSet, DataView, Network, Options } from 'vis-network/standalone';
 import { GemChartLegend } from './GemChartLegend';

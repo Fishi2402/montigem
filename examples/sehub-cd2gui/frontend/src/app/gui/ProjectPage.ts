@@ -2,9 +2,9 @@
 
 import {GemTreeviewEntry} from '@umlp/basic';
 import {GemNetworkData, GemNetworkEdge, GemNetworkNode} from '@umlp/charts';
-import {ProjectPageComponent,config} from '@src/gui/ProjectPageComponent';
-import {Artifact} from '@src/sehub/Artifact';
-import {Directory} from '@src/sehub/Directory';
+import {ProjectPageComponent,config} from 'gui/ProjectPageComponent';
+import {Artifact} from 'sehub/Artifact';
+import {Directory} from 'sehub/Directory';
 import { SehubSecurityManager } from "../sehub/SehubSecurityManager";
 import {Component} from '@angular/core';
 

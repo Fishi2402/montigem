@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {Component} from '@angular/core';
-import {UserLoginComponent,config} from '@src/gui/login/UserLoginComponent';
-import {User} from '@src/finanzverwaltung/User';
+import {UserLoginComponent,config} from 'gui/login/UserLoginComponent';
+import {User} from 'finanzverwaltung/User';
 import {FinanzverwaltungSecurityManager} from "../../finanzverwaltung/FinanzverwaltungSecurityManager";
 
 // import { ActivatedRoute, Router } from '@angular/router';

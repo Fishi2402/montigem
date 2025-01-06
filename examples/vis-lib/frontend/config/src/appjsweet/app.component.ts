@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { DomainManagerClientImpl } from '@src/domain/DomainManagerClientImpl';
+import { DomainManagerClientImpl } from 'domain/DomainManagerClientImpl';
 // JSweet
 import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from '@umlp/commonj2ts';
-import { DomainComponentObserverManager } from '@src/DomainComponentObserverManager'
+import { DomainComponentObserverManager } from 'DomainComponentObserverManager'
 // Non-JSweet
 
 @Component({

@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { config, GemVennDiagramComponent } from 'mc/fenix/charts/GemVennDiagramComponent';
+import { config, GemVennDiagramComponent } from '../../../../build/gui/mc/fenix/charts/GemVennDiagramComponent';
 import * as d3 from 'd3';
 import * as venn from 'venn.js';
-import { GemVennDiagramData } from 'mc/fenix/charts/gemvenndiagramtypes/GemVennDiagramData';
+import { GemVennDiagramData } from '../../../../build/cd/mc/fenix/charts/gemvenndiagramtypes/GemVennDiagramData';
 import { autoColors } from './colors';
 import { GemChartLegend } from './GemChartLegend';
 import { GemChartOptions } from './GemChartOptions';

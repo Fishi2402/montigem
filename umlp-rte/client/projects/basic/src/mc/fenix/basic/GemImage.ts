@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component, HostBinding, Input } from '@angular/core';
-import { config, GemImageComponent } from 'mc/fenix/basic/GemImageComponent';
+import { config, GemImageComponent } from '../../../../build/gui/mc/fenix/basic/GemImageComponent';
 
 @Component({
   standalone: true,

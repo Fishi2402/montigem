@@ -343,7 +343,7 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
   }
 
   protected void addImport(String qType, String as) {
-    importHelper.addImport(qType, Optional.of(as), gui.getComponentQName());
+    importHelper.addImport(qType, Optional.of(as), false, gui.getComponentQName());
   }
 
   @Override

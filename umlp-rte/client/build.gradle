@@ -69,7 +69,7 @@ libs.each {
     // e.g. `projects/basic/src/mc/fenix/basic/`
     inputs.dir(project.fileTree("projects/${libName}/src/mc/fenix/${libName}/")
         .exclude("**/*.spec.ts", "**/*.md"))
-    inputs.files("angular.json", "tsconfig.base.json", "package.json")
+    inputs.files("angular.json", "tsconfig.json", "tsconfig.prod.json", "package.json")
     // e.g. `build/dist/basic/`
     outputs.dir("${project.buildDir}/${npmOutput}")
   }
@@ -119,6 +119,7 @@ libs.each {
       importsDir = files(targetRoot)
       guiGenJsweet = false
       guiGenTSFuncionality = true
+      gen4TSLib = true
     }
 
     tasks[buildTaskName].dependsOn tasks[genTaskName]

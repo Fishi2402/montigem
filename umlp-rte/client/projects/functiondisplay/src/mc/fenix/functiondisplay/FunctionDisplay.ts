@@ -2,11 +2,11 @@
 
 import { Component, Input } from "@angular/core";
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { config, FunctionDisplayComponent } from 'mc/fenix/functiondisplay/FunctionDisplayComponent';
+import { config, FunctionDisplayComponent } from '../../../../build/gui/mc/fenix/functiondisplay/FunctionDisplayComponent';
 import ELK from 'elkjs/lib/elk.bundled';
-import { Function4Display } from "mc/fenix/functiondisplay/functionstructure4fenix/Function4Display";
-import { Function4DisplayBuilder } from "mc/fenix/functiondisplay/functionstructure4fenix/Function4DisplayBuilder";
-import { Port4Display } from "mc/fenix/functiondisplay/functionstructure4fenix/Port4Display";
+import { Function4Display } from "../../../../build/cd/mc/fenix/functiondisplay/functionstructure4fenix/Function4Display";
+import { Function4DisplayBuilder } from "../../../../build/cd/mc/fenix/functiondisplay/functionstructure4fenix/Function4DisplayBuilder";
+import { Port4Display } from "../../../../build/cd/mc/fenix/functiondisplay/functionstructure4fenix/Port4Display";
 import { Port4Elk, Funktion4Elk } from "./FunctionStructure4Fenix";
 
 @Component({

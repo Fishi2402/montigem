@@ -2,7 +2,7 @@
 
 import { Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { config, GemTextInputComponent } from 'mc/fenix/input/GemTextInputComponent';
+import { config, GemTextInputComponent } from '../../../../build/gui/mc/fenix/input/GemTextInputComponent';
 import { GemTextInputMode } from './GemTextInputMode';
 import { MatTooltipModule } from '@angular/material/tooltip';
 

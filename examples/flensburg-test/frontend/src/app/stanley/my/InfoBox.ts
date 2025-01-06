@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
-import { InfoBoxComponent } from "@src/stanley/my/InfoBoxComponent";
-import {config} from "@src/stanley/my/InfoBoxStandaloneConfig";
+import { InfoBoxComponent } from "stanley/my/InfoBoxComponent";
+import {config} from "stanley/my/InfoBoxStandaloneConfig";
 @Component({
   standalone:true,
   imports:[...config.imports],

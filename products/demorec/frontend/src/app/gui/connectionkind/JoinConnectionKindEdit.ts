@@ -183,21 +183,21 @@ export class JoinConnectionKindEdit extends JoinConnectionKindEditComponent impl
   public checkConnectionType() : GemTextInputValidity {
     if(this.getConnectionKind()) {
       if(this.getConnectionKind().getJoinConnectionType()) {
-        return {status: "Success"}
+        return new GemTextInputValidity("Success");
       }
-      return {status: "Error", message: "Please choose a connection type."}
+      return new GemTextInputValidity("Error", "Please choose a connection type.");
     }
-    return {status: "Warning", message: "Wait for page init."}
+    return new GemTextInputValidity("Warning", "Wait for page init.");
   }
 
   public checkChosenComponents() : GemTextInputValidity {
     if(this.getConnectionKind()) {
       if(this.getConnectionKind().getConnectsList().length >= 2) {
-        return {status: "Success"}
+        return new GemTextInputValidity("Success")
       }
-      return {status: "Warning", message: "Later on, you should specify at least 2 connected components."}
+      return new GemTextInputValidity("Warning", "Later on, you should specify at least 2 connected components.");
     }
-    return {status: "Warning", message: "Wait for page init."}
+    return new GemTextInputValidity("Warning", "Wait for page init.");
   }
 
 }

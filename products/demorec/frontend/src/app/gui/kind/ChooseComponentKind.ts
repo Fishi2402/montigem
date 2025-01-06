@@ -98,11 +98,11 @@ export class ChooseComponentKind extends ChooseComponentKindComponent {
   public override checkKindChoice() : GemTextInputValidity {
     if(this.kindEntry) {
       if(this.kindEntry === newOption.getValue()) {
-        return {status: "Error", message: "Please save the new component kind or choose another one."}
+        return new GemTextInputValidity("Error", "Please save the new component kind or choose another one.");
       }
-      return {status: "Success"}
+      return new GemTextInputValidity("Success");
     }
-    return {status: "Error", message: "Please enter a valid component kind."}
+    return new GemTextInputValidity("Error", "Please enter a valid component kind.");
   }
 
 }

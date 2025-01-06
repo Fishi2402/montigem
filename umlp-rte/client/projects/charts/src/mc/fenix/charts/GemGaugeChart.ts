@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component, Input } from '@angular/core';
-import { config, GemGaugeChartComponent } from 'mc/fenix/charts/GemGaugeChartComponent';
+import { config, GemGaugeChartComponent } from '../../../../build/gui/mc/fenix/charts/GemGaugeChartComponent';
 import { NgxChartsModule, ScaleType } from "@swimlane/ngx-charts";
-import { GemGaugeChartData } from 'mc/fenix/charts/gemgaugecharttypes/GemGaugeChartData';
+import { GemGaugeChartData } from '../../../../build/cd/mc/fenix/charts/gemgaugecharttypes/GemGaugeChartData';
 import { autoColors } from './colors';
 import { GemChartLegend } from './GemChartLegend';
 import { GemChartOptions } from './GemChartOptions';

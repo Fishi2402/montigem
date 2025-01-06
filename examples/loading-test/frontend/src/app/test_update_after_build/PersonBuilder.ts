@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 import { Component } from '@angular/core';
-import { PersonBuilderComponent,config } from '@src/test_update_after_build/PersonBuilderComponent';
+import { PersonBuilderComponent,config } from 'test_update_after_build/PersonBuilderComponent';
 
 
 @Component({

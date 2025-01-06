@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {UserTOP} from '@src/dtcockpit/UserTOP';
-import {DtcockpitRole} from '@src/dtcockpit/DtcockpitRole';
+import {UserTOP} from 'dtcockpit/UserTOP';
+import {DtcockpitRole} from 'dtcockpit/DtcockpitRole';
 
 export class User extends UserTOP {
 

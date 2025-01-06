@@ -1,13 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component, Input } from '@angular/core';
-import { config, GemSunburstChartComponent } from 'mc/fenix/charts/GemSunburstChartComponent';
+import { config, GemSunburstChartComponent } from '../../../../build/gui/mc/fenix/charts/GemSunburstChartComponent';
 import { ChartDataset, ChartOptions } from "chart.js";
 import { NgChartsModule } from 'ng2-charts';
-import { GemSunburstData } from 'mc/fenix/charts/gemsunburstcharttypes/GemSunburstData';
-import { GemSunburstDataBuilder } from 'mc/fenix/charts/gemsunburstcharttypes/GemSunburstDataBuilder';
-import { GemSunburstEntry } from 'mc/fenix/charts/gemsunburstcharttypes/GemSunburstEntry';
-import { GemSunburstEntryBuilder } from 'mc/fenix/charts/gemsunburstcharttypes/GemSunburstEntryBuilder';
+import { GemSunburstData } from '../../../../build/cd/mc/fenix/charts/gemsunburstcharttypes/GemSunburstData';
+import { GemSunburstDataBuilder } from '../../../../build/cd/mc/fenix/charts/gemsunburstcharttypes/GemSunburstDataBuilder';
+import { GemSunburstEntry } from '../../../../build/cd/mc/fenix/charts/gemsunburstcharttypes/GemSunburstEntry';
+import { GemSunburstEntryBuilder } from '../../../../build/cd/mc/fenix/charts/gemsunburstcharttypes/GemSunburstEntryBuilder';
 import { autoColors } from './colors';
 import { GemChartLegend } from './GemChartLegend';
 import { GemChartOptions } from './GemChartOptions';

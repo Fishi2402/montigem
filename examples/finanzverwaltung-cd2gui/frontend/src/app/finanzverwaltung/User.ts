@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {UserTOP} from '@src/finanzverwaltung/UserTOP';
-import {Role} from '@src/finanzverwaltung/Role';
+import {UserTOP} from 'finanzverwaltung/UserTOP';
+import {Role} from 'finanzverwaltung/Role';
 
 export class User extends UserTOP {
 

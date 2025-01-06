@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {User} from '@src/sehub/User';
+import {User} from 'sehub/User';
 
 export class SehubSecurityManager {
 

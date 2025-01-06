@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { Person } from '@src/domain/Person';
-import { GemTreeviewExampleComponent, config } from '@src/example_basic/GemTreeviewExampleComponent';
+import { Person } from 'domain/Person';
+import { GemTreeviewExampleComponent, config } from 'example_basic/GemTreeviewExampleComponent';
 import { GemTreeviewEntry } from '@umlp/basic';
 import { Event } from '@umlp/common';
-import {stringifyWithoutRealBuilder} from "@src/StringifyWithoutRealBuilder";
+import {stringifyWithoutRealBuilder} from "StringifyWithoutRealBuilder";
 
 @Component({
   standalone: true,

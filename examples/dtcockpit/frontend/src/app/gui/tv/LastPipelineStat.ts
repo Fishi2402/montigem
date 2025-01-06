@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { LastPipelineStatComponent,config } from '@src/gui/tv/LastPipelineStatComponent';
+import { LastPipelineStatComponent,config } from 'gui/tv/LastPipelineStatComponent';
 
 @Component({
   standalone:true,

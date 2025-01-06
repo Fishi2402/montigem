@@ -1,12 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component, Input } from '@angular/core';
-import { config, GemScatterPlotComponent } from 'mc/fenix/charts/GemScatterPlotComponent';
+import { config, GemScatterPlotComponent } from '../../../../build/gui/mc/fenix/charts/GemScatterPlotComponent';
 import { ChartDataset, ChartOptions, TooltipItem } from 'chart.js';
 import { NgChartsModule } from 'ng2-charts';
-import { GemScatterPlotAxis } from 'mc/fenix/charts/gemscatterplottypes/GemScatterPlotAxis';
-import { GemScatterPlotData } from 'mc/fenix/charts/gemscatterplottypes/GemScatterPlotData';
-import { GemScatterPlotShape } from 'mc/fenix/charts/gemscatterplottypes/GemScatterPlotShape';
+import { GemScatterPlotAxis } from '../../../../build/cd/mc/fenix/charts/gemscatterplottypes/GemScatterPlotAxis';
+import { GemScatterPlotData } from '../../../../build/cd/mc/fenix/charts/gemscatterplottypes/GemScatterPlotData';
+import { GemScatterPlotShape } from '../../../../build/cd/mc/fenix/charts/gemscatterplottypes/GemScatterPlotShape';
 import { autoColors } from './colors';
 import { GemChartLegend } from './GemChartLegend';
 import { GemChartOptions } from './GemChartOptions';

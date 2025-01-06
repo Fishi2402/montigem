@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { Meeting } from '@src/dtcockpit/Meeting';
+import { Meeting } from 'dtcockpit/Meeting';
 import { GemList } from '@umlp/common';
 
 import { Component, Input } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-import {config, CalendarComponent} from "@src/gui/widgets/CalendarComponent";
+import {config, CalendarComponent} from "gui/widgets/CalendarComponent";
 interface CalendarBlock {
   x: number;
   y: number;

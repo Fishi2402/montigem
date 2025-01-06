@@ -4,7 +4,7 @@
 import {GemButton, GemCheckbox, GemImage, GemLink, GemText} from "@umlp/basic";
 import {GemCard, GemColumn, GemColumns,  GemRow, GemRows} from "@umlp/arrange";
 
-import {WizardContainer} from "@src/wizard/WizardContainer";
+import {WizardContainer} from "wizard/WizardContainer";
 
 interface InspectData {
   [key: string]: {

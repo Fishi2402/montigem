@@ -1,5 +1,6 @@
 package umlp.generator.gui.gentypescript.decorator;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -7,10 +8,13 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.io.paths.MCPath;
+import de.se_rwth.commons.Names;
+import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.List;
@@ -34,7 +38,7 @@ public class TSImportHelper {
     this.importsPath = importsPath;
   }
 
-  public void addImport(String qType, Optional<String> as, String importerQName) {
+  public void addImport(String qType, Optional<String> as, boolean importIntermediateAngularClass, String importerQName) {
     String alias = "";
     if (as.isPresent()) {
       alias = " as " + as.get();
@@ -69,8 +73,11 @@ public class TSImportHelper {
       }
       // case: a component in an app imports a component from the app
       String from = GUIGeneratorUtil.getInstance().qName2path(String.join(".", parts));
-      Optional<String> relativeFrom = GUIGeneratorUtil.getInstance()
-          .getSourceRootImportPathForComponent(hwPath, outPath, importsPath, importerQName, qType);
+      if (importIntermediateAngularClass) {
+        from += "Component";
+      }
+      Optional<String> relativeFrom = getImportPathForComponent(
+          hwPath, outPath, importsPath, importerQName, qType, importIntermediateAngularClass);
       if (relativeFrom.isPresent()) {
         from = relativeFrom.get();
       }
@@ -92,7 +99,7 @@ public class TSImportHelper {
   }
 
   public void addImport(String qType, String importerQName) {
-    addImport(qType, Optional.empty(), importerQName);
+    addImport(qType, Optional.empty(), false, importerQName);
   }
 
   public void addImportString(String importStr) {
@@ -101,6 +108,106 @@ public class TSImportHelper {
       glex.addAfterTemplate("umlp.gui2ts.TSEmptyImports", clazz,
           new StringHookPoint(importStr));
     }
+  }
+
+  protected Optional<String> getImportPathForComponent(
+      MCPath hwPath, Path outPath, MCPath importsPath, String importerQName, String importedQName, boolean importIntermediateAngularClass) {
+    String importedQualifier = Names.getQualifier(importedQName);
+    String importedSimpleName = Names.getSimpleName(importedQName);
+    String importedMaybeCD;
+
+    if (!importedQualifier.isBlank()) {
+      List<String> parts = Splitter.on('.').splitToList(importedQualifier);
+      // Lowercase the last part
+      int lastIndex = parts.size() - 1;
+      String lastPart = parts.get(lastIndex).toLowerCase();
+      // Rejoin the parts with the modified last part
+      importedMaybeCD = Joiner.on('/').join(parts.subList(0, lastIndex))
+          + (lastIndex > 0 ? "/" : "") + lastPart
+          + "/" + importedSimpleName + ".ts";
+    }
+    else {
+      importedMaybeCD = importedQualifier + ".ts";
+    }
+
+    String imported = Names.getPathFromPackage(importedQName) + ".ts";
+    String importer = Names.getPathFromPackage(importerQName) + ".ts";
+    // case: TOP is used, use path to HW file, e.g.,
+    // "gen/gui/ExampleComponent.ts" imports "hw/gui/Example.ts" -> "../../hw/gui/Example"
+    Optional<URL> hwFilePath = hwPath.find(imported);
+    if (hwFilePath.isPresent()) {
+      if (UMLPGeneratorConfig.getInstance().isGenerate4TSLib()) {
+        Optional<Path> hw = MCPath.toPath(hwFilePath.get());
+        if (hw.isPresent()) {
+          return Optional.of(path2TSRelativeImport(outPath.resolve(importer).getParent()
+              .toAbsolutePath()
+              .normalize()
+              .relativize(hw.get().toAbsolutePath())
+              .toString()
+              .replaceAll("\\\\", "/")));
+        }
+      }
+      else {
+        return Optional.of(path2TSRootImport(imported));
+      }
+    }
+    else {
+      Optional<URL> importedURLOpt = importsPath.find(imported);
+      Optional<URL> importedMaybeCDURLOpt = importsPath.find(importedMaybeCD);
+      // case: external (generated) file must be imported, e.g.,
+      // "gen/gui/Example.ts" imports "gen/cd/fetypes/Option.ts" -> "../cd/fetypes/Option"
+      if (importedURLOpt.isPresent() || importedMaybeCDURLOpt.isPresent()) {
+        if (UMLPGeneratorConfig.getInstance().isGenerate4TSLib()) {
+          Optional<Path> importedPath;
+          // prefer "maybe CD" option
+          if (importedMaybeCDURLOpt.isPresent()) {
+            importedPath = MCPath.toPath(importedMaybeCDURLOpt.get());
+          } else {
+            importedPath = MCPath.toPath(importedURLOpt.get());
+          }
+          if (importedPath.isPresent()) {
+            Path fromPath = outPath.resolve(importer);
+            // Calculate the relative path
+            return Optional.of(path2TSRelativeImport(fromPath.getParent()
+                .normalize()
+                .relativize(importedPath.get())
+                .toString()
+                .replaceAll("\\\\", "/")));
+          }
+        }
+        else {
+          if (importedMaybeCDURLOpt.isPresent()) {
+            return Optional.of(path2TSRootImport(importedMaybeCD));
+          } else {
+            return Optional.of(path2TSRootImport(imported));
+          }
+        }
+      }
+      // case: a component imports currently generated other component, e.g.
+      // "gen/gui/foo/ExampleComponent.ts" imports "gen/gui/foo/Example.ts" -> "./Example"
+      else if (UMLPGeneratorConfig.getInstance().isGenerate4TSLib()
+          && Names.getQualifier(importerQName).equals(Names.getQualifier(importedQName))) {
+        String res = "./" + Names.getSimpleName(importedQName);
+        return Optional.of(res);
+      }
+    }
+    return Optional.empty();
+  }
+
+  protected String path2TSRelativeImport(String relativePath) {
+    if (!relativePath.contains("/")) {
+      // Same folder, prepend "./"
+      relativePath = "./" + relativePath;
+    }
+    return path2TSRootImport(relativePath);
+  }
+
+  protected String path2TSRootImport(String rootPath) {
+    if (rootPath.endsWith(".ts")) {
+      // Remove file extension
+      rootPath = rootPath.replace(".ts", "");
+    }
+    return rootPath.replaceAll("\\\\", "/");
   }
 
 }

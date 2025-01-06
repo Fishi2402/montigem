@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component, HostBinding } from '@angular/core';
-import { config, GemAudioComponent } from 'mc/fenix/basic/GemAudioComponent';
+import { config, GemAudioComponent } from '../../../../build/gui/mc/fenix/basic/GemAudioComponent';
 
 @Component({
   standalone: true,

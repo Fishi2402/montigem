@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { GemHeatmapChartExampleComponent, config } from '@src/example_charts/GemHeatmapChartExampleComponent';
+import { GemHeatmapChartExampleComponent, config } from 'example_charts/GemHeatmapChartExampleComponent';
 import {
   GemHeatmapChartData,
   GemHeatmapChartDataBuilder,

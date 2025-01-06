@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-import {TimeseriesTOP} from "@src/weather/TimeseriesTOP";
+import {TimeseriesTOP} from "weather/TimeseriesTOP";
 
 // TODO: JSweet?
 export class Timeseries extends TimeseriesTOP {

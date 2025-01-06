@@ -347,43 +347,43 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
   public override checkTimeConsumptionSet (): GemTextInputValidity {
     if(this.getStep()) {
       if(!this.getStep()?.getTimeConsumption()) {
-        return {status: "Error",message: "You have to set a time"};
+        return new GemTextInputValidity("Error", "You have to set a time");;
       } else {
-        return {status: "Success"}
+        return new GemTextInputValidity("Success")
       }
     } else {
-      return {status: "Error",message: "Wait for Page initialization."};
+      return new GemTextInputValidity("Error", "Wait for Page initialization.");;
     }
   }
 
   public override checkEndEffectorSet (): GemTextInputValidity {
     if(this.getStep()) {
       if(this.getSelectEndeffectorEntry() === "") {
-        return {status: "Error",message: "Please choose an appropriate End Effector"};
+        return new GemTextInputValidity("Error", "Please choose an appropriate End Effector");
       } else {
-        return {status: "Success"}
+        return new GemTextInputValidity("Success")
       }
     } else {
-      return {status: "Error",message: "Wait for Page initialization."};
+      return new GemTextInputValidity("Error", "Wait for Page initialization.");
     }
   }
 
   public override checkStepTypeSet(): GemTextInputValidity {
     if(this.typeEntry) {
-      return {status: "Success"}
+      return new GemTextInputValidity("Success")
     } else {
-      return {status: "Error", message: "Please choose a Step Type"};
+      return new GemTextInputValidity("Error", "Please choose a Step Type");
     }
   }
 
   public override checkJoinConnectionKind(): GemTextInputValidity {
     if(this.joinConnectionKindEntry) {
       if(this.joinConnectionKindEntry === newOption.getValue()) {
-        return {status: "Error", message: "Please Save the new Connection."};
+        return new GemTextInputValidity("Error", "Please Save the new Connection.");;
       }
-      return {status: "Success"};
+      return new GemTextInputValidity("Success");
     } else {
-      return {status: "Error", message: "Please choose an existing Connection or create a new one."}
+      return new GemTextInputValidity("Error", "Please choose an existing Connection or create a new one.");
     }
   }
 

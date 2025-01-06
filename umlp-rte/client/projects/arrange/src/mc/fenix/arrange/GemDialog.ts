@@ -16,7 +16,7 @@ import {
   TemplateRef,
   ViewContainerRef
 } from '@angular/core';
-import { config, GemDialogComponent } from 'mc/fenix/arrange/GemDialogComponent';
+import { config, GemDialogComponent } from '../../../../build/gui/mc/fenix/arrange/GemDialogComponent';
 
 @Component({
   standalone: true,
