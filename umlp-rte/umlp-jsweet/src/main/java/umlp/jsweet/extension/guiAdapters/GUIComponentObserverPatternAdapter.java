@@ -8,11 +8,12 @@ import org.jsweet.transpiler.OverloadScanner;
 import org.jsweet.transpiler.extension.AnnotationManager;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.ExtendedElement;
-import org.jsweet.transpiler.model.ExtendedElementFactory;
 import org.jsweet.transpiler.model.MethodInvocationElement;
+import org.jsweet.transpiler.model.VariableAccessElement;
 import org.jsweet.transpiler.model.support.MethodInvocationElementSupport;
 import org.jsweet.transpiler.util.Util;
 import standalone.com.sun.source.tree.ClassTree;
+import standalone.com.sun.source.tree.ExpressionTree;
 import standalone.com.sun.source.tree.MethodInvocationTree;
 import standalone.com.sun.source.tree.MethodTree;
 import standalone.com.sun.source.tree.Tree;
@@ -27,13 +28,12 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static umlp.jsweet.extension.guiAdapters.DelegateGemListToArrayAdapter.shouldPrintToArray;
 
 public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
 
@@ -200,7 +200,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
         !context.hasAnnotationType(executable, Override.class.getName()))
       printSynchronizerMethods(executable, false);
     if (adapterUtils.isSynchronizedMethod(executable, this)) {
-      addObserversToParameters(executable, classElement);
+      addObserversToArguments(executable, classElement);
     }
     if (adapterUtils.isInitMethod(executable, classElement)) {
       print("protected allVarsInited: boolean = false;").println().printIndent();
@@ -208,7 +208,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     return super.substituteExecutable(executable);
   }
 
-  private void addObserversToParameters(ExecutableElement executable, TypeElement classElement) {
+  private void addObserversToArguments(ExecutableElement executable, TypeElement classElement) {
     MethodTree tree = trees().getTree(executable);
     JCTree.JCVariableDecl domainObserver = adapterUtils.getNewParameter(DOMAIN_OBSERVER_FUNCTION_NAME);
     JCTree.JCVariableDecl statevarObserver = adapterUtils.getNewParameter(STATEVAR_OBSERVER_FUNCTION_NAME);
@@ -225,6 +225,21 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
       Log.error("0JS0002 unexpected error while transpiling class " + classElement.getQualifiedName().toString());
     } else if (parameters.size() > 0) {
       Log.error("0JS0003 unexpected error while transpiling class " + classElement.getQualifiedName().toString());
+    }
+  }
+
+  private void addObserversToArguments(MethodInvocationElement invocation) {
+    MethodInvocationTree tree = ((MethodInvocationElementSupport) invocation).getTree();
+    JCTree.JCIdent domainObserver = adapterUtils.getNewIdent(DOMAIN_OBSERVER_FUNCTION_NAME);
+    JCTree.JCIdent statevarObserver = adapterUtils.getNewIdent(STATEVAR_OBSERVER_FUNCTION_NAME);
+    List<? extends ExpressionTree> arguments = tree.getArguments();
+    if (arguments.size() > 0) {
+      ((JCTree.JCMethodInvocation) tree).args =
+          ((standalone.com.sun.tools.javac.util.List) arguments)
+              .append(domainObserver).append(statevarObserver);
+    } else if (arguments.size() == 0) {
+      ((JCTree.JCMethodInvocation) tree).args =
+          ((JCTree.JCMethodInvocation) tree).args.append(domainObserver).append(statevarObserver);
     }
   }
 
@@ -433,35 +448,12 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
       print(STATEVAR_OBSERVER_FUNCTION_NAME + "(");
     }
 
+    if (shouldAddObservers) {
+      addObserversToArguments(invocation);
+    }
+
     boolean res = super.substituteMethodInvocation(invocation);
 
-    if (shouldAddObservers) {
-      MethodInvocationTree methodInvocationTree = ExtendedElementFactory.toTree(invocation);
-      boolean removeBracketFromAwaitInvocation =
-          context.isAwaitInvocation(methodInvocationTree) &&
-
-              // only in this case the await is wrapped in brackets
-              (getParentElement() instanceof MethodInvocationTree) ||
-              (getParentElement() instanceof MethodInvocationElementSupport) ||
-              shouldPrintToArray(invocatedType,getPrinter(),adapterUtils);
-
-      int parenthesisCount = 0;
-      if (getPrinter().getOutput().endsWith(")")) {
-        parenthesisCount++;
-        getPrinter().removeLastChar();
-      }
-      if (removeBracketFromAwaitInvocation && getPrinter().getOutput().endsWith(")")) {
-        parenthesisCount++;
-        getPrinter().removeLastChar();
-      }
-      if (invocation.getArgumentCount() > 0) {
-        print(",");
-      }
-      print(DOMAIN_OBSERVER_FUNCTION_NAME + ", " + STATEVAR_OBSERVER_FUNCTION_NAME);
-      for (int i = 0; i < parenthesisCount; i++) {
-        print(")");
-      }
-    }
     if (shouldPrintStatevarObs) {
       print(", \"" + GUIAdapterUtils.STATEVAR_PREFIX + GUIAdapterUtils.getMethodNameWithoutGetIs(invocation) + "\")");
     }
@@ -470,6 +462,30 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
           .print("\")");
     }
     return res;
+  }
+
+  @Override
+  public boolean substituteVariableAccess(VariableAccessElement variableAccess) {
+    if (variableAccess.getVariable().getSimpleName().toString().equals(DOMAIN_OBSERVER_FUNCTION_NAME)) {
+      print(DOMAIN_OBSERVER_FUNCTION_NAME);
+      return true;
+    } else if (variableAccess.getVariable().getSimpleName().toString().equals(STATEVAR_OBSERVER_FUNCTION_NAME)) {
+      print(STATEVAR_OBSERVER_FUNCTION_NAME);
+      return true;
+    }
+    return super.substituteVariableAccess(variableAccess);
+  }
+
+  @Override
+  public boolean substituteAssignedExpression(TypeMirror type, ExtendedElement assignedExpression) {
+    if (assignedExpression.toString().equals("\""+DOMAIN_OBSERVER_FUNCTION_NAME+"\"")) {
+      print(DOMAIN_OBSERVER_FUNCTION_NAME);
+      return true;
+    } else if (assignedExpression.toString().equals("\""+STATEVAR_OBSERVER_FUNCTION_NAME+"\"")) {
+      print(STATEVAR_OBSERVER_FUNCTION_NAME);
+      return true;
+    }
+    return super.substituteAssignedExpression(type, assignedExpression);
   }
 
   private void printMethodParameters(ExecutableElement executable, boolean overloadMethod,
