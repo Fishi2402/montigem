@@ -1,20 +1,20 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { DemoRecManager } from '@src/demorec/DemoRecManager';
+import { DemoRecManager } from 'demorec/DemoRecManager';
 import {StringifyForBuilder} from '@umlp/commonj2ts'
-import { ComponentKind } from '@src/demorec/ComponentKind';
-import { DemoRecComponent } from '@src/demorec/DemoRecComponent';
+import { ComponentKind } from 'demorec/ComponentKind';
+import { DemoRecComponent } from 'demorec/DemoRecComponent';
 
-import { BatteryPack } from '@src/demorec/BatteryPack';
+import { BatteryPack } from 'demorec/BatteryPack';
 
-import { ComponentsOfPackComponent ,config} from '@src/gui/pack/ComponentsOfPackComponent';
+import { ComponentsOfPackComponent ,config} from 'gui/pack/ComponentsOfPackComponent';
 import {GemTreeviewEntry, GemTreeviewEntryBuilder} from '@umlp/basic';
 
 import {
   Component,
 } from '@angular/core';
 
-import {BatteryPackService} from "@src/BatteryPackService";
+import {BatteryPackService} from "BatteryPackService";
 
 const unroutable : string = "Not clickable yet."
 

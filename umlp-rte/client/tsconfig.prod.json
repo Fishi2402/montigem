@@ -5,40 +5,34 @@
     "declarationMap": false,
     "paths": {
       "@umlp/arrange": [
-        "./build/dist/arrange/mc/fenix/arrange"
+        "./build/dist/arrange"
       ],
       "@umlp/basic": [
-        "./build/dist/basic/mc/fenix/basic"
+        "./build/dist/basic"
       ],
       "@umlp/charts": [
-        "./build/dist/charts/mc/fenix/charts"
+        "./build/dist/charts"
       ],
       "@umlp/common": [
-        "./build/dist/common/mc/fenix/common"
+        "./build/dist/common"
       ],
       "@umlp/commonj2ts": [
-        "./build/dist/commonj2ts/mc/fenix/commonj2ts"
-      ],
-      "@umlp/composite": [
-        "./build/dist/composite/mc/fenix/composite"
-      ],
-      "@umlp/experimental": [
-        "./build/dist/experimental/mc/fenix/experimental"
+        "./build/dist/commonj2ts"
       ],
       "@umlp/input": [
-        "./build/dist/input/mc/fenix/input"
+        "./build/dist/input"
       ],
       "@umlp/table": [
-        "./build/dist/table/mc/fenix/table"
+        "./build/dist/table"
       ],
       "@umlp/theme": [
-        "./build/dist/theme/mc/fenix/theme"
+        "./build/dist/theme"
       ],
       "@umlp/navigation": [
-        "./build/dist/navigation/mc/fenix/navigation"
+        "./build/dist/navigation"
       ],
       "@umlp/networkgraph": [
-        "./build/dist/networkgraph/mc/fenix/networkgraph"
+        "./build/dist/networkgraph"
       ],
       "*": [
         "./projects/common/src/*",

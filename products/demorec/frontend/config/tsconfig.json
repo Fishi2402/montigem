@@ -26,18 +26,22 @@
       "dom"
     ],
     "paths": {
-      "@src/*": ["build/appdomain/*", "build/appgui/*", "../umlp/fe2/*", "src/app/*", "../../src/app/*"],
-      "@angular/*": ["node_modules/@angular/*"],
-      "@umlp/arrange": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/arrange"],
-      "@umlp/basic": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/basic"],
-      "@umlp/charts": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/charts"],
-      "@umlp/common": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/common"],
-      "@umlp/commonj2ts": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/commonj2ts"],
-      "@umlp/input": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/input"],
-      "@umlp/navigation": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/navigation"],
-      "@umlp/table": ["../../../../../umlp-rte/client/projects/umlp/mc/fenix/table"],
-      "@umlp/*": ["node_modules/@umlp/*"],
-      "tslib": ["node_modules/tslib"]
+      "@umlp/arrange": ["../../../../../umlp-rte/client/build/dist/arrange"],
+      "@umlp/basic": ["../../../../../umlp-rte/client/build/dist/basic"],
+      "@umlp/charts": ["../../../../../umlp-rte/client/build/dist/charts"],
+      "@umlp/common": ["../../../../../umlp-rte/client/build/dist/common"],
+      "@umlp/commonj2ts": ["../../../../../umlp-rte/client/build/dist/commonj2ts"],
+      "@umlp/input": ["../../../../../umlp-rte/client/build/dist/input"],
+      "@umlp/navigation": ["../../../../../umlp-rte/client/build/dist/navigation"],
+      "@umlp/table": ["../../../../../umlp-rte/client/build/dist/table"],
+      "*": [
+        "node_modules/*",
+        "build/appdomain/*",
+        "build/appgui/*",
+        "../umlp/fe2/*",
+        "src/app/*",
+        "../../src/app/*"
+      ]
     }
   },
   "angularCompilerOptions": {

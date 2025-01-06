@@ -95,7 +95,7 @@ public class PackageRoute {
   }
 
   public String getImportPath() {
-    return "@src/" + getImportDir() + "/" + getRoutingFileNameBase() + ROUTE_FILE_SUFFIX;
+    return getImportDir() + "/" + getRoutingFileNameBase() + ROUTE_FILE_SUFFIX;
   }
 
   public String getPathFromRoot() {

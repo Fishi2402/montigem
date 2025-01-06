@@ -1,13 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
-import { State } from '@src/demorec/State';
+import { State } from 'demorec/State';
 
-import { BatteryPack } from '@src/demorec/BatteryPack';
-import { ComponentKind } from '@src/demorec/ComponentKind';
-import { Photo } from '@src/demorec/Photo';
-import { DemoRecManager } from '@src/demorec/DemoRecManager';
+import { BatteryPack } from 'demorec/BatteryPack';
+import { ComponentKind } from 'demorec/ComponentKind';
+import { Photo } from 'demorec/Photo';
+import { DemoRecManager } from 'demorec/DemoRecManager';
 import {GemTextInputValidity, Option, OptionBuilder} from '@umlp/input';
 
-import { ComponentEditComponent, config } from '@src/gui/component/ComponentEditComponent';
+import { ComponentEditComponent, config } from 'gui/component/ComponentEditComponent';
 
 import {
   Component,

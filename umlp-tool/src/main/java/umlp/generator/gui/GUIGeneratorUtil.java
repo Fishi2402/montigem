@@ -896,11 +896,11 @@ public class GUIGeneratorUtil {
   }
 
   public String getComponentPath(String javaPackage) {
-    return "@src/" + qName2path(javaPackage);
+    return qName2path(javaPackage);
   }
 
   public String java2tsModule(String javaPackage) {
-    String res = "@src/" + qName2path(javaPackage);
+    String res = qName2path(javaPackage);
 
     for (TSImportMap type : TSImportMap.values()) {
       if (javaPackage.startsWith(type.getJavaPackage())) {

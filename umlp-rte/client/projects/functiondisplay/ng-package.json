@@ -1,6 +1,6 @@
 {
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
-  "dest": "../../build/dist/functiondisplay/mc/fenix/functiondisplay",
+  "dest": "../../build/dist/functiondisplay",
   "lib": {
     "entryFile": "index.ts"
   },

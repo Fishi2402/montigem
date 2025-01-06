@@ -60,7 +60,7 @@ libs.each {
   def buildTaskName = "${buildTaskPrefix}${libName}"
   def genNpmrcTaskName = "gen_npmrc_${libName}"
   def publishTaskName = "${publishTaskPrefix}${libName}"
-  def npmOutput = "dist/${libName}/mc/fenix/${libName}"
+  def npmOutput = "dist/${libName}"
 
   // task `build_<lib_name>` that runs `npm run build @umlp/<lib_name>`
   task "${buildTaskName}"(type: NpmTask) {
@@ -69,15 +69,15 @@ libs.each {
     // e.g. `projects/basic/src/mc/fenix/basic/`
     inputs.dir(project.fileTree("projects/${libName}/src/mc/fenix/${libName}/")
         .exclude("**/*.spec.ts", "**/*.md"))
-    inputs.files("angular.json", "tsconfig.base.json", "package-lock.json")
-    // e.g. `build/dist/basic/mc/fenix/basic/`
+    inputs.files("angular.json", "tsconfig.base.json", "package.json")
+    // e.g. `build/dist/basic/`
     outputs.dir("${project.buildDir}/${npmOutput}")
   }
 
   // task `gen_npmrc_<lib_name>` that creates .npmrc file for publishing
   task "${genNpmrcTaskName}"(type: NPMAuthCreate) {
     dependsOn "${buildTaskName}"
-    // e.g. `build/dist/basic/mc/fenix/basic/.npmrc`
+    // e.g. `build/dist/basic/.npmrc`
     npmrcFile = file("${project.buildDir}/${npmOutput}/.npmrc")
     unscoped = true
   }
@@ -85,7 +85,7 @@ libs.each {
   // task `publish_<lib_name>` that runs `npm publish <lib_name>`
   task "${publishTaskName}"(type: NpmTask) {
     dependsOn "${genNpmrcTaskName}"
-    // e.g. `build/dist/basic/mc/fenix/basic/`
+    // e.g. `build/dist/basic/`
     workingDir = file("${project.buildDir}/${npmOutput}")
     args = ["publish"]
   }
@@ -133,6 +133,8 @@ clean.doLast {
 
 tasks.build_basic.inputs.files(tasks.build_common.outputs.files.singleFile)
 tasks.build_basic.dependsOn(tasks.build_common)
+tasks.build_basic.inputs.files(tasks.build_commonj2ts.outputs.files.singleFile)
+tasks.build_basic.dependsOn(tasks.build_commonj2ts)
 tasks.build_charts.inputs.files(tasks.build_commonj2ts.outputs.files.singleFile)
 tasks.build_charts.dependsOn(tasks.build_commonj2ts)
 tasks.build_input.inputs.files(tasks.build_commonj2ts.outputs.files.singleFile)

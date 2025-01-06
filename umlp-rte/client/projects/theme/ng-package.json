@@ -1,6 +1,6 @@
 {
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
-  "dest": "../../build/dist/theme/mc/fenix/theme",
+  "dest": "../../build/dist/theme",
   "assets": [
     "./**/*.scss",
     "./**/*.png"

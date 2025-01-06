@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { DemoRecManager } from '@src/demorec/DemoRecManager';
+import { DemoRecManager } from 'demorec/DemoRecManager';
 
-import { BatteryPackType } from '@src/demorec/BatteryPackType';
+import { BatteryPackType } from 'demorec/BatteryPackType';
 
-import { ChoosePackTypeComponent ,config} from '@src/gui/pack/ChoosePackTypeComponent';
+import { ChoosePackTypeComponent ,config} from 'gui/pack/ChoosePackTypeComponent';
 
 import { Option, OptionBuilder } from '@umlp/input';
 

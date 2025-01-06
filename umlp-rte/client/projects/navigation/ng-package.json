@@ -1,6 +1,6 @@
 {
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
-  "dest": "../../build/dist/navigation/mc/fenix/navigation",
+  "dest": "../../build/dist/navigation",
   "lib": {
     "entryFile": "index.ts"
   }

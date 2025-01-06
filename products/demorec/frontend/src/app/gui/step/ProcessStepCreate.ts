@@ -1,16 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 
-import {DemoRecManager} from '@src/demorec/DemoRecManager';
+import {DemoRecManager} from 'demorec/DemoRecManager';
 
-import {ProcessStepType} from '@src/demorec/ProcessStepType';
-import {ProcessStep} from '@src/demorec/ProcessStep'
+import {ProcessStepType} from 'demorec/ProcessStepType';
+import {ProcessStep} from 'demorec/ProcessStep'
 
-import { State } from '@src/demorec/State';
-import { BatteryPack } from '@src/demorec/BatteryPack';
-import {JoinConnection} from '@src/demorec/JoinConnection'
+import { State } from 'demorec/State';
+import { BatteryPack } from 'demorec/BatteryPack';
+import {JoinConnection} from 'demorec/JoinConnection'
 
-import {ProcessStepCreateComponent, config} from '@src/gui/step/ProcessStepCreateComponent';
+import {ProcessStepCreateComponent, config} from 'gui/step/ProcessStepCreateComponent';
 
 import {
   Component,
@@ -22,8 +22,8 @@ import {
 
 
 import {GemTextInputValidity, Option} from '@umlp/input';
-import {JoinConnectionKind} from "@src/demorec/JoinConnectionKind";
-import {BatteryPackService} from "@src/BatteryPackService";
+import {JoinConnectionKind} from "demorec/JoinConnectionKind";
+import {BatteryPackService} from "BatteryPackService";
 
 const newOption: Option = new Option("NEW");
 

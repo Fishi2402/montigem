@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
-import { DemoRecManager } from '@src/demorec/DemoRecManager';
-import { BatteryPack } from '@src/demorec/BatteryPack';
-import { Photo } from '@src/demorec/Photo';
+import { DemoRecManager } from 'demorec/DemoRecManager';
+import { BatteryPack } from 'demorec/BatteryPack';
+import { Photo } from 'demorec/Photo';
 
 import { GemButton } from "@umlp/basic";
 

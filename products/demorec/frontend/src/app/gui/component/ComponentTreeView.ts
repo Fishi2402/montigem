@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { GemTreeviewEntry } from '@umlp/basic';
-import { DemoRecComponent } from '@src/demorec/DemoRecComponent';
+import { DemoRecComponent } from 'demorec/DemoRecComponent';
 
 
 import { ComponentTreeViewComponent,config } from '../../../../build/frontendGen/build/appgui/gui/component/ComponentTreeViewComponent';

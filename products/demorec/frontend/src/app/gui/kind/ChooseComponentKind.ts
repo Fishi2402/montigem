@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { DemoRecManager } from '@src/demorec/DemoRecManager';
+import { DemoRecManager } from 'demorec/DemoRecManager';
 
-import { ComponentKind } from '@src/demorec/ComponentKind';
+import { ComponentKind } from 'demorec/ComponentKind';
 import {GemTextInputValidity, Option} from '@umlp/input';
 
-import { ChooseComponentKindComponent, config } from '@src/gui/kind/ChooseComponentKindComponent';
+import { ChooseComponentKindComponent, config } from 'gui/kind/ChooseComponentKindComponent';
 
 import {
   Directive,

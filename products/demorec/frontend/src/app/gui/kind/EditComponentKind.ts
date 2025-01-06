@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { EditComponentKindComponent, config } from '@src/gui/kind/EditComponentKindComponent';
+import { EditComponentKindComponent, config } from 'gui/kind/EditComponentKindComponent';
 import {GemTextInputValidity} from '@umlp/input';
 
 import {
