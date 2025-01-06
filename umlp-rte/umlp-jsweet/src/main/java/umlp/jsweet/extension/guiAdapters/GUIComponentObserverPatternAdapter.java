@@ -200,7 +200,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
         !context.hasAnnotationType(executable, Override.class.getName()))
       printSynchronizerMethods(executable, false);
     if (adapterUtils.isSynchronizedMethod(executable, this)) {
-      addObserversToArguments(executable, classElement);
+      addObserversToParameters(executable, classElement);
     }
     if (adapterUtils.isInitMethod(executable, classElement)) {
       print("protected allVarsInited: boolean = false;").println().printIndent();
@@ -208,7 +208,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     return super.substituteExecutable(executable);
   }
 
-  private void addObserversToArguments(ExecutableElement executable, TypeElement classElement) {
+  private void addObserversToParameters(ExecutableElement executable, TypeElement classElement) {
     MethodTree tree = trees().getTree(executable);
     JCTree.JCVariableDecl domainObserver = adapterUtils.getNewParameter(DOMAIN_OBSERVER_FUNCTION_NAME);
     JCTree.JCVariableDecl statevarObserver = adapterUtils.getNewParameter(STATEVAR_OBSERVER_FUNCTION_NAME);
@@ -233,6 +233,14 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     JCTree.JCIdent domainObserver = adapterUtils.getNewIdent(DOMAIN_OBSERVER_FUNCTION_NAME);
     JCTree.JCIdent statevarObserver = adapterUtils.getNewIdent(STATEVAR_OBSERVER_FUNCTION_NAME);
     List<? extends ExpressionTree> arguments = tree.getArguments();
+    if (arguments.size() >= 2 &&
+        arguments.get(arguments.size() - 2) instanceof JCTree.JCIdent &&
+        arguments.get(arguments.size() - 1) instanceof JCTree.JCIdent &&
+        ((JCTree.JCIdent) arguments.get(arguments.size() - 2)).getName().toString().equals(DOMAIN_OBSERVER_FUNCTION_NAME) &&
+        ((JCTree.JCIdent) arguments.get(arguments.size() - 1)).getName().toString().equals(STATEVAR_OBSERVER_FUNCTION_NAME)
+    ) {
+      return;
+    }
     if (arguments.size() > 0) {
       ((JCTree.JCMethodInvocation) tree).args =
           ((standalone.com.sun.tools.javac.util.List) arguments)
