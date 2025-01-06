@@ -6,6 +6,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdmerge.CDMerge;
 import de.monticore.cdmerge.config.MergeParameter;
 import de.monticore.gradle.common.GradleLog;
+import de.monticore.umlstereotype.UMLStereotypeMill;
 import de.se_rwth.commons.logging.Log;
 import org.gradle.internal.FileUtils;
 import org.gradle.workers.WorkAction;
@@ -50,6 +51,21 @@ public abstract class MergeAction implements WorkAction<MergeActionParameter> {
         fail("Merge was unsuccessful");
         return;
       }
+
+      // HOTFIX: copy all stereos
+      var stereos = models.stream().filter(e->e.getCDDefinition().getModifier().isPresentStereotype())
+              .map(e->e.getCDDefinition().getModifier().getStereotype().getValuesList())
+          .flatMap(List::stream).collect(Collectors.toSet());
+
+      if (!merge.getCDDefinition().getModifier().isPresentStereotype() && !stereos.isEmpty()) {
+        Log.warn("[MERGE-HOTFIX] COPY ALL STEREOTYPES (" + stereos.size() + ") INTO THE MERGED MODEL APPLIED");
+        merge.getCDDefinition().getModifier().setStereotype(
+            UMLStereotypeMill.stereotypeBuilder()
+                .addAllValues(stereos)
+                .build()
+        );
+      }
+      // end hotfix
 
       UMLPFullPrettyPrinter printer = new UMLPFullPrettyPrinter();
       merge.accept(printer.getTraverser());

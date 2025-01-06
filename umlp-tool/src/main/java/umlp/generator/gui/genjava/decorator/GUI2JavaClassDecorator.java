@@ -33,6 +33,7 @@ import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -265,14 +266,17 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         if (!subscribedManagerEvents.contains(innerType.printType())) {
           subscribedManagerEvents.add(innerType.printType());
           getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandManager"));
-          importCommand(innerType.printType());
           /*
             CommandManager.executeCommand(new Person_subscribeManagerEvents());
            */
-          glex.addAfterTemplate(
-              getInitBodyHookpoint(),
-              new TemplateHookPoint(getSubscribeManagerEventsTemplate(), innerType)
-          );
+          if (((OOTypeSymbol) util.getDomainListInnerType(typeSTE).get().getTypeInfo()).isIsInterface()) {
+            Log.warn("0xTODO: " + util.getDomainListInnerType(typeSTE).get().printFullName() + " is an interface, no _subscribeManagerEvents is generated. This MIGHT be a bug.");
+            // TODO: We do not have the SubscribeManagerEvent generated for interfaces - do we need them?
+            // Right now, we just fix the compilation errors
+          } else {
+            importCommand(innerType.printType());
+            glex.addAfterTemplate(getInitBodyHookpoint(), new TemplateHookPoint(getSubscribeManagerEventsTemplate(), innerType));
+          }
         }
 
         // TODO: simple name clash, e.g., foo.Person and bar.Person
@@ -783,9 +787,27 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       String name = method.getName();
       if (!addedMethods.contains(method)) {
         addedMethods.add(method);
+        if(util.isCommandCall(this.gui, node)) {
+          getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandResult"));
+          getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandManager"));
+          ASTMCType type = createTypeAndAddImports(method.getReturnType());
+          String cmdQPath = Joiners.DOT.join(util.getMainDomainModelSimpleName().get().toLowerCase(),
+              "commands",StringTransformations.capitalize(method.getName()));
+          getCD4C().addImport(clazz, cmdQPath);
 
+          List<ASTCDParameter> params = new ArrayList<>();
+          for (int i = 0; i < method.getParamTypes().size(); ++i) {
+
+            SymTypeExpression argSTE = method.getParamTypes().get(i);
+            params.add(CDParameterFacade.getInstance().createParameter(
+                createTypeAndAddImports(argSTE),
+                Expression2SetterPrinter.SETTER_PARAM + "_$" + i
+            ));
+          }
+          getCD4C().addMethod(clazz, getCommandExecutionTemplate(), type, name, params);
+        }
         // predefined function: @PersonForm(buttonClick = create(person))
-        if (PredefinedFunction.getMember(name).isPresent()) {
+        else if (PredefinedFunction.getMember(name).isPresent()) {
           // TODO AGe: check type correctness
           PredefinedFunction fun = PredefinedFunction.getMember(name).get();
           String manager = getAndImportManager();
@@ -1472,5 +1494,9 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
   protected String getScopeTemplate() {
     return "umlp.gui2java.GUI2JavaScope";
+  }
+
+  protected String getCommandExecutionTemplate() {
+    return "umlp.gui2java.GUI2JavaExecuteCommandMethod";
   }
 }

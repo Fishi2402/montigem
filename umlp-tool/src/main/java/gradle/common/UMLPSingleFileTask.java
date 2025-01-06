@@ -45,7 +45,6 @@ public abstract class UMLPSingleFileTask extends MCSingleFileTask implements Gra
   public UMLPSingleFileTask(String type, String symbolPathConfigurationName) {
     super(type, symbolPathConfigurationName);
 
-    getModules().from(getProject().getConfigurations().getByName(UMLPPluginBase.UMLP_MODULES_CONFIG));
     getModules().from(getProject().getConfigurations().getByName(UMLPPluginBase.UMLP_MODULES_GEN_CONFIG));
 
     getModuleConfigTemplates().convention(getProject().provider(() -> {

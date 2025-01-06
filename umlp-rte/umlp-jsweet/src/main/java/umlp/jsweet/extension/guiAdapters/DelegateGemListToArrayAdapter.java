@@ -3,6 +3,7 @@ package umlp.jsweet.extension.guiAdapters;
 
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.MethodInvocationElement;
+import org.jsweet.transpiler.util.AbstractTreePrinter;
 import standalone.com.sun.source.tree.Tree;
 import umlp.jsweet.extension.util.GUIAdapterUtils;
 import umlp.jsweet.extension.util.RTEPathUtil;
@@ -45,9 +46,7 @@ public class DelegateGemListToArrayAdapter extends PrinterAdapter {
     boolean shouldPrintToArray = false;
 
     Element invocatedType = types().asElement(invocation.getType());
-    if (invocatedType != null && invocatedType instanceof TypeElement &&
-        adapterUtils.isSubTypeOf((TypeElement) invocatedType, "java.util.List") &&
-        !getPrinter().getParent().getKind().equals(Tree.Kind.EXPRESSION_STATEMENT)) {
+    if (shouldPrintToArray(invocatedType, getPrinter(), adapterUtils)) {
       shouldPrintToArray = true;
     }
 
@@ -60,5 +59,11 @@ public class DelegateGemListToArrayAdapter extends PrinterAdapter {
     }
 
     return res;
+  }
+
+  public static boolean shouldPrintToArray(Element invocatedType, AbstractTreePrinter printer, GUIAdapterUtils adapterUtils) {
+    return invocatedType != null && invocatedType instanceof TypeElement &&
+        adapterUtils.isSubTypeOf((TypeElement) invocatedType, "java.util.List") &&
+        !printer.getParent().getKind().equals(Tree.Kind.EXPRESSION_STATEMENT);
   }
 }

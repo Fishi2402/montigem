@@ -4,7 +4,7 @@ import DemoRec.BatteryPack;
 
 import mc.fenix.basic.GemText;
 import mc.fenix.arrange.GemCard;
-import mc.fenix.basic.GemTreeview;
+import mc.fenix.arrange.GemTreeNode;
 import mc.fenix.basic.GemButton;
 
 page ComponentsOfPack(BatteryPack pack) {
@@ -14,11 +14,42 @@ page ComponentsOfPack(BatteryPack pack) {
     component=packNav@GemButton(label=pack.name, leftClick=navigateToPackEdit())
   );
   @GemCard(
-    title="Components",
-    component=components@GemTreeview(items=null, leftClick=navigateToComponent())
+    title = "Components",
+    component = components@GemTreeNode(children = [
+      @iterate(ComponentKind kind : pack.allKinds) {
+        @GemTreeNode(
+          content = @GemText(value = kind.name),
+          children = [
+            @iterate(DemoRecComponent c : kind.demoRecComponent) {
+              @GemTreeNode(
+                content = @GemText(value = c.name),
+                onClick = navigateToComponent(c)
+              );
+            }
+          ],
+          onClick = navigateToKind(kind)
+        );
+      }
+    ])
   );
+
   @GemCard(
     title="Join Connections",
-    component=connections@GemTreeview(items=null, leftClick=navigateToConnection())
+    component=connections@GemTreeNode(children = [
+      @iterate(JoinConnectionKind connKind : pack.allConnections) {
+        @GemTreeNode(
+          content = @GemText(value = getConnectionKindName(connKind)),
+          children = [
+            @iterate(JoinConnection conn : connKind.joinConnection) {
+              @GemTreeNode(
+                content = @GemText(value = getConnectionName(conn)),
+                onClick = navigateToConnection(conn)
+              );
+            }
+          ]
+        );
+      }
+    ])
   );
+
 }

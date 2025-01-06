@@ -2,8 +2,11 @@
 package gradle;
 
 import gradle.specific.UMLPBackendTask;
+import gradle.specific.serialize.SerializeCDSymbolsTask;
+import gradle.specific.serialize.SerializeGUISymbolsTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskProvider;
@@ -15,6 +18,8 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.function.Consumer;
 
+import static gradle.UMLPPluginFrontendBase.getBooleanProjectProperty;
+
 /***
  * A opinionated plugin which handles backend generation.
  * with only a single line "id 'de.rwth.se.umlp-tool-backend'" in build.gradle
@@ -24,13 +29,21 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
 
   final static String UMLP_BACKEND_TASK_NAME = "generateUmlpBackend";
   static final String UMLP_GROUP_NAME = "umlp";
+  static final String GUI_LIB_NAME = "guiLib";
 
   @Override
   public void apply(Project project) {
     project.getPluginManager().apply(UMLPPluginBase.class);
     project.getPluginManager().apply("java");
 
-    TaskProvider<UMLPBackendTask> umlpTask = createUMLPBackendTask(project, UMLP_BACKEND_TASK_NAME);
+    boolean local = getBooleanProjectProperty(project, "useLocalDependencies");
+    if (!local) {
+      project.getConfigurations().register(GUI_LIB_NAME);
+      project.getDependencies().add(GUI_LIB_NAME, "umlp.umlp-rte:client:" +
+          UMLPPluginFrontendBase.getStringProjectProperty(project, "mc_version", ""));
+    }
+
+    TaskProvider<UMLPBackendTask> umlpTask = createUMLPBackendTask(project, UMLP_BACKEND_TASK_NAME, local);
     // Generate Backend must run before JavaCompile
     project.getTasks().withType(AbstractCompile.class).configureEach(compile -> {
       compile.dependsOn(umlpTask);
@@ -67,7 +80,7 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
     main.getResources().srcDir(umlpTask.getOutputDir().dir("resources"));
   }
 
-  protected static TaskProvider<UMLPBackendTask> createUMLPBackendTask(final Project project, String umlpBackendTaskName) {
+  protected static TaskProvider<UMLPBackendTask> createUMLPBackendTask(final Project project, String umlpBackendTaskName, boolean local) {
     final TaskProvider<UMLPBackendTask> result = project.getTasks().register(umlpBackendTaskName, UMLPBackendTask.class, umlpTask -> {
       umlpTask.setGroup(UMLP_GROUP_NAME);
 
@@ -87,9 +100,27 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
           project.getBuildDir().getAbsolutePath(), "umlp", "backend_symbols").toFile());
 
       // Include umlpModulesModels
-      umlpTask.getModelDir().from(project.getConfigurations().getByName("umlpModulesModels"));
+      umlpTask.getModelDir().from(project.getConfigurations().getByName(UMLPPluginBase.UMLP_MODULES_MODELS_CONFIG));
 
     });
+
+    if (local) {
+      Project umlpRteClientProject = project.findProject(":umlp-rte:client");
+      boolean createGuiSymbolsPresent = !umlpRteClientProject.getTasksByName("createGuiSymbols", false).isEmpty();
+      boolean createCDSymbolsPresent = !umlpRteClientProject.getTasksByName("createCDSymbols", false).isEmpty();
+      if (createCDSymbolsPresent && createGuiSymbolsPresent) {
+        SerializeGUISymbolsTask createGuiSymbols = (SerializeGUISymbolsTask) umlpRteClientProject.getTasks().getByName("createGuiSymbols");
+        SerializeCDSymbolsTask createCDSymbols = (SerializeCDSymbolsTask) umlpRteClientProject.getTasks().getByName("createCDSymbols");
+        result.get().dependsOn(createGuiSymbols, createCDSymbols);
+        result.get().getSymbolPath().from(createGuiSymbols.getOutput(), createCDSymbols.getOutput());
+      }
+    }
+    else {
+      Configuration guiLib = project.getConfigurations().getByName(GUI_LIB_NAME);
+      result.get().getSymbolPath().from(
+          project.provider(() -> guiLib.getFiles())
+      );
+    }
     return result;
   }
 

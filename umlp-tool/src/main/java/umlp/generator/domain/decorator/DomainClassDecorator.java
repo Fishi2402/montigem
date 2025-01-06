@@ -351,9 +351,21 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
   protected void addImportsForCommands(ASTCDClass domainType, ASTCDType cdType) {
     if (TagLookUp.isSingleton(domainType) && !domainType.getCDMethodList().isEmpty()) {
       getCD4C().addImport(cdType, PathUtil.getBackendRTECommandPath("CommandManager"));
-      domainType.getCDMethodList().forEach(m -> getCD4C().addImport(cdType,
-          getPackageName(UMLPSymbolTables.getDiagramFor(domainType), "commands.") +
-          StringTransformations.capitalize(m.getName())));
+      domainType.getCDMethodList().forEach(m -> {
+        getCD4C().addImport(cdType,
+            getPackageName(UMLPSymbolTables.getDiagramFor(domainType), "commands.") +
+                StringTransformations.capitalize(m.getName()));
+
+        SymTypeExpression type = m.getSymbol().getType();
+        if (type.isVoidType()) return;
+
+        if (GenService.isJavaType(type)){
+          addJavaImport(domainType, type);
+        }else if (GenService.isCDType(type)){
+          getCD4C().addImport(cdType, Joiners.DOT.join(type.getTypeInfo().getPackageName().toLowerCase(), type.print()));
+        }
+
+      });
     }
   }
 

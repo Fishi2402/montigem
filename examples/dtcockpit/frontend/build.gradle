@@ -7,9 +7,10 @@ plugins {
 
 
 dependencies {
-  umlpModulesGen("umlp.modules:login:$version") // Load generator modifications
-  umlpModulesDomainSymbols("umlp.modules.login:frontendTS:$version") // frontend domain symbols
-  umlpModulesModels("umlp.modules:login:$version") // and models itself
+  umlpModules("umlp.modules:login:$version") // Load generator modifications
+//  umlpModulesGen("umlp.modules:login:$version") // Load generator modifications
+//  umlpModulesDomainSymbols("umlp.modules:login:$version") // frontend domain symbols
+//  umlpModulesModels("umlp.modules:login:$version") // and models itself
 }
 
 // ALus local gradle is apparently unaware of these versions?
@@ -50,7 +51,7 @@ genDomain {
 }
 
 genGUI {
-  domainModels = ["Dtcockpit", "LoginModule"]
+  domainModels = ["Dtcockpit"] // "LoginModule" is included via the modGen (or not required?)
   guiCreateModels = ["gui.login.UserCreate", "gui.project.ProjectCreate", "gui.project.ProjectsCreateByGroup"]
 
   // TODO: Gradle Setup for modules
@@ -94,4 +95,9 @@ tasks.register('runApp', NpxTask) {
 }
 tasks.register('run') {
   dependsOn(runApp)
+}
+
+// Avoid a pesky org.gradle.api.InvalidUserDataException: Cannot expand ZIP 'bundle.jar' as it does not exist
+unpackModule {
+  dependsOn(":modules:login:frontendTS:packFrontendAsZip")
 }

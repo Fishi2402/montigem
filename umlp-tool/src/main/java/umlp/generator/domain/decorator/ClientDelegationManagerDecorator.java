@@ -15,6 +15,7 @@ import umlp.UMLPMill;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -105,7 +106,8 @@ public class ClientDelegationManagerDecorator extends ManagerDecorator {
   }
 
   protected void addManagerInit(ASTCDClass delegationManagerClass, String extendedCDName, String delegationManagerName) {
-    getCD4C().addMethod(delegationManagerClass, getInitTemplate(), extendedCDName, delegationManagerName);
+    // TODO: How do we work with RegModule extends LoginModule?
+    getCD4C().addMethod(delegationManagerClass, getInitTemplate(), extendedCDName, delegationManagerName, new ArrayList<>());
   }
 
   protected void addDelegationGetters(ASTCDClass delegationManagerClass,
