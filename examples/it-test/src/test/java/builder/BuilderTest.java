@@ -24,6 +24,7 @@ class BuilderTest extends BuilderSQLDBTestSetup {
   void testGemAssociationBuildWithCompleteBuilder() {
     var mainResidenceBuilder = BuilderManager.addressBuilder().streetName("Main Street");
     var alice = BuilderManager.personBuilder().name("Alice").mainResidence(mainResidenceBuilder).build().orElseThrow();
+    //build method of mainResidenceBuilder should have been called by personBuilder
     assertTrue(mainResidenceBuilder.isBuildFinished());
     assertEquals("Alice", alice.getName());
     assertEquals("Main Street", alice.getMainResidence().getStreetName());
