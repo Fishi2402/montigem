@@ -141,7 +141,7 @@ public class GUI2ConfigGeneratorTest extends DomainGUITest {
     ComponentRoute dummy5_cr = conf_nested_deep_deep_deep_comps.get(0);
     assertAll(
         () -> assertFalse(dummy5_cr.getHasIds()),
-        () -> assertEquals("Dummy5Component", dummy5_cr.getImportedSymbolName()),
+        () -> assertEquals("Dummy5", dummy5_cr.getImportedSymbolName()),
         () -> assertEquals("nested/deep/deep/deep/Dummy5", dummy5_cr.getUrl()),
         () -> assertEquals("nested/deep/deep/deep", dummy5_cr.getUrlPrefix()),
         () -> assertEquals("./Dummy5Component", dummy5_cr.getImportPathNoExt())
@@ -153,7 +153,7 @@ public class GUI2ConfigGeneratorTest extends DomainGUITest {
     ComponentRoute dummy6_cr = other_deep_nested_comps.get(0);
     assertAll(
         () -> assertFalse(dummy6_cr.getHasIds()),
-        () -> assertEquals("Dummy6Component", dummy6_cr.getImportedSymbolName()),
+        () -> assertEquals("Dummy6", dummy6_cr.getImportedSymbolName()),
         () -> assertEquals("deep/nested/Dummy6", dummy6_cr.getUrl()),
         () -> assertEquals("deep/nested", dummy6_cr.getUrlPrefix()),
         () -> assertEquals("./Dummy6Component", dummy6_cr.getImportPathNoExt())
