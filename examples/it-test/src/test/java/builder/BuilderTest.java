@@ -16,16 +16,15 @@ class BuilderTest extends BuilderSQLDBTestSetup {
   @Test
   void testGemAssociationBuildWithIncompleteBuilder() {
     var mainResidenceBuilder = BuilderManager.addressBuilder();
-    assertTrue(mainResidenceBuilder.build().isEmpty()); //should not be able to be build
-    //should also not be able to build, if the assoc can't build
+    //should not be able to build, since residence builder should not be able to build
     assertTrue(BuilderManager.personBuilder().name("Alice").mainResidence(mainResidenceBuilder).build().isEmpty());
   }
 
   @Test
   void testGemAssociationBuildWithCompleteBuilder() {
     var mainResidenceBuilder = BuilderManager.addressBuilder().streetName("Main Street");
-    assertTrue(mainResidenceBuilder.build().isPresent());
     var alice = BuilderManager.personBuilder().name("Alice").mainResidence(mainResidenceBuilder).build().orElseThrow();
+    assertTrue(mainResidenceBuilder.isBuildFinished());
     assertEquals("Alice", alice.getName());
     assertEquals("Main Street", alice.getMainResidence().getStreetName());
   }
