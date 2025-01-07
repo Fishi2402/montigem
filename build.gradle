@@ -161,19 +161,28 @@ build.dependsOn(umlp_check_report)
 
 subprojects {
   tasks.configureEach { task ->
-    // Only inspect tasks with inputs defined
     task.doLast {
-      println "Artifacts Output:"
+      def outputFile = new File("${buildDir}/artifacts_report/${project.name}_${task.name}.txt")
+      outputFile.parentFile.mkdirs() // Ensure the directory exists
+      outputFile.text=""
 
-      // Print task name
-      println "Task: ${task.name}"
+      outputFile.append("Task: ${task.name}\n")
+      outputFile.append("------------Artifacts Input-------------\n")
 
       // Check if the task has input files and print them
       if (task.inputs.files) {
         task.inputs.files.each { file ->
-          println "  Input file: $file"
+          outputFile.append("  Input file: $file\n")
         }
       }
+      // Check if the task has output files and print them
+      outputFile.append("------------Artifacts Output-------------\n")
+      if (task.outputs.files) {
+        task.outputs.files.each { file ->
+          outputFile.append("  Output file: $file\n")
+        }
+      }
+      println "Artifacts Output logged to ${outputFile.absolutePath}"
     }
   }
 }
