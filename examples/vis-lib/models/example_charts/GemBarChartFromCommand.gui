@@ -5,11 +5,12 @@ import mc.fenix.charts.GemBarChart;
 import mc.fenix.input.GemTextInput;
 
 import Domain.App;
+import Domain.Person;
 
-page GemBarChartFromCommand(App app, String myStringValue = "default")
+page GemBarChartFromCommand(List<Person> persons, App app, String myStringValue = "default")
 {
   barchart@GemBarChart(
-    data = app.getBarChart(myStringValue),
+    data = app.getBarChart(persons, myStringValue),
     stacked = false,
     maxValue = 10,
     minValue = null

@@ -35,7 +35,6 @@ import java.util.Set;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
-import static de.monticore.types.check.SymTypePrimitive.box;
 import static umlp.generator.domain.decorator.commands.CommandDecorator.DE_SER;
 
 public class TSOwnCommandDecorator extends OwnCommandDecorator {
@@ -101,7 +100,7 @@ public class TSOwnCommandDecorator extends OwnCommandDecorator {
     if (isGem(param.getSymbol().getType())) {
       return "protected number " + param.getName() + "GemId";
     }
-    if (isGemList(param.getSymbol().getType())) {
+    if (isListOfGemIdentifiable(param.getSymbol().getType())) {
       return "protected number[] " + param.getName() + "GemId";
     }
     return "protected " + new TSUtilsPrinter().printType(param.getMCType()) + " " + param.getName();

@@ -13,7 +13,6 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.Types;
 
 public class GUIAdapterUtils extends UMLPAdapterUtils {
@@ -168,6 +167,14 @@ public class GUIAdapterUtils extends UMLPAdapterUtils {
   SunTypesHelper sunTypesHelper = new SunTypesHelper();
   public standalone.com.sun.tools.javac.tree.JCTree.JCVariableDecl getNewParameter(String variableName) {
     return sunTypesHelper.getNewParameter(variableName);
+  }
+
+  public standalone.com.sun.tools.javac.tree.JCTree.JCLiteral getNewLiteral(String variableName) {
+    return sunTypesHelper.getNewLiteral(variableName);
+  }
+
+  public standalone.com.sun.tools.javac.tree.JCTree.JCIdent getNewIdent(String variableName) {
+    return sunTypesHelper.getNewIdent(variableName);
   }
 
   public boolean isStateVarGetter(MethodInvocationElement invocation,
