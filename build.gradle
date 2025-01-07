@@ -159,3 +159,21 @@ build.dependsOn(umlp_check_report)
   }
 }*/
 
+subprojects {
+  tasks.configureEach { task ->
+    // Only inspect tasks with inputs defined
+    task.doLast {
+      println "Artifacts Output:"
+
+      // Print task name
+      println "Task: ${task.name}"
+
+      // Check if the task has input files and print them
+      if (task.inputs.files) {
+        task.inputs.files.each { file ->
+          println "  Input file: $file"
+        }
+      }
+    }
+  }
+}
