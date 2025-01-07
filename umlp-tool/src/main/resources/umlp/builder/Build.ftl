@@ -14,16 +14,10 @@ if (!buildFinished) {
     <#if genService.isList(assoc)>
       this._${assoc.getName()}.build();
     <#else>
-      <#-- TODO can we assume that every other association is a Gem? -->
-      if (this._${assoc.getName()} instanceof Gem) {
-        var attr = ((Gem) this._${assoc.getName()}).get();
-        <#-- TODO can we assume that every object inside a gem has a build method? -->
-        if (attr instanceof GemBuildable) {
-          var buildAttr = ((GemBuildable) attr).build();
-          if (buildAttr.isEmpty()) {
-            return Optional.empty();
-          }
-        }
+      //at the time of writing we assume that every other attribute is a Gem on something which implements GemBuildable
+      if (this._${assoc.getName()}.get().build().isEmpty()) {
+        //let the build fail
+        return Optional.empty();
       }
     </#if>
 </#list>
