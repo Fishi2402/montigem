@@ -10,7 +10,7 @@ import {Component} from '@angular/core';
 import {
   GraphNode,
   GraphEdge,
-  GemGraphComponent,
+  GemGraph,
   GraphEdgeBuilder,
   GraphNodeBuilder,
   Graph,
@@ -19,7 +19,7 @@ import {
 @Component({
   standalone:true,
   imports:[...config.imports,
-    GemGraphComponent],
+    GemGraph],
   selector: config.selector,
   templateUrl: config.templateUrl,
   styles: config.styles,
