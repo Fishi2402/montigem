@@ -40,6 +40,7 @@ if (!buildFinished) {
           </#if>
       }
     </#if>
+<#--    TODO Code generated for bidiractional Gems is currently invalid -->
 <#--  <#else>-->
 <#--    <#if genService.isBidirectional(assoc)>-->
 <#--      <#assign otherSide=assoc.getSymbol().getOtherSide().getAssocSide()>-->
