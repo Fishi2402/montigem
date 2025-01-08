@@ -77,4 +77,26 @@ public class SunTypesHelper {
 
     return jcVariableDecl;
   }
+
+  public standalone.com.sun.tools.javac.tree.JCTree.JCLiteral getNewLiteral(String name) {
+    JCTree.JCLiteral result = treeMaker.Literal(TypeTag.CLASS, name);
+    result.pos = 42;
+    result.type = this.behaviorSubject.type;
+    return result;
+  }
+
+  public standalone.com.sun.tools.javac.tree.JCTree.JCIdent getNewIdent(String name) {
+    Name sunName = sunNames.fromString(name);
+    JCTree.JCIdent result = treeMaker.Ident(sunName);
+    Name sN = sunNames.fromString("String");
+    this.behaviorSubject = new Symbol.ClassSymbol(Flags.PUBLIC, sN,
+        null);
+    Type.ClassType type = new Type.ClassType(Type.noType, List.nil(),
+        new Symbol.ClassSymbol(1073741825, sN,
+            new Symbol.PackageSymbol(sunNames.fromString("java.util"), null)));
+    result.sym = new Symbol.VarSymbol(Flags.PRIVATE, sunName, type, null);
+    result.pos = 42;
+    result.type = this.behaviorSubject.type;
+    return result;
+  }
 }

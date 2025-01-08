@@ -9,10 +9,10 @@ plugins {
 }
 
 dependencies {
-  umlpModulesGen("umlp.modules:login:$version")
-  // TODO: adding it directly to the umlpModules failes due to missing module metadata
-  implementation("umlp.modules.login:backend:$version")
-  umlpModulesModels("umlp.modules:login:$version") // and models itself
+  umlpModules("umlp.modules:login:$version")
+//  umlpModulesGen("umlp.modules:login:$version")
+//  implementation("umlp.modules:login:$version")
+//  umlpModulesModels("umlp.modules:login:$version") // and models itself
 }
 
 // ALus local gradle is apparently unaware of these versions?

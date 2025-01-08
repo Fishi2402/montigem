@@ -5,9 +5,9 @@ import {Role} from '@src/finanzverwaltung/Role';
 
 export class User extends UserTOP {
 
-  private _statusUsername = '';
+  protected _statusUsername = '';
 
-  private _validityUsername = '';
+  protected _validityUsername = '';
 
   public getHash (value: string) : any {
     var hash = 0,
@@ -33,9 +33,9 @@ export class User extends UserTOP {
     this._statusUsername = value;
   }
 
-  private _statusPassword = '';
+  protected _statusPassword = '';
 
-  private _validityPassword = '';
+  protected _validityPassword = '';
 
   public getValidityPassword(): any {
     return {status: this._statusPassword, message: this._validityPassword};
@@ -49,9 +49,9 @@ export class User extends UserTOP {
     this._statusPassword = value;
   }
 
-  private _statusEmail = '';
+  protected _statusEmail = '';
 
-  private _validityEmail = '';
+  protected _validityEmail = '';
 
   public getValidityEmail(): any {
     return {status: this._statusEmail, message: this._validityEmail};
@@ -70,9 +70,9 @@ export class User extends UserTOP {
     this._statusEmail = value;
   }
 
-  private _statusRole = '';
+  protected _statusRole = '';
 
-  private _validityRole = '';
+  protected _validityRole = '';
 
   public getValidityRole(): any {
     return {status: this._statusRole, message: this._validityRole};

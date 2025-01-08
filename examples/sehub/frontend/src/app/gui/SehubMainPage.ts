@@ -5,6 +5,8 @@ import {SehubMainPageComponent,config} from '@src/gui/SehubMainPageComponent';
 
 import {Component} from '@angular/core';
 import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
+import {Project} from '@src/sehub/Project';
+import { Event } from '@umlp/common';
 
 @Component({
   standalone:true,
@@ -27,8 +29,8 @@ export  class SehubMainPage extends SehubMainPageComponent {
     return null;
   }
 
-  public override goToProjectPage (project: any): (arg: any) => void {
-    return event => this._router.navigate([ "gui", "ProjectFileView", project.getRootArtifact()[0].getGemId()]);
+  public override goToProjectPage(project: Project): Event {
+    return () => this._router.navigate([ "gui", "ProjectFileView", project.getRootArtifact1(0).getGemId()]);
   }
 
 

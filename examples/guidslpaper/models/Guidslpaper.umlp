@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 import java.time.LocalDate;
+import LoginModule.*;
 
+<<extends="LoginModule">>
 classdiagram Guidslpaper {
 
   class Person {
@@ -109,17 +111,8 @@ classdiagram Guidslpaper {
      ADMIN;
    }
 
-   class User {
-     <<dbColumn = "unique=true">>
-     String username;
-     String password;
-     LocalDate registrationDate;
-     <<dbColumn = "unique=true">>
-     String email;
+   class User extends LoginModuleUser {
      Role role;
-     String validityUsername();
-     String validityEmail();
-     String validityPassword();
    }
 
    <<singleton>>

@@ -20,7 +20,7 @@ public class UMLPGeneratorConfig {
   private boolean useShell;
 
   private boolean generateTypescript = true;
-  private boolean useJsweet;
+  public boolean useJsweet;
 
   private UMLPGeneratorConfig() {
   }

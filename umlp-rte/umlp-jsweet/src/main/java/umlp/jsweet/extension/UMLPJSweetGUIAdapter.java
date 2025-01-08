@@ -26,8 +26,8 @@ public class UMLPJSweetGUIAdapter extends PrinterAdapter {
                 new UMLPGUICollectionsAdapter(
                     new UMLPRTEImportAdapter(
                         new UMLPBasicsAdapter(
-                            new GUIComponentObserverPatternAdapter(
-                                new DelegateGemListToArrayAdapter(
+                            new DelegateGemListToArrayAdapter(
+                                new GUIComponentObserverPatternAdapter(
                                     new GUIComponentBasicsAdapter(
                                         new GUITypesImportAdapter(
                                             new TSTypesAdapter(

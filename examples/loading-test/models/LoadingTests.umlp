@@ -53,4 +53,16 @@ classdiagram LoadingTests {
 
     composition [1] Game -> Player [*];
 
+
+  // And some tests for interfaces
+
+  public class IUseAnInterface {
+    MyInterface i;
+  }
+  public interface MyInterface { }
+  public class MyInterfaceImpl implements MyInterface {
+    String name;
+  }
+
+
 }

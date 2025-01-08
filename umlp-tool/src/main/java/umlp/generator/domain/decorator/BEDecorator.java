@@ -99,6 +99,12 @@ public class BEDecorator extends AbstractDecorator {
     builderDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: BuilderDecorator", BEDecorator.class.getName());
 
+    // Generate delegated/concretized builder classes
+    DelegatedBuilderDecorator delegatedBuilderDecorator = new DelegatedBuilderDecorator(glex);
+    delegatedBuilderDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: DelegatedBuilderDecorator", BEDecorator.class.getName());
+
+
     // Generate DeSer builder classes
     DeSerBuilderDecorator deSerBuilderDecorator = new DeSerBuilderDecorator(glex, hwPath);
     deSerBuilderDecorator.transform(cdAST, decoratedAST);

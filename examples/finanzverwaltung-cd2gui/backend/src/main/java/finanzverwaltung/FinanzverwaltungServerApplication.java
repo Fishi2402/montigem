@@ -14,7 +14,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @SpringBootApplication(
@@ -40,7 +40,7 @@ public class FinanzverwaltungServerApplication extends finanzverwaltung.Finanzve
       FinanzverwaltungManager.userBuilder()
           .username("MyUser")
           .password(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode("MyPasswort"))
-          .registrationDate(LocalDate.now())
+          .registrationDate(LocalDateTime.now())
           .email("unknown")
           .role(Role.ADMIN)
           .build();
