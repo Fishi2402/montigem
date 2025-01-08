@@ -37,7 +37,7 @@ page Warehouse_Demo(MbdoWarehouseState state){
         minValue=1,
         maxValue=100,
         value=state.horizontalPercentage
-      ),
+      )
     ]
   );
   @Warehouse(
