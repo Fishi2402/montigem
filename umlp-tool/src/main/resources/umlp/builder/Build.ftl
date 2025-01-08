@@ -17,7 +17,7 @@ if (!buildFinished) {
       //at the time of writing we assume that every other attribute is a Gem on something which implements GemBuildable
       if (this._${assoc.getName()}.get().build().isEmpty()) {
         //let the build fail
-<#--        TODO report error; see CheckAssoc.ftl -->
+        ${name}ErrorCollector.report${assoc.getName()?cap_first}Invalid(this);
         return Optional.empty();
       }
     </#if>
