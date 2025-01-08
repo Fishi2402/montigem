@@ -1,0 +1,12 @@
+package mbdo;
+
+import mbdo.components.Warehouse;
+
+page Warehouse_Demo(){
+  @Warehouse(
+    depthPercentage=0,
+    verticalPercentage=0,
+    horizontalPercentage=0
+  );
+}
+

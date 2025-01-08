@@ -1,0 +1,12 @@
+package mbdo;
+
+import mbdo.components.Transportbelt;
+
+page Transportbelt_Demo(){
+  @Transportbelt(
+   speedIndicatorPercentage=0,
+   rightDetectorOn=false,
+   leftDetectorOn=false
+  );
+}
+

@@ -1,0 +1,14 @@
+package mbdo;
+
+import mbdo.components.ColorSorter;
+
+page ColorSorter_Demo(){
+  @ColorSorter(
+    pumpRunning=false,
+    pusherIndicator1On=false,
+    pusherIndicator2On=false,
+    pusherIndicator3On=false,
+    speedIndicatorPercentage=0
+  );
+}
+

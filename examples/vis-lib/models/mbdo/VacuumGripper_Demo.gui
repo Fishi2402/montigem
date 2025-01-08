@@ -1,13 +1,13 @@
 package mbdo;
 
-import Domain.App;
+import Domain.MbdoVacuumGripperState;
 import mbdo.components.VacuumGripper;
 
 import mc.fenix.arrange.GemColumn;
 import mc.fenix.input.GemRangeInput;
 import mc.fenix.input.GemCheckBoxInput;
 
-page Visualization(App app){
+page VacuumGripper_Demo(MbdoVacuumGripperState state){
   @GemColumn(
     rowGap = "15px",
     components = [
@@ -18,7 +18,7 @@ page Visualization(App app){
         step=1,
         minValue=1,
         maxValue=360,
-        value=app.rotationDeg
+        value=state.rotationDeg
       ),
       @GemRangeInput(
         id="vertical-percentage",
@@ -27,7 +27,7 @@ page Visualization(App app){
         step=1,
         minValue=1,
         maxValue=100,
-        value=app.verticalPercentage
+        value=state.verticalPercentage
       ),
       @GemRangeInput(
         id="hotizontal-percentage",
@@ -36,21 +36,21 @@ page Visualization(App app){
         step=1,
         minValue=1,
         maxValue=100,
-        value=app.horizontalPercentage
+        value=state.horizontalPercentage
       ),
       @GemCheckBoxInput(
         id="pump-running",
         labelText="Pumpe läuft",
-        checked=app.pumpRunning
+        checked=state.pumpRunning
       )
     ]
   );
 
   @VacuumGripper(
-    rotationDeg=app.rotationDeg,
-    verticalPercentage=app.verticalPercentage,
-    horizontalPercentage=app.horizontalPercentage,
-    pumpRunning=app.pumpRunning
+    rotationDeg=state.rotationDeg,
+    verticalPercentage=state.verticalPercentage,
+    horizontalPercentage=state.horizontalPercentage,
+    pumpRunning=state.pumpRunning
   );
 }
 

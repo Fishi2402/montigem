@@ -1,0 +1,5 @@
+package mbdo.components;
+
+component ColorSorter(boolean pumpRunning, boolean pusherIndicator1On, boolean pusherIndicator2On, boolean pusherIndicator3On, int speedIndicatorPercentage){
+
+}

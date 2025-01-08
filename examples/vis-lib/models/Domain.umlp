@@ -45,6 +45,10 @@ classdiagram Domain {
   class App {
     Boolean isOld(Person p);
     GemBarChartData getBarChart(List<Person> persons, String date);
+  }
+
+  <<singleton>>
+  class MbdoVacuumGripperState {
     int rotationDeg = 0;
     int verticalPercentage = 0;
     int horizontalPercentage = 0;

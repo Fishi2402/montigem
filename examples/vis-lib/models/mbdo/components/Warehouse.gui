@@ -1,0 +1,5 @@
+package mbdo.components;
+
+component Warehouse(int depthPercentage, int verticalPercentage, int horizontalPercentage){
+
+}
