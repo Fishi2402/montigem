@@ -17,6 +17,7 @@ if (!buildFinished) {
       //at the time of writing we assume that every other attribute is a Gem on something which implements GemBuildable
       if (this._${assoc.getName()}.get().build().isEmpty()) {
         //let the build fail
+<#--        TODO report error; see CheckAssoc.ftl -->
         return Optional.empty();
       }
     </#if>
@@ -44,7 +45,7 @@ if (!buildFinished) {
 <#--  <#else>-->
 <#--    <#if genService.isBidirectional(assoc)>-->
 <#--      <#assign otherSide=assoc.getSymbol().getOtherSide().getAssocSide()>-->
-<#--      if (is${assoc.getName()?cap_first}Present()) {-->
+<#--      if (is${assoc.getName()?cap_first}Present()) { TODO maybe use loading state on gem -->
 <#--      <#if genService.isList(otherSide)>-->
 <#--        if (!this._${assoc.getName()}.get().get${otherSide.getName()?cap_first}().contains(this)) {-->
 <#--          this._${assoc.getName()}.get().add${otherSide.getName()?cap_first}(this, NotificationScope.MINIMAL);-->
