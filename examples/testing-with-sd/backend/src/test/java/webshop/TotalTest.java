@@ -1,15 +1,14 @@
 package webshop;
 
+import monitor.StackEventQueue;
+import monitor.event.CallEvent;
+import monitor.event.EndEvent;
 import org.junit.jupiter.api.Test;
 import totaltest.TotalTestInstantiator;
-import umlp.backendrte.common.NotificationScope;
 import umlp.test_rte.ClientSetup;
 import webshop.test_infrastructure.WebshopSQLDBTestSetup;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TotalTest extends WebshopSQLDBTestSetup {
 
@@ -20,24 +19,18 @@ public class TotalTest extends WebshopSQLDBTestSetup {
   @Test
   void matchVisible() {
     var testInstances = new TotalTestInstantiator().instantiate();
-    Order o = WebshopManager.orderBuilder().build().orElseThrow();
+    //Order o = WebshopManager.orderBuilder().build().orElseThrow();
+    Order o = new OrderMonitor(); //TODO only for testing, integrate that into the WebShopManager
     Item item = testInstances.getItem();
 
     assertEquals(0, o.getTotal());
 
-    var obsCalled = new AtomicBoolean();
-    o.addObserver(new OrderObserver() {
-      @Override
-      public void maybeNotifyAddItem(Order order,
-                                     long arg,
-                                     int indexInList,
-                                     NotificationScope scope) {
-        assertEquals(o, order);
-        obsCalled.set(true);
-      }
-    });
+    StackEventQueue.clear();
+
     o.addItem(item);
-    assertTrue(obsCalled.get());
+
+    assertEquals(new CallEvent("addItem"), StackEventQueue.poll().orElseThrow());
+    assertEquals(new EndEvent("addItem", null), StackEventQueue.poll().orElseThrow());
 
     assertEquals(6, o.getTotal());
   }

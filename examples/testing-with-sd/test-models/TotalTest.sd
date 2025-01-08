@@ -1,14 +1,18 @@
 import Webshop.*;
 
 sequencediagram TotalTest {
-  t:TotalTest;
   o:Order;
+  t:TotalTest; //TODO automate this by trigger?
 
   assert o.total == 0;
+
+  //make sure event queue is empty
 
   t -> o : addItem(item) {
     o -> t : return;
   }
 
-  assert o.total == 6;
+  //make sure event queue contains Call("addItem"), End("addItem", null)
+
+  assert o.total == 6; //TODO parse that into valid java?
 }
