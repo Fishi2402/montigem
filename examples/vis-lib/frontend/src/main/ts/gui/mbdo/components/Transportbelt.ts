@@ -7,7 +7,7 @@ import {Component, HostBinding, Input} from '@angular/core';
   standalone: true,
   imports: [...config.imports],
   selector: config.selector,
-  templateUrl: config.templateUrl,
+  templateUrl: "Transportbelt.html",
 })
 export class Transportbelt extends TransportbeltComponent {
   @Input()

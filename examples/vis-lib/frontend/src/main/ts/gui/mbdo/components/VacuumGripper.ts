@@ -7,7 +7,7 @@ import {Component, HostBinding, Input} from '@angular/core';
     standalone: true,
     imports: [...config.imports],
     selector: config.selector,
-    templateUrl: config.templateUrl,
+    templateUrl: "VacuumGripper.html",
 })
 export class VacuumGripper extends VacuumGripperComponent {
     @Input()

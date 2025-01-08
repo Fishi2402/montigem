@@ -7,7 +7,7 @@ import {Component, HostBinding, Input} from '@angular/core';
   standalone: true,
   imports: [...config.imports],
   selector: config.selector,
-  templateUrl: config.templateUrl,
+  templateUrl: "ColorSorter.html",
 })
 export class ColorSorter extends ColorSorterComponent {
   @Input()
