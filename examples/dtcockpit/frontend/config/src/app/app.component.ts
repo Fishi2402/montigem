@@ -15,8 +15,7 @@ import {LoginModule4DtcockpitManagerClientImpl} from "loginmodule/LoginModule4Dt
 })
 export class AppComponent {
   constructor() {
-    // TODO: The delegate mus be first
-    LoginModule4DtcockpitManagerClientImpl.init(); // TODO: Include me within DtcockpitManagerClientImpl
+    // LoginModule4DtcockpitManagerClientImpl.init(); // Included within DtcockpitManagerClientImpl
 
     DtcockpitManagerClientImpl.init();
     const ws_protocol = document.location.protocol == "https:" ? "wss": "ws";

@@ -22,12 +22,15 @@ import Dtcockpit.RoomStatistic;
 import Dtcockpit.Server;
 import Dtcockpit.ServerStatus;
 
+import LoginModule.LoginSecManager;
+
+
 page Start(
   App app,
   List<Project> projects,
   List<Group> groups,
   List<Room> rooms,
-  List<Server> servers
+  List<Server> servers, LoginSecManager secMan
 ) {
   @NavContainer(projects = projects, groups = groups, content = [
     pageRow@GemRow(wrap = "wrap", rowGap = "10px", colGap = "10px", hAlign = "center", components = [

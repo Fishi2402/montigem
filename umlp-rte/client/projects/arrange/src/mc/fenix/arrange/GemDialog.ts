@@ -186,4 +186,6 @@ export class GemDialog extends GemDialogComponent {
       this.overlayRef.dispose();
     }
   }
+
+  public ngOnInit(): void { }
 }

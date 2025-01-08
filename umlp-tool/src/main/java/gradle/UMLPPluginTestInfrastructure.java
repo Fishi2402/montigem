@@ -2,8 +2,11 @@ package gradle;
 
 import gradle.specific.UMLPBackendTask;
 import gradle.specific.UMLPTestInfrastructureTask;
+import gradle.specific.serialize.SerializeCDSymbolsTask;
+import gradle.specific.serialize.SerializeGUISymbolsTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.dsl.DependencyHandler;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.plugins.PluginManager;
@@ -15,6 +18,9 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.function.Consumer;
+
+import static gradle.UMLPPluginFrontendBase.GUI_LIB_NAME;
+import static gradle.UMLPPluginFrontendBase.getBooleanProjectProperty;
 
 /**
  * Plugin which handles test infrastructure generation.
@@ -45,7 +51,9 @@ public abstract class UMLPPluginTestInfrastructure implements Plugin<Project> {
     pluginManager.apply(UMLPPluginBase.class);
     pluginManager.apply("java");
 
-    var umlpTestInfrastructureTask = createUmlpTestInfrastructureTask(project);
+    boolean local = getBooleanProjectProperty(project, "useLocalDependencies");
+
+    var umlpTestInfrastructureTask = createUmlpTestInfrastructureTask(project, local);
     //generate test infrastructure must run before compiling the tests
     project.getTasks()
         .withType(AbstractCompile.class)
@@ -87,8 +95,8 @@ public abstract class UMLPPluginTestInfrastructure implements Plugin<Project> {
     }
   }
 
-  public static TaskProvider<UMLPTestInfrastructureTask> createUmlpTestInfrastructureTask(Project project) {
-    return project.getTasks()
+  public static TaskProvider<UMLPTestInfrastructureTask> createUmlpTestInfrastructureTask(Project project, boolean local) {
+    TaskProvider<UMLPTestInfrastructureTask> testInfrastructureTask = project.getTasks()
         .register(UMLP_TEST_INFRASTRUCTURE_TASK_NAME, UMLPTestInfrastructureTask.class, task -> {
           task.setGroup(UMLP_GROUP_NAME);
 
@@ -116,6 +124,27 @@ public abstract class UMLPPluginTestInfrastructure implements Plugin<Project> {
           task.getOutputDir().set(Path.of(buildDirPath, "umlp", "backend_test").toFile());
           task.getSymbolOutDir().set(Path.of(buildDirPath, "umlp", "backend_test_symbols").toFile());
         });
+
+
+    if (local) {
+      Project umlpRteClientProject = project.findProject(":umlp-rte:client");
+      boolean createGuiSymbolsPresent = !umlpRteClientProject.getTasksByName("createGuiSymbols", false).isEmpty();
+      boolean createCDSymbolsPresent = !umlpRteClientProject.getTasksByName("createCDSymbols", false).isEmpty();
+      if (createCDSymbolsPresent && createGuiSymbolsPresent) {
+        SerializeGUISymbolsTask createGuiSymbols = (SerializeGUISymbolsTask) umlpRteClientProject.getTasks().getByName("createGuiSymbols");
+        SerializeCDSymbolsTask createCDSymbols = (SerializeCDSymbolsTask) umlpRteClientProject.getTasks().getByName("createCDSymbols");
+        testInfrastructureTask.get().dependsOn(createGuiSymbols, createCDSymbols);
+        testInfrastructureTask.get().getSymbolPath().from(createGuiSymbols.getOutput(), createCDSymbols.getOutput());
+      }
+    }
+    else {
+      Configuration guiLib = project.getConfigurations().getByName(GUI_LIB_NAME);
+      testInfrastructureTask.get().getSymbolPath().from(
+          project.provider(() -> guiLib.getFiles())
+      );
+    }
+
+    return testInfrastructureTask;
   }
 
   private static void setIfPathExists(Consumer<File> setter, Path path) {

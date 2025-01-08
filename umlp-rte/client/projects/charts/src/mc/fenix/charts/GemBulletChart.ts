@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { config, GemBulletChartComponent } from '../../../../build/gui/mc/fenix/charts/GemBulletChartComponent';
 import { PlotlyViaCDNModule } from "angular-plotly.js";
 
@@ -10,12 +10,11 @@ import { PlotlyViaCDNModule } from "angular-plotly.js";
   selector: config.selector,
   styleUrls: config.styleUrls,
   templateUrl: config.templateUrl,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GemBulletChart extends GemBulletChartComponent {
 
   constructor() { super(); }
-
-  ngOnInit(): void { }
 
   topmargin: number = 20;
   bottommargin: number = 25;
@@ -340,4 +339,6 @@ export class GemBulletChart extends GemBulletChartComponent {
       console.log(this._layout.margin);
     }
   }
+
+  public ngOnInit(): void { }
 }

@@ -388,4 +388,5 @@ export class GemHeatmapChart extends GemHeatmapChartComponent {
     return date.getTimezoneOffset() * 60;
   }
 
+  public ngOnInit(): void { }
 }

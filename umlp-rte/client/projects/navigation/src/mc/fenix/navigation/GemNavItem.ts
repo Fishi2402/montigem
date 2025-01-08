@@ -9,14 +9,7 @@ import { filter } from 'rxjs/operators';
   standalone: true,
   imports: [...config.imports],
   selector: config.selector,
-  styles: [
-    ...config.styles,
-    `
-      :host {
-        width: 100%;
-      }
-    `
-  ],
+  styles: [`:host { display: flex; width: 100%; }`],
   styleUrls: config.styleUrls,
   templateUrl: config.templateUrl,
 })

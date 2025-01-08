@@ -70,9 +70,10 @@ export class GemVennDiagram extends GemVennDiagramComponent {
     super();
   }
 
-  ngOnInit() {
+  init() {
     this.colors = this.getColors();
     this.updateValues();
+    super.init();
   }
 
   public get sets() {

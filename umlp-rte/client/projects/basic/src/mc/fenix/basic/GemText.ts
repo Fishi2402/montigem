@@ -8,6 +8,7 @@ import { config, GemTextComponent } from '../../../../build/gui/mc/fenix/basic/G
   imports: [...config.imports],
   selector: config.selector,
   styleUrls: config.styleUrls,
+  styles: config.styles,
   templateUrl: config.templateUrl,
 })
 export class GemText extends GemTextComponent {

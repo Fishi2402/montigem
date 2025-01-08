@@ -15,7 +15,7 @@
 @import "./src/gem-button.component";
 @import "./src/gem-card.component";
 @import "./src/breadcrumb.component";
-@import "./src/gem-treeview.component";
+@import "./src/gem-tree-node.component";
 @import "./src/action-buttons.component";
 @import "./src/header.component";
 @import "./src/horizontal-navigation-bar.component";
@@ -39,6 +39,7 @@
 
 * {
   font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+  box-sizing: border-box;
 }
 
 @mixin montigem-theme(
@@ -55,7 +56,7 @@
   @include login-theme($primary-color);
 
   /* ##### Basic ##### */
-  @include gem-treeview-theme($primary-color, $button-hover-color);
+  @include gem-tree-node-theme();
   @include gem-button-theme($primary-color, $button-hover-color);
 
   /* ##### Layout ##### */

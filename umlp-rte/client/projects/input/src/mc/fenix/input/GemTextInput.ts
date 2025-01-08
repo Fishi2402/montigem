@@ -14,6 +14,12 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   templateUrl: config.templateUrl,
 })
 export class GemTextInput extends GemTextInputComponent {
+  override _id: string = Math.random() + '';
+  override _labelText: string = "";
+  override _inputType: string = "text";
+  override _disabled: boolean = false;
+  override _placeholder: string = "";
+
   isNumeric: boolean = false;
 
   @HostBinding("attr.id")

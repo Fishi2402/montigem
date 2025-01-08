@@ -8,6 +8,7 @@ import { config, GemImageComponent } from '../../../../build/gui/mc/fenix/basic/
   imports: [...config.imports],
   selector: config.selector,
   styleUrls: config.styleUrls,
+  styles: config.styles,
   templateUrl: config.templateUrl,
 })
 export class GemImage extends GemImageComponent {

@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package gui.loginmodule;
+package gui.loginmodule.comp;
 
 import LoginModule.LoginModuleUser;
 
@@ -11,7 +11,7 @@ import mc.fenix.basic.GemButton;
 import mc.fenix.basic.GemText;
 import mc.fenix.input.GemTextInput;
 
-component UserLogin(/*List<LoginModuleUser> users, */ LoginModuleUser loginUser) {
+component UserLogin(LoginModuleUser loginUser, boolean forgotPasswordEnabled, boolean signupEnabled) {
   @GemCard(title = "Login", component =
     @GemColumn(hAlign = "center", rowGap = "20px", components = [
       @GemTextInput(
@@ -30,6 +30,12 @@ component UserLogin(/*List<LoginModuleUser> users, */ LoginModuleUser loginUser)
       ),
       // @GemButton(label = "Cancel", leftClick = navigateBack()),
       @GemButton(label = "Sign in", leftClick = login()),
+      @guard(forgotPasswordEnabled) {
+        @GemButton(label = "Forgot password", leftClick = navigateForgotPassword());
+      },
+      @guard(signupEnabled) {
+            @GemButton(label = "Create new Account", leftClick = navigateSignUp());
+      },
       error@GemText(value = "")
     ])
   );

@@ -30,4 +30,6 @@ export class GemOverlay extends GemOverlayComponent {
   public set components(components: TemplateRef<any>[]) {
     this._components = components;
   }
+
+  public ngOnInit(): void { }
 }

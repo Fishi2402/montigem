@@ -11,7 +11,8 @@ import { config, GemTableRowComponent } from '../../../../build/gui/mc/fenix/tab
   templateUrl: config.templateUrl,
 })
 export class GemTableRow extends GemTableRowComponent {
-  @ViewChild('tableRowTemplate', { static: true }) tableRowTemplate: TemplateRef<any>;
+  @ViewChild('tableRowTemplate', { static: true })
+  tableRowTemplate: TemplateRef<any>;
 
   public get cols(): TemplateRef<any>[] {
     return this._cols;

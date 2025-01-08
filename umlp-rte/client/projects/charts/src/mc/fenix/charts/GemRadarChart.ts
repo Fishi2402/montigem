@@ -150,4 +150,6 @@ export class GemRadarChart extends GemRadarChartComponent {
         return 'wholeChartWithLegendBottomContainer';
     }
   }
+
+  public ngOnInit(): void { }
 }

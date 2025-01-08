@@ -9,6 +9,13 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 // TODO: Generate me when concretizised
+//
+
+/**
+ * Replaced with the generated LoginModuleUser4UserDelegatedBuilder
+ * {@link LoginModuleUser4UserDelegatedBuilder}
+ */
+@Deprecated
 public class LoginModuleUser4UserBuilder extends LoginModuleUserBuilder {
   protected final UserBuilder delegate;
 
@@ -44,8 +51,19 @@ public class LoginModuleUser4UserBuilder extends LoginModuleUserBuilder {
   }
 
   @Override
+  public LoginModuleUserBuilder email(String email) {
+    delegate.email(email);
+    return this;
+  }
+
+  @Override
   protected boolean checkUsernamePresent() {
     return delegate.checkUsernamePresent();
+  }
+
+  @Override
+  protected boolean checkEmailPresent() {
+    return delegate.checkEmailPresent();
   }
 
   @Override
@@ -72,8 +90,7 @@ public class LoginModuleUser4UserBuilder extends LoginModuleUserBuilder {
 
   @Override
   public Optional<LoginModuleUser> build() {
-    Optional<User> user = delegate.build();
-    return user.map(u -> u);
+    return delegate.build().map(u->u);
   }
 
   @Override
@@ -149,6 +166,31 @@ public class LoginModuleUser4UserBuilder extends LoginModuleUserBuilder {
   @Override
   public void setPasswordPresent(boolean val) {
     delegate.setPasswordPresent(val);
+  }
+
+  @Override
+  public String getEmail() {
+    return delegate.getEmail();
+  }
+
+  @Override
+  public void setEmail(String _email) {
+    delegate.setEmail(_email);
+  }
+
+  @Override
+  public void setEmail(String _email, NotificationScope scope) {
+    delegate.setEmail(_email, scope);
+  }
+
+  @Override
+  public void setEmailPresent(boolean val) {
+    delegate.setEmailPresent(val);
+  }
+
+  @Override
+  protected boolean checkEmail() {
+    return delegate.checkEmail();
   }
 
   @Override

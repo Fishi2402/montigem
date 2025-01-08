@@ -43,4 +43,6 @@ export class GemOverlayItem extends GemOverlayItemComponent {
   public set y(value: string) {
     this._y = value;
   }
+
+  public ngOnInit(): void { }
 }

@@ -38,6 +38,15 @@ export class GemRow extends GemRowComponent {
     return this._hAlign;
   }
 
+  public override get height(): string {
+    return this.getHeight();
+  }
+
+  @Input()
+  public override set height(val_$: string) {
+    this._height = val_$;
+  }
+
   @Input()
   public override set hAlign(hAlign: string) {
     if (hAlign === 'left') {
@@ -67,4 +76,6 @@ export class GemRow extends GemRowComponent {
       this._vAlign = vAlign;
     }
   }
+
+  public ngOnInit(): void { }
 }

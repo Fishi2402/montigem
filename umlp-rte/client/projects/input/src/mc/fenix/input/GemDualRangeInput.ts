@@ -13,6 +13,8 @@ import { config, GemDualRangeInputComponent } from '../../../../build/gui/mc/fen
 })
 export class GemDualRangeInput extends GemDualRangeInputComponent {
 
+  override _id: string = Math.random() + '';
+
   @HostBinding("attr.id")
   componentId: string;
 

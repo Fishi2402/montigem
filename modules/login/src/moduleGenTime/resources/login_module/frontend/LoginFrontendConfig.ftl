@@ -8,5 +8,5 @@ ${bindHookPoint("component.GUI2AngularInitBodyInner", tc.instantiate("de.montico
 ${mod.addModuleToHookpoint("umlp.gui2ts.TSEmptyImports",  "login_module.frontend.LoginFrontendPageImport")}
 
 
-${mod.addModuleToHookpoint("umlp.generator.hook.AfterTransformGui2C",  "login_module.frontend.LoginFrontend_AfterTransformGui2C")}
+<#--${mod.addModuleToHookpoint("umlp.generator.hook.AfterTransformGui2C",  "login_module.frontend.LoginFrontend_AfterTransformGui2C")}-->
 ${mod.addModuleBeforeHookpoint("umlp.gui2ts.TSPackageRoutes",  "login_module.frontend.LoginFrontend_Routes_Package")}

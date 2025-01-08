@@ -6,3 +6,4 @@ export * from './src/mc/fenix/arrange/GemGridCell';
 export * from './src/mc/fenix/arrange/GemOverlay';
 export * from './src/mc/fenix/arrange/GemOverlayItem';
 export * from './src/mc/fenix/arrange/GemRow';
+export * from './src/mc/fenix/arrange/GemTreeNode';

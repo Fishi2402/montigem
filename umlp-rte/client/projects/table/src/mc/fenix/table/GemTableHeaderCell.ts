@@ -11,7 +11,8 @@ import { config, GemTableHeaderCellComponent } from '../../../../build/gui/mc/fe
   templateUrl: config.templateUrl,
 })
 export class GemTableHeaderCell extends GemTableHeaderCellComponent {
-  @ViewChild('tableHeaderCellTemplate', { static: true }) tableHeaderCellTemplate: TemplateRef<any>;
+  @ViewChild('tableHeaderCellTemplate', { static: true })
+  tableHeaderCellTemplate: TemplateRef<any>;
 
   constructor(private viewContainerRef: ViewContainerRef) {
     super();

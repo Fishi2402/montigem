@@ -18,6 +18,7 @@ export enum LAZY_LOGIN_STATE {
 export class LoginSecManager extends LoginSecManagerTOP {
 
   private static _instance: LoginSecManager = undefined;
+  private static _user: LoginModuleUser = undefined; // For some reason our singleton is not really a singleton locally?
 
   static readonly LS_KEY: string = "MightBeLoggedIn";
 
@@ -25,7 +26,18 @@ export class LoginSecManager extends LoginSecManagerTOP {
     // User logged in
     localStorage.setItem(LoginSecManager.LS_KEY, "true");
     this.setSignedInUser1(currentUser);
+    LoginSecManager._user = currentUser;
   }
+
+  public override   getSignedInUser (): LoginModuleUser  {
+    return LoginSecManager._user;
+  }
+  public  override setSignedInUserAbsent (scope: NotificationScope): void {
+    LoginSecManager._user = null;
+    super.setSignedInUserAbsent(scope);
+  }
+
+
 
   public static setInstance(value: LoginSecManager) {
     this._instance = value;

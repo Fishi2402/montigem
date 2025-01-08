@@ -24,6 +24,10 @@ export class GemDropdownInput extends GemDropdownInputComponent {
   @HostBinding("style.height")
   _height: string = '100%';
 
+  override _disabled: boolean = false;
+
+  override _searchEnabled: boolean = false;
+
   @HostListener('document:click', ['$event'])
   clickOutside(event: any): void {
     if (!this.componentRef.nativeElement.contains(event.target)) {
@@ -40,10 +44,6 @@ export class GemDropdownInput extends GemDropdownInputComponent {
 
   @Output()
   entryChange: EventEmitter<string> = new EventEmitter<string>();
-  @Output()
-  keyPress: EventEmitter<KeyboardEvent> = new EventEmitter<KeyboardEvent>;
-  @Output()
-  keyRelease: EventEmitter<KeyboardEvent> = new EventEmitter<KeyboardEvent>;
 
   elementId: string = Math.random() + '';
   isContentShown: boolean = false;

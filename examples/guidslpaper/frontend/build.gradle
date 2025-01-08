@@ -10,6 +10,21 @@ node {
 }
 nodeSetup.dependsOn(frontendSetup)
 
+dependencies {
+  umlpModulesGen("umlp.modules:login:$version") // Load generator modifications
+  umlpModulesDomainSymbols("umlp.modules.login:frontendTS:$version") // frontend domain symbols
+  umlpModulesModels("umlp.modules:login:$version") // and models itself
+}
+
+// ALus local gradle is apparently unaware of these versions?
+// Explicitly use the local login module
+configurations.all {
+  resolutionStrategy.dependencySubstitution {
+    substitute module("umlp.modules:login") using project(":modules:login")
+    substitute module("umlp.modules.login:frontendTS") using project(":modules:login:frontendTS")
+  }
+}
+
 genGUI {
   domainModels = ["Guidslpaper"]
   guiCreateModels = ["gui.login.UserCreate", "gui.person.PersonCreate", "gui.konto.KontoCreate"]

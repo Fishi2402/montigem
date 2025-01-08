@@ -8,9 +8,12 @@ import { config, GemAudioComponent } from '../../../../build/gui/mc/fenix/basic/
   imports: [...config.imports],
   selector: config.selector,
   styleUrls: config.styleUrls,
+  styles: config.styles,
   templateUrl: config.templateUrl,
 })
 export class GemAudio extends GemAudioComponent {
   @HostBinding("style.width")
   _width: string = "auto";
+
+  public ngOnInit(): void { }
 }

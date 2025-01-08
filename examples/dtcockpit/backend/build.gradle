@@ -9,15 +9,15 @@ plugins {
 }
 
 dependencies {
-  umlpModulesGen("umlp.modules:login:$version")
-  // TODO: adding it directly to the umlpModules failes due to missing module metadata
-  implementation("umlp.modules.login:backend:$version")
-  umlpModulesModels("umlp.modules:login:$version") // and models itself
+  umlpModules("umlp.modules:login:$version")
+//  umlpModulesGen("umlp.modules:login:$version")
+//  implementation("umlp.modules:login:$version")
+//  umlpModulesModels("umlp.modules:login:$version") // and models itself
 }
 
 // ALus local gradle is apparently unaware of these versions?
 // Explicitly use the local login module
-configurations.all {
+configurations.configureEach {
   resolutionStrategy.dependencySubstitution {
     substitute module("umlp.modules:login") using project(":modules:login")
     substitute module("umlp.modules.login:backend") using project(":modules:login:backend")
@@ -81,8 +81,6 @@ generateUmlpBackend {
   input = file("../models/Dtcockpit.umlp")
   useSpring = true
   useShell = true
-
-  modelDir.from(configurations.umlpModulesModels) // TODO: Move this module logic into the plugin
 }
 
 //COMPARE_generateUmlpBackend {

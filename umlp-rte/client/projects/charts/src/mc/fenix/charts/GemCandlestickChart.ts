@@ -19,9 +19,6 @@ export class GemCandlestickChart extends GemCandlestickChartComponent {
     super();
   }
 
-  ngOnInit(): void {
-  }
-
   /**
    * Connected with the *ngIf Directive to show/ hide the external HTML buttons for controlling the range of the chart
    */
@@ -435,4 +432,6 @@ export class GemCandlestickChart extends GemCandlestickChartComponent {
       this._layout.margin.r = this.rightmargin;
     }
   }
+
+  public ngOnInit(): void { }
 }

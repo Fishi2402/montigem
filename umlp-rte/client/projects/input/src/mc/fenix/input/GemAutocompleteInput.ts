@@ -23,6 +23,10 @@ export class GemAutocompleteInput extends GemAutocompleteInputComponent {
   @HostBinding("style.height")
   _height: string = '100%';
 
+  override _disabled: boolean = false;
+
+  override _placeholder: string = '';
+
   @HostListener('document:click', ['$event'])
   clickOutside(event: any): void {
     if (!this.componentRef.nativeElement.contains(event.target)) {

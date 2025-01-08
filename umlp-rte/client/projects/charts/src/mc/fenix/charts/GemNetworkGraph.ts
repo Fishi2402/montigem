@@ -44,9 +44,6 @@ export class GemNetworkGraph extends GemNetworkGraphComponent {
     super();
   }
 
-  ngOnInit() {
-  }
-
   @Input()
   public set labelEqualsID(input: boolean) {
     this._labelEqualsID = input;
@@ -237,4 +234,5 @@ export class GemNetworkGraph extends GemNetworkGraphComponent {
     }
   }
 
+  public ngOnInit(): void { }
 }

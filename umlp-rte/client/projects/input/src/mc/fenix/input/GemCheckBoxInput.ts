@@ -35,4 +35,5 @@ export class GemCheckBoxInput extends GemCheckBoxInputComponent {
     }
   }
 
+  ngOnInit(): void { }
 }

@@ -15,6 +15,8 @@ export class GemRangeInput extends GemRangeInputComponent {
   @HostBinding("attr.id")
   componentId: string;
 
+  override _id: string = Math.random() + '';
+
   constructor(private elementRef: ElementRef) {
     super();
   }

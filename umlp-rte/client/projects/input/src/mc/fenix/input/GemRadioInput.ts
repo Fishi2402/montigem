@@ -13,6 +13,8 @@ import { config, GemRadioInputComponent } from '../../../../build/gui/mc/fenix/i
 })
 export class GemRadioInput extends GemRadioInputComponent {
 
+  override _id: string = Math.random() + '';
+
   rightPosition: boolean = true;
 
   @Output()
@@ -21,5 +23,7 @@ export class GemRadioInput extends GemRadioInputComponent {
   onSelectedValueChange(event: string) {
     this.selectedValueChange.emit(event);
   }
+
+  public ngOnInit(): void { }
 
 }

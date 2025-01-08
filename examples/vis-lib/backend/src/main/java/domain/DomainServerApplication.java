@@ -1,15 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
 package domain;
 
+import mc.fenix.charts.gembarcharttypes.GemBarChartTypesDeSer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+import umlp.backendrte.common.BaseClassObjectMapper;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class,
     HibernateJpaAutoConfiguration.class}, scanBasePackages = {"umlp.backendrte.service.websocket",
@@ -25,14 +28,11 @@ public class DomainServerApplication extends domain.DomainServerApplicationTOP {
   public void init() throws IOException {
     super.init();
 
+    BaseClassObjectMapper.addDeSers(new ArrayList<>(GemBarChartTypesDeSer.getInstance().getDeSerMap().entrySet()));
     createDummyData();
   }
 
   public void createDummyData() {
-
-    Service cameraService = addService("Camera", ServiceStatus.GREEN, 20.0);
-    Service lidarService = addService("LIDAR Sensor", ServiceStatus.GREEN, 20.0);
-    Service steeringService = addService("Steering", ServiceStatus.GREEN, 20.0);
 
     Conversation c0 = addConversation("id0");
 
@@ -257,15 +257,6 @@ public class DomainServerApplication extends domain.DomainServerApplicationTOP {
   protected Conversation addConversation(String conversationId) {
     return DomainManager.conversationBuilder()
         .conversationid(conversationId)
-        .build()
-        .get();
-  }
-
-  protected Service addService(String serviceName, ServiceStatus initialStatus, double initialTemp) {
-    return DomainManager.serviceBuilder()
-        .name(serviceName)
-        .status(initialStatus)
-        .temperature(initialTemp)
         .build()
         .get();
   }

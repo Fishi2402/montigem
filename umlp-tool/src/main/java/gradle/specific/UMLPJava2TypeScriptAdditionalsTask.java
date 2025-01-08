@@ -68,7 +68,14 @@ public abstract class UMLPJava2TypeScriptAdditionalsTask extends UMLPSingleFileT
       for (File file : this.getModelDir()) {
         result.add("-mp");
         result.add(handlePath.apply(file.toPath()));
-        System.out.println("WORKSSS"+file.getAbsolutePath());
+      }
+    }
+
+    System.out.println("Symbol path is " + this.getSymbolPath().getFiles());
+    if(!this.getSymbolPath().isEmpty()) {
+      for (File file : this.getSymbolPath()) {
+        result.add("-path");
+        result.add(handlePath.apply(file.toPath()));
       }
     }
 

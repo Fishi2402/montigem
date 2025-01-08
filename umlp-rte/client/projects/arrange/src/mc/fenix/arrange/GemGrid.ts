@@ -241,4 +241,6 @@ export class GemGrid extends GemGridComponent {
     }
   }
 
+  public ngOnInit(): void { }
+
 }

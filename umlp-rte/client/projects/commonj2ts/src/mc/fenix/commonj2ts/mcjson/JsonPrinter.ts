@@ -78,10 +78,28 @@ export class JsonPrinter {
 
   value(value: any) {
     // TODO
+    if(typeof value === "number") {
+      this.internalNumberValue(value)
+    }
   }
 
-  valueJson( value : string) : void {
+  valueJson(value : string) : void {
     this.internalStringValue(value);
+  }
+
+  internalNumberValue(value : number) : void{
+    if (!(this.currElements.length === 0) && this.getCurrentElement() instanceof Array) {
+      const parent = this.getCurrentElement()
+      parent.push(value);
+    }
+    else if (!(this.currElements.length === 0) && this.getCurrentElement().isJsonObject()) {
+      Log.error("0xA0604 JsonPrinter detected an invalid nesting of Json. "
+        + "Cannot add a numeric value `" + value + "` to the JSON object: `"
+        + toString() + "`");
+    }
+    else {
+      this.currElements.push(value);
+    }
   }
 
   internalStringValue(value : string) : void {

@@ -66,4 +66,6 @@ export class GemColumn extends GemColumnComponent {
       this._vAlign = vAlign;
     }
   }
+
+  public ngOnInit(): void { }
 }

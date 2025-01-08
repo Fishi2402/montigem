@@ -241,4 +241,5 @@ export class GemGaugeChart extends GemGaugeChartComponent {
         return 'wholeChartWithLegendBottomContainer';
     }
   }
+
 }

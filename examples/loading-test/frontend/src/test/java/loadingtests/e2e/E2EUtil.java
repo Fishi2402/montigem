@@ -13,6 +13,8 @@ public class E2EUtil {
   public static final String isLoadedFoodFunction = "arg => window.LoadingTestsManager.isLoadedFood(arg)";
   public static final String isLoadedAnimalFunction = "arg => window.LoadingTestsManager.isLoadedAnimal(arg)";
   public static final String isLoadedPersonFunction = "arg => window.LoadingTestsManager.isLoadedPerson(arg)";
+  public static final String isLoadedPlayerFunction = "arg => window.LoadingTestsManager.isLoadedPlayer(arg)";
+  public static final String isLoadedGameFunction = "arg => window.LoadingTestsManager.isLoadedGame(arg)";
 
   public static void createDummyData(List<Long> personGemIds, List<Long> animalGemIds, List<Long> foodGemIds) {
 
@@ -41,6 +43,22 @@ public class E2EUtil {
     animalGemIds.add(tango.getGemId());
     LoadingTestsManager.getUpdateListHelper().setTestAnimal(tango);
   }
+
+  public static void createDummyData(List<Long> gameIds, List<Long> playerIds) {
+    var game = LoadingTestsManager.gameBuilder()
+        .currentTurn(0)
+        .currentPlayerIndex(0L)
+        .votingPhase(false)
+        .build().get();
+    gameIds.add(game.getGemId());
+    var p1 = LoadingTestsManager.playerBuilder().name("P1").isActive(false).points(0).build().get();
+    var p2 = LoadingTestsManager.playerBuilder().name("P2").isActive(false).points(0).build().get();
+    game.addPlayer(p1);
+    game.addPlayer(p2);
+    playerIds.add(p1.getGemId());
+    playerIds.add(p2.getGemId());
+  }
+
 
   public static Person createPerson(String name, int age, Set<Animal> animalSet) {
     return LoadingTestsManager.personBuilder().name(name).age(age).pet(animalSet).build().get();

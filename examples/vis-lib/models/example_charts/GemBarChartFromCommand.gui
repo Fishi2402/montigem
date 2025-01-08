@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_charts;
+
+import mc.fenix.charts.GemBarChart;
+import mc.fenix.input.GemTextInput;
+
+import Domain.App;
+import Domain.Person;
+
+page GemBarChartFromCommand(List<Person> persons, App app, String myStringValue = "default")
+{
+  barchart@GemBarChart(
+    data = app.getBarChart(persons, myStringValue),
+    stacked = false,
+    maxValue = 10,
+    minValue = null
+  );
+}

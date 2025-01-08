@@ -8,7 +8,6 @@ import { config, GemNavListComponent } from '../../../../build/gui/mc/fenix/navi
   imports: [...config.imports],
   selector: config.selector,
   styles: [
-    ...config.styles,
     `
       :host {
         width: 100%;

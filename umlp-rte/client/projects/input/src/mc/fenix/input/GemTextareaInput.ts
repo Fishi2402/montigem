@@ -13,6 +13,12 @@ import { config, GemTextareaInputComponent } from '../../../../build/gui/mc/feni
   templateUrl: config.templateUrl,
 })
 export class GemTextareaInput extends GemTextareaInputComponent {
+  override _id: string = Math.random() + '';
+
+  override _disabled: boolean = false;
+
+  override _placeholder: string = "";
+
   @HostBinding("attr.id")
   componentId: string;
 

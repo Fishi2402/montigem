@@ -11,7 +11,11 @@ import { config, GemTableRowCellComponent } from '../../../../build/gui/mc/fenix
   templateUrl: config.templateUrl,
 })
 export class GemTableRowCell extends GemTableRowCellComponent {
-  @ViewChild('tableRowCellTemplate', { static: true }) tableRowCellTemplate: TemplateRef<any>;
+  @ViewChild('tableRowCellTemplate', { static: true })
+  tableRowCellTemplate: TemplateRef<any>;
+
+  override _colSpan: number = 1;
+  override _rowSpan: number = 1;
 
   constructor(private viewContainerRef: ViewContainerRef) {
     super();

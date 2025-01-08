@@ -56,4 +56,6 @@ export class GemGridCell extends GemGridCellComponent {
       this._y2 = 'span ' + (this._b[1] - this._a[1] + 1);
     }
   }
+
+  public ngOnInit(): void { }
 }

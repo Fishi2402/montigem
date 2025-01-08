@@ -21,4 +21,8 @@ export class GemTable extends GemTableComponent {
 
   @HostBinding("style.overflow")
   overflow: string = "auto";
+
+  override _layout: string = "auto";
+
+  ngOnInit(): void { }
 }

@@ -27,4 +27,6 @@ export class GemChartLegend extends GemChartLegendComponent {
       this._entries.push(legendEntry);
     }
   }
+
+  public ngOnInit(): void { }
 }

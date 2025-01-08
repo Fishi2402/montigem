@@ -7,9 +7,11 @@ import com.google.common.base.Splitter;
 import de.monticore.ast.ASTNode;
 import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cd4code._prettyprint.CD4CodeFullPrettyPrinter;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
@@ -54,6 +56,7 @@ import de.monticore.types3.Type4Ast;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
+import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
@@ -65,6 +68,7 @@ import umlp.generator.gui.gentypescript.printer.TSBackendMap;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 import umlp.generator.util.TagLookUp;
+import umlp.generator.util.UMLPSymbolTables;
 
 import java.net.URL;
 import java.nio.file.Path;
@@ -74,6 +78,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -121,6 +126,28 @@ public class GUIGeneratorUtil {
 
   public boolean isComponent(ASTCDClass clazz) {
     return clazz.getName().endsWith(GUIAbstractDecorator.COMPONENT_SUFFIX);
+  }
+
+  public boolean isCommandCall(ASTGUICompilationUnit unit, ASTCallExpression methodCall) {
+    if(methodCall.getExpression() instanceof ASTFieldAccessExpression) {
+      ASTFieldAccessExpression fieldAccessExpression = (ASTFieldAccessExpression) methodCall.getExpression();
+      if(fieldAccessExpression.getExpression() instanceof ASTNameExpression) {
+        String variableName = ((ASTNameExpression) fieldAccessExpression.getExpression()).getName();
+        Optional<GUIParamSymbol> guiParamOpt = unit.getGUIComponentDeclaration().getSpannedScope().resolveGUIParam(variableName);
+        if(guiParamOpt.isPresent()) {
+          if(guiParamOpt.get().getType().getTypeInfo() instanceof OOTypeSymbol) {
+            OOTypeSymbol typeSymbol = (OOTypeSymbol) guiParamOpt.get().getType().getTypeInfo();
+             /*
+             For now: Assume that every method call of a singleton is a Command Execution Call
+             since taggin look up does not allow to search for method symbols
+             */
+            return TagLookUp.isSingleton(typeSymbol);
+          }
+        }
+
+      }
+    }
+    return false;
   }
 
   public boolean isCommand(ASTCDClass clazz) {
@@ -1224,6 +1251,24 @@ public class GUIGeneratorUtil {
     return res.toString();
   }
 
+  public String params2String(Map<ASTCDParameter, SymTypeExpression> params) {
+    if(params == null) {
+      return "";
+    }
+    StringBuilder res = new StringBuilder();
+    Iterator<ASTCDParameter> iter = params.keySet().iterator();
+    while (iter.hasNext()) {
+      ASTCDParameter param = iter.next();
+      res.append(param.getMCType().printType());
+      res.append(" ");
+      res.append(param.getName());
+      if (iter.hasNext()) {
+        res.append(",");
+      }
+    }
+    return res.toString();
+  }
+
   public String params2String(Collection<ASTCDParameter> params) {
     StringBuilder res = new StringBuilder();
     Iterator<ASTCDParameter> iter = params.iterator();
@@ -1231,6 +1276,19 @@ public class GUIGeneratorUtil {
       ASTCDParameter param = iter.next();
       res.append(param.getMCType().printType());
       res.append(" ");
+      res.append(param.getName());
+      if (iter.hasNext()) {
+        res.append(",");
+      }
+    }
+    return res.toString();
+  }
+
+  public String params2StringVariableNames(Collection<ASTCDParameter> params) {
+    StringBuilder res = new StringBuilder();
+    Iterator<ASTCDParameter> iter = params.iterator();
+    while (iter.hasNext()) {
+      ASTCDParameter param = iter.next();
       res.append(param.getName());
       if (iter.hasNext()) {
         res.append(",");
