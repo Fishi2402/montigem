@@ -29,7 +29,6 @@ import de.monticore.types.check.TypeCheckResult;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.monticore.umlstereotype._ast.ASTStereotypeBuilder;
@@ -351,9 +350,21 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
   protected void addImportsForCommands(ASTCDClass domainType, ASTCDType cdType) {
     if (TagLookUp.isSingleton(domainType) && !domainType.getCDMethodList().isEmpty()) {
       getCD4C().addImport(cdType, PathUtil.getBackendRTECommandPath("CommandManager"));
-      domainType.getCDMethodList().forEach(m -> getCD4C().addImport(cdType,
-          getPackageName(UMLPSymbolTables.getDiagramFor(domainType), "commands.") +
-          StringTransformations.capitalize(m.getName())));
+      domainType.getCDMethodList().forEach(m -> {
+        getCD4C().addImport(cdType,
+            getPackageName(UMLPSymbolTables.getDiagramFor(domainType), "commands.") +
+                StringTransformations.capitalize(m.getName()));
+
+        SymTypeExpression type = m.getSymbol().getType();
+        if (type.isVoidType()) return;
+
+        if (GenService.isJavaType(type)){
+          addJavaImport(domainType, type);
+        }else if (GenService.isCDType(type)){
+          getCD4C().addImport(cdType, Joiners.DOT.join(type.getTypeInfo().getPackageName().toLowerCase(), type.print()));
+        }
+
+      });
     }
   }
 
@@ -368,7 +379,7 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
       adjustedParam.setMCType(MCBasicTypesMill.mCPrimitiveTypeBuilder()
                                   .setPrimitive(ASTConstantsMCBasicTypes.LONG).build());
     }
-    if (isGemList(param.getSymbol().getType())) {
+    if (isListOfGemIdentifiable(param.getSymbol().getType())) {
       adjustedParam.setName(param.getName() + "GemId");
       adjustedParam.setMCType(MCTypeFacade.getInstance().createListTypeOf("Long"));
     }

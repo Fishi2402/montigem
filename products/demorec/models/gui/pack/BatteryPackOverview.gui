@@ -10,7 +10,6 @@ import mc.fenix.basic.GemButton;
 
 import gui.pack.PackTypeOverview;
 import gui.component.PhotoDisplay;
-import gui.component.ComponentTreeView;
 import gui.staticcontainer.StatTable;
 import gui.staticcontainer.StatTableRow;
 

@@ -1,5 +1,6 @@
 package gradle.common;
 
+import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.IOUtils;
 import org.gradle.api.Task;
 import org.gradle.api.file.ConfigurableFileCollection;
@@ -13,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -24,30 +26,34 @@ public class ModuleSystemUtil {
     List<ModuleMetadata> res = new ArrayList<>();
 
     for (File file : modules.getFiles()) {
-      res.add(ModuleMetadata.fromJson(readModuleMetadata(file)));
+      var opt = readModuleMetadata(file); //The file might be missing (as in empty jars, only describing dependencies)
+      opt.ifPresent(s -> res.add(ModuleMetadata.fromJson(s)));
     }
     return res;
   }
 
-  protected static String readModuleMetadata(File file) {
+  protected static Optional<String> readModuleMetadata(File file) {
     try(var zf = new ZipFile(file)){
       Enumeration<? extends ZipEntry> entries = zf.entries();
       ZipEntry entry = null;
+      boolean found = false;
       while(entries.hasMoreElements() && (entry = entries.nextElement()) != null){
         if(entry.getName().matches("[^/]+[.]metadata[.](json)")){
+          found = true;
           break;
         }
       }
-      if(entry != null){
+      if(entry != null && found){
         try(var is = zf.getInputStream(entry)){
-          return IOUtils.toString(is, StandardCharsets.UTF_8);
+          return Optional.of(IOUtils.toString(is, StandardCharsets.UTF_8));
         }
       }
     }catch (IOException e){
       throw new RuntimeException("Error loading metadata of module " + file, e);
     }
 
-    throw new IllegalStateException("Can not find metadata of module "  + file);
+    Log.warn("Can not find metadata of module " + file);
+    return Optional.empty();
   }
 
   @Internal

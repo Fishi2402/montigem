@@ -23,6 +23,7 @@ import umlp.generator.util.PathUtil;
 import umlp.generator.util.TagLookUp;
 import umlp.generator.util.UMLPSymbolTables;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -54,8 +55,17 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
         .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(name + ManagerDecorator.SUFFIX))
         .build();
 
+    List<String> superDelegateManagerNames = new ArrayList<>();
+    for (var ex : this.getExtendedDefinitions(origCD)) {
+      List<String> exFQN = new ArrayList<>(ex.getCDPackageList());
+      exFQN.add(ex.getCDDefinition().getName().toLowerCase());
+      exFQN.add(ex.getCDDefinition().getName() + "4" + origCD.getCDDefinition().getName() +ManagerDecorator.SUFFIX + "Client" + "Impl");
+      superDelegateManagerNames.add(ex.getCDDefinition().getName() + "4" + origCD.getCDDefinition().getName() +ManagerDecorator.SUFFIX + "Client" + "Impl");
+      getCD4C().addImport(managerClass, String.join(".", exFQN));
+    }
+
     // methods
-    getCD4C().addMethod(managerClass, getInitTemplate(), name, name + SUFFIX);
+    getCD4C().addMethod(managerClass, getInitTemplate(), name, name + SUFFIX, superDelegateManagerNames);
     getCD4C().addMethod(managerClass, getConstructorTemplate(), name + SUFFIX);
     getCD4C().addMethod(managerClass, getDoGetFreeGemIdTemplate());
     getCD4C().addMethod(managerClass, getErrorNotificationScopeTemplate());

@@ -41,8 +41,8 @@ public class SpringSecurityConfigDecorator extends AbstractDecorator {
     glex.replaceTemplate("cd2java.Annotations", ast,
         new StringHookPoint("@Configuration\n@EnableWebSecurity"));
 
-    String managerName = name + ManagerDecorator.SUFFIX;
-    String userclassName = "User";
+    String managerName = "LoginModule" + ManagerDecorator.SUFFIX;
+    String userclassName = "LoginModuleUser";
 
     var m1 = getCD4C().addMethod(ast, "login_module.backend.security_config.CustomerUserDetailsService",
         managerName, userclassName);
@@ -64,8 +64,9 @@ public class SpringSecurityConfigDecorator extends AbstractDecorator {
     String name = origCD.getCDDefinition().getName();
 
     // Domain
-    getCD4C().addImport(ast, defaultPackage.getName() + ".User");
-    getCD4C().addImport(ast, defaultPackage.getName() + "." + name + ManagerDecorator.SUFFIX);
+
+    getCD4C().addImport(ast, "loginmodule.LoginModuleUser");
+    getCD4C().addImport(ast, "loginmodule.LoginModuleManager");
 
     // Others
     getCD4C().addImport(ast, "java.util.Map");

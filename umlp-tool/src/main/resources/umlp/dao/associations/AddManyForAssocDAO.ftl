@@ -2,6 +2,12 @@
 ${tc.signature("association")}
 ${cd4c.method("public Boolean addMany${association.getName()?cap_first}(Map<Long, List<Long>> ${association.getName()?cap_first}s)")}
   ensureAdd${association.getName()?cap_first}Created();
+  if(${association.getName()?cap_first}s.entrySet().isEmpty()) {
+    return true;
+  }
+  if(${association.getName()?cap_first}s.values().stream().allMatch(v -> v.isEmpty())) {
+    return true;
+  }
   synchronized(add${association.getName()?cap_first}){
     try {
       DatabaseAccessManager.getConnection().setAutoCommit(false);
@@ -16,6 +22,7 @@ ${cd4c.method("public Boolean addMany${association.getName()?cap_first}(Map<Long
       }
       add${association.getName()?cap_first}.executeBatch();
       DatabaseAccessManager.getConnection().commit();
+      DatabaseAccessManager.getConnection().setAutoCommit(true);
       return true;
 
     } catch (SQLException e){

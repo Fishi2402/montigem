@@ -4,7 +4,7 @@
     "@angular/core": "^17.0.7"
   },
   "name": "@umlp/charts",
-  "version": "7.6.2",
+  "version": "7.6.4",
   "dependencies": {
     "venn.js": "^0.2.20",
     "chart.js": "^3.0.0",

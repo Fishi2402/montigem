@@ -10,8 +10,11 @@ import org.gradle.api.tasks.Sync;
 import org.gradle.api.tasks.TaskProvider;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import static gradle.UMLPPluginFrontendBase.UMLP_FRONTEND_DOMAIN_TASK_NAME;
 import static gradle.UMLPPluginFrontendBase.UMLP_FRONTEND_GUI_TASK_NAME;
@@ -34,9 +37,14 @@ public abstract class UMLPPluginFrontendNonJSweet implements Plugin<Project> {
 
     TaskProvider<FrontendSetup> frontendSetupTask = project.getTasks().named(UMLP_FRONTEND_SETUP_TASK_NAME, FrontendSetup.class);
 
+    TaskProvider<Sync> unpackModulesTask = createUnpackModuleTask(project);
+
     frontendGuiTask.configure(umlpTask -> {
       setIfPathExists(x -> umlpTask.getHwcDir().from(x), Path.of(project.getProjectDir().getAbsolutePath(), "src", "app"));
       umlpTask.getGuiGenJsweet().set(false);
+
+      // // Load the symbols from the .jars in the domain symbols path
+      umlpTask.getSymbolDir().from(project.getConfigurations().getByName("umlpModulesDomainSymbols"));
     });
 
     // task dependencies
@@ -57,6 +65,7 @@ public abstract class UMLPPluginFrontendNonJSweet implements Plugin<Project> {
 
     project.getTasks().named("generate").configure(generateTask -> {
       generateTask.dependsOn(frontendGuiTask);
+      generateTask.dependsOn(unpackModulesTask);
     });
 
   }
@@ -74,7 +83,35 @@ public abstract class UMLPPluginFrontendNonJSweet implements Plugin<Project> {
       // Always create symbols & tag files
       umlpTask.getSymbolOutDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols_gui_domain_domain__from_task_frontenddomain").toFile());
 
+      // We require the modules actual models here, as the symbols are not enough:
+      /*
+      genDomain with A extends B (where B is only a symbol import)
+       0xA7003x57269 get for AstNode can't return a value. Attribute is empty.
+
+      at de.monticore.cdbasis._symboltable.CDTypeSymbolTOP.getAstNode(CDTypeSymbolTOP.java:1)
+      at de.monticore.cd._symboltable.CDSymbolTables.getTransitiveSuperTypes(CDSymbolTables.java:86)
+       */
+      umlpTask.getModelDir().from(project.getConfigurations().getByName(UMLPPluginBase.UMLP_MODULES_MODELS_CONFIG));
     });
+  }
+
+
+  protected TaskProvider<Sync> createUnpackModuleTask(final Project project) {
+    // Download the frontends code and extract it into a dir
+    // Make sure to add "umlp_modules/loginmodule-ts/template_placeholder/src/*" as a path to the tsconfig
+    var conf = project.getConfigurations().getByName(UMLPPluginBase.UMLP_MODULES_FRONTEND_CONFIG);
+    var t = project.getTasks().register("unpackModule", Sync.class);
+    t.configure(task -> {
+      task.setGroup("umlp");
+      task.setDescription("Unpacks all umlp modules");
+      // Make sure to provide a lazy-provider to #from
+      task.from(project.provider(
+          // And expand the zipfile
+          () -> conf.getFiles().stream().map(project::zipTree).collect(Collectors.toList())
+      ));
+      task.into(project.getLayout().getBuildDirectory().dir("frontendGen/umlp_modules"));
+    });
+    return t;
   }
 
   private void setIfPathExists(Consumer<File> add, Path path) {

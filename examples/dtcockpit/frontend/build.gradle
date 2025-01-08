@@ -7,9 +7,10 @@ plugins {
 
 
 dependencies {
-  umlpModulesGen("umlp.modules:login:$version") // Load generator modifications
-  umlpModulesDomainSymbols("umlp.modules.login:frontendTS:$version") // frontend domain symbols
-  umlpModulesModels("umlp.modules:login:$version") // and models itself
+  umlpModules("umlp.modules:login:$version") // Load generator modifications
+//  umlpModulesGen("umlp.modules:login:$version") // Load generator modifications
+//  umlpModulesDomainSymbols("umlp.modules:login:$version") // frontend domain symbols
+//  umlpModulesModels("umlp.modules:login:$version") // and models itself
 }
 
 // ALus local gradle is apparently unaware of these versions?
@@ -27,22 +28,15 @@ node {
 }
 
 createDomainSymbols {
-  modelDir.from(configurations.umlpModulesModels) // TODO: Move this module logic into the plugin
 }
 
 genDomain {
   // TODO: Gradle setup
-  /*
-  genDomain with A extends B (where B is only a symbol import)
-   0xA7003x57269 get for AstNode can't return a value. Attribute is empty.
 
-	at de.monticore.cdbasis._symboltable.CDTypeSymbolTOP.getAstNode(CDTypeSymbolTOP.java:1)
-	at de.monticore.cd._symboltable.CDSymbolTables.getTransitiveSuperTypes(CDSymbolTables.java:86)
-   */
 
   // Alternative: Generate the module-frontend-domain too
   input = file("../models/Dtcockpit.umlp")
-  modelDir.from(configurations.umlpModulesModels) // TODO: Move this module logic into the plugin
+//  modelDir.from(configurations.umlpModulesModels) // TODO: Move this module logic into the plugin
 
   // TODO: The module has to be added to the tsconfig path
   /*
@@ -57,16 +51,16 @@ genDomain {
 }
 
 genGUI {
-  domainModels = ["Dtcockpit", "LoginModule"]
+  domainModels = ["Dtcockpit"] // "LoginModule" is included via the modGen (or not required?)
   guiCreateModels = ["gui.login.UserCreate", "gui.project.ProjectCreate", "gui.project.ProjectsCreateByGroup"]
 
   // TODO: Gradle Setup for modules
   symbolDir.from(() -> tasks.named("createDomainSymbols").get().outputs)
 
   // Load the symbols from the .jars in the domain symbols path
-  symbolDir.from(configurations.umlpModulesDomainSymbols) // TODO: Move this module logic into the plugin
+//  symbolDir.from(configurations.umlpModulesDomainSymbols) // TODO: Move this module logic into the plugin
 
-  outputs.upToDateWhen { false }
+//  outputs.upToDateWhen { false }
   /*
   debug = true
   outputs.upToDateWhen { false }
@@ -101,4 +95,9 @@ tasks.register('runApp', NpxTask) {
 }
 tasks.register('run') {
   dependsOn(runApp)
+}
+
+// Avoid a pesky org.gradle.api.InvalidUserDataException: Cannot expand ZIP 'bundle.jar' as it does not exist
+unpackModule {
+  dependsOn(":modules:login:frontendTS:packFrontendAsZip")
 }

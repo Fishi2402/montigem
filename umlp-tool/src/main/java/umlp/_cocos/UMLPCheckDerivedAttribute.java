@@ -15,7 +15,7 @@ public class UMLPCheckDerivedAttribute implements CDBasisASTCDClassCoCo {
   @Override
   public void check(ASTCDClass clazz) {
     clazz.getCDAttributeList().stream().filter(a -> !a.getModifier().isDerived()).forEach(attr -> {
-      CDSymbolTables.getInheritedAttributesInHierarchy(clazz).forEach(a -> {
+      CDSymbolTables.getInheritedAttributesInHierarchy(clazz).stream().filter(a -> a.getName().equals(attr.getName())).forEach(a -> {
         if (a.getModifier().isDerived()) {
           Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, attr.getName()), attr.get_SourcePositionStart());
         }

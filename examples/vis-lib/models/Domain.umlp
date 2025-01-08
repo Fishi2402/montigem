@@ -1,17 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 import java.time.LocalDateTime;
+import mc.fenix.charts.GemBarChartTypes.GemBarChartData;
 
 classdiagram Domain {
-
-  class Service {
-    String name;
-    ServiceStatus status;
-    double temperature;
-  }
-
-  enum ServiceStatus {
-    GREEN, YELLOW, RED;
-  }
 
   class Conversation {
     String conversationid;
@@ -53,6 +44,7 @@ classdiagram Domain {
   <<singleton>>
   class App {
     Boolean isOld(Person p);
+    GemBarChartData getBarChart(List<Person> persons, String date);
     int rotationDeg = 0;
     int verticalPercentage = 0;
     int horizontalPercentage = 0;
