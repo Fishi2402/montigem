@@ -1,12 +1,41 @@
 package mbdo;
 
+import Domain.MbdoTransportbeltState;
 import mbdo.components.Transportbelt;
 
-page Transportbelt_Demo(){
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.input.GemRangeInput;
+import mc.fenix.input.GemCheckBoxInput;
+
+page Transportbelt_Demo(MbdoTransportbeltState state){
+  @GemColumn(
+    rowGap = "15px",
+    components = [
+      @GemRangeInput(
+        id="speed-percentage",
+        labelText="Geschwindigkeit:",
+        vertical=false,
+        step=1,
+        minValue=1,
+        maxValue=100,
+        value=state.speedIndicatorPercentage
+      ),
+      @GemCheckBoxInput(
+        id="right-detector",
+        labelText="Rechte Lichtschranke unterbrochen",
+        checked=state.rightDetectorOn
+      ),
+      @GemCheckBoxInput(
+        id="left-detector",
+        labelText="Linke Lichtschranke unterbrochen",
+        checked=state.leftDetectorOn
+      )
+    ]
+  );
   @Transportbelt(
-   speedIndicatorPercentage=0,
-   rightDetectorOn=false,
-   leftDetectorOn=false
+   speedIndicatorPercentage=state.speedIndicatorPercentage,
+   rightDetectorOn=state.rightDetectorOn,
+   leftDetectorOn=state.leftDetectorOn
   );
 }
 

@@ -1,14 +1,53 @@
 package mbdo;
 
+import Domain.MbdoColorSorterState;
 import mbdo.components.ColorSorter;
 
-page ColorSorter_Demo(){
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.input.GemRangeInput;
+import mc.fenix.input.GemCheckBoxInput;
+
+page ColorSorter_Demo(MbdoColorSorterState state){
+  @GemColumn(
+    rowGap = "15px",
+    components = [
+      @GemRangeInput(
+        id="speed-percentage",
+        labelText="Geschwindigkeit:",
+        vertical=false,
+        step=1,
+        minValue=1,
+        maxValue=100,
+        value=state.speedIndicatorPercentage
+      ),
+      @GemCheckBoxInput(
+        id="pusher1",
+        labelText="Schieber 1 aktiv",
+        checked=state.pusherIndicator1On
+      ),
+      @GemCheckBoxInput(
+        id="pusher2",
+        labelText="Schieber 2 aktiv",
+        checked=state.pusherIndicator2On
+      ),
+      @GemCheckBoxInput(
+        id="pusher3",
+        labelText="Schieber 3 aktiv",
+        checked=state.pusherIndicator3On
+      ),
+      @GemCheckBoxInput(
+        id="pump-running",
+        labelText="Pumpe läuft",
+        checked=state.pumpRunning
+      )
+    ]
+  );
   @ColorSorter(
-    pumpRunning=false,
-    pusherIndicator1On=false,
-    pusherIndicator2On=false,
-    pusherIndicator3On=false,
-    speedIndicatorPercentage=0
+    pumpRunning=state.pumpRunning,
+    pusherIndicator1On=state.pusherIndicator1On,
+    pusherIndicator2On=state.pusherIndicator2On,
+    pusherIndicator3On=state.pusherIndicator3On,
+    speedIndicatorPercentage=state.speedIndicatorPercentage
   );
 }
 
