@@ -11,6 +11,13 @@ if (!this.buildFinished) {
 <#list assocList as assoc>
     <#if genService.isList(assoc)>
       this._${assoc.getName()}.build();
+    <#else>
+      //at the time of writing we assume that every other attribute is a Gem on something which implements GemBuildable
+      if (this._${assoc.getName()}.isPresent() && this._${assoc.getName()}.get().build() == null) {
+        //let the build fail
+        ${name}ErrorCollector.report${assoc.getName()?cap_first}Invalid(this);
+        return null;
+      }
     </#if>
 </#list>
 
@@ -30,19 +37,19 @@ if (!this.buildFinished) {
                     </#if>
                   }
                 </#if>
-            <#else>
-                <#if genService.isBidirectional(assoc)>
-                    <#assign otherSide=assoc.getSymbol().getOtherSide().getAssocSide()>
-                  if (this.${name} != null) {
-                    <#if genService.isList(otherSide)>
-                      if (!this._${assoc.getName()}.get().get${otherSide.getName()?cap_first}().includes(this)) {
-                      this._${assoc.getName()}.get().add${otherSide.getName()?cap_first}(this, NotificationScope.MINIMAL);
-                      }
-                    <#else>
-                      this._${assoc.getName()}.get().set${otherSide.getName()?cap_first}(this, NotificationScope.MINIMAL);
-                    </#if>
-                  }
-                </#if>
+            <#--<#else>  -->
+            <#--    <#if genService.isBidirectional(assoc)>  -->
+            <#--        <#assign otherSide=assoc.getSymbol().getOtherSide().getAssocSide()>  -->
+            <#--      if (this.${name} != null) {  -->
+            <#--        <#if genService.isList(otherSide)>  -->
+            <#--          if (!this._${assoc.getName()}.get().get${otherSide.getName()?cap_first}().includes(this)) {  -->
+            <#--          this._${assoc.getName()}.get().add${otherSide.getName()?cap_first}(this, NotificationScope.MINIMAL);  -->
+            <#--          }  -->
+            <#--        <#else>  -->
+            <#--          this._${assoc.getName()}.get().set${otherSide.getName()?cap_first}(this, NotificationScope.MINIMAL);  -->
+            <#--        </#if>  -->
+            <#--      }  -->
+            <#--    </#if>  -->
             </#if>
         </#list>
         this.${name?uncap_first}Observers.forEach(obs => obs.notifyBuild(this)); //+ an initial notification
@@ -64,19 +71,19 @@ if (!this.buildFinished) {
         </#if>
       }
     </#if>
-  <#else>
-    <#if genService.isBidirectional(assoc)>
-      <#assign otherSide=assoc.getSymbol().getOtherSide().getAssocSide()>
-      if (this.${name} != null) {
-      <#if genService.isList(otherSide)>
-        if (!this._${assoc.getName()}.get().get${otherSide.getName()?cap_first}().includes(this)) {
-          this._${assoc.getName()}.get().add${otherSide.getName()?cap_first}(this, NotificationScope.MINIMAL);
-        }
-      <#else>
-        this._${assoc.getName()}.get().set${otherSide.getName()?cap_first}(this, NotificationScope.MINIMAL);
-      </#if>
-      }
-    </#if>
+<#--  <#else> -->
+<#--    <#if genService.isBidirectional(assoc)> -->
+<#--      <#assign otherSide=assoc.getSymbol().getOtherSide().getAssocSide()> -->
+<#--      if (this.${name} != null) { -->
+<#--      <#if genService.isList(otherSide)> -->
+<#--        if (!this._${assoc.getName()}.get().get${otherSide.getName()?cap_first}().includes(this)) { -->
+<#--          this._${assoc.getName()}.get().add${otherSide.getName()?cap_first}(this, NotificationScope.MINIMAL); -->
+<#--        } -->
+<#--      <#else> -->
+<#--        this._${assoc.getName()}.get().set${otherSide.getName()?cap_first}(this, NotificationScope.MINIMAL); -->
+<#--      </#if> -->
+<#--      } -->
+<#--    </#if> -->
   </#if>
 </#list>
     this.${name?uncap_first}Observers.forEach(obs => obs.notifyBuild(this)); //+ an initial notification
