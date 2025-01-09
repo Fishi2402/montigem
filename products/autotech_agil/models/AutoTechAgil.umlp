@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 classdiagram AutoTechAgil {
   enum ServiceStatus {
@@ -39,6 +39,35 @@ classdiagram AutoTechAgil {
   */
   class Port {
     String name;
+  }
+
+  // TODO: Outgoing relations von Port nach Channel durch Port nach FunctionStream ersetzen
+
+  class Value;
+
+  // TODO: Eigene Value-Klassen definieren
+  class ServiceValue extends Value {
+    LocalDateTime timestamp;  // TODO: gemId soll timestamp werden, danach hier entfernen
+    ServiceData data;
+    ServiceQuality quality;
+  }
+
+  class ServiceData {
+    double speed;
+  }
+
+  class ServiceQuality {
+    QualityStatus status;
+    double latency;
+    double refreshRate;
+  }
+
+  class CameraQuality extends ServiceQuality {
+    double contrast;
+  }
+
+  enum QualityStatus {
+    RED, YELLOW, GREEN;
   }
 
   association [0..1] Service (ownerIn) -> (in) Port [*];

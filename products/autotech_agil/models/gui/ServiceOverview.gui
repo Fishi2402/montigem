@@ -22,7 +22,7 @@ page ServiceOverview (List<Service> services, Port selectedPort) {
             content = @GemText(value = s.name),
             children = [
               @GemTreeNode(
-                content = @GemText(value = "In"),
+                content = @GemText(value = "Requirements"),
                 children = [
                   @iterate(Port pIn : s.in) {
                     @GemTreeNode(
@@ -33,7 +33,7 @@ page ServiceOverview (List<Service> services, Port selectedPort) {
                 ]
               ),
               @GemTreeNode(
-                content = @GemText(value = "Out"),
+                content = @GemText(value = "Guarantee"),
                 children = [
                   @iterate(Port pOut : s.out) {
                     @GemTreeNode(

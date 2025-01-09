@@ -6,8 +6,8 @@ import AutoTechAgil.Status;
   A status indicator that provides visual representation of different states
 */
 component StatusIndicator(
-  String width = "100%",
-  String height = "100%",
+  String width,
+  String height,
   /**
     Possible statuses the indicator can take
   */

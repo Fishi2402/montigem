@@ -65,5 +65,6 @@ export class PortDetail extends PortDetailComponent {
     }
     return this.possibleStates.find(status => status.getStatusId() == ServiceStatus.RED);
   }
-  */
+   */
+
 }

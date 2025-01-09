@@ -11,20 +11,32 @@ import gui.components.StatusIndicator;
 
 import AutoTechAgil.Port;
 import AutoTechAgil.Status;
+import mc.fenix.arrange.GemCard;
 
 component PortDetail(Port port) {
-  @GemText(value = port.name);
-  /*
-  @GemText(value = service.name);
-  @GemRow(colGap = "50px", components = [
+  @guard(port != null) {
+    @GemCard(
+      title = port.name,
+      component = @GemColumn(rowGap = "20px", components = [
+        @GemRow(colGap = "10px", height = "auto", vAlign = "center", components = [
+          @GemText(value = "from"),
+          @GemTextInput(inputType = "date"),
+          @GemTextInput(inputType = "time"),
+          @GemText(value = "to"),
+          @GemTextInput(inputType = "date"),
+          @GemTextInput(inputType = "time")
+        ])
+      ])
+    );
+  }
+  /*@GemRow(colGap = "50px", components = [
     @GemColumn(rowGap = "20px", hAlign = "center", components = [
       @StatusIndicator(
-        width = "100px",
         possibleStatuses = getPossibleStatuses(),
-        statusId = service.status
+        statusId = port.status
       ),
       @GemDropdownInput(
-        entry = service.status,
+        entry = port.status,
         options = getStatusOptions()
       )
     ]),
@@ -49,6 +61,6 @@ component PortDetail(Port port) {
         entry = service.temperature
       )
     ])
-  ]);
-  */
+  ]);*/
+
 }
