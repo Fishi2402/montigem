@@ -2,10 +2,15 @@
 package gradle.specific.serialize;
 
 import de.se_rwth.commons.logging.Log;
+import gradle.specific.cd.CDGeneratorAction;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.tasks.*;
+import org.gradle.workers.WorkQueue;
+import org.gradle.workers.WorkerExecutor;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +35,16 @@ abstract public class SerializeCDSymbolsTask extends DefaultTask {
     super();
   }
 
+  @Inject
+  abstract public WorkerExecutor getWorkerExecutor();
+
+  @InputFiles
+  @Classpath
+  public abstract ConfigurableFileCollection getClassPath();
+
   @TaskAction
   public void run() {
+    WorkQueue workQueue = getWorkerExecutor().classLoaderIsolation(spec -> spec.getClasspath().from(getClassPath()));
     // TODO: Isolate TaskAction, so that no side-effects (... static variables / Logger / Mill) occur
     // Also important for parallelization
 
@@ -63,7 +76,11 @@ abstract public class SerializeCDSymbolsTask extends DefaultTask {
 
       Log.trace(args.toString(), this.getName());
 
-      de.monticore.CDGeneratorTool.main(args.toArray(new String[0]));
+      String[] argsA = args.toArray(new String[0]);
+      workQueue.submit(CDGeneratorAction.class, cdGenParams -> {
+        cdGenParams.getArgs().set(argsA);
+      });
+
     }
   }
 }

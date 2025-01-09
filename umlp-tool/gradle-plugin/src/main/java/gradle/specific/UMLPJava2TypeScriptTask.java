@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gradle.specific;
 
-import de.monticore.generating.GeneratorSetup;
-import de.monticore.io.paths.MCPath;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
@@ -15,7 +13,6 @@ import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.workers.WorkQueue;
 import org.gradle.workers.WorkerExecutor;
-import umlp.generator.gui.JSweetConfigGenerator;
 
 import javax.inject.Inject;
 import java.io.File;

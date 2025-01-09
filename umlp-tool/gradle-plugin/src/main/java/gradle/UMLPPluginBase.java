@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gradle;
 
-import de.monticore.gradle.common.GradleErrorHook;
 import gradle.common.CheckDirEqualityTask;
 import gradle.module.UMLPPluginModule;
 import gradle.module.UMLPPluginModuleJSFrontend;
@@ -39,6 +38,8 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
 
   @Override
     public void apply(Project project) {
+      // Load dependencies
+      project.getPluginManager().apply(UMLPPluginDep.class);
       // Make the Tasks available without fully qualified name
       project.getExtensions().getExtraProperties().set("UMLPMergeTask", UMLPMergeTask.class);
       project.getExtensions().getExtraProperties().set("UMLPGuiGenTask", UMLPGuiGenTask.class);
