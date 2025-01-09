@@ -1,14 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gradle.specific;
 
-import de.monticore.od4development.OD4DevelopmentTool;
+import de.se_rwth.commons.logging.Log;
 import gradle.common.UMLPSingleFileTask;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.tasks.*;
 import org.gradle.work.InputChanges;
-import standalone.com.sun.tools.sjavac.Log;
+import org.gradle.workers.WorkQueue;
+import org.gradle.workers.WorkerExecutor;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -48,18 +50,22 @@ public abstract class UMLPOD2DataTask extends UMLPSingleFileTask {
     return symbolOutDir;
   }
 
+  @Inject
+  abstract public WorkerExecutor getWorkerExecutor();
+
+
   @Override
   @TaskAction
   public void run(InputChanges inputChanges) {
     prepareRun();
 
-    Log.info("Starting data generation from object diagram.");
+    Log.info("Starting data generation from object diagram.", getName());
 
-    Log.debug("Input file: " + getInput().getAsPath());
-    Log.debug("Symbol path: " + getSymbolDir().getAsPath());
-    Log.debug("Output directory: " + getOutputDir().get());
+    Log.debug("Input file: " + getInput().getAsPath(), getName());
+    Log.debug("Symbol path: " + getSymbolDir().getAsPath(), getName());
+    Log.debug("Output directory: " + getOutputDir().get(), getName());
     if(getSymbolOutDir().isPresent()) {
-      Log.debug("Symbol output directory: " + getSymbolOutDir().get());
+      Log.debug("Symbol output directory: " + getSymbolOutDir().get(), getName());
     }
 
     List<String> args = new ArrayList<>();
@@ -73,7 +79,9 @@ public abstract class UMLPOD2DataTask extends UMLPSingleFileTask {
       args.add("-s");
       args.add(getSymbolOutDir().get().toString());
     }
-    OD4DevelopmentTool.main(args.toArray(new String[0]));
+    WorkQueue workQueue = getWorkerExecutor().classLoaderIsolation(spec -> spec.getClasspath().from(getExtraClasspathElements()));
+    String[] argsA = args.toArray(new String[0]);
+    workQueue.submit(OD2DataToolAction.class, params -> params.getArgs().set(argsA));
   }
 
   /**
