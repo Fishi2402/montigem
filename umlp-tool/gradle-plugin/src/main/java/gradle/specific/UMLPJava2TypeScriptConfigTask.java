@@ -1,17 +1,21 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gradle.specific;
 
-import de.monticore.generating.GeneratorSetup;
-import de.monticore.io.paths.MCPath;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.provider.Property;
+import org.gradle.api.tasks.Classpath;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
+import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
-import umlp.generator.gui.JSweetConfigGenerator;
+import org.gradle.workers.WorkQueue;
+import org.gradle.workers.WorkerExecutor;
+
+import javax.inject.Inject;
 
 public abstract class UMLPJava2TypeScriptConfigTask extends DefaultTask {
 
@@ -33,21 +37,24 @@ public abstract class UMLPJava2TypeScriptConfigTask extends DefaultTask {
   @InputDirectory
   public abstract DirectoryProperty getHwcDir();
 
+  @Inject
+  abstract public WorkerExecutor getWorkerExecutor();
+
+  @InputFiles
+  @Classpath
+  public abstract ConfigurableFileCollection getClassPath();
+
   @TaskAction
   public void run() {
-    generateJSweetConfig();
+    WorkQueue workQueue = getWorkerExecutor().classLoaderIsolation(spec -> spec.getClasspath().from(getClassPath()));
+    workQueue.submit(UMLPJava2TypeScriptConfigAction.class, params -> {
+      params.getDomainModel().set(getDomainModel());
+      params.getGenerateForDomain().set(getGenerateForDomain());
+      params.getGenerateForGui().set(getGenerateForGui());
+      params.getJsweetConfigOut().set(getJsweetConfigOut());
+      params.getHwcDir().set(getHwcDir());
+    });
   }
 
-  /**
-   * Generates configuration files required for the JSweet transpilation.
-   */
-  protected void generateJSweetConfig() {
-    GeneratorSetup gs = new GeneratorSetup();
-    gs.setOutputDirectory(getJsweetConfigOut().get().getAsFile());
-    if (getHwcDir().isPresent()) {
-      gs.setHandcodedPath(new MCPath(getHwcDir().get().getAsFile().toPath()));
-    }
-    JSweetConfigGenerator generator = new JSweetConfigGenerator(gs);
-    generator.generate(getDomainModel().get(), getGenerateForDomain().getOrElse(!getGenerateForGui().getOrElse(true)));
-  }
+
 }
