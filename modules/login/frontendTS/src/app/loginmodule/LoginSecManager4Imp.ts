@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {LoginSecManager} from '@src/loginmodule/LoginSecManager';
+import {LoginSecManager} from 'loginmodule/LoginSecManager';
 
 import {ActivatedRoute, Router} from "@angular/router";
 

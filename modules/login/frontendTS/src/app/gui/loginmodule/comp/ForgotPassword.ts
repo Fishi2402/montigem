@@ -1,11 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {Component} from '@angular/core';
-import {config, ForgotPasswordComponent} from '@src/gui/loginmodule/comp/ForgotPasswordComponent';
-import {LoginModuleManager} from '@src/loginmodule/LoginModuleManager';
-import {GetCurrentUserRequest} from '@src/loginmodule/commands/GetCurrentUserRequest';
+import {config, ForgotPasswordComponent} from 'gui/loginmodule/comp/ForgotPasswordComponent';
+import {LoginModuleManager} from 'loginmodule/LoginModuleManager';
+import {GetCurrentUserRequest} from 'loginmodule/commands/GetCurrentUserRequest';
 import {ClientCommandManager, CommandManager} from '@umlp/common';
-import {LoginSecManager} from "@src/loginmodule/LoginSecManager";
+import {LoginSecManager} from "loginmodule/LoginSecManager";
+import { GemTextInputValidity } from '@umlp/input';
 
 
 // import { ActivatedRoute, Router } from '@angular/router';
@@ -49,14 +50,14 @@ export class ForgotPassword extends ForgotPasswordComponent {
             if (result.success) {
               alert("Got success - TODO: Improve this message :) ")
             } else if (result.error === 'disabled') {
-              this.setValidity({
-                'status': 'Error',
-                'message': 'Password resets have been disabled. Please contact an administrator.'
-              })
+              this.setValidity(new GemTextInputValidity(
+                'Error',
+                'Password resets have been disabled. Please contact an administrator.'
+              ))
               this.setErrorMessage('Password resets have been disabled. Please contact an administrator.')
             } else {
               console.warn(result);
-              this.setValidity({'status': 'Error', 'message': 'Failed to request password reset'})
+              this.setValidity(new GemTextInputValidity('Error', 'Failed to request password reset'))
               this.setErrorMessage('Failed to request password reset: ' + result.error);
             }
           })
