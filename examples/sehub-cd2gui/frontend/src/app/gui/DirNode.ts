@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {DirNodeComponent, config} from '@src/gui/DirNodeComponent';
+import {DirNodeComponent, config} from 'gui/DirNodeComponent';
 import {Component} from '@angular/core';
-import {Artifact} from "@src/sehub/Artifact";
-import {Directory} from "@src/sehub/Directory";
+import {Artifact} from "sehub/Artifact";
+import {Directory} from "sehub/Directory";
 import { GemtreenodeModule } from "@umlp/arrange";
 import { GemtextModule } from "@umlp/basic";
 import { CommonModule } from "@angular/common";
