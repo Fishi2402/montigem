@@ -228,7 +228,7 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
           print("{}");
           return true;
         } else if (newClass.getArguments().size() == 2) {
-          print(String.format("{status: %s, message: %s}", newClass.getArguments().get(0), newClass.getArguments().get(1)));
+          print(String.format("new GemTextInputValidity(%s, %s)", newClass.getArguments().get(0), newClass.getArguments().get(1)));
           return true;
         } else {
           // ERROR

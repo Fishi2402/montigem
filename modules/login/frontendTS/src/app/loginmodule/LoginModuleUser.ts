@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {LoginModuleUserTOP} from 'loginmodule/LoginModuleUserTOP';
+import {GemTextInputValidity} from '@umlp/input';
 
 export class LoginModuleUser extends LoginModuleUserTOP {
   protected _statusUsername = '';
@@ -19,8 +20,8 @@ export class LoginModuleUser extends LoginModuleUserTOP {
     return hash;
   }
 
-  public getValidityUsername(): any {
-    return {status: this._statusUsername, message: this._validityUsername};
+  public getValidityUsername(): GemTextInputValidity {
+    return new GemTextInputValidity(this._statusUsername, this._validityUsername);
   }
 
   public set validityUsername(value: string) {
@@ -35,8 +36,8 @@ export class LoginModuleUser extends LoginModuleUserTOP {
 
   protected _validityPassword = '';
 
-  public getValidityPassword(): any {
-    return {status: this._statusPassword, message: this._validityPassword};
+  public getValidityPassword(): GemTextInputValidity {
+    return new GemTextInputValidity(this._statusPassword, this._validityPassword);
   }
 
   public set validityPassword(value: string) {
@@ -51,8 +52,8 @@ export class LoginModuleUser extends LoginModuleUserTOP {
 
   protected _validityEmail = '';
 
-  public getValidityEmail(): any {
-    return {status: this._statusEmail, message: this._validityEmail};
+  public getValidityEmail(): GemTextInputValidity {
+    return new GemTextInputValidity(this._statusEmail, this._validityEmail);
   }
 
   public set validityEmail(value: string) {
