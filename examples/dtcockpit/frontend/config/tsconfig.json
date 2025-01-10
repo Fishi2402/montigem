@@ -41,7 +41,10 @@
         "build/appgui/*",
         "../umlp/fe2/*",
         "src/app/*",
-        "../../src/app/*"
+        "../../src/app/*",
+        "../../../../../modules/login/frontendTS/build/frontendGen/build/appdomain/*",
+        "../../../../../modules/login/frontendTS/build/frontendGen/build/appgui/*",
+        "../../../../../modules/login/frontendTS/src/app/*"
       ]
     }
   },
