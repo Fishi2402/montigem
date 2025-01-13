@@ -1,0 +1,12 @@
+/* You can add global styles to this file, and also import other style files */
+@import "../node_modules/@umlp/theme/theme";
+
+// maker sure the default styles are included
+@include montigem-theme();
+
+// override one of the default styles
+/*
+.gem-card-line {
+  background: aqua;
+}
+/**/
