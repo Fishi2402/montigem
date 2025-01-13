@@ -2,17 +2,20 @@
 package example_charts;
 
 import mc.fenix.charts.GemBarChart;
-import mc.fenix.input.GemTextInput;
+import mc.fenix.charts.GemPieChart;
 
 import Domain.App;
 import Domain.Person;
 
-page GemBarChartFromCommand(List<Person> persons, App app, String myStringValue = "default")
+page GemBarChartFromCommand(App app, List<Person> persons, String myStringValue = "default")
 {
   barchart@GemBarChart(
     data = app.getBarChart(persons, myStringValue),
     stacked = false,
     maxValue = 10,
     minValue = null
+  );
+  piechart@GemPieChart(
+    data = app.getPieChart(persons, myStringValue)
   );
 }

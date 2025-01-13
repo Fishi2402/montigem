@@ -1,0 +1,104 @@
+plugins {
+  id 'java-library'
+  id 'java-gradle-plugin'
+  id 'maven-publish'
+}
+
+configurations {
+  umlpTool
+}
+
+dependencies {
+  implementation group: 'de.se_rwth.commons', name: 'se-commons-gradle', version: mc_version
+
+  implementation('com.google.cloud.tools:jib-core:0.27.1')
+  implementation('org.jetbrains:annotations:26.0.1')
+  implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version // for json
+  implementation ('org.yaml:snakeyaml:2.2')
+
+  // The following dependencies will be present during compilation & loaded into a separated classloa
+  umlpTool group: 'de.monticore.lang', name: 'od', version: mc_version
+  umlpTool group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version, classifier: 'cdmerge'
+  umlpTool "umlp:umlp-tool:$version"
+  umlpTool group: 'de.rwth.se.umlp.jsweet', name: 'jsweet-transpiler', version: '3.2.0-UMLP-SNAPSHOT'
+
+}
+
+sourceSets {
+  main.compileClasspath += configurations.umlpTool
+  test.compileClasspath += configurations.umlpTool
+}
+
+group = 'umlp'
+repositories {
+  if (("true").equals(getProperty('useLocalRepo'))) {
+    mavenLocal()
+  }
+  maven {
+    credentials.username mavenUser
+    credentials.password mavenPassword
+    url repo
+  }
+  mavenCentral()
+}
+
+
+gradlePlugin {
+  plugins {
+    umlpplugin {
+      id = "de.rwth.se.umlp-tool"
+      implementationClass = "gradle.UMLPPluginBase"
+    }
+    umlpplugin_dependencies {
+      id = "de.rwth.se.umlp-tool-dependencies"
+      implementationClass = "gradle.UMLPPluginDep"
+    }
+    umlpplugin_backend {
+      id = "de.rwth.se.umlp-tool-backend"
+      implementationClass = "gradle.UMLPPluginBackend"
+    }
+    umlpplugin_backend_test {
+      id = "de.rwth.se.umlp-tool-backend-test"
+      implementationClass = "gradle.UMLPPluginBackendTest"
+    }
+    umlpplugin_testing {
+      id = "de.rwth.se.umlp-tool-testing"
+      implementationClass = "gradle.UMLPPluginTestInfrastructure"
+    }
+    umlpplugin_frontend {
+      id = "de.rwth.se.umlp-tool-frontend"
+      implementationClass = "gradle.UMLPPluginFrontend"
+    }
+    umlpplugin_frontend_test {
+      id = "de.rwth.se.umlp-tool-frontend-test"
+      implementationClass = "gradle.UMLPPluginFrontendTest"
+    }
+    umlpplugin_module_models {
+      id = "de.rwth.se.umlp-tool-module-models"
+      implementationClass = "gradle.module.UMLPPluginModule"
+    }
+    umlpplugin_module_backend {
+      id = "de.rwth.se.umlp-tool-module-backend"
+      implementationClass = "gradle.module.UMLPPluginModuleBackend"
+    }
+    umlpplugin_module_jsfrontend {
+      id = "de.rwth.se.umlp-tool-module-jsfrontend"
+      implementationClass = "gradle.module.UMLPPluginModuleJSFrontend"
+    }
+  }
+}
+
+tasks.register("buildInfo", de.monticore.gradle.common.MCBuildInfoTask) {}
+processResources.dependsOn("buildInfo")
+
+// configure deployment
+publishing {
+  repositories.maven {
+    credentials.username mavenUser
+    credentials.password mavenPassword
+
+    def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-releases/"
+    def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-snapshots/"
+    url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+  }
+}

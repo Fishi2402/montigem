@@ -2,9 +2,12 @@
 package gradle.specific.serialize;
 
 import de.se_rwth.commons.logging.Log;
+import gradle.specific.GUIDSLToolAction;
+import gradle.specific.cd.CDGeneratorAction;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.tasks.Classpath;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Optional;
@@ -12,7 +15,10 @@ import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.PathSensitive;
 import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.api.tasks.TaskAction;
+import org.gradle.workers.WorkQueue;
+import org.gradle.workers.WorkerExecutor;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,9 +58,17 @@ abstract public class SerializeGUISymbolsTask extends DefaultTask {
     super();
   }
 
+  @Inject
+  abstract public WorkerExecutor getWorkerExecutor();
+
+  @InputFiles
+  @Classpath
+  public abstract ConfigurableFileCollection getClassPath();
+
+
   @TaskAction
   public void run() {
-    // TODO: Isolate TaskAction, so that no side-effects (... static variables / Logger / Mill) occur
+    WorkQueue workQueue = getWorkerExecutor().classLoaderIsolation(spec -> spec.getClasspath().from(getClassPath()));
     // Also important for parallelization
 
     Set<File> inputFiles = getInput().getAsFileTree().getFiles().stream()
@@ -84,7 +98,11 @@ abstract public class SerializeGUISymbolsTask extends DefaultTask {
       }
 
       Log.trace(args.toString(), this.getName());
-      de.monticore.guidsl.GUIDSLTool.main(args.toArray(new String[0]));
+      String[] argsA = args.toArray(new String[0]);
+      workQueue.submit(GUIDSLToolAction.class, cdGenParams -> {
+        cdGenParams.getArgs().set(argsA);
+      });
+
     }
   }
 }

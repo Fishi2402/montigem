@@ -2,9 +2,12 @@
 package gradle.specific.merge;
 
 import de.se_rwth.commons.logging.Log;
+import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.Property;
+import org.gradle.api.tasks.Classpath;
 import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.SourceTask;
 import org.gradle.api.tasks.TaskAction;
@@ -26,6 +29,10 @@ public abstract class UMLPMergeTask extends SourceTask {
   @Inject
   abstract public WorkerExecutor getWorkerExecutor();
 
+  @InputFiles
+  @Classpath
+  public abstract ConfigurableFileCollection getClassPath();
+
   public UMLPMergeTask() {
     getDebug().convention(getProject().hasProperty(TASK_DEBUG) && "true".equals(getProject().property(TASK_DEBUG)));
   }
@@ -38,7 +45,7 @@ public abstract class UMLPMergeTask extends SourceTask {
 
       MergeAction.umlpMerge(getSource().getFiles(), getOutputFile().getAsFile().get());
     }else {
-      WorkQueue workQueue = getWorkerExecutor().classLoaderIsolation();
+      WorkQueue workQueue = getWorkerExecutor().classLoaderIsolation(spec -> spec.getClasspath().from(getClassPath()));
       workQueue.submit(MergeAction.class, param -> {
         param.getInputs().from(this.getSource());
         param.getOutputFile().set(this.getOutputFile());
