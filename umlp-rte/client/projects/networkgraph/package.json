@@ -1,6 +1,6 @@
 {
   "name": "@umlp/networkgraph",
-  "version": "7.6.11",
+  "version": "7.6.12",
   "peerDependencies": {
     "@angular/animations": "^17.0.7",
     "@angular/common": "^17.0.7",
