@@ -1,0 +1,132 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram grammar_withconcepts_AST {
+  @Grammar_WithConcepts!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @Grammar_WithConcepts!Symbol(2,0);
+    enclosingScope = @Grammar_WithConcepts!ArtifactScope;
+    spanningScope = @Grammar_WithConcepts!Scope;
+    startRule = @!StartRule(20,2):ASTStartRule {
+      enclosingScope = @Grammar_WithConcepts!Scope;
+      name = MCGrammar;
+    };
+    r__package = [de, monticore, grammar];
+    name = Grammar_WithConcepts;
+    supergrammar = [// *size: 9
+      @Grammar!GrammarReference(5,11):ASTGrammarReference {
+        enclosingScope = @Grammar_WithConcepts!Scope;
+        names = [de, monticore, grammar, Grammar];
+      },
+      @MCCommonStatements!GrammarReference(6,11):ASTGrammarReference {
+        enclosingScope = @Grammar_WithConcepts!Scope;
+        names = [de, monticore, statements, MCCommonStatements];
+      },
+      @MCReturnStatements!GrammarReference(7,11):ASTGrammarReference {
+        enclosingScope = @Grammar_WithConcepts!Scope;
+        names = [de, monticore, statements, MCReturnStatements];
+      },
+      @MCExceptionStatements!GrammarReference(8,11):ASTGrammarReference {
+        enclosingScope = @Grammar_WithConcepts!Scope;
+        names = [de, monticore, statements, MCExceptionStatements];
+      },
+      @JavaClassExpressions!GrammarReference(9,11):ASTGrammarReference {
+        enclosingScope = @Grammar_WithConcepts!Scope;
+        names = [de, monticore, expressions, JavaClassExpressions];
+      },
+      @JavaLight!GrammarReference(10,11):ASTGrammarReference {
+        enclosingScope = @Grammar_WithConcepts!Scope;
+        names = [de, monticore, JavaLight];
+      },
+      @Antlr!GrammarReference(11,11):ASTGrammarReference {
+        enclosingScope = @Grammar_WithConcepts!Scope;
+        names = [de, monticore, grammar, concepts, antlr, Antlr];
+      },
+      @CommonExpressions!GrammarReference(12,11):ASTGrammarReference {
+        enclosingScope = @Grammar_WithConcepts!Scope;
+        names = [de, monticore, expressions, CommonExpressions];
+      },
+      @BitExpressions!GrammarReference(13,11):ASTGrammarReference {
+        enclosingScope = @Grammar_WithConcepts!Scope;
+        names = [de, monticore, expressions, BitExpressions];
+      }];
+    classProds = [// *size: 4
+      @MCConcept!ClassProd(24,2):ASTClassProd {
+        enclosingScope = @Grammar_WithConcepts!Scope;
+        alts = [// *size: 1
+          @!Alt(24,14):ASTAlt {
+            enclosingScope = @MCConcept!Scope;
+            component = [// *size: 1
+              @ConceptAntlr!NonTerminal(24,14):ASTNonTerminal {
+                enclosingScope = @MCConcept!Scope;
+                name = ConceptAntlr;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = MCConcept;
+      },
+      @Action!ClassProd(26,2):ASTClassProd {
+        enclosingScope = @Grammar_WithConcepts!Scope;
+        alts = [// *size: 1
+          @!Alt(26,11):ASTAlt {
+            enclosingScope = @Action!Scope;
+            component = [// *size: 1
+              @MCBlockStatement!NonTerminal(26,11):ASTNonTerminal {
+                enclosingScope = @Action!Scope;
+                name = MCBlockStatement;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 21;
+              }];
+            rightAssoc = false;
+          }];
+        name = Action;
+      },
+      @ExpressionPredicate!ClassProd(28,2):ASTClassProd {
+        enclosingScope = @Grammar_WithConcepts!Scope;
+        alts = [// *size: 1
+          @!Alt(28,24):ASTAlt {
+            enclosingScope = @ExpressionPredicate!Scope;
+            component = [// *size: 1
+              @Expression!NonTerminal(28,24):ASTNonTerminal {
+                enclosingScope = @ExpressionPredicate!Scope;
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = ExpressionPredicate;
+      },
+      @JavaCode!ClassProd(30,2):ASTClassProd {
+        enclosingScope = @Grammar_WithConcepts!Scope;
+        alts = [// *size: 1
+          @!Alt(30,13):ASTAlt {
+            enclosingScope = @JavaCode!Scope;
+            component = [// *size: 1
+              @ClassBodyDeclaration!NonTerminal(30,13):ASTNonTerminal {
+                enclosingScope = @JavaCode!Scope;
+                name = ClassBodyDeclaration;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 21;
+              }];
+            rightAssoc = false;
+          }];
+        name = JavaCode;
+      }];
+    keywordRules = [// *size: 1
+      @!KeywordRule(17,2):ASTKeywordRule {
+        enclosingScope = @Grammar_WithConcepts!Scope;
+        strings = [association, composition, ordered, targetimport, classdiagram];
+      }];
+    component = false;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

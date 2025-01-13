@@ -1,0 +1,348 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram oosymbols_AST {
+  @OOSymbols!MCGrammar(3,0):ASTMCGrammar {
+    symbol = @OOSymbols!Symbol(3,0);
+    enclosingScope = @OOSymbols!ArtifactScope;
+    spanningScope = @OOSymbols!Scope;
+    r__package = [de, monticore, symbols];
+    importStatement = [// *size: 1
+      @!MCImportStatement(8,0):ASTMCImportStatement {
+        enclosingScope = @OOSymbols!Scope;
+        mCQualifiedName = @de.monticore.symbols!MCQualifiedName(8,7):ASTMCQualifiedName {
+          enclosingScope = @OOSymbols!Scope;
+          parts = [de, monticore, symbols];
+        };
+        star = true;
+      }];
+    name = OOSymbols;
+    supergrammar = [// *size: 1
+      @BasicSymbols!GrammarReference(36,36):ASTGrammarReference {
+        enclosingScope = @OOSymbols!Scope;
+        names = [BasicSymbols];
+      }];
+    interfaceProds = [// *size: 3
+      @OOType!InterfaceProd(51,2):ASTInterfaceProd {
+        enclosingScope = @OOSymbols!Scope;
+        symbolDefinitions = [// *size: 1
+          @!SymbolDefinition(51,12):ASTSymbolDefinition {
+            enclosingScope = @OOType!Scope;
+            genSymbol = true;
+            genScope = false;
+            shadowing = false;
+            non_exporting = false;
+            ordered = false;
+          }];
+        superInterfaceRule = [// *size: 1
+          @Type!RuleReference(51,34):ASTRuleReference {
+            enclosingScope = @OOType!Scope;
+            name = Type;
+          }];
+        alt = [// *size: 1
+          @!Alt(51,41):ASTAlt {
+            enclosingScope = @OOType!Scope;
+            component = [// *size: 1
+              @Name!NonTerminal(51,41):ASTNonTerminal {
+                enclosingScope = @OOType!Scope;
+                name = Name;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = OOType;
+      },
+      @Field!InterfaceProd(73,2):ASTInterfaceProd {
+        enclosingScope = @OOSymbols!Scope;
+        symbolDefinitions = [// *size: 1
+          @!SymbolDefinition(73,12):ASTSymbolDefinition {
+            enclosingScope = @Field!Scope;
+            genSymbol = true;
+            genScope = false;
+            shadowing = false;
+            non_exporting = false;
+            ordered = false;
+          }];
+        superInterfaceRule = [// *size: 1
+          @Variable!RuleReference(73,33):ASTRuleReference {
+            enclosingScope = @Field!Scope;
+            name = Variable;
+          }];
+        alt = [// *size: 1
+          @!Alt(73,44):ASTAlt {
+            enclosingScope = @Field!Scope;
+            component = [// *size: 1
+              @Name!NonTerminal(73,44):ASTNonTerminal {
+                enclosingScope = @Field!Scope;
+                name = Name;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = Field;
+      },
+      @Method!InterfaceProd(92,2):ASTInterfaceProd {
+        enclosingScope = @OOSymbols!Scope;
+        symbolDefinitions = [// *size: 1
+          @!SymbolDefinition(92,12):ASTSymbolDefinition {
+            enclosingScope = @Method!Scope;
+            genSymbol = true;
+            genScope = false;
+            shadowing = false;
+            non_exporting = false;
+            ordered = false;
+          }];
+        superInterfaceRule = [// *size: 1
+          @Function!RuleReference(92,34):ASTRuleReference {
+            enclosingScope = @Method!Scope;
+            name = Function;
+          }];
+        alt = [// *size: 1
+          @!Alt(92,45):ASTAlt {
+            enclosingScope = @Method!Scope;
+            component = [// *size: 1
+              @Name!NonTerminal(92,45):ASTNonTerminal {
+                enclosingScope = @Method!Scope;
+                name = Name;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = Method;
+      }];
+    symbolRules = [// *size: 3
+      @!SymbolRule(53,2):ASTSymbolRule {
+        enclosingScope = @OOSymbols!Scope;
+        type = OOType;
+        additionalAttributes = [// *size: 9
+          @isClass!AdditionalAttribute(54,4):ASTAdditionalAttribute {
+            symbol = @isClass!Symbol(54,4);
+            enclosingScope = @OOSymbols!Scope;
+            name = "isClass";
+            mCType = @boolean!MCPrimitiveType(54,13):ASTMCPrimitiveType {
+              enclosingScope = @OOSymbols!Scope;
+              primitive = 1;
+            };
+          },
+          @isInterface!AdditionalAttribute(55,4):ASTAdditionalAttribute {
+            symbol = @isInterface!Symbol(55,4);
+            enclosingScope = @OOSymbols!Scope;
+            name = "isInterface";
+            mCType = @boolean!MCPrimitiveType(55,17):ASTMCPrimitiveType {
+              enclosingScope = @OOSymbols!Scope;
+              primitive = 1;
+            };
+          },
+          @isEnum!AdditionalAttribute(56,4):ASTAdditionalAttribute {
+            symbol = @isEnum!Symbol(56,4);
+            enclosingScope = @OOSymbols!Scope;
+            name = "isEnum";
+            mCType = @boolean!MCPrimitiveType(56,12):ASTMCPrimitiveType {
+              enclosingScope = @OOSymbols!Scope;
+              primitive = 1;
+            };
+          },
+          @isAbstract!AdditionalAttribute(57,4):ASTAdditionalAttribute {
+            symbol = @isAbstract!Symbol(57,4);
+            enclosingScope = @OOSymbols!Scope;
+            name = "isAbstract";
+            mCType = @boolean!MCPrimitiveType(57,16):ASTMCPrimitiveType {
+              enclosingScope = @OOSymbols!Scope;
+              primitive = 1;
+            };
+          },
+          @isPrivate!AdditionalAttribute(58,4):ASTAdditionalAttribute {
+            symbol = @isPrivate!Symbol(58,4);
+            enclosingScope = @OOSymbols!Scope;
+            name = "isPrivate";
+            mCType = @boolean!MCPrimitiveType(58,15):ASTMCPrimitiveType {
+              enclosingScope = @OOSymbols!Scope;
+              primitive = 1;
+            };
+          },
+          @isProtected!AdditionalAttribute(59,4):ASTAdditionalAttribute {
+            symbol = @isProtected!Symbol(59,4);
+            enclosingScope = @OOSymbols!Scope;
+            name = "isProtected";
+            mCType = @boolean!MCPrimitiveType(59,17):ASTMCPrimitiveType {
+              enclosingScope = @OOSymbols!Scope;
+              primitive = 1;
+            };
+          },
+          @isPublic!AdditionalAttribute(60,4):ASTAdditionalAttribute {
+            symbol = @isPublic!Symbol(60,4);
+            enclosingScope = @OOSymbols!Scope;
+            name = "isPublic";
+            mCType = @boolean!MCPrimitiveType(60,14):ASTMCPrimitiveType {
+              enclosingScope = @OOSymbols!Scope;
+              primitive = 1;
+            };
+          },
+          @isStatic!AdditionalAttribute(61,4):ASTAdditionalAttribute {
+            symbol = @isStatic!Symbol(61,4);
+            enclosingScope = @OOSymbols!Scope;
+            name = "isStatic";
+            mCType = @boolean!MCPrimitiveType(61,14):ASTMCPrimitiveType {
+              enclosingScope = @OOSymbols!Scope;
+              primitive = 1;
+            };
+          },
+          @isFinal!AdditionalAttribute(62,4):ASTAdditionalAttribute {
+            symbol = @isFinal!Symbol(62,4);
+            enclosingScope = @OOSymbols!Scope;
+            name = "isFinal";
+            mCType = @boolean!MCPrimitiveType(62,13):ASTMCPrimitiveType {
+              enclosingScope = @OOSymbols!Scope;
+              primitive = 1;
+            };
+          }];
+      },
+      @!SymbolRule(75,2):ASTSymbolRule {
+        enclosingScope = @OOSymbols!Scope;
+        type = Field;
+        additionalAttributes = [// *size: 6
+          @isPrivate!AdditionalAttribute(76,4):ASTAdditionalAttribute {
+            symbol = @isPrivate!Symbol(76,4);
+            enclosingScope = @OOSymbols!Scope;
+            name = "isPrivate";
+            mCType = @boolean!MCPrimitiveType(76,15):ASTMCPrimitiveType {
+              enclosingScope = @OOSymbols!Scope;
+              primitive = 1;
+            };
+          },
+          @isProtected!AdditionalAttribute(77,4):ASTAdditionalAttribute {
+            symbol = @isProtected!Symbol(77,4);
+            enclosingScope = @OOSymbols!Scope;
+            name = "isProtected";
+            mCType = @boolean!MCPrimitiveType(77,17):ASTMCPrimitiveType {
+              enclosingScope = @OOSymbols!Scope;
+              primitive = 1;
+            };
+          },
+          @isPublic!AdditionalAttribute(78,4):ASTAdditionalAttribute {
+            symbol = @isPublic!Symbol(78,4);
+            enclosingScope = @OOSymbols!Scope;
+            name = "isPublic";
+            mCType = @boolean!MCPrimitiveType(78,14):ASTMCPrimitiveType {
+              enclosingScope = @OOSymbols!Scope;
+              primitive = 1;
+            };
+          },
+          @isStatic!AdditionalAttribute(79,4):ASTAdditionalAttribute {
+            symbol = @isStatic!Symbol(79,4);
+            enclosingScope = @OOSymbols!Scope;
+            name = "isStatic";
+            mCType = @boolean!MCPrimitiveType(79,13):ASTMCPrimitiveType {
+              enclosingScope = @OOSymbols!Scope;
+              primitive = 1;
+            };
+          },
+          @isFinal!AdditionalAttribute(80,4):ASTAdditionalAttribute {
+            symbol = @isFinal!Symbol(80,4);
+            enclosingScope = @OOSymbols!Scope;
+            name = "isFinal";
+            mCType = @boolean!MCPrimitiveType(80,13):ASTMCPrimitiveType {
+              enclosingScope = @OOSymbols!Scope;
+              primitive = 1;
+            };
+          },
+          @isDerived!AdditionalAttribute(81,4):ASTAdditionalAttribute {
+            symbol = @isDerived!Symbol(81,4);
+            enclosingScope = @OOSymbols!Scope;
+            name = "isDerived";
+            mCType = @boolean!MCPrimitiveType(81,15):ASTMCPrimitiveType {
+              enclosingScope = @OOSymbols!Scope;
+              primitive = 1;
+            };
+          }];
+      },
+      @!SymbolRule(94,2):ASTSymbolRule {
+        enclosingScope = @OOSymbols!Scope;
+        type = Method;
+        additionalAttributes = [// *size: 8
+          @isConstructor!AdditionalAttribute(95,4):ASTAdditionalAttribute {
+            symbol = @isConstructor!Symbol(95,4);
+            enclosingScope = @OOSymbols!Scope;
+            name = "isConstructor";
+            mCType = @boolean!MCPrimitiveType(95,19):ASTMCPrimitiveType {
+              enclosingScope = @OOSymbols!Scope;
+              primitive = 1;
+            };
+          },
+          @isMethod!AdditionalAttribute(96,4):ASTAdditionalAttribute {
+            symbol = @isMethod!Symbol(96,4);
+            enclosingScope = @OOSymbols!Scope;
+            name = "isMethod";
+            mCType = @boolean!MCPrimitiveType(96,14):ASTMCPrimitiveType {
+              enclosingScope = @OOSymbols!Scope;
+              primitive = 1;
+            };
+          },
+          @isPrivate!AdditionalAttribute(97,4):ASTAdditionalAttribute {
+            symbol = @isPrivate!Symbol(97,4);
+            enclosingScope = @OOSymbols!Scope;
+            name = "isPrivate";
+            mCType = @boolean!MCPrimitiveType(97,15):ASTMCPrimitiveType {
+              enclosingScope = @OOSymbols!Scope;
+              primitive = 1;
+            };
+          },
+          @isProtected!AdditionalAttribute(98,4):ASTAdditionalAttribute {
+            symbol = @isProtected!Symbol(98,4);
+            enclosingScope = @OOSymbols!Scope;
+            name = "isProtected";
+            mCType = @boolean!MCPrimitiveType(98,17):ASTMCPrimitiveType {
+              enclosingScope = @OOSymbols!Scope;
+              primitive = 1;
+            };
+          },
+          @isPublic!AdditionalAttribute(99,4):ASTAdditionalAttribute {
+            symbol = @isPublic!Symbol(99,4);
+            enclosingScope = @OOSymbols!Scope;
+            name = "isPublic";
+            mCType = @boolean!MCPrimitiveType(99,14):ASTMCPrimitiveType {
+              enclosingScope = @OOSymbols!Scope;
+              primitive = 1;
+            };
+          },
+          @isAbstract!AdditionalAttribute(100,4):ASTAdditionalAttribute {
+            symbol = @isAbstract!Symbol(100,4);
+            enclosingScope = @OOSymbols!Scope;
+            name = "isAbstract";
+            mCType = @boolean!MCPrimitiveType(100,16):ASTMCPrimitiveType {
+              enclosingScope = @OOSymbols!Scope;
+              primitive = 1;
+            };
+          },
+          @isStatic!AdditionalAttribute(101,4):ASTAdditionalAttribute {
+            symbol = @isStatic!Symbol(101,4);
+            enclosingScope = @OOSymbols!Scope;
+            name = "isStatic";
+            mCType = @boolean!MCPrimitiveType(101,14):ASTMCPrimitiveType {
+              enclosingScope = @OOSymbols!Scope;
+              primitive = 1;
+            };
+          },
+          @isFinal!AdditionalAttribute(102,4):ASTAdditionalAttribute {
+            symbol = @isFinal!Symbol(102,4);
+            enclosingScope = @OOSymbols!Scope;
+            name = "isFinal";
+            mCType = @boolean!MCPrimitiveType(102,13):ASTMCPrimitiveType {
+              enclosingScope = @OOSymbols!Scope;
+              primitive = 1;
+            };
+          }];
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

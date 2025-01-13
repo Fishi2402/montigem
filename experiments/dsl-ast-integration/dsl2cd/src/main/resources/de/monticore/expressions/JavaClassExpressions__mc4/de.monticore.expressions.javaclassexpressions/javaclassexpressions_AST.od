@@ -1,0 +1,545 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram javaclassexpressions_AST {
+  @JavaClassExpressions!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @JavaClassExpressions!Symbol(2,0);
+    enclosingScope = @JavaClassExpressions!ArtifactScope;
+    spanningScope = @JavaClassExpressions!Scope;
+    r__package = [de, monticore, expressions];
+    importStatement = [// *size: 3
+      @!MCImportStatement(7,0):ASTMCImportStatement {
+        enclosingScope = @JavaClassExpressions!Scope;
+        mCQualifiedName = @de.monticore.expressions!MCQualifiedName(7,7):ASTMCQualifiedName {
+          enclosingScope = @JavaClassExpressions!Scope;
+          parts = [de, monticore, expressions];
+        };
+        star = true;
+      },
+      @!MCImportStatement(8,0):ASTMCImportStatement {
+        enclosingScope = @JavaClassExpressions!Scope;
+        mCQualifiedName = @de.monticore.statements!MCQualifiedName(8,7):ASTMCQualifiedName {
+          enclosingScope = @JavaClassExpressions!Scope;
+          parts = [de, monticore, statements];
+        };
+        star = true;
+      },
+      @!MCImportStatement(9,0):ASTMCImportStatement {
+        enclosingScope = @JavaClassExpressions!Scope;
+        mCQualifiedName = @de.monticore.types!MCQualifiedName(9,7):ASTMCQualifiedName {
+          enclosingScope = @JavaClassExpressions!Scope;
+          parts = [de, monticore, types];
+        };
+        star = true;
+      }];
+    name = JavaClassExpressions;
+    supergrammar = [// *size: 4
+      @CommonExpressions!GrammarReference(33,18):ASTGrammarReference {
+        enclosingScope = @JavaClassExpressions!Scope;
+        names = [CommonExpressions];
+      },
+      @MCVarDeclarationStatements!GrammarReference(34,10):ASTGrammarReference {
+        enclosingScope = @JavaClassExpressions!Scope;
+        names = [MCVarDeclarationStatements];
+      },
+      @MCFullGenericTypes!GrammarReference(35,10):ASTGrammarReference {
+        enclosingScope = @JavaClassExpressions!Scope;
+        names = [MCFullGenericTypes];
+      },
+      @UglyExpressions!GrammarReference(36,10):ASTGrammarReference {
+        enclosingScope = @JavaClassExpressions!Scope;
+        names = [UglyExpressions];
+      }];
+    classProds = [// *size: 11
+      @PrimaryThisExpression!ClassProd(40,2):ASTClassProd {
+        enclosingScope = @JavaClassExpressions!Scope;
+        superInterfaceRule = [// *size: 1
+          @Expression!RuleReference(40,35):ASTRuleReference {
+            enclosingScope = @PrimaryThisExpression!Scope;
+            name = Expression;
+            prio = "320";
+          }];
+        alts = [// *size: 1
+          @!Alt(41,4):ASTAlt {
+            enclosingScope = @PrimaryThisExpression!Scope;
+            component = [// *size: 1
+              @this!Terminal(41,4):ASTTerminal {
+                enclosingScope = @PrimaryThisExpression!Scope;
+                iteration = 0;
+                name = this;
+              }];
+            rightAssoc = false;
+          }];
+        name = PrimaryThisExpression;
+      },
+      @ThisExpression!ClassProd(43,2):ASTClassProd {
+        enclosingScope = @JavaClassExpressions!Scope;
+        superInterfaceRule = [// *size: 1
+          @Expression!RuleReference(43,28):ASTRuleReference {
+            enclosingScope = @ThisExpression!Scope;
+            name = Expression;
+            prio = "280";
+          }];
+        alts = [// *size: 1
+          @!Alt(44,4):ASTAlt {
+            enclosingScope = @ThisExpression!Scope;
+            component = [// *size: 3
+              @Expression!NonTerminal(44,4):ASTNonTerminal {
+                enclosingScope = @ThisExpression!Scope;
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @POINT!Terminal(44,15):ASTTerminal {
+                enclosingScope = @ThisExpression!Scope;
+                iteration = 0;
+                name = .;
+              },
+              @this!Terminal(44,19):ASTTerminal {
+                enclosingScope = @ThisExpression!Scope;
+                iteration = 0;
+                name = this;
+              }];
+            rightAssoc = false;
+          }];
+        name = ThisExpression;
+      },
+      @SuperExpression!ClassProd(46,2):ASTClassProd {
+        enclosingScope = @JavaClassExpressions!Scope;
+        superInterfaceRule = [// *size: 1
+          @Expression!RuleReference(46,29):ASTRuleReference {
+            enclosingScope = @SuperExpression!Scope;
+            name = Expression;
+            prio = "270";
+          }];
+        alts = [// *size: 1
+          @!Alt(47,4):ASTAlt {
+            enclosingScope = @SuperExpression!Scope;
+            component = [// *size: 4
+              @Expression!NonTerminal(47,4):ASTNonTerminal {
+                enclosingScope = @SuperExpression!Scope;
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @POINT!Terminal(47,15):ASTTerminal {
+                enclosingScope = @SuperExpression!Scope;
+                iteration = 0;
+                name = .;
+              },
+              @super!Terminal(47,19):ASTTerminal {
+                enclosingScope = @SuperExpression!Scope;
+                iteration = 0;
+                name = super;
+              },
+              @SuperSuffix!NonTerminal(47,27):ASTNonTerminal {
+                enclosingScope = @SuperExpression!Scope;
+                name = SuperSuffix;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = SuperExpression;
+      },
+      @GenericInvocationExpression!ClassProd(49,2):ASTClassProd {
+        enclosingScope = @JavaClassExpressions!Scope;
+        superInterfaceRule = [// *size: 1
+          @Expression!RuleReference(49,41):ASTRuleReference {
+            enclosingScope = @GenericInvocationExpression!Scope;
+            name = Expression;
+            prio = "260";
+          }];
+        alts = [// *size: 1
+          @!Alt(50,4):ASTAlt {
+            enclosingScope = @GenericInvocationExpression!Scope;
+            component = [// *size: 3
+              @Expression!NonTerminal(50,4):ASTNonTerminal {
+                enclosingScope = @GenericInvocationExpression!Scope;
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @POINT!Terminal(50,15):ASTTerminal {
+                enclosingScope = @GenericInvocationExpression!Scope;
+                iteration = 0;
+                name = .;
+              },
+              @PrimaryGenericInvocationExpression!NonTerminal(50,19):ASTNonTerminal {
+                enclosingScope = @GenericInvocationExpression!Scope;
+                name = PrimaryGenericInvocationExpression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = GenericInvocationExpression;
+      },
+      @PrimarySuperExpression!ClassProd(52,2):ASTClassProd {
+        enclosingScope = @JavaClassExpressions!Scope;
+        superInterfaceRule = [// *size: 1
+          @Expression!RuleReference(52,36):ASTRuleReference {
+            enclosingScope = @PrimarySuperExpression!Scope;
+            name = Expression;
+            prio = "330";
+          }];
+        alts = [// *size: 1
+          @!Alt(53,4):ASTAlt {
+            enclosingScope = @PrimarySuperExpression!Scope;
+            component = [// *size: 1
+              @super!Terminal(53,4):ASTTerminal {
+                enclosingScope = @PrimarySuperExpression!Scope;
+                iteration = 0;
+                name = super;
+              }];
+            rightAssoc = false;
+          }];
+        name = PrimarySuperExpression;
+      },
+      @ClassExpression!ClassProd(58,2):ASTClassProd {
+        enclosingScope = @JavaClassExpressions!Scope;
+        superInterfaceRule = [// *size: 1
+          @Expression!RuleReference(58,29):ASTRuleReference {
+            enclosingScope = @ClassExpression!Scope;
+            name = Expression;
+            prio = "360";
+          }];
+        alts = [// *size: 1
+          @!Alt(59,4):ASTAlt {
+            enclosingScope = @ClassExpression!Scope;
+            component = [// *size: 3
+              @MCReturnType!NonTerminal(59,4):ASTNonTerminal {
+                enclosingScope = @ClassExpression!Scope;
+                name = MCReturnType;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @POINT!Terminal(59,17):ASTTerminal {
+                enclosingScope = @ClassExpression!Scope;
+                iteration = 0;
+                name = .;
+              },
+              @class!Terminal(59,21):ASTTerminal {
+                enclosingScope = @ClassExpression!Scope;
+                iteration = 0;
+                name = class;
+              }];
+            rightAssoc = false;
+          }];
+        name = ClassExpression;
+      },
+      @PrimaryGenericInvocationExpression!ClassProd(62,2):ASTClassProd {
+        enclosingScope = @JavaClassExpressions!Scope;
+        superInterfaceRule = [// *size: 1
+          @Expression!RuleReference(62,48):ASTRuleReference {
+            enclosingScope = @PrimaryGenericInvocationExpression!Scope;
+            name = Expression;
+            prio = "370";
+          }];
+        alts = [// *size: 1
+          @!Alt(63,4):ASTAlt {
+            enclosingScope = @PrimaryGenericInvocationExpression!Scope;
+            component = [// *size: 4
+              @LT!Terminal(63,4):ASTTerminal {
+                enclosingScope = @PrimaryGenericInvocationExpression!Scope;
+                iteration = 0;
+                name = <;
+              },
+              @!Block(1,0):ASTBlock {
+                enclosingScope = @PrimaryGenericInvocationExpression!Scope;
+                alt = [// *size: 1
+                  @!Alt(1,2):ASTAlt {
+                    enclosingScope = @PrimaryGenericInvocationExpression!Scope;
+                    component = [// *size: 2
+                      @MCTypeArgument!NonTerminal(1,2):ASTNonTerminal {
+                        enclosingScope = @PrimaryGenericInvocationExpression!Scope;
+                        name = MCTypeArgument;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      },
+                      @!Block(1,19):ASTBlock {
+                        enclosingScope = @PrimaryGenericInvocationExpression!Scope;
+                        alt = [// *size: 1
+                          @!Alt(1,20):ASTAlt {
+                            enclosingScope = @PrimaryGenericInvocationExpression!Scope;
+                            component = [// *size: 2
+                              @COMMA!Terminal(1,20):ASTTerminal {
+                                enclosingScope = @PrimaryGenericInvocationExpression!Scope;
+                                iteration = 0;
+                                name = ,;
+                              },
+                              @MCTypeArgument!NonTerminal(1,25):ASTNonTerminal {
+                                enclosingScope = @PrimaryGenericInvocationExpression!Scope;
+                                name = MCTypeArgument;
+                                genSymbol = false;
+                                plusKeywords = false;
+                                iteration = 0;
+                              }];
+                            rightAssoc = false;
+                          }];
+                        iteration = 21;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 0;
+              },
+              @GT!Terminal(63,29):ASTTerminal {
+                enclosingScope = @PrimaryGenericInvocationExpression!Scope;
+                iteration = 0;
+                name = >;
+              },
+              @GenericInvocationSuffix!NonTerminal(63,33):ASTNonTerminal {
+                enclosingScope = @PrimaryGenericInvocationExpression!Scope;
+                name = GenericInvocationSuffix;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = PrimaryGenericInvocationExpression;
+      },
+      @GenericInvocationSuffix!ClassProd(65,2):ASTClassProd {
+        enclosingScope = @JavaClassExpressions!Scope;
+        alts = [// *size: 3
+          @!Alt(66,8):ASTAlt {
+            enclosingScope = @GenericInvocationSuffix!Scope;
+            component = [// *size: 2
+              @!ConstantGroup(66,8):ASTConstantGroup {
+                enclosingScope = @GenericInvocationSuffix!Scope;
+                constants = [// *size: 1
+                  @super!Constant(66,9):ASTConstant {
+                    enclosingScope = @GenericInvocationSuffix!Scope;
+                    string = "super";
+                    name = super;
+                  }];
+                iteration = 0;
+              },
+              @SuperSuffix!NonTerminal(66,18):ASTNonTerminal {
+                enclosingScope = @GenericInvocationSuffix!Scope;
+                name = SuperSuffix;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          },
+          @!Alt(67,8):ASTAlt {
+            enclosingScope = @GenericInvocationSuffix!Scope;
+            component = [// *size: 2
+              @!ConstantGroup(67,8):ASTConstantGroup {
+                enclosingScope = @GenericInvocationSuffix!Scope;
+                constants = [// *size: 1
+                  @this!Constant(67,9):ASTConstant {
+                    enclosingScope = @GenericInvocationSuffix!Scope;
+                    string = "this";
+                    name = this;
+                  }];
+                iteration = 0;
+              },
+              @Arguments!NonTerminal(67,17):ASTNonTerminal {
+                enclosingScope = @GenericInvocationSuffix!Scope;
+                name = Arguments;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          },
+          @!Alt(68,8):ASTAlt {
+            enclosingScope = @GenericInvocationSuffix!Scope;
+            component = [// *size: 2
+              @Name!NonTerminal(68,8):ASTNonTerminal {
+                enclosingScope = @GenericInvocationSuffix!Scope;
+                name = Name;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @Arguments!NonTerminal(68,13):ASTNonTerminal {
+                enclosingScope = @GenericInvocationSuffix!Scope;
+                name = Arguments;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = GenericInvocationSuffix;
+      },
+      @SuperSuffix!ClassProd(71,2):ASTClassProd {
+        enclosingScope = @JavaClassExpressions!Scope;
+        alts = [// *size: 2
+          @!Alt(72,8):ASTAlt {
+            enclosingScope = @SuperSuffix!Scope;
+            component = [// *size: 1
+              @Arguments!NonTerminal(72,8):ASTNonTerminal {
+                enclosingScope = @SuperSuffix!Scope;
+                name = Arguments;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          },
+          @!Alt(73,8):ASTAlt {
+            enclosingScope = @SuperSuffix!Scope;
+            component = [// *size: 4
+              @POINT!Terminal(73,8):ASTTerminal {
+                enclosingScope = @SuperSuffix!Scope;
+                iteration = 0;
+                name = .;
+              },
+              @!Block(73,12):ASTBlock {
+                enclosingScope = @SuperSuffix!Scope;
+                alt = [// *size: 1
+                  @!Alt(73,13):ASTAlt {
+                    enclosingScope = @SuperSuffix!Scope;
+                    component = [// *size: 3
+                      @LT!Terminal(73,13):ASTTerminal {
+                        enclosingScope = @SuperSuffix!Scope;
+                        iteration = 0;
+                        name = <;
+                      },
+                      @!Block(1,0!2):ASTBlock {
+                        enclosingScope = @SuperSuffix!Scope;
+                        alt = [// *size: 1
+                          @!Alt(1,2!2):ASTAlt {
+                            enclosingScope = @SuperSuffix!Scope;
+                            component = [// *size: 2
+                              @MCTypeArgument!NonTerminal(1,2!2):ASTNonTerminal {
+                                enclosingScope = @SuperSuffix!Scope;
+                                name = MCTypeArgument;
+                                genSymbol = false;
+                                plusKeywords = false;
+                                iteration = 0;
+                              },
+                              @!Block(1,19!2):ASTBlock {
+                                enclosingScope = @SuperSuffix!Scope;
+                                alt = [// *size: 1
+                                  @!Alt(1,20!2):ASTAlt {
+                                    enclosingScope = @SuperSuffix!Scope;
+                                    component = [// *size: 2
+                                      @COMMA!Terminal(1,20!2):ASTTerminal {
+                                        enclosingScope = @SuperSuffix!Scope;
+                                        iteration = 0;
+                                        name = ,;
+                                      },
+                                      @MCTypeArgument!NonTerminal(1,25!2):ASTNonTerminal {
+                                        enclosingScope = @SuperSuffix!Scope;
+                                        name = MCTypeArgument;
+                                        genSymbol = false;
+                                        plusKeywords = false;
+                                        iteration = 0;
+                                      }];
+                                    rightAssoc = false;
+                                  }];
+                                iteration = 21;
+                              }];
+                            rightAssoc = false;
+                          }];
+                        iteration = 0;
+                      },
+                      @GT!Terminal(73,38):ASTTerminal {
+                        enclosingScope = @SuperSuffix!Scope;
+                        iteration = 0;
+                        name = >;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 17;
+              },
+              @Name!NonTerminal(73,44):ASTNonTerminal {
+                enclosingScope = @SuperSuffix!Scope;
+                name = Name;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @Arguments!NonTerminal(73,49):ASTNonTerminal {
+                enclosingScope = @SuperSuffix!Scope;
+                name = Arguments;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 17;
+              }];
+            rightAssoc = false;
+          }];
+        name = SuperSuffix;
+      },
+      @InstanceofPatternExpression!ClassProd(79,2):ASTClassProd {
+        enclosingScope = @JavaClassExpressions!Scope;
+        superInterfaceRule = [// *size: 1
+          @Expression!RuleReference(79,41):ASTRuleReference {
+            enclosingScope = @InstanceofPatternExpression!Scope;
+            name = Expression;
+            prio = "140";
+          }];
+        alts = [// *size: 1
+          @!Alt(80,4):ASTAlt {
+            enclosingScope = @InstanceofPatternExpression!Scope;
+            component = [// *size: 3
+              @Expression!NonTerminal(80,4):ASTNonTerminal {
+                enclosingScope = @InstanceofPatternExpression!Scope;
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @instanceof!Terminal(80,15):ASTTerminal {
+                enclosingScope = @InstanceofPatternExpression!Scope;
+                iteration = 0;
+                name = instanceof;
+              },
+              @Pattern!NonTerminal(80,28):ASTNonTerminal {
+                enclosingScope = @InstanceofPatternExpression!Scope;
+                name = Pattern;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = InstanceofPatternExpression;
+      },
+      @TypePattern!ClassProd(84,2):ASTClassProd {
+        enclosingScope = @JavaClassExpressions!Scope;
+        superInterfaceRule = [// *size: 1
+          @Pattern!RuleReference(84,25):ASTRuleReference {
+            enclosingScope = @TypePattern!Scope;
+            name = Pattern;
+          }];
+        alts = [// *size: 1
+          @!Alt(84,35):ASTAlt {
+            enclosingScope = @TypePattern!Scope;
+            component = [// *size: 1
+              @LocalVariableDeclaration!NonTerminal(84,35):ASTNonTerminal {
+                enclosingScope = @TypePattern!Scope;
+                name = LocalVariableDeclaration;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = TypePattern;
+      }];
+    interfaceProds = [// *size: 1
+      @Pattern!InterfaceProd(82,2):ASTInterfaceProd {
+        enclosingScope = @JavaClassExpressions!Scope;
+        name = Pattern;
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

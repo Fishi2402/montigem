@@ -1,0 +1,35 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram mcstatementsbasis_AST {
+  @MCStatementsBasis!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @MCStatementsBasis!Symbol(2,0);
+    enclosingScope = @MCStatementsBasis!ArtifactScope;
+    spanningScope = @MCStatementsBasis!Scope;
+    r__package = [de, monticore, statements];
+    name = MCStatementsBasis;
+    interfaceProds = [// *size: 3
+      @MCBlockStatement!InterfaceProd(43,0):ASTInterfaceProd {
+        enclosingScope = @MCStatementsBasis!Scope;
+        name = MCBlockStatement;
+      },
+      @MCStatement!InterfaceProd(53,0):ASTInterfaceProd {
+        enclosingScope = @MCStatementsBasis!Scope;
+        superInterfaceRule = [// *size: 1
+          @MCBlockStatement!RuleReference(53,30):ASTRuleReference {
+            enclosingScope = @MCStatement!Scope;
+            name = MCBlockStatement;
+          }];
+        name = MCStatement;
+      },
+      @MCModifier!InterfaceProd(55,0):ASTInterfaceProd {
+        enclosingScope = @MCStatementsBasis!Scope;
+        name = MCModifier;
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

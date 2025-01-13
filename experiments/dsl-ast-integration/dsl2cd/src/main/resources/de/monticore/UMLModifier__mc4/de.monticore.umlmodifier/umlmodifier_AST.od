@@ -1,0 +1,269 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram umlmodifier_AST {
+  @UMLModifier!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @UMLModifier!Symbol(2,0);
+    enclosingScope = @UMLModifier!ArtifactScope;
+    spanningScope = @UMLModifier!Scope;
+    r__package = [de, monticore];
+    importStatement = [// *size: 1
+      @!MCImportStatement(7,0):ASTMCImportStatement {
+        enclosingScope = @UMLModifier!Scope;
+        mCQualifiedName = @de.monticore!MCQualifiedName(7,7):ASTMCQualifiedName {
+          enclosingScope = @UMLModifier!Scope;
+          parts = [de, monticore];
+        };
+        star = true;
+      }];
+    name = UMLModifier;
+    supergrammar = [// *size: 1
+      @UMLStereotype!GrammarReference(21,38):ASTGrammarReference {
+        enclosingScope = @UMLModifier!Scope;
+        names = [UMLStereotype];
+      }];
+    classProds = [// *size: 1
+      @Modifier!ClassProd(45,4):ASTClassProd {
+        enclosingScope = @UMLModifier!Scope;
+        alts = [// *size: 1
+          @!Alt(46,8):ASTAlt {
+            enclosingScope = @Modifier!Scope;
+            component = [// *size: 2
+              @Stereotype!NonTerminal(46,8):ASTNonTerminal {
+                enclosingScope = @Modifier!Scope;
+                name = Stereotype;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 17;
+              },
+              @!Block(47,8):ASTBlock {
+                enclosingScope = @Modifier!Scope;
+                alt = [// *size: 14
+                  @!Alt(47,12):ASTAlt {
+                    enclosingScope = @Modifier!Scope;
+                    component = [// *size: 1
+                      @!ConstantGroup(47,12):ASTConstantGroup {
+                        enclosingScope = @Modifier!Scope;
+                        constants = [// *size: 1
+                          @public!Constant(47,13):ASTConstant {
+                            enclosingScope = @Modifier!Scope;
+                            string = "public";
+                            name = public;
+                          }];
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  },
+                  @!Alt(47,31):ASTAlt {
+                    enclosingScope = @Modifier!Scope;
+                    component = [// *size: 1
+                      @!ConstantGroup(47,31):ASTConstantGroup {
+                        enclosingScope = @Modifier!Scope;
+                        constants = [// *size: 1
+                          @PLUS!Constant(47,32):ASTConstant {
+                            enclosingScope = @Modifier!Scope;
+                            string = "+";
+                            usageName = "public";
+                            name = +;
+                          }];
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  },
+                  @!Alt(48,12):ASTAlt {
+                    enclosingScope = @Modifier!Scope;
+                    component = [// *size: 1
+                      @!ConstantGroup(48,12):ASTConstantGroup {
+                        enclosingScope = @Modifier!Scope;
+                        constants = [// *size: 1
+                          @private!Constant(48,13):ASTConstant {
+                            enclosingScope = @Modifier!Scope;
+                            string = "private";
+                            name = private;
+                          }];
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  },
+                  @!Alt(48,31):ASTAlt {
+                    enclosingScope = @Modifier!Scope;
+                    component = [// *size: 1
+                      @!ConstantGroup(48,31):ASTConstantGroup {
+                        enclosingScope = @Modifier!Scope;
+                        constants = [// *size: 1
+                          @MINUS!Constant(48,32):ASTConstant {
+                            enclosingScope = @Modifier!Scope;
+                            string = "-";
+                            usageName = "private";
+                            name = -;
+                          }];
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  },
+                  @!Alt(49,12):ASTAlt {
+                    enclosingScope = @Modifier!Scope;
+                    component = [// *size: 1
+                      @!ConstantGroup(49,12):ASTConstantGroup {
+                        enclosingScope = @Modifier!Scope;
+                        constants = [// *size: 1
+                          @protected!Constant(49,13):ASTConstant {
+                            enclosingScope = @Modifier!Scope;
+                            string = "protected";
+                            name = protected;
+                          }];
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  },
+                  @!Alt(49,31):ASTAlt {
+                    enclosingScope = @Modifier!Scope;
+                    component = [// *size: 1
+                      @!ConstantGroup(49,31):ASTConstantGroup {
+                        enclosingScope = @Modifier!Scope;
+                        constants = [// *size: 1
+                          @HASH!Constant(49,32):ASTConstant {
+                            enclosingScope = @Modifier!Scope;
+                            string = "#";
+                            usageName = "protected";
+                            name = #;
+                          }];
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  },
+                  @!Alt(50,12):ASTAlt {
+                    enclosingScope = @Modifier!Scope;
+                    component = [// *size: 1
+                      @!ConstantGroup(50,12):ASTConstantGroup {
+                        enclosingScope = @Modifier!Scope;
+                        constants = [// *size: 1
+                          @final!Constant(50,13):ASTConstant {
+                            enclosingScope = @Modifier!Scope;
+                            string = "final";
+                            name = final;
+                          }];
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  },
+                  @!Alt(51,12):ASTAlt {
+                    enclosingScope = @Modifier!Scope;
+                    component = [// *size: 1
+                      @!ConstantGroup(51,12):ASTConstantGroup {
+                        enclosingScope = @Modifier!Scope;
+                        constants = [// *size: 1
+                          @abstract!Constant(51,13):ASTConstant {
+                            enclosingScope = @Modifier!Scope;
+                            string = "abstract";
+                            name = abstract;
+                          }];
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  },
+                  @!Alt(52,12):ASTAlt {
+                    enclosingScope = @Modifier!Scope;
+                    component = [// *size: 1
+                      @!ConstantGroup(52,12):ASTConstantGroup {
+                        enclosingScope = @Modifier!Scope;
+                        constants = [// *size: 1
+                          @local!Constant(52,13):ASTConstant {
+                            enclosingScope = @Modifier!Scope;
+                            string = "local";
+                            name = local;
+                          }];
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  },
+                  @!Alt(53,12):ASTAlt {
+                    enclosingScope = @Modifier!Scope;
+                    component = [// *size: 1
+                      @!ConstantGroup(53,12):ASTConstantGroup {
+                        enclosingScope = @Modifier!Scope;
+                        constants = [// *size: 1
+                          @derived!Constant(53,13):ASTConstant {
+                            enclosingScope = @Modifier!Scope;
+                            string = "derived";
+                            name = derived;
+                          }];
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  },
+                  @!Alt(53,31):ASTAlt {
+                    enclosingScope = @Modifier!Scope;
+                    component = [// *size: 1
+                      @!ConstantGroup(53,31):ASTConstantGroup {
+                        enclosingScope = @Modifier!Scope;
+                        constants = [// *size: 1
+                          @SLASH!Constant(53,32):ASTConstant {
+                            enclosingScope = @Modifier!Scope;
+                            string = "/";
+                            usageName = "derived";
+                            name = /;
+                          }];
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  },
+                  @!Alt(54,12):ASTAlt {
+                    enclosingScope = @Modifier!Scope;
+                    component = [// *size: 1
+                      @!ConstantGroup(54,12):ASTConstantGroup {
+                        enclosingScope = @Modifier!Scope;
+                        constants = [// *size: 1
+                          @readonly!Constant(54,13):ASTConstant {
+                            enclosingScope = @Modifier!Scope;
+                            string = "readonly";
+                            name = readonly;
+                          }];
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  },
+                  @!Alt(54,31):ASTAlt {
+                    enclosingScope = @Modifier!Scope;
+                    component = [// *size: 1
+                      @!ConstantGroup(54,31):ASTConstantGroup {
+                        enclosingScope = @Modifier!Scope;
+                        constants = [// *size: 1
+                          @QUESTION!Constant(54,32):ASTConstant {
+                            enclosingScope = @Modifier!Scope;
+                            string = "?";
+                            usageName = "readonly";
+                            name = ?;
+                          }];
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  },
+                  @!Alt(55,12):ASTAlt {
+                    enclosingScope = @Modifier!Scope;
+                    component = [// *size: 1
+                      @!ConstantGroup(55,12):ASTConstantGroup {
+                        enclosingScope = @Modifier!Scope;
+                        constants = [// *size: 1
+                          @static!Constant(55,13):ASTConstant {
+                            enclosingScope = @Modifier!Scope;
+                            string = "static";
+                            name = static;
+                          }];
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 21;
+              }];
+            rightAssoc = false;
+          }];
+        name = Modifier;
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

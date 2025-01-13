@@ -1,0 +1,259 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram mcfullgenerictypes_AST {
+  @MCFullGenericTypes!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @MCFullGenericTypes!Symbol(2,0);
+    enclosingScope = @MCFullGenericTypes!ArtifactScope;
+    spanningScope = @MCFullGenericTypes!Scope;
+    r__package = [de, monticore, types];
+    importStatement = [// *size: 1
+      @!MCImportStatement(7,0):ASTMCImportStatement {
+        enclosingScope = @MCFullGenericTypes!Scope;
+        mCQualifiedName = @de.monticore.types!MCQualifiedName(7,7):ASTMCQualifiedName {
+          enclosingScope = @MCFullGenericTypes!Scope;
+          parts = [de, monticore, types];
+        };
+        star = true;
+      }];
+    name = MCFullGenericTypes;
+    supergrammar = [// *size: 1
+      @MCSimpleGenericTypes!GrammarReference(27,18):ASTGrammarReference {
+        enclosingScope = @MCFullGenericTypes!Scope;
+        names = [MCSimpleGenericTypes];
+      }];
+    classProds = [// *size: 3
+      @MCWildcardTypeArgument!ClassProd(37,2):ASTClassProd {
+        enclosingScope = @MCFullGenericTypes!Scope;
+        superInterfaceRule = [// *size: 1
+          @MCTypeArgument!RuleReference(37,36):ASTRuleReference {
+            enclosingScope = @MCWildcardTypeArgument!Scope;
+            name = MCTypeArgument;
+          }];
+        alts = [// *size: 1
+          @!Alt(38,7):ASTAlt {
+            enclosingScope = @MCWildcardTypeArgument!Scope;
+            component = [// *size: 2
+              @QUESTION!Terminal(38,7):ASTTerminal {
+                enclosingScope = @MCWildcardTypeArgument!Scope;
+                iteration = 0;
+                name = ?;
+              },
+              @!Block(38,11):ASTBlock {
+                enclosingScope = @MCWildcardTypeArgument!Scope;
+                alt = [// *size: 2
+                  @!Alt(38,14):ASTAlt {
+                    enclosingScope = @MCWildcardTypeArgument!Scope;
+                    component = [// *size: 1
+                      @!Block(38,14):ASTBlock {
+                        enclosingScope = @MCWildcardTypeArgument!Scope;
+                        alt = [// *size: 1
+                          @!Alt(38,15):ASTAlt {
+                            enclosingScope = @MCWildcardTypeArgument!Scope;
+                            component = [// *size: 2
+                              @extends!Terminal(38,15):ASTTerminal {
+                                enclosingScope = @MCWildcardTypeArgument!Scope;
+                                iteration = 0;
+                                name = extends;
+                              },
+                              @MCType!NonTerminal(38,25):ASTNonTerminal {
+                                enclosingScope = @MCWildcardTypeArgument!Scope;
+                                usageName = "upperBound";
+                                name = MCType;
+                                genSymbol = false;
+                                plusKeywords = false;
+                                iteration = 0;
+                              }];
+                            rightAssoc = false;
+                          }];
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  },
+                  @!Alt(39,14):ASTAlt {
+                    enclosingScope = @MCWildcardTypeArgument!Scope;
+                    component = [// *size: 1
+                      @!Block(39,14):ASTBlock {
+                        enclosingScope = @MCWildcardTypeArgument!Scope;
+                        alt = [// *size: 1
+                          @!Alt(39,15):ASTAlt {
+                            enclosingScope = @MCWildcardTypeArgument!Scope;
+                            component = [// *size: 2
+                              @super!Terminal(39,15):ASTTerminal {
+                                enclosingScope = @MCWildcardTypeArgument!Scope;
+                                iteration = 0;
+                                name = super;
+                              },
+                              @MCType!NonTerminal(39,25):ASTNonTerminal {
+                                enclosingScope = @MCWildcardTypeArgument!Scope;
+                                usageName = "lowerBound";
+                                name = MCType;
+                                genSymbol = false;
+                                plusKeywords = false;
+                                iteration = 0;
+                              }];
+                            rightAssoc = false;
+                          }];
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 17;
+              }];
+            rightAssoc = false;
+          }];
+        name = MCWildcardTypeArgument;
+      },
+      @MCMultipleGenericType!ClassProd(49,2):ASTClassProd {
+        enclosingScope = @MCFullGenericTypes!Scope;
+        superInterfaceRule = [// *size: 2
+          @MCGenericType!RuleReference(49,35):ASTRuleReference {
+            enclosingScope = @MCMultipleGenericType!Scope;
+            name = MCGenericType;
+          },
+          @MCType!RuleReference(49,50):ASTRuleReference {
+            enclosingScope = @MCMultipleGenericType!Scope;
+            name = MCType;
+          }];
+        alts = [// *size: 1
+          @!Alt(50,7):ASTAlt {
+            enclosingScope = @MCMultipleGenericType!Scope;
+            component = [// *size: 3
+              @MCBasicGenericType!NonTerminal(50,7):ASTNonTerminal {
+                enclosingScope = @MCMultipleGenericType!Scope;
+                name = MCBasicGenericType;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @POINT!Terminal(51,8):ASTTerminal {
+                enclosingScope = @MCMultipleGenericType!Scope;
+                iteration = 0;
+                name = .;
+              },
+              @!Block(1,0):ASTBlock {
+                enclosingScope = @MCMultipleGenericType!Scope;
+                alt = [// *size: 1
+                  @!Alt(1,2):ASTAlt {
+                    enclosingScope = @MCMultipleGenericType!Scope;
+                    component = [// *size: 2
+                      @MCInnerType!NonTerminal(1,2):ASTNonTerminal {
+                        enclosingScope = @MCMultipleGenericType!Scope;
+                        name = MCInnerType;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      },
+                      @!Block(1,16):ASTBlock {
+                        enclosingScope = @MCMultipleGenericType!Scope;
+                        alt = [// *size: 1
+                          @!Alt(1,17):ASTAlt {
+                            enclosingScope = @MCMultipleGenericType!Scope;
+                            component = [// *size: 2
+                              @POINT!Terminal(1,17):ASTTerminal {
+                                enclosingScope = @MCMultipleGenericType!Scope;
+                                iteration = 0;
+                                name = .;
+                              },
+                              @MCInnerType!NonTerminal(1,22):ASTNonTerminal {
+                                enclosingScope = @MCMultipleGenericType!Scope;
+                                name = MCInnerType;
+                                genSymbol = false;
+                                plusKeywords = false;
+                                iteration = 0;
+                              }];
+                            rightAssoc = false;
+                          }];
+                        iteration = 21;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = MCMultipleGenericType;
+      },
+      @MCInnerType!ClassProd(55,2):ASTClassProd {
+        enclosingScope = @MCFullGenericTypes!Scope;
+        alts = [// *size: 1
+          @!Alt(55,16):ASTAlt {
+            enclosingScope = @MCInnerType!Scope;
+            component = [// *size: 2
+              @Name!NonTerminal(55,16):ASTNonTerminal {
+                enclosingScope = @MCInnerType!Scope;
+                name = Name;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @!Block(55,21):ASTBlock {
+                enclosingScope = @MCInnerType!Scope;
+                alt = [// *size: 1
+                  @!Alt(55,22):ASTAlt {
+                    enclosingScope = @MCInnerType!Scope;
+                    component = [// *size: 3
+                      @LT!Terminal(55,22):ASTTerminal {
+                        enclosingScope = @MCInnerType!Scope;
+                        iteration = 0;
+                        name = <;
+                      },
+                      @!Block(1,0!2):ASTBlock {
+                        enclosingScope = @MCInnerType!Scope;
+                        alt = [// *size: 1
+                          @!Alt(1,2!2):ASTAlt {
+                            enclosingScope = @MCInnerType!Scope;
+                            component = [// *size: 2
+                              @MCTypeArgument!NonTerminal(1,2):ASTNonTerminal {
+                                enclosingScope = @MCInnerType!Scope;
+                                name = MCTypeArgument;
+                                genSymbol = false;
+                                plusKeywords = false;
+                                iteration = 0;
+                              },
+                              @!Block(1,19):ASTBlock {
+                                enclosingScope = @MCInnerType!Scope;
+                                alt = [// *size: 1
+                                  @!Alt(1,20):ASTAlt {
+                                    enclosingScope = @MCInnerType!Scope;
+                                    component = [// *size: 2
+                                      @COMMA!Terminal(1,20):ASTTerminal {
+                                        enclosingScope = @MCInnerType!Scope;
+                                        iteration = 0;
+                                        name = ,;
+                                      },
+                                      @MCTypeArgument!NonTerminal(1,25):ASTNonTerminal {
+                                        enclosingScope = @MCInnerType!Scope;
+                                        name = MCTypeArgument;
+                                        genSymbol = false;
+                                        plusKeywords = false;
+                                        iteration = 0;
+                                      }];
+                                    rightAssoc = false;
+                                  }];
+                                iteration = 21;
+                              }];
+                            rightAssoc = false;
+                          }];
+                        iteration = 0;
+                      },
+                      @GT!Terminal(55,51):ASTTerminal {
+                        enclosingScope = @MCInnerType!Scope;
+                        iteration = 0;
+                        name = >;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 17;
+              }];
+            rightAssoc = false;
+          }];
+        name = MCInnerType;
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

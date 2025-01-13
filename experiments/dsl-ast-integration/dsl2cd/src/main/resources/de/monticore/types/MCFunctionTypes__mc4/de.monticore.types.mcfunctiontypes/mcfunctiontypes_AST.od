@@ -1,0 +1,187 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram mcfunctiontypes_AST {
+  @MCFunctionTypes!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @MCFunctionTypes!Symbol(2,0);
+    enclosingScope = @MCFunctionTypes!ArtifactScope;
+    spanningScope = @MCFunctionTypes!Scope;
+    r__package = [de, monticore, types];
+    importStatement = [// *size: 1
+      @!MCImportStatement(7,0):ASTMCImportStatement {
+        enclosingScope = @MCFunctionTypes!Scope;
+        mCQualifiedName = @de.monticore.types!MCQualifiedName(7,7):ASTMCQualifiedName {
+          enclosingScope = @MCFunctionTypes!Scope;
+          parts = [de, monticore, types];
+        };
+        star = true;
+      }];
+    name = MCFunctionTypes;
+    supergrammar = [// *size: 1
+      @MCBasicTypes!GrammarReference(33,18):ASTGrammarReference {
+        enclosingScope = @MCFunctionTypes!Scope;
+        names = [MCBasicTypes];
+      }];
+    classProds = [// *size: 3
+      @MCFunctionParTypes!ClassProd(39,2):ASTClassProd {
+        enclosingScope = @MCFunctionTypes!Scope;
+        alts = [// *size: 1
+          @!Alt(40,4):ASTAlt {
+            enclosingScope = @MCFunctionParTypes!Scope;
+            component = [// *size: 3
+              @LPAREN!Terminal(40,4):ASTTerminal {
+                enclosingScope = @MCFunctionParTypes!Scope;
+                iteration = 0;
+                name = (;
+              },
+              @!Block(40,8):ASTBlock {
+                enclosingScope = @MCFunctionParTypes!Scope;
+                alt = [// *size: 1
+                  @!Alt(41,4):ASTAlt {
+                    enclosingScope = @MCFunctionParTypes!Scope;
+                    component = [// *size: 2
+                      @!Block(1,0):ASTBlock {
+                        enclosingScope = @MCFunctionParTypes!Scope;
+                        alt = [// *size: 1
+                          @!Alt(1,2):ASTAlt {
+                            enclosingScope = @MCFunctionParTypes!Scope;
+                            component = [// *size: 2
+                              @MCType!NonTerminal(1,2):ASTNonTerminal {
+                                enclosingScope = @MCFunctionParTypes!Scope;
+                                name = MCType;
+                                genSymbol = false;
+                                plusKeywords = false;
+                                iteration = 0;
+                              },
+                              @!Block(1,11):ASTBlock {
+                                enclosingScope = @MCFunctionParTypes!Scope;
+                                alt = [// *size: 1
+                                  @!Alt(1,12):ASTAlt {
+                                    enclosingScope = @MCFunctionParTypes!Scope;
+                                    component = [// *size: 2
+                                      @COMMA!Terminal(1,12):ASTTerminal {
+                                        enclosingScope = @MCFunctionParTypes!Scope;
+                                        iteration = 0;
+                                        name = ,;
+                                      },
+                                      @MCType!NonTerminal(1,17):ASTNonTerminal {
+                                        enclosingScope = @MCFunctionParTypes!Scope;
+                                        name = MCType;
+                                        genSymbol = false;
+                                        plusKeywords = false;
+                                        iteration = 0;
+                                      }];
+                                    rightAssoc = false;
+                                  }];
+                                iteration = 21;
+                              }];
+                            rightAssoc = false;
+                          }];
+                        iteration = 0;
+                      },
+                      @!Block(42,4):ASTBlock {
+                        enclosingScope = @MCFunctionParTypes!Scope;
+                        alt = [// *size: 1
+                          @!Alt(42,5):ASTAlt {
+                            enclosingScope = @MCFunctionParTypes!Scope;
+                            component = [// *size: 1
+                              @POINTPOINTPOINT!Terminal(42,5):ASTTerminal {
+                                enclosingScope = @MCFunctionParTypes!Scope;
+                                iteration = 0;
+                                usageName = "isElliptic";
+                                name = ...;
+                              }];
+                            rightAssoc = false;
+                          }];
+                        iteration = 17;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 17;
+              },
+              @RPAREN!Terminal(43,7):ASTTerminal {
+                enclosingScope = @MCFunctionParTypes!Scope;
+                iteration = 0;
+                name = );
+              }];
+            rightAssoc = false;
+          }];
+        name = MCFunctionParTypes;
+      },
+      @MCFunctionType!ClassProd(51,2):ASTClassProd {
+        enclosingScope = @MCFunctionTypes!Scope;
+        superInterfaceRule = [// *size: 1
+          @MCType!RuleReference(51,28):ASTRuleReference {
+            enclosingScope = @MCFunctionType!Scope;
+            name = MCType;
+            prio = "80";
+          }];
+        alts = [// *size: 1
+          @!Alt(52,4):ASTAlt {
+            enclosingScope = @MCFunctionType!Scope;
+            component = [// *size: 3
+              @MCFunctionParTypes!NonTerminal(53,4):ASTNonTerminal {
+                enclosingScope = @MCFunctionType!Scope;
+                name = MCFunctionParTypes;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @MINUSGT!Terminal(53,23):ASTTerminal {
+                enclosingScope = @MCFunctionType!Scope;
+                iteration = 0;
+                name = ->;
+              },
+              @MCReturnType!NonTerminal(54,4):ASTNonTerminal {
+                enclosingScope = @MCFunctionType!Scope;
+                name = MCReturnType;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = true;
+          }];
+        name = MCFunctionType;
+      },
+      @MCUnaryFunctionType!ClassProd(63,2):ASTClassProd {
+        enclosingScope = @MCFunctionTypes!Scope;
+        superInterfaceRule = [// *size: 1
+          @MCType!RuleReference(63,33):ASTRuleReference {
+            enclosingScope = @MCUnaryFunctionType!Scope;
+            name = MCType;
+            prio = "60";
+          }];
+        alts = [// *size: 1
+          @!Alt(64,4):ASTAlt {
+            enclosingScope = @MCUnaryFunctionType!Scope;
+            component = [// *size: 3
+              @MCType!NonTerminal(65,4):ASTNonTerminal {
+                enclosingScope = @MCUnaryFunctionType!Scope;
+                name = MCType;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @MINUSGT!Terminal(65,11):ASTTerminal {
+                enclosingScope = @MCUnaryFunctionType!Scope;
+                iteration = 0;
+                name = ->;
+              },
+              @MCReturnType!NonTerminal(66,4):ASTNonTerminal {
+                enclosingScope = @MCUnaryFunctionType!Scope;
+                name = MCReturnType;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = true;
+          }];
+        name = MCUnaryFunctionType;
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

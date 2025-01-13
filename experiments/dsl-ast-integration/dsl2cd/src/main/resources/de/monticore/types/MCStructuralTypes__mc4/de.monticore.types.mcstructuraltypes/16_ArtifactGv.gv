@@ -1,0 +1,690 @@
+digraph {
+  subgraph cluster_de_monticore_types {
+    label = "de.monticore.types";
+    labeljust = l;
+    subgraph cluster_de_monticore_types_mcstructuraltypes {
+      label = "de.monticore.types.mcstructuraltypes";
+      labeljust = l;
+      subgraph cluster_de_monticore_types_mcstructuraltypes__util {
+        label = "de.monticore.types.mcstructuraltypes._util";
+        labeljust = l;
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__util_MCStructuralTypesTypeDispatcher [label="de.monticore.types.mcstructuraltypes._util.MCStructuralTypesTypeDispatcher.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__util_IMCStructuralTypesTypeDispatcher [label="de.monticore.types.mcstructuraltypes._util.IMCStructuralTypesTypeDispatcher.java (1)"];
+      }
+      subgraph cluster_de_monticore_types_mcstructuraltypes__auxiliary {
+        label = "de.monticore.types.mcstructuraltypes._auxiliary";
+        labeljust = l;
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__auxiliary_MCBasicsMillForMCStructuralTypes [label="de.monticore.types.mcstructuraltypes._auxiliary.MCBasicsMillForMCStructuralTypes.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__auxiliary_MCBasicTypesMillForMCStructuralTypes [label="de.monticore.types.mcstructuraltypes._auxiliary.MCBasicTypesMillForMCStructuralTypes.java (1)"];
+      }
+      subgraph cluster_de_monticore_types_mcstructuraltypes__symboltable {
+        label = "de.monticore.types.mcstructuraltypes._symboltable";
+        labeljust = l;
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__symboltable_MCStructuralTypesGlobalScope [label="de.monticore.types.mcstructuraltypes._symboltable.MCStructuralTypesGlobalScope.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__symboltable_ICommonMCStructuralTypesSymbol [label="de.monticore.types.mcstructuraltypes._symboltable.ICommonMCStructuralTypesSymbol.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__symboltable_MCStructuralTypesScopesGenitorDelegator [label="de.monticore.types.mcstructuraltypes._symboltable.MCStructuralTypesScopesGenitorDelegator.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__symboltable_MCStructuralTypesDeSer [label="de.monticore.types.mcstructuraltypes._symboltable.MCStructuralTypesDeSer.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__symboltable_IMCStructuralTypesGlobalScope [label="de.monticore.types.mcstructuraltypes._symboltable.IMCStructuralTypesGlobalScope.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__symboltable_MCStructuralTypesSymbols2Json [label="de.monticore.types.mcstructuraltypes._symboltable.MCStructuralTypesSymbols2Json.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__symboltable_IMCStructuralTypesArtifactScope [label="de.monticore.types.mcstructuraltypes._symboltable.IMCStructuralTypesArtifactScope.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__symboltable_MCStructuralTypesArtifactScope [label="de.monticore.types.mcstructuraltypes._symboltable.MCStructuralTypesArtifactScope.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__symboltable_MCStructuralTypesScope [label="de.monticore.types.mcstructuraltypes._symboltable.MCStructuralTypesScope.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__symboltable_MCStructuralTypesScopesGenitor [label="de.monticore.types.mcstructuraltypes._symboltable.MCStructuralTypesScopesGenitor.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__symboltable_IMCStructuralTypesScope [label="de.monticore.types.mcstructuraltypes._symboltable.IMCStructuralTypesScope.java (1)"];
+      }
+      subgraph cluster_de_monticore_types_mcstructuraltypes__parser {
+        label = "de.monticore.types.mcstructuraltypes._parser";
+        labeljust = l;
+        subgraph cluster_de_monticore_types_mcstructuraltypes__parser__auxiliary {
+          label = "de.monticore.types.mcstructuraltypes._parser._auxiliary";
+          labeljust = l;
+          node[shape=note];
+          File_de_monticore_types_mcstructuraltypes__parser__auxiliary_MCStructuralTypesParserInfoForMCBasicTypes [label="de.monticore.types.mcstructuraltypes._parser._auxiliary.MCStructuralTypesParserInfoForMCBasicTypes.java (1)"];
+          node[shape=note];
+          File_de_monticore_types_mcstructuraltypes__parser__auxiliary_MCStructuralTypesParserInfoForMCBasics [label="de.monticore.types.mcstructuraltypes._parser._auxiliary.MCStructuralTypesParserInfoForMCBasics.java (1)"];
+        }
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__parser_EmptyMCStructuralTypesParserInfo [label="de.monticore.types.mcstructuraltypes._parser.EmptyMCStructuralTypesParserInfo.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__parser_MCStructuralTypesParserInfo [label="de.monticore.types.mcstructuraltypes._parser.MCStructuralTypesParserInfo.java (1)"];
+      }
+      subgraph cluster_de_monticore_types_mcstructuraltypes__od {
+        label = "de.monticore.types.mcstructuraltypes._od";
+        labeljust = l;
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__od_MCStructuralTypes2OD [label="de.monticore.types.mcstructuraltypes._od.MCStructuralTypes2OD.java (1)"];
+      }
+      subgraph cluster_de_monticore_types_mcstructuraltypes__prettyprint {
+        label = "de.monticore.types.mcstructuraltypes._prettyprint";
+        labeljust = l;
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__prettyprint_MCStructuralTypesFullPrettyPrinter [label="de.monticore.types.mcstructuraltypes._prettyprint.MCStructuralTypesFullPrettyPrinter.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__prettyprint_MCStructuralTypesPrettyPrinter [label="de.monticore.types.mcstructuraltypes._prettyprint.MCStructuralTypesPrettyPrinter.java (1)"];
+      }
+      subgraph cluster_de_monticore_types_mcstructuraltypes__visitor {
+        label = "de.monticore.types.mcstructuraltypes._visitor";
+        labeljust = l;
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__visitor_MCStructuralTypesVisitor2 [label="de.monticore.types.mcstructuraltypes._visitor.MCStructuralTypesVisitor2.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__visitor_MCStructuralTypesInterpreter [label="de.monticore.types.mcstructuraltypes._visitor.MCStructuralTypesInterpreter.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__visitor_MCStructuralTypesHandler [label="de.monticore.types.mcstructuraltypes._visitor.MCStructuralTypesHandler.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__visitor_IMCStructuralTypesInterpreter [label="de.monticore.types.mcstructuraltypes._visitor.IMCStructuralTypesInterpreter.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__visitor_MCStructuralTypesTraverserImplementation [label="de.monticore.types.mcstructuraltypes._visitor.MCStructuralTypesTraverserImplementation.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__visitor_MCStructuralTypesTraverser [label="de.monticore.types.mcstructuraltypes._visitor.MCStructuralTypesTraverser.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__visitor_MCStructuralTypesInheritanceHandler [label="de.monticore.types.mcstructuraltypes._visitor.MCStructuralTypesInheritanceHandler.java (1)"];
+      }
+      subgraph cluster_de_monticore_types_mcstructuraltypes__cocos {
+        label = "de.monticore.types.mcstructuraltypes._cocos";
+        labeljust = l;
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__cocos_MCStructuralTypesASTMCBracketTypeCoCo [label="de.monticore.types.mcstructuraltypes._cocos.MCStructuralTypesASTMCBracketTypeCoCo.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__cocos_MCStructuralTypesASTMCUnionTypeCoCo [label="de.monticore.types.mcstructuraltypes._cocos.MCStructuralTypesASTMCUnionTypeCoCo.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__cocos_MCStructuralTypesASTMCStructuralTypesNodeCoCo [label="de.monticore.types.mcstructuraltypes._cocos.MCStructuralTypesASTMCStructuralTypesNodeCoCo.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__cocos_MCStructuralTypesCoCoChecker [label="de.monticore.types.mcstructuraltypes._cocos.MCStructuralTypesCoCoChecker.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__cocos_MCStructuralTypesASTMCIntersectionTypeCoCo [label="de.monticore.types.mcstructuraltypes._cocos.MCStructuralTypesASTMCIntersectionTypeCoCo.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__cocos_MCStructuralTypesASTMCTupleTypeCoCo [label="de.monticore.types.mcstructuraltypes._cocos.MCStructuralTypesASTMCTupleTypeCoCo.java (1)"];
+      }
+      subgraph cluster_de_monticore_types_mcstructuraltypes__ast {
+        label = "de.monticore.types.mcstructuraltypes._ast";
+        labeljust = l;
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__ast_ASTMCIntersectionTypeTOP [label="de.monticore.types.mcstructuraltypes._ast.ASTMCIntersectionTypeTOP.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__ast_ASTMCIntersectionTypeBuilder [label="de.monticore.types.mcstructuraltypes._ast.ASTMCIntersectionTypeBuilder.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__ast_ASTMCUnionTypeTOP [label="de.monticore.types.mcstructuraltypes._ast.ASTMCUnionTypeTOP.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__ast_ASTMCBracketTypeTOP [label="de.monticore.types.mcstructuraltypes._ast.ASTMCBracketTypeTOP.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__ast_ASTMCUnionTypeBuilder [label="de.monticore.types.mcstructuraltypes._ast.ASTMCUnionTypeBuilder.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__ast_ASTMCStructuralTypesNode [label="de.monticore.types.mcstructuraltypes._ast.ASTMCStructuralTypesNode.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__ast_MCStructuralTypesLiterals [label="de.monticore.types.mcstructuraltypes._ast.MCStructuralTypesLiterals.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__ast_ASTMCTupleTypeTOP [label="de.monticore.types.mcstructuraltypes._ast.ASTMCTupleTypeTOP.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__ast_ASTConstantsMCStructuralTypes [label="de.monticore.types.mcstructuraltypes._ast.ASTConstantsMCStructuralTypes.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__ast_ASTMCBracketTypeBuilder [label="de.monticore.types.mcstructuraltypes._ast.ASTMCBracketTypeBuilder.java (1)"];
+        node[shape=note];
+        File_de_monticore_types_mcstructuraltypes__ast_ASTMCTupleTypeBuilder [label="de.monticore.types.mcstructuraltypes._ast.ASTMCTupleTypeBuilder.java (1)"];
+      }
+      node[shape=note];
+      File_de_monticore_types_mcstructuraltypes_MCStructuralTypesMill [label="de.monticore.types.mcstructuraltypes.MCStructuralTypesMill.java (1)"];
+    }
+    node[shape=box3d];
+    Model_de_monticore_types_MCStructuralTypes [label="de.monticore.types.MCStructuralTypes (1)"];
+  }
+  subgraph cluster_data {
+    label = "data";
+    labeljust = l;
+    node[shape=ellipse];
+    Template_data_DeepEqualsWithComments [label="data.DeepEqualsWithComments.ftl (4)"];
+    node[shape=ellipse];
+    Template_data_EqualsWithComments [label="data.EqualsWithComments.ftl (4)"];
+    node[shape=ellipse];
+    Template_data_DeepCloneWithParameters [label="data.DeepCloneWithParameters.ftl (4)"];
+    node[shape=ellipse];
+    Template_data_AcceptSuper [label="data.AcceptSuper.ftl (21)"];
+    node[shape=ellipse];
+    Template_data_DeepEqualsWithOrder [label="data.DeepEqualsWithOrder.ftl (4)"];
+    node[shape=ellipse];
+    Template_data_EqualAttributes [label="data.EqualAttributes.ftl (4)"];
+  }
+  subgraph cluster_methods {
+    label = "methods";
+    labeljust = l;
+    subgraph cluster_methods_opt {
+      label = "methods.opt";
+      labeljust = l;
+      node[shape=ellipse];
+      Template_methods_opt_Set4Opt [label="methods.opt.Set4Opt.ftl (31)"];
+      node[shape=ellipse];
+      Template_methods_opt_IsPresent4Opt [label="methods.opt.IsPresent4Opt.ftl (31)"];
+      node[shape=ellipse];
+      Template_methods_opt_SetAbsent [label="methods.opt.SetAbsent.ftl (31)"];
+      node[shape=ellipse];
+      Template_methods_opt_Get4Opt [label="methods.opt.Get4Opt.ftl (31)"];
+    }
+    node[shape=ellipse];
+    Template_methods_Set [label="methods.Set.ftl (30)"];
+    node[shape=ellipse];
+    Template_methods_Get [label="methods.Get.ftl (38)"];
+    node[shape=ellipse];
+    Template_methods_MethodDelegate [label="methods.MethodDelegate.ftl (82)"];
+  }
+  subgraph cluster__prettyprinter_pp {
+    label = "_prettyprinter.pp";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__prettyprinter_pp_HandleMethod [label="_prettyprinter.pp.HandleMethod.ftl (4)"];
+    node[shape=ellipse];
+    Template__prettyprinter_pp_Alt [label="_prettyprinter.pp.Alt.ftl (6)"];
+    node[shape=ellipse];
+    Template__prettyprinter_pp_Block [label="_prettyprinter.pp.Block.ftl (6)"];
+    node[shape=ellipse];
+    Template__prettyprinter_pp_Terminal [label="_prettyprinter.pp.Terminal.ftl (8)"];
+  }
+  subgraph cluster__prettyprinter_full {
+    label = "_prettyprinter.full";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__prettyprinter_full_FPPTraverserInit [label="_prettyprinter.full.FPPTraverserInit.ftl (1)"];
+    node[shape=ellipse];
+    Template__prettyprinter_full_FullPrettyPrintMethod [label="_prettyprinter.full.FullPrettyPrintMethod.ftl (1)"];
+    node[shape=ellipse];
+    Template__prettyprinter_full_FPPSetPrintComments [label="_prettyprinter.full.FPPSetPrintComments.ftl (1)"];
+    node[shape=ellipse];
+    Template__prettyprinter_full_FPPConstructor [label="_prettyprinter.full.FPPConstructor.ftl (1)"];
+  }
+  subgraph cluster_interpreter {
+    label = "interpreter";
+    labeljust = l;
+    node[shape=ellipse];
+    Template_interpreter_ConstructorNoParams [label="interpreter.ConstructorNoParams.ftl (1)"];
+  }
+  subgraph cluster_cd2java {
+    label = "cd2java";
+    labeljust = l;
+    node[shape=ellipse];
+    Template_cd2java_Constructor [label="cd2java.Constructor.ftl (32)"];
+    node[shape=ellipse];
+    Template_cd2java_Attribute [label="cd2java.Attribute.ftl (124)"];
+    node[shape=ellipse];
+    Template_cd2java_Package [label="cd2java.Package.ftl (43)"];
+    node[shape=ellipse];
+    Template_cd2java_Class [label="cd2java.Class.ftl (27)"];
+    node[shape=ellipse];
+    Template_cd2java_Interface [label="cd2java.Interface.ftl (15)"];
+    node[shape=ellipse];
+    Template_cd2java_Annotations [label="cd2java.Annotations.ftl (1115)"];
+    node[shape=ellipse];
+    Template_cd2java_EmptyBody [label="cd2java.EmptyBody.ftl (40)"];
+    node[shape=ellipse];
+    Template_cd2java_Method [label="cd2java.Method.ftl (968)"];
+    node[shape=ellipse];
+    Template_cd2java_Imports [label="cd2java.Imports.ftl (42)"];
+    node[shape=ellipse];
+    Template_cd2java_Value [label="cd2java.Value.ftl (96)"];
+    node[shape=ellipse];
+    Template_cd2java_Enum [label="cd2java.Enum.ftl (1)"];
+  }
+  subgraph cluster__visitor_handler {
+    label = "_visitor.handler";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__visitor_handler_Traverse [label="_visitor.handler.Traverse.ftl (4)"];
+    node[shape=ellipse];
+    Template__visitor_handler_HandleSymTabInheritance [label="_visitor.handler.HandleSymTabInheritance.ftl (3)"];
+    node[shape=ellipse];
+    Template__visitor_handler_HandleASTInheritance [label="_visitor.handler.HandleASTInheritance.ftl (5)"];
+    node[shape=ellipse];
+    Template__visitor_handler_TraverseScope [label="_visitor.handler.TraverseScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__visitor_handler_Handle [label="_visitor.handler.Handle.ftl (9)"];
+  }
+  subgraph cluster__visitor_traverser {
+    label = "_visitor.traverser";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__visitor_traverser_Traverse [label="_visitor.traverser.Traverse.ftl (4)"];
+    node[shape=ellipse];
+    Template__visitor_traverser_AddVisitor [label="_visitor.traverser.AddVisitor.ftl (4)"];
+    node[shape=ellipse];
+    Template__visitor_traverser_DelegatingMethods [label="_visitor.traverser.DelegatingMethods.ftl (18)"];
+    node[shape=ellipse];
+    Template__visitor_traverser_SetHandler [label="_visitor.traverser.SetHandler.ftl (3)"];
+    node[shape=ellipse];
+    Template__visitor_traverser_TraverseScope [label="_visitor.traverser.TraverseScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__visitor_traverser_Handle [label="_visitor.traverser.Handle.ftl (9)"];
+  }
+  subgraph cluster_mill {
+    label = "mill";
+    labeljust = l;
+    node[shape=ellipse];
+    Template_mill_PrettyPrintBuilderMethod [label="mill.PrettyPrintBuilderMethod.ftl (1)"];
+    node[shape=ellipse];
+    Template_mill_PrettyPrintProtectedBuilderMethod [label="mill.PrettyPrintProtectedBuilderMethod.ftl (1)"];
+    node[shape=ellipse];
+    Template_mill_ResetMethod [label="mill.ResetMethod.ftl (1)"];
+    node[shape=ellipse];
+    Template_mill_ProtectedMethodForSuper [label="mill.ProtectedMethodForSuper.ftl (12)"];
+    node[shape=ellipse];
+    Template_mill_BuilderMethod [label="mill.BuilderMethod.ftl (12)"];
+    node[shape=ellipse];
+    Template_mill_TypeDispatcherGetter [label="mill.TypeDispatcherGetter.ftl (1)"];
+    node[shape=ellipse];
+    Template_mill_ProtectedBuilderMethod [label="mill.ProtectedBuilderMethod.ftl (8)"];
+    node[shape=ellipse];
+    Template_mill_ProtectedGlobalScopeMethod [label="mill.ProtectedGlobalScopeMethod.ftl (1)"];
+    node[shape=ellipse];
+    Template_mill_InitMethod [label="mill.InitMethod.ftl (1)"];
+    node[shape=ellipse];
+    Template_mill_InitMeMethod [label="mill.InitMeMethod.ftl (1)"];
+    node[shape=ellipse];
+    Template_mill_BuilderDelegatorMethod [label="mill.BuilderDelegatorMethod.ftl (7)"];
+    node[shape=ellipse];
+    Template_mill_GetMillMethod [label="mill.GetMillMethod.ftl (1)"];
+    node[shape=ellipse];
+    Template_mill_InheritanceHandlerMethod [label="mill.InheritanceHandlerMethod.ftl (1)"];
+  }
+  subgraph cluster__ast_ast_class {
+    label = "_ast.ast_class";
+    labeljust = l;
+    subgraph cluster__ast_ast_class_builder {
+      label = "_ast.ast_class.builder";
+      labeljust = l;
+      node[shape=ellipse];
+      Template__ast_ast_class_builder_ASTCNodeInit [label="_ast.ast_class.builder.ASTCNodeInit.ftl (8)"];
+      node[shape=ellipse];
+      Template__ast_ast_class_builder_ASTCNodeMethodDelegate [label="_ast.ast_class.builder.ASTCNodeMethodDelegate.ftl (136)"];
+    }
+    subgraph cluster__ast_ast_class_symboltable {
+      label = "_ast.ast_class.symboltable";
+      labeljust = l;
+      node[shape=ellipse];
+      Template__ast_ast_class_symboltable_InheritedSetEnclosingScope [label="_ast.ast_class.symboltable.InheritedSetEnclosingScope.ftl (8)"];
+    }
+    node[shape=ellipse];
+    Template__ast_ast_class_Evaluate [label="_ast.ast_class.Evaluate.ftl (4)"];
+    node[shape=ellipse];
+    Template__ast_ast_class_Accept [label="_ast.ast_class.Accept.ftl (6)"];
+  }
+  subgraph cluster__ast_builder {
+    label = "_ast.builder";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__ast_builder_BuildMethod [label="_ast.builder.BuildMethod.ftl (8)"];
+    node[shape=ellipse];
+    Template__ast_builder_Set4ASTBuilder [label="_ast.builder.Set4ASTBuilder.ftl (6)"];
+    node[shape=ellipse];
+    Template__ast_builder_MethodDelegate4ASTBuilder [label="_ast.builder.MethodDelegate4ASTBuilder.ftl (14)"];
+    node[shape=ellipse];
+    Template__ast_builder_IsValidMethod [label="_ast.builder.IsValidMethod.ftl (4)"];
+  }
+  subgraph cluster__ast_ast_constants {
+    label = "_ast.ast_constants";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__ast_ast_constants_GetAllLanguages [label="_ast.ast_constants.GetAllLanguages.ftl (1)"];
+  }
+  subgraph cluster__symboltable_serialization_scopeDeSer {
+    label = "_symboltable.serialization.scopeDeSer";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__symboltable_serialization_scopeDeSer_DeserializeArtifactScope [label="_symboltable.serialization.scopeDeSer.DeserializeArtifactScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_serialization_scopeDeSer_DeserializeSymbols [label="_symboltable.serialization.scopeDeSer.DeserializeSymbols.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_serialization_scopeDeSer_DeserializeScope [label="_symboltable.serialization.scopeDeSer.DeserializeScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_serialization_scopeDeSer_SerializeS2J4ScopeDeSer [label="_symboltable.serialization.scopeDeSer.SerializeS2J4ScopeDeSer.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_serialization_scopeDeSer_SerializeAS4ScopeDeSer [label="_symboltable.serialization.scopeDeSer.SerializeAS4ScopeDeSer.ftl (1)"];
+  }
+  subgraph cluster__symboltable_serialization_symbols2Json {
+    label = "_symboltable.serialization.symbols2Json";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__symboltable_serialization_symbols2Json_VisitScope4STP [label="_symboltable.serialization.symbols2Json.VisitScope4STP.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_serialization_symbols2Json_Load2 [label="_symboltable.serialization.symbols2Json.Load2.ftl (3)"];
+    node[shape=ellipse];
+    Template__symboltable_serialization_symbols2Json_Serialize4Symbols2Json [label="_symboltable.serialization.symbols2Json.Serialize4Symbols2Json.ftl (2)"];
+    node[shape=ellipse];
+    Template__symboltable_serialization_symbols2Json_EndVisit4Scope [label="_symboltable.serialization.symbols2Json.EndVisit4Scope.ftl (2)"];
+    node[shape=ellipse];
+    Template__symboltable_serialization_symbols2Json_Init [label="_symboltable.serialization.symbols2Json.Init.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_serialization_symbols2Json_Store [label="_symboltable.serialization.symbols2Json.Store.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_serialization_symbols2Json_VisitArtifactScope [label="_symboltable.serialization.symbols2Json.VisitArtifactScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_serialization_symbols2Json_Deserialize [label="_symboltable.serialization.symbols2Json.Deserialize.ftl (1)"];
+  }
+  subgraph cluster__symboltable_artifactscope {
+    label = "_symboltable.artifactscope";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__symboltable_artifactscope_SetEnclosingScope [label="_symboltable.artifactscope.SetEnclosingScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_artifactscope_GetName [label="_symboltable.artifactscope.GetName.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_artifactscope_ConstructorArtifactScope [label="_symboltable.artifactscope.ConstructorArtifactScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_artifactscope_IsPresentName [label="_symboltable.artifactscope.IsPresentName.ftl (1)"];
+  }
+  subgraph cluster__symboltable_scopesgenitor {
+    label = "_symboltable.scopesgenitor";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__symboltable_scopesgenitor_CreateScope [label="_symboltable.scopesgenitor.CreateScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_scopesgenitor_VisitNoSymbol [label="_symboltable.scopesgenitor.VisitNoSymbol.ftl (4)"];
+    node[shape=ellipse];
+    Template__symboltable_scopesgenitor_PutOnStack [label="_symboltable.scopesgenitor.PutOnStack.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_scopesgenitor_CreateFromAST [label="_symboltable.scopesgenitor.CreateFromAST.ftl (1)"];
+  }
+  subgraph cluster__symboltable_iartifactscope {
+    label = "_symboltable.iartifactscope";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__symboltable_iartifactscope_CheckIfContinueAsSubScope [label="_symboltable.iartifactscope.CheckIfContinueAsSubScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_iartifactscope_GetRemainingNameForResolveDown [label="_symboltable.iartifactscope.GetRemainingNameForResolveDown.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_iartifactscope_GetTopLevelSymbol [label="_symboltable.iartifactscope.GetTopLevelSymbol.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_iartifactscope_GetFullName [label="_symboltable.iartifactscope.GetFullName.ftl (1)"];
+  }
+  subgraph cluster__symboltable_scope {
+    label = "_symboltable.scope";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__symboltable_scope_SetSpanningSymbolAbsent [label="_symboltable.scope.SetSpanningSymbolAbsent.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_scope_SetEnclosingScope [label="_symboltable.scope.SetEnclosingScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_scope_SetSubScopes [label="_symboltable.scope.SetSubScopes.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_scope_SetSpanningSymbol [label="_symboltable.scope.SetSpanningSymbol.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_scope_AddSubScope [label="_symboltable.scope.AddSubScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_scope_RemoveSubScope [label="_symboltable.scope.RemoveSubScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_scope_GetSubScopes [label="_symboltable.scope.GetSubScopes.ftl (1)"];
+  }
+  subgraph cluster__symboltable_globalscope {
+    label = "_symboltable.globalscope";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__symboltable_globalscope_ZeroArgsConstructorGlobalScope [label="_symboltable.globalscope.ZeroArgsConstructorGlobalScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_globalscope_LoadFileForModelName [label="_symboltable.globalscope.LoadFileForModelName.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_globalscope_Init [label="_symboltable.globalscope.Init.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_globalscope_GetSymbols2Json [label="_symboltable.globalscope.GetSymbols2Json.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_globalscope_Clear [label="_symboltable.globalscope.Clear.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_globalscope_ConstructorGlobalScope [label="_symboltable.globalscope.ConstructorGlobalScope.ftl (1)"];
+  }
+  subgraph cluster__symboltable_scopesgenitordelegator {
+    label = "_symboltable.scopesgenitordelegator";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__symboltable_scopesgenitordelegator_CreateFromASTDelegator [label="_symboltable.scopesgenitordelegator.CreateFromASTDelegator.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_scopesgenitordelegator_ConstructorScopesGenitorDelegator [label="_symboltable.scopesgenitordelegator.ConstructorScopesGenitorDelegator.ftl (1)"];
+  }
+  subgraph cluster_parser {
+    label = "parser";
+    labeljust = l;
+    node[shape=ellipse];
+    Template_parser_EmptyParserInfo [label="parser.EmptyParserInfo.ftl (1)"];
+    node[shape=ellipse];
+    Template_parser_ParserInfoForSuperLang [label="parser.ParserInfoForSuperLang.ftl (2)"];
+    node[shape=ellipse];
+    Template_parser_ParserInfo [label="parser.ParserInfo.ftl (1)"];
+  }
+  subgraph cluster__od {
+    label = "_od";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__od_PrintObject [label="_od.PrintObject.ftl (1)"];
+    node[shape=ellipse];
+    Template__od_PrintAttribute [label="_od.PrintAttribute.ftl (1)"];
+    node[shape=ellipse];
+    Template__od_ConstructorOD [label="_od.ConstructorOD.ftl (1)"];
+    node[shape=ellipse];
+    Template__od_HandleOD [label="_od.HandleOD.ftl (4)"];
+    node[shape=ellipse];
+    Template__od_PrintObjectDiagram [label="_od.PrintObjectDiagram.ftl (1)"];
+  }
+  subgraph cluster_mc {
+    label = "mc";
+    labeljust = l;
+    node[shape=ellipse];
+    Template_mc_Imports [label="mc.Imports.ftl (42)"];
+  }
+  subgraph cluster_dispatcher {
+    label = "dispatcher";
+    labeljust = l;
+    node[shape=ellipse];
+    Template_dispatcher_Constructor [label="dispatcher.Constructor.ftl (1)"];
+    node[shape=ellipse];
+    Template_dispatcher_AsMethod [label="dispatcher.AsMethod.ftl (28)"];
+    node[shape=ellipse];
+    Template_dispatcher_IsMethod [label="dispatcher.IsMethod.ftl (28)"];
+    node[shape=ellipse];
+    Template_dispatcher_Reset [label="dispatcher.Reset.ftl (1)"];
+    node[shape=ellipse];
+    Template_dispatcher_Handle [label="dispatcher.Handle.ftl (28)"];
+  }
+  subgraph cluster__cocos {
+    label = "_cocos";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__cocos_CoCoCheckerConstructor [label="_cocos.CoCoCheckerConstructor.ftl (1)"];
+    node[shape=ellipse];
+    Template__cocos_AddChecker [label="_cocos.AddChecker.ftl (3)"];
+  }
+  Model_de_monticore_types_MCStructuralTypes -> Template_parser_EmptyParserInfo;
+  Model_de_monticore_types_MCStructuralTypes -> Template_parser_ParserInfo;
+  Model_de_monticore_types_MCStructuralTypes -> Template_cd2java_Class;
+  Model_de_monticore_types_MCStructuralTypes -> Template_cd2java_Interface;
+  Model_de_monticore_types_MCStructuralTypes -> Template_cd2java_Enum;
+  Model_de_monticore_types_MCStructuralTypes -> Template_parser_ParserInfoForSuperLang;
+  Template__prettyprinter_pp_HandleMethod -> Template__prettyprinter_pp_Block;
+  Template__prettyprinter_pp_Alt -> Template__prettyprinter_pp_Block;
+  Template__prettyprinter_pp_Alt -> Template__prettyprinter_pp_Terminal;
+  Template__prettyprinter_pp_Block -> Template__prettyprinter_pp_Alt;
+  Template_cd2java_Constructor -> Template_interpreter_ConstructorNoParams;
+  Template_cd2java_Constructor -> Template__od_ConstructorOD;
+  Template_cd2java_Constructor -> Template__symboltable_globalscope_ConstructorGlobalScope;
+  Template_cd2java_Constructor -> Template_cd2java_Annotations;
+  Template_cd2java_Constructor -> Template_dispatcher_Constructor;
+  Template_cd2java_Constructor -> Template__prettyprinter_full_FPPConstructor;
+  Template_cd2java_Constructor -> Template__symboltable_scopesgenitordelegator_ConstructorScopesGenitorDelegator;
+  Template_cd2java_Constructor -> Template__symboltable_artifactscope_ConstructorArtifactScope;
+  Template_cd2java_Constructor -> Template__cocos_CoCoCheckerConstructor;
+  Template_cd2java_Constructor -> Template_cd2java_EmptyBody;
+  Template_cd2java_Constructor -> Template__symboltable_globalscope_ZeroArgsConstructorGlobalScope;
+  Template_cd2java_Attribute -> Template_cd2java_Annotations;
+  Template_cd2java_Attribute -> Template_cd2java_Value;
+  Template_cd2java_Class -> Template_cd2java_Attribute;
+  Template_cd2java_Class -> Template_cd2java_Constructor;
+  Template_cd2java_Class -> File_de_monticore_types_mcstructuraltypes__ast_ASTMCTupleTypeBuilder;
+  Template_cd2java_Class -> File_de_monticore_types_mcstructuraltypes__symboltable_MCStructuralTypesScopesGenitorDelegator;
+  Template_cd2java_Class -> File_de_monticore_types_mcstructuraltypes__ast_ASTMCTupleTypeTOP;
+  Template_cd2java_Class -> File_de_monticore_types_mcstructuraltypes__util_MCStructuralTypesTypeDispatcher;
+  Template_cd2java_Class -> File_de_monticore_types_mcstructuraltypes__visitor_MCStructuralTypesTraverserImplementation;
+  Template_cd2java_Class -> File_de_monticore_types_mcstructuraltypes__auxiliary_MCBasicTypesMillForMCStructuralTypes;
+  Template_cd2java_Class -> Template_cd2java_Package;
+  Template_cd2java_Class -> Template_cd2java_Annotations;
+  Template_cd2java_Class -> File_de_monticore_types_mcstructuraltypes__od_MCStructuralTypes2OD;
+  Template_cd2java_Class -> File_de_monticore_types_mcstructuraltypes__visitor_MCStructuralTypesInheritanceHandler;
+  Template_cd2java_Class -> File_de_monticore_types_mcstructuraltypes__symboltable_MCStructuralTypesDeSer;
+  Template_cd2java_Class -> Template_mc_Imports;
+  Template_cd2java_Class -> File_de_monticore_types_mcstructuraltypes__ast_ASTMCUnionTypeBuilder;
+  Template_cd2java_Class -> File_de_monticore_types_mcstructuraltypes__visitor_MCStructuralTypesInterpreter;
+  Template_cd2java_Class -> File_de_monticore_types_mcstructuraltypes__ast_ASTMCIntersectionTypeTOP;
+  Template_cd2java_Class -> File_de_monticore_types_mcstructuraltypes__symboltable_MCStructuralTypesScope;
+  Template_cd2java_Class -> File_de_monticore_types_mcstructuraltypes__symboltable_MCStructuralTypesScopesGenitor;
+  Template_cd2java_Class -> File_de_monticore_types_mcstructuraltypes__ast_ASTMCBracketTypeTOP;
+  Template_cd2java_Class -> File_de_monticore_types_mcstructuraltypes_MCStructuralTypesMill;
+  Template_cd2java_Class -> File_de_monticore_types_mcstructuraltypes__cocos_MCStructuralTypesCoCoChecker;
+  Template_cd2java_Class -> File_de_monticore_types_mcstructuraltypes__symboltable_MCStructuralTypesSymbols2Json;
+  Template_cd2java_Class -> File_de_monticore_types_mcstructuraltypes__ast_ASTMCUnionTypeTOP;
+  Template_cd2java_Class -> File_de_monticore_types_mcstructuraltypes__prettyprint_MCStructuralTypesPrettyPrinter;
+  Template_cd2java_Class -> File_de_monticore_types_mcstructuraltypes__symboltable_MCStructuralTypesArtifactScope;
+  Template_cd2java_Class -> File_de_monticore_types_mcstructuraltypes__auxiliary_MCBasicsMillForMCStructuralTypes;
+  Template_cd2java_Class -> Template_cd2java_Imports;
+  Template_cd2java_Class -> File_de_monticore_types_mcstructuraltypes__symboltable_MCStructuralTypesGlobalScope;
+  Template_cd2java_Class -> Template_cd2java_Method;
+  Template_cd2java_Class -> File_de_monticore_types_mcstructuraltypes__ast_ASTMCIntersectionTypeBuilder;
+  Template_cd2java_Class -> File_de_monticore_types_mcstructuraltypes__ast_ASTMCBracketTypeBuilder;
+  Template_cd2java_Class -> File_de_monticore_types_mcstructuraltypes__ast_ASTConstantsMCStructuralTypes;
+  Template_cd2java_Class -> File_de_monticore_types_mcstructuraltypes__prettyprint_MCStructuralTypesFullPrettyPrinter;
+  Template_cd2java_Interface -> File_de_monticore_types_mcstructuraltypes__visitor_MCStructuralTypesVisitor2;
+  Template_cd2java_Interface -> File_de_monticore_types_mcstructuraltypes__visitor_IMCStructuralTypesInterpreter;
+  Template_cd2java_Interface -> File_de_monticore_types_mcstructuraltypes__cocos_MCStructuralTypesASTMCIntersectionTypeCoCo;
+  Template_cd2java_Interface -> File_de_monticore_types_mcstructuraltypes__symboltable_IMCStructuralTypesGlobalScope;
+  Template_cd2java_Interface -> File_de_monticore_types_mcstructuraltypes__visitor_MCStructuralTypesHandler;
+  Template_cd2java_Interface -> File_de_monticore_types_mcstructuraltypes__symboltable_IMCStructuralTypesArtifactScope;
+  Template_cd2java_Interface -> File_de_monticore_types_mcstructuraltypes__util_IMCStructuralTypesTypeDispatcher;
+  Template_cd2java_Interface -> File_de_monticore_types_mcstructuraltypes__symboltable_IMCStructuralTypesScope;
+  Template_cd2java_Interface -> File_de_monticore_types_mcstructuraltypes__ast_ASTMCStructuralTypesNode;
+  Template_cd2java_Interface -> File_de_monticore_types_mcstructuraltypes__cocos_MCStructuralTypesASTMCUnionTypeCoCo;
+  Template_cd2java_Interface -> Template_cd2java_Package;
+  Template_cd2java_Interface -> Template_cd2java_Annotations;
+  Template_cd2java_Interface -> File_de_monticore_types_mcstructuraltypes__symboltable_ICommonMCStructuralTypesSymbol;
+  Template_cd2java_Interface -> File_de_monticore_types_mcstructuraltypes__cocos_MCStructuralTypesASTMCBracketTypeCoCo;
+  Template_cd2java_Interface -> Template_cd2java_Imports;
+  Template_cd2java_Interface -> Template_cd2java_Method;
+  Template_cd2java_Interface -> File_de_monticore_types_mcstructuraltypes__visitor_MCStructuralTypesTraverser;
+  Template_cd2java_Interface -> File_de_monticore_types_mcstructuraltypes__cocos_MCStructuralTypesASTMCTupleTypeCoCo;
+  Template_cd2java_Interface -> File_de_monticore_types_mcstructuraltypes__cocos_MCStructuralTypesASTMCStructuralTypesNodeCoCo;
+  Template_cd2java_Interface -> Template_mc_Imports;
+  Template_cd2java_Method -> Template_mill_PrettyPrintProtectedBuilderMethod;
+  Template_cd2java_Method -> Template__symboltable_scope_SetSpanningSymbolAbsent;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbols2Json_EndVisit4Scope;
+  Template_cd2java_Method -> Template__symboltable_scope_SetSubScopes;
+  Template_cd2java_Method -> Template_dispatcher_AsMethod;
+  Template_cd2java_Method -> Template__ast_ast_constants_GetAllLanguages;
+  Template_cd2java_Method -> Template__symboltable_artifactscope_GetName;
+  Template_cd2java_Method -> Template__visitor_handler_HandleASTInheritance;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbols2Json_Store;
+  Template_cd2java_Method -> Template__prettyprinter_full_FPPSetPrintComments;
+  Template_cd2java_Method -> Template_data_EqualAttributes;
+  Template_cd2java_Method -> Template_methods_MethodDelegate;
+  Template_cd2java_Method -> Template_mill_ProtectedMethodForSuper;
+  Template_cd2java_Method -> Template__symboltable_globalscope_LoadFileForModelName;
+  Template_cd2java_Method -> Template__cocos_AddChecker;
+  Template_cd2java_Method -> Template__visitor_traverser_DelegatingMethods;
+  Template_cd2java_Method -> Template__visitor_traverser_Handle;
+  Template_cd2java_Method -> Template_mill_GetMillMethod;
+  Template_cd2java_Method -> Template__visitor_handler_HandleSymTabInheritance;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbols2Json_Load2;
+  Template_cd2java_Method -> Template__symboltable_scope_SetSpanningSymbol;
+  Template_cd2java_Method -> Template__ast_ast_class_Evaluate;
+  Template_cd2java_Method -> Template__od_PrintObject;
+  Template_cd2java_Method -> Template__symboltable_scopesgenitor_CreateFromAST;
+  Template_cd2java_Method -> Template_data_AcceptSuper;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbols2Json_Init;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbols2Json_Serialize4Symbols2Json;
+  Template_cd2java_Method -> Template_methods_opt_Set4Opt;
+  Template_cd2java_Method -> Template__symboltable_serialization_scopeDeSer_SerializeAS4ScopeDeSer;
+  Template_cd2java_Method -> Template__visitor_traverser_Traverse;
+  Template_cd2java_Method -> Template_methods_Get;
+  Template_cd2java_Method -> Template_dispatcher_Handle;
+  Template_cd2java_Method -> Template_dispatcher_Reset;
+  Template_cd2java_Method -> Template__symboltable_scope_RemoveSubScope;
+  Template_cd2java_Method -> Template__symboltable_scopesgenitor_PutOnStack;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbols2Json_VisitScope4STP;
+  Template_cd2java_Method -> Template__prettyprinter_full_FullPrettyPrintMethod;
+  Template_cd2java_Method -> Template__symboltable_globalscope_Clear;
+  Template_cd2java_Method -> Template__ast_ast_class_Accept;
+  Template_cd2java_Method -> Template_mill_BuilderDelegatorMethod;
+  Template_cd2java_Method -> Template__symboltable_iartifactscope_CheckIfContinueAsSubScope;
+  Template_cd2java_Method -> Template__symboltable_scopesgenitor_VisitNoSymbol;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbols2Json_VisitArtifactScope;
+  Template_cd2java_Method -> Template__ast_ast_class_builder_ASTCNodeMethodDelegate;
+  Template_cd2java_Method -> Template_mill_InitMethod;
+  Template_cd2java_Method -> Template__symboltable_scope_AddSubScope;
+  Template_cd2java_Method -> Template__symboltable_iartifactscope_GetTopLevelSymbol;
+  Template_cd2java_Method -> Template__ast_builder_BuildMethod;
+  Template_cd2java_Method -> Template__prettyprinter_full_FPPTraverserInit;
+  Template_cd2java_Method -> Template_methods_Set;
+  Template_cd2java_Method -> Template_mill_BuilderMethod;
+  Template_cd2java_Method -> Template__ast_builder_MethodDelegate4ASTBuilder;
+  Template_cd2java_Method -> Template__od_HandleOD;
+  Template_cd2java_Method -> Template_mill_InitMeMethod;
+  Template_cd2java_Method -> Template__symboltable_globalscope_GetSymbols2Json;
+  Template_cd2java_Method -> Template__prettyprinter_pp_HandleMethod;
+  Template_cd2java_Method -> Template__visitor_handler_Handle;
+  Template_cd2java_Method -> Template__symboltable_scope_GetSubScopes;
+  Template_cd2java_Method -> Template_methods_opt_Get4Opt;
+  Template_cd2java_Method -> Template__visitor_handler_TraverseScope;
+  Template_cd2java_Method -> Template__symboltable_scopesgenitordelegator_CreateFromASTDelegator;
+  Template_cd2java_Method -> Template__symboltable_scopesgenitor_CreateScope;
+  Template_cd2java_Method -> Template__od_PrintObjectDiagram;
+  Template_cd2java_Method -> Template__visitor_traverser_TraverseScope;
+  Template_cd2java_Method -> Template__symboltable_artifactscope_IsPresentName;
+  Template_cd2java_Method -> Template_mill_ResetMethod;
+  Template_cd2java_Method -> Template_mill_ProtectedGlobalScopeMethod;
+  Template_cd2java_Method -> Template__symboltable_globalscope_Init;
+  Template_cd2java_Method -> Template__symboltable_serialization_scopeDeSer_DeserializeArtifactScope;
+  Template_cd2java_Method -> Template_data_DeepEqualsWithComments;
+  Template_cd2java_Method -> Template__ast_builder_IsValidMethod;
+  Template_cd2java_Method -> Template_mill_ProtectedBuilderMethod;
+  Template_cd2java_Method -> Template_mill_PrettyPrintBuilderMethod;
+  Template_cd2java_Method -> Template_methods_opt_IsPresent4Opt;
+  Template_cd2java_Method -> Template__symboltable_serialization_scopeDeSer_DeserializeScope;
+  Template_cd2java_Method -> Template_cd2java_EmptyBody;
+  Template_cd2java_Method -> Template_cd2java_Annotations;
+  Template_cd2java_Method -> Template__ast_builder_Set4ASTBuilder;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbols2Json_Deserialize;
+  Template_cd2java_Method -> Template_data_EqualsWithComments;
+  Template_cd2java_Method -> Template__symboltable_artifactscope_SetEnclosingScope;
+  Template_cd2java_Method -> Template__symboltable_iartifactscope_GetRemainingNameForResolveDown;
+  Template_cd2java_Method -> Template_dispatcher_IsMethod;
+  Template_cd2java_Method -> Template__visitor_traverser_SetHandler;
+  Template_cd2java_Method -> Template_mill_TypeDispatcherGetter;
+  Template_cd2java_Method -> Template__symboltable_serialization_scopeDeSer_DeserializeSymbols;
+  Template_cd2java_Method -> Template__symboltable_serialization_scopeDeSer_SerializeS2J4ScopeDeSer;
+  Template_cd2java_Method -> Template_data_DeepCloneWithParameters;
+  Template_cd2java_Method -> Template__symboltable_scope_SetEnclosingScope;
+  Template_cd2java_Method -> Template__symboltable_iartifactscope_GetFullName;
+  Template_cd2java_Method -> Template_methods_opt_SetAbsent;
+  Template_cd2java_Method -> Template__visitor_traverser_AddVisitor;
+  Template_cd2java_Method -> Template__od_PrintAttribute;
+  Template_cd2java_Method -> Template__visitor_handler_Traverse;
+  Template_cd2java_Method -> Template__ast_ast_class_symboltable_InheritedSetEnclosingScope;
+  Template_cd2java_Method -> Template_data_DeepEqualsWithOrder;
+  Template_cd2java_Method -> Template_mill_InheritanceHandlerMethod;
+  Template_cd2java_Enum -> Template_cd2java_Package;
+  Template_cd2java_Enum -> Template_cd2java_Attribute;
+  Template_cd2java_Enum -> Template_cd2java_Constructor;
+  Template_cd2java_Enum -> Template_cd2java_Method;
+  Template_cd2java_Enum -> File_de_monticore_types_mcstructuraltypes__ast_MCStructuralTypesLiterals;
+  Template__ast_builder_BuildMethod -> Template__ast_ast_class_builder_ASTCNodeInit;
+  Template__symboltable_scope_SetSpanningSymbolAbsent -> Template_methods_opt_SetAbsent;
+  Template__symboltable_scope_SetSpanningSymbol -> Template_methods_opt_Set4Opt;
+  Template_parser_EmptyParserInfo -> File_de_monticore_types_mcstructuraltypes__parser_EmptyMCStructuralTypesParserInfo;
+  Template_parser_ParserInfoForSuperLang -> File_de_monticore_types_mcstructuraltypes__parser__auxiliary_MCStructuralTypesParserInfoForMCBasicTypes;
+  Template_parser_ParserInfoForSuperLang -> File_de_monticore_types_mcstructuraltypes__parser__auxiliary_MCStructuralTypesParserInfoForMCBasics;
+  Template_parser_ParserInfo -> File_de_monticore_types_mcstructuraltypes__parser_MCStructuralTypesParserInfo;
+}

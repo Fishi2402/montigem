@@ -1,0 +1,147 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram cardinality_AST {
+  @Cardinality!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @Cardinality!Symbol(2,0);
+    enclosingScope = @Cardinality!ArtifactScope;
+    spanningScope = @Cardinality!Scope;
+    r__package = [de, monticore];
+    importStatement = [// *size: 2
+      @!MCImportStatement(7,0):ASTMCImportStatement {
+        enclosingScope = @Cardinality!Scope;
+        mCQualifiedName = @de.monticore.literals!MCQualifiedName(7,7):ASTMCQualifiedName {
+          enclosingScope = @Cardinality!Scope;
+          parts = [de, monticore, literals];
+        };
+        star = true;
+      },
+      @!MCImportStatement(8,0):ASTMCImportStatement {
+        enclosingScope = @Cardinality!Scope;
+        mCQualifiedName = @de.monticore!MCQualifiedName(8,7):ASTMCQualifiedName {
+          enclosingScope = @Cardinality!Scope;
+          parts = [de, monticore];
+        };
+        star = true;
+      }];
+    name = Cardinality;
+    supergrammar = [// *size: 2
+      @MCBasics!GrammarReference(17,18):ASTGrammarReference {
+        enclosingScope = @Cardinality!Scope;
+        names = [de, monticore, MCBasics];
+      },
+      @MCCommonLiterals!GrammarReference(18,18):ASTGrammarReference {
+        enclosingScope = @Cardinality!Scope;
+        names = [MCCommonLiterals];
+      }];
+    classProds = [// *size: 1
+      @Cardinality!ClassProd(30,2):ASTClassProd {
+        enclosingScope = @Cardinality!Scope;
+        alts = [// *size: 1
+          @!Alt(31,4):ASTAlt {
+            enclosingScope = @Cardinality!Scope(!2);
+            component = [// *size: 3
+              @LBRACK!Terminal(31,4):ASTTerminal {
+                enclosingScope = @Cardinality!Scope(!2);
+                iteration = 0;
+                name = [;
+              },
+              @!Block(32,4):ASTBlock {
+                enclosingScope = @Cardinality!Scope(!2);
+                alt = [// *size: 2
+                  @!Alt(32,6):ASTAlt {
+                    enclosingScope = @Cardinality!Scope(!2);
+                    component = [// *size: 1
+                      @many!ConstantGroup(32,6):ASTConstantGroup {
+                        enclosingScope = @Cardinality!Scope(!2);
+                        usageName = "many";
+                        constants = [// *size: 1
+                          @STAR!Constant(32,12):ASTConstant {
+                            enclosingScope = @Cardinality!Scope(!2);
+                            string = "*";
+                            name = *;
+                          }];
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  },
+                  @!Alt(33,8):ASTAlt {
+                    enclosingScope = @Cardinality!Scope(!2);
+                    component = [// *size: 2
+                      @NatLiteral!NonTerminal(33,8):ASTNonTerminal {
+                        enclosingScope = @Cardinality!Scope(!2);
+                        usageName = "lowerBoundLit";
+                        name = NatLiteral;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      },
+                      @!Block(34,6):ASTBlock {
+                        enclosingScope = @Cardinality!Scope(!2);
+                        alt = [// *size: 1
+                          @!Alt(34,8):ASTAlt {
+                            enclosingScope = @Cardinality!Scope(!2);
+                            component = [// *size: 2
+                              @POINTPOINT!Terminal(34,8):ASTTerminal {
+                                enclosingScope = @Cardinality!Scope(!2);
+                                iteration = 0;
+                                name = ..;
+                              },
+                              @!Block(34,13):ASTBlock {
+                                enclosingScope = @Cardinality!Scope(!2);
+                                alt = [// *size: 2
+                                  @!Alt(35,8):ASTAlt {
+                                    enclosingScope = @Cardinality!Scope(!2);
+                                    component = [// *size: 1
+                                      @NatLiteral!NonTerminal(35,8):ASTNonTerminal {
+                                        enclosingScope = @Cardinality!Scope(!2);
+                                        usageName = "upperBoundLit";
+                                        name = NatLiteral;
+                                        genSymbol = false;
+                                        plusKeywords = false;
+                                        iteration = 0;
+                                      }];
+                                    rightAssoc = false;
+                                  },
+                                  @!Alt(37,8):ASTAlt {
+                                    enclosingScope = @Cardinality!Scope(!2);
+                                    component = [// *size: 1
+                                      @noUpperLimit!ConstantGroup(37,8):ASTConstantGroup {
+                                        enclosingScope = @Cardinality!Scope(!2);
+                                        usageName = "noUpperLimit";
+                                        constants = [// *size: 1
+                                          @STAR!Constant(37,22):ASTConstant {
+                                            enclosingScope = @Cardinality!Scope(!2);
+                                            string = "*";
+                                            name = *;
+                                          }];
+                                        iteration = 0;
+                                      }];
+                                    rightAssoc = false;
+                                  }];
+                                iteration = 0;
+                              }];
+                            rightAssoc = false;
+                          }];
+                        iteration = 17;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 0;
+              },
+              @RBRACK!Terminal(38,6):ASTTerminal {
+                enclosingScope = @Cardinality!Scope(!2);
+                iteration = 0;
+                name = ];
+              }];
+            rightAssoc = false;
+          }];
+        name = Cardinality;
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */
