@@ -1,8 +1,8 @@
 import { AfterViewInit, Component, inject, signal } from '@angular/core';
 
-import { ParseMyDSLComponent, config } from "@src/gui/ParseMyDSLComponent";
+import { ParseMyDSLComponent, config } from "gui/ParseMyDSLComponent";
 
-import {ParseMyCompilationUnit} from "@src/domain/commands/ParseMyCompilationUnit"
+import {ParseMyCompilationUnit} from "domain/commands/ParseMyCompilationUnit"
 import {CommandManager, Event} from '@umlp/common';
 
 import {ActivatedRoute, Router} from '@angular/router';
