@@ -37,7 +37,6 @@ import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
 import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Splitters;
@@ -815,7 +814,13 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
           getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandResult"));
           getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandManager"));
           getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("UMLPArrayList"));
-          ASTMCType type = createTypeAndAddImports(method.getReturnType());
+          SymTypeExpression symTypeExpression = method.getReturnType();
+          String commandResultTypeParameter = symTypeExpression.print();
+          if(GenService.isList(symTypeExpression)) {
+            SymTypeExpression innerType = symTypeExpression.asGenericType().getArgument(0);
+            commandResultTypeParameter = innerType.print();
+          }
+          createTypeAndAddImports(method.getReturnType());
           String cmdQPath = Joiners.DOT.join(util.getMainDomainModelSimpleName().get().toLowerCase(),
               "commands",StringTransformations.capitalize(method.getName()));
           getCD4C().addImport(clazz, cmdQPath);
@@ -827,7 +832,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
                 createTypeAndAddImports(argSTE),Expression2SetterPrinter.SETTER_PARAM + "_$" + i),
                 argSTE);
           }
-          getCD4C().addMethod(clazz, getCommandExecutionTemplate(), type, name, argumentParams);
+          getCD4C().addMethod(clazz, getCommandExecutionTemplate(), method.getReturnType(), commandResultTypeParameter, name, argumentParams);
         }
         // predefined function: @PersonForm(buttonClick = create(person))
         else if (PredefinedFunction.getMember(name).isPresent()) {
