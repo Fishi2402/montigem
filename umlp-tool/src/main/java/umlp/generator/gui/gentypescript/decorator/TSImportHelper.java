@@ -114,7 +114,7 @@ public class TSImportHelper {
       MCPath hwPath, Path outPath, MCPath importsPath, String importerQName, String importedQName) {
     String importedQualifier = Names.getQualifier(importedQName);
     String importedSimpleName = Names.getSimpleName(importedQName);
-    String importedMaybeCD;
+    String importedMaybeCDName;
 
     if (!importedQualifier.isBlank()) {
       List<String> parts = Splitter.on('.').splitToList(importedQualifier);
@@ -122,31 +122,28 @@ public class TSImportHelper {
       int lastIndex = parts.size() - 1;
       String lastPart = parts.get(lastIndex).toLowerCase();
       // Rejoin the parts with the modified last part
-      importedMaybeCD = Joiner.on('/').join(parts.subList(0, lastIndex))
+      importedMaybeCDName = Joiner.on('/').join(parts.subList(0, lastIndex))
           + (lastIndex > 0 ? "/" : "") + lastPart
           + "/" + importedSimpleName;
     }
     else {
-      importedMaybeCD = importedQualifier;
+      importedMaybeCDName = importedQualifier;
     }
 
-    String imported = Names.getPathFromPackage(importedQName);
-    String importer = Names.getPathFromPackage(importerQName);
+    String importedMaybeCD = importedMaybeCDName + ".ts";
+    String imported = Names.getPathFromPackage(importedQName) + ".ts";
+    String importer = Names.getPathFromPackage(importerQName) + ".ts";
 
-    if (UMLPGeneratorConfig.getInstance().isUseJsweet()) {
-      importedMaybeCD += ".java";
-      imported += ".java";
-      importer += ".java";
-    }
-    else {
-      importedMaybeCD += ".ts";
-      imported += ".ts";
-      importer += ".ts";
+    Optional<URL> hwFilePath = hwPath.find(imported);
+    if (hwFilePath.isEmpty() && UMLPGeneratorConfig.getInstance().isUseJsweet()) {
+      importedMaybeCD = importedMaybeCDName + ".java";
+      imported = Names.getPathFromPackage(importedQName) + ".java";
+      importer = Names.getPathFromPackage(importerQName) + ".java";
+      hwFilePath = hwPath.find(imported);
     }
 
     // case: TOP is used, use path to HW file, e.g.,
     // "gen/gui/ExampleComponent.ts" imports "hw/gui/Example.ts" -> "../../hw/gui/Example"
-    Optional<URL> hwFilePath = hwPath.find(imported);
     if (hwFilePath.isPresent()) {
       if (UMLPGeneratorConfig.getInstance().isGenerate4TSLib()) {
         Optional<Path> hw = MCPath.toPath(hwFilePath.get());
