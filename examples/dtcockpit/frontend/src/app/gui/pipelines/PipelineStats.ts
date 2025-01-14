@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { PipelineStatistic } from '@src/dtcockpit/PipelineStatistic';
-import { PipelineStatsComponent,config } from '@src/gui/pipelines/PipelineStatsComponent';
+import { PipelineStatistic } from 'dtcockpit/PipelineStatistic';
+import { PipelineStatsComponent,config } from 'gui/pipelines/PipelineStatsComponent';
 import {
   GemBarChartData,
   GemBarChartDataBuilder,

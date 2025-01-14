@@ -1,15 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { inject } from '@angular/core';
-import { DemoRecManager } from '@src/demorec/DemoRecManager';
+import { DemoRecManager } from 'demorec/DemoRecManager';
 
-import { DemoRecComponent } from '@src/demorec/DemoRecComponent';
-import { State } from '@src/demorec/State';
-import { BatteryPack } from '@src/demorec/BatteryPack';
+import { DemoRecComponent } from 'demorec/DemoRecComponent';
+import { State } from 'demorec/State';
+import { BatteryPack } from 'demorec/BatteryPack';
 
-import { JoinConnectionType } from '@src/demorec/JoinConnectionType';
+import { JoinConnectionType } from 'demorec/JoinConnectionType';
 
-import { JoinConnectionKindEditComponent, config } from '@src/gui/connectionkind/JoinConnectionKindEditComponent';
+import { JoinConnectionKindEditComponent, config } from 'gui/connectionkind/JoinConnectionKindEditComponent';
 
 import {
   Component,
@@ -183,21 +183,21 @@ export class JoinConnectionKindEdit extends JoinConnectionKindEditComponent impl
   public checkConnectionType() : GemTextInputValidity {
     if(this.getConnectionKind()) {
       if(this.getConnectionKind().getJoinConnectionType()) {
-        return {status: "Success"}
+        return new GemTextInputValidity("Success");
       }
-      return {status: "Error", message: "Please choose a connection type."}
+      return new GemTextInputValidity("Error", "Please choose a connection type.");
     }
-    return {status: "Warning", message: "Wait for page init."}
+    return new GemTextInputValidity("Warning", "Wait for page init.");
   }
 
   public checkChosenComponents() : GemTextInputValidity {
     if(this.getConnectionKind()) {
       if(this.getConnectionKind().getConnectsList().length >= 2) {
-        return {status: "Success"}
+        return new GemTextInputValidity("Success")
       }
-      return {status: "Warning", message: "Later on, you should specify at least 2 connected components."}
+      return new GemTextInputValidity("Warning", "Later on, you should specify at least 2 connected components.");
     }
-    return {status: "Warning", message: "Wait for page init."}
+    return new GemTextInputValidity("Warning", "Wait for page init.");
   }
 
 }

@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {ArtifactTOP} from '@src/sehub/ArtifactTOP';
+import {ArtifactTOP} from 'sehub/ArtifactTOP';
 
 export class Artifact extends ArtifactTOP {
 

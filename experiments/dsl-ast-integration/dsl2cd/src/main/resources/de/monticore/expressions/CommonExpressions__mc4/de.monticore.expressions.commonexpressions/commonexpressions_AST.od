@@ -1,0 +1,912 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram commonexpressions_AST {
+  @CommonExpressions!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @CommonExpressions!Symbol(2,0);
+    enclosingScope = @CommonExpressions!ArtifactScope;
+    spanningScope = @CommonExpressions!Scope;
+    r__package = [de, monticore, expressions];
+    importStatement = [// *size: 1
+      @!MCImportStatement(7,0):ASTMCImportStatement {
+        enclosingScope = @CommonExpressions!Scope;
+        mCQualifiedName = @de.monticore.expressions!MCQualifiedName(7,7):ASTMCQualifiedName {
+          enclosingScope = @CommonExpressions!Scope;
+          parts = [de, monticore, expressions];
+        };
+        star = true;
+      }];
+    name = CommonExpressions;
+    supergrammar = [// *size: 1
+      @ExpressionsBasis!GrammarReference(34,18):ASTGrammarReference {
+        enclosingScope = @CommonExpressions!Scope;
+        names = [ExpressionsBasis];
+      }];
+    classProds = [// *size: 22
+      @CallExpression!ClassProd(53,2):ASTClassProd {
+        enclosingScope = @CommonExpressions!Scope;
+        superInterfaceRule = [// *size: 1
+          @Expression!RuleReference(53,28):ASTRuleReference {
+            enclosingScope = @CallExpression!Scope;
+            name = Expression;
+            prio = "240";
+          }];
+        alts = [// *size: 1
+          @!Alt(54,4):ASTAlt {
+            enclosingScope = @CallExpression!Scope;
+            component = [// *size: 2
+              @Expression!NonTerminal(54,4):ASTNonTerminal {
+                enclosingScope = @CallExpression!Scope;
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @Arguments!NonTerminal(54,15):ASTNonTerminal {
+                enclosingScope = @CallExpression!Scope;
+                name = Arguments;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = CallExpression;
+      },
+      @FieldAccessExpression!ClassProd(66,2):ASTClassProd {
+        enclosingScope = @CommonExpressions!Scope;
+        superInterfaceRule = [// *size: 1
+          @Expression!RuleReference(66,35):ASTRuleReference {
+            enclosingScope = @FieldAccessExpression!Scope;
+            name = Expression;
+            prio = "290";
+          }];
+        alts = [// *size: 1
+          @!Alt(67,4):ASTAlt {
+            enclosingScope = @FieldAccessExpression!Scope;
+            component = [// *size: 3
+              @Expression!NonTerminal(67,4):ASTNonTerminal {
+                enclosingScope = @FieldAccessExpression!Scope;
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @POINT!Terminal(67,15):ASTTerminal {
+                enclosingScope = @FieldAccessExpression!Scope;
+                iteration = 0;
+                name = .;
+              },
+              @Name!NonTerminal(67,19):ASTNonTerminal {
+                enclosingScope = @FieldAccessExpression!Scope;
+                name = Name;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = FieldAccessExpression;
+      },
+      @PlusPrefixExpression!ClassProd(71,2):ASTClassProd {
+        enclosingScope = @CommonExpressions!Scope;
+        superInterfaceRule = [// *size: 1
+          @Expression!RuleReference(71,34):ASTRuleReference {
+            enclosingScope = @PlusPrefixExpression!Scope;
+            name = Expression;
+            prio = "210";
+          }];
+        alts = [// *size: 1
+          @!Alt(72,4):ASTAlt {
+            enclosingScope = @PlusPrefixExpression!Scope;
+            component = [// *size: 2
+              @PLUS!Terminal(72,4):ASTTerminal {
+                enclosingScope = @PlusPrefixExpression!Scope;
+                iteration = 0;
+                name = +;
+              },
+              @Expression!NonTerminal(72,8):ASTNonTerminal {
+                enclosingScope = @PlusPrefixExpression!Scope;
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = PlusPrefixExpression;
+      },
+      @MinusPrefixExpression!ClassProd(74,2):ASTClassProd {
+        enclosingScope = @CommonExpressions!Scope;
+        superInterfaceRule = [// *size: 1
+          @Expression!RuleReference(74,35):ASTRuleReference {
+            enclosingScope = @MinusPrefixExpression!Scope;
+            name = Expression;
+            prio = "210";
+          }];
+        alts = [// *size: 1
+          @!Alt(75,4):ASTAlt {
+            enclosingScope = @MinusPrefixExpression!Scope;
+            component = [// *size: 2
+              @MINUS!Terminal(75,4):ASTTerminal {
+                enclosingScope = @MinusPrefixExpression!Scope;
+                iteration = 0;
+                name = -;
+              },
+              @Expression!NonTerminal(75,8):ASTNonTerminal {
+                enclosingScope = @MinusPrefixExpression!Scope;
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = MinusPrefixExpression;
+      },
+      @BooleanNotExpression!ClassProd(79,2):ASTClassProd {
+        enclosingScope = @CommonExpressions!Scope;
+        superInterfaceRule = [// *size: 1
+          @Expression!RuleReference(79,34):ASTRuleReference {
+            enclosingScope = @BooleanNotExpression!Scope;
+            name = Expression;
+            prio = "200";
+          }];
+        alts = [// *size: 1
+          @!Alt(80,4):ASTAlt {
+            enclosingScope = @BooleanNotExpression!Scope;
+            component = [// *size: 2
+              @TILDE!Terminal(80,4):ASTTerminal {
+                enclosingScope = @BooleanNotExpression!Scope;
+                iteration = 0;
+                name = ~;
+              },
+              @Expression!NonTerminal(80,9):ASTNonTerminal {
+                enclosingScope = @BooleanNotExpression!Scope;
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = BooleanNotExpression;
+      },
+      @LogicalNotExpression!ClassProd(82,2):ASTClassProd {
+        enclosingScope = @CommonExpressions!Scope;
+        superInterfaceRule = [// *size: 1
+          @Expression!RuleReference(82,34):ASTRuleReference {
+            enclosingScope = @LogicalNotExpression!Scope;
+            name = Expression;
+            prio = "190";
+          }];
+        alts = [// *size: 1
+          @!Alt(83,4):ASTAlt {
+            enclosingScope = @LogicalNotExpression!Scope;
+            component = [// *size: 2
+              @EXCLAMATIONMARK!Terminal(83,4):ASTTerminal {
+                enclosingScope = @LogicalNotExpression!Scope;
+                iteration = 0;
+                name = !;
+              },
+              @Expression!NonTerminal(83,8):ASTNonTerminal {
+                enclosingScope = @LogicalNotExpression!Scope;
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = LogicalNotExpression;
+      },
+      @MultExpression!ClassProd(87,2):ASTClassProd {
+        enclosingScope = @CommonExpressions!Scope;
+        superInterfaceRule = [// *size: 2
+          @Expression!RuleReference(87,28):ASTRuleReference {
+            enclosingScope = @MultExpression!Scope;
+            name = Expression;
+            prio = "180";
+          },
+          @InfixExpression!RuleReference(87,46):ASTRuleReference {
+            enclosingScope = @MultExpression!Scope;
+            name = InfixExpression;
+          }];
+        alts = [// *size: 1
+          @!Alt(88,4):ASTAlt {
+            enclosingScope = @MultExpression!Scope;
+            component = [// *size: 3
+              @Expression!NonTerminal(88,4):ASTNonTerminal {
+                enclosingScope = @MultExpression!Scope;
+                usageName = "left";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @STAR!Terminal(88,20):ASTTerminal {
+                enclosingScope = @MultExpression!Scope;
+                iteration = 0;
+                usageName = "operator";
+                name = *;
+              },
+              @Expression!NonTerminal(88,33):ASTNonTerminal {
+                enclosingScope = @MultExpression!Scope;
+                usageName = "right";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = MultExpression;
+      },
+      @DivideExpression!ClassProd(90,2):ASTClassProd {
+        enclosingScope = @CommonExpressions!Scope;
+        superInterfaceRule = [// *size: 2
+          @Expression!RuleReference(90,30):ASTRuleReference {
+            enclosingScope = @DivideExpression!Scope;
+            name = Expression;
+            prio = "180";
+          },
+          @InfixExpression!RuleReference(90,48):ASTRuleReference {
+            enclosingScope = @DivideExpression!Scope;
+            name = InfixExpression;
+          }];
+        alts = [// *size: 1
+          @!Alt(91,4):ASTAlt {
+            enclosingScope = @DivideExpression!Scope;
+            component = [// *size: 3
+              @Expression!NonTerminal(91,4):ASTNonTerminal {
+                enclosingScope = @DivideExpression!Scope;
+                usageName = "left";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @SLASH!Terminal(91,20):ASTTerminal {
+                enclosingScope = @DivideExpression!Scope;
+                iteration = 0;
+                usageName = "operator";
+                name = /;
+              },
+              @Expression!NonTerminal(91,33):ASTNonTerminal {
+                enclosingScope = @DivideExpression!Scope;
+                usageName = "right";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = DivideExpression;
+      },
+      @ModuloExpression!ClassProd(93,2):ASTClassProd {
+        enclosingScope = @CommonExpressions!Scope;
+        superInterfaceRule = [// *size: 2
+          @Expression!RuleReference(93,30):ASTRuleReference {
+            enclosingScope = @ModuloExpression!Scope;
+            name = Expression;
+            prio = "180";
+          },
+          @InfixExpression!RuleReference(93,48):ASTRuleReference {
+            enclosingScope = @ModuloExpression!Scope;
+            name = InfixExpression;
+          }];
+        alts = [// *size: 1
+          @!Alt(94,4):ASTAlt {
+            enclosingScope = @ModuloExpression!Scope;
+            component = [// *size: 3
+              @Expression!NonTerminal(94,4):ASTNonTerminal {
+                enclosingScope = @ModuloExpression!Scope;
+                usageName = "left";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @PERCENT!Terminal(94,20):ASTTerminal {
+                enclosingScope = @ModuloExpression!Scope;
+                iteration = 0;
+                usageName = "operator";
+                name = %;
+              },
+              @Expression!NonTerminal(94,33):ASTNonTerminal {
+                enclosingScope = @ModuloExpression!Scope;
+                usageName = "right";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = ModuloExpression;
+      },
+      @PlusExpression!ClassProd(96,2):ASTClassProd {
+        enclosingScope = @CommonExpressions!Scope;
+        superInterfaceRule = [// *size: 2
+          @Expression!RuleReference(96,28):ASTRuleReference {
+            enclosingScope = @PlusExpression!Scope;
+            name = Expression;
+            prio = "170";
+          },
+          @InfixExpression!RuleReference(96,46):ASTRuleReference {
+            enclosingScope = @PlusExpression!Scope;
+            name = InfixExpression;
+          }];
+        alts = [// *size: 1
+          @!Alt(97,4):ASTAlt {
+            enclosingScope = @PlusExpression!Scope;
+            component = [// *size: 3
+              @Expression!NonTerminal(97,4):ASTNonTerminal {
+                enclosingScope = @PlusExpression!Scope;
+                usageName = "left";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @PLUS!Terminal(97,20):ASTTerminal {
+                enclosingScope = @PlusExpression!Scope;
+                iteration = 0;
+                usageName = "operator";
+                name = +;
+              },
+              @Expression!NonTerminal(97,33):ASTNonTerminal {
+                enclosingScope = @PlusExpression!Scope;
+                usageName = "right";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = PlusExpression;
+      },
+      @MinusExpression!ClassProd(99,2):ASTClassProd {
+        enclosingScope = @CommonExpressions!Scope;
+        superInterfaceRule = [// *size: 2
+          @Expression!RuleReference(99,29):ASTRuleReference {
+            enclosingScope = @MinusExpression!Scope;
+            name = Expression;
+            prio = "170";
+          },
+          @InfixExpression!RuleReference(99,47):ASTRuleReference {
+            enclosingScope = @MinusExpression!Scope;
+            name = InfixExpression;
+          }];
+        alts = [// *size: 1
+          @!Alt(100,4):ASTAlt {
+            enclosingScope = @MinusExpression!Scope;
+            component = [// *size: 3
+              @Expression!NonTerminal(100,4):ASTNonTerminal {
+                enclosingScope = @MinusExpression!Scope;
+                usageName = "left";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @MINUS!Terminal(100,20):ASTTerminal {
+                enclosingScope = @MinusExpression!Scope;
+                iteration = 0;
+                usageName = "operator";
+                name = -;
+              },
+              @Expression!NonTerminal(100,33):ASTNonTerminal {
+                enclosingScope = @MinusExpression!Scope;
+                usageName = "right";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = MinusExpression;
+      },
+      @LessEqualExpression!ClassProd(104,2):ASTClassProd {
+        enclosingScope = @CommonExpressions!Scope;
+        superInterfaceRule = [// *size: 2
+          @Expression!RuleReference(104,33):ASTRuleReference {
+            enclosingScope = @LessEqualExpression!Scope;
+            name = Expression;
+            prio = "150";
+          },
+          @InfixExpression!RuleReference(104,51):ASTRuleReference {
+            enclosingScope = @LessEqualExpression!Scope;
+            name = InfixExpression;
+          }];
+        alts = [// *size: 1
+          @!Alt(105,4):ASTAlt {
+            enclosingScope = @LessEqualExpression!Scope;
+            component = [// *size: 3
+              @Expression!NonTerminal(105,4):ASTNonTerminal {
+                enclosingScope = @LessEqualExpression!Scope;
+                usageName = "left";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @LTEQUALS!Terminal(105,20):ASTTerminal {
+                enclosingScope = @LessEqualExpression!Scope;
+                iteration = 0;
+                usageName = "operator";
+                name = <=;
+              },
+              @Expression!NonTerminal(105,34):ASTNonTerminal {
+                enclosingScope = @LessEqualExpression!Scope;
+                usageName = "right";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = LessEqualExpression;
+      },
+      @GreaterEqualExpression!ClassProd(107,2):ASTClassProd {
+        enclosingScope = @CommonExpressions!Scope;
+        superInterfaceRule = [// *size: 2
+          @Expression!RuleReference(107,36):ASTRuleReference {
+            enclosingScope = @GreaterEqualExpression!Scope;
+            name = Expression;
+            prio = "150";
+          },
+          @InfixExpression!RuleReference(107,54):ASTRuleReference {
+            enclosingScope = @GreaterEqualExpression!Scope;
+            name = InfixExpression;
+          }];
+        alts = [// *size: 1
+          @!Alt(108,4):ASTAlt {
+            enclosingScope = @GreaterEqualExpression!Scope;
+            component = [// *size: 3
+              @Expression!NonTerminal(108,4):ASTNonTerminal {
+                enclosingScope = @GreaterEqualExpression!Scope;
+                usageName = "left";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @GTEQUALS!Terminal(108,20):ASTTerminal {
+                enclosingScope = @GreaterEqualExpression!Scope;
+                iteration = 0;
+                usageName = "operator";
+                name = >=;
+              },
+              @Expression!NonTerminal(108,34):ASTNonTerminal {
+                enclosingScope = @GreaterEqualExpression!Scope;
+                usageName = "right";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = GreaterEqualExpression;
+      },
+      @LessThanExpression!ClassProd(110,2):ASTClassProd {
+        enclosingScope = @CommonExpressions!Scope;
+        superInterfaceRule = [// *size: 2
+          @Expression!RuleReference(110,32):ASTRuleReference {
+            enclosingScope = @LessThanExpression!Scope;
+            name = Expression;
+            prio = "150";
+          },
+          @InfixExpression!RuleReference(110,50):ASTRuleReference {
+            enclosingScope = @LessThanExpression!Scope;
+            name = InfixExpression;
+          }];
+        alts = [// *size: 1
+          @!Alt(111,4):ASTAlt {
+            enclosingScope = @LessThanExpression!Scope;
+            component = [// *size: 3
+              @Expression!NonTerminal(111,4):ASTNonTerminal {
+                enclosingScope = @LessThanExpression!Scope;
+                usageName = "left";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @LT!Terminal(111,20):ASTTerminal {
+                enclosingScope = @LessThanExpression!Scope;
+                iteration = 0;
+                usageName = "operator";
+                name = <;
+              },
+              @Expression!NonTerminal(111,33):ASTNonTerminal {
+                enclosingScope = @LessThanExpression!Scope;
+                usageName = "right";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = LessThanExpression;
+      },
+      @GreaterThanExpression!ClassProd(113,2):ASTClassProd {
+        enclosingScope = @CommonExpressions!Scope;
+        superInterfaceRule = [// *size: 2
+          @Expression!RuleReference(113,35):ASTRuleReference {
+            enclosingScope = @GreaterThanExpression!Scope;
+            name = Expression;
+            prio = "150";
+          },
+          @InfixExpression!RuleReference(113,53):ASTRuleReference {
+            enclosingScope = @GreaterThanExpression!Scope;
+            name = InfixExpression;
+          }];
+        alts = [// *size: 1
+          @!Alt(114,4):ASTAlt {
+            enclosingScope = @GreaterThanExpression!Scope;
+            component = [// *size: 3
+              @Expression!NonTerminal(114,4):ASTNonTerminal {
+                enclosingScope = @GreaterThanExpression!Scope;
+                usageName = "left";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @GT!Terminal(114,20):ASTTerminal {
+                enclosingScope = @GreaterThanExpression!Scope;
+                iteration = 0;
+                usageName = "operator";
+                name = >;
+              },
+              @Expression!NonTerminal(114,33):ASTNonTerminal {
+                enclosingScope = @GreaterThanExpression!Scope;
+                usageName = "right";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = GreaterThanExpression;
+      },
+      @EqualsExpression!ClassProd(116,2):ASTClassProd {
+        enclosingScope = @CommonExpressions!Scope;
+        superInterfaceRule = [// *size: 2
+          @Expression!RuleReference(116,30):ASTRuleReference {
+            enclosingScope = @EqualsExpression!Scope;
+            name = Expression;
+            prio = "130";
+          },
+          @InfixExpression!RuleReference(116,48):ASTRuleReference {
+            enclosingScope = @EqualsExpression!Scope;
+            name = InfixExpression;
+          }];
+        alts = [// *size: 1
+          @!Alt(117,4):ASTAlt {
+            enclosingScope = @EqualsExpression!Scope;
+            component = [// *size: 3
+              @Expression!NonTerminal(117,4):ASTNonTerminal {
+                enclosingScope = @EqualsExpression!Scope;
+                usageName = "left";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @EQUALSEQUALS!Terminal(117,20):ASTTerminal {
+                enclosingScope = @EqualsExpression!Scope;
+                iteration = 0;
+                usageName = "operator";
+                name = ==;
+              },
+              @Expression!NonTerminal(117,34):ASTNonTerminal {
+                enclosingScope = @EqualsExpression!Scope;
+                usageName = "right";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = EqualsExpression;
+      },
+      @NotEqualsExpression!ClassProd(119,2):ASTClassProd {
+        enclosingScope = @CommonExpressions!Scope;
+        superInterfaceRule = [// *size: 2
+          @Expression!RuleReference(119,33):ASTRuleReference {
+            enclosingScope = @NotEqualsExpression!Scope;
+            name = Expression;
+            prio = "130";
+          },
+          @InfixExpression!RuleReference(119,51):ASTRuleReference {
+            enclosingScope = @NotEqualsExpression!Scope;
+            name = InfixExpression;
+          }];
+        alts = [// *size: 1
+          @!Alt(120,4):ASTAlt {
+            enclosingScope = @NotEqualsExpression!Scope;
+            component = [// *size: 3
+              @Expression!NonTerminal(120,4):ASTNonTerminal {
+                enclosingScope = @NotEqualsExpression!Scope;
+                usageName = "left";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @EXCLAMATIONMARKEQUALS!Terminal(120,20):ASTTerminal {
+                enclosingScope = @NotEqualsExpression!Scope;
+                iteration = 0;
+                usageName = "operator";
+                name = !=;
+              },
+              @Expression!NonTerminal(120,34):ASTNonTerminal {
+                enclosingScope = @NotEqualsExpression!Scope;
+                usageName = "right";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = NotEqualsExpression;
+      },
+      @BooleanAndOpExpression!ClassProd(124,2):ASTClassProd {
+        enclosingScope = @CommonExpressions!Scope;
+        superInterfaceRule = [// *size: 2
+          @Expression!RuleReference(124,36):ASTRuleReference {
+            enclosingScope = @BooleanAndOpExpression!Scope;
+            name = Expression;
+            prio = "120";
+          },
+          @InfixExpression!RuleReference(124,54):ASTRuleReference {
+            enclosingScope = @BooleanAndOpExpression!Scope;
+            name = InfixExpression;
+          }];
+        alts = [// *size: 1
+          @!Alt(125,4):ASTAlt {
+            enclosingScope = @BooleanAndOpExpression!Scope;
+            component = [// *size: 3
+              @Expression!NonTerminal(125,4):ASTNonTerminal {
+                enclosingScope = @BooleanAndOpExpression!Scope;
+                usageName = "left";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @AND_AND_!Terminal(125,20):ASTTerminal {
+                enclosingScope = @BooleanAndOpExpression!Scope;
+                iteration = 0;
+                usageName = "operator";
+                name = &&;
+              },
+              @Expression!NonTerminal(125,34):ASTNonTerminal {
+                enclosingScope = @BooleanAndOpExpression!Scope;
+                usageName = "right";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = BooleanAndOpExpression;
+      },
+      @BooleanOrOpExpression!ClassProd(127,2):ASTClassProd {
+        enclosingScope = @CommonExpressions!Scope;
+        superInterfaceRule = [// *size: 2
+          @Expression!RuleReference(127,35):ASTRuleReference {
+            enclosingScope = @BooleanOrOpExpression!Scope;
+            name = Expression;
+            prio = "117";
+          },
+          @InfixExpression!RuleReference(127,53):ASTRuleReference {
+            enclosingScope = @BooleanOrOpExpression!Scope;
+            name = InfixExpression;
+          }];
+        alts = [// *size: 1
+          @!Alt(128,4):ASTAlt {
+            enclosingScope = @BooleanOrOpExpression!Scope;
+            component = [// *size: 3
+              @Expression!NonTerminal(128,4):ASTNonTerminal {
+                enclosingScope = @BooleanOrOpExpression!Scope;
+                usageName = "left";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @PIPEPIPE!Terminal(128,20):ASTTerminal {
+                enclosingScope = @BooleanOrOpExpression!Scope;
+                iteration = 0;
+                usageName = "operator";
+                name = ||;
+              },
+              @Expression!NonTerminal(128,34):ASTNonTerminal {
+                enclosingScope = @BooleanOrOpExpression!Scope;
+                usageName = "right";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = BooleanOrOpExpression;
+      },
+      @ConditionalExpression!ClassProd(132,2):ASTClassProd {
+        enclosingScope = @CommonExpressions!Scope;
+        superInterfaceRule = [// *size: 1
+          @Expression!RuleReference(132,35):ASTRuleReference {
+            enclosingScope = @ConditionalExpression!Scope;
+            name = Expression;
+            prio = "114";
+          }];
+        alts = [// *size: 1
+          @!Alt(133,4):ASTAlt {
+            enclosingScope = @ConditionalExpression!Scope;
+            component = [// *size: 5
+              @Expression!NonTerminal(133,4):ASTNonTerminal {
+                enclosingScope = @ConditionalExpression!Scope;
+                usageName = "condition";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @QUESTION!Terminal(133,25):ASTTerminal {
+                enclosingScope = @ConditionalExpression!Scope;
+                iteration = 0;
+                name = ?;
+              },
+              @Expression!NonTerminal(133,29):ASTNonTerminal {
+                enclosingScope = @ConditionalExpression!Scope;
+                usageName = "trueExpression";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @COLON!Terminal(133,55):ASTTerminal {
+                enclosingScope = @ConditionalExpression!Scope;
+                iteration = 0;
+                name = :;
+              },
+              @Expression!NonTerminal(133,59):ASTNonTerminal {
+                enclosingScope = @ConditionalExpression!Scope;
+                usageName = "falseExpression";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = ConditionalExpression;
+      },
+      @BracketExpression!ClassProd(137,2):ASTClassProd {
+        enclosingScope = @CommonExpressions!Scope;
+        superInterfaceRule = [// *size: 1
+          @Expression!RuleReference(137,31):ASTRuleReference {
+            enclosingScope = @BracketExpression!Scope;
+            name = Expression;
+            prio = "310";
+          }];
+        alts = [// *size: 1
+          @!Alt(138,7):ASTAlt {
+            enclosingScope = @BracketExpression!Scope;
+            component = [// *size: 3
+              @LPAREN!Terminal(138,7):ASTTerminal {
+                enclosingScope = @BracketExpression!Scope;
+                iteration = 0;
+                name = (;
+              },
+              @Expression!NonTerminal(138,11):ASTNonTerminal {
+                enclosingScope = @BracketExpression!Scope;
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @RPAREN!Terminal(138,22):ASTTerminal {
+                enclosingScope = @BracketExpression!Scope;
+                iteration = 0;
+                name = );
+              }];
+            rightAssoc = false;
+          }];
+        name = BracketExpression;
+      },
+      @ArrayAccessExpression!ClassProd(142,2):ASTClassProd {
+        enclosingScope = @CommonExpressions!Scope;
+        superInterfaceRule = [// *size: 1
+          @Expression!RuleReference(142,35):ASTRuleReference {
+            enclosingScope = @ArrayAccessExpression!Scope;
+            name = Expression;
+            prio = "250";
+          }];
+        alts = [// *size: 1
+          @!Alt(143,4):ASTAlt {
+            enclosingScope = @ArrayAccessExpression!Scope;
+            component = [// *size: 4
+              @Expression!NonTerminal(143,4):ASTNonTerminal {
+                enclosingScope = @ArrayAccessExpression!Scope;
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @LBRACK!Terminal(143,15):ASTTerminal {
+                enclosingScope = @ArrayAccessExpression!Scope;
+                iteration = 0;
+                name = [;
+              },
+              @Expression!NonTerminal(143,19):ASTNonTerminal {
+                enclosingScope = @ArrayAccessExpression!Scope;
+                usageName = "indexExpression";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @RBRACK!Terminal(143,46):ASTTerminal {
+                enclosingScope = @ArrayAccessExpression!Scope;
+                iteration = 0;
+                name = ];
+              }];
+            rightAssoc = false;
+          }];
+        name = ArrayAccessExpression;
+      }];
+    interfaceProds = [// *size: 1
+      @InfixExpression!InterfaceProd(41,2):ASTInterfaceProd {
+        enclosingScope = @CommonExpressions!Scope;
+        alt = [// *size: 1
+          @!Alt(42,12):ASTAlt {
+            enclosingScope = @InfixExpression!Scope;
+            component = [// *size: 3
+              @Expression!NonTerminal(42,12):ASTNonTerminal {
+                enclosingScope = @InfixExpression!Scope;
+                usageName = "left";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @!Terminal(42,28):ASTTerminal {
+                enclosingScope = @InfixExpression!Scope;
+                iteration = 0;
+                usageName = "operator";
+                name = ;
+              },
+              @Expression!NonTerminal(42,40):ASTNonTerminal {
+                enclosingScope = @InfixExpression!Scope;
+                usageName = "right";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = InfixExpression;
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

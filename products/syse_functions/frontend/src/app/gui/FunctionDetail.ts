@@ -1,9 +1,9 @@
 /* Generated from Java with JSweet 3.2.0-UMLP-SNAPSHOT - http://www.jsweet.org */
-import { DoubleValue } from '@src/functionstructure4fenix/DoubleValue';
-import { Function } from '@src/functionstructure4fenix/Function';
-import { Port } from '@src/functionstructure4fenix/Port';
-import { Channel } from '@src/functionstructure4fenix/Channel';
-import { Value } from '@src/functionstructure4fenix/Value';
+import { DoubleValue } from 'functionstructure4fenix/DoubleValue';
+import { Function } from 'functionstructure4fenix/Function';
+import { Port } from 'functionstructure4fenix/Port';
+import { Channel } from 'functionstructure4fenix/Channel';
+import { Value } from 'functionstructure4fenix/Value';
 import { Gem } from '@umlp/commonj2ts';
 import { Random } from '@umlp/commonj2ts';
 import { Component } from '@angular/core';
@@ -11,9 +11,9 @@ import { FunctionDetailTOP } from './FunctionDetailTOP';
 import { StringHelper } from '@umlp/commonj2ts';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ComponentObserverManager } from '@umlp/commonj2ts';
-import { FunctionDetailComponent, config } from '@src/gui/FunctionDetailComponent';
+import { FunctionDetailComponent, config } from 'gui/FunctionDetailComponent';
 import { OnDestroy } from '@angular/core';
-import { FunctionStructure4FenixManager } from '@src/functionstructure4fenix/FunctionStructure4FenixManager';
+import { FunctionStructure4FenixManager } from 'functionstructure4fenix/FunctionStructure4FenixManager';
 import ManyKeysMap from 'many-keys-map';
 import {Function4Display, Channel4Display, Port4Display}  from '@umlp/functiondisplay';
 

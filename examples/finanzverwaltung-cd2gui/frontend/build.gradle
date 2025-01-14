@@ -126,7 +126,7 @@ tasks.register('genGUI2', UMLPGuiGenTask) {
 npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 
 def prebuildTasks = [
-    npmInstall, genGUI2
+    npmInstall, genGUI2,
 ]
 
 tasks.register('buildApp', NpxTask) {
@@ -136,10 +136,22 @@ tasks.register('buildApp', NpxTask) {
 }
 assemble.dependsOn(buildApp)
 
+tasks.named('buildApp') {
+  dependsOn {
+    project(':modules:login:frontendTS').tasks.named('generate').get()
+  }
+}
+
 tasks.register('testApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["test"]
+}
+
+tasks.named('testApp') {
+  dependsOn {
+    project(':modules:login:frontendTS').tasks.named('generate').get()
+  }
 }
 
 tasks.register('runApp', NpxTask) {
@@ -148,3 +160,8 @@ tasks.register('runApp', NpxTask) {
   args = ["serve"]
 }
 
+tasks.named('runApp') {
+  dependsOn {
+    project(':modules:login:frontendTS').tasks.named('generate').get()
+  }
+}

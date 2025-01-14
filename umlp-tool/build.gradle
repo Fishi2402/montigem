@@ -5,10 +5,10 @@ import de.mclsg.task.AutoconfigureTask
 
 plugins {
   id 'java'
-  id 'java-gradle-plugin'
   id 'maven-publish'
   id 'de.monticore.generator' version "$mc_version"
   id 'com.github.johnrengelman.shadow' version "$shadow_plugin_version"
+  id 'java-gradle-plugin'
 
   id 'de.monticore.language-server' version "$mclsg_version"
   id 'org.jetbrains.intellij' version '1.13.3' apply(false)
@@ -47,8 +47,6 @@ dependencies {
 
   implementation group: 'org.jsweet', name: 'jsweet-core', version: "6.3.0"
   implementation group: 'de.rwth.se.umlp.jsweet', name: 'jsweet-transpiler', version: '3.2.0-UMLP-SNAPSHOT'
-
-  implementation('com.google.cloud.tools:jib-core:0.27.1')
 
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit_version
@@ -222,44 +220,6 @@ jar.dependsOn(sourcesJar)
 // jar.dependsOn(shadowJar)
 
 gradlePlugin {
-  plugins {
-    umlpplugin {
-      id = "de.rwth.se.umlp-tool"
-      implementationClass = "gradle.UMLPPluginBase"
-    }
-    umlpplugin_backend {
-      id = "de.rwth.se.umlp-tool-backend"
-      implementationClass = "gradle.UMLPPluginBackend"
-    }
-    umlpplugin_backend_test {
-      id = "de.rwth.se.umlp-tool-backend-test"
-      implementationClass = "gradle.UMLPPluginBackendTest"
-    }
-    umlpplugin_testing {
-      id = "de.rwth.se.umlp-tool-testing"
-      implementationClass = "gradle.UMLPPluginTestInfrastructure"
-    }
-    umlpplugin_frontend {
-      id = "de.rwth.se.umlp-tool-frontend"
-      implementationClass = "gradle.UMLPPluginFrontend"
-    }
-    umlpplugin_frontend_test {
-      id = "de.rwth.se.umlp-tool-frontend-test"
-      implementationClass = "gradle.UMLPPluginFrontendTest"
-    }
-    umlpplugin_module_models {
-      id = "de.rwth.se.umlp-tool-module-models"
-      implementationClass = "gradle.module.UMLPPluginModule"
-    }
-    umlpplugin_module_backend {
-      id = "de.rwth.se.umlp-tool-module-backend"
-      implementationClass = "gradle.module.UMLPPluginModuleBackend"
-    }
-    umlpplugin_module_jsfrontend {
-      id = "de.rwth.se.umlp-tool-module-jsfrontend"
-      implementationClass = "gradle.module.UMLPPluginModuleJSFrontend"
-    }
-  }
 }
 
 /////////////////////////   Deployment  //////////////////////////////////

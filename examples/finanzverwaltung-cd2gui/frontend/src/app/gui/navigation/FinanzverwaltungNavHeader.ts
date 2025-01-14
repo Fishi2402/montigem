@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from '@angular/router';
-import { FinanzverwaltungSecurityManager } from "@src/finanzverwaltung/FinanzverwaltungSecurityManager";
-import { User } from '@src/finanzverwaltung/User';
-import { FinanzverwaltungNavHeaderComponent,config } from '@src/gui/navigation/FinanzverwaltungNavHeaderComponent';
+import { FinanzverwaltungSecurityManager } from "finanzverwaltung/FinanzverwaltungSecurityManager";
+import { User } from 'finanzverwaltung/User';
+import { FinanzverwaltungNavHeaderComponent,config } from 'gui/navigation/FinanzverwaltungNavHeaderComponent';
 import { RouterModule } from '@angular/router';
 import {CommonModule} from '@angular/common';
 @Component({

@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { Person } from '@src/domain/Person';
-import { config, SimpleOverviewComponent } from '@src/person/SimpleOverviewComponent';
+import { Person } from 'domain/Person';
+import { config, SimpleOverviewComponent } from 'person/SimpleOverviewComponent';
 import { Event, previousIfUnchanged } from '@umlp/common';
 import { Option } from '@umlp/input';
 

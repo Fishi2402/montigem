@@ -1,0 +1,242 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram assignmentexpressions_AST {
+  @AssignmentExpressions!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @AssignmentExpressions!Symbol(2,0);
+    enclosingScope = @AssignmentExpressions!ArtifactScope;
+    spanningScope = @AssignmentExpressions!Scope;
+    r__package = [de, monticore, expressions];
+    importStatement = [// *size: 1
+      @!MCImportStatement(7,0):ASTMCImportStatement {
+        enclosingScope = @AssignmentExpressions!Scope;
+        mCQualifiedName = @de.monticore.expressions!MCQualifiedName(7,7):ASTMCQualifiedName {
+          enclosingScope = @AssignmentExpressions!Scope;
+          parts = [de, monticore, expressions];
+        };
+        star = true;
+      }];
+    name = AssignmentExpressions;
+    supergrammar = [// *size: 1
+      @ExpressionsBasis!GrammarReference(26,12):ASTGrammarReference {
+        enclosingScope = @AssignmentExpressions!Scope;
+        names = [ExpressionsBasis];
+      }];
+    classProds = [// *size: 5
+      @IncSuffixExpression!ClassProd(30,2):ASTClassProd {
+        enclosingScope = @AssignmentExpressions!Scope;
+        superInterfaceRule = [// *size: 1
+          @Expression!RuleReference(30,33):ASTRuleReference {
+            enclosingScope = @IncSuffixExpression!Scope;
+            name = Expression;
+            prio = "220";
+          }];
+        alts = [// *size: 1
+          @!Alt(31,4):ASTAlt {
+            enclosingScope = @IncSuffixExpression!Scope;
+            component = [// *size: 2
+              @Expression!NonTerminal(31,4):ASTNonTerminal {
+                enclosingScope = @IncSuffixExpression!Scope;
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @PLUSPLUS!Terminal(31,15):ASTTerminal {
+                enclosingScope = @IncSuffixExpression!Scope;
+                iteration = 0;
+                name = ++;
+              }];
+            rightAssoc = false;
+          }];
+        name = IncSuffixExpression;
+      },
+      @DecSuffixExpression!ClassProd(33,2):ASTClassProd {
+        enclosingScope = @AssignmentExpressions!Scope;
+        superInterfaceRule = [// *size: 1
+          @Expression!RuleReference(33,33):ASTRuleReference {
+            enclosingScope = @DecSuffixExpression!Scope;
+            name = Expression;
+            prio = "220";
+          }];
+        alts = [// *size: 1
+          @!Alt(34,4):ASTAlt {
+            enclosingScope = @DecSuffixExpression!Scope;
+            component = [// *size: 2
+              @Expression!NonTerminal(34,4):ASTNonTerminal {
+                enclosingScope = @DecSuffixExpression!Scope;
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @MINUSMINUS!Terminal(34,15):ASTTerminal {
+                enclosingScope = @DecSuffixExpression!Scope;
+                iteration = 0;
+                name = --;
+              }];
+            rightAssoc = false;
+          }];
+        name = DecSuffixExpression;
+      },
+      @IncPrefixExpression!ClassProd(38,2):ASTClassProd {
+        enclosingScope = @AssignmentExpressions!Scope;
+        superInterfaceRule = [// *size: 1
+          @Expression!RuleReference(38,33):ASTRuleReference {
+            enclosingScope = @IncPrefixExpression!Scope;
+            name = Expression;
+            prio = "210";
+          }];
+        alts = [// *size: 1
+          @!Alt(39,4):ASTAlt {
+            enclosingScope = @IncPrefixExpression!Scope;
+            component = [// *size: 2
+              @PLUSPLUS!Terminal(39,4):ASTTerminal {
+                enclosingScope = @IncPrefixExpression!Scope;
+                iteration = 0;
+                name = ++;
+              },
+              @Expression!NonTerminal(39,9):ASTNonTerminal {
+                enclosingScope = @IncPrefixExpression!Scope;
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = IncPrefixExpression;
+      },
+      @DecPrefixExpression!ClassProd(41,2):ASTClassProd {
+        enclosingScope = @AssignmentExpressions!Scope;
+        superInterfaceRule = [// *size: 1
+          @Expression!RuleReference(41,33):ASTRuleReference {
+            enclosingScope = @DecPrefixExpression!Scope;
+            name = Expression;
+            prio = "210";
+          }];
+        alts = [// *size: 1
+          @!Alt(42,4):ASTAlt {
+            enclosingScope = @DecPrefixExpression!Scope;
+            component = [// *size: 2
+              @MINUSMINUS!Terminal(42,4):ASTTerminal {
+                enclosingScope = @DecPrefixExpression!Scope;
+                iteration = 0;
+                name = --;
+              },
+              @Expression!NonTerminal(42,9):ASTNonTerminal {
+                enclosingScope = @DecPrefixExpression!Scope;
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = DecPrefixExpression;
+      },
+      @AssignmentExpression!ClassProd(46,2):ASTClassProd {
+        enclosingScope = @AssignmentExpressions!Scope;
+        superInterfaceRule = [// *size: 1
+          @Expression!RuleReference(46,34):ASTRuleReference {
+            enclosingScope = @AssignmentExpression!Scope;
+            name = Expression;
+            prio = "60";
+          }];
+        alts = [// *size: 1
+          @!Alt(46,52):ASTAlt {
+            enclosingScope = @AssignmentExpression!Scope;
+            component = [// *size: 3
+              @Expression!NonTerminal(47,4):ASTNonTerminal {
+                enclosingScope = @AssignmentExpression!Scope;
+                usageName = "left";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @operator!ConstantGroup(48,4):ASTConstantGroup {
+                enclosingScope = @AssignmentExpression!Scope;
+                usageName = "operator";
+                constants = [// *size: 12
+                  @EQUALS!Constant(48,16):ASTConstant {
+                    enclosingScope = @AssignmentExpression!Scope;
+                    string = "=";
+                    name = =;
+                  },
+                  @PLUSEQUALS!Constant(48,22):ASTConstant {
+                    enclosingScope = @AssignmentExpression!Scope;
+                    string = "+=";
+                    name = +=;
+                  },
+                  @MINUSEQUALS!Constant(48,29):ASTConstant {
+                    enclosingScope = @AssignmentExpression!Scope;
+                    string = "-=";
+                    name = -=;
+                  },
+                  @STAREQUALS!Constant(48,36):ASTConstant {
+                    enclosingScope = @AssignmentExpression!Scope;
+                    string = "*=";
+                    name = *=;
+                  },
+                  @SLASHEQUALS!Constant(48,43):ASTConstant {
+                    enclosingScope = @AssignmentExpression!Scope;
+                    string = "/=";
+                    name = /=;
+                  },
+                  @AND_EQUALS!Constant(48,50):ASTConstant {
+                    enclosingScope = @AssignmentExpression!Scope;
+                    string = "&=";
+                    name = &=;
+                  },
+                  @PIPEEQUALS!Constant(48,57):ASTConstant {
+                    enclosingScope = @AssignmentExpression!Scope;
+                    string = "|=";
+                    name = |=;
+                  },
+                  @ROOFEQUALS!Constant(49,16):ASTConstant {
+                    enclosingScope = @AssignmentExpression!Scope;
+                    string = "^=";
+                    name = ^=;
+                  },
+                  @GTGTEQUALS!Constant(49,23):ASTConstant {
+                    enclosingScope = @AssignmentExpression!Scope;
+                    string = ">>=";
+                    name = >>=;
+                  },
+                  @____!Constant(49,31):ASTConstant {
+                    enclosingScope = @AssignmentExpression!Scope;
+                    string = ">>>=";
+                    name = >>>=;
+                  },
+                  @LTLTEQUALS!Constant(49,40):ASTConstant {
+                    enclosingScope = @AssignmentExpression!Scope;
+                    string = "<<=";
+                    name = <<=;
+                  },
+                  @PERCENTEQUALS!Constant(49,48):ASTConstant {
+                    enclosingScope = @AssignmentExpression!Scope;
+                    string = "%=";
+                    name = %=;
+                  }];
+                iteration = 0;
+              },
+              @Expression!NonTerminal(50,4):ASTNonTerminal {
+                enclosingScope = @AssignmentExpression!Scope;
+                usageName = "right";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = true;
+          }];
+        name = AssignmentExpression;
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

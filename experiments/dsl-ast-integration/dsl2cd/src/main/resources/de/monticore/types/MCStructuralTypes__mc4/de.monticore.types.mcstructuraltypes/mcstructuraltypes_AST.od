@@ -1,0 +1,216 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram mcstructuraltypes_AST {
+  @MCStructuralTypes!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @MCStructuralTypes!Symbol(2,0);
+    enclosingScope = @MCStructuralTypes!ArtifactScope;
+    spanningScope = @MCStructuralTypes!Scope;
+    r__package = [de, monticore, types];
+    importStatement = [// *size: 1
+      @!MCImportStatement(7,0):ASTMCImportStatement {
+        enclosingScope = @MCStructuralTypes!Scope;
+        mCQualifiedName = @de.monticore.types!MCQualifiedName(7,7):ASTMCQualifiedName {
+          enclosingScope = @MCStructuralTypes!Scope;
+          parts = [de, monticore, types];
+        };
+        star = true;
+      }];
+    name = MCStructuralTypes;
+    supergrammar = [// *size: 1
+      @MCBasicTypes!GrammarReference(43,18):ASTGrammarReference {
+        enclosingScope = @MCStructuralTypes!Scope;
+        names = [MCBasicTypes];
+      }];
+    classProds = [// *size: 4
+      @MCUnionType!ClassProd(52,2):ASTClassProd {
+        enclosingScope = @MCStructuralTypes!Scope;
+        superInterfaceRule = [// *size: 1
+          @MCType!RuleReference(52,25):ASTRuleReference {
+            enclosingScope = @MCUnionType!Scope;
+            name = MCType;
+            prio = "140";
+          }];
+        alts = [// *size: 1
+          @!Alt(53,4):ASTAlt {
+            enclosingScope = @MCUnionType!Scope;
+            component = [// *size: 3
+              @MCType!NonTerminal(53,4):ASTNonTerminal {
+                enclosingScope = @MCUnionType!Scope;
+                usageName = "left";
+                name = MCType;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @PIPE!Terminal(53,16):ASTTerminal {
+                enclosingScope = @MCUnionType!Scope;
+                iteration = 0;
+                name = |;
+              },
+              @MCType!NonTerminal(53,20):ASTNonTerminal {
+                enclosingScope = @MCUnionType!Scope;
+                usageName = "right";
+                name = MCType;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = MCUnionType;
+      },
+      @MCIntersectionType!ClassProd(67,2):ASTClassProd {
+        enclosingScope = @MCStructuralTypes!Scope;
+        superInterfaceRule = [// *size: 1
+          @MCType!RuleReference(67,32):ASTRuleReference {
+            enclosingScope = @MCIntersectionType!Scope;
+            name = MCType;
+            prio = "160";
+          }];
+        alts = [// *size: 1
+          @!Alt(68,4):ASTAlt {
+            enclosingScope = @MCIntersectionType!Scope;
+            component = [// *size: 3
+              @MCType!NonTerminal(68,4):ASTNonTerminal {
+                enclosingScope = @MCIntersectionType!Scope;
+                usageName = "left";
+                name = MCType;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @AND_!Terminal(68,16):ASTTerminal {
+                enclosingScope = @MCIntersectionType!Scope;
+                iteration = 0;
+                name = &;
+              },
+              @MCType!NonTerminal(68,20):ASTNonTerminal {
+                enclosingScope = @MCIntersectionType!Scope;
+                usageName = "right";
+                name = MCType;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = MCIntersectionType;
+      },
+      @MCTupleType!ClassProd(78,2):ASTClassProd {
+        enclosingScope = @MCStructuralTypes!Scope;
+        superInterfaceRule = [// *size: 1
+          @MCType!RuleReference(78,25):ASTRuleReference {
+            enclosingScope = @MCTupleType!Scope;
+            name = MCType;
+            prio = "30";
+          }];
+        alts = [// *size: 1
+          @!Alt(79,4):ASTAlt {
+            enclosingScope = @MCTupleType!Scope;
+            component = [// *size: 5
+              @LPAREN!Terminal(79,4):ASTTerminal {
+                enclosingScope = @MCTupleType!Scope;
+                iteration = 0;
+                name = (;
+              },
+              @MCType!NonTerminal(79,8):ASTNonTerminal {
+                enclosingScope = @MCTupleType!Scope;
+                name = MCType;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @COMMA!Terminal(79,15):ASTTerminal {
+                enclosingScope = @MCTupleType!Scope;
+                iteration = 0;
+                name = ,;
+              },
+              @!Block(1,0):ASTBlock {
+                enclosingScope = @MCTupleType!Scope;
+                alt = [// *size: 1
+                  @!Alt(1,2):ASTAlt {
+                    enclosingScope = @MCTupleType!Scope;
+                    component = [// *size: 2
+                      @MCType!NonTerminal(1,2):ASTNonTerminal {
+                        enclosingScope = @MCTupleType!Scope;
+                        name = MCType;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      },
+                      @!Block(1,11):ASTBlock {
+                        enclosingScope = @MCTupleType!Scope;
+                        alt = [// *size: 1
+                          @!Alt(1,12):ASTAlt {
+                            enclosingScope = @MCTupleType!Scope;
+                            component = [// *size: 2
+                              @COMMA!Terminal(1,12):ASTTerminal {
+                                enclosingScope = @MCTupleType!Scope;
+                                iteration = 0;
+                                name = ,;
+                              },
+                              @MCType!NonTerminal(1,17):ASTNonTerminal {
+                                enclosingScope = @MCTupleType!Scope;
+                                name = MCType;
+                                genSymbol = false;
+                                plusKeywords = false;
+                                iteration = 0;
+                              }];
+                            rightAssoc = false;
+                          }];
+                        iteration = 21;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 0;
+              },
+              @RPAREN!Terminal(79,36):ASTTerminal {
+                enclosingScope = @MCTupleType!Scope;
+                iteration = 0;
+                name = );
+              }];
+            rightAssoc = false;
+          }];
+        name = MCTupleType;
+      },
+      @MCBracketType!ClassProd(88,2):ASTClassProd {
+        enclosingScope = @MCStructuralTypes!Scope;
+        superInterfaceRule = [// *size: 1
+          @MCType!RuleReference(88,27):ASTRuleReference {
+            enclosingScope = @MCBracketType!Scope;
+            name = MCType;
+            prio = "300";
+          }];
+        alts = [// *size: 1
+          @!Alt(89,4):ASTAlt {
+            enclosingScope = @MCBracketType!Scope;
+            component = [// *size: 3
+              @LPAREN!Terminal(89,4):ASTTerminal {
+                enclosingScope = @MCBracketType!Scope;
+                iteration = 0;
+                name = (;
+              },
+              @MCType!NonTerminal(89,8):ASTNonTerminal {
+                enclosingScope = @MCBracketType!Scope;
+                name = MCType;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @RPAREN!Terminal(89,15):ASTTerminal {
+                enclosingScope = @MCBracketType!Scope;
+                iteration = 0;
+                name = );
+              }];
+            rightAssoc = false;
+          }];
+        name = MCBracketType;
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

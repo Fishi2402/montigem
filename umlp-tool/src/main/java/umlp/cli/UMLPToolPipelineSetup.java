@@ -18,6 +18,7 @@ import static umlp.UMLPToolOptions.GUIRTETypes;
 import static umlp.UMLPToolOptions.GUIVariability;
 import static umlp.UMLPToolOptions.HELP;
 import static umlp.UMLPToolOptions.HWC_PATH;
+import static umlp.UMLPToolOptions.IMPORTS_PATH;
 import static umlp.UMLPToolOptions.INPUT;
 import static umlp.UMLPToolOptions.MODEl_PATH;
 import static umlp.UMLPToolOptions.OUTPUT;
@@ -61,6 +62,7 @@ public class UMLPToolPipelineSetup {
   final IOperation<UMLPPipelineData> getInputFile;
 
   final IOperation<UMLPPipelineData> loadPath;
+  final IOperation<UMLPPipelineData> importsPath;
 
   final IOperation<UMLPPipelineData> loadModelPath;
 
@@ -134,6 +136,14 @@ public class UMLPToolPipelineSetup {
       if (PATH.isSelected(data.cmd)) {
         for (String v : data.cmd.getOptionValues(PATH.getCMD())) {
           data.importedSymbolPath.addEntry(Paths.get(v));
+        }
+      }
+      return true;
+    });
+    main.register(importsPath = data -> {
+      if (IMPORTS_PATH.isSelected(data.cmd)) {
+        for (String v : data.cmd.getOptionValues(IMPORTS_PATH.getCMD())) {
+          data.importsPath.addEntry(Paths.get(v));
         }
       }
       return true;

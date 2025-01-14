@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { CurrentCityWeatherComponent,config } from '@src/gui/current_city_weather/CurrentCityWeatherComponent';
+import { CurrentCityWeatherComponent,config } from 'gui/current_city_weather/CurrentCityWeatherComponent';
 import { Component } from '@angular/core';
-import { WeatherState } from "@src/weather/WeatherState";
+import { WeatherState } from "weather/WeatherState";
 
 @Component({
   standalone:true,

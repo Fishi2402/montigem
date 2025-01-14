@@ -5,7 +5,7 @@ import {
   ClientCommandWebsocketCommunication,
   CommandManager
 } from '@umlp/common';
-import {SehubManagerClientImpl} from '@src/sehub/SehubManagerClientImpl';
+import {SehubManagerClientImpl} from 'sehub/SehubManagerClientImpl';
 
 @Component({
   selector: 'app-root',

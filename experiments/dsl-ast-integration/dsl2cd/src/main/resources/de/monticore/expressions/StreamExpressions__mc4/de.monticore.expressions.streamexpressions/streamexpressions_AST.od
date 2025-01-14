@@ -1,0 +1,282 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram streamexpressions_AST {
+  @StreamExpressions!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @StreamExpressions!Symbol(2,0);
+    enclosingScope = @StreamExpressions!ArtifactScope;
+    spanningScope = @StreamExpressions!Scope;
+    r__package = [de, monticore, expressions];
+    importStatement = [// *size: 1
+      @!MCImportStatement(7,0):ASTMCImportStatement {
+        enclosingScope = @StreamExpressions!Scope;
+        mCQualifiedName = @de.monticore.expressions.ExpressionsBasis!MCQualifiedName(7,7):ASTMCQualifiedName {
+          enclosingScope = @StreamExpressions!Scope;
+          parts = [de, monticore, expressions, ExpressionsBasis];
+        };
+        star = false;
+      }];
+    name = StreamExpressions;
+    supergrammar = [// *size: 1
+      @CommonExpressions!GrammarReference(39,44):ASTGrammarReference {
+        enclosingScope = @StreamExpressions!Scope;
+        names = [CommonExpressions];
+      }];
+    classProds = [// *size: 4
+      @StreamConstructorExpression!ClassProd(52,2):ASTClassProd {
+        enclosingScope = @StreamExpressions!Scope;
+        superInterfaceRule = [// *size: 1
+          @Expression!RuleReference(52,41):ASTRuleReference {
+            enclosingScope = @StreamConstructorExpression!Scope;
+            name = Expression;
+            prio = "360";
+          }];
+        alts = [// *size: 1
+          @!Alt(53,4):ASTAlt {
+            enclosingScope = @StreamConstructorExpression!Scope;
+            component = [// *size: 4
+              @!Block(53,4):ASTBlock {
+                enclosingScope = @StreamConstructorExpression!Scope;
+                alt = [// *size: 1
+                  @!Alt(53,5):ASTAlt {
+                    enclosingScope = @StreamConstructorExpression!Scope;
+                    component = [// *size: 2
+                      @!SemanticpredicateOrAction(53,5):ASTSemanticpredicateOrAction {
+                        enclosingScope = @StreamConstructorExpression!Scope;
+                        expressionPredicate = @!ExpressionPredicate(53,6):ASTExpressionPredicate {
+                          enclosingScope = @StreamConstructorExpression!Scope;
+                          expression = @!CallExpression(53,13):ASTCallExpression {
+                            enclosingScope = @StreamConstructorExpression!Scope;
+                            expression = @!NameExpression(53,6):ASTNameExpression {
+                              enclosingScope = @StreamConstructorExpression!Scope;
+                              name = noSpace;
+                            };
+                            arguments = @!Arguments(53,13):ASTArguments {
+                              enclosingScope = @StreamConstructorExpression!Scope;
+                              expressions = [// *size: 1
+                                @!LiteralExpression(53,14):ASTLiteralExpression {
+                                  enclosingScope = @StreamConstructorExpression!Scope;
+                                  literal = @!NatLiteral(53,14):ASTNatLiteral {
+                                    enclosingScope = @StreamConstructorExpression!Scope;
+                                    digits = 2;
+                                  };
+                                }];
+                            };
+                          };
+                        };
+                        predicate = true;
+                      },
+                      @timing!ConstantGroup(54,4):ASTConstantGroup {
+                        enclosingScope = @StreamConstructorExpression!Scope;
+                        usageName = "timing";
+                        constants = [// *size: 4
+                          @Event!Constant(54,12):ASTConstant {
+                            enclosingScope = @StreamConstructorExpression!Scope;
+                            keyConstant = @!KeyConstant(54,12):ASTKeyConstant {
+                              enclosingScope = @StreamConstructorExpression!Scope;
+                              strings = [Event];
+                            };
+                            name = Event;
+                          },
+                          @Sync!Constant(54,27):ASTConstant {
+                            enclosingScope = @StreamConstructorExpression!Scope;
+                            keyConstant = @!KeyConstant(54,27):ASTKeyConstant {
+                              enclosingScope = @StreamConstructorExpression!Scope;
+                              strings = [Sync];
+                            };
+                            name = Sync;
+                          },
+                          @Topt!Constant(54,41):ASTConstant {
+                            enclosingScope = @StreamConstructorExpression!Scope;
+                            keyConstant = @!KeyConstant(54,41):ASTKeyConstant {
+                              enclosingScope = @StreamConstructorExpression!Scope;
+                              strings = [Topt];
+                            };
+                            name = Topt;
+                          },
+                          @Untimed!Constant(54,55):ASTConstant {
+                            enclosingScope = @StreamConstructorExpression!Scope;
+                            keyConstant = @!KeyConstant(54,55):ASTKeyConstant {
+                              enclosingScope = @StreamConstructorExpression!Scope;
+                              strings = [Untimed];
+                            };
+                            name = Untimed;
+                          }];
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 17;
+              },
+              @LT!Terminal(55,4):ASTTerminal {
+                enclosingScope = @StreamConstructorExpression!Scope;
+                iteration = 0;
+                name = <;
+              },
+              @!Block(1,0):ASTBlock {
+                enclosingScope = @StreamConstructorExpression!Scope;
+                alt = [// *size: 1
+                  @!Alt(1,2):ASTAlt {
+                    enclosingScope = @StreamConstructorExpression!Scope;
+                    component = [// *size: 2
+                      @Expression!NonTerminal(1,2):ASTNonTerminal {
+                        enclosingScope = @StreamConstructorExpression!Scope;
+                        name = Expression;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      },
+                      @!Block(1,15):ASTBlock {
+                        enclosingScope = @StreamConstructorExpression!Scope;
+                        alt = [// *size: 1
+                          @!Alt(1,16):ASTAlt {
+                            enclosingScope = @StreamConstructorExpression!Scope;
+                            component = [// *size: 2
+                              @COMMA!Terminal(1,16):ASTTerminal {
+                                enclosingScope = @StreamConstructorExpression!Scope;
+                                iteration = 0;
+                                name = ,;
+                              },
+                              @Expression!NonTerminal(1,21):ASTNonTerminal {
+                                enclosingScope = @StreamConstructorExpression!Scope;
+                                name = Expression;
+                                genSymbol = false;
+                                plusKeywords = false;
+                                iteration = 0;
+                              }];
+                            rightAssoc = false;
+                          }];
+                        iteration = 21;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 17;
+              },
+              @GT!Terminal(55,29):ASTTerminal {
+                enclosingScope = @StreamConstructorExpression!Scope;
+                iteration = 0;
+                name = >;
+              }];
+            rightAssoc = false;
+          }];
+        name = StreamConstructorExpression;
+      },
+      @AppendStreamExpression!ClassProd(65,2):ASTClassProd {
+        enclosingScope = @StreamExpressions!Scope;
+        superInterfaceRule = [// *size: 2
+          @Expression!RuleReference(65,36):ASTRuleReference {
+            enclosingScope = @AppendStreamExpression!Scope;
+            name = Expression;
+            prio = "154";
+          },
+          @InfixExpression!RuleReference(65,54):ASTRuleReference {
+            enclosingScope = @AppendStreamExpression!Scope;
+            name = InfixExpression;
+          }];
+        alts = [// *size: 1
+          @!Alt(66,4):ASTAlt {
+            enclosingScope = @AppendStreamExpression!Scope;
+            component = [// *size: 3
+              @Expression!NonTerminal(67,4):ASTNonTerminal {
+                enclosingScope = @AppendStreamExpression!Scope;
+                usageName = "left";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @COLON!Terminal(67,20):ASTTerminal {
+                enclosingScope = @AppendStreamExpression!Scope;
+                iteration = 0;
+                usageName = "operator";
+                name = :;
+              },
+              @Expression!NonTerminal(67,33):ASTNonTerminal {
+                enclosingScope = @AppendStreamExpression!Scope;
+                usageName = "right";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = true;
+          }];
+        name = AppendStreamExpression;
+      },
+      @ConcatStreamExpression!ClassProd(74,2):ASTClassProd {
+        enclosingScope = @StreamExpressions!Scope;
+        superInterfaceRule = [// *size: 2
+          @Expression!RuleReference(74,36):ASTRuleReference {
+            enclosingScope = @ConcatStreamExpression!Scope;
+            name = Expression;
+            prio = "156";
+          },
+          @InfixExpression!RuleReference(74,54):ASTRuleReference {
+            enclosingScope = @ConcatStreamExpression!Scope;
+            name = InfixExpression;
+          }];
+        alts = [// *size: 1
+          @!Alt(75,4):ASTAlt {
+            enclosingScope = @ConcatStreamExpression!Scope;
+            component = [// *size: 3
+              @Expression!NonTerminal(76,4):ASTNonTerminal {
+                enclosingScope = @ConcatStreamExpression!Scope;
+                usageName = "left";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @ROOFROOF!Terminal(76,20):ASTTerminal {
+                enclosingScope = @ConcatStreamExpression!Scope;
+                iteration = 0;
+                usageName = "operator";
+                name = ^^;
+              },
+              @Expression!NonTerminal(76,34):ASTNonTerminal {
+                enclosingScope = @ConcatStreamExpression!Scope;
+                usageName = "right";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = true;
+          }];
+        name = ConcatStreamExpression;
+      },
+      @LengthStreamExpression!ClassProd(81,2):ASTClassProd {
+        enclosingScope = @StreamExpressions!Scope;
+        superInterfaceRule = [// *size: 1
+          @Expression!RuleReference(81,36):ASTRuleReference {
+            enclosingScope = @LengthStreamExpression!Scope;
+            name = Expression;
+            prio = "185";
+          }];
+        alts = [// *size: 1
+          @!Alt(82,6):ASTAlt {
+            enclosingScope = @LengthStreamExpression!Scope;
+            component = [// *size: 2
+              @HASH!Terminal(82,6):ASTTerminal {
+                enclosingScope = @LengthStreamExpression!Scope;
+                iteration = 0;
+                name = #;
+              },
+              @Expression!NonTerminal(82,10):ASTNonTerminal {
+                enclosingScope = @LengthStreamExpression!Scope;
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = LengthStreamExpression;
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

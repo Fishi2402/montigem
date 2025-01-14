@@ -1,13 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { DemoRecManager } from '@src/demorec/DemoRecManager';
+import { DemoRecManager } from 'demorec/DemoRecManager';
 
-import { JoinConnection } from '@src/demorec/JoinConnection';
-import { JoinConnectionKind } from '@src/demorec/JoinConnectionKind';
-import { State } from '@src/demorec/State';
-import { BatteryPack } from '@src/demorec/BatteryPack';
+import { JoinConnection } from 'demorec/JoinConnection';
+import { JoinConnectionKind } from 'demorec/JoinConnectionKind';
+import { State } from 'demorec/State';
+import { BatteryPack } from 'demorec/BatteryPack';
 
-import { JoinConnectionKindCreateComponent, config } from '@src/gui/connectionkind/JoinConnectionKindCreateComponent';
+import { JoinConnectionKindCreateComponent, config } from 'gui/connectionkind/JoinConnectionKindCreateComponent';
 
 import {
   Component,

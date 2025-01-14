@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {FinanzverwaltungMainPageComponent,config} from '@src/gui/FinanzverwaltungMainPageComponent';
+import {FinanzverwaltungMainPageComponent,config} from 'gui/FinanzverwaltungMainPageComponent';
 import {Component} from '@angular/core';
 import {FinanzverwaltungSecurityManager} from "../finanzverwaltung/FinanzverwaltungSecurityManager";
 

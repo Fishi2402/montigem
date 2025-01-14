@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {Component} from '@angular/core';
-import {ResetPasswordComponent,config} from '@src/gui/login/ResetPasswordComponent';
-import {User} from '@src/dtcockpit//User';
-import {DtcockpitManager} from '@src/dtcockpit/DtcockpitManager';
+import {ResetPasswordComponent,config} from 'gui/login/ResetPasswordComponent';
+import {User} from 'dtcockpit//User';
+import {DtcockpitManager} from 'dtcockpit/DtcockpitManager';
 
 @Component({
   standalone:true,

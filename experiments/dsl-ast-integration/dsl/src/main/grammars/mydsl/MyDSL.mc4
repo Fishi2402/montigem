@@ -1,0 +1,27 @@
+package mydsl;
+
+grammar MyDSL extends de.monticore.MCBasics,
+    de.monticore.literals.MCLiteralsBasis,
+   // de.monticore.expressions.ExpressionsBasis,
+    de.monticore.types.MCBasicTypes,
+    de.monticore.symbols.OOSymbols,
+    de.monticore.UMLStereotype,
+    de.monticore.UMLModifier,
+    de.monticore.expressions.CommonExpressions
+ {
+
+   MyCompilationUnit =
+     MCPackageDeclaration?
+     MCImportStatement*
+     MyDefinition;
+
+    MyDefinition implements Diagram =
+      Modifier "unit" Name "{" MyElement* "}";
+
+    interface MyElement;
+
+    StateElem implements MyElement= "state" myname:Name optName:Name?;
+
+    ExprElem implements MyElement= "expression" Expression;
+
+}

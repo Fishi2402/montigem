@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { Group } from '@src/dtcockpit/Group';
-import { Project } from '@src/dtcockpit/Project';
-import { NavContainerComponent, config } from '@src/gui/navigation/NavContainerComponent';
+import { Group } from 'dtcockpit/Group';
+import { Project } from 'dtcockpit/Project';
+import { NavContainerComponent, config } from 'gui/navigation/NavContainerComponent';
 
 import { Component } from '@angular/core';
 // import { RouterModule } from '@angular/router';

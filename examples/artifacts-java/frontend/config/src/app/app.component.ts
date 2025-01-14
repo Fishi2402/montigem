@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { JavaProjectManagerClientImpl } from '@src/javaproject/JavaProjectManagerClientImpl';
+import { JavaProjectManagerClientImpl } from 'javaproject/JavaProjectManagerClientImpl';
 // JSweet
 import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from '@umlp/commonj2ts';
-import { JavaProjectComponentObserverManager } from '@src/JavaProjectComponentObserverManager'
+import { JavaProjectComponentObserverManager } from 'JavaProjectComponentObserverManager'
 // Non-JSweet
 
 @Component({

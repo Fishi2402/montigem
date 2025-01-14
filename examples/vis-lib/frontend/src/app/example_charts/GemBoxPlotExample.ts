@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { GemBoxPlotExampleComponent, config } from '@src/example_charts/GemBoxPlotExampleComponent';
+import { GemBoxPlotExampleComponent, config } from 'example_charts/GemBoxPlotExampleComponent';
 import {GemBoxPlotEntry, GemBoxPlotEntryBuilder} from '@umlp/charts';
 import {GemBoxPlotBox, GemBoxPlotBoxBuilder} from '@umlp/charts';
 

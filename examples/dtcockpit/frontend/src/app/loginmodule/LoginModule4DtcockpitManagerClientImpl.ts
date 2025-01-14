@@ -1,8 +1,8 @@
-import { LoginModule4DtcockpitManagerClientImplTOP } from "@src/loginmodule/LoginModule4DtcockpitManagerClientImplTOP";
-import { LoginModuleManager } from "@src/loginmodule/LoginModuleManager";
-import {LoginModuleUser} from "@src/loginmodule/LoginModuleUser";
-import {LoginModuleUserBuilder} from "@src/loginmodule/LoginModuleUserBuilder";
-import {DtcockpitManager} from "@src/dtcockpit/DtcockpitManager";
+import { LoginModule4DtcockpitManagerClientImplTOP } from "loginmodule/LoginModule4DtcockpitManagerClientImplTOP";
+import { LoginModuleManager } from "loginmodule/LoginModuleManager";
+import {LoginModuleUser} from "loginmodule/LoginModuleUser";
+import {LoginModuleUserBuilder} from "loginmodule/LoginModuleUserBuilder";
+import {DtcockpitManager} from "dtcockpit/DtcockpitManager";
 import {GemList} from "@umlp/common";
 
 // TODO: Generate this class

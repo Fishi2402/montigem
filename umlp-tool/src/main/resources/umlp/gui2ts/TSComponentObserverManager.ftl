@@ -4,11 +4,11 @@ ${tc.signature("AST", "cdName", "cDNames", "domainClassNamesCDMap")}
 
 import { ComponentObserverManager, GemIdentifiable } from "@umlp/commonj2ts";
 <#list cDNames as specificCDName>
-  import { ${specificCDName}Manager } from "@src/${specificCDName?lower_case}/${specificCDName}Manager";
+  import { ${specificCDName}Manager } from "${specificCDName?lower_case}/${specificCDName}Manager";
 </#list>
 
 <#list domainClassNamesCDMap as domainClassName, package>
-import { ${domainClassName}AllObserver } from "@src/${package?lower_case}/${domainClassName}AllObserver";
+import { ${domainClassName}AllObserver } from "${package?lower_case}/${domainClassName}AllObserver";
 </#list>
 
 export class ${cdName}ComponentObserverManager extends ComponentObserverManager {

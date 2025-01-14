@@ -1,0 +1,49 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+body {
+  width: 50vw;
+  height: 50vh;
+}
+
+.venn-circle {
+  color: red;
+}
+
+.wholeChartContainer {
+  width: auto;
+  height: 500px;
+}
+
+.wholeChartWithLegendLeftContainer {
+  width: 100%;
+  height: fit-content;
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.wholeChartWithLegendTopContainer {
+  width: 100%;
+  height: fit-content;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.wholeChartWithLegendBottomContainer {
+  width: 100%;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+}
+
+.wholeChartWithLegendRightContainer {
+  width: 100%;
+  height: fit-content;
+  display: flex;
+  flex-direction: row;
+}
+
+.legendButtons {
+  display: flex;
+  column-gap: 10px;
+  justify-content: space-between;
+}
