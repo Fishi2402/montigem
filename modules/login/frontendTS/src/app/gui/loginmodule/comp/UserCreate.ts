@@ -2,11 +2,11 @@
 
 import {Component} from '@angular/core';
 import {Location} from '@angular/common';
-import {config, UserCreateComponent} from '@src/gui/loginmodule/comp/UserCreateComponent';
-import {LoginModuleManager} from '@src/loginmodule/LoginModuleManager';
-import {LoginModuleUser} from '@src/loginmodule/LoginModuleUser';
+import {config, UserCreateComponent} from 'gui/loginmodule/comp/UserCreateComponent';
+import {LoginModuleManager} from 'loginmodule/LoginModuleManager';
+import {LoginModuleUser} from 'loginmodule/LoginModuleUser';
 import {ClientCommandManager, CommandManager, GemList} from '@umlp/common';
-import {LoginSecManager} from "@src/loginmodule/LoginSecManager";
+import {LoginSecManager} from "loginmodule/LoginSecManager";
 
 
 // import { ActivatedRoute, Router } from '@angular/router';

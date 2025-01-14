@@ -1,0 +1,162 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram expressionsbasis_AST {
+  @ExpressionsBasis!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @ExpressionsBasis!Symbol(2,0);
+    enclosingScope = @ExpressionsBasis!ArtifactScope;
+    spanningScope = @ExpressionsBasis!Scope;
+    r__package = [de, monticore, expressions];
+    importStatement = [// *size: 3
+      @!MCImportStatement(7,0):ASTMCImportStatement {
+        enclosingScope = @ExpressionsBasis!Scope;
+        mCQualifiedName = @de.monticore.literals!MCQualifiedName(7,7):ASTMCQualifiedName {
+          enclosingScope = @ExpressionsBasis!Scope;
+          parts = [de, monticore, literals];
+        };
+        star = true;
+      },
+      @!MCImportStatement(8,0):ASTMCImportStatement {
+        enclosingScope = @ExpressionsBasis!Scope;
+        mCQualifiedName = @de.monticore.types!MCQualifiedName(8,7):ASTMCQualifiedName {
+          enclosingScope = @ExpressionsBasis!Scope;
+          parts = [de, monticore, types];
+        };
+        star = true;
+      },
+      @!MCImportStatement(9,0):ASTMCImportStatement {
+        enclosingScope = @ExpressionsBasis!Scope;
+        mCQualifiedName = @de.monticore!MCQualifiedName(9,7):ASTMCQualifiedName {
+          enclosingScope = @ExpressionsBasis!Scope;
+          parts = [de, monticore];
+        };
+        star = true;
+      }];
+    name = ExpressionsBasis;
+    supergrammar = [// *size: 2
+      @MCBasics!GrammarReference(32,18):ASTGrammarReference {
+        enclosingScope = @ExpressionsBasis!Scope;
+        names = [MCBasics];
+      },
+      @MCLiteralsBasis!GrammarReference(32,28):ASTGrammarReference {
+        enclosingScope = @ExpressionsBasis!Scope;
+        names = [MCLiteralsBasis];
+      }];
+    classProds = [// *size: 3
+      @NameExpression!ClassProd(50,2):ASTClassProd {
+        enclosingScope = @ExpressionsBasis!Scope;
+        superInterfaceRule = [// *size: 1
+          @Expression!RuleReference(50,28):ASTRuleReference {
+            enclosingScope = @NameExpression!Scope;
+            name = Expression;
+            prio = "350";
+          }];
+        alts = [// *size: 1
+          @!Alt(51,6):ASTAlt {
+            enclosingScope = @NameExpression!Scope;
+            component = [// *size: 1
+              @Name!NonTerminal(51,6):ASTNonTerminal {
+                enclosingScope = @NameExpression!Scope;
+                name = Name;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = NameExpression;
+      },
+      @LiteralExpression!ClassProd(56,2):ASTClassProd {
+        enclosingScope = @ExpressionsBasis!Scope;
+        superInterfaceRule = [// *size: 1
+          @Expression!RuleReference(56,31):ASTRuleReference {
+            enclosingScope = @LiteralExpression!Scope;
+            name = Expression;
+            prio = "340";
+          }];
+        alts = [// *size: 1
+          @!Alt(57,6):ASTAlt {
+            enclosingScope = @LiteralExpression!Scope;
+            component = [// *size: 1
+              @Literal!NonTerminal(57,6):ASTNonTerminal {
+                enclosingScope = @LiteralExpression!Scope;
+                name = Literal;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = LiteralExpression;
+      },
+      @Arguments!ClassProd(62,2):ASTClassProd {
+        enclosingScope = @ExpressionsBasis!Scope;
+        alts = [// *size: 1
+          @!Alt(63,8):ASTAlt {
+            enclosingScope = @Arguments!Scope;
+            component = [// *size: 3
+              @LPAREN!Terminal(63,8):ASTTerminal {
+                enclosingScope = @Arguments!Scope;
+                iteration = 0;
+                name = (;
+              },
+              @!Block(1,0):ASTBlock {
+                enclosingScope = @Arguments!Scope;
+                alt = [// *size: 1
+                  @!Alt(1,2):ASTAlt {
+                    enclosingScope = @Arguments!Scope;
+                    component = [// *size: 2
+                      @Expression!NonTerminal(1,2):ASTNonTerminal {
+                        enclosingScope = @Arguments!Scope;
+                        name = Expression;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      },
+                      @!Block(1,15):ASTBlock {
+                        enclosingScope = @Arguments!Scope;
+                        alt = [// *size: 1
+                          @!Alt(1,16):ASTAlt {
+                            enclosingScope = @Arguments!Scope;
+                            component = [// *size: 2
+                              @COMMA!Terminal(1,16):ASTTerminal {
+                                enclosingScope = @Arguments!Scope;
+                                iteration = 0;
+                                name = ,;
+                              },
+                              @Expression!NonTerminal(1,21):ASTNonTerminal {
+                                enclosingScope = @Arguments!Scope;
+                                name = Expression;
+                                genSymbol = false;
+                                plusKeywords = false;
+                                iteration = 0;
+                              }];
+                            rightAssoc = false;
+                          }];
+                        iteration = 21;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 17;
+              },
+              @RPAREN!Terminal(63,33):ASTTerminal {
+                enclosingScope = @Arguments!Scope;
+                iteration = 0;
+                name = );
+              }];
+            rightAssoc = false;
+          }];
+        name = Arguments;
+      }];
+    interfaceProds = [// *size: 1
+      @Expression!InterfaceProd(38,2):ASTInterfaceProd {
+        enclosingScope = @ExpressionsBasis!Scope;
+        name = Expression;
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

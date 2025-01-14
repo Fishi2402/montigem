@@ -3,13 +3,13 @@
 import {Component} from '@angular/core';
 import {Location} from '@angular/common';
 import {Router} from '@angular/router';
-import {User} from '@src/sehub/User';
-import {SehubRole} from '@src/sehub/SehubRole';
-import {SehubManager} from '@src/sehub/SehubManager';
-import {BoardMapper} from '@src/sehub/BoardMapper';
-import {BingoEntry} from '@src/sehub/BingoEntry';
+import {User} from 'sehub/User';
+import {SehubRole} from 'sehub/SehubRole';
+import {SehubManager} from 'sehub/SehubManager';
+import {BoardMapper} from 'sehub/BoardMapper';
+import {BingoEntry} from 'sehub/BingoEntry';
 import {GemList} from '@umlp/common';
-import {UserCreateComponent,config} from '@src/gui/login/UserCreateComponent';
+import {UserCreateComponent,config} from 'gui/login/UserCreateComponent';
 
 @Component({
   standalone:true,

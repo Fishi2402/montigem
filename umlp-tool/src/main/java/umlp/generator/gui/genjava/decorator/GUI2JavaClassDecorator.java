@@ -43,8 +43,7 @@ import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
-import standalone.com.sun.tools.javac.jvm.Gen;
-import umlp.generator.domain.decorator.GenService;
+import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.domain.decorator.ObserverDecorator;
 import umlp.generator.gui.GUI2ClassDecorator;
 import umlp.generator.gui.genjava.prettyprinter.Expression2AccessorPrinter;
@@ -125,7 +124,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     addInit();
     addDestroy();
 
-    getCD4C().addImport(clazz, "java.util.ArrayList");
+    addImport("java.util.ArrayList");
 
     // remove
     for (NotifyMethodTemplate notifyDeleted : this.notifyDeleted.values()) {
@@ -209,7 +208,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     String initName = "init" + StringTransformations.capitalize(node.getName());
 
     // case 1: component Foo(App app)
-    if (typeSTE.isObjectType() && TagLookUp.isSingleton(typeSTE.getTypeInfo())) {
+    if (util.isDomainType(typeSTE) && typeSTE.isObjectType() && TagLookUp.isSingleton(typeSTE.getTypeInfo())) {
       // Use the manager corresponding (when importing from extended CDs)
       String manager = getAndImportManager(typeSTE.asObjectType());
 
@@ -268,7 +267,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         addDomainObserverMethods();
         if (!subscribedManagerEvents.contains(innerType.printType())) {
           subscribedManagerEvents.add(innerType.printType());
-          getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandManager"));
+          addImport(PathUtil.getBackendRTECommandPath("CommandManager"));
           /*
             CommandManager.executeCommand(new Person_subscribeManagerEvents());
            */
@@ -605,7 +604,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       Attribute attrWrapper = node2Attr.get(node);
       ASTCDAttribute attr = attrWrapper.getCdAttr();
       for (String qName : attrWrapper.getImportList()) {
-        getCD4C().addImport(clazz, qName);
+        addImport(qName);
       }
       clazz.addCDMember(attr);
 
@@ -632,7 +631,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
             .getDependency(node);
         if (dep.isPresent()) {
           if (TypeScriptTypes.ARRAY_LIST.getJavaQName().isPresent()) {
-            getCD4C().addImport(clazz, TypeScriptTypes.ARRAY_LIST.getJavaQName().get());
+            addImport(TypeScriptTypes.ARRAY_LIST.getJavaQName().get());
           }
           // add init
           dep.get().setInitMethod(new MethodTemplate(
@@ -662,7 +661,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
             .getDependency(node);
         if (dep.isPresent()) {
           if (TypeScriptTypes.HASH_MAP.getJavaQName().isPresent()) {
-            getCD4C().addImport(clazz, TypeScriptTypes.HASH_MAP.getJavaQName().get());
+            addImport(TypeScriptTypes.HASH_MAP.getJavaQName().get());
           }
           // add init
           dep.get().setInitMethod(new MethodTemplate(
@@ -701,8 +700,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
           Log.error("0x00016 Constructor with arguments '" + util.print(node)
               + "' at " + node.getArguments().get_SourcePositionStart().toString()
               + " - " + node.getArguments().get_SourcePositionEnd().toString()
-              + ". Only constructors explicitly declared with matching parameters are supported"
-              + " so far. Please replace the call via a custom or a predefined function call,"
+              + ". Only constructors explicitly declared with matching parameters are supported."
+              + " Please replace the call via a custom or a predefined function call,"
               + " e.g. get" + util.print(node)
           );
         }
@@ -711,7 +710,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       // add attr
       Attribute attrWrapper = node2Attr.get(node);
       for (String qName : attrWrapper.getImportList()) {
-        getCD4C().addImport(clazz, qName);
+        addImport(qName);
       }
       ASTCDAttribute attr = attrWrapper.getCdAttr();
       clazz.addCDMember(attr);
@@ -720,6 +719,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       List<ASTCDParameter> params = attrWrapper.getParams();
 
       ASTMCType type = attrWrapper.getBaseType();
+      SymTypeExpression ste = attrWrapper.getSourceType();
       String name = attr.getName();
 
       IterationItemsFinder finder = new IterationItemsFinder();
@@ -743,12 +743,23 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
             .getDependency(node);
         if (dep.isPresent()) {
           if (constructorArgs.isEmpty()) {
-            String manager = getAndImportManager();
+            // a call that maps to a domain builder, e.g., @PersonForm(person = Person())
+            if (util.isDomainType(ste)) {
+              String manager = getAndImportManager();
 
-            dep.get().setInitMethod(new MethodTemplate(
-                getBuilderInitTemplate(), type, name, manager
-            ));
+              dep.get().setInitMethod(new MethodTemplate(
+                  getBuilderInitTemplate(), type, name, manager
+              ));
+            }
+            // a call that maps to a non-domain builder, e.g., @GemDropdown(options = [Option()])
+            else {
+              addImport(BuilderDecorator.getClassName(ste.printFullName()));
+              dep.get().setInitMethod(new MethodTemplate(
+                  getBuilderViaConstructorInitTemplate(), type, name
+              ));
+            }
           }
+          // a call that maps to a constructor, e.g., @GemDropdown(options = [Option("foo")])
           else {
             dep.get().setInitMethod(new MethodTemplate(
                 getConstructorInitTemplate(), type, name, constructorArgs
@@ -766,14 +777,24 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
             .getDependency(node);
         if (dep.isPresent()) {
           if (TypeScriptTypes.HASH_MAP.getJavaQName().isPresent()) {
-            getCD4C().addImport(clazz, TypeScriptTypes.HASH_MAP.getJavaQName().get());
+            addImport(TypeScriptTypes.HASH_MAP.getJavaQName().get());
           }
           if (constructorArgs.isEmpty()) {
-            String manager = getAndImportManager();
+            // a call that maps to a domain builder, e.g., @PersonForm(person = Person())
+            if (util.isDomainType(ste)) {
+              String manager = getAndImportManager();
 
-            dep.get().setInitMethod(new MethodTemplate(
-                getStaticBuilderInitTemplate(), type, name, manager, params
-            ));
+              dep.get().setInitMethod(new MethodTemplate(
+                  getStaticBuilderInitTemplate(), type, name, manager, params
+              ));
+            }
+            // a call that maps to a non-domain builder, e.g., @GemDropdown(options = [Option()])
+            else {
+              addImport(BuilderDecorator.getClassName(ste.printFullName()));
+              dep.get().setInitMethod(new MethodTemplate(
+                  getStaticBuilderViaConstructorInitTemplate(), type, name
+              ));
+            }
           }
           else {
             dep.get().setInitMethod(new MethodTemplate(
@@ -823,7 +844,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
                     + " - " + node.get_SourcePositionEnd().toString());
               }
               if (TypeScriptTypes.CONSUMER.getJavaQName().isPresent()) {
-                getCD4C().addImport(clazz, TypeScriptTypes.CONSUMER.getJavaQName().get());
+                addImport(TypeScriptTypes.CONSUMER.getJavaQName().get());
               }
               getCD4C().addMethod(clazz, getCreateTemplate(),
                   method.getAlias(), createTypeAndAddImports(method.getParamTypes().get(0)));
@@ -836,7 +857,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
                     + " - " + node.get_SourcePositionEnd().toString());
               }
               if (TypeScriptTypes.CONSUMER.getJavaQName().isPresent()) {
-                getCD4C().addImport(clazz, TypeScriptTypes.CONSUMER.getJavaQName().get());
+                addImport(TypeScriptTypes.CONSUMER.getJavaQName().get());
               }
               getCD4C().addMethod(clazz, getDeleteTemplate(),
                   method.getAlias(), createTypeAndAddImports(method.getParamTypes().get(0)), manager);
@@ -885,7 +906,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       // get init method info
       Attribute attrWrapper = node2Attr.get(node);
       for (String qName : attrWrapper.getImportList()) {
-        getCD4C().addImport(clazz, qName);
+        addImport(qName);
       }
       ASTCDAttribute attr = attrWrapper.getCdAttr();
 
@@ -978,7 +999,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     String domainModel = util.getMainDomainModelQName().orElse("");
     boolean isEmpty = gui.getGUIComponentDeclaration().getGUIParamList().isEmpty();
 
-    getCD4C().addImport(clazz, "umlp.jsweet.extension.annotation.Directive");
+    addImport("umlp.jsweet.extension.annotation.Directive");
     glex.replaceTemplate("cd2java.Annotations", clazz,
         new TemplateHookPoint("umlp.gui2java.GUI2JavaDirectiveAnnotation", domainModel, isEmpty));
   }
@@ -1061,7 +1082,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       );
 
       // implement getScope method of observer
-      getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
+      addImport(PathUtil.getBackendRTECommonPath("NotificationScope"));
       getCD4C().addMethod(clazz, getScopeTemplate());
     }
   }
@@ -1079,7 +1100,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
     String qObserver = qType + ObserverDecorator.SUFFIX;
     String observer = type + ObserverDecorator.SUFFIX;
-    getCD4C().addImport(clazz, qObserver);
+    addImport(qObserver);
     // implement observer
     if (!clazz.isPresentCDInterfaceUsage()) {
       clazz.setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder()
@@ -1132,7 +1153,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         .getExpression(0)).getName();
 
     if (TypeScriptTypes.CONSUMER.getJavaQName().isPresent()) {
-      getCD4C().addImport(clazz, TypeScriptTypes.CONSUMER.getJavaQName().get());
+      addImport(TypeScriptTypes.CONSUMER.getJavaQName().get());
     }
     getCD4C().addMethod(clazz, template,
         method.getAlias(), type, getterValue, isList, assoc);
@@ -1168,7 +1189,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         .getExpression(0)).getName();
 
     if (TypeScriptTypes.CONSUMER.getJavaQName().isPresent()) {
-      getCD4C().addImport(clazz, TypeScriptTypes.CONSUMER.getJavaQName().get());
+      addImport(TypeScriptTypes.CONSUMER.getJavaQName().get());
     }
     getCD4C().addMethod(clazz, template,
         method.getAlias(), type, getterValue, isList, assoc);
@@ -1442,12 +1463,20 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     return "umlp.gui2java.GUI2JavaBuilderInit";
   }
 
+  protected String getBuilderViaConstructorInitTemplate() {
+    return "umlp.gui2java.GUI2JavaBuilderViaConstructorInit";
+  }
+
   protected String getConstructorInitTemplate() {
     return "umlp.gui2java.GUI2JavaConstructorInit";
   }
 
   protected String getStaticBuilderInitTemplate() {
     return "umlp.gui2java.GUI2JavaStaticBuilderInit";
+  }
+
+  protected String getStaticBuilderViaConstructorInitTemplate() {
+    return "umlp.gui2java.GUI2JavaStaticBuilderViaConstructorInit";
   }
 
   protected String getStaticConstructorInitTemplate() {

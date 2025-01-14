@@ -1,0 +1,389 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram compsymbols_AST {
+  @CompSymbols!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @CompSymbols!Symbol(2,0);
+    enclosingScope = @CompSymbols!ArtifactScope;
+    spanningScope = @CompSymbols!Scope;
+    r__package = [de, monticore, symbols];
+    name = CompSymbols;
+    supergrammar = [// *size: 1
+      @BasicSymbols!GrammarReference(7,38):ASTGrammarReference {
+        enclosingScope = @CompSymbols!Scope;
+        names = [de, monticore, symbols, BasicSymbols];
+      }];
+    interfaceProds = [// *size: 3
+      @Component!InterfaceProd(9,2):ASTInterfaceProd {
+        enclosingScope = @CompSymbols!Scope;
+        symbolDefinitions = [// *size: 2
+          @!SymbolDefinition(9,12):ASTSymbolDefinition {
+            enclosingScope = @Component!Scope;
+            genSymbol = false;
+            genScope = true;
+            shadowing = false;
+            non_exporting = false;
+            ordered = false;
+          },
+          @!SymbolDefinition(9,18):ASTSymbolDefinition {
+            enclosingScope = @Component!Scope;
+            genSymbol = true;
+            genScope = false;
+            shadowing = false;
+            non_exporting = false;
+            ordered = false;
+          }];
+        alt = [// *size: 1
+          @!Alt(9,37):ASTAlt {
+            enclosingScope = @Component!Scope;
+            component = [// *size: 1
+              @Name!NonTerminal(9,37):ASTNonTerminal {
+                enclosingScope = @Component!Scope;
+                name = Name;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = Component;
+      },
+      @Subcomponent!InterfaceProd(34,2):ASTInterfaceProd {
+        enclosingScope = @CompSymbols!Scope;
+        symbolDefinitions = [// *size: 1
+          @!SymbolDefinition(34,12):ASTSymbolDefinition {
+            enclosingScope = @Subcomponent!Scope;
+            genSymbol = true;
+            genScope = false;
+            shadowing = false;
+            non_exporting = false;
+            ordered = false;
+          }];
+        alt = [// *size: 1
+          @!Alt(34,34):ASTAlt {
+            enclosingScope = @Subcomponent!Scope;
+            component = [// *size: 1
+              @Name!NonTerminal(34,34):ASTNonTerminal {
+                enclosingScope = @Subcomponent!Scope;
+                name = Name;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = Subcomponent;
+      },
+      @Port!InterfaceProd(40,2):ASTInterfaceProd {
+        enclosingScope = @CompSymbols!Scope;
+        symbolDefinitions = [// *size: 1
+          @!SymbolDefinition(40,12):ASTSymbolDefinition {
+            enclosingScope = @Port!Scope;
+            genSymbol = true;
+            genScope = false;
+            shadowing = false;
+            non_exporting = false;
+            ordered = false;
+          }];
+        alt = [// *size: 1
+          @!Alt(40,26):ASTAlt {
+            enclosingScope = @Port!Scope;
+            component = [// *size: 1
+              @Name!NonTerminal(40,26):ASTNonTerminal {
+                enclosingScope = @Port!Scope;
+                name = Name;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = Port;
+      }];
+    symbolRules = [// *size: 3
+      @!SymbolRule(14,2):ASTSymbolRule {
+        enclosingScope = @CompSymbols!Scope;
+        type = Component;
+        grammarMethods = [// *size: 3
+          @getTypeParameters!GrammarMethod(18,4):ASTGrammarMethod {
+            enclosingScope = @CompSymbols!Scope;
+            mCReturnType = @!MCReturnType(18,18):ASTMCReturnType {
+              enclosingScope = @CompSymbols!Scope;
+              mCType = @List<de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol>!MCListType(18,18):ASTMCListType {
+                enclosingScope = @CompSymbols!Scope;
+                mCTypeArgument = @!MCBasicTypeArgument(18,23):ASTMCBasicTypeArgument {
+                  enclosingScope = @CompSymbols!Scope;
+                  mCQualifiedType = @de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol!MCQualifiedType(18,23):ASTMCQualifiedType {
+                    enclosingScope = @CompSymbols!Scope;
+                    mCQualifiedName = @de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol!MCQualifiedName(18,23):ASTMCQualifiedName {
+                      enclosingScope = @CompSymbols!Scope;
+                      parts = [de, monticore, symbols, basicsymbols, _symboltable, TypeVarSymbol];
+                    };
+                  };
+                };
+              };
+            };
+            name = getTypeParameters;
+            body = @!Action(19,6):ASTAction {
+              enclosingScope = @CompSymbols!Scope;
+              mCBlockStatements = [// *size: 1
+                @!ReturnStatement(19,6):ASTReturnStatement {
+                  enclosingScope = @CompSymbols!Scope;
+                  expression = @!CallExpression(19,58):ASTCallExpression {
+                    enclosingScope = @CompSymbols!Scope;
+                    expression = @!FieldAccessExpression(19,35):ASTFieldAccessExpression {
+                      enclosingScope = @CompSymbols!Scope;
+                      expression = @!CallExpression(19,33):ASTCallExpression {
+                        enclosingScope = @CompSymbols!Scope;
+                        expression = @!FieldAccessExpression(19,17):ASTFieldAccessExpression {
+                          enclosingScope = @CompSymbols!Scope;
+                          expression = @!PrimaryThisExpression(19,13):ASTPrimaryThisExpression {
+                            enclosingScope = @CompSymbols!Scope;
+                          };
+                          name = getSpannedScope;
+                        };
+                        arguments = @!Arguments(19,33):ASTArguments {
+                          enclosingScope = @CompSymbols!Scope;
+                        };
+                      };
+                      name = getLocalTypeVarSymbols;
+                    };
+                    arguments = @!Arguments(19,58):ASTArguments {
+                      enclosingScope = @CompSymbols!Scope;
+                    };
+                  };
+                }];
+            };
+            r__public = true;
+            r__private = false;
+            r__protected = false;
+            r__final = false;
+            r__static = false;
+          },
+          @getPorts!GrammarMethod(22,4):ASTGrammarMethod {
+            enclosingScope = @CompSymbols!Scope;
+            mCReturnType = @!MCReturnType(22,18):ASTMCReturnType {
+              enclosingScope = @CompSymbols!Scope;
+              mCType = @List<de.monticore.symbols.compsymbols._symboltable.PortSymbol>!MCListType(22,18):ASTMCListType {
+                enclosingScope = @CompSymbols!Scope;
+                mCTypeArgument = @!MCBasicTypeArgument(22,23):ASTMCBasicTypeArgument {
+                  enclosingScope = @CompSymbols!Scope;
+                  mCQualifiedType = @de.monticore.symbols.compsymbols._symboltable.PortSymbol!MCQualifiedType(22,23):ASTMCQualifiedType {
+                    enclosingScope = @CompSymbols!Scope;
+                    mCQualifiedName = @de.monticore.symbols.compsymbols._symboltable.PortSymbol!MCQualifiedName(22,23):ASTMCQualifiedName {
+                      enclosingScope = @CompSymbols!Scope;
+                      parts = [de, monticore, symbols, compsymbols, _symboltable, PortSymbol];
+                    };
+                  };
+                };
+              };
+            };
+            name = getPorts;
+            body = @!Action(23,6):ASTAction {
+              enclosingScope = @CompSymbols!Scope;
+              mCBlockStatements = [// *size: 1
+                @!ReturnStatement(23,6):ASTReturnStatement {
+                  enclosingScope = @CompSymbols!Scope;
+                  expression = @!CallExpression(23,55):ASTCallExpression {
+                    enclosingScope = @CompSymbols!Scope;
+                    expression = @!FieldAccessExpression(23,35):ASTFieldAccessExpression {
+                      enclosingScope = @CompSymbols!Scope;
+                      expression = @!CallExpression(23,33):ASTCallExpression {
+                        enclosingScope = @CompSymbols!Scope;
+                        expression = @!FieldAccessExpression(23,17):ASTFieldAccessExpression {
+                          enclosingScope = @CompSymbols!Scope;
+                          expression = @!PrimaryThisExpression(23,13):ASTPrimaryThisExpression {
+                            enclosingScope = @CompSymbols!Scope;
+                          };
+                          name = getSpannedScope;
+                        };
+                        arguments = @!Arguments(23,33):ASTArguments {
+                          enclosingScope = @CompSymbols!Scope;
+                        };
+                      };
+                      name = getLocalPortSymbols;
+                    };
+                    arguments = @!Arguments(23,55):ASTArguments {
+                      enclosingScope = @CompSymbols!Scope;
+                    };
+                  };
+                }];
+            };
+            r__public = true;
+            r__private = false;
+            r__protected = false;
+            r__final = false;
+            r__static = false;
+          },
+          @getSubcomponents!GrammarMethod(29,4):ASTGrammarMethod {
+            enclosingScope = @CompSymbols!Scope;
+            mCReturnType = @!MCReturnType(29,18):ASTMCReturnType {
+              enclosingScope = @CompSymbols!Scope;
+              mCType = @List<de.monticore.symbols.compsymbols._symboltable.SubcomponentSymbol>!MCListType(29,18):ASTMCListType {
+                enclosingScope = @CompSymbols!Scope;
+                mCTypeArgument = @!MCBasicTypeArgument(29,23):ASTMCBasicTypeArgument {
+                  enclosingScope = @CompSymbols!Scope;
+                  mCQualifiedType = @de.monticore.symbols.compsymbols._symboltable.SubcomponentSymbol!MCQualifiedType(29,23):ASTMCQualifiedType {
+                    enclosingScope = @CompSymbols!Scope;
+                    mCQualifiedName = @de.monticore.symbols.compsymbols._symboltable.SubcomponentSymbol!MCQualifiedName(29,23):ASTMCQualifiedName {
+                      enclosingScope = @CompSymbols!Scope;
+                      parts = [de, monticore, symbols, compsymbols, _symboltable, SubcomponentSymbol];
+                    };
+                  };
+                };
+              };
+            };
+            name = getSubcomponents;
+            body = @!Action(30,6):ASTAction {
+              enclosingScope = @CompSymbols!Scope;
+              mCBlockStatements = [// *size: 1
+                @!ReturnStatement(30,6):ASTReturnStatement {
+                  enclosingScope = @CompSymbols!Scope;
+                  expression = @!CallExpression(30,63):ASTCallExpression {
+                    enclosingScope = @CompSymbols!Scope;
+                    expression = @!FieldAccessExpression(30,35):ASTFieldAccessExpression {
+                      enclosingScope = @CompSymbols!Scope;
+                      expression = @!CallExpression(30,33):ASTCallExpression {
+                        enclosingScope = @CompSymbols!Scope;
+                        expression = @!FieldAccessExpression(30,17):ASTFieldAccessExpression {
+                          enclosingScope = @CompSymbols!Scope;
+                          expression = @!PrimaryThisExpression(30,13):ASTPrimaryThisExpression {
+                            enclosingScope = @CompSymbols!Scope;
+                          };
+                          name = getSpannedScope;
+                        };
+                        arguments = @!Arguments(30,33):ASTArguments {
+                          enclosingScope = @CompSymbols!Scope;
+                        };
+                      };
+                      name = getLocalSubcomponentSymbols;
+                    };
+                    arguments = @!Arguments(30,63):ASTArguments {
+                      enclosingScope = @CompSymbols!Scope;
+                    };
+                  };
+                }];
+            };
+            r__public = true;
+            r__private = false;
+            r__protected = false;
+            r__final = false;
+            r__static = false;
+          }];
+        additionalAttributes = [// *size: 2
+          @superComponents!AdditionalAttribute(15,4):ASTAdditionalAttribute {
+            symbol = @superComponents!Symbol(15,4);
+            enclosingScope = @CompSymbols!Scope;
+            name = "superComponents";
+            mCType = @de.monticore.types.check.CompKindExpression!MCQualifiedType(15,21):ASTMCQualifiedType {
+              enclosingScope = @CompSymbols!Scope;
+              mCQualifiedName = @de.monticore.types.check.CompKindExpression!MCQualifiedName(15,21):ASTMCQualifiedName {
+                enclosingScope = @CompSymbols!Scope;
+                parts = [de, monticore, types, check, CompKindExpression];
+              };
+            };
+            card = @!Card(15,64):ASTCard {
+              enclosingScope = @CompSymbols!Scope;
+              iteration = 21;
+            };
+          },
+          @refinements!AdditionalAttribute(16,4):ASTAdditionalAttribute {
+            symbol = @refinements!Symbol(16,4);
+            enclosingScope = @CompSymbols!Scope;
+            name = "refinements";
+            mCType = @de.monticore.types.check.CompKindExpression!MCQualifiedType(16,17):ASTMCQualifiedType {
+              enclosingScope = @CompSymbols!Scope;
+              mCQualifiedName = @de.monticore.types.check.CompKindExpression!MCQualifiedName(16,17):ASTMCQualifiedName {
+                enclosingScope = @CompSymbols!Scope;
+                parts = [de, monticore, types, check, CompKindExpression];
+              };
+            };
+            card = @!Card(16,60):ASTCard {
+              enclosingScope = @CompSymbols!Scope;
+              iteration = 21;
+            };
+          }];
+      },
+      @!SymbolRule(36,2):ASTSymbolRule {
+        enclosingScope = @CompSymbols!Scope;
+        type = Subcomponent;
+        additionalAttributes = [// *size: 1
+          @type!AdditionalAttribute(37,4):ASTAdditionalAttribute {
+            symbol = @type!Symbol(37,4);
+            enclosingScope = @CompSymbols!Scope;
+            name = "type";
+            mCType = @de.monticore.types.check.CompKindExpression!MCQualifiedType(37,10):ASTMCQualifiedType {
+              enclosingScope = @CompSymbols!Scope;
+              mCQualifiedName = @de.monticore.types.check.CompKindExpression!MCQualifiedName(37,10):ASTMCQualifiedName {
+                enclosingScope = @CompSymbols!Scope;
+                parts = [de, monticore, types, check, CompKindExpression];
+              };
+            };
+          }];
+      },
+      @!SymbolRule(42,2):ASTSymbolRule {
+        enclosingScope = @CompSymbols!Scope;
+        type = Port;
+        additionalAttributes = [// *size: 5
+          @type!AdditionalAttribute(43,4):ASTAdditionalAttribute {
+            symbol = @type!Symbol(43,4);
+            enclosingScope = @CompSymbols!Scope;
+            name = "type";
+            mCType = @de.monticore.types.check.SymTypeExpression!MCQualifiedType(43,10):ASTMCQualifiedType {
+              enclosingScope = @CompSymbols!Scope;
+              mCQualifiedName = @de.monticore.types.check.SymTypeExpression!MCQualifiedName(43,10):ASTMCQualifiedName {
+                enclosingScope = @CompSymbols!Scope;
+                parts = [de, monticore, types, check, SymTypeExpression];
+              };
+            };
+          },
+          @incoming!AdditionalAttribute(44,4):ASTAdditionalAttribute {
+            symbol = @incoming!Symbol(44,4);
+            enclosingScope = @CompSymbols!Scope;
+            name = "incoming";
+            mCType = @boolean!MCPrimitiveType(44,14):ASTMCPrimitiveType {
+              enclosingScope = @CompSymbols!Scope;
+              primitive = 1;
+            };
+          },
+          @outgoing!AdditionalAttribute(45,4):ASTAdditionalAttribute {
+            symbol = @outgoing!Symbol(45,4);
+            enclosingScope = @CompSymbols!Scope;
+            name = "outgoing";
+            mCType = @boolean!MCPrimitiveType(45,14):ASTMCPrimitiveType {
+              enclosingScope = @CompSymbols!Scope;
+              primitive = 1;
+            };
+          },
+          @timing!AdditionalAttribute(46,4):ASTAdditionalAttribute {
+            symbol = @timing!Symbol(46,4);
+            enclosingScope = @CompSymbols!Scope;
+            name = "timing";
+            mCType = @de.monticore.symbols.compsymbols._symboltable.Timing!MCQualifiedType(46,12):ASTMCQualifiedType {
+              enclosingScope = @CompSymbols!Scope;
+              mCQualifiedName = @de.monticore.symbols.compsymbols._symboltable.Timing!MCQualifiedName(46,12):ASTMCQualifiedName {
+                enclosingScope = @CompSymbols!Scope;
+                parts = [de, monticore, symbols, compsymbols, _symboltable, Timing];
+              };
+            };
+          },
+          @stronglyCausal!AdditionalAttribute(47,4):ASTAdditionalAttribute {
+            symbol = @stronglyCausal!Symbol(47,4);
+            enclosingScope = @CompSymbols!Scope;
+            name = "stronglyCausal";
+            mCType = @Boolean!MCQualifiedType(47,20):ASTMCQualifiedType {
+              enclosingScope = @CompSymbols!Scope;
+              mCQualifiedName = @Boolean!MCQualifiedName(47,20):ASTMCQualifiedName {
+                enclosingScope = @CompSymbols!Scope;
+                parts = [Boolean];
+              };
+            };
+          }];
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

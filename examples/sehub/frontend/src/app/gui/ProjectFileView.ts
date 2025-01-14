@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {ProjectFileViewComponent,config} from '@src/gui/ProjectFileViewComponent';
+import {ProjectFileViewComponent,config} from 'gui/ProjectFileViewComponent';
 import {Component} from '@angular/core';
-import {SehubManager} from '@src/sehub/SehubManager';
+import {SehubManager} from 'sehub/SehubManager';
 
 import {ActivatedRoute, Router} from '@angular/router';
 

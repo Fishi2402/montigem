@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { GemScatterPlotExampleComponent, config } from '@src/example_charts/GemScatterPlotExampleComponent';
+import { GemScatterPlotExampleComponent, config } from 'example_charts/GemScatterPlotExampleComponent';
 import {
   GemScatterPlotData,
   GemScatterPlotAxis,

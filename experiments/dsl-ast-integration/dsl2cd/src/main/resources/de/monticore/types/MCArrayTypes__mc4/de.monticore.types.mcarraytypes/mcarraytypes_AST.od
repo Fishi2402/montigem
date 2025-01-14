@@ -1,0 +1,117 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram mcarraytypes_AST {
+  @MCArrayTypes!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @MCArrayTypes!Symbol(2,0);
+    enclosingScope = @MCArrayTypes!ArtifactScope;
+    spanningScope = @MCArrayTypes!Scope;
+    r__package = [de, monticore, types];
+    importStatement = [// *size: 1
+      @!MCImportStatement(7,0):ASTMCImportStatement {
+        enclosingScope = @MCArrayTypes!Scope;
+        mCQualifiedName = @de.monticore.types!MCQualifiedName(7,7):ASTMCQualifiedName {
+          enclosingScope = @MCArrayTypes!Scope;
+          parts = [de, monticore, types];
+        };
+        star = true;
+      }];
+    name = MCArrayTypes;
+    supergrammar = [// *size: 1
+      @MCBasicTypes!GrammarReference(23,18):ASTGrammarReference {
+        enclosingScope = @MCArrayTypes!Scope;
+        names = [MCBasicTypes];
+      }];
+    classProds = [// *size: 1
+      @MCArrayType!ClassProd(27,2):ASTClassProd {
+        enclosingScope = @MCArrayTypes!Scope;
+        superInterfaceRule = [// *size: 1
+          @MCType!RuleReference(27,25):ASTRuleReference {
+            enclosingScope = @MCArrayType!Scope;
+            name = MCType;
+          }];
+        alts = [// *size: 1
+          @!Alt(28,4):ASTAlt {
+            enclosingScope = @MCArrayType!Scope;
+            component = [// *size: 2
+              @MCType!NonTerminal(28,4):ASTNonTerminal {
+                enclosingScope = @MCArrayType!Scope;
+                name = MCType;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @!Block(28,11):ASTBlock {
+                enclosingScope = @MCArrayType!Scope;
+                alt = [// *size: 1
+                  @!Alt(28,12):ASTAlt {
+                    enclosingScope = @MCArrayType!Scope;
+                    component = [// *size: 2
+                      @LBRACK!Terminal(28,12):ASTTerminal {
+                        enclosingScope = @MCArrayType!Scope;
+                        iteration = 0;
+                        usageName = "dimT";
+                        name = [;
+                      },
+                      @RBRACK!Terminal(28,21):ASTTerminal {
+                        enclosingScope = @MCArrayType!Scope;
+                        iteration = 0;
+                        name = ];
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 13;
+              }];
+            rightAssoc = false;
+          }];
+        name = MCArrayType;
+      }];
+    aSTRules = [// *size: 1
+      @!ASTRule(31,2):ASTASTRule {
+        enclosingScope = @MCArrayTypes!Scope;
+        type = MCArrayType;
+        grammarMethods = [// *size: 1
+          @getDimensions!GrammarMethod(32,4):ASTGrammarMethod {
+            enclosingScope = @MCArrayTypes!Scope;
+            mCReturnType = @!MCReturnType(32,18):ASTMCReturnType {
+              enclosingScope = @MCArrayTypes!Scope;
+              mCType = @int!MCPrimitiveType(32,18):ASTMCPrimitiveType {
+                enclosingScope = @MCArrayTypes!Scope;
+                primitive = 6;
+              };
+            };
+            name = getDimensions;
+            body = @!Action(33,6):ASTAction {
+              enclosingScope = @MCArrayTypes!Scope;
+              mCBlockStatements = [// *size: 1
+                @!ReturnStatement(33,6):ASTReturnStatement {
+                  enclosingScope = @MCArrayTypes!Scope;
+                  expression = @!CallExpression(33,26):ASTCallExpression {
+                    enclosingScope = @MCArrayTypes!Scope;
+                    expression = @!FieldAccessExpression(33,17):ASTFieldAccessExpression {
+                      enclosingScope = @MCArrayTypes!Scope;
+                      expression = @!PrimaryThisExpression(33,13):ASTPrimaryThisExpression {
+                        enclosingScope = @MCArrayTypes!Scope;
+                      };
+                      name = sizeDimT;
+                    };
+                    arguments = @!Arguments(33,26):ASTArguments {
+                      enclosingScope = @MCArrayTypes!Scope;
+                    };
+                  };
+                }];
+            };
+            r__public = true;
+            r__private = false;
+            r__protected = false;
+            r__final = false;
+            r__static = false;
+          }];
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

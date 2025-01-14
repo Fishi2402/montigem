@@ -1,0 +1,29 @@
+
+package gui;
+
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
+import mc.fenix.input.GemTextInput;
+import mc.fenix.input.GemTextareaInput;
+
+
+page ParseMyDSL(boolean disableLink = true, boolean disableInput = false, boolean disableParse = false, String msg = "...", List<String> errors,
+String parseInput = "package test;\npublic unit MyName {\n state A \n}") {
+  @GemTextareaInput(
+      labelText = "Textual representation of MyCompilationUnit",
+      keyPress = changeInput(),
+      disabled = disableInput,
+      entry = parseInput,
+      height = "50vh"
+  );
+
+  @GemButton(label = "Parse Input", leftClick = parse(), disabled = disableParse);
+
+  message@GemText(value = msg);
+  @iterate(String emsg : errors) {
+    @GemText(value = emsg, color="red");
+  }
+
+  @GemButton(label = "View AST", leftClick = viewAST(), disabled = disableLink);
+
+}

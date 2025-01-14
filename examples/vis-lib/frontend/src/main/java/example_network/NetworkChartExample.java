@@ -14,8 +14,8 @@
   import java.util.Optional;
 
   @Component(
-      imports = {"...config.imports", "GemGraphComponent"},
-      tsImports = {"GemGraphComponent, @umlp/networkgraph"}
+      imports = {"...config.imports", "GemGraph"},
+      tsImports = {"GemGraph, @umlp/networkgraph"}
   )
   public class NetworkChartExample extends NetworkChartExampleTOP {
 

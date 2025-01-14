@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {Component} from '@angular/core';
-import {UserSettingsComponent,config} from '@src/gui/usersettings/UserSettingsComponent';
+import {UserSettingsComponent,config} from 'gui/usersettings/UserSettingsComponent';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
-import {SehubManager} from '@src/sehub/SehubManager';
+import {SehubManager} from 'sehub/SehubManager';
 
 @Component({
   standalone:true,

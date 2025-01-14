@@ -2,7 +2,7 @@
 import {Component} from '@angular/core';
 import {
   ShortFormDateTimeRendererComponent,config
-} from "@src/gui/common/ShortFormDateTimeRendererComponent";
+} from "gui/common/ShortFormDateTimeRendererComponent";
 
 @Component({
   standalone:true,

@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public abstract class UMLPDomainImportAdapter extends PrinterAdapter {
-  private static final String DOMAIN_LOCATION = "@src";
+  private static final String DOMAIN_LOCATION = "";
 
   private Set<String> domainNames = new HashSet<>();
 
@@ -56,7 +56,7 @@ public abstract class UMLPDomainImportAdapter extends PrinterAdapter {
 
   private String getDomainLocation(TypeElement importedClass) {
     String loc = importedClass.getQualifiedName().toString().replace(".", "/");
-    return DOMAIN_LOCATION + "/" + loc;
+    return DOMAIN_LOCATION + loc;
   }
 
   // Allows adding domain names to the domainNames set.

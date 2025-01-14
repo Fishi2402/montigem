@@ -1,0 +1,135 @@
+
+plugins {
+   id 'java-library'
+   id 'de.rwth.se.umlp-tool-backend'
+
+   id 'application'
+   id 'com.google.cloud.tools.jib' version '3.4.4'
+   id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+   id 'org.springframework.boot' version "${spring_version}"
+
+}
+
+repositories {
+   if (("true").equals(getProperty('useLocalRepo'))) {
+      mavenLocal()
+   }
+   maven {
+      credentials.username mavenUser
+      credentials.password mavenPassword
+      url repo
+   }
+
+   // native image
+   maven { url "https://repo.spring.io/snapshot" }
+   maven { url "https://repo.spring.io/milestone" }
+
+   mavenCentral()
+}
+
+configurations {
+   guiDefaultTypes
+}
+
+application {
+   mainClass = 'domain.DomainServerApplication'
+}
+
+dependencies {
+   def withoutSpringLogging = {
+      exclude module: 'spring-boot-starter-logging'
+      exclude module: 'logback-classic'
+      exclude module: 'log4j-to-slf4j'
+   }
+
+   guiDefaultTypes "de.monticore.lang:guidsl:${mc_version}:default-types"
+   guiDefaultTypes "umlp.umlp-rte:client:${mc_version}"
+
+   api group: 'umlp', name: 'umlp-rte', version: mc_version, withoutSpringLogging
+   api group: 'umlp', name: 'umlp-test-rte', version: mc_version, withoutSpringLogging
+   api 'com.h2database:h2:2.1.214'
+
+   // Spring Boot Dependencies
+   compileOnly group: 'org.springframework.boot', name: 'spring-boot-devtools', version: spring_version, withoutSpringLogging
+   api group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version, withoutSpringLogging
+   api group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version, withoutSpringLogging
+   api group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: spring_version, withoutSpringLogging
+   api group: 'org.springframework.shell', name: 'spring-shell-starter', version: spring_shell_version, withoutSpringLogging
+
+   implementation group: 'org.slf4j', name: 'slf4j-simple', version: "1.7.10"
+
+   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
+   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2', withoutSpringLogging
+   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2', withoutSpringLogging
+
+   implementation(project(":experiments:dsl-ast-integration:dsl"))
+}
+
+task mergeWithDSL(type: UMLPMergeTask){
+   source = file("../models/")
+   source += tasks.getByPath(":experiments:dsl-ast-integration:dsl2cd:dsl2cd").getOutputs()
+   includes = ["**.umlp"]
+   dependsOn(tasks.getByPath(":experiments:dsl-ast-integration:dsl2cd:dsl2cd"))
+
+   // Where should the merged result be stored?
+   outputFile = layout.buildDirectory.file("origmerge/Domain.umlp")  // buildDirectory = "build/"
+}
+
+
+sourceSets.main.java.srcDirs += project(":experiments:dsl-ast-integration:dsl2cd").tasks.dsl2cd.getJavaOut()
+
+
+generateUmlpBackend {
+//   symbolOutDir = file("${project.buildDir}/symbols")
+   input = mergeWithDSL.outputFile
+   useSpring.set(true)
+   useShell.set(true)
+
+//   input = file("../models/Domain.umlp")
+}
+
+
+
+//task genInitData(type: UMLPOD2DataTask) {
+//   input = file("../models/CarData.od")
+//   outputDir = file("$project.buildDir/initdata")
+//   hwcDir = file("$projectDir/src/main/java")
+//   symbolDir = files(generateUmlpBackend.symbolOutDir)
+//   dependsOn(generateUmlpBackend)
+//
+//}
+
+
+task runServer {
+   dependsOn(bootRun {
+      systemProperty "spring.shell.interactive.enabled", "false"
+   })
+}
+
+test {
+   testLogging {
+      events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
+   }
+   useJUnitPlatform()
+}
+
+sourceSets {
+   main {
+//      java.srcDirs += [genInitData.outputDir]
+   }
+   test {
+      java {
+         exclude '**/gui/**'
+      }
+   }
+}
+
+
+
+tasks.withType(Tar) {
+   duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+tasks.withType(Zip) {
+   duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+

@@ -2,6 +2,8 @@
 package umlp.generator.gui;
 
 import com.google.common.base.CaseFormat;
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import de.monticore.ast.ASTNode;
 import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cd4code._prettyprint.CD4CodeFullPrettyPrinter;
@@ -394,7 +396,11 @@ public class GUIGeneratorUtil {
   }
 
   public final boolean isGuiImport(ASTMCImportStatement i) {
-    return GUIDSLMill.globalScope().resolveGUIComponentDeclaration(i.getQName()).isPresent();
+    return isGuiImport(i.getQName());
+  }
+
+  public final boolean isGuiImport(String qName) {
+    return GUIDSLMill.globalScope().resolveGUIComponentDeclaration(qName).isPresent();
   }
 
   public final boolean isBuiltIn(String qName) {
@@ -543,7 +549,7 @@ public class GUIGeneratorUtil {
         + StringTransformations.capitalize(componentId)
         + StringTransformations.capitalize(namedArg.getName())
         + ((UMLPGeneratorConfig.getInstance().isGenerateTypescript() || isList(namedArg))
-         && !UMLPGeneratorConfig.getInstance().isUseJsweet()
+        && !UMLPGeneratorConfig.getInstance().isUseJsweet()
         ? ""
         : SYNCHRONIZED_SUFFIX // JSweet method to synchronize async callbacks
     );
@@ -917,11 +923,11 @@ public class GUIGeneratorUtil {
   }
 
   public String getComponentPath(String javaPackage) {
-    return "@src/" + qName2path(javaPackage);
+    return qName2path(javaPackage);
   }
 
   public String java2tsModule(String javaPackage) {
-    String res = "@src/" + qName2path(javaPackage) + "Module";
+    String res = qName2path(javaPackage);
 
     for (TSImportMap type : TSImportMap.values()) {
       if (javaPackage.startsWith(type.getJavaPackage())) {
@@ -935,7 +941,7 @@ public class GUIGeneratorUtil {
     return res;
   }
 
-  public Optional<String> getRelativeImportPathForAnnotation(
+  public String getRelativeImportPathForAnnotation(
       String path, String base, String qualifiedName) {
     path = path + "/" + Names.getPathFromPackage(qualifiedName) + ".html";
     base = base + "/" + Names.getPathFromPackage(qualifiedName) + ".ts";
@@ -946,7 +952,7 @@ public class GUIGeneratorUtil {
         .toString()
         .replaceAll("\\\\", "/");
 
-    return Optional.of(relative);
+    return relative;
   }
 
   public Optional<String> getRelativeImportPath(
@@ -956,23 +962,23 @@ public class GUIGeneratorUtil {
   }
 
   public Optional<String> getRelativeImportPath(
-      MCPath imported, Path importer, String hwFile) {
-    Optional<URL> hwFilePath = imported.find(hwFile);
+      MCPath hwPath, Path outPath, String hwFile) {
+    Optional<URL> hwFilePath = hwPath.find(hwFile);
     Optional<String> res = Optional.empty();
     if (hwFilePath.isPresent()) {
-      Optional<Path> hwPath = MCPath.toPath(hwFilePath.get());
-      if (hwPath.isPresent()) {
-        res = Optional.of(importer.resolve(hwFile).getParent()
+      Optional<Path> hw = MCPath.toPath(hwFilePath.get());
+      if (hw.isPresent()) {
+        res = Optional.of(outPath.resolve(hwFile).getParent()
             .toAbsolutePath()
             .normalize()
-            .relativize(hwPath.get().toAbsolutePath())
+            .relativize(hw.get().toAbsolutePath())
             .toString()
             .replaceAll("\\\\", "/"));
 
-        Reporting.reportUseHandwrittenCodeFile(hwPath.get(), Paths.get(hwFile));
+        Reporting.reportUseHandwrittenCodeFile(hw.get(), Paths.get(hwFile));
       }
     }
-    Reporting.reportHWCExistenceCheck(imported, Paths.get(hwFile), hwFilePath);
+    Reporting.reportHWCExistenceCheck(hwPath, Paths.get(hwFile), hwFilePath);
     return res;
   }
 

@@ -3,8 +3,8 @@ package umlp.generator.gui.gentypescript.decorator;
 
 import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cd.facade.CDModifier;
-import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -31,33 +31,34 @@ import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.gui.GUI2ClassDecorator;
-import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentTemplates;
 import umlp.generator.gui.gentypescript.printer.TSUtilsPrinter;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
-import umlp.generator.util.PathUtil;
 import umlp.generator.util.TagLookUp;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUIDSLVisitor2 {
 
   protected GUIDSLTraverser traverser;
 
   public static final String COMPONENT_SUFFIX = "Component";
-  protected Set<String> extraImports = new HashSet<>();
   protected final MCPath hwPath;
+  protected final Path outPath;
+  protected final MCPath importsPath;
+  protected TSImportHelper importHelper;
 
-  public GUI2AngularClassDecorator(final GlobalExtensionManagement glex, MCPath hwPath) {
+  public GUI2AngularClassDecorator(final GlobalExtensionManagement glex, MCPath hwPath, Path outPath, MCPath importsPath) {
     super(glex);
     traverser = GUIDSLMill.traverser();
     traverser.add4GUIDSL(this);
     this.hwPath = hwPath;
+    this.outPath = outPath;
+    this.importsPath = importsPath;
   }
 
   public void transform(ASTGUICompilationUnit gui, ASTCDCompilationUnit cd) {
@@ -69,8 +70,11 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
     addInit();
     addDestroy();
     addConstructor();
-    // must run last
-    addExtraImports();
+  }
+
+  @Override
+  protected void init() {
+    importHelper = new TSImportHelper(glex, clazz, hwPath, outPath, importsPath);
   }
 
   @Override
@@ -103,15 +107,20 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
     }
     String setterName = "set" + StringTransformations.capitalize(node.getName());
 
+
     // GUIViewElement or List<List< ... List<GUIViewElement> ... >>
     if (util.isViewElement(typeSTE) || util.isViewElementsCollection(typeSTE)) {
       // add attr
       ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
-          CDModifier.PUBLIC.build(), createTypeAndAddImports(typeSTE), node.getName());
+          CDModifier.PUBLIC.build(), createTypeAndAddImports(typeSTE), name);
       clazz.addCDMember(attr);
-      extraImports.add("import { Input } from '@angular/core';");
+      addImportString("import { Input } from '@angular/core';");
       glex.replaceTemplate(GUI2ComponentTemplates.ANNOTATIONS, attr,
           new StringHookPoint("@Input()"));
+
+      glex.replaceTemplate("umlp.Empty", attr,
+          new TemplateHookPoint("umlp.gui2ts.GUI2AngularAttrSimpleGetterSetter",
+              mcType, node.getName(), name));
     }
     // Event attr
     else if (util.isEventArgument(node.getSymbol())) {
@@ -124,11 +133,11 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
       ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
           CDModifier.PUBLIC.build(), "EventEmitter<" + innerType + ">", node.getName());
       clazz.addCDMember(attr);
-      extraImports.add("import { Output } from '@angular/core';");
+      addImportString("import { Output } from '@angular/core';");
       glex.replaceTemplate(GUI2ComponentTemplates.ANNOTATIONS, attr,
           new StringHookPoint("@Output()"));
 
-      extraImports.add("import { EventEmitter } from '@angular/core';");
+      addImportString("import { EventEmitter } from '@angular/core';");
       glex.replaceTemplate("cd2java.Value", attr,
           new StringHookPoint(" = new EventEmitter<" + innerType + ">()"));
 
@@ -178,10 +187,10 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
       glex.replaceTemplate("umlp.gui2ts.TSAttribute", attr,
           new TemplateHookPoint("umlp.gui2ts.TSOverrideAttribute"));
 
-      extraImports.add("import { Input } from '@angular/core';");
+      addImportString("import { Input } from '@angular/core';");
       // setter + getter
       if (UMLPGeneratorConfig.getInstance().isUseJsweet()) {
-//        getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("UMLPArrayList"));
+//        addImport(PathUtil.getBackendRTECommonPath("UMLPArrayList"));
         mcType = createTypeAndAddImports(typeSTE);
       }
       glex.replaceTemplate("umlp.Empty", attr,
@@ -196,33 +205,33 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
   }
 
   @Override
+  public ASTCDClass emptyClass() {
+    ASTCDClass res = super.emptyClass();
+    if (!util.existsHandwrittenClass(hwPath, gui.getComponentQName())) {
+      glex.replaceTemplate("umlp.gui2ts.TSClassName", res, new StringHookPoint(super.className()));
+    }
+    return res;
+  }
+
+  @Override
   protected void extendClass(ASTCDCompilationUnit cd) {
     String superClass = util.getBaseClassName(gui.getGUIComponentDeclaration());
     String qName = cd.getMCPackageDeclaration().getMCQualifiedName().getQName()
         + "." + superClass;
-    boolean existsHw = GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, qName);
-    if (existsHw) {
-      superClass += TopDecorator.TOP_SUFFIX;
-      qName += TopDecorator.TOP_SUFFIX;
+    superClass += TopDecorator.TOP_SUFFIX;
+    if (util.existsHandwrittenClass(hwPath, qName)) {
+      addImport(qName + TopDecorator.TOP_SUFFIX);
     }
-
+    else {
+      addImport(qName, superClass);
+    }
     clazz.setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(superClass));
-    getCD4C().addImport(clazz, qName);
-  }
-
-  @Override
-  protected void addClassAnnotation() {
-    if (TypeScriptTypes.DIRECTIVE.getJavaQName().isPresent()) {
-      getCD4C().addImport(clazz, TypeScriptTypes.DIRECTIVE.getJavaQName().get());
-    }
-    glex.replaceTemplate("umlp.gui2ts.TSAnnotations", clazz,
-        new TemplateHookPoint("umlp.gui2ts.TSAnnotationDirective"));
   }
 
   @Override
   protected void addRouter() {
     if (TypeScriptTypes.ROUTER.getJavaQName().isPresent()) {
-      getCD4C().addImport(clazz, TypeScriptTypes.ROUTER.getJavaQName().get());
+      addImport(TypeScriptTypes.ROUTER.getJavaQName().get());
     }
     ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
         CDModifier.PROTECTED.build(), "Router", "_router");
@@ -231,14 +240,14 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
 
   @Override
   protected void addConstructor() {
-    extraImports.add("import { inject } from '@angular/core';");
+    addImportString("import { inject } from '@angular/core';");
     glex.replaceTemplate("umlp.gui2ts.TSConstructor", clazz,
         new TemplateHookPoint("umlp.gui2ts.GUI2AngularConstructor"));
   }
 
 
   protected void addRoute() {
-    extraImports.add("import { ActivatedRoute } from '@angular/router';");
+    addImportString("import { ActivatedRoute } from '@angular/router';");
     ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
         CDModifier.PROTECTED.build(), "ActivatedRoute", "_route");
 
@@ -246,7 +255,7 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
   }
 
   protected void addSubscriptions() {
-    extraImports.add("import { Subscription } from 'rxjs';");
+    addImportString("import { Subscription } from 'rxjs';");
     ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
         CDModifier.PROTECTED.build(), "Subscription[]", "_subscriptions");
 
@@ -261,17 +270,10 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
 
   @Override
   protected void addDestroy() {
-    getCD4C().addMethod(clazz, "umlp.gui2ts.GUI2AngularDestroy", getAndImportManager(), clazz.getName());
+    getCD4C().addMethod(clazz, "umlp.gui2ts.GUI2AngularDestroy", clazz.getName());
   }
 
   protected void removeObserver() {
-  }
-
-  protected void addExtraImports() {
-    // TODO AGe: should be added by component annotation decorator
-    extraImports.add("import { Component } from '@angular/core';");
-    glex.replaceTemplate("umlp.gui2ts.TSEmptyImports", clazz,
-        new StringHookPoint(String.join("\n", extraImports)));
   }
 
   @Override
@@ -299,11 +301,11 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
           parts.set(parts.size() - 2, domainPackage);
           qType = Joiners.DOT.join(parts);
         }
-        getCD4C().addImport(clazz, qType);
+        addImport(qType);
         return MCTypeFacade.getInstance().createQualifiedType(type);
       }
       else {
-        getCD4C().addImport(clazz, ste.printFullName());
+        addImport(ste.printFullName());
         return MCTypeFacade.getInstance().createQualifiedType(ste.print());
       }
     }
@@ -316,7 +318,7 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
         type = TypeScriptTypes.CONSUMER.getMCType();
       }
 
-      getCD4C().addImport(clazz, qType);
+      addImport(qType);
 
       ASTMCBasicGenericTypeBuilder genTypeBuilder = MCFullGenericTypesMill.mCBasicGenericTypeBuilder()
           .setNamesList(new ArrayList<>(Arrays.asList(type)))
@@ -340,4 +342,16 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
     return MCTypeFacade.getInstance().createQualifiedType(ste.printFullName());
   }
 
+  protected void addImport(String qType, String as) {
+    importHelper.addImport(qType, Optional.of(as), false, gui.getComponentQName());
+  }
+
+  @Override
+  protected void addImport(String qType) {
+    importHelper.addImport(qType, gui.getComponentQName());
+  }
+
+  protected void addImportString(String importStr) {
+    importHelper.addImportString(importStr);
+  }
 }

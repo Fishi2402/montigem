@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {User} from '@src/dtcockpit/User';
+import {User} from 'dtcockpit/User';
 import {LoginSecManager} from "./login/LoginSecManager";
-import {LoginSecManager as LoginModuleSecManager} from "@src/loginmodule/LoginSecManager";
+import {LoginSecManager as LoginModuleSecManager} from "loginmodule/LoginSecManager";
 import {Router} from "@angular/router";
 
 // Now delegated to the login-modules SecurityManager

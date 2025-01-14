@@ -10,13 +10,12 @@ import { CommonModule } from "@angular/common"
 <#if existModuleConfig >
 import { config } from '${pathModuleConfig}';
 </#if>
-<#if existHWRoutes >
+<#if existHWRoutes>
 import { routes } from '${pathHWRoutes}';
-</#if>
-<#if !existHWRoutes >
+<#else>
 import { routes } from './AppGemRouting';
 </#if>
-import { AppComponent } from '@src/app.component';
+import { AppComponent } from 'app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({

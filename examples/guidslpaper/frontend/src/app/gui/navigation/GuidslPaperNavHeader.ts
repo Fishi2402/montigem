@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from '@angular/router';
-import { GuidslpaperSecurityManager } from "@src/guidslpaper/GuidslpaperSecurityManager";
-import { User } from '@src/guidslpaper/User';
-import { GuidslPaperNavHeaderComponent,config } from '@src/gui/navigation/GuidslPaperNavHeaderComponent';
+import { GuidslpaperSecurityManager } from "guidslpaper/GuidslpaperSecurityManager";
+import { User } from 'guidslpaper/User';
+import { GuidslPaperNavHeaderComponent,config } from 'gui/navigation/GuidslPaperNavHeaderComponent';
 import { RouterModule } from '@angular/router';
 import {CommonModule} from '@angular/common';
 @Component({

@@ -1,15 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {ProjectPageComponent,config} from '@src/gui/ProjectPageComponent';
-import {Artifact} from '@src/sehub/Artifact';
-import {Directory} from '@src/sehub/Directory';
+import {ProjectPageComponent,config} from 'gui/ProjectPageComponent';
+import {Artifact} from 'sehub/Artifact';
+import {Directory} from 'sehub/Directory';
 import { SehubSecurityManager } from "../sehub/SehubSecurityManager";
 import {Component} from '@angular/core';
 
 import {
   GraphNode,
   GraphEdge,
-  GemGraphComponent,
+  GemGraph,
   GraphEdgeBuilder,
   GraphNodeBuilder,
   Graph,
@@ -18,7 +18,7 @@ import {
 @Component({
   standalone:true,
   imports:[...config.imports,
-    GemGraphComponent],
+    GemGraph],
   selector: config.selector,
   templateUrl: config.templateUrl,
   styles: config.styles,

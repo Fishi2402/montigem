@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { Service } from '@src/autotechagil/Service';
-import { ServiceStatus } from '@src/autotechagil/ServiceStatus';
-import { Status } from "@src/autotechagil/Status";
+import { Service } from 'autotechagil/Service';
+import { ServiceStatus } from 'autotechagil/ServiceStatus';
+import { Status } from "autotechagil/Status";
 import { Component } from '@angular/core';
-import { ServiceDetailComponent, config } from '@src/gui/ServiceDetailComponent';
+import { ServiceDetailComponent, config } from 'gui/ServiceDetailComponent';
 import { Option } from "@umlp/input";
 
 @Component({

@@ -5,7 +5,7 @@ import {
   ClientCommandWebsocketCommunication,
   CommandManager
 } from '@umlp/common';
-import {FinanzverwaltungManagerClientImpl} from '@src/finanzverwaltung/FinanzverwaltungManagerClientImpl';
+import {FinanzverwaltungManagerClientImpl} from 'finanzverwaltung/FinanzverwaltungManagerClientImpl';
 
 @Component({
   selector: 'app-root',

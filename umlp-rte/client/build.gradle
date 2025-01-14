@@ -1,14 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import groovy.json.JsonGenerator
-import groovy.json.JsonSlurper
-import org.gradle.work.Incremental
-import org.gradle.work.InputChanges
-
 plugins {
   id 'java'
   id 'maven-publish'
-  id 'com.diffplug.spotless' version '6.19.0'
   id "com.github.node-gradle.node" version "5.0.0"
   id "de.rwth.se.umlp-tool-frontend"
 }
@@ -20,6 +14,7 @@ repositories {
 configurations {
   guiDefaultTypes
 }
+
 dependencies {
   guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
   implementation project(":umlp-rte")
@@ -37,43 +32,54 @@ tasks.register('createGuiSymbols', SerializeGUISymbolsTask) {
   output = layout.buildDirectory.dir("GuiSymbols")
 }
 
-def libs = [
+def componentLibs = [
     "arrange",
     "basic",
     "charts",
-    "common",
-    "commonj2ts",
     "functiondisplay",
     "input",
     "navigation",
     "table",
-    "theme",
     "networkgraph"
 ]
 
+def libs = [
+    "common",
+    "commonj2ts",
+    "theme",
+] + componentLibs
+
 def buildTaskPrefix = "build_"
 def publishTaskPrefix = "publish_"
+def copyTaskPrefix = "copy_types_"
+def genTaskPrefix = "gen_"
+def genNpmrcTaskPrefix = "npmrc_"
+def buildFolders = []
 
 libs.each {
   def libName = it
   def buildTaskName = "${buildTaskPrefix}${libName}"
-  def genNpmrcTaskName = "gen_npmrc_${libName}"
+  def genNpmrcTaskName = "${genNpmrcTaskPrefix}${libName}"
   def publishTaskName = "${publishTaskPrefix}${libName}"
-  def npmOutput = "dist/umlp/mc/fenix/${libName}"
+  def npmOutput = "dist/${libName}"
 
   // task `build_<lib_name>` that runs `npm run build @umlp/<lib_name>`
   task "${buildTaskName}"(type: NpmTask) {
     dependsOn tasks.npmInstall
     args = ["run", "build", "@umlp/${libName}"]
-    inputs.dir(project.fileTree("projects/umlp/mc/fenix/${libName}/")
+    // e.g. `projects/basic/src/mc/fenix/basic/`
+    inputs.dir(project.fileTree("projects/${libName}")
+        .exclude("**/build/**")
         .exclude("**/*.spec.ts", "**/*.md"))
-    inputs.files("angular.json", "tsconfig.base.json", "package-lock.json")
+    inputs.files("angular.json", "tsconfig.json", "tsconfig.prod.json", "package.json")
+    // e.g. `build/dist/basic/`
     outputs.dir("${project.buildDir}/${npmOutput}")
   }
 
-  // task `gen_npmrc_<lib_name>` that creates .npmrc file for publishing
+  // task `npmrc_<lib_name>` that creates .npmrc file for publishing
   task "${genNpmrcTaskName}"(type: NPMAuthCreate) {
     dependsOn "${buildTaskName}"
+    // e.g. `build/dist/basic/.npmrc`
     npmrcFile = file("${project.buildDir}/${npmOutput}/.npmrc")
     unscoped = true
   }
@@ -81,10 +87,63 @@ libs.each {
   // task `publish_<lib_name>` that runs `npm publish <lib_name>`
   task "${publishTaskName}"(type: NpmTask) {
     dependsOn "${genNpmrcTaskName}"
+    // e.g. `build/dist/basic/`
     workingDir = file("${project.buildDir}/${npmOutput}")
     args = ["publish"]
   }
+
+  def copyTaskName = "${copyTaskPrefix}${libName}"
+  def sourceDir = "${project.buildDir}/guiComponentTypes/mc/fenix/${libName}"
+  def genDir = "projects/${libName}/build"
+  buildFolders << genDir
+  def targetRoot = "${genDir}/cd"
+  def targetDir = "${targetRoot}/mc/fenix/${libName}"
+
+  task "${copyTaskName}"(type: Copy) {
+    dependsOn translateJava2TSDomain
+    // e.g. `build/guiComponentTypes/mc/fenix/basic/`
+    from sourceDir
+    // e.g. `projects/basic/build/cd/mc/fenix/basic/`
+    into targetDir
+  }
+
+  tasks[buildTaskName].dependsOn tasks[copyTaskName]
+  def genTaskName = "${genTaskPrefix}${libName}"
+
+  if (libName in componentLibs) {
+    task "${genTaskName}"(type: UMLPGuiGenTask) {
+      dependsOn(createCDSymbols, tasks[copyTaskName])
+      input = layout.projectDirectory.dir("models/mc/fenix/${libName}")
+      modelDir = layout.projectDirectory.dir("models")
+      hwcDir = file(layout.projectDirectory.dir("projects/${libName}/src"))
+      symbolDir = files(createCDSymbols.getOutput(), configurations.guiDefaultTypes.files)
+      outputDir = layout.projectDirectory.dir("${genDir}/gui")
+      importsDir = files(targetRoot)
+      guiGenJsweet = false
+      guiGenTSFuncionality = true
+      gen4TSLib = true
+    }
+
+    tasks[buildTaskName].dependsOn tasks[genTaskName]
+  }
 }
+
+clean.doLast {
+  buildFolders.each { folder ->
+    delete file(folder)
+  }
+}
+
+tasks.build_basic.inputs.files(tasks.build_common.outputs.files.singleFile)
+tasks.build_basic.dependsOn(tasks.build_common)
+tasks.build_basic.inputs.files(tasks.build_commonj2ts.outputs.files.singleFile)
+tasks.build_basic.dependsOn(tasks.build_commonj2ts)
+tasks.build_charts.inputs.files(tasks.build_commonj2ts.outputs.files.singleFile)
+tasks.build_charts.dependsOn(tasks.build_commonj2ts)
+tasks.build_input.inputs.files(tasks.build_commonj2ts.outputs.files.singleFile)
+tasks.build_input.dependsOn(tasks.build_commonj2ts)
+tasks.build_networkgraph.inputs.files(tasks.build_commonj2ts.outputs.files.singleFile)
+tasks.build_networkgraph.dependsOn(tasks.build_commonj2ts)
 
 tasks.register('buildAll') {
   dependsOn tasks.findAll { it.name.startsWith(buildTaskPrefix) }
@@ -94,92 +153,11 @@ tasks.register('publishAll') {
   dependsOn tasks.findAll { it.name.startsWith(publishTaskPrefix) }
 }
 
+build.dependsOn(buildAll)
+
+publish.dependsOn(publishAll)
+
 dependencies {
-}
-
-class StaticMethods {
-  static void updateVersion(String lib) {
-    def jsonSlurper = new JsonSlurper()
-    def data = jsonSlurper.parse(new File("projects/umlp/" + lib + "/package.json"))
-    String oldVersion = data["version"]
-    int startIndex = oldVersion.length() - 1;
-    while (startIndex > -1 && oldVersion.charAt(startIndex) != ".".charAt(0)) {
-      startIndex--;
-    }
-    String newVersion;
-    if (startIndex < 0) {
-      println("false version format")
-      return;
-    } else {
-      int versionNumber = oldVersion.substring(startIndex + 1).toInteger();
-      versionNumber++;
-      newVersion = oldVersion.substring(0, startIndex + 1) + versionNumber as String;
-      data["version"] = newVersion
-    }
-
-    def generator = new JsonGenerator.Options()
-        .build()
-    def json = generator.toJson(data)
-
-    File file = new File("projects/umlp/" + lib + "/package.json")
-    file.write(json)
-  }
-}
-
-abstract class IncrementalReverseTask extends DefaultTask {
-  @Incremental
-  @PathSensitive(PathSensitivity.NAME_ONLY)
-  @InputDirectory
-  abstract DirectoryProperty getInputDir()
-
-  @OutputDirectory
-  abstract DirectoryProperty getOutputDir()
-
-  @Input
-  abstract Property<String> getInputProperty()
-
-  @TaskAction
-  void execute(InputChanges inputChanges) {
-    if (!inputChanges.isIncremental()) {
-      println("First run, all libraries history is saved");
-      return
-    }
-
-    def libs = [
-        "basic",
-        "charts",
-        "common",
-        "commonj2ts",
-        "functiondisplay",
-        "table",
-        "input",
-        "arrange",
-        "theme",
-        "utils"]
-    libs.forEach(lib -> {
-      def pattern = ".*" + "projects" + ".+" + "umlp" + ".+" + lib + ".*";
-      if (inputChanges.getFileChanges(inputDir).toString().matches(pattern)) {
-        StaticMethods.updateVersion(lib);
-        println(lib + " library version updated")
-      }
-    })
-  }
-}
-
-tasks.register('incrementalReverse', IncrementalReverseTask) {
-  inputDir = file('projects/umlp')
-  outputDir = file("${project.buildDir}/dist")
-  inputProperty = project.properties['taskInputProperty'] ?: 'original'
-}
-
-tasks.register("updateVersion") {
-  dependsOn("incrementalReverse")
-  //dependsOn("spotlessApply")
-}
-
-tasks.register("start") {
-  dependsOn("incrementalReverse")
-  //dependsOn("spotlessApply")
 }
 
 sourceSets {
@@ -201,12 +179,6 @@ jar.dependsOn(symbolJar)
 artifacts {
   archives symbolJar
 }
-
-build.dependsOn(buildAll)
-
-publish.dependsOn(publishAll)
-
-tasks.build_charts.dependsOn(tasks.build_commonj2ts)
 
 publishing {
   publications {
@@ -233,8 +205,7 @@ translateJava2TSDomain {
 
   def hwcFiles = []
   srcDir.traverse(type: groovy.io.FileType.FILES) { file ->
-    if (file.getPath().startsWith(srcDir.getPath() + File.separator + "mc" + File.separator + "fenix") ||
-      file.getPath().startsWith(srcDir.getPath() + File.separator + "rte" + File.separator + "deser")) {
+    if (file.getPath().startsWith(srcDir.getPath() + File.separator + "mc" + File.separator + "fenix")) {
       hwcFiles << file
     }
   }
@@ -255,25 +226,6 @@ gradle.projectsEvaluated {
   translateJava2TSDomain.configure {task ->
     task.dependsOn(project(":umlp-rte").tasks["generateGuiComponentJava"])
   }
-}
-
-def copyTaskPrefix = "copy_"
-def copyTaskPostFix = "Types"
-
-libs.each {
-  def libName = it
-  def copyTaskName = "${copyTaskPrefix}${libName}${copyTaskPostFix}"
-  def sourceDir = "${project.buildDir}/guiComponentTypes/mc/fenix/${libName}"
-  def targetDir = "projects/umlp/mc/fenix/${libName}/src/lib/gen"
-  def buildTaskName = "${buildTaskPrefix}${libName}"
-
-  task "${copyTaskName}"(type: Copy) {
-    dependsOn translateJava2TSDomain
-    from "${sourceDir}"
-    into "${targetDir}"
-  }
-
-  tasks[buildTaskName].dependsOn tasks[copyTaskName]
 }
 
 genGUI {

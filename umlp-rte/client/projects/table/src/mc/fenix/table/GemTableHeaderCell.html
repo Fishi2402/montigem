@@ -1,0 +1,7 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+
+<ng-template #tableHeaderCellTemplate>
+  <th class="gem-table-cell" [colSpan]="colSpan" [rowSpan]="rowSpan">
+    <ng-container *ngTemplateOutlet="content"></ng-container>
+  </th>
+</ng-template>

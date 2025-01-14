@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {Component} from '@angular/core';
-import {LoginPageComponent,config} from '@src/gui/login/LoginPageComponent';
-import { SehubManager } from '@src/sehub/SehubManager';
+import {LoginPageComponent,config} from 'gui/login/LoginPageComponent';
+import { SehubManager } from 'sehub/SehubManager';
 
 @Component({
   standalone:true,

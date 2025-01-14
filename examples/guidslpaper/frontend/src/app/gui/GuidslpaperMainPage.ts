@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {GuidslpaperMainPageComponent,config} from '@src/gui/GuidslpaperMainPageComponent';
+import {GuidslpaperMainPageComponent,config} from 'gui/GuidslpaperMainPageComponent';
 import {Component} from '@angular/core';
-import {Person} from '@src/guidslpaper/Person';
+import {Person} from 'guidslpaper/Person';
 import {GuidslpaperSecurityManager} from "../guidslpaper/GuidslpaperSecurityManager";
 
 @Component({

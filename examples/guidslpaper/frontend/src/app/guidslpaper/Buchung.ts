@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {BuchungTOP} from '@src/guidslpaper/BuchungTOP';
+import {BuchungTOP} from 'guidslpaper/BuchungTOP';
 
 export class Buchung extends BuchungTOP {
 

@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { GemBarChartExampleComponent, config } from '@src/example_charts/GemBarChartExampleComponent';
+import { GemBarChartExampleComponent, config } from 'example_charts/GemBarChartExampleComponent';
 import {
   GemBarChartData,
   GemBarChartDataBuilder,

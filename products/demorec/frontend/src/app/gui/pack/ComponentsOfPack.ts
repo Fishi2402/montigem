@@ -1,18 +1,22 @@
 /* (c) https://github.com/MontiCore/monticore */
-import { ComponentKind } from '@src/demorec/ComponentKind';
-import { DemoRecComponent } from '@src/demorec/DemoRecComponent';
 
-import { BatteryPack } from '@src/demorec/BatteryPack';
-import { ComponentsOfPackComponent ,config} from '@src/gui/pack/ComponentsOfPackComponent';
+import { DemoRecManager } from 'demorec/DemoRecManager';
+import {StringifyForBuilder} from '@umlp/commonj2ts'
+import { ComponentKind } from 'demorec/ComponentKind';
+import { DemoRecComponent } from 'demorec/DemoRecComponent';
+
+import { BatteryPack } from 'demorec/BatteryPack';
+
+import { ComponentsOfPackComponent ,config} from 'gui/pack/ComponentsOfPackComponent';
 import { Event } from '@umlp/common'
 
 import {
   Component,
 } from '@angular/core';
 
-import {BatteryPackService} from "@src/BatteryPackService";
-import {JoinConnectionKind} from "@src/demorec/JoinConnectionKind";
-import {JoinConnection} from "@src/demorec/JoinConnection";
+import {BatteryPackService} from "BatteryPackService";
+import {JoinConnectionKind} from "demorec/JoinConnectionKind";
+import {JoinConnection} from "demorec/JoinConnection";
 
 
 @Component({

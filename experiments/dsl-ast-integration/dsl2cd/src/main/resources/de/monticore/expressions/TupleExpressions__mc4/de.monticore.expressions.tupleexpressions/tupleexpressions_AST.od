@@ -1,0 +1,108 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram tupleexpressions_AST {
+  @TupleExpressions!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @TupleExpressions!Symbol(2,0);
+    enclosingScope = @TupleExpressions!ArtifactScope;
+    spanningScope = @TupleExpressions!Scope;
+    r__package = [de, monticore, expressions];
+    importStatement = [// *size: 1
+      @!MCImportStatement(7,0):ASTMCImportStatement {
+        enclosingScope = @TupleExpressions!Scope;
+        mCQualifiedName = @de.monticore.expressions!MCQualifiedName(7,7):ASTMCQualifiedName {
+          enclosingScope = @TupleExpressions!Scope;
+          parts = [de, monticore, expressions];
+        };
+        star = true;
+      }];
+    name = TupleExpressions;
+    supergrammar = [// *size: 1
+      @ExpressionsBasis!GrammarReference(26,18):ASTGrammarReference {
+        enclosingScope = @TupleExpressions!Scope;
+        names = [ExpressionsBasis];
+      }];
+    classProds = [// *size: 1
+      @TupleExpression!ClassProd(36,2):ASTClassProd {
+        enclosingScope = @TupleExpressions!Scope;
+        superInterfaceRule = [// *size: 1
+          @Expression!RuleReference(36,29):ASTRuleReference {
+            enclosingScope = @TupleExpression!Scope;
+            name = Expression;
+          }];
+        alts = [// *size: 1
+          @!Alt(37,4):ASTAlt {
+            enclosingScope = @TupleExpression!Scope;
+            component = [// *size: 5
+              @LPAREN!Terminal(37,4):ASTTerminal {
+                enclosingScope = @TupleExpression!Scope;
+                iteration = 0;
+                name = (;
+              },
+              @Expression!NonTerminal(37,8):ASTNonTerminal {
+                enclosingScope = @TupleExpression!Scope;
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @COMMA!Terminal(37,19):ASTTerminal {
+                enclosingScope = @TupleExpression!Scope;
+                iteration = 0;
+                name = ,;
+              },
+              @!Block(1,0):ASTBlock {
+                enclosingScope = @TupleExpression!Scope;
+                alt = [// *size: 1
+                  @!Alt(1,2):ASTAlt {
+                    enclosingScope = @TupleExpression!Scope;
+                    component = [// *size: 2
+                      @Expression!NonTerminal(1,2):ASTNonTerminal {
+                        enclosingScope = @TupleExpression!Scope;
+                        name = Expression;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      },
+                      @!Block(1,15):ASTBlock {
+                        enclosingScope = @TupleExpression!Scope;
+                        alt = [// *size: 1
+                          @!Alt(1,16):ASTAlt {
+                            enclosingScope = @TupleExpression!Scope;
+                            component = [// *size: 2
+                              @COMMA!Terminal(1,16):ASTTerminal {
+                                enclosingScope = @TupleExpression!Scope;
+                                iteration = 0;
+                                name = ,;
+                              },
+                              @Expression!NonTerminal(1,21):ASTNonTerminal {
+                                enclosingScope = @TupleExpression!Scope;
+                                name = Expression;
+                                genSymbol = false;
+                                plusKeywords = false;
+                                iteration = 0;
+                              }];
+                            rightAssoc = false;
+                          }];
+                        iteration = 21;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 0;
+              },
+              @RPAREN!Terminal(37,44):ASTTerminal {
+                enclosingScope = @TupleExpression!Scope;
+                iteration = 0;
+                name = );
+              }];
+            rightAssoc = false;
+          }];
+        name = TupleExpression;
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

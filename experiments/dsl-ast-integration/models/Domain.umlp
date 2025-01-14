@@ -1,0 +1,14 @@
+umlp Domain {
+  class Test { }
+
+  <<singleton>>
+  class MydslASTManager {
+    ParseResultASTMyCompilationUnit parseMyCompilationUnit(String input);
+  }
+
+  class ParseResultASTMyCompilationUnit {
+    Optional<ASTMyCompilationUnit> ast;
+    List<String> errors;
+  }
+
+}

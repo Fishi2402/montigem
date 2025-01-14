@@ -5,7 +5,7 @@ import {
   ClientCommandWebsocketCommunication,
   CommandManager
 } from '@umlp/common';
-import {GuidslpaperManagerClientImpl} from '@src/guidslpaper/GuidslpaperManagerClientImpl';
+import {GuidslpaperManagerClientImpl} from 'guidslpaper/GuidslpaperManagerClientImpl';
 
 @Component({
   selector: 'app-root',

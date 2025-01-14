@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {Person} from '@src/guidslpaper/Person';
-import {GuidslPaperNavigationComponent,config} from '@src/gui/navigation/GuidslPaperNavigationComponent';
+import {Person} from 'guidslpaper/Person';
+import {GuidslPaperNavigationComponent,config} from 'gui/navigation/GuidslPaperNavigationComponent';
 import {Component} from '@angular/core';
 import { RouterModule } from '@angular/router';
 import {CommonModule} from '@angular/common';

@@ -1,0 +1,23 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+
+<label class="gem-label-text-input" [for]="id + 'Input'">{{ labelText }}</label>
+<input
+  class="gem-text-input"
+  [matTooltip]="
+    validity?.getStatus() === 'Error' || validity?.getStatus() === 'Warning'
+      ? validity.getMessage()
+      : null
+  "
+  matTooltipPosition="after"
+  [gemInputMode]="isNumeric ? 'numeric' : null"
+  [class.gem-input-error]="validity?.getStatus() === 'Error'"
+  [class.gem-input-warning]="validity?.getStatus() === 'Warning'"
+  [type]="inputType"
+  [id]="id + 'Input'"
+  [ngModel]="entry"
+  [disabled]="disabled"
+  [placeholder]="placeholder"
+  (ngModelChange)="onEntryChange($event)"
+  (keyup)="keyRelease.emit($event)"
+  (keydown)="keyPress.emit($event)"
+/>

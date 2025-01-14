@@ -1,0 +1,939 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram javalight_AST {
+  @JavaLight!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @JavaLight!Symbol(2,0);
+    enclosingScope = @JavaLight!ArtifactScope;
+    spanningScope = @JavaLight!Scope;
+    r__package = [de, monticore];
+    importStatement = [// *size: 4
+      @!MCImportStatement(7,0):ASTMCImportStatement {
+        enclosingScope = @JavaLight!Scope;
+        mCQualifiedName = @de.monticore.statements!MCQualifiedName(7,7):ASTMCQualifiedName {
+          enclosingScope = @JavaLight!Scope;
+          parts = [de, monticore, statements];
+        };
+        star = true;
+      },
+      @!MCImportStatement(8,0):ASTMCImportStatement {
+        enclosingScope = @JavaLight!Scope;
+        mCQualifiedName = @de.monticore.expressions!MCQualifiedName(8,7):ASTMCQualifiedName {
+          enclosingScope = @JavaLight!Scope;
+          parts = [de, monticore, expressions];
+        };
+        star = true;
+      },
+      @!MCImportStatement(9,0):ASTMCImportStatement {
+        enclosingScope = @JavaLight!Scope;
+        mCQualifiedName = @de.monticore.symbols!MCQualifiedName(9,7):ASTMCQualifiedName {
+          enclosingScope = @JavaLight!Scope;
+          parts = [de, monticore, symbols];
+        };
+        star = true;
+      },
+      @!MCImportStatement(10,0):ASTMCImportStatement {
+        enclosingScope = @JavaLight!Scope;
+        mCQualifiedName = @de.monticore.types!MCQualifiedName(10,7):ASTMCQualifiedName {
+          enclosingScope = @JavaLight!Scope;
+          parts = [de, monticore, types];
+        };
+        star = true;
+      }];
+    name = JavaLight;
+    supergrammar = [// *size: 6
+      @AssignmentExpressions!GrammarReference(26,36):ASTGrammarReference {
+        enclosingScope = @JavaLight!Scope;
+        names = [AssignmentExpressions];
+      },
+      @JavaClassExpressions!GrammarReference(27,36):ASTGrammarReference {
+        enclosingScope = @JavaLight!Scope;
+        names = [JavaClassExpressions];
+      },
+      @MCCommonStatements!GrammarReference(28,36):ASTGrammarReference {
+        enclosingScope = @JavaLight!Scope;
+        names = [MCCommonStatements];
+      },
+      @MCArrayStatements!GrammarReference(29,36):ASTGrammarReference {
+        enclosingScope = @JavaLight!Scope;
+        names = [MCArrayStatements];
+      },
+      @MCReturnStatements!GrammarReference(30,36):ASTGrammarReference {
+        enclosingScope = @JavaLight!Scope;
+        names = [MCReturnStatements];
+      },
+      @TypeParameters!GrammarReference(31,36):ASTGrammarReference {
+        enclosingScope = @JavaLight!Scope;
+        names = [TypeParameters];
+      }];
+    classProds = [// *size: 13
+      @MethodDeclaration!ClassProd(48,0):ASTClassProd {
+        enclosingScope = @JavaLight!Scope;
+        superInterfaceRule = [// *size: 3
+          @JavaMethod!RuleReference(48,29):ASTRuleReference {
+            enclosingScope = @MethodDeclaration!Scope;
+            name = JavaMethod;
+          },
+          @ClassBodyDeclaration!RuleReference(48,41):ASTRuleReference {
+            enclosingScope = @MethodDeclaration!Scope;
+            name = ClassBodyDeclaration;
+          },
+          @InterfaceBodyDeclaration!RuleReference(48,63):ASTRuleReference {
+            enclosingScope = @MethodDeclaration!Scope;
+            name = InterfaceBodyDeclaration;
+          }];
+        alts = [// *size: 1
+          @!Alt(49,8):ASTAlt {
+            enclosingScope = @MethodDeclaration!Scope;
+            component = [// *size: 8
+              @MCModifier!NonTerminal(49,8):ASTNonTerminal {
+                enclosingScope = @MethodDeclaration!Scope;
+                name = MCModifier;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 21;
+              },
+              @TypeParameters!NonTerminal(49,20):ASTNonTerminal {
+                enclosingScope = @MethodDeclaration!Scope;
+                name = TypeParameters;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 17;
+              },
+              @MCReturnType!NonTerminal(50,15):ASTNonTerminal {
+                enclosingScope = @MethodDeclaration!Scope;
+                name = MCReturnType;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @Name!NonTerminal(50,28):ASTNonTerminal {
+                enclosingScope = @MethodDeclaration!Scope;
+                name = Name;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @FormalParameters!NonTerminal(50,33):ASTNonTerminal {
+                enclosingScope = @MethodDeclaration!Scope;
+                name = FormalParameters;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @!Block(50,50):ASTBlock {
+                enclosingScope = @MethodDeclaration!Scope;
+                alt = [// *size: 1
+                  @!Alt(50,51):ASTAlt {
+                    enclosingScope = @MethodDeclaration!Scope;
+                    component = [// *size: 2
+                      @LBRACK!Terminal(50,51):ASTTerminal {
+                        enclosingScope = @MethodDeclaration!Scope;
+                        iteration = 0;
+                        usageName = "dim";
+                        name = [;
+                      },
+                      @RBRACK!Terminal(50,59):ASTTerminal {
+                        enclosingScope = @MethodDeclaration!Scope;
+                        iteration = 0;
+                        name = ];
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 21;
+              },
+              @!Block(51,15):ASTBlock {
+                enclosingScope = @MethodDeclaration!Scope;
+                alt = [// *size: 1
+                  @!Alt(51,16):ASTAlt {
+                    enclosingScope = @MethodDeclaration!Scope;
+                    component = [// *size: 2
+                      @throws!Terminal(51,16):ASTTerminal {
+                        enclosingScope = @MethodDeclaration!Scope;
+                        iteration = 0;
+                        name = throws;
+                      },
+                      @Throws!NonTerminal(51,25):ASTNonTerminal {
+                        enclosingScope = @MethodDeclaration!Scope;
+                        name = Throws;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 17;
+              },
+              @!Block(51,34):ASTBlock {
+                enclosingScope = @MethodDeclaration!Scope;
+                alt = [// *size: 2
+                  @!Alt(51,35):ASTAlt {
+                    enclosingScope = @MethodDeclaration!Scope;
+                    component = [// *size: 1
+                      @MCJavaBlock!NonTerminal(51,35):ASTNonTerminal {
+                        enclosingScope = @MethodDeclaration!Scope;
+                        name = MCJavaBlock;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  },
+                  @!Alt(51,49):ASTAlt {
+                    enclosingScope = @MethodDeclaration!Scope;
+                    component = [// *size: 1
+                      @SEMI!Terminal(51,49):ASTTerminal {
+                        enclosingScope = @MethodDeclaration!Scope;
+                        iteration = 0;
+                        name = ;;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = MethodDeclaration;
+      },
+      @ConstructorDeclaration!ClassProd(53,0):ASTClassProd {
+        enclosingScope = @JavaLight!Scope;
+        superInterfaceRule = [// *size: 2
+          @JavaMethod!RuleReference(53,34):ASTRuleReference {
+            enclosingScope = @ConstructorDeclaration!Scope;
+            name = JavaMethod;
+          },
+          @ClassBodyDeclaration!RuleReference(53,46):ASTRuleReference {
+            enclosingScope = @ConstructorDeclaration!Scope;
+            name = ClassBodyDeclaration;
+          }];
+        alts = [// *size: 1
+          @!Alt(54,8):ASTAlt {
+            enclosingScope = @ConstructorDeclaration!Scope;
+            component = [// *size: 6
+              @MCModifier!NonTerminal(54,8):ASTNonTerminal {
+                enclosingScope = @ConstructorDeclaration!Scope;
+                name = MCModifier;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 21;
+              },
+              @TypeParameters!NonTerminal(54,20):ASTNonTerminal {
+                enclosingScope = @ConstructorDeclaration!Scope;
+                name = TypeParameters;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 17;
+              },
+              @Name!NonTerminal(54,36):ASTNonTerminal {
+                enclosingScope = @ConstructorDeclaration!Scope;
+                name = Name;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @FormalParameters!NonTerminal(54,41):ASTNonTerminal {
+                enclosingScope = @ConstructorDeclaration!Scope;
+                name = FormalParameters;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @!Block(55,16):ASTBlock {
+                enclosingScope = @ConstructorDeclaration!Scope;
+                alt = [// *size: 1
+                  @!Alt(55,17):ASTAlt {
+                    enclosingScope = @ConstructorDeclaration!Scope;
+                    component = [// *size: 2
+                      @throws!Terminal(55,17):ASTTerminal {
+                        enclosingScope = @ConstructorDeclaration!Scope;
+                        iteration = 0;
+                        name = throws;
+                      },
+                      @Throws!NonTerminal(55,26):ASTNonTerminal {
+                        enclosingScope = @ConstructorDeclaration!Scope;
+                        name = Throws;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 17;
+              },
+              @MCJavaBlock!NonTerminal(55,35):ASTNonTerminal {
+                enclosingScope = @ConstructorDeclaration!Scope;
+                name = MCJavaBlock;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = ConstructorDeclaration;
+      },
+      @ConstDeclaration!ClassProd(57,0):ASTClassProd {
+        enclosingScope = @JavaLight!Scope;
+        superRule = [// *size: 1
+          @LocalVariableDeclarationStatement!RuleReference(57,25):ASTRuleReference {
+            enclosingScope = @ConstDeclaration!Scope;
+            name = LocalVariableDeclarationStatement;
+          }];
+        superInterfaceRule = [// *size: 2
+          @ClassBodyDeclaration!RuleReference(58,27):ASTRuleReference {
+            enclosingScope = @ConstDeclaration!Scope;
+            name = ClassBodyDeclaration;
+          },
+          @InterfaceBodyDeclaration!RuleReference(59,14):ASTRuleReference {
+            enclosingScope = @ConstDeclaration!Scope;
+            name = InterfaceBodyDeclaration;
+          }];
+        alts = [// *size: 1
+          @!Alt(60,8):ASTAlt {
+            enclosingScope = @ConstDeclaration!Scope;
+            component = [// *size: 2
+              @LocalVariableDeclaration!NonTerminal(60,8):ASTNonTerminal {
+                enclosingScope = @ConstDeclaration!Scope;
+                name = LocalVariableDeclaration;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @SEMI!Terminal(60,33):ASTTerminal {
+                enclosingScope = @ConstDeclaration!Scope;
+                iteration = 0;
+                name = ;;
+              }];
+            rightAssoc = false;
+          }];
+        name = ConstDeclaration;
+      },
+      @Throws!ClassProd(62,0):ASTClassProd {
+        enclosingScope = @JavaLight!Scope;
+        alts = [// *size: 1
+          @!Alt(63,8):ASTAlt {
+            enclosingScope = @Throws!Scope;
+            component = [// *size: 1
+              @!Block(1,0):ASTBlock {
+                enclosingScope = @Throws!Scope;
+                alt = [// *size: 1
+                  @!Alt(1,2):ASTAlt {
+                    enclosingScope = @Throws!Scope;
+                    component = [// *size: 2
+                      @MCQualifiedName!NonTerminal(1,2):ASTNonTerminal {
+                        enclosingScope = @Throws!Scope;
+                        name = MCQualifiedName;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      },
+                      @!Block(1,20):ASTBlock {
+                        enclosingScope = @Throws!Scope;
+                        alt = [// *size: 1
+                          @!Alt(1,21):ASTAlt {
+                            enclosingScope = @Throws!Scope;
+                            component = [// *size: 2
+                              @COMMA!Terminal(1,21):ASTTerminal {
+                                enclosingScope = @Throws!Scope;
+                                iteration = 0;
+                                name = ,;
+                              },
+                              @MCQualifiedName!NonTerminal(1,26):ASTNonTerminal {
+                                enclosingScope = @Throws!Scope;
+                                name = MCQualifiedName;
+                                genSymbol = false;
+                                plusKeywords = false;
+                                iteration = 0;
+                              }];
+                            rightAssoc = false;
+                          }];
+                        iteration = 21;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = Throws;
+      },
+      @LastFormalParameter!ClassProd(65,0):ASTClassProd {
+        enclosingScope = @JavaLight!Scope;
+        alts = [// *size: 1
+          @!Alt(66,8):ASTAlt {
+            enclosingScope = @LastFormalParameter!Scope;
+            component = [// *size: 4
+              @JavaModifier!NonTerminal(66,8):ASTNonTerminal {
+                enclosingScope = @LastFormalParameter!Scope;
+                name = JavaModifier;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 21;
+              },
+              @MCType!NonTerminal(66,23):ASTNonTerminal {
+                enclosingScope = @LastFormalParameter!Scope;
+                name = MCType;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @POINTPOINTPOINT!Terminal(66,30):ASTTerminal {
+                enclosingScope = @LastFormalParameter!Scope;
+                iteration = 0;
+                name = ...;
+              },
+              @DeclaratorId!NonTerminal(66,36):ASTNonTerminal {
+                enclosingScope = @LastFormalParameter!Scope;
+                name = DeclaratorId;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = LastFormalParameter;
+      },
+      @FormalParameterListing!ClassProd(68,0):ASTClassProd {
+        enclosingScope = @JavaLight!Scope;
+        alts = [// *size: 2
+          @!Alt(69,8):ASTAlt {
+            enclosingScope = @FormalParameterListing!Scope;
+            component = [// *size: 2
+              @!Block(1,0!2):ASTBlock {
+                enclosingScope = @FormalParameterListing!Scope;
+                alt = [// *size: 1
+                  @!Alt(1,2!2):ASTAlt {
+                    enclosingScope = @FormalParameterListing!Scope;
+                    component = [// *size: 2
+                      @FormalParameter!NonTerminal(1,2):ASTNonTerminal {
+                        enclosingScope = @FormalParameterListing!Scope;
+                        name = FormalParameter;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      },
+                      @!Block(1,20!2):ASTBlock {
+                        enclosingScope = @FormalParameterListing!Scope;
+                        alt = [// *size: 1
+                          @!Alt(1,21!2):ASTAlt {
+                            enclosingScope = @FormalParameterListing!Scope;
+                            component = [// *size: 2
+                              @COMMA!Terminal(1,21!2):ASTTerminal {
+                                enclosingScope = @FormalParameterListing!Scope;
+                                iteration = 0;
+                                name = ,;
+                              },
+                              @FormalParameter!NonTerminal(1,26):ASTNonTerminal {
+                                enclosingScope = @FormalParameterListing!Scope;
+                                name = FormalParameter;
+                                genSymbol = false;
+                                plusKeywords = false;
+                                iteration = 0;
+                              }];
+                            rightAssoc = false;
+                          }];
+                        iteration = 21;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 0;
+              },
+              @!Block(69,34):ASTBlock {
+                enclosingScope = @FormalParameterListing!Scope;
+                alt = [// *size: 1
+                  @!Alt(69,35):ASTAlt {
+                    enclosingScope = @FormalParameterListing!Scope;
+                    component = [// *size: 2
+                      @COMMA!Terminal(69,35):ASTTerminal {
+                        enclosingScope = @FormalParameterListing!Scope;
+                        iteration = 0;
+                        name = ,;
+                      },
+                      @LastFormalParameter!NonTerminal(69,39):ASTNonTerminal {
+                        enclosingScope = @FormalParameterListing!Scope;
+                        name = LastFormalParameter;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 17;
+              }];
+            rightAssoc = false;
+          },
+          @!Alt(70,8):ASTAlt {
+            enclosingScope = @FormalParameterListing!Scope;
+            component = [// *size: 1
+              @LastFormalParameter!NonTerminal(70,8):ASTNonTerminal {
+                enclosingScope = @FormalParameterListing!Scope;
+                name = LastFormalParameter;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = FormalParameterListing;
+      },
+      @FormalParameters!ClassProd(72,0):ASTClassProd {
+        enclosingScope = @JavaLight!Scope;
+        alts = [// *size: 1
+          @!Alt(73,8):ASTAlt {
+            enclosingScope = @FormalParameters!Scope;
+            component = [// *size: 3
+              @LPAREN!Terminal(73,8):ASTTerminal {
+                enclosingScope = @FormalParameters!Scope;
+                iteration = 0;
+                name = (;
+              },
+              @FormalParameterListing!NonTerminal(73,12):ASTNonTerminal {
+                enclosingScope = @FormalParameters!Scope;
+                name = FormalParameterListing;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 17;
+              },
+              @RPAREN!Terminal(73,36):ASTTerminal {
+                enclosingScope = @FormalParameters!Scope;
+                iteration = 0;
+                name = );
+              }];
+            rightAssoc = false;
+          }];
+        name = FormalParameters;
+      },
+      @Annotation!ClassProd(78,0):ASTClassProd {
+        enclosingScope = @JavaLight!Scope;
+        superInterfaceRule = [// *size: 2
+          @MCModifier!RuleReference(78,22):ASTRuleReference {
+            enclosingScope = @Annotation!Scope;
+            name = MCModifier;
+          },
+          @ElementValue!RuleReference(78,35):ASTRuleReference {
+            enclosingScope = @Annotation!Scope;
+            name = ElementValue;
+          }];
+        alts = [// *size: 1
+          @!Alt(79,8):ASTAlt {
+            enclosingScope = @Annotation!Scope;
+            component = [// *size: 3
+              @AT!Terminal(79,8):ASTTerminal {
+                enclosingScope = @Annotation!Scope;
+                iteration = 0;
+                name = @;
+              },
+              @MCQualifiedName!NonTerminal(79,12):ASTNonTerminal {
+                enclosingScope = @Annotation!Scope;
+                usageName = "annotationName";
+                name = MCQualifiedName;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @!Block(80,12):ASTBlock {
+                enclosingScope = @Annotation!Scope;
+                alt = [// *size: 1
+                  @!Alt(80,14):ASTAlt {
+                    enclosingScope = @Annotation!Scope;
+                    component = [// *size: 3
+                      @LPAREN!Terminal(80,14):ASTTerminal {
+                        enclosingScope = @Annotation!Scope;
+                        iteration = 0;
+                        name = (;
+                      },
+                      @AnnotationArguments!NonTerminal(80,18):ASTNonTerminal {
+                        enclosingScope = @Annotation!Scope;
+                        name = AnnotationArguments;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 17;
+                      },
+                      @RPAREN!Terminal(80,39):ASTTerminal {
+                        enclosingScope = @Annotation!Scope;
+                        iteration = 0;
+                        name = );
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 17;
+              }];
+            rightAssoc = false;
+          }];
+        name = Annotation;
+      },
+      @AnnotationPairArguments!ClassProd(84,0):ASTClassProd {
+        enclosingScope = @JavaLight!Scope;
+        superInterfaceRule = [// *size: 1
+          @AnnotationArguments!RuleReference(84,35):ASTRuleReference {
+            enclosingScope = @AnnotationPairArguments!Scope;
+            name = AnnotationArguments;
+          }];
+        alts = [// *size: 1
+          @!Alt(85,7):ASTAlt {
+            enclosingScope = @AnnotationPairArguments!Scope;
+            component = [// *size: 1
+              @!Block(1,0!3):ASTBlock {
+                enclosingScope = @AnnotationPairArguments!Scope;
+                alt = [// *size: 1
+                  @!Alt(1,2!3):ASTAlt {
+                    enclosingScope = @AnnotationPairArguments!Scope;
+                    component = [// *size: 2
+                      @ElementValuePair!NonTerminal(1,2):ASTNonTerminal {
+                        enclosingScope = @AnnotationPairArguments!Scope;
+                        name = ElementValuePair;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      },
+                      @!Block(1,21):ASTBlock {
+                        enclosingScope = @AnnotationPairArguments!Scope;
+                        alt = [// *size: 1
+                          @!Alt(1,22):ASTAlt {
+                            enclosingScope = @AnnotationPairArguments!Scope;
+                            component = [// *size: 2
+                              @COMMA!Terminal(1,22):ASTTerminal {
+                                enclosingScope = @AnnotationPairArguments!Scope;
+                                iteration = 0;
+                                name = ,;
+                              },
+                              @ElementValuePair!NonTerminal(1,27):ASTNonTerminal {
+                                enclosingScope = @AnnotationPairArguments!Scope;
+                                name = ElementValuePair;
+                                genSymbol = false;
+                                plusKeywords = false;
+                                iteration = 0;
+                              }];
+                            rightAssoc = false;
+                          }];
+                        iteration = 21;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = AnnotationPairArguments;
+      },
+      @ElementValueOrExpr!ClassProd(89,0):ASTClassProd {
+        enclosingScope = @JavaLight!Scope;
+        superInterfaceRule = [// *size: 1
+          @AnnotationArguments!RuleReference(89,30):ASTRuleReference {
+            enclosingScope = @ElementValueOrExpr!Scope;
+            name = AnnotationArguments;
+          }];
+        alts = [// *size: 2
+          @!Alt(90,6):ASTAlt {
+            enclosingScope = @ElementValueOrExpr!Scope;
+            component = [// *size: 1
+              @ElementValue!NonTerminal(90,6):ASTNonTerminal {
+                enclosingScope = @ElementValueOrExpr!Scope;
+                name = ElementValue;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          },
+          @!Alt(90,21):ASTAlt {
+            enclosingScope = @ElementValueOrExpr!Scope;
+            component = [// *size: 1
+              @Expression!NonTerminal(90,21):ASTNonTerminal {
+                enclosingScope = @ElementValueOrExpr!Scope;
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = ElementValueOrExpr;
+      },
+      @ElementValuePair!ClassProd(92,0):ASTClassProd {
+        enclosingScope = @JavaLight!Scope;
+        alts = [// *size: 1
+          @!Alt(93,8):ASTAlt {
+            enclosingScope = @ElementValuePair!Scope;
+            component = [// *size: 3
+              @Name!NonTerminal(93,8):ASTNonTerminal {
+                enclosingScope = @ElementValuePair!Scope;
+                name = Name;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @EQUALS!Terminal(93,13):ASTTerminal {
+                enclosingScope = @ElementValuePair!Scope;
+                iteration = 0;
+                name = =;
+              },
+              @ElementValueOrExpr!NonTerminal(93,17):ASTNonTerminal {
+                enclosingScope = @ElementValuePair!Scope;
+                name = ElementValueOrExpr;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = ElementValuePair;
+      },
+      @ElementValueArrayInitializer!ClassProd(95,0):ASTClassProd {
+        enclosingScope = @JavaLight!Scope;
+        superInterfaceRule = [// *size: 1
+          @ElementValue!RuleReference(95,40):ASTRuleReference {
+            enclosingScope = @ElementValueArrayInitializer!Scope;
+            name = ElementValue;
+          }];
+        alts = [// *size: 1
+          @!Alt(96,8):ASTAlt {
+            enclosingScope = @ElementValueArrayInitializer!Scope;
+            component = [// *size: 4
+              @LCURLY!Terminal(96,8):ASTTerminal {
+                enclosingScope = @ElementValueArrayInitializer!Scope;
+                iteration = 0;
+                name = {;
+              },
+              @!Block(1,0!4):ASTBlock {
+                enclosingScope = @ElementValueArrayInitializer!Scope;
+                alt = [// *size: 1
+                  @!Alt(1,2!4):ASTAlt {
+                    enclosingScope = @ElementValueArrayInitializer!Scope;
+                    component = [// *size: 2
+                      @ElementValueOrExpr!NonTerminal(1,2):ASTNonTerminal {
+                        enclosingScope = @ElementValueArrayInitializer!Scope;
+                        name = ElementValueOrExpr;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      },
+                      @!Block(1,23):ASTBlock {
+                        enclosingScope = @ElementValueArrayInitializer!Scope;
+                        alt = [// *size: 1
+                          @!Alt(1,24):ASTAlt {
+                            enclosingScope = @ElementValueArrayInitializer!Scope;
+                            component = [// *size: 2
+                              @COMMA!Terminal(1,24):ASTTerminal {
+                                enclosingScope = @ElementValueArrayInitializer!Scope;
+                                iteration = 0;
+                                name = ,;
+                              },
+                              @ElementValueOrExpr!NonTerminal(1,29):ASTNonTerminal {
+                                enclosingScope = @ElementValueArrayInitializer!Scope;
+                                name = ElementValueOrExpr;
+                                genSymbol = false;
+                                plusKeywords = false;
+                                iteration = 0;
+                              }];
+                            rightAssoc = false;
+                          }];
+                        iteration = 21;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 17;
+              },
+              @!Block(96,41):ASTBlock {
+                enclosingScope = @ElementValueArrayInitializer!Scope;
+                alt = [// *size: 1
+                  @!Alt(96,42):ASTAlt {
+                    enclosingScope = @ElementValueArrayInitializer!Scope;
+                    component = [// *size: 1
+                      @COMMA!Terminal(96,42):ASTTerminal {
+                        enclosingScope = @ElementValueArrayInitializer!Scope;
+                        iteration = 0;
+                        name = ,;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 17;
+              },
+              @RCURLY!Terminal(96,48):ASTTerminal {
+                enclosingScope = @ElementValueArrayInitializer!Scope;
+                iteration = 0;
+                name = };
+              }];
+            rightAssoc = false;
+          }];
+        name = ElementValueArrayInitializer;
+      },
+      @ArrayDimensionByInitializer!ClassProd(100,0):ASTClassProd {
+        enclosingScope = @JavaLight!Scope;
+        superInterfaceRule = [// *size: 1
+          @ArrayDimensionSpecifier!RuleReference(100,39):ASTRuleReference {
+            enclosingScope = @ArrayDimensionByInitializer!Scope;
+            name = ArrayDimensionSpecifier;
+          }];
+        alts = [// *size: 1
+          @!Alt(101,6):ASTAlt {
+            enclosingScope = @ArrayDimensionByInitializer!Scope;
+            component = [// *size: 2
+              @!Block(101,6):ASTBlock {
+                enclosingScope = @ArrayDimensionByInitializer!Scope;
+                alt = [// *size: 1
+                  @!Alt(101,7):ASTAlt {
+                    enclosingScope = @ArrayDimensionByInitializer!Scope;
+                    component = [// *size: 2
+                      @LBRACK!Terminal(101,7):ASTTerminal {
+                        enclosingScope = @ArrayDimensionByInitializer!Scope;
+                        iteration = 0;
+                        usageName = "dim";
+                        name = [;
+                      },
+                      @RBRACK!Terminal(101,15):ASTTerminal {
+                        enclosingScope = @ArrayDimensionByInitializer!Scope;
+                        iteration = 0;
+                        name = ];
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 13;
+              },
+              @ArrayInit!NonTerminal(101,21):ASTNonTerminal {
+                enclosingScope = @ArrayDimensionByInitializer!Scope;
+                name = ArrayInit;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = ArrayDimensionByInitializer;
+      }];
+    interfaceProds = [// *size: 5
+      @ClassBodyDeclaration!InterfaceProd(33,0):ASTInterfaceProd {
+        enclosingScope = @JavaLight!Scope;
+        name = ClassBodyDeclaration;
+      },
+      @InterfaceBodyDeclaration!InterfaceProd(35,0):ASTInterfaceProd {
+        enclosingScope = @JavaLight!Scope;
+        name = InterfaceBodyDeclaration;
+      },
+      @JavaMethod!InterfaceProd(37,0):ASTInterfaceProd {
+        enclosingScope = @JavaLight!Scope;
+        symbolDefinitions = [// *size: 2
+          @!SymbolDefinition(37,10):ASTSymbolDefinition {
+            enclosingScope = @JavaMethod!Scope;
+            genSymbol = false;
+            genScope = true;
+            shadowing = true;
+            non_exporting = true;
+            ordered = true;
+          },
+          @!SymbolDefinition(38,0):ASTSymbolDefinition {
+            enclosingScope = @JavaMethod!Scope;
+            genSymbol = true;
+            genScope = false;
+            shadowing = false;
+            non_exporting = false;
+            ordered = false;
+          }];
+        superInterfaceRule = [// *size: 1
+          @Method!RuleReference(38,26):ASTRuleReference {
+            enclosingScope = @JavaMethod!Scope;
+            name = Method;
+          }];
+        alt = [// *size: 1
+          @!Alt(38,35):ASTAlt {
+            enclosingScope = @JavaMethod!Scope;
+            component = [// *size: 1
+              @Name!NonTerminal(38,35):ASTNonTerminal {
+                enclosingScope = @JavaMethod!Scope;
+                name = Name;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = JavaMethod;
+      },
+      @AnnotationArguments!InterfaceProd(82,0):ASTInterfaceProd {
+        enclosingScope = @JavaLight!Scope;
+        name = AnnotationArguments;
+      },
+      @ElementValue!InterfaceProd(87,0):ASTInterfaceProd {
+        enclosingScope = @JavaLight!Scope;
+        name = ElementValue;
+      }];
+    symbolRules = [// *size: 1
+      @!SymbolRule(40,0):ASTSymbolRule {
+        enclosingScope = @JavaLight!Scope;
+        type = JavaMethod;
+        additionalAttributes = [// *size: 6
+          @exceptions!AdditionalAttribute(41,4):ASTAdditionalAttribute {
+            symbol = @exceptions!Symbol(41,4);
+            enclosingScope = @JavaLight!Scope;
+            name = "exceptions";
+            mCType = @de.monticore.types.check.SymTypeExpression!MCQualifiedType(41,16):ASTMCQualifiedType {
+              enclosingScope = @JavaLight!Scope;
+              mCQualifiedName = @de.monticore.types.check.SymTypeExpression!MCQualifiedName(41,16):ASTMCQualifiedName {
+                enclosingScope = @JavaLight!Scope;
+                parts = [de, monticore, types, check, SymTypeExpression];
+              };
+            };
+            card = @!Card(41,58):ASTCard {
+              enclosingScope = @JavaLight!Scope;
+              iteration = 21;
+            };
+          },
+          @annotations!AdditionalAttribute(42,4):ASTAdditionalAttribute {
+            symbol = @annotations!Symbol(42,4);
+            enclosingScope = @JavaLight!Scope;
+            name = "annotations";
+            mCType = @de.monticore.types.check.SymTypeExpression!MCQualifiedType(42,17):ASTMCQualifiedType {
+              enclosingScope = @JavaLight!Scope;
+              mCQualifiedName = @de.monticore.types.check.SymTypeExpression!MCQualifiedName(42,17):ASTMCQualifiedName {
+                enclosingScope = @JavaLight!Scope;
+                parts = [de, monticore, types, check, SymTypeExpression];
+              };
+            };
+            card = @!Card(42,59):ASTCard {
+              enclosingScope = @JavaLight!Scope;
+              iteration = 21;
+            };
+          },
+          @isSynchronized!AdditionalAttribute(43,4):ASTAdditionalAttribute {
+            symbol = @isSynchronized!Symbol(43,4);
+            enclosingScope = @JavaLight!Scope;
+            name = "isSynchronized";
+            mCType = @boolean!MCPrimitiveType(43,20):ASTMCPrimitiveType {
+              enclosingScope = @JavaLight!Scope;
+              primitive = 1;
+            };
+          },
+          @isNative!AdditionalAttribute(44,4):ASTAdditionalAttribute {
+            symbol = @isNative!Symbol(44,4);
+            enclosingScope = @JavaLight!Scope;
+            name = "isNative";
+            mCType = @boolean!MCPrimitiveType(44,13):ASTMCPrimitiveType {
+              enclosingScope = @JavaLight!Scope;
+              primitive = 1;
+            };
+          },
+          @isStrictfp!AdditionalAttribute(45,4):ASTAdditionalAttribute {
+            symbol = @isStrictfp!Symbol(45,4);
+            enclosingScope = @JavaLight!Scope;
+            name = "isStrictfp";
+            mCType = @boolean!MCPrimitiveType(45,16):ASTMCPrimitiveType {
+              enclosingScope = @JavaLight!Scope;
+              primitive = 1;
+            };
+          },
+          @isDefault!AdditionalAttribute(46,4):ASTAdditionalAttribute {
+            symbol = @isDefault!Symbol(46,4);
+            enclosingScope = @JavaLight!Scope;
+            name = "isDefault";
+            mCType = @boolean!MCPrimitiveType(46,15):ASTMCPrimitiveType {
+              enclosingScope = @JavaLight!Scope;
+              primitive = 1;
+            };
+          }];
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

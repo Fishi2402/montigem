@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 import {Component} from "@angular/core";
-import {RangeWithGradientComponent,config} from "@src/gui/atomic/range_with_gradient/RangeWithGradientComponent";
+import {RangeWithGradientComponent,config} from "gui/atomic/range_with_gradient/RangeWithGradientComponent";
 
 @Component({
   standalone:true,

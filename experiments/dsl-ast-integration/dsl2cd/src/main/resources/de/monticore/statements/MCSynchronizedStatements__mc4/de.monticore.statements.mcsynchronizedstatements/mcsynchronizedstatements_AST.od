@@ -1,0 +1,76 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram mcsynchronizedstatements_AST {
+  @MCSynchronizedStatements!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @MCSynchronizedStatements!Symbol(2,0);
+    enclosingScope = @MCSynchronizedStatements!ArtifactScope;
+    spanningScope = @MCSynchronizedStatements!Scope;
+    r__package = [de, monticore, statements];
+    importStatement = [// *size: 1
+      @!MCImportStatement(7,0):ASTMCImportStatement {
+        enclosingScope = @MCSynchronizedStatements!Scope;
+        mCQualifiedName = @de.monticore.statements!MCQualifiedName(7,7):ASTMCQualifiedName {
+          enclosingScope = @MCSynchronizedStatements!Scope;
+          parts = [de, monticore, statements];
+        };
+        star = true;
+      }];
+    name = MCSynchronizedStatements;
+    supergrammar = [// *size: 1
+      @MCCommonStatements!GrammarReference(32,18):ASTGrammarReference {
+        enclosingScope = @MCSynchronizedStatements!Scope;
+        names = [MCCommonStatements];
+      }];
+    classProds = [// *size: 1
+      @SynchronizedStatement!ClassProd(34,0):ASTClassProd {
+        enclosingScope = @MCSynchronizedStatements!Scope;
+        superInterfaceRule = [// *size: 1
+          @MCStatement!RuleReference(34,33):ASTRuleReference {
+            enclosingScope = @SynchronizedStatement!Scope;
+            name = MCStatement;
+          }];
+        alts = [// *size: 1
+          @!Alt(35,8):ASTAlt {
+            enclosingScope = @SynchronizedStatement!Scope;
+            component = [// *size: 5
+              @synchronized!Terminal(35,8):ASTTerminal {
+                enclosingScope = @SynchronizedStatement!Scope;
+                iteration = 0;
+                name = synchronized;
+              },
+              @LPAREN!Terminal(35,23):ASTTerminal {
+                enclosingScope = @SynchronizedStatement!Scope;
+                iteration = 0;
+                name = (;
+              },
+              @Expression!NonTerminal(35,27):ASTNonTerminal {
+                enclosingScope = @SynchronizedStatement!Scope;
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @RPAREN!Terminal(35,38):ASTTerminal {
+                enclosingScope = @SynchronizedStatement!Scope;
+                iteration = 0;
+                name = );
+              },
+              @MCJavaBlock!NonTerminal(35,42):ASTNonTerminal {
+                enclosingScope = @SynchronizedStatement!Scope;
+                name = MCJavaBlock;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = SynchronizedStatement;
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

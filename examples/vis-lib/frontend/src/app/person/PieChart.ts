@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { PieChartComponent, config } from '@src/person/PieChartComponent';
+import { PieChartComponent, config } from 'person/PieChartComponent';
 import { Component } from '@angular/core';
 import {GemPieChartData, GemPieChartDataBuilder, GemPieChartEntryBuilder} from '@umlp/charts';
 import { GemPieChartEntry } from '@umlp/charts';

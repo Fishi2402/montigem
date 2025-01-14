@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { DemoRecManager } from '@src/demorec/DemoRecManager';
+import { DemoRecManager } from 'demorec/DemoRecManager';
 
-import { BatteryPackType } from '@src/demorec/BatteryPackType';
+import { BatteryPackType } from 'demorec/BatteryPackType';
 
-import { BatteryPack } from '@src/demorec/BatteryPack';
-import { JoinConnection } from '@src/demorec/JoinConnection';
+import { BatteryPack } from 'demorec/BatteryPack';
+import { JoinConnection } from 'demorec/JoinConnection';
 
 import { SubComponentViewComponent, config } from '../../../../build/frontendGen/build/appgui/gui/component/SubComponentViewComponent';
 

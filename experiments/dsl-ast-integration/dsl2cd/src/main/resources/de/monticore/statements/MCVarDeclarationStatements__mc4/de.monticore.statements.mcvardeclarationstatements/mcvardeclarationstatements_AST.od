@@ -1,0 +1,268 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram mcvardeclarationstatements_AST {
+  @MCVarDeclarationStatements!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @MCVarDeclarationStatements!Symbol(2,0);
+    enclosingScope = @MCVarDeclarationStatements!ArtifactScope;
+    spanningScope = @MCVarDeclarationStatements!Scope;
+    r__package = [de, monticore, statements];
+    importStatement = [// *size: 4
+      @!MCImportStatement(7,0):ASTMCImportStatement {
+        enclosingScope = @MCVarDeclarationStatements!Scope;
+        mCQualifiedName = @de.monticore.statements!MCQualifiedName(7,7):ASTMCQualifiedName {
+          enclosingScope = @MCVarDeclarationStatements!Scope;
+          parts = [de, monticore, statements];
+        };
+        star = true;
+      },
+      @!MCImportStatement(8,0):ASTMCImportStatement {
+        enclosingScope = @MCVarDeclarationStatements!Scope;
+        mCQualifiedName = @de.monticore.expressions!MCQualifiedName(8,7):ASTMCQualifiedName {
+          enclosingScope = @MCVarDeclarationStatements!Scope;
+          parts = [de, monticore, expressions];
+        };
+        star = true;
+      },
+      @!MCImportStatement(9,0):ASTMCImportStatement {
+        enclosingScope = @MCVarDeclarationStatements!Scope;
+        mCQualifiedName = @de.monticore.symbols!MCQualifiedName(9,7):ASTMCQualifiedName {
+          enclosingScope = @MCVarDeclarationStatements!Scope;
+          parts = [de, monticore, symbols];
+        };
+        star = true;
+      },
+      @!MCImportStatement(10,0):ASTMCImportStatement {
+        enclosingScope = @MCVarDeclarationStatements!Scope;
+        mCQualifiedName = @de.monticore.types!MCQualifiedName(10,7):ASTMCQualifiedName {
+          enclosingScope = @MCVarDeclarationStatements!Scope;
+          parts = [de, monticore, types];
+        };
+        star = true;
+      }];
+    name = MCVarDeclarationStatements;
+    supergrammar = [// *size: 4
+      @MCStatementsBasis!GrammarReference(35,18):ASTGrammarReference {
+        enclosingScope = @MCVarDeclarationStatements!Scope;
+        names = [MCStatementsBasis];
+      },
+      @MCBasicTypes!GrammarReference(36,18):ASTGrammarReference {
+        enclosingScope = @MCVarDeclarationStatements!Scope;
+        names = [MCBasicTypes];
+      },
+      @ExpressionsBasis!GrammarReference(37,18):ASTGrammarReference {
+        enclosingScope = @MCVarDeclarationStatements!Scope;
+        names = [ExpressionsBasis];
+      },
+      @OOSymbols!GrammarReference(38,18):ASTGrammarReference {
+        enclosingScope = @MCVarDeclarationStatements!Scope;
+        names = [OOSymbols];
+      }];
+    classProds = [// *size: 5
+      @LocalVariableDeclarationStatement!ClassProd(40,2):ASTClassProd {
+        enclosingScope = @MCVarDeclarationStatements!Scope;
+        superInterfaceRule = [// *size: 1
+          @MCBlockStatement!RuleReference(40,47):ASTRuleReference {
+            enclosingScope = @LocalVariableDeclarationStatement!Scope;
+            name = MCBlockStatement;
+          }];
+        alts = [// *size: 1
+          @!Alt(41,8):ASTAlt {
+            enclosingScope = @LocalVariableDeclarationStatement!Scope;
+            component = [// *size: 2
+              @LocalVariableDeclaration!NonTerminal(41,8):ASTNonTerminal {
+                enclosingScope = @LocalVariableDeclarationStatement!Scope;
+                name = LocalVariableDeclaration;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @SEMI!Terminal(41,33):ASTTerminal {
+                enclosingScope = @LocalVariableDeclarationStatement!Scope;
+                iteration = 0;
+                name = ;;
+              }];
+            rightAssoc = false;
+          }];
+        name = LocalVariableDeclarationStatement;
+      },
+      @LocalVariableDeclaration!ClassProd(43,2):ASTClassProd {
+        enclosingScope = @MCVarDeclarationStatements!Scope;
+        alts = [// *size: 1
+          @!Alt(44,8):ASTAlt {
+            enclosingScope = @LocalVariableDeclaration!Scope;
+            component = [// *size: 3
+              @MCModifier!NonTerminal(44,8):ASTNonTerminal {
+                enclosingScope = @LocalVariableDeclaration!Scope;
+                name = MCModifier;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 21;
+              },
+              @MCType!NonTerminal(44,20):ASTNonTerminal {
+                enclosingScope = @LocalVariableDeclaration!Scope;
+                name = MCType;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @!Block(1,0):ASTBlock {
+                enclosingScope = @LocalVariableDeclaration!Scope;
+                alt = [// *size: 1
+                  @!Alt(1,2):ASTAlt {
+                    enclosingScope = @LocalVariableDeclaration!Scope;
+                    component = [// *size: 2
+                      @VariableDeclarator!NonTerminal(1,2):ASTNonTerminal {
+                        enclosingScope = @LocalVariableDeclaration!Scope;
+                        name = VariableDeclarator;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      },
+                      @!Block(1,23):ASTBlock {
+                        enclosingScope = @LocalVariableDeclaration!Scope;
+                        alt = [// *size: 1
+                          @!Alt(1,24):ASTAlt {
+                            enclosingScope = @LocalVariableDeclaration!Scope;
+                            component = [// *size: 2
+                              @COMMA!Terminal(1,24):ASTTerminal {
+                                enclosingScope = @LocalVariableDeclaration!Scope;
+                                iteration = 0;
+                                name = ,;
+                              },
+                              @VariableDeclarator!NonTerminal(1,29):ASTNonTerminal {
+                                enclosingScope = @LocalVariableDeclaration!Scope;
+                                name = VariableDeclarator;
+                                genSymbol = false;
+                                plusKeywords = false;
+                                iteration = 0;
+                              }];
+                            rightAssoc = false;
+                          }];
+                        iteration = 21;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = LocalVariableDeclaration;
+      },
+      @VariableDeclarator!ClassProd(46,2):ASTClassProd {
+        enclosingScope = @MCVarDeclarationStatements!Scope;
+        alts = [// *size: 1
+          @!Alt(47,8):ASTAlt {
+            enclosingScope = @VariableDeclarator!Scope;
+            component = [// *size: 2
+              @Declarator!NonTerminal(47,8):ASTNonTerminal {
+                enclosingScope = @VariableDeclarator!Scope;
+                name = Declarator;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @!Block(47,19):ASTBlock {
+                enclosingScope = @VariableDeclarator!Scope;
+                alt = [// *size: 1
+                  @!Alt(47,20):ASTAlt {
+                    enclosingScope = @VariableDeclarator!Scope;
+                    component = [// *size: 2
+                      @EQUALS!Terminal(47,20):ASTTerminal {
+                        enclosingScope = @VariableDeclarator!Scope;
+                        iteration = 0;
+                        name = =;
+                      },
+                      @VariableInit!NonTerminal(47,24):ASTNonTerminal {
+                        enclosingScope = @VariableDeclarator!Scope;
+                        name = VariableInit;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 17;
+              }];
+            rightAssoc = false;
+          }];
+        name = VariableDeclarator;
+      },
+      @DeclaratorId!ClassProd(52,2):ASTClassProd {
+        enclosingScope = @MCVarDeclarationStatements!Scope;
+        superInterfaceRule = [// *size: 1
+          @Declarator!RuleReference(52,26):ASTRuleReference {
+            enclosingScope = @DeclaratorId!Scope;
+            name = Declarator;
+          }];
+        alts = [// *size: 1
+          @!Alt(53,8):ASTAlt {
+            enclosingScope = @DeclaratorId!Scope;
+            component = [// *size: 1
+              @Name!NonTerminal(53,8):ASTNonTerminal {
+                enclosingScope = @DeclaratorId!Scope;
+                name = Name;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = DeclaratorId;
+      },
+      @SimpleInit!ClassProd(57,2):ASTClassProd {
+        enclosingScope = @MCVarDeclarationStatements!Scope;
+        superInterfaceRule = [// *size: 1
+          @VariableInit!RuleReference(57,24):ASTRuleReference {
+            enclosingScope = @SimpleInit!Scope;
+            name = VariableInit;
+          }];
+        alts = [// *size: 1
+          @!Alt(58,8):ASTAlt {
+            enclosingScope = @SimpleInit!Scope;
+            component = [// *size: 1
+              @Expression!NonTerminal(58,8):ASTNonTerminal {
+                enclosingScope = @SimpleInit!Scope;
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = SimpleInit;
+      }];
+    interfaceProds = [// *size: 2
+      @Declarator!InterfaceProd(49,2):ASTInterfaceProd {
+        enclosingScope = @MCVarDeclarationStatements!Scope;
+        superInterfaceRule = [// *size: 1
+          @Field!RuleReference(49,31):ASTRuleReference {
+            enclosingScope = @Declarator!Scope;
+            name = Field;
+          }];
+        alt = [// *size: 1
+          @!Alt(50,8):ASTAlt {
+            enclosingScope = @Declarator!Scope;
+            component = [// *size: 1
+              @Name!NonTerminal(50,8):ASTNonTerminal {
+                enclosingScope = @Declarator!Scope;
+                name = Name;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = Declarator;
+      },
+      @VariableInit!InterfaceProd(55,2):ASTInterfaceProd {
+        enclosingScope = @MCVarDeclarationStatements!Scope;
+        name = VariableInit;
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */
