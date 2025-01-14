@@ -1,5 +1,6 @@
 package gradle.specific;
 
+import de.se_rwth.commons.logging.Log;
 import gradle.common.UMLPSingleFileTask;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.Directory;
@@ -8,7 +9,6 @@ import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Optional;
 import org.jetbrains.annotations.NotNull;
-import standalone.com.sun.tools.sjavac.Log;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -62,22 +62,22 @@ public abstract class UMLPExternalToolTask extends UMLPSingleFileTask {
 
   protected @NotNull List<String> prepareToolArgumentList() {
     var inputPath = getInput().getAsPath();
-    Log.debug("Input file: " + inputPath);
+    Log.debug("Input file: " + inputPath, getName());
     var args = new ArrayList<>(List.of("--input", inputPath));
 
     var symbolPath = getSymbolDir().getAsPath();
-    Log.debug("Symbol input path: " + symbolPath);
+    Log.debug("Symbol input path: " + symbolPath, getName());
     args.addAll(List.of("-path", symbolPath));
 
     var symbolOutDir = getSymbolOutDir();
     if (symbolOutDir.isPresent()) {
       var symbolOutputDir = symbolOutDir.get().toString();
-      Log.debug("Symbol output dir: " + symbolOutputDir);
+      Log.debug("Symbol output dir: " + symbolOutputDir, getName());
       args.addAll(List.of("--symboltable", symbolOutputDir));
     }
 
     var outputDirectory = getOutputDir().get().toString();
-    Log.debug("Output directory: " + outputDirectory);
+    Log.debug("Output directory: " + outputDirectory, getName());
     args.addAll(List.of("--output", outputDirectory));
     return args;
   }

@@ -2,7 +2,11 @@ package webshop;
 
 import monitor.MethodMonitor;
 
-public class OrderMonitor extends Order {
+public class OrderMonitor extends OrderBuilder {
+  public OrderMonitor(long gemId) {
+    super(gemId);
+  }
+
   @Override
   public int getTotal() {
     var monitor = MethodMonitor.start("getTotal");

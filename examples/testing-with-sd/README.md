@@ -40,6 +40,19 @@ class FooMonitor extends Foo {
 }
 ```
 
+### Implementation note on inheritance
+
+Since in our system all instances are Builders, we don't want to extend `Foo` but `FooBuilder` instead.
+
+```
+class A
+class B extends A
+class ABuilder extends A
+class BBuilder extends B //implements methods of ABuilder
+class AMonitor extends ABuilder
+class BMonitor extends BBuilder //implements methods of AMonitor
+```
+
 ### Static delegators
 
 We don't need to adjust these, since they all delegate to adjusted instances
