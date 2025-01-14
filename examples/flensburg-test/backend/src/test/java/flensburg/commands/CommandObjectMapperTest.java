@@ -143,7 +143,6 @@ public class CommandObjectMapperTest extends FlensburgMockTestSetup {
     assertNotSame(person, recreatedPerson);
     assertEquals(person.getGemId(), recreatedPerson.getGemId());
 
-    //TODO why is it important, that the mainResidenceGem is not yet loaded?
     Gem<Address> mainResidenceGem = recreatedPerson.getMainResidenceGem();
     assertEquals(LoadingState.NOT_YET_LOADED, mainResidenceGem.getLoadingState());
   }

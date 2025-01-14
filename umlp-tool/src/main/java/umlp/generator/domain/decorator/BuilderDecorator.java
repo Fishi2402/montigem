@@ -174,6 +174,7 @@ public class BuilderDecorator extends AbstractDecorator {
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("Gem"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("GemBuildable"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("LoadingState"));
   }
 
 }

@@ -15,7 +15,7 @@ if (!buildFinished) {
       this._${assoc.getName()}.build();
     <#else>
       //at the time of writing we assume that every other attribute is a Gem on something which implements GemBuildable
-      if (this._${assoc.getName()}.isPresent() && this._${assoc.getName()}.get().build().isEmpty()) {
+      if (this._${assoc.getName()}.getLoadingState() == LoadingState.LOADED && this._${assoc.getName()}.get().build().isEmpty()) {
         //let the build fail
         ${name}ErrorCollector.report${assoc.getName()?cap_first}Invalid(this);
         return Optional.empty();
