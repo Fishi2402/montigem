@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { PersonTOP } from '@src/hardy/flensburg/PersonTOP';
+import { PersonTOP } from 'hardy/flensburg/PersonTOP';
 
 // Hand-Written, before generation
 export class Person extends PersonTOP {

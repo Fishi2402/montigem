@@ -1,13 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
-import { State } from '@src/demorec/State';
+import { State } from 'demorec/State';
 
-import { BatteryPack } from '@src/demorec/BatteryPack';
-import { ComponentKind } from '@src/demorec/ComponentKind';
-import { Photo } from '@src/demorec/Photo';
-import { DemoRecManager } from '@src/demorec/DemoRecManager';
+import { BatteryPack } from 'demorec/BatteryPack';
+import { ComponentKind } from 'demorec/ComponentKind';
+import { Photo } from 'demorec/Photo';
+import { DemoRecManager } from 'demorec/DemoRecManager';
 import {GemTextInputValidity, Option, OptionBuilder} from '@umlp/input';
 
-import { ComponentEditComponent, config } from '@src/gui/component/ComponentEditComponent';
+import { ComponentEditComponent, config } from 'gui/component/ComponentEditComponent';
 
 import {
   Component,
@@ -87,12 +87,12 @@ export  class ComponentEdit extends ComponentEditComponent {
   public override checkComponentName() :GemTextInputValidity {
     if(this.getComponent()) {
       if(this.getComponent().getName()) {
-        return {status: "Success"}
+        return new GemTextInputValidity("Success");
       }
       // TODO check if the name already exists
-      return {status: "Error", message: "Please enter a name."}
+      return new GemTextInputValidity("Error", "Please enter a name.");
     } else {
-      return {status: "Warning", message: "Wait for initialization."}
+      return new GemTextInputValidity("Warning", "Wait for initialization.");
     }
   }
 

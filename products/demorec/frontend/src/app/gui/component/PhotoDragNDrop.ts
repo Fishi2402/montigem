@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { DemoRecComponent } from '@src/demorec/DemoRecComponent';
-import { DemoRecManager } from '@src/demorec/DemoRecManager';
-import { Photo } from '@src/demorec/Photo';
+import { DemoRecComponent } from 'demorec/DemoRecComponent';
+import { DemoRecManager } from 'demorec/DemoRecManager';
+import { Photo } from 'demorec/Photo';
 
 import { PhotoDragNDropComponent, config } from '../../../../build/frontendGen/build/appgui/gui/component/PhotoDragNDropComponent';
 

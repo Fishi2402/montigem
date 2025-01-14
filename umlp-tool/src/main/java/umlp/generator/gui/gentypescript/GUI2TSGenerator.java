@@ -6,11 +6,10 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
-import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.io.paths.MCPath;
 import umlp.generator.gui.genjava.GUI2CDTrafo;
 import umlp.generator.gui.genjava.GUI2JavaGenerator;
 import umlp.generator.gui.gentypescript.printer.TSUtilsPrinter;
-import umlp.generator.gui.gentypescript.printer.TypeScriptTypesFullPrettyPrinter;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,10 +18,12 @@ import java.util.Arrays;
 public class GUI2TSGenerator extends GUI2JavaGenerator {
 
   protected static final String TS_EXTENSION = ".ts";
+  protected final MCPath importsPath;
 
-  public GUI2TSGenerator(GeneratorSetup genSetup) {
+  public GUI2TSGenerator(GeneratorSetup genSetup, MCPath importsPath) {
     super(genSetup);
     genSetup.getGlex().setGlobalValue("cdPrinter", new TSUtilsPrinter());
+    this.importsPath = importsPath;
   }
 
   protected Path getAsPath(String packageAsPath, String name) {
@@ -41,7 +42,7 @@ public class GUI2TSGenerator extends GUI2JavaGenerator {
 
     // translate the GUI-AST into TypeScript
     hpp.processValue(tc, gui, Arrays.asList(
-        cd, setup.getGlex(), setup.getHandcodedPath(), setup.getOutputDirectory().toPath(), this));
+        cd, setup.getGlex(), setup.getHandcodedPath(), setup.getOutputDirectory().toPath(), importsPath, this));
   }
 
 }

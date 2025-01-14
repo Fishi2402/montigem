@@ -1,0 +1,603 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram umlstereotype_AST {
+  @UMLStereotype!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @UMLStereotype!Symbol(2,0);
+    enclosingScope = @UMLStereotype!ArtifactScope;
+    spanningScope = @UMLStereotype!Scope;
+    r__package = [de, monticore];
+    importStatement = [// *size: 1
+      @!MCImportStatement(7,0):ASTMCImportStatement {
+        enclosingScope = @UMLStereotype!Scope;
+        mCQualifiedName = @de.monticore.literals!MCQualifiedName(7,7):ASTMCQualifiedName {
+          enclosingScope = @UMLStereotype!Scope;
+          parts = [de, monticore, literals];
+        };
+        star = true;
+      }];
+    name = UMLStereotype;
+    supergrammar = [// *size: 1
+      @MCCommonLiterals!GrammarReference(24,40):ASTGrammarReference {
+        enclosingScope = @UMLStereotype!Scope;
+        names = [MCCommonLiterals];
+      }];
+    classProds = [// *size: 2
+      @Stereotype!ClassProd(33,4):ASTClassProd {
+        enclosingScope = @UMLStereotype!Scope;
+        alts = [// *size: 1
+          @!Alt(34,9):ASTAlt {
+            enclosingScope = @Stereotype!Scope;
+            component = [// *size: 3
+              @LTLT!Terminal(34,9):ASTTerminal {
+                enclosingScope = @Stereotype!Scope;
+                iteration = 0;
+                name = <<;
+              },
+              @!Block(1,0):ASTBlock {
+                enclosingScope = @Stereotype!Scope;
+                alt = [// *size: 1
+                  @!Alt(1,1):ASTAlt {
+                    enclosingScope = @Stereotype!Scope;
+                    component = [// *size: 2
+                      @StereoValue!NonTerminal(1,1):ASTNonTerminal {
+                        enclosingScope = @Stereotype!Scope;
+                        usageName = "values";
+                        name = StereoValue;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      },
+                      @!Block(1,23):ASTBlock {
+                        enclosingScope = @Stereotype!Scope;
+                        alt = [// *size: 1
+                          @!Alt(1,24):ASTAlt {
+                            enclosingScope = @Stereotype!Scope;
+                            component = [// *size: 2
+                              @COMMA!Terminal(1,24):ASTTerminal {
+                                enclosingScope = @Stereotype!Scope;
+                                iteration = 0;
+                                name = ,;
+                              },
+                              @StereoValue!NonTerminal(1,28):ASTNonTerminal {
+                                enclosingScope = @Stereotype!Scope;
+                                usageName = "values";
+                                name = StereoValue;
+                                genSymbol = false;
+                                plusKeywords = false;
+                                iteration = 0;
+                              }];
+                            rightAssoc = false;
+                          }];
+                        iteration = 21;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 0;
+              },
+              @GTGT!Terminal(34,44):ASTTerminal {
+                enclosingScope = @Stereotype!Scope;
+                iteration = 0;
+                name = >>;
+              }];
+            rightAssoc = false;
+          }];
+        name = Stereotype;
+      },
+      @StereoValue!ClassProd(45,4):ASTClassProd {
+        enclosingScope = @UMLStereotype!Scope;
+        alts = [// *size: 1
+          @!Alt(46,8):ASTAlt {
+            enclosingScope = @StereoValue!Scope;
+            component = [// *size: 2
+              @Name!NonTerminal(46,8):ASTNonTerminal {
+                enclosingScope = @StereoValue!Scope;
+                name = Name;
+                genSymbol = false;
+                plusKeywords = true;
+                iteration = 0;
+              },
+              @!Block(46,14):ASTBlock {
+                enclosingScope = @StereoValue!Scope;
+                alt = [// *size: 1
+                  @!Alt(46,15):ASTAlt {
+                    enclosingScope = @StereoValue!Scope;
+                    component = [// *size: 2
+                      @EQUALS!Terminal(46,15):ASTTerminal {
+                        enclosingScope = @StereoValue!Scope;
+                        iteration = 0;
+                        name = =;
+                      },
+                      @StringLiteral!NonTerminal(46,19):ASTNonTerminal {
+                        enclosingScope = @StereoValue!Scope;
+                        usageName = "text";
+                        name = StringLiteral;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 17;
+              }];
+            rightAssoc = false;
+          }];
+        name = StereoValue;
+      }];
+    aSTRules = [// *size: 2
+      @!ASTRule(52,4):ASTASTRule {
+        enclosingScope = @UMLStereotype!Scope;
+        type = Stereotype;
+        grammarMethods = [// *size: 3
+          @contains!GrammarMethod(53,8):ASTGrammarMethod {
+            enclosingScope = @UMLStereotype!Scope;
+            mCReturnType = @!MCReturnType(53,22):ASTMCReturnType {
+              enclosingScope = @UMLStereotype!Scope;
+              mCType = @boolean!MCPrimitiveType(53,22):ASTMCPrimitiveType {
+                enclosingScope = @UMLStereotype!Scope;
+                primitive = 1;
+              };
+            };
+            name = contains;
+            methodParameters = [// *size: 1
+              @name!MethodParameter(53,39):ASTMethodParameter {
+                enclosingScope = @UMLStereotype!Scope;
+                type = @String!MCQualifiedType(53,39):ASTMCQualifiedType {
+                  enclosingScope = @UMLStereotype!Scope;
+                  mCQualifiedName = @String!MCQualifiedName(53,39):ASTMCQualifiedName {
+                    enclosingScope = @UMLStereotype!Scope;
+                    parts = [String];
+                  };
+                };
+                name = name;
+              }];
+            body = @!Action(54,10):ASTAction {
+              enclosingScope = @UMLStereotype!Scope;
+              mCBlockStatements = [// *size: 2
+                @ASTStereoValue!MCQualifiedType(54,15):ASTMCQualifiedType {
+                  enclosingScope = @!Scope;
+                  mCQualifiedName = @ASTStereoValue!MCQualifiedName(54,15):ASTMCQualifiedName {
+                    enclosingScope = @!Scope;
+                    parts = [ASTStereoValue];
+                  };
+                }@!NameExpression(54,35):ASTNameExpression {
+                  enclosingScope = @!Scope;
+                  name = values;
+                }@!CallExpression(55,35):ASTCallExpression {
+                  enclosingScope = @!Scope(!2);
+                  expression = @!FieldAccessExpression(55,28):ASTFieldAccessExpression {
+                    enclosingScope = @!Scope(!2);
+                    expression = @!CallExpression(55,26):ASTCallExpression {
+                      enclosingScope = @!Scope(!2);
+                      expression = @!FieldAccessExpression(55,18):ASTFieldAccessExpression {
+                        enclosingScope = @!Scope(!2);
+                        expression = @!NameExpression(55,16):ASTNameExpression {
+                          enclosingScope = @!Scope(!2);
+                          name = sv;
+                        };
+                        name = getName;
+                      };
+                      arguments = @!Arguments(55,26):ASTArguments {
+                        enclosingScope = @!Scope(!2);
+                      };
+                    };
+                    name = equals;
+                  };
+                  arguments = @!Arguments(55,35):ASTArguments {
+                    enclosingScope = @!Scope(!2);
+                    expressions = [// *size: 1
+                      @!NameExpression(55,36):ASTNameExpression {
+                        enclosingScope = @!Scope(!2);
+                        name = name;
+                      }];
+                  };
+                }@!ReturnStatement(56,14):ASTReturnStatement {
+                  enclosingScope = @!Scope(!3);
+                  expression = @!LiteralExpression(56,21):ASTLiteralExpression {
+                    enclosingScope = @!Scope(!3);
+                    literal = @!BooleanLiteral(56,21):ASTBooleanLiteral {
+                      enclosingScope = @!Scope(!3);
+                      source = 3;
+                    };
+                  };
+                },
+                @!ReturnStatement(59,10):ASTReturnStatement {
+                  enclosingScope = @UMLStereotype!Scope;
+                  expression = @!LiteralExpression(59,17):ASTLiteralExpression {
+                    enclosingScope = @UMLStereotype!Scope;
+                    literal = @!BooleanLiteral(59,17):ASTBooleanLiteral {
+                      enclosingScope = @UMLStereotype!Scope;
+                      source = 1;
+                    };
+                  };
+                }];
+            };
+            r__public = true;
+            r__private = false;
+            r__protected = false;
+            r__final = false;
+            r__static = false;
+          },
+          @contains!GrammarMethod(61,8):ASTGrammarMethod {
+            enclosingScope = @UMLStereotype!Scope;
+            mCReturnType = @!MCReturnType(61,22):ASTMCReturnType {
+              enclosingScope = @UMLStereotype!Scope;
+              mCType = @boolean!MCPrimitiveType(61,22):ASTMCPrimitiveType {
+                enclosingScope = @UMLStereotype!Scope;
+                primitive = 1;
+              };
+            };
+            name = contains;
+            methodParameters = [// *size: 2
+              @name!MethodParameter(61,39):ASTMethodParameter {
+                enclosingScope = @UMLStereotype!Scope;
+                type = @String!MCQualifiedType(61,39):ASTMCQualifiedType {
+                  enclosingScope = @UMLStereotype!Scope;
+                  mCQualifiedName = @String!MCQualifiedName(61,39):ASTMCQualifiedName {
+                    enclosingScope = @UMLStereotype!Scope;
+                    parts = [String];
+                  };
+                };
+                name = name;
+              },
+              @value!MethodParameter(61,52):ASTMethodParameter {
+                enclosingScope = @UMLStereotype!Scope;
+                type = @String!MCQualifiedType(61,52):ASTMCQualifiedType {
+                  enclosingScope = @UMLStereotype!Scope;
+                  mCQualifiedName = @String!MCQualifiedName(61,52):ASTMCQualifiedName {
+                    enclosingScope = @UMLStereotype!Scope;
+                    parts = [String];
+                  };
+                };
+                name = value;
+              }];
+            body = @!Action(62,10):ASTAction {
+              enclosingScope = @UMLStereotype!Scope;
+              mCBlockStatements = [// *size: 2
+                @ASTStereoValue!MCQualifiedType(62,15):ASTMCQualifiedType {
+                  enclosingScope = @!Scope(!4);
+                  mCQualifiedName = @ASTStereoValue!MCQualifiedName(62,15):ASTMCQualifiedName {
+                    enclosingScope = @!Scope(!4);
+                    parts = [ASTStereoValue];
+                  };
+                }@!NameExpression(62,35):ASTNameExpression {
+                  enclosingScope = @!Scope(!4);
+                  name = values;
+                }@!CallExpression(63,35):ASTCallExpression {
+                  enclosingScope = @!Scope(!5);
+                  expression = @!FieldAccessExpression(63,28):ASTFieldAccessExpression {
+                    enclosingScope = @!Scope(!5);
+                    expression = @!CallExpression(63,26):ASTCallExpression {
+                      enclosingScope = @!Scope(!5);
+                      expression = @!FieldAccessExpression(63,18):ASTFieldAccessExpression {
+                        enclosingScope = @!Scope(!5);
+                        expression = @!NameExpression(63,16):ASTNameExpression {
+                          enclosingScope = @!Scope(!5);
+                          name = sv;
+                        };
+                        name = getName;
+                      };
+                      arguments = @!Arguments(63,26):ASTArguments {
+                        enclosingScope = @!Scope(!5);
+                      };
+                    };
+                    name = equals;
+                  };
+                  arguments = @!Arguments(63,35):ASTArguments {
+                    enclosingScope = @!Scope(!5);
+                    expressions = [// *size: 1
+                      @!NameExpression(63,36):ASTNameExpression {
+                        enclosingScope = @!Scope(!5);
+                        name = name;
+                      }];
+                  };
+                }@!ReturnStatement(64,14):ASTReturnStatement {
+                  enclosingScope = @!Scope(!6);
+                  expression = @!CallExpression(64,41):ASTCallExpression {
+                    enclosingScope = @!Scope(!6);
+                    expression = @!FieldAccessExpression(64,34):ASTFieldAccessExpression {
+                      enclosingScope = @!Scope(!6);
+                      expression = @!CallExpression(64,32):ASTCallExpression {
+                        enclosingScope = @!Scope(!6);
+                        expression = @!FieldAccessExpression(64,23):ASTFieldAccessExpression {
+                          enclosingScope = @!Scope(!6);
+                          expression = @!NameExpression(64,21):ASTNameExpression {
+                            enclosingScope = @!Scope(!6);
+                            name = sv;
+                          };
+                          name = getValue;
+                        };
+                        arguments = @!Arguments(64,32):ASTArguments {
+                          enclosingScope = @!Scope(!6);
+                        };
+                      };
+                      name = equals;
+                    };
+                    arguments = @!Arguments(64,41):ASTArguments {
+                      enclosingScope = @!Scope(!6);
+                      expressions = [// *size: 1
+                        @!NameExpression(64,42):ASTNameExpression {
+                          enclosingScope = @!Scope(!6);
+                          name = value;
+                        }];
+                    };
+                  };
+                },
+                @!ReturnStatement(67,10):ASTReturnStatement {
+                  enclosingScope = @UMLStereotype!Scope;
+                  expression = @!LiteralExpression(67,17):ASTLiteralExpression {
+                    enclosingScope = @UMLStereotype!Scope;
+                    literal = @!BooleanLiteral(67,17):ASTBooleanLiteral {
+                      enclosingScope = @UMLStereotype!Scope;
+                      source = 1;
+                    };
+                  };
+                }];
+            };
+            r__public = true;
+            r__private = false;
+            r__protected = false;
+            r__final = false;
+            r__static = false;
+          },
+          @getValue!GrammarMethod(69,8):ASTGrammarMethod {
+            enclosingScope = @UMLStereotype!Scope;
+            mCReturnType = @!MCReturnType(69,22):ASTMCReturnType {
+              enclosingScope = @UMLStereotype!Scope;
+              mCType = @String!MCQualifiedType(69,22):ASTMCQualifiedType {
+                enclosingScope = @UMLStereotype!Scope;
+                mCQualifiedName = @String!MCQualifiedName(69,22):ASTMCQualifiedName {
+                  enclosingScope = @UMLStereotype!Scope;
+                  parts = [String];
+                };
+              };
+            };
+            name = getValue;
+            methodParameters = [// *size: 1
+              @name!MethodParameter(69,38):ASTMethodParameter {
+                enclosingScope = @UMLStereotype!Scope;
+                type = @String!MCQualifiedType(69,38):ASTMCQualifiedType {
+                  enclosingScope = @UMLStereotype!Scope;
+                  mCQualifiedName = @String!MCQualifiedName(69,38):ASTMCQualifiedName {
+                    enclosingScope = @UMLStereotype!Scope;
+                    parts = [String];
+                  };
+                };
+                name = name;
+              }];
+            body = @!Action(70,10):ASTAction {
+              enclosingScope = @UMLStereotype!Scope;
+              mCBlockStatements = [// *size: 2
+                @ASTStereoValue!MCQualifiedType(70,15):ASTMCQualifiedType {
+                  enclosingScope = @!Scope(!7);
+                  mCQualifiedName = @ASTStereoValue!MCQualifiedName(70,15):ASTMCQualifiedName {
+                    enclosingScope = @!Scope(!7);
+                    parts = [ASTStereoValue];
+                  };
+                }@!NameExpression(70,35):ASTNameExpression {
+                  enclosingScope = @!Scope(!7);
+                  name = values;
+                }@!CallExpression(71,35):ASTCallExpression {
+                  enclosingScope = @!Scope(!8);
+                  expression = @!FieldAccessExpression(71,28):ASTFieldAccessExpression {
+                    enclosingScope = @!Scope(!8);
+                    expression = @!CallExpression(71,26):ASTCallExpression {
+                      enclosingScope = @!Scope(!8);
+                      expression = @!FieldAccessExpression(71,18):ASTFieldAccessExpression {
+                        enclosingScope = @!Scope(!8);
+                        expression = @!NameExpression(71,16):ASTNameExpression {
+                          enclosingScope = @!Scope(!8);
+                          name = sv;
+                        };
+                        name = getName;
+                      };
+                      arguments = @!Arguments(71,26):ASTArguments {
+                        enclosingScope = @!Scope(!8);
+                      };
+                    };
+                    name = equals;
+                  };
+                  arguments = @!Arguments(71,35):ASTArguments {
+                    enclosingScope = @!Scope(!8);
+                    expressions = [// *size: 1
+                      @!NameExpression(71,36):ASTNameExpression {
+                        enclosingScope = @!Scope(!8);
+                        name = name;
+                      }];
+                  };
+                }@!ReturnStatement(72,14):ASTReturnStatement {
+                  enclosingScope = @!Scope(!9);
+                  expression = @!CallExpression(72,32):ASTCallExpression {
+                    enclosingScope = @!Scope(!9);
+                    expression = @!FieldAccessExpression(72,23):ASTFieldAccessExpression {
+                      enclosingScope = @!Scope(!9);
+                      expression = @!NameExpression(72,21):ASTNameExpression {
+                        enclosingScope = @!Scope(!9);
+                        name = sv;
+                      };
+                      name = getValue;
+                    };
+                    arguments = @!Arguments(72,32):ASTArguments {
+                      enclosingScope = @!Scope(!9);
+                    };
+                  };
+                },
+                @!ThrowStatement(75,10):ASTThrowStatement {
+                  enclosingScope = @UMLStereotype!Scope;
+                  expression = @java.util.NoSuchElementException!MCQualifiedType(75,20):ASTMCQualifiedType {
+                    enclosingScope = @UMLStereotype!Scope;
+                    mCQualifiedName = @java.util.NoSuchElementException!MCQualifiedName(75,20):ASTMCQualifiedName {
+                      enclosingScope = @UMLStereotype!Scope;
+                      parts = [java, util, NoSuchElementException];
+                    };
+                  }@!Arguments(75,52):ASTArguments {
+                    enclosingScope = @UMLStereotype!Scope;
+                  };
+                }];
+            };
+            r__public = true;
+            r__private = false;
+            r__protected = false;
+            r__final = false;
+            r__static = false;
+          }];
+      },
+      @!ASTRule(78,4):ASTASTRule {
+        enclosingScope = @UMLStereotype!Scope;
+        type = StereoValue;
+        grammarMethods = [// *size: 1
+          @getValue!GrammarMethod(82,8):ASTGrammarMethod {
+            enclosingScope = @UMLStereotype!Scope;
+            mCReturnType = @!MCReturnType(82,22):ASTMCReturnType {
+              enclosingScope = @UMLStereotype!Scope;
+              mCType = @String!MCQualifiedType(82,22):ASTMCQualifiedType {
+                enclosingScope = @UMLStereotype!Scope;
+                mCQualifiedName = @String!MCQualifiedName(82,22):ASTMCQualifiedName {
+                  enclosingScope = @UMLStereotype!Scope;
+                  parts = [String];
+                };
+              };
+            };
+            name = getValue;
+            body = @!Action(83,10):ASTAction {
+              enclosingScope = @UMLStereotype!Scope;
+              mCBlockStatements = [// *size: 2
+                @!EqualsExpression(83,21):ASTEqualsExpression {
+                  enclosingScope = @UMLStereotype!Scope;
+                  left = @!NameExpression(83,13):ASTNameExpression {
+                    enclosingScope = @UMLStereotype!Scope;
+                    name = content;
+                  };
+                  operator = ==;
+                  right = @!LiteralExpression(83,24):ASTLiteralExpression {
+                    enclosingScope = @UMLStereotype!Scope;
+                    literal = @!NullLiteral(83,24):ASTNullLiteral {
+                      enclosingScope = @UMLStereotype!Scope;
+                    };
+                  };
+                }@!CallExpression(84,30):ASTCallExpression {
+                  enclosingScope = @!Scope(!10);
+                  expression = @!FieldAccessExpression(84,20):ASTFieldAccessExpression {
+                    enclosingScope = @!Scope(!10);
+                    expression = @!NameExpression(84,16):ASTNameExpression {
+                      enclosingScope = @!Scope(!10);
+                      name = text;
+                    };
+                    name = isPresent;
+                  };
+                  arguments = @!Arguments(84,30):ASTArguments {
+                    enclosingScope = @!Scope(!10);
+                  };
+                }@!AssignmentExpression(85,22):ASTAssignmentExpression {
+                  enclosingScope = @!Scope(!11);
+                  left = @!NameExpression(85,14):ASTNameExpression {
+                    enclosingScope = @!Scope(!11);
+                    name = content;
+                  };
+                  right = @!CallExpression(85,76):ASTCallExpression {
+                    enclosingScope = @!Scope(!11);
+                    expression = @!FieldAccessExpression(85,63):ASTFieldAccessExpression {
+                      enclosingScope = @!Scope(!11);
+                      expression = @!FieldAccessExpression(85,45):ASTFieldAccessExpression {
+                        enclosingScope = @!Scope(!11);
+                        expression = @!FieldAccessExpression(85,36):ASTFieldAccessExpression {
+                          enclosingScope = @!Scope(!11);
+                          expression = @!FieldAccessExpression(85,26):ASTFieldAccessExpression {
+                            enclosingScope = @!Scope(!11);
+                            expression = @!NameExpression(85,24):ASTNameExpression {
+                              enclosingScope = @!Scope(!11);
+                              name = de;
+                            };
+                            name = monticore;
+                          };
+                          name = literals;
+                        };
+                        name = MCLiteralsDecoder;
+                      };
+                      name = decodeString;
+                    };
+                    arguments = @!Arguments(85,76):ASTArguments {
+                      enclosingScope = @!Scope(!11);
+                      expressions = [// *size: 1
+                        @!CallExpression(86,39):ASTCallExpression {
+                          enclosingScope = @!Scope(!11);
+                          expression = @!FieldAccessExpression(86,30):ASTFieldAccessExpression {
+                            enclosingScope = @!Scope(!11);
+                            expression = @!CallExpression(86,28):ASTCallExpression {
+                              enclosingScope = @!Scope(!11);
+                              expression = @!FieldAccessExpression(86,24):ASTFieldAccessExpression {
+                                enclosingScope = @!Scope(!11);
+                                expression = @!NameExpression(86,20):ASTNameExpression {
+                                  enclosingScope = @!Scope(!11);
+                                  name = text;
+                                };
+                                name = get;
+                              };
+                              arguments = @!Arguments(86,28):ASTArguments {
+                                enclosingScope = @!Scope(!11);
+                              };
+                            };
+                            name = getValue;
+                          };
+                          arguments = @!Arguments(86,39):ASTArguments {
+                            enclosingScope = @!Scope(!11);
+                          };
+                        }];
+                    };
+                  };
+                  operator = 2;
+                }@!AssignmentExpression(88,22):ASTAssignmentExpression {
+                  enclosingScope = @!Scope(!12);
+                  left = @!NameExpression(88,14):ASTNameExpression {
+                    enclosingScope = @!Scope(!12);
+                    name = content;
+                  };
+                  right = @!LiteralExpression(88,24):ASTLiteralExpression {
+                    enclosingScope = @!Scope(!12);
+                    literal = @!StringLiteral(88,24):ASTStringLiteral {
+                      enclosingScope = @!Scope(!12);
+                      source = ;
+                    };
+                  };
+                  operator = 2;
+                },
+                @!ReturnStatement(91,10):ASTReturnStatement {
+                  enclosingScope = @UMLStereotype!Scope;
+                  expression = @!NameExpression(91,17):ASTNameExpression {
+                    enclosingScope = @UMLStereotype!Scope;
+                    name = content;
+                  };
+                }];
+            };
+            r__public = true;
+            r__private = false;
+            r__protected = false;
+            r__final = false;
+            r__static = false;
+          }];
+        additionalAttributes = [// *size: 1
+          @content!AdditionalAttribute(81,8):ASTAdditionalAttribute {
+            symbol = @content!Symbol(81,8);
+            enclosingScope = @UMLStereotype!Scope;
+            name = "content";
+            mCType = @String!MCQualifiedType(81,16):ASTMCQualifiedType {
+              enclosingScope = @UMLStereotype!Scope;
+              mCQualifiedName = @String!MCQualifiedName(81,16):ASTMCQualifiedName {
+                enclosingScope = @UMLStereotype!Scope;
+                parts = [String];
+              };
+            };
+          }];
+      }];
+    splitRules = [// *size: 1
+      @!SplitRule(38,4):ASTSplitRule {
+        enclosingScope = @UMLStereotype!Scope;
+        strings = [>>];
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

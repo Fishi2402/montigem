@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { GemGridExampleComponent, config } from '@src/example_arrange/GemGridExampleComponent';
+import { GemGridExampleComponent, config } from 'example_arrange/GemGridExampleComponent';
 import { Component } from '@angular/core';
 
 @Component({

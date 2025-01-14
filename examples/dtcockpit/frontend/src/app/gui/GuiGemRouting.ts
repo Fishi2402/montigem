@@ -1,6 +1,6 @@
 import {Route} from "@angular/router";
-import {routes as routesTOP} from "@src/gui/GuiGemRoutingTOP"
-import { routes as LoginmoduleRoutes } from "@src/gui/loginmodule/LoginmoduleGemRouting";
+import {routes as routesTOP} from "gui/GuiGemRoutingTOP"
+import { routes as LoginmoduleRoutes } from "gui/loginmodule/LoginmoduleGemRouting";
 
 export const routes: Route[] = [
   ...routesTOP,

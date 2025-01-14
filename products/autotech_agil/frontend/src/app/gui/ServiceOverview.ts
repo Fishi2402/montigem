@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
-import { Service } from '@src/autotechagil/Service';
+import { Service } from 'autotechagil/Service';
 import { Component } from '@angular/core';
-import { ServiceOverviewComponent, config } from '@src/gui/ServiceOverviewComponent';
+import { ServiceOverviewComponent, config } from 'gui/ServiceOverviewComponent';
 import { Event } from '@umlp/common';
 
 @Component({

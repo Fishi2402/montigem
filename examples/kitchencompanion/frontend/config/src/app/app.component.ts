@@ -5,7 +5,7 @@ import {
   ClientCommandWebsocketCommunication,
   CommandManager
 } from '@umlp/common';
-import {KitchenCompanionManagerClientImpl} from '@src/kitchencompanion/KitchenCompanionManagerClientImpl';
+import {KitchenCompanionManagerClientImpl} from 'kitchencompanion/KitchenCompanionManagerClientImpl';
 
 @Component({
   selector: 'app-root',

@@ -33,6 +33,24 @@ public abstract class UMLPGuiGenTask extends UMLPAllFilesTask {
   // @Incremental I am not sure if this _should_ be incremental?
   public abstract DirectoryProperty getModelDir();
 
+  private final ConfigurableFileCollection importsDir = getProject().getObjects().fileCollection();
+
+  @InputFiles
+  public ConfigurableFileCollection getImportsDir() {
+    return importsDir;
+  }
+
+  public void setImportsDir(File f){
+    importsDir.from(f);
+  }
+
+  public void setImportsDir(Iterable<File> f){
+    importsDir.from(f);
+  }
+  public void setImportsDir(Object... paths) {
+    importsDir.from(paths);
+  }
+
   private final ConfigurableFileCollection symbolDir = getProject().getObjects().fileCollection();
 
   @InputFiles
@@ -75,6 +93,9 @@ public abstract class UMLPGuiGenTask extends UMLPAllFilesTask {
   @org.gradle.api.tasks.Optional
   public abstract Property<Boolean> getGuiGenJsweet();
 
+  @Input
+  @org.gradle.api.tasks.Optional
+  public abstract Property<Boolean> getGen4TSLib();
 
   /**
    * @param f file which should be checked
@@ -97,6 +118,13 @@ public abstract class UMLPGuiGenTask extends UMLPAllFilesTask {
       for (var symDir : this.getSymbolDir()) {
         result.add("-path");
         result.add(symDir.getAbsolutePath());
+      }
+    }
+
+    if (!this.getSymbolDir().isEmpty()) {
+      for (var importDir : this.getImportsDir()) {
+        result.add("-" + UMLPToolOptions.IMPORTS_PATH.getCMD());
+        result.add(importDir.getAbsolutePath());
       }
     }
 
@@ -133,6 +161,10 @@ public abstract class UMLPGuiGenTask extends UMLPAllFilesTask {
     if (this.getGuiGenJsweet().isPresent()) {
       result.add("-" + UMLPToolOptions.GUI_GEN_JSWEET.getCMD());
       result.add(this.getGuiGenJsweet().get() + "");
+    }
+
+    if (this.getGen4TSLib().isPresent()) {
+      result.add("-" + UMLPToolOptions.GUI_GEN_FOR_TS_LIB.getCMD());
     }
 
     return result;

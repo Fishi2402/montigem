@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { ForecastUpdateComponent,config } from '@src/gui/ForecastUpdateComponent';
+import { ForecastUpdateComponent,config } from 'gui/ForecastUpdateComponent';
 @Component({
   standalone:true,
   imports:[... config.imports],

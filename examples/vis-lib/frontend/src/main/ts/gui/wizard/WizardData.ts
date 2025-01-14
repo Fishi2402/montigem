@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 
-import {GemButton, GemCheckbox, GemImage, GemLink, GemText} from "@umlp/basic";
-import {GemCard, GemColumn, GemColumns,  GemRow, GemRows} from "@umlp/arrange";
+import {GemButton, GemImage, GemLink, GemText} from "@umlp/basic";
+import {GemCard, GemColumn, GemRow} from "@umlp/arrange";
 
-import {WizardContainer} from "@src/wizard/WizardContainer";
+import {WizardContainer} from "wizard/WizardContainer";
 
 interface InspectData {
   [key: string]: {
@@ -60,15 +60,6 @@ export const WIZARD_DATA: { [name: string]: WizData } = {
       return {text: 'Link', url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'}
     }]
   },
-  'GemCheckbox': {
-    componentName: 'GemCheckbox',
-    inspect: {
-      checkboxItem: {format: "string"},
-    },
-    new: [GemCheckbox, () => {
-      return {checkboxItem: 'GemCheckbox'}
-    }]
-  },
   'GemImage': {
     componentName: 'GemImage',
     inspect: {
@@ -100,19 +91,6 @@ export const WIZARD_DATA: { [name: string]: WizData } = {
       };
     }]
   },
-  'GemRows': {
-    componentName: 'GemRows',
-    inspect: {
-      height: {format: "string"},
-    },
-    new: [WizardContainer, () => {
-      return {
-        containerType: GemRows,
-        humanReadableName: "GemRows",
-        containerInputs: {},
-      };
-    }]
-  },
   'GemColumn': {
     componentName: 'GemColumn',
     inspect: {
@@ -129,19 +107,6 @@ export const WIZARD_DATA: { [name: string]: WizData } = {
         containerType: GemColumn,
         humanReadableName: "GemColumn",
         containerInputs: {},
-      };
-    }]
-  },
-  'GemColumns': {
-    componentName: 'GemColumns',
-    inspect: {
-    },
-    new: [WizardContainer, () => {
-      return {
-        containerType: GemColumns,
-        humanReadableName: "GemColumns",
-        containerInputs: {},
-        innerNames: {"column1": -1, "column2": -1, "column3": -1}
       };
     }]
   },

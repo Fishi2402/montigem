@@ -2,6 +2,7 @@
 package domain;
 
 import mc.fenix.charts.gembarcharttypes.GemBarChartTypesDeSer;
+import mc.fenix.charts.gempiecharttypes.GemPieChartTypesDeSer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -29,6 +30,7 @@ public class DomainServerApplication extends domain.DomainServerApplicationTOP {
     super.init();
 
     BaseClassObjectMapper.addDeSers(new ArrayList<>(GemBarChartTypesDeSer.getInstance().getDeSerMap().entrySet()));
+    BaseClassObjectMapper.addDeSers(new ArrayList<>(GemPieChartTypesDeSer.getInstance().getDeSerMap().entrySet()));
     createDummyData();
   }
 

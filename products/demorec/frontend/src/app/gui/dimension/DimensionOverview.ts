@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { Dimension } from '@src/demorec/Dimension';
+import { Dimension } from 'demorec/Dimension';
 
 import { DimensionOverviewComponent, config } from '../../../../build/frontendGen/build/appgui/gui/dimension/DimensionOverviewComponent';
 

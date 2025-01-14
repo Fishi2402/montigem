@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { GemTreeViewExampleComponent, config } from '@src/example_arrange/GemTreeViewExampleComponent';
+import { GemTreeViewExampleComponent, config } from 'example_arrange/GemTreeViewExampleComponent';
 import { Component } from '@angular/core';
 
 @Component({

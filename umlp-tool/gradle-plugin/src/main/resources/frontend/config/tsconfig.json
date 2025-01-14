@@ -27,11 +27,14 @@
       "dom"
     ],
     "paths": {
-      "@src/*": ["build/appdomain/*", "build/appgui/*", "src/app/*", "../../src/app/*", "../umlp/fe2/*"],
-      "@angular/*": ["node_modules/@angular/*"],
-      "@umlp/*": ["node_modules/@umlp/*"],
-      "@monticore/*": ["node_modules/@monticore/*"],
-      "tslib": ["node_modules/tslib"]
+      "*": [
+        "build/appdomain/*",
+        "build/appgui/*",
+        "src/app/*",
+        "../../src/app/*",
+        "../umlp/fe2/*",
+        "node_modules/*"
+      ]
     }
   },
   "include": [

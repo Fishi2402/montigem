@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { CityInfo } from '@src/hardy/flensburg/CityInfo';
-import { Person } from '@src/hardy/flensburg/Person';
+import { CityInfo } from 'hardy/flensburg/CityInfo';
+import { Person } from 'hardy/flensburg/Person';
 import {CommandManager} from "@umlp/common";
-import {Transaction} from "@src/hardy/flensburg/Transaction";
-import {MonthlyReportClientImplTOP} from "@src/hardy/flensburg/MonthlyReportClientImplTOP";
+import {Transaction} from "hardy/flensburg/Transaction";
+import {MonthlyReportClientImplTOP} from "hardy/flensburg/MonthlyReportClientImplTOP";
 
 export class MonthlyReportClientImpl extends MonthlyReportClientImplTOP {
 

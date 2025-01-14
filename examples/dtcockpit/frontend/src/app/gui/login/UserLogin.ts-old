@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {Component} from '@angular/core';
-import {UserLoginComponent,config} from '@src/gui/login/UserLoginComponent';
-import {User} from '@src/dtcockpit/User';
+import {UserLoginComponent,config} from 'gui/login/UserLoginComponent';
+import {User} from 'dtcockpit/User';
 import {DtcockpitSecurityManager} from "../../dtcockpit/DtcockpitSecurityManager";
 
 import { ClientCommandManager, CommandManager } from '@umlp/common';

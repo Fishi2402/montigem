@@ -1,0 +1,257 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram basicsymbols_AST {
+  @BasicSymbols!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @BasicSymbols!Symbol(2,0);
+    enclosingScope = @BasicSymbols!ArtifactScope;
+    spanningScope = @BasicSymbols!Scope;
+    r__package = [de, monticore, symbols];
+    importStatement = [// *size: 1
+      @!MCImportStatement(7,0):ASTMCImportStatement {
+        enclosingScope = @BasicSymbols!Scope;
+        mCQualifiedName = @de.monticore!MCQualifiedName(7,7):ASTMCQualifiedName {
+          enclosingScope = @BasicSymbols!Scope;
+          parts = [de, monticore];
+        };
+        star = true;
+      }];
+    name = BasicSymbols;
+    supergrammar = [// *size: 1
+      @MCBasics!GrammarReference(32,39):ASTGrammarReference {
+        enclosingScope = @BasicSymbols!Scope;
+        names = [de, monticore, MCBasics];
+      }];
+    interfaceProds = [// *size: 5
+      @Diagram!InterfaceProd(44,2):ASTInterfaceProd {
+        enclosingScope = @BasicSymbols!Scope;
+        symbolDefinitions = [// *size: 1
+          @!SymbolDefinition(44,12):ASTSymbolDefinition {
+            enclosingScope = @Diagram!Scope;
+            genSymbol = true;
+            genScope = false;
+            shadowing = false;
+            non_exporting = false;
+            ordered = false;
+          }];
+        alt = [// *size: 1
+          @!Alt(44,29):ASTAlt {
+            enclosingScope = @Diagram!Scope;
+            component = [// *size: 1
+              @Name!NonTerminal(44,29):ASTNonTerminal {
+                enclosingScope = @Diagram!Scope;
+                name = Name;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = Diagram;
+      },
+      @Type!InterfaceProd(57,2):ASTInterfaceProd {
+        enclosingScope = @BasicSymbols!Scope;
+        symbolDefinitions = [// *size: 2
+          @!SymbolDefinition(57,12):ASTSymbolDefinition {
+            enclosingScope = @Type!Scope;
+            genSymbol = false;
+            genScope = true;
+            shadowing = false;
+            non_exporting = false;
+            ordered = false;
+          },
+          @!SymbolDefinition(57,18):ASTSymbolDefinition {
+            enclosingScope = @Type!Scope;
+            genSymbol = true;
+            genScope = false;
+            shadowing = false;
+            non_exporting = false;
+            ordered = false;
+          }];
+        alt = [// *size: 1
+          @!Alt(57,32):ASTAlt {
+            enclosingScope = @Type!Scope;
+            component = [// *size: 1
+              @Name!NonTerminal(57,32):ASTNonTerminal {
+                enclosingScope = @Type!Scope;
+                name = Name;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = Type;
+      },
+      @TypeVar!InterfaceProd(69,2):ASTInterfaceProd {
+        enclosingScope = @BasicSymbols!Scope;
+        symbolDefinitions = [// *size: 1
+          @!SymbolDefinition(69,12):ASTSymbolDefinition {
+            enclosingScope = @TypeVar!Scope;
+            genSymbol = true;
+            genScope = false;
+            shadowing = false;
+            non_exporting = false;
+            ordered = false;
+          }];
+        superInterfaceRule = [// *size: 1
+          @Type!RuleReference(69,35):ASTRuleReference {
+            enclosingScope = @TypeVar!Scope;
+            name = Type;
+          }];
+        alt = [// *size: 1
+          @!Alt(69,42):ASTAlt {
+            enclosingScope = @TypeVar!Scope;
+            component = [// *size: 1
+              @Name!NonTerminal(69,42):ASTNonTerminal {
+                enclosingScope = @TypeVar!Scope;
+                name = Name;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = TypeVar;
+      },
+      @Variable!InterfaceProd(76,2):ASTInterfaceProd {
+        enclosingScope = @BasicSymbols!Scope;
+        symbolDefinitions = [// *size: 1
+          @!SymbolDefinition(76,12):ASTSymbolDefinition {
+            enclosingScope = @Variable!Scope;
+            genSymbol = true;
+            genScope = false;
+            shadowing = false;
+            non_exporting = false;
+            ordered = false;
+          }];
+        alt = [// *size: 1
+          @!Alt(76,30):ASTAlt {
+            enclosingScope = @Variable!Scope;
+            component = [// *size: 1
+              @Name!NonTerminal(76,30):ASTNonTerminal {
+                enclosingScope = @Variable!Scope;
+                name = Name;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = Variable;
+      },
+      @Function!InterfaceProd(89,2):ASTInterfaceProd {
+        enclosingScope = @BasicSymbols!Scope;
+        symbolDefinitions = [// *size: 2
+          @!SymbolDefinition(89,12):ASTSymbolDefinition {
+            enclosingScope = @Function!Scope;
+            genSymbol = false;
+            genScope = true;
+            shadowing = false;
+            non_exporting = false;
+            ordered = false;
+          },
+          @!SymbolDefinition(89,18):ASTSymbolDefinition {
+            enclosingScope = @Function!Scope;
+            genSymbol = true;
+            genScope = false;
+            shadowing = false;
+            non_exporting = false;
+            ordered = false;
+          }];
+        alt = [// *size: 1
+          @!Alt(89,36):ASTAlt {
+            enclosingScope = @Function!Scope;
+            component = [// *size: 1
+              @Name!NonTerminal(89,36):ASTNonTerminal {
+                enclosingScope = @Function!Scope;
+                name = Name;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = Function;
+      }];
+    symbolRules = [// *size: 3
+      @!SymbolRule(59,2):ASTSymbolRule {
+        enclosingScope = @BasicSymbols!Scope;
+        type = Type;
+        additionalAttributes = [// *size: 1
+          @superTypes!AdditionalAttribute(60,4):ASTAdditionalAttribute {
+            symbol = @superTypes!Symbol(60,4);
+            enclosingScope = @BasicSymbols!Scope;
+            name = "superTypes";
+            mCType = @de.monticore.types.check.SymTypeExpression!MCQualifiedType(60,16):ASTMCQualifiedType {
+              enclosingScope = @BasicSymbols!Scope;
+              mCQualifiedName = @de.monticore.types.check.SymTypeExpression!MCQualifiedName(60,16):ASTMCQualifiedName {
+                enclosingScope = @BasicSymbols!Scope;
+                parts = [de, monticore, types, check, SymTypeExpression];
+              };
+            };
+            card = @!Card(60,58):ASTCard {
+              enclosingScope = @BasicSymbols!Scope;
+              iteration = 21;
+            };
+          }];
+      },
+      @!SymbolRule(78,2):ASTSymbolRule {
+        enclosingScope = @BasicSymbols!Scope;
+        type = Variable;
+        additionalAttributes = [// *size: 2
+          @type!AdditionalAttribute(79,4):ASTAdditionalAttribute {
+            symbol = @type!Symbol(79,4);
+            enclosingScope = @BasicSymbols!Scope;
+            name = "type";
+            mCType = @de.monticore.types.check.SymTypeExpression!MCQualifiedType(79,10):ASTMCQualifiedType {
+              enclosingScope = @BasicSymbols!Scope;
+              mCQualifiedName = @de.monticore.types.check.SymTypeExpression!MCQualifiedName(79,10):ASTMCQualifiedName {
+                enclosingScope = @BasicSymbols!Scope;
+                parts = [de, monticore, types, check, SymTypeExpression];
+              };
+            };
+          },
+          @isReadOnly!AdditionalAttribute(80,4):ASTAdditionalAttribute {
+            symbol = @isReadOnly!Symbol(80,4);
+            enclosingScope = @BasicSymbols!Scope;
+            name = "isReadOnly";
+            mCType = @boolean!MCPrimitiveType(80,16):ASTMCPrimitiveType {
+              enclosingScope = @BasicSymbols!Scope;
+              primitive = 1;
+            };
+          }];
+      },
+      @!SymbolRule(91,2):ASTSymbolRule {
+        enclosingScope = @BasicSymbols!Scope;
+        type = Function;
+        additionalAttributes = [// *size: 2
+          @isElliptic!AdditionalAttribute(92,4):ASTAdditionalAttribute {
+            symbol = @isElliptic!Symbol(92,4);
+            enclosingScope = @BasicSymbols!Scope;
+            name = "isElliptic";
+            mCType = @boolean!MCPrimitiveType(92,16):ASTMCPrimitiveType {
+              enclosingScope = @BasicSymbols!Scope;
+              primitive = 1;
+            };
+          },
+          @type!AdditionalAttribute(93,4):ASTAdditionalAttribute {
+            symbol = @type!Symbol(93,4);
+            enclosingScope = @BasicSymbols!Scope;
+            name = "type";
+            mCType = @de.monticore.types.check.SymTypeExpression!MCQualifiedType(93,10):ASTMCQualifiedType {
+              enclosingScope = @BasicSymbols!Scope;
+              mCQualifiedName = @de.monticore.types.check.SymTypeExpression!MCQualifiedName(93,10):ASTMCQualifiedName {
+                enclosingScope = @BasicSymbols!Scope;
+                parts = [de, monticore, types, check, SymTypeExpression];
+              };
+            };
+          }];
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

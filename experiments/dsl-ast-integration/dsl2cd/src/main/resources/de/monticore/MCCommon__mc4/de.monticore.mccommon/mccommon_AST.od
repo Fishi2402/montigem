@@ -1,0 +1,43 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram mccommon_AST {
+  @MCCommon!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @MCCommon!Symbol(2,0);
+    enclosingScope = @MCCommon!ArtifactScope;
+    spanningScope = @MCCommon!Scope;
+    r__package = [de, monticore];
+    importStatement = [// *size: 1
+      @!MCImportStatement(7,0):ASTMCImportStatement {
+        enclosingScope = @MCCommon!Scope;
+        mCQualifiedName = @de.monticore!MCQualifiedName(7,7):ASTMCQualifiedName {
+          enclosingScope = @MCCommon!Scope;
+          parts = [de, monticore];
+        };
+        star = true;
+      }];
+    name = MCCommon;
+    supergrammar = [// *size: 4
+      @Cardinality!GrammarReference(17,18):ASTGrammarReference {
+        enclosingScope = @MCCommon!Scope;
+        names = [Cardinality];
+      },
+      @Completeness!GrammarReference(18,18):ASTGrammarReference {
+        enclosingScope = @MCCommon!Scope;
+        names = [Completeness];
+      },
+      @UMLModifier!GrammarReference(19,18):ASTGrammarReference {
+        enclosingScope = @MCCommon!Scope;
+        names = [UMLModifier];
+      },
+      @UMLStereotype!GrammarReference(20,18):ASTGrammarReference {
+        enclosingScope = @MCCommon!Scope;
+        names = [UMLStereotype];
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

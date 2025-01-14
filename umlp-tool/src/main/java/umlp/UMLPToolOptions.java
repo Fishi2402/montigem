@@ -44,6 +44,8 @@ public enum UMLPToolOptions {
       .desc("Fully qualified names of the domain models, space separated").build()),
   MODEl_PATH(Option.builder("mp").longOpt("modelPath").hasArgs()
       .desc("Sets the artifact path for imported models, space separated").build()),
+  IMPORTS_PATH(Option.builder("ip").longOpt("importsPath").hasArgs()
+      .desc("Sets the artifact path for files that are imported by the generated artifacts, space separated").build()),
   MODULE_CONFIG(Option.builder("m").longOpt("module-config").hasArgs()
       .desc("Fully qualified name(s) of config template(s) for added modules").build()),
   MERGE(Option.builder("mrg").longOpt("merge").hasArgs().desc("Parses the files as additional CDs" +
@@ -63,6 +65,8 @@ public enum UMLPToolOptions {
       .desc("Flag which determines whether TS functionality should directly be generated from GUI models").build()),
   GUI_GEN_JSWEET(Option.builder("jsweet").longOpt("guiGenJsweet").hasArgs()
       .desc("Flag which determines whether TS code should be transpiled instead of generated from GUI models directly").build()),
+  GUI_GEN_FOR_TS_LIB(Option.builder("gui4tslib")
+      .desc("Flag which determines whether generation schema is adjusted for a TS library").build()),
   USE_SPRING(Option.builder("use_spring").desc("If the backend is generated, generate additional spring classes").build()),
   USE_SHELL(Option.builder("use_shell").desc("If the backend is generated, generate additional spring shell classes").build()),
   USE_PLAYWRIGHT(Option.builder("use_playwright").desc("If spring classes are generated, generate additional playwright e2e infrastructure").build());

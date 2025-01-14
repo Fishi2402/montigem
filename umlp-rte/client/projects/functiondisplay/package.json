@@ -1,0 +1,15 @@
+{
+  "peerDependencies": {
+    "@angular/common": "^17.0.7",
+    "@angular/forms": "^17.0.7",
+    "@angular/core": "^17.0.7",
+    "rxjs": "~7.8.0"
+  },
+  "name": "@umlp/functiondisplay",
+  "version": "7.6.5",
+  "sideEffects": false,
+  "dependencies": {
+    "elkjs": "^0.9.3",
+    "tslib": "^2.3.0"
+  }
+}

@@ -5,7 +5,7 @@ ${tc.signature("glex")}
 <#--Instead we use a hookpoint-->
 ${bindHookPoint("component.InitPageBody", tc.instantiate("de.monticore.generating.templateengine.TemplateHookPoint", ["login_module.frontend.LoginFrontendPageNGOnInit"]))}
 ${bindHookPoint("component.GUI2AngularInitBodyInner", tc.instantiate("de.monticore.generating.templateengine.TemplateHookPoint", ["login_module.frontend.LoginFrontendPageNGOnInit"]))}
-${mod.addModuleToHookpoint("umlp.gui2ts.TSEmptyImports",  "login_module.frontend.LoginFrontendPageImport")}
+${mod.addModuleToHookpoint("umlp.gui2ts.TSEmptyImportsNoAST",  "login_module.frontend.LoginFrontendPageImport")}
 
 
 <#--${mod.addModuleToHookpoint("umlp.generator.hook.AfterTransformGui2C",  "login_module.frontend.LoginFrontend_AfterTransformGui2C")}-->
