@@ -21,6 +21,7 @@ export class Navigation {
     { url: '/person/SimpleOverview', title: 'Overview' },
     { url: '/example_basic/GemAudioExample', title: 'Audio' },
     { url: '/example_basic/GemButtonExample', title: 'Button' },
+    { url: '/example_basic/GemIconExample', title: 'Icon' },
     { url: '/example_basic/GemImageExample', title: 'Image' },
     { url: '/example_basic/GemLinkExample', title: 'Link' },
     { url: '/example_basic/GemTextExample', title: 'Text' },

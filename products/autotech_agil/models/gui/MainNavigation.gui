@@ -9,7 +9,8 @@ component MainNavigation () {
   @GemNavList(components = [
     @GemRow(components = [
       @GemNavItem(title = "Start", target = "/gui/Start"),
-      @GemNavItem(title = "Overview", target = "/gui/ServiceOverview/0")
+      @GemNavItem(title = "Overview", target = "/gui/ServiceOverview/0"),
+      @GemNavItem(title = "Orchestrator", target = "/gui/Orchestrator")
     ])
   ]);
 }

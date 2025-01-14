@@ -6,12 +6,8 @@ import mc.fenix.arrange.GemColumn;
 import mc.fenix.arrange.GemRow;
 import mc.fenix.arrange.GemTreeNode;
 
-import gui.ServiceNavigation;
-import gui.MainNavigation;
-
 import AutoTechAgil.Service;
 import AutoTechAgil.Port;
-import gui.PortDetail;
 
 page ServiceOverview (List<Service> services, Port selectedPort) {
   @NavContainer(content = [

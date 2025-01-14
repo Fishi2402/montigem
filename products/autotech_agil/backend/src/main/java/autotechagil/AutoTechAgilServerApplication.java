@@ -24,7 +24,7 @@ public class AutoTechAgilServerApplication extends AutoTechAgilServerApplication
   public void init() throws IOException {
     super.init();
 
-    this.createDummyData();
+    //this.createDummyData();
   }
 
   public void createDummyData() {

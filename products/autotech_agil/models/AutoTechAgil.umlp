@@ -22,28 +22,61 @@ classdiagram AutoTechAgil {
 
   class Service {
     String name;
+    boolean isActive;
+    QualityStatus systemSelfAssessment;
+    /QualityStatus serviceSelfAssessment;
   }
 
-  class Channel;
-
-  /**
-   Since Fenix currently does not support qualified associations, we emulate them using the `Port`
-   class:
-   For each qualifier from `Function` to a Channel in the original model, here the `Function`
-   contains an instance of port, which contains the relevant name qualifing the channel from the
-   function.
-
-   We adapted `Function` with the handwritten methods `String getInChannel(String name)` and
-   `String getOutChannel(String name)`, such that it can be used as if the associations are
-   qualified.
-  */
   class Port {
     String name;
   }
 
   // TODO: Outgoing relations von Port nach Channel durch Port nach FunctionStream ersetzen
 
+  association [0..1] Service (ownerIn) -> (in) Port [*];
+  association [0..1] Service (ownerOut) -> (out) Port [*];
+
+  //association [*] Port <-> Channel [1];
+
+  association [*] Port -> Category [1];
+  composition [0..1] Service (owner) <-> (subFunction) Service [*];
+
+  class FunctionStream;
+
+  association [*] FunctionStream -> Category [1];
+  association [0..1] Port <-> FunctionStream [0..1];
+  composition [0..1] Service -> (state) FunctionStream [0..1];
+
+  class Category {
+    Optional<Boolean> continuous; // a false value stands for a discrete category
+    -> Kind [0..1];
+    -> Type [1];
+  }
+
+  class Kind {
+    Optional<String> specifier;
+  }
+
+  class Energy extends Kind;
+  class Material extends Kind;
+  class Data extends Kind;
+
+  class Type {
+    String mctype;
+  }
+
+  class Observation {
+    LocalDateTime start;
+    LocalDateTime end;
+  }
+
+  association [*] Observation <-> FunctionStream [1];
+  association [*] Observation -> Category [1];
+
   class Value;
+
+  association [0..1] FunctionStream -> Value [*] {ordered};
+  association [*] Observation -> Value [*] {ordered};
 
   // TODO: Eigene Value-Klassen definieren
   class ServiceValue extends Value {
@@ -70,6 +103,4 @@ classdiagram AutoTechAgil {
     RED, YELLOW, GREEN;
   }
 
-  association [0..1] Service (ownerIn) -> (in) Port [*];
-  association [0..1] Service (ownerOut) -> (out) Port [*];
 }
