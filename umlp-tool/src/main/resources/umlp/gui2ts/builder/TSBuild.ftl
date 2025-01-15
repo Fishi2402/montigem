@@ -12,8 +12,8 @@ if (!this.buildFinished) {
     <#if genService.isList(assoc)>
       this._${assoc.getName()}.build();
     <#else>
-      //at the time of writing we assume that every other attribute is a Gem on something which implements GemBuildable
-      if (this._${assoc.getName()}.isPresent() && this._${assoc.getName()}.get().build() == null) {
+      //at the time of writing we assume that every non-list association is a Gem on something which implements GemBuildable
+      if (this._${assoc.getName()}.getLoadingState() == LoadingState.LOADED && this._${assoc.getName()}.get().build() == null) {
         //let the build fail
         ${name}ErrorCollector.report${assoc.getName()?cap_first}Invalid(this);
         return null;

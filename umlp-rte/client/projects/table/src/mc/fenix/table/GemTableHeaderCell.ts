@@ -14,6 +14,9 @@ export class GemTableHeaderCell extends GemTableHeaderCellComponent {
   @ViewChild('tableHeaderCellTemplate', { static: true })
   tableHeaderCellTemplate: TemplateRef<any>;
 
+  override _colSpan: number = 1;
+  override _rowSpan: number = 1;
+
   constructor(private viewContainerRef: ViewContainerRef) {
     super();
   }
