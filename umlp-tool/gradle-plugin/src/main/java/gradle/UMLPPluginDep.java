@@ -10,6 +10,7 @@ import gradle.specific.serialize.SerializeGUISymbolsTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.attributes.Bundling;
 
 /**
  * Sets up all tasks with their required Tool-classpath
@@ -21,10 +22,6 @@ public abstract class UMLPPluginDep implements Plugin<Project> {
 
   @Override
     public void apply(Project project) {
-      // We require java-library to differentiate between runtimeElements and shadowRuntimeElements
-      project.getPluginManager().apply("java-library");
-
-      // Load the actual UMLP-Tool as a dependency of the "umlpTool" configuration
       var toolConfig = project.getConfigurations().maybeCreate(UMLP_CONFIG_TOOL);
       toolConfig.setCanBeResolved(true);
       toolConfig.defaultDependencies(dependencies -> {
@@ -32,8 +29,11 @@ public abstract class UMLPPluginDep implements Plugin<Project> {
         dependencies.add(project.getDependencies().create("de.monticore.lang:cd4analysis:7.7.0-SNAPSHOT:cdmerge"));
         dependencies.add(project.getDependencies().create("de.monticore.lang:od:7.7.0-SNAPSHOT"));
       });
+      toolConfig.attributes(it -> {
+        // Do not use the shadowed bundling variant
+        it.attribute(Bundling.BUNDLING_ATTRIBUTE, project.getObjects().named(Bundling.class, Bundling.EXTERNAL));
+      });
 
-      // And add it to the classpath of various tasks
       project.getTasks().withType(UMLPSingleFileTask.class).configureEach(t -> t.getExtraClasspathElements().from(toolConfig));
       project.getTasks().withType(UMLPAllFilesTask.class).configureEach(t -> t.getExtraClasspathElements().from(toolConfig));
       project.getTasks().withType(SerializeCDSymbolsTask.class).configureEach(t -> t.getClassPath().from(toolConfig));
