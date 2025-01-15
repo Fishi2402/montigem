@@ -21,6 +21,10 @@ public abstract class UMLPPluginDep implements Plugin<Project> {
 
   @Override
     public void apply(Project project) {
+      // We require java-library to differentiate between runtimeElements and shadowRuntimeElements
+      project.getPluginManager().apply("java-library");
+
+      // Load the actual UMLP-Tool as a dependency of the "umlpTool" configuration
       var toolConfig = project.getConfigurations().maybeCreate(UMLP_CONFIG_TOOL);
       toolConfig.setCanBeResolved(true);
       toolConfig.defaultDependencies(dependencies -> {
@@ -29,6 +33,7 @@ public abstract class UMLPPluginDep implements Plugin<Project> {
         dependencies.add(project.getDependencies().create("de.monticore.lang:od:7.7.0-SNAPSHOT"));
       });
 
+      // And add it to the classpath of various tasks
       project.getTasks().withType(UMLPSingleFileTask.class).configureEach(t -> t.getExtraClasspathElements().from(toolConfig));
       project.getTasks().withType(UMLPAllFilesTask.class).configureEach(t -> t.getExtraClasspathElements().from(toolConfig));
       project.getTasks().withType(SerializeCDSymbolsTask.class).configureEach(t -> t.getClassPath().from(toolConfig));
