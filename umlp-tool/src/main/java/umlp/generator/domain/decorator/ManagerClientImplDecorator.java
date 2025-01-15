@@ -3,6 +3,7 @@
 package umlp.generator.domain.decorator;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
+import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -128,7 +129,8 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
 
     List<ASTCDType> concreteSubclassesOrderedByDistance = concreteSubclassesOrderedByDistance(origCD, domainClass);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSure", name);
-    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoGetList", name, isSingleton, domainClass.getModifier().isAbstract());
+    ASTCDMethodSignature m = getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoGetList", name, isSingleton, domainClass.getModifier().isAbstract());
+    glex.replaceTemplate("cd2java.Annotations", m, new StringHookPoint("@umlp.jsweet.extension.annotation.Synchronized"));
 
     if (isSingleton) {
       getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoOptSingletonElement", name);
