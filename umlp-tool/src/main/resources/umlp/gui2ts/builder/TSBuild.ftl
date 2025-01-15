@@ -42,7 +42,7 @@ if (!this.buildFinished) {
                 <#assign otherSide=assoc.getSymbol().getOtherSide().getAssocSide()>
                 if (this._${assoc.getName()}.getLoadingState() == LoadingState.LOADED) {
                 <#if genService.isList(otherSide)>
-                  if (!this._${assoc.getName()}.get().get${otherSide.getName()?cap_first}().includes(this)) {
+                  if (!this._${assoc.getName()}.get().get${otherSide.getName()?cap_first}List().includes(this)) {
                     this._${assoc.getName()}.get().add${otherSide.getName()?cap_first}(this, NotificationScope.MINIMAL);
                   }
                 <#else>
