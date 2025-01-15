@@ -18,7 +18,7 @@ public class TotalTest extends WebshopSQLDBTestSetup {
 
   @Test
   void matchVisible() {
-    WebshopManager.setInstance(new WebshopMonitorManagerImpl());
+    WebshopMonitorManagerImpl.init(); //TODO this needs to be called in the _init method instead of WebShopManagerImpl.init()
 
     var testInstances = new TotalTestInstantiator().instantiate();
     Order o = WebshopManager.orderBuilder().build().orElseThrow();
