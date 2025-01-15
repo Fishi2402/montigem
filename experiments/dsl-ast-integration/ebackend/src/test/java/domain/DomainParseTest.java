@@ -1,15 +1,23 @@
 package domain;
 
+import de.se_rwth.commons.logging.LogStub;
 import domain.commands.ParseMyCompilationUnit;
 import domain.test_infrastructure.DomainMockTestSetup;
 import mydsl.mydsl.MyDSLMill;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import umlp.test_rte.ClientSetup;
 
 public class DomainParseTest extends DomainMockTestSetup {
   public DomainParseTest() {
     super(ClientSetup.of(1));
+  }
+
+  @BeforeEach
+  public void setup() {
+    LogStub.init();
+    LogStub.clearFindings();
   }
 
   @Test
