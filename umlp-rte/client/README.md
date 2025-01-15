@@ -1,19 +1,18 @@
-<!--
-If you make any changes to a library, please run `gradle build` to update the library version before publishing it.
+<!-- (c) https://github.com/MontiCore/monticore -->
+This documentation uses the same example setup.
 
-# Creating a New Library
-​
-To create a new library, use the gradle script and run `gradle create library name`.
-This script will assign the library a default version.
-​
-# Update a Library
-​
-Whenever changes are made to a library, use the gradle script to
-update its version. For example, if a table has version 7.5.4
-and you make changes to the table library, running `gradle build`
-will upgrade the version from 7.5.4 to 7.5.5, as defined in the
-gradle script.
--->
+Example setup:
+- Example non-existing library: `experimental` would be in
+  `projects/experimental`. `experimental` (full name: `@umlp/experimental`) can
+  be replaced with any other library name in this instruction. For example, if
+  you build library `foo`, every occurence of `experimental` must be replaced
+  with `foo`.
+- Example existing library: [arrange](projects/arrange). `arrange` (full name:
+  `@umlp/arrange`) can be replaced with any other existing library name in this
+  instruction.
+- [Full library list](./projects)
+- [Project root](./). Will be referred to as "root" in this instruction.
+
 # Add library
 
 Decide if you need a new library. When you may need a library:
@@ -27,42 +26,35 @@ Decide if you need a new library. When you may need a library:
   they depend on in the compiled bundle, which may make the library
   significantly bigger.
 
-Example setup:
-- Example library (does not actually exist):
-  [experimental](projects/umlp/experimental). `experimental` (full name:
-  `@umlp/experimental`) can be replaced with any other library name in this
-  instruction. For example, if you build library `foo`, every occurence of
-  `experimental` must be replaced with `foo`.
-- [Full library list](./projects/umlp)
-- [Project root](./). Will be referred to as "root" in this instruction.
-
 To create a library:
-1.  Create a new folder `umlp/experimental`.
-2.  Add file `umlp/experimental/README.md` and describe what you library
-    contains and why it exists.
-3.  Add file `umlp/experimental/ng-package.json` with following contents:
+1.  Create a new folder `projects/experimental/`.
+2.  Add file `projects/experimental/README.md` and describe what
+    you library contains and why it exists.
+3.  Add file `projects/experimental/ng-package.json` with following contents:
     ```json
     {
-      "$schema": "../../../node_modules/ng-packagr/ng-package.schema.json",
-      "dest": "../../../build/dist/umlp/experimental",
+      "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
+      "dest": "../../build/dist/experimental",
       "lib": {
-        "entryFile": "src/index.ts"
-      }
+        "entryFile": "index.ts"
+      },
+      "allowedNonPeerDependencies": []
     }
     ```
-4.  Add file `umlp/experimental/package.json` with following contents:
+4.  Add file `projects/experimental/package.json` with following contents:
     ```json
     {
+      "peerDependencies": {
+        "@angular/common": "^17.0.7",
+        "@angular/core": "^17.0.7",
+        "rxjs": "~7.8.0"
+      },
       "name": "@umlp/experimental",
       "version": "7.6.0",
-      "peerDependencies": {
-        "@angular/common": "^17.2.0",
-        "@angular/core": "^17.2.0"
-      },
+      "sideEffects": false,
       "dependencies": {
         "tslib": "^2.3.0"
-      },
-      "sideEffects": false
+      }
     }
     ```
     The `version` should be set to the current MontiCore release version. This
@@ -79,11 +71,23 @@ To create a library:
     + "@umlp/arrange": "^7.6.0"
     },
     ```
-5.  Create `umlp/experimental/src/lib` folder and add your components in this
-    folder. For example, you added `umlp/experimental/src/lib/MyComp.ts`
-6.  Add file `umlp/experimental/src/index.ts`. This file exports the components,
-    functions, services and other code that your library contains. The example
-    content:
+    App developers using your library will have to specify both `@umlp/arrange`
+    and `@umlp/experimental` as dependencies if not provided by default (next
+    step).
+5.  (Optional) If it makes sense to include your library in every MontiGem
+    application, add it to the [default `package.json`
+    file](../../umlp-tool/gradle-plugin/src/main/resources/frontend/config/package.json):
+    ```diff
+    dependencies: {
+      ...,
+    + "@umlp/experimental": "^7.6.0"
+    }
+    ```
+6.  [Add a component](#add-component). You may skip to step 7 if you are going
+    to add a component later.
+7.  Add file `projects/experimental/src/index.ts`. This file exports the
+    components, functions, services and other code that your library contains.
+    The example content:
     ```ts
     export * from './lib/MyComp';
     ```
@@ -92,14 +96,14 @@ To create a library:
     ```json
     "@umlp/experimental": {
       "projectType": "library",
-      "root": "projects/umlp/experimental",
-      "sourceRoot": "projects/umlp/experimental/src",
+      "root": "projects/experimental",
+      "sourceRoot": "projects/experimental",
       "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/umlp/experimental/ng-package.json"
+            "project": "projects/experimental/ng-package.json"
           },
           "configurations": {
             "production": {
@@ -132,7 +136,7 @@ To create a library:
     ]
     ```
 
-    **My library depends on an existing MontiGem library**. For example, the
+    **My library depends on another MontiGem library**. For example, the
     `@umlp/experimental` library uses a component from `@umlp/arrange`. In that
     case add the dependency:
     ```groovy
@@ -142,9 +146,66 @@ To create a library:
     If you introduce a circular dependency, you need to reconsider your library
     structure.
 
-# Remove library
+# Update library
 
-Example setup: see [Add library](#add-library).
+Whenever changes are made to a library, the version needs to be updated in the
+`package.json` file of the library. Example (all references to the `arrange`
+example should be replaced with your own library):
+
+- A file is changed in `arrange` library, i.e. any file inside [the library
+  folder - `projects/arrange`](projects/arrange).
+- Open [`projects/arrange/package.json` file](projects/arrange/package.json) of
+  the library. 
+- Increment the version number of the `"version"` field.
+  - last version number if you make a patch (bug fix, minor stuff) or a backward
+    compatible change, e.g., current value is `"7.5.1"`. Set new value
+    `"7.5.2"`.
+  - middle version number if you add a backward compatible feature, e.g.,
+    current value is `"7.5.12"`. Set new value `"7.6.0"`.
+  - first version number if you make a breaking change, e.g., current value is
+    `"7.5.12"`. Set new value according to MontiCore version `"8.0.0"`.
+- Commit and push changes
+
+## Add component
+
+For example, you want to add a component `foo.Bar` to the `experimental`
+library:
+1.  Place `foo/Bar.gui` into `models` folder, if exists. If file additionally
+    uses types from CD models, CD-related artifacts are handled similarly
+    (placed beside component files).
+2.  If the component is not described in a model, add sources in a path of your
+    choice inside `experimental/src`. If component is based on a model, use [TOP
+    mechanism](https://git.rwth-aachen.de/monticore/umlp/-/wikis/tutorial/step2/TOPMechanism)
+    to extend/rewrite the component with hand-written code. For example, create
+    `projects/experimental/src/foo/Bar.ts` to extend the TypeScript class of the
+    component.
+3.  Export the component. If the TypeScript class that defines the component is
+    hand-written, export it in `projects/experimental/index.ts` file:
+    ```ts
+    export { Bar } from './src/foo/Bar';
+    ```
+    If the class is generated, export it from generated file:
+    ```ts
+    export { Bar } from './build/gui/foo/BarComponent';
+    ```
+
+## Remove component
+
+For example, you want to remove a component `foo.Bar` from the `experimental`
+library:
+1.  Remove hand-written sources for the component, possible artifacts:
+    - `projects/experimental/src/foo/Bar.*`
+    - `projects/experimental/src/foo/BarTypes.*`
+    - `models/foo/Bar.gui`
+    - `models/foo/BarTypes.cd`
+2.  Remove component export(s) from `projects/experimental/index.ts` if exists:
+    ```diff
+    - export { Bar } from './src/foo/Bar';
+    - export { MyBarType } from './build/cd/foo/MyBarType';
+    - ...
+    ```
+
+# Remove library
 
 To remove a library:
 1.  Remove folder `umlp/experimental`.
@@ -153,14 +214,14 @@ To remove a library:
     ```json
     "@umlp/experimental": {
       "projectType": "library",
-      "root": "projects/umlp/experimental",
-      "sourceRoot": "projects/umlp/experimental/src",
+      "root": "projects/experimental",
+      "sourceRoot": "projects/experimental/src",
       "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/umlp/experimental/ng-package.json"
+            "project": "projects/experimental/ng-package.json"
           },
           "configurations": {
             "production": {
@@ -200,62 +261,25 @@ To remove a library:
     - tasks.build_experimental.dependsOn(tasks.build_arrange)
     ```
 
-# Updating a library
-
-Example setup
-- Example library: [arrange](projects/umlp/arrange). `arrange` (full name: `@umlp/arrange`) can be
-  replaced with any other library name in this instruction.
-- [Full library list](./projects/umlp)
-- [Project root](./). Will be referred to as "root" in this instruction.
-
-Whenever changes are made to a library, the version needs to be updated in the `package.json` file
-of the library. Example (all references to the `arrange` example should be replaced with your own
-library):
-
-- A file is changed in `arrange` library, i.e. any file inside [the library
-  folder](projects/umlp/arrange).
-- Open [`package.json` file](projects/umlp/arrange/package.json) of the changed library. 
-- Increment the version number of the `"version"` field.
-  - last version number if you make a patch (bug fix, minor stuff) or a backward compatible change,
-    e.g., current value is `"7.5.1"`. Set new value `"7.5.2"`.
-  - middle version number if you add a backward compatible feature, e.g., current value is
-    `"7.5.12"`. Set new value `"7.6.0"`.
-  - first version number if you make a breaking change, e.g., current value is `"7.5.12"`. Set new
-    value according to MontiCore version `"8.0.0"`.
-- Commit and push changes
-
 # Using a library
 
-Example setup: see [Updating a library](#updating-a-library).
-
-- add dependency to the library in your project's `package.json` file:
-  ```
+In a regular app:
+- add dependency to the library in your project's `package.json` file if you are
+  adding a domain-specific library:
+  ```diff
   "dependencies": {
     ...,
-    "@umlp/arrange": "^7.5.0"
+  + "@umlp/experimental": "^7.6.0"
   }
   ```
-  - In case of a Fenix-local example (`examples` folder) add the dependency to the `package.json`
-    [default configuration](../../umlp-tool/src/main/resources/frontend/config/package.json) if not
-    done already. Alternatively overwrite the `package.json` file by providing your own
-    configuration.
-- add dependency to the GUI symbols library in your project's frontend and backend `build.gradle`
-  files if not done already (similar change for both):
-  ```gradle
-  // add a dependency to new symbols for the genGUI task
-  task genGUI(type: UMLPGuiGenTask) {
-    dependsOn(genDomain, tasks.getByPath(":umlp-rte:client:createGuiSymbols"))
-    /*...*/
-    symbolDir = files(
-      /*...*/
-      project(":umlp-rte:client").tasks.createGuiSymbols.output
-    )
-  }
-  ```
+  > Note: domain-specific includes, e.g., `@umlp/networkgraph` and
+  > `@umlp/functiondisplay`
 
-<!--
-# Usage of the Library
-​
-To use the library, add the following line to your `package.json` file:
-"library name": "^7.5.0". The "^" symbol ensures that the latest version of the library is used.
--->
+In an app inside of a montigem project (`example`, `products`, etc.):
+- add path to your project's `tsconfig.json` file:
+  ```diff
+  "paths": {
+  + "@umlp/experimental": ["../../../../../umlp-rte/client/projects/experimental"],
+    ...,
+  }
+  ```
