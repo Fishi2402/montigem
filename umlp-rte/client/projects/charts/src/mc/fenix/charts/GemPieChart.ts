@@ -66,7 +66,7 @@ export class GemPieChart extends GemPieChartComponent {
 
     for (let i = 0; i < data.getEntriesList().length; i++) {
       if (!data.getEntries(i).getBackgroundColor() || !CSS.supports('color', data.getEntries(i).getBackgroundColor())) {
-        data.getEntries(i).setBackgroundColor(autocolors[pointerAutoColors++]);
+        data.getEntries(i).setBackgroundColor(autocolors[(pointerAutoColors++) % autocolors.length]);
       }
       const bgrColor = data.getEntries(i).getBackgroundColor();
       const label = data.getEntries(i).getLabel();
