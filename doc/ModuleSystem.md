@@ -180,6 +180,8 @@ The angular/TS compiler now has to be made aware of where to find the login modu
 ],
 ```
 
+***TODO: This notation is about to change!***
+
 *Technical note:* We bundle the frontend files as a zip and extract them via Gradle
  into the `umlp_modules/loginmodule-ts` directory.
 Due to the relative template paths, the actual sources are two levels further down (*template_placeholder/src*),
@@ -236,14 +238,15 @@ Instead, we can also replace/"delegate away" all uses of the *LoginModuleUser* c
 ```cd
   <<ConcretizeModule>>
   class User extends LoginModuleUser {
-    String nickname;
+    String nickname; // a required nickname attribute
+    AccessRole role; // a required role attribute
   }
 ```
 
 This results in calls to `LoginModuleManager.loginModuleUserBuilder()` actually returning builders of the new `User` class.
 
 Behind the magic, an adapter Builder class `LoginModuleUser4UserDelegatedBuilder extends LoginModuleUserBuilder` is generated.
-(Unfortunately, the class inheritance is not translated onto MontiGem builder)
+(Unfortunately, the class inheritance is not translated onto MontiGem builders)
 
 ```mermaid
 classDiagram
@@ -252,11 +255,15 @@ classDiagram
     class LoginModuleUserBuilder 
     LoginModuleUser <|-- LoginModuleUserBuilder
     class UserBuilder
+    <<derived>> UserBuilder
     User <|-- UserBuilder
-    User <|-- LoginModuleUser
+    User --|> LoginModuleUser  
+    <<module>> LoginModuleUser
+    <<moduleDerived>> LoginModuleUserBuilder
     class LoginModuleUser4UserDelegatedBuilder
     LoginModuleUser4UserDelegatedBuilder --> "adaptee" UserBuilder
-    LoginModuleUser4UserDelegatedBuilder <|-- LoginModuleUserBuilder
+    LoginModuleUser4UserDelegatedBuilder --|> LoginModuleUserBuilder
+    <<gen>> LoginModuleUser4UserDelegatedBuilder
 
 ```
 
@@ -277,6 +284,7 @@ public class CarRentalServerApplication extends carrental.CarRentalServerApplica
     // For the public Sign up: Ensure the role is set to a default value of USER
     loginModuleRestService.onSignupAdditionals.add((jsonObject, uB) -> {
       ((LoginModuleUser4UserDelegatedBuilder)uB).adaptee.role(DtcockpitRole.USER);
+      ((LoginModuleUser4UserDelegatedBuilder)uB).adaptee.nickname(jsonObject.getString("nickname"));
     });
     super.init();
     ...
