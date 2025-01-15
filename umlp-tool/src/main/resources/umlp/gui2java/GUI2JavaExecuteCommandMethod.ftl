@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("type", "name", "params")}
-<#assign mcType = type.printType()>
+${tc.signature("fullType","commandResultType", "name", "params")}
+<#assign mcType = fullType.print()>
 <#assign paramString = genHelper.params2String(params)>
 
 ${cd4c.method("public ${mcType} ${name}(${paramString})")}
@@ -18,11 +18,17 @@ ${cd4c.method("public ${mcType} ${name}(${paramString})")}
   </#if>
 </#list>
 
-CommandResult<${mcType}> res = CommandManager.executeCommand(new ${name?cap_first}(
+CommandResult<${commandResultType}> res = CommandManager.executeCommand(new ${name?cap_first}(
   <#list params as param, symType> arg__${param?index}<sep>, </#list>
   ));
 
+<#if genHelper.isDomainListType(fullType)>
+if(res.isSuccessful() && res.isListResult()){
+  return res.asListResult().get();
+}
+<#else>
 if(res.isSuccessful() && res.isSimpleResult()) {
   return res.asSimpleResult().get();
 }
+</#if>
 return null;

@@ -1,5 +1,8 @@
 package mydsl;
 
+/**
+ * An exemplary grammar, which will be parsed
+ */
 grammar MyDSL extends de.monticore.MCBasics,
     de.monticore.literals.MCLiteralsBasis,
    // de.monticore.expressions.ExpressionsBasis,
@@ -20,8 +23,10 @@ grammar MyDSL extends de.monticore.MCBasics,
 
     interface MyElement;
 
-    StateElem implements MyElement= "state" myname:Name optName:Name?;
+    symbol scope StateElem implements MyElement = initial:["initial"]? final:["final"]? "state" Name ( "{"  "}" | ";" );
 
-    ExprElem implements MyElement= "expression" Expression;
+    TransElem implements MyElement = "transition" from:Name@StateElem "->" to:Name@StateElem ";";
+
+    ExprElem implements MyElement = "expression" Expression ";";
 
 }
