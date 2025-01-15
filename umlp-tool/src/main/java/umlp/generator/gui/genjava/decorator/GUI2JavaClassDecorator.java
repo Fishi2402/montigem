@@ -43,6 +43,7 @@ import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.decorator.BuilderDecorator;
+import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ObserverDecorator;
 import umlp.generator.gui.GUI2ClassDecorator;
 import umlp.generator.gui.genjava.prettyprinter.Expression2AccessorPrinter;
