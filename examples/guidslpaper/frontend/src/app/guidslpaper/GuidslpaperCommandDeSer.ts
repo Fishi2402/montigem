@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {GuidslpaperCommandDeSerTOP} from "@src/guidslpaper/GuidslpaperCommandDeSerTOP";
+import {GuidslpaperCommandDeSerTOP} from "guidslpaper/GuidslpaperCommandDeSerTOP";
 import {GetCurrentUserRequestDeSer} from "../security/GetCurrentUserRequestDeSer";
 
 export class GuidslpaperCommandDeSer extends GuidslpaperCommandDeSerTOP  {

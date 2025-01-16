@@ -1,0 +1,865 @@
+digraph {
+  subgraph cluster_de_monticore_expressions {
+    label = "de.monticore.expressions";
+    labeljust = l;
+    subgraph cluster_de_monticore_expressions_javaclassexpressions {
+      label = "de.monticore.expressions.javaclassexpressions";
+      labeljust = l;
+      subgraph cluster_de_monticore_expressions_javaclassexpressions__util {
+        label = "de.monticore.expressions.javaclassexpressions._util";
+        labeljust = l;
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__util_IJavaClassExpressionsTypeDispatcher [label="de.monticore.expressions.javaclassexpressions._util.IJavaClassExpressionsTypeDispatcher.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__util_JavaClassExpressionsTypeDispatcher [label="de.monticore.expressions.javaclassexpressions._util.JavaClassExpressionsTypeDispatcher.java (1)"];
+      }
+      subgraph cluster_de_monticore_expressions_javaclassexpressions__auxiliary {
+        label = "de.monticore.expressions.javaclassexpressions._auxiliary";
+        labeljust = l;
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__auxiliary_OOSymbolsMillForJavaClassExpressions [label="de.monticore.expressions.javaclassexpressions._auxiliary.OOSymbolsMillForJavaClassExpressions.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__auxiliary_MCLiteralsBasisMillForJavaClassExpressions [label="de.monticore.expressions.javaclassexpressions._auxiliary.MCLiteralsBasisMillForJavaClassExpressions.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__auxiliary_MCSimpleGenericTypesMillForJavaClassExpressions [label="de.monticore.expressions.javaclassexpressions._auxiliary.MCSimpleGenericTypesMillForJavaClassExpressions.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__auxiliary_BasicSymbolsMillForJavaClassExpressions [label="de.monticore.expressions.javaclassexpressions._auxiliary.BasicSymbolsMillForJavaClassExpressions.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__auxiliary_MCVarDeclarationStatementsMillForJavaClassExpressions [label="de.monticore.expressions.javaclassexpressions._auxiliary.MCVarDeclarationStatementsMillForJavaClassExpressions.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__auxiliary_CommonExpressionsMillForJavaClassExpressions [label="de.monticore.expressions.javaclassexpressions._auxiliary.CommonExpressionsMillForJavaClassExpressions.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__auxiliary_MCStatementsBasisMillForJavaClassExpressions [label="de.monticore.expressions.javaclassexpressions._auxiliary.MCStatementsBasisMillForJavaClassExpressions.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__auxiliary_UglyExpressionsMillForJavaClassExpressions [label="de.monticore.expressions.javaclassexpressions._auxiliary.UglyExpressionsMillForJavaClassExpressions.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__auxiliary_MCFullGenericTypesMillForJavaClassExpressions [label="de.monticore.expressions.javaclassexpressions._auxiliary.MCFullGenericTypesMillForJavaClassExpressions.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__auxiliary_MCBasicTypesMillForJavaClassExpressions [label="de.monticore.expressions.javaclassexpressions._auxiliary.MCBasicTypesMillForJavaClassExpressions.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__auxiliary_MCCollectionTypesMillForJavaClassExpressions [label="de.monticore.expressions.javaclassexpressions._auxiliary.MCCollectionTypesMillForJavaClassExpressions.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__auxiliary_MCBasicsMillForJavaClassExpressions [label="de.monticore.expressions.javaclassexpressions._auxiliary.MCBasicsMillForJavaClassExpressions.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__auxiliary_ExpressionsBasisMillForJavaClassExpressions [label="de.monticore.expressions.javaclassexpressions._auxiliary.ExpressionsBasisMillForJavaClassExpressions.java (1)"];
+      }
+      subgraph cluster_de_monticore_expressions_javaclassexpressions__symboltable {
+        label = "de.monticore.expressions.javaclassexpressions._symboltable";
+        labeljust = l;
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__symboltable_JavaClassExpressionsGlobalScope [label="de.monticore.expressions.javaclassexpressions._symboltable.JavaClassExpressionsGlobalScope.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__symboltable_JavaClassExpressionsSymbols2Json [label="de.monticore.expressions.javaclassexpressions._symboltable.JavaClassExpressionsSymbols2Json.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__symboltable_JavaClassExpressionsScopesGenitorDelegator [label="de.monticore.expressions.javaclassexpressions._symboltable.JavaClassExpressionsScopesGenitorDelegator.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__symboltable_JavaClassExpressionsScope [label="de.monticore.expressions.javaclassexpressions._symboltable.JavaClassExpressionsScope.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__symboltable_JavaClassExpressionsScopesGenitor [label="de.monticore.expressions.javaclassexpressions._symboltable.JavaClassExpressionsScopesGenitor.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__symboltable_ICommonJavaClassExpressionsSymbol [label="de.monticore.expressions.javaclassexpressions._symboltable.ICommonJavaClassExpressionsSymbol.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__symboltable_JavaClassExpressionsDeSer [label="de.monticore.expressions.javaclassexpressions._symboltable.JavaClassExpressionsDeSer.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__symboltable_IJavaClassExpressionsScope [label="de.monticore.expressions.javaclassexpressions._symboltable.IJavaClassExpressionsScope.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__symboltable_IJavaClassExpressionsGlobalScope [label="de.monticore.expressions.javaclassexpressions._symboltable.IJavaClassExpressionsGlobalScope.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__symboltable_IJavaClassExpressionsArtifactScope [label="de.monticore.expressions.javaclassexpressions._symboltable.IJavaClassExpressionsArtifactScope.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__symboltable_JavaClassExpressionsArtifactScope [label="de.monticore.expressions.javaclassexpressions._symboltable.JavaClassExpressionsArtifactScope.java (1)"];
+      }
+      subgraph cluster_de_monticore_expressions_javaclassexpressions__parser {
+        label = "de.monticore.expressions.javaclassexpressions._parser";
+        labeljust = l;
+        subgraph cluster_de_monticore_expressions_javaclassexpressions__parser__auxiliary {
+          label = "de.monticore.expressions.javaclassexpressions._parser._auxiliary";
+          labeljust = l;
+          node[shape=note];
+          File_de_monticore_expressions_javaclassexpressions__parser__auxiliary_JavaClassExpressionsParserInfoForCommonExpressions [label="de.monticore.expressions.javaclassexpressions._parser._auxiliary.JavaClassExpressionsParserInfoForCommonExpressions.java (1)"];
+          node[shape=note];
+          File_de_monticore_expressions_javaclassexpressions__parser__auxiliary_JavaClassExpressionsParserInfoForMCBasics [label="de.monticore.expressions.javaclassexpressions._parser._auxiliary.JavaClassExpressionsParserInfoForMCBasics.java (1)"];
+          node[shape=note];
+          File_de_monticore_expressions_javaclassexpressions__parser__auxiliary_JavaClassExpressionsParserInfoForMCCollectionTypes [label="de.monticore.expressions.javaclassexpressions._parser._auxiliary.JavaClassExpressionsParserInfoForMCCollectionTypes.java (1)"];
+          node[shape=note];
+          File_de_monticore_expressions_javaclassexpressions__parser__auxiliary_JavaClassExpressionsParserInfoForMCSimpleGenericTypes [label="de.monticore.expressions.javaclassexpressions._parser._auxiliary.JavaClassExpressionsParserInfoForMCSimpleGenericTypes.java (1)"];
+          node[shape=note];
+          File_de_monticore_expressions_javaclassexpressions__parser__auxiliary_JavaClassExpressionsParserInfoForExpressionsBasis [label="de.monticore.expressions.javaclassexpressions._parser._auxiliary.JavaClassExpressionsParserInfoForExpressionsBasis.java (1)"];
+          node[shape=note];
+          File_de_monticore_expressions_javaclassexpressions__parser__auxiliary_JavaClassExpressionsParserInfoForMCLiteralsBasis [label="de.monticore.expressions.javaclassexpressions._parser._auxiliary.JavaClassExpressionsParserInfoForMCLiteralsBasis.java (1)"];
+          node[shape=note];
+          File_de_monticore_expressions_javaclassexpressions__parser__auxiliary_JavaClassExpressionsParserInfoForBasicSymbols [label="de.monticore.expressions.javaclassexpressions._parser._auxiliary.JavaClassExpressionsParserInfoForBasicSymbols.java (1)"];
+          node[shape=note];
+          File_de_monticore_expressions_javaclassexpressions__parser__auxiliary_JavaClassExpressionsParserInfoForMCFullGenericTypes [label="de.monticore.expressions.javaclassexpressions._parser._auxiliary.JavaClassExpressionsParserInfoForMCFullGenericTypes.java (1)"];
+          node[shape=note];
+          File_de_monticore_expressions_javaclassexpressions__parser__auxiliary_JavaClassExpressionsParserInfoForMCStatementsBasis [label="de.monticore.expressions.javaclassexpressions._parser._auxiliary.JavaClassExpressionsParserInfoForMCStatementsBasis.java (1)"];
+          node[shape=note];
+          File_de_monticore_expressions_javaclassexpressions__parser__auxiliary_JavaClassExpressionsParserInfoForOOSymbols [label="de.monticore.expressions.javaclassexpressions._parser._auxiliary.JavaClassExpressionsParserInfoForOOSymbols.java (1)"];
+          node[shape=note];
+          File_de_monticore_expressions_javaclassexpressions__parser__auxiliary_JavaClassExpressionsParserInfoForMCVarDeclarationStatements [label="de.monticore.expressions.javaclassexpressions._parser._auxiliary.JavaClassExpressionsParserInfoForMCVarDeclarationStatements.java (1)"];
+          node[shape=note];
+          File_de_monticore_expressions_javaclassexpressions__parser__auxiliary_JavaClassExpressionsParserInfoForUglyExpressions [label="de.monticore.expressions.javaclassexpressions._parser._auxiliary.JavaClassExpressionsParserInfoForUglyExpressions.java (1)"];
+          node[shape=note];
+          File_de_monticore_expressions_javaclassexpressions__parser__auxiliary_JavaClassExpressionsParserInfoForMCBasicTypes [label="de.monticore.expressions.javaclassexpressions._parser._auxiliary.JavaClassExpressionsParserInfoForMCBasicTypes.java (1)"];
+        }
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__parser_EmptyJavaClassExpressionsParserInfo [label="de.monticore.expressions.javaclassexpressions._parser.EmptyJavaClassExpressionsParserInfo.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__parser_JavaClassExpressionsParserInfo [label="de.monticore.expressions.javaclassexpressions._parser.JavaClassExpressionsParserInfo.java (1)"];
+      }
+      subgraph cluster_de_monticore_expressions_javaclassexpressions__od {
+        label = "de.monticore.expressions.javaclassexpressions._od";
+        labeljust = l;
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__od_JavaClassExpressions2OD [label="de.monticore.expressions.javaclassexpressions._od.JavaClassExpressions2OD.java (1)"];
+      }
+      subgraph cluster_de_monticore_expressions_javaclassexpressions__prettyprint {
+        label = "de.monticore.expressions.javaclassexpressions._prettyprint";
+        labeljust = l;
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__prettyprint_JavaClassExpressionsFullPrettyPrinter [label="de.monticore.expressions.javaclassexpressions._prettyprint.JavaClassExpressionsFullPrettyPrinter.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__prettyprint_JavaClassExpressionsPrettyPrinter [label="de.monticore.expressions.javaclassexpressions._prettyprint.JavaClassExpressionsPrettyPrinter.java (1)"];
+      }
+      subgraph cluster_de_monticore_expressions_javaclassexpressions__visitor {
+        label = "de.monticore.expressions.javaclassexpressions._visitor";
+        labeljust = l;
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__visitor_JavaClassExpressionsInheritanceHandler [label="de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsInheritanceHandler.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__visitor_JavaClassExpressionsInterpreter [label="de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsInterpreter.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__visitor_IJavaClassExpressionsInterpreter [label="de.monticore.expressions.javaclassexpressions._visitor.IJavaClassExpressionsInterpreter.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__visitor_JavaClassExpressionsTraverserImplementation [label="de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsTraverserImplementation.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__visitor_JavaClassExpressionsVisitor2 [label="de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsVisitor2.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__visitor_JavaClassExpressionsHandler [label="de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsHandler.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__visitor_JavaClassExpressionsTraverser [label="de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsTraverser.java (1)"];
+      }
+      subgraph cluster_de_monticore_expressions_javaclassexpressions__cocos {
+        label = "de.monticore.expressions.javaclassexpressions._cocos";
+        labeljust = l;
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__cocos_JavaClassExpressionsASTSuperExpressionCoCo [label="de.monticore.expressions.javaclassexpressions._cocos.JavaClassExpressionsASTSuperExpressionCoCo.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__cocos_JavaClassExpressionsASTGenericInvocationSuffixCoCo [label="de.monticore.expressions.javaclassexpressions._cocos.JavaClassExpressionsASTGenericInvocationSuffixCoCo.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__cocos_JavaClassExpressionsASTGenericInvocationExpressionCoCo [label="de.monticore.expressions.javaclassexpressions._cocos.JavaClassExpressionsASTGenericInvocationExpressionCoCo.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__cocos_JavaClassExpressionsASTThisExpressionCoCo [label="de.monticore.expressions.javaclassexpressions._cocos.JavaClassExpressionsASTThisExpressionCoCo.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__cocos_JavaClassExpressionsASTPatternCoCo [label="de.monticore.expressions.javaclassexpressions._cocos.JavaClassExpressionsASTPatternCoCo.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__cocos_JavaClassExpressionsASTJavaClassExpressionsNodeCoCo [label="de.monticore.expressions.javaclassexpressions._cocos.JavaClassExpressionsASTJavaClassExpressionsNodeCoCo.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__cocos_JavaClassExpressionsASTSuperSuffixCoCo [label="de.monticore.expressions.javaclassexpressions._cocos.JavaClassExpressionsASTSuperSuffixCoCo.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__cocos_JavaClassExpressionsASTTypePatternCoCo [label="de.monticore.expressions.javaclassexpressions._cocos.JavaClassExpressionsASTTypePatternCoCo.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__cocos_JavaClassExpressionsCoCoChecker [label="de.monticore.expressions.javaclassexpressions._cocos.JavaClassExpressionsCoCoChecker.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__cocos_JavaClassExpressionsASTPrimaryGenericInvocationExpressionCoCo [label="de.monticore.expressions.javaclassexpressions._cocos.JavaClassExpressionsASTPrimaryGenericInvocationExpressionCoCo.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__cocos_JavaClassExpressionsASTClassExpressionCoCo [label="de.monticore.expressions.javaclassexpressions._cocos.JavaClassExpressionsASTClassExpressionCoCo.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__cocos_JavaClassExpressionsASTInstanceofPatternExpressionCoCo [label="de.monticore.expressions.javaclassexpressions._cocos.JavaClassExpressionsASTInstanceofPatternExpressionCoCo.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__cocos_JavaClassExpressionsASTPrimarySuperExpressionCoCo [label="de.monticore.expressions.javaclassexpressions._cocos.JavaClassExpressionsASTPrimarySuperExpressionCoCo.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__cocos_JavaClassExpressionsASTPrimaryThisExpressionCoCo [label="de.monticore.expressions.javaclassexpressions._cocos.JavaClassExpressionsASTPrimaryThisExpressionCoCo.java (1)"];
+      }
+      subgraph cluster_de_monticore_expressions_javaclassexpressions__ast {
+        label = "de.monticore.expressions.javaclassexpressions._ast";
+        labeljust = l;
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__ast_ASTPrimaryThisExpression [label="de.monticore.expressions.javaclassexpressions._ast.ASTPrimaryThisExpression.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__ast_ASTTypePattern [label="de.monticore.expressions.javaclassexpressions._ast.ASTTypePattern.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__ast_ASTClassExpressionBuilder [label="de.monticore.expressions.javaclassexpressions._ast.ASTClassExpressionBuilder.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__ast_ASTPrimaryGenericInvocationExpression [label="de.monticore.expressions.javaclassexpressions._ast.ASTPrimaryGenericInvocationExpression.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__ast_ASTPrimarySuperExpressionBuilder [label="de.monticore.expressions.javaclassexpressions._ast.ASTPrimarySuperExpressionBuilder.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__ast_JavaClassExpressionsLiterals [label="de.monticore.expressions.javaclassexpressions._ast.JavaClassExpressionsLiterals.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__ast_ASTConstantsJavaClassExpressions [label="de.monticore.expressions.javaclassexpressions._ast.ASTConstantsJavaClassExpressions.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__ast_ASTSuperExpressionBuilder [label="de.monticore.expressions.javaclassexpressions._ast.ASTSuperExpressionBuilder.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__ast_ASTPrimarySuperExpression [label="de.monticore.expressions.javaclassexpressions._ast.ASTPrimarySuperExpression.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__ast_ASTInstanceofPatternExpression [label="de.monticore.expressions.javaclassexpressions._ast.ASTInstanceofPatternExpression.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__ast_ASTThisExpression [label="de.monticore.expressions.javaclassexpressions._ast.ASTThisExpression.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__ast_ASTTypePatternBuilder [label="de.monticore.expressions.javaclassexpressions._ast.ASTTypePatternBuilder.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__ast_ASTSuperExpression [label="de.monticore.expressions.javaclassexpressions._ast.ASTSuperExpression.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__ast_ASTGenericInvocationExpression [label="de.monticore.expressions.javaclassexpressions._ast.ASTGenericInvocationExpression.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__ast_ASTGenericInvocationSuffix [label="de.monticore.expressions.javaclassexpressions._ast.ASTGenericInvocationSuffix.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__ast_ASTPattern [label="de.monticore.expressions.javaclassexpressions._ast.ASTPattern.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__ast_ASTGenericInvocationExpressionBuilder [label="de.monticore.expressions.javaclassexpressions._ast.ASTGenericInvocationExpressionBuilder.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__ast_ASTInstanceofPatternExpressionBuilder [label="de.monticore.expressions.javaclassexpressions._ast.ASTInstanceofPatternExpressionBuilder.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__ast_ASTGenericInvocationSuffixBuilder [label="de.monticore.expressions.javaclassexpressions._ast.ASTGenericInvocationSuffixBuilder.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__ast_ASTPrimaryThisExpressionBuilder [label="de.monticore.expressions.javaclassexpressions._ast.ASTPrimaryThisExpressionBuilder.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__ast_ASTThisExpressionBuilder [label="de.monticore.expressions.javaclassexpressions._ast.ASTThisExpressionBuilder.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__ast_ASTSuperSuffix [label="de.monticore.expressions.javaclassexpressions._ast.ASTSuperSuffix.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__ast_ASTSuperSuffixBuilder [label="de.monticore.expressions.javaclassexpressions._ast.ASTSuperSuffixBuilder.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__ast_ASTJavaClassExpressionsNode [label="de.monticore.expressions.javaclassexpressions._ast.ASTJavaClassExpressionsNode.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__ast_ASTClassExpression [label="de.monticore.expressions.javaclassexpressions._ast.ASTClassExpression.java (1)"];
+        node[shape=note];
+        File_de_monticore_expressions_javaclassexpressions__ast_ASTPrimaryGenericInvocationExpressionBuilder [label="de.monticore.expressions.javaclassexpressions._ast.ASTPrimaryGenericInvocationExpressionBuilder.java (1)"];
+      }
+      node[shape=note];
+      File_de_monticore_expressions_javaclassexpressions_JavaClassExpressionsMill [label="de.monticore.expressions.javaclassexpressions.JavaClassExpressionsMill.java (1)"];
+    }
+    node[shape=box3d];
+    Model_de_monticore_expressions_JavaClassExpressions [label="de.monticore.expressions.JavaClassExpressions (1)"];
+  }
+  subgraph cluster_data {
+    label = "data";
+    labeljust = l;
+    node[shape=ellipse];
+    Template_data_DeepEqualsWithComments [label="data.DeepEqualsWithComments.ftl (9)"];
+    node[shape=ellipse];
+    Template_data_EqualsWithComments [label="data.EqualsWithComments.ftl (11)"];
+    node[shape=ellipse];
+    Template_data_DeepCloneWithParameters [label="data.DeepCloneWithParameters.ftl (11)"];
+    node[shape=ellipse];
+    Template_data_AcceptSuper [label="data.AcceptSuper.ftl (196)"];
+    node[shape=ellipse];
+    Template_data_DeepEqualsWithOrder [label="data.DeepEqualsWithOrder.ftl (9)"];
+    node[shape=ellipse];
+    Template_data_EqualAttributes [label="data.EqualAttributes.ftl (11)"];
+  }
+  subgraph cluster_methods {
+    label = "methods";
+    labeljust = l;
+    subgraph cluster_methods_opt {
+      label = "methods.opt";
+      labeljust = l;
+      node[shape=ellipse];
+      Template_methods_opt_Set4Opt [label="methods.opt.Set4Opt.ftl (174)"];
+      node[shape=ellipse];
+      Template_methods_opt_IsPresent4Opt [label="methods.opt.IsPresent4Opt.ftl (179)"];
+      node[shape=ellipse];
+      Template_methods_opt_SetAbsent [label="methods.opt.SetAbsent.ftl (174)"];
+      node[shape=ellipse];
+      Template_methods_opt_Get4Opt [label="methods.opt.Get4Opt.ftl (179)"];
+    }
+    node[shape=ellipse];
+    Template_methods_Set [label="methods.Set.ftl (53)"];
+    node[shape=ellipse];
+    Template_methods_Get [label="methods.Get.ftl (69)"];
+    node[shape=ellipse];
+    Template_methods_MethodDelegate [label="methods.MethodDelegate.ftl (132)"];
+  }
+  subgraph cluster__prettyprinter_pp {
+    label = "_prettyprinter.pp";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__prettyprinter_pp_HandleMethod [label="_prettyprinter.pp.HandleMethod.ftl (11)"];
+    node[shape=ellipse];
+    Template__prettyprinter_pp_Alt [label="_prettyprinter.pp.Alt.ftl (19)"];
+    node[shape=ellipse];
+    Template__prettyprinter_pp_Tokens [label="_prettyprinter.pp.Tokens.ftl (2)"];
+    node[shape=ellipse];
+    Template__prettyprinter_pp_Block [label="_prettyprinter.pp.Block.ftl (15)"];
+    node[shape=ellipse];
+    Template__prettyprinter_pp_Terminal [label="_prettyprinter.pp.Terminal.ftl (19)"];
+  }
+  subgraph cluster__prettyprinter_full {
+    label = "_prettyprinter.full";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__prettyprinter_full_FPPTraverserInit [label="_prettyprinter.full.FPPTraverserInit.ftl (1)"];
+    node[shape=ellipse];
+    Template__prettyprinter_full_FullPrettyPrintMethod [label="_prettyprinter.full.FullPrettyPrintMethod.ftl (1)"];
+    node[shape=ellipse];
+    Template__prettyprinter_full_FPPSetPrintComments [label="_prettyprinter.full.FPPSetPrintComments.ftl (1)"];
+    node[shape=ellipse];
+    Template__prettyprinter_full_FPPConstructor [label="_prettyprinter.full.FPPConstructor.ftl (1)"];
+  }
+  subgraph cluster_interpreter {
+    label = "interpreter";
+    labeljust = l;
+    node[shape=ellipse];
+    Template_interpreter_ConstructorNoParams [label="interpreter.ConstructorNoParams.ftl (1)"];
+  }
+  subgraph cluster_cd2java {
+    label = "cd2java";
+    labeljust = l;
+    node[shape=ellipse];
+    Template_cd2java_Constructor [label="cd2java.Constructor.ftl (46)"];
+    node[shape=ellipse];
+    Template_cd2java_Attribute [label="cd2java.Attribute.ftl (368)"];
+    node[shape=ellipse];
+    Template_cd2java_Package [label="cd2java.Package.ftl (77)"];
+    node[shape=ellipse];
+    Template_cd2java_Class [label="cd2java.Class.ftl (52)"];
+    node[shape=ellipse];
+    Template_cd2java_Interface [label="cd2java.Interface.ftl (24)"];
+    node[shape=ellipse];
+    Template_cd2java_Annotations [label="cd2java.Annotations.ftl (3790)"];
+    node[shape=ellipse];
+    Template_cd2java_EmptyBody [label="cd2java.EmptyBody.ftl (96)"];
+    node[shape=ellipse];
+    Template_cd2java_Method [label="cd2java.Method.ftl (3531)"];
+    node[shape=ellipse];
+    Template_cd2java_Imports [label="cd2java.Imports.ftl (76)"];
+    node[shape=ellipse];
+    Template_cd2java_Value [label="cd2java.Value.ftl (280)"];
+    node[shape=ellipse];
+    Template_cd2java_Enum [label="cd2java.Enum.ftl (1)"];
+  }
+  subgraph cluster__visitor_handler {
+    label = "_visitor.handler";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__visitor_handler_Traverse [label="_visitor.handler.Traverse.ftl (11)"];
+    node[shape=ellipse];
+    Template__visitor_handler_HandleSymTabInheritance [label="_visitor.handler.HandleSymTabInheritance.ftl (3)"];
+    node[shape=ellipse];
+    Template__visitor_handler_HandleASTInheritance [label="_visitor.handler.HandleASTInheritance.ftl (13)"];
+    node[shape=ellipse];
+    Template__visitor_handler_TraverseScope [label="_visitor.handler.TraverseScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__visitor_handler_Handle [label="_visitor.handler.Handle.ftl (17)"];
+  }
+  subgraph cluster__visitor_traverser {
+    label = "_visitor.traverser";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__visitor_traverser_Traverse [label="_visitor.traverser.Traverse.ftl (11)"];
+    node[shape=ellipse];
+    Template__visitor_traverser_AddVisitor [label="_visitor.traverser.AddVisitor.ftl (15)"];
+    node[shape=ellipse];
+    Template__visitor_traverser_DelegatingMethods [label="_visitor.traverser.DelegatingMethods.ftl (34)"];
+    node[shape=ellipse];
+    Template__visitor_traverser_SetHandler [label="_visitor.traverser.SetHandler.ftl (14)"];
+    node[shape=ellipse];
+    Template__visitor_traverser_TraverseScope [label="_visitor.traverser.TraverseScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__visitor_traverser_Handle [label="_visitor.traverser.Handle.ftl (17)"];
+  }
+  subgraph cluster_mill {
+    label = "mill";
+    labeljust = l;
+    node[shape=ellipse];
+    Template_mill_PrettyPrintBuilderMethod [label="mill.PrettyPrintBuilderMethod.ftl (1)"];
+    node[shape=ellipse];
+    Template_mill_PrettyPrintProtectedBuilderMethod [label="mill.PrettyPrintProtectedBuilderMethod.ftl (1)"];
+    node[shape=ellipse];
+    Template_mill_ResetMethod [label="mill.ResetMethod.ftl (1)"];
+    node[shape=ellipse];
+    Template_mill_ProtectedMethodForSuper [label="mill.ProtectedMethodForSuper.ftl (78)"];
+    node[shape=ellipse];
+    Template_mill_BuilderMethod [label="mill.BuilderMethod.ftl (19)"];
+    node[shape=ellipse];
+    Template_mill_TypeDispatcherGetter [label="mill.TypeDispatcherGetter.ftl (1)"];
+    node[shape=ellipse];
+    Template_mill_ProtectedBuilderMethod [label="mill.ProtectedBuilderMethod.ftl (15)"];
+    node[shape=ellipse];
+    Template_mill_ProtectedGlobalScopeMethod [label="mill.ProtectedGlobalScopeMethod.ftl (1)"];
+    node[shape=ellipse];
+    Template_mill_InitMethod [label="mill.InitMethod.ftl (1)"];
+    node[shape=ellipse];
+    Template_mill_InitMeMethod [label="mill.InitMeMethod.ftl (1)"];
+    node[shape=ellipse];
+    Template_mill_BuilderDelegatorMethod [label="mill.BuilderDelegatorMethod.ftl (54)"];
+    node[shape=ellipse];
+    Template_mill_GetMillMethod [label="mill.GetMillMethod.ftl (1)"];
+    node[shape=ellipse];
+    Template_mill_InheritanceHandlerMethod [label="mill.InheritanceHandlerMethod.ftl (1)"];
+  }
+  subgraph cluster__ast_ast_class {
+    label = "_ast.ast_class";
+    labeljust = l;
+    subgraph cluster__ast_ast_class_builder {
+      label = "_ast.ast_class.builder";
+      labeljust = l;
+      node[shape=ellipse];
+      Template__ast_ast_class_builder_ASTCNodeInit [label="_ast.ast_class.builder.ASTCNodeInit.ftl (22)"];
+      node[shape=ellipse];
+      Template__ast_ast_class_builder_ASTCNodeMethodDelegate [label="_ast.ast_class.builder.ASTCNodeMethodDelegate.ftl (374)"];
+    }
+    subgraph cluster__ast_ast_class_symboltable {
+      label = "_ast.ast_class.symboltable";
+      labeljust = l;
+      node[shape=ellipse];
+      Template__ast_ast_class_symboltable_InheritedSetEnclosingScope [label="_ast.ast_class.symboltable.InheritedSetEnclosingScope.ftl (143)"];
+    }
+    node[shape=ellipse];
+    Template__ast_ast_class_Evaluate [label="_ast.ast_class.Evaluate.ftl (11)"];
+    node[shape=ellipse];
+    Template__ast_ast_class_Accept [label="_ast.ast_class.Accept.ftl (13)"];
+  }
+  subgraph cluster__ast_builder {
+    label = "_ast.builder";
+    labeljust = l;
+    subgraph cluster__ast_builder_opt {
+      label = "_ast.builder.opt";
+      labeljust = l;
+      node[shape=ellipse];
+      Template__ast_builder_opt_SetAbsent4ASTBuilderOpt [label="_ast.builder.opt.SetAbsent4ASTBuilderOpt.ftl (5)"];
+      node[shape=ellipse];
+      Template__ast_builder_opt_Set4ASTBuilderOpt [label="_ast.builder.opt.Set4ASTBuilderOpt.ftl (5)"];
+    }
+    node[shape=ellipse];
+    Template__ast_builder_BuildMethod [label="_ast.builder.BuildMethod.ftl (22)"];
+    node[shape=ellipse];
+    Template__ast_builder_Set4ASTBuilder [label="_ast.builder.Set4ASTBuilder.ftl (14)"];
+    node[shape=ellipse];
+    Template__ast_builder_MethodDelegate4ASTBuilder [label="_ast.builder.MethodDelegate4ASTBuilder.ftl (28)"];
+    node[shape=ellipse];
+    Template__ast_builder_IsValidMethod [label="_ast.builder.IsValidMethod.ftl (11)"];
+  }
+  subgraph cluster__ast_ast_constants {
+    label = "_ast.ast_constants";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__ast_ast_constants_GetAllLanguages [label="_ast.ast_constants.GetAllLanguages.ftl (1)"];
+  }
+  subgraph cluster__symboltable_serialization_scopeDeSer {
+    label = "_symboltable.serialization.scopeDeSer";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__symboltable_serialization_scopeDeSer_DeserializeArtifactScope [label="_symboltable.serialization.scopeDeSer.DeserializeArtifactScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_serialization_scopeDeSer_DeserializeSymbols [label="_symboltable.serialization.scopeDeSer.DeserializeSymbols.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_serialization_scopeDeSer_DeserializeScope [label="_symboltable.serialization.scopeDeSer.DeserializeScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_serialization_scopeDeSer_SerializeS2J4ScopeDeSer [label="_symboltable.serialization.scopeDeSer.SerializeS2J4ScopeDeSer.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_serialization_scopeDeSer_SerializeAS4ScopeDeSer [label="_symboltable.serialization.scopeDeSer.SerializeAS4ScopeDeSer.ftl (1)"];
+  }
+  subgraph cluster__symboltable_serialization_symbols2Json {
+    label = "_symboltable.serialization.symbols2Json";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__symboltable_serialization_symbols2Json_VisitScope4STP [label="_symboltable.serialization.symbols2Json.VisitScope4STP.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_serialization_symbols2Json_Load2 [label="_symboltable.serialization.symbols2Json.Load2.ftl (3)"];
+    node[shape=ellipse];
+    Template__symboltable_serialization_symbols2Json_Serialize4Symbols2Json [label="_symboltable.serialization.symbols2Json.Serialize4Symbols2Json.ftl (2)"];
+    node[shape=ellipse];
+    Template__symboltable_serialization_symbols2Json_EndVisit4Scope [label="_symboltable.serialization.symbols2Json.EndVisit4Scope.ftl (2)"];
+    node[shape=ellipse];
+    Template__symboltable_serialization_symbols2Json_Init [label="_symboltable.serialization.symbols2Json.Init.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_serialization_symbols2Json_Store [label="_symboltable.serialization.symbols2Json.Store.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_serialization_symbols2Json_VisitArtifactScope [label="_symboltable.serialization.symbols2Json.VisitArtifactScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_serialization_symbols2Json_Deserialize [label="_symboltable.serialization.symbols2Json.Deserialize.ftl (1)"];
+  }
+  subgraph cluster__symboltable_artifactscope {
+    label = "_symboltable.artifactscope";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__symboltable_artifactscope_SetEnclosingScope [label="_symboltable.artifactscope.SetEnclosingScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_artifactscope_GetName [label="_symboltable.artifactscope.GetName.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_artifactscope_ConstructorArtifactScope [label="_symboltable.artifactscope.ConstructorArtifactScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_artifactscope_IsPresentName [label="_symboltable.artifactscope.IsPresentName.ftl (1)"];
+  }
+  subgraph cluster__symboltable_scopesgenitor {
+    label = "_symboltable.scopesgenitor";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__symboltable_scopesgenitor_CreateScope [label="_symboltable.scopesgenitor.CreateScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_scopesgenitor_VisitNoSymbol [label="_symboltable.scopesgenitor.VisitNoSymbol.ftl (11)"];
+    node[shape=ellipse];
+    Template__symboltable_scopesgenitor_PutOnStack [label="_symboltable.scopesgenitor.PutOnStack.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_scopesgenitor_CreateFromAST [label="_symboltable.scopesgenitor.CreateFromAST.ftl (1)"];
+  }
+  subgraph cluster__symboltable_iartifactscope {
+    label = "_symboltable.iartifactscope";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__symboltable_iartifactscope_CheckIfContinueAsSubScope [label="_symboltable.iartifactscope.CheckIfContinueAsSubScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_iartifactscope_GetRemainingNameForResolveDown [label="_symboltable.iartifactscope.GetRemainingNameForResolveDown.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_iartifactscope_ContinueWithEnclosingScope4ArtifactScope [label="_symboltable.iartifactscope.ContinueWithEnclosingScope4ArtifactScope.ftl (8)"];
+    node[shape=ellipse];
+    Template__symboltable_iartifactscope_GetTopLevelSymbol [label="_symboltable.iartifactscope.GetTopLevelSymbol.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_iartifactscope_GetFullName [label="_symboltable.iartifactscope.GetFullName.ftl (1)"];
+  }
+  subgraph cluster__symboltable_scope {
+    label = "_symboltable.scope";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__symboltable_scope_SetSpanningSymbolAbsent [label="_symboltable.scope.SetSpanningSymbolAbsent.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_scope_SetEnclosingScope [label="_symboltable.scope.SetEnclosingScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_scope_ResolveSubKinds [label="_symboltable.scope.ResolveSubKinds.ftl (8)"];
+    node[shape=ellipse];
+    Template__symboltable_scope_SetSubScopes [label="_symboltable.scope.SetSubScopes.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_scope_SetSpanningSymbol [label="_symboltable.scope.SetSpanningSymbol.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_scope_AddSubScope [label="_symboltable.scope.AddSubScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_scope_RemoveSubScope [label="_symboltable.scope.RemoveSubScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_scope_GetSubScopes [label="_symboltable.scope.GetSubScopes.ftl (1)"];
+  }
+  subgraph cluster__symboltable_globalscope {
+    label = "_symboltable.globalscope";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__symboltable_globalscope_ZeroArgsConstructorGlobalScope [label="_symboltable.globalscope.ZeroArgsConstructorGlobalScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_globalscope_LoadFileForModelName [label="_symboltable.globalscope.LoadFileForModelName.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_globalscope_Init [label="_symboltable.globalscope.Init.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_globalscope_GetSymbols2Json [label="_symboltable.globalscope.GetSymbols2Json.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_globalscope_Load [label="_symboltable.globalscope.Load.ftl (8)"];
+    node[shape=ellipse];
+    Template__symboltable_globalscope_Clear [label="_symboltable.globalscope.Clear.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_globalscope_ConstructorGlobalScope [label="_symboltable.globalscope.ConstructorGlobalScope.ftl (1)"];
+  }
+  subgraph cluster__symboltable_iscope {
+    label = "_symboltable.iscope";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__symboltable_iscope_GetSymbolSize [label="_symboltable.iscope.GetSymbolSize.ftl (1)"];
+  }
+  subgraph cluster__symboltable_iglobalscope {
+    label = "_symboltable.iglobalscope";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__symboltable_iglobalscope_ResolveAdapted [label="_symboltable.iglobalscope.ResolveAdapted.ftl (8)"];
+    node[shape=ellipse];
+    Template__symboltable_iglobalscope_ResolveMany4GlobalScope [label="_symboltable.iglobalscope.ResolveMany4GlobalScope.ftl (8)"];
+  }
+  subgraph cluster__symboltable_scopesgenitordelegator {
+    label = "_symboltable.scopesgenitordelegator";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__symboltable_scopesgenitordelegator_CreateFromASTDelegator [label="_symboltable.scopesgenitordelegator.CreateFromASTDelegator.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_scopesgenitordelegator_ConstructorScopesGenitorDelegator [label="_symboltable.scopesgenitordelegator.ConstructorScopesGenitorDelegator.ftl (1)"];
+  }
+  subgraph cluster_parser {
+    label = "parser";
+    labeljust = l;
+    node[shape=ellipse];
+    Template_parser_EmptyParserInfo [label="parser.EmptyParserInfo.ftl (1)"];
+    node[shape=ellipse];
+    Template_parser_ParserInfoForSuperLang [label="parser.ParserInfoForSuperLang.ftl (13)"];
+    node[shape=ellipse];
+    Template_parser_ParserInfo [label="parser.ParserInfo.ftl (1)"];
+  }
+  subgraph cluster__od {
+    label = "_od";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__od_PrintObject [label="_od.PrintObject.ftl (1)"];
+    node[shape=ellipse];
+    Template__od_PrintAttribute [label="_od.PrintAttribute.ftl (1)"];
+    node[shape=ellipse];
+    Template__od_ConstructorOD [label="_od.ConstructorOD.ftl (1)"];
+    node[shape=ellipse];
+    Template__od_HandleOD [label="_od.HandleOD.ftl (11)"];
+    node[shape=ellipse];
+    Template__od_PrintObjectDiagram [label="_od.PrintObjectDiagram.ftl (1)"];
+  }
+  subgraph cluster_mc {
+    label = "mc";
+    labeljust = l;
+    node[shape=ellipse];
+    Template_mc_Imports [label="mc.Imports.ftl (76)"];
+  }
+  subgraph cluster_dispatcher {
+    label = "dispatcher";
+    labeljust = l;
+    node[shape=ellipse];
+    Template_dispatcher_Constructor [label="dispatcher.Constructor.ftl (1)"];
+    node[shape=ellipse];
+    Template_dispatcher_AsMethod [label="dispatcher.AsMethod.ftl (166)"];
+    node[shape=ellipse];
+    Template_dispatcher_IsMethod [label="dispatcher.IsMethod.ftl (166)"];
+    node[shape=ellipse];
+    Template_dispatcher_Reset [label="dispatcher.Reset.ftl (1)"];
+    node[shape=ellipse];
+    Template_dispatcher_Handle [label="dispatcher.Handle.ftl (166)"];
+  }
+  subgraph cluster__cocos {
+    label = "_cocos";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__cocos_CoCoCheckerConstructor [label="_cocos.CoCoCheckerConstructor.ftl (1)"];
+    node[shape=ellipse];
+    Template__cocos_AddChecker [label="_cocos.AddChecker.ftl (14)"];
+  }
+  Model_de_monticore_expressions_JavaClassExpressions -> Template_parser_EmptyParserInfo;
+  Model_de_monticore_expressions_JavaClassExpressions -> Template_parser_ParserInfo;
+  Model_de_monticore_expressions_JavaClassExpressions -> Template_cd2java_Class;
+  Model_de_monticore_expressions_JavaClassExpressions -> Template_cd2java_Interface;
+  Model_de_monticore_expressions_JavaClassExpressions -> Template_cd2java_Enum;
+  Model_de_monticore_expressions_JavaClassExpressions -> Template_parser_ParserInfoForSuperLang;
+  Template__prettyprinter_pp_HandleMethod -> Template__prettyprinter_pp_Block;
+  Template__prettyprinter_pp_HandleMethod -> Template__prettyprinter_pp_Alt;
+  Template__prettyprinter_pp_Alt -> Template__prettyprinter_pp_Block;
+  Template__prettyprinter_pp_Alt -> Template__prettyprinter_pp_Terminal;
+  Template__prettyprinter_pp_Alt -> Template__prettyprinter_pp_Tokens;
+  Template__prettyprinter_pp_Block -> Template__prettyprinter_pp_Alt;
+  Template_cd2java_Constructor -> Template_interpreter_ConstructorNoParams;
+  Template_cd2java_Constructor -> Template__od_ConstructorOD;
+  Template_cd2java_Constructor -> Template__symboltable_globalscope_ConstructorGlobalScope;
+  Template_cd2java_Constructor -> Template_cd2java_Annotations;
+  Template_cd2java_Constructor -> Template_dispatcher_Constructor;
+  Template_cd2java_Constructor -> Template__prettyprinter_full_FPPConstructor;
+  Template_cd2java_Constructor -> Template__symboltable_scopesgenitordelegator_ConstructorScopesGenitorDelegator;
+  Template_cd2java_Constructor -> Template__symboltable_artifactscope_ConstructorArtifactScope;
+  Template_cd2java_Constructor -> Template__cocos_CoCoCheckerConstructor;
+  Template_cd2java_Constructor -> Template_cd2java_EmptyBody;
+  Template_cd2java_Constructor -> Template__symboltable_globalscope_ZeroArgsConstructorGlobalScope;
+  Template_cd2java_Attribute -> Template_cd2java_Annotations;
+  Template_cd2java_Attribute -> Template_cd2java_Value;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__ast_ASTInstanceofPatternExpressionBuilder;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__auxiliary_MCBasicTypesMillForJavaClassExpressions;
+  Template_cd2java_Class -> Template_cd2java_Attribute;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__ast_ASTPrimaryThisExpression;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__ast_ASTThisExpression;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__ast_ASTTypePatternBuilder;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__prettyprint_JavaClassExpressionsFullPrettyPrinter;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__auxiliary_MCVarDeclarationStatementsMillForJavaClassExpressions;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__auxiliary_ExpressionsBasisMillForJavaClassExpressions;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__ast_ASTPrimarySuperExpression;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__ast_ASTSuperSuffixBuilder;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions_JavaClassExpressionsMill;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__auxiliary_BasicSymbolsMillForJavaClassExpressions;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__symboltable_JavaClassExpressionsScope;
+  Template_cd2java_Class -> Template_mc_Imports;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__ast_ASTConstantsJavaClassExpressions;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__ast_ASTPrimaryGenericInvocationExpressionBuilder;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__symboltable_JavaClassExpressionsScopesGenitorDelegator;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__auxiliary_MCStatementsBasisMillForJavaClassExpressions;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__visitor_JavaClassExpressionsTraverserImplementation;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__ast_ASTPrimaryThisExpressionBuilder;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__symboltable_JavaClassExpressionsScopesGenitor;
+  Template_cd2java_Class -> Template_cd2java_Imports;
+  Template_cd2java_Class -> Template_cd2java_Method;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__auxiliary_CommonExpressionsMillForJavaClassExpressions;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__ast_ASTInstanceofPatternExpression;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__ast_ASTGenericInvocationExpressionBuilder;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__ast_ASTSuperSuffix;
+  Template_cd2java_Class -> Template_cd2java_Constructor;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__ast_ASTGenericInvocationExpression;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__cocos_JavaClassExpressionsCoCoChecker;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__auxiliary_UglyExpressionsMillForJavaClassExpressions;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__ast_ASTSuperExpression;
+  Template_cd2java_Class -> Template_cd2java_Package;
+  Template_cd2java_Class -> Template_cd2java_Annotations;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__ast_ASTGenericInvocationSuffix;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__symboltable_JavaClassExpressionsSymbols2Json;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__od_JavaClassExpressions2OD;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__symboltable_JavaClassExpressionsDeSer;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__symboltable_JavaClassExpressionsGlobalScope;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__visitor_JavaClassExpressionsInheritanceHandler;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__ast_ASTTypePattern;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__auxiliary_MCBasicsMillForJavaClassExpressions;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__ast_ASTGenericInvocationSuffixBuilder;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__ast_ASTClassExpression;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__ast_ASTClassExpressionBuilder;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__ast_ASTSuperExpressionBuilder;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__auxiliary_MCCollectionTypesMillForJavaClassExpressions;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__ast_ASTPrimaryGenericInvocationExpression;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__auxiliary_MCLiteralsBasisMillForJavaClassExpressions;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__ast_ASTThisExpressionBuilder;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__symboltable_JavaClassExpressionsArtifactScope;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__prettyprint_JavaClassExpressionsPrettyPrinter;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__auxiliary_MCFullGenericTypesMillForJavaClassExpressions;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__util_JavaClassExpressionsTypeDispatcher;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__auxiliary_MCSimpleGenericTypesMillForJavaClassExpressions;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__auxiliary_OOSymbolsMillForJavaClassExpressions;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__ast_ASTPrimarySuperExpressionBuilder;
+  Template_cd2java_Class -> File_de_monticore_expressions_javaclassexpressions__visitor_JavaClassExpressionsInterpreter;
+  Template_cd2java_Interface -> File_de_monticore_expressions_javaclassexpressions__cocos_JavaClassExpressionsASTJavaClassExpressionsNodeCoCo;
+  Template_cd2java_Interface -> File_de_monticore_expressions_javaclassexpressions__cocos_JavaClassExpressionsASTGenericInvocationSuffixCoCo;
+  Template_cd2java_Interface -> File_de_monticore_expressions_javaclassexpressions__cocos_JavaClassExpressionsASTTypePatternCoCo;
+  Template_cd2java_Interface -> File_de_monticore_expressions_javaclassexpressions__visitor_JavaClassExpressionsHandler;
+  Template_cd2java_Interface -> File_de_monticore_expressions_javaclassexpressions__cocos_JavaClassExpressionsASTClassExpressionCoCo;
+  Template_cd2java_Interface -> File_de_monticore_expressions_javaclassexpressions__cocos_JavaClassExpressionsASTThisExpressionCoCo;
+  Template_cd2java_Interface -> File_de_monticore_expressions_javaclassexpressions__cocos_JavaClassExpressionsASTPrimaryGenericInvocationExpressionCoCo;
+  Template_cd2java_Interface -> File_de_monticore_expressions_javaclassexpressions__cocos_JavaClassExpressionsASTSuperSuffixCoCo;
+  Template_cd2java_Interface -> File_de_monticore_expressions_javaclassexpressions__cocos_JavaClassExpressionsASTGenericInvocationExpressionCoCo;
+  Template_cd2java_Interface -> File_de_monticore_expressions_javaclassexpressions__visitor_IJavaClassExpressionsInterpreter;
+  Template_cd2java_Interface -> File_de_monticore_expressions_javaclassexpressions__cocos_JavaClassExpressionsASTPrimaryThisExpressionCoCo;
+  Template_cd2java_Interface -> Template_cd2java_Package;
+  Template_cd2java_Interface -> Template_cd2java_Annotations;
+  Template_cd2java_Interface -> File_de_monticore_expressions_javaclassexpressions__symboltable_ICommonJavaClassExpressionsSymbol;
+  Template_cd2java_Interface -> File_de_monticore_expressions_javaclassexpressions__visitor_JavaClassExpressionsTraverser;
+  Template_cd2java_Interface -> File_de_monticore_expressions_javaclassexpressions__symboltable_IJavaClassExpressionsArtifactScope;
+  Template_cd2java_Interface -> File_de_monticore_expressions_javaclassexpressions__cocos_JavaClassExpressionsASTSuperExpressionCoCo;
+  Template_cd2java_Interface -> Template_mc_Imports;
+  Template_cd2java_Interface -> File_de_monticore_expressions_javaclassexpressions__cocos_JavaClassExpressionsASTInstanceofPatternExpressionCoCo;
+  Template_cd2java_Interface -> File_de_monticore_expressions_javaclassexpressions__cocos_JavaClassExpressionsASTPatternCoCo;
+  Template_cd2java_Interface -> File_de_monticore_expressions_javaclassexpressions__cocos_JavaClassExpressionsASTPrimarySuperExpressionCoCo;
+  Template_cd2java_Interface -> File_de_monticore_expressions_javaclassexpressions__ast_ASTJavaClassExpressionsNode;
+  Template_cd2java_Interface -> File_de_monticore_expressions_javaclassexpressions__util_IJavaClassExpressionsTypeDispatcher;
+  Template_cd2java_Interface -> File_de_monticore_expressions_javaclassexpressions__visitor_JavaClassExpressionsVisitor2;
+  Template_cd2java_Interface -> File_de_monticore_expressions_javaclassexpressions__symboltable_IJavaClassExpressionsScope;
+  Template_cd2java_Interface -> Template_cd2java_Imports;
+  Template_cd2java_Interface -> File_de_monticore_expressions_javaclassexpressions__symboltable_IJavaClassExpressionsGlobalScope;
+  Template_cd2java_Interface -> File_de_monticore_expressions_javaclassexpressions__ast_ASTPattern;
+  Template_cd2java_Interface -> Template_cd2java_Method;
+  Template_cd2java_Method -> Template__symboltable_iartifactscope_ContinueWithEnclosingScope4ArtifactScope;
+  Template_cd2java_Method -> Template_mill_PrettyPrintProtectedBuilderMethod;
+  Template_cd2java_Method -> Template__symboltable_scope_SetSpanningSymbolAbsent;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbols2Json_EndVisit4Scope;
+  Template_cd2java_Method -> Template__symboltable_scope_ResolveSubKinds;
+  Template_cd2java_Method -> Template__symboltable_scope_SetSubScopes;
+  Template_cd2java_Method -> Template_dispatcher_AsMethod;
+  Template_cd2java_Method -> Template__ast_ast_constants_GetAllLanguages;
+  Template_cd2java_Method -> Template__symboltable_artifactscope_GetName;
+  Template_cd2java_Method -> Template__visitor_handler_HandleASTInheritance;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbols2Json_Store;
+  Template_cd2java_Method -> Template__prettyprinter_full_FPPSetPrintComments;
+  Template_cd2java_Method -> Template_data_EqualAttributes;
+  Template_cd2java_Method -> Template_methods_MethodDelegate;
+  Template_cd2java_Method -> Template_mill_ProtectedMethodForSuper;
+  Template_cd2java_Method -> Template__symboltable_globalscope_LoadFileForModelName;
+  Template_cd2java_Method -> Template__cocos_AddChecker;
+  Template_cd2java_Method -> Template__symboltable_iglobalscope_ResolveAdapted;
+  Template_cd2java_Method -> Template__visitor_traverser_DelegatingMethods;
+  Template_cd2java_Method -> Template__visitor_traverser_Handle;
+  Template_cd2java_Method -> Template_mill_GetMillMethod;
+  Template_cd2java_Method -> Template__visitor_handler_HandleSymTabInheritance;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbols2Json_Load2;
+  Template_cd2java_Method -> Template__symboltable_scope_SetSpanningSymbol;
+  Template_cd2java_Method -> Template__ast_ast_class_Evaluate;
+  Template_cd2java_Method -> Template__od_PrintObject;
+  Template_cd2java_Method -> Template__symboltable_scopesgenitor_CreateFromAST;
+  Template_cd2java_Method -> Template_data_AcceptSuper;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbols2Json_Init;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbols2Json_Serialize4Symbols2Json;
+  Template_cd2java_Method -> Template_methods_opt_Set4Opt;
+  Template_cd2java_Method -> Template__symboltable_serialization_scopeDeSer_SerializeAS4ScopeDeSer;
+  Template_cd2java_Method -> Template__visitor_traverser_Traverse;
+  Template_cd2java_Method -> Template_methods_Get;
+  Template_cd2java_Method -> Template_dispatcher_Handle;
+  Template_cd2java_Method -> Template_dispatcher_Reset;
+  Template_cd2java_Method -> Template__symboltable_scope_RemoveSubScope;
+  Template_cd2java_Method -> Template__symboltable_scopesgenitor_PutOnStack;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbols2Json_VisitScope4STP;
+  Template_cd2java_Method -> Template__prettyprinter_full_FullPrettyPrintMethod;
+  Template_cd2java_Method -> Template__symboltable_globalscope_Clear;
+  Template_cd2java_Method -> Template__ast_ast_class_Accept;
+  Template_cd2java_Method -> Template_mill_BuilderDelegatorMethod;
+  Template_cd2java_Method -> Template__symboltable_iartifactscope_CheckIfContinueAsSubScope;
+  Template_cd2java_Method -> Template__symboltable_scopesgenitor_VisitNoSymbol;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbols2Json_VisitArtifactScope;
+  Template_cd2java_Method -> Template__ast_ast_class_builder_ASTCNodeMethodDelegate;
+  Template_cd2java_Method -> Template_mill_InitMethod;
+  Template_cd2java_Method -> Template__symboltable_globalscope_Load;
+  Template_cd2java_Method -> Template__symboltable_scope_AddSubScope;
+  Template_cd2java_Method -> Template__symboltable_iartifactscope_GetTopLevelSymbol;
+  Template_cd2java_Method -> Template__ast_builder_BuildMethod;
+  Template_cd2java_Method -> Template__prettyprinter_full_FPPTraverserInit;
+  Template_cd2java_Method -> Template_methods_Set;
+  Template_cd2java_Method -> Template_mill_BuilderMethod;
+  Template_cd2java_Method -> Template__ast_builder_MethodDelegate4ASTBuilder;
+  Template_cd2java_Method -> Template__od_HandleOD;
+  Template_cd2java_Method -> Template_mill_InitMeMethod;
+  Template_cd2java_Method -> Template__symboltable_globalscope_GetSymbols2Json;
+  Template_cd2java_Method -> Template__prettyprinter_pp_HandleMethod;
+  Template_cd2java_Method -> Template__visitor_handler_Handle;
+  Template_cd2java_Method -> Template__symboltable_scope_GetSubScopes;
+  Template_cd2java_Method -> Template_methods_opt_Get4Opt;
+  Template_cd2java_Method -> Template__visitor_handler_TraverseScope;
+  Template_cd2java_Method -> Template__symboltable_scopesgenitordelegator_CreateFromASTDelegator;
+  Template_cd2java_Method -> Template__ast_builder_opt_Set4ASTBuilderOpt;
+  Template_cd2java_Method -> Template__symboltable_scopesgenitor_CreateScope;
+  Template_cd2java_Method -> Template__od_PrintObjectDiagram;
+  Template_cd2java_Method -> Template__visitor_traverser_TraverseScope;
+  Template_cd2java_Method -> Template__symboltable_artifactscope_IsPresentName;
+  Template_cd2java_Method -> Template_mill_ResetMethod;
+  Template_cd2java_Method -> Template_mill_ProtectedGlobalScopeMethod;
+  Template_cd2java_Method -> Template__ast_builder_opt_SetAbsent4ASTBuilderOpt;
+  Template_cd2java_Method -> Template__symboltable_globalscope_Init;
+  Template_cd2java_Method -> Template__symboltable_iscope_GetSymbolSize;
+  Template_cd2java_Method -> Template__symboltable_serialization_scopeDeSer_DeserializeArtifactScope;
+  Template_cd2java_Method -> Template_data_DeepEqualsWithComments;
+  Template_cd2java_Method -> Template__ast_builder_IsValidMethod;
+  Template_cd2java_Method -> Template_mill_ProtectedBuilderMethod;
+  Template_cd2java_Method -> Template_mill_PrettyPrintBuilderMethod;
+  Template_cd2java_Method -> Template__symboltable_iglobalscope_ResolveMany4GlobalScope;
+  Template_cd2java_Method -> Template_methods_opt_IsPresent4Opt;
+  Template_cd2java_Method -> Template__symboltable_serialization_scopeDeSer_DeserializeScope;
+  Template_cd2java_Method -> Template_cd2java_EmptyBody;
+  Template_cd2java_Method -> Template_cd2java_Annotations;
+  Template_cd2java_Method -> Template__ast_builder_Set4ASTBuilder;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbols2Json_Deserialize;
+  Template_cd2java_Method -> Template_data_EqualsWithComments;
+  Template_cd2java_Method -> Template__symboltable_artifactscope_SetEnclosingScope;
+  Template_cd2java_Method -> Template__symboltable_iartifactscope_GetRemainingNameForResolveDown;
+  Template_cd2java_Method -> Template_dispatcher_IsMethod;
+  Template_cd2java_Method -> Template__visitor_traverser_SetHandler;
+  Template_cd2java_Method -> Template_mill_TypeDispatcherGetter;
+  Template_cd2java_Method -> Template__symboltable_serialization_scopeDeSer_DeserializeSymbols;
+  Template_cd2java_Method -> Template__symboltable_serialization_scopeDeSer_SerializeS2J4ScopeDeSer;
+  Template_cd2java_Method -> Template_data_DeepCloneWithParameters;
+  Template_cd2java_Method -> Template__symboltable_scope_SetEnclosingScope;
+  Template_cd2java_Method -> Template__symboltable_iartifactscope_GetFullName;
+  Template_cd2java_Method -> Template_methods_opt_SetAbsent;
+  Template_cd2java_Method -> Template__visitor_traverser_AddVisitor;
+  Template_cd2java_Method -> Template__od_PrintAttribute;
+  Template_cd2java_Method -> Template__visitor_handler_Traverse;
+  Template_cd2java_Method -> Template__ast_ast_class_symboltable_InheritedSetEnclosingScope;
+  Template_cd2java_Method -> Template_data_DeepEqualsWithOrder;
+  Template_cd2java_Method -> Template_mill_InheritanceHandlerMethod;
+  Template_cd2java_Enum -> Template_cd2java_Package;
+  Template_cd2java_Enum -> Template_cd2java_Attribute;
+  Template_cd2java_Enum -> Template_cd2java_Constructor;
+  Template_cd2java_Enum -> File_de_monticore_expressions_javaclassexpressions__ast_JavaClassExpressionsLiterals;
+  Template_cd2java_Enum -> Template_cd2java_Method;
+  Template__ast_builder_BuildMethod -> Template__ast_ast_class_builder_ASTCNodeInit;
+  Template__symboltable_scope_SetSpanningSymbolAbsent -> Template_methods_opt_SetAbsent;
+  Template__symboltable_scope_SetSpanningSymbol -> Template_methods_opt_Set4Opt;
+  Template_parser_EmptyParserInfo -> File_de_monticore_expressions_javaclassexpressions__parser_EmptyJavaClassExpressionsParserInfo;
+  Template_parser_ParserInfoForSuperLang -> File_de_monticore_expressions_javaclassexpressions__parser__auxiliary_JavaClassExpressionsParserInfoForBasicSymbols;
+  Template_parser_ParserInfoForSuperLang -> File_de_monticore_expressions_javaclassexpressions__parser__auxiliary_JavaClassExpressionsParserInfoForMCCollectionTypes;
+  Template_parser_ParserInfoForSuperLang -> File_de_monticore_expressions_javaclassexpressions__parser__auxiliary_JavaClassExpressionsParserInfoForExpressionsBasis;
+  Template_parser_ParserInfoForSuperLang -> File_de_monticore_expressions_javaclassexpressions__parser__auxiliary_JavaClassExpressionsParserInfoForMCLiteralsBasis;
+  Template_parser_ParserInfoForSuperLang -> File_de_monticore_expressions_javaclassexpressions__parser__auxiliary_JavaClassExpressionsParserInfoForCommonExpressions;
+  Template_parser_ParserInfoForSuperLang -> File_de_monticore_expressions_javaclassexpressions__parser__auxiliary_JavaClassExpressionsParserInfoForMCFullGenericTypes;
+  Template_parser_ParserInfoForSuperLang -> File_de_monticore_expressions_javaclassexpressions__parser__auxiliary_JavaClassExpressionsParserInfoForMCStatementsBasis;
+  Template_parser_ParserInfoForSuperLang -> File_de_monticore_expressions_javaclassexpressions__parser__auxiliary_JavaClassExpressionsParserInfoForOOSymbols;
+  Template_parser_ParserInfoForSuperLang -> File_de_monticore_expressions_javaclassexpressions__parser__auxiliary_JavaClassExpressionsParserInfoForMCBasics;
+  Template_parser_ParserInfoForSuperLang -> File_de_monticore_expressions_javaclassexpressions__parser__auxiliary_JavaClassExpressionsParserInfoForMCBasicTypes;
+  Template_parser_ParserInfoForSuperLang -> File_de_monticore_expressions_javaclassexpressions__parser__auxiliary_JavaClassExpressionsParserInfoForMCSimpleGenericTypes;
+  Template_parser_ParserInfoForSuperLang -> File_de_monticore_expressions_javaclassexpressions__parser__auxiliary_JavaClassExpressionsParserInfoForUglyExpressions;
+  Template_parser_ParserInfoForSuperLang -> File_de_monticore_expressions_javaclassexpressions__parser__auxiliary_JavaClassExpressionsParserInfoForMCVarDeclarationStatements;
+  Template_parser_ParserInfo -> File_de_monticore_expressions_javaclassexpressions__parser_JavaClassExpressionsParserInfo;
+}

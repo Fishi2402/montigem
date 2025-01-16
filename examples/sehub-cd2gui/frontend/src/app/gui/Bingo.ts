@@ -2,8 +2,8 @@
 import {BingoComponent,config} from "../../../build/frontendGen/build/appgui/gui/BingoComponent";
 import {Component} from '@angular/core';
 import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
-import {SehubManager} from "@src/sehub/SehubManager";
-import {BoardMapper} from "@src/sehub/BoardMapper";
+import {SehubManager} from "sehub/SehubManager";
+import {BoardMapper} from "sehub/BoardMapper";
 
 @Component({
   standalone:true,

@@ -493,4 +493,8 @@ public class GenService {
     }
     return false;
   }
+
+  public static boolean isListOfGemIdentifiable(SymTypeExpression type) {
+    return GenService.isList(type) && GenService.isCDType(((SymTypeOfGenerics) type).getArgument(0));
+  }
 }

@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {DemoRecManager} from '@src/demorec/DemoRecManager';
+import {DemoRecManager} from 'demorec/DemoRecManager';
 
-import {MeasuringValue} from '@src/demorec/MeasuringValue'
+import {MeasuringValue} from 'demorec/MeasuringValue'
 
-import {MeasuringValueCreateComponent, config} from '@src/gui/measuringvalues/MeasuringValueCreateComponent';
+import {MeasuringValueCreateComponent, config} from 'gui/measuringvalues/MeasuringValueCreateComponent';
 
 import {
   Component,

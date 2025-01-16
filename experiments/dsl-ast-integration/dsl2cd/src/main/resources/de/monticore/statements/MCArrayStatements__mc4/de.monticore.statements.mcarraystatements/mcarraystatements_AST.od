@@ -1,0 +1,154 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram mcarraystatements_AST {
+  @MCArrayStatements!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @MCArrayStatements!Symbol(2,0);
+    enclosingScope = @MCArrayStatements!ArtifactScope;
+    spanningScope = @MCArrayStatements!Scope;
+    r__package = [de, monticore, statements];
+    importStatement = [// *size: 1
+      @!MCImportStatement(7,0):ASTMCImportStatement {
+        enclosingScope = @MCArrayStatements!Scope;
+        mCQualifiedName = @de.monticore.statements.MCVarDeclarationStatements!MCQualifiedName(7,7):ASTMCQualifiedName {
+          enclosingScope = @MCArrayStatements!Scope;
+          parts = [de, monticore, statements, MCVarDeclarationStatements];
+        };
+        star = false;
+      }];
+    name = MCArrayStatements;
+    supergrammar = [// *size: 1
+      @MCVarDeclarationStatements!GrammarReference(32,18):ASTGrammarReference {
+        enclosingScope = @MCArrayStatements!Scope;
+        names = [MCVarDeclarationStatements];
+      }];
+    classProds = [// *size: 2
+      @ArrayDeclaratorId!ClassProd(34,2):ASTClassProd {
+        enclosingScope = @MCArrayStatements!Scope;
+        superInterfaceRule = [// *size: 1
+          @Declarator!RuleReference(34,31):ASTRuleReference {
+            enclosingScope = @ArrayDeclaratorId!Scope;
+            name = Declarator;
+          }];
+        alts = [// *size: 1
+          @!Alt(35,10):ASTAlt {
+            enclosingScope = @ArrayDeclaratorId!Scope;
+            component = [// *size: 2
+              @Name!NonTerminal(35,10):ASTNonTerminal {
+                enclosingScope = @ArrayDeclaratorId!Scope;
+                name = Name;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @!Block(35,15):ASTBlock {
+                enclosingScope = @ArrayDeclaratorId!Scope;
+                alt = [// *size: 1
+                  @!Alt(35,16):ASTAlt {
+                    enclosingScope = @ArrayDeclaratorId!Scope;
+                    component = [// *size: 2
+                      @LBRACK!Terminal(35,16):ASTTerminal {
+                        enclosingScope = @ArrayDeclaratorId!Scope;
+                        iteration = 0;
+                        usageName = "dim";
+                        name = [;
+                      },
+                      @RBRACK!Terminal(35,24):ASTTerminal {
+                        enclosingScope = @ArrayDeclaratorId!Scope;
+                        iteration = 0;
+                        name = ];
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 13;
+              }];
+            rightAssoc = false;
+          }];
+        name = ArrayDeclaratorId;
+      },
+      @ArrayInit!ClassProd(37,2):ASTClassProd {
+        enclosingScope = @MCArrayStatements!Scope;
+        superInterfaceRule = [// *size: 1
+          @VariableInit!RuleReference(37,23):ASTRuleReference {
+            enclosingScope = @ArrayInit!Scope;
+            name = VariableInit;
+          }];
+        alts = [// *size: 1
+          @!Alt(38,11):ASTAlt {
+            enclosingScope = @ArrayInit!Scope;
+            component = [// *size: 4
+              @LCURLY!Terminal(38,11):ASTTerminal {
+                enclosingScope = @ArrayInit!Scope;
+                iteration = 0;
+                name = {;
+              },
+              @!Block(1,0):ASTBlock {
+                enclosingScope = @ArrayInit!Scope;
+                alt = [// *size: 1
+                  @!Alt(1,2):ASTAlt {
+                    enclosingScope = @ArrayInit!Scope;
+                    component = [// *size: 2
+                      @VariableInit!NonTerminal(1,2):ASTNonTerminal {
+                        enclosingScope = @ArrayInit!Scope;
+                        name = VariableInit;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      },
+                      @!Block(1,17):ASTBlock {
+                        enclosingScope = @ArrayInit!Scope;
+                        alt = [// *size: 1
+                          @!Alt(1,18):ASTAlt {
+                            enclosingScope = @ArrayInit!Scope;
+                            component = [// *size: 2
+                              @COMMA!Terminal(1,18):ASTTerminal {
+                                enclosingScope = @ArrayInit!Scope;
+                                iteration = 0;
+                                name = ,;
+                              },
+                              @VariableInit!NonTerminal(1,23):ASTNonTerminal {
+                                enclosingScope = @ArrayInit!Scope;
+                                name = VariableInit;
+                                genSymbol = false;
+                                plusKeywords = false;
+                                iteration = 0;
+                              }];
+                            rightAssoc = false;
+                          }];
+                        iteration = 21;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 17;
+              },
+              @!Block(38,38):ASTBlock {
+                enclosingScope = @ArrayInit!Scope;
+                alt = [// *size: 1
+                  @!Alt(38,39):ASTAlt {
+                    enclosingScope = @ArrayInit!Scope;
+                    component = [// *size: 1
+                      @COMMA!Terminal(38,39):ASTTerminal {
+                        enclosingScope = @ArrayInit!Scope;
+                        iteration = 0;
+                        name = ,;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 17;
+              },
+              @RCURLY!Terminal(38,45):ASTTerminal {
+                enclosingScope = @ArrayInit!Scope;
+                iteration = 0;
+                name = };
+              }];
+            rightAssoc = false;
+          }];
+        name = ArrayInit;
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

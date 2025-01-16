@@ -1,0 +1,246 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram lambdaexpressions_AST {
+  @LambdaExpressions!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @LambdaExpressions!Symbol(2,0);
+    enclosingScope = @LambdaExpressions!ArtifactScope;
+    spanningScope = @LambdaExpressions!Scope;
+    r__package = [de, monticore, expressions];
+    importStatement = [// *size: 3
+      @!MCImportStatement(7,0):ASTMCImportStatement {
+        enclosingScope = @LambdaExpressions!Scope;
+        mCQualifiedName = @de.monticore.expressions!MCQualifiedName(7,7):ASTMCQualifiedName {
+          enclosingScope = @LambdaExpressions!Scope;
+          parts = [de, monticore, expressions];
+        };
+        star = true;
+      },
+      @!MCImportStatement(8,0):ASTMCImportStatement {
+        enclosingScope = @LambdaExpressions!Scope;
+        mCQualifiedName = @de.monticore.symbols!MCQualifiedName(8,7):ASTMCQualifiedName {
+          enclosingScope = @LambdaExpressions!Scope;
+          parts = [de, monticore, symbols];
+        };
+        star = true;
+      },
+      @!MCImportStatement(9,0):ASTMCImportStatement {
+        enclosingScope = @LambdaExpressions!Scope;
+        mCQualifiedName = @de.monticore.types!MCQualifiedName(9,7):ASTMCQualifiedName {
+          enclosingScope = @LambdaExpressions!Scope;
+          parts = [de, monticore, types];
+        };
+        star = true;
+      }];
+    name = LambdaExpressions;
+    supergrammar = [// *size: 3
+      @BasicSymbols!GrammarReference(12,18):ASTGrammarReference {
+        enclosingScope = @LambdaExpressions!Scope;
+        names = [BasicSymbols];
+      },
+      @MCBasicTypes!GrammarReference(13,18):ASTGrammarReference {
+        enclosingScope = @LambdaExpressions!Scope;
+        names = [MCBasicTypes];
+      },
+      @ExpressionsBasis!GrammarReference(14,18):ASTGrammarReference {
+        enclosingScope = @LambdaExpressions!Scope;
+        names = [ExpressionsBasis];
+      }];
+    classProds = [// *size: 4
+      @LambdaParameter!ClassProd(44,2):ASTClassProd {
+        enclosingScope = @LambdaExpressions!Scope;
+        superInterfaceRule = [// *size: 1
+          @Variable!RuleReference(44,29):ASTRuleReference {
+            enclosingScope = @LambdaParameter!Scope;
+            name = Variable;
+          }];
+        alts = [// *size: 1
+          @!Alt(44,40):ASTAlt {
+            enclosingScope = @LambdaParameter!Scope;
+            component = [// *size: 2
+              @MCType!NonTerminal(44,40):ASTNonTerminal {
+                enclosingScope = @LambdaParameter!Scope;
+                name = MCType;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 17;
+              },
+              @Name!NonTerminal(44,48):ASTNonTerminal {
+                enclosingScope = @LambdaParameter!Scope;
+                name = Name;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = LambdaParameter;
+      },
+      @LambdaParameters!ClassProd(46,2):ASTClassProd {
+        enclosingScope = @LambdaExpressions!Scope;
+        alts = [// *size: 2
+          @!Alt(47,4):ASTAlt {
+            enclosingScope = @LambdaParameters!Scope;
+            component = [// *size: 1
+              @LambdaParameter!NonTerminal(47,4):ASTNonTerminal {
+                enclosingScope = @LambdaParameters!Scope;
+                name = LambdaParameter;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          },
+          @!Alt(48,6):ASTAlt {
+            enclosingScope = @LambdaParameters!Scope;
+            component = [// *size: 3
+              @LPAREN!Terminal(48,6):ASTTerminal {
+                enclosingScope = @LambdaParameters!Scope;
+                iteration = 0;
+                usageName = "parenthesis";
+                name = (;
+              },
+              @!Block(1,0):ASTBlock {
+                enclosingScope = @LambdaParameters!Scope;
+                alt = [// *size: 1
+                  @!Alt(1,2):ASTAlt {
+                    enclosingScope = @LambdaParameters!Scope;
+                    component = [// *size: 2
+                      @LambdaParameter!NonTerminal(1,2):ASTNonTerminal {
+                        enclosingScope = @LambdaParameters!Scope;
+                        name = LambdaParameter;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      },
+                      @!Block(1,20):ASTBlock {
+                        enclosingScope = @LambdaParameters!Scope;
+                        alt = [// *size: 1
+                          @!Alt(1,21):ASTAlt {
+                            enclosingScope = @LambdaParameters!Scope;
+                            component = [// *size: 2
+                              @COMMA!Terminal(1,21):ASTTerminal {
+                                enclosingScope = @LambdaParameters!Scope;
+                                iteration = 0;
+                                name = ,;
+                              },
+                              @LambdaParameter!NonTerminal(1,26):ASTNonTerminal {
+                                enclosingScope = @LambdaParameters!Scope;
+                                name = LambdaParameter;
+                                genSymbol = false;
+                                plusKeywords = false;
+                                iteration = 0;
+                              }];
+                            rightAssoc = false;
+                          }];
+                        iteration = 21;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 17;
+              },
+              @RPAREN!Terminal(48,48):ASTTerminal {
+                enclosingScope = @LambdaParameters!Scope;
+                iteration = 0;
+                name = );
+              }];
+            rightAssoc = false;
+          }];
+        name = LambdaParameters;
+      },
+      @LambdaExpressionBody!ClassProd(60,2):ASTClassProd {
+        enclosingScope = @LambdaExpressions!Scope;
+        superInterfaceRule = [// *size: 1
+          @LambdaBody!RuleReference(60,34):ASTRuleReference {
+            enclosingScope = @LambdaExpressionBody!Scope;
+            name = LambdaBody;
+          }];
+        alts = [// *size: 1
+          @!Alt(60,47):ASTAlt {
+            enclosingScope = @LambdaExpressionBody!Scope;
+            component = [// *size: 1
+              @Expression!NonTerminal(60,47):ASTNonTerminal {
+                enclosingScope = @LambdaExpressionBody!Scope;
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = LambdaExpressionBody;
+      },
+      @LambdaExpression!ClassProd(62,2):ASTClassProd {
+        enclosingScope = @LambdaExpressions!Scope;
+        symbolDefinitions = [// *size: 1
+          @!SymbolDefinition(62,2):ASTSymbolDefinition {
+            enclosingScope = @LambdaExpression!Scope;
+            genSymbol = false;
+            genScope = true;
+            shadowing = true;
+            non_exporting = true;
+            ordered = true;
+          }];
+        superInterfaceRule = [// *size: 1
+          @Expression!RuleReference(63,47):ASTRuleReference {
+            enclosingScope = @LambdaExpression!Scope;
+            name = Expression;
+            prio = "50";
+          }];
+        alts = [// *size: 1
+          @!Alt(64,4):ASTAlt {
+            enclosingScope = @LambdaExpression!Scope;
+            component = [// *size: 3
+              @LambdaParameters!NonTerminal(65,4):ASTNonTerminal {
+                enclosingScope = @LambdaExpression!Scope;
+                name = LambdaParameters;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @MINUSGT!Terminal(65,21):ASTTerminal {
+                enclosingScope = @LambdaExpression!Scope;
+                iteration = 0;
+                name = ->;
+              },
+              @LambdaBody!NonTerminal(66,4):ASTNonTerminal {
+                enclosingScope = @LambdaExpression!Scope;
+                name = LambdaBody;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = true;
+          }];
+        name = LambdaExpression;
+      }];
+    interfaceProds = [// *size: 1
+      @LambdaBody!InterfaceProd(55,2):ASTInterfaceProd {
+        enclosingScope = @LambdaExpressions!Scope;
+        name = LambdaBody;
+      }];
+    aSTRules = [// *size: 1
+      @!ASTRule(57,2):ASTASTRule {
+        enclosingScope = @LambdaExpressions!Scope;
+        type = LambdaBody;
+        additionalAttributes = [// *size: 1
+          @type!AdditionalAttribute(58,4):ASTAdditionalAttribute {
+            symbol = @type!Symbol(58,4);
+            enclosingScope = @LambdaExpressions!Scope;
+            name = "type";
+            mCType = @de.monticore.types.check.SymTypeExpression!MCQualifiedType(58,10):ASTMCQualifiedType {
+              enclosingScope = @LambdaExpressions!Scope;
+              mCQualifiedName = @de.monticore.types.check.SymTypeExpression!MCQualifiedName(58,10):ASTMCQualifiedName {
+                enclosingScope = @LambdaExpressions!Scope;
+                parts = [de, monticore, types, check, SymTypeExpression];
+              };
+            };
+          }];
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

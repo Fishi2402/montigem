@@ -117,6 +117,9 @@ public class GuiPipelineSetup {
         createModels.addAll(Arrays.asList(data.cmd.getOptionValues(GUI_CREATE.getCMD())));
       }
 
+      // TODO: hook point
+      // TODO: Convert gui to pipeline and allow module to hook into
+
       GUIGeneratorUtil.getInstance().init(domainModels, createModels);
 
       // Get all ASTGUIComponents
@@ -129,7 +132,7 @@ public class GuiPipelineSetup {
       String javaConfigTemplate = data.cmd.getOptionValue("ct_java", UMLPTool.DEFAULT_CONFIGTEMPLATE_GUI2JAVA);
       javaGenerator.generate(astGui, javaConfigTemplate);
 
-      GUI2TSGenerator tsGenerator = new GUI2TSGenerator(genSetup);
+      GUI2TSGenerator tsGenerator = new GUI2TSGenerator(genSetup, data.importsPath);
       tsGenerator.generate(astGui, UMLPTool.DEFAULT_CONFIGTEMPLATE_GUI2TS);
 
       GUI2HtmlGenerator htmlGenerator = new GUI2HtmlGenerator(genSetup);

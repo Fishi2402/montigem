@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {Component} from '@angular/core';
-import {UserLoginComponent,config} from '@src/gui/login/UserLoginComponent';
-import {User} from '@src/guidslpaper/User';
+import {UserLoginComponent,config} from 'gui/login/UserLoginComponent';
+import {User} from 'guidslpaper/User';
 import {GuidslpaperSecurityManager} from "../../guidslpaper/GuidslpaperSecurityManager";
 
 // import { ActivatedRoute, Router } from '@angular/router';

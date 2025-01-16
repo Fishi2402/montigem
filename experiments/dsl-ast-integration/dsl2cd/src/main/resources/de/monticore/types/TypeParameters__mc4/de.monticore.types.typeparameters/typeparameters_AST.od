@@ -1,0 +1,171 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram typeparameters_AST {
+  @TypeParameters!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @TypeParameters!Symbol(2,0);
+    enclosingScope = @TypeParameters!ArtifactScope;
+    spanningScope = @TypeParameters!Scope;
+    r__package = [de, monticore, types];
+    importStatement = [// *size: 1
+      @!MCImportStatement(7,0):ASTMCImportStatement {
+        enclosingScope = @TypeParameters!Scope;
+        mCQualifiedName = @de.monticore.symbols.BasicSymbols!MCQualifiedName(7,7):ASTMCQualifiedName {
+          enclosingScope = @TypeParameters!Scope;
+          parts = [de, monticore, symbols, BasicSymbols];
+        };
+        star = false;
+      }];
+    name = TypeParameters;
+    supergrammar = [// *size: 2
+      @BasicSymbols!GrammarReference(20,18):ASTGrammarReference {
+        enclosingScope = @TypeParameters!Scope;
+        names = [BasicSymbols];
+      },
+      @MCBasicTypes!GrammarReference(21,18):ASTGrammarReference {
+        enclosingScope = @TypeParameters!Scope;
+        names = [MCBasicTypes];
+      }];
+    classProds = [// *size: 2
+      @TypeParameters!ClassProd(31,2):ASTClassProd {
+        enclosingScope = @TypeParameters!Scope;
+        alts = [// *size: 1
+          @!Alt(32,4):ASTAlt {
+            enclosingScope = @TypeParameters!Scope(!2);
+            component = [// *size: 3
+              @LT!Terminal(32,4):ASTTerminal {
+                enclosingScope = @TypeParameters!Scope(!2);
+                iteration = 0;
+                name = <;
+              },
+              @!Block(1,0):ASTBlock {
+                enclosingScope = @TypeParameters!Scope(!2);
+                alt = [// *size: 1
+                  @!Alt(1,2):ASTAlt {
+                    enclosingScope = @TypeParameters!Scope(!2);
+                    component = [// *size: 2
+                      @TypeParameter!NonTerminal(1,2):ASTNonTerminal {
+                        enclosingScope = @TypeParameters!Scope(!2);
+                        name = TypeParameter;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      },
+                      @!Block(1,18):ASTBlock {
+                        enclosingScope = @TypeParameters!Scope(!2);
+                        alt = [// *size: 1
+                          @!Alt(1,19):ASTAlt {
+                            enclosingScope = @TypeParameters!Scope(!2);
+                            component = [// *size: 2
+                              @COMMA!Terminal(1,19):ASTTerminal {
+                                enclosingScope = @TypeParameters!Scope(!2);
+                                iteration = 0;
+                                name = ,;
+                              },
+                              @TypeParameter!NonTerminal(1,24):ASTNonTerminal {
+                                enclosingScope = @TypeParameters!Scope(!2);
+                                name = TypeParameter;
+                                genSymbol = false;
+                                plusKeywords = false;
+                                iteration = 0;
+                              }];
+                            rightAssoc = false;
+                          }];
+                        iteration = 21;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 0;
+              },
+              @GT!Terminal(32,32):ASTTerminal {
+                enclosingScope = @TypeParameters!Scope(!2);
+                iteration = 0;
+                name = >;
+              }];
+            rightAssoc = false;
+          }];
+        name = TypeParameters;
+      },
+      @TypeParameter!ClassProd(46,2):ASTClassProd {
+        enclosingScope = @TypeParameters!Scope;
+        superInterfaceRule = [// *size: 1
+          @TypeVar!RuleReference(46,27):ASTRuleReference {
+            enclosingScope = @TypeParameter!Scope;
+            name = TypeVar;
+          }];
+        alts = [// *size: 1
+          @!Alt(47,4):ASTAlt {
+            enclosingScope = @TypeParameter!Scope;
+            component = [// *size: 2
+              @Name!NonTerminal(47,4):ASTNonTerminal {
+                enclosingScope = @TypeParameter!Scope;
+                name = Name;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @!Block(48,4):ASTBlock {
+                enclosingScope = @TypeParameter!Scope;
+                alt = [// *size: 1
+                  @!Alt(48,5):ASTAlt {
+                    enclosingScope = @TypeParameter!Scope;
+                    component = [// *size: 2
+                      @extends!Terminal(48,5):ASTTerminal {
+                        enclosingScope = @TypeParameter!Scope;
+                        iteration = 0;
+                        name = extends;
+                      },
+                      @!Block(1,0!2):ASTBlock {
+                        enclosingScope = @TypeParameter!Scope;
+                        alt = [// *size: 1
+                          @!Alt(1,2!2):ASTAlt {
+                            enclosingScope = @TypeParameter!Scope;
+                            component = [// *size: 2
+                              @MCType!NonTerminal(1,2):ASTNonTerminal {
+                                enclosingScope = @TypeParameter!Scope;
+                                name = MCType;
+                                genSymbol = false;
+                                plusKeywords = false;
+                                iteration = 0;
+                              },
+                              @!Block(1,11):ASTBlock {
+                                enclosingScope = @TypeParameter!Scope;
+                                alt = [// *size: 1
+                                  @!Alt(1,12):ASTAlt {
+                                    enclosingScope = @TypeParameter!Scope;
+                                    component = [// *size: 2
+                                      @AND_!Terminal(1,12):ASTTerminal {
+                                        enclosingScope = @TypeParameter!Scope;
+                                        iteration = 0;
+                                        name = &;
+                                      },
+                                      @MCType!NonTerminal(1,17):ASTNonTerminal {
+                                        enclosingScope = @TypeParameter!Scope;
+                                        name = MCType;
+                                        genSymbol = false;
+                                        plusKeywords = false;
+                                        iteration = 0;
+                                      }];
+                                    rightAssoc = false;
+                                  }];
+                                iteration = 21;
+                              }];
+                            rightAssoc = false;
+                          }];
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 17;
+              }];
+            rightAssoc = false;
+          }];
+        name = TypeParameter;
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

@@ -3,6 +3,47 @@
 Only big changes are listed. Since there is no semantic versioning for Fenix,
 the changes are tagged with a date.
 
+## 2025-01-15
+
+### Additions
+
+- added "generate TypeScript for library" (`gen4TSLib = true`) flag to the
+  generator and frontend plugin. The flag forces the generator to generate
+  relative import paths instead of path for source roots. Details in
+  visualization library README.
+
+### Changes
+
+For MontiGem users:
+
+- changed source root from `@src/` to empty string, e.g., 
+  ```diff 
+  - import { Bar } from '@src/foo/Bar';
+  + import { Bar } from 'foo/Bar';
+  ```
+  Migration script:
+  ```sh
+  find . -type d -name "build" -prune -o \( -type f \( -name "*.ts" -o -name "*.java" \) -exec sed -i 's|@src/||g' {} + \)
+  ```
+- adjusted default `tsconfig.json` file accordingly. In most cases deleting the
+  file should be enough. Adding library paths to `tsconfig.json` is no longer
+  necessary.
+- changed paths to styles from theme library, e.g.,
+  ```diff
+  - @import "../node_modules/@umlp/theme/theme";
+  + @import "../node_modules/@umlp/theme/src/mc/fenix/theme/theme";
+  ```
+  Migration script:
+  ```sh
+  find . -type d -name "build" -prune -o -type f -name "styles.scss" -exec sed -i 's|umlp/theme|umlp/theme/src/mc/fenix/theme|g' {} +
+  ```
+
+For MontiGem developers:
+
+- restructured visualization library. Details in visualization library README.
+- partially moved import handling for TypeScript files to
+  `TSImportHelper`.
+
 ## 2024-07-24
 
 ### Additions

@@ -1,7 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {UserTOP} from '@src/dtcockpit/UserTOP';
-import {DtcockpitRole} from '@src/dtcockpit/DtcockpitRole';
+import {UserTOP} from 'dtcockpit/UserTOP';
+import {DtcockpitRole} from 'dtcockpit/DtcockpitRole';
+import {GemTextInputValidity} from '@umlp/input';
 
 export class User extends UserTOP {
 
@@ -15,8 +16,8 @@ export class User extends UserTOP {
 
   private _validityRole = '';
 
-  public getValidityRole(): any {
-    return {status: this._statusRole, message: this._validityRole};
+  public getValidityRole(): GemTextInputValidity {
+    return new GemTextInputValidity(this._statusRole, this._validityRole);
   }
 
   public set validityRole(value: string) {

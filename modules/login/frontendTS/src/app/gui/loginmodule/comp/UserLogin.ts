@@ -1,12 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {Component} from '@angular/core';
-import {config, UserLoginComponent} from '@src/gui/loginmodule/comp/UserLoginComponent';
-import {LoginModuleManager} from '@src/loginmodule/LoginModuleManager';
-import {GetCurrentUserRequest} from '@src/loginmodule/commands/GetCurrentUserRequest';
+import {config, UserLoginComponent} from 'gui/loginmodule/comp/UserLoginComponent';
+import {LoginModuleManager} from 'loginmodule/LoginModuleManager';
+import {GetCurrentUserRequest} from 'loginmodule/commands/GetCurrentUserRequest';
 // import {LoginSecurityManager} from "../../loginmodule/DtcockpitSecurityManager";
 import {ClientCommandManager, CommandManager} from '@umlp/common';
-import {LoginSecManager} from "@src/loginmodule/LoginSecManager";
+import {LoginSecManager} from "loginmodule/LoginSecManager";
 
 
 // import { ActivatedRoute, Router } from '@angular/router';
@@ -28,6 +28,7 @@ export class UserLogin extends UserLoginComponent {
       alert("Apparently already logged in");
       return;
     }
+    this.loadModuleConfigFromPublic();
     if (this.loginUser == null) {
       this.loginUser = LoginModuleManager.loginModuleUserBuilderFromId(-32);
       // this.loginUser = new LoginModuleUser(); // TODO: builder? constructor?
@@ -46,6 +47,24 @@ export class UserLogin extends UserLoginComponent {
 
   protected ngOnInitContinue() {
     (CommandManager.getInstance() as ClientCommandManager).pauseRetryCommunication();
+  }
+
+  protected loadModuleConfigFromPublic() {
+    const requestOptions: RequestInit = {
+      method: "GET",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      }
+    };
+    const that = this;
+    fetch("/umlp/api/loginmodule/public/config", requestOptions)
+        .then(response => response.json())
+        .then(result => {
+          console.warn(result);
+          that.setSignupEnabled(result.signup);
+          that.setForgotPasswordEnabled(result.reset);
+        });
   }
 
   protected error: string = "";
@@ -120,5 +139,13 @@ export class UserLogin extends UserLoginComponent {
 
   public override getErrorValue(): string {
     return this.error;
+  }
+
+  public override navigateForgotPassword(): (arg: void) => void {
+    return () => { this._router.navigate(['gui', 'loginmodule', 'ForgotPasswordPage']);};
+  }
+
+  public override navigateSignUp(): (arg: void) => void {
+    return () => { this._router.navigate(['gui', 'loginmodule', 'SignupPage']);};
   }
 }

@@ -51,7 +51,7 @@ public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
       if (typeArgs.size() > 0) {
         TypeMirror backingType = typeArgs.get(0);
         if (backingType.getKind() == TypeKind.DECLARED) {
-          return backingType;
+          return this.getPrinter().getAdapter().mapType(backingType);
         }
       }
     }

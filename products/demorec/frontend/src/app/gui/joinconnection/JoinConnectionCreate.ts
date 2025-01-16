@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { DemoRecManager } from '@src/demorec/DemoRecManager';
+import { DemoRecManager } from 'demorec/DemoRecManager';
 
-import { JoinConnection } from '@src/demorec/JoinConnection';
-import { State } from '@src/demorec/State';
-import { BatteryPack } from '@src/demorec/BatteryPack';
+import { JoinConnection } from 'demorec/JoinConnection';
+import { State } from 'demorec/State';
+import { BatteryPack } from 'demorec/BatteryPack';
 
 import { JoinConnectionCreateComponent, config } from '../../../../build/frontendGen/build/appgui/gui/joinconnection/JoinConnectionCreateComponent';
 

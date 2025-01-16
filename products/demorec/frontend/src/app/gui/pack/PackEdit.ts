@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { DemoRecManager } from '@src/demorec/DemoRecManager';
+import { DemoRecManager } from 'demorec/DemoRecManager';
 
-import { BatteryPackType } from '@src/demorec/BatteryPackType';
+import { BatteryPackType } from 'demorec/BatteryPackType';
 
 import { PackEditComponent ,config} from '../../../../build/frontendGen/build/appgui/gui/pack/PackEditComponent';
 

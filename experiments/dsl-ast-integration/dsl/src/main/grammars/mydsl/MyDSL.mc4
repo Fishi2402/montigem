@@ -1,0 +1,32 @@
+package mydsl;
+
+/**
+ * An exemplary grammar, which will be parsed
+ */
+grammar MyDSL extends de.monticore.MCBasics,
+    de.monticore.literals.MCLiteralsBasis,
+   // de.monticore.expressions.ExpressionsBasis,
+    de.monticore.types.MCBasicTypes,
+    de.monticore.symbols.OOSymbols,
+    de.monticore.UMLStereotype,
+    de.monticore.UMLModifier,
+    de.monticore.expressions.CommonExpressions
+ {
+
+   MyCompilationUnit =
+     MCPackageDeclaration?
+     MCImportStatement*
+     MyDefinition;
+
+    MyDefinition implements Diagram =
+      Modifier "unit" Name "{" MyElement* "}";
+
+    interface MyElement;
+
+    symbol scope StateElem implements MyElement = initial:["initial"]? final:["final"]? "state" Name ( "{"  "}" | ";" );
+
+    TransElem implements MyElement = "transition" from:Name@StateElem "->" to:Name@StateElem ";";
+
+    ExprElem implements MyElement = "expression" Expression ";";
+
+}

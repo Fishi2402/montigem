@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {Component} from '@angular/core';
-import {config, ResetPasswordComponent} from '@src/gui/loginmodule/comp/ResetPasswordComponent';
-import {LoginModuleManager} from '@src/loginmodule/LoginModuleManager';
-import {GetCurrentUserRequest} from '@src/loginmodule/commands/GetCurrentUserRequest';
+import {config, ResetPasswordComponent} from 'gui/loginmodule/comp/ResetPasswordComponent';
+import {LoginModuleManager} from 'loginmodule/LoginModuleManager';
+import {GetCurrentUserRequest} from 'loginmodule/commands/GetCurrentUserRequest';
 import {ClientCommandManager, CommandManager} from '@umlp/common';
-import {LoginSecManager} from "@src/loginmodule/LoginSecManager";
+import {LoginSecManager} from "loginmodule/LoginSecManager";
 
 
 // import { ActivatedRoute, Router } from '@angular/router';

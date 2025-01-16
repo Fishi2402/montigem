@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { DemoRecManager } from '@src/demorec/DemoRecManager';
+import { DemoRecManager } from 'demorec/DemoRecManager';
 
-import { ComponentKind } from '@src/demorec/ComponentKind';
+import { ComponentKind } from 'demorec/ComponentKind';
 import {GemTextInputValidity, Option} from '@umlp/input';
 
-import { ChooseComponentKindComponent, config } from '@src/gui/kind/ChooseComponentKindComponent';
+import { ChooseComponentKindComponent, config } from 'gui/kind/ChooseComponentKindComponent';
 
 import {
   Directive,
@@ -98,11 +98,11 @@ export class ChooseComponentKind extends ChooseComponentKindComponent {
   public override checkKindChoice() : GemTextInputValidity {
     if(this.kindEntry) {
       if(this.kindEntry === newOption.getValue()) {
-        return {status: "Error", message: "Please save the new component kind or choose another one."}
+        return new GemTextInputValidity("Error", "Please save the new component kind or choose another one.");
       }
-      return {status: "Success"}
+      return new GemTextInputValidity("Success");
     }
-    return {status: "Error", message: "Please enter a valid component kind."}
+    return new GemTextInputValidity("Error", "Please enter a valid component kind.");
   }
 
 }

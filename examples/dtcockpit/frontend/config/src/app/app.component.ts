@@ -5,8 +5,8 @@ import {
   ClientCommandWebsocketCommunication,
   CommandManager
 } from '@umlp/common';
-import {DtcockpitManagerClientImpl} from '@src/dtcockpit/DtcockpitManagerClientImpl';
-import {LoginModule4DtcockpitManagerClientImpl} from "@src/loginmodule/LoginModule4DtcockpitManagerClientImpl";
+import {DtcockpitManagerClientImpl} from 'dtcockpit/DtcockpitManagerClientImpl';
+import {LoginModule4DtcockpitManagerClientImpl} from "loginmodule/LoginModule4DtcockpitManagerClientImpl";
 
 @Component({
   selector: 'app-root',
@@ -15,8 +15,7 @@ import {LoginModule4DtcockpitManagerClientImpl} from "@src/loginmodule/LoginModu
 })
 export class AppComponent {
   constructor() {
-    // TODO: The delegate mus be first
-    LoginModule4DtcockpitManagerClientImpl.init(); // TODO: Include me within DtcockpitManagerClientImpl
+    // LoginModule4DtcockpitManagerClientImpl.init(); // Included within DtcockpitManagerClientImpl
 
     DtcockpitManagerClientImpl.init();
     const ws_protocol = document.location.protocol == "https:" ? "wss": "ws";

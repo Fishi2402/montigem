@@ -1,0 +1,87 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram siunitliterals_AST {
+  @SIUnitLiterals!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @SIUnitLiterals!Symbol(2,0);
+    enclosingScope = @SIUnitLiterals!ArtifactScope;
+    spanningScope = @SIUnitLiterals!Scope;
+    r__package = [de, monticore, siunit];
+    name = SIUnitLiterals;
+    supergrammar = [// *size: 2
+      @SIUnits!GrammarReference(30,18):ASTGrammarReference {
+        enclosingScope = @SIUnitLiterals!Scope;
+        names = [de, monticore, siunit, SIUnits];
+      },
+      @MCCommonLiterals!GrammarReference(31,18):ASTGrammarReference {
+        enclosingScope = @SIUnitLiterals!Scope;
+        names = [de, monticore, literals, MCCommonLiterals];
+      }];
+    classProds = [// *size: 2
+      @SIUnitLiteral!ClassProd(34,2):ASTClassProd {
+        enclosingScope = @SIUnitLiterals!Scope;
+        superInterfaceRule = [// *size: 1
+          @Literal!RuleReference(34,27):ASTRuleReference {
+            enclosingScope = @SIUnitLiteral!Scope;
+            name = Literal;
+            prio = "10";
+          }];
+        alts = [// *size: 1
+          @!Alt(35,4):ASTAlt {
+            enclosingScope = @SIUnitLiteral!Scope;
+            component = [// *size: 2
+              @NumericLiteral!NonTerminal(35,4):ASTNonTerminal {
+                enclosingScope = @SIUnitLiteral!Scope;
+                name = NumericLiteral;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @SIUnit!NonTerminal(35,19):ASTNonTerminal {
+                enclosingScope = @SIUnitLiteral!Scope;
+                name = SIUnit;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = SIUnitLiteral;
+      },
+      @SignedSIUnitLiteral!ClassProd(38,2):ASTClassProd {
+        enclosingScope = @SIUnitLiterals!Scope;
+        superInterfaceRule = [// *size: 1
+          @SignedLiteral!RuleReference(38,33):ASTRuleReference {
+            enclosingScope = @SignedSIUnitLiteral!Scope;
+            name = SignedLiteral;
+            prio = "10";
+          }];
+        alts = [// *size: 1
+          @!Alt(39,4):ASTAlt {
+            enclosingScope = @SignedSIUnitLiteral!Scope;
+            component = [// *size: 2
+              @SignedNumericLiteral!NonTerminal(39,4):ASTNonTerminal {
+                enclosingScope = @SignedSIUnitLiteral!Scope;
+                name = SignedNumericLiteral;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @SIUnit!NonTerminal(39,25):ASTNonTerminal {
+                enclosingScope = @SignedSIUnitLiteral!Scope;
+                name = SIUnit;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = SignedSIUnitLiteral;
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

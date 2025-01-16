@@ -5,7 +5,6 @@ import de.se_rwth.commons.logging.Log;
 import dtcockpit.montiverse.MontiVerseLite;
 import dtcockpit.pipelines.PipelineInformationExtractor;
 import dtcockpit.welcome_board.OutlookConnection;
-import loginmodule.LoginModule4DtcockpitManagerImpl;
 import loginmodule.LoginModuleManager;
 import org.h2.tools.Server;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import security.LoginModuleRestService;
+import service.LoginModuleRestService;
 import umlp.backendrte.common.DatabaseAccessManager;
 import umlp.backendrte.service.mqtt.MqttService;
 
@@ -34,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication(
     exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class},
-    scanBasePackages = {"umlp.backendrte.service.websocket", "umlp.backendrte.service.rest", "dtcockpit.service", "security"} // TODO: security
+    scanBasePackages = {"umlp.backendrte.service.websocket", "umlp.backendrte.service.rest", "dtcockpit.service", "security", "service"} // TODO: security
 )
 public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplicationTOP {
   private static Set<Server> servers;
@@ -63,11 +62,8 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
 
     // For the public Sign up: Ensure the role is set to a default value of USER
     loginModuleRestService.onSignupAdditionals.add((jsonObject, uB) -> {
-      ((LoginModuleUser4UserBuilder)uB).delegate.role(DtcockpitRole.USER);
+      ((LoginModuleUser4UserDelegatedBuilder)uB).delegate.role(DtcockpitRole.USER);
     });
-
-    // TODO: Move this line into the generated DtcockpitManagerImpl
-    LoginModule4DtcockpitManagerImpl.init();
     super.init();
 
     // Only create DummyData if database is empty

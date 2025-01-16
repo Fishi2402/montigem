@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {RoomStatsComponent,config} from '@src/gui/rooms/RoomStatsComponent';
+import {RoomStatsComponent,config} from 'gui/rooms/RoomStatsComponent';
 
-import {RoomObserverMixin} from '@src/dtcockpit/RoomObserverMixin';
-import {Room} from '@src/dtcockpit/Room';
+import {RoomObserverMixin} from 'dtcockpit/RoomObserverMixin';
+import {Room} from 'dtcockpit/Room';
 import {NotificationScope} from '@umlp/common';
 import { Component } from '@angular/core';
 

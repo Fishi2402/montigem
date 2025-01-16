@@ -1,0 +1,76 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+.candlestickchartbuttons {
+  text-align: left;
+  background-color: white;
+}
+
+.candlestickchartbuttons .period button {
+  width: fit-content;
+  padding: 5px;
+  padding-left: 4px;
+  padding-right: 4px;
+  margin-left: 2px;
+  margin-right: 2px;
+  margin-bottom: 4px;
+  margin-top: 4px;
+  font-size: 10px;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  border-radius: 4px;
+  text-align: center;
+  background-color: #00549f;
+  color: white;
+  border: none;
+}
+
+.candlestickchartbuttons .type button {
+  width: fit-content;
+  padding: 5px;
+  padding-left: 4px;
+  padding-right: 4px;
+  margin-left: 2px;
+  margin-right: 2px;
+  margin-bottom: 4px;
+  margin-top: 4px;
+  font-size: 10px;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  border-radius: 4px;
+  text-align: center;
+  background-color: #11750e;
+  color: white;
+  border: none;
+}
+
+.candlestickchartbuttons .dateformat button {
+  width: fit-content;
+  padding: 5px;
+  padding-left: 4px;
+  padding-right: 4px;
+  margin-left: 2px;
+  margin-right: 2px;
+  margin-bottom: 4px;
+  margin-top: 4px;
+  font-size: 10px;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  border-radius: 4px;
+  text-align: center;
+  background-color: #f6a800;
+  color: white;
+  border: none;
+}
+
+.candlestickchartbuttons .period {
+  display: inline-block;
+}
+
+.candlestickchartbuttons .type {
+  display: inline-block;
+}
+
+.candlestickchartbuttons .dateformat {
+  display: inline-block;
+}
+
+.candlestickchartbuttons .label {
+  display: inline-block;
+}

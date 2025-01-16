@@ -1,0 +1,318 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram mcbasics_AST {
+  @MCBasics!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @MCBasics!Symbol(2,0);
+    enclosingScope = @MCBasics!ArtifactScope;
+    spanningScope = @MCBasics!Scope;
+    r__package = [de, monticore];
+    name = MCBasics;
+    lexProds = [// *size: 5
+      @Name!LexProd(20,2):ASTLexProd {
+        enclosingScope = @MCBasics!Scope;
+        alt = [// *size: 1
+          @!LexAlt(21,4):ASTLexAlt {
+            enclosingScope = @Name!Scope;
+            lexComponent = [// *size: 2
+              @!LexBlock(21,4):ASTLexBlock {
+                enclosingScope = @Name!Scope;
+                lexAlt = [// *size: 4
+                  @!LexAlt(21,6):ASTLexAlt {
+                    enclosingScope = @Name!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexCharRange(21,6):ASTLexCharRange {
+                        enclosingScope = @Name!Scope;
+                        lowerChar = a;
+                        upperChar = z;
+                        negate = false;
+                      }];
+                  },
+                  @!LexAlt(21,17):ASTLexAlt {
+                    enclosingScope = @Name!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexCharRange(21,17):ASTLexCharRange {
+                        enclosingScope = @Name!Scope;
+                        lowerChar = A;
+                        upperChar = Z;
+                        negate = false;
+                      }];
+                  },
+                  @!LexAlt(21,28):ASTLexAlt {
+                    enclosingScope = @Name!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexChar(21,28):ASTLexChar {
+                        enclosingScope = @Name!Scope;
+                        r__char = _;
+                        negate = false;
+                      }];
+                  },
+                  @!LexAlt(21,34):ASTLexAlt {
+                    enclosingScope = @Name!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexChar(21,34):ASTLexChar {
+                        enclosingScope = @Name!Scope;
+                        r__char = $;
+                        negate = false;
+                      }];
+                  }];
+                negate = false;
+                iteration = 0;
+              },
+              @!LexBlock(22,4):ASTLexBlock {
+                enclosingScope = @Name!Scope;
+                lexAlt = [// *size: 5
+                  @!LexAlt(22,6):ASTLexAlt {
+                    enclosingScope = @Name!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexCharRange(22,6):ASTLexCharRange {
+                        enclosingScope = @Name!Scope;
+                        lowerChar = a;
+                        upperChar = z;
+                        negate = false;
+                      }];
+                  },
+                  @!LexAlt(22,17):ASTLexAlt {
+                    enclosingScope = @Name!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexCharRange(22,17):ASTLexCharRange {
+                        enclosingScope = @Name!Scope;
+                        lowerChar = A;
+                        upperChar = Z;
+                        negate = false;
+                      }];
+                  },
+                  @!LexAlt(22,28):ASTLexAlt {
+                    enclosingScope = @Name!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexChar(22,28):ASTLexChar {
+                        enclosingScope = @Name!Scope;
+                        r__char = _;
+                        negate = false;
+                      }];
+                  },
+                  @!LexAlt(22,34):ASTLexAlt {
+                    enclosingScope = @Name!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexCharRange(22,34):ASTLexCharRange {
+                        enclosingScope = @Name!Scope;
+                        lowerChar = 0;
+                        upperChar = 9;
+                        negate = false;
+                      }];
+                  },
+                  @!LexAlt(22,45):ASTLexAlt {
+                    enclosingScope = @Name!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexChar(22,45):ASTLexChar {
+                        enclosingScope = @Name!Scope;
+                        r__char = $;
+                        negate = false;
+                      }];
+                  }];
+                negate = false;
+                iteration = 21;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = false;
+        comment = false;
+        name = Name;
+      },
+      @NEWLINE!LexProd(26,2):ASTLexProd {
+        enclosingScope = @MCBasics!Scope;
+        alt = [// *size: 1
+          @!LexAlt(27,4):ASTLexAlt {
+            enclosingScope = @NEWLINE!Scope;
+            lexComponent = [// *size: 1
+              @!LexBlock(27,4):ASTLexBlock {
+                enclosingScope = @NEWLINE!Scope;
+                lexAlt = [// *size: 3
+                  @!LexAlt(27,5):ASTLexAlt {
+                    enclosingScope = @NEWLINE!Scope;
+                    lexComponent = [// *size: 2
+                      @!LexChar(27,5):ASTLexChar {
+                        enclosingScope = @NEWLINE!Scope;
+                        r__char = \r;
+                        negate = false;
+                      },
+                      @!LexChar(27,10):ASTLexChar {
+                        enclosingScope = @NEWLINE!Scope;
+                        r__char = \n;
+                        negate = false;
+                      }];
+                  },
+                  @!LexAlt(27,17):ASTLexAlt {
+                    enclosingScope = @NEWLINE!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexChar(27,17):ASTLexChar {
+                        enclosingScope = @NEWLINE!Scope;
+                        r__char = \r;
+                        negate = false;
+                      }];
+                  },
+                  @!LexAlt(27,24):ASTLexAlt {
+                    enclosingScope = @NEWLINE!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexChar(27,24):ASTLexChar {
+                        enclosingScope = @NEWLINE!Scope;
+                        r__char = \n;
+                        negate = false;
+                      }];
+                  }];
+                negate = false;
+                iteration = 0;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = NEWLINE;
+      },
+      @WS!LexProd(32,2):ASTLexProd {
+        enclosingScope = @MCBasics!Scope;
+        alt = [// *size: 1
+          @!LexAlt(33,4):ASTLexAlt {
+            enclosingScope = @WS!Scope;
+            lexComponent = [// *size: 1
+              @!LexBlock(33,4):ASTLexBlock {
+                enclosingScope = @WS!Scope;
+                lexAlt = [// *size: 4
+                  @!LexAlt(33,5):ASTLexAlt {
+                    enclosingScope = @WS!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexChar(33,5):ASTLexChar {
+                        enclosingScope = @WS!Scope;
+                        r__char =  ;
+                        negate = false;
+                      }];
+                  },
+                  @!LexAlt(33,11):ASTLexAlt {
+                    enclosingScope = @WS!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexChar(33,11):ASTLexChar {
+                        enclosingScope = @WS!Scope;
+                        r__char = \t;
+                        negate = false;
+                      }];
+                  },
+                  @!LexAlt(33,18):ASTLexAlt {
+                    enclosingScope = @WS!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexChar(33,18):ASTLexChar {
+                        enclosingScope = @WS!Scope;
+                        r__char = \r;
+                        negate = false;
+                      }];
+                  },
+                  @!LexAlt(33,25):ASTLexAlt {
+                    enclosingScope = @WS!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexChar(33,25):ASTLexChar {
+                        enclosingScope = @WS!Scope;
+                        r__char = \n;
+                        negate = false;
+                      }];
+                  }];
+                negate = false;
+                iteration = 0;
+              }];
+          }];
+        lexerCommand = "skip";
+        parameter = [];
+        type = [];
+        fragment = false;
+        comment = false;
+        name = WS;
+      },
+      @SL_COMMENT!LexProd(40,2):ASTLexProd {
+        enclosingScope = @MCBasics!Scope;
+        alt = [// *size: 1
+          @!LexAlt(41,4):ASTLexAlt {
+            enclosingScope = @SL_COMMENT!Scope;
+            lexComponent = [// *size: 2
+              @!LexString(41,4):ASTLexString {
+                enclosingScope = @SL_COMMENT!Scope;
+                string = //;
+              },
+              @!LexBlock(41,9):ASTLexBlock {
+                enclosingScope = @SL_COMMENT!Scope;
+                lexAlt = [// *size: 1
+                  @!LexAlt(41,10):ASTLexAlt {
+                    enclosingScope = @SL_COMMENT!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexBlock(41,10):ASTLexBlock {
+                        enclosingScope = @SL_COMMENT!Scope;
+                        lexAlt = [// *size: 2
+                          @!LexAlt(41,12):ASTLexAlt {
+                            enclosingScope = @SL_COMMENT!Scope;
+                            lexComponent = [// *size: 1
+                              @!LexChar(41,12):ASTLexChar {
+                                enclosingScope = @SL_COMMENT!Scope;
+                                r__char = \n;
+                                negate = false;
+                              }];
+                          },
+                          @!LexAlt(41,19):ASTLexAlt {
+                            enclosingScope = @SL_COMMENT!Scope;
+                            lexComponent = [// *size: 1
+                              @!LexChar(41,19):ASTLexChar {
+                                enclosingScope = @SL_COMMENT!Scope;
+                                r__char = \r;
+                                negate = false;
+                              }];
+                          }];
+                        negate = true;
+                        iteration = 0;
+                      }];
+                  }];
+                negate = false;
+                iteration = 21;
+              }];
+          }];
+        lexerCommand = "channel";
+        parameter = [HIDDEN];
+        type = [];
+        fragment = false;
+        comment = false;
+        name = SL_COMMENT;
+      },
+      @ML_COMMENT!LexProd(47,2):ASTLexProd {
+        enclosingScope = @MCBasics!Scope;
+        alt = [// *size: 1
+          @!LexAlt(48,4):ASTLexAlt {
+            enclosingScope = @ML_COMMENT!Scope;
+            lexComponent = [// *size: 3
+              @!LexString(48,4):ASTLexString {
+                enclosingScope = @ML_COMMENT!Scope;
+                string = /*;
+              },
+              @!LexSimpleIteration(48,9):ASTLexSimpleIteration {
+                enclosingScope = @ML_COMMENT!Scope;
+                lexAnyChar = @!LexAnyChar(48,9):ASTLexAnyChar {
+                  enclosingScope = @ML_COMMENT!Scope;
+                };
+                iteration = 21;
+                question = true;
+              },
+              @!LexString(48,13):ASTLexString {
+                enclosingScope = @ML_COMMENT!Scope;
+                string = */;
+              }];
+          }];
+        lexerCommand = "channel";
+        parameter = [HIDDEN];
+        type = [];
+        fragment = false;
+        comment = false;
+        name = ML_COMMENT;
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

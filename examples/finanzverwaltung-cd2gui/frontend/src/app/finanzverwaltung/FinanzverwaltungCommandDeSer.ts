@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {FinanzverwaltungCommandDeSerTOP} from "@src/finanzverwaltung/FinanzverwaltungCommandDeSerTOP";
+import {FinanzverwaltungCommandDeSerTOP} from "finanzverwaltung/FinanzverwaltungCommandDeSerTOP";
 import {GetCurrentUserRequestDeSer} from "../security/GetCurrentUserRequestDeSer";
 
 export class FinanzverwaltungCommandDeSer extends FinanzverwaltungCommandDeSerTOP  {

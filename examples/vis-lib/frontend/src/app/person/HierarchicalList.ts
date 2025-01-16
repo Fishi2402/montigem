@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { HierarchicalListComponent, config } from '@src/person/HierarchicalListComponent';
+import { HierarchicalListComponent, config } from 'person/HierarchicalListComponent';
 
 @Component({
   standalone: true,

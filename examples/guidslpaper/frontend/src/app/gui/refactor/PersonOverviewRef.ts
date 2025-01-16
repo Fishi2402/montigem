@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { PersonOverviewRefComponent, config } from '@src/gui/refactor/PersonOverviewRefComponent';
+import { PersonOverviewRefComponent, config } from 'gui/refactor/PersonOverviewRefComponent';
 
 @Component({
   standalone: true,

@@ -12,6 +12,7 @@ import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
+import umlp.generator.gui.gentypescript.decorator.TSImportHelper;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -26,17 +27,20 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
   protected final GlobalExtensionManagement glex;
   protected final MCPath hwPath;
   protected final Path outPath;
+  protected final MCPath importsPath;
 
   public GUIComponentAnnotationDecoratorAndStandaloneConfig(
-      final GlobalExtensionManagement glex, MCPath hwPath, Path outPath) {
+      final GlobalExtensionManagement glex, MCPath hwPath, Path outPath, MCPath importsPath) {
     this.glex = glex;
     this.hwPath = hwPath;
     this.outPath = outPath;
+    this.importsPath = importsPath;
   }
 
-  public void transform(ASTCDCompilationUnit ast, ASTGUICompilationUnit astGui, GUIComponentsVisitor viewComponents) {
+  public void transform(ASTCDCompilationUnit ast, ASTGUICompilationUnit gui, GUIComponentsVisitor viewComponents) {
     String qName = ast.getMCPackageDeclaration().getMCQualifiedName().getQName();
     for (ASTCDClass clazz : ast.getCDDefinition().getCDClassesList()) {
+      TSImportHelper importHelper = new TSImportHelper(glex, clazz, hwPath, outPath, importsPath);
       String originalName = GUIGeneratorUtil.getInstance().getOriginalName(clazz);
       String qClassName = qName + "." + originalName;
       if (!GUIGeneratorUtil.getInstance().isComponent(clazz)) {
@@ -47,12 +51,13 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
         );
       }
       else {
-        boolean generateAnnotation = !GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, qClassName);
+        boolean noHWC = !GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, qClassName);
         String htmlFileName = originalName + ".html";
         String htmlPath = "./" + htmlFileName;
         List<String> scssPaths = new ArrayList<>();
 
-        if (generateAnnotation) {
+        if (noHWC) {
+          importHelper.addImportString("import { Component } from '@angular/core';");
           Optional<String> hwHtmlPath = util.getRelativeImportPath(
               hwPath, outPath, qClassName, "html");
           if (hwHtmlPath.isPresent()) {
@@ -64,12 +69,13 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
             scssPaths.add(hwScssPath.get());
           }
         }
-        else if (!UMLPGeneratorConfig.getInstance().isUseJsweet()){
+        else if (!UMLPGeneratorConfig.getInstance().isUseJsweet()) {
+          importHelper.addImportString("import { Directive } from '@angular/core';");
           Optional<String> hwHtmlPath = util.getRelativeImportPath(
               hwPath, outPath, qClassName, "html");
-          if (!hwHtmlPath.isPresent()) {
+          if (hwHtmlPath.isEmpty()) {
             htmlPath = util.getRelativeImportPathForAnnotation(
-                outPath.toString(), new ArrayList<>(hwPath.getEntries()).get(0).toString(), qClassName).get();
+                outPath.toString(), new ArrayList<>(hwPath.getEntries()).get(0).toString(), qClassName);
           }
           Optional<String> hwScssPath = util.getRelativeImportPath(
               hwPath, outPath, qClassName, "scss");
@@ -78,6 +84,7 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
           }
         }
         else {
+          importHelper.addImportString("import { Directive } from '@angular/core';");
           // TODO #3768
           Optional<String> hwHtmlPath = util.getRelativeImportPath(
               hwPath, outPath, qClassName, "html");
@@ -91,25 +98,26 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
           }
         }
         String selector = GUIGeneratorUtil.getInstance().pascal2KebabCase(originalName);
-        HashSet<String> importedComponents = calculateImports(astGui.getComponentName(), viewComponents.getComponents());
+        HashSet<String> importedComponents = calculateImports(gui.getComponentQName(), viewComponents.getComponents(), importHelper);
         glex.replaceTemplate(
             GUI2ComponentTemplates.ANNOTATIONS,
             clazz,
-            new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATION_STANDALONECONFIG_COMPONENT, htmlPath, scssPaths, selector, importedComponents, hwPath, generateAnnotation)
+            new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATION_STANDALONECONFIG_COMPONENT, htmlPath, scssPaths, selector, importedComponents, hwPath, noHWC)
         );
       }
     }
   }
 
-  protected HashSet<String> calculateImports(String componentName, List<ASTGUIComponent> guiComponents) {
+  protected HashSet<String> calculateImports(String componentQName, List<ASTGUIComponent> guiComponents, TSImportHelper importHelper) {
     HashSet<String> importedComponents = Sets.newHashSet();
-    for (ASTGUIComponent component: guiComponents) {
+    for (ASTGUIComponent component : guiComponents) {
       if (!component.isPresentNameSymbol()) {
         Log.error("0x0008B Name symbol of " + component.getName() + " not present.");
       }
 
       // Avoid circular import dependencies for recursive component calls
-      if (!component.getNameSymbol().getName().equals(componentName)) {
+      if (!component.getNameSymbol().getName().equals(componentQName)) {
+        importHelper.addImport(component.getNameSymbol().getFullName(), Optional.empty(), true, componentQName);
         importedComponents.add(component.getNameSymbol().getFullName());
       }
     }

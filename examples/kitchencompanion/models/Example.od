@@ -1,7 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package examples;
-
 import KitchenCompanion.*;
 
 objectdiagram Examples {

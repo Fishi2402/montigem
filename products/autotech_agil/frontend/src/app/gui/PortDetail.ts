@@ -1,10 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { Service } from '@src/autotechagil/Service';
-import { Status } from "@src/autotechagil/Status";
 import { Component } from '@angular/core';
 import { PortDetailComponent, config } from '@src/gui/PortDetailComponent';
-import { Option } from "@umlp/input";
 import { SteeringValue } from "@src/autotechagil/SteeringValue";
 
 

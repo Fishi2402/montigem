@@ -1,0 +1,177 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram antlr_AST {
+  @Antlr!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @Antlr!Symbol(2,0);
+    enclosingScope = @Antlr!ArtifactScope;
+    spanningScope = @Antlr!Scope;
+    r__package = [de, monticore, grammar, concepts, antlr];
+    name = Antlr;
+    classProds = [// *size: 3
+      @ConceptAntlr!ClassProd(15,1):ASTClassProd {
+        enclosingScope = @Antlr!Scope;
+        alts = [// *size: 1
+          @!Alt(16,2):ASTAlt {
+            enclosingScope = @ConceptAntlr!Scope;
+            component = [// *size: 3
+              @LCURLY!Terminal(16,2):ASTTerminal {
+                enclosingScope = @ConceptAntlr!Scope;
+                iteration = 0;
+                name = {;
+              },
+              @!Block(17,5):ASTBlock {
+                enclosingScope = @ConceptAntlr!Scope;
+                alt = [// *size: 2
+                  @!Alt(17,6):ASTAlt {
+                    enclosingScope = @ConceptAntlr!Scope;
+                    component = [// *size: 1
+                      @AntlrParserAction!NonTerminal(17,6):ASTNonTerminal {
+                        enclosingScope = @ConceptAntlr!Scope;
+                        name = AntlrParserAction;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  },
+                  @!Alt(17,26):ASTAlt {
+                    enclosingScope = @ConceptAntlr!Scope;
+                    component = [// *size: 1
+                      @AntlrLexerAction!NonTerminal(17,26):ASTNonTerminal {
+                        enclosingScope = @ConceptAntlr!Scope;
+                        name = AntlrLexerAction;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 21;
+              },
+              @RCURLY!Terminal(18,2):ASTTerminal {
+                enclosingScope = @ConceptAntlr!Scope;
+                iteration = 0;
+                name = };
+              }];
+            rightAssoc = false;
+          }];
+        name = ConceptAntlr;
+      },
+      @AntlrParserAction!ClassProd(28,1):ASTClassProd {
+        enclosingScope = @Antlr!Scope;
+        alts = [// *size: 1
+          @!Alt(29,2):ASTAlt {
+            enclosingScope = @AntlrParserAction!Scope;
+            component = [// *size: 4
+              @parserjava!Terminal(29,2):ASTTerminal {
+                enclosingScope = @AntlrParserAction!Scope;
+                iteration = 0;
+                name = parserjava;
+              },
+              @LCURLY!Terminal(29,15):ASTTerminal {
+                enclosingScope = @AntlrParserAction!Scope;
+                iteration = 0;
+                name = {;
+              },
+              @JavaCode!NonTerminal(29,19):ASTNonTerminal {
+                enclosingScope = @AntlrParserAction!Scope;
+                usageName = "text";
+                name = JavaCode;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @RCURLY!Terminal(29,33):ASTTerminal {
+                enclosingScope = @AntlrParserAction!Scope;
+                iteration = 0;
+                name = };
+              }];
+            rightAssoc = false;
+          }];
+        name = AntlrParserAction;
+      },
+      @AntlrLexerAction!ClassProd(34,1):ASTClassProd {
+        enclosingScope = @Antlr!Scope;
+        alts = [// *size: 1
+          @!Alt(35,2):ASTAlt {
+            enclosingScope = @AntlrLexerAction!Scope;
+            component = [// *size: 4
+              @lexerjava!Terminal(35,2):ASTTerminal {
+                enclosingScope = @AntlrLexerAction!Scope;
+                iteration = 0;
+                name = lexerjava;
+              },
+              @LCURLY!Terminal(35,14):ASTTerminal {
+                enclosingScope = @AntlrLexerAction!Scope;
+                iteration = 0;
+                name = {;
+              },
+              @JavaCode!NonTerminal(35,18):ASTNonTerminal {
+                enclosingScope = @AntlrLexerAction!Scope;
+                usageName = "text";
+                name = JavaCode;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @RCURLY!Terminal(35,32):ASTTerminal {
+                enclosingScope = @AntlrLexerAction!Scope;
+                iteration = 0;
+                name = };
+              }];
+            rightAssoc = false;
+          }];
+        name = AntlrLexerAction;
+      }];
+    externalProds = [// *size: 1
+      @JavaCode!ExternalProd(7,1):ASTExternalProd {
+        enclosingScope = @Antlr!Scope;
+        name = JavaCode;
+      }];
+    aSTRules = [// *size: 1
+      @!ASTRule(20,1):ASTASTRule {
+        enclosingScope = @Antlr!Scope;
+        type = ConceptAntlr;
+        grammarMethods = [// *size: 1
+          @toString!GrammarMethod(21,2):ASTGrammarMethod {
+            enclosingScope = @Antlr!Scope;
+            mCReturnType = @!MCReturnType(21,16):ASTMCReturnType {
+              enclosingScope = @Antlr!Scope;
+              mCType = @String!MCQualifiedType(21,16):ASTMCQualifiedType {
+                enclosingScope = @Antlr!Scope;
+                mCQualifiedName = @String!MCQualifiedName(21,16):ASTMCQualifiedName {
+                  enclosingScope = @Antlr!Scope;
+                  parts = [String];
+                };
+              };
+            };
+            name = toString;
+            body = @!Action(22,3):ASTAction {
+              enclosingScope = @Antlr!Scope;
+              mCBlockStatements = [// *size: 1
+                @!ReturnStatement(22,3):ASTReturnStatement {
+                  enclosingScope = @Antlr!Scope;
+                  expression = @!LiteralExpression(22,10):ASTLiteralExpression {
+                    enclosingScope = @Antlr!Scope;
+                    literal = @!StringLiteral(22,10):ASTStringLiteral {
+                      enclosingScope = @Antlr!Scope;
+                      source = ;
+                    };
+                  };
+                }];
+            };
+            r__public = true;
+            r__private = false;
+            r__protected = false;
+            r__final = false;
+            r__static = false;
+          }];
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

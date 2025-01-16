@@ -1,10 +1,10 @@
 /* Generated from Java with JSweet 3.2.0-UMLP-SNAPSHOT - http://www.jsweet.org */
-import { Category } from '@src/functionstructure4fenix/Category';
-import { Channel } from '@src/functionstructure4fenix/Channel';
-import { Function } from '@src/functionstructure4fenix/Function';
-import { FunctionStructure4FenixManager } from '@src/functionstructure4fenix/FunctionStructure4FenixManager';
-import { Port } from '@src/functionstructure4fenix/Port';
-import { Type } from '@src/functionstructure4fenix/Type';
+import { Category } from 'functionstructure4fenix/Category';
+import { Channel } from 'functionstructure4fenix/Channel';
+import { Function } from 'functionstructure4fenix/Function';
+import { FunctionStructure4FenixManager } from 'functionstructure4fenix/FunctionStructure4FenixManager';
+import { Port } from 'functionstructure4fenix/Port';
+import { Type } from 'functionstructure4fenix/Type';
 import { StringHelper } from '@umlp/commonj2ts';
 import { IUMLPList } from '@umlp/commonj2ts';
 import { Directive } from '@angular/core';

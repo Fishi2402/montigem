@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 import {Component} from '@angular/core';
-import {DtcockpitManager} from '@src/dtcockpit/DtcockpitManager';
-import {ProjectCreateComponent,config} from '@src/gui/project/ProjectCreateComponent';
-import {ProjectErrorCollector} from '@src/dtcockpit/ProjectErrorCollector';
-import {Project} from '@src/dtcockpit/Project';
+import {DtcockpitManager} from 'dtcockpit/DtcockpitManager';
+import {ProjectCreateComponent,config} from 'gui/project/ProjectCreateComponent';
+import {ProjectErrorCollector} from 'dtcockpit/ProjectErrorCollector';
+import {Project} from 'dtcockpit/Project';
 
 
 @Component({

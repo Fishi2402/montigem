@@ -1,0 +1,51 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram mcfulljavastatements_AST {
+  @MCFullJavaStatements!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @MCFullJavaStatements!Symbol(2,0);
+    enclosingScope = @MCFullJavaStatements!ArtifactScope;
+    spanningScope = @MCFullJavaStatements!Scope;
+    r__package = [de, monticore, statements];
+    importStatement = [// *size: 1
+      @!MCImportStatement(7,0):ASTMCImportStatement {
+        enclosingScope = @MCFullJavaStatements!Scope;
+        mCQualifiedName = @de.monticore.statements!MCQualifiedName(7,7):ASTMCQualifiedName {
+          enclosingScope = @MCFullJavaStatements!Scope;
+          parts = [de, monticore, statements];
+        };
+        star = true;
+      }];
+    name = MCFullJavaStatements;
+    supergrammar = [// *size: 6
+      @MCAssertStatements!GrammarReference(32,4):ASTGrammarReference {
+        enclosingScope = @MCFullJavaStatements!Scope;
+        names = [MCAssertStatements];
+      },
+      @MCExceptionStatements!GrammarReference(33,4):ASTGrammarReference {
+        enclosingScope = @MCFullJavaStatements!Scope;
+        names = [MCExceptionStatements];
+      },
+      @MCLowLevelStatements!GrammarReference(34,4):ASTGrammarReference {
+        enclosingScope = @MCFullJavaStatements!Scope;
+        names = [MCLowLevelStatements];
+      },
+      @MCReturnStatements!GrammarReference(35,4):ASTGrammarReference {
+        enclosingScope = @MCFullJavaStatements!Scope;
+        names = [MCReturnStatements];
+      },
+      @MCSynchronizedStatements!GrammarReference(36,4):ASTGrammarReference {
+        enclosingScope = @MCFullJavaStatements!Scope;
+        names = [MCSynchronizedStatements];
+      },
+      @MCArrayStatements!GrammarReference(37,4):ASTGrammarReference {
+        enclosingScope = @MCFullJavaStatements!Scope;
+        names = [MCArrayStatements];
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */
