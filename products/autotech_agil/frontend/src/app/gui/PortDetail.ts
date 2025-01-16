@@ -1,11 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Service } from '@src/autotechagil/Service';
-import { ServiceStatus } from '@src/autotechagil/ServiceStatus';
 import { Status } from "@src/autotechagil/Status";
 import { Component } from '@angular/core';
 import { PortDetailComponent, config } from '@src/gui/PortDetailComponent';
 import { Option } from "@umlp/input";
+import { SteeringValue } from "@src/autotechagil/SteeringValue";
+
 
 @Component({
   standalone: true,
@@ -14,6 +15,10 @@ import { Option } from "@umlp/input";
   templateUrl: config.templateUrl,
 })
 export class PortDetail extends PortDetailComponent {
+
+  public override getSteeringValues(): SteeringValue[] {
+    return this.getPort().getFunctionStream().getValueList() as SteeringValue[];
+  }
 
   /*
   private possibleStates: Status[] = [];

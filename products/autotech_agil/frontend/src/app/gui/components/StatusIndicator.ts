@@ -2,7 +2,8 @@
 import { Component, HostBinding } from '@angular/core';
 import { StatusIndicatorComponent, config } from "@src/gui/components/StatusIndicatorComponent";
 import { MatTooltipModule } from "@angular/material/tooltip";
-
+import { Status } from '@src/autotechagil/Status';
+import { QualityStatus } from '@src/autotechagil/QualityStatus';
 
 @Component({
   standalone: true,
@@ -27,9 +28,32 @@ export class StatusIndicator extends StatusIndicatorComponent {
 
   public override setStatusId(value : number): void {
     this.setCurrentStatus(
-        this.possibleStatuses.find(status => status.getStatusId() == value)
+        this.getPossibleStatuses().find(status => status.getStatusId() == value)
     );
     this.onStatusChange.emit(this.getCurrentStatus());
+  }
+
+  public override getPossibleStatuses(): Array<Status> {
+    const statuses: Array<Status> = [];
+    const statusRed: Status = new Status();
+    statusRed.setStatusId(QualityStatus.RED);
+    statusRed.setImageSource("assets/images/traffic-light-red.png");
+    statusRed.setLabel("Red");
+    statusRed.setThreshold(30.0);
+    statuses.push(statusRed);
+    const statusYellow: Status = new Status();
+    statusYellow.setStatusId(QualityStatus.YELLOW);
+    statusYellow.setImageSource("assets/images/traffic-light-yellow.png");
+    statusYellow.setLabel("Yellow");
+    statusYellow.setThreshold(20.0);
+    statuses.push(statusYellow);
+    const statusGreen: Status = new Status();
+    statusGreen.setStatusId(QualityStatus.GREEN);
+    statusGreen.setImageSource("assets/images/traffic-light-green.png");
+    statusGreen.setLabel("Green");
+    statusGreen.setThreshold(0.0);
+    statuses.push(statusGreen);
+    return statuses;
   }
 
 }

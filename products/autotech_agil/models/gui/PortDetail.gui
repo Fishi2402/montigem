@@ -6,26 +6,31 @@ import mc.fenix.basic.GemButton;
 import mc.fenix.basic.GemText;
 import mc.fenix.input.GemTextInput;
 import mc.fenix.input.GemDropdownInput;
+import mc.fenix.arrange.GemCard;
 
 import gui.components.StatusIndicator;
+import gui.services.steering.SteeringTable;
+import gui.services.steering.SteeringGraph;
 
 import AutoTechAgil.Port;
 import AutoTechAgil.Status;
-import mc.fenix.arrange.GemCard;
 
 component PortDetail(Port port) {
   @guard(port != null) {
     @GemCard(
+      width = "100%",
       title = port.name,
       component = @GemColumn(rowGap = "20px", components = [
         @GemRow(colGap = "10px", height = "auto", vAlign = "center", components = [
-          @GemText(value = "from"),
+          @GemText(value = "Date: "),
           @GemTextInput(inputType = "date"),
+          @GemText(value = "from"),
           @GemTextInput(inputType = "time"),
           @GemText(value = "to"),
-          @GemTextInput(inputType = "date"),
           @GemTextInput(inputType = "time")
-        ])
+        ]),
+        @SteeringTable(values = getSteeringValues()),
+        @SteeringGraph(values = getSteeringValues())
       ])
     );
   }

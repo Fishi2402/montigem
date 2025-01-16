@@ -7,8 +7,13 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static com.fasterxml.jackson.databind.type.LogicalType.Collection;
 
@@ -24,7 +29,7 @@ public class AutoTechAgilServerApplication extends AutoTechAgilServerApplication
   public void init() throws IOException {
     super.init();
 
-    //this.createDummyData();
+    this.createDummyData();
   }
 
   public void createDummyData() {
@@ -39,14 +44,10 @@ public class AutoTechAgilServerApplication extends AutoTechAgilServerApplication
     Port portE = createPort("Port E");
     Port portF = createPort("Port F");
     Port portG = createPort("Port G");
-    Port portWheelFLIn = createPort("Wheel Front Left");
-    Port portWheelFRIn = createPort("Wheel Front Right");
-    Port portWheelBLIn = createPort("Wheel Back Left");
-    Port portWheelBRIn = createPort("Wheel Back Right");
-    Port portWheelFLOut = createPort("Wheel Front Left");
-    Port portWheelFROut = createPort("Wheel Front Right");
-    Port portWheelBLOut = createPort("Wheel Back Left");
-    Port portWheelBROut = createPort("Wheel Back Right");
+    Port portTargetAngleIn = createPort("Target Angle");
+    Port portAngleOut = createPort("Angle", createSteeringValueStream());
+    Port portMomentOut = createPort("Moment");
+    Port portSpeedOut = createPort("Speed");
 
     cameraService.addAllIns(Arrays.asList(portA, portB));
     cameraService.addOut(portC);
@@ -54,11 +55,9 @@ public class AutoTechAgilServerApplication extends AutoTechAgilServerApplication
     lidarService.addIn(portD);
     lidarService.addAllOuts(Arrays.asList(portE, portF, portG));
 
-    steeringService.addAllIns(
-        Arrays.asList(portWheelFLIn, portWheelFRIn, portWheelBLIn, portWheelBRIn)
-    );
+    steeringService.addIn(portTargetAngleIn);
     steeringService.addAllOuts(
-        Arrays.asList(portWheelFLOut, portWheelFROut, portWheelBLOut, portWheelBROut)
+        Arrays.asList(portAngleOut, portMomentOut, portSpeedOut)
     );
   }
 
@@ -72,7 +71,116 @@ public class AutoTechAgilServerApplication extends AutoTechAgilServerApplication
   protected Port createPort(String portName) {
     return AutoTechAgilManager.portBuilder()
         .name(portName)
+        .category(AutoTechAgilManager.categoryBuilder()
+            .kind(AutoTechAgilManager.dataBuilder().build().get())
+            .type(AutoTechAgilManager.typeBuilder().mctype("SteeringValue").build().get())
+            .build()
+            .get())
         .build()
         .get();
+  }
+
+  protected Port createPort(String portName, FunctionStream stream) {
+    return AutoTechAgilManager.portBuilder()
+        .name(portName)
+        .category(AutoTechAgilManager.categoryBuilder()
+            .kind(AutoTechAgilManager.dataBuilder().build().get())
+            .type(AutoTechAgilManager.typeBuilder().mctype("SteeringValue").build().get())
+            .build()
+            .get())
+        .functionStream(stream)
+        .build()
+        .get();
+  }
+
+  protected FunctionStream createSteeringValueStream() {
+    List<Value> values = new ArrayList<>();
+    LocalDateTime time = LocalDateTime.now();
+    float angle = 0.0f;
+    for (int i = 0; i < 7; i++) {
+      angle += getRandomFloatValue(angle, angle + 1);
+      SteeringData data = AutoTechAgilManager.steeringDataBuilder()
+          .angle(getRandomFloatValue(i, i + 1))
+          .build()
+          .get();
+      SteeringQuality quality = AutoTechAgilManager.steeringQualityBuilder()
+          .latency(getRandomFloatValue(60, 100))
+          .refreshRate(getRandomFloatValue(80, 120))
+          .status(QualityStatus.GREEN)
+          .build()
+          .get();
+      time = time.plusNanos(getRandomLongValue(9_000_000L, 10_000_000L));
+      values.add(AutoTechAgilManager.steeringValueBuilder()
+          .timestamp(time)
+          .data(data)
+          .quality(quality)
+          .build()
+          .get()
+      );
+    }
+    for (int i = 7; i < 11; i++) {
+      angle += getRandomFloatValue(angle, angle + 1);
+      SteeringData data = AutoTechAgilManager.steeringDataBuilder()
+          .angle(getRandomFloatValue(i, i + 1))
+          .build()
+          .get();
+      SteeringQuality quality = AutoTechAgilManager.steeringQualityBuilder()
+          .latency(getRandomFloatValue(150, 200))
+          .refreshRate(getRandomFloatValue(80, 120))
+          .status(QualityStatus.YELLOW)
+          .build()
+          .get();
+      time = time.plusNanos(getRandomLongValue(9_000_000L, 10_000_000L));
+      values.add(AutoTechAgilManager.steeringValueBuilder()
+          .timestamp(time)
+          .data(data)
+          .quality(quality)
+          .build()
+          .get()
+      );
+    }
+    angle += getRandomFloatValue(angle, angle + 1);
+    SteeringData data = AutoTechAgilManager.steeringDataBuilder()
+        .angle(getRandomFloatValue(12, 12 + 1))
+        .build()
+        .get();
+    SteeringQuality quality = AutoTechAgilManager.steeringQualityBuilder()
+        .latency(0.0f)
+        .refreshRate(0.0f)
+        .status(QualityStatus.RED)
+        .build()
+        .get();
+    time = time.plusNanos(getRandomLongValue(9_000_000L, 10_000_000L));
+    values.add(AutoTechAgilManager.steeringValueBuilder()
+        .timestamp(time)
+        .data(data)
+        .quality(quality)
+        .build()
+        .get()
+    );
+    FunctionStream valueStream = AutoTechAgilManager.functionStreamBuilder().build().get();
+    valueStream.addAllValues(values);
+    return valueStream;
+  }
+
+  private float getRandomFloatValue(float min, float max) {
+    Random rand = new Random();
+    return rand.nextFloat() * (max - min) + min;
+  }
+
+  private long getRandomLongValue(long min, long max) {
+    return ThreadLocalRandom.current().nextLong(min, max);
+  }
+
+  private QualityStatus getStatusByPercentage(int total, int current) {
+    if ((current / (float) total) < 0.60) {
+      return QualityStatus.GREEN;
+    }
+    else if ((current / (float) total) < 0.30) {
+      return QualityStatus.YELLOW;
+    }
+    else {
+      return QualityStatus.RED;
+    }
   }
 }

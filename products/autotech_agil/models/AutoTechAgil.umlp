@@ -3,9 +3,6 @@
 import java.time.LocalDateTime;
 
 classdiagram AutoTechAgil {
-  enum ServiceStatus {
-    GREEN, YELLOW, RED;
-  }
 
   public class Status {
     int statusId;
@@ -22,9 +19,9 @@ classdiagram AutoTechAgil {
 
   class Service {
     String name;
-    boolean isActive;
-    QualityStatus systemSelfAssessment;
-    /QualityStatus serviceSelfAssessment;
+    //boolean isActive;
+    //QualityStatus systemSelfAssessment;
+    ///QualityStatus serviceSelfAssessment;
   }
 
   class Port {
@@ -43,7 +40,7 @@ classdiagram AutoTechAgil {
 
   class FunctionStream;
 
-  association [*] FunctionStream -> Category [1];
+  //association [*] FunctionStream -> Category [1];
   association [0..1] Port <-> FunctionStream [0..1];
   composition [0..1] Service -> (state) FunctionStream [0..1];
 
@@ -79,24 +76,20 @@ classdiagram AutoTechAgil {
   association [*] Observation -> Value [*] {ordered};
 
   // TODO: Eigene Value-Klassen definieren
-  class ServiceValue extends Value {
+  class SteeringValue extends Value {
     LocalDateTime timestamp;  // TODO: gemId soll timestamp werden, danach hier entfernen
-    ServiceData data;
-    ServiceQuality quality;
+    SteeringData data;
+    SteeringQuality quality;
   }
 
-  class ServiceData {
-    double speed;
+  class SteeringData {
+    float angle;
   }
 
-  class ServiceQuality {
+  class SteeringQuality {
     QualityStatus status;
-    double latency;
-    double refreshRate;
-  }
-
-  class CameraQuality extends ServiceQuality {
-    double contrast;
+    float latency;
+    float refreshRate;
   }
 
   enum QualityStatus {

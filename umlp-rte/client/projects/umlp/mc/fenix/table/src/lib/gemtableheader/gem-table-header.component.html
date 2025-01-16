@@ -2,13 +2,13 @@
 <ng-template #tableHeaderTemplate>
   <tr class="gem-table-row">
     <ng-container *ngIf="cells != null; else tableHeaderCols">
-      <ng-container *ngFor="let c of cells">
-        <ng-container *ngTemplateOutlet="c"></ng-container>
+      <ng-container *ngFor="let cell of cells">
+        <ng-container *ngTemplateOutlet="cell"></ng-container>
       </ng-container>
     </ng-container>
     <ng-template #tableHeaderCols>
-      <ng-container *ngFor="let c of cols">
-        <th class="gem-table-cell">{{c}}</th>
+      <ng-container *ngFor="let col of cols">
+        <th class="gem-table-cell">{{col}}</th>
       </ng-container>
     </ng-template>
   </tr>
