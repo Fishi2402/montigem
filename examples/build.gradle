@@ -7,41 +7,6 @@ subprojects {
   }
 }
 
-// Make buildApp tasks sequential. Doesn't seem to lose time compared to a parallel build,
-// but makes build process more stable
-gradle.projectsEvaluated {
-  project(":examples:dtcockpit:frontend").tasks.npmInstall.mustRunAfter(
-      project(":examples:dtcockpit-jsweet:frontend").tasks.npmInstall
-  )
-  project(":examples:dtcockpit-jsweet:frontend").tasks.npmInstall.mustRunAfter(
-      project(":examples:guidslpaper:frontend").tasks.npmInstall
-  )
-  project(":examples:guidslpaper:frontend").tasks.npmInstall.mustRunAfter(
-      project(":examples:jsweet-test:frontend").tasks.npmInstall
-  )
-  project(":examples:jsweet-test:frontend").tasks.npmInstall.mustRunAfter(
-      project(":examples:kitchencompanion:frontend").tasks.npmInstall
-  )
-  project(":examples:kitchencompanion:frontend").tasks.npmInstall.mustRunAfter(
-      project(":examples:sehub:frontend").tasks.npmInstall
-  )
-  project(":examples:sehub:frontend").tasks.npmInstall.mustRunAfter(
-      project(":examples:sehub-cd2gui:frontend").tasks.npmInstall
-  )
-  project(":examples:sehub-cd2gui:frontend").tasks.npmInstall.mustRunAfter(
-      project(":examples:vis-lib:frontend").tasks.npmInstall
-  )
-  project(":examples:vis-lib:frontend").tasks.npmInstall.mustRunAfter(
-      project(":examples:weather:frontend").tasks.npmInstall
-  )
-  project(":examples:weather:frontend").tasks.npmInstall.mustRunAfter(
-      project(":examples:finanzverwaltung-cd2gui:frontend").tasks.npmInstall
-  )
-  project(":examples:finanzverwaltung-cd2gui:frontend").tasks.npmInstall.mustRunAfter(
-      project(":products:demorec:frontend").tasks.npmInstall
-  )
-}
-
 clean.dependsOn(subprojects.collect { it.getTasksByName("clean", false) })
 
 build.dependsOn(subprojects.collect { it.getTasksByName("build", false) })
