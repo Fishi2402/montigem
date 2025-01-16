@@ -37,6 +37,12 @@ public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
     return (TypeMirror type) -> {
       TypeMirror mappedType = mapOptionalType(type);
       if (mappedType != null) {
+        for (Function<TypeMirror, String> mapping : context.getFunctionalTypeMirrorMappings()) {
+          String mapped = mapping.apply(mappedType);
+          if (mapped != null) {
+            return mapped;
+          }
+        }
         return this.getMappedType(mappedType);
       }
       return null;
@@ -51,7 +57,8 @@ public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
       if (typeArgs.size() > 0) {
         TypeMirror backingType = typeArgs.get(0);
         if (backingType.getKind() == TypeKind.DECLARED) {
-          return this.getPrinter().getAdapter().mapType(backingType);
+          TypeMirror typeMirror = this.getPrinter().getAdapter().mapType(backingType);
+          return typeMirror == null ? backingType : typeMirror;
         }
       }
     }
