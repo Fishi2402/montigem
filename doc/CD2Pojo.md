@@ -5,8 +5,10 @@ flowchart LR
   ast[Load origin AST]
   transform[Transform origin CD-AST]
   ast-->transform
+  create[Create a bare derived CD]
+  transform-->create
   decorate[Decorate the derived CD]
-  transform-->decorate
+  create-->decorate
   generate[Write the derived CD to files]
   decorate-->generate
 ````
@@ -17,7 +19,9 @@ For examples,
  associations to primitive types may be transformed to attributes.
 Next, decorators add features to a 2nd, derived CD based on a 
  configuration and the original CD.
-Finally, we output the classes to files.
+The order of decorators CAN be important, e.g., the TOP decorator 
+ modified previously created&decorated classes.
+Finally, we output ("generate") the classes to files.
  
 
 
@@ -32,6 +36,7 @@ With builders:
 * Setter
 * toString, equals, ..
 * Builder
+* Constructor
 * MontiGem Builder (ABuilder extends A)
 * Visitor
 * Observeable
@@ -49,8 +54,9 @@ Interesting idea: It might be possible to run decorators "in parallel",
  i.e. during the same CD-visitation.
 
 ## Accessibility 
-This tooling has to be provided as a simple gradle plugin and as a standalone CLI-jar.
-Both distributions should be configurable.
+This tooling has to be provided as a simple gradle plugin, as a standalone CLI-jar,
+ and as a library for inclusion.
+All distributions must be configurable.
 
 Import symbols & export generated symbols. 
 
@@ -71,3 +77,9 @@ classdiagram MyCD {
 classdiagram MyCD {
   <<withbuilder>> class MyCD;
 ```
+
+Defaults should be provided via a config template (or similar mechanism).
+Depending on where we aim to use the CD-Generator,
+ different defaults shall be assumed (MontiGem vs POJO use case).
+
+
