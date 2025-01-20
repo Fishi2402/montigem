@@ -8,10 +8,12 @@ import umlp.test_rte.ClientSetup;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/// We want to test the following situation:
-/// * Server creates O1
-/// * Client creates O2 and links that to O1 via GemID
-/// * assert that O1 got updated with link to O2
+/**
+ * We want to test the following situation:
+ * <li>Server creates O1</li>
+ * <li>Client creates O2 and links that to O1 via GemID</li>
+ * <li>assert that O1 got updated with link to O2</li>
+ */
 public class SyncLinkCreationTest extends BuilderSQLDBTestSetup {
 
   public SyncLinkCreationTest() {
