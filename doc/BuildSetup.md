@@ -17,20 +17,26 @@ Rules:
 - Multiple tasks must not have the same output folder. Current exception:
   `nodeSetup` and `frontedSetup` work with the same output folder.
 - `npmInstall` tasks must not run in parallel. This is configured in
-  [`examples/build.gradle` file](../examples/build.gradle).
+  [`build.gradle` file](../build.gradle).
   The lines:
   ```groovy
-  project(":examples:dtcockpit:frontend").tasks.npmInstall.mustRunAfter(
-    project(":examples:dtcockpit-jsweet:frontend").tasks.npmInstall
-  )
+  var previousInstallTask
+  subprojects {
+    tasks.withType(com.github.gradle.node.npm.task.NpmInstallTask).configureEach {
+      if (previousInstallTask)
+        it.mustRunAfter(previousInstallTask)
+      previousInstallTask = it
+    }
+  }
   ```
   mean that if `npmInstall` task of two projects must be executed, it will be
   done sequentially (the order is defined but not relevant in this case). If
   `npmInstall` is executed only for one project, the other `npmInstall` tasks
   will not be triggered.
+  This configuration using subprojects & configureEach detects all npmInstall 
+  tasks across the entire project.
 
-  Similar configuration must be done for every new subproject with an
-  `npmInstall` task. Otherwise, an error will appear:
+  Otherwise, an error will appear:
   ```
   npm ERR! code 1
   npm ERR! path /builds/monticore/umlp/examples/<my-project>/frontend/build/frontendGen/node_modules/puppeteer
