@@ -3,7 +3,7 @@ import { Service } from 'autotechagil/Service';
 import { Component } from '@angular/core';
 import { ServiceOverviewComponent, config } from 'gui/ServiceOverviewComponent';
 import { Event } from '@umlp/common';
-import { Port } from '@src/autotechagil/Port';
+import { Port } from 'autotechagil/Port';
 
 @Component({
   standalone: true,

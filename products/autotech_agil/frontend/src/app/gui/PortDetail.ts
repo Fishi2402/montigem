@@ -1,9 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { PortDetailComponent, config } from '@src/gui/PortDetailComponent';
-import { SteeringValue } from "@src/autotechagil/SteeringValue";
-
+import { PortDetailComponent, config } from 'gui/PortDetailComponent';
+import { SteeringValue } from "autotechagil/SteeringValue";
 
 @Component({
   standalone: true,
