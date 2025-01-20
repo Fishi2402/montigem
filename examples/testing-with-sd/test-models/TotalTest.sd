@@ -4,7 +4,7 @@ sequencediagram TotalTest {
   o:Order;
   t:TotalTest; //TODO automate this by trigger?
 
-  assert o.total == 0;
+  assert o.getTotal() == 0; //have to use valid java here since parser isn't that good
 
   //make sure event queue is empty
 
@@ -14,5 +14,5 @@ sequencediagram TotalTest {
 
   //make sure event queue contains Call("addItem"), End("addItem", null)
 
-  assert o.total == 6; //TODO parse that into valid java?
+  assert o.getTotal() == 6;
 }
