@@ -13,4 +13,10 @@ umlp Builder {
 
   association [1] Person -> (car) Car [*];
   association [1] Person -> (mainResidence) Address [1];
+
+  class LinkObject {
+
+  }
+
+  association [0..1] LinkObject <-> (link) LinkObject [0..1];
 }
