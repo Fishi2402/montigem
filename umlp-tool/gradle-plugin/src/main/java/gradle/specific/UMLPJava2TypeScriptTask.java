@@ -23,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -171,6 +172,18 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
       if (file.isFile()) {
         if (file.getName().endsWith(SOURCE_FILE_EXTENSION))
           individualInputPaths.add(file.toPath());
+        else if (file.getName().endsWith(".jar")) {
+          // Also provide java files within jars
+          try (FileSystem jarFS = FileSystems.newFileSystem(file.toPath(), null)) {
+            Path jarRoot = jarFS.getPath("/");
+            try (var javas = Files.walk(jarRoot)) {
+              javas.forEach(path -> {
+                if (path.toString().endsWith(SOURCE_FILE_EXTENSION))
+                  individualInputPaths.add(path);
+              });
+            }
+          }
+        }
       } else if (file.exists()) {
         try (Stream<Path> o = Files.walk(file.toPath())) {
           o.filter(f -> f.getFileName().toString().endsWith(SOURCE_FILE_EXTENSION))
