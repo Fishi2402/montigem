@@ -36,6 +36,8 @@ public class SyncLinkCreationTest extends BuilderSQLDBTestSetup {
     var o2GemId = o2.getGemId();
 
     //O1 should contain link to O2
+    getBackend().activate();
+
     var linkGem = o1.getLinkObjectGem();
     assertEquals(o2GemId, linkGem.getGemId());
   }
