@@ -148,6 +148,8 @@ public class TestSetupDecorator extends AbstractDecorator {
     cd4C.addMethod(res, "umlp.test_infrastructure.GetClientName", cdName);
     cd4C.addMethod(res, "umlp.test_infrastructure.GetNumberOfClients");
     cd4C.addMethod(res, "umlp.test_infrastructure.Init", cdName);
+    cd4C.addMethod(res, "umlp.test_infrastructure.InitBackendManager", cdName);
+    cd4C.addMethod(res, "umlp.test_infrastructure.InitClientManager", cdName);
     cd4C.addMethod(res, "umlp.test_infrastructure.HasDatabase");
 
     addImports(origCD, res);
@@ -175,6 +177,7 @@ public class TestSetupDecorator extends AbstractDecorator {
 
     // methods
     cd4C.addMethod(res, "umlp.test_infrastructure.mockTestSetup.Init", cdName);
+    cd4C.addMethod(res, "umlp.test_infrastructure.mockTestSetup.InitBackendManager", cdName);
     cd4C.addMethod(res, "umlp.test_infrastructure.mockTestSetup.HasDatabase", cdName);
 
     addImports(origCD, res);

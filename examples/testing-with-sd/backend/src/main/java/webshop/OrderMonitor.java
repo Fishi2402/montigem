@@ -22,7 +22,7 @@ public class OrderMonitor extends OrderBuilder {
 
   @Override
   public void addItem(Item o) {
-    var monitor = MethodMonitor.start("getTotal");
+    var monitor = MethodMonitor.start("addItem");
     try {
       super.addItem(o);
       monitor.reportEnd(null);

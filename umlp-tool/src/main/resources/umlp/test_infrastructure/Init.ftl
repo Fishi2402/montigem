@@ -6,7 +6,7 @@ backend = ${cdName}TestContext.fromCurrentContext();
 
 for(int i = 0; i < getNumberOfClients(); i++){
   ${cdName}TestContext.clear();
-  ${cdName}Manager.initMe(new ${cdName}ManagerClientImpl());
+  initClientManager();
   String userName = getClientName(i).orElse("");
   CommandDirectCommunication communication = new CommandDirectCommunication(backend, userName);
   TestClientCommandManager clientCommandManager = new TestClientCommandManager(communication);

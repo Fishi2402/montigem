@@ -3,5 +3,5 @@ ${tc.signature("cdName")}
 ${cd4c.method("public void _init() throws Exception")}
 
 ${cdName}TestContext.clear();
-${cdName}Mock.init();
+initBackendManager();
 super._init();

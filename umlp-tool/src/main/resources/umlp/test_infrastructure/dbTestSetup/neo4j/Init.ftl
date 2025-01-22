@@ -5,7 +5,7 @@ dbStarter.start(this::getDBPath);
 ${cdName}TestContext.clear();
 DatabaseAccessManager4Neo4j.initBoltLocalhost(dbStarter.getPort(), "neo4j", "");
 
-${cdName}ManagerImpl.init();
+initBackendManager();
 ${cdName}DAOFactory.initNeo4J();
 super._init();
 

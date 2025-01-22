@@ -16,10 +16,13 @@ public class TotalTest extends WebshopSQLDBTestSetup {
     super(ClientSetup.of(1));
   }
 
+  @Override
+  protected void initBackendManager() {
+    WebshopMonitorManagerImpl.init();
+  }
+
   @Test
   void matchVisible() {
-    WebshopMonitorManagerImpl.init(); //TODO this needs to be called in the _init method instead of WebShopManagerImpl.init()
-
     var testInstances = new TotalTestInstantiator().instantiate();
     Order o = WebshopManager.orderBuilder().build().orElseThrow();
     Item item = testInstances.getItem();

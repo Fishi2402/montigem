@@ -27,4 +27,9 @@ public final class CallEvent implements StackEvent {
   public int hashCode() {
     return Objects.hashCode(methodName);
   }
+
+  @Override
+  public String toString() {
+    return "CallEvent{" + "methodName='" + methodName + '\'' + '}';
+  }
 }

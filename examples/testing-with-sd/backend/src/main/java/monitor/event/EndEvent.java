@@ -34,4 +34,9 @@ public final class EndEvent implements StackEvent {
   public int hashCode() {
     return Objects.hash(methodName, returnValue);
   }
+
+  @Override
+  public String toString() {
+    return "EndEvent{" + "methodName='" + methodName + '\'' + ", returnValue=" + returnValue + '}';
+  }
 }

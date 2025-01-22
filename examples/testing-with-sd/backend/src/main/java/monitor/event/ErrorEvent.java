@@ -33,4 +33,9 @@ public final class ErrorEvent implements StackEvent {
   public int hashCode() {
     return Objects.hash(methodName, exception);
   }
+
+  @Override
+  public String toString() {
+    return "ErrorEvent{" + "methodName='" + methodName + '\'' + ", exception=" + exception + '}';
+  }
 }
