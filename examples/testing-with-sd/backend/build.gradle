@@ -64,4 +64,4 @@ tasks.register('parseSD', UMLPSD2DataTask) {
   dependsOn parseOD
 }
 
-tasks.compileTestJava.dependsOn parseOD //TODO why does this fail?
+tasks.compileJava.dependsOn parseOD //compile dependency because of bad source set setup

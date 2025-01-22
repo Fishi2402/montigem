@@ -26,6 +26,7 @@ public class OrderMonitor extends OrderBuilder {
     try {
       super.addItem(o);
       monitor.reportEnd(null);
+      //TODO add a special reporting method for void case
       //returning res does not work with void
     } catch (Exception e) {
       monitor.reportError(e);
