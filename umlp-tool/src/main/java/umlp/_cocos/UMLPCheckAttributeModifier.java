@@ -3,9 +3,8 @@ package umlp._cocos;
 
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._cocos.CDBasisASTCDAttributeCoCo;
-import de.se_rwth.commons.logging.Log;
 
-public class UMLPCheckAttributeModifier implements CDBasisASTCDAttributeCoCo {
+public class UMLPCheckAttributeModifier implements CDBasisASTCDAttributeCoCo, CoCoTestable {
 
   public static final String ERROR_CODE = "0x70874";
 
@@ -14,8 +13,17 @@ public class UMLPCheckAttributeModifier implements CDBasisASTCDAttributeCoCo {
   @Override
   public void check(ASTCDAttribute attr) {
     if (attr.getModifier().isPrivate()) {
-      Log.error(String.format(ERROR_CODE+ ERROR_MSG_FORMAT, attr.getName()), attr.get_SourcePositionStart());
+      logError(attr, attr.getName());
     }
   }
 
+  @Override
+  public String getErrorCode() {
+    return ERROR_CODE;
+  }
+
+  @Override
+  public String getErrorMessageFormat() {
+    return ERROR_MSG_FORMAT;
+  }
 }

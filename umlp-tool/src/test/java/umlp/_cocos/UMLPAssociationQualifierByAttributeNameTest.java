@@ -1,45 +1,32 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp._cocos;
 
-import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import org.junit.jupiter.api.Test;
-import umlp.AbstractUMLPTest;
 
-public class UMLPAssociationQualifierByAttributeNameTest extends AbstractUMLPTest {
+public class UMLPAssociationQualifierByAttributeNameTest extends AbstractCoCoTest<UMLPAssociationQualifierByAttributeName> {
 
-  @Test
-  public void testValid() {
-    UMLPCoCoChecker checker = new UMLPCoCoChecker();
-    checker.addCoCo(new UMLPAssociationQualifierByAttributeName());
-
-    ASTCDCompilationUnit ast = parse("cocovalid/Valid.umlp");
-    createSymTab(ast);
-
-    checker.checkAll(ast);
-    assertNoErrors();
+  UMLPAssociationQualifierByAttributeNameTest() {
+    super(new UMLPAssociationQualifierByAttributeName(), UMLPCoCoChecker::addCoCo);
   }
 
   @Test
   public void testInvalidQAttrType() {
-    UMLPCoCoChecker checker = new UMLPCoCoChecker();
-    checker.addCoCo(new UMLPAssociationQualifierByAttributeName());
-    ASTCDCompilationUnit ast = parse("cocoinvalid/UMLPAssocQualifierComplexAttrType.umlp");
-    createSymTab(ast);
+    parseInvalid("UMLPAssocQualifierComplexAttrType");
 
-    checker.checkAll(ast);
-    assertErrors(UMLPAssociationQualifierByAttributeName.TYPE_ERROR_CODE, UMLPAssociationQualifierByAttributeName.TYPE_ERROR_CODE);
+    assertFindingAtLine(0, 13, "isTrue");
+    assertFindingAtLine(1, 14, "a");
+    assertFindingsCount(2);
   }
 
   @Test
-  public void testInvalidNoAttr() {
-    UMLPCoCoChecker checker = new UMLPCoCoChecker();
-    checker.addCoCo(new UMLPAssociationQualifierByAttributeName());
-    ASTCDCompilationUnit ast = parse("cocoinvalid/UMLPAssocQualifierNoAttr.umlp");
-    createSymTab(ast);
-
-    checker.checkAll(ast);
-
-    assertErrors(UMLPAssociationQualifierByAttributeName.NO_ATTR_ERROR_CODE);
+  void testInvalidNoAttr() {
+    parseInvalid("UMLPAssocQualifierNoAttr");
+    assertFindingAtLine(0,
+                        getExpectedErrorMessage(UMLPAssociationQualifierByAttributeName.NO_ATTR_ERROR_CODE,
+                                                UMLPAssociationQualifierByAttributeName.NO_ATTR_ERROR_MSG_FORMAT,
+                                                "noMatchingAttr",
+                                                "B"),
+                        13);
+    assertFindingsCount(1);
   }
-
 }
