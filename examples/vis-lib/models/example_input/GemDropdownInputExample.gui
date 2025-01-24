@@ -14,8 +14,8 @@ page GemDropdownInputExample() {
         width = "50%",
         labelText = "Academic degree:",
         options = [
-          Option("Bachelor"),
-          Option("Master"),
+          Option("Bachelor", "B.Sc."),
+          Option("Master", "M.Sc."),
           Option("PhD")
         ]
       )

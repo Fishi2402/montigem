@@ -147,7 +147,7 @@ export class GemAutocompleteInput extends GemAutocompleteInputComponent {
 
   private filterOptions(): void {
     this.filteredOptions = this.options.filter(option =>
-      option.getValue().toUpperCase().indexOf(this.entry.toUpperCase()) > -1
+      option.getDisplay().toUpperCase().indexOf(this.entry.toUpperCase()) > -1
     );
     if (this.filteredOptions.length == 1) {
       this.highlightIdx = 0;
