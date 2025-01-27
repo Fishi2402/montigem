@@ -13,6 +13,8 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.umlstereotype._ast.ASTStereoValueBuilder;
+import de.monticore.umlstereotype._ast.ASTStereotypeBuilder;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
@@ -24,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static umlp.generator.domain.decorator.GenService.createType;
@@ -38,13 +41,16 @@ public class BuilderDecorator extends AbstractDecorator {
     super(glex);
   }
 
+  public Stream<ASTCDClass> getClassesToGenerateBuilderFor(ASTCDCompilationUnit origCD) {
+    return getConcreteDomainClasses(origCD).stream();
+  }
+
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     this.origCD = origCD;
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     String name = origCD.getCDDefinition().getName();
-    getConcreteDomainClasses(origCD).forEach(c -> astcdPackage.addCDElement(withOrigin(createClass(c,
-                                                                                                   name,
-                                                                                                   origCD))));
+    getClassesToGenerateBuilderFor(origCD).forEach(c -> astcdPackage.addCDElement(withOrigin(
+        createClass(c, name, origCD))));
   }
 
   public static String getClassName(String domainClassName) {
@@ -59,6 +65,21 @@ public class BuilderDecorator extends AbstractDecorator {
         .setModifier(PUBLIC.build())
         .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(domainClass.getName()))
         .setName(className).build();
+
+    //add needs-monitor stereotype
+    //TODO how do I create those builders?
+    var modifier = builderClass.getModifier();
+    var stereotypeValue = new ASTStereoValueBuilder()
+        .setName("needs-monitor")
+        .setContent("true")
+        .build();
+
+    if (modifier.isPresentStereotype()) {
+      modifier.getStereotype().addValues(stereotypeValue);
+    } else {
+      var stereotype = new ASTStereotypeBuilder().addValues(stereotypeValue).build();
+      modifier.setStereotype(stereotype);
+    }
 
     List<ASTCDAttribute> attrFields = CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
         .filter(GenService::isVisibleNotDerived)

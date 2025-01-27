@@ -9,7 +9,6 @@ import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.BEDecorator;
 import umlp.generator.domain.decorator.DiagramObserverDecorator;
 import umlp.generator.domain.decorator.ObserverDecorator;
-import umlp.generator.domain.decorator.ShellAPIDecorator;
 
 import java.util.StringJoiner;
 
@@ -42,13 +41,17 @@ public class TestInfrastructureDecorator extends BEDecorator {
 
     TestContextDecorator testContextDecorator = new TestContextDecorator(glex);
     testContextDecorator.transform(cdAST, decoratedAST);
-    Log.info("After decorator: TestContextDecorator", ShellAPIDecorator.class.getName());
+    Log.info("After decorator: TestContextDecorator", logName);
 
     TestSetupDecorator testSetupDecorator = new TestSetupDecorator(glex,
                                                                    observerDecorator,
                                                                    diagramObserverDecorator);
     testSetupDecorator.transform(cdAST, decoratedAST);
-    Log.info("After decorator: TestSetupDecorator", TestSetupDecorator.class.getName());
+    Log.info("After decorator: TestSetupDecorator", logName);
+
+    var monitorDecorator = new MonitorDecorator(glex);
+    monitorDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: MonitorDecorator", logName);
 
     if (playwright) {
       E2ETestDecorator e2ETestDecorator = new E2ETestDecorator(glex);
