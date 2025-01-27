@@ -7,6 +7,7 @@ import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4analysis._symboltable.ICD4AnalysisArtifactScope;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._parser.ForgivingParser;
+import de.monticore.cd4code._symboltable.ICD4CodeArtifactScope;
 import de.monticore.cd4codebasis._ast.ASTCDInterface;
 import de.monticore.cdassociation._ast.ASTCDCardMult;
 import de.monticore.cdassociation._ast.ASTCDCardOpt;
@@ -14,6 +15,7 @@ import de.monticore.cdassociation._ast.ASTCDCardinality;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.cdbasis._visitor.CDBasisVisitor2;
@@ -45,11 +47,9 @@ public class DSL2CD {
 
   static Stack<ASTCDType> requestedClasses = new Stack<>();
   static Map<String, String> shortNameMap = new HashMap<>();
+  static Map<String, String> domain2ASTFQN = new HashMap<>();
 
   public static void main(String[] args) throws Exception {
-    for (String x : args)
-      System.err.println(x);
-
     String domainName = args[0];
 
     if (!"domain".equals(domainName))
@@ -104,6 +104,11 @@ public class DSL2CD {
 
     cds.add(astOpt.get());
 
+    doWork(umlpDef, mainAS, glex, cds, astOpt.get(), domainCDFile, genSetup);
+  }
+
+  static void doWork(ASTCDDefinition umlpDef, ICD4CodeArtifactScope mainAS, GlobalExtensionManagement glex, List<ASTCDCompilationUnit> cds, ASTCDCompilationUnit origDSLCD, File domainCDFile, GeneratorSetup genSetup)
+      throws IOException {
     var dsl2domainClass = CD4CodeMill.cDClassBuilder().setName("DSL2Domain").setModifier(CD4CodeMill.modifierBuilder().PUBLIC().build()).build();
 
     // Prepare dsl2domainClass
@@ -136,24 +141,84 @@ public class DSL2CD {
       } else {
         Log.warn("Unhandled type " + rc + " " + rc.getName());
       }
-
     }
 
-    // Next, we add the Handler
-    var handlers = ClassSearcher.lookForHandlers(cds.stream().filter(c -> grammarsUsed.contains(c.getCDDefinition().getSymbol().getFullName())).collect(Collectors.toList()));
-    var traversers = ClassSearcher.lookForTraversers(cds.stream().filter(c -> grammarsUsed.contains(c.getCDDefinition().getSymbol().getFullName())).collect(Collectors.toList()));
+    // WORKAROUND: Interfaces
+    List<de.monticore.cdinterfaceandenum._ast.ASTCDInterface> interfaces = umlpDef.getCDInterfacesList();
+    Set<String> interfacesNames = new HashSet<>();
+    Map<String, ASTCDClass> interfacesNamesToImplClass = new HashMap<>();
+    Map<String, List<String>> interfaceImpls = new HashMap<>();
+    for (de.monticore.cdinterfaceandenum._ast.ASTCDInterface i : interfaces) {
+      // Create a pseudo-class ${interfacename} for every interface, and rename the interface by prefixing I
+      var c = CD4CodeMill.cDClassBuilder().setName(i.getName()).setModifier(i.getModifier()).build();
+      umlpDef.addCDElement(c);
+      interfacesNamesToImplClass.put(i.getName(), c);
+      interfaceImpls.put(i.getName(), new ArrayList<>());
+      interfacesNames.add(i.getName());
 
+      i.setName("I" + i.getName());
+    }
+    var workaroundT = CD4CodeMill.inheritanceTraverser();
+    workaroundT.add4CDBasis(new CDBasisVisitor2() {
+      @Override
+      public void visit(ASTCDClass node) {
+        if (node.isPresentCDInterfaceUsage()) {
+          for (var iObj : node.getCDInterfaceUsage().getInterfaceList()) {
+            String iName = iObj.printType();
+            if (interfacesNames.contains(iName)) {
+              interfaceImpls.get(iName).add(node.getName());
+              // Add an optional attribute C implements I => IIImpl.c [opt]
+              ASTCDClass impl = interfacesNamesToImplClass.get(iName);
+              impl.addCDMember(CD4CodeMill.cDDirectCompositionBuilder().setCDAssocRightSide(CD4CodeMill.cDAssocRightSideBuilder().setCDRole(CD4CodeMill.cDRoleBuilder().setName(StringTransformations.uncapitalize(node.getName())).build()).setMCQualifiedType(typeFromString(node.getName())).setCDCardinality(opt()).setModifier(CD4CodeMill.modifierBuilder().build()).build()).build());
+
+              // Rename the interface usage by prefixing I
+              if (iObj instanceof ASTMCQualifiedType) {
+                // Change attributes from ${interfacename} to their IImpl-classes
+                List<String> names = new ArrayList<>(((ASTMCQualifiedType) iObj).getNameList());
+                names.set(names.size() - 1, "I" + names.get(names.size() - 1));
+                ((ASTMCQualifiedType) iObj).getMCQualifiedName().setPartsList(names);
+              } else {
+                Log.error("Unable to work with " + iObj.getClass());
+              }
+            }
+          }
+        }
+      }
+
+      // TODO IA extends IB
+    });
+    umlpDef.accept(workaroundT);
+
+
+    // Finally, a handle method for the interfaces
+    for (Map.Entry<String, ASTCDClass> entry : interfacesNamesToImplClass.entrySet()) {
+      StringBuilder dsl2domainBody = new StringBuilder();
+      for (String key : interfaceImpls.get(entry.getKey())) {
+        String astKey = StringTransformations.uncapitalize(sanitizeTypeName(domain2ASTFQN.get(key)));
+        dsl2domainBody.append(" if (node instanceof " + astKey + ") { \n");
+        dsl2domainBody.append(" handle((" + astKey + ") node); \n");
+        dsl2domainBody.append(" nodeBuilder." + StringTransformations.uncapitalize(key) + "((domain." + key + ") stack.pop()); \n");
+        dsl2domainBody.append(" } \n");
+      }
+      CD4C.getInstance().addMethod(dsl2domainClass, "templates.dsl2domain.handle", StringTransformations.uncapitalize(sanitizeTypeName(domain2ASTFQN.get(entry.getValue().getName()))), entry.getKey(), "domain.Domain", dsl2domainBody.toString());
+    }
+
+
+
+    // Next, we search for the handlers & traverser classes
+    var handlers = ClassSearcher.lookForHandlers(cds.stream().filter(c -> grammarsUsed.contains(c.getCDDefinition().getSymbol().getFullName())).collect(Collectors.toList()));
+    var traverser = ClassSearcher.lookForTraversers(cds.stream().filter(c -> grammarsUsed.contains(c.getCDDefinition().getSymbol().getFullName())).collect(Collectors.toList()));
+    // and use them for the translator/converter
     dsl2domainClass.setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder().uncheckedBuild());
     for (var handler : handlers) {
       dsl2domainClass.getCDInterfaceUsage().addInterface(CD4CodeMill.mCQualifiedTypeBuilder().setMCQualifiedName(CD4CodeMill.mCQualifiedNameBuilder().setPartsList(Splitters.DOT.splitToList(simplifyName(handler.getSymbol()))).build()).build());
     }
-    for (var t : traversers) {
+    for (var t : traverser) {
       CD4C.getInstance().addMethod(dsl2domainClass, "templates.dsl2domain.setTraverser", simplifyName(t.getSymbol()));
     }
-    CD4C.getInstance().addMethod(dsl2domainClass, "templates.dsl2domain.getTraverser", simplifyName(ClassSearcher.lookForTraversers(List.of(astOpt.get())).get(0).getSymbol()));
+    CD4C.getInstance().addMethod(dsl2domainClass, "templates.dsl2domain.getTraverser", simplifyName(ClassSearcher.lookForTraversers(List.of(origDSLCD)).get(0).getSymbol()));
 
     var umlp = CD4CodeMill.cDCompilationUnitBuilder().setCDDefinition(umlpDef).build();
-
 
     if (domainCDFile.exists()) {
       domainCDFile.delete();
@@ -222,6 +287,8 @@ public class DSL2CD {
 
     var clazz = CD4CodeMill.cDClassBuilder().setName(name).setModifier(astClass.getModifier()).build();
 
+    domain2ASTFQN.put(name, astClass.getSymbol().getFullName());
+
     if (astClass.isPresentCDInterfaceUsage()) {
 
       clazz.setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder().uncheckedBuild());
@@ -229,8 +296,6 @@ public class DSL2CD {
         String iname = interf.printType();
         if (iname.endsWith("Node")) continue; // TODO: Better Exclude _ast.AST${dsl}Node interface
         if (iname.contains("._ast.AST")) {
-          System.err.println("interface: " + clazz.getName());
-          System.err.println(interf.printType());
 
           var sym = as.resolveCDTypeMany(iname);
           if (!sym.isEmpty()) {
@@ -266,7 +331,9 @@ public class DSL2CD {
           if (i > 0) {
             dsl2domainBody.append("if (node.isPresent").append(StringTransformations.capitalize(node.getName())).append("()){\n");
             if (i == 1) {
-              dsl2domainBody.append("node.get").append(StringTransformations.capitalize(node.getName())).append("().accept(getTraverser());\n");
+              dsl2domainBody.append("//node.get").append(StringTransformations.capitalize(node.getName())).append("().accept(getTraverser());\n");
+              dsl2domainBody.append("this.handle(node.get").append(StringTransformations.capitalize(node.getName())).append("()); // not using traverser due to interface-workaround\n");
+
               dsl2domainBody.append("nodeBuilder.").append(StringTransformations.uncapitalize(attributeName)).append("( (domain.").append(getUniqueShortName(typeString)).append(") stack.pop());\n}\n\n");
             } else {
               dsl2domainBody.append("nodeBuilder.").append(StringTransformations.uncapitalize(attributeName)).append("(Optional.of(").append("node.get").append(StringTransformations.capitalize(node.getName())).append("() ) );\n}\n\n");
@@ -284,7 +351,8 @@ public class DSL2CD {
               n = n.substring(0, n.length() - 1);
             if (i == ASSOC_ADDED) {
               dsl2domainBody.append("for (var elem : node.get").append(StringTransformations.capitalize(n)).append("List()){\n");
-              dsl2domainBody.append("elem.accept(getTraverser());\n");
+              dsl2domainBody.append("//elem.accept(getTraverser());\n");
+              dsl2domainBody.append("handle(elem); // Not using traverser due to interface-workaround\n");
               dsl2domainBody.append("nodeBuilder.").append(StringTransformations.uncapitalize(attributeName)).append("Add( (domain.").append(getUniqueShortName(typeString)).append(") stack.pop());\n}\n\n");
             } else if (i == PRIMITIVE_ADDED) {
               dsl2domainBody.append("nodeBuilder.").append(StringTransformations.uncapitalize(attributeName)).append("(").append("node.get").append(StringTransformations.capitalize(node.getName())).append("List() );\n\n");
@@ -308,7 +376,8 @@ public class DSL2CD {
                 nodeBuilder.myDefinition(pop());
             */
 
-            dsl2domainBody.append("node.get").append(StringTransformations.capitalize(node.getName())).append("().accept(getTraverser());\n");
+            dsl2domainBody.append("//node.get").append(StringTransformations.capitalize(node.getName())).append("().accept(getTraverser());\n");
+            dsl2domainBody.append("handle(node.get").append(StringTransformations.capitalize(node.getName())).append("()); // Not using traverser due to interface-workaround\n");
             dsl2domainBody.append("nodeBuilder.").append(StringTransformations.uncapitalize(attributeName)).append("( (domain.").append(typeName).append(") stack.pop());\n\n");
 
 
@@ -355,6 +424,8 @@ public class DSL2CD {
     String name = sanitizeTypeName(astClass.getSymbol().getFullName());
     name = getUniqueShortName(name);
     var clazz = CD4CodeMill.cDInterfaceBuilder().setName(name).setModifier(astClass.getModifier()).build();
+
+    domain2ASTFQN.put(name, astClass.getSymbol().getFullName());
 
     if (!clazz.getModifier().isPresentStereotype())
       clazz.getModifier().setStereotype(CD4CodeMill.stereotypeBuilder().uncheckedBuild());

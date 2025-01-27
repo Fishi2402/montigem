@@ -24,6 +24,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCSetType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.StringTransformations;
@@ -260,6 +261,26 @@ public class GenService {
     if (mcType instanceof ASTMCQualifiedType) {
       List<String> nameList = ((ASTMCQualifiedType) mcType).getNameList();
       return "List".equals(nameList.get(nameList.size() - 1));
+    }
+    return false;
+  }
+
+  public static boolean isSet(ASTCDAttribute attr) {
+    ASTMCType mcType = attr.getMCType();
+    return isSet(mcType);
+  }
+
+  public static boolean isSet(ASTMCType mcType) {
+    if (mcType instanceof ASTMCSetType) {
+      return true;
+    }
+    if (mcType instanceof ASTMCBasicGenericType) {
+      List<String> nameList = ((ASTMCBasicGenericType) mcType).getNameList();
+      return "Set".equals(nameList.get(nameList.size() - 1));
+    }
+    if (mcType instanceof ASTMCQualifiedType) {
+      List<String> nameList = ((ASTMCQualifiedType) mcType).getNameList();
+      return "Set".equals(nameList.get(nameList.size() - 1));
     }
     return false;
   }

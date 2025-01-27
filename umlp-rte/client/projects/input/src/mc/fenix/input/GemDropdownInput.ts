@@ -45,6 +45,7 @@ export class GemDropdownInput extends GemDropdownInputComponent {
   @Output()
   entryChange: EventEmitter<string> = new EventEmitter<string>();
 
+  selectedOption: Option;
   elementId: string = Math.random() + '';
   isContentShown: boolean = false;
   filterString: string = "";
@@ -87,6 +88,7 @@ export class GemDropdownInput extends GemDropdownInputComponent {
 
   selectOption(option: Option): void {
     this.entry = option.getValue();
+    this.selectedOption = option;
     this.entryChange.emit(this.entry);
     this.hideDropdown();
   }
@@ -125,7 +127,7 @@ export class GemDropdownInput extends GemDropdownInputComponent {
   filterOptions(): void {
     if (this.options) {
       this.filteredOptions = this.options.filter(option =>
-        option.getValue().toUpperCase().indexOf(this.filterString.toUpperCase()) > -1
+        option.getDisplay().toUpperCase().indexOf(this.filterString.toUpperCase()) > -1
       );
     }
   }

@@ -496,24 +496,30 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     return this.asArray == null ? [] : [...this.asArray];
   }
 
+  asArrayPromise: Promise<Array<E>> = null;
   async toArraySync(startIndex?: number, endIndex?: number): Promise<Array<E>> {
-    // TODO Beachtung von startIndex und endIndex
-    // if (startIndex !== undefined && startIndex !== unll && endIndex !== undefined && endIndex !== null) {
-    //   if (asArrayMap[{startIndex, endIndex} == null]) {
-    //
-    //   }
-    //   return asArrayMap[{startIndex, endIndex}];
-    // }
-    if (this.asArray == null) {
-      this.asArray = [];
-      const arr = [];
-      await this.loadObjects(new UMLPArrayList(this.ids));
-      for await (let gemListElement of this) {
-        arr.push(gemListElement);
-      }
-      this.asArray = arr
+    if (this.asArrayPromise == null) {
+      this.asArrayPromise = new Promise(async resolve => {
+        // TODO Beachtung von startIndex und endIndex
+        // if (startIndex !== undefined && startIndex !== unll && endIndex !== undefined && endIndex !== null) {
+        //   if (asArrayMap[{startIndex, endIndex} == null]) {
+        //
+        //   }
+        //   return asArrayMap[{startIndex, endIndex}];
+        // }
+        if (this.asArray === null) {
+          this.asArray = [];
+          const arr = [];
+          await this.loadObjects(new UMLPArrayList(this.ids));
+          for await (let gemListElement of this) {
+            arr.push(gemListElement);
+          }
+          this.asArray = arr;
+        }
+        resolve(this.asArray);
+      });
     }
-    return this.asArray;
+    return this.asArrayPromise;
   }
 
   toArrayDeep(startIndex?: number, endIndex?: number): Array<E> {

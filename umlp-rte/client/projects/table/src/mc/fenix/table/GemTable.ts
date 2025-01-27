@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { Component, HostBinding, Input } from '@angular/core';
+import { Component, HostBinding } from '@angular/core';
 import { config, GemTableComponent } from '../../../../build/gui/mc/fenix/table/GemTableComponent';
 
 @Component({
@@ -12,11 +12,9 @@ import { config, GemTableComponent } from '../../../../build/gui/mc/fenix/table/
 })
 export class GemTable extends GemTableComponent {
   @HostBinding("style.width")
-  @Input()
   _width: string;
 
   @HostBinding("style.height")
-  @Input()
   _height: string;
 
   @HostBinding("style.overflow")

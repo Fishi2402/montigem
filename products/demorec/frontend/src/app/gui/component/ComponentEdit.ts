@@ -87,7 +87,7 @@ export  class ComponentEdit extends ComponentEditComponent {
   public override checkComponentName() :GemTextInputValidity {
     if(this.getComponent()) {
       if(this.getComponent().getName()) {
-        return new GemTextInputValidity("Success");
+        return new GemTextInputValidity("Success", null);
       }
       // TODO check if the name already exists
       return new GemTextInputValidity("Error", "Please enter a name.");

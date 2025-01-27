@@ -183,7 +183,7 @@ export class JoinConnectionKindEdit extends JoinConnectionKindEditComponent impl
   public checkConnectionType() : GemTextInputValidity {
     if(this.getConnectionKind()) {
       if(this.getConnectionKind().getJoinConnectionType()) {
-        return new GemTextInputValidity("Success");
+        return new GemTextInputValidity("Success", null);
       }
       return new GemTextInputValidity("Error", "Please choose a connection type.");
     }
@@ -193,7 +193,7 @@ export class JoinConnectionKindEdit extends JoinConnectionKindEditComponent impl
   public checkChosenComponents() : GemTextInputValidity {
     if(this.getConnectionKind()) {
       if(this.getConnectionKind().getConnectsList().length >= 2) {
-        return new GemTextInputValidity("Success")
+        return new GemTextInputValidity("Success", null)
       }
       return new GemTextInputValidity("Warning", "Later on, you should specify at least 2 connected components.");
     }

@@ -22,11 +22,16 @@ dependencies {
   umlpTool "umlp:umlp-tool:$version"
   umlpTool group: 'de.rwth.se.umlp.jsweet', name: 'jsweet-transpiler', version: '3.2.0-UMLP-SNAPSHOT'
 
+  testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
 }
 
 sourceSets {
   main.compileClasspath += configurations.umlpTool
   test.compileClasspath += configurations.umlpTool
+}
+
+test {
+  useJUnitPlatform()
 }
 
 group = 'umlp'

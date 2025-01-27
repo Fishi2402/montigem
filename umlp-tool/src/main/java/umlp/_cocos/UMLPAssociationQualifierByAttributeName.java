@@ -9,13 +9,13 @@ import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.util.WithinTypeBasicSymbolsResolver;
-import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
 
 
-public class UMLPAssociationQualifierByAttributeName implements CDAssociationASTCDAssociationCoCo {
+public class UMLPAssociationQualifierByAttributeName implements CDAssociationASTCDAssociationCoCo, CoCoTestable {
 
+  //TODO every coco should only check one thing and not two, even if they are similar
   public static final String TYPE_ERROR_CODE = "0xCDC68";
   public static final String NO_ATTR_ERROR_CODE = "0xCDC69";
 
@@ -23,12 +23,15 @@ public class UMLPAssociationQualifierByAttributeName implements CDAssociationAST
       "has incompatible type, qualified associations only support numeric or string type qualifiers.";
   public static final String NO_ATTR_ERROR_MSG_FORMAT = " Attribute %s of qualified association " +
       "does not exist in class %s.";
-  private FullSynthesizeFromCD4Code synthesizer;
-  private WithinTypeBasicSymbolsResolver resolver;
+
+  private final FullSynthesizeFromCD4Code synthesizer;
+  private final WithinTypeBasicSymbolsResolver resolver;
+
   public UMLPAssociationQualifierByAttributeName(){
     this.synthesizer = new FullSynthesizeFromCD4Code();
     this.resolver = new WithinTypeBasicSymbolsResolver();
   }
+
   @Override
   public void check(ASTCDAssociation assoc) {
     if (assoc.getLeft().isPresentCDQualifier() && assoc.getLeft().getCDQualifier()
@@ -46,18 +49,29 @@ public class UMLPAssociationQualifierByAttributeName implements CDAssociationAST
     final String attributeName = qSide.getCDQualifier().getByAttributeName();
     Optional<SymTypeExpression> expr = this.resolver.resolveVariable(ste, attributeName,
         BasicAccessModifier.ALL_INCLUSION, x -> true);
-    if(expr.isPresent()){
+    if (expr.isPresent()) {
       if (!SymTypeRelations.isNumericType(expr.get()) && !SymTypeRelations.isString(expr.get())){
-        Log.error(
-            String.format(TYPE_ERROR_CODE + TYPE_ERROR_MSG_FORMAT,
-               attributeName),
-            qSide.getCDQualifier().get_SourcePositionStart());
+        logError(qSide.getCDQualifier().get_SourcePositionStart(),
+                 TYPE_ERROR_CODE,
+                 TYPE_ERROR_MSG_FORMAT,
+                 attributeName);
       }
-    }else{
-      Log.error(
-          String.format(
-              NO_ATTR_ERROR_CODE + NO_ATTR_ERROR_MSG_FORMAT,
-              attributeName, attrSide.getMCQualifiedType().getMCQualifiedName()), qSide.getCDQualifier().get_SourcePositionStart());
+    } else {
+      logError(qSide.getCDQualifier().get_SourcePositionStart(),
+               NO_ATTR_ERROR_CODE,
+               NO_ATTR_ERROR_MSG_FORMAT,
+               attributeName,
+               attrSide.getMCQualifiedType().getMCQualifiedName());
     }
+  }
+
+  @Override
+  public String getErrorCode() {
+    return TYPE_ERROR_CODE;
+  }
+
+  @Override
+  public String getErrorMessageFormat() {
+    return TYPE_ERROR_MSG_FORMAT;
   }
 }
