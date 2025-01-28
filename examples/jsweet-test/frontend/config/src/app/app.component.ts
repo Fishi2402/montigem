@@ -5,8 +5,8 @@ import {
   ClientCommandWebsocketCommunication,
   CommandManager
 } from '@umlp/commonj2ts';
-import {JsweettestManagerClientImpl} from '@src/jsweettest/JsweettestManagerClientImpl';
-import {JsweettestComponentObserverManager} from '@src/JsweettestComponentObserverManager';
+import {JsweettestManagerClientImpl} from 'jsweettest/JsweettestManagerClientImpl';
+import {JsweettestComponentObserverManager} from 'JsweettestComponentObserverManager';
 
 @Component({
   selector: 'app-root',

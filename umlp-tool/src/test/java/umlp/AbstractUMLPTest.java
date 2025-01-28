@@ -50,6 +50,11 @@ public abstract class AbstractUMLPTest {
     UMLPMill.reset();
     UMLPMill.init();
     BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope(), false);
+    _setup();
+  }
+
+  public void _setup() {
+    //override this method if needed
   }
 
   public ASTCDCompilationUnit parse(String model) {

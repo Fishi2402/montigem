@@ -2,6 +2,7 @@ plugins {
   id "base"
   id "java"
   id 'maven-publish'
+  id 'de.rwth.se.umlp-tool-module-models' // create models-jar
 }
 
 configurations {
@@ -23,25 +24,20 @@ sourceSets {
   }
 }
 
-def moduleClassifier = "module-generator-time"
-
-tasks.register('moduleJar', Jar){
-  from("src/models"){
-    include "**/*.*"
-  }
-  from(sourceSets.moduleGenTime.output)
-  archiveClassifier = moduleClassifier
+// We do not have main java soures => Remove .jar from outgoing artifacts
+tasks.named('jar') {
+  enabled = false
 }
-tasks.jar.dependsOn(moduleJar)
 
-artifacts {
-  moduleGenTime moduleJar
-}
 
 publishing {
   publications {
     mavenJava(MavenPublication) {
-      artifact moduleJar
+      from components.java
+      artifacts.removeIf {
+        return it.classifier == null // remove the default jar (as it is skipped and otherwise an error is thrown during publishing)
+      }
+      // The plugin publishes moduleGenTime & the models jar
     }
   }
   // TODO: correct repo

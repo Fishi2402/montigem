@@ -1,0 +1,3065 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram mccommonliterals_AST {
+  @MCCommonLiterals!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @MCCommonLiterals!Symbol(2,0);
+    enclosingScope = @MCCommonLiterals!ArtifactScope;
+    spanningScope = @MCCommonLiterals!Scope;
+    r__package = [de, monticore, literals];
+    importStatement = [// *size: 1
+      @!MCImportStatement(7,0):ASTMCImportStatement {
+        enclosingScope = @MCCommonLiterals!Scope;
+        mCQualifiedName = @de.monticore.literals!MCQualifiedName(7,7):ASTMCQualifiedName {
+          enclosingScope = @MCCommonLiterals!Scope;
+          parts = [de, monticore, literals];
+        };
+        star = true;
+      }];
+    name = MCCommonLiterals;
+    supergrammar = [// *size: 2
+      @MCBasics!GrammarReference(18,18):ASTGrammarReference {
+        enclosingScope = @MCCommonLiterals!Scope;
+        names = [de, monticore, MCBasics];
+      },
+      @MCLiteralsBasis!GrammarReference(19,18):ASTGrammarReference {
+        enclosingScope = @MCCommonLiterals!Scope;
+        names = [MCLiteralsBasis];
+      }];
+    lexProds = [// *size: 13
+      @Digits!LexProd(149,2):ASTLexProd {
+        enclosingScope = @MCCommonLiterals!Scope;
+        alt = [// *size: 1
+          @!LexAlt(150,6):ASTLexAlt {
+            enclosingScope = @Digits!Scope;
+            lexComponent = [// *size: 1
+              @!LexSimpleIteration(150,6):ASTLexSimpleIteration {
+                enclosingScope = @Digits!Scope;
+                lexNonTerminal = @Digit!LexNonTerminal(150,6):ASTLexNonTerminal {
+                  enclosingScope = @Digits!Scope;
+                  name = Digit;
+                };
+                iteration = 13;
+                question = false;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = false;
+        comment = false;
+        name = Digits;
+      },
+      @Digit!LexProd(152,2):ASTLexProd {
+        enclosingScope = @MCCommonLiterals!Scope;
+        alt = [// *size: 1
+          @!LexAlt(153,6):ASTLexAlt {
+            enclosingScope = @Digit!Scope;
+            lexComponent = [// *size: 1
+              @!LexCharRange(153,6):ASTLexCharRange {
+                enclosingScope = @Digit!Scope;
+                lowerChar = 0;
+                upperChar = 9;
+                negate = false;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = Digit;
+      },
+      @Char!LexProd(156,2):ASTLexProd {
+        enclosingScope = @MCCommonLiterals!Scope;
+        alt = [// *size: 1
+          @!LexAlt(157,6):ASTLexAlt {
+            enclosingScope = @Char!Scope;
+            lexComponent = [// *size: 3
+              @!LexChar(157,6):ASTLexChar {
+                enclosingScope = @Char!Scope;
+                r__char = \';
+                negate = false;
+              },
+              @!LexBlock(157,11):ASTLexBlock {
+                enclosingScope = @Char!Scope;
+                lexAlt = [// *size: 2
+                  @!LexAlt(157,12):ASTLexAlt {
+                    enclosingScope = @Char!Scope;
+                    lexComponent = [// *size: 1
+                      @SingleCharacter!LexNonTerminal(157,12):ASTLexNonTerminal {
+                        enclosingScope = @Char!Scope;
+                        name = SingleCharacter;
+                      }];
+                  },
+                  @!LexAlt(157,28):ASTLexAlt {
+                    enclosingScope = @Char!Scope;
+                    lexComponent = [// *size: 1
+                      @EscapeSequence!LexNonTerminal(157,28):ASTLexNonTerminal {
+                        enclosingScope = @Char!Scope;
+                        name = EscapeSequence;
+                      }];
+                  }];
+                negate = false;
+                iteration = 0;
+              },
+              @!LexChar(157,44):ASTLexChar {
+                enclosingScope = @Char!Scope;
+                r__char = \';
+                negate = false;
+              }];
+          }];
+        parameter = [];
+        endAction = @!Action(158,7):ASTAction {
+          enclosingScope = @Char!Scope;
+          mCBlockStatements = [// *size: 1
+            @!CallExpression(158,14):ASTCallExpression {
+              enclosingScope = @Char!Scope;
+              expression = @!NameExpression(158,7):ASTNameExpression {
+                enclosingScope = @Char!Scope;
+                name = setText;
+              };
+              arguments = @!Arguments(158,14):ASTArguments {
+                enclosingScope = @Char!Scope;
+                expressions = [// *size: 1
+                  @!CallExpression(158,34):ASTCallExpression {
+                    enclosingScope = @Char!Scope;
+                    expression = @!FieldAccessExpression(158,24):ASTFieldAccessExpression {
+                      enclosingScope = @Char!Scope;
+                      expression = @!CallExpression(158,22):ASTCallExpression {
+                        enclosingScope = @Char!Scope;
+                        expression = @!NameExpression(158,15):ASTNameExpression {
+                          enclosingScope = @Char!Scope;
+                          name = getText;
+                        };
+                        arguments = @!Arguments(158,22):ASTArguments {
+                          enclosingScope = @Char!Scope;
+                        };
+                      };
+                      name = substring;
+                    };
+                    arguments = @!Arguments(158,34):ASTArguments {
+                      enclosingScope = @Char!Scope;
+                      expressions = [// *size: 2
+                        @!LiteralExpression(158,35):ASTLiteralExpression {
+                          enclosingScope = @Char!Scope;
+                          literal = @!NatLiteral(158,35):ASTNatLiteral {
+                            enclosingScope = @Char!Scope;
+                            digits = 1;
+                          };
+                        },
+                        @!MinusExpression(158,57):ASTMinusExpression {
+                          enclosingScope = @Char!Scope;
+                          left = @!CallExpression(158,54):ASTCallExpression {
+                            enclosingScope = @Char!Scope;
+                            expression = @!FieldAccessExpression(158,47):ASTFieldAccessExpression {
+                              enclosingScope = @Char!Scope;
+                              expression = @!CallExpression(158,45):ASTCallExpression {
+                                enclosingScope = @Char!Scope;
+                                expression = @!NameExpression(158,38):ASTNameExpression {
+                                  enclosingScope = @Char!Scope;
+                                  name = getText;
+                                };
+                                arguments = @!Arguments(158,45):ASTArguments {
+                                  enclosingScope = @Char!Scope;
+                                };
+                              };
+                              name = length;
+                            };
+                            arguments = @!Arguments(158,54):ASTArguments {
+                              enclosingScope = @Char!Scope;
+                            };
+                          };
+                          operator = -;
+                          right = @!LiteralExpression(158,59):ASTLiteralExpression {
+                            enclosingScope = @Char!Scope;
+                            literal = @!NatLiteral(158,59):ASTNatLiteral {
+                              enclosingScope = @Char!Scope;
+                              digits = 1;
+                            };
+                          };
+                        }];
+                    };
+                  }];
+              };
+            }];
+        };
+        type = [];
+        fragment = false;
+        comment = false;
+        name = Char;
+      },
+      @SingleCharacter!LexProd(160,2):ASTLexProd {
+        enclosingScope = @MCCommonLiterals!Scope;
+        alt = [// *size: 1
+          @!LexAlt(161,6):ASTLexAlt {
+            enclosingScope = @SingleCharacter!Scope;
+            lexComponent = [// *size: 1
+              @!LexBlock(161,6):ASTLexBlock {
+                enclosingScope = @SingleCharacter!Scope;
+                lexAlt = [// *size: 1
+                  @!LexAlt(161,9):ASTLexAlt {
+                    enclosingScope = @SingleCharacter!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexChar(161,9):ASTLexChar {
+                        enclosingScope = @SingleCharacter!Scope;
+                        r__char = \';
+                        negate = false;
+                      }];
+                  }];
+                negate = true;
+                iteration = 0;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = SingleCharacter;
+      },
+      @String!LexProd(165,2):ASTLexProd {
+        enclosingScope = @MCCommonLiterals!Scope;
+        alt = [// *size: 1
+          @!LexAlt(166,6):ASTLexAlt {
+            enclosingScope = @String!Scope;
+            lexComponent = [// *size: 3
+              @!LexChar(166,6):ASTLexChar {
+                enclosingScope = @String!Scope;
+                r__char = ";
+                negate = false;
+              },
+              @!LexBlock(166,10):ASTLexBlock {
+                enclosingScope = @String!Scope;
+                lexAlt = [// *size: 1
+                  @!LexAlt(166,11):ASTLexAlt {
+                    enclosingScope = @String!Scope;
+                    lexComponent = [// *size: 1
+                      @StringCharacters!LexNonTerminal(166,11):ASTLexNonTerminal {
+                        enclosingScope = @String!Scope;
+                        name = StringCharacters;
+                      }];
+                  }];
+                negate = false;
+                iteration = 17;
+              },
+              @!LexChar(166,30):ASTLexChar {
+                enclosingScope = @String!Scope;
+                r__char = ";
+                negate = false;
+              }];
+          }];
+        parameter = [];
+        endAction = @!Action(167,7):ASTAction {
+          enclosingScope = @String!Scope;
+          mCBlockStatements = [// *size: 1
+            @!CallExpression(167,14):ASTCallExpression {
+              enclosingScope = @String!Scope;
+              expression = @!NameExpression(167,7):ASTNameExpression {
+                enclosingScope = @String!Scope;
+                name = setText;
+              };
+              arguments = @!Arguments(167,14):ASTArguments {
+                enclosingScope = @String!Scope;
+                expressions = [// *size: 1
+                  @!CallExpression(167,34):ASTCallExpression {
+                    enclosingScope = @String!Scope;
+                    expression = @!FieldAccessExpression(167,24):ASTFieldAccessExpression {
+                      enclosingScope = @String!Scope;
+                      expression = @!CallExpression(167,22):ASTCallExpression {
+                        enclosingScope = @String!Scope;
+                        expression = @!NameExpression(167,15):ASTNameExpression {
+                          enclosingScope = @String!Scope;
+                          name = getText;
+                        };
+                        arguments = @!Arguments(167,22):ASTArguments {
+                          enclosingScope = @String!Scope;
+                        };
+                      };
+                      name = substring;
+                    };
+                    arguments = @!Arguments(167,34):ASTArguments {
+                      enclosingScope = @String!Scope;
+                      expressions = [// *size: 2
+                        @!LiteralExpression(167,35):ASTLiteralExpression {
+                          enclosingScope = @String!Scope;
+                          literal = @!NatLiteral(167,35):ASTNatLiteral {
+                            enclosingScope = @String!Scope;
+                            digits = 1;
+                          };
+                        },
+                        @!MinusExpression(167,57):ASTMinusExpression {
+                          enclosingScope = @String!Scope;
+                          left = @!CallExpression(167,54):ASTCallExpression {
+                            enclosingScope = @String!Scope;
+                            expression = @!FieldAccessExpression(167,47):ASTFieldAccessExpression {
+                              enclosingScope = @String!Scope;
+                              expression = @!CallExpression(167,45):ASTCallExpression {
+                                enclosingScope = @String!Scope;
+                                expression = @!NameExpression(167,38):ASTNameExpression {
+                                  enclosingScope = @String!Scope;
+                                  name = getText;
+                                };
+                                arguments = @!Arguments(167,45):ASTArguments {
+                                  enclosingScope = @String!Scope;
+                                };
+                              };
+                              name = length;
+                            };
+                            arguments = @!Arguments(167,54):ASTArguments {
+                              enclosingScope = @String!Scope;
+                            };
+                          };
+                          operator = -;
+                          right = @!LiteralExpression(167,59):ASTLiteralExpression {
+                            enclosingScope = @String!Scope;
+                            literal = @!NatLiteral(167,59):ASTNatLiteral {
+                              enclosingScope = @String!Scope;
+                              digits = 1;
+                            };
+                          };
+                        }];
+                    };
+                  }];
+              };
+            }];
+        };
+        type = [];
+        fragment = false;
+        comment = false;
+        name = String;
+      },
+      @StringCharacters!LexProd(169,2):ASTLexProd {
+        enclosingScope = @MCCommonLiterals!Scope;
+        alt = [// *size: 1
+          @!LexAlt(170,6):ASTLexAlt {
+            enclosingScope = @StringCharacters!Scope;
+            lexComponent = [// *size: 1
+              @!LexBlock(170,6):ASTLexBlock {
+                enclosingScope = @StringCharacters!Scope;
+                lexAlt = [// *size: 1
+                  @!LexAlt(170,7):ASTLexAlt {
+                    enclosingScope = @StringCharacters!Scope;
+                    lexComponent = [// *size: 1
+                      @StringCharacter!LexNonTerminal(170,7):ASTLexNonTerminal {
+                        enclosingScope = @StringCharacters!Scope;
+                        name = StringCharacter;
+                      }];
+                  }];
+                negate = false;
+                iteration = 13;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = StringCharacters;
+      },
+      @StringCharacter!LexProd(172,2):ASTLexProd {
+        enclosingScope = @MCCommonLiterals!Scope;
+        alt = [// *size: 2
+          @!LexAlt(173,6):ASTLexAlt {
+            enclosingScope = @StringCharacter!Scope;
+            lexComponent = [// *size: 1
+              @!LexBlock(173,6):ASTLexBlock {
+                enclosingScope = @StringCharacter!Scope;
+                lexAlt = [// *size: 2
+                  @!LexAlt(173,9):ASTLexAlt {
+                    enclosingScope = @StringCharacter!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexChar(173,9):ASTLexChar {
+                        enclosingScope = @StringCharacter!Scope;
+                        r__char = ";
+                        negate = false;
+                      }];
+                  },
+                  @!LexAlt(173,15):ASTLexAlt {
+                    enclosingScope = @StringCharacter!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexChar(173,15):ASTLexChar {
+                        enclosingScope = @StringCharacter!Scope;
+                        r__char = \\;
+                        negate = false;
+                      }];
+                  }];
+                negate = true;
+                iteration = 0;
+              }];
+          },
+          @!LexAlt(173,23):ASTLexAlt {
+            enclosingScope = @StringCharacter!Scope;
+            lexComponent = [// *size: 1
+              @EscapeSequence!LexNonTerminal(173,23):ASTLexNonTerminal {
+                enclosingScope = @StringCharacter!Scope;
+                name = EscapeSequence;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = StringCharacter;
+      },
+      @EscapeSequence!LexProd(177,2):ASTLexProd {
+        enclosingScope = @MCCommonLiterals!Scope;
+        alt = [// *size: 3
+          @!LexAlt(178,6):ASTLexAlt {
+            enclosingScope = @EscapeSequence!Scope;
+            lexComponent = [// *size: 2
+              @!LexChar(178,6):ASTLexChar {
+                enclosingScope = @EscapeSequence!Scope;
+                r__char = \\;
+                negate = false;
+              },
+              @!LexBlock(178,11):ASTLexBlock {
+                enclosingScope = @EscapeSequence!Scope;
+                lexAlt = [// *size: 8
+                  @!LexAlt(178,12):ASTLexAlt {
+                    enclosingScope = @EscapeSequence!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexChar(178,12):ASTLexChar {
+                        enclosingScope = @EscapeSequence!Scope;
+                        r__char = b;
+                        negate = false;
+                      }];
+                  },
+                  @!LexAlt(178,18):ASTLexAlt {
+                    enclosingScope = @EscapeSequence!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexChar(178,18):ASTLexChar {
+                        enclosingScope = @EscapeSequence!Scope;
+                        r__char = t;
+                        negate = false;
+                      }];
+                  },
+                  @!LexAlt(178,24):ASTLexAlt {
+                    enclosingScope = @EscapeSequence!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexChar(178,24):ASTLexChar {
+                        enclosingScope = @EscapeSequence!Scope;
+                        r__char = n;
+                        negate = false;
+                      }];
+                  },
+                  @!LexAlt(178,30):ASTLexAlt {
+                    enclosingScope = @EscapeSequence!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexChar(178,30):ASTLexChar {
+                        enclosingScope = @EscapeSequence!Scope;
+                        r__char = f;
+                        negate = false;
+                      }];
+                  },
+                  @!LexAlt(178,36):ASTLexAlt {
+                    enclosingScope = @EscapeSequence!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexChar(178,36):ASTLexChar {
+                        enclosingScope = @EscapeSequence!Scope;
+                        r__char = r;
+                        negate = false;
+                      }];
+                  },
+                  @!LexAlt(178,42):ASTLexAlt {
+                    enclosingScope = @EscapeSequence!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexChar(178,42):ASTLexChar {
+                        enclosingScope = @EscapeSequence!Scope;
+                        r__char = ";
+                        negate = false;
+                      }];
+                  },
+                  @!LexAlt(178,48):ASTLexAlt {
+                    enclosingScope = @EscapeSequence!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexChar(178,48):ASTLexChar {
+                        enclosingScope = @EscapeSequence!Scope;
+                        r__char = \';
+                        negate = false;
+                      }];
+                  },
+                  @!LexAlt(178,55):ASTLexAlt {
+                    enclosingScope = @EscapeSequence!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexChar(178,55):ASTLexChar {
+                        enclosingScope = @EscapeSequence!Scope;
+                        r__char = \\;
+                        negate = false;
+                      }];
+                  }];
+                negate = false;
+                iteration = 0;
+              }];
+          },
+          @!LexAlt(179,8):ASTLexAlt {
+            enclosingScope = @EscapeSequence!Scope;
+            lexComponent = [// *size: 1
+              @OctalEscape!LexNonTerminal(179,8):ASTLexNonTerminal {
+                enclosingScope = @EscapeSequence!Scope;
+                name = OctalEscape;
+              }];
+          },
+          @!LexAlt(179,22):ASTLexAlt {
+            enclosingScope = @EscapeSequence!Scope;
+            lexComponent = [// *size: 1
+              @UnicodeEscape!LexNonTerminal(179,22):ASTLexNonTerminal {
+                enclosingScope = @EscapeSequence!Scope;
+                name = UnicodeEscape;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = EscapeSequence;
+      },
+      @OctalEscape!LexProd(181,2):ASTLexProd {
+        enclosingScope = @MCCommonLiterals!Scope;
+        alt = [// *size: 3
+          @!LexAlt(182,6):ASTLexAlt {
+            enclosingScope = @OctalEscape!Scope;
+            lexComponent = [// *size: 2
+              @!LexChar(182,6):ASTLexChar {
+                enclosingScope = @OctalEscape!Scope;
+                r__char = \\;
+                negate = false;
+              },
+              @OctalDigit!LexNonTerminal(182,11):ASTLexNonTerminal {
+                enclosingScope = @OctalEscape!Scope;
+                name = OctalDigit;
+              }];
+          },
+          @!LexAlt(182,24):ASTLexAlt {
+            enclosingScope = @OctalEscape!Scope;
+            lexComponent = [// *size: 3
+              @!LexChar(182,24):ASTLexChar {
+                enclosingScope = @OctalEscape!Scope;
+                r__char = \\;
+                negate = false;
+              },
+              @OctalDigit!LexNonTerminal(182,29):ASTLexNonTerminal {
+                enclosingScope = @OctalEscape!Scope;
+                name = OctalDigit;
+              },
+              @OctalDigit!LexNonTerminal(182,40):ASTLexNonTerminal {
+                enclosingScope = @OctalEscape!Scope;
+                name = OctalDigit;
+              }];
+          },
+          @!LexAlt(183,8):ASTLexAlt {
+            enclosingScope = @OctalEscape!Scope;
+            lexComponent = [// *size: 4
+              @!LexChar(183,8):ASTLexChar {
+                enclosingScope = @OctalEscape!Scope;
+                r__char = \\;
+                negate = false;
+              },
+              @ZeroToThree!LexNonTerminal(183,13):ASTLexNonTerminal {
+                enclosingScope = @OctalEscape!Scope;
+                name = ZeroToThree;
+              },
+              @OctalDigit!LexNonTerminal(183,25):ASTLexNonTerminal {
+                enclosingScope = @OctalEscape!Scope;
+                name = OctalDigit;
+              },
+              @OctalDigit!LexNonTerminal(183,36):ASTLexNonTerminal {
+                enclosingScope = @OctalEscape!Scope;
+                name = OctalDigit;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = OctalEscape;
+      },
+      @UnicodeEscape!LexProd(185,2):ASTLexProd {
+        enclosingScope = @MCCommonLiterals!Scope;
+        alt = [// *size: 1
+          @!LexAlt(186,6):ASTLexAlt {
+            enclosingScope = @UnicodeEscape!Scope;
+            lexComponent = [// *size: 6
+              @!LexChar(186,6):ASTLexChar {
+                enclosingScope = @UnicodeEscape!Scope;
+                r__char = \\;
+                negate = false;
+              },
+              @!LexChar(186,11):ASTLexChar {
+                enclosingScope = @UnicodeEscape!Scope;
+                r__char = u;
+                negate = false;
+              },
+              @HexDigit!LexNonTerminal(186,15):ASTLexNonTerminal {
+                enclosingScope = @UnicodeEscape!Scope;
+                name = HexDigit;
+              },
+              @HexDigit!LexNonTerminal(186,24):ASTLexNonTerminal {
+                enclosingScope = @UnicodeEscape!Scope;
+                name = HexDigit;
+              },
+              @HexDigit!LexNonTerminal(186,33):ASTLexNonTerminal {
+                enclosingScope = @UnicodeEscape!Scope;
+                name = HexDigit;
+              },
+              @HexDigit!LexNonTerminal(186,42):ASTLexNonTerminal {
+                enclosingScope = @UnicodeEscape!Scope;
+                name = HexDigit;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = UnicodeEscape;
+      },
+      @ZeroToThree!LexProd(188,2):ASTLexProd {
+        enclosingScope = @MCCommonLiterals!Scope;
+        alt = [// *size: 1
+          @!LexAlt(189,6):ASTLexAlt {
+            enclosingScope = @ZeroToThree!Scope;
+            lexComponent = [// *size: 1
+              @!LexCharRange(189,6):ASTLexCharRange {
+                enclosingScope = @ZeroToThree!Scope;
+                lowerChar = 0;
+                upperChar = 3;
+                negate = false;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = ZeroToThree;
+      },
+      @HexDigit!LexProd(191,2):ASTLexProd {
+        enclosingScope = @MCCommonLiterals!Scope;
+        alt = [// *size: 3
+          @!LexAlt(192,6):ASTLexAlt {
+            enclosingScope = @HexDigit!Scope;
+            lexComponent = [// *size: 1
+              @!LexCharRange(192,6):ASTLexCharRange {
+                enclosingScope = @HexDigit!Scope;
+                lowerChar = 0;
+                upperChar = 9;
+                negate = false;
+              }];
+          },
+          @!LexAlt(192,18):ASTLexAlt {
+            enclosingScope = @HexDigit!Scope;
+            lexComponent = [// *size: 1
+              @!LexCharRange(192,18):ASTLexCharRange {
+                enclosingScope = @HexDigit!Scope;
+                lowerChar = a;
+                upperChar = f;
+                negate = false;
+              }];
+          },
+          @!LexAlt(192,30):ASTLexAlt {
+            enclosingScope = @HexDigit!Scope;
+            lexComponent = [// *size: 1
+              @!LexCharRange(192,30):ASTLexCharRange {
+                enclosingScope = @HexDigit!Scope;
+                lowerChar = A;
+                upperChar = F;
+                negate = false;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = HexDigit;
+      },
+      @OctalDigit!LexProd(194,2):ASTLexProd {
+        enclosingScope = @MCCommonLiterals!Scope;
+        alt = [// *size: 1
+          @!LexAlt(195,6):ASTLexAlt {
+            enclosingScope = @OctalDigit!Scope;
+            lexComponent = [// *size: 1
+              @!LexCharRange(195,6):ASTLexCharRange {
+                enclosingScope = @OctalDigit!Scope;
+                lowerChar = 0;
+                upperChar = 7;
+                negate = false;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = OctalDigit;
+      }];
+    classProds = [// *size: 12
+      @NullLiteral!ClassProd(53,2):ASTClassProd {
+        enclosingScope = @MCCommonLiterals!Scope;
+        superInterfaceRule = [// *size: 2
+          @Literal!RuleReference(53,25):ASTRuleReference {
+            enclosingScope = @NullLiteral!Scope;
+            name = Literal;
+          },
+          @SignedLiteral!RuleReference(53,34):ASTRuleReference {
+            enclosingScope = @NullLiteral!Scope;
+            name = SignedLiteral;
+          }];
+        alts = [// *size: 1
+          @!Alt(54,4):ASTAlt {
+            enclosingScope = @NullLiteral!Scope;
+            component = [// *size: 1
+              @null!Terminal(54,4):ASTTerminal {
+                enclosingScope = @NullLiteral!Scope;
+                iteration = 0;
+                name = null;
+              }];
+            rightAssoc = false;
+          }];
+        name = NullLiteral;
+      },
+      @BooleanLiteral!ClassProd(60,2):ASTClassProd {
+        enclosingScope = @MCCommonLiterals!Scope;
+        superInterfaceRule = [// *size: 2
+          @Literal!RuleReference(60,28):ASTRuleReference {
+            enclosingScope = @BooleanLiteral!Scope;
+            name = Literal;
+          },
+          @SignedLiteral!RuleReference(60,37):ASTRuleReference {
+            enclosingScope = @BooleanLiteral!Scope;
+            name = SignedLiteral;
+          }];
+        alts = [// *size: 1
+          @!Alt(61,4):ASTAlt {
+            enclosingScope = @BooleanLiteral!Scope;
+            component = [// *size: 1
+              @source!ConstantGroup(61,4):ASTConstantGroup {
+                enclosingScope = @BooleanLiteral!Scope;
+                usageName = "source";
+                constants = [// *size: 2
+                  @true!Constant(61,12):ASTConstant {
+                    enclosingScope = @BooleanLiteral!Scope;
+                    string = "true";
+                    name = true;
+                  },
+                  @false!Constant(61,21):ASTConstant {
+                    enclosingScope = @BooleanLiteral!Scope;
+                    string = "false";
+                    name = false;
+                  }];
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = BooleanLiteral;
+      },
+      @CharLiteral!ClassProd(67,2):ASTClassProd {
+        enclosingScope = @MCCommonLiterals!Scope;
+        superInterfaceRule = [// *size: 2
+          @Literal!RuleReference(67,25):ASTRuleReference {
+            enclosingScope = @CharLiteral!Scope;
+            name = Literal;
+          },
+          @SignedLiteral!RuleReference(67,34):ASTRuleReference {
+            enclosingScope = @CharLiteral!Scope;
+            name = SignedLiteral;
+          }];
+        alts = [// *size: 1
+          @!Alt(68,4):ASTAlt {
+            enclosingScope = @CharLiteral!Scope;
+            component = [// *size: 1
+              @Char!NonTerminal(68,4):ASTNonTerminal {
+                enclosingScope = @CharLiteral!Scope;
+                usageName = "source";
+                name = Char;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = CharLiteral;
+      },
+      @StringLiteral!ClassProd(75,2):ASTClassProd {
+        enclosingScope = @MCCommonLiterals!Scope;
+        superInterfaceRule = [// *size: 2
+          @Literal!RuleReference(75,27):ASTRuleReference {
+            enclosingScope = @StringLiteral!Scope;
+            name = Literal;
+          },
+          @SignedLiteral!RuleReference(75,36):ASTRuleReference {
+            enclosingScope = @StringLiteral!Scope;
+            name = SignedLiteral;
+          }];
+        alts = [// *size: 1
+          @!Alt(76,4):ASTAlt {
+            enclosingScope = @StringLiteral!Scope;
+            component = [// *size: 1
+              @String!NonTerminal(76,4):ASTNonTerminal {
+                enclosingScope = @StringLiteral!Scope;
+                usageName = "source";
+                name = String;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = StringLiteral;
+      },
+      @NatLiteral!ClassProd(82,2):ASTClassProd {
+        enclosingScope = @MCCommonLiterals!Scope;
+        superInterfaceRule = [// *size: 1
+          @NumericLiteral!RuleReference(82,24):ASTRuleReference {
+            enclosingScope = @NatLiteral!Scope;
+            name = NumericLiteral;
+            prio = "1";
+          }];
+        alts = [// *size: 1
+          @!Alt(83,4):ASTAlt {
+            enclosingScope = @NatLiteral!Scope;
+            component = [// *size: 1
+              @Digits!NonTerminal(83,4):ASTNonTerminal {
+                enclosingScope = @NatLiteral!Scope;
+                name = Digits;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = NatLiteral;
+      },
+      @SignedNatLiteral!ClassProd(88,2):ASTClassProd {
+        enclosingScope = @MCCommonLiterals!Scope;
+        superInterfaceRule = [// *size: 1
+          @SignedNumericLiteral!RuleReference(88,30):ASTRuleReference {
+            enclosingScope = @SignedNatLiteral!Scope;
+            name = SignedNumericLiteral;
+            prio = "1";
+          }];
+        alts = [// *size: 2
+          @!Alt(89,4):ASTAlt {
+            enclosingScope = @SignedNatLiteral!Scope;
+            component = [// *size: 3
+              @!SemanticpredicateOrAction(89,4):ASTSemanticpredicateOrAction {
+                enclosingScope = @SignedNatLiteral!Scope;
+                expressionPredicate = @!ExpressionPredicate(89,5):ASTExpressionPredicate {
+                  enclosingScope = @SignedNatLiteral!Scope;
+                  expression = @!CallExpression(89,12):ASTCallExpression {
+                    enclosingScope = @SignedNatLiteral!Scope;
+                    expression = @!NameExpression(89,5):ASTNameExpression {
+                      enclosingScope = @SignedNatLiteral!Scope;
+                      name = noSpace;
+                    };
+                    arguments = @!Arguments(89,12):ASTArguments {
+                      enclosingScope = @SignedNatLiteral!Scope;
+                      expressions = [// *size: 1
+                        @!LiteralExpression(89,13):ASTLiteralExpression {
+                          enclosingScope = @SignedNatLiteral!Scope;
+                          literal = @!NatLiteral(89,13):ASTNatLiteral {
+                            enclosingScope = @SignedNatLiteral!Scope;
+                            digits = 2;
+                          };
+                        }];
+                    };
+                  };
+                };
+                predicate = true;
+              },
+              @!Block(89,18):ASTBlock {
+                enclosingScope = @SignedNatLiteral!Scope;
+                alt = [// *size: 1
+                  @!Alt(89,19):ASTAlt {
+                    enclosingScope = @SignedNatLiteral!Scope;
+                    component = [// *size: 1
+                      @negative!ConstantGroup(89,19):ASTConstantGroup {
+                        enclosingScope = @SignedNatLiteral!Scope;
+                        usageName = "negative";
+                        constants = [// *size: 1
+                          @MINUS!Constant(89,29):ASTConstant {
+                            enclosingScope = @SignedNatLiteral!Scope;
+                            string = "-";
+                            name = -;
+                          }];
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 0;
+              },
+              @Digits!NonTerminal(89,35):ASTNonTerminal {
+                enclosingScope = @SignedNatLiteral!Scope;
+                name = Digits;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          },
+          @!Alt(90,35):ASTAlt {
+            enclosingScope = @SignedNatLiteral!Scope;
+            component = [// *size: 1
+              @Digits!NonTerminal(90,35):ASTNonTerminal {
+                enclosingScope = @SignedNatLiteral!Scope;
+                name = Digits;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = SignedNatLiteral;
+      },
+      @BasicLongLiteral!ClassProd(95,2):ASTClassProd {
+        enclosingScope = @MCCommonLiterals!Scope;
+        superInterfaceRule = [// *size: 1
+          @NumericLiteral!RuleReference(95,30):ASTRuleReference {
+            enclosingScope = @BasicLongLiteral!Scope;
+            name = NumericLiteral;
+            prio = "1";
+          }];
+        alts = [// *size: 1
+          @!Alt(96,4):ASTAlt {
+            enclosingScope = @BasicLongLiteral!Scope;
+            component = [// *size: 3
+              @!SemanticpredicateOrAction(96,4):ASTSemanticpredicateOrAction {
+                enclosingScope = @BasicLongLiteral!Scope;
+                expressionPredicate = @!ExpressionPredicate(96,6):ASTExpressionPredicate {
+                  enclosingScope = @BasicLongLiteral!Scope;
+                  expression = @!BooleanAndOpExpression(96,26):ASTBooleanAndOpExpression {
+                    enclosingScope = @BasicLongLiteral!Scope;
+                    left = @!CallExpression(96,14):ASTCallExpression {
+                      enclosingScope = @BasicLongLiteral!Scope;
+                      expression = @!NameExpression(96,6):ASTNameExpression {
+                        enclosingScope = @BasicLongLiteral!Scope;
+                        name = cmpToken;
+                      };
+                      arguments = @!Arguments(96,14):ASTArguments {
+                        enclosingScope = @BasicLongLiteral!Scope;
+                        expressions = [// *size: 3
+                          @!LiteralExpression(96,15):ASTLiteralExpression {
+                            enclosingScope = @BasicLongLiteral!Scope;
+                            literal = @!NatLiteral(96,15):ASTNatLiteral {
+                              enclosingScope = @BasicLongLiteral!Scope;
+                              digits = 2;
+                            };
+                          },
+                          @!LiteralExpression(96,17):ASTLiteralExpression {
+                            enclosingScope = @BasicLongLiteral!Scope;
+                            literal = @!StringLiteral(96,17):ASTStringLiteral {
+                              enclosingScope = @BasicLongLiteral!Scope;
+                              source = l;
+                            };
+                          },
+                          @!LiteralExpression(96,21):ASTLiteralExpression {
+                            enclosingScope = @BasicLongLiteral!Scope;
+                            literal = @!StringLiteral(96,21):ASTStringLiteral {
+                              enclosingScope = @BasicLongLiteral!Scope;
+                              source = L;
+                            };
+                          }];
+                      };
+                    };
+                    operator = &&;
+                    right = @!CallExpression(96,36):ASTCallExpression {
+                      enclosingScope = @BasicLongLiteral!Scope;
+                      expression = @!NameExpression(96,29):ASTNameExpression {
+                        enclosingScope = @BasicLongLiteral!Scope;
+                        name = noSpace;
+                      };
+                      arguments = @!Arguments(96,36):ASTArguments {
+                        enclosingScope = @BasicLongLiteral!Scope;
+                        expressions = [// *size: 1
+                          @!LiteralExpression(96,37):ASTLiteralExpression {
+                            enclosingScope = @BasicLongLiteral!Scope;
+                            literal = @!NatLiteral(96,37):ASTNatLiteral {
+                              enclosingScope = @BasicLongLiteral!Scope;
+                              digits = 2;
+                            };
+                          }];
+                      };
+                    };
+                  };
+                };
+                predicate = true;
+              },
+              @Digits!NonTerminal(96,43):ASTNonTerminal {
+                enclosingScope = @BasicLongLiteral!Scope;
+                name = Digits;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @l!KeyTerminal(96,50):ASTKeyTerminal {
+                enclosingScope = @BasicLongLiteral!Scope;
+                keyConstant = @!KeyConstant(96,50):ASTKeyConstant {
+                  enclosingScope = @BasicLongLiteral!Scope;
+                  strings = [l, L];
+                };
+                iteration = 0;
+                name = l;
+              }];
+            rightAssoc = false;
+          }];
+        name = BasicLongLiteral;
+      },
+      @SignedBasicLongLiteral!ClassProd(101,2):ASTClassProd {
+        enclosingScope = @MCCommonLiterals!Scope;
+        superInterfaceRule = [// *size: 1
+          @SignedNumericLiteral!RuleReference(101,36):ASTRuleReference {
+            enclosingScope = @SignedBasicLongLiteral!Scope;
+            name = SignedNumericLiteral;
+            prio = "1";
+          }];
+        alts = [// *size: 2
+          @!Alt(102,4):ASTAlt {
+            enclosingScope = @SignedBasicLongLiteral!Scope;
+            component = [// *size: 4
+              @!SemanticpredicateOrAction(102,4):ASTSemanticpredicateOrAction {
+                enclosingScope = @SignedBasicLongLiteral!Scope;
+                expressionPredicate = @!ExpressionPredicate(102,6):ASTExpressionPredicate {
+                  enclosingScope = @SignedBasicLongLiteral!Scope;
+                  expression = @!BooleanAndOpExpression(102,26):ASTBooleanAndOpExpression {
+                    enclosingScope = @SignedBasicLongLiteral!Scope;
+                    left = @!CallExpression(102,14):ASTCallExpression {
+                      enclosingScope = @SignedBasicLongLiteral!Scope;
+                      expression = @!NameExpression(102,6):ASTNameExpression {
+                        enclosingScope = @SignedBasicLongLiteral!Scope;
+                        name = cmpToken;
+                      };
+                      arguments = @!Arguments(102,14):ASTArguments {
+                        enclosingScope = @SignedBasicLongLiteral!Scope;
+                        expressions = [// *size: 3
+                          @!LiteralExpression(102,15):ASTLiteralExpression {
+                            enclosingScope = @SignedBasicLongLiteral!Scope;
+                            literal = @!NatLiteral(102,15):ASTNatLiteral {
+                              enclosingScope = @SignedBasicLongLiteral!Scope;
+                              digits = 3;
+                            };
+                          },
+                          @!LiteralExpression(102,17):ASTLiteralExpression {
+                            enclosingScope = @SignedBasicLongLiteral!Scope;
+                            literal = @!StringLiteral(102,17):ASTStringLiteral {
+                              enclosingScope = @SignedBasicLongLiteral!Scope;
+                              source = l;
+                            };
+                          },
+                          @!LiteralExpression(102,21):ASTLiteralExpression {
+                            enclosingScope = @SignedBasicLongLiteral!Scope;
+                            literal = @!StringLiteral(102,21):ASTStringLiteral {
+                              enclosingScope = @SignedBasicLongLiteral!Scope;
+                              source = L;
+                            };
+                          }];
+                      };
+                    };
+                    operator = &&;
+                    right = @!CallExpression(102,36):ASTCallExpression {
+                      enclosingScope = @SignedBasicLongLiteral!Scope;
+                      expression = @!NameExpression(102,29):ASTNameExpression {
+                        enclosingScope = @SignedBasicLongLiteral!Scope;
+                        name = noSpace;
+                      };
+                      arguments = @!Arguments(102,36):ASTArguments {
+                        enclosingScope = @SignedBasicLongLiteral!Scope;
+                        expressions = [// *size: 2
+                          @!LiteralExpression(102,37):ASTLiteralExpression {
+                            enclosingScope = @SignedBasicLongLiteral!Scope;
+                            literal = @!NatLiteral(102,37):ASTNatLiteral {
+                              enclosingScope = @SignedBasicLongLiteral!Scope;
+                              digits = 2;
+                            };
+                          },
+                          @!LiteralExpression(102,39):ASTLiteralExpression {
+                            enclosingScope = @SignedBasicLongLiteral!Scope;
+                            literal = @!NatLiteral(102,39):ASTNatLiteral {
+                              enclosingScope = @SignedBasicLongLiteral!Scope;
+                              digits = 3;
+                            };
+                          }];
+                      };
+                    };
+                  };
+                };
+                predicate = true;
+              },
+              @negative!ConstantGroup(103,6):ASTConstantGroup {
+                enclosingScope = @SignedBasicLongLiteral!Scope;
+                usageName = "negative";
+                constants = [// *size: 1
+                  @MINUS!Constant(103,16):ASTConstant {
+                    enclosingScope = @SignedBasicLongLiteral!Scope;
+                    string = "-";
+                    name = -;
+                  }];
+                iteration = 0;
+              },
+              @Digits!NonTerminal(103,21):ASTNonTerminal {
+                enclosingScope = @SignedBasicLongLiteral!Scope;
+                name = Digits;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @l!KeyTerminal(103,28):ASTKeyTerminal {
+                enclosingScope = @SignedBasicLongLiteral!Scope;
+                keyConstant = @!KeyConstant(103,28):ASTKeyConstant {
+                  enclosingScope = @SignedBasicLongLiteral!Scope;
+                  strings = [l, L];
+                };
+                iteration = 0;
+                name = l;
+              }];
+            rightAssoc = false;
+          },
+          @!Alt(105,4):ASTAlt {
+            enclosingScope = @SignedBasicLongLiteral!Scope;
+            component = [// *size: 3
+              @!SemanticpredicateOrAction(105,4):ASTSemanticpredicateOrAction {
+                enclosingScope = @SignedBasicLongLiteral!Scope;
+                expressionPredicate = @!ExpressionPredicate(105,6):ASTExpressionPredicate {
+                  enclosingScope = @SignedBasicLongLiteral!Scope;
+                  expression = @!BooleanAndOpExpression(105,26):ASTBooleanAndOpExpression {
+                    enclosingScope = @SignedBasicLongLiteral!Scope;
+                    left = @!CallExpression(105,14):ASTCallExpression {
+                      enclosingScope = @SignedBasicLongLiteral!Scope;
+                      expression = @!NameExpression(105,6):ASTNameExpression {
+                        enclosingScope = @SignedBasicLongLiteral!Scope;
+                        name = cmpToken;
+                      };
+                      arguments = @!Arguments(105,14):ASTArguments {
+                        enclosingScope = @SignedBasicLongLiteral!Scope;
+                        expressions = [// *size: 3
+                          @!LiteralExpression(105,15):ASTLiteralExpression {
+                            enclosingScope = @SignedBasicLongLiteral!Scope;
+                            literal = @!NatLiteral(105,15):ASTNatLiteral {
+                              enclosingScope = @SignedBasicLongLiteral!Scope;
+                              digits = 2;
+                            };
+                          },
+                          @!LiteralExpression(105,17):ASTLiteralExpression {
+                            enclosingScope = @SignedBasicLongLiteral!Scope;
+                            literal = @!StringLiteral(105,17):ASTStringLiteral {
+                              enclosingScope = @SignedBasicLongLiteral!Scope;
+                              source = l;
+                            };
+                          },
+                          @!LiteralExpression(105,21):ASTLiteralExpression {
+                            enclosingScope = @SignedBasicLongLiteral!Scope;
+                            literal = @!StringLiteral(105,21):ASTStringLiteral {
+                              enclosingScope = @SignedBasicLongLiteral!Scope;
+                              source = L;
+                            };
+                          }];
+                      };
+                    };
+                    operator = &&;
+                    right = @!CallExpression(105,36):ASTCallExpression {
+                      enclosingScope = @SignedBasicLongLiteral!Scope;
+                      expression = @!NameExpression(105,29):ASTNameExpression {
+                        enclosingScope = @SignedBasicLongLiteral!Scope;
+                        name = noSpace;
+                      };
+                      arguments = @!Arguments(105,36):ASTArguments {
+                        enclosingScope = @SignedBasicLongLiteral!Scope;
+                        expressions = [// *size: 1
+                          @!LiteralExpression(105,37):ASTLiteralExpression {
+                            enclosingScope = @SignedBasicLongLiteral!Scope;
+                            literal = @!NatLiteral(105,37):ASTNatLiteral {
+                              enclosingScope = @SignedBasicLongLiteral!Scope;
+                              digits = 2;
+                            };
+                          }];
+                      };
+                    };
+                  };
+                };
+                predicate = true;
+              },
+              @Digits!NonTerminal(106,21):ASTNonTerminal {
+                enclosingScope = @SignedBasicLongLiteral!Scope;
+                name = Digits;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @l!KeyTerminal(106,28):ASTKeyTerminal {
+                enclosingScope = @SignedBasicLongLiteral!Scope;
+                keyConstant = @!KeyConstant(106,28):ASTKeyConstant {
+                  enclosingScope = @SignedBasicLongLiteral!Scope;
+                  strings = [l, L];
+                };
+                iteration = 0;
+                name = l;
+              }];
+            rightAssoc = false;
+          }];
+        name = SignedBasicLongLiteral;
+      },
+      @BasicFloatLiteral!ClassProd(111,2):ASTClassProd {
+        enclosingScope = @MCCommonLiterals!Scope;
+        superInterfaceRule = [// *size: 1
+          @NumericLiteral!RuleReference(111,31):ASTRuleReference {
+            enclosingScope = @BasicFloatLiteral!Scope;
+            name = NumericLiteral;
+            prio = "1";
+          }];
+        alts = [// *size: 1
+          @!Alt(112,4):ASTAlt {
+            enclosingScope = @BasicFloatLiteral!Scope;
+            component = [// *size: 5
+              @!SemanticpredicateOrAction(112,4):ASTSemanticpredicateOrAction {
+                enclosingScope = @BasicFloatLiteral!Scope;
+                expressionPredicate = @!ExpressionPredicate(112,6):ASTExpressionPredicate {
+                  enclosingScope = @BasicFloatLiteral!Scope;
+                  expression = @!BooleanAndOpExpression(112,26):ASTBooleanAndOpExpression {
+                    enclosingScope = @BasicFloatLiteral!Scope;
+                    left = @!CallExpression(112,14):ASTCallExpression {
+                      enclosingScope = @BasicFloatLiteral!Scope;
+                      expression = @!NameExpression(112,6):ASTNameExpression {
+                        enclosingScope = @BasicFloatLiteral!Scope;
+                        name = cmpToken;
+                      };
+                      arguments = @!Arguments(112,14):ASTArguments {
+                        enclosingScope = @BasicFloatLiteral!Scope;
+                        expressions = [// *size: 3
+                          @!LiteralExpression(112,15):ASTLiteralExpression {
+                            enclosingScope = @BasicFloatLiteral!Scope;
+                            literal = @!NatLiteral(112,15):ASTNatLiteral {
+                              enclosingScope = @BasicFloatLiteral!Scope;
+                              digits = 4;
+                            };
+                          },
+                          @!LiteralExpression(112,17):ASTLiteralExpression {
+                            enclosingScope = @BasicFloatLiteral!Scope;
+                            literal = @!StringLiteral(112,17):ASTStringLiteral {
+                              enclosingScope = @BasicFloatLiteral!Scope;
+                              source = f;
+                            };
+                          },
+                          @!LiteralExpression(112,21):ASTLiteralExpression {
+                            enclosingScope = @BasicFloatLiteral!Scope;
+                            literal = @!StringLiteral(112,21):ASTStringLiteral {
+                              enclosingScope = @BasicFloatLiteral!Scope;
+                              source = F;
+                            };
+                          }];
+                      };
+                    };
+                    operator = &&;
+                    right = @!CallExpression(112,36):ASTCallExpression {
+                      enclosingScope = @BasicFloatLiteral!Scope;
+                      expression = @!NameExpression(112,29):ASTNameExpression {
+                        enclosingScope = @BasicFloatLiteral!Scope;
+                        name = noSpace;
+                      };
+                      arguments = @!Arguments(112,36):ASTArguments {
+                        enclosingScope = @BasicFloatLiteral!Scope;
+                        expressions = [// *size: 3
+                          @!LiteralExpression(112,37):ASTLiteralExpression {
+                            enclosingScope = @BasicFloatLiteral!Scope;
+                            literal = @!NatLiteral(112,37):ASTNatLiteral {
+                              enclosingScope = @BasicFloatLiteral!Scope;
+                              digits = 2;
+                            };
+                          },
+                          @!LiteralExpression(112,39):ASTLiteralExpression {
+                            enclosingScope = @BasicFloatLiteral!Scope;
+                            literal = @!NatLiteral(112,39):ASTNatLiteral {
+                              enclosingScope = @BasicFloatLiteral!Scope;
+                              digits = 3;
+                            };
+                          },
+                          @!LiteralExpression(112,41):ASTLiteralExpression {
+                            enclosingScope = @BasicFloatLiteral!Scope;
+                            literal = @!NatLiteral(112,41):ASTNatLiteral {
+                              enclosingScope = @BasicFloatLiteral!Scope;
+                              digits = 4;
+                            };
+                          }];
+                      };
+                    };
+                  };
+                };
+                predicate = true;
+              },
+              @Digits!NonTerminal(113,6):ASTNonTerminal {
+                enclosingScope = @BasicFloatLiteral!Scope;
+                usageName = "pre";
+                name = Digits;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @POINT!Terminal(113,17):ASTTerminal {
+                enclosingScope = @BasicFloatLiteral!Scope;
+                iteration = 0;
+                name = .;
+              },
+              @Digits!NonTerminal(113,21):ASTNonTerminal {
+                enclosingScope = @BasicFloatLiteral!Scope;
+                usageName = "post";
+                name = Digits;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @f!KeyTerminal(113,33):ASTKeyTerminal {
+                enclosingScope = @BasicFloatLiteral!Scope;
+                keyConstant = @!KeyConstant(113,33):ASTKeyConstant {
+                  enclosingScope = @BasicFloatLiteral!Scope;
+                  strings = [f, F];
+                };
+                iteration = 0;
+                name = f;
+              }];
+            rightAssoc = false;
+          }];
+        name = BasicFloatLiteral;
+      },
+      @SignedBasicFloatLiteral!ClassProd(118,2):ASTClassProd {
+        enclosingScope = @MCCommonLiterals!Scope;
+        superInterfaceRule = [// *size: 1
+          @SignedNumericLiteral!RuleReference(118,37):ASTRuleReference {
+            enclosingScope = @SignedBasicFloatLiteral!Scope;
+            name = SignedNumericLiteral;
+            prio = "1";
+          }];
+        alts = [// *size: 2
+          @!Alt(119,4):ASTAlt {
+            enclosingScope = @SignedBasicFloatLiteral!Scope;
+            component = [// *size: 6
+              @!SemanticpredicateOrAction(119,4):ASTSemanticpredicateOrAction {
+                enclosingScope = @SignedBasicFloatLiteral!Scope;
+                expressionPredicate = @!ExpressionPredicate(119,6):ASTExpressionPredicate {
+                  enclosingScope = @SignedBasicFloatLiteral!Scope;
+                  expression = @!BooleanAndOpExpression(119,26):ASTBooleanAndOpExpression {
+                    enclosingScope = @SignedBasicFloatLiteral!Scope;
+                    left = @!CallExpression(119,14):ASTCallExpression {
+                      enclosingScope = @SignedBasicFloatLiteral!Scope;
+                      expression = @!NameExpression(119,6):ASTNameExpression {
+                        enclosingScope = @SignedBasicFloatLiteral!Scope;
+                        name = cmpToken;
+                      };
+                      arguments = @!Arguments(119,14):ASTArguments {
+                        enclosingScope = @SignedBasicFloatLiteral!Scope;
+                        expressions = [// *size: 3
+                          @!LiteralExpression(119,15):ASTLiteralExpression {
+                            enclosingScope = @SignedBasicFloatLiteral!Scope;
+                            literal = @!NatLiteral(119,15):ASTNatLiteral {
+                              enclosingScope = @SignedBasicFloatLiteral!Scope;
+                              digits = 5;
+                            };
+                          },
+                          @!LiteralExpression(119,17):ASTLiteralExpression {
+                            enclosingScope = @SignedBasicFloatLiteral!Scope;
+                            literal = @!StringLiteral(119,17):ASTStringLiteral {
+                              enclosingScope = @SignedBasicFloatLiteral!Scope;
+                              source = f;
+                            };
+                          },
+                          @!LiteralExpression(119,21):ASTLiteralExpression {
+                            enclosingScope = @SignedBasicFloatLiteral!Scope;
+                            literal = @!StringLiteral(119,21):ASTStringLiteral {
+                              enclosingScope = @SignedBasicFloatLiteral!Scope;
+                              source = F;
+                            };
+                          }];
+                      };
+                    };
+                    operator = &&;
+                    right = @!CallExpression(119,36):ASTCallExpression {
+                      enclosingScope = @SignedBasicFloatLiteral!Scope;
+                      expression = @!NameExpression(119,29):ASTNameExpression {
+                        enclosingScope = @SignedBasicFloatLiteral!Scope;
+                        name = noSpace;
+                      };
+                      arguments = @!Arguments(119,36):ASTArguments {
+                        enclosingScope = @SignedBasicFloatLiteral!Scope;
+                        expressions = [// *size: 4
+                          @!LiteralExpression(119,37):ASTLiteralExpression {
+                            enclosingScope = @SignedBasicFloatLiteral!Scope;
+                            literal = @!NatLiteral(119,37):ASTNatLiteral {
+                              enclosingScope = @SignedBasicFloatLiteral!Scope;
+                              digits = 2;
+                            };
+                          },
+                          @!LiteralExpression(119,39):ASTLiteralExpression {
+                            enclosingScope = @SignedBasicFloatLiteral!Scope;
+                            literal = @!NatLiteral(119,39):ASTNatLiteral {
+                              enclosingScope = @SignedBasicFloatLiteral!Scope;
+                              digits = 3;
+                            };
+                          },
+                          @!LiteralExpression(119,41):ASTLiteralExpression {
+                            enclosingScope = @SignedBasicFloatLiteral!Scope;
+                            literal = @!NatLiteral(119,41):ASTNatLiteral {
+                              enclosingScope = @SignedBasicFloatLiteral!Scope;
+                              digits = 4;
+                            };
+                          },
+                          @!LiteralExpression(119,43):ASTLiteralExpression {
+                            enclosingScope = @SignedBasicFloatLiteral!Scope;
+                            literal = @!NatLiteral(119,43):ASTNatLiteral {
+                              enclosingScope = @SignedBasicFloatLiteral!Scope;
+                              digits = 5;
+                            };
+                          }];
+                      };
+                    };
+                  };
+                };
+                predicate = true;
+              },
+              @negative!ConstantGroup(120,6):ASTConstantGroup {
+                enclosingScope = @SignedBasicFloatLiteral!Scope;
+                usageName = "negative";
+                constants = [// *size: 1
+                  @MINUS!Constant(120,16):ASTConstant {
+                    enclosingScope = @SignedBasicFloatLiteral!Scope;
+                    string = "-";
+                    name = -;
+                  }];
+                iteration = 0;
+              },
+              @Digits!NonTerminal(120,21):ASTNonTerminal {
+                enclosingScope = @SignedBasicFloatLiteral!Scope;
+                usageName = "pre";
+                name = Digits;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @POINT!Terminal(120,32):ASTTerminal {
+                enclosingScope = @SignedBasicFloatLiteral!Scope;
+                iteration = 0;
+                name = .;
+              },
+              @Digits!NonTerminal(120,36):ASTNonTerminal {
+                enclosingScope = @SignedBasicFloatLiteral!Scope;
+                usageName = "post";
+                name = Digits;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @f!KeyTerminal(120,48):ASTKeyTerminal {
+                enclosingScope = @SignedBasicFloatLiteral!Scope;
+                keyConstant = @!KeyConstant(120,48):ASTKeyConstant {
+                  enclosingScope = @SignedBasicFloatLiteral!Scope;
+                  strings = [f, F];
+                };
+                iteration = 0;
+                name = f;
+              }];
+            rightAssoc = false;
+          },
+          @!Alt(121,4):ASTAlt {
+            enclosingScope = @SignedBasicFloatLiteral!Scope;
+            component = [// *size: 5
+              @!SemanticpredicateOrAction(121,4):ASTSemanticpredicateOrAction {
+                enclosingScope = @SignedBasicFloatLiteral!Scope;
+                expressionPredicate = @!ExpressionPredicate(121,6):ASTExpressionPredicate {
+                  enclosingScope = @SignedBasicFloatLiteral!Scope;
+                  expression = @!BooleanAndOpExpression(121,26):ASTBooleanAndOpExpression {
+                    enclosingScope = @SignedBasicFloatLiteral!Scope;
+                    left = @!CallExpression(121,14):ASTCallExpression {
+                      enclosingScope = @SignedBasicFloatLiteral!Scope;
+                      expression = @!NameExpression(121,6):ASTNameExpression {
+                        enclosingScope = @SignedBasicFloatLiteral!Scope;
+                        name = cmpToken;
+                      };
+                      arguments = @!Arguments(121,14):ASTArguments {
+                        enclosingScope = @SignedBasicFloatLiteral!Scope;
+                        expressions = [// *size: 3
+                          @!LiteralExpression(121,15):ASTLiteralExpression {
+                            enclosingScope = @SignedBasicFloatLiteral!Scope;
+                            literal = @!NatLiteral(121,15):ASTNatLiteral {
+                              enclosingScope = @SignedBasicFloatLiteral!Scope;
+                              digits = 4;
+                            };
+                          },
+                          @!LiteralExpression(121,17):ASTLiteralExpression {
+                            enclosingScope = @SignedBasicFloatLiteral!Scope;
+                            literal = @!StringLiteral(121,17):ASTStringLiteral {
+                              enclosingScope = @SignedBasicFloatLiteral!Scope;
+                              source = f;
+                            };
+                          },
+                          @!LiteralExpression(121,21):ASTLiteralExpression {
+                            enclosingScope = @SignedBasicFloatLiteral!Scope;
+                            literal = @!StringLiteral(121,21):ASTStringLiteral {
+                              enclosingScope = @SignedBasicFloatLiteral!Scope;
+                              source = F;
+                            };
+                          }];
+                      };
+                    };
+                    operator = &&;
+                    right = @!CallExpression(121,36):ASTCallExpression {
+                      enclosingScope = @SignedBasicFloatLiteral!Scope;
+                      expression = @!NameExpression(121,29):ASTNameExpression {
+                        enclosingScope = @SignedBasicFloatLiteral!Scope;
+                        name = noSpace;
+                      };
+                      arguments = @!Arguments(121,36):ASTArguments {
+                        enclosingScope = @SignedBasicFloatLiteral!Scope;
+                        expressions = [// *size: 3
+                          @!LiteralExpression(121,37):ASTLiteralExpression {
+                            enclosingScope = @SignedBasicFloatLiteral!Scope;
+                            literal = @!NatLiteral(121,37):ASTNatLiteral {
+                              enclosingScope = @SignedBasicFloatLiteral!Scope;
+                              digits = 2;
+                            };
+                          },
+                          @!LiteralExpression(121,39):ASTLiteralExpression {
+                            enclosingScope = @SignedBasicFloatLiteral!Scope;
+                            literal = @!NatLiteral(121,39):ASTNatLiteral {
+                              enclosingScope = @SignedBasicFloatLiteral!Scope;
+                              digits = 3;
+                            };
+                          },
+                          @!LiteralExpression(121,41):ASTLiteralExpression {
+                            enclosingScope = @SignedBasicFloatLiteral!Scope;
+                            literal = @!NatLiteral(121,41):ASTNatLiteral {
+                              enclosingScope = @SignedBasicFloatLiteral!Scope;
+                              digits = 4;
+                            };
+                          }];
+                      };
+                    };
+                  };
+                };
+                predicate = true;
+              },
+              @Digits!NonTerminal(122,6):ASTNonTerminal {
+                enclosingScope = @SignedBasicFloatLiteral!Scope;
+                usageName = "pre";
+                name = Digits;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @POINT!Terminal(122,17):ASTTerminal {
+                enclosingScope = @SignedBasicFloatLiteral!Scope;
+                iteration = 0;
+                name = .;
+              },
+              @Digits!NonTerminal(122,21):ASTNonTerminal {
+                enclosingScope = @SignedBasicFloatLiteral!Scope;
+                usageName = "post";
+                name = Digits;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @f!KeyTerminal(122,33):ASTKeyTerminal {
+                enclosingScope = @SignedBasicFloatLiteral!Scope;
+                keyConstant = @!KeyConstant(122,33):ASTKeyConstant {
+                  enclosingScope = @SignedBasicFloatLiteral!Scope;
+                  strings = [f, F];
+                };
+                iteration = 0;
+                name = f;
+              }];
+            rightAssoc = false;
+          }];
+        name = SignedBasicFloatLiteral;
+      },
+      @BasicDoubleLiteral!ClassProd(127,2):ASTClassProd {
+        enclosingScope = @MCCommonLiterals!Scope;
+        superInterfaceRule = [// *size: 1
+          @NumericLiteral!RuleReference(127,32):ASTRuleReference {
+            enclosingScope = @BasicDoubleLiteral!Scope;
+            name = NumericLiteral;
+            prio = "1";
+          }];
+        alts = [// *size: 1
+          @!Alt(128,4):ASTAlt {
+            enclosingScope = @BasicDoubleLiteral!Scope;
+            component = [// *size: 4
+              @!SemanticpredicateOrAction(128,4):ASTSemanticpredicateOrAction {
+                enclosingScope = @BasicDoubleLiteral!Scope;
+                expressionPredicate = @!ExpressionPredicate(128,6):ASTExpressionPredicate {
+                  enclosingScope = @BasicDoubleLiteral!Scope;
+                  expression = @!CallExpression(128,13):ASTCallExpression {
+                    enclosingScope = @BasicDoubleLiteral!Scope;
+                    expression = @!NameExpression(128,6):ASTNameExpression {
+                      enclosingScope = @BasicDoubleLiteral!Scope;
+                      name = noSpace;
+                    };
+                    arguments = @!Arguments(128,13):ASTArguments {
+                      enclosingScope = @BasicDoubleLiteral!Scope;
+                      expressions = [// *size: 2
+                        @!LiteralExpression(128,14):ASTLiteralExpression {
+                          enclosingScope = @BasicDoubleLiteral!Scope;
+                          literal = @!NatLiteral(128,14):ASTNatLiteral {
+                            enclosingScope = @BasicDoubleLiteral!Scope;
+                            digits = 2;
+                          };
+                        },
+                        @!LiteralExpression(128,16):ASTLiteralExpression {
+                          enclosingScope = @BasicDoubleLiteral!Scope;
+                          literal = @!NatLiteral(128,16):ASTNatLiteral {
+                            enclosingScope = @BasicDoubleLiteral!Scope;
+                            digits = 3;
+                          };
+                        }];
+                    };
+                  };
+                };
+                predicate = true;
+              },
+              @Digits!NonTerminal(128,22):ASTNonTerminal {
+                enclosingScope = @BasicDoubleLiteral!Scope;
+                usageName = "pre";
+                name = Digits;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @POINT!Terminal(128,33):ASTTerminal {
+                enclosingScope = @BasicDoubleLiteral!Scope;
+                iteration = 0;
+                name = .;
+              },
+              @Digits!NonTerminal(128,37):ASTNonTerminal {
+                enclosingScope = @BasicDoubleLiteral!Scope;
+                usageName = "post";
+                name = Digits;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = BasicDoubleLiteral;
+      },
+      @SignedBasicDoubleLiteral!ClassProd(133,2):ASTClassProd {
+        enclosingScope = @MCCommonLiterals!Scope;
+        superInterfaceRule = [// *size: 1
+          @SignedNumericLiteral!RuleReference(133,38):ASTRuleReference {
+            enclosingScope = @SignedBasicDoubleLiteral!Scope;
+            name = SignedNumericLiteral;
+            prio = "1";
+          }];
+        alts = [// *size: 2
+          @!Alt(134,4):ASTAlt {
+            enclosingScope = @SignedBasicDoubleLiteral!Scope;
+            component = [// *size: 5
+              @!SemanticpredicateOrAction(134,4):ASTSemanticpredicateOrAction {
+                enclosingScope = @SignedBasicDoubleLiteral!Scope;
+                expressionPredicate = @!ExpressionPredicate(134,6):ASTExpressionPredicate {
+                  enclosingScope = @SignedBasicDoubleLiteral!Scope;
+                  expression = @!CallExpression(134,13):ASTCallExpression {
+                    enclosingScope = @SignedBasicDoubleLiteral!Scope;
+                    expression = @!NameExpression(134,6):ASTNameExpression {
+                      enclosingScope = @SignedBasicDoubleLiteral!Scope;
+                      name = noSpace;
+                    };
+                    arguments = @!Arguments(134,13):ASTArguments {
+                      enclosingScope = @SignedBasicDoubleLiteral!Scope;
+                      expressions = [// *size: 3
+                        @!LiteralExpression(134,14):ASTLiteralExpression {
+                          enclosingScope = @SignedBasicDoubleLiteral!Scope;
+                          literal = @!NatLiteral(134,14):ASTNatLiteral {
+                            enclosingScope = @SignedBasicDoubleLiteral!Scope;
+                            digits = 2;
+                          };
+                        },
+                        @!LiteralExpression(134,16):ASTLiteralExpression {
+                          enclosingScope = @SignedBasicDoubleLiteral!Scope;
+                          literal = @!NatLiteral(134,16):ASTNatLiteral {
+                            enclosingScope = @SignedBasicDoubleLiteral!Scope;
+                            digits = 3;
+                          };
+                        },
+                        @!LiteralExpression(134,18):ASTLiteralExpression {
+                          enclosingScope = @SignedBasicDoubleLiteral!Scope;
+                          literal = @!NatLiteral(134,18):ASTNatLiteral {
+                            enclosingScope = @SignedBasicDoubleLiteral!Scope;
+                            digits = 4;
+                          };
+                        }];
+                    };
+                  };
+                };
+                predicate = true;
+              },
+              @negative!ConstantGroup(134,24):ASTConstantGroup {
+                enclosingScope = @SignedBasicDoubleLiteral!Scope;
+                usageName = "negative";
+                constants = [// *size: 1
+                  @MINUS!Constant(134,34):ASTConstant {
+                    enclosingScope = @SignedBasicDoubleLiteral!Scope;
+                    string = "-";
+                    name = -;
+                  }];
+                iteration = 0;
+              },
+              @Digits!NonTerminal(134,39):ASTNonTerminal {
+                enclosingScope = @SignedBasicDoubleLiteral!Scope;
+                usageName = "pre";
+                name = Digits;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @POINT!Terminal(134,50):ASTTerminal {
+                enclosingScope = @SignedBasicDoubleLiteral!Scope;
+                iteration = 0;
+                name = .;
+              },
+              @Digits!NonTerminal(134,54):ASTNonTerminal {
+                enclosingScope = @SignedBasicDoubleLiteral!Scope;
+                usageName = "post";
+                name = Digits;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          },
+          @!Alt(135,4):ASTAlt {
+            enclosingScope = @SignedBasicDoubleLiteral!Scope;
+            component = [// *size: 4
+              @!SemanticpredicateOrAction(135,4):ASTSemanticpredicateOrAction {
+                enclosingScope = @SignedBasicDoubleLiteral!Scope;
+                expressionPredicate = @!ExpressionPredicate(135,6):ASTExpressionPredicate {
+                  enclosingScope = @SignedBasicDoubleLiteral!Scope;
+                  expression = @!CallExpression(135,13):ASTCallExpression {
+                    enclosingScope = @SignedBasicDoubleLiteral!Scope;
+                    expression = @!NameExpression(135,6):ASTNameExpression {
+                      enclosingScope = @SignedBasicDoubleLiteral!Scope;
+                      name = noSpace;
+                    };
+                    arguments = @!Arguments(135,13):ASTArguments {
+                      enclosingScope = @SignedBasicDoubleLiteral!Scope;
+                      expressions = [// *size: 2
+                        @!LiteralExpression(135,14):ASTLiteralExpression {
+                          enclosingScope = @SignedBasicDoubleLiteral!Scope;
+                          literal = @!NatLiteral(135,14):ASTNatLiteral {
+                            enclosingScope = @SignedBasicDoubleLiteral!Scope;
+                            digits = 2;
+                          };
+                        },
+                        @!LiteralExpression(135,16):ASTLiteralExpression {
+                          enclosingScope = @SignedBasicDoubleLiteral!Scope;
+                          literal = @!NatLiteral(135,16):ASTNatLiteral {
+                            enclosingScope = @SignedBasicDoubleLiteral!Scope;
+                            digits = 3;
+                          };
+                        }];
+                    };
+                  };
+                };
+                predicate = true;
+              },
+              @Digits!NonTerminal(135,39):ASTNonTerminal {
+                enclosingScope = @SignedBasicDoubleLiteral!Scope;
+                usageName = "pre";
+                name = Digits;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @POINT!Terminal(135,50):ASTTerminal {
+                enclosingScope = @SignedBasicDoubleLiteral!Scope;
+                iteration = 0;
+                name = .;
+              },
+              @Digits!NonTerminal(135,54):ASTNonTerminal {
+                enclosingScope = @SignedBasicDoubleLiteral!Scope;
+                usageName = "post";
+                name = Digits;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = SignedBasicDoubleLiteral;
+      }];
+    interfaceProds = [// *size: 3
+      @SignedLiteral!InterfaceProd(31,2):ASTInterfaceProd {
+        enclosingScope = @MCCommonLiterals!Scope;
+        name = SignedLiteral;
+      },
+      @NumericLiteral!InterfaceProd(37,2):ASTInterfaceProd {
+        enclosingScope = @MCCommonLiterals!Scope;
+        superInterfaceRule = [// *size: 1
+          @Literal!RuleReference(37,35):ASTRuleReference {
+            enclosingScope = @NumericLiteral!Scope;
+            name = Literal;
+            prio = "100";
+          }];
+        name = NumericLiteral;
+      },
+      @SignedNumericLiteral!InterfaceProd(44,2):ASTInterfaceProd {
+        enclosingScope = @MCCommonLiterals!Scope;
+        superInterfaceRule = [// *size: 1
+          @SignedLiteral!RuleReference(44,41):ASTRuleReference {
+            enclosingScope = @SignedNumericLiteral!Scope;
+            name = SignedLiteral;
+            prio = "100";
+          }];
+        name = SignedNumericLiteral;
+      }];
+    aSTRules = [// *size: 11
+      @!ASTRule(202,2):ASTASTRule {
+        enclosingScope = @MCCommonLiterals!Scope;
+        type = BooleanLiteral;
+        grammarMethods = [// *size: 1
+          @getValue!GrammarMethod(203,4):ASTGrammarMethod {
+            enclosingScope = @MCCommonLiterals!Scope;
+            mCReturnType = @!MCReturnType(203,18):ASTMCReturnType {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCType = @boolean!MCPrimitiveType(203,18):ASTMCPrimitiveType {
+                enclosingScope = @MCCommonLiterals!Scope;
+                primitive = 1;
+              };
+            };
+            name = getValue;
+            body = @!Action(204,6):ASTAction {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCBlockStatements = [// *size: 1
+                @!ReturnStatement(204,6):ASTReturnStatement {
+                  enclosingScope = @MCCommonLiterals!Scope;
+                  expression = @!EqualsExpression(204,25):ASTEqualsExpression {
+                    enclosingScope = @MCCommonLiterals!Scope;
+                    left = @!FieldAccessExpression(204,17):ASTFieldAccessExpression {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      expression = @!PrimaryThisExpression(204,13):ASTPrimaryThisExpression {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                      };
+                      name = source;
+                    };
+                    operator = ==;
+                    right = @!FieldAccessExpression(204,56):ASTFieldAccessExpression {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      expression = @!NameExpression(204,28):ASTNameExpression {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                        name = ASTConstantsMCCommonLiterals;
+                      };
+                      name = TRUE;
+                    };
+                  };
+                }];
+            };
+            r__public = true;
+            r__private = false;
+            r__protected = false;
+            r__final = false;
+            r__static = false;
+          }];
+      },
+      @!ASTRule(208,2):ASTASTRule {
+        enclosingScope = @MCCommonLiterals!Scope;
+        type = CharLiteral;
+        grammarMethods = [// *size: 1
+          @getValue!GrammarMethod(209,4):ASTGrammarMethod {
+            enclosingScope = @MCCommonLiterals!Scope;
+            mCReturnType = @!MCReturnType(209,18):ASTMCReturnType {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCType = @char!MCPrimitiveType(209,18):ASTMCPrimitiveType {
+                enclosingScope = @MCCommonLiterals!Scope;
+                primitive = 3;
+              };
+            };
+            name = getValue;
+            body = @!Action(210,6):ASTAction {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCBlockStatements = [// *size: 1
+                @!ReturnStatement(210,6):ASTReturnStatement {
+                  enclosingScope = @MCCommonLiterals!Scope;
+                  expression = @!CallExpression(210,63):ASTCallExpression {
+                    enclosingScope = @MCCommonLiterals!Scope;
+                    expression = @!FieldAccessExpression(210,52):ASTFieldAccessExpression {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      expression = @!FieldAccessExpression(210,34):ASTFieldAccessExpression {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                        expression = @!FieldAccessExpression(210,25):ASTFieldAccessExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          expression = @!FieldAccessExpression(210,15):ASTFieldAccessExpression {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                            expression = @!NameExpression(210,13):ASTNameExpression {
+                              enclosingScope = @MCCommonLiterals!Scope;
+                              name = de;
+                            };
+                            name = monticore;
+                          };
+                          name = literals;
+                        };
+                        name = MCLiteralsDecoder;
+                      };
+                      name = decodeChar;
+                    };
+                    arguments = @!Arguments(210,63):ASTArguments {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      expressions = [// *size: 1
+                        @!CallExpression(211,17):ASTCallExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          expression = @!NameExpression(211,8):ASTNameExpression {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                            name = getSource;
+                          };
+                          arguments = @!Arguments(211,17):ASTArguments {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                          };
+                        }];
+                    };
+                  };
+                }];
+            };
+            r__public = true;
+            r__private = false;
+            r__protected = false;
+            r__final = false;
+            r__static = false;
+          }];
+      },
+      @!ASTRule(215,2):ASTASTRule {
+        enclosingScope = @MCCommonLiterals!Scope;
+        type = StringLiteral;
+        grammarMethods = [// *size: 1
+          @getValue!GrammarMethod(216,4):ASTGrammarMethod {
+            enclosingScope = @MCCommonLiterals!Scope;
+            mCReturnType = @!MCReturnType(216,18):ASTMCReturnType {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCType = @String!MCQualifiedType(216,18):ASTMCQualifiedType {
+                enclosingScope = @MCCommonLiterals!Scope;
+                mCQualifiedName = @String!MCQualifiedName(216,18):ASTMCQualifiedName {
+                  enclosingScope = @MCCommonLiterals!Scope;
+                  parts = [String];
+                };
+              };
+            };
+            name = getValue;
+            body = @!Action(217,6):ASTAction {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCBlockStatements = [// *size: 1
+                @!ReturnStatement(217,6):ASTReturnStatement {
+                  enclosingScope = @MCCommonLiterals!Scope;
+                  expression = @!CallExpression(217,65):ASTCallExpression {
+                    enclosingScope = @MCCommonLiterals!Scope;
+                    expression = @!FieldAccessExpression(217,52):ASTFieldAccessExpression {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      expression = @!FieldAccessExpression(217,34):ASTFieldAccessExpression {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                        expression = @!FieldAccessExpression(217,25):ASTFieldAccessExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          expression = @!FieldAccessExpression(217,15):ASTFieldAccessExpression {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                            expression = @!NameExpression(217,13):ASTNameExpression {
+                              enclosingScope = @MCCommonLiterals!Scope;
+                              name = de;
+                            };
+                            name = monticore;
+                          };
+                          name = literals;
+                        };
+                        name = MCLiteralsDecoder;
+                      };
+                      name = decodeString;
+                    };
+                    arguments = @!Arguments(217,65):ASTArguments {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      expressions = [// *size: 1
+                        @!CallExpression(218,17):ASTCallExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          expression = @!NameExpression(218,8):ASTNameExpression {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                            name = getSource;
+                          };
+                          arguments = @!Arguments(218,17):ASTArguments {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                          };
+                        }];
+                    };
+                  };
+                }];
+            };
+            r__public = true;
+            r__private = false;
+            r__protected = false;
+            r__final = false;
+            r__static = false;
+          }];
+      },
+      @!ASTRule(222,3):ASTASTRule {
+        enclosingScope = @MCCommonLiterals!Scope;
+        type = NatLiteral;
+        grammarMethods = [// *size: 2
+          @getSource!GrammarMethod(223,4):ASTGrammarMethod {
+            enclosingScope = @MCCommonLiterals!Scope;
+            mCReturnType = @!MCReturnType(223,18):ASTMCReturnType {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCType = @String!MCQualifiedType(223,18):ASTMCQualifiedType {
+                enclosingScope = @MCCommonLiterals!Scope;
+                mCQualifiedName = @String!MCQualifiedName(223,18):ASTMCQualifiedName {
+                  enclosingScope = @MCCommonLiterals!Scope;
+                  parts = [String];
+                };
+              };
+            };
+            name = getSource;
+            body = @!Action(224,9):ASTAction {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCBlockStatements = [// *size: 1
+                @!ReturnStatement(224,9):ASTReturnStatement {
+                  enclosingScope = @MCCommonLiterals!Scope;
+                  expression = @!CallExpression(224,25):ASTCallExpression {
+                    enclosingScope = @MCCommonLiterals!Scope;
+                    expression = @!NameExpression(224,16):ASTNameExpression {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      name = getDigits;
+                    };
+                    arguments = @!Arguments(224,25):ASTArguments {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                    };
+                  };
+                }];
+            };
+            r__public = true;
+            r__private = false;
+            r__protected = false;
+            r__final = false;
+            r__static = false;
+          },
+          @getValue!GrammarMethod(226,4):ASTGrammarMethod {
+            enclosingScope = @MCCommonLiterals!Scope;
+            mCReturnType = @!MCReturnType(226,18):ASTMCReturnType {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCType = @int!MCPrimitiveType(226,18):ASTMCPrimitiveType {
+                enclosingScope = @MCCommonLiterals!Scope;
+                primitive = 6;
+              };
+            };
+            name = getValue;
+            body = @!Action(227,6):ASTAction {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCBlockStatements = [// *size: 1
+                @!ReturnStatement(227,6):ASTReturnStatement {
+                  enclosingScope = @MCCommonLiterals!Scope;
+                  expression = @!CallExpression(227,62):ASTCallExpression {
+                    enclosingScope = @MCCommonLiterals!Scope;
+                    expression = @!FieldAccessExpression(227,52):ASTFieldAccessExpression {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      expression = @!FieldAccessExpression(227,34):ASTFieldAccessExpression {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                        expression = @!FieldAccessExpression(227,25):ASTFieldAccessExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          expression = @!FieldAccessExpression(227,15):ASTFieldAccessExpression {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                            expression = @!NameExpression(227,13):ASTNameExpression {
+                              enclosingScope = @MCCommonLiterals!Scope;
+                              name = de;
+                            };
+                            name = monticore;
+                          };
+                          name = literals;
+                        };
+                        name = MCLiteralsDecoder;
+                      };
+                      name = decodeNat;
+                    };
+                    arguments = @!Arguments(227,62):ASTArguments {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      expressions = [// *size: 1
+                        @!CallExpression(228,17):ASTCallExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          expression = @!NameExpression(228,8):ASTNameExpression {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                            name = getSource;
+                          };
+                          arguments = @!Arguments(228,17):ASTArguments {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                          };
+                        }];
+                    };
+                  };
+                }];
+            };
+            r__public = true;
+            r__private = false;
+            r__protected = false;
+            r__final = false;
+            r__static = false;
+          }];
+      },
+      @!ASTRule(232,2):ASTASTRule {
+        enclosingScope = @MCCommonLiterals!Scope;
+        type = SignedNatLiteral;
+        grammarMethods = [// *size: 2
+          @getSource!GrammarMethod(233,4):ASTGrammarMethod {
+            enclosingScope = @MCCommonLiterals!Scope;
+            mCReturnType = @!MCReturnType(233,18):ASTMCReturnType {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCType = @String!MCQualifiedType(233,18):ASTMCQualifiedType {
+                enclosingScope = @MCCommonLiterals!Scope;
+                mCQualifiedName = @String!MCQualifiedName(233,18):ASTMCQualifiedName {
+                  enclosingScope = @MCCommonLiterals!Scope;
+                  parts = [String];
+                };
+              };
+            };
+            name = getSource;
+            body = @!Action(234,6):ASTAction {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCBlockStatements = [// *size: 1
+                @!ReturnStatement(234,6):ASTReturnStatement {
+                  enclosingScope = @MCCommonLiterals!Scope;
+                  expression = @!PlusExpression(234,31):ASTPlusExpression {
+                    enclosingScope = @MCCommonLiterals!Scope;
+                    left = @!BracketExpression(234,13):ASTBracketExpression {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      expression = @!ConditionalExpression(234,22):ASTConditionalExpression {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                        condition = @!NameExpression(234,14):ASTNameExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          name = negative;
+                        };
+                        trueExpression = @!LiteralExpression(234,23):ASTLiteralExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          literal = @!StringLiteral(234,23):ASTStringLiteral {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                            source = -;
+                          };
+                        };
+                        falseExpression = @!LiteralExpression(234,27):ASTLiteralExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          literal = @!StringLiteral(234,27):ASTStringLiteral {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                            source = ;
+                          };
+                        };
+                      };
+                    };
+                    operator = +;
+                    right = @!CallExpression(234,42):ASTCallExpression {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      expression = @!NameExpression(234,33):ASTNameExpression {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                        name = getDigits;
+                      };
+                      arguments = @!Arguments(234,42):ASTArguments {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                      };
+                    };
+                  };
+                }];
+            };
+            r__public = true;
+            r__private = false;
+            r__protected = false;
+            r__final = false;
+            r__static = false;
+          },
+          @getValue!GrammarMethod(236,4):ASTGrammarMethod {
+            enclosingScope = @MCCommonLiterals!Scope;
+            mCReturnType = @!MCReturnType(236,18):ASTMCReturnType {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCType = @int!MCPrimitiveType(236,18):ASTMCPrimitiveType {
+                enclosingScope = @MCCommonLiterals!Scope;
+                primitive = 6;
+              };
+            };
+            name = getValue;
+            body = @!Action(237,6):ASTAction {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCBlockStatements = [// *size: 1
+                @!ReturnStatement(237,6):ASTReturnStatement {
+                  enclosingScope = @MCCommonLiterals!Scope;
+                  expression = @!CallExpression(237,62):ASTCallExpression {
+                    enclosingScope = @MCCommonLiterals!Scope;
+                    expression = @!FieldAccessExpression(237,52):ASTFieldAccessExpression {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      expression = @!FieldAccessExpression(237,34):ASTFieldAccessExpression {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                        expression = @!FieldAccessExpression(237,25):ASTFieldAccessExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          expression = @!FieldAccessExpression(237,15):ASTFieldAccessExpression {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                            expression = @!NameExpression(237,13):ASTNameExpression {
+                              enclosingScope = @MCCommonLiterals!Scope;
+                              name = de;
+                            };
+                            name = monticore;
+                          };
+                          name = literals;
+                        };
+                        name = MCLiteralsDecoder;
+                      };
+                      name = decodeNat;
+                    };
+                    arguments = @!Arguments(237,62):ASTArguments {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      expressions = [// *size: 1
+                        @!CallExpression(238,17):ASTCallExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          expression = @!NameExpression(238,8):ASTNameExpression {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                            name = getSource;
+                          };
+                          arguments = @!Arguments(238,17):ASTArguments {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                          };
+                        }];
+                    };
+                  };
+                }];
+            };
+            r__public = true;
+            r__private = false;
+            r__protected = false;
+            r__final = false;
+            r__static = false;
+          }];
+      },
+      @!ASTRule(242,3):ASTASTRule {
+        enclosingScope = @MCCommonLiterals!Scope;
+        type = BasicLongLiteral;
+        grammarMethods = [// *size: 2
+          @getSource!GrammarMethod(243,4):ASTGrammarMethod {
+            enclosingScope = @MCCommonLiterals!Scope;
+            mCReturnType = @!MCReturnType(243,18):ASTMCReturnType {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCType = @String!MCQualifiedType(243,18):ASTMCQualifiedType {
+                enclosingScope = @MCCommonLiterals!Scope;
+                mCQualifiedName = @String!MCQualifiedName(243,18):ASTMCQualifiedName {
+                  enclosingScope = @MCCommonLiterals!Scope;
+                  parts = [String];
+                };
+              };
+            };
+            name = getSource;
+            body = @!Action(244,9):ASTAction {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCBlockStatements = [// *size: 1
+                @!ReturnStatement(244,9):ASTReturnStatement {
+                  enclosingScope = @MCCommonLiterals!Scope;
+                  expression = @!PlusExpression(244,28):ASTPlusExpression {
+                    enclosingScope = @MCCommonLiterals!Scope;
+                    left = @!CallExpression(244,25):ASTCallExpression {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      expression = @!NameExpression(244,16):ASTNameExpression {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                        name = getDigits;
+                      };
+                      arguments = @!Arguments(244,25):ASTArguments {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                      };
+                    };
+                    operator = +;
+                    right = @!LiteralExpression(244,30):ASTLiteralExpression {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      literal = @!StringLiteral(244,30):ASTStringLiteral {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                        source = L;
+                      };
+                    };
+                  };
+                }];
+            };
+            r__public = true;
+            r__private = false;
+            r__protected = false;
+            r__final = false;
+            r__static = false;
+          },
+          @getValue!GrammarMethod(246,4):ASTGrammarMethod {
+            enclosingScope = @MCCommonLiterals!Scope;
+            mCReturnType = @!MCReturnType(246,18):ASTMCReturnType {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCType = @long!MCPrimitiveType(246,18):ASTMCPrimitiveType {
+                enclosingScope = @MCCommonLiterals!Scope;
+                primitive = 7;
+              };
+            };
+            name = getValue;
+            body = @!Action(247,6):ASTAction {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCBlockStatements = [// *size: 1
+                @!ReturnStatement(247,6):ASTReturnStatement {
+                  enclosingScope = @MCCommonLiterals!Scope;
+                  expression = @!CallExpression(247,63):ASTCallExpression {
+                    enclosingScope = @MCCommonLiterals!Scope;
+                    expression = @!FieldAccessExpression(247,52):ASTFieldAccessExpression {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      expression = @!FieldAccessExpression(247,34):ASTFieldAccessExpression {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                        expression = @!FieldAccessExpression(247,25):ASTFieldAccessExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          expression = @!FieldAccessExpression(247,15):ASTFieldAccessExpression {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                            expression = @!NameExpression(247,13):ASTNameExpression {
+                              enclosingScope = @MCCommonLiterals!Scope;
+                              name = de;
+                            };
+                            name = monticore;
+                          };
+                          name = literals;
+                        };
+                        name = MCLiteralsDecoder;
+                      };
+                      name = decodeLong;
+                    };
+                    arguments = @!Arguments(247,63):ASTArguments {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      expressions = [// *size: 1
+                        @!CallExpression(247,73):ASTCallExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          expression = @!NameExpression(247,64):ASTNameExpression {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                            name = getSource;
+                          };
+                          arguments = @!Arguments(247,73):ASTArguments {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                          };
+                        }];
+                    };
+                  };
+                }];
+            };
+            r__public = true;
+            r__private = false;
+            r__protected = false;
+            r__final = false;
+            r__static = false;
+          }];
+      },
+      @!ASTRule(251,2):ASTASTRule {
+        enclosingScope = @MCCommonLiterals!Scope;
+        type = SignedBasicLongLiteral;
+        grammarMethods = [// *size: 2
+          @getSource!GrammarMethod(252,4):ASTGrammarMethod {
+            enclosingScope = @MCCommonLiterals!Scope;
+            mCReturnType = @!MCReturnType(252,18):ASTMCReturnType {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCType = @String!MCQualifiedType(252,18):ASTMCQualifiedType {
+                enclosingScope = @MCCommonLiterals!Scope;
+                mCQualifiedName = @String!MCQualifiedName(252,18):ASTMCQualifiedName {
+                  enclosingScope = @MCCommonLiterals!Scope;
+                  parts = [String];
+                };
+              };
+            };
+            name = getSource;
+            body = @!Action(253,6):ASTAction {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCBlockStatements = [// *size: 1
+                @!ReturnStatement(253,6):ASTReturnStatement {
+                  enclosingScope = @MCCommonLiterals!Scope;
+                  expression = @!PlusExpression(253,45):ASTPlusExpression {
+                    enclosingScope = @MCCommonLiterals!Scope;
+                    left = @!PlusExpression(253,31):ASTPlusExpression {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      left = @!BracketExpression(253,13):ASTBracketExpression {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                        expression = @!ConditionalExpression(253,22):ASTConditionalExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          condition = @!NameExpression(253,14):ASTNameExpression {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                            name = negative;
+                          };
+                          trueExpression = @!LiteralExpression(253,23):ASTLiteralExpression {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                            literal = @!StringLiteral(253,23):ASTStringLiteral {
+                              enclosingScope = @MCCommonLiterals!Scope;
+                              source = -;
+                            };
+                          };
+                          falseExpression = @!LiteralExpression(253,27):ASTLiteralExpression {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                            literal = @!StringLiteral(253,27):ASTStringLiteral {
+                              enclosingScope = @MCCommonLiterals!Scope;
+                              source = ;
+                            };
+                          };
+                        };
+                      };
+                      operator = +;
+                      right = @!CallExpression(253,42):ASTCallExpression {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                        expression = @!NameExpression(253,33):ASTNameExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          name = getDigits;
+                        };
+                        arguments = @!Arguments(253,42):ASTArguments {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                        };
+                      };
+                    };
+                    operator = +;
+                    right = @!LiteralExpression(253,47):ASTLiteralExpression {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      literal = @!StringLiteral(253,47):ASTStringLiteral {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                        source = L;
+                      };
+                    };
+                  };
+                }];
+            };
+            r__public = true;
+            r__private = false;
+            r__protected = false;
+            r__final = false;
+            r__static = false;
+          },
+          @getValue!GrammarMethod(255,4):ASTGrammarMethod {
+            enclosingScope = @MCCommonLiterals!Scope;
+            mCReturnType = @!MCReturnType(255,18):ASTMCReturnType {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCType = @long!MCPrimitiveType(255,18):ASTMCPrimitiveType {
+                enclosingScope = @MCCommonLiterals!Scope;
+                primitive = 7;
+              };
+            };
+            name = getValue;
+            body = @!Action(256,6):ASTAction {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCBlockStatements = [// *size: 1
+                @!ReturnStatement(256,6):ASTReturnStatement {
+                  enclosingScope = @MCCommonLiterals!Scope;
+                  expression = @!CallExpression(256,63):ASTCallExpression {
+                    enclosingScope = @MCCommonLiterals!Scope;
+                    expression = @!FieldAccessExpression(256,52):ASTFieldAccessExpression {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      expression = @!FieldAccessExpression(256,34):ASTFieldAccessExpression {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                        expression = @!FieldAccessExpression(256,25):ASTFieldAccessExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          expression = @!FieldAccessExpression(256,15):ASTFieldAccessExpression {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                            expression = @!NameExpression(256,13):ASTNameExpression {
+                              enclosingScope = @MCCommonLiterals!Scope;
+                              name = de;
+                            };
+                            name = monticore;
+                          };
+                          name = literals;
+                        };
+                        name = MCLiteralsDecoder;
+                      };
+                      name = decodeLong;
+                    };
+                    arguments = @!Arguments(256,63):ASTArguments {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      expressions = [// *size: 1
+                        @!CallExpression(256,73):ASTCallExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          expression = @!NameExpression(256,64):ASTNameExpression {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                            name = getSource;
+                          };
+                          arguments = @!Arguments(256,73):ASTArguments {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                          };
+                        }];
+                    };
+                  };
+                }];
+            };
+            r__public = true;
+            r__private = false;
+            r__protected = false;
+            r__final = false;
+            r__static = false;
+          }];
+      },
+      @!ASTRule(260,2):ASTASTRule {
+        enclosingScope = @MCCommonLiterals!Scope;
+        type = BasicFloatLiteral;
+        grammarMethods = [// *size: 2
+          @getSource!GrammarMethod(261,4):ASTGrammarMethod {
+            enclosingScope = @MCCommonLiterals!Scope;
+            mCReturnType = @!MCReturnType(261,18):ASTMCReturnType {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCType = @String!MCQualifiedType(261,18):ASTMCQualifiedType {
+                enclosingScope = @MCCommonLiterals!Scope;
+                mCQualifiedName = @String!MCQualifiedName(261,18):ASTMCQualifiedName {
+                  enclosingScope = @MCCommonLiterals!Scope;
+                  parts = [String];
+                };
+              };
+            };
+            name = getSource;
+            body = @!Action(262,6):ASTAction {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCBlockStatements = [// *size: 1
+                @!ReturnStatement(262,6):ASTReturnStatement {
+                  enclosingScope = @MCCommonLiterals!Scope;
+                  expression = @!PlusExpression(262,40):ASTPlusExpression {
+                    enclosingScope = @MCCommonLiterals!Scope;
+                    left = @!PlusExpression(262,28):ASTPlusExpression {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      left = @!PlusExpression(262,22):ASTPlusExpression {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                        left = @!CallExpression(262,19):ASTCallExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          expression = @!NameExpression(262,13):ASTNameExpression {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                            name = getPre;
+                          };
+                          arguments = @!Arguments(262,19):ASTArguments {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                          };
+                        };
+                        operator = +;
+                        right = @!LiteralExpression(262,24):ASTLiteralExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          literal = @!StringLiteral(262,24):ASTStringLiteral {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                            source = .;
+                          };
+                        };
+                      };
+                      operator = +;
+                      right = @!CallExpression(262,37):ASTCallExpression {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                        expression = @!NameExpression(262,30):ASTNameExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          name = getPost;
+                        };
+                        arguments = @!Arguments(262,37):ASTArguments {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                        };
+                      };
+                    };
+                    operator = +;
+                    right = @!LiteralExpression(262,42):ASTLiteralExpression {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      literal = @!StringLiteral(262,42):ASTStringLiteral {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                        source = F;
+                      };
+                    };
+                  };
+                }];
+            };
+            r__public = true;
+            r__private = false;
+            r__protected = false;
+            r__final = false;
+            r__static = false;
+          },
+          @getValue!GrammarMethod(264,4):ASTGrammarMethod {
+            enclosingScope = @MCCommonLiterals!Scope;
+            mCReturnType = @!MCReturnType(264,18):ASTMCReturnType {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCType = @float!MCPrimitiveType(264,18):ASTMCPrimitiveType {
+                enclosingScope = @MCCommonLiterals!Scope;
+                primitive = 5;
+              };
+            };
+            name = getValue;
+            body = @!Action(265,6):ASTAction {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCBlockStatements = [// *size: 1
+                @!ReturnStatement(265,6):ASTReturnStatement {
+                  enclosingScope = @MCCommonLiterals!Scope;
+                  expression = @!CallExpression(265,64):ASTCallExpression {
+                    enclosingScope = @MCCommonLiterals!Scope;
+                    expression = @!FieldAccessExpression(265,52):ASTFieldAccessExpression {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      expression = @!FieldAccessExpression(265,34):ASTFieldAccessExpression {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                        expression = @!FieldAccessExpression(265,25):ASTFieldAccessExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          expression = @!FieldAccessExpression(265,15):ASTFieldAccessExpression {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                            expression = @!NameExpression(265,13):ASTNameExpression {
+                              enclosingScope = @MCCommonLiterals!Scope;
+                              name = de;
+                            };
+                            name = monticore;
+                          };
+                          name = literals;
+                        };
+                        name = MCLiteralsDecoder;
+                      };
+                      name = decodeFloat;
+                    };
+                    arguments = @!Arguments(265,64):ASTArguments {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      expressions = [// *size: 1
+                        @!CallExpression(265,74):ASTCallExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          expression = @!NameExpression(265,65):ASTNameExpression {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                            name = getSource;
+                          };
+                          arguments = @!Arguments(265,74):ASTArguments {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                          };
+                        }];
+                    };
+                  };
+                }];
+            };
+            r__public = true;
+            r__private = false;
+            r__protected = false;
+            r__final = false;
+            r__static = false;
+          }];
+      },
+      @!ASTRule(269,2):ASTASTRule {
+        enclosingScope = @MCCommonLiterals!Scope;
+        type = SignedBasicFloatLiteral;
+        grammarMethods = [// *size: 2
+          @getSource!GrammarMethod(270,4):ASTGrammarMethod {
+            enclosingScope = @MCCommonLiterals!Scope;
+            mCReturnType = @!MCReturnType(270,18):ASTMCReturnType {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCType = @String!MCQualifiedType(270,18):ASTMCQualifiedType {
+                enclosingScope = @MCCommonLiterals!Scope;
+                mCQualifiedName = @String!MCQualifiedName(270,18):ASTMCQualifiedName {
+                  enclosingScope = @MCCommonLiterals!Scope;
+                  parts = [String];
+                };
+              };
+            };
+            name = getSource;
+            body = @!Action(271,6):ASTAction {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCBlockStatements = [// *size: 1
+                @!ReturnStatement(271,6):ASTReturnStatement {
+                  enclosingScope = @MCCommonLiterals!Scope;
+                  expression = @!PlusExpression(271,65):ASTPlusExpression {
+                    enclosingScope = @MCCommonLiterals!Scope;
+                    left = @!PlusExpression(271,53):ASTPlusExpression {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      left = @!PlusExpression(271,47):ASTPlusExpression {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                        left = @!PlusExpression(271,36):ASTPlusExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          left = @!BracketExpression(271,14):ASTBracketExpression {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                            expression = @!ConditionalExpression(271,27):ASTConditionalExpression {
+                              enclosingScope = @MCCommonLiterals!Scope;
+                              condition = @!CallExpression(271,25):ASTCallExpression {
+                                enclosingScope = @MCCommonLiterals!Scope;
+                                expression = @!NameExpression(271,15):ASTNameExpression {
+                                  enclosingScope = @MCCommonLiterals!Scope;
+                                  name = isNegative;
+                                };
+                                arguments = @!Arguments(271,25):ASTArguments {
+                                  enclosingScope = @MCCommonLiterals!Scope;
+                                };
+                              };
+                              trueExpression = @!LiteralExpression(271,28):ASTLiteralExpression {
+                                enclosingScope = @MCCommonLiterals!Scope;
+                                literal = @!StringLiteral(271,28):ASTStringLiteral {
+                                  enclosingScope = @MCCommonLiterals!Scope;
+                                  source = -;
+                                };
+                              };
+                              falseExpression = @!LiteralExpression(271,32):ASTLiteralExpression {
+                                enclosingScope = @MCCommonLiterals!Scope;
+                                literal = @!StringLiteral(271,32):ASTStringLiteral {
+                                  enclosingScope = @MCCommonLiterals!Scope;
+                                  source = ;
+                                };
+                              };
+                            };
+                          };
+                          operator = +;
+                          right = @!CallExpression(271,44):ASTCallExpression {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                            expression = @!NameExpression(271,38):ASTNameExpression {
+                              enclosingScope = @MCCommonLiterals!Scope;
+                              name = getPre;
+                            };
+                            arguments = @!Arguments(271,44):ASTArguments {
+                              enclosingScope = @MCCommonLiterals!Scope;
+                            };
+                          };
+                        };
+                        operator = +;
+                        right = @!LiteralExpression(271,49):ASTLiteralExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          literal = @!StringLiteral(271,49):ASTStringLiteral {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                            source = .;
+                          };
+                        };
+                      };
+                      operator = +;
+                      right = @!CallExpression(271,62):ASTCallExpression {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                        expression = @!NameExpression(271,55):ASTNameExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          name = getPost;
+                        };
+                        arguments = @!Arguments(271,62):ASTArguments {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                        };
+                      };
+                    };
+                    operator = +;
+                    right = @!LiteralExpression(271,67):ASTLiteralExpression {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      literal = @!StringLiteral(271,67):ASTStringLiteral {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                        source = F;
+                      };
+                    };
+                  };
+                }];
+            };
+            r__public = true;
+            r__private = false;
+            r__protected = false;
+            r__final = false;
+            r__static = false;
+          },
+          @getValue!GrammarMethod(273,4):ASTGrammarMethod {
+            enclosingScope = @MCCommonLiterals!Scope;
+            mCReturnType = @!MCReturnType(273,18):ASTMCReturnType {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCType = @float!MCPrimitiveType(273,18):ASTMCPrimitiveType {
+                enclosingScope = @MCCommonLiterals!Scope;
+                primitive = 5;
+              };
+            };
+            name = getValue;
+            body = @!Action(274,6):ASTAction {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCBlockStatements = [// *size: 1
+                @!ReturnStatement(274,6):ASTReturnStatement {
+                  enclosingScope = @MCCommonLiterals!Scope;
+                  expression = @!CallExpression(274,64):ASTCallExpression {
+                    enclosingScope = @MCCommonLiterals!Scope;
+                    expression = @!FieldAccessExpression(274,52):ASTFieldAccessExpression {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      expression = @!FieldAccessExpression(274,34):ASTFieldAccessExpression {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                        expression = @!FieldAccessExpression(274,25):ASTFieldAccessExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          expression = @!FieldAccessExpression(274,15):ASTFieldAccessExpression {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                            expression = @!NameExpression(274,13):ASTNameExpression {
+                              enclosingScope = @MCCommonLiterals!Scope;
+                              name = de;
+                            };
+                            name = monticore;
+                          };
+                          name = literals;
+                        };
+                        name = MCLiteralsDecoder;
+                      };
+                      name = decodeFloat;
+                    };
+                    arguments = @!Arguments(274,64):ASTArguments {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      expressions = [// *size: 1
+                        @!CallExpression(274,74):ASTCallExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          expression = @!NameExpression(274,65):ASTNameExpression {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                            name = getSource;
+                          };
+                          arguments = @!Arguments(274,74):ASTArguments {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                          };
+                        }];
+                    };
+                  };
+                }];
+            };
+            r__public = true;
+            r__private = false;
+            r__protected = false;
+            r__final = false;
+            r__static = false;
+          }];
+      },
+      @!ASTRule(278,2):ASTASTRule {
+        enclosingScope = @MCCommonLiterals!Scope;
+        type = BasicDoubleLiteral;
+        grammarMethods = [// *size: 2
+          @getSource!GrammarMethod(279,4):ASTGrammarMethod {
+            enclosingScope = @MCCommonLiterals!Scope;
+            mCReturnType = @!MCReturnType(279,18):ASTMCReturnType {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCType = @String!MCQualifiedType(279,18):ASTMCQualifiedType {
+                enclosingScope = @MCCommonLiterals!Scope;
+                mCQualifiedName = @String!MCQualifiedName(279,18):ASTMCQualifiedName {
+                  enclosingScope = @MCCommonLiterals!Scope;
+                  parts = [String];
+                };
+              };
+            };
+            name = getSource;
+            body = @!Action(280,6):ASTAction {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCBlockStatements = [// *size: 1
+                @!ReturnStatement(280,6):ASTReturnStatement {
+                  enclosingScope = @MCCommonLiterals!Scope;
+                  expression = @!PlusExpression(280,28):ASTPlusExpression {
+                    enclosingScope = @MCCommonLiterals!Scope;
+                    left = @!PlusExpression(280,22):ASTPlusExpression {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      left = @!CallExpression(280,19):ASTCallExpression {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                        expression = @!NameExpression(280,13):ASTNameExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          name = getPre;
+                        };
+                        arguments = @!Arguments(280,19):ASTArguments {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                        };
+                      };
+                      operator = +;
+                      right = @!LiteralExpression(280,24):ASTLiteralExpression {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                        literal = @!StringLiteral(280,24):ASTStringLiteral {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          source = .;
+                        };
+                      };
+                    };
+                    operator = +;
+                    right = @!CallExpression(280,37):ASTCallExpression {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      expression = @!NameExpression(280,30):ASTNameExpression {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                        name = getPost;
+                      };
+                      arguments = @!Arguments(280,37):ASTArguments {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                      };
+                    };
+                  };
+                }];
+            };
+            r__public = true;
+            r__private = false;
+            r__protected = false;
+            r__final = false;
+            r__static = false;
+          },
+          @getValue!GrammarMethod(282,4):ASTGrammarMethod {
+            enclosingScope = @MCCommonLiterals!Scope;
+            mCReturnType = @!MCReturnType(282,18):ASTMCReturnType {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCType = @double!MCPrimitiveType(282,18):ASTMCPrimitiveType {
+                enclosingScope = @MCCommonLiterals!Scope;
+                primitive = 4;
+              };
+            };
+            name = getValue;
+            body = @!Action(283,6):ASTAction {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCBlockStatements = [// *size: 1
+                @!ReturnStatement(283,6):ASTReturnStatement {
+                  enclosingScope = @MCCommonLiterals!Scope;
+                  expression = @!CallExpression(283,65):ASTCallExpression {
+                    enclosingScope = @MCCommonLiterals!Scope;
+                    expression = @!FieldAccessExpression(283,52):ASTFieldAccessExpression {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      expression = @!FieldAccessExpression(283,34):ASTFieldAccessExpression {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                        expression = @!FieldAccessExpression(283,25):ASTFieldAccessExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          expression = @!FieldAccessExpression(283,15):ASTFieldAccessExpression {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                            expression = @!NameExpression(283,13):ASTNameExpression {
+                              enclosingScope = @MCCommonLiterals!Scope;
+                              name = de;
+                            };
+                            name = monticore;
+                          };
+                          name = literals;
+                        };
+                        name = MCLiteralsDecoder;
+                      };
+                      name = decodeDouble;
+                    };
+                    arguments = @!Arguments(283,65):ASTArguments {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      expressions = [// *size: 1
+                        @!CallExpression(283,75):ASTCallExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          expression = @!NameExpression(283,66):ASTNameExpression {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                            name = getSource;
+                          };
+                          arguments = @!Arguments(283,75):ASTArguments {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                          };
+                        }];
+                    };
+                  };
+                }];
+            };
+            r__public = true;
+            r__private = false;
+            r__protected = false;
+            r__final = false;
+            r__static = false;
+          }];
+      },
+      @!ASTRule(287,2):ASTASTRule {
+        enclosingScope = @MCCommonLiterals!Scope;
+        type = SignedBasicDoubleLiteral;
+        grammarMethods = [// *size: 2
+          @getSource!GrammarMethod(288,4):ASTGrammarMethod {
+            enclosingScope = @MCCommonLiterals!Scope;
+            mCReturnType = @!MCReturnType(288,18):ASTMCReturnType {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCType = @String!MCQualifiedType(288,18):ASTMCQualifiedType {
+                enclosingScope = @MCCommonLiterals!Scope;
+                mCQualifiedName = @String!MCQualifiedName(288,18):ASTMCQualifiedName {
+                  enclosingScope = @MCCommonLiterals!Scope;
+                  parts = [String];
+                };
+              };
+            };
+            name = getSource;
+            body = @!Action(289,6):ASTAction {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCBlockStatements = [// *size: 1
+                @!ReturnStatement(289,6):ASTReturnStatement {
+                  enclosingScope = @MCCommonLiterals!Scope;
+                  expression = @!PlusExpression(289,52):ASTPlusExpression {
+                    enclosingScope = @MCCommonLiterals!Scope;
+                    left = @!PlusExpression(289,46):ASTPlusExpression {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      left = @!PlusExpression(289,35):ASTPlusExpression {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                        left = @!BracketExpression(289,13):ASTBracketExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          expression = @!ConditionalExpression(289,26):ASTConditionalExpression {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                            condition = @!CallExpression(289,24):ASTCallExpression {
+                              enclosingScope = @MCCommonLiterals!Scope;
+                              expression = @!NameExpression(289,14):ASTNameExpression {
+                                enclosingScope = @MCCommonLiterals!Scope;
+                                name = isNegative;
+                              };
+                              arguments = @!Arguments(289,24):ASTArguments {
+                                enclosingScope = @MCCommonLiterals!Scope;
+                              };
+                            };
+                            trueExpression = @!LiteralExpression(289,27):ASTLiteralExpression {
+                              enclosingScope = @MCCommonLiterals!Scope;
+                              literal = @!StringLiteral(289,27):ASTStringLiteral {
+                                enclosingScope = @MCCommonLiterals!Scope;
+                                source = -;
+                              };
+                            };
+                            falseExpression = @!LiteralExpression(289,31):ASTLiteralExpression {
+                              enclosingScope = @MCCommonLiterals!Scope;
+                              literal = @!StringLiteral(289,31):ASTStringLiteral {
+                                enclosingScope = @MCCommonLiterals!Scope;
+                                source = ;
+                              };
+                            };
+                          };
+                        };
+                        operator = +;
+                        right = @!CallExpression(289,43):ASTCallExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          expression = @!NameExpression(289,37):ASTNameExpression {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                            name = getPre;
+                          };
+                          arguments = @!Arguments(289,43):ASTArguments {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                          };
+                        };
+                      };
+                      operator = +;
+                      right = @!LiteralExpression(289,48):ASTLiteralExpression {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                        literal = @!StringLiteral(289,48):ASTStringLiteral {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          source = .;
+                        };
+                      };
+                    };
+                    operator = +;
+                    right = @!CallExpression(289,61):ASTCallExpression {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      expression = @!NameExpression(289,54):ASTNameExpression {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                        name = getPost;
+                      };
+                      arguments = @!Arguments(289,61):ASTArguments {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                      };
+                    };
+                  };
+                }];
+            };
+            r__public = true;
+            r__private = false;
+            r__protected = false;
+            r__final = false;
+            r__static = false;
+          },
+          @getValue!GrammarMethod(291,4):ASTGrammarMethod {
+            enclosingScope = @MCCommonLiterals!Scope;
+            mCReturnType = @!MCReturnType(291,18):ASTMCReturnType {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCType = @double!MCPrimitiveType(291,18):ASTMCPrimitiveType {
+                enclosingScope = @MCCommonLiterals!Scope;
+                primitive = 4;
+              };
+            };
+            name = getValue;
+            body = @!Action(292,6):ASTAction {
+              enclosingScope = @MCCommonLiterals!Scope;
+              mCBlockStatements = [// *size: 1
+                @!ReturnStatement(292,6):ASTReturnStatement {
+                  enclosingScope = @MCCommonLiterals!Scope;
+                  expression = @!CallExpression(292,65):ASTCallExpression {
+                    enclosingScope = @MCCommonLiterals!Scope;
+                    expression = @!FieldAccessExpression(292,52):ASTFieldAccessExpression {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      expression = @!FieldAccessExpression(292,34):ASTFieldAccessExpression {
+                        enclosingScope = @MCCommonLiterals!Scope;
+                        expression = @!FieldAccessExpression(292,25):ASTFieldAccessExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          expression = @!FieldAccessExpression(292,15):ASTFieldAccessExpression {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                            expression = @!NameExpression(292,13):ASTNameExpression {
+                              enclosingScope = @MCCommonLiterals!Scope;
+                              name = de;
+                            };
+                            name = monticore;
+                          };
+                          name = literals;
+                        };
+                        name = MCLiteralsDecoder;
+                      };
+                      name = decodeDouble;
+                    };
+                    arguments = @!Arguments(292,65):ASTArguments {
+                      enclosingScope = @MCCommonLiterals!Scope;
+                      expressions = [// *size: 1
+                        @!CallExpression(292,75):ASTCallExpression {
+                          enclosingScope = @MCCommonLiterals!Scope;
+                          expression = @!NameExpression(292,66):ASTNameExpression {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                            name = getSource;
+                          };
+                          arguments = @!Arguments(292,75):ASTArguments {
+                            enclosingScope = @MCCommonLiterals!Scope;
+                          };
+                        }];
+                    };
+                  };
+                }];
+            };
+            r__public = true;
+            r__private = false;
+            r__protected = false;
+            r__final = false;
+            r__static = false;
+          }];
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

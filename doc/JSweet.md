@@ -89,6 +89,27 @@ werden, indem entsprechende Datei mit gleichem Orderpfad unter
 `src/main/ts/gui` bzw. `src/main/ts/domain` erstellt wird. Diese überschreiben
 dann alle transpilierten Dateien mit gleichem Namen.
 
+### Zusätzliche Attribute
+Sollte der handgeschriebene Java Code einer Component zusätzliche Attribute benutzten, so sollten diese im Gui-Modell hinzugefügt werden, damit die automatische Aktualisierung der Anzeige durch Angular noch funktioniert:
+
+```gui
+component MyComponent(..., boolean myNewBooleanAttribute = true){
+  ...
+}
+```
+
+In Java müssen dann der generierte Setter genutzt werden:
+
+```
+@Component
+public class MyComponent extends MyComponentTOP { 
+  public void myHandwrittenExtension(){
+    setMyNewBooleanAttribute(true);
+    ...
+  }
+}
+```
+
 ### Nicht unterstützte Features
 Die Nutzung von JSweet schränkt den Funktionsumfang von Java an einigen 
 Stellen ein.

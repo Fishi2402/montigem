@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {Component} from '@angular/core';
-import {ResetPasswordComponent,config} from '@src/gui/login/ResetPasswordComponent';
-import {User} from '@src/sehub/User';
-import {SehubManager} from '@src/sehub/SehubManager';
+import {ResetPasswordComponent,config} from 'gui/login/ResetPasswordComponent';
+import {User} from 'sehub/User';
+import {SehubManager} from 'sehub/SehubManager';
 
 @Component({
   standalone:true,

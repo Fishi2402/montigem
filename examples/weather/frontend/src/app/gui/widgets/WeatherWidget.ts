@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { WeatherWidgetComponent,config } from '@src/gui/widgets/WeatherWidgetComponent';
+import { WeatherWidgetComponent,config } from 'gui/widgets/WeatherWidgetComponent';
 
 @Component({
   standalone:true,

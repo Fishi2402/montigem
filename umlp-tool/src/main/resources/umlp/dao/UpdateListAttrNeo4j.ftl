@@ -16,12 +16,12 @@ ${cd4c.method("public void update${attrName}(long gemId, List<${innerType}> ${at
 
     long index = 0;
     for(${innerType} element : ${attrName?uncap_first}) {
-    update${attrName}Statement.clearParameters();
-    update${attrName}Statement.setLong(1, gemId);
-    ${includeArgs("umlp.dao.Set", "update"+attrName+"Statement", 2, dbName, "element", false,"_Neo4j")};
-    // TODO there is no index currently -> need to use neo4j map? update${attrName}Statement.setLong(3, index++);
-    update${attrName}Statement.executeUpdate();
-  }
+      update${attrName}Statement.clearParameters();
+      update${attrName}Statement.setLong(1, gemId);
+      ${includeArgs("umlp.dao.Set", "update"+attrName+"Statement", 2, dbName, "element", false,"_Neo4j")};
+      // TODO there is no index currently -> need to use neo4j map? update${attrName}Statement.setLong(3, index++);
+      update${attrName}Statement.executeUpdate();
+    }
 
   } catch (SQLException e){
     throw new RuntimeException(e);

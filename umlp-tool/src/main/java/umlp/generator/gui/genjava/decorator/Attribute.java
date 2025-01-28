@@ -3,6 +3,7 @@ package umlp.generator.gui.genjava.decorator;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.Collection;
@@ -14,15 +15,18 @@ public class Attribute {
   protected final List<ASTCDParameter> params;
 
   protected final Collection<String> importList;
+  protected final SymTypeExpression sourceType;
 
   public Attribute(
       ASTCDAttribute cdAttr, ASTMCType baseType,
-      List<ASTCDParameter> params, Collection<String> importList
+      List<ASTCDParameter> params, Collection<String> importList,
+      SymTypeExpression sourceType
   ) {
     this.cdAttr = cdAttr;
     this.params = params;
     this.baseType = baseType;
     this.importList = importList;
+    this.sourceType = sourceType;
   }
 
   public ASTCDAttribute getCdAttr() {
@@ -41,4 +45,7 @@ public class Attribute {
     return importList;
   }
 
+  public SymTypeExpression getSourceType() {
+    return sourceType;
+  }
 }

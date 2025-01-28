@@ -1,0 +1,866 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram mccommonstatements_AST {
+  @MCCommonStatements!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @MCCommonStatements!Symbol(2,0);
+    enclosingScope = @MCCommonStatements!ArtifactScope;
+    spanningScope = @MCCommonStatements!Scope;
+    r__package = [de, monticore, statements];
+    importStatement = [// *size: 1
+      @!MCImportStatement(7,0):ASTMCImportStatement {
+        enclosingScope = @MCCommonStatements!Scope;
+        mCQualifiedName = @de.monticore.statements!MCQualifiedName(7,7):ASTMCQualifiedName {
+          enclosingScope = @MCCommonStatements!Scope;
+          parts = [de, monticore, statements];
+        };
+        star = true;
+      }];
+    name = MCCommonStatements;
+    supergrammar = [// *size: 1
+      @MCVarDeclarationStatements!GrammarReference(34,18):ASTGrammarReference {
+        enclosingScope = @MCCommonStatements!Scope;
+        names = [MCVarDeclarationStatements];
+      }];
+    classProds = [// *size: 19
+      @MCJavaBlock!ClassProd(41,0):ASTClassProd {
+        enclosingScope = @MCCommonStatements!Scope;
+        symbolDefinitions = [// *size: 1
+          @!SymbolDefinition(41,0):ASTSymbolDefinition {
+            enclosingScope = @MCJavaBlock!Scope;
+            genSymbol = false;
+            genScope = true;
+            shadowing = false;
+            non_exporting = true;
+            ordered = true;
+          }];
+        superInterfaceRule = [// *size: 1
+          @MCStatement!RuleReference(41,52):ASTRuleReference {
+            enclosingScope = @MCJavaBlock!Scope;
+            name = MCStatement;
+          }];
+        alts = [// *size: 1
+          @!Alt(42,6):ASTAlt {
+            enclosingScope = @MCJavaBlock!Scope;
+            component = [// *size: 3
+              @LCURLY!Terminal(42,6):ASTTerminal {
+                enclosingScope = @MCJavaBlock!Scope;
+                iteration = 0;
+                name = {;
+              },
+              @MCBlockStatement!NonTerminal(42,10):ASTNonTerminal {
+                enclosingScope = @MCJavaBlock!Scope;
+                name = MCBlockStatement;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 21;
+              },
+              @RCURLY!Terminal(42,28):ASTTerminal {
+                enclosingScope = @MCJavaBlock!Scope;
+                iteration = 0;
+                name = };
+              }];
+            rightAssoc = false;
+          }];
+        name = MCJavaBlock;
+      },
+      @JavaModifier!ClassProd(47,0):ASTClassProd {
+        enclosingScope = @MCCommonStatements!Scope;
+        superInterfaceRule = [// *size: 1
+          @MCModifier!RuleReference(47,24):ASTRuleReference {
+            enclosingScope = @JavaModifier!Scope;
+            name = MCModifier;
+          }];
+        alts = [// *size: 1
+          @!Alt(48,6):ASTAlt {
+            enclosingScope = @JavaModifier!Scope;
+            component = [// *size: 1
+              @Modifier!ConstantGroup(48,6):ASTConstantGroup {
+                enclosingScope = @JavaModifier!Scope;
+                usageName = "Modifier";
+                constants = [// *size: 14
+                  @private!Constant(48,16):ASTConstant {
+                    enclosingScope = @JavaModifier!Scope;
+                    string = "private";
+                    name = private;
+                  },
+                  @public!Constant(48,28):ASTConstant {
+                    enclosingScope = @JavaModifier!Scope;
+                    string = "public";
+                    name = public;
+                  },
+                  @protected!Constant(48,39):ASTConstant {
+                    enclosingScope = @JavaModifier!Scope;
+                    string = "protected";
+                    name = protected;
+                  },
+                  @static!Constant(48,53):ASTConstant {
+                    enclosingScope = @JavaModifier!Scope;
+                    string = "static";
+                    name = static;
+                  },
+                  @transient!Constant(49,12):ASTConstant {
+                    enclosingScope = @JavaModifier!Scope;
+                    string = "transient";
+                    name = transient;
+                  },
+                  @final!Constant(49,26):ASTConstant {
+                    enclosingScope = @JavaModifier!Scope;
+                    string = "final";
+                    name = final;
+                  },
+                  @abstract!Constant(49,36):ASTConstant {
+                    enclosingScope = @JavaModifier!Scope;
+                    string = "abstract";
+                    name = abstract;
+                  },
+                  @native!Constant(49,49):ASTConstant {
+                    enclosingScope = @JavaModifier!Scope;
+                    string = "native";
+                    name = native;
+                  },
+                  @threadsafe!Constant(50,12):ASTConstant {
+                    enclosingScope = @JavaModifier!Scope;
+                    string = "threadsafe";
+                    name = threadsafe;
+                  },
+                  @synchronized!Constant(50,27):ASTConstant {
+                    enclosingScope = @JavaModifier!Scope;
+                    string = "synchronized";
+                    name = synchronized;
+                  },
+                  @const!Constant(50,44):ASTConstant {
+                    enclosingScope = @JavaModifier!Scope;
+                    string = "const";
+                    name = const;
+                  },
+                  @volatile!Constant(50,54):ASTConstant {
+                    enclosingScope = @JavaModifier!Scope;
+                    string = "volatile";
+                    name = volatile;
+                  },
+                  @strictfp!Constant(51,12):ASTConstant {
+                    enclosingScope = @JavaModifier!Scope;
+                    string = "strictfp";
+                    name = strictfp;
+                  },
+                  @default!Constant(51,25):ASTConstant {
+                    enclosingScope = @JavaModifier!Scope;
+                    string = "default";
+                    usageName = "modifier_default";
+                    name = default;
+                  }];
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = JavaModifier;
+      },
+      @IfStatement!ClassProd(53,0):ASTClassProd {
+        enclosingScope = @MCCommonStatements!Scope;
+        superInterfaceRule = [// *size: 1
+          @MCStatement!RuleReference(53,23):ASTRuleReference {
+            enclosingScope = @IfStatement!Scope;
+            name = MCStatement;
+          }];
+        alts = [// *size: 1
+          @!Alt(54,8):ASTAlt {
+            enclosingScope = @IfStatement!Scope;
+            component = [// *size: 6
+              @if!Terminal(54,8):ASTTerminal {
+                enclosingScope = @IfStatement!Scope;
+                iteration = 0;
+                name = if;
+              },
+              @LPAREN!Terminal(54,13):ASTTerminal {
+                enclosingScope = @IfStatement!Scope;
+                iteration = 0;
+                name = (;
+              },
+              @Expression!NonTerminal(54,17):ASTNonTerminal {
+                enclosingScope = @IfStatement!Scope;
+                usageName = "condition";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @RPAREN!Terminal(54,38):ASTTerminal {
+                enclosingScope = @IfStatement!Scope;
+                iteration = 0;
+                name = );
+              },
+              @MCStatement!NonTerminal(55,20):ASTNonTerminal {
+                enclosingScope = @IfStatement!Scope;
+                usageName = "thenStatement";
+                name = MCStatement;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @!Block(56,12):ASTBlock {
+                enclosingScope = @IfStatement!Scope;
+                alt = [// *size: 1
+                  @!Alt(56,13):ASTAlt {
+                    enclosingScope = @IfStatement!Scope;
+                    component = [// *size: 2
+                      @else!Terminal(56,13):ASTTerminal {
+                        enclosingScope = @IfStatement!Scope;
+                        iteration = 0;
+                        name = else;
+                      },
+                      @MCStatement!NonTerminal(56,20):ASTNonTerminal {
+                        enclosingScope = @IfStatement!Scope;
+                        usageName = "elseStatement";
+                        name = MCStatement;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 17;
+              }];
+            rightAssoc = false;
+          }];
+        name = IfStatement;
+      },
+      @ForStatement!ClassProd(61,0):ASTClassProd {
+        enclosingScope = @MCCommonStatements!Scope;
+        symbolDefinitions = [// *size: 1
+          @!SymbolDefinition(61,0):ASTSymbolDefinition {
+            enclosingScope = @ForStatement!Scope;
+            genSymbol = false;
+            genScope = true;
+            shadowing = false;
+            non_exporting = true;
+            ordered = true;
+          }];
+        superInterfaceRule = [// *size: 1
+          @MCStatement!RuleReference(61,54):ASTRuleReference {
+            enclosingScope = @ForStatement!Scope;
+            name = MCStatement;
+          }];
+        alts = [// *size: 1
+          @!Alt(62,6):ASTAlt {
+            enclosingScope = @ForStatement!Scope;
+            component = [// *size: 5
+              @for!Terminal(62,6):ASTTerminal {
+                enclosingScope = @ForStatement!Scope;
+                iteration = 0;
+                name = for;
+              },
+              @LPAREN!Terminal(62,12):ASTTerminal {
+                enclosingScope = @ForStatement!Scope;
+                iteration = 0;
+                name = (;
+              },
+              @ForControl!NonTerminal(62,16):ASTNonTerminal {
+                enclosingScope = @ForStatement!Scope;
+                name = ForControl;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @RPAREN!Terminal(62,27):ASTTerminal {
+                enclosingScope = @ForStatement!Scope;
+                iteration = 0;
+                name = );
+              },
+              @MCStatement!NonTerminal(62,31):ASTNonTerminal {
+                enclosingScope = @ForStatement!Scope;
+                name = MCStatement;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = ForStatement;
+      },
+      @CommonForControl!ClassProd(66,0):ASTClassProd {
+        enclosingScope = @MCCommonStatements!Scope;
+        superInterfaceRule = [// *size: 1
+          @ForControl!RuleReference(66,28):ASTRuleReference {
+            enclosingScope = @CommonForControl!Scope;
+            name = ForControl;
+          }];
+        alts = [// *size: 1
+          @!Alt(67,6):ASTAlt {
+            enclosingScope = @CommonForControl!Scope;
+            component = [// *size: 5
+              @ForInit!NonTerminal(67,6):ASTNonTerminal {
+                enclosingScope = @CommonForControl!Scope;
+                name = ForInit;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 17;
+              },
+              @SEMI!Terminal(67,15):ASTTerminal {
+                enclosingScope = @CommonForControl!Scope;
+                iteration = 0;
+                name = ;;
+              },
+              @Expression!NonTerminal(67,19):ASTNonTerminal {
+                enclosingScope = @CommonForControl!Scope;
+                usageName = "condition";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 17;
+              },
+              @SEMI!Terminal(67,41):ASTTerminal {
+                enclosingScope = @CommonForControl!Scope;
+                iteration = 0;
+                name = ;;
+              },
+              @!Block(1,0):ASTBlock {
+                enclosingScope = @CommonForControl!Scope;
+                alt = [// *size: 1
+                  @!Alt(1,2):ASTAlt {
+                    enclosingScope = @CommonForControl!Scope;
+                    component = [// *size: 2
+                      @Expression!NonTerminal(1,2):ASTNonTerminal {
+                        enclosingScope = @CommonForControl!Scope;
+                        name = Expression;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      },
+                      @!Block(1,15):ASTBlock {
+                        enclosingScope = @CommonForControl!Scope;
+                        alt = [// *size: 1
+                          @!Alt(1,16):ASTAlt {
+                            enclosingScope = @CommonForControl!Scope;
+                            component = [// *size: 2
+                              @COMMA!Terminal(1,16):ASTTerminal {
+                                enclosingScope = @CommonForControl!Scope;
+                                iteration = 0;
+                                name = ,;
+                              },
+                              @Expression!NonTerminal(1,21):ASTNonTerminal {
+                                enclosingScope = @CommonForControl!Scope;
+                                name = Expression;
+                                genSymbol = false;
+                                plusKeywords = false;
+                                iteration = 0;
+                              }];
+                            rightAssoc = false;
+                          }];
+                        iteration = 21;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 17;
+              }];
+            rightAssoc = false;
+          }];
+        name = CommonForControl;
+      },
+      @ForInit!ClassProd(69,0):ASTClassProd {
+        enclosingScope = @MCCommonStatements!Scope;
+        alts = [// *size: 2
+          @!Alt(70,6):ASTAlt {
+            enclosingScope = @ForInit!Scope;
+            component = [// *size: 1
+              @ForInitByExpressions!NonTerminal(70,6):ASTNonTerminal {
+                enclosingScope = @ForInit!Scope;
+                name = ForInitByExpressions;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          },
+          @!Alt(70,29):ASTAlt {
+            enclosingScope = @ForInit!Scope;
+            component = [// *size: 1
+              @LocalVariableDeclaration!NonTerminal(70,29):ASTNonTerminal {
+                enclosingScope = @ForInit!Scope;
+                name = LocalVariableDeclaration;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = ForInit;
+      },
+      @ForInitByExpressions!ClassProd(72,0):ASTClassProd {
+        enclosingScope = @MCCommonStatements!Scope;
+        alts = [// *size: 1
+          @!Alt(73,6):ASTAlt {
+            enclosingScope = @ForInitByExpressions!Scope;
+            component = [// *size: 1
+              @!Block(1,0!2):ASTBlock {
+                enclosingScope = @ForInitByExpressions!Scope;
+                alt = [// *size: 1
+                  @!Alt(1,2!2):ASTAlt {
+                    enclosingScope = @ForInitByExpressions!Scope;
+                    component = [// *size: 2
+                      @Expression!NonTerminal(1,2!2):ASTNonTerminal {
+                        enclosingScope = @ForInitByExpressions!Scope;
+                        name = Expression;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      },
+                      @!Block(1,15!2):ASTBlock {
+                        enclosingScope = @ForInitByExpressions!Scope;
+                        alt = [// *size: 1
+                          @!Alt(1,16!2):ASTAlt {
+                            enclosingScope = @ForInitByExpressions!Scope;
+                            component = [// *size: 2
+                              @COMMA!Terminal(1,16!2):ASTTerminal {
+                                enclosingScope = @ForInitByExpressions!Scope;
+                                iteration = 0;
+                                name = ,;
+                              },
+                              @Expression!NonTerminal(1,21!2):ASTNonTerminal {
+                                enclosingScope = @ForInitByExpressions!Scope;
+                                name = Expression;
+                                genSymbol = false;
+                                plusKeywords = false;
+                                iteration = 0;
+                              }];
+                            rightAssoc = false;
+                          }];
+                        iteration = 21;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = ForInitByExpressions;
+      },
+      @EnhancedForControl!ClassProd(75,0):ASTClassProd {
+        enclosingScope = @MCCommonStatements!Scope;
+        superInterfaceRule = [// *size: 1
+          @ForControl!RuleReference(75,30):ASTRuleReference {
+            enclosingScope = @EnhancedForControl!Scope;
+            name = ForControl;
+          }];
+        alts = [// *size: 1
+          @!Alt(76,6):ASTAlt {
+            enclosingScope = @EnhancedForControl!Scope;
+            component = [// *size: 3
+              @FormalParameter!NonTerminal(76,6):ASTNonTerminal {
+                enclosingScope = @EnhancedForControl!Scope;
+                name = FormalParameter;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @COLON!Terminal(76,22):ASTTerminal {
+                enclosingScope = @EnhancedForControl!Scope;
+                iteration = 0;
+                name = :;
+              },
+              @Expression!NonTerminal(76,26):ASTNonTerminal {
+                enclosingScope = @EnhancedForControl!Scope;
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = EnhancedForControl;
+      },
+      @FormalParameter!ClassProd(78,0):ASTClassProd {
+        enclosingScope = @MCCommonStatements!Scope;
+        alts = [// *size: 1
+          @!Alt(79,8):ASTAlt {
+            enclosingScope = @FormalParameter!Scope;
+            component = [// *size: 3
+              @JavaModifier!NonTerminal(79,8):ASTNonTerminal {
+                enclosingScope = @FormalParameter!Scope;
+                name = JavaModifier;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 21;
+              },
+              @MCType!NonTerminal(79,22):ASTNonTerminal {
+                enclosingScope = @FormalParameter!Scope;
+                name = MCType;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @Declarator!NonTerminal(79,29):ASTNonTerminal {
+                enclosingScope = @FormalParameter!Scope;
+                name = Declarator;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = FormalParameter;
+      },
+      @WhileStatement!ClassProd(81,0):ASTClassProd {
+        enclosingScope = @MCCommonStatements!Scope;
+        superInterfaceRule = [// *size: 1
+          @MCStatement!RuleReference(81,26):ASTRuleReference {
+            enclosingScope = @WhileStatement!Scope;
+            name = MCStatement;
+          }];
+        alts = [// *size: 1
+          @!Alt(82,6):ASTAlt {
+            enclosingScope = @WhileStatement!Scope;
+            component = [// *size: 5
+              @while!Terminal(82,6):ASTTerminal {
+                enclosingScope = @WhileStatement!Scope;
+                iteration = 0;
+                name = while;
+              },
+              @LPAREN!Terminal(82,14):ASTTerminal {
+                enclosingScope = @WhileStatement!Scope;
+                iteration = 0;
+                name = (;
+              },
+              @Expression!NonTerminal(82,18):ASTNonTerminal {
+                enclosingScope = @WhileStatement!Scope;
+                usageName = "condition";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @RPAREN!Terminal(82,39):ASTTerminal {
+                enclosingScope = @WhileStatement!Scope;
+                iteration = 0;
+                name = );
+              },
+              @MCStatement!NonTerminal(82,43):ASTNonTerminal {
+                enclosingScope = @WhileStatement!Scope;
+                name = MCStatement;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = WhileStatement;
+      },
+      @DoWhileStatement!ClassProd(84,0):ASTClassProd {
+        enclosingScope = @MCCommonStatements!Scope;
+        superInterfaceRule = [// *size: 1
+          @MCStatement!RuleReference(84,28):ASTRuleReference {
+            enclosingScope = @DoWhileStatement!Scope;
+            name = MCStatement;
+          }];
+        alts = [// *size: 1
+          @!Alt(85,6):ASTAlt {
+            enclosingScope = @DoWhileStatement!Scope;
+            component = [// *size: 7
+              @do!Terminal(85,6):ASTTerminal {
+                enclosingScope = @DoWhileStatement!Scope;
+                iteration = 0;
+                name = do;
+              },
+              @MCStatement!NonTerminal(85,11):ASTNonTerminal {
+                enclosingScope = @DoWhileStatement!Scope;
+                name = MCStatement;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @while!Terminal(85,23):ASTTerminal {
+                enclosingScope = @DoWhileStatement!Scope;
+                iteration = 0;
+                name = while;
+              },
+              @LPAREN!Terminal(85,31):ASTTerminal {
+                enclosingScope = @DoWhileStatement!Scope;
+                iteration = 0;
+                name = (;
+              },
+              @Expression!NonTerminal(85,35):ASTNonTerminal {
+                enclosingScope = @DoWhileStatement!Scope;
+                usageName = "condition";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @RPAREN!Terminal(85,56):ASTTerminal {
+                enclosingScope = @DoWhileStatement!Scope;
+                iteration = 0;
+                name = );
+              },
+              @SEMI!Terminal(85,60):ASTTerminal {
+                enclosingScope = @DoWhileStatement!Scope;
+                iteration = 0;
+                name = ;;
+              }];
+            rightAssoc = false;
+          }];
+        name = DoWhileStatement;
+      },
+      @SwitchStatement!ClassProd(87,0):ASTClassProd {
+        enclosingScope = @MCCommonStatements!Scope;
+        superInterfaceRule = [// *size: 1
+          @MCStatement!RuleReference(87,27):ASTRuleReference {
+            enclosingScope = @SwitchStatement!Scope;
+            name = MCStatement;
+          }];
+        alts = [// *size: 1
+          @!Alt(88,6):ASTAlt {
+            enclosingScope = @SwitchStatement!Scope;
+            component = [// *size: 8
+              @switch!Terminal(88,6):ASTTerminal {
+                enclosingScope = @SwitchStatement!Scope;
+                iteration = 0;
+                name = switch;
+              },
+              @LPAREN!Terminal(88,15):ASTTerminal {
+                enclosingScope = @SwitchStatement!Scope;
+                iteration = 0;
+                name = (;
+              },
+              @Expression!NonTerminal(88,19):ASTNonTerminal {
+                enclosingScope = @SwitchStatement!Scope;
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @RPAREN!Terminal(88,30):ASTTerminal {
+                enclosingScope = @SwitchStatement!Scope;
+                iteration = 0;
+                name = );
+              },
+              @LCURLY!Terminal(89,11):ASTTerminal {
+                enclosingScope = @SwitchStatement!Scope;
+                iteration = 0;
+                name = {;
+              },
+              @SwitchBlockStatementGroup!NonTerminal(89,15):ASTNonTerminal {
+                enclosingScope = @SwitchStatement!Scope;
+                name = SwitchBlockStatementGroup;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 21;
+              },
+              @SwitchLabel!NonTerminal(89,42):ASTNonTerminal {
+                enclosingScope = @SwitchStatement!Scope;
+                name = SwitchLabel;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 21;
+              },
+              @RCURLY!Terminal(89,55):ASTTerminal {
+                enclosingScope = @SwitchStatement!Scope;
+                iteration = 0;
+                name = };
+              }];
+            rightAssoc = false;
+          }];
+        name = SwitchStatement;
+      },
+      @EmptyStatement!ClassProd(91,0):ASTClassProd {
+        enclosingScope = @MCCommonStatements!Scope;
+        superInterfaceRule = [// *size: 1
+          @MCStatement!RuleReference(91,26):ASTRuleReference {
+            enclosingScope = @EmptyStatement!Scope;
+            name = MCStatement;
+          }];
+        alts = [// *size: 1
+          @!Alt(92,6):ASTAlt {
+            enclosingScope = @EmptyStatement!Scope;
+            component = [// *size: 1
+              @SEMI!Terminal(92,6):ASTTerminal {
+                enclosingScope = @EmptyStatement!Scope;
+                iteration = 0;
+                name = ;;
+              }];
+            rightAssoc = false;
+          }];
+        name = EmptyStatement;
+      },
+      @ExpressionStatement!ClassProd(94,0):ASTClassProd {
+        enclosingScope = @MCCommonStatements!Scope;
+        superInterfaceRule = [// *size: 1
+          @MCStatement!RuleReference(94,31):ASTRuleReference {
+            enclosingScope = @ExpressionStatement!Scope;
+            name = MCStatement;
+          }];
+        alts = [// *size: 1
+          @!Alt(95,6):ASTAlt {
+            enclosingScope = @ExpressionStatement!Scope;
+            component = [// *size: 2
+              @Expression!NonTerminal(95,6):ASTNonTerminal {
+                enclosingScope = @ExpressionStatement!Scope;
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @SEMI!Terminal(95,17):ASTTerminal {
+                enclosingScope = @ExpressionStatement!Scope;
+                iteration = 0;
+                name = ;;
+              }];
+            rightAssoc = false;
+          }];
+        name = ExpressionStatement;
+      },
+      @SwitchBlockStatementGroup!ClassProd(100,0):ASTClassProd {
+        enclosingScope = @MCCommonStatements!Scope;
+        alts = [// *size: 1
+          @!Alt(101,8):ASTAlt {
+            enclosingScope = @SwitchBlockStatementGroup!Scope;
+            component = [// *size: 2
+              @SwitchLabel!NonTerminal(101,8):ASTNonTerminal {
+                enclosingScope = @SwitchBlockStatementGroup!Scope;
+                name = SwitchLabel;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 13;
+              },
+              @MCBlockStatement!NonTerminal(101,21):ASTNonTerminal {
+                enclosingScope = @SwitchBlockStatementGroup!Scope;
+                name = MCBlockStatement;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 13;
+              }];
+            rightAssoc = false;
+          }];
+        name = SwitchBlockStatementGroup;
+      },
+      @ConstantExpressionSwitchLabel!ClassProd(105,0):ASTClassProd {
+        enclosingScope = @MCCommonStatements!Scope;
+        superInterfaceRule = [// *size: 1
+          @SwitchLabel!RuleReference(105,41):ASTRuleReference {
+            enclosingScope = @ConstantExpressionSwitchLabel!Scope;
+            name = SwitchLabel;
+          }];
+        alts = [// *size: 1
+          @!Alt(106,8):ASTAlt {
+            enclosingScope = @ConstantExpressionSwitchLabel!Scope;
+            component = [// *size: 3
+              @case!Terminal(106,8):ASTTerminal {
+                enclosingScope = @ConstantExpressionSwitchLabel!Scope;
+                iteration = 0;
+                name = case;
+              },
+              @Expression!NonTerminal(106,15):ASTNonTerminal {
+                enclosingScope = @ConstantExpressionSwitchLabel!Scope;
+                usageName = "constant";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @COLON!Terminal(106,35):ASTTerminal {
+                enclosingScope = @ConstantExpressionSwitchLabel!Scope;
+                iteration = 0;
+                name = :;
+              }];
+            rightAssoc = false;
+          }];
+        name = ConstantExpressionSwitchLabel;
+      },
+      @EnumConstantSwitchLabel!ClassProd(108,0):ASTClassProd {
+        enclosingScope = @MCCommonStatements!Scope;
+        superInterfaceRule = [// *size: 1
+          @SwitchLabel!RuleReference(108,35):ASTRuleReference {
+            enclosingScope = @EnumConstantSwitchLabel!Scope;
+            name = SwitchLabel;
+          }];
+        alts = [// *size: 1
+          @!Alt(109,8):ASTAlt {
+            enclosingScope = @EnumConstantSwitchLabel!Scope;
+            component = [// *size: 3
+              @case!Terminal(109,8):ASTTerminal {
+                enclosingScope = @EnumConstantSwitchLabel!Scope;
+                iteration = 0;
+                name = case;
+              },
+              @Name!NonTerminal(109,15):ASTNonTerminal {
+                enclosingScope = @EnumConstantSwitchLabel!Scope;
+                usageName = "enumConstant";
+                name = Name;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @COLON!Terminal(109,33):ASTTerminal {
+                enclosingScope = @EnumConstantSwitchLabel!Scope;
+                iteration = 0;
+                name = :;
+              }];
+            rightAssoc = false;
+          }];
+        name = EnumConstantSwitchLabel;
+      },
+      @DefaultSwitchLabel!ClassProd(111,0):ASTClassProd {
+        enclosingScope = @MCCommonStatements!Scope;
+        superInterfaceRule = [// *size: 1
+          @SwitchLabel!RuleReference(111,30):ASTRuleReference {
+            enclosingScope = @DefaultSwitchLabel!Scope;
+            name = SwitchLabel;
+          }];
+        alts = [// *size: 1
+          @!Alt(112,8):ASTAlt {
+            enclosingScope = @DefaultSwitchLabel!Scope;
+            component = [// *size: 2
+              @default!Terminal(112,8):ASTTerminal {
+                enclosingScope = @DefaultSwitchLabel!Scope;
+                iteration = 0;
+                name = default;
+              },
+              @COLON!Terminal(112,18):ASTTerminal {
+                enclosingScope = @DefaultSwitchLabel!Scope;
+                iteration = 0;
+                name = :;
+              }];
+            rightAssoc = false;
+          }];
+        name = DefaultSwitchLabel;
+      },
+      @BreakStatement!ClassProd(114,0):ASTClassProd {
+        enclosingScope = @MCCommonStatements!Scope;
+        superInterfaceRule = [// *size: 1
+          @MCStatement!RuleReference(114,26):ASTRuleReference {
+            enclosingScope = @BreakStatement!Scope;
+            name = MCStatement;
+          }];
+        alts = [// *size: 1
+          @!Alt(115,8):ASTAlt {
+            enclosingScope = @BreakStatement!Scope;
+            component = [// *size: 2
+              @break!Terminal(115,8):ASTTerminal {
+                enclosingScope = @BreakStatement!Scope;
+                iteration = 0;
+                name = break;
+              },
+              @SEMI!Terminal(115,16):ASTTerminal {
+                enclosingScope = @BreakStatement!Scope;
+                iteration = 0;
+                name = ;;
+              }];
+            rightAssoc = false;
+          }];
+        name = BreakStatement;
+      }];
+    interfaceProds = [// *size: 2
+      @ForControl!InterfaceProd(64,0):ASTInterfaceProd {
+        enclosingScope = @MCCommonStatements!Scope;
+        name = ForControl;
+      },
+      @SwitchLabel!InterfaceProd(103,0):ASTInterfaceProd {
+        enclosingScope = @MCCommonStatements!Scope;
+        name = SwitchLabel;
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

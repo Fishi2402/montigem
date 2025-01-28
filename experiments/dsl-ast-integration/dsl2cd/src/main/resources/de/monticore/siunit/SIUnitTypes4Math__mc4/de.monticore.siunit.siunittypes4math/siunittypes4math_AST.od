@@ -1,0 +1,59 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram siunittypes4math_AST {
+  @SIUnitTypes4Math!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @SIUnitTypes4Math!Symbol(2,0);
+    enclosingScope = @SIUnitTypes4Math!ArtifactScope;
+    spanningScope = @SIUnitTypes4Math!Scope;
+    r__package = [de, monticore, siunit];
+    name = SIUnitTypes4Math;
+    supergrammar = [// *size: 2
+      @SIUnits!GrammarReference(28,8):ASTGrammarReference {
+        enclosingScope = @SIUnitTypes4Math!Scope;
+        names = [de, monticore, siunit, SIUnits];
+      },
+      @MCBasicTypes!GrammarReference(29,8):ASTGrammarReference {
+        enclosingScope = @SIUnitTypes4Math!Scope;
+        names = [de, monticore, types, MCBasicTypes];
+      }];
+    classProds = [// *size: 1
+      @SIUnitType!ClassProd(31,2):ASTClassProd {
+        enclosingScope = @SIUnitTypes4Math!Scope;
+        superInterfaceRule = [// *size: 1
+          @MCType!RuleReference(31,24):ASTRuleReference {
+            enclosingScope = @SIUnitType!Scope;
+            name = MCType;
+          }];
+        alts = [// *size: 1
+          @!Alt(32,4):ASTAlt {
+            enclosingScope = @SIUnitType!Scope;
+            component = [// *size: 3
+              @LBRACK!Terminal(32,4):ASTTerminal {
+                enclosingScope = @SIUnitType!Scope;
+                iteration = 0;
+                name = [;
+              },
+              @SIUnit!NonTerminal(32,8):ASTNonTerminal {
+                enclosingScope = @SIUnitType!Scope;
+                name = SIUnit;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @RBRACK!Terminal(32,15):ASTTerminal {
+                enclosingScope = @SIUnitType!Scope;
+                iteration = 0;
+                name = ];
+              }];
+            rightAssoc = false;
+          }];
+        name = SIUnitType;
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

@@ -8,7 +8,7 @@
  - we check for the existence of a getDoesNotRequireLogin property
 */
 var loginPageThat = this;
-if (!('getDoesNotRequireLogin' in this) && LoginSecManager.shouldAbortOnInit(loginPageThat._router, loginPageThat._route)) {
+if (!('getDoesNotRequireLogin' in this) && LoginSecManager4Imp.shouldAbortOnInit(loginPageThat._router, loginPageThat._route)) {
   return;
 }
 // end login module system

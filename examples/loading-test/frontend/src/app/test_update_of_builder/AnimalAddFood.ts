@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 import { Component } from '@angular/core';
-import { AnimalAddFoodComponent,config } from '@src/test_update_of_builder/AnimalAddFoodComponent';
+import { AnimalAddFoodComponent,config } from 'test_update_of_builder/AnimalAddFoodComponent';
 import {Option} from "@umlp/input";
-import {LoadingTestsManager} from "@src/loadingtests/LoadingTestsManager";
+import {LoadingTestsManager} from "loadingtests/LoadingTestsManager";
 
 @Component({
   standalone:true,

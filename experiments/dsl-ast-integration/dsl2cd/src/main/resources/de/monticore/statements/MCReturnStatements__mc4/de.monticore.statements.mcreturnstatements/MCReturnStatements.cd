@@ -1,0 +1,1038 @@
+package de.monticore.statements;
+classdiagram MCReturnStatements { 
+  package de.monticore.statements.mcreturnstatements._auxiliary { 
+    public class MCStatementsBasisMillForMCReturnStatements extends de.monticore.statements.mcstatementsbasis.MCStatementsBasisMill { 
+      protected de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope _artifactScope();
+      protected de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsGlobalScope _globalScope();
+      protected de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope _scope();
+      protected de.monticore.statements.mcstatementsbasis._visitor.MCStatementsBasisTraverser _traverser();
+      protected de.monticore.statements.mcstatementsbasis._visitor.MCStatementsBasisTraverser _inheritanceTraverser();
+      protected de.monticore.statements.mcstatementsbasis._util.IMCStatementsBasisTypeDispatcher _typeDispatcher();
+      protected String _prettyPrint(de.monticore.ast.ASTNode node,boolean printComments);
+
+    } 
+    public class ExpressionsBasisMillForMCReturnStatements extends de.monticore.expressions.expressionsbasis.ExpressionsBasisMill { 
+      protected de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope _artifactScope();
+      protected de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsGlobalScope _globalScope();
+      protected de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope _scope();
+      protected de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser _traverser();
+      protected de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser _inheritanceTraverser();
+      protected de.monticore.expressions.expressionsbasis._util.IExpressionsBasisTypeDispatcher _typeDispatcher();
+      protected String _prettyPrint(de.monticore.ast.ASTNode node,boolean printComments);
+
+    } 
+    public class MCBasicsMillForMCReturnStatements extends de.monticore.mcbasics.MCBasicsMill { 
+      protected de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope _artifactScope();
+      protected de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsGlobalScope _globalScope();
+      protected de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope _scope();
+      protected de.monticore.mcbasics._visitor.MCBasicsTraverser _traverser();
+      protected de.monticore.mcbasics._visitor.MCBasicsTraverser _inheritanceTraverser();
+      protected de.monticore.mcbasics._util.IMCBasicsTypeDispatcher _typeDispatcher();
+      protected String _prettyPrint(de.monticore.ast.ASTNode node,boolean printComments);
+
+    } 
+    public class MCLiteralsBasisMillForMCReturnStatements extends de.monticore.literals.mcliteralsbasis.MCLiteralsBasisMill { 
+      protected de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope _artifactScope();
+      protected de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsGlobalScope _globalScope();
+      protected de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope _scope();
+      protected de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisTraverser _traverser();
+      protected de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisTraverser _inheritanceTraverser();
+      protected de.monticore.literals.mcliteralsbasis._util.IMCLiteralsBasisTypeDispatcher _typeDispatcher();
+      protected String _prettyPrint(de.monticore.ast.ASTNode node,boolean printComments);
+
+    } 
+
+  } 
+  package de.monticore.statements.mcreturnstatements { 
+    public class MCReturnStatementsMill { 
+      protected static MCReturnStatementsMill mill;
+      protected MCReturnStatementsMill();
+      public static MCReturnStatementsMill getMill();
+      public static void init();
+      protected static MCReturnStatementsMill millASTReturnStatementBuilder;
+      public static de.monticore.statements.mcreturnstatements._ast.ASTReturnStatementBuilder returnStatementBuilder();
+      protected de.monticore.statements.mcreturnstatements._ast.ASTReturnStatementBuilder _returnStatementBuilder();
+      protected static MCReturnStatementsMill millMCReturnStatementsTraverserImplementation;
+      protected static MCReturnStatementsMill millMCReturnStatementsInheritanceHandler;
+      protected static MCReturnStatementsMill millMCReturnStatementsScope;
+      protected static MCReturnStatementsMill millMCReturnStatementsScopesGenitorDelegator;
+      protected static MCReturnStatementsMill millMCReturnStatementsArtifactScope;
+      protected static MCReturnStatementsMill millMCReturnStatementsGlobalScope;
+      protected static MCReturnStatementsMill millMCReturnStatementsScopesGenitor;
+      protected static MCReturnStatementsMill millMCReturnStatementsFullPrettyPrinter;
+      public static String prettyPrint(de.monticore.ast.ASTNode node,boolean printComments);
+      protected String _prettyPrint(de.monticore.ast.ASTNode node,boolean printComments);
+      protected de.monticore.statements.mcreturnstatements._prettyprint.MCReturnStatementsFullPrettyPrinter fullPrettyPrinter;
+      protected static MCReturnStatementsMill millMCReturnStatementsTypeDispatcher;
+      protected de.monticore.statements.mcreturnstatements._util.IMCReturnStatementsTypeDispatcher typeDispatcher;
+      public static de.monticore.statements.mcreturnstatements._util.IMCReturnStatementsTypeDispatcher typeDispatcher();
+      protected de.monticore.statements.mcreturnstatements._util.IMCReturnStatementsTypeDispatcher _typeDispatcher();
+      public static de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser traverser();
+      protected de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser _traverser();
+      public static de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser inheritanceTraverser();
+      protected de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser _inheritanceTraverser();
+      protected de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsGlobalScope mCReturnStatementsGlobalScope;
+      public static de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsGlobalScope globalScope();
+      protected de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsGlobalScope _globalScope();
+      public static de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope artifactScope();
+      protected de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope _artifactScope();
+      public static de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope scope();
+      protected de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope _scope();
+      public static de.monticore.statements.mcreturnstatements._symboltable.MCReturnStatementsScopesGenitor scopesGenitor();
+      protected de.monticore.statements.mcreturnstatements._symboltable.MCReturnStatementsScopesGenitor _scopesGenitor();
+      public static de.monticore.statements.mcreturnstatements._symboltable.MCReturnStatementsScopesGenitorDelegator scopesGenitorDelegator();
+      protected de.monticore.statements.mcreturnstatements._symboltable.MCReturnStatementsScopesGenitorDelegator _scopesGenitorDelegator();
+      public static de.monticore.expressions.expressionsbasis._ast.ASTNameExpressionBuilder nameExpressionBuilder();
+      public static de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpressionBuilder literalExpressionBuilder();
+      public static de.monticore.expressions.expressionsbasis._ast.ASTArgumentsBuilder argumentsBuilder();
+      public static void initMe(MCReturnStatementsMill a);
+      public static void reset();
+
+    } 
+
+  } 
+  package de.monticore.statements.mcreturnstatements._prettyprint { 
+    public class MCReturnStatementsPrettyPrinter implements de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsHandler,de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsVisitor2 { 
+      public void handle(de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement node);
+      protected de.monticore.prettyprint.IndentPrinter printer;
+      public de.monticore.prettyprint.IndentPrinter getPrinter();
+      protected boolean printComments;
+      public boolean isPrintComments();
+      public void setPrintComments(boolean printComments);
+      protected de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser traverser;
+      public de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser getTraverser();
+      public void setTraverser(de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser traverser);
+      public MCReturnStatementsPrettyPrinter(de.monticore.prettyprint.IndentPrinter printer,boolean printComments);
+
+    } 
+    public class MCReturnStatementsFullPrettyPrinter { 
+      protected de.monticore.prettyprint.IndentPrinter printer;
+      public de.monticore.prettyprint.IndentPrinter getPrinter();
+      protected de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser traverser;
+      public de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser getTraverser();
+      public void setTraverser(de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser traverser);
+      public MCReturnStatementsFullPrettyPrinter(de.monticore.prettyprint.IndentPrinter printer,boolean printComments);
+      public MCReturnStatementsFullPrettyPrinter(de.monticore.prettyprint.IndentPrinter printer);
+      protected void initializeTraverser(boolean printComments);
+      public void setPrintComments(boolean printComments);
+      public String prettyprint(de.monticore.ast.ASTNode node);
+
+    } 
+
+  } 
+  package de.monticore.statements.mcreturnstatements._od { 
+    public class MCReturnStatements2OD implements de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsVisitor2,de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsHandler { 
+      public MCReturnStatements2OD(de.monticore.prettyprint.IndentPrinter printer,de.monticore.generating.templateengine.reporting.commons.ReportingRepository reporting);
+      protected de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser traverser;
+      protected de.monticore.prettyprint.IndentPrinter pp;
+      protected de.monticore.generating.templateengine.reporting.commons.ReportingRepository reporting;
+      protected boolean printEmptyOptional;
+      protected boolean printEmptyList;
+      public void handle(de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement node);
+      public de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser getTraverser();
+      public void setTraverser(de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser traverser);
+      protected void printAttribute(String name,String value);
+      protected void printObject(String objName,String objType);
+      public String printObjectDiagram(String modelName,de.monticore.statements.mcreturnstatements._ast.ASTMCReturnStatementsNode node);
+      public boolean isPrintEmptyOptional();
+      public void setPrintEmptyOptional(boolean printEmptyOptional);
+      public boolean isPrintEmptyList();
+      public void setPrintEmptyList(boolean printEmptyList);
+
+    } 
+
+  } 
+  package de.monticore.statements.mcreturnstatements._util { 
+    public class MCReturnStatementsTypeDispatcher implements IMCReturnStatementsTypeDispatcher { 
+      protected Optional<de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement>optMCReturnStatementsASTReturnStatement;
+      protected Optional<de.monticore.statements.mcreturnstatements._ast.MCReturnStatementsLiterals>optMCReturnStatementsMCReturnStatementsLiterals;
+      protected Optional<de.monticore.statements.mcreturnstatements._ast.ASTMCReturnStatementsNode>optMCReturnStatementsASTMCReturnStatementsNode;
+      protected Optional<de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope>optMCReturnStatementsIMCReturnStatementsScope;
+      protected Optional<de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope>optMCReturnStatementsIMCReturnStatementsArtifactScope;
+      protected Optional<de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsGlobalScope>optMCReturnStatementsIMCReturnStatementsGlobalScope;
+      protected Optional<de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement>optMCStatementsBasisASTMCBlockStatement;
+      protected Optional<de.monticore.statements.mcstatementsbasis._ast.ASTMCStatement>optMCStatementsBasisASTMCStatement;
+      protected Optional<de.monticore.statements.mcstatementsbasis._ast.ASTMCModifier>optMCStatementsBasisASTMCModifier;
+      protected Optional<de.monticore.statements.mcstatementsbasis._ast.MCStatementsBasisLiterals>optMCStatementsBasisMCStatementsBasisLiterals;
+      protected Optional<de.monticore.statements.mcstatementsbasis._ast.ASTMCStatementsBasisNode>optMCStatementsBasisASTMCStatementsBasisNode;
+      protected Optional<de.monticore.statements.mcstatementsbasis._symboltable.IMCStatementsBasisScope>optMCStatementsBasisIMCStatementsBasisScope;
+      protected Optional<de.monticore.statements.mcstatementsbasis._symboltable.IMCStatementsBasisArtifactScope>optMCStatementsBasisIMCStatementsBasisArtifactScope;
+      protected Optional<de.monticore.statements.mcstatementsbasis._symboltable.IMCStatementsBasisGlobalScope>optMCStatementsBasisIMCStatementsBasisGlobalScope;
+      protected Optional<de.monticore.expressions.expressionsbasis._ast.ASTNameExpression>optExpressionsBasisASTNameExpression;
+      protected Optional<de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression>optExpressionsBasisASTLiteralExpression;
+      protected Optional<de.monticore.expressions.expressionsbasis._ast.ASTArguments>optExpressionsBasisASTArguments;
+      protected Optional<de.monticore.expressions.expressionsbasis._ast.ASTExpression>optExpressionsBasisASTExpression;
+      protected Optional<de.monticore.expressions.expressionsbasis._ast.ExpressionsBasisLiterals>optExpressionsBasisExpressionsBasisLiterals;
+      protected Optional<de.monticore.expressions.expressionsbasis._ast.ASTExpressionsBasisNode>optExpressionsBasisASTExpressionsBasisNode;
+      protected Optional<de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope>optExpressionsBasisIExpressionsBasisScope;
+      protected Optional<de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisArtifactScope>optExpressionsBasisIExpressionsBasisArtifactScope;
+      protected Optional<de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisGlobalScope>optExpressionsBasisIExpressionsBasisGlobalScope;
+      protected Optional<de.monticore.mcbasics._ast.MCBasicsLiterals>optMCBasicsMCBasicsLiterals;
+      protected Optional<de.monticore.mcbasics._ast.ASTMCBasicsNode>optMCBasicsASTMCBasicsNode;
+      protected Optional<de.monticore.mcbasics._symboltable.IMCBasicsScope>optMCBasicsIMCBasicsScope;
+      protected Optional<de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope>optMCBasicsIMCBasicsArtifactScope;
+      protected Optional<de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope>optMCBasicsIMCBasicsGlobalScope;
+      protected Optional<de.monticore.literals.mcliteralsbasis._ast.ASTLiteral>optMCLiteralsBasisASTLiteral;
+      protected Optional<de.monticore.literals.mcliteralsbasis._ast.MCLiteralsBasisLiterals>optMCLiteralsBasisMCLiteralsBasisLiterals;
+      protected Optional<de.monticore.literals.mcliteralsbasis._ast.ASTMCLiteralsBasisNode>optMCLiteralsBasisASTMCLiteralsBasisNode;
+      protected Optional<de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope>optMCLiteralsBasisIMCLiteralsBasisScope;
+      protected Optional<de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisArtifactScope>optMCLiteralsBasisIMCLiteralsBasisArtifactScope;
+      protected Optional<de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisGlobalScope>optMCLiteralsBasisIMCLiteralsBasisGlobalScope;
+      public MCReturnStatementsTypeDispatcher();
+      protected void reset();
+      public boolean isMCReturnStatementsASTReturnStatement(de.monticore.ast.ASTNode node);
+      public de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement asMCReturnStatementsASTReturnStatement(de.monticore.ast.ASTNode node);
+      public boolean isMCReturnStatementsMCReturnStatementsLiterals(de.monticore.ast.ASTNode node);
+      public de.monticore.statements.mcreturnstatements._ast.MCReturnStatementsLiterals asMCReturnStatementsMCReturnStatementsLiterals(de.monticore.ast.ASTNode node);
+      public boolean isMCReturnStatementsASTMCReturnStatementsNode(de.monticore.ast.ASTNode node);
+      public de.monticore.statements.mcreturnstatements._ast.ASTMCReturnStatementsNode asMCReturnStatementsASTMCReturnStatementsNode(de.monticore.ast.ASTNode node);
+      public boolean isMCReturnStatementsIMCReturnStatementsScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope asMCReturnStatementsIMCReturnStatementsScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCReturnStatementsIMCReturnStatementsArtifactScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope asMCReturnStatementsIMCReturnStatementsArtifactScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCReturnStatementsIMCReturnStatementsGlobalScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsGlobalScope asMCReturnStatementsIMCReturnStatementsGlobalScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCStatementsBasisASTMCBlockStatement(de.monticore.ast.ASTNode node);
+      public de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement asMCStatementsBasisASTMCBlockStatement(de.monticore.ast.ASTNode node);
+      public boolean isMCStatementsBasisASTMCStatement(de.monticore.ast.ASTNode node);
+      public de.monticore.statements.mcstatementsbasis._ast.ASTMCStatement asMCStatementsBasisASTMCStatement(de.monticore.ast.ASTNode node);
+      public boolean isMCStatementsBasisASTMCModifier(de.monticore.ast.ASTNode node);
+      public de.monticore.statements.mcstatementsbasis._ast.ASTMCModifier asMCStatementsBasisASTMCModifier(de.monticore.ast.ASTNode node);
+      public boolean isMCStatementsBasisMCStatementsBasisLiterals(de.monticore.ast.ASTNode node);
+      public de.monticore.statements.mcstatementsbasis._ast.MCStatementsBasisLiterals asMCStatementsBasisMCStatementsBasisLiterals(de.monticore.ast.ASTNode node);
+      public boolean isMCStatementsBasisASTMCStatementsBasisNode(de.monticore.ast.ASTNode node);
+      public de.monticore.statements.mcstatementsbasis._ast.ASTMCStatementsBasisNode asMCStatementsBasisASTMCStatementsBasisNode(de.monticore.ast.ASTNode node);
+      public boolean isMCStatementsBasisIMCStatementsBasisScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.statements.mcstatementsbasis._symboltable.IMCStatementsBasisScope asMCStatementsBasisIMCStatementsBasisScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCStatementsBasisIMCStatementsBasisArtifactScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.statements.mcstatementsbasis._symboltable.IMCStatementsBasisArtifactScope asMCStatementsBasisIMCStatementsBasisArtifactScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCStatementsBasisIMCStatementsBasisGlobalScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.statements.mcstatementsbasis._symboltable.IMCStatementsBasisGlobalScope asMCStatementsBasisIMCStatementsBasisGlobalScope(de.monticore.symboltable.IScope scope);
+      public boolean isExpressionsBasisASTNameExpression(de.monticore.ast.ASTNode node);
+      public de.monticore.expressions.expressionsbasis._ast.ASTNameExpression asExpressionsBasisASTNameExpression(de.monticore.ast.ASTNode node);
+      public boolean isExpressionsBasisASTLiteralExpression(de.monticore.ast.ASTNode node);
+      public de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression asExpressionsBasisASTLiteralExpression(de.monticore.ast.ASTNode node);
+      public boolean isExpressionsBasisASTArguments(de.monticore.ast.ASTNode node);
+      public de.monticore.expressions.expressionsbasis._ast.ASTArguments asExpressionsBasisASTArguments(de.monticore.ast.ASTNode node);
+      public boolean isExpressionsBasisASTExpression(de.monticore.ast.ASTNode node);
+      public de.monticore.expressions.expressionsbasis._ast.ASTExpression asExpressionsBasisASTExpression(de.monticore.ast.ASTNode node);
+      public boolean isExpressionsBasisExpressionsBasisLiterals(de.monticore.ast.ASTNode node);
+      public de.monticore.expressions.expressionsbasis._ast.ExpressionsBasisLiterals asExpressionsBasisExpressionsBasisLiterals(de.monticore.ast.ASTNode node);
+      public boolean isExpressionsBasisASTExpressionsBasisNode(de.monticore.ast.ASTNode node);
+      public de.monticore.expressions.expressionsbasis._ast.ASTExpressionsBasisNode asExpressionsBasisASTExpressionsBasisNode(de.monticore.ast.ASTNode node);
+      public boolean isExpressionsBasisIExpressionsBasisScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope asExpressionsBasisIExpressionsBasisScope(de.monticore.symboltable.IScope scope);
+      public boolean isExpressionsBasisIExpressionsBasisArtifactScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisArtifactScope asExpressionsBasisIExpressionsBasisArtifactScope(de.monticore.symboltable.IScope scope);
+      public boolean isExpressionsBasisIExpressionsBasisGlobalScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisGlobalScope asExpressionsBasisIExpressionsBasisGlobalScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCBasicsMCBasicsLiterals(de.monticore.ast.ASTNode node);
+      public de.monticore.mcbasics._ast.MCBasicsLiterals asMCBasicsMCBasicsLiterals(de.monticore.ast.ASTNode node);
+      public boolean isMCBasicsASTMCBasicsNode(de.monticore.ast.ASTNode node);
+      public de.monticore.mcbasics._ast.ASTMCBasicsNode asMCBasicsASTMCBasicsNode(de.monticore.ast.ASTNode node);
+      public boolean isMCBasicsIMCBasicsScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.mcbasics._symboltable.IMCBasicsScope asMCBasicsIMCBasicsScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCBasicsIMCBasicsArtifactScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope asMCBasicsIMCBasicsArtifactScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCBasicsIMCBasicsGlobalScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope asMCBasicsIMCBasicsGlobalScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCLiteralsBasisASTLiteral(de.monticore.ast.ASTNode node);
+      public de.monticore.literals.mcliteralsbasis._ast.ASTLiteral asMCLiteralsBasisASTLiteral(de.monticore.ast.ASTNode node);
+      public boolean isMCLiteralsBasisMCLiteralsBasisLiterals(de.monticore.ast.ASTNode node);
+      public de.monticore.literals.mcliteralsbasis._ast.MCLiteralsBasisLiterals asMCLiteralsBasisMCLiteralsBasisLiterals(de.monticore.ast.ASTNode node);
+      public boolean isMCLiteralsBasisASTMCLiteralsBasisNode(de.monticore.ast.ASTNode node);
+      public de.monticore.literals.mcliteralsbasis._ast.ASTMCLiteralsBasisNode asMCLiteralsBasisASTMCLiteralsBasisNode(de.monticore.ast.ASTNode node);
+      public boolean isMCLiteralsBasisIMCLiteralsBasisScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope asMCLiteralsBasisIMCLiteralsBasisScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCLiteralsBasisIMCLiteralsBasisArtifactScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisArtifactScope asMCLiteralsBasisIMCLiteralsBasisArtifactScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCLiteralsBasisIMCLiteralsBasisGlobalScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisGlobalScope asMCLiteralsBasisIMCLiteralsBasisGlobalScope(de.monticore.symboltable.IScope scope);
+      public void handle(de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement node);
+      public void handle(de.monticore.statements.mcreturnstatements._ast.MCReturnStatementsLiterals node);
+      public void handle(de.monticore.statements.mcreturnstatements._ast.ASTMCReturnStatementsNode node);
+      public void handle(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope scope);
+      public void handle(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope scope);
+      public void handle(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsGlobalScope scope);
+      public void handle(de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement node);
+      public void handle(de.monticore.statements.mcstatementsbasis._ast.ASTMCStatement node);
+      public void handle(de.monticore.statements.mcstatementsbasis._ast.ASTMCModifier node);
+      public void handle(de.monticore.statements.mcstatementsbasis._ast.MCStatementsBasisLiterals node);
+      public void handle(de.monticore.statements.mcstatementsbasis._ast.ASTMCStatementsBasisNode node);
+      public void handle(de.monticore.statements.mcstatementsbasis._symboltable.IMCStatementsBasisScope scope);
+      public void handle(de.monticore.statements.mcstatementsbasis._symboltable.IMCStatementsBasisArtifactScope scope);
+      public void handle(de.monticore.statements.mcstatementsbasis._symboltable.IMCStatementsBasisGlobalScope scope);
+      public void handle(de.monticore.expressions.expressionsbasis._ast.ASTNameExpression node);
+      public void handle(de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression node);
+      public void handle(de.monticore.expressions.expressionsbasis._ast.ASTArguments node);
+      public void handle(de.monticore.expressions.expressionsbasis._ast.ASTExpression node);
+      public void handle(de.monticore.expressions.expressionsbasis._ast.ExpressionsBasisLiterals node);
+      public void handle(de.monticore.expressions.expressionsbasis._ast.ASTExpressionsBasisNode node);
+      public void handle(de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope scope);
+      public void handle(de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisArtifactScope scope);
+      public void handle(de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisGlobalScope scope);
+      public void handle(de.monticore.mcbasics._ast.MCBasicsLiterals node);
+      public void handle(de.monticore.mcbasics._ast.ASTMCBasicsNode node);
+      public void handle(de.monticore.mcbasics._symboltable.IMCBasicsScope scope);
+      public void handle(de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope scope);
+      public void handle(de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope scope);
+      public void handle(de.monticore.literals.mcliteralsbasis._ast.ASTLiteral node);
+      public void handle(de.monticore.literals.mcliteralsbasis._ast.MCLiteralsBasisLiterals node);
+      public void handle(de.monticore.literals.mcliteralsbasis._ast.ASTMCLiteralsBasisNode node);
+      public void handle(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope scope);
+      public void handle(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisArtifactScope scope);
+      public void handle(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisGlobalScope scope);
+      protected de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser traverser;
+      public de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser getTraverser();
+      public void setTraverser(de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser traverser);
+      public void setTraverser(de.monticore.statements.mcstatementsbasis._visitor.MCStatementsBasisTraverser traverser);
+      public void setTraverser(de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser traverser);
+      public void setTraverser(de.monticore.mcbasics._visitor.MCBasicsTraverser traverser);
+      public void setTraverser(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisTraverser traverser);
+      public de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement getOptMCReturnStatementsASTReturnStatement();
+      public boolean isPresentOptMCReturnStatementsASTReturnStatement();
+      public void setOptMCReturnStatementsASTReturnStatement(de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement optMCReturnStatementsASTReturnStatement);
+      public void setOptMCReturnStatementsASTReturnStatementAbsent();
+      public de.monticore.statements.mcreturnstatements._ast.MCReturnStatementsLiterals getOptMCReturnStatementsMCReturnStatementsLiterals();
+      public boolean isPresentOptMCReturnStatementsMCReturnStatementsLiterals();
+      public void setOptMCReturnStatementsMCReturnStatementsLiterals(de.monticore.statements.mcreturnstatements._ast.MCReturnStatementsLiterals optMCReturnStatementsMCReturnStatementsLiterals);
+      public void setOptMCReturnStatementsMCReturnStatementsLiteralsAbsent();
+      public de.monticore.statements.mcreturnstatements._ast.ASTMCReturnStatementsNode getOptMCReturnStatementsASTMCReturnStatementsNode();
+      public boolean isPresentOptMCReturnStatementsASTMCReturnStatementsNode();
+      public void setOptMCReturnStatementsASTMCReturnStatementsNode(de.monticore.statements.mcreturnstatements._ast.ASTMCReturnStatementsNode optMCReturnStatementsASTMCReturnStatementsNode);
+      public void setOptMCReturnStatementsASTMCReturnStatementsNodeAbsent();
+      public de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope getOptMCReturnStatementsIMCReturnStatementsScope();
+      public boolean isPresentOptMCReturnStatementsIMCReturnStatementsScope();
+      public void setOptMCReturnStatementsIMCReturnStatementsScope(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope optMCReturnStatementsIMCReturnStatementsScope);
+      public void setOptMCReturnStatementsIMCReturnStatementsScopeAbsent();
+      public de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope getOptMCReturnStatementsIMCReturnStatementsArtifactScope();
+      public boolean isPresentOptMCReturnStatementsIMCReturnStatementsArtifactScope();
+      public void setOptMCReturnStatementsIMCReturnStatementsArtifactScope(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope optMCReturnStatementsIMCReturnStatementsArtifactScope);
+      public void setOptMCReturnStatementsIMCReturnStatementsArtifactScopeAbsent();
+      public de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsGlobalScope getOptMCReturnStatementsIMCReturnStatementsGlobalScope();
+      public boolean isPresentOptMCReturnStatementsIMCReturnStatementsGlobalScope();
+      public void setOptMCReturnStatementsIMCReturnStatementsGlobalScope(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsGlobalScope optMCReturnStatementsIMCReturnStatementsGlobalScope);
+      public void setOptMCReturnStatementsIMCReturnStatementsGlobalScopeAbsent();
+      public de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement getOptMCStatementsBasisASTMCBlockStatement();
+      public boolean isPresentOptMCStatementsBasisASTMCBlockStatement();
+      public void setOptMCStatementsBasisASTMCBlockStatement(de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement optMCStatementsBasisASTMCBlockStatement);
+      public void setOptMCStatementsBasisASTMCBlockStatementAbsent();
+      public de.monticore.statements.mcstatementsbasis._ast.ASTMCStatement getOptMCStatementsBasisASTMCStatement();
+      public boolean isPresentOptMCStatementsBasisASTMCStatement();
+      public void setOptMCStatementsBasisASTMCStatement(de.monticore.statements.mcstatementsbasis._ast.ASTMCStatement optMCStatementsBasisASTMCStatement);
+      public void setOptMCStatementsBasisASTMCStatementAbsent();
+      public de.monticore.statements.mcstatementsbasis._ast.ASTMCModifier getOptMCStatementsBasisASTMCModifier();
+      public boolean isPresentOptMCStatementsBasisASTMCModifier();
+      public void setOptMCStatementsBasisASTMCModifier(de.monticore.statements.mcstatementsbasis._ast.ASTMCModifier optMCStatementsBasisASTMCModifier);
+      public void setOptMCStatementsBasisASTMCModifierAbsent();
+      public de.monticore.statements.mcstatementsbasis._ast.MCStatementsBasisLiterals getOptMCStatementsBasisMCStatementsBasisLiterals();
+      public boolean isPresentOptMCStatementsBasisMCStatementsBasisLiterals();
+      public void setOptMCStatementsBasisMCStatementsBasisLiterals(de.monticore.statements.mcstatementsbasis._ast.MCStatementsBasisLiterals optMCStatementsBasisMCStatementsBasisLiterals);
+      public void setOptMCStatementsBasisMCStatementsBasisLiteralsAbsent();
+      public de.monticore.statements.mcstatementsbasis._ast.ASTMCStatementsBasisNode getOptMCStatementsBasisASTMCStatementsBasisNode();
+      public boolean isPresentOptMCStatementsBasisASTMCStatementsBasisNode();
+      public void setOptMCStatementsBasisASTMCStatementsBasisNode(de.monticore.statements.mcstatementsbasis._ast.ASTMCStatementsBasisNode optMCStatementsBasisASTMCStatementsBasisNode);
+      public void setOptMCStatementsBasisASTMCStatementsBasisNodeAbsent();
+      public de.monticore.statements.mcstatementsbasis._symboltable.IMCStatementsBasisScope getOptMCStatementsBasisIMCStatementsBasisScope();
+      public boolean isPresentOptMCStatementsBasisIMCStatementsBasisScope();
+      public void setOptMCStatementsBasisIMCStatementsBasisScope(de.monticore.statements.mcstatementsbasis._symboltable.IMCStatementsBasisScope optMCStatementsBasisIMCStatementsBasisScope);
+      public void setOptMCStatementsBasisIMCStatementsBasisScopeAbsent();
+      public de.monticore.statements.mcstatementsbasis._symboltable.IMCStatementsBasisArtifactScope getOptMCStatementsBasisIMCStatementsBasisArtifactScope();
+      public boolean isPresentOptMCStatementsBasisIMCStatementsBasisArtifactScope();
+      public void setOptMCStatementsBasisIMCStatementsBasisArtifactScope(de.monticore.statements.mcstatementsbasis._symboltable.IMCStatementsBasisArtifactScope optMCStatementsBasisIMCStatementsBasisArtifactScope);
+      public void setOptMCStatementsBasisIMCStatementsBasisArtifactScopeAbsent();
+      public de.monticore.statements.mcstatementsbasis._symboltable.IMCStatementsBasisGlobalScope getOptMCStatementsBasisIMCStatementsBasisGlobalScope();
+      public boolean isPresentOptMCStatementsBasisIMCStatementsBasisGlobalScope();
+      public void setOptMCStatementsBasisIMCStatementsBasisGlobalScope(de.monticore.statements.mcstatementsbasis._symboltable.IMCStatementsBasisGlobalScope optMCStatementsBasisIMCStatementsBasisGlobalScope);
+      public void setOptMCStatementsBasisIMCStatementsBasisGlobalScopeAbsent();
+      public de.monticore.expressions.expressionsbasis._ast.ASTNameExpression getOptExpressionsBasisASTNameExpression();
+      public boolean isPresentOptExpressionsBasisASTNameExpression();
+      public void setOptExpressionsBasisASTNameExpression(de.monticore.expressions.expressionsbasis._ast.ASTNameExpression optExpressionsBasisASTNameExpression);
+      public void setOptExpressionsBasisASTNameExpressionAbsent();
+      public de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression getOptExpressionsBasisASTLiteralExpression();
+      public boolean isPresentOptExpressionsBasisASTLiteralExpression();
+      public void setOptExpressionsBasisASTLiteralExpression(de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression optExpressionsBasisASTLiteralExpression);
+      public void setOptExpressionsBasisASTLiteralExpressionAbsent();
+      public de.monticore.expressions.expressionsbasis._ast.ASTArguments getOptExpressionsBasisASTArguments();
+      public boolean isPresentOptExpressionsBasisASTArguments();
+      public void setOptExpressionsBasisASTArguments(de.monticore.expressions.expressionsbasis._ast.ASTArguments optExpressionsBasisASTArguments);
+      public void setOptExpressionsBasisASTArgumentsAbsent();
+      public de.monticore.expressions.expressionsbasis._ast.ASTExpression getOptExpressionsBasisASTExpression();
+      public boolean isPresentOptExpressionsBasisASTExpression();
+      public void setOptExpressionsBasisASTExpression(de.monticore.expressions.expressionsbasis._ast.ASTExpression optExpressionsBasisASTExpression);
+      public void setOptExpressionsBasisASTExpressionAbsent();
+      public de.monticore.expressions.expressionsbasis._ast.ExpressionsBasisLiterals getOptExpressionsBasisExpressionsBasisLiterals();
+      public boolean isPresentOptExpressionsBasisExpressionsBasisLiterals();
+      public void setOptExpressionsBasisExpressionsBasisLiterals(de.monticore.expressions.expressionsbasis._ast.ExpressionsBasisLiterals optExpressionsBasisExpressionsBasisLiterals);
+      public void setOptExpressionsBasisExpressionsBasisLiteralsAbsent();
+      public de.monticore.expressions.expressionsbasis._ast.ASTExpressionsBasisNode getOptExpressionsBasisASTExpressionsBasisNode();
+      public boolean isPresentOptExpressionsBasisASTExpressionsBasisNode();
+      public void setOptExpressionsBasisASTExpressionsBasisNode(de.monticore.expressions.expressionsbasis._ast.ASTExpressionsBasisNode optExpressionsBasisASTExpressionsBasisNode);
+      public void setOptExpressionsBasisASTExpressionsBasisNodeAbsent();
+      public de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope getOptExpressionsBasisIExpressionsBasisScope();
+      public boolean isPresentOptExpressionsBasisIExpressionsBasisScope();
+      public void setOptExpressionsBasisIExpressionsBasisScope(de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope optExpressionsBasisIExpressionsBasisScope);
+      public void setOptExpressionsBasisIExpressionsBasisScopeAbsent();
+      public de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisArtifactScope getOptExpressionsBasisIExpressionsBasisArtifactScope();
+      public boolean isPresentOptExpressionsBasisIExpressionsBasisArtifactScope();
+      public void setOptExpressionsBasisIExpressionsBasisArtifactScope(de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisArtifactScope optExpressionsBasisIExpressionsBasisArtifactScope);
+      public void setOptExpressionsBasisIExpressionsBasisArtifactScopeAbsent();
+      public de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisGlobalScope getOptExpressionsBasisIExpressionsBasisGlobalScope();
+      public boolean isPresentOptExpressionsBasisIExpressionsBasisGlobalScope();
+      public void setOptExpressionsBasisIExpressionsBasisGlobalScope(de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisGlobalScope optExpressionsBasisIExpressionsBasisGlobalScope);
+      public void setOptExpressionsBasisIExpressionsBasisGlobalScopeAbsent();
+      public de.monticore.mcbasics._ast.MCBasicsLiterals getOptMCBasicsMCBasicsLiterals();
+      public boolean isPresentOptMCBasicsMCBasicsLiterals();
+      public void setOptMCBasicsMCBasicsLiterals(de.monticore.mcbasics._ast.MCBasicsLiterals optMCBasicsMCBasicsLiterals);
+      public void setOptMCBasicsMCBasicsLiteralsAbsent();
+      public de.monticore.mcbasics._ast.ASTMCBasicsNode getOptMCBasicsASTMCBasicsNode();
+      public boolean isPresentOptMCBasicsASTMCBasicsNode();
+      public void setOptMCBasicsASTMCBasicsNode(de.monticore.mcbasics._ast.ASTMCBasicsNode optMCBasicsASTMCBasicsNode);
+      public void setOptMCBasicsASTMCBasicsNodeAbsent();
+      public de.monticore.mcbasics._symboltable.IMCBasicsScope getOptMCBasicsIMCBasicsScope();
+      public boolean isPresentOptMCBasicsIMCBasicsScope();
+      public void setOptMCBasicsIMCBasicsScope(de.monticore.mcbasics._symboltable.IMCBasicsScope optMCBasicsIMCBasicsScope);
+      public void setOptMCBasicsIMCBasicsScopeAbsent();
+      public de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope getOptMCBasicsIMCBasicsArtifactScope();
+      public boolean isPresentOptMCBasicsIMCBasicsArtifactScope();
+      public void setOptMCBasicsIMCBasicsArtifactScope(de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope optMCBasicsIMCBasicsArtifactScope);
+      public void setOptMCBasicsIMCBasicsArtifactScopeAbsent();
+      public de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope getOptMCBasicsIMCBasicsGlobalScope();
+      public boolean isPresentOptMCBasicsIMCBasicsGlobalScope();
+      public void setOptMCBasicsIMCBasicsGlobalScope(de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope optMCBasicsIMCBasicsGlobalScope);
+      public void setOptMCBasicsIMCBasicsGlobalScopeAbsent();
+      public de.monticore.literals.mcliteralsbasis._ast.ASTLiteral getOptMCLiteralsBasisASTLiteral();
+      public boolean isPresentOptMCLiteralsBasisASTLiteral();
+      public void setOptMCLiteralsBasisASTLiteral(de.monticore.literals.mcliteralsbasis._ast.ASTLiteral optMCLiteralsBasisASTLiteral);
+      public void setOptMCLiteralsBasisASTLiteralAbsent();
+      public de.monticore.literals.mcliteralsbasis._ast.MCLiteralsBasisLiterals getOptMCLiteralsBasisMCLiteralsBasisLiterals();
+      public boolean isPresentOptMCLiteralsBasisMCLiteralsBasisLiterals();
+      public void setOptMCLiteralsBasisMCLiteralsBasisLiterals(de.monticore.literals.mcliteralsbasis._ast.MCLiteralsBasisLiterals optMCLiteralsBasisMCLiteralsBasisLiterals);
+      public void setOptMCLiteralsBasisMCLiteralsBasisLiteralsAbsent();
+      public de.monticore.literals.mcliteralsbasis._ast.ASTMCLiteralsBasisNode getOptMCLiteralsBasisASTMCLiteralsBasisNode();
+      public boolean isPresentOptMCLiteralsBasisASTMCLiteralsBasisNode();
+      public void setOptMCLiteralsBasisASTMCLiteralsBasisNode(de.monticore.literals.mcliteralsbasis._ast.ASTMCLiteralsBasisNode optMCLiteralsBasisASTMCLiteralsBasisNode);
+      public void setOptMCLiteralsBasisASTMCLiteralsBasisNodeAbsent();
+      public de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope getOptMCLiteralsBasisIMCLiteralsBasisScope();
+      public boolean isPresentOptMCLiteralsBasisIMCLiteralsBasisScope();
+      public void setOptMCLiteralsBasisIMCLiteralsBasisScope(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope optMCLiteralsBasisIMCLiteralsBasisScope);
+      public void setOptMCLiteralsBasisIMCLiteralsBasisScopeAbsent();
+      public de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisArtifactScope getOptMCLiteralsBasisIMCLiteralsBasisArtifactScope();
+      public boolean isPresentOptMCLiteralsBasisIMCLiteralsBasisArtifactScope();
+      public void setOptMCLiteralsBasisIMCLiteralsBasisArtifactScope(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisArtifactScope optMCLiteralsBasisIMCLiteralsBasisArtifactScope);
+      public void setOptMCLiteralsBasisIMCLiteralsBasisArtifactScopeAbsent();
+      public de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisGlobalScope getOptMCLiteralsBasisIMCLiteralsBasisGlobalScope();
+      public boolean isPresentOptMCLiteralsBasisIMCLiteralsBasisGlobalScope();
+      public void setOptMCLiteralsBasisIMCLiteralsBasisGlobalScope(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisGlobalScope optMCLiteralsBasisIMCLiteralsBasisGlobalScope);
+      public void setOptMCLiteralsBasisIMCLiteralsBasisGlobalScopeAbsent();
+
+    } 
+    public interface IMCReturnStatementsTypeDispatcher extends de.monticore.statements.mcstatementsbasis._util.IMCStatementsBasisTypeDispatcher,de.monticore.expressions.expressionsbasis._util.IExpressionsBasisTypeDispatcher,de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsHandler { 
+      public abstract boolean isMCReturnStatementsASTReturnStatement(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement asMCReturnStatementsASTReturnStatement(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCReturnStatementsMCReturnStatementsLiterals(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.statements.mcreturnstatements._ast.MCReturnStatementsLiterals asMCReturnStatementsMCReturnStatementsLiterals(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCReturnStatementsASTMCReturnStatementsNode(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.statements.mcreturnstatements._ast.ASTMCReturnStatementsNode asMCReturnStatementsASTMCReturnStatementsNode(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCReturnStatementsIMCReturnStatementsScope(de.monticore.symboltable.IScope scope);
+      public abstract de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope asMCReturnStatementsIMCReturnStatementsScope(de.monticore.symboltable.IScope scope);
+      public abstract boolean isMCReturnStatementsIMCReturnStatementsGlobalScope(de.monticore.symboltable.IScope scope);
+      public abstract de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsGlobalScope asMCReturnStatementsIMCReturnStatementsGlobalScope(de.monticore.symboltable.IScope scope);
+      public abstract boolean isMCReturnStatementsIMCReturnStatementsArtifactScope(de.monticore.symboltable.IScope scope);
+      public abstract de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope asMCReturnStatementsIMCReturnStatementsArtifactScope(de.monticore.symboltable.IScope scope);
+
+    } 
+
+  } 
+  package de.monticore.statements.mcreturnstatements._cocos { 
+    public class MCReturnStatementsCoCoChecker { 
+      protected de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser traverser;
+      public MCReturnStatementsCoCoChecker();
+      public de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser getTraverser();
+      public void setTraverser(de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser traverser);
+      public void addChecker(de.monticore.statements.mcreturnstatements._cocos.MCReturnStatementsCoCoChecker checker);
+      public void checkAll(de.monticore.statements.mcreturnstatements._ast.ASTMCReturnStatementsNode node);
+      public void addCoCo(de.monticore.statements.mcreturnstatements._cocos.MCReturnStatementsASTReturnStatementCoCo coco);
+      public void addCoCo(de.monticore.statements.mcreturnstatements._cocos.MCReturnStatementsASTMCReturnStatementsNodeCoCo coco);
+      public void addChecker(de.monticore.statements.mcstatementsbasis._cocos.MCStatementsBasisCoCoChecker checker);
+      public void checkAll(de.monticore.statements.mcstatementsbasis._ast.ASTMCStatementsBasisNode node);
+      public void addCoCo(de.monticore.statements.mcstatementsbasis._cocos.MCStatementsBasisASTMCBlockStatementCoCo coco);
+      public void addCoCo(de.monticore.statements.mcstatementsbasis._cocos.MCStatementsBasisASTMCStatementCoCo coco);
+      public void addCoCo(de.monticore.statements.mcstatementsbasis._cocos.MCStatementsBasisASTMCModifierCoCo coco);
+      public void addCoCo(de.monticore.statements.mcstatementsbasis._cocos.MCStatementsBasisASTMCStatementsBasisNodeCoCo coco);
+      public void addChecker(de.monticore.expressions.expressionsbasis._cocos.ExpressionsBasisCoCoChecker checker);
+      public void checkAll(de.monticore.expressions.expressionsbasis._ast.ASTExpressionsBasisNode node);
+      public void addCoCo(de.monticore.expressions.expressionsbasis._cocos.ExpressionsBasisASTNameExpressionCoCo coco);
+      public void addCoCo(de.monticore.expressions.expressionsbasis._cocos.ExpressionsBasisASTLiteralExpressionCoCo coco);
+      public void addCoCo(de.monticore.expressions.expressionsbasis._cocos.ExpressionsBasisASTArgumentsCoCo coco);
+      public void addCoCo(de.monticore.expressions.expressionsbasis._cocos.ExpressionsBasisASTExpressionCoCo coco);
+      public void addCoCo(de.monticore.expressions.expressionsbasis._cocos.ExpressionsBasisASTExpressionsBasisNodeCoCo coco);
+      public void addChecker(de.monticore.mcbasics._cocos.MCBasicsCoCoChecker checker);
+      public void checkAll(de.monticore.mcbasics._ast.ASTMCBasicsNode node);
+      public void addCoCo(de.monticore.mcbasics._cocos.MCBasicsASTMCBasicsNodeCoCo coco);
+      public void addChecker(de.monticore.literals.mcliteralsbasis._cocos.MCLiteralsBasisCoCoChecker checker);
+      public void checkAll(de.monticore.literals.mcliteralsbasis._ast.ASTMCLiteralsBasisNode node);
+      public void addCoCo(de.monticore.literals.mcliteralsbasis._cocos.MCLiteralsBasisASTLiteralCoCo coco);
+      public void addCoCo(de.monticore.literals.mcliteralsbasis._cocos.MCLiteralsBasisASTMCLiteralsBasisNodeCoCo coco);
+
+    } 
+    public interface MCReturnStatementsASTReturnStatementCoCo extends de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsVisitor2 { 
+      public abstract void check(de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement node);
+      public void visit(de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement node);
+
+    } 
+    public interface MCReturnStatementsASTMCReturnStatementsNodeCoCo extends de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsVisitor2 { 
+      public abstract void check(de.monticore.statements.mcreturnstatements._ast.ASTMCReturnStatementsNode node);
+      public void visit(de.monticore.statements.mcreturnstatements._ast.ASTMCReturnStatementsNode node);
+
+    } 
+
+  } 
+  package de.monticore.statements.mcreturnstatements._visitor { 
+    public interface MCReturnStatementsTraverser extends de.monticore.statements.mcstatementsbasis._visitor.MCStatementsBasisTraverser,de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser { 
+      public void add4MCReturnStatements(de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsVisitor2 mCReturnStatementsVisitor);
+      public List<de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsVisitor2>getMCReturnStatementsVisitorList();
+      public void add4MCStatementsBasis(de.monticore.statements.mcstatementsbasis._visitor.MCStatementsBasisVisitor2 mCStatementsBasisVisitor);
+      public List<de.monticore.statements.mcstatementsbasis._visitor.MCStatementsBasisVisitor2>getMCStatementsBasisVisitorList();
+      public void add4ExpressionsBasis(de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor2 expressionsBasisVisitor);
+      public List<de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor2>getExpressionsBasisVisitorList();
+      public void add4MCBasics(de.monticore.mcbasics._visitor.MCBasicsVisitor2 mCBasicsVisitor);
+      public List<de.monticore.mcbasics._visitor.MCBasicsVisitor2>getMCBasicsVisitorList();
+      public void add4MCLiteralsBasis(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisVisitor2 mCLiteralsBasisVisitor);
+      public List<de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisVisitor2>getMCLiteralsBasisVisitorList();
+      public void setMCReturnStatementsHandler(de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsHandler mCReturnStatementsHandler);
+      public Optional<de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsHandler>getMCReturnStatementsHandler();
+      public void setMCStatementsBasisHandler(de.monticore.statements.mcstatementsbasis._visitor.MCStatementsBasisHandler mCStatementsBasisHandler);
+      public Optional<de.monticore.statements.mcstatementsbasis._visitor.MCStatementsBasisHandler>getMCStatementsBasisHandler();
+      public void setExpressionsBasisHandler(de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisHandler expressionsBasisHandler);
+      public Optional<de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisHandler>getExpressionsBasisHandler();
+      public void setMCBasicsHandler(de.monticore.mcbasics._visitor.MCBasicsHandler mCBasicsHandler);
+      public Optional<de.monticore.mcbasics._visitor.MCBasicsHandler>getMCBasicsHandler();
+      public void setMCLiteralsBasisHandler(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisHandler mCLiteralsBasisHandler);
+      public Optional<de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisHandler>getMCLiteralsBasisHandler();
+      public void visit(de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement node);
+      public void endVisit(de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement node);
+      public void handle(de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement node);
+      public void traverse(de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement node);
+      public void visit(de.monticore.statements.mcreturnstatements._ast.ASTMCReturnStatementsNode node);
+      public void endVisit(de.monticore.statements.mcreturnstatements._ast.ASTMCReturnStatementsNode node);
+      public void handle(de.monticore.statements.mcreturnstatements._ast.ASTMCReturnStatementsNode node);
+      public void visit(de.monticore.statements.mcreturnstatements._symboltable.ICommonMCReturnStatementsSymbol node);
+      public void endVisit(de.monticore.statements.mcreturnstatements._symboltable.ICommonMCReturnStatementsSymbol node);
+      public void handle(de.monticore.statements.mcreturnstatements._symboltable.ICommonMCReturnStatementsSymbol node);
+      public void traverse(de.monticore.statements.mcreturnstatements._symboltable.ICommonMCReturnStatementsSymbol node);
+      public void visit(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope node);
+      public void endVisit(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope node);
+      public void handle(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope node);
+      public void traverse(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope node);
+      public void visit(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope node);
+      public void endVisit(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope node);
+      public void handle(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope node);
+      public void traverse(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope node);
+      public void visit(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsGlobalScope node);
+      public void endVisit(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsGlobalScope node);
+      public void handle(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsGlobalScope node);
+      public void traverse(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsGlobalScope node);
+
+    } 
+    public class MCReturnStatementsTraverserImplementation implements de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser { 
+      protected MCReturnStatementsTraverserImplementation realThis;
+      protected List<de.monticore.visitor.IVisitor>iVisitorList;
+      protected List<de.monticore.statements.mcstatementsbasis._visitor.MCStatementsBasisVisitor2>mCStatementsBasisVisitorList;
+      protected List<de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor2>expressionsBasisVisitorList;
+      protected List<de.monticore.mcbasics._visitor.MCBasicsVisitor2>mCBasicsVisitorList;
+      protected List<de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisVisitor2>mCLiteralsBasisVisitorList;
+      protected List<de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsVisitor2>mCReturnStatementsVisitorList;
+      protected Optional<de.monticore.statements.mcstatementsbasis._visitor.MCStatementsBasisHandler>mCStatementsBasisHandler;
+      protected Optional<de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisHandler>expressionsBasisHandler;
+      protected Optional<de.monticore.mcbasics._visitor.MCBasicsHandler>mCBasicsHandler;
+      protected Optional<de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisHandler>mCLiteralsBasisHandler;
+      protected Optional<de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsHandler>mCReturnStatementsHandler;
+      public void add4MCStatementsBasis(de.monticore.statements.mcstatementsbasis._visitor.MCStatementsBasisVisitor2 mCStatementsBasisVisitor);
+      public List<de.monticore.statements.mcstatementsbasis._visitor.MCStatementsBasisVisitor2>getMCStatementsBasisVisitorList();
+      public void add4ExpressionsBasis(de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor2 expressionsBasisVisitor);
+      public List<de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor2>getExpressionsBasisVisitorList();
+      public void add4MCBasics(de.monticore.mcbasics._visitor.MCBasicsVisitor2 mCBasicsVisitor);
+      public List<de.monticore.mcbasics._visitor.MCBasicsVisitor2>getMCBasicsVisitorList();
+      public void add4MCLiteralsBasis(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisVisitor2 mCLiteralsBasisVisitor);
+      public List<de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisVisitor2>getMCLiteralsBasisVisitorList();
+      public void add4MCReturnStatements(de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsVisitor2 mCReturnStatementsVisitor);
+      public List<de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsVisitor2>getMCReturnStatementsVisitorList();
+      public void setMCStatementsBasisHandler(de.monticore.statements.mcstatementsbasis._visitor.MCStatementsBasisHandler mCStatementsBasisHandler);
+      public Optional<de.monticore.statements.mcstatementsbasis._visitor.MCStatementsBasisHandler>getMCStatementsBasisHandler();
+      public void setExpressionsBasisHandler(de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisHandler expressionsBasisHandler);
+      public Optional<de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisHandler>getExpressionsBasisHandler();
+      public void setMCBasicsHandler(de.monticore.mcbasics._visitor.MCBasicsHandler mCBasicsHandler);
+      public Optional<de.monticore.mcbasics._visitor.MCBasicsHandler>getMCBasicsHandler();
+      public void setMCLiteralsBasisHandler(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisHandler mCLiteralsBasisHandler);
+      public Optional<de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisHandler>getMCLiteralsBasisHandler();
+      public void setMCReturnStatementsHandler(de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsHandler mCReturnStatementsHandler);
+      public Optional<de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsHandler>getMCReturnStatementsHandler();
+      public void add4IVisitor(de.monticore.visitor.IVisitor iVisitor);
+      public List<de.monticore.visitor.IVisitor>getIVisitorList();
+      protected Set<Object> traversedElements;
+      public Set<Object> getTraversedElements();
+      public void setTraversedElements(Set<Object> traversedElements);
+
+    } 
+    public interface MCReturnStatementsVisitor2 extends de.monticore.visitor.IVisitor { 
+      public void visit(de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement node);
+      public void endVisit(de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement node);
+      public void visit(de.monticore.statements.mcreturnstatements._ast.ASTMCReturnStatementsNode node);
+      public void endVisit(de.monticore.statements.mcreturnstatements._ast.ASTMCReturnStatementsNode node);
+      public void visit(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope node);
+      public void endVisit(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope node);
+      public void visit(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope node);
+      public void endVisit(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope node);
+      public void visit(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsGlobalScope node);
+      public void endVisit(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsGlobalScope node);
+
+    } 
+    public interface MCReturnStatementsHandler extends de.monticore.visitor.IHandler { 
+      public abstract de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser getTraverser();
+      public abstract void setTraverser(de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser traverser);
+      public void handle(de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement node);
+      public void traverse(de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement node);
+      public void handle(de.monticore.statements.mcreturnstatements._ast.ASTMCReturnStatementsNode node);
+      public void handle(de.monticore.statements.mcreturnstatements._symboltable.ICommonMCReturnStatementsSymbol node);
+      public void traverse(de.monticore.statements.mcreturnstatements._symboltable.ICommonMCReturnStatementsSymbol node);
+      public void handle(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope node);
+      public void traverse(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope node);
+      public void handle(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope node);
+      public void traverse(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope node);
+      public void handle(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsGlobalScope node);
+      public void traverse(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsGlobalScope node);
+
+    } 
+    public class MCReturnStatementsInheritanceHandler implements de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsHandler { 
+      protected de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser traverser;
+      public de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser getTraverser();
+      public void setTraverser(de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser traverser);
+      public void handle(de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement node);
+      public void handle(de.monticore.statements.mcreturnstatements._ast.ASTMCReturnStatementsNode node);
+      public void handle(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope node);
+      public void handle(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope node);
+      public void handle(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsGlobalScope node);
+
+    } 
+    public interface IMCReturnStatementsInterpreter extends de.monticore.statements.mcstatementsbasis._visitor.IMCStatementsBasisInterpreter,de.monticore.expressions.expressionsbasis._visitor.IExpressionsBasisInterpreter,de.monticore.interpreter.ModelInterpreter { 
+      public abstract de.monticore.interpreter.Value interpret(de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement node);
+      public abstract de.monticore.interpreter.Value interpret(de.monticore.statements.mcreturnstatements._ast.ASTMCReturnStatementsNode node);
+
+    } 
+    public class MCReturnStatementsInterpreter implements IMCReturnStatementsInterpreter { 
+      protected de.monticore.statements.mcstatementsbasis._visitor.IMCStatementsBasisInterpreter mCStatementsBasisInterpreter;
+      protected de.monticore.expressions.expressionsbasis._visitor.IExpressionsBasisInterpreter expressionsBasisInterpreter;
+      protected de.monticore.mcbasics._visitor.IMCBasicsInterpreter mCBasicsInterpreter;
+      protected de.monticore.literals.mcliteralsbasis._visitor.IMCLiteralsBasisInterpreter mCLiteralsBasisInterpreter;
+      public MCReturnStatementsInterpreter();
+      public MCReturnStatementsInterpreter(de.monticore.interpreter.ModelInterpreter realThis);
+      protected de.monticore.interpreter.ModelInterpreter realThis;
+      public de.monticore.interpreter.ModelInterpreter getRealThis();
+      public void setRealThis(de.monticore.interpreter.ModelInterpreter realThis);
+      protected Map<de.monticore.symboltable.ISymbol,de.monticore.interpreter.Value>contextMap;
+      public void store(de.monticore.symboltable.ISymbol symbol,de.monticore.interpreter.Value value);
+      public de.monticore.interpreter.Value load(de.monticore.symboltable.ISymbol symbol);
+      public Map<de.monticore.symboltable.ISymbol,de.monticore.interpreter.Value>getContextMap();
+      public de.monticore.interpreter.Value interpret(de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement node);
+      public de.monticore.interpreter.Value interpret(de.monticore.statements.mcreturnstatements._ast.ASTMCReturnStatementsNode node);
+      public de.monticore.interpreter.Value interpret(de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement node);
+      public de.monticore.interpreter.Value interpret(de.monticore.statements.mcstatementsbasis._ast.ASTMCStatement node);
+      public de.monticore.interpreter.Value interpret(de.monticore.statements.mcstatementsbasis._ast.ASTMCModifier node);
+      public de.monticore.interpreter.Value interpret(de.monticore.statements.mcstatementsbasis._ast.ASTMCStatementsBasisNode node);
+      public de.monticore.interpreter.Value interpret(de.monticore.expressions.expressionsbasis._ast.ASTNameExpression node);
+      public de.monticore.interpreter.Value interpret(de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression node);
+      public de.monticore.interpreter.Value interpret(de.monticore.expressions.expressionsbasis._ast.ASTArguments node);
+      public de.monticore.interpreter.Value interpret(de.monticore.expressions.expressionsbasis._ast.ASTExpression node);
+      public de.monticore.interpreter.Value interpret(de.monticore.expressions.expressionsbasis._ast.ASTExpressionsBasisNode node);
+      public de.monticore.interpreter.Value interpret(de.monticore.mcbasics._ast.ASTMCBasicsNode node);
+      public de.monticore.interpreter.Value interpret(de.monticore.literals.mcliteralsbasis._ast.ASTLiteral node);
+      public de.monticore.interpreter.Value interpret(de.monticore.literals.mcliteralsbasis._ast.ASTMCLiteralsBasisNode node);
+
+    } 
+
+  } 
+  package de.monticore.statements.mcreturnstatements._symboltable { 
+    public class MCReturnStatementsScope implements de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope { 
+      public MCReturnStatementsScope();
+      public MCReturnStatementsScope(boolean shadowing);
+      public MCReturnStatementsScope(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope enclosingScope);
+      public MCReturnStatementsScope(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope enclosingScope,boolean shadowing);
+      protected com.google.common.collect.LinkedListMultimap<String,de.monticore.symboltable.SymbolWithScopeOfUnknownKind>unknownSymbols;
+      public void add(de.monticore.symboltable.SymbolWithScopeOfUnknownKind symbol);
+      public void remove(de.monticore.symboltable.SymbolWithScopeOfUnknownKind symbol);
+      public com.google.common.collect.LinkedListMultimap<String,de.monticore.symboltable.SymbolWithScopeOfUnknownKind>getUnknownSymbols();
+      protected boolean unknownSymbolsAlreadyResolved;
+      public boolean isUnknownSymbolsAlreadyResolved();
+      public void setUnknownSymbolsAlreadyResolved(boolean unknownSymbolsAlreadyResolved);
+      protected de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope enclosingScope;
+      public de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope getEnclosingScope();
+      public void setEnclosingScope(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope enclosingScope);
+      protected Optional<de.monticore.symboltable.IScopeSpanningSymbol>spanningSymbol;
+      public de.monticore.symboltable.IScopeSpanningSymbol getSpanningSymbol();
+      public boolean isPresentSpanningSymbol();
+      public void setSpanningSymbol(de.monticore.symboltable.IScopeSpanningSymbol spanningSymbol);
+      public void setSpanningSymbolAbsent();
+      protected boolean shadowing;
+      public boolean isShadowing();
+      public void setShadowing(boolean shadowing);
+      protected boolean exportingSymbols;
+      public boolean isExportingSymbols();
+      public void setExportingSymbols(boolean exportingSymbols);
+      protected boolean ordered;
+      public boolean isOrdered();
+      public void setOrdered(boolean ordered);
+      protected Optional<String>name;
+      public String getName();
+      public boolean isPresentName();
+      public void setName(String name);
+      public void setNameAbsent();
+      protected Optional<de.monticore.ast.ASTNode>astNode;
+      public de.monticore.ast.ASTNode getAstNode();
+      public boolean isPresentAstNode();
+      public void setAstNode(de.monticore.ast.ASTNode astNode);
+      public void setAstNodeAbsent();
+      protected List<de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope>subScopes;
+      public void addSubScope(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope subScope);
+      public void removeSubScope(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope subScope);
+      public List<de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope>getSubScopes();
+      public void setSubScopes(List<de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope>subScopes);
+      public void addSubScope(de.monticore.statements.mcstatementsbasis._symboltable.IMCStatementsBasisScope subScope);
+      public void removeSubScope(de.monticore.statements.mcstatementsbasis._symboltable.IMCStatementsBasisScope subScope);
+      public void setEnclosingScope(de.monticore.statements.mcstatementsbasis._symboltable.IMCStatementsBasisScope newEnclosingScope);
+      public void addSubScope(de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope subScope);
+      public void removeSubScope(de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope subScope);
+      public void setEnclosingScope(de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope newEnclosingScope);
+      public void addSubScope(de.monticore.mcbasics._symboltable.IMCBasicsScope subScope);
+      public void removeSubScope(de.monticore.mcbasics._symboltable.IMCBasicsScope subScope);
+      public void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope newEnclosingScope);
+      public void addSubScope(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope subScope);
+      public void removeSubScope(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope subScope);
+      public void setEnclosingScope(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope newEnclosingScope);
+      public void accept(de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser visitor);
+      public void accept(de.monticore.statements.mcstatementsbasis._visitor.MCStatementsBasisTraverser visitor);
+      public void accept(de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+
+    } 
+    public interface IMCReturnStatementsScope extends de.monticore.statements.mcstatementsbasis._symboltable.IMCStatementsBasisScope,de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope { 
+      public abstract List<? extends IMCReturnStatementsScope>getSubScopes();
+      public void addSubScope(IMCReturnStatementsScope subScope);
+      public void removeSubScope(IMCReturnStatementsScope subScope);
+      public abstract IMCReturnStatementsScope getEnclosingScope();
+      public abstract void setEnclosingScope(IMCReturnStatementsScope enclosingScope);
+      public abstract void accept(de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser visitor);
+      public int getSymbolsSize();
+      public abstract void accept(de.monticore.statements.mcstatementsbasis._visitor.MCStatementsBasisTraverser visitor);
+      public abstract void accept(de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser visitor);
+      public abstract void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public abstract void accept(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisTraverser visitor);
+      public abstract void accept(de.monticore.visitor.ITraverser visitor);
+
+    } 
+    public class MCReturnStatementsSymbols2Json implements de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsVisitor2 { 
+      protected de.monticore.symboltable.serialization.IDeSer<de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope, de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope, MCReturnStatementsSymbols2Json> scopeDeSer;
+      protected MCReturnStatementsSymbols2Json realThis;
+      public MCReturnStatementsSymbols2Json getRealThis();
+      public void setRealThis(MCReturnStatementsSymbols2Json realThis);
+      protected de.monticore.symboltable.serialization.JsonPrinter printer;
+      public de.monticore.symboltable.serialization.JsonPrinter getJsonPrinter();
+      public void setJsonPrinter(de.monticore.symboltable.serialization.JsonPrinter printer);
+      protected de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser traverser;
+      public String serialize(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope toSerialize);
+      public String serialize(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope toSerialize);
+      public de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope deserialize(String serialized);
+      public de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser getTraverser();
+      public void setTraverser(de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser traverser);
+      public MCReturnStatementsSymbols2Json();
+      public MCReturnStatementsSymbols2Json(de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser traverser,de.monticore.symboltable.serialization.JsonPrinter printer);
+      public void init();
+      public String getSerializedString();
+      public de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope load(java.net.URL url);
+      public de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope load(java.io.Reader reader);
+      public de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope load(String model);
+      public String store(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope scope,String fileName);
+      public void visit(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope node);
+      public void endVisit(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope node);
+      public void visit(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope node);
+      public void endVisit(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope node);
+
+    } 
+    public interface ICommonMCReturnStatementsSymbol extends de.monticore.symboltable.ISymbol { 
+      public abstract void accept(de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser visitor);
+      public abstract de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope getEnclosingScope();
+      public abstract void setEnclosingScope(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope enclosingScope);
+
+    } 
+    public interface IMCReturnStatementsGlobalScope extends de.monticore.statements.mcstatementsbasis._symboltable.IMCStatementsBasisGlobalScope,de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisGlobalScope,de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope { 
+      public abstract void loadFileForModelName(String modelName);
+      public de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope getEnclosingScope();
+      public void setEnclosingScope(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope enclosingScope);
+      public String getName();
+      public boolean isPresentName();
+      public boolean checkIfContinueAsSubScope(String symbolName);
+      public abstract Map<String,de.monticore.symboltable.serialization.ISymbolDeSer> getSymbolDeSers();
+      public void putSymbolDeSer(String key,de.monticore.symboltable.serialization.ISymbolDeSer value);
+      public de.monticore.symboltable.serialization.ISymbolDeSer getSymbolDeSer(String key);
+      public abstract IMCReturnStatementsGlobalScope getRealThis();
+      public abstract void accept(de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser visitor);
+      public abstract void accept(de.monticore.statements.mcstatementsbasis._visitor.MCStatementsBasisTraverser visitor);
+      public abstract void accept(de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser visitor);
+      public abstract void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public abstract void accept(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisTraverser visitor);
+      public abstract void accept(de.monticore.visitor.ITraverser visitor);
+
+    } 
+    public interface IMCReturnStatementsArtifactScope extends de.monticore.statements.mcstatementsbasis._symboltable.IMCStatementsBasisArtifactScope,de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisArtifactScope,de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope { 
+      public boolean containsImports(Object element);
+      public boolean containsAllImports(Collection<?>collection);
+      public boolean isEmptyImports();
+      public Iterator<de.monticore.symboltable.ImportStatement>iteratorImports();
+      public int sizeImports();
+      public de.monticore.symboltable.ImportStatement []toArrayImports(de.monticore.symboltable.ImportStatement []array);
+      public Object []toArrayImports();
+      public Spliterator<de.monticore.symboltable.ImportStatement>spliteratorImports();
+      public Stream<de.monticore.symboltable.ImportStatement>streamImports();
+      public Stream<de.monticore.symboltable.ImportStatement>parallelStreamImports();
+      public de.monticore.symboltable.ImportStatement getImports(int index);
+      public int indexOfImports(Object element);
+      public int lastIndexOfImports(Object element);
+      public boolean equalsImports(Object o);
+      public int hashCodeImports();
+      public ListIterator<de.monticore.symboltable.ImportStatement>listIteratorImports();
+      public ListIterator<de.monticore.symboltable.ImportStatement>listIteratorImports(int index);
+      public List<de.monticore.symboltable.ImportStatement>subListImports(int start,int end);
+      public void clearImports();
+      public boolean addImports(de.monticore.symboltable.ImportStatement element);
+      public boolean addAllImports(Collection<? extends de.monticore.symboltable.ImportStatement>collection);
+      public boolean removeImports(Object element);
+      public boolean removeAllImports(Collection<?>collection);
+      public boolean retainAllImports(Collection<?>collection);
+      public boolean removeIfImports(Predicate<? super de.monticore.symboltable.ImportStatement>filter);
+      public void forEachImports(Consumer<? super de.monticore.symboltable.ImportStatement>action);
+      public void addImports(int index,de.monticore.symboltable.ImportStatement element);
+      public boolean addAllImports(int index,Collection<? extends de.monticore.symboltable.ImportStatement>collection);
+      public de.monticore.symboltable.ImportStatement removeImports(int index);
+      public de.monticore.symboltable.ImportStatement setImports(int index,de.monticore.symboltable.ImportStatement element);
+      public void replaceAllImports(UnaryOperator<de.monticore.symboltable.ImportStatement>operator);
+      public void sortImports(Comparator<? super de.monticore.symboltable.ImportStatement>comparator);
+      public abstract List<de.monticore.symboltable.ImportStatement>getImportsList();
+      public abstract void setImportsList(List<de.monticore.symboltable.ImportStatement>imports);
+      public Optional<de.monticore.symboltable.ISymbol>getTopLevelSymbol();
+      public boolean checkIfContinueAsSubScope(String symbolName);
+      public List<String>getRemainingNameForResolveDown(String symbolName);
+      public String getFullName();
+      public abstract void accept(de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser visitor);
+      public abstract void accept(de.monticore.statements.mcstatementsbasis._visitor.MCStatementsBasisTraverser visitor);
+      public abstract void accept(de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser visitor);
+      public abstract void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public abstract void accept(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisTraverser visitor);
+      public abstract void accept(de.monticore.visitor.ITraverser visitor);
+
+    } 
+    public class MCReturnStatementsScopesGenitorDelegator { 
+      public MCReturnStatementsScopesGenitorDelegator();
+      protected Deque<de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope>scopeStack;
+      protected final MCReturnStatementsScopesGenitor symbolTable;
+      protected de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsGlobalScope globalScope;
+      protected de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser traverser;
+      public de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope createFromAST(de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement rootNode);
+
+    } 
+    public class MCReturnStatementsArtifactScope extends de.monticore.statements.mcreturnstatements._symboltable.MCReturnStatementsScope implements de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope { 
+      public MCReturnStatementsArtifactScope(String packageName,List<de.monticore.symboltable.ImportStatement>imports);
+      public MCReturnStatementsArtifactScope(Optional<de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope>enclosingScope,String packageName,List<de.monticore.symboltable.ImportStatement>imports);
+      public MCReturnStatementsArtifactScope();
+      protected String packageName;
+      public String getPackageName();
+      public void setPackageName(String packageName);
+      protected List<de.monticore.symboltable.ImportStatement>imports;
+      public List<de.monticore.symboltable.ImportStatement>getImportsList();
+      public void setImportsList(List<de.monticore.symboltable.ImportStatement>imports);
+      public boolean isPresentName();
+      public String getName();
+      public void setEnclosingScope(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope enclosingScope);
+      public void accept(de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser visitor);
+      public void accept(de.monticore.statements.mcstatementsbasis._visitor.MCStatementsBasisTraverser visitor);
+      public void accept(de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+
+    } 
+    public class MCReturnStatementsDeSer implements de.monticore.symboltable.serialization.IDeSer<de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope, de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope, de.monticore.statements.mcreturnstatements._symboltable.MCReturnStatementsSymbols2Json> { 
+      public String serialize(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope toSerialize,de.monticore.statements.mcreturnstatements._symboltable.MCReturnStatementsSymbols2Json s2j);
+      public String serialize(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope toSerialize,de.monticore.statements.mcreturnstatements._symboltable.MCReturnStatementsSymbols2Json s2j);
+      public void serializeAddons(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope toSerialize,de.monticore.statements.mcreturnstatements._symboltable.MCReturnStatementsSymbols2Json s2j);
+      public void serializeAddons(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope toSerialize,de.monticore.statements.mcreturnstatements._symboltable.MCReturnStatementsSymbols2Json s2j);
+      public de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope deserializeScope(de.monticore.symboltable.serialization.json.JsonObject scopeJson);
+      public de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope deserializeArtifactScope(de.monticore.symboltable.serialization.json.JsonObject scopeJson);
+      protected void deserializeSymbols(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope scope,de.monticore.symboltable.serialization.json.JsonObject scopeJson);
+      public void deserializeAddons(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope scope,de.monticore.symboltable.serialization.json.JsonObject scopeJson);
+      public void deserializeAddons(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope scope,de.monticore.symboltable.serialization.json.JsonObject scopeJson);
+
+    } 
+    public class MCReturnStatementsGlobalScope extends de.monticore.statements.mcreturnstatements._symboltable.MCReturnStatementsScope implements de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsGlobalScope { 
+      public MCReturnStatementsGlobalScope(de.monticore.io.paths.MCPath symbolPath,String fileExt);
+      public MCReturnStatementsGlobalScope();
+      protected de.monticore.io.paths.MCPath symbolPath;
+      public de.monticore.io.paths.MCPath getSymbolPath();
+      public void setSymbolPath(de.monticore.io.paths.MCPath symbolPath);
+      protected String fileExt;
+      public String getFileExt();
+      public void setFileExt(String fileExt);
+      public de.monticore.symboltable.serialization.IDeSer deSer;
+      public de.monticore.symboltable.serialization.IDeSer getDeSer();
+      public void setDeSer(de.monticore.symboltable.serialization.IDeSer deSer);
+      protected Map<String,de.monticore.symboltable.serialization.ISymbolDeSer> symbolDeSers;
+      public Map<String,de.monticore.symboltable.serialization.ISymbolDeSer> getSymbolDeSers();
+      public void setSymbolDeSers(Map<String,de.monticore.symboltable.serialization.ISymbolDeSer> symbolDeSers);
+      protected MCReturnStatementsSymbols2Json symbols2Json;
+      public void setSymbols2Json(MCReturnStatementsSymbols2Json symbols2Json);
+      public MCReturnStatementsSymbols2Json getSymbols2Json();
+      protected Set<String>cache;
+      public void addLoadedFile(String name);
+      public void clearLoadedFiles();
+      public boolean isFileLoaded(String name);
+      public void init();
+      public void loadFileForModelName(String modelName);
+      public MCReturnStatementsGlobalScope getRealThis();
+      public void clear();
+      public void accept(de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser visitor);
+      public void accept(de.monticore.statements.mcstatementsbasis._visitor.MCStatementsBasisTraverser visitor);
+      public void accept(de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+
+    } 
+    public class MCReturnStatementsScopesGenitor implements de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsVisitor2,de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsHandler { 
+      public MCReturnStatementsScopesGenitor();
+      protected Deque<de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope>scopeStack;
+      protected de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser traverser;
+      public de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser getTraverser();
+      public void setTraverser(de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser traverser);
+      protected de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope firstCreatedScope;
+      public de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope getFirstCreatedScope();
+      public de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope createFromAST(de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement rootNode);
+      public void putOnStack(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope scope);
+      public final Optional<de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope>getCurrentScope();
+      public final Optional<de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope>removeCurrentScope();
+      public void setScopeStack(Deque<? extends de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope>scopeStack);
+      public de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope createScope(boolean shadowing);
+      public void visit(de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement node);
+      protected void initScopeHP1(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope scope);
+      protected void initScopeHP2(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope scope);
+      protected void initArtifactScopeHP1(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope scope);
+      protected void initArtifactScopeHP2(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsArtifactScope scope);
+      public void addToScopeStack(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope scope);
+
+    } 
+
+  } 
+  package de.monticore.statements.mcreturnstatements._ast { 
+    <<startProd>>public class ASTReturnStatement extends ASTCNode implements de.monticore.statements.mcstatementsbasis._ast.ASTMCStatement,de.monticore.statements.mcreturnstatements._ast.ASTMCReturnStatementsNode { 
+      protected ASTReturnStatement();
+      public boolean deepEquals(Object o);
+      public boolean deepEquals(Object o,boolean forceSameOrder);
+      public boolean deepEqualsWithComments(Object o);
+      public boolean deepEqualsWithComments(Object o,boolean forceSameOrder);
+      public boolean equalAttributes(Object o);
+      public boolean equalsWithComments(Object o);
+      public ASTReturnStatement deepClone();
+      public ASTReturnStatement deepClone(ASTReturnStatement result);
+      <<derived_attribute_name="",astType="">>protected Optional<de.monticore.expressions.expressionsbasis._ast.ASTExpression>expression;
+      public de.monticore.expressions.expressionsbasis._ast.ASTExpression getExpression();
+      public boolean isPresentExpression();
+      public void setExpression(de.monticore.expressions.expressionsbasis._ast.ASTExpression expression);
+      public void setExpressionAbsent();
+      public void accept(de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser visitor);
+      public void accept(de.monticore.statements.mcstatementsbasis._visitor.MCStatementsBasisTraverser visitor);
+      public void accept(de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+      protected ASTReturnStatement _construct();
+      protected de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope enclosingScope;
+      public de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope getEnclosingScope();
+      public void setEnclosingScope(de.monticore.statements.mcreturnstatements._symboltable.IMCReturnStatementsScope enclosingScope);
+      public void setEnclosingScope(de.monticore.statements.mcstatementsbasis._symboltable.IMCStatementsBasisScope enclosingScope);
+      public void setEnclosingScope(de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope enclosingScope);
+      public void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope);
+      public void setEnclosingScope(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope enclosingScope);
+      public de.monticore.interpreter.Value evaluate(de.monticore.statements.mcreturnstatements._visitor.IMCReturnStatementsInterpreter interpreter);
+      public de.monticore.interpreter.Value evaluate(de.monticore.interpreter.ModelInterpreter interpreter);
+
+    } 
+    public class ASTReturnStatementBuilder extends de.monticore.ast.ASTNodeBuilder<ASTReturnStatementBuilder> { 
+      protected ASTReturnStatementBuilder realBuilder;
+      <<derived_attribute_name="",astType="">>protected Optional<de.monticore.expressions.expressionsbasis._ast.ASTExpression>expression;
+      public ASTReturnStatementBuilder();
+      public ASTReturnStatement build();
+      public boolean isValid();
+      public de.monticore.expressions.expressionsbasis._ast.ASTExpression getExpression();
+      public boolean isPresentExpression();
+      public ASTReturnStatementBuilder setExpression(de.monticore.expressions.expressionsbasis._ast.ASTExpression expression);
+      public ASTReturnStatementBuilder setExpressionAbsent();
+      public ASTReturnStatementBuilder set_SourcePositionEnd(SourcePosition end);
+      public ASTReturnStatementBuilder set_SourcePositionEndAbsent();
+      public ASTReturnStatementBuilder set_SourcePositionStart(SourcePosition start);
+      public ASTReturnStatementBuilder set_SourcePositionStartAbsent();
+      public ASTReturnStatementBuilder clear_PreComments();
+      public ASTReturnStatementBuilder add_PreComment(Comment precomment);
+      public ASTReturnStatementBuilder add_PreComment(int index,Comment precomment);
+      public ASTReturnStatementBuilder addAll_PreComments(Collection<Comment>precomments);
+      public ASTReturnStatementBuilder addAll_PreComments(int index,Collection<Comment>precomments);
+      public ASTReturnStatementBuilder remove_PreComment(Object element);
+      public ASTReturnStatementBuilder remove_PreComment(int index);
+      public ASTReturnStatementBuilder removeAll_PreComments(Collection<?>element);
+      public ASTReturnStatementBuilder retainAll_PreComments(Collection<?>element);
+      public ASTReturnStatementBuilder removeIf_PreComment(Predicate<? super Comment>filter);
+      public ASTReturnStatementBuilder forEach_PreComments(Consumer<? super Comment>action);
+      public ASTReturnStatementBuilder replaceAll_PreComments(UnaryOperator<Comment>operator);
+      public ASTReturnStatementBuilder sort_PreComments(Comparator<? super Comment>comparator);
+      public ASTReturnStatementBuilder set_PreCommentList(List<Comment>preComments);
+      public ASTReturnStatementBuilder set_PreComment(int index,Comment precomment);
+      public ASTReturnStatementBuilder clear_PostComments();
+      public ASTReturnStatementBuilder add_PostComment(Comment postcomment);
+      public ASTReturnStatementBuilder add_PostComment(int index,Comment postcomment);
+      public ASTReturnStatementBuilder addAll_PostComments(Collection<Comment>postcomments);
+      public ASTReturnStatementBuilder addAll_PostComments(int index,Collection<Comment>postcomments);
+      public ASTReturnStatementBuilder remove_PostComment(Object element);
+      public ASTReturnStatementBuilder remove_PostComment(int index);
+      public ASTReturnStatementBuilder removeAll_PostComments(Collection<?>element);
+      public ASTReturnStatementBuilder retainAll_PostComments(Collection<?>element);
+      public ASTReturnStatementBuilder removeIf_PostComment(Predicate<? super Comment>filter);
+      public ASTReturnStatementBuilder forEach_PostComments(Consumer<? super Comment>action);
+      public ASTReturnStatementBuilder replaceAll_PostComments(UnaryOperator<Comment>operator);
+      public ASTReturnStatementBuilder sort_PostComments(Comparator<? super Comment>comparator);
+      public ASTReturnStatementBuilder set_PostCommentList(List<Comment>postComments);
+      public ASTReturnStatementBuilder set_PostComment(int index,Comment postcomment);
+      public ASTReturnStatement uncheckedBuild();
+
+    } 
+    public class ASTConstantsMCReturnStatements { 
+      public final static String LANGUAGE;
+      public final static int DEFAULT;
+      public static String []superGrammars;
+      public ASTConstantsMCReturnStatements();
+      public static Collection<String>getAllLanguages();
+
+    } 
+    public interface ASTMCReturnStatementsNode extends ASTNode { 
+      public abstract void accept(de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser visitor);
+
+    } 
+    <<deprecated>>public enum MCReturnStatementsLiterals { 
+      ;
+      private MCReturnStatementsLiterals(int intValue);
+      protected int intValue;
+      public int getIntValue();
+
+    } 
+
+  } 
+
+} 

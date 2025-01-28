@@ -1,0 +1,800 @@
+digraph {
+  subgraph cluster_de_monticore_symbols {
+    label = "de.monticore.symbols";
+    labeljust = l;
+    subgraph cluster_de_monticore_symbols_oosymbols {
+      label = "de.monticore.symbols.oosymbols";
+      labeljust = l;
+      subgraph cluster_de_monticore_symbols_oosymbols__util {
+        label = "de.monticore.symbols.oosymbols._util";
+        labeljust = l;
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__util_OOSymbolsTypeDispatcher [label="de.monticore.symbols.oosymbols._util.OOSymbolsTypeDispatcher.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__util_IOOSymbolsTypeDispatcher [label="de.monticore.symbols.oosymbols._util.IOOSymbolsTypeDispatcher.java (1)"];
+      }
+      subgraph cluster_de_monticore_symbols_oosymbols__auxiliary {
+        label = "de.monticore.symbols.oosymbols._auxiliary";
+        labeljust = l;
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__auxiliary_BasicSymbolsMillForOOSymbols [label="de.monticore.symbols.oosymbols._auxiliary.BasicSymbolsMillForOOSymbols.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__auxiliary_MCBasicsMillForOOSymbols [label="de.monticore.symbols.oosymbols._auxiliary.MCBasicsMillForOOSymbols.java (1)"];
+      }
+      subgraph cluster_de_monticore_symbols_oosymbols__symboltable {
+        label = "de.monticore.symbols.oosymbols._symboltable";
+        labeljust = l;
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__symboltable_IMethodSymbolResolver [label="de.monticore.symbols.oosymbols._symboltable.IMethodSymbolResolver.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__symboltable_OOTypeSymbolDeSer [label="de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolDeSer.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__symboltable_FieldSymbolDeSer [label="de.monticore.symbols.oosymbols._symboltable.FieldSymbolDeSer.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__symboltable_MethodSymbolDeSer [label="de.monticore.symbols.oosymbols._symboltable.MethodSymbolDeSer.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__symboltable_OOSymbolsDeSer [label="de.monticore.symbols.oosymbols._symboltable.OOSymbolsDeSer.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__symboltable_MethodSymbolSurrogateBuilder [label="de.monticore.symbols.oosymbols._symboltable.MethodSymbolSurrogateBuilder.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__symboltable_OOSymbolsSymbols2Json [label="de.monticore.symbols.oosymbols._symboltable.OOSymbolsSymbols2Json.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__symboltable_FieldSymbolSurrogate [label="de.monticore.symbols.oosymbols._symboltable.FieldSymbolSurrogate.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__symboltable_FieldSymbolBuilder [label="de.monticore.symbols.oosymbols._symboltable.FieldSymbolBuilder.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__symboltable_MethodSymbolBuilder [label="de.monticore.symbols.oosymbols._symboltable.MethodSymbolBuilder.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__symboltable_OOSymbolsScope [label="de.monticore.symbols.oosymbols._symboltable.OOSymbolsScope.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__symboltable_OOTypeSymbolTOP [label="de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolTOP.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__symboltable_FieldSymbolTOP [label="de.monticore.symbols.oosymbols._symboltable.FieldSymbolTOP.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__symboltable_MethodSymbolTOP [label="de.monticore.symbols.oosymbols._symboltable.MethodSymbolTOP.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__symboltable_OOTypeSymbolBuilder [label="de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolBuilder.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__symboltable_ICommonOOSymbolsSymbol [label="de.monticore.symbols.oosymbols._symboltable.ICommonOOSymbolsSymbol.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__symboltable_IOOSymbolsArtifactScope [label="de.monticore.symbols.oosymbols._symboltable.IOOSymbolsArtifactScope.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__symboltable_OOTypeSymbolSurrogateBuilder [label="de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogateBuilder.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__symboltable_OOTypeSymbolSurrogateTOP [label="de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogateTOP.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__symboltable_MethodSymbolSurrogate [label="de.monticore.symbols.oosymbols._symboltable.MethodSymbolSurrogate.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__symboltable_IOOTypeSymbolResolver [label="de.monticore.symbols.oosymbols._symboltable.IOOTypeSymbolResolver.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__symboltable_IOOSymbolsGlobalScope [label="de.monticore.symbols.oosymbols._symboltable.IOOSymbolsGlobalScope.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__symboltable_IFieldSymbolResolver [label="de.monticore.symbols.oosymbols._symboltable.IFieldSymbolResolver.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__symboltable_IOOSymbolsScopeTOP [label="de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScopeTOP.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__symboltable_OOSymbolsArtifactScope [label="de.monticore.symbols.oosymbols._symboltable.OOSymbolsArtifactScope.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__symboltable_OOSymbolsScopesGenitor [label="de.monticore.symbols.oosymbols._symboltable.OOSymbolsScopesGenitor.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__symboltable_OOSymbolsGlobalScope [label="de.monticore.symbols.oosymbols._symboltable.OOSymbolsGlobalScope.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__symboltable_FieldSymbolSurrogateBuilder [label="de.monticore.symbols.oosymbols._symboltable.FieldSymbolSurrogateBuilder.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__symboltable_OOSymbolsScopesGenitorDelegator [label="de.monticore.symbols.oosymbols._symboltable.OOSymbolsScopesGenitorDelegator.java (1)"];
+      }
+      subgraph cluster_de_monticore_symbols_oosymbols__parser {
+        label = "de.monticore.symbols.oosymbols._parser";
+        labeljust = l;
+        subgraph cluster_de_monticore_symbols_oosymbols__parser__auxiliary {
+          label = "de.monticore.symbols.oosymbols._parser._auxiliary";
+          labeljust = l;
+          node[shape=note];
+          File_de_monticore_symbols_oosymbols__parser__auxiliary_OOSymbolsParserInfoForBasicSymbols [label="de.monticore.symbols.oosymbols._parser._auxiliary.OOSymbolsParserInfoForBasicSymbols.java (1)"];
+          node[shape=note];
+          File_de_monticore_symbols_oosymbols__parser__auxiliary_OOSymbolsParserInfoForMCBasics [label="de.monticore.symbols.oosymbols._parser._auxiliary.OOSymbolsParserInfoForMCBasics.java (1)"];
+        }
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__parser_OOSymbolsParserInfo [label="de.monticore.symbols.oosymbols._parser.OOSymbolsParserInfo.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__parser_EmptyOOSymbolsParserInfo [label="de.monticore.symbols.oosymbols._parser.EmptyOOSymbolsParserInfo.java (1)"];
+      }
+      subgraph cluster_de_monticore_symbols_oosymbols__od {
+        label = "de.monticore.symbols.oosymbols._od";
+        labeljust = l;
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__od_OOSymbols2OD [label="de.monticore.symbols.oosymbols._od.OOSymbols2OD.java (1)"];
+      }
+      subgraph cluster_de_monticore_symbols_oosymbols__prettyprint {
+        label = "de.monticore.symbols.oosymbols._prettyprint";
+        labeljust = l;
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__prettyprint_OOSymbolsPrettyPrinter [label="de.monticore.symbols.oosymbols._prettyprint.OOSymbolsPrettyPrinter.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__prettyprint_OOSymbolsFullPrettyPrinter [label="de.monticore.symbols.oosymbols._prettyprint.OOSymbolsFullPrettyPrinter.java (1)"];
+      }
+      subgraph cluster_de_monticore_symbols_oosymbols__visitor {
+        label = "de.monticore.symbols.oosymbols._visitor";
+        labeljust = l;
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__visitor_OOSymbolsTraverserImplementation [label="de.monticore.symbols.oosymbols._visitor.OOSymbolsTraverserImplementation.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__visitor_OOSymbolsInheritanceHandler [label="de.monticore.symbols.oosymbols._visitor.OOSymbolsInheritanceHandler.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__visitor_OOSymbolsTraverser [label="de.monticore.symbols.oosymbols._visitor.OOSymbolsTraverser.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__visitor_OOSymbolsVisitor2 [label="de.monticore.symbols.oosymbols._visitor.OOSymbolsVisitor2.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__visitor_OOSymbolsInterpreter [label="de.monticore.symbols.oosymbols._visitor.OOSymbolsInterpreter.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__visitor_IOOSymbolsInterpreter [label="de.monticore.symbols.oosymbols._visitor.IOOSymbolsInterpreter.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__visitor_OOSymbolsHandler [label="de.monticore.symbols.oosymbols._visitor.OOSymbolsHandler.java (1)"];
+      }
+      subgraph cluster_de_monticore_symbols_oosymbols__cocos {
+        label = "de.monticore.symbols.oosymbols._cocos";
+        labeljust = l;
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__cocos_OOSymbolsASTFieldCoCo [label="de.monticore.symbols.oosymbols._cocos.OOSymbolsASTFieldCoCo.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__cocos_OOSymbolsCoCoChecker [label="de.monticore.symbols.oosymbols._cocos.OOSymbolsCoCoChecker.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__cocos_OOSymbolsASTMethodCoCo [label="de.monticore.symbols.oosymbols._cocos.OOSymbolsASTMethodCoCo.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__cocos_OOSymbolsASTOOSymbolsNodeCoCo [label="de.monticore.symbols.oosymbols._cocos.OOSymbolsASTOOSymbolsNodeCoCo.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__cocos_OOSymbolsASTOOTypeCoCo [label="de.monticore.symbols.oosymbols._cocos.OOSymbolsASTOOTypeCoCo.java (1)"];
+      }
+      subgraph cluster_de_monticore_symbols_oosymbols__ast {
+        label = "de.monticore.symbols.oosymbols._ast";
+        labeljust = l;
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__ast_ASTConstantsOOSymbols [label="de.monticore.symbols.oosymbols._ast.ASTConstantsOOSymbols.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__ast_ASTOOType [label="de.monticore.symbols.oosymbols._ast.ASTOOType.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__ast_ASTOOSymbolsNode [label="de.monticore.symbols.oosymbols._ast.ASTOOSymbolsNode.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__ast_ASTMethod [label="de.monticore.symbols.oosymbols._ast.ASTMethod.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__ast_ASTField [label="de.monticore.symbols.oosymbols._ast.ASTField.java (1)"];
+        node[shape=note];
+        File_de_monticore_symbols_oosymbols__ast_OOSymbolsLiterals [label="de.monticore.symbols.oosymbols._ast.OOSymbolsLiterals.java (1)"];
+      }
+      node[shape=note];
+      File_de_monticore_symbols_oosymbols_OOSymbolsMill [label="de.monticore.symbols.oosymbols.OOSymbolsMill.java (1)"];
+    }
+    node[shape=box3d];
+    Model_de_monticore_symbols_OOSymbols [label="de.monticore.symbols.OOSymbols (1)"];
+  }
+  subgraph cluster_data {
+    label = "data";
+    labeljust = l;
+    node[shape=ellipse];
+    Template_data_AcceptSuper [label="data.AcceptSuper.ftl (18)"];
+  }
+  subgraph cluster_methods {
+    label = "methods";
+    labeljust = l;
+    subgraph cluster_methods_opt {
+      label = "methods.opt";
+      labeljust = l;
+      node[shape=ellipse];
+      Template_methods_opt_Set4Opt [label="methods.opt.Set4Opt.ftl (34)"];
+      node[shape=ellipse];
+      Template_methods_opt_IsPresent4Opt [label="methods.opt.IsPresent4Opt.ftl (34)"];
+      node[shape=ellipse];
+      Template_methods_opt_SetAbsent [label="methods.opt.SetAbsent.ftl (34)"];
+      node[shape=ellipse];
+      Template_methods_opt_Get4Opt [label="methods.opt.Get4Opt.ftl (34)"];
+    }
+    node[shape=ellipse];
+    Template_methods_Set [label="methods.Set.ftl (57)"];
+    node[shape=ellipse];
+    Template_methods_Get [label="methods.Get.ftl (110)"];
+    node[shape=ellipse];
+    Template_methods_MethodDelegate [label="methods.MethodDelegate.ftl (146)"];
+  }
+  subgraph cluster__prettyprinter_full {
+    label = "_prettyprinter.full";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__prettyprinter_full_FPPTraverserInit [label="_prettyprinter.full.FPPTraverserInit.ftl (1)"];
+    node[shape=ellipse];
+    Template__prettyprinter_full_FullPrettyPrintMethod [label="_prettyprinter.full.FullPrettyPrintMethod.ftl (1)"];
+    node[shape=ellipse];
+    Template__prettyprinter_full_FPPSetPrintComments [label="_prettyprinter.full.FPPSetPrintComments.ftl (1)"];
+    node[shape=ellipse];
+    Template__prettyprinter_full_FPPConstructor [label="_prettyprinter.full.FPPConstructor.ftl (1)"];
+  }
+  subgraph cluster_interpreter {
+    label = "interpreter";
+    labeljust = l;
+    node[shape=ellipse];
+    Template_interpreter_ConstructorNoParams [label="interpreter.ConstructorNoParams.ftl (1)"];
+  }
+  subgraph cluster_cd2java {
+    label = "cd2java";
+    labeljust = l;
+    node[shape=ellipse];
+    Template_cd2java_Constructor [label="cd2java.Constructor.ftl (36)"];
+    node[shape=ellipse];
+    Template_cd2java_Attribute [label="cd2java.Attribute.ftl (225)"];
+    node[shape=ellipse];
+    Template_cd2java_Package [label="cd2java.Package.ftl (55)"];
+    node[shape=ellipse];
+    Template_cd2java_Class [label="cd2java.Class.ftl (34)"];
+    node[shape=ellipse];
+    Template_cd2java_Interface [label="cd2java.Interface.ftl (20)"];
+    node[shape=ellipse];
+    Template_cd2java_Annotations [label="cd2java.Annotations.ftl (1855)"];
+    node[shape=ellipse];
+    Template_cd2java_EmptyBody [label="cd2java.EmptyBody.ftl (52)"];
+    node[shape=ellipse];
+    Template_cd2java_Method [label="cd2java.Method.ftl (1571)"];
+    node[shape=ellipse];
+    Template_cd2java_Imports [label="cd2java.Imports.ftl (54)"];
+    node[shape=ellipse];
+    Template_cd2java_Value [label="cd2java.Value.ftl (171)"];
+    node[shape=ellipse];
+    Template_cd2java_Enum [label="cd2java.Enum.ftl (1)"];
+  }
+  subgraph cluster__visitor_handler {
+    label = "_visitor.handler";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__visitor_handler_HandleSymTabInheritance [label="_visitor.handler.HandleSymTabInheritance.ftl (6)"];
+    node[shape=ellipse];
+    Template__visitor_handler_HandleASTInheritance [label="_visitor.handler.HandleASTInheritance.ftl (4)"];
+    node[shape=ellipse];
+    Template__visitor_handler_TraverseScope [label="_visitor.handler.TraverseScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__visitor_handler_Handle [label="_visitor.handler.Handle.ftl (11)"];
+  }
+  subgraph cluster__visitor_traverser {
+    label = "_visitor.traverser";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__visitor_traverser_AddVisitor [label="_visitor.traverser.AddVisitor.ftl (4)"];
+    node[shape=ellipse];
+    Template__visitor_traverser_DelegatingMethods [label="_visitor.traverser.DelegatingMethods.ftl (22)"];
+    node[shape=ellipse];
+    Template__visitor_traverser_SetHandler [label="_visitor.traverser.SetHandler.ftl (3)"];
+    node[shape=ellipse];
+    Template__visitor_traverser_TraverseScope [label="_visitor.traverser.TraverseScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__visitor_traverser_Handle [label="_visitor.traverser.Handle.ftl (11)"];
+  }
+  subgraph cluster_mill {
+    label = "mill";
+    labeljust = l;
+    node[shape=ellipse];
+    Template_mill_InitMethod [label="mill.InitMethod.ftl (1)"];
+    node[shape=ellipse];
+    Template_mill_InitMeMethod [label="mill.InitMeMethod.ftl (1)"];
+    node[shape=ellipse];
+    Template_mill_PrettyPrintBuilderMethod [label="mill.PrettyPrintBuilderMethod.ftl (1)"];
+    node[shape=ellipse];
+    Template_mill_PrettyPrintProtectedBuilderMethod [label="mill.PrettyPrintProtectedBuilderMethod.ftl (1)"];
+    node[shape=ellipse];
+    Template_mill_ResetMethod [label="mill.ResetMethod.ftl (1)"];
+    node[shape=ellipse];
+    Template_mill_ProtectedMethodForSuper [label="mill.ProtectedMethodForSuper.ftl (12)"];
+    node[shape=ellipse];
+    Template_mill_BuilderMethod [label="mill.BuilderMethod.ftl (14)"];
+    node[shape=ellipse];
+    Template_mill_TypeDispatcherGetter [label="mill.TypeDispatcherGetter.ftl (1)"];
+    node[shape=ellipse];
+    Template_mill_GetMillMethod [label="mill.GetMillMethod.ftl (1)"];
+    node[shape=ellipse];
+    Template_mill_ProtectedBuilderMethod [label="mill.ProtectedBuilderMethod.ftl (10)"];
+    node[shape=ellipse];
+    Template_mill_InheritanceHandlerMethod [label="mill.InheritanceHandlerMethod.ftl (1)"];
+    node[shape=ellipse];
+    Template_mill_ProtectedGlobalScopeMethod [label="mill.ProtectedGlobalScopeMethod.ftl (1)"];
+  }
+  subgraph cluster__ast_ast_class {
+    label = "_ast.ast_class";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__ast_ast_class_Accept [label="_ast.ast_class.Accept.ftl (2)"];
+  }
+  subgraph cluster__ast_builder {
+    label = "_ast.builder";
+    labeljust = l;
+    subgraph cluster__ast_builder_opt {
+      label = "_ast.builder.opt";
+      labeljust = l;
+      node[shape=ellipse];
+      Template__ast_builder_opt_SetAbsent4ASTBuilderOpt [label="_ast.builder.opt.SetAbsent4ASTBuilderOpt.ftl (3)"];
+      node[shape=ellipse];
+      Template__ast_builder_opt_Set4ASTBuilderOpt [label="_ast.builder.opt.Set4ASTBuilderOpt.ftl (3)"];
+    }
+    node[shape=ellipse];
+    Template__ast_builder_SetInherited [label="_ast.builder.SetInherited.ftl (5)"];
+    node[shape=ellipse];
+    Template__ast_builder_Set4ASTBuilder [label="_ast.builder.Set4ASTBuilder.ftl (74)"];
+    node[shape=ellipse];
+    Template__ast_builder_MethodDelegate4ASTBuilder [label="_ast.builder.MethodDelegate4ASTBuilder.ftl (28)"];
+    node[shape=ellipse];
+    Template__ast_builder_IsValidMethod [label="_ast.builder.IsValidMethod.ftl (3)"];
+  }
+  subgraph cluster__ast_ast_constants {
+    label = "_ast.ast_constants";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__ast_ast_constants_GetAllLanguages [label="_ast.ast_constants.GetAllLanguages.ftl (1)"];
+  }
+  subgraph cluster__symboltable {
+    label = "_symboltable";
+    labeljust = l;
+    subgraph cluster__symboltable_serialization_symbolDeSer {
+      label = "_symboltable.serialization.symbolDeSer";
+      labeljust = l;
+      node[shape=ellipse];
+      Template__symboltable_serialization_symbolDeSer_DeserializeIScope4SymbolDeSer [label="_symboltable.serialization.symbolDeSer.DeserializeIScope4SymbolDeSer.ftl (3)"];
+      node[shape=ellipse];
+      Template__symboltable_serialization_symbolDeSer_Deserialize4SymbolDeSer [label="_symboltable.serialization.symbolDeSer.Deserialize4SymbolDeSer.ftl (3)"];
+      node[shape=ellipse];
+      Template__symboltable_serialization_symbolDeSer_Serialize4SymbolDeSer [label="_symboltable.serialization.symbolDeSer.Serialize4SymbolDeSer.ftl (3)"];
+    }
+    subgraph cluster__symboltable_serialization_scopeDeSer {
+      label = "_symboltable.serialization.scopeDeSer";
+      labeljust = l;
+      node[shape=ellipse];
+      Template__symboltable_serialization_scopeDeSer_DeserializeArtifactScope [label="_symboltable.serialization.scopeDeSer.DeserializeArtifactScope.ftl (1)"];
+      node[shape=ellipse];
+      Template__symboltable_serialization_scopeDeSer_DeserializeSymbols [label="_symboltable.serialization.scopeDeSer.DeserializeSymbols.ftl (1)"];
+      node[shape=ellipse];
+      Template__symboltable_serialization_scopeDeSer_DeserializeScope [label="_symboltable.serialization.scopeDeSer.DeserializeScope.ftl (1)"];
+      node[shape=ellipse];
+      Template__symboltable_serialization_scopeDeSer_SerializeS2J4ScopeDeSer [label="_symboltable.serialization.scopeDeSer.SerializeS2J4ScopeDeSer.ftl (1)"];
+      node[shape=ellipse];
+      Template__symboltable_serialization_scopeDeSer_SerializeAS4ScopeDeSer [label="_symboltable.serialization.scopeDeSer.SerializeAS4ScopeDeSer.ftl (1)"];
+    }
+    subgraph cluster__symboltable_serialization_symbols2Json {
+      label = "_symboltable.serialization.symbols2Json";
+      labeljust = l;
+      node[shape=ellipse];
+      Template__symboltable_serialization_symbols2Json_VisitScope4STP [label="_symboltable.serialization.symbols2Json.VisitScope4STP.ftl (1)"];
+      node[shape=ellipse];
+      Template__symboltable_serialization_symbols2Json_Load2 [label="_symboltable.serialization.symbols2Json.Load2.ftl (3)"];
+      node[shape=ellipse];
+      Template__symboltable_serialization_symbols2Json_VisitSymbol [label="_symboltable.serialization.symbols2Json.VisitSymbol.ftl (3)"];
+      node[shape=ellipse];
+      Template__symboltable_serialization_symbols2Json_Serialize4Symbols2Json [label="_symboltable.serialization.symbols2Json.Serialize4Symbols2Json.ftl (2)"];
+      node[shape=ellipse];
+      Template__symboltable_serialization_symbols2Json_EndVisit4Scope [label="_symboltable.serialization.symbols2Json.EndVisit4Scope.ftl (2)"];
+      node[shape=ellipse];
+      Template__symboltable_serialization_symbols2Json_Init [label="_symboltable.serialization.symbols2Json.Init.ftl (1)"];
+      node[shape=ellipse];
+      Template__symboltable_serialization_symbols2Json_Store [label="_symboltable.serialization.symbols2Json.Store.ftl (1)"];
+      node[shape=ellipse];
+      Template__symboltable_serialization_symbols2Json_VisitArtifactScope [label="_symboltable.serialization.symbols2Json.VisitArtifactScope.ftl (1)"];
+      node[shape=ellipse];
+      Template__symboltable_serialization_symbols2Json_Deserialize [label="_symboltable.serialization.symbols2Json.Deserialize.ftl (1)"];
+    }
+    subgraph cluster__symboltable_symbol {
+      label = "_symboltable.symbol";
+      labeljust = l;
+      node[shape=ellipse];
+      Template__symboltable_symbol_SetSpannedScope [label="_symboltable.symbol.SetSpannedScope.ftl (2)"];
+      node[shape=ellipse];
+      Template__symboltable_symbol_DetermineFullName [label="_symboltable.symbol.DetermineFullName.ftl (3)"];
+      node[shape=ellipse];
+      Template__symboltable_symbol_BuildSymbol [label="_symboltable.symbol.BuildSymbol.ftl (3)"];
+      node[shape=ellipse];
+      Template__symboltable_symbol_GetScope [label="_symboltable.symbol.GetScope.ftl (10)"];
+      node[shape=ellipse];
+      Template__symboltable_symbol_ToString [label="_symboltable.symbol.ToString.ftl (3)"];
+      node[shape=ellipse];
+      Template__symboltable_symbol_DeterminePackageName [label="_symboltable.symbol.DeterminePackageName.ftl (3)"];
+    }
+    subgraph cluster__symboltable_artifactscope {
+      label = "_symboltable.artifactscope";
+      labeljust = l;
+      node[shape=ellipse];
+      Template__symboltable_artifactscope_SetEnclosingScope [label="_symboltable.artifactscope.SetEnclosingScope.ftl (1)"];
+      node[shape=ellipse];
+      Template__symboltable_artifactscope_GetName [label="_symboltable.artifactscope.GetName.ftl (1)"];
+      node[shape=ellipse];
+      Template__symboltable_artifactscope_ConstructorArtifactScope [label="_symboltable.artifactscope.ConstructorArtifactScope.ftl (1)"];
+      node[shape=ellipse];
+      Template__symboltable_artifactscope_IsPresentName [label="_symboltable.artifactscope.IsPresentName.ftl (1)"];
+    }
+    subgraph cluster__symboltable_scopesgenitor {
+      label = "_symboltable.scopesgenitor";
+      labeljust = l;
+      node[shape=ellipse];
+      Template__symboltable_scopesgenitor_CreateScope [label="_symboltable.scopesgenitor.CreateScope.ftl (1)"];
+      node[shape=ellipse];
+      Template__symboltable_scopesgenitor_PutOnStack [label="_symboltable.scopesgenitor.PutOnStack.ftl (1)"];
+      node[shape=ellipse];
+      Template__symboltable_scopesgenitor_CreateFromAST [label="_symboltable.scopesgenitor.CreateFromAST.ftl (1)"];
+    }
+    subgraph cluster__symboltable_iartifactscope {
+      label = "_symboltable.iartifactscope";
+      labeljust = l;
+      node[shape=ellipse];
+      Template__symboltable_iartifactscope_CheckIfContinueAsSubScope [label="_symboltable.iartifactscope.CheckIfContinueAsSubScope.ftl (1)"];
+      node[shape=ellipse];
+      Template__symboltable_iartifactscope_GetRemainingNameForResolveDown [label="_symboltable.iartifactscope.GetRemainingNameForResolveDown.ftl (1)"];
+      node[shape=ellipse];
+      Template__symboltable_iartifactscope_ContinueWithEnclosingScope4ArtifactScope [label="_symboltable.iartifactscope.ContinueWithEnclosingScope4ArtifactScope.ftl (8)"];
+      node[shape=ellipse];
+      Template__symboltable_iartifactscope_GetTopLevelSymbol [label="_symboltable.iartifactscope.GetTopLevelSymbol.ftl (1)"];
+      node[shape=ellipse];
+      Template__symboltable_iartifactscope_GetFullName [label="_symboltable.iartifactscope.GetFullName.ftl (1)"];
+    }
+    subgraph cluster__symboltable_scope {
+      label = "_symboltable.scope";
+      labeljust = l;
+      node[shape=ellipse];
+      Template__symboltable_scope_SetSpanningSymbolAbsent [label="_symboltable.scope.SetSpanningSymbolAbsent.ftl (1)"];
+      node[shape=ellipse];
+      Template__symboltable_scope_SetEnclosingScope [label="_symboltable.scope.SetEnclosingScope.ftl (1)"];
+      node[shape=ellipse];
+      Template__symboltable_scope_ResolveSubKinds [label="_symboltable.scope.ResolveSubKinds.ftl (8)"];
+      node[shape=ellipse];
+      Template__symboltable_scope_SetSubScopes [label="_symboltable.scope.SetSubScopes.ftl (1)"];
+      node[shape=ellipse];
+      Template__symboltable_scope_SetSpanningSymbol [label="_symboltable.scope.SetSpanningSymbol.ftl (1)"];
+      node[shape=ellipse];
+      Template__symboltable_scope_AddSubScope [label="_symboltable.scope.AddSubScope.ftl (1)"];
+      node[shape=ellipse];
+      Template__symboltable_scope_RemoveSubScope [label="_symboltable.scope.RemoveSubScope.ftl (1)"];
+      node[shape=ellipse];
+      Template__symboltable_scope_GetSubScopes [label="_symboltable.scope.GetSubScopes.ftl (1)"];
+    }
+    subgraph cluster__symboltable_symbolsurrogate {
+      label = "_symboltable.symbolsurrogate";
+      labeljust = l;
+      node[shape=ellipse];
+      Template__symboltable_symbolsurrogate_SetEnclosingScope4SymbolSurrogate [label="_symboltable.symbolsurrogate.SetEnclosingScope4SymbolSurrogate.ftl (3)"];
+      node[shape=ellipse];
+      Template__symboltable_symbolsurrogate_CheckLazyLoadDelegate [label="_symboltable.symbolsurrogate.CheckLazyLoadDelegate.ftl (3)"];
+      node[shape=ellipse];
+      Template__symboltable_symbolsurrogate_DetermineFullName [label="_symboltable.symbolsurrogate.DetermineFullName.ftl (3)"];
+      node[shape=ellipse];
+      Template__symboltable_symbolsurrogate_ConstructorSymbolSurrogate [label="_symboltable.symbolsurrogate.ConstructorSymbolSurrogate.ftl (3)"];
+      node[shape=ellipse];
+      Template__symboltable_symbolsurrogate_Set4SymbolSurrogate [label="_symboltable.symbolsurrogate.Set4SymbolSurrogate.ftl (3)"];
+      node[shape=ellipse];
+      Template__symboltable_symbolsurrogate_LazyLoadDelegate [label="_symboltable.symbolsurrogate.LazyLoadDelegate.ftl (3)"];
+      node[shape=ellipse];
+      Template__symboltable_symbolsurrogate_GetFullName [label="_symboltable.symbolsurrogate.GetFullName.ftl (3)"];
+      node[shape=ellipse];
+      Template__symboltable_symbolsurrogate_GetEnclosingScopeSymbolSurrogate [label="_symboltable.symbolsurrogate.GetEnclosingScopeSymbolSurrogate.ftl (3)"];
+      node[shape=ellipse];
+      Template__symboltable_symbolsurrogate_BuildSymbolSurrogate [label="_symboltable.symbolsurrogate.BuildSymbolSurrogate.ftl (3)"];
+      node[shape=ellipse];
+      Template__symboltable_symbolsurrogate_DeterminePackageName [label="_symboltable.symbolsurrogate.DeterminePackageName.ftl (3)"];
+    }
+    subgraph cluster__symboltable_globalscope {
+      label = "_symboltable.globalscope";
+      labeljust = l;
+      node[shape=ellipse];
+      Template__symboltable_globalscope_ZeroArgsConstructorGlobalScope [label="_symboltable.globalscope.ZeroArgsConstructorGlobalScope.ftl (1)"];
+      node[shape=ellipse];
+      Template__symboltable_globalscope_LoadFileForModelName [label="_symboltable.globalscope.LoadFileForModelName.ftl (1)"];
+      node[shape=ellipse];
+      Template__symboltable_globalscope_Init [label="_symboltable.globalscope.Init.ftl (1)"];
+      node[shape=ellipse];
+      Template__symboltable_globalscope_GetSymbols2Json [label="_symboltable.globalscope.GetSymbols2Json.ftl (1)"];
+      node[shape=ellipse];
+      Template__symboltable_globalscope_Load [label="_symboltable.globalscope.Load.ftl (8)"];
+      node[shape=ellipse];
+      Template__symboltable_globalscope_Clear [label="_symboltable.globalscope.Clear.ftl (1)"];
+      node[shape=ellipse];
+      Template__symboltable_globalscope_ConstructorGlobalScope [label="_symboltable.globalscope.ConstructorGlobalScope.ftl (1)"];
+    }
+    subgraph cluster__symboltable_iscope {
+      label = "_symboltable.iscope";
+      labeljust = l;
+      node[shape=ellipse];
+      Template__symboltable_iscope_ResolveDownMany [label="_symboltable.iscope.ResolveDownMany.ftl (3)"];
+      node[shape=ellipse];
+      Template__symboltable_iscope_ResolveDelegate [label="_symboltable.iscope.ResolveDelegate.ftl (21)"];
+      node[shape=ellipse];
+      Template__symboltable_iscope_ResolveMany4IScope [label="_symboltable.iscope.ResolveMany4IScope.ftl (3)"];
+      node[shape=ellipse];
+      Template__symboltable_iscope_Filter [label="_symboltable.iscope.Filter.ftl (3)"];
+      node[shape=ellipse];
+      Template__symboltable_iscope_ContinueWithEnclosingScope4IScope [label="_symboltable.iscope.ContinueWithEnclosingScope4IScope.ftl (3)"];
+      node[shape=ellipse];
+      Template__symboltable_iscope_GetSymbolSize [label="_symboltable.iscope.GetSymbolSize.ftl (1)"];
+      node[shape=ellipse];
+      Template__symboltable_iscope_ResolveManyLocally [label="_symboltable.iscope.ResolveManyLocally.ftl (3)"];
+      node[shape=ellipse];
+      Template__symboltable_iscope_ContinueAsSubScope [label="_symboltable.iscope.ContinueAsSubScope.ftl (3)"];
+    }
+    subgraph cluster__symboltable_iglobalscope {
+      label = "_symboltable.iglobalscope";
+      labeljust = l;
+      node[shape=ellipse];
+      Template__symboltable_iglobalscope_CalculateModelNamesFor [label="_symboltable.iglobalscope.CalculateModelNamesFor.ftl (3)"];
+      node[shape=ellipse];
+      Template__symboltable_iglobalscope_ResolveAdapted [label="_symboltable.iglobalscope.ResolveAdapted.ftl (8)"];
+      node[shape=ellipse];
+      Template__symboltable_iglobalscope_ResolveMany4GlobalScope [label="_symboltable.iglobalscope.ResolveMany4GlobalScope.ftl (8)"];
+    }
+    subgraph cluster__symboltable_scopesgenitordelegator {
+      label = "_symboltable.scopesgenitordelegator";
+      labeljust = l;
+      node[shape=ellipse];
+      Template__symboltable_scopesgenitordelegator_CreateFromASTDelegator [label="_symboltable.scopesgenitordelegator.CreateFromASTDelegator.ftl (1)"];
+      node[shape=ellipse];
+      Template__symboltable_scopesgenitordelegator_ConstructorScopesGenitorDelegator [label="_symboltable.scopesgenitordelegator.ConstructorScopesGenitorDelegator.ftl (1)"];
+    }
+    node[shape=ellipse];
+    Template__symboltable_AcceptTop [label="_symboltable.AcceptTop.ftl (3)"];
+  }
+  subgraph cluster_parser {
+    label = "parser";
+    labeljust = l;
+    node[shape=ellipse];
+    Template_parser_EmptyParserInfo [label="parser.EmptyParserInfo.ftl (1)"];
+    node[shape=ellipse];
+    Template_parser_ParserInfoForSuperLang [label="parser.ParserInfoForSuperLang.ftl (2)"];
+    node[shape=ellipse];
+    Template_parser_ParserInfo [label="parser.ParserInfo.ftl (1)"];
+  }
+  subgraph cluster__od {
+    label = "_od";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__od_PrintObject [label="_od.PrintObject.ftl (1)"];
+    node[shape=ellipse];
+    Template__od_PrintAttribute [label="_od.PrintAttribute.ftl (1)"];
+    node[shape=ellipse];
+    Template__od_ConstructorOD [label="_od.ConstructorOD.ftl (1)"];
+    node[shape=ellipse];
+    Template__od_PrintObjectDiagram [label="_od.PrintObjectDiagram.ftl (1)"];
+  }
+  subgraph cluster_mc {
+    label = "mc";
+    labeljust = l;
+    node[shape=ellipse];
+    Template_mc_Imports [label="mc.Imports.ftl (54)"];
+  }
+  subgraph cluster_dispatcher {
+    label = "dispatcher";
+    labeljust = l;
+    node[shape=ellipse];
+    Template_dispatcher_Constructor [label="dispatcher.Constructor.ftl (1)"];
+    node[shape=ellipse];
+    Template_dispatcher_AsMethod [label="dispatcher.AsMethod.ftl (31)"];
+    node[shape=ellipse];
+    Template_dispatcher_IsMethod [label="dispatcher.IsMethod.ftl (31)"];
+    node[shape=ellipse];
+    Template_dispatcher_Reset [label="dispatcher.Reset.ftl (1)"];
+    node[shape=ellipse];
+    Template_dispatcher_Handle [label="dispatcher.Handle.ftl (31)"];
+  }
+  subgraph cluster__cocos {
+    label = "_cocos";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__cocos_CoCoCheckerConstructor [label="_cocos.CoCoCheckerConstructor.ftl (1)"];
+    node[shape=ellipse];
+    Template__cocos_AddChecker [label="_cocos.AddChecker.ftl (3)"];
+  }
+  Model_de_monticore_symbols_OOSymbols -> Template_parser_EmptyParserInfo;
+  Model_de_monticore_symbols_OOSymbols -> Template_parser_ParserInfo;
+  Model_de_monticore_symbols_OOSymbols -> Template_cd2java_Class;
+  Model_de_monticore_symbols_OOSymbols -> Template_cd2java_Interface;
+  Model_de_monticore_symbols_OOSymbols -> Template_cd2java_Enum;
+  Model_de_monticore_symbols_OOSymbols -> Template_parser_ParserInfoForSuperLang;
+  Template_cd2java_Constructor -> Template_interpreter_ConstructorNoParams;
+  Template_cd2java_Constructor -> Template__od_ConstructorOD;
+  Template_cd2java_Constructor -> Template__symboltable_globalscope_ConstructorGlobalScope;
+  Template_cd2java_Constructor -> Template_cd2java_Annotations;
+  Template_cd2java_Constructor -> Template_dispatcher_Constructor;
+  Template_cd2java_Constructor -> Template__prettyprinter_full_FPPConstructor;
+  Template_cd2java_Constructor -> Template__symboltable_symbolsurrogate_ConstructorSymbolSurrogate;
+  Template_cd2java_Constructor -> Template__symboltable_scopesgenitordelegator_ConstructorScopesGenitorDelegator;
+  Template_cd2java_Constructor -> Template__symboltable_artifactscope_ConstructorArtifactScope;
+  Template_cd2java_Constructor -> Template__cocos_CoCoCheckerConstructor;
+  Template_cd2java_Constructor -> Template_cd2java_EmptyBody;
+  Template_cd2java_Constructor -> Template__symboltable_globalscope_ZeroArgsConstructorGlobalScope;
+  Template_cd2java_Attribute -> Template_cd2java_Annotations;
+  Template_cd2java_Attribute -> Template_cd2java_Value;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols__prettyprint_OOSymbolsFullPrettyPrinter;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols__symboltable_FieldSymbolDeSer;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols__symboltable_FieldSymbolBuilder;
+  Template_cd2java_Class -> Template_cd2java_Attribute;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols__visitor_OOSymbolsInterpreter;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols__symboltable_OOTypeSymbolSurrogateBuilder;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols__util_OOSymbolsTypeDispatcher;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols__symboltable_FieldSymbolTOP;
+  Template_cd2java_Class -> Template_cd2java_Constructor;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols__symboltable_OOSymbolsScopesGenitorDelegator;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols__symboltable_OOSymbolsGlobalScope;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols__symboltable_MethodSymbolBuilder;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols_OOSymbolsMill;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols__prettyprint_OOSymbolsPrettyPrinter;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols__symboltable_OOTypeSymbolDeSer;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols__cocos_OOSymbolsCoCoChecker;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols__symboltable_FieldSymbolSurrogateBuilder;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols__visitor_OOSymbolsInheritanceHandler;
+  Template_cd2java_Class -> Template_cd2java_Package;
+  Template_cd2java_Class -> Template_cd2java_Annotations;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols__symboltable_OOSymbolsDeSer;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols__symboltable_MethodSymbolSurrogate;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols__symboltable_OOSymbolsScope;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols__ast_ASTConstantsOOSymbols;
+  Template_cd2java_Class -> Template_mc_Imports;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols__symboltable_MethodSymbolTOP;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols__visitor_OOSymbolsTraverserImplementation;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols__symboltable_MethodSymbolSurrogateBuilder;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols__symboltable_FieldSymbolSurrogate;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols__symboltable_OOTypeSymbolTOP;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols__auxiliary_BasicSymbolsMillForOOSymbols;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols__symboltable_OOSymbolsSymbols2Json;
+  Template_cd2java_Class -> Template_cd2java_Imports;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols__od_OOSymbols2OD;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols__symboltable_OOTypeSymbolBuilder;
+  Template_cd2java_Class -> Template_cd2java_Method;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols__symboltable_OOTypeSymbolSurrogateTOP;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols__symboltable_OOSymbolsScopesGenitor;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols__auxiliary_MCBasicsMillForOOSymbols;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols__symboltable_MethodSymbolDeSer;
+  Template_cd2java_Class -> File_de_monticore_symbols_oosymbols__symboltable_OOSymbolsArtifactScope;
+  Template_cd2java_Interface -> File_de_monticore_symbols_oosymbols__symboltable_ICommonOOSymbolsSymbol;
+  Template_cd2java_Interface -> File_de_monticore_symbols_oosymbols__ast_ASTField;
+  Template_cd2java_Interface -> File_de_monticore_symbols_oosymbols__ast_ASTMethod;
+  Template_cd2java_Interface -> File_de_monticore_symbols_oosymbols__visitor_OOSymbolsVisitor2;
+  Template_cd2java_Interface -> File_de_monticore_symbols_oosymbols__symboltable_IOOSymbolsScopeTOP;
+  Template_cd2java_Interface -> Template_cd2java_Package;
+  Template_cd2java_Interface -> Template_cd2java_Annotations;
+  Template_cd2java_Interface -> File_de_monticore_symbols_oosymbols__symboltable_IFieldSymbolResolver;
+  Template_cd2java_Interface -> File_de_monticore_symbols_oosymbols__cocos_OOSymbolsASTFieldCoCo;
+  Template_cd2java_Interface -> File_de_monticore_symbols_oosymbols__symboltable_IOOTypeSymbolResolver;
+  Template_cd2java_Interface -> File_de_monticore_symbols_oosymbols__symboltable_IOOSymbolsGlobalScope;
+  Template_cd2java_Interface -> File_de_monticore_symbols_oosymbols__util_IOOSymbolsTypeDispatcher;
+  Template_cd2java_Interface -> File_de_monticore_symbols_oosymbols__symboltable_IOOSymbolsArtifactScope;
+  Template_cd2java_Interface -> Template_mc_Imports;
+  Template_cd2java_Interface -> File_de_monticore_symbols_oosymbols__cocos_OOSymbolsASTMethodCoCo;
+  Template_cd2java_Interface -> File_de_monticore_symbols_oosymbols__visitor_IOOSymbolsInterpreter;
+  Template_cd2java_Interface -> File_de_monticore_symbols_oosymbols__ast_ASTOOType;
+  Template_cd2java_Interface -> File_de_monticore_symbols_oosymbols__visitor_OOSymbolsHandler;
+  Template_cd2java_Interface -> File_de_monticore_symbols_oosymbols__symboltable_IMethodSymbolResolver;
+  Template_cd2java_Interface -> Template_cd2java_Imports;
+  Template_cd2java_Interface -> Template_cd2java_Method;
+  Template_cd2java_Interface -> File_de_monticore_symbols_oosymbols__visitor_OOSymbolsTraverser;
+  Template_cd2java_Interface -> File_de_monticore_symbols_oosymbols__cocos_OOSymbolsASTOOTypeCoCo;
+  Template_cd2java_Interface -> File_de_monticore_symbols_oosymbols__ast_ASTOOSymbolsNode;
+  Template_cd2java_Interface -> File_de_monticore_symbols_oosymbols__cocos_OOSymbolsASTOOSymbolsNodeCoCo;
+  Template_cd2java_Method -> Template__symboltable_iartifactscope_ContinueWithEnclosingScope4ArtifactScope;
+  Template_cd2java_Method -> Template_mill_PrettyPrintProtectedBuilderMethod;
+  Template_cd2java_Method -> Template__symboltable_symbol_GetScope;
+  Template_cd2java_Method -> Template__symboltable_scope_SetSpanningSymbolAbsent;
+  Template_cd2java_Method -> Template__symboltable_symbol_ToString;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbols2Json_EndVisit4Scope;
+  Template_cd2java_Method -> Template__symboltable_symbolsurrogate_DeterminePackageName;
+  Template_cd2java_Method -> Template__symboltable_symbol_DetermineFullName;
+  Template_cd2java_Method -> Template__symboltable_scope_ResolveSubKinds;
+  Template_cd2java_Method -> Template__symboltable_scope_SetSubScopes;
+  Template_cd2java_Method -> Template_dispatcher_AsMethod;
+  Template_cd2java_Method -> Template__symboltable_iscope_ResolveDelegate;
+  Template_cd2java_Method -> Template__ast_ast_constants_GetAllLanguages;
+  Template_cd2java_Method -> Template__symboltable_artifactscope_GetName;
+  Template_cd2java_Method -> Template__visitor_handler_HandleASTInheritance;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbols2Json_Store;
+  Template_cd2java_Method -> Template__prettyprinter_full_FPPSetPrintComments;
+  Template_cd2java_Method -> Template_methods_MethodDelegate;
+  Template_cd2java_Method -> Template_mill_ProtectedMethodForSuper;
+  Template_cd2java_Method -> Template__symboltable_globalscope_LoadFileForModelName;
+  Template_cd2java_Method -> Template__cocos_AddChecker;
+  Template_cd2java_Method -> Template__symboltable_iscope_ContinueWithEnclosingScope4IScope;
+  Template_cd2java_Method -> Template__symboltable_iglobalscope_ResolveAdapted;
+  Template_cd2java_Method -> Template__visitor_traverser_DelegatingMethods;
+  Template_cd2java_Method -> Template__visitor_traverser_Handle;
+  Template_cd2java_Method -> Template__symboltable_symbolsurrogate_GetEnclosingScopeSymbolSurrogate;
+  Template_cd2java_Method -> Template_mill_GetMillMethod;
+  Template_cd2java_Method -> Template__visitor_handler_HandleSymTabInheritance;
+  Template_cd2java_Method -> Template__symboltable_symbolsurrogate_CheckLazyLoadDelegate;
+  Template_cd2java_Method -> Template__symboltable_symbolsurrogate_BuildSymbolSurrogate;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbols2Json_Load2;
+  Template_cd2java_Method -> Template__symboltable_scope_SetSpanningSymbol;
+  Template_cd2java_Method -> Template__od_PrintObject;
+  Template_cd2java_Method -> Template__symboltable_scopesgenitor_CreateFromAST;
+  Template_cd2java_Method -> Template_data_AcceptSuper;
+  Template_cd2java_Method -> Template__symboltable_iscope_ResolveDownMany;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbols2Json_Init;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbols2Json_Serialize4Symbols2Json;
+  Template_cd2java_Method -> Template_methods_opt_Set4Opt;
+  Template_cd2java_Method -> Template__symboltable_serialization_scopeDeSer_SerializeAS4ScopeDeSer;
+  Template_cd2java_Method -> Template__symboltable_symbol_BuildSymbol;
+  Template_cd2java_Method -> Template_methods_Get;
+  Template_cd2java_Method -> Template_dispatcher_Handle;
+  Template_cd2java_Method -> Template_dispatcher_Reset;
+  Template_cd2java_Method -> Template__symboltable_scope_RemoveSubScope;
+  Template_cd2java_Method -> Template__symboltable_scopesgenitor_PutOnStack;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbols2Json_VisitScope4STP;
+  Template_cd2java_Method -> Template__symboltable_iglobalscope_CalculateModelNamesFor;
+  Template_cd2java_Method -> Template__prettyprinter_full_FullPrettyPrintMethod;
+  Template_cd2java_Method -> Template__symboltable_symbol_SetSpannedScope;
+  Template_cd2java_Method -> Template__symboltable_globalscope_Clear;
+  Template_cd2java_Method -> Template__ast_ast_class_Accept;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbolDeSer_Deserialize4SymbolDeSer;
+  Template_cd2java_Method -> Template__symboltable_symbolsurrogate_SetEnclosingScope4SymbolSurrogate;
+  Template_cd2java_Method -> Template__symboltable_iartifactscope_CheckIfContinueAsSubScope;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbols2Json_VisitArtifactScope;
+  Template_cd2java_Method -> Template_mill_InitMethod;
+  Template_cd2java_Method -> Template__symboltable_globalscope_Load;
+  Template_cd2java_Method -> Template__symboltable_scope_AddSubScope;
+  Template_cd2java_Method -> Template__symboltable_iartifactscope_GetTopLevelSymbol;
+  Template_cd2java_Method -> Template__prettyprinter_full_FPPTraverserInit;
+  Template_cd2java_Method -> Template_methods_Set;
+  Template_cd2java_Method -> Template_mill_BuilderMethod;
+  Template_cd2java_Method -> Template__ast_builder_MethodDelegate4ASTBuilder;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbolDeSer_Serialize4SymbolDeSer;
+  Template_cd2java_Method -> Template__symboltable_iscope_ContinueAsSubScope;
+  Template_cd2java_Method -> Template_mill_InitMeMethod;
+  Template_cd2java_Method -> Template__symboltable_globalscope_GetSymbols2Json;
+  Template_cd2java_Method -> Template__visitor_handler_Handle;
+  Template_cd2java_Method -> Template__symboltable_scope_GetSubScopes;
+  Template_cd2java_Method -> Template_methods_opt_Get4Opt;
+  Template_cd2java_Method -> Template__visitor_handler_TraverseScope;
+  Template_cd2java_Method -> Template__symboltable_scopesgenitordelegator_CreateFromASTDelegator;
+  Template_cd2java_Method -> Template__symboltable_symbol_DeterminePackageName;
+  Template_cd2java_Method -> Template__ast_builder_opt_Set4ASTBuilderOpt;
+  Template_cd2java_Method -> Template__symboltable_scopesgenitor_CreateScope;
+  Template_cd2java_Method -> Template__od_PrintObjectDiagram;
+  Template_cd2java_Method -> Template__visitor_traverser_TraverseScope;
+  Template_cd2java_Method -> Template__symboltable_artifactscope_IsPresentName;
+  Template_cd2java_Method -> Template_mill_ResetMethod;
+  Template_cd2java_Method -> Template_mill_ProtectedGlobalScopeMethod;
+  Template_cd2java_Method -> Template__ast_builder_opt_SetAbsent4ASTBuilderOpt;
+  Template_cd2java_Method -> Template__symboltable_globalscope_Init;
+  Template_cd2java_Method -> Template__symboltable_iscope_GetSymbolSize;
+  Template_cd2java_Method -> Template__symboltable_serialization_scopeDeSer_DeserializeArtifactScope;
+  Template_cd2java_Method -> Template__symboltable_AcceptTop;
+  Template_cd2java_Method -> Template__ast_builder_IsValidMethod;
+  Template_cd2java_Method -> Template_mill_ProtectedBuilderMethod;
+  Template_cd2java_Method -> Template_mill_PrettyPrintBuilderMethod;
+  Template_cd2java_Method -> Template__symboltable_symbolsurrogate_Set4SymbolSurrogate;
+  Template_cd2java_Method -> Template__symboltable_iglobalscope_ResolveMany4GlobalScope;
+  Template_cd2java_Method -> Template_methods_opt_IsPresent4Opt;
+  Template_cd2java_Method -> Template__symboltable_serialization_scopeDeSer_DeserializeScope;
+  Template_cd2java_Method -> Template_cd2java_EmptyBody;
+  Template_cd2java_Method -> Template_cd2java_Annotations;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbols2Json_VisitSymbol;
+  Template_cd2java_Method -> Template__symboltable_symbolsurrogate_DetermineFullName;
+  Template_cd2java_Method -> Template__symboltable_iscope_ResolveManyLocally;
+  Template_cd2java_Method -> Template__ast_builder_Set4ASTBuilder;
+  Template_cd2java_Method -> Template__symboltable_iscope_ResolveMany4IScope;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbols2Json_Deserialize;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbolDeSer_DeserializeIScope4SymbolDeSer;
+  Template_cd2java_Method -> Template__symboltable_artifactscope_SetEnclosingScope;
+  Template_cd2java_Method -> Template__symboltable_iartifactscope_GetRemainingNameForResolveDown;
+  Template_cd2java_Method -> Template__ast_builder_SetInherited;
+  Template_cd2java_Method -> Template_dispatcher_IsMethod;
+  Template_cd2java_Method -> Template__visitor_traverser_SetHandler;
+  Template_cd2java_Method -> Template_mill_TypeDispatcherGetter;
+  Template_cd2java_Method -> Template__symboltable_serialization_scopeDeSer_DeserializeSymbols;
+  Template_cd2java_Method -> Template__symboltable_serialization_scopeDeSer_SerializeS2J4ScopeDeSer;
+  Template_cd2java_Method -> Template__symboltable_scope_SetEnclosingScope;
+  Template_cd2java_Method -> Template__symboltable_iartifactscope_GetFullName;
+  Template_cd2java_Method -> Template_methods_opt_SetAbsent;
+  Template_cd2java_Method -> Template__symboltable_symbolsurrogate_LazyLoadDelegate;
+  Template_cd2java_Method -> Template__visitor_traverser_AddVisitor;
+  Template_cd2java_Method -> Template__od_PrintAttribute;
+  Template_cd2java_Method -> Template__symboltable_iscope_Filter;
+  Template_cd2java_Method -> Template__symboltable_symbolsurrogate_GetFullName;
+  Template_cd2java_Method -> Template_mill_InheritanceHandlerMethod;
+  Template_cd2java_Enum -> Template_cd2java_Package;
+  Template_cd2java_Enum -> Template_cd2java_Attribute;
+  Template_cd2java_Enum -> File_de_monticore_symbols_oosymbols__ast_OOSymbolsLiterals;
+  Template_cd2java_Enum -> Template_cd2java_Constructor;
+  Template_cd2java_Enum -> Template_cd2java_Method;
+  Template__symboltable_scope_SetSpanningSymbolAbsent -> Template_methods_opt_SetAbsent;
+  Template__symboltable_scope_SetSpanningSymbol -> Template_methods_opt_Set4Opt;
+  Template__symboltable_symbolsurrogate_SetEnclosingScope4SymbolSurrogate -> Template_methods_Set;
+  Template__symboltable_symbolsurrogate_Set4SymbolSurrogate -> Template_methods_Set;
+  Template_parser_EmptyParserInfo -> File_de_monticore_symbols_oosymbols__parser_EmptyOOSymbolsParserInfo;
+  Template_parser_ParserInfoForSuperLang -> File_de_monticore_symbols_oosymbols__parser__auxiliary_OOSymbolsParserInfoForMCBasics;
+  Template_parser_ParserInfoForSuperLang -> File_de_monticore_symbols_oosymbols__parser__auxiliary_OOSymbolsParserInfoForBasicSymbols;
+  Template_parser_ParserInfo -> File_de_monticore_symbols_oosymbols__parser_OOSymbolsParserInfo;
+}

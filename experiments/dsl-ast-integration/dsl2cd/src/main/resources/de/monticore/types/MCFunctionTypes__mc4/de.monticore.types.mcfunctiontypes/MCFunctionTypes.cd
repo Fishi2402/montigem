@@ -1,0 +1,1190 @@
+package de.monticore.types;
+classdiagram MCFunctionTypes { 
+  package de.monticore.types.mcfunctiontypes._auxiliary { 
+    public class MCBasicTypesMillForMCFunctionTypes extends de.monticore.types.mcbasictypes.MCBasicTypesMill { 
+      protected de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope _artifactScope();
+      protected de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesGlobalScope _globalScope();
+      protected de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope _scope();
+      protected de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser _traverser();
+      protected de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser _inheritanceTraverser();
+      protected de.monticore.types.mcbasictypes._util.IMCBasicTypesTypeDispatcher _typeDispatcher();
+      protected String _prettyPrint(de.monticore.ast.ASTNode node,boolean printComments);
+
+    } 
+    public class MCBasicsMillForMCFunctionTypes extends de.monticore.mcbasics.MCBasicsMill { 
+      protected de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope _artifactScope();
+      protected de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesGlobalScope _globalScope();
+      protected de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope _scope();
+      protected de.monticore.mcbasics._visitor.MCBasicsTraverser _traverser();
+      protected de.monticore.mcbasics._visitor.MCBasicsTraverser _inheritanceTraverser();
+      protected de.monticore.mcbasics._util.IMCBasicsTypeDispatcher _typeDispatcher();
+      protected String _prettyPrint(de.monticore.ast.ASTNode node,boolean printComments);
+
+    } 
+
+  } 
+  package de.monticore.types.mcfunctiontypes { 
+    public class MCFunctionTypesMill { 
+      protected static MCFunctionTypesMill mill;
+      protected MCFunctionTypesMill();
+      public static MCFunctionTypesMill getMill();
+      public static void init();
+      protected static MCFunctionTypesMill millASTMCFunctionParTypesBuilder;
+      protected static MCFunctionTypesMill millASTMCFunctionTypeBuilder;
+      protected static MCFunctionTypesMill millASTMCUnaryFunctionTypeBuilder;
+      public static de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypesBuilder mCFunctionParTypesBuilder();
+      protected de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypesBuilder _mCFunctionParTypesBuilder();
+      public static de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionTypeBuilder mCFunctionTypeBuilder();
+      protected de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionTypeBuilder _mCFunctionTypeBuilder();
+      public static de.monticore.types.mcfunctiontypes._ast.ASTMCUnaryFunctionTypeBuilder mCUnaryFunctionTypeBuilder();
+      protected de.monticore.types.mcfunctiontypes._ast.ASTMCUnaryFunctionTypeBuilder _mCUnaryFunctionTypeBuilder();
+      protected static MCFunctionTypesMill millMCFunctionTypesTraverserImplementation;
+      protected static MCFunctionTypesMill millMCFunctionTypesInheritanceHandler;
+      protected static MCFunctionTypesMill millMCFunctionTypesScope;
+      protected static MCFunctionTypesMill millMCFunctionTypesScopesGenitorDelegator;
+      protected static MCFunctionTypesMill millMCFunctionTypesArtifactScope;
+      protected static MCFunctionTypesMill millMCFunctionTypesGlobalScope;
+      protected static MCFunctionTypesMill millMCFunctionTypesScopesGenitor;
+      protected static MCFunctionTypesMill millMCFunctionTypesFullPrettyPrinter;
+      public static String prettyPrint(de.monticore.ast.ASTNode node,boolean printComments);
+      protected String _prettyPrint(de.monticore.ast.ASTNode node,boolean printComments);
+      protected de.monticore.types.mcfunctiontypes._prettyprint.MCFunctionTypesFullPrettyPrinter fullPrettyPrinter;
+      protected static MCFunctionTypesMill millMCFunctionTypesTypeDispatcher;
+      protected de.monticore.types.mcfunctiontypes._util.IMCFunctionTypesTypeDispatcher typeDispatcher;
+      public static de.monticore.types.mcfunctiontypes._util.IMCFunctionTypesTypeDispatcher typeDispatcher();
+      protected de.monticore.types.mcfunctiontypes._util.IMCFunctionTypesTypeDispatcher _typeDispatcher();
+      public static de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser traverser();
+      protected de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser _traverser();
+      public static de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser inheritanceTraverser();
+      protected de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser _inheritanceTraverser();
+      protected de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesGlobalScope mCFunctionTypesGlobalScope;
+      public static de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesGlobalScope globalScope();
+      protected de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesGlobalScope _globalScope();
+      public static de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope artifactScope();
+      protected de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope _artifactScope();
+      public static de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope scope();
+      protected de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope _scope();
+      public static de.monticore.types.mcfunctiontypes._symboltable.MCFunctionTypesScopesGenitor scopesGenitor();
+      protected de.monticore.types.mcfunctiontypes._symboltable.MCFunctionTypesScopesGenitor _scopesGenitor();
+      public static de.monticore.types.mcfunctiontypes._symboltable.MCFunctionTypesScopesGenitorDelegator scopesGenitorDelegator();
+      protected de.monticore.types.mcfunctiontypes._symboltable.MCFunctionTypesScopesGenitorDelegator _scopesGenitorDelegator();
+      public static de.monticore.types.mcbasictypes._ast.ASTMCQualifiedNameBuilder mCQualifiedNameBuilder();
+      public static de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclarationBuilder mCPackageDeclarationBuilder();
+      public static de.monticore.types.mcbasictypes._ast.ASTMCImportStatementBuilder mCImportStatementBuilder();
+      public static de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveTypeBuilder mCPrimitiveTypeBuilder();
+      public static de.monticore.types.mcbasictypes._ast.ASTMCQualifiedTypeBuilder mCQualifiedTypeBuilder();
+      public static de.monticore.types.mcbasictypes._ast.ASTMCReturnTypeBuilder mCReturnTypeBuilder();
+      public static de.monticore.types.mcbasictypes._ast.ASTMCVoidTypeBuilder mCVoidTypeBuilder();
+      public static void initMe(MCFunctionTypesMill a);
+      public static void reset();
+
+    } 
+
+  } 
+  package de.monticore.types.mcfunctiontypes._prettyprint { 
+    public class MCFunctionTypesPrettyPrinter implements de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesHandler,de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesVisitor2 { 
+      public void handle(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypes node);
+      public void handle(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType node);
+      public void handle(de.monticore.types.mcfunctiontypes._ast.ASTMCUnaryFunctionType node);
+      protected de.monticore.prettyprint.IndentPrinter printer;
+      public de.monticore.prettyprint.IndentPrinter getPrinter();
+      protected boolean printComments;
+      public boolean isPrintComments();
+      public void setPrintComments(boolean printComments);
+      protected de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser traverser;
+      public de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser getTraverser();
+      public void setTraverser(de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser traverser);
+      public MCFunctionTypesPrettyPrinter(de.monticore.prettyprint.IndentPrinter printer,boolean printComments);
+
+    } 
+    public class MCFunctionTypesFullPrettyPrinter { 
+      protected de.monticore.prettyprint.IndentPrinter printer;
+      public de.monticore.prettyprint.IndentPrinter getPrinter();
+      protected de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser traverser;
+      public de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser getTraverser();
+      public void setTraverser(de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser traverser);
+      public MCFunctionTypesFullPrettyPrinter(de.monticore.prettyprint.IndentPrinter printer,boolean printComments);
+      public MCFunctionTypesFullPrettyPrinter(de.monticore.prettyprint.IndentPrinter printer);
+      protected void initializeTraverser(boolean printComments);
+      public void setPrintComments(boolean printComments);
+      public String prettyprint(de.monticore.ast.ASTNode node);
+
+    } 
+
+  } 
+  package de.monticore.types.mcfunctiontypes._od { 
+    public class MCFunctionTypes2OD implements de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesVisitor2,de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesHandler { 
+      public MCFunctionTypes2OD(de.monticore.prettyprint.IndentPrinter printer,de.monticore.generating.templateengine.reporting.commons.ReportingRepository reporting);
+      protected de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser traverser;
+      protected de.monticore.prettyprint.IndentPrinter pp;
+      protected de.monticore.generating.templateengine.reporting.commons.ReportingRepository reporting;
+      protected boolean printEmptyOptional;
+      protected boolean printEmptyList;
+      public void handle(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypes node);
+      public void handle(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType node);
+      public void handle(de.monticore.types.mcfunctiontypes._ast.ASTMCUnaryFunctionType node);
+      public de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser getTraverser();
+      public void setTraverser(de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser traverser);
+      protected void printAttribute(String name,String value);
+      protected void printObject(String objName,String objType);
+      public String printObjectDiagram(String modelName,de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionTypesNode node);
+      public boolean isPrintEmptyOptional();
+      public void setPrintEmptyOptional(boolean printEmptyOptional);
+      public boolean isPrintEmptyList();
+      public void setPrintEmptyList(boolean printEmptyList);
+
+    } 
+
+  } 
+  package de.monticore.types.mcfunctiontypes._util { 
+    public class MCFunctionTypesTypeDispatcher implements IMCFunctionTypesTypeDispatcher { 
+      protected Optional<de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypes>optMCFunctionTypesASTMCFunctionParTypes;
+      protected Optional<de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType>optMCFunctionTypesASTMCFunctionType;
+      protected Optional<de.monticore.types.mcfunctiontypes._ast.ASTMCUnaryFunctionType>optMCFunctionTypesASTMCUnaryFunctionType;
+      protected Optional<de.monticore.types.mcfunctiontypes._ast.MCFunctionTypesLiterals>optMCFunctionTypesMCFunctionTypesLiterals;
+      protected Optional<de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionTypesNode>optMCFunctionTypesASTMCFunctionTypesNode;
+      protected Optional<de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope>optMCFunctionTypesIMCFunctionTypesScope;
+      protected Optional<de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope>optMCFunctionTypesIMCFunctionTypesArtifactScope;
+      protected Optional<de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesGlobalScope>optMCFunctionTypesIMCFunctionTypesGlobalScope;
+      protected Optional<de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName>optMCBasicTypesASTMCQualifiedName;
+      protected Optional<de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration>optMCBasicTypesASTMCPackageDeclaration;
+      protected Optional<de.monticore.types.mcbasictypes._ast.ASTMCImportStatement>optMCBasicTypesASTMCImportStatement;
+      protected Optional<de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType>optMCBasicTypesASTMCPrimitiveType;
+      protected Optional<de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType>optMCBasicTypesASTMCQualifiedType;
+      protected Optional<de.monticore.types.mcbasictypes._ast.ASTMCReturnType>optMCBasicTypesASTMCReturnType;
+      protected Optional<de.monticore.types.mcbasictypes._ast.ASTMCVoidType>optMCBasicTypesASTMCVoidType;
+      protected Optional<de.monticore.types.mcbasictypes._ast.ASTMCType>optMCBasicTypesASTMCType;
+      protected Optional<de.monticore.types.mcbasictypes._ast.ASTMCObjectType>optMCBasicTypesASTMCObjectType;
+      protected Optional<de.monticore.types.mcbasictypes._ast.MCBasicTypesLiterals>optMCBasicTypesMCBasicTypesLiterals;
+      protected Optional<de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode>optMCBasicTypesASTMCBasicTypesNode;
+      protected Optional<de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope>optMCBasicTypesIMCBasicTypesScope;
+      protected Optional<de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope>optMCBasicTypesIMCBasicTypesArtifactScope;
+      protected Optional<de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesGlobalScope>optMCBasicTypesIMCBasicTypesGlobalScope;
+      protected Optional<de.monticore.mcbasics._ast.MCBasicsLiterals>optMCBasicsMCBasicsLiterals;
+      protected Optional<de.monticore.mcbasics._ast.ASTMCBasicsNode>optMCBasicsASTMCBasicsNode;
+      protected Optional<de.monticore.mcbasics._symboltable.IMCBasicsScope>optMCBasicsIMCBasicsScope;
+      protected Optional<de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope>optMCBasicsIMCBasicsArtifactScope;
+      protected Optional<de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope>optMCBasicsIMCBasicsGlobalScope;
+      public MCFunctionTypesTypeDispatcher();
+      protected void reset();
+      public boolean isMCFunctionTypesASTMCFunctionParTypes(de.monticore.ast.ASTNode node);
+      public de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypes asMCFunctionTypesASTMCFunctionParTypes(de.monticore.ast.ASTNode node);
+      public boolean isMCFunctionTypesASTMCFunctionType(de.monticore.ast.ASTNode node);
+      public de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType asMCFunctionTypesASTMCFunctionType(de.monticore.ast.ASTNode node);
+      public boolean isMCFunctionTypesASTMCUnaryFunctionType(de.monticore.ast.ASTNode node);
+      public de.monticore.types.mcfunctiontypes._ast.ASTMCUnaryFunctionType asMCFunctionTypesASTMCUnaryFunctionType(de.monticore.ast.ASTNode node);
+      public boolean isMCFunctionTypesMCFunctionTypesLiterals(de.monticore.ast.ASTNode node);
+      public de.monticore.types.mcfunctiontypes._ast.MCFunctionTypesLiterals asMCFunctionTypesMCFunctionTypesLiterals(de.monticore.ast.ASTNode node);
+      public boolean isMCFunctionTypesASTMCFunctionTypesNode(de.monticore.ast.ASTNode node);
+      public de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionTypesNode asMCFunctionTypesASTMCFunctionTypesNode(de.monticore.ast.ASTNode node);
+      public boolean isMCFunctionTypesIMCFunctionTypesScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope asMCFunctionTypesIMCFunctionTypesScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCFunctionTypesIMCFunctionTypesArtifactScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope asMCFunctionTypesIMCFunctionTypesArtifactScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCFunctionTypesIMCFunctionTypesGlobalScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesGlobalScope asMCFunctionTypesIMCFunctionTypesGlobalScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCBasicTypesASTMCQualifiedName(de.monticore.ast.ASTNode node);
+      public de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName asMCBasicTypesASTMCQualifiedName(de.monticore.ast.ASTNode node);
+      public boolean isMCBasicTypesASTMCPackageDeclaration(de.monticore.ast.ASTNode node);
+      public de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration asMCBasicTypesASTMCPackageDeclaration(de.monticore.ast.ASTNode node);
+      public boolean isMCBasicTypesASTMCImportStatement(de.monticore.ast.ASTNode node);
+      public de.monticore.types.mcbasictypes._ast.ASTMCImportStatement asMCBasicTypesASTMCImportStatement(de.monticore.ast.ASTNode node);
+      public boolean isMCBasicTypesASTMCPrimitiveType(de.monticore.ast.ASTNode node);
+      public de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType asMCBasicTypesASTMCPrimitiveType(de.monticore.ast.ASTNode node);
+      public boolean isMCBasicTypesASTMCQualifiedType(de.monticore.ast.ASTNode node);
+      public de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType asMCBasicTypesASTMCQualifiedType(de.monticore.ast.ASTNode node);
+      public boolean isMCBasicTypesASTMCReturnType(de.monticore.ast.ASTNode node);
+      public de.monticore.types.mcbasictypes._ast.ASTMCReturnType asMCBasicTypesASTMCReturnType(de.monticore.ast.ASTNode node);
+      public boolean isMCBasicTypesASTMCVoidType(de.monticore.ast.ASTNode node);
+      public de.monticore.types.mcbasictypes._ast.ASTMCVoidType asMCBasicTypesASTMCVoidType(de.monticore.ast.ASTNode node);
+      public boolean isMCBasicTypesASTMCType(de.monticore.ast.ASTNode node);
+      public de.monticore.types.mcbasictypes._ast.ASTMCType asMCBasicTypesASTMCType(de.monticore.ast.ASTNode node);
+      public boolean isMCBasicTypesASTMCObjectType(de.monticore.ast.ASTNode node);
+      public de.monticore.types.mcbasictypes._ast.ASTMCObjectType asMCBasicTypesASTMCObjectType(de.monticore.ast.ASTNode node);
+      public boolean isMCBasicTypesMCBasicTypesLiterals(de.monticore.ast.ASTNode node);
+      public de.monticore.types.mcbasictypes._ast.MCBasicTypesLiterals asMCBasicTypesMCBasicTypesLiterals(de.monticore.ast.ASTNode node);
+      public boolean isMCBasicTypesASTMCBasicTypesNode(de.monticore.ast.ASTNode node);
+      public de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode asMCBasicTypesASTMCBasicTypesNode(de.monticore.ast.ASTNode node);
+      public boolean isMCBasicTypesIMCBasicTypesScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope asMCBasicTypesIMCBasicTypesScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCBasicTypesIMCBasicTypesArtifactScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope asMCBasicTypesIMCBasicTypesArtifactScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCBasicTypesIMCBasicTypesGlobalScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesGlobalScope asMCBasicTypesIMCBasicTypesGlobalScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCBasicsMCBasicsLiterals(de.monticore.ast.ASTNode node);
+      public de.monticore.mcbasics._ast.MCBasicsLiterals asMCBasicsMCBasicsLiterals(de.monticore.ast.ASTNode node);
+      public boolean isMCBasicsASTMCBasicsNode(de.monticore.ast.ASTNode node);
+      public de.monticore.mcbasics._ast.ASTMCBasicsNode asMCBasicsASTMCBasicsNode(de.monticore.ast.ASTNode node);
+      public boolean isMCBasicsIMCBasicsScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.mcbasics._symboltable.IMCBasicsScope asMCBasicsIMCBasicsScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCBasicsIMCBasicsArtifactScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope asMCBasicsIMCBasicsArtifactScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCBasicsIMCBasicsGlobalScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope asMCBasicsIMCBasicsGlobalScope(de.monticore.symboltable.IScope scope);
+      public void handle(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypes node);
+      public void handle(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType node);
+      public void handle(de.monticore.types.mcfunctiontypes._ast.ASTMCUnaryFunctionType node);
+      public void handle(de.monticore.types.mcfunctiontypes._ast.MCFunctionTypesLiterals node);
+      public void handle(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionTypesNode node);
+      public void handle(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope scope);
+      public void handle(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope scope);
+      public void handle(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesGlobalScope scope);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCImportStatement node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCReturnType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCVoidType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCObjectType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.MCBasicTypesLiterals node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode node);
+      public void handle(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope scope);
+      public void handle(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope scope);
+      public void handle(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesGlobalScope scope);
+      public void handle(de.monticore.mcbasics._ast.MCBasicsLiterals node);
+      public void handle(de.monticore.mcbasics._ast.ASTMCBasicsNode node);
+      public void handle(de.monticore.mcbasics._symboltable.IMCBasicsScope scope);
+      public void handle(de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope scope);
+      public void handle(de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope scope);
+      protected de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser traverser;
+      public de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser getTraverser();
+      public void setTraverser(de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser traverser);
+      public void setTraverser(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser traverser);
+      public void setTraverser(de.monticore.mcbasics._visitor.MCBasicsTraverser traverser);
+      public de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypes getOptMCFunctionTypesASTMCFunctionParTypes();
+      public boolean isPresentOptMCFunctionTypesASTMCFunctionParTypes();
+      public void setOptMCFunctionTypesASTMCFunctionParTypes(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypes optMCFunctionTypesASTMCFunctionParTypes);
+      public void setOptMCFunctionTypesASTMCFunctionParTypesAbsent();
+      public de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType getOptMCFunctionTypesASTMCFunctionType();
+      public boolean isPresentOptMCFunctionTypesASTMCFunctionType();
+      public void setOptMCFunctionTypesASTMCFunctionType(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType optMCFunctionTypesASTMCFunctionType);
+      public void setOptMCFunctionTypesASTMCFunctionTypeAbsent();
+      public de.monticore.types.mcfunctiontypes._ast.ASTMCUnaryFunctionType getOptMCFunctionTypesASTMCUnaryFunctionType();
+      public boolean isPresentOptMCFunctionTypesASTMCUnaryFunctionType();
+      public void setOptMCFunctionTypesASTMCUnaryFunctionType(de.monticore.types.mcfunctiontypes._ast.ASTMCUnaryFunctionType optMCFunctionTypesASTMCUnaryFunctionType);
+      public void setOptMCFunctionTypesASTMCUnaryFunctionTypeAbsent();
+      public de.monticore.types.mcfunctiontypes._ast.MCFunctionTypesLiterals getOptMCFunctionTypesMCFunctionTypesLiterals();
+      public boolean isPresentOptMCFunctionTypesMCFunctionTypesLiterals();
+      public void setOptMCFunctionTypesMCFunctionTypesLiterals(de.monticore.types.mcfunctiontypes._ast.MCFunctionTypesLiterals optMCFunctionTypesMCFunctionTypesLiterals);
+      public void setOptMCFunctionTypesMCFunctionTypesLiteralsAbsent();
+      public de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionTypesNode getOptMCFunctionTypesASTMCFunctionTypesNode();
+      public boolean isPresentOptMCFunctionTypesASTMCFunctionTypesNode();
+      public void setOptMCFunctionTypesASTMCFunctionTypesNode(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionTypesNode optMCFunctionTypesASTMCFunctionTypesNode);
+      public void setOptMCFunctionTypesASTMCFunctionTypesNodeAbsent();
+      public de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope getOptMCFunctionTypesIMCFunctionTypesScope();
+      public boolean isPresentOptMCFunctionTypesIMCFunctionTypesScope();
+      public void setOptMCFunctionTypesIMCFunctionTypesScope(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope optMCFunctionTypesIMCFunctionTypesScope);
+      public void setOptMCFunctionTypesIMCFunctionTypesScopeAbsent();
+      public de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope getOptMCFunctionTypesIMCFunctionTypesArtifactScope();
+      public boolean isPresentOptMCFunctionTypesIMCFunctionTypesArtifactScope();
+      public void setOptMCFunctionTypesIMCFunctionTypesArtifactScope(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope optMCFunctionTypesIMCFunctionTypesArtifactScope);
+      public void setOptMCFunctionTypesIMCFunctionTypesArtifactScopeAbsent();
+      public de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesGlobalScope getOptMCFunctionTypesIMCFunctionTypesGlobalScope();
+      public boolean isPresentOptMCFunctionTypesIMCFunctionTypesGlobalScope();
+      public void setOptMCFunctionTypesIMCFunctionTypesGlobalScope(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesGlobalScope optMCFunctionTypesIMCFunctionTypesGlobalScope);
+      public void setOptMCFunctionTypesIMCFunctionTypesGlobalScopeAbsent();
+      public de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName getOptMCBasicTypesASTMCQualifiedName();
+      public boolean isPresentOptMCBasicTypesASTMCQualifiedName();
+      public void setOptMCBasicTypesASTMCQualifiedName(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName optMCBasicTypesASTMCQualifiedName);
+      public void setOptMCBasicTypesASTMCQualifiedNameAbsent();
+      public de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration getOptMCBasicTypesASTMCPackageDeclaration();
+      public boolean isPresentOptMCBasicTypesASTMCPackageDeclaration();
+      public void setOptMCBasicTypesASTMCPackageDeclaration(de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration optMCBasicTypesASTMCPackageDeclaration);
+      public void setOptMCBasicTypesASTMCPackageDeclarationAbsent();
+      public de.monticore.types.mcbasictypes._ast.ASTMCImportStatement getOptMCBasicTypesASTMCImportStatement();
+      public boolean isPresentOptMCBasicTypesASTMCImportStatement();
+      public void setOptMCBasicTypesASTMCImportStatement(de.monticore.types.mcbasictypes._ast.ASTMCImportStatement optMCBasicTypesASTMCImportStatement);
+      public void setOptMCBasicTypesASTMCImportStatementAbsent();
+      public de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType getOptMCBasicTypesASTMCPrimitiveType();
+      public boolean isPresentOptMCBasicTypesASTMCPrimitiveType();
+      public void setOptMCBasicTypesASTMCPrimitiveType(de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType optMCBasicTypesASTMCPrimitiveType);
+      public void setOptMCBasicTypesASTMCPrimitiveTypeAbsent();
+      public de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType getOptMCBasicTypesASTMCQualifiedType();
+      public boolean isPresentOptMCBasicTypesASTMCQualifiedType();
+      public void setOptMCBasicTypesASTMCQualifiedType(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType optMCBasicTypesASTMCQualifiedType);
+      public void setOptMCBasicTypesASTMCQualifiedTypeAbsent();
+      public de.monticore.types.mcbasictypes._ast.ASTMCReturnType getOptMCBasicTypesASTMCReturnType();
+      public boolean isPresentOptMCBasicTypesASTMCReturnType();
+      public void setOptMCBasicTypesASTMCReturnType(de.monticore.types.mcbasictypes._ast.ASTMCReturnType optMCBasicTypesASTMCReturnType);
+      public void setOptMCBasicTypesASTMCReturnTypeAbsent();
+      public de.monticore.types.mcbasictypes._ast.ASTMCVoidType getOptMCBasicTypesASTMCVoidType();
+      public boolean isPresentOptMCBasicTypesASTMCVoidType();
+      public void setOptMCBasicTypesASTMCVoidType(de.monticore.types.mcbasictypes._ast.ASTMCVoidType optMCBasicTypesASTMCVoidType);
+      public void setOptMCBasicTypesASTMCVoidTypeAbsent();
+      public de.monticore.types.mcbasictypes._ast.ASTMCType getOptMCBasicTypesASTMCType();
+      public boolean isPresentOptMCBasicTypesASTMCType();
+      public void setOptMCBasicTypesASTMCType(de.monticore.types.mcbasictypes._ast.ASTMCType optMCBasicTypesASTMCType);
+      public void setOptMCBasicTypesASTMCTypeAbsent();
+      public de.monticore.types.mcbasictypes._ast.ASTMCObjectType getOptMCBasicTypesASTMCObjectType();
+      public boolean isPresentOptMCBasicTypesASTMCObjectType();
+      public void setOptMCBasicTypesASTMCObjectType(de.monticore.types.mcbasictypes._ast.ASTMCObjectType optMCBasicTypesASTMCObjectType);
+      public void setOptMCBasicTypesASTMCObjectTypeAbsent();
+      public de.monticore.types.mcbasictypes._ast.MCBasicTypesLiterals getOptMCBasicTypesMCBasicTypesLiterals();
+      public boolean isPresentOptMCBasicTypesMCBasicTypesLiterals();
+      public void setOptMCBasicTypesMCBasicTypesLiterals(de.monticore.types.mcbasictypes._ast.MCBasicTypesLiterals optMCBasicTypesMCBasicTypesLiterals);
+      public void setOptMCBasicTypesMCBasicTypesLiteralsAbsent();
+      public de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode getOptMCBasicTypesASTMCBasicTypesNode();
+      public boolean isPresentOptMCBasicTypesASTMCBasicTypesNode();
+      public void setOptMCBasicTypesASTMCBasicTypesNode(de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode optMCBasicTypesASTMCBasicTypesNode);
+      public void setOptMCBasicTypesASTMCBasicTypesNodeAbsent();
+      public de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope getOptMCBasicTypesIMCBasicTypesScope();
+      public boolean isPresentOptMCBasicTypesIMCBasicTypesScope();
+      public void setOptMCBasicTypesIMCBasicTypesScope(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope optMCBasicTypesIMCBasicTypesScope);
+      public void setOptMCBasicTypesIMCBasicTypesScopeAbsent();
+      public de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope getOptMCBasicTypesIMCBasicTypesArtifactScope();
+      public boolean isPresentOptMCBasicTypesIMCBasicTypesArtifactScope();
+      public void setOptMCBasicTypesIMCBasicTypesArtifactScope(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope optMCBasicTypesIMCBasicTypesArtifactScope);
+      public void setOptMCBasicTypesIMCBasicTypesArtifactScopeAbsent();
+      public de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesGlobalScope getOptMCBasicTypesIMCBasicTypesGlobalScope();
+      public boolean isPresentOptMCBasicTypesIMCBasicTypesGlobalScope();
+      public void setOptMCBasicTypesIMCBasicTypesGlobalScope(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesGlobalScope optMCBasicTypesIMCBasicTypesGlobalScope);
+      public void setOptMCBasicTypesIMCBasicTypesGlobalScopeAbsent();
+      public de.monticore.mcbasics._ast.MCBasicsLiterals getOptMCBasicsMCBasicsLiterals();
+      public boolean isPresentOptMCBasicsMCBasicsLiterals();
+      public void setOptMCBasicsMCBasicsLiterals(de.monticore.mcbasics._ast.MCBasicsLiterals optMCBasicsMCBasicsLiterals);
+      public void setOptMCBasicsMCBasicsLiteralsAbsent();
+      public de.monticore.mcbasics._ast.ASTMCBasicsNode getOptMCBasicsASTMCBasicsNode();
+      public boolean isPresentOptMCBasicsASTMCBasicsNode();
+      public void setOptMCBasicsASTMCBasicsNode(de.monticore.mcbasics._ast.ASTMCBasicsNode optMCBasicsASTMCBasicsNode);
+      public void setOptMCBasicsASTMCBasicsNodeAbsent();
+      public de.monticore.mcbasics._symboltable.IMCBasicsScope getOptMCBasicsIMCBasicsScope();
+      public boolean isPresentOptMCBasicsIMCBasicsScope();
+      public void setOptMCBasicsIMCBasicsScope(de.monticore.mcbasics._symboltable.IMCBasicsScope optMCBasicsIMCBasicsScope);
+      public void setOptMCBasicsIMCBasicsScopeAbsent();
+      public de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope getOptMCBasicsIMCBasicsArtifactScope();
+      public boolean isPresentOptMCBasicsIMCBasicsArtifactScope();
+      public void setOptMCBasicsIMCBasicsArtifactScope(de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope optMCBasicsIMCBasicsArtifactScope);
+      public void setOptMCBasicsIMCBasicsArtifactScopeAbsent();
+      public de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope getOptMCBasicsIMCBasicsGlobalScope();
+      public boolean isPresentOptMCBasicsIMCBasicsGlobalScope();
+      public void setOptMCBasicsIMCBasicsGlobalScope(de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope optMCBasicsIMCBasicsGlobalScope);
+      public void setOptMCBasicsIMCBasicsGlobalScopeAbsent();
+
+    } 
+    public interface IMCFunctionTypesTypeDispatcher extends de.monticore.types.mcbasictypes._util.IMCBasicTypesTypeDispatcher,de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesHandler { 
+      public abstract boolean isMCFunctionTypesASTMCFunctionParTypes(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypes asMCFunctionTypesASTMCFunctionParTypes(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCFunctionTypesASTMCFunctionType(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType asMCFunctionTypesASTMCFunctionType(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCFunctionTypesASTMCUnaryFunctionType(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.types.mcfunctiontypes._ast.ASTMCUnaryFunctionType asMCFunctionTypesASTMCUnaryFunctionType(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCFunctionTypesMCFunctionTypesLiterals(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.types.mcfunctiontypes._ast.MCFunctionTypesLiterals asMCFunctionTypesMCFunctionTypesLiterals(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCFunctionTypesASTMCFunctionTypesNode(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionTypesNode asMCFunctionTypesASTMCFunctionTypesNode(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCFunctionTypesIMCFunctionTypesScope(de.monticore.symboltable.IScope scope);
+      public abstract de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope asMCFunctionTypesIMCFunctionTypesScope(de.monticore.symboltable.IScope scope);
+      public abstract boolean isMCFunctionTypesIMCFunctionTypesGlobalScope(de.monticore.symboltable.IScope scope);
+      public abstract de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesGlobalScope asMCFunctionTypesIMCFunctionTypesGlobalScope(de.monticore.symboltable.IScope scope);
+      public abstract boolean isMCFunctionTypesIMCFunctionTypesArtifactScope(de.monticore.symboltable.IScope scope);
+      public abstract de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope asMCFunctionTypesIMCFunctionTypesArtifactScope(de.monticore.symboltable.IScope scope);
+
+    } 
+
+  } 
+  package de.monticore.types.mcfunctiontypes._cocos { 
+    public class MCFunctionTypesCoCoChecker { 
+      protected de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser traverser;
+      public MCFunctionTypesCoCoChecker();
+      public de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser getTraverser();
+      public void setTraverser(de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser traverser);
+      public void addChecker(de.monticore.types.mcfunctiontypes._cocos.MCFunctionTypesCoCoChecker checker);
+      public void checkAll(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionTypesNode node);
+      public void addCoCo(de.monticore.types.mcfunctiontypes._cocos.MCFunctionTypesASTMCFunctionParTypesCoCo coco);
+      public void addCoCo(de.monticore.types.mcfunctiontypes._cocos.MCFunctionTypesASTMCFunctionTypeCoCo coco);
+      public void addCoCo(de.monticore.types.mcfunctiontypes._cocos.MCFunctionTypesASTMCUnaryFunctionTypeCoCo coco);
+      public void addCoCo(de.monticore.types.mcfunctiontypes._cocos.MCFunctionTypesASTMCFunctionTypesNodeCoCo coco);
+      public void addChecker(de.monticore.types.mcbasictypes._cocos.MCBasicTypesCoCoChecker checker);
+      public void checkAll(de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode node);
+      public void addCoCo(de.monticore.types.mcbasictypes._cocos.MCBasicTypesASTMCQualifiedNameCoCo coco);
+      public void addCoCo(de.monticore.types.mcbasictypes._cocos.MCBasicTypesASTMCPackageDeclarationCoCo coco);
+      public void addCoCo(de.monticore.types.mcbasictypes._cocos.MCBasicTypesASTMCImportStatementCoCo coco);
+      public void addCoCo(de.monticore.types.mcbasictypes._cocos.MCBasicTypesASTMCPrimitiveTypeCoCo coco);
+      public void addCoCo(de.monticore.types.mcbasictypes._cocos.MCBasicTypesASTMCQualifiedTypeCoCo coco);
+      public void addCoCo(de.monticore.types.mcbasictypes._cocos.MCBasicTypesASTMCReturnTypeCoCo coco);
+      public void addCoCo(de.monticore.types.mcbasictypes._cocos.MCBasicTypesASTMCVoidTypeCoCo coco);
+      public void addCoCo(de.monticore.types.mcbasictypes._cocos.MCBasicTypesASTMCTypeCoCo coco);
+      public void addCoCo(de.monticore.types.mcbasictypes._cocos.MCBasicTypesASTMCObjectTypeCoCo coco);
+      public void addCoCo(de.monticore.types.mcbasictypes._cocos.MCBasicTypesASTMCBasicTypesNodeCoCo coco);
+      public void addChecker(de.monticore.mcbasics._cocos.MCBasicsCoCoChecker checker);
+      public void checkAll(de.monticore.mcbasics._ast.ASTMCBasicsNode node);
+      public void addCoCo(de.monticore.mcbasics._cocos.MCBasicsASTMCBasicsNodeCoCo coco);
+
+    } 
+    public interface MCFunctionTypesASTMCFunctionParTypesCoCo extends de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesVisitor2 { 
+      public abstract void check(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypes node);
+      public void visit(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypes node);
+
+    } 
+    public interface MCFunctionTypesASTMCFunctionTypeCoCo extends de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesVisitor2 { 
+      public abstract void check(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType node);
+      public void visit(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType node);
+
+    } 
+    public interface MCFunctionTypesASTMCUnaryFunctionTypeCoCo extends de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesVisitor2 { 
+      public abstract void check(de.monticore.types.mcfunctiontypes._ast.ASTMCUnaryFunctionType node);
+      public void visit(de.monticore.types.mcfunctiontypes._ast.ASTMCUnaryFunctionType node);
+
+    } 
+    public interface MCFunctionTypesASTMCFunctionTypesNodeCoCo extends de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesVisitor2 { 
+      public abstract void check(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionTypesNode node);
+      public void visit(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionTypesNode node);
+
+    } 
+
+  } 
+  package de.monticore.types.mcfunctiontypes._visitor { 
+    public interface MCFunctionTypesTraverser extends de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser { 
+      public void add4MCFunctionTypes(de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesVisitor2 mCFunctionTypesVisitor);
+      public List<de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesVisitor2>getMCFunctionTypesVisitorList();
+      public void add4MCBasicTypes(de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2 mCBasicTypesVisitor);
+      public List<de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2>getMCBasicTypesVisitorList();
+      public void add4MCBasics(de.monticore.mcbasics._visitor.MCBasicsVisitor2 mCBasicsVisitor);
+      public List<de.monticore.mcbasics._visitor.MCBasicsVisitor2>getMCBasicsVisitorList();
+      public void setMCFunctionTypesHandler(de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesHandler mCFunctionTypesHandler);
+      public Optional<de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesHandler>getMCFunctionTypesHandler();
+      public void setMCBasicTypesHandler(de.monticore.types.mcbasictypes._visitor.MCBasicTypesHandler mCBasicTypesHandler);
+      public Optional<de.monticore.types.mcbasictypes._visitor.MCBasicTypesHandler>getMCBasicTypesHandler();
+      public void setMCBasicsHandler(de.monticore.mcbasics._visitor.MCBasicsHandler mCBasicsHandler);
+      public Optional<de.monticore.mcbasics._visitor.MCBasicsHandler>getMCBasicsHandler();
+      public void visit(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypes node);
+      public void endVisit(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypes node);
+      public void handle(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypes node);
+      public void traverse(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypes node);
+      public void visit(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType node);
+      public void endVisit(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType node);
+      public void handle(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType node);
+      public void traverse(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType node);
+      public void visit(de.monticore.types.mcfunctiontypes._ast.ASTMCUnaryFunctionType node);
+      public void endVisit(de.monticore.types.mcfunctiontypes._ast.ASTMCUnaryFunctionType node);
+      public void handle(de.monticore.types.mcfunctiontypes._ast.ASTMCUnaryFunctionType node);
+      public void traverse(de.monticore.types.mcfunctiontypes._ast.ASTMCUnaryFunctionType node);
+      public void visit(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionTypesNode node);
+      public void endVisit(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionTypesNode node);
+      public void handle(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionTypesNode node);
+      public void visit(de.monticore.types.mcfunctiontypes._symboltable.ICommonMCFunctionTypesSymbol node);
+      public void endVisit(de.monticore.types.mcfunctiontypes._symboltable.ICommonMCFunctionTypesSymbol node);
+      public void handle(de.monticore.types.mcfunctiontypes._symboltable.ICommonMCFunctionTypesSymbol node);
+      public void traverse(de.monticore.types.mcfunctiontypes._symboltable.ICommonMCFunctionTypesSymbol node);
+      public void visit(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope node);
+      public void endVisit(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope node);
+      public void handle(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope node);
+      public void traverse(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope node);
+      public void visit(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope node);
+      public void endVisit(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope node);
+      public void handle(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope node);
+      public void traverse(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope node);
+      public void visit(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesGlobalScope node);
+      public void endVisit(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesGlobalScope node);
+      public void handle(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesGlobalScope node);
+      public void traverse(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesGlobalScope node);
+
+    } 
+    public class MCFunctionTypesTraverserImplementation implements de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser { 
+      protected MCFunctionTypesTraverserImplementation realThis;
+      protected List<de.monticore.visitor.IVisitor>iVisitorList;
+      protected List<de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2>mCBasicTypesVisitorList;
+      protected List<de.monticore.mcbasics._visitor.MCBasicsVisitor2>mCBasicsVisitorList;
+      protected List<de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesVisitor2>mCFunctionTypesVisitorList;
+      protected Optional<de.monticore.types.mcbasictypes._visitor.MCBasicTypesHandler>mCBasicTypesHandler;
+      protected Optional<de.monticore.mcbasics._visitor.MCBasicsHandler>mCBasicsHandler;
+      protected Optional<de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesHandler>mCFunctionTypesHandler;
+      public void add4MCBasicTypes(de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2 mCBasicTypesVisitor);
+      public List<de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2>getMCBasicTypesVisitorList();
+      public void add4MCBasics(de.monticore.mcbasics._visitor.MCBasicsVisitor2 mCBasicsVisitor);
+      public List<de.monticore.mcbasics._visitor.MCBasicsVisitor2>getMCBasicsVisitorList();
+      public void add4MCFunctionTypes(de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesVisitor2 mCFunctionTypesVisitor);
+      public List<de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesVisitor2>getMCFunctionTypesVisitorList();
+      public void setMCBasicTypesHandler(de.monticore.types.mcbasictypes._visitor.MCBasicTypesHandler mCBasicTypesHandler);
+      public Optional<de.monticore.types.mcbasictypes._visitor.MCBasicTypesHandler>getMCBasicTypesHandler();
+      public void setMCBasicsHandler(de.monticore.mcbasics._visitor.MCBasicsHandler mCBasicsHandler);
+      public Optional<de.monticore.mcbasics._visitor.MCBasicsHandler>getMCBasicsHandler();
+      public void setMCFunctionTypesHandler(de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesHandler mCFunctionTypesHandler);
+      public Optional<de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesHandler>getMCFunctionTypesHandler();
+      public void add4IVisitor(de.monticore.visitor.IVisitor iVisitor);
+      public List<de.monticore.visitor.IVisitor>getIVisitorList();
+      protected Set<Object> traversedElements;
+      public Set<Object> getTraversedElements();
+      public void setTraversedElements(Set<Object> traversedElements);
+
+    } 
+    public interface MCFunctionTypesVisitor2 extends de.monticore.visitor.IVisitor { 
+      public void visit(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypes node);
+      public void endVisit(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypes node);
+      public void visit(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType node);
+      public void endVisit(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType node);
+      public void visit(de.monticore.types.mcfunctiontypes._ast.ASTMCUnaryFunctionType node);
+      public void endVisit(de.monticore.types.mcfunctiontypes._ast.ASTMCUnaryFunctionType node);
+      public void visit(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionTypesNode node);
+      public void endVisit(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionTypesNode node);
+      public void visit(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope node);
+      public void endVisit(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope node);
+      public void visit(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope node);
+      public void endVisit(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope node);
+      public void visit(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesGlobalScope node);
+      public void endVisit(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesGlobalScope node);
+
+    } 
+    public interface MCFunctionTypesHandler extends de.monticore.visitor.IHandler { 
+      public abstract de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser getTraverser();
+      public abstract void setTraverser(de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser traverser);
+      public void handle(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypes node);
+      public void traverse(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypes node);
+      public void handle(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType node);
+      public void traverse(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType node);
+      public void handle(de.monticore.types.mcfunctiontypes._ast.ASTMCUnaryFunctionType node);
+      public void traverse(de.monticore.types.mcfunctiontypes._ast.ASTMCUnaryFunctionType node);
+      public void handle(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionTypesNode node);
+      public void handle(de.monticore.types.mcfunctiontypes._symboltable.ICommonMCFunctionTypesSymbol node);
+      public void traverse(de.monticore.types.mcfunctiontypes._symboltable.ICommonMCFunctionTypesSymbol node);
+      public void handle(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope node);
+      public void traverse(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope node);
+      public void handle(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope node);
+      public void traverse(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope node);
+      public void handle(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesGlobalScope node);
+      public void traverse(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesGlobalScope node);
+
+    } 
+    public class MCFunctionTypesInheritanceHandler implements de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesHandler { 
+      protected de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser traverser;
+      public de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser getTraverser();
+      public void setTraverser(de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser traverser);
+      public void handle(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypes node);
+      public void handle(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType node);
+      public void handle(de.monticore.types.mcfunctiontypes._ast.ASTMCUnaryFunctionType node);
+      public void handle(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionTypesNode node);
+      public void handle(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope node);
+      public void handle(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope node);
+      public void handle(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesGlobalScope node);
+
+    } 
+    public interface IMCFunctionTypesInterpreter extends de.monticore.types.mcbasictypes._visitor.IMCBasicTypesInterpreter,de.monticore.interpreter.ModelInterpreter { 
+      public abstract de.monticore.interpreter.Value interpret(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypes node);
+      public abstract de.monticore.interpreter.Value interpret(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType node);
+      public abstract de.monticore.interpreter.Value interpret(de.monticore.types.mcfunctiontypes._ast.ASTMCUnaryFunctionType node);
+      public abstract de.monticore.interpreter.Value interpret(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionTypesNode node);
+
+    } 
+    public class MCFunctionTypesInterpreter implements IMCFunctionTypesInterpreter { 
+      protected de.monticore.types.mcbasictypes._visitor.IMCBasicTypesInterpreter mCBasicTypesInterpreter;
+      protected de.monticore.mcbasics._visitor.IMCBasicsInterpreter mCBasicsInterpreter;
+      public MCFunctionTypesInterpreter();
+      public MCFunctionTypesInterpreter(de.monticore.interpreter.ModelInterpreter realThis);
+      protected de.monticore.interpreter.ModelInterpreter realThis;
+      public de.monticore.interpreter.ModelInterpreter getRealThis();
+      public void setRealThis(de.monticore.interpreter.ModelInterpreter realThis);
+      protected Map<de.monticore.symboltable.ISymbol,de.monticore.interpreter.Value>contextMap;
+      public void store(de.monticore.symboltable.ISymbol symbol,de.monticore.interpreter.Value value);
+      public de.monticore.interpreter.Value load(de.monticore.symboltable.ISymbol symbol);
+      public Map<de.monticore.symboltable.ISymbol,de.monticore.interpreter.Value>getContextMap();
+      public de.monticore.interpreter.Value interpret(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypes node);
+      public de.monticore.interpreter.Value interpret(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType node);
+      public de.monticore.interpreter.Value interpret(de.monticore.types.mcfunctiontypes._ast.ASTMCUnaryFunctionType node);
+      public de.monticore.interpreter.Value interpret(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionTypesNode node);
+      public de.monticore.interpreter.Value interpret(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName node);
+      public de.monticore.interpreter.Value interpret(de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration node);
+      public de.monticore.interpreter.Value interpret(de.monticore.types.mcbasictypes._ast.ASTMCImportStatement node);
+      public de.monticore.interpreter.Value interpret(de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType node);
+      public de.monticore.interpreter.Value interpret(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType node);
+      public de.monticore.interpreter.Value interpret(de.monticore.types.mcbasictypes._ast.ASTMCReturnType node);
+      public de.monticore.interpreter.Value interpret(de.monticore.types.mcbasictypes._ast.ASTMCVoidType node);
+      public de.monticore.interpreter.Value interpret(de.monticore.types.mcbasictypes._ast.ASTMCType node);
+      public de.monticore.interpreter.Value interpret(de.monticore.types.mcbasictypes._ast.ASTMCObjectType node);
+      public de.monticore.interpreter.Value interpret(de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode node);
+      public de.monticore.interpreter.Value interpret(de.monticore.mcbasics._ast.ASTMCBasicsNode node);
+
+    } 
+
+  } 
+  package de.monticore.types.mcfunctiontypes._symboltable { 
+    public class MCFunctionTypesScope implements de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope { 
+      public MCFunctionTypesScope();
+      public MCFunctionTypesScope(boolean shadowing);
+      public MCFunctionTypesScope(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope enclosingScope);
+      public MCFunctionTypesScope(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope enclosingScope,boolean shadowing);
+      protected com.google.common.collect.LinkedListMultimap<String,de.monticore.symboltable.SymbolWithScopeOfUnknownKind>unknownSymbols;
+      public void add(de.monticore.symboltable.SymbolWithScopeOfUnknownKind symbol);
+      public void remove(de.monticore.symboltable.SymbolWithScopeOfUnknownKind symbol);
+      public com.google.common.collect.LinkedListMultimap<String,de.monticore.symboltable.SymbolWithScopeOfUnknownKind>getUnknownSymbols();
+      protected boolean unknownSymbolsAlreadyResolved;
+      public boolean isUnknownSymbolsAlreadyResolved();
+      public void setUnknownSymbolsAlreadyResolved(boolean unknownSymbolsAlreadyResolved);
+      protected de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope enclosingScope;
+      public de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope getEnclosingScope();
+      public void setEnclosingScope(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope enclosingScope);
+      protected Optional<de.monticore.symboltable.IScopeSpanningSymbol>spanningSymbol;
+      public de.monticore.symboltable.IScopeSpanningSymbol getSpanningSymbol();
+      public boolean isPresentSpanningSymbol();
+      public void setSpanningSymbol(de.monticore.symboltable.IScopeSpanningSymbol spanningSymbol);
+      public void setSpanningSymbolAbsent();
+      protected boolean shadowing;
+      public boolean isShadowing();
+      public void setShadowing(boolean shadowing);
+      protected boolean exportingSymbols;
+      public boolean isExportingSymbols();
+      public void setExportingSymbols(boolean exportingSymbols);
+      protected boolean ordered;
+      public boolean isOrdered();
+      public void setOrdered(boolean ordered);
+      protected Optional<String>name;
+      public String getName();
+      public boolean isPresentName();
+      public void setName(String name);
+      public void setNameAbsent();
+      protected Optional<de.monticore.ast.ASTNode>astNode;
+      public de.monticore.ast.ASTNode getAstNode();
+      public boolean isPresentAstNode();
+      public void setAstNode(de.monticore.ast.ASTNode astNode);
+      public void setAstNodeAbsent();
+      protected List<de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope>subScopes;
+      public void addSubScope(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope subScope);
+      public void removeSubScope(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope subScope);
+      public List<de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope>getSubScopes();
+      public void setSubScopes(List<de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope>subScopes);
+      public void addSubScope(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope subScope);
+      public void removeSubScope(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope subScope);
+      public void setEnclosingScope(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope newEnclosingScope);
+      public void addSubScope(de.monticore.mcbasics._symboltable.IMCBasicsScope subScope);
+      public void removeSubScope(de.monticore.mcbasics._symboltable.IMCBasicsScope subScope);
+      public void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope newEnclosingScope);
+      public void accept(de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser visitor);
+      public void accept(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+
+    } 
+    public interface IMCFunctionTypesScope extends de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope { 
+      public abstract List<? extends IMCFunctionTypesScope>getSubScopes();
+      public void addSubScope(IMCFunctionTypesScope subScope);
+      public void removeSubScope(IMCFunctionTypesScope subScope);
+      public abstract IMCFunctionTypesScope getEnclosingScope();
+      public abstract void setEnclosingScope(IMCFunctionTypesScope enclosingScope);
+      public abstract void accept(de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser visitor);
+      public int getSymbolsSize();
+      public abstract void accept(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser visitor);
+      public abstract void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public abstract void accept(de.monticore.visitor.ITraverser visitor);
+
+    } 
+    public class MCFunctionTypesSymbols2Json implements de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesVisitor2 { 
+      protected de.monticore.symboltable.serialization.IDeSer<de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope, de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope, MCFunctionTypesSymbols2Json> scopeDeSer;
+      protected MCFunctionTypesSymbols2Json realThis;
+      public MCFunctionTypesSymbols2Json getRealThis();
+      public void setRealThis(MCFunctionTypesSymbols2Json realThis);
+      protected de.monticore.symboltable.serialization.JsonPrinter printer;
+      public de.monticore.symboltable.serialization.JsonPrinter getJsonPrinter();
+      public void setJsonPrinter(de.monticore.symboltable.serialization.JsonPrinter printer);
+      protected de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser traverser;
+      public String serialize(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope toSerialize);
+      public String serialize(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope toSerialize);
+      public de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope deserialize(String serialized);
+      public de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser getTraverser();
+      public void setTraverser(de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser traverser);
+      public MCFunctionTypesSymbols2Json();
+      public MCFunctionTypesSymbols2Json(de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser traverser,de.monticore.symboltable.serialization.JsonPrinter printer);
+      public void init();
+      public String getSerializedString();
+      public de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope load(java.net.URL url);
+      public de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope load(java.io.Reader reader);
+      public de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope load(String model);
+      public String store(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope scope,String fileName);
+      public void visit(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope node);
+      public void endVisit(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope node);
+      public void visit(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope node);
+      public void endVisit(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope node);
+
+    } 
+    public interface ICommonMCFunctionTypesSymbol extends de.monticore.symboltable.ISymbol { 
+      public abstract void accept(de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser visitor);
+      public abstract de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope getEnclosingScope();
+      public abstract void setEnclosingScope(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope enclosingScope);
+
+    } 
+    public interface IMCFunctionTypesGlobalScope extends de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesGlobalScope,de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope { 
+      public abstract void loadFileForModelName(String modelName);
+      public de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope getEnclosingScope();
+      public void setEnclosingScope(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope enclosingScope);
+      public String getName();
+      public boolean isPresentName();
+      public boolean checkIfContinueAsSubScope(String symbolName);
+      public abstract Map<String,de.monticore.symboltable.serialization.ISymbolDeSer> getSymbolDeSers();
+      public void putSymbolDeSer(String key,de.monticore.symboltable.serialization.ISymbolDeSer value);
+      public de.monticore.symboltable.serialization.ISymbolDeSer getSymbolDeSer(String key);
+      public abstract IMCFunctionTypesGlobalScope getRealThis();
+      public abstract void accept(de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser visitor);
+      public abstract void accept(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser visitor);
+      public abstract void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public abstract void accept(de.monticore.visitor.ITraverser visitor);
+
+    } 
+    public interface IMCFunctionTypesArtifactScope extends de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope,de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope { 
+      public boolean containsImports(Object element);
+      public boolean containsAllImports(Collection<?>collection);
+      public boolean isEmptyImports();
+      public Iterator<de.monticore.symboltable.ImportStatement>iteratorImports();
+      public int sizeImports();
+      public de.monticore.symboltable.ImportStatement []toArrayImports(de.monticore.symboltable.ImportStatement []array);
+      public Object []toArrayImports();
+      public Spliterator<de.monticore.symboltable.ImportStatement>spliteratorImports();
+      public Stream<de.monticore.symboltable.ImportStatement>streamImports();
+      public Stream<de.monticore.symboltable.ImportStatement>parallelStreamImports();
+      public de.monticore.symboltable.ImportStatement getImports(int index);
+      public int indexOfImports(Object element);
+      public int lastIndexOfImports(Object element);
+      public boolean equalsImports(Object o);
+      public int hashCodeImports();
+      public ListIterator<de.monticore.symboltable.ImportStatement>listIteratorImports();
+      public ListIterator<de.monticore.symboltable.ImportStatement>listIteratorImports(int index);
+      public List<de.monticore.symboltable.ImportStatement>subListImports(int start,int end);
+      public void clearImports();
+      public boolean addImports(de.monticore.symboltable.ImportStatement element);
+      public boolean addAllImports(Collection<? extends de.monticore.symboltable.ImportStatement>collection);
+      public boolean removeImports(Object element);
+      public boolean removeAllImports(Collection<?>collection);
+      public boolean retainAllImports(Collection<?>collection);
+      public boolean removeIfImports(Predicate<? super de.monticore.symboltable.ImportStatement>filter);
+      public void forEachImports(Consumer<? super de.monticore.symboltable.ImportStatement>action);
+      public void addImports(int index,de.monticore.symboltable.ImportStatement element);
+      public boolean addAllImports(int index,Collection<? extends de.monticore.symboltable.ImportStatement>collection);
+      public de.monticore.symboltable.ImportStatement removeImports(int index);
+      public de.monticore.symboltable.ImportStatement setImports(int index,de.monticore.symboltable.ImportStatement element);
+      public void replaceAllImports(UnaryOperator<de.monticore.symboltable.ImportStatement>operator);
+      public void sortImports(Comparator<? super de.monticore.symboltable.ImportStatement>comparator);
+      public abstract List<de.monticore.symboltable.ImportStatement>getImportsList();
+      public abstract void setImportsList(List<de.monticore.symboltable.ImportStatement>imports);
+      public Optional<de.monticore.symboltable.ISymbol>getTopLevelSymbol();
+      public boolean checkIfContinueAsSubScope(String symbolName);
+      public List<String>getRemainingNameForResolveDown(String symbolName);
+      public String getFullName();
+      public abstract void accept(de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser visitor);
+      public abstract void accept(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser visitor);
+      public abstract void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public abstract void accept(de.monticore.visitor.ITraverser visitor);
+
+    } 
+    public class MCFunctionTypesScopesGenitorDelegator { 
+      public MCFunctionTypesScopesGenitorDelegator();
+      protected Deque<de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope>scopeStack;
+      protected final MCFunctionTypesScopesGenitor symbolTable;
+      protected de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesGlobalScope globalScope;
+      protected de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser traverser;
+      public de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope createFromAST(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypes rootNode);
+
+    } 
+    public class MCFunctionTypesArtifactScope extends de.monticore.types.mcfunctiontypes._symboltable.MCFunctionTypesScope implements de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope { 
+      public MCFunctionTypesArtifactScope(String packageName,List<de.monticore.symboltable.ImportStatement>imports);
+      public MCFunctionTypesArtifactScope(Optional<de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope>enclosingScope,String packageName,List<de.monticore.symboltable.ImportStatement>imports);
+      public MCFunctionTypesArtifactScope();
+      protected String packageName;
+      public String getPackageName();
+      public void setPackageName(String packageName);
+      protected List<de.monticore.symboltable.ImportStatement>imports;
+      public List<de.monticore.symboltable.ImportStatement>getImportsList();
+      public void setImportsList(List<de.monticore.symboltable.ImportStatement>imports);
+      public boolean isPresentName();
+      public String getName();
+      public void setEnclosingScope(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope enclosingScope);
+      public void accept(de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser visitor);
+      public void accept(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+
+    } 
+    public class MCFunctionTypesDeSer implements de.monticore.symboltable.serialization.IDeSer<de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope, de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope, de.monticore.types.mcfunctiontypes._symboltable.MCFunctionTypesSymbols2Json> { 
+      public String serialize(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope toSerialize,de.monticore.types.mcfunctiontypes._symboltable.MCFunctionTypesSymbols2Json s2j);
+      public String serialize(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope toSerialize,de.monticore.types.mcfunctiontypes._symboltable.MCFunctionTypesSymbols2Json s2j);
+      public void serializeAddons(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope toSerialize,de.monticore.types.mcfunctiontypes._symboltable.MCFunctionTypesSymbols2Json s2j);
+      public void serializeAddons(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope toSerialize,de.monticore.types.mcfunctiontypes._symboltable.MCFunctionTypesSymbols2Json s2j);
+      public de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope deserializeScope(de.monticore.symboltable.serialization.json.JsonObject scopeJson);
+      public de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope deserializeArtifactScope(de.monticore.symboltable.serialization.json.JsonObject scopeJson);
+      protected void deserializeSymbols(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope scope,de.monticore.symboltable.serialization.json.JsonObject scopeJson);
+      public void deserializeAddons(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope scope,de.monticore.symboltable.serialization.json.JsonObject scopeJson);
+      public void deserializeAddons(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope scope,de.monticore.symboltable.serialization.json.JsonObject scopeJson);
+
+    } 
+    public class MCFunctionTypesGlobalScope extends de.monticore.types.mcfunctiontypes._symboltable.MCFunctionTypesScope implements de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesGlobalScope { 
+      public MCFunctionTypesGlobalScope(de.monticore.io.paths.MCPath symbolPath,String fileExt);
+      public MCFunctionTypesGlobalScope();
+      protected de.monticore.io.paths.MCPath symbolPath;
+      public de.monticore.io.paths.MCPath getSymbolPath();
+      public void setSymbolPath(de.monticore.io.paths.MCPath symbolPath);
+      protected String fileExt;
+      public String getFileExt();
+      public void setFileExt(String fileExt);
+      public de.monticore.symboltable.serialization.IDeSer deSer;
+      public de.monticore.symboltable.serialization.IDeSer getDeSer();
+      public void setDeSer(de.monticore.symboltable.serialization.IDeSer deSer);
+      protected Map<String,de.monticore.symboltable.serialization.ISymbolDeSer> symbolDeSers;
+      public Map<String,de.monticore.symboltable.serialization.ISymbolDeSer> getSymbolDeSers();
+      public void setSymbolDeSers(Map<String,de.monticore.symboltable.serialization.ISymbolDeSer> symbolDeSers);
+      protected MCFunctionTypesSymbols2Json symbols2Json;
+      public void setSymbols2Json(MCFunctionTypesSymbols2Json symbols2Json);
+      public MCFunctionTypesSymbols2Json getSymbols2Json();
+      protected Set<String>cache;
+      public void addLoadedFile(String name);
+      public void clearLoadedFiles();
+      public boolean isFileLoaded(String name);
+      public void init();
+      public void loadFileForModelName(String modelName);
+      public MCFunctionTypesGlobalScope getRealThis();
+      public void clear();
+      public void accept(de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser visitor);
+      public void accept(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+
+    } 
+    public class MCFunctionTypesScopesGenitor implements de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesVisitor2,de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesHandler { 
+      public MCFunctionTypesScopesGenitor();
+      protected Deque<de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope>scopeStack;
+      protected de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser traverser;
+      public de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser getTraverser();
+      public void setTraverser(de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser traverser);
+      protected de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope firstCreatedScope;
+      public de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope getFirstCreatedScope();
+      public de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope createFromAST(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypes rootNode);
+      public void putOnStack(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope scope);
+      public final Optional<de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope>getCurrentScope();
+      public final Optional<de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope>removeCurrentScope();
+      public void setScopeStack(Deque<? extends de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope>scopeStack);
+      public de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope createScope(boolean shadowing);
+      public void visit(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypes node);
+      public void visit(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType node);
+      public void visit(de.monticore.types.mcfunctiontypes._ast.ASTMCUnaryFunctionType node);
+      protected void initScopeHP1(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope scope);
+      protected void initScopeHP2(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope scope);
+      protected void initArtifactScopeHP1(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope scope);
+      protected void initArtifactScopeHP2(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesArtifactScope scope);
+      public void addToScopeStack(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope scope);
+
+    } 
+
+  } 
+  package de.monticore.types.mcfunctiontypes._ast { 
+    <<startProd>>public class ASTMCFunctionParTypes extends ASTCNode implements de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionTypesNode { 
+      protected ASTMCFunctionParTypes();
+      public boolean deepEquals(Object o);
+      public boolean deepEquals(Object o,boolean forceSameOrder);
+      public boolean deepEqualsWithComments(Object o);
+      public boolean deepEqualsWithComments(Object o,boolean forceSameOrder);
+      public boolean equalAttributes(Object o);
+      public boolean equalsWithComments(Object o);
+      public ASTMCFunctionParTypes deepClone();
+      public ASTMCFunctionParTypes deepClone(ASTMCFunctionParTypes result);
+      <<derived_attribute_name="",astType="">>protected java.util.List<de.monticore.types.mcbasictypes._ast.ASTMCType>mCTypes;
+      protected Optional<String>isElliptic;
+      public boolean containsMCType(Object element);
+      public boolean containsAllMCTypes(Collection<?>collection);
+      public boolean isEmptyMCTypes();
+      public Iterator<de.monticore.types.mcbasictypes._ast.ASTMCType>iteratorMCTypes();
+      public int sizeMCTypes();
+      public de.monticore.types.mcbasictypes._ast.ASTMCType []toArrayMCTypes(de.monticore.types.mcbasictypes._ast.ASTMCType []array);
+      public Object []toArrayMCTypes();
+      public Spliterator<de.monticore.types.mcbasictypes._ast.ASTMCType>spliteratorMCTypes();
+      public Stream<de.monticore.types.mcbasictypes._ast.ASTMCType>streamMCTypes();
+      public Stream<de.monticore.types.mcbasictypes._ast.ASTMCType>parallelStreamMCTypes();
+      public de.monticore.types.mcbasictypes._ast.ASTMCType getMCType(int index);
+      public int indexOfMCType(Object element);
+      public int lastIndexOfMCType(Object element);
+      public boolean equalsMCTypes(Object o);
+      public int hashCodeMCTypes();
+      public ListIterator<de.monticore.types.mcbasictypes._ast.ASTMCType>listIteratorMCTypes();
+      public ListIterator<de.monticore.types.mcbasictypes._ast.ASTMCType>listIteratorMCTypes(int index);
+      public List<de.monticore.types.mcbasictypes._ast.ASTMCType>subListMCTypes(int start,int end);
+      public List<de.monticore.types.mcbasictypes._ast.ASTMCType>getMCTypeList();
+      public String getIsElliptic();
+      public boolean isPresentIsElliptic();
+      public void clearMCTypes();
+      public boolean addMCType(de.monticore.types.mcbasictypes._ast.ASTMCType element);
+      public boolean addAllMCTypes(Collection<? extends de.monticore.types.mcbasictypes._ast.ASTMCType>collection);
+      public boolean removeMCType(Object element);
+      public boolean removeAllMCTypes(Collection<?>collection);
+      public boolean retainAllMCTypes(Collection<?>collection);
+      public boolean removeIfMCType(Predicate<? super de.monticore.types.mcbasictypes._ast.ASTMCType>filter);
+      public void forEachMCTypes(Consumer<? super de.monticore.types.mcbasictypes._ast.ASTMCType>action);
+      public void addMCType(int index,de.monticore.types.mcbasictypes._ast.ASTMCType element);
+      public boolean addAllMCTypes(int index,Collection<? extends de.monticore.types.mcbasictypes._ast.ASTMCType>collection);
+      public de.monticore.types.mcbasictypes._ast.ASTMCType removeMCType(int index);
+      public de.monticore.types.mcbasictypes._ast.ASTMCType setMCType(int index,de.monticore.types.mcbasictypes._ast.ASTMCType element);
+      public void replaceAllMCTypes(UnaryOperator<de.monticore.types.mcbasictypes._ast.ASTMCType>operator);
+      public void sortMCTypes(Comparator<? super de.monticore.types.mcbasictypes._ast.ASTMCType>comparator);
+      public void setMCTypeList(List<de.monticore.types.mcbasictypes._ast.ASTMCType>mCTypes);
+      public void setIsElliptic(String isElliptic);
+      public void setIsEllipticAbsent();
+      public void accept(de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser visitor);
+      public void accept(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+      protected ASTMCFunctionParTypes _construct();
+      protected de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope enclosingScope;
+      public de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope getEnclosingScope();
+      public void setEnclosingScope(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope enclosingScope);
+      public void setEnclosingScope(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope enclosingScope);
+      public void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope);
+      public de.monticore.interpreter.Value evaluate(de.monticore.types.mcfunctiontypes._visitor.IMCFunctionTypesInterpreter interpreter);
+      public de.monticore.interpreter.Value evaluate(de.monticore.interpreter.ModelInterpreter interpreter);
+
+    } 
+    public class ASTMCFunctionType extends ASTCNode implements de.monticore.types.mcbasictypes._ast.ASTMCType,de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionTypesNode { 
+      protected ASTMCFunctionType();
+      public boolean deepEquals(Object o);
+      public boolean deepEquals(Object o,boolean forceSameOrder);
+      public boolean deepEqualsWithComments(Object o);
+      public boolean deepEqualsWithComments(Object o,boolean forceSameOrder);
+      public boolean equalAttributes(Object o);
+      public boolean equalsWithComments(Object o);
+      public ASTMCFunctionType deepClone();
+      public ASTMCFunctionType deepClone(ASTMCFunctionType result);
+      <<derived_attribute_name="",astType="">>protected de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypes mCFunctionParTypes;
+      <<derived_attribute_name="",astType="">>protected de.monticore.types.mcbasictypes._ast.ASTMCReturnType mCReturnType;
+      public de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypes getMCFunctionParTypes();
+      public de.monticore.types.mcbasictypes._ast.ASTMCReturnType getMCReturnType();
+      public void setMCFunctionParTypes(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypes mCFunctionParTypes);
+      public void setMCReturnType(de.monticore.types.mcbasictypes._ast.ASTMCReturnType mCReturnType);
+      public void accept(de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser visitor);
+      public void accept(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+      protected ASTMCFunctionType _construct();
+      protected de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope enclosingScope;
+      public de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope getEnclosingScope();
+      public void setEnclosingScope(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope enclosingScope);
+      public void setEnclosingScope(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope enclosingScope);
+      public void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope);
+      public de.monticore.interpreter.Value evaluate(de.monticore.types.mcfunctiontypes._visitor.IMCFunctionTypesInterpreter interpreter);
+      public de.monticore.interpreter.Value evaluate(de.monticore.interpreter.ModelInterpreter interpreter);
+
+    } 
+    <<left_recursive>>public class ASTMCUnaryFunctionType extends ASTCNode implements de.monticore.types.mcbasictypes._ast.ASTMCType,de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionTypesNode { 
+      protected ASTMCUnaryFunctionType();
+      public boolean deepEquals(Object o);
+      public boolean deepEquals(Object o,boolean forceSameOrder);
+      public boolean deepEqualsWithComments(Object o);
+      public boolean deepEqualsWithComments(Object o,boolean forceSameOrder);
+      public boolean equalAttributes(Object o);
+      public boolean equalsWithComments(Object o);
+      public ASTMCUnaryFunctionType deepClone();
+      public ASTMCUnaryFunctionType deepClone(ASTMCUnaryFunctionType result);
+      <<derived_attribute_name="",astType="">>protected de.monticore.types.mcbasictypes._ast.ASTMCType mCType;
+      <<derived_attribute_name="",astType="">>protected de.monticore.types.mcbasictypes._ast.ASTMCReturnType mCReturnType;
+      public de.monticore.types.mcbasictypes._ast.ASTMCType getMCType();
+      public de.monticore.types.mcbasictypes._ast.ASTMCReturnType getMCReturnType();
+      public void setMCType(de.monticore.types.mcbasictypes._ast.ASTMCType mCType);
+      public void setMCReturnType(de.monticore.types.mcbasictypes._ast.ASTMCReturnType mCReturnType);
+      public void accept(de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser visitor);
+      public void accept(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+      protected ASTMCUnaryFunctionType _construct();
+      protected de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope enclosingScope;
+      public de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope getEnclosingScope();
+      public void setEnclosingScope(de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope enclosingScope);
+      public void setEnclosingScope(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope enclosingScope);
+      public void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope);
+      public de.monticore.interpreter.Value evaluate(de.monticore.types.mcfunctiontypes._visitor.IMCFunctionTypesInterpreter interpreter);
+      public de.monticore.interpreter.Value evaluate(de.monticore.interpreter.ModelInterpreter interpreter);
+
+    } 
+    public class ASTMCFunctionParTypesBuilder extends de.monticore.ast.ASTNodeBuilder<ASTMCFunctionParTypesBuilder> { 
+      protected ASTMCFunctionParTypesBuilder realBuilder;
+      <<derived_attribute_name="",astType="">>protected java.util.List<de.monticore.types.mcbasictypes._ast.ASTMCType>mCTypes;
+      protected Optional<String>isElliptic;
+      public ASTMCFunctionParTypesBuilder();
+      public ASTMCFunctionParTypes build();
+      public boolean isValid();
+      public boolean containsMCType(Object element);
+      public boolean containsAllMCTypes(Collection<?>collection);
+      public boolean isEmptyMCTypes();
+      public Iterator<de.monticore.types.mcbasictypes._ast.ASTMCType>iteratorMCTypes();
+      public int sizeMCTypes();
+      public de.monticore.types.mcbasictypes._ast.ASTMCType []toArrayMCTypes(de.monticore.types.mcbasictypes._ast.ASTMCType []array);
+      public Object []toArrayMCTypes();
+      public Spliterator<de.monticore.types.mcbasictypes._ast.ASTMCType>spliteratorMCTypes();
+      public Stream<de.monticore.types.mcbasictypes._ast.ASTMCType>streamMCTypes();
+      public Stream<de.monticore.types.mcbasictypes._ast.ASTMCType>parallelStreamMCTypes();
+      public de.monticore.types.mcbasictypes._ast.ASTMCType getMCType(int index);
+      public int indexOfMCType(Object element);
+      public int lastIndexOfMCType(Object element);
+      public boolean equalsMCTypes(Object o);
+      public int hashCodeMCTypes();
+      public ListIterator<de.monticore.types.mcbasictypes._ast.ASTMCType>listIteratorMCTypes();
+      public ListIterator<de.monticore.types.mcbasictypes._ast.ASTMCType>listIteratorMCTypes(int index);
+      public List<de.monticore.types.mcbasictypes._ast.ASTMCType>subListMCTypes(int start,int end);
+      public List<de.monticore.types.mcbasictypes._ast.ASTMCType>getMCTypeList();
+      public String getIsElliptic();
+      public boolean isPresentIsElliptic();
+      public ASTMCFunctionParTypesBuilder clearMCTypes();
+      public ASTMCFunctionParTypesBuilder addMCType(de.monticore.types.mcbasictypes._ast.ASTMCType element);
+      public ASTMCFunctionParTypesBuilder addAllMCTypes(Collection<? extends de.monticore.types.mcbasictypes._ast.ASTMCType>collection);
+      public ASTMCFunctionParTypesBuilder removeMCType(Object element);
+      public ASTMCFunctionParTypesBuilder removeAllMCTypes(Collection<?>collection);
+      public ASTMCFunctionParTypesBuilder retainAllMCTypes(Collection<?>collection);
+      public ASTMCFunctionParTypesBuilder removeIfMCType(Predicate<? super de.monticore.types.mcbasictypes._ast.ASTMCType>filter);
+      public ASTMCFunctionParTypesBuilder forEachMCTypes(Consumer<? super de.monticore.types.mcbasictypes._ast.ASTMCType>action);
+      public ASTMCFunctionParTypesBuilder addMCType(int index,de.monticore.types.mcbasictypes._ast.ASTMCType element);
+      public ASTMCFunctionParTypesBuilder addAllMCTypes(int index,Collection<? extends de.monticore.types.mcbasictypes._ast.ASTMCType>collection);
+      public ASTMCFunctionParTypesBuilder removeMCType(int index);
+      public ASTMCFunctionParTypesBuilder setMCType(int index,de.monticore.types.mcbasictypes._ast.ASTMCType element);
+      public ASTMCFunctionParTypesBuilder replaceAllMCTypes(UnaryOperator<de.monticore.types.mcbasictypes._ast.ASTMCType>operator);
+      public ASTMCFunctionParTypesBuilder sortMCTypes(Comparator<? super de.monticore.types.mcbasictypes._ast.ASTMCType>comparator);
+      public ASTMCFunctionParTypesBuilder setMCTypesList(List<de.monticore.types.mcbasictypes._ast.ASTMCType>mCTypes);
+      public ASTMCFunctionParTypesBuilder setIsElliptic(String isElliptic);
+      public ASTMCFunctionParTypesBuilder setIsEllipticAbsent();
+      public ASTMCFunctionParTypesBuilder set_SourcePositionEnd(SourcePosition end);
+      public ASTMCFunctionParTypesBuilder set_SourcePositionEndAbsent();
+      public ASTMCFunctionParTypesBuilder set_SourcePositionStart(SourcePosition start);
+      public ASTMCFunctionParTypesBuilder set_SourcePositionStartAbsent();
+      public ASTMCFunctionParTypesBuilder clear_PreComments();
+      public ASTMCFunctionParTypesBuilder add_PreComment(Comment precomment);
+      public ASTMCFunctionParTypesBuilder add_PreComment(int index,Comment precomment);
+      public ASTMCFunctionParTypesBuilder addAll_PreComments(Collection<Comment>precomments);
+      public ASTMCFunctionParTypesBuilder addAll_PreComments(int index,Collection<Comment>precomments);
+      public ASTMCFunctionParTypesBuilder remove_PreComment(Object element);
+      public ASTMCFunctionParTypesBuilder remove_PreComment(int index);
+      public ASTMCFunctionParTypesBuilder removeAll_PreComments(Collection<?>element);
+      public ASTMCFunctionParTypesBuilder retainAll_PreComments(Collection<?>element);
+      public ASTMCFunctionParTypesBuilder removeIf_PreComment(Predicate<? super Comment>filter);
+      public ASTMCFunctionParTypesBuilder forEach_PreComments(Consumer<? super Comment>action);
+      public ASTMCFunctionParTypesBuilder replaceAll_PreComments(UnaryOperator<Comment>operator);
+      public ASTMCFunctionParTypesBuilder sort_PreComments(Comparator<? super Comment>comparator);
+      public ASTMCFunctionParTypesBuilder set_PreCommentList(List<Comment>preComments);
+      public ASTMCFunctionParTypesBuilder set_PreComment(int index,Comment precomment);
+      public ASTMCFunctionParTypesBuilder clear_PostComments();
+      public ASTMCFunctionParTypesBuilder add_PostComment(Comment postcomment);
+      public ASTMCFunctionParTypesBuilder add_PostComment(int index,Comment postcomment);
+      public ASTMCFunctionParTypesBuilder addAll_PostComments(Collection<Comment>postcomments);
+      public ASTMCFunctionParTypesBuilder addAll_PostComments(int index,Collection<Comment>postcomments);
+      public ASTMCFunctionParTypesBuilder remove_PostComment(Object element);
+      public ASTMCFunctionParTypesBuilder remove_PostComment(int index);
+      public ASTMCFunctionParTypesBuilder removeAll_PostComments(Collection<?>element);
+      public ASTMCFunctionParTypesBuilder retainAll_PostComments(Collection<?>element);
+      public ASTMCFunctionParTypesBuilder removeIf_PostComment(Predicate<? super Comment>filter);
+      public ASTMCFunctionParTypesBuilder forEach_PostComments(Consumer<? super Comment>action);
+      public ASTMCFunctionParTypesBuilder replaceAll_PostComments(UnaryOperator<Comment>operator);
+      public ASTMCFunctionParTypesBuilder sort_PostComments(Comparator<? super Comment>comparator);
+      public ASTMCFunctionParTypesBuilder set_PostCommentList(List<Comment>postComments);
+      public ASTMCFunctionParTypesBuilder set_PostComment(int index,Comment postcomment);
+      public ASTMCFunctionParTypes uncheckedBuild();
+
+    } 
+    public class ASTMCFunctionTypeBuilder extends de.monticore.ast.ASTNodeBuilder<ASTMCFunctionTypeBuilder> { 
+      protected ASTMCFunctionTypeBuilder realBuilder;
+      <<derived_attribute_name="",astType="">>protected de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypes mCFunctionParTypes;
+      <<derived_attribute_name="",astType="">>protected de.monticore.types.mcbasictypes._ast.ASTMCReturnType mCReturnType;
+      public ASTMCFunctionTypeBuilder();
+      public ASTMCFunctionType build();
+      public boolean isValid();
+      public de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypes getMCFunctionParTypes();
+      public de.monticore.types.mcbasictypes._ast.ASTMCReturnType getMCReturnType();
+      public ASTMCFunctionTypeBuilder setMCFunctionParTypes(de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypes mCFunctionParTypes);
+      public ASTMCFunctionTypeBuilder setMCReturnType(de.monticore.types.mcbasictypes._ast.ASTMCReturnType mCReturnType);
+      public ASTMCFunctionTypeBuilder set_SourcePositionEnd(SourcePosition end);
+      public ASTMCFunctionTypeBuilder set_SourcePositionEndAbsent();
+      public ASTMCFunctionTypeBuilder set_SourcePositionStart(SourcePosition start);
+      public ASTMCFunctionTypeBuilder set_SourcePositionStartAbsent();
+      public ASTMCFunctionTypeBuilder clear_PreComments();
+      public ASTMCFunctionTypeBuilder add_PreComment(Comment precomment);
+      public ASTMCFunctionTypeBuilder add_PreComment(int index,Comment precomment);
+      public ASTMCFunctionTypeBuilder addAll_PreComments(Collection<Comment>precomments);
+      public ASTMCFunctionTypeBuilder addAll_PreComments(int index,Collection<Comment>precomments);
+      public ASTMCFunctionTypeBuilder remove_PreComment(Object element);
+      public ASTMCFunctionTypeBuilder remove_PreComment(int index);
+      public ASTMCFunctionTypeBuilder removeAll_PreComments(Collection<?>element);
+      public ASTMCFunctionTypeBuilder retainAll_PreComments(Collection<?>element);
+      public ASTMCFunctionTypeBuilder removeIf_PreComment(Predicate<? super Comment>filter);
+      public ASTMCFunctionTypeBuilder forEach_PreComments(Consumer<? super Comment>action);
+      public ASTMCFunctionTypeBuilder replaceAll_PreComments(UnaryOperator<Comment>operator);
+      public ASTMCFunctionTypeBuilder sort_PreComments(Comparator<? super Comment>comparator);
+      public ASTMCFunctionTypeBuilder set_PreCommentList(List<Comment>preComments);
+      public ASTMCFunctionTypeBuilder set_PreComment(int index,Comment precomment);
+      public ASTMCFunctionTypeBuilder clear_PostComments();
+      public ASTMCFunctionTypeBuilder add_PostComment(Comment postcomment);
+      public ASTMCFunctionTypeBuilder add_PostComment(int index,Comment postcomment);
+      public ASTMCFunctionTypeBuilder addAll_PostComments(Collection<Comment>postcomments);
+      public ASTMCFunctionTypeBuilder addAll_PostComments(int index,Collection<Comment>postcomments);
+      public ASTMCFunctionTypeBuilder remove_PostComment(Object element);
+      public ASTMCFunctionTypeBuilder remove_PostComment(int index);
+      public ASTMCFunctionTypeBuilder removeAll_PostComments(Collection<?>element);
+      public ASTMCFunctionTypeBuilder retainAll_PostComments(Collection<?>element);
+      public ASTMCFunctionTypeBuilder removeIf_PostComment(Predicate<? super Comment>filter);
+      public ASTMCFunctionTypeBuilder forEach_PostComments(Consumer<? super Comment>action);
+      public ASTMCFunctionTypeBuilder replaceAll_PostComments(UnaryOperator<Comment>operator);
+      public ASTMCFunctionTypeBuilder sort_PostComments(Comparator<? super Comment>comparator);
+      public ASTMCFunctionTypeBuilder set_PostCommentList(List<Comment>postComments);
+      public ASTMCFunctionTypeBuilder set_PostComment(int index,Comment postcomment);
+      public ASTMCFunctionType uncheckedBuild();
+
+    } 
+    public class ASTMCUnaryFunctionTypeBuilder extends de.monticore.ast.ASTNodeBuilder<ASTMCUnaryFunctionTypeBuilder> { 
+      protected ASTMCUnaryFunctionTypeBuilder realBuilder;
+      <<derived_attribute_name="",astType="">>protected de.monticore.types.mcbasictypes._ast.ASTMCType mCType;
+      <<derived_attribute_name="",astType="">>protected de.monticore.types.mcbasictypes._ast.ASTMCReturnType mCReturnType;
+      public ASTMCUnaryFunctionTypeBuilder();
+      public ASTMCUnaryFunctionType build();
+      public boolean isValid();
+      public de.monticore.types.mcbasictypes._ast.ASTMCType getMCType();
+      public de.monticore.types.mcbasictypes._ast.ASTMCReturnType getMCReturnType();
+      public ASTMCUnaryFunctionTypeBuilder setMCType(de.monticore.types.mcbasictypes._ast.ASTMCType mCType);
+      public ASTMCUnaryFunctionTypeBuilder setMCReturnType(de.monticore.types.mcbasictypes._ast.ASTMCReturnType mCReturnType);
+      public ASTMCUnaryFunctionTypeBuilder set_SourcePositionEnd(SourcePosition end);
+      public ASTMCUnaryFunctionTypeBuilder set_SourcePositionEndAbsent();
+      public ASTMCUnaryFunctionTypeBuilder set_SourcePositionStart(SourcePosition start);
+      public ASTMCUnaryFunctionTypeBuilder set_SourcePositionStartAbsent();
+      public ASTMCUnaryFunctionTypeBuilder clear_PreComments();
+      public ASTMCUnaryFunctionTypeBuilder add_PreComment(Comment precomment);
+      public ASTMCUnaryFunctionTypeBuilder add_PreComment(int index,Comment precomment);
+      public ASTMCUnaryFunctionTypeBuilder addAll_PreComments(Collection<Comment>precomments);
+      public ASTMCUnaryFunctionTypeBuilder addAll_PreComments(int index,Collection<Comment>precomments);
+      public ASTMCUnaryFunctionTypeBuilder remove_PreComment(Object element);
+      public ASTMCUnaryFunctionTypeBuilder remove_PreComment(int index);
+      public ASTMCUnaryFunctionTypeBuilder removeAll_PreComments(Collection<?>element);
+      public ASTMCUnaryFunctionTypeBuilder retainAll_PreComments(Collection<?>element);
+      public ASTMCUnaryFunctionTypeBuilder removeIf_PreComment(Predicate<? super Comment>filter);
+      public ASTMCUnaryFunctionTypeBuilder forEach_PreComments(Consumer<? super Comment>action);
+      public ASTMCUnaryFunctionTypeBuilder replaceAll_PreComments(UnaryOperator<Comment>operator);
+      public ASTMCUnaryFunctionTypeBuilder sort_PreComments(Comparator<? super Comment>comparator);
+      public ASTMCUnaryFunctionTypeBuilder set_PreCommentList(List<Comment>preComments);
+      public ASTMCUnaryFunctionTypeBuilder set_PreComment(int index,Comment precomment);
+      public ASTMCUnaryFunctionTypeBuilder clear_PostComments();
+      public ASTMCUnaryFunctionTypeBuilder add_PostComment(Comment postcomment);
+      public ASTMCUnaryFunctionTypeBuilder add_PostComment(int index,Comment postcomment);
+      public ASTMCUnaryFunctionTypeBuilder addAll_PostComments(Collection<Comment>postcomments);
+      public ASTMCUnaryFunctionTypeBuilder addAll_PostComments(int index,Collection<Comment>postcomments);
+      public ASTMCUnaryFunctionTypeBuilder remove_PostComment(Object element);
+      public ASTMCUnaryFunctionTypeBuilder remove_PostComment(int index);
+      public ASTMCUnaryFunctionTypeBuilder removeAll_PostComments(Collection<?>element);
+      public ASTMCUnaryFunctionTypeBuilder retainAll_PostComments(Collection<?>element);
+      public ASTMCUnaryFunctionTypeBuilder removeIf_PostComment(Predicate<? super Comment>filter);
+      public ASTMCUnaryFunctionTypeBuilder forEach_PostComments(Consumer<? super Comment>action);
+      public ASTMCUnaryFunctionTypeBuilder replaceAll_PostComments(UnaryOperator<Comment>operator);
+      public ASTMCUnaryFunctionTypeBuilder sort_PostComments(Comparator<? super Comment>comparator);
+      public ASTMCUnaryFunctionTypeBuilder set_PostCommentList(List<Comment>postComments);
+      public ASTMCUnaryFunctionTypeBuilder set_PostComment(int index,Comment postcomment);
+      public ASTMCUnaryFunctionType uncheckedBuild();
+
+    } 
+    public class ASTConstantsMCFunctionTypes { 
+      public final static String LANGUAGE;
+      public final static int DEFAULT;
+      public static String []superGrammars;
+      public ASTConstantsMCFunctionTypes();
+      public static Collection<String>getAllLanguages();
+
+    } 
+    public interface ASTMCFunctionTypesNode extends ASTNode { 
+      public abstract void accept(de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser visitor);
+
+    } 
+    <<deprecated>>public enum MCFunctionTypesLiterals { 
+      ;
+      private MCFunctionTypesLiterals(int intValue);
+      protected int intValue;
+      public int getIntValue();
+
+    } 
+
+  } 
+
+} 

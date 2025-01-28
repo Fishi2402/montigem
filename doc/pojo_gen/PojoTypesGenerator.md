@@ -46,7 +46,7 @@ available DeSers in the CD. This map has to be added to an instantiated BaseClas
 the DeSerialization to properly work.
 
 Because we want to be able to use these types client and server side we generate them for Java 
-and in the near future plan to transpile them with JSweet to be able to use them in JS as well. 
+and also transpile them with JSweet. 
 
 ## Future:
 - collect other Use-Cases for the generator to decide if the current one fits all the needs

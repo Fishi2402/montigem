@@ -1,12 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {LoginModuleUser} from '@src/loginmodule/LoginModuleUser';
-import {LoginModuleManager} from '@src/loginmodule/LoginModuleManager';
-import {LoginSecManagerTOP} from '@src/loginmodule/LoginSecManagerTOP';
+import {LoginModuleUser} from 'loginmodule/LoginModuleUser';
+import {LoginModuleManager} from 'loginmodule/LoginModuleManager';
+import {LoginSecManagerTOP} from 'loginmodule/LoginSecManagerTOP';
 
 import {ActivatedRoute, Router} from "@angular/router";
 import {CommandManager, NotificationScope} from "@umlp/common";
-import {GetCurrentUserRequest} from '@src/loginmodule/commands/GetCurrentUserRequest';
+import {GetCurrentUserRequest} from 'loginmodule/commands/GetCurrentUserRequest';
 
 export enum LAZY_LOGIN_STATE {
   LOGIN_DONE,
@@ -18,6 +18,7 @@ export enum LAZY_LOGIN_STATE {
 export class LoginSecManager extends LoginSecManagerTOP {
 
   private static _instance: LoginSecManager = undefined;
+  private static _user: LoginModuleUser = undefined; // For some reason our singleton is not really a singleton locally?
 
   static readonly LS_KEY: string = "MightBeLoggedIn";
 
@@ -25,7 +26,18 @@ export class LoginSecManager extends LoginSecManagerTOP {
     // User logged in
     localStorage.setItem(LoginSecManager.LS_KEY, "true");
     this.setSignedInUser1(currentUser);
+    LoginSecManager._user = currentUser;
   }
+
+  public override   getSignedInUser (): LoginModuleUser  {
+    return LoginSecManager._user;
+  }
+  public  override setSignedInUserAbsent (scope: NotificationScope): void {
+    LoginSecManager._user = null;
+    super.setSignedInUserAbsent(scope);
+  }
+
+
 
   public static setInstance(value: LoginSecManager) {
     this._instance = value;

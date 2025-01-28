@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { EndEffector } from '@src/demorec/EndEffector';
+import { EndEffector } from 'demorec/EndEffector';
 import { EndEffectorOverviewComponent, config } from '../../../../build/frontendGen/build/appgui/gui/endeffector/EndEffectorOverviewComponent';
 
 import {

@@ -22,11 +22,11 @@ import {
 } from "@angular/common";
 
 import "@angular/compiler";
-import {InspectorService} from "@src/wizard/InspectorService";
+import {InspectorService} from "wizard/InspectorService";
 import {Observable} from "rxjs";
-import {WIZARD_DATA} from "@src/wizard/WizardData";
-import {WizComponentOutlet} from "@src/wizard/WizComponentOutlet";
-import {WizardDropComp} from "@src/wizard/WizardDropComp";
+import {WIZARD_DATA} from "wizard/WizardData";
+import {WizComponentOutlet} from "wizard/WizComponentOutlet";
+import {WizardDropComp} from "wizard/WizardDropComp";
 
 
 /**

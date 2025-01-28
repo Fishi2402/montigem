@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 import { Component } from '@angular/core';
 import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from '@umlp/common';
-import {SehubManagerClientImpl} from '@src/sehub/SehubManagerClientImpl';
+import {SehubManagerClientImpl} from 'sehub/SehubManagerClientImpl';
 
 @Component({
   selector: 'app-root',

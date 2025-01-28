@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package person;
+
+import Domain.Person;
+
+import mc.fenix.basic.GemText;
+import person.MyOverview;
+import person.MyOverview2;
+import example_charts.GemBarChartFromCommand;
+
+page TwoOverviews() {
+  @MyOverview2();
+  @GemBarChartFromCommand();
+}

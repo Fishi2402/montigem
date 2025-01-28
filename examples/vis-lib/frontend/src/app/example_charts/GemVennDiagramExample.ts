@@ -4,15 +4,15 @@ import {Component} from '@angular/core';
 import {
   config,
   GemVennDiagramExampleComponent
-} from '@src/example_charts/GemVennDiagramExampleComponent';
+} from 'example_charts/GemVennDiagramExampleComponent';
 import {
   GemVennDiagramData,
   GemVennDiagramDataBuilder,
   GemVennDiagramEntry,
   GemVennDiagramEntryBuilder
 } from '@umlp/charts';
-import {Person} from '@src/domain/Person';
-import {stringifyWithoutRealBuilder} from "@src/StringifyWithoutRealBuilder";
+import {Person} from 'domain/Person';
+import {stringifyWithoutRealBuilder} from "StringifyWithoutRealBuilder";
 
 @Component({
   standalone: true,

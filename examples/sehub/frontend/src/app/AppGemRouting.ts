@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 import { Routes } from "@angular/router";
-import { routes as routesTOP } from "@src/AppGemRoutingTOP";
+import { routes as routesTOP } from "AppGemRoutingTOP";
 
 export const routes: Routes = [
   // default path like in other routing files

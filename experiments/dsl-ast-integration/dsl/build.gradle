@@ -1,0 +1,20 @@
+plugins {
+  id 'de.monticore.generator' version "$mc_version"
+}
+
+dependencies {
+  grammar "de.monticore:monticore-grammar:$mc_version"
+}
+
+
+// TODO: Due to the shared root-buildEnvironment-Configuration, this is currently required
+configurations {
+  extraForMCTool {}
+}
+dependencies {
+  extraForMCTool "de.monticore:monticore-generator:$mc_version"
+}
+
+generateMCGrammars {
+  extraClasspathElements.from(configurations.extraForMCTool)
+}

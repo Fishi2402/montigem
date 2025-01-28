@@ -1,0 +1,274 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram completeness_AST {
+  @Completeness!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @Completeness!Symbol(2,0);
+    enclosingScope = @Completeness!ArtifactScope;
+    spanningScope = @Completeness!Scope;
+    r__package = [de, monticore];
+    name = Completeness;
+    classProds = [// *size: 1
+      @Completeness!ClassProd(28,2):ASTClassProd {
+        enclosingScope = @Completeness!Scope;
+        alts = [// *size: 6
+          @!Alt(30,7):ASTAlt {
+            enclosingScope = @Completeness!Scope(!2);
+            component = [// *size: 4
+              @!SemanticpredicateOrAction(30,7):ASTSemanticpredicateOrAction {
+                enclosingScope = @Completeness!Scope(!2);
+                expressionPredicate = @!ExpressionPredicate(30,8):ASTExpressionPredicate {
+                  enclosingScope = @Completeness!Scope(!2);
+                  expression = @!CallExpression(30,15):ASTCallExpression {
+                    enclosingScope = @Completeness!Scope(!2);
+                    expression = @!NameExpression(30,8):ASTNameExpression {
+                      enclosingScope = @Completeness!Scope(!2);
+                      name = noSpace;
+                    };
+                    arguments = @!Arguments(30,15):ASTArguments {
+                      enclosingScope = @Completeness!Scope(!2);
+                      expressions = [// *size: 2
+                        @!LiteralExpression(30,16):ASTLiteralExpression {
+                          enclosingScope = @Completeness!Scope(!2);
+                          literal = @!NatLiteral(30,16):ASTNatLiteral {
+                            enclosingScope = @Completeness!Scope(!2);
+                            digits = 2;
+                          };
+                        },
+                        @!LiteralExpression(30,18):ASTLiteralExpression {
+                          enclosingScope = @Completeness!Scope(!2);
+                          literal = @!NatLiteral(30,18):ASTNatLiteral {
+                            enclosingScope = @Completeness!Scope(!2);
+                            digits = 3;
+                          };
+                        }];
+                    };
+                  };
+                };
+                predicate = true;
+              },
+              @LPAREN!Terminal(30,23):ASTTerminal {
+                enclosingScope = @Completeness!Scope(!2);
+                iteration = 0;
+                name = (;
+              },
+              @!ConstantGroup(30,27):ASTConstantGroup {
+                enclosingScope = @Completeness!Scope(!2);
+                constants = [// *size: 1
+                  @c!Constant(30,28):ASTConstant {
+                    enclosingScope = @Completeness!Scope(!2);
+                    string = "c";
+                    usageName = "complete";
+                    name = c;
+                  }];
+                iteration = 0;
+              },
+              @RPAREN!Terminal(30,42):ASTTerminal {
+                enclosingScope = @Completeness!Scope(!2);
+                iteration = 0;
+                name = );
+              }];
+            rightAssoc = false;
+          },
+          @!Alt(31,7):ASTAlt {
+            enclosingScope = @Completeness!Scope(!2);
+            component = [// *size: 4
+              @!SemanticpredicateOrAction(31,7):ASTSemanticpredicateOrAction {
+                enclosingScope = @Completeness!Scope(!2);
+                expressionPredicate = @!ExpressionPredicate(31,8):ASTExpressionPredicate {
+                  enclosingScope = @Completeness!Scope(!2);
+                  expression = @!CallExpression(31,15):ASTCallExpression {
+                    enclosingScope = @Completeness!Scope(!2);
+                    expression = @!NameExpression(31,8):ASTNameExpression {
+                      enclosingScope = @Completeness!Scope(!2);
+                      name = noSpace;
+                    };
+                    arguments = @!Arguments(31,15):ASTArguments {
+                      enclosingScope = @Completeness!Scope(!2);
+                      expressions = [// *size: 2
+                        @!LiteralExpression(31,16):ASTLiteralExpression {
+                          enclosingScope = @Completeness!Scope(!2);
+                          literal = @!NatLiteral(31,16):ASTNatLiteral {
+                            enclosingScope = @Completeness!Scope(!2);
+                            digits = 2;
+                          };
+                        },
+                        @!LiteralExpression(31,18):ASTLiteralExpression {
+                          enclosingScope = @Completeness!Scope(!2);
+                          literal = @!NatLiteral(31,18):ASTNatLiteral {
+                            enclosingScope = @Completeness!Scope(!2);
+                            digits = 3;
+                          };
+                        }];
+                    };
+                  };
+                };
+                predicate = true;
+              },
+              @LPAREN!Terminal(31,23):ASTTerminal {
+                enclosingScope = @Completeness!Scope(!2);
+                iteration = 0;
+                name = (;
+              },
+              @!ConstantGroup(31,27):ASTConstantGroup {
+                enclosingScope = @Completeness!Scope(!2);
+                constants = [// *size: 1
+                  @POINTPOINTPOINT!Constant(31,28):ASTConstant {
+                    enclosingScope = @Completeness!Scope(!2);
+                    string = "...";
+                    usageName = "incomplete";
+                    name = ...;
+                  }];
+                iteration = 0;
+              },
+              @RPAREN!Terminal(31,46):ASTTerminal {
+                enclosingScope = @Completeness!Scope(!2);
+                iteration = 0;
+                name = );
+              }];
+            rightAssoc = false;
+          },
+          @!Alt(32,7):ASTAlt {
+            enclosingScope = @Completeness!Scope(!2);
+            component = [// *size: 1
+              @!ConstantGroup(32,7):ASTConstantGroup {
+                enclosingScope = @Completeness!Scope(!2);
+                constants = [// *size: 1
+                  @_________!Constant(32,8):ASTConstant {
+                    enclosingScope = @Completeness!Scope(!2);
+                    string = "(...,...)";
+                    usageName = "incomplete";
+                    name = (...,...);
+                  }];
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          },
+          @!Alt(33,7):ASTAlt {
+            enclosingScope = @Completeness!Scope(!2);
+            component = [// *size: 6
+              @!SemanticpredicateOrAction(33,7):ASTSemanticpredicateOrAction {
+                enclosingScope = @Completeness!Scope(!2);
+                expressionPredicate = @!ExpressionPredicate(33,8):ASTExpressionPredicate {
+                  enclosingScope = @Completeness!Scope(!2);
+                  expression = @!CallExpression(33,15):ASTCallExpression {
+                    enclosingScope = @Completeness!Scope(!2);
+                    expression = @!NameExpression(33,8):ASTNameExpression {
+                      enclosingScope = @Completeness!Scope(!2);
+                      name = noSpace;
+                    };
+                    arguments = @!Arguments(33,15):ASTArguments {
+                      enclosingScope = @Completeness!Scope(!2);
+                      expressions = [// *size: 4
+                        @!LiteralExpression(33,16):ASTLiteralExpression {
+                          enclosingScope = @Completeness!Scope(!2);
+                          literal = @!NatLiteral(33,16):ASTNatLiteral {
+                            enclosingScope = @Completeness!Scope(!2);
+                            digits = 2;
+                          };
+                        },
+                        @!LiteralExpression(33,18):ASTLiteralExpression {
+                          enclosingScope = @Completeness!Scope(!2);
+                          literal = @!NatLiteral(33,18):ASTNatLiteral {
+                            enclosingScope = @Completeness!Scope(!2);
+                            digits = 3;
+                          };
+                        },
+                        @!LiteralExpression(33,20):ASTLiteralExpression {
+                          enclosingScope = @Completeness!Scope(!2);
+                          literal = @!NatLiteral(33,20):ASTNatLiteral {
+                            enclosingScope = @Completeness!Scope(!2);
+                            digits = 4;
+                          };
+                        },
+                        @!LiteralExpression(33,22):ASTLiteralExpression {
+                          enclosingScope = @Completeness!Scope(!2);
+                          literal = @!NatLiteral(33,22):ASTNatLiteral {
+                            enclosingScope = @Completeness!Scope(!2);
+                            digits = 5;
+                          };
+                        }];
+                    };
+                  };
+                };
+                predicate = true;
+              },
+              @LPAREN!Terminal(33,27):ASTTerminal {
+                enclosingScope = @Completeness!Scope(!2);
+                iteration = 0;
+                name = (;
+              },
+              @!ConstantGroup(33,31):ASTConstantGroup {
+                enclosingScope = @Completeness!Scope(!2);
+                constants = [// *size: 1
+                  @c!Constant(33,32):ASTConstant {
+                    enclosingScope = @Completeness!Scope(!2);
+                    string = "c";
+                    usageName = "complete";
+                    name = c;
+                  }];
+                iteration = 0;
+              },
+              @COMMA!Terminal(33,46):ASTTerminal {
+                enclosingScope = @Completeness!Scope(!2);
+                iteration = 0;
+                name = ,;
+              },
+              @c!Terminal(33,50):ASTTerminal {
+                enclosingScope = @Completeness!Scope(!2);
+                iteration = 0;
+                name = c;
+              },
+              @RPAREN!Terminal(33,54):ASTTerminal {
+                enclosingScope = @Completeness!Scope(!2);
+                iteration = 0;
+                name = );
+              }];
+            rightAssoc = false;
+          },
+          @!Alt(34,7):ASTAlt {
+            enclosingScope = @Completeness!Scope(!2);
+            component = [// *size: 1
+              @!ConstantGroup(34,7):ASTConstantGroup {
+                enclosingScope = @Completeness!Scope(!2);
+                constants = [// *size: 1
+                  @_____c_!Constant(34,8):ASTConstant {
+                    enclosingScope = @Completeness!Scope(!2);
+                    string = "(...,c)";
+                    usageName = "rightComplete";
+                    name = (...,c);
+                  }];
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          },
+          @!Alt(35,7):ASTAlt {
+            enclosingScope = @Completeness!Scope(!2);
+            component = [// *size: 1
+              @!ConstantGroup(35,7):ASTConstantGroup {
+                enclosingScope = @Completeness!Scope(!2);
+                constants = [// *size: 1
+                  @_c_____!Constant(35,8):ASTConstant {
+                    enclosingScope = @Completeness!Scope(!2);
+                    string = "(c,...)";
+                    usageName = "leftComplete";
+                    name = (c,...);
+                  }];
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = Completeness;
+      }];
+    keywordRules = [// *size: 1
+      @!KeywordRule(38,2):ASTKeywordRule {
+        enclosingScope = @Completeness!Scope;
+        strings = [c];
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

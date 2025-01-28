@@ -1,12 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
-import {NoteComponent,config} from "@src/gui/note/NoteComponent";
+import {NoteComponent,config} from "gui/note/NoteComponent";
 import {Component} from '@angular/core';
-import {SehubManager} from '@src/sehub/SehubManager';
-import {Post} from '@src/sehub/Post';
+import {SehubManager} from 'sehub/SehubManager';
+import {Post} from 'sehub/Post';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 import {Gem} from '@umlp/common';
-import {User} from '@src/sehub/User';
-import {SehubRole} from '@src/sehub/SehubRole';
+import {User} from 'sehub/User';
+import {SehubRole} from 'sehub/SehubRole';
 
 @Component({
   standalone:true,

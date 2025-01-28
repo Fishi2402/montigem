@@ -1,0 +1,354 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram bitexpressions_AST {
+  @BitExpressions!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @BitExpressions!Symbol(2,0);
+    enclosingScope = @BitExpressions!ArtifactScope;
+    spanningScope = @BitExpressions!Scope;
+    r__package = [de, monticore, expressions];
+    importStatement = [// *size: 1
+      @!MCImportStatement(7,0):ASTMCImportStatement {
+        enclosingScope = @BitExpressions!Scope;
+        mCQualifiedName = @de.monticore.expressions!MCQualifiedName(7,7):ASTMCQualifiedName {
+          enclosingScope = @BitExpressions!Scope;
+          parts = [de, monticore, expressions];
+        };
+        star = true;
+      }];
+    name = BitExpressions;
+    supergrammar = [// *size: 1
+      @ExpressionsBasis!GrammarReference(26,26):ASTGrammarReference {
+        enclosingScope = @BitExpressions!Scope;
+        names = [ExpressionsBasis];
+      }];
+    classProds = [// *size: 6
+      @LeftShiftExpression!ClassProd(45,2):ASTClassProd {
+        enclosingScope = @BitExpressions!Scope;
+        superInterfaceRule = [// *size: 2
+          @Expression!RuleReference(45,33):ASTRuleReference {
+            enclosingScope = @LeftShiftExpression!Scope;
+            name = Expression;
+            prio = "160";
+          },
+          @ShiftExpression!RuleReference(45,51):ASTRuleReference {
+            enclosingScope = @LeftShiftExpression!Scope;
+            name = ShiftExpression;
+          }];
+        alts = [// *size: 1
+          @!Alt(46,4):ASTAlt {
+            enclosingScope = @LeftShiftExpression!Scope;
+            component = [// *size: 3
+              @Expression!NonTerminal(46,4):ASTNonTerminal {
+                enclosingScope = @LeftShiftExpression!Scope;
+                usageName = "left";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @LTLT!Terminal(47,4):ASTTerminal {
+                enclosingScope = @LeftShiftExpression!Scope;
+                iteration = 0;
+                usageName = "shiftOp";
+                name = <<;
+              },
+              @Expression!NonTerminal(48,4):ASTNonTerminal {
+                enclosingScope = @LeftShiftExpression!Scope;
+                usageName = "right";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = LeftShiftExpression;
+      },
+      @RightShiftExpression!ClassProd(50,2):ASTClassProd {
+        enclosingScope = @BitExpressions!Scope;
+        superInterfaceRule = [// *size: 2
+          @Expression!RuleReference(50,34):ASTRuleReference {
+            enclosingScope = @RightShiftExpression!Scope;
+            name = Expression;
+            prio = "160";
+          },
+          @ShiftExpression!RuleReference(50,52):ASTRuleReference {
+            enclosingScope = @RightShiftExpression!Scope;
+            name = ShiftExpression;
+          }];
+        alts = [// *size: 1
+          @!Alt(51,4):ASTAlt {
+            enclosingScope = @RightShiftExpression!Scope;
+            component = [// *size: 3
+              @Expression!NonTerminal(51,4):ASTNonTerminal {
+                enclosingScope = @RightShiftExpression!Scope;
+                usageName = "left";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @GTGT!Terminal(52,4):ASTTerminal {
+                enclosingScope = @RightShiftExpression!Scope;
+                iteration = 0;
+                usageName = "shiftOp";
+                name = >>;
+              },
+              @Expression!NonTerminal(53,4):ASTNonTerminal {
+                enclosingScope = @RightShiftExpression!Scope;
+                usageName = "right";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = RightShiftExpression;
+      },
+      @LogicalRightShiftExpression!ClassProd(55,2):ASTClassProd {
+        enclosingScope = @BitExpressions!Scope;
+        superInterfaceRule = [// *size: 2
+          @Expression!RuleReference(55,41):ASTRuleReference {
+            enclosingScope = @LogicalRightShiftExpression!Scope;
+            name = Expression;
+            prio = "160";
+          },
+          @ShiftExpression!RuleReference(56,41):ASTRuleReference {
+            enclosingScope = @LogicalRightShiftExpression!Scope;
+            name = ShiftExpression;
+          }];
+        alts = [// *size: 1
+          @!Alt(57,4):ASTAlt {
+            enclosingScope = @LogicalRightShiftExpression!Scope;
+            component = [// *size: 3
+              @Expression!NonTerminal(57,4):ASTNonTerminal {
+                enclosingScope = @LogicalRightShiftExpression!Scope;
+                usageName = "left";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @GTGTGT!Terminal(58,4):ASTTerminal {
+                enclosingScope = @LogicalRightShiftExpression!Scope;
+                iteration = 0;
+                usageName = "shiftOp";
+                name = >>>;
+              },
+              @Expression!NonTerminal(59,4):ASTNonTerminal {
+                enclosingScope = @LogicalRightShiftExpression!Scope;
+                usageName = "right";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = LogicalRightShiftExpression;
+      },
+      @BinaryAndExpression!ClassProd(67,2):ASTClassProd {
+        enclosingScope = @BitExpressions!Scope;
+        superInterfaceRule = [// *size: 2
+          @BinaryExpression!RuleReference(67,33):ASTRuleReference {
+            enclosingScope = @BinaryAndExpression!Scope;
+            name = BinaryExpression;
+          },
+          @Expression!RuleReference(67,51):ASTRuleReference {
+            enclosingScope = @BinaryAndExpression!Scope;
+            name = Expression;
+            prio = "120";
+          }];
+        alts = [// *size: 1
+          @!Alt(68,4):ASTAlt {
+            enclosingScope = @BinaryAndExpression!Scope;
+            component = [// *size: 3
+              @Expression!NonTerminal(68,4):ASTNonTerminal {
+                enclosingScope = @BinaryAndExpression!Scope;
+                usageName = "left";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @AND_!Terminal(68,20):ASTTerminal {
+                enclosingScope = @BinaryAndExpression!Scope;
+                iteration = 0;
+                usageName = "operator";
+                name = &;
+              },
+              @Expression!NonTerminal(68,34):ASTNonTerminal {
+                enclosingScope = @BinaryAndExpression!Scope;
+                usageName = "right";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = BinaryAndExpression;
+      },
+      @BinaryXorExpression!ClassProd(70,2):ASTClassProd {
+        enclosingScope = @BitExpressions!Scope;
+        superInterfaceRule = [// *size: 2
+          @BinaryExpression!RuleReference(70,33):ASTRuleReference {
+            enclosingScope = @BinaryXorExpression!Scope;
+            name = BinaryExpression;
+          },
+          @Expression!RuleReference(70,51):ASTRuleReference {
+            enclosingScope = @BinaryXorExpression!Scope;
+            name = Expression;
+            prio = "110";
+          }];
+        alts = [// *size: 1
+          @!Alt(71,4):ASTAlt {
+            enclosingScope = @BinaryXorExpression!Scope;
+            component = [// *size: 3
+              @Expression!NonTerminal(71,4):ASTNonTerminal {
+                enclosingScope = @BinaryXorExpression!Scope;
+                usageName = "left";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @ROOF!Terminal(71,20):ASTTerminal {
+                enclosingScope = @BinaryXorExpression!Scope;
+                iteration = 0;
+                usageName = "operator";
+                name = ^;
+              },
+              @Expression!NonTerminal(71,34):ASTNonTerminal {
+                enclosingScope = @BinaryXorExpression!Scope;
+                usageName = "right";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = BinaryXorExpression;
+      },
+      @BinaryOrOpExpression!ClassProd(73,2):ASTClassProd {
+        enclosingScope = @BitExpressions!Scope;
+        superInterfaceRule = [// *size: 2
+          @BinaryExpression!RuleReference(73,34):ASTRuleReference {
+            enclosingScope = @BinaryOrOpExpression!Scope;
+            name = BinaryExpression;
+          },
+          @Expression!RuleReference(73,52):ASTRuleReference {
+            enclosingScope = @BinaryOrOpExpression!Scope;
+            name = Expression;
+            prio = "100";
+          }];
+        alts = [// *size: 1
+          @!Alt(74,4):ASTAlt {
+            enclosingScope = @BinaryOrOpExpression!Scope;
+            component = [// *size: 3
+              @Expression!NonTerminal(74,4):ASTNonTerminal {
+                enclosingScope = @BinaryOrOpExpression!Scope;
+                usageName = "left";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @PIPE!Terminal(74,20):ASTTerminal {
+                enclosingScope = @BinaryOrOpExpression!Scope;
+                iteration = 0;
+                usageName = "operator";
+                name = |;
+              },
+              @Expression!NonTerminal(74,34):ASTNonTerminal {
+                enclosingScope = @BinaryOrOpExpression!Scope;
+                usageName = "right";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = BinaryOrOpExpression;
+      }];
+    interfaceProds = [// *size: 2
+      @ShiftExpression!InterfaceProd(30,2):ASTInterfaceProd {
+        enclosingScope = @BitExpressions!Scope;
+        alt = [// *size: 1
+          @!Alt(31,4):ASTAlt {
+            enclosingScope = @ShiftExpression!Scope;
+            component = [// *size: 3
+              @Expression!NonTerminal(31,4):ASTNonTerminal {
+                enclosingScope = @ShiftExpression!Scope;
+                usageName = "left";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @!Terminal(31,20):ASTTerminal {
+                enclosingScope = @ShiftExpression!Scope;
+                iteration = 0;
+                usageName = "shiftOp";
+                name = ;
+              },
+              @Expression!NonTerminal(31,31):ASTNonTerminal {
+                enclosingScope = @ShiftExpression!Scope;
+                usageName = "right";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = ShiftExpression;
+      },
+      @BinaryExpression!InterfaceProd(64,2):ASTInterfaceProd {
+        enclosingScope = @BitExpressions!Scope;
+        alt = [// *size: 1
+          @!Alt(65,4):ASTAlt {
+            enclosingScope = @BinaryExpression!Scope;
+            component = [// *size: 3
+              @Expression!NonTerminal(65,4):ASTNonTerminal {
+                enclosingScope = @BinaryExpression!Scope;
+                usageName = "left";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @!Terminal(65,20):ASTTerminal {
+                enclosingScope = @BinaryExpression!Scope;
+                iteration = 0;
+                usageName = "operator";
+                name = ;
+              },
+              @Expression!NonTerminal(65,32):ASTNonTerminal {
+                enclosingScope = @BinaryExpression!Scope;
+                usageName = "right";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = BinaryExpression;
+      }];
+    splitRules = [// *size: 1
+      @!SplitRule(43,2):ASTSplitRule {
+        enclosingScope = @BitExpressions!Scope;
+        strings = [>>, >>>];
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

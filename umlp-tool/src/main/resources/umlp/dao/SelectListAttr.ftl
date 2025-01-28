@@ -10,11 +10,14 @@ ${cd4c.method("public List<${innerType}> select${attrName}(long gemId)")}
       select${attrName}Statement.clearParameters();
       select${attrName}Statement.setLong(1, gemId);
       List<${innerType}> res = new ArrayList<>();
-      ResultSet rs = select${attrName}Statement.executeQuery();
-      while(rs.next()){
-        res.add(${includeArgs("umlp.dao.Get", "rs", attr, 1,"")});
+      try(ResultSet rs = select${attrName}Statement.executeQuery()) {
+        while(rs.next()){
+          res.add(${includeArgs("umlp.dao.Get", "rs", attr, 1,"")});
+        }
+        return res;
+      } catch(SQLException e) {
+        throw new RuntimeException(e);
       }
-      return res;
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }

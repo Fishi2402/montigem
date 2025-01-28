@@ -4,13 +4,13 @@ plugins {
 
 dependencies {
   implementation(project(":experiments:module-system:module-definition"))
-  umlpModules(project(path: ":experiments:module-system:module-definition", configuration: "moduleGenTime"))
+  umlpModulesGen(project(path: ":experiments:module-system:module-definition", configuration: "moduleGenTime"))
 }
 
 tasks.register('printUmlpModules')(){
   doLast{
-    println("Files in umlpModules")
-    configurations.umlpModules.files.each {
+    println("Files in umlpModulesGen")
+    configurations.umlpModulesGen.files.each {
       println(it)
     }
   }

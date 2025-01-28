@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {User} from '@src/dtcockpit/User';
+import {User} from 'dtcockpit/User';
 
 // TODO: Generate parts, and implement using TOP?
 export class LoginSecManager {

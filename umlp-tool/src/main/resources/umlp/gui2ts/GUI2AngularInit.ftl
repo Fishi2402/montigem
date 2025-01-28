@@ -9,5 +9,7 @@ this._subscriptions.push(this._route.paramMap.subscribe(params => {
       (<any> window).allVarsInited2 = {};
     }
     (<any> window).allVarsInited2["${pageName}"] = true;
-  });
+  })<#if glex.getGlobalVar("UMLPGeneratorConfig").useJsweet>.catch(_ => {
+    this.allVarsInited = true;
+  })</#if>;
 }));

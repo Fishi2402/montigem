@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { AccountOverviewRefComponent, config } from '@src/gui/refactor/AccountOverviewRefComponent';
+import { AccountOverviewRefComponent, config } from 'gui/refactor/AccountOverviewRefComponent';
 
 @Component({
   standalone: true,

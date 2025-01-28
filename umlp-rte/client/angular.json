@@ -2,25 +2,30 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "newProjectRoot": "projects",
+  "schematics": {
+    "@schematics/angular:library": {
+      "entryFile": "index",
+      "prefix": "gem"
+    }
+  },
   "projects": {
-
     "@umlp/basic": {
       "projectType": "library",
-      "root": "projects/umlp/mc/fenix/basic",
-      "sourceRoot": "projects/umlp/mc/fenix/basic/src",
-      "prefix": "lib",
+      "root": "projects/basic",
+      "sourceRoot": "projects/basic",
+      "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/umlp/mc/fenix/basic/ng-package.json"
+            "project": "projects/basic/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/umlp/mc/fenix/basic/tsconfig.lib.prod.json"
+              "tsConfig": "tsconfig.prod.json"
             },
             "development": {
-              "tsConfig": "projects/umlp/mc/fenix/basic/tsconfig.lib.json"
+              "tsConfig": "tsconfig.json"
             }
           },
           "defaultConfiguration": "production"
@@ -28,7 +33,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "tsConfig": "projects/umlp/mc/fenix/basic/tsconfig.spec.json",
+            "tsConfig": "tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"
@@ -39,21 +44,21 @@
     },
     "@umlp/charts": {
       "projectType": "library",
-      "root": "projects/umlp/mc/fenix/charts",
-      "sourceRoot": "projects/umlp/mc/fenix/charts/src",
-      "prefix": "lib",
+      "root": "projects/charts",
+      "sourceRoot": "projects/charts",
+      "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/umlp/mc/fenix/charts/ng-package.json"
+            "project": "projects/charts/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/umlp/mc/fenix/charts/tsconfig.lib.prod.json"
+              "tsConfig": "tsconfig.prod.json"
             },
             "development": {
-              "tsConfig": "projects/umlp/mc/fenix/charts/tsconfig.lib.json"
+              "tsConfig": "tsconfig.json"
             }
           },
           "defaultConfiguration": "production"
@@ -61,7 +66,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "tsConfig": "projects/umlp/mc/fenix/charts/tsconfig.spec.json",
+            "tsConfig": "tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"
@@ -72,21 +77,21 @@
     },
     "@umlp/networkgraph": {
       "projectType": "library",
-      "root": "projects/umlp/mc/fenix/networkgraph",
-      "sourceRoot": "projects/umlp/mc/fenix/networkgraph/src",
-      "prefix": "lib",
+      "root": "projects/networkgraph",
+      "sourceRoot": "projects/networkgraph",
+      "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/umlp/mc/fenix/networkgraph/ng-package.json"
+            "project": "projects/networkgraph/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/umlp/mc/fenix/networkgraph/tsconfig.lib.prod.json"
+              "tsConfig": "tsconfig.prod.json"
             },
             "development": {
-              "tsConfig": "projects/umlp/mc/fenix/networkgraph/tsconfig.lib.json"
+              "tsConfig": "tsconfig.json"
             }
           },
           "defaultConfiguration": "production"
@@ -94,7 +99,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "tsConfig": "projects/umlp/mc/fenix/networkgraph/tsconfig.spec.json",
+            "tsConfig": "tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"
@@ -105,21 +110,21 @@
     },
     "@umlp/table": {
       "projectType": "library",
-      "root": "projects/umlp/mc/fenix/table",
-      "sourceRoot": "projects/umlp/mc/fenix/table/src",
-      "prefix": "lib",
+      "root": "projects/table",
+      "sourceRoot": "projects/table",
+      "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/umlp/mc/fenix/table/ng-package.json"
+            "project": "projects/table/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/umlp/mc/fenix/table/tsconfig.lib.prod.json"
+              "tsConfig": "tsconfig.prod.json"
             },
             "development": {
-              "tsConfig": "projects/umlp/mc/fenix/table/tsconfig.lib.json"
+              "tsConfig": "tsconfig.json"
             }
           },
           "defaultConfiguration": "production"
@@ -127,7 +132,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "tsConfig": "projects/umlp/mc/fenix/table/tsconfig.spec.json",
+            "tsConfig": "tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"
@@ -136,24 +141,23 @@
         }
       }
     },
-
     "@umlp/theme": {
       "projectType": "library",
-      "root": "projects/umlp/mc/fenix/theme",
-      "sourceRoot": "projects/umlp/mc/fenix/theme/src",
-      "prefix": "lib",
+      "root": "projects/theme",
+      "sourceRoot": "projects/theme",
+      "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/umlp/mc/fenix/theme/ng-package.json"
+            "project": "projects/theme/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/umlp/mc/fenix/theme/tsconfig.lib.prod.json"
+              "tsConfig": "tsconfig.prod.json"
             },
             "development": {
-              "tsConfig": "projects/umlp/mc/fenix/theme/tsconfig.lib.json"
+              "tsConfig": "tsconfig.json"
             }
           },
           "defaultConfiguration": "production"
@@ -161,7 +165,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "tsConfig": "projects/umlp/mc/fenix/theme/tsconfig.spec.json",
+            "tsConfig": "tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"
@@ -172,21 +176,21 @@
     },
     "@umlp/input": {
       "projectType": "library",
-      "root": "projects/umlp/mc/fenix/input",
-      "sourceRoot": "projects/umlp/mc/fenix/input/src",
-      "prefix": "lib",
+      "root": "projects/input",
+      "sourceRoot": "projects/input",
+      "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/umlp/mc/fenix/input/ng-package.json"
+            "project": "projects/input/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/umlp/mc/fenix/input/tsconfig.lib.prod.json"
+              "tsConfig": "tsconfig.prod.json"
             },
             "development": {
-              "tsConfig": "projects/umlp/mc/fenix/input/tsconfig.lib.json"
+              "tsConfig": "tsconfig.json"
             }
           },
           "defaultConfiguration": "production"
@@ -194,7 +198,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "tsConfig": "projects/umlp/mc/fenix/input/tsconfig.spec.json",
+            "tsConfig": "tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"
@@ -205,21 +209,21 @@
     },
     "@umlp/arrange": {
       "projectType": "library",
-      "root": "projects/umlp/mc/fenix/arrange",
-      "sourceRoot": "projects/umlp/mc/fenix/arrange/src",
-      "prefix": "lib",
+      "root": "projects/arrange",
+      "sourceRoot": "projects/arrange",
+      "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/umlp/mc/fenix/arrange/ng-package.json"
+            "project": "projects/arrange/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/umlp/mc/fenix/arrange/tsconfig.lib.prod.json"
+              "tsConfig": "tsconfig.prod.json"
             },
             "development": {
-              "tsConfig": "projects/umlp/mc/fenix/arrange/tsconfig.lib.json"
+              "tsConfig": "tsconfig.json"
             }
           },
           "defaultConfiguration": "production"
@@ -227,7 +231,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "tsConfig": "projects/umlp/mc/fenix/arrange/tsconfig.spec.json",
+            "tsConfig": "tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"
@@ -238,21 +242,21 @@
     },
     "@umlp/common": {
       "projectType": "library",
-      "root": "projects/umlp/mc/fenix/common",
-      "sourceRoot": "projects/umlp/mc/fenix/common/src",
-      "prefix": "lib",
+      "root": "projects/common",
+      "sourceRoot": "projects/common",
+      "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/umlp/mc/fenix/common/ng-package.json"
+            "project": "projects/common/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/umlp/mc/fenix/common/tsconfig.lib.prod.json"
+              "tsConfig": "tsconfig.prod.json"
             },
             "development": {
-              "tsConfig": "projects/umlp/mc/fenix/common/tsconfig.lib.json"
+              "tsConfig": "tsconfig.json"
             }
           },
           "defaultConfiguration": "production"
@@ -260,7 +264,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "tsConfig": "projects/umlp/mc/fenix/common/tsconfig.spec.json",
+            "tsConfig": "tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"
@@ -271,21 +275,21 @@
     },
     "@umlp/commonj2ts": {
       "projectType": "library",
-      "root": "projects/umlp/mc/fenix/commonj2ts",
-      "sourceRoot": "projects/umlp/mc/fenix/commonj2ts/src",
-      "prefix": "lib",
+      "root": "projects/commonj2ts",
+      "sourceRoot": "projects/commonj2ts",
+      "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/umlp/mc/fenix/commonj2ts/ng-package.json"
+            "project": "projects/commonj2ts/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/umlp/mc/fenix/commonj2ts/tsconfig.lib.prod.json"
+              "tsConfig": "tsconfig.prod.json"
             },
             "development": {
-              "tsConfig": "projects/umlp/mc/fenix/commonj2ts/tsconfig.lib.json"
+              "tsConfig": "tsconfig.json"
             }
           },
           "defaultConfiguration": "production"
@@ -293,7 +297,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "tsConfig": "projects/umlp/mc/fenix/commonj2ts/tsconfig.spec.json",
+            "tsConfig": "tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"
@@ -304,21 +308,21 @@
     },
     "@umlp/functiondisplay": {
       "projectType": "library",
-      "root": "projects/umlp/mc/fenix/functiondisplay",
-      "sourceRoot": "projects/umlp/mc/fenix/functiondisplay/src",
-      "prefix": "lib",
+      "root": "projects/functiondisplay",
+      "sourceRoot": "projects/functiondisplay",
+      "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/umlp/mc/fenix/functiondisplay/ng-package.json"
+            "project": "projects/functiondisplay/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/umlp/mc/fenix/functiondisplay/tsconfig.lib.prod.json"
+              "tsConfig": "tsconfig.prod.json"
             },
             "development": {
-              "tsConfig": "projects/umlp/mc/fenix/functiondisplay/tsconfig.lib.json"
+              "tsConfig": "tsconfig.json"
             }
           },
           "defaultConfiguration": "production"
@@ -326,7 +330,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "tsConfig": "projects/umlp/mc/fenix/functiondisplay/tsconfig.spec.json",
+            "tsConfig": "tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"
@@ -337,21 +341,21 @@
     },
     "@umlp/navigation": {
       "projectType": "library",
-      "root": "projects/umlp/mc/fenix/navigation",
-      "sourceRoot": "projects/umlp/mc/fenix/navigation/src",
-      "prefix": "lib",
+      "root": "projects/navigation",
+      "sourceRoot": "projects/navigation",
+      "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/umlp/mc/fenix/navigation/ng-package.json"
+            "project": "projects/navigation/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/umlp/mc/fenix/navigation/tsconfig.lib.prod.json"
+              "tsConfig": "tsconfig.prod.json"
             },
             "development": {
-              "tsConfig": "projects/umlp/mc/fenix/navigation/tsconfig.lib.json"
+              "tsConfig": "tsconfig.json"
             }
           },
           "defaultConfiguration": "production"
@@ -359,7 +363,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "tsConfig": "projects/umlp/mc/fenix/navigation/tsconfig.spec.json",
+            "tsConfig": "tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"

@@ -1,0 +1,48 @@
+package test_load_inner;
+
+import mc.fenix.basic.GemText;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemGrid;
+import mc.fenix.arrange.GemGridCell;
+import mc.fenix.basic.GemButton;
+import java.util.List;
+import LoadingTests.Player;
+import LoadingTests.Game;
+
+component PlayerList(Game game, Player player, Player selectedPlayer, boolean collapsed, boolean displayed) {
+    playerContainer@GemCard(
+        width = "100%",
+        height = "100%",
+        title = "Players",
+        component = outergrid@GemGrid(
+          width = "100%",
+          height = "100%",
+          x = ["auto"],
+          y = ["1fr", "auto"],  // document.querySelector(".playerContainer gem-grid").style.gridTemplateRows
+          cols = [
+            [
+                @GemGrid(
+                    width = "auto",
+                    height = "auto",
+                    x = ["1fr", "1fr"],
+                    colGap = "10px",
+                    rowGap = "10px",
+                    cells = [
+                        @iterate(Player p : game.player) {
+                            @guard(p != player) {
+                                others@GemGridCell(
+                                    content = @GemButton(width = "100%", height = "fit-content", leftClick = openPlayerInfo(p), content = [
+                                        @GemText(value = player.name)
+                                    ])
+                                );
+                            }
+                        }
+                    ]
+                )
+            ]
+          ]
+        )
+    );
+}

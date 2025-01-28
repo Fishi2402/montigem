@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {User} from '@src/guidslpaper/User';
+import {User} from 'guidslpaper/User';
 
 export class GuidslpaperSecurityManager {
 

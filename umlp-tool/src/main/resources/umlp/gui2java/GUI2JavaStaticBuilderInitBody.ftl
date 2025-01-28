@@ -1,0 +1,31 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
+${tc.signature("tmpVar", "name", "keys")}
+
+if (this.${name} == null) {
+  this.${name} = new HashMap<>();
+}
+<#list keys as key>
+  <#assign i = key?index - 1>
+  <#if key?has_next>
+    if (!this.${name}
+      <#if i gt -1>
+        <#list keys[0..i] as prev>
+          .get(${prev.getName()})
+        </#list>
+      </#if>
+          .containsKey(${key.getName()})) {
+  </#if>
+  this.${name}
+  <#if i gt -1>
+    <#list keys[0..i] as prev>
+      .get(${prev.getName()})
+    </#list>
+  </#if>
+  <#if key?has_next>
+      .put(${key.getName()}, new HashMap<>());
+  }
+  <#else>
+      .put(${key.getName()}, ${tmpVar});
+  </#if>
+</#list>
+;

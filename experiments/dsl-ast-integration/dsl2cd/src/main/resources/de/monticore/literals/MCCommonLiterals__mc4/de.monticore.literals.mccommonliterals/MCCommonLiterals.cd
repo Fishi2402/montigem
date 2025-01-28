@@ -1,0 +1,2186 @@
+package de.monticore.literals;
+classdiagram MCCommonLiterals { 
+  package de.monticore.literals.mccommonliterals._auxiliary { 
+    public class MCBasicsMillForMCCommonLiterals extends de.monticore.mcbasics.MCBasicsMill { 
+      protected de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope _artifactScope();
+      protected de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsGlobalScope _globalScope();
+      protected de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope _scope();
+      protected de.monticore.mcbasics._visitor.MCBasicsTraverser _traverser();
+      protected de.monticore.mcbasics._visitor.MCBasicsTraverser _inheritanceTraverser();
+      protected de.monticore.mcbasics._util.IMCBasicsTypeDispatcher _typeDispatcher();
+      protected String _prettyPrint(de.monticore.ast.ASTNode node,boolean printComments);
+
+    } 
+    public class MCLiteralsBasisMillForMCCommonLiterals extends de.monticore.literals.mcliteralsbasis.MCLiteralsBasisMill { 
+      protected de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope _artifactScope();
+      protected de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsGlobalScope _globalScope();
+      protected de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope _scope();
+      protected de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisTraverser _traverser();
+      protected de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisTraverser _inheritanceTraverser();
+      protected de.monticore.literals.mcliteralsbasis._util.IMCLiteralsBasisTypeDispatcher _typeDispatcher();
+      protected String _prettyPrint(de.monticore.ast.ASTNode node,boolean printComments);
+
+    } 
+
+  } 
+  package de.monticore.literals.mccommonliterals { 
+    public class MCCommonLiteralsMill { 
+      protected static MCCommonLiteralsMill mill;
+      protected MCCommonLiteralsMill();
+      public static MCCommonLiteralsMill getMill();
+      public static void init();
+      protected static MCCommonLiteralsMill millASTNullLiteralBuilder;
+      protected static MCCommonLiteralsMill millASTBooleanLiteralBuilder;
+      protected static MCCommonLiteralsMill millASTCharLiteralBuilder;
+      protected static MCCommonLiteralsMill millASTStringLiteralBuilder;
+      protected static MCCommonLiteralsMill millASTNatLiteralBuilder;
+      protected static MCCommonLiteralsMill millASTSignedNatLiteralBuilder;
+      protected static MCCommonLiteralsMill millASTBasicLongLiteralBuilder;
+      protected static MCCommonLiteralsMill millASTSignedBasicLongLiteralBuilder;
+      protected static MCCommonLiteralsMill millASTBasicFloatLiteralBuilder;
+      protected static MCCommonLiteralsMill millASTSignedBasicFloatLiteralBuilder;
+      protected static MCCommonLiteralsMill millASTBasicDoubleLiteralBuilder;
+      protected static MCCommonLiteralsMill millASTSignedBasicDoubleLiteralBuilder;
+      public static de.monticore.literals.mccommonliterals._ast.ASTNullLiteralBuilder nullLiteralBuilder();
+      protected de.monticore.literals.mccommonliterals._ast.ASTNullLiteralBuilder _nullLiteralBuilder();
+      public static de.monticore.literals.mccommonliterals._ast.ASTBooleanLiteralBuilder booleanLiteralBuilder();
+      protected de.monticore.literals.mccommonliterals._ast.ASTBooleanLiteralBuilder _booleanLiteralBuilder();
+      public static de.monticore.literals.mccommonliterals._ast.ASTCharLiteralBuilder charLiteralBuilder();
+      protected de.monticore.literals.mccommonliterals._ast.ASTCharLiteralBuilder _charLiteralBuilder();
+      public static de.monticore.literals.mccommonliterals._ast.ASTStringLiteralBuilder stringLiteralBuilder();
+      protected de.monticore.literals.mccommonliterals._ast.ASTStringLiteralBuilder _stringLiteralBuilder();
+      public static de.monticore.literals.mccommonliterals._ast.ASTNatLiteralBuilder natLiteralBuilder();
+      protected de.monticore.literals.mccommonliterals._ast.ASTNatLiteralBuilder _natLiteralBuilder();
+      public static de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteralBuilder signedNatLiteralBuilder();
+      protected de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteralBuilder _signedNatLiteralBuilder();
+      public static de.monticore.literals.mccommonliterals._ast.ASTBasicLongLiteralBuilder basicLongLiteralBuilder();
+      protected de.monticore.literals.mccommonliterals._ast.ASTBasicLongLiteralBuilder _basicLongLiteralBuilder();
+      public static de.monticore.literals.mccommonliterals._ast.ASTSignedBasicLongLiteralBuilder signedBasicLongLiteralBuilder();
+      protected de.monticore.literals.mccommonliterals._ast.ASTSignedBasicLongLiteralBuilder _signedBasicLongLiteralBuilder();
+      public static de.monticore.literals.mccommonliterals._ast.ASTBasicFloatLiteralBuilder basicFloatLiteralBuilder();
+      protected de.monticore.literals.mccommonliterals._ast.ASTBasicFloatLiteralBuilder _basicFloatLiteralBuilder();
+      public static de.monticore.literals.mccommonliterals._ast.ASTSignedBasicFloatLiteralBuilder signedBasicFloatLiteralBuilder();
+      protected de.monticore.literals.mccommonliterals._ast.ASTSignedBasicFloatLiteralBuilder _signedBasicFloatLiteralBuilder();
+      public static de.monticore.literals.mccommonliterals._ast.ASTBasicDoubleLiteralBuilder basicDoubleLiteralBuilder();
+      protected de.monticore.literals.mccommonliterals._ast.ASTBasicDoubleLiteralBuilder _basicDoubleLiteralBuilder();
+      public static de.monticore.literals.mccommonliterals._ast.ASTSignedBasicDoubleLiteralBuilder signedBasicDoubleLiteralBuilder();
+      protected de.monticore.literals.mccommonliterals._ast.ASTSignedBasicDoubleLiteralBuilder _signedBasicDoubleLiteralBuilder();
+      protected static MCCommonLiteralsMill millMCCommonLiteralsTraverserImplementation;
+      protected static MCCommonLiteralsMill millMCCommonLiteralsInheritanceHandler;
+      protected static MCCommonLiteralsMill millMCCommonLiteralsScope;
+      protected static MCCommonLiteralsMill millMCCommonLiteralsScopesGenitorDelegator;
+      protected static MCCommonLiteralsMill millMCCommonLiteralsArtifactScope;
+      protected static MCCommonLiteralsMill millMCCommonLiteralsGlobalScope;
+      protected static MCCommonLiteralsMill millMCCommonLiteralsScopesGenitor;
+      protected static MCCommonLiteralsMill millMCCommonLiteralsFullPrettyPrinter;
+      public static String prettyPrint(de.monticore.ast.ASTNode node,boolean printComments);
+      protected String _prettyPrint(de.monticore.ast.ASTNode node,boolean printComments);
+      protected de.monticore.literals.mccommonliterals._prettyprint.MCCommonLiteralsFullPrettyPrinter fullPrettyPrinter;
+      protected static MCCommonLiteralsMill millMCCommonLiteralsTypeDispatcher;
+      protected de.monticore.literals.mccommonliterals._util.IMCCommonLiteralsTypeDispatcher typeDispatcher;
+      public static de.monticore.literals.mccommonliterals._util.IMCCommonLiteralsTypeDispatcher typeDispatcher();
+      protected de.monticore.literals.mccommonliterals._util.IMCCommonLiteralsTypeDispatcher _typeDispatcher();
+      public static de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser traverser();
+      protected de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser _traverser();
+      public static de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser inheritanceTraverser();
+      protected de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser _inheritanceTraverser();
+      protected de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsGlobalScope mCCommonLiteralsGlobalScope;
+      public static de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsGlobalScope globalScope();
+      protected de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsGlobalScope _globalScope();
+      public static de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope artifactScope();
+      protected de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope _artifactScope();
+      public static de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope scope();
+      protected de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope _scope();
+      public static de.monticore.literals.mccommonliterals._symboltable.MCCommonLiteralsScopesGenitor scopesGenitor();
+      protected de.monticore.literals.mccommonliterals._symboltable.MCCommonLiteralsScopesGenitor _scopesGenitor();
+      public static de.monticore.literals.mccommonliterals._symboltable.MCCommonLiteralsScopesGenitorDelegator scopesGenitorDelegator();
+      protected de.monticore.literals.mccommonliterals._symboltable.MCCommonLiteralsScopesGenitorDelegator _scopesGenitorDelegator();
+      public static void initMe(MCCommonLiteralsMill a);
+      public static void reset();
+
+    } 
+
+  } 
+  package de.monticore.literals.mccommonliterals._prettyprint { 
+    public class MCCommonLiteralsPrettyPrinter implements de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsHandler,de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2 { 
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTNullLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTBooleanLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTCharLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTStringLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTNatLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTBasicLongLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicLongLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTBasicFloatLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicFloatLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTBasicDoubleLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicDoubleLiteral node);
+      protected de.monticore.prettyprint.IndentPrinter printer;
+      public de.monticore.prettyprint.IndentPrinter getPrinter();
+      protected boolean printComments;
+      public boolean isPrintComments();
+      public void setPrintComments(boolean printComments);
+      protected de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser traverser;
+      public de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser getTraverser();
+      public void setTraverser(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser traverser);
+      public MCCommonLiteralsPrettyPrinter(de.monticore.prettyprint.IndentPrinter printer,boolean printComments);
+
+    } 
+    public class MCCommonLiteralsFullPrettyPrinter { 
+      protected de.monticore.prettyprint.IndentPrinter printer;
+      public de.monticore.prettyprint.IndentPrinter getPrinter();
+      protected de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser traverser;
+      public de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser getTraverser();
+      public void setTraverser(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser traverser);
+      public MCCommonLiteralsFullPrettyPrinter(de.monticore.prettyprint.IndentPrinter printer,boolean printComments);
+      public MCCommonLiteralsFullPrettyPrinter(de.monticore.prettyprint.IndentPrinter printer);
+      protected void initializeTraverser(boolean printComments);
+      public void setPrintComments(boolean printComments);
+      public String prettyprint(de.monticore.ast.ASTNode node);
+
+    } 
+
+  } 
+  package de.monticore.literals.mccommonliterals._od { 
+    public class MCCommonLiterals2OD implements de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2,de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsHandler { 
+      public MCCommonLiterals2OD(de.monticore.prettyprint.IndentPrinter printer,de.monticore.generating.templateengine.reporting.commons.ReportingRepository reporting);
+      protected de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser traverser;
+      protected de.monticore.prettyprint.IndentPrinter pp;
+      protected de.monticore.generating.templateengine.reporting.commons.ReportingRepository reporting;
+      protected boolean printEmptyOptional;
+      protected boolean printEmptyList;
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTNullLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTBooleanLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTCharLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTStringLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTNatLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTBasicLongLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicLongLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTBasicFloatLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicFloatLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTBasicDoubleLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicDoubleLiteral node);
+      public de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser getTraverser();
+      public void setTraverser(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser traverser);
+      protected void printAttribute(String name,String value);
+      protected void printObject(String objName,String objType);
+      public String printObjectDiagram(String modelName,de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode node);
+      public boolean isPrintEmptyOptional();
+      public void setPrintEmptyOptional(boolean printEmptyOptional);
+      public boolean isPrintEmptyList();
+      public void setPrintEmptyList(boolean printEmptyList);
+
+    } 
+
+  } 
+  package de.monticore.literals.mccommonliterals._util { 
+    public class MCCommonLiteralsTypeDispatcher implements IMCCommonLiteralsTypeDispatcher { 
+      protected Optional<de.monticore.literals.mccommonliterals._ast.ASTNullLiteral>optMCCommonLiteralsASTNullLiteral;
+      protected Optional<de.monticore.literals.mccommonliterals._ast.ASTBooleanLiteral>optMCCommonLiteralsASTBooleanLiteral;
+      protected Optional<de.monticore.literals.mccommonliterals._ast.ASTCharLiteral>optMCCommonLiteralsASTCharLiteral;
+      protected Optional<de.monticore.literals.mccommonliterals._ast.ASTStringLiteral>optMCCommonLiteralsASTStringLiteral;
+      protected Optional<de.monticore.literals.mccommonliterals._ast.ASTNatLiteral>optMCCommonLiteralsASTNatLiteral;
+      protected Optional<de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral>optMCCommonLiteralsASTSignedNatLiteral;
+      protected Optional<de.monticore.literals.mccommonliterals._ast.ASTBasicLongLiteral>optMCCommonLiteralsASTBasicLongLiteral;
+      protected Optional<de.monticore.literals.mccommonliterals._ast.ASTSignedBasicLongLiteral>optMCCommonLiteralsASTSignedBasicLongLiteral;
+      protected Optional<de.monticore.literals.mccommonliterals._ast.ASTBasicFloatLiteral>optMCCommonLiteralsASTBasicFloatLiteral;
+      protected Optional<de.monticore.literals.mccommonliterals._ast.ASTSignedBasicFloatLiteral>optMCCommonLiteralsASTSignedBasicFloatLiteral;
+      protected Optional<de.monticore.literals.mccommonliterals._ast.ASTBasicDoubleLiteral>optMCCommonLiteralsASTBasicDoubleLiteral;
+      protected Optional<de.monticore.literals.mccommonliterals._ast.ASTSignedBasicDoubleLiteral>optMCCommonLiteralsASTSignedBasicDoubleLiteral;
+      protected Optional<de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral>optMCCommonLiteralsASTSignedLiteral;
+      protected Optional<de.monticore.literals.mccommonliterals._ast.ASTNumericLiteral>optMCCommonLiteralsASTNumericLiteral;
+      protected Optional<de.monticore.literals.mccommonliterals._ast.ASTSignedNumericLiteral>optMCCommonLiteralsASTSignedNumericLiteral;
+      protected Optional<de.monticore.literals.mccommonliterals._ast.MCCommonLiteralsLiterals>optMCCommonLiteralsMCCommonLiteralsLiterals;
+      protected Optional<de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode>optMCCommonLiteralsASTMCCommonLiteralsNode;
+      protected Optional<de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope>optMCCommonLiteralsIMCCommonLiteralsScope;
+      protected Optional<de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope>optMCCommonLiteralsIMCCommonLiteralsArtifactScope;
+      protected Optional<de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsGlobalScope>optMCCommonLiteralsIMCCommonLiteralsGlobalScope;
+      protected Optional<de.monticore.mcbasics._ast.MCBasicsLiterals>optMCBasicsMCBasicsLiterals;
+      protected Optional<de.monticore.mcbasics._ast.ASTMCBasicsNode>optMCBasicsASTMCBasicsNode;
+      protected Optional<de.monticore.mcbasics._symboltable.IMCBasicsScope>optMCBasicsIMCBasicsScope;
+      protected Optional<de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope>optMCBasicsIMCBasicsArtifactScope;
+      protected Optional<de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope>optMCBasicsIMCBasicsGlobalScope;
+      protected Optional<de.monticore.literals.mcliteralsbasis._ast.ASTLiteral>optMCLiteralsBasisASTLiteral;
+      protected Optional<de.monticore.literals.mcliteralsbasis._ast.MCLiteralsBasisLiterals>optMCLiteralsBasisMCLiteralsBasisLiterals;
+      protected Optional<de.monticore.literals.mcliteralsbasis._ast.ASTMCLiteralsBasisNode>optMCLiteralsBasisASTMCLiteralsBasisNode;
+      protected Optional<de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope>optMCLiteralsBasisIMCLiteralsBasisScope;
+      protected Optional<de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisArtifactScope>optMCLiteralsBasisIMCLiteralsBasisArtifactScope;
+      protected Optional<de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisGlobalScope>optMCLiteralsBasisIMCLiteralsBasisGlobalScope;
+      public MCCommonLiteralsTypeDispatcher();
+      protected void reset();
+      public boolean isMCCommonLiteralsASTNullLiteral(de.monticore.ast.ASTNode node);
+      public de.monticore.literals.mccommonliterals._ast.ASTNullLiteral asMCCommonLiteralsASTNullLiteral(de.monticore.ast.ASTNode node);
+      public boolean isMCCommonLiteralsASTBooleanLiteral(de.monticore.ast.ASTNode node);
+      public de.monticore.literals.mccommonliterals._ast.ASTBooleanLiteral asMCCommonLiteralsASTBooleanLiteral(de.monticore.ast.ASTNode node);
+      public boolean isMCCommonLiteralsASTCharLiteral(de.monticore.ast.ASTNode node);
+      public de.monticore.literals.mccommonliterals._ast.ASTCharLiteral asMCCommonLiteralsASTCharLiteral(de.monticore.ast.ASTNode node);
+      public boolean isMCCommonLiteralsASTStringLiteral(de.monticore.ast.ASTNode node);
+      public de.monticore.literals.mccommonliterals._ast.ASTStringLiteral asMCCommonLiteralsASTStringLiteral(de.monticore.ast.ASTNode node);
+      public boolean isMCCommonLiteralsASTNatLiteral(de.monticore.ast.ASTNode node);
+      public de.monticore.literals.mccommonliterals._ast.ASTNatLiteral asMCCommonLiteralsASTNatLiteral(de.monticore.ast.ASTNode node);
+      public boolean isMCCommonLiteralsASTSignedNatLiteral(de.monticore.ast.ASTNode node);
+      public de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral asMCCommonLiteralsASTSignedNatLiteral(de.monticore.ast.ASTNode node);
+      public boolean isMCCommonLiteralsASTBasicLongLiteral(de.monticore.ast.ASTNode node);
+      public de.monticore.literals.mccommonliterals._ast.ASTBasicLongLiteral asMCCommonLiteralsASTBasicLongLiteral(de.monticore.ast.ASTNode node);
+      public boolean isMCCommonLiteralsASTSignedBasicLongLiteral(de.monticore.ast.ASTNode node);
+      public de.monticore.literals.mccommonliterals._ast.ASTSignedBasicLongLiteral asMCCommonLiteralsASTSignedBasicLongLiteral(de.monticore.ast.ASTNode node);
+      public boolean isMCCommonLiteralsASTBasicFloatLiteral(de.monticore.ast.ASTNode node);
+      public de.monticore.literals.mccommonliterals._ast.ASTBasicFloatLiteral asMCCommonLiteralsASTBasicFloatLiteral(de.monticore.ast.ASTNode node);
+      public boolean isMCCommonLiteralsASTSignedBasicFloatLiteral(de.monticore.ast.ASTNode node);
+      public de.monticore.literals.mccommonliterals._ast.ASTSignedBasicFloatLiteral asMCCommonLiteralsASTSignedBasicFloatLiteral(de.monticore.ast.ASTNode node);
+      public boolean isMCCommonLiteralsASTBasicDoubleLiteral(de.monticore.ast.ASTNode node);
+      public de.monticore.literals.mccommonliterals._ast.ASTBasicDoubleLiteral asMCCommonLiteralsASTBasicDoubleLiteral(de.monticore.ast.ASTNode node);
+      public boolean isMCCommonLiteralsASTSignedBasicDoubleLiteral(de.monticore.ast.ASTNode node);
+      public de.monticore.literals.mccommonliterals._ast.ASTSignedBasicDoubleLiteral asMCCommonLiteralsASTSignedBasicDoubleLiteral(de.monticore.ast.ASTNode node);
+      public boolean isMCCommonLiteralsASTSignedLiteral(de.monticore.ast.ASTNode node);
+      public de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral asMCCommonLiteralsASTSignedLiteral(de.monticore.ast.ASTNode node);
+      public boolean isMCCommonLiteralsASTNumericLiteral(de.monticore.ast.ASTNode node);
+      public de.monticore.literals.mccommonliterals._ast.ASTNumericLiteral asMCCommonLiteralsASTNumericLiteral(de.monticore.ast.ASTNode node);
+      public boolean isMCCommonLiteralsASTSignedNumericLiteral(de.monticore.ast.ASTNode node);
+      public de.monticore.literals.mccommonliterals._ast.ASTSignedNumericLiteral asMCCommonLiteralsASTSignedNumericLiteral(de.monticore.ast.ASTNode node);
+      public boolean isMCCommonLiteralsMCCommonLiteralsLiterals(de.monticore.ast.ASTNode node);
+      public de.monticore.literals.mccommonliterals._ast.MCCommonLiteralsLiterals asMCCommonLiteralsMCCommonLiteralsLiterals(de.monticore.ast.ASTNode node);
+      public boolean isMCCommonLiteralsASTMCCommonLiteralsNode(de.monticore.ast.ASTNode node);
+      public de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode asMCCommonLiteralsASTMCCommonLiteralsNode(de.monticore.ast.ASTNode node);
+      public boolean isMCCommonLiteralsIMCCommonLiteralsScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope asMCCommonLiteralsIMCCommonLiteralsScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCCommonLiteralsIMCCommonLiteralsArtifactScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope asMCCommonLiteralsIMCCommonLiteralsArtifactScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCCommonLiteralsIMCCommonLiteralsGlobalScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsGlobalScope asMCCommonLiteralsIMCCommonLiteralsGlobalScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCBasicsMCBasicsLiterals(de.monticore.ast.ASTNode node);
+      public de.monticore.mcbasics._ast.MCBasicsLiterals asMCBasicsMCBasicsLiterals(de.monticore.ast.ASTNode node);
+      public boolean isMCBasicsASTMCBasicsNode(de.monticore.ast.ASTNode node);
+      public de.monticore.mcbasics._ast.ASTMCBasicsNode asMCBasicsASTMCBasicsNode(de.monticore.ast.ASTNode node);
+      public boolean isMCBasicsIMCBasicsScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.mcbasics._symboltable.IMCBasicsScope asMCBasicsIMCBasicsScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCBasicsIMCBasicsArtifactScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope asMCBasicsIMCBasicsArtifactScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCBasicsIMCBasicsGlobalScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope asMCBasicsIMCBasicsGlobalScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCLiteralsBasisASTLiteral(de.monticore.ast.ASTNode node);
+      public de.monticore.literals.mcliteralsbasis._ast.ASTLiteral asMCLiteralsBasisASTLiteral(de.monticore.ast.ASTNode node);
+      public boolean isMCLiteralsBasisMCLiteralsBasisLiterals(de.monticore.ast.ASTNode node);
+      public de.monticore.literals.mcliteralsbasis._ast.MCLiteralsBasisLiterals asMCLiteralsBasisMCLiteralsBasisLiterals(de.monticore.ast.ASTNode node);
+      public boolean isMCLiteralsBasisASTMCLiteralsBasisNode(de.monticore.ast.ASTNode node);
+      public de.monticore.literals.mcliteralsbasis._ast.ASTMCLiteralsBasisNode asMCLiteralsBasisASTMCLiteralsBasisNode(de.monticore.ast.ASTNode node);
+      public boolean isMCLiteralsBasisIMCLiteralsBasisScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope asMCLiteralsBasisIMCLiteralsBasisScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCLiteralsBasisIMCLiteralsBasisArtifactScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisArtifactScope asMCLiteralsBasisIMCLiteralsBasisArtifactScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCLiteralsBasisIMCLiteralsBasisGlobalScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisGlobalScope asMCLiteralsBasisIMCLiteralsBasisGlobalScope(de.monticore.symboltable.IScope scope);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTNullLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTBooleanLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTCharLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTStringLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTNatLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTBasicLongLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicLongLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTBasicFloatLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicFloatLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTBasicDoubleLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicDoubleLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTNumericLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTSignedNumericLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.MCCommonLiteralsLiterals node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode node);
+      public void handle(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope scope);
+      public void handle(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope scope);
+      public void handle(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsGlobalScope scope);
+      public void handle(de.monticore.mcbasics._ast.MCBasicsLiterals node);
+      public void handle(de.monticore.mcbasics._ast.ASTMCBasicsNode node);
+      public void handle(de.monticore.mcbasics._symboltable.IMCBasicsScope scope);
+      public void handle(de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope scope);
+      public void handle(de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope scope);
+      public void handle(de.monticore.literals.mcliteralsbasis._ast.ASTLiteral node);
+      public void handle(de.monticore.literals.mcliteralsbasis._ast.MCLiteralsBasisLiterals node);
+      public void handle(de.monticore.literals.mcliteralsbasis._ast.ASTMCLiteralsBasisNode node);
+      public void handle(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope scope);
+      public void handle(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisArtifactScope scope);
+      public void handle(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisGlobalScope scope);
+      protected de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser traverser;
+      public de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser getTraverser();
+      public void setTraverser(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser traverser);
+      public void setTraverser(de.monticore.mcbasics._visitor.MCBasicsTraverser traverser);
+      public void setTraverser(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisTraverser traverser);
+      public de.monticore.literals.mccommonliterals._ast.ASTNullLiteral getOptMCCommonLiteralsASTNullLiteral();
+      public boolean isPresentOptMCCommonLiteralsASTNullLiteral();
+      public void setOptMCCommonLiteralsASTNullLiteral(de.monticore.literals.mccommonliterals._ast.ASTNullLiteral optMCCommonLiteralsASTNullLiteral);
+      public void setOptMCCommonLiteralsASTNullLiteralAbsent();
+      public de.monticore.literals.mccommonliterals._ast.ASTBooleanLiteral getOptMCCommonLiteralsASTBooleanLiteral();
+      public boolean isPresentOptMCCommonLiteralsASTBooleanLiteral();
+      public void setOptMCCommonLiteralsASTBooleanLiteral(de.monticore.literals.mccommonliterals._ast.ASTBooleanLiteral optMCCommonLiteralsASTBooleanLiteral);
+      public void setOptMCCommonLiteralsASTBooleanLiteralAbsent();
+      public de.monticore.literals.mccommonliterals._ast.ASTCharLiteral getOptMCCommonLiteralsASTCharLiteral();
+      public boolean isPresentOptMCCommonLiteralsASTCharLiteral();
+      public void setOptMCCommonLiteralsASTCharLiteral(de.monticore.literals.mccommonliterals._ast.ASTCharLiteral optMCCommonLiteralsASTCharLiteral);
+      public void setOptMCCommonLiteralsASTCharLiteralAbsent();
+      public de.monticore.literals.mccommonliterals._ast.ASTStringLiteral getOptMCCommonLiteralsASTStringLiteral();
+      public boolean isPresentOptMCCommonLiteralsASTStringLiteral();
+      public void setOptMCCommonLiteralsASTStringLiteral(de.monticore.literals.mccommonliterals._ast.ASTStringLiteral optMCCommonLiteralsASTStringLiteral);
+      public void setOptMCCommonLiteralsASTStringLiteralAbsent();
+      public de.monticore.literals.mccommonliterals._ast.ASTNatLiteral getOptMCCommonLiteralsASTNatLiteral();
+      public boolean isPresentOptMCCommonLiteralsASTNatLiteral();
+      public void setOptMCCommonLiteralsASTNatLiteral(de.monticore.literals.mccommonliterals._ast.ASTNatLiteral optMCCommonLiteralsASTNatLiteral);
+      public void setOptMCCommonLiteralsASTNatLiteralAbsent();
+      public de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral getOptMCCommonLiteralsASTSignedNatLiteral();
+      public boolean isPresentOptMCCommonLiteralsASTSignedNatLiteral();
+      public void setOptMCCommonLiteralsASTSignedNatLiteral(de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral optMCCommonLiteralsASTSignedNatLiteral);
+      public void setOptMCCommonLiteralsASTSignedNatLiteralAbsent();
+      public de.monticore.literals.mccommonliterals._ast.ASTBasicLongLiteral getOptMCCommonLiteralsASTBasicLongLiteral();
+      public boolean isPresentOptMCCommonLiteralsASTBasicLongLiteral();
+      public void setOptMCCommonLiteralsASTBasicLongLiteral(de.monticore.literals.mccommonliterals._ast.ASTBasicLongLiteral optMCCommonLiteralsASTBasicLongLiteral);
+      public void setOptMCCommonLiteralsASTBasicLongLiteralAbsent();
+      public de.monticore.literals.mccommonliterals._ast.ASTSignedBasicLongLiteral getOptMCCommonLiteralsASTSignedBasicLongLiteral();
+      public boolean isPresentOptMCCommonLiteralsASTSignedBasicLongLiteral();
+      public void setOptMCCommonLiteralsASTSignedBasicLongLiteral(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicLongLiteral optMCCommonLiteralsASTSignedBasicLongLiteral);
+      public void setOptMCCommonLiteralsASTSignedBasicLongLiteralAbsent();
+      public de.monticore.literals.mccommonliterals._ast.ASTBasicFloatLiteral getOptMCCommonLiteralsASTBasicFloatLiteral();
+      public boolean isPresentOptMCCommonLiteralsASTBasicFloatLiteral();
+      public void setOptMCCommonLiteralsASTBasicFloatLiteral(de.monticore.literals.mccommonliterals._ast.ASTBasicFloatLiteral optMCCommonLiteralsASTBasicFloatLiteral);
+      public void setOptMCCommonLiteralsASTBasicFloatLiteralAbsent();
+      public de.monticore.literals.mccommonliterals._ast.ASTSignedBasicFloatLiteral getOptMCCommonLiteralsASTSignedBasicFloatLiteral();
+      public boolean isPresentOptMCCommonLiteralsASTSignedBasicFloatLiteral();
+      public void setOptMCCommonLiteralsASTSignedBasicFloatLiteral(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicFloatLiteral optMCCommonLiteralsASTSignedBasicFloatLiteral);
+      public void setOptMCCommonLiteralsASTSignedBasicFloatLiteralAbsent();
+      public de.monticore.literals.mccommonliterals._ast.ASTBasicDoubleLiteral getOptMCCommonLiteralsASTBasicDoubleLiteral();
+      public boolean isPresentOptMCCommonLiteralsASTBasicDoubleLiteral();
+      public void setOptMCCommonLiteralsASTBasicDoubleLiteral(de.monticore.literals.mccommonliterals._ast.ASTBasicDoubleLiteral optMCCommonLiteralsASTBasicDoubleLiteral);
+      public void setOptMCCommonLiteralsASTBasicDoubleLiteralAbsent();
+      public de.monticore.literals.mccommonliterals._ast.ASTSignedBasicDoubleLiteral getOptMCCommonLiteralsASTSignedBasicDoubleLiteral();
+      public boolean isPresentOptMCCommonLiteralsASTSignedBasicDoubleLiteral();
+      public void setOptMCCommonLiteralsASTSignedBasicDoubleLiteral(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicDoubleLiteral optMCCommonLiteralsASTSignedBasicDoubleLiteral);
+      public void setOptMCCommonLiteralsASTSignedBasicDoubleLiteralAbsent();
+      public de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral getOptMCCommonLiteralsASTSignedLiteral();
+      public boolean isPresentOptMCCommonLiteralsASTSignedLiteral();
+      public void setOptMCCommonLiteralsASTSignedLiteral(de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral optMCCommonLiteralsASTSignedLiteral);
+      public void setOptMCCommonLiteralsASTSignedLiteralAbsent();
+      public de.monticore.literals.mccommonliterals._ast.ASTNumericLiteral getOptMCCommonLiteralsASTNumericLiteral();
+      public boolean isPresentOptMCCommonLiteralsASTNumericLiteral();
+      public void setOptMCCommonLiteralsASTNumericLiteral(de.monticore.literals.mccommonliterals._ast.ASTNumericLiteral optMCCommonLiteralsASTNumericLiteral);
+      public void setOptMCCommonLiteralsASTNumericLiteralAbsent();
+      public de.monticore.literals.mccommonliterals._ast.ASTSignedNumericLiteral getOptMCCommonLiteralsASTSignedNumericLiteral();
+      public boolean isPresentOptMCCommonLiteralsASTSignedNumericLiteral();
+      public void setOptMCCommonLiteralsASTSignedNumericLiteral(de.monticore.literals.mccommonliterals._ast.ASTSignedNumericLiteral optMCCommonLiteralsASTSignedNumericLiteral);
+      public void setOptMCCommonLiteralsASTSignedNumericLiteralAbsent();
+      public de.monticore.literals.mccommonliterals._ast.MCCommonLiteralsLiterals getOptMCCommonLiteralsMCCommonLiteralsLiterals();
+      public boolean isPresentOptMCCommonLiteralsMCCommonLiteralsLiterals();
+      public void setOptMCCommonLiteralsMCCommonLiteralsLiterals(de.monticore.literals.mccommonliterals._ast.MCCommonLiteralsLiterals optMCCommonLiteralsMCCommonLiteralsLiterals);
+      public void setOptMCCommonLiteralsMCCommonLiteralsLiteralsAbsent();
+      public de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode getOptMCCommonLiteralsASTMCCommonLiteralsNode();
+      public boolean isPresentOptMCCommonLiteralsASTMCCommonLiteralsNode();
+      public void setOptMCCommonLiteralsASTMCCommonLiteralsNode(de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode optMCCommonLiteralsASTMCCommonLiteralsNode);
+      public void setOptMCCommonLiteralsASTMCCommonLiteralsNodeAbsent();
+      public de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope getOptMCCommonLiteralsIMCCommonLiteralsScope();
+      public boolean isPresentOptMCCommonLiteralsIMCCommonLiteralsScope();
+      public void setOptMCCommonLiteralsIMCCommonLiteralsScope(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope optMCCommonLiteralsIMCCommonLiteralsScope);
+      public void setOptMCCommonLiteralsIMCCommonLiteralsScopeAbsent();
+      public de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope getOptMCCommonLiteralsIMCCommonLiteralsArtifactScope();
+      public boolean isPresentOptMCCommonLiteralsIMCCommonLiteralsArtifactScope();
+      public void setOptMCCommonLiteralsIMCCommonLiteralsArtifactScope(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope optMCCommonLiteralsIMCCommonLiteralsArtifactScope);
+      public void setOptMCCommonLiteralsIMCCommonLiteralsArtifactScopeAbsent();
+      public de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsGlobalScope getOptMCCommonLiteralsIMCCommonLiteralsGlobalScope();
+      public boolean isPresentOptMCCommonLiteralsIMCCommonLiteralsGlobalScope();
+      public void setOptMCCommonLiteralsIMCCommonLiteralsGlobalScope(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsGlobalScope optMCCommonLiteralsIMCCommonLiteralsGlobalScope);
+      public void setOptMCCommonLiteralsIMCCommonLiteralsGlobalScopeAbsent();
+      public de.monticore.mcbasics._ast.MCBasicsLiterals getOptMCBasicsMCBasicsLiterals();
+      public boolean isPresentOptMCBasicsMCBasicsLiterals();
+      public void setOptMCBasicsMCBasicsLiterals(de.monticore.mcbasics._ast.MCBasicsLiterals optMCBasicsMCBasicsLiterals);
+      public void setOptMCBasicsMCBasicsLiteralsAbsent();
+      public de.monticore.mcbasics._ast.ASTMCBasicsNode getOptMCBasicsASTMCBasicsNode();
+      public boolean isPresentOptMCBasicsASTMCBasicsNode();
+      public void setOptMCBasicsASTMCBasicsNode(de.monticore.mcbasics._ast.ASTMCBasicsNode optMCBasicsASTMCBasicsNode);
+      public void setOptMCBasicsASTMCBasicsNodeAbsent();
+      public de.monticore.mcbasics._symboltable.IMCBasicsScope getOptMCBasicsIMCBasicsScope();
+      public boolean isPresentOptMCBasicsIMCBasicsScope();
+      public void setOptMCBasicsIMCBasicsScope(de.monticore.mcbasics._symboltable.IMCBasicsScope optMCBasicsIMCBasicsScope);
+      public void setOptMCBasicsIMCBasicsScopeAbsent();
+      public de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope getOptMCBasicsIMCBasicsArtifactScope();
+      public boolean isPresentOptMCBasicsIMCBasicsArtifactScope();
+      public void setOptMCBasicsIMCBasicsArtifactScope(de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope optMCBasicsIMCBasicsArtifactScope);
+      public void setOptMCBasicsIMCBasicsArtifactScopeAbsent();
+      public de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope getOptMCBasicsIMCBasicsGlobalScope();
+      public boolean isPresentOptMCBasicsIMCBasicsGlobalScope();
+      public void setOptMCBasicsIMCBasicsGlobalScope(de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope optMCBasicsIMCBasicsGlobalScope);
+      public void setOptMCBasicsIMCBasicsGlobalScopeAbsent();
+      public de.monticore.literals.mcliteralsbasis._ast.ASTLiteral getOptMCLiteralsBasisASTLiteral();
+      public boolean isPresentOptMCLiteralsBasisASTLiteral();
+      public void setOptMCLiteralsBasisASTLiteral(de.monticore.literals.mcliteralsbasis._ast.ASTLiteral optMCLiteralsBasisASTLiteral);
+      public void setOptMCLiteralsBasisASTLiteralAbsent();
+      public de.monticore.literals.mcliteralsbasis._ast.MCLiteralsBasisLiterals getOptMCLiteralsBasisMCLiteralsBasisLiterals();
+      public boolean isPresentOptMCLiteralsBasisMCLiteralsBasisLiterals();
+      public void setOptMCLiteralsBasisMCLiteralsBasisLiterals(de.monticore.literals.mcliteralsbasis._ast.MCLiteralsBasisLiterals optMCLiteralsBasisMCLiteralsBasisLiterals);
+      public void setOptMCLiteralsBasisMCLiteralsBasisLiteralsAbsent();
+      public de.monticore.literals.mcliteralsbasis._ast.ASTMCLiteralsBasisNode getOptMCLiteralsBasisASTMCLiteralsBasisNode();
+      public boolean isPresentOptMCLiteralsBasisASTMCLiteralsBasisNode();
+      public void setOptMCLiteralsBasisASTMCLiteralsBasisNode(de.monticore.literals.mcliteralsbasis._ast.ASTMCLiteralsBasisNode optMCLiteralsBasisASTMCLiteralsBasisNode);
+      public void setOptMCLiteralsBasisASTMCLiteralsBasisNodeAbsent();
+      public de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope getOptMCLiteralsBasisIMCLiteralsBasisScope();
+      public boolean isPresentOptMCLiteralsBasisIMCLiteralsBasisScope();
+      public void setOptMCLiteralsBasisIMCLiteralsBasisScope(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope optMCLiteralsBasisIMCLiteralsBasisScope);
+      public void setOptMCLiteralsBasisIMCLiteralsBasisScopeAbsent();
+      public de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisArtifactScope getOptMCLiteralsBasisIMCLiteralsBasisArtifactScope();
+      public boolean isPresentOptMCLiteralsBasisIMCLiteralsBasisArtifactScope();
+      public void setOptMCLiteralsBasisIMCLiteralsBasisArtifactScope(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisArtifactScope optMCLiteralsBasisIMCLiteralsBasisArtifactScope);
+      public void setOptMCLiteralsBasisIMCLiteralsBasisArtifactScopeAbsent();
+      public de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisGlobalScope getOptMCLiteralsBasisIMCLiteralsBasisGlobalScope();
+      public boolean isPresentOptMCLiteralsBasisIMCLiteralsBasisGlobalScope();
+      public void setOptMCLiteralsBasisIMCLiteralsBasisGlobalScope(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisGlobalScope optMCLiteralsBasisIMCLiteralsBasisGlobalScope);
+      public void setOptMCLiteralsBasisIMCLiteralsBasisGlobalScopeAbsent();
+
+    } 
+    public interface IMCCommonLiteralsTypeDispatcher extends de.monticore.mcbasics._util.IMCBasicsTypeDispatcher,de.monticore.literals.mcliteralsbasis._util.IMCLiteralsBasisTypeDispatcher,de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsHandler { 
+      public abstract boolean isMCCommonLiteralsASTNullLiteral(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.literals.mccommonliterals._ast.ASTNullLiteral asMCCommonLiteralsASTNullLiteral(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCCommonLiteralsASTBooleanLiteral(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.literals.mccommonliterals._ast.ASTBooleanLiteral asMCCommonLiteralsASTBooleanLiteral(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCCommonLiteralsASTCharLiteral(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.literals.mccommonliterals._ast.ASTCharLiteral asMCCommonLiteralsASTCharLiteral(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCCommonLiteralsASTStringLiteral(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.literals.mccommonliterals._ast.ASTStringLiteral asMCCommonLiteralsASTStringLiteral(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCCommonLiteralsASTNatLiteral(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.literals.mccommonliterals._ast.ASTNatLiteral asMCCommonLiteralsASTNatLiteral(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCCommonLiteralsASTSignedNatLiteral(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral asMCCommonLiteralsASTSignedNatLiteral(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCCommonLiteralsASTBasicLongLiteral(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.literals.mccommonliterals._ast.ASTBasicLongLiteral asMCCommonLiteralsASTBasicLongLiteral(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCCommonLiteralsASTSignedBasicLongLiteral(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.literals.mccommonliterals._ast.ASTSignedBasicLongLiteral asMCCommonLiteralsASTSignedBasicLongLiteral(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCCommonLiteralsASTBasicFloatLiteral(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.literals.mccommonliterals._ast.ASTBasicFloatLiteral asMCCommonLiteralsASTBasicFloatLiteral(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCCommonLiteralsASTSignedBasicFloatLiteral(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.literals.mccommonliterals._ast.ASTSignedBasicFloatLiteral asMCCommonLiteralsASTSignedBasicFloatLiteral(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCCommonLiteralsASTBasicDoubleLiteral(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.literals.mccommonliterals._ast.ASTBasicDoubleLiteral asMCCommonLiteralsASTBasicDoubleLiteral(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCCommonLiteralsASTSignedBasicDoubleLiteral(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.literals.mccommonliterals._ast.ASTSignedBasicDoubleLiteral asMCCommonLiteralsASTSignedBasicDoubleLiteral(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCCommonLiteralsASTSignedLiteral(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral asMCCommonLiteralsASTSignedLiteral(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCCommonLiteralsASTNumericLiteral(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.literals.mccommonliterals._ast.ASTNumericLiteral asMCCommonLiteralsASTNumericLiteral(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCCommonLiteralsASTSignedNumericLiteral(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.literals.mccommonliterals._ast.ASTSignedNumericLiteral asMCCommonLiteralsASTSignedNumericLiteral(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCCommonLiteralsMCCommonLiteralsLiterals(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.literals.mccommonliterals._ast.MCCommonLiteralsLiterals asMCCommonLiteralsMCCommonLiteralsLiterals(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCCommonLiteralsASTMCCommonLiteralsNode(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode asMCCommonLiteralsASTMCCommonLiteralsNode(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCCommonLiteralsIMCCommonLiteralsScope(de.monticore.symboltable.IScope scope);
+      public abstract de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope asMCCommonLiteralsIMCCommonLiteralsScope(de.monticore.symboltable.IScope scope);
+      public abstract boolean isMCCommonLiteralsIMCCommonLiteralsGlobalScope(de.monticore.symboltable.IScope scope);
+      public abstract de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsGlobalScope asMCCommonLiteralsIMCCommonLiteralsGlobalScope(de.monticore.symboltable.IScope scope);
+      public abstract boolean isMCCommonLiteralsIMCCommonLiteralsArtifactScope(de.monticore.symboltable.IScope scope);
+      public abstract de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope asMCCommonLiteralsIMCCommonLiteralsArtifactScope(de.monticore.symboltable.IScope scope);
+
+    } 
+
+  } 
+  package de.monticore.literals.mccommonliterals._cocos { 
+    public class MCCommonLiteralsCoCoChecker { 
+      protected de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser traverser;
+      public MCCommonLiteralsCoCoChecker();
+      public de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser getTraverser();
+      public void setTraverser(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser traverser);
+      public void addChecker(de.monticore.literals.mccommonliterals._cocos.MCCommonLiteralsCoCoChecker checker);
+      public void checkAll(de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode node);
+      public void addCoCo(de.monticore.literals.mccommonliterals._cocos.MCCommonLiteralsASTNullLiteralCoCo coco);
+      public void addCoCo(de.monticore.literals.mccommonliterals._cocos.MCCommonLiteralsASTBooleanLiteralCoCo coco);
+      public void addCoCo(de.monticore.literals.mccommonliterals._cocos.MCCommonLiteralsASTCharLiteralCoCo coco);
+      public void addCoCo(de.monticore.literals.mccommonliterals._cocos.MCCommonLiteralsASTStringLiteralCoCo coco);
+      public void addCoCo(de.monticore.literals.mccommonliterals._cocos.MCCommonLiteralsASTNatLiteralCoCo coco);
+      public void addCoCo(de.monticore.literals.mccommonliterals._cocos.MCCommonLiteralsASTSignedNatLiteralCoCo coco);
+      public void addCoCo(de.monticore.literals.mccommonliterals._cocos.MCCommonLiteralsASTBasicLongLiteralCoCo coco);
+      public void addCoCo(de.monticore.literals.mccommonliterals._cocos.MCCommonLiteralsASTSignedBasicLongLiteralCoCo coco);
+      public void addCoCo(de.monticore.literals.mccommonliterals._cocos.MCCommonLiteralsASTBasicFloatLiteralCoCo coco);
+      public void addCoCo(de.monticore.literals.mccommonliterals._cocos.MCCommonLiteralsASTSignedBasicFloatLiteralCoCo coco);
+      public void addCoCo(de.monticore.literals.mccommonliterals._cocos.MCCommonLiteralsASTBasicDoubleLiteralCoCo coco);
+      public void addCoCo(de.monticore.literals.mccommonliterals._cocos.MCCommonLiteralsASTSignedBasicDoubleLiteralCoCo coco);
+      public void addCoCo(de.monticore.literals.mccommonliterals._cocos.MCCommonLiteralsASTSignedLiteralCoCo coco);
+      public void addCoCo(de.monticore.literals.mccommonliterals._cocos.MCCommonLiteralsASTNumericLiteralCoCo coco);
+      public void addCoCo(de.monticore.literals.mccommonliterals._cocos.MCCommonLiteralsASTSignedNumericLiteralCoCo coco);
+      public void addCoCo(de.monticore.literals.mccommonliterals._cocos.MCCommonLiteralsASTMCCommonLiteralsNodeCoCo coco);
+      public void addChecker(de.monticore.mcbasics._cocos.MCBasicsCoCoChecker checker);
+      public void checkAll(de.monticore.mcbasics._ast.ASTMCBasicsNode node);
+      public void addCoCo(de.monticore.mcbasics._cocos.MCBasicsASTMCBasicsNodeCoCo coco);
+      public void addChecker(de.monticore.literals.mcliteralsbasis._cocos.MCLiteralsBasisCoCoChecker checker);
+      public void checkAll(de.monticore.literals.mcliteralsbasis._ast.ASTMCLiteralsBasisNode node);
+      public void addCoCo(de.monticore.literals.mcliteralsbasis._cocos.MCLiteralsBasisASTLiteralCoCo coco);
+      public void addCoCo(de.monticore.literals.mcliteralsbasis._cocos.MCLiteralsBasisASTMCLiteralsBasisNodeCoCo coco);
+
+    } 
+    public interface MCCommonLiteralsASTNullLiteralCoCo extends de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2 { 
+      public abstract void check(de.monticore.literals.mccommonliterals._ast.ASTNullLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTNullLiteral node);
+
+    } 
+    public interface MCCommonLiteralsASTBooleanLiteralCoCo extends de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2 { 
+      public abstract void check(de.monticore.literals.mccommonliterals._ast.ASTBooleanLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTBooleanLiteral node);
+
+    } 
+    public interface MCCommonLiteralsASTCharLiteralCoCo extends de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2 { 
+      public abstract void check(de.monticore.literals.mccommonliterals._ast.ASTCharLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTCharLiteral node);
+
+    } 
+    public interface MCCommonLiteralsASTStringLiteralCoCo extends de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2 { 
+      public abstract void check(de.monticore.literals.mccommonliterals._ast.ASTStringLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTStringLiteral node);
+
+    } 
+    public interface MCCommonLiteralsASTNatLiteralCoCo extends de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2 { 
+      public abstract void check(de.monticore.literals.mccommonliterals._ast.ASTNatLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTNatLiteral node);
+
+    } 
+    public interface MCCommonLiteralsASTSignedNatLiteralCoCo extends de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2 { 
+      public abstract void check(de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral node);
+
+    } 
+    public interface MCCommonLiteralsASTBasicLongLiteralCoCo extends de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2 { 
+      public abstract void check(de.monticore.literals.mccommonliterals._ast.ASTBasicLongLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTBasicLongLiteral node);
+
+    } 
+    public interface MCCommonLiteralsASTSignedBasicLongLiteralCoCo extends de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2 { 
+      public abstract void check(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicLongLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicLongLiteral node);
+
+    } 
+    public interface MCCommonLiteralsASTBasicFloatLiteralCoCo extends de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2 { 
+      public abstract void check(de.monticore.literals.mccommonliterals._ast.ASTBasicFloatLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTBasicFloatLiteral node);
+
+    } 
+    public interface MCCommonLiteralsASTSignedBasicFloatLiteralCoCo extends de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2 { 
+      public abstract void check(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicFloatLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicFloatLiteral node);
+
+    } 
+    public interface MCCommonLiteralsASTBasicDoubleLiteralCoCo extends de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2 { 
+      public abstract void check(de.monticore.literals.mccommonliterals._ast.ASTBasicDoubleLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTBasicDoubleLiteral node);
+
+    } 
+    public interface MCCommonLiteralsASTSignedBasicDoubleLiteralCoCo extends de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2 { 
+      public abstract void check(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicDoubleLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicDoubleLiteral node);
+
+    } 
+    public interface MCCommonLiteralsASTSignedLiteralCoCo extends de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2 { 
+      public abstract void check(de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral node);
+
+    } 
+    public interface MCCommonLiteralsASTNumericLiteralCoCo extends de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2 { 
+      public abstract void check(de.monticore.literals.mccommonliterals._ast.ASTNumericLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTNumericLiteral node);
+
+    } 
+    public interface MCCommonLiteralsASTSignedNumericLiteralCoCo extends de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2 { 
+      public abstract void check(de.monticore.literals.mccommonliterals._ast.ASTSignedNumericLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTSignedNumericLiteral node);
+
+    } 
+    public interface MCCommonLiteralsASTMCCommonLiteralsNodeCoCo extends de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2 { 
+      public abstract void check(de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode node);
+
+    } 
+
+  } 
+  package de.monticore.literals.mccommonliterals._visitor { 
+    public interface MCCommonLiteralsTraverser extends de.monticore.mcbasics._visitor.MCBasicsTraverser,de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisTraverser { 
+      public void add4MCCommonLiterals(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2 mCCommonLiteralsVisitor);
+      public List<de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2>getMCCommonLiteralsVisitorList();
+      public void add4MCBasics(de.monticore.mcbasics._visitor.MCBasicsVisitor2 mCBasicsVisitor);
+      public List<de.monticore.mcbasics._visitor.MCBasicsVisitor2>getMCBasicsVisitorList();
+      public void add4MCLiteralsBasis(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisVisitor2 mCLiteralsBasisVisitor);
+      public List<de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisVisitor2>getMCLiteralsBasisVisitorList();
+      public void setMCCommonLiteralsHandler(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsHandler mCCommonLiteralsHandler);
+      public Optional<de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsHandler>getMCCommonLiteralsHandler();
+      public void setMCBasicsHandler(de.monticore.mcbasics._visitor.MCBasicsHandler mCBasicsHandler);
+      public Optional<de.monticore.mcbasics._visitor.MCBasicsHandler>getMCBasicsHandler();
+      public void setMCLiteralsBasisHandler(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisHandler mCLiteralsBasisHandler);
+      public Optional<de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisHandler>getMCLiteralsBasisHandler();
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTNullLiteral node);
+      public void endVisit(de.monticore.literals.mccommonliterals._ast.ASTNullLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTNullLiteral node);
+      public void traverse(de.monticore.literals.mccommonliterals._ast.ASTNullLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTBooleanLiteral node);
+      public void endVisit(de.monticore.literals.mccommonliterals._ast.ASTBooleanLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTBooleanLiteral node);
+      public void traverse(de.monticore.literals.mccommonliterals._ast.ASTBooleanLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTCharLiteral node);
+      public void endVisit(de.monticore.literals.mccommonliterals._ast.ASTCharLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTCharLiteral node);
+      public void traverse(de.monticore.literals.mccommonliterals._ast.ASTCharLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTStringLiteral node);
+      public void endVisit(de.monticore.literals.mccommonliterals._ast.ASTStringLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTStringLiteral node);
+      public void traverse(de.monticore.literals.mccommonliterals._ast.ASTStringLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTNatLiteral node);
+      public void endVisit(de.monticore.literals.mccommonliterals._ast.ASTNatLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTNatLiteral node);
+      public void traverse(de.monticore.literals.mccommonliterals._ast.ASTNatLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral node);
+      public void endVisit(de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral node);
+      public void traverse(de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTBasicLongLiteral node);
+      public void endVisit(de.monticore.literals.mccommonliterals._ast.ASTBasicLongLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTBasicLongLiteral node);
+      public void traverse(de.monticore.literals.mccommonliterals._ast.ASTBasicLongLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicLongLiteral node);
+      public void endVisit(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicLongLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicLongLiteral node);
+      public void traverse(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicLongLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTBasicFloatLiteral node);
+      public void endVisit(de.monticore.literals.mccommonliterals._ast.ASTBasicFloatLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTBasicFloatLiteral node);
+      public void traverse(de.monticore.literals.mccommonliterals._ast.ASTBasicFloatLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicFloatLiteral node);
+      public void endVisit(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicFloatLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicFloatLiteral node);
+      public void traverse(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicFloatLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTBasicDoubleLiteral node);
+      public void endVisit(de.monticore.literals.mccommonliterals._ast.ASTBasicDoubleLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTBasicDoubleLiteral node);
+      public void traverse(de.monticore.literals.mccommonliterals._ast.ASTBasicDoubleLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicDoubleLiteral node);
+      public void endVisit(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicDoubleLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicDoubleLiteral node);
+      public void traverse(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicDoubleLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral node);
+      public void endVisit(de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTNumericLiteral node);
+      public void endVisit(de.monticore.literals.mccommonliterals._ast.ASTNumericLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTNumericLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTSignedNumericLiteral node);
+      public void endVisit(de.monticore.literals.mccommonliterals._ast.ASTSignedNumericLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTSignedNumericLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode node);
+      public void endVisit(de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode node);
+      public void visit(de.monticore.literals.mccommonliterals._symboltable.ICommonMCCommonLiteralsSymbol node);
+      public void endVisit(de.monticore.literals.mccommonliterals._symboltable.ICommonMCCommonLiteralsSymbol node);
+      public void handle(de.monticore.literals.mccommonliterals._symboltable.ICommonMCCommonLiteralsSymbol node);
+      public void traverse(de.monticore.literals.mccommonliterals._symboltable.ICommonMCCommonLiteralsSymbol node);
+      public void visit(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope node);
+      public void endVisit(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope node);
+      public void handle(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope node);
+      public void traverse(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope node);
+      public void visit(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope node);
+      public void endVisit(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope node);
+      public void handle(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope node);
+      public void traverse(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope node);
+      public void visit(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsGlobalScope node);
+      public void endVisit(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsGlobalScope node);
+      public void handle(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsGlobalScope node);
+      public void traverse(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsGlobalScope node);
+
+    } 
+    public class MCCommonLiteralsTraverserImplementation implements de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser { 
+      protected MCCommonLiteralsTraverserImplementation realThis;
+      protected List<de.monticore.visitor.IVisitor>iVisitorList;
+      protected List<de.monticore.mcbasics._visitor.MCBasicsVisitor2>mCBasicsVisitorList;
+      protected List<de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisVisitor2>mCLiteralsBasisVisitorList;
+      protected List<de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2>mCCommonLiteralsVisitorList;
+      protected Optional<de.monticore.mcbasics._visitor.MCBasicsHandler>mCBasicsHandler;
+      protected Optional<de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisHandler>mCLiteralsBasisHandler;
+      protected Optional<de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsHandler>mCCommonLiteralsHandler;
+      public void add4MCBasics(de.monticore.mcbasics._visitor.MCBasicsVisitor2 mCBasicsVisitor);
+      public List<de.monticore.mcbasics._visitor.MCBasicsVisitor2>getMCBasicsVisitorList();
+      public void add4MCLiteralsBasis(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisVisitor2 mCLiteralsBasisVisitor);
+      public List<de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisVisitor2>getMCLiteralsBasisVisitorList();
+      public void add4MCCommonLiterals(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2 mCCommonLiteralsVisitor);
+      public List<de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2>getMCCommonLiteralsVisitorList();
+      public void setMCBasicsHandler(de.monticore.mcbasics._visitor.MCBasicsHandler mCBasicsHandler);
+      public Optional<de.monticore.mcbasics._visitor.MCBasicsHandler>getMCBasicsHandler();
+      public void setMCLiteralsBasisHandler(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisHandler mCLiteralsBasisHandler);
+      public Optional<de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisHandler>getMCLiteralsBasisHandler();
+      public void setMCCommonLiteralsHandler(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsHandler mCCommonLiteralsHandler);
+      public Optional<de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsHandler>getMCCommonLiteralsHandler();
+      public void add4IVisitor(de.monticore.visitor.IVisitor iVisitor);
+      public List<de.monticore.visitor.IVisitor>getIVisitorList();
+      protected Set<Object> traversedElements;
+      public Set<Object> getTraversedElements();
+      public void setTraversedElements(Set<Object> traversedElements);
+
+    } 
+    public interface MCCommonLiteralsVisitor2 extends de.monticore.visitor.IVisitor { 
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTNullLiteral node);
+      public void endVisit(de.monticore.literals.mccommonliterals._ast.ASTNullLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTBooleanLiteral node);
+      public void endVisit(de.monticore.literals.mccommonliterals._ast.ASTBooleanLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTCharLiteral node);
+      public void endVisit(de.monticore.literals.mccommonliterals._ast.ASTCharLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTStringLiteral node);
+      public void endVisit(de.monticore.literals.mccommonliterals._ast.ASTStringLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTNatLiteral node);
+      public void endVisit(de.monticore.literals.mccommonliterals._ast.ASTNatLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral node);
+      public void endVisit(de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTBasicLongLiteral node);
+      public void endVisit(de.monticore.literals.mccommonliterals._ast.ASTBasicLongLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicLongLiteral node);
+      public void endVisit(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicLongLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTBasicFloatLiteral node);
+      public void endVisit(de.monticore.literals.mccommonliterals._ast.ASTBasicFloatLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicFloatLiteral node);
+      public void endVisit(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicFloatLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTBasicDoubleLiteral node);
+      public void endVisit(de.monticore.literals.mccommonliterals._ast.ASTBasicDoubleLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicDoubleLiteral node);
+      public void endVisit(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicDoubleLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral node);
+      public void endVisit(de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTNumericLiteral node);
+      public void endVisit(de.monticore.literals.mccommonliterals._ast.ASTNumericLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTSignedNumericLiteral node);
+      public void endVisit(de.monticore.literals.mccommonliterals._ast.ASTSignedNumericLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode node);
+      public void endVisit(de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode node);
+      public void visit(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope node);
+      public void endVisit(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope node);
+      public void visit(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope node);
+      public void endVisit(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope node);
+      public void visit(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsGlobalScope node);
+      public void endVisit(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsGlobalScope node);
+
+    } 
+    public interface MCCommonLiteralsHandler extends de.monticore.visitor.IHandler { 
+      public abstract de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser getTraverser();
+      public abstract void setTraverser(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser traverser);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTNullLiteral node);
+      public void traverse(de.monticore.literals.mccommonliterals._ast.ASTNullLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTBooleanLiteral node);
+      public void traverse(de.monticore.literals.mccommonliterals._ast.ASTBooleanLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTCharLiteral node);
+      public void traverse(de.monticore.literals.mccommonliterals._ast.ASTCharLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTStringLiteral node);
+      public void traverse(de.monticore.literals.mccommonliterals._ast.ASTStringLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTNatLiteral node);
+      public void traverse(de.monticore.literals.mccommonliterals._ast.ASTNatLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral node);
+      public void traverse(de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTBasicLongLiteral node);
+      public void traverse(de.monticore.literals.mccommonliterals._ast.ASTBasicLongLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicLongLiteral node);
+      public void traverse(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicLongLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTBasicFloatLiteral node);
+      public void traverse(de.monticore.literals.mccommonliterals._ast.ASTBasicFloatLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicFloatLiteral node);
+      public void traverse(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicFloatLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTBasicDoubleLiteral node);
+      public void traverse(de.monticore.literals.mccommonliterals._ast.ASTBasicDoubleLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicDoubleLiteral node);
+      public void traverse(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicDoubleLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTNumericLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTSignedNumericLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode node);
+      public void handle(de.monticore.literals.mccommonliterals._symboltable.ICommonMCCommonLiteralsSymbol node);
+      public void traverse(de.monticore.literals.mccommonliterals._symboltable.ICommonMCCommonLiteralsSymbol node);
+      public void handle(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope node);
+      public void traverse(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope node);
+      public void handle(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope node);
+      public void traverse(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope node);
+      public void handle(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsGlobalScope node);
+      public void traverse(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsGlobalScope node);
+
+    } 
+    public class MCCommonLiteralsInheritanceHandler implements de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsHandler { 
+      protected de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser traverser;
+      public de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser getTraverser();
+      public void setTraverser(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser traverser);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTNullLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTBooleanLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTCharLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTStringLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTNatLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTBasicLongLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicLongLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTBasicFloatLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicFloatLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTBasicDoubleLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicDoubleLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTNumericLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTSignedNumericLiteral node);
+      public void handle(de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode node);
+      public void handle(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope node);
+      public void handle(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope node);
+      public void handle(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsGlobalScope node);
+
+    } 
+    public interface IMCCommonLiteralsInterpreter extends de.monticore.mcbasics._visitor.IMCBasicsInterpreter,de.monticore.literals.mcliteralsbasis._visitor.IMCLiteralsBasisInterpreter,de.monticore.interpreter.ModelInterpreter { 
+      public abstract de.monticore.interpreter.Value interpret(de.monticore.literals.mccommonliterals._ast.ASTNullLiteral node);
+      public abstract de.monticore.interpreter.Value interpret(de.monticore.literals.mccommonliterals._ast.ASTBooleanLiteral node);
+      public abstract de.monticore.interpreter.Value interpret(de.monticore.literals.mccommonliterals._ast.ASTCharLiteral node);
+      public abstract de.monticore.interpreter.Value interpret(de.monticore.literals.mccommonliterals._ast.ASTStringLiteral node);
+      public abstract de.monticore.interpreter.Value interpret(de.monticore.literals.mccommonliterals._ast.ASTNatLiteral node);
+      public abstract de.monticore.interpreter.Value interpret(de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral node);
+      public abstract de.monticore.interpreter.Value interpret(de.monticore.literals.mccommonliterals._ast.ASTBasicLongLiteral node);
+      public abstract de.monticore.interpreter.Value interpret(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicLongLiteral node);
+      public abstract de.monticore.interpreter.Value interpret(de.monticore.literals.mccommonliterals._ast.ASTBasicFloatLiteral node);
+      public abstract de.monticore.interpreter.Value interpret(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicFloatLiteral node);
+      public abstract de.monticore.interpreter.Value interpret(de.monticore.literals.mccommonliterals._ast.ASTBasicDoubleLiteral node);
+      public abstract de.monticore.interpreter.Value interpret(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicDoubleLiteral node);
+      public abstract de.monticore.interpreter.Value interpret(de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral node);
+      public abstract de.monticore.interpreter.Value interpret(de.monticore.literals.mccommonliterals._ast.ASTNumericLiteral node);
+      public abstract de.monticore.interpreter.Value interpret(de.monticore.literals.mccommonliterals._ast.ASTSignedNumericLiteral node);
+      public abstract de.monticore.interpreter.Value interpret(de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode node);
+
+    } 
+    public class MCCommonLiteralsInterpreter implements IMCCommonLiteralsInterpreter { 
+      protected de.monticore.mcbasics._visitor.IMCBasicsInterpreter mCBasicsInterpreter;
+      protected de.monticore.literals.mcliteralsbasis._visitor.IMCLiteralsBasisInterpreter mCLiteralsBasisInterpreter;
+      public MCCommonLiteralsInterpreter();
+      public MCCommonLiteralsInterpreter(de.monticore.interpreter.ModelInterpreter realThis);
+      protected de.monticore.interpreter.ModelInterpreter realThis;
+      public de.monticore.interpreter.ModelInterpreter getRealThis();
+      public void setRealThis(de.monticore.interpreter.ModelInterpreter realThis);
+      protected Map<de.monticore.symboltable.ISymbol,de.monticore.interpreter.Value>contextMap;
+      public void store(de.monticore.symboltable.ISymbol symbol,de.monticore.interpreter.Value value);
+      public de.monticore.interpreter.Value load(de.monticore.symboltable.ISymbol symbol);
+      public Map<de.monticore.symboltable.ISymbol,de.monticore.interpreter.Value>getContextMap();
+      public de.monticore.interpreter.Value interpret(de.monticore.literals.mccommonliterals._ast.ASTNullLiteral node);
+      public de.monticore.interpreter.Value interpret(de.monticore.literals.mccommonliterals._ast.ASTBooleanLiteral node);
+      public de.monticore.interpreter.Value interpret(de.monticore.literals.mccommonliterals._ast.ASTCharLiteral node);
+      public de.monticore.interpreter.Value interpret(de.monticore.literals.mccommonliterals._ast.ASTStringLiteral node);
+      public de.monticore.interpreter.Value interpret(de.monticore.literals.mccommonliterals._ast.ASTNatLiteral node);
+      public de.monticore.interpreter.Value interpret(de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral node);
+      public de.monticore.interpreter.Value interpret(de.monticore.literals.mccommonliterals._ast.ASTBasicLongLiteral node);
+      public de.monticore.interpreter.Value interpret(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicLongLiteral node);
+      public de.monticore.interpreter.Value interpret(de.monticore.literals.mccommonliterals._ast.ASTBasicFloatLiteral node);
+      public de.monticore.interpreter.Value interpret(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicFloatLiteral node);
+      public de.monticore.interpreter.Value interpret(de.monticore.literals.mccommonliterals._ast.ASTBasicDoubleLiteral node);
+      public de.monticore.interpreter.Value interpret(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicDoubleLiteral node);
+      public de.monticore.interpreter.Value interpret(de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral node);
+      public de.monticore.interpreter.Value interpret(de.monticore.literals.mccommonliterals._ast.ASTNumericLiteral node);
+      public de.monticore.interpreter.Value interpret(de.monticore.literals.mccommonliterals._ast.ASTSignedNumericLiteral node);
+      public de.monticore.interpreter.Value interpret(de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode node);
+      public de.monticore.interpreter.Value interpret(de.monticore.mcbasics._ast.ASTMCBasicsNode node);
+      public de.monticore.interpreter.Value interpret(de.monticore.literals.mcliteralsbasis._ast.ASTLiteral node);
+      public de.monticore.interpreter.Value interpret(de.monticore.literals.mcliteralsbasis._ast.ASTMCLiteralsBasisNode node);
+
+    } 
+
+  } 
+  package de.monticore.literals.mccommonliterals._symboltable { 
+    public class MCCommonLiteralsScope implements de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope { 
+      public MCCommonLiteralsScope();
+      public MCCommonLiteralsScope(boolean shadowing);
+      public MCCommonLiteralsScope(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope);
+      public MCCommonLiteralsScope(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope,boolean shadowing);
+      protected com.google.common.collect.LinkedListMultimap<String,de.monticore.symboltable.SymbolWithScopeOfUnknownKind>unknownSymbols;
+      public void add(de.monticore.symboltable.SymbolWithScopeOfUnknownKind symbol);
+      public void remove(de.monticore.symboltable.SymbolWithScopeOfUnknownKind symbol);
+      public com.google.common.collect.LinkedListMultimap<String,de.monticore.symboltable.SymbolWithScopeOfUnknownKind>getUnknownSymbols();
+      protected boolean unknownSymbolsAlreadyResolved;
+      public boolean isUnknownSymbolsAlreadyResolved();
+      public void setUnknownSymbolsAlreadyResolved(boolean unknownSymbolsAlreadyResolved);
+      protected de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope;
+      public de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope getEnclosingScope();
+      public void setEnclosingScope(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope);
+      protected Optional<de.monticore.symboltable.IScopeSpanningSymbol>spanningSymbol;
+      public de.monticore.symboltable.IScopeSpanningSymbol getSpanningSymbol();
+      public boolean isPresentSpanningSymbol();
+      public void setSpanningSymbol(de.monticore.symboltable.IScopeSpanningSymbol spanningSymbol);
+      public void setSpanningSymbolAbsent();
+      protected boolean shadowing;
+      public boolean isShadowing();
+      public void setShadowing(boolean shadowing);
+      protected boolean exportingSymbols;
+      public boolean isExportingSymbols();
+      public void setExportingSymbols(boolean exportingSymbols);
+      protected boolean ordered;
+      public boolean isOrdered();
+      public void setOrdered(boolean ordered);
+      protected Optional<String>name;
+      public String getName();
+      public boolean isPresentName();
+      public void setName(String name);
+      public void setNameAbsent();
+      protected Optional<de.monticore.ast.ASTNode>astNode;
+      public de.monticore.ast.ASTNode getAstNode();
+      public boolean isPresentAstNode();
+      public void setAstNode(de.monticore.ast.ASTNode astNode);
+      public void setAstNodeAbsent();
+      protected List<de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope>subScopes;
+      public void addSubScope(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope subScope);
+      public void removeSubScope(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope subScope);
+      public List<de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope>getSubScopes();
+      public void setSubScopes(List<de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope>subScopes);
+      public void addSubScope(de.monticore.mcbasics._symboltable.IMCBasicsScope subScope);
+      public void removeSubScope(de.monticore.mcbasics._symboltable.IMCBasicsScope subScope);
+      public void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope newEnclosingScope);
+      public void addSubScope(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope subScope);
+      public void removeSubScope(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope subScope);
+      public void setEnclosingScope(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope newEnclosingScope);
+      public void accept(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+
+    } 
+    public interface IMCCommonLiteralsScope extends de.monticore.mcbasics._symboltable.IMCBasicsScope,de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope { 
+      public abstract List<? extends IMCCommonLiteralsScope>getSubScopes();
+      public void addSubScope(IMCCommonLiteralsScope subScope);
+      public void removeSubScope(IMCCommonLiteralsScope subScope);
+      public abstract IMCCommonLiteralsScope getEnclosingScope();
+      public abstract void setEnclosingScope(IMCCommonLiteralsScope enclosingScope);
+      public abstract void accept(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser visitor);
+      public int getSymbolsSize();
+      public abstract void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public abstract void accept(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisTraverser visitor);
+      public abstract void accept(de.monticore.visitor.ITraverser visitor);
+
+    } 
+    public class MCCommonLiteralsSymbols2Json implements de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2 { 
+      protected de.monticore.symboltable.serialization.IDeSer<de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope, de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope, MCCommonLiteralsSymbols2Json> scopeDeSer;
+      protected MCCommonLiteralsSymbols2Json realThis;
+      public MCCommonLiteralsSymbols2Json getRealThis();
+      public void setRealThis(MCCommonLiteralsSymbols2Json realThis);
+      protected de.monticore.symboltable.serialization.JsonPrinter printer;
+      public de.monticore.symboltable.serialization.JsonPrinter getJsonPrinter();
+      public void setJsonPrinter(de.monticore.symboltable.serialization.JsonPrinter printer);
+      protected de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser traverser;
+      public String serialize(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope toSerialize);
+      public String serialize(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope toSerialize);
+      public de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope deserialize(String serialized);
+      public de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser getTraverser();
+      public void setTraverser(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser traverser);
+      public MCCommonLiteralsSymbols2Json();
+      public MCCommonLiteralsSymbols2Json(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser traverser,de.monticore.symboltable.serialization.JsonPrinter printer);
+      public void init();
+      public String getSerializedString();
+      public de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope load(java.net.URL url);
+      public de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope load(java.io.Reader reader);
+      public de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope load(String model);
+      public String store(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope scope,String fileName);
+      public void visit(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope node);
+      public void endVisit(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope node);
+      public void visit(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope node);
+      public void endVisit(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope node);
+
+    } 
+    public interface ICommonMCCommonLiteralsSymbol extends de.monticore.symboltable.ISymbol { 
+      public abstract void accept(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser visitor);
+      public abstract de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope getEnclosingScope();
+      public abstract void setEnclosingScope(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope);
+
+    } 
+    public interface IMCCommonLiteralsGlobalScope extends de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope,de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisGlobalScope,de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope { 
+      public abstract void loadFileForModelName(String modelName);
+      public de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope getEnclosingScope();
+      public void setEnclosingScope(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope);
+      public String getName();
+      public boolean isPresentName();
+      public boolean checkIfContinueAsSubScope(String symbolName);
+      public abstract Map<String,de.monticore.symboltable.serialization.ISymbolDeSer> getSymbolDeSers();
+      public void putSymbolDeSer(String key,de.monticore.symboltable.serialization.ISymbolDeSer value);
+      public de.monticore.symboltable.serialization.ISymbolDeSer getSymbolDeSer(String key);
+      public abstract IMCCommonLiteralsGlobalScope getRealThis();
+      public abstract void accept(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser visitor);
+      public abstract void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public abstract void accept(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisTraverser visitor);
+      public abstract void accept(de.monticore.visitor.ITraverser visitor);
+
+    } 
+    public interface IMCCommonLiteralsArtifactScope extends de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope,de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisArtifactScope,de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope { 
+      public boolean containsImports(Object element);
+      public boolean containsAllImports(Collection<?>collection);
+      public boolean isEmptyImports();
+      public Iterator<de.monticore.symboltable.ImportStatement>iteratorImports();
+      public int sizeImports();
+      public de.monticore.symboltable.ImportStatement []toArrayImports(de.monticore.symboltable.ImportStatement []array);
+      public Object []toArrayImports();
+      public Spliterator<de.monticore.symboltable.ImportStatement>spliteratorImports();
+      public Stream<de.monticore.symboltable.ImportStatement>streamImports();
+      public Stream<de.monticore.symboltable.ImportStatement>parallelStreamImports();
+      public de.monticore.symboltable.ImportStatement getImports(int index);
+      public int indexOfImports(Object element);
+      public int lastIndexOfImports(Object element);
+      public boolean equalsImports(Object o);
+      public int hashCodeImports();
+      public ListIterator<de.monticore.symboltable.ImportStatement>listIteratorImports();
+      public ListIterator<de.monticore.symboltable.ImportStatement>listIteratorImports(int index);
+      public List<de.monticore.symboltable.ImportStatement>subListImports(int start,int end);
+      public void clearImports();
+      public boolean addImports(de.monticore.symboltable.ImportStatement element);
+      public boolean addAllImports(Collection<? extends de.monticore.symboltable.ImportStatement>collection);
+      public boolean removeImports(Object element);
+      public boolean removeAllImports(Collection<?>collection);
+      public boolean retainAllImports(Collection<?>collection);
+      public boolean removeIfImports(Predicate<? super de.monticore.symboltable.ImportStatement>filter);
+      public void forEachImports(Consumer<? super de.monticore.symboltable.ImportStatement>action);
+      public void addImports(int index,de.monticore.symboltable.ImportStatement element);
+      public boolean addAllImports(int index,Collection<? extends de.monticore.symboltable.ImportStatement>collection);
+      public de.monticore.symboltable.ImportStatement removeImports(int index);
+      public de.monticore.symboltable.ImportStatement setImports(int index,de.monticore.symboltable.ImportStatement element);
+      public void replaceAllImports(UnaryOperator<de.monticore.symboltable.ImportStatement>operator);
+      public void sortImports(Comparator<? super de.monticore.symboltable.ImportStatement>comparator);
+      public abstract List<de.monticore.symboltable.ImportStatement>getImportsList();
+      public abstract void setImportsList(List<de.monticore.symboltable.ImportStatement>imports);
+      public Optional<de.monticore.symboltable.ISymbol>getTopLevelSymbol();
+      public boolean checkIfContinueAsSubScope(String symbolName);
+      public List<String>getRemainingNameForResolveDown(String symbolName);
+      public String getFullName();
+      public abstract void accept(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser visitor);
+      public abstract void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public abstract void accept(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisTraverser visitor);
+      public abstract void accept(de.monticore.visitor.ITraverser visitor);
+
+    } 
+    public class MCCommonLiteralsScopesGenitorDelegator { 
+      public MCCommonLiteralsScopesGenitorDelegator();
+      protected Deque<de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope>scopeStack;
+      protected final MCCommonLiteralsScopesGenitor symbolTable;
+      protected de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsGlobalScope globalScope;
+      protected de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser traverser;
+      public de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope createFromAST(de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral rootNode);
+
+    } 
+    public class MCCommonLiteralsArtifactScope extends de.monticore.literals.mccommonliterals._symboltable.MCCommonLiteralsScope implements de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope { 
+      public MCCommonLiteralsArtifactScope(String packageName,List<de.monticore.symboltable.ImportStatement>imports);
+      public MCCommonLiteralsArtifactScope(Optional<de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope>enclosingScope,String packageName,List<de.monticore.symboltable.ImportStatement>imports);
+      public MCCommonLiteralsArtifactScope();
+      protected String packageName;
+      public String getPackageName();
+      public void setPackageName(String packageName);
+      protected List<de.monticore.symboltable.ImportStatement>imports;
+      public List<de.monticore.symboltable.ImportStatement>getImportsList();
+      public void setImportsList(List<de.monticore.symboltable.ImportStatement>imports);
+      public boolean isPresentName();
+      public String getName();
+      public void setEnclosingScope(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope);
+      public void accept(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+
+    } 
+    public class MCCommonLiteralsDeSer implements de.monticore.symboltable.serialization.IDeSer<de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope, de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope, de.monticore.literals.mccommonliterals._symboltable.MCCommonLiteralsSymbols2Json> { 
+      public String serialize(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope toSerialize,de.monticore.literals.mccommonliterals._symboltable.MCCommonLiteralsSymbols2Json s2j);
+      public String serialize(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope toSerialize,de.monticore.literals.mccommonliterals._symboltable.MCCommonLiteralsSymbols2Json s2j);
+      public void serializeAddons(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope toSerialize,de.monticore.literals.mccommonliterals._symboltable.MCCommonLiteralsSymbols2Json s2j);
+      public void serializeAddons(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope toSerialize,de.monticore.literals.mccommonliterals._symboltable.MCCommonLiteralsSymbols2Json s2j);
+      public de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope deserializeScope(de.monticore.symboltable.serialization.json.JsonObject scopeJson);
+      public de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope deserializeArtifactScope(de.monticore.symboltable.serialization.json.JsonObject scopeJson);
+      protected void deserializeSymbols(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope scope,de.monticore.symboltable.serialization.json.JsonObject scopeJson);
+      public void deserializeAddons(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope scope,de.monticore.symboltable.serialization.json.JsonObject scopeJson);
+      public void deserializeAddons(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope scope,de.monticore.symboltable.serialization.json.JsonObject scopeJson);
+
+    } 
+    public class MCCommonLiteralsGlobalScope extends de.monticore.literals.mccommonliterals._symboltable.MCCommonLiteralsScope implements de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsGlobalScope { 
+      public MCCommonLiteralsGlobalScope(de.monticore.io.paths.MCPath symbolPath,String fileExt);
+      public MCCommonLiteralsGlobalScope();
+      protected de.monticore.io.paths.MCPath symbolPath;
+      public de.monticore.io.paths.MCPath getSymbolPath();
+      public void setSymbolPath(de.monticore.io.paths.MCPath symbolPath);
+      protected String fileExt;
+      public String getFileExt();
+      public void setFileExt(String fileExt);
+      public de.monticore.symboltable.serialization.IDeSer deSer;
+      public de.monticore.symboltable.serialization.IDeSer getDeSer();
+      public void setDeSer(de.monticore.symboltable.serialization.IDeSer deSer);
+      protected Map<String,de.monticore.symboltable.serialization.ISymbolDeSer> symbolDeSers;
+      public Map<String,de.monticore.symboltable.serialization.ISymbolDeSer> getSymbolDeSers();
+      public void setSymbolDeSers(Map<String,de.monticore.symboltable.serialization.ISymbolDeSer> symbolDeSers);
+      protected MCCommonLiteralsSymbols2Json symbols2Json;
+      public void setSymbols2Json(MCCommonLiteralsSymbols2Json symbols2Json);
+      public MCCommonLiteralsSymbols2Json getSymbols2Json();
+      protected Set<String>cache;
+      public void addLoadedFile(String name);
+      public void clearLoadedFiles();
+      public boolean isFileLoaded(String name);
+      public void init();
+      public void loadFileForModelName(String modelName);
+      public MCCommonLiteralsGlobalScope getRealThis();
+      public void clear();
+      public void accept(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+
+    } 
+    public class MCCommonLiteralsScopesGenitor implements de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2,de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsHandler { 
+      public MCCommonLiteralsScopesGenitor();
+      protected Deque<de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope>scopeStack;
+      protected de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser traverser;
+      public de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser getTraverser();
+      public void setTraverser(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser traverser);
+      protected de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope firstCreatedScope;
+      public de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope getFirstCreatedScope();
+      public de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope createFromAST(de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral rootNode);
+      public void putOnStack(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope scope);
+      public final Optional<de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope>getCurrentScope();
+      public final Optional<de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope>removeCurrentScope();
+      public void setScopeStack(Deque<? extends de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope>scopeStack);
+      public de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope createScope(boolean shadowing);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTNullLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTBooleanLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTCharLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTStringLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTNatLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTBasicLongLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicLongLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTBasicFloatLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicFloatLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTBasicDoubleLiteral node);
+      public void visit(de.monticore.literals.mccommonliterals._ast.ASTSignedBasicDoubleLiteral node);
+      protected void initScopeHP1(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope scope);
+      protected void initScopeHP2(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope scope);
+      protected void initArtifactScopeHP1(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope scope);
+      protected void initArtifactScopeHP2(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsArtifactScope scope);
+      public void addToScopeStack(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope scope);
+
+    } 
+
+  } 
+  package de.monticore.literals.mccommonliterals._ast { 
+    public class ASTNullLiteral extends ASTCNode implements de.monticore.literals.mcliteralsbasis._ast.ASTLiteral,de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral,de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode { 
+      protected ASTNullLiteral();
+      public boolean deepEquals(Object o);
+      public boolean deepEquals(Object o,boolean forceSameOrder);
+      public boolean deepEqualsWithComments(Object o);
+      public boolean deepEqualsWithComments(Object o,boolean forceSameOrder);
+      public boolean equalAttributes(Object o);
+      public boolean equalsWithComments(Object o);
+      public ASTNullLiteral deepClone();
+      public ASTNullLiteral deepClone(ASTNullLiteral result);
+      public void accept(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+      protected ASTNullLiteral _construct();
+      protected de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope;
+      public de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope getEnclosingScope();
+      public void setEnclosingScope(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope);
+      public void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope);
+      public void setEnclosingScope(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope enclosingScope);
+      public de.monticore.interpreter.Value evaluate(de.monticore.literals.mccommonliterals._visitor.IMCCommonLiteralsInterpreter interpreter);
+      public de.monticore.interpreter.Value evaluate(de.monticore.interpreter.ModelInterpreter interpreter);
+
+    } 
+    public class ASTBooleanLiteral extends ASTCNode implements de.monticore.literals.mcliteralsbasis._ast.ASTLiteral,de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral,de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode { 
+      protected ASTBooleanLiteral();
+      <<methodBody="return this.source==ASTConstantsMCCommonLiterals.TRUE;
+      ">>public boolean getValue();
+      public boolean deepEquals(Object o);
+      public boolean deepEquals(Object o,boolean forceSameOrder);
+      public boolean deepEqualsWithComments(Object o);
+      public boolean deepEqualsWithComments(Object o,boolean forceSameOrder);
+      public boolean equalAttributes(Object o);
+      public boolean equalsWithComments(Object o);
+      public ASTBooleanLiteral deepClone();
+      public ASTBooleanLiteral deepClone(ASTBooleanLiteral result);
+      protected int source;
+      public int getSource();
+      public void setSource(int source);
+      public void accept(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+      protected ASTBooleanLiteral _construct();
+      protected de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope;
+      public de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope getEnclosingScope();
+      public void setEnclosingScope(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope);
+      public void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope);
+      public void setEnclosingScope(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope enclosingScope);
+      public de.monticore.interpreter.Value evaluate(de.monticore.literals.mccommonliterals._visitor.IMCCommonLiteralsInterpreter interpreter);
+      public de.monticore.interpreter.Value evaluate(de.monticore.interpreter.ModelInterpreter interpreter);
+
+    } 
+    public class ASTCharLiteral extends ASTCNode implements de.monticore.literals.mcliteralsbasis._ast.ASTLiteral,de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral,de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode { 
+      protected ASTCharLiteral();
+      <<methodBody="return de.monticore.literals.MCLiteralsDecoder.decodeChar(getSource());
+      ">>public char getValue();
+      public boolean deepEquals(Object o);
+      public boolean deepEquals(Object o,boolean forceSameOrder);
+      public boolean deepEqualsWithComments(Object o);
+      public boolean deepEqualsWithComments(Object o,boolean forceSameOrder);
+      public boolean equalAttributes(Object o);
+      public boolean equalsWithComments(Object o);
+      public ASTCharLiteral deepClone();
+      public ASTCharLiteral deepClone(ASTCharLiteral result);
+      protected String source;
+      public String getSource();
+      public void setSource(String source);
+      public void accept(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+      protected ASTCharLiteral _construct();
+      protected de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope;
+      public de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope getEnclosingScope();
+      public void setEnclosingScope(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope);
+      public void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope);
+      public void setEnclosingScope(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope enclosingScope);
+      public de.monticore.interpreter.Value evaluate(de.monticore.literals.mccommonliterals._visitor.IMCCommonLiteralsInterpreter interpreter);
+      public de.monticore.interpreter.Value evaluate(de.monticore.interpreter.ModelInterpreter interpreter);
+
+    } 
+    public class ASTStringLiteral extends ASTCNode implements de.monticore.literals.mcliteralsbasis._ast.ASTLiteral,de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral,de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode { 
+      protected ASTStringLiteral();
+      <<methodBody="return de.monticore.literals.MCLiteralsDecoder.decodeString(getSource());
+      ">>public String getValue();
+      public boolean deepEquals(Object o);
+      public boolean deepEquals(Object o,boolean forceSameOrder);
+      public boolean deepEqualsWithComments(Object o);
+      public boolean deepEqualsWithComments(Object o,boolean forceSameOrder);
+      public boolean equalAttributes(Object o);
+      public boolean equalsWithComments(Object o);
+      public ASTStringLiteral deepClone();
+      public ASTStringLiteral deepClone(ASTStringLiteral result);
+      protected String source;
+      public String getSource();
+      public void setSource(String source);
+      public void accept(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+      protected ASTStringLiteral _construct();
+      protected de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope;
+      public de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope getEnclosingScope();
+      public void setEnclosingScope(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope);
+      public void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope);
+      public void setEnclosingScope(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope enclosingScope);
+      public de.monticore.interpreter.Value evaluate(de.monticore.literals.mccommonliterals._visitor.IMCCommonLiteralsInterpreter interpreter);
+      public de.monticore.interpreter.Value evaluate(de.monticore.interpreter.ModelInterpreter interpreter);
+
+    } 
+    public class ASTNatLiteral extends ASTCNode implements de.monticore.literals.mccommonliterals._ast.ASTNumericLiteral,de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode { 
+      protected ASTNatLiteral();
+      <<methodBody="return getDigits();
+      ">>public String getSource();
+      <<methodBody="return de.monticore.literals.MCLiteralsDecoder.decodeNat(getSource());
+      ">>public int getValue();
+      public boolean deepEquals(Object o);
+      public boolean deepEquals(Object o,boolean forceSameOrder);
+      public boolean deepEqualsWithComments(Object o);
+      public boolean deepEqualsWithComments(Object o,boolean forceSameOrder);
+      public boolean equalAttributes(Object o);
+      public boolean equalsWithComments(Object o);
+      public ASTNatLiteral deepClone();
+      public ASTNatLiteral deepClone(ASTNatLiteral result);
+      <<derived_attribute_name="">>protected String digits;
+      public String getDigits();
+      public void setDigits(String digits);
+      public void accept(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+      protected ASTNatLiteral _construct();
+      protected de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope;
+      public de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope getEnclosingScope();
+      public void setEnclosingScope(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope);
+      public void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope);
+      public void setEnclosingScope(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope enclosingScope);
+      public de.monticore.interpreter.Value evaluate(de.monticore.literals.mccommonliterals._visitor.IMCCommonLiteralsInterpreter interpreter);
+      public de.monticore.interpreter.Value evaluate(de.monticore.interpreter.ModelInterpreter interpreter);
+
+    } 
+    public class ASTSignedNatLiteral extends ASTCNode implements de.monticore.literals.mccommonliterals._ast.ASTSignedNumericLiteral,de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode { 
+      protected ASTSignedNatLiteral();
+      <<methodBody="return(negative ? "-":"")+getDigits();
+      ">>public String getSource();
+      <<methodBody="return de.monticore.literals.MCLiteralsDecoder.decodeNat(getSource());
+      ">>public int getValue();
+      public boolean deepEquals(Object o);
+      public boolean deepEquals(Object o,boolean forceSameOrder);
+      public boolean deepEqualsWithComments(Object o);
+      public boolean deepEqualsWithComments(Object o,boolean forceSameOrder);
+      public boolean equalAttributes(Object o);
+      public boolean equalsWithComments(Object o);
+      public ASTSignedNatLiteral deepClone();
+      public ASTSignedNatLiteral deepClone(ASTSignedNatLiteral result);
+      <<derived_attribute_name="">>protected Optional<String>digits;
+      protected boolean negative;
+      public String getDigits();
+      public boolean isPresentDigits();
+      public boolean isNegative();
+      public void setDigits(String digits);
+      public void setDigitsAbsent();
+      public void setNegative(boolean negative);
+      public void accept(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+      protected ASTSignedNatLiteral _construct();
+      protected de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope;
+      public de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope getEnclosingScope();
+      public void setEnclosingScope(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope);
+      public void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope);
+      public void setEnclosingScope(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope enclosingScope);
+      public de.monticore.interpreter.Value evaluate(de.monticore.literals.mccommonliterals._visitor.IMCCommonLiteralsInterpreter interpreter);
+      public de.monticore.interpreter.Value evaluate(de.monticore.interpreter.ModelInterpreter interpreter);
+
+    } 
+    public class ASTBasicLongLiteral extends ASTCNode implements de.monticore.literals.mccommonliterals._ast.ASTNumericLiteral,de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode { 
+      protected ASTBasicLongLiteral();
+      <<methodBody="return getDigits()+"L";
+      ">>public String getSource();
+      <<methodBody="return de.monticore.literals.MCLiteralsDecoder.decodeLong(getSource());
+      ">>public long getValue();
+      public boolean deepEquals(Object o);
+      public boolean deepEquals(Object o,boolean forceSameOrder);
+      public boolean deepEqualsWithComments(Object o);
+      public boolean deepEqualsWithComments(Object o,boolean forceSameOrder);
+      public boolean equalAttributes(Object o);
+      public boolean equalsWithComments(Object o);
+      public ASTBasicLongLiteral deepClone();
+      public ASTBasicLongLiteral deepClone(ASTBasicLongLiteral result);
+      <<derived_attribute_name="">>protected String digits;
+      public String getDigits();
+      public void setDigits(String digits);
+      public void accept(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+      protected ASTBasicLongLiteral _construct();
+      protected de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope;
+      public de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope getEnclosingScope();
+      public void setEnclosingScope(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope);
+      public void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope);
+      public void setEnclosingScope(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope enclosingScope);
+      public de.monticore.interpreter.Value evaluate(de.monticore.literals.mccommonliterals._visitor.IMCCommonLiteralsInterpreter interpreter);
+      public de.monticore.interpreter.Value evaluate(de.monticore.interpreter.ModelInterpreter interpreter);
+
+    } 
+    public class ASTSignedBasicLongLiteral extends ASTCNode implements de.monticore.literals.mccommonliterals._ast.ASTSignedNumericLiteral,de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode { 
+      protected ASTSignedBasicLongLiteral();
+      <<methodBody="return(negative ? "-":"")+getDigits()+"L";
+      ">>public String getSource();
+      <<methodBody="return de.monticore.literals.MCLiteralsDecoder.decodeLong(getSource());
+      ">>public long getValue();
+      public boolean deepEquals(Object o);
+      public boolean deepEquals(Object o,boolean forceSameOrder);
+      public boolean deepEqualsWithComments(Object o);
+      public boolean deepEqualsWithComments(Object o,boolean forceSameOrder);
+      public boolean equalAttributes(Object o);
+      public boolean equalsWithComments(Object o);
+      public ASTSignedBasicLongLiteral deepClone();
+      public ASTSignedBasicLongLiteral deepClone(ASTSignedBasicLongLiteral result);
+      <<derived_attribute_name="">>protected Optional<String>digits;
+      protected boolean negative;
+      public String getDigits();
+      public boolean isPresentDigits();
+      public boolean isNegative();
+      public void setDigits(String digits);
+      public void setDigitsAbsent();
+      public void setNegative(boolean negative);
+      public void accept(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+      protected ASTSignedBasicLongLiteral _construct();
+      protected de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope;
+      public de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope getEnclosingScope();
+      public void setEnclosingScope(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope);
+      public void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope);
+      public void setEnclosingScope(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope enclosingScope);
+      public de.monticore.interpreter.Value evaluate(de.monticore.literals.mccommonliterals._visitor.IMCCommonLiteralsInterpreter interpreter);
+      public de.monticore.interpreter.Value evaluate(de.monticore.interpreter.ModelInterpreter interpreter);
+
+    } 
+    public class ASTBasicFloatLiteral extends ASTCNode implements de.monticore.literals.mccommonliterals._ast.ASTNumericLiteral,de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode { 
+      protected ASTBasicFloatLiteral();
+      <<methodBody="return getPre()+"."+getPost()+"F";
+      ">>public String getSource();
+      <<methodBody="return de.monticore.literals.MCLiteralsDecoder.decodeFloat(getSource());
+      ">>public float getValue();
+      public boolean deepEquals(Object o);
+      public boolean deepEquals(Object o,boolean forceSameOrder);
+      public boolean deepEqualsWithComments(Object o);
+      public boolean deepEqualsWithComments(Object o,boolean forceSameOrder);
+      public boolean equalAttributes(Object o);
+      public boolean equalsWithComments(Object o);
+      public ASTBasicFloatLiteral deepClone();
+      public ASTBasicFloatLiteral deepClone(ASTBasicFloatLiteral result);
+      protected String pre;
+      protected String post;
+      public String getPre();
+      public String getPost();
+      public void setPre(String pre);
+      public void setPost(String post);
+      public void accept(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+      protected ASTBasicFloatLiteral _construct();
+      protected de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope;
+      public de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope getEnclosingScope();
+      public void setEnclosingScope(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope);
+      public void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope);
+      public void setEnclosingScope(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope enclosingScope);
+      public de.monticore.interpreter.Value evaluate(de.monticore.literals.mccommonliterals._visitor.IMCCommonLiteralsInterpreter interpreter);
+      public de.monticore.interpreter.Value evaluate(de.monticore.interpreter.ModelInterpreter interpreter);
+
+    } 
+    public class ASTSignedBasicFloatLiteral extends ASTCNode implements de.monticore.literals.mccommonliterals._ast.ASTSignedNumericLiteral,de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode { 
+      protected ASTSignedBasicFloatLiteral();
+      <<methodBody="return(isNegative()? "-":"")+getPre()+"."+getPost()+"F";
+      ">>public String getSource();
+      <<methodBody="return de.monticore.literals.MCLiteralsDecoder.decodeFloat(getSource());
+      ">>public float getValue();
+      public boolean deepEquals(Object o);
+      public boolean deepEquals(Object o,boolean forceSameOrder);
+      public boolean deepEqualsWithComments(Object o);
+      public boolean deepEqualsWithComments(Object o,boolean forceSameOrder);
+      public boolean equalAttributes(Object o);
+      public boolean equalsWithComments(Object o);
+      public ASTSignedBasicFloatLiteral deepClone();
+      public ASTSignedBasicFloatLiteral deepClone(ASTSignedBasicFloatLiteral result);
+      protected Optional<String>pre;
+      protected Optional<String>post;
+      protected boolean negative;
+      public String getPre();
+      public boolean isPresentPre();
+      public String getPost();
+      public boolean isPresentPost();
+      public boolean isNegative();
+      public void setPre(String pre);
+      public void setPreAbsent();
+      public void setPost(String post);
+      public void setPostAbsent();
+      public void setNegative(boolean negative);
+      public void accept(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+      protected ASTSignedBasicFloatLiteral _construct();
+      protected de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope;
+      public de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope getEnclosingScope();
+      public void setEnclosingScope(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope);
+      public void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope);
+      public void setEnclosingScope(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope enclosingScope);
+      public de.monticore.interpreter.Value evaluate(de.monticore.literals.mccommonliterals._visitor.IMCCommonLiteralsInterpreter interpreter);
+      public de.monticore.interpreter.Value evaluate(de.monticore.interpreter.ModelInterpreter interpreter);
+
+    } 
+    public class ASTBasicDoubleLiteral extends ASTCNode implements de.monticore.literals.mccommonliterals._ast.ASTNumericLiteral,de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode { 
+      protected ASTBasicDoubleLiteral();
+      <<methodBody="return getPre()+"."+getPost();
+      ">>public String getSource();
+      <<methodBody="return de.monticore.literals.MCLiteralsDecoder.decodeDouble(getSource());
+      ">>public double getValue();
+      public boolean deepEquals(Object o);
+      public boolean deepEquals(Object o,boolean forceSameOrder);
+      public boolean deepEqualsWithComments(Object o);
+      public boolean deepEqualsWithComments(Object o,boolean forceSameOrder);
+      public boolean equalAttributes(Object o);
+      public boolean equalsWithComments(Object o);
+      public ASTBasicDoubleLiteral deepClone();
+      public ASTBasicDoubleLiteral deepClone(ASTBasicDoubleLiteral result);
+      protected String pre;
+      protected String post;
+      public String getPre();
+      public String getPost();
+      public void setPre(String pre);
+      public void setPost(String post);
+      public void accept(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+      protected ASTBasicDoubleLiteral _construct();
+      protected de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope;
+      public de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope getEnclosingScope();
+      public void setEnclosingScope(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope);
+      public void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope);
+      public void setEnclosingScope(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope enclosingScope);
+      public de.monticore.interpreter.Value evaluate(de.monticore.literals.mccommonliterals._visitor.IMCCommonLiteralsInterpreter interpreter);
+      public de.monticore.interpreter.Value evaluate(de.monticore.interpreter.ModelInterpreter interpreter);
+
+    } 
+    public class ASTSignedBasicDoubleLiteral extends ASTCNode implements de.monticore.literals.mccommonliterals._ast.ASTSignedNumericLiteral,de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode { 
+      protected ASTSignedBasicDoubleLiteral();
+      <<methodBody="return(isNegative()? "-":"")+getPre()+"."+getPost();
+      ">>public String getSource();
+      <<methodBody="return de.monticore.literals.MCLiteralsDecoder.decodeDouble(getSource());
+      ">>public double getValue();
+      public boolean deepEquals(Object o);
+      public boolean deepEquals(Object o,boolean forceSameOrder);
+      public boolean deepEqualsWithComments(Object o);
+      public boolean deepEqualsWithComments(Object o,boolean forceSameOrder);
+      public boolean equalAttributes(Object o);
+      public boolean equalsWithComments(Object o);
+      public ASTSignedBasicDoubleLiteral deepClone();
+      public ASTSignedBasicDoubleLiteral deepClone(ASTSignedBasicDoubleLiteral result);
+      protected Optional<String>pre;
+      protected Optional<String>post;
+      protected boolean negative;
+      public String getPre();
+      public boolean isPresentPre();
+      public String getPost();
+      public boolean isPresentPost();
+      public boolean isNegative();
+      public void setPre(String pre);
+      public void setPreAbsent();
+      public void setPost(String post);
+      public void setPostAbsent();
+      public void setNegative(boolean negative);
+      public void accept(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+      protected ASTSignedBasicDoubleLiteral _construct();
+      protected de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope;
+      public de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope getEnclosingScope();
+      public void setEnclosingScope(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope);
+      public void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope);
+      public void setEnclosingScope(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope enclosingScope);
+      public de.monticore.interpreter.Value evaluate(de.monticore.literals.mccommonliterals._visitor.IMCCommonLiteralsInterpreter interpreter);
+      public de.monticore.interpreter.Value evaluate(de.monticore.interpreter.ModelInterpreter interpreter);
+
+    } 
+    public class ASTNullLiteralBuilder extends de.monticore.ast.ASTNodeBuilder<ASTNullLiteralBuilder> { 
+      protected ASTNullLiteralBuilder realBuilder;
+      public ASTNullLiteralBuilder();
+      public ASTNullLiteral build();
+      public boolean isValid();
+      public ASTNullLiteralBuilder set_SourcePositionEnd(SourcePosition end);
+      public ASTNullLiteralBuilder set_SourcePositionEndAbsent();
+      public ASTNullLiteralBuilder set_SourcePositionStart(SourcePosition start);
+      public ASTNullLiteralBuilder set_SourcePositionStartAbsent();
+      public ASTNullLiteralBuilder clear_PreComments();
+      public ASTNullLiteralBuilder add_PreComment(Comment precomment);
+      public ASTNullLiteralBuilder add_PreComment(int index,Comment precomment);
+      public ASTNullLiteralBuilder addAll_PreComments(Collection<Comment>precomments);
+      public ASTNullLiteralBuilder addAll_PreComments(int index,Collection<Comment>precomments);
+      public ASTNullLiteralBuilder remove_PreComment(Object element);
+      public ASTNullLiteralBuilder remove_PreComment(int index);
+      public ASTNullLiteralBuilder removeAll_PreComments(Collection<?>element);
+      public ASTNullLiteralBuilder retainAll_PreComments(Collection<?>element);
+      public ASTNullLiteralBuilder removeIf_PreComment(Predicate<? super Comment>filter);
+      public ASTNullLiteralBuilder forEach_PreComments(Consumer<? super Comment>action);
+      public ASTNullLiteralBuilder replaceAll_PreComments(UnaryOperator<Comment>operator);
+      public ASTNullLiteralBuilder sort_PreComments(Comparator<? super Comment>comparator);
+      public ASTNullLiteralBuilder set_PreCommentList(List<Comment>preComments);
+      public ASTNullLiteralBuilder set_PreComment(int index,Comment precomment);
+      public ASTNullLiteralBuilder clear_PostComments();
+      public ASTNullLiteralBuilder add_PostComment(Comment postcomment);
+      public ASTNullLiteralBuilder add_PostComment(int index,Comment postcomment);
+      public ASTNullLiteralBuilder addAll_PostComments(Collection<Comment>postcomments);
+      public ASTNullLiteralBuilder addAll_PostComments(int index,Collection<Comment>postcomments);
+      public ASTNullLiteralBuilder remove_PostComment(Object element);
+      public ASTNullLiteralBuilder remove_PostComment(int index);
+      public ASTNullLiteralBuilder removeAll_PostComments(Collection<?>element);
+      public ASTNullLiteralBuilder retainAll_PostComments(Collection<?>element);
+      public ASTNullLiteralBuilder removeIf_PostComment(Predicate<? super Comment>filter);
+      public ASTNullLiteralBuilder forEach_PostComments(Consumer<? super Comment>action);
+      public ASTNullLiteralBuilder replaceAll_PostComments(UnaryOperator<Comment>operator);
+      public ASTNullLiteralBuilder sort_PostComments(Comparator<? super Comment>comparator);
+      public ASTNullLiteralBuilder set_PostCommentList(List<Comment>postComments);
+      public ASTNullLiteralBuilder set_PostComment(int index,Comment postcomment);
+      public ASTNullLiteral uncheckedBuild();
+
+    } 
+    public class ASTBooleanLiteralBuilder extends de.monticore.ast.ASTNodeBuilder<ASTBooleanLiteralBuilder> { 
+      protected ASTBooleanLiteralBuilder realBuilder;
+      protected int source;
+      public ASTBooleanLiteralBuilder();
+      public ASTBooleanLiteral build();
+      public boolean isValid();
+      public int getSource();
+      public ASTBooleanLiteralBuilder setSource(int source);
+      public ASTBooleanLiteralBuilder set_SourcePositionEnd(SourcePosition end);
+      public ASTBooleanLiteralBuilder set_SourcePositionEndAbsent();
+      public ASTBooleanLiteralBuilder set_SourcePositionStart(SourcePosition start);
+      public ASTBooleanLiteralBuilder set_SourcePositionStartAbsent();
+      public ASTBooleanLiteralBuilder clear_PreComments();
+      public ASTBooleanLiteralBuilder add_PreComment(Comment precomment);
+      public ASTBooleanLiteralBuilder add_PreComment(int index,Comment precomment);
+      public ASTBooleanLiteralBuilder addAll_PreComments(Collection<Comment>precomments);
+      public ASTBooleanLiteralBuilder addAll_PreComments(int index,Collection<Comment>precomments);
+      public ASTBooleanLiteralBuilder remove_PreComment(Object element);
+      public ASTBooleanLiteralBuilder remove_PreComment(int index);
+      public ASTBooleanLiteralBuilder removeAll_PreComments(Collection<?>element);
+      public ASTBooleanLiteralBuilder retainAll_PreComments(Collection<?>element);
+      public ASTBooleanLiteralBuilder removeIf_PreComment(Predicate<? super Comment>filter);
+      public ASTBooleanLiteralBuilder forEach_PreComments(Consumer<? super Comment>action);
+      public ASTBooleanLiteralBuilder replaceAll_PreComments(UnaryOperator<Comment>operator);
+      public ASTBooleanLiteralBuilder sort_PreComments(Comparator<? super Comment>comparator);
+      public ASTBooleanLiteralBuilder set_PreCommentList(List<Comment>preComments);
+      public ASTBooleanLiteralBuilder set_PreComment(int index,Comment precomment);
+      public ASTBooleanLiteralBuilder clear_PostComments();
+      public ASTBooleanLiteralBuilder add_PostComment(Comment postcomment);
+      public ASTBooleanLiteralBuilder add_PostComment(int index,Comment postcomment);
+      public ASTBooleanLiteralBuilder addAll_PostComments(Collection<Comment>postcomments);
+      public ASTBooleanLiteralBuilder addAll_PostComments(int index,Collection<Comment>postcomments);
+      public ASTBooleanLiteralBuilder remove_PostComment(Object element);
+      public ASTBooleanLiteralBuilder remove_PostComment(int index);
+      public ASTBooleanLiteralBuilder removeAll_PostComments(Collection<?>element);
+      public ASTBooleanLiteralBuilder retainAll_PostComments(Collection<?>element);
+      public ASTBooleanLiteralBuilder removeIf_PostComment(Predicate<? super Comment>filter);
+      public ASTBooleanLiteralBuilder forEach_PostComments(Consumer<? super Comment>action);
+      public ASTBooleanLiteralBuilder replaceAll_PostComments(UnaryOperator<Comment>operator);
+      public ASTBooleanLiteralBuilder sort_PostComments(Comparator<? super Comment>comparator);
+      public ASTBooleanLiteralBuilder set_PostCommentList(List<Comment>postComments);
+      public ASTBooleanLiteralBuilder set_PostComment(int index,Comment postcomment);
+      public ASTBooleanLiteral uncheckedBuild();
+
+    } 
+    public class ASTCharLiteralBuilder extends de.monticore.ast.ASTNodeBuilder<ASTCharLiteralBuilder> { 
+      protected ASTCharLiteralBuilder realBuilder;
+      protected String source;
+      public ASTCharLiteralBuilder();
+      public ASTCharLiteral build();
+      public boolean isValid();
+      public String getSource();
+      public ASTCharLiteralBuilder setSource(String source);
+      public ASTCharLiteralBuilder set_SourcePositionEnd(SourcePosition end);
+      public ASTCharLiteralBuilder set_SourcePositionEndAbsent();
+      public ASTCharLiteralBuilder set_SourcePositionStart(SourcePosition start);
+      public ASTCharLiteralBuilder set_SourcePositionStartAbsent();
+      public ASTCharLiteralBuilder clear_PreComments();
+      public ASTCharLiteralBuilder add_PreComment(Comment precomment);
+      public ASTCharLiteralBuilder add_PreComment(int index,Comment precomment);
+      public ASTCharLiteralBuilder addAll_PreComments(Collection<Comment>precomments);
+      public ASTCharLiteralBuilder addAll_PreComments(int index,Collection<Comment>precomments);
+      public ASTCharLiteralBuilder remove_PreComment(Object element);
+      public ASTCharLiteralBuilder remove_PreComment(int index);
+      public ASTCharLiteralBuilder removeAll_PreComments(Collection<?>element);
+      public ASTCharLiteralBuilder retainAll_PreComments(Collection<?>element);
+      public ASTCharLiteralBuilder removeIf_PreComment(Predicate<? super Comment>filter);
+      public ASTCharLiteralBuilder forEach_PreComments(Consumer<? super Comment>action);
+      public ASTCharLiteralBuilder replaceAll_PreComments(UnaryOperator<Comment>operator);
+      public ASTCharLiteralBuilder sort_PreComments(Comparator<? super Comment>comparator);
+      public ASTCharLiteralBuilder set_PreCommentList(List<Comment>preComments);
+      public ASTCharLiteralBuilder set_PreComment(int index,Comment precomment);
+      public ASTCharLiteralBuilder clear_PostComments();
+      public ASTCharLiteralBuilder add_PostComment(Comment postcomment);
+      public ASTCharLiteralBuilder add_PostComment(int index,Comment postcomment);
+      public ASTCharLiteralBuilder addAll_PostComments(Collection<Comment>postcomments);
+      public ASTCharLiteralBuilder addAll_PostComments(int index,Collection<Comment>postcomments);
+      public ASTCharLiteralBuilder remove_PostComment(Object element);
+      public ASTCharLiteralBuilder remove_PostComment(int index);
+      public ASTCharLiteralBuilder removeAll_PostComments(Collection<?>element);
+      public ASTCharLiteralBuilder retainAll_PostComments(Collection<?>element);
+      public ASTCharLiteralBuilder removeIf_PostComment(Predicate<? super Comment>filter);
+      public ASTCharLiteralBuilder forEach_PostComments(Consumer<? super Comment>action);
+      public ASTCharLiteralBuilder replaceAll_PostComments(UnaryOperator<Comment>operator);
+      public ASTCharLiteralBuilder sort_PostComments(Comparator<? super Comment>comparator);
+      public ASTCharLiteralBuilder set_PostCommentList(List<Comment>postComments);
+      public ASTCharLiteralBuilder set_PostComment(int index,Comment postcomment);
+      public ASTCharLiteral uncheckedBuild();
+
+    } 
+    public class ASTStringLiteralBuilder extends de.monticore.ast.ASTNodeBuilder<ASTStringLiteralBuilder> { 
+      protected ASTStringLiteralBuilder realBuilder;
+      protected String source;
+      public ASTStringLiteralBuilder();
+      public ASTStringLiteral build();
+      public boolean isValid();
+      public String getSource();
+      public ASTStringLiteralBuilder setSource(String source);
+      public ASTStringLiteralBuilder set_SourcePositionEnd(SourcePosition end);
+      public ASTStringLiteralBuilder set_SourcePositionEndAbsent();
+      public ASTStringLiteralBuilder set_SourcePositionStart(SourcePosition start);
+      public ASTStringLiteralBuilder set_SourcePositionStartAbsent();
+      public ASTStringLiteralBuilder clear_PreComments();
+      public ASTStringLiteralBuilder add_PreComment(Comment precomment);
+      public ASTStringLiteralBuilder add_PreComment(int index,Comment precomment);
+      public ASTStringLiteralBuilder addAll_PreComments(Collection<Comment>precomments);
+      public ASTStringLiteralBuilder addAll_PreComments(int index,Collection<Comment>precomments);
+      public ASTStringLiteralBuilder remove_PreComment(Object element);
+      public ASTStringLiteralBuilder remove_PreComment(int index);
+      public ASTStringLiteralBuilder removeAll_PreComments(Collection<?>element);
+      public ASTStringLiteralBuilder retainAll_PreComments(Collection<?>element);
+      public ASTStringLiteralBuilder removeIf_PreComment(Predicate<? super Comment>filter);
+      public ASTStringLiteralBuilder forEach_PreComments(Consumer<? super Comment>action);
+      public ASTStringLiteralBuilder replaceAll_PreComments(UnaryOperator<Comment>operator);
+      public ASTStringLiteralBuilder sort_PreComments(Comparator<? super Comment>comparator);
+      public ASTStringLiteralBuilder set_PreCommentList(List<Comment>preComments);
+      public ASTStringLiteralBuilder set_PreComment(int index,Comment precomment);
+      public ASTStringLiteralBuilder clear_PostComments();
+      public ASTStringLiteralBuilder add_PostComment(Comment postcomment);
+      public ASTStringLiteralBuilder add_PostComment(int index,Comment postcomment);
+      public ASTStringLiteralBuilder addAll_PostComments(Collection<Comment>postcomments);
+      public ASTStringLiteralBuilder addAll_PostComments(int index,Collection<Comment>postcomments);
+      public ASTStringLiteralBuilder remove_PostComment(Object element);
+      public ASTStringLiteralBuilder remove_PostComment(int index);
+      public ASTStringLiteralBuilder removeAll_PostComments(Collection<?>element);
+      public ASTStringLiteralBuilder retainAll_PostComments(Collection<?>element);
+      public ASTStringLiteralBuilder removeIf_PostComment(Predicate<? super Comment>filter);
+      public ASTStringLiteralBuilder forEach_PostComments(Consumer<? super Comment>action);
+      public ASTStringLiteralBuilder replaceAll_PostComments(UnaryOperator<Comment>operator);
+      public ASTStringLiteralBuilder sort_PostComments(Comparator<? super Comment>comparator);
+      public ASTStringLiteralBuilder set_PostCommentList(List<Comment>postComments);
+      public ASTStringLiteralBuilder set_PostComment(int index,Comment postcomment);
+      public ASTStringLiteral uncheckedBuild();
+
+    } 
+    public class ASTNatLiteralBuilder extends de.monticore.ast.ASTNodeBuilder<ASTNatLiteralBuilder> { 
+      protected ASTNatLiteralBuilder realBuilder;
+      <<derived_attribute_name="">>protected String digits;
+      public ASTNatLiteralBuilder();
+      public ASTNatLiteral build();
+      public boolean isValid();
+      public String getDigits();
+      public ASTNatLiteralBuilder setDigits(String digits);
+      public ASTNatLiteralBuilder set_SourcePositionEnd(SourcePosition end);
+      public ASTNatLiteralBuilder set_SourcePositionEndAbsent();
+      public ASTNatLiteralBuilder set_SourcePositionStart(SourcePosition start);
+      public ASTNatLiteralBuilder set_SourcePositionStartAbsent();
+      public ASTNatLiteralBuilder clear_PreComments();
+      public ASTNatLiteralBuilder add_PreComment(Comment precomment);
+      public ASTNatLiteralBuilder add_PreComment(int index,Comment precomment);
+      public ASTNatLiteralBuilder addAll_PreComments(Collection<Comment>precomments);
+      public ASTNatLiteralBuilder addAll_PreComments(int index,Collection<Comment>precomments);
+      public ASTNatLiteralBuilder remove_PreComment(Object element);
+      public ASTNatLiteralBuilder remove_PreComment(int index);
+      public ASTNatLiteralBuilder removeAll_PreComments(Collection<?>element);
+      public ASTNatLiteralBuilder retainAll_PreComments(Collection<?>element);
+      public ASTNatLiteralBuilder removeIf_PreComment(Predicate<? super Comment>filter);
+      public ASTNatLiteralBuilder forEach_PreComments(Consumer<? super Comment>action);
+      public ASTNatLiteralBuilder replaceAll_PreComments(UnaryOperator<Comment>operator);
+      public ASTNatLiteralBuilder sort_PreComments(Comparator<? super Comment>comparator);
+      public ASTNatLiteralBuilder set_PreCommentList(List<Comment>preComments);
+      public ASTNatLiteralBuilder set_PreComment(int index,Comment precomment);
+      public ASTNatLiteralBuilder clear_PostComments();
+      public ASTNatLiteralBuilder add_PostComment(Comment postcomment);
+      public ASTNatLiteralBuilder add_PostComment(int index,Comment postcomment);
+      public ASTNatLiteralBuilder addAll_PostComments(Collection<Comment>postcomments);
+      public ASTNatLiteralBuilder addAll_PostComments(int index,Collection<Comment>postcomments);
+      public ASTNatLiteralBuilder remove_PostComment(Object element);
+      public ASTNatLiteralBuilder remove_PostComment(int index);
+      public ASTNatLiteralBuilder removeAll_PostComments(Collection<?>element);
+      public ASTNatLiteralBuilder retainAll_PostComments(Collection<?>element);
+      public ASTNatLiteralBuilder removeIf_PostComment(Predicate<? super Comment>filter);
+      public ASTNatLiteralBuilder forEach_PostComments(Consumer<? super Comment>action);
+      public ASTNatLiteralBuilder replaceAll_PostComments(UnaryOperator<Comment>operator);
+      public ASTNatLiteralBuilder sort_PostComments(Comparator<? super Comment>comparator);
+      public ASTNatLiteralBuilder set_PostCommentList(List<Comment>postComments);
+      public ASTNatLiteralBuilder set_PostComment(int index,Comment postcomment);
+      public ASTNatLiteral uncheckedBuild();
+
+    } 
+    public class ASTSignedNatLiteralBuilder extends de.monticore.ast.ASTNodeBuilder<ASTSignedNatLiteralBuilder> { 
+      protected ASTSignedNatLiteralBuilder realBuilder;
+      <<derived_attribute_name="">>protected Optional<String>digits;
+      protected boolean negative;
+      public ASTSignedNatLiteralBuilder();
+      public ASTSignedNatLiteral build();
+      public boolean isValid();
+      public String getDigits();
+      public boolean isPresentDigits();
+      public boolean isNegative();
+      public ASTSignedNatLiteralBuilder setDigits(String digits);
+      public ASTSignedNatLiteralBuilder setDigitsAbsent();
+      public ASTSignedNatLiteralBuilder setNegative(boolean negative);
+      public ASTSignedNatLiteralBuilder set_SourcePositionEnd(SourcePosition end);
+      public ASTSignedNatLiteralBuilder set_SourcePositionEndAbsent();
+      public ASTSignedNatLiteralBuilder set_SourcePositionStart(SourcePosition start);
+      public ASTSignedNatLiteralBuilder set_SourcePositionStartAbsent();
+      public ASTSignedNatLiteralBuilder clear_PreComments();
+      public ASTSignedNatLiteralBuilder add_PreComment(Comment precomment);
+      public ASTSignedNatLiteralBuilder add_PreComment(int index,Comment precomment);
+      public ASTSignedNatLiteralBuilder addAll_PreComments(Collection<Comment>precomments);
+      public ASTSignedNatLiteralBuilder addAll_PreComments(int index,Collection<Comment>precomments);
+      public ASTSignedNatLiteralBuilder remove_PreComment(Object element);
+      public ASTSignedNatLiteralBuilder remove_PreComment(int index);
+      public ASTSignedNatLiteralBuilder removeAll_PreComments(Collection<?>element);
+      public ASTSignedNatLiteralBuilder retainAll_PreComments(Collection<?>element);
+      public ASTSignedNatLiteralBuilder removeIf_PreComment(Predicate<? super Comment>filter);
+      public ASTSignedNatLiteralBuilder forEach_PreComments(Consumer<? super Comment>action);
+      public ASTSignedNatLiteralBuilder replaceAll_PreComments(UnaryOperator<Comment>operator);
+      public ASTSignedNatLiteralBuilder sort_PreComments(Comparator<? super Comment>comparator);
+      public ASTSignedNatLiteralBuilder set_PreCommentList(List<Comment>preComments);
+      public ASTSignedNatLiteralBuilder set_PreComment(int index,Comment precomment);
+      public ASTSignedNatLiteralBuilder clear_PostComments();
+      public ASTSignedNatLiteralBuilder add_PostComment(Comment postcomment);
+      public ASTSignedNatLiteralBuilder add_PostComment(int index,Comment postcomment);
+      public ASTSignedNatLiteralBuilder addAll_PostComments(Collection<Comment>postcomments);
+      public ASTSignedNatLiteralBuilder addAll_PostComments(int index,Collection<Comment>postcomments);
+      public ASTSignedNatLiteralBuilder remove_PostComment(Object element);
+      public ASTSignedNatLiteralBuilder remove_PostComment(int index);
+      public ASTSignedNatLiteralBuilder removeAll_PostComments(Collection<?>element);
+      public ASTSignedNatLiteralBuilder retainAll_PostComments(Collection<?>element);
+      public ASTSignedNatLiteralBuilder removeIf_PostComment(Predicate<? super Comment>filter);
+      public ASTSignedNatLiteralBuilder forEach_PostComments(Consumer<? super Comment>action);
+      public ASTSignedNatLiteralBuilder replaceAll_PostComments(UnaryOperator<Comment>operator);
+      public ASTSignedNatLiteralBuilder sort_PostComments(Comparator<? super Comment>comparator);
+      public ASTSignedNatLiteralBuilder set_PostCommentList(List<Comment>postComments);
+      public ASTSignedNatLiteralBuilder set_PostComment(int index,Comment postcomment);
+      public ASTSignedNatLiteral uncheckedBuild();
+
+    } 
+    public class ASTBasicLongLiteralBuilder extends de.monticore.ast.ASTNodeBuilder<ASTBasicLongLiteralBuilder> { 
+      protected ASTBasicLongLiteralBuilder realBuilder;
+      <<derived_attribute_name="">>protected String digits;
+      public ASTBasicLongLiteralBuilder();
+      public ASTBasicLongLiteral build();
+      public boolean isValid();
+      public String getDigits();
+      public ASTBasicLongLiteralBuilder setDigits(String digits);
+      public ASTBasicLongLiteralBuilder set_SourcePositionEnd(SourcePosition end);
+      public ASTBasicLongLiteralBuilder set_SourcePositionEndAbsent();
+      public ASTBasicLongLiteralBuilder set_SourcePositionStart(SourcePosition start);
+      public ASTBasicLongLiteralBuilder set_SourcePositionStartAbsent();
+      public ASTBasicLongLiteralBuilder clear_PreComments();
+      public ASTBasicLongLiteralBuilder add_PreComment(Comment precomment);
+      public ASTBasicLongLiteralBuilder add_PreComment(int index,Comment precomment);
+      public ASTBasicLongLiteralBuilder addAll_PreComments(Collection<Comment>precomments);
+      public ASTBasicLongLiteralBuilder addAll_PreComments(int index,Collection<Comment>precomments);
+      public ASTBasicLongLiteralBuilder remove_PreComment(Object element);
+      public ASTBasicLongLiteralBuilder remove_PreComment(int index);
+      public ASTBasicLongLiteralBuilder removeAll_PreComments(Collection<?>element);
+      public ASTBasicLongLiteralBuilder retainAll_PreComments(Collection<?>element);
+      public ASTBasicLongLiteralBuilder removeIf_PreComment(Predicate<? super Comment>filter);
+      public ASTBasicLongLiteralBuilder forEach_PreComments(Consumer<? super Comment>action);
+      public ASTBasicLongLiteralBuilder replaceAll_PreComments(UnaryOperator<Comment>operator);
+      public ASTBasicLongLiteralBuilder sort_PreComments(Comparator<? super Comment>comparator);
+      public ASTBasicLongLiteralBuilder set_PreCommentList(List<Comment>preComments);
+      public ASTBasicLongLiteralBuilder set_PreComment(int index,Comment precomment);
+      public ASTBasicLongLiteralBuilder clear_PostComments();
+      public ASTBasicLongLiteralBuilder add_PostComment(Comment postcomment);
+      public ASTBasicLongLiteralBuilder add_PostComment(int index,Comment postcomment);
+      public ASTBasicLongLiteralBuilder addAll_PostComments(Collection<Comment>postcomments);
+      public ASTBasicLongLiteralBuilder addAll_PostComments(int index,Collection<Comment>postcomments);
+      public ASTBasicLongLiteralBuilder remove_PostComment(Object element);
+      public ASTBasicLongLiteralBuilder remove_PostComment(int index);
+      public ASTBasicLongLiteralBuilder removeAll_PostComments(Collection<?>element);
+      public ASTBasicLongLiteralBuilder retainAll_PostComments(Collection<?>element);
+      public ASTBasicLongLiteralBuilder removeIf_PostComment(Predicate<? super Comment>filter);
+      public ASTBasicLongLiteralBuilder forEach_PostComments(Consumer<? super Comment>action);
+      public ASTBasicLongLiteralBuilder replaceAll_PostComments(UnaryOperator<Comment>operator);
+      public ASTBasicLongLiteralBuilder sort_PostComments(Comparator<? super Comment>comparator);
+      public ASTBasicLongLiteralBuilder set_PostCommentList(List<Comment>postComments);
+      public ASTBasicLongLiteralBuilder set_PostComment(int index,Comment postcomment);
+      public ASTBasicLongLiteral uncheckedBuild();
+
+    } 
+    public class ASTSignedBasicLongLiteralBuilder extends de.monticore.ast.ASTNodeBuilder<ASTSignedBasicLongLiteralBuilder> { 
+      protected ASTSignedBasicLongLiteralBuilder realBuilder;
+      <<derived_attribute_name="">>protected Optional<String>digits;
+      protected boolean negative;
+      public ASTSignedBasicLongLiteralBuilder();
+      public ASTSignedBasicLongLiteral build();
+      public boolean isValid();
+      public String getDigits();
+      public boolean isPresentDigits();
+      public boolean isNegative();
+      public ASTSignedBasicLongLiteralBuilder setDigits(String digits);
+      public ASTSignedBasicLongLiteralBuilder setDigitsAbsent();
+      public ASTSignedBasicLongLiteralBuilder setNegative(boolean negative);
+      public ASTSignedBasicLongLiteralBuilder set_SourcePositionEnd(SourcePosition end);
+      public ASTSignedBasicLongLiteralBuilder set_SourcePositionEndAbsent();
+      public ASTSignedBasicLongLiteralBuilder set_SourcePositionStart(SourcePosition start);
+      public ASTSignedBasicLongLiteralBuilder set_SourcePositionStartAbsent();
+      public ASTSignedBasicLongLiteralBuilder clear_PreComments();
+      public ASTSignedBasicLongLiteralBuilder add_PreComment(Comment precomment);
+      public ASTSignedBasicLongLiteralBuilder add_PreComment(int index,Comment precomment);
+      public ASTSignedBasicLongLiteralBuilder addAll_PreComments(Collection<Comment>precomments);
+      public ASTSignedBasicLongLiteralBuilder addAll_PreComments(int index,Collection<Comment>precomments);
+      public ASTSignedBasicLongLiteralBuilder remove_PreComment(Object element);
+      public ASTSignedBasicLongLiteralBuilder remove_PreComment(int index);
+      public ASTSignedBasicLongLiteralBuilder removeAll_PreComments(Collection<?>element);
+      public ASTSignedBasicLongLiteralBuilder retainAll_PreComments(Collection<?>element);
+      public ASTSignedBasicLongLiteralBuilder removeIf_PreComment(Predicate<? super Comment>filter);
+      public ASTSignedBasicLongLiteralBuilder forEach_PreComments(Consumer<? super Comment>action);
+      public ASTSignedBasicLongLiteralBuilder replaceAll_PreComments(UnaryOperator<Comment>operator);
+      public ASTSignedBasicLongLiteralBuilder sort_PreComments(Comparator<? super Comment>comparator);
+      public ASTSignedBasicLongLiteralBuilder set_PreCommentList(List<Comment>preComments);
+      public ASTSignedBasicLongLiteralBuilder set_PreComment(int index,Comment precomment);
+      public ASTSignedBasicLongLiteralBuilder clear_PostComments();
+      public ASTSignedBasicLongLiteralBuilder add_PostComment(Comment postcomment);
+      public ASTSignedBasicLongLiteralBuilder add_PostComment(int index,Comment postcomment);
+      public ASTSignedBasicLongLiteralBuilder addAll_PostComments(Collection<Comment>postcomments);
+      public ASTSignedBasicLongLiteralBuilder addAll_PostComments(int index,Collection<Comment>postcomments);
+      public ASTSignedBasicLongLiteralBuilder remove_PostComment(Object element);
+      public ASTSignedBasicLongLiteralBuilder remove_PostComment(int index);
+      public ASTSignedBasicLongLiteralBuilder removeAll_PostComments(Collection<?>element);
+      public ASTSignedBasicLongLiteralBuilder retainAll_PostComments(Collection<?>element);
+      public ASTSignedBasicLongLiteralBuilder removeIf_PostComment(Predicate<? super Comment>filter);
+      public ASTSignedBasicLongLiteralBuilder forEach_PostComments(Consumer<? super Comment>action);
+      public ASTSignedBasicLongLiteralBuilder replaceAll_PostComments(UnaryOperator<Comment>operator);
+      public ASTSignedBasicLongLiteralBuilder sort_PostComments(Comparator<? super Comment>comparator);
+      public ASTSignedBasicLongLiteralBuilder set_PostCommentList(List<Comment>postComments);
+      public ASTSignedBasicLongLiteralBuilder set_PostComment(int index,Comment postcomment);
+      public ASTSignedBasicLongLiteral uncheckedBuild();
+
+    } 
+    public class ASTBasicFloatLiteralBuilder extends de.monticore.ast.ASTNodeBuilder<ASTBasicFloatLiteralBuilder> { 
+      protected ASTBasicFloatLiteralBuilder realBuilder;
+      protected String pre;
+      protected String post;
+      public ASTBasicFloatLiteralBuilder();
+      public ASTBasicFloatLiteral build();
+      public boolean isValid();
+      public String getPre();
+      public String getPost();
+      public ASTBasicFloatLiteralBuilder setPre(String pre);
+      public ASTBasicFloatLiteralBuilder setPost(String post);
+      public ASTBasicFloatLiteralBuilder set_SourcePositionEnd(SourcePosition end);
+      public ASTBasicFloatLiteralBuilder set_SourcePositionEndAbsent();
+      public ASTBasicFloatLiteralBuilder set_SourcePositionStart(SourcePosition start);
+      public ASTBasicFloatLiteralBuilder set_SourcePositionStartAbsent();
+      public ASTBasicFloatLiteralBuilder clear_PreComments();
+      public ASTBasicFloatLiteralBuilder add_PreComment(Comment precomment);
+      public ASTBasicFloatLiteralBuilder add_PreComment(int index,Comment precomment);
+      public ASTBasicFloatLiteralBuilder addAll_PreComments(Collection<Comment>precomments);
+      public ASTBasicFloatLiteralBuilder addAll_PreComments(int index,Collection<Comment>precomments);
+      public ASTBasicFloatLiteralBuilder remove_PreComment(Object element);
+      public ASTBasicFloatLiteralBuilder remove_PreComment(int index);
+      public ASTBasicFloatLiteralBuilder removeAll_PreComments(Collection<?>element);
+      public ASTBasicFloatLiteralBuilder retainAll_PreComments(Collection<?>element);
+      public ASTBasicFloatLiteralBuilder removeIf_PreComment(Predicate<? super Comment>filter);
+      public ASTBasicFloatLiteralBuilder forEach_PreComments(Consumer<? super Comment>action);
+      public ASTBasicFloatLiteralBuilder replaceAll_PreComments(UnaryOperator<Comment>operator);
+      public ASTBasicFloatLiteralBuilder sort_PreComments(Comparator<? super Comment>comparator);
+      public ASTBasicFloatLiteralBuilder set_PreCommentList(List<Comment>preComments);
+      public ASTBasicFloatLiteralBuilder set_PreComment(int index,Comment precomment);
+      public ASTBasicFloatLiteralBuilder clear_PostComments();
+      public ASTBasicFloatLiteralBuilder add_PostComment(Comment postcomment);
+      public ASTBasicFloatLiteralBuilder add_PostComment(int index,Comment postcomment);
+      public ASTBasicFloatLiteralBuilder addAll_PostComments(Collection<Comment>postcomments);
+      public ASTBasicFloatLiteralBuilder addAll_PostComments(int index,Collection<Comment>postcomments);
+      public ASTBasicFloatLiteralBuilder remove_PostComment(Object element);
+      public ASTBasicFloatLiteralBuilder remove_PostComment(int index);
+      public ASTBasicFloatLiteralBuilder removeAll_PostComments(Collection<?>element);
+      public ASTBasicFloatLiteralBuilder retainAll_PostComments(Collection<?>element);
+      public ASTBasicFloatLiteralBuilder removeIf_PostComment(Predicate<? super Comment>filter);
+      public ASTBasicFloatLiteralBuilder forEach_PostComments(Consumer<? super Comment>action);
+      public ASTBasicFloatLiteralBuilder replaceAll_PostComments(UnaryOperator<Comment>operator);
+      public ASTBasicFloatLiteralBuilder sort_PostComments(Comparator<? super Comment>comparator);
+      public ASTBasicFloatLiteralBuilder set_PostCommentList(List<Comment>postComments);
+      public ASTBasicFloatLiteralBuilder set_PostComment(int index,Comment postcomment);
+      public ASTBasicFloatLiteral uncheckedBuild();
+
+    } 
+    public class ASTSignedBasicFloatLiteralBuilder extends de.monticore.ast.ASTNodeBuilder<ASTSignedBasicFloatLiteralBuilder> { 
+      protected ASTSignedBasicFloatLiteralBuilder realBuilder;
+      protected Optional<String>pre;
+      protected Optional<String>post;
+      protected boolean negative;
+      public ASTSignedBasicFloatLiteralBuilder();
+      public ASTSignedBasicFloatLiteral build();
+      public boolean isValid();
+      public String getPre();
+      public boolean isPresentPre();
+      public String getPost();
+      public boolean isPresentPost();
+      public boolean isNegative();
+      public ASTSignedBasicFloatLiteralBuilder setPre(String pre);
+      public ASTSignedBasicFloatLiteralBuilder setPreAbsent();
+      public ASTSignedBasicFloatLiteralBuilder setPost(String post);
+      public ASTSignedBasicFloatLiteralBuilder setPostAbsent();
+      public ASTSignedBasicFloatLiteralBuilder setNegative(boolean negative);
+      public ASTSignedBasicFloatLiteralBuilder set_SourcePositionEnd(SourcePosition end);
+      public ASTSignedBasicFloatLiteralBuilder set_SourcePositionEndAbsent();
+      public ASTSignedBasicFloatLiteralBuilder set_SourcePositionStart(SourcePosition start);
+      public ASTSignedBasicFloatLiteralBuilder set_SourcePositionStartAbsent();
+      public ASTSignedBasicFloatLiteralBuilder clear_PreComments();
+      public ASTSignedBasicFloatLiteralBuilder add_PreComment(Comment precomment);
+      public ASTSignedBasicFloatLiteralBuilder add_PreComment(int index,Comment precomment);
+      public ASTSignedBasicFloatLiteralBuilder addAll_PreComments(Collection<Comment>precomments);
+      public ASTSignedBasicFloatLiteralBuilder addAll_PreComments(int index,Collection<Comment>precomments);
+      public ASTSignedBasicFloatLiteralBuilder remove_PreComment(Object element);
+      public ASTSignedBasicFloatLiteralBuilder remove_PreComment(int index);
+      public ASTSignedBasicFloatLiteralBuilder removeAll_PreComments(Collection<?>element);
+      public ASTSignedBasicFloatLiteralBuilder retainAll_PreComments(Collection<?>element);
+      public ASTSignedBasicFloatLiteralBuilder removeIf_PreComment(Predicate<? super Comment>filter);
+      public ASTSignedBasicFloatLiteralBuilder forEach_PreComments(Consumer<? super Comment>action);
+      public ASTSignedBasicFloatLiteralBuilder replaceAll_PreComments(UnaryOperator<Comment>operator);
+      public ASTSignedBasicFloatLiteralBuilder sort_PreComments(Comparator<? super Comment>comparator);
+      public ASTSignedBasicFloatLiteralBuilder set_PreCommentList(List<Comment>preComments);
+      public ASTSignedBasicFloatLiteralBuilder set_PreComment(int index,Comment precomment);
+      public ASTSignedBasicFloatLiteralBuilder clear_PostComments();
+      public ASTSignedBasicFloatLiteralBuilder add_PostComment(Comment postcomment);
+      public ASTSignedBasicFloatLiteralBuilder add_PostComment(int index,Comment postcomment);
+      public ASTSignedBasicFloatLiteralBuilder addAll_PostComments(Collection<Comment>postcomments);
+      public ASTSignedBasicFloatLiteralBuilder addAll_PostComments(int index,Collection<Comment>postcomments);
+      public ASTSignedBasicFloatLiteralBuilder remove_PostComment(Object element);
+      public ASTSignedBasicFloatLiteralBuilder remove_PostComment(int index);
+      public ASTSignedBasicFloatLiteralBuilder removeAll_PostComments(Collection<?>element);
+      public ASTSignedBasicFloatLiteralBuilder retainAll_PostComments(Collection<?>element);
+      public ASTSignedBasicFloatLiteralBuilder removeIf_PostComment(Predicate<? super Comment>filter);
+      public ASTSignedBasicFloatLiteralBuilder forEach_PostComments(Consumer<? super Comment>action);
+      public ASTSignedBasicFloatLiteralBuilder replaceAll_PostComments(UnaryOperator<Comment>operator);
+      public ASTSignedBasicFloatLiteralBuilder sort_PostComments(Comparator<? super Comment>comparator);
+      public ASTSignedBasicFloatLiteralBuilder set_PostCommentList(List<Comment>postComments);
+      public ASTSignedBasicFloatLiteralBuilder set_PostComment(int index,Comment postcomment);
+      public ASTSignedBasicFloatLiteral uncheckedBuild();
+
+    } 
+    public class ASTBasicDoubleLiteralBuilder extends de.monticore.ast.ASTNodeBuilder<ASTBasicDoubleLiteralBuilder> { 
+      protected ASTBasicDoubleLiteralBuilder realBuilder;
+      protected String pre;
+      protected String post;
+      public ASTBasicDoubleLiteralBuilder();
+      public ASTBasicDoubleLiteral build();
+      public boolean isValid();
+      public String getPre();
+      public String getPost();
+      public ASTBasicDoubleLiteralBuilder setPre(String pre);
+      public ASTBasicDoubleLiteralBuilder setPost(String post);
+      public ASTBasicDoubleLiteralBuilder set_SourcePositionEnd(SourcePosition end);
+      public ASTBasicDoubleLiteralBuilder set_SourcePositionEndAbsent();
+      public ASTBasicDoubleLiteralBuilder set_SourcePositionStart(SourcePosition start);
+      public ASTBasicDoubleLiteralBuilder set_SourcePositionStartAbsent();
+      public ASTBasicDoubleLiteralBuilder clear_PreComments();
+      public ASTBasicDoubleLiteralBuilder add_PreComment(Comment precomment);
+      public ASTBasicDoubleLiteralBuilder add_PreComment(int index,Comment precomment);
+      public ASTBasicDoubleLiteralBuilder addAll_PreComments(Collection<Comment>precomments);
+      public ASTBasicDoubleLiteralBuilder addAll_PreComments(int index,Collection<Comment>precomments);
+      public ASTBasicDoubleLiteralBuilder remove_PreComment(Object element);
+      public ASTBasicDoubleLiteralBuilder remove_PreComment(int index);
+      public ASTBasicDoubleLiteralBuilder removeAll_PreComments(Collection<?>element);
+      public ASTBasicDoubleLiteralBuilder retainAll_PreComments(Collection<?>element);
+      public ASTBasicDoubleLiteralBuilder removeIf_PreComment(Predicate<? super Comment>filter);
+      public ASTBasicDoubleLiteralBuilder forEach_PreComments(Consumer<? super Comment>action);
+      public ASTBasicDoubleLiteralBuilder replaceAll_PreComments(UnaryOperator<Comment>operator);
+      public ASTBasicDoubleLiteralBuilder sort_PreComments(Comparator<? super Comment>comparator);
+      public ASTBasicDoubleLiteralBuilder set_PreCommentList(List<Comment>preComments);
+      public ASTBasicDoubleLiteralBuilder set_PreComment(int index,Comment precomment);
+      public ASTBasicDoubleLiteralBuilder clear_PostComments();
+      public ASTBasicDoubleLiteralBuilder add_PostComment(Comment postcomment);
+      public ASTBasicDoubleLiteralBuilder add_PostComment(int index,Comment postcomment);
+      public ASTBasicDoubleLiteralBuilder addAll_PostComments(Collection<Comment>postcomments);
+      public ASTBasicDoubleLiteralBuilder addAll_PostComments(int index,Collection<Comment>postcomments);
+      public ASTBasicDoubleLiteralBuilder remove_PostComment(Object element);
+      public ASTBasicDoubleLiteralBuilder remove_PostComment(int index);
+      public ASTBasicDoubleLiteralBuilder removeAll_PostComments(Collection<?>element);
+      public ASTBasicDoubleLiteralBuilder retainAll_PostComments(Collection<?>element);
+      public ASTBasicDoubleLiteralBuilder removeIf_PostComment(Predicate<? super Comment>filter);
+      public ASTBasicDoubleLiteralBuilder forEach_PostComments(Consumer<? super Comment>action);
+      public ASTBasicDoubleLiteralBuilder replaceAll_PostComments(UnaryOperator<Comment>operator);
+      public ASTBasicDoubleLiteralBuilder sort_PostComments(Comparator<? super Comment>comparator);
+      public ASTBasicDoubleLiteralBuilder set_PostCommentList(List<Comment>postComments);
+      public ASTBasicDoubleLiteralBuilder set_PostComment(int index,Comment postcomment);
+      public ASTBasicDoubleLiteral uncheckedBuild();
+
+    } 
+    public class ASTSignedBasicDoubleLiteralBuilder extends de.monticore.ast.ASTNodeBuilder<ASTSignedBasicDoubleLiteralBuilder> { 
+      protected ASTSignedBasicDoubleLiteralBuilder realBuilder;
+      protected Optional<String>pre;
+      protected Optional<String>post;
+      protected boolean negative;
+      public ASTSignedBasicDoubleLiteralBuilder();
+      public ASTSignedBasicDoubleLiteral build();
+      public boolean isValid();
+      public String getPre();
+      public boolean isPresentPre();
+      public String getPost();
+      public boolean isPresentPost();
+      public boolean isNegative();
+      public ASTSignedBasicDoubleLiteralBuilder setPre(String pre);
+      public ASTSignedBasicDoubleLiteralBuilder setPreAbsent();
+      public ASTSignedBasicDoubleLiteralBuilder setPost(String post);
+      public ASTSignedBasicDoubleLiteralBuilder setPostAbsent();
+      public ASTSignedBasicDoubleLiteralBuilder setNegative(boolean negative);
+      public ASTSignedBasicDoubleLiteralBuilder set_SourcePositionEnd(SourcePosition end);
+      public ASTSignedBasicDoubleLiteralBuilder set_SourcePositionEndAbsent();
+      public ASTSignedBasicDoubleLiteralBuilder set_SourcePositionStart(SourcePosition start);
+      public ASTSignedBasicDoubleLiteralBuilder set_SourcePositionStartAbsent();
+      public ASTSignedBasicDoubleLiteralBuilder clear_PreComments();
+      public ASTSignedBasicDoubleLiteralBuilder add_PreComment(Comment precomment);
+      public ASTSignedBasicDoubleLiteralBuilder add_PreComment(int index,Comment precomment);
+      public ASTSignedBasicDoubleLiteralBuilder addAll_PreComments(Collection<Comment>precomments);
+      public ASTSignedBasicDoubleLiteralBuilder addAll_PreComments(int index,Collection<Comment>precomments);
+      public ASTSignedBasicDoubleLiteralBuilder remove_PreComment(Object element);
+      public ASTSignedBasicDoubleLiteralBuilder remove_PreComment(int index);
+      public ASTSignedBasicDoubleLiteralBuilder removeAll_PreComments(Collection<?>element);
+      public ASTSignedBasicDoubleLiteralBuilder retainAll_PreComments(Collection<?>element);
+      public ASTSignedBasicDoubleLiteralBuilder removeIf_PreComment(Predicate<? super Comment>filter);
+      public ASTSignedBasicDoubleLiteralBuilder forEach_PreComments(Consumer<? super Comment>action);
+      public ASTSignedBasicDoubleLiteralBuilder replaceAll_PreComments(UnaryOperator<Comment>operator);
+      public ASTSignedBasicDoubleLiteralBuilder sort_PreComments(Comparator<? super Comment>comparator);
+      public ASTSignedBasicDoubleLiteralBuilder set_PreCommentList(List<Comment>preComments);
+      public ASTSignedBasicDoubleLiteralBuilder set_PreComment(int index,Comment precomment);
+      public ASTSignedBasicDoubleLiteralBuilder clear_PostComments();
+      public ASTSignedBasicDoubleLiteralBuilder add_PostComment(Comment postcomment);
+      public ASTSignedBasicDoubleLiteralBuilder add_PostComment(int index,Comment postcomment);
+      public ASTSignedBasicDoubleLiteralBuilder addAll_PostComments(Collection<Comment>postcomments);
+      public ASTSignedBasicDoubleLiteralBuilder addAll_PostComments(int index,Collection<Comment>postcomments);
+      public ASTSignedBasicDoubleLiteralBuilder remove_PostComment(Object element);
+      public ASTSignedBasicDoubleLiteralBuilder remove_PostComment(int index);
+      public ASTSignedBasicDoubleLiteralBuilder removeAll_PostComments(Collection<?>element);
+      public ASTSignedBasicDoubleLiteralBuilder retainAll_PostComments(Collection<?>element);
+      public ASTSignedBasicDoubleLiteralBuilder removeIf_PostComment(Predicate<? super Comment>filter);
+      public ASTSignedBasicDoubleLiteralBuilder forEach_PostComments(Consumer<? super Comment>action);
+      public ASTSignedBasicDoubleLiteralBuilder replaceAll_PostComments(UnaryOperator<Comment>operator);
+      public ASTSignedBasicDoubleLiteralBuilder sort_PostComments(Comparator<? super Comment>comparator);
+      public ASTSignedBasicDoubleLiteralBuilder set_PostCommentList(List<Comment>postComments);
+      public ASTSignedBasicDoubleLiteralBuilder set_PostComment(int index,Comment postcomment);
+      public ASTSignedBasicDoubleLiteral uncheckedBuild();
+
+    } 
+    public class ASTConstantsMCCommonLiterals { 
+      public final static String LANGUAGE;
+      public final static int DEFAULT;
+      public final static int FALSE;
+      public final static int MINUS;
+      public final static int TRUE;
+      public static String []superGrammars;
+      public ASTConstantsMCCommonLiterals();
+      public static Collection<String>getAllLanguages();
+
+    } 
+    <<startProd>>public interface ASTSignedLiteral extends de.monticore.ast.ASTNode,de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode { 
+      public abstract boolean deepEquals(Object o);
+      public abstract boolean deepEquals(Object o,boolean forceSameOrder);
+      public abstract boolean deepEqualsWithComments(Object o);
+      public abstract boolean deepEqualsWithComments(Object o,boolean forceSameOrder);
+      public abstract boolean equalAttributes(Object o);
+      public abstract boolean equalsWithComments(Object o);
+      public abstract ASTSignedLiteral deepClone();
+      public abstract de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope getEnclosingScope();
+      public abstract void setEnclosingScope(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope);
+      public abstract void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope);
+      public abstract void setEnclosingScope(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope enclosingScope);
+
+    } 
+    public interface ASTNumericLiteral extends de.monticore.literals.mcliteralsbasis._ast.ASTLiteral,de.monticore.ast.ASTNode,de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode { 
+      public abstract boolean deepEquals(Object o);
+      public abstract boolean deepEquals(Object o,boolean forceSameOrder);
+      public abstract boolean deepEqualsWithComments(Object o);
+      public abstract boolean deepEqualsWithComments(Object o,boolean forceSameOrder);
+      public abstract boolean equalAttributes(Object o);
+      public abstract boolean equalsWithComments(Object o);
+      public abstract ASTNumericLiteral deepClone();
+      public abstract de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope getEnclosingScope();
+      public abstract void setEnclosingScope(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope);
+      public abstract void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope);
+      public abstract void setEnclosingScope(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope enclosingScope);
+
+    } 
+    public interface ASTSignedNumericLiteral extends de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral,de.monticore.ast.ASTNode,de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode { 
+      public abstract boolean deepEquals(Object o);
+      public abstract boolean deepEquals(Object o,boolean forceSameOrder);
+      public abstract boolean deepEqualsWithComments(Object o);
+      public abstract boolean deepEqualsWithComments(Object o,boolean forceSameOrder);
+      public abstract boolean equalAttributes(Object o);
+      public abstract boolean equalsWithComments(Object o);
+      public abstract ASTSignedNumericLiteral deepClone();
+      public abstract de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope getEnclosingScope();
+      public abstract void setEnclosingScope(de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope enclosingScope);
+      public abstract void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope);
+      public abstract void setEnclosingScope(de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope enclosingScope);
+
+    } 
+    public interface ASTMCCommonLiteralsNode extends ASTNode { 
+      public abstract void accept(de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser visitor);
+
+    } 
+    <<deprecated>>public enum MCCommonLiteralsLiterals { 
+      FALSE(de.monticore.literals.mccommonliterals._ast.ASTConstantsMCCommonLiterals.FALSE),MINUS(de.monticore.literals.mccommonliterals._ast.ASTConstantsMCCommonLiterals.MINUS),TRUE(de.monticore.literals.mccommonliterals._ast.ASTConstantsMCCommonLiterals.TRUE);
+      private MCCommonLiteralsLiterals(int intValue);
+      protected int intValue;
+      public int getIntValue();
+
+    } 
+
+  } 
+
+} 

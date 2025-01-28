@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { CreatePersonComponent, config } from '@src/person/CreatePersonComponent';
+import { CreatePersonComponent, config } from 'person/CreatePersonComponent';
 import { Component } from '@angular/core';
 import { CommandManager, Event } from '@umlp/common';
-import { IsOld } from '@src/domain/commands/IsOld';
-import { DomainManager } from '@src/domain/DomainManager';
-import { Person } from '@src/domain/Person';
+import { IsOld } from 'domain/commands/IsOld';
+import { DomainManager } from 'domain/DomainManager';
+import { Person } from 'domain/Person';
 
 @Component({
   standalone: true,

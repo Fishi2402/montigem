@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 import { Component } from '@angular/core';
-import { DevProcessCockpitManagerClientImpl } from '@src/devprocesscockpit/DevProcessCockpitManagerClientImpl';
+import { DevProcessCockpitManagerClientImpl } from 'devprocesscockpit/DevProcessCockpitManagerClientImpl';
 import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from '@umlp/common';
 
 @Component({

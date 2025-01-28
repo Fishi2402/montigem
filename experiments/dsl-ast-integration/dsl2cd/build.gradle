@@ -1,0 +1,51 @@
+plugins{
+  id 'java-library'
+}
+
+dependencies {
+  implementation "de.monticore.lang:cd4analysis:$mc_version"
+}
+
+// TODO: Proper outputs: Turn this Java-Task into a proper task
+// TODO: CLI Options
+// TODO: The reports are currently hand-copied - publ
+
+abstract class DSL2CDTask extends JavaExec {
+  @InputFile  abstract RegularFileProperty getDSLCD();
+  @Input   abstract Property<String> getDomainName();
+  @InputDirectory  abstract DirectoryProperty getAdditionalCDs();
+
+  @OutputFile abstract RegularFileProperty getGemCD()
+  @OutputDirectory abstract DirectoryProperty getJavaOut()
+
+  @TaskAction
+  @Override
+  public void exec() {
+    this.args(
+            getDomainName().get(),
+            getDSLCD().get().getAsFile().getAbsolutePath(),
+            getGemCD().get().getAsFile().getAbsolutePath(),
+            getJavaOut().get().getAsFile().getAbsolutePath(),
+            getAdditionalCDs().get().getAsFile().getAbsolutePath(),
+    )
+    super.exec();
+  }
+}
+
+tasks.register("dsl2cd", DSL2CDTask) {
+  classpath = sourceSets.main.runtimeClasspath
+  mainClass = 'de.monticore.dsl2cd.DSL2CD'
+//  getDSLCD().set(project(":experiments:dsl-ast-integration:dsl").tasks.generateMCGrammars.getReportDir().file("src/main/grammars/mydsl/MyDSL__mc4/mydsl.mydsl/MyDSL.cd").get())
+  getDSLCD().set(project.provider {
+    return project(":experiments:dsl-ast-integration:dsl").tasks.generateMCGrammars.getReportDir().file("src/main/grammars/mydsl/MyDSL__mc4/mydsl.mydsl/MyDSL.cd").get()
+  })
+  domainName = "domain"
+  additionalCDs = project.layout.projectDirectory.dir("src/main/resources/de/monticore")
+
+  gemCD = project.layout.buildDirectory.file("dsl2cd/MyDSL.umlp")
+  javaOut = project.layout.buildDirectory.dir("dsl2cd/javaout")
+
+//  outputs.file(project.layout.buildDirectory.file("mc2dsl/MyDSL.umlp"))
+  dependsOn(project(":experiments:dsl-ast-integration:dsl").tasks.named("generateMCGrammars"))
+
+}

@@ -1,0 +1,76 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram mcreturnstatements_AST {
+  @MCReturnStatements!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @MCReturnStatements!Symbol(2,0);
+    enclosingScope = @MCReturnStatements!ArtifactScope;
+    spanningScope = @MCReturnStatements!Scope;
+    r__package = [de, monticore, statements];
+    importStatement = [// *size: 2
+      @!MCImportStatement(7,0):ASTMCImportStatement {
+        enclosingScope = @MCReturnStatements!Scope;
+        mCQualifiedName = @de.monticore.statements!MCQualifiedName(7,7):ASTMCQualifiedName {
+          enclosingScope = @MCReturnStatements!Scope;
+          parts = [de, monticore, statements];
+        };
+        star = true;
+      },
+      @!MCImportStatement(8,0):ASTMCImportStatement {
+        enclosingScope = @MCReturnStatements!Scope;
+        mCQualifiedName = @de.monticore.expressions!MCQualifiedName(8,7):ASTMCQualifiedName {
+          enclosingScope = @MCReturnStatements!Scope;
+          parts = [de, monticore, expressions];
+        };
+        star = true;
+      }];
+    name = MCReturnStatements;
+    supergrammar = [// *size: 2
+      @MCStatementsBasis!GrammarReference(30,18):ASTGrammarReference {
+        enclosingScope = @MCReturnStatements!Scope;
+        names = [MCStatementsBasis];
+      },
+      @ExpressionsBasis!GrammarReference(31,18):ASTGrammarReference {
+        enclosingScope = @MCReturnStatements!Scope;
+        names = [ExpressionsBasis];
+      }];
+    classProds = [// *size: 1
+      @ReturnStatement!ClassProd(33,0):ASTClassProd {
+        enclosingScope = @MCReturnStatements!Scope;
+        superInterfaceRule = [// *size: 1
+          @MCStatement!RuleReference(33,27):ASTRuleReference {
+            enclosingScope = @ReturnStatement!Scope;
+            name = MCStatement;
+          }];
+        alts = [// *size: 1
+          @!Alt(34,8):ASTAlt {
+            enclosingScope = @ReturnStatement!Scope;
+            component = [// *size: 3
+              @return!Terminal(34,8):ASTTerminal {
+                enclosingScope = @ReturnStatement!Scope;
+                iteration = 0;
+                name = return;
+              },
+              @Expression!NonTerminal(34,17):ASTNonTerminal {
+                enclosingScope = @ReturnStatement!Scope;
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 17;
+              },
+              @SEMI!Terminal(34,29):ASTTerminal {
+                enclosingScope = @ReturnStatement!Scope;
+                iteration = 0;
+                name = ;;
+              }];
+            rightAssoc = false;
+          }];
+        name = ReturnStatement;
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.fenix.charts;
 import java.util.List;
+import java.util.Optional;
 
 classdiagram GemPieChartTypes {
 
@@ -11,7 +12,7 @@ classdiagram GemPieChartTypes {
   public class GemPieChartEntry {
     Integer value;
     String label;
-    String backgroundColor;
+    Optional<String> backgroundColor;
   }
 
 }

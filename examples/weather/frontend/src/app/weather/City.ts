@@ -1,12 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
-import { CityTOP } from "@src/weather/CityTOP";
+import { CityTOP } from "weather/CityTOP";
 import { Gem, GemList } from "@umlp/common";
 import { Timeseries } from "./Timeseries";
-import { DailyForecast } from "@src/weather/DailyForecast";
-import { WeatherManager } from "@src/weather/WeatherManager";
-import { Forecast } from "@src/weather/Forecast";
-import { ForecastGemList } from "@src/weather/gemlists/ForecastGemList";
-import { App } from "@src/weather/App";
+import { DailyForecast } from "weather/DailyForecast";
+import { WeatherManager } from "weather/WeatherManager";
+import { Forecast } from "weather/Forecast";
+import { ForecastGemList } from "weather/gemlists/ForecastGemList";
+import { App } from "weather/App";
 
 // TODO: JSweet?
 export class City extends CityTOP {

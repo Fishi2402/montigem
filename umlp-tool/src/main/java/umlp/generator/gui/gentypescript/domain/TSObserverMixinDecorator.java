@@ -60,10 +60,9 @@ public class TSObserverMixinDecorator extends TSObserverDecorator {
         glex.addAfterTemplate("TSMixinExtend:end", i,
             new StringHookPoint(")"));
       }
-      c.getSuperclassList().forEach(cdExtension ->
-          cdExtension.getDefiningSymbol().ifPresent(definingSymbol ->
-              getCD4C().addImport(i, Joiners.DOT.join(definingSymbol.getPackageName().toLowerCase(),
-                  definingSymbol.getName() + ObserverDecorator.SUFFIX + SUFFIX))));
+      c.getSymbol().getSuperTypesList().forEach(symTypeExpression ->
+              getCD4C().addImport(i, Joiners.DOT.join(symTypeExpression.getTypeInfo().getPackageName().toLowerCase(),
+                  symTypeExpression.getTypeInfo().getName() + ObserverDecorator.SUFFIX + SUFFIX)));
       i.setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder()
           .setSuperclassList(List.of(MCTypeFacade.getInstance()
               .createQualifiedType(i.getName()))).build());

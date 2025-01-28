@@ -1,0 +1,106 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram siunittypes4computing_AST {
+  @SIUnitTypes4Computing!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @SIUnitTypes4Computing!Symbol(2,0);
+    enclosingScope = @SIUnitTypes4Computing!ArtifactScope;
+    spanningScope = @SIUnitTypes4Computing!Scope;
+    r__package = [de, monticore, siunit];
+    name = SIUnitTypes4Computing;
+    supergrammar = [// *size: 2
+      @MCBasicTypes!GrammarReference(32,8):ASTGrammarReference {
+        enclosingScope = @SIUnitTypes4Computing!Scope;
+        names = [de, monticore, types, MCBasicTypes];
+      },
+      @SIUnitTypes4Math!GrammarReference(33,9):ASTGrammarReference {
+        enclosingScope = @SIUnitTypes4Computing!Scope;
+        names = [de, monticore, siunit, SIUnitTypes4Math];
+      }];
+    classProds = [// *size: 1
+      @SIUnitType4Computing!ClassProd(38,4):ASTClassProd {
+        enclosingScope = @SIUnitTypes4Computing!Scope;
+        superInterfaceRule = [// *size: 1
+          @SIUnitType4ComputingInt!RuleReference(38,36):ASTRuleReference {
+            enclosingScope = @SIUnitType4Computing!Scope;
+            name = SIUnitType4ComputingInt;
+          }];
+        alts = [// *size: 1
+          @!Alt(39,7):ASTAlt {
+            enclosingScope = @SIUnitType4Computing!Scope;
+            component = [// *size: 6
+              @LBRACK!Terminal(39,7):ASTTerminal {
+                enclosingScope = @SIUnitType4Computing!Scope;
+                iteration = 0;
+                name = [;
+              },
+              @SIUnit!NonTerminal(39,11):ASTNonTerminal {
+                enclosingScope = @SIUnitType4Computing!Scope;
+                name = SIUnit;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @RBRACK!Terminal(39,18):ASTTerminal {
+                enclosingScope = @SIUnitType4Computing!Scope;
+                iteration = 0;
+                name = ];
+              },
+              @LT!Terminal(39,22):ASTTerminal {
+                enclosingScope = @SIUnitType4Computing!Scope;
+                iteration = 0;
+                name = <;
+              },
+              @MCPrimitiveType!NonTerminal(39,26):ASTNonTerminal {
+                enclosingScope = @SIUnitType4Computing!Scope;
+                name = MCPrimitiveType;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @GT!Terminal(39,42):ASTTerminal {
+                enclosingScope = @SIUnitType4Computing!Scope;
+                iteration = 0;
+                name = >;
+              }];
+            rightAssoc = false;
+          }];
+        name = SIUnitType4Computing;
+      }];
+    interfaceProds = [// *size: 1
+      @SIUnitType4ComputingInt!InterfaceProd(35,4):ASTInterfaceProd {
+        enclosingScope = @SIUnitTypes4Computing!Scope;
+        superInterfaceRule = [// *size: 1
+          @MCType!RuleReference(35,46):ASTRuleReference {
+            enclosingScope = @SIUnitType4ComputingInt!Scope;
+            name = MCType;
+          }];
+        alt = [// *size: 1
+          @!Alt(36,8):ASTAlt {
+            enclosingScope = @SIUnitType4ComputingInt!Scope;
+            component = [// *size: 2
+              @MCPrimitiveType!NonTerminal(36,8):ASTNonTerminal {
+                enclosingScope = @SIUnitType4ComputingInt!Scope;
+                name = MCPrimitiveType;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @SIUnit!NonTerminal(36,24):ASTNonTerminal {
+                enclosingScope = @SIUnitType4ComputingInt!Scope;
+                name = SIUnit;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = SIUnitType4ComputingInt;
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

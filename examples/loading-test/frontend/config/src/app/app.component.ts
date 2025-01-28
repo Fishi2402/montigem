@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { LoadingTestsManagerClientImpl } from '@src/loadingtests/LoadingTestsManagerClientImpl';
-import { LoadingTestsManager } from '@src/loadingtests/LoadingTestsManager';
+import { LoadingTestsManagerClientImpl } from 'loadingtests/LoadingTestsManagerClientImpl';
+import { LoadingTestsManager } from 'loadingtests/LoadingTestsManager';
 import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from '@umlp/common';
 
 declare global {
   interface Window {
-    LoadingTestsManager: typeof import('@src/loadingtests/LoadingTestsManager').LoadingTestsManager
+    LoadingTestsManager: typeof import('loadingtests/LoadingTestsManager').LoadingTestsManager
   }
 }
 

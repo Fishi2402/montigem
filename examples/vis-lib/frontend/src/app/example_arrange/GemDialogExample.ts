@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { GemDialogExampleComponent, config } from '@src/example_arrange/GemDialogExampleComponent';
+import { GemDialogExampleComponent, config } from 'example_arrange/GemDialogExampleComponent';
 import { Component } from '@angular/core';
 
 @Component({

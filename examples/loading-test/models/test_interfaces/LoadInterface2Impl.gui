@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test_interfaces;
+
+import mc.fenix.basic.GemText;
+
+import LoadingTests.IUseAnInterface;
+import LoadingTests.MyInterface;
+
+page LoadInterface2Impl(IUseAnInterface cl, List<MyInterfaceImpl> i_list) {
+    myit@iterate(MyInterfaceImpl i : i_list){  }
+}

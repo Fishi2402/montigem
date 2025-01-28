@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
-import { JoinConnectionTOP } from '@src/demorec/JoinConnectionTOP';
-import { JoinConnectionType } from '@src/demorec/JoinConnectionType';
+import { JoinConnectionTOP } from 'demorec/JoinConnectionTOP';
+import { JoinConnectionType } from 'demorec/JoinConnectionType';
 
 export class JoinConnection extends JoinConnectionTOP {
 

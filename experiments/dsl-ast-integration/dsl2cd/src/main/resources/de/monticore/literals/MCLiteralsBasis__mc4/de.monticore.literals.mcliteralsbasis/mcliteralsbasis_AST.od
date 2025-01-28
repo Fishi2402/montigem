@@ -1,0 +1,22 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram mcliteralsbasis_AST {
+  @MCLiteralsBasis!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @MCLiteralsBasis!Symbol(2,0);
+    enclosingScope = @MCLiteralsBasis!ArtifactScope;
+    spanningScope = @MCLiteralsBasis!Scope;
+    r__package = [de, monticore, literals];
+    name = MCLiteralsBasis;
+    interfaceProds = [// *size: 1
+      @Literal!InterfaceProd(20,2):ASTInterfaceProd {
+        enclosingScope = @MCLiteralsBasis!Scope;
+        name = Literal;
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

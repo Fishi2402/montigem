@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {DtcockpitMainPageComponent,config} from '@src/gui/DtcockpitMainPageComponent';
+import {DtcockpitMainPageComponent,config} from 'gui/DtcockpitMainPageComponent';
 import {Component} from '@angular/core';
-import {Project} from '@src/dtcockpit/Project';
+import {Project} from 'dtcockpit/Project';
 
 @Component({
   standalone:true,

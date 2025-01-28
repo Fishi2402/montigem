@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {Component} from '@angular/core';
-import {LoginPageComponent,config} from '@src/gui/login/LoginPageComponent';
+import {LoginPageComponent,config} from 'gui/login/LoginPageComponent';
 
 @Component({
   standalone:true,

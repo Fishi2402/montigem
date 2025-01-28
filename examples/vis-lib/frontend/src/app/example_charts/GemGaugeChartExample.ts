@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { GemGaugeChartExampleComponent, config } from '@src/example_charts/GemGaugeChartExampleComponent';
+import { GemGaugeChartExampleComponent, config } from 'example_charts/GemGaugeChartExampleComponent';
 import { GemGaugeChartData, GemGaugeChartDataBuilder, GemGaugeChartEntry, GemGaugeChartEntryBuilder } from '@umlp/charts';
 import {StringifyForBuilder} from "@umlp/commonj2ts";
 

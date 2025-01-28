@@ -38,7 +38,7 @@ public class GUIUtilAdapter extends UMLPAbstractAdapter {
         switch (methodName) {
           case "navigate":
             this.print("this._router.navigate([").printArgList(invocation.getArguments())
-                .print("]).then(() => { window.location.reload(); });");
+                .print("])");
             return true;
         }
       case "umlp.guiutil.Location":
@@ -95,10 +95,10 @@ public class GUIUtilAdapter extends UMLPAbstractAdapter {
     switch (newClass.getTypeAsElement().toString()) {
       case "mc.fenix.input.gemtextinputtypes.GemTextInputValidity":
         if (newClass.getArgumentCount() == 2) {
-          print("{status: ").print(newClass.getArgument(0)).print(", message: ").print(newClass.getArgument(1)).print("}");
+          print("new GemTextInputValidity(").print(newClass.getArgument(0)).print(", ").print(newClass.getArgument(1)).print(")");
           return true;
         } else if (newClass.getArgumentCount() == 0) {
-          print("{status: null, message: null}");
+          print("new GemTextInputValidity(null, null)");
           return true;
       }
     }

@@ -1,0 +1,23 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+
+<label class="gem-label-textarea" [for]="id + 'TextArea'">{{ labelText }}</label>
+<textarea
+  class="gem-textarea"
+  [id]="id + 'TextArea'"
+  [matTooltip]="
+    validity?.getStatus() === 'Error' || validity?.getStatus() === 'Warning'
+      ? validity.getMessage()
+      : null
+  "
+  matTooltipPosition="after"
+  [disabled]="disabled"
+  [placeholder]="placeholder"
+  [class.gem-textarea-error]="validity?.getStatus() === 'Error'"
+  [class.gem-textarea-warning]="validity?.getStatus() === 'Warning'"
+  [id]="id"
+  [ngModel]="entry"
+  (ngModelChange)="onEntryChange($event)"
+  (keyup)="keyRelease.emit($event)"
+  (keydown)="keyPress.emit($event)"
+>
+</textarea>

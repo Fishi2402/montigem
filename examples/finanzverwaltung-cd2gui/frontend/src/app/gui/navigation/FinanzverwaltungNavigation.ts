@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {FinanzverwaltungNavigationComponent,config} from '@src/gui/navigation/FinanzverwaltungNavigationComponent';
+import {FinanzverwaltungNavigationComponent,config} from 'gui/navigation/FinanzverwaltungNavigationComponent';
 import {Component} from '@angular/core';
 import { RouterModule } from '@angular/router';
 import {CommonModule} from '@angular/common';

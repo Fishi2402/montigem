@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { ComponentKind } from '@src/demorec/ComponentKind';
-import { BatteryPack } from '@src/demorec/BatteryPack';
+import { ComponentKind } from 'demorec/ComponentKind';
+import { BatteryPack } from 'demorec/BatteryPack';
 
-import { CreateComponentKindComponent, config } from '@src/gui/kind/CreateComponentKindComponent';
+import { CreateComponentKindComponent, config } from 'gui/kind/CreateComponentKindComponent';
 
 import {
   Component,
@@ -11,7 +11,7 @@ import {
   EventEmitter
 } from '@angular/core';
 
-import {BatteryPackService} from "@src/BatteryPackService";
+import {BatteryPackService} from "BatteryPackService";
 
 @Component({
   standalone:true,

@@ -14,7 +14,7 @@ page ChoosePackType(BatteryPackType currentType, Event<BatteryPackType> chosenTy
     entry = null,
     width="var(--smallDropDownWidth)"
   );
-  createPackType@guard(true) {
+  @guard(getCreatePackTypeCondition()) {
     @PackTypeCreate(newType=addNewBatteryPackType());
   }
 

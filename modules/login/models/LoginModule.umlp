@@ -1,7 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-
-
 //<<module>>
 umlp LoginModule {
 
@@ -19,9 +17,15 @@ umlp LoginModule {
       <<dbColumn = "unique=true">>
       String email;
 
+      // The following commands only work when admins create new users
       String validityUsername();
       String validityEmail();
       String validityPassword();
+    }
+
+    enum LoginModuleAccountStatus {
+      MAIL_NOT_CONFIRMED,
+      MAIL_CONFIRMED;
     }
 
      // Singleton-Type used instead of stereotypes/annotations
@@ -32,6 +36,13 @@ umlp LoginModule {
     class LoginSecManager {
         <<command>>
         long getCurrentUserRequest();
+
+        // Config Options:
+
+        // allow password reset
+        boolean allowPasswordReset = false;
+        // allow public user sign-up/creation
+        boolean allowPublicSignUp = false;
     }
 
     association LoginSecManager -> (signedInUser) LoginModuleUser [0..1];

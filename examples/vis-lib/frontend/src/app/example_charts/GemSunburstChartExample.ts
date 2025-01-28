@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { GemSunburstChartExampleComponent, config } from '@src/example_charts/GemSunburstChartExampleComponent';
+import { GemSunburstChartExampleComponent, config } from 'example_charts/GemSunburstChartExampleComponent';
 import {GemSunburstData, GemSunburstDataBuilder, GemSunburstEntryBuilder} from '@umlp/charts';
 import {StringifyForBuilder} from "@umlp/commonj2ts";
 

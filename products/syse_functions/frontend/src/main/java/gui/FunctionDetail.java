@@ -140,7 +140,7 @@ public class FunctionDetail extends FunctionDetailTOP {
       Channel4DisplayBuilder channel4Display = new Channel4DisplayBuilder();
       List<Port4Display> ports = new ArrayList<>();
       for (int i = 0; i < channel.getPortList().size(); i++) {
-        ports.add(portMap.get(channel.getPort(i)));
+        ports.add(port2Port4Display(channel.getPort(i), portMap, channelMap));
       }
       channel4Display.port4Display(ports);
       channelMap.put(channel, channel4Display);

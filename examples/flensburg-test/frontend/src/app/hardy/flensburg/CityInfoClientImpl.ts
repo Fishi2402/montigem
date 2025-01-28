@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { CityInfo } from '@src/hardy/flensburg/CityInfo';
-import { Person } from '@src/hardy/flensburg/Person';
+import { CityInfo } from 'hardy/flensburg/CityInfo';
+import { Person } from 'hardy/flensburg/Person';
 
 // Hand-Written, before generation
 export class CityInfoClientImpl extends CityInfo {

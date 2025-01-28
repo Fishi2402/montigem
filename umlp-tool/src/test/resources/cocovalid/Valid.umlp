@@ -4,10 +4,17 @@ umlp Valid {
 
   class A {
     int a;
+    java.util.List<String> names;
   }
 
   class B {
     boolean isTrue;
+    /String derivedAttr;
+  }
+
+  class C extends B {
+    /String derivedAttr;
+    String otherAttr;
   }
 
   interface I;

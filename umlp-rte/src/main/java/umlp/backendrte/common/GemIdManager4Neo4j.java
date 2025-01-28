@@ -1,7 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.backendrte.common;
+import de.se_rwth.commons.logging.Log;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Optional;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -43,27 +46,26 @@ public class GemIdManager4Neo4j {
   }
 
   private void refillReservedGemIds() {
-    try {
-      Optional<ResultSet> res = DatabaseAccessManager.executeQuery("MATCH(n:METANODE) return n.gemIdCounter");;
-
-      if(res.isPresent()){
-        ResultSet rs = res.get();
-        rs.next();
-        Long startGemId = rs.getLong(1);
-
-        // fill the queue with BATCH_SIZE amount of gemIds
-        for(long i = startGemId; i < startGemId + BATCH_SIZE; i++){
-          reservedGemIds.add(i);
-        }
-
-        // add BATCH_SIZE to the highest GemID in the DB to indicate the range for future use
-        DatabaseAccessManager.executeStatement("MATCH(n:METANODE) SET n.gemIdCounter = n.gemIdCounter+" + BATCH_SIZE);
-
-      }else{
+    try (Statement stmt = DatabaseAccessManager.getConnection().createStatement()) {
+      Optional<ResultSet> res = Optional.ofNullable(stmt.executeQuery("MATCH(n:METANODE) return n.gemIdCounter"));
+      if (!res.isPresent()) {
         throw new RuntimeException("No GemId inside DB!");
       }
-    } catch (SQLException e) {
-      e.printStackTrace();
+
+      ResultSet rs = res.get();
+      rs.next();
+      Long startGemId = rs.getLong(1);
+
+      for(long i = startGemId; i < startGemId + 10000L; ++i) {
+        this.reservedGemIds.add(i);
+      }
+    } catch (SQLException var2) {
+      Log.error("JDBC DB Connection Issue: " + var2.getMessage(), var2);
+    }
+    try(Statement stmt2 = DatabaseAccessManager.getConnection().createStatement()) {
+      stmt2.execute("MATCH(n:METANODE) SET n.gemIdCounter = n.gemIdCounter+10000");
+    } catch (SQLException var2) {
+      Log.error("JDBC DB Connection Issue: " + var2.getMessage(), var2);
     }
   }
 }

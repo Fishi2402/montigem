@@ -25,6 +25,7 @@ synchronized(${statement}){
     }
     ${statement}.executeBatch();
     DatabaseAccessManager.getConnection().commit();
+    DatabaseAccessManager.getConnection().setAutoCommit(true);
     return true;
 
     } catch (SQLException e){

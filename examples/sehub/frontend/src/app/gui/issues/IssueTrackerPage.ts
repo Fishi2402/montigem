@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {Component} from '@angular/core';
-import {IssueTrackerPageComponent,config} from '@src/gui/issues/IssueTrackerPageComponent';
-import {Issue} from '@src/sehub/Issue';
-import {IssueState} from '@src/sehub/IssueState';
-import {SehubSecurityManager} from '@src/sehub/SehubSecurityManager';
-import {IssueGemList} from '@src/sehub/gemlists/IssueGemList';
+import {IssueTrackerPageComponent,config} from 'gui/issues/IssueTrackerPageComponent';
+import {Issue} from 'sehub/Issue';
+import {IssueState} from 'sehub/IssueState';
+import {SehubSecurityManager} from 'sehub/SehubSecurityManager';
+import {IssueGemList} from 'sehub/gemlists/IssueGemList';
 import {GemList} from '@umlp/common';
 
 @Component({

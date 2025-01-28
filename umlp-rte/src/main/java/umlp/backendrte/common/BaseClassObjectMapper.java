@@ -42,7 +42,7 @@ public class BaseClassObjectMapper {
     baseDeSers.put("java.time.LocalTime", new LocalTimeDeSer());
   }
 
-  public static void addDeSers(Collection<Map.Entry<String, DeSer>> addedDeSers) {
+  public static void addDeSers(Collection<Map.Entry<String, ? extends DeSer>> addedDeSers) {
     addedDeSers.forEach(deser -> {
       getInstance().baseDeSers.put(deser.getKey(), deser.getValue());
     });

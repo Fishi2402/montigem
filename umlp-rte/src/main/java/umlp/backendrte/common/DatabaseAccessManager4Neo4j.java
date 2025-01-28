@@ -8,6 +8,7 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Optional;
 
 public class DatabaseAccessManager4Neo4j extends DatabaseAccessManager {
@@ -46,13 +47,19 @@ public class DatabaseAccessManager4Neo4j extends DatabaseAccessManager {
    * The MetaNode is a singleton and is only created, if it does not exist already (DB was initialized beforehand).
    */
   protected void createMetaNodeSingleton() {
-    try {
-      Optional<ResultSet> resultSet = executeQuery("MATCH(n:METANODE) return n");
-      if(resultSet.isEmpty() || !resultSet.get().next()) {
-        executeStatement("CREATE (n:METANODE {gemIdCounter: 0})");
+    boolean createMetaNode = false;
+    try(Statement stmt = connection.createStatement()) {
+      ResultSet resultSet= stmt.executeQuery("MATCH(n:METANODE) return n");
+      createMetaNode = !resultSet.next();
+    } catch (SQLException var2) {
+      Log.error("0xadakfjjflsd: Could not create MetaNode necessary for GemId Counter.", var2);
+    }
+    if(createMetaNode) {
+      try (Statement stmt2 = connection.createStatement()) {
+        stmt2.executeUpdate("CREATE (n:METANODE {gemIdCounter: 0})");
+      } catch (SQLException var2) {
+        Log.error("JDBC DB Connection Issue: " + var2.getMessage(), var2);
       }
-    } catch (SQLException exception) {
-      Log.error("0xadakfjjflsd: Could not create MetaNode necessary for GemId Counter.", exception);
     }
   }
 

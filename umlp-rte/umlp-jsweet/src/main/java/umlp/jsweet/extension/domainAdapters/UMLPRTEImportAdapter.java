@@ -85,7 +85,7 @@ public class UMLPRTEImportAdapter extends UMLPAbstractAdapter {
 
   private boolean isSpecificRTEClass(String fullyQualifiedName) {
     switch (fullyQualifiedName) {
-      case "rte.deser.DeSerRepository":
+      case "mc.fenix.commonj2ts.deser.DeSerRepository":
         return true;
       default:
         return false;

@@ -1,0 +1,1501 @@
+package de.monticore.types;
+classdiagram MCBasicTypes { 
+  package de.monticore.types.mcbasictypes._auxiliary { 
+    public class MCBasicsMillForMCBasicTypes extends de.monticore.mcbasics.MCBasicsMill { 
+      protected de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope _artifactScope();
+      protected de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesGlobalScope _globalScope();
+      protected de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope _scope();
+      protected de.monticore.mcbasics._visitor.MCBasicsTraverser _traverser();
+      protected de.monticore.mcbasics._visitor.MCBasicsTraverser _inheritanceTraverser();
+      protected de.monticore.mcbasics._util.IMCBasicsTypeDispatcher _typeDispatcher();
+      protected String _prettyPrint(de.monticore.ast.ASTNode node,boolean printComments);
+
+    } 
+
+  } 
+  package de.monticore.types.mcbasictypes { 
+    public class MCBasicTypesMill { 
+      protected static MCBasicTypesMill mill;
+      protected MCBasicTypesMill();
+      public static MCBasicTypesMill getMill();
+      public static void init();
+      protected static MCBasicTypesMill millASTMCQualifiedNameBuilder;
+      protected static MCBasicTypesMill millASTMCPackageDeclarationBuilder;
+      protected static MCBasicTypesMill millASTMCImportStatementBuilder;
+      protected static MCBasicTypesMill millASTMCPrimitiveTypeBuilder;
+      protected static MCBasicTypesMill millASTMCQualifiedTypeBuilder;
+      protected static MCBasicTypesMill millASTMCReturnTypeBuilder;
+      protected static MCBasicTypesMill millASTMCVoidTypeBuilder;
+      public static de.monticore.types.mcbasictypes._ast.ASTMCQualifiedNameBuilder mCQualifiedNameBuilder();
+      protected de.monticore.types.mcbasictypes._ast.ASTMCQualifiedNameBuilder _mCQualifiedNameBuilder();
+      public static de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclarationBuilder mCPackageDeclarationBuilder();
+      protected de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclarationBuilder _mCPackageDeclarationBuilder();
+      public static de.monticore.types.mcbasictypes._ast.ASTMCImportStatementBuilder mCImportStatementBuilder();
+      protected de.monticore.types.mcbasictypes._ast.ASTMCImportStatementBuilder _mCImportStatementBuilder();
+      public static de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveTypeBuilder mCPrimitiveTypeBuilder();
+      protected de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveTypeBuilder _mCPrimitiveTypeBuilder();
+      public static de.monticore.types.mcbasictypes._ast.ASTMCQualifiedTypeBuilder mCQualifiedTypeBuilder();
+      protected de.monticore.types.mcbasictypes._ast.ASTMCQualifiedTypeBuilder _mCQualifiedTypeBuilder();
+      public static de.monticore.types.mcbasictypes._ast.ASTMCReturnTypeBuilder mCReturnTypeBuilder();
+      protected de.monticore.types.mcbasictypes._ast.ASTMCReturnTypeBuilder _mCReturnTypeBuilder();
+      public static de.monticore.types.mcbasictypes._ast.ASTMCVoidTypeBuilder mCVoidTypeBuilder();
+      protected de.monticore.types.mcbasictypes._ast.ASTMCVoidTypeBuilder _mCVoidTypeBuilder();
+      protected static MCBasicTypesMill millMCBasicTypesTraverserImplementation;
+      protected static MCBasicTypesMill millMCBasicTypesInheritanceHandler;
+      protected static MCBasicTypesMill millMCBasicTypesScope;
+      protected static MCBasicTypesMill millMCBasicTypesScopesGenitorDelegator;
+      protected static MCBasicTypesMill millMCBasicTypesArtifactScope;
+      protected static MCBasicTypesMill millMCBasicTypesGlobalScope;
+      protected static MCBasicTypesMill millMCBasicTypesScopesGenitor;
+      protected static MCBasicTypesMill millMCBasicTypesFullPrettyPrinter;
+      public static String prettyPrint(de.monticore.ast.ASTNode node,boolean printComments);
+      protected String _prettyPrint(de.monticore.ast.ASTNode node,boolean printComments);
+      protected de.monticore.types.mcbasictypes._prettyprint.MCBasicTypesFullPrettyPrinter fullPrettyPrinter;
+      protected static MCBasicTypesMill millMCBasicTypesTypeDispatcher;
+      protected de.monticore.types.mcbasictypes._util.IMCBasicTypesTypeDispatcher typeDispatcher;
+      public static de.monticore.types.mcbasictypes._util.IMCBasicTypesTypeDispatcher typeDispatcher();
+      protected de.monticore.types.mcbasictypes._util.IMCBasicTypesTypeDispatcher _typeDispatcher();
+      public static de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser traverser();
+      protected de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser _traverser();
+      public static de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser inheritanceTraverser();
+      protected de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser _inheritanceTraverser();
+      protected de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesGlobalScope mCBasicTypesGlobalScope;
+      public static de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesGlobalScope globalScope();
+      protected de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesGlobalScope _globalScope();
+      public static de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope artifactScope();
+      protected de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope _artifactScope();
+      public static de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope scope();
+      protected de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope _scope();
+      public static de.monticore.types.mcbasictypes._symboltable.MCBasicTypesScopesGenitor scopesGenitor();
+      protected de.monticore.types.mcbasictypes._symboltable.MCBasicTypesScopesGenitor _scopesGenitor();
+      public static de.monticore.types.mcbasictypes._symboltable.MCBasicTypesScopesGenitorDelegator scopesGenitorDelegator();
+      protected de.monticore.types.mcbasictypes._symboltable.MCBasicTypesScopesGenitorDelegator _scopesGenitorDelegator();
+      public static void initMe(MCBasicTypesMill a);
+      public static void reset();
+
+    } 
+
+  } 
+  package de.monticore.types.mcbasictypes._prettyprint { 
+    public class MCBasicTypesPrettyPrinter implements de.monticore.types.mcbasictypes._visitor.MCBasicTypesHandler,de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2 { 
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCImportStatement node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCReturnType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCVoidType node);
+      protected de.monticore.prettyprint.IndentPrinter printer;
+      public de.monticore.prettyprint.IndentPrinter getPrinter();
+      protected boolean printComments;
+      public boolean isPrintComments();
+      public void setPrintComments(boolean printComments);
+      protected de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser traverser;
+      public de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser getTraverser();
+      public void setTraverser(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser traverser);
+      public MCBasicTypesPrettyPrinter(de.monticore.prettyprint.IndentPrinter printer,boolean printComments);
+
+    } 
+    public class MCBasicTypesFullPrettyPrinter { 
+      protected de.monticore.prettyprint.IndentPrinter printer;
+      public de.monticore.prettyprint.IndentPrinter getPrinter();
+      protected de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser traverser;
+      public de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser getTraverser();
+      public void setTraverser(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser traverser);
+      public MCBasicTypesFullPrettyPrinter(de.monticore.prettyprint.IndentPrinter printer,boolean printComments);
+      public MCBasicTypesFullPrettyPrinter(de.monticore.prettyprint.IndentPrinter printer);
+      protected void initializeTraverser(boolean printComments);
+      public void setPrintComments(boolean printComments);
+      public String prettyprint(de.monticore.ast.ASTNode node);
+
+    } 
+
+  } 
+  package de.monticore.types.mcbasictypes._od { 
+    public class MCBasicTypes2OD implements de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2,de.monticore.types.mcbasictypes._visitor.MCBasicTypesHandler { 
+      public MCBasicTypes2OD(de.monticore.prettyprint.IndentPrinter printer,de.monticore.generating.templateengine.reporting.commons.ReportingRepository reporting);
+      protected de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser traverser;
+      protected de.monticore.prettyprint.IndentPrinter pp;
+      protected de.monticore.generating.templateengine.reporting.commons.ReportingRepository reporting;
+      protected boolean printEmptyOptional;
+      protected boolean printEmptyList;
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCImportStatement node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCReturnType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCVoidType node);
+      public de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser getTraverser();
+      public void setTraverser(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser traverser);
+      protected void printAttribute(String name,String value);
+      protected void printObject(String objName,String objType);
+      public String printObjectDiagram(String modelName,de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode node);
+      public boolean isPrintEmptyOptional();
+      public void setPrintEmptyOptional(boolean printEmptyOptional);
+      public boolean isPrintEmptyList();
+      public void setPrintEmptyList(boolean printEmptyList);
+
+    } 
+
+  } 
+  package de.monticore.types.mcbasictypes._util { 
+    public class MCBasicTypesTypeDispatcher implements IMCBasicTypesTypeDispatcher { 
+      protected Optional<de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName>optMCBasicTypesASTMCQualifiedName;
+      protected Optional<de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration>optMCBasicTypesASTMCPackageDeclaration;
+      protected Optional<de.monticore.types.mcbasictypes._ast.ASTMCImportStatement>optMCBasicTypesASTMCImportStatement;
+      protected Optional<de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType>optMCBasicTypesASTMCPrimitiveType;
+      protected Optional<de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType>optMCBasicTypesASTMCQualifiedType;
+      protected Optional<de.monticore.types.mcbasictypes._ast.ASTMCReturnType>optMCBasicTypesASTMCReturnType;
+      protected Optional<de.monticore.types.mcbasictypes._ast.ASTMCVoidType>optMCBasicTypesASTMCVoidType;
+      protected Optional<de.monticore.types.mcbasictypes._ast.ASTMCType>optMCBasicTypesASTMCType;
+      protected Optional<de.monticore.types.mcbasictypes._ast.ASTMCObjectType>optMCBasicTypesASTMCObjectType;
+      protected Optional<de.monticore.types.mcbasictypes._ast.MCBasicTypesLiterals>optMCBasicTypesMCBasicTypesLiterals;
+      protected Optional<de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode>optMCBasicTypesASTMCBasicTypesNode;
+      protected Optional<de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope>optMCBasicTypesIMCBasicTypesScope;
+      protected Optional<de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope>optMCBasicTypesIMCBasicTypesArtifactScope;
+      protected Optional<de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesGlobalScope>optMCBasicTypesIMCBasicTypesGlobalScope;
+      protected Optional<de.monticore.mcbasics._ast.MCBasicsLiterals>optMCBasicsMCBasicsLiterals;
+      protected Optional<de.monticore.mcbasics._ast.ASTMCBasicsNode>optMCBasicsASTMCBasicsNode;
+      protected Optional<de.monticore.mcbasics._symboltable.IMCBasicsScope>optMCBasicsIMCBasicsScope;
+      protected Optional<de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope>optMCBasicsIMCBasicsArtifactScope;
+      protected Optional<de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope>optMCBasicsIMCBasicsGlobalScope;
+      public MCBasicTypesTypeDispatcher();
+      protected void reset();
+      public boolean isMCBasicTypesASTMCQualifiedName(de.monticore.ast.ASTNode node);
+      public de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName asMCBasicTypesASTMCQualifiedName(de.monticore.ast.ASTNode node);
+      public boolean isMCBasicTypesASTMCPackageDeclaration(de.monticore.ast.ASTNode node);
+      public de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration asMCBasicTypesASTMCPackageDeclaration(de.monticore.ast.ASTNode node);
+      public boolean isMCBasicTypesASTMCImportStatement(de.monticore.ast.ASTNode node);
+      public de.monticore.types.mcbasictypes._ast.ASTMCImportStatement asMCBasicTypesASTMCImportStatement(de.monticore.ast.ASTNode node);
+      public boolean isMCBasicTypesASTMCPrimitiveType(de.monticore.ast.ASTNode node);
+      public de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType asMCBasicTypesASTMCPrimitiveType(de.monticore.ast.ASTNode node);
+      public boolean isMCBasicTypesASTMCQualifiedType(de.monticore.ast.ASTNode node);
+      public de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType asMCBasicTypesASTMCQualifiedType(de.monticore.ast.ASTNode node);
+      public boolean isMCBasicTypesASTMCReturnType(de.monticore.ast.ASTNode node);
+      public de.monticore.types.mcbasictypes._ast.ASTMCReturnType asMCBasicTypesASTMCReturnType(de.monticore.ast.ASTNode node);
+      public boolean isMCBasicTypesASTMCVoidType(de.monticore.ast.ASTNode node);
+      public de.monticore.types.mcbasictypes._ast.ASTMCVoidType asMCBasicTypesASTMCVoidType(de.monticore.ast.ASTNode node);
+      public boolean isMCBasicTypesASTMCType(de.monticore.ast.ASTNode node);
+      public de.monticore.types.mcbasictypes._ast.ASTMCType asMCBasicTypesASTMCType(de.monticore.ast.ASTNode node);
+      public boolean isMCBasicTypesASTMCObjectType(de.monticore.ast.ASTNode node);
+      public de.monticore.types.mcbasictypes._ast.ASTMCObjectType asMCBasicTypesASTMCObjectType(de.monticore.ast.ASTNode node);
+      public boolean isMCBasicTypesMCBasicTypesLiterals(de.monticore.ast.ASTNode node);
+      public de.monticore.types.mcbasictypes._ast.MCBasicTypesLiterals asMCBasicTypesMCBasicTypesLiterals(de.monticore.ast.ASTNode node);
+      public boolean isMCBasicTypesASTMCBasicTypesNode(de.monticore.ast.ASTNode node);
+      public de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode asMCBasicTypesASTMCBasicTypesNode(de.monticore.ast.ASTNode node);
+      public boolean isMCBasicTypesIMCBasicTypesScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope asMCBasicTypesIMCBasicTypesScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCBasicTypesIMCBasicTypesArtifactScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope asMCBasicTypesIMCBasicTypesArtifactScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCBasicTypesIMCBasicTypesGlobalScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesGlobalScope asMCBasicTypesIMCBasicTypesGlobalScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCBasicsMCBasicsLiterals(de.monticore.ast.ASTNode node);
+      public de.monticore.mcbasics._ast.MCBasicsLiterals asMCBasicsMCBasicsLiterals(de.monticore.ast.ASTNode node);
+      public boolean isMCBasicsASTMCBasicsNode(de.monticore.ast.ASTNode node);
+      public de.monticore.mcbasics._ast.ASTMCBasicsNode asMCBasicsASTMCBasicsNode(de.monticore.ast.ASTNode node);
+      public boolean isMCBasicsIMCBasicsScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.mcbasics._symboltable.IMCBasicsScope asMCBasicsIMCBasicsScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCBasicsIMCBasicsArtifactScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope asMCBasicsIMCBasicsArtifactScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCBasicsIMCBasicsGlobalScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope asMCBasicsIMCBasicsGlobalScope(de.monticore.symboltable.IScope scope);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCImportStatement node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCReturnType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCVoidType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCObjectType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.MCBasicTypesLiterals node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode node);
+      public void handle(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope scope);
+      public void handle(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope scope);
+      public void handle(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesGlobalScope scope);
+      public void handle(de.monticore.mcbasics._ast.MCBasicsLiterals node);
+      public void handle(de.monticore.mcbasics._ast.ASTMCBasicsNode node);
+      public void handle(de.monticore.mcbasics._symboltable.IMCBasicsScope scope);
+      public void handle(de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope scope);
+      public void handle(de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope scope);
+      protected de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser traverser;
+      public de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser getTraverser();
+      public void setTraverser(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser traverser);
+      public void setTraverser(de.monticore.mcbasics._visitor.MCBasicsTraverser traverser);
+      public de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName getOptMCBasicTypesASTMCQualifiedName();
+      public boolean isPresentOptMCBasicTypesASTMCQualifiedName();
+      public void setOptMCBasicTypesASTMCQualifiedName(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName optMCBasicTypesASTMCQualifiedName);
+      public void setOptMCBasicTypesASTMCQualifiedNameAbsent();
+      public de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration getOptMCBasicTypesASTMCPackageDeclaration();
+      public boolean isPresentOptMCBasicTypesASTMCPackageDeclaration();
+      public void setOptMCBasicTypesASTMCPackageDeclaration(de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration optMCBasicTypesASTMCPackageDeclaration);
+      public void setOptMCBasicTypesASTMCPackageDeclarationAbsent();
+      public de.monticore.types.mcbasictypes._ast.ASTMCImportStatement getOptMCBasicTypesASTMCImportStatement();
+      public boolean isPresentOptMCBasicTypesASTMCImportStatement();
+      public void setOptMCBasicTypesASTMCImportStatement(de.monticore.types.mcbasictypes._ast.ASTMCImportStatement optMCBasicTypesASTMCImportStatement);
+      public void setOptMCBasicTypesASTMCImportStatementAbsent();
+      public de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType getOptMCBasicTypesASTMCPrimitiveType();
+      public boolean isPresentOptMCBasicTypesASTMCPrimitiveType();
+      public void setOptMCBasicTypesASTMCPrimitiveType(de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType optMCBasicTypesASTMCPrimitiveType);
+      public void setOptMCBasicTypesASTMCPrimitiveTypeAbsent();
+      public de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType getOptMCBasicTypesASTMCQualifiedType();
+      public boolean isPresentOptMCBasicTypesASTMCQualifiedType();
+      public void setOptMCBasicTypesASTMCQualifiedType(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType optMCBasicTypesASTMCQualifiedType);
+      public void setOptMCBasicTypesASTMCQualifiedTypeAbsent();
+      public de.monticore.types.mcbasictypes._ast.ASTMCReturnType getOptMCBasicTypesASTMCReturnType();
+      public boolean isPresentOptMCBasicTypesASTMCReturnType();
+      public void setOptMCBasicTypesASTMCReturnType(de.monticore.types.mcbasictypes._ast.ASTMCReturnType optMCBasicTypesASTMCReturnType);
+      public void setOptMCBasicTypesASTMCReturnTypeAbsent();
+      public de.monticore.types.mcbasictypes._ast.ASTMCVoidType getOptMCBasicTypesASTMCVoidType();
+      public boolean isPresentOptMCBasicTypesASTMCVoidType();
+      public void setOptMCBasicTypesASTMCVoidType(de.monticore.types.mcbasictypes._ast.ASTMCVoidType optMCBasicTypesASTMCVoidType);
+      public void setOptMCBasicTypesASTMCVoidTypeAbsent();
+      public de.monticore.types.mcbasictypes._ast.ASTMCType getOptMCBasicTypesASTMCType();
+      public boolean isPresentOptMCBasicTypesASTMCType();
+      public void setOptMCBasicTypesASTMCType(de.monticore.types.mcbasictypes._ast.ASTMCType optMCBasicTypesASTMCType);
+      public void setOptMCBasicTypesASTMCTypeAbsent();
+      public de.monticore.types.mcbasictypes._ast.ASTMCObjectType getOptMCBasicTypesASTMCObjectType();
+      public boolean isPresentOptMCBasicTypesASTMCObjectType();
+      public void setOptMCBasicTypesASTMCObjectType(de.monticore.types.mcbasictypes._ast.ASTMCObjectType optMCBasicTypesASTMCObjectType);
+      public void setOptMCBasicTypesASTMCObjectTypeAbsent();
+      public de.monticore.types.mcbasictypes._ast.MCBasicTypesLiterals getOptMCBasicTypesMCBasicTypesLiterals();
+      public boolean isPresentOptMCBasicTypesMCBasicTypesLiterals();
+      public void setOptMCBasicTypesMCBasicTypesLiterals(de.monticore.types.mcbasictypes._ast.MCBasicTypesLiterals optMCBasicTypesMCBasicTypesLiterals);
+      public void setOptMCBasicTypesMCBasicTypesLiteralsAbsent();
+      public de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode getOptMCBasicTypesASTMCBasicTypesNode();
+      public boolean isPresentOptMCBasicTypesASTMCBasicTypesNode();
+      public void setOptMCBasicTypesASTMCBasicTypesNode(de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode optMCBasicTypesASTMCBasicTypesNode);
+      public void setOptMCBasicTypesASTMCBasicTypesNodeAbsent();
+      public de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope getOptMCBasicTypesIMCBasicTypesScope();
+      public boolean isPresentOptMCBasicTypesIMCBasicTypesScope();
+      public void setOptMCBasicTypesIMCBasicTypesScope(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope optMCBasicTypesIMCBasicTypesScope);
+      public void setOptMCBasicTypesIMCBasicTypesScopeAbsent();
+      public de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope getOptMCBasicTypesIMCBasicTypesArtifactScope();
+      public boolean isPresentOptMCBasicTypesIMCBasicTypesArtifactScope();
+      public void setOptMCBasicTypesIMCBasicTypesArtifactScope(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope optMCBasicTypesIMCBasicTypesArtifactScope);
+      public void setOptMCBasicTypesIMCBasicTypesArtifactScopeAbsent();
+      public de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesGlobalScope getOptMCBasicTypesIMCBasicTypesGlobalScope();
+      public boolean isPresentOptMCBasicTypesIMCBasicTypesGlobalScope();
+      public void setOptMCBasicTypesIMCBasicTypesGlobalScope(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesGlobalScope optMCBasicTypesIMCBasicTypesGlobalScope);
+      public void setOptMCBasicTypesIMCBasicTypesGlobalScopeAbsent();
+      public de.monticore.mcbasics._ast.MCBasicsLiterals getOptMCBasicsMCBasicsLiterals();
+      public boolean isPresentOptMCBasicsMCBasicsLiterals();
+      public void setOptMCBasicsMCBasicsLiterals(de.monticore.mcbasics._ast.MCBasicsLiterals optMCBasicsMCBasicsLiterals);
+      public void setOptMCBasicsMCBasicsLiteralsAbsent();
+      public de.monticore.mcbasics._ast.ASTMCBasicsNode getOptMCBasicsASTMCBasicsNode();
+      public boolean isPresentOptMCBasicsASTMCBasicsNode();
+      public void setOptMCBasicsASTMCBasicsNode(de.monticore.mcbasics._ast.ASTMCBasicsNode optMCBasicsASTMCBasicsNode);
+      public void setOptMCBasicsASTMCBasicsNodeAbsent();
+      public de.monticore.mcbasics._symboltable.IMCBasicsScope getOptMCBasicsIMCBasicsScope();
+      public boolean isPresentOptMCBasicsIMCBasicsScope();
+      public void setOptMCBasicsIMCBasicsScope(de.monticore.mcbasics._symboltable.IMCBasicsScope optMCBasicsIMCBasicsScope);
+      public void setOptMCBasicsIMCBasicsScopeAbsent();
+      public de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope getOptMCBasicsIMCBasicsArtifactScope();
+      public boolean isPresentOptMCBasicsIMCBasicsArtifactScope();
+      public void setOptMCBasicsIMCBasicsArtifactScope(de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope optMCBasicsIMCBasicsArtifactScope);
+      public void setOptMCBasicsIMCBasicsArtifactScopeAbsent();
+      public de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope getOptMCBasicsIMCBasicsGlobalScope();
+      public boolean isPresentOptMCBasicsIMCBasicsGlobalScope();
+      public void setOptMCBasicsIMCBasicsGlobalScope(de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope optMCBasicsIMCBasicsGlobalScope);
+      public void setOptMCBasicsIMCBasicsGlobalScopeAbsent();
+
+    } 
+    public interface IMCBasicTypesTypeDispatcher extends de.monticore.mcbasics._util.IMCBasicsTypeDispatcher,de.monticore.types.mcbasictypes._visitor.MCBasicTypesHandler { 
+      public abstract boolean isMCBasicTypesASTMCQualifiedName(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName asMCBasicTypesASTMCQualifiedName(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCBasicTypesASTMCPackageDeclaration(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration asMCBasicTypesASTMCPackageDeclaration(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCBasicTypesASTMCImportStatement(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.types.mcbasictypes._ast.ASTMCImportStatement asMCBasicTypesASTMCImportStatement(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCBasicTypesASTMCPrimitiveType(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType asMCBasicTypesASTMCPrimitiveType(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCBasicTypesASTMCQualifiedType(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType asMCBasicTypesASTMCQualifiedType(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCBasicTypesASTMCReturnType(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.types.mcbasictypes._ast.ASTMCReturnType asMCBasicTypesASTMCReturnType(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCBasicTypesASTMCVoidType(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.types.mcbasictypes._ast.ASTMCVoidType asMCBasicTypesASTMCVoidType(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCBasicTypesASTMCType(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.types.mcbasictypes._ast.ASTMCType asMCBasicTypesASTMCType(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCBasicTypesASTMCObjectType(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.types.mcbasictypes._ast.ASTMCObjectType asMCBasicTypesASTMCObjectType(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCBasicTypesMCBasicTypesLiterals(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.types.mcbasictypes._ast.MCBasicTypesLiterals asMCBasicTypesMCBasicTypesLiterals(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCBasicTypesASTMCBasicTypesNode(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode asMCBasicTypesASTMCBasicTypesNode(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCBasicTypesIMCBasicTypesScope(de.monticore.symboltable.IScope scope);
+      public abstract de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope asMCBasicTypesIMCBasicTypesScope(de.monticore.symboltable.IScope scope);
+      public abstract boolean isMCBasicTypesIMCBasicTypesGlobalScope(de.monticore.symboltable.IScope scope);
+      public abstract de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesGlobalScope asMCBasicTypesIMCBasicTypesGlobalScope(de.monticore.symboltable.IScope scope);
+      public abstract boolean isMCBasicTypesIMCBasicTypesArtifactScope(de.monticore.symboltable.IScope scope);
+      public abstract de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope asMCBasicTypesIMCBasicTypesArtifactScope(de.monticore.symboltable.IScope scope);
+
+    } 
+
+  } 
+  package de.monticore.types.mcbasictypes._cocos { 
+    public class MCBasicTypesCoCoChecker { 
+      protected de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser traverser;
+      public MCBasicTypesCoCoChecker();
+      public de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser getTraverser();
+      public void setTraverser(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser traverser);
+      public void addChecker(de.monticore.types.mcbasictypes._cocos.MCBasicTypesCoCoChecker checker);
+      public void checkAll(de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode node);
+      public void addCoCo(de.monticore.types.mcbasictypes._cocos.MCBasicTypesASTMCQualifiedNameCoCo coco);
+      public void addCoCo(de.monticore.types.mcbasictypes._cocos.MCBasicTypesASTMCPackageDeclarationCoCo coco);
+      public void addCoCo(de.monticore.types.mcbasictypes._cocos.MCBasicTypesASTMCImportStatementCoCo coco);
+      public void addCoCo(de.monticore.types.mcbasictypes._cocos.MCBasicTypesASTMCPrimitiveTypeCoCo coco);
+      public void addCoCo(de.monticore.types.mcbasictypes._cocos.MCBasicTypesASTMCQualifiedTypeCoCo coco);
+      public void addCoCo(de.monticore.types.mcbasictypes._cocos.MCBasicTypesASTMCReturnTypeCoCo coco);
+      public void addCoCo(de.monticore.types.mcbasictypes._cocos.MCBasicTypesASTMCVoidTypeCoCo coco);
+      public void addCoCo(de.monticore.types.mcbasictypes._cocos.MCBasicTypesASTMCTypeCoCo coco);
+      public void addCoCo(de.monticore.types.mcbasictypes._cocos.MCBasicTypesASTMCObjectTypeCoCo coco);
+      public void addCoCo(de.monticore.types.mcbasictypes._cocos.MCBasicTypesASTMCBasicTypesNodeCoCo coco);
+      public void addChecker(de.monticore.mcbasics._cocos.MCBasicsCoCoChecker checker);
+      public void checkAll(de.monticore.mcbasics._ast.ASTMCBasicsNode node);
+      public void addCoCo(de.monticore.mcbasics._cocos.MCBasicsASTMCBasicsNodeCoCo coco);
+
+    } 
+    public interface MCBasicTypesASTMCQualifiedNameCoCo extends de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2 { 
+      public abstract void check(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName node);
+
+    } 
+    public interface MCBasicTypesASTMCPackageDeclarationCoCo extends de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2 { 
+      public abstract void check(de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration node);
+
+    } 
+    public interface MCBasicTypesASTMCImportStatementCoCo extends de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2 { 
+      public abstract void check(de.monticore.types.mcbasictypes._ast.ASTMCImportStatement node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCImportStatement node);
+
+    } 
+    public interface MCBasicTypesASTMCPrimitiveTypeCoCo extends de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2 { 
+      public abstract void check(de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType node);
+
+    } 
+    public interface MCBasicTypesASTMCQualifiedTypeCoCo extends de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2 { 
+      public abstract void check(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType node);
+
+    } 
+    public interface MCBasicTypesASTMCReturnTypeCoCo extends de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2 { 
+      public abstract void check(de.monticore.types.mcbasictypes._ast.ASTMCReturnType node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCReturnType node);
+
+    } 
+    public interface MCBasicTypesASTMCVoidTypeCoCo extends de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2 { 
+      public abstract void check(de.monticore.types.mcbasictypes._ast.ASTMCVoidType node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCVoidType node);
+
+    } 
+    public interface MCBasicTypesASTMCTypeCoCo extends de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2 { 
+      public abstract void check(de.monticore.types.mcbasictypes._ast.ASTMCType node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCType node);
+
+    } 
+    public interface MCBasicTypesASTMCObjectTypeCoCo extends de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2 { 
+      public abstract void check(de.monticore.types.mcbasictypes._ast.ASTMCObjectType node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCObjectType node);
+
+    } 
+    public interface MCBasicTypesASTMCBasicTypesNodeCoCo extends de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2 { 
+      public abstract void check(de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode node);
+
+    } 
+
+  } 
+  package de.monticore.types.mcbasictypes._visitor { 
+    public interface MCBasicTypesTraverser extends de.monticore.mcbasics._visitor.MCBasicsTraverser { 
+      public void add4MCBasicTypes(de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2 mCBasicTypesVisitor);
+      public List<de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2>getMCBasicTypesVisitorList();
+      public void add4MCBasics(de.monticore.mcbasics._visitor.MCBasicsVisitor2 mCBasicsVisitor);
+      public List<de.monticore.mcbasics._visitor.MCBasicsVisitor2>getMCBasicsVisitorList();
+      public void setMCBasicTypesHandler(de.monticore.types.mcbasictypes._visitor.MCBasicTypesHandler mCBasicTypesHandler);
+      public Optional<de.monticore.types.mcbasictypes._visitor.MCBasicTypesHandler>getMCBasicTypesHandler();
+      public void setMCBasicsHandler(de.monticore.mcbasics._visitor.MCBasicsHandler mCBasicsHandler);
+      public Optional<de.monticore.mcbasics._visitor.MCBasicsHandler>getMCBasicsHandler();
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName node);
+      public void endVisit(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName node);
+      public void traverse(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration node);
+      public void endVisit(de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration node);
+      public void traverse(de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCImportStatement node);
+      public void endVisit(de.monticore.types.mcbasictypes._ast.ASTMCImportStatement node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCImportStatement node);
+      public void traverse(de.monticore.types.mcbasictypes._ast.ASTMCImportStatement node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType node);
+      public void endVisit(de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType node);
+      public void traverse(de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType node);
+      public void endVisit(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType node);
+      public void traverse(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCReturnType node);
+      public void endVisit(de.monticore.types.mcbasictypes._ast.ASTMCReturnType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCReturnType node);
+      public void traverse(de.monticore.types.mcbasictypes._ast.ASTMCReturnType node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCVoidType node);
+      public void endVisit(de.monticore.types.mcbasictypes._ast.ASTMCVoidType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCVoidType node);
+      public void traverse(de.monticore.types.mcbasictypes._ast.ASTMCVoidType node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCType node);
+      public void endVisit(de.monticore.types.mcbasictypes._ast.ASTMCType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCType node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCObjectType node);
+      public void endVisit(de.monticore.types.mcbasictypes._ast.ASTMCObjectType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCObjectType node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode node);
+      public void endVisit(de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode node);
+      public void visit(de.monticore.types.mcbasictypes._symboltable.ICommonMCBasicTypesSymbol node);
+      public void endVisit(de.monticore.types.mcbasictypes._symboltable.ICommonMCBasicTypesSymbol node);
+      public void handle(de.monticore.types.mcbasictypes._symboltable.ICommonMCBasicTypesSymbol node);
+      public void traverse(de.monticore.types.mcbasictypes._symboltable.ICommonMCBasicTypesSymbol node);
+      public void visit(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope node);
+      public void endVisit(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope node);
+      public void handle(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope node);
+      public void traverse(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope node);
+      public void visit(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope node);
+      public void endVisit(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope node);
+      public void handle(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope node);
+      public void traverse(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope node);
+      public void visit(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesGlobalScope node);
+      public void endVisit(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesGlobalScope node);
+      public void handle(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesGlobalScope node);
+      public void traverse(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesGlobalScope node);
+
+    } 
+    public class MCBasicTypesTraverserImplementation implements de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser { 
+      protected MCBasicTypesTraverserImplementation realThis;
+      protected List<de.monticore.visitor.IVisitor>iVisitorList;
+      protected List<de.monticore.mcbasics._visitor.MCBasicsVisitor2>mCBasicsVisitorList;
+      protected List<de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2>mCBasicTypesVisitorList;
+      protected Optional<de.monticore.mcbasics._visitor.MCBasicsHandler>mCBasicsHandler;
+      protected Optional<de.monticore.types.mcbasictypes._visitor.MCBasicTypesHandler>mCBasicTypesHandler;
+      public void add4MCBasics(de.monticore.mcbasics._visitor.MCBasicsVisitor2 mCBasicsVisitor);
+      public List<de.monticore.mcbasics._visitor.MCBasicsVisitor2>getMCBasicsVisitorList();
+      public void add4MCBasicTypes(de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2 mCBasicTypesVisitor);
+      public List<de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2>getMCBasicTypesVisitorList();
+      public void setMCBasicsHandler(de.monticore.mcbasics._visitor.MCBasicsHandler mCBasicsHandler);
+      public Optional<de.monticore.mcbasics._visitor.MCBasicsHandler>getMCBasicsHandler();
+      public void setMCBasicTypesHandler(de.monticore.types.mcbasictypes._visitor.MCBasicTypesHandler mCBasicTypesHandler);
+      public Optional<de.monticore.types.mcbasictypes._visitor.MCBasicTypesHandler>getMCBasicTypesHandler();
+      public void add4IVisitor(de.monticore.visitor.IVisitor iVisitor);
+      public List<de.monticore.visitor.IVisitor>getIVisitorList();
+      protected Set<Object> traversedElements;
+      public Set<Object> getTraversedElements();
+      public void setTraversedElements(Set<Object> traversedElements);
+
+    } 
+    public interface MCBasicTypesVisitor2 extends de.monticore.visitor.IVisitor { 
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName node);
+      public void endVisit(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration node);
+      public void endVisit(de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCImportStatement node);
+      public void endVisit(de.monticore.types.mcbasictypes._ast.ASTMCImportStatement node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType node);
+      public void endVisit(de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType node);
+      public void endVisit(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCReturnType node);
+      public void endVisit(de.monticore.types.mcbasictypes._ast.ASTMCReturnType node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCVoidType node);
+      public void endVisit(de.monticore.types.mcbasictypes._ast.ASTMCVoidType node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCType node);
+      public void endVisit(de.monticore.types.mcbasictypes._ast.ASTMCType node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCObjectType node);
+      public void endVisit(de.monticore.types.mcbasictypes._ast.ASTMCObjectType node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode node);
+      public void endVisit(de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode node);
+      public void visit(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope node);
+      public void endVisit(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope node);
+      public void visit(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope node);
+      public void endVisit(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope node);
+      public void visit(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesGlobalScope node);
+      public void endVisit(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesGlobalScope node);
+
+    } 
+    public interface MCBasicTypesHandler extends de.monticore.visitor.IHandler { 
+      public abstract de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser getTraverser();
+      public abstract void setTraverser(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser traverser);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName node);
+      public void traverse(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration node);
+      public void traverse(de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCImportStatement node);
+      public void traverse(de.monticore.types.mcbasictypes._ast.ASTMCImportStatement node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType node);
+      public void traverse(de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType node);
+      public void traverse(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCReturnType node);
+      public void traverse(de.monticore.types.mcbasictypes._ast.ASTMCReturnType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCVoidType node);
+      public void traverse(de.monticore.types.mcbasictypes._ast.ASTMCVoidType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCObjectType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode node);
+      public void handle(de.monticore.types.mcbasictypes._symboltable.ICommonMCBasicTypesSymbol node);
+      public void traverse(de.monticore.types.mcbasictypes._symboltable.ICommonMCBasicTypesSymbol node);
+      public void handle(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope node);
+      public void traverse(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope node);
+      public void handle(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope node);
+      public void traverse(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope node);
+      public void handle(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesGlobalScope node);
+      public void traverse(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesGlobalScope node);
+
+    } 
+    public class MCBasicTypesInheritanceHandler implements de.monticore.types.mcbasictypes._visitor.MCBasicTypesHandler { 
+      protected de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser traverser;
+      public de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser getTraverser();
+      public void setTraverser(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser traverser);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCImportStatement node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCReturnType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCVoidType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCObjectType node);
+      public void handle(de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode node);
+      public void handle(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope node);
+      public void handle(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope node);
+      public void handle(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesGlobalScope node);
+
+    } 
+    public interface IMCBasicTypesInterpreter extends de.monticore.mcbasics._visitor.IMCBasicsInterpreter,de.monticore.interpreter.ModelInterpreter { 
+      public abstract de.monticore.interpreter.Value interpret(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName node);
+      public abstract de.monticore.interpreter.Value interpret(de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration node);
+      public abstract de.monticore.interpreter.Value interpret(de.monticore.types.mcbasictypes._ast.ASTMCImportStatement node);
+      public abstract de.monticore.interpreter.Value interpret(de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType node);
+      public abstract de.monticore.interpreter.Value interpret(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType node);
+      public abstract de.monticore.interpreter.Value interpret(de.monticore.types.mcbasictypes._ast.ASTMCReturnType node);
+      public abstract de.monticore.interpreter.Value interpret(de.monticore.types.mcbasictypes._ast.ASTMCVoidType node);
+      public abstract de.monticore.interpreter.Value interpret(de.monticore.types.mcbasictypes._ast.ASTMCType node);
+      public abstract de.monticore.interpreter.Value interpret(de.monticore.types.mcbasictypes._ast.ASTMCObjectType node);
+      public abstract de.monticore.interpreter.Value interpret(de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode node);
+
+    } 
+    public class MCBasicTypesInterpreter implements IMCBasicTypesInterpreter { 
+      protected de.monticore.mcbasics._visitor.IMCBasicsInterpreter mCBasicsInterpreter;
+      public MCBasicTypesInterpreter();
+      public MCBasicTypesInterpreter(de.monticore.interpreter.ModelInterpreter realThis);
+      protected de.monticore.interpreter.ModelInterpreter realThis;
+      public de.monticore.interpreter.ModelInterpreter getRealThis();
+      public void setRealThis(de.monticore.interpreter.ModelInterpreter realThis);
+      protected Map<de.monticore.symboltable.ISymbol,de.monticore.interpreter.Value>contextMap;
+      public void store(de.monticore.symboltable.ISymbol symbol,de.monticore.interpreter.Value value);
+      public de.monticore.interpreter.Value load(de.monticore.symboltable.ISymbol symbol);
+      public Map<de.monticore.symboltable.ISymbol,de.monticore.interpreter.Value>getContextMap();
+      public de.monticore.interpreter.Value interpret(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName node);
+      public de.monticore.interpreter.Value interpret(de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration node);
+      public de.monticore.interpreter.Value interpret(de.monticore.types.mcbasictypes._ast.ASTMCImportStatement node);
+      public de.monticore.interpreter.Value interpret(de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType node);
+      public de.monticore.interpreter.Value interpret(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType node);
+      public de.monticore.interpreter.Value interpret(de.monticore.types.mcbasictypes._ast.ASTMCReturnType node);
+      public de.monticore.interpreter.Value interpret(de.monticore.types.mcbasictypes._ast.ASTMCVoidType node);
+      public de.monticore.interpreter.Value interpret(de.monticore.types.mcbasictypes._ast.ASTMCType node);
+      public de.monticore.interpreter.Value interpret(de.monticore.types.mcbasictypes._ast.ASTMCObjectType node);
+      public de.monticore.interpreter.Value interpret(de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode node);
+      public de.monticore.interpreter.Value interpret(de.monticore.mcbasics._ast.ASTMCBasicsNode node);
+
+    } 
+
+  } 
+  package de.monticore.types.mcbasictypes._symboltable { 
+    public class MCBasicTypesScope implements de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope { 
+      public MCBasicTypesScope();
+      public MCBasicTypesScope(boolean shadowing);
+      public MCBasicTypesScope(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope enclosingScope);
+      public MCBasicTypesScope(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope enclosingScope,boolean shadowing);
+      protected com.google.common.collect.LinkedListMultimap<String,de.monticore.symboltable.SymbolWithScopeOfUnknownKind>unknownSymbols;
+      public void add(de.monticore.symboltable.SymbolWithScopeOfUnknownKind symbol);
+      public void remove(de.monticore.symboltable.SymbolWithScopeOfUnknownKind symbol);
+      public com.google.common.collect.LinkedListMultimap<String,de.monticore.symboltable.SymbolWithScopeOfUnknownKind>getUnknownSymbols();
+      protected boolean unknownSymbolsAlreadyResolved;
+      public boolean isUnknownSymbolsAlreadyResolved();
+      public void setUnknownSymbolsAlreadyResolved(boolean unknownSymbolsAlreadyResolved);
+      protected de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope enclosingScope;
+      public de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope getEnclosingScope();
+      public void setEnclosingScope(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope enclosingScope);
+      protected Optional<de.monticore.symboltable.IScopeSpanningSymbol>spanningSymbol;
+      public de.monticore.symboltable.IScopeSpanningSymbol getSpanningSymbol();
+      public boolean isPresentSpanningSymbol();
+      public void setSpanningSymbol(de.monticore.symboltable.IScopeSpanningSymbol spanningSymbol);
+      public void setSpanningSymbolAbsent();
+      protected boolean shadowing;
+      public boolean isShadowing();
+      public void setShadowing(boolean shadowing);
+      protected boolean exportingSymbols;
+      public boolean isExportingSymbols();
+      public void setExportingSymbols(boolean exportingSymbols);
+      protected boolean ordered;
+      public boolean isOrdered();
+      public void setOrdered(boolean ordered);
+      protected Optional<String>name;
+      public String getName();
+      public boolean isPresentName();
+      public void setName(String name);
+      public void setNameAbsent();
+      protected Optional<de.monticore.ast.ASTNode>astNode;
+      public de.monticore.ast.ASTNode getAstNode();
+      public boolean isPresentAstNode();
+      public void setAstNode(de.monticore.ast.ASTNode astNode);
+      public void setAstNodeAbsent();
+      protected List<de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope>subScopes;
+      public void addSubScope(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope subScope);
+      public void removeSubScope(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope subScope);
+      public List<de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope>getSubScopes();
+      public void setSubScopes(List<de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope>subScopes);
+      public void addSubScope(de.monticore.mcbasics._symboltable.IMCBasicsScope subScope);
+      public void removeSubScope(de.monticore.mcbasics._symboltable.IMCBasicsScope subScope);
+      public void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope newEnclosingScope);
+      public void accept(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+
+    } 
+    public interface IMCBasicTypesScope extends de.monticore.mcbasics._symboltable.IMCBasicsScope { 
+      public abstract List<? extends IMCBasicTypesScope>getSubScopes();
+      public void addSubScope(IMCBasicTypesScope subScope);
+      public void removeSubScope(IMCBasicTypesScope subScope);
+      public abstract IMCBasicTypesScope getEnclosingScope();
+      public abstract void setEnclosingScope(IMCBasicTypesScope enclosingScope);
+      public abstract void accept(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser visitor);
+      public int getSymbolsSize();
+      public abstract void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public abstract void accept(de.monticore.visitor.ITraverser visitor);
+
+    } 
+    public class MCBasicTypesSymbols2Json implements de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2 { 
+      protected de.monticore.symboltable.serialization.IDeSer<de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope, de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope, MCBasicTypesSymbols2Json> scopeDeSer;
+      protected MCBasicTypesSymbols2Json realThis;
+      public MCBasicTypesSymbols2Json getRealThis();
+      public void setRealThis(MCBasicTypesSymbols2Json realThis);
+      protected de.monticore.symboltable.serialization.JsonPrinter printer;
+      public de.monticore.symboltable.serialization.JsonPrinter getJsonPrinter();
+      public void setJsonPrinter(de.monticore.symboltable.serialization.JsonPrinter printer);
+      protected de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser traverser;
+      public String serialize(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope toSerialize);
+      public String serialize(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope toSerialize);
+      public de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope deserialize(String serialized);
+      public de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser getTraverser();
+      public void setTraverser(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser traverser);
+      public MCBasicTypesSymbols2Json();
+      public MCBasicTypesSymbols2Json(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser traverser,de.monticore.symboltable.serialization.JsonPrinter printer);
+      public void init();
+      public String getSerializedString();
+      public de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope load(java.net.URL url);
+      public de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope load(java.io.Reader reader);
+      public de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope load(String model);
+      public String store(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope scope,String fileName);
+      public void visit(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope node);
+      public void endVisit(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope node);
+      public void visit(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope node);
+      public void endVisit(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope node);
+
+    } 
+    public interface ICommonMCBasicTypesSymbol extends de.monticore.symboltable.ISymbol { 
+      public abstract void accept(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser visitor);
+      public abstract de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope getEnclosingScope();
+      public abstract void setEnclosingScope(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope enclosingScope);
+
+    } 
+    public interface IMCBasicTypesGlobalScope extends de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope,de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope { 
+      public abstract void loadFileForModelName(String modelName);
+      public de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope getEnclosingScope();
+      public void setEnclosingScope(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope enclosingScope);
+      public String getName();
+      public boolean isPresentName();
+      public boolean checkIfContinueAsSubScope(String symbolName);
+      public abstract Map<String,de.monticore.symboltable.serialization.ISymbolDeSer> getSymbolDeSers();
+      public void putSymbolDeSer(String key,de.monticore.symboltable.serialization.ISymbolDeSer value);
+      public de.monticore.symboltable.serialization.ISymbolDeSer getSymbolDeSer(String key);
+      public abstract IMCBasicTypesGlobalScope getRealThis();
+      public abstract void accept(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser visitor);
+      public abstract void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public abstract void accept(de.monticore.visitor.ITraverser visitor);
+
+    } 
+    public interface IMCBasicTypesArtifactScope extends de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope,de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope { 
+      public boolean containsImports(Object element);
+      public boolean containsAllImports(Collection<?>collection);
+      public boolean isEmptyImports();
+      public Iterator<de.monticore.symboltable.ImportStatement>iteratorImports();
+      public int sizeImports();
+      public de.monticore.symboltable.ImportStatement []toArrayImports(de.monticore.symboltable.ImportStatement []array);
+      public Object []toArrayImports();
+      public Spliterator<de.monticore.symboltable.ImportStatement>spliteratorImports();
+      public Stream<de.monticore.symboltable.ImportStatement>streamImports();
+      public Stream<de.monticore.symboltable.ImportStatement>parallelStreamImports();
+      public de.monticore.symboltable.ImportStatement getImports(int index);
+      public int indexOfImports(Object element);
+      public int lastIndexOfImports(Object element);
+      public boolean equalsImports(Object o);
+      public int hashCodeImports();
+      public ListIterator<de.monticore.symboltable.ImportStatement>listIteratorImports();
+      public ListIterator<de.monticore.symboltable.ImportStatement>listIteratorImports(int index);
+      public List<de.monticore.symboltable.ImportStatement>subListImports(int start,int end);
+      public void clearImports();
+      public boolean addImports(de.monticore.symboltable.ImportStatement element);
+      public boolean addAllImports(Collection<? extends de.monticore.symboltable.ImportStatement>collection);
+      public boolean removeImports(Object element);
+      public boolean removeAllImports(Collection<?>collection);
+      public boolean retainAllImports(Collection<?>collection);
+      public boolean removeIfImports(Predicate<? super de.monticore.symboltable.ImportStatement>filter);
+      public void forEachImports(Consumer<? super de.monticore.symboltable.ImportStatement>action);
+      public void addImports(int index,de.monticore.symboltable.ImportStatement element);
+      public boolean addAllImports(int index,Collection<? extends de.monticore.symboltable.ImportStatement>collection);
+      public de.monticore.symboltable.ImportStatement removeImports(int index);
+      public de.monticore.symboltable.ImportStatement setImports(int index,de.monticore.symboltable.ImportStatement element);
+      public void replaceAllImports(UnaryOperator<de.monticore.symboltable.ImportStatement>operator);
+      public void sortImports(Comparator<? super de.monticore.symboltable.ImportStatement>comparator);
+      public abstract List<de.monticore.symboltable.ImportStatement>getImportsList();
+      public abstract void setImportsList(List<de.monticore.symboltable.ImportStatement>imports);
+      public Optional<de.monticore.symboltable.ISymbol>getTopLevelSymbol();
+      public boolean checkIfContinueAsSubScope(String symbolName);
+      public List<String>getRemainingNameForResolveDown(String symbolName);
+      public String getFullName();
+      public abstract void accept(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser visitor);
+      public abstract void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public abstract void accept(de.monticore.visitor.ITraverser visitor);
+
+    } 
+    public class MCBasicTypesScopesGenitorDelegator { 
+      public MCBasicTypesScopesGenitorDelegator();
+      protected Deque<de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope>scopeStack;
+      protected final MCBasicTypesScopesGenitor symbolTable;
+      protected de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesGlobalScope globalScope;
+      protected de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser traverser;
+      public de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope createFromAST(de.monticore.types.mcbasictypes._ast.ASTMCType rootNode);
+
+    } 
+    public class MCBasicTypesArtifactScope extends de.monticore.types.mcbasictypes._symboltable.MCBasicTypesScope implements de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope { 
+      public MCBasicTypesArtifactScope(String packageName,List<de.monticore.symboltable.ImportStatement>imports);
+      public MCBasicTypesArtifactScope(Optional<de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope>enclosingScope,String packageName,List<de.monticore.symboltable.ImportStatement>imports);
+      public MCBasicTypesArtifactScope();
+      protected String packageName;
+      public String getPackageName();
+      public void setPackageName(String packageName);
+      protected List<de.monticore.symboltable.ImportStatement>imports;
+      public List<de.monticore.symboltable.ImportStatement>getImportsList();
+      public void setImportsList(List<de.monticore.symboltable.ImportStatement>imports);
+      public boolean isPresentName();
+      public String getName();
+      public void setEnclosingScope(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope enclosingScope);
+      public void accept(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+
+    } 
+    public class MCBasicTypesDeSer implements de.monticore.symboltable.serialization.IDeSer<de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope, de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope, de.monticore.types.mcbasictypes._symboltable.MCBasicTypesSymbols2Json> { 
+      public String serialize(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope toSerialize,de.monticore.types.mcbasictypes._symboltable.MCBasicTypesSymbols2Json s2j);
+      public String serialize(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope toSerialize,de.monticore.types.mcbasictypes._symboltable.MCBasicTypesSymbols2Json s2j);
+      public void serializeAddons(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope toSerialize,de.monticore.types.mcbasictypes._symboltable.MCBasicTypesSymbols2Json s2j);
+      public void serializeAddons(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope toSerialize,de.monticore.types.mcbasictypes._symboltable.MCBasicTypesSymbols2Json s2j);
+      public de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope deserializeScope(de.monticore.symboltable.serialization.json.JsonObject scopeJson);
+      public de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope deserializeArtifactScope(de.monticore.symboltable.serialization.json.JsonObject scopeJson);
+      protected void deserializeSymbols(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope scope,de.monticore.symboltable.serialization.json.JsonObject scopeJson);
+      public void deserializeAddons(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope scope,de.monticore.symboltable.serialization.json.JsonObject scopeJson);
+      public void deserializeAddons(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope scope,de.monticore.symboltable.serialization.json.JsonObject scopeJson);
+
+    } 
+    public class MCBasicTypesGlobalScope extends de.monticore.types.mcbasictypes._symboltable.MCBasicTypesScope implements de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesGlobalScope { 
+      public MCBasicTypesGlobalScope(de.monticore.io.paths.MCPath symbolPath,String fileExt);
+      public MCBasicTypesGlobalScope();
+      protected de.monticore.io.paths.MCPath symbolPath;
+      public de.monticore.io.paths.MCPath getSymbolPath();
+      public void setSymbolPath(de.monticore.io.paths.MCPath symbolPath);
+      protected String fileExt;
+      public String getFileExt();
+      public void setFileExt(String fileExt);
+      public de.monticore.symboltable.serialization.IDeSer deSer;
+      public de.monticore.symboltable.serialization.IDeSer getDeSer();
+      public void setDeSer(de.monticore.symboltable.serialization.IDeSer deSer);
+      protected Map<String,de.monticore.symboltable.serialization.ISymbolDeSer> symbolDeSers;
+      public Map<String,de.monticore.symboltable.serialization.ISymbolDeSer> getSymbolDeSers();
+      public void setSymbolDeSers(Map<String,de.monticore.symboltable.serialization.ISymbolDeSer> symbolDeSers);
+      protected MCBasicTypesSymbols2Json symbols2Json;
+      public void setSymbols2Json(MCBasicTypesSymbols2Json symbols2Json);
+      public MCBasicTypesSymbols2Json getSymbols2Json();
+      protected Set<String>cache;
+      public void addLoadedFile(String name);
+      public void clearLoadedFiles();
+      public boolean isFileLoaded(String name);
+      public void init();
+      public void loadFileForModelName(String modelName);
+      public MCBasicTypesGlobalScope getRealThis();
+      public void clear();
+      public void accept(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+
+    } 
+    public class MCBasicTypesScopesGenitor implements de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2,de.monticore.types.mcbasictypes._visitor.MCBasicTypesHandler { 
+      public MCBasicTypesScopesGenitor();
+      protected Deque<de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope>scopeStack;
+      protected de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser traverser;
+      public de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser getTraverser();
+      public void setTraverser(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser traverser);
+      protected de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope firstCreatedScope;
+      public de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope getFirstCreatedScope();
+      public de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope createFromAST(de.monticore.types.mcbasictypes._ast.ASTMCType rootNode);
+      public void putOnStack(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope scope);
+      public final Optional<de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope>getCurrentScope();
+      public final Optional<de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope>removeCurrentScope();
+      public void setScopeStack(Deque<? extends de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope>scopeStack);
+      public de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope createScope(boolean shadowing);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCImportStatement node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCReturnType node);
+      public void visit(de.monticore.types.mcbasictypes._ast.ASTMCVoidType node);
+      protected void initScopeHP1(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope scope);
+      protected void initScopeHP2(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope scope);
+      protected void initArtifactScopeHP1(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope scope);
+      protected void initArtifactScopeHP2(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope scope);
+      public void addToScopeStack(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope scope);
+
+    } 
+
+  } 
+  package de.monticore.types.mcbasictypes._ast { 
+    public class ASTMCQualifiedName extends ASTCNode implements de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode { 
+      protected ASTMCQualifiedName();
+      public boolean deepEquals(Object o);
+      public boolean deepEquals(Object o,boolean forceSameOrder);
+      public boolean deepEqualsWithComments(Object o);
+      public boolean deepEqualsWithComments(Object o,boolean forceSameOrder);
+      public boolean equalAttributes(Object o);
+      public boolean equalsWithComments(Object o);
+      public ASTMCQualifiedName deepClone();
+      public ASTMCQualifiedName deepClone(ASTMCQualifiedName result);
+      protected java.util.List<String>parts;
+      public boolean containsParts(Object element);
+      public boolean containsAllParts(Collection<?>collection);
+      public boolean isEmptyParts();
+      public Iterator<String>iteratorParts();
+      public int sizeParts();
+      public String []toArrayParts(String []array);
+      public Object []toArrayParts();
+      public Spliterator<String>spliteratorParts();
+      public Stream<String>streamParts();
+      public Stream<String>parallelStreamParts();
+      public String getParts(int index);
+      public int indexOfParts(Object element);
+      public int lastIndexOfParts(Object element);
+      public boolean equalsParts(Object o);
+      public int hashCodeParts();
+      public ListIterator<String>listIteratorParts();
+      public ListIterator<String>listIteratorParts(int index);
+      public List<String>subListParts(int start,int end);
+      public List<String>getPartsList();
+      public void clearParts();
+      public boolean addParts(String element);
+      public boolean addAllParts(Collection<? extends String>collection);
+      public boolean removeParts(Object element);
+      public boolean removeAllParts(Collection<?>collection);
+      public boolean retainAllParts(Collection<?>collection);
+      public boolean removeIfParts(Predicate<? super String>filter);
+      public void forEachParts(Consumer<? super String>action);
+      public void addParts(int index,String element);
+      public boolean addAllParts(int index,Collection<? extends String>collection);
+      public String removeParts(int index);
+      public String setParts(int index,String element);
+      public void replaceAllParts(UnaryOperator<String>operator);
+      public void sortParts(Comparator<? super String>comparator);
+      public void setPartsList(List<String>parts);
+      public void accept(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+      protected ASTMCQualifiedName _construct();
+      protected de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope enclosingScope;
+      public de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope getEnclosingScope();
+      public void setEnclosingScope(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope enclosingScope);
+      public void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope);
+      public de.monticore.interpreter.Value evaluate(de.monticore.types.mcbasictypes._visitor.IMCBasicTypesInterpreter interpreter);
+      public de.monticore.interpreter.Value evaluate(de.monticore.interpreter.ModelInterpreter interpreter);
+
+    } 
+    public class ASTMCPackageDeclaration extends ASTCNode implements de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode { 
+      protected ASTMCPackageDeclaration();
+      public boolean deepEquals(Object o);
+      public boolean deepEquals(Object o,boolean forceSameOrder);
+      public boolean deepEqualsWithComments(Object o);
+      public boolean deepEqualsWithComments(Object o,boolean forceSameOrder);
+      public boolean equalAttributes(Object o);
+      public boolean equalsWithComments(Object o);
+      public ASTMCPackageDeclaration deepClone();
+      public ASTMCPackageDeclaration deepClone(ASTMCPackageDeclaration result);
+      <<derived_attribute_name="",astType="">>protected de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName mCQualifiedName;
+      public de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName getMCQualifiedName();
+      public void setMCQualifiedName(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName mCQualifiedName);
+      public void accept(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+      protected ASTMCPackageDeclaration _construct();
+      protected de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope enclosingScope;
+      public de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope getEnclosingScope();
+      public void setEnclosingScope(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope enclosingScope);
+      public void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope);
+      public de.monticore.interpreter.Value evaluate(de.monticore.types.mcbasictypes._visitor.IMCBasicTypesInterpreter interpreter);
+      public de.monticore.interpreter.Value evaluate(de.monticore.interpreter.ModelInterpreter interpreter);
+
+    } 
+    public class ASTMCImportStatement extends ASTCNode implements de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode { 
+      protected ASTMCImportStatement();
+      public boolean deepEquals(Object o);
+      public boolean deepEquals(Object o,boolean forceSameOrder);
+      public boolean deepEqualsWithComments(Object o);
+      public boolean deepEqualsWithComments(Object o,boolean forceSameOrder);
+      public boolean equalAttributes(Object o);
+      public boolean equalsWithComments(Object o);
+      public ASTMCImportStatement deepClone();
+      public ASTMCImportStatement deepClone(ASTMCImportStatement result);
+      <<derived_attribute_name="",astType="">>protected de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName mCQualifiedName;
+      protected boolean star;
+      public de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName getMCQualifiedName();
+      public boolean isStar();
+      public void setMCQualifiedName(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName mCQualifiedName);
+      public void setStar(boolean star);
+      public void accept(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+      protected ASTMCImportStatement _construct();
+      protected de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope enclosingScope;
+      public de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope getEnclosingScope();
+      public void setEnclosingScope(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope enclosingScope);
+      public void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope);
+      public de.monticore.interpreter.Value evaluate(de.monticore.types.mcbasictypes._visitor.IMCBasicTypesInterpreter interpreter);
+      public de.monticore.interpreter.Value evaluate(de.monticore.interpreter.ModelInterpreter interpreter);
+
+    } 
+    public class ASTMCPrimitiveType extends ASTCNode implements de.monticore.types.mcbasictypes._ast.ASTMCType,de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode { 
+      protected ASTMCPrimitiveType();
+      public boolean deepEquals(Object o);
+      public boolean deepEquals(Object o,boolean forceSameOrder);
+      public boolean deepEqualsWithComments(Object o);
+      public boolean deepEqualsWithComments(Object o,boolean forceSameOrder);
+      public boolean equalAttributes(Object o);
+      public boolean equalsWithComments(Object o);
+      public ASTMCPrimitiveType deepClone();
+      public ASTMCPrimitiveType deepClone(ASTMCPrimitiveType result);
+      protected int primitive;
+      public int getPrimitive();
+      public void setPrimitive(int primitive);
+      public void accept(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+      protected ASTMCPrimitiveType _construct();
+      protected de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope enclosingScope;
+      public de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope getEnclosingScope();
+      public void setEnclosingScope(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope enclosingScope);
+      public void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope);
+      public de.monticore.interpreter.Value evaluate(de.monticore.types.mcbasictypes._visitor.IMCBasicTypesInterpreter interpreter);
+      public de.monticore.interpreter.Value evaluate(de.monticore.interpreter.ModelInterpreter interpreter);
+
+    } 
+    public class ASTMCQualifiedType extends ASTCNode implements de.monticore.types.mcbasictypes._ast.ASTMCObjectType,de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode { 
+      protected ASTMCQualifiedType();
+      public boolean deepEquals(Object o);
+      public boolean deepEquals(Object o,boolean forceSameOrder);
+      public boolean deepEqualsWithComments(Object o);
+      public boolean deepEqualsWithComments(Object o,boolean forceSameOrder);
+      public boolean equalAttributes(Object o);
+      public boolean equalsWithComments(Object o);
+      public ASTMCQualifiedType deepClone();
+      public ASTMCQualifiedType deepClone(ASTMCQualifiedType result);
+      <<derived_attribute_name="",astType="">>protected de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName mCQualifiedName;
+      public de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName getMCQualifiedName();
+      public void setMCQualifiedName(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName mCQualifiedName);
+      public void accept(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+      protected ASTMCQualifiedType _construct();
+      protected de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope enclosingScope;
+      public de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope getEnclosingScope();
+      public void setEnclosingScope(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope enclosingScope);
+      public void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope);
+      public de.monticore.interpreter.Value evaluate(de.monticore.types.mcbasictypes._visitor.IMCBasicTypesInterpreter interpreter);
+      public de.monticore.interpreter.Value evaluate(de.monticore.interpreter.ModelInterpreter interpreter);
+
+    } 
+    public class ASTMCReturnType extends ASTCNode implements de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode { 
+      protected ASTMCReturnType();
+      public boolean deepEquals(Object o);
+      public boolean deepEquals(Object o,boolean forceSameOrder);
+      public boolean deepEqualsWithComments(Object o);
+      public boolean deepEqualsWithComments(Object o,boolean forceSameOrder);
+      public boolean equalAttributes(Object o);
+      public boolean equalsWithComments(Object o);
+      public ASTMCReturnType deepClone();
+      public ASTMCReturnType deepClone(ASTMCReturnType result);
+      <<derived_attribute_name="",astType="">>protected Optional<de.monticore.types.mcbasictypes._ast.ASTMCVoidType>mCVoidType;
+      <<derived_attribute_name="",astType="">>protected Optional<de.monticore.types.mcbasictypes._ast.ASTMCType>mCType;
+      public de.monticore.types.mcbasictypes._ast.ASTMCVoidType getMCVoidType();
+      public boolean isPresentMCVoidType();
+      public de.monticore.types.mcbasictypes._ast.ASTMCType getMCType();
+      public boolean isPresentMCType();
+      public void setMCVoidType(de.monticore.types.mcbasictypes._ast.ASTMCVoidType mCVoidType);
+      public void setMCVoidTypeAbsent();
+      public void setMCType(de.monticore.types.mcbasictypes._ast.ASTMCType mCType);
+      public void setMCTypeAbsent();
+      public void accept(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+      protected ASTMCReturnType _construct();
+      protected de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope enclosingScope;
+      public de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope getEnclosingScope();
+      public void setEnclosingScope(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope enclosingScope);
+      public void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope);
+      public de.monticore.interpreter.Value evaluate(de.monticore.types.mcbasictypes._visitor.IMCBasicTypesInterpreter interpreter);
+      public de.monticore.interpreter.Value evaluate(de.monticore.interpreter.ModelInterpreter interpreter);
+
+    } 
+    public class ASTMCVoidType extends ASTCNode implements de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode { 
+      protected ASTMCVoidType();
+      public boolean deepEquals(Object o);
+      public boolean deepEquals(Object o,boolean forceSameOrder);
+      public boolean deepEqualsWithComments(Object o);
+      public boolean deepEqualsWithComments(Object o,boolean forceSameOrder);
+      public boolean equalAttributes(Object o);
+      public boolean equalsWithComments(Object o);
+      public ASTMCVoidType deepClone();
+      public ASTMCVoidType deepClone(ASTMCVoidType result);
+      public void accept(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser visitor);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+      protected ASTMCVoidType _construct();
+      protected de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope enclosingScope;
+      public de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope getEnclosingScope();
+      public void setEnclosingScope(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope enclosingScope);
+      public void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope);
+      public de.monticore.interpreter.Value evaluate(de.monticore.types.mcbasictypes._visitor.IMCBasicTypesInterpreter interpreter);
+      public de.monticore.interpreter.Value evaluate(de.monticore.interpreter.ModelInterpreter interpreter);
+
+    } 
+    public class ASTMCQualifiedNameBuilder extends de.monticore.ast.ASTNodeBuilder<ASTMCQualifiedNameBuilder> { 
+      protected ASTMCQualifiedNameBuilder realBuilder;
+      protected java.util.List<String>parts;
+      public ASTMCQualifiedNameBuilder();
+      public ASTMCQualifiedName build();
+      public boolean isValid();
+      public boolean containsParts(Object element);
+      public boolean containsAllParts(Collection<?>collection);
+      public boolean isEmptyParts();
+      public Iterator<String>iteratorParts();
+      public int sizeParts();
+      public String []toArrayParts(String []array);
+      public Object []toArrayParts();
+      public Spliterator<String>spliteratorParts();
+      public Stream<String>streamParts();
+      public Stream<String>parallelStreamParts();
+      public String getParts(int index);
+      public int indexOfParts(Object element);
+      public int lastIndexOfParts(Object element);
+      public boolean equalsParts(Object o);
+      public int hashCodeParts();
+      public ListIterator<String>listIteratorParts();
+      public ListIterator<String>listIteratorParts(int index);
+      public List<String>subListParts(int start,int end);
+      public List<String>getPartsList();
+      public ASTMCQualifiedNameBuilder clearParts();
+      public ASTMCQualifiedNameBuilder addParts(String element);
+      public ASTMCQualifiedNameBuilder addAllParts(Collection<? extends String>collection);
+      public ASTMCQualifiedNameBuilder removeParts(Object element);
+      public ASTMCQualifiedNameBuilder removeAllParts(Collection<?>collection);
+      public ASTMCQualifiedNameBuilder retainAllParts(Collection<?>collection);
+      public ASTMCQualifiedNameBuilder removeIfParts(Predicate<? super String>filter);
+      public ASTMCQualifiedNameBuilder forEachParts(Consumer<? super String>action);
+      public ASTMCQualifiedNameBuilder addParts(int index,String element);
+      public ASTMCQualifiedNameBuilder addAllParts(int index,Collection<? extends String>collection);
+      public ASTMCQualifiedNameBuilder removeParts(int index);
+      public ASTMCQualifiedNameBuilder setParts(int index,String element);
+      public ASTMCQualifiedNameBuilder replaceAllParts(UnaryOperator<String>operator);
+      public ASTMCQualifiedNameBuilder sortParts(Comparator<? super String>comparator);
+      public ASTMCQualifiedNameBuilder setPartsList(List<String>parts);
+      public ASTMCQualifiedNameBuilder set_SourcePositionEnd(SourcePosition end);
+      public ASTMCQualifiedNameBuilder set_SourcePositionEndAbsent();
+      public ASTMCQualifiedNameBuilder set_SourcePositionStart(SourcePosition start);
+      public ASTMCQualifiedNameBuilder set_SourcePositionStartAbsent();
+      public ASTMCQualifiedNameBuilder clear_PreComments();
+      public ASTMCQualifiedNameBuilder add_PreComment(Comment precomment);
+      public ASTMCQualifiedNameBuilder add_PreComment(int index,Comment precomment);
+      public ASTMCQualifiedNameBuilder addAll_PreComments(Collection<Comment>precomments);
+      public ASTMCQualifiedNameBuilder addAll_PreComments(int index,Collection<Comment>precomments);
+      public ASTMCQualifiedNameBuilder remove_PreComment(Object element);
+      public ASTMCQualifiedNameBuilder remove_PreComment(int index);
+      public ASTMCQualifiedNameBuilder removeAll_PreComments(Collection<?>element);
+      public ASTMCQualifiedNameBuilder retainAll_PreComments(Collection<?>element);
+      public ASTMCQualifiedNameBuilder removeIf_PreComment(Predicate<? super Comment>filter);
+      public ASTMCQualifiedNameBuilder forEach_PreComments(Consumer<? super Comment>action);
+      public ASTMCQualifiedNameBuilder replaceAll_PreComments(UnaryOperator<Comment>operator);
+      public ASTMCQualifiedNameBuilder sort_PreComments(Comparator<? super Comment>comparator);
+      public ASTMCQualifiedNameBuilder set_PreCommentList(List<Comment>preComments);
+      public ASTMCQualifiedNameBuilder set_PreComment(int index,Comment precomment);
+      public ASTMCQualifiedNameBuilder clear_PostComments();
+      public ASTMCQualifiedNameBuilder add_PostComment(Comment postcomment);
+      public ASTMCQualifiedNameBuilder add_PostComment(int index,Comment postcomment);
+      public ASTMCQualifiedNameBuilder addAll_PostComments(Collection<Comment>postcomments);
+      public ASTMCQualifiedNameBuilder addAll_PostComments(int index,Collection<Comment>postcomments);
+      public ASTMCQualifiedNameBuilder remove_PostComment(Object element);
+      public ASTMCQualifiedNameBuilder remove_PostComment(int index);
+      public ASTMCQualifiedNameBuilder removeAll_PostComments(Collection<?>element);
+      public ASTMCQualifiedNameBuilder retainAll_PostComments(Collection<?>element);
+      public ASTMCQualifiedNameBuilder removeIf_PostComment(Predicate<? super Comment>filter);
+      public ASTMCQualifiedNameBuilder forEach_PostComments(Consumer<? super Comment>action);
+      public ASTMCQualifiedNameBuilder replaceAll_PostComments(UnaryOperator<Comment>operator);
+      public ASTMCQualifiedNameBuilder sort_PostComments(Comparator<? super Comment>comparator);
+      public ASTMCQualifiedNameBuilder set_PostCommentList(List<Comment>postComments);
+      public ASTMCQualifiedNameBuilder set_PostComment(int index,Comment postcomment);
+      public ASTMCQualifiedName uncheckedBuild();
+
+    } 
+    public class ASTMCPackageDeclarationBuilder extends de.monticore.ast.ASTNodeBuilder<ASTMCPackageDeclarationBuilder> { 
+      protected ASTMCPackageDeclarationBuilder realBuilder;
+      <<derived_attribute_name="",astType="">>protected de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName mCQualifiedName;
+      public ASTMCPackageDeclarationBuilder();
+      public ASTMCPackageDeclaration build();
+      public boolean isValid();
+      public de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName getMCQualifiedName();
+      public ASTMCPackageDeclarationBuilder setMCQualifiedName(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName mCQualifiedName);
+      public ASTMCPackageDeclarationBuilder set_SourcePositionEnd(SourcePosition end);
+      public ASTMCPackageDeclarationBuilder set_SourcePositionEndAbsent();
+      public ASTMCPackageDeclarationBuilder set_SourcePositionStart(SourcePosition start);
+      public ASTMCPackageDeclarationBuilder set_SourcePositionStartAbsent();
+      public ASTMCPackageDeclarationBuilder clear_PreComments();
+      public ASTMCPackageDeclarationBuilder add_PreComment(Comment precomment);
+      public ASTMCPackageDeclarationBuilder add_PreComment(int index,Comment precomment);
+      public ASTMCPackageDeclarationBuilder addAll_PreComments(Collection<Comment>precomments);
+      public ASTMCPackageDeclarationBuilder addAll_PreComments(int index,Collection<Comment>precomments);
+      public ASTMCPackageDeclarationBuilder remove_PreComment(Object element);
+      public ASTMCPackageDeclarationBuilder remove_PreComment(int index);
+      public ASTMCPackageDeclarationBuilder removeAll_PreComments(Collection<?>element);
+      public ASTMCPackageDeclarationBuilder retainAll_PreComments(Collection<?>element);
+      public ASTMCPackageDeclarationBuilder removeIf_PreComment(Predicate<? super Comment>filter);
+      public ASTMCPackageDeclarationBuilder forEach_PreComments(Consumer<? super Comment>action);
+      public ASTMCPackageDeclarationBuilder replaceAll_PreComments(UnaryOperator<Comment>operator);
+      public ASTMCPackageDeclarationBuilder sort_PreComments(Comparator<? super Comment>comparator);
+      public ASTMCPackageDeclarationBuilder set_PreCommentList(List<Comment>preComments);
+      public ASTMCPackageDeclarationBuilder set_PreComment(int index,Comment precomment);
+      public ASTMCPackageDeclarationBuilder clear_PostComments();
+      public ASTMCPackageDeclarationBuilder add_PostComment(Comment postcomment);
+      public ASTMCPackageDeclarationBuilder add_PostComment(int index,Comment postcomment);
+      public ASTMCPackageDeclarationBuilder addAll_PostComments(Collection<Comment>postcomments);
+      public ASTMCPackageDeclarationBuilder addAll_PostComments(int index,Collection<Comment>postcomments);
+      public ASTMCPackageDeclarationBuilder remove_PostComment(Object element);
+      public ASTMCPackageDeclarationBuilder remove_PostComment(int index);
+      public ASTMCPackageDeclarationBuilder removeAll_PostComments(Collection<?>element);
+      public ASTMCPackageDeclarationBuilder retainAll_PostComments(Collection<?>element);
+      public ASTMCPackageDeclarationBuilder removeIf_PostComment(Predicate<? super Comment>filter);
+      public ASTMCPackageDeclarationBuilder forEach_PostComments(Consumer<? super Comment>action);
+      public ASTMCPackageDeclarationBuilder replaceAll_PostComments(UnaryOperator<Comment>operator);
+      public ASTMCPackageDeclarationBuilder sort_PostComments(Comparator<? super Comment>comparator);
+      public ASTMCPackageDeclarationBuilder set_PostCommentList(List<Comment>postComments);
+      public ASTMCPackageDeclarationBuilder set_PostComment(int index,Comment postcomment);
+      public ASTMCPackageDeclaration uncheckedBuild();
+
+    } 
+    public class ASTMCImportStatementBuilder extends de.monticore.ast.ASTNodeBuilder<ASTMCImportStatementBuilder> { 
+      protected ASTMCImportStatementBuilder realBuilder;
+      <<derived_attribute_name="",astType="">>protected de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName mCQualifiedName;
+      protected boolean star;
+      public ASTMCImportStatementBuilder();
+      public ASTMCImportStatement build();
+      public boolean isValid();
+      public de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName getMCQualifiedName();
+      public boolean isStar();
+      public ASTMCImportStatementBuilder setMCQualifiedName(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName mCQualifiedName);
+      public ASTMCImportStatementBuilder setStar(boolean star);
+      public ASTMCImportStatementBuilder set_SourcePositionEnd(SourcePosition end);
+      public ASTMCImportStatementBuilder set_SourcePositionEndAbsent();
+      public ASTMCImportStatementBuilder set_SourcePositionStart(SourcePosition start);
+      public ASTMCImportStatementBuilder set_SourcePositionStartAbsent();
+      public ASTMCImportStatementBuilder clear_PreComments();
+      public ASTMCImportStatementBuilder add_PreComment(Comment precomment);
+      public ASTMCImportStatementBuilder add_PreComment(int index,Comment precomment);
+      public ASTMCImportStatementBuilder addAll_PreComments(Collection<Comment>precomments);
+      public ASTMCImportStatementBuilder addAll_PreComments(int index,Collection<Comment>precomments);
+      public ASTMCImportStatementBuilder remove_PreComment(Object element);
+      public ASTMCImportStatementBuilder remove_PreComment(int index);
+      public ASTMCImportStatementBuilder removeAll_PreComments(Collection<?>element);
+      public ASTMCImportStatementBuilder retainAll_PreComments(Collection<?>element);
+      public ASTMCImportStatementBuilder removeIf_PreComment(Predicate<? super Comment>filter);
+      public ASTMCImportStatementBuilder forEach_PreComments(Consumer<? super Comment>action);
+      public ASTMCImportStatementBuilder replaceAll_PreComments(UnaryOperator<Comment>operator);
+      public ASTMCImportStatementBuilder sort_PreComments(Comparator<? super Comment>comparator);
+      public ASTMCImportStatementBuilder set_PreCommentList(List<Comment>preComments);
+      public ASTMCImportStatementBuilder set_PreComment(int index,Comment precomment);
+      public ASTMCImportStatementBuilder clear_PostComments();
+      public ASTMCImportStatementBuilder add_PostComment(Comment postcomment);
+      public ASTMCImportStatementBuilder add_PostComment(int index,Comment postcomment);
+      public ASTMCImportStatementBuilder addAll_PostComments(Collection<Comment>postcomments);
+      public ASTMCImportStatementBuilder addAll_PostComments(int index,Collection<Comment>postcomments);
+      public ASTMCImportStatementBuilder remove_PostComment(Object element);
+      public ASTMCImportStatementBuilder remove_PostComment(int index);
+      public ASTMCImportStatementBuilder removeAll_PostComments(Collection<?>element);
+      public ASTMCImportStatementBuilder retainAll_PostComments(Collection<?>element);
+      public ASTMCImportStatementBuilder removeIf_PostComment(Predicate<? super Comment>filter);
+      public ASTMCImportStatementBuilder forEach_PostComments(Consumer<? super Comment>action);
+      public ASTMCImportStatementBuilder replaceAll_PostComments(UnaryOperator<Comment>operator);
+      public ASTMCImportStatementBuilder sort_PostComments(Comparator<? super Comment>comparator);
+      public ASTMCImportStatementBuilder set_PostCommentList(List<Comment>postComments);
+      public ASTMCImportStatementBuilder set_PostComment(int index,Comment postcomment);
+      public ASTMCImportStatement uncheckedBuild();
+
+    } 
+    public class ASTMCPrimitiveTypeBuilder extends de.monticore.ast.ASTNodeBuilder<ASTMCPrimitiveTypeBuilder> { 
+      protected ASTMCPrimitiveTypeBuilder realBuilder;
+      protected int primitive;
+      public ASTMCPrimitiveTypeBuilder();
+      public ASTMCPrimitiveType build();
+      public boolean isValid();
+      public int getPrimitive();
+      public ASTMCPrimitiveTypeBuilder setPrimitive(int primitive);
+      public ASTMCPrimitiveTypeBuilder set_SourcePositionEnd(SourcePosition end);
+      public ASTMCPrimitiveTypeBuilder set_SourcePositionEndAbsent();
+      public ASTMCPrimitiveTypeBuilder set_SourcePositionStart(SourcePosition start);
+      public ASTMCPrimitiveTypeBuilder set_SourcePositionStartAbsent();
+      public ASTMCPrimitiveTypeBuilder clear_PreComments();
+      public ASTMCPrimitiveTypeBuilder add_PreComment(Comment precomment);
+      public ASTMCPrimitiveTypeBuilder add_PreComment(int index,Comment precomment);
+      public ASTMCPrimitiveTypeBuilder addAll_PreComments(Collection<Comment>precomments);
+      public ASTMCPrimitiveTypeBuilder addAll_PreComments(int index,Collection<Comment>precomments);
+      public ASTMCPrimitiveTypeBuilder remove_PreComment(Object element);
+      public ASTMCPrimitiveTypeBuilder remove_PreComment(int index);
+      public ASTMCPrimitiveTypeBuilder removeAll_PreComments(Collection<?>element);
+      public ASTMCPrimitiveTypeBuilder retainAll_PreComments(Collection<?>element);
+      public ASTMCPrimitiveTypeBuilder removeIf_PreComment(Predicate<? super Comment>filter);
+      public ASTMCPrimitiveTypeBuilder forEach_PreComments(Consumer<? super Comment>action);
+      public ASTMCPrimitiveTypeBuilder replaceAll_PreComments(UnaryOperator<Comment>operator);
+      public ASTMCPrimitiveTypeBuilder sort_PreComments(Comparator<? super Comment>comparator);
+      public ASTMCPrimitiveTypeBuilder set_PreCommentList(List<Comment>preComments);
+      public ASTMCPrimitiveTypeBuilder set_PreComment(int index,Comment precomment);
+      public ASTMCPrimitiveTypeBuilder clear_PostComments();
+      public ASTMCPrimitiveTypeBuilder add_PostComment(Comment postcomment);
+      public ASTMCPrimitiveTypeBuilder add_PostComment(int index,Comment postcomment);
+      public ASTMCPrimitiveTypeBuilder addAll_PostComments(Collection<Comment>postcomments);
+      public ASTMCPrimitiveTypeBuilder addAll_PostComments(int index,Collection<Comment>postcomments);
+      public ASTMCPrimitiveTypeBuilder remove_PostComment(Object element);
+      public ASTMCPrimitiveTypeBuilder remove_PostComment(int index);
+      public ASTMCPrimitiveTypeBuilder removeAll_PostComments(Collection<?>element);
+      public ASTMCPrimitiveTypeBuilder retainAll_PostComments(Collection<?>element);
+      public ASTMCPrimitiveTypeBuilder removeIf_PostComment(Predicate<? super Comment>filter);
+      public ASTMCPrimitiveTypeBuilder forEach_PostComments(Consumer<? super Comment>action);
+      public ASTMCPrimitiveTypeBuilder replaceAll_PostComments(UnaryOperator<Comment>operator);
+      public ASTMCPrimitiveTypeBuilder sort_PostComments(Comparator<? super Comment>comparator);
+      public ASTMCPrimitiveTypeBuilder set_PostCommentList(List<Comment>postComments);
+      public ASTMCPrimitiveTypeBuilder set_PostComment(int index,Comment postcomment);
+      public ASTMCPrimitiveType uncheckedBuild();
+
+    } 
+    public class ASTMCQualifiedTypeBuilder extends de.monticore.ast.ASTNodeBuilder<ASTMCQualifiedTypeBuilder> { 
+      protected ASTMCQualifiedTypeBuilder realBuilder;
+      <<derived_attribute_name="",astType="">>protected de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName mCQualifiedName;
+      public ASTMCQualifiedTypeBuilder();
+      public ASTMCQualifiedType build();
+      public boolean isValid();
+      public de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName getMCQualifiedName();
+      public ASTMCQualifiedTypeBuilder setMCQualifiedName(de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName mCQualifiedName);
+      public ASTMCQualifiedTypeBuilder set_SourcePositionEnd(SourcePosition end);
+      public ASTMCQualifiedTypeBuilder set_SourcePositionEndAbsent();
+      public ASTMCQualifiedTypeBuilder set_SourcePositionStart(SourcePosition start);
+      public ASTMCQualifiedTypeBuilder set_SourcePositionStartAbsent();
+      public ASTMCQualifiedTypeBuilder clear_PreComments();
+      public ASTMCQualifiedTypeBuilder add_PreComment(Comment precomment);
+      public ASTMCQualifiedTypeBuilder add_PreComment(int index,Comment precomment);
+      public ASTMCQualifiedTypeBuilder addAll_PreComments(Collection<Comment>precomments);
+      public ASTMCQualifiedTypeBuilder addAll_PreComments(int index,Collection<Comment>precomments);
+      public ASTMCQualifiedTypeBuilder remove_PreComment(Object element);
+      public ASTMCQualifiedTypeBuilder remove_PreComment(int index);
+      public ASTMCQualifiedTypeBuilder removeAll_PreComments(Collection<?>element);
+      public ASTMCQualifiedTypeBuilder retainAll_PreComments(Collection<?>element);
+      public ASTMCQualifiedTypeBuilder removeIf_PreComment(Predicate<? super Comment>filter);
+      public ASTMCQualifiedTypeBuilder forEach_PreComments(Consumer<? super Comment>action);
+      public ASTMCQualifiedTypeBuilder replaceAll_PreComments(UnaryOperator<Comment>operator);
+      public ASTMCQualifiedTypeBuilder sort_PreComments(Comparator<? super Comment>comparator);
+      public ASTMCQualifiedTypeBuilder set_PreCommentList(List<Comment>preComments);
+      public ASTMCQualifiedTypeBuilder set_PreComment(int index,Comment precomment);
+      public ASTMCQualifiedTypeBuilder clear_PostComments();
+      public ASTMCQualifiedTypeBuilder add_PostComment(Comment postcomment);
+      public ASTMCQualifiedTypeBuilder add_PostComment(int index,Comment postcomment);
+      public ASTMCQualifiedTypeBuilder addAll_PostComments(Collection<Comment>postcomments);
+      public ASTMCQualifiedTypeBuilder addAll_PostComments(int index,Collection<Comment>postcomments);
+      public ASTMCQualifiedTypeBuilder remove_PostComment(Object element);
+      public ASTMCQualifiedTypeBuilder remove_PostComment(int index);
+      public ASTMCQualifiedTypeBuilder removeAll_PostComments(Collection<?>element);
+      public ASTMCQualifiedTypeBuilder retainAll_PostComments(Collection<?>element);
+      public ASTMCQualifiedTypeBuilder removeIf_PostComment(Predicate<? super Comment>filter);
+      public ASTMCQualifiedTypeBuilder forEach_PostComments(Consumer<? super Comment>action);
+      public ASTMCQualifiedTypeBuilder replaceAll_PostComments(UnaryOperator<Comment>operator);
+      public ASTMCQualifiedTypeBuilder sort_PostComments(Comparator<? super Comment>comparator);
+      public ASTMCQualifiedTypeBuilder set_PostCommentList(List<Comment>postComments);
+      public ASTMCQualifiedTypeBuilder set_PostComment(int index,Comment postcomment);
+      public ASTMCQualifiedType uncheckedBuild();
+
+    } 
+    public class ASTMCReturnTypeBuilder extends de.monticore.ast.ASTNodeBuilder<ASTMCReturnTypeBuilder> { 
+      protected ASTMCReturnTypeBuilder realBuilder;
+      <<derived_attribute_name="",astType="">>protected Optional<de.monticore.types.mcbasictypes._ast.ASTMCVoidType>mCVoidType;
+      <<derived_attribute_name="",astType="">>protected Optional<de.monticore.types.mcbasictypes._ast.ASTMCType>mCType;
+      public ASTMCReturnTypeBuilder();
+      public ASTMCReturnType build();
+      public boolean isValid();
+      public de.monticore.types.mcbasictypes._ast.ASTMCVoidType getMCVoidType();
+      public boolean isPresentMCVoidType();
+      public de.monticore.types.mcbasictypes._ast.ASTMCType getMCType();
+      public boolean isPresentMCType();
+      public ASTMCReturnTypeBuilder setMCVoidType(de.monticore.types.mcbasictypes._ast.ASTMCVoidType mCVoidType);
+      public ASTMCReturnTypeBuilder setMCVoidTypeAbsent();
+      public ASTMCReturnTypeBuilder setMCType(de.monticore.types.mcbasictypes._ast.ASTMCType mCType);
+      public ASTMCReturnTypeBuilder setMCTypeAbsent();
+      public ASTMCReturnTypeBuilder set_SourcePositionEnd(SourcePosition end);
+      public ASTMCReturnTypeBuilder set_SourcePositionEndAbsent();
+      public ASTMCReturnTypeBuilder set_SourcePositionStart(SourcePosition start);
+      public ASTMCReturnTypeBuilder set_SourcePositionStartAbsent();
+      public ASTMCReturnTypeBuilder clear_PreComments();
+      public ASTMCReturnTypeBuilder add_PreComment(Comment precomment);
+      public ASTMCReturnTypeBuilder add_PreComment(int index,Comment precomment);
+      public ASTMCReturnTypeBuilder addAll_PreComments(Collection<Comment>precomments);
+      public ASTMCReturnTypeBuilder addAll_PreComments(int index,Collection<Comment>precomments);
+      public ASTMCReturnTypeBuilder remove_PreComment(Object element);
+      public ASTMCReturnTypeBuilder remove_PreComment(int index);
+      public ASTMCReturnTypeBuilder removeAll_PreComments(Collection<?>element);
+      public ASTMCReturnTypeBuilder retainAll_PreComments(Collection<?>element);
+      public ASTMCReturnTypeBuilder removeIf_PreComment(Predicate<? super Comment>filter);
+      public ASTMCReturnTypeBuilder forEach_PreComments(Consumer<? super Comment>action);
+      public ASTMCReturnTypeBuilder replaceAll_PreComments(UnaryOperator<Comment>operator);
+      public ASTMCReturnTypeBuilder sort_PreComments(Comparator<? super Comment>comparator);
+      public ASTMCReturnTypeBuilder set_PreCommentList(List<Comment>preComments);
+      public ASTMCReturnTypeBuilder set_PreComment(int index,Comment precomment);
+      public ASTMCReturnTypeBuilder clear_PostComments();
+      public ASTMCReturnTypeBuilder add_PostComment(Comment postcomment);
+      public ASTMCReturnTypeBuilder add_PostComment(int index,Comment postcomment);
+      public ASTMCReturnTypeBuilder addAll_PostComments(Collection<Comment>postcomments);
+      public ASTMCReturnTypeBuilder addAll_PostComments(int index,Collection<Comment>postcomments);
+      public ASTMCReturnTypeBuilder remove_PostComment(Object element);
+      public ASTMCReturnTypeBuilder remove_PostComment(int index);
+      public ASTMCReturnTypeBuilder removeAll_PostComments(Collection<?>element);
+      public ASTMCReturnTypeBuilder retainAll_PostComments(Collection<?>element);
+      public ASTMCReturnTypeBuilder removeIf_PostComment(Predicate<? super Comment>filter);
+      public ASTMCReturnTypeBuilder forEach_PostComments(Consumer<? super Comment>action);
+      public ASTMCReturnTypeBuilder replaceAll_PostComments(UnaryOperator<Comment>operator);
+      public ASTMCReturnTypeBuilder sort_PostComments(Comparator<? super Comment>comparator);
+      public ASTMCReturnTypeBuilder set_PostCommentList(List<Comment>postComments);
+      public ASTMCReturnTypeBuilder set_PostComment(int index,Comment postcomment);
+      public ASTMCReturnType uncheckedBuild();
+
+    } 
+    public class ASTMCVoidTypeBuilder extends de.monticore.ast.ASTNodeBuilder<ASTMCVoidTypeBuilder> { 
+      protected ASTMCVoidTypeBuilder realBuilder;
+      public ASTMCVoidTypeBuilder();
+      public ASTMCVoidType build();
+      public boolean isValid();
+      public ASTMCVoidTypeBuilder set_SourcePositionEnd(SourcePosition end);
+      public ASTMCVoidTypeBuilder set_SourcePositionEndAbsent();
+      public ASTMCVoidTypeBuilder set_SourcePositionStart(SourcePosition start);
+      public ASTMCVoidTypeBuilder set_SourcePositionStartAbsent();
+      public ASTMCVoidTypeBuilder clear_PreComments();
+      public ASTMCVoidTypeBuilder add_PreComment(Comment precomment);
+      public ASTMCVoidTypeBuilder add_PreComment(int index,Comment precomment);
+      public ASTMCVoidTypeBuilder addAll_PreComments(Collection<Comment>precomments);
+      public ASTMCVoidTypeBuilder addAll_PreComments(int index,Collection<Comment>precomments);
+      public ASTMCVoidTypeBuilder remove_PreComment(Object element);
+      public ASTMCVoidTypeBuilder remove_PreComment(int index);
+      public ASTMCVoidTypeBuilder removeAll_PreComments(Collection<?>element);
+      public ASTMCVoidTypeBuilder retainAll_PreComments(Collection<?>element);
+      public ASTMCVoidTypeBuilder removeIf_PreComment(Predicate<? super Comment>filter);
+      public ASTMCVoidTypeBuilder forEach_PreComments(Consumer<? super Comment>action);
+      public ASTMCVoidTypeBuilder replaceAll_PreComments(UnaryOperator<Comment>operator);
+      public ASTMCVoidTypeBuilder sort_PreComments(Comparator<? super Comment>comparator);
+      public ASTMCVoidTypeBuilder set_PreCommentList(List<Comment>preComments);
+      public ASTMCVoidTypeBuilder set_PreComment(int index,Comment precomment);
+      public ASTMCVoidTypeBuilder clear_PostComments();
+      public ASTMCVoidTypeBuilder add_PostComment(Comment postcomment);
+      public ASTMCVoidTypeBuilder add_PostComment(int index,Comment postcomment);
+      public ASTMCVoidTypeBuilder addAll_PostComments(Collection<Comment>postcomments);
+      public ASTMCVoidTypeBuilder addAll_PostComments(int index,Collection<Comment>postcomments);
+      public ASTMCVoidTypeBuilder remove_PostComment(Object element);
+      public ASTMCVoidTypeBuilder remove_PostComment(int index);
+      public ASTMCVoidTypeBuilder removeAll_PostComments(Collection<?>element);
+      public ASTMCVoidTypeBuilder retainAll_PostComments(Collection<?>element);
+      public ASTMCVoidTypeBuilder removeIf_PostComment(Predicate<? super Comment>filter);
+      public ASTMCVoidTypeBuilder forEach_PostComments(Consumer<? super Comment>action);
+      public ASTMCVoidTypeBuilder replaceAll_PostComments(UnaryOperator<Comment>operator);
+      public ASTMCVoidTypeBuilder sort_PostComments(Comparator<? super Comment>comparator);
+      public ASTMCVoidTypeBuilder set_PostCommentList(List<Comment>postComments);
+      public ASTMCVoidTypeBuilder set_PostComment(int index,Comment postcomment);
+      public ASTMCVoidType uncheckedBuild();
+
+    } 
+    public class ASTConstantsMCBasicTypes { 
+      public final static String LANGUAGE;
+      public final static int DEFAULT;
+      public final static int BOOLEAN;
+      public final static int BYTE;
+      public final static int CHAR;
+      public final static int DOUBLE;
+      public final static int FLOAT;
+      public final static int INT;
+      public final static int LONG;
+      public final static int SHORT;
+      public final static int STAR;
+      public static String []superGrammars;
+      public ASTConstantsMCBasicTypes();
+      public static Collection<String>getAllLanguages();
+
+    } 
+    <<startProd>>public interface ASTMCType extends de.monticore.ast.ASTNode,de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode { 
+      public abstract boolean deepEquals(Object o);
+      public abstract boolean deepEquals(Object o,boolean forceSameOrder);
+      public abstract boolean deepEqualsWithComments(Object o);
+      public abstract boolean deepEqualsWithComments(Object o,boolean forceSameOrder);
+      public abstract boolean equalAttributes(Object o);
+      public abstract boolean equalsWithComments(Object o);
+      public abstract ASTMCType deepClone();
+      public abstract de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope getEnclosingScope();
+      public abstract void setEnclosingScope(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope enclosingScope);
+      public abstract void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope);
+
+    } 
+    public interface ASTMCObjectType extends de.monticore.types.mcbasictypes._ast.ASTMCType,de.monticore.ast.ASTNode,de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode { 
+      public abstract boolean deepEquals(Object o);
+      public abstract boolean deepEquals(Object o,boolean forceSameOrder);
+      public abstract boolean deepEqualsWithComments(Object o);
+      public abstract boolean deepEqualsWithComments(Object o,boolean forceSameOrder);
+      public abstract boolean equalAttributes(Object o);
+      public abstract boolean equalsWithComments(Object o);
+      public abstract ASTMCObjectType deepClone();
+      public abstract de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope getEnclosingScope();
+      public abstract void setEnclosingScope(de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope enclosingScope);
+      public abstract void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope);
+
+    } 
+    public interface ASTMCBasicTypesNode extends ASTNode { 
+      public abstract void accept(de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser visitor);
+
+    } 
+    <<deprecated>>public enum MCBasicTypesLiterals { 
+      BOOLEAN(de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes.BOOLEAN),BYTE(de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes.BYTE),CHAR(de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes.CHAR),DOUBLE(de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes.DOUBLE),FLOAT(de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes.FLOAT),INT(de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes.INT),LONG(de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes.LONG),SHORT(de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes.SHORT),STAR(de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes.STAR);
+      private MCBasicTypesLiterals(int intValue);
+      protected int intValue;
+      public int getIntValue();
+
+    } 
+
+  } 
+
+} 

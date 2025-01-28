@@ -12,7 +12,6 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
@@ -20,6 +19,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.monticore.umlstereotype._ast.ASTStereotypeBuilder;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -40,7 +40,6 @@ import java.util.function.Predicate;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
-import static de.monticore.types.check.SymTypePrimitive.box;
 import static umlp.generator.domain.decorator.commands.CommandDecorator.DE_SER;
 
 public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCommands {
@@ -181,7 +180,7 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
     if (isGem(param.getSymbol().getType())) {
       return "protected long " + param.getName() + "GemId";
     }
-    if (isGemList(param.getSymbol().getType())) {
+    if (isListOfGemIdentifiable(param.getSymbol().getType())) {
       return "protected List<Long> " + param.getName() + "GemId";
     }
     return "protected " + UMLPMill.prettyPrint(param.getMCType(), false) + " " + param.getName();
@@ -199,20 +198,27 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
   }
 
   protected void addImport(SymTypeExpression type, ASTCDClass ast) {
-    if (GenService.isCDType(type)) {
+    if(type.getTypeInfo().isPresentAstNode()) {
       ASTCDCompilationUnit typeCD = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
-      getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print());
-      if (!GenService.isCDEnum(type)) {
-        getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print()
-                                     + AccessPolicyDecorator.SUFFIX);
+      if (GenService.isCDType(type)) {
+        getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print());
+        if (!GenService.isCDEnum(type)) {
+          getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print()
+              + AccessPolicyDecorator.SUFFIX);
+        }
       }
-    }
-    else if (GenService.isCDEnum(type)) {
-      ASTCDCompilationUnit typeCD = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
-      getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print());
-    }
-    else if (GenService.isJavaType(type)) {
-      addJavaImport(ast, type);
+      else if (GenService.isCDEnum(type)) {
+        getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print());
+      }
+      else if (GenService.isJavaType(type)) {
+        addJavaImport(ast, type);
+      }
+    } else {
+      // Assume guiLib Import?
+      if(GenService.isCDType(type) && type.getTypeInfo().getFullName().startsWith("mc.fenix")) {
+        System.out.println(type.getTypeInfo().getFullName());
+        getCD4C().addImport(ast, Joiners.DOT.join(type.getTypeInfo().getPackageName().toLowerCase(), type.print()));
+      }
     }
   }
 
@@ -301,9 +307,17 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
     for (ASTCDParameter p : meth.getCDParameterList()) {
       SymTypeExpression type = p.getSymbol().getType();
       String paramName = p.getName();
+      /*
+        TODO this check may break when we import types from other Class Diagrams that are not
+        Gem identifiable
+      */
+      boolean originalGemList = isListOfGemIdentifiable(type);
       if (isGem(type)) {
         type = GenService.getSymType("long");
         paramName += "GemId";
+      }
+      if (originalGemList) {
+        paramName += "GemIdList";
       }
       paramNameList.add(paramName);
       typeList.add(type);
@@ -320,7 +334,10 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
       addDeSerImport(ast, origCD, supportedDeSers.contains(typeName), GenService.isCDOrInnerCDEnum(type),
           baseClassDecorator, typeName);
 
-      if (GenService.isList(type)) {
+      if (originalGemList) {
+        getCD4C().addMethod(ast, getOwnCommand_FromJsonObjectParametersGemListTemplate(), paramName);
+        getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonElement");
+      } else if (GenService.isList(type)) {
         getCD4C().addMethod(ast, getOwnCommand_FromJsonObjectParametersListTemplate(), p.getName());
         getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonElement");
       }
@@ -369,6 +386,10 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
 
   protected String getOwnCommand_FromJsonObjectParametersListTemplate() {
     return "umlp.commands.deser.OwnCommand_FromJsonObjectParametersList";
+  }
+
+  protected String getOwnCommand_FromJsonObjectParametersGemListTemplate() {
+    return "umlp.commands.deser.OwnCommand_FromJsonObjectParametersGemList";
   }
 
   protected void addDeSerImport(ASTCDClass ast, ASTCDCompilationUnit origCD,

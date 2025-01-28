@@ -1,0 +1,100 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram mcassertstatements_AST {
+  @MCAssertStatements!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @MCAssertStatements!Symbol(2,0);
+    enclosingScope = @MCAssertStatements!ArtifactScope;
+    spanningScope = @MCAssertStatements!Scope;
+    r__package = [de, monticore, statements];
+    importStatement = [// *size: 2
+      @!MCImportStatement(7,0):ASTMCImportStatement {
+        enclosingScope = @MCAssertStatements!Scope;
+        mCQualifiedName = @de.monticore.statements!MCQualifiedName(7,7):ASTMCQualifiedName {
+          enclosingScope = @MCAssertStatements!Scope;
+          parts = [de, monticore, statements];
+        };
+        star = true;
+      },
+      @!MCImportStatement(8,0):ASTMCImportStatement {
+        enclosingScope = @MCAssertStatements!Scope;
+        mCQualifiedName = @de.monticore.expressions!MCQualifiedName(8,7):ASTMCQualifiedName {
+          enclosingScope = @MCAssertStatements!Scope;
+          parts = [de, monticore, expressions];
+        };
+        star = true;
+      }];
+    name = MCAssertStatements;
+    supergrammar = [// *size: 2
+      @MCStatementsBasis!GrammarReference(33,18):ASTGrammarReference {
+        enclosingScope = @MCAssertStatements!Scope;
+        names = [MCStatementsBasis];
+      },
+      @ExpressionsBasis!GrammarReference(34,18):ASTGrammarReference {
+        enclosingScope = @MCAssertStatements!Scope;
+        names = [ExpressionsBasis];
+      }];
+    classProds = [// *size: 1
+      @AssertStatement!ClassProd(36,0):ASTClassProd {
+        enclosingScope = @MCAssertStatements!Scope;
+        superInterfaceRule = [// *size: 1
+          @MCStatement!RuleReference(36,27):ASTRuleReference {
+            enclosingScope = @AssertStatement!Scope;
+            name = MCStatement;
+          }];
+        alts = [// *size: 1
+          @!Alt(37,6):ASTAlt {
+            enclosingScope = @AssertStatement!Scope;
+            component = [// *size: 4
+              @assert!Terminal(37,6):ASTTerminal {
+                enclosingScope = @AssertStatement!Scope;
+                iteration = 0;
+                name = assert;
+              },
+              @Expression!NonTerminal(37,15):ASTNonTerminal {
+                enclosingScope = @AssertStatement!Scope;
+                usageName = "assertion";
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @!Block(37,36):ASTBlock {
+                enclosingScope = @AssertStatement!Scope;
+                alt = [// *size: 1
+                  @!Alt(37,37):ASTAlt {
+                    enclosingScope = @AssertStatement!Scope;
+                    component = [// *size: 2
+                      @COLON!Terminal(37,37):ASTTerminal {
+                        enclosingScope = @AssertStatement!Scope;
+                        iteration = 0;
+                        name = :;
+                      },
+                      @Expression!NonTerminal(37,41):ASTNonTerminal {
+                        enclosingScope = @AssertStatement!Scope;
+                        usageName = "message";
+                        name = Expression;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 17;
+              },
+              @SEMI!Terminal(37,62):ASTTerminal {
+                enclosingScope = @AssertStatement!Scope;
+                iteration = 0;
+                name = ;;
+              }];
+            rightAssoc = false;
+          }];
+        name = AssertStatement;
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

@@ -1,0 +1,304 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram mcbasictypes_AST {
+  @MCBasicTypes!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @MCBasicTypes!Symbol(2,0);
+    enclosingScope = @MCBasicTypes!ArtifactScope;
+    spanningScope = @MCBasicTypes!Scope;
+    r__package = [de, monticore, types];
+    importStatement = [// *size: 1
+      @!MCImportStatement(7,0):ASTMCImportStatement {
+        enclosingScope = @MCBasicTypes!Scope;
+        mCQualifiedName = @de.monticore!MCQualifiedName(7,7):ASTMCQualifiedName {
+          enclosingScope = @MCBasicTypes!Scope;
+          parts = [de, monticore];
+        };
+        star = true;
+      }];
+    name = MCBasicTypes;
+    supergrammar = [// *size: 1
+      @MCBasics!GrammarReference(27,39):ASTGrammarReference {
+        enclosingScope = @MCBasicTypes!Scope;
+        names = [de, monticore, MCBasics];
+      }];
+    classProds = [// *size: 7
+      @MCQualifiedName!ClassProd(44,2):ASTClassProd {
+        enclosingScope = @MCBasicTypes!Scope;
+        alts = [// *size: 1
+          @!Alt(45,6):ASTAlt {
+            enclosingScope = @MCQualifiedName!Scope;
+            component = [// *size: 1
+              @!Block(1,0):ASTBlock {
+                enclosingScope = @MCQualifiedName!Scope;
+                alt = [// *size: 1
+                  @!Alt(1,1):ASTAlt {
+                    enclosingScope = @MCQualifiedName!Scope;
+                    component = [// *size: 2
+                      @Name!NonTerminal(1,1):ASTNonTerminal {
+                        enclosingScope = @MCQualifiedName!Scope;
+                        usageName = "parts";
+                        name = Name;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      },
+                      @!Block(1,15):ASTBlock {
+                        enclosingScope = @MCQualifiedName!Scope;
+                        alt = [// *size: 1
+                          @!Alt(1,16):ASTAlt {
+                            enclosingScope = @MCQualifiedName!Scope;
+                            component = [// *size: 2
+                              @POINT!Terminal(1,16):ASTTerminal {
+                                enclosingScope = @MCQualifiedName!Scope;
+                                iteration = 0;
+                                name = .;
+                              },
+                              @Name!NonTerminal(1,20):ASTNonTerminal {
+                                enclosingScope = @MCQualifiedName!Scope;
+                                usageName = "parts";
+                                name = Name;
+                                genSymbol = false;
+                                plusKeywords = false;
+                                iteration = 0;
+                              }];
+                            rightAssoc = false;
+                          }];
+                        iteration = 21;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = MCQualifiedName;
+      },
+      @MCPackageDeclaration!ClassProd(53,2):ASTClassProd {
+        enclosingScope = @MCBasicTypes!Scope;
+        alts = [// *size: 1
+          @!Alt(53,25):ASTAlt {
+            enclosingScope = @MCPackageDeclaration!Scope;
+            component = [// *size: 3
+              @package!Terminal(53,25):ASTTerminal {
+                enclosingScope = @MCPackageDeclaration!Scope;
+                iteration = 0;
+                name = package;
+              },
+              @MCQualifiedName!NonTerminal(53,35):ASTNonTerminal {
+                enclosingScope = @MCPackageDeclaration!Scope;
+                name = MCQualifiedName;
+                genSymbol = false;
+                plusKeywords = true;
+                iteration = 0;
+              },
+              @SEMI!Terminal(53,52):ASTTerminal {
+                enclosingScope = @MCPackageDeclaration!Scope;
+                iteration = 0;
+                name = ;;
+              }];
+            rightAssoc = false;
+          }];
+        name = MCPackageDeclaration;
+      },
+      @MCImportStatement!ClassProd(59,2):ASTClassProd {
+        enclosingScope = @MCBasicTypes!Scope;
+        alts = [// *size: 1
+          @!Alt(60,6):ASTAlt {
+            enclosingScope = @MCImportStatement!Scope;
+            component = [// *size: 4
+              @import!Terminal(60,6):ASTTerminal {
+                enclosingScope = @MCImportStatement!Scope;
+                iteration = 0;
+                name = import;
+              },
+              @MCQualifiedName!NonTerminal(60,15):ASTNonTerminal {
+                enclosingScope = @MCImportStatement!Scope;
+                name = MCQualifiedName;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @!Block(60,31):ASTBlock {
+                enclosingScope = @MCImportStatement!Scope;
+                alt = [// *size: 1
+                  @!Alt(60,32):ASTAlt {
+                    enclosingScope = @MCImportStatement!Scope;
+                    component = [// *size: 2
+                      @POINT!Terminal(60,32):ASTTerminal {
+                        enclosingScope = @MCImportStatement!Scope;
+                        iteration = 0;
+                        name = .;
+                      },
+                      @Star!ConstantGroup(60,36):ASTConstantGroup {
+                        enclosingScope = @MCImportStatement!Scope;
+                        usageName = "Star";
+                        constants = [// *size: 1
+                          @STAR!Constant(60,42):ASTConstant {
+                            enclosingScope = @MCImportStatement!Scope;
+                            string = "*";
+                            name = *;
+                          }];
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 17;
+              },
+              @SEMI!Terminal(60,49):ASTTerminal {
+                enclosingScope = @MCImportStatement!Scope;
+                iteration = 0;
+                name = ;;
+              }];
+            rightAssoc = false;
+          }];
+        name = MCImportStatement;
+      },
+      @MCPrimitiveType!ClassProd(71,2):ASTClassProd {
+        enclosingScope = @MCBasicTypes!Scope;
+        superInterfaceRule = [// *size: 1
+          @MCType!RuleReference(71,29):ASTRuleReference {
+            enclosingScope = @MCPrimitiveType!Scope;
+            name = MCType;
+          }];
+        alts = [// *size: 1
+          @!Alt(72,5):ASTAlt {
+            enclosingScope = @MCPrimitiveType!Scope;
+            component = [// *size: 1
+              @primitive!ConstantGroup(72,5):ASTConstantGroup {
+                enclosingScope = @MCPrimitiveType!Scope;
+                usageName = "primitive";
+                constants = [// *size: 8
+                  @boolean!Constant(72,18):ASTConstant {
+                    enclosingScope = @MCPrimitiveType!Scope;
+                    string = "boolean";
+                    name = boolean;
+                  },
+                  @byte!Constant(72,30):ASTConstant {
+                    enclosingScope = @MCPrimitiveType!Scope;
+                    string = "byte";
+                    name = byte;
+                  },
+                  @short!Constant(72,39):ASTConstant {
+                    enclosingScope = @MCPrimitiveType!Scope;
+                    string = "short";
+                    name = short;
+                  },
+                  @int!Constant(72,49):ASTConstant {
+                    enclosingScope = @MCPrimitiveType!Scope;
+                    string = "int";
+                    name = int;
+                  },
+                  @long!Constant(73,20):ASTConstant {
+                    enclosingScope = @MCPrimitiveType!Scope;
+                    string = "long";
+                    name = long;
+                  },
+                  @char!Constant(73,29):ASTConstant {
+                    enclosingScope = @MCPrimitiveType!Scope;
+                    string = "char";
+                    name = char;
+                  },
+                  @float!Constant(73,37):ASTConstant {
+                    enclosingScope = @MCPrimitiveType!Scope;
+                    string = "float";
+                    name = float;
+                  },
+                  @double!Constant(73,47):ASTConstant {
+                    enclosingScope = @MCPrimitiveType!Scope;
+                    string = "double";
+                    name = double;
+                  }];
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = MCPrimitiveType;
+      },
+      @MCQualifiedType!ClassProd(90,2):ASTClassProd {
+        enclosingScope = @MCBasicTypes!Scope;
+        superInterfaceRule = [// *size: 1
+          @MCObjectType!RuleReference(90,29):ASTRuleReference {
+            enclosingScope = @MCQualifiedType!Scope;
+            name = MCObjectType;
+          }];
+        alts = [// *size: 1
+          @!Alt(90,44):ASTAlt {
+            enclosingScope = @MCQualifiedType!Scope;
+            component = [// *size: 1
+              @MCQualifiedName!NonTerminal(90,44):ASTNonTerminal {
+                enclosingScope = @MCQualifiedType!Scope;
+                name = MCQualifiedName;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = MCQualifiedType;
+      },
+      @MCReturnType!ClassProd(99,2):ASTClassProd {
+        enclosingScope = @MCBasicTypes!Scope;
+        alts = [// *size: 2
+          @!Alt(99,17):ASTAlt {
+            enclosingScope = @MCReturnType!Scope;
+            component = [// *size: 1
+              @MCVoidType!NonTerminal(99,17):ASTNonTerminal {
+                enclosingScope = @MCReturnType!Scope;
+                name = MCVoidType;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          },
+          @!Alt(99,30):ASTAlt {
+            enclosingScope = @MCReturnType!Scope;
+            component = [// *size: 1
+              @MCType!NonTerminal(99,30):ASTNonTerminal {
+                enclosingScope = @MCReturnType!Scope;
+                name = MCType;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = MCReturnType;
+      },
+      @MCVoidType!ClassProd(103,2):ASTClassProd {
+        enclosingScope = @MCBasicTypes!Scope;
+        alts = [// *size: 1
+          @!Alt(103,15):ASTAlt {
+            enclosingScope = @MCVoidType!Scope;
+            component = [// *size: 1
+              @void!Terminal(103,15):ASTTerminal {
+                enclosingScope = @MCVoidType!Scope;
+                iteration = 0;
+                name = void;
+              }];
+            rightAssoc = false;
+          }];
+        name = MCVoidType;
+      }];
+    interfaceProds = [// *size: 2
+      @MCType!InterfaceProd(35,2):ASTInterfaceProd {
+        enclosingScope = @MCBasicTypes!Scope;
+        name = MCType;
+      },
+      @MCObjectType!InterfaceProd(85,2):ASTInterfaceProd {
+        enclosingScope = @MCBasicTypes!Scope;
+        superInterfaceRule = [// *size: 1
+          @MCType!RuleReference(85,34):ASTRuleReference {
+            enclosingScope = @MCObjectType!Scope;
+            name = MCType;
+          }];
+        name = MCObjectType;
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

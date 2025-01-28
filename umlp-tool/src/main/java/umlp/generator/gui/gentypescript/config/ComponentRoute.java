@@ -22,11 +22,7 @@ public class ComponentRoute {
     this.importPathNoExt = importPathNoExt;
     this.urlPrefix = urlPrefix;
 
-    String importedSymbolName = ast.getComponentName();
-    if (!existsHWC) {
-      importedSymbolName += "Component";
-    }
-    this.importedSymbolName = importedSymbolName;
+    this.importedSymbolName = ast.getComponentName();
 
     String url = urlPrefix;
     if (!urlPrefix.isEmpty()) {

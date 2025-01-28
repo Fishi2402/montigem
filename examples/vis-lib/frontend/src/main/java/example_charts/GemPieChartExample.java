@@ -9,6 +9,7 @@ import umlp.jsweet.extension.annotation.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class GemPieChartExample extends GemPieChartExampleTOP {
@@ -19,8 +20,8 @@ public class GemPieChartExample extends GemPieChartExampleTOP {
       return null;
     }
     List<GemPieChartEntry> dataEntries = new ArrayList<>();
-    dataEntries.add(new GemPieChartEntry(0, "People born before 1993", "#000000"));
-    dataEntries.add(new GemPieChartEntry(0, "People born in and after 1993", "#000000"));
+    dataEntries.add(new GemPieChartEntry(0, "People born before 1993", Optional.empty()));
+    dataEntries.add(new GemPieChartEntry(0, "People born in and after 1993", Optional.of("#000000")));
 
     int group1 = 0;
     int group2 = 0;

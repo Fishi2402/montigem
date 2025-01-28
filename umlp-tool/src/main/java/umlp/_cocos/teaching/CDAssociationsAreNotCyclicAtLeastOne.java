@@ -5,11 +5,14 @@ import de.monticore.cdassociation._ast.ASTCDAssociation;
 import de.monticore.cdassociation._util.CDAssociationTypeDispatcher;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cdbasis._cocos.CDBasisASTCDDefinitionCoCo;
-import de.se_rwth.commons.logging.Log;
+import umlp._cocos.CoCoTestable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
-public class CDAssociationsAreNotCyclicAtLeastOne implements CDBasisASTCDDefinitionCoCo {
+public class CDAssociationsAreNotCyclicAtLeastOne implements CDBasisASTCDDefinitionCoCo, CoCoTestable {
 
   Map<String, List<String>> graph = new LinkedHashMap<>();
 
@@ -37,7 +40,7 @@ public class CDAssociationsAreNotCyclicAtLeastOne implements CDBasisASTCDDefinit
       }
 
       if (isCyclic()) {
-        Log.error("0x52567: Associations must not form a dependency loop.");
+        logError(node);
       }
     }
   }
@@ -81,4 +84,13 @@ public class CDAssociationsAreNotCyclicAtLeastOne implements CDBasisASTCDDefinit
     }
   }
 
+  @Override
+  public String getErrorCode() {
+    return "0x52567";
+  }
+
+  @Override
+  public String getErrorMessageFormat() {
+    return "Associations must not form a dependency loop";
+  }
 }

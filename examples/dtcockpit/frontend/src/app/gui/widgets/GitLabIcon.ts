@@ -3,7 +3,7 @@
 import { Component, Input } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
-import {config} from "@src/gui/widgets/GitLabIconComponent";
+import {config} from "gui/widgets/GitLabIconComponent";
 @Component({
   standalone:true,
   imports:[...config.imports],

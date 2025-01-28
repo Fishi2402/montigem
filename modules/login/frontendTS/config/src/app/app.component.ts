@@ -5,7 +5,7 @@ import {
   ClientCommandWebsocketCommunication,
   CommandManager
 } from '@umlp/common';
-import {LoginModuleManagerClientImpl} from '@src/loginmodule/LoginModuleManagerClientImpl';
+import {LoginModuleManagerClientImpl} from 'loginmodule/LoginModuleManagerClientImpl';
 
 @Component({
   selector: 'app-root',

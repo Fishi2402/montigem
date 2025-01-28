@@ -37,9 +37,9 @@ public class CommandResultDeSer implements JsonDeSer<CommandResult<?>> {
         }
       }
     }else if(result.isListResult()) {
+      var lr = result.asListResult();
+      printer.member("successful", lr.isSuccessful());
       if(BaseClassObjectMapper.canDeSer(tp)){
-        var lr = result.asListResult();
-        printer.member("successful", lr.isSuccessful());
         if(lr.isSuccessful()){
           List<String> objects = new ArrayList<>();
           for (Object o : lr.get()) {

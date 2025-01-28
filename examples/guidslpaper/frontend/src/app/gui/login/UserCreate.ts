@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {Component} from '@angular/core';
-import {UserCreateComponent,config} from '@src/gui/login/UserCreateComponent';
-import {Role} from '@src/guidslpaper/Role';
-import {User} from "@src/guidslpaper/User";
+import {UserCreateComponent,config} from 'gui/login/UserCreateComponent';
+import {Role} from 'guidslpaper/Role';
+import {User} from "guidslpaper/User";
 import {GemList} from '@umlp/common';
-import {GuidslpaperManager} from '@src/guidslpaper/GuidslpaperManager';
+import {GuidslpaperManager} from 'guidslpaper/GuidslpaperManager';
 import {Location} from '@angular/common';
 import {Router} from '@angular/router';
 

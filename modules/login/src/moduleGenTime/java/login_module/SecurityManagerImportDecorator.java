@@ -3,6 +3,7 @@
 package login_module;
 
 import de.monticore.cd.methodtemplates.CD4C;
+import de.monticore.cd4codebasis._visitor.CD4CodeBasisTraverser;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDElement;
@@ -32,7 +33,8 @@ public class SecurityManagerImportDecorator  {
     GUIDSLTraverser traverser = GUIDSLMill.traverser();
 
     // "Fun" fact: There exists no symbol table, thus we have to "resolve" on our own
-    CDBasisTraverser cdBasisTraverser = UMLPMill.inheritanceTraverser();
+    // TODO: The handlers are not inheritance-aware
+    CD4CodeBasisTraverser cdBasisTraverser = UMLPMill.inheritanceTraverser();
     ClassSearcher classSearcher = new ClassSearcher();
     cdBasisTraverser.setCDBasisHandler(classSearcher);
 
@@ -45,13 +47,18 @@ public class SecurityManagerImportDecorator  {
         classSearcher.setSearch(origGui.getPackage(), node.getName() + "Component");
 
         String fqn = String.join(".", origGui.getPackage(), node.getName() + "Component");
+        cdBasisTraverser.clearTraversedElements();
         decoratedCD.accept(cdBasisTraverser);
 
         if (classSearcher.candidate != null) {
           // And if found: Add the Import
-          String secManager = String.join(".", getPackageName(), "loginmodule.LoginSecManager");
+//          String secManager = String.join(".", getPackageName(), "loginmodule.LoginSecManager");
 //          String secManager = String.join(".", getPackageName(), "login.LoginSecManager");
-          CD4C.getInstance().addImport(classSearcher.candidate, "loginmodule.LoginSecManager");
+          // Only import the LoginSecManager if not yet present
+          if (CD4C.getInstance().getImportList(classSearcher.candidate).stream().noneMatch(
+              f -> f.printType().equals("loginmodule.LoginSecManager")
+          ))
+            CD4C.getInstance().addImport(classSearcher.candidate, "loginmodule.LoginSecManager");
           // not finding a class might be caused by other modules/TOP
         }
       }
@@ -102,7 +109,7 @@ public class SecurityManagerImportDecorator  {
 
     protected boolean alreadyFound = false;
     @Override
-    public void handle(ASTCDClass node) {
+    public void handle(ASTCDClass node) { // TODO: handle fails due to cd4codebasis
       if (node.getName().equals(searchClassName)) {
         alreadyFound = true;
         candidate = node;

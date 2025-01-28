@@ -1,15 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { DemoRecManager } from '@src/demorec/DemoRecManager';
+import { DemoRecManager } from 'demorec/DemoRecManager';
 
-import { BatteryPackType } from '@src/demorec/BatteryPackType';
+import { BatteryPackType } from 'demorec/BatteryPackType';
 
-import { ChoosePackTypeComponent ,config} from '@src/gui/pack/ChoosePackTypeComponent';
+import { ChoosePackTypeComponent ,config} from 'gui/pack/ChoosePackTypeComponent';
 
 import { Option, OptionBuilder } from '@umlp/input';
 
 
 import {
+  ChangeDetectorRef,
   Directive,
   Component,
   Input,
@@ -20,7 +21,7 @@ import {
 
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 
-const newOption: Option = new Option("NEW");
+const newOption: Option = new Option("NEW", "NEW");
 
 @Component({
   standalone:true,
@@ -39,7 +40,12 @@ export class ChoosePackType extends ChoosePackTypeComponent {
   @Output()
   public chosenType = new EventEmitter<BatteryPackType>
 
-  public init(): void {
+  constructor(private cdRef: ChangeDetectorRef) {
+    super();
+  }
+
+  public override init(): void {
+    super.init();
     DemoRecManager.getBatteryPackTypeList().then(gemPromiseRes => {
       const types = gemPromiseRes;
       types.loadAll().then(() => {
@@ -51,8 +57,6 @@ export class ChoosePackType extends ChoosePackTypeComponent {
         this.bPackTypeEntry = this.getCurrentType()? this.getCurrentType().getGemId()+"" : newOption.getValue()
       });
     });
-
-    super.init();
   }
 
    public override getSelectPackTypeOptions(): Array<Option> {
@@ -71,6 +75,7 @@ export class ChoosePackType extends ChoosePackTypeComponent {
 
    public override setSelectPackTypeEntry(value: string): void {
      this.bPackTypeEntry = value;
+     this.cdRef.detectChanges();
    }
 
    public override getCreatePackTypeCondition(): boolean {

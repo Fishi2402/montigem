@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 import { Component } from '@angular/core';
-import { WeatherManagerClientImpl } from '@src/weather/WeatherManagerClientImpl';
+import { WeatherManagerClientImpl } from 'weather/WeatherManagerClientImpl';
 import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from '@umlp/common';
 
 @Component({

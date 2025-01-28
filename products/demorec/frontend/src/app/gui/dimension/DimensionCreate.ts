@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { DemoRecManager } from '@src/demorec/DemoRecManager';
+import { DemoRecManager } from 'demorec/DemoRecManager';
 
-import { DimensionCreateComponent, config } from '@src/gui/dimension/DimensionCreateComponent';
+import { DimensionCreateComponent, config } from 'gui/dimension/DimensionCreateComponent';
 
 import {
   Directive,

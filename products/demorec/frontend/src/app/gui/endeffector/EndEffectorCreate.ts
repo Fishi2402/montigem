@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {DemoRecManager} from '@src/demorec/DemoRecManager';
+import {DemoRecManager} from 'demorec/DemoRecManager';
 
 import {
   EndEffectorCreateComponent,
   config
-} from '@src/gui/endeffector/EndEffectorCreateComponent';
+} from 'gui/endeffector/EndEffectorCreateComponent';
 
 import {
   Directive,

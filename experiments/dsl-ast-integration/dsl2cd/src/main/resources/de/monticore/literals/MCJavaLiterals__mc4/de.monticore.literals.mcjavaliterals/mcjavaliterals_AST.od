@@ -1,0 +1,1805 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram mcjavaliterals_AST {
+  @MCJavaLiterals!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @MCJavaLiterals!Symbol(2,0);
+    enclosingScope = @MCJavaLiterals!ArtifactScope;
+    spanningScope = @MCJavaLiterals!Scope;
+    r__package = [de, monticore, literals];
+    importStatement = [// *size: 1
+      @!MCImportStatement(7,0):ASTMCImportStatement {
+        enclosingScope = @MCJavaLiterals!Scope;
+        mCQualifiedName = @de.monticore.literals!MCQualifiedName(7,7):ASTMCQualifiedName {
+          enclosingScope = @MCJavaLiterals!Scope;
+          parts = [de, monticore, literals];
+        };
+        star = true;
+      }];
+    name = MCJavaLiterals;
+    supergrammar = [// *size: 1
+      @MCCommonLiterals!GrammarReference(21,41):ASTGrammarReference {
+        enclosingScope = @MCJavaLiterals!Scope;
+        names = [MCCommonLiterals];
+      }];
+    lexProds = [// *size: 40
+      @Num_Int!LexProd(75,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 4
+          @!LexAlt(76,7):ASTLexAlt {
+            enclosingScope = @Num_Int!Scope;
+            lexComponent = [// *size: 1
+              @DecimalIntegerLiteral!LexNonTerminal(76,7):ASTLexNonTerminal {
+                enclosingScope = @Num_Int!Scope;
+                name = DecimalIntegerLiteral;
+              }];
+          },
+          @!LexAlt(76,31):ASTLexAlt {
+            enclosingScope = @Num_Int!Scope;
+            lexComponent = [// *size: 1
+              @HexIntegerLiteral!LexNonTerminal(76,31):ASTLexNonTerminal {
+                enclosingScope = @Num_Int!Scope;
+                name = HexIntegerLiteral;
+              }];
+          },
+          @!LexAlt(77,9):ASTLexAlt {
+            enclosingScope = @Num_Int!Scope;
+            lexComponent = [// *size: 1
+              @OctalIntegerLiteral!LexNonTerminal(77,9):ASTLexNonTerminal {
+                enclosingScope = @Num_Int!Scope;
+                name = OctalIntegerLiteral;
+              }];
+          },
+          @!LexAlt(77,31):ASTLexAlt {
+            enclosingScope = @Num_Int!Scope;
+            lexComponent = [// *size: 1
+              @BinaryIntegerLiteral!LexNonTerminal(77,31):ASTLexNonTerminal {
+                enclosingScope = @Num_Int!Scope;
+                name = BinaryIntegerLiteral;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = false;
+        comment = false;
+        name = Num_Int;
+      },
+      @Num_Long!LexProd(79,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 4
+          @!LexAlt(80,7):ASTLexAlt {
+            enclosingScope = @Num_Long!Scope;
+            lexComponent = [// *size: 2
+              @DecimalIntegerLiteral!LexNonTerminal(80,7):ASTLexNonTerminal {
+                enclosingScope = @Num_Long!Scope;
+                name = DecimalIntegerLiteral;
+              },
+              @IntegerTypeSuffix!LexNonTerminal(80,29):ASTLexNonTerminal {
+                enclosingScope = @Num_Long!Scope;
+                name = IntegerTypeSuffix;
+              }];
+          },
+          @!LexAlt(81,9):ASTLexAlt {
+            enclosingScope = @Num_Long!Scope;
+            lexComponent = [// *size: 2
+              @HexIntegerLiteral!LexNonTerminal(81,9):ASTLexNonTerminal {
+                enclosingScope = @Num_Long!Scope;
+                name = HexIntegerLiteral;
+              },
+              @IntegerTypeSuffix!LexNonTerminal(81,27):ASTLexNonTerminal {
+                enclosingScope = @Num_Long!Scope;
+                name = IntegerTypeSuffix;
+              }];
+          },
+          @!LexAlt(82,9):ASTLexAlt {
+            enclosingScope = @Num_Long!Scope;
+            lexComponent = [// *size: 2
+              @OctalIntegerLiteral!LexNonTerminal(82,9):ASTLexNonTerminal {
+                enclosingScope = @Num_Long!Scope;
+                name = OctalIntegerLiteral;
+              },
+              @IntegerTypeSuffix!LexNonTerminal(82,29):ASTLexNonTerminal {
+                enclosingScope = @Num_Long!Scope;
+                name = IntegerTypeSuffix;
+              }];
+          },
+          @!LexAlt(83,9):ASTLexAlt {
+            enclosingScope = @Num_Long!Scope;
+            lexComponent = [// *size: 2
+              @BinaryIntegerLiteral!LexNonTerminal(83,9):ASTLexNonTerminal {
+                enclosingScope = @Num_Long!Scope;
+                name = BinaryIntegerLiteral;
+              },
+              @IntegerTypeSuffix!LexNonTerminal(83,30):ASTLexNonTerminal {
+                enclosingScope = @Num_Long!Scope;
+                name = IntegerTypeSuffix;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = false;
+        comment = false;
+        name = Num_Long;
+      },
+      @DecimalIntegerLiteral!LexProd(85,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 1
+          @!LexAlt(86,7):ASTLexAlt {
+            enclosingScope = @DecimalIntegerLiteral!Scope;
+            lexComponent = [// *size: 1
+              @DecimalNumeral!LexNonTerminal(86,7):ASTLexNonTerminal {
+                enclosingScope = @DecimalIntegerLiteral!Scope;
+                name = DecimalNumeral;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = DecimalIntegerLiteral;
+      },
+      @HexIntegerLiteral!LexProd(88,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 1
+          @!LexAlt(89,7):ASTLexAlt {
+            enclosingScope = @HexIntegerLiteral!Scope;
+            lexComponent = [// *size: 1
+              @HexNumeral!LexNonTerminal(89,7):ASTLexNonTerminal {
+                enclosingScope = @HexIntegerLiteral!Scope;
+                name = HexNumeral;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = HexIntegerLiteral;
+      },
+      @OctalIntegerLiteral!LexProd(91,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 1
+          @!LexAlt(92,7):ASTLexAlt {
+            enclosingScope = @OctalIntegerLiteral!Scope;
+            lexComponent = [// *size: 1
+              @OctalNumeral!LexNonTerminal(92,7):ASTLexNonTerminal {
+                enclosingScope = @OctalIntegerLiteral!Scope;
+                name = OctalNumeral;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = OctalIntegerLiteral;
+      },
+      @BinaryIntegerLiteral!LexProd(94,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 1
+          @!LexAlt(95,7):ASTLexAlt {
+            enclosingScope = @BinaryIntegerLiteral!Scope;
+            lexComponent = [// *size: 1
+              @BinaryNumeral!LexNonTerminal(95,7):ASTLexNonTerminal {
+                enclosingScope = @BinaryIntegerLiteral!Scope;
+                name = BinaryNumeral;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = BinaryIntegerLiteral;
+      },
+      @IntegerTypeSuffix!LexProd(97,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 2
+          @!LexAlt(98,7):ASTLexAlt {
+            enclosingScope = @IntegerTypeSuffix!Scope;
+            lexComponent = [// *size: 1
+              @!LexChar(98,7):ASTLexChar {
+                enclosingScope = @IntegerTypeSuffix!Scope;
+                r__char = l;
+                negate = false;
+              }];
+          },
+          @!LexAlt(98,13):ASTLexAlt {
+            enclosingScope = @IntegerTypeSuffix!Scope;
+            lexComponent = [// *size: 1
+              @!LexChar(98,13):ASTLexChar {
+                enclosingScope = @IntegerTypeSuffix!Scope;
+                r__char = L;
+                negate = false;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = IntegerTypeSuffix;
+      },
+      @DecimalNumeral!LexProd(100,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 2
+          @!LexAlt(101,7):ASTLexAlt {
+            enclosingScope = @DecimalNumeral!Scope;
+            lexComponent = [// *size: 1
+              @!LexChar(101,7):ASTLexChar {
+                enclosingScope = @DecimalNumeral!Scope;
+                r__char = 0;
+                negate = false;
+              }];
+          },
+          @!LexAlt(101,13):ASTLexAlt {
+            enclosingScope = @DecimalNumeral!Scope;
+            lexComponent = [// *size: 2
+              @NonZeroDigit!LexNonTerminal(101,13):ASTLexNonTerminal {
+                enclosingScope = @DecimalNumeral!Scope;
+                name = NonZeroDigit;
+              },
+              @!LexBlock(101,26):ASTLexBlock {
+                enclosingScope = @DecimalNumeral!Scope;
+                lexAlt = [// *size: 2
+                  @!LexAlt(101,27):ASTLexAlt {
+                    enclosingScope = @DecimalNumeral!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexSimpleIteration(101,27):ASTLexSimpleIteration {
+                        enclosingScope = @DecimalNumeral!Scope;
+                        lexNonTerminal = @Digits!LexNonTerminal(101,27):ASTLexNonTerminal {
+                          enclosingScope = @DecimalNumeral!Scope;
+                          name = Digits;
+                        };
+                        iteration = 17;
+                        question = false;
+                      }];
+                  },
+                  @!LexAlt(101,37):ASTLexAlt {
+                    enclosingScope = @DecimalNumeral!Scope;
+                    lexComponent = [// *size: 2
+                      @Underscores!LexNonTerminal(101,37):ASTLexNonTerminal {
+                        enclosingScope = @DecimalNumeral!Scope;
+                        name = Underscores;
+                      },
+                      @Digits!LexNonTerminal(101,49):ASTLexNonTerminal {
+                        enclosingScope = @DecimalNumeral!Scope;
+                        name = Digits;
+                      }];
+                  }];
+                negate = false;
+                iteration = 0;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = DecimalNumeral;
+      },
+      @Digits!LexProd(103,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 1
+          @!LexAlt(105,7):ASTLexAlt {
+            enclosingScope = @Digits!Scope;
+            lexComponent = [// *size: 2
+              @Digit!LexNonTerminal(105,7):ASTLexNonTerminal {
+                enclosingScope = @Digits!Scope;
+                name = Digit;
+              },
+              @!LexBlock(105,13):ASTLexBlock {
+                enclosingScope = @Digits!Scope;
+                lexAlt = [// *size: 1
+                  @!LexAlt(105,14):ASTLexAlt {
+                    enclosingScope = @Digits!Scope;
+                    lexComponent = [// *size: 2
+                      @!LexSimpleIteration(105,14):ASTLexSimpleIteration {
+                        enclosingScope = @Digits!Scope;
+                        lexNonTerminal = @DigitOrUnderscore!LexNonTerminal(105,14):ASTLexNonTerminal {
+                          enclosingScope = @Digits!Scope;
+                          name = DigitOrUnderscore;
+                        };
+                        iteration = 21;
+                        question = false;
+                      },
+                      @Digit!LexNonTerminal(105,33):ASTLexNonTerminal {
+                        enclosingScope = @Digits!Scope;
+                        name = Digit;
+                      }];
+                  }];
+                negate = false;
+                iteration = 17;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        grammarAnnotations = [// *size: 1
+          @!GrammarAnnotation(103,3):ASTGrammarAnnotation {
+            enclosingScope = @Digits!Scope;
+            deprecated = false;
+            override = true;
+            nonConservative = false;
+          }];
+        name = Digits;
+      },
+      @Digit!LexProd(107,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 2
+          @!LexAlt(109,7):ASTLexAlt {
+            enclosingScope = @Digit!Scope;
+            lexComponent = [// *size: 1
+              @!LexChar(109,7):ASTLexChar {
+                enclosingScope = @Digit!Scope;
+                r__char = 0;
+                negate = false;
+              }];
+          },
+          @!LexAlt(109,13):ASTLexAlt {
+            enclosingScope = @Digit!Scope;
+            lexComponent = [// *size: 1
+              @NonZeroDigit!LexNonTerminal(109,13):ASTLexNonTerminal {
+                enclosingScope = @Digit!Scope;
+                name = NonZeroDigit;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        grammarAnnotations = [// *size: 1
+          @!GrammarAnnotation(107,3):ASTGrammarAnnotation {
+            enclosingScope = @Digit!Scope;
+            deprecated = false;
+            override = true;
+            nonConservative = false;
+          }];
+        name = Digit;
+      },
+      @NonZeroDigit!LexProd(111,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 1
+          @!LexAlt(112,7):ASTLexAlt {
+            enclosingScope = @NonZeroDigit!Scope;
+            lexComponent = [// *size: 1
+              @!LexCharRange(112,7):ASTLexCharRange {
+                enclosingScope = @NonZeroDigit!Scope;
+                lowerChar = 1;
+                upperChar = 9;
+                negate = false;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = NonZeroDigit;
+      },
+      @DigitOrUnderscore!LexProd(114,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 2
+          @!LexAlt(115,7):ASTLexAlt {
+            enclosingScope = @DigitOrUnderscore!Scope;
+            lexComponent = [// *size: 1
+              @Digit!LexNonTerminal(115,7):ASTLexNonTerminal {
+                enclosingScope = @DigitOrUnderscore!Scope;
+                name = Digit;
+              }];
+          },
+          @!LexAlt(115,15):ASTLexAlt {
+            enclosingScope = @DigitOrUnderscore!Scope;
+            lexComponent = [// *size: 1
+              @!LexChar(115,15):ASTLexChar {
+                enclosingScope = @DigitOrUnderscore!Scope;
+                r__char = _;
+                negate = false;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = DigitOrUnderscore;
+      },
+      @Underscores!LexProd(117,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 1
+          @!LexAlt(118,7):ASTLexAlt {
+            enclosingScope = @Underscores!Scope;
+            lexComponent = [// *size: 1
+              @!LexSimpleIteration(118,7):ASTLexSimpleIteration {
+                enclosingScope = @Underscores!Scope;
+                lexChar = @!LexChar(118,7):ASTLexChar {
+                  enclosingScope = @Underscores!Scope;
+                  r__char = _;
+                  negate = false;
+                };
+                iteration = 13;
+                question = false;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = Underscores;
+      },
+      @HexNumeral!LexProd(120,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 1
+          @!LexAlt(121,7):ASTLexAlt {
+            enclosingScope = @HexNumeral!Scope;
+            lexComponent = [// *size: 3
+              @!LexChar(121,7):ASTLexChar {
+                enclosingScope = @HexNumeral!Scope;
+                r__char = 0;
+                negate = false;
+              },
+              @!LexBlock(121,11):ASTLexBlock {
+                enclosingScope = @HexNumeral!Scope;
+                lexAlt = [// *size: 2
+                  @!LexAlt(121,12):ASTLexAlt {
+                    enclosingScope = @HexNumeral!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexChar(121,12):ASTLexChar {
+                        enclosingScope = @HexNumeral!Scope;
+                        r__char = x;
+                        negate = false;
+                      }];
+                  },
+                  @!LexAlt(121,18):ASTLexAlt {
+                    enclosingScope = @HexNumeral!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexChar(121,18):ASTLexChar {
+                        enclosingScope = @HexNumeral!Scope;
+                        r__char = X;
+                        negate = false;
+                      }];
+                  }];
+                negate = false;
+                iteration = 0;
+              },
+              @HexDigits!LexNonTerminal(121,23):ASTLexNonTerminal {
+                enclosingScope = @HexNumeral!Scope;
+                name = HexDigits;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = HexNumeral;
+      },
+      @HexDigits!LexProd(123,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 1
+          @!LexAlt(124,7):ASTLexAlt {
+            enclosingScope = @HexDigits!Scope;
+            lexComponent = [// *size: 2
+              @HexDigit!LexNonTerminal(124,7):ASTLexNonTerminal {
+                enclosingScope = @HexDigits!Scope;
+                name = HexDigit;
+              },
+              @!LexBlock(124,16):ASTLexBlock {
+                enclosingScope = @HexDigits!Scope;
+                lexAlt = [// *size: 1
+                  @!LexAlt(124,17):ASTLexAlt {
+                    enclosingScope = @HexDigits!Scope;
+                    lexComponent = [// *size: 2
+                      @!LexSimpleIteration(124,17):ASTLexSimpleIteration {
+                        enclosingScope = @HexDigits!Scope;
+                        lexNonTerminal = @HexDigitOrUnderscore!LexNonTerminal(124,17):ASTLexNonTerminal {
+                          enclosingScope = @HexDigits!Scope;
+                          name = HexDigitOrUnderscore;
+                        };
+                        iteration = 21;
+                        question = false;
+                      },
+                      @HexDigit!LexNonTerminal(124,39):ASTLexNonTerminal {
+                        enclosingScope = @HexDigits!Scope;
+                        name = HexDigit;
+                      }];
+                  }];
+                negate = false;
+                iteration = 17;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = HexDigits;
+      },
+      @HexDigit!LexProd(126,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 3
+          @!LexAlt(128,7):ASTLexAlt {
+            enclosingScope = @HexDigit!Scope;
+            lexComponent = [// *size: 1
+              @!LexCharRange(128,7):ASTLexCharRange {
+                enclosingScope = @HexDigit!Scope;
+                lowerChar = 0;
+                upperChar = 9;
+                negate = false;
+              }];
+          },
+          @!LexAlt(128,19):ASTLexAlt {
+            enclosingScope = @HexDigit!Scope;
+            lexComponent = [// *size: 1
+              @!LexCharRange(128,19):ASTLexCharRange {
+                enclosingScope = @HexDigit!Scope;
+                lowerChar = a;
+                upperChar = f;
+                negate = false;
+              }];
+          },
+          @!LexAlt(128,31):ASTLexAlt {
+            enclosingScope = @HexDigit!Scope;
+            lexComponent = [// *size: 1
+              @!LexCharRange(128,31):ASTLexCharRange {
+                enclosingScope = @HexDigit!Scope;
+                lowerChar = A;
+                upperChar = F;
+                negate = false;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        grammarAnnotations = [// *size: 1
+          @!GrammarAnnotation(126,3):ASTGrammarAnnotation {
+            enclosingScope = @HexDigit!Scope;
+            deprecated = false;
+            override = true;
+            nonConservative = false;
+          }];
+        name = HexDigit;
+      },
+      @HexDigitOrUnderscore!LexProd(130,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 2
+          @!LexAlt(131,7):ASTLexAlt {
+            enclosingScope = @HexDigitOrUnderscore!Scope;
+            lexComponent = [// *size: 1
+              @HexDigit!LexNonTerminal(131,7):ASTLexNonTerminal {
+                enclosingScope = @HexDigitOrUnderscore!Scope;
+                name = HexDigit;
+              }];
+          },
+          @!LexAlt(131,18):ASTLexAlt {
+            enclosingScope = @HexDigitOrUnderscore!Scope;
+            lexComponent = [// *size: 1
+              @!LexChar(131,18):ASTLexChar {
+                enclosingScope = @HexDigitOrUnderscore!Scope;
+                r__char = _;
+                negate = false;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = HexDigitOrUnderscore;
+      },
+      @OctalNumeral!LexProd(133,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 1
+          @!LexAlt(134,7):ASTLexAlt {
+            enclosingScope = @OctalNumeral!Scope;
+            lexComponent = [// *size: 3
+              @!LexChar(134,7):ASTLexChar {
+                enclosingScope = @OctalNumeral!Scope;
+                r__char = 0;
+                negate = false;
+              },
+              @!LexSimpleIteration(134,11):ASTLexSimpleIteration {
+                enclosingScope = @OctalNumeral!Scope;
+                lexNonTerminal = @Underscores!LexNonTerminal(134,11):ASTLexNonTerminal {
+                  enclosingScope = @OctalNumeral!Scope;
+                  name = Underscores;
+                };
+                iteration = 17;
+                question = false;
+              },
+              @OctalDigits!LexNonTerminal(134,24):ASTLexNonTerminal {
+                enclosingScope = @OctalNumeral!Scope;
+                name = OctalDigits;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = OctalNumeral;
+      },
+      @OctalDigits!LexProd(136,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 1
+          @!LexAlt(137,7):ASTLexAlt {
+            enclosingScope = @OctalDigits!Scope;
+            lexComponent = [// *size: 2
+              @OctalDigit!LexNonTerminal(137,7):ASTLexNonTerminal {
+                enclosingScope = @OctalDigits!Scope;
+                name = OctalDigit;
+              },
+              @!LexBlock(137,18):ASTLexBlock {
+                enclosingScope = @OctalDigits!Scope;
+                lexAlt = [// *size: 1
+                  @!LexAlt(137,19):ASTLexAlt {
+                    enclosingScope = @OctalDigits!Scope;
+                    lexComponent = [// *size: 2
+                      @!LexSimpleIteration(137,19):ASTLexSimpleIteration {
+                        enclosingScope = @OctalDigits!Scope;
+                        lexNonTerminal = @OctalDigitOrUnderscore!LexNonTerminal(137,19):ASTLexNonTerminal {
+                          enclosingScope = @OctalDigits!Scope;
+                          name = OctalDigitOrUnderscore;
+                        };
+                        iteration = 21;
+                        question = false;
+                      },
+                      @OctalDigit!LexNonTerminal(137,43):ASTLexNonTerminal {
+                        enclosingScope = @OctalDigits!Scope;
+                        name = OctalDigit;
+                      }];
+                  }];
+                negate = false;
+                iteration = 17;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = OctalDigits;
+      },
+      @OctalDigit!LexProd(139,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 1
+          @!LexAlt(141,7):ASTLexAlt {
+            enclosingScope = @OctalDigit!Scope;
+            lexComponent = [// *size: 1
+              @!LexCharRange(141,7):ASTLexCharRange {
+                enclosingScope = @OctalDigit!Scope;
+                lowerChar = 0;
+                upperChar = 7;
+                negate = false;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        grammarAnnotations = [// *size: 1
+          @!GrammarAnnotation(139,3):ASTGrammarAnnotation {
+            enclosingScope = @OctalDigit!Scope;
+            deprecated = false;
+            override = true;
+            nonConservative = false;
+          }];
+        name = OctalDigit;
+      },
+      @OctalDigitOrUnderscore!LexProd(143,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 2
+          @!LexAlt(144,7):ASTLexAlt {
+            enclosingScope = @OctalDigitOrUnderscore!Scope;
+            lexComponent = [// *size: 1
+              @OctalDigit!LexNonTerminal(144,7):ASTLexNonTerminal {
+                enclosingScope = @OctalDigitOrUnderscore!Scope;
+                name = OctalDigit;
+              }];
+          },
+          @!LexAlt(144,20):ASTLexAlt {
+            enclosingScope = @OctalDigitOrUnderscore!Scope;
+            lexComponent = [// *size: 1
+              @!LexChar(144,20):ASTLexChar {
+                enclosingScope = @OctalDigitOrUnderscore!Scope;
+                r__char = _;
+                negate = false;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = OctalDigitOrUnderscore;
+      },
+      @BinaryNumeral!LexProd(146,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 1
+          @!LexAlt(147,7):ASTLexAlt {
+            enclosingScope = @BinaryNumeral!Scope;
+            lexComponent = [// *size: 3
+              @!LexChar(147,7):ASTLexChar {
+                enclosingScope = @BinaryNumeral!Scope;
+                r__char = 0;
+                negate = false;
+              },
+              @!LexBlock(147,11):ASTLexBlock {
+                enclosingScope = @BinaryNumeral!Scope;
+                lexAlt = [// *size: 2
+                  @!LexAlt(147,12):ASTLexAlt {
+                    enclosingScope = @BinaryNumeral!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexChar(147,12):ASTLexChar {
+                        enclosingScope = @BinaryNumeral!Scope;
+                        r__char = b;
+                        negate = false;
+                      }];
+                  },
+                  @!LexAlt(147,18):ASTLexAlt {
+                    enclosingScope = @BinaryNumeral!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexChar(147,18):ASTLexChar {
+                        enclosingScope = @BinaryNumeral!Scope;
+                        r__char = B;
+                        negate = false;
+                      }];
+                  }];
+                negate = false;
+                iteration = 0;
+              },
+              @BinaryDigits!LexNonTerminal(147,23):ASTLexNonTerminal {
+                enclosingScope = @BinaryNumeral!Scope;
+                name = BinaryDigits;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = BinaryNumeral;
+      },
+      @BinaryDigits!LexProd(149,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 1
+          @!LexAlt(150,7):ASTLexAlt {
+            enclosingScope = @BinaryDigits!Scope;
+            lexComponent = [// *size: 2
+              @BinaryDigit!LexNonTerminal(150,7):ASTLexNonTerminal {
+                enclosingScope = @BinaryDigits!Scope;
+                name = BinaryDigit;
+              },
+              @!LexBlock(150,19):ASTLexBlock {
+                enclosingScope = @BinaryDigits!Scope;
+                lexAlt = [// *size: 1
+                  @!LexAlt(150,20):ASTLexAlt {
+                    enclosingScope = @BinaryDigits!Scope;
+                    lexComponent = [// *size: 2
+                      @!LexSimpleIteration(150,20):ASTLexSimpleIteration {
+                        enclosingScope = @BinaryDigits!Scope;
+                        lexNonTerminal = @BinaryDigitOrUnderscore!LexNonTerminal(150,20):ASTLexNonTerminal {
+                          enclosingScope = @BinaryDigits!Scope;
+                          name = BinaryDigitOrUnderscore;
+                        };
+                        iteration = 21;
+                        question = false;
+                      },
+                      @BinaryDigit!LexNonTerminal(150,45):ASTLexNonTerminal {
+                        enclosingScope = @BinaryDigits!Scope;
+                        name = BinaryDigit;
+                      }];
+                  }];
+                negate = false;
+                iteration = 17;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = BinaryDigits;
+      },
+      @BinaryDigit!LexProd(152,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 2
+          @!LexAlt(153,7):ASTLexAlt {
+            enclosingScope = @BinaryDigit!Scope;
+            lexComponent = [// *size: 1
+              @!LexChar(153,7):ASTLexChar {
+                enclosingScope = @BinaryDigit!Scope;
+                r__char = 0;
+                negate = false;
+              }];
+          },
+          @!LexAlt(153,13):ASTLexAlt {
+            enclosingScope = @BinaryDigit!Scope;
+            lexComponent = [// *size: 1
+              @!LexChar(153,13):ASTLexChar {
+                enclosingScope = @BinaryDigit!Scope;
+                r__char = 1;
+                negate = false;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = BinaryDigit;
+      },
+      @BinaryDigitOrUnderscore!LexProd(155,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 2
+          @!LexAlt(156,7):ASTLexAlt {
+            enclosingScope = @BinaryDigitOrUnderscore!Scope;
+            lexComponent = [// *size: 1
+              @BinaryDigit!LexNonTerminal(156,7):ASTLexNonTerminal {
+                enclosingScope = @BinaryDigitOrUnderscore!Scope;
+                name = BinaryDigit;
+              }];
+          },
+          @!LexAlt(156,21):ASTLexAlt {
+            enclosingScope = @BinaryDigitOrUnderscore!Scope;
+            lexComponent = [// *size: 1
+              @!LexChar(156,21):ASTLexChar {
+                enclosingScope = @BinaryDigitOrUnderscore!Scope;
+                r__char = _;
+                negate = false;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = BinaryDigitOrUnderscore;
+      },
+      @Num_Float!LexProd(161,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 2
+          @!LexAlt(162,7):ASTLexAlt {
+            enclosingScope = @Num_Float!Scope;
+            lexComponent = [// *size: 1
+              @DecimalFloatingPointLiteral!LexNonTerminal(162,7):ASTLexNonTerminal {
+                enclosingScope = @Num_Float!Scope;
+                name = DecimalFloatingPointLiteral;
+              }];
+          },
+          @!LexAlt(162,37):ASTLexAlt {
+            enclosingScope = @Num_Float!Scope;
+            lexComponent = [// *size: 1
+              @HexadecimalFloatingPointLiteral!LexNonTerminal(162,37):ASTLexNonTerminal {
+                enclosingScope = @Num_Float!Scope;
+                name = HexadecimalFloatingPointLiteral;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = false;
+        comment = false;
+        name = Num_Float;
+      },
+      @Num_Double!LexProd(164,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 2
+          @!LexAlt(165,7):ASTLexAlt {
+            enclosingScope = @Num_Double!Scope;
+            lexComponent = [// *size: 1
+              @DecimalDoublePointLiteral!LexNonTerminal(165,7):ASTLexNonTerminal {
+                enclosingScope = @Num_Double!Scope;
+                name = DecimalDoublePointLiteral;
+              }];
+          },
+          @!LexAlt(165,35):ASTLexAlt {
+            enclosingScope = @Num_Double!Scope;
+            lexComponent = [// *size: 1
+              @HexadecimalDoublePointLiteral!LexNonTerminal(165,35):ASTLexNonTerminal {
+                enclosingScope = @Num_Double!Scope;
+                name = HexadecimalDoublePointLiteral;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = false;
+        comment = false;
+        name = Num_Double;
+      },
+      @DecimalDoublePointLiteral!LexProd(167,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 4
+          @!LexAlt(168,9):ASTLexAlt {
+            enclosingScope = @DecimalDoublePointLiteral!Scope;
+            lexComponent = [// *size: 5
+              @Digits!LexNonTerminal(168,9):ASTLexNonTerminal {
+                enclosingScope = @DecimalDoublePointLiteral!Scope;
+                name = Digits;
+              },
+              @!LexChar(168,16):ASTLexChar {
+                enclosingScope = @DecimalDoublePointLiteral!Scope;
+                r__char = .;
+                negate = false;
+              },
+              @!LexSimpleIteration(168,20):ASTLexSimpleIteration {
+                enclosingScope = @DecimalDoublePointLiteral!Scope;
+                lexNonTerminal = @Digits!LexNonTerminal(168,20):ASTLexNonTerminal {
+                  enclosingScope = @DecimalDoublePointLiteral!Scope;
+                  name = Digits;
+                };
+                iteration = 17;
+                question = false;
+              },
+              @!LexSimpleIteration(168,28):ASTLexSimpleIteration {
+                enclosingScope = @DecimalDoublePointLiteral!Scope;
+                lexNonTerminal = @ExponentPart!LexNonTerminal(168,28):ASTLexNonTerminal {
+                  enclosingScope = @DecimalDoublePointLiteral!Scope;
+                  name = ExponentPart;
+                };
+                iteration = 17;
+                question = false;
+              },
+              @!LexSimpleIteration(168,42):ASTLexSimpleIteration {
+                enclosingScope = @DecimalDoublePointLiteral!Scope;
+                lexNonTerminal = @DoubleTypeSuffix!LexNonTerminal(168,42):ASTLexNonTerminal {
+                  enclosingScope = @DecimalDoublePointLiteral!Scope;
+                  name = DoubleTypeSuffix;
+                };
+                iteration = 17;
+                question = false;
+              }];
+          },
+          @!LexAlt(169,16):ASTLexAlt {
+            enclosingScope = @DecimalDoublePointLiteral!Scope;
+            lexComponent = [// *size: 4
+              @!LexChar(169,16):ASTLexChar {
+                enclosingScope = @DecimalDoublePointLiteral!Scope;
+                r__char = .;
+                negate = false;
+              },
+              @Digits!LexNonTerminal(169,20):ASTLexNonTerminal {
+                enclosingScope = @DecimalDoublePointLiteral!Scope;
+                name = Digits;
+              },
+              @!LexSimpleIteration(169,28):ASTLexSimpleIteration {
+                enclosingScope = @DecimalDoublePointLiteral!Scope;
+                lexNonTerminal = @ExponentPart!LexNonTerminal(169,28):ASTLexNonTerminal {
+                  enclosingScope = @DecimalDoublePointLiteral!Scope;
+                  name = ExponentPart;
+                };
+                iteration = 17;
+                question = false;
+              },
+              @!LexSimpleIteration(169,42):ASTLexSimpleIteration {
+                enclosingScope = @DecimalDoublePointLiteral!Scope;
+                lexNonTerminal = @DoubleTypeSuffix!LexNonTerminal(169,42):ASTLexNonTerminal {
+                  enclosingScope = @DecimalDoublePointLiteral!Scope;
+                  name = DoubleTypeSuffix;
+                };
+                iteration = 17;
+                question = false;
+              }];
+          },
+          @!LexAlt(170,9):ASTLexAlt {
+            enclosingScope = @DecimalDoublePointLiteral!Scope;
+            lexComponent = [// *size: 3
+              @Digits!LexNonTerminal(170,9):ASTLexNonTerminal {
+                enclosingScope = @DecimalDoublePointLiteral!Scope;
+                name = Digits;
+              },
+              @ExponentPart!LexNonTerminal(170,28):ASTLexNonTerminal {
+                enclosingScope = @DecimalDoublePointLiteral!Scope;
+                name = ExponentPart;
+              },
+              @!LexSimpleIteration(170,42):ASTLexSimpleIteration {
+                enclosingScope = @DecimalDoublePointLiteral!Scope;
+                lexNonTerminal = @DoubleTypeSuffix!LexNonTerminal(170,42):ASTLexNonTerminal {
+                  enclosingScope = @DecimalDoublePointLiteral!Scope;
+                  name = DoubleTypeSuffix;
+                };
+                iteration = 17;
+                question = false;
+              }];
+          },
+          @!LexAlt(171,9):ASTLexAlt {
+            enclosingScope = @DecimalDoublePointLiteral!Scope;
+            lexComponent = [// *size: 2
+              @Digits!LexNonTerminal(171,9):ASTLexNonTerminal {
+                enclosingScope = @DecimalDoublePointLiteral!Scope;
+                name = Digits;
+              },
+              @DoubleTypeSuffix!LexNonTerminal(171,42):ASTLexNonTerminal {
+                enclosingScope = @DecimalDoublePointLiteral!Scope;
+                name = DoubleTypeSuffix;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = DecimalDoublePointLiteral;
+      },
+      @DecimalFloatingPointLiteral!LexProd(173,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 4
+          @!LexAlt(174,9):ASTLexAlt {
+            enclosingScope = @DecimalFloatingPointLiteral!Scope;
+            lexComponent = [// *size: 5
+              @Digits!LexNonTerminal(174,9):ASTLexNonTerminal {
+                enclosingScope = @DecimalFloatingPointLiteral!Scope;
+                name = Digits;
+              },
+              @!LexChar(174,16):ASTLexChar {
+                enclosingScope = @DecimalFloatingPointLiteral!Scope;
+                r__char = .;
+                negate = false;
+              },
+              @!LexSimpleIteration(174,20):ASTLexSimpleIteration {
+                enclosingScope = @DecimalFloatingPointLiteral!Scope;
+                lexNonTerminal = @Digits!LexNonTerminal(174,20):ASTLexNonTerminal {
+                  enclosingScope = @DecimalFloatingPointLiteral!Scope;
+                  name = Digits;
+                };
+                iteration = 17;
+                question = false;
+              },
+              @!LexSimpleIteration(174,28):ASTLexSimpleIteration {
+                enclosingScope = @DecimalFloatingPointLiteral!Scope;
+                lexNonTerminal = @ExponentPart!LexNonTerminal(174,28):ASTLexNonTerminal {
+                  enclosingScope = @DecimalFloatingPointLiteral!Scope;
+                  name = ExponentPart;
+                };
+                iteration = 17;
+                question = false;
+              },
+              @FloatTypeSuffix!LexNonTerminal(174,42):ASTLexNonTerminal {
+                enclosingScope = @DecimalFloatingPointLiteral!Scope;
+                name = FloatTypeSuffix;
+              }];
+          },
+          @!LexAlt(175,16):ASTLexAlt {
+            enclosingScope = @DecimalFloatingPointLiteral!Scope;
+            lexComponent = [// *size: 4
+              @!LexChar(175,16):ASTLexChar {
+                enclosingScope = @DecimalFloatingPointLiteral!Scope;
+                r__char = .;
+                negate = false;
+              },
+              @Digits!LexNonTerminal(175,20):ASTLexNonTerminal {
+                enclosingScope = @DecimalFloatingPointLiteral!Scope;
+                name = Digits;
+              },
+              @!LexSimpleIteration(175,28):ASTLexSimpleIteration {
+                enclosingScope = @DecimalFloatingPointLiteral!Scope;
+                lexNonTerminal = @ExponentPart!LexNonTerminal(175,28):ASTLexNonTerminal {
+                  enclosingScope = @DecimalFloatingPointLiteral!Scope;
+                  name = ExponentPart;
+                };
+                iteration = 17;
+                question = false;
+              },
+              @FloatTypeSuffix!LexNonTerminal(175,42):ASTLexNonTerminal {
+                enclosingScope = @DecimalFloatingPointLiteral!Scope;
+                name = FloatTypeSuffix;
+              }];
+          },
+          @!LexAlt(176,9):ASTLexAlt {
+            enclosingScope = @DecimalFloatingPointLiteral!Scope;
+            lexComponent = [// *size: 3
+              @Digits!LexNonTerminal(176,9):ASTLexNonTerminal {
+                enclosingScope = @DecimalFloatingPointLiteral!Scope;
+                name = Digits;
+              },
+              @ExponentPart!LexNonTerminal(176,28):ASTLexNonTerminal {
+                enclosingScope = @DecimalFloatingPointLiteral!Scope;
+                name = ExponentPart;
+              },
+              @FloatTypeSuffix!LexNonTerminal(176,42):ASTLexNonTerminal {
+                enclosingScope = @DecimalFloatingPointLiteral!Scope;
+                name = FloatTypeSuffix;
+              }];
+          },
+          @!LexAlt(177,9):ASTLexAlt {
+            enclosingScope = @DecimalFloatingPointLiteral!Scope;
+            lexComponent = [// *size: 2
+              @Digits!LexNonTerminal(177,9):ASTLexNonTerminal {
+                enclosingScope = @DecimalFloatingPointLiteral!Scope;
+                name = Digits;
+              },
+              @FloatTypeSuffix!LexNonTerminal(177,42):ASTLexNonTerminal {
+                enclosingScope = @DecimalFloatingPointLiteral!Scope;
+                name = FloatTypeSuffix;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = DecimalFloatingPointLiteral;
+      },
+      @ExponentPart!LexProd(179,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 1
+          @!LexAlt(180,7):ASTLexAlt {
+            enclosingScope = @ExponentPart!Scope;
+            lexComponent = [// *size: 2
+              @ExponentIndicator!LexNonTerminal(180,7):ASTLexNonTerminal {
+                enclosingScope = @ExponentPart!Scope;
+                name = ExponentIndicator;
+              },
+              @SignedInteger!LexNonTerminal(180,25):ASTLexNonTerminal {
+                enclosingScope = @ExponentPart!Scope;
+                name = SignedInteger;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = ExponentPart;
+      },
+      @ExponentIndicator!LexProd(182,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 2
+          @!LexAlt(183,7):ASTLexAlt {
+            enclosingScope = @ExponentIndicator!Scope;
+            lexComponent = [// *size: 1
+              @!LexChar(183,7):ASTLexChar {
+                enclosingScope = @ExponentIndicator!Scope;
+                r__char = e;
+                negate = false;
+              }];
+          },
+          @!LexAlt(183,13):ASTLexAlt {
+            enclosingScope = @ExponentIndicator!Scope;
+            lexComponent = [// *size: 1
+              @!LexChar(183,13):ASTLexChar {
+                enclosingScope = @ExponentIndicator!Scope;
+                r__char = E;
+                negate = false;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = ExponentIndicator;
+      },
+      @SignedInteger!LexProd(185,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 1
+          @!LexAlt(186,7):ASTLexAlt {
+            enclosingScope = @SignedInteger!Scope;
+            lexComponent = [// *size: 2
+              @!LexSimpleIteration(186,7):ASTLexSimpleIteration {
+                enclosingScope = @SignedInteger!Scope;
+                lexNonTerminal = @Sign!LexNonTerminal(186,7):ASTLexNonTerminal {
+                  enclosingScope = @SignedInteger!Scope;
+                  name = Sign;
+                };
+                iteration = 17;
+                question = false;
+              },
+              @Digits!LexNonTerminal(186,13):ASTLexNonTerminal {
+                enclosingScope = @SignedInteger!Scope;
+                name = Digits;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = SignedInteger;
+      },
+      @Sign!LexProd(188,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 2
+          @!LexAlt(189,7):ASTLexAlt {
+            enclosingScope = @Sign!Scope;
+            lexComponent = [// *size: 1
+              @!LexChar(189,7):ASTLexChar {
+                enclosingScope = @Sign!Scope;
+                r__char = +;
+                negate = false;
+              }];
+          },
+          @!LexAlt(189,13):ASTLexAlt {
+            enclosingScope = @Sign!Scope;
+            lexComponent = [// *size: 1
+              @!LexChar(189,13):ASTLexChar {
+                enclosingScope = @Sign!Scope;
+                r__char = -;
+                negate = false;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = Sign;
+      },
+      @FloatTypeSuffix!LexProd(191,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 2
+          @!LexAlt(192,7):ASTLexAlt {
+            enclosingScope = @FloatTypeSuffix!Scope;
+            lexComponent = [// *size: 1
+              @!LexChar(192,7):ASTLexChar {
+                enclosingScope = @FloatTypeSuffix!Scope;
+                r__char = f;
+                negate = false;
+              }];
+          },
+          @!LexAlt(192,13):ASTLexAlt {
+            enclosingScope = @FloatTypeSuffix!Scope;
+            lexComponent = [// *size: 1
+              @!LexChar(192,13):ASTLexChar {
+                enclosingScope = @FloatTypeSuffix!Scope;
+                r__char = F;
+                negate = false;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = FloatTypeSuffix;
+      },
+      @DoubleTypeSuffix!LexProd(194,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 2
+          @!LexAlt(195,7):ASTLexAlt {
+            enclosingScope = @DoubleTypeSuffix!Scope;
+            lexComponent = [// *size: 1
+              @!LexChar(195,7):ASTLexChar {
+                enclosingScope = @DoubleTypeSuffix!Scope;
+                r__char = d;
+                negate = false;
+              }];
+          },
+          @!LexAlt(195,13):ASTLexAlt {
+            enclosingScope = @DoubleTypeSuffix!Scope;
+            lexComponent = [// *size: 1
+              @!LexChar(195,13):ASTLexChar {
+                enclosingScope = @DoubleTypeSuffix!Scope;
+                r__char = D;
+                negate = false;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = DoubleTypeSuffix;
+      },
+      @HexadecimalDoublePointLiteral!LexProd(197,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 1
+          @!LexAlt(198,7):ASTLexAlt {
+            enclosingScope = @HexadecimalDoublePointLiteral!Scope;
+            lexComponent = [// *size: 3
+              @HexSignificand!LexNonTerminal(198,7):ASTLexNonTerminal {
+                enclosingScope = @HexadecimalDoublePointLiteral!Scope;
+                name = HexSignificand;
+              },
+              @BinaryExponent!LexNonTerminal(198,22):ASTLexNonTerminal {
+                enclosingScope = @HexadecimalDoublePointLiteral!Scope;
+                name = BinaryExponent;
+              },
+              @!LexSimpleIteration(198,37):ASTLexSimpleIteration {
+                enclosingScope = @HexadecimalDoublePointLiteral!Scope;
+                lexNonTerminal = @DoubleTypeSuffix!LexNonTerminal(198,37):ASTLexNonTerminal {
+                  enclosingScope = @HexadecimalDoublePointLiteral!Scope;
+                  name = DoubleTypeSuffix;
+                };
+                iteration = 17;
+                question = false;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = HexadecimalDoublePointLiteral;
+      },
+      @HexadecimalFloatingPointLiteral!LexProd(200,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 1
+          @!LexAlt(201,7):ASTLexAlt {
+            enclosingScope = @HexadecimalFloatingPointLiteral!Scope;
+            lexComponent = [// *size: 3
+              @HexSignificand!LexNonTerminal(201,7):ASTLexNonTerminal {
+                enclosingScope = @HexadecimalFloatingPointLiteral!Scope;
+                name = HexSignificand;
+              },
+              @BinaryExponent!LexNonTerminal(201,22):ASTLexNonTerminal {
+                enclosingScope = @HexadecimalFloatingPointLiteral!Scope;
+                name = BinaryExponent;
+              },
+              @FloatTypeSuffix!LexNonTerminal(201,37):ASTLexNonTerminal {
+                enclosingScope = @HexadecimalFloatingPointLiteral!Scope;
+                name = FloatTypeSuffix;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = HexadecimalFloatingPointLiteral;
+      },
+      @HexSignificand!LexProd(203,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 2
+          @!LexAlt(204,7):ASTLexAlt {
+            enclosingScope = @HexSignificand!Scope;
+            lexComponent = [// *size: 2
+              @HexNumeral!LexNonTerminal(204,7):ASTLexNonTerminal {
+                enclosingScope = @HexSignificand!Scope;
+                name = HexNumeral;
+              },
+              @!LexSimpleIteration(204,18):ASTLexSimpleIteration {
+                enclosingScope = @HexSignificand!Scope;
+                lexChar = @!LexChar(204,18):ASTLexChar {
+                  enclosingScope = @HexSignificand!Scope;
+                  r__char = .;
+                  negate = false;
+                };
+                iteration = 17;
+                question = false;
+              }];
+          },
+          @!LexAlt(204,25):ASTLexAlt {
+            enclosingScope = @HexSignificand!Scope;
+            lexComponent = [// *size: 5
+              @!LexChar(204,25):ASTLexChar {
+                enclosingScope = @HexSignificand!Scope;
+                r__char = 0;
+                negate = false;
+              },
+              @!LexBlock(204,29):ASTLexBlock {
+                enclosingScope = @HexSignificand!Scope;
+                lexAlt = [// *size: 2
+                  @!LexAlt(204,30):ASTLexAlt {
+                    enclosingScope = @HexSignificand!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexChar(204,30):ASTLexChar {
+                        enclosingScope = @HexSignificand!Scope;
+                        r__char = x;
+                        negate = false;
+                      }];
+                  },
+                  @!LexAlt(204,36):ASTLexAlt {
+                    enclosingScope = @HexSignificand!Scope;
+                    lexComponent = [// *size: 1
+                      @!LexChar(204,36):ASTLexChar {
+                        enclosingScope = @HexSignificand!Scope;
+                        r__char = X;
+                        negate = false;
+                      }];
+                  }];
+                negate = false;
+                iteration = 0;
+              },
+              @!LexSimpleIteration(204,41):ASTLexSimpleIteration {
+                enclosingScope = @HexSignificand!Scope;
+                lexNonTerminal = @HexDigits!LexNonTerminal(204,41):ASTLexNonTerminal {
+                  enclosingScope = @HexSignificand!Scope;
+                  name = HexDigits;
+                };
+                iteration = 17;
+                question = false;
+              },
+              @!LexChar(204,52):ASTLexChar {
+                enclosingScope = @HexSignificand!Scope;
+                r__char = .;
+                negate = false;
+              },
+              @HexDigits!LexNonTerminal(204,56):ASTLexNonTerminal {
+                enclosingScope = @HexSignificand!Scope;
+                name = HexDigits;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = HexSignificand;
+      },
+      @BinaryExponent!LexProd(206,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 1
+          @!LexAlt(207,7):ASTLexAlt {
+            enclosingScope = @BinaryExponent!Scope;
+            lexComponent = [// *size: 2
+              @BinaryExponentIndicator!LexNonTerminal(207,7):ASTLexNonTerminal {
+                enclosingScope = @BinaryExponent!Scope;
+                name = BinaryExponentIndicator;
+              },
+              @SignedInteger!LexNonTerminal(207,31):ASTLexNonTerminal {
+                enclosingScope = @BinaryExponent!Scope;
+                name = SignedInteger;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = BinaryExponent;
+      },
+      @BinaryExponentIndicator!LexProd(209,3):ASTLexProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        alt = [// *size: 2
+          @!LexAlt(210,7):ASTLexAlt {
+            enclosingScope = @BinaryExponentIndicator!Scope;
+            lexComponent = [// *size: 1
+              @!LexChar(210,7):ASTLexChar {
+                enclosingScope = @BinaryExponentIndicator!Scope;
+                r__char = p;
+                negate = false;
+              }];
+          },
+          @!LexAlt(210,13):ASTLexAlt {
+            enclosingScope = @BinaryExponentIndicator!Scope;
+            lexComponent = [// *size: 1
+              @!LexChar(210,13):ASTLexChar {
+                enclosingScope = @BinaryExponentIndicator!Scope;
+                r__char = P;
+                negate = false;
+              }];
+          }];
+        parameter = [];
+        type = [];
+        fragment = true;
+        comment = false;
+        name = BinaryExponentIndicator;
+      }];
+    classProds = [// *size: 4
+      @IntLiteral!ClassProd(37,2):ASTClassProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        superInterfaceRule = [// *size: 1
+          @NumericLiteral!RuleReference(37,24):ASTRuleReference {
+            enclosingScope = @IntLiteral!Scope;
+            name = NumericLiteral;
+            prio = "100";
+          }];
+        alts = [// *size: 1
+          @!Alt(38,4):ASTAlt {
+            enclosingScope = @IntLiteral!Scope;
+            component = [// *size: 1
+              @Num_Int!NonTerminal(38,4):ASTNonTerminal {
+                enclosingScope = @IntLiteral!Scope;
+                usageName = "source";
+                name = Num_Int;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = IntLiteral;
+      },
+      @LongLiteral!ClassProd(44,2):ASTClassProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        superInterfaceRule = [// *size: 1
+          @NumericLiteral!RuleReference(44,25):ASTRuleReference {
+            enclosingScope = @LongLiteral!Scope;
+            name = NumericLiteral;
+            prio = "99";
+          }];
+        alts = [// *size: 1
+          @!Alt(45,4):ASTAlt {
+            enclosingScope = @LongLiteral!Scope;
+            component = [// *size: 1
+              @Num_Long!NonTerminal(45,4):ASTNonTerminal {
+                enclosingScope = @LongLiteral!Scope;
+                usageName = "source";
+                name = Num_Long;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = LongLiteral;
+      },
+      @FloatLiteral!ClassProd(51,2):ASTClassProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        superInterfaceRule = [// *size: 1
+          @NumericLiteral!RuleReference(51,26):ASTRuleReference {
+            enclosingScope = @FloatLiteral!Scope;
+            name = NumericLiteral;
+            prio = "100";
+          }];
+        alts = [// *size: 1
+          @!Alt(52,5):ASTAlt {
+            enclosingScope = @FloatLiteral!Scope;
+            component = [// *size: 1
+              @Num_Float!NonTerminal(52,5):ASTNonTerminal {
+                enclosingScope = @FloatLiteral!Scope;
+                usageName = "source";
+                name = Num_Float;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = FloatLiteral;
+      },
+      @DoubleLiteral!ClassProd(59,2):ASTClassProd {
+        enclosingScope = @MCJavaLiterals!Scope;
+        superInterfaceRule = [// *size: 1
+          @NumericLiteral!RuleReference(59,27):ASTRuleReference {
+            enclosingScope = @DoubleLiteral!Scope;
+            name = NumericLiteral;
+            prio = "100";
+          }];
+        alts = [// *size: 1
+          @!Alt(60,4):ASTAlt {
+            enclosingScope = @DoubleLiteral!Scope;
+            component = [// *size: 1
+              @Num_Double!NonTerminal(60,4):ASTNonTerminal {
+                enclosingScope = @DoubleLiteral!Scope;
+                usageName = "source";
+                name = Num_Double;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = DoubleLiteral;
+      }];
+    aSTRules = [// *size: 4
+      @!ASTRule(217,2):ASTASTRule {
+        enclosingScope = @MCJavaLiterals!Scope;
+        type = IntLiteral;
+        grammarMethods = [// *size: 1
+          @getValue!GrammarMethod(218,4):ASTGrammarMethod {
+            enclosingScope = @MCJavaLiterals!Scope;
+            mCReturnType = @!MCReturnType(218,18):ASTMCReturnType {
+              enclosingScope = @MCJavaLiterals!Scope;
+              mCType = @int!MCPrimitiveType(218,18):ASTMCPrimitiveType {
+                enclosingScope = @MCJavaLiterals!Scope;
+                primitive = 6;
+              };
+            };
+            name = getValue;
+            body = @!Action(219,6):ASTAction {
+              enclosingScope = @MCJavaLiterals!Scope;
+              mCBlockStatements = [// *size: 1
+                @!ReturnStatement(219,6):ASTReturnStatement {
+                  enclosingScope = @MCJavaLiterals!Scope;
+                  expression = @!CallExpression(219,62):ASTCallExpression {
+                    enclosingScope = @MCJavaLiterals!Scope;
+                    expression = @!FieldAccessExpression(219,52):ASTFieldAccessExpression {
+                      enclosingScope = @MCJavaLiterals!Scope;
+                      expression = @!FieldAccessExpression(219,34):ASTFieldAccessExpression {
+                        enclosingScope = @MCJavaLiterals!Scope;
+                        expression = @!FieldAccessExpression(219,25):ASTFieldAccessExpression {
+                          enclosingScope = @MCJavaLiterals!Scope;
+                          expression = @!FieldAccessExpression(219,15):ASTFieldAccessExpression {
+                            enclosingScope = @MCJavaLiterals!Scope;
+                            expression = @!NameExpression(219,13):ASTNameExpression {
+                              enclosingScope = @MCJavaLiterals!Scope;
+                              name = de;
+                            };
+                            name = monticore;
+                          };
+                          name = literals;
+                        };
+                        name = MCLiteralsDecoder;
+                      };
+                      name = decodeInt;
+                    };
+                    arguments = @!Arguments(219,62):ASTArguments {
+                      enclosingScope = @MCJavaLiterals!Scope;
+                      expressions = [// *size: 1
+                        @!CallExpression(219,72):ASTCallExpression {
+                          enclosingScope = @MCJavaLiterals!Scope;
+                          expression = @!NameExpression(219,63):ASTNameExpression {
+                            enclosingScope = @MCJavaLiterals!Scope;
+                            name = getSource;
+                          };
+                          arguments = @!Arguments(219,72):ASTArguments {
+                            enclosingScope = @MCJavaLiterals!Scope;
+                          };
+                        }];
+                    };
+                  };
+                }];
+            };
+            r__public = true;
+            r__private = false;
+            r__protected = false;
+            r__final = false;
+            r__static = false;
+          }];
+      },
+      @!ASTRule(223,2):ASTASTRule {
+        enclosingScope = @MCJavaLiterals!Scope;
+        type = LongLiteral;
+        grammarMethods = [// *size: 1
+          @getValue!GrammarMethod(224,4):ASTGrammarMethod {
+            enclosingScope = @MCJavaLiterals!Scope;
+            mCReturnType = @!MCReturnType(224,18):ASTMCReturnType {
+              enclosingScope = @MCJavaLiterals!Scope;
+              mCType = @long!MCPrimitiveType(224,18):ASTMCPrimitiveType {
+                enclosingScope = @MCJavaLiterals!Scope;
+                primitive = 7;
+              };
+            };
+            name = getValue;
+            body = @!Action(225,6):ASTAction {
+              enclosingScope = @MCJavaLiterals!Scope;
+              mCBlockStatements = [// *size: 1
+                @!ReturnStatement(225,6):ASTReturnStatement {
+                  enclosingScope = @MCJavaLiterals!Scope;
+                  expression = @!CallExpression(225,63):ASTCallExpression {
+                    enclosingScope = @MCJavaLiterals!Scope;
+                    expression = @!FieldAccessExpression(225,52):ASTFieldAccessExpression {
+                      enclosingScope = @MCJavaLiterals!Scope;
+                      expression = @!FieldAccessExpression(225,34):ASTFieldAccessExpression {
+                        enclosingScope = @MCJavaLiterals!Scope;
+                        expression = @!FieldAccessExpression(225,25):ASTFieldAccessExpression {
+                          enclosingScope = @MCJavaLiterals!Scope;
+                          expression = @!FieldAccessExpression(225,15):ASTFieldAccessExpression {
+                            enclosingScope = @MCJavaLiterals!Scope;
+                            expression = @!NameExpression(225,13):ASTNameExpression {
+                              enclosingScope = @MCJavaLiterals!Scope;
+                              name = de;
+                            };
+                            name = monticore;
+                          };
+                          name = literals;
+                        };
+                        name = MCLiteralsDecoder;
+                      };
+                      name = decodeLong;
+                    };
+                    arguments = @!Arguments(225,63):ASTArguments {
+                      enclosingScope = @MCJavaLiterals!Scope;
+                      expressions = [// *size: 1
+                        @!CallExpression(225,73):ASTCallExpression {
+                          enclosingScope = @MCJavaLiterals!Scope;
+                          expression = @!NameExpression(225,64):ASTNameExpression {
+                            enclosingScope = @MCJavaLiterals!Scope;
+                            name = getSource;
+                          };
+                          arguments = @!Arguments(225,73):ASTArguments {
+                            enclosingScope = @MCJavaLiterals!Scope;
+                          };
+                        }];
+                    };
+                  };
+                }];
+            };
+            r__public = true;
+            r__private = false;
+            r__protected = false;
+            r__final = false;
+            r__static = false;
+          }];
+      },
+      @!ASTRule(230,2):ASTASTRule {
+        enclosingScope = @MCJavaLiterals!Scope;
+        type = FloatLiteral;
+        grammarMethods = [// *size: 1
+          @getValue!GrammarMethod(231,4):ASTGrammarMethod {
+            enclosingScope = @MCJavaLiterals!Scope;
+            mCReturnType = @!MCReturnType(231,18):ASTMCReturnType {
+              enclosingScope = @MCJavaLiterals!Scope;
+              mCType = @float!MCPrimitiveType(231,18):ASTMCPrimitiveType {
+                enclosingScope = @MCJavaLiterals!Scope;
+                primitive = 5;
+              };
+            };
+            name = getValue;
+            body = @!Action(232,6):ASTAction {
+              enclosingScope = @MCJavaLiterals!Scope;
+              mCBlockStatements = [// *size: 1
+                @!ReturnStatement(232,6):ASTReturnStatement {
+                  enclosingScope = @MCJavaLiterals!Scope;
+                  expression = @!CallExpression(232,64):ASTCallExpression {
+                    enclosingScope = @MCJavaLiterals!Scope;
+                    expression = @!FieldAccessExpression(232,52):ASTFieldAccessExpression {
+                      enclosingScope = @MCJavaLiterals!Scope;
+                      expression = @!FieldAccessExpression(232,34):ASTFieldAccessExpression {
+                        enclosingScope = @MCJavaLiterals!Scope;
+                        expression = @!FieldAccessExpression(232,25):ASTFieldAccessExpression {
+                          enclosingScope = @MCJavaLiterals!Scope;
+                          expression = @!FieldAccessExpression(232,15):ASTFieldAccessExpression {
+                            enclosingScope = @MCJavaLiterals!Scope;
+                            expression = @!NameExpression(232,13):ASTNameExpression {
+                              enclosingScope = @MCJavaLiterals!Scope;
+                              name = de;
+                            };
+                            name = monticore;
+                          };
+                          name = literals;
+                        };
+                        name = MCLiteralsDecoder;
+                      };
+                      name = decodeFloat;
+                    };
+                    arguments = @!Arguments(232,64):ASTArguments {
+                      enclosingScope = @MCJavaLiterals!Scope;
+                      expressions = [// *size: 1
+                        @!CallExpression(232,74):ASTCallExpression {
+                          enclosingScope = @MCJavaLiterals!Scope;
+                          expression = @!NameExpression(232,65):ASTNameExpression {
+                            enclosingScope = @MCJavaLiterals!Scope;
+                            name = getSource;
+                          };
+                          arguments = @!Arguments(232,74):ASTArguments {
+                            enclosingScope = @MCJavaLiterals!Scope;
+                          };
+                        }];
+                    };
+                  };
+                }];
+            };
+            r__public = true;
+            r__private = false;
+            r__protected = false;
+            r__final = false;
+            r__static = false;
+          }];
+      },
+      @!ASTRule(237,2):ASTASTRule {
+        enclosingScope = @MCJavaLiterals!Scope;
+        type = DoubleLiteral;
+        grammarMethods = [// *size: 1
+          @getValue!GrammarMethod(238,4):ASTGrammarMethod {
+            enclosingScope = @MCJavaLiterals!Scope;
+            mCReturnType = @!MCReturnType(238,18):ASTMCReturnType {
+              enclosingScope = @MCJavaLiterals!Scope;
+              mCType = @double!MCPrimitiveType(238,18):ASTMCPrimitiveType {
+                enclosingScope = @MCJavaLiterals!Scope;
+                primitive = 4;
+              };
+            };
+            name = getValue;
+            body = @!Action(239,6):ASTAction {
+              enclosingScope = @MCJavaLiterals!Scope;
+              mCBlockStatements = [// *size: 1
+                @!ReturnStatement(239,6):ASTReturnStatement {
+                  enclosingScope = @MCJavaLiterals!Scope;
+                  expression = @!CallExpression(239,65):ASTCallExpression {
+                    enclosingScope = @MCJavaLiterals!Scope;
+                    expression = @!FieldAccessExpression(239,52):ASTFieldAccessExpression {
+                      enclosingScope = @MCJavaLiterals!Scope;
+                      expression = @!FieldAccessExpression(239,34):ASTFieldAccessExpression {
+                        enclosingScope = @MCJavaLiterals!Scope;
+                        expression = @!FieldAccessExpression(239,25):ASTFieldAccessExpression {
+                          enclosingScope = @MCJavaLiterals!Scope;
+                          expression = @!FieldAccessExpression(239,15):ASTFieldAccessExpression {
+                            enclosingScope = @MCJavaLiterals!Scope;
+                            expression = @!NameExpression(239,13):ASTNameExpression {
+                              enclosingScope = @MCJavaLiterals!Scope;
+                              name = de;
+                            };
+                            name = monticore;
+                          };
+                          name = literals;
+                        };
+                        name = MCLiteralsDecoder;
+                      };
+                      name = decodeDouble;
+                    };
+                    arguments = @!Arguments(239,65):ASTArguments {
+                      enclosingScope = @MCJavaLiterals!Scope;
+                      expressions = [// *size: 1
+                        @!CallExpression(239,75):ASTCallExpression {
+                          enclosingScope = @MCJavaLiterals!Scope;
+                          expression = @!NameExpression(239,66):ASTNameExpression {
+                            enclosingScope = @MCJavaLiterals!Scope;
+                            name = getSource;
+                          };
+                          arguments = @!Arguments(239,75):ASTArguments {
+                            enclosingScope = @MCJavaLiterals!Scope;
+                          };
+                        }];
+                    };
+                  };
+                }];
+            };
+            r__public = true;
+            r__private = false;
+            r__protected = false;
+            r__final = false;
+            r__static = false;
+          }];
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

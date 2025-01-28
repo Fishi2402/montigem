@@ -97,7 +97,8 @@ public class UMLPFilePipelineSetup {
           Reporting.reportParseInputFile(data.inputFile.toPath().toAbsolutePath(), report_on);
           loadModelPathPipe.doWork(new ModelPathData(data, ast));
         } catch (IOException e) {
-          Log.error("Can not load model for url " + modelUrl);
+          e.printStackTrace();
+          Log.error("Can not load model for url " + modelUrl, e);
           return false;
         }
       }

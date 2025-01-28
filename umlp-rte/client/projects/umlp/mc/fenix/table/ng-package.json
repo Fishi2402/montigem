@@ -1,8 +1,0 @@
-{
-  "$schema": "../../../../../node_modules/ng-packagr/ng-package.schema.json",
-  "dest": "../../../../../build/dist/umlp/mc/fenix/table",
-  "lib": {
-    "entryFile": "src/index.ts"
-  },
-  "allowedNonPeerDependencies": ["@perfectmemory/ngx-contextmenu", "moment"]
-}

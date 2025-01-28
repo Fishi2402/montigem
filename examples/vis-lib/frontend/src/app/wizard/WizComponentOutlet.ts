@@ -23,10 +23,10 @@ import {
   Type,
   ViewContainerRef,
 } from '@angular/core';
-import {WizardControls} from "@src/wizard/WizardControls";
-import {WizardDropComp} from "@src/wizard/WizardDropComp";
-import {InspectorService} from "@src/wizard/InspectorService";
-import {WizardContainer} from "@src/wizard/WizardContainer";
+import {WizardControls} from "wizard/WizardControls";
+import {WizardDropComp} from "wizard/WizardDropComp";
+import {InspectorService} from "wizard/InspectorService";
+import {WizardContainer} from "wizard/WizardContainer";
 
 /**
  *

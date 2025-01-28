@@ -3,6 +3,7 @@ package umlp.jsweet.extension;
 
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import umlp.jsweet.extension.domainAdapters.ImportExcludeAdapter;
+import umlp.jsweet.extension.domainAdapters.SynchronizedAdapter;
 import umlp.jsweet.extension.domainAdapters.UMLPBasicsAdapter;
 import umlp.jsweet.extension.domainAdapters.UMLPJavaBasicsAdapter;
 import umlp.jsweet.extension.domainAdapters.UMLPRTEImportAdapter;
@@ -26,14 +27,16 @@ public class UMLPJSweetGUIAdapter extends PrinterAdapter {
                 new UMLPGUICollectionsAdapter(
                     new UMLPRTEImportAdapter(
                         new UMLPBasicsAdapter(
-                            new GUIComponentObserverPatternAdapter(
-                                new DelegateGemListToArrayAdapter(
+                            new DelegateGemListToArrayAdapter(
+                                new GUIComponentObserverPatternAdapter(
                                     new GUIComponentBasicsAdapter(
                                         new GUITypesImportAdapter(
                                             new TSTypesAdapter(
                                                 new GUIUtilAdapter(
                                                     new BackendOnlyAdapter(
-                                                        parentAdapter
+                                                        new SynchronizedAdapter(
+                                                          parentAdapter
+                                                        )
                                                     )
                                                 )
                                             )

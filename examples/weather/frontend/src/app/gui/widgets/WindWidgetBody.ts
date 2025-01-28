@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import {WindWidgetBodyComponent,config} from "@src/gui/widgets/WindWidgetBodyComponent";
+import {WindWidgetBodyComponent,config} from "gui/widgets/WindWidgetBodyComponent";
 
 @Component({
   standalone:true,

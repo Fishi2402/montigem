@@ -1,9 +1,9 @@
-import {GemChatComponent, config} from "@src/example_input/GemChatComponent";
+import {GemChatComponent, config} from "example_input/GemChatComponent";
 import {Component} from "@angular/core";
-import {Message} from "@src/domain/Message";
-import {Role} from '@src/domain/Role';
-import {DomainManager} from "@src/domain/DomainManager";
-import {Answer} from "@src/domain/commands/Answer";
+import {Message} from "domain/Message";
+import {Role} from 'domain/Role';
+import {DomainManager} from "domain/DomainManager";
+import {Answer} from "domain/commands/Answer";
 import {CommandManager, CommandResult} from "@umlp/common";
 
 @Component({

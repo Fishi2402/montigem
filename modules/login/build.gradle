@@ -1,6 +1,6 @@
 plugins {
   id "base"
-  id "java"
+  id "java-library"
   id 'maven-publish'
   id 'de.rwth.se.umlp-tool-module-models' // create models-jar
 }
@@ -24,13 +24,40 @@ sourceSets {
   }
 }
 
+// Publish empty publications with dependencies to the backend/frontend subproject
+configurations {
+  outgoingUMLPFrontendTSDS {
+    canBeConsumed(true)
+    gradle.module.UMLPPluginModuleJSFrontend.addDomainSymbolsJarAttributes(it, project)
+  }
+  outgoingUMLPFrontendTSZip {
+    canBeConsumed(true)
+    gradle.module.UMLPPluginModuleJSFrontend.addBundledJSJarAttributes(it, project)
+  }
+}
+
+dependencies {
+  api(project(":modules:login:backend"))
+  outgoingUMLPFrontendTSDS project(":modules:login:frontendTS")
+  outgoingUMLPFrontendTSZip project(":modules:login:frontendTS")
+}
+project.components.java.addVariantsFromConfiguration(configurations.outgoingUMLPFrontendTSDS) {
+  it.mapToOptional()
+}
+project.components.java.addVariantsFromConfiguration(configurations.outgoingUMLPFrontendTSZip) {
+  it.mapToOptional()
+}
+
+
 // We do not have main java soures => Remove .jar from outgoing artifacts
 tasks.named('jar') {
-  enabled = false
+  // TODO: We currently publish an almost empty jar, as otherwise gradle is unable to find the runtimeElements config
+  // Fix that problem & only publish the dependencies, not the jar
+//  enabled = false
 }
 configurations{
   [apiElements, runtimeElements].each {
-    it.outgoing.artifacts.removeIf { it.buildDependencies.getDependencies(null).contains(jar) }
+//    it.outgoing.artifacts.removeIf { it.buildDependencies.getDependencies(null).contains(jar) }
   }
 }
 
@@ -40,6 +67,7 @@ publishing {
       from components.java
       // The plugin publishes moduleGenTime & the models jar
     }
+    mavenJava(MavenPublication)
   }
   // TODO: correct repo
   repositories {

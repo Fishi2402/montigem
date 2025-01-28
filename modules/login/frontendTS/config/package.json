@@ -1,6 +1,6 @@
 {
-  "name": "client",
-  "version": "0.0.0",
+  "name": "@umlp/loginmodule-ts",
+  "version": "7.6.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

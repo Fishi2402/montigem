@@ -407,7 +407,7 @@ public class UMLPCollectionsAdapter extends UMLPAbstractAdapter {
         return true;
       case "keySet":
         printMacroName(targetMethodName);
-        print(invocation.getTargetExpression()).print(".keys()");
+        print("[...").print(invocation.getTargetExpression()).print(".keys()").print("]");
         return true;
       case "values":
         printMacroName(targetMethodName);

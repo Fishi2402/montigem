@@ -1,13 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {UserTOP} from '@src/finanzverwaltung/UserTOP';
-import {Role} from '@src/finanzverwaltung/Role';
+import {UserTOP} from 'finanzverwaltung/UserTOP';
+import {Role} from 'finanzverwaltung/Role';
+import {GemTextInputValidity} from '@umlp/input';
 
 export class User extends UserTOP {
 
-  private _statusUsername = '';
+  protected _statusUsername = '';
 
-  private _validityUsername = '';
+  protected _validityUsername = '';
 
   public getHash (value: string) : any {
     var hash = 0,
@@ -21,8 +22,8 @@ export class User extends UserTOP {
     return hash;
   }
 
-  public getValidityUsername(): any {
-    return {status: this._statusUsername, message: this._validityUsername};
+  public getValidityUsername(): GemTextInputValidity {
+    return new GemTextInputValidity(this._statusUsername, this._validityUsername);
   }
 
   public set validityUsername(value: string) {
@@ -33,12 +34,12 @@ export class User extends UserTOP {
     this._statusUsername = value;
   }
 
-  private _statusPassword = '';
+  protected _statusPassword = '';
 
-  private _validityPassword = '';
+  protected _validityPassword = '';
 
-  public getValidityPassword(): any {
-    return {status: this._statusPassword, message: this._validityPassword};
+  public getValidityPassword(): GemTextInputValidity {
+    return new GemTextInputValidity(this._statusPassword, this._validityPassword);
   }
 
   public set validityPassword(value: string) {
@@ -49,12 +50,12 @@ export class User extends UserTOP {
     this._statusPassword = value;
   }
 
-  private _statusEmail = '';
+  protected _statusEmail = '';
 
-  private _validityEmail = '';
+  protected _validityEmail = '';
 
-  public getValidityEmail(): any {
-    return {status: this._statusEmail, message: this._validityEmail};
+  public getValidityEmail(): GemTextInputValidity {
+    return new GemTextInputValidity(this._statusEmail, this._validityEmail);
   }
 
   public getAvatar() : any {
@@ -70,12 +71,12 @@ export class User extends UserTOP {
     this._statusEmail = value;
   }
 
-  private _statusRole = '';
+  protected _statusRole = '';
 
-  private _validityRole = '';
+  protected _validityRole = '';
 
-  public getValidityRole(): any {
-    return {status: this._statusRole, message: this._validityRole};
+  public getValidityRole(): GemTextInputValidity {
+    return new GemTextInputValidity(this._statusRole, this._validityRole);
   }
 
   public set validityRole(value: string) {

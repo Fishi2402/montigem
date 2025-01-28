@@ -23,7 +23,8 @@ in this context.
 ### Input configuration
 * input: The input OD model describing the data to be instantiated
 * outputDir: The directory the generated instantiator will be located
-* symbolDir: The path to the directory in which the symbol table of the domain model is lcoated
+* symbolDir: The path to the directory in which the symbol table of the domain model is located
+* symbolOutDir: The path to the directory in which the symbol table of the object diagram shall be stored (optional)
 * hwcDir: The path to hand-written artifacts, enabling the TOP mechanism
 
 ### Output
@@ -41,6 +42,7 @@ task genTestData(type: UMLPOD2DataTask) {
   outputDir = file("$project.buildDir/testdata")
   hwcDir = file("$projectDir/src/main/java")
   symbolDir = files(generateUmlpBackend.symbolOutDir)
+  symbolOutDir = file("$project.buildDir/testdata/symtab")
 }
 
 sourceSets {

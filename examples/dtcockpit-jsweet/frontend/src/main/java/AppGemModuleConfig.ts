@@ -1,4 +1,4 @@
-import { Navigation } from '@src/navigation/navigation.component';
+import { Navigation } from 'navigation/navigation.component';
 
 
 

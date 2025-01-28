@@ -3,7 +3,6 @@ package umlp.generator.domain.decorator.commands;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDClass;
-import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
@@ -91,7 +90,7 @@ public interface OwnCommands {
                || (GenService.isOptional(type) && GenService.isCDType(((SymTypeOfGenerics) type).getArgument(0)));
   }
 
-  default boolean isGemList(SymTypeExpression type) {
+  default boolean isListOfGemIdentifiable(SymTypeExpression type) {
     return GenService.isList(type) && GenService.isCDType(((SymTypeOfGenerics) type).getArgument(0));
   }
 

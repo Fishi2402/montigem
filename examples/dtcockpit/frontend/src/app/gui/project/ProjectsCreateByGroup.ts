@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 import {Component} from '@angular/core';
-import {DtcockpitManager} from '@src/dtcockpit/DtcockpitManager';
-import {ProjectsCreateByGroupComponent,config} from '@src/gui/project/ProjectsCreateByGroupComponent';
-import {ProjectErrorCollector} from '@src/dtcockpit/ProjectErrorCollector';
-import {Project} from '@src/dtcockpit/Project';
+import {DtcockpitManager} from 'dtcockpit/DtcockpitManager';
+import {ProjectsCreateByGroupComponent,config} from 'gui/project/ProjectsCreateByGroupComponent';
+import {ProjectErrorCollector} from 'dtcockpit/ProjectErrorCollector';
+import {Project} from 'dtcockpit/Project';
 
 @Component({
   standalone:true,

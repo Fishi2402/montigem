@@ -39,3 +39,5 @@ buildCache {
 
 
 rootProject.name = 'umlp-tool'
+
+include "gradle-plugin"

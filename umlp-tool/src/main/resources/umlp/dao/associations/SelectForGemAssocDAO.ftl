@@ -8,11 +8,14 @@ ${cd4c.method("public Optional<Long> select${methodName}(long ${startingSide}Gem
       select${methodName}.clearParameters();
       select${methodName}.setLong(1, ${startingSide}GemId);
       Optional<Long> res = Optional.empty();
-      ResultSet rs = select${methodName}.executeQuery();
-      if(rs.next()){
-        res = Optional.of(rs.getLong(1));
+      try(ResultSet rs = select${methodName}.executeQuery()) {
+        if(rs.next()){
+          res = Optional.of(rs.getLong(1));
+        }
+        return res;
+      } catch(SQLException e) {
+        throw new RuntimeException(e);
       }
-      return res;
     }catch (SQLException e){
       throw new RuntimeException(e);
     }

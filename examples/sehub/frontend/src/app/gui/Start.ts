@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {StartComponent,config} from '@src/gui/StartComponent';
+import {StartComponent,config} from 'gui/StartComponent';
 import {Component} from '@angular/core';
-import {SehubManager} from '@src/sehub/SehubManager';
+import {SehubManager} from 'sehub/SehubManager';
 import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
 import {GetCurrentUserRequest} from "../security/GetCurrentUserRequest";
 import {CommandManager} from '@umlp/common';

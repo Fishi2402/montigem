@@ -1,0 +1,155 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram mclowlevelstatements_AST {
+  @MCLowLevelStatements!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @MCLowLevelStatements!Symbol(2,0);
+    enclosingScope = @MCLowLevelStatements!ArtifactScope;
+    spanningScope = @MCLowLevelStatements!Scope;
+    r__package = [de, monticore, statements];
+    importStatement = [// *size: 2
+      @!MCImportStatement(7,0):ASTMCImportStatement {
+        enclosingScope = @MCLowLevelStatements!Scope;
+        mCQualifiedName = @de.monticore.statements!MCQualifiedName(7,7):ASTMCQualifiedName {
+          enclosingScope = @MCLowLevelStatements!Scope;
+          parts = [de, monticore, statements];
+        };
+        star = true;
+      },
+      @!MCImportStatement(8,0):ASTMCImportStatement {
+        enclosingScope = @MCLowLevelStatements!Scope;
+        mCQualifiedName = @de.monticore!MCQualifiedName(8,7):ASTMCQualifiedName {
+          enclosingScope = @MCLowLevelStatements!Scope;
+          parts = [de, monticore];
+        };
+        star = true;
+      }];
+    name = MCLowLevelStatements;
+    supergrammar = [// *size: 2
+      @MCStatementsBasis!GrammarReference(32,18):ASTGrammarReference {
+        enclosingScope = @MCLowLevelStatements!Scope;
+        names = [MCStatementsBasis];
+      },
+      @MCBasics!GrammarReference(33,18):ASTGrammarReference {
+        enclosingScope = @MCLowLevelStatements!Scope;
+        names = [de, monticore, MCBasics];
+      }];
+    classProds = [// *size: 3
+      @LabelledBreakStatement!ClassProd(35,0):ASTClassProd {
+        enclosingScope = @MCLowLevelStatements!Scope;
+        superInterfaceRule = [// *size: 1
+          @MCStatement!RuleReference(35,34):ASTRuleReference {
+            enclosingScope = @LabelledBreakStatement!Scope;
+            name = MCStatement;
+          }];
+        alts = [// *size: 1
+          @!Alt(36,8):ASTAlt {
+            enclosingScope = @LabelledBreakStatement!Scope;
+            component = [// *size: 3
+              @break!Terminal(36,8):ASTTerminal {
+                enclosingScope = @LabelledBreakStatement!Scope;
+                iteration = 0;
+                name = break;
+              },
+              @Name!NonTerminal(36,16):ASTNonTerminal {
+                enclosingScope = @LabelledBreakStatement!Scope;
+                usageName = "label";
+                name = Name;
+                referencedSymbol = "Label";
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 17;
+              },
+              @SEMI!Terminal(36,34):ASTTerminal {
+                enclosingScope = @LabelledBreakStatement!Scope;
+                iteration = 0;
+                name = ;;
+              }];
+            rightAssoc = false;
+          }];
+        name = LabelledBreakStatement;
+      },
+      @ContinueStatement!ClassProd(38,0):ASTClassProd {
+        enclosingScope = @MCLowLevelStatements!Scope;
+        superInterfaceRule = [// *size: 1
+          @MCStatement!RuleReference(38,29):ASTRuleReference {
+            enclosingScope = @ContinueStatement!Scope;
+            name = MCStatement;
+          }];
+        alts = [// *size: 1
+          @!Alt(39,8):ASTAlt {
+            enclosingScope = @ContinueStatement!Scope;
+            component = [// *size: 3
+              @continue!Terminal(39,8):ASTTerminal {
+                enclosingScope = @ContinueStatement!Scope;
+                iteration = 0;
+                name = continue;
+              },
+              @Name!NonTerminal(39,19):ASTNonTerminal {
+                enclosingScope = @ContinueStatement!Scope;
+                usageName = "label";
+                name = Name;
+                referencedSymbol = "Label";
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 17;
+              },
+              @SEMI!Terminal(39,37):ASTTerminal {
+                enclosingScope = @ContinueStatement!Scope;
+                iteration = 0;
+                name = ;;
+              }];
+            rightAssoc = false;
+          }];
+        name = ContinueStatement;
+      },
+      @Label!ClassProd(41,0):ASTClassProd {
+        enclosingScope = @MCLowLevelStatements!Scope;
+        symbolDefinitions = [// *size: 1
+          @!SymbolDefinition(41,0):ASTSymbolDefinition {
+            enclosingScope = @Label!Scope;
+            genSymbol = true;
+            genScope = false;
+            shadowing = false;
+            non_exporting = false;
+            ordered = false;
+          }];
+        superInterfaceRule = [// *size: 1
+          @MCStatement!RuleReference(41,24):ASTRuleReference {
+            enclosingScope = @Label!Scope;
+            name = MCStatement;
+          }];
+        alts = [// *size: 1
+          @!Alt(42,8):ASTAlt {
+            enclosingScope = @Label!Scope;
+            component = [// *size: 3
+              @Name!NonTerminal(42,8):ASTNonTerminal {
+                enclosingScope = @Label!Scope;
+                name = Name;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @COLON!Terminal(42,13):ASTTerminal {
+                enclosingScope = @Label!Scope;
+                iteration = 0;
+                name = :;
+              },
+              @MCStatement!NonTerminal(42,17):ASTNonTerminal {
+                enclosingScope = @Label!Scope;
+                name = MCStatement;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = Label;
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

@@ -23,6 +23,10 @@ ${cd4c.method("public Optional<${typeName}> unpack${typeName}(ResultSet res) thr
   .${attr.getName()}(this.select${attr.getName()?cap_first}(gemId))<#sep>${'\n'}</#sep><#rt>
 </#list><#lt><#if listAttributes?has_content>;</#if><#rt>
 
+if(!res.isClosed()) {
+  res.close();
+}
+
 <#lt>
 <#list listAssocs as assocSide, assoc><#assign assocType = assocSide.getSymbol().getType().print()>
     <#if assocSide.isLeft()>

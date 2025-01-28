@@ -1,0 +1,888 @@
+digraph {
+  subgraph cluster_de_monticore_tagging {
+    label = "de.monticore.tagging";
+    labeljust = l;
+    subgraph cluster_de_monticore_tagging_tags {
+      label = "de.monticore.tagging.tags";
+      labeljust = l;
+      subgraph cluster_de_monticore_tagging_tags__util {
+        label = "de.monticore.tagging.tags._util";
+        labeljust = l;
+        node[shape=note];
+        File_de_monticore_tagging_tags__util_TagsTypeDispatcher [label="de.monticore.tagging.tags._util.TagsTypeDispatcher.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__util_ITagsTypeDispatcher [label="de.monticore.tagging.tags._util.ITagsTypeDispatcher.java (1)"];
+      }
+      subgraph cluster_de_monticore_tagging_tags__auxiliary {
+        label = "de.monticore.tagging.tags._auxiliary";
+        labeljust = l;
+        node[shape=note];
+        File_de_monticore_tagging_tags__auxiliary_MCBasicTypesMillForTags [label="de.monticore.tagging.tags._auxiliary.MCBasicTypesMillForTags.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__auxiliary_MCBasicsMillForTags [label="de.monticore.tagging.tags._auxiliary.MCBasicsMillForTags.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__auxiliary_MCCommonLiteralsMillForTags [label="de.monticore.tagging.tags._auxiliary.MCCommonLiteralsMillForTags.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__auxiliary_MCLiteralsBasisMillForTags [label="de.monticore.tagging.tags._auxiliary.MCLiteralsBasisMillForTags.java (1)"];
+      }
+      subgraph cluster_de_monticore_tagging_tags__symboltable {
+        label = "de.monticore.tagging.tags._symboltable";
+        labeljust = l;
+        node[shape=note];
+        File_de_monticore_tagging_tags__symboltable_TagsSymbols2Json [label="de.monticore.tagging.tags._symboltable.TagsSymbols2Json.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__symboltable_ITagsGlobalScope [label="de.monticore.tagging.tags._symboltable.ITagsGlobalScope.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__symboltable_TagsScope [label="de.monticore.tagging.tags._symboltable.TagsScope.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__symboltable_TagsScopesGenitorDelegator [label="de.monticore.tagging.tags._symboltable.TagsScopesGenitorDelegator.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__symboltable_TagsArtifactScope [label="de.monticore.tagging.tags._symboltable.TagsArtifactScope.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__symboltable_TagsDeSer [label="de.monticore.tagging.tags._symboltable.TagsDeSer.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__symboltable_ITagsArtifactScope [label="de.monticore.tagging.tags._symboltable.ITagsArtifactScope.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__symboltable_ITagsScope [label="de.monticore.tagging.tags._symboltable.ITagsScope.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__symboltable_ICommonTagsSymbol [label="de.monticore.tagging.tags._symboltable.ICommonTagsSymbol.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__symboltable_TagsScopesGenitor [label="de.monticore.tagging.tags._symboltable.TagsScopesGenitor.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__symboltable_TagsGlobalScope [label="de.monticore.tagging.tags._symboltable.TagsGlobalScope.java (1)"];
+      }
+      subgraph cluster_de_monticore_tagging_tags__parser {
+        label = "de.monticore.tagging.tags._parser";
+        labeljust = l;
+        subgraph cluster_de_monticore_tagging_tags__parser__auxiliary {
+          label = "de.monticore.tagging.tags._parser._auxiliary";
+          labeljust = l;
+          node[shape=note];
+          File_de_monticore_tagging_tags__parser__auxiliary_TagsParserInfoForMCBasics [label="de.monticore.tagging.tags._parser._auxiliary.TagsParserInfoForMCBasics.java (1)"];
+          node[shape=note];
+          File_de_monticore_tagging_tags__parser__auxiliary_TagsParserInfoForMCLiteralsBasis [label="de.monticore.tagging.tags._parser._auxiliary.TagsParserInfoForMCLiteralsBasis.java (1)"];
+          node[shape=note];
+          File_de_monticore_tagging_tags__parser__auxiliary_TagsParserInfoForMCBasicTypes [label="de.monticore.tagging.tags._parser._auxiliary.TagsParserInfoForMCBasicTypes.java (1)"];
+          node[shape=note];
+          File_de_monticore_tagging_tags__parser__auxiliary_TagsParserInfoForMCCommonLiterals [label="de.monticore.tagging.tags._parser._auxiliary.TagsParserInfoForMCCommonLiterals.java (1)"];
+        }
+        node[shape=note];
+        File_de_monticore_tagging_tags__parser_TagsAntlrLexer [label="de.monticore.tagging.tags._parser.TagsAntlrLexer.g4 (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__parser_TagsASTBuildVisitor [label="de.monticore.tagging.tags._parser.TagsASTBuildVisitor.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__parser_EmptyTagsParserInfo [label="de.monticore.tagging.tags._parser.EmptyTagsParserInfo.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__parser_TagsParser [label="de.monticore.tagging.tags._parser.TagsParser.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__parser_TagsParserInfo [label="de.monticore.tagging.tags._parser.TagsParserInfo.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__parser_TagsAntlrParser [label="de.monticore.tagging.tags._parser.TagsAntlrParser.g4 (1)"];
+      }
+      subgraph cluster_de_monticore_tagging_tags__od {
+        label = "de.monticore.tagging.tags._od";
+        labeljust = l;
+        node[shape=note];
+        File_de_monticore_tagging_tags__od_Tags2OD [label="de.monticore.tagging.tags._od.Tags2OD.java (1)"];
+      }
+      subgraph cluster_de_monticore_tagging_tags__prettyprint {
+        label = "de.monticore.tagging.tags._prettyprint";
+        labeljust = l;
+        node[shape=note];
+        File_de_monticore_tagging_tags__prettyprint_TagsPrettyPrinter [label="de.monticore.tagging.tags._prettyprint.TagsPrettyPrinter.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__prettyprint_TagsFullPrettyPrinter [label="de.monticore.tagging.tags._prettyprint.TagsFullPrettyPrinter.java (1)"];
+      }
+      subgraph cluster_de_monticore_tagging_tags__visitor {
+        label = "de.monticore.tagging.tags._visitor";
+        labeljust = l;
+        node[shape=note];
+        File_de_monticore_tagging_tags__visitor_TagsInterpreter [label="de.monticore.tagging.tags._visitor.TagsInterpreter.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__visitor_TagsHandler [label="de.monticore.tagging.tags._visitor.TagsHandler.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__visitor_TagsInheritanceHandler [label="de.monticore.tagging.tags._visitor.TagsInheritanceHandler.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__visitor_TagsTraverserImplementation [label="de.monticore.tagging.tags._visitor.TagsTraverserImplementation.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__visitor_TagsVisitor2 [label="de.monticore.tagging.tags._visitor.TagsVisitor2.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__visitor_TagsTraverser [label="de.monticore.tagging.tags._visitor.TagsTraverser.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__visitor_ITagsInterpreter [label="de.monticore.tagging.tags._visitor.ITagsInterpreter.java (1)"];
+      }
+      subgraph cluster_de_monticore_tagging_tags__cocos {
+        label = "de.monticore.tagging.tags._cocos";
+        labeljust = l;
+        node[shape=note];
+        File_de_monticore_tagging_tags__cocos_TagsASTTagUnitCoCo [label="de.monticore.tagging.tags._cocos.TagsASTTagUnitCoCo.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__cocos_TagsASTComplexTagCoCo [label="de.monticore.tagging.tags._cocos.TagsASTComplexTagCoCo.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__cocos_TagsASTValuedTagCoCo [label="de.monticore.tagging.tags._cocos.TagsASTValuedTagCoCo.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__cocos_TagsASTModelElementIdentifierCoCo [label="de.monticore.tagging.tags._cocos.TagsASTModelElementIdentifierCoCo.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__cocos_TagsASTTagsNodeCoCo [label="de.monticore.tagging.tags._cocos.TagsASTTagsNodeCoCo.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__cocos_TagsASTDefaultIdentCoCo [label="de.monticore.tagging.tags._cocos.TagsASTDefaultIdentCoCo.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__cocos_TagsASTTargetElementCoCo [label="de.monticore.tagging.tags._cocos.TagsASTTargetElementCoCo.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__cocos_TagsASTSimpleTagCoCo [label="de.monticore.tagging.tags._cocos.TagsASTSimpleTagCoCo.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__cocos_TagsASTContextCoCo [label="de.monticore.tagging.tags._cocos.TagsASTContextCoCo.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__cocos_TagsCoCoChecker [label="de.monticore.tagging.tags._cocos.TagsCoCoChecker.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__cocos_TagsASTTagCoCo [label="de.monticore.tagging.tags._cocos.TagsASTTagCoCo.java (1)"];
+      }
+      subgraph cluster_de_monticore_tagging_tags__ast {
+        label = "de.monticore.tagging.tags._ast";
+        labeljust = l;
+        node[shape=note];
+        File_de_monticore_tagging_tags__ast_ASTContext [label="de.monticore.tagging.tags._ast.ASTContext.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__ast_ASTValuedTagBuilder [label="de.monticore.tagging.tags._ast.ASTValuedTagBuilder.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__ast_ASTTargetElementBuilder [label="de.monticore.tagging.tags._ast.ASTTargetElementBuilder.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__ast_ASTDefaultIdentTOP [label="de.monticore.tagging.tags._ast.ASTDefaultIdentTOP.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__ast_ASTConstantsTags [label="de.monticore.tagging.tags._ast.ASTConstantsTags.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__ast_ASTTagUnitBuilder [label="de.monticore.tagging.tags._ast.ASTTagUnitBuilder.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__ast_ASTTag [label="de.monticore.tagging.tags._ast.ASTTag.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__ast_ASTModelElementIdentifierTOP [label="de.monticore.tagging.tags._ast.ASTModelElementIdentifierTOP.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__ast_ASTSimpleTag [label="de.monticore.tagging.tags._ast.ASTSimpleTag.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__ast_ASTValuedTag [label="de.monticore.tagging.tags._ast.ASTValuedTag.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__ast_ASTTagsNode [label="de.monticore.tagging.tags._ast.ASTTagsNode.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__ast_ASTDefaultIdentBuilder [label="de.monticore.tagging.tags._ast.ASTDefaultIdentBuilder.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__ast_ASTTagUnit [label="de.monticore.tagging.tags._ast.ASTTagUnit.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__ast_ASTContextBuilder [label="de.monticore.tagging.tags._ast.ASTContextBuilder.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__ast_ASTComplexTag [label="de.monticore.tagging.tags._ast.ASTComplexTag.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__ast_ASTSimpleTagBuilder [label="de.monticore.tagging.tags._ast.ASTSimpleTagBuilder.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__ast_ASTTargetElement [label="de.monticore.tagging.tags._ast.ASTTargetElement.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__ast_ASTComplexTagBuilder [label="de.monticore.tagging.tags._ast.ASTComplexTagBuilder.java (1)"];
+        node[shape=note];
+        File_de_monticore_tagging_tags__ast_TagsLiterals [label="de.monticore.tagging.tags._ast.TagsLiterals.java (1)"];
+      }
+      node[shape=note];
+      File_de_monticore_tagging_tags_TagsTool [label="de.monticore.tagging.tags.TagsTool.java (1)"];
+      node[shape=note];
+      File_de_monticore_tagging_tags_TagsMill [label="de.monticore.tagging.tags.TagsMill.java (1)"];
+    }
+    node[shape=box3d];
+    Model_de_monticore_tagging_Tags [label="de.monticore.tagging.Tags (1)"];
+  }
+  subgraph cluster_data {
+    label = "data";
+    labeljust = l;
+    node[shape=ellipse];
+    Template_data_DeepEqualsWithComments [label="data.DeepEqualsWithComments.ftl (7)"];
+    node[shape=ellipse];
+    Template_data_EqualsWithComments [label="data.EqualsWithComments.ftl (7)"];
+    node[shape=ellipse];
+    Template_data_DeepCloneWithParameters [label="data.DeepCloneWithParameters.ftl (7)"];
+    node[shape=ellipse];
+    Template_data_AcceptSuper [label="data.AcceptSuper.ftl (50)"];
+    node[shape=ellipse];
+    Template_data_DeepEqualsWithOrder [label="data.DeepEqualsWithOrder.ftl (7)"];
+    node[shape=ellipse];
+    Template_data_EqualAttributes [label="data.EqualAttributes.ftl (7)"];
+  }
+  subgraph cluster__parser {
+    label = "_parser";
+    labeljust = l;
+    subgraph cluster__parser_visitor {
+      label = "_parser.visitor";
+      labeljust = l;
+      node[shape=ellipse];
+      Template__parser_visitor_Constructor [label="_parser.visitor.Constructor.ftl (1)"];
+      node[shape=ellipse];
+      Template__parser_visitor_VisitKeywordRule [label="_parser.visitor.VisitKeywordRule.ftl (2)"];
+      node[shape=ellipse];
+      Template__parser_visitor_NotImplemented [label="_parser.visitor.NotImplemented.ftl (3)"];
+      node[shape=ellipse];
+      Template__parser_visitor_TreeEntry [label="_parser.visitor.TreeEntry.ftl (204)"];
+      node[shape=ellipse];
+      Template__parser_visitor_VisitClassProd [label="_parser.visitor.VisitClassProd.ftl (26)"];
+      node[shape=ellipse];
+      Template__parser_visitor_VisitInterface [label="_parser.visitor.VisitInterface.ftl (8)"];
+      node[shape=ellipse];
+      Template__parser_visitor_VisitTree [label="_parser.visitor.VisitTree.ftl (1)"];
+    }
+    node[shape=ellipse];
+    Template__parser_CreateReader [label="_parser.CreateReader.ftl (1)"];
+    node[shape=ellipse];
+    Template__parser_Create [label="_parser.Create.ftl (1)"];
+    node[shape=ellipse];
+    Template__parser_ParseRuleString [label="_parser.ParseRuleString.ftl (34)"];
+    node[shape=ellipse];
+    Template__parser_ParseRuleReader [label="_parser.ParseRuleReader.ftl (34)"];
+    node[shape=ellipse];
+    Template__parser_ParseString [label="_parser.ParseString.ftl (1)"];
+    node[shape=ellipse];
+    Template__parser_Parse [label="_parser.Parse.ftl (1)"];
+    node[shape=ellipse];
+    Template__parser_ParseReader [label="_parser.ParseReader.ftl (1)"];
+    node[shape=ellipse];
+    Template__parser_ParseRule [label="_parser.ParseRule.ftl (34)"];
+  }
+  subgraph cluster_methods {
+    label = "methods";
+    labeljust = l;
+    subgraph cluster_methods_opt {
+      label = "methods.opt";
+      labeljust = l;
+      node[shape=ellipse];
+      Template_methods_opt_Set4Opt [label="methods.opt.Set4Opt.ftl (64)"];
+      node[shape=ellipse];
+      Template_methods_opt_IsPresent4Opt [label="methods.opt.IsPresent4Opt.ftl (66)"];
+      node[shape=ellipse];
+      Template_methods_opt_SetAbsent [label="methods.opt.SetAbsent.ftl (64)"];
+      node[shape=ellipse];
+      Template_methods_opt_Get4Opt [label="methods.opt.Get4Opt.ftl (66)"];
+    }
+    node[shape=ellipse];
+    Template_methods_Set [label="methods.Set.ftl (45)"];
+    node[shape=ellipse];
+    Template_methods_Get [label="methods.Get.ftl (63)"];
+    node[shape=ellipse];
+    Template_methods_MethodDelegate [label="methods.MethodDelegate.ftl (482)"];
+  }
+  subgraph cluster__prettyprinter_pp {
+    label = "_prettyprinter.pp";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__prettyprinter_pp_HandleMethod [label="_prettyprinter.pp.HandleMethod.ftl (7)"];
+    node[shape=ellipse];
+    Template__prettyprinter_pp_Alt [label="_prettyprinter.pp.Alt.ftl (22)"];
+    node[shape=ellipse];
+    Template__prettyprinter_pp_Tokens [label="_prettyprinter.pp.Tokens.ftl (5)"];
+    node[shape=ellipse];
+    Template__prettyprinter_pp_Block [label="_prettyprinter.pp.Block.ftl (18)"];
+    node[shape=ellipse];
+    Template__prettyprinter_pp_Terminal [label="_prettyprinter.pp.Terminal.ftl (23)"];
+  }
+  subgraph cluster__prettyprinter_full {
+    label = "_prettyprinter.full";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__prettyprinter_full_FPPTraverserInit [label="_prettyprinter.full.FPPTraverserInit.ftl (1)"];
+    node[shape=ellipse];
+    Template__prettyprinter_full_FullPrettyPrintMethod [label="_prettyprinter.full.FullPrettyPrintMethod.ftl (1)"];
+    node[shape=ellipse];
+    Template__prettyprinter_full_FPPSetPrintComments [label="_prettyprinter.full.FPPSetPrintComments.ftl (1)"];
+    node[shape=ellipse];
+    Template__prettyprinter_full_FPPConstructor [label="_prettyprinter.full.FPPConstructor.ftl (1)"];
+  }
+  subgraph cluster_interpreter {
+    label = "interpreter";
+    labeljust = l;
+    node[shape=ellipse];
+    Template_interpreter_ConstructorNoParams [label="interpreter.ConstructorNoParams.ftl (1)"];
+  }
+  subgraph cluster_cd2java {
+    label = "cd2java";
+    labeljust = l;
+    node[shape=ellipse];
+    Template_cd2java_Constructor [label="cd2java.Constructor.ftl (39)"];
+    node[shape=ellipse];
+    Template_cd2java_Attribute [label="cd2java.Attribute.ftl (198)"];
+    node[shape=ellipse];
+    Template_cd2java_Package [label="cd2java.Package.ftl (61)"];
+    node[shape=ellipse];
+    Template_cd2java_Class [label="cd2java.Class.ftl (38)"];
+    node[shape=ellipse];
+    Template_cd2java_Interface [label="cd2java.Interface.ftl (22)"];
+    node[shape=ellipse];
+    Template_cd2java_Annotations [label="cd2java.Annotations.ftl (2559)"];
+    node[shape=ellipse];
+    Template_cd2java_EmptyBody [label="cd2java.EmptyBody.ftl (59)"];
+    node[shape=ellipse];
+    Template_cd2java_Method [label="cd2java.Method.ftl (2359)"];
+    node[shape=ellipse];
+    Template_cd2java_Imports [label="cd2java.Imports.ftl (60)"];
+    node[shape=ellipse];
+    Template_cd2java_Value [label="cd2java.Value.ftl (146)"];
+    node[shape=ellipse];
+    Template_cd2java_Enum [label="cd2java.Enum.ftl (1)"];
+  }
+  subgraph cluster__cli {
+    label = "_cli";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__cli_Main [label="_cli.Main.ftl (1)"];
+    node[shape=ellipse];
+    Template__cli_AddStandardOptions [label="_cli.AddStandardOptions.ftl (1)"];
+    node[shape=ellipse];
+    Template__cli_PrintVersion [label="_cli.PrintVersion.ftl (1)"];
+    node[shape=ellipse];
+    Template__cli_SymbolTable [label="_cli.SymbolTable.ftl (1)"];
+    node[shape=ellipse];
+    Template__cli_Parser [label="_cli.Parser.ftl (1)"];
+    node[shape=ellipse];
+    Template__cli_PrettyPrint [label="_cli.PrettyPrint.ftl (1)"];
+    node[shape=ellipse];
+    Template__cli_StoreSymbols [label="_cli.StoreSymbols.ftl (1)"];
+    node[shape=ellipse];
+    Template__cli_Init [label="_cli.Init.ftl (1)"];
+    node[shape=ellipse];
+    Template__cli_AddAdditionalOptions [label="_cli.AddAdditionalOptions.ftl (1)"];
+    node[shape=ellipse];
+    Template__cli_Run [label="_cli.Run.ftl (1)"];
+    node[shape=ellipse];
+    Template__cli_Print [label="_cli.Print.ftl (1)"];
+    node[shape=ellipse];
+    Template__cli_PrintHelp [label="_cli.PrintHelp.ftl (1)"];
+    node[shape=ellipse];
+    Template__cli_InitOptions [label="_cli.InitOptions.ftl (1)"];
+  }
+  subgraph cluster__visitor_handler {
+    label = "_visitor.handler";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__visitor_handler_Traverse [label="_visitor.handler.Traverse.ftl (7)"];
+    node[shape=ellipse];
+    Template__visitor_handler_HandleSymTabInheritance [label="_visitor.handler.HandleSymTabInheritance.ftl (3)"];
+    node[shape=ellipse];
+    Template__visitor_handler_HandleASTInheritance [label="_visitor.handler.HandleASTInheritance.ftl (10)"];
+    node[shape=ellipse];
+    Template__visitor_handler_TraverseScope [label="_visitor.handler.TraverseScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__visitor_handler_Handle [label="_visitor.handler.Handle.ftl (14)"];
+  }
+  subgraph cluster__visitor_traverser {
+    label = "_visitor.traverser";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__visitor_traverser_Traverse [label="_visitor.traverser.Traverse.ftl (7)"];
+    node[shape=ellipse];
+    Template__visitor_traverser_AddVisitor [label="_visitor.traverser.AddVisitor.ftl (6)"];
+    node[shape=ellipse];
+    Template__visitor_traverser_DelegatingMethods [label="_visitor.traverser.DelegatingMethods.ftl (28)"];
+    node[shape=ellipse];
+    Template__visitor_traverser_SetHandler [label="_visitor.traverser.SetHandler.ftl (5)"];
+    node[shape=ellipse];
+    Template__visitor_traverser_TraverseScope [label="_visitor.traverser.TraverseScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__visitor_traverser_Handle [label="_visitor.traverser.Handle.ftl (14)"];
+  }
+  subgraph cluster_mill {
+    label = "mill";
+    labeljust = l;
+    node[shape=ellipse];
+    Template_mill_ProtectedParserMethod [label="mill.ProtectedParserMethod.ftl (1)"];
+    node[shape=ellipse];
+    Template_mill_PrettyPrintBuilderMethod [label="mill.PrettyPrintBuilderMethod.ftl (1)"];
+    node[shape=ellipse];
+    Template_mill_PrettyPrintProtectedBuilderMethod [label="mill.PrettyPrintProtectedBuilderMethod.ftl (1)"];
+    node[shape=ellipse];
+    Template_mill_ResetMethod [label="mill.ResetMethod.ftl (1)"];
+    node[shape=ellipse];
+    Template_mill_ProtectedMethodForSuper [label="mill.ProtectedMethodForSuper.ftl (24)"];
+    node[shape=ellipse];
+    Template_mill_BuilderMethod [label="mill.BuilderMethod.ftl (16)"];
+    node[shape=ellipse];
+    Template_mill_TypeDispatcherGetter [label="mill.TypeDispatcherGetter.ftl (1)"];
+    node[shape=ellipse];
+    Template_mill_ProtectedBuilderMethod [label="mill.ProtectedBuilderMethod.ftl (11)"];
+    node[shape=ellipse];
+    Template_mill_ProtectedGlobalScopeMethod [label="mill.ProtectedGlobalScopeMethod.ftl (1)"];
+    node[shape=ellipse];
+    Template_mill_InitMethod [label="mill.InitMethod.ftl (1)"];
+    node[shape=ellipse];
+    Template_mill_InitMeMethod [label="mill.InitMeMethod.ftl (1)"];
+    node[shape=ellipse];
+    Template_mill_BuilderDelegatorMethod [label="mill.BuilderDelegatorMethod.ftl (19)"];
+    node[shape=ellipse];
+    Template_mill_GetMillMethod [label="mill.GetMillMethod.ftl (1)"];
+    node[shape=ellipse];
+    Template_mill_InheritanceHandlerMethod [label="mill.InheritanceHandlerMethod.ftl (1)"];
+  }
+  subgraph cluster__ast_ast_class {
+    label = "_ast.ast_class";
+    labeljust = l;
+    subgraph cluster__ast_ast_class_builder {
+      label = "_ast.ast_class.builder";
+      labeljust = l;
+      node[shape=ellipse];
+      Template__ast_ast_class_builder_ASTCNodeInit [label="_ast.ast_class.builder.ASTCNodeInit.ftl (14)"];
+      node[shape=ellipse];
+      Template__ast_ast_class_builder_ASTCNodeMethodDelegate [label="_ast.ast_class.builder.ASTCNodeMethodDelegate.ftl (238)"];
+    }
+    subgraph cluster__ast_ast_class_symboltable {
+      label = "_ast.ast_class.symboltable";
+      labeljust = l;
+      node[shape=ellipse];
+      Template__ast_ast_class_symboltable_InheritedSetEnclosingScope [label="_ast.ast_class.symboltable.InheritedSetEnclosingScope.ftl (28)"];
+    }
+    node[shape=ellipse];
+    Template__ast_ast_class_Evaluate [label="_ast.ast_class.Evaluate.ftl (7)"];
+    node[shape=ellipse];
+    Template__ast_ast_class_Accept [label="_ast.ast_class.Accept.ftl (9)"];
+  }
+  subgraph cluster__ast_builder {
+    label = "_ast.builder";
+    labeljust = l;
+    subgraph cluster__ast_builder_opt {
+      label = "_ast.builder.opt";
+      labeljust = l;
+      node[shape=ellipse];
+      Template__ast_builder_opt_SetAbsent4ASTBuilderOpt [label="_ast.builder.opt.SetAbsent4ASTBuilderOpt.ftl (2)"];
+      node[shape=ellipse];
+      Template__ast_builder_opt_Set4ASTBuilderOpt [label="_ast.builder.opt.Set4ASTBuilderOpt.ftl (2)"];
+    }
+    node[shape=ellipse];
+    Template__ast_builder_BuildMethod [label="_ast.builder.BuildMethod.ftl (14)"];
+    node[shape=ellipse];
+    Template__ast_builder_Set4ASTBuilder [label="_ast.builder.Set4ASTBuilder.ftl (16)"];
+    node[shape=ellipse];
+    Template__ast_builder_MethodDelegate4ASTBuilder [label="_ast.builder.MethodDelegate4ASTBuilder.ftl (126)"];
+    node[shape=ellipse];
+    Template__ast_builder_IsValidMethod [label="_ast.builder.IsValidMethod.ftl (7)"];
+  }
+  subgraph cluster__ast_ast_constants {
+    label = "_ast.ast_constants";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__ast_ast_constants_GetAllLanguages [label="_ast.ast_constants.GetAllLanguages.ftl (1)"];
+  }
+  subgraph cluster__symboltable_serialization_scopeDeSer {
+    label = "_symboltable.serialization.scopeDeSer";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__symboltable_serialization_scopeDeSer_DeserializeArtifactScope [label="_symboltable.serialization.scopeDeSer.DeserializeArtifactScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_serialization_scopeDeSer_DeserializeSymbols [label="_symboltable.serialization.scopeDeSer.DeserializeSymbols.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_serialization_scopeDeSer_DeserializeScope [label="_symboltable.serialization.scopeDeSer.DeserializeScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_serialization_scopeDeSer_SerializeS2J4ScopeDeSer [label="_symboltable.serialization.scopeDeSer.SerializeS2J4ScopeDeSer.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_serialization_scopeDeSer_SerializeAS4ScopeDeSer [label="_symboltable.serialization.scopeDeSer.SerializeAS4ScopeDeSer.ftl (1)"];
+  }
+  subgraph cluster__symboltable_serialization_symbols2Json {
+    label = "_symboltable.serialization.symbols2Json";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__symboltable_serialization_symbols2Json_VisitScope4STP [label="_symboltable.serialization.symbols2Json.VisitScope4STP.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_serialization_symbols2Json_Load2 [label="_symboltable.serialization.symbols2Json.Load2.ftl (3)"];
+    node[shape=ellipse];
+    Template__symboltable_serialization_symbols2Json_Serialize4Symbols2Json [label="_symboltable.serialization.symbols2Json.Serialize4Symbols2Json.ftl (2)"];
+    node[shape=ellipse];
+    Template__symboltable_serialization_symbols2Json_EndVisit4Scope [label="_symboltable.serialization.symbols2Json.EndVisit4Scope.ftl (2)"];
+    node[shape=ellipse];
+    Template__symboltable_serialization_symbols2Json_Init [label="_symboltable.serialization.symbols2Json.Init.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_serialization_symbols2Json_Store [label="_symboltable.serialization.symbols2Json.Store.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_serialization_symbols2Json_VisitArtifactScope [label="_symboltable.serialization.symbols2Json.VisitArtifactScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_serialization_symbols2Json_Deserialize [label="_symboltable.serialization.symbols2Json.Deserialize.ftl (1)"];
+  }
+  subgraph cluster__symboltable_artifactscope {
+    label = "_symboltable.artifactscope";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__symboltable_artifactscope_SetEnclosingScope [label="_symboltable.artifactscope.SetEnclosingScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_artifactscope_GetName [label="_symboltable.artifactscope.GetName.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_artifactscope_ConstructorArtifactScope [label="_symboltable.artifactscope.ConstructorArtifactScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_artifactscope_IsPresentName [label="_symboltable.artifactscope.IsPresentName.ftl (1)"];
+  }
+  subgraph cluster__symboltable_scopesgenitor {
+    label = "_symboltable.scopesgenitor";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__symboltable_scopesgenitor_CreateScope [label="_symboltable.scopesgenitor.CreateScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_scopesgenitor_VisitNoSymbol [label="_symboltable.scopesgenitor.VisitNoSymbol.ftl (5)"];
+    node[shape=ellipse];
+    Template__symboltable_scopesgenitor_PutOnStack [label="_symboltable.scopesgenitor.PutOnStack.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_scopesgenitor_EndVisitScope4SSC [label="_symboltable.scopesgenitor.EndVisitScope4SSC.ftl (2)"];
+    node[shape=ellipse];
+    Template__symboltable_scopesgenitor_CreateFromAST [label="_symboltable.scopesgenitor.CreateFromAST.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_scopesgenitor_VisitScope4SSC [label="_symboltable.scopesgenitor.VisitScope4SSC.ftl (2)"];
+  }
+  subgraph cluster__symboltable_iartifactscope {
+    label = "_symboltable.iartifactscope";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__symboltable_iartifactscope_CheckIfContinueAsSubScope [label="_symboltable.iartifactscope.CheckIfContinueAsSubScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_iartifactscope_GetRemainingNameForResolveDown [label="_symboltable.iartifactscope.GetRemainingNameForResolveDown.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_iartifactscope_GetTopLevelSymbol [label="_symboltable.iartifactscope.GetTopLevelSymbol.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_iartifactscope_GetFullName [label="_symboltable.iartifactscope.GetFullName.ftl (1)"];
+  }
+  subgraph cluster__symboltable_scope {
+    label = "_symboltable.scope";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__symboltable_scope_SetSpanningSymbolAbsent [label="_symboltable.scope.SetSpanningSymbolAbsent.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_scope_SetEnclosingScope [label="_symboltable.scope.SetEnclosingScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_scope_SetSubScopes [label="_symboltable.scope.SetSubScopes.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_scope_SetSpanningSymbol [label="_symboltable.scope.SetSpanningSymbol.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_scope_AddSubScope [label="_symboltable.scope.AddSubScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_scope_RemoveSubScope [label="_symboltable.scope.RemoveSubScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_scope_GetSubScopes [label="_symboltable.scope.GetSubScopes.ftl (1)"];
+  }
+  subgraph cluster__symboltable_globalscope {
+    label = "_symboltable.globalscope";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__symboltable_globalscope_ZeroArgsConstructorGlobalScope [label="_symboltable.globalscope.ZeroArgsConstructorGlobalScope.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_globalscope_LoadFileForModelName [label="_symboltable.globalscope.LoadFileForModelName.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_globalscope_Init [label="_symboltable.globalscope.Init.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_globalscope_GetSymbols2Json [label="_symboltable.globalscope.GetSymbols2Json.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_globalscope_Clear [label="_symboltable.globalscope.Clear.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_globalscope_ConstructorGlobalScope [label="_symboltable.globalscope.ConstructorGlobalScope.ftl (1)"];
+  }
+  subgraph cluster__symboltable_scopesgenitordelegator {
+    label = "_symboltable.scopesgenitordelegator";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__symboltable_scopesgenitordelegator_CreateFromASTDelegator [label="_symboltable.scopesgenitordelegator.CreateFromASTDelegator.ftl (1)"];
+    node[shape=ellipse];
+    Template__symboltable_scopesgenitordelegator_ConstructorScopesGenitorDelegator [label="_symboltable.scopesgenitordelegator.ConstructorScopesGenitorDelegator.ftl (1)"];
+  }
+  subgraph cluster_parser {
+    label = "parser";
+    labeljust = l;
+    node[shape=ellipse];
+    Template_parser_Parser [label="parser.Parser.ftl (1)"];
+    node[shape=ellipse];
+    Template_parser_Lexer [label="parser.Lexer.ftl (1)"];
+    node[shape=ellipse];
+    Template_parser_EmptyParserInfo [label="parser.EmptyParserInfo.ftl (1)"];
+    node[shape=ellipse];
+    Template_parser_ParserHeader [label="parser.ParserHeader.ftl (1)"];
+    node[shape=ellipse];
+    Template_parser_LexerMember [label="parser.LexerMember.ftl (1)"];
+    node[shape=ellipse];
+    Template_parser_ParserInfoForSuperLang [label="parser.ParserInfoForSuperLang.ftl (4)"];
+    node[shape=ellipse];
+    Template_parser_ParserInfo [label="parser.ParserInfo.ftl (1)"];
+  }
+  subgraph cluster__od {
+    label = "_od";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__od_PrintObject [label="_od.PrintObject.ftl (1)"];
+    node[shape=ellipse];
+    Template__od_PrintAttribute [label="_od.PrintAttribute.ftl (1)"];
+    node[shape=ellipse];
+    Template__od_ConstructorOD [label="_od.ConstructorOD.ftl (1)"];
+    node[shape=ellipse];
+    Template__od_HandleOD [label="_od.HandleOD.ftl (7)"];
+    node[shape=ellipse];
+    Template__od_PrintObjectDiagram [label="_od.PrintObjectDiagram.ftl (1)"];
+  }
+  subgraph cluster_mc {
+    label = "mc";
+    labeljust = l;
+    node[shape=ellipse];
+    Template_mc_Imports [label="mc.Imports.ftl (60)"];
+  }
+  subgraph cluster_dispatcher {
+    label = "dispatcher";
+    labeljust = l;
+    node[shape=ellipse];
+    Template_dispatcher_Constructor [label="dispatcher.Constructor.ftl (1)"];
+    node[shape=ellipse];
+    Template_dispatcher_AsMethod [label="dispatcher.AsMethod.ftl (59)"];
+    node[shape=ellipse];
+    Template_dispatcher_IsMethod [label="dispatcher.IsMethod.ftl (59)"];
+    node[shape=ellipse];
+    Template_dispatcher_Reset [label="dispatcher.Reset.ftl (1)"];
+    node[shape=ellipse];
+    Template_dispatcher_Handle [label="dispatcher.Handle.ftl (59)"];
+  }
+  subgraph cluster__cocos {
+    label = "_cocos";
+    labeljust = l;
+    node[shape=ellipse];
+    Template__cocos_CoCoCheckerConstructor [label="_cocos.CoCoCheckerConstructor.ftl (1)"];
+    node[shape=ellipse];
+    Template__cocos_AddChecker [label="_cocos.AddChecker.ftl (5)"];
+  }
+  Model_de_monticore_tagging_Tags -> Template_parser_EmptyParserInfo;
+  Model_de_monticore_tagging_Tags -> Template_parser_Parser;
+  Model_de_monticore_tagging_Tags -> Template_parser_Lexer;
+  Model_de_monticore_tagging_Tags -> Template_parser_ParserInfo;
+  Model_de_monticore_tagging_Tags -> Template_cd2java_Class;
+  Model_de_monticore_tagging_Tags -> Template_cd2java_Interface;
+  Model_de_monticore_tagging_Tags -> Template_cd2java_Enum;
+  Model_de_monticore_tagging_Tags -> Template_parser_ParserInfoForSuperLang;
+  Template__parser_visitor_TreeEntry -> Template__parser_visitor_TreeEntry;
+  Template__parser_visitor_VisitClassProd -> Template__parser_visitor_TreeEntry;
+  Template__prettyprinter_pp_HandleMethod -> Template__prettyprinter_pp_Block;
+  Template__prettyprinter_pp_HandleMethod -> Template__prettyprinter_pp_Alt;
+  Template__prettyprinter_pp_Alt -> Template__prettyprinter_pp_Block;
+  Template__prettyprinter_pp_Alt -> Template__prettyprinter_pp_Terminal;
+  Template__prettyprinter_pp_Alt -> Template__prettyprinter_pp_Tokens;
+  Template__prettyprinter_pp_Block -> Template__prettyprinter_pp_Alt;
+  Template_cd2java_Constructor -> Template_interpreter_ConstructorNoParams;
+  Template_cd2java_Constructor -> Template__od_ConstructorOD;
+  Template_cd2java_Constructor -> Template__symboltable_globalscope_ConstructorGlobalScope;
+  Template_cd2java_Constructor -> Template_cd2java_Annotations;
+  Template_cd2java_Constructor -> Template_dispatcher_Constructor;
+  Template_cd2java_Constructor -> Template__prettyprinter_full_FPPConstructor;
+  Template_cd2java_Constructor -> Template__parser_visitor_Constructor;
+  Template_cd2java_Constructor -> Template__symboltable_scopesgenitordelegator_ConstructorScopesGenitorDelegator;
+  Template_cd2java_Constructor -> Template__symboltable_artifactscope_ConstructorArtifactScope;
+  Template_cd2java_Constructor -> Template__cocos_CoCoCheckerConstructor;
+  Template_cd2java_Constructor -> Template_cd2java_EmptyBody;
+  Template_cd2java_Constructor -> Template__symboltable_globalscope_ZeroArgsConstructorGlobalScope;
+  Template_cd2java_Attribute -> Template_cd2java_Annotations;
+  Template_cd2java_Attribute -> Template_cd2java_Value;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__ast_ASTDefaultIdentBuilder;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags_TagsMill;
+  Template_cd2java_Class -> Template_cd2java_Attribute;
+  Template_cd2java_Class -> Template_cd2java_Constructor;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__auxiliary_MCBasicTypesMillForTags;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__ast_ASTSimpleTagBuilder;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__symboltable_TagsSymbols2Json;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__ast_ASTComplexTag;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__symboltable_TagsScopesGenitorDelegator;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__ast_ASTComplexTagBuilder;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__symboltable_TagsArtifactScope;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__ast_ASTTagUnit;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__ast_ASTTargetElement;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__od_Tags2OD;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__symboltable_TagsGlobalScope;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__prettyprint_TagsFullPrettyPrinter;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__visitor_TagsTraverserImplementation;
+  Template_cd2java_Class -> Template_cd2java_Package;
+  Template_cd2java_Class -> Template_cd2java_Annotations;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__ast_ASTDefaultIdentTOP;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__util_TagsTypeDispatcher;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__ast_ASTValuedTag;
+  Template_cd2java_Class -> Template_mc_Imports;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__parser_TagsParser;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__ast_ASTContext;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__parser_TagsASTBuildVisitor;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__ast_ASTTargetElementBuilder;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__auxiliary_MCBasicsMillForTags;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags_TagsTool;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__visitor_TagsInheritanceHandler;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__ast_ASTContextBuilder;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__symboltable_TagsScopesGenitor;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__ast_ASTSimpleTag;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__ast_ASTValuedTagBuilder;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__visitor_TagsInterpreter;
+  Template_cd2java_Class -> Template_cd2java_Imports;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__prettyprint_TagsPrettyPrinter;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__cocos_TagsCoCoChecker;
+  Template_cd2java_Class -> Template_cd2java_Method;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__auxiliary_MCLiteralsBasisMillForTags;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__ast_ASTTagUnitBuilder;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__auxiliary_MCCommonLiteralsMillForTags;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__ast_ASTConstantsTags;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__symboltable_TagsScope;
+  Template_cd2java_Class -> File_de_monticore_tagging_tags__symboltable_TagsDeSer;
+  Template_cd2java_Interface -> File_de_monticore_tagging_tags__cocos_TagsASTModelElementIdentifierCoCo;
+  Template_cd2java_Interface -> File_de_monticore_tagging_tags__visitor_TagsVisitor2;
+  Template_cd2java_Interface -> File_de_monticore_tagging_tags__cocos_TagsASTComplexTagCoCo;
+  Template_cd2java_Interface -> File_de_monticore_tagging_tags__visitor_ITagsInterpreter;
+  Template_cd2java_Interface -> Template_cd2java_Package;
+  Template_cd2java_Interface -> Template_cd2java_Annotations;
+  Template_cd2java_Interface -> File_de_monticore_tagging_tags__cocos_TagsASTTagsNodeCoCo;
+  Template_cd2java_Interface -> File_de_monticore_tagging_tags__cocos_TagsASTTargetElementCoCo;
+  Template_cd2java_Interface -> File_de_monticore_tagging_tags__cocos_TagsASTValuedTagCoCo;
+  Template_cd2java_Interface -> File_de_monticore_tagging_tags__symboltable_ITagsGlobalScope;
+  Template_cd2java_Interface -> File_de_monticore_tagging_tags__symboltable_ITagsArtifactScope;
+  Template_cd2java_Interface -> File_de_monticore_tagging_tags__cocos_TagsASTContextCoCo;
+  Template_cd2java_Interface -> Template_mc_Imports;
+  Template_cd2java_Interface -> File_de_monticore_tagging_tags__ast_ASTModelElementIdentifierTOP;
+  Template_cd2java_Interface -> File_de_monticore_tagging_tags__cocos_TagsASTTagUnitCoCo;
+  Template_cd2java_Interface -> File_de_monticore_tagging_tags__ast_ASTTagsNode;
+  Template_cd2java_Interface -> File_de_monticore_tagging_tags__visitor_TagsHandler;
+  Template_cd2java_Interface -> File_de_monticore_tagging_tags__symboltable_ICommonTagsSymbol;
+  Template_cd2java_Interface -> File_de_monticore_tagging_tags__cocos_TagsASTDefaultIdentCoCo;
+  Template_cd2java_Interface -> File_de_monticore_tagging_tags__visitor_TagsTraverser;
+  Template_cd2java_Interface -> File_de_monticore_tagging_tags__symboltable_ITagsScope;
+  Template_cd2java_Interface -> File_de_monticore_tagging_tags__util_ITagsTypeDispatcher;
+  Template_cd2java_Interface -> Template_cd2java_Imports;
+  Template_cd2java_Interface -> Template_cd2java_Method;
+  Template_cd2java_Interface -> File_de_monticore_tagging_tags__cocos_TagsASTTagCoCo;
+  Template_cd2java_Interface -> File_de_monticore_tagging_tags__ast_ASTTag;
+  Template_cd2java_Interface -> File_de_monticore_tagging_tags__cocos_TagsASTSimpleTagCoCo;
+  Template_cd2java_Method -> Template_mill_PrettyPrintProtectedBuilderMethod;
+  Template_cd2java_Method -> Template__symboltable_scope_SetSpanningSymbolAbsent;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbols2Json_EndVisit4Scope;
+  Template_cd2java_Method -> Template__parser_Parse;
+  Template_cd2java_Method -> Template__symboltable_scope_SetSubScopes;
+  Template_cd2java_Method -> Template_dispatcher_AsMethod;
+  Template_cd2java_Method -> Template__parser_visitor_VisitClassProd;
+  Template_cd2java_Method -> Template__ast_ast_constants_GetAllLanguages;
+  Template_cd2java_Method -> Template__parser_visitor_NotImplemented;
+  Template_cd2java_Method -> Template__symboltable_artifactscope_GetName;
+  Template_cd2java_Method -> Template__visitor_handler_HandleASTInheritance;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbols2Json_Store;
+  Template_cd2java_Method -> Template__prettyprinter_full_FPPSetPrintComments;
+  Template_cd2java_Method -> Template__parser_visitor_VisitTree;
+  Template_cd2java_Method -> Template_data_EqualAttributes;
+  Template_cd2java_Method -> Template_methods_MethodDelegate;
+  Template_cd2java_Method -> Template__cli_Print;
+  Template_cd2java_Method -> Template__cli_AddStandardOptions;
+  Template_cd2java_Method -> Template_mill_ProtectedMethodForSuper;
+  Template_cd2java_Method -> Template__parser_CreateReader;
+  Template_cd2java_Method -> Template__symboltable_globalscope_LoadFileForModelName;
+  Template_cd2java_Method -> Template__cocos_AddChecker;
+  Template_cd2java_Method -> Template__visitor_traverser_DelegatingMethods;
+  Template_cd2java_Method -> Template__visitor_traverser_Handle;
+  Template_cd2java_Method -> Template__cli_Main;
+  Template_cd2java_Method -> Template_mill_GetMillMethod;
+  Template_cd2java_Method -> Template__visitor_handler_HandleSymTabInheritance;
+  Template_cd2java_Method -> Template_mill_ProtectedParserMethod;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbols2Json_Load2;
+  Template_cd2java_Method -> Template__symboltable_scope_SetSpanningSymbol;
+  Template_cd2java_Method -> Template__ast_ast_class_Evaluate;
+  Template_cd2java_Method -> Template__cli_PrintHelp;
+  Template_cd2java_Method -> Template__od_PrintObject;
+  Template_cd2java_Method -> Template__symboltable_scopesgenitor_CreateFromAST;
+  Template_cd2java_Method -> Template_data_AcceptSuper;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbols2Json_Init;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbols2Json_Serialize4Symbols2Json;
+  Template_cd2java_Method -> Template_methods_opt_Set4Opt;
+  Template_cd2java_Method -> Template__symboltable_serialization_scopeDeSer_SerializeAS4ScopeDeSer;
+  Template_cd2java_Method -> Template__visitor_traverser_Traverse;
+  Template_cd2java_Method -> Template_methods_Get;
+  Template_cd2java_Method -> Template_dispatcher_Handle;
+  Template_cd2java_Method -> Template__parser_ParseRuleString;
+  Template_cd2java_Method -> Template_dispatcher_Reset;
+  Template_cd2java_Method -> Template__symboltable_scope_RemoveSubScope;
+  Template_cd2java_Method -> Template__symboltable_scopesgenitor_PutOnStack;
+  Template_cd2java_Method -> Template__cli_PrintVersion;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbols2Json_VisitScope4STP;
+  Template_cd2java_Method -> Template__cli_Parser;
+  Template_cd2java_Method -> Template__parser_Create;
+  Template_cd2java_Method -> Template__prettyprinter_full_FullPrettyPrintMethod;
+  Template_cd2java_Method -> Template__symboltable_globalscope_Clear;
+  Template_cd2java_Method -> Template__ast_ast_class_Accept;
+  Template_cd2java_Method -> Template_mill_BuilderDelegatorMethod;
+  Template_cd2java_Method -> Template__symboltable_iartifactscope_CheckIfContinueAsSubScope;
+  Template_cd2java_Method -> Template__symboltable_scopesgenitor_VisitNoSymbol;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbols2Json_VisitArtifactScope;
+  Template_cd2java_Method -> Template__ast_ast_class_builder_ASTCNodeMethodDelegate;
+  Template_cd2java_Method -> Template_mill_InitMethod;
+  Template_cd2java_Method -> Template__symboltable_scope_AddSubScope;
+  Template_cd2java_Method -> Template__symboltable_iartifactscope_GetTopLevelSymbol;
+  Template_cd2java_Method -> Template__ast_builder_BuildMethod;
+  Template_cd2java_Method -> Template__prettyprinter_full_FPPTraverserInit;
+  Template_cd2java_Method -> Template_methods_Set;
+  Template_cd2java_Method -> Template__parser_ParseRule;
+  Template_cd2java_Method -> Template_mill_BuilderMethod;
+  Template_cd2java_Method -> Template__cli_Init;
+  Template_cd2java_Method -> Template__ast_builder_MethodDelegate4ASTBuilder;
+  Template_cd2java_Method -> Template__parser_visitor_VisitInterface;
+  Template_cd2java_Method -> Template__cli_StoreSymbols;
+  Template_cd2java_Method -> Template__od_HandleOD;
+  Template_cd2java_Method -> Template_mill_InitMeMethod;
+  Template_cd2java_Method -> Template__symboltable_globalscope_GetSymbols2Json;
+  Template_cd2java_Method -> Template__cli_PrettyPrint;
+  Template_cd2java_Method -> Template__prettyprinter_pp_HandleMethod;
+  Template_cd2java_Method -> Template__visitor_handler_Handle;
+  Template_cd2java_Method -> Template__symboltable_scope_GetSubScopes;
+  Template_cd2java_Method -> Template__cli_AddAdditionalOptions;
+  Template_cd2java_Method -> Template__parser_ParseString;
+  Template_cd2java_Method -> Template_methods_opt_Get4Opt;
+  Template_cd2java_Method -> Template__visitor_handler_TraverseScope;
+  Template_cd2java_Method -> Template__symboltable_scopesgenitordelegator_CreateFromASTDelegator;
+  Template_cd2java_Method -> Template__cli_Run;
+  Template_cd2java_Method -> Template__parser_ParseReader;
+  Template_cd2java_Method -> Template__parser_ParseRuleReader;
+  Template_cd2java_Method -> Template__ast_builder_opt_Set4ASTBuilderOpt;
+  Template_cd2java_Method -> Template__symboltable_scopesgenitor_CreateScope;
+  Template_cd2java_Method -> Template__cli_InitOptions;
+  Template_cd2java_Method -> Template__od_PrintObjectDiagram;
+  Template_cd2java_Method -> Template__visitor_traverser_TraverseScope;
+  Template_cd2java_Method -> Template__symboltable_artifactscope_IsPresentName;
+  Template_cd2java_Method -> Template_mill_ResetMethod;
+  Template_cd2java_Method -> Template_mill_ProtectedGlobalScopeMethod;
+  Template_cd2java_Method -> Template__ast_builder_opt_SetAbsent4ASTBuilderOpt;
+  Template_cd2java_Method -> Template__symboltable_globalscope_Init;
+  Template_cd2java_Method -> Template__symboltable_serialization_scopeDeSer_DeserializeArtifactScope;
+  Template_cd2java_Method -> Template_data_DeepEqualsWithComments;
+  Template_cd2java_Method -> Template__ast_builder_IsValidMethod;
+  Template_cd2java_Method -> Template_mill_ProtectedBuilderMethod;
+  Template_cd2java_Method -> Template_mill_PrettyPrintBuilderMethod;
+  Template_cd2java_Method -> Template_methods_opt_IsPresent4Opt;
+  Template_cd2java_Method -> Template__symboltable_serialization_scopeDeSer_DeserializeScope;
+  Template_cd2java_Method -> Template__symboltable_scopesgenitor_VisitScope4SSC;
+  Template_cd2java_Method -> Template_cd2java_EmptyBody;
+  Template_cd2java_Method -> Template_cd2java_Annotations;
+  Template_cd2java_Method -> Template__parser_visitor_VisitKeywordRule;
+  Template_cd2java_Method -> Template__ast_builder_Set4ASTBuilder;
+  Template_cd2java_Method -> Template__symboltable_serialization_symbols2Json_Deserialize;
+  Template_cd2java_Method -> Template_data_EqualsWithComments;
+  Template_cd2java_Method -> Template__symboltable_artifactscope_SetEnclosingScope;
+  Template_cd2java_Method -> Template__symboltable_iartifactscope_GetRemainingNameForResolveDown;
+  Template_cd2java_Method -> Template_dispatcher_IsMethod;
+  Template_cd2java_Method -> Template__visitor_traverser_SetHandler;
+  Template_cd2java_Method -> Template_mill_TypeDispatcherGetter;
+  Template_cd2java_Method -> Template__symboltable_serialization_scopeDeSer_DeserializeSymbols;
+  Template_cd2java_Method -> Template__symboltable_serialization_scopeDeSer_SerializeS2J4ScopeDeSer;
+  Template_cd2java_Method -> Template_data_DeepCloneWithParameters;
+  Template_cd2java_Method -> Template__symboltable_scope_SetEnclosingScope;
+  Template_cd2java_Method -> Template__symboltable_iartifactscope_GetFullName;
+  Template_cd2java_Method -> Template__symboltable_scopesgenitor_EndVisitScope4SSC;
+  Template_cd2java_Method -> Template_methods_opt_SetAbsent;
+  Template_cd2java_Method -> Template__visitor_traverser_AddVisitor;
+  Template_cd2java_Method -> Template__od_PrintAttribute;
+  Template_cd2java_Method -> Template__visitor_handler_Traverse;
+  Template_cd2java_Method -> Template__cli_SymbolTable;
+  Template_cd2java_Method -> Template__ast_ast_class_symboltable_InheritedSetEnclosingScope;
+  Template_cd2java_Method -> Template_data_DeepEqualsWithOrder;
+  Template_cd2java_Method -> Template_mill_InheritanceHandlerMethod;
+  Template_cd2java_Enum -> Template_cd2java_Package;
+  Template_cd2java_Enum -> Template_cd2java_Attribute;
+  Template_cd2java_Enum -> Template_cd2java_Constructor;
+  Template_cd2java_Enum -> Template_cd2java_Method;
+  Template_cd2java_Enum -> File_de_monticore_tagging_tags__ast_TagsLiterals;
+  Template__ast_builder_BuildMethod -> Template__ast_ast_class_builder_ASTCNodeInit;
+  Template__symboltable_scope_SetSpanningSymbolAbsent -> Template_methods_opt_SetAbsent;
+  Template__symboltable_scope_SetSpanningSymbol -> Template_methods_opt_Set4Opt;
+  Template_parser_Parser -> Template_parser_ParserHeader;
+  Template_parser_Parser -> File_de_monticore_tagging_tags__parser_TagsAntlrParser;
+  Template_parser_Lexer -> Template_parser_LexerMember;
+  Template_parser_Lexer -> File_de_monticore_tagging_tags__parser_TagsAntlrLexer;
+  Template_parser_EmptyParserInfo -> File_de_monticore_tagging_tags__parser_EmptyTagsParserInfo;
+  Template_parser_ParserInfoForSuperLang -> File_de_monticore_tagging_tags__parser__auxiliary_TagsParserInfoForMCLiteralsBasis;
+  Template_parser_ParserInfoForSuperLang -> File_de_monticore_tagging_tags__parser__auxiliary_TagsParserInfoForMCCommonLiterals;
+  Template_parser_ParserInfoForSuperLang -> File_de_monticore_tagging_tags__parser__auxiliary_TagsParserInfoForMCBasics;
+  Template_parser_ParserInfoForSuperLang -> File_de_monticore_tagging_tags__parser__auxiliary_TagsParserInfoForMCBasicTypes;
+  Template_parser_ParserInfo -> File_de_monticore_tagging_tags__parser_TagsParserInfo;
+}

@@ -1,0 +1,437 @@
+/*
+ * ========================================================== Object diagram
+ */
+objectdiagram mcexceptionstatements_AST {
+  @MCExceptionStatements!MCGrammar(2,0):ASTMCGrammar {
+    symbol = @MCExceptionStatements!Symbol(2,0);
+    enclosingScope = @MCExceptionStatements!ArtifactScope;
+    spanningScope = @MCExceptionStatements!Scope;
+    r__package = [de, monticore, statements];
+    importStatement = [// *size: 1
+      @!MCImportStatement(7,0):ASTMCImportStatement {
+        enclosingScope = @MCExceptionStatements!Scope;
+        mCQualifiedName = @de.monticore.statements!MCQualifiedName(7,7):ASTMCQualifiedName {
+          enclosingScope = @MCExceptionStatements!Scope;
+          parts = [de, monticore, statements];
+        };
+        star = true;
+      }];
+    name = MCExceptionStatements;
+    supergrammar = [// *size: 1
+      @MCCommonStatements!GrammarReference(30,18):ASTGrammarReference {
+        enclosingScope = @MCExceptionStatements!Scope;
+        names = [MCCommonStatements];
+      }];
+    classProds = [// *size: 7
+      @TryStatement1!ClassProd(35,0):ASTClassProd {
+        enclosingScope = @MCExceptionStatements!Scope;
+        superInterfaceRule = [// *size: 1
+          @MCStatement!RuleReference(35,25):ASTRuleReference {
+            enclosingScope = @TryStatement1!Scope;
+            name = MCStatement;
+          }];
+        alts = [// *size: 1
+          @!Alt(36,8):ASTAlt {
+            enclosingScope = @TryStatement1!Scope;
+            component = [// *size: 4
+              @try!Terminal(36,8):ASTTerminal {
+                enclosingScope = @TryStatement1!Scope;
+                iteration = 0;
+                name = try;
+              },
+              @MCJavaBlock!NonTerminal(37,9):ASTNonTerminal {
+                enclosingScope = @TryStatement1!Scope;
+                usageName = "core";
+                name = MCJavaBlock;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @CatchClause!NonTerminal(38,9):ASTNonTerminal {
+                enclosingScope = @TryStatement1!Scope;
+                name = CatchClause;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 13;
+              },
+              @!Block(39,9):ASTBlock {
+                enclosingScope = @TryStatement1!Scope;
+                alt = [// *size: 1
+                  @!Alt(39,10):ASTAlt {
+                    enclosingScope = @TryStatement1!Scope;
+                    component = [// *size: 2
+                      @finally!Terminal(39,10):ASTTerminal {
+                        enclosingScope = @TryStatement1!Scope;
+                        iteration = 0;
+                        name = finally;
+                      },
+                      @MCJavaBlock!NonTerminal(39,20):ASTNonTerminal {
+                        enclosingScope = @TryStatement1!Scope;
+                        usageName = "finally";
+                        name = MCJavaBlock;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 17;
+              }];
+            rightAssoc = false;
+          }];
+        name = TryStatement1;
+      },
+      @TryStatement2!ClassProd(41,0):ASTClassProd {
+        enclosingScope = @MCExceptionStatements!Scope;
+        superInterfaceRule = [// *size: 1
+          @MCStatement!RuleReference(41,25):ASTRuleReference {
+            enclosingScope = @TryStatement2!Scope;
+            name = MCStatement;
+          }];
+        alts = [// *size: 1
+          @!Alt(42,8):ASTAlt {
+            enclosingScope = @TryStatement2!Scope;
+            component = [// *size: 4
+              @try!Terminal(42,8):ASTTerminal {
+                enclosingScope = @TryStatement2!Scope;
+                iteration = 0;
+                name = try;
+              },
+              @MCJavaBlock!NonTerminal(43,8):ASTNonTerminal {
+                enclosingScope = @TryStatement2!Scope;
+                usageName = "core";
+                name = MCJavaBlock;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @CatchClause!NonTerminal(44,8):ASTNonTerminal {
+                enclosingScope = @TryStatement2!Scope;
+                name = CatchClause;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 21;
+              },
+              @!Block(45,8):ASTBlock {
+                enclosingScope = @TryStatement2!Scope;
+                alt = [// *size: 1
+                  @!Alt(45,9):ASTAlt {
+                    enclosingScope = @TryStatement2!Scope;
+                    component = [// *size: 2
+                      @finally!Terminal(45,9):ASTTerminal {
+                        enclosingScope = @TryStatement2!Scope;
+                        iteration = 0;
+                        name = finally;
+                      },
+                      @MCJavaBlock!NonTerminal(45,19):ASTNonTerminal {
+                        enclosingScope = @TryStatement2!Scope;
+                        usageName = "finally";
+                        name = MCJavaBlock;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = TryStatement2;
+      },
+      @TryStatement3!ClassProd(47,0):ASTClassProd {
+        enclosingScope = @MCExceptionStatements!Scope;
+        superInterfaceRule = [// *size: 1
+          @MCStatement!RuleReference(47,25):ASTRuleReference {
+            enclosingScope = @TryStatement3!Scope;
+            name = MCStatement;
+          }];
+        alts = [// *size: 1
+          @!Alt(48,8):ASTAlt {
+            enclosingScope = @TryStatement3!Scope;
+            component = [// *size: 8
+              @try!Terminal(48,8):ASTTerminal {
+                enclosingScope = @TryStatement3!Scope;
+                iteration = 0;
+                name = try;
+              },
+              @LPAREN!Terminal(48,14):ASTTerminal {
+                enclosingScope = @TryStatement3!Scope;
+                iteration = 0;
+                name = (;
+              },
+              @!Block(1,0):ASTBlock {
+                enclosingScope = @TryStatement3!Scope;
+                alt = [// *size: 1
+                  @!Alt(1,2):ASTAlt {
+                    enclosingScope = @TryStatement3!Scope;
+                    component = [// *size: 2
+                      @TryLocalVariableDeclaration!NonTerminal(1,2):ASTNonTerminal {
+                        enclosingScope = @TryStatement3!Scope;
+                        name = TryLocalVariableDeclaration;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      },
+                      @!Block(1,32):ASTBlock {
+                        enclosingScope = @TryStatement3!Scope;
+                        alt = [// *size: 1
+                          @!Alt(1,33):ASTAlt {
+                            enclosingScope = @TryStatement3!Scope;
+                            component = [// *size: 2
+                              @SEMI!Terminal(1,33):ASTTerminal {
+                                enclosingScope = @TryStatement3!Scope;
+                                iteration = 0;
+                                name = ;;
+                              },
+                              @TryLocalVariableDeclaration!NonTerminal(1,38):ASTNonTerminal {
+                                enclosingScope = @TryStatement3!Scope;
+                                name = TryLocalVariableDeclaration;
+                                genSymbol = false;
+                                plusKeywords = false;
+                                iteration = 0;
+                              }];
+                            rightAssoc = false;
+                          }];
+                        iteration = 21;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 0;
+              },
+              @SEMI!Terminal(48,56):ASTTerminal {
+                enclosingScope = @TryStatement3!Scope;
+                iteration = 17;
+                name = ;;
+              },
+              @RPAREN!Terminal(48,61):ASTTerminal {
+                enclosingScope = @TryStatement3!Scope;
+                iteration = 0;
+                name = );
+              },
+              @MCJavaBlock!NonTerminal(49,8):ASTNonTerminal {
+                enclosingScope = @TryStatement3!Scope;
+                usageName = "core";
+                name = MCJavaBlock;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @CatchClause!NonTerminal(50,8):ASTNonTerminal {
+                enclosingScope = @TryStatement3!Scope;
+                name = CatchClause;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 21;
+              },
+              @!Block(51,8):ASTBlock {
+                enclosingScope = @TryStatement3!Scope;
+                alt = [// *size: 1
+                  @!Alt(51,9):ASTAlt {
+                    enclosingScope = @TryStatement3!Scope;
+                    component = [// *size: 2
+                      @finally!Terminal(51,9):ASTTerminal {
+                        enclosingScope = @TryStatement3!Scope;
+                        iteration = 0;
+                        name = finally;
+                      },
+                      @MCJavaBlock!NonTerminal(51,19):ASTNonTerminal {
+                        enclosingScope = @TryStatement3!Scope;
+                        usageName = "finally";
+                        name = MCJavaBlock;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 17;
+              }];
+            rightAssoc = false;
+          }];
+        name = TryStatement3;
+      },
+      @TryLocalVariableDeclaration!ClassProd(53,0):ASTClassProd {
+        enclosingScope = @MCExceptionStatements!Scope;
+        alts = [// *size: 1
+          @!Alt(54,6):ASTAlt {
+            enclosingScope = @TryLocalVariableDeclaration!Scope;
+            component = [// *size: 5
+              @JavaModifier!NonTerminal(54,6):ASTNonTerminal {
+                enclosingScope = @TryLocalVariableDeclaration!Scope;
+                name = JavaModifier;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 21;
+              },
+              @MCType!NonTerminal(54,20):ASTNonTerminal {
+                enclosingScope = @TryLocalVariableDeclaration!Scope;
+                name = MCType;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @DeclaratorId!NonTerminal(54,27):ASTNonTerminal {
+                enclosingScope = @TryLocalVariableDeclaration!Scope;
+                name = DeclaratorId;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @EQUALS!Terminal(54,40):ASTTerminal {
+                enclosingScope = @TryLocalVariableDeclaration!Scope;
+                iteration = 0;
+                name = =;
+              },
+              @Expression!NonTerminal(54,44):ASTNonTerminal {
+                enclosingScope = @TryLocalVariableDeclaration!Scope;
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = TryLocalVariableDeclaration;
+      },
+      @CatchClause!ClassProd(56,0):ASTClassProd {
+        enclosingScope = @MCExceptionStatements!Scope;
+        alts = [// *size: 1
+          @!Alt(57,6):ASTAlt {
+            enclosingScope = @CatchClause!Scope;
+            component = [// *size: 7
+              @catch!Terminal(57,6):ASTTerminal {
+                enclosingScope = @CatchClause!Scope;
+                iteration = 0;
+                name = catch;
+              },
+              @LPAREN!Terminal(57,14):ASTTerminal {
+                enclosingScope = @CatchClause!Scope;
+                iteration = 0;
+                name = (;
+              },
+              @JavaModifier!NonTerminal(57,18):ASTNonTerminal {
+                enclosingScope = @CatchClause!Scope;
+                name = JavaModifier;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 21;
+              },
+              @CatchTypeList!NonTerminal(57,32):ASTNonTerminal {
+                enclosingScope = @CatchClause!Scope;
+                name = CatchTypeList;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @Name!NonTerminal(57,46):ASTNonTerminal {
+                enclosingScope = @CatchClause!Scope;
+                name = Name;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @RPAREN!Terminal(57,51):ASTTerminal {
+                enclosingScope = @CatchClause!Scope;
+                iteration = 0;
+                name = );
+              },
+              @MCJavaBlock!NonTerminal(57,55):ASTNonTerminal {
+                enclosingScope = @CatchClause!Scope;
+                name = MCJavaBlock;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = CatchClause;
+      },
+      @CatchTypeList!ClassProd(59,0):ASTClassProd {
+        enclosingScope = @MCExceptionStatements!Scope;
+        alts = [// *size: 1
+          @!Alt(60,6):ASTAlt {
+            enclosingScope = @CatchTypeList!Scope;
+            component = [// *size: 1
+              @!Block(1,0!2):ASTBlock {
+                enclosingScope = @CatchTypeList!Scope;
+                alt = [// *size: 1
+                  @!Alt(1,2!2):ASTAlt {
+                    enclosingScope = @CatchTypeList!Scope;
+                    component = [// *size: 2
+                      @MCQualifiedName!NonTerminal(1,2):ASTNonTerminal {
+                        enclosingScope = @CatchTypeList!Scope;
+                        name = MCQualifiedName;
+                        genSymbol = false;
+                        plusKeywords = false;
+                        iteration = 0;
+                      },
+                      @!Block(1,20):ASTBlock {
+                        enclosingScope = @CatchTypeList!Scope;
+                        alt = [// *size: 1
+                          @!Alt(1,21):ASTAlt {
+                            enclosingScope = @CatchTypeList!Scope;
+                            component = [// *size: 2
+                              @PIPE!Terminal(1,21):ASTTerminal {
+                                enclosingScope = @CatchTypeList!Scope;
+                                iteration = 0;
+                                name = |;
+                              },
+                              @MCQualifiedName!NonTerminal(1,26):ASTNonTerminal {
+                                enclosingScope = @CatchTypeList!Scope;
+                                name = MCQualifiedName;
+                                genSymbol = false;
+                                plusKeywords = false;
+                                iteration = 0;
+                              }];
+                            rightAssoc = false;
+                          }];
+                        iteration = 21;
+                      }];
+                    rightAssoc = false;
+                  }];
+                iteration = 0;
+              }];
+            rightAssoc = false;
+          }];
+        name = CatchTypeList;
+      },
+      @ThrowStatement!ClassProd(62,0):ASTClassProd {
+        enclosingScope = @MCExceptionStatements!Scope;
+        superInterfaceRule = [// *size: 1
+          @MCStatement!RuleReference(62,26):ASTRuleReference {
+            enclosingScope = @ThrowStatement!Scope;
+            name = MCStatement;
+          }];
+        alts = [// *size: 1
+          @!Alt(63,6):ASTAlt {
+            enclosingScope = @ThrowStatement!Scope;
+            component = [// *size: 3
+              @throw!Terminal(63,6):ASTTerminal {
+                enclosingScope = @ThrowStatement!Scope;
+                iteration = 0;
+                name = throw;
+              },
+              @Expression!NonTerminal(63,14):ASTNonTerminal {
+                enclosingScope = @ThrowStatement!Scope;
+                name = Expression;
+                genSymbol = false;
+                plusKeywords = false;
+                iteration = 0;
+              },
+              @SEMI!Terminal(63,25):ASTTerminal {
+                enclosingScope = @ThrowStatement!Scope;
+                iteration = 0;
+                name = ;;
+              }];
+            rightAssoc = false;
+          }];
+        name = ThrowStatement;
+      }];
+    component = true;
+};}
+
+/*
+ * ========================================================== Explanation
+ * Shows the AST with all attributes as object diagram
+ */

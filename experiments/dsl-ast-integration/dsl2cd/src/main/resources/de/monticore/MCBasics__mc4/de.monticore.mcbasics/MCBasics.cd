@@ -1,0 +1,506 @@
+package de.monticore;
+classdiagram MCBasics { 
+  package de.monticore.mcbasics._auxiliary { 
+
+  } 
+  package de.monticore.mcbasics { 
+    public class MCBasicsMill { 
+      protected static MCBasicsMill mill;
+      protected MCBasicsMill();
+      public static MCBasicsMill getMill();
+      public static void init();
+      protected static MCBasicsMill millMCBasicsTraverserImplementation;
+      protected static MCBasicsMill millMCBasicsInheritanceHandler;
+      protected static MCBasicsMill millMCBasicsScope;
+      protected static MCBasicsMill millMCBasicsArtifactScope;
+      protected static MCBasicsMill millMCBasicsGlobalScope;
+      protected static MCBasicsMill millMCBasicsFullPrettyPrinter;
+      public static String prettyPrint(de.monticore.ast.ASTNode node,boolean printComments);
+      protected String _prettyPrint(de.monticore.ast.ASTNode node,boolean printComments);
+      protected de.monticore.mcbasics._prettyprint.MCBasicsFullPrettyPrinter fullPrettyPrinter;
+      protected static MCBasicsMill millMCBasicsTypeDispatcher;
+      protected de.monticore.mcbasics._util.IMCBasicsTypeDispatcher typeDispatcher;
+      public static de.monticore.mcbasics._util.IMCBasicsTypeDispatcher typeDispatcher();
+      protected de.monticore.mcbasics._util.IMCBasicsTypeDispatcher _typeDispatcher();
+      public static de.monticore.mcbasics._visitor.MCBasicsTraverser traverser();
+      protected de.monticore.mcbasics._visitor.MCBasicsTraverser _traverser();
+      public static de.monticore.mcbasics._visitor.MCBasicsTraverser inheritanceTraverser();
+      protected de.monticore.mcbasics._visitor.MCBasicsTraverser _inheritanceTraverser();
+      protected de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope mCBasicsGlobalScope;
+      public static de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope globalScope();
+      protected de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope _globalScope();
+      public static de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope artifactScope();
+      protected de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope _artifactScope();
+      public static de.monticore.mcbasics._symboltable.IMCBasicsScope scope();
+      protected de.monticore.mcbasics._symboltable.IMCBasicsScope _scope();
+      public static void initMe(MCBasicsMill a);
+      public static void reset();
+
+    } 
+
+  } 
+  package de.monticore.mcbasics._prettyprint { 
+    public class MCBasicsPrettyPrinter implements de.monticore.mcbasics._visitor.MCBasicsHandler,de.monticore.mcbasics._visitor.MCBasicsVisitor2 { 
+      protected de.monticore.prettyprint.IndentPrinter printer;
+      public de.monticore.prettyprint.IndentPrinter getPrinter();
+      protected boolean printComments;
+      public boolean isPrintComments();
+      public void setPrintComments(boolean printComments);
+      protected de.monticore.mcbasics._visitor.MCBasicsTraverser traverser;
+      public de.monticore.mcbasics._visitor.MCBasicsTraverser getTraverser();
+      public void setTraverser(de.monticore.mcbasics._visitor.MCBasicsTraverser traverser);
+      public MCBasicsPrettyPrinter(de.monticore.prettyprint.IndentPrinter printer,boolean printComments);
+
+    } 
+    public class MCBasicsFullPrettyPrinter { 
+      protected de.monticore.prettyprint.IndentPrinter printer;
+      public de.monticore.prettyprint.IndentPrinter getPrinter();
+      protected de.monticore.mcbasics._visitor.MCBasicsTraverser traverser;
+      public de.monticore.mcbasics._visitor.MCBasicsTraverser getTraverser();
+      public void setTraverser(de.monticore.mcbasics._visitor.MCBasicsTraverser traverser);
+      public MCBasicsFullPrettyPrinter(de.monticore.prettyprint.IndentPrinter printer,boolean printComments);
+      public MCBasicsFullPrettyPrinter(de.monticore.prettyprint.IndentPrinter printer);
+      protected void initializeTraverser(boolean printComments);
+      public void setPrintComments(boolean printComments);
+      public String prettyprint(de.monticore.ast.ASTNode node);
+
+    } 
+
+  } 
+  package de.monticore.mcbasics._od { 
+    public class MCBasics2OD implements de.monticore.mcbasics._visitor.MCBasicsVisitor2,de.monticore.mcbasics._visitor.MCBasicsHandler { 
+      public MCBasics2OD(de.monticore.prettyprint.IndentPrinter printer,de.monticore.generating.templateengine.reporting.commons.ReportingRepository reporting);
+      protected de.monticore.mcbasics._visitor.MCBasicsTraverser traverser;
+      protected de.monticore.prettyprint.IndentPrinter pp;
+      protected de.monticore.generating.templateengine.reporting.commons.ReportingRepository reporting;
+      protected boolean printEmptyOptional;
+      protected boolean printEmptyList;
+      public de.monticore.mcbasics._visitor.MCBasicsTraverser getTraverser();
+      public void setTraverser(de.monticore.mcbasics._visitor.MCBasicsTraverser traverser);
+      protected void printAttribute(String name,String value);
+      protected void printObject(String objName,String objType);
+      public String printObjectDiagram(String modelName,de.monticore.mcbasics._ast.ASTMCBasicsNode node);
+      public boolean isPrintEmptyOptional();
+      public void setPrintEmptyOptional(boolean printEmptyOptional);
+      public boolean isPrintEmptyList();
+      public void setPrintEmptyList(boolean printEmptyList);
+
+    } 
+
+  } 
+  package de.monticore.mcbasics._util { 
+    public class MCBasicsTypeDispatcher implements IMCBasicsTypeDispatcher { 
+      protected Optional<de.monticore.mcbasics._ast.MCBasicsLiterals>optMCBasicsMCBasicsLiterals;
+      protected Optional<de.monticore.mcbasics._ast.ASTMCBasicsNode>optMCBasicsASTMCBasicsNode;
+      protected Optional<de.monticore.mcbasics._symboltable.IMCBasicsScope>optMCBasicsIMCBasicsScope;
+      protected Optional<de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope>optMCBasicsIMCBasicsArtifactScope;
+      protected Optional<de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope>optMCBasicsIMCBasicsGlobalScope;
+      public MCBasicsTypeDispatcher();
+      protected void reset();
+      public boolean isMCBasicsMCBasicsLiterals(de.monticore.ast.ASTNode node);
+      public de.monticore.mcbasics._ast.MCBasicsLiterals asMCBasicsMCBasicsLiterals(de.monticore.ast.ASTNode node);
+      public boolean isMCBasicsASTMCBasicsNode(de.monticore.ast.ASTNode node);
+      public de.monticore.mcbasics._ast.ASTMCBasicsNode asMCBasicsASTMCBasicsNode(de.monticore.ast.ASTNode node);
+      public boolean isMCBasicsIMCBasicsScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.mcbasics._symboltable.IMCBasicsScope asMCBasicsIMCBasicsScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCBasicsIMCBasicsArtifactScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope asMCBasicsIMCBasicsArtifactScope(de.monticore.symboltable.IScope scope);
+      public boolean isMCBasicsIMCBasicsGlobalScope(de.monticore.symboltable.IScope scope);
+      public de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope asMCBasicsIMCBasicsGlobalScope(de.monticore.symboltable.IScope scope);
+      public void handle(de.monticore.mcbasics._ast.MCBasicsLiterals node);
+      public void handle(de.monticore.mcbasics._ast.ASTMCBasicsNode node);
+      public void handle(de.monticore.mcbasics._symboltable.IMCBasicsScope scope);
+      public void handle(de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope scope);
+      public void handle(de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope scope);
+      protected de.monticore.mcbasics._visitor.MCBasicsTraverser traverser;
+      public de.monticore.mcbasics._visitor.MCBasicsTraverser getTraverser();
+      public void setTraverser(de.monticore.mcbasics._visitor.MCBasicsTraverser traverser);
+      public de.monticore.mcbasics._ast.MCBasicsLiterals getOptMCBasicsMCBasicsLiterals();
+      public boolean isPresentOptMCBasicsMCBasicsLiterals();
+      public void setOptMCBasicsMCBasicsLiterals(de.monticore.mcbasics._ast.MCBasicsLiterals optMCBasicsMCBasicsLiterals);
+      public void setOptMCBasicsMCBasicsLiteralsAbsent();
+      public de.monticore.mcbasics._ast.ASTMCBasicsNode getOptMCBasicsASTMCBasicsNode();
+      public boolean isPresentOptMCBasicsASTMCBasicsNode();
+      public void setOptMCBasicsASTMCBasicsNode(de.monticore.mcbasics._ast.ASTMCBasicsNode optMCBasicsASTMCBasicsNode);
+      public void setOptMCBasicsASTMCBasicsNodeAbsent();
+      public de.monticore.mcbasics._symboltable.IMCBasicsScope getOptMCBasicsIMCBasicsScope();
+      public boolean isPresentOptMCBasicsIMCBasicsScope();
+      public void setOptMCBasicsIMCBasicsScope(de.monticore.mcbasics._symboltable.IMCBasicsScope optMCBasicsIMCBasicsScope);
+      public void setOptMCBasicsIMCBasicsScopeAbsent();
+      public de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope getOptMCBasicsIMCBasicsArtifactScope();
+      public boolean isPresentOptMCBasicsIMCBasicsArtifactScope();
+      public void setOptMCBasicsIMCBasicsArtifactScope(de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope optMCBasicsIMCBasicsArtifactScope);
+      public void setOptMCBasicsIMCBasicsArtifactScopeAbsent();
+      public de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope getOptMCBasicsIMCBasicsGlobalScope();
+      public boolean isPresentOptMCBasicsIMCBasicsGlobalScope();
+      public void setOptMCBasicsIMCBasicsGlobalScope(de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope optMCBasicsIMCBasicsGlobalScope);
+      public void setOptMCBasicsIMCBasicsGlobalScopeAbsent();
+
+    } 
+    public interface IMCBasicsTypeDispatcher extends de.monticore.mcbasics._visitor.MCBasicsHandler { 
+      public abstract boolean isMCBasicsMCBasicsLiterals(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.mcbasics._ast.MCBasicsLiterals asMCBasicsMCBasicsLiterals(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCBasicsASTMCBasicsNode(de.monticore.ast.ASTNode node);
+      public abstract de.monticore.mcbasics._ast.ASTMCBasicsNode asMCBasicsASTMCBasicsNode(de.monticore.ast.ASTNode node);
+      public abstract boolean isMCBasicsIMCBasicsScope(de.monticore.symboltable.IScope scope);
+      public abstract de.monticore.mcbasics._symboltable.IMCBasicsScope asMCBasicsIMCBasicsScope(de.monticore.symboltable.IScope scope);
+      public abstract boolean isMCBasicsIMCBasicsGlobalScope(de.monticore.symboltable.IScope scope);
+      public abstract de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope asMCBasicsIMCBasicsGlobalScope(de.monticore.symboltable.IScope scope);
+      public abstract boolean isMCBasicsIMCBasicsArtifactScope(de.monticore.symboltable.IScope scope);
+      public abstract de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope asMCBasicsIMCBasicsArtifactScope(de.monticore.symboltable.IScope scope);
+
+    } 
+
+  } 
+  package de.monticore.mcbasics._cocos { 
+    public class MCBasicsCoCoChecker { 
+      protected de.monticore.mcbasics._visitor.MCBasicsTraverser traverser;
+      public MCBasicsCoCoChecker();
+      public de.monticore.mcbasics._visitor.MCBasicsTraverser getTraverser();
+      public void setTraverser(de.monticore.mcbasics._visitor.MCBasicsTraverser traverser);
+      public void addChecker(de.monticore.mcbasics._cocos.MCBasicsCoCoChecker checker);
+      public void checkAll(de.monticore.mcbasics._ast.ASTMCBasicsNode node);
+      public void addCoCo(de.monticore.mcbasics._cocos.MCBasicsASTMCBasicsNodeCoCo coco);
+
+    } 
+    public interface MCBasicsASTMCBasicsNodeCoCo extends de.monticore.mcbasics._visitor.MCBasicsVisitor2 { 
+      public abstract void check(de.monticore.mcbasics._ast.ASTMCBasicsNode node);
+      public void visit(de.monticore.mcbasics._ast.ASTMCBasicsNode node);
+
+    } 
+
+  } 
+  package de.monticore.mcbasics._visitor { 
+    public interface MCBasicsTraverser extends de.monticore.visitor.ITraverser { 
+      public void add4MCBasics(de.monticore.mcbasics._visitor.MCBasicsVisitor2 mCBasicsVisitor);
+      public List<de.monticore.mcbasics._visitor.MCBasicsVisitor2>getMCBasicsVisitorList();
+      public void setMCBasicsHandler(de.monticore.mcbasics._visitor.MCBasicsHandler mCBasicsHandler);
+      public Optional<de.monticore.mcbasics._visitor.MCBasicsHandler>getMCBasicsHandler();
+      public void visit(de.monticore.mcbasics._ast.ASTMCBasicsNode node);
+      public void endVisit(de.monticore.mcbasics._ast.ASTMCBasicsNode node);
+      public void handle(de.monticore.mcbasics._ast.ASTMCBasicsNode node);
+      public void visit(de.monticore.mcbasics._symboltable.ICommonMCBasicsSymbol node);
+      public void endVisit(de.monticore.mcbasics._symboltable.ICommonMCBasicsSymbol node);
+      public void handle(de.monticore.mcbasics._symboltable.ICommonMCBasicsSymbol node);
+      public void traverse(de.monticore.mcbasics._symboltable.ICommonMCBasicsSymbol node);
+      public void visit(de.monticore.mcbasics._symboltable.IMCBasicsScope node);
+      public void endVisit(de.monticore.mcbasics._symboltable.IMCBasicsScope node);
+      public void handle(de.monticore.mcbasics._symboltable.IMCBasicsScope node);
+      public void traverse(de.monticore.mcbasics._symboltable.IMCBasicsScope node);
+      public void visit(de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope node);
+      public void endVisit(de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope node);
+      public void handle(de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope node);
+      public void traverse(de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope node);
+      public void visit(de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope node);
+      public void endVisit(de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope node);
+      public void handle(de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope node);
+      public void traverse(de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope node);
+
+    } 
+    public class MCBasicsTraverserImplementation implements de.monticore.mcbasics._visitor.MCBasicsTraverser { 
+      protected MCBasicsTraverserImplementation realThis;
+      protected List<de.monticore.visitor.IVisitor>iVisitorList;
+      protected List<de.monticore.mcbasics._visitor.MCBasicsVisitor2>mCBasicsVisitorList;
+      protected Optional<de.monticore.mcbasics._visitor.MCBasicsHandler>mCBasicsHandler;
+      public void add4MCBasics(de.monticore.mcbasics._visitor.MCBasicsVisitor2 mCBasicsVisitor);
+      public List<de.monticore.mcbasics._visitor.MCBasicsVisitor2>getMCBasicsVisitorList();
+      public void setMCBasicsHandler(de.monticore.mcbasics._visitor.MCBasicsHandler mCBasicsHandler);
+      public Optional<de.monticore.mcbasics._visitor.MCBasicsHandler>getMCBasicsHandler();
+      public void add4IVisitor(de.monticore.visitor.IVisitor iVisitor);
+      public List<de.monticore.visitor.IVisitor>getIVisitorList();
+      protected Set<Object> traversedElements;
+      public Set<Object> getTraversedElements();
+      public void setTraversedElements(Set<Object> traversedElements);
+
+    } 
+    public interface MCBasicsVisitor2 extends de.monticore.visitor.IVisitor { 
+      public void visit(de.monticore.mcbasics._ast.ASTMCBasicsNode node);
+      public void endVisit(de.monticore.mcbasics._ast.ASTMCBasicsNode node);
+      public void visit(de.monticore.mcbasics._symboltable.IMCBasicsScope node);
+      public void endVisit(de.monticore.mcbasics._symboltable.IMCBasicsScope node);
+      public void visit(de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope node);
+      public void endVisit(de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope node);
+      public void visit(de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope node);
+      public void endVisit(de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope node);
+
+    } 
+    public interface MCBasicsHandler extends de.monticore.visitor.IHandler { 
+      public abstract de.monticore.mcbasics._visitor.MCBasicsTraverser getTraverser();
+      public abstract void setTraverser(de.monticore.mcbasics._visitor.MCBasicsTraverser traverser);
+      public void handle(de.monticore.mcbasics._ast.ASTMCBasicsNode node);
+      public void handle(de.monticore.mcbasics._symboltable.ICommonMCBasicsSymbol node);
+      public void traverse(de.monticore.mcbasics._symboltable.ICommonMCBasicsSymbol node);
+      public void handle(de.monticore.mcbasics._symboltable.IMCBasicsScope node);
+      public void traverse(de.monticore.mcbasics._symboltable.IMCBasicsScope node);
+      public void handle(de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope node);
+      public void traverse(de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope node);
+      public void handle(de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope node);
+      public void traverse(de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope node);
+
+    } 
+    public class MCBasicsInheritanceHandler implements de.monticore.mcbasics._visitor.MCBasicsHandler { 
+      protected de.monticore.mcbasics._visitor.MCBasicsTraverser traverser;
+      public de.monticore.mcbasics._visitor.MCBasicsTraverser getTraverser();
+      public void setTraverser(de.monticore.mcbasics._visitor.MCBasicsTraverser traverser);
+      public void handle(de.monticore.mcbasics._ast.ASTMCBasicsNode node);
+      public void handle(de.monticore.mcbasics._symboltable.IMCBasicsScope node);
+      public void handle(de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope node);
+      public void handle(de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope node);
+
+    } 
+    public interface IMCBasicsInterpreter extends de.monticore.interpreter.ModelInterpreter { 
+      public abstract de.monticore.interpreter.Value interpret(de.monticore.mcbasics._ast.ASTMCBasicsNode node);
+
+    } 
+    public class MCBasicsInterpreter implements IMCBasicsInterpreter { 
+      public MCBasicsInterpreter();
+      public MCBasicsInterpreter(de.monticore.interpreter.ModelInterpreter realThis);
+      protected de.monticore.interpreter.ModelInterpreter realThis;
+      public de.monticore.interpreter.ModelInterpreter getRealThis();
+      public void setRealThis(de.monticore.interpreter.ModelInterpreter realThis);
+      protected Map<de.monticore.symboltable.ISymbol,de.monticore.interpreter.Value>contextMap;
+      public void store(de.monticore.symboltable.ISymbol symbol,de.monticore.interpreter.Value value);
+      public de.monticore.interpreter.Value load(de.monticore.symboltable.ISymbol symbol);
+      public Map<de.monticore.symboltable.ISymbol,de.monticore.interpreter.Value>getContextMap();
+      public de.monticore.interpreter.Value interpret(de.monticore.mcbasics._ast.ASTMCBasicsNode node);
+
+    } 
+
+  } 
+  package de.monticore.mcbasics._symboltable { 
+    public class MCBasicsScope implements de.monticore.mcbasics._symboltable.IMCBasicsScope { 
+      public MCBasicsScope();
+      public MCBasicsScope(boolean shadowing);
+      public MCBasicsScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope);
+      public MCBasicsScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope,boolean shadowing);
+      protected com.google.common.collect.LinkedListMultimap<String,de.monticore.symboltable.SymbolWithScopeOfUnknownKind>unknownSymbols;
+      public void add(de.monticore.symboltable.SymbolWithScopeOfUnknownKind symbol);
+      public void remove(de.monticore.symboltable.SymbolWithScopeOfUnknownKind symbol);
+      public com.google.common.collect.LinkedListMultimap<String,de.monticore.symboltable.SymbolWithScopeOfUnknownKind>getUnknownSymbols();
+      protected boolean unknownSymbolsAlreadyResolved;
+      public boolean isUnknownSymbolsAlreadyResolved();
+      public void setUnknownSymbolsAlreadyResolved(boolean unknownSymbolsAlreadyResolved);
+      protected de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope;
+      public de.monticore.mcbasics._symboltable.IMCBasicsScope getEnclosingScope();
+      public void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope);
+      protected Optional<de.monticore.symboltable.IScopeSpanningSymbol>spanningSymbol;
+      public de.monticore.symboltable.IScopeSpanningSymbol getSpanningSymbol();
+      public boolean isPresentSpanningSymbol();
+      public void setSpanningSymbol(de.monticore.symboltable.IScopeSpanningSymbol spanningSymbol);
+      public void setSpanningSymbolAbsent();
+      protected boolean shadowing;
+      public boolean isShadowing();
+      public void setShadowing(boolean shadowing);
+      protected boolean exportingSymbols;
+      public boolean isExportingSymbols();
+      public void setExportingSymbols(boolean exportingSymbols);
+      protected boolean ordered;
+      public boolean isOrdered();
+      public void setOrdered(boolean ordered);
+      protected Optional<String>name;
+      public String getName();
+      public boolean isPresentName();
+      public void setName(String name);
+      public void setNameAbsent();
+      protected Optional<de.monticore.ast.ASTNode>astNode;
+      public de.monticore.ast.ASTNode getAstNode();
+      public boolean isPresentAstNode();
+      public void setAstNode(de.monticore.ast.ASTNode astNode);
+      public void setAstNodeAbsent();
+      protected List<de.monticore.mcbasics._symboltable.IMCBasicsScope>subScopes;
+      public void addSubScope(de.monticore.mcbasics._symboltable.IMCBasicsScope subScope);
+      public void removeSubScope(de.monticore.mcbasics._symboltable.IMCBasicsScope subScope);
+      public List<de.monticore.mcbasics._symboltable.IMCBasicsScope>getSubScopes();
+      public void setSubScopes(List<de.monticore.mcbasics._symboltable.IMCBasicsScope>subScopes);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+
+    } 
+    public interface IMCBasicsScope extends de.monticore.symboltable.IScope { 
+      public abstract List<? extends IMCBasicsScope>getSubScopes();
+      public void addSubScope(IMCBasicsScope subScope);
+      public void removeSubScope(IMCBasicsScope subScope);
+      public abstract IMCBasicsScope getEnclosingScope();
+      public abstract void setEnclosingScope(IMCBasicsScope enclosingScope);
+      public abstract void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public int getSymbolsSize();
+      public abstract void accept(de.monticore.visitor.ITraverser visitor);
+
+    } 
+    public class MCBasicsSymbols2Json implements de.monticore.mcbasics._visitor.MCBasicsVisitor2 { 
+      protected de.monticore.symboltable.serialization.IDeSer<de.monticore.mcbasics._symboltable.IMCBasicsScope, de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope, MCBasicsSymbols2Json> scopeDeSer;
+      protected MCBasicsSymbols2Json realThis;
+      public MCBasicsSymbols2Json getRealThis();
+      public void setRealThis(MCBasicsSymbols2Json realThis);
+      protected de.monticore.symboltable.serialization.JsonPrinter printer;
+      public de.monticore.symboltable.serialization.JsonPrinter getJsonPrinter();
+      public void setJsonPrinter(de.monticore.symboltable.serialization.JsonPrinter printer);
+      protected de.monticore.mcbasics._visitor.MCBasicsTraverser traverser;
+      public String serialize(de.monticore.mcbasics._symboltable.IMCBasicsScope toSerialize);
+      public String serialize(de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope toSerialize);
+      public de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope deserialize(String serialized);
+      public de.monticore.mcbasics._visitor.MCBasicsTraverser getTraverser();
+      public void setTraverser(de.monticore.mcbasics._visitor.MCBasicsTraverser traverser);
+      public MCBasicsSymbols2Json();
+      public MCBasicsSymbols2Json(de.monticore.mcbasics._visitor.MCBasicsTraverser traverser,de.monticore.symboltable.serialization.JsonPrinter printer);
+      public void init();
+      public String getSerializedString();
+      public de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope load(java.net.URL url);
+      public de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope load(java.io.Reader reader);
+      public de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope load(String model);
+      public String store(de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope scope,String fileName);
+      public void visit(de.monticore.mcbasics._symboltable.IMCBasicsScope node);
+      public void endVisit(de.monticore.mcbasics._symboltable.IMCBasicsScope node);
+      public void visit(de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope node);
+      public void endVisit(de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope node);
+
+    } 
+    public interface ICommonMCBasicsSymbol extends de.monticore.symboltable.ISymbol { 
+      public abstract void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public abstract de.monticore.mcbasics._symboltable.IMCBasicsScope getEnclosingScope();
+      public abstract void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope);
+
+    } 
+    public interface IMCBasicsGlobalScope extends de.monticore.symboltable.IGlobalScope,de.monticore.mcbasics._symboltable.IMCBasicsScope { 
+      public abstract void loadFileForModelName(String modelName);
+      public de.monticore.mcbasics._symboltable.IMCBasicsScope getEnclosingScope();
+      public void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope);
+      public String getName();
+      public boolean isPresentName();
+      public boolean checkIfContinueAsSubScope(String symbolName);
+      public abstract Map<String,de.monticore.symboltable.serialization.ISymbolDeSer> getSymbolDeSers();
+      public void putSymbolDeSer(String key,de.monticore.symboltable.serialization.ISymbolDeSer value);
+      public de.monticore.symboltable.serialization.ISymbolDeSer getSymbolDeSer(String key);
+      public abstract IMCBasicsGlobalScope getRealThis();
+      public abstract void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public abstract void accept(de.monticore.visitor.ITraverser visitor);
+
+    } 
+    public interface IMCBasicsArtifactScope extends de.monticore.symboltable.IArtifactScope,de.monticore.mcbasics._symboltable.IMCBasicsScope { 
+      public boolean containsImports(Object element);
+      public boolean containsAllImports(Collection<?>collection);
+      public boolean isEmptyImports();
+      public Iterator<de.monticore.symboltable.ImportStatement>iteratorImports();
+      public int sizeImports();
+      public de.monticore.symboltable.ImportStatement []toArrayImports(de.monticore.symboltable.ImportStatement []array);
+      public Object []toArrayImports();
+      public Spliterator<de.monticore.symboltable.ImportStatement>spliteratorImports();
+      public Stream<de.monticore.symboltable.ImportStatement>streamImports();
+      public Stream<de.monticore.symboltable.ImportStatement>parallelStreamImports();
+      public de.monticore.symboltable.ImportStatement getImports(int index);
+      public int indexOfImports(Object element);
+      public int lastIndexOfImports(Object element);
+      public boolean equalsImports(Object o);
+      public int hashCodeImports();
+      public ListIterator<de.monticore.symboltable.ImportStatement>listIteratorImports();
+      public ListIterator<de.monticore.symboltable.ImportStatement>listIteratorImports(int index);
+      public List<de.monticore.symboltable.ImportStatement>subListImports(int start,int end);
+      public void clearImports();
+      public boolean addImports(de.monticore.symboltable.ImportStatement element);
+      public boolean addAllImports(Collection<? extends de.monticore.symboltable.ImportStatement>collection);
+      public boolean removeImports(Object element);
+      public boolean removeAllImports(Collection<?>collection);
+      public boolean retainAllImports(Collection<?>collection);
+      public boolean removeIfImports(Predicate<? super de.monticore.symboltable.ImportStatement>filter);
+      public void forEachImports(Consumer<? super de.monticore.symboltable.ImportStatement>action);
+      public void addImports(int index,de.monticore.symboltable.ImportStatement element);
+      public boolean addAllImports(int index,Collection<? extends de.monticore.symboltable.ImportStatement>collection);
+      public de.monticore.symboltable.ImportStatement removeImports(int index);
+      public de.monticore.symboltable.ImportStatement setImports(int index,de.monticore.symboltable.ImportStatement element);
+      public void replaceAllImports(UnaryOperator<de.monticore.symboltable.ImportStatement>operator);
+      public void sortImports(Comparator<? super de.monticore.symboltable.ImportStatement>comparator);
+      public abstract List<de.monticore.symboltable.ImportStatement>getImportsList();
+      public abstract void setImportsList(List<de.monticore.symboltable.ImportStatement>imports);
+      public Optional<de.monticore.symboltable.ISymbol>getTopLevelSymbol();
+      public boolean checkIfContinueAsSubScope(String symbolName);
+      public List<String>getRemainingNameForResolveDown(String symbolName);
+      public String getFullName();
+      public abstract void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public abstract void accept(de.monticore.visitor.ITraverser visitor);
+
+    } 
+    public class MCBasicsArtifactScope extends de.monticore.mcbasics._symboltable.MCBasicsScope implements de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope { 
+      public MCBasicsArtifactScope(String packageName,List<de.monticore.symboltable.ImportStatement>imports);
+      public MCBasicsArtifactScope(Optional<de.monticore.mcbasics._symboltable.IMCBasicsScope>enclosingScope,String packageName,List<de.monticore.symboltable.ImportStatement>imports);
+      public MCBasicsArtifactScope();
+      protected String packageName;
+      public String getPackageName();
+      public void setPackageName(String packageName);
+      protected List<de.monticore.symboltable.ImportStatement>imports;
+      public List<de.monticore.symboltable.ImportStatement>getImportsList();
+      public void setImportsList(List<de.monticore.symboltable.ImportStatement>imports);
+      public boolean isPresentName();
+      public String getName();
+      public void setEnclosingScope(de.monticore.mcbasics._symboltable.IMCBasicsScope enclosingScope);
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+
+    } 
+    public class MCBasicsDeSer implements de.monticore.symboltable.serialization.IDeSer<de.monticore.mcbasics._symboltable.IMCBasicsScope, de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope, de.monticore.mcbasics._symboltable.MCBasicsSymbols2Json> { 
+      public String serialize(de.monticore.mcbasics._symboltable.IMCBasicsScope toSerialize,de.monticore.mcbasics._symboltable.MCBasicsSymbols2Json s2j);
+      public String serialize(de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope toSerialize,de.monticore.mcbasics._symboltable.MCBasicsSymbols2Json s2j);
+      public void serializeAddons(de.monticore.mcbasics._symboltable.IMCBasicsScope toSerialize,de.monticore.mcbasics._symboltable.MCBasicsSymbols2Json s2j);
+      public void serializeAddons(de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope toSerialize,de.monticore.mcbasics._symboltable.MCBasicsSymbols2Json s2j);
+      public de.monticore.mcbasics._symboltable.IMCBasicsScope deserializeScope(de.monticore.symboltable.serialization.json.JsonObject scopeJson);
+      public de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope deserializeArtifactScope(de.monticore.symboltable.serialization.json.JsonObject scopeJson);
+      protected void deserializeSymbols(de.monticore.mcbasics._symboltable.IMCBasicsScope scope,de.monticore.symboltable.serialization.json.JsonObject scopeJson);
+      public void deserializeAddons(de.monticore.mcbasics._symboltable.IMCBasicsScope scope,de.monticore.symboltable.serialization.json.JsonObject scopeJson);
+      public void deserializeAddons(de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope scope,de.monticore.symboltable.serialization.json.JsonObject scopeJson);
+
+    } 
+    public class MCBasicsGlobalScope extends de.monticore.mcbasics._symboltable.MCBasicsScope implements de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope { 
+      public MCBasicsGlobalScope(de.monticore.io.paths.MCPath symbolPath,String fileExt);
+      public MCBasicsGlobalScope();
+      protected de.monticore.io.paths.MCPath symbolPath;
+      public de.monticore.io.paths.MCPath getSymbolPath();
+      public void setSymbolPath(de.monticore.io.paths.MCPath symbolPath);
+      protected String fileExt;
+      public String getFileExt();
+      public void setFileExt(String fileExt);
+      public de.monticore.symboltable.serialization.IDeSer deSer;
+      public de.monticore.symboltable.serialization.IDeSer getDeSer();
+      public void setDeSer(de.monticore.symboltable.serialization.IDeSer deSer);
+      protected Map<String,de.monticore.symboltable.serialization.ISymbolDeSer> symbolDeSers;
+      public Map<String,de.monticore.symboltable.serialization.ISymbolDeSer> getSymbolDeSers();
+      public void setSymbolDeSers(Map<String,de.monticore.symboltable.serialization.ISymbolDeSer> symbolDeSers);
+      protected MCBasicsSymbols2Json symbols2Json;
+      public void setSymbols2Json(MCBasicsSymbols2Json symbols2Json);
+      public MCBasicsSymbols2Json getSymbols2Json();
+      protected Set<String>cache;
+      public void addLoadedFile(String name);
+      public void clearLoadedFiles();
+      public boolean isFileLoaded(String name);
+      public void init();
+      public void loadFileForModelName(String modelName);
+      public MCBasicsGlobalScope getRealThis();
+      public void clear();
+      public void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+      public void accept(de.monticore.visitor.ITraverser visitor);
+
+    } 
+
+  } 
+  package de.monticore.mcbasics._ast { 
+    public class ASTConstantsMCBasics { 
+      public final static String LANGUAGE;
+      public final static int DEFAULT;
+      public static String []superGrammars;
+      public ASTConstantsMCBasics();
+      public static Collection<String>getAllLanguages();
+
+    } 
+    public interface ASTMCBasicsNode extends ASTNode { 
+      public abstract void accept(de.monticore.mcbasics._visitor.MCBasicsTraverser visitor);
+
+    } 
+    <<deprecated>>public enum MCBasicsLiterals { 
+      ;
+      private MCBasicsLiterals(int intValue);
+      protected int intValue;
+      public int getIntValue();
+
+    } 
+
+  } 
+
+} 

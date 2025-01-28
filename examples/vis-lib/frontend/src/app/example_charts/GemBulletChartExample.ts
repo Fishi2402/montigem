@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { GemBulletChartExampleComponent, config } from '@src/example_charts/GemBulletChartExampleComponent';
+import { GemBulletChartExampleComponent, config } from 'example_charts/GemBulletChartExampleComponent';
 
 @Component({
     standalone: true,
