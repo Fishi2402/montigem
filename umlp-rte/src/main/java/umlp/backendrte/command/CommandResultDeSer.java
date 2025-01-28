@@ -68,6 +68,17 @@ public class CommandResultDeSer implements JsonDeSer<CommandResult<?>> {
     return printer.getContent();
   }
 
+    public Optional<String> optSerialize(CommandResult<?> command){
+    if(!BaseClassObjectMapper.canDeSer(command.getTypeParameter())) {
+      return Optional.empty();
+    }
+    JsonPrinter printer = new JsonPrinter(true);
+    printer.beginObject();
+    buildJson(command, printer);
+    printer.endObject();
+    return Optional.of(printer.getContent());
+  }
+
   protected Optional<CommandResult<?>> fromJson(JsonObject jsonObject){
     if(jsonObject.getBooleanMemberOpt("statusResult").orElse(false)){
       return Optional.of(new StatusResult(
