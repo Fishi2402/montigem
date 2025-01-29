@@ -4,6 +4,6 @@ ${cd4c.method("protected Optional<CommandResult<any>> _deserializeResponse(Strin
 
 return this.resultDeSer.deserialize(responseStr)
   <#list superCdResultDeSers as tmp>
-    ?? this.${tmp}.deserialize(command)
+    ?? this.${tmp}.deserialize(responseStr)
   </#list>
 ;

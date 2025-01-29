@@ -4,6 +4,6 @@ ${cd4c.method("public Optional<String> _serializeResponse(CommandResult<?> resul
 
 return resultDeSer.optSerialize(result)
   <#list superCdResultDeSers as tmp>
-    .or(() -> ${tmp}.optSerialize(command))
+    .or(() -> ${tmp}.optSerialize(result))
   </#list>
 ;
