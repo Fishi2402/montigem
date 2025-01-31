@@ -136,6 +136,8 @@ clean.doLast {
 
 tasks.build_basic.inputs.files(tasks.build_common.outputs.files.singleFile)
 tasks.build_basic.dependsOn(tasks.build_common)
+tasks.build_arrange.inputs.files(tasks.build_common.outputs.files.singleFile)
+tasks.build_arrange.dependsOn(tasks.build_common)
 tasks.build_basic.inputs.files(tasks.build_commonj2ts.outputs.files.singleFile)
 tasks.build_basic.dependsOn(tasks.build_commonj2ts)
 tasks.build_charts.inputs.files(tasks.build_commonj2ts.outputs.files.singleFile)
