@@ -100,6 +100,17 @@ export class CommandResultDeSer implements JsonDeSer<CommandResult<any>> {
     return Promise.resolve(<any>this.serialize$umlp_backendrte_command_CommandResult(command));
   }
 
+  public optSerialize(command : CommandResult<any>) : string {
+    if(!BaseClassObjectMapper.canDeSer(command.getTypeParameter())) {
+      return null;
+    }
+    const printer : JsonPrinter = new JsonPrinter(true);
+    printer.beginObject();
+    this.buildJson(command, printer);
+    printer.endObject();
+    return printer.getContent();
+}
+
   public fromJson(jsonObject: any): Promise<CommandResult<any>> {
     if (/* orElse */((v, v2) => v == null ? v2 : v)(jsonObject["statusResult"], false)) {
       return Promise.resolve((v => {
@@ -113,6 +124,10 @@ export class CommandResultDeSer implements JsonDeSer<CommandResult<any>> {
 
   public deserialize(json: string): Promise<CommandResult<any>> {
     return Promise.resolve(this.fromJson(JSON.parse(json)));
+  }
+
+  protected canDeser(className : string) : boolean {
+    return BaseClassObjectMapper.canDeSer(className);
   }
 }
 

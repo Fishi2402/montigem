@@ -74,4 +74,8 @@ export class CommandResultDeSer implements JsonDeSer<CommandResult<any>> {
   public deserialize(json: string): CommandResult<any> {
     return this.fromJson(JSON.parse(json));
   }
+
+  protected canDeser(className : string) : boolean {
+    return BaseClassObjectMapper.canDeSer(className);
+  }
 }
