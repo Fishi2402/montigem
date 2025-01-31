@@ -125,6 +125,10 @@ export class CommandResultDeSer implements JsonDeSer<CommandResult<any>> {
   public deserialize(json: string): Promise<CommandResult<any>> {
     return Promise.resolve(this.fromJson(JSON.parse(json)));
   }
+
+  protected canDeser(className : string) : boolean {
+    return BaseClassObjectMapper.canDeSer(className);
+  }
 }
 
 CommandResultDeSer["__class"] = "umlp.backendrte.command.CommandResultDeSer";

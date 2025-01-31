@@ -14,6 +14,9 @@ import java.util.List;
 import java.util.Optional;
 
 public class CommandResultDeSer implements JsonDeSer<CommandResult<?>> {
+
+  public final static String VOID_TYPE_RESULT = "java.lang.Void";
+
   public void buildJson(CommandResult<?> result, JsonPrinter printer){
     printer.member("commandId", result.getCommandId());
     String tp = result.getTypeParameter();
@@ -69,7 +72,7 @@ public class CommandResultDeSer implements JsonDeSer<CommandResult<?>> {
   }
 
     public Optional<String> optSerialize(CommandResult<?> command){
-    if(!BaseClassObjectMapper.canDeSer(command.getTypeParameter())) {
+    if(!command.getTypeParameter().equals(VOID_TYPE_RESULT) && !canDeser(command.getTypeParameter())) {
       return Optional.empty();
     }
     JsonPrinter printer = new JsonPrinter(true);
@@ -98,5 +101,9 @@ public class CommandResultDeSer implements JsonDeSer<CommandResult<?>> {
 
   public Optional<CommandResult<?>> deserialize(String json){
     return fromJson(JsonParser.parseJsonObject(json));
+  }
+
+  protected boolean canDeser(String className) {
+    return BaseClassObjectMapper.canDeSer(className);
   }
 }
