@@ -71,6 +71,7 @@ build_with_deploy:
       -Djib.from.auth.username=$CI_REGISTRY_USER  \
       -Djib.from.auth.password=$CI_REGISTRY_PASSWORD \
       -Djib.to.image=$CI_REGISTRY_IMAGE/weather_backend:latest \
+      -Djib.console=plain \
       -Djib.to.auth.username=$CI_REGISTRY_USER  \
       -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
     # SEHub Backend
@@ -79,6 +80,7 @@ build_with_deploy:
       -Djib.from.auth.username=$CI_REGISTRY_USER  \
       -Djib.from.auth.password=$CI_REGISTRY_PASSWORD \
       -Djib.to.image=$CI_REGISTRY_IMAGE/sehub_backend:latest \
+      -Djib.console=plain \
       -Djib.to.auth.username=$CI_REGISTRY_USER  \
       -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
     # Stat-Server
@@ -87,6 +89,7 @@ build_with_deploy:
       -Djib.from.auth.username=$CI_REGISTRY_USER  \
       -Djib.from.auth.password=$CI_REGISTRY_PASSWORD \
       -Djib.to.image=$CI_REGISTRY_IMAGE/stat_backend:latest \
+      -Djib.console=plain \
       -Djib.to.auth.username=$CI_REGISTRY_USER  \
       -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
     # DTCockpit Backend
@@ -95,6 +98,7 @@ build_with_deploy:
       -Djib.from.auth.username=$CI_REGISTRY_USER  \
       -Djib.from.auth.password=$CI_REGISTRY_PASSWORD \
       -Djib.to.image=$CI_REGISTRY_IMAGE/dtcockpit_backend:latest \
+      -Djib.console=plain \
       -Djib.to.auth.username=$CI_REGISTRY_USER  \
       -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
     # DemoRec Application
@@ -103,6 +107,7 @@ build_with_deploy:
       -Djib.from.auth.username=$CI_REGISTRY_USER  \
       -Djib.from.auth.password=$CI_REGISTRY_PASSWORD \
       -Djib.to.image=$CI_REGISTRY_IMAGE/demorec_backend:latest \
+      -Djib.console=plain \
       -Djib.to.auth.username=$CI_REGISTRY_USER  \
       -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
     # Vis-Lib Application
@@ -111,6 +116,7 @@ build_with_deploy:
       -Djib.from.auth.username=$CI_REGISTRY_USER  \
       -Djib.from.auth.password=$CI_REGISTRY_PASSWORD \
       -Djib.to.image=$CI_REGISTRY_IMAGE/vis-lib_backend:latest \
+      -Djib.console=plain \
       -Djib.to.auth.username=$CI_REGISTRY_USER  \
       -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
 
@@ -233,5 +239,6 @@ buildNativeImage:
     - "gradle :examples:native-image:nativeBuild --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
     - "gradle :examples:native-image:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
         -Djib.to.image=$CI_REGISTRY_IMAGE/native-image-demo:latest \
+        -Djib.console=plain \
         -Djib.to.auth.username=$CI_REGISTRY_USER  \
         -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "

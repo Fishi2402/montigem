@@ -2,8 +2,6 @@
 
 import { DemoRecManager } from 'demorec/DemoRecManager';
 
-import { BatteryPackType } from 'demorec/BatteryPackType';
-
 import { BatteryPack } from 'demorec/BatteryPack';
 
 import { PackChooseComponent,config } from 'gui/pack/PackChooseComponent';

@@ -17,6 +17,7 @@ import de.monticore.ocl.ocl._visitor.OCLTraverser;
 import de.monticore.ocl.setexpressions._ast.ASTSetComprehension;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.se_rwth.commons.logging.Log;
 import org.gradle.internal.Pair;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
@@ -117,7 +118,9 @@ public class ValidatorDecorator extends AbstractDecorator {
     List<ASTCDMethodSignature> oclRules = new ArrayList<>();
     for(ASTOCLInvariant invariant : collectInvariantsForType(domainClass.getName())) {
       OCLInvariantTree oCLInvariantTree = this.oclInvariantTrees.stream().filter(a -> a.getInvariant().equals(invariant)).findFirst().get();
-      String body = OCLParser.generate(invariant, new IndentPrinter(), enumMap, oCLInvariantTree, cDDefinition);
+//      String body = OCLParser.generate(invariant, new IndentPrinter(), enumMap, oCLInvariantTree, cDDefinition);
+      Log.warn("0xTODO skipping OCL");
+      String body = "0xTODO skipping OCL";
       // Multiple context definitions were replaced by multiple invariants in the OCLASTPreProcessor
       ASTOCLParamDeclaration dec = invariant.getOCLContextDefinitionList().get(0).getOCLParamDeclaration();
 

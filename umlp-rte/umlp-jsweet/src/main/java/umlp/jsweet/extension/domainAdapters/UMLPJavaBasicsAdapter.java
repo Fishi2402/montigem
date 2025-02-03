@@ -32,6 +32,7 @@ public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
     getTypeMirrorMappings().add(0, computeJavaOptionalTypeMapping());
     getTypeMirrorMappings().add(0, computeDateTypeMapping());
     addTypeMapping("java.time.LocalDateTime", "Date");
+    addTypeMapping("java.time.LocalDate", "Date");
   }
 
   public Function<TypeMirror, String> computeJavaOptionalTypeMapping() {

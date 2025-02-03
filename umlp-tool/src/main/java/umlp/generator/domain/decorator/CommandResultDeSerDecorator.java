@@ -49,6 +49,7 @@ public class CommandResultDeSerDecorator extends AbstractDecorator {
     getCD4C().addMethod(cmdResultDeSerClass, getFromJsonTemplate());
     getCD4C().addMethod(cmdResultDeSerClass, getDeserSingleValueTemplate(), classNames);
     getCD4C().addMethod(cmdResultDeSerClass, getSerSingleValueTemplate(), classNames);
+    getCD4C().addMethod(cmdResultDeSerClass, getCanDeserTemplate(), classNames);
 
     addImports(cmdResultDeSerClass);
 
@@ -100,6 +101,10 @@ public class CommandResultDeSerDecorator extends AbstractDecorator {
 
   protected String getBuildJsonTemplate() {
     return "umlp.commandresultdeser.BuildJson";
+  }
+
+  protected String getCanDeserTemplate() {
+    return "umlp.commandresultdeser.CanDeser";
   }
 
   protected void addImports(ASTCDType clazz) {

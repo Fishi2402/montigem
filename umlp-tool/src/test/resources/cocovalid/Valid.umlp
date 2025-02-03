@@ -4,6 +4,7 @@ umlp Valid {
 
   class A {
     int a;
+    java.util.List<String> names;
   }
 
   class B {

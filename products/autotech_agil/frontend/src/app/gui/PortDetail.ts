@@ -1,11 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { Service } from 'autotechagil/Service';
-import { ServiceStatus } from 'autotechagil/ServiceStatus';
-import { Status } from "autotechagil/Status";
 import { Component } from '@angular/core';
-import { ServiceDetailComponent, config } from 'gui/ServiceDetailComponent';
-import { Option } from "@umlp/input";
+import { PortDetailComponent, config } from 'gui/PortDetailComponent';
+import { SteeringValue } from "autotechagil/SteeringValue";
 
 @Component({
   standalone: true,
@@ -13,8 +10,13 @@ import { Option } from "@umlp/input";
   selector: config.selector,
   templateUrl: config.templateUrl,
 })
-export class ServiceDetail extends ServiceDetailComponent {
+export class PortDetail extends PortDetailComponent {
 
+  public override getSteeringValues(): SteeringValue[] {
+    return this.getPort().getFunctionStream().getValueList() as SteeringValue[];
+  }
+
+  /*
   private possibleStates: Status[] = [];
 
   private statusOptions = Object.values(ServiceStatus)
@@ -64,5 +66,6 @@ export class ServiceDetail extends ServiceDetailComponent {
     }
     return this.possibleStates.find(status => status.getStatusId() == ServiceStatus.RED);
   }
+   */
 
 }

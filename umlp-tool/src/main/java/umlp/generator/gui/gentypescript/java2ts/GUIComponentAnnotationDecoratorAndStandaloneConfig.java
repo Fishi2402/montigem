@@ -116,7 +116,7 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
       }
 
       // Avoid circular import dependencies for recursive component calls
-      if (!component.getNameSymbol().getName().equals(componentQName)) {
+      if (!component.getNameSymbol().getFullName().equals(componentQName)) {
         importHelper.addImport(component.getNameSymbol().getFullName(), Optional.empty(), true, componentQName);
         importedComponents.add(component.getNameSymbol().getFullName());
       }

@@ -17,9 +17,9 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static umlp.AbstractUMLPTest.BUILD_FOLDER;
 
 public class IncGenDataTest {
+  public static final String BUILD_FOLDER = "build";
   protected IncGenData lastRun;
 
   @TempDir

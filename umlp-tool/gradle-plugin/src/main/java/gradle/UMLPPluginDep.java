@@ -25,9 +25,9 @@ public abstract class UMLPPluginDep implements Plugin<Project> {
       var toolConfig = project.getConfigurations().maybeCreate(UMLP_CONFIG_TOOL);
       toolConfig.setCanBeResolved(true);
       toolConfig.defaultDependencies(dependencies -> {
-        dependencies.add(project.getDependencies().create("umlp:umlp-tool:7.7.0-SNAPSHOT"));
-        dependencies.add(project.getDependencies().create("de.monticore.lang:cd4analysis:7.7.0-SNAPSHOT:cdmerge"));
-        dependencies.add(project.getDependencies().create("de.monticore.lang:od:7.7.0-SNAPSHOT"));
+        dependencies.add(project.getDependencies().create("umlp:umlp-tool:7.8.0-SNAPSHOT"));
+        dependencies.add(project.getDependencies().create("de.monticore.lang:cd4analysis:7.8.0-SNAPSHOT:cdmerge"));
+        dependencies.add(project.getDependencies().create("de.monticore.lang:od:7.8.0-SNAPSHOT"));
       });
       toolConfig.attributes(it -> {
         // Do not use the shadowed bundling variant

@@ -349,7 +349,7 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
       if(!this.getStep()?.getTimeConsumption()) {
         return new GemTextInputValidity("Error", "You have to set a time");;
       } else {
-        return new GemTextInputValidity("Success")
+        return new GemTextInputValidity("Success", null)
       }
     } else {
       return new GemTextInputValidity("Error", "Wait for Page initialization.");;
@@ -361,7 +361,7 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
       if(this.getSelectEndeffectorEntry() === "") {
         return new GemTextInputValidity("Error", "Please choose an appropriate End Effector");
       } else {
-        return new GemTextInputValidity("Success")
+        return new GemTextInputValidity("Success", null)
       }
     } else {
       return new GemTextInputValidity("Error", "Wait for Page initialization.");
@@ -370,7 +370,7 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
 
   public override checkStepTypeSet(): GemTextInputValidity {
     if(this.typeEntry) {
-      return new GemTextInputValidity("Success")
+      return new GemTextInputValidity("Success", null)
     } else {
       return new GemTextInputValidity("Error", "Please choose a Step Type");
     }
@@ -381,7 +381,7 @@ export class ProcessStepCreate extends ProcessStepCreateComponent implements OnI
       if(this.joinConnectionKindEntry === newOption.getValue()) {
         return new GemTextInputValidity("Error", "Please Save the new Connection.");;
       }
-      return new GemTextInputValidity("Success");
+      return new GemTextInputValidity("Success",null );
     } else {
       return new GemTextInputValidity("Error", "Please choose an existing Connection or create a new one.");
     }

@@ -50,16 +50,23 @@ public abstract class CommandObjectMapper {
   protected abstract Optional<Command<Object>> _deserializeCommand(String cmdStr);
 
   public static String serializeResponse(CommandResult<?> result){
+    Exception err;
     try {
-      return getInstance()._serializeResponse(result);
+      Optional<String> responseOpt = getInstance()._serializeResponse(result);
+      if(responseOpt.isPresent()) {
+        return responseOpt.get();
+      } else {
+        err = new IllegalStateException("Instance returned Optional.empty");
+      }
     } catch (Exception e) {
-      String msg = String.format("%s Could not serialize result: %s\n%s", "0xS0001", result.getTypeParameter(), e.getMessage());
-      Log.warn(msg, e);
-      return getInstance()._serializeResponse(StatusResult.error(result.getCommandId()));
+      err = e;
     }
+    String msg = String.format("%s Could not serialize result: %s\n%s", "0xS0001", result.getTypeParameter(), err.getMessage());
+    Log.warn(msg, err);
+    return getInstance()._serializeResponse(StatusResult.error(result.getCommandId())).get();
   }
 
-  public abstract String _serializeResponse(CommandResult<?> result);
+  public abstract Optional<String> _serializeResponse(CommandResult<?> result);
 
   public static Optional<CommandResult<?>> deserializeResponse(String responseStr){
     try {

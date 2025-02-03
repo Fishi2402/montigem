@@ -28,7 +28,7 @@ export class EditComponentKind extends EditComponentKindComponent {
   public override checkKindName(): GemTextInputValidity {
     if(this.getComponentKind()) {
       if(this.getComponentKind().getName()) {
-        return new GemTextInputValidity("Success")
+        return new GemTextInputValidity("Success", null)
       }
       return new GemTextInputValidity("Error", "Enter a name.");
     }

@@ -1,37 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp._cocos;
 
-import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Test;
-import umlp.AbstractUMLPTest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+public class UMLPCheckAttributeModifierTest extends AbstractCoCoTest<UMLPCheckAttributeModifier> {
 
-public class UMLPCheckAttributeModifierTest extends AbstractUMLPTest {
-
-  @Test
-  public void testValid() {
-    UMLPCoCoChecker checker = new UMLPCoCoChecker();
-    checker.addCoCo(new UMLPCheckAttributeModifier());
-    ASTCDCompilationUnit ast = parse("cocovalid/Valid.umlp");
-
-    checker.checkAll(ast);
-
-    assertTrue(Log.getFindings().isEmpty());
+  UMLPCheckAttributeModifierTest() {
+    super(new UMLPCheckAttributeModifier(), UMLPCoCoChecker::addCoCo);
   }
 
   @Test
   public void testInvalid() {
-    UMLPCoCoChecker checker = new UMLPCoCoChecker();
-    checker.addCoCo(new UMLPCheckAttributeModifier());
-    ASTCDCompilationUnit ast = parse("cocoinvalid/UMLPCheckAttributeModifier.umlp");
-
-    checker.checkAll(ast);
-
-    assertEquals(1, Log.getFindingsCount());
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith(UMLPCheckAttributeModifier.ERROR_CODE));
+    parseInvalid("UMLPCheckAttributeModifier");
+    assertFindingsCount(1);
+    assertFindingAtLine(0, 4, "invalidAttr");
   }
 
 }
