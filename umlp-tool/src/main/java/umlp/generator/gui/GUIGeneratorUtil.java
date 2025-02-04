@@ -60,6 +60,7 @@ import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
+import umlp.generator.gui.genjava.decorator.GUI2JavaClassDecorator;
 import umlp.generator.gui.genjava.prettyprinter.Expression2NullCheckAccessorPrinter;
 import umlp.generator.gui.genjava.prettyprinter.Expression2SetterPrinter;
 import umlp.generator.gui.genjava.prettyprinter.IterationItemsFinder;
@@ -641,6 +642,21 @@ public class GUIGeneratorUtil {
     Log.error("0x00004 iterate construct " + iterate.getId().getName()
         + " was not processed: range iterate control not supported yet");
     return "";
+  }
+
+  public String getIterableGetter(ASTGUIIterate iterate) {
+    String name = iterate.getId().getName() + StringTransformations.capitalize(
+        GUI2JavaClassDecorator.ITERATE_ARG);
+    String args = findIterationItemSymbols(iterate.getEnclosingScope()).stream()
+        .map(v -> v.getName()).collect(
+            Collectors.joining(", "));
+    String getter = "get" + StringTransformations.capitalize(name);
+    if (UMLPGeneratorConfig.getInstance().isUseJsweet()) {
+      getter = "toArray(" + getter + SYNCHRONIZED_SUFFIX + "(" + args + "))";
+    } else {
+      getter = getter + "(" + args + ")";
+    }
+    return getter;
   }
 
   public String gui2tsGeneralImport(String forComponent, String postfix) {

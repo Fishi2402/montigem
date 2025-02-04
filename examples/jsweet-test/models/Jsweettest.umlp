@@ -44,4 +44,13 @@ classdiagram Jsweettest {
     Integer int2;
   }
 
+  class N0;
+  class N1;
+  class N2 {
+    String name;
+  }
+
+  association [1] N0 -> N1 [1];
+  association [1] N1 -> N2 [*];
+
 }
