@@ -47,7 +47,7 @@ import java.util.concurrent.ExecutionException;
  */
 public class IterationItemsFinder implements ExpressionsBasisVisitor2 {
   protected static Cache<Map.Entry<String, IExpressionsBasisScope>, Optional<VariableSymbol>> cache
-      = CacheBuilder.newBuilder().weakKeys().softValues().build();
+      = CacheBuilder.newBuilder().softValues().build();
 
   protected ExpressionsBasisTraverser traverser;
 
