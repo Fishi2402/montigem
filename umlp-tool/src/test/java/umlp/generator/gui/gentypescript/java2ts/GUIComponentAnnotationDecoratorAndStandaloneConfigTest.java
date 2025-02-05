@@ -28,7 +28,7 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfigTest extends Doma
     GUIComponentStat stat = GUIComponentStat.getInstance();
     List<ASTGUIComponent> components = stat.getComponents(decl);
 
-    HashSet<String> calculatedImports = generator.calculateImports("DirNode", components, new TSImportHelperDummy());
+    HashSet<String> calculatedImports = generator.calculateImports("gentypescript.java2ts.DirNode", components, new TSImportHelperDummy());
 
     assertFalse(calculatedImports.stream().anyMatch(s -> s.endsWith("DirNode")));
   }

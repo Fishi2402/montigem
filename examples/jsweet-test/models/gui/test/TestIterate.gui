@@ -1,0 +1,19 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui.test;
+
+import mc.fenix.basic.GemText;
+import gui.test.TestNav;
+
+import Jsweettest.N0;
+import Jsweettest.N1;
+import Jsweettest.N2;
+
+page TestIterate (List<N0> n0s) {
+  @TestNav();
+  @iterate (N0 n0: n0s) {
+    @GemText(value = "N0");
+    @iterate(N2 n2: n0.n1.n2) {
+      @GemText(value = "--" + n2.name);
+    };
+  };
+}

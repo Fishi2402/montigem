@@ -11,6 +11,8 @@ component TestNav() {
 
   @GemNavItem(title = "C1-C2-C3 assoc", target = "/gui/test/TestC1List");
 
+  @GemNavItem(title = "Deeper iterate statement", target = "gui/test/TestIterate");
+
   @GemButton(label = "Reset Data", leftClick = resetData());
 
   @GemText(value = "... navigation ends here...");

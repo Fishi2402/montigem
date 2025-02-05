@@ -86,8 +86,6 @@ genGUI {
    symbolDir += generateCDTOGUI.getOutputDir().file("symbols")
    symbolDir += file("$buildDir/tags")
    var toExclude = tasks.genDomain.getSymbolOutDir().get().asFile
-   println("Excluding")
-   println(toExclude)
    symbolDir.setFrom symbolDir.filter(f -> f != toExclude)
    modelDir = file(tasks.guiVariability.getOutputDir())
 }

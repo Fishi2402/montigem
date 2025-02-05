@@ -63,6 +63,29 @@ public class JsweettestServerApplication extends JsweettestServerApplicationTOP 
     c1.addC2mult(randomC2(3));
     c1.addC2mult(randomC2(4));
     c1.addC2mult(randomC2(5));
+
+
+    // Reset Ns
+    System.out.println("Reset Ns");
+    for (N2 n2 : JsweettestManager.getN2List()) {
+      JsweettestManager.deleteN2(n2.getGemId());
+    }
+    for (N1 n1 : JsweettestManager.getN1List()) {
+      JsweettestManager.deleteN1(n1.getGemId());
+    }
+    for (N0 n0 : JsweettestManager.getN0List()) {
+      JsweettestManager.deleteN0(n0.getGemId());
+    }
+    // Invent Ns
+    System.out.println("Invent Ns");
+    for (int i = 0; i < 3; i++) {
+      N1Builder n1Builder = JsweettestManager.n1Builder();
+      for (int j = 0; j < 4; j++) {
+        n1Builder.n2Add(JsweettestManager.n2Builder()
+            .name("N2#" + i + "#" + j).build().get());
+      }
+      JsweettestManager.n0Builder().n1(n1Builder.build().get()).build();
+    }
   }
 
   protected static C3 randomC3(int i) {
