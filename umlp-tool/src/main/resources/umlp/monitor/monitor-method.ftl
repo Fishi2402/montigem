@@ -1,17 +1,14 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("name", "returnType", "params")}
-${cd4c.method("public ${returnType} ${name}(${params
-  .stream()
-  .map(param -> param.getMCType().printType() + " " + param.getName())
-  .collect(Collectors.joining(", "))})")}
+${tc.signature("name", "returnType", "paramSignature", "paramCallsite", "isVoid")}
+${cd4c.method("public ${returnType} ${name}(${paramSignature})")}
 
 var monitor = MethodMonitor.start("${name}");
 try {
-<#if returnType.equals("void")>
-  super.${name}(${params.stream().map(param -> param.getName()).collect(Collectors.joining(", "))});
+<#if isVoid>
+  super.${name}(${paramCallsite});
   monitor.reportEnd(null); //TODO report void instead of null
 <#else>
-  var res = super.${name}(${params.stream().map(param -> param.getName()).collect(Collectors.joining(", "))});
+  var res = super.${name}(${paramCallsite});
   monitor.reportEnd(res);
   return res;
 </#if>

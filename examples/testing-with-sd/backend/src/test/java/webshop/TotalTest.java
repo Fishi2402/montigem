@@ -1,11 +1,11 @@
 package webshop;
 
-import monitor.StackEventQueue;
-import monitor.event.CallEvent;
-import monitor.event.EndEvent;
 import org.junit.jupiter.api.Test;
 import totaltest.TotalTestInstantiator;
 import umlp.test_rte.ClientSetup;
+import umlp.test_rte.monitor.StackEventQueue;
+import umlp.test_rte.monitor.event.CallEvent;
+import umlp.test_rte.monitor.event.EndEvent;
 import webshop.test_infrastructure.WebshopSQLDBTestSetup;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

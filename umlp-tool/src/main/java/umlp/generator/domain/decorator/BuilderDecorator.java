@@ -13,8 +13,6 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.umlstereotype._ast.ASTStereoValueBuilder;
-import de.monticore.umlstereotype._ast.ASTStereotypeBuilder;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
@@ -67,9 +65,8 @@ public class BuilderDecorator extends AbstractDecorator {
         .setName(className).build();
 
     //add needs-monitor stereotype
-    //TODO how do I create those builders?
     var modifier = builderClass.getModifier();
-    var stereotypeValue = new ASTStereoValueBuilder()
+    var stereotypeValue = UMLPMill.stereoValueBuilder()
         .setName("needs-monitor")
         .setContent("true")
         .build();
@@ -77,7 +74,7 @@ public class BuilderDecorator extends AbstractDecorator {
     if (modifier.isPresentStereotype()) {
       modifier.getStereotype().addValues(stereotypeValue);
     } else {
-      var stereotype = new ASTStereotypeBuilder().addValues(stereotypeValue).build();
+      var stereotype = UMLPMill.stereotypeBuilder().addValues(stereotypeValue).build();
       modifier.setStereotype(stereotype);
     }
 

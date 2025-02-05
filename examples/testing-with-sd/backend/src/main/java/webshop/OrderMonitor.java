@@ -1,6 +1,6 @@
 package webshop;
 
-import monitor.MethodMonitor;
+import umlp.test_rte.monitor.MethodMonitor;
 
 public class OrderMonitor extends OrderBuilder {
   public OrderMonitor(long gemId) {

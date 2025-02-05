@@ -1,6 +1,6 @@
-package monitor;
+package umlp.test_rte.monitor;
 
-import monitor.event.StackEvent;
+import umlp.test_rte.monitor.event.StackEvent;
 
 import java.util.Optional;
 import java.util.Queue;

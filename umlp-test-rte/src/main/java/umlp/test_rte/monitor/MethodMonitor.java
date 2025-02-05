@@ -1,8 +1,8 @@
-package monitor;
+package umlp.test_rte.monitor;
 
-import monitor.event.CallEvent;
-import monitor.event.EndEvent;
-import monitor.event.ErrorEvent;
+import umlp.test_rte.monitor.event.CallEvent;
+import umlp.test_rte.monitor.event.EndEvent;
+import umlp.test_rte.monitor.event.ErrorEvent;
 
 public final class MethodMonitor {
 

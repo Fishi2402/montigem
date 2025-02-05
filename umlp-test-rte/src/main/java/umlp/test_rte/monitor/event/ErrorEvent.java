@@ -1,4 +1,4 @@
-package monitor.event;
+package umlp.test_rte.monitor.event;
 
 import java.util.Objects;
 
