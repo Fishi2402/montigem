@@ -34,11 +34,6 @@ public class MonitorDecorator extends AbstractDecorator {
         .build();
     builderDecorator.transform(origCD, redecoratedCD);
 
-    //    builderDecorator
-    //        .getClassesToGenerateBuilderFor(origCD)
-    //        .forEach(astcdClass -> targetPackage.addCDElement(withOrigin(createMonitor(origCD,
-    //        astcdClass))));
-
     redecoratedCD
         .getCDDefinition()
         .getCDClassesList()
