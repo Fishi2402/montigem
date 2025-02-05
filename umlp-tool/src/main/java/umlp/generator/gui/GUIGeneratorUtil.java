@@ -81,6 +81,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -1098,10 +1099,12 @@ public class GUIGeneratorUtil {
     return name.substring(0, index2) + name.substring(index1);
   }
 
+  Type4Ast type4Ast = new Type4Ast();
   public SymTypeExpression getType(ASTExpression node) {
-    Type4Ast type4Ast = new Type4Ast();
-    GUIDSLTraverser traverser = GUIDSLTypeTraverserFactory.getInstance().createTraverserForOO(type4Ast);
-    node.accept(traverser);
+    if(!type4Ast.hasTypeOfExpression(node)) {
+      GUIDSLTraverser traverser = GUIDSLTypeTraverserFactory.getInstance().createTraverserForOO(type4Ast);
+      node.accept(traverser);
+    }
 
     return type4Ast.getTypeOfExpression(node);
   }
