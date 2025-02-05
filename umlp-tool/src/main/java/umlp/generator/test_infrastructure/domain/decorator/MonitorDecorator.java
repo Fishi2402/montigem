@@ -69,6 +69,8 @@ public class MonitorDecorator extends AbstractDecorator {
     addSuperConstructors(res, decoratedBuilderClass);
 
     //override all generated methods
+    //TODO also get the methods of the super classes
+
     decoratedBuilderClass.getCDMethodList().stream().filter(method -> {
       var modifier = method.getModifier();
       return !modifier.isStatic() && !modifier.isFinal() && !modifier.isPrivate();

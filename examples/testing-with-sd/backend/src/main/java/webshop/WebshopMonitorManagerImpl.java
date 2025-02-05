@@ -1,5 +1,7 @@
 package webshop;
 
+import webshop.test_infrastructure.OrderBuilderMonitor;
+
 public class WebshopMonitorManagerImpl extends WebshopManagerImpl {
 
   public static void init() {
@@ -9,6 +11,6 @@ public class WebshopMonitorManagerImpl extends WebshopManagerImpl {
 
   @Override
   protected OrderBuilder _doOrderBuilderFromId(long gemId) {
-    return new OrderMonitorBuilder(gemId);
+    return new OrderBuilderMonitor(gemId);
   }
 }
