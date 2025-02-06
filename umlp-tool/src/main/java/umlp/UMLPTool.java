@@ -20,9 +20,10 @@ import de.monticore.guidsl.GUIDSLTool;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._cocos.GUIDSLCoCoChecker;
 import de.monticore.guidsl._parser.GUIDSLParser;
+import de.monticore.guidsl._symboltable.GUIDSLGlobalScope;
 import de.monticore.guidsl._symboltable.GUIDSLSymbols2Json;
 import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
-import de.monticore.guidsl._symboltable.IGUIDSLGlobalScope;
+import de.monticore.guidsl._symboltable.IGUIDSLScope;
 import de.monticore.guidsl._symboltable.RoleSymbolDeSer;
 import de.monticore.io.paths.MCPath;
 import de.monticore.ocl.ocl._ast.ASTOCLCompilationUnit;
@@ -52,21 +53,19 @@ import umlp.generator.domain.UMLAssocToAttrTrafo;
 import umlp.generator.domain.UMLAttrToAssocTrafo;
 import umlp.generator.domain.UMLImportTrafo;
 import umlp.generator.domain.UMLSetDefaultsTrafo;
+import umlp.generator.gui.GUINodeIdTrafo;
 import umlp.generator.gui.coco.GUIDSLCoCosForUMLP;
 import umlp.generator.gui.genjava.decorator.CallTypeDeriver;
 import umlp.generator.gui.genjava.decorator.InitDependencyTree;
 import umlp.generator.gui.genjava.decorator.StaticObjectsCollector;
 import umlp.generator.util.TagLookUp;
-import umlp.generator.gui.coco.GUIParamDefaultOnlyLiteralCoCo;
-import umlp.generator.gui.coco.GUIParamNoUnderspecifiedGenericsCoCo;
-import umlp.generator.gui.coco.NameExpressionsSymbolBoundExceptCallsCoCo;
-import umlp.generator.gui.coco.RefGUIArgIncompatibleWithDerivedCoCo;
 import umlp.generator.gui.coco.SymbolBoundNameExpressionsFinder;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static umlp.UMLPToolOptions.DEBUG;
@@ -358,20 +357,51 @@ public class UMLPTool extends UMLPToolTOP {
     return f.getName().endsWith(".ocl");
   }
 
-  // TODO MB, AGe
-  public static IGUIDSLArtifactScope createSymbolTable(
-      ASTGUICompilationUnit ast, Optional<Path> modelFilePathOpt, MCPath modelPath) {
-    GUIDSLTool tool = new GUIDSLTool();
-    tool.defaultImportTrafo(ast);
-    tool.resetGSAndMill();
-    if (modelFilePathOpt.isPresent()) {
-      tool.registerLoadedFile(modelFilePathOpt.get().toString());
+  protected GUIDSLTool guidslTool = new GUIDSLTool();
+  public Map.Entry<ASTGUICompilationUnit, IGUIDSLArtifactScope> createAstWithSymtab(Path modelFilePath) {
+    Optional<IGUIDSLArtifactScope> asOpt = findGUIArtifactScope(modelFilePath);
+    if (asOpt.isPresent()) {
+      return Map.entry(
+          (ASTGUICompilationUnit) asOpt.get().getAstNode(),
+          asOpt.get()
+      );
+    } else {
+      ASTGUICompilationUnit ast = parseGUI(modelFilePath.toString());
+      GUINodeIdTrafo nodeIdTrafo = new GUINodeIdTrafo();
+      nodeIdTrafo.transform(ast);
+
+      guidslTool.defaultImportTrafo(ast);
+      guidslTool.registerLoadedFile(modelFilePath.toString());
+      return Map.entry(
+          ast,
+          createSymbolTable(guidslTool, ast)
+      );
     }
-    return createSymbolTable(tool, ast, modelPath);
   }
 
-  public static IGUIDSLArtifactScope createSymbolTable(GUIDSLTool tool, ASTGUICompilationUnit node, MCPath modelPath) {
-    initGUIGlobalScope(modelPath);
+  protected Optional<IGUIDSLArtifactScope> findGUIArtifactScope(Path modelFilePath) {
+    for (IGUIDSLScope subScope : GUIDSLMill.globalScope().getSubScopes()) {
+      if(subScope instanceof IGUIDSLArtifactScope){
+        IGUIDSLArtifactScope as = (IGUIDSLArtifactScope) subScope;
+
+        String pack = "";
+        for (int i = 0; i < modelFilePath.getNameCount() - 1; i++) {
+          if(i > 0){
+            pack += ".";
+          }
+          pack += modelFilePath.getName(i);
+        }
+
+        String modelName = modelFilePath.getFileName().toString().replaceAll("[.]gui$", "");
+        if(as.getName().equals(modelName) && pack.endsWith(as.getPackageName())){
+          return Optional.of(as);
+        }
+      }
+    }
+    return Optional.empty();
+  }
+
+  public static IGUIDSLArtifactScope createSymbolTable(GUIDSLTool tool, ASTGUICompilationUnit node) {
     IGUIDSLArtifactScope as = tool.createSymbolTableP1(node);
     tool.createSymbolTableP2(node);
     tool.createSymbolTableP3(node);
@@ -380,7 +410,7 @@ public class UMLPTool extends UMLPToolTOP {
 
   public static void initGUIGlobalScope(MCPath modelPath) {
     BasicSymbolsMill.initializePrimitives();
-    IGUIDSLGlobalScope gs = GUIDSLMill.globalScope();
+    GUIDSLGlobalScope gs = (GUIDSLGlobalScope) GUIDSLMill.globalScope();
     gs.setSymbolPath(modelPath);
     gs.addAdaptedTypeSymbolResolver(new OOClass2MCResolver());
     gs.addAdaptedOOTypeSymbolResolver(new OOClass2MCResolver());
@@ -392,6 +422,11 @@ public class UMLPTool extends UMLPToolTOP {
         new de.monticore.symbols.oosymbols._symboltable.MethodSymbolDeSer());
     gs.putSymbolDeSer("de.monticore.cdassociation._symboltable.CDRoleSymbol",
         new RoleSymbolDeSer());
+    gs.addAfterParseAction(ast -> {
+      GUINodeIdTrafo nodeIdTrafo = new GUINodeIdTrafo();
+      nodeIdTrafo.transform(ast);
+      new GUIDSLTool().defaultImportTrafo(ast);
+    });
   }
 
   public void runDefaultCoCos(ASTGUICompilationUnit ast) {
