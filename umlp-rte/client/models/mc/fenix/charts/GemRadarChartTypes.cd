@@ -8,6 +8,7 @@ classdiagram GemRadarChartTypes {
   class GemRadarChartData {
     List<GemRadarChartDataSet> dataSets;
     List<String> labels;
+    Optional<Integer> maxLabelLength;
   }
 
   class GemRadarChartDataSet {

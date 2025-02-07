@@ -117,6 +117,13 @@ export class GemBarChart extends GemBarChartComponent {
     this.setData();
   }
 
+  @Input()
+  public set overlapping(overlapping: boolean) {
+    this._overlapping = overlapping;
+    this.saveAllOptionsChanges();
+    this.setData();
+  }
+
   constructor() {
     super();
   }
@@ -151,7 +158,7 @@ export class GemBarChart extends GemBarChartComponent {
       maintainAspectRatio: false,
       scales: {
         x: {
-          stacked: this._stacked,
+          stacked: this._stacked && !this._overlapping,
           grid: {
             color: '#888'
           },

@@ -20,7 +20,9 @@ import { GemChartOptions } from './GemChartOptions';
 export class GemRadarChart extends GemRadarChartComponent {
 
   public _dataSets: any; // {data: number[], label: string}
-  public _labels: string[];
+  public _labels: (string | string[])[];
+
+  public _maxLabelLength: number = 20;
 
   public options: ChartOptions<'radar'> = {
     elements: {
@@ -76,7 +78,24 @@ export class GemRadarChart extends GemRadarChartComponent {
       this.legendColors.push(backgroundColor);
       return res;
     });
-    this._labels = data.getLabelsList();
+    this._labels = [];
+
+    for (const label of data.getLabelsList()) {
+      // split the label into maximum 15 character long chunks
+      let words = label.split(' ');
+      let labels = [];
+      let chunk = words[0];
+      for (let i = 1; i < words.length; i++) {
+        if ((chunk + ' ' + words[i]).length <= this._maxLabelLength) {
+          chunk += ' ' + words[i];
+        } else {
+          labels.push(chunk);
+          chunk = words[i];
+        }
+      }
+      labels.push(chunk);
+      this._labels.push(labels);
+    }
   }
 
   @Input()
@@ -102,6 +121,11 @@ export class GemRadarChart extends GemRadarChartComponent {
   @Input()
   public set stepSize(stepSize: number) {
     this.options.scales['r'].ticks.stepSize = stepSize;
+  }
+
+  @Input()
+  public set maxLabelLength(maxLabelLength: number) {
+    this._maxLabelLength = maxLabelLength;
   }
 
   chartHovered($event: { event: ChartEvent; active: {}[] }) {
