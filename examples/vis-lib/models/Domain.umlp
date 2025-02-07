@@ -7,8 +7,6 @@ classdiagram Domain {
 
   class Conversation {
     String conversationid;
-    Role sender;
-    Role receiver;
   }
 
   class Message {
