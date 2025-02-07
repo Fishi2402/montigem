@@ -1,6 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("attrName", "type", "isOptional", "isCDEnum", "isList", "json", "useDeSer", "objectMapperName")}
-<#if isOptional>Optional.ofNullable(</#if>
+${tc.signature("attrName", "type", "isOptional", "isCDEnum", "isList", "json", "useDeSer", "objectMapperName", "isGemOptional")}
 <#if useDeSer>
     ${objectMapperName}.<${type}>deserialize(jsonObject.getMember("${attrName}").isJsonString() ? '"'
       + jsonObject.getMember("${attrName}").getAsJsonString().getValue() + '"' : jsonObject.getMember("${attrName}").toString(), "${type}").orElse(null)
@@ -10,7 +9,12 @@ ${tc.signature("attrName", "type", "isOptional", "isCDEnum", "isList", "json", "
     <#elseif isList>
     ${json}
     <#else>
-    jsonObject.getMember("${attrName}").${json}
+      <#if isOptional || isGemOptional>
+      jsonObject.getMember("${attrName}") != null ?
+        Optional.of(jsonObject.getMember("${attrName}").${json})
+          : Optional.empty()
+      <#else>
+      jsonObject.getMember("${attrName}").${json}
+      </#if>
     </#if>
 </#if>
-<#if isOptional>)</#if>

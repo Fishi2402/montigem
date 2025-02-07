@@ -2,10 +2,12 @@
 package umlp.generator.domain.decorator;
 
 import com.google.common.base.Defaults;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.typescalculator.FullSynthesizeFromCD4Code;
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.class2mc.adapters.JClass2OOTypeSymbolAdapter;
@@ -20,6 +22,7 @@ import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.TypeCheck;
 import de.monticore.types.check.TypeCheckResult;
 import de.monticore.types.check.TypeRelations;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
@@ -31,6 +34,7 @@ import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
 import umlp._prettyprint.UMLPFullPrettyPrinter;
+import umlp.generator.util.PathUtil;
 
 import java.util.List;
 import java.util.Optional;

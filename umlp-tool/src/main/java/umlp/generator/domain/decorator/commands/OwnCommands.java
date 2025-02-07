@@ -90,6 +90,10 @@ public interface OwnCommands {
                || (GenService.isOptional(type) && GenService.isCDType(((SymTypeOfGenerics) type).getArgument(0)));
   }
 
+  default boolean isOptionalGem(SymTypeExpression type) {
+    return GenService.isOptional(type) && GenService.isCDType(((SymTypeOfGenerics) type).getArgument(0));
+  }
+
   default boolean isListOfGemIdentifiable(SymTypeExpression type) {
     return GenService.isList(type) && GenService.isCDType(((SymTypeOfGenerics) type).getArgument(0));
   }

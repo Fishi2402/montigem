@@ -9,7 +9,11 @@ ${tc.signature("attrName", "type", "typeName", "isCDEnum", "json", "useDeSer", "
     jsonPrinter.value(gemId);
   }
     jsonPrinter.endArray();
+  <#elseif genService.isOptional(type)>
+  if (command.isPresent${attrName?cap_first}()) {
+    jsonPrinter.member("${attrName}", command.${genService.getGetterName(attrName, type)}());
+  }
   <#else>
-  jsonPrinter.member("${attrName}", command.${genService.getGetterName(attrName, type)}<#if genService.isList(type)>List</#if>()<#if isCDEnum>.name()</#if>);
+    jsonPrinter.member("${attrName}", command.${genService.getGetterName(attrName, type)}<#if genService.isList(type)>List</#if>()<#if isCDEnum>.name()</#if>);
   </#if>
 </#if>
