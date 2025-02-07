@@ -3,7 +3,9 @@ package umlp.generator.gui;
 
 import de.monticore.cd._symboltable.BuiltInTypes;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
+import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
 import de.monticore.io.paths.MCPath;
 import de.monticore.tagging.TagRepository;
 import org.apache.commons.cli.CommandLine;
@@ -19,7 +21,6 @@ import umlp._symboltable.UMLPSymbols2Json;
 
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.Optional;
 
 public abstract class DomainGUITest extends AbstractGUITest {
 
@@ -68,13 +69,14 @@ public abstract class DomainGUITest extends AbstractGUITest {
       Assert.fail();
     }
 
+    GUIDSLMill.init();
+    GUIDSLMill.globalScope().clear();
+    dummyTool.initGUIGlobalScope(importedSymbolPath);
     ASTGUICompilationUnit guiAst;
-    guiAst = parseGUI(modelPath);
-    UMLPTool.createSymbolTable(
-        guiAst,
-        Optional.of(Paths.get("src/test/resources/" + modelPath)),
-        importedSymbolPath
+    var e = dummyTool.createAstWithSymtab(
+        Paths.get("src/test/resources/" + modelPath)
     );
+    guiAst = e.getKey();
     return guiAst;
   }
 
