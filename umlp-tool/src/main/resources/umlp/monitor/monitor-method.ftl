@@ -6,10 +6,10 @@ var monitor = MethodMonitor.start("${name}");
 try {
 <#if isVoid>
   super.${name}(${paramCallsite});
-  monitor.reportEnd(null); //TODO report void instead of null
+  monitor.reportReturnVoid();
 <#else>
   var res = super.${name}(${paramCallsite});
-  monitor.reportEnd(res);
+  monitor.reportReturn(res);
   return res;
 </#if>
 } catch (Exception e) {

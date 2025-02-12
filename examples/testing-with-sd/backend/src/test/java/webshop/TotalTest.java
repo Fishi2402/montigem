@@ -5,7 +5,7 @@ import totaltest.TotalTestInstantiator;
 import umlp.test_rte.ClientSetup;
 import umlp.test_rte.monitor.StackEventQueue;
 import umlp.test_rte.monitor.event.CallEvent;
-import umlp.test_rte.monitor.event.EndEvent;
+import umlp.test_rte.monitor.event.ReturnVoidEvent;
 import webshop.test_infrastructure.WebshopSQLDBTestSetup;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,8 +33,8 @@ public class TotalTest extends WebshopSQLDBTestSetup {
 
     o.addItem(item);
 
-    assertEquals(new CallEvent("addItem"), StackEventQueue.poll().orElseThrow());
-    assertEquals(new EndEvent("addItem", null), StackEventQueue.poll().orElseThrow());
+    assertEquals(new CallEvent("addItem"), StackEventQueue.toQueue().getFirst());
+    assertEquals(new ReturnVoidEvent("addItem"), StackEventQueue.toQueue().getLast());
 
     assertEquals(6, o.getTotal());
   }

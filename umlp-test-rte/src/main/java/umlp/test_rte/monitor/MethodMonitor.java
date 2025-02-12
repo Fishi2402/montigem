@@ -1,14 +1,14 @@
 package umlp.test_rte.monitor;
 
 import umlp.test_rte.monitor.event.CallEvent;
-import umlp.test_rte.monitor.event.EndEvent;
 import umlp.test_rte.monitor.event.ErrorEvent;
+import umlp.test_rte.monitor.event.ReturnEvent;
+import umlp.test_rte.monitor.event.ReturnVoidEvent;
 
 public final class MethodMonitor {
 
   private final String methodName;
-  private Exception exception;
-  private Object returnValue;
+  private boolean active = true;
 
   public static MethodMonitor start(String methodName) {
     StackEventQueue.report(new CallEvent(methodName));
@@ -24,20 +24,25 @@ public final class MethodMonitor {
   }
 
   public void reportError(Exception exception) {
-    checkActive();
-    this.exception = exception;
+    deactivate();
     StackEventQueue.report(new ErrorEvent(methodName, exception));
   }
 
-  public void reportEnd(Object returnValue) {
-    checkActive();
-    this.returnValue = returnValue;
-    StackEventQueue.report(new EndEvent(methodName, returnValue));
+  public void reportReturn(Object returnValue) {
+    deactivate();
+    StackEventQueue.report(new ReturnEvent(methodName, returnValue));
   }
 
-  public void checkActive() {
-    if (exception != null || returnValue != null) {
+  public void reportReturnVoid() {
+    deactivate();
+    StackEventQueue.report(new ReturnVoidEvent(methodName));
+  }
+
+  private void deactivate() {
+    if (!active) {
       throw new IllegalStateException("method end has already been reported");
     }
+
+    this.active = false;
   }
 }

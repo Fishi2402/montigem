@@ -2,12 +2,12 @@ package umlp.test_rte.monitor.event;
 
 import java.util.Objects;
 
-public final class EndEvent implements StackEvent {
+public final class ReturnEvent implements StackEvent {
 
   private final String methodName;
   private final Object returnValue;
 
-  public EndEvent(String methodName, Object returnValue) {
+  public ReturnEvent(String methodName, Object returnValue) {
     this.methodName = methodName;
     this.returnValue = returnValue;
   }
@@ -25,9 +25,9 @@ public final class EndEvent implements StackEvent {
   public boolean equals(Object o) {
     if (o == null || getClass() != o.getClass())
       return false;
-    EndEvent endEvent = (EndEvent) o;
-    return Objects.equals(methodName, endEvent.methodName) && Objects.equals(returnValue,
-        endEvent.returnValue);
+    ReturnEvent returnEvent = (ReturnEvent) o;
+    return Objects.equals(methodName, returnEvent.methodName) && Objects.equals(returnValue,
+                                                                                returnEvent.returnValue);
   }
 
   @Override
