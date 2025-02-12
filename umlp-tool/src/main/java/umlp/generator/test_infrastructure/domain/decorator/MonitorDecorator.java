@@ -13,8 +13,9 @@ import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
 
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class MonitorDecorator extends AbstractDecorator {
@@ -101,16 +102,25 @@ public class MonitorDecorator extends AbstractDecorator {
     return res;
   }
 
-  private Set<ASTCDMethod> getMethodsToMonitor(ASTCDClass classToMonitor,
+  private Collection<ASTCDMethod> getMethodsToMonitor(ASTCDClass classToMonitor,
+      ASTCDCompilationUnit decoratedCD) {
+    return getSignatureComparedMethodsToMonitor(classToMonitor, decoratedCD)
+        .stream()
+        .map(SignatureComparedMethod::method)
+        .collect(Collectors.toList());
+  }
+
+  private Collection<SignatureComparedMethod> getSignatureComparedMethodsToMonitor(ASTCDClass classToMonitor,
       ASTCDCompilationUnit decoratedCD) {
     var methods = classToMonitor.getCDMethodList().stream().filter(method -> {
       var modifier = method.getModifier();
       return !modifier.isStatic() && !modifier.isFinal() && !modifier.isPrivate();
-    }).collect(Collectors.toCollection(HashSet::new));
+    }).map(SignatureComparedMethod::new).collect(Collectors.toCollection(HashSet::new));
 
     //super class
     if (classToMonitor.isPresentCDExtendUsage()) {
-      //TODO use signatures for comparison, since return type Option<? extends T> and Option<T> are not the same but may refer to the same method
+      //TODO use signatures for comparison, since return type Option<? extends T> and Option<T>
+      // are not the same but may refer to the same method
       methods.addAll(classToMonitor
                          .getCDExtendUsage()
                          .getSuperclassList()
@@ -123,13 +133,39 @@ public class MonitorDecorator extends AbstractDecorator {
                              .getCDClassesList()
                              .stream()
                              .filter(cdClass -> cdClass.getName().equals(superClassName))
-                             .flatMap(superClass -> getMethodsToMonitor(superClass,
-                                                                        decoratedCD).stream()))
+                             .flatMap(superClass -> getSignatureComparedMethodsToMonitor(superClass,
+                                                                                         decoratedCD).stream()))
                          .collect(Collectors.toList()));
     }
 
     //TODO monitor default methods of interfaces
 
     return methods;
+  }
+
+  private static final class SignatureComparedMethod {
+
+    private final ASTCDMethod method;
+
+    public SignatureComparedMethod(ASTCDMethod method) {
+      this.method = method;
+    }
+
+    public ASTCDMethod method() {
+      return method;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == null || getClass() != o.getClass()) return false;
+      SignatureComparedMethod that = (SignatureComparedMethod) o;
+      return Objects.equals(method.getName(), that.method.getName()) &&
+             Objects.equals(method.getCDParameterList(), that.method.getCDParameterList());
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(method.getName(), method.getCDParameterList());
+    }
   }
 }
