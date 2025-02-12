@@ -245,7 +245,9 @@ public class TSOwnCommandDecorator extends OwnCommandDecorator {
             baseClassDecorator, typeName);
       }
 
-      if (!type.isObscureType() && GenService.isList(type)) {
+      if (!type.isObscureType() && GenService.isListOfGemIdentifiable(type)) {
+        getCD4C().addMethod(ast, getOwnCommand_FromJsonObjectParametersGemListTemplate(), p.getName());
+      } else if (!type.isObscureType() && GenService.isList(type)) {
         getCD4C().addMethod(ast, getOwnCommand_FromJsonObjectParametersListTemplate(), p.getName());
       }
     }
@@ -295,6 +297,10 @@ public class TSOwnCommandDecorator extends OwnCommandDecorator {
   @Override
   protected String getOwnCommand_FromJsonObjectParametersListTemplate() {
     return "umlp.gui2ts.commands.deser.TSOwnCommand_FromJsonObjectParametersList";
+  }
+
+  protected String getOwnCommand_FromJsonObjectParametersGemListTemplate() {
+    return "umlp.gui2ts.commands.deser.TSOwnCommand_FromJsonObjectParametersGemList";
   }
 
   @Override

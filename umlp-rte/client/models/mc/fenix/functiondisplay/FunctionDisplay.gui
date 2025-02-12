@@ -4,7 +4,16 @@ package mc.fenix.functiondisplay;
 //import mc.fenix.functiondisplay.FunctionDisplayTypes.Function;
 import mc.fenix.functiondisplay.FunctionStructure4Fenix.Function4Display;
 
+import java.util.function.Consumer;
+
 
 component FunctionDisplay(
-  Function4Display data
+  Function4Display data,
+  Consumer<Function4Display> functionClick,
+  Consumer<Function4Display> functionMouseover,
+  Consumer<Function4Display> functionMouseout,
+  Consumer<Channel4Display> channelClick,
+  Consumer<Channel4Display> channelMouseover,
+  Consumer<Channel4Display> channelMouseout,
+  Consumer<Void> outsideClick
 )

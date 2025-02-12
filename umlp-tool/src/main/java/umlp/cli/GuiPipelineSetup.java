@@ -35,7 +35,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static umlp.UMLPToolOptions.DOMAIN;
@@ -60,6 +59,8 @@ public class GuiPipelineSetup {
     }
     // checkSameFilenames(modelPaths);
 
+    GUIDSLMill.init();
+    UMLPTool.initGUIGlobalScope(data.importedSymbolPath);
     for (String guiPathString : modelPathStrings) {
       Path guiModel = Paths.get(guiPathString);
       data.guidsl_reportManagerFactory = new GUIDSLReports(data.outDir.getPath(), data.reportDir.getPath(), data.reportPathOutput, data.hwcPath);
@@ -69,14 +70,12 @@ public class GuiPipelineSetup {
       Reporting.on(report_on);
 
       // parse, add default component ids, create symbol table, check all cocos
-      GUIDSLMill.init();
-      ASTGUICompilationUnit astGui = data.tool.parseGUI(guiModel.toString());
-      Reporting.reportParseInputFile(guiModel.toAbsolutePath(), report_on);
-      GUINodeIdTrafo nodeIdTrafo = new GUINodeIdTrafo();
-      nodeIdTrafo.transform(astGui);
-      // logTrafoExec("GUINodeIdTrafo", astGui);
 
-      IGUIDSLArtifactScope symbolTable = data.tool.createSymbolTable(astGui, Optional.of(guiModel), data.importedSymbolPath);
+      Reporting.reportParseInputFile(guiModel.toAbsolutePath(), report_on);
+      var e = data.tool.createAstWithSymtab(guiModel);
+      ASTGUICompilationUnit astGui = e.getKey();
+      IGUIDSLArtifactScope symbolTable = e.getValue();
+
       data.tool.runDefaultCoCos(astGui);
 
       // print or store symbol table

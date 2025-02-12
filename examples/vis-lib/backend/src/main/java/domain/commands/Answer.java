@@ -17,9 +17,8 @@ public class Answer extends AnswerTOP{
   @Override
   public SimpleResult<Message> doAction() {
     DomainManager.getMessageSure(this.getMGemId());
-    Optional<Message> msg = DomainManager.messageBuilder().content("Mockup fom Backend Service :)").sender(Role.ASSISTANT).receiver(Role.USER).timestamp(LocalDateTime.now()).build();
-
-
+    Message incoming = DomainManager.getMessageSure(this.getMGemId());
+    Optional<Message> msg = DomainManager.messageBuilder().content(String.format("Answer to Message: %s",incoming.getContent())).sender(Role.ASSISTANT).receiver(Role.USER).timestamp(LocalDateTime.now()).build();
     return new SimpleResult<>(this.getId(), msg.get(), "domain.Message");
   }
 }

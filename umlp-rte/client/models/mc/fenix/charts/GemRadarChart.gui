@@ -13,5 +13,6 @@ component GemRadarChart(
     Optional<Double> min,
     Optional<Double> max,
     Optional<Double> stepSize,
+    Optional<Integer> maxLabelLength,
     Boolean showConfig = true
 )
