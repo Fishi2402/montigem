@@ -95,7 +95,8 @@ public class MonitorDecorator extends AbstractDecorator {
                    Joiners.DOT.join(PathUtil.getTestInfrastructurePath(),
                                     "monitor",
                                     "MethodMonitor"));
-    //TODO import GemList and NotificationScope from umlp.backendrte.common
+    cd4C.addImport(res, Joiners.DOT.join(PathUtil.getBackendRTECommonPath(), "GemList"));
+    cd4C.addImport(res, Joiners.DOT.join(PathUtil.getBackendRTECommonPath(), "NotificationScope"));
 
     return res;
   }
