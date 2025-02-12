@@ -61,11 +61,6 @@ public class MonitorDecorator extends AbstractDecorator {
         .build();
 
     var cd4C = getCD4C();
-    cd4C.addImport(res, Joiners.DOT.join(packageName, "*"));
-    cd4C.addImport(res,
-                   Joiners.DOT.join(PathUtil.getTestInfrastructurePath(),
-                                    "monitor",
-                                    "MethodMonitor"));
 
     //constructors
     addSuperConstructors(res, decoratedBuilderClass);
@@ -94,6 +89,14 @@ public class MonitorDecorator extends AbstractDecorator {
                      isVoid);
     });
 
+    //imports
+    cd4C.addImport(res, Joiners.DOT.join(packageName, "*"));
+    cd4C.addImport(res,
+                   Joiners.DOT.join(PathUtil.getTestInfrastructurePath(),
+                                    "monitor",
+                                    "MethodMonitor"));
+    //TODO import GemList and NotificationScope from umlp.backendrte.common
+
     return res;
   }
 
@@ -106,6 +109,7 @@ public class MonitorDecorator extends AbstractDecorator {
 
     //super class
     if (classToMonitor.isPresentCDExtendUsage()) {
+      //TODO use signatures for comparison, since return type Option<? extends T> and Option<T> are not the same but may refer to the same method
       methods.addAll(classToMonitor
                          .getCDExtendUsage()
                          .getSuperclassList()
