@@ -30,10 +30,12 @@ public class TestInfrastructureDecorator extends BEDecorator {
     usedDecorators.clear();
 
     //we don't want to regenerate the classes, so we use a new decorated ast and throw it away afterward
-    ASTCDCompilationUnit dummyAST = UMLPGenerator.createNewCompilationUnit(cdAST);
+    ASTCDCompilationUnit redecoratedCD = UMLPGenerator.createNewCompilationUnit(cdAST);
 
     //we need some information from the backend generation - so we just do it again
-    super.transform(cdAST, dummyAST);
+    Log.info("Rerunning BEDecorator transformation", logName);
+    super.transform(cdAST, redecoratedCD);
+
     ObserverDecorator observerDecorator = getUsedDecorator(ObserverDecorator.class).orElseGet(() -> new ObserverDecorator(
         glex));
     DiagramObserverDecorator diagramObserverDecorator = getUsedDecorator(DiagramObserverDecorator.class).orElseGet(
@@ -49,7 +51,7 @@ public class TestInfrastructureDecorator extends BEDecorator {
     testSetupDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: TestSetupDecorator", logName);
 
-    var monitorDecorator = new MonitorDecorator(glex);
+    var monitorDecorator = new MonitorDecorator(glex, redecoratedCD);
     monitorDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: MonitorDecorator", logName);
 

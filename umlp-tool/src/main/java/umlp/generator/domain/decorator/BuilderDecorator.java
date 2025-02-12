@@ -15,6 +15,7 @@ import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.test_infrastructure.domain.decorator.MonitorDecorator;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.TagLookUp;
 
@@ -67,7 +68,7 @@ public class BuilderDecorator extends AbstractDecorator {
     //add needs-monitor stereotype
     var modifier = builderClass.getModifier();
     var stereotypeValue = UMLPMill.stereoValueBuilder()
-        .setName("needs-monitor")
+        .setName(MonitorDecorator.STEREOTYPE_NEEDS_MONITOR)
         .setContent("true")
         .build();
 

@@ -1,38 +1,38 @@
 package umlp.generator.test_infrastructure.domain.decorator;
 
 import de.monticore.cd.facade.CDModifier;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameterTOP;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDElement;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.se_rwth.commons.Joiners;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
-import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.util.PathUtil;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class MonitorDecorator extends AbstractDecorator {
 
   public static final String TEST_INFRASTRUCTURE_PACKAGE = "test_infrastructure";
   public static final String MONITOR_SUFFIX = "Monitor";
+  public static final String STEREOTYPE_NEEDS_MONITOR = "needs-monitor";
 
-  public MonitorDecorator(GlobalExtensionManagement glex) {
+  private final ASTCDCompilationUnit redecoratedCD;
+
+  public MonitorDecorator(GlobalExtensionManagement glex, ASTCDCompilationUnit redecoratedCD) {
     super(glex);
+    this.redecoratedCD = redecoratedCD;
   }
 
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     var targetPackage = getPackage(origCD, decoratedCD, TEST_INFRASTRUCTURE_PACKAGE);
-
-    var builderDecorator = new BuilderDecorator(glex);
-    var redecoratedCD = UMLPMill
-        .cDCompilationUnitBuilder()
-        .setCDDefinition(origCD.getCDDefinition())
-        .build();
-    builderDecorator.transform(origCD, redecoratedCD);
 
     redecoratedCD
         .getCDDefinition()
@@ -41,14 +41,16 @@ public class MonitorDecorator extends AbstractDecorator {
         .filter(astcdClass -> {
           var modifier = astcdClass.getModifier();
           return modifier.isPresentStereotype() &&
-                 modifier.getStereotype().contains("needs-monitor");
+                 modifier.getStereotype().contains(STEREOTYPE_NEEDS_MONITOR);
         })
-        .forEach(astcdClass -> targetPackage.addCDElement(withOrigin(createMonitor(origCD,
-                                                                                   astcdClass))));
+        .forEach(astcdClass -> targetPackage.addCDElement(withOrigin(createMonitor(astcdClass,
+                                                                                   origCD,
+                                                                                   redecoratedCD))));
   }
 
-  private ASTCDElement createMonitor(ASTCDCompilationUnit origCd,
-      ASTCDClass decoratedBuilderClass) {
+  private ASTCDElement createMonitor(ASTCDClass decoratedBuilderClass,
+      ASTCDCompilationUnit origCd,
+      ASTCDCompilationUnit redecoratedCD) {
     var builderName = decoratedBuilderClass.getName();
     var packageName = getPackageName(origCd, DEFAULT_PACKAGE);
     var res = UMLPMill
@@ -69,12 +71,7 @@ public class MonitorDecorator extends AbstractDecorator {
     addSuperConstructors(res, decoratedBuilderClass);
 
     //override all generated methods
-    //TODO also get the methods of the super classes
-
-    decoratedBuilderClass.getCDMethodList().stream().filter(method -> {
-      var modifier = method.getModifier();
-      return !modifier.isStatic() && !modifier.isFinal() && !modifier.isPrivate();
-    }).forEach(method -> {
+    getMethodsToMonitor(decoratedBuilderClass, redecoratedCD).forEach(method -> {
       var returnType = method.getMCReturnType().printType();
       var name = method.getName();
       var params = method.getCDParameterList();
@@ -98,5 +95,36 @@ public class MonitorDecorator extends AbstractDecorator {
     });
 
     return res;
+  }
+
+  private Set<ASTCDMethod> getMethodsToMonitor(ASTCDClass classToMonitor,
+      ASTCDCompilationUnit decoratedCD) {
+    var methods = classToMonitor.getCDMethodList().stream().filter(method -> {
+      var modifier = method.getModifier();
+      return !modifier.isStatic() && !modifier.isFinal() && !modifier.isPrivate();
+    }).collect(Collectors.toCollection(HashSet::new));
+
+    //super class
+    if (classToMonitor.isPresentCDExtendUsage()) {
+      methods.addAll(classToMonitor
+                         .getCDExtendUsage()
+                         .getSuperclassList()
+                         .stream()
+                         .filter(type -> type instanceof ASTMCQualifiedType)
+                         .map(type -> (ASTMCQualifiedType) type)
+                         .map(type -> type.getMCQualifiedName().getBaseName())
+                         .flatMap(superClassName -> decoratedCD
+                             .getCDDefinition()
+                             .getCDClassesList()
+                             .stream()
+                             .filter(cdClass -> cdClass.getName().equals(superClassName))
+                             .flatMap(superClass -> getMethodsToMonitor(superClass,
+                                                                        decoratedCD).stream()))
+                         .collect(Collectors.toList()));
+    }
+
+    //TODO monitor default methods of interfaces
+
+    return methods;
   }
 }
