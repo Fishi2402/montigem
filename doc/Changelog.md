@@ -3,6 +3,109 @@
 Only big changes are listed. Since there is no semantic versioning for Fenix,
 the changes are tagged with a date.
 
+## Upcoming (if confirmed)
+
+### Changes
+
+For MontiGem users:
+
+- GUI component usage, `@iterate` and `@guard` become `Expression`
+- enable OCL list comprehensions
+- Consequences: enable defining lists, list comprehensions and GUI components as
+  default parameter values and as iterables in `@iterate`. Example: 
+  ```java
+  1  | package foo;
+  2  | import Domain.Car;
+  3  | 
+  4  | page Bar(
+  5  |   GUIViewElement title = @GemText(value = "Good"),
+  6  | 
+  7  |   List<String> textLines = ["Hello", " world!"],
+  8  | 
+  9  |   List<Car> cars = [c | c in Car, c.color.equals("red")]
+  10 | ) {
+  11 |   @iterate(GUIViewElement elem : [@GemText(), @GemButton()]) {
+  12 |     elem;
+  13 |   }
+  14 | }
+  ```
+  * line 5 - allow default GUI components
+  * line 7 - allow default lists
+  * line 9 - allow list comprehensions
+  * line 11 - allow lists in `iterate`
+
+For MontiGem developers:
+
+Changes in GUI DSL AST and corresponding type checks:
+
+- add OCL SetExpressions
+  ```diff
+  grammar GUIDSL extends de.monticore.symbols.OOSymbols,
+                          de.monticore.literals.MCCommonLiterals,
+                          de.monticore.types.MCSimpleGenericTypes,
+                          de.monticore.expressions.CommonExpressions,
+  +                       de.monticore.ocl.SetExpressions
+  ```
+  OCL `SetExpressions` includes `SetEnumeration` (`SetEnumeration` is an
+  `Expression`), which replaces `GUIList`. This enables lists as default
+  parameter values:
+  ```java
+  7  |   List<String> textLines = ["Hello", " world!"],
+  ```
+  `GUIList` is removed from GUI DSL:
+  ```diff
+  -  GUIList = "[" (GUIArgValue || ",")* "]";
+  ```
+  `SetExpressions` includes `SetComprehension`, which enables following:
+  ```java
+  9  |   List<Car> cars = [c | c in Car, c.color.equals("red")]
+  ```
+
+-   `GUIComponent`, `GUIIterate`, `GUIGuard` implement `Expression`:
+    ```diff
+    -  scope GUIComponent =
+    +  scope GUIComponent implements Expression =
+        id:GUIVariableDeclaration? "@"
+        Name@GUIComponentDeclaration GUINamedArgs
+      ;
+
+    -  scope (non_exporting) GUIIterate =
+    +  scope (non_exporting) GUIIterate implements Expression =
+        id:GUIVariableDeclaration? "@iterate" "(" IterateControl ")" GUIBlock
+      ;
+
+    -  GUIGuard =
+    +  GUIGuard implements Expression =
+        id:GUIVariableDeclaration? "@guard" "(" condition:Expression ")"
+          thenStatement:GUIBlock
+        ("else"
+          elseStatement:GUIBlock
+        )?
+      ;
+    ```
+
+    This change enables following:
+    ```java
+    5  |   GUIViewElement title = @GemText(value = "Good"),
+    ```
+    ```java
+    11 |   @iterate(GUIViewElement elem : [@GemText(), @GemButton()]) {
+    ```
+
+    Since `GUIComponent`, `GUIIterate`, `GUIGuard` and `GUIList` are currently
+    used in places, where an `Expression` is being used, the corresponding
+    Production rule is removed:
+    ```diff
+    -  GUIArgValue = Expression | GUIComponent | GUIGuard | GUIIterate | GUIList;
+
+    -  GUINamedArg = Name@GUIParam "=" GUIArgValue;
+    +  GUINamedArg = Name@GUIParam "=" Expression;
+
+      GUIAdapt =
+    -    position:["before" | "after" | "replace"] Name@Variable ":" GUIArgValue;
+    +    position:["before" | "after" | "replace"] Name@Variable ":" Expression;
+    ```
+
 ## 2025-01-15
 
 ### Additions
