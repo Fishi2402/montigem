@@ -176,4 +176,17 @@ public class TestLoading extends AbstractLoadingTestsE2ETest {
       assertEquals(Boolean.FALSE,page.evaluate(isLoadedPersonFunction,id.intValue()));
     });
   }
+
+  @Test
+  void testInit(Page page) {
+    // go to page to load persons
+    navAndWait(page, "/test_load_all/InitPersons");
+    page.waitForLoadState(LoadState.NETWORKIDLE);
+
+    navAndWait(page, "/test_load_all/InitPersonsAndTextValue");
+    page.waitForLoadState(LoadState.NETWORKIDLE);
+
+    // check text value initialized
+    assertEquals(1, page.getByText("foo").all().size());
+  }
 }
