@@ -14,7 +14,6 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.MCFatalError;
 import org.gradle.internal.impldep.org.junit.Assert;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import umlp.generator.gui.GUIGeneratorUtil;

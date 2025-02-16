@@ -25,11 +25,11 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import umlp.AbstractUMLPTest;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.UMLSetDefaultsTrafo;
 import umlp.generator.domain.decorator.GenService;
-import umlp.AbstractUMLPTest;
 
 import java.util.Optional;
 

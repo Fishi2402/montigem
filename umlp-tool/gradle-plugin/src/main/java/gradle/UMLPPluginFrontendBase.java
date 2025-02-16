@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -157,25 +158,18 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
 
     if (local) {
       Project umlpRteClientProject = project.findProject(":umlp-rte:client");
-      boolean createGuiSymbolsPresent = !umlpRteClientProject.getTasksByName("createGuiSymbols", false).isEmpty();
-      boolean createCDSymbolsPresent = !umlpRteClientProject.getTasksByName("createCDSymbols", false).isEmpty();
-      if (createCDSymbolsPresent && createGuiSymbolsPresent) {
-        SerializeGUISymbolsTask createGuiSymbols = (SerializeGUISymbolsTask) umlpRteClientProject.getTasks().getByName("createGuiSymbols");
-        SerializeCDSymbolsTask createCDSymbols = (SerializeCDSymbolsTask) umlpRteClientProject.getTasks().getByName("createCDSymbols");
-        guiGenTask.get().dependsOn(createGuiSymbols, createCDSymbols);
-        guiGenTask.get().getSymbolDir().from(createGuiSymbols.getOutput(), createCDSymbols.getOutput());
+      boolean symbolJarTaskPresent = !umlpRteClientProject.getTasksByName("symbolJar", false).isEmpty();
+      if (symbolJarTaskPresent) {
+        guiGenTask.get().dependsOn(umlpRteClientProject.getTasks().getByName("symbolJar"));
 
         TaskCollection<Task> rteGenTasks = umlpRteClientProject.getTasks().matching(t -> t.getName().startsWith("gen_"));
         TaskCollection<Task> rteCopyTasks = umlpRteClientProject.getTasks().matching(t -> t.getName().startsWith("copy_"));
         guiGenTask.get().dependsOn(rteGenTasks, rteCopyTasks);
       }
     }
-    else {
-      Configuration guiLib = project.getConfigurations().getByName(GUI_LIB_NAME);
-      guiGenTask.get().getSymbolPath().from(
-          project.provider(() -> guiLib.getFiles())
-      );
-    }
+
+    Configuration guiLib = project.getConfigurations().getByName(GUI_LIB_NAME);
+    guiGenTask.get().getSymbolDir().from(guiLib.getFiles());
 
     return guiGenTask;
   }
@@ -249,13 +243,20 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
 
     // Configurations
     project.getConfigurations().register(GUI_TYPES_NAME);
-    // Add the guidsl dependency as non-transitive (while we use the default-types jar, the
-    // dependencies are the main guidsl dependencies)
-    project.getDependencies().add(GUI_TYPES_NAME, ((ModuleDependency) project.getDependencies().module("de.monticore.lang:guidsl:" + getStringProjectProperty(project, "mc_version", "") + ":default-types")).
-        setTransitive(false));
+    project.getDependencies().add(GUI_TYPES_NAME, "de.monticore.lang:guidsl:" + getStringProjectProperty(project, "mc_version", "") + ":default-types");
+    project.getConfigurations().register(GUI_LIB_NAME);
 
-    if (!local) {
-      project.getConfigurations().register(GUI_LIB_NAME);
+    if (local) {
+      if(!project.getPath().equals(":umlp-rte:client")) {
+        project.getConfigurations().getByName(GUI_LIB_NAME).getDependencies().add(
+            project.getDependencies().project(Map.of(
+                "path", ":umlp-rte:client",
+                "configuration", "localGuiLib",
+                "transitive", false
+            ))
+        );
+      }
+    } else {
       project.getDependencies().add(GUI_LIB_NAME, "umlp.umlp-rte:client:" + getStringProjectProperty(project, "mc_version", ""));
     }
   }
