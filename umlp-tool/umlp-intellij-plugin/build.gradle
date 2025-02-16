@@ -1,0 +1,71 @@
+plugins {
+  id 'java'
+  id 'de.monticore.language-server' version "$mclsg_version"
+  id 'org.jetbrains.intellij' apply(false) // version defined in umlp-tool
+}
+
+def shouldBuildIntelliJPlugin = ("true").equals(getProperty('buildIntelliJPlugin'))
+
+if(shouldBuildIntelliJPlugin) {
+  apply plugin: "org.jetbrains.intellij"
+  intellij{
+    version = "2024.2"
+    plugins.set(["com.redhat.devtools.lsp4ij:0.7.0"])
+  }
+}
+
+java {
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(17)
+  }
+}
+
+repositories {
+  if (("true").equals(getProperty('useLocalRepo'))) {
+    mavenLocal()
+  }
+  maven {
+    credentials.username mavenUser
+    credentials.password mavenPassword
+    url repo
+  }
+  mavenCentral()
+}
+
+def languageServerJarFile = parent.tasks.packUMLPWithGUILanguageServer.getArchiveFile().get().getAsFile()
+
+dependencies {
+  implementation "de.monticore.language-server.plugin:monticore-language-server-runtime-intellij:$mclsg_version"
+}
+
+task autoconfigure(type: de.mclsg.task.AutoconfigureTask) {
+  mclsgAggregation {
+    languageAggregationName = "UMLPWithGUI"
+    targetPackage = "umlp_with_gui"
+    member("UMLP", "umlp", true)
+    member("de.monticore.GUIDSL", "gui", false)
+    modelPath = ["${parent.projectDir}/src/main/grammars"]
+    if(shouldBuildIntelliJPlugin) {
+      including(de.mclsg.TaskTypes.INTELLIJ_PLUGIN)
+    }
+    excluding(de.mclsg.TaskTypes.LANGUAGE_SERVER)
+    languageServerJar(languageServerJarFile)
+  }
+}
+
+if(shouldBuildIntelliJPlugin) {
+  def lspWorkdir = file("../../").getAbsolutePath()
+
+  runIde {
+    args += lspWorkdir
+  }
+
+  // TODO: can not override default starting behaviour
+  task runLsp(type: JavaExec) {
+    classpath languageServerJarFile
+    mainClass.set("umlp_with_gui._lsp.language_aggregation.UMLPWithGUILanguageAggrServerCLI")
+    args("-port", "3000", "-r", "-mp", lspWorkdir, "-mup")
+    environment("LSP_SYSTEM_EXIT", "false")
+    dependsOn parent.tasks.packUMLPWithGUILanguageServer
+  }
+}

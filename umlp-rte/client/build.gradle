@@ -13,6 +13,7 @@ repositories {
 
 configurations {
   guiDefaultTypes
+  localGuiLib
 }
 
 dependencies {
@@ -180,6 +181,7 @@ jar.dependsOn(symbolJar)
 
 artifacts {
   archives symbolJar
+  localGuiLib symbolJar
 }
 
 publishing {

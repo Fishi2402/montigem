@@ -6,7 +6,6 @@ import de.monticore.symboltable.serialization.json.JsonElement;
 import gradle.UMLPPluginBase;
 import gradle.stat.GradleTaskStatistic;
 import gradle.stat.TaskStatData;
-import org.apache.commons.io.IOUtils;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.tasks.Input;
@@ -15,20 +14,13 @@ import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.PathSensitive;
 import org.gradle.api.tasks.PathSensitivity;
-import umlp.module_system.ModuleMetadata;
 import umlp.module_system.TaskModuleMetadata;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 public abstract class UMLPSingleFileTask extends MCSingleFileTask implements GradleTaskStatistic {
   protected final TaskStatData statdata = new TaskStatData("SingleFile");

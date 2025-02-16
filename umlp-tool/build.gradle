@@ -11,20 +11,20 @@ plugins {
   id 'java-gradle-plugin'
 
   id 'de.monticore.language-server' version "$mclsg_version"
+  // this is needed for the intellij plugin, even though it has its own gradle subproject
   id 'org.jetbrains.intellij' version '1.13.3' apply(false)
   id "io.github.themrmilchmann.ecj" version "0.2.0"
 }
 
-def shouldBuildIntelliJPlugin = ("true").equals(getProperty('buildIntelliJPlugin'))
 def shouldBuildVscodePlugin = ("true").equals(getProperty('buildVscodePlugin'))
-
-if(shouldBuildIntelliJPlugin) {
-  apply plugin: "org.jetbrains.intellij"
-  intellij.version = "2022.2"
-}
 
 configurations {
   guiDefaultTypes
+
+  compileOnly {
+    exclude(group: 'org.slf4j', module: 'slf4j-api')
+  }
+
 }
 
 dependencies {
@@ -71,9 +71,6 @@ repositories {
     url repo
   }
   mavenCentral()
-  if(shouldBuildIntelliJPlugin) {
-    maven { url 'https://www.jitpack.io' }
-  }
  }
 
 test {
@@ -103,49 +100,12 @@ task autoconfigure(type: AutoconfigureTask) {
     member("UMLP", "umlp", true)
     member("de.monticore.GUIDSL", "gui", false)
     modelPath = ["$projectDir/src/main/grammars"]
-    if(shouldBuildIntelliJPlugin) {
-      including(TaskTypes.INTELLIJ_PLUGIN)
-    }
     if(shouldBuildVscodePlugin){
       including(TaskTypes.VSCODE_PLUGIN)
     }
   }
 }
 tasks.build.dependsOn tasks.named('autoconfigure')
-
-task printConfigs(){
-  doLast{
-    configurations.each {
-      if(it.name.equals("grammarSymbolDependencies") && it.canBeResolved){
-        println("${it.name} , resolved: ${it.canBeResolved}, consumed: ${it.canBeConsumed}")
-        try{
-          it.resolve().each{
-            println(it)
-          }
-        }catch(Exception e){
-          e.printStackTrace()
-        }
-
-      }
-    }
-  }
-}
-
-if(shouldBuildIntelliJPlugin) {
-  def lspWorkdir = file("../examples/").getAbsolutePath()
-
-  runIde {
-    environment.put("LSP_PORT", "3000")
-    args += lspWorkdir
-  }
-
-tasks.register('runLsp', JavaExec) {
-    classpath tasks.packUMLPWithGUILanguageServer.archiveFile.get().asFile
-    args("-port", "3000", "-r", "-mp", lspWorkdir, "-mup")
-    environment("LSP_SYSTEM_EXIT", "false")
-    dependsOn tasks.packUMLPWithGUILanguageServer
-  }
-}
 
 if(shouldBuildVscodePlugin) {
   task runVscodePluginMultiproject(type: JavaExec) {

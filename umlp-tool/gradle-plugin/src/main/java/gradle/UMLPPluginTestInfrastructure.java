@@ -16,7 +16,6 @@ import org.gradle.api.tasks.compile.AbstractCompile;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 import static gradle.UMLPPluginFrontendBase.GUI_LIB_NAME;

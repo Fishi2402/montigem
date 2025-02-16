@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static umlp.generator.domain.decorator.commands.CommandDecorator.DE_SER;
 
 public class AggregatedCommandDeSerDecorator extends AbstractDecorator {
 
