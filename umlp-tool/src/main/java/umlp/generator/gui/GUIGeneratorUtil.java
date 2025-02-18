@@ -278,6 +278,9 @@ public class GUIGeneratorUtil {
   }
 
   public final boolean isEnumType(SymTypeExpression type) {
+    if (!type.hasTypeInfo()) {
+      return false;
+    }
     Optional<TypeSymbol> symb = type.getTypeInfo().getEnclosingScope().resolveType(type.getTypeInfo().getName());
     if (symb.isPresent()) {
       if (OOSymbolsMill.typeDispatcher().isOOSymbolsOOType(symb.get())) {
