@@ -94,6 +94,9 @@ subprojects {
       url repo
     }
     mavenCentral()
+    maven {
+      url = "https://repo.gradle.org/gradle/libs-releases/"
+    }
   }
 
   tasks.withType(JavaCompile).configureEach {
