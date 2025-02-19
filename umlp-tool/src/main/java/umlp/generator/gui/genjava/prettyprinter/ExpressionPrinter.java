@@ -39,10 +39,10 @@ public abstract class ExpressionPrinter extends GUIDSLFullPrettyPrinter {
   protected void resetPrinter() {
     allIgnore = ignore;
 
-    GUIDSLPrettyPrinter gUIDSL = new GUIList2JavaConverter(getPrinter(), printComments);
-    getTraverser().setGUIDSLHandler(gUIDSL);
+    GUIList2JavaConverter gUIDSL = new GUIList2JavaConverter(getPrinter(), printComments);
+    getTraverser().setSetExpressionsHandler(gUIDSL);
     getTraverser().getGUIDSLVisitorList().clear();
-    getTraverser().add4GUIDSL(gUIDSL);
+    getTraverser().add4SetExpressions(gUIDSL);
   }
 
   @Override

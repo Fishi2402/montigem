@@ -7,7 +7,6 @@ import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsTrav
 import de.monticore.expressions.expressionsbasis.ExpressionsBasisMill;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.guidsl.GUIDSLMill;
-import de.monticore.guidsl._ast.ASTGUIArgValue;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.types.check.SymTypeExpression;
@@ -24,8 +23,8 @@ public class GUIArgValueReplaceVisitor extends GUINameExpressionReplaceVisitor {
 
   protected GUIDSLTraverser traverser;
 
-  protected ASTGUIArgValue getterExpression;
-  protected Optional<ASTGUIArgValue> setterExpression = Optional.empty();
+  protected ASTExpression getterExpression;
+  protected Optional<ASTExpression> setterExpression = Optional.empty();
 
   protected Optional<ExpressionReplacement> setterReplacement = Optional.empty();
   protected boolean usesBuilder = false;
@@ -54,14 +53,6 @@ public class GUIArgValueReplaceVisitor extends GUINameExpressionReplaceVisitor {
     // do not throw error
   }
 
-  public ASTExpression getGetterExpression() {
-    return getterExpression.getExpression();
-  }
-
-  public Optional<ASTExpression> getSetterExpression() {
-    return setterExpression.map(ASTGUIArgValue::getExpression);
-  }
-
   public boolean argNeedsGetter() {
     return needsGetter;
   }
@@ -86,41 +77,40 @@ public class GUIArgValueReplaceVisitor extends GUINameExpressionReplaceVisitor {
     needsGetter = true;
 
     // TODO AGe: also when a constructor like call is present
-    if (arg.getGUIArgValue().isPresentGUIList()) {
+    if (GUIDSLMill.typeDispatcher().isSetExpressionsASTSetEnumeration(arg.getExpression())) {
       needsOwnParam = true;
       return;
     }
 
-    if (arg.getGUIArgValue().isPresentExpression()) {
-      getterExpression = arg.getGUIArgValue().deepClone();
-      getterExpression.accept(getTraverser());
-      Collections.reverse(replacements);
-      for (ExpressionReplacement nr : replacements) {
-        ExpressionReplaceVisitor visitor = new ExpressionReplaceVisitor();
-        visitor.transform(nr.getHolder(), nr.getOldValue(), nr.getNewValue());
-      }
-
-      replacements = new ArrayList<>();
-
-      setterExpression = Optional.of(arg.getGUIArgValue().deepClone());
-      setterExpression.get().accept(getTraverser());
-      Collections.reverse(replacements);
-      for (int i = 0; i < replacements.size(); ++i) {
-        ExpressionReplacement nr = replacements.get(i);
-        if (i == replacements.size() - 1 && setterReplacement.isPresent()) {
-          nr = setterReplacement.get();
-        }
-        ExpressionReplaceVisitor visitor = new ExpressionReplaceVisitor();
-        visitor.transform(nr.getHolder(), nr.getOldValue(), nr.getNewValue());
-      }
+    getterExpression = arg.getExpression().deepClone();
+    getterExpression.accept(getTraverser());
+    Collections.reverse(replacements);
+    for (ExpressionReplacement nr : replacements) {
+      ExpressionReplaceVisitor visitor = new ExpressionReplaceVisitor();
+      visitor.transform(nr.getHolder(), nr.getOldValue(), nr.getNewValue());
     }
+
+    replacements = new ArrayList<>();
+
+    setterExpression = Optional.of(arg.getExpression().deepClone());
+    setterExpression.get().accept(getTraverser());
+    Collections.reverse(replacements);
+    for (int i = 0; i < replacements.size(); ++i) {
+      ExpressionReplacement nr = replacements.get(i);
+      if (i == replacements.size() - 1 && setterReplacement.isPresent()) {
+        nr = setterReplacement.get();
+      }
+      ExpressionReplaceVisitor visitor = new ExpressionReplaceVisitor();
+      visitor.transform(nr.getHolder(), nr.getOldValue(), nr.getNewValue());
+    }
+
   }
 
   @Override
   public void visit(ASTFieldAccessExpression node) {
     if (potentialHolder != null) {
       if (potentialHolder.getValue().equals(node)) {
-        if (potentialHolder.getKey() instanceof ASTGUIArgValue) {
+        if (GUIDSLMill.typeDispatcher().isExpressionsBasisASTExpression(potentialHolder.getKey())) {
           Supplier<ASTExpression> newValue = createFieldSetterSupplier(node);
           setterReplacement = Optional.of(new ExpressionReplacement(
               potentialHolder.getKey(), potentialHolder.getValue(), newValue));

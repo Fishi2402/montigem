@@ -33,11 +33,6 @@ public class GUIVariabilityHandlerTest extends AbstractGUIVariabilityTest {
                     Assert.assertEquals(actualContent.get(i).getGUIIterate()
                             .getId().getName(), expectedContent.get(i).getValue());
                     break;
-                case COMPONENT:
-                    Assert.assertTrue(actualContent.get(i).isPresentGUIComponent());
-                    Assert.assertEquals(actualContent.get(i).getGUIComponent()
-                            .getId().getName(), expectedContent.get(i).getValue());
-                    break;
             }
         }
     }
