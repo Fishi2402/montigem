@@ -60,6 +60,8 @@ if(shouldBuildIntelliJPlugin) {
     args += lspWorkdir
   }
 
+  jar.dependsOn parent.tasks.packUMLPWithGUILanguageServer
+
   // TODO: can not override default starting behaviour
   task runLsp(type: JavaExec) {
     classpath languageServerJarFile

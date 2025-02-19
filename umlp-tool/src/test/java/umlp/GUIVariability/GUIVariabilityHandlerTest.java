@@ -3,13 +3,14 @@ package umlp.GUIVariability;
 import de.monticore.guidsl._ast.ASTGUIBlockContent;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.se_rwth.commons.logging.Log;
-import org.gradle.internal.impldep.org.testng.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GUIVariabilityHandlerTest extends AbstractGUIVariabilityTest {
 
@@ -19,18 +20,18 @@ public class GUIVariabilityHandlerTest extends AbstractGUIVariabilityTest {
     }
 
     public void checkGUIBlock(List<AbstractMap.SimpleEntry<ContentType, String>> expectedContent, List<ASTGUIBlockContent> actualContent){
-        Assert.assertEquals(expectedContent.size(), actualContent.size());
+        assertEquals(expectedContent.size(), actualContent.size());
 
         for (int i = 0; i < expectedContent.size(); i++) {
             switch (expectedContent.get(i).getKey()){
                 case GUARD:
-                    Assert.assertTrue(actualContent.get(i).isPresentGUIGuard());
-                    Assert.assertEquals(actualContent.get(i).getGUIGuard()
+                    assertTrue(actualContent.get(i).isPresentGUIGuard());
+                    assertEquals(actualContent.get(i).getGUIGuard()
                             .getId().getName(), expectedContent.get(i).getValue());
                     break;
                 case ITERATE:
-                    Assert.assertTrue(actualContent.get(i).isPresentGUIIterate());
-                    Assert.assertEquals(actualContent.get(i).getGUIIterate()
+                    assertTrue(actualContent.get(i).isPresentGUIIterate());
+                    assertEquals(actualContent.get(i).getGUIIterate()
                             .getId().getName(), expectedContent.get(i).getValue());
                     break;
             }
@@ -47,10 +48,10 @@ public class GUIVariabilityHandlerTest extends AbstractGUIVariabilityTest {
         assertNoErrors();
         assertWarnings("0x45c0100");
 
-        Assert.assertEquals(productAST.getMCPackageDeclaration().getMCQualifiedName().toString(), "guivariability");
-        Assert.assertEquals(productAST.getComponentName(),"BaseModel");
-        Assert.assertEquals(productAST.getMCImportStatementList().size(), 2);
-        Assert.assertEquals(productAST.getMCImportStatementList().stream().filter(
+        assertEquals(productAST.getMCPackageDeclaration().getMCQualifiedName().toString(), "guivariability");
+        assertEquals(productAST.getComponentName(),"BaseModel");
+        assertEquals(productAST.getMCImportStatementList().size(), 2);
+        assertEquals(productAST.getMCImportStatementList().stream().filter(
                 i -> i.getQName().equals("guivariability.Text") || i.getQName().equals("guivariability.Button")
         ).count(), 2);
     }
@@ -65,7 +66,7 @@ public class GUIVariabilityHandlerTest extends AbstractGUIVariabilityTest {
         assertNoErrors();
         assertNoWarnings();
 
-        Assert.assertEquals(productAST.getGUIComponentDeclaration().getGUIBlock()
+        assertEquals(productAST.getGUIComponentDeclaration().getGUIBlock()
                 .getGUIBlockContentList().size(), 0);
     }
 

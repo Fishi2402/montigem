@@ -8,7 +8,6 @@ plugins {
   id 'maven-publish'
   id 'de.monticore.generator' version "$mc_version"
   id 'com.github.johnrengelman.shadow' version "$shadow_plugin_version"
-  id 'java-gradle-plugin'
 
   id 'de.monticore.language-server' version "$mclsg_version"
   // this is needed for the intellij plugin, even though it has its own gradle subproject
@@ -20,16 +19,10 @@ def shouldBuildVscodePlugin = ("true").equals(getProperty('buildVscodePlugin'))
 
 configurations {
   guiDefaultTypes
-
-  compileOnly {
-    exclude(group: 'org.slf4j', module: 'slf4j-api')
-  }
-
 }
 
 dependencies {
   implementation group: 'de.monticore.lang', name: 'ocl', version: mc_version
-  implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
   implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version
   implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
   implementation group: 'de.monticore', name: 'class2mc', version: mc_version
@@ -46,12 +39,16 @@ dependencies {
   implementation group: 'org.jsweet', name: 'jsweet-core', version: "6.3.0"
   implementation group: 'de.rwth.se.umlp.jsweet', name: 'jsweet-transpiler', version: '3.2.0-UMLP-SNAPSHOT'
 
+  // LSP dependencies
+  implementation 'org.slf4j:slf4j-api:1.7.7'
+  implementation 'ch.qos.logback:logback-classic:1.5.16'
+  implementation 'org.gradle:gradle-tooling-api:7.6'
+
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit_version
   testImplementation group: 'com.github.javaparser', name: 'javaparser-symbol-solver-core', version: javaparser_version
   testImplementation group: 'org.mockito', name: 'mockito-inline', version: mockito_version
   testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.11.2")
-  testRuntimeOnly gradleApi()
 
   grammar("de.monticore.lang:cd4analysis:$mc_version")
   grammar("de.monticore:monticore-grammar:$mc_version")
@@ -71,6 +68,9 @@ repositories {
     url repo
   }
   mavenCentral()
+  maven {
+    url = "https://repo.gradle.org/gradle/libs-releases/"
+  }
  }
 
 test {
@@ -106,6 +106,12 @@ task autoconfigure(type: AutoconfigureTask) {
   }
 }
 tasks.build.dependsOn tasks.named('autoconfigure')
+
+packUMLPWithGUILanguageServer{
+  exclude("org/apache/log4j/**")
+  exclude("jsweet/**")
+  exclude("standalone/**")
+}
 
 if(shouldBuildVscodePlugin) {
   task runVscodePluginMultiproject(type: JavaExec) {
@@ -176,9 +182,6 @@ shadowJar { // all in one jar
 
 jar.dependsOn(sourcesJar)
 // jar.dependsOn(shadowJar)
-
-gradlePlugin {
-}
 
 /////////////////////////   Deployment  //////////////////////////////////
 

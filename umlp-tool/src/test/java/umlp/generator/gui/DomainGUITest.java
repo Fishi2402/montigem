@@ -12,7 +12,6 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.ParseException;
-import org.gradle.internal.impldep.org.junit.Assert;
 import umlp.TagRelated;
 import umlp.UMLPMill;
 import umlp.UMLPTool;
@@ -21,6 +20,8 @@ import umlp._symboltable.UMLPSymbols2Json;
 
 import java.io.File;
 import java.nio.file.Paths;
+
+import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class DomainGUITest extends AbstractGUITest {
 
@@ -66,7 +67,7 @@ public abstract class DomainGUITest extends AbstractGUITest {
       TagRepository.clearTags(); // Make sure to unload all previous tags from earlier runs
       TagRelated.doStoreTagStereos(domainAST, dummyTool, domainSym, cmd);
     } catch (ParseException e) {
-      Assert.fail();
+      fail();
     }
 
     GUIDSLMill.init();
