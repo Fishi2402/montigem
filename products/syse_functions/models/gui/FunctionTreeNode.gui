@@ -1,0 +1,41 @@
+package gui;
+
+import FunctionStructure4Fenix.Function;
+import FunctionStructure4Fenix.Port;
+
+import mc.fenix.basic.GemText;
+import mc.fenix.arrange.GemTreeNode;
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemCheckbox;
+import mc.fenix.arrange.GemRow;
+
+component FunctionTreeNode(Function function, List<Function> selectedFunctions, List<Port> selectedPorts) {
+  @GemTreeNode(
+  content =
+    @GemRow(contents = [
+      @GemText(value = function.name),
+      @GemCheckbox(checked = isSelectedFunction(function), leftClick = toggleSelectedFunction(function)),
+      @GemButton(label = "Go to Function", leftClick = goToFunctionDetails(function))
+    ]),
+  children = [
+    @GemTreeNode(
+      content = @GemText(value = "Subfunctions"),
+      children = [
+        @iterate(Function f: function.subFunction) {
+          @FunctionTreeNode(function = f);
+        }
+      ]),
+    @GemTreeNode(content = @GemText(value = "In Ports"),
+      children = [
+        @iterate(Port p: function.in) {
+          @PortTreeNode(port = p, selectedFunctions = selectedFunctions, selectedChannels = selectedChannels, selectedPorts = selectedPorts);
+        }
+      ]),
+    @GemTreeNode(content = @GemText(value = "Out Ports"),
+      children = [
+        @iterate(Port p: function.out) {
+          @PortTreeNode(port = p, selectedFunctions = selectedFunctions, selectedChannels = selectedChannels, selectedPorts = selectedPorts);
+        }
+      ])
+  ]);
+}
