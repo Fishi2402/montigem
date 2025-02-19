@@ -14,12 +14,12 @@ import FunctionStructure4Fenix.Value;
 import FunctionStructure4Fenix.Channel;
 
 import mc.fenix.functiondisplay.FunctionDisplay;
-import mc.fenix.functiondisplay.FunctionStructure4Fenix.Funktion4Display;
+import mc.fenix.functiondisplay.FunctionStructure4Fenix.Function4Display;
 
 import mc.fenix.charts.GemLineChart;
 import mc.fenix.charts.GemLineChartTypes.GemLineChartData;
 
-page FunctionDetail (Function f, Channel selectedChannel) {
+page FunctionDetail (Function f, List<Function> selectedFunctions, List<Port> selectedPorts, List<Channel> selectedChannels, Channel selectedChannel) {
   @GemRow(width = "100%", colGap="10px", components = [
     @Navigation(),
     @GemRow(height = "50%", components = [
@@ -29,7 +29,7 @@ page FunctionDetail (Function f, Channel selectedChannel) {
             @guard(f.owner != null) {
               @GemRow(components = [
                 owningFunctionButton@GemButton(label = "Back To Owning Function \"" + f.owner.name + "\"",
-                leftClick = goToFunctionDetailsSuper(f))
+                leftClick = goToFunctionDetails(f))
               ]);
             },
             @GemRow(width = "100%", colGap="10px", components = [
@@ -77,13 +77,18 @@ page FunctionDetail (Function f, Channel selectedChannel) {
                     @GemButton(label = "Details", leftClick = goToFunctionDetailsSub(sf))
                   ]);
                 }
-              ])
+              ]),
+              @GemColumn(width = "auto", component = @FunctionTreeNode(function = f))
             ]),
             @GemRow(width = "100%", component =
               @FunctionDisplay(data = transformData(f),
                 functionClick = goToFunction4DisplayDetails(),
                 outsideClick = goToFunctionDetailsSuper2(f),
-                channelClick = selectChannel()
+                channelClick = toggleChannelSelection(),
+                portClick = togglePortSelection(),
+                selectedFunctions = getSelectedFunctions4Display(),
+                selectedChannels = getSelectedChannels4Display(),
+                selectedPorts = getSelectedPorts4Display()
               )
             ),
             @GemRow(height = "50%", components = [

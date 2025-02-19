@@ -1,0 +1,19 @@
+package gui;
+
+import FunctionStructure4Fenix.Function;
+import FunctionStructure4Fenix.Port;
+import FunctionStructure4Fenix.Channel;
+
+import mc.fenix.basic.GemText;
+import mc.fenix.arrange.GemTreeNode;
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemCheckbox;
+import mc.fenix.arrange.GemRow;
+
+component ChannelTreeNode(Channel channel, List<Function> selectedFunctions, List<Channel> selectedChannels, List<Port> selectedPorts) {
+  @GemTreeNode(content = @GemText(value = "Channel"), children = [
+    @iterate(Port p: channel.ports) {
+      @PortTreeNode(port = p, selectedFunctions = selectedFunctions, selectedChannels = selectedChannels, selectedPorts = selectedPorts);
+    }
+  ]);
+}
