@@ -34,6 +34,8 @@ import de.se_rwth.commons.logging.Log;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
@@ -230,35 +232,53 @@ public class DSL2CD {
     generatorEngine.generate(CD2JavaTemplates.CLASS, new File("dsl2cd/DSL2Domain.java").toPath(), dsl2domainClass, CD4CodeMill.cDPackageBuilder().setMCQualifiedName(CD4CodeMill.mCQualifiedNameBuilder().setPartsList(Arrays.asList("dsl2cd")).build()).build());
   }
 
-  private static List<ASTCDCompilationUnit> loadAdditionalCDs(File additional, ForgivingParser parser, List<String> dslsToLoad) throws IOException {
+
+  static List<ASTCDCompilationUnit> loadAdditionalCDs(File additional, ForgivingParser parser, List<String> dslsToLoad) throws IOException {
     List<ASTCDCompilationUnit> cds = new ArrayList<>();
-    Files.walkFileTree(additional.toPath(), new SimpleFileVisitor<>() {
-      @Override
-      public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-        if (file.getFileName().toString().endsWith(".cd")) {
 
+    Path initialPath = additional.toPath();
 
-          var astOpt = parser.parse(new BrokenStereoFixReader(Files.newBufferedReader(file.toAbsolutePath())));
-          if (parser.hasErrors() || astOpt.isEmpty()) {
-            throw new IllegalStateException("Could not parse file: " + file);
-          }
-          String x = astOpt.get().getCDPackageList().isEmpty() ? astOpt.get().getCDDefinition().getName() : Joiners.DOT.join(astOpt.get().getCDPackageList()) + "." + astOpt.get().getCDDefinition().getName();
+    FileSystem fs = null;
 
-          if (!dslsToLoad.contains(x.toLowerCase())) {
-            return FileVisitResult.CONTINUE;
-          }
-
-          cds.add(astOpt.get());
-          var as = CD4CodeMill.scopesGenitorDelegator().createFromAST(astOpt.get());
-
-          // Somewhat cursed "imports" to other CDs
-          CD4CodeMill.globalScope().addAdaptedCDTypeSymbolResolver(new AdaptedICDTypeSymbolResolver(as));
-
-        }
-        return FileVisitResult.CONTINUE;
+    try {
+      // In case the file is a jar, load it as a file system
+      if (additional.getName().endsWith(".jar")) {
+        URI uri = new URI("jar", additional.toURI().toString(), null);
+        fs = FileSystems.newFileSystem(uri, new HashMap<>());
+        initialPath = fs.getPath("/");
       }
-    });
-    return cds;
+      Files.walkFileTree(initialPath, new SimpleFileVisitor<>() {
+        @Override
+        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+          if (file.getFileName().toString().endsWith(".cd")) {
+
+            var astOpt = parser.parse(new BrokenStereoFixReader(Files.newBufferedReader(file.toAbsolutePath())));
+            if (parser.hasErrors() || astOpt.isEmpty()) {
+              throw new IllegalStateException("Could not parse file: " + file);
+            }
+            String x = astOpt.get().getCDPackageList().isEmpty() ? astOpt.get().getCDDefinition().getName() : Joiners.DOT.join(astOpt.get().getCDPackageList()) + "." + astOpt.get().getCDDefinition().getName();
+
+            if (!dslsToLoad.contains(x.toLowerCase())) {
+              return FileVisitResult.CONTINUE;
+            }
+
+            cds.add(astOpt.get());
+            var as = CD4CodeMill.scopesGenitorDelegator().createFromAST(astOpt.get());
+
+            // Somewhat cursed "imports" to other CDs
+            CD4CodeMill.globalScope().addAdaptedCDTypeSymbolResolver(new AdaptedICDTypeSymbolResolver(as));
+
+          }
+          return FileVisitResult.CONTINUE;
+        }
+      });
+      return cds;
+    } catch (URISyntaxException e) {
+      throw new RuntimeException(e);
+    } finally {
+      if (fs != null)
+        fs.close();
+    }
   }
 
   static List<String> primitives = Arrays.asList("String", "boolean", "int", "long", "short", "double", "float");
