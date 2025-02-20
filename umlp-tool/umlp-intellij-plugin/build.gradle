@@ -61,6 +61,7 @@ if(shouldBuildIntelliJPlugin) {
   }
 
   jar.dependsOn parent.tasks.packUMLPWithGUILanguageServer
+  processIntelliJPluginSourceSetResources.dependsOn generateUMLPWithGUIIntellijPlugin
 
   // TODO: can not override default starting behaviour
   task runLsp(type: JavaExec) {
