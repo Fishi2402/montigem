@@ -3,7 +3,7 @@
 Only big changes are listed. Since there is no semantic versioning for Fenix,
 the changes are tagged with a date.
 
-## Upcoming (if confirmed)
+## Upcoming
 
 ### Changes
 
@@ -33,6 +33,10 @@ For MontiGem users:
   * line 7 - allow default lists
   * line 9 - allow list comprehensions
   * line 11 - allow lists in `iterate`
+
+## 2025-02-20
+
+### Changes
 
 For MontiGem developers:
 
