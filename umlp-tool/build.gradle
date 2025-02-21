@@ -19,6 +19,7 @@ def shouldBuildVscodePlugin = ("true").equals(getProperty('buildVscodePlugin'))
 
 configurations {
   guiDefaultTypes
+  languageServer
 }
 
 dependencies {
@@ -44,6 +45,7 @@ dependencies {
   implementation 'ch.qos.logback:logback-classic:1.5.16'
   compileOnly 'org.gradle:gradle-tooling-api:7.6'
   testImplementation 'org.gradle:gradle-tooling-api:7.6'
+  languageServer 'org.gradle:gradle-tooling-api:7.6'
 
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit_version
@@ -112,6 +114,7 @@ packUMLPWithGUILanguageServer{
   exclude("org/apache/log4j/**")
   exclude("jsweet/**")
   exclude("standalone/**")
+  from(configurations.languageServer.resolve().collect { project.zipTree(it)})
 }
 
 if(shouldBuildVscodePlugin) {
