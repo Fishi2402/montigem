@@ -34,8 +34,6 @@ import de.monticore.guidsl._symboltable.GUIComponentDeclarationSymbol;
 import de.monticore.guidsl._symboltable.GUIParamSymbol;
 import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
 import de.monticore.guidsl._symboltable.IGUIDSLScope;
-import de.monticore.guidsl._visitor.GUIDSLTraverser;
-import de.monticore.guidsl.types.check.util.GUIDSLTypeTraverserFactory;
 import de.monticore.io.paths.MCPath;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
 import de.monticore.ocl.setexpressions._ast.ASTSetCollectionItem;
@@ -52,7 +50,7 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
-import de.monticore.types3.Type4Ast;
+import de.monticore.types3.TypeCheck3;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -1113,14 +1111,8 @@ public class GUIGeneratorUtil {
     return name.substring(0, index2) + name.substring(index1);
   }
 
-  Type4Ast type4Ast = new Type4Ast();
   public SymTypeExpression getType(ASTExpression node) {
-    if(!type4Ast.hasTypeOfExpression(node)) {
-      GUIDSLTraverser traverser = GUIDSLTypeTraverserFactory.getInstance().createTraverserForOO(type4Ast);
-      node.accept(traverser);
-    }
-
-    return type4Ast.getTypeOfExpression(node);
+    return TypeCheck3.typeOf(node);
   }
 
   public String getNgTemplateName(ASTGUIBlockContent node) {
