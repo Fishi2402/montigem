@@ -201,7 +201,9 @@ export abstract class GemGraphBasis {
           new Observable((obs: Subscriber<EventParameter<TEventTypes[K]>>) => {
             const handler: TEventTypes[K] = ((...arguments_: EventParameter<TEventTypes[K]>[]): void => {
               this.ngZone.run(() => {
-                arguments_.length === 1 ? obs.next(arguments_[0]) : obs.next(...arguments_);
+                for (const arg of arguments_) {
+                  obs.next(arg);
+                }
               });
             }) as TEventTypes[K];
             onEvent(graph, handler);
