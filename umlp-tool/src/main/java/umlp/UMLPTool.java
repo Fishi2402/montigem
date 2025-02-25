@@ -12,7 +12,11 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._visitor.CDBasisVisitor2;
 import de.monticore.class2mc.OOClass2MCResolver;
+import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.TemplateController;
+import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.gradle.common.GradleLog;
 import de.monticore.guidsl.GUIDSLMill;
@@ -36,6 +40,7 @@ import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.symboltable.serialization.json.UserJsonString;
 import de.se_rwth.commons.logging.Log;
+import freemarker.template.SimpleHash;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -189,6 +194,10 @@ public class UMLPTool extends UMLPToolTOP {
 
       // Here we could further modify the Pipeline
       UMLPPipelineData data = new UMLPPipelineData(cmd, options, this);
+
+      // Give the module system access to the tool pipeline
+      invokeModuleSystemForToolConfig(data, pipeline);
+
       main.doWork(data);
     }
     catch (ParseException e) {
@@ -201,6 +210,31 @@ public class UMLPTool extends UMLPToolTOP {
       Reporting.off();
       cleanUpAfterMemoryLeakingSingletons();
     }
+  }
+
+  /**
+   * Give the module system access to the tool pipeline
+   * @param data the pipeline data
+   * @param pipeline the (main) pipeline setup
+   */
+  public void invokeModuleSystemForToolConfig(UMLPPipelineData data, UMLPToolPipelineSetup pipeline) {
+    var modSetup = new GeneratorSetup();
+    GlobalExtensionManagement modInitGlex = createGlex(getModuleConfigTemplates(data.getCmd()));
+    modSetup.setGlex(modInitGlex);
+
+    // Ensure our freemarker object wrapper has access to fields without getters
+    var modFtlConfig = modSetup.getConfig();
+    ((freemarker.ext.beans.BeansWrapper)modFtlConfig.getObjectWrapper()).setExposeFields(true);
+    modSetup.setFreeMarkerTemplateEngine(new FreeMarkerTemplateEngine(modFtlConfig));
+    modInitGlex.setGlobalData(new SimpleHash(modFtlConfig.getObjectWrapper()));
+    // Set the "arguments" to the template
+    modInitGlex.setGlobalValue("data", data);
+    modInitGlex.setGlobalValue("mainPipelineSetup", pipeline);
+
+    TemplateController modTC = modSetup.getNewTemplateController("umlp.UMLPToolInit");
+    TemplateHookPoint modToolInit = new TemplateHookPoint(modTC.getTemplatename());
+    // We cannot use args, as it will create a non-exposing thingy - instead we use glex#setGlobalValue
+    modToolInit.processValue(modTC, List.of(this));
   }
 
   public static void cleanUpAfterMemoryLeakingSingletons() {
