@@ -56,24 +56,24 @@ import static umlp.UMLPToolOptions.SYMTAB;
 public class UMLPFilePipelineSetup {
 
 
-  final IOperation<UMLPPipelineData> init;
-  final IOperation.ISimpleOperation2<UMLPPipelineData> addBuiltInTypes;
+  public final IOperation<UMLPPipelineData> init;
+  public final IOperation.ISimpleOperation2<UMLPPipelineData> addBuiltInTypes;
 
-  Pipeline<ModelPathData> loadModelPathPipe;
-  final IOperation<UMLPPipelineData> loadModelpath;
-  Pipeline<Data> astPipe;
-  final IOperation.ISimpleOperation<UMLPPipelineData> loadAST;
+  public Pipeline<ModelPathData> loadModelPathPipe;
+  public final IOperation<UMLPPipelineData> loadModelpath;
+  public Pipeline<Data> astPipe;
+  public final IOperation.ISimpleOperation<UMLPPipelineData> loadAST;
 
-  final IOperation<Data> mergeAST;
-  final IOperation.ISimpleOperation<Data> storeSymbols;
+  public final IOperation<Data> mergeAST;
+  public final IOperation.ISimpleOperation<Data> storeSymbols;
 
-  final IOperation.ISimpleOperation<Data> writeSymbolsToSTD;
-  final IOperation<Data> loadOCL;
+  public final IOperation.ISimpleOperation<Data> writeSymbolsToSTD;
+  public final IOperation<Data> loadOCL;
 
-  final IOperation.ISimpleOperation<Data> prettyPrint;
-  final IOperation.ISimpleOperation<Data> storeTags;
-  final IOperation.ISimpleOperation<Data> setupGenerator;
-  final IOperation.ISimpleOperation<Data> generate;
+  public final IOperation.ISimpleOperation<Data> prettyPrint;
+  public final IOperation.ISimpleOperation<Data> storeTags;
+  public final IOperation.ISimpleOperation<Data> setupGenerator;
+  public final IOperation.ISimpleOperation<Data> generate;
 
   UMLPFilePipelineSetup(UMLPToolPipelineSetup umlpPipeline) {
     umlpPipeline.umlp.register(umlpPipeline.setupUMLPReports);
@@ -269,19 +269,19 @@ public class UMLPFilePipelineSetup {
 
   }
 
-  final IOperation.ISimpleOperation<DataWithCDASTAndTool> create_pipe_afterParseTrafo = data -> {
+  public final IOperation.ISimpleOperation<DataWithCDASTAndTool> create_pipe_afterParseTrafo = data -> {
     data.getTool().runAfterParseTrafo(data.getAST());
   };
-  final IOperation.ISimpleOperation<DataWithCDASTAndTool> create_pipe_create_st = data -> {
+  public final IOperation.ISimpleOperation<DataWithCDASTAndTool> create_pipe_create_st = data -> {
     data.getTool().createSymbolTable(data.getAST());
   };
-  final IOperation.ISimpleOperation<DataWithCDASTAndTool> create_pipe_run_def_coco = data -> {
+  public final IOperation.ISimpleOperation<DataWithCDASTAndTool> create_pipe_run_def_coco = data -> {
     data.getTool().runDefaultCoCos(data.getAST());
   };
-  final IOperation.ISimpleOperation<DataWithCDASTAndTool> create_pipe_run_def_trafos = data -> {
+  public final IOperation.ISimpleOperation<DataWithCDASTAndTool> create_pipe_run_def_trafos = data -> {
     data.getTool().runDefaultTrafos(data.getAST());
   };
-  final IOperation.ISimpleOperation<DataWithCDASTAndTool> create_pipe_recreate_st = data -> {
+  public final IOperation.ISimpleOperation<DataWithCDASTAndTool> create_pipe_recreate_st = data -> {
     data.setSymbolTable(data.getTool().recreateSymbolTable(data.getAST()));
   };
 
@@ -295,7 +295,7 @@ public class UMLPFilePipelineSetup {
     return (Pipeline<T>) pipe;
   }
 
-  static class ModelPathData implements DataWithCDASTAndTool {
+  public static class ModelPathData implements DataWithCDASTAndTool {
     final UMLPPipelineData data;
     final ASTCDCompilationUnit ast;
 
@@ -320,7 +320,7 @@ public class UMLPFilePipelineSetup {
     }
   }
 
-  static class Data implements DataWithCDASTAndTool {
+  public static class Data implements DataWithCDASTAndTool {
     final UMLPPipelineData data;
     ASTCDCompilationUnit ast;
 
@@ -358,16 +358,16 @@ public class UMLPFilePipelineSetup {
   }
 
 
-  interface DataWithCDAST {
+  public interface DataWithCDAST {
     ASTCDCompilationUnit getAST();
     void setSymbolTable(IUMLPArtifactScope symbolTable);
   }
 
-  interface DataWithTool {
+  public interface DataWithTool {
     UMLPTool getTool();
   }
 
-  interface DataWithCDASTAndTool extends DataWithCDAST, DataWithTool {
+  public interface DataWithCDASTAndTool extends DataWithCDAST, DataWithTool {
   }
 
 }
