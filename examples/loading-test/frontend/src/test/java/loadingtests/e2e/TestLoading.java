@@ -188,5 +188,6 @@ public class TestLoading extends AbstractLoadingTestsE2ETest {
 
     // check text value initialized
     assertEquals(1, page.getByText("foo").all().size());
+    assertEquals(1, page.getByText("bar").all().size());
   }
 }
