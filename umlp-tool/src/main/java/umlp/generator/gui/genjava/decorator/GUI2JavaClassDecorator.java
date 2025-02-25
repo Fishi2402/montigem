@@ -202,6 +202,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
     // add wait external value attr
     String waitName = addWaitAttr(name);
+    String externInitName = addExternInitAttr(name);
 
     // add setter
     String setterName = "set" + StringTransformations.capitalize(node.getName());
@@ -220,7 +221,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       if (dep.isPresent()) {
         dep.get().setInitMethod(new MethodTemplate(
             getInitParamSingletonTemplate(), type, name, manager,
-            initName, setExternName, waitName
+            initName, setExternName, externInitName
         ));
       }
     }
@@ -233,7 +234,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         if (dep.isPresent()) {
           dep.get().setInitMethod(new MethodTemplate(
               getInitDerivedDomainParamTemplate(), type, name, manager,
-              initName, setExternName, waitName
+              initName, setExternName, externInitName
           ));
         }
       }
@@ -246,7 +247,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         if (dep.isPresent()) {
           dep.get().setInitMethod(new MethodTemplate(
               getInitDomainParamTemplate(), type, name, manager, id,
-              initName, setExternName, waitName, util.isAbstractDomainType(typeSTE)
+              initName, setExternName, externInitName, util.isAbstractDomainType(typeSTE)
           ));
         }
       }
@@ -307,7 +308,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         // add init
         dep.get().setInitMethod(new MethodTemplate(
             getInitDomainListTemplate(), innerType, name, manager,
-            initName, setExternName, waitName
+            initName, setExternName, externInitName
         ));
       }
     }
@@ -322,13 +323,17 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       if (dep.isPresent()) {
         dep.get().setInitMethod(new MethodTemplate(
             getInitDefaultParamTemplate(), name, value,
-            initName, setExternName, waitName, getterName, setterName
+            initName, setExternName, externInitName, getterName, setterName
         ));
       }
     }
   }
 
   protected String addWaitAttr(String attrName) {
+    return "";
+  }
+
+  protected String addExternInitAttr(String attrName) {
     return "";
   }
 
