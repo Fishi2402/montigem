@@ -1,5 +1,7 @@
 package umlp.cli.common;
 
+import java.util.List;
+
 public interface IOperation<T> {
   /**
    * Execute a piece of work
@@ -30,6 +32,27 @@ public interface IOperation<T> {
     }
   }
 
+  /**
+   * A utility for the reporter
+   * @param <T>
+   */
+  interface IOperationWithDependantPipelines<T> extends IOperation<T> {
+    List<Pipeline<?>> innerPipelinesForReporting();
+  }
+
+  static <T> IOperation<T> withDependantPipelines(final IOperation<T> operation, final List<Pipeline<?>> pipelines) {
+    return new IOperationWithDependantPipelines<T>() {
+      @Override
+      public List<Pipeline<?>> innerPipelinesForReporting() {
+        return pipelines;
+      }
+
+      @Override
+      public boolean doWork(T data) {
+        return operation.doWork(data);
+      }
+    };
+  }
 
 
 }
