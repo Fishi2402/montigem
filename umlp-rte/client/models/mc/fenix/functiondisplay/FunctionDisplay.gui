@@ -19,7 +19,7 @@ component FunctionDisplay(
   Consumer<Port4Display> portClick,
   Consumer<Port4Display> portMouseover,
   Consumer<Port4Display> portMouseout,
-  List<Function4Display> setSelectedFunctions,
-  List<Channel4Display> setSelectedChannels,
-  List<Port4Display> setSelectedPorts
+  List<Function4Display> selectedFunctions,
+  List<Channel4Display> selectedChannels,
+  List<Port4Display> selectedPorts
 )

@@ -1,22 +1,31 @@
 package gui;
 
+import gui.ChannelTreeNode;
 import FunctionStructure4Fenix.Function;
 import FunctionStructure4Fenix.Port;
 
 import mc.fenix.basic.GemText;
 import mc.fenix.arrange.GemTreeNode;
 import mc.fenix.basic.GemButton;
-import mc.fenix.basic.GemCheckbox;
 import mc.fenix.arrange.GemRow;
+import mc.fenix.input.GemCheckBoxInput;
 
 component PortTreeNode(Port port, List<Function> selectedFunctions, List<Channel> selectedChannels, List<Port> selectedPorts) {
     @GemTreeNode(content =
-      @GemRow(contents = [
+      @GemRow(components = [
         @GemText(value = "Port: " + port.name),
-        @GemCheckbox(checked = isSelectedPort(), leftClick = toggleSelectedPort())
+        //@GemCheckBoxInput(checked = isSelectedPort(), leftClick = toggleSelectedPort())
+        @guard(isSelectedPort()) {
+               @GemButton(leftClick = toggleSelectedPort(),
+                 label = "Selected"
+                 );
+              } else {
+                @GemButton(leftClick = toggleSelectedPort(),
+                  label = "Select"
+                );
+              }
       ]),
     children = [
-    @GemChannelTreeNode(channel = port.channel, selectedFunctions = selectedFunctions, selectedChannels = selectedChannels, selectedPorts = selectedPorts),
-    @FunctionTreeNode(function = port.function, selectedFunctions = selectedFunctions, selectedChannels = selectedChannels, selectedPorts = selectedPorts)
+    @ChannelTreeNode(channel = port.channel, selectedFunctions = selectedFunctions, selectedChannels = selectedChannels, selectedPorts = selectedPorts)
   ]);
 }

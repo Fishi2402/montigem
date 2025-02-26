@@ -7,6 +7,7 @@ import mc.fenix.arrange.GemColumn;
 import mc.fenix.arrange.GemCard;
 
 import gui.Navigation;
+import gui.FunctionTreeNode;
 
 import FunctionStructure4Fenix.Function;
 import FunctionStructure4Fenix.Port;
@@ -29,7 +30,7 @@ page FunctionDetail (Function f, List<Function> selectedFunctions, List<Port> se
             @guard(f.owner != null) {
               @GemRow(components = [
                 owningFunctionButton@GemButton(label = "Back To Owning Function \"" + f.owner.name + "\"",
-                leftClick = goToFunctionDetails(f))
+                leftClick = goToFunctionDetailsSuper(f))
               ]);
             },
             @GemRow(width = "100%", colGap="10px", components = [
@@ -78,7 +79,13 @@ page FunctionDetail (Function f, List<Function> selectedFunctions, List<Port> se
                   ]);
                 }
               ]),
-              @GemColumn(width = "auto", component = @FunctionTreeNode(function = f))
+              @GemColumn(width = "auto",
+              component = @FunctionTreeNode(func = f,
+                selectedFunctions = selectedFunctions,
+                selectedChannels = selectedChannels,
+                selectedPorts = selectedPorts
+              )
+              )
             ]),
             @GemRow(width = "100%", component =
               @FunctionDisplay(data = transformData(f),

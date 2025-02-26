@@ -83,7 +83,6 @@ public class FunctionDetail extends FunctionDetailTOP {
     return getPortStringValue(p);
   }
 
-  @Override
   public Consumer<Channel4Display> selectChannel() {
     return c -> {
       setSelectedChannel(display2channelMap.get(c));
