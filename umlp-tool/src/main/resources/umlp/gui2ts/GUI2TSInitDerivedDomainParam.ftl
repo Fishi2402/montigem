@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("type", "name", "manager", "init", "setExternally", "wait", "initList")}
+${tc.signature("type", "name", "manager", "init", "setExternally", "externInit", "initList")}
 <#assign tsType = cdPrinter.printType(type)>
 <#assign tmpVar = "tmp_$">
 
@@ -11,7 +11,7 @@ ${cd4c.method("protected void ${init}()")}
     });
   }
   else {
-    firstValueFrom(this.${wait}).then(() => {
+    this.${externInit}.then(() => {
       ${tc.includeArgs("umlp.gui2java.GUI2JavaCallMethods", [initList])}
     });
   }

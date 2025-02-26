@@ -20,11 +20,7 @@ import de.monticore.types.check.types3wrapper.TypeCheck3AsTypeCalculator;
 public class GUIDSLCoCosForUMLP extends GUIDSLCoCos {
 
   public GUIDSLCoCoChecker createChecker() {
-    TypeCalculator tc = new TypeCheck3AsTypeCalculator(
-        GUIDSLTypeTraverserFactory.getInstance().createTraverserForOO(type4Ast),
-        type4Ast,
-        new CommonExpressionsLValueRelations()
-    );
+    TypeCalculator tc = new TypeCheck3AsTypeCalculator();
     GUIDSLCoCoChecker checker = new GUIDSLCoCoChecker();
     checker.addCoCo(new ExpressionValid(tc));
     checker.addCoCo(new GUIParamDefaultFitsType());

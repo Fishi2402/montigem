@@ -13,11 +13,9 @@ import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
-import de.monticore.guidsl._visitor.GUIDSLTraverser;
-import de.monticore.guidsl.types.check.util.GUIDSLTypeTraverserFactory;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types3.Type4Ast;
+import de.monticore.types3.TypeCheck3;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.GenService;
@@ -67,11 +65,7 @@ public class EventDecorator extends GUI2JavaComponentDecorator {
         Optional<EventType> eventTypeRes = Optional.empty();
         Optional<SymTypeExpression> teOpt = Optional.empty();
         if (!call.getArguments().getExpressionList().isEmpty()) {
-          Type4Ast type4Ast = new Type4Ast();
-          GUIDSLTraverser traverser = GUIDSLTypeTraverserFactory.getInstance()
-              .createTraverserForOO(type4Ast);
-          call.getArguments().getExpression(0).accept(traverser);
-          SymTypeExpression te = type4Ast.getTypeOfExpression(call.getArguments().getExpression(0));
+          SymTypeExpression te = TypeCheck3.typeOf(call.getArguments().getExpression(0));
           teOpt = Optional.of(te);
           if(te.hasTypeInfo() && (util.isDomainType(te) || util.isDomainListType(te))) {
             for (EventType eventType : EventType.values()) {
@@ -160,11 +154,7 @@ public class EventDecorator extends GUI2JavaComponentDecorator {
   }
 
   protected ReferencedAssoc extractReferencedAssoc(ASTFieldAccessExpression e){
-    Type4Ast type4Ast = new Type4Ast();
-    GUIDSLTraverser traverser = GUIDSLTypeTraverserFactory.getInstance()
-        .createTraverserForOO(type4Ast);
-    e.accept(traverser);
-    SymTypeExpression ste = type4Ast.getTypeOfExpression(e);
+    SymTypeExpression ste = TypeCheck3.typeOf(e);
 
     IterationItemsFinder finder = new IterationItemsFinder();
     Collection<ASTExpression> iterateItems = new HashSet<>(finder.getItems(guiAst));

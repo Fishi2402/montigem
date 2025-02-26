@@ -29,7 +29,9 @@ import java.util.function.Function;
 public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
 
   protected boolean extendedMixin = false;
-  protected boolean addedRxjsImports = false;
+  protected boolean addedRxjsSubjectImport = false;
+  protected boolean addedRxjsFirstValueFromImport = false;
+
   protected final MCPath hwPath;
   protected final Path outPath;
   protected final MCPath importsPath;
@@ -80,15 +82,36 @@ public class GUI2TSClassDecorator extends GUI2JavaClassDecorator {
 
   @Override
   protected String addWaitAttr(String attrName) {
-    String waitName = attrName + "Wait";
-    if (!addedRxjsImports) {
+    String waitName = getWaitAttrName(attrName);
+    if (!addedRxjsSubjectImport) {
       glex.addAfterTemplate("umlp.gui2ts.TSEmptyImports", clazz,
-          new StringHookPoint("import { Subject, firstValueFrom } from 'rxjs';"));
-      addedRxjsImports = true;
+          new StringHookPoint("import { Subject } from 'rxjs';"));
+      addedRxjsSubjectImport = true;
     }
     glex.addAfterTemplate("TSClassContent:Elements", clazz, new StringHookPoint(
-        "public " + waitName + " : Subject<void> = new Subject<void>();\n"));
+        "public " + waitName + ": Subject<void> = new Subject<void>();\n"));
     return waitName;
+  }
+
+  @Override
+  protected String addExternInitAttr(String attrName) {
+    String initName = getExternInitAttrName(attrName);
+    if (!addedRxjsFirstValueFromImport) {
+      glex.addAfterTemplate("umlp.gui2ts.TSEmptyImports", clazz,
+          new StringHookPoint("import { firstValueFrom } from 'rxjs';"));
+      addedRxjsFirstValueFromImport = true;
+    }
+    glex.addAfterTemplate("TSClassContent:Elements", clazz, new StringHookPoint(
+        "public " + initName + ": Promise<void> = firstValueFrom(this." + getWaitAttrName(attrName) + ");\n"));
+    return initName;
+  }
+
+  protected String getWaitAttrName(String attrName) {
+    return attrName + "Wait";
+  }
+
+  protected String getExternInitAttrName(String attrName) {
+    return attrName + "ExternInit";
   }
 
   @Override
