@@ -34,10 +34,6 @@ export class FunctionDisplay extends FunctionDisplayComponent {
   private channelSvgMap = new Map<Channel4Display, Set<Element>>();
   private portSvgMap = new Map<Port4Display, Element>();
 
-  private selectedFunctions: Function4Display[] = [];
-  private selectedChannels: Channel4Display[] = [];
-  private selectedPorts: Port4Display[]
-
 
   private static wrapperId = '----------------'
 
@@ -80,8 +76,8 @@ export class FunctionDisplay extends FunctionDisplayComponent {
 
 
   @Input()
-  public set setSelectedFunctions(f: Function4Display[]){
-    this.selectedFunctions = f;
+  public set selectedFunctions(f: Function4Display[]){
+    this.setSelectedFunctions(f);
     if(f == null){
       return;
     }
@@ -95,7 +91,8 @@ export class FunctionDisplay extends FunctionDisplayComponent {
   }
 
   @Input()
-  public set setSelectedChannels(c: Channel4Display[]){
+  public set selectedChannels(c: Channel4Display[]){
+    this.setSelectedChannels(c);
     if(c == null){
       return;
     }
@@ -109,7 +106,8 @@ export class FunctionDisplay extends FunctionDisplayComponent {
   }
 
   @Input()
-  public set setSelectedPorts(p: Port4Display[]){
+  public set selectedPorts(p: Port4Display[]){
+    this.setSelectedPorts(p);
     if(p == null){
       return;
     }

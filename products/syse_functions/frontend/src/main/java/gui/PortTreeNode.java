@@ -3,12 +3,15 @@ package gui;
 import java.util.List;
 import java.util.function.Consumer;
 import functionstructure4fenix.Port;
+import umlp.jsweet.extension.annotation.Component;
+
 import java.util.ArrayList;
 
+@Component
 public class PortTreeNode extends PortTreeNodeTOP{
 
   public Consumer<Void> toggleSelectedPort(){
-    return () -> {
+    return (v) -> {
       List<Port> selectedPorts = new ArrayList<>(getSelectedPorts());
       if (getSelectedPorts().contains(getPort())) {
         selectedPorts.remove(getPort());
@@ -19,7 +22,7 @@ public class PortTreeNode extends PortTreeNodeTOP{
     };
   }
 
-  public boolean isPortSelected(){
+  public Boolean isSelectedPort(){
     return getSelectedPorts().contains(getPort());
   }
 }
