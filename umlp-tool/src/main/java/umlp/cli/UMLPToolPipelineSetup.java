@@ -10,6 +10,7 @@ import umlp.cli.common.Pipeline;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Objects;
 
 import static umlp.UMLPToolOptions.CD2GUI;
@@ -94,7 +95,7 @@ public class UMLPToolPipelineSetup {
     // Define the "main" pipeline (which is followed for every tool-run)
     main = new Pipeline<>();
     // A reuseable operation, showing the help and exiting
-    main.register(showHelp = data -> {
+    main.register("showHelp", showHelp = data -> {
       if (data.getCmd() == null || !data.getCmd().getArgList().isEmpty() || HELP.isSelected(data.getCmd())) {
         org.apache.commons.cli.HelpFormatter formatter = new org.apache.commons.cli.HelpFormatter();
         formatter.setWidth(80);
@@ -103,7 +104,7 @@ public class UMLPToolPipelineSetup {
       }
       return true;
     });
-    main.register(initLog = data -> {
+    main.register("initLog", initLog = data -> {
       // set desired log level without modifying the "failQuick" option
       boolean enableFailQuick = Log.isFailQuickEnabled();
       if (DEBUG.isSelected(data.getCmd())) {
@@ -181,7 +182,7 @@ public class UMLPToolPipelineSetup {
     umlp = new Pipeline<>();
     gui = new Pipeline<>();
     testInfrastructure = new Pipeline<>();
-    main.register(data -> {
+    main.register("selectMoreSpecificPipeline", IOperation.withDependantPipelines(data -> {
       if (GUIRTETypes.isSelected(data.cmd)) {
         return guiRTETypes.doWork(data);
       }else  if (CD2GUI.isSelected(data.cmd)) {
@@ -198,7 +199,7 @@ public class UMLPToolPipelineSetup {
         Log.error("Unhandled input file");
         return true;
       }
-    });
+    }, Arrays.asList(guiRTETypes, cd2Gui, testInfrastructure, guiVar, umlp, gui)));
 
     // Next, actually populate the individual pipelines of the options
     cd2GUIPipelineSetup = new CD2GUIPipelineSetup();

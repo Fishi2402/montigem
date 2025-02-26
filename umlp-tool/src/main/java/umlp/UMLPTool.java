@@ -49,6 +49,7 @@ import org.apache.commons.cli.ParseException;
 import umlp._cocos.UMLPCoCos;
 import umlp._symboltable.IUMLPArtifactScope;
 import umlp._visitor.UMLPTraverser;
+import umlp.cli.PipelineReporter;
 import umlp.cli.UMLPPipelineData;
 import umlp.cli.UMLPToolPipelineSetup;
 import umlp.cli.common.Pipeline;
@@ -76,6 +77,7 @@ import java.util.Optional;
 import static umlp.UMLPToolOptions.DEBUG;
 import static umlp.UMLPToolOptions.HWC_PATH;
 import static umlp.UMLPToolOptions.INPUT;
+import static umlp.UMLPToolOptions.REPORTS;
 
 /**
  * This class offers both a Java API and a command line tool for processing UMLP
@@ -197,6 +199,9 @@ public class UMLPTool extends UMLPToolTOP {
 
       // Give the module system access to the tool pipeline
       invokeModuleSystemForToolConfig(data, pipeline);
+
+      new PipelineReporter().report(main,
+          new File(new File(REPORTS.getValue(data.getCmd(), UMLPTool.DEFAULT_REPORT_OUT)), "pipeline.md"));
 
       main.doWork(data);
     }

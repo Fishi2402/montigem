@@ -40,6 +40,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -76,8 +77,8 @@ public class UMLPFilePipelineSetup {
   public final IOperation.ISimpleOperation<Data> generate;
 
   UMLPFilePipelineSetup(UMLPToolPipelineSetup umlpPipeline) {
-    umlpPipeline.umlp.register(umlpPipeline.setupUMLPReports);
-    umlpPipeline.umlp.register(init = data -> {
+    umlpPipeline.umlp.register("setupUMLPReports", umlpPipeline.setupUMLPReports);
+    umlpPipeline.umlp.register("init", init = data -> {
       // If we were to with to use concrete syntax, we would have to use the UMLPTagDefinitionMill
       if (SYMTAB.isSelected(data.cmd)) {
         TagsMill.init(); // instead we only support generic tagging models
@@ -86,8 +87,11 @@ public class UMLPFilePipelineSetup {
       UMLPMill.globalScope().setSymbolPath(data.importedSymbolPath);
       return true;
     });
-    umlpPipeline.umlp.register(addBuiltInTypes = this::addBuiltInTypes);
-    umlpPipeline.umlp.register(loadModelpath = data -> {
+    umlpPipeline.umlp.register("addBuiltInTypes", addBuiltInTypes = this::addBuiltInTypes);
+
+    // Pipeline dealing with how to load models into the model path
+    loadModelPathPipe = createPipe(ModelPathData.class);
+    umlpPipeline.umlp.register("loadModelpath", IOperation.withDependantPipelines(loadModelpath = data -> {
       String report_on = data.inputFile.getName().replace(".", "__");   // TODO: Is this name unique? Should it be unique?
 
       List<URL> models = MCPathUtil.getAllModels(data.modelPath, ".*[.]umlp");
@@ -103,23 +107,22 @@ public class UMLPFilePipelineSetup {
         }
       }
       return true;
-    });
-    // Pipeline dealing with how to load models into the model path
-    loadModelPathPipe = createPipe(ModelPathData.class);
+    }, Collections.singletonList(loadModelPathPipe)));
 
+
+    // Pipeline for dealing with parsed ASTs (will be called next)
+    astPipe = createPipe(Data.class);
     // Next, we load the item into the AST
-    umlpPipeline.umlp.register(loadAST = data -> {
+    umlpPipeline.umlp.register("loadAST", IOperation.withDependantPipelines(loadAST = data -> {
       String report_on = data.inputFile.getName().replace(".", "__");   // TODO: Is this name unique? Should it be unique?
 
       // parse, create symbol table, check all cocos
       ASTCDCompilationUnit ast = data.tool.parse(data.inputFile.getPath());
       Reporting.reportParseInputFile(data.inputFile.toPath().toAbsolutePath(), report_on); // TODO: causes NullPointerException
       astPipe.doWork(new Data(data, ast));
-    });
-    // Pipeline for dealing with parsed ASTs
-    astPipe = createPipe(Data.class);
+    }, Collections.singletonList(astPipe)));
     // Insert merge operation at the front of the ast pipeline
-    astPipe.registerFirst(mergeAST = data -> {
+    astPipe.registerFirst("mergeAST", mergeAST = data -> {
       // First step of an AST: If --merge was provided, override AST with merged AST
       if (MERGE.isSelected(data.data.cmd)){
         List<ASTCDCompilationUnit> mergeSet = new ArrayList<>();
@@ -157,7 +160,7 @@ public class UMLPFilePipelineSetup {
       }
       return true;
     });
-    astPipe.register(storeSymbols = data -> {
+    astPipe.register("storeSymbols", storeSymbols = data -> {
       if (SYMTAB.isSelected(data.data.cmd) && SYMTAB.getValue(data.data.cmd) != null) {
         String s = SYMTAB.getValue(data.data.cmd);
         // store symbol table to passed file
@@ -168,7 +171,7 @@ public class UMLPFilePipelineSetup {
         data.data.tool.storeSymbols(data.symbolTable, data.symbolPath.toString());
       }
     });
-    astPipe.register(writeSymbolsToSTD = data -> {
+    astPipe.register("writeSymbolsToSTD", writeSymbolsToSTD = data -> {
       if (SYMTAB.isSelected(data.data.cmd) && SYMTAB.getValue(data.data.cmd) == null) {
         //print (formatted!) symboltable to console
         UMLPSymbols2Json s2j = new UMLPSymbols2Json();
@@ -178,7 +181,7 @@ public class UMLPFilePipelineSetup {
       }
     });
 
-    astPipe.register(loadOCL = data -> {
+    astPipe.register("loadOCL", loadOCL = data -> {
       if (SYMTAB.isSelected(data.data.cmd) && SYMTAB.getValue(data.data.cmd) != null) {
         if (OCL.isSelected(data.data.cmd)) {
           MCPath oclModelPath = new MCPath();
@@ -219,18 +222,18 @@ public class UMLPFilePipelineSetup {
       return true;
     });
 
-    astPipe.register(prettyPrint = data -> {
+    astPipe.register("prettyPrint", prettyPrint = data -> {
       // pretty print model and either output on stdout or store to file
       if (PRETTYPRINT.isSelected(data.data.cmd)) {
         data.data.tool.prettyPrint(data.ast, PRETTYPRINT.getValue(data.data.cmd));
       }
     });
-    astPipe.register(storeTags = data -> {
+    astPipe.register("storeTags", storeTags = data -> {
       TagRelated.doStoreTagStereos(data.ast, data.data.tool, data.symbolTable, data.data.cmd);
     });
 
     //
-    astPipe.register(setupGenerator = data -> {
+    astPipe.register("setupGenerator", setupGenerator = data -> {
       data.genSetup = new GeneratorSetup();
       data.genSetup.setGlex(UMLPTool.createGlex(data.data.tool.getModuleConfigTemplates(data.data.cmd)));
       // set output directory
@@ -245,7 +248,7 @@ public class UMLPFilePipelineSetup {
     });
 
     // Finally, generate
-    astPipe.register(generate = data -> {
+    astPipe.register("generate", generate = data -> {
       UMLPGeneratorConfig config = UMLPGeneratorConfig.getInstance().initFromCmd(data.data.cmd);
       if (FOR_CLIENT.isSelected(data.data.cmd)) {
         TSUMLPGenerator generator = new TSUMLPGenerator(data.genSetup, config);
@@ -287,11 +290,11 @@ public class UMLPFilePipelineSetup {
 
   <T extends DataWithCDASTAndTool> Pipeline<T> createPipe(Class<T> clazz) {
     Pipeline<DataWithCDASTAndTool> pipe = new Pipeline<>();
-    pipe.register(create_pipe_afterParseTrafo);
-    pipe.register(create_pipe_create_st);
-    pipe.register(create_pipe_run_def_coco);
-    pipe.register(create_pipe_run_def_trafos);
-    pipe.register(create_pipe_recreate_st);
+    pipe.register("create_pipe_afterParseTrafo", create_pipe_afterParseTrafo);
+    pipe.register("create_pipe_create_st", create_pipe_create_st);
+    pipe.register("create_pipe_run_def_coco", create_pipe_run_def_coco);
+    pipe.register("create_pipe_run_def_trafos", create_pipe_run_def_trafos);
+    pipe.register("create_pipe_recreate_st", create_pipe_recreate_st);
     return (Pipeline<T>) pipe;
   }
 
