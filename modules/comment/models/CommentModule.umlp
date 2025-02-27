@@ -1,0 +1,22 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+//<<module>>
+umlp CommentModule {
+
+    <<requiresImplementation>> // Require an implementing class in the final model using this
+
+    // TODO: Move requiresImplementation to extends
+
+    class CommentModuleNote {
+      String creatorUsername;
+      java.time.LocalDateTime creationDate;
+      java.time.LocalDateTime lastChangeDate;
+      CommentModuleVisibility visibility;
+      String content;
+    }
+
+    enum CommentModuleVisibility {
+      COMMENT_PRIVATE,
+      COMMENT_PUBLIC;
+    }
+}

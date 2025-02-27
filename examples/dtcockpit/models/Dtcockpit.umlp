@@ -1,8 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 import mc.fenix.input.GemTextInputTypes.GemTextInputValidity;
 import LoginModule.*;
+import CommentModule.*;
 
-<<extends="LoginModule">>
+<<extends="LoginModule",extends="CommentModule">>
 classdiagram Dtcockpit {
 
   <<singleton>>
