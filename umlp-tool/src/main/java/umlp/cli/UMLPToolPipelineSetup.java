@@ -37,7 +37,7 @@ import static umlp.UMLPToolOptions.TMPL_PATH;
 public class UMLPToolPipelineSetup {
 
   // A reuseable operation, showing the help
-  final IOperation<UMLPPipelineData> showHelp;
+  public final IOperation<UMLPPipelineData> showHelp;
 
   // a reuseable operation, setting up the UMLPReports
   final IOperation<UMLPPipelineData> setupUMLPReports = data -> {
@@ -48,7 +48,7 @@ public class UMLPToolPipelineSetup {
     return true;
   };
 
-  final IOperation<UMLPPipelineData> isUMLPFileCheck = data -> {
+  public final IOperation<UMLPPipelineData> isUMLPFileCheck = data -> {
     if (!data.inputFile.getName().endsWith(".umlp")) {
       Log.warn("option -cd2gui used without a classdiagram umlp file as input");
       return false;
@@ -58,38 +58,38 @@ public class UMLPToolPipelineSetup {
 
   // Next, the various operations are stored, such that they can be modified
 
-  final IOperation<UMLPPipelineData> initLog;
+  public final IOperation<UMLPPipelineData> initLog;
 
-  final IOperation<UMLPPipelineData> getInputFile;
+  public final IOperation<UMLPPipelineData> getInputFile;
 
-  final IOperation<UMLPPipelineData> loadPath;
-  final IOperation<UMLPPipelineData> importsPath;
+  public final IOperation<UMLPPipelineData> loadPath;
+  public final IOperation<UMLPPipelineData> importsPath;
 
-  final IOperation<UMLPPipelineData> loadModelPath;
+  public final IOperation<UMLPPipelineData> loadModelPath;
 
-  final IOperation<UMLPPipelineData> loadHWCPath;
+  public final IOperation<UMLPPipelineData> loadHWCPath;
 
-  final IOperation<UMLPPipelineData> loadTmplPath;
+  public final IOperation<UMLPPipelineData> loadTmplPath;
 
-  final Pipeline<UMLPPipelineData> cd2Gui;
-  final Pipeline<UMLPPipelineData> testInfrastructure;
-  final Pipeline<UMLPPipelineData> guiVar;
-  final Pipeline<UMLPPipelineData> umlp;
-  final Pipeline<UMLPPipelineData> gui;
-  final Pipeline<UMLPPipelineData> guiRTETypes;
+  public final Pipeline<UMLPPipelineData> cd2Gui;
+  public final Pipeline<UMLPPipelineData> testInfrastructure;
+  public final Pipeline<UMLPPipelineData> guiVar;
+  public final Pipeline<UMLPPipelineData> umlp;
+  public final Pipeline<UMLPPipelineData> gui;
+  public final Pipeline<UMLPPipelineData> guiRTETypes;
 
 
   // Specific separate workflows are defined in individual classes
 
   // they are selected based on if/elses
 
-  CD2GUIPipelineSetup cd2GUIPipelineSetup;
-  GuiVarPipelineSetup guiVarPipelineSetup;
-  UMLPFilePipelineSetup umlpFilePipelineSetup;
-  GuiPipelineSetup guiPipelineSetup;
-  RTEDataPipelineSetup gUIRTEDataPipelineSetup;
+  public CD2GUIPipelineSetup cd2GUIPipelineSetup;
+  public GuiVarPipelineSetup guiVarPipelineSetup;
+  public UMLPFilePipelineSetup umlpFilePipelineSetup;
+  public GuiPipelineSetup guiPipelineSetup;
+  public RTEDataPipelineSetup gUIRTEDataPipelineSetup;
 
-  final Pipeline<UMLPPipelineData> main;
+  public final Pipeline<UMLPPipelineData> main;
 
   public UMLPToolPipelineSetup() {
     // Define the "main" pipeline (which is followed for every tool-run)
