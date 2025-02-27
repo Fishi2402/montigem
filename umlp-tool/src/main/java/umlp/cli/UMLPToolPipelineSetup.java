@@ -40,7 +40,7 @@ public class UMLPToolPipelineSetup {
   public final IOperation<UMLPPipelineData> showHelp;
 
   // a reuseable operation, setting up the UMLPReports
-  final IOperation<UMLPPipelineData> setupUMLPReports = data -> {
+  public final IOperation<UMLPPipelineData> setupUMLPReports = data -> {
     data.umlp_reportManagerFactory = new UMLPReports(data.outDir.getPath(), data.reportDir.getPath(), data.reportPathOutput, data.hwcPath, data.tool.buildJsonData(data.cmd));
     Reporting.init(data.outDir.getPath(), data.reportDir.getPath(), data.umlp_reportManagerFactory);
     String report_on = data.inputFile.getName().replace(".", "__");   // TODO: Is this name unique? Should it be unique?
