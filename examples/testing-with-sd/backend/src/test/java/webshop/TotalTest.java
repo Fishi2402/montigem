@@ -8,7 +8,13 @@ import umlp.test_rte.monitor.event.CallEvent;
 import umlp.test_rte.monitor.event.ReturnVoidEvent;
 import webshop.test_infrastructure.WebshopSQLDBTestSetup;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TotalTest extends WebshopSQLDBTestSetup {
 
@@ -19,6 +25,27 @@ public class TotalTest extends WebshopSQLDBTestSetup {
   @Override
   protected void initBackendManager() {
     WebshopMonitorManagerImpl.init();
+  }
+
+  @Test
+  void matchComplete() {
+    var testInstances = new TotalTestInstantiator().instantiate();
+    Order o = WebshopManager.orderBuilder().build().orElseThrow();
+    Item item = testInstances.getItem();
+
+    assertEquals(0, o.getTotal());
+
+    StackEventQueue.clear();
+
+    o.addItem(item);
+
+    //here we would need to check every element of the queue in order -> we're not going to do this
+    // for demo purposes
+    assertEquals(16, StackEventQueue.toQueue().size()); //currently 16 events since we're not monitoring managers yet
+    assertEquals(new CallEvent(o, "addItem"), StackEventQueue.toQueue().getFirst());
+    assertEquals(new ReturnVoidEvent(o,"addItem"), StackEventQueue.toQueue().getLast());
+
+    assertEquals(6, o.getTotal());
   }
 
   @Test
@@ -33,8 +60,52 @@ public class TotalTest extends WebshopSQLDBTestSetup {
 
     o.addItem(item);
 
-    assertEquals(new CallEvent("addItem"), StackEventQueue.toQueue().getFirst());
-    assertEquals(new ReturnVoidEvent("addItem"), StackEventQueue.toQueue().getLast());
+    //we filter the events first to only include those, which involved the visible variables (o in our case)
+    var queue = StackEventQueue
+        .toQueue()
+        .stream()
+        .filter(event -> event.object().equals(o))
+        .collect(Collectors.toCollection(LinkedList::new));
+
+    //now we perform a match complete on that queue
+    //which we're also going to omit for demo purposes
+    assertEquals(16, queue.size()); //8 calls in current implementation -> 16 events
+    assertEquals(new CallEvent(o, "addItem"), queue.getFirst());
+    assertEquals(new ReturnVoidEvent(o, "addItem"), queue.getLast());
+
+    assertEquals(6, o.getTotal());
+  }
+
+  @Test
+  void matchFree() {
+    var testInstances = new TotalTestInstantiator().instantiate();
+    Order o = WebshopManager.orderBuilder().build().orElseThrow();
+    Item item = testInstances.getItem();
+
+    assertEquals(0, o.getTotal());
+
+    StackEventQueue.clear();
+
+    o.addItem(item);
+
+    //we can use a queue instead of a state machine
+    var expectedEvents = new LinkedList<>(List.of(new CallEvent(o, "addItem"),
+                                                  new ReturnVoidEvent(o, "addItem")));
+    var eventTrace = new ArrayList<String>();
+
+    for (var event : StackEventQueue.toQueue()) {
+      if (event.equals(expectedEvents.peek())) {
+        expectedEvents.pop();
+        eventTrace.add("Expected: " + event);
+      } else {
+        eventTrace.add("Ignored: " + event);
+      }
+    }
+    for (var expectedEvent : expectedEvents) {
+      eventTrace.add("Missing: " + expectedEvent);
+    }
+    assertTrue(expectedEvents.isEmpty(),
+               "Some events are missing: " + String.join("\n", eventTrace));
 
     assertEquals(6, o.getTotal());
   }

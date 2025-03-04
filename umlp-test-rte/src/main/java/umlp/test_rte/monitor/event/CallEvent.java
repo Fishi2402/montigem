@@ -4,32 +4,40 @@ import java.util.Objects;
 
 public final class CallEvent implements StackEvent {
 
-  private final String methodName;
+  private final BasicEvent parent;
 
-  public CallEvent(String methodName) {
-    this.methodName = methodName;
+  public CallEvent(Object object, String methodName) {
+    this(new BasicEvent(object, methodName));
+  }
+
+  public CallEvent(BasicEvent parent) {
+    this.parent = parent;
   }
 
   @Override
   public String methodName() {
-    return methodName;
+    return parent.methodName();
+  }
+
+  @Override
+  public Object object() {
+    return parent.object();
   }
 
   @Override
   public boolean equals(Object o) {
-    if (o == null || getClass() != o.getClass())
-      return false;
+    if (o == null || getClass() != o.getClass()) return false;
     CallEvent callEvent = (CallEvent) o;
-    return Objects.equals(methodName, callEvent.methodName);
+    return Objects.equals(parent, callEvent.parent);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(methodName);
+    return Objects.hashCode(parent);
   }
 
   @Override
   public String toString() {
-    return "CallEvent{" + "methodName='" + methodName + '\'' + '}';
+    return "CallEvent{" + "parent=" + parent + '}';
   }
 }

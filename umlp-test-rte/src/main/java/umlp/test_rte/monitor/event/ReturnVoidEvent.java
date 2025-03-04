@@ -3,31 +3,40 @@ package umlp.test_rte.monitor.event;
 import java.util.Objects;
 
 public final class ReturnVoidEvent implements StackEvent {
-  private final String methodName;
+  private final BasicEvent parent;
 
-  public ReturnVoidEvent(String methodName) {
-    this.methodName = methodName;
+  public ReturnVoidEvent(Object object, String methodName) {
+    this(new BasicEvent(object, methodName));
+  }
+
+  public ReturnVoidEvent(BasicEvent parent) {
+    this.parent = parent;
+  }
+
+  @Override
+  public Object object() {
+    return parent.object();
   }
 
   @Override
   public String methodName() {
-    return methodName;
+    return parent.methodName();
   }
 
   @Override
   public boolean equals(Object o) {
     if (o == null || getClass() != o.getClass()) return false;
     ReturnVoidEvent that = (ReturnVoidEvent) o;
-    return Objects.equals(methodName, that.methodName);
+    return Objects.equals(parent, that.parent);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(methodName);
+    return Objects.hashCode(parent);
   }
 
   @Override
   public String toString() {
-    return "ReturnVoidEvent{" + "methodName='" + methodName + '\'' + '}';
+    return "ReturnVoidEvent{" + "parent=" + parent + '}';
   }
 }

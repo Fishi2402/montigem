@@ -4,17 +4,26 @@ import java.util.Objects;
 
 public final class ReturnEvent implements StackEvent {
 
-  private final String methodName;
+  private final BasicEvent parent;
   private final Object returnValue;
 
-  public ReturnEvent(String methodName, Object returnValue) {
-    this.methodName = methodName;
+  public ReturnEvent(Object object, String methodName, Object returnValue) {
+    this(new BasicEvent(object, methodName), returnValue);
+  }
+
+  public ReturnEvent(BasicEvent parent, Object returnValue) {
+    this.parent = parent;
     this.returnValue = returnValue;
   }
 
   @Override
+  public Object object() {
+    return parent.object();
+  }
+
+  @Override
   public String methodName() {
-    return methodName;
+    return parent.methodName();
   }
 
   public Object returnValue() {
@@ -23,20 +32,18 @@ public final class ReturnEvent implements StackEvent {
 
   @Override
   public boolean equals(Object o) {
-    if (o == null || getClass() != o.getClass())
-      return false;
-    ReturnEvent returnEvent = (ReturnEvent) o;
-    return Objects.equals(methodName, returnEvent.methodName) && Objects.equals(returnValue,
-                                                                                returnEvent.returnValue);
+    if (o == null || getClass() != o.getClass()) return false;
+    ReturnEvent that = (ReturnEvent) o;
+    return Objects.equals(parent, that.parent) && Objects.equals(returnValue, that.returnValue);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(methodName, returnValue);
+    return Objects.hash(parent, returnValue);
   }
 
   @Override
   public String toString() {
-    return "EndEvent{" + "methodName='" + methodName + '\'' + ", returnValue=" + returnValue + '}';
+    return "ReturnEvent{" + "parent=" + parent + ", returnValue=" + returnValue + '}';
   }
 }
