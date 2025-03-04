@@ -44,7 +44,10 @@
         "../../src/app/*",
         "../../../../../modules/login/frontendTS/build/frontendGen/build/appdomain/*",
         "../../../../../modules/login/frontendTS/build/frontendGen/build/appgui/*",
-        "../../../../../modules/login/frontendTS/src/app/*"
+        "../../../../../modules/login/frontendTS/src/app/*",
+        "../../../../../modules/comment/frontendTS/build/frontendGen/build/appdomain/*",
+        "../../../../../modules/comment/frontendTS/build/frontendGen/build/appgui/*",
+        "../../../../../modules/comment/frontendTS/src/app/*"
       ]
     }
   },
