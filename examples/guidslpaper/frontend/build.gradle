@@ -16,14 +16,15 @@ dependencies {
   umlpModulesModels("umlp.modules:login:$version") // and models itself
 }
 
+// TODO AHe: needed?
 // ALus local gradle is apparently unaware of these versions?
 // Explicitly use the local login module
-configurations.all {
-  resolutionStrategy.dependencySubstitution {
-    substitute module("umlp.modules:login") using project(":modules:login")
-    substitute module("umlp.modules.login:frontendTS") using project(":modules:login:frontendTS")
-  }
-}
+//configurations.all {
+//  resolutionStrategy.dependencySubstitution {
+//    substitute module("umlp.modules:login") using project(":modules:login")
+//    substitute module("umlp.modules.login:frontendTS") using project(":modules:login:frontendTS")
+//  }
+//}
 
 genGUI {
   domainModels = ["Guidslpaper"]

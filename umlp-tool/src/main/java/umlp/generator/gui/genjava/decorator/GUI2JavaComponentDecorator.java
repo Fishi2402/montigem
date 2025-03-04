@@ -10,12 +10,14 @@ import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.guidsl._ast.ASTGUIArgValue;
+import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._symboltable.GUIComponentDeclarationSymbol;
 import de.monticore.guidsl._symboltable.GUIParamSymbol;
+import de.monticore.ocl.setexpressions._ast.ASTSetCollectionItem;
+import de.monticore.ocl.setexpressions._ast.ASTSetValueItem;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
@@ -152,15 +154,17 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
     List<VariableSymbol> iterItemSymbols = util.findIterationItemSymbols(namedArg.getEnclosingScope());
     List<String> iterItemArgs = getArgs(iterItemSymbols);
 
-    if (namedArg.getGUIArgValue().isPresentGUIList()) {
+    if (GUIDSLMill.typeDispatcher().isSetExpressionsASTSetEnumeration(namedArg.getExpression())) {
       getCD4C().addImport(decoratedClass, "java.util.ArrayList");
       // TODO AGe: how to do that better?
-      List<ASTGUIArgValue> valueList = namedArg.getGUIArgValue().getGUIList().getGUIArgValueList();
+      List<ASTSetCollectionItem> valueList = GUIDSLMill.typeDispatcher().asSetExpressionsASTSetEnumeration(namedArg.getExpression())
+          .getSetCollectionItemList();
 
       boolean isPrimitive = false;
       if (!valueList.isEmpty()) {
-        if (valueList.get(0).isPresentExpression()) {
-          if (valueList.get(0).getExpression() instanceof ASTLiteralExpression) {
+        if (GUIDSLMill.typeDispatcher().isSetExpressionsASTSetValueItem(valueList.get(0))) {
+          ASTSetValueItem val = GUIDSLMill.typeDispatcher().asSetExpressionsASTSetValueItem(valueList.get(0));
+          if (GUIDSLMill.typeDispatcher().isExpressionsBasisASTLiteralExpression(val.getExpression())) {
             isPrimitive = true;
           }
         }
@@ -188,8 +192,8 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
           attr.getName(), setterArgs, argValueHolder, "");
 
       List<String> initValues = new ArrayList<>();
-      for (ASTGUIArgValue av : valueList) {
-        initValues.add(util.print(av.getExpression()));
+      for (ASTSetCollectionItem av : valueList) {
+        initValues.add(util.print(av));
       }
       TemplateHookPoint hp = new TemplateHookPoint(
           getInitListsTemplate(), attr.getName(), setterName, isPrimitive, initValues, iterItemArgs
@@ -217,11 +221,11 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       }
       Expression2NullCheckPrinter nullCheckPrinter = new Expression2NullCheckPrinter(getterPrinter);
 
-      String nullCheck = nullCheckPrinter.prettyprint(namedArg.getGUIArgValue());
-      String getterValue = getterPrinter.prettyprint(namedArg.getGUIArgValue());
+      String nullCheck = nullCheckPrinter.prettyprint(namedArg.getExpression());
+      String getterValue = getterPrinter.prettyprint(namedArg.getExpression());
 
       Function<String, String> conversion = getConversion(decoratedClass,
-          paramSTE, namedArg.getGUIArgValue().getExpression(), true);
+          paramSTE, namedArg.getExpression(), true);
       // TODO AGe: explicit gem lists when domain typed lists are used as an input
       if (!paramType.contains("GemList")) {
         getterValue = conversion.apply(getterValue);
@@ -232,14 +236,14 @@ public class GUI2JavaComponentDecorator extends GUIAbstractDecorator {
       addGetComponentMethod(decoratedClass, getterName, paramType,
           getterValue, iterItemArgs, nullCheck);
       if (paramSym.get().isIsReference()) {
-        String setterValue = setterPrinter.prettyprint(namedArg.getGUIArgValue());
+        String setterValue = setterPrinter.prettyprint(namedArg.getExpression());
         List<String> setterArgs = new ArrayList<>();
         // TODO AGe: clean up
         String valueConversion = Expression2SetterPrinter.SETTER_PARAM + "4Conv";
         setterArgs.add(paramType + " " + valueConversion);
         setterArgs.addAll(iterItemArgs);
         conversion = getConversion(
-            decoratedClass, paramSTE, namedArg.getGUIArgValue().getExpression(), false
+            decoratedClass, paramSTE, namedArg.getExpression(), false
         );
         valueConversion = "var " + Expression2SetterPrinter.SETTER_PARAM + " = " + conversion.apply(valueConversion);
         addSetComponentMethod(getSetterReplacedTemplate(), decoratedClass, setterName, paramType,

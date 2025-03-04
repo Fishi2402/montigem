@@ -8,28 +8,22 @@ plugins {
   id 'maven-publish'
   id 'de.monticore.generator' version "$mc_version"
   id 'com.github.johnrengelman.shadow' version "$shadow_plugin_version"
-  id 'java-gradle-plugin'
 
   id 'de.monticore.language-server' version "$mclsg_version"
+  // this is needed for the intellij plugin, even though it has its own gradle subproject
   id 'org.jetbrains.intellij' version '1.13.3' apply(false)
   id "io.github.themrmilchmann.ecj" version "0.2.0"
 }
 
-def shouldBuildIntelliJPlugin = ("true").equals(getProperty('buildIntelliJPlugin'))
 def shouldBuildVscodePlugin = ("true").equals(getProperty('buildVscodePlugin'))
-
-if(shouldBuildIntelliJPlugin) {
-  apply plugin: "org.jetbrains.intellij"
-  intellij.version = "2022.2"
-}
 
 configurations {
   guiDefaultTypes
+  languageServer
 }
 
 dependencies {
   implementation group: 'de.monticore.lang', name: 'ocl', version: mc_version
-  implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
   implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version
   implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
   implementation group: 'de.monticore', name: 'class2mc', version: mc_version
@@ -48,12 +42,18 @@ dependencies {
   implementation group: 'org.jsweet', name: 'jsweet-core', version: "6.3.0"
   implementation group: 'de.rwth.se.umlp.jsweet', name: 'jsweet-transpiler', version: '3.2.0-UMLP-SNAPSHOT'
 
+  // LSP dependencies
+  implementation 'org.slf4j:slf4j-api:1.7.7'
+  implementation 'ch.qos.logback:logback-classic:1.5.16'
+  compileOnly 'org.gradle:gradle-tooling-api:7.6'
+  testImplementation 'org.gradle:gradle-tooling-api:7.6'
+  languageServer 'org.gradle:gradle-tooling-api:7.6'
+
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit_version
   testImplementation group: 'com.github.javaparser', name: 'javaparser-symbol-solver-core', version: javaparser_version
   testImplementation group: 'org.mockito', name: 'mockito-inline', version: mockito_version
   testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.11.2")
-  testRuntimeOnly gradleApi()
 
   grammar("de.monticore.lang:cd4analysis:$mc_version")
   grammar("de.monticore:monticore-grammar:$mc_version")
@@ -73,8 +73,8 @@ repositories {
     url repo
   }
   mavenCentral()
-  if(shouldBuildIntelliJPlugin) {
-    maven { url 'https://www.jitpack.io' }
+  maven {
+    url = "https://repo.gradle.org/gradle/libs-releases/"
   }
  }
 
@@ -105,9 +105,6 @@ task autoconfigure(type: AutoconfigureTask) {
     member("UMLP", "umlp", true)
     member("de.monticore.GUIDSL", "gui", false)
     modelPath = ["$projectDir/src/main/grammars"]
-    if(shouldBuildIntelliJPlugin) {
-      including(TaskTypes.INTELLIJ_PLUGIN)
-    }
     if(shouldBuildVscodePlugin){
       including(TaskTypes.VSCODE_PLUGIN)
     }
@@ -115,38 +112,11 @@ task autoconfigure(type: AutoconfigureTask) {
 }
 tasks.build.dependsOn tasks.named('autoconfigure')
 
-task printConfigs(){
-  doLast{
-    configurations.each {
-      if(it.name.equals("grammarSymbolDependencies") && it.canBeResolved){
-        println("${it.name} , resolved: ${it.canBeResolved}, consumed: ${it.canBeConsumed}")
-        try{
-          it.resolve().each{
-            println(it)
-          }
-        }catch(Exception e){
-          e.printStackTrace()
-        }
-
-      }
-    }
-  }
-}
-
-if(shouldBuildIntelliJPlugin) {
-  def lspWorkdir = file("../examples/").getAbsolutePath()
-
-  runIde {
-    environment.put("LSP_PORT", "3000")
-    args += lspWorkdir
-  }
-
-tasks.register('runLsp', JavaExec) {
-    classpath tasks.packUMLPWithGUILanguageServer.archiveFile.get().asFile
-    args("-port", "3000", "-r", "-mp", lspWorkdir, "-mup")
-    environment("LSP_SYSTEM_EXIT", "false")
-    dependsOn tasks.packUMLPWithGUILanguageServer
-  }
+packUMLPWithGUILanguageServer{
+  exclude("org/apache/log4j/**")
+  exclude("jsweet/**")
+  exclude("standalone/**")
+  from(configurations.languageServer.resolve().collect { project.zipTree(it)})
 }
 
 if(shouldBuildVscodePlugin) {
@@ -219,9 +189,6 @@ shadowJar { // all in one jar
 jar.dependsOn(sourcesJar)
 // jar.dependsOn(shadowJar)
 
-gradlePlugin {
-}
-
 /////////////////////////   Deployment  //////////////////////////////////
 
 // configure deployment
@@ -233,5 +200,13 @@ publishing {
     def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-releases/"
     def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-snapshots/"
     url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+  }
+}
+
+publishing {
+  publications {
+    maven(MavenPublication) {
+      from components.java
+    }
   }
 }

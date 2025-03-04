@@ -5,6 +5,15 @@ plugins {
   id "de.rwth.se.umlp-tool-frontend-test"  // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
 }
 
+// TODO AHe: needed?
+// ALus local gradle is apparently unaware of these versions?
+// Explicitly use the local login module
+//configurations.all {
+//  resolutionStrategy.dependencySubstitution {
+//    substitute module("umlp.modules:login") using project(":modules:login")
+//    substitute module("umlp.modules.login:frontendTS") using project(":modules:login:frontendTS")
+//  }
+//}
 
 dependencies {
   umlpModules("umlp.modules:login:$version") // Load generator modifications
@@ -12,16 +21,6 @@ dependencies {
 //  umlpModulesDomainSymbols("umlp.modules:login:$version") // frontend domain symbols
 //  umlpModulesModels("umlp.modules:login:$version") // and models itself
 }
-
-// ALus local gradle is apparently unaware of these versions?
-// Explicitly use the local login module
-configurations.all {
-  resolutionStrategy.dependencySubstitution {
-    substitute module("umlp.modules:login") using project(":modules:login")
-    substitute module("umlp.modules.login:frontendTS") using project(":modules:login:frontendTS")
-  }
-}
-
 
 node {
   nodeProjectDir = file("${buildDir}/frontendGen")

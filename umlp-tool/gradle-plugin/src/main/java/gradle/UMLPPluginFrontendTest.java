@@ -1,7 +1,6 @@
 package gradle;
 
 import gradle.common.CheckDirEqualityTask;
-import gradle.specific.UMLPBackendTask;
 import gradle.specific.UMLPFrontendTask;
 import gradle.specific.UMLPGuiGenTask;
 import org.gradle.api.Plugin;

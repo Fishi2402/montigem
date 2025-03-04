@@ -1,5 +1,6 @@
 import groovy.json.JsonBuilder
 import groovy.json.JsonGenerator
+import java.util.regex.Pattern
 
 // this file drives the MultiProjectLanguageServer's capability to read the project structure
 // from gradle state instead of a manifest file. This cannot be done in automatic testing from
@@ -38,17 +39,65 @@ allprojects {
         if(it.class.name.contains("UMLPBackendTask")){
           try{
             def subproj = new MCLSMultiprojectPluginExtension.SubprojectLayoutExtension();
-            def model = it.getInput().getFiles().findAll {it.name.endsWith(".umlp")}[0]
+            def model = it.getInput().getAsFileTree().getFiles().findAll {it.name.endsWith(".umlp")}[0]
 
             if(model != null){
+              // Extract package
+              def modelText = model.text
+              def matcher = Pattern.compile("^\\s*package\\s+([\\w\\.]+)", Pattern.MULTILINE).matcher(modelText)
+              def packName = matcher.find() ? matcher.group(1) : null
+
               subproj.name = model.parentFile.parentFile.name
               subproj.projectpath = model.parentFile.parentFile.toString()
-              subproj.resources = null // all
-              subproj.modelDirs = it.getModelDir().getFiles().collect { it.toString() }
+              List<String> resources = new ArrayList<>()
+
+              resources.addAll(it.getModelDir().getFiles().collect { it.toString() })
+
+              if(packName == null){
+                resources.add(model.parentFile.toString())
+              } else {
+                File f = model
+                for(String part : packName.split("[.]")){
+                  f = model.parentFile
+                }
+                resources.add(f.toString())
+              }
+
+              subproj.resources = resources.toArray(new String[0])
+              subproj.modelDirs = []
               rootProject.ext.subprojectCollection << subproj
+
+              if(project.path.endsWith(":backend")){
+                def frontendPath = project.path.substring(0, project.path.lastIndexOf(':')) + ":frontend"
+                println("Searching frontend under " + frontendPath)
+                def frontend = findProject(frontendPath)
+                if(frontend != null){
+                  println("Found frontend")
+                  Configuration config = frontend.configurations.findByName("guiLib")
+                  if(config != null){
+                    println("Found config")
+                    subproj.symbolPath = config.files.collect{ it.toString() }.toArray(new String[0])
+                    println(subproj.symbolPath)
+                  }else{
+                    println("Did not find config")
+                  }
+                }else{
+                  println("Did not find frontend")
+                }
+              }else{
+                println("Project path '${project.path}' does not end with :backend")
+              }
+
+              def generator = new groovy.json.JsonGenerator.Options()
+                  .excludeFieldsByName('contentHash', 'originalClassName')
+                  .build()
+
+              println(new JsonBuilder(subproj, generator))
+            } else {
+              println("Can not find model, input files where " + it.getInput().getFiles())
             }
           }catch(Exception e){
-            // Ignore
+            e.printStackTrace()
           }
         }
       }
@@ -138,6 +187,15 @@ class MCLSMultiprojectPluginExtension {
     public String projectpath = "";
     public String[] resources = [];
     public String[] modelDirs = [];
+    public String[] symbolPath = [];
+
+    String[] getSymbolPath(){
+      return symbolPath;
+    }
+
+    void setSymbolPath(String[] symbolPath){
+      this.symbolPath = symbolPath
+    }
 
     String[] getModelDirs() {
       return modelDirs
@@ -148,7 +206,7 @@ class MCLSMultiprojectPluginExtension {
     }
 
     String[] getResources() {
-      return resources
+      return this.resources
     }
 
     void setResources(String[] resources) {

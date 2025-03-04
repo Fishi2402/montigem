@@ -18,19 +18,20 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl.GUIDSLMill;
-import de.monticore.guidsl._ast.ASTGUIArgValue;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.monticore.guidsl._ast.ASTGUIGuard;
 import de.monticore.guidsl._ast.ASTGUIIterate;
-import de.monticore.guidsl._ast.ASTGUIList;
 import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._ast.ASTGUIParam;
 import de.monticore.guidsl._ast.ASTGUIShortIterateControl;
 import de.monticore.guidsl._symboltable.BuiltInTypes;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
+import de.monticore.ocl.setexpressions._ast.ASTSetCollectionItem;
+import de.monticore.ocl.setexpressions._ast.ASTSetEnumeration;
+import de.monticore.ocl.setexpressions._visitor.SetExpressionsVisitor2;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
@@ -71,7 +72,8 @@ import java.util.function.Function;
  * Turn a GUI AST into a CD AST containing one class. The class manages component state and
  * implements some logic, such as navigation to pages, creation of objects, etc.
  */
-public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSLVisitor2, CommonExpressionsVisitor2 {
+public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSLVisitor2,
+    CommonExpressionsVisitor2, SetExpressionsVisitor2 {
 
   public static final String GUARD_ARG = "condition";
   public static final String ITERATE_ARG = "iterable";
@@ -90,6 +92,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     traverser = GUIDSLMill.traverser();
     traverser.add4GUIDSL(this);
     traverser.add4CommonExpressions(this);
+    traverser.add4SetExpressions(this);
   }
 
   protected void resetHooks() {
@@ -199,6 +202,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
     // add wait external value attr
     String waitName = addWaitAttr(name);
+    String externInitName = addExternInitAttr(name);
 
     // add setter
     String setterName = "set" + StringTransformations.capitalize(node.getName());
@@ -217,7 +221,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       if (dep.isPresent()) {
         dep.get().setInitMethod(new MethodTemplate(
             getInitParamSingletonTemplate(), type, name, manager,
-            initName, setExternName, waitName
+            initName, setExternName, externInitName
         ));
       }
     }
@@ -230,7 +234,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         if (dep.isPresent()) {
           dep.get().setInitMethod(new MethodTemplate(
               getInitDerivedDomainParamTemplate(), type, name, manager,
-              initName, setExternName, waitName
+              initName, setExternName, externInitName
           ));
         }
       }
@@ -243,7 +247,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         if (dep.isPresent()) {
           dep.get().setInitMethod(new MethodTemplate(
               getInitDomainParamTemplate(), type, name, manager, id,
-              initName, setExternName, waitName, util.isAbstractDomainType(typeSTE)
+              initName, setExternName, externInitName, util.isAbstractDomainType(typeSTE)
           ));
         }
       }
@@ -304,7 +308,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         // add init
         dep.get().setInitMethod(new MethodTemplate(
             getInitDomainListTemplate(), innerType, name, manager,
-            initName, setExternName, waitName
+            initName, setExternName, externInitName
         ));
       }
     }
@@ -319,13 +323,17 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       if (dep.isPresent()) {
         dep.get().setInitMethod(new MethodTemplate(
             getInitDefaultParamTemplate(), name, value,
-            initName, setExternName, waitName, getterName, setterName
+            initName, setExternName, externInitName, getterName, setterName
         ));
       }
     }
   }
 
   protected String addWaitAttr(String attrName) {
+    return "";
+  }
+
+  protected String addExternInitAttr(String attrName) {
     return "";
   }
 
@@ -375,8 +383,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       );
       Expression2NullCheckPrinter nullCheckPrinter = new Expression2NullCheckPrinter(getterPrinter);
 
-      String nullCheck = nullCheckPrinter.prettyprint(arg.getGUIArgValue());
-      String getterValue = getterPrinter.prettyprint(arg.getGUIArgValue());
+      String nullCheck = nullCheckPrinter.prettyprint(arg.getExpression());
+      String getterValue = getterPrinter.prettyprint(arg.getExpression());
 
       List<ASTCDParameter> params = getIterationItemParameters(arg);
 
@@ -419,22 +427,14 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       else {
         String returnValue = Expression2SetterPrinter.SETTER_PARAM;
         String conv = "";
-        if (arg.getGUIArgValue().isPresentExpression()) {
-          // example: `String val = date2String(this.getPerson().getBirthday())`
-          conv = getConvertedValueAssignment(
-              printType(createTypeAndAddImports(typeSTE)),
-              returnValue,
-              getConversion(typeSTE, util.getType(arg.getGUIArgValue().getExpression()))
-                  .apply(getterValue)
-          );
-        }
-        else {
-          conv = getConvertedValueAssignment(
-              printType(createTypeAndAddImports(typeSTE)),
-              returnValue,
-              getterValue
-          );
-        }
+        // example: `String val = date2String(this.getPerson().getBirthday())`
+        conv = getConvertedValueAssignment(
+            printType(createTypeAndAddImports(typeSTE)),
+            returnValue,
+            getConversion(typeSTE, util.getType(arg.getExpression()))
+                .apply(getterValue)
+        );
+
         // add getter
         getCD4C().addMethod(
             clazz, getArgGetterWithConversionTemplate(),
@@ -447,23 +447,22 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         String target = "conv_" + Expression2SetterPrinter.SETTER_PARAM;
         String value = Expression2SetterPrinter.SETTER_PARAM;
         String conv = "";
-        Optional<String> setterValue = Optional.ofNullable(setterPrinter.prettyprint(arg.getGUIArgValue()));
+        Optional<String> setterValue = Optional.ofNullable(setterPrinter.prettyprint(arg.getExpression()));
         if (this.getClass().getSimpleName().equals("GUI2JavaClassDecorator") && (setterValue.isEmpty() || "null".equals(setterValue.get()))) {
           setterValue = Optional.of(value + " = " + value);
         }
-        if (arg.getGUIArgValue().isPresentExpression()) {
-          SymTypeExpression left = util.getType(arg.getGUIArgValue().getExpression());
-          String convType;
-          if (left.isNullType()) {
-            convType = "Object";
-          }
-          else {
-            convType = printType(createTypeAndAddImports(left));
-          }
-          // example: `Date val_$ = string2Date(val)`
-          conv = getConvertedValueAssignment(
-              convType, value, getConversion(left, typeSTE).apply(target));
+        SymTypeExpression left = util.getType(arg.getExpression());
+        String convType;
+        if (left.isNullType()) {
+          convType = "Object";
         }
+        else {
+          convType = printType(createTypeAndAddImports(left));
+        }
+        // example: `Date val_$ = string2Date(val)`
+        conv = getConvertedValueAssignment(
+            convType, value, getConversion(left, typeSTE).apply(target));
+
         getCD4C().addMethod(
             clazz, getArgSetterWithConversionTemplate(),
             type, name, nullCheck, setterValue.orElse(null), conv, params
@@ -595,7 +594,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
    * @param node GUIList AST node
    */
   @Override
-  public void endVisit(ASTGUIList node) {
+  public void endVisit(ASTSetEnumeration node) {
     // a GUIList requires preprocessing and extra information for code generation
     Map<ASTNode, Attribute> node2Attr = StaticObjectsCollector
         .getInstance().getNode2Attr();
@@ -623,7 +622,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
             new IndentPrinter(), false, new ArrayList<>(), new ArrayList<>()
         );
         List<String> listItems = new ArrayList<>();
-        for (ASTGUIArgValue val : node.getGUIArgValueList()) {
+        for (ASTSetCollectionItem val : node.getSetCollectionItemList()) {
           listItems.add(getterPrinter.prettyprint(val));
         }
 
@@ -653,7 +652,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
             new IndentPrinter(), false, iterateItems, nonClassMembers
         );
         List<String> listItems = new ArrayList<>();
-        for (ASTGUIArgValue val : node.getGUIArgValueList()) {
+        for (ASTSetCollectionItem val : node.getSetCollectionItemList()) {
           listItems.add(getterPrinter.prettyprint(val));
         }
 

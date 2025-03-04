@@ -2,7 +2,6 @@
 package umlp.generator.gui;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
 import de.monticore.expressions.commonexpressions._ast.ASTBooleanAndOpExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTBooleanNotExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTBooleanOrOpExpression;
@@ -26,23 +25,13 @@ import de.monticore.expressions.commonexpressions._ast.ASTPlusPrefixExpression;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsHandler;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsTraverser;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;
-import de.monticore.expressions.expressionsbasis.ExpressionsBasisMill;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor2;
 import de.monticore.guidsl.GUIDSLMill;
-import de.monticore.guidsl._ast.ASTGUIArgValue;
-import de.monticore.guidsl._ast.ASTGUINamedArg;
-import de.monticore.guidsl._symboltable.BuiltInTypes;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
-import de.monticore.types.check.SymTypeExpression;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 
 public abstract class ExpressionReplaceSearchVisitor implements GUIDSLVisitor2, ExpressionsBasisVisitor2, CommonExpressionsVisitor2, CommonExpressionsHandler {
 
@@ -71,10 +60,13 @@ public abstract class ExpressionReplaceSearchVisitor implements GUIDSLVisitor2, 
     // do not throw error
   }
 
-  @Override
-  public void visit(ASTGUIArgValue node) {
-    potentialHolder = Map.entry(node, node.getExpression());
-  }
+// TODO: Die Methode konnte vorher eigentlich nicht richtig funktionieren,
+// da node.getExpression u.U. null ist
+//  @Override
+//  public void visit(ASTGUIArgValue node) {
+//    potentialHolder = Map.entry(node, node.getExpression());
+//  }
+
 
   @Override
   public void visit(ASTFieldAccessExpression node) {

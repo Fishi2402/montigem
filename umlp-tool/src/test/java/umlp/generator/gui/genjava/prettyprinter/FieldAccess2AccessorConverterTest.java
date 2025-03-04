@@ -40,12 +40,12 @@ public class FieldAccess2AccessorConverterTest extends DomainGUITest {
 
     String expect1 = removeSpaces("getName()");
     String result1 = removeSpaces(conv.attr2GetterCall((ASTFieldAccessExpression)
-        comp1.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression()
+        comp1.getGUINamedArgs().getGUINamedArg(0).getExpression()
     ));
 
     String expect2 = removeSpaces("isEmployed()");
     String result2 = removeSpaces(conv.attr2GetterCall((ASTFieldAccessExpression)
-        comp2.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue().getExpression()
+        comp2.getGUINamedArgs().getGUINamedArg(0).getExpression()
     ));
 
     assertAll(

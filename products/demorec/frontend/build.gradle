@@ -33,14 +33,6 @@ tasks.register('guiVariability', GuiVariabilityHandlerTask) {
 }
 
 genGUI {
-  dependsOn(
-      tasks.getByPath(":umlp-rte:client:createGuiSymbols"),
-      tasks.getByPath(":umlp-rte:client:createCDSymbols")
-  )
-  symbolDir = files(
-      project(":umlp-rte:client").tasks.createGuiSymbols.output,
-      project(":umlp-rte:client").tasks.createCDSymbols.output
-  )
   domainModels = ["DemoRec"]
   guiCreateModels = ["gui.pack.PackCreate",
                      "gui.process.ProcessCreate",
