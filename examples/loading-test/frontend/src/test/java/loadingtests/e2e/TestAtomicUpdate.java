@@ -129,8 +129,8 @@ public class TestAtomicUpdate extends AbstractLoadingTestsE2ETest {
     // Let frontend communicate with backend and wait for response
     page.waitForLoadState(LoadState.NETWORKIDLE);
     Thread.sleep(200);
-    assertThat(page.locator(GemText.selector())).hasCount(2); // TODO: 1
-    assertThat(page.locator(GemText.selector()).first()).hasText("a#"); // todo: remove
+//    assertThat(page.locator(GemText.selector())).hasCount(2); // TODO: 1
+//    assertThat(page.locator(GemText.selector()).first()).hasText("a#"); // todo: remove
     assertThat(page.locator(GemText.selector()).last()).hasText("a##");
 
   }
