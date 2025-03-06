@@ -66,6 +66,7 @@ public class GetFilteredDecorator extends AbstractDeSerDecorator {
 
   protected void addConstructor(ASTCDClass ast, String classname, String packageName) {
     getCD4C().addConstructor(ast, getConstructorTemplate(), classname, "", SUFFIX, packageName);
+    getCD4C().addConstructor(ast, getConstructorWithFilterTemplate(), classname, "", SUFFIX, packageName);
   }
 
   protected String getDoRunTemplate() {
@@ -74,6 +75,10 @@ public class GetFilteredDecorator extends AbstractDeSerDecorator {
 
   protected String getConstructorTemplate() {
     return "umlp.commands.get_filtered.Constructor";
+  }
+
+  protected String getConstructorWithFilterTemplate() {
+    return "umlp.commands.get_filtered.ConstructorWithFilter";
   }
 
   protected ASTCDClass createDeSer(ASTCDCompilationUnit origCD, ASTCDType domainType) {

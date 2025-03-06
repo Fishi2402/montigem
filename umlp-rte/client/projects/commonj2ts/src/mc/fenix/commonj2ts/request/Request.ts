@@ -1,8 +1,16 @@
 import {Command} from '../command/Command';
 
 export abstract class Request<T> extends Command<T> {
-  constructor(commandType: string) {
+
+  private filter: string;
+
+  public constructor(commandType: string, filter?: string) {
     super(commandType);
+    this.filter = filter;
+  }
+
+  public getFilter(): string {
+    return this.filter;
   }
 
   /**
