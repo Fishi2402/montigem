@@ -8,7 +8,6 @@ dependencies {
 
 // TODO: Proper outputs: Turn this Java-Task into a proper task
 // TODO: CLI Options
-// TODO: The reports are currently hand-copied - publ
 
 abstract class DSL2CDTask extends JavaExec {
   @InputFile  abstract RegularFileProperty getDSLCD();

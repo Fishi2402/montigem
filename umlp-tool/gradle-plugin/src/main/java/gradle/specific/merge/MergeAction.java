@@ -9,14 +9,17 @@ import de.monticore.umlstereotype.UMLStereotypeMill;
 import de.se_rwth.commons.logging.Log;
 import org.gradle.internal.FileUtils;
 import org.gradle.workers.WorkAction;
+import umlp.UMLPMill;
 import umlp.UMLPTool;
 import umlp._prettyprint.UMLPFullPrettyPrinter;
+import umlp._symboltable.IUMLPScope;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -33,12 +36,13 @@ public abstract class MergeAction implements WorkAction<MergeActionParameter> {
     GradleLog.init();
     try {
 
+      List<IUMLPScope> scopes = new ArrayList<>();
       // Parse and convert to CDCompilationUnit
       List<ASTCDCompilationUnit> models = inputFiles.stream()
           .sorted((f1, f2) -> f2.getName().compareTo(f1.getName()))
           .map(File::toPath)
           .map(Path::toAbsolutePath)
-          .map(MergeAction::parseAndCheck)
+          .map(path -> parseAndCheck(path, scopes))
           .collect(Collectors.toList());
 
       String outputModelName = FileUtils.removeExtension(outputFile.getName());
@@ -81,14 +85,18 @@ public abstract class MergeAction implements WorkAction<MergeActionParameter> {
     }
   }
 
-  protected static ASTCDCompilationUnit parseAndCheck(Path absolutePath) {
-    UMLPTool tool = new UMLPTool();
+  protected static ASTCDCompilationUnit parseAndCheck(Path absolutePath, List<IUMLPScope> previousArtifactScopes) {
+    UMLPTool tool = new UMLPTool(); // implicitly does a Mill.init
+
+    for (var p : previousArtifactScopes)
+      UMLPMill.globalScope().addSubScope(p);
 
     ASTCDCompilationUnit result = tool.parse(absolutePath.toString());
 
     tool.runAfterParseTrafo(result);
-    tool.createSymbolTable(result);
+    var as = tool.createSymbolTable(result);
     tool.runDefaultCoCos(result);
+    previousArtifactScopes.add(as);
 
     return result;
   }
