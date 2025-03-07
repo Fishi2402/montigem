@@ -1,6 +1,7 @@
 package loadingtests;
 
 import de.se_rwth.commons.logging.Log;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -24,13 +25,16 @@ public class LoadingTestsServerApplication extends LoadingTestsServerApplication
     SpringApplication.run(LoadingTestsServerApplication.class, args);
   }
 
+  @Value("${umlp.e2etest:false}")
+  private String isE2ETest;
+
   @PostConstruct
   @Override
   public void init() throws IOException {
     super.init();
 
-    boolean runOutsideTest =false;
-    if(runOutsideTest) {
+    boolean runOutsideTest = isE2ETest == null;
+    if(isE2ETest == null || !isE2ETest.equals("true")) {
       createDummyData(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
     }
   }
