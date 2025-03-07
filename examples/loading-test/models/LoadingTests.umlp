@@ -64,5 +64,13 @@ classdiagram LoadingTests {
     String name;
   }
 
+  public class LeftSide {
+    String label;
+  }
+  public class RightSide {
+    String label;
+  }
+  association [0..1] LeftSide (connectedLeft) <-> (connectedRight) RightSide [0..1];
+
 
 }

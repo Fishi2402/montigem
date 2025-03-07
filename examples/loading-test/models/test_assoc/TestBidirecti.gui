@@ -1,0 +1,29 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test_assoc;
+
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
+
+
+import LoadingTests.LeftSide;
+import LoadingTests.RightSide;
+
+page TestBidirecti(LeftSide l, RightSide r) {
+  @GemText(value="left: " + l.label);
+  @guard(l.connectedRight != null) {
+    @GemText(value="  -> : " + l.connectedRight.label);
+  }
+
+    @GemText(value="right: " + r.label);
+    @guard(r.connectedLeft != null) {
+      @GemText(value="  <- : " + r.connectedLeft.label);
+    }
+
+  @GemButton(label = "Connect from left", leftClick = connectToLeft(l, r));
+  @GemButton(label = "Connect from right", leftClick = connectToRight(l, r));
+
+
+  @GemButton(label = "Disconnect from left", leftClick = disconnectFromLeft(l));
+  @GemButton(label = "Disconnect from right", leftClick = disconnectFromRight(r));
+
+}
