@@ -39,6 +39,7 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
   private messages: Map<number, Subject<CommandResult<any>>> = new Map();
 
   private commandObserver: Array<CommandReceiveObserver> = [];
+  private commandObserverChain: Promise<any> = Promise.resolve();
   private commandResultObserver: Array<CommandResultReceiveObserver> = [];
 
   private socket: WebSocketSubject<any>;
@@ -256,11 +257,14 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
       } else if (commandOptional != null) {
         //Fall Antwort eines Erhalt eines weitergeleiteten Commands zur Datensynchronisierung
         let finalCommandOptional: Command<Object> = commandOptional;
-        // this.executor.submit(() => {
-        for (const consumer of this.commandObserver) {
-          consumer(finalCommandOptional);
-        }
-        // });
+        // Mutex
+        this.commandObserverChain = this.commandObserverChain.then(() => {
+          return this.commandObserver.reduce((prevPromise, consumer) => {
+            return prevPromise.then(() => {
+              return consumer(finalCommandOptional);
+            });
+          }, Promise.resolve());
+        });
       }
     }
   }

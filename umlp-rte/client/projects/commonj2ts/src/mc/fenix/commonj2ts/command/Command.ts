@@ -38,13 +38,13 @@ export abstract class Command<T> {
     this.commandType = commandType;
   }
 
-  public doRun(): Promise<CommandResult<T>> {
+  public async doRun(): Promise<CommandResult<T>> {
     if (!this.checkAccessPolicy()) {
-      return Promise.resolve(<CommandResult<T>><unknown>new SimpleResult().createFromObject(this.getId(), LoadingState.NOT_AUTHORIZED, this.commandType));
+      return <CommandResult<T>><unknown>new SimpleResult().createFromObject(this.getId(), LoadingState.NOT_AUTHORIZED, this.commandType);
     } else if (!this.checkContract()) {
-      return Promise.resolve(<CommandResult<T>><unknown>new SimpleResult().createFromLoadingState(this.getId(), LoadingState.FAILED_TO_LOAD, this.commandType));
+      return <CommandResult<T>><unknown>new SimpleResult().createFromLoadingState(this.getId(), LoadingState.FAILED_TO_LOAD, this.commandType);
     } else {
-      return Promise.resolve(this.doAction());
+      return this.doAction();
     }
   }
 
