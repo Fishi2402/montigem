@@ -65,6 +65,14 @@ public class LoadingTestsServerApplication extends LoadingTestsServerApplication
     Animal tango = createAnimal("tango", 2, Set.of(fA));
     animalGemIds.add(tango.getGemId());
     LoadingTestsManager.getUpdateListHelper().setTestAnimal(tango);
+
+    // Bidirectional assoc
+    LeftSide leftSide = LoadingTestsManager.leftSideBuilder().label("L 1").build().get();
+    RightSide rightSide = LoadingTestsManager.rightSideBuilder().label("R 1").build().get();
+
+    leftSide.setConnectedRight(rightSide);
+
+    System.err.println("### Left" + leftSide.gemId);
   }
 
   public static Person createPerson(String name, int age, Set<Animal> animalSet) {

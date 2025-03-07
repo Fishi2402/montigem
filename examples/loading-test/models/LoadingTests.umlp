@@ -72,5 +72,10 @@ classdiagram LoadingTests {
   }
   association [0..1] LeftSide (connectedLeft) <-> (connectedRight) RightSide [0..1];
 
+  //public interface MyBetterInterface extends MyInterface {}
+  //public class MyBetterInterfaceImpl implements MyBetterInterface {
+  //    String name;
+  //}
+
 
 }
