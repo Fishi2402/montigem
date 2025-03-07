@@ -31,8 +31,8 @@ public class TestBidirectAssoc extends AbstractLoadingTestsE2ETest {
 
     page.onConsoleMessage(cm -> System.out.println("[BROWSER] " + cm.text()));
 
-    Assertions.assertNotEquals(0, this.rightSide.getGemId());
-    Assertions.assertNotEquals(0, this.leftSide.getGemId());
+    Assertions.assertNotEquals(-1, this.rightSide.getGemId());
+    Assertions.assertNotEquals(-1, this.leftSide.getGemId());
     Assertions.assertNotEquals(this.leftSide.getGemId(), this.rightSide.getGemId());
   }
 
