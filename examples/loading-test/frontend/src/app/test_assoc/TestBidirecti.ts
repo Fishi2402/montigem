@@ -28,7 +28,6 @@ export class TestBidirecti extends TestBidirectiComponent {
   public disconnectFromLeft(l: LeftSide): Event<void> {
     return () => {
       l.setConnectedRightAbsent1();
-      console.warn("LL" + l.isPresentConnectedRight())
     }
   }
 

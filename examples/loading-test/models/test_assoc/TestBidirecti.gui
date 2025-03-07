@@ -7,8 +7,9 @@ import mc.fenix.basic.GemButton;
 
 import LoadingTests.LeftSide;
 import LoadingTests.RightSide;
+import LoadingTests.Sides; // We load a Sides, with an inner leftSide (with an absent inner element)
 
-page TestBidirecti(LeftSide l, RightSide r) {
+page TestBidirecti(LeftSide l, RightSide r, List<Sides> allSides) {
   @GemText(value="left: " + l.label);
   @guard(l.connectedRight != null) {
     @GemText(value="  -> : " + l.connectedRight.label);
@@ -25,5 +26,9 @@ page TestBidirecti(LeftSide l, RightSide r) {
 
   @GemButton(label = "Disconnect from left", leftClick = disconnectFromLeft(l));
   @GemButton(label = "Disconnect from right", leftClick = disconnectFromRight(r));
+
+  @iterate(Sides s : allSides){ @GemText(value="loaded an outer^2 element with an absent leftside child");  }
+
+
 
 }

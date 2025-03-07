@@ -73,6 +73,8 @@ public class LoadingTestsServerApplication extends LoadingTestsServerApplication
     leftSide.setConnectedRight(rightSide);
 
     System.err.println("### Left" + leftSide.gemId);
+
+    LoadingTestsManager.sidesBuilder().left(LoadingTestsManager.leftSideBuilder().label("inner").build().get()).build();
   }
 
   public static Person createPerson(String name, int age, Set<Animal> animalSet) {

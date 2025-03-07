@@ -27,6 +27,11 @@ public class TestBidirectAssoc extends AbstractLoadingTestsE2ETest {
     this.leftSide = LoadingTestsManager.leftSideBuilder().label("L 1").build().get();
     this.rightSide = LoadingTestsManager.rightSideBuilder().label("R 1").build().get();
 
+    // Load something with an absent optional
+    // Load something with an absent optional
+    // Ensure, the empty LeftSide is not actually marked as loaded, breaking everything
+    LoadingTestsManager.sidesBuilder().left(LoadingTestsManager.leftSideBuilder().label("inner").build().get()).build();
+
     leftSide.setConnectedRight(rightSide);
 
     page.onConsoleMessage(cm -> System.out.println("[BROWSER] " + cm.text()));
