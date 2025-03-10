@@ -113,6 +113,11 @@ public abstract class UMLPGuiGenTask extends UMLPAllFilesTask {
       result.add("-mp");
       result.add(handlePath.apply(getModelDir().getAsFile().get().toPath()));
     }
+    
+    if (this.getSymbolOutDir().isPresent()) {
+      result.add("-s");
+      result.add(handlePath.apply(getSymbolOutDir().getAsFile().get().toPath()));
+    }
 
     if (!this.getSymbolDir().isEmpty()) {
       for (var symDir : this.getSymbolDir()) {
