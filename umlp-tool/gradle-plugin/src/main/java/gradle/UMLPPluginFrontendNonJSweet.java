@@ -45,6 +45,7 @@ public abstract class UMLPPluginFrontendNonJSweet implements Plugin<Project> {
 
       // // Load the symbols from the .jars in the domain symbols path
       umlpTask.getSymbolDir().from(project.getConfigurations().getByName("umlpModulesDomainSymbols"));
+      umlpTask.getSymbolDir().from(project.getConfigurations().getByName("umlpModulesGuiSymbols"));
     });
 
     // task dependencies

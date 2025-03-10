@@ -37,7 +37,27 @@ public class UMLPPluginModuleJSFrontend implements Plugin<Project> {
    project.getArtifacts().add(outgoingDomainSymbols.getName(), jarTask);
    var javaComponent = (AdhocComponentWithVariants)project.getComponents().getByName("java");
    javaComponent.addVariantsFromConfiguration(outgoingDomainSymbols, ConfigurationVariantDetails::mapToOptional);
-
+    
+    // Create the gui jar
+    
+    Configuration outgoingGuiSymbols = project.getConfigurations().create("umlpOutgoingGuiSymbols");
+    outgoingGuiSymbols.setCanBeConsumed(true);
+    outgoingGuiSymbols.setCanBeResolved(false);
+    outgoingGuiSymbols.setDescription("Published gui Symbols of the module");
+    
+    addGuiSymbolsJarAttributes(outgoingGuiSymbols, project);
+    
+    TaskProvider<Jar> guiSymbolsJarTask = project.getTasks().register("createGuiSymbolsJar", Jar.class, jar -> {
+      jar.setGroup("umlp");
+      jar.getArchiveClassifier().set("guisymbols");
+      jar.from(project.getTasks().named("genGUI")).include("**/*.guisym");
+      jar.setIncludeEmptyDirs(false);
+    });
+    project.getTasks().named(BasePlugin.ASSEMBLE_TASK_NAME).configure(it->it.dependsOn(guiSymbolsJarTask));
+    
+    // Add createGuiSymbolsJar-jar as artifact to the config
+    project.getArtifacts().add(outgoingGuiSymbols.getName(), guiSymbolsJarTask);
+    javaComponent.addVariantsFromConfiguration(outgoingGuiSymbols, ConfigurationVariantDetails::mapToOptional);
 
    /// Also prepare publishing of
 
@@ -66,6 +86,15 @@ public class UMLPPluginModuleJSFrontend implements Plugin<Project> {
     config.attributes( it -> {
       it.attribute(Category.CATEGORY_ATTRIBUTE, project.getObjects().named(Category.class, Category.LIBRARY));
       it.attribute(Usage.USAGE_ATTRIBUTE, project.getObjects().named(Usage.class, "montigem-module-domain-symbols"));
+      it.attribute(Bundling.BUNDLING_ATTRIBUTE, project.getObjects().named(Bundling.class, Bundling.EXTERNAL));
+      it.attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, project.getObjects().named(LibraryElements.class, LibraryElements.JAR));
+    });
+  }
+  
+  public static void addGuiSymbolsJarAttributes(Configuration config, Project project) {
+    config.attributes( it -> {
+      it.attribute(Category.CATEGORY_ATTRIBUTE, project.getObjects().named(Category.class, Category.LIBRARY));
+      it.attribute(Usage.USAGE_ATTRIBUTE, project.getObjects().named(Usage.class, "montigem-module-gui-symbols"));
       it.attribute(Bundling.BUNDLING_ATTRIBUTE, project.getObjects().named(Bundling.class, Bundling.EXTERNAL));
       it.attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, project.getObjects().named(LibraryElements.class, LibraryElements.JAR));
     });
