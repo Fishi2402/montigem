@@ -1,7 +1,7 @@
 package loadingtests.ocl;
 
-import loadingtests.ocl.OCL2SQL;
-import loadingtests.ocl.OCLParserException;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,11 +15,14 @@ public class OCL2SQLTest {
   @BeforeEach
   public void setup() {
     OCL2SQL.init();
+    LogStub.init();
   }
 
   @Test
   public void testConvertThrows() {
+    Log.enableFailQuick(false);
     assertThrows(OCLParserException.class, () -> OCL2SQL.getInstance().convert(""));
+    Log.enableFailQuick(true);
   }
 
   @Test

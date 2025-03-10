@@ -4,16 +4,24 @@ public class QueryBuilder {
   protected String _select;
   protected String _from;
 
-  public void select(String select) {
-    this._select = select;
+  public QueryBuilder select(String... select) {
+    StringBuilder sb = new StringBuilder();
+    String sep = "";
+    for (String s : select) {
+      sb.append(s).append(sep);
+      sep = ",";
+    }
+    this._select = sb.toString();
+    return this;
   }
 
-  public void from(String from) {
+  public QueryBuilder from(String from) {
     this._from = from;
+    return this;
   }
 
   public String build() {
-    return _select + _from;
+    return "select " + _select + " from " + _from;
   }
 
 }

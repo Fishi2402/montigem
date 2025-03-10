@@ -1,8 +1,10 @@
 package loadingtests.ocl;
 
+import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.ocl.ocl.OCLMill;
 import de.monticore.ocl.ocl._parser.OCLParser;
 import de.monticore.ocl.ocl._visitor.OCLTraverser;
+import de.monticore.ocl.setexpressions._ast.ASTGeneratorDeclaration;
 import de.monticore.ocl.setexpressions._ast.ASTSetComprehension;
 import de.monticore.ocl.setexpressions._ast.ASTSetComprehensionItem;
 import de.monticore.ocl.setexpressions._visitor.SetExpressionsVisitor2;
@@ -15,7 +17,7 @@ import java.util.Optional;
 public class OCL2SQL implements SetExpressionsVisitor2 {
 
   protected static OCL2SQL instance;
-  OCLTraverser traverser;
+  protected OCLTraverser traverser;
 
   private OCL2SQL() {
     traverser = OCLMill.traverser();
@@ -37,7 +39,7 @@ public class OCL2SQL implements SetExpressionsVisitor2 {
     OCLParser parser = OCLMill.parser();
     Optional<ASTSetComprehension> ast = parser.parse_StringSetComprehension(listComprehension);
     if (ast.isPresent()) {
-      return "select * from ";
+      return new OCL2SQLVisitor().getQuery(ast.get());
     }
     else {
       StringBuilder findings = new StringBuilder();
@@ -51,10 +53,4 @@ public class OCL2SQL implements SetExpressionsVisitor2 {
     }
   }
 
-  @Override
-  public void visit(ASTSetComprehension node) {
-    for (ASTSetComprehensionItem item : node.getSetComprehensionItemList()) {
-
-    }
-  }
 }
