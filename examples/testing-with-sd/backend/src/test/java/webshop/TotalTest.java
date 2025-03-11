@@ -61,10 +61,12 @@ public class TotalTest extends WebshopSQLDBTestSetup {
     o.addItem(item);
 
     //we filter the events first to only include those, which involved the visible variables (o in our case)
+    var visibleObjects = List.<Object>of(o);
+
     var queue = StackEventQueue
         .toQueue()
         .stream()
-        .filter(event -> event.object().equals(o))
+        .filter(event -> visibleObjects.contains(event.object()))
         .collect(Collectors.toCollection(LinkedList::new));
 
     //now we perform a match complete on that queue
