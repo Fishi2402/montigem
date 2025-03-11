@@ -256,6 +256,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     else if (util.getDomainListInnerType(typeSTE).isPresent()
         && !util.isEnumType(util.getDomainListInnerType(typeSTE).get())) {
       ASTMCType innerType = createTypeAndAddImports(util.getDomainListInnerType(typeSTE).get());
+      ASTMCType simpleInnerType = getSimpleType(innerType);
       String manager = getAndImportManager(util.getDomainListInnerType(typeSTE).get().asObjectType());
 
       // add remove
@@ -264,13 +265,13 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
       // add add
       ASTCDMethodSignature add = getCD4C().addMethod(
-          clazz, getAddDomainListTemplate(), innerType, node.getName(), getterName);
+          clazz, getAddDomainListTemplate(), simpleInnerType, node.getName(), getterName);
 
       // add list item observer
       if (gui.getGUIComponentDeclaration().isPage()) {
         addDomainObserverMethods();
-        if (!subscribedManagerEvents.contains(innerType.printType())) {
-          subscribedManagerEvents.add(innerType.printType());
+        if (!subscribedManagerEvents.contains(simpleInnerType.printType())) {
+          subscribedManagerEvents.add(simpleInnerType.printType());
           addImport(PathUtil.getBackendRTECommandPath("CommandManager"));
           /*
             CommandManager.executeCommand(new Person_subscribeManagerEvents());
@@ -281,11 +282,9 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
             // Right now, we just fix the compilation errors
           } else {
             importCommand(innerType);
-            glex.addAfterTemplate(getInitBodyHookpoint(), new TemplateHookPoint(getSubscribeManagerEventsTemplate(), innerType));
+            glex.addAfterTemplate(getInitBodyHookpoint(), new TemplateHookPoint(getSubscribeManagerEventsTemplate(), simpleInnerType));
           }
         }
-
-        ASTMCType simpleInnerType = getSimpleType(innerType);
 
         // TODO: simple name clash, e.g., foo.Person and bar.Person
         // add notifyDeleted method
@@ -309,7 +308,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       if (dep.isPresent()) {
         // add init
         dep.get().setInitMethod(new MethodTemplate(
-            getInitDomainListTemplate(), innerType, name, manager,
+            getInitDomainListTemplate(), getSimpleType(innerType), name, manager,
             initName, setExternName, externInitName
         ));
       }
