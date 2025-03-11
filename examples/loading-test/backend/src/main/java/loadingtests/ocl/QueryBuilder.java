@@ -1,27 +1,48 @@
 package loadingtests.ocl;
 
-public class QueryBuilder {
-  protected String _select;
-  protected String _from;
+public abstract class QueryBuilder {
 
-  public QueryBuilder select(String... select) {
-    StringBuilder sb = new StringBuilder();
-    String sep = "";
-    for (String s : select) {
-      sb.append(s).append(sep);
-      sep = ",";
+  protected String _alias = "";
+  protected String _where = "";
+  protected boolean hasWhere = false;
+
+  public QueryBuilder as(String alias) {
+    this._alias = alias;
+    return this;
+  }
+
+  public QueryBuilder where(String where) {
+    if (!hasWhere) {
+      this._where = where;
+      hasWhere = true;
     }
-    this._select = sb.toString();
+    else {
+      this._where += " AND " + where;
+    }
     return this;
   }
 
-  public QueryBuilder from(String from) {
-    this._from = from;
-    return this;
+  public abstract String build();
+
+  protected String printAttr(String attr) {
+    if (!_alias.isBlank()) {
+      return _alias + "." + attr;
+    }
+    return attr;
   }
 
-  public String build() {
-    return "select " + _select + " from " + _from;
+  protected String printTable(String table) {
+    if (!_alias.isBlank()) {
+      return table + " " + _alias;
+    }
+    return table;
+  }
+
+  protected String printWhere() {
+    if (hasWhere) {
+      return "WHERE " + _where;
+    }
+    return "";
   }
 
 }

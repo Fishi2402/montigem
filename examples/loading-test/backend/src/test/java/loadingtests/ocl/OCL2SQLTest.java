@@ -28,8 +28,28 @@ public class OCL2SQLTest {
 
   @Test
   public void testConvert2Select() throws IOException {
-    assertEquals("select * from Person", OCL2SQL.getInstance().convert("[ p | p in Person ]"));
-    assertEquals("select * from Animal", OCL2SQL.getInstance().convert("[ a | a in Animal ]"));
+    assertEquals(
+        "SELECT p.id, p.name, p.age FROM person p",
+        collapse(OCL2SQL.getInstance().convert("[ p | p in Person ]"))
+    );
+
+    assertEquals(
+        "SELECT p.id, p.name, p.age FROM person p"
+            + " WHERE"
+            + " p.age>18 AND"
+            + " p.age<23 AND"
+            + " p.age>=15 AND"
+            + " p.age<=66 AND"
+            + " p.name=\"Alice\" AND"
+            + " p.name!=\"Bob\"",
+        collapse(OCL2SQL.getInstance().convert("[ p | p in Person,"
+            + " p.age > 18,"
+            + " p.age < 23,"
+            + " p.age >= 15,"
+            + " p.age <= 66,"
+            + " p.name == \"Alice\","
+            + " p.name != \"Bob\"]"))
+    );
 
     assertThrows(OCLException.class, () -> OCL2SQL.getInstance().convert("[ x * x | bar in Baz ]"));
     assertEquals(1, Log.getErrorCount());
@@ -61,4 +81,13 @@ public class OCL2SQLTest {
     assertTrue(Log.getFindings().get(0).getMsg().contains("0xB0006"));
   }
 
+  /**
+   * Collapse all white spaces into a single space and trim. E.g.,
+   * "  This   is \n a  test\tstring.  " -> "This is a test string."
+   * @param s String to collapse
+   * @return Trimmed string with collapsed spaces
+   */
+  protected String collapse(String s) {
+    return s.trim().replaceAll("\\s+", " ");
+  }
 }

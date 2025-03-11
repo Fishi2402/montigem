@@ -15,7 +15,7 @@ import de.monticore.ocl.setexpressions._cocos.SetExpressionsASTSetComprehensionC
 import de.se_rwth.commons.logging.Log;
 
 /**
- * Allows only simple set comprehensions, like `[ p | p in Person, p.age > 18, p.cars.size() == 2 ]`
+ * Allows only simple set comprehensions, like `[ p | p in Person, p.age > 18 ]`
  */
 public class OnlySimpleComprehensions implements SetExpressionsASTSetComprehensionCoCo {
 
@@ -48,11 +48,11 @@ public class OnlySimpleComprehensions implements SetExpressionsASTSetComprehensi
         }
         else if (right.isPresentExpression()) {
           if (!(right.getExpression() instanceof ASTLessThanExpression)
-              || !(right.getExpression() instanceof ASTLessEqualExpression)
-              || !(right.getExpression() instanceof ASTEqualsExpression)
-              || !(right.getExpression() instanceof ASTNotEqualsExpression)
-              || !(right.getExpression() instanceof ASTGreaterThanExpression)
-              || !(right.getExpression() instanceof ASTGreaterEqualExpression)
+              && !(right.getExpression() instanceof ASTLessEqualExpression)
+              && !(right.getExpression() instanceof ASTEqualsExpression)
+              && !(right.getExpression() instanceof ASTNotEqualsExpression)
+              && !(right.getExpression() instanceof ASTGreaterThanExpression)
+              && !(right.getExpression() instanceof ASTGreaterEqualExpression)
           ) {
             Log.error("0xB0006 Unsupported format: Expression on the right side of SetComprehension"
                 + " must be a comparison, like `person.age > 18` or `car.name = 'Mustang'`"

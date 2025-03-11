@@ -46,7 +46,7 @@ public class OCL2SQL implements SetExpressionsVisitor2 {
         throw new OCLException(getLogFindings());
       }
 
-      return new OCL2SQLVisitor().getQuery(ast.get());
+      return new OCL2SQLPrinter().getQuery(ast.get());
     }
     else {
       throw new OCLException("0xB0000"
