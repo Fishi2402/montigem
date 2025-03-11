@@ -65,19 +65,7 @@ public class BuilderDecorator extends AbstractDecorator {
         .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(domainClass.getName()))
         .setName(className).build();
 
-    //add needs-monitor stereotype
-    var modifier = builderClass.getModifier();
-    var stereotypeValue = UMLPMill.stereoValueBuilder()
-        .setName(MonitorDecorator.STEREOTYPE_NEEDS_MONITOR)
-        .setContent("true")
-        .build();
-
-    if (modifier.isPresentStereotype()) {
-      modifier.getStereotype().addValues(stereotypeValue);
-    } else {
-      var stereotype = UMLPMill.stereotypeBuilder().addValues(stereotypeValue).build();
-      modifier.setStereotype(stereotype);
-    }
+    MonitorDecorator.addNeedsMonitorStereotype(builderClass);
 
     List<ASTCDAttribute> attrFields = CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
         .filter(GenService::isVisibleNotDerived)

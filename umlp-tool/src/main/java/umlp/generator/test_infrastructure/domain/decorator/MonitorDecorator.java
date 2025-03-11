@@ -15,6 +15,7 @@ import umlp.generator.util.PathUtil;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -29,6 +30,28 @@ public class MonitorDecorator extends AbstractDecorator {
   public MonitorDecorator(GlobalExtensionManagement glex, ASTCDCompilationUnit redecoratedCD) {
     super(glex);
     this.redecoratedCD = redecoratedCD;
+  }
+
+  /**
+   * Adds the stereotype {@link #STEREOTYPE_NEEDS_MONITOR} with value "true" to an
+   * {@link ASTCDClass}. The value may change over time, so it shouldn't be relied upon.
+   *
+   * @param astcdClass The {@link ASTCDClass} to add the stereotype to
+   */
+  public static void addNeedsMonitorStereotype(ASTCDClass astcdClass) {
+    var modifier = astcdClass.getModifier();
+    var stereotypeValue = UMLPMill
+        .stereoValueBuilder()
+        .setName(MonitorDecorator.STEREOTYPE_NEEDS_MONITOR)
+        .setContent("true")
+        .build();
+
+    if (modifier.isPresentStereotype()) {
+      modifier.getStereotype().addValues(stereotypeValue);
+    } else {
+      var stereotype = UMLPMill.stereotypeBuilder().addValues(stereotypeValue).build();
+      modifier.setStereotype(stereotype);
+    }
   }
 
   @Override
@@ -96,6 +119,7 @@ public class MonitorDecorator extends AbstractDecorator {
                    Joiners.DOT.join(PathUtil.getTestInfrastructurePath(),
                                     "monitor",
                                     "MethodMonitor"));
+    cd4C.addImport(res, Joiners.DOT.join(PathUtil.getBackendRTECommonPath(), "Gem"));
     cd4C.addImport(res, Joiners.DOT.join(PathUtil.getBackendRTECommonPath(), "GemList"));
     cd4C.addImport(res, Joiners.DOT.join(PathUtil.getBackendRTECommonPath(), "NotificationScope"));
 
@@ -107,7 +131,8 @@ public class MonitorDecorator extends AbstractDecorator {
     return getSignatureComparedMethodsToMonitor(classToMonitor, decoratedCD)
         .stream()
         .map(SignatureComparedMethod::method)
-        .collect(Collectors.toList());
+        .collect(Collectors.toList()); //toList is acceptable here since duplicates should be
+    // filtered out earlier on
   }
 
   private Collection<SignatureComparedMethod> getSignatureComparedMethodsToMonitor(ASTCDClass classToMonitor,
@@ -119,7 +144,7 @@ public class MonitorDecorator extends AbstractDecorator {
 
     //super class
     if (classToMonitor.isPresentCDExtendUsage()) {
-      //TODO use signatures for comparison, since return type Option<? extends T> and Option<T>
+      //use signatures for comparison, since return type Option<? extends T> and Option<T>
       // are not the same but may refer to the same method
       methods.addAll(classToMonitor
                          .getCDExtendUsage()
@@ -146,9 +171,17 @@ public class MonitorDecorator extends AbstractDecorator {
   private static final class SignatureComparedMethod {
 
     private final ASTCDMethod method;
+    private final String methodName;
+    private final List<String> parameterTypeNames;
 
     public SignatureComparedMethod(ASTCDMethod method) {
       this.method = method;
+      this.methodName = method.getName();
+      this.parameterTypeNames = method
+          .getCDParameterList()
+          .stream()
+          .map(parameter -> parameter.getMCType().printType())
+          .collect(Collectors.toList());
     }
 
     public ASTCDMethod method() {
@@ -159,13 +192,15 @@ public class MonitorDecorator extends AbstractDecorator {
     public boolean equals(Object o) {
       if (o == null || getClass() != o.getClass()) return false;
       SignatureComparedMethod that = (SignatureComparedMethod) o;
-      return Objects.equals(method.getName(), that.method.getName()) &&
-             Objects.equals(method.getCDParameterList(), that.method.getCDParameterList());
+
+      //TODO is there a better builtin way to compare two methods?
+      return Objects.equals(methodName, that.methodName) &&
+             Objects.equals(parameterTypeNames, that.parameterTypeNames);
     }
 
     @Override
     public int hashCode() {
-      return Objects.hash(method.getName(), method.getCDParameterList());
+      return Objects.hash(methodName, parameterTypeNames);
     }
   }
 }
