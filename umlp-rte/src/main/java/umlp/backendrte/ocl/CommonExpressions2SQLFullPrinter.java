@@ -1,4 +1,4 @@
-package loadingtests.ocl;
+package umlp.backendrte.ocl;
 
 import de.monticore.expressions.commonexpressions._prettyprint.CommonExpressionsPrettyPrinter;
 import de.monticore.literals.mccommonliterals._prettyprint.MCCommonLiteralsPrettyPrinter;

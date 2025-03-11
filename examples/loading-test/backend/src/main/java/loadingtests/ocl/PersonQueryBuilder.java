@@ -1,5 +1,7 @@
 package loadingtests.ocl;
 
+import umlp.backendrte.ocl.QueryBuilder;
+
 public class PersonQueryBuilder extends QueryBuilder {
 
   public String build() {

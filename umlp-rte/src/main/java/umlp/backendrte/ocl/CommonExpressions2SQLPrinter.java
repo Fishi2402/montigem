@@ -1,4 +1,4 @@
-package loadingtests.ocl;
+package umlp.backendrte.ocl;
 
 import de.monticore.expressions.commonexpressions._ast.ASTEqualsExpression;
 import de.monticore.expressions.commonexpressions._prettyprint.CommonExpressionsPrettyPrinter;

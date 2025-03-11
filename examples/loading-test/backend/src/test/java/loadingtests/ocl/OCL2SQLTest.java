@@ -4,6 +4,8 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import umlp.backendrte.ocl.OCL2SQL;
+import umlp.backendrte.ocl.OCLException;
 
 import java.io.IOException;
 
@@ -19,6 +21,7 @@ public class OCL2SQLTest {
     LogStub.init();
     Log.enableFailQuick(false);
     Log.clearFindings();
+    LoadingTestsQueryBuilderMap.init();
   }
 
   @Test

@@ -1,4 +1,4 @@
-package loadingtests.ocl;
+package umlp.backendrte.ocl;
 
 import de.monticore.expressions.commonexpressions._ast.ASTEqualsExpression;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;
@@ -34,7 +34,7 @@ public class OCL2SQLPrinter implements SetExpressionsVisitor2, ExpressionsBasisV
     for (ASTSetComprehensionItem item : node.getSetComprehensionItemList()) {
       if (item.isPresentGeneratorDeclaration()) {
         String set = OCLMill.prettyPrint(item.getGeneratorDeclaration().getExpression(), false);
-        Optional<QueryBuilder> qb = new QueryBuilderMap().getBuilder(set);
+        Optional<QueryBuilder> qb = QueryBuilderMap.getInstance().getBuilder(set);
         String name = item.getGeneratorDeclaration().getName();
         if (qb.isPresent()) {
           queryBuilder = qb.get();

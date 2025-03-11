@@ -1,4 +1,4 @@
-package loadingtests.ocl;
+package umlp.backendrte.ocl;
 
 public abstract class QueryBuilder {
 

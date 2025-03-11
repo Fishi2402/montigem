@@ -1,4 +1,4 @@
-package loadingtests.ocl;
+package umlp.backendrte.ocl;
 
 import de.monticore.ocl.ocl.OCLMill;
 import de.monticore.ocl.ocl._parser.OCLParser;

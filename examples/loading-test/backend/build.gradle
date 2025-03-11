@@ -25,7 +25,6 @@ configurations {
 
 dependencies {
   guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
-  implementation group: 'de.monticore.lang', name: 'ocl', version: mc_version
 }
 
 application {
