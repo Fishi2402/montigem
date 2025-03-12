@@ -33,7 +33,7 @@ public abstract class QueryBuilder {
 
   protected String printTable(String table) {
     if (!_alias.isBlank()) {
-      return table + " " + _alias;
+      return "\""  + table + "\" " + _alias;
     }
     return table;
   }

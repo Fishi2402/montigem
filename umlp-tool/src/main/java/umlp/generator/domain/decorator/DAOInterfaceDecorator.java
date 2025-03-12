@@ -186,24 +186,6 @@ public class DAOInterfaceDecorator extends AbstractDecorator {
   }
 
 
-  // Helper Methods
-
-  protected List<ASTCDAttribute> getOptionalAttributes(ASTCDClass domainClass) {
-    return CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
-        .filter(a -> !a.getModifier().isDerived() && GenService.isOptional(a)).collect(Collectors.toList());
-  }
-
-  protected List<ASTCDAttribute> getListAttributes(ASTCDClass domainClass) {
-    return CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
-        .filter(a -> !a.getModifier().isDerived() && GenService.isList(a)).collect(Collectors.toList());
-  }
-
-  protected List<ASTCDAttribute> getNormalAttributes(ASTCDClass domainClass) {
-    return CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
-        .filter(a -> !a.getModifier().isDerived() &&
-            !GenService.isList(a) && !GenService.isOptional(a)).collect(Collectors.toList());
-  }
-
   private void addStaticImports(ASTCDType clazz) {
     // UMLP RTE
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("DatabaseAccessManager"));

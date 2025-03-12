@@ -32,12 +32,12 @@ public class OCL2SQLTest {
   @Test
   public void testConvert2Select() throws IOException {
     assertEquals(
-        "SELECT p.id, p.name, p.age FROM person p",
+        "SELECT p.id, p.name, p.age FROM \"person\" p",
         collapse(OCL2SQL.getInstance().convert("[ p | p in Person ]"))
     );
 
     assertEquals(
-        "SELECT p.id, p.name, p.age FROM person p"
+        "SELECT p.id, p.name, p.age FROM \"person\" p"
             + " WHERE"
             + " p.age>18 AND"
             + " p.age<23 AND"
