@@ -24,7 +24,7 @@ public class MA2FenixTransformTest extends FunctionStructure4FenixSQLDBTestSetup
   @Test
   public void Test1(){
     String[] args = new String[] {
-        "-mp", input1.toAbsolutePath().toString(),
+        "-i", input1.toAbsolutePath().toString(),
         "-main", "A"
     };
     MA2FenixTool.main(args);
@@ -46,7 +46,7 @@ public class MA2FenixTransformTest extends FunctionStructure4FenixSQLDBTestSetup
   @Test
   public void Test2(){
     String[] args = new String[] {
-        "-mp", input2.toAbsolutePath().toString(),
+        "-i", input2.toAbsolutePath().toString(),
         "-main", "L"
     };
     MA2FenixTool.main(args);
