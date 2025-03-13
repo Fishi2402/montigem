@@ -151,6 +151,7 @@ public class ManagerMockDecorator extends AbstractDecorator {
       getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, CLIENT_PACKAGE), domainClass.getName() + CommandSendingObserverDecorator.SUFFIX));
     } else {
       getCD4C().addMethod(managerClass, "umlp.managermock.DoGetListAbstract", name);
+      getCD4C().addMethod(managerClass, "umlp.managermock.DoGetFilteredListAbstract", name);
     }
 
     // Associations
