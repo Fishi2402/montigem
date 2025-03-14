@@ -210,8 +210,7 @@ public class UMLPToolPipelineSetup {
 
     umlpFilePipelineSetup = new UMLPFilePipelineSetup(this);
 
-    guiPipelineSetup = new GuiPipelineSetup();
-    guiPipelineSetup.createGui(this);
+    guiPipelineSetup = new GuiPipelineSetup(this);
 
     gUIRTEDataPipelineSetup = new RTEDataPipelineSetup();
     gUIRTEDataPipelineSetup.createGUIRTETypes(this);
