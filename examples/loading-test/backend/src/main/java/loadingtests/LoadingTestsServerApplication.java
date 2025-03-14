@@ -73,6 +73,8 @@ public class LoadingTestsServerApplication extends LoadingTestsServerApplication
     leftSide.setConnectedRight(rightSide);
 
     System.err.println("### Left" + leftSide.gemId);
+    LeftSide singleLeftSide = LoadingTestsManager.leftSideBuilder().label("L I 1").build().get();
+    System.err.println("### singleLeftSide" + singleLeftSide.gemId);
 
     LoadingTestsManager.sidesBuilder().left(LoadingTestsManager.leftSideBuilder().label("inner").build().get()).build();
   }
