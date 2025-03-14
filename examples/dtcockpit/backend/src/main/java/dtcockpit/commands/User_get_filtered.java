@@ -14,6 +14,10 @@ public class User_get_filtered extends User_get_filteredTOP {
     super();
   }
 
+  public User_get_filtered(String filter) {
+    super(filter);
+  }
+
   @Override
   public ListResult<Long, List<Long>> doAction() {
 
