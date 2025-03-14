@@ -59,4 +59,13 @@ classdiagram Jsweettest {
   }
   association [1] EnumTestClass -> EnumTestEnum [1];
 
+  <<singleton>>
+  class GlobalState {
+    -> (state) State [0..1];
+  }
+
+  class State {
+    String name;
+  }
+
 }

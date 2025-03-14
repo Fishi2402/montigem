@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui.test.globalstate;
+
+import gui.test.globalstate.SubState1;
+import gui.test.globalstate.SubState2;
+
+page TestGlobalState () {
+  state1@SubState1();
+  state2@SubState2();
+}
