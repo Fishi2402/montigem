@@ -7,6 +7,8 @@ ${tc.signature("name", "delegateFlag")}
 <#else>
   ${cd4c.method("protected Gem<${name}> _doCreate${name}Gem(long gemId)")}
 
+  if (gemId == -1) return new Gem(); // For optionals, do not actually load the EMPTY gem - TODO: ensure this does not break syncing
+
   return new Gem<${name}>().Gem3(gemId, () =>
     this._do${name}Opt(gemId).then(res => {
       let optElem: ${name} = res;

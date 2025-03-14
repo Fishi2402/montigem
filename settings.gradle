@@ -88,6 +88,7 @@ include ':examples:finanzverwaltung-cd2gui:frontend'
 
 include ':examples:loading-test:backend'
 include ':examples:loading-test:frontend'
+include ':examples:loading-test:frontend-jsweet'
 
 include ':products:syse_functions:backend'
 include ':products:syse_functions:frontend'

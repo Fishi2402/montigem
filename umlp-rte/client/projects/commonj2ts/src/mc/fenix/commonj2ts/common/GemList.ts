@@ -29,14 +29,12 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
   }
 
 
-
   public constructor(ids?: Array<number> | IUMLPList<number>) {
     // this.subject = new GemListBehaviorSubject(this.asArray, this._onSub.bind(this));
     this.state = LoadingState.NOT_YET_LOADED;
     if (ids instanceof Array) {
       this.ids = ids;
-    }
-    else if (typeof ids !== 'undefined' && ids != null) {
+    } else if (typeof ids !== 'undefined' && ids != null) {
       // ids.toArray().then(numbers => this.ids = [...numbers]);
       this.ids = [...ids.toArray()];
     } else if (typeof ids === 'undefined') {
@@ -155,7 +153,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
   public async hashCode(): Promise<number> {
     let hashCode: number = 1;
     for await (const element of this) {
-      hashCode = 31*hashCode + (!element ? 0 : element.getGemId());
+      hashCode = 31 * hashCode + (!element ? 0 : element.getGemId());
     }
     return hashCode;
   }
@@ -443,7 +441,16 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
    */
   public removeIdSure(gemId: number) {
     console.info(this.ids);
-    this.ids = this.ids.filter(l => l !== gemId);
+    let filteredObjects = [];
+    this.ids = this.ids.filter((l, index) => {
+      if (l !== gemId) {
+        filteredObjects.push(this.asArray[index]);
+        return true;
+      } else {
+        return false;
+      }
+    });
+    this.asArray = filteredObjects;
   }
 
   public indexOfId(gemId: number): number {
@@ -497,6 +504,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
   }
 
   asArrayPromise: Promise<Array<E>> = null;
+
   async toArraySync(startIndex?: number, endIndex?: number): Promise<Array<E>> {
     if (this.asArrayPromise == null) {
       this.asArrayPromise = new Promise(async resolve => {
@@ -519,6 +527,9 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
         resolve(this.asArray);
       });
     }
+    // this.asArrayPromise.then(v => console.log("Before: ", v));
+    this.asArrayPromise = this.asArrayPromise.then(() => this.asArray);
+    // this.asArrayPromise.then(v => console.log("After: ", + v));
     return this.asArrayPromise;
   }
 
