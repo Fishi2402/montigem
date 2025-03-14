@@ -205,8 +205,7 @@ public class UMLPToolPipelineSetup {
     cd2GUIPipelineSetup = new CD2GUIPipelineSetup();
     cd2GUIPipelineSetup.createCD2GUI(this);
 
-    guiVarPipelineSetup = new GuiVarPipelineSetup();
-    guiVarPipelineSetup.createGuiVar(this);
+    guiVarPipelineSetup = new GuiVarPipelineSetup(this);
 
     umlpFilePipelineSetup = new UMLPFilePipelineSetup(this);
 
