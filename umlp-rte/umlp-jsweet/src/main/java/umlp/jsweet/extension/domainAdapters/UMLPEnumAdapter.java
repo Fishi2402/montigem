@@ -18,6 +18,10 @@ public class UMLPEnumAdapter extends PrinterAdapter {
 
   @Override
   public boolean substituteMethodInvocation(MethodInvocationElement invocationElement) {
+    if (invocationElement == null || invocationElement.getTargetType() == null) {
+      return super.substituteMethodInvocation(invocationElement);
+    }
+
     Element targetTypeElement = types().asElement(invocationElement.getTargetType());
 
     if (targetTypeElement != null && targetTypeElement.getKind() == ElementKind.ENUM

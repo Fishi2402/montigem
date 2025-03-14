@@ -53,4 +53,10 @@ classdiagram Jsweettest {
   association [1] N0 -> N1 [1];
   association [1] N1 -> N2 [*];
 
+  class EnumTestClass;
+  enum EnumTestEnum {
+    A, B, C;
+  }
+  association [1] EnumTestClass -> EnumTestEnum [1];
+
 }
