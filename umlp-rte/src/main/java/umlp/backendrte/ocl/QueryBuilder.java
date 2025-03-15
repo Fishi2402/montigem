@@ -26,7 +26,10 @@ public abstract class QueryBuilder {
 
   protected String printAttr(String attr) {
     if (!_alias.isBlank()) {
-      return _alias + "." + attr;
+      if (attr.equals("id")) {
+        return _alias + "." + attr + "";
+      }
+      return _alias + ".\"" + attr + "\"";
     }
     return attr;
   }

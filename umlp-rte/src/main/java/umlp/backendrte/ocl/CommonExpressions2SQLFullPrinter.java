@@ -20,6 +20,11 @@ public class CommonExpressions2SQLFullPrinter extends OCLFullPrettyPrinter {
     getTraverser().setCommonExpressionsHandler(commonExpressions);
     getTraverser().getCommonExpressionsVisitorList().clear();
     getTraverser().add4CommonExpressions(commonExpressions);
+
+    MCCommonLiteralsPrettyPrinter mCCommonLiterals = new CommonLiterals2SQLPrinter(getPrinter(), printComments);
+    getTraverser().setMCCommonLiteralsHandler(mCCommonLiterals);
+    getTraverser().getMCCommonLiteralsVisitorList().clear();
+    getTraverser().add4MCCommonLiterals(mCCommonLiterals);
   }
 
 }

@@ -1,10 +1,11 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("typeName")}
+<#assign query = "selectFiltered" + typeName + "List">
 ${cd4c.method("public void ensureSelectFiltered${typeName}Created(String filter)")}
-  if (selectFiltered${typeName}List == null) {
+  if (${query} == null) {
     try {
       String query = OCL2SQL.getInstance().convert(filter);
-      selectAllIds${typeName} = DatabaseAccessManager.prepareStatement(query);
+      ${query} = DatabaseAccessManager.prepareStatement(query);
     } catch (IOException | OCLException e) {
       throw new RuntimeException(e);
     }

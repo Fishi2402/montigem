@@ -19,9 +19,10 @@ ${cd4c.method("public List<${typeName}> selectFiltered${typeName}List(String fil
               + res.getLong(1));
           }
         }
+        if(!res.isClosed()) {
+          res.close();
+        }
         return result;
-      } catch (SQLException e) {
-        throw new RuntimeException(e);
       }
     } catch (SQLException e) {
       throw new RuntimeException(e);
