@@ -503,6 +503,22 @@ public abstract class AbstractDecorator {
     return subNames[subNames.length - 1];
   }
 
+  protected List<ASTCDAttribute> getOptionalAttributes(ASTCDClass domainClass) {
+    return CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
+        .filter(a -> !a.getModifier().isDerived() && GenService.isOptional(a)).collect(Collectors.toList());
+  }
+
+  protected List<ASTCDAttribute> getListAttributes(ASTCDClass domainClass) {
+    return CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
+        .filter(a -> !a.getModifier().isDerived() && GenService.isList(a)).collect(Collectors.toList());
+  }
+
+  protected List<ASTCDAttribute> getNormalAttributes(ASTCDClass domainClass) {
+    return CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
+        .filter(a -> !a.getModifier().isDerived() &&
+            !GenService.isList(a) && !GenService.isOptional(a)).collect(Collectors.toList());
+  }
+
   protected String getAssocName(ASTCDType type, ASTCDAssocSide assoc) {
     return type.getName()
         + "_"

@@ -137,11 +137,13 @@ public class ManagerImplDecorator extends AbstractDecorator {
       getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSingletonElement", origCD.getCDDefinition().getName(), name, managerName);
       getCD4C().addMethod(managerClass, "umlp.managerimpl.DoOptSingletonElement", name);
       getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetListSingletonElement", name);
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetFilteredListSingletonElement", name);
     }else {
       Set<ASTCDType> collectConcreteSubclassesInclSelf = UMLPSymbolTables.collectConcreteSubclassesInclSelf(origCD, domainClass);
       getCD4C().addMethod(managerClass, "umlp.managerimpl.DoOpt", origCD.getCDDefinition().getName(), name, collectConcreteSubclassesInclSelf);
       getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSure", name);
       getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetList", origCD.getCDDefinition().getName(), name, collectConcreteSubclassesInclSelf);
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetFilteredList", origCD.getCDDefinition().getName(), name, collectConcreteSubclassesInclSelf);
       getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name, collectConcreteSubclassesInclSelf);
     }
 
@@ -171,6 +173,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoOpt", origCD.getCDDefinition().getName(),name, concreteSubclassesInclSelf);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSure", name);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetList", origCD.getCDDefinition().getName(), name, concreteSubclassesInclSelf);
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetFilteredList", origCD.getCDDefinition().getName(), name, concreteSubclassesInclSelf);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name, concreteSubclassesInclSelf);
 
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), name + "GemList"));

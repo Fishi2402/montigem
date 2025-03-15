@@ -8,9 +8,16 @@ import { Command } from "../command/Command";
 // Hat keinen Effekt auf die Daten.
 // Nutzt zur einfacheren Umsetzung dieselbe Infrastruktur wie Commands
 export abstract class Request<T> extends Command<T> {
-  public constructor(commandType: string) {
+
+  private filter: string;
+
+  public constructor(commandType: string, filter?: string) {
     super(commandType);
-    return this;
+    this.filter = filter;
+  }
+
+  public getFilter(): string {
+    return this.filter;
   }
 
   public override isRequest(): boolean {

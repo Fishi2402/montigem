@@ -122,8 +122,10 @@ public class ManagerMockDecorator extends AbstractDecorator {
     if (!domainClass.getModifier().isAbstract()) {
       if (isSingleton) {
         getCD4C().addMethod(managerClass, "umlp.managermock.DoGetListSingletonElement", name);
+        getCD4C().addMethod(managerClass, "umlp.managermock.DoGetFilteredListSingletonElement", name);
       } else {
         getCD4C().addMethod(managerClass, "umlp.managermock.DoGetList", name, concreteSubclassesInclSelf);
+        getCD4C().addMethod(managerClass, "umlp.managermock.DoGetFilteredList", name, concreteSubclassesInclSelf);
       }
 
       if (isSingleton) {
@@ -149,6 +151,7 @@ public class ManagerMockDecorator extends AbstractDecorator {
       getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, CLIENT_PACKAGE), domainClass.getName() + CommandSendingObserverDecorator.SUFFIX));
     } else {
       getCD4C().addMethod(managerClass, "umlp.managermock.DoGetListAbstract", name);
+      getCD4C().addMethod(managerClass, "umlp.managermock.DoGetFilteredListAbstract", name);
     }
 
     // Associations
@@ -181,6 +184,7 @@ public class ManagerMockDecorator extends AbstractDecorator {
     getCD4C().addMethod(managerClass, "umlp.managermock.DoOpt", name, concreteSubclassesInclSelf);
     getCD4C().addMethod(managerClass, "umlp.managermock.DoGetSure", name);
     getCD4C().addMethod(managerClass, "umlp.managermock.DoGetList", name, concreteSubclassesInclSelf);
+    getCD4C().addMethod(managerClass, "umlp.managermock.DoGetFilteredList", name, concreteSubclassesInclSelf);
     getCD4C().addMethod(managerClass, "umlp.managermock.IsLoaded", name, concreteSubclassesInclSelf);
 
     // Imports
