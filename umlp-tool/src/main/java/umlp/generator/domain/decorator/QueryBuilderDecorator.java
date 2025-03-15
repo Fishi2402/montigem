@@ -4,10 +4,12 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDClassBuilder;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDElement;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
+import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.db.sql.SQLSchemaGenerator;
@@ -32,8 +34,15 @@ public class QueryBuilderDecorator extends AbstractDecorator {
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     cdName = origCD.getCDDefinition().getName();
-    getConcreteDomainClasses(origCD).forEach(c -> astcdPackage.addCDElement(withOrigin(
-        createQueryBuilderClassForDomainClass(c))));
+    List<ASTCDClass> qbList = new ArrayList<>();
+    for (ASTCDClass c : getConcreteDomainClasses(origCD)) {
+      ASTCDClass qb = createQueryBuilderClassForDomainClass(c);
+      astcdPackage.addCDElement(withOrigin(qb));
+      qbList.add(qb);
+    }
+    QueryBuilderMapDecorator qbmDecorator = new QueryBuilderMapDecorator(glex, qbList);
+    qbmDecorator.transform(origCD, decoratedCD);
+    Log.info("After decorator: QueryBuilderMapDecorator", BEDecorator.class.getName());
   }
 
   /**

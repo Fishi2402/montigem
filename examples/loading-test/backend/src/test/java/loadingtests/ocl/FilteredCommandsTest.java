@@ -3,6 +3,7 @@ package loadingtests.ocl;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import loadingtests.LoadingTestsManager;
+import loadingtests.LoadingTestsQueryBuilderMap;
 import loadingtests.test_infrastructure.LoadingTestsSQLDBTestSetup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

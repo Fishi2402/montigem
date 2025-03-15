@@ -2,6 +2,7 @@ package loadingtests.ocl;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import loadingtests.LoadingTestsQueryBuilderMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import umlp.backendrte.ocl.OCL2SQL;
