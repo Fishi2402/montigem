@@ -67,6 +67,7 @@ public class ServerApplicationDecorator extends AbstractDecorator {
     getCD4C().addImport(clazz, "org.springframework.boot.autoconfigure.condition.ConditionalOnProperty");
     getCD4C().addImport(clazz, PathUtil.getBackendRTEPath("service", "websocket", "CommandWebSocketService"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTEPath("service", "websocket", "CommandWebSocketNoAuthService"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTEOCLPath("OCL2SQL"));
 
     getCD4C().addImport(clazz, "de.monticore.io.FileReaderWriter");
     getCD4C().addImport(clazz, "de.se_rwth.commons.logging.Log");
