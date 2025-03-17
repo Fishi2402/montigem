@@ -202,8 +202,7 @@ public class UMLPToolPipelineSetup {
     }, Arrays.asList(guiRTETypes, cd2Gui, testInfrastructure, guiVar, umlp, gui)));
 
     // Next, actually populate the individual pipelines of the options
-    cd2GUIPipelineSetup = new CD2GUIPipelineSetup();
-    cd2GUIPipelineSetup.createCD2GUI(this);
+    cd2GUIPipelineSetup = new CD2GUIPipelineSetup(this);
 
     guiVarPipelineSetup = new GuiVarPipelineSetup(this);
 
