@@ -3,7 +3,7 @@ package gui.test;
 
 import mc.fenix.basic.GemText;
 
-import Domain.EnumTestClass;
+import Jsweettest.EnumTestClass;
 
 page TestEnum(List<EnumTestClass> testClasses){
   @iterate(EnumTestClass testClass: testClasses) {
