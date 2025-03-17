@@ -2,4 +2,4 @@
 
 import {Command} from "./Command";
 
-export type CommandReceiveObserver = (arg: Command<any>) => void;
+export type CommandReceiveObserver = (arg: Command<any>) => Promise<any>;

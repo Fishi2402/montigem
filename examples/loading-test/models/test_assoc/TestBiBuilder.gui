@@ -1,0 +1,23 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test_assoc;
+
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
+
+
+import LoadingTests.LeftSide;
+import LoadingTests.RightSide;
+import LoadingTests.Sides; // We load a Sides, with an inner leftSide (with an absent inner element)
+
+page TestBiBuilder(LeftSide l) {
+  @GemText(value="left: " + l.label);
+  @guard(l.connectedRight != null) {
+    @GemText(value="  -(s)-> : " + l.connectedRight.label);
+  }
+  @iterate(RightSide rs : l.connectedRightList) {
+    @GemText(value="  -(l)-> : " + rs.label);
+  }
+
+  @GemButton(label = "New single from Left", leftClick = connectNew(l));
+  @GemButton(label = "New from Left (List)", leftClick = connectNewList(l));
+}

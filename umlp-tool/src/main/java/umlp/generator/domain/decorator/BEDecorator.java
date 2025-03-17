@@ -79,6 +79,10 @@ public class BEDecorator extends AbstractDecorator {
     daoInterfaceDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: DAOInterfaceDecorator", BEDecorator.class.getName());
 
+    QueryBuilderDecorator queryBuilderDecorator = new QueryBuilderDecorator(glex);
+    queryBuilderDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: QueryBuilderDecorator", BEDecorator.class.getName());
+
     // Generate DAOs
     DAODecorator daoDecorator = new DAODecorator(glex);
     daoDecorator.transform(cdAST, decoratedAST);

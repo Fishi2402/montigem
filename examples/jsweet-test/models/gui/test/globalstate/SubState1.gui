@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui.test.globalstate;
+
+import Jsweettest.GlobalState;
+import Jsweettest.State;
+import mc.fenix.basic.GemText;
+
+component SubState1 (GlobalState gs) {
+  @GemText(value = gs.state.name);
+}

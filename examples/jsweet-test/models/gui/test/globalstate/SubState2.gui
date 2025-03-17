@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui.test.globalstate;
+
+import Jsweettest.GlobalState;
+import Jsweettest.State;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
+
+component SubState2 (GlobalState gs) {
+  @GemText(value = gs.state.name);
+  @GemButton(label = "Change State", leftClick = changeState() );
+}

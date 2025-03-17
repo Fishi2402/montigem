@@ -173,6 +173,10 @@ public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
         print(invocation.getTargetExpression()).print(".getDate(")
             .printArgList(invocation.getArguments()).print(")");
         return true;
+      case "toString":
+        print(invocation.getTargetExpression()).print(".toISOString(")
+            .printArgList(invocation.getArguments()).print(")").print(".slice(0, 10)");
+        return true;
     }
     return false;
   }

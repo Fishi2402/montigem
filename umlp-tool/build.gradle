@@ -210,3 +210,24 @@ publishing {
     }
   }
 }
+
+// TODO: ALu/AHe Enable publishing
+if (shouldBuildVscodePlugin && false) {
+  // Also upload the LSP vsix (VSCode extension) to the nexus
+  publishing {
+    publications {
+      "buildLSPPublication"(MavenPublication) {
+        groupId = "umlp"
+        artifactId = "umlp-tool-lsp"
+        artifact(tasks.named("packageUMLPWithGUIVscodePlugin").map {
+          // only publish the vsix file
+          it.outputs.getFiles().filter { it.name.endsWith(".vsix") }.singleFile
+        }) {
+          builtBy(tasks.named("packageUMLPWithGUIVscodePlugin"))
+        }
+      }
+    }
+  }
+  // Appears to be necessary, as builtBy is ignored
+  tasks.generatePomFileForBuildLSPPublicationPublication.dependsOn(tasks.named("packageUMLPWithGUIVscodePlugin"))
+}

@@ -3,7 +3,7 @@ ${tc.signature("name", "otherSideName", "targetName", "sourceName", "managerName
 
 ${cd4c.method("public void _internal_set${name?cap_first}(long gemID, NotificationScope scope)")}
 
-const oldValue = this._${name}.isPresent()?this._${name}.getGemId():0;
+const oldValue = this._${name}.isPresent()?this._${name}.getGemId():-1;
 
 if(${managerName}.isLoaded${targetName}(gemID)){
 ${managerName}.get${targetName}Sure(gemID).then(x => this._${name} = new Gem<${targetName}>().Gem2(x))

@@ -3,14 +3,14 @@ ${tc.signature("name", "otherSideName", "targetName", "sourceName", "managerName
 
 ${cd4c.method("public void _internal_set${name?cap_first}2(${targetName} o, NotificationScope scope)")}
 
-const oldValue = this._${name}.isPresent()?this._${name}.getGemId():0;
+const oldValue = this._${name}.isPresent()?this._${name}.getGemId():-1;
 
 this._${name} = new Gem<${targetName}>().Gem2(o);
 
 <#if otherSideName?has_content>
   if (scope.contains(NotificationScope.LOCAL)) {
   o.${otherSideName}(<${sourceName}> <any> this, NotificationScope.MINIMAL);
-  if(${managerName}.isLoaded${targetName}(oldValue)){
+  if(oldValue != -1 && oldValue != o.getGemId() && ${managerName}.isLoaded${targetName}(oldValue)){
     <#if otherSideName?starts_with("set")>
         ${managerName}.get${targetName}Sure(oldValue).then(x => x.${otherSideName}Gem(new Gem<${sourceName}>(), NotificationScope.MINIMAL));
     <#else>
