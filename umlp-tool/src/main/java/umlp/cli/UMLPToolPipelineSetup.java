@@ -115,7 +115,7 @@ public class UMLPToolPipelineSetup {
       Log.enableFailQuick(enableFailQuick);
       return true;
     });
-    main.register(getInputFile = data -> {
+    main.register("getInputFile", getInputFile = data -> {
       if (!INPUT.isSelected(data.getCmd())) {
         Log.error("0xE0000 Indicating an input file with the option 'i' is mandatory");
       }
@@ -133,7 +133,7 @@ public class UMLPToolPipelineSetup {
       }
       return true;
     });
-    main.register(loadPath = data -> {
+    main.register("loadPath", loadPath = data -> {
       if (PATH.isSelected(data.cmd)) {
         for (String v : data.cmd.getOptionValues(PATH.getCMD())) {
           data.importedSymbolPath.addEntry(Paths.get(v));
@@ -141,7 +141,7 @@ public class UMLPToolPipelineSetup {
       }
       return true;
     });
-    main.register(importsPath = data -> {
+    main.register("loadImportsPath", importsPath = data -> {
       if (IMPORTS_PATH.isSelected(data.cmd)) {
         for (String v : data.cmd.getOptionValues(IMPORTS_PATH.getCMD())) {
           data.importsPath.addEntry(Paths.get(v));
@@ -149,7 +149,7 @@ public class UMLPToolPipelineSetup {
       }
       return true;
     });
-    main.register(loadModelPath = data -> {
+    main.register("loadModelPath", loadModelPath = data -> {
       if (MODEl_PATH.isSelected(data.cmd)) {
         for (String v : data.cmd.getOptionValues(MODEl_PATH.getCMD())) {
           data.modelPath.addEntry(Paths.get(v));
@@ -158,7 +158,7 @@ public class UMLPToolPipelineSetup {
       }
       return true;
     });
-    main.register(loadHWCPath = data -> {
+    main.register("loadHWCPath", loadHWCPath = data -> {
       if (HWC_PATH.isSelected(data.cmd)) {
         for (String v : data.cmd.getOptionValues(HWC_PATH.getCMD())) {
           data.hwcPath.addEntry(Paths.get(v));
@@ -166,7 +166,7 @@ public class UMLPToolPipelineSetup {
       }
       return true;
     });
-    main.register(loadTmplPath = data -> {
+    main.register("loadTemplatePath", loadTmplPath = data -> {
       if (TMPL_PATH.isSelected(data.cmd)) {
         for (String v : data.cmd.getOptionValues(TMPL_PATH.getCMD())) {
           data.fpPath.addEntry(Paths.get(v));
