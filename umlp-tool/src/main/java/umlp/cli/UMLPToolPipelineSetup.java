@@ -210,8 +210,7 @@ public class UMLPToolPipelineSetup {
 
     guiPipelineSetup = new GuiPipelineSetup(this);
 
-    gUIRTEDataPipelineSetup = new RTEDataPipelineSetup();
-    gUIRTEDataPipelineSetup.createGUIRTETypes(this);
+    gUIRTEDataPipelineSetup = new RTEDataPipelineSetup(this);
 
     // Finally (for every option), close report managers
     main.addFinally(data -> {
