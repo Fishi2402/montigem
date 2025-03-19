@@ -12,7 +12,11 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._visitor.CDBasisVisitor2;
 import de.monticore.class2mc.OOClass2MCResolver;
+import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.TemplateController;
+import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.gradle.common.GradleLog;
 import de.monticore.guidsl.GUIDSLMill;
@@ -36,6 +40,7 @@ import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.symboltable.serialization.json.UserJsonString;
 import de.se_rwth.commons.logging.Log;
+import freemarker.template.SimpleHash;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -44,6 +49,7 @@ import org.apache.commons.cli.ParseException;
 import umlp._cocos.UMLPCoCos;
 import umlp._symboltable.IUMLPArtifactScope;
 import umlp._visitor.UMLPTraverser;
+import umlp.cli.PipelineReporter;
 import umlp.cli.UMLPPipelineData;
 import umlp.cli.UMLPToolPipelineSetup;
 import umlp.cli.common.Pipeline;
@@ -71,6 +77,7 @@ import java.util.Optional;
 import static umlp.UMLPToolOptions.DEBUG;
 import static umlp.UMLPToolOptions.HWC_PATH;
 import static umlp.UMLPToolOptions.INPUT;
+import static umlp.UMLPToolOptions.REPORTS;
 
 /**
  * This class offers both a Java API and a command line tool for processing UMLP
@@ -189,6 +196,13 @@ public class UMLPTool extends UMLPToolTOP {
 
       // Here we could further modify the Pipeline
       UMLPPipelineData data = new UMLPPipelineData(cmd, options, this);
+
+      // Give the module system access to the tool pipeline
+      invokeModuleSystemForToolConfig(data, pipeline);
+
+      new PipelineReporter().report(main,
+          new File(new File(REPORTS.getValue(data.getCmd(), UMLPTool.DEFAULT_REPORT_OUT)), "pipeline.md"));
+
       main.doWork(data);
     }
     catch (ParseException e) {
@@ -201,6 +215,38 @@ public class UMLPTool extends UMLPToolTOP {
       Reporting.off();
       cleanUpAfterMemoryLeakingSingletons();
     }
+  }
+
+  /**
+   * Give the module system access to the tool pipeline
+   * @param data the pipeline data
+   * @param pipeline the (main) pipeline setup
+   */
+  public void invokeModuleSystemForToolConfig(UMLPPipelineData data, UMLPToolPipelineSetup pipeline) {
+    var modSetup = new GeneratorSetup();
+    GlobalExtensionManagement modInitGlex = createGlex(getModuleConfigTemplates(data.getCmd()));
+    modSetup.setGlex(modInitGlex);
+
+    // Ensure our freemarker object wrapper has access to fields without getters
+    var modFtlConfig = modSetup.getConfig();
+    ((freemarker.ext.beans.BeansWrapper)modFtlConfig.getObjectWrapper()).setExposeFields(true);
+    modSetup.setFreeMarkerTemplateEngine(new FreeMarkerTemplateEngine(modFtlConfig));
+    var oldGlobalDataMod = modInitGlex.getGlobalVar("mod"); // The next line removes the old var
+    modInitGlex.setGlobalData(new SimpleHash(modFtlConfig.getObjectWrapper()));
+    // Set the "arguments" to the template
+    modInitGlex.setGlobalValue("data", data);
+    modInitGlex.setGlobalValue("mainPipelineSetup", pipeline);
+    modInitGlex.setGlobalValue("mod", oldGlobalDataMod);
+
+    // Call the InitModules hookpoint
+    TemplateController initModulesTC = modSetup.getNewTemplateController("umlp.generator.hook.InitModules");
+    initModulesTC.includeArgs(initModulesTC.getTemplatename(), null, List.of(modInitGlex));
+
+
+    // Then call the tool/pipeline UMLPToolInit hookpoint
+    TemplateController modTC = modSetup.getNewTemplateController("umlp.UMLPToolInit");
+    // We cannot use args for the pipeline, as it will create a non-exposing thingy - instead we use glex#setGlobalValue
+    modTC.includeArgs(modTC.getTemplatename(), null, List.of(this));
   }
 
   public static void cleanUpAfterMemoryLeakingSingletons() {
