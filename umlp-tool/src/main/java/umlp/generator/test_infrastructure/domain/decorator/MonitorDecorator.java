@@ -1,7 +1,9 @@
 package umlp.generator.test_infrastructure.domain.decorator;
 
 import de.monticore.cd.facade.CDModifier;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cd4codebasis._ast.ASTCDParameterTOP;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -13,11 +15,13 @@ import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class MonitorDecorator extends AbstractDecorator {
@@ -147,42 +151,32 @@ public class MonitorDecorator extends AbstractDecorator {
     //constructors
     addSuperConstructors(monitorClass, decoratedBuilderClass);
 
-    //TODO override methods based on present stereotypes
+    var overrides = new ArrayList<MethodOverride>();
 
-    //override all generated methods
-    getMonitorableMethods(decoratedBuilderClass, redecoratedCD).forEach(method -> {
-      var returnType = method.getMCReturnType().printType();
-      var name = method.getName();
-      var params = method.getCDParameterList();
-      var paramSignature = params
-          .stream()
-          .map(param -> param.getMCType().printType() + " " + param.getName())
-          .collect(Collectors.joining(", "));
-      var paramCallsite = params
-          .stream()
-          .map(ASTCDParameterTOP::getName)
-          .collect(Collectors.joining(", "));
-      var isVoid = returnType.equals("void");
-      var actualCall = String.format("super.%s(%s)", name, paramCallsite);
+    var monitorMethods = Stereotype.NEEDS_MONITOR.isPresentOn(decoratedBuilderClass);
 
-      cd4C.addMethod(monitorClass,
-                     "umlp.monitor.monitor-method",
-                     name,
-                     returnType,
-                     paramSignature,
-                     isVoid,
-                     actualCall);
-    });
+    //TODO handle the presence of other stereotypes
+    if (monitorMethods) {
+      //monitor all the generated methods
+      overrides.addAll(getMonitorableMethods(decoratedBuilderClass, redecoratedCD)
+                           .stream()
+                           .map(method -> new MethodOverride(method, MethodOverrideKind.monitor()))
+                           .collect(Collectors.toList()));
+    }
+
+    //override methods
+    overrides.forEach(override -> override.apply(cd4C, monitorClass));
 
     //imports
     cd4C.addImport(monitorClass, Joiners.DOT.join(packageName, "*"));
-    cd4C.addImport(monitorClass,
-                   Joiners.DOT.join(PathUtil.getTestInfrastructurePath(),
-                                    "monitor",
-                                    "MethodMonitor"));
     cd4C.addImport(monitorClass, Joiners.DOT.join(PathUtil.getBackendRTECommonPath(), "Gem"));
     cd4C.addImport(monitorClass, Joiners.DOT.join(PathUtil.getBackendRTECommonPath(), "GemList"));
     cd4C.addImport(monitorClass, Joiners.DOT.join(PathUtil.getBackendRTECommonPath(), "NotificationScope"));
+    overrides
+        .stream()
+        .flatMap(override -> override.kind.requiredImports().stream())
+        .collect(Collectors.toSet())
+        .forEach(importSignature -> cd4C.addImport(monitorClass, importSignature));
 
     return monitorClass;
   }
@@ -227,6 +221,72 @@ public class MonitorDecorator extends AbstractDecorator {
     //TODO monitor default methods of interfaces
 
     return methods;
+  }
+
+  private static final class MethodOverride {
+    private final ASTCDMethod method;
+    private final MethodOverrideKind kind;
+
+    private MethodOverride(ASTCDMethod method, MethodOverrideKind kind) {
+      this.method = method;
+      this.kind = kind;
+    }
+
+    @SuppressWarnings("UnusedReturnValue")
+    public ASTCDMethodSignature apply(CD4C cd4C, ASTCDClass clazz) {
+      return kind.apply(cd4C, clazz, method);
+    }
+  }
+
+  private interface MethodOverrideKind {
+    ASTCDMethodSignature apply(CD4C cd4c, ASTCDClass clazz, ASTCDMethod method);
+    Collection<String> requiredImports();
+
+    static Monitor monitor() {
+      return new Monitor();
+    }
+
+    final class Monitor implements MethodOverrideKind {
+
+      private Optional<String> actualCall = Optional.empty();
+
+      public Monitor withActualCall(String actualCall) {
+        this.actualCall = Optional.of(actualCall);
+        return this;
+      }
+
+      @Override
+      public ASTCDMethodSignature apply(CD4C cd4c, ASTCDClass clazz, ASTCDMethod method) {
+        var returnType = method.getMCReturnType().printType();
+        var name = method.getName();
+        var params = method.getCDParameterList();
+        var paramSignature = params
+            .stream()
+            .map(param -> param.getMCType().printType() + " " + param.getName())
+            .collect(Collectors.joining(", "));
+        var paramCallsite = params
+            .stream()
+            .map(ASTCDParameterTOP::getName)
+            .collect(Collectors.joining(", "));
+        var isVoid = returnType.equals("void");
+        var actualCall = this.actualCall.orElseGet(() ->  String.format("super.%s(%s)", name, paramCallsite));
+
+        return cd4c.addMethod(clazz,
+                       "umlp.monitor.monitor-method",
+                       name,
+                       returnType,
+                       paramSignature,
+                       isVoid,
+                       actualCall);
+      }
+
+      @Override
+      public Collection<String> requiredImports() {
+        return List.of(Joiners.DOT.join(PathUtil.getTestInfrastructurePath(),
+                                        "monitor",
+                                        "MethodMonitor"));
+      }
+    }
   }
 
   private static final class SignatureComparedMethod {
