@@ -25,7 +25,7 @@ public class GuiPipelineSetupTest extends AbstractGUITest {
     paths.add(Paths.get("src/test/resources/gui/duplicated/again/Same2.gui"));
     paths.add(Paths.get("src/test/resources/gui/duplicated/Unique.gui"));
 
-    new GuiPipelineSetup().checkSameFilenames(paths);
+    new GuiPipelineSetup(new UMLPToolPipelineSetup()).checkSameFilenames(paths);
     assertEquals(1, Log.getFindingsCount());
     assertTrue(Log.getFindings().get(0).isError());
     String msg = Log.getFindings().get(0).getMsg();
