@@ -13,6 +13,7 @@ import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -34,6 +35,28 @@ public class MonitorDecorator extends AbstractDecorator {
      * In conjunction with {@link #NEEDS_MONITOR} this method will also be monitored.
      */
     USE_MONITOR_BUILDERS("use-monitor-builders");
+
+    /**
+     * Get a {@link Collection} of all {@link Stereotype}s present on an {@link ASTCDClass}.
+     *
+     * @param astcdClass An {@link ASTCDClass}
+     * @return All present {@link Stereotype}s
+     */
+    public static Collection<Stereotype> getStereotypesOf(ASTCDClass astcdClass) {
+      return Arrays
+          .stream(values())
+          .filter(stereotype -> stereotype.isPresentOn(astcdClass))
+          .collect(Collectors.toList());
+    }
+
+    /**
+     * Checks whether the {@link ASTCDClass} has any defines {@link Stereotype}s
+     * @param astcdClass An {@link ASTCDClass}
+     * @return Whether any {@link Stereotype}s are present
+     */
+    public static boolean hasStereotypes(ASTCDClass astcdClass) {
+      return !getStereotypesOf(astcdClass).isEmpty();
+    }
 
     private final String name;
 
@@ -61,6 +84,11 @@ public class MonitorDecorator extends AbstractDecorator {
         var stereotype = UMLPMill.stereotypeBuilder().addValues(stereotypeValue).build();
         modifier.setStereotype(stereotype);
       }
+    }
+
+    public boolean isPresentOn(ASTCDClass astcdClass) {
+      var modifier = astcdClass.getModifier();
+      return modifier.isPresentStereotype() && modifier.getStereotype().contains(name);
     }
 
     @Override
@@ -96,11 +124,7 @@ public class MonitorDecorator extends AbstractDecorator {
         .getCDDefinition()
         .getCDClassesList()
         .stream()
-        .filter(astcdClass -> {
-          var modifier = astcdClass.getModifier();
-          return modifier.isPresentStereotype() &&
-                 modifier.getStereotype().contains(Stereotype.NEEDS_MONITOR.toString());
-        })
+        .filter(Stereotype::hasStereotypes)
         .forEach(astcdClass -> targetPackage.addCDElement(withOrigin(createMonitor(astcdClass,
                                                                                    origCD,
                                                                                    redecoratedCD))));
@@ -111,7 +135,7 @@ public class MonitorDecorator extends AbstractDecorator {
       ASTCDCompilationUnit redecoratedCD) {
     var builderName = decoratedBuilderClass.getName();
     var packageName = getPackageName(origCd, DEFAULT_PACKAGE);
-    var res = UMLPMill
+    var monitorClass = UMLPMill
         .cDClassBuilder()
         .setModifier(CDModifier.PUBLIC.build())
         .setName(builderName + MONITOR_SUFFIX)
@@ -121,10 +145,12 @@ public class MonitorDecorator extends AbstractDecorator {
     var cd4C = getCD4C();
 
     //constructors
-    addSuperConstructors(res, decoratedBuilderClass);
+    addSuperConstructors(monitorClass, decoratedBuilderClass);
+
+    //TODO override methods based on present stereotypes
 
     //override all generated methods
-    getMethodsToMonitor(decoratedBuilderClass, redecoratedCD).forEach(method -> {
+    getMonitorableMethods(decoratedBuilderClass, redecoratedCD).forEach(method -> {
       var returnType = method.getMCReturnType().printType();
       var name = method.getName();
       var params = method.getCDParameterList();
@@ -139,7 +165,7 @@ public class MonitorDecorator extends AbstractDecorator {
       var isVoid = returnType.equals("void");
       var actualCall = String.format("super.%s(%s)", name, paramCallsite);
 
-      cd4C.addMethod(res,
+      cd4C.addMethod(monitorClass,
                      "umlp.monitor.monitor-method",
                      name,
                      returnType,
@@ -149,28 +175,28 @@ public class MonitorDecorator extends AbstractDecorator {
     });
 
     //imports
-    cd4C.addImport(res, Joiners.DOT.join(packageName, "*"));
-    cd4C.addImport(res,
+    cd4C.addImport(monitorClass, Joiners.DOT.join(packageName, "*"));
+    cd4C.addImport(monitorClass,
                    Joiners.DOT.join(PathUtil.getTestInfrastructurePath(),
                                     "monitor",
                                     "MethodMonitor"));
-    cd4C.addImport(res, Joiners.DOT.join(PathUtil.getBackendRTECommonPath(), "Gem"));
-    cd4C.addImport(res, Joiners.DOT.join(PathUtil.getBackendRTECommonPath(), "GemList"));
-    cd4C.addImport(res, Joiners.DOT.join(PathUtil.getBackendRTECommonPath(), "NotificationScope"));
+    cd4C.addImport(monitorClass, Joiners.DOT.join(PathUtil.getBackendRTECommonPath(), "Gem"));
+    cd4C.addImport(monitorClass, Joiners.DOT.join(PathUtil.getBackendRTECommonPath(), "GemList"));
+    cd4C.addImport(monitorClass, Joiners.DOT.join(PathUtil.getBackendRTECommonPath(), "NotificationScope"));
 
-    return res;
+    return monitorClass;
   }
 
-  private Collection<ASTCDMethod> getMethodsToMonitor(ASTCDClass classToMonitor,
+  private Collection<ASTCDMethod> getMonitorableMethods(ASTCDClass classToMonitor,
       ASTCDCompilationUnit decoratedCD) {
-    return getSignatureComparedMethodsToMonitor(classToMonitor, decoratedCD)
+    return getMonitorableSignatureComparedMethods(classToMonitor, decoratedCD)
         .stream()
         .map(SignatureComparedMethod::method)
         .collect(Collectors.toList()); //toList is acceptable here since duplicates should be
     // filtered out earlier on
   }
 
-  private Collection<SignatureComparedMethod> getSignatureComparedMethodsToMonitor(ASTCDClass classToMonitor,
+  private Collection<SignatureComparedMethod> getMonitorableSignatureComparedMethods(ASTCDClass classToMonitor,
       ASTCDCompilationUnit decoratedCD) {
     var methods = classToMonitor.getCDMethodList().stream().filter(method -> {
       var modifier = method.getModifier();
@@ -193,8 +219,8 @@ public class MonitorDecorator extends AbstractDecorator {
                              .getCDClassesList()
                              .stream()
                              .filter(cdClass -> cdClass.getName().equals(superClassName))
-                             .flatMap(superClass -> getSignatureComparedMethodsToMonitor(superClass,
-                                                                                         decoratedCD).stream()))
+                             .flatMap(superClass -> getMonitorableSignatureComparedMethods(superClass,
+                                                                                           decoratedCD).stream()))
                          .collect(Collectors.toList()));
     }
 
