@@ -23,7 +23,51 @@ public class MonitorDecorator extends AbstractDecorator {
 
   public static final String TEST_INFRASTRUCTURE_PACKAGE = "test_infrastructure";
   public static final String MONITOR_SUFFIX = "Monitor";
-  public static final String STEREOTYPE_NEEDS_MONITOR = "needs-monitor";
+
+  public enum Stereotype {
+    /**
+     * Implies that all overridable methods need to be overridden with monitor methods
+     */
+    NEEDS_MONITOR("needs-monitor"),
+    /**
+     * Implies that _doFooBuilderFromId methods should return a FooBuilderMonitor instead of a FooBuilder.
+     * In conjunction with {@link #NEEDS_MONITOR} this method will also be monitored.
+     */
+    USE_MONITOR_BUILDERS("use-monitor-builders");
+
+    private final String name;
+
+    Stereotype(String name) {
+      this.name = name;
+    }
+
+    /**
+     * Add this stereotype to the provided {@link ASTCDClass} with the value {@code "true"}. That
+     * value may change over time and should not be relied upon.
+     *
+     * @param astcdClass An {@link ASTCDClass} to add the stereotype to
+     */
+    public void addTo(ASTCDClass astcdClass) {
+      var modifier = astcdClass.getModifier();
+      var stereotypeValue = UMLPMill
+          .stereoValueBuilder()
+          .setName(name)
+          .setContent("true")
+          .build();
+
+      if (modifier.isPresentStereotype()) {
+        modifier.getStereotype().addValues(stereotypeValue);
+      } else {
+        var stereotype = UMLPMill.stereotypeBuilder().addValues(stereotypeValue).build();
+        modifier.setStereotype(stereotype);
+      }
+    }
+
+    @Override
+    public String toString() {
+      return name;
+    }
+  }
 
   private final ASTCDCompilationUnit redecoratedCD;
 
@@ -33,25 +77,15 @@ public class MonitorDecorator extends AbstractDecorator {
   }
 
   /**
-   * Adds the stereotype {@link #STEREOTYPE_NEEDS_MONITOR} with value "true" to an
+   * Adds the {@link Stereotype#NEEDS_MONITOR} with value "true" to an
    * {@link ASTCDClass}. The value may change over time, so it shouldn't be relied upon.
    *
    * @param astcdClass The {@link ASTCDClass} to add the stereotype to
+   * @deprecated Use {@link Stereotype#addTo(ASTCDClass)} instead
    */
+  @Deprecated
   public static void addNeedsMonitorStereotype(ASTCDClass astcdClass) {
-    var modifier = astcdClass.getModifier();
-    var stereotypeValue = UMLPMill
-        .stereoValueBuilder()
-        .setName(MonitorDecorator.STEREOTYPE_NEEDS_MONITOR)
-        .setContent("true")
-        .build();
-
-    if (modifier.isPresentStereotype()) {
-      modifier.getStereotype().addValues(stereotypeValue);
-    } else {
-      var stereotype = UMLPMill.stereotypeBuilder().addValues(stereotypeValue).build();
-      modifier.setStereotype(stereotype);
-    }
+    Stereotype.NEEDS_MONITOR.addTo(astcdClass);
   }
 
   @Override
@@ -65,7 +99,7 @@ public class MonitorDecorator extends AbstractDecorator {
         .filter(astcdClass -> {
           var modifier = astcdClass.getModifier();
           return modifier.isPresentStereotype() &&
-                 modifier.getStereotype().contains(STEREOTYPE_NEEDS_MONITOR);
+                 modifier.getStereotype().contains(Stereotype.NEEDS_MONITOR.toString());
         })
         .forEach(astcdClass -> targetPackage.addCDElement(withOrigin(createMonitor(astcdClass,
                                                                                    origCD,
