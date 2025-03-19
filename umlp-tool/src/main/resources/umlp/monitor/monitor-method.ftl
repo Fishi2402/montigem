@@ -1,14 +1,14 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("name", "returnType", "paramSignature", "paramCallsite", "isVoid")}
+${tc.signature("name", "returnType", "paramSignature", "isVoid", "actualCall")}
 ${cd4c.method("public ${returnType} ${name}(${paramSignature})")}
 
 var monitor = MethodMonitor.start(this, "${name}");
 try {
 <#if isVoid>
-  super.${name}(${paramCallsite});
+  ${actualCall};
   monitor.reportReturnVoid();
 <#else>
-  var res = super.${name}(${paramCallsite});
+  var res = ${actualCall};
   monitor.reportReturn(res);
   return res;
 </#if>
