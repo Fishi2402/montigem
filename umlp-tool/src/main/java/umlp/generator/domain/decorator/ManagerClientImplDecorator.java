@@ -20,6 +20,7 @@ import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.Filter;
 import umlp.generator.domain.decorator.commands.GetFreeGemIdRequestDecorator;
+import umlp.generator.test_infrastructure.domain.decorator.MonitorDecorator;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.TagLookUp;
 import umlp.generator.util.UMLPSymbolTables;
@@ -55,6 +56,8 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
         .setName(name + SUFFIX)
         .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(name + ManagerDecorator.SUFFIX))
         .build();
+
+    MonitorDecorator.addNeedsMonitorStereotype(managerClass);
 
     List<String> superDelegateManagerNames = new ArrayList<>();
     for (var ex : this.getExtendedDefinitions(origCD)) {

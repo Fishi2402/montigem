@@ -12,6 +12,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.se_rwth.commons.Joiners;
 import umlp.UMLPMill;
+import umlp.generator.test_infrastructure.domain.decorator.MonitorDecorator;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
@@ -76,6 +77,8 @@ public class ClientDelegationManagerDecorator extends ManagerDecorator {
         .setCDExtendUsage(getExtendUsageFacade()
             .createCDExtendUsage(parentCD.getName()+ManagerDecorator.SUFFIX+CLIENT_IMPL_SUFFIX))
         .build();
+
+    MonitorDecorator.addNeedsMonitorStereotype(delegationManagerClass);
 
     addManagerInit(delegationManagerClass, parentCD.getName(), delegationManagerName);
 

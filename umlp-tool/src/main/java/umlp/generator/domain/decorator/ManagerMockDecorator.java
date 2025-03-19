@@ -4,7 +4,6 @@ package umlp.generator.domain.decorator;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
-import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
@@ -18,6 +17,7 @@ import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.commands.EventSendingObserverDecorator;
+import umlp.generator.test_infrastructure.domain.decorator.MonitorDecorator;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.TagLookUp;
 import umlp.generator.util.UMLPSymbolTables;
@@ -52,6 +52,8 @@ public class ManagerMockDecorator extends AbstractDecorator {
         .setName(name + SUFFIX)
         .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(name + ManagerDecorator.SUFFIX))
         .build();
+
+    MonitorDecorator.addNeedsMonitorStereotype(managerClass);
 
     // Add @jsweet.lang.Erased annotation
     glex.replaceTemplate("cd2java.Annotations", managerClass,

@@ -13,6 +13,7 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.se_rwth.commons.Joiners;
 import umlp.UMLPMill;
+import umlp.generator.test_infrastructure.domain.decorator.MonitorDecorator;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
@@ -80,6 +81,9 @@ public class DelegationManagerDecorator extends ManagerDecorator {
         .setCDExtendUsage(getExtendUsageFacade()
             .createCDExtendUsage(parentCD.getName()+ManagerDecorator.SUFFIX+"Impl"))
         .build();
+
+    MonitorDecorator.addNeedsMonitorStereotype(delegationManagerClass);
+
     glex.replaceTemplate("cd2java.Annotations", delegationManagerClass,
         new StringHookPoint("@jsweet.lang.Erased"));
 

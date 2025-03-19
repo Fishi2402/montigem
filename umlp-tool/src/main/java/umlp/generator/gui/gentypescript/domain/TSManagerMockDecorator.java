@@ -22,6 +22,7 @@ import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.domain.decorator.ManagerMockDecorator;
 import umlp.generator.domain.decorator.ObserverDecorator;
+import umlp.generator.test_infrastructure.domain.decorator.MonitorDecorator;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.TagLookUp;
 import umlp.generator.util.UMLPSymbolTables;
@@ -62,6 +63,8 @@ public class TSManagerMockDecorator extends ManagerMockDecorator {
         .setName(name + SUFFIX)
         .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(name + ManagerDecorator.SUFFIX))
         .build();
+
+    MonitorDecorator.addNeedsMonitorStereotype(managerClass);
 
     // attributes
     getCD4C().addAttribute(managerClass, "static protected long freeGemId = 1001");
