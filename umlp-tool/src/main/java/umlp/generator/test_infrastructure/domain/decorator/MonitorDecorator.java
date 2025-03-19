@@ -154,14 +154,16 @@ public class MonitorDecorator extends AbstractDecorator {
     var overrides = new ArrayList<MethodOverride>();
 
     var monitorMethods = Stereotype.NEEDS_MONITOR.isPresentOn(decoratedBuilderClass);
+    var returnBuilderMonitors = Stereotype.USE_MONITOR_BUILDERS.isPresentOn(decoratedBuilderClass);
+
+    var overridableMethods = getOverridableMethods(decoratedBuilderClass, redecoratedCD);
 
     //TODO handle the presence of other stereotypes
     if (monitorMethods) {
       //monitor all the generated methods
-      overrides.addAll(getMonitorableMethods(decoratedBuilderClass, redecoratedCD)
-                           .stream()
-                           .map(method -> new MethodOverride(method, MethodOverrideKind.monitor()))
-                           .collect(Collectors.toList()));
+      overrides.addAll(overridableMethods.stream()
+          .map(method -> new MethodOverride(method, MethodOverrideKind.monitor()))
+          .collect(Collectors.toList()));
     }
 
     //override methods
@@ -174,24 +176,24 @@ public class MonitorDecorator extends AbstractDecorator {
     cd4C.addImport(monitorClass, Joiners.DOT.join(PathUtil.getBackendRTECommonPath(), "NotificationScope"));
     overrides
         .stream()
-        .flatMap(override -> override.kind.requiredImports().stream())
+        .flatMap(override -> override.kind().requiredImports().stream())
         .collect(Collectors.toSet())
         .forEach(importSignature -> cd4C.addImport(monitorClass, importSignature));
 
     return monitorClass;
   }
 
-  private Collection<ASTCDMethod> getMonitorableMethods(ASTCDClass classToMonitor,
-      ASTCDCompilationUnit decoratedCD) {
-    return getMonitorableSignatureComparedMethods(classToMonitor, decoratedCD)
+  private Collection<ASTCDMethod> getOverridableMethods(ASTCDClass classToMonitor,
+                                                        ASTCDCompilationUnit decoratedCD) {
+    return getOverridableSignatureComparedMethods(classToMonitor, decoratedCD)
         .stream()
         .map(SignatureComparedMethod::method)
         .collect(Collectors.toList()); //toList is acceptable here since duplicates should be
     // filtered out earlier on
   }
 
-  private Collection<SignatureComparedMethod> getMonitorableSignatureComparedMethods(ASTCDClass classToMonitor,
-      ASTCDCompilationUnit decoratedCD) {
+  private Collection<SignatureComparedMethod> getOverridableSignatureComparedMethods(ASTCDClass classToMonitor,
+                                                                                     ASTCDCompilationUnit decoratedCD) {
     var methods = classToMonitor.getCDMethodList().stream().filter(method -> {
       var modifier = method.getModifier();
       return !modifier.isStatic() && !modifier.isFinal() && !modifier.isPrivate();
@@ -213,12 +215,12 @@ public class MonitorDecorator extends AbstractDecorator {
                              .getCDClassesList()
                              .stream()
                              .filter(cdClass -> cdClass.getName().equals(superClassName))
-                             .flatMap(superClass -> getMonitorableSignatureComparedMethods(superClass,
+                             .flatMap(superClass -> getOverridableSignatureComparedMethods(superClass,
                                                                                            decoratedCD).stream()))
                          .collect(Collectors.toList()));
     }
 
-    //TODO monitor default methods of interfaces
+    //TODO default methods of interfaces are overridable (but very uncommon in our case)
 
     return methods;
   }
@@ -235,6 +237,14 @@ public class MonitorDecorator extends AbstractDecorator {
     @SuppressWarnings("UnusedReturnValue")
     public ASTCDMethodSignature apply(CD4C cd4C, ASTCDClass clazz) {
       return kind.apply(cd4C, clazz, method);
+    }
+
+    public ASTCDMethod method() {
+      return method;
+    }
+
+    public MethodOverrideKind kind() {
+      return kind;
     }
   }
 
