@@ -2,7 +2,7 @@
 
 import { Component } from '@angular/core';
 import { GemBoxPlotExampleComponent, config } from 'example_charts/GemBoxPlotExampleComponent';
-import {GemBoxPlotEntry, GemBoxPlotEntryBuilder} from '@umlp/charts';
+import {GemBoxPlotData, GemBoxPlotDataBuilder, GemBoxPlotEntry, GemBoxPlotEntryBuilder} from '@umlp/charts';
 import {GemBoxPlotBox, GemBoxPlotBoxBuilder} from '@umlp/charts';
 
 @Component({
@@ -14,27 +14,27 @@ import {GemBoxPlotBox, GemBoxPlotBoxBuilder} from '@umlp/charts';
 export class GemBoxPlotExample extends GemBoxPlotExampleComponent {
 
   public override getBoxplotWidth(): number {
-    return this.data.length*150
+    return this.data.getEntries().length*150
   }
 
   public override getBoxplotHeight(): number {
-    return this.data.length*150
+    return this.data.getEntries().length*150
   }
 
   public override getSecondBoxplotWidth(): number {
-    return this.secondData.length*150
+    return this.secondData.getEntries().length*150
   }
 
   public override getSecondBoxplotHeight(): number {
-    return this.secondData.length*150
+    return this.secondData.getEntries().length*150
   }
 
-  public override getSecondBoxPlotData(): GemBoxPlotEntry[] {
+  public override getSecondBoxPlotData(): GemBoxPlotData {
 
     return this.secondData;
   }
 
-  public override getBoxplotEntries(): GemBoxPlotEntry[] {
+  public override getBoxplotData(): GemBoxPlotData {
 
     return this.data;
   }
@@ -54,7 +54,9 @@ export class GemBoxPlotExample extends GemBoxPlotExampleComponent {
               .build())
           .build()
 
-  secondData = [this.secondData1]
+  secondData = {
+    entries: [this.secondData1]
+    }
 
   // Dummy data
   data1 :GemBoxPlotEntry =
@@ -169,6 +171,8 @@ export class GemBoxPlotExample extends GemBoxPlotExampleComponent {
               .build())
           .build();
 
-  data = [this.data1, this.data2, this.data3, this.data4,this.data5,this.data6,this.data7,this.data8]
+  data = {
 
+    entries: [this.data1, this.data2, this.data3, this.data4,this.data5,this.data6,this.data7,this.data8]
+  }
 }

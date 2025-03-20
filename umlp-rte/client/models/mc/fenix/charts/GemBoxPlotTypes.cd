@@ -5,6 +5,10 @@ import java.util.Optional;
 
 classdiagram GemBoxPlotTypes {
 
+  public class GemBoxPlotData {
+    List<GemBoxPlotEntry> entries;
+  }
+
   public class GemBoxPlotEntry {
     String group;
     GemBoxPlotBox box;
