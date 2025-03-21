@@ -10,20 +10,11 @@ import mc.fenix.basic.GemButton;
 import mc.fenix.arrange.GemRow;
 import mc.fenix.input.GemCheckBoxInput;
 
-component PortTreeNode(Port port, List<Function> selectedFunctions, List<Channel> selectedChannels, List<Port> selectedPorts) {
+component PortTreeNode(Port port, List<Function> selectedFunctions, List<Channel> selectedChannels, List<Port> selectedPorts, Boolean selected) {
     @GemTreeNode(content =
       @GemRow(components = [
         @GemText(value = "Port: " + port.name),
-        //@GemCheckBoxInput(checked = isSelectedPort(), leftClick = toggleSelectedPort())
-        @guard(isSelectedPort()) {
-               @GemButton(leftClick = toggleSelectedPort(),
-                 label = "Selected"
-                 );
-              } else {
-                @GemButton(leftClick = toggleSelectedPort(),
-                  label = "Select"
-                );
-              }
+        portSelection@GemCheckBoxInput(checked = selected)
       ]),
     children = [
     @ChannelTreeNode(channel = port.channel, selectedFunctions = selectedFunctions, selectedChannels = selectedChannels, selectedPorts = selectedPorts)

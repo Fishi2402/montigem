@@ -10,21 +10,12 @@ import mc.fenix.basic.GemButton;
 import mc.fenix.arrange.GemRow;
 import mc.fenix.input.GemCheckBoxInput;
 
-component FunctionTreeNode(Function func, List<Function> selectedFunctions, List<Channel> selectedChannels, List<Port> selectedPorts) {
+component FunctionTreeNode(Function func, List<Function> selectedFunctions, List<Channel> selectedChannels, List<Port> selectedPorts, Boolean selected) {
   @GemTreeNode(
   content =
     @GemRow(components = [
       @GemText(value = func.name),
-      //@GemCheckBoxInput(checked = isSelectedFunction(func), leftClick = toggleSelectedFunction(func)),
-      @guard(isSelectedFunction(func)) {
-       @GemButton(leftClick = toggleSelectedFunction(func),
-         label = "selected"
-         );
-      } else {
-        @GemButton(leftClick = toggleSelectedFunction(func),
-          label = "select"
-        );
-      },
+      functionSelection@GemCheckBoxInput(checked = selected),
       @GemButton(label = "Go to Function", leftClick = goToFunctionDetails(func))
     ]),
   children = [
@@ -32,7 +23,7 @@ component FunctionTreeNode(Function func, List<Function> selectedFunctions, List
       content = @GemText(value = "Subfunctions"),
       children = [
         @iterate(Function f: func.subFunction) {
-          @FunctionTreeNode(func = f);
+          @FunctionTreeNode(func = f, selectedFunctions = selectedFunctions, selectedChannels = selectedChannels, selectedPorts = selectedPorts);
         }
       ]),
     @GemTreeNode(content = @GemText(value = "In Ports"),

@@ -35,6 +35,7 @@ public class FunctionStructure4FenixServerApplication extends FunctionStructure4
   private void importFunctions() {
     Path input1 = Paths.get("src/test/resources/ma2fenix/test1");
     Path input2 = Paths.get("src/test/resources/ma2fenix/test2");
+    Path input3 = Paths.get("src/test/resources/ma2fenix/autopilot");
     MA2FenixTool.main(new String[] {
         "-mp", input1.toAbsolutePath().toString(),
         "-main", "A"
@@ -42,6 +43,10 @@ public class FunctionStructure4FenixServerApplication extends FunctionStructure4
     MA2FenixTool.main(new String[] {
         "-mp", input2.toAbsolutePath().toString(),
         "-main", "L"
+    });
+    MA2FenixTool.main(new String[] {
+        "-mp", input3.toAbsolutePath().toString(),
+        "-main", "de.rwth.armin.modeling.autopilot.Autopilot"
     });
   }
 

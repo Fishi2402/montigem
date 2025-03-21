@@ -16,11 +16,14 @@ import FunctionStructure4Fenix.Channel;
 
 import mc.fenix.functiondisplay.FunctionDisplay;
 import mc.fenix.functiondisplay.FunctionStructure4Fenix.Function4Display;
+import mc.fenix.functiondisplay.FunctionStructure4Fenix.Channel4Display;
+import mc.fenix.functiondisplay.FunctionStructure4Fenix.Port4Display;
+
 
 import mc.fenix.charts.GemLineChart;
 import mc.fenix.charts.GemLineChartTypes.GemLineChartData;
 
-page FunctionDetail (Function f, List<Function> selectedFunctions, List<Port> selectedPorts, List<Channel> selectedChannels, Channel selectedChannel) {
+page FunctionDetail (Function f, List<Function> selectedFunctions, List<Port> selectedPorts, List<Channel> selectedChannels, Channel selectedChannel, List<Function4Display> functions4Display, List<Channel4Display> channels4Display, List<Port4Display> ports4Display) {
   @GemRow(width = "100%", colGap="10px", components = [
     @Navigation(),
     @GemRow(height = "50%", components = [
@@ -88,14 +91,14 @@ page FunctionDetail (Function f, List<Function> selectedFunctions, List<Port> se
               )
             ]),
             @GemRow(width = "100%", component =
-              @FunctionDisplay(data = transformData(f),
+              funcDisplay@FunctionDisplay(data = transformData(f),
                 functionClick = goToFunction4DisplayDetails(),
                 outsideClick = goToFunctionDetailsSuper2(f),
                 channelClick = toggleChannelSelection(),
                 portClick = togglePortSelection(),
-                selectedFunctions = getSelectedFunctions4Display(),
-                selectedChannels = getSelectedChannels4Display(),
-                selectedPorts = getSelectedPorts4Display()
+                selectedFunctions = functions4Display,
+                selectedChannels = channels4Display,
+                selectedPorts = ports4Display
               )
             ),
             @GemRow(height = "50%", components = [

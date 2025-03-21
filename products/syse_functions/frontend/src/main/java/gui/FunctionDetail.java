@@ -29,6 +29,13 @@ import java.util.function.Consumer;
 @Component
 public class FunctionDetail extends FunctionDetailTOP {
 
+  public FunctionDetail(){
+    super();
+    setSelectedFunctions(new ArrayList<>());
+    setSelectedChannels(new ArrayList<>());
+    setSelectedPorts(new ArrayList<>());
+  }
+
   private Map<Function, Function4Display> function2displayMap = new HashMap<>();
   private Map<Function4Display, Function> display2functionMap = new HashMap<>();
   private Map<Channel, Channel4Display> channel2displayMap = new HashMap<>();
@@ -108,10 +115,28 @@ public class FunctionDetail extends FunctionDetailTOP {
   }
 
   @Override
-  public List<Function4Display> getSelectedFunctions4Display(){
+  public List<Function4Display> getFuncDisplaySelectedFunctions(){
     List<Function4Display> res = new ArrayList<>();
     for(Function f : getSelectedFunctions()){
       res.add(function2displayMap.get(f));
+    }
+    return res;
+  }
+
+  @Override
+  public List<Channel4Display> getFuncDisplaySelectedChannels(){
+    List<Channel4Display> res = new ArrayList<>();
+    for(Channel c : getSelectedChannels()){
+      res.add(channel2displayMap.get(c));
+    }
+    return res;
+  }
+
+  @Override
+  public List<Port4Display> getFuncDisplaySelectedPorts(){
+    List<Port4Display> res = new ArrayList<>();
+    for(Port p : getSelectedPorts()){
+      res.add(port2displayMap.get(p));
     }
     return res;
   }

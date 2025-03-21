@@ -10,19 +10,18 @@ import java.util.ArrayList;
 @Component
 public class PortTreeNode extends PortTreeNodeTOP{
 
-  public Consumer<Void> toggleSelectedPort(){
-    return (v) -> {
-      List<Port> selectedPorts = new ArrayList<>(getSelectedPorts());
-      if (getSelectedPorts().contains(getPort())) {
-        selectedPorts.remove(getPort());
-      } else {
-        selectedPorts.add(getPort());
-      }
-      setSelectedPorts(selectedPorts);
-    };
+  public void setPortSelectionChecked(Boolean selected){
+    List<Port> selectedPorts = new ArrayList<>(getSelectedPorts());
+    if (selected) {
+      selectedPorts.remove(getPort());
+    } else {
+      selectedPorts.add(getPort());
+    }
+    setSelectedPorts(selectedPorts);
   }
 
-  public Boolean isSelectedPort(){
+  @Override
+  public Boolean getPortSelectionChecked(){
     return getSelectedPorts().contains(getPort());
   }
 }

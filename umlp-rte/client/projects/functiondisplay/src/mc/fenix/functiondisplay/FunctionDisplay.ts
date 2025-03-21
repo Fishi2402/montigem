@@ -300,7 +300,7 @@ export class FunctionDisplay extends FunctionDisplayComponent {
       this.markElement(rect, 'rgb(0,119,190)');
     })
     rect.addEventListener('mouseout', () => {
-      if(!this.selectedFunctions.includes(node.funktion4display)){
+      if(!this.getSelectedFunctions().includes(node.funktion4display)){
         this.unmarkElement(rect);
       }
     })
@@ -329,14 +329,14 @@ export class FunctionDisplay extends FunctionDisplayComponent {
       portRect.addEventListener('click', () => this.portClicked(port.port4display));
       portRect.addEventListener('mouseover', () => this.portHovered(port.port4display));
       portRect.addEventListener('mouseout', () => this.portMouseouted(port.port4display));
-      if(this.selectedPorts.includes(port.port4display)){
+      if(this.getSelectedPorts().includes(port.port4display)){
         this.markElement(portRect, 'rgb(0,119,190)');
       }
       portRect.addEventListener('mouseover', () => {
         this.markElement(portRect, 'rgb(0,119,190)');
       })
       portRect.addEventListener('mouseout', () => {
-        if(!this.selectedPorts.includes(port.port4display)){
+        if(!this.getSelectedPorts().includes(port.port4display)){
           this.unmarkElement(portRect);
         }
       })
@@ -375,7 +375,7 @@ export class FunctionDisplay extends FunctionDisplayComponent {
         polyline.addEventListener('click', () => this.channelClicked(edge.channel4Display))
         polyline.addEventListener('mouseover', () => this.channelHovered(edge.channel4Display))
         polyline.addEventListener('mouseout', () => this.channelMouseouted(edge.channel4Display))
-        if(this.selectedChannels.includes(edge.channel4Display)){
+        if(this.getSelectedChannels().includes(edge.channel4Display)){
           this.markElement(polyline, 'rgb(0,119,190)');
         }
         g.appendChild(polyline);
@@ -389,7 +389,7 @@ export class FunctionDisplay extends FunctionDisplayComponent {
           polyline.setAttribute("stroke-width", '5')
         })
         hiddenPolyline.addEventListener('mouseout', () => {
-          if(!this.selectedChannels.includes(edge.channel4Display)){
+          if(!this.getSelectedChannels().includes(edge.channel4Display)){
             this.unmarkElement(polyline);
           }
         })
