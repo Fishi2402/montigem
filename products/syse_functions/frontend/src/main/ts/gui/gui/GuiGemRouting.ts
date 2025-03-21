@@ -10,7 +10,7 @@ export const routes: Route[] = [
     redirectTo: "gui/FunctionOverview"
   },
   {
-    path: "gui/FunctionDetail/:gui_FunctionDetail_f_RoutingId/:gui_FunctionDetail_selectedChannel_RoutingId",
+    path: "gui/FunctionDetail/:gui_FunctionDetail_f_RoutingId/:gui_FunctionDetail_selectedFunctions_RoutingId/:gui_FunctionDetail_selectedChannels_RoutingId/:gui_FunctionDetail_selectedPorts_RoutingId",
     component: FunctionDetail
   },
   {
