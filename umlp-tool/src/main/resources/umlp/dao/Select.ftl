@@ -8,7 +8,11 @@ ${cd4c.method("public Optional<${typeName}> select${typeName}(long gemId)")}
       select${typeName}.setLong(1, gemId);
       try(ResultSet res = select${typeName}.executeQuery()) {
         if(res.next()){
-          return unpack${typeName}(res);
+          Optional<${typeName}> obj = unpack${typeName}(res);
+          if(!res.isClosed()) {
+            res.close();
+          }
+          return obj;
         }else{
           return Optional.empty();
         }

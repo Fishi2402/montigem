@@ -34,6 +34,44 @@ For MontiGem users:
   * line 9 - allow list comprehensions
   * line 11 - allow lists in `iterate`
 
+## 2025-03-15
+
+### Changes
+
+For MontiGem users:
+
+Enable filtered commands in backend of MontiGem apps. The feature is a
+prototype. Given a command as a string, for example:
+```
+{\"id\":12,\"commandType\":\"loadingtests.commands.Person_get_filtered\",\"participantId\":1,\"filter\":\"[ p | p in Person, p.age > 18, p.age < 23, p.age >= 15, p.age <= 66, p.name == \\\"Alice\\\", p.name != \\\"Bob\\\"]\" }
+```
+It can be passed to `CommandObjectMapper` to deserialize to get a command
+object. The command object may also be created using a new constructor with
+`String filter` as an input. The command with a filter will be processed and
+return ids of objects satisifying the filter.
+
+Only simple filters can currently be defined. Supported filter options:
+- a single generator (`p in Person`)
+- comparison operators (`<`, `>`, `<=`, `>=`, `!=`, `==`)
+- the expressions used in a comparison can either constants (`18`, `"Alice"`) or
+  simple field access (`p.age`) The fteature only supports SQL databases.
+
+Most of the restrictions have a corresponding error message.
+
+For MontiGem developers:
+
+Given a class diagram `Foo` with a class `Bar`, following infrastructure (sorted
+by the order of execution) handles the commands with filters:
+
+- `Bar_get_filtered`
+- `FooManager#_doGetFilteredBarList`
+- `FooDAOFactory.getBarDAO().selectFilteredBarList(filter)`
+- `BarDAO#ensureSelectFilteredBarCreated`
+- `OCL2SQL` (RTE)
+- `OCL2SQLPrinter` (RTE)
+- `BarQueryBuilderMap`
+- `BarQueryBuilder`
+
 ## 2025-02-20
 
 ### Changes

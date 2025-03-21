@@ -25,6 +25,8 @@ public class JsweettestServerApplication extends JsweettestServerApplicationTOP 
     super.init();
     JsweettestManager.aBuilder().value("Malte").build();
     JsweettestManager.aBuilder().value("Alex").build();
+
+    JsweettestManager.getGlobalState().setState(JsweettestManager.stateBuilder().name("State A").build().get());
   }
 
   public static void resetTestData() {

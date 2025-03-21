@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui.test;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemText;
+
+page TestCustomUpdate () {
+  @GemText(value = superComplexComputationDependentOnField());
+
+  @GemButton(label = "changeFieldWithoutUpdate", leftClick = changeFieldWithoutUpdate() );
+  @GemButton(label = "changeFieldWithUpdate", leftClick = changeFieldWithUpdate() );
+}

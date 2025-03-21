@@ -88,7 +88,7 @@ public class DelegationManagerDecorator extends ManagerDecorator {
     // TODO: What do we have to for RegMod extend LogMod?
 
     addManagerInit(delegationManagerClass, parentCD.getName(), delegationManagerName, superDelegateManagerNames);
-    addManagerInitNeo4J(delegationManagerClass, parentCD.getName(), delegationManagerName);
+    addManagerInitNeo4J(delegationManagerClass, parentCD.getName(), delegationManagerName, superDelegateManagerNames);
 
     LinkedHashMap<ASTCDType, LinkedHashSet<ASTCDType>> superTypesToTypes =
         getSuperToTypes(parentCD, extendingCDs);
@@ -128,8 +128,8 @@ public class DelegationManagerDecorator extends ManagerDecorator {
     getCD4C().addMethod(delegationManagerClass, "umlp.managerimpl.Init", extendedCDName, delegationManagerName, superDelegateManagerNames);
   }
 
-  protected void addManagerInitNeo4J(ASTCDClass delegationManagerClass, String extendedCDName, String delegationManagerName) {
-    getCD4C().addMethod(delegationManagerClass, "umlp.managerimpl.InitNeo4J", extendedCDName, delegationManagerName);
+  protected void addManagerInitNeo4J(ASTCDClass delegationManagerClass, String extendedCDName, String delegationManagerName, List<String> superDelegateManagerNames) {
+    getCD4C().addMethod(delegationManagerClass, "umlp.managerimpl.InitNeo4J", extendedCDName, delegationManagerName, superDelegateManagerNames);
   }
 
   protected void addDelegationGetters(ASTCDClass delegationManagerClass,

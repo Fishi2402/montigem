@@ -122,7 +122,7 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
         var symbol = meth.getEnclosingScope().resolveType(paramType);
         if (symbol.isEmpty())
           Log.error("Unable to resolve Optional inner type " + paramType, meth.get_SourcePositionStart());
-        String paramFQN = StringTransformations.uncapitalize(symbol.get().getFullName());
+        String paramFQN = domainToLowerCase(symbol.get().getFullName());
         // Handle native types
         if (DerivedClassCommandDecorator.nativeTypes.contains(paramFQN) || DerivedClassCommandDecorator.nativeTypes.contains(boxType(paramFQN)))
           paramFQN = "java.lang." + boxType(paramFQN);
@@ -137,9 +137,9 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
           if (symbol.isEmpty()) {
             Log.error("Unable to resolve Optional inner type " + paramType, meth.get_SourcePositionStart());
           }
-          paramFQN = StringTransformations.uncapitalize(symbol.get().getFullName());
+          paramFQN = domainToLowerCase(symbol.get().getFullName());
         } else if (paramTypeSym.getDefiningSymbol().isPresent()) {
-          paramFQN = StringTransformations.uncapitalize(paramTypeSym.getDefiningSymbol().get().getFullName());
+          paramFQN = domainToLowerCase(paramTypeSym.getDefiningSymbol().get().getFullName());
         } else {
           Log.error("Unable to detect type from command ", meth.get_SourcePositionStart());
           paramFQN = "Object";
@@ -175,6 +175,16 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
     getCD4C().addMethod(ast, getCheckAccessPolicyTemplate(), domainParameters);
 
     return ast;
+  }
+
+  protected String domainToLowerCase(String fqn) {
+    // Turn Domain.Class into domain.class
+    // and MyDomain.class into mydomain.class
+    if (fqn.contains(".")) {
+      String[] sp = fqn.split("\\.", 2);
+      return sp[0].toLowerCase() + "." + sp[1];
+    }
+    return fqn;
   }
 
   protected String getAttributeForMethodParameter(ASTCDParameter param) {

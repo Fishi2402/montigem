@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static umlp.test_rte.playwright.ComponentKind.GemButton;
 import static umlp.test_rte.playwright.ComponentKind.GemText;
 import static umlp.test_rte.playwright.ComponentKind.GemTextInput;
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 public class TestUpdate extends AbstractLoadingTestsE2ETest {
 
@@ -68,7 +69,7 @@ public class TestUpdate extends AbstractLoadingTestsE2ETest {
     );
 
     // Assert that all person names are displayed on page
-    assertEquals(personGemIds.size(), page.locator(GemText.selector()).all().size());
+    assertThat(page.locator(GemText.selector())).hasCount(personGemIds.size());
 
     // Fill in GemTextInput field
     page.locator(GemTextInput.selector()).fill("Neuer Name");
@@ -79,6 +80,6 @@ public class TestUpdate extends AbstractLoadingTestsE2ETest {
     page.waitForLoadState(LoadState.NETWORKIDLE);
 
     // Assert that one more person is displayed
-    assertEquals(personGemIds.size() + 1, page.locator(GemText.selector()).all().size());
+    assertThat(page.locator(GemText.selector())).hasCount(personGemIds.size() + 1);
   }
 }
