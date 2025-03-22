@@ -6,6 +6,7 @@ import umlp.test_rte.ClientSetup;
 import umlp.test_rte.monitor.StackEventQueue;
 import umlp.test_rte.monitor.event.CallEvent;
 import umlp.test_rte.monitor.event.ReturnVoidEvent;
+import webshop.test_infrastructure.WebshopManagerImplMonitor;
 import webshop.test_infrastructure.WebshopSQLDBTestSetup;
 
 import java.util.ArrayList;
@@ -24,7 +25,8 @@ public class TotalTest extends WebshopSQLDBTestSetup {
 
   @Override
   protected void initBackendManager() {
-    WebshopMonitorManagerImpl.init();
+    var instance = new WebshopManagerImplMonitor();
+    WebshopManager.setInstance(instance);
   }
 
   @Test
@@ -41,7 +43,7 @@ public class TotalTest extends WebshopSQLDBTestSetup {
 
     //here we would need to check every element of the queue in order -> we're not going to do this
     // for demo purposes
-    assertEquals(16, StackEventQueue.toQueue().size()); //currently 16 events since we're not monitoring managers yet
+    assertEquals(20, StackEventQueue.toQueue().size()); //currently 16 events since we're not monitoring managers yet
     assertEquals(new CallEvent(o, "addItem"), StackEventQueue.toQueue().getFirst());
     assertEquals(new ReturnVoidEvent(o,"addItem"), StackEventQueue.toQueue().getLast());
 
