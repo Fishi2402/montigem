@@ -82,7 +82,7 @@ public class DelegationManagerDecorator extends ManagerDecorator {
             .createCDExtendUsage(parentCD.getName()+ManagerDecorator.SUFFIX+"Impl"))
         .build();
 
-    MonitorDecorator.addNeedsMonitorStereotype(delegationManagerClass);
+    MonitorDecorator.Stereotype.NEEDS_MONITOR.addTo(delegationManagerClass);
 
     glex.replaceTemplate("cd2java.Annotations", delegationManagerClass,
         new StringHookPoint("@jsweet.lang.Erased"));

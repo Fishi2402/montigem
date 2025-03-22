@@ -57,7 +57,7 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
         .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(name + ManagerDecorator.SUFFIX))
         .build();
 
-    MonitorDecorator.addNeedsMonitorStereotype(managerClass);
+    MonitorDecorator.Stereotype.NEEDS_MONITOR.addTo(managerClass);
 
     List<String> superDelegateManagerNames = new ArrayList<>();
     for (var ex : this.getExtendedDefinitions(origCD)) {

@@ -65,7 +65,7 @@ public class BuilderDecorator extends AbstractDecorator {
         .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(domainClass.getName()))
         .setName(className).build();
 
-    MonitorDecorator.addNeedsMonitorStereotype(builderClass);
+    MonitorDecorator.Stereotype.NEEDS_MONITOR.addTo(builderClass);
 
     List<ASTCDAttribute> attrFields = CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
         .filter(GenService::isVisibleNotDerived)

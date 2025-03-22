@@ -78,7 +78,7 @@ public class ClientDelegationManagerDecorator extends ManagerDecorator {
             .createCDExtendUsage(parentCD.getName()+ManagerDecorator.SUFFIX+CLIENT_IMPL_SUFFIX))
         .build();
 
-    MonitorDecorator.addNeedsMonitorStereotype(delegationManagerClass);
+    MonitorDecorator.Stereotype.NEEDS_MONITOR.addTo(delegationManagerClass);
 
     addManagerInit(delegationManagerClass, parentCD.getName(), delegationManagerName);
 

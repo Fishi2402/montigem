@@ -106,18 +106,6 @@ public class MonitorDecorator extends AbstractDecorator {
     this.redecoratedCD = redecoratedCD;
   }
 
-  /**
-   * Adds the {@link Stereotype#NEEDS_MONITOR} with value "true" to an {@link ASTCDClass}. The value
-   * may change over time, so it shouldn't be relied upon.
-   *
-   * @param astcdClass The {@link ASTCDClass} to add the stereotype to
-   * @deprecated Use {@link Stereotype#addTo(ASTCDClass)} instead
-   */
-  @Deprecated
-  public static void addNeedsMonitorStereotype(ASTCDClass astcdClass) {
-    Stereotype.NEEDS_MONITOR.addTo(astcdClass);
-  }
-
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     var targetPackage = getPackage(origCD, decoratedCD, TEST_INFRASTRUCTURE_PACKAGE);

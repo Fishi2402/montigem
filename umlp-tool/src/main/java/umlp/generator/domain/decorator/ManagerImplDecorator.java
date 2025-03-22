@@ -58,7 +58,8 @@ public class ManagerImplDecorator extends AbstractDecorator {
         .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(name + ManagerDecorator.SUFFIX))
         .build();
 
-    MonitorDecorator.addNeedsMonitorStereotype(managerClass);
+    MonitorDecorator.Stereotype.NEEDS_MONITOR.addTo(managerClass);
+    MonitorDecorator.Stereotype.USE_MONITOR_BUILDERS.addTo(managerClass);
 
     // Add @jsweet.lang.Erased annotation
     glex.replaceTemplate("cd2java.Annotations", managerClass,
