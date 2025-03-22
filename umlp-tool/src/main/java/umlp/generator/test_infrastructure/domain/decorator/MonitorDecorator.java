@@ -151,19 +151,17 @@ public class MonitorDecorator extends AbstractDecorator {
     //constructors
     addSuperConstructors(monitorClass, decoratedBuilderClass);
 
-    //TODO rather call it AddMethod because it is not always an override
-    var overrides = new ArrayList<MethodOverride>();
+    var methods = new ArrayList<MethodToAdd>();
 
     var monitorMethods = Stereotype.NEEDS_MONITOR.isPresentOn(decoratedBuilderClass);
     var returnBuilderMonitors = Stereotype.USE_MONITOR_BUILDERS.isPresentOn(decoratedBuilderClass);
 
     var overridableMethods = getOverridableMethods(decoratedBuilderClass, redecoratedCD);
 
-    //TODO handle the presence of other stereotypes
     if (monitorMethods) {
       //monitor all the generated methods
-      overrides.addAll(overridableMethods.stream()
-          .map(method -> new MethodOverride(method, MethodOverrideKind.monitor()))
+      methods.addAll(overridableMethods.stream()
+          .map(method -> new MethodToAdd(method, MethodKind.monitor()))
           .collect(Collectors.toList()));
     }
     if (returnBuilderMonitors) {
@@ -172,14 +170,14 @@ public class MonitorDecorator extends AbstractDecorator {
     }
 
     //override methods
-    overrides.forEach(override -> override.apply(cd4C, monitorClass));
+    methods.forEach(method -> method.addTo(cd4C, monitorClass));
 
     //imports
     cd4C.addImport(monitorClass, Joiners.DOT.join(packageName, "*"));
     cd4C.addImport(monitorClass, Joiners.DOT.join(PathUtil.getBackendRTECommonPath(), "Gem"));
     cd4C.addImport(monitorClass, Joiners.DOT.join(PathUtil.getBackendRTECommonPath(), "GemList"));
     cd4C.addImport(monitorClass, Joiners.DOT.join(PathUtil.getBackendRTECommonPath(), "NotificationScope"));
-    overrides
+    methods
         .stream()
         .flatMap(override -> override.kind().requiredImports().stream())
         .collect(Collectors.toSet())
@@ -230,38 +228,38 @@ public class MonitorDecorator extends AbstractDecorator {
     return methods;
   }
 
-  private static final class MethodOverride {
+  private static final class MethodToAdd {
     private final ASTCDMethod method;
-    private final MethodOverrideKind kind;
+    private final MethodKind kind;
 
-    private MethodOverride(ASTCDMethod method, MethodOverrideKind kind) {
+    private MethodToAdd(ASTCDMethod method, MethodKind kind) {
       this.method = method;
       this.kind = kind;
     }
 
     @SuppressWarnings("UnusedReturnValue")
-    public ASTCDMethodSignature apply(CD4C cd4C, ASTCDClass clazz) {
-      return kind.apply(cd4C, clazz, method);
+    public ASTCDMethodSignature addTo(CD4C cd4C, ASTCDClass clazz) {
+      return kind.applyOn(cd4C, clazz, method);
     }
 
     public ASTCDMethod method() {
       return method;
     }
 
-    public MethodOverrideKind kind() {
+    public MethodKind kind() {
       return kind;
     }
   }
 
-  private interface MethodOverrideKind {
-    ASTCDMethodSignature apply(CD4C cd4c, ASTCDClass clazz, ASTCDMethod method);
+  private interface MethodKind {
+    ASTCDMethodSignature applyOn(CD4C cd4c, ASTCDClass clazz, ASTCDMethod method);
     Collection<String> requiredImports();
 
     static Monitor monitor() {
       return new Monitor();
     }
 
-    final class Monitor implements MethodOverrideKind {
+    final class Monitor implements MethodKind {
 
       private Optional<String> actualCall = Optional.empty();
 
@@ -271,7 +269,7 @@ public class MonitorDecorator extends AbstractDecorator {
       }
 
       @Override
-      public ASTCDMethodSignature apply(CD4C cd4c, ASTCDClass clazz, ASTCDMethod method) {
+      public ASTCDMethodSignature applyOn(CD4C cd4c, ASTCDClass clazz, ASTCDMethod method) {
         var returnType = method.getMCReturnType().printType();
         var name = method.getName();
         var params = method.getCDParameterList();
