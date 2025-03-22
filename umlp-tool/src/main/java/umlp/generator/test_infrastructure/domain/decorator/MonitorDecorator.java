@@ -151,6 +151,7 @@ public class MonitorDecorator extends AbstractDecorator {
     //constructors
     addSuperConstructors(monitorClass, decoratedBuilderClass);
 
+    //TODO rather call it AddMethod because it is not always an override
     var overrides = new ArrayList<MethodOverride>();
 
     var monitorMethods = Stereotype.NEEDS_MONITOR.isPresentOn(decoratedBuilderClass);
@@ -164,6 +165,10 @@ public class MonitorDecorator extends AbstractDecorator {
       overrides.addAll(overridableMethods.stream()
           .map(method -> new MethodOverride(method, MethodOverrideKind.monitor()))
           .collect(Collectors.toList()));
+    }
+    if (returnBuilderMonitors) {
+      //TODO add _doFooMonitorBuilderFromId methods
+      //TODO if monitorMethods then adjust overrides for _doFooBuilderFromId methods
     }
 
     //override methods

@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -95,6 +96,19 @@ public class ManagerImplDecorator extends AbstractDecorator {
     // Imports
     addImports(managerClass);
     return managerClass;
+  }
+
+  /**
+   * Gets the classes for which a manager will provide _doFooBuilderFromId methods.
+   *
+   * @param origCD The origCD for which the manager is made
+   * @return The classes of the provided builders
+   */
+  public static Stream<ASTCDClass> classesOfProvidedBuilders(ASTCDCompilationUnit origCD) {
+    return origCD.getCDDefinition().getCDClassesList().stream().filter(clazz -> {
+      var modifier = clazz.getModifier();
+      return !modifier.isDerived() && !modifier.isAbstract();
+    });
   }
 
   protected void addClassElements(ASTCDCompilationUnit origCD, ASTCDClass domainClass,
