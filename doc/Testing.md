@@ -5,6 +5,7 @@ Sections:
 3. [Testing Synchronization between Server and Client(s)](#testing-synchronization-between-server-and-clients)
 4. [Testing Synchronization between Server and (Multiple) Databases](#testing-synchronization-between-server-and-multiple-databases)
 5. [E2E Testing using Simulated GUI](#e2e-testing-using-simulated-gui)
+6. [E2E Testing using Playwright](#e2e-testing-with-playwright)
 
 ## Base Concept
 
@@ -241,3 +242,95 @@ This example demonstrates:
 4.  Verifying that the change is reflected in the underlying `Person` object.
 5.  Simulating a button click and observing the effect on both the GUI and the object.
 6.   Testing GUI updates across multiple clients.
+
+## E2E Testing with Playwright
+
+UMLP supports end-to-end (E2E) testing using [Playwright](https://playwright.dev/), a library for automating web browsers.
+This allows for testing the entire application flow, including interactions between the frontend and backend, in a real browser environment.
+These tests execute much slower than testing using the simulated GUI, therefore it should only be used to test the UMLP platform itself, not generated applications. 
+
+**Key Concepts:**
+*   **`Abstract${Domain}E2ETest`:** A generated class that provides common functionality for Playwright-based E2E tests. It handles starting and stopping the frontend server, cleaning up the backend database between tests, and provides utility methods for interacting with the UI.
+*   **Frontend and Backend Server Ports:**  The tests automatically allocate free ports for the frontend and backend servers, ensuring that tests can run in parallel without port conflicts.  These are accessed via `getFrontendServerPort()` and `getBackendServerPort()`.
+*   **`FrontendServer4Test`:**  This class manages the frontend server, serving the compiled frontend application during the tests.  It's automatically started and stopped by `AbstractPlaywrightE2ETest`.
+*  **`waitForBackend()`:** Use this utility method after interacting with the UI and triggering backend operations.  It introduces a short delay to allow commands to be processed by the backend, improving test stability.
+*   **`ComponentKind`:**  The `ComponentKind` enum (used with `locator()`) helps in locating specific generated GUI elements within the DOM.  Examples include `GemButton` and `GemTextInput`.
+* **Multi-Page Testing:** Playwright allows the creation of multiple browser contexts and pages, facilitating testing of scenarios involving multiple simultaneous users or views, such as synchronisation between clients.
+* **Navigation and Waiting:** Use `navAndWait()` to navigate the page to the required url, followed by waiting for frontend to initialize with `waitRdy()`.
+
+**Example ([ExampleE2ETest.java](examples/vis-lib/frontend/src/test/java/domain/e2e/ExampleE2ETest.java) excerpt):**
+
+```java
+public class ExampleE2ETest extends AbstractDomainE2ETest {
+
+  @BeforeEach
+  void init(Page page) {
+    page.onConsoleMessage(cm -> System.out.println("[BROWSER] " + cm.text()));
+    navAndWait(page, "/person/Overview"); //go to page we want to test
+  }
+
+  @Test
+  void testOverview(Page page) {
+    waitRdy(page);
+    assertTrue(page.getByText("Alice").first().isVisible());
+  }
+}
+```
+
+This example shows:
+
+1.  Extending `AbstractDomainE2ETest` to set up the testing environment.
+2.  Using `@BeforeEach` to initialize the Playwright `Page` object and navigate to the page under test.
+3. Using `navAndWait()` navigates to the correct page and waits for it to fully load.
+4.  A simple test case that verifies the visibility of an element on the page.
+
+**Example ([MultiPageE2ETest.java](examples/vis-lib/frontend/src/test/java/domain/e2e/MultiPageE2ETest.java) excerpt):**
+
+```java
+public class MultiPageE2ETest extends AbstractDomainE2ETest {
+
+  Page page1, page2;
+
+  @BeforeEach
+  void setup(Browser browser) {
+    //create the number of pages we want to test with
+    page1 = browser.newPage();
+    page2 = browser.newPage();
+    init(page1);
+    init(page2);
+  }
+
+  void init(Page page) {
+    page.onConsoleMessage(cm -> System.out.println("[BROWSER1] " + cm.text()));
+    navAndWait(page, "/person/Overview"); //go to page we want to test
+  }
+
+  @Test
+  void testSync() {
+    var createPerson = page1.locator(".createPerson");
+    locator(createPerson, ".name", GemTextInput).fill("Abby");
+    // ... fill other fields ...
+    locator(createPerson, ".createButton", GemButton).click();
+
+    waitForBackend(); //give commands time to reach backend
+
+    page2.reload();
+    waitRdy(page2);
+
+    assertThat(page2.getByText("Abby").first()).isVisible();
+  }
+}
+```
+This example demonstrates multi-page testing:
+1. Two `Page` objects (`page1`, `page2`) are created, representing two different browser tabs/windows.
+2. The `init` method sets up each page.
+3. User interactions are simulated on `page1` to create a new Person.
+4.  `waitForBackend()` is called to ensure the changes are processed.
+5. `page2` is reloaded, and after waiting for readiness, the test verifies that the changes made on `page1` are reflected on `page2`. This checks client-to-client synchronization through the backend.
+
+**Debugging:**
+To debug Playwright tests, set the environment variable `PWDEBUG=1` in the run configuration.
+This will open the Playwright Inspector, allowing you to step through the test execution and inspect the browser state.
+
+**Important Note:**  In the frontend application's `app.component.ts` constructor, ensure the following line is present: `(<any>window).websocket_connected = true;`.
+This is used to signal to the test framework that the frontend has successfully connected to the backend via websockets.
