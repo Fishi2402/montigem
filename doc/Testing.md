@@ -36,8 +36,10 @@ public class CityInfoTest extends FlensburgMockTestSetup {
 
   @Test
   public void testCityInfo(){
-    // ... object creation and setup ...
-
+    // Backend is activated by default
+    Car c1 = FlensburgManager.carBuilder().wheelLeft(false).namesOfAllParts(new ArrayList<>()).build().get();
+    // ...
+    
     CityInfo cityInfo = new CityInfo();
 
     assertNotNull(cityInfo);
@@ -111,7 +113,9 @@ This example demonstrates:
 
 ## Testing Synchronization between Server and (Multiple) Databases
 
-UMLP also supports testing synchronization with databases. When `hasDatabase()` returns `true`, the tests interact with a real database.  The testing framework provides helper classes (e.g., `FlensburgSQLDBTestSetup`) to manage database connections and setup.
+UMLP also supports testing synchronization with databases.
+When `hasDatabase()` returns `true`, the tests interact with a real database. 
+The testing framework provides helper classes (e.g., `FlensburgSQLDBTestSetup`) to manage database connections and setup.
 
 **Key Concepts:**
 
@@ -140,8 +144,8 @@ public class HumanSyncDbTest extends FlensburgSQLDBTestSetup {
 }
 ```
 
-We can also test multiple persistance implementations at the same time by defining all test cases(=methods) in an interface and creating one subclass for the mock, one for SQL, and one for Neo4J.
-To enable variation points depending on the availaility of the database, the `TestSetup` provides the method `hasDatabase`.
+We can also test multiple persistence implementations at the same time by defining all test cases(=methods) in an interface and creating one subclass for the mock, one for SQL, and one for Neo4J.
+To enable variation points depending on the availability of the database, the `TestSetup` provides the method `hasDatabase`.
 
 **Example ([PersonSyncTest.java](examples/flensburg-test/backend/src/test/java/flensburg/sync/PersonSyncTest.java) excerpt using `TESTING_deepEquals`):**
 ```java
@@ -173,7 +177,8 @@ This example demonstrates persisting a change to a `Human` object and verifies i
 
 ## E2E Testing using Simulated GUI
 
-UMLP provides a way to perform end-to-end (E2E) testing using simulated GUIs. These tests simulate user interactions with generated GUI components and verify the resulting state changes in the underlying objects and across contexts.
+UMLP provides a way to perform end-to-end (E2E) testing using simulated GUIs.
+These tests simulate user interactions with generated GUI components and verify the resulting state changes in the underlying objects and across contexts.
 
 **Key Concepts:**
 
