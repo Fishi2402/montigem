@@ -1,4 +1,11 @@
 # Testing UMLP and UMLP Applications
+Sections:
+1. [Base Concept](#base-concept)
+2. [Testing Base Features](#testing-base-features)
+3. [Testing Synchronization between Server and Client(s)](#testing-synchronization-between-server-and-clients)
+4. [Testing Synchronization between Server and (Multiple) Databases](#testing-synchronization-between-server-and-multiple-databases)
+5. [E2E Testing using Simulated GUI](#e2e-testing-using-simulated-gui)
+
 ## Base Concept
 
 The base concept for testing in UMLP revolves around the `TestSetup` interface.
@@ -42,7 +49,7 @@ public class CityInfoTest extends FlensburgMockTestSetup {
 
 This example tests calculations performed by the `CityInfo` class without involving any client-server or database synchronization.
 
-## Testing Synchronization between Server and Client(s)
+## Testing Synchronization between Server and Clients
 
 A crucial aspect of internal UMLP testing is verifying synchronization between the server (backend) and one or more clients.  This involves creating objects in one context (e.g., a client) and verifying that the changes are reflected in another context (e.g., the server or another client). It is crucial to activate the context, where changes should happen, before object modifications.
 
