@@ -100,8 +100,14 @@ public class UMLPTool extends UMLPToolTOP {
   private static final List<ASTOCLCompilationUnit> oclCompilationUnits = new ArrayList<>();
 
   public UMLPTool() {
-    UMLPMill.init();
-    BuiltInTypes.addBuiltInTypes(CD4CodeMill.globalScope(), false);
+    this(true);
+  }
+
+  public UMLPTool(boolean initMill){
+    if(initMill){
+      UMLPMill.init();
+      BuiltInTypes.addBuiltInTypes(CD4CodeMill.globalScope(), false);
+    }
   }
 
   public static List<ASTOCLCompilationUnit> getOclCompilationUnits() {
