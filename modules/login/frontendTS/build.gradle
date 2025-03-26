@@ -33,98 +33,76 @@ tasks.register('createGuiSymbols', SerializeGUISymbolsTask) {
   output = layout.buildDirectory.dir("GuiSymbols")
 }
 
-def libs = [
-    "login",
-]
-
 def buildTaskPrefix = "build_"
 def publishTaskPrefix = "publish_"
-def copyTaskPrefix = "copy_types_"
 def genTaskPrefix = "gen_"
 def genNpmrcTaskPrefix = "npmrc_"
 def buildFolders = []
 
-libs.each {
-  def libName = it
-  def buildTaskName = "${buildTaskPrefix}${libName}"
-  def genNpmrcTaskName = "${genNpmrcTaskPrefix}${libName}"
-  def publishTaskName = "${publishTaskPrefix}${libName}"
-  def npmOutput = "dist/${libName}"
+def libName = "login"
+def buildTaskName = "${buildTaskPrefix}${libName}"
+def genNpmrcTaskName = "${genNpmrcTaskPrefix}${libName}"
+def publishTaskName = "${publishTaskPrefix}${libName}"
+def npmOutput = "dist/${libName}"
 
-  // task `build_<lib_name>` that runs `npm run build @montigem/<lib_name>`
-  task "${buildTaskName}"(type: NpmTask) {
-    dependsOn tasks.npmInstall
-    args = ["run", "build", "@montigem/${libName}"]
-    // e.g. `login/src/montigem/`
-    inputs.dir(project.fileTree("${libName}")
-        .exclude("**/build/**")
-        .exclude("**/*.spec.ts", "**/*.md"))
-    inputs.files("angular.json", "tsconfig.json", "tsconfig.prod.json", "package.json")
-    // e.g. `build/dist/login/`
-    outputs.dir("${project.buildDir}/${npmOutput}")
-  }
+// task `build_<lib_name>` that runs `npm run build @montigem/<lib_name>`
+task "${buildTaskName}"(type: NpmTask) {
+  dependsOn tasks.npmInstall
+  args = ["run", "build", "@montigem/${libName}"]
+  // e.g. `login/src/montigem/`
+  inputs.dir(project.fileTree("${libName}")
+      .exclude("**/build/**")
+      .exclude("**/*.spec.ts", "**/*.md"))
+  inputs.files("angular.json", "tsconfig.json", "tsconfig.prod.json", "package.json")
+  // e.g. `build/dist/login/`
+  outputs.dir("${buildDir}/${npmOutput}")
+}
 
-  // task `npmrc_<lib_name>` that creates .npmrc file for publishing
-  task "${genNpmrcTaskName}"(type: NPMAuthCreate) {
-    dependsOn "${buildTaskName}"
-    // e.g. `build/dist/login/.npmrc`
-    npmrcFile = file("${project.buildDir}/${npmOutput}/.npmrc")
-    unscoped = true
-  }
+// task `npmrc_<lib_name>` that creates .npmrc file for publishing
+task "${genNpmrcTaskName}"(type: NPMAuthCreate) {
+  dependsOn "${buildTaskName}"
+  // e.g. `build/dist/login/.npmrc`
+  npmrcFile = file("${buildDir}/${npmOutput}/.npmrc")
+  unscoped = true
+}
 
-  // task `publish_<lib_name>` that runs `npm publish <lib_name>`
-  task "${publishTaskName}"(type: NpmTask) {
-    dependsOn "${genNpmrcTaskName}"
-    // e.g. `build/dist/login/`
-    workingDir = file("${project.buildDir}/${npmOutput}")
-    args = ["publish"]
-  }
+// task `publish_<lib_name>` that runs `npm publish <lib_name>`
+task "${publishTaskName}"(type: NpmTask) {
+  dependsOn "${genNpmrcTaskName}"
+  // e.g. `build/dist/login/`
+  workingDir = file("${buildDir}/${npmOutput}")
+  args = ["publish"]
+}
 
-  def genDir = "${libName}/build"
-  buildFolders << genDir
-  def targetRoot = "${genDir}/cd"
-  /*
-  def copyTaskName = "${copyTaskPrefix}${libName}"
-  def sourceDir = "${project.buildDir}/guiComponentTypes/montigem/${libName}"
-  def targetDir = "${targetRoot}/montigem"
+def genDir = "${libName}/build"
+buildFolders << genDir
+def targetRoot = "${genDir}/cd"
 
-  task "${copyTaskName}"(type: Copy) {
-    dependsOn translateJava2TSDomain
-    // e.g. `build/guiComponentTypes/montigem/`
-    from sourceDir
-    // e.g. `login/build/cd/montigem/`
-    into targetDir
-  }
+genDomain {
+  input = file("../models/LoginModule.umlp")
+  outputDir = file("login/build/cd")
+}
 
-  tasks[buildTaskName].dependsOn tasks[copyTaskName]
-  /**/
+genGUI {
+  dependsOn(
+    ":umlp-rte:client:createCDSymbols",
+    ":umlp-rte:client:createGuiSymbols"
+  )
+  input = layout.projectDirectory.dir("../models/montigem")
+  modelDir = layout.projectDirectory.dir("../models")
+  hwcDir = file(layout.projectDirectory.dir("${libName}/src"))
+  outputDir = layout.projectDirectory.dir("${genDir}/gui")
+  importsDir = files(targetRoot)
+  guiGenJsweet = false
+  guiGenTSFuncionality = true
+  gen4TSLib = true
+}
 
-  def genTaskName = "${genTaskPrefix}${libName}"
+tasks[buildTaskName].dependsOn genGUI
+build.dependsOn tasks[buildTaskName]
 
-  task "${genTaskName}"(type: UMLPGuiGenTask) {
-    dependsOn(
-      createCDSymbols,
-      ":umlp-rte:client:createCDSymbols",
-      ":umlp-rte:client:createGuiSymbols"
-      //tasks[copyTaskName]/*
-    )
-    input = layout.projectDirectory.dir("../models/montigem")
-    modelDir = layout.projectDirectory.dir("../models")
-    hwcDir = file(layout.projectDirectory.dir("${libName}/src"))
-    symbolDir = files(
-      project(":umlp-rte:client").createCDSymbols.getOutput(),
-      project(":umlp-rte:client").createGuiSymbols.getOutput(),
-      createCDSymbols.getOutput(),
-      configurations.guiDefaultTypes.files
-    )
-    outputDir = layout.projectDirectory.dir("${genDir}/gui")
-    importsDir = files(targetRoot)
-    guiGenJsweet = false
-    guiGenTSFuncionality = true
-    gen4TSLib = true
-  }
-
-  tasks[buildTaskName].dependsOn tasks[genTaskName]
+frontendSetup {
+  enabled = false
 }
 
 clean.doLast {
@@ -166,7 +144,6 @@ jar.dependsOn(symbolJar)
 
 artifacts {
   archives symbolJar
-  // localGuiLib symbolJar
 }
 
 publishing {
@@ -209,36 +186,5 @@ gradle.projectsEvaluated {
   translateJava2TSDomain.configure {task ->
     task.dependsOn(project(":umlp-rte").tasks["generateGuiComponentJava"])
   }
-}
-/**/
-
-genDomain {
-  input = file("../models/LoginModule.umlp")
-  outputDir = file("login/build/cd")
-}
-
-genGUI {
-  enabled = false
-}
-
-createDomainSymbols {
-  enabled = false
-}
-
-frontendSetup {
-  enabled = false
-}
-
-/*
-genJava2TSGUIConfig {
-  enabled = false
-}
-
-genJava2TSDomainConfig {
-  enabled = false
-}
-
-translateJava2TSGUI {
-  enabled = false
 }
 /**/
