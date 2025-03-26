@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package montigem;
+
+import montigem.UserSignUp;
+import montigem.LoginContainer;
+
+import LoginModule.LoginModuleUser;
+import LoginModule.DoesNotRequireLogin;
+
+page SignupPage(DoesNotRequireLogin doesNotRequireLogin){
+  @LoginContainer(component = @UserSignUp());
+}

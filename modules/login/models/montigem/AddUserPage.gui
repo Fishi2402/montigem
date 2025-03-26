@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+package montigem;
+
+import montigem.UserCreate;
+import montigem.LoginContainer;
+
+import LoginModule.LoginModuleUser;
+
+page AddUserPage(List<LoginModuleUser> users){
+  @LoginContainer(component = @UserCreate(users=users));
+}

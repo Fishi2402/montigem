@@ -75,17 +75,22 @@ def prebuildTasks = [
 ]
 
 tasks.register('buildApp', NpxTask) {
-  dependsOn(prebuildTasks)
+  dependsOn(
+    prebuildTasks,
+    project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") }
+  )
   command = "ng"
   args = ["build"]
 }
 assemble.dependsOn(buildApp)
 
+/*
 tasks.named('buildApp') {
   dependsOn {
     project(':modules:login:frontendTS').tasks.named('generate').get()
   }
 }
+/**/
 
 tasks.register('testApp', NpxTask) {
   dependsOn(prebuildTasks)
