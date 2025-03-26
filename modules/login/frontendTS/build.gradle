@@ -1,223 +1,244 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
-  id "com.github.node-gradle.node" version "5.0.0"
-  // TODO: -test
-  id "de.rwth.se.umlp-tool-frontend"  // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
-//  id "de.rwth.se.umlp-tool-frontend-test"  // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
+  id 'java'
   id 'maven-publish'
-  id 'de.rwth.se.umlp-tool-module-jsfrontend' // create domainSymbols-jar
+  id "com.github.node-gradle.node" version "5.0.0"
+  id "de.rwth.se.umlp-tool-frontend"
 }
 
-node {
-  nodeProjectDir = file("${buildDir}/frontendGen")
+repositories {
+  mavenCentral()
 }
 
-createDomainSymbols {
-  // TODO: Gradle setup
-//  modelDir.from(project(":modules:login").layout.getProjectDirectory().dir("models"))
-
+configurations {
+  guiDefaultTypes
+  // localGuiLib
 }
 
-genDomain {
-  // TODO: Gradle setup
-//  modelDir.from(project(":modules:login").layout.getProjectDirectory().dir("models"))
-
+dependencies {
+  guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
+  // implementation project(":umlp-rte")
 }
 
-generate {
-  //println("ADDING GENERATE")
+tasks.register('createCDSymbols', SerializeCDSymbolsTask) {
+  input = file("../models/")
+  // symbolPath = file("models/")
+  output = layout.buildDirectory.dir("CDSymbols")
 }
 
-
-genGUI {
-  domainModels = ["LoginModule"]
-//  guiCreateModels = ["gui.login.UserCreate", "gui.project.ProjectCreate", "gui.project.ProjectsCreateByGroup"]
-
-//  symbolDir.from(project(":modules:login").layout.getProjectDirectory().dir("models"))
-
-  /*
-  debug = true
-  outputs.upToDateWhen { false }
-  /**/
+tasks.register('createGuiSymbols', SerializeGUISymbolsTask) {
+  input = file("../models/")
+  symbolDir = files(createCDSymbols.getOutput(), configurations.guiDefaultTypes.files)
+  output = layout.buildDirectory.dir("GuiSymbols")
 }
-nodeSetup.dependsOn(frontendSetup)
-npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 
-def prebuildTasks = [
-    npmInstall,
-    generate  // Created from UMLP-Frontend Plugin.
+def libs = [
+    "login",
 ]
 
-tasks.register('buildApp', NpxTask) {
-  dependsOn(prebuildTasks)
-  command = "ng"
-  args = ["build"]
-}
-assemble.dependsOn(buildApp)
+def buildTaskPrefix = "build_"
+def publishTaskPrefix = "publish_"
+def copyTaskPrefix = "copy_types_"
+def genTaskPrefix = "gen_"
+def genNpmrcTaskPrefix = "npmrc_"
+def buildFolders = []
 
-//// This task copies the hwc in src/app into a distapp dir within the build dir
-//// This dir is NOT referenced by the tsconfig (to run/build this app), instead only by the package.json (to export these files)
-//// This was required as the "../../src/app" tsconfig-path is not liked at all by a npm pack/publish
-//tasks.register('syncHWCApp', Sync) {
-//  from 'src/app'
-//  into "${project.buildDir}/frontendGen/distapp/abc"
-//}
-//
-//// TODO: Version?
-//tasks.register('packApp', NpxTask) {
-//  dependsOn(prebuildTasks, syncHWCApp)
-//  inputs.dir(project.fileTree("src/") // TODO: Properly include src? a different way than syncHWCApp
-//      .exclude("**/*.spec.ts", "**/*.md"))
-//  dependsOn "buildApp"
-//  command = "npm"
-//  args = ["pack"]
-//}
+libs.each {
+  def libName = it
+  def buildTaskName = "${buildTaskPrefix}${libName}"
+  def genNpmrcTaskName = "${genNpmrcTaskPrefix}${libName}"
+  def publishTaskName = "${publishTaskPrefix}${libName}"
+  def npmOutput = "dist/${libName}"
 
-tasks.register('syncLibConfig', Sync) {
-  dependsOn(nodeSetup)
-  from 'config/projects'
-  into "${project.buildDir}/frontendGen/projects"
-  outputs.upToDateWhen {false}
-}
-
-// Prepare the frontend as a lib
-tasks.register('syncLib', Sync) {
-  dependsOn(frontendSetup, SYNC_genDomain, SYNC_genGUI, syncLibConfig)
-  from "src/app"
-  from "${project.buildDir}/frontendGen/build/appdomain/"
-  from "${project.buildDir}/frontendGen/build/appgui/"
-  into "${project.buildDir}/frontendGen/projects/loginmodule-ts/src/"
-  outputs.upToDateWhen {false}
-  preserve {
-    include 'public-api.ts'
+  // task `build_<lib_name>` that runs `npm run build @montigem/<lib_name>`
+  task "${buildTaskName}"(type: NpmTask) {
+    dependsOn tasks.npmInstall
+    args = ["run", "build", "@montigem/${libName}"]
+    // e.g. `login/src/montigem/`
+    inputs.dir(project.fileTree("${libName}")
+        .exclude("**/build/**")
+        .exclude("**/*.spec.ts", "**/*.md"))
+    inputs.files("angular.json", "tsconfig.json", "tsconfig.prod.json", "package.json")
+    // e.g. `build/dist/login/`
+    outputs.dir("${project.buildDir}/${npmOutput}")
   }
-}
-//tasks.register('syncLibloginmoduleSRC', Sync) {
-//  from "src/app/loginmodule"
-//  from "${project.buildDir}/frontendGen/build/appdomain/loginmodule"
-//  into "${project.buildDir}/frontendGen/projects/loginmodule-ts/loginmodule/src"
-//  // non recursive:
-//  include "*.*"
-//  outputs.upToDateWhen {false}
-//  filter { line ->  line.replaceAll('@src/loginmodule/commands/[a-zA-Z0-9_]+', 'loginmodule-ts/loginmodule/commands')
-//  }
-//  outputs.upToDateWhen {false}
-//
-//}
 
-//tasks.register('syncLibloginmoduleCommands', Sync) {
-//  dependsOn(frontendSetup, SYNC_genDomain, SYNC_genGUI, syncLibloginmoduleGUI)
-//  from 'config/projects/loginmodule-ts/loginmodule/commands'
-//  into "${project.buildDir}/frontendGen/projects/loginmodule-ts/loginmodule/commands"
-//  outputs.upToDateWhen {false}
-//  finalizedBy(tasks.syncLibloginmoduleCommandsSRC) // replace @src in commands afterwards
-//}
-//
-//tasks.register('syncLibloginmoduleCommandsSRC', Sync) {
-//  dependsOn(frontendSetup, SYNC_genDomain, SYNC_genGUI, syncLibloginmoduleGUI)
-//  from "src/app/loginmodule/commands"
-//  from "${project.buildDir}/frontendGen/build/appdomain/loginmodule/commands"
-//  into "${project.buildDir}/frontendGen/projects/loginmodule-ts/loginmodule/commands/src"
-//  filter { line -> line.contains("@src/loginmodule/commands")?line
-//      : line.replaceAll('@src/loginmodule/[a-zA-Z0-9_]+', 'loginmodule-ts/loginmodule')
-//  }
-//  include "*.*"
-//  outputs.upToDateWhen {false}
-//}
-
-
-//tasks.register('syncLibloginmoduleGUI', Sync) {
-//  dependsOn(frontendSetup, SYNC_genDomain, SYNC_genGUI, syncLibFilesI)
-//  from "src/app/gui"
-//  from 'config/projects/loginmodule-ts/gui'
-//  from "${project.buildDir}/frontendGen/build/appgui/gui"
-////  from "${project.buildDir}/frontendGen/build/appgui/loginmodule"
-//  into "${project.buildDir}/frontendGen/projects/loginmodule-ts/gui/"
-//  // TODO: Replace @src with precise path
-//  filter { line -> line.replaceAll('@src/loginmodule/[a-zA-Z0-9_]+', 'loginmodule-ts/loginmodule') }
-//  outputs.upToDateWhen {false}
-//}
-
-//
-//// Hackaround for templatePaths
-//tasks.register('syncLibFilesI', Sync) {
-//  dependsOn(frontendSetup, SYNC_genDomain, SYNC_genGUI)
-//  from ("${project.buildDir}/frontendGen/build/appgui") {
-//    include '**/*.html' // only html files
-//  }
-////  include '**/*.html' // TODO: Only use .html files
-//  into "${project.buildDir}/frontendGen/projects/build/umlp_frontend/intermediate/appgui"
-//}
-
-
-// Lets do this without npm, I guess
-// We might be able to do this without syncLib?
-packFrontendAsZip { // AbstractCopy Task
-  dependsOn(syncLib)
-  from ("${project.buildDir}/frontendGen/projects/loginmodule-ts/src") {
-    into 'loginmodule-ts/template_placeholder/src/'
+  // task `npmrc_<lib_name>` that creates .npmrc file for publishing
+  task "${genNpmrcTaskName}"(type: NPMAuthCreate) {
+    dependsOn "${buildTaskName}"
+    // e.g. `build/dist/login/.npmrc`
+    npmrcFile = file("${project.buildDir}/${npmOutput}/.npmrc")
+    unscoped = true
   }
-  // Hackaround to include the html template files at the correct relative location
-  from ("${project.buildDir}/frontendGen/build/appgui") {
-    include '**/*.html' // only html files (aka the template path)
-    into 'loginmodule-ts/build/umlp_frontend/intermediate/appgui'
+
+  // task `publish_<lib_name>` that runs `npm publish <lib_name>`
+  task "${publishTaskName}"(type: NpmTask) {
+    dependsOn "${genNpmrcTaskName}"
+    // e.g. `build/dist/login/`
+    workingDir = file("${project.buildDir}/${npmOutput}")
+    args = ["publish"]
   }
-//  archiveName 'LoginModuleFrontend.zip'
-  setArchiveClassifier("bundlejs")
+
+  def genDir = "${libName}/build"
+  buildFolders << genDir
+  def targetRoot = "${genDir}/cd"
+  /*
+  def copyTaskName = "${copyTaskPrefix}${libName}"
+  def sourceDir = "${project.buildDir}/guiComponentTypes/montigem/${libName}"
+  def targetDir = "${targetRoot}/montigem"
+
+  task "${copyTaskName}"(type: Copy) {
+    dependsOn translateJava2TSDomain
+    // e.g. `build/guiComponentTypes/montigem/`
+    from sourceDir
+    // e.g. `login/build/cd/montigem/`
+    into targetDir
+  }
+
+  tasks[buildTaskName].dependsOn tasks[copyTaskName]
+  /**/
+
+  def genTaskName = "${genTaskPrefix}${libName}"
+
+  task "${genTaskName}"(type: UMLPGuiGenTask) {
+    dependsOn(
+      createCDSymbols,
+      ":umlp-rte:client:createCDSymbols",
+      ":umlp-rte:client:createGuiSymbols"
+      //tasks[copyTaskName]/*
+    )
+    input = layout.projectDirectory.dir("../models/montigem")
+    modelDir = layout.projectDirectory.dir("../models")
+    hwcDir = file(layout.projectDirectory.dir("${libName}/src"))
+    symbolDir = files(
+      project(":umlp-rte:client").createCDSymbols.getOutput(),
+      project(":umlp-rte:client").createGuiSymbols.getOutput(),
+      createCDSymbols.getOutput(),
+      configurations.guiDefaultTypes.files
+    )
+    outputDir = layout.projectDirectory.dir("${genDir}/gui")
+    importsDir = files(targetRoot)
+    guiGenJsweet = false
+    guiGenTSFuncionality = true
+    gen4TSLib = true
+  }
+
+  tasks[buildTaskName].dependsOn tasks[genTaskName]
 }
 
-//artifacts.add("umlpOutgoingFrontendBundle", packFrontendAsZip) {
-//  type = "zip"
-//}
-//project.components.java.addVariantsFromConfiguration(configurations.umlpOutgoingFrontendBundle) {
-//  it.mapToOptional()
-//}
-// End of js bundle
-
-tasks.register('testApp', NpxTask) {
-  dependsOn(prebuildTasks)
-  command = "ng"
-  args = ["test"]
-}
-
-tasks.register('runApp', NpxTask) {
-  dependsOn(prebuildTasks)
-  command = "ng"
-  args = ["serve"]
-}
-tasks.register('run') {
-  dependsOn(runApp)
-}
-
-// We do not have main java soures => Remove .jar from outgoing artifacts
-tasks.named('jar') {
-  enabled = false
-}
-configurations{
-  [apiElements, runtimeElements].each {
-    it.outgoing.artifacts.removeIf { it.buildDependencies.getDependencies(null).contains(jar) }
+clean.doLast {
+  buildFolders.each { folder ->
+    delete file(folder)
   }
 }
 
-// Publish
+// tasks.build_basic.inputs.files(tasks.build_common.outputs.files.singleFile)
+// tasks.build_basic.dependsOn(tasks.build_common)
+
+tasks.register('buildAll') {
+  dependsOn tasks.findAll { it.name.startsWith(buildTaskPrefix) }
+}
+
+tasks.register('publishAll') {
+  dependsOn tasks.findAll { it.name.startsWith(publishTaskPrefix) }
+}
+
+build.dependsOn(buildAll)
+
+publish.dependsOn(publishAll)
+
+sourceSets {
+  symbols {
+    resources {
+      srcDirs(createCDSymbols.getOutput(), createGuiSymbols.getOutput())
+      include "**/*sym"
+    }
+  }
+}
+
+tasks.register('symbolJar', Jar) {
+  from sourceSets.symbols.output
+  includeEmptyDirs = false
+}
+
+jar.dependsOn(symbolJar)
+
+artifacts {
+  archives symbolJar
+  // localGuiLib symbolJar
+}
+
 publishing {
   publications {
     mavenJava(MavenPublication) {
-      from components.java
+      artifact symbolJar
     }
   }
-  repositories {
-    maven {
-      url "file://${project.buildDir}/repo"
-    }
-    maven {
-      credentials.username mavenUser
-      credentials.password mavenPassword
+  repositories.maven {
+    credentials.username mavenUser
+    credentials.password mavenPassword
 
-      def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-releases/"
-      def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-snapshots/"
-      url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
-    }
+    def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-releases/"
+    def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-snapshots/"
+    url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
   }
 }
+
+
+// JSweet
+/*
+translateJava2TSDomain {
+  verbose = true
+  File projectBase = parent.projectDir
+  File srcDir = new File(projectBase, "src/main/java")
+
+  def hwcFiles = []
+  srcDir.traverse(type: groovy.io.FileType.FILES) { file ->
+    if (file.getPath().startsWith(srcDir.getPath() + File.separator + "mc" + File.separator + "fenix")) {
+      hwcFiles << file
+    }
+  }
+  input.from(hwcFiles)
+  input.from(files(project(":umlp-rte").buildDir, "guiComponentTypes"))
+
+  outputDir.set(new File(project.buildDir, "guiComponentTypes"))
+}
+
+gradle.projectsEvaluated {
+  translateJava2TSDomain.configure {task ->
+    task.dependsOn(project(":umlp-rte").tasks["generateGuiComponentJava"])
+  }
+}
+/**/
+
+genDomain {
+  input = file("../models/LoginModule.umlp")
+  outputDir = file("login/build/cd")
+}
+
+genGUI {
+  enabled = false
+}
+
+createDomainSymbols {
+  enabled = false
+}
+
+frontendSetup {
+  enabled = false
+}
+
+/*
+genJava2TSGUIConfig {
+  enabled = false
+}
+
+genJava2TSDomainConfig {
+  enabled = false
+}
+
+translateJava2TSGUI {
+  enabled = false
+}
+/**/

@@ -1,0 +1,16 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "declarationMap": false,
+    "paths": {
+      "@montigem/login": [
+        "./build/dist/login"
+      ]
+    },
+    "baseUrl": "./"
+  },
+  "angularCompilerOptions": {
+    "compilationMode": "partial"
+  }
+}
