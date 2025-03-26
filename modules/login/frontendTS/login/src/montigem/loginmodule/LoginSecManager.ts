@@ -1,12 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {LoginModuleUser} from './LoginModuleUser';
-import {LoginModuleManager} from '../../build/cd/loginmodule/LoginModuleManager';
+import {LoginModuleManager} from '../../../build/cd/loginmodule/LoginModuleManager';
 import {LoginSecManagerTOP} from '../../build/cd/loginmodule/LoginSecManagerTOP';
 
 import {ActivatedRoute, Router} from "@angular/router";
 import {CommandManager, NotificationScope} from "@umlp/common";
-import {GetCurrentUserRequest} from '../../build/cd/loginmodule/commands/GetCurrentUserRequest';
+import {GetCurrentUserRequest} from '../../../build/cd/loginmodule/commands/GetCurrentUserRequest';
 
 export enum LAZY_LOGIN_STATE {
   LOGIN_DONE,

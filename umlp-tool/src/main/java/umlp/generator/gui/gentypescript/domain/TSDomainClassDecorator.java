@@ -34,6 +34,7 @@ import umlp.generator.gui.gentypescript.printer.TSUtilsPrinter;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,9 +46,11 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
 
   protected String astcdPackage;
   protected ASTCDCompilationUnit origCD;
+  protected final Path outPath;
 
-  public TSDomainClassDecorator(final GlobalExtensionManagement glex, MCPath hwPath) {
+  public TSDomainClassDecorator(final GlobalExtensionManagement glex, MCPath hwPath, Path outPath) {
     super(glex, hwPath);
+    this.outPath = outPath;
   }
 
   @Override
@@ -64,6 +67,7 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
     getCD4C().addImport(cdType, PathUtil.getBackendRTECommonPath("Gem"));
     getCD4C().addImport(cdType, PathUtil.getBackendRTECommonPath("GemList"));
     getCD4C().addImport(cdType, PathUtil.getBackendRTECommonPath("GemBuildable"));
+
     getCD4C().addImport(cdType, this.astcdPackage + "." + getCorrectManager(domainType));
     getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getName() + ObserverDecorator.SUFFIX);
     getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getName() + ErrorCollectorDecorator.SUFFIX);

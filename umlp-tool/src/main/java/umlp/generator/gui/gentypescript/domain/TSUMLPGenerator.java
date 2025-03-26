@@ -81,6 +81,7 @@ public class TSUMLPGenerator extends UMLPGenerator {
     hpp.processValue(tc, cdAST, Arrays.asList(
         decoratedAST, genSetup.getGlex(),
         genSetup.getHandcodedPath(),
+        genSetup.getOutputDirectory().toPath(),
         cdGenerator, schemaGenerator
     ));
   }

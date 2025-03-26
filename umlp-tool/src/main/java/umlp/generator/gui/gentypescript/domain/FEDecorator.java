@@ -31,17 +31,22 @@ import umlp.generator.domain.decorator.ValidationResultDeSerDecorator;
 import umlp.generator.domain.decorator.ValidationResultDecorator;
 import umlp.generator.gui.gentypescript.commands.TSAccessPolicyDecorator;
 
+import java.nio.file.Path;
+
 public class FEDecorator extends BEDecorator {
 
-  public FEDecorator(GlobalExtensionManagement glex, MCPath hwPath) {
+  protected final Path outPath;
+
+  public FEDecorator(GlobalExtensionManagement glex, MCPath hwPath, Path outPath) {
     super(glex, hwPath);
+    this.outPath = outPath;
   }
 
   @Override
   public void transform(ASTCDCompilationUnit cdAST, ASTCDCompilationUnit decoratedAST) {
     DomainClassDecorator domainClassDecorator;
 
-    domainClassDecorator = new TSDomainClassDecorator(glex, hwPath);
+    domainClassDecorator = new TSDomainClassDecorator(glex, hwPath, outPath);
     domainClassDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: CreateDecorator", FEDecorator.class.getName());
 
