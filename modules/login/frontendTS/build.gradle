@@ -81,6 +81,7 @@ def targetRoot = "${genDir}/cd"
 genDomain {
   input = file("../models/LoginModule.umlp")
   outputDir = file("login/build/cd")
+  gen4TSLib = true
 }
 
 genGUI {

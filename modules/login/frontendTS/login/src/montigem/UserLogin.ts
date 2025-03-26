@@ -6,7 +6,7 @@ import { GetCurrentUserRequest } from '../../build/cd/loginmodule/commands/GetCu
 import { config, UserLoginComponent } from '../../build/gui/montigem/UserLoginComponent';
 // import {LoginSecurityManager} from "../../loginmodule/DtcockpitSecurityManager";
 import { ClientCommandManager, CommandManager } from '@umlp/common';
-import { LoginSecManager } from "./LoginSecManager";
+import { LoginSecManager } from "./loginmodule/LoginSecManager";
 
 
 // import { ActivatedRoute, Router } from '@angular/router';

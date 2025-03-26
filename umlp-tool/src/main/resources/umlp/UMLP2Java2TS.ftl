@@ -5,13 +5,13 @@
   Call it using the CLI: .. -ct umlp.UMLP2Java2TS
 
 -->
-${tc.signature("decoratedAST", "glex", "hwPath", "cdGenerator", "schemaGenerator")}
+${tc.signature("decoratedAST", "glex", "hwPath", "outPath", "cdGenerator", "schemaGenerator")}
 
 <#-- Initialize all modules, adding their templates to the other hookpoints, e.g., BeforeTransform -->
 ${includeArgs("umlp.generator.hook.InitModules", glex)}
 
 <#-- Call all decorators -->
-<#assign beDecorator = tc.instantiate("umlp.generator.gui.gentypescript.domain.FEDecorator", [glex, hwPath])>
+<#assign beDecorator = tc.instantiate("umlp.generator.gui.gentypescript.domain.FEDecorator", [glex, hwPath, outPath])>
 <#assign commandDecorator = tc.instantiate("umlp.generator.gui.gentypescript.commands.TSCommandDecorator", [glex])>
 <#assign requestDecorator = tc.instantiate("umlp.generator.gui.gentypescript.commands.TSGetFreeGemIdRequestDecorator", [glex])>
 <#assign topDecorator = tc.instantiate("umlp.generator.gui.gentypescript.java2ts.TSTopDecorator", [hwPath])>
