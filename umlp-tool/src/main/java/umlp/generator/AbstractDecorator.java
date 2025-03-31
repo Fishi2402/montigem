@@ -36,7 +36,6 @@ import de.monticore.types.check.TypeCheck;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
-import de.monticore.umlstereotype._ast.ASTStereoValueTOP;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
@@ -614,7 +613,7 @@ public abstract class AbstractDecorator {
     }
     List<ASTStereoValue> valueList = origCD.getModifier().getStereotype().getValuesList();
     List<String> extendedCDs = valueList.stream().filter(value -> value.getName().equals("extends"))
-        .map(ASTStereoValueTOP::getValue).collect(Collectors.toList());
+        .map(ASTStereoValue::getValue).collect(Collectors.toList());
 
     // This checks a CD 'extends' another one, i.e. a UMLP Project extends/ is composed of another one
     if (extendedCDs.stream().anyMatch(cdName -> cdName.equals(potentialExtendedCDName))) {
