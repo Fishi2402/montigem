@@ -4,7 +4,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.io.paths.MCPath;
@@ -25,14 +25,18 @@ public class TSImportHelper {
 
   protected Set<String> importSet = new HashSet<>();
   protected final GlobalExtensionManagement glex;
-  protected final ASTCDClass clazz;
+  protected final ASTCDType cdType;
   protected final MCPath hwPath;
   protected final Path outPath;
   protected final MCPath importsPath;
 
-  public TSImportHelper(GlobalExtensionManagement glex, ASTCDClass clazz, MCPath hwPath, Path outPath, MCPath importsPath) {
+  public TSImportHelper(GlobalExtensionManagement glex, ASTCDType cdType, MCPath hwPath, Path outPath) {
+    this(glex, cdType, hwPath, outPath, new MCPath());
+  }
+
+  public TSImportHelper(GlobalExtensionManagement glex, ASTCDType cdType, MCPath hwPath, Path outPath, MCPath importsPath) {
     this.glex = glex;
-    this.clazz = clazz;
+    this.cdType = cdType;
     this.hwPath = hwPath;
     this.outPath = outPath;
     this.importsPath = importsPath;
@@ -76,7 +80,7 @@ public class TSImportHelper {
       if (importIntermediateAngularClass) {
         from += "Component";
       }
-      Optional<String> relativeFrom = getImportPathForComponent(
+      Optional<String> relativeFrom = getImportPath(
           hwPath, outPath, importsPath, importerQName, qType);
       if (relativeFrom.isPresent()) {
         from = relativeFrom.get();
@@ -105,12 +109,12 @@ public class TSImportHelper {
   public void addImportString(String importStr) {
     if (!importSet.contains(importStr)) {
       importSet.add(importStr);
-      glex.addAfterTemplate("umlp.gui2ts.TSEmptyImports", clazz,
+      glex.addAfterTemplate("umlp.gui2ts.TSEmptyImports", cdType,
           new StringHookPoint(importStr));
     }
   }
 
-  protected Optional<String> getImportPathForComponent(
+  protected Optional<String> getImportPath(
       MCPath hwPath, Path outPath, MCPath importsPath, String importerQName, String importedQName) {
     String importedQualifier = Names.getQualifier(importedQName);
     String importedSimpleName = Names.getSimpleName(importedQName);
@@ -171,7 +175,8 @@ public class TSImportHelper {
           // prefer "maybe CD" option
           if (importedMaybeCDURLOpt.isPresent()) {
             importedPath = MCPath.toPath(importedMaybeCDURLOpt.get());
-          } else {
+          }
+          else {
             importedPath = MCPath.toPath(importedURLOpt.get());
           }
           if (importedPath.isPresent()) {
@@ -187,7 +192,8 @@ public class TSImportHelper {
         else {
           if (importedMaybeCDURLOpt.isPresent()) {
             return Optional.of(path2TSRootImport(importedMaybeCD));
-          } else {
+          }
+          else {
             return Optional.of(path2TSRootImport(imported));
           }
         }

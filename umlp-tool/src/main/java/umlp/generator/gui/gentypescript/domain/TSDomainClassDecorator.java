@@ -24,6 +24,7 @@ import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ObserverDecorator;
 import umlp.generator.domain.decorator.methods.MethodGenService;
 import umlp.generator.domain.decorator.methods.UMLPMutatorDecorator;
+import umlp.generator.gui.gentypescript.decorator.TSImportHelper;
 import umlp.generator.gui.gentypescript.method.TSAccessorDecorator;
 import umlp.generator.gui.gentypescript.method.TSAssocAccessorDecorator;
 import umlp.generator.gui.gentypescript.method.TSAssocMutatorDecorator;
@@ -68,7 +69,12 @@ public class TSDomainClassDecorator extends DomainClassDecorator {
     getCD4C().addImport(cdType, PathUtil.getBackendRTECommonPath("GemList"));
     getCD4C().addImport(cdType, PathUtil.getBackendRTECommonPath("GemBuildable"));
 
-    getCD4C().addImport(cdType, this.astcdPackage + "." + getCorrectManager(domainType));
+    TSImportHelper importHelper = new TSImportHelper(glex, cdType, hwPath, outPath);
+
+    String importerQName = this.astcdPackage + "." + cdType.getName();
+    importHelper.addImport(this.astcdPackage + "." + getCorrectManager(domainType), importerQName);
+
+    // getCD4C().addImport(cdType, this.astcdPackage + "." + getCorrectManager(domainType));
     getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getName() + ObserverDecorator.SUFFIX);
     getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getName() + ErrorCollectorDecorator.SUFFIX);
     if (!domainType.getSuperclassList().isEmpty()) {
