@@ -14,7 +14,7 @@ ${includeArgs("umlp.generator.hook.InitModules", glex)}
 <#assign beDecorator = tc.instantiate("umlp.generator.gui.gentypescript.domain.FEDecorator", [glex, hwPath, outPath])>
 <#assign commandDecorator = tc.instantiate("umlp.generator.gui.gentypescript.commands.TSCommandDecorator", [glex])>
 <#assign requestDecorator = tc.instantiate("umlp.generator.gui.gentypescript.commands.TSGetFreeGemIdRequestDecorator", [glex])>
-<#assign topDecorator = tc.instantiate("umlp.generator.gui.gentypescript.java2ts.TSTopDecorator", [hwPath])>
+<#assign topDecorator = tc.instantiate("umlp.generator.gui.gentypescript.java2ts.TSTopDecorator", [glex, hwPath, outPath])>
 
 ${includeArgs("umlp.generator.hook.BeforeTransform", decoratedAST, glex, hwPath, cdGenerator, schemaGenerator, beDecorator, commandDecorator, requestDecorator, topDecorator)}
 

@@ -8,15 +8,24 @@ import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.io.paths.MCPath;
 import umlp.generator.domain.decorator.CommandObserverDecorator;
 import umlp.generator.domain.decorator.ObserverDecorator;
+import umlp.generator.gui.gentypescript.decorator.TSImportHelper;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
+import java.nio.file.Path;
+
 public class TSCommandObserverDecorator extends CommandObserverDecorator {
 
-  public TSCommandObserverDecorator(GlobalExtensionManagement glex) {
+  protected final Path outPath;
+  protected final MCPath hwPath;
+
+  public TSCommandObserverDecorator(GlobalExtensionManagement glex, MCPath hwPath, Path outPath) {
     super(glex);
+    this.hwPath = hwPath;
+    this.outPath = outPath;
   }
 
   @Override
@@ -49,13 +58,17 @@ public class TSCommandObserverDecorator extends CommandObserverDecorator {
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandManager"));
 
+    String astcdPackage = getPackageName(origCD, DEFAULT_PACKAGE);
+    TSImportHelper importHelper = new TSImportHelper(glex, clazz, hwPath, outPath);
+    String importerQName = astcdPackage + "." + clazz.getName();
+
     for (ASTCDType t : UMLPSymbolTables.getAttributesInHierarchyWithDefiningType(domainClass).values()) {
       ASTCDCompilationUnit def = UMLPSymbolTables.getDiagramFor(t);
-      getCD4C().addImport(clazz, getPackageName(def, DEFAULT_PACKAGE) + "." + t.getName());
+      importHelper.addImport(getPackageName(def, DEFAULT_PACKAGE) + "." + t.getName(), importerQName);
     }
 
     String obs = domainClass.getName() + ObserverDecorator.SUFFIX + TSObserverMixinDecorator.SUFFIX;
-    getCD4C().addImport(clazz, getPackageName(origCD, DEFAULT_PACKAGE) + "." + obs);
+    importHelper.addImport(getPackageName(origCD, DEFAULT_PACKAGE) + "." + obs, importerQName);
   }
 
 }

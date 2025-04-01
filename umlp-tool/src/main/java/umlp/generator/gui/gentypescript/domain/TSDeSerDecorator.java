@@ -16,19 +16,23 @@ import umlp.generator.domain.decorator.BaseClassObjectMapperDecorator;
 import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.domain.decorator.DeSerDecorator;
 import umlp.generator.domain.decorator.ManagerDecorator;
+import umlp.generator.gui.gentypescript.decorator.TSImportHelper;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
+import java.nio.file.Path;
 import java.util.Set;
 
 public class TSDeSerDecorator extends DeSerDecorator {
 
   protected String astcdPackage;
   protected ASTCDCompilationUnit origCD;
+  protected final Path outPath;
 
-  public TSDeSerDecorator(GlobalExtensionManagement glex, MCPath hwPath,
+  public TSDeSerDecorator(GlobalExtensionManagement glex, MCPath hwPath, Path outPath,
       Set<String> supportedDesers) {
     super(glex, hwPath, supportedDesers);
+    this.outPath = outPath;
   }
 
   @Override
@@ -101,37 +105,42 @@ public class TSDeSerDecorator extends DeSerDecorator {
   protected void addImports(ASTCDType domainType, ASTCDType clazz) {
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("Gem"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("JsonDeSer"));
+
+    TSImportHelper importHelper = new TSImportHelper(glex, clazz, hwPath, outPath);
+    String importerQName = this.astcdPackage + "." + clazz.getName();
+    importHelper.addImport(this.astcdPackage + "." + getCorrectManager(domainType), importerQName);
+
     if (!domainType.getModifier().isAbstract()) {
-      getCD4C().addImport(clazz, this.astcdPackage + "." + domainType.getName());
-      getCD4C().addImport(clazz, this.astcdPackage + "."
-          + domainType.getName() + BuilderDecorator.BUILDER_SUFFIX);
+      importHelper.addImport(this.astcdPackage + "." + domainType.getName(), importerQName);
+      importHelper.addImport(this.astcdPackage + "."
+          + domainType.getName() + BuilderDecorator.BUILDER_SUFFIX, importerQName);
     }
     String name = origCD.getCDDefinition().getName();
-    getCD4C().addImport(clazz, this.astcdPackage + "." + name + ManagerDecorator.SUFFIX);
-    getCD4C().addImport(clazz, this.astcdPackage + "." + name + BaseClassObjectMapperDecorator.SUFFIX);
+    importHelper.addImport(this.astcdPackage + "." + name + ManagerDecorator.SUFFIX, importerQName);
+    importHelper.addImport(this.astcdPackage + "." + name + BaseClassObjectMapperDecorator.SUFFIX, importerQName);
 
     for (ASTCDClass c : this.origCD.getCDDefinition().getCDClassesList()) {
       if (!c.getModifier().isDerived()) {
-        getCD4C().addImport(clazz, this.astcdPackage + "." + c.getName());
+        importHelper.addImport(this.astcdPackage + "." + c.getName(), importerQName);
         if (!(c.getName() + DeSerDecorator.SUFFIX).equals(clazz.getName())  && !c.getModifier().isAbstract()
 
         ) {
-          getCD4C().addImport(clazz, this.astcdPackage + "."
-              + c.getName() + DeSerDecorator.SUFFIX);
+          importHelper.addImport(this.astcdPackage + "."
+              + c.getName() + DeSerDecorator.SUFFIX, importerQName);
         }
       }
     }
     for (ASTCDEnum c : this.origCD.getCDDefinition().getCDEnumsList()) {
-      getCD4C().addImport(clazz, this.astcdPackage + "." + c.getName());
+      importHelper.addImport(this.astcdPackage + "." + c.getName(), importerQName);
     }
     for (ASTCDInterface c : this.origCD.getCDDefinition().getCDInterfacesList()) {
-      getCD4C().addImport(clazz, this.astcdPackage + "." + c.getName());
+      importHelper.addImport(this.astcdPackage + "." + c.getName(), importerQName);
     }
 
     for (ASTCDAssocSide assoc : CDSymbolTables.getAssociationsInHierarchy(domainType)) {
       ASTCDCompilationUnit cdOfAssoc = UMLPSymbolTables.getDiagramFor(assoc.getMCQualifiedType());
       if(!cdOfAssoc.equals(origCD)){
-        getCD4C().addImport(clazz, getPackageName(cdOfAssoc, DEFAULT_PACKAGE) + "." + assoc.getMCQualifiedType().printType());
+        importHelper.addImport(getPackageName(cdOfAssoc, DEFAULT_PACKAGE) + "." + assoc.getMCQualifiedType().printType(), importerQName);
       }
     }
   }

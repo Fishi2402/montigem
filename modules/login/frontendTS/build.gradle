@@ -21,21 +21,33 @@ dependencies {
   // implementation project(":umlp-rte")
 }
 
+/*
 tasks.register('createCDSymbols', SerializeCDSymbolsTask) {
   input = file("../models/")
   // symbolPath = file("models/")
   output = layout.buildDirectory.dir("CDSymbols")
 }
+/* */
+
+/*
+createDomainSymbols {
+  dependsOn(":umlp-rte:client:createCDSymbols")
+  symbolPath.setFrom(project(":umlp-rte:client").createCDSymbols.getOutput())
+}
+/**/
 
 tasks.register('createGuiSymbols', SerializeGUISymbolsTask) {
   input = file("../models/")
-  symbolDir = files(createCDSymbols.getOutput(), configurations.guiDefaultTypes.files)
+  symbolDir = files(
+      project(":umlp-rte:client").createCDSymbols.getOutput(),
+      createDomainSymbols.getSymbolOutDir(),
+      configurations.guiDefaultTypes.files
+  )
   output = layout.buildDirectory.dir("GuiSymbols")
 }
 
 def buildTaskPrefix = "build_"
 def publishTaskPrefix = "publish_"
-def genTaskPrefix = "gen_"
 def genNpmrcTaskPrefix = "npmrc_"
 def buildFolders = []
 
@@ -80,14 +92,15 @@ def targetRoot = "${genDir}/cd"
 
 genDomain {
   input = file("../models/LoginModule.umlp")
+  hwcDir = file(layout.projectDirectory.dir("${libName}/src"))
   outputDir = file("login/build/cd")
   gen4TSLib = true
 }
 
 genGUI {
   dependsOn(
-    ":umlp-rte:client:createCDSymbols",
-    ":umlp-rte:client:createGuiSymbols"
+      ":umlp-rte:client:createCDSymbols",
+      ":umlp-rte:client:createGuiSymbols"
   )
   input = layout.projectDirectory.dir("../models/montigem")
   modelDir = layout.projectDirectory.dir("../models")
@@ -130,7 +143,7 @@ publish.dependsOn(publishAll)
 sourceSets {
   symbols {
     resources {
-      srcDirs(createCDSymbols.getOutput(), createGuiSymbols.getOutput())
+      srcDirs(createDomainSymbols.getSymbolOutDir(), createGuiSymbols.getOutput())
       include "**/*sym"
     }
   }

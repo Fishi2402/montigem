@@ -6,13 +6,21 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.io.paths.MCPath;
 import umlp.generator.domain.decorator.GemListAssocDecorator;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentTemplates;
 
+import java.nio.file.Path;
+
 public class TSGemListAssocDecorator extends GemListAssocDecorator {
 
-  public TSGemListAssocDecorator(GlobalExtensionManagement glex) {
+  protected final Path outPath;
+  protected final MCPath hwPath;
+
+  public TSGemListAssocDecorator(GlobalExtensionManagement glex, MCPath hwPath, Path outPath) {
     super(glex);
+    this.hwPath = hwPath;
+    this.outPath = outPath;
   }
 
   @Override

@@ -7,8 +7,12 @@ import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.io.paths.MCPath;
 import umlp.generator.domain.decorator.DiagramObserverDecorator;
+import umlp.generator.gui.gentypescript.decorator.TSImportHelper;
 import umlp.generator.util.PathUtil;
+
+import java.nio.file.Path;
 
 public class TSDiagramObserverDecorator extends DiagramObserverDecorator {
 
@@ -16,8 +20,13 @@ public class TSDiagramObserverDecorator extends DiagramObserverDecorator {
 
   protected ASTCDCompilationUnit origCD;
 
-  public TSDiagramObserverDecorator(GlobalExtensionManagement glex) {
+  protected final Path outPath;
+  protected final MCPath hwPath;
+
+  public TSDiagramObserverDecorator(GlobalExtensionManagement glex, MCPath hwPath, Path outPath) {
     super(glex);
+    this.hwPath = hwPath;
+    this.outPath = outPath;
   }
 
   @Override
@@ -30,16 +39,19 @@ public class TSDiagramObserverDecorator extends DiagramObserverDecorator {
   protected ASTCDInterface createInterface(ASTCDCompilationUnit origCD) {
     ASTCDInterface clazz = super.createInterface(origCD);
 
+    TSImportHelper importHelper = new TSImportHelper(glex, clazz, hwPath, outPath);
+    String importerQName = this.astcdPackage + "." + clazz.getName();
+
     for (ASTCDClass c : this.origCD.getCDDefinition().getCDClassesList()) {
-      getCD4C().addImport(clazz, this.astcdPackage + "." + c.getName());
+      importHelper.addImport(this.astcdPackage + "." + c.getName(), importerQName);
     }
     for (ASTCDEnum c : this.origCD.getCDDefinition().getCDEnumsList()) {
-      getCD4C().addImport(clazz, this.astcdPackage + "."
-          + c.getName());
+      importHelper.addImport(this.astcdPackage + "."
+          + c.getName(), importerQName);
     }
     for (ASTCDInterface c : this.origCD.getCDDefinition().getCDInterfacesList()) {
-      getCD4C().addImport(clazz, this.astcdPackage + "."
-          + c.getName());
+      importHelper.addImport(this.astcdPackage + "."
+          + c.getName(), importerQName);
     }
 
     return clazz;
@@ -58,19 +70,22 @@ public class TSDiagramObserverDecorator extends DiagramObserverDecorator {
     });
     getCD4C().addMethod(clazz, "umlp.common_observer.GetScopeGlobal");
 
+    TSImportHelper importHelper = new TSImportHelper(glex, clazz, hwPath, outPath);
+    String importerQName = this.astcdPackage + "." + clazz.getName();
+
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
-    getCD4C().addImport(clazz, this.astcdPackage + "." + i.getName());
+    importHelper.addImport(this.astcdPackage + "." + i.getName(), importerQName);
 
     for (ASTCDClass c : this.origCD.getCDDefinition().getCDClassesList()) {
-      getCD4C().addImport(clazz, this.astcdPackage + "." + c.getName());
+      importHelper.addImport(this.astcdPackage + "." + c.getName(), importerQName);
     }
     for (ASTCDEnum c : this.origCD.getCDDefinition().getCDEnumsList()) {
-      getCD4C().addImport(clazz, this.astcdPackage + "."
-          + c.getName());
+      importHelper.addImport(this.astcdPackage + "."
+          + c.getName(), importerQName);
     }
     for (ASTCDInterface c : this.origCD.getCDDefinition().getCDInterfacesList()) {
-      getCD4C().addImport(clazz, this.astcdPackage + "."
-          + c.getName());
+      importHelper.addImport(this.astcdPackage + "."
+          + c.getName(), importerQName);
     }
 
     return clazz;

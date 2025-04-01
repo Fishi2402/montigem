@@ -476,7 +476,7 @@ public abstract class AbstractDecorator {
     }
   }
 
-  protected String getPackageName(ASTCDCompilationUnit origCD, String subPackage) {
+  public static String getPackageName(ASTCDCompilationUnit origCD, String subPackage) {
     String origPackage = Names.constructQualifiedName(origCD.getCDPackageList(), origCD.getCDDefinition().getName());
     return (subPackage.isEmpty() ? origPackage : Joiners.DOT.join(origPackage, subPackage)).toLowerCase();
   }

@@ -45,12 +45,11 @@ public class FEDecorator extends BEDecorator {
   @Override
   public void transform(ASTCDCompilationUnit cdAST, ASTCDCompilationUnit decoratedAST) {
     DomainClassDecorator domainClassDecorator;
-
     domainClassDecorator = new TSDomainClassDecorator(glex, hwPath, outPath);
     domainClassDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: CreateDecorator", FEDecorator.class.getName());
 
-    DomainInterfaceDecorator domainInterfaceDecorator = new TSDomainInterfaceDecorator(glex);
+    DomainInterfaceDecorator domainInterfaceDecorator = new TSDomainInterfaceDecorator(glex, hwPath, outPath);
     domainInterfaceDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: CreateDecorator", FEDecorator.class.getName());
 
@@ -68,34 +67,34 @@ public class FEDecorator extends BEDecorator {
     /**/
 
     // Generate DeSer
-    DeSerDecorator deSerDecorator = new TSDeSerDecorator(glex, hwPath, supportedDesers);
+    DeSerDecorator deSerDecorator = new TSDeSerDecorator(glex, hwPath, outPath, supportedDesers);
     deSerDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: DeSerDecorator", FEDecorator.class.getName());
 
     // Generate builder classes
-    BuilderDecorator builderDecorator = new TSBuilderDecorator(glex);
+    BuilderDecorator builderDecorator = new TSBuilderDecorator(glex, hwPath, outPath);
     builderDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: BuilderDecorator", FEDecorator.class.getName());
 
     // Generate DeSer builder classes
-    DeSerBuilderDecorator deSerBuilderDecorator = new TSDeSerBuilderDecorator(glex, hwPath);
+    DeSerBuilderDecorator deSerBuilderDecorator = new TSDeSerBuilderDecorator(glex, hwPath, outPath);
     deSerBuilderDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: DeSerBuilderDecorator", FEDecorator.class.getName());
 
     // Generate ErrorCollector classes
-    ErrorCollectorDecorator errorCollectorDecorator = new TSErrorCollectorDecorator(glex);
+    ErrorCollectorDecorator errorCollectorDecorator = new TSErrorCollectorDecorator(glex, hwPath, outPath);
     errorCollectorDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ErrorCollectorDecorator", FEDecorator.class.getName());
 
-    ObserverDecorator observerDecorator = new TSObserverDecorator(glex);
+    ObserverDecorator observerDecorator = new TSObserverDecorator(glex, hwPath, outPath);
     observerDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: TSObserverDecorator", FEDecorator.class.getName());
 
-    ObserverDecorator observerMixinDecorator = new TSObserverMixinDecorator(glex);
+    ObserverDecorator observerMixinDecorator = new TSObserverMixinDecorator(glex, hwPath, outPath);
     observerMixinDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: TSObserverMixinDecorator", FEDecorator.class.getName());
 
-    TSAccessPolicyDecorator tsAccessPolicyDecorator = new TSAccessPolicyDecorator(glex);
+    TSAccessPolicyDecorator tsAccessPolicyDecorator = new TSAccessPolicyDecorator(glex, hwPath, outPath);
     tsAccessPolicyDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: TSAccessPolicyDecorator", FEDecorator.class.getName());
 
@@ -113,17 +112,17 @@ public class FEDecorator extends BEDecorator {
     Log.info("After decorator: CommandSendingObserverDecorator", FEDecorator.class.getName());
     /**/
 
-    CommandObserverDecorator cmdDecorator = new TSCommandObserverDecorator(glex);
+    CommandObserverDecorator cmdDecorator = new TSCommandObserverDecorator(glex, hwPath, outPath);
     cmdDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: CommandObserverDecorator", FEDecorator.class.getName());
 
     // Generate DiagramObserver classes
-    DiagramObserverDecorator diagramObserverDecorator = new TSDiagramObserverDecorator(glex);
+    DiagramObserverDecorator diagramObserverDecorator = new TSDiagramObserverDecorator(glex, hwPath, outPath);
     diagramObserverDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: DiagramObserverDecorator", FEDecorator.class.getName());
 
     // Generate manager classes
-    ManagerDecorator managerDecorator = new TSManagerDecorator(glex);
+    ManagerDecorator managerDecorator = new TSManagerDecorator(glex, hwPath, outPath);
     managerDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ManagerDecorator", FEDecorator.class.getName());
 
@@ -133,15 +132,15 @@ public class FEDecorator extends BEDecorator {
     Log.info("After decorator: ManagerImplDecorator", FEDecorator.class.getName());
     /**/
 
-    ManagerClientImplDecorator managerClientImplDecorator = new TSManagerClientImplDecorator(glex);
+    ManagerClientImplDecorator managerClientImplDecorator = new TSManagerClientImplDecorator(glex, hwPath, outPath);
     managerClientImplDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ManagerClientImplDecorator", FEDecorator.class.getName());
 
-    TSClientDelegationManagerDecorator clientDelegationManagerDecorator = new TSClientDelegationManagerDecorator(glex);
+    TSClientDelegationManagerDecorator clientDelegationManagerDecorator = new TSClientDelegationManagerDecorator(glex, hwPath, outPath);
     clientDelegationManagerDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ClientDelegationManagerDecorator", FEDecorator.class.getName());
 
-    ManagerMockDecorator managerMockDecorator = new TSManagerMockDecorator(glex);
+    ManagerMockDecorator managerMockDecorator = new TSManagerMockDecorator(glex, hwPath, outPath);
     managerMockDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ManagerMockDecorator", FEDecorator.class.getName());
 
@@ -151,27 +150,27 @@ public class FEDecorator extends BEDecorator {
     Log.info("After decorator: DummyProviderDecorator", FEDecorator.class.getName());
     /**/
 
-    ErrorObserverDecorator errorObserverDecorator = new TSErrorObserverDecorator(glex);
+    ErrorObserverDecorator errorObserverDecorator = new TSErrorObserverDecorator(glex, hwPath, outPath);
     errorObserverDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: ErrorObserverDecorator", FEDecorator.class.getName());
 
-    GemListAssocDecorator gemListAssocDecorator = new TSGemListAssocDecorator(glex);
+    GemListAssocDecorator gemListAssocDecorator = new TSGemListAssocDecorator(glex, hwPath, outPath);
     gemListAssocDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: GemListAssocDecorator", FEDecorator.class.getName());
 
-    GemListDomainDecorator gemListDomainDecorator = new TSGemListDomainDecorator(glex);
+    GemListDomainDecorator gemListDomainDecorator = new TSGemListDomainDecorator(glex, hwPath, outPath);
     gemListDomainDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: GemListDomainDecorator", FEDecorator.class.getName());
 
-    CommandObjectMapperDecorator commandObjectMapperDecorator = new TSCommandObjectMapperDecorator(glex);
+    CommandObjectMapperDecorator commandObjectMapperDecorator = new TSCommandObjectMapperDecorator(glex, hwPath, outPath);
     commandObjectMapperDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: CommandObjectMapperDecorator", FEDecorator.class.getName());
 
-    BaseClassObjectMapperDecorator baseClassObjectMapperDecorator = new TSBaseClassObjectMapperDecorator(glex);
+    BaseClassObjectMapperDecorator baseClassObjectMapperDecorator = new TSBaseClassObjectMapperDecorator(glex, hwPath, outPath);
     baseClassObjectMapperDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: BaseClassObjectMapperDecorator", FEDecorator.class.getName());
 
-    CommandResultDeSerDecorator commandResultDeSerDecorator = new TSCommandResultDeSerDecorator(glex);
+    CommandResultDeSerDecorator commandResultDeSerDecorator = new TSCommandResultDeSerDecorator(glex, hwPath, outPath);
     commandResultDeSerDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: CommandResultDeSerDecorator", FEDecorator.class.getName());
 
