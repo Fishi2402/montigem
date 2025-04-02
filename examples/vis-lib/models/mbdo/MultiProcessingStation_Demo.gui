@@ -1,0 +1,83 @@
+package mbdo;
+
+import Domain.MbdoMultiProcessingStationState;
+import mbdo.components.MultiProcessingStation;
+
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.input.GemRangeInput;
+import mc.fenix.input.GemCheckBoxInput;
+
+page MultiProcessingStation_Demo(MbdoMultiProcessingStationState state){
+    @GemColumn(
+        rowGap = "15px",
+        components = [
+        @GemRangeInput(
+            id="position-indicator",
+            labelText="Position:",
+            vertical=false,
+            step=1,
+            minValue=1,
+            maxValue=100,
+            value=state.positionIndicatorPercentage
+        ),
+        @GemRangeInput(
+            id="belt-speed-indicator",
+            labelText="Bandgeschwindigkeit:",
+            vertical=false,
+            step=1,
+            minValue=1,
+            maxValue=100,
+            value=state.beltSpeedIndicatorPercentage
+        ),
+        @GemRangeInput(
+            id="drill-speed-indicator",
+            labelText="Bohrer Geschwindigkeit:",
+            vertical=false,
+            step=1,
+            minValue=1,
+            maxValue=100,
+            value=state.drillSpeedIndicatorPercentage
+        ),
+        @GemRangeInput(
+            id="rotation-indicator",
+            labelText="Rotation:",
+            vertical=false,
+            step=1,
+            minValue=0,
+            maxValue=270,
+            value=state.rotationIndicatorDeg
+        ),
+        @GemCheckBoxInput(
+            id="light-barrier",
+            labelText="Lichtschranke",
+            checked=state.lightBarrier
+        ),
+        @GemCheckBoxInput(
+            id="light-barrier-oven",
+            labelText="Lichtschranke Ofen",
+            checked=state.lightBarrierOven
+        ),
+        @GemCheckBoxInput(
+            id="pusher",
+            labelText="Pusher",
+            checked=state.pusher
+        ),
+        @GemCheckBoxInput(
+            id="gripper",
+            labelText="Gripper",
+            checked=state.gripper
+        )
+      ]
+    );
+    @MultiProcessingStation(
+        positionIndicatorPercentage=state.positionIndicatorPercentage,
+        beltSpeedIndicatorPercentage=state.beltSpeedIndicatorPercentage,
+        drillSpeedIndicatorPercentage=state.drillSpeedIndicatorPercentage,
+        rotationIndicatorDeg=state.rotationIndicatorDeg,
+        lightBarrier=state.lightBarrier,
+        lightBarrierOven=state.lightBarrierOven,
+        pusher=state.pusher,
+        gripper=state.gripper,
+        pumpRunning=state.pumpRunning
+    );
+}

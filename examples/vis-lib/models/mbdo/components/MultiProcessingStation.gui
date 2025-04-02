@@ -1,0 +1,16 @@
+package mbdo.components;
+
+
+component MultiProcessingStation(
+    int positionIndicatorPercentage,
+    int beltSpeedIndicatorPercentage,
+    int drillSpeedIndicatorPercentage,
+    int rotationIndicatorDeg,
+    boolean lightBarrier,
+    boolean lightBarrierOven,
+    boolean pusher,
+    boolean gripper,
+    boolean pumpRunning
+){
+
+}

@@ -57,6 +57,19 @@ classdiagram Domain {
   }
 
   <<singleton>>
+  class MbdoMultiProcessingStationState {
+    int positionIndicatorPercentage = 0;
+    int beltSpeedIndicatorPercentage = 0;
+    int drillSpeedIndicatorPercentage = 0;
+    int rotationIndicatorDeg = 0;
+    boolean lightBarrier = false;
+    boolean lightBarrierOven = false;
+    boolean pusher = false;
+    boolean gripper = false;
+    boolean pumpRunning = false;
+  }
+
+  <<singleton>>
   class MbdoTransportbeltState{
     int speedIndicatorPercentage = 0;
     boolean rightDetectorOn = false;
