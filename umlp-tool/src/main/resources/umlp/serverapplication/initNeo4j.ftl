@@ -5,4 +5,4 @@ Log.enableFailQuick(false);
 Log.warn("I AM ALIVE!");
 
 DatabaseAccessManager4Neo4j.init();
-${cdName}ManagerImpl.init();
+${cdName}ManagerImpl.initNeo4J();

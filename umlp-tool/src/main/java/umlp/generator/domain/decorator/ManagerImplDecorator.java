@@ -77,7 +77,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
     // methods
     getCD4C().addMethod(managerClass, "umlp.managerimpl.Constructor", name + SUFFIX, name);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.Init", name, name + ManagerDecorator.SUFFIX + "Impl", superDelegateManagerNames);
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.InitNeo4J", name, name + ManagerDecorator.SUFFIX + "Impl");
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.InitNeo4J", name, name + ManagerDecorator.SUFFIX + "Impl", superDelegateManagerNames);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetFreeGemId");
     getCD4C().addMethod(managerClass, "umlp.managerimpl.ErrorNotificationScope");
 

@@ -2,7 +2,9 @@
 package example_charts;
 
 import mc.fenix.charts.gemboxplottypes.GemBoxPlotBoxBuilder;
+import mc.fenix.charts.gemboxplottypes.GemBoxPlotDataBuilder;
 import mc.fenix.charts.gemboxplottypes.GemBoxPlotEntry;
+import mc.fenix.charts.gemboxplottypes.GemBoxPlotData;
 import mc.fenix.charts.gemboxplottypes.GemBoxPlotEntryBuilder;
 import umlp.jsweet.extension.annotation.Component;
 
@@ -15,38 +17,38 @@ public class GemBoxPlotExample extends GemBoxPlotExampleTOP {
 
   @Override
   public Integer getBoxPlotWidth() {
-    return getData().size() * 150;
+    return getData().getEntriesList().size() * 150;
   }
 
   @Override
   public Integer getBoxPlotHeight() {
-    return getData().size() * 150;
+    return getData().getEntriesList().size() * 150;
   }
 
   @Override
   public Integer getSecondBoxPlotWidth() {
-    return getSecondData().size() * 150;
+    return getSecondData().getEntriesList().size() * 150;
   }
 
   @Override
   public Integer getSecondBoxPlotHeight() {
-    return getSecondData().size() * 150;
+    return getSecondData().getEntriesList().size() * 150;
   }
 
   @Override
-  public List<GemBoxPlotEntry> getBoxplotEntries() {
+  public GemBoxPlotData getBoxplotData() {
     return this.getData();
   }
 
   @Override
-  public List<GemBoxPlotEntry> getSecondBoxplotEntries() {
+  public GemBoxPlotData getSecondBoxplotData() {
     return this.getSecondData();
   }
 
   // Dummy data
-  private List<GemBoxPlotEntry> getData() {
-    return Arrays.asList(getData1(), getData2(), getData3(), getData4(),
-        getData5(), getData6(), getData7(), getData8());
+  private GemBoxPlotData getData() {
+    return new GemBoxPlotDataBuilder().entries(Arrays.asList(getData1(), getData2(), getData3(), getData4(),
+        getData5(), getData6(), getData7(), getData8())).build().get();
   }
 
   private GemBoxPlotEntry getData1() {
@@ -163,8 +165,8 @@ public class GemBoxPlotExample extends GemBoxPlotExampleTOP {
         .build().get();
   }
 
-  private List<GemBoxPlotEntry> getSecondData() {
-    return Arrays.asList(new GemBoxPlotEntryBuilder()
+  private GemBoxPlotData getSecondData() {
+    return new GemBoxPlotDataBuilder().entries(Arrays.asList(new GemBoxPlotEntryBuilder()
             .group("Test A")
             .color(Optional.of("#69b3a2"))
             .points(Arrays.asList(0d,19d,11d,13d,12d,22d,13d,4d,15d,16d))
@@ -175,6 +177,6 @@ public class GemBoxPlotExample extends GemBoxPlotExampleTOP {
                 .lowerExtreme(0d)
                 .upperExtreme(22d)
                 .build().get())
-        .build().get());
+        .build().get())).build().get();
   }
 }

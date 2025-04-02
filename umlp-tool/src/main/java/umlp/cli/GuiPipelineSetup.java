@@ -11,14 +11,13 @@ import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
-import umlp.GUIDSLReports;
-import umlp.TagRelated;
-import umlp.UMLPTool;
+import org.apache.commons.cli.CommandLine;
+import umlp.*;
 import umlp.cli.common.IOperation;
+import umlp.cli.common.Pipeline;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
-import umlp.generator.gui.GUINodeIdTrafo;
 import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
 import umlp.generator.gui.genjava.GUI2JavaGenerator;
 import umlp.generator.gui.gentypescript.GUI2TSGenerator;
@@ -28,13 +27,7 @@ import umlp.generator.gui.gentypescript.config.PackageRoute;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static umlp.UMLPToolOptions.DOMAIN;
@@ -43,151 +36,246 @@ import static umlp.UMLPToolOptions.INPUT;
 import static umlp.UMLPToolOptions.SYMTAB;
 
 public class GuiPipelineSetup {
-
-  // TODO: Split this further into pipelines - right now the entire GUI workflow is a single op
-  final IOperation<UMLPPipelineData> gui = data -> {
-    Map<String, PackageRoute> routeMap = new LinkedHashMap<>();
-
-    // Prepare the SingletonLookup
-    TagRelated.initLookup(data.importedSymbolPath);
-
-    // check same file names
-    List<Path> modelPaths = new ArrayList<>();
-    String[] modelPathStrings = data.cmd.getOptionValues(INPUT.getCMD());
-    for (String guiPathString : modelPathStrings) {
-      modelPaths.add(Paths.get(guiPathString));
-    }
-    // checkSameFilenames(modelPaths);
-
-    GUIDSLMill.init();
-    UMLPTool.initGUIGlobalScope(data.importedSymbolPath);
-    for (String guiPathString : modelPathStrings) {
-      Path guiModel = Paths.get(guiPathString);
-      data.guidsl_reportManagerFactory = new GUIDSLReports(data.outDir.getPath(), data.reportDir.getPath(), data.reportPathOutput, data.hwcPath);
-
-      Reporting.init(data.outDir.getPath(), data.reportDir.getPath(), data.guidsl_reportManagerFactory);
-      String report_on = guiModel.getFileName().toString().replace(".", "__");
-      Reporting.on(report_on);
-
-      // parse, add default component ids, create symbol table, check all cocos
-
-      Reporting.reportParseInputFile(guiModel.toAbsolutePath(), report_on);
-      var e = data.tool.createAstWithSymtab(guiModel);
-      ASTGUICompilationUnit astGui = e.getKey();
-      IGUIDSLArtifactScope symbolTable = e.getValue();
-
-      data.tool.runDefaultCoCos(astGui);
-
-      // print or store symbol table
-      if (SYMTAB.isSelected(data.cmd)) {
-        String s = SYMTAB.getValue(data.cmd);
-        if (null != s) {
-          // store symbol table to passed file
-          Path symbolPath = Paths.get(s + File.separator + Names.getPathFromPackage(symbolTable.getPackageName()) + File.separator + symbolTable.getName() + ".guisym");
-          JsonPrinter.disableIndentation();
-          data.tool.storeSymbols(symbolTable, symbolPath.toString());
-        }
-        else {
-          //print (formatted!) symboltable to console
-          GUIDSLSymbols2Json s2j = new GUIDSLSymbols2Json();
-          JsonPrinter.enableIndentation();
-          System.out.println(s2j.serialize(symbolTable));
-        }
-      }
-
-      GeneratorSetup genSetup = new GeneratorSetup();
-      // set output directory
-      genSetup.setOutputDirectory(data.outDir);
-      // set hwc directories
-      genSetup.setHandcodedPath(data.hwcPath);
-      // set template path
-      genSetup.setAdditionalTemplatePaths(data.fpPath.getEntries().stream().map(p -> p.toFile()).collect(Collectors.toList()));
-      GlobalExtensionManagement glex = data.tool.createGlex(data.tool.getModuleConfigTemplates(data.cmd));
-      genSetup.setGlex(glex);
-      CD4C.init(genSetup);
-
-      List<String> domainModels = new ArrayList<>();
-      if (DOMAIN.isSelected(data.cmd)) {
-        domainModels.addAll(Arrays.asList(data.cmd.getOptionValues(DOMAIN.getCMD())));
-      }
-
-      List<String> createModels = new ArrayList<>();
-      if (GUI_CREATE.isSelected(data.cmd)) {
-        createModels.addAll(Arrays.asList(data.cmd.getOptionValues(GUI_CREATE.getCMD())));
-      }
-
-      // TODO: hook point
-      // TODO: Convert gui to pipeline and allow module to hook into
-
-      GUIGeneratorUtil.getInstance().init(domainModels, createModels);
-
-      // Get all ASTGUIComponents
-      GUIComponentsVisitor viewComponents = new GUIComponentsVisitor(astGui, genSetup.getGlex());
-      genSetup.getGlex().setGlobalValue("viewComponents", viewComponents);
-      genSetup.getGlex().setGlobalValue("genHelper", GUIGeneratorUtil.getInstance());
-      genSetup.getGlex().setGlobalValue("UMLPGeneratorConfig", UMLPGeneratorConfig.getInstance().initFromCmd(data.cmd));
-
-      GUI2JavaGenerator javaGenerator = new GUI2JavaGenerator(genSetup);
-      String javaConfigTemplate = data.cmd.getOptionValue("ct_java", UMLPTool.DEFAULT_CONFIGTEMPLATE_GUI2JAVA);
-      javaGenerator.generate(astGui, javaConfigTemplate);
-
-      GUI2TSGenerator tsGenerator = new GUI2TSGenerator(genSetup, data.importsPath);
-      tsGenerator.generate(astGui, UMLPTool.DEFAULT_CONFIGTEMPLATE_GUI2TS);
-
-      GUI2HtmlGenerator htmlGenerator = new GUI2HtmlGenerator(genSetup);
-      String htmlConfigTemplate = data.cmd.getOptionValue("ct_html", UMLPTool.DEFAULT_CONFIGTEMPLATE_GUI2HTML);
-      htmlGenerator.generate(astGui, htmlConfigTemplate);
-
-      // each package containing a page represents one URL routing configuration
-      // each page contributes to a URL routing configuration
-      if (astGui.getGUIComponentDeclaration().isPage()) {
-        if (!routeMap.containsKey(astGui.getPackage())) {
-          routeMap.put(astGui.getPackage(), new PackageRoute(
-              astGui.getMCPackageDeclaration().getMCQualifiedName().getPartsList()
-          ));
-        }
-        routeMap.get(astGui.getPackage()).add(astGui);
-      }
-
-      // write reports
-      Reporting.flush(astGui);
-      //Reporting.reportFileCreation(standaloneConfigPath);
-    }
-
-    //create routes file for every package and
-    GeneratorSetup genSetup = new GeneratorSetup();
-    // set output directory
-    genSetup.setOutputDirectory(data.outDir);
-    // set hwc directories
-    genSetup.setHandcodedPath(data.hwcPath);
-    // set template path
-    genSetup.setAdditionalTemplatePaths(data.fpPath.getEntries().stream().map(p -> p.toFile()).collect(Collectors.toList()));
-    GlobalExtensionManagement glex = data.tool.createGlex(data.tool.getModuleConfigTemplates(data.cmd));
-    genSetup.setGlex(glex);
-    genSetup.getGlex().setGlobalValue("genHelper", GUIGeneratorUtil.getInstance());
-    genSetup.setTracing(false);
-    GUI2ConfigGenerator configGenerator = new GUI2ConfigGenerator(genSetup);
-
-    // Report InitModules
-    genSetup.getNewTemplateController("umlp.generator.hook.InitModules")
-        .includeArgs("umlp.generator.hook.InitModules", GUIDSLMill.stringLiteralBuilder().setSource("GuiPipelineSetup#configs").build(),
-            Arrays.asList(glex));
-
-    List<String> outputs = configGenerator.generateConfig(routeMap.values());
-    for (String output : outputs) {
-      Reporting.reportFileCreation(Paths.get(data.outDir.getPath(), output).toString());
-    }
-
-    TagRelated.postInfo();
-
-    Reporting.flush(new ASTGUICompilationUnit());
-    return true;
-  };
-
-  void createGui(UMLPToolPipelineSetup umlpPipeline) {
-    umlpPipeline.gui.register(gui);
+  
+  public final IOperation<UMLPPipelineData> init;
+  public final IOperation<UMLPPipelineData> loadModelPath;
+  public final Pipeline<DataWithGenSetupAndModel> modelPipeline;
+  public final Pipeline<DataWithGenSetupAndRouting> configurationPipeline;
+  
+  public GuiPipelineSetup(UMLPToolPipelineSetup umlpPipeline) {
+    umlpPipeline.gui.register("setupUMLPReports", umlpPipeline.setupUMLPReports);
+    umlpPipeline.gui.register("init", init = data -> {
+      // Prepare the SingletonLookup
+      TagRelated.initLookup(data.importedSymbolPath);
+      GUIDSLMill.init();
+      UMLPTool.initGUIGlobalScope(data.importedSymbolPath);
+      return true;
+    });
+    
+    modelPipeline = createModelPipeline();
+    configurationPipeline = createConfigurationPipeline();
+    
+    umlpPipeline.gui.register("processModels",
+        IOperation.withDependantPipelines(loadModelPath = data -> {
+          String[] modelPathStrings = data.cmd.getOptionValues(INPUT.getCMD());
+          List<Path> modelPaths =
+              Arrays.stream(modelPathStrings).map(Paths::get).collect(Collectors.toList());
+          Map<String, PackageRoute> routeMap = new HashMap<>();
+          
+          for (Path modelPath : modelPaths) {
+            DataWithGenSetupAndModel modelData = new Data(data, modelPath);
+            boolean modelPipeResult = modelPipeline.doWork(modelData);
+            
+            if (modelPipeResult && modelData.getAst() != null) {
+              ASTGUICompilationUnit ast = modelData.getAst();
+              if (ast.getGUIComponentDeclaration().isPage()) {
+                if (!routeMap.containsKey(ast.getPackage())) {
+                  routeMap.put(ast.getPackage(), new PackageRoute(
+                      ast.getMCPackageDeclaration().getMCQualifiedName().getPartsList()));
+                }
+                routeMap.get(ast.getPackage()).add(ast);
+              }
+            }
+          }
+          configurationPipeline.doWork(new GenConfigData(data, routeMap));
+          return true;
+        }, List.of(modelPipeline, configurationPipeline)));
+    
+    umlpPipeline.gui.addFinally(data -> {
+      TagRelated.postInfo();
+      Reporting.flush(new ASTGUICompilationUnit());
+    });
   }
-
+  
+  protected final String getReportingOnModelName(Path modelPath) {
+    return modelPath.getFileName().toString().replace(".", "__");
+  }
+  
+  public final IOperation.ISimpleOperation<DataWithGenSetupAndModel> model_pipe_init_reporting =
+      data -> {
+        data.getData().guidsl_reportManagerFactory =
+            new GUIDSLReports(data.getData().outDir.getPath(), data.getData().reportDir.getPath(),
+                data.getData().reportPathOutput, data.getData().hwcPath);
+        Reporting.init(data.getData().outDir.getPath(), data.getData().reportDir.getPath(),
+            data.getData().guidsl_reportManagerFactory);
+        Reporting.on(getReportingOnModelName(data.getPath()));
+      };
+  
+  public final IOperation.ISimpleOperation<DataWithGenSetupAndModel> model_pipe_load_ast_with_st =
+      data -> {
+        Path modelPath = data.getPath();
+        Reporting.reportParseInputFile(modelPath.toAbsolutePath(),
+            getReportingOnModelName(modelPath));
+        var e = data.getTool().createAstWithSymtab(modelPath);
+        ASTGUICompilationUnit astGui = e.getKey();
+        IGUIDSLArtifactScope symbolTable = e.getValue();
+        data.setAst(astGui);
+        data.setSymbolTable(symbolTable);
+      };
+  
+  public final IOperation.ISimpleOperation<DataWithGenSetupAndModel> model_pipe_store_st = data -> {
+    // print or store symbol table
+    if (SYMTAB.isSelected(data.getCMD())) {
+      String s = SYMTAB.getValue(data.getCMD());
+      IGUIDSLArtifactScope symbolTable = data.getSymbolTable();
+      if (null != s) {
+        // store symbol table to passed file
+        Path symbolPath = Paths.get(
+            s + File.separator + Names.getPathFromPackage(symbolTable.getPackageName())
+                + File.separator + symbolTable.getName() + ".guisym");
+        JsonPrinter.disableIndentation();
+        data.getTool().storeSymbols(symbolTable, symbolPath.toString());
+      }
+      else {
+        //print (formatted!) symboltable to console
+        GUIDSLSymbols2Json s2j = new GUIDSLSymbols2Json();
+        JsonPrinter.enableIndentation();
+        System.out.println(s2j.serialize(symbolTable));
+      }
+    }
+  };
+  
+  public final IOperation.ISimpleOperation<DataWithGenSetupAndModel>
+      model_pipe_create_run_def_coco = data -> {
+    data.getTool().runDefaultCoCos(data.getAst());
+  };
+  
+  public final IOperation.ISimpleOperation<DataWithGenSetupAndModel> model_pipe_setup_generator =
+      data -> {
+        GeneratorSetup genSetup = new GeneratorSetup();
+        // set output directory
+        genSetup.setOutputDirectory(data.getData().outDir);
+        // set hwc directories
+        genSetup.setHandcodedPath(data.getData().hwcPath);
+        // set template path
+        genSetup.setAdditionalTemplatePaths(
+            data.getData().fpPath.getEntries().stream().map(Path::toFile)
+                .collect(Collectors.toList()));
+        GlobalExtensionManagement glex =
+            data.getTool().createGlex(data.getTool().getModuleConfigTemplates(data.getCMD()));
+        genSetup.setGlex(glex);
+        CD4C.init(genSetup);
+        
+        data.setGenSetup(genSetup);
+      };
+  
+  public final IOperation.ISimpleOperation<DataWithGenSetupAndModel>
+      model_pipe_init_generator_util = data -> {
+    List<String> domainModels = new ArrayList<>();
+    if (DOMAIN.isSelected(data.getCMD())) {
+      domainModels.addAll(Arrays.asList(data.getCMD().getOptionValues(DOMAIN.getCMD())));
+    }
+    
+    List<String> createModels = new ArrayList<>();
+    if (GUI_CREATE.isSelected(data.getCMD())) {
+      createModels.addAll(Arrays.asList(data.getCMD().getOptionValues(GUI_CREATE.getCMD())));
+    }
+    
+    GUIGeneratorUtil.getInstance().init(domainModels, createModels);
+  };
+  
+  public final IOperation.ISimpleOperation<DataWithGenSetupAndModel> model_pipe_setup_glex_vars =
+      data -> {
+        // Get all ASTGUIComponents
+        GUIComponentsVisitor viewComponents =
+            new GUIComponentsVisitor(data.getAst(), data.getGenSetup().getGlex());
+        data.getGenSetup().getGlex().setGlobalValue("viewComponents", viewComponents);
+        data.getGenSetup().getGlex().setGlobalValue("genHelper", GUIGeneratorUtil.getInstance());
+        data.getGenSetup().getGlex().setGlobalValue("UMLPGeneratorConfig",
+            UMLPGeneratorConfig.getInstance().initFromCmd(data.getCMD()));
+      };
+  
+  public final IOperation.ISimpleOperation<DataWithGenSetupAndModel> model_pipe_java_generator =
+      data -> {
+        GUI2JavaGenerator javaGenerator = new GUI2JavaGenerator(data.getGenSetup());
+        String javaConfigTemplate =
+            data.getCMD().getOptionValue("ct_java", UMLPTool.DEFAULT_CONFIGTEMPLATE_GUI2JAVA);
+        javaGenerator.generate(data.getAst(), javaConfigTemplate);
+      };
+  
+  public final IOperation.ISimpleOperation<DataWithGenSetupAndModel> model_pipe_ts_generator =
+      data -> {
+        GUI2TSGenerator tsGenerator =
+            new GUI2TSGenerator(data.getGenSetup(), data.getData().importsPath);
+        tsGenerator.generate(data.getAst(), UMLPTool.DEFAULT_CONFIGTEMPLATE_GUI2TS);
+      };
+  
+  public final IOperation.ISimpleOperation<DataWithGenSetupAndModel> model_pipe_html_generator =
+      data -> {
+        GUI2HtmlGenerator htmlGenerator = new GUI2HtmlGenerator(data.getGenSetup());
+        String htmlConfigTemplate =
+            data.getCMD().getOptionValue("ct_html", UMLPTool.DEFAULT_CONFIGTEMPLATE_GUI2HTML);
+        htmlGenerator.generate(data.getAst(), htmlConfigTemplate);
+      };
+  
+  Pipeline<DataWithGenSetupAndModel> createModelPipeline() {
+    Pipeline<DataWithGenSetupAndModel> pipe = new Pipeline<>();
+    pipe.register("model_pipe_init_reporting", model_pipe_init_reporting);
+    pipe.register("model_pipe_load_ast_with_st", model_pipe_load_ast_with_st);
+    pipe.register("model_pipe_create_run_def_coco", model_pipe_create_run_def_coco);
+    pipe.register("model_pipe_store_st", model_pipe_store_st);
+    pipe.register("model_pipe_setup_generator", model_pipe_setup_generator);
+    pipe.register("model_pipe_init_generator_util", model_pipe_init_generator_util);
+    pipe.register("model_pipe_setup_glex_vars", model_pipe_setup_glex_vars);
+    pipe.register("model_pipe_java_generator", model_pipe_java_generator);
+    pipe.register("model_pipe_ts_generator", model_pipe_ts_generator);
+    pipe.register("model_pipe_html_generator", model_pipe_html_generator);
+    
+    pipe.addFinally(data -> {
+      // write reports
+      Reporting.flush(data.getAst());
+    });
+    return pipe;
+  }
+  
+  public final IOperation.ISimpleOperation<DataWithGenSetupAndRouting> config_pipe_setup_generator =
+      data -> {
+        //create routes file for every package and
+        GeneratorSetup genSetup = new GeneratorSetup();
+        // set output directory
+        genSetup.setOutputDirectory(data.getData().outDir);
+        // set hwc directories
+        genSetup.setHandcodedPath(data.getData().hwcPath);
+        // set template path
+        genSetup.setAdditionalTemplatePaths(
+            data.getData().fpPath.getEntries().stream().map(p -> p.toFile())
+                .collect(Collectors.toList()));
+        GlobalExtensionManagement glex =
+            data.getTool().createGlex(data.getTool().getModuleConfigTemplates(data.getCMD()));
+        genSetup.setGlex(glex);
+        genSetup.getGlex().setGlobalValue("genHelper", GUIGeneratorUtil.getInstance());
+        genSetup.setTracing(false);
+        
+        data.setGenSetup(genSetup);
+      };
+  
+  public final IOperation.ISimpleOperation<DataWithGenSetupAndRouting> config_pipe_init_modules =
+      data -> {
+        // Report InitModules
+        data.getGenSetup().getNewTemplateController("umlp.generator.hook.InitModules")
+            .includeArgs("umlp.generator.hook.InitModules",
+                GUIDSLMill.stringLiteralBuilder().setSource("GuiPipelineSetup#configs").build(),
+                Collections.singletonList(data.getGenSetup().getGlex()));
+      };
+  
+  public final IOperation.ISimpleOperation<DataWithGenSetupAndRouting> config_pipe_generate =
+      data -> {
+        GUI2ConfigGenerator configGenerator = new GUI2ConfigGenerator(data.getGenSetup());
+        List<String> outputs = configGenerator.generateConfig(data.getRouting().values());
+        for (String output : outputs) {
+          Reporting.reportFileCreation(
+              Paths.get(data.getData().outDir.getPath(), output).toString());
+        }
+      };
+  
+  Pipeline<DataWithGenSetupAndRouting> createConfigurationPipeline() {
+    Pipeline<DataWithGenSetupAndRouting> pipe = new Pipeline<>();
+    pipe.register("config_pipe_setup_generator", config_pipe_setup_generator);
+    pipe.register("config_pipe_init_modules", config_pipe_init_modules);
+    pipe.register("config_pipe_generate", config_pipe_generate);
+    return pipe;
+  }
+  
   /**
    * Check if a collection of paths has files with same names and report them as an error.
    * Models of MC languages generally require that the symbol declaration closest to a global scope
@@ -196,6 +284,7 @@ public class GuiPipelineSetup {
    * generator implementation does not allow the same name for components. E.g. foo.bar.MyPage and
    * other.MyPage may result in routing collisions or component usage collisions, depending on the
    * situation.
+   *
    * @param paths Paths to check for duplicates.
    */
   protected void checkSameFilenames(Collection<Path> paths) {
@@ -206,9 +295,9 @@ public class GuiPipelineSetup {
       String filenameNoExt = (lastDotIndex == -1) ? filename : filename.substring(0, lastDotIndex);
       filenameMap.computeIfAbsent(filenameNoExt, x -> new ArrayList<>()).add(path);
     }
-
-    StringBuilder sb = new StringBuilder("0x00023 Found files with the same names,"
-        + " which is likely to cause issues:\n");
+    
+    StringBuilder sb = new StringBuilder(
+        "0x00023 Found files with the same names," + " which is likely to cause issues:\n");
     boolean error = false;
     for (Map.Entry<String, List<Path>> entry : filenameMap.entrySet()) {
       if (entry.getValue().size() > 1) {
@@ -226,5 +315,126 @@ public class GuiPipelineSetup {
       Log.error(sb.toString());
     }
   }
-
+  
+  public static class GenConfigData implements DataWithGenSetupAndRouting {
+    
+    final UMLPPipelineData data;
+    final Map<String, PackageRoute> routing;
+    GeneratorSetup genSetup;
+    
+    public GenConfigData(UMLPPipelineData data, Map<String, PackageRoute> routing) {
+      this.data = data;
+      this.routing = routing;
+    }
+    
+    public UMLPTool getTool() {
+      return this.data.tool;
+    }
+    
+    public CommandLine getCMD() {
+      return this.data.cmd;
+    }
+    
+    public UMLPPipelineData getData() {
+      return data;
+    }
+    
+    public Map<String, PackageRoute> getRouting() {
+      return routing;
+    }
+    
+    public GeneratorSetup getGenSetup() {
+      return genSetup;
+    }
+    
+    public void setGenSetup(GeneratorSetup genSetup) {
+      this.genSetup = genSetup;
+    }
+  }
+  
+  public static class Data implements DataWithGenSetupAndModel {
+    
+    final UMLPPipelineData data;
+    final Path path;
+    ASTGUICompilationUnit ast;
+    IGUIDSLArtifactScope symbolTable;
+    GeneratorSetup genSetup;
+    
+    public Data(UMLPPipelineData data, Path path) {
+      this.data = data;
+      this.path = path;
+    }
+    
+    public UMLPTool getTool() {
+      return this.data.tool;
+    }
+    
+    public CommandLine getCMD() {
+      return this.data.cmd;
+    }
+    
+    public UMLPPipelineData getData() {
+      return data;
+    }
+    
+    public Path getPath() {
+      return path;
+    }
+    
+    public IGUIDSLArtifactScope getSymbolTable() {
+      return symbolTable;
+    }
+    
+    public ASTGUICompilationUnit getAst() {
+      return ast;
+    }
+    
+    public GeneratorSetup getGenSetup() {
+      return genSetup;
+    }
+    
+    public void setAst(ASTGUICompilationUnit ast) {
+      this.ast = ast;
+    }
+    
+    public void setSymbolTable(IGUIDSLArtifactScope symbolTable) {
+      this.symbolTable = symbolTable;
+    }
+    
+    public void setGenSetup(GeneratorSetup genSetup) {
+      this.genSetup = genSetup;
+    }
+  }
+  
+  public interface DataWithGenSetupAndModel extends DataWithGenSetup {
+    
+    Path getPath();
+    
+    ASTGUICompilationUnit getAst();
+    
+    void setAst(ASTGUICompilationUnit ast);
+    
+    IGUIDSLArtifactScope getSymbolTable();
+    
+    void setSymbolTable(IGUIDSLArtifactScope symbolTable);
+  }
+  
+  public interface DataWithGenSetupAndRouting extends DataWithGenSetup {
+    
+    Map<String, PackageRoute> getRouting();
+  }
+  
+  public interface DataWithGenSetup {
+    
+    UMLPPipelineData getData();
+    
+    UMLPTool getTool();
+    
+    CommandLine getCMD();
+    
+    GeneratorSetup getGenSetup();
+    
+    void setGenSetup(GeneratorSetup genSetup);
+  }
+  
 }

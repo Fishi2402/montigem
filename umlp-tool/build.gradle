@@ -36,6 +36,7 @@ dependencies {
   implementation group: 'de.se_rwth.commons', name: 'se-commons-gradle', version: mc_version
   implementation group: 'de.monticore.lang', name: 'od', version: mc_version
   implementation group: 'de.monticore.lang', name: 'sd-language', version: mc_version
+  implementation "org.freemarker:freemarker:$freemarker_version"
 
   implementation group: "org.yaml", name: "snakeyaml", version: "$snake_yaml_version"
 

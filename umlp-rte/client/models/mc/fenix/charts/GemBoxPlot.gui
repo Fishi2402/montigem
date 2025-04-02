@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.fenix.charts;
 
-import mc.fenix.charts.GemBoxPlotTypes.GemBoxPlotEntry;
+import mc.fenix.charts.GemBoxPlotTypes.GemBoxPlotData;
 
 /**
  A BoxPlot presents a set of two dimensional data with a number of rectangular boxes + whiskers that represent max, min,
@@ -12,8 +12,8 @@ import mc.fenix.charts.GemBoxPlotTypes.GemBoxPlotEntry;
 */
 
 component GemBoxPlot(
-  /** Each entry corresponds to one box in the diagram */
-  List<GemBoxPlotEntry> entries,
+  /** Each entry in data corresponds to one box in the diagram */
+  GemBoxPlotData data,
 
   /** Sometimes a boxplot can be misleading. Displaying the data points of the underlying data can help with that. */
   boolean showDataPoints = true,

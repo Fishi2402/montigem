@@ -20,7 +20,6 @@ public class UMLPScopeManager extends UMLPScopeManagerTOP {
 
   @Override
   public void initGlobalScope(MCPath modelPath) {
-    UMLPMill.init();
     super.initGlobalScope(modelPath);
     syncAccessGlobalScope(globalScope -> BuiltInTypes.addBuiltInTypes(globalScope, false));
   }

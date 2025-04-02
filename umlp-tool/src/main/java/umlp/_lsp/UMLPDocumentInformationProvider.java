@@ -13,7 +13,7 @@ import umlp._lsp.language_access.UMLPLanguageAccess;
 public class UMLPDocumentInformationProvider extends UMLPDocumentInformationProviderTOP {
 	private static final Logger logger = LoggerFactory.getLogger(UMLPDocumentInformationProvider.class);
 
-  protected UMLPTool tool = new UMLPTool();
+  protected UMLPTool tool = new UMLPTool(false);
   public UMLPDocumentInformationProvider(DocumentManager documentManager, SeCommonsLogParser logParser, UMLPLanguageAccess languageAccess) {
     super(documentManager, logParser, languageAccess);
   }

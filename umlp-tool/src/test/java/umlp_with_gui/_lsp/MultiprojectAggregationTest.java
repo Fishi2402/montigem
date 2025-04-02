@@ -153,7 +153,6 @@ public class MultiprojectAggregationTest {
   }
 
   @Test
-  @Disabled // TODO: Fails since https://github.com/MontiCore/monticore/pull/91
   public void compareMultiProjectWithRegular(){
     var hPosition = new Position(11, 12);
     Hover regular_h = hoverRegularAggregation1(hPosition);

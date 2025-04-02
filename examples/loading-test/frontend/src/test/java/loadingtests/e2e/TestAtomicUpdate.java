@@ -94,7 +94,7 @@ public class TestAtomicUpdate extends AbstractLoadingTestsE2ETest {
 
     waitForAngular(page);
     // Assert that one food is displayed
-    assertEquals(1, page.locator(GemText.selector()).all().size());
+    assertThat(page.locator(GemText.selector())).hasCount(1);
     assertEquals("a", page.locator(GemText.selector()).textContent().trim());
 
     assertThat(page.locator(GemText.selector())).hasCount(1);

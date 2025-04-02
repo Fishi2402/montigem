@@ -19,18 +19,29 @@ import umlp.jsweet.extension.annotation.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 
 @Component
 public class FunctionDetail extends FunctionDetailTOP {
 
+  public FunctionDetail(){
+    super();
+    setSelectedFunctions(new ArrayList<>());
+    setSelectedChannels(new ArrayList<>());
+    setSelectedPorts(new ArrayList<>());
+  }
+
   private Map<Function, Function4Display> function2displayMap = new HashMap<>();
   private Map<Function4Display, Function> display2functionMap = new HashMap<>();
   private Map<Channel, Channel4Display> channel2displayMap = new HashMap<>();
   private Map<Channel4Display, Channel> display2channelMap = new HashMap<>();
+  private Map<Port, Port4Display> port2displayMap = new HashMap<>();
+  private Map<Port4Display, Port> display2portMap = new HashMap<>();
 
 
   @Override
@@ -79,7 +90,6 @@ public class FunctionDetail extends FunctionDetailTOP {
     return getPortStringValue(p);
   }
 
-  @Override
   public Consumer<Channel4Display> selectChannel() {
     return c -> {
       setSelectedChannel(display2channelMap.get(c));
@@ -102,6 +112,85 @@ public class FunctionDetail extends FunctionDetailTOP {
     }
     return res2.substring(0, res2.length() - 2);
 
+  }
+
+  @Override
+  public List<Function4Display> getFuncDisplaySelectedFunctions(){
+    List<Function4Display> res = new ArrayList<>();
+    for(Function f : getSelectedFunctions()){
+      res.add(function2displayMap.get(f));
+    }
+    return res;
+  }
+
+  @Override
+  public List<Channel4Display> getFuncDisplaySelectedChannels(){
+    List<Channel4Display> res = new ArrayList<>();
+    for(Channel c : getSelectedChannels()){
+      res.add(channel2displayMap.get(c));
+    }
+    return res;
+  }
+
+  @Override
+  public List<Port4Display> getFuncDisplaySelectedPorts(){
+    List<Port4Display> res = new ArrayList<>();
+    for(Port p : getSelectedPorts()){
+      res.add(port2displayMap.get(p));
+    }
+    return res;
+  }
+
+
+  public Consumer<Function4Display> toggleFunctionSelection(){
+    return f -> {
+      if(!display2functionMap.containsKey(f)){return;}
+      if( getSelectedFunctions().contains(display2functionMap.get(f))) {
+        ArrayList<Function> functions = new ArrayList<>(getSelectedFunctions());
+        functions.remove(display2functionMap.get(f));
+        this.setSelectedFunctions(functions);
+        //removeSelectedFunctions(display2functionMap.get(f).getGemId());
+      }else {
+        ArrayList<Function> functions = new ArrayList<>(getSelectedFunctions());
+        functions.add(display2functionMap.get(f));
+        this.setSelectedFunctions(functions);
+        //addSelectedFunctions(display2functionMap.get(f));
+      }
+    };
+  }
+
+  public Consumer<Channel4Display> toggleChannelSelection(){
+    return c -> {
+      if(!display2channelMap.containsKey(c)){return;}
+      if(getSelectedChannels().contains(display2channelMap.get(c))) {
+        ArrayList<Channel> channels = new ArrayList<>(getSelectedChannels());
+        channels.remove(display2channelMap.get(c));
+        this.setSelectedChannels(channels);
+        //removeSelectedChannels(display2channelMap.get(c).getGemId());
+      }else {
+        ArrayList<Channel> channels = new ArrayList<>(getSelectedChannels());
+        channels.add(display2channelMap.get(c));
+        this.setSelectedChannels(channels);
+        //addSelectedChannels(display2channelMap.get(c));
+      }
+    };
+  }
+
+  public Consumer<Port4Display> togglePortSelection(){
+    return p -> {
+      if(!display2portMap.containsKey(p)){return;}
+      if(getSelectedPorts().contains(display2portMap.get(p))) {
+        ArrayList<Port> ports = new ArrayList<>(getSelectedPorts());
+        ports.remove(display2portMap.get(p));
+        this.setSelectedPorts(ports);
+        //removeSelectedPorts(display2portMap.get(p).getGemId());
+      }else {
+        ArrayList<Port> ports = new ArrayList<>(getSelectedPorts());
+        ports.add(display2portMap.get(p));
+        this.setSelectedPorts(ports);
+        //addSelectedPorts(display2portMap.get(p));
+      }
+    };
   }
 
   @Override
@@ -164,12 +253,12 @@ public class FunctionDetail extends FunctionDetailTOP {
       display2functionMap.put(function4Display, function);
       ArrayList<Port4Display> _in = new ArrayList<>();
       for (int i = 0; i < function.getInList().size(); i++) {
-        _in.add(port2Port4Display(function.getIn(i), portMap));
+        _in.add(port2Port4Display(function.getIn(i)));
       }
       function4Display.in(_in);
       ArrayList<Port4Display> out = new ArrayList<>();
       for (int i = 0; i < function.getOutList().size(); i++) {
-        out.add(port2Port4Display(function.getOut(i), portMap));
+        out.add(port2Port4Display(function.getOut(i)));
       }
       function4Display.out(out);
       ArrayList<Function4Display> subf = new ArrayList<>();
@@ -184,23 +273,23 @@ public class FunctionDetail extends FunctionDetailTOP {
     }
   }
 
-  public Port4Display port2Port4Display(Port port, Map<Port, Port4Display> portMap) {
-    if (portMap.containsKey(port)) {
-      return portMap.get(port);
+  public Port4Display port2Port4Display(Port port) {
+    if (port2displayMap.containsKey(port)) {
+      return port2displayMap.get(port);
     }
     else {
       Port4DisplayBuilder port4Display = new Port4DisplayBuilder()
           .name(port.getName());
-      portMap.put(port, port4Display);
+      port2displayMap.put(port, port4Display);
+      display2portMap.put(port4Display, port);
       port4Display.channel4Display(port.getChannel() != null
-              ? channel2Channel4Display(port.getChannel(), portMap)
+              ? channel2Channel4Display(port.getChannel())
               : null);
       return port4Display.build().get();
     }
   }
 
-  public Channel4Display channel2Channel4Display(Channel channel,
-      Map<Port, Port4Display> portMap) {
+  public Channel4Display channel2Channel4Display(Channel channel) {
     if (channel2displayMap.containsKey(channel)) {
       return channel2displayMap.get(channel);
     }
@@ -208,7 +297,7 @@ public class FunctionDetail extends FunctionDetailTOP {
       Channel4DisplayBuilder channel4Display = new Channel4DisplayBuilder();
       List<Port4Display> ports = new ArrayList<>();
       for (int i = 0; i < channel.getPortList().size(); i++) {
-        ports.add(port2Port4Display(channel.getPort(i), portMap));
+        ports.add(port2Port4Display(channel.getPort(i)));
       }
       channel4Display.port4Display(ports);
       channel2displayMap.put(channel, channel4Display);
