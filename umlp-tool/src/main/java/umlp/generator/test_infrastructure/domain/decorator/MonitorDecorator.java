@@ -71,14 +71,13 @@ public class MonitorDecorator extends AbstractDecorator {
     }
 
     /**
-     * Add this stereotype to the provided {@link ASTCDClass} with the value {@code "true"}. That
-     * value may change over time and should not be relied upon.
+     * Add this stereotype to the provided {@link ASTCDClass}.
      *
      * @param astcdClass An {@link ASTCDClass} to add the stereotype to
      */
     public void addTo(ASTCDClass astcdClass) {
       var modifier = astcdClass.getModifier();
-      var stereotypeValue = UMLPMill.stereoValueBuilder().setName(name).setContent("true").build();
+      var stereotypeValue = UMLPMill.stereoValueBuilder().setName(name).build();
 
       if (modifier.isPresentStereotype()) {
         modifier.getStereotype().addValues(stereotypeValue);
