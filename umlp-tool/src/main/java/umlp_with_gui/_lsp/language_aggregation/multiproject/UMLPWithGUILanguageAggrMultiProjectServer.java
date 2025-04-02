@@ -45,7 +45,7 @@ public class UMLPWithGUILanguageAggrMultiProjectServer extends UMLPWithGUILangua
 
               @Override
               protected Path createTempInitScript() {
-                return createTempInitScript("/lsp/lsp_init.gradle");
+                return createTempInitScript("/lsp/lsp_init.gradle", DEFAULT_DATA_STRUCTURE_RESOURCE);
               }
             },
             new MultiProjectLanguageServerFileModelPathResolver(rootDir)
