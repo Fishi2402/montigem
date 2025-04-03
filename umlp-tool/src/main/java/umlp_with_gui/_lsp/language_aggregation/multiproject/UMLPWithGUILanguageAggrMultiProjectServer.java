@@ -62,6 +62,15 @@ public class UMLPWithGUILanguageAggrMultiProjectServer extends UMLPWithGUILangua
         );
       }
     });
+    resolver.addOnError(t -> {
+      if(languageClient != null){
+        languageClient.showMessage(new MessageParams(
+            MessageType.Error,
+            "Failed to load the project structure via Gradle. Check your tmp dir for logs. Msg was: "
+                + t.getMessage()
+        ));
+      }
+    });
     resolver.addPathUpdatedListener(this::updateBasedOnConfig);
     resolver.loadCachedModelPath();
     AsyncUtil.runAsync(() -> resolver.refreshModelPaths());
