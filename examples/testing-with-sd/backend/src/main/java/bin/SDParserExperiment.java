@@ -3,7 +3,6 @@ package bin;
 import de.monticore.cd._symboltable.BuiltInTypes;
 import de.monticore.cd.codegen.CDGenerator;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.MCPath;
 import de.monticore.lang.sd4development.SD4DevelopmentMill;
 import de.monticore.lang.sd4development.SD4DevelopmentTool;
@@ -35,19 +34,22 @@ public class SDParserExperiment {
     Path backendSymbols = Path.of("examples/testing-with-sd/backend/build/umlp/backend_symbols");
     Path testSymbols = Path.of("examples/testing-with-sd/backend/build/umlp/test_symbols");
 
-    if(!backendSymbols.toFile().exists()){
+    if (!backendSymbols.toFile().exists()) {
       throw new IllegalStateException("Can not find backend symbol dir at " + backendSymbols.toAbsolutePath());
     }
 
-    if(!testSymbols.toFile().exists()){
+    if (!testSymbols.toFile().exists()) {
       throw new IllegalStateException("Can not find test symbols dir at " + testSymbols.toAbsolutePath());
     }
 
     var symbolPath = new MCPath(List.of(backendSymbols, testSymbols));
     globalScope.setSymbolPath(symbolPath);
-    globalScope.putSymbolDeSer("de.monticore.cdbasis._symboltable.CDTypeSymbol", new OOTypeSymbolDeSer());
-    globalScope.putSymbolDeSer("de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol", new MethodSymbolDeSer());
-    globalScope.putSymbolDeSer("de.monticore.cdassociation._symboltable.CDRoleSymbol", new FieldSymbolDeSer());
+    globalScope.putSymbolDeSer("de.monticore.cdbasis._symboltable.CDTypeSymbol",
+        new OOTypeSymbolDeSer());
+    globalScope.putSymbolDeSer("de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol",
+        new MethodSymbolDeSer());
+    globalScope.putSymbolDeSer("de.monticore.cdassociation._symboltable.CDRoleSymbol",
+        new FieldSymbolDeSer());
     BuiltInTypes.addBuiltInTypes(globalScope);
 
     ISD4DevelopmentArtifactScope artifactScope = tool.createSymbolTable(model);
@@ -62,13 +64,13 @@ public class SDParserExperiment {
 
     // TODO: here the model is parsed and coco checked and can be processed
 
-
     // This is how the Generator from the SD project would be called
     // BUT: it seems to be customized for use with MontiCore generated code(0xA4387 No mill exists in the production code.)
     // maybe we need another generator
     // Generator
     GeneratorSetup generatorSetup = new GeneratorSetup();
-    generatorSetup.setOutputDirectory(new File("examples/testing-with-sd/build/sdgenerator/TotalTest"));
+    generatorSetup.setOutputDirectory(new File(
+        "examples/testing-with-sd/build/sdgenerator/TotalTest"));
 
     // SD -> CD
     SD2TestGenerator sdGenerator = new SD2TestGenerator();
