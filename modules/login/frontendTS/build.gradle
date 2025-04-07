@@ -112,7 +112,11 @@ genGUI {
   gen4TSLib = true
 }
 
-tasks[buildTaskName].dependsOn genGUI
+tasks[buildTaskName].dependsOn {
+  genGUI
+  project(":umlp-rte:client").tasks.findAll { it.name.startsWith(buildTaskPrefix) }
+}
+
 build.dependsOn tasks[buildTaskName]
 
 frontendSetup {
