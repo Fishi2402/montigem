@@ -103,8 +103,8 @@ public class TSManagerMockDecorator extends ManagerMockDecorator {
   protected void addClassElements(ASTCDCompilationUnit origCD, ASTCDClass domainClass,
       ASTCDClass managerClass, String managerName) {
     String name = domainClass.getName();
-    TSImportHelper importHelper = new TSImportHelper(glex, domainClass, hwPath, outPath);
-    String importerQName = this.astcdPackage + "." + domainClass.getName();
+    TSImportHelper importHelper = new TSImportHelper(glex, managerClass, hwPath, outPath);
+    String importerQName = this.astcdPackage + "." + managerClass.getName();
 
     if (domainClass.getModifier().isDerived()) {
       getCD4C().addMethod(managerClass, "umlp.gui2ts.managermock.TSGetDerived", name);

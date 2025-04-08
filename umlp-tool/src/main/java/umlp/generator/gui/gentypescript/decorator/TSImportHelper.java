@@ -77,13 +77,15 @@ public class TSImportHelper {
       }
       // case: a component in an app imports a component from the app
       String from = GUIGeneratorUtil.getInstance().qName2path(String.join(".", parts));
-      if (importIntermediateAngularClass) {
-        from += "Component";
-      }
-      Optional<String> relativeFrom = getImportPath(
-          hwPath, outPath, importsPath, importerQName, qType);
-      if (relativeFrom.isPresent()) {
-        from = relativeFrom.get();
+      if (!GUIGeneratorUtil.getInstance().isInitialized() || !GUIGeneratorUtil.getInstance().isDomainImport(qType)) {
+        if (importIntermediateAngularClass) {
+          from += "Component";
+        }
+        Optional<String> relativeFrom = getImportPath(
+            hwPath, outPath, importsPath, importerQName, qType);
+        if (relativeFrom.isPresent()) {
+          from = relativeFrom.get();
+        }
       }
       tsImportPath = TSImportMap.getTSPackage(qType);
 
@@ -110,7 +112,7 @@ public class TSImportHelper {
     if (!importSet.contains(importStr)) {
       importSet.add(importStr);
       glex.addAfterTemplate("umlp.gui2ts.TSEmptyImports", cdType,
-          new StringHookPoint(importStr));
+          new StringHookPoint(importStr + "\n"));
     }
   }
 
@@ -200,13 +202,50 @@ public class TSImportHelper {
       }
       // case: a component imports currently generated other component, e.g.
       // "gen/gui/foo/ExampleComponent.ts" imports "gen/gui/foo/Example.ts" -> "./Example"
-      else if (UMLPGeneratorConfig.getInstance().isGenerate4TSLib()
-          && Names.getQualifier(importerQName).equals(Names.getQualifier(importedQName))) {
-        String res = "./" + Names.getSimpleName(importedQName);
-        return Optional.of(res);
+      // or: a class imports currently generated other class, e.g.
+      // "gen/cd/SomeManager.ts" imports "gen/cd/commands/Some_create.ts"
+      else if (UMLPGeneratorConfig.getInstance().isGenerate4TSLib()) {
+        Optional<String> importedPath = getRelativeQualifiedPath(
+            Names.getQualifier(importerQName), Names.getQualifier(importedQName)
+        );
+        if (importedPath.isPresent()) {
+          String res = importedPath.get() + Names.getSimpleName(importedQName);
+          return Optional.of(res);
+        }
       }
     }
     return Optional.empty();
+  }
+
+  public static Optional<String> getRelativeQualifiedPath(String importer, String imported) {
+    String[] fullParts = imported.split("\\.");
+    String[] candidateParts = importer.split("\\.");
+
+    int commonLength = 0;
+    while (commonLength < fullParts.length
+        && commonLength < candidateParts.length
+        && fullParts[commonLength].equals(candidateParts[commonLength])) {
+      commonLength++;
+    }
+
+    if (commonLength == 0) {
+      return Optional.empty(); // No shared root at all
+    }
+
+    StringBuilder path = new StringBuilder("./");
+
+    // Add ".." for each extra level in importer
+    for (int i = commonLength; i < candidateParts.length; i++) {
+      path.append("../");
+    }
+
+    // Add remaining parts from imported
+    for (int i = commonLength; i < fullParts.length; i++) {
+      path.append(fullParts[i]);
+      path.append('/');
+    }
+
+    return Optional.of(path.toString());
   }
 
   protected String path2TSRelativeImport(String relativePath) {

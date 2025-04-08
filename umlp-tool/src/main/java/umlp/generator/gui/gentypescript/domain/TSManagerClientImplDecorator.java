@@ -139,8 +139,8 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
                                   ASTCDClass managerClass, String managerName) {
     String name = domainClass.getName();
 
-    TSImportHelper importHelper = new TSImportHelper(glex, domainClass, hwPath, outPath);
-    String importerQName = this.astcdPackage + "." + domainClass.getName();
+    TSImportHelper importHelper = new TSImportHelper(glex, managerClass, hwPath, outPath);
+    String importerQName = this.astcdPackage + "." + managerClass.getName();
 
     if (domainClass.getModifier().isDerived()) {
       getCD4C().addMethod(managerClass, "umlp.gui2ts.managerclientimpl.TSGetDerived", name);
@@ -157,7 +157,7 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
         managerClass.addCDMember(getCacheAttribute(domainClass));
         managerClass.addCDMember(getLoadedAttribute(domainClass));
       }
-      managerClass.addCDMember(getCommandObserverAttribute(domainClass));
+      managerClass.addCDMember(getCommandObserverAttribute(domainClass, origCD, importHelper, importerQName));
     }
 
     List<ASTCDType> concreteSubclassesOrderedByDistance = concreteSubclassesOrderedByDistance(origCD, domainClass);
@@ -240,6 +240,16 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
           getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSDoBuilderAssoc", name, getAssocName(domainInterface, a), type);
           importHelper.addImport(Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainInterface, a)), importerQName);
         });
+  }
+
+  protected ASTCDAttribute getCommandObserverAttribute(
+      ASTCDClass domainClass, ASTCDCompilationUnit origCD,
+      TSImportHelper importHelper, String importerQName
+  ) {
+    ASTCDAttribute attr = super.getCommandObserverAttribute(domainClass);
+    importHelper.addImport(getPackageName(origCD, CLIENT_PACKAGE) + "."
+        + attr.getMCType().printType(), importerQName);
+    return attr;
   }
 
   @Override

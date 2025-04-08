@@ -192,6 +192,10 @@ public class GUIGeneratorUtil {
             Names.getPathFromPackage(qualifiedName) + ".java"));
   }
 
+  public boolean isInitialized() {
+    return DOMAIN_AND_MODULE_MODELS != null;
+  }
+
   public void init(List<String> domainModels, List<String> createModels) {
     DOMAIN_AND_MODULE_MODELS = domainModels;
     CREATE_MODELS = createModels;
@@ -390,8 +394,12 @@ public class GUIGeneratorUtil {
   }
 
   public final boolean isDomainImport(ASTMCImportStatement i) {
+    return isDomainImport(i.getQName());
+  }
+
+  public final boolean isDomainImport(String qName) {
     for (String cd : DOMAIN_AND_MODULE_MODELS) {
-      if (i.getQName().startsWith(cd)) {
+      if (qName.startsWith(cd)) {
         return true;
       }
     }

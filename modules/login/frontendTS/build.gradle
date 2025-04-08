@@ -95,6 +95,11 @@ genDomain {
   hwcDir = file(layout.projectDirectory.dir("${libName}/src"))
   outputDir = file("login/build/cd")
   gen4TSLib = true
+
+  /*
+  debug = true
+  outputs.upToDateWhen { false }
+  /**/
 }
 
 genGUI {
@@ -102,6 +107,7 @@ genGUI {
       ":umlp-rte:client:createCDSymbols",
       ":umlp-rte:client:createGuiSymbols"
   )
+  domainModels = ["LoginModule"]
   input = layout.projectDirectory.dir("../models/montigem")
   modelDir = layout.projectDirectory.dir("../models")
   hwcDir = file(layout.projectDirectory.dir("${libName}/src"))
@@ -110,11 +116,16 @@ genGUI {
   guiGenJsweet = false
   guiGenTSFuncionality = true
   gen4TSLib = true
+
+  /*
+  debug = true
+  outputs.upToDateWhen { false }
+  /**/
 }
 
-tasks[buildTaskName].dependsOn {
-  genGUI
-  project(":umlp-rte:client").tasks.findAll { it.name.startsWith(buildTaskPrefix) }
+tasks.named(buildTaskName) {
+  dependsOn genGUI
+  dependsOn project(":umlp-rte:client").tasks.findAll { it.name.startsWith(buildTaskPrefix) }
 }
 
 build.dependsOn tasks[buildTaskName]

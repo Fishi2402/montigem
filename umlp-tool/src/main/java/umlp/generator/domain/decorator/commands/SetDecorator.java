@@ -133,8 +133,7 @@ public class SetDecorator extends AbstractDeSerDecorator {
 
       getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList("gemId", name + "GemId"));
       getCD4C().addMethod(ast, getAssocsCheckAccessPolicyTemplate(), domainType.getName(), otherType, "Update");
-      ASTCDCompilationUnit cd = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
-      getCD4C().addImport(ast, getPackageName(cd, DEFAULT_PACKAGE) + "." + otherType + "AccessPolicy");
+      addImportAccessPolicy(ast, type, otherType);
     } else {
       getCD4C().addMethod(ast, getGeneralCheckAccessPolicyTemplate(), domainType.getName(), "Update");
       getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList("getGemId()"));
@@ -146,6 +145,11 @@ public class SetDecorator extends AbstractDeSerDecorator {
     addImports(ast, origCD, domainType, type, isGem, attr);
 
     return ast;
+  }
+
+  protected void addImportAccessPolicy(ASTCDClass ast, SymTypeExpression type, String otherType) {
+    ASTCDCompilationUnit cd = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
+    getCD4C().addImport(ast, getPackageName(cd, DEFAULT_PACKAGE) + "." + otherType + "AccessPolicy");
   }
 
   protected String getAssocsCheckAccessPolicyTemplate() {

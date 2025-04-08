@@ -8,22 +8,30 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.io.paths.MCPath;
 import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.Names;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.domain.decorator.commands.SetDecorator;
+import umlp.generator.gui.gentypescript.decorator.TSImportHelper;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentTemplates;
 import umlp.generator.gui.gentypescript.method.TSAccessorDecorator;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
+import java.nio.file.Path;
 import java.util.Set;
 
 public class TSSetDecorator extends SetDecorator {
 
-  public TSSetDecorator(GlobalExtensionManagement glex, Set<String> supportedDeSers) {
+  protected final Path outPath;
+  protected final MCPath hwPath;
+
+  public TSSetDecorator(GlobalExtensionManagement glex, MCPath hwPath, Path outPath, Set<String> supportedDeSers) {
     super(glex, supportedDeSers);
+    this.hwPath = hwPath;
+    this.outPath = outPath;
   }
 
   @Override
@@ -78,6 +86,15 @@ public class TSSetDecorator extends SetDecorator {
   }
 
   @Override
+  protected void addImportAccessPolicy(ASTCDClass ast, SymTypeExpression type, String otherType) {
+    ASTCDCompilationUnit cd = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
+    TSImportHelper importHelper = new TSImportHelper(glex, ast, hwPath, outPath);
+    String importerQName = getPackageName(cd, COMMAND_PACKAGE) + "." + ast.getName();
+
+    importHelper.addImport(getPackageName(cd, DEFAULT_PACKAGE) + "." + otherType + "AccessPolicy", importerQName);
+  }
+
+  @Override
   protected void addImports(ASTCDClass ast, ASTCDCompilationUnit origCD, ASTCDType domainType,
       SymTypeExpression type, boolean isGem, ASTCDAttribute attr) {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("StatusResult"));
@@ -85,22 +102,25 @@ public class TSSetDecorator extends SetDecorator {
     getCD4C().addImport(ast, PathUtil.getBackendRTEUtilPath("LogUtil"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("GeneralErrorCollector"));
-    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + domainType.getName());
-    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + origCD.getCDDefinition().getName() + ManagerDecorator.SUFFIX);
-    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+ "." + domainType.getName() + "AccessPolicy");
+    TSImportHelper importHelper = new TSImportHelper(glex, ast, hwPath, outPath);
+    String importerQName = getPackageName(origCD, COMMAND_PACKAGE) + "." + ast.getName();
+
+    importHelper.addImport(getPackageName(origCD, DEFAULT_PACKAGE) + "." + domainType.getName(), importerQName);
+    importHelper.addImport(getPackageName(origCD, DEFAULT_PACKAGE) + "." + origCD.getCDDefinition().getName() + ManagerDecorator.SUFFIX, importerQName);
+    importHelper.addImport(getPackageName(origCD, DEFAULT_PACKAGE) + "." + domainType.getName() + "AccessPolicy", importerQName);
     if (GenService.isOptional(type)) {
       if (GenService.isInnerCDEnum(type)) {
-        getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + GenService.getInnerType(attr.getMCType()));
+        importHelper.addImport(getPackageName(origCD, DEFAULT_PACKAGE) + "." + GenService.getInnerType(attr.getMCType()), importerQName);
       }
     }
     else {
       if (GenService.isCDEnum(type)) {
         ASTCDCompilationUnit typeCD = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
-        getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print());
+        importHelper.addImport(getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print(), importerQName);
       }
       else if (isGem) {
         ASTCDCompilationUnit typeCD = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
-        getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print());
+        importHelper.addImport(getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print(), importerQName);
       }
     }
   }
@@ -109,12 +129,15 @@ public class TSSetDecorator extends SetDecorator {
   protected void addDeSerImport(ASTCDClass ast, ASTCDCompilationUnit origCD, boolean useDeSer,
       boolean isCDEnum, String baseClassDecorator, String typeName, String cmdName) {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
-    getCD4C().addImport(ast, getPackageName(origCD, COMMAND_PACKAGE) + "." + cmdName);
+    TSImportHelper importHelper = new TSImportHelper(glex, ast, hwPath, outPath);
+    String importerQName = getPackageName(origCD, COMMAND_PACKAGE) + "." + ast.getName();
+
+    importHelper.addImport(getPackageName(origCD, COMMAND_PACKAGE) + "." + cmdName, importerQName);
     if (isCDEnum) {
-      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + Names.getSimpleName(typeName));
+      importHelper.addImport(getPackageName(origCD, DEFAULT_PACKAGE) + "." + Names.getSimpleName(typeName), importerQName);
     }
     if (useDeSer) {
-      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + baseClassDecorator);
+      importHelper.addImport(getPackageName(origCD, DEFAULT_PACKAGE) + "." + baseClassDecorator, importerQName);
     }
   }
 

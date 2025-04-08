@@ -36,16 +36,19 @@ public class GetFreeGemIdRequestDecorator extends AbstractDecorator {
         .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(extendedClass()))
         .setName(CLASS_NAME)
         .build();
-    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("SimpleResult"));
-    getCD4C().addImport(ast, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE),
-        origCD.getCDDefinition().getName() + SUFFIX));
-    getCD4C().addImport(ast, PathUtil.getBackendRTERequestPath("Request"));
-
+    addImports(ast, origCD);
     addConstructor(ast, origCD);
     getCD4C().addMethod(ast, getDoRunTemplate(), origCD.getCDDefinition().getName());
     getCD4C().addMethod(ast, "umlp.commands.AlwaysTrueCheckAccessPolicy");
 
     return ast;
+  }
+
+  protected void addImports(ASTCDClass ast, ASTCDCompilationUnit origCD) {
+    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("SimpleResult"));
+    getCD4C().addImport(ast, PathUtil.getBackendRTERequestPath("Request"));
+    getCD4C().addImport(ast, Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE),
+        origCD.getCDDefinition().getName() + SUFFIX));
   }
 
   protected String extendedClass() {
