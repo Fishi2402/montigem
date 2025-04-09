@@ -1,8 +1,12 @@
 package gradle.specific;
 
+import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.CacheableTask;
 import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.InputDirectory;
+import org.gradle.api.tasks.PathSensitive;
+import org.gradle.api.tasks.PathSensitivity;
 import umlp.UMLPToolOptions;
 
 import java.nio.file.Path;
@@ -17,6 +21,11 @@ public abstract class UMLPTestInfrastructureTask extends UMLPBackendTask {
   @Input
   @org.gradle.api.tasks.Optional
   public abstract Property<Boolean> getUsePlaywright();
+
+  @InputDirectory
+  @org.gradle.api.tasks.Optional
+  @PathSensitive(PathSensitivity.RELATIVE)
+  public abstract ConfigurableFileCollection getTestModelDir();
 
   public UMLPTestInfrastructureTask() {
     super("UMLPTestInfrastructureTask");

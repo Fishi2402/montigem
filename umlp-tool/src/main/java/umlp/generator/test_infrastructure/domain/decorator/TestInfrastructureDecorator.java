@@ -55,6 +55,10 @@ public class TestInfrastructureDecorator extends BEDecorator {
     monitorDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: MonitorDecorator", logName);
 
+    var sd2TestDecorator = new SD2TestDecorator(glex);
+    sd2TestDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: SD2TestDecorator", logName);
+
     if (playwright) {
       E2ETestDecorator e2ETestDecorator = new E2ETestDecorator(glex);
       e2ETestDecorator.transform(cdAST, decoratedAST);
