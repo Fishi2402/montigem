@@ -3,6 +3,64 @@
 Only big changes are listed. Since there is no semantic versioning for Fenix,
 the changes are tagged with a date.
 
+## Upcoming (if confirmed)
+
+### Changes
+
+For MontiGem developers:
+
+Changes in GUI DSL AST and corresponding type checks:
+
+- Add type parameters
+  ```diff
+    grammar GUIDSL extends de.monticore.symbols.OOSymbols,
+                         de.monticore.literals.MCCommonLiterals,
+                         de.monticore.types.MCSimpleGenericTypes,
+  +                      de.monticore.types.TypeParameters,
+                         de.monticore.expressions.CommonExpressions,
+                         de.monticore.ocl.SetExpressions 
+  ```
+  `TypeParameters` are type parameter lists that can be used to declare generic model elements.
+  ```diff
+    symbol GUIComponentDeclaration implements Function =
+  -   (["component"] | ["page"]) Name "("
+  +   (["component"] | ["page"]) Name TypeParameters? "("
+        (GUIParam || ",")*
+      ")"
+      GUIComponentAdaptation?
+      GUIBlock?
+    ;
+  ```
+  This change enables the declaration of generic GUI components as follows:
+  ```java
+  component FamilyTree<T>() {}
+  ```
+  Currently, a CoCo is implemented for GUIDSL that forbids the usage of `extends` in a type parameter
+
+- Add type arguments
+  ```diff
+    scope GUIComponent implements Expression =
+      id:GUIVariableDeclaration? "@"
+  -   Name@GUIComponentDeclaration GUINamedArgs
+  +   Name@GUIComponentDeclaration GUITypeArgs? GUINamedArgs
+    ;
+  
+  + GUITypeArgs = "<" (MCTypeArgument || ",")* ">";
+  ```
+  A list of type arguments (defined in `GUITypeArgs`) can be added to a GUI component using `MCTypeArgument` provided in `MCSimpleGenericTypes`.
+
+  This change enables following:
+  ```java
+  1  |  package example.generic;
+  2  |  
+  3  |  import example.Domain.Person;
+  4  |
+  5  |  page PersonHeritageDetails() {
+  6  |    @FamilyTree<Person>();
+  7  |  }
+  ```
+  Uses type `Person` (imported in line 4) as type argument of component `FamilyTree` in line 7.
+
 ## Upcoming
 
 ### Changes
