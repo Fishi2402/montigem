@@ -177,6 +177,10 @@ public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
         print(invocation.getTargetExpression()).print(".toISOString(")
             .printArgList(invocation.getArguments()).print(")").print(".slice(0, 10)");
         return true;
+      case "compareTo":
+        print("(").print(invocation.getTargetExpression()).print(".getTime() - ")
+            .printArgList(invocation.getArguments()).print(".getTime())");
+        return true;
     }
     return false;
   }
