@@ -1,0 +1,5 @@
+package mc.fenix.fischertechnik;
+
+component ColorSorter(boolean pumpRunning, boolean pusherIndicator1On, boolean pusherIndicator2On, boolean pusherIndicator3On, int speedIndicatorPercentage){
+
+}

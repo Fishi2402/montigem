@@ -1,0 +1,5 @@
+package mc.fenix.fischertechnik;
+
+component Transportbelt(int speedIndicatorPercentage, boolean rightDetectorOn, boolean leftDetectorOn){
+
+}
