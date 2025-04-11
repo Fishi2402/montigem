@@ -32,7 +32,7 @@ page Start(List<Process> allProcesses) {
                      components= [
                        editProcessButton@GemButton(label="Continue Process", leftClick=editProcess(p), disabled=false),
                        deleteProcessButton@GemButton(label="Delete Process", leftClick=deleteProcess(p), disabled=false),
-                       @GemText(value="Deconstruction started on: "+p.startedAt)
+                       @GemText(value="Deconstruction started on: "+p.startedAt.toString())
                      ]),
                    @GemColumn(
                      width="80%",
