@@ -126,8 +126,10 @@ tasks.register('run') {
 }
 
 // Avoid a pesky org.gradle.api.InvalidUserDataException: Cannot expand ZIP 'bundle.jar' as it does not exist
+/*
 unpackModule {
   duplicatesStrategy = DuplicatesStrategy.WARN
   dependsOn(":modules:login:frontendTS:packFrontendAsZip")
   dependsOn(":modules:comment:frontendTS:packFrontendAsZip")
 }
+/**/

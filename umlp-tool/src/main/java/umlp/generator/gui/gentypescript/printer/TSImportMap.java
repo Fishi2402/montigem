@@ -23,7 +23,8 @@ public enum TSImportMap {
   NAVIGATION_DEPRECATED("navigation", "@umlp/navigation"),
   INPUT_DEPRECATED("input", "@umlp/input"),
   TABLE_DEPRECATED("table", "@umlp/table"),
-  BACKEND_RTE("umlp.backendrte", "@umlp/common");
+  BACKEND_RTE("umlp.backendrte", "@umlp/common"),
+  MONTIGEM_LOGIN("montigem", "@montigem/login");
 
   private static final String JSWEET_RTE = "@umlp/commonj2ts";
 

@@ -13,28 +13,11 @@ repositories {
 
 configurations {
   guiDefaultTypes
-  // localGuiLib
 }
 
 dependencies {
   guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
-  // implementation project(":umlp-rte")
 }
-
-/*
-tasks.register('createCDSymbols', SerializeCDSymbolsTask) {
-  input = file("../models/")
-  // symbolPath = file("models/")
-  output = layout.buildDirectory.dir("CDSymbols")
-}
-/* */
-
-/*
-createDomainSymbols {
-  dependsOn(":umlp-rte:client:createCDSymbols")
-  symbolPath.setFrom(project(":umlp-rte:client").createCDSymbols.getOutput())
-}
-/**/
 
 tasks.register('createGuiSymbols', SerializeGUISymbolsTask) {
   input = file("../models/")
@@ -95,11 +78,6 @@ genDomain {
   hwcDir = file(layout.projectDirectory.dir("${libName}/src"))
   outputDir = file("login/build/cd")
   gen4TSLib = true
-
-  /*
-  debug = true
-  outputs.upToDateWhen { false }
-  /**/
 }
 
 genGUI {
@@ -116,11 +94,6 @@ genGUI {
   guiGenJsweet = false
   guiGenTSFuncionality = true
   gen4TSLib = true
-
-  /*
-  debug = true
-  outputs.upToDateWhen { false }
-  /**/
 }
 
 tasks.named(buildTaskName) {
@@ -139,9 +112,6 @@ clean.doLast {
     delete file(folder)
   }
 }
-
-// tasks.build_basic.inputs.files(tasks.build_common.outputs.files.singleFile)
-// tasks.build_basic.dependsOn(tasks.build_common)
 
 tasks.register('buildAll') {
   dependsOn tasks.findAll { it.name.startsWith(buildTaskPrefix) }

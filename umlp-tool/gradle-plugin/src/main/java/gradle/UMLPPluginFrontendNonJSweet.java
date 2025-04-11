@@ -16,6 +16,8 @@ import java.nio.file.Path;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import static gradle.UMLPPluginBase.UMLP_MODULES_DOMAIN_SYMBOLS_CONFIG;
+import static gradle.UMLPPluginBase.UMLP_MODULES_GUI_SYMBOLS_CONFIG;
 import static gradle.UMLPPluginFrontendBase.UMLP_FRONTEND_DOMAIN_TASK_NAME;
 import static gradle.UMLPPluginFrontendBase.UMLP_FRONTEND_GUI_TASK_NAME;
 import static gradle.UMLPPluginFrontendBase.UMLP_FRONTEND_SETUP_TASK_NAME;
@@ -44,8 +46,8 @@ public abstract class UMLPPluginFrontendNonJSweet implements Plugin<Project> {
       umlpTask.getGuiGenJsweet().set(false);
 
       // // Load the symbols from the .jars in the domain symbols path
-      umlpTask.getSymbolDir().from(project.getConfigurations().getByName("umlpModulesDomainSymbols"));
-      umlpTask.getSymbolDir().from(project.getConfigurations().getByName("umlpModulesGuiSymbols"));
+      umlpTask.getSymbolDir().from(project.getConfigurations().getByName(UMLP_MODULES_DOMAIN_SYMBOLS_CONFIG));
+      umlpTask.getSymbolDir().from(project.getConfigurations().getByName(UMLP_MODULES_GUI_SYMBOLS_CONFIG));
     });
 
     // task dependencies
