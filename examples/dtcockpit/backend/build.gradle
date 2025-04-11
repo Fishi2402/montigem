@@ -10,6 +10,7 @@ plugins {
 
 dependencies {
   umlpModules("umlp.modules:login:$version")
+  umlpModules("umlp.modules:comment:$version")
 //  umlpModulesGen("umlp.modules:login:$version")
 //  implementation("umlp.modules:login:$version")
 //  umlpModulesModels("umlp.modules:login:$version") // and models itself
@@ -21,6 +22,8 @@ configurations.configureEach {
   resolutionStrategy.dependencySubstitution {
     substitute module("umlp.modules:login") using project(":modules:login")
     substitute module("umlp.modules.login:backend") using project(":modules:login:backend")
+    substitute module("umlp.modules:comment") using project(":modules:comment")
+    substitute module("umlp.modules.comment:backend") using project(":modules:comment:backend")
   }
 }
 

@@ -108,6 +108,11 @@ include ':modules:login:backend'
 include ':modules:login:frontendTS'
 include ':modules:login:frontendJSweet'
 
+include ':modules:comment'
+include ':modules:comment:backend'
+include ':modules:comment:frontendTS'
+include ':modules:comment:frontendJSweet'
+
 include ':modules:sovd-gateway'
 include ':modules:sovd-gateway-it:backend'
 

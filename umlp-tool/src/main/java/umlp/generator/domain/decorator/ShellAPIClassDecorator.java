@@ -231,7 +231,7 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
       template = originalTemplate;
     }
 
-    ASTCDMethodSignature m = getCD4C().addMethod(api, template, cdName, originalClassName, attr.getName(), type, false);
+    ASTCDMethodSignature m = getCD4C().addMethod(api, template, cdName, cdName,originalClassName, attr.getName(), type, false);
     String annotation = String.format(methodAnnotation,
         StringTransformations.uncapitalize(originalClassName), attr.getName(), attr.getName(),
         originalClassName);
@@ -270,7 +270,10 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
     } else {
       type = assoc.getSymbol().getType().print();
     }
-    ASTCDMethodSignature m = getCD4C().addMethod(api, template, cdName,
+    
+    String assocTypeCdName = getClassDiagramName(assoc);
+    
+    ASTCDMethodSignature m = getCD4C().addMethod(api, template, cdName, assocTypeCdName,
         originalClassName, assoc.getName(), type, true);
     String annotation = String.format(methodAnnotation,
         StringTransformations.uncapitalize(originalClassName), assoc.getName(), assoc.getName(),
@@ -295,8 +298,11 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
 
   private void addAssocImport(ASTCDCompilationUnit origCD, ASTCDClass clazz,
                               ASTCDAssocSide assoc) {
-    String rightType = assoc.getMCQualifiedType().printType();
-    getCD4C().addImport(clazz, getPackageName(origCD, DEFAULT_PACKAGE) + "." + rightType);
+    // do not add imports for types that are injected by a module
+    if(getClassDiagramName(assoc).equals(origCD.getCDDefinition().getName())) {
+      String rightType = assoc.getMCQualifiedType().printType();
+      getCD4C().addImport(clazz, getPackageName(origCD, DEFAULT_PACKAGE) + "." + rightType);
+    }
   }
 
   private void addAnnotationToParameters(ASTCDMethodSignature m, String... annotations) {

@@ -1,0 +1,11 @@
+{
+  "name": "Comment",
+  "tasks": [
+    {
+      "type": "UMLPBackendTask",
+      "additionalConfigs": [
+        "comment_module.backend.CommentBackendConfig.ftl"
+      ]
+    }
+  ]
+}

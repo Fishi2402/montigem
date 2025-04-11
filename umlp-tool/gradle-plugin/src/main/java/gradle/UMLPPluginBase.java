@@ -34,6 +34,7 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
   public static final String UMLP_MODULES_GEN_CONFIG = "umlpModulesGen";
   public static final String UMLP_MODULES_MODELS_CONFIG = "umlpModulesModels";
   public static final String UMLP_MODULES_DOMAIN_SYMBOLS_CONFIG = "umlpModulesDomainSymbols";
+  public static final String UMLP_MODULES_GUI_SYMBOLS_CONFIG = "umlpModulesGuiSymbols";
   public static final String UMLP_MODULES_FRONTEND_CONFIG = "umlpModulesFrontend";
 
   @Override
@@ -69,6 +70,11 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
       umlpModulesDSC.setCanBeConsumed(false);
       UMLPPluginModuleJSFrontend.addDomainSymbolsJarAttributes(umlpModulesDSC, project);
       umlpModulesDSC.extendsFrom(umlpModulesC);
+      
+      var umlpModulesGSC = project.getConfigurations().maybeCreate(UMLP_MODULES_GUI_SYMBOLS_CONFIG);
+      umlpModulesGSC.setCanBeConsumed(false);
+      UMLPPluginModuleJSFrontend.addGuiSymbolsJarAttributes(umlpModulesGSC, project);
+      umlpModulesGSC.extendsFrom(umlpModulesC);
 
       var umlpModuleFrontend = project.getConfigurations().maybeCreate(UMLP_MODULES_FRONTEND_CONFIG);
       umlpModuleFrontend.setCanBeConsumed(false);

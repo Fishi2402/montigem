@@ -1,0 +1,223 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+plugins {
+  id "com.github.node-gradle.node" version "5.0.0"
+  // TODO: -test
+  id "de.rwth.se.umlp-tool-frontend"  // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
+//  id "de.rwth.se.umlp-tool-frontend-test"  // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
+  id 'maven-publish'
+  id 'de.rwth.se.umlp-tool-module-jsfrontend' // create domainSymbols-jar
+}
+
+node {
+  nodeProjectDir = file("${buildDir}/frontendGen")
+}
+
+createDomainSymbols {
+  // TODO: Gradle setup
+//  modelDir.from(project(":modules:comment").layout.getProjectDirectory().dir("models"))
+
+}
+
+genDomain {
+  // TODO: Gradle setup
+//  modelDir.from(project(":modules:comment").layout.getProjectDirectory().dir("models"))
+
+}
+
+generate {
+  //println("ADDING GENERATE")
+}
+
+
+genGUI {
+  domainModels = ["CommentModule"]
+//  guiCreateModels = ["gui.comment.UserCreate", "gui.project.ProjectCreate", "gui.project.ProjectsCreateByGroup"]
+
+//  symbolDir.from(project(":modules:comment").layout.getProjectDirectory().dir("models"))
+
+  /*
+  debug = true
+  outputs.upToDateWhen { false }
+  /**/
+}
+nodeSetup.dependsOn(frontendSetup)
+npmInstall.dependsOn(':umlp-rte:client:npmInstall')
+
+def prebuildTasks = [
+    npmInstall,
+    generate  // Created from UMLP-Frontend Plugin.
+]
+
+tasks.register('buildApp', NpxTask) {
+  dependsOn(prebuildTasks)
+  command = "ng"
+  args = ["build"]
+}
+assemble.dependsOn(buildApp)
+
+//// This task copies the hwc in src/app into a distapp dir within the build dir
+//// This dir is NOT referenced by the tsconfig (to run/build this app), instead only by the package.json (to export these files)
+//// This was required as the "../../src/app" tsconfig-path is not liked at all by a npm pack/publish
+//tasks.register('syncHWCApp', Sync) {
+//  from 'src/app'
+//  into "${project.buildDir}/frontendGen/distapp/abc"
+//}
+//
+//// TODO: Version?
+//tasks.register('packApp', NpxTask) {
+//  dependsOn(prebuildTasks, syncHWCApp)
+//  inputs.dir(project.fileTree("src/") // TODO: Properly include src? a different way than syncHWCApp
+//      .exclude("**/*.spec.ts", "**/*.md"))
+//  dependsOn "buildApp"
+//  command = "npm"
+//  args = ["pack"]
+//}
+
+tasks.register('syncLibConfig', Sync) {
+  dependsOn(nodeSetup)
+  from 'config/projects'
+  into "${project.buildDir}/frontendGen/projects"
+  outputs.upToDateWhen {false}
+}
+
+// Prepare the frontend as a lib
+tasks.register('syncLib', Sync) {
+  dependsOn(frontendSetup, SYNC_genDomain, SYNC_genGUI, syncLibConfig)
+  from "src/app"
+  from "${project.buildDir}/frontendGen/build/appdomain/"
+  from "${project.buildDir}/frontendGen/build/appgui/"
+  into "${project.buildDir}/frontendGen/projects/commentmodule-ts/src/"
+  outputs.upToDateWhen {false}
+  preserve {
+    include 'public-api.ts'
+  }
+}
+//tasks.register('syncLibcommentmoduleSRC', Sync) {
+//  from "src/app/commentmodule"
+//  from "${project.buildDir}/frontendGen/build/appdomain/commentmodule"
+//  into "${project.buildDir}/frontendGen/projects/commentmodule-ts/commentmodule/src"
+//  // non recursive:
+//  include "*.*"
+//  outputs.upToDateWhen {false}
+//  filter { line ->  line.replaceAll('@src/commentmodule/commands/[a-zA-Z0-9_]+', 'commentmodule-ts/commentmodule/commands')
+//  }
+//  outputs.upToDateWhen {false}
+//
+//}
+
+//tasks.register('syncLibcommentmoduleCommands', Sync) {
+//  dependsOn(frontendSetup, SYNC_genDomain, SYNC_genGUI, syncLibcommentmoduleGUI)
+//  from 'config/projects/commentmodule-ts/commentmodule/commands'
+//  into "${project.buildDir}/frontendGen/projects/commentmodule-ts/commentmodule/commands"
+//  outputs.upToDateWhen {false}
+//  finalizedBy(tasks.syncLibcommentmoduleCommandsSRC) // replace @src in commands afterwards
+//}
+//
+//tasks.register('syncLibcommentmoduleCommandsSRC', Sync) {
+//  dependsOn(frontendSetup, SYNC_genDomain, SYNC_genGUI, syncLibcommentmoduleGUI)
+//  from "src/app/commentmodule/commands"
+//  from "${project.buildDir}/frontendGen/build/appdomain/commentmodule/commands"
+//  into "${project.buildDir}/frontendGen/projects/commentmodule-ts/commentmodule/commands/src"
+//  filter { line -> line.contains("@src/commentmodule/commands")?line
+//      : line.replaceAll('@src/commentmodule/[a-zA-Z0-9_]+', 'commentmodule-ts/commentmodule')
+//  }
+//  include "*.*"
+//  outputs.upToDateWhen {false}
+//}
+
+
+//tasks.register('syncLibcommentmoduleGUI', Sync) {
+//  dependsOn(frontendSetup, SYNC_genDomain, SYNC_genGUI, syncLibFilesI)
+//  from "src/app/gui"
+//  from 'config/projects/commentmodule-ts/gui'
+//  from "${project.buildDir}/frontendGen/build/appgui/gui"
+////  from "${project.buildDir}/frontendGen/build/appgui/commentmodule"
+//  into "${project.buildDir}/frontendGen/projects/commentmodule-ts/gui/"
+//  // TODO: Replace @src with precise path
+//  filter { line -> line.replaceAll('@src/commentmodule/[a-zA-Z0-9_]+', 'commentmodule-ts/commentmodule') }
+//  outputs.upToDateWhen {false}
+//}
+
+//
+//// Hackaround for templatePaths
+//tasks.register('syncLibFilesI', Sync) {
+//  dependsOn(frontendSetup, SYNC_genDomain, SYNC_genGUI)
+//  from ("${project.buildDir}/frontendGen/build/appgui") {
+//    include '**/*.html' // only html files
+//  }
+////  include '**/*.html' // TODO: Only use .html files
+//  into "${project.buildDir}/frontendGen/projects/build/umlp_frontend/intermediate/appgui"
+//}
+
+
+// Lets do this without npm, I guess
+// We might be able to do this without syncLib?
+packFrontendAsZip { // AbstractCopy Task
+  dependsOn(syncLib)
+  from ("${project.buildDir}/frontendGen/projects/commentmodule-ts/src") {
+    into 'commentmodule-ts/template_placeholder/src/'
+  }
+  // Hackaround to include the html template files at the correct relative location
+  from ("${project.buildDir}/frontendGen/build/appgui") {
+    include '**/*.html' // only html files (aka the template path)
+    into 'commentmodule-ts/build/umlp_frontend/intermediate/appgui'
+  }
+//  archiveName 'CommentModuleFrontend.zip'
+  setArchiveClassifier("bundlejs")
+}
+
+//artifacts.add("umlpOutgoingFrontendBundle", packFrontendAsZip) {
+//  type = "zip"
+//}
+//project.components.java.addVariantsFromConfiguration(configurations.umlpOutgoingFrontendBundle) {
+//  it.mapToOptional()
+//}
+// End of js bundle
+
+tasks.register('testApp', NpxTask) {
+  dependsOn(prebuildTasks)
+  command = "ng"
+  args = ["test"]
+}
+
+tasks.register('runApp', NpxTask) {
+  dependsOn(prebuildTasks)
+  command = "ng"
+  args = ["serve"]
+}
+tasks.register('run') {
+  dependsOn(runApp)
+}
+
+// We do not have main java soures => Remove .jar from outgoing artifacts
+tasks.named('jar') {
+  enabled = false
+}
+configurations{
+  [apiElements, runtimeElements].each {
+    it.outgoing.artifacts.removeIf { it.buildDependencies.getDependencies(null).contains(jar) }
+  }
+}
+
+// Publish
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      from components.java
+    }
+  }
+  repositories {
+    maven {
+      url "file://${project.buildDir}/repo"
+    }
+    maven {
+      credentials.username mavenUser
+      credentials.password mavenPassword
+
+      def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-releases/"
+      def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-snapshots/"
+      url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+    }
+  }
+}
