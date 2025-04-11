@@ -4,46 +4,49 @@
   "compilerOptions": {
     "paths": {
       "@umlp/common": [
-        "../dist/umlp/mc/fenix/common"
+        "./projects/common"
       ],
       "@umlp/commonj2ts": [
-        "../dist/umlp/mc/fenix/commonj2ts"
+        "./projects/commonj2ts"
       ],
       "@umlp/arrange": [
-        "../dist/umlp/mc/fenix/arrange"
+        "./projects/arrange"
       ],
       "@umlp/basic": [
-        "../dist/umlp/mc/fenix/basic"
+        "./projects/basic"
       ],
       "@umlp/charts": [
-        "../dist/umlp/mc/fenix/charts"
-      ],
-      "@umlp/functiondisplay": [
-        "../dist/umlp/mc/fenix/functiondisplay"
+        "./projects/charts"
       ],
       "@umlp/input": [
-        "../dist/umlp/mc/fenix/input"
+        "./projects/input"
       ],
       "@umlp/table": [
-        "../dist/umlp/mc/fenix/table"
+        "./projects/table"
       ],
       "@umlp/theme": [
-        "../dist/umlp/mc/fenix/theme"
+        "./projects/theme"
+      ],
+      "@umlp/navigation": [
+        "./projects/networkgraph"
       ],
       "@umlp/networkgraph": [
-        "../dist/umlp/mc/fenix/networkgraph"
+        "./projects/networkgraph"
       ]
     },
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
     "strict": false,
-    "noImplicitOverride": true,
+    "noImplicitOverride": false,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": false,
+    "noUnusedLocals": false,
     "sourceMap": true,
-    "declaration": false,
+    "declaration": true,
+    "declarationMap": true,
+    "inlineSources": true,
     "downlevelIteration": true,
     "experimentalDecorators": true,
     "moduleResolution": "node",
@@ -56,6 +59,9 @@
       "dom"
     ]
   },
+  "exclude": [
+    "**/*.spec.ts"
+  ],
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,

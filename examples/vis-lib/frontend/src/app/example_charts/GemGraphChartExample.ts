@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { GemGraphChartExampleComponent, config } from '@src/example_charts/GemGraphChartExampleComponent';
+import { GemGraphChartExampleComponent, config } from 'example_charts/GemGraphChartExampleComponent';
 import {
   GemNetworkData, GemNetworkDataBuilder,
   GemNetworkEdge,
@@ -9,8 +9,8 @@ import {
   GemNetworkNode,
   GemNetworkNodeBuilder
 } from '@umlp/charts';
-import { Person } from '@src/domain/Person';
-import {stringifyWithoutRealBuilder} from "@src/StringifyWithoutRealBuilder";
+import { Person } from 'domain/Person';
+import {stringifyWithoutRealBuilder} from "StringifyWithoutRealBuilder";
 
 @Component({
   standalone: true,

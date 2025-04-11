@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
-import {SehubManager} from '@src/sehub/SehubManager';
+import {SehubManager} from 'sehub/SehubManager';
 import {Component} from '@angular/core';
-import {ResponseComponent,config} from '@src/gui/note/ResponseComponent';
-import {Post} from '@src/sehub/Post';
+import {ResponseComponent,config} from 'gui/note/ResponseComponent';
+import {Post} from 'sehub/Post';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
-import {User} from '@src/sehub/User';
-import {SehubRole} from '@src/sehub/SehubRole';
+import {User} from 'sehub/User';
+import {SehubRole} from 'sehub/SehubRole';
 @Component({
   standalone:true,
   imports:[...config.imports],

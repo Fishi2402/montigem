@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { RadarBodyComponent,config } from '@src/gui/widgets/RadarBodyComponent';
+import { RadarBodyComponent,config } from 'gui/widgets/RadarBodyComponent';
 
 @Component({
   standalone:true,

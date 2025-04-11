@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component, } from '@angular/core';
-import { AddToFavoriteComponent ,config} from '@src/gui/AddToFavoriteComponent';
-import { WeatherManager } from '@src/weather/WeatherManager';
+import { AddToFavoriteComponent ,config} from 'gui/AddToFavoriteComponent';
+import { WeatherManager } from 'weather/WeatherManager';
 import { Option } from '@umlp/input';
 
 @Component({

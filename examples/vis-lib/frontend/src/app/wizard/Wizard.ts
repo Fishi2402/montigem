@@ -1,13 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {config, WizardComponent} from "@src/wizard/WizardComponent";
+import {config, WizardComponent} from "wizard/WizardComponent";
 import {Component, ViewChild, ViewContainerRef, AfterViewInit} from "@angular/core";
 import {KeyValuePipe, NgComponentOutlet} from "@angular/common";
 
-import {GET_WIZARD_DATA_BY_CLASS, WIZARD_DATA} from "@src/wizard/WizardData";
-import {WizardContainer} from "@src/wizard/WizardContainer";
-import {InspectorService} from "@src/wizard/InspectorService";
-import {WizardModal} from "@src/wizard/WizardModal";
+import {GET_WIZARD_DATA_BY_CLASS, WIZARD_DATA} from "wizard/WizardData";
+import {WizardContainer} from "wizard/WizardContainer";
+import {InspectorService} from "wizard/InspectorService";
+import {WizardModal} from "wizard/WizardModal";
 
 /**
  * A simple GUI-Wizard  allowing WYSIWYG GUI Design.

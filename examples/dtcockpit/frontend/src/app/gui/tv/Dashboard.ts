@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { DashboardComponent,config } from '@src/gui/tv/DashboardComponent';
-import { App } from '@src/dtcockpit/App';
-import { Meeting } from '@src/dtcockpit/Meeting';
+import { DashboardComponent,config } from 'gui/tv/DashboardComponent';
+import { App } from 'dtcockpit/App';
+import { Meeting } from 'dtcockpit/Meeting';
 import { GemList } from '@umlp/common';
 
 @Component({

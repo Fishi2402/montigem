@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {GemNetworkData} from '@umlp/charts';
-import {SehubMainPageComponent,config} from '@src/gui/SehubMainPageComponent';
+import {SehubMainPageComponent,config} from 'gui/SehubMainPageComponent';
 
 import {Component} from '@angular/core';
 import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
-import {Project} from '@src/sehub/Project';
+import {Project} from 'sehub/Project';
 import { Event } from '@umlp/common';
 
 @Component({

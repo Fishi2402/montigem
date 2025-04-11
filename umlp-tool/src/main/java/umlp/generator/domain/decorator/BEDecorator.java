@@ -13,7 +13,6 @@ import umlp.generator.domain.UMLPGeneratorConfig;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 public class BEDecorator extends AbstractDecorator {
@@ -79,6 +78,10 @@ public class BEDecorator extends AbstractDecorator {
     DAOInterfaceDecorator daoInterfaceDecorator = new DAOInterfaceDecorator(glex);
     daoInterfaceDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: DAOInterfaceDecorator", BEDecorator.class.getName());
+
+    QueryBuilderDecorator queryBuilderDecorator = new QueryBuilderDecorator(glex);
+    queryBuilderDecorator.transform(cdAST, decoratedAST);
+    Log.info("After decorator: QueryBuilderDecorator", BEDecorator.class.getName());
 
     // Generate DAOs
     DAODecorator daoDecorator = new DAODecorator(glex);

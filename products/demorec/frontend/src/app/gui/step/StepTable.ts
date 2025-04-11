@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
-import { DemoRecManager } from '@src/demorec/DemoRecManager';
+import { DemoRecManager } from 'demorec/DemoRecManager';
 
-import { StepTableComponent,config } from '@src/gui/step/StepTableComponent';
+import { StepTableComponent,config } from 'gui/step/StepTableComponent';
 
-import {ProcessStep} from '@src/demorec/ProcessStep'
+import {ProcessStep} from 'demorec/ProcessStep'
 
-import {JoinConnectionType} from '@src/demorec/JoinConnectionType'
+import {JoinConnectionType} from 'demorec/JoinConnectionType'
 
 import {
   Component

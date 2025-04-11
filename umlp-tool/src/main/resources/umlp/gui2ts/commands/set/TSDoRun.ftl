@@ -3,7 +3,6 @@ ${tc.signature( "attributename","classname","manager", "isGem", "targettype", "t
 ${cd4c.method("public Promise<StatusResult> doRun()")}
 
 console.debug("Executing set_${attributename} to " + this.${attributename}<#if isGem>GemId</#if> + " on ${classname?uncap_first} " + this.gemId);
-console.trace();
 return Promise.all([
   ${manager}.${classname?uncap_first}Opt(this.gemId)
   <#if isGem>, ${manager}.create${targettype}Gem(this.${attributename}GemId)</#if>

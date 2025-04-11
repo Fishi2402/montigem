@@ -29,7 +29,7 @@ public class GUIComponentBasicsAdapter extends PrinterAdapter {
     if (adapterUtils.isDirective(type) || adapterUtils.isComponent(type) || adapterUtils.isHWCofComponent(type)) {
       String cdName = adapterUtils.getAnnotationPropertyValue(type, "cdName", String.class, "");
       String managerName = cdName + "Manager";
-      String pathToManager = "@src/" + StringUtils.lowerCase(cdName) + "/" + managerName;
+      String pathToManager = StringUtils.lowerCase(cdName) + "/" + managerName;
       adapterUtils.importFromWithModule(managerName, pathToManager);
     }
 
@@ -93,7 +93,7 @@ public class GUIComponentBasicsAdapter extends PrinterAdapter {
       print(" extends " + componentName);
       String path = type.getQualifiedName().toString().replace(".", "/");
 
-      adapterUtils.importFromWithModule(componentName + ", config", "@src/" + path + "Component");
+      adapterUtils.importFromWithModule(componentName + ", config", path + "Component");
       adapterUtils.importFromWithModule("ActivatedRoute, Router", "@angular/router");
       return true;
     }

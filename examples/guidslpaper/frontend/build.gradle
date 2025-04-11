@@ -16,14 +16,15 @@ dependencies {
   umlpModulesModels("umlp.modules:login:$version") // and models itself
 }
 
+// TODO AHe: needed?
 // ALus local gradle is apparently unaware of these versions?
 // Explicitly use the local login module
-configurations.all {
-  resolutionStrategy.dependencySubstitution {
-    substitute module("umlp.modules:login") using project(":modules:login")
-    substitute module("umlp.modules.login:frontendTS") using project(":modules:login:frontendTS")
-  }
-}
+//configurations.all {
+//  resolutionStrategy.dependencySubstitution {
+//    substitute module("umlp.modules:login") using project(":modules:login")
+//    substitute module("umlp.modules.login:frontendTS") using project(":modules:login:frontendTS")
+//  }
+//}
 
 genGUI {
   domainModels = ["Guidslpaper"]
@@ -49,16 +50,34 @@ tasks.register('buildApp', NpxTask) {
 }
 assemble.dependsOn(buildApp)
 
+tasks.named('buildApp') {
+  dependsOn {
+    project(':modules:login:frontendTS').tasks.named('generate').get()
+  }
+}
+
 tasks.register('testApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["test"]
 }
 
+tasks.named('testApp') {
+  dependsOn {
+    project(':modules:login:frontendTS').tasks.named('generate').get()
+  }
+}
+
 tasks.register('runApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["serve"]
+}
+
+tasks.named('runApp') {
+  dependsOn {
+    project(':modules:login:frontendTS').tasks.named('generate').get()
+  }
 }
 
 tasks.register('run') {

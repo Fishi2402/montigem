@@ -1,13 +1,13 @@
 
 import { Router } from '@angular/router';
-import { LoadingTestsManager } from '@src/loadingtests/LoadingTestsManager';
+import { LoadingTestsManager } from 'loadingtests/LoadingTestsManager';
 
-import { Player } from '@src/loadingtests/Player';
+import { Player } from 'loadingtests/Player';
 
 import { Directive, Component } from '@angular/core';
-import { CommandTest } from '@src/loadingtests/CommandTest';
+import { CommandTest } from 'loadingtests/CommandTest';
 
-import { PlayerListComponent,config } from '@src/test_load_inner/PlayerListComponent';
+import { PlayerListComponent,config } from 'test_load_inner/PlayerListComponent';
 
 
 import { Subject, ReplaySubject, firstValueFrom } from 'rxjs';

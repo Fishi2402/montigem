@@ -2,6 +2,8 @@
 package umlp.generator.gui;
 
 import com.google.common.base.CaseFormat;
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import de.monticore.ast.ASTNode;
 import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cd4code._prettyprint.CD4CodeFullPrettyPrinter;
@@ -17,7 +19,6 @@ import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUIAdapt;
-import de.monticore.guidsl._ast.ASTGUIArgValue;
 import de.monticore.guidsl._ast.ASTGUIBlockContent;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
@@ -33,10 +34,9 @@ import de.monticore.guidsl._symboltable.GUIComponentDeclarationSymbol;
 import de.monticore.guidsl._symboltable.GUIParamSymbol;
 import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
 import de.monticore.guidsl._symboltable.IGUIDSLScope;
-import de.monticore.guidsl._visitor.GUIDSLTraverser;
-import de.monticore.guidsl.types.check.util.GUIDSLTypeTraverserFactory;
 import de.monticore.io.paths.MCPath;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
+import de.monticore.ocl.setexpressions._ast.ASTSetCollectionItem;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
@@ -50,7 +50,7 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
-import de.monticore.types3.Type4Ast;
+import de.monticore.types3.TypeCheck3;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -58,6 +58,7 @@ import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
+import umlp.generator.gui.genjava.decorator.GUI2JavaClassDecorator;
 import umlp.generator.gui.genjava.prettyprinter.Expression2NullCheckAccessorPrinter;
 import umlp.generator.gui.genjava.prettyprinter.Expression2SetterPrinter;
 import umlp.generator.gui.genjava.prettyprinter.IterationItemsFinder;
@@ -78,6 +79,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -274,6 +276,9 @@ public class GUIGeneratorUtil {
   }
 
   public final boolean isEnumType(SymTypeExpression type) {
+    if (!type.hasTypeInfo()) {
+      return false;
+    }
     Optional<TypeSymbol> symb = type.getTypeInfo().getEnclosingScope().resolveType(type.getTypeInfo().getName());
     if (symb.isPresent()) {
       if (OOSymbolsMill.typeDispatcher().isOOSymbolsOOType(symb.get())) {
@@ -394,7 +399,11 @@ public class GUIGeneratorUtil {
   }
 
   public final boolean isGuiImport(ASTMCImportStatement i) {
-    return GUIDSLMill.globalScope().resolveGUIComponentDeclaration(i.getQName()).isPresent();
+    return isGuiImport(i.getQName());
+  }
+
+  public final boolean isGuiImport(String qName) {
+    return GUIDSLMill.globalScope().resolveGUIComponentDeclaration(qName).isPresent();
   }
 
   public final boolean isBuiltIn(String qName) {
@@ -469,8 +478,8 @@ public class GUIGeneratorUtil {
     return !guiComponentSymbol.isPresent() || isInputArgument(guiComponentSymbol.get(), arg);
   }
 
-  public boolean isComponentArgument(ASTGUIComponent guiComponent, ASTGUIArgValue arg) {
-    return arg.isPresentGUIComponent();
+  public boolean isComponentArgument(ASTGUIComponent guiComponent, ASTExpression arg) {
+    return GUIDSLMill.typeDispatcher().isGUIDSLASTGUIComponent(arg);
   }
 
 /*  public  List<ASTGUINamedArg> getComponentArguments(ASTGUIComponent guiComponent) {
@@ -479,26 +488,33 @@ public class GUIGeneratorUtil {
   }*/
 
   public List<ASTGUIComponent> getComponentAsArguments(ASTGUIComponent guiComponent) {
-    return guiComponent.getGUINamedArgs().getGUINamedArgList().stream().map(a -> a.getGUIArgValue()).filter(a -> isComponentArgument(guiComponent, a))
-        .map(a -> a.getGUIComponent()).collect(Collectors.toList());
+    return guiComponent.getGUINamedArgs().getGUINamedArgList().stream().map(a -> a.getExpression()).filter(a -> isComponentArgument(guiComponent, a))
+        .map(a -> GUIDSLMill.typeDispatcher().asGUIDSLASTGUIComponent(a)).collect(Collectors.toList());
   }
 
-  public List<ASTGUIArgValue> getComponentArguments(ASTGUIComponent guiComponent) {
-    List<ASTGUIArgValue> values = new ArrayList<>();
-    values.addAll(guiComponent.getGUINamedArgs().getGUINamedArgList().stream().map(a -> a.getGUIArgValue())
+  public List<ASTExpression> getComponentArguments(ASTGUIComponent guiComponent) {
+    List<ASTExpression> values = new ArrayList<>();
+    values.addAll(guiComponent.getGUINamedArgs().getGUINamedArgList().stream().map(a -> a.getExpression())
         .filter(a -> isComponentArgument(guiComponent, a)).collect(Collectors.toList()));
-    values.addAll(guiComponent.getGUINamedArgs().getGUINamedArgList().stream().map(a -> a.getGUIArgValue())
-        .filter(a -> a.isPresentGUIList()).flatMap(a -> a.getGUIList().getGUIArgValueList().stream())
-        .filter(v -> isComponentArgument(guiComponent, v)).collect(Collectors.toList()));
+    values.addAll(guiComponent.getGUINamedArgs().getGUINamedArgList().stream().map(a -> a.getExpression())
+        .filter(a -> GUIDSLMill.typeDispatcher().isSetExpressionsASTSetEnumeration(a))
+        .flatMap(a -> GUIDSLMill.typeDispatcher().asSetExpressionsASTSetEnumeration(a).getSetCollectionItemList().stream())
+            .map(v -> GUIDSLMill.typeDispatcher().asSetExpressionsASTSetValueItem(v))
+        .filter(v -> isComponentArgument(guiComponent, v.getExpression()))
+        .map(v -> v.getExpression()).collect(Collectors.toList()));
     return values;
   }
 
-  public List<ASTGUIArgValue> getComponentListArguments(ASTGUIComponent guiComponent, ASTGUIArgValue arg) {
-    List<ASTGUIArgValue> values = new ArrayList<>();
-    if (!arg.isPresentGUIList()) {
+  public List<ASTExpression> getComponentListArguments(ASTGUIComponent guiComponent, ASTExpression arg) {
+    List<ASTExpression> values = new ArrayList<>();
+    if (!GUIDSLMill.typeDispatcher().isSetExpressionsASTSetEnumeration(arg)) {
       return values;
     }
-    values.addAll(arg.getGUIList().getGUIArgValueList().stream().filter(v -> isComponentArgument(guiComponent, v)).collect(Collectors.toList()));
+    values.addAll(GUIDSLMill.typeDispatcher().asSetExpressionsASTSetEnumeration(arg)
+        .getSetCollectionItemList().stream()
+        .filter(v -> GUIDSLMill.typeDispatcher().isSetExpressionsASTSetValueItem(v))
+        .map(v -> GUIDSLMill.typeDispatcher().asSetExpressionsASTSetValueItem(v).getExpression())
+        .filter(v -> isComponentArgument(guiComponent, v)).collect(Collectors.toList()));
     return values;
   }
 
@@ -543,7 +559,7 @@ public class GUIGeneratorUtil {
         + StringTransformations.capitalize(componentId)
         + StringTransformations.capitalize(namedArg.getName())
         + ((UMLPGeneratorConfig.getInstance().isGenerateTypescript() || isList(namedArg))
-         && !UMLPGeneratorConfig.getInstance().isUseJsweet()
+        && !UMLPGeneratorConfig.getInstance().isUseJsweet()
         ? ""
         : SYNCHRONIZED_SUFFIX // JSweet method to synchronize async callbacks
     );
@@ -637,6 +653,21 @@ public class GUIGeneratorUtil {
     return "";
   }
 
+  public String getIterableGetter(ASTGUIIterate iterate) {
+    String name = iterate.getId().getName() + StringTransformations.capitalize(
+        GUI2JavaClassDecorator.ITERATE_ARG);
+    String args = findIterationItemSymbols(iterate.getEnclosingScope()).stream()
+        .map(v -> v.getName()).collect(
+            Collectors.joining(", "));
+    String getter = "get" + StringTransformations.capitalize(name);
+    if (UMLPGeneratorConfig.getInstance().isUseJsweet()) {
+      getter = "toArray(" + getter + SYNCHRONIZED_SUFFIX + "(" + args + "))";
+    } else {
+      getter = getter + "(" + args + ")";
+    }
+    return getter;
+  }
+
   public String gui2tsGeneralImport(String forComponent, String postfix) {
     Optional<String> domainQName = getMainDomainModelQName();
     if (domainQName.isPresent()) {
@@ -673,9 +704,12 @@ public class GUIGeneratorUtil {
     }
   }
 
-  public boolean isComponentListArgument(ASTGUIComponent guiComponent, ASTGUIArgValue arg) {
-    return arg.isPresentGUIList() && arg.getGUIList().getGUIArgValueList()
-        .stream().anyMatch(a -> a.isPresentGUIComponent());
+  public boolean isComponentListArgument(ASTGUIComponent guiComponent, ASTExpression arg) {
+    return GUIDSLMill.typeDispatcher().isSetExpressionsASTSetEnumeration(arg) &&
+        GUIDSLMill.typeDispatcher().asSetExpressionsASTSetEnumeration(arg).getSetCollectionItemList().stream()
+            .filter(v -> GUIDSLMill.typeDispatcher().isSetExpressionsASTSetValueItem(v))
+            .map(v -> GUIDSLMill.typeDispatcher().asSetExpressionsASTSetValueItem(v))
+            .anyMatch(v -> GUIDSLMill.typeDispatcher().isGUIDSLASTGUIComponent(v.getExpression()));
   }
 
   public boolean isEventComponent(ASTGUIComponent guiComponent) {
@@ -705,9 +739,9 @@ public class GUIGeneratorUtil {
     return paramSym.getType().getTypeInfo().getFullName().equals(BuiltInTypes.EVENT.getQName());
   }
 
-  public boolean isStringLiteral(ASTGUIArgValue argValue) {
-    return argValue.getExpression() instanceof ASTLiteralExpression
-        && ((ASTLiteralExpression) argValue.getExpression()).getLiteral() instanceof ASTStringLiteral;
+  public boolean isStringLiteral(ASTExpression argValue) {
+    return argValue instanceof ASTLiteralExpression
+        && ((ASTLiteralExpression) argValue).getLiteral() instanceof ASTStringLiteral;
   }
 
   public List<ASTGUINamedArg> getInputArguments(ASTGUIComponent guiComponent) {
@@ -890,38 +924,39 @@ public class GUIGeneratorUtil {
     return qualifiedModuleName;
   }
 
-  public String gui2htmlArgValue(ASTGUIArgValue node) {
-    if (node.isPresentGUIComponent()) {
-      return getNgTemplateName(node.getGUIComponent().getId().getName());
+  public String gui2htmlArgValue(ASTExpression node) {
+    if (GUIDSLMill.typeDispatcher().isGUIDSLASTGUIComponent(node)) {
+      return getNgTemplateName(GUIDSLMill.typeDispatcher().asGUIDSLASTGUIComponent(node).getId().getName());
     }
-    if (node.isPresentGUIGuard()) {
-      return getNgTemplateName(node.getGUIGuard().getId().getName());
+    if (GUIDSLMill.typeDispatcher().isGUIDSLASTGUIGuard(node)) {
+      return getNgTemplateName(GUIDSLMill.typeDispatcher().asGUIDSLASTGUIGuard(node).getId().getName());
     }
-    if (node.isPresentGUIIterate()) {
-      return getNgTemplateName(node.getGUIIterate().getId().getName());
+    if (GUIDSLMill.typeDispatcher().isGUIDSLASTGUIIterate(node)) {
+      return getNgTemplateName(GUIDSLMill.typeDispatcher().asGUIDSLASTGUIIterate(node).getId().getName());
     }
-    if (node.isPresentExpression()) {
-      return print(node);
-    }
-    if (node.isPresentGUIList()) {
+    if (GUIDSLMill.typeDispatcher().isSetExpressionsASTSetEnumeration(node)) {
       StringBuilder res = new StringBuilder("[");
-      for (ASTGUIArgValue v : node.getGUIList().getGUIArgValueList()) {
-        res.append(gui2htmlArgValue(v)).append(", ");
+      for (ASTSetCollectionItem v : GUIDSLMill.typeDispatcher().asSetExpressionsASTSetEnumeration(node).getSetCollectionItemList()) {
+        res.append(gui2htmlArgValue(GUIDSLMill.typeDispatcher().asSetExpressionsASTSetValueItem(v).getExpression())).append(", ");
       }
       res.append("]");
       return res.toString();
     }
+    if (GUIDSLMill.typeDispatcher().isExpressionsBasisASTExpression(node)) {
+      return print(node);
+    }
+
     Log.error("0x00005 corrupt ASTGUIArgValue node " + node
         + ": missing actual value");
     return "";
   }
 
   public String getComponentPath(String javaPackage) {
-    return "@src/" + qName2path(javaPackage);
+    return qName2path(javaPackage);
   }
 
   public String java2tsModule(String javaPackage) {
-    String res = "@src/" + qName2path(javaPackage) + "Module";
+    String res = qName2path(javaPackage);
 
     for (TSImportMap type : TSImportMap.values()) {
       if (javaPackage.startsWith(type.getJavaPackage())) {
@@ -935,7 +970,7 @@ public class GUIGeneratorUtil {
     return res;
   }
 
-  public Optional<String> getRelativeImportPathForAnnotation(
+  public String getRelativeImportPathForAnnotation(
       String path, String base, String qualifiedName) {
     path = path + "/" + Names.getPathFromPackage(qualifiedName) + ".html";
     base = base + "/" + Names.getPathFromPackage(qualifiedName) + ".ts";
@@ -946,7 +981,7 @@ public class GUIGeneratorUtil {
         .toString()
         .replaceAll("\\\\", "/");
 
-    return Optional.of(relative);
+    return relative;
   }
 
   public Optional<String> getRelativeImportPath(
@@ -956,23 +991,23 @@ public class GUIGeneratorUtil {
   }
 
   public Optional<String> getRelativeImportPath(
-      MCPath imported, Path importer, String hwFile) {
-    Optional<URL> hwFilePath = imported.find(hwFile);
+      MCPath hwPath, Path outPath, String hwFile) {
+    Optional<URL> hwFilePath = hwPath.find(hwFile);
     Optional<String> res = Optional.empty();
     if (hwFilePath.isPresent()) {
-      Optional<Path> hwPath = MCPath.toPath(hwFilePath.get());
-      if (hwPath.isPresent()) {
-        res = Optional.of(importer.resolve(hwFile).getParent()
+      Optional<Path> hw = MCPath.toPath(hwFilePath.get());
+      if (hw.isPresent()) {
+        res = Optional.of(outPath.resolve(hwFile).getParent()
             .toAbsolutePath()
             .normalize()
-            .relativize(hwPath.get().toAbsolutePath())
+            .relativize(hw.get().toAbsolutePath())
             .toString()
             .replaceAll("\\\\", "/"));
 
-        Reporting.reportUseHandwrittenCodeFile(hwPath.get(), Paths.get(hwFile));
+        Reporting.reportUseHandwrittenCodeFile(hw.get(), Paths.get(hwFile));
       }
     }
-    Reporting.reportHWCExistenceCheck(imported, Paths.get(hwFile), hwFilePath);
+    Reporting.reportHWCExistenceCheck(hwPath, Paths.get(hwFile), hwFilePath);
     return res;
   }
 
@@ -1077,23 +1112,19 @@ public class GUIGeneratorUtil {
   }
 
   public SymTypeExpression getType(ASTExpression node) {
-    Type4Ast type4Ast = new Type4Ast();
-    GUIDSLTraverser traverser = GUIDSLTypeTraverserFactory.getInstance().createTraverserForOO(type4Ast);
-    node.accept(traverser);
-
-    return type4Ast.getTypeOfExpression(node);
+    return TypeCheck3.typeOf(node);
   }
 
   public String getNgTemplateName(ASTGUIBlockContent node) {
     String name;
-    if (node.isPresentGUIComponent()) {
-      name = node.getGUIComponent().getId().getName();
-    }
-    else if (node.isPresentGUIGuard()) {
+    if (node.isPresentGUIGuard()) {
       name = node.getGUIGuard().getId().getName();
     }
     else if (node.isPresentGUIIterate()) {
       name = node.getGUIIterate().getId().getName();
+    }
+    else if (node.isPresentExpression() && GUIDSLMill.typeDispatcher().isGUIDSLASTGUIComponent(node.getExpression())) {
+      name = ((ASTGUIComponent) node.getExpression()).getId().getName();
     }
     else {
       String received = "Unknown";
@@ -1313,5 +1344,12 @@ public class GUIGeneratorUtil {
       }
     }
     return isAbstract;
+  }
+
+  public Optional<ASTGUIComponent> getAsGuiComponent(ASTExpression node) {
+    if (GUIDSLMill.typeDispatcher().isGUIDSLASTGUIComponent(node)) {
+      return Optional.of(GUIDSLMill.typeDispatcher().asGUIDSLASTGUIComponent(node));
+    }
+    return Optional.empty();
   }
 }

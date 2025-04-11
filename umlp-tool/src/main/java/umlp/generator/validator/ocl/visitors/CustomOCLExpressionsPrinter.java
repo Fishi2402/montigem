@@ -30,7 +30,6 @@ import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.TypeCheckResult;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
-import org.gradle.internal.Pair;
 import umlp.generator.validator.ocl.associationTree.OCLInvariantTree;
 import umlp.generator.validator.ocl.associationTree.OCLInvariantTreeNode;
 
@@ -103,7 +102,7 @@ public class CustomOCLExpressionsPrinter extends OCLExpressionsPrinter {
 
     List<String> validationResultCalls = new ArrayList<>();
     List<String> finishingCalls = new ArrayList<>();
-    List<Pair<String, String>> finishingSetComprehensionCalls = new ArrayList<>();
+    List<Map.Entry<String, String>> finishingSetComprehensionCalls = new ArrayList<>();
     List<String> addToValidationResultListCalls = new ArrayList<>();
 
     for(ASTInDeclaration dec : node.getInDeclarationList()) {
@@ -150,7 +149,7 @@ public class CustomOCLExpressionsPrinter extends OCLExpressionsPrinter {
                  finishingCallsForVarsOutsideOfSet.addAll(varTreeNode.get().getFinishingCalls(true, "!value" + currentForallLevel));
                 }
                 for(int i = 0; i < finishingCallsForVarsOutsideOfSet.size(); i++) {
-                  finishingSetComprehensionCalls.add(Pair.of(finishingCallsForVar.get(i),  finishingCallsForVarsOutsideOfSet.get(i)));
+                  finishingSetComprehensionCalls.add(Map.entry(finishingCallsForVar.get(i),  finishingCallsForVarsOutsideOfSet.get(i)));
                 }
               } else {
                 finishingCalls.addAll(finishingCallsForVar);
@@ -192,8 +191,8 @@ public class CustomOCLExpressionsPrinter extends OCLExpressionsPrinter {
     for (String call : finishingCalls) {
       printer.println(call);
     }
-    for(Pair<String, String> call : finishingSetComprehensionCalls) {
-      String varName = call.getLeft().substring(0, call.getLeft().indexOf("ValidationResult."));
+    for(Map.Entry<String, String> call : finishingSetComprehensionCalls) {
+      String varName = call.getKey().substring(0, call.getKey().indexOf("ValidationResult."));
       String setCompName = setComprehensionVariablesInScope.get(varName);
       printer.print("if(");
       printer.print(setCompName);
@@ -201,11 +200,11 @@ public class CustomOCLExpressionsPrinter extends OCLExpressionsPrinter {
       printer.print(varName);
       printer.println(")) {");
       printer.indent();
-      printer.println(call.getLeft());
+      printer.println(call.getKey());
       printer.unindent();
       printer.println("} else {");
       printer.indent();
-      printer.println(call.getRight());
+      printer.println(call.getValue());
       printer.unindent();
       printer.println("}");
     }

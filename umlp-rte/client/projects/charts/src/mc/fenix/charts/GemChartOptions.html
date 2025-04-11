@@ -1,0 +1,21 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+
+<button 
+  (click)="buttonClicked = !buttonClicked"
+  type="button"
+  cdkOverlayOrigin
+  #trigger="cdkOverlayOrigin"
+  style="font-size: 15px"
+>
+  <i class="fa fa-gear"></i>
+</button>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="trigger"
+  [cdkConnectedOverlayOpen]="buttonClicked"
+>
+  <ul class="gem-settings-list">
+    <ng-content></ng-content>
+  </ul>
+</ng-template>

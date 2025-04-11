@@ -1,7 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {UserTOP} from '@src/sehub/UserTOP';
-import { SehubRole } from '@src/sehub/SehubRole';
+import {UserTOP} from 'sehub/UserTOP';
+import { SehubRole } from 'sehub/SehubRole';
+import {GemTextInputValidity} from '@umlp/input';
 
 export class User extends UserTOP {
 
@@ -9,8 +10,8 @@ export class User extends UserTOP {
 
   private _validityUsername = '';
 
-  public getValidityUsername(): any {
-    return {status: this._statusUsername, message: this._validityUsername};
+  public getValidityUsername(): GemTextInputValidity {
+    return new GemTextInputValidity(this._statusUsername, this._validityUsername);
   }
 
   public set validityUsername(value: string) {
@@ -25,8 +26,8 @@ export class User extends UserTOP {
 
   private _validityPassword = '';
 
-  public getValidityPassword(): any {
-    return {status: this._statusPassword, message: this._validityPassword};
+  public getValidityPassword(): GemTextInputValidity {
+    return new GemTextInputValidity(this._statusPassword, this._validityPassword);
   }
 
   public set validityPassword(value: string) {
@@ -41,8 +42,8 @@ export class User extends UserTOP {
 
   private _validityEmail = '';
 
-  public getValidityEmail(): any {
-    return {status: this._statusEmail, message: this._validityEmail};
+  public getValidityEmail(): GemTextInputValidity {
+    return new GemTextInputValidity(this._statusEmail, this._validityEmail);
   }
 
   public set validityEmail(value: string) {
@@ -57,8 +58,8 @@ export class User extends UserTOP {
 
   private _validityRole = '';
 
-  public getValidityRole(): any {
-    return {status: this._statusRole, message: this._validityRole};
+  public getValidityRole(): GemTextInputValidity {
+    return new GemTextInputValidity(this._statusRole, this._validityRole);
   }
 
   public set validityRole(value: string) {

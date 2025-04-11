@@ -5,6 +5,5 @@ import Domain.Message;
 import mc.fenix.arrange.GemColumn;
 
 page GemChatExample(List<Message> messages) {
-  @GemColumn(width="50%",components =[@GemChat(messages=messages)])
-  ;
+  @GemColumn(width="50%",components =[@GemChat(messages=messages)]);
 }

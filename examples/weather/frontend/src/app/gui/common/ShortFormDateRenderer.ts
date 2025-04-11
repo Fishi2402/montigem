@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 import {Component} from '@angular/core';
-import {ShortFormDateRendererComponent,config} from "@src/gui/common/ShortFormDateRendererComponent";
+import {ShortFormDateRendererComponent,config} from "gui/common/ShortFormDateRendererComponent";
 
 @Component({
   standalone:true,

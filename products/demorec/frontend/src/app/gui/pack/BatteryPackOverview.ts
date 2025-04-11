@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-import { BatteryPackOverviewComponent ,config} from '@src/gui/pack/BatteryPackOverviewComponent';
+import { BatteryPackOverviewComponent ,config} from 'gui/pack/BatteryPackOverviewComponent';
 
 import {
   Component

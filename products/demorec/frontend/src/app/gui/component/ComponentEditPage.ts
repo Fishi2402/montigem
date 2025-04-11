@@ -1,12 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
-import { ComponentEditPageComponent, config } from '@src/gui/component/ComponentEditPageComponent';
+import { ComponentEditPageComponent, config } from 'gui/component/ComponentEditPageComponent';
 
 import {
   Component,
 } from '@angular/core';
 
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
-import {JoinConnectionKind} from "@src/demorec/JoinConnectionKind";
+import {JoinConnectionKind} from "demorec/JoinConnectionKind";
 
 @Component({
   standalone:true,

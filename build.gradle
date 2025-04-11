@@ -25,6 +25,8 @@ def getNodeDir() {
   return node_dir
 }
 
+var previousInstallTask;
+
 subprojects {
   apply plugin: 'java'
   apply plugin: 'io.github.themrmilchmann.ecj'
@@ -38,6 +40,14 @@ subprojects {
     toolchain {
       languageVersion = JavaLanguageVersion.of(11)
     }
+  }
+
+  // Make NpmInstall tasks sequential. Doesn't seem to lose time compared to a parallel build,
+  // but makes build process more stable
+  tasks.withType(com.github.gradle.node.npm.task.NpmInstallTask).configureEach {
+    if (previousInstallTask)
+      it.mustRunAfter(previousInstallTask)
+    previousInstallTask = it
   }
 
   // Use downloaded node for all subprojects
@@ -84,6 +94,9 @@ subprojects {
       url repo
     }
     mavenCentral()
+    maven {
+      url = "https://repo.gradle.org/gradle/libs-releases/"
+    }
   }
 
   tasks.withType(JavaCompile).configureEach {
@@ -99,6 +112,7 @@ subprojects {
 
   configurations {
     configureEach {
+      if (it.name == "extraForMCTool") return; // Required to allow the MC-Tool (including log4j) to run
       exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
       exclude group: 'ch.qos.logback', module: 'logback-classic'
       exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'

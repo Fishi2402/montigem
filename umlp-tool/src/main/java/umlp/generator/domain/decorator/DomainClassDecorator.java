@@ -374,12 +374,14 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
 
   protected ASTCDParameter getAdjustedMethodParameter(ASTCDParameter param) {
     ASTCDParameter adjustedParam = param.deepClone();
-    if (isGem(param.getSymbol().getType())) {
+    if (isOptionalGem(param.getSymbol().getType())) {
+      adjustedParam.setName(param.getName() + "GemId");
+      adjustedParam.setMCType(MCTypeFacade.getInstance().createOptionalTypeOf("Long"));
+    } else if (isGem(param.getSymbol().getType())) {
       adjustedParam.setName(param.getName() + "GemId");
       adjustedParam.setMCType(MCBasicTypesMill.mCPrimitiveTypeBuilder()
                                   .setPrimitive(ASTConstantsMCBasicTypes.LONG).build());
-    }
-    if (isListOfGemIdentifiable(param.getSymbol().getType())) {
+    } else if (isListOfGemIdentifiable(param.getSymbol().getType())) {
       adjustedParam.setName(param.getName() + "GemId");
       adjustedParam.setMCType(MCTypeFacade.getInstance().createListTypeOf("Long"));
     }

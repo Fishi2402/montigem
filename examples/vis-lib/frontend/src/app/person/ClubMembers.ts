@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { ClubMembersComponent, config } from '@src/person/ClubMembersComponent';
-import { Person } from '@src/domain/Person';
+import { ClubMembersComponent, config } from 'person/ClubMembersComponent';
+import { Person } from 'domain/Person';
 import { Component } from '@angular/core';
-import { DomainManager } from '@src/domain/DomainManager';
+import { DomainManager } from 'domain/DomainManager';
 import { Event } from '@umlp/common';
 
 @Component({

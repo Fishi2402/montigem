@@ -93,7 +93,7 @@ public class RTEDeSerDecorator extends AbstractDecorator {
 
     glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint(" = new HashMap<String, JsonDeSer<?>>();"));
 
-    getCD4C().addImport(deSerRepo, "rte.deser.DeSerRepository");
+    getCD4C().addImport(deSerRepo, "mc.fenix.commonj2ts.deser.DeSerRepository");
     getCD4C().addImport(deSerRepo, "umlp.backendrte.command.JsonDeSer");
     getCD4C().addImport(deSerRepo, "de.se_rwth.commons.logging.Log");
     getCD4C().addImport(deSerRepo, "umlp.backendrte.common.BaseClassObjectMapper");

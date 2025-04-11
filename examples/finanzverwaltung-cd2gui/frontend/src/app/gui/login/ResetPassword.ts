@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {Component} from '@angular/core';
-import {ResetPasswordComponent,config} from '@src/gui/login/ResetPasswordComponent';
-import {User} from '@src/finanzverwaltung//User';
-import {FinanzverwaltungManager} from '@src/finanzverwaltung/FinanzverwaltungManager';
+import {ResetPasswordComponent,config} from 'gui/login/ResetPasswordComponent';
+import {User} from 'finanzverwaltung//User';
+import {FinanzverwaltungManager} from 'finanzverwaltung/FinanzverwaltungManager';
 
 @Component({
   standalone:true,

@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {IssueState} from '@src/sehub/IssueState';
+import {IssueState} from 'sehub/IssueState';
 import {Component} from '@angular/core';
-import {IssueCreateComponent,config} from '@src/gui/issues/IssueCreateComponent';
-import { SehubManager } from '@src/sehub/SehubManager';
+import {IssueCreateComponent,config} from 'gui/issues/IssueCreateComponent';
+import { SehubManager } from 'sehub/SehubManager';
 
 @Component({
   standalone:true,

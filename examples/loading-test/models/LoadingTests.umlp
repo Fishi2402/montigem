@@ -64,5 +64,22 @@ classdiagram LoadingTests {
     String name;
   }
 
+  public class LeftSide {
+    String label;
+  }
+  public class RightSide {
+    String label;
+  }
+  association [0..1] LeftSide (connectedLeft) <-> (connectedRight) RightSide [0..1];
+  association [0..1] LeftSide (connectedLeftList) <-> (connectedRightList) RightSide [*];
+  public class Sides {
+    LeftSide left;
+  }
+
+  //public interface MyBetterInterface extends MyInterface {}
+  //public class MyBetterInterfaceImpl implements MyBetterInterface {
+  //    String name;
+  //}
+
 
 }

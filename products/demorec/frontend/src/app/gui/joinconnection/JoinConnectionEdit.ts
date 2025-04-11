@@ -1,15 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { inject } from '@angular/core';
-import { DemoRecManager } from '@src/demorec/DemoRecManager';
+import { DemoRecManager } from 'demorec/DemoRecManager';
 
-import { DemoRecComponent } from '@src/demorec/DemoRecComponent';
-import { State } from '@src/demorec/State';
-import { BatteryPack } from '@src/demorec/BatteryPack';
+import { DemoRecComponent } from 'demorec/DemoRecComponent';
+import { State } from 'demorec/State';
+import { BatteryPack } from 'demorec/BatteryPack';
 
-import { JoinConnectionType } from '@src/demorec/JoinConnectionType';
+import { JoinConnectionType } from 'demorec/JoinConnectionType';
 
-import { JoinConnectionEditComponent, config } from '@src/gui/joinconnection/JoinConnectionEditComponent';
+import { JoinConnectionEditComponent, config } from 'gui/joinconnection/JoinConnectionEditComponent';
 
 import {
   Component,

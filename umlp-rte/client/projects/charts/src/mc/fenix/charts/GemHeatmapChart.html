@@ -1,0 +1,82 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+
+<div style="margin-bottom: 5px">
+	<gem-chart-options>
+		<li>
+			<h3>Heatmap Chart Settings</h3>
+			<label>
+				<input #colorbox
+					[value]=defaultColor
+					(change)="enter_color(colorbox.value)"
+					type="color"
+				> Color Select
+			</label>
+			<br>
+			<label>
+				<input #box style="width:50px"
+					[value]=defaultColNum
+					(change)="enter_num_seperations(box.value)"
+					type="number"
+					min="1"
+					max="32"
+				> Columns
+			</label>
+			<br>
+
+			<div *ngIf="_timestampdata; then thenblock else elseblock"></div>
+
+			<ng-template #thenblock>
+				<label>
+					<input #checkbox1
+					[defaultChecked]="1"
+					(change)="enter_pretty_date(checkbox1.checked)"
+					type="checkbox"
+				> Pretty-Print timestamps
+				</label>
+				<br>
+				<label>
+					<input #checkbox2
+						(change)="enter_loop_days(checkbox2.checked);  _hasGroupingFactor = !_hasGroupingFactor;"
+						type="checkbox"
+					> Group by grouping factor
+				</label>
+				<br>
+				<label [class.grayout]="!_hasGroupingFactor">
+					<input #loopbox class="numberSlider"
+						[value]="86400"
+						(change)="enter_num_loop_factor(loopbox.value)"
+						type="number"
+					> Select Grouping factor (86400 = 1day)
+				</label>
+			</ng-template>
+
+			<ng-template #elseblock>
+				<label>
+					<input #checkbox2
+						(change)="enter_loop_days(checkbox2.checked);  _hasGroupingFactor = !_hasGroupingFactor;"
+						type="checkbox"
+					> Group by grouping factor
+				</label>
+				<br />
+				<label>Select the desired grouping factor (modulo value): </label>
+				<input #loopbox [value]="10" (change)="enter_num_loop_factor(loopbox.value)" type="number">
+			</ng-template>
+		</li>
+	</gem-chart-options>
+</div>
+
+<div>
+	<ngx-charts-heat-map
+    [scheme]="colorScheme"
+    [results]="computed_data"
+    [gradient]="gradient"
+    [xAxis]="showXAxis"
+    [yAxis]="showYAxis"
+    [legend]="displayLegend"
+    [showXAxisLabel]="showXAxisLabel"
+    [showYAxisLabel]="showYAxisLabel"
+    [xAxisLabel]="_xLabel"
+    [yAxisLabel]="_yLabel"
+  	>
+	</ngx-charts-heat-map>
+</div>

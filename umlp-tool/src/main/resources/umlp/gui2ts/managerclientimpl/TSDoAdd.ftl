@@ -2,7 +2,6 @@
 ${tc.signature("name", "managerName", "attributes", "hasOCL")}
 ${cd4c.method("public Promise<Void> _doAdd${name}2(${name} o, NotificationScope scope)")}
   console.debug("Adding known ${name?uncap_first} " + o.getGemId());
-  console.trace();
   this.known${name}s.set(o.getGemId(), Promise.resolve(o));
   if (this.loaded${name}List) {
     this.loaded${name}List.then(tmp_$ => {

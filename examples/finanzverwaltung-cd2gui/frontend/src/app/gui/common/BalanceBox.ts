@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { BalanceBoxComponent, config } from '@src/gui/common/BalanceBoxComponent';
+import { BalanceBoxComponent, config } from 'gui/common/BalanceBoxComponent';
 import { Component, Input, HostBinding } from '@angular/core';
 
 @Component({

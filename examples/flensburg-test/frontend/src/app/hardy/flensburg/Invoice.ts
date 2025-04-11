@@ -1,4 +1,4 @@
-import { InvoiceTOP } from "@src/hardy/flensburg/InvoiceTOP";
+import { InvoiceTOP } from "hardy/flensburg/InvoiceTOP";
 
 export class Invoice extends InvoiceTOP {
 

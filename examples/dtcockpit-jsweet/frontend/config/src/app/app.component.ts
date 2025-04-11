@@ -5,7 +5,7 @@ import {
   ClientCommandWebsocketCommunication,
   CommandManager
 } from '@umlp/commonj2ts';
-import {DtcockpitManagerClientImpl} from '@src/dtcockpit/DtcockpitManagerClientImpl';
+import {DtcockpitManagerClientImpl} from 'dtcockpit/DtcockpitManagerClientImpl';
 
 @Component({
   selector: 'app-root',

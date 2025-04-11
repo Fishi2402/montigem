@@ -10,6 +10,7 @@ import umlp.cli.common.Pipeline;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Objects;
 
 import static umlp.UMLPToolOptions.CD2GUI;
@@ -18,6 +19,7 @@ import static umlp.UMLPToolOptions.GUIRTETypes;
 import static umlp.UMLPToolOptions.GUIVariability;
 import static umlp.UMLPToolOptions.HELP;
 import static umlp.UMLPToolOptions.HWC_PATH;
+import static umlp.UMLPToolOptions.IMPORTS_PATH;
 import static umlp.UMLPToolOptions.INPUT;
 import static umlp.UMLPToolOptions.MODEl_PATH;
 import static umlp.UMLPToolOptions.OUTPUT;
@@ -35,10 +37,10 @@ import static umlp.UMLPToolOptions.TMPL_PATH;
 public class UMLPToolPipelineSetup {
 
   // A reuseable operation, showing the help
-  final IOperation<UMLPPipelineData> showHelp;
+  public final IOperation<UMLPPipelineData> showHelp;
 
   // a reuseable operation, setting up the UMLPReports
-  final IOperation<UMLPPipelineData> setupUMLPReports = data -> {
+  public final IOperation<UMLPPipelineData> setupUMLPReports = data -> {
     data.umlp_reportManagerFactory = new UMLPReports(data.outDir.getPath(), data.reportDir.getPath(), data.reportPathOutput, data.hwcPath, data.tool.buildJsonData(data.cmd));
     Reporting.init(data.outDir.getPath(), data.reportDir.getPath(), data.umlp_reportManagerFactory);
     String report_on = data.inputFile.getName().replace(".", "__");   // TODO: Is this name unique? Should it be unique?
@@ -46,7 +48,7 @@ public class UMLPToolPipelineSetup {
     return true;
   };
 
-  final IOperation<UMLPPipelineData> isUMLPFileCheck = data -> {
+  public final IOperation<UMLPPipelineData> isUMLPFileCheck = data -> {
     if (!data.inputFile.getName().endsWith(".umlp")) {
       Log.warn("option -cd2gui used without a classdiagram umlp file as input");
       return false;
@@ -56,43 +58,44 @@ public class UMLPToolPipelineSetup {
 
   // Next, the various operations are stored, such that they can be modified
 
-  final IOperation<UMLPPipelineData> initLog;
+  public final IOperation<UMLPPipelineData> initLog;
 
-  final IOperation<UMLPPipelineData> getInputFile;
+  public final IOperation<UMLPPipelineData> getInputFile;
 
-  final IOperation<UMLPPipelineData> loadPath;
+  public final IOperation<UMLPPipelineData> loadPath;
+  public final IOperation<UMLPPipelineData> importsPath;
 
-  final IOperation<UMLPPipelineData> loadModelPath;
+  public final IOperation<UMLPPipelineData> loadModelPath;
 
-  final IOperation<UMLPPipelineData> loadHWCPath;
+  public final IOperation<UMLPPipelineData> loadHWCPath;
 
-  final IOperation<UMLPPipelineData> loadTmplPath;
+  public final IOperation<UMLPPipelineData> loadTmplPath;
 
-  final Pipeline<UMLPPipelineData> cd2Gui;
-  final Pipeline<UMLPPipelineData> testInfrastructure;
-  final Pipeline<UMLPPipelineData> guiVar;
-  final Pipeline<UMLPPipelineData> umlp;
-  final Pipeline<UMLPPipelineData> gui;
-  final Pipeline<UMLPPipelineData> guiRTETypes;
+  public final Pipeline<UMLPPipelineData> cd2Gui;
+  public final Pipeline<UMLPPipelineData> testInfrastructure;
+  public final Pipeline<UMLPPipelineData> guiVar;
+  public final Pipeline<UMLPPipelineData> umlp;
+  public final Pipeline<UMLPPipelineData> gui;
+  public final Pipeline<UMLPPipelineData> guiRTETypes;
 
 
   // Specific separate workflows are defined in individual classes
 
   // they are selected based on if/elses
 
-  CD2GUIPipelineSetup cd2GUIPipelineSetup;
-  GuiVarPipelineSetup guiVarPipelineSetup;
-  UMLPFilePipelineSetup umlpFilePipelineSetup;
-  GuiPipelineSetup guiPipelineSetup;
-  RTEDataPipelineSetup gUIRTEDataPipelineSetup;
+  public CD2GUIPipelineSetup cd2GUIPipelineSetup;
+  public GuiVarPipelineSetup guiVarPipelineSetup;
+  public UMLPFilePipelineSetup umlpFilePipelineSetup;
+  public GuiPipelineSetup guiPipelineSetup;
+  public RTEDataPipelineSetup gUIRTEDataPipelineSetup;
 
-  final Pipeline<UMLPPipelineData> main;
+  public final Pipeline<UMLPPipelineData> main;
 
   public UMLPToolPipelineSetup() {
     // Define the "main" pipeline (which is followed for every tool-run)
     main = new Pipeline<>();
     // A reuseable operation, showing the help and exiting
-    main.register(showHelp = data -> {
+    main.register("showHelp", showHelp = data -> {
       if (data.getCmd() == null || !data.getCmd().getArgList().isEmpty() || HELP.isSelected(data.getCmd())) {
         org.apache.commons.cli.HelpFormatter formatter = new org.apache.commons.cli.HelpFormatter();
         formatter.setWidth(80);
@@ -101,7 +104,7 @@ public class UMLPToolPipelineSetup {
       }
       return true;
     });
-    main.register(initLog = data -> {
+    main.register("initLog", initLog = data -> {
       // set desired log level without modifying the "failQuick" option
       boolean enableFailQuick = Log.isFailQuickEnabled();
       if (DEBUG.isSelected(data.getCmd())) {
@@ -112,7 +115,7 @@ public class UMLPToolPipelineSetup {
       Log.enableFailQuick(enableFailQuick);
       return true;
     });
-    main.register(getInputFile = data -> {
+    main.register("getInputFile", getInputFile = data -> {
       if (!INPUT.isSelected(data.getCmd())) {
         Log.error("0xE0000 Indicating an input file with the option 'i' is mandatory");
       }
@@ -130,7 +133,7 @@ public class UMLPToolPipelineSetup {
       }
       return true;
     });
-    main.register(loadPath = data -> {
+    main.register("loadPath", loadPath = data -> {
       if (PATH.isSelected(data.cmd)) {
         for (String v : data.cmd.getOptionValues(PATH.getCMD())) {
           data.importedSymbolPath.addEntry(Paths.get(v));
@@ -138,7 +141,15 @@ public class UMLPToolPipelineSetup {
       }
       return true;
     });
-    main.register(loadModelPath = data -> {
+    main.register("loadImportsPath", importsPath = data -> {
+      if (IMPORTS_PATH.isSelected(data.cmd)) {
+        for (String v : data.cmd.getOptionValues(IMPORTS_PATH.getCMD())) {
+          data.importsPath.addEntry(Paths.get(v));
+        }
+      }
+      return true;
+    });
+    main.register("loadModelPath", loadModelPath = data -> {
       if (MODEl_PATH.isSelected(data.cmd)) {
         for (String v : data.cmd.getOptionValues(MODEl_PATH.getCMD())) {
           data.modelPath.addEntry(Paths.get(v));
@@ -147,7 +158,7 @@ public class UMLPToolPipelineSetup {
       }
       return true;
     });
-    main.register(loadHWCPath = data -> {
+    main.register("loadHWCPath", loadHWCPath = data -> {
       if (HWC_PATH.isSelected(data.cmd)) {
         for (String v : data.cmd.getOptionValues(HWC_PATH.getCMD())) {
           data.hwcPath.addEntry(Paths.get(v));
@@ -155,7 +166,7 @@ public class UMLPToolPipelineSetup {
       }
       return true;
     });
-    main.register(loadTmplPath = data -> {
+    main.register("loadTemplatePath", loadTmplPath = data -> {
       if (TMPL_PATH.isSelected(data.cmd)) {
         for (String v : data.cmd.getOptionValues(TMPL_PATH.getCMD())) {
           data.fpPath.addEntry(Paths.get(v));
@@ -171,7 +182,7 @@ public class UMLPToolPipelineSetup {
     umlp = new Pipeline<>();
     gui = new Pipeline<>();
     testInfrastructure = new Pipeline<>();
-    main.register(data -> {
+    main.register("selectMoreSpecificPipeline", IOperation.withDependantPipelines(data -> {
       if (GUIRTETypes.isSelected(data.cmd)) {
         return guiRTETypes.doWork(data);
       }else  if (CD2GUI.isSelected(data.cmd)) {
@@ -188,22 +199,18 @@ public class UMLPToolPipelineSetup {
         Log.error("Unhandled input file");
         return true;
       }
-    });
+    }, Arrays.asList(guiRTETypes, cd2Gui, testInfrastructure, guiVar, umlp, gui)));
 
     // Next, actually populate the individual pipelines of the options
-    cd2GUIPipelineSetup = new CD2GUIPipelineSetup();
-    cd2GUIPipelineSetup.createCD2GUI(this);
+    cd2GUIPipelineSetup = new CD2GUIPipelineSetup(this);
 
-    guiVarPipelineSetup = new GuiVarPipelineSetup();
-    guiVarPipelineSetup.createGuiVar(this);
+    guiVarPipelineSetup = new GuiVarPipelineSetup(this);
 
     umlpFilePipelineSetup = new UMLPFilePipelineSetup(this);
 
-    guiPipelineSetup = new GuiPipelineSetup();
-    guiPipelineSetup.createGui(this);
+    guiPipelineSetup = new GuiPipelineSetup(this);
 
-    gUIRTEDataPipelineSetup = new RTEDataPipelineSetup();
-    gUIRTEDataPipelineSetup.createGUIRTETypes(this);
+    gUIRTEDataPipelineSetup = new RTEDataPipelineSetup(this);
 
     // Finally (for every option), close report managers
     main.addFinally(data -> {

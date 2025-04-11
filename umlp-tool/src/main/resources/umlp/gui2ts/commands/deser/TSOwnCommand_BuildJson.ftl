@@ -8,7 +8,7 @@ ${tc.signature("command", "parameters", "types", "useDeser", "objectMapperName",
 <#list parameters as param>
     <#assign type = types[param?index]>
     <#if !type.isObscureType()>
-  ${tc.includeArgs("umlp.gui2ts.commands.deser.TSOwnCommand_BuildJsonParameters", [param, type, genService.printTypeFullName(type), genService.isCDOrInnerCDEnum(type), genService.calculateJsonInclGenerics(type, param), useDeser[param?index], objectMapperName])}
+  ${tc.includeArgs("umlp.gui2ts.commands.deser.TSOwnCommand_BuildJsonParameters", [param, type, genService.printTypeFullName(type), genService.isCDOrInnerCDEnum(type), genService.calculateJsonInclGenerics(type, param), useDeser[param?index], objectMapperName, genService.isListOfGemIdentifiable(type)])}
     <#else>
   jsonPrinter["${param}"] = command.${genService.getGetterName(param, type)}();
     </#if>

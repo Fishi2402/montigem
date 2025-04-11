@@ -2,8 +2,8 @@
 
 import { Component } from '@angular/core';
 import { GemGaugeChartData, GemGaugeChartEntry, GemLineChartData, GemLineChartEntry } from '@umlp/charts';
-import { WeatherViewComponent,config } from '@src/gui/WeatherViewComponent';
-import { Forecast } from '@src/weather/Forecast';
+import { WeatherViewComponent,config } from 'gui/WeatherViewComponent';
+import { Forecast } from 'weather/Forecast';
 import {StringifyForBuilder} from "@umlp/commonj2ts";
 import { Event } from '@umlp/common';
 

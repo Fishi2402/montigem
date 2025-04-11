@@ -1,13 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from '@angular/router';
-import { DtcockpitSecurityManager } from "@src/dtcockpit/DtcockpitSecurityManager";
-import { User } from '@src/dtcockpit/User';
-import { DtNavHeaderComponent ,config} from '@src/gui/navigation/DtNavHeaderComponent';
+import { DtcockpitSecurityManager } from "dtcockpit/DtcockpitSecurityManager";
+import { User } from 'dtcockpit/User';
+import { DtNavHeaderComponent ,config} from 'gui/navigation/DtNavHeaderComponent';
 
 import { RouterModule } from '@angular/router';
 import {CommonModule} from '@angular/common';
-import {LoginSecManager} from "@src/dtcockpit/login/LoginSecManager";
+import {LoginSecManager} from "dtcockpit/login/LoginSecManager";
 @Component({
   standalone:true,
   imports:[...config.imports,RouterModule,CommonModule],

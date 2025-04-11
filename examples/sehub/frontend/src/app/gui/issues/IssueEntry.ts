@@ -1,12 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {SehubManager} from '@src/sehub/SehubManager';
-import {IssueState} from '@src/sehub/IssueState';
+import {SehubManager} from 'sehub/SehubManager';
+import {IssueState} from 'sehub/IssueState';
 import {Component} from '@angular/core';
-import {IssueEntryComponent,config} from '@src/gui/issues/IssueEntryComponent';
+import {IssueEntryComponent,config} from 'gui/issues/IssueEntryComponent';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
-import {User} from '@src/sehub/User';
-import {SehubRole} from '@src/sehub/SehubRole';
+import {User} from 'sehub/User';
+import {SehubRole} from 'sehub/SehubRole';
 
 @Component({
   standalone:true,

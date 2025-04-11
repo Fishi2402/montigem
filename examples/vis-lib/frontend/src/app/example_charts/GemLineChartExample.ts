@@ -1,15 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { GemLineChartExampleComponent, config } from '@src/example_charts/GemLineChartExampleComponent';
+import { GemLineChartExampleComponent, config } from 'example_charts/GemLineChartExampleComponent';
 import {
   GemLineChartData,
   GemLineChartDataBuilder,
   GemLineChartEntry,
   GemLineChartEntryBuilder
 } from '@umlp/charts';
-import { Stock } from '@src/domain/Stock';
-import { Person } from '@src/domain/Person';
+import { Stock } from 'domain/Stock';
+import { Person } from 'domain/Person';
 import {StringifyForBuilder} from "@umlp/commonj2ts";
 
 @Component({

@@ -3,6 +3,250 @@
 Only big changes are listed. Since there is no semantic versioning for Fenix,
 the changes are tagged with a date.
 
+## Upcoming (if confirmed)
+
+### Changes
+
+For MontiGem developers:
+
+Changes in GUI DSL AST and corresponding type checks:
+
+- Add type parameters
+  ```diff
+    grammar GUIDSL extends de.monticore.symbols.OOSymbols,
+                         de.monticore.literals.MCCommonLiterals,
+                         de.monticore.types.MCSimpleGenericTypes,
+  +                      de.monticore.types.TypeParameters,
+                         de.monticore.expressions.CommonExpressions,
+                         de.monticore.ocl.SetExpressions 
+  ```
+  `TypeParameters` are type parameter lists that can be used to declare generic model elements.
+  ```diff
+    symbol GUIComponentDeclaration implements Function =
+  -   (["component"] | ["page"]) Name "("
+  +   (["component"] | ["page"]) Name TypeParameters? "("
+        (GUIParam || ",")*
+      ")"
+      GUIComponentAdaptation?
+      GUIBlock?
+    ;
+  ```
+  This change enables the declaration of generic GUI components as follows:
+  ```java
+  component FamilyTree<T>() {}
+  ```
+  Currently, a CoCo is implemented for GUIDSL that forbids the usage of `extends` in a type parameter
+
+- Add type arguments
+  ```diff
+    scope GUIComponent implements Expression =
+      id:GUIVariableDeclaration? "@"
+  -   Name@GUIComponentDeclaration GUINamedArgs
+  +   Name@GUIComponentDeclaration GUITypeArgs? GUINamedArgs
+    ;
+  
+  + GUITypeArgs = "<" (MCTypeArgument || ",")* ">";
+  ```
+  A list of type arguments (defined in `GUITypeArgs`) can be added to a GUI component using `MCTypeArgument` provided in `MCSimpleGenericTypes`.
+
+  This change enables following:
+  ```java
+  1  |  package example.generic;
+  2  |  
+  3  |  import example.Domain.Person;
+  4  |
+  5  |  page PersonHeritageDetails() {
+  6  |    @FamilyTree<Person>();
+  7  |  }
+  ```
+  Uses type `Person` (imported in line 4) as type argument of component `FamilyTree` in line 7.
+
+## Upcoming
+
+### Changes
+
+For MontiGem users:
+
+- GUI component usage, `@iterate` and `@guard` become `Expression`
+- enable OCL list comprehensions
+- Consequences: enable defining lists, list comprehensions and GUI components as
+  default parameter values and as iterables in `@iterate`. Example: 
+  ```java
+  1  | package foo;
+  2  | import Domain.Car;
+  3  | 
+  4  | page Bar(
+  5  |   GUIViewElement title = @GemText(value = "Good"),
+  6  | 
+  7  |   List<String> textLines = ["Hello", " world!"],
+  8  | 
+  9  |   List<Car> cars = [c | c in Car, c.color.equals("red")]
+  10 | ) {
+  11 |   @iterate(GUIViewElement elem : [@GemText(), @GemButton()]) {
+  12 |     elem;
+  13 |   }
+  14 | }
+  ```
+  * line 5 - allow default GUI components
+  * line 7 - allow default lists
+  * line 9 - allow list comprehensions
+  * line 11 - allow lists in `iterate`
+
+## 2025-03-15
+
+### Changes
+
+For MontiGem users:
+
+Enable filtered commands in backend of MontiGem apps. The feature is a
+prototype. Given a command as a string, for example:
+```
+{\"id\":12,\"commandType\":\"loadingtests.commands.Person_get_filtered\",\"participantId\":1,\"filter\":\"[ p | p in Person, p.age > 18, p.age < 23, p.age >= 15, p.age <= 66, p.name == \\\"Alice\\\", p.name != \\\"Bob\\\"]\" }
+```
+It can be passed to `CommandObjectMapper` to deserialize to get a command
+object. The command object may also be created using a new constructor with
+`String filter` as an input. The command with a filter will be processed and
+return ids of objects satisifying the filter.
+
+Only simple filters can currently be defined. Supported filter options:
+- a single generator (`p in Person`)
+- comparison operators (`<`, `>`, `<=`, `>=`, `!=`, `==`)
+- the expressions used in a comparison can either constants (`18`, `"Alice"`) or
+  simple field access (`p.age`) The fteature only supports SQL databases.
+
+Most of the restrictions have a corresponding error message.
+
+For MontiGem developers:
+
+Given a class diagram `Foo` with a class `Bar`, following infrastructure (sorted
+by the order of execution) handles the commands with filters:
+
+- `Bar_get_filtered`
+- `FooManager#_doGetFilteredBarList`
+- `FooDAOFactory.getBarDAO().selectFilteredBarList(filter)`
+- `BarDAO#ensureSelectFilteredBarCreated`
+- `OCL2SQL` (RTE)
+- `OCL2SQLPrinter` (RTE)
+- `BarQueryBuilderMap`
+- `BarQueryBuilder`
+
+## 2025-02-20
+
+### Changes
+
+For MontiGem developers:
+
+Changes in GUI DSL AST and corresponding type checks:
+
+- add OCL SetExpressions
+  ```diff
+  grammar GUIDSL extends de.monticore.symbols.OOSymbols,
+                          de.monticore.literals.MCCommonLiterals,
+                          de.monticore.types.MCSimpleGenericTypes,
+                          de.monticore.expressions.CommonExpressions,
+  +                       de.monticore.ocl.SetExpressions
+  ```
+  OCL `SetExpressions` includes `SetEnumeration` (`SetEnumeration` is an
+  `Expression`), which replaces `GUIList`. This enables lists as default
+  parameter values:
+  ```java
+  7  |   List<String> textLines = ["Hello", " world!"],
+  ```
+  `GUIList` is removed from GUI DSL:
+  ```diff
+  -  GUIList = "[" (GUIArgValue || ",")* "]";
+  ```
+  `SetExpressions` includes `SetComprehension`, which enables following:
+  ```java
+  9  |   List<Car> cars = [c | c in Car, c.color.equals("red")]
+  ```
+
+-   `GUIComponent`, `GUIIterate`, `GUIGuard` implement `Expression`:
+    ```diff
+    -  scope GUIComponent =
+    +  scope GUIComponent implements Expression =
+        id:GUIVariableDeclaration? "@"
+        Name@GUIComponentDeclaration GUINamedArgs
+      ;
+
+    -  scope (non_exporting) GUIIterate =
+    +  scope (non_exporting) GUIIterate implements Expression =
+        id:GUIVariableDeclaration? "@iterate" "(" IterateControl ")" GUIBlock
+      ;
+
+    -  GUIGuard =
+    +  GUIGuard implements Expression =
+        id:GUIVariableDeclaration? "@guard" "(" condition:Expression ")"
+          thenStatement:GUIBlock
+        ("else"
+          elseStatement:GUIBlock
+        )?
+      ;
+    ```
+
+    This change enables following:
+    ```java
+    5  |   GUIViewElement title = @GemText(value = "Good"),
+    ```
+    ```java
+    11 |   @iterate(GUIViewElement elem : [@GemText(), @GemButton()]) {
+    ```
+
+    Since `GUIComponent`, `GUIIterate`, `GUIGuard` and `GUIList` are currently
+    used in places, where an `Expression` is being used, the corresponding
+    Production rule is removed:
+    ```diff
+    -  GUIArgValue = Expression | GUIComponent | GUIGuard | GUIIterate | GUIList;
+
+    -  GUINamedArg = Name@GUIParam "=" GUIArgValue;
+    +  GUINamedArg = Name@GUIParam "=" Expression;
+
+      GUIAdapt =
+    -    position:["before" | "after" | "replace"] Name@Variable ":" GUIArgValue;
+    +    position:["before" | "after" | "replace"] Name@Variable ":" Expression;
+    ```
+
+## 2025-01-15
+
+### Additions
+
+- added "generate TypeScript for library" (`gen4TSLib = true`) flag to the
+  generator and frontend plugin. The flag forces the generator to generate
+  relative import paths instead of path for source roots. Details in
+  visualization library README.
+
+### Changes
+
+For MontiGem users:
+
+- changed source root from `@src/` to empty string, e.g., 
+  ```diff 
+  - import { Bar } from '@src/foo/Bar';
+  + import { Bar } from 'foo/Bar';
+  ```
+  Migration script:
+  ```sh
+  find . -type d -name "build" -prune -o \( -type f \( -name "*.ts" -o -name "*.java" \) -exec sed -i 's|@src/||g' {} + \)
+  ```
+- adjusted default `tsconfig.json` file accordingly. In most cases deleting the
+  file should be enough. Adding library paths to `tsconfig.json` is no longer
+  necessary.
+- changed paths to styles from theme library, e.g.,
+  ```diff
+  - @import "../node_modules/@umlp/theme/theme";
+  + @import "../node_modules/@umlp/theme/src/mc/fenix/theme/theme";
+  ```
+  Migration script:
+  ```sh
+  find . -type d -name "build" -prune -o -type f -name "styles.scss" -exec sed -i 's|umlp/theme|umlp/theme/src/mc/fenix/theme|g' {} +
+  ```
+
+For MontiGem developers:
+
+- restructured visualization library. Details in visualization library README.
+- partially moved import handling for TypeScript files to
+  `TSImportHelper`.
+
 ## 2024-07-24
 
 ### Additions

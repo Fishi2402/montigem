@@ -1,8 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
-import { Service } from '@src/autotechagil/Service';
+import { Service } from 'autotechagil/Service';
 import { Component } from '@angular/core';
-import { ServiceOverviewComponent, config } from '@src/gui/ServiceOverviewComponent';
+import { ServiceOverviewComponent, config } from 'gui/ServiceOverviewComponent';
 import { Event } from '@umlp/common';
+import { Port } from 'autotechagil/Port';
 
 @Component({
   standalone: true,
@@ -12,10 +13,15 @@ import { Event } from '@umlp/common';
 })
 export class ServiceOverview extends ServiceOverviewComponent {
 
-  public override goToServiceDetails(service: Service): Event {
+  /*
+  public override goToPortDetails(port: Port): Event {
     return () => {
-      this._router.navigate(["gui", "ServiceDetail", "" + service.getGemId()]);
+      this._router.navigate(["gui", "PortDetail", "" + port.getGemId()]);
     }
   }
+   */
 
+  public override selectPort(port: Port): Event {
+    return () => this.setSelectedPort(port);
+  }
 }

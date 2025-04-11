@@ -31,6 +31,8 @@ public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
   private void initTypeMappings() {
     getTypeMirrorMappings().add(0, computeJavaOptionalTypeMapping());
     getTypeMirrorMappings().add(0, computeDateTypeMapping());
+    addTypeMapping("java.time.LocalDateTime", "Date");
+    addTypeMapping("java.time.LocalDate", "Date");
   }
 
   public Function<TypeMirror, String> computeJavaOptionalTypeMapping() {
@@ -170,6 +172,14 @@ public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
       case "getDayOfMonth":
         print(invocation.getTargetExpression()).print(".getDate(")
             .printArgList(invocation.getArguments()).print(")");
+        return true;
+      case "toString":
+        print(invocation.getTargetExpression()).print(".toISOString(")
+            .printArgList(invocation.getArguments()).print(")").print(".slice(0, 10)");
+        return true;
+      case "compareTo":
+        print("(").print(invocation.getTargetExpression()).print(".getTime() - ")
+            .printArgList(invocation.getArguments()).print(".getTime())");
         return true;
     }
     return false;

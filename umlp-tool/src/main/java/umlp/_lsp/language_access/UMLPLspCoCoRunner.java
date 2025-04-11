@@ -4,6 +4,7 @@ package umlp._lsp.language_access;
 
 import de.mclsg.lsp.document_management.DocumentManager;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import umlp.UMLPTool;
 import umlp._cocos.UMLPCoCoChecker;
 import umlp._cocos.UMLPCoCos;
 
@@ -20,5 +21,10 @@ public class UMLPLspCoCoRunner extends UMLPLspCoCoRunnerTOP {
   @Override
   public void runAllCoCos(ASTCDCompilationUnit ast) {
     checker.checkAll(ast);
+  }
+
+  @Override
+  protected UMLPTool initTool() {
+    return new UMLPTool(false);
   }
 }

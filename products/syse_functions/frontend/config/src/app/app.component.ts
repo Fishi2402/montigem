@@ -5,8 +5,8 @@ import {
   ClientCommandWebsocketCommunication,
   CommandManager
 } from '@umlp/commonj2ts';
-import {FunctionStructure4FenixManagerClientImpl} from '@src/functionstructure4fenix/FunctionStructure4FenixManagerClientImpl';
-import {FunctionStructure4FenixComponentObserverManager} from '@src/FunctionStructure4FenixComponentObserverManager';
+import {FunctionStructure4FenixManagerClientImpl} from 'functionstructure4fenix/FunctionStructure4FenixManagerClientImpl';
+import {FunctionStructure4FenixComponentObserverManager} from 'FunctionStructure4FenixComponentObserverManager';
 
 @Component({
   selector: 'app-root',

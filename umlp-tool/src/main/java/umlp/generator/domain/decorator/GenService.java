@@ -2,10 +2,12 @@
 package umlp.generator.domain.decorator;
 
 import com.google.common.base.Defaults;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.typescalculator.FullSynthesizeFromCD4Code;
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.class2mc.adapters.JClass2OOTypeSymbolAdapter;
@@ -20,16 +22,19 @@ import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.TypeCheck;
 import de.monticore.types.check.TypeCheckResult;
 import de.monticore.types.check.TypeRelations;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCSetType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
 import umlp._prettyprint.UMLPFullPrettyPrinter;
+import umlp.generator.util.PathUtil;
 
 import java.util.List;
 import java.util.Optional;
@@ -260,6 +265,26 @@ public class GenService {
     if (mcType instanceof ASTMCQualifiedType) {
       List<String> nameList = ((ASTMCQualifiedType) mcType).getNameList();
       return "List".equals(nameList.get(nameList.size() - 1));
+    }
+    return false;
+  }
+
+  public static boolean isSet(ASTCDAttribute attr) {
+    ASTMCType mcType = attr.getMCType();
+    return isSet(mcType);
+  }
+
+  public static boolean isSet(ASTMCType mcType) {
+    if (mcType instanceof ASTMCSetType) {
+      return true;
+    }
+    if (mcType instanceof ASTMCBasicGenericType) {
+      List<String> nameList = ((ASTMCBasicGenericType) mcType).getNameList();
+      return "Set".equals(nameList.get(nameList.size() - 1));
+    }
+    if (mcType instanceof ASTMCQualifiedType) {
+      List<String> nameList = ((ASTMCQualifiedType) mcType).getNameList();
+      return "Set".equals(nameList.get(nameList.size() - 1));
     }
     return false;
   }

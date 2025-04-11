@@ -5,8 +5,8 @@ import {
   ClientCommandWebsocketCommunication,
   CommandManager
 } from '@umlp/common';
-import {DtcockpitManagerClientImpl} from '@src/dtcockpit/DtcockpitManagerClientImpl';
-import {LoginModule4DtcockpitManagerClientImpl} from "@src/loginmodule/LoginModule4DtcockpitManagerClientImpl";
+import {DtcockpitManagerClientImpl} from 'dtcockpit/DtcockpitManagerClientImpl';
+import {LoginModule4DtcockpitManagerClientImpl} from "loginmodule/LoginModule4DtcockpitManagerClientImpl";
 
 @Component({
   selector: 'app-root',

@@ -23,7 +23,7 @@ public class MA2FenixAutTransformTest extends FunctionStructure4Fenix_AutomatonS
   @Test
   public void Test1(){
     String[] args = new String[] {
-        "-mp", input1.toAbsolutePath().toString(),
+        "-i", input1.toAbsolutePath().toString(),
         "-main", "A"
     };
     FunctionStructure4Fenix4FunctionStructure4Fenix_AutomatonManagerImpl manager =

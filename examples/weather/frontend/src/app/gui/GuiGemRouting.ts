@@ -3,7 +3,7 @@
 import { Route } from "@angular/router";
 // imports of pages in the package
 import { WeatherView } from "./WeatherView";
-import { routes as routesTOP} from "@src/gui/GuiGemRoutingTOP";
+import { routes as routesTOP} from "gui/GuiGemRoutingTOP";
 export const routes: Route[] = [
     ... routesTOP,
 

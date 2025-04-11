@@ -11,6 +11,7 @@ component GemBarChart(
   GemBarChartData data,
   Object displayValue,
   Boolean stacked,
+  Boolean overlapping,
   Integer maxValue,
   Integer minValue,
   boolean showConfig = true

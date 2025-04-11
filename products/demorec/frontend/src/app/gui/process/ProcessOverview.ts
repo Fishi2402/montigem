@@ -1,14 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { ProcessBuilder } from '@src/demorec/ProcessBuilder';
+import { ProcessBuilder } from 'demorec/ProcessBuilder';
 
-import { DemoRecManager } from '@src/demorec/DemoRecManager';
+import { DemoRecManager } from 'demorec/DemoRecManager';
 
-import { ProcessOverviewComponent,config } from '@src/gui/process/ProcessOverviewComponent';
+import { ProcessOverviewComponent,config } from 'gui/process/ProcessOverviewComponent';
 
-import {ProcessStep} from '@src/demorec/ProcessStep'
+import {ProcessStep} from 'demorec/ProcessStep'
 
-import {Process} from '@src/demorec/Process'
+import {Process} from 'demorec/Process'
 
 import {
   Directive,

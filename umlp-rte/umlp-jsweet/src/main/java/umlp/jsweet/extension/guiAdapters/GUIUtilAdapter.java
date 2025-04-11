@@ -4,9 +4,12 @@ package umlp.jsweet.extension.guiAdapters;
 import org.jsweet.transpiler.ModuleImportDescriptor;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.CompilationUnitElement;
+import org.jsweet.transpiler.model.ExtendedElement;
 import org.jsweet.transpiler.model.ImportElement;
 import org.jsweet.transpiler.model.MethodInvocationElement;
 import org.jsweet.transpiler.model.NewClassElement;
+import org.jsweet.transpiler.model.support.ExtendedElementSupport;
+import standalone.com.sun.tools.javac.tree.JCTree;
 import umlp.jsweet.extension.UMLPAbstractAdapter;
 
 import javax.lang.model.element.PackageElement;
@@ -49,10 +52,22 @@ public class GUIUtilAdapter extends UMLPAbstractAdapter {
         }
       case "umlp.guiutil.HTMLUtils":
         switch (methodName) {
-        case "alert":
-          this.print("alert(").printArgList(invocation.getArguments()).print(")");
-          return true;
-      }
+          case "alert":
+            this.print("alert(").printArgList(invocation.getArguments()).print(")");
+            return true;
+        }
+      case "umlp.guiutil.GUIUtils":
+        switch (methodName) {
+          case "update":
+            ExtendedElement argument = invocation.getArgument(0);
+            if (argument instanceof ExtendedElementSupport &&
+            ((ExtendedElementSupport<?>) argument).getTree() instanceof JCTree.JCLambda &&
+            ((JCTree.JCLambda) ((ExtendedElementSupport<?>) argument).getTree()).getBody() instanceof JCTree.JCMethodInvocation) {
+              JCTree.JCMethodInvocation body = (JCTree.JCMethodInvocation) ((JCTree.JCLambda) ((ExtendedElementSupport<?>) argument).getTree()).getBody();
+              getPrinter().print(body.getMethodSelect()).print("__update(").printArgList(body).print(")");
+            }
+            return true;
+        }
     }
 
     return super.substituteMethodInvocation(invocation);
@@ -95,10 +110,10 @@ public class GUIUtilAdapter extends UMLPAbstractAdapter {
     switch (newClass.getTypeAsElement().toString()) {
       case "mc.fenix.input.gemtextinputtypes.GemTextInputValidity":
         if (newClass.getArgumentCount() == 2) {
-          print("{status: ").print(newClass.getArgument(0)).print(", message: ").print(newClass.getArgument(1)).print("}");
+          print("new GemTextInputValidity(").print(newClass.getArgument(0)).print(", ").print(newClass.getArgument(1)).print(")");
           return true;
         } else if (newClass.getArgumentCount() == 0) {
-          print("{status: null, message: null}");
+          print("new GemTextInputValidity(null, null)");
           return true;
       }
     }

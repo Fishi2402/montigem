@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { DomainManagerClientImpl } from '@src/domain/DomainManagerClientImpl';
+import { DomainManagerClientImpl } from 'domain/DomainManagerClientImpl';
 import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from '@umlp/common';
 
 @Component({

@@ -44,4 +44,28 @@ classdiagram Jsweettest {
     Integer int2;
   }
 
+  class N0;
+  class N1;
+  class N2 {
+    String name;
+  }
+
+  association [1] N0 -> N1 [1];
+  association [1] N1 -> N2 [*];
+
+  class EnumTestClass;
+  enum EnumTestEnum {
+    A, B, C;
+  }
+  association [1] EnumTestClass -> EnumTestEnum [1];
+
+  <<singleton>>
+  class GlobalState {
+    -> (state) State [0..1];
+  }
+
+  class State {
+    String name;
+  }
+
 }

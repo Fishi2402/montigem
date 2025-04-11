@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package person;
+
+import Domain.Person;
+
+import mc.fenix.basic.GemText;
+
+page MyOverview2(List<Person> persons) {
+  @iterate(Person p : persons) {
+    @GemText(value=p.name);
+  }
+}

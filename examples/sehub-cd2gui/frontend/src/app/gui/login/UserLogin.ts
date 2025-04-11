@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {Component} from '@angular/core';
-import {UserLoginComponent,config} from '@src/gui/login/UserLoginComponent';
-import {User} from '@src/sehub/User';
+import {UserLoginComponent,config} from 'gui/login/UserLoginComponent';
+import {User} from 'sehub/User';
 import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
 
 @Component({

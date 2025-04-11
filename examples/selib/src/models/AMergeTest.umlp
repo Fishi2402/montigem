@@ -2,5 +2,6 @@
 umlp AMergeTest {
   class Person {
     String test_that_merge_is_working;
+    Optional<TimeMarker> anOptionalWhichIsFromTheOtherClass;
   }
 }

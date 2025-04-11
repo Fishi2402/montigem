@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("manager", "pageName")}
+${tc.signature("pageName")}
 ${cd4c.method("public void ngOnDestroy()")}
 for (const sub of this._subscriptions) {
   sub.unsubscribe();

@@ -13,6 +13,7 @@ import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfObject;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
@@ -24,13 +25,15 @@ import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.DiagramObserverDecorator;
 import umlp.generator.domain.decorator.ManagerDecorator;
-import umlp.generator.domain.decorator.ObserverDecorator;
 import umlp.generator.domain.decorator.commands.ManagerSubscriptionDecorator;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
+import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public abstract class GUI2ClassDecorator extends AbstractDecorator {
 
@@ -58,11 +61,15 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
 
     // class
     clazz = emptyClass();
-    extendClass(cd);
-
     cdPackage.addCDElement(withOrigin(clazz));
-    // directive
+
+    init();
+
+    extendClass(cd);
     addClassAnnotation();
+  }
+
+  protected void init() {
   }
 
   protected void replaceTemplates() {
@@ -104,6 +111,20 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
   }
   /**/
 
+  protected void addImport(String qType) {
+    getCD4C().addImport(clazz, qType);
+  }
+
+  protected ASTMCType getSimpleType(ASTMCType astmcType) {
+    if(astmcType instanceof ASTMCQualifiedType) {
+      List<String> nameList = ((ASTMCQualifiedType) astmcType).getNameList();
+      if(nameList.size()>=1) {
+        return MCTypeFacade.getInstance().createQualifiedType(nameList.get(nameList.size()-1));
+      }
+    }
+    return astmcType;
+  }
+
   /**
    * Transform a GUI type into a Java type and add all necessary imports for its usage. For example,
    * `Event<Person>` is transformed into `Consumer<Person>` and imports
@@ -132,8 +153,8 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
         parts.set(parts.size() - 2, domainPackage);
         qType = Joiners.DOT.join(parts);
       }
-      getCD4C().addImport(clazz, qType);
-      return MCTypeFacade.getInstance().createQualifiedType(type);
+      addImport(qType);
+      return MCTypeFacade.getInstance().createQualifiedType(qType);
     }
     else if (ste.isGenericType()) {
       SymTypeOfGenerics stog = ste.asGenericType();
@@ -143,7 +164,7 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
         qType = TypeScriptTypes.CONSUMER.getJavaQName().get();
         type = TypeScriptTypes.CONSUMER.getMCType();
       }
-      getCD4C().addImport(clazz, qType);
+      addImport(qType);
 
       ASTMCBasicGenericTypeBuilder genTypeBuilder = MCFullGenericTypesMill.mCBasicGenericTypeBuilder()
           .setNamesList(new ArrayList<>(Arrays.asList(type)))
@@ -167,6 +188,30 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
     return MCTypeFacade.getInstance().createQualifiedType(ste.printFullName());
   }
 
+  protected void importCommand(ASTMCType domainClass) {
+    String typeName = "";
+    String packageName = "";
+    if(domainClass instanceof ASTMCQualifiedType) {
+      List<String> nameList = ((ASTMCQualifiedType) domainClass).getNameList();
+      typeName = nameList.get(nameList.size()-1);
+
+      if(nameList.size() > 1) {
+        List<String> packageNameList = nameList.subList(0, nameList.size()-1);
+        packageName = packageNameList.stream().map(String::toLowerCase).collect(Collectors.joining("."));
+      }
+    }
+    if(!packageName.isEmpty()) {
+      Joiners.DOT.join(packageName.toLowerCase(), COMMAND_PACKAGE,
+          domainClass.printType() + ManagerSubscriptionDecorator.SUFFIX);
+    }
+
+    String commandQName = Joiners.DOT.join(packageName.toLowerCase(), COMMAND_PACKAGE,
+        typeName + ManagerSubscriptionDecorator.SUFFIX);
+
+    addImport(commandQName);
+  }
+  // Use method above which keeps the TypeInformation
+  @Deprecated
   protected void importCommand(String domainClassName) {
     if (util.getMainDomainModelSimpleName().isEmpty() || util.getMainDomainModelQName().isEmpty()) {
       Log.error("0x00007 Could not identify the manager name: domain class diagram is missing");
@@ -175,7 +220,7 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
     String commandQName = Joiners.DOT.join(domainQName.toLowerCase(), COMMAND_PACKAGE,
         domainClassName + ManagerSubscriptionDecorator.SUFFIX);
 
-    getCD4C().addImport(clazz, commandQName);
+    addImport(commandQName);
   }
 
   protected String getAndImportManager() {
@@ -189,12 +234,13 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
     String qManager = ManagerDecorator.getClassName(util.getMainDomainModelQName().get());
     String domain = util.getMainDomainModelSimpleName().get().toLowerCase();
 
-    getCD4C().addImport(clazz, insertDomain2QType(qManager, domain));
+    addImport(insertDomain2QType(qManager, domain));
     return manager;
   }
 
   /**
    * Constructs and imports the Manager of a domain object
+   *
    * @param domainType
    * @return
    */
@@ -208,12 +254,12 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
     // append Manager and insert lowercase cd name (e.g., flensburg) to get the result
     String packageName = domainType.getTypeInfo().getPackageName();
     int dotIx = packageName.lastIndexOf('.');
-    String domainSimple = dotIx == -1? packageName : packageName.substring(dotIx+1);
+    String domainSimple = dotIx == -1 ? packageName : packageName.substring(dotIx + 1);
 
     String manager = ManagerDecorator.getClassName(domainSimple);
     String domain = packageName.toLowerCase();
 
-    getCD4C().addImport(clazz, insertDomain2QType(manager, domain));
+    addImport(insertDomain2QType(manager, domain));
 
     return manager;
   }
@@ -232,7 +278,7 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
     }
     String domain = util.getMainDomainModelSimpleName().get().toLowerCase();
 
-    getCD4C().addImport(clazz, insertDomain2QType(qObserver, domain));
+    addImport(insertDomain2QType(qObserver, domain));
     return observer;
   }
 

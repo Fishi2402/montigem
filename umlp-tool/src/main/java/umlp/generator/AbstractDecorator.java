@@ -36,7 +36,6 @@ import de.monticore.types.check.TypeCheck;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
-import de.monticore.umlstereotype._ast.ASTStereoValueTOP;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
@@ -503,6 +502,22 @@ public abstract class AbstractDecorator {
     return subNames[subNames.length - 1];
   }
 
+  protected List<ASTCDAttribute> getOptionalAttributes(ASTCDClass domainClass) {
+    return CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
+        .filter(a -> !a.getModifier().isDerived() && GenService.isOptional(a)).collect(Collectors.toList());
+  }
+
+  protected List<ASTCDAttribute> getListAttributes(ASTCDClass domainClass) {
+    return CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
+        .filter(a -> !a.getModifier().isDerived() && GenService.isList(a)).collect(Collectors.toList());
+  }
+
+  protected List<ASTCDAttribute> getNormalAttributes(ASTCDClass domainClass) {
+    return CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
+        .filter(a -> !a.getModifier().isDerived() &&
+            !GenService.isList(a) && !GenService.isOptional(a)).collect(Collectors.toList());
+  }
+
   protected String getAssocName(ASTCDType type, ASTCDAssocSide assoc) {
     return type.getName()
         + "_"
@@ -598,7 +613,7 @@ public abstract class AbstractDecorator {
     }
     List<ASTStereoValue> valueList = origCD.getModifier().getStereotype().getValuesList();
     List<String> extendedCDs = valueList.stream().filter(value -> value.getName().equals("extends"))
-        .map(ASTStereoValueTOP::getValue).collect(Collectors.toList());
+        .map(ASTStereoValue::getValue).collect(Collectors.toList());
 
     // This checks a CD 'extends' another one, i.e. a UMLP Project extends/ is composed of another one
     if (extendedCDs.stream().anyMatch(cdName -> cdName.equals(potentialExtendedCDName))) {

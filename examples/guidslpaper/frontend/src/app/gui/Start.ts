@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {StartComponent,config} from '@src/gui/StartComponent';
+import {StartComponent,config} from 'gui/StartComponent';
 import {Component} from '@angular/core';
-import {GuidslpaperManager} from '@src/guidslpaper/GuidslpaperManager';
+import {GuidslpaperManager} from 'guidslpaper/GuidslpaperManager';
 import {GuidslpaperSecurityManager} from "../guidslpaper/GuidslpaperSecurityManager";
 import {GetCurrentUserRequest} from "../security/GetCurrentUserRequest";
 import {CommandManager} from '@umlp/common';

@@ -12,9 +12,7 @@ import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.MCFatalError;
-import org.gradle.internal.impldep.org.junit.Assert;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import umlp.generator.gui.GUIGeneratorUtil;
@@ -27,6 +25,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class UMLPTOPTest {
 
@@ -69,18 +69,18 @@ public class UMLPTOPTest {
 
         // A simple class -> check that it exists
         var dec = tsTopDecorator.decorate(make(newClass("Class1")));
-        Assert.assertEquals(1, getCheckCount("Class1", checkedGenEngineFiles));
-        Assert.assertEquals(1, getCheckCount("Class1", checkedGuiGenUtilFiles));
+        assertEquals(1, getCheckCount("Class1", checkedGenEngineFiles));
+        assertEquals(1, getCheckCount("Class1", checkedGuiGenUtilFiles));
 
         Log.setErrorHook(() -> {throw new MCFatalError("msg");});
-        Assert.assertThrows("0xC0FFEE00: Missing Class2", MCFatalError.class, () -> {
+        assertThrows(MCFatalError.class, () -> {
           tsTopDecorator.decorate(make(needsTop(newClass("Class2"), "Missing %s")));
-        });
+        }, "0xC0FFEE00: Missing Class2");
         Log.clearFindings();
 
         // Class with a hand-written implementation
         dec = tsTopDecorator.decorate(make(needsTop(addHWCGuiGen(newClass("Class3")), "Missing %s")));
-        Assert.assertEquals(1, getCheckCount("Class3", checkedGuiGenUtilFiles));
+        assertEquals(1, getCheckCount("Class3", checkedGuiGenUtilFiles));
 
 
         dec = tsTopDecorator.decorate(make(needsTop(addHWCGuiGen(newClass("Class4Component")), "Missing %s")));

@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import {HumidityWidgetBodyComponent,config} from "@src/gui/widgets/HumidityWidgetBodyComponent";
+import {HumidityWidgetBodyComponent,config} from "gui/widgets/HumidityWidgetBodyComponent";
 
 
 @Component({

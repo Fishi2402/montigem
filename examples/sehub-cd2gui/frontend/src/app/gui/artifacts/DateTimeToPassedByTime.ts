@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {DateTimeToPassedByTimeComponent,config} from '@src/gui/artifacts/DateTimeToPassedByTimeComponent';
+import {DateTimeToPassedByTimeComponent,config} from 'gui/artifacts/DateTimeToPassedByTimeComponent';
 
 import {Component,} from '@angular/core';
 

@@ -228,7 +228,7 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
           print("{}");
           return true;
         } else if (newClass.getArguments().size() == 2) {
-          print(String.format("{status: %s, message: %s}", newClass.getArguments().get(0), newClass.getArguments().get(1)));
+          print(String.format("new GemTextInputValidity(%s, %s)", newClass.getArguments().get(0), newClass.getArguments().get(1)));
           return true;
         } else {
           // ERROR
@@ -242,6 +242,7 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
 
   @Override
   public String needsImport(ImportElement importElement, String qualifiedName) {
+    /*
     switch (qualifiedName) {
       case "input.GemTextInputValidity":
       case "mc.fenix.input.GemTextInputValidity":
@@ -250,6 +251,7 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
       case "mc.fenix.input.gemtextinputtypes.GemTextInputValidity":
         return getRootRelativeName(importElement.getImportedType());
     }
+    /**/
     return super.needsImport(importElement, qualifiedName);
   }
 
@@ -257,6 +259,7 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
   public ModuleImportDescriptor getModuleImportDescriptor(
       CompilationUnitElement currentCompilationUnit, String importedName,
       TypeElement importedClass) {
+    /*
     String fqn = importedClass.getQualifiedName().toString();
     switch (fqn) {
       case "input.GemTextInputValidity":
@@ -268,6 +271,7 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
             "GemTextInputValidity", "@umlp/input", importedClass);
 
     }
+    /**/
     return super.getModuleImportDescriptor(currentCompilationUnit, importedName, importedClass);
   }
 

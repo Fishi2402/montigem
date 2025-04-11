@@ -39,3 +39,8 @@ buildCache {
 
 
 rootProject.name = 'umlp-tool'
+if(("true").equals(getProperty('buildIntelliJPlugin'))){
+  include(":umlp-intellij-plugin")
+}
+
+include "gradle-plugin"

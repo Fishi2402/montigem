@@ -44,14 +44,4 @@ testem.log
 Thumbs.db
 
 # Gui Types
-/projects/umlp/mc/fenix/arrange/src/lib/gen/
-/projects/umlp/mc/fenix/basic/src/lib/gen/
-/projects/umlp/mc/fenix/charts/src/lib/gen/
-/projects/umlp/mc/fenix/common/src/lib/gen/
-/projects/umlp/mc/fenix/commonj2ts/src/lib/gen/
-/projects/umlp/mc/fenix/input/src/lib/gen/
-/projects/umlp/mc/fenix/navigation/src/lib/gen/
-/projects/umlp/mc/fenix/networkgraph/src/lib/gen/
-/projects/umlp/mc/fenix/table/src/lib/gen/
-/projects/umlp/mc/fenix/theme/src/lib/gen/
-/projects/umlp/mc/fenix/functiondisplay/src/lib/gen/
+**/gen/

@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-import {ArtifactTypeIconComponent,config} from '@src/gui/artifacts/ArtifactTypeIconComponent';
+import {ArtifactTypeIconComponent,config} from 'gui/artifacts/ArtifactTypeIconComponent';
 
 import {Component,} from '@angular/core';
 

@@ -2,8 +2,8 @@
 
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 import {Component, EventEmitter, Output} from '@angular/core';
-import {IssueDragDropComponent,config} from '@src/gui/issues/IssueDragDropComponent';
-import {Issue} from '@src/sehub/Issue';
+import {IssueDragDropComponent,config} from 'gui/issues/IssueDragDropComponent';
+import {Issue} from 'sehub/Issue';
 import { DragDropModule } from "@angular/cdk/drag-drop";
 import { IssueEntry } from "./IssueEntry";
 @Component({

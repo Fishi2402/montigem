@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {User} from '@src/finanzverwaltung/User';
+import {User} from 'finanzverwaltung/User';
 
 export class FinanzverwaltungSecurityManager {
 

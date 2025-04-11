@@ -2,11 +2,12 @@
 
 import {Component} from '@angular/core';
 import {Location} from '@angular/common';
-import {config, UserSignUpComponent} from '@src/gui/loginmodule/comp/UserSignUpComponent';
-import {LoginModuleManager} from '@src/loginmodule/LoginModuleManager';
-import {LoginModuleUser} from '@src/loginmodule/LoginModuleUser';
+import {config, UserSignUpComponent} from 'gui/loginmodule/comp/UserSignUpComponent';
+import {LoginModuleManager} from 'loginmodule/LoginModuleManager';
+import {LoginModuleUser} from 'loginmodule/LoginModuleUser';
 import {ClientCommandManager, CommandManager, GemList} from '@umlp/common';
-import {LoginSecManager} from "@src/loginmodule/LoginSecManager";
+import {LoginSecManager} from "loginmodule/LoginSecManager";
+import { GemTextInputValidity } from '@umlp/input';
 
 
 // import { ActivatedRoute, Router } from '@angular/router';
@@ -71,14 +72,11 @@ export class UserSignUp extends UserSignUpComponent {
                 this._router.navigate(['gui', 'loginmodule', 'LoginPage']);
               } else if (result.error === 'disabled') {
                 this.error = 'SignUps have been disabled. Please contact an administrator.'
-                this.setValidityUsername({
-                  'status': 'Error',
-                  'message': this.error,
-                })
+                this.setValidityUsername(new GemTextInputValidity('Error', this.error))
               } else {
                 console.warn(result);
                 this.error = 'Failed to signup: ' + result.error;
-                this.setValidityUsername({'status': 'Error', 'message': this.error})
+                this.setValidityUsername(new GemTextInputValidity('Error', this.error))
               }
             })
             .catch(error => {

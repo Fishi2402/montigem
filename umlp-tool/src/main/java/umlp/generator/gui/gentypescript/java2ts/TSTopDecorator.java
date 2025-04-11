@@ -7,16 +7,10 @@ import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._visitor.CD4CodeTraverser;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdbasis._ast.ASTCDPackage;
-import de.monticore.cdbasis._visitor.CDBasisVisitor2;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
-import de.monticore.cdinterfaceandenum._visitor.CDInterfaceAndEnumVisitor2;
 import de.monticore.io.paths.MCPath;
-import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIGeneratorUtil;
-
-import static de.monticore.generating.GeneratorEngine.existsHandwrittenClass;
 
 @SuppressWarnings("unused") // used in ftl
 public class TSTopDecorator extends TopDecorator {

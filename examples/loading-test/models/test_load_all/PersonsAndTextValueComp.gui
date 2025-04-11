@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test_load_all;
+
+import LoadingTests.Person;
+import mc.fenix.basic.*;
+
+component PersonsAndTextValueComp(String first = "foo", List<Person> persons, String second = "bar") {
+  @GemText(value = first);
+  @GemText(value = second);
+}

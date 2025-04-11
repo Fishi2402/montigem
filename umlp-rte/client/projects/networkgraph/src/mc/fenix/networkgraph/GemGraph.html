@@ -1,0 +1,65 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+
+<!-- Template for the error message -->
+<ng-template #noWebGL>
+  <div class="error-container">
+    <h2>Chart Rendering Issue</h2>
+    <p>
+      We're sorry, but it appears that your browser does not support WebGPU, which is essential for rendering this
+      chart. Please update your browser or switch to a compatible one for the best experience.
+    </p>
+  </div>
+</ng-template>
+
+<!-- Main content -->
+<div *ngIf="hasWebGLSupport; else noWebGL" class="chart-container">
+  <!-- Container for Sigma Graph -->
+  <div #sigmaContainer class="chart-wrapper" [style.min-height]="minHeight"></div>
+
+  <!-- Toggle between UI Overlay and Information Container -->
+  <ng-container
+    *ngIf="
+      !graphManager.needsInitializationSignalTracked && graphManager.graphData.hasVisibleNodes;
+      then uiOverlay;
+      else informationContainer
+    "></ng-container>
+</div>
+
+<!-- Template for UI Overlay -->
+<ng-template #uiOverlay>
+  <div class="ui-overlay">
+    <div class="control-buttons-container">
+      <graph-control-buttons
+        (controlButtonClicked)="controlButtonClicked.emit($event)"
+        *ngIf="showControlButtons"
+        [extendControlButtons]="cbExtendButtons"
+        [layout]="cbLayout"
+        [removeControlButtons]="cbRemoveButtons"
+        [speedDialConfig]="cbSpeedDialConfig"
+        [tooltipOptions]="tooltipOptions"
+        (click)="cdReference.detectChanges()"></graph-control-buttons>
+    </div>
+
+    <!-- Container that houses the interactive elements -->
+    <div class="filter-container">
+      <graph-search-node *ngIf="showSearchNode" (click)="cdReference.detectChanges()"></graph-search-node>
+      <graph-filter-group *ngIf="showFilterGroup" (click)="cdReference.detectChanges()"></graph-filter-group>
+    </div>
+
+    <div class="metric-information">
+      <graph-metric-information
+        *ngIf="showInformation"
+        (click)="cdReference.detectChanges()"
+        [metricKeys]="metricKeys"
+        [tooltipOptions]="tooltipOptions"></graph-metric-information>
+    </div>
+  </div>
+</ng-template>
+
+<!-- Template for Information Container -->
+<ng-template #informationContainer>
+  <div class="information-container">
+    <span *ngIf="graphManager.graphData.visibleNodeCount() === 0" class="no-nodes">No nodes found!</span>
+  </div>
+</ng-template>
+

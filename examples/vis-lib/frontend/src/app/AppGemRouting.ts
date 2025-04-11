@@ -3,7 +3,8 @@
 import { Routes } from "@angular/router";
 // imports module of pages for every package
 
-import { routes as routesTOP } from "@src/AppGemRoutingTOP"
+import { routes as routesTOP } from "AppGemRoutingTOP"
+
 export const routes: Routes = [
   ...routesTOP,
   {

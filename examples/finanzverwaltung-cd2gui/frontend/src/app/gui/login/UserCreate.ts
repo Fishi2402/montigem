@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {Component} from '@angular/core';
-import {UserCreateComponent,config} from '@src/gui/login/UserCreateComponent';
-import {Role} from '@src/finanzverwaltung/Role';
-import {User} from "@src/finanzverwaltung/User";
+import {UserCreateComponent,config} from 'gui/login/UserCreateComponent';
+import {Role} from 'finanzverwaltung/Role';
+import {User} from "finanzverwaltung/User";
 import {GemList} from '@umlp/common';
-import {FinanzverwaltungManager} from '@src/finanzverwaltung/FinanzverwaltungManager';
+import {FinanzverwaltungManager} from 'finanzverwaltung/FinanzverwaltungManager';
 import {Location} from '@angular/common';
 import {Router} from '@angular/router';
 

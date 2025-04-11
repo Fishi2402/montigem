@@ -1,12 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { DemoRecManager } from '@src/demorec/DemoRecManager';
+import { DemoRecManager } from 'demorec/DemoRecManager';
 
-import { BatteryPackType } from '@src/demorec/BatteryPackType';
+import { BatteryPackType } from 'demorec/BatteryPackType';
 
-import { BatteryPack } from '@src/demorec/BatteryPack';
+import { BatteryPack } from 'demorec/BatteryPack';
 
-import { ProcessCreateComponent,config } from '@src/gui/process/ProcessCreateComponent';
+import { ProcessCreateComponent,config } from 'gui/process/ProcessCreateComponent';
 
 import {
   Component,

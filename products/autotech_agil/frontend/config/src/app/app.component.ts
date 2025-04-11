@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 import { Component } from '@angular/core';
-import { AutoTechAgilManagerClientImpl } from '@src/autotechagil/AutoTechAgilManagerClientImpl';
+import { AutoTechAgilManagerClientImpl } from 'autotechagil/AutoTechAgilManagerClientImpl';
 import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from '@umlp/common';
 
 

@@ -122,7 +122,7 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
         var symbol = meth.getEnclosingScope().resolveType(paramType);
         if (symbol.isEmpty())
           Log.error("Unable to resolve Optional inner type " + paramType, meth.get_SourcePositionStart());
-        String paramFQN = StringTransformations.uncapitalize(symbol.get().getFullName());
+        String paramFQN = domainToLowerCase(symbol.get().getFullName());
         // Handle native types
         if (DerivedClassCommandDecorator.nativeTypes.contains(paramFQN) || DerivedClassCommandDecorator.nativeTypes.contains(boxType(paramFQN)))
           paramFQN = "java.lang." + boxType(paramFQN);
@@ -134,11 +134,12 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
         if (isOptional) {
           paramType = ((ASTMCOptionalType)paramTypeSym).getMCTypeArgumentList().get(0).printType();
           var symbol = meth.getEnclosingScope().resolveType(paramType);
-          if (symbol.isEmpty())
+          if (symbol.isEmpty()) {
             Log.error("Unable to resolve Optional inner type " + paramType, meth.get_SourcePositionStart());
-          paramFQN = StringTransformations.uncapitalize(symbol.get().getFullName());
+          }
+          paramFQN = domainToLowerCase(symbol.get().getFullName());
         } else if (paramTypeSym.getDefiningSymbol().isPresent()) {
-          paramFQN = StringTransformations.uncapitalize(paramTypeSym.getDefiningSymbol().get().getFullName());
+          paramFQN = domainToLowerCase(paramTypeSym.getDefiningSymbol().get().getFullName());
         } else {
           Log.error("Unable to detect type from command ", meth.get_SourcePositionStart());
           paramFQN = "Object";
@@ -176,7 +177,20 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
     return ast;
   }
 
+  protected String domainToLowerCase(String fqn) {
+    // Turn Domain.Class into domain.class
+    // and MyDomain.class into mydomain.class
+    if (fqn.contains(".")) {
+      String[] sp = fqn.split("\\.", 2);
+      return sp[0].toLowerCase() + "." + sp[1];
+    }
+    return fqn;
+  }
+
   protected String getAttributeForMethodParameter(ASTCDParameter param) {
+    if (isOptionalGem(param.getSymbol().getType())) {
+      return "protected Optional<Long> " + param.getName() + "GemId";
+    }
     if (isGem(param.getSymbol().getType())) {
       return "protected long " + param.getName() + "GemId";
     }
@@ -298,6 +312,7 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
     List<String> paramNameList = new ArrayList<>();
     List<SymTypeExpression> typeList = new ArrayList<>();
     List<Boolean> userDeserList = new ArrayList<>();
+    List<Boolean> optionals = new ArrayList<>();
 
     boolean useDeSer = true;
     boolean jsonEmpty = true;
@@ -312,12 +327,19 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
         Gem identifiable
       */
       boolean originalGemList = isListOfGemIdentifiable(type);
-      if (isGem(type)) {
+      if (isOptionalGem(type)) {
         type = GenService.getSymType("long");
         paramName += "GemId";
-      }
-      if (originalGemList) {
-        paramName += "GemIdList";
+        optionals.add(true);
+      } else {
+        optionals.add(false);
+        if (isGem(type)) {
+          type = GenService.getSymType("long");
+          paramName += "GemId";
+        }
+        if (originalGemList) {
+          paramName += "GemIdList";
+        }
       }
       paramNameList.add(paramName);
       typeList.add(type);
@@ -350,7 +372,7 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
     }
 
     getCD4C().addMethod(ast, getOwnCommand_FromJsonObjectTemplate(), cmdName, paramNameList, typeList,
-        userDeserList, baseClassDecorator, makeAbstract);
+        userDeserList, baseClassDecorator, makeAbstract, optionals);
     getCD4C().addMethod(ast, getOwnCommand_BuildJsonTemplate(), cmdName, paramNameList, typeList,
         userDeserList, baseClassDecorator, makeAbstract);
 

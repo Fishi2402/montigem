@@ -1,0 +1,79 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+
+<div style="margin-bottom: 5px">
+  <gem-chart-options>
+    <li *ngIf="displayLegend === true">
+      <h3>Legend Position</h3>
+      <div class="legendButtons">
+        <button (click)="setLegendPosition('left')">Left</button>
+        <button (click)="setLegendPosition('top')">Top</button>
+        <button (click)="setLegendPosition('bottom')">Bottom</button>
+        <button (click)="setLegendPosition('right')">Right</button>
+      </div>
+    </li>
+    <li>
+      <h3>Gauge Chart Settings</h3>
+      <label>
+        <input type="checkbox"
+          (change)="_showAxis = !_showAxis"
+        /> Disable Axis
+      </label>
+      <br>
+      <label [class.grayout]="!_showAxis">
+        <input class="numberInput" #sliderSelector
+          (change)="smallTickResizer(sliderSelector.value)"
+          type="number" min="0" max="4" value="0"
+        /> Helper Ticks Quantity
+      </label>
+      <br>
+      <label [class.grayout]="!_showAxis">
+        <input class="numberInput" #sliderSelector2
+          (change)="changeMin(sliderSelector2.value)"
+          type="number" value="{{_min}}"
+        /> Min Value
+      </label>
+      <br>
+      <label [class.grayout]="!_showAxis">
+        <input class="numberInput" #sliderSelector3
+          (change)="changeMax(sliderSelector3.value)"
+          type="number" value="{{_max}}"
+        /> Max Value
+      </label>
+      <br>
+      <label>
+        <input class="textInput" #sliderSelector4
+          (change)="changeUnit(sliderSelector4.value)"
+          type="text"
+        /> Unit
+      </label>
+    </li>
+  </gem-chart-options>
+</div>
+
+<div [ngClass]="changeContainer()" *ngIf="dataSets != null && dataSets.length > 0; else elseBlock">
+  <div class="wholeChartContainer">
+    <ngx-charts-gauge
+      [scheme]="colorScheme"
+      [results]="selectedDataSet"
+      [min]="_min"
+      [max]="_max"
+      [bigSegments]="bigTicks"
+      [smallSegments]="smallTicks"
+      [units]="_unit"
+      [showText]="showText"
+      [textValue]="_textValue"
+      [showAxis]="showAxis"
+      >
+    </ngx-charts-gauge>
+  </div>
+  <gem-chart-legend
+    [labels]="legendLabels"
+    [colors]="legendColors"
+    [displayLegend]="displayLegend"
+    >
+  </gem-chart-legend>
+</div>
+
+<ng-template #elseBlock>
+  <p>No data available</p>
+</ng-template>

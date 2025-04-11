@@ -8,6 +8,14 @@ import java.util.List;
 
 public class LoginModuleUser_get_filtered extends LoginModuleUser_get_filteredTOP {
 
+  public LoginModuleUser_get_filtered() {
+    super();
+  }
+
+  public LoginModuleUser_get_filtered(String filter) {
+    super(filter);
+  }
+
   @Override
   public ListResult<Long, List<Long>> doAction() {
 

@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { Process } from '@src/demorec/Process';
+import { Process } from 'demorec/Process';
 
-import { BatteryPack } from '@src/demorec/BatteryPack';
-import { DemoRecManager } from '@src/demorec/DemoRecManager';
+import { BatteryPack } from 'demorec/BatteryPack';
+import { DemoRecManager } from 'demorec/DemoRecManager';
 
 import { StartComponent,config } from '../../../build/frontendGen/build/appgui/gui/StartComponent';
 

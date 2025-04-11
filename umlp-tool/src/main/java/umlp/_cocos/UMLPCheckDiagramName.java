@@ -3,9 +3,8 @@ package umlp._cocos;
 
 import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cdbasis._cocos.CDBasisASTCDDefinitionCoCo;
-import de.se_rwth.commons.logging.Log;
 
-public class UMLPCheckDiagramName implements CDBasisASTCDDefinitionCoCo {
+public class UMLPCheckDiagramName implements CDBasisASTCDDefinitionCoCo, CoCoTestable {
 
   public static final String ERROR_CODE = "0x70873";
 
@@ -16,10 +15,19 @@ public class UMLPCheckDiagramName implements CDBasisASTCDDefinitionCoCo {
     String diagramName = node.getName();
     node.getCDClassesList().stream()
         .filter(c -> diagramName.equals(c.getName()))
-        .findAny().ifPresent(c -> Log.error(String.format(ERROR_CODE+ ERROR_MSG_FORMAT, diagramName), c.get_SourcePositionStart()));
+        .findAny().ifPresent(c -> logError(c, diagramName));
     node.getCDInterfacesList().stream()
         .filter(c -> diagramName.equals(c.getName()))
-        .findAny().ifPresent(c -> Log.error(String.format(ERROR_CODE+ ERROR_MSG_FORMAT, diagramName), c.get_SourcePositionStart()));
+        .findAny().ifPresent(c -> logError(c, diagramName));
   }
 
+  @Override
+  public String getErrorCode() {
+    return ERROR_CODE;
+  }
+
+  @Override
+  public String getErrorMessageFormat() {
+    return ERROR_MSG_FORMAT;
+  }
 }

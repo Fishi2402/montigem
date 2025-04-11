@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {StartComponent,config} from '@src/gui/StartComponent';
+import {StartComponent,config} from 'gui/StartComponent';
 import {Component} from '@angular/core';
-import {FinanzverwaltungManager} from '@src/finanzverwaltung/FinanzverwaltungManager';
+import {FinanzverwaltungManager} from 'finanzverwaltung/FinanzverwaltungManager';
 import {FinanzverwaltungSecurityManager} from "../finanzverwaltung/FinanzverwaltungSecurityManager";
 import {GetCurrentUserRequest} from "../security/GetCurrentUserRequest";
 import {CommandManager} from '@umlp/common';
