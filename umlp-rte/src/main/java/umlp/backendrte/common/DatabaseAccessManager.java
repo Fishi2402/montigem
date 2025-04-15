@@ -87,6 +87,16 @@ public abstract class DatabaseAccessManager {
     return Optional.empty();
   }
 
+  public static Optional<ResultSet> executeFallibleQuery(String sql) {
+    try {
+      Statement stmt = connection.createStatement();
+      return Optional.ofNullable(stmt.executeQuery(sql));
+    } catch (SQLException e) {
+      Log.warn("JDBC DB Connection Issue: "+e.getMessage(),e);
+    }
+    return Optional.empty();
+  }
+
   public static void setInstance(DatabaseAccessManager databaseAccessManager) {
     instance = databaseAccessManager;
   }
