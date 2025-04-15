@@ -54,9 +54,9 @@ public class Neo4jDatabaseStarter {
   }
 
   /**
-   * Sometimes needed for configuring a Neo4j Test Instance 
+   * Sometimes needed for configuring a Neo4j Test Instance
    */
-  public static getManagementService() {
+  public static DatabaseManagementService getManagementService() {
     return managementService;
   }
 }
