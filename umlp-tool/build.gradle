@@ -115,6 +115,12 @@ packUMLPWithGUILanguageServer{
   exclude("org/apache/log4j/**")
   exclude("jsweet/**")
   exclude("standalone/**")
+  exclude("com/kohlschutter/jdk/**")
+  // Exclude unused grammars (very conservative, could be done via shadow?)
+  exclude("de/monticore/grammar/**")
+  exclude("de/monticore/tf/**")
+  // Exclude sources
+  exclude("**.java")
   from(configurations.languageServer.resolve().collect { project.zipTree(it)})
 }
 
