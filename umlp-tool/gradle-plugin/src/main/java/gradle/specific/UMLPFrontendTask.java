@@ -54,7 +54,7 @@ public abstract class UMLPFrontendTask extends UMLPSingleFileTask {
 
   @Input
   @org.gradle.api.tasks.Optional
-  public abstract Property<Boolean> getGen4TSLib();
+  public abstract Property<String> getTslib();
 
   /**
    * @param filePath Path of InputFile
@@ -84,8 +84,9 @@ public abstract class UMLPFrontendTask extends UMLPSingleFileTask {
       result.add(handlePath.apply(Path.of(getOcl().getAsPath())));
     }
 
-    if (this.getGen4TSLib().isPresent()) {
+    if (this.getTslib().isPresent()) {
       result.add("-" + UMLPToolOptions.GUI_GEN_FOR_TS_LIB.getCMD());
+      result.add(getTslib().get());
     }
 
     return result;

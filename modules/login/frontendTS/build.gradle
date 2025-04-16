@@ -77,7 +77,7 @@ genDomain {
   input = file("../models/LoginModule.umlp")
   hwcDir = file(layout.projectDirectory.dir("${libName}/src"))
   outputDir = file("login/build/cd")
-  gen4TSLib = true
+  tslib = "@montigem/login"
 }
 
 genGUI {
@@ -93,7 +93,7 @@ genGUI {
   importsDir = files(targetRoot)
   guiGenJsweet = false
   guiGenTSFuncionality = true
-  gen4TSLib = true
+  tslib = "@montigem/login"
 }
 
 tasks.named(buildTaskName) {

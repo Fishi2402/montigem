@@ -2,58 +2,68 @@ package umlp.generator.gui.gentypescript.printer;
 
 import umlp.generator.domain.UMLPGeneratorConfig;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 // TODO AGe: move to frontend-rte
 public enum TSImportMap {
-  // vis libs
-  ARRANGE("mc.fenix.arrange", "@umlp/arrange"),
-  BASIC("mc.fenix.basic", "@umlp/basic"),
-  CHARTS("mc.fenix.charts", "@umlp/charts"),
-  COMMON("mc.fenix.common", "@umlp/common"),
-  NAVIGATION("mc.fenix.navigation", "@umlp/navigation"),
-  INPUT("mc.fenix.input", "@umlp/input"),
-  TABLE("mc.fenix.table", "@umlp/table"),
-  FUNCTIONDISPLAY("mc.fenix.functiondisplay", "@umlp/functiondisplay"),
-  NETWORKGRAPH("mc.fenix.networkgraph", "@umlp/networkgraph"),
-  ARRANGE_DEPRECATED("arrange", "@umlp/arrange"),
-  BASIC_DEPRECATED("basic", "@umlp/basic"),
-  CHARTS_DEPRECATED("charts", "@umlp/charts"),
-  COMMON_DEPRECATED("common", "@umlp/common"),
-  NAVIGATION_DEPRECATED("navigation", "@umlp/navigation"),
-  INPUT_DEPRECATED("input", "@umlp/input"),
-  TABLE_DEPRECATED("table", "@umlp/table"),
-  BACKEND_RTE("umlp.backendrte", "@umlp/common"),
-  MONTIGEM_LOGIN("montigem", "@montigem/login");
+  INSTANCE;
 
-  private static final String JSWEET_RTE = "@umlp/commonj2ts";
+  // key: javaPackage, value: tsPackage
+  private final Map<String, String> importMap = new HashMap<>();
+  public static final String JSWEET_RTE = "@umlp/commonj2ts";
+  public static final String COMMON  = "@umlp/common";
+  public static final String BACKEND_RTE  = "umlp.backendrte";
 
-  private final String tsPackage;
-  private final String javaPackage;
-
-  TSImportMap(String javaPackage, String tsPackage) {
-    this.javaPackage = javaPackage;
-    this.tsPackage = tsPackage;
+  TSImportMap() {
+    add("mc.fenix.arrange", "@umlp/arrange");
+    add("mc.fenix.basic", "@umlp/basic");
+    add("mc.fenix.charts", "@umlp/charts");
+    add("mc.fenix.common", COMMON);
+    add("mc.fenix.navigation", "@umlp/navigation");
+    add("mc.fenix.input", "@umlp/input");
+    add("mc.fenix.table", "@umlp/table");
+    add("mc.fenix.functiondisplay", "@umlp/functiondisplay");
+    add("mc.fenix.networkgraph", "@umlp/networkgraph");
+    add("arrange", "@umlp/arrange");
+    add("basic", "@umlp/basic");
+    add("charts", "@umlp/charts");
+    add("common", "@umlp/common");
+    add("navigation", "@umlp/navigation");
+    add("input", "@umlp/input");
+    add("table", "@umlp/table");
+    add(BACKEND_RTE, "@umlp/common");
+    add("montigem", "@montigem/login");
   }
 
-  public String getJavaPackage() {
-    return javaPackage;
+  public void add(String javaPackage, String tsPackage) {
+    importMap.put(javaPackage, tsPackage);
   }
 
-  public String getTSPackage() {
-    return tsPackage;
-  }
-
-  public static Optional<String> getTSPackage(String javaPackage) {
-    for (TSImportMap type : TSImportMap.values()) {
-      if (javaPackage.startsWith(type.getJavaPackage())) {
-        if (type == BACKEND_RTE && UMLPGeneratorConfig.getInstance().isUseJsweet()) {
+  public Optional<String> getTSPackage(String javaPackage) {
+    for (String key : importMap.keySet()) {
+      if (javaPackage.startsWith(key)) {
+        if (key.equals(BACKEND_RTE) && UMLPGeneratorConfig.getInstance().isUseJsweet()) {
           return Optional.of(JSWEET_RTE);
         }
-        return Optional.of(type.getTSPackage());
+        return Optional.of(importMap.get(key));
       }
     }
     return Optional.empty();
+  }
+
+  public boolean isTSPackageImport(String javaPackage)  {
+    for (String key : importMap.keySet()) {
+      if (javaPackage.startsWith(key)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  public void clear() {
+    importMap.clear();
   }
 
 }

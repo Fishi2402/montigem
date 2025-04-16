@@ -3,6 +3,8 @@ package umlp.generator.domain;
 
 import org.apache.commons.cli.CommandLine;
 
+import java.util.Optional;
+
 import static umlp.UMLPToolOptions.GUI_GEN_FOR_TS_LIB;
 import static umlp.UMLPToolOptions.GUI_GEN_JSWEET;
 import static umlp.UMLPToolOptions.GUI_GEN_TS_FUNC;
@@ -21,7 +23,7 @@ public class UMLPGeneratorConfig {
   private boolean useShell;
 
   private boolean generateTypescript = true;
-  private boolean generate4TSLib = false;
+  private String tslib;
   public boolean useJsweet;
 
   private UMLPGeneratorConfig() {
@@ -71,12 +73,16 @@ public class UMLPGeneratorConfig {
     return this;
   }
 
-  public boolean isGenerate4TSLib() {
-    return generate4TSLib;
+  public boolean is4TSLib() {
+    return Optional.ofNullable(tslib).isPresent();
   }
 
-  public UMLPGeneratorConfig setGenerate4TSLib(boolean generate4TSLib) {
-    this.generate4TSLib = generate4TSLib;
+  public Optional<String> getTSLib() {
+    return Optional.ofNullable(tslib);
+  }
+
+  public UMLPGeneratorConfig setTSLib(String tslib) {
+    this.tslib = tslib;
     return this;
   }
 
@@ -94,7 +100,7 @@ public class UMLPGeneratorConfig {
     return this.setUseSpring(USE_SPRING.isSelected(cmd))
         .setUseShell(USE_SHELL.isSelected(cmd))
         .setGenerateTypescript(Boolean.parseBoolean(GUI_GEN_TS_FUNC.getValue(cmd, GUI_GEN_TS_FUNC_DEFAULT)))
-        .setGenerate4TSLib(GUI_GEN_FOR_TS_LIB.isSelected(cmd))
+        .setTSLib(GUI_GEN_FOR_TS_LIB.getValue(cmd))
         .setUseJsweet(Boolean.parseBoolean(GUI_GEN_JSWEET.getValue(cmd, GUI_GEN_JSWEET_DEFAULT)))
         .setUsePlaywright(USE_PLAYWRIGHT.isSelected(cmd));
   }

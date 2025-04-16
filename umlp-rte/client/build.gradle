@@ -55,6 +55,8 @@ def publishTaskPrefix = "publish_"
 def copyTaskPrefix = "copy_types_"
 def genTaskPrefix = "gen_"
 def genNpmrcTaskPrefix = "npmrc_"
+def importMapTaskPrefix = "import_map_"
+def targetImportsDir = layout.buildDirectory.dir("import_maps").get().asFile
 def buildFolders = []
 
 libs.each {
@@ -109,6 +111,7 @@ libs.each {
   }
 
   tasks[buildTaskName].dependsOn tasks[copyTaskName]
+  def copyImportMapTaskName = "${importMapTaskPrefix}${libName}"
   def genTaskName = "${genTaskPrefix}${libName}"
 
   if (libName in componentLibs) {
@@ -122,9 +125,20 @@ libs.each {
       importsDir = files(targetRoot)
       guiGenJsweet = false
       guiGenTSFuncionality = true
-      gen4TSLib = true
+      tslib = "@umlp/${libName}"
     }
 
+    task "${copyImportMapTaskName}"(type: Copy) {
+      into targetImportsDir
+
+      // e.g. `arrange/build/gui/import.map`
+      from("projects/${libName}/build/gui/import.map") {
+        // e.g. `arrange/build/arrange/import.map`
+        into(libName)
+      }
+    }
+
+    tasks[copyImportMapTaskName].dependsOn tasks[genTaskName]
     tasks[buildTaskName].dependsOn tasks[genTaskName]
   }
 }
@@ -149,7 +163,9 @@ tasks.build_networkgraph.inputs.files(tasks.build_commonj2ts.outputs.files.singl
 tasks.build_networkgraph.dependsOn(tasks.build_commonj2ts)
 
 tasks.register('buildAll') {
-  dependsOn tasks.findAll { it.name.startsWith(buildTaskPrefix) }
+  dependsOn tasks.matching {
+    it.name.startsWith(buildTaskPrefix) || it.name.startsWith(importMapTaskPrefix)
+  }
 }
 
 tasks.register('publishAll') {
@@ -166,8 +182,8 @@ dependencies {
 sourceSets {
   symbols {
     resources {
-      srcDirs(createCDSymbols.getOutput(), createGuiSymbols.getOutput())
-      include "**/*sym"
+      srcDirs(createCDSymbols.getOutput(), createGuiSymbols.getOutput(), targetImportsDir)
+      include "**/*sym", "**/import.map"
     }
   }
 }

@@ -348,10 +348,8 @@ public class GUIGeneratorUtil {
   }
 
   public final boolean isTSPackageImport(String javaPackage) {
-    for (TSImportMap type : TSImportMap.values()) {
-      if (javaPackage.startsWith(type.getJavaPackage())) {
-        return false;
-      }
+    if (!TSImportMap.INSTANCE.isTSPackageImport(javaPackage)) {
+      return false;
     }
     return !TSBackendMap.isBackendRTEPackage(javaPackage);
   }
@@ -966,10 +964,9 @@ public class GUIGeneratorUtil {
   public String java2tsModule(String javaPackage) {
     String res = qName2path(javaPackage);
 
-    for (TSImportMap type : TSImportMap.values()) {
-      if (javaPackage.startsWith(type.getJavaPackage())) {
-        res = type.getTSPackage();
-      }
+    Optional<String> tsPackage = TSImportMap.INSTANCE.getTSPackage(javaPackage);
+    if (tsPackage.isPresent()) {
+      res = tsPackage.get();
     }
     if (TSBackendMap.isBackendRTEPackage(javaPackage)) {
       res = TSBackendMap.getTSRTEPackage();

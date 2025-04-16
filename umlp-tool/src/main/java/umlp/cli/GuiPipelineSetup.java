@@ -22,6 +22,7 @@ import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
 import umlp.generator.gui.genjava.GUI2JavaGenerator;
 import umlp.generator.gui.gentypescript.GUI2TSGenerator;
 import umlp.generator.gui.gentypescript.config.GUI2ConfigGenerator;
+import umlp.generator.gui.gentypescript.config.GUI2ImportMapGenerator;
 import umlp.generator.gui.gentypescript.config.PackageRoute;
 
 import java.io.File;
@@ -61,13 +62,15 @@ public class GuiPipelineSetup {
           List<Path> modelPaths =
               Arrays.stream(modelPathStrings).map(Paths::get).collect(Collectors.toList());
           Map<String, PackageRoute> routeMap = new HashMap<>();
-          
+
+          List<ASTGUICompilationUnit> asts = new ArrayList<>();
           for (Path modelPath : modelPaths) {
             DataWithGenSetupAndModel modelData = new Data(data, modelPath);
             boolean modelPipeResult = modelPipeline.doWork(modelData);
             
             if (modelPipeResult && modelData.getAst() != null) {
               ASTGUICompilationUnit ast = modelData.getAst();
+              asts.add(ast);
               if (ast.getGUIComponentDeclaration().isPage()) {
                 if (!routeMap.containsKey(ast.getPackage())) {
                   routeMap.put(ast.getPackage(), new PackageRoute(
@@ -77,7 +80,7 @@ public class GuiPipelineSetup {
               }
             }
           }
-          configurationPipeline.doWork(new GenConfigData(data, routeMap));
+          configurationPipeline.doWork(new GenConfigData(data, routeMap, asts));
           return true;
         }, List.of(modelPipeline, configurationPipeline)));
     
@@ -267,12 +270,22 @@ public class GuiPipelineSetup {
               Paths.get(data.getData().outDir.getPath(), output).toString());
         }
       };
-  
+
+  public final IOperation.ISimpleOperation<DataWithGenSetupAndRouting> import_map_pipe_generate =
+      data -> {
+        Optional<String> tslib = UMLPGeneratorConfig.getInstance().getTSLib();
+        if (tslib.isPresent()) {
+          GUI2ImportMapGenerator importMapGenerator = new GUI2ImportMapGenerator(data.getGenSetup());
+          importMapGenerator.generate(tslib.get(), data.getASTs());
+        }
+      };
+
   Pipeline<DataWithGenSetupAndRouting> createConfigurationPipeline() {
     Pipeline<DataWithGenSetupAndRouting> pipe = new Pipeline<>();
     pipe.register("config_pipe_setup_generator", config_pipe_setup_generator);
     pipe.register("config_pipe_init_modules", config_pipe_init_modules);
     pipe.register("config_pipe_generate", config_pipe_generate);
+    pipe.register("import_map_pipe_generate", import_map_pipe_generate);
     return pipe;
   }
   
@@ -320,11 +333,13 @@ public class GuiPipelineSetup {
     
     final UMLPPipelineData data;
     final Map<String, PackageRoute> routing;
+    final List<ASTGUICompilationUnit> asts;
     GeneratorSetup genSetup;
     
-    public GenConfigData(UMLPPipelineData data, Map<String, PackageRoute> routing) {
+    public GenConfigData(UMLPPipelineData data, Map<String, PackageRoute> routing, List<ASTGUICompilationUnit> asts) {
       this.data = data;
       this.routing = routing;
+      this.asts = asts;
     }
     
     public UMLPTool getTool() {
@@ -342,7 +357,11 @@ public class GuiPipelineSetup {
     public Map<String, PackageRoute> getRouting() {
       return routing;
     }
-    
+
+    public List<ASTGUICompilationUnit> getASTs() {
+      return asts;
+    }
+
     public GeneratorSetup getGenSetup() {
       return genSetup;
     }
@@ -422,6 +441,8 @@ public class GuiPipelineSetup {
   public interface DataWithGenSetupAndRouting extends DataWithGenSetup {
     
     Map<String, PackageRoute> getRouting();
+
+    List<ASTGUICompilationUnit> getASTs();
   }
   
   public interface DataWithGenSetup {

@@ -87,11 +87,11 @@ public class TSImportHelper {
           from = relativeFrom.get();
         }
       }
-      tsImportPath = TSImportMap.getTSPackage(qType);
+      tsImportPath = TSImportMap.INSTANCE.getTSPackage(qType);
 
       int lastDotIndex = importerQName.lastIndexOf('.');
       String importerPackage = lastDotIndex != -1 ? importerQName.substring(0, lastDotIndex) : "";
-      Optional<String> componentImportPath = TSImportMap.getTSPackage(importerPackage);
+      Optional<String> componentImportPath = TSImportMap.INSTANCE.getTSPackage(importerPackage);
       if (tsImportPath.isPresent() &&
           (componentImportPath.isEmpty() || !componentImportPath.get().equals(tsImportPath.get()))) {
         from = tsImportPath.get();
@@ -151,7 +151,7 @@ public class TSImportHelper {
     // case: TOP is used, use path to HW file, e.g.,
     // "gen/gui/ExampleComponent.ts" imports "hw/gui/Example.ts" -> "../../hw/gui/Example"
     if (hwFilePath.isPresent()) {
-      if (UMLPGeneratorConfig.getInstance().isGenerate4TSLib()) {
+      if (UMLPGeneratorConfig.getInstance().is4TSLib()) {
         Optional<Path> hw = MCPath.toPath(hwFilePath.get());
         if (hw.isPresent()) {
           return Optional.of(path2TSRelativeImport(outPath.resolve(importer).getParent()
@@ -172,7 +172,7 @@ public class TSImportHelper {
       // case: external (generated) file must be imported, e.g.,
       // "gen/gui/Example.ts" imports "gen/cd/fetypes/Option.ts" -> "../cd/fetypes/Option"
       if (importedURLOpt.isPresent() || importedMaybeCDURLOpt.isPresent()) {
-        if (UMLPGeneratorConfig.getInstance().isGenerate4TSLib()) {
+        if (UMLPGeneratorConfig.getInstance().is4TSLib()) {
           Optional<Path> importedPath;
           // prefer "maybe CD" option
           if (importedMaybeCDURLOpt.isPresent()) {
@@ -204,7 +204,7 @@ public class TSImportHelper {
       // "gen/gui/foo/ExampleComponent.ts" imports "gen/gui/foo/Example.ts" -> "./Example"
       // or: a class imports currently generated other class, e.g.
       // "gen/cd/SomeManager.ts" imports "gen/cd/commands/Some_create.ts"
-      else if (UMLPGeneratorConfig.getInstance().isGenerate4TSLib()) {
+      else if (UMLPGeneratorConfig.getInstance().is4TSLib()) {
         Optional<String> importedPath = getRelativeQualifiedPath(
             Names.getQualifier(importerQName), Names.getQualifier(importedQName)
         );

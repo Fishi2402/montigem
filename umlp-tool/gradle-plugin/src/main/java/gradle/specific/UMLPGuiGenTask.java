@@ -95,7 +95,7 @@ public abstract class UMLPGuiGenTask extends UMLPAllFilesTask {
 
   @Input
   @org.gradle.api.tasks.Optional
-  public abstract Property<Boolean> getGen4TSLib();
+  public abstract Property<String> getTslib();
 
   /**
    * @param f file which should be checked
@@ -168,8 +168,9 @@ public abstract class UMLPGuiGenTask extends UMLPAllFilesTask {
       result.add(this.getGuiGenJsweet().get() + "");
     }
 
-    if (this.getGen4TSLib().isPresent()) {
+    if (this.getTslib().isPresent()) {
       result.add("-" + UMLPToolOptions.GUI_GEN_FOR_TS_LIB.getCMD());
+      result.add(getTslib().get());
     }
 
     return result;
