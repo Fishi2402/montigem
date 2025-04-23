@@ -59,7 +59,7 @@ Changes in GUI DSL AST and corresponding type checks:
   6  |    @FamilyTree<Person>();
   7  |  }
   ```
-  Uses type `Person` (imported in line 4) as type argument of component `FamilyTree` in line 7.
+  Uses type `Person` (imported in line 4) as type argument of component `FamilyTree` in line 6.
 
 ## Upcoming
 
