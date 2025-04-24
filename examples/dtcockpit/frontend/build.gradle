@@ -23,6 +23,17 @@ dependencies {
 //  umlpModulesModels("umlp.modules:login:$version") // and models itself
 }
 
+configurations.configureEach {
+  if (it.name != 'guiLib') {
+    resolutionStrategy.dependencySubstitution {
+      substitute module("umlp.modules:login") using project(":modules:login")
+      substitute module("umlp.modules.login:backend") using project(":modules:login:backend")
+      substitute module("umlp.modules:comment") using project(":modules:comment")
+      substitute module("umlp.modules.comment:backend") using project(":modules:comment:backend")
+    }
+  }
+}
+
 node {
   nodeProjectDir = file("${buildDir}/frontendGen")
 }
