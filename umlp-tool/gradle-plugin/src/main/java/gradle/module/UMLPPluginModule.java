@@ -55,9 +55,15 @@ public class UMLPPluginModule implements Plugin<Project> {
     project.getTasks().named(BasePlugin.ASSEMBLE_TASK_NAME).configure(it -> it.dependsOn(modelsjarTask));
     project.getArtifacts().add(outgoingModels.getName(), modelsjarTask);
 
+    // Tell gradle, that the jar tasks builds a publication
+    var modelsPublication = createPublishedArtifact(modelsjarTask, project);
+
     // Add a variant
     var javaComponent = (AdhocComponentWithVariants)project.getComponents().getByName("java");
     javaComponent.addVariantsFromConfiguration(outgoingModels, ConfigurationVariantDetails::mapToOptional);
+
+    // Add the publication as an artifact
+    outgoingModels.getOutgoing().getArtifacts().add(modelsPublication);
 
 
 
@@ -79,7 +85,10 @@ public class UMLPPluginModule implements Plugin<Project> {
     project.getArtifacts().add(moduleGenTime.getName(), genTimejarTask);
     javaComponent.addVariantsFromConfiguration(moduleGenTime, ConfigurationVariantDetails::mapToOptional);
 
-
+    // Tell gradle, that the jar tasks builds a publication
+    var genTimePublication = createPublishedArtifact(genTimejarTask, project);
+    // Add the publication as an artifact
+    moduleGenTime.getOutgoing().getArtifacts().add(genTimePublication);
   }
 
   public static void addModelsJarAttributes(Configuration config, Project project) {
@@ -104,17 +113,20 @@ public class UMLPPluginModule implements Plugin<Project> {
    * Create a lazy {@link org.gradle.api.internal.artifacts.publish.ArchivePublishArtifact} from a given
    * {@link Jar} task.
    * Provides compatibility between gradle 7 and 8
+   * --
+   * This is important for Gradle's dependency substition to work,
+   *  otherwise hand-written reloactions have to be written.
    */
-  protected PublishArtifact createPublishedArtifact(TaskProvider<Jar> grammarsJarTask, Project project) {
+  protected PublishArtifact createPublishedArtifact(TaskProvider<Jar> jarTaskProvider, Project project) {
     // the LazyPublishArtifact constructor has changed between gradle versions:
     try {
       // Gradle 7.4.2
-      return new LazyPublishArtifact(grammarsJarTask, null, ((ProjectInternal) project).getFileResolver());
+      return new LazyPublishArtifact(jarTaskProvider, null, ((ProjectInternal) project).getFileResolver());
     } catch (NoSuchMethodError incompatibleVersion) {
       try {
         // Gradle 8 - the TaskDependencyFactory parameter was added
         return LazyPublishArtifact.class.getConstructor(org.gradle.api.provider.Provider.class, String.class, FileResolver.class, TaskDependencyFactory.class)
-            .newInstance(grammarsJarTask, null, ((ProjectInternal) project).getFileResolver(), taskDependencyFactory);
+            .newInstance(jarTaskProvider, null, ((ProjectInternal) project).getFileResolver(), taskDependencyFactory);
       } catch (ReflectiveOperationException e) {
         throw new IllegalStateException("Incompatible LazyPublishArtifact constructor in gradle " + project.getGradle().getGradleVersion(), e);
       }
