@@ -64,6 +64,7 @@ import umlp.generator.gui.coco.GUIDSLCoCosForUMLP;
 import umlp.generator.gui.genjava.decorator.CallTypeDeriver;
 import umlp.generator.gui.genjava.decorator.InitDependencyTree;
 import umlp.generator.gui.genjava.decorator.StaticObjectsCollector;
+import umlp.generator.gui.gentypescript.printer.TSImportMap;
 import umlp.generator.util.TagLookUp;
 import umlp.generator.gui.coco.SymbolBoundNameExpressionsFinder;
 
@@ -265,6 +266,7 @@ public class UMLPTool extends UMLPToolTOP {
     CDDeSerHelper.reset(); // This https://git.rwth-aachen.de/monticore/monticore/-/issues/4306
     StaticObjectsCollector.unsetInstance();
     CallTypeDeriver.unsetInstance();
+    TSImportMap.INSTANCE.clear();
 
     AbstractDecorator.cleanUp();
     TagLookUp.cleanUp();

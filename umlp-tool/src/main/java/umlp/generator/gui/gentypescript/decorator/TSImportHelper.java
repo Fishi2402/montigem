@@ -42,27 +42,28 @@ public class TSImportHelper {
     this.importsPath = importsPath;
   }
 
-  public void addImport(String qType, Optional<String> as, boolean importIntermediateAngularClass, String importerQName) {
+  public void addImport(String importedQName, Optional<String> as,
+      boolean importIntermediateAngularClass, String importerQName) {
     String alias = "";
     if (as.isPresent()) {
       alias = " as " + as.get();
     }
-    Optional<String> tsImportPath = TypeScriptTypes.getTsImportPath(qType);
+    Optional<String> tsImportPath = TypeScriptTypes.getTsImportPath(importedQName);
     // Optional doesn't exist in TypeScript
-    if (qType.equals("java.util.Optional") || qType.isBlank()) {
+    if (importedQName.equals("java.util.Optional") || importedQName.isBlank()) {
       return;
     }
     if (tsImportPath.isPresent()) {
-      String importStr = "import { " + TypeScriptTypes.toTSType(qType) + alias
+      String importStr = "import { " + TypeScriptTypes.toTSType(importedQName) + alias
           + " } from '" + tsImportPath.get() + "';";
       addImportString(importStr);
     }
-    else if (!TypeScriptTypes.isDefault(qType)) {
+    else if (!TypeScriptTypes.isDefault(importedQName)) {
       StringBuilder importBuilder = new StringBuilder();
       importBuilder.append("import { ");
 
-      List<String> parts = Lists.newArrayList(Splitter.on('.').split(qType));
-      String baseName = Iterables.getLast(Splitter.on('.').split(qType), qType);
+      List<String> parts = Lists.newArrayList(Splitter.on('.').split(importedQName));
+      String baseName = Iterables.getLast(Splitter.on('.').split(importedQName), importedQName);
       importBuilder.append(baseName);
       importBuilder.append(alias);
 
@@ -77,21 +78,19 @@ public class TSImportHelper {
       }
       // case: a component in an app imports a component from the app
       String from = GUIGeneratorUtil.getInstance().qName2path(String.join(".", parts));
-      if (!GUIGeneratorUtil.getInstance().isInitialized() || !GUIGeneratorUtil.getInstance().isDomainImport(qType)) {
+      if (!GUIGeneratorUtil.getInstance().isInitialized() || !GUIGeneratorUtil.getInstance().isDomainImport(importedQName)) {
         if (importIntermediateAngularClass) {
           from += "Component";
         }
         Optional<String> relativeFrom = getImportPath(
-            hwPath, outPath, importsPath, importerQName, qType);
+            hwPath, outPath, importsPath, importerQName, importedQName);
         if (relativeFrom.isPresent()) {
           from = relativeFrom.get();
         }
       }
-      tsImportPath = TSImportMap.INSTANCE.getTSPackage(qType);
+      tsImportPath = TSImportMap.INSTANCE.getTSPackage(importedQName);
 
-      int lastDotIndex = importerQName.lastIndexOf('.');
-      String importerPackage = lastDotIndex != -1 ? importerQName.substring(0, lastDotIndex) : "";
-      Optional<String> componentImportPath = TSImportMap.INSTANCE.getTSPackage(importerPackage);
+      Optional<String> componentImportPath = TSImportMap.INSTANCE.getTSPackage(importerQName);
       if (tsImportPath.isPresent() &&
           (componentImportPath.isEmpty() || !componentImportPath.get().equals(tsImportPath.get()))) {
         from = tsImportPath.get();
@@ -104,8 +103,8 @@ public class TSImportHelper {
     }
   }
 
-  public void addImport(String qType, String importerQName) {
-    addImport(qType, Optional.empty(), false, importerQName);
+  public void addImport(String importedQName, String importerQName) {
+    addImport(importedQName, Optional.empty(), false, importerQName);
   }
 
   public void addImportString(String importStr) {

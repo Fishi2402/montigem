@@ -24,6 +24,7 @@ import umlp.generator.gui.gentypescript.GUI2TSGenerator;
 import umlp.generator.gui.gentypescript.config.GUI2ConfigGenerator;
 import umlp.generator.gui.gentypescript.config.GUI2ImportMapGenerator;
 import umlp.generator.gui.gentypescript.config.PackageRoute;
+import umlp.generator.gui.gentypescript.printer.TSImportMap;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -50,6 +51,7 @@ public class GuiPipelineSetup {
       TagRelated.initLookup(data.importedSymbolPath);
       GUIDSLMill.init();
       UMLPTool.initGUIGlobalScope(data.importedSymbolPath);
+      TSImportMap.INSTANCE.init(data.importedSymbolPath);
       return true;
     });
     

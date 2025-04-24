@@ -28,6 +28,7 @@ import umlp.generator.domain.UMLPGenerator;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.gui.gentypescript.domain.TSUMLPGenerator;
 import umlp.generator.gui.gentypescript.java2ts.ComponentObserverManagerGenerator;
+import umlp.generator.gui.gentypescript.printer.TSImportMap;
 import umlp.generator.util.UMLPSymbolTables;
 import umlp.generator.validator.ocl.OCLASTPreProcessor;
 
@@ -85,6 +86,7 @@ public class UMLPFilePipelineSetup {
       }
       UMLPMill.init();
       UMLPMill.globalScope().setSymbolPath(data.importedSymbolPath);
+      TSImportMap.INSTANCE.init(data.importedSymbolPath);
       return true;
     });
     umlpPipeline.umlp.register("addBuiltInTypes", addBuiltInTypes = this::addBuiltInTypes);

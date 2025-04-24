@@ -139,7 +139,7 @@ libs.each {
     }
 
     tasks[copyImportMapTaskName].dependsOn tasks[genTaskName]
-    tasks[buildTaskName].dependsOn tasks[genTaskName]
+    tasks[buildTaskName].dependsOn tasks[copyImportMapTaskName]
   }
 }
 
@@ -164,7 +164,7 @@ tasks.build_networkgraph.dependsOn(tasks.build_commonj2ts)
 
 tasks.register('buildAll') {
   dependsOn tasks.matching {
-    it.name.startsWith(buildTaskPrefix) || it.name.startsWith(importMapTaskPrefix)
+    it.name.startsWith(buildTaskPrefix)
   }
 }
 

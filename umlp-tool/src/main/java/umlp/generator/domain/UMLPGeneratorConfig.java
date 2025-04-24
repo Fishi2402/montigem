@@ -97,10 +97,12 @@ public class UMLPGeneratorConfig {
   }
 
   public UMLPGeneratorConfig initFromCmd(CommandLine cmd) {
+    if (GUI_GEN_FOR_TS_LIB.isSelected(cmd)) {
+      this.setTSLib(GUI_GEN_FOR_TS_LIB.getValue(cmd));
+    }
     return this.setUseSpring(USE_SPRING.isSelected(cmd))
         .setUseShell(USE_SHELL.isSelected(cmd))
         .setGenerateTypescript(Boolean.parseBoolean(GUI_GEN_TS_FUNC.getValue(cmd, GUI_GEN_TS_FUNC_DEFAULT)))
-        .setTSLib(GUI_GEN_FOR_TS_LIB.getValue(cmd))
         .setUseJsweet(Boolean.parseBoolean(GUI_GEN_JSWEET.getValue(cmd, GUI_GEN_JSWEET_DEFAULT)))
         .setUsePlaywright(USE_PLAYWRIGHT.isSelected(cmd));
   }
