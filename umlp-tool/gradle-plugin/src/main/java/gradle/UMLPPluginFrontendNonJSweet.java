@@ -39,15 +39,15 @@ public abstract class UMLPPluginFrontendNonJSweet implements Plugin<Project> {
 
     TaskProvider<FrontendSetup> frontendSetupTask = project.getTasks().named(UMLP_FRONTEND_SETUP_TASK_NAME, FrontendSetup.class);
 
-    TaskProvider<Sync> unpackModulesTask = createUnpackModuleTask(project);
+    // TaskProvider<Sync> unpackModulesTask = createUnpackModuleTask(project);
 
     frontendGuiTask.configure(umlpTask -> {
       setIfPathExists(x -> umlpTask.getHwcDir().from(x), Path.of(project.getProjectDir().getAbsolutePath(), "src", "app"));
       umlpTask.getGuiGenJsweet().set(false);
 
       // // Load the symbols from the .jars in the domain symbols path
-      umlpTask.getSymbolDir().from(project.getConfigurations().getByName(UMLP_MODULES_DOMAIN_SYMBOLS_CONFIG));
-      umlpTask.getSymbolDir().from(project.getConfigurations().getByName(UMLP_MODULES_GUI_SYMBOLS_CONFIG));
+      umlpTask.getSymbolDir().from(project.getConfigurations().named(UMLP_MODULES_DOMAIN_SYMBOLS_CONFIG));
+      umlpTask.getSymbolDir().from(project.getConfigurations().named(UMLP_MODULES_GUI_SYMBOLS_CONFIG));
     });
 
     // task dependencies
@@ -68,7 +68,7 @@ public abstract class UMLPPluginFrontendNonJSweet implements Plugin<Project> {
 
     project.getTasks().named("generate").configure(generateTask -> {
       generateTask.dependsOn(frontendGuiTask);
-      generateTask.dependsOn(unpackModulesTask);
+      // generateTask.dependsOn(unpackModulesTask);
     });
 
   }
@@ -94,15 +94,16 @@ public abstract class UMLPPluginFrontendNonJSweet implements Plugin<Project> {
       at de.monticore.cdbasis._symboltable.CDTypeSymbolTOP.getAstNode(CDTypeSymbolTOP.java:1)
       at de.monticore.cd._symboltable.CDSymbolTables.getTransitiveSuperTypes(CDSymbolTables.java:86)
        */
-      umlpTask.getModelDir().from(project.getConfigurations().getByName(UMLPPluginBase.UMLP_MODULES_MODELS_CONFIG));
+      umlpTask.getModelDir().from(project.getConfigurations().named(UMLPPluginBase.UMLP_MODULES_MODELS_CONFIG));
     });
   }
 
 
+  /*
   protected TaskProvider<Sync> createUnpackModuleTask(final Project project) {
     // Download the frontends code and extract it into a dir
     // Make sure to add "umlp_modules/loginmodule-ts/template_placeholder/src/*" as a path to the tsconfig
-    var conf = project.getConfigurations().getByName(UMLPPluginBase.UMLP_MODULES_FRONTEND_CONFIG);
+    var conf = project.getConfigurations().named(UMLPPluginBase.UMLP_MODULES_FRONTEND_CONFIG);
     var t = project.getTasks().register("unpackModule", Sync.class);
     t.configure(task -> {
       task.setGroup("umlp");
@@ -110,12 +111,13 @@ public abstract class UMLPPluginFrontendNonJSweet implements Plugin<Project> {
       // Make sure to provide a lazy-provider to #from
       task.from(project.provider(
           // And expand the zipfile
-          () -> conf.getFiles().stream().map(project::zipTree).collect(Collectors.toList())
+          () -> conf.get().getFiles().stream().map(project::zipTree).collect(Collectors.toList())
       ));
       task.into(project.getLayout().getBuildDirectory().dir("frontendGen/umlp_modules"));
     });
     return t;
   }
+  /**/
 
   private void setIfPathExists(Consumer<File> add, Path path) {
     File f = path.toFile();

@@ -75,6 +75,7 @@ public class UMLPPluginModuleJSFrontend extends ALazyPublishingPlugin implements
 
    /// Also prepare publishing of
 
+    /*
     Configuration outgoingBundlesJS = project.getConfigurations().create("umlpOutgoingFrontendBundle");
     outgoingBundlesJS.setCanBeConsumed(true);
     outgoingBundlesJS.setCanBeResolved(false);
@@ -91,11 +92,12 @@ public class UMLPPluginModuleJSFrontend extends ALazyPublishingPlugin implements
     // Add outgoingBundlesJS-jar as artifact to the config
     project.getArtifacts().add(outgoingBundlesJS.getName(), bundleTask);
     javaComponent.addVariantsFromConfiguration(outgoingBundlesJS, ConfigurationVariantDetails::mapToOptional);
+    /**/
 
     // Tell gradle, that the jar tasks builds a publication
-    var bundleArtifact = createPublishedArtifact(jarTask, project);
+    // var bundleArtifact = createPublishedArtifact(jarTask, project);
     // and add the publication to the outgoing artifacts
-    outgoingBundlesJS.getOutgoing().getArtifacts().add(bundleArtifact);
+    // outgoingBundlesJS.getOutgoing().getArtifacts().add(bundleArtifact);
 
     // artifacts & addVariant is for now done in the module-frontends build.gradle
   }
@@ -118,6 +120,7 @@ public class UMLPPluginModuleJSFrontend extends ALazyPublishingPlugin implements
     });
   }
 
+  /*
   public static void addBundledJSJarAttributes(Configuration config, Project project) {
     config.attributes( it -> {
       it.attribute(Category.CATEGORY_ATTRIBUTE, project.getObjects().named(Category.class, Category.LIBRARY));
@@ -126,4 +129,5 @@ public class UMLPPluginModuleJSFrontend extends ALazyPublishingPlugin implements
       it.attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, project.getObjects().named(LibraryElements.class, LibraryElements.JAR));
     });
   }
+  /**/
 }

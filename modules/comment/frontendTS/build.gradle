@@ -153,19 +153,19 @@ tasks.register('syncLib', Sync) {
 
 // Lets do this without npm, I guess
 // We might be able to do this without syncLib?
-packFrontendAsZip { // AbstractCopy Task
-  dependsOn(syncLib)
-  from ("${project.buildDir}/frontendGen/projects/commentmodule-ts/src") {
-    into 'commentmodule-ts/template_placeholder/src/'
-  }
-  // Hackaround to include the html template files at the correct relative location
-  from ("${project.buildDir}/frontendGen/build/appgui") {
-    include '**/*.html' // only html files (aka the template path)
-    into 'commentmodule-ts/build/umlp_frontend/intermediate/appgui'
-  }
-//  archiveName 'CommentModuleFrontend.zip'
-  setArchiveClassifier("bundlejs")
-}
+//packFrontendAsZip { // AbstractCopy Task
+//  dependsOn(syncLib)
+//  from ("${project.buildDir}/frontendGen/projects/commentmodule-ts/src") {
+//    into 'commentmodule-ts/template_placeholder/src/'
+//  }
+//  // Hackaround to include the html template files at the correct relative location
+//  from ("${project.buildDir}/frontendGen/build/appgui") {
+//    include '**/*.html' // only html files (aka the template path)
+//    into 'commentmodule-ts/build/umlp_frontend/intermediate/appgui'
+//  }
+////  archiveName 'CommentModuleFrontend.zip'
+//  setArchiveClassifier("bundlejs")
+//}
 
 //artifacts.add("umlpOutgoingFrontendBundle", packFrontendAsZip) {
 //  type = "zip"

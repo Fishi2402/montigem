@@ -21,21 +21,9 @@ createDomainSymbols {
 genDomain {
   // TODO: Gradle setup
 
-
   // Alternative: Generate the module-frontend-domain too
   input = file("../models/Dtcockpit.umlp")
 //  modelDir.from(configurations.umlpModulesModels) // TODO: Move this module logic into the plugin
-
-  // TODO: The module has to be added to the tsconfig path
-  /*
-      "paths": {
-      "@src/*": ["build/appdomain/*", "build/appgui/*", "src/app/*", "../../src/app/*",
-        "../../../../../modules/login/frontendsTS/build/frontendGen/build/appdomain/*",
-        "../../../../../modules/login/frontendsTS/src/app/*",
-      ],
-
-   */
-
 }
 
 genGUI {

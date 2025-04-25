@@ -34,17 +34,19 @@ configurations {
     canBeConsumed(true)
     gradle.module.UMLPPluginModuleJSFrontend.addGuiSymbolsJarAttributes(it, project)
   }
+  /*
   outgoingUMLPFrontendTSZip {
     canBeConsumed(true)
     gradle.module.UMLPPluginModuleJSFrontend.addBundledJSJarAttributes(it, project)
   }
+  /**/
 }
 
 dependencies {
   api(project(":modules:login:backend"))
   outgoingUMLPFrontendTSDS project(":modules:login:frontendTS")
   outgoingUMLPFrontendTSGS project(":modules:login:frontendTS")
-  outgoingUMLPFrontendTSZip project(":modules:login:frontendTS")
+  // outgoingUMLPFrontendTSZip project(":modules:login:frontendTS")
 }
 project.components.java.addVariantsFromConfiguration(configurations.outgoingUMLPFrontendTSDS) {
   it.mapToOptional()
@@ -52,9 +54,11 @@ project.components.java.addVariantsFromConfiguration(configurations.outgoingUMLP
 project.components.java.addVariantsFromConfiguration(configurations.outgoingUMLPFrontendTSGS) {
   it.mapToOptional()
 }
+/*
 project.components.java.addVariantsFromConfiguration(configurations.outgoingUMLPFrontendTSZip) {
   it.mapToOptional()
 }
+/**/
 
 
 // We do not have main java soures => Remove .jar from outgoing artifacts
