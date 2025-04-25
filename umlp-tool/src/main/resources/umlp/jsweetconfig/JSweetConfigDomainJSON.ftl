@@ -5,5 +5,15 @@ ${signature("domName")}
     "umlp.jsweet.extension.UMLPJSweetDomainAdapter",
     "umlp.jsweet.extension.domainAdapters.${domName}ImportAdapter"
   ],
-  "domainName": "${domName}"
+  "domainName": "${domName}",
+  "@Erased": {
+    "include": [
+      "**.spliterator*()",
+      "**.stream*()",
+      "**.parallelStream*()",
+      "**.toArray*(*)",
+      "**.hashCode*()",
+      "**.equals*(*)"
+    ]
+  }
 }

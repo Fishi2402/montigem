@@ -5,33 +5,10 @@ plugins {
   id "de.rwth.se.umlp-tool-frontend-test"  // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
 }
 
-// TODO AHe: needed?
-// ALus local gradle is apparently unaware of these versions?
-// Explicitly use the local login module
-//configurations.all {
-//  resolutionStrategy.dependencySubstitution {
-//    substitute module("umlp.modules:login") using project(":modules:login")
-//    substitute module("umlp.modules.login:frontendTS") using project(":modules:login:frontendTS")
-//  }
-//}
 
 dependencies {
-  umlpModules("umlp.modules:login:$version") // Load generator modifications
-  umlpModules("umlp.modules:comment:$version") // Load generator modifications
-//  umlpModulesGen("umlp.modules:login:$version") // Load generator modifications
-//  umlpModulesDomainSymbols("umlp.modules:login:$version") // frontend domain symbols
-//  umlpModulesModels("umlp.modules:login:$version") // and models itself
-}
-
-configurations.configureEach {
-  if (it.name != 'guiLib') {
-    resolutionStrategy.dependencySubstitution {
-      substitute module("umlp.modules:login") using project(":modules:login")
-      substitute module("umlp.modules.login:backend") using project(":modules:login:backend")
-      substitute module("umlp.modules:comment") using project(":modules:comment")
-      substitute module("umlp.modules.comment:backend") using project(":modules:comment:backend")
-    }
-  }
+  umlpModules(project(":modules:login")) // Load generator modifications
+  umlpModules(project(":modules:comment")) // Load generator modifications
 }
 
 node {

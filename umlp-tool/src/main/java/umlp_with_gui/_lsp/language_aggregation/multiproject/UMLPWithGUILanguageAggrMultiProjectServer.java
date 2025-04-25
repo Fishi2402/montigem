@@ -45,7 +45,7 @@ public class UMLPWithGUILanguageAggrMultiProjectServer extends UMLPWithGUILangua
 
               @Override
               protected Path createTempInitScript() {
-                return createTempInitScript("/lsp/lsp_init.gradle");
+                return createTempInitScript("/lsp/lsp_init.gradle", DEFAULT_DATA_STRUCTURE_RESOURCE);
               }
             },
             new MultiProjectLanguageServerFileModelPathResolver(rootDir)
@@ -60,6 +60,15 @@ public class UMLPWithGUILanguageAggrMultiProjectServer extends UMLPWithGUILangua
             "Loading project layout via Gradle, this might take a while.\n" +
                 "Future startups for the same project should be much faster")
         );
+      }
+    });
+    resolver.addOnError(t -> {
+      if(languageClient != null){
+        languageClient.showMessage(new MessageParams(
+            MessageType.Error,
+            "Failed to load the project structure via Gradle. Check your tmp dir for logs. Msg was: "
+                + t.getMessage()
+        ));
       }
     });
     resolver.addPathUpdatedListener(this::updateBasedOnConfig);
