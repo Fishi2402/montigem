@@ -35,46 +35,50 @@ public class UMLPPluginModuleJSFrontend extends ALazyPublishingPlugin implements
 
     addDomainSymbolsJarAttributes(outgoingDomainSymbols, project);
 
+    var javaComponent = (AdhocComponentWithVariants) project.getComponents().getByName("java");
+    {
     TaskProvider<Jar> jarTask = project.getTasks().register("createDomainSymbolsJar", Jar.class, jar -> {
       jar.setGroup("umlp");
       jar.getArchiveClassifier().set("domainsymbols");
       jar.from(project.getTasks().named("createDomainSymbols"));
     });
-   project.getTasks().named(BasePlugin.ASSEMBLE_TASK_NAME).configure(it->it.dependsOn(jarTask));
+    project.getTasks().named(BasePlugin.ASSEMBLE_TASK_NAME).configure(it -> it.dependsOn(jarTask));
 
-   // Add createDomainSymbolsJar-jar as artifact to the config
-   project.getArtifacts().add(outgoingDomainSymbols.getName(), jarTask);
-   var javaComponent = (AdhocComponentWithVariants)project.getComponents().getByName("java");
-   javaComponent.addVariantsFromConfiguration(outgoingDomainSymbols, ConfigurationVariantDetails::mapToOptional);
+    // Add createDomainSymbolsJar-jar as artifact to the config
+    project.getArtifacts().add(outgoingDomainSymbols.getName(), jarTask);
+
+    javaComponent.addVariantsFromConfiguration(outgoingDomainSymbols, ConfigurationVariantDetails::mapToOptional);
 
     // Tell gradle, that the jar tasks builds a publication
     var publ = createPublishedArtifact(jarTask, project);
     // and add the publication to the outgoing artifacts
     outgoingDomainSymbols.getOutgoing().getArtifacts().add(publ);
+  }
 
    /// Also prepare publishing of
+    {
+      Configuration outgoingBundlesJS = project.getConfigurations().create("umlpOutgoingFrontendBundle");
+      outgoingBundlesJS.setCanBeConsumed(true);
+      outgoingBundlesJS.setCanBeResolved(false);
+      outgoingBundlesJS.setDescription("Published frontend source");
 
-    Configuration outgoingBundlesJS = project.getConfigurations().create("umlpOutgoingFrontendBundle");
-    outgoingBundlesJS.setCanBeConsumed(true);
-    outgoingBundlesJS.setCanBeResolved(false);
-    outgoingBundlesJS.setDescription("Published frontend source");
+      addBundledJSJarAttributes(outgoingBundlesJS, project);
 
-    addBundledJSJarAttributes(outgoingBundlesJS, project);
+      TaskProvider<Jar> bundleTask = project.getTasks().register("packFrontendAsZip", Jar.class, jar -> {
+        jar.setGroup("umlp");
+        jar.getArchiveClassifier().set("bundlejs");
+      });
+      project.getTasks().named(BasePlugin.ASSEMBLE_TASK_NAME).configure(it -> it.dependsOn(bundleTask));
 
-    TaskProvider<Jar> bundleTask = project.getTasks().register("packFrontendAsZip", Jar.class, jar -> {
-      jar.setGroup("umlp");
-      jar.getArchiveClassifier().set("bundlejs");
-    });
-    project.getTasks().named(BasePlugin.ASSEMBLE_TASK_NAME).configure(it->it.dependsOn(bundleTask));
+      // Add outgoingBundlesJS-jar as artifact to the config
+      project.getArtifacts().add(outgoingBundlesJS.getName(), bundleTask);
+      javaComponent.addVariantsFromConfiguration(outgoingBundlesJS, ConfigurationVariantDetails::mapToOptional);
 
-    // Add outgoingBundlesJS-jar as artifact to the config
-    project.getArtifacts().add(outgoingBundlesJS.getName(), bundleTask);
-    javaComponent.addVariantsFromConfiguration(outgoingBundlesJS, ConfigurationVariantDetails::mapToOptional);
-
-    // Tell gradle, that the jar tasks builds a publication
-    var bundleArtifact = createPublishedArtifact(jarTask, project);
-    // and add the publication to the outgoing artifacts
-    outgoingBundlesJS.getOutgoing().getArtifacts().add(bundleArtifact);
+      // Tell gradle, that the jar tasks builds a publication
+      var bundleArtifact = createPublishedArtifact(bundleTask, project);
+      // and add the publication to the outgoing artifacts
+      outgoingBundlesJS.getOutgoing().getArtifacts().add(bundleArtifact);
+    }
 
     // artifacts & addVariant is for now done in the module-frontends build.gradle
   }
