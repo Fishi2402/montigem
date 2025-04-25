@@ -104,6 +104,7 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
 
     });
 
+    // Add Symbols of RTE ClassDiagrams to SymbolPath
     if (local) {
       Project umlpRteClientProject = project.findProject(":umlp-rte:client");
       boolean createGuiSymbolsPresent = !umlpRteClientProject.getTasksByName("createGuiSymbols", false).isEmpty();

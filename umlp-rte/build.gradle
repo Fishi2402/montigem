@@ -53,6 +53,7 @@ tasks.register('generateGuiComponentJava', GUITypes2JavaTask) {
   hwcDir = project.layout.files("src/main/java")
   input = file("client/models/")
   outputDir = project.layout.buildDirectory.dir("guiComponentTypes")
+  symbolOutDir = project("client").tasks.named("createCDSymbols").get().getOutput()
 }
 
 // Let RTE assemble depend on the generation

@@ -49,37 +49,17 @@ public class TagRelated {
     // Extract singleton stereotypes and store them ina
     ASTTagUnit tagUnit = TagRepository.loadTempTagModel(ast.getCDDefinition().getName()).get();
     boolean[] hasTags = new boolean[1];
+
+    // e.g. RTE CDs are Pojo CDs, in which all Classes are tagged with 'pojo'
+    boolean isPojoCD = false;
+    if(ast.getCDDefinition().getModifier().isPresentStereotype()) {
+      isPojoCD = ast.getCDDefinition().getModifier().getStereotype().contains("pojoCD");
+    }
+
     UMLPTraverser traverser = UMLPMill.inheritanceTraverser();
     SimpleSymbolTagger tagger = new SimpleSymbolTagger(() -> Collections.singleton(tagUnit));
-    traverser.add4CDBasis(new CDBasisVisitor2() {
-      @Override
-      public void visit(ASTCDClass node) {
-        if (node.getModifier().isPresentStereotype() && node.getModifier().getStereotype().contains("singleton")) {
-          ASTTag astTag = TagsMill.simpleTagBuilder().setName("singleton").build();
-          hasTags[0] = true;
-          tagger.addTag(node.getSymbol(), astTag);
-          node.getCDMethodList().forEach(m -> {
-            ASTTag astTagCommand = TagsMill.simpleTagBuilder().setName("command").build();
-            tagger.addTag(m.getSymbol(), astTagCommand);
-            hasTags[0] = true;
-          });
-        }
-        if (node.getModifier().isDerived()) {
-          ASTTag astTag = TagsMill.simpleTagBuilder().setName("derived").build();
-          hasTags[0] = true;
-          tagger.addTag(node.getSymbol(), astTag);
-        }
-      }
-
-      @Override
-      public void visit(ASTCDAttribute node) {
-        if (node.getModifier().isDerived()) {
-          ASTTag astTag = TagsMill.simpleTagBuilder().setName("derived").build();
-          hasTags[0] = true;
-          tagger.addTag(node.getSymbol(), astTag);
-        }
-      }
-    });
+    traverser.add4CDBasis(new DomainModelTagVisitor(tagger, hasTags));
+    traverser.add4CDBasis(new PojoTaggerVisitor(tagger, hasTags, isPojoCD));
     ast.accept(traverser);
 
     String s = UMLPToolOptions.SYMTAB.getValue(cmd);
@@ -113,7 +93,6 @@ public class TagRelated {
         );
     }
   }
-
 
   public static void postInfo() {
     System.out.println("Finished usage of tags: Had " + Iterables.size(TagRepository.getLoadedTagUnits()) + " tag units");
@@ -185,6 +164,77 @@ public class TagRelated {
           }
         });
 
+  }
+
+  private static class DomainModelTagVisitor implements CDBasisVisitor2 {
+    SimpleSymbolTagger tagger;
+    boolean[] hasTags;
+
+    protected DomainModelTagVisitor (SimpleSymbolTagger tagger, boolean[] hasTags) {
+      this.tagger = tagger;
+      this.hasTags = hasTags;
+    }
+
+    @Override
+    public void visit(ASTCDClass node) {
+      if (node.getModifier().isPresentStereotype() && node.getModifier().getStereotype().contains("singleton")) {
+        ASTTag astTag = TagsMill.simpleTagBuilder().setName("singleton").build();
+        hasTags[0] = true;
+        tagger.addTag(node.getSymbol(), astTag);
+        node.getCDMethodList().forEach(m -> {
+          ASTTag astTagCommand = TagsMill.simpleTagBuilder().setName("command").build();
+          tagger.addTag(m.getSymbol(), astTagCommand);
+          hasTags[0] = true;
+        });
+      }
+      if (node.getModifier().isDerived()) {
+        ASTTag astTag = TagsMill.simpleTagBuilder().setName("derived").build();
+        hasTags[0] = true;
+        tagger.addTag(node.getSymbol(), astTag);
+      }
+    }
+
+    @Override
+    public void visit(ASTCDAttribute node) {
+      if (node.getModifier().isDerived()) {
+        ASTTag astTag = TagsMill.simpleTagBuilder().setName("derived").build();
+        hasTags[0] = true;
+        tagger.addTag(node.getSymbol(), astTag);
+      }
+    }
+  }
+
+  private static class PojoTaggerVisitor implements CDBasisVisitor2 {
+    SimpleSymbolTagger tagger;
+    boolean[] hasTags;
+    boolean isPojoCD = false;
+
+    protected PojoTaggerVisitor (SimpleSymbolTagger tagger, boolean[] hasTags) {
+      this.tagger = tagger;
+      this.hasTags = hasTags;
+    }
+
+    protected PojoTaggerVisitor (SimpleSymbolTagger tagger, boolean[] hasTags, boolean isPojoCD) {
+      this.tagger = tagger;
+      this.hasTags = hasTags;
+      this.isPojoCD = isPojoCD;
+    }
+
+    @Override
+    public void visit(ASTCDClass node) {
+      if(isPojoCD || isPojoClass(node)) {
+        ASTTag astTag = TagsMill.simpleTagBuilder().setName("pojo").build();
+        hasTags[0] = true;
+        tagger.addTag(node.getSymbol(), astTag);
+      }
+    }
+
+    public boolean isPojoClass(ASTCDClass node) {
+      if(node.getModifier().isPresentStereotype()) {
+        return node.getModifier().getStereotype().contains("pojo");
+      }
+      return false;
+    }
   }
 
 }

@@ -2,6 +2,7 @@
 package mc.fenix.charts;
 import java.util.List;
 
+<<pojoCD>>
 classdiagram GemSunburstChartTypes {
   public class GemSunburstData {
     GemSunburstEntry entry;
