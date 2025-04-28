@@ -83,9 +83,9 @@ export class FunctionDisplay extends FunctionDisplayComponent {
     }
     this.functionSvgMap.forEach((value, key) => {
       if(f.includes(key)){
-        value.setAttribute('stroke', 'rgb(0,119,190)');
+        this.markElement(value, key.getBorderColor());
       }else {
-        value.setAttribute('stroke', 'black');
+        this.unmarkElement(value);
       }
     })
   }
@@ -96,12 +96,14 @@ export class FunctionDisplay extends FunctionDisplayComponent {
     if(c == null){
       return;
     }
-    this.channelSvgMap.forEach((value, key) => {
-      if(c.includes(key)){
-        value.forEach(v => v.setAttribute('stroke', 'rgb(0,119,190)'));
-      }else {
-        value.forEach(v => v.setAttribute('stroke', 'black'));
-      }
+    this.channelSvgMap.forEach((values, key) => {
+      values.forEach(value => {
+        if(c.includes(key)){
+          this.markElement(value, key.getLineColor());
+        }else {
+          this.unmarkElement(value);
+        }
+      })
     })
   }
 
@@ -113,9 +115,9 @@ export class FunctionDisplay extends FunctionDisplayComponent {
     }
     this.portSvgMap.forEach((value, key) => {
       if(p.includes(key)){
-        value.setAttribute('stroke', 'rgb(0,119,190)');
+        this.markElement(value, key.getBorderColor());
       }else {
-        value.setAttribute('stroke', 'black');
+        this.unmarkElement(value);
       }
     })
   }
@@ -296,6 +298,9 @@ export class FunctionDisplay extends FunctionDisplayComponent {
     rect.addEventListener('click', () => this.functionClicked(node.funktion4display));
     rect.addEventListener('mouseover', () => this.functionHovered(node.funktion4display));
     rect.addEventListener('mouseout', () => this.functionMouseouted(node.funktion4display));
+    if(this.getSelectedFunctions().includes(node.funktion4display)){
+      this.markElement(rect, node.funktion4display.getBorderColor());
+    }
     rect.addEventListener('mouseover', () => {
       this.markElement(rect, 'rgb(0,119,190)');
     })
@@ -330,7 +335,7 @@ export class FunctionDisplay extends FunctionDisplayComponent {
       portRect.addEventListener('mouseover', () => this.portHovered(port.port4display));
       portRect.addEventListener('mouseout', () => this.portMouseouted(port.port4display));
       if(this.getSelectedPorts().includes(port.port4display)){
-        this.markElement(portRect, 'rgb(0,119,190)');
+        this.markElement(portRect, port.port4display.getBorderColor());
       }
       portRect.addEventListener('mouseover', () => {
         this.markElement(portRect, 'rgb(0,119,190)');
@@ -376,7 +381,7 @@ export class FunctionDisplay extends FunctionDisplayComponent {
         polyline.addEventListener('mouseover', () => this.channelHovered(edge.channel4Display))
         polyline.addEventListener('mouseout', () => this.channelMouseouted(edge.channel4Display))
         if(this.getSelectedChannels().includes(edge.channel4Display)){
-          this.markElement(polyline, 'rgb(0,119,190)');
+          this.markElement(polyline, edge.channel4Display.getLineColor());
         }
         g.appendChild(polyline);
         let hiddenPolyline = document.createElementNS(svgNS, "polyline");
@@ -385,8 +390,7 @@ export class FunctionDisplay extends FunctionDisplayComponent {
         hiddenPolyline.setAttribute("stroke-width", "15");
         hiddenPolyline.setAttribute("fill", "none");
         hiddenPolyline.addEventListener('mouseover', () => {
-          polyline.setAttribute("stroke", "rgb(0,119,190)");
-          polyline.setAttribute("stroke-width", '5')
+          this.markElement(polyline, 'rgb(0,119,190)');
         })
         hiddenPolyline.addEventListener('mouseout', () => {
           if(!this.getSelectedChannels().includes(edge.channel4Display)){

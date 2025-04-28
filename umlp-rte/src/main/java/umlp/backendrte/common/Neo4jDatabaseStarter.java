@@ -52,4 +52,11 @@ public class Neo4jDatabaseStarter {
     // running application).
     Runtime.getRuntime().addShutdownHook(new Thread(managementService::shutdown));
   }
+
+  /**
+   * Sometimes needed for configuring a Neo4j Test Instance
+   */
+  public static DatabaseManagementService getManagementService() {
+    return managementService;
+  }
 }

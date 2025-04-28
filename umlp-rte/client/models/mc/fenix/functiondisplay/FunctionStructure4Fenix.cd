@@ -9,9 +9,12 @@ import java.time.LocalDate;
 classdiagram FunctionStructure4Fenix {
     class Function4Display {
       String name;
+      String borderColor;
     }
 
-    class Channel4Display;
+    class Channel4Display{
+      String lineColor;
+    }
 
     /**
      Since Fenix currently does not support qualified associations, we emulate them using the `Port`
@@ -26,6 +29,7 @@ classdiagram FunctionStructure4Fenix {
     */
     class Port4Display {
       String name;
+      String borderColor;
     }
 
     association [0..1] Function4Display (onwerIn) -> (in) Port4Display [*];

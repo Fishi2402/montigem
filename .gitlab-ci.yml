@@ -235,6 +235,15 @@ trigger-montigem3-tutorial:
   only:
     - dev
 
+trigger-artifacts:
+  stage: testDeployed
+  allow_failure: false # Failure is not an option
+  trigger:
+    project: monticore/artifacts/artifacts
+    branch: dev
+  only:
+    - dev
+
 checkMDLinks:
   stage: check
   script:
