@@ -179,6 +179,7 @@ sourceSets {
 
 tasks.register('symbolJar', Jar) {
   from sourceSets.symbols.output
+  dependsOn parent.assemble
   includeEmptyDirs = false
 }
 
