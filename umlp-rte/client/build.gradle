@@ -55,8 +55,6 @@ def publishTaskPrefix = "publish_"
 def copyTaskPrefix = "copy_types_"
 def genTaskPrefix = "gen_"
 def genNpmrcTaskPrefix = "npmrc_"
-def importMapTaskPrefix = "import_map_"
-def targetImportsDir = layout.buildDirectory.dir("import_maps").get().asFile
 def buildFolders = []
 
 libs.each {
@@ -111,7 +109,6 @@ libs.each {
   }
 
   tasks[buildTaskName].dependsOn tasks[copyTaskName]
-  def copyImportMapTaskName = "${importMapTaskPrefix}${libName}"
   def genTaskName = "${genTaskPrefix}${libName}"
 
   if (libName in componentLibs) {
@@ -128,18 +125,7 @@ libs.each {
       tslib = "@umlp/${libName}"
     }
 
-    task "${copyImportMapTaskName}"(type: Copy) {
-      into targetImportsDir
-
-      // e.g. `arrange/build/gui/import.map`
-      from("projects/${libName}/build/gui/import.map") {
-        // e.g. `arrange/build/arrange/import.map`
-        into(libName)
-      }
-    }
-
-    tasks[copyImportMapTaskName].dependsOn tasks[genTaskName]
-    tasks[buildTaskName].dependsOn tasks[copyImportMapTaskName]
+    tasks[buildTaskName].dependsOn tasks[genTaskName]
   }
 }
 
@@ -176,14 +162,14 @@ build.dependsOn(buildAll)
 
 publish.dependsOn(publishAll)
 
-dependencies {
-}
-
 sourceSets {
   symbols {
     resources {
-      srcDirs(createCDSymbols.getOutput(), createGuiSymbols.getOutput(), targetImportsDir)
-      include "**/*sym", "**/import.map"
+      srcDirs(createCDSymbols.getOutput(), createGuiSymbols.getOutput())
+      srcDirs libs.collect {
+        file("projects/$it/build/gui")
+      }
+      include "**/*sym", "**/*import.map"
     }
   }
 }

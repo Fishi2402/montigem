@@ -129,8 +129,13 @@ publish.dependsOn(publishAll)
 sourceSets {
   symbols {
     resources {
-      srcDirs(createDomainSymbols.getSymbolOutDir(), createGuiSymbols.getOutput())
-      include "**/*sym"
+      srcDirs(
+          createDomainSymbols.getSymbolOutDir(),
+          createGuiSymbols.getOutput(),
+          genDomain.getOutputDir(),
+          genGUI.getOutputDir()
+      )
+      include "**/*sym", "**/*import.map"
     }
   }
 }
@@ -138,6 +143,14 @@ sourceSets {
 tasks.register('symbolJar', Jar) {
   from sourceSets.symbols.output
   includeEmptyDirs = false
+  doLast {
+    println "Files in ${archiveFile.get().asFile}:"
+    def jarFile = new java.util.jar.JarFile(archiveFile.get().asFile)
+    jarFile.entries().each { entry ->
+      println entry.name
+    }
+    jarFile.close()
+  }
 }
 
 jar.dependsOn(symbolJar)

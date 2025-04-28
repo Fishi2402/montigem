@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-// TODO AGe: move to frontend-rte
 public enum TSImportMap {
   INSTANCE;
 
@@ -50,8 +49,8 @@ public enum TSImportMap {
 
   public Optional<String> getTSPackage(String javaPackage) {
     for (String key : importMap.keySet()) {
-      if (javaPackage.equals(key)) {
-        if (key.equals(BACKEND_RTE) && UMLPGeneratorConfig.getInstance().isUseJsweet()) {
+      if (javaPackage.toLowerCase().startsWith(key.toLowerCase())) {
+        if (key.startsWith(BACKEND_RTE) && UMLPGeneratorConfig.getInstance().isUseJsweet()) {
           return Optional.of(JSWEET_RTE);
         }
         return Optional.of(importMap.get(key));
@@ -62,7 +61,7 @@ public enum TSImportMap {
 
   public boolean isTSPackageImport(String javaPackage) {
     for (String key : importMap.keySet()) {
-      if (javaPackage.equals(key)) {
+      if (javaPackage.toLowerCase().startsWith(key.toLowerCase())) {
         return false;
       }
     }

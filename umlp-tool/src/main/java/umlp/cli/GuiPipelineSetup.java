@@ -22,7 +22,7 @@ import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
 import umlp.generator.gui.genjava.GUI2JavaGenerator;
 import umlp.generator.gui.gentypescript.GUI2TSGenerator;
 import umlp.generator.gui.gentypescript.config.GUI2ConfigGenerator;
-import umlp.generator.gui.gentypescript.config.GUI2ImportMapGenerator;
+import umlp.generator.gui.gentypescript.config.ImportMapGenerator;
 import umlp.generator.gui.gentypescript.config.PackageRoute;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
 
@@ -277,7 +277,7 @@ public class GuiPipelineSetup {
       data -> {
         Optional<String> tslib = UMLPGeneratorConfig.getInstance().getTSLib();
         if (tslib.isPresent()) {
-          GUI2ImportMapGenerator importMapGenerator = new GUI2ImportMapGenerator(data.getGenSetup());
+          ImportMapGenerator importMapGenerator = new ImportMapGenerator(data.getGenSetup());
           importMapGenerator.generate(tslib.get(), data.getASTs());
         }
       };

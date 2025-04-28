@@ -24,6 +24,9 @@ genDomain {
   // Alternative: Generate the module-frontend-domain too
   input = file("../models/Dtcockpit.umlp")
 //  modelDir.from(configurations.umlpModulesModels) // TODO: Move this module logic into the plugin
+  debug = true
+  outputs.upToDateWhen { false }
+  /**/
 }
 
 genGUI {
