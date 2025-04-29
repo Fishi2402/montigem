@@ -1,3 +1,4 @@
+import org.gradle.api.internal.artifacts.dependencies.DefaultProjectDependency
 import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
@@ -9,18 +10,31 @@ plugins {
 }
 
 dependencies {
-  umlpModules("umlp.modules:login:$version")
-//  umlpModulesGen("umlp.modules:login:$version")
-//  implementation("umlp.modules:login:$version")
-//  umlpModulesModels("umlp.modules:login:$version") // and models itself
+  umlpModules(project(":modules:login"))
 }
 
-// ALus local gradle is apparently unaware of these versions?
-// Explicitly use the local login module
-configurations.configureEach {
-  resolutionStrategy.dependencySubstitution {
-    substitute module("umlp.modules:login") using project(":modules:login")
-    substitute module("umlp.modules.login:backend") using project(":modules:login:backend")
+// Use this to debug dependencies
+tasks.register("reportDependenciesCI") { task ->
+  println("The following libs were used:")
+  project.configurations.each { config ->
+    // dependencies of configuration ':examples:dtcockpit:backend:compileClasspath'umlp.modules:login DefaultExternalModuleDependency{group='umlp.modules', name='login', version='7.8.0-SNAPSHOT', configuration='default'}
+    //[C:\Users\ALu\.gradle\caches\modules-2\files-2.1\\ umlp.modules\login\7.8.0-SNAPSHOT\da276b235a3e1f9f2c4c1d74e675ebcd7a2ef07f\login-7.8.0-SNAPSHOT.jar,
+    if (config.isCanBeResolved()) {
+      println("config " + project.path + " : " + config.name + " " + config.isCanBeResolved())
+      config.allDependencies.each { d ->
+        if (d instanceof ExternalModuleDependency) {
+          println("dependencies of " + config)
+          println(d.getGroup() + ":" + d.getName() + " " + d)
+          println(config.fileCollection(d).getFiles())
+        } else if (d instanceof DefaultProjectDependency) {
+          println("dependencies of (project) " + config)
+          println(d.getGroup() + ":" + d.getName() + " (local) " + d)
+          println(config.fileCollection(d).getFiles())
+        } else {
+          println("unknown d " + d)
+        }
+      }
+    }
   }
 }
 

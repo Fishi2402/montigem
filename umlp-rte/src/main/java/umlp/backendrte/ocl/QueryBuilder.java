@@ -24,6 +24,12 @@ public abstract class QueryBuilder {
 
   public abstract String build();
 
+  public void clear() {
+    this._alias = "";
+    this._where = "";
+    this.hasWhere = false;
+  }
+
   protected String printAttr(String attr) {
     if (!_alias.isBlank()) {
       if (attr.equals("id")) {

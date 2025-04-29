@@ -11,7 +11,7 @@ import gui.staticcontainer.StatTableRow;
 
 component PackTypeOverview(BatteryPackType type) {
   @StatTable(rows = [
-    @StatTableRow(left = @GemText(value = "Car "), right = @GemText(value=type.carModel+" ("+type.carYear+") "+type.carBrand)),
+    @StatTableRow(left = @GemText(value = "Car "), right = @GemText(value=type.carModel.toString()+" ("+type.carYear.toString()+") "+type.carBrand.toString())),
     @StatTableRow(left = @GemText(value = "Voltage (V)"), right = @GemText(value = type.voltage)),
     @StatTableRow(left = @GemText(value = "Capacity (kWh)"), right = @GemText(value = type.capacity)),
     @StatTableRow(left = @GemText(value = "BMS located at "), right = @GemText(value = type.bmsLocation)),

@@ -17,13 +17,13 @@ import mc.fenix.functiondisplay.functionstructure4fenix.Port4DisplayBuilder;
 import umlp.guiutil.Router;
 import umlp.jsweet.extension.annotation.Component;
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
+import java.util.Random;
 import java.util.function.Consumer;
 
 @Component
@@ -269,6 +269,7 @@ public class FunctionDetail extends FunctionDetailTOP {
       function4Display.owner(Optional.ofNullable(function.getOwner() != null
           ? this.function2Function4Display(function.getOwner(),  portMap)
           : null));
+      function4Display.borderColor(randomColor());
       return function4Display.build().get();
     }
   }
@@ -285,6 +286,7 @@ public class FunctionDetail extends FunctionDetailTOP {
       port4Display.channel4Display(port.getChannel() != null
               ? channel2Channel4Display(port.getChannel())
               : null);
+      port4Display.borderColor(randomColor());
       return port4Display.build().get();
     }
   }
@@ -300,9 +302,15 @@ public class FunctionDetail extends FunctionDetailTOP {
         ports.add(port2Port4Display(channel.getPort(i)));
       }
       channel4Display.port4Display(ports);
+      channel4Display.lineColor(randomColor());
       channel2displayMap.put(channel, channel4Display);
       display2channelMap.put(channel4Display, channel);
       return channel4Display;
     }
+  }
+
+  private String randomColor() {
+    String[] colors = {"#FF5733", "#33FF57", "#3357FF", "#F1C40F", "#8E44AD", "#E74C3C", "#3498DB"};
+    return colors[(int) (Math.random() * colors.length)];
   }
 }

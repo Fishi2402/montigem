@@ -45,7 +45,7 @@ public class FunctionStructure4FenixServerApplication extends FunctionStructure4
         "-main", "L"
     });
     MA2FenixTool.main(new String[] {
-        "-mp", input3.toAbsolutePath().toString(),
+        "-i", input3.toAbsolutePath().toString(),
         "-main", "de.rwth.armin.modeling.autopilot.Autopilot"
     });
   }
