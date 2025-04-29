@@ -6,6 +6,7 @@ import gradle.specific.UMLPFrontendTask;
 import gradle.specific.UMLPGuiGenTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.file.DuplicatesStrategy;
 import org.gradle.api.tasks.Sync;
 import org.gradle.api.tasks.TaskProvider;
 
@@ -104,6 +105,7 @@ public abstract class UMLPPluginFrontendNonJSweet implements Plugin<Project> {
     t.configure(task -> {
       task.setGroup("umlp");
       task.setDescription("Unpacks all umlp modules");
+      task.setDuplicatesStrategy(DuplicatesStrategy.WARN); // TODO: why is domain symbols included here for :frontend?
       // Make sure to provide a lazy-provider to #from
       task.from(project.provider(
           // And expand the zipfile

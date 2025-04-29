@@ -38,6 +38,7 @@ public class OCL2SQLPrinter implements SetExpressionsVisitor2, ExpressionsBasisV
         String name = item.getGeneratorDeclaration().getName();
         if (qb.isPresent()) {
           queryBuilder = qb.get();
+          queryBuilder.clear();
           queryBuilder.as(name);
         }
         else {

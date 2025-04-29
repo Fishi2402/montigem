@@ -9,16 +9,25 @@ import org.gradle.api.attributes.LibraryElements;
 import org.gradle.api.attributes.Usage;
 import org.gradle.api.component.AdhocComponentWithVariants;
 import org.gradle.api.component.ConfigurationVariantDetails;
+import org.gradle.api.component.SoftwareComponentFactory;
+import org.gradle.api.internal.tasks.TaskDependencyFactory;
 import org.gradle.api.plugins.BasePlugin;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.bundling.Jar;
 
+import javax.inject.Inject;
 
-public class UMLPPluginModuleJSFrontend implements Plugin<Project> {
+
+public class UMLPPluginModuleJSFrontend extends ALazyPublishingPlugin implements Plugin<Project> {
+
+  @Inject
+  public UMLPPluginModuleJSFrontend(SoftwareComponentFactory softwareComponentFactory, TaskDependencyFactory taskDependencyFactory) {
+    super(softwareComponentFactory, taskDependencyFactory);
+  }
+
   @Override
   public void apply(Project project) {
-    // Create the models jar
-
+    // Create the domain symbols jar
     Configuration outgoingDomainSymbols = project.getConfigurations().create("umlpOutgoingDomainSymbols");
     outgoingDomainSymbols.setCanBeConsumed(true);
     outgoingDomainSymbols.setCanBeResolved(false);
@@ -26,38 +35,50 @@ public class UMLPPluginModuleJSFrontend implements Plugin<Project> {
 
     addDomainSymbolsJarAttributes(outgoingDomainSymbols, project);
 
+    var javaComponent = (AdhocComponentWithVariants) project.getComponents().getByName("java");
+    {
     TaskProvider<Jar> jarTask = project.getTasks().register("createDomainSymbolsJar", Jar.class, jar -> {
       jar.setGroup("umlp");
       jar.getArchiveClassifier().set("domainsymbols");
       jar.from(project.getTasks().named("createDomainSymbols"));
     });
-   project.getTasks().named(BasePlugin.ASSEMBLE_TASK_NAME).configure(it->it.dependsOn(jarTask));
-
-   // Add createDomainSymbolsJar-jar as artifact to the config
-   project.getArtifacts().add(outgoingDomainSymbols.getName(), jarTask);
-   var javaComponent = (AdhocComponentWithVariants)project.getComponents().getByName("java");
-   javaComponent.addVariantsFromConfiguration(outgoingDomainSymbols, ConfigurationVariantDetails::mapToOptional);
-
-
-   /// Also prepare publishing of
-
-    Configuration outgoingBundlesJS = project.getConfigurations().create("umlpOutgoingFrontendBundle");
-    outgoingBundlesJS.setCanBeConsumed(true);
-    outgoingBundlesJS.setCanBeResolved(false);
-    outgoingBundlesJS.setDescription("Published frontend source");
-
-    addBundledJSJarAttributes(outgoingBundlesJS, project);
-
-    TaskProvider<Jar> bundleTask = project.getTasks().register("packFrontendAsZip", Jar.class, jar -> {
-      jar.setGroup("umlp");
-      jar.getArchiveClassifier().set("bundlejs");
-    });
-    project.getTasks().named(BasePlugin.ASSEMBLE_TASK_NAME).configure(it->it.dependsOn(bundleTask));
+    project.getTasks().named(BasePlugin.ASSEMBLE_TASK_NAME).configure(it -> it.dependsOn(jarTask));
 
     // Add createDomainSymbolsJar-jar as artifact to the config
-    project.getArtifacts().add(outgoingBundlesJS.getName(), bundleTask);
-    javaComponent.addVariantsFromConfiguration(outgoingBundlesJS, ConfigurationVariantDetails::mapToOptional);
+    project.getArtifacts().add(outgoingDomainSymbols.getName(), jarTask);
 
+    javaComponent.addVariantsFromConfiguration(outgoingDomainSymbols, ConfigurationVariantDetails::mapToOptional);
+
+    // Tell gradle, that the jar tasks builds a publication
+    var publ = createPublishedArtifact(jarTask, project);
+    // and add the publication to the outgoing artifacts
+    outgoingDomainSymbols.getOutgoing().getArtifacts().add(publ);
+  }
+
+   /// Also prepare publishing of
+    {
+      Configuration outgoingBundlesJS = project.getConfigurations().create("umlpOutgoingFrontendBundle");
+      outgoingBundlesJS.setCanBeConsumed(true);
+      outgoingBundlesJS.setCanBeResolved(false);
+      outgoingBundlesJS.setDescription("Published frontend source");
+
+      addBundledJSJarAttributes(outgoingBundlesJS, project);
+
+      TaskProvider<Jar> bundleTask = project.getTasks().register("packFrontendAsZip", Jar.class, jar -> {
+        jar.setGroup("umlp");
+        jar.getArchiveClassifier().set("bundlejs");
+      });
+      project.getTasks().named(BasePlugin.ASSEMBLE_TASK_NAME).configure(it -> it.dependsOn(bundleTask));
+
+      // Add outgoingBundlesJS-jar as artifact to the config
+      project.getArtifacts().add(outgoingBundlesJS.getName(), bundleTask);
+      javaComponent.addVariantsFromConfiguration(outgoingBundlesJS, ConfigurationVariantDetails::mapToOptional);
+
+      // Tell gradle, that the jar tasks builds a publication
+      var bundleArtifact = createPublishedArtifact(bundleTask, project);
+      // and add the publication to the outgoing artifacts
+      outgoingBundlesJS.getOutgoing().getArtifacts().add(bundleArtifact);
+    }
 
     // artifacts & addVariant is for now done in the module-frontends build.gradle
   }

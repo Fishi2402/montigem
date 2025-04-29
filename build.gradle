@@ -134,6 +134,9 @@ subprojects {
       ))
     }
   }
+  gradle.taskGraph.whenReady {
+    it.getAllTasks().findAll { ["distZip", "distTar", "bootDistZip", "bootDistTar"].contains(it.name) }.each{ it.enabled = false }
+  }
 }
 
 repositories { // required to resolve the ecj dependency, including the whole chain of repos to avoid unexpected behaviour

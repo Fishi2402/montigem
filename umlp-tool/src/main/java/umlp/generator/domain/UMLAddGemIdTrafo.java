@@ -16,6 +16,10 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._visitor.CDBasisVisitor2;
+import de.monticore.types.MCTypeFacade;
+import de.monticore.types.mcbasictypes.MCBasicTypesMill;
+import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
+import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import umlp.UMLPMill;
 
 /*
@@ -39,7 +43,7 @@ public class UMLAddGemIdTrafo implements CDBasisVisitor2, CD4CodeBasisVisitor2 {
     if (!ast.isPresentCDExtendUsage() && !ast.getCDAttributeList().stream().anyMatch(a -> GEM_ID.equals(a.getName()))) {
       // Add attribute
       ast.addCDMember(CDAttributeFacade.getInstance().
-          createAttribute(CDModifier.PUBLIC.build(), "long", GEM_ID));
+          createAttribute(CDModifier.PUBLIC.build(), createLongType(), GEM_ID));
     }
   }
 
@@ -48,12 +52,18 @@ public class UMLAddGemIdTrafo implements CDBasisVisitor2, CD4CodeBasisVisitor2 {
     if (!ast.isPresentCDExtendUsage() && !ast.getCDAttributeList().stream().anyMatch(a -> GEM_ID.equals(a.getName()))) {
       // Add attribute
       ast.addCDMember(CDAttributeFacade.getInstance().
-          createAttribute(CDModifier.PUBLIC.build(), "long", GEM_ID));
+          createAttribute(CDModifier.PUBLIC.build(), createLongType(), GEM_ID));
     }
   }
 
   public void transform(ASTCDCompilationUnit ast) {
     ast.accept(this.traverser);
+  }
+
+  protected ASTMCPrimitiveType createLongType() {
+    return MCBasicTypesMill.mCPrimitiveTypeBuilder()
+        .setPrimitive(ASTConstantsMCBasicTypes.LONG)
+        .build();
   }
 
 }
