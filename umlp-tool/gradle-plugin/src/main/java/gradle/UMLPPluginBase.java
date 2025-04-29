@@ -93,9 +93,8 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
         if (!project.getPath().equals(":umlp-rte:client")) {
           project.getConfigurations().getByName(GUI_LIB_NAME).getDependencies().add(project.getDependencies().project(Map.of("path", ":umlp-rte:client", "configuration", "localGuiLib", "transitive", false)));
         }
-      }
-      else {
-        project.getDependencies().add(GUI_LIB_NAME, "umlp.umlp-rte:client:" + UMLPPluginFrontend.getStringProjectProperty(project, "mc_version", ""));
+      } else {
+        project.getDependencies().add(GUI_LIB_NAME, "umlp.umlp-rte:client:" + UMLPPluginFrontend.getStringProjectProperty(project, "mc_version", "")+":symbols");
       }
     }
 
