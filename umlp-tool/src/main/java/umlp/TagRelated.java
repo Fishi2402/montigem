@@ -23,11 +23,16 @@ import umlp._visitor.UMLPTraverser;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -104,12 +109,25 @@ public class TagRelated {
   public static void initLookup(MCPath importedSymbolPath) {
     System.out.println("Init tag lookup: " + importedSymbolPath.getEntries().size() + "(" + Iterables.size(TagRepository.getLoadedTagUnits()) + ") in " + importedSymbolPath.getEntries());
     TagRepository.clearTags(); // Make sure to unload all previous tags from earlier runs
-    Set<File> tagFiles = importedSymbolPath.getEntries().stream()
-        .map(x -> x.toFile().listFiles(f -> f.getName().endsWith(".tags")))
-        .filter(Objects::nonNull)
-        .flatMap(Arrays::stream)
-        .peek(p -> System.out.println("Looking for tags within " + p.getAbsolutePath()))
-        .collect(Collectors.toSet());
+    Set<File> tagFiles = new HashSet<>();
+    importedSymbolPath.getEntries()
+        .forEach(path -> {
+          try {
+            Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+              @Override
+              public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                // Check if the file ends with .tags
+                if (file.toString().endsWith(".tags")) {
+                  tagFiles.add(file.toFile());
+                  Log.info("Loading tag file "+file, this.getClass().getName());
+                }
+                return FileVisitResult.CONTINUE;
+              }
+            });
+          }catch (IOException e) {
+            Log.warn("Failed to look up tags for path "+path, e);
+          }
+        });
 
     // note: The generic Tags language does not support concrete UMLP syntax tagging
     TagsMill.init();
