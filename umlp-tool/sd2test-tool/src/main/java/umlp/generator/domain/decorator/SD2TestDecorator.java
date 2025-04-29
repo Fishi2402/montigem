@@ -21,11 +21,10 @@ public class SD2TestDecorator {
   public void transform(ASTSDArtifact sdAst, ASTCDCompilationUnit decoratedCD) {
     var name = sdAst.getSequenceDiagram().getName();
     var targetPackage = getPackage(name.toLowerCase(), decoratedCD);
-    //TODO how do origins work?
-    targetPackage.addCDElement(createTest(sdAst, decoratedCD));
+    targetPackage.addCDElement(createTest(sdAst));
   }
 
-  private ASTCDElement createTest(ASTSDArtifact model, ASTCDCompilationUnit decoratedCD) {
+  private ASTCDElement createTest(ASTSDArtifact model) {
     var name = model.getSequenceDiagram().getName();
 
     var testClass = CD4CodeBasisMill.cDClassBuilder()
