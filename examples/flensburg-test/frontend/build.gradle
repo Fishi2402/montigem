@@ -55,7 +55,7 @@ tasks.register('genGUI', UMLPGuiGenTask) {
   modelDir = layout.projectDirectory.dir("../models")
   symbolDir = files(
       genDomain.symbolOutDir,
-      project(":umlp-rte:client").configurations.rteSymbolPath,
+    configurations.guiLib,
       configurations.guiDefaultTypes
   )
   domainModels = ["hardy.Flensburg"]

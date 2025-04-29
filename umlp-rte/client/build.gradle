@@ -13,7 +13,9 @@ repositories {
 
 configurations {
   guiDefaultTypes
-  localGuiLib
+  localGuiLib {
+    canBeConsumed = true
+  }
 }
 
 dependencies {
@@ -181,22 +183,12 @@ sourceSets {
 }
 
 tasks.register('symbolJar', Jar) {
+  dependsOn createCDSymbols
+  dependsOn createGuiSymbols
   from sourceSets.symbols.output
+  archiveClassifier.set('symbols')
   includeEmptyDirs = false
 }
-// Publish the this projects symbols-jar in its configuration
-// (Enables easier modification)
-configurations {
-  rteSymbolPath {
-    canBeConsumed = true
-    canBeResolved = true
-  }
-}
-artifacts {
-  rteSymbolPath(symbolJar)
-}
-
-
 
 jar.dependsOn(symbolJar)
 

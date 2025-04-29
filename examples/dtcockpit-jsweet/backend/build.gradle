@@ -95,7 +95,7 @@ tasks.register('genTestGUI', UMLPGuiGenTask) {
   modelDir = layout.projectDirectory.dir("../models")
   symbolDir = files(
       generateUmlpBackend.symbolOutDir,
-      project(":umlp-rte:client").configurations.rteSymbolPath,
+      configurations.guiLib,
       configurations.guiDefaultTypes
   )
   domainModels = ["Dtcockpit"]

@@ -37,11 +37,6 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
     project.getPluginManager().apply("java");
 
     boolean local = getBooleanProjectProperty(project, "useLocalDependencies");
-    if (!local) {
-      project.getConfigurations().register(GUI_LIB_NAME);
-      project.getDependencies().add(GUI_LIB_NAME, "umlp.umlp-rte:client:" +
-          UMLPPluginFrontendBase.getStringProjectProperty(project, "mc_version", ""));
-    }
 
     TaskProvider<UMLPBackendTask> umlpTask = createUMLPBackendTask(project, UMLP_BACKEND_TASK_NAME, local);
     // Generate Backend must run before JavaCompile
