@@ -3,6 +3,7 @@ package mc.fenix.charts;
 import java.util.List;
 import java.util.Optional;
 
+<<pojoCD>>
 classdiagram GemRadarChartTypes {
 
   class GemRadarChartData {

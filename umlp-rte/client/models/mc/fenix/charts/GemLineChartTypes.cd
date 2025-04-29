@@ -2,6 +2,7 @@
 package mc.fenix.charts;
 import java.util.List;
 
+<<pojoCD>>
 classdiagram GemLineChartTypes {
 
   public class GemLineChartData {

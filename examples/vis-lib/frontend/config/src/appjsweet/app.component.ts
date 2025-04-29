@@ -3,9 +3,6 @@ import { DomainManagerClientImpl } from 'domain/DomainManagerClientImpl';
 // JSweet
 import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager, BaseClassObjectMapper } from '@umlp/commonj2ts';
 import { DomainComponentObserverManager } from 'DomainComponentObserverManager'
-// Non-JSweet
-import {GemBarChartTypesDeSer} from '@umlp/charts'
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -22,6 +19,5 @@ export class AppComponent {
     (<any>window).websocket_connected = true;
     // JSweet
     DomainComponentObserverManager.init();
-    BaseClassObjectMapper.addDeSers(GemBarChartTypesDeSer.getInstance().getDeSerMap())
   }
 }

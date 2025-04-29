@@ -1,19 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 package domain;
 
-import mc.fenix.charts.gembarcharttypes.GemBarChartTypesDeSer;
-import mc.fenix.charts.gempiecharttypes.GemPieChartTypesDeSer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import umlp.backendrte.common.BaseClassObjectMapper;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class,
     HibernateJpaAutoConfiguration.class}, scanBasePackages = {"umlp.backendrte.service.websocket",
@@ -28,9 +24,6 @@ public class DomainServerApplication extends domain.DomainServerApplicationTOP {
   @Override
   public void init() throws IOException {
     super.init();
-
-    BaseClassObjectMapper.addDeSers(new ArrayList<>(GemBarChartTypesDeSer.getInstance().getDeSerMap().entrySet()));
-    BaseClassObjectMapper.addDeSers(new ArrayList<>(GemPieChartTypesDeSer.getInstance().getDeSerMap().entrySet()));
     createDummyData();
   }
 

@@ -3,6 +3,7 @@ package mc.fenix.networkgraph;
 import java.util.List;
 import java.util.Optional;
 
+<<pojoCD>>
 classdiagram NetworkGraphTypes {
 
   public class Graph {

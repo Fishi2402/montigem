@@ -3,15 +3,22 @@
 package umlp.generator.domain.decorator;
 
 import de.monticore.cdbasis._ast.*;
+import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.se_rwth.commons.Joiners;
+import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
+import umlp.generator.rte.data.RTEDeSerDecorator;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.TagLookUp;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -47,8 +54,14 @@ public class BaseClassObjectMapperDecorator extends AbstractDecorator {
     getCD4C().addConstructor(mapperClass, getConstructorTemplate(),
         new ArrayList<>(), name+SUFFIX);
 
+    Map<String, String> deserInits = getNecessaryImportToDeSerMap(origCD);
+
     // add methods
-    getCD4C().addMethod(mapperClass, getInitTemplate(), name);
+    getCD4C().addMethod(mapperClass, getInitTemplate(), name, deserInits.values());
+
+    deserInits.keySet().forEach(deserImport -> {
+      getCD4C().addImport(mapperClass, deserImport);
+    });
 
     addImports(mapperClass);
 
@@ -67,5 +80,24 @@ public class BaseClassObjectMapperDecorator extends AbstractDecorator {
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("BaseClassObjectMapper"));
   }
 
+  protected Map<String, String> getNecessaryImportToDeSerMap(ASTCDCompilationUnit compilationUnit) {
+    Map<String, String> deSerNames = new HashMap<>();
+    compilationUnit.getMCImportStatementList().forEach(i -> {
+      Optional<CDTypeSymbol> symbol = compilationUnit.getEnclosingScope().resolveCDType(i.getQName());
+
+      if(symbol.isPresent() && TagLookUp.isPojo(symbol.get())) {
+        Log.info("Found POJO Symbol, adding initialization logic for DeSers.", this.getClass().getName());
+
+        String fullyQualifiedCdName = symbol.get().getPackageName();
+        String[] parts = fullyQualifiedCdName.split("\\.");
+        String simpleCDName = parts[parts.length-1];
+        String simpleDeserName = simpleCDName+RTEDeSerDecorator.SUFFIX;
+        String fullyQualifiedDeSerName = Joiners.DOT.join(fullyQualifiedCdName.toLowerCase(),
+            simpleDeserName);
+        deSerNames.put(fullyQualifiedDeSerName, simpleDeserName);
+      }
+    });
+    return deSerNames;
+  }
 
 }
