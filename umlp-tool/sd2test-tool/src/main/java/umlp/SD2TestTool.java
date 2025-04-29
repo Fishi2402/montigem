@@ -69,6 +69,8 @@ public class SD2TestTool extends SD4DevelopmentTool {
     generatorSetup.setGlex(glex);
     generatorSetup.setOutputDirectory(new File(outputDirectoryPath));
     var generator = new CDGenerator(generatorSetup);
+
+    //TODO the generator can't be called like that
     generator.generate(decoratedCD);
   }
 
@@ -106,6 +108,7 @@ public class SD2TestTool extends SD4DevelopmentTool {
 
     //artifact scope
     var artifactScope = createSymbolTable(model);
+    artifactScope.resolveType("Webshop.Order"); //TODO it doesn't work without this
     SD4DevelopmentSymbolTableCompleter.apply(model);
     globalScope.addSubScope(artifactScope);
   }
