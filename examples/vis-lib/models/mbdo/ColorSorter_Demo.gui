@@ -1,8 +1,8 @@
 package mbdo;
 
 import Domain.MbdoColorSorterState;
-import mbdo.components.ColorSorter;
 
+import mc.fenix.fischertechnik.ColorSorter;
 import mc.fenix.arrange.GemColumn;
 import mc.fenix.input.GemRangeInput;
 import mc.fenix.input.GemCheckBoxInput;

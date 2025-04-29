@@ -1,8 +1,8 @@
 package mbdo;
 
 import Domain.MbdoTransportbeltState;
-import mbdo.components.Transportbelt;
 
+import mc.fenix.fischertechnik.Transportbelt;
 import mc.fenix.arrange.GemColumn;
 import mc.fenix.input.GemRangeInput;
 import mc.fenix.input.GemCheckBoxInput;

@@ -1,5 +1,0 @@
-package mbdo.components;
-
-component VacuumGripper(int rotationDeg, int verticalPercentage, int horizontalPercentage, boolean pumpRunning){
-
-}

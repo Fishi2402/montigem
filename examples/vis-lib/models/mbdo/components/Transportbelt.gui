@@ -1,5 +1,0 @@
-package mbdo.components;
-
-component Transportbelt(int speedIndicatorPercentage, boolean rightDetectorOn, boolean leftDetectorOn){
-
-}
