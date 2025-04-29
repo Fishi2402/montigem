@@ -16,6 +16,7 @@ import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.Optional;
 
+//TODO rename this to workflow or smth
 public class SequenceDiagrammParser {
 
   private final String modelPath;
