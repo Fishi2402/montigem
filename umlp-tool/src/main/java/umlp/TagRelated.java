@@ -166,7 +166,7 @@ public class TagRelated {
 
   }
 
-  private static class DomainModelTagVisitor implements CDBasisVisitor2 {
+  public static class DomainModelTagVisitor implements CDBasisVisitor2 {
     SimpleSymbolTagger tagger;
     boolean[] hasTags;
 
@@ -204,7 +204,7 @@ public class TagRelated {
     }
   }
 
-  private static class PojoTaggerVisitor implements CDBasisVisitor2 {
+  public static class PojoTaggerVisitor implements CDBasisVisitor2 {
     SimpleSymbolTagger tagger;
     boolean[] hasTags;
     boolean isPojoCD = false;

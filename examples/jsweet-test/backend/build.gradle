@@ -100,9 +100,8 @@ tasks.register('genTestGUI', UMLPGuiGenTask) {
   modelDir = layout.projectDirectory.dir("../models")
   symbolDir = files(
       generateUmlpBackend.symbolOutDir,
-      project(":umlp-rte:client").tasks.createGuiSymbols.output,
-      project(":umlp-rte:client").tasks.createCDSymbols.output,
-      configurations.guiDefaultTypes.files
+      project(":umlp-rte:client").configurations.rteSymbolPath,
+      configurations.guiDefaultTypes
   )
   domainModels = ["Jsweettest"]
   guiCreateModels = ["gui.UserCreate"]

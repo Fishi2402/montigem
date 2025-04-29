@@ -92,8 +92,7 @@ tasks.register('genGUI', UMLPGuiGenTask) {
   hwcDir = file("src/app/")
   modelDir = layout.projectDirectory.dir("../models")
   symbolDir.setFrom(genDomainSymbols.symbolOutDir)
-  symbolDir.from(project(":umlp-rte:client").tasks.createGuiSymbols.output)
-  symbolDir.from(project(":umlp-rte:client").tasks.createCDSymbols.output)
+  symbolDir.from(project(":umlp-rte:client").configurations.rteSymbolPath)
   symbolDir.from(configurations.guiDefaultTypes)
   symbolDir.from(configurations.umlpModulesDomainSymbols)
 
@@ -108,9 +107,8 @@ tasks.register('genGUI2', UMLPGuiGenTask) {
   input = file(guiVariability.getOutputDir())
   symbolDir = files(
       generateCDTOGUI.getOutputDir().file("symbols"),
-      project(":umlp-rte:client").tasks.createGuiSymbols.output,
-      project(":umlp-rte:client").tasks.createCDSymbols.output,
-      configurations.guiDefaultTypes.files
+      project(":umlp-rte:client").configurations.rteSymbolPath,
+      configurations.guiDefaultTypes
   )
   hwcDir = file("src/app/")
   symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")
