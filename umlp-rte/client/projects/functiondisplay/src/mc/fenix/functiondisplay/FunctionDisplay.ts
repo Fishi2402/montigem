@@ -67,9 +67,20 @@ export class FunctionDisplay extends FunctionDisplayComponent {
       }
     });
     layouted.then(v => {
-      this.container.nativeElement.appendChild(this.renderNode(v));
+      const containerElement = this.container.nativeElement;
+
+      // Entfernt alle bestehenden Kinder im container
+      if (containerElement.firstChild) {
+        containerElement.innerHTML = ''; // Löscht den aktuellen Inhalt
+      }
+
+      // Fügt das neue Element hinzu
+      containerElement.appendChild(this.renderNode(v));
+
+      // Outside-Click-Listener hinzufügen
       this.addOutsideClickListener();
     });
+
     layouted.catch(e => console.error(e));
 
   }

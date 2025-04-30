@@ -82,6 +82,7 @@ public class UMLPFilePipelineSetup {
       // If we were to with to use concrete syntax, we would have to use the UMLPTagDefinitionMill
       if (SYMTAB.isSelected(data.cmd)) {
         TagsMill.init(); // instead we only support generic tagging models
+        TagRelated.initLookup(data.importedSymbolPath);
       }
       UMLPMill.init();
       UMLPMill.globalScope().setSymbolPath(data.importedSymbolPath);

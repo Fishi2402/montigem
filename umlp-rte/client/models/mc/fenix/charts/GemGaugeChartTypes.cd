@@ -2,6 +2,7 @@
 package mc.fenix.charts;
 import java.util.List;
 
+<<pojoCD>>
 classdiagram GemGaugeChartTypes {
   public class GemGaugeChartData {
     List<GemGaugeChartEntry> entries;

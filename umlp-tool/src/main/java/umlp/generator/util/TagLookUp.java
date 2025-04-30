@@ -22,6 +22,7 @@ public class TagLookUp {
   private final static String SINGLETON = "singleton";
   private final static String COMMAND = "command";
   private final static String DERIVED = "derived";
+  private final static String POJO = "pojo";
 
   protected static SimpleSymbolTagger _simpleSymbolTagger;
 
@@ -65,6 +66,14 @@ public class TagLookUp {
         }
       });
 
+  protected static LoadingCache<TypeSymbol, Boolean> isPojoCacheSymbol = CacheBuilder.newBuilder()
+      .build(new CacheLoader<>() {
+        @Override
+        public @NotNull Boolean load(@NotNull TypeSymbol key) {
+          return _isPojo(key);
+        }
+      });
+
   public static boolean isSingleton(TypeSymbol typeSymbol) {
     return isSingletonCacheSymbol.getUnchecked(typeSymbol);
   }
@@ -92,6 +101,10 @@ public class TagLookUp {
     return isDerivedAttrCacheSymbol.getUnchecked(fieldSymbol);
   }
 
+  public static boolean isPojo(TypeSymbol typeSymbol) {
+    return isPojoCacheSymbol.getUnchecked(typeSymbol);
+  }
+
   protected static Boolean _isSingleton(TypeSymbol typeSymbol) {
     return getSimpleSymbolTagger().getTags(typeSymbol).stream().anyMatch(TagLookUp::isSingleton);
   }
@@ -108,6 +121,9 @@ public class TagLookUp {
     return getSimpleSymbolTagger().getTags(typeSymbol).stream().anyMatch(TagLookUp::isDerived);
   }
 
+  public static boolean _isPojo(TypeSymbol typeSymbol) {
+    return getSimpleSymbolTagger().getTags(typeSymbol).stream().anyMatch(TagLookUp::isPojo);
+  }
 
   // This would be nice to have generated from a TagSchema
   protected static boolean isSingleton(ASTTag tag){
@@ -128,6 +144,12 @@ public class TagLookUp {
     return false;
   }
 
+  protected static boolean isPojo(ASTTag tag){
+    if (tag instanceof ASTSimpleTag)
+      return ((ASTSimpleTag) tag).getName().equals(POJO);
+    return false;
+  }
+
   public static void cleanUp() {
     _simpleSymbolTagger = null;
     isSingletonCacheSymbol.invalidateAll();
@@ -138,6 +160,8 @@ public class TagLookUp {
     isDerivedCacheSymbol.cleanUp();
     isDerivedAttrCacheSymbol.invalidateAll();
     isDerivedAttrCacheSymbol.cleanUp();
+    isPojoCacheSymbol.invalidateAll();
+    isPojoCacheSymbol.cleanUp();
     TagRepository.clearTags();
   }
 }
