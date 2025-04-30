@@ -50,6 +50,8 @@ public class SD2TestTool extends SD4DevelopmentTool {
   }
 
   public void generateUnitTest(ASTSDArtifact model, String outputDirectoryPath) {
+    CD4CodeMill.init();
+
     //new cd since tests are created in isolation for the time being
     var decoratedCD = CD4CodeMill
         .cDCompilationUnitBuilder()
@@ -61,6 +63,7 @@ public class SD2TestTool extends SD4DevelopmentTool {
         .build();
 
     var glex = new GlobalExtensionManagement();
+    //TODO set cdPrinter variable, see SD Tool
 
     var sd2testDecorator = new SD2TestDecorator(glex);
     sd2testDecorator.transform(model, decoratedCD);
@@ -70,7 +73,6 @@ public class SD2TestTool extends SD4DevelopmentTool {
     generatorSetup.setOutputDirectory(new File(outputDirectoryPath));
     var generator = new CDGenerator(generatorSetup);
 
-    //TODO the generator can't be called like that
     generator.generate(decoratedCD);
   }
 
