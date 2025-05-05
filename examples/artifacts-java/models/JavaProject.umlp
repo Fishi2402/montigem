@@ -38,8 +38,8 @@ umlp JavaProject{
     class ExternalJavaSource extends Artifact{
     }
 
-    association imports [*] JavaView -> (importedArtifacts) Artifact [*] ;
-    association compiledTo [1] JavaView -> (compiledArtifacts) Artifact [*] ;
+    association imports [*] JavaView (importingArtifacts) -> (importedArtifacts) Artifact [*] ;
+    association compiledTo [1] JavaView (compilingArtifact) -> (compiledArtifacts) Artifact [*] ;
 
 
     // ______________________________________________________
@@ -57,8 +57,8 @@ umlp JavaProject{
         //int loc; Now in LOC Metric
     }
 
-    association defines [1] JavaView -> JavaType [*] ;
-    association mainType [1] JavaView -> JavaType [1] ;
+    association defines [1] JavaView (definedBy) -> (defines) JavaType [*] ;
+    association mainType [1] JavaView (types) -> (type) JavaType [1] ;
 
     //composition contains  [1]  JavaPackage  ->  JavaType  [*] ;
 

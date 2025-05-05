@@ -49,11 +49,11 @@ umlp SELib {
     / String inventoryNumber;
   }
 
-  association [1] Person -> (rentedBooks) Book [*];
+  association [1] Person (rentedBy) -> (rentedBooks) Book [*];
 
   association [*] Book -> (description) BookDescription [1];
 
-  association [*] Person -> (favorite) Book [0..1];
+  association [*] Person (favoredBy) -> (favorite) Book [0..1];
 
   /association [1] Person -> (rentedBookDescriptions) BookDescription [*];
 }
