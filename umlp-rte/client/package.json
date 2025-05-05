@@ -48,7 +48,8 @@
     "venn.js": "^0.2.20",
     "vis-network": "^9.1.2",
     "xlsx-js-style": "^1.2.0",
-    "zone.js": "~0.14.0"
+    "zone.js": "~0.14.0",
+    "ngx-monaco-editor-v2": "^17.0.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^17.0.7",

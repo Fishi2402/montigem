@@ -1,8 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package example_monaco;
-import example_input.GemChat;
-import mc.fenix.arrange.GemColumn;
-
-page Example() {
-  // This component is TOPed with an example for using the monaco editor
-}
