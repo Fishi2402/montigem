@@ -3,6 +3,7 @@ import { config, MonacoEditorComponent } from '../../../../build/gui/mc/fenix/ed
 import {EventEmitter, Output, Provider} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {MonacoEditorModule, NGX_MONACO_EDITOR_CONFIG, NgxMonacoEditorConfig } from 'ngx-monaco-editor-v2';
+import {editor} from "monaco-editor";
 
 export function provideMonacoEditor(config: NgxMonacoEditorConfig = {}): Provider[] {
   return [
@@ -13,6 +14,7 @@ export function provideMonacoEditor(config: NgxMonacoEditorConfig = {}): Provide
 import {
   Component,
 } from '@angular/core';
+
 
 @Component({
   standalone:true,
@@ -33,6 +35,9 @@ import {
 
 export class MonacoEditor extends MonacoEditorComponent  {
 
+  protected cacheCheck : string = "";
+  protected highlightingCache;
+
   /**
    * Adapt the component here if you want to add any options
    */
@@ -49,6 +54,35 @@ export class MonacoEditor extends MonacoEditorComponent  {
 
   onEntryChange(event: string) {
     this.entryChange.emit(event);
+  }
+
+  public highlightInitialization(editor: editor.ICodeEditor): void {
+    console.warn(editor.getModel().getLineCount())
+    const highlighting = this.getHighlighting().map(inlineHighlight => {
+      console.warn("Highlighting now! ",  inlineHighlight.getCssClass())
+      return {
+        range: {
+          startLineNumber: inlineHighlight.getStartLin(),
+          startColumn: inlineHighlight.getStartCol(),
+          endLineNumber: inlineHighlight.getEndLin(),
+          endColumn: inlineHighlight.getEndCol(),
+        },
+        options: {
+          inlineClassName: inlineHighlight.getCssClass()
+        }
+      };
+    });
+
+    const cache = JSON.stringify(highlighting);
+
+    if(cache === this.highlightingCache) {
+      return;
+    } {
+      console.warn("This is called ", highlighting)
+      this.cacheCheck = cache;
+      this.highlightingCache = highlighting;
+      editor.createDecorationsCollection(this.highlightingCache);
+    }
   }
 
   public override setLanguage(val: string) {
