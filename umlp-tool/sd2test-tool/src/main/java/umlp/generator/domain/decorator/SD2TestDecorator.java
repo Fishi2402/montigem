@@ -4,6 +4,7 @@ import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis.CD4CodeBasisMill;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cdbasis._ast.ASTCDElement;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -18,19 +19,21 @@ public class SD2TestDecorator {
     this.glex = glex;
   }
 
-  public void transform(ASTSDArtifact sdAst, ASTCDCompilationUnit decoratedCD) {
+  public void transform(ASTSDArtifact sdAst, ASTCDDefinition domainCd, ASTCDCompilationUnit decoratedCD) {
     var name = sdAst.getSequenceDiagram().getName();
     var targetPackage = getPackage(name.toLowerCase(), decoratedCD);
-    targetPackage.addCDElement(createTest(sdAst));
+    targetPackage.addCDElement(createTest(sdAst, domainCd));
   }
 
-  private ASTCDElement createTest(ASTSDArtifact model) {
+  private ASTCDElement createTest(ASTSDArtifact model, ASTCDDefinition domainCd) {
     var name = model.getSequenceDiagram().getName();
 
     var testClass = CD4CodeBasisMill.cDClassBuilder()
         .setModifier(CDModifier.PUBLIC.build())
         .setName(name)
         .build();
+
+    //TODO we need some info about the domain CD here, like name and package; How do we get that?
 
     //TODO implement
     return testClass;

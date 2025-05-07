@@ -5,6 +5,7 @@ import de.monticore.cd.codegen.CDGenerator;
 import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.MCPath;
@@ -31,13 +32,16 @@ public class SD2TestTool extends SD4DevelopmentTool {
 
     var tool = new SD2TestTool();
 
+    //TODO how do I load domain CD info from the symbols?
+    var domainCdName = "Webshop";
     var modelPath = "examples/testing-with-sd/test-models/TotalTest.sd";
     var backendSymbolDirectoryPath = "examples/testing-with-sd/backend/build/umlp/backend_symbols";
     var testSymbolDirectoryPath = "examples/testing-with-sd/backend/build/umlp/test_symbols";
     var model = tool.parseModel(modelPath, backendSymbolDirectoryPath, testSymbolDirectoryPath);
 
     var outputDirectoryPath = "examples/testing-with-sd/backend/build/umlp/backend_test";
-    tool.generateUnitTest(model, outputDirectoryPath);
+    //TODO create domainCD definition
+    tool.generateUnitTest(model, null, outputDirectoryPath);
   }
 
   public SD2TestTool() {
@@ -50,7 +54,7 @@ public class SD2TestTool extends SD4DevelopmentTool {
     }
   }
 
-  public void generateUnitTest(ASTSDArtifact model, String outputDirectoryPath) {
+  public void generateUnitTest(ASTSDArtifact model, ASTCDDefinition domainCD, String outputDirectoryPath) {
     CD4CodeMill.init();
 
     //new cd since tests are created in isolation for the time being
@@ -67,7 +71,7 @@ public class SD2TestTool extends SD4DevelopmentTool {
     glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
 
     var sd2testDecorator = new SD2TestDecorator(glex);
-    sd2testDecorator.transform(model, decoratedCD);
+    sd2testDecorator.transform(model, domainCD, decoratedCD);
 
     var generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
