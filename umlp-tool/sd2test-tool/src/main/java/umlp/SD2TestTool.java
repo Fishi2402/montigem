@@ -2,6 +2,7 @@ package umlp;
 
 import de.monticore.cd._symboltable.BuiltInTypes;
 import de.monticore.cd.codegen.CDGenerator;
+import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.generating.GeneratorSetup;
@@ -63,7 +64,7 @@ public class SD2TestTool extends SD4DevelopmentTool {
         .build();
 
     var glex = new GlobalExtensionManagement();
-    //TODO set cdPrinter variable, see SD Tool
+    glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
 
     var sd2testDecorator = new SD2TestDecorator(glex);
     sd2testDecorator.transform(model, decoratedCD);
