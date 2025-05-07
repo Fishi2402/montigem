@@ -2,10 +2,12 @@
 
 package umlp.generator.domain.decorator;
 
-import de.monticore.cdbasis._ast.*;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.StringHookPoint;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
@@ -14,9 +16,9 @@ import umlp.generator.rte.data.RTEDeSerDecorator;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.TagLookUp;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -78,6 +80,8 @@ public class BaseClassObjectMapperDecorator extends AbstractDecorator {
 
   protected void addImports(ASTCDType clazz) {
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("BaseClassObjectMapper"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("DeSer"));
+    getCD4C().addImport(clazz, "java.util.Map");
   }
 
   protected Map<String, String> getNecessaryImportToDeSerMap(ASTCDCompilationUnit compilationUnit) {
