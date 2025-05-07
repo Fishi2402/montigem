@@ -82,6 +82,7 @@ public class BaseClassObjectMapperDecorator extends AbstractDecorator {
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("BaseClassObjectMapper"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("DeSer"));
     getCD4C().addImport(clazz, "java.util.Map");
+    getCD4C().addImport(clazz, "java.util.HashMap");
   }
 
   protected Map<String, String> getNecessaryImportToDeSerMap(ASTCDCompilationUnit compilationUnit) {

@@ -39,6 +39,10 @@ export class BaseClassObjectMapper {
     this.baseDeSers.set("java.time.LocalDateTime", new LocalDateTimeDeSer());
   }
 
+  public getBaseDeSers() : Map<string, DeSer<any>> {
+    return this.baseDeSers;
+  }
+
   public static addDeSers(addedDeSers : Map<string, JsonDeSer<any>>) : void {
     for (const [deSerTypeName,deSer] of addedDeSers) {
       this.getInstance().baseDeSers.set(deSerTypeName, deSer)
