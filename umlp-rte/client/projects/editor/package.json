@@ -1,6 +1,6 @@
 {
   "name": "@umlp/editor",
-  "version": "7.6.0",
+  "version": "7.6.1",
   "peerDependencies": {
     "@angular/animations": "^17.0.7",
     "@angular/common": "^17.0.7",

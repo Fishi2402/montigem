@@ -57,7 +57,9 @@ export class MonacoEditor extends MonacoEditorComponent  {
   }
 
   public highlightInitialization(editor: editor.ICodeEditor): void {
-    console.warn(editor.getModel().getLineCount())
+    if(!this.getHighlighting()) {
+      return;
+    }
     const highlighting = this.getHighlighting().map(inlineHighlight => {
       console.warn("Highlighting now! ",  inlineHighlight.getCssClass())
       return {
