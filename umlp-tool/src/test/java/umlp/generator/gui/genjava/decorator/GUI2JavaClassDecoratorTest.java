@@ -78,7 +78,6 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
 
     ASTCDClass clazz = cd.getCDDefinition().getCDClassesList().get(0);
     Collection<ASTMCImportStatement> imports = CD4C.getInstance().getImportList(clazz);
-    var findings = Log.getFindings();
 
     assertAll(
         () -> assertTrue(Log.getFindings().isEmpty()),

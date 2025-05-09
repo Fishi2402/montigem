@@ -13,6 +13,7 @@ import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfObject;
+import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
@@ -134,6 +135,9 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
    * @return Java type that corresponds to the input GUI type
    */
   protected ASTMCType createTypeAndAddImports(SymTypeExpression ste) {
+    if (ste.isTypeVariable()) {
+      return MCTypeFacade.getInstance().createQualifiedType(ste.asTypeVariable().print());
+    }
     if (!ste.hasTypeInfo()) {
       Log.error("0x0001B Encountered a SymTypeExpression disconnected from a type symbol: "
           + ste.printFullName());

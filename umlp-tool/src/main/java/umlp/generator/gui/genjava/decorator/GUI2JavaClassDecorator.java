@@ -33,12 +33,18 @@ import de.monticore.ocl.setexpressions._ast.ASTSetCollectionItem;
 import de.monticore.ocl.setexpressions._ast.ASTSetEnumeration;
 import de.monticore.ocl.setexpressions._visitor.SetExpressionsVisitor2;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types3.SymTypeRelations;
+import de.monticore.types3.TypeCheck3;
+import de.monticore.types3.generics.TypeParameterRelations;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.StringTransformations;
@@ -352,6 +358,21 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
    */
   @Override
   public void endVisit(ASTGUIComponent node) {
+    // TODO: fill replaceMap: T, G -> Key; Person, Room -> Value
+    Map<SymTypeVariable, SymTypeExpression> replaceMap = new HashMap<>();
+    if (node.isPresentGUITypeArgs()) {
+      List<TypeVarSymbol> typeVars = node.getNameSymbol().getTypeVariableList();
+      List<ASTMCTypeArgument> typeArgs = node.getGUITypeArgs().getMCTypeArgumentList();
+      for (int i = 0; typeVars != null && i < typeVars.size(); i++) {
+        Optional<ASTMCType> mcType = typeArgs.get(i).getMCTypeOpt();
+        if (mcType.isPresent()) {
+          replaceMap.put(
+              SymTypeExpressionFactory.createTypeVariable(typeVars.get(i)),
+              TypeCheck3.symTypeFromAST(mcType.get())
+          );
+        }
+      }
+    }
     for (ASTGUINamedArg arg : node.getGUINamedArgs().getGUINamedArgList()) {
       // calc type
       if (!arg.isPresentNameSymbol()) {
@@ -366,6 +387,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
           || util.isViewElementsCollection(typeSTE)) {
         continue;
       }
+      // TODO: TypeParameterRelations.replaceTypeVariables
+      typeSTE = TypeParameterRelations.replaceTypeVariables(typeSTE, replaceMap);
       ASTMCType type = getSimpleType(createTypeAndAddImports(typeSTE));
 
       // calc name
