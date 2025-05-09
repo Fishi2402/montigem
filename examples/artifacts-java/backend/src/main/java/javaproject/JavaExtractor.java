@@ -87,6 +87,7 @@ public class JavaExtractor extends BaseExtractor {
 
     JavaViewBuilder javaViewBuilder = JavaProjectManager.javaViewBuilder();
     javaViewBuilder.artifact(artifact);
+    javaViewBuilder.typeGem(JavaProjectManager.createJavaTypeGem(JavaProjectManager.getFreeGemId()));
 
     JavaView javaView = javaViewBuilder.build().get();
 

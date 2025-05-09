@@ -48,6 +48,10 @@ public class BaseClassObjectMapper {
     });
   }
 
+  public Map<String, DeSer> getBaseDeSers() {
+    return baseDeSers;
+  }
+
   public static Optional<String> serialize(Object o, String className) {
     return getInstance()._serialize(o, className);
   }

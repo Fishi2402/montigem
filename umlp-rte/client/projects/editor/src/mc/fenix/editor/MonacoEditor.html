@@ -1,0 +1,6 @@
+<ngx-monaco-editor
+  [options]="_options"
+  [ngModel]="entry"
+  (ngModelChange)="onEntryChange($event)"
+  (onInit)="highlightInitialization($event)">
+</ngx-monaco-editor>

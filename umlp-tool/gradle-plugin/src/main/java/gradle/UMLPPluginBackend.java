@@ -101,26 +101,8 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
     });
 
     // Add Symbols and Tags of RTE ClassDiagrams to SymbolPath
-    if (local) {
-      Project umlpRteClientProject = project.findProject(":umlp-rte:client");
-      boolean createGuiSymbolsPresent = !umlpRteClientProject.getTasksByName("createGuiSymbols", false).isEmpty();
-      boolean createCDSymbolsPresent = !umlpRteClientProject.getTasksByName("createCDSymbols", false).isEmpty();
-      Project umlpRteProject = project.findProject(":umlp-rte");
-      boolean generateGuiComponentJava = !umlpRteProject.getTasksByName("generateGuiComponentJava", false).isEmpty();
-      if (createCDSymbolsPresent && createGuiSymbolsPresent && generateGuiComponentJava) {
-        SerializeGUISymbolsTask createGuiSymbols = (SerializeGUISymbolsTask) umlpRteClientProject.getTasks().getByName("createGuiSymbols");
-        SerializeCDSymbolsTask createCDSymbols = (SerializeCDSymbolsTask) umlpRteClientProject.getTasks().getByName("createCDSymbols");
-        GUITypes2JavaTask createTags = (GUITypes2JavaTask) umlpRteProject.getTasks().getByName("generateGuiComponentJava");
-        result.get().dependsOn(createGuiSymbols, createCDSymbols,createTags);
-        result.get().getSymbolPath().from(createGuiSymbols.getOutput(), createCDSymbols.getOutput(),createTags.getSymbolOutDir());
-      }
-    }
-    else {
-      Configuration guiLib = project.getConfigurations().getByName(GUI_LIB_NAME);
-      result.get().getSymbolPath().from(
-          project.provider(() -> guiLib.getFiles())
-      );
-    }
+    Configuration guiLib = project.getConfigurations().getByName(GUI_LIB_NAME);
+    result.get().getSymbolPath().from(guiLib);
     return result;
   }
 

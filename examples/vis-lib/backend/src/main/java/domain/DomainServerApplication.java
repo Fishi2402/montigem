@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package domain;
 
+import de.se_rwth.commons.logging.Log;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -217,7 +218,7 @@ public class DomainServerApplication extends domain.DomainServerApplicationTOP {
   }
 
   protected Person addPerson(String name, LocalDate birthday, String aboutMe, boolean employed, Address address) {
-    return DomainManager.personBuilder()
+    Person p = DomainManager.personBuilder()
         .name(name)
         .birthday(birthday)
         .address(address)
@@ -225,6 +226,8 @@ public class DomainServerApplication extends domain.DomainServerApplicationTOP {
         .employed(employed)
         .build()
         .get();
+    Log.info("Person created with gemId: "+p.getGemId(), this.getClass().getName());
+    return p;
   }
 
   protected Stock createStock(LocalDateTime date, String name, int price) {

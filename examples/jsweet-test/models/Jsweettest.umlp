@@ -26,8 +26,8 @@ classdiagram Jsweettest {
     long hwGemId;
   }
 
-  association C1 -> (c2opt) C2 [0..1];
-  association C1 -> (c2mult) C2 [*];
+  association C1 (asOpt) -> (c2opt) C2 [0..1];
+  association C1 (asMult) -> (c2mult) C2 [*];
 
   class C2 {
     String string;
@@ -35,8 +35,8 @@ classdiagram Jsweettest {
     Integer int2;
   }
 
-  association C2 -> (c3opt) C3 [0..1];
-  association C2 -> (c3mult) C3 [*];
+  association C2 (asOpt) -> (c3opt) C3 [0..1];
+  association C2 (asMult) -> (c3mult) C3 [*];
 
   class C3 {
     String string;
