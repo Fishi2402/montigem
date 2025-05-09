@@ -35,6 +35,7 @@ import {
 
 export class MonacoEditor extends MonacoEditorComponent  {
 
+  protected editor: editor.ICodeEditor;
   protected cacheCheck : string = "";
   protected highlightingCache;
 
@@ -54,9 +55,14 @@ export class MonacoEditor extends MonacoEditorComponent  {
 
   onEntryChange(event: string) {
     this.entryChange.emit(event);
+    if(this.editor) {
+      this.highlightInitialization(this.editor)
+    }
   }
 
   public highlightInitialization(editor: editor.ICodeEditor): void {
+    this.editor = editor;
+    console.warn("Highlighting now", this.getHighlighting())
     if(!this.getHighlighting()) {
       return;
     }
