@@ -244,21 +244,7 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
     // Configurations
     project.getConfigurations().register(GUI_TYPES_NAME);
     project.getDependencies().add(GUI_TYPES_NAME, "de.monticore.lang:guidsl:" + getStringProjectProperty(project, "mc_version", "") + ":default-types");
-    project.getConfigurations().register(GUI_LIB_NAME);
 
-    if (local) {
-      if(!project.getPath().equals(":umlp-rte:client")) {
-        project.getConfigurations().getByName(GUI_LIB_NAME).getDependencies().add(
-            project.getDependencies().project(Map.of(
-                "path", ":umlp-rte:client",
-                "configuration", "localGuiLib",
-                "transitive", false
-            ))
-        );
-      }
-    } else {
-      project.getDependencies().add(GUI_LIB_NAME, "umlp.umlp-rte:client:" + getStringProjectProperty(project, "mc_version", ""));
-    }
   }
 
   @NotNull

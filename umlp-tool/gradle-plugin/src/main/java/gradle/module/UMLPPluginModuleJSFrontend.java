@@ -35,45 +35,48 @@ public class UMLPPluginModuleJSFrontend extends ALazyPublishingPlugin implements
 
     addDomainSymbolsJarAttributes(outgoingDomainSymbols, project);
 
-    TaskProvider<Jar> jarTask = project.getTasks().register("createDomainSymbolsJar", Jar.class, jar -> {
-      jar.setGroup("umlp");
-      jar.getArchiveClassifier().set("domainsymbols");
-      jar.from(project.getTasks().named("createDomainSymbols"));
-    });
-   project.getTasks().named(BasePlugin.ASSEMBLE_TASK_NAME).configure(it->it.dependsOn(jarTask));
+    var javaComponent = (AdhocComponentWithVariants) project.getComponents().getByName("java");
+    {
+      TaskProvider<Jar> jarTask = project.getTasks().register("createDomainSymbolsJar", Jar.class, jar -> {
+        jar.setGroup("umlp");
+        jar.getArchiveClassifier().set("domainsymbols");
+        jar.from(project.getTasks().named("createDomainSymbols"));
+      });
+      project.getTasks().named(BasePlugin.ASSEMBLE_TASK_NAME).configure(it -> it.dependsOn(jarTask));
 
-   // Add createDomainSymbolsJar-jar as artifact to the config
-   project.getArtifacts().add(outgoingDomainSymbols.getName(), jarTask);
-   var javaComponent = (AdhocComponentWithVariants)project.getComponents().getByName("java");
-   javaComponent.addVariantsFromConfiguration(outgoingDomainSymbols, ConfigurationVariantDetails::mapToOptional);
+      // Add createDomainSymbolsJar-jar as artifact to the config
+      project.getArtifacts().add(outgoingDomainSymbols.getName(), jarTask);
 
-    // Create the gui jar
-    
-    Configuration outgoingGuiSymbols = project.getConfigurations().create("umlpOutgoingGuiSymbols");
-    outgoingGuiSymbols.setCanBeConsumed(true);
-    outgoingGuiSymbols.setCanBeResolved(false);
-    outgoingGuiSymbols.setDescription("Published gui Symbols of the module");
-    
-    addGuiSymbolsJarAttributes(outgoingGuiSymbols, project);
-    
-    TaskProvider<Jar> guiSymbolsJarTask = project.getTasks().register("createGuiSymbolsJar", Jar.class, jar -> {
-      jar.setGroup("umlp");
-      jar.getArchiveClassifier().set("guisymbols");
-      jar.from(project.getTasks().named("genGUI")).include("**/*.guisym");
-      jar.setIncludeEmptyDirs(false);
-    });
-    project.getTasks().named(BasePlugin.ASSEMBLE_TASK_NAME).configure(it->it.dependsOn(guiSymbolsJarTask));
-    
-    // Add createGuiSymbolsJar-jar as artifact to the config
-    project.getArtifacts().add(outgoingGuiSymbols.getName(), guiSymbolsJarTask);
-    javaComponent.addVariantsFromConfiguration(outgoingGuiSymbols, ConfigurationVariantDetails::mapToOptional);
+      javaComponent.addVariantsFromConfiguration(outgoingDomainSymbols, ConfigurationVariantDetails::mapToOptional);
 
-    // Tell gradle, that the jar tasks builds a publication
-    var publ = createPublishedArtifact(jarTask, project);
-    // and add the publication to the outgoing artifacts
-    outgoingDomainSymbols.getOutgoing().getArtifacts().add(publ);
+      // Create the gui jar
 
-   /// Also prepare publishing of
+      Configuration outgoingGuiSymbols = project.getConfigurations().create("umlpOutgoingGuiSymbols");
+      outgoingGuiSymbols.setCanBeConsumed(true);
+      outgoingGuiSymbols.setCanBeResolved(false);
+      outgoingGuiSymbols.setDescription("Published gui Symbols of the module");
+
+      addGuiSymbolsJarAttributes(outgoingGuiSymbols, project);
+
+      TaskProvider<Jar> guiSymbolsJarTask = project.getTasks().register("createGuiSymbolsJar", Jar.class, jar -> {
+        jar.setGroup("umlp");
+        jar.getArchiveClassifier().set("guisymbols");
+        jar.from(project.getTasks().named("genGUI")).include("**/*.guisym");
+        jar.setIncludeEmptyDirs(false);
+      });
+      project.getTasks().named(BasePlugin.ASSEMBLE_TASK_NAME).configure(it -> it.dependsOn(guiSymbolsJarTask));
+
+      // Add createGuiSymbolsJar-jar as artifact to the config
+      project.getArtifacts().add(outgoingGuiSymbols.getName(), guiSymbolsJarTask);
+      javaComponent.addVariantsFromConfiguration(outgoingGuiSymbols, ConfigurationVariantDetails::mapToOptional);
+
+      // Tell gradle, that the jar tasks builds a publication
+      var publ = createPublishedArtifact(jarTask, project);
+      // and add the publication to the outgoing artifacts
+      outgoingDomainSymbols.getOutgoing().getArtifacts().add(publ);
+    }
+
+    /// Also prepare publishing of
 
     /*
     Configuration outgoingBundlesJS = project.getConfigurations().create("umlpOutgoingFrontendBundle");

@@ -6,6 +6,7 @@ import gradle.specific.UMLPFrontendTask;
 import gradle.specific.UMLPGuiGenTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.file.DuplicatesStrategy;
 import org.gradle.api.tasks.Sync;
 import org.gradle.api.tasks.TaskProvider;
 
@@ -94,6 +95,11 @@ public abstract class UMLPPluginFrontendNonJSweet implements Plugin<Project> {
       at de.monticore.cdbasis._symboltable.CDTypeSymbolTOP.getAstNode(CDTypeSymbolTOP.java:1)
       at de.monticore.cd._symboltable.CDSymbolTables.getTransitiveSuperTypes(CDSymbolTables.java:86)
        */
+
+      // // Load the symbols from the .jars in the domain symbols path
+      umlpTask.getSymbolPath().from(project.getConfigurations().named(UMLP_MODULES_DOMAIN_SYMBOLS_CONFIG));
+      umlpTask.getSymbolPath().from(project.getConfigurations().named(UMLP_MODULES_GUI_SYMBOLS_CONFIG));
+
       umlpTask.getModelDir().from(project.getConfigurations().named(UMLPPluginBase.UMLP_MODULES_MODELS_CONFIG));
     });
   }
@@ -108,6 +114,7 @@ public abstract class UMLPPluginFrontendNonJSweet implements Plugin<Project> {
     t.configure(task -> {
       task.setGroup("umlp");
       task.setDescription("Unpacks all umlp modules");
+      task.setDuplicatesStrategy(DuplicatesStrategy.WARN); // TODO: why is domain symbols included here for :frontend?
       // Make sure to provide a lazy-provider to #from
       task.from(project.provider(
           // And expand the zipfile

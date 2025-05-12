@@ -126,7 +126,7 @@ public abstract class UMLPGuiGenTask extends UMLPAllFilesTask {
       }
     }
 
-    if (!this.getSymbolDir().isEmpty()) {
+    if (!this.getImportsDir().isEmpty()) {
       for (var importDir : this.getImportsDir()) {
         result.add("-" + UMLPToolOptions.IMPORTS_PATH.getCMD());
         result.add(importDir.getAbsolutePath());

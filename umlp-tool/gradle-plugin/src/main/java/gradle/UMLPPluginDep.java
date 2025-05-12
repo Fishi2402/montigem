@@ -18,7 +18,7 @@ import java.util.Objects;
 import java.util.Properties;
 
 /**
- * Sets up all tasks with their required Tool-classpath
+ * Sets up all tasks with their required Tool-classpath.
  */
 public abstract class UMLPPluginDep implements Plugin<Project> {
 
@@ -27,7 +27,10 @@ public abstract class UMLPPluginDep implements Plugin<Project> {
 
   @Override
     public void apply(Project project) {
+      // add a new configuration in which the umlp-tool (.jar) is loaded
+      //  (this avoids loading the tool+all its dependencies into the shared plugin-classpath)
       var toolConfig = project.getConfigurations().maybeCreate(UMLP_CONFIG_TOOL);
+      // Load the buildInfo.properties file (containing the current version)
       Properties buildInfo = new Properties();
       try(InputStream is = UMLPPluginDep.class.getResourceAsStream("/buildInfo.properties")) {
         buildInfo.load(is);
@@ -38,7 +41,7 @@ public abstract class UMLPPluginDep implements Plugin<Project> {
           buildInfo.getProperty("version"),
           "Can not find version in buildInfo.properties"
       );
-
+      // Add the dependencies to the toolConfig
       toolConfig.setCanBeResolved(true);
       toolConfig.defaultDependencies(dependencies -> {
         dependencies.add(project.getDependencies().create("umlp:umlp-tool:" + version));
@@ -50,6 +53,7 @@ public abstract class UMLPPluginDep implements Plugin<Project> {
         it.attribute(Bundling.BUNDLING_ATTRIBUTE, project.getObjects().named(Bundling.class, Bundling.EXTERNAL));
       });
 
+      // And add the config to the classpath of various tasks
       project.getTasks().withType(UMLPSingleFileTask.class).configureEach(t -> t.getExtraClasspathElements().from(toolConfig));
       project.getTasks().withType(UMLPAllFilesTask.class).configureEach(t -> t.getExtraClasspathElements().from(toolConfig));
       project.getTasks().withType(SerializeCDSymbolsTask.class).configureEach(t -> t.getClassPath().from(toolConfig));

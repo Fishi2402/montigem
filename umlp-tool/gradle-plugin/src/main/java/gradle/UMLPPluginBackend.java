@@ -2,6 +2,7 @@
 package gradle;
 
 import gradle.specific.UMLPBackendTask;
+import gradle.specific.cd.GUITypes2JavaTask;
 import gradle.specific.serialize.SerializeCDSymbolsTask;
 import gradle.specific.serialize.SerializeGUISymbolsTask;
 import org.gradle.api.Plugin;
@@ -37,11 +38,6 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
     project.getPluginManager().apply("java");
 
     boolean local = getBooleanProjectProperty(project, "useLocalDependencies");
-    if (!local) {
-      project.getConfigurations().register(GUI_LIB_NAME);
-      project.getDependencies().add(GUI_LIB_NAME, "umlp.umlp-rte:client:" +
-          UMLPPluginFrontendBase.getStringProjectProperty(project, "mc_version", ""));
-    }
 
     TaskProvider<UMLPBackendTask> umlpTask = createUMLPBackendTask(project, UMLP_BACKEND_TASK_NAME, local);
     // Generate Backend must run before JavaCompile
@@ -104,15 +100,19 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
 
     });
 
+    // Add Symbols and Tags of RTE ClassDiagrams to SymbolPath
     if (local) {
       Project umlpRteClientProject = project.findProject(":umlp-rte:client");
       boolean createGuiSymbolsPresent = !umlpRteClientProject.getTasksByName("createGuiSymbols", false).isEmpty();
       boolean createCDSymbolsPresent = !umlpRteClientProject.getTasksByName("createCDSymbols", false).isEmpty();
-      if (createCDSymbolsPresent && createGuiSymbolsPresent) {
+      Project umlpRteProject = project.findProject(":umlp-rte");
+      boolean generateGuiComponentJava = !umlpRteProject.getTasksByName("generateGuiComponentJava", false).isEmpty();
+      if (createCDSymbolsPresent && createGuiSymbolsPresent && generateGuiComponentJava) {
         SerializeGUISymbolsTask createGuiSymbols = (SerializeGUISymbolsTask) umlpRteClientProject.getTasks().getByName("createGuiSymbols");
         SerializeCDSymbolsTask createCDSymbols = (SerializeCDSymbolsTask) umlpRteClientProject.getTasks().getByName("createCDSymbols");
-        result.get().dependsOn(createGuiSymbols, createCDSymbols);
-        result.get().getSymbolPath().from(createGuiSymbols.getOutput(), createCDSymbols.getOutput());
+        GUITypes2JavaTask createTags = (GUITypes2JavaTask) umlpRteProject.getTasks().getByName("generateGuiComponentJava");
+        result.get().dependsOn(createGuiSymbols, createCDSymbols,createTags);
+        result.get().getSymbolPath().from(createGuiSymbols.getOutput(), createCDSymbols.getOutput(),createTags.getSymbolOutDir());
       }
     }
     else {

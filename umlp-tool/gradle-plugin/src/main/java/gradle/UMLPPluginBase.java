@@ -20,11 +20,13 @@ import gradle.stat.StatisticListener;
 import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.Map;
 
 /**
- * Base Plugin. Only adds the Tasks and the StatisticListener.
+ * Base Plugin. Only adds the Tasks, module config, and the StatisticListener.
  * Nothing else is done! See other Plugins (e.g. UMLPPluginBackend.java) for alternatives
  */
 public abstract class UMLPPluginBase implements Plugin<Project> {
@@ -36,6 +38,8 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
   public static final String UMLP_MODULES_DOMAIN_SYMBOLS_CONFIG = "umlpModulesDomainSymbols";
   public static final String UMLP_MODULES_GUI_SYMBOLS_CONFIG = "umlpModulesGuiSymbols";
   // public static final String UMLP_MODULES_FRONTEND_CONFIG = "umlpModulesFrontend";
+
+  public static final String GUI_LIB_NAME = "guiLib";
 
   @Override
     public void apply(Project project) {
@@ -90,6 +94,17 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
         project.getConfigurations().getByName("api").extendsFrom(umlpModulesC);
       });
 
+    {
+      // Add guiLib configuration
+      project.getConfigurations().maybeCreate(GUI_LIB_NAME);
+      if (getBooleanProjectProperty(project, "useLocalDependencies")) {
+        if (!project.getPath().equals(":umlp-rte:client")) {
+          project.getConfigurations().getByName(GUI_LIB_NAME).getDependencies().add(project.getDependencies().project(Map.of("path", ":umlp-rte:client", "configuration", "localGuiLib", "transitive", false)));
+        }
+      } else {
+        project.getDependencies().add(GUI_LIB_NAME, "umlp.umlp-rte:client:" + UMLPPluginFrontend.getStringProjectProperty(project, "mc_version", "")+":symbols");
+      }
+    }
 
       StatisticListener.registerOnce(project);
 
@@ -116,4 +131,9 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
       throw new GradleException("The MontiCore Generator & MontiGem Plugins are not compatible. \n" +
           "Please use the MontiCore plugin in a separate subproject and use that as a dependency.");
     }
+
+  @NotNull
+  public static Boolean getBooleanProjectProperty(Project project, String propertyName) {
+    return UMLPPluginFrontend.getBooleanProjectProperty(project, propertyName);
+  }
 }

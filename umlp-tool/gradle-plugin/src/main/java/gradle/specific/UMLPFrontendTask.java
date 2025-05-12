@@ -79,6 +79,13 @@ public abstract class UMLPFrontendTask extends UMLPSingleFileTask {
       }
     }
 
+    if (!this.getSymbolPath().isEmpty()) {
+      for (var symDir : this.getSymbolPath()) {
+        result.add("-path");
+        result.add(symDir.getAbsolutePath());
+      }
+    }
+
     if(!this.getOcl().isEmpty()) {
       result.add("-ocl");
       result.add(handlePath.apply(Path.of(getOcl().getAsPath())));
