@@ -43,6 +43,7 @@ public class TotalTest extends WebshopSQLDBTestSetup {
 
     //here we would need to check every element of the queue in order -> we're not going to do this
     // for demo purposes
+    //TODO link OCL conditions to expected events
     assertEquals(20, StackEventQueue.toQueue().size()); //currently 16 events since we're not monitoring managers yet
     assertEquals(new CallEvent(o, "addItem"), StackEventQueue.toQueue().getFirst());
     assertEquals(new ReturnVoidEvent(o,"addItem"), StackEventQueue.toQueue().getLast());
@@ -74,6 +75,7 @@ public class TotalTest extends WebshopSQLDBTestSetup {
     //now we perform a match complete on that queue
     //which we're also going to omit for demo purposes
     assertEquals(16, queue.size()); //8 calls in current implementation -> 16 events
+    //TODO link OCL conditions to expected events
     assertEquals(new CallEvent(o, "addItem"), queue.getFirst());
     assertEquals(new ReturnVoidEvent(o, "addItem"), queue.getLast());
 
@@ -92,6 +94,7 @@ public class TotalTest extends WebshopSQLDBTestSetup {
 
     o.addItem(item);
 
+    //TODO link OCL conditions to expected events
     //we can use a queue instead of a state machine
     var expectedEvents = new LinkedList<>(List.of(new CallEvent(o, "addItem"),
                                                   new ReturnVoidEvent(o, "addItem")));
