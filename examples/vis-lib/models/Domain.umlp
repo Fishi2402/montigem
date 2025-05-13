@@ -50,7 +50,7 @@ classdiagram Domain {
   }
 
   <<singleton>>
-  class MbdoColorSorterState{
+  class FischertechnikSortingLineState{
     boolean pumpRunning = false;
     boolean pusherIndicator1On = false;
     boolean pusherIndicator2On = false;
@@ -59,7 +59,7 @@ classdiagram Domain {
   }
 
   <<singleton>>
-  class MbdoMultiProcessingStationState {
+  class FischertechnikMultiProcessingStationState {
     int positionIndicatorPercentage = 0;
     int beltSpeedIndicatorPercentage = 0;
     int drillSpeedIndicatorPercentage = 0;
@@ -72,14 +72,14 @@ classdiagram Domain {
   }
 
   <<singleton>>
-  class MbdoTransportbeltState{
+  class FischertechnikConveyorState{
     int speedIndicatorPercentage = 0;
     boolean rightDetectorOn = false;
     boolean leftDetectorOn = false;
   }
 
   <<singleton>>
-  class MbdoVacuumGripperState {
+  class FischertechnikVacuumGripperState {
     int rotationDeg = 0;
     int verticalPercentage = 0;
     int horizontalPercentage = 0;
@@ -87,7 +87,7 @@ classdiagram Domain {
   }
 
   <<singleton>>
-  class MbdoWarehouseState {
+  class FischertechnikWarehouseState {
     int depthPercentage = 0;
     int verticalPercentage = 0;
     int horizontalPercentage = 0;

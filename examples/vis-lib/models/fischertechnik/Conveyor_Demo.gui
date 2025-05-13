@@ -1,13 +1,13 @@
-package mbdo;
+package fischertechnik;
 
-import Domain.MbdoTransportbeltState;
+import Domain.FischertechnikConveyorState;
 
-import mc.fenix.fischertechnik.Transportbelt;
+import mc.fenix.fischertechnik.Conveyor;
 import mc.fenix.arrange.GemColumn;
 import mc.fenix.input.GemRangeInput;
 import mc.fenix.input.GemCheckBoxInput;
 
-page Transportbelt_Demo(MbdoTransportbeltState state){
+page Conveyor_Demo(FischertechnikConveyorState state){
   @GemColumn(
     rowGap = "15px",
     components = [
@@ -32,7 +32,7 @@ page Transportbelt_Demo(MbdoTransportbeltState state){
       )
     ]
   );
-  @Transportbelt(
+  @Conveyor(
    speedIndicatorPercentage=state.speedIndicatorPercentage,
    rightDetectorOn=state.rightDetectorOn,
    leftDetectorOn=state.leftDetectorOn

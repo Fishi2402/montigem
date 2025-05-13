@@ -1,13 +1,13 @@
-package mbdo;
+package fischertechnik;
 
-import Domain.MbdoMultiProcessingStationState;
+import Domain.FischertechnikMultiProcessingStationState;
 
 import mc.fenix.fischertechnik.MultiProcessingStation;
 import mc.fenix.arrange.GemColumn;
 import mc.fenix.input.GemRangeInput;
 import mc.fenix.input.GemCheckBoxInput;
 
-page MultiProcessingStation_Demo(MbdoMultiProcessingStationState state){
+page MultiProcessingStation_Demo(FischertechnikMultiProcessingStationState state){
     @GemColumn(
         rowGap = "15px",
         components = [

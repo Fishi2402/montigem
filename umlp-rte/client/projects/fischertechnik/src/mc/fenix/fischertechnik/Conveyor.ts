@@ -1,15 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {config, TransportbeltComponent} from '../../../../build/gui/mc/fenix/fischertechnik/TransportbeltComponent';
+import {config, ConveyorComponent} from '../../../../build/gui/mc/fenix/fischertechnik/ConveyorComponent';
 import {Component, HostBinding, Input} from '@angular/core';
 
 @Component({
   standalone: true,
   imports: [...config.imports],
   selector: config.selector,
-  templateUrl: "Transportbelt.html",
+  templateUrl: "Conveyor.html",
 })
-export class Transportbelt extends TransportbeltComponent {
+export class Conveyor extends ConveyorComponent {
   @Input()
   @HostBinding("style.--leftDetectorIndicatorOpacity")
   leftDetectorIndicatorOpacity: number;

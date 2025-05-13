@@ -1,13 +1,13 @@
-package mbdo;
+package fischertechnik;
 
-import Domain.MbdoColorSorterState;
+import Domain.FischertechnikSortingLineState;
 
-import mc.fenix.fischertechnik.ColorSorter;
+import mc.fenix.fischertechnik.SortingLine;
 import mc.fenix.arrange.GemColumn;
 import mc.fenix.input.GemRangeInput;
 import mc.fenix.input.GemCheckBoxInput;
 
-page ColorSorter_Demo(MbdoColorSorterState state){
+page SortingLine_Demo(FischertechnikSortingLineState state){
   @GemColumn(
     rowGap = "15px",
     components = [
@@ -42,7 +42,7 @@ page ColorSorter_Demo(MbdoColorSorterState state){
       )
     ]
   );
-  @ColorSorter(
+  @SortingLine(
     pumpRunning=state.pumpRunning,
     pusherIndicator1On=state.pusherIndicator1On,
     pusherIndicator2On=state.pusherIndicator2On,

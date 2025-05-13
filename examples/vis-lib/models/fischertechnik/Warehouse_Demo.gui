@@ -1,24 +1,24 @@
-package mbdo;
+package fischertechnik;
 
-import Domain.MbdoVacuumGripperState;
+import Domain.FischertechnikWarehouseState;
 
-import mc.fenix.fischertechnik.VacuumGripper;
+import mc.fenix.fischertechnik.Warehouse;
 import mc.fenix.arrange.GemColumn;
 import mc.fenix.input.GemRangeInput;
 import mc.fenix.input.GemCheckBoxInput;
 
-page VacuumGripper_Demo(MbdoVacuumGripperState state){
+page Warehouse_Demo(FischertechnikWarehouseState state){
   @GemColumn(
     rowGap = "15px",
     components = [
       @GemRangeInput(
-        id="rotation-degree",
-        labelText="Rotation: ",
+        id="depth-percentage",
+        labelText="Tiefe:",
         vertical=false,
         step=1,
         minValue=1,
-        maxValue=360,
-        value=state.rotationDeg
+        maxValue=100,
+        value=state.depthPercentage
       ),
       @GemRangeInput(
         id="vertical-percentage",
@@ -37,20 +37,13 @@ page VacuumGripper_Demo(MbdoVacuumGripperState state){
         minValue=1,
         maxValue=100,
         value=state.horizontalPercentage
-      ),
-      @GemCheckBoxInput(
-        id="pump-running",
-        labelText="Pumpe läuft",
-        checked=state.pumpRunning
       )
     ]
   );
-
-  @VacuumGripper(
-    rotationDeg=state.rotationDeg,
+  @Warehouse(
+    depthPercentage=state.depthPercentage,
     verticalPercentage=state.verticalPercentage,
-    horizontalPercentage=state.horizontalPercentage,
-    pumpRunning=state.pumpRunning
+    horizontalPercentage=state.horizontalPercentage
   );
 }
 

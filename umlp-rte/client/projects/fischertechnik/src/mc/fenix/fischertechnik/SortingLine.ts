@@ -1,15 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {config, ColorSorterComponent} from '../../../../build/gui/mc/fenix/fischertechnik/ColorSorterComponent';
+import {config, SortingLineComponent} from '../../../../build/gui/mc/fenix/fischertechnik/SortingLineComponent';
 import {Component, HostBinding, Input} from '@angular/core';
 
 @Component({
   standalone: true,
   imports: [...config.imports],
   selector: config.selector,
-  templateUrl: "ColorSorter.html",
+  templateUrl: "SortingLine.html",
 })
-export class ColorSorter extends ColorSorterComponent {
+export class SortingLine extends SortingLineComponent {
   @Input()
   @HostBinding("style.--pumpIndicatorOpacity")
   pumpIndicatorOpacity: number;
