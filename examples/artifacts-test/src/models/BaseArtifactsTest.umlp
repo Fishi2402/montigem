@@ -11,9 +11,9 @@ umlp BaseArtifactsTest {
 
   class FileArtifact extends Artifact {}
 
-  association refersTo [*] Artifact -> (referred) Artifact [*];
+  association refersTo [*] Artifact (referrer) -> (referred) Artifact [*];
 
-  association produces [*] Artifact -> (produced) Artifact [*];
+  association produces [*] Artifact (producer) -> (produced) Artifact [*];
 
   class RootArtifact {
     boolean isExternal;
@@ -25,7 +25,7 @@ umlp BaseArtifactsTest {
 
   association descendants [1] RootArtifact -> (descendant) Artifact [*];
 
-  association artifactRepresentation [1] RootArtifact -> (artifactRepresentation) Artifact [*]; // TODO Optional because of technical issue 1 <-> 1 cycles not allowed
+  association artifactRepresentation [1] RootArtifact (representing) -> (artifactRepresentation) Artifact [*]; // TODO Optional because of technical issue 1 <-> 1 cycles not allowed
 
   abstract class ArtifactContainer extends Artifact {}
 

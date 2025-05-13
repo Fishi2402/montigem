@@ -53,7 +53,10 @@ tasks.register('generateGuiComponentJava', GUITypes2JavaTask) {
   hwcDir = project.layout.files("src/main/java")
   input = file("client/models/")
   outputDir = project.layout.buildDirectory.dir("guiComponentTypes")
+  symbolOutDir = project.layout.buildDirectory.dir("guiComponentTypesTagOut")
 }
+// Ensure that the symbolJar task knows it depends on the generateGuiComponentJava task
+project(":umlp-rte:client").tasks.named("symbolJar").configure {it.dependsOn(generateGuiComponentJava)}
 
 // Let RTE assemble depend on the generation
 assemble.dependsOn generateGuiComponentJava

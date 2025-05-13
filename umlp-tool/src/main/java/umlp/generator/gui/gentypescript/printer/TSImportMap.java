@@ -8,6 +8,7 @@ import java.util.Optional;
 public enum TSImportMap {
   // vis libs
   ARRANGE("mc.fenix.arrange", "@umlp/arrange"),
+  EDITOR("mc.fenix.editor", "@umlp/editor"),
   BASIC("mc.fenix.basic", "@umlp/basic"),
   CHARTS("mc.fenix.charts", "@umlp/charts"),
   COMMON("mc.fenix.common", "@umlp/common"),

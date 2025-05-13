@@ -35,6 +35,9 @@
       ],
       "@umlp/networkgraph": [
         "./projects/networkgraph"
+      ],
+      "@umlp/editor": [
+        "./projects/editor"
       ]
     },
     "baseUrl": "./",

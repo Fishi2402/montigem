@@ -36,6 +36,7 @@
       "@umlp/navigation": ["../../../../../umlp-rte/client/projects/navigation"],
       "@umlp/networkgraph": ["../../../../../umlp-rte/client/projects/networkgraph"],
       "@umlp/table": ["../../../../../umlp-rte/client/projects/table"],
+      "@umlp/editor": ["../../../../../umlp-rte/client/projects/editor"],
       "*": [
         "node_modules/*",
         "build/appdomain/*",

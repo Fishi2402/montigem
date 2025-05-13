@@ -36,6 +36,9 @@
       ],
       "@umlp/networkgraph": [
         "./build/dist/networkgraph"
+      ],
+      "@umlp/editor": [
+        "./build/dist/editor"
       ]
     },
     "baseUrl": "./"

@@ -217,15 +217,6 @@ trigger-wirca-demonstrator:
   only:
     - dev
 
-trigger-monticalc:
-  stage: testDeployed
-  allow_failure: false # Failure is not an option
-  trigger:
-    project: monticore/umlp-anwendungen/monticalc
-    branch: dev
-  only:
-    - dev
-
 trigger-montigem3-tutorial:
   stage: testDeployed
   allow_failure: false # Failure is not an option

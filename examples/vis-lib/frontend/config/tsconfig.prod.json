@@ -13,6 +13,7 @@
       "@umlp/navigation": ["../../../../../umlp-rte/client/build/dist/navigation"],
       "@umlp/table": ["../../../../../umlp-rte/client/build/dist/table"],
       "@umlp/networkgraph": ["../../../../../umlp-rte/client/build/dist/networkgraph"],
+      "@umlp/editor": ["../../../../../umlp-rte/client/projects/editor"],
       "*": [
         "node_modules/*",
         "build/appdomain/*",
