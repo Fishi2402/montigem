@@ -39,6 +39,7 @@ def componentLibs = [
     "arrange",
     "basic",
     "charts",
+    "fischertechnik",
     "functiondisplay",
     "input",
     "navigation",

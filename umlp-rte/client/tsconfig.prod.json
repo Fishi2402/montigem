@@ -19,6 +19,9 @@
       "@umlp/commonj2ts": [
         "./build/dist/commonj2ts"
       ],
+      "@umlp/fischertechnik": [
+        "./projects/fischertechnik"
+      ],
       "@umlp/input": [
         "./build/dist/input"
       ],

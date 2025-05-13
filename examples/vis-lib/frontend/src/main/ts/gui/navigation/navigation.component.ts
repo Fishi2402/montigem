@@ -58,7 +58,8 @@ export class Navigation {
     { url: '/example_charts/GemGraphChartExample', title: 'NetworkChart' },
     { url: '/example_network/NetworkChartExample/', title: 'NewNetworkChart'},
     { url: '/example_charts/GemScatterPlotExample', title: 'GemScatterPlot' },
-    { url: '/example_monaco/ExampleFromLib/3', title: 'MonacoEditor' }
+    { url: '/example_monaco/ExampleFromLib/3', title: 'MonacoEditor' },
+    { url: '/fischertechnik/FischertechnikExample', title: 'Fischertechnik' }
   ];
 
 }
