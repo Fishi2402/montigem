@@ -58,6 +58,7 @@ export class MonacoEditor extends MonacoEditorComponent  {
     this.entryChange.emit(event);
     if(this.editor) {
       this.highlightInitialization(this.editor)
+      this.scrollToLine(this.editor)
     }
   }
 
@@ -65,6 +66,7 @@ export class MonacoEditor extends MonacoEditorComponent  {
     this.editor = editor;
     if(this.getHighlighting()) {
       this.highlightInitialization(editor)
+      this.scrollToLine(this.editor)
     }
     console.log("Setting editor.")
   }
@@ -99,6 +101,14 @@ export class MonacoEditor extends MonacoEditorComponent  {
       this.highlightingCache = highlighting;
       editor.createDecorationsCollection(this.highlightingCache);
     }
+  }
+
+  public scrollToLine(editor: editor.ICodeEditor): void {
+    console.warn("Scroll to line now", this.getInitialScrollToLine())
+    if(!this.getInitialScrollToLine()) {
+      return;
+    }
+    editor.revealLineNearTop(this.getInitialScrollToLine())
   }
 
   public override setLanguage(val: string) {
