@@ -358,7 +358,6 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
    */
   @Override
   public void endVisit(ASTGUIComponent node) {
-    // TODO: fill replaceMap: T, G -> Key; Person, Room -> Value
     Map<SymTypeVariable, SymTypeExpression> replaceMap = new HashMap<>();
     if (node.isPresentGUITypeArgs()) {
       List<TypeVarSymbol> typeVars = node.getNameSymbol().getTypeVariableList();
@@ -387,7 +386,6 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
           || util.isViewElementsCollection(typeSTE)) {
         continue;
       }
-      // TODO: TypeParameterRelations.replaceTypeVariables
       typeSTE = TypeParameterRelations.replaceTypeVariables(typeSTE, replaceMap);
       ASTMCType type = getSimpleType(createTypeAndAddImports(typeSTE));
 

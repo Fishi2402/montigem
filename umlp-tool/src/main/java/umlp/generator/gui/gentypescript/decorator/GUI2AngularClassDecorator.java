@@ -278,6 +278,9 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
 
   @Override
   protected ASTMCType createTypeAndAddImports(SymTypeExpression ste) {
+    if (ste.isTypeVariable()) {
+      return MCTypeFacade.getInstance().createQualifiedType(ste.asTypeVariable().print());
+    }
     if (!ste.hasTypeInfo()) {
       Log.error("0x0001B Encountered a SymTypeExpression disconnected from a type symbol: "
           + ste.printFullName());
