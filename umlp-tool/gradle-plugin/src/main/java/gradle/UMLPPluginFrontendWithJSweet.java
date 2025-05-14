@@ -26,8 +26,10 @@ import org.gradle.api.tasks.Sync;
 import org.gradle.api.tasks.TaskProvider;
 
 import java.io.File;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.Properties;
 import java.util.function.Consumer;
 
 import static gradle.UMLPPluginFrontendBase.CREATE_DOMAIN_SYMBOLS_TASK_NAME;
@@ -367,7 +369,15 @@ public abstract class UMLPPluginFrontendWithJSweet implements Plugin<Project> {
       project.getDependencies().add("implementation", project.findProject(":umlp-rte:umlp-jsweet"));
     }
     else {
-      project.getDependencies().add("implementation", "umlp:umlp-jsweet:" + getStringProjectProperty(project, "version", ""));
+      try {
+        try(InputStream stream = getClass().getResourceAsStream("/buildInfo.properties")) {
+          Properties properties = new Properties();
+          properties.load(stream);
+          project.getDependencies().add("implementation", "umlp:umlp-jsweet:" + properties.get("version"));
+        }
+      } catch(java.io.IOException e) {
+        Log.error("Can not find /buildInfo.properties to configure umlp-jsweet", e);
+      }
     }
 
     // Add dependency to jsweet-core, to import the annotations (such as @Erased)
