@@ -85,6 +85,7 @@ public class SD2TestTool extends SD4DevelopmentTool {
     generatorSetup.setGlex(glex);
     generatorSetup.setOutputDirectory(new File(outputDirectoryPath));
     CD4C.init(generatorSetup);
+    CD4C.getInstance().setEmptyBodyTemplate("cd2java.EmptyBody");
 
     //call decorators
     var sd2testDecorator = new SD2TestDecorator(glex);

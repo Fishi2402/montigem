@@ -41,8 +41,6 @@ public class SD2TestDecorator {
 
     var cd4c = CD4C.getInstance();
 
-    //FIXME generated method bodies are empty
-
     //constructor
     cd4c.addConstructor(testClass, "umlp.domain.sd2test.Constructor", name);
 
