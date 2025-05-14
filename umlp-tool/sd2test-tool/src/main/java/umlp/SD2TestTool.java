@@ -4,6 +4,7 @@ import de.monticore.cd._symboltable.BuiltInTypes;
 import de.monticore.cd.codegen.CDGenerator;
 import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.facade.CDModifier;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.generating.GeneratorSetup;
@@ -25,23 +26,33 @@ import java.nio.file.Path;
 
 public class SD2TestTool extends SD4DevelopmentTool {
 
-  private static final String LOG_NAME = "SD4DevelopmentTool";
+  private static final String LOG_NAME = "SD2TestTool";
 
   public static void main(String[] args) {
     Log.info("running tool relative to " + new File(".").getAbsolutePath(), LOG_NAME);
 
     var tool = new SD2TestTool();
 
-    //TODO how do I load domain CD info from the symbols?
-    var domainCdName = "Webshop";
+    var domainModelPath = "examples/testing-with-sd/models/Webshop.umlp";
     var modelPath = "examples/testing-with-sd/test-models/TotalTest.sd";
     var backendSymbolDirectoryPath = "examples/testing-with-sd/backend/build/umlp/backend_symbols";
     var testSymbolDirectoryPath = "examples/testing-with-sd/backend/build/umlp/test_symbols";
-    var model = tool.parseModel(modelPath, backendSymbolDirectoryPath, testSymbolDirectoryPath);
-
     var outputDirectoryPath = "examples/testing-with-sd/backend/build/umlp/backend_test";
-    //TODO create domainCD definition
-    tool.generateUnitTest(model, null, outputDirectoryPath);
+
+    var model = tool.parseModel(modelPath, backendSymbolDirectoryPath, testSymbolDirectoryPath);
+    var domainCD = parseDomainCD(domainModelPath);
+    tool.generateUnitTest(model, domainCD, outputDirectoryPath);
+  }
+
+  private static ASTCDDefinition parseDomainCD(String domainModelPath) {
+    var tool = new UMLPTool();
+    var ast = tool.parse(domainModelPath);
+    tool.runAfterParseTrafo(ast);
+    tool.createSymbolTable(ast);
+    tool.runDefaultCoCos(ast);
+    tool.runDefaultTrafos(ast);
+    tool.recreateSymbolTable(ast);
+    return ast.getCDDefinition();
   }
 
   public SD2TestTool() {
@@ -70,14 +81,16 @@ public class SD2TestTool extends SD4DevelopmentTool {
     var glex = new GlobalExtensionManagement();
     glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
 
-    var sd2testDecorator = new SD2TestDecorator(glex);
-    sd2testDecorator.transform(model, domainCD, decoratedCD);
-
     var generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     generatorSetup.setOutputDirectory(new File(outputDirectoryPath));
-    var generator = new CDGenerator(generatorSetup);
+    CD4C.init(generatorSetup);
 
+    //call decorators
+    var sd2testDecorator = new SD2TestDecorator(glex);
+    sd2testDecorator.transform(model, domainCD, decoratedCD);
+
+    var generator = new CDGenerator(generatorSetup);
     generator.generate(decoratedCD);
   }
 

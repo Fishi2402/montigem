@@ -22,6 +22,7 @@ dependencies {
   implementation "de.monticore:monticore-runtime:${mc_version}"
   implementation "de.monticore:monticore-grammar:${mc_version}"
   implementation "de.monticore.lang:cd4analysis:${mc_version}"
+  implementation "umlp:umlp-tool:$version"
 }
 
 group = "umlp"

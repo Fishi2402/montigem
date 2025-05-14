@@ -1,6 +1,8 @@
 package umlp.generator.domain.decorator;
 
+import de.monticore.cd.facade.CDExtendUsageFacade;
 import de.monticore.cd.facade.CDModifier;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis.CD4CodeBasisMill;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -10,6 +12,7 @@ import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.lang.sdbasis._ast.ASTSDArtifact;
 import de.monticore.types.MCTypeFacade;
+import de.se_rwth.commons.Joiners;
 
 public class SD2TestDecorator {
 
@@ -27,15 +30,29 @@ public class SD2TestDecorator {
 
   private ASTCDElement createTest(ASTSDArtifact model, ASTCDDefinition domainCd) {
     var name = model.getSequenceDiagram().getName();
+    var domainName = domainCd.getName();
+    var domainPackageName = domainName.toLowerCase();
 
     var testClass = CD4CodeBasisMill.cDClassBuilder()
         .setModifier(CDModifier.PUBLIC.build())
         .setName(name)
+        .setCDExtendUsage(CDExtendUsageFacade.getInstance().createCDExtendUsage(domainName + "SQLDBTestSetup"))
         .build();
 
-    //TODO we need some info about the domain CD here, like name and package; How do we get that?
+    var cd4c = CD4C.getInstance();
 
-    //TODO implement
+    //constructor
+    //TODO why is the method body generated from this empty?
+    cd4c.addConstructor(testClass, "umlp.domain.sd2test.Constructor", name);
+
+    //TODO override initBackendManager
+
+    //TODO create test method
+
+    //imports
+    cd4c.addImport(testClass, Joiners.DOT.join(domainPackageName, "*"));
+    cd4c.addImport(testClass, Joiners.DOT.join(domainPackageName, "test_infrastructure", "*"));
+
     return testClass;
   }
 
