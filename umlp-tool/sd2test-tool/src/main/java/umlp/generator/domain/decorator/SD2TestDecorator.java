@@ -41,11 +41,13 @@ public class SD2TestDecorator {
 
     var cd4c = CD4C.getInstance();
 
+    //FIXME generated method bodies are empty
+
     //constructor
-    //TODO why is the method body generated from this empty?
     cd4c.addConstructor(testClass, "umlp.domain.sd2test.Constructor", name);
 
-    //TODO override initBackendManager
+    //override initBackendManager
+    cd4c.addMethod(testClass, "umlp.domain.sd2test.InitBackendManager", domainName);
 
     //TODO create test method
 
