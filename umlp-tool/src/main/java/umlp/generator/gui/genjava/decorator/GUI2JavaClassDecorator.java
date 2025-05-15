@@ -82,6 +82,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
   protected List<Method> addedMethods = new ArrayList<>();
   protected boolean extendedDomainObserver = false;
+  boolean getScopeAdded = false;
   protected Set<String> implementedAssocObservers = new HashSet<>();
   protected Set<String> subscribedManagerEvents = new HashSet<>();
   protected Map<String, NotifyMethodTemplate> notifyDeleted = new HashMap<>();
@@ -1088,8 +1089,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       );
 
       // implement getScope method of observer
-      addImport(PathUtil.getBackendRTECommonPath("NotificationScope"));
-      getCD4C().addMethod(clazz, getScopeTemplate());
+      addGetScope();
     }
   }
 
@@ -1124,7 +1124,21 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       getCD4C().addMethod(clazz, getNotifyAssocAddedTemplate(),
           type, assoc.getName());
       implementedAssocObservers.add(ownerType.printFullName());
+
+      // implement getScope method of observer
+      addGetScope();
     }
+  }
+
+  /**
+   * Both domain observer & assoc observer require a getScope method
+   */
+  protected void addGetScope() {
+    if (getScopeAdded) return;
+    getScopeAdded = true;
+    // implement getScope method of observer
+    addImport(PathUtil.getBackendRTECommonPath("NotificationScope"));
+    getCD4C().addMethod(clazz, getScopeTemplate());
   }
 
   protected void addAssocListMethod(Method method, ASTCallExpression node, String template) {
