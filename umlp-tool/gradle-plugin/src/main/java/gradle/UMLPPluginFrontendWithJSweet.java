@@ -10,10 +10,13 @@ import gradle.specific.UMLPJava2TypeScriptTask;
 import gradle.specific.UMLPSymbolsTask;
 import gradle.specific.serialize.SerializeCDSymbolsTask;
 import gradle.specific.serialize.SerializeGUISymbolsTask;
+import groovy.lang.Closure;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.artifacts.Dependency;
+import org.gradle.api.artifacts.ExternalModuleDependency;
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
 import org.gradle.api.artifacts.repositories.MavenRepositoryContentDescriptor;
 import org.gradle.api.attributes.Bundling;
@@ -364,7 +367,24 @@ public abstract class UMLPPluginFrontendWithJSweet implements Plugin<Project> {
     releaseRepo.mavenContent(filterContent);
 
     project.getDependencies().add("implementation", "org.jsweet:jsweet-core:6.3.0");
-    project.getDependencies().add("implementation", "de.rwth.se.umlp.jsweet:jsweet-transpiler:3.2.0-UMLP-SNAPSHOT");
+    Dependency dep = project.getDependencies().create("de.rwth.se.umlp.jsweet:jsweet-transpiler:3.2.0-UMLP-SNAPSHOT", new Closure<Object>(this, this) {
+      @Override
+      public Object call(Object arg) {
+        var emd = (ExternalModuleDependency)arg;
+        emd.exclude(Map.of(
+            "group", "com.kohlschutter.jdk",
+            "module", "standalone-home"
+        ));
+        return arg;
+      }
+
+      @Override
+      public int getMaximumNumberOfParameters() {
+        return 1;
+      }
+    });
+    project.getDependencies().add("implementation", dep);
+    project.getDependencies().add("implementation", "com.kohlschutter.jdk.compiler:standalone-jdk11:1.0.0");
     if (local) {
       project.getDependencies().add("implementation", project.findProject(":umlp-rte:umlp-jsweet"));
     }
