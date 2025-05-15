@@ -49,10 +49,24 @@ classdiagram LoadingTests {
       + int currentTurn;
       + long currentPlayerIndex;
       + boolean votingPhase;
+
+      int gemIdForNav = -1;
     }
 
     composition [1] Game -> Player [*];
 
+   // A class causing Game -> Player * -> PlayerStat *;
+   public class PlayerStat {
+    + String statID;
+   }
+   composition [1] Player -> PlayerStat [*];
+   <<singleton>>
+   class PlayerStatsManager {
+     void addPlayerRemote(Game g);
+     void addStatRemote(Game g);
+     void reset(Game g);
+   }
+   association PlayerStatsManager -> Game [0..1];
 
   // And some tests for interfaces
 
