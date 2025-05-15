@@ -14,6 +14,7 @@ public enum TSImportMap {
   TABLE("mc.fenix.table", "@umlp/table"),
   FUNCTIONDISPLAY("mc.fenix.functiondisplay", "@umlp/functiondisplay"),
   NETWORKGRAPH("mc.fenix.networkgraph", "@umlp/networkgraph"),
+  EDITOR("mc.fenix.editor", "@umlp/editor"),
   ARRANGE_DEPRECATED("arrange", "@umlp/arrange"),
   BASIC_DEPRECATED("basic", "@umlp/basic"),
   CHARTS_DEPRECATED("charts", "@umlp/charts"),

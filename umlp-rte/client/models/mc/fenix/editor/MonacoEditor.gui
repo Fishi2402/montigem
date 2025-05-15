@@ -1,0 +1,25 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.editor;
+
+import mc.fenix.editor.MonacoEditorTypes.InlineDecoration;
+
+/* Find more options: https://microsoft.github.io/monaco-editor/typedoc/interfaces/editor.IStandaloneEditorConstructionOptions.html */
+
+component MonacoEditor(
+  ?String entry,
+
+  // Toggles read only
+  boolean disabled = false,
+
+  String language = "Java",
+
+  // Default Dark theme is 'vs-dark'
+  String theme = "Light +",
+
+  boolean glyphMargin = true,
+  boolean showLightbulbIconMode = true,
+  boolean automaticLayout = true,
+  boolean semanticHighlightingEnabled = true,
+
+  List<InlineDecoration> highlighting
+)

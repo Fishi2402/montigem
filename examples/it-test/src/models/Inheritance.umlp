@@ -53,7 +53,7 @@ umlp Inheritance{
   class R extends Q { }
 
   association mToQOptional [*] M -> (setQ) Q [*]; // M,N,O1,P -> Q,R
-  association mToQMandatory [*] M -> (mandatoryQ) Q [1];
+  association mToQMandatory [*] M (mandatedBy) -> (mandatoryQ) Q [1];
 
   association qToOBidirectional [*] Q <-> O1 [*]; // Q,R <-> O1, P
 
@@ -80,11 +80,11 @@ umlp Inheritance{
   }
 
   class AssocHelper;
-  association MI1 -> (gemAssoc1) AssocHelper [0..1];
-  association MI2 -> (gemAssoc2) AssocHelper [0..1];
-  association MultipleInhClass -> (gemAssoc3) AssocHelper [0..1];
+  association MI1 (mi1) -> (gemAssoc1) AssocHelper [0..1];
+  association MI2 (mi2) -> (gemAssoc2) AssocHelper [0..1];
+  association MultipleInhClass (mi3) -> (gemAssoc3) AssocHelper [0..1];
 
-  association MI1 -> (listAssoc1) AssocHelper [*];
-  association MI2 -> (listAssoc2) AssocHelper [*];
-  association MultipleInhClass -> (listAssoc3) AssocHelper [*];
+  association MI1 (miList1) -> (listAssoc1) AssocHelper [*];
+  association MI2 (miList2) -> (listAssoc2) AssocHelper [*];
+  association MultipleInhClass (miList3) -> (listAssoc3) AssocHelper [*];
 }

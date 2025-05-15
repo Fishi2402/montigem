@@ -20,7 +20,7 @@ classdiagram Dtcockpit {
   association [1] App -> Room [*];
   association [1] App -> Project [*];
   association [1] App -> Group [*];
-  association [1] App -> (dashboardGroup) Group [0..1];
+  association [1] App (dashboard) -> (dashboardGroup) Group [0..1];
 
   // TODO: Decide on a stereotype for concretizing extends for modules
   <<ConcretizeModule>>
@@ -123,10 +123,10 @@ classdiagram Dtcockpit {
   association [1] Server -> ServerStatus [*];
 
   // Welcome board  @ SE front door LCD
-  association [1] App -> (montiCoreProjects) Project [*];
-  association [1] Project -> (lastPipeline) PipelineStatistic [0..1];
-  association [1] App -> (currentMessage) MessageOfTheDay [0..1];
-  association [1] App -> (displayedMeetings) Meeting [*];
+  association [1] App (seApp) -> (montiCoreProjects) Project [*];
+  association [1] Project (seProject) -> (lastPipeline) PipelineStatistic [0..1];
+  association [1] App (seApp) -> (currentMessage) MessageOfTheDay [0..1];
+  association [1] App (seApp) -> (displayedMeetings) Meeting [*];
 
   class Meeting {
     java.time.LocalDateTime start;
@@ -151,7 +151,7 @@ classdiagram Dtcockpit {
   }
 
   / association DerivedInfo -> (manyStrings) java.lang.String [*];
-  / association [1] DerivedInfo -> (monthlyMeetings) Meeting [*];
-  / association [1] DerivedInfo -> (importantMeeting) Meeting [1];
-  / association [1] DerivedInfo -> (randomMeeting) Meeting [0..1];
+  / association [1] DerivedInfo (monthlyInfo) -> (monthlyMeetings) Meeting [*];
+  / association [1] DerivedInfo (importantInfo) -> (importantMeeting) Meeting [1];
+  / association [1] DerivedInfo (randomInfo) -> (randomMeeting) Meeting [0..1];
 }

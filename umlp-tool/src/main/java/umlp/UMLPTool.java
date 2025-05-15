@@ -29,6 +29,7 @@ import de.monticore.guidsl._symboltable.GUIDSLSymbols2Json;
 import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
 import de.monticore.guidsl._symboltable.IGUIDSLScope;
 import de.monticore.guidsl._symboltable.RoleSymbolDeSer;
+import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
 import de.monticore.ocl.ocl._ast.ASTOCLCompilationUnit;
 import de.monticore.ocl.ocl._parser.OCLParser;
@@ -217,6 +218,14 @@ public class UMLPTool extends UMLPToolTOP {
       Log.error("0xB005 An exception occurred while processing the CLI input!", e);
     }
     finally {
+      // Close all file systems
+      MCPath.closeAllJarFileSystems();
+      // Close all file handles (if last usage!)
+      FileReaderWriter.closeOpenedJarFiles();
+      // Clear MCPath caches
+      UMLPMill.globalScope().getSymbolPath().close();
+      GUIDSLMill.globalScope().getSymbolPath().close();
+      // Clear globalScope cache
       UMLPMill.globalScope().clear();
       GUIDSLMill.globalScope().clear();
       Reporting.off();

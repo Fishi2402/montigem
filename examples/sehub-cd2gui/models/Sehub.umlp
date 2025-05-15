@@ -82,9 +82,9 @@ classdiagram Sehub {
 
   class FileArtifact extends Artifact {}
 
-  association refersTo [*] Artifact -> (referred) Artifact [*];
+  association refersTo [*] Artifact (referrer) -> (referred) Artifact [*];
 
-  association produces [*] Artifact -> (produced) Artifact [*];
+  association produces [*] Artifact (producer) -> (produced) Artifact [*];
 
   association root [*] Artifact -> (root) Project [1];
 
