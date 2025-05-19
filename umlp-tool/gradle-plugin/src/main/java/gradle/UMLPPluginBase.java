@@ -11,6 +11,7 @@ import gradle.specific.UMLPBackendTask;
 import gradle.specific.UMLPCdToGuiTask;
 import gradle.specific.UMLPFrontendTask;
 import gradle.specific.UMLPGuiGenTask;
+import gradle.specific.UMLPGui2SymTask;
 import gradle.specific.UMLPOD2DataTask;
 import gradle.specific.UMLPSymbolsTask;
 import gradle.specific.merge.UMLPMergeTask;
@@ -54,6 +55,7 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
       project.getExtensions().getExtraProperties().set("GuiVariabilityHandlerTask", GuiVariabilityHandlerTask.class);
       project.getExtensions().getExtraProperties().set("UMLPFrontendTask", UMLPFrontendTask.class);
       project.getExtensions().getExtraProperties().set("UMLPSymbolsTask", UMLPSymbolsTask.class);
+      project.getExtensions().getExtraProperties().set(UMLPGui2SymTask.class.getSimpleName(), UMLPGui2SymTask.class);
       project.getExtensions().getExtraProperties().set("FrontendSetup", FrontendSetup.class);
       project.getExtensions().getExtraProperties().set("SerializeGUISymbolsTask", SerializeGUISymbolsTask.class);
       project.getExtensions().getExtraProperties().set("SerializeCDSymbolsTask", SerializeCDSymbolsTask.class);

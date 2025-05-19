@@ -1,5 +1,6 @@
 package gradle.module;
 
+import gradle.UMLPPluginFrontendBase;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
@@ -40,7 +41,8 @@ public class UMLPPluginModuleJSFrontend extends ALazyPublishingPlugin implements
       TaskProvider<Jar> jarTask = project.getTasks().register("createDomainSymbolsJar", Jar.class, jar -> {
         jar.setGroup("umlp");
         jar.getArchiveClassifier().set("domainsymbols");
-        jar.from(project.getTasks().named("createDomainSymbols"));
+        // jar.from(project.getTasks().named("createDomainSymbols")).include("**/*sym");
+        jar.from(project.getTasks().named("genDomain")).include("**/*import.map");
       });
       project.getTasks().named(BasePlugin.ASSEMBLE_TASK_NAME).configure(it -> it.dependsOn(jarTask));
 
@@ -61,7 +63,8 @@ public class UMLPPluginModuleJSFrontend extends ALazyPublishingPlugin implements
       TaskProvider<Jar> guiSymbolsJarTask = project.getTasks().register("createGuiSymbolsJar", Jar.class, jar -> {
         jar.setGroup("umlp");
         jar.getArchiveClassifier().set("guisymbols");
-        jar.from(project.getTasks().named("genGUI")).include("**/*.guisym");
+        jar.from(project.getTasks().named(UMLPPluginFrontendBase.CREATE_GUI_SYMBOLS_TASK_NAME))
+            .include("**/*sym", "**/*import.map");
         jar.setIncludeEmptyDirs(false);
       });
       project.getTasks().named(BasePlugin.ASSEMBLE_TASK_NAME).configure(it -> it.dependsOn(guiSymbolsJarTask));

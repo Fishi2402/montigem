@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+// to be replaced by UMLPGui2SymTask
+@Deprecated
 abstract public class SerializeGUISymbolsTask extends DefaultTask {
 
   @InputDirectory

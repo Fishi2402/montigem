@@ -13,7 +13,7 @@ configurations {
 dependencies {
     moduleGenTimeCompileOnly("umlp:umlp-tool")
     moduleGenTimeCompileOnly group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
-    moduleGenTimeCompileOnly group: 'de.monticore.lang', name: 'guidsl', version: mc_version
+    // moduleGenTimeCompileOnly group: 'de.monticore.lang', name: 'guidsl', version: mc_version
     moduleGenTimeCompileOnly group: 'de.monticore', name: 'monticore-runtime', version: mc_version
     moduleGenTimeCompileOnly group: 'de.monticore', name: 'monticore-grammar', version: mc_version
 }
@@ -26,6 +26,7 @@ sourceSets {
 
 // Publish empty publications with dependencies to the backend/frontend subproject
 configurations {
+    /*
     outgoingUMLPFrontendTSDS {
         canBeConsumed(true)
         gradle.module.UMLPPluginModuleJSFrontend.addDomainSymbolsJarAttributes(it, project)
@@ -34,6 +35,7 @@ configurations {
         canBeConsumed(true)
         gradle.module.UMLPPluginModuleJSFrontend.addGuiSymbolsJarAttributes(it, project)
     }
+    /**/
     /*
     outgoingUMLPFrontendTSZip {
         canBeConsumed(true)
@@ -44,16 +46,18 @@ configurations {
 
 dependencies {
     api(project(":modules:comment:backend"))
-    outgoingUMLPFrontendTSDS project(":modules:comment:frontendTS")
-    outgoingUMLPFrontendTSGS project(":modules:comment:frontendTS")
+    // outgoingUMLPFrontendTSDS project(":modules:comment:frontendTS")
+    // outgoingUMLPFrontendTSGS project(":modules:comment:frontendTS")
     // outgoingUMLPFrontendTSZip project(":modules:comment:frontendTS")
 }
+/*
 project.components.java.addVariantsFromConfiguration(configurations.outgoingUMLPFrontendTSDS) {
     it.mapToOptional()
 }
 project.components.java.addVariantsFromConfiguration(configurations.outgoingUMLPFrontendTSGS) {
     it.mapToOptional()
 }
+/**/
 /*
 project.components.java.addVariantsFromConfiguration(configurations.outgoingUMLPFrontendTSZip) {
     it.mapToOptional()

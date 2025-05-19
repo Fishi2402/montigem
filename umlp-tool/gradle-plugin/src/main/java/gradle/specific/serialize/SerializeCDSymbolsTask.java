@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+// to be replaced by UMLPSymbolsTask
+@Deprecated
 abstract public class SerializeCDSymbolsTask extends DefaultTask {
 
   @InputDirectory

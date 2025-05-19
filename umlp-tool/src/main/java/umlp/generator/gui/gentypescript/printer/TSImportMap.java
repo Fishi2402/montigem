@@ -69,14 +69,15 @@ public enum TSImportMap {
   }
 
   public void init(MCPath importedSymbolPath) {
-    // default map
-    add("mc.fenix.common", COMMON);
-    add(BACKEND_RTE, "@umlp/common");
-
     // loaded from files
     Log.info("Initializing qualified name to TypeScript import map",
         TSImportMap.class.getSimpleName());
     clear();
+
+    // default map
+    add("mc.fenix.common", COMMON);
+    add(BACKEND_RTE, "@umlp/common");
+
     Set<File> mapFiles = importedSymbolPath.getEntries().stream()
         .map(x -> x.toFile().listFiles(f -> f.getName().endsWith("import.map")))
         .filter(Objects::nonNull)

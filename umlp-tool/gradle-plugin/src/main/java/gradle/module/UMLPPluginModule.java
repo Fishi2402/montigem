@@ -46,7 +46,7 @@ public class UMLPPluginModule extends ALazyPublishingPlugin implements Plugin<Pr
     TaskProvider<Jar> modelsjarTask = project.getTasks().register("moduleModelsJar", Jar.class, jar -> {
       jar.setGroup("umlp");
       jar.getArchiveClassifier().set("models");
-      jar.from(project.getLayout().getProjectDirectory().dir("models"));
+      jar.from(project.getLayout().getProjectDirectory().dir("models")).include("**/*umlp");
     });
     project.getTasks().named(BasePlugin.ASSEMBLE_TASK_NAME).configure(it -> it.dependsOn(modelsjarTask));
     project.getArtifacts().add(outgoingModels.getName(), modelsjarTask);
