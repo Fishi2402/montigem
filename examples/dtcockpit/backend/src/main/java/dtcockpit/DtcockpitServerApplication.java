@@ -36,6 +36,11 @@ import java.util.concurrent.TimeUnit;
     scanBasePackages = {"umlp.backendrte.service.websocket", "umlp.backendrte.service.rest", "dtcockpit.service", "security", "service"} // TODO: security
 )
 public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplicationTOP {
+
+  private static final String MQTTUSR = "umlpuser";
+
+  private static final String MQTTPW = "xCpxikes6H7n7S";
+
   private static Set<Server> servers;
 
   @Autowired
@@ -135,7 +140,7 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
 
     MqttSerializer.instance = new MqttSerializer();
 
-    MqttService.getInstance().connect();
+    MqttService.getInstance().connect(MQTTUSR, MQTTPW);
 
     SendRoomChangesToMqttObserver mqttRoomObserver = new SendRoomChangesToMqttObserver();
     DtcockpitManager.addObserver(new DtcockpitObserver() {
