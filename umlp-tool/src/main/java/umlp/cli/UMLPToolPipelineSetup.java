@@ -173,7 +173,7 @@ public class UMLPToolPipelineSetup {
     }else if (CD2GUI.isSelected(cmd)) {
       main.register(CD2GUI.name(), CD2GUIPipelineSetup.createPipeline(setupUMLPReports, isUMLPFileCheck));
     } else if (TEST_INFRASTRUCTURE.isSelected(cmd)) {
-      // TODO: why does this not have pipeline setup?
+      // Is configured via the config template UMLP2JavaTestInfrastructure
       main.register(TEST_INFRASTRUCTURE.name(), new Pipeline<>());
     } else if (GUIVariability.isSelected(cmd)) {
       main.register(GUIVariability.name(), GuiVarPipelineSetup.createPipeline(setupUMLPReports));
