@@ -57,7 +57,8 @@ export class Navigation {
     { url: '/example_charts/GemVennDiagramExample', title: 'VennDiagram' },
     { url: '/example_charts/GemGraphChartExample', title: 'NetworkChart' },
     { url: '/example_network/NetworkChartExample/', title: 'NewNetworkChart'},
-    { url: '/example_charts/GemScatterPlotExample', title: 'GemScatterPlot' }
+    { url: '/example_charts/GemScatterPlotExample', title: 'GemScatterPlot' },
+    { url: '/fischertechnik/FischertechnikExample', title: 'Fischertechnik' }
   ];
 
 }

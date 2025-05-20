@@ -3,7 +3,7 @@ package umlp.jsweet.extension;
 
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import umlp.jsweet.extension.domainAdapters.ImportExcludeAdapter;
-import umlp.jsweet.extension.domainAdapters.SynchronizedAdapter;
+import umlp.jsweet.extension.domainAdapters.MutexAdapter;
 import umlp.jsweet.extension.domainAdapters.UMLPBasicsAdapter;
 import umlp.jsweet.extension.domainAdapters.UMLPCollectionsAdapter;
 import umlp.jsweet.extension.domainAdapters.UMLPEnumAdapter;
@@ -25,7 +25,7 @@ public class UMLPJSweetDomainAdapter extends PrinterAdapter {
                         new UMLPRTEImportAdapter(
                             new UMLPBasicsAdapter(
                                 new BackendOnlyAdapter(
-                                    new SynchronizedAdapter(
+                                    new MutexAdapter(
                                         new UMLPEnumAdapter(
                                             parentAdapter
                                         )

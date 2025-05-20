@@ -24,23 +24,23 @@ import java.util.stream.Collectors;
 
 import static umlp.UMLPToolOptions.INPUT;
 
-public class RTEDataPipelineSetup {
+public class RTEDataPipeline extends Pipeline<UMLPPipelineData> {
 
   public final IOperation<UMLPPipelineData> init;
   public final IOperation.ISimpleOperation2<UMLPPipelineData> addBuiltInTypes;
   public final Pipeline<DataWithAstAndGen> modelPipeline;
   public final IOperation<UMLPPipelineData> generateRTE;
 
-  public RTEDataPipelineSetup(UMLPToolPipelineSetup umlpPipeline) {
-    umlpPipeline.guiRTETypes.register("setupUMLPReports", umlpPipeline.setupUMLPReports);
-    umlpPipeline.guiRTETypes.register("init", init = data -> {
+  public RTEDataPipeline(IOperation<UMLPPipelineData> setupUMLPReports) {
+    register("setupUMLPReports", setupUMLPReports);
+    register("init", init = data -> {
       UMLPMill.init();
       return true;
     });
-    umlpPipeline.guiRTETypes.register("addBuiltInTypes", addBuiltInTypes = this::addBuiltInTypes);
+    register("addBuiltInTypes", addBuiltInTypes = this::addBuiltInTypes);
 
     modelPipeline = createModelPipeline();
-    umlpPipeline.guiRTETypes.register("generateRTE",
+    register("generateRTE",
         IOperation.withDependantPipelines(generateRTE = data -> {
           List<Path> paths = Arrays.stream(data.cmd.getOptionValues(INPUT.getCMD())).map(Paths::get)
               .collect(Collectors.toList());

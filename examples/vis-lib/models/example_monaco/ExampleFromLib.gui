@@ -9,6 +9,7 @@ page ExampleFromLib(Person p) {
     entry=p.aboutMe,
     disabled=false,
     theme="vs-dark",
-    highlighting = getHighlights()
+    highlighting = getHighlights(),
+    initialScrollToLine = 20
   );
 }

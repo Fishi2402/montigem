@@ -77,6 +77,12 @@ public class LoadingTestsServerApplication extends LoadingTestsServerApplication
     System.err.println("### singleLeftSide" + singleLeftSide.gemId);
 
     LoadingTestsManager.sidesBuilder().left(LoadingTestsManager.leftSideBuilder().label("inner").build().get()).build();
+
+
+    LoadingTestsManager.getPlayerStatsManager().setGame(
+        LoadingTestsManager.gameBuilder().currentTurn(0).currentPlayerIndex(0L).votingPhase(false).gemIdForNav(-1).build().get()
+    );
+    LoadingTestsManager.getPlayerStatsManager().getGame().setGemIdForNav((int)LoadingTestsManager.getPlayerStatsManager().getGame().getGemId());
   }
 
   public static Person createPerson(String name, int age, Set<Animal> animalSet) {

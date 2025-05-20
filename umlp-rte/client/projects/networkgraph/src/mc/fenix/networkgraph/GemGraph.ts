@@ -156,6 +156,12 @@ export class GemGraph extends GemGraphBasis implements OnChanges {
 
   @Input({
     transform: (graph: GUIGraph) => {
+      if(!graph) {
+        return {
+          nodes:[],
+          edges:[]
+        }
+      }
       return {
         nodes: graph._nodes.map(n => {
           return {

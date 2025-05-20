@@ -18,6 +18,9 @@
       "@umlp/charts": [
         "./projects/charts"
       ],
+      "@umlp/fischertechnik": [
+        "./projects/fischertechnik"
+      ],
       "@umlp/input": [
         "./projects/input"
       ],

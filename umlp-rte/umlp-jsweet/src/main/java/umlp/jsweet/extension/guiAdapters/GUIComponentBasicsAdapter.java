@@ -6,7 +6,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import umlp.jsweet.extension.util.GUIAdapterUtils;
 
-import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import java.util.Arrays;
 
@@ -23,10 +22,10 @@ public class GUIComponentBasicsAdapter extends PrinterAdapter {
 
   @Override
   public void beforeTypeBody(TypeElement type) {
-    if (adapterUtils.isDirective(type)) {
+    if (adapterUtils.hasDirectiveAnnotation(type)) {
       println().printIndent().print("protected router: Router;").println().println();
     }
-    if (adapterUtils.isDirective(type) || adapterUtils.isComponent(type) || adapterUtils.isHWCofComponent(type)) {
+    if (adapterUtils.isComponentOrDirective(type)) {
       String cdName = adapterUtils.getAnnotationPropertyValue(type, "cdName", String.class, "");
       String managerName = cdName + "Manager";
       String pathToManager = StringUtils.lowerCase(cdName) + "/" + managerName;
@@ -38,6 +37,10 @@ public class GUIComponentBasicsAdapter extends PrinterAdapter {
 
   @Override
   public boolean substituteType(TypeElement classElement) {
+    if (adapterUtils.isComponent(classElement) && !adapterUtils.hasComponentAnnotation(classElement)) {
+      Log.warn("0JSC003 " + classElement.getQualifiedName().toString()
+          + " Handwritten Adaption of a GUI Component should be tagged with @Component()");
+    }
     if (adapterUtils.isComponent(classElement)) {
       Boolean standAlone = adapterUtils.getAnnotationPropertyValue(classElement, "standalone", Boolean.class,
           true);
@@ -71,15 +74,11 @@ public class GUIComponentBasicsAdapter extends PrinterAdapter {
         adapterUtils.importFromWithModule(split[0].strip(), split[1].strip());
       }
     }
-    else if (adapterUtils.isHWCofComponent(classElement)) {
-      Log.error("0JSC003 " + classElement.getQualifiedName().toString()
-          + " Handwritten Adaption of a GUI Component must be tagged with @Component()");
-    }
-    else if (adapterUtils.isDirective(classElement)) {
+    else if (adapterUtils.hasDirectiveAnnotation(classElement)) {
       print("@Directive()").println().printIndent();
       adapterUtils.importFromWithModule("Directive", "@angular/core");
     }
-    if (adapterUtils.isDirective(classElement) || adapterUtils.isComponent(classElement)) {
+    if (adapterUtils.isComponentOrDirective(classElement)) {
       adapterUtils.importFromWithModule("ActivatedRoute, Router", "@angular/router");
       adapterUtils.importFromWithModule("ComponentObserverManager", GUIAdapterUtils.UMLP_COMMON_POINTER);
     }
@@ -88,7 +87,7 @@ public class GUIComponentBasicsAdapter extends PrinterAdapter {
 
   @Override
   public boolean substituteExtends(TypeElement type) {
-    if (adapterUtils.isHWCofComponent(type)) {
+    if (adapterUtils.isHWCofDirective(type)) {
       String componentName = type.getSimpleName().toString() + "Component";
       print(" extends " + componentName);
       String path = type.getQualifiedName().toString().replace(".", "/");
@@ -100,29 +99,4 @@ public class GUIComponentBasicsAdapter extends PrinterAdapter {
     return super.substituteExtends(type);
   }
 
-  @Override
-  public boolean substituteExecutable(ExecutableElement executable) {
-//    TypeElement classElement = getParentElement(TypeElement.class);
-//    if (adapterUtils.isComponentConstructor(executable, classElement)) {
-//      // Don't print the constructor
-//      return true;
-//    }
-    return super.substituteExecutable(executable);
-  }
-
-  @Override
-  public void afterType(TypeElement type) {
-    // Remove standard constructor
-//    if (adapterUtils.isDirective(type) || adapterUtils.isComponent(type) || adapterUtils.isHWCofComponent(type)) {
-//      int publicConstructor = getPrinter().getOutput().lastIndexOf("constructor()");
-//      if (publicConstructor < 0) {
-//        return;
-//      }
-//      int length = getPrinter().getOutput().length();
-//      getPrinter().removeLastChars(length - publicConstructor);
-//      println().print("}").println();
-//      print(type.getSimpleName()).print("[\"__class\"] = \"").print(type.getQualifiedName())
-//          .print("\";");
-//    }
-  }
 }

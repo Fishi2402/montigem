@@ -1,0 +1,26 @@
+package test_load_inner;
+
+import mc.fenix.basic.GemText;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.navigation.GemNavItem;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemGrid;
+import mc.fenix.arrange.GemGridCell;
+import mc.fenix.basic.GemButton;
+import java.util.List;
+import LoadingTests.Player;
+import LoadingTests.Game;
+import LoadingTests.PlayerStat;
+
+component PlayerStatListControls(int gemIdForNav) {
+   @GemButton(label="add player local", leftClick=addPlayer_Local());
+   @GemButton(label="add stat local", leftClick=addStat_Local());
+   @GemButton(label="add player remote", leftClick=addPlayer_Remote());
+   @GemButton(label="add stat remote", leftClick=addStat_Remote());
+   @GemButton(label="Reset", leftClick=reset());
+
+   @GemNavItem(title = "PlayerStats", target = "/test_load_inner/PlayerStats/" + gemIdForNav);
+   @GemNavItem(title = "PlayerStatsWithComponent", target = "/test_load_inner/PlayerStatsWithComp/" + gemIdForNav);
+   @GemNavItem(title = "PlayerStatsGlobal", target = "/test_load_inner/PlayerStatsGlobal/" + gemIdForNav);
+}

@@ -14,6 +14,7 @@ export function provideMonacoEditor(config: NgxMonacoEditorConfig = {}): Provide
 import {
   Component,
 } from '@angular/core';
+import {InlineDecoration} from "../../../../build/cd/mc/fenix/editor/monacoeditortypes/InlineDecoration";
 
 
 @Component({
@@ -35,6 +36,7 @@ import {
 
 export class MonacoEditor extends MonacoEditorComponent  {
 
+  protected editor: editor.ICodeEditor;
   protected cacheCheck : string = "";
   protected highlightingCache;
 
@@ -54,9 +56,23 @@ export class MonacoEditor extends MonacoEditorComponent  {
 
   onEntryChange(event: string) {
     this.entryChange.emit(event);
+    if(this.editor) {
+      this.highlightInitialization(this.editor)
+      this.scrollToLine(this.editor)
+    }
+  }
+
+  public saveEditor(editor: editor.ICodeEditor) : void{
+    this.editor = editor;
+    if(this.getHighlighting()) {
+      this.highlightInitialization(editor)
+      this.scrollToLine(this.editor)
+    }
+    console.log("Setting editor.")
   }
 
   public highlightInitialization(editor: editor.ICodeEditor): void {
+    console.warn("Highlighting now", this.getHighlighting())
     if(!this.getHighlighting()) {
       return;
     }
@@ -87,6 +103,14 @@ export class MonacoEditor extends MonacoEditorComponent  {
     }
   }
 
+  public scrollToLine(editor: editor.ICodeEditor): void {
+    console.warn("Scroll to line now", this.getInitialScrollToLine())
+    if(!this.getInitialScrollToLine()) {
+      return;
+    }
+    editor.revealLineNearTop(this.getInitialScrollToLine())
+  }
+
   public override setLanguage(val: string) {
     super.setLanguage(val);
     this.updateOptions();
@@ -100,6 +124,15 @@ export class MonacoEditor extends MonacoEditorComponent  {
   public override setDisabled(val: boolean) {
     super.setDisabled(val);
     this.updateOptions();
+  }
+
+  public override setHighlighting(val: InlineDecoration[]) {
+    super.setHighlighting(val);
+    if(this.editor) {
+      this.highlightInitialization(this.editor);
+    } else {
+      console.warn("Highlighting initialization not possible due to editor not set.")
+    }
   }
 
   public updateOptions() : void {

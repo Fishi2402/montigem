@@ -31,6 +31,7 @@
       "@umlp/charts": ["../../../../../umlp-rte/client/projects/charts"],
       "@umlp/common": ["../../../../../umlp-rte/client/projects/common"],
       "@umlp/commonj2ts": ["../../../../../umlp-rte/client/projects/commonj2ts"],
+      "@umlp/fischertechnik": ["../../../../../umlp-rte/client/projects/fischertechnik"],
       "@umlp/input": ["../../../../../umlp-rte/client/projects/input"],
       "@umlp/navigation": ["../../../../../umlp-rte/client/projects/navigation"],
       "@umlp/networkgraph": ["../../../../../umlp-rte/client/projects/networkgraph"],

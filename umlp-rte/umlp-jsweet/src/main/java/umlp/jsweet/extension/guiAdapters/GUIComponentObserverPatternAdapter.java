@@ -57,12 +57,12 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
 
   @Override
   public void beforeTypeBody(TypeElement type) {
-    if (adapterUtils.isDirective(type)) {
+    if (adapterUtils.hasDirectiveAnnotation(type)) {
       printUniqueIds(type);
       printHashes(type);
       printGetObs(type);
     }
-    if (adapterUtils.isComponent(type) ||  adapterUtils.isDirective(type) && !adapterUtils.isTOPComponent(type)) {
+    if (adapterUtils.isComponent(type) ||  adapterUtils.hasDirectiveAnnotation(type) && !adapterUtils.isTOPOfComponent(type)) {
       printNgOnDestroy(type);
     }
     adapterUtils.importFromWithModule("GemListUtil", GUIAdapterUtils.UMLP_COMMON_POINTER);
@@ -118,7 +118,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
 
   private void printGetObs(TypeElement type) {
     String guiComponentName = "\"" + type.getQualifiedName().toString() + "\"";
-    if (guiComponentName.endsWith("TOP\"") && adapterUtils.isDirective(type)) {
+    if (guiComponentName.endsWith("TOP\"") && adapterUtils.hasDirectiveAnnotation(type)) {
       guiComponentName = guiComponentName.substring(0, guiComponentName.length() - 4) + "\"";
     }
     guiComponentName = guiComponentName + " + this.uniqueIdentifier";
@@ -151,12 +151,12 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
 
   private void printNgOnDestroy(TypeElement typeElement) {
     String guiComponentName = "\"" + typeElement.getQualifiedName().toString() + "\"";
-    if (guiComponentName.endsWith("TOP\"") && adapterUtils.isDirective(typeElement)) {
+    if (guiComponentName.endsWith("TOP\"") && adapterUtils.hasDirectiveAnnotation(typeElement)) {
       guiComponentName = guiComponentName.substring(0, guiComponentName.length() - 4) + "\"";
     }
     guiComponentName = guiComponentName + " + this.uniqueIdentifier";
     printIndent().print("public ngOnDestroy(): void {").println().startIndent().printIndent();
-    if (adapterUtils.isHWCofComponent(typeElement)) {
+    if (adapterUtils.isComponent(typeElement)) {
       print("super.ngOnDestroy();").println().printIndent();
     }
     print("ComponentObserverManager.removeObservers(" + guiComponentName + ");")
@@ -537,7 +537,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
             element.getKind().toString().equals("METHOD") &&
             (element.getSimpleName().toString().startsWith("get") || element.getSimpleName().toString().startsWith("is")) &&
             !((Symbol.MethodSymbol) element).getReturnType().getKind().equals(TypeKind.VOID) &&
-            adapterUtils.isMethodOfComponent(element) ?
+            adapterUtils.isMethodOfComponentOrDirective(element) ?
             Action.ADD :
             Action.VOID;
       }
