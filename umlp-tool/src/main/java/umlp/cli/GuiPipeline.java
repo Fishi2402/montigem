@@ -12,7 +12,9 @@ import de.monticore.symboltable.serialization.JsonPrinter;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.CommandLine;
-import umlp.*;
+import umlp.GUIDSLReports;
+import umlp.TagRelated;
+import umlp.UMLPTool;
 import umlp.cli.common.IOperation;
 import umlp.cli.common.Pipeline;
 import umlp.generator.domain.UMLPGeneratorConfig;
@@ -27,7 +29,13 @@ import umlp.generator.gui.gentypescript.config.PackageRoute;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static umlp.UMLPToolOptions.DOMAIN;
@@ -35,22 +43,16 @@ import static umlp.UMLPToolOptions.GUI_CREATE;
 import static umlp.UMLPToolOptions.INPUT;
 import static umlp.UMLPToolOptions.SYMTAB;
 
-public class GuiPipelineSetup {
+public class GuiPipeline extends Pipeline<UMLPPipelineData> {
 
   public final IOperation<UMLPPipelineData> init;
   public final IOperation<UMLPPipelineData> loadModelPath;
   public final Pipeline<DataWithGenSetupAndModel> modelPipeline;
   public final Pipeline<DataWithGenSetupAndRouting> configurationPipeline;
 
-  public static Pipeline<UMLPPipelineData> createPipeline(IOperation<UMLPPipelineData> setupUMLPReports) {
-    Pipeline<UMLPPipelineData> res = new Pipeline<>();
-    new GuiPipelineSetup(res, setupUMLPReports);
-    return res;
-  }
-
-  public GuiPipelineSetup(Pipeline<UMLPPipelineData> gui, IOperation<UMLPPipelineData> setupUMLPReports) {
-    gui.register("setupUMLPReports", setupUMLPReports);
-    gui.register("init", init = data -> {
+  public GuiPipeline(IOperation<UMLPPipelineData> setupUMLPReports) {
+    register("setupUMLPReports", setupUMLPReports);
+    register("init", init = data -> {
       // Prepare the SingletonLookup
       TagRelated.initLookup(data.importedSymbolPath);
       GUIDSLMill.init();
@@ -61,7 +63,7 @@ public class GuiPipelineSetup {
     modelPipeline = createModelPipeline();
     configurationPipeline = createConfigurationPipeline();
 
-    gui.register("processModels",
+    register("processModels",
         IOperation.withDependantPipelines(loadModelPath = data -> {
           String[] modelPathStrings = data.cmd.getOptionValues(INPUT.getCMD());
           List<Path> modelPaths =
@@ -87,7 +89,7 @@ public class GuiPipelineSetup {
           return true;
         }, List.of(modelPipeline, configurationPipeline)));
 
-    gui.addFinally(data -> {
+    addFinally(data -> {
       TagRelated.postInfo();
       Reporting.flush(new ASTGUICompilationUnit());
     });

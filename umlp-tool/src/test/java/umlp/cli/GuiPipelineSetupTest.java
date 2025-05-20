@@ -1,10 +1,7 @@
 package umlp.cli;
 
 import de.se_rwth.commons.logging.Log;
-import org.apache.commons.cli.CommandLine;
 import org.junit.jupiter.api.Test;
-import umlp.cli.common.IOperation;
-import umlp.cli.common.Pipeline;
 import umlp.generator.gui.AbstractGUITest;
 
 import java.nio.file.Path;
@@ -28,10 +25,7 @@ public class GuiPipelineSetupTest extends AbstractGUITest {
     paths.add(Paths.get("src/test/resources/gui/duplicated/again/Same2.gui"));
     paths.add(Paths.get("src/test/resources/gui/duplicated/Unique.gui"));
 
-    new GuiPipelineSetup(
-        new Pipeline<>(),
-        data -> true
-    ).checkSameFilenames(paths);
+    new GuiPipeline( data -> true).checkSameFilenames(paths);
     assertEquals(1, Log.getFindingsCount());
     assertTrue(Log.getFindings().get(0).isError());
     String msg = Log.getFindings().get(0).getMsg();

@@ -12,6 +12,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.Optional;
 
 import static umlp.UMLPToolOptions.CD2GUI;
 import static umlp.UMLPToolOptions.DEBUG;
@@ -34,7 +35,7 @@ import static umlp.UMLPToolOptions.TMPL_PATH;
  * The options CD2GUI, GuiVar, UMLP (from a .umlp file), and GUI are moved into separate pipelines
  * (each defined in their own files)
  */
-public class UMLPToolPipelineSetup {
+public class UMLPToolPipeline extends Pipeline<UMLPPipelineData> {
 
   // A reuseable operation, showing the help
   public IOperation<UMLPPipelineData> showHelp;
@@ -51,26 +52,23 @@ public class UMLPToolPipelineSetup {
   };
 
   // Next, the various operations are stored, such that they can be modified
+  protected IOperation<UMLPPipelineData> initLog;
+  protected IOperation<UMLPPipelineData> getInputFile;
+  protected IOperation<UMLPPipelineData> loadPath;
+  protected IOperation<UMLPPipelineData> importsPath;
+  protected IOperation<UMLPPipelineData> loadModelPath;
+  protected IOperation<UMLPPipelineData> loadHWCPath;
+  protected IOperation<UMLPPipelineData> loadTmplPath;
 
-  public IOperation<UMLPPipelineData> initLog;
+  // Alternative pipeline actions
+  protected RTEDataPipeline rteDataPipeline = null;
+  protected CD2GUIPipeline cd2GUIPipeline = null;
+  protected Pipeline<UMLPPipelineData> testInfrastructurePipeline = null;
+  protected GuiVarPipeline guiVarPipeline = null;
+  protected UMLPFilePipeline umlpFilePipeline = null;
+  protected GuiPipeline guiPipeline = null;
 
-  public IOperation<UMLPPipelineData> getInputFile;
-
-  public IOperation<UMLPPipelineData> loadPath;
-  public IOperation<UMLPPipelineData> importsPath;
-
-  public IOperation<UMLPPipelineData> loadModelPath;
-
-  public IOperation<UMLPPipelineData> loadHWCPath;
-
-  public IOperation<UMLPPipelineData> loadTmplPath;
-
-  public final Pipeline<UMLPPipelineData> main;
-
-  public UMLPToolPipelineSetup(CommandLine cmd) {
-    // Define the "main" pipeline (which is followed for every tool-run)
-    main = new Pipeline<>();
-
+  public UMLPToolPipeline(CommandLine cmd) {
     setupUMLPReports = data -> {
       data.umlp_reportManagerFactory = new UMLPReports(data.outDir.getPath(), data.reportDir.getPath(), data.reportPathOutput, data.hwcPath, data.tool.buildJsonData(data.cmd));
       Reporting.init(data.outDir.getPath(), data.reportDir.getPath(), data.umlp_reportManagerFactory);
@@ -81,7 +79,7 @@ public class UMLPToolPipelineSetup {
 
     // A reuseable operation, showing the help and exiting
     if(cmd == null || !cmd.getArgList().isEmpty() || HELP.isSelected(cmd)) {
-      main.register("showHelp", showHelp = data -> {
+      this.register("showHelp", showHelp = data -> {
         org.apache.commons.cli.HelpFormatter formatter = new org.apache.commons.cli.HelpFormatter();
         formatter.setWidth(80);
         formatter.printHelp("UMLPTool", data.getCmdOptions());
@@ -89,7 +87,7 @@ public class UMLPToolPipelineSetup {
       });
     }
 
-    main.register("initLog", initLog = data -> {
+    this.register("initLog", initLog = data -> {
       // set desired log level without modifying the "failQuick" option
       boolean enableFailQuick = Log.isFailQuickEnabled();
       if (DEBUG.isSelected(data.getCmd())) {
@@ -101,7 +99,7 @@ public class UMLPToolPipelineSetup {
       return true;
     });
 
-    main.register("getInputFile", getInputFile = data -> {
+    this.register("getInputFile", getInputFile = data -> {
       if (!INPUT.isSelected(data.getCmd())) {
         Log.error("0xE0000 Indicating an input file with the option 'i' is mandatory");
       }
@@ -121,7 +119,7 @@ public class UMLPToolPipelineSetup {
     });
 
     if (PATH.isSelected(cmd)) {
-      main.register("loadPath", loadPath = data -> {
+      this.register("loadPath", loadPath = data -> {
         for (String v : data.cmd.getOptionValues(PATH.getCMD())) {
           data.importedSymbolPath.addEntry(Paths.get(v));
         }
@@ -130,7 +128,7 @@ public class UMLPToolPipelineSetup {
     }
 
     if (IMPORTS_PATH.isSelected(cmd)) {
-      main.register("loadImportsPath", importsPath = data -> {
+      this.register("loadImportsPath", importsPath = data -> {
         for (String v : data.cmd.getOptionValues(IMPORTS_PATH.getCMD())) {
           data.importsPath.addEntry(Paths.get(v));
         }
@@ -139,7 +137,7 @@ public class UMLPToolPipelineSetup {
     }
 
     if (MODEl_PATH.isSelected(cmd)) {
-      main.register("loadModelPath", loadModelPath = data -> {
+      this.register("loadModelPath", loadModelPath = data -> {
         for (String v : data.cmd.getOptionValues(MODEl_PATH.getCMD())) {
           data.modelPath.addEntry(Paths.get(v));
           data.importedSymbolPath.addEntry(Paths.get(v));
@@ -149,7 +147,7 @@ public class UMLPToolPipelineSetup {
     }
 
     if (HWC_PATH.isSelected(cmd)) {
-      main.register("loadHWCPath", loadHWCPath = data -> {
+      this.register("loadHWCPath", loadHWCPath = data -> {
         for (String v : data.cmd.getOptionValues(HWC_PATH.getCMD())) {
           data.hwcPath.addEntry(Paths.get(v));
         }
@@ -158,7 +156,7 @@ public class UMLPToolPipelineSetup {
     }
 
     if (TMPL_PATH.isSelected(cmd)) {
-      main.register("loadTemplatePath", loadTmplPath = data -> {
+      this.register("loadTemplatePath", loadTmplPath = data -> {
         for (String v : data.cmd.getOptionValues(TMPL_PATH.getCMD())) {
           data.fpPath.addEntry(Paths.get(v));
         }
@@ -169,29 +167,35 @@ public class UMLPToolPipelineSetup {
     // Register the alternatives
     var inputFile = new File(INPUT.getValue(cmd));
     if (GUIRTETypes.isSelected(cmd)) {
-      main.register(GUIRTETypes.name(), RTEDataPipelineSetup.createPipeline(setupUMLPReports));
+      rteDataPipeline = new RTEDataPipeline(setupUMLPReports);
+      this.register(GUIRTETypes.name(), rteDataPipeline);
     }else if (CD2GUI.isSelected(cmd)) {
-      main.register(CD2GUI.name(), CD2GUIPipelineSetup.createPipeline(setupUMLPReports, isUMLPFileCheck));
+      cd2GUIPipeline = new CD2GUIPipeline(setupUMLPReports, isUMLPFileCheck);
+      this.register(CD2GUI.name(), cd2GUIPipeline);
     } else if (TEST_INFRASTRUCTURE.isSelected(cmd)) {
       // Is configured via the config template UMLP2JavaTestInfrastructure
-      main.register(TEST_INFRASTRUCTURE.name(), new Pipeline<>());
+      testInfrastructurePipeline = new Pipeline<>();
+      this.register(TEST_INFRASTRUCTURE.name(), testInfrastructurePipeline);
     } else if (GUIVariability.isSelected(cmd)) {
-      main.register(GUIVariability.name(), GuiVarPipelineSetup.createPipeline(setupUMLPReports));
+      guiVarPipeline = new GuiVarPipeline(setupUMLPReports);
+      this.register(GUIVariability.name(), guiVarPipeline);
     } else if (inputFile.getName().endsWith(".umlp")) {
-      main.register(UMLPFilePipelineSetup.createPipeline(setupUMLPReports));
+      umlpFilePipeline = new UMLPFilePipeline(setupUMLPReports);
+      this.register(umlpFilePipeline);
     } else if (inputFile.getName().endsWith(".gui")) {
-      main.register(GuiPipelineSetup.createPipeline(setupUMLPReports));
+      guiPipeline = new GuiPipeline(setupUMLPReports);
+      this.register(guiPipeline);
     } else {
       Log.error("Unhandled input file");
     }
 
     // Finally (for every option), close report managers
-    main.addFinally(data -> {
+    this.addFinally(data -> {
       if (data.umlp_reportManagerFactory != null) {
         data.umlp_reportManagerFactory.close();
       }
     });
-    main.addFinally(data -> {
+    this.addFinally(data -> {
       if (data.guidsl_reportManagerFactory != null) {
         data.guidsl_reportManagerFactory.close();
       }
@@ -199,10 +203,27 @@ public class UMLPToolPipelineSetup {
 
   }
 
-  /**
-   * @return the main pipeline
-   */
-  public Pipeline<UMLPPipelineData> getMain() {
-    return this.main;
+  public Optional<CD2GUIPipeline> getCd2GUIPipeline() {
+    return Optional.ofNullable(cd2GUIPipeline);
+  }
+
+  public Optional<GuiPipeline> getGuiPipeline() {
+    return Optional.ofNullable(guiPipeline);
+  }
+
+  public Optional<GuiVarPipeline> getGuiVarPipeline() {
+    return Optional.ofNullable(guiVarPipeline);
+  }
+
+  public Optional<RTEDataPipeline> getRteDataPipeline() {
+    return Optional.ofNullable(rteDataPipeline);
+  }
+
+  public Optional<Pipeline<UMLPPipelineData>> getTestInfrastructurePipeline() {
+    return Optional.ofNullable(testInfrastructurePipeline);
+  }
+
+  public Optional<UMLPFilePipeline> getUmlpFilePipeline() {
+    return Optional.ofNullable(umlpFilePipeline);
   }
 }

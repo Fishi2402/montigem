@@ -54,7 +54,7 @@ import static umlp.UMLPToolOptions.OCL;
 import static umlp.UMLPToolOptions.PRETTYPRINT;
 import static umlp.UMLPToolOptions.SYMTAB;
 
-public class UMLPFilePipelineSetup {
+public class UMLPFilePipeline extends Pipeline<UMLPPipelineData> {
 
 
   public final IOperation<UMLPPipelineData> init;
@@ -76,15 +76,9 @@ public class UMLPFilePipelineSetup {
   public final IOperation.ISimpleOperation<Data> setupGenerator;
   public final IOperation.ISimpleOperation<Data> generate;
 
-  public static Pipeline<UMLPPipelineData> createPipeline(IOperation<UMLPPipelineData> setupUMLPReports) {
-    Pipeline<UMLPPipelineData> res = new Pipeline<>();
-    new UMLPFilePipelineSetup(res, setupUMLPReports);
-    return res;
-  }
-
-  UMLPFilePipelineSetup(Pipeline<UMLPPipelineData> umlp, IOperation<UMLPPipelineData> setupUMLPReports) {
-    umlp.register("setupUMLPReports", setupUMLPReports);
-    umlp.register("init", init = data -> {
+  UMLPFilePipeline(IOperation<UMLPPipelineData> setupUMLPReports) {
+    register("setupUMLPReports", setupUMLPReports);
+    register("init", init = data -> {
       // If we were to with to use concrete syntax, we would have to use the UMLPTagDefinitionMill
       if (SYMTAB.isSelected(data.cmd)) {
         TagsMill.init(); // instead we only support generic tagging models
@@ -94,11 +88,11 @@ public class UMLPFilePipelineSetup {
       UMLPMill.globalScope().setSymbolPath(data.importedSymbolPath);
       return true;
     });
-    umlp.register("addBuiltInTypes", addBuiltInTypes = this::addBuiltInTypes);
+    register("addBuiltInTypes", addBuiltInTypes = this::addBuiltInTypes);
 
     // Pipeline dealing with how to load models into the model path
     loadModelPathPipe = createPipe(ModelPathData.class);
-    umlp.register("loadModelpath", IOperation.withDependantPipelines(loadModelpath = data -> {
+    register("loadModelpath", IOperation.withDependantPipelines(loadModelpath = data -> {
       String report_on = data.inputFile.getName().replace(".", "__");   // TODO: Is this name unique? Should it be unique?
 
       List<URL> models = MCPathUtil.getAllModels(data.modelPath, ".*[.]umlp");
@@ -120,7 +114,7 @@ public class UMLPFilePipelineSetup {
     // Pipeline for dealing with parsed ASTs (will be called next)
     astPipe = createPipe(Data.class);
     // Next, we load the item into the AST
-    umlp.register("loadAST", IOperation.withDependantPipelines(loadAST = data -> {
+    register("loadAST", IOperation.withDependantPipelines(loadAST = data -> {
       String report_on = data.inputFile.getName().replace(".", "__");   // TODO: Is this name unique? Should it be unique?
 
       // parse, create symbol table, check all cocos

@@ -14,27 +14,23 @@ import umlp.cli.common.Pipeline;
 import umlp.generator.gui.guivariability.GUIVariabilityHandler;
 
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static umlp.UMLPToolOptions.INPUT;
 
-public class GuiVarPipelineSetup {
+public class GuiVarPipeline extends Pipeline<UMLPPipelineData> {
 
   public final IOperation<UMLPPipelineData> init;
   public final IOperation<UMLPPipelineData> processModels;
   public final Pipeline<DataWithUnprocessedModels> modelPreprocessingPipeline;
   public final Pipeline<DataWithModels> modelPipeline;
 
-  public static Pipeline<UMLPPipelineData> createPipeline(IOperation<UMLPPipelineData> setupUMLPReports) {
-    Pipeline<UMLPPipelineData> res = new Pipeline<>();
-    new GuiVarPipelineSetup(res, setupUMLPReports);
-    return res;
-  }
-
-  public GuiVarPipelineSetup(Pipeline<UMLPPipelineData> guiVar, IOperation<UMLPPipelineData> setupUMLPReports) {
-    guiVar.register("setupUMLPReports", setupUMLPReports);
-    guiVar.register("init", init = data -> {
+  public GuiVarPipeline(IOperation<UMLPPipelineData> setupUMLPReports) {
+    register("setupUMLPReports", setupUMLPReports);
+    register("init", init = data -> {
       data.guidsl_reportManagerFactory =
           new GUIDSLReports(data.outDir.getPath(), data.reportDir.getPath(), data.reportPathOutput,
               data.hwcPath);
@@ -47,7 +43,7 @@ public class GuiVarPipelineSetup {
     modelPreprocessingPipeline = createParsePipeline();
     modelPipeline = createModelPipeline();
 
-    guiVar.register("processModels",
+    register("processModels",
         IOperation.withDependantPipelines(processModels = data -> {
           List<Path> inputs = Arrays.stream(data.cmd.getOptionValues(INPUT.getCMD())).map(Path::of)
               .collect(Collectors.toList());

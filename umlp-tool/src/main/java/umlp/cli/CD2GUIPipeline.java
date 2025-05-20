@@ -20,30 +20,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class CD2GUIPipelineSetup {
+public class CD2GUIPipeline extends Pipeline<UMLPPipelineData> {
 
   public final IOperation<UMLPPipelineData> init;
   public final IOperation.ISimpleOperation2<UMLPPipelineData> addBuiltInTypes;
   public final IOperation<UMLPPipelineData> generateGui;
   public final Pipeline<DataWithAst> modelPipeline;
 
-  public static Pipeline<UMLPPipelineData> createPipeline(IOperation<UMLPPipelineData> setupUMLPReports, IOperation<UMLPPipelineData> isUMLPFileCheck){
-    Pipeline<UMLPPipelineData> cd2Gui = new Pipeline<>();
-    new CD2GUIPipelineSetup(cd2Gui, setupUMLPReports, isUMLPFileCheck);
-    return cd2Gui;
-  }
-
-  public CD2GUIPipelineSetup(Pipeline<UMLPPipelineData> cd2Gui, IOperation<UMLPPipelineData> setupUMLPReports, IOperation<UMLPPipelineData> isUMLPFileCheck) {
-    cd2Gui.register("setupUMLPReports", setupUMLPReports);
-    cd2Gui.register("check_umlp_filetype", isUMLPFileCheck);
-    cd2Gui.register("init", init = data -> {
+  public CD2GUIPipeline(IOperation<UMLPPipelineData> setupUMLPReports, IOperation<UMLPPipelineData> isUMLPFileCheck) {
+    register("setupUMLPReports", setupUMLPReports);
+    register("check_umlp_filetype", isUMLPFileCheck);
+    register("init", init = data -> {
       UMLPMill.init();
       return true;
     });
-    cd2Gui.register("addBuiltInTypes", addBuiltInTypes = this::addBuiltInTypes);
+    register("addBuiltInTypes", addBuiltInTypes = this::addBuiltInTypes);
 
     modelPipeline = createModelPipeline();
-    cd2Gui.register("generateGui",
+    register("generateGui",
         IOperation.withDependantPipelines(generateGui = data -> {
           modelPipeline.doWork(new Data(data));
           return true;
