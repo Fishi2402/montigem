@@ -60,6 +60,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
 
     MonitorDecorator.Stereotype.NEEDS_MONITOR.addTo(managerClass);
     MonitorDecorator.Stereotype.USE_MONITOR_BUILDERS.addTo(managerClass);
+    MonitorDecorator.Stereotype.MANAGER.addTo(managerClass);
 
     // Add @jsweet.lang.Erased annotation
     glex.replaceTemplate("cd2java.Annotations", managerClass,

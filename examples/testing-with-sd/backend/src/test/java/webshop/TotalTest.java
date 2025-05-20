@@ -6,7 +6,6 @@ import umlp.test_rte.ClientSetup;
 import umlp.test_rte.monitor.StackEventQueue;
 import umlp.test_rte.monitor.event.CallEvent;
 import umlp.test_rte.monitor.event.ReturnVoidEvent;
-import webshop.test_infrastructure.WebshopManagerImplMonitor;
 import webshop.test_infrastructure.WebshopSQLDBTestSetup;
 
 import java.util.ArrayList;

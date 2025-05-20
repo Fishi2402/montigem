@@ -39,7 +39,11 @@ public class MonitorDecorator extends AbstractDecorator {
      * Implies that _doFooBuilderFromId methods should return a FooBuilderMonitor instead of a
      * FooBuilder. In conjunction with {@link #NEEDS_MONITOR} this method will also be monitored.
      */
-    USE_MONITOR_BUILDERS("use-monitor-builders");
+    USE_MONITOR_BUILDERS("use-monitor-builders"),
+    /**
+     * Implies that the class is a manager and according static methods should be generated
+     */
+    MANAGER("manager");
 
     /**
      * Get a {@link Collection} of all {@link Stereotype}s present on an {@link ASTCDClass}.
@@ -140,6 +144,7 @@ public class MonitorDecorator extends AbstractDecorator {
 
     var monitorMethods = Stereotype.NEEDS_MONITOR.isPresentOn(decoratedBuilderClass);
     var returnBuilderMonitors = Stereotype.USE_MONITOR_BUILDERS.isPresentOn(decoratedBuilderClass);
+    var generateStaticManagerMethods = Stereotype.MANAGER.isPresentOn(decoratedBuilderClass);
 
     var overridableMethods = getOverridableMethods(decoratedBuilderClass, redecoratedCD);
 
@@ -184,6 +189,9 @@ public class MonitorDecorator extends AbstractDecorator {
                            .map(MethodToAdd::delegateBuilderFromId)
                            .collect(Collectors.toList()));
       }
+    }
+    if (generateStaticManagerMethods) {
+      methods.add(MethodToAdd.managerMethods(monitorClass));
     }
 
     //override methods
@@ -264,6 +272,10 @@ public class MonitorDecorator extends AbstractDecorator {
 
     static DelegateBuilderFromId delegateBuilderFromId(ASTCDClass domainClass) {
       return new DelegateBuilderFromId(domainClass);
+    }
+
+    static Init managerMethods(ASTCDClass managerClass) {
+      return new Init(managerClass);
     }
 
     final class Monitor implements MethodToAdd {
@@ -352,6 +364,26 @@ public class MonitorDecorator extends AbstractDecorator {
       public ASTCDMethodSignature addTo(CD4C cd4c, ASTCDClass clazz) {
         var name = domainClass.getName();
         return cd4c.addMethod(clazz, "umlp.monitor.DoBuilderParam", name);
+      }
+
+      @Override
+      public Collection<String> requiredImports() {
+        return List.of();
+      }
+    }
+
+    final class Init implements MethodToAdd {
+
+      private final ASTCDClass managerClass;
+
+      public Init(ASTCDClass managerClass) {
+        this.managerClass = managerClass;
+      }
+
+      @Override
+      public ASTCDMethodSignature addTo(CD4C cd4c, ASTCDClass clazz) {
+        var name = managerClass.getName();
+        return cd4c.addMethod(clazz, "umlp.monitor.manager.Init", name);
       }
 
       @Override
