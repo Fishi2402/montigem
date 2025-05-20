@@ -76,9 +76,15 @@ public class UMLPFilePipelineSetup {
   public final IOperation.ISimpleOperation<Data> setupGenerator;
   public final IOperation.ISimpleOperation<Data> generate;
 
-  UMLPFilePipelineSetup(UMLPToolPipelineSetup umlpPipeline) {
-    umlpPipeline.umlp.register("setupUMLPReports", umlpPipeline.setupUMLPReports);
-    umlpPipeline.umlp.register("init", init = data -> {
+  public static Pipeline<UMLPPipelineData> createPipeline(IOperation<UMLPPipelineData> setupUMLPReports) {
+    Pipeline<UMLPPipelineData> res = new Pipeline<>();
+    new UMLPFilePipelineSetup(res, setupUMLPReports);
+    return res;
+  }
+
+  UMLPFilePipelineSetup(Pipeline<UMLPPipelineData> umlp, IOperation<UMLPPipelineData> setupUMLPReports) {
+    umlp.register("setupUMLPReports", setupUMLPReports);
+    umlp.register("init", init = data -> {
       // If we were to with to use concrete syntax, we would have to use the UMLPTagDefinitionMill
       if (SYMTAB.isSelected(data.cmd)) {
         TagsMill.init(); // instead we only support generic tagging models
@@ -88,11 +94,11 @@ public class UMLPFilePipelineSetup {
       UMLPMill.globalScope().setSymbolPath(data.importedSymbolPath);
       return true;
     });
-    umlpPipeline.umlp.register("addBuiltInTypes", addBuiltInTypes = this::addBuiltInTypes);
+    umlp.register("addBuiltInTypes", addBuiltInTypes = this::addBuiltInTypes);
 
     // Pipeline dealing with how to load models into the model path
     loadModelPathPipe = createPipe(ModelPathData.class);
-    umlpPipeline.umlp.register("loadModelpath", IOperation.withDependantPipelines(loadModelpath = data -> {
+    umlp.register("loadModelpath", IOperation.withDependantPipelines(loadModelpath = data -> {
       String report_on = data.inputFile.getName().replace(".", "__");   // TODO: Is this name unique? Should it be unique?
 
       List<URL> models = MCPathUtil.getAllModels(data.modelPath, ".*[.]umlp");
@@ -114,7 +120,7 @@ public class UMLPFilePipelineSetup {
     // Pipeline for dealing with parsed ASTs (will be called next)
     astPipe = createPipe(Data.class);
     // Next, we load the item into the AST
-    umlpPipeline.umlp.register("loadAST", IOperation.withDependantPipelines(loadAST = data -> {
+    umlp.register("loadAST", IOperation.withDependantPipelines(loadAST = data -> {
       String report_on = data.inputFile.getName().replace(".", "__");   // TODO: Is this name unique? Should it be unique?
 
       // parse, create symbol table, check all cocos

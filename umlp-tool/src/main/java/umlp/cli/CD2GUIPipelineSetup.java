@@ -21,29 +21,35 @@ import java.util.Collections;
 import java.util.List;
 
 public class CD2GUIPipelineSetup {
-  
+
   public final IOperation<UMLPPipelineData> init;
   public final IOperation.ISimpleOperation2<UMLPPipelineData> addBuiltInTypes;
   public final IOperation<UMLPPipelineData> generateGui;
   public final Pipeline<DataWithAst> modelPipeline;
-  
-  public CD2GUIPipelineSetup(UMLPToolPipelineSetup umlpPipeline) {
-    umlpPipeline.cd2Gui.register("setupUMLPReports", umlpPipeline.setupUMLPReports);
-    umlpPipeline.cd2Gui.register("check_umlp_filetype", umlpPipeline.isUMLPFileCheck);
-    umlpPipeline.cd2Gui.register("init", init = data -> {
+
+  public static Pipeline<UMLPPipelineData> createPipeline(IOperation<UMLPPipelineData> setupUMLPReports, IOperation<UMLPPipelineData> isUMLPFileCheck){
+    Pipeline<UMLPPipelineData> cd2Gui = new Pipeline<>();
+    new CD2GUIPipelineSetup(cd2Gui, setupUMLPReports, isUMLPFileCheck);
+    return cd2Gui;
+  }
+
+  public CD2GUIPipelineSetup(Pipeline<UMLPPipelineData> cd2Gui, IOperation<UMLPPipelineData> setupUMLPReports, IOperation<UMLPPipelineData> isUMLPFileCheck) {
+    cd2Gui.register("setupUMLPReports", setupUMLPReports);
+    cd2Gui.register("check_umlp_filetype", isUMLPFileCheck);
+    cd2Gui.register("init", init = data -> {
       UMLPMill.init();
       return true;
     });
-    umlpPipeline.cd2Gui.register("addBuiltInTypes", addBuiltInTypes = this::addBuiltInTypes);
-    
+    cd2Gui.register("addBuiltInTypes", addBuiltInTypes = this::addBuiltInTypes);
+
     modelPipeline = createModelPipeline();
-    umlpPipeline.cd2Gui.register("generateGui",
+    cd2Gui.register("generateGui",
         IOperation.withDependantPipelines(generateGui = data -> {
           modelPipeline.doWork(new Data(data));
           return true;
         }, Collections.singletonList(modelPipeline)));
   }
-  
+
   public final IOperation.ISimpleOperation<DataWithAst> model_pipe_parse = data -> {
     ASTCDCompilationUnit ast = data.getTool().parse(data.getData().inputFile.getPath());
     Reporting.reportParseInputFile(data.getData().inputFile.toPath().toAbsolutePath(),
@@ -51,22 +57,22 @@ public class CD2GUIPipelineSetup {
             data.getData().inputFile.toPath())); // TODO: causes NullPointerException
     data.setAst(ast);
   };
-  
+
   public final IOperation.ISimpleOperation<DataWithAst> model_pipe_after_parse_trafos =
       data -> data.getTool().runAfterParseTrafo(data.getAst());
-  
+
   public final IOperation.ISimpleOperation<DataWithAst> model_pipe_symbol_table =
       data -> data.getTool().createSymbolTable(data.getAst());
-  
+
   public final IOperation.ISimpleOperation<DataWithAst> model_pipe_default_cocos =
       data -> data.getTool().runDefaultCoCos(data.getAst());
-  
+
   public final IOperation.ISimpleOperation<DataWithAst> model_pipe_default_trafos =
       data -> data.getTool().runDefaultTrafos(data.getAst());
-  
+
   public final IOperation.ISimpleOperation<DataWithAst> model_pipe_recreate_symbol_table =
       data -> data.getTool().recreateSymbolTable(data.getAst());
-  
+
   public final IOperation.ISimpleOperation<DataWithAst> model_pipe_set_options = data -> {
     // Do not gen Forms for singletons
     for (String singletonClass : data.getTool().getSingletonClasses(data.getAst())) {
@@ -74,18 +80,18 @@ public class CD2GUIPipelineSetup {
       data.addExtraOption("NoOverview", singletonClass);
     }
   };
-  
+
   public final IOperation.ISimpleOperation<DataWithAst> model_pipe_generate_gui = data -> {
     CD2GUITool guiTool =
         new CD2GUITool(data.getAst(), data.getData().outDir, data.getData().hwcPath,
             data.getExtraOptions().toArray(new String[0]));
     guiTool.generateGUI();
   };
-  
+
   public final IOperation.ISimpleOperation<DataWithAst> model_pipe_add_gem_id_trafo = data -> {
     new UMLAddGemIdTrafo(UMLPMill.inheritanceTraverser()).transform(data.getAst());
   };
-  
+
   public final IOperation.ISimpleOperation<DataWithAst> model_pipe_recreate_and_store_symbol_table =
       data -> {
         // TODO (MB): Ist diese Lösung okay?
@@ -98,7 +104,7 @@ public class CD2GUIPipelineSetup {
         JsonPrinter.disableIndentation();
         data.getTool().storeSymbols(symbolTable, symbolPath.toString());
       };
-  
+
   Pipeline<DataWithAst> createModelPipeline() {
     Pipeline<DataWithAst> pipe = new Pipeline<>();
     pipe.register("model_pipe_parse", model_pipe_parse);
@@ -112,52 +118,52 @@ public class CD2GUIPipelineSetup {
     pipe.register("model_pipe_add_gem_id_trafo", model_pipe_add_gem_id_trafo);
     pipe.register("model_pipe_recreate_and_store_symbol_table",
         model_pipe_recreate_and_store_symbol_table);
-    
+
     pipe.addFinally(data -> Reporting.flush(data.getAst()));
     return pipe;
   }
-  
+
   protected final String getReportingOnModelName(Path modelPath) {
     return modelPath.getFileName().toString()
         .replace(".", "__"); // TODO: Is this name unique? Should it be unique?
   }
-  
+
   public static class Data implements DataWithAst {
-    
+
     final UMLPPipelineData data;
     ASTCDCompilationUnit ast;
     List<String> extraOptions;
-    
+
     public Data(UMLPPipelineData data) {
       this.data = data;
       this.extraOptions = new ArrayList<>();
     }
-    
+
     @Override
     public UMLPPipelineData getData() {
       return data;
     }
-    
+
     @Override
     public UMLPTool getTool() {
       return data.tool;
     }
-    
+
     @Override
     public ASTCDCompilationUnit getAst() {
       return ast;
     }
-    
+
     @Override
     public void setAst(ASTCDCompilationUnit ast) {
       this.ast = ast;
     }
-    
+
     @Override
     public List<String> getExtraOptions() {
       return extraOptions;
     }
-    
+
     @Override
     public void addExtraOption(String key, String value) {
       extraOptions.add("-");
@@ -165,24 +171,24 @@ public class CD2GUIPipelineSetup {
       extraOptions.add(value);
     }
   }
-  
+
   public interface DataWithAst {
-    
+
     UMLPPipelineData getData();
-    
+
     UMLPTool getTool();
-    
+
     ASTCDCompilationUnit getAst();
-    
+
     void setAst(ASTCDCompilationUnit ast);
-    
+
     List<String> getExtraOptions();
-    
+
     void addExtraOption(String key, String value);
   }
-  
+
   void addBuiltInTypes() {
     BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope(), false);
   }
-  
+
 }

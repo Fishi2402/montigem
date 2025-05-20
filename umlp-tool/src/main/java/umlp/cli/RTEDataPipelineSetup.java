@@ -31,16 +31,22 @@ public class RTEDataPipelineSetup {
   public final Pipeline<DataWithAstAndGen> modelPipeline;
   public final IOperation<UMLPPipelineData> generateRTE;
 
-  public RTEDataPipelineSetup(UMLPToolPipelineSetup umlpPipeline) {
-    umlpPipeline.guiRTETypes.register("setupUMLPReports", umlpPipeline.setupUMLPReports);
-    umlpPipeline.guiRTETypes.register("init", init = data -> {
+  public static Pipeline<UMLPPipelineData> createPipeline(IOperation<UMLPPipelineData> setupUMLPReports){
+    Pipeline<UMLPPipelineData> guiRTETypes = new Pipeline<>();
+    new RTEDataPipelineSetup(guiRTETypes, setupUMLPReports);
+    return guiRTETypes;
+  }
+
+  public RTEDataPipelineSetup(Pipeline<UMLPPipelineData> guiRTETypes, IOperation<UMLPPipelineData> setupUMLPReports) {
+    guiRTETypes.register("setupUMLPReports", setupUMLPReports);
+    guiRTETypes.register("init", init = data -> {
       UMLPMill.init();
       return true;
     });
-    umlpPipeline.guiRTETypes.register("addBuiltInTypes", addBuiltInTypes = this::addBuiltInTypes);
+    guiRTETypes.register("addBuiltInTypes", addBuiltInTypes = this::addBuiltInTypes);
 
     modelPipeline = createModelPipeline();
-    umlpPipeline.guiRTETypes.register("generateRTE",
+    guiRTETypes.register("generateRTE",
         IOperation.withDependantPipelines(generateRTE = data -> {
           List<Path> paths = Arrays.stream(data.cmd.getOptionValues(INPUT.getCMD())).map(Paths::get)
               .collect(Collectors.toList());
