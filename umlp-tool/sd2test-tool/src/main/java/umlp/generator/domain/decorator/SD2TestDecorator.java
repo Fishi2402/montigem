@@ -13,6 +13,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.lang.sdbasis._ast.ASTSDArtifact;
 import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.Joiners;
+import umlp.generator.util.PathUtil;
 
 public class SD2TestDecorator {
 
@@ -52,6 +53,7 @@ public class SD2TestDecorator {
     //imports
     cd4c.addImport(testClass, Joiners.DOT.join(domainPackageName, "*"));
     cd4c.addImport(testClass, Joiners.DOT.join(domainPackageName, "test_infrastructure", "*"));
+    cd4c.addImport(testClass, Joiners.DOT.join(PathUtil.getTestInfrastructurePath(), "*"));
 
     return testClass;
   }
