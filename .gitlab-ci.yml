@@ -41,6 +41,7 @@ build_no_containers:
     paths:
       - umlp-tool/umlp-intellij-plugin/build/distributions/**
       - umlp-tool/build/generated-sources/UMLPWithGUI/**/*.vsix
+      - ./**/build/reports/tests/test/**
     reports:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
@@ -133,6 +134,7 @@ build_with_deploy:
     paths:
       - umlp-tool/umlp-intellij-plugin/build/distributions/**
       - umlp-tool/build/generated-sources/UMLPWithGUI/**/*.vsix
+      - ./**/build/reports/tests/test/**
     reports:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
