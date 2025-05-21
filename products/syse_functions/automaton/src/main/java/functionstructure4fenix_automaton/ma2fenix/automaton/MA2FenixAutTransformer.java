@@ -3,7 +3,7 @@ package functionstructure4fenix_automaton.ma2fenix.automaton;
 import arcautomaton._ast.ASTArcStatechart;
 import arcbasis._ast.ASTArcPort;
 import arcbasis._ast.ASTComponentInstance;
-import arcbasis._ast.ASTComponentType;
+import arcbasis._ast.ASTArcComponentType;
 import arcbasis._ast.ASTConnector;
 import functionstructure4fenix_automaton.Automaton;
 import functionstructure4fenix_automaton.FunctionAut;
@@ -27,7 +27,7 @@ public class MA2FenixAutTransformer extends MA2FenixTransformer {
   }
 
   @Override
-  public Function createFunction(ASTComponentType node){
+  public Function createFunction(ASTArcComponentType node){
     if(this.getQname().isEmpty()) {
       stack.push(node.getName().toLowerCase());
     }
@@ -40,7 +40,7 @@ public class MA2FenixAutTransformer extends MA2FenixTransformer {
     if(node.getSymbol().isDecomposed()){
       for(ASTComponentInstance instance : node.getSubComponents()) {
         stack.push(instance.getName());
-        function.subFunctionAdd(createFunction(node.getSpannedScope().resolveComponentType(
+        function.subFunctionAdd(createFunction(node.getSpannedScope().resolveArcComponentType(
             instance.getSymbol().getType().getTypeInfo().getName()
         ).get().getAstNode()));
         stack.pop();

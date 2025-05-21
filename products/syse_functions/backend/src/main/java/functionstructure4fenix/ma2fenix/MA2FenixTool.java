@@ -1,7 +1,7 @@
 package functionstructure4fenix.ma2fenix;
 
 
-import arcbasis._symboltable.ComponentTypeSymbol;
+import arcbasis._symboltable.ArcComponentTypeSymbol;
 import com.google.common.base.Preconditions;
 import de.se_rwth.commons.logging.Log;
 import montiarc.MontiArcMill;
@@ -45,7 +45,7 @@ public class MA2FenixTool extends MontiArcTool {
   public void generate(String main) {
     Preconditions.checkNotNull(main);
     MA2FenixTransformer transformer = new MA2FenixTransformer();
-    Optional<ComponentTypeSymbol> mainType = MontiArcMill.globalScope().resolveComponentType(main);
+    Optional<ArcComponentTypeSymbol> mainType = MontiArcMill.globalScope().resolveArcComponentType(main);
     if (mainType.isEmpty()) {
       Log.error("Main component not found in model path.");
     }
