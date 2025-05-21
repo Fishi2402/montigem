@@ -11,6 +11,7 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
+import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.monticore.guidsl._ast.ASTGUIParam;
 import de.monticore.guidsl._symboltable.BuiltInTypes;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
@@ -84,6 +85,13 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
         "cd2java.Package", new StringHookPoint(""));
     glex.replaceTemplate(
         "cd2java.Class", new TemplateHookPoint("umlp.gui2ts.TSClass"));
+  }
+
+  @Override
+  public void endVisit(ASTGUIComponentDeclaration node) {
+    if (node.isPresentTypeParameters()) {
+      ((de.monticore.cd4codebasis._ast.ASTCDClass)clazz).setTypeParameters(node.getTypeParameters().deepClone());
+    }
   }
 
   @Override
@@ -215,7 +223,8 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
 
   @Override
   protected void extendClass(ASTCDCompilationUnit cd) {
-    String superClass = util.getBaseClassName(gui.getGUIComponentDeclaration());
+    ASTGUIComponentDeclaration guiComp = gui.getGUIComponentDeclaration();
+    String superClass = util.getBaseClassName(guiComp);
     String qName = cd.getMCPackageDeclaration().getMCQualifiedName().getQName()
         + "." + superClass;
     superClass += TopDecorator.TOP_SUFFIX;
@@ -225,7 +234,13 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
     else {
       addImport(qName, superClass);
     }
-    clazz.setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(superClass));
+    if (guiComp.isPresentTypeParameters()) {
+      String[] superClassTypeArgs = guiComp.getTypeParameters().streamTypeParameters().map(tp -> tp.getName()).toArray(String[]::new);
+      clazz.setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(getMCTypeFacade().createBasicGenericTypeOf(superClass, superClassTypeArgs)));
+    }
+    else {
+      clazz.setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(superClass));
+    }
   }
 
   @Override

@@ -6,6 +6,7 @@ import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd.facade.CDParameterFacade;
 import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4codebasis._ast.ASTCDClass;
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
@@ -127,6 +128,10 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     addRouter();
 
     ASTGUIComponentDeclaration declaration = gui.getGUIComponentDeclaration();
+    if (declaration.isPresentTypeParameters()) {
+      ((ASTCDClass)clazz).setTypeParameters(declaration.getTypeParameters().deepClone());
+    }
+
     StaticObjectsCollector.getInstance().init(declaration);
     InitDependencyTree.getInstance().init(declaration);
     gui.accept(traverser);
