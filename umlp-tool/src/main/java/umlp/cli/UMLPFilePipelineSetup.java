@@ -89,6 +89,13 @@ public class UMLPFilePipelineSetup {
       UMLPMill.init();
       UMLPMill.globalScope().setSymbolPath(data.importedSymbolPath);
       TSImportMap.INSTANCE.init(data.importedSymbolPath);
+      System.out.println();
+      System.out.println();
+      System.out.println();
+      System.out.println("+");
+      System.out.println();
+      System.out.println();
+      System.out.println();
       return true;
     });
     umlpPipeline.umlp.register("addBuiltInTypes", addBuiltInTypes = this::addBuiltInTypes);

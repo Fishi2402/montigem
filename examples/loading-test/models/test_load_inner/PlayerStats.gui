@@ -1,0 +1,25 @@
+package test_load_inner;
+
+import mc.fenix.basic.GemText;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemGrid;
+import mc.fenix.arrange.GemGridCell;
+import mc.fenix.basic.GemButton;
+import java.util.List;
+import LoadingTests.Player;
+import LoadingTests.Game;
+import LoadingTests.PlayerStat;
+import test_load_inner.PlayerStatListControls;
+
+page PlayerStats(Game game) {
+  @iterate(Player p : game.player) { // FieldAccessExpression -> leads to Assoc-Observer usage
+    @GemText(value="Player: " + p.name);
+    @iterate(PlayerStat stat : p.playerStat) { // FieldAccessExpression -> leads to Assoc-Observer usage
+      @GemText(value=" > " + stat.statID);
+    }
+  }
+
+  @PlayerStatListControls(gemIdForNav=game.gemIdForNav);
+}

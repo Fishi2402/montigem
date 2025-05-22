@@ -8,6 +8,8 @@ export * from './src/montigem/UserCreate';
 export * from './src/montigem/UserLogin';
 export * from './src/montigem/UserSignUp';
 
+export * from './build/gui/montigem/MontigemGemRouting';
+
 export * from './build/cd/loginmodule/client/DoesNotRequireLoginCommandObserver';
 export * from './build/cd/loginmodule/client/LoginModuleUserCommandObserver';
 export * from './build/cd/loginmodule/client/LoginSecManagerCommandObserver';

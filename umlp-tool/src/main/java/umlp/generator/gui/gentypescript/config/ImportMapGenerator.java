@@ -26,6 +26,7 @@ public class ImportMapGenerator {
   protected MCPath hwcPath;
 
   public ImportMapGenerator(GeneratorSetup generatorSetup) {
+    generatorSetup.setTracing(false);
     this.generatorEngine = new GeneratorEngine(generatorSetup);
     this.setup = generatorSetup;
     this.hwcPath = generatorSetup.getHandcodedPath();
@@ -38,6 +39,7 @@ public class ImportMapGenerator {
       pkg = cd.getMCPackageDeclaration().getMCQualifiedName().getQName() + ".";
     }
     pkg += cd.getCDDefinition().getName();
+    qNames.add(pkg);
     for (ASTCDType ast : cd.getCDDefinition().getCDEnumsList()) {
       qNames.add(pkg + "." + ast.getName());
     }

@@ -6,6 +6,7 @@ import arcbasis._ast.ASTComponentType;
 import arcbasis._ast.ASTConnector;
 import arcbasis._ast.ASTPortAccess;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.compsymbols._ast.ASTPort;
 import de.se_rwth.commons.logging.Log;
 import functionstructure4fenix.Category;
 import functionstructure4fenix.Channel;
@@ -101,7 +102,7 @@ public class MA2FenixTransformer {
     return function;
   }
 
-  public Category createCategory(ASTArcPort node){
+  public Category createCategory(ASTPort node){
     Category category;
     if(categories.containsKey(node.getSymbol().getTypeInfo().getFullName())){
       category = categories.get(node.getSymbol().getTypeInfo().getFullName());

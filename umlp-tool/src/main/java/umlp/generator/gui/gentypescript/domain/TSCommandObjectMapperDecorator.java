@@ -6,6 +6,8 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.MCPath;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.se_rwth.commons.Joiners;
 import umlp.generator.domain.decorator.CommandObjectMapperDecorator;
 import umlp.generator.domain.decorator.CommandResultDeSerDecorator;
 import umlp.generator.domain.decorator.commands.AggregatedCommandDeSerDecorator;
@@ -58,6 +60,19 @@ public class TSCommandObjectMapperDecorator extends CommandObjectMapperDecorator
   @Override
   protected String getDeserializeResponseTemplate() {
     return "umlp.gui2ts.commandobjectmapper.TSDeserializeResponse";
+  }
+
+  @Override
+  protected void addImportsDeSer(
+      ASTCDType mapperClass, DiagramSymbol superDiagram,
+      String commandDeSerName, String commandResultDeSerName
+  ) {
+    TSImportHelper importHelper = new TSImportHelper(glex, mapperClass, hwPath, outPath);
+    String importerQName = this.astcdPackage + "." + mapperClass.getName();
+
+    String packageName = getPackageName(superDiagram, DEFAULT_PACKAGE);
+    importHelper.addImport(Joiners.DOT.join(packageName, commandDeSerName), importerQName);
+    importHelper.addImport(Joiners.DOT.join(packageName, commandResultDeSerName), importerQName);
   }
 
   @Override

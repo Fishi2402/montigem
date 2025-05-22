@@ -37,7 +37,7 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
 
   static final String UMLP_FRONTEND_SETUP_TASK_NAME = "frontendSetup";
   static final String UMLP_FRONTEND_DOMAIN_TASK_NAME = "genDomain";
-  static final String UMLP_FRONTEND_GUI_TASK_NAME = "genGUI";
+  public static final String UMLP_FRONTEND_GUI_TASK_NAME = "genGUI";
   static final String UMLP_FRONTEND_BUILD_IMAGE_LOCAL = "buildImageLocal";
   static final String UMLP_FRONTEND_DEPLOY_IMAGE_CI = "deployImageCI";
   static final String CREATE_DOMAIN_SYMBOLS_TASK_NAME = "createDomainSymbols";
@@ -151,12 +151,12 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
       umlpTask.setGroup(UMLP_GROUP_NAME);
       umlpTask.getInput().from(getModelsPath(project));
       umlpTask.getSymbolOutDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "gui2sym").toFile());
+      umlpTask.getModelDir().set(getModelsPath(project).toFile());
       umlpTask.getSymbolPath().from(domainSymDir);
-      umlpTask.getSymbolPath().from(getModelsPath(project));
       umlpTask.getSymbolPath().from(guiTypes);
       umlpTask.getOutputDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "gui2sym").toFile());
 
-      umlpTask.getModelDir().from(project.getConfigurations().getByName(UMLPPluginBase.UMLP_MODULES_MODELS_CONFIG));
+      // umlpTask.getModelDir().from(project.getConfigurations().getByName(UMLPPluginBase.UMLP_MODULES_MODELS_CONFIG));
     });
 
     if (local) {

@@ -1,7 +1,7 @@
 import { LoginModule4DtcockpitManagerClientImplTOP } from "loginmodule/LoginModule4DtcockpitManagerClientImplTOP";
-import { LoginModuleManager } from "loginmodule/LoginModuleManager";
-import {LoginModuleUser} from "loginmodule/LoginModuleUser";
-import {LoginModuleUserBuilder} from "loginmodule/LoginModuleUserBuilder";
+import { LoginModuleManager } from "@montigem/login";
+import {LoginModuleUser} from "@montigem/login";
+import {LoginModuleUserBuilder} from "@montigem/login";
 import {DtcockpitManager} from "dtcockpit/DtcockpitManager";
 import {GemList} from "@umlp/common";
 

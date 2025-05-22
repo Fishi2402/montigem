@@ -275,6 +275,13 @@ public class UMLPTool extends UMLPToolTOP {
     CDDeSerHelper.reset(); // This https://git.rwth-aachen.de/monticore/monticore/-/issues/4306
     StaticObjectsCollector.unsetInstance();
     CallTypeDeriver.unsetInstance();
+    System.out.println();
+    System.out.println();
+    System.out.println();
+    System.out.println("x");
+    System.out.println();
+    System.out.println();
+    System.out.println();
     TSImportMap.INSTANCE.clear();
 
     AbstractDecorator.cleanUp();

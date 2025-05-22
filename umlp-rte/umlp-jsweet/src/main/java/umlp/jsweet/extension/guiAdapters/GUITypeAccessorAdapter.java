@@ -8,6 +8,10 @@ import umlp.jsweet.extension.UMLPAbstractAdapter;
 
 import javax.lang.model.type.TypeMirror;
 
+/**
+ * Sollte nicht mehr nötig sein, da wir die Types nun auch wie gewohnt mit allen Gettern und Settern generieren
+ */
+@Deprecated(forRemoval = true, since = "2025-05-16")
 public class GUITypeAccessorAdapter extends UMLPAbstractAdapter {
   public GUITypeAccessorAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);

@@ -54,14 +54,22 @@ public class GUIAdapterUtils extends UMLPAdapterUtils {
   }
 
   public boolean isComponent(TypeElement type) {
+    return hasComponentAnnotation(type) || isHWCofDirective(type);
+  }
+
+  public boolean isComponentOrDirective(TypeElement type) {
+    return isComponent(type) || hasDirectiveAnnotation(type);
+  }
+
+  public boolean hasComponentAnnotation(TypeElement type) {
     return context.hasAnnotationType(type, COMPONENT_ANNOTATION);
   }
 
-  public boolean isDirective(TypeElement classElement) {
+  public boolean hasDirectiveAnnotation(TypeElement classElement) {
     return context.hasAnnotationType(classElement, DIRECTIVE_ANNOTATION);
   }
 
-  public boolean isHWCofComponent(TypeElement classElement) {
+  public boolean isHWCofDirective(TypeElement classElement) {
     if (classElement.getSuperclass() == null || classElement.getSuperclass().toString() == "none") {
       return false;
     }
@@ -70,22 +78,20 @@ public class GUIAdapterUtils extends UMLPAdapterUtils {
         && context.hasAnnotationType(superType, GUIAdapterUtils.DIRECTIVE_ANNOTATION);
   }
 
-  public boolean isTOPComponent(TypeElement classElement) {
-    return isDirective(classElement) && !isHWCofComponent(classElement) &&
+  public boolean isTOPOfComponent(TypeElement classElement) {
+    return hasDirectiveAnnotation(classElement) && !isHWCofDirective(classElement) &&
         classElement.getSimpleName().toString().endsWith("TOP");
   }
 
-  public boolean isMethodOfComponent(Element element) {
+  public boolean isMethodOfComponentOrDirective(Element element) {
     return element.getEnclosingElement() instanceof TypeElement &&
-        (isComponent((TypeElement) element.getEnclosingElement()) ||
-            isHWCofComponent((TypeElement) element.getEnclosingElement()) ||
-            isDirective((TypeElement) element.getEnclosingElement()));
+        isComponentOrDirective((TypeElement) element.getEnclosingElement());
   }
 
   public boolean isMethodOfDirective(Element element) {
     return element.getEnclosingElement() instanceof TypeElement &&
-        (isDirective((TypeElement) element.getEnclosingElement()) &&
-            !isHWCofComponent((TypeElement) element.getEnclosingElement()));
+        (hasDirectiveAnnotation((TypeElement) element.getEnclosingElement()) &&
+            !isHWCofDirective((TypeElement) element.getEnclosingElement()));
   }
 
   public boolean isSynchronized(ExecutableElement executable) {
@@ -111,7 +117,7 @@ public class GUIAdapterUtils extends UMLPAdapterUtils {
   }
 
   boolean isDirectiveMethod(ExecutableElement executable, TypeElement classElement) {
-    return isDirective(classElement) &&
+    return hasDirectiveAnnotation(classElement) &&
         executable.getKind().toString().equals("METHOD") &&
         !util.isInterface(adapter.getParentElement(TypeElement.class)) &&
         !executable.getModifiers().contains(Modifier.ABSTRACT) &&
@@ -130,8 +136,8 @@ public class GUIAdapterUtils extends UMLPAdapterUtils {
 
   public <T> T getAnnotationPropertyValue(TypeElement classElement, String annotationProperty,
       Class<T> propertyClass, T defaultValue) {
-    if (isComponent(classElement) || isDirective(classElement)) {
-      String annotation = isDirective(classElement) ?
+    if (hasComponentAnnotation(classElement) || hasDirectiveAnnotation(classElement)) {
+      String annotation = hasDirectiveAnnotation(classElement) ?
           GUIAdapterUtils.DIRECTIVE_ANNOTATION :
           GUIAdapterUtils.COMPONENT_ANNOTATION;
       T value = context.getAnnotationValue(classElement, annotation, annotationProperty,
@@ -140,7 +146,7 @@ public class GUIAdapterUtils extends UMLPAdapterUtils {
         return value;
       }
     }
-    if (isHWCofComponent(classElement)) {
+    if (isHWCofDirective(classElement)) {
       T value = getAnnotationPropertyValue(
           (TypeElement) types.asElement(classElement.getSuperclass()),
           annotationProperty, propertyClass, defaultValue);
@@ -150,13 +156,6 @@ public class GUIAdapterUtils extends UMLPAdapterUtils {
     }
     //    Log.error("0JSC002 Cannot find " + annotationProperty + " of classElement " + classElement.getSimpleNameOfFQN().toString());
     return defaultValue;
-  }
-
-  public boolean isComponentConstructor(ExecutableElement executable, TypeElement classElement) {
-    return
-        (isDirective(classElement) || isComponent(classElement) || isHWCofComponent(
-            classElement))
-            && executable.getKind().toString().equals("CONSTRUCTOR");
   }
 
   public boolean isInitMethod(ExecutableElement executable, TypeElement classElement) {

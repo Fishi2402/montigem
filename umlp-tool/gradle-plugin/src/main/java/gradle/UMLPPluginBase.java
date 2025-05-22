@@ -37,6 +37,7 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
   public static final String UMLP_MODULES_GEN_CONFIG = "umlpModulesGen";
   public static final String UMLP_MODULES_MODELS_CONFIG = "umlpModulesModels";
   public static final String UMLP_MODULES_DOMAIN_SYMBOLS_CONFIG = "umlpModulesDomainSymbols";
+  public static final String UMLP_MODULES_IMPORT_MAP_CONFIG = "umlpModulesImportMap";
   public static final String UMLP_MODULES_GUI_SYMBOLS_CONFIG = "umlpModulesGuiSymbols";
   // public static final String UMLP_MODULES_FRONTEND_CONFIG = "umlpModulesFrontend";
 
@@ -65,9 +66,11 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
       // Module system
       var umlpModulesC = project.getConfigurations().maybeCreate(UMLP_MODULES_CONFIG);
       umlpModulesC.setCanBeResolved(false);
+
       var umlpModulesGenC = project.getConfigurations().maybeCreate(UMLP_MODULES_GEN_CONFIG);
       UMLPPluginModule.addModuleGenJarJarAttributes(umlpModulesGenC, project);
       umlpModulesGenC.extendsFrom(umlpModulesC);
+
       var umlpModulesModelsC = project.getConfigurations().maybeCreate(UMLP_MODULES_MODELS_CONFIG);
       UMLPPluginModule.addModelsJarAttributes(umlpModulesModelsC, project);
       umlpModulesModelsC.extendsFrom(umlpModulesC);
@@ -76,7 +79,12 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
       umlpModulesDSC.setCanBeConsumed(false);
       UMLPPluginModuleJSFrontend.addDomainSymbolsJarAttributes(umlpModulesDSC, project);
       umlpModulesDSC.extendsFrom(umlpModulesC);
-      
+
+      var umlpModulesIMC = project.getConfigurations().maybeCreate(UMLP_MODULES_IMPORT_MAP_CONFIG);
+      umlpModulesIMC.setCanBeConsumed(false);
+      UMLPPluginModuleJSFrontend.addImportMapJarAttributes(umlpModulesIMC, project);
+      umlpModulesIMC.extendsFrom(umlpModulesC);
+
       var umlpModulesGSC = project.getConfigurations().maybeCreate(UMLP_MODULES_GUI_SYMBOLS_CONFIG);
       umlpModulesGSC.setCanBeConsumed(false);
       UMLPPluginModuleJSFrontend.addGuiSymbolsJarAttributes(umlpModulesGSC, project);

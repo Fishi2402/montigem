@@ -35,20 +35,14 @@
       "@umlp/navigation": ["../../../../../umlp-rte/client/projects/navigation"],
       "@umlp/networkgraph": ["../../../../../umlp-rte/client/projects/networkgraph"],
       "@umlp/table": ["../../../../../umlp-rte/client/projects/table"],
-      "@montigem/login": ["../../../../../modules/login/frontendTS/build/dist/login"],
+      "@montigem/login": ["../../../../../modules/login/frontendTS/login"],
       "*": [
         "node_modules/*",
         "build/appdomain/*",
         "build/appgui/*",
         "../umlp/fe2/*",
         "src/app/*",
-        "../../src/app/*",
-        "../../../../../modules/login/frontendTS/build/frontendGen/build/appdomain/*",
-        "../../../../../modules/login/frontendTS/build/frontendGen/build/appgui/*",
-        "../../../../../modules/login/frontendTS/src/app/*",
-        "../../../../../modules/comment/frontendTS/build/frontendGen/build/appdomain/*",
-        "../../../../../modules/comment/frontendTS/build/frontendGen/build/appgui/*",
-        "../../../../../modules/comment/frontendTS/src/app/*"
+        "../../src/app/*"
       ]
     }
   },

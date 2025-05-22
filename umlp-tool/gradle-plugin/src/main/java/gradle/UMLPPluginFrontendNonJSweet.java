@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 import static gradle.UMLPPluginBase.UMLP_MODULES_DOMAIN_SYMBOLS_CONFIG;
 import static gradle.UMLPPluginBase.UMLP_MODULES_GUI_SYMBOLS_CONFIG;
+import static gradle.UMLPPluginBase.UMLP_MODULES_IMPORT_MAP_CONFIG;
 import static gradle.UMLPPluginFrontendBase.UMLP_FRONTEND_DOMAIN_TASK_NAME;
 import static gradle.UMLPPluginFrontendBase.UMLP_FRONTEND_GUI_TASK_NAME;
 import static gradle.UMLPPluginFrontendBase.UMLP_FRONTEND_SETUP_TASK_NAME;
@@ -48,6 +49,7 @@ public abstract class UMLPPluginFrontendNonJSweet implements Plugin<Project> {
 
       // // Load the symbols from the .jars in the domain symbols path
       umlpTask.getSymbolDir().from(project.getConfigurations().named(UMLP_MODULES_DOMAIN_SYMBOLS_CONFIG));
+      umlpTask.getSymbolDir().from(project.getConfigurations().named(UMLP_MODULES_IMPORT_MAP_CONFIG));
       umlpTask.getSymbolDir().from(project.getConfigurations().named(UMLP_MODULES_GUI_SYMBOLS_CONFIG));
     });
 
@@ -96,9 +98,8 @@ public abstract class UMLPPluginFrontendNonJSweet implements Plugin<Project> {
       at de.monticore.cd._symboltable.CDSymbolTables.getTransitiveSuperTypes(CDSymbolTables.java:86)
        */
 
-      // // Load the symbols from the .jars in the domain symbols path
-      // umlpTask.getSymbolPath().from(project.getConfigurations().named(UMLP_MODULES_DOMAIN_SYMBOLS_CONFIG));
       umlpTask.getSymbolPath().from(project.getConfigurations().named(UMLP_MODULES_GUI_SYMBOLS_CONFIG));
+      umlpTask.getSymbolPath().from(project.getConfigurations().named(UMLPPluginBase.UMLP_MODULES_IMPORT_MAP_CONFIG));
 
       umlpTask.getModelDir().from(project.getConfigurations().named(UMLPPluginBase.UMLP_MODULES_MODELS_CONFIG));
     });

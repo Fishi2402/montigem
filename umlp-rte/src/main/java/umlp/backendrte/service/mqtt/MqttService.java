@@ -31,8 +31,10 @@ public class MqttService {
    * The broker is either the server the application is deployed on (environment variable
    * "UMLP_DOMAINNAME_ENV") or "localhost" (if the environment variable is not set).
    * If there is no MQTT broker available, the method will return without creating an MQTT client.
+   * @param userName
+   * @param password
    */
-  public void connect() {
+  public void connect(String userName, String password) {
 
     String brokerHost = System.getenv().getOrDefault(UMLP_MQTT_BROKER, "localhost");
 
@@ -45,6 +47,10 @@ public class MqttService {
         .identifier(UUID.randomUUID().toString())
         .serverHost(brokerHost)
         .serverPort(1883)
+        .simpleAuth()
+          .username(userName)
+          .password(password.getBytes(Charset.defaultCharset()))
+          .applySimpleAuth()
         .buildBlocking();
 
     // Connect to broker

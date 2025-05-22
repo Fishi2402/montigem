@@ -1,0 +1,5 @@
+package mc.fenix.fischertechnik;
+
+component Conveyor(int speedIndicatorPercentage, boolean rightDetectorOn, boolean leftDetectorOn){
+
+}

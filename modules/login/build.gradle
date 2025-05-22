@@ -34,6 +34,10 @@ configurations {
     canBeConsumed(true)
     gradle.module.UMLPPluginModuleJSFrontend.addGuiSymbolsJarAttributes(it, project)
   }
+  outgoingUMLPFrontendTSIM {
+    canBeConsumed(true)
+    gradle.module.UMLPPluginModuleJSFrontend.addImportMapJarAttributes(it, project)
+  }
   /*
   outgoingUMLPFrontendTSZip {
     canBeConsumed(true)
@@ -46,12 +50,16 @@ dependencies {
   api(project(":modules:login:backend"))
   outgoingUMLPFrontendTSDS project(":modules:login:frontendTS")
   outgoingUMLPFrontendTSGS project(":modules:login:frontendTS")
+  outgoingUMLPFrontendTSIM project(":modules:login:frontendTS")
   // outgoingUMLPFrontendTSZip project(":modules:login:frontendTS")
 }
 project.components.java.addVariantsFromConfiguration(configurations.outgoingUMLPFrontendTSDS) {
   it.mapToOptional()
 }
 project.components.java.addVariantsFromConfiguration(configurations.outgoingUMLPFrontendTSGS) {
+  it.mapToOptional()
+}
+project.components.java.addVariantsFromConfiguration(configurations.outgoingUMLPFrontendTSIM) {
   it.mapToOptional()
 }
 /*

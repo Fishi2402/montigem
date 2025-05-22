@@ -38,8 +38,7 @@ public abstract class UMLPGui2SymTask extends UMLPAllFilesTask {
   @org.gradle.api.tasks.Optional
   @PathSensitive(PathSensitivity.RELATIVE)
   @Incremental
-  // This Annotation requires custom java-logic to run correctly. See "getStreamOfChanges()"
-  public abstract ConfigurableFileCollection getModelDir();
+  public abstract DirectoryProperty getModelDir();
 
   @Input
   @org.gradle.api.tasks.Optional
@@ -56,11 +55,9 @@ public abstract class UMLPGui2SymTask extends UMLPAllFilesTask {
       result.add(handlePath.apply(getSymbolOutDir().getAsFile().get().toPath()));
     }
 
-    if (!this.getModelDir().isEmpty()) {
-      for (File file : this.getModelDir()) {
-        result.add("-" + UMLPToolOptions.MODEl_PATH.getCMD());
-        result.add(handlePath.apply(file.toPath()));
-      }
+    if (this.getModelDir().isPresent()) {
+      result.add("-" + UMLPToolOptions.MODEl_PATH.getCMD());
+      result.add(handlePath.apply(getModelDir().getAsFile().get().toPath()));
     }
 
     if (!this.getSymbolPath().isEmpty()) {
