@@ -54,6 +54,29 @@ def libs = [
     "theme",
 ] + componentLibs
 
+sourceSets {
+  symbols {
+    resources {
+      srcDirs(createGuiSymbols.getOutput())
+      srcDirs(tasks.named("createCDSymbols").get().getOutput())
+      srcDirs(() -> parent.tasks.named("generateGuiComponentJava").get().getSymbolOutDir())
+      srcDirs libs.collect {
+        file("projects/$it/build/gui")
+      }
+      include "**/*sym", "**/*import.map", "**/*tags"
+    }
+  }
+}
+
+tasks.register('symbolJar', Jar) {
+  dependsOn processSymbolsResources
+  from sourceSets.symbols.output
+  archiveClassifier.set('symbols')
+  includeEmptyDirs = false
+}
+
+jar.dependsOn(symbolJar)
+
 def buildTaskPrefix = "build_"
 def publishTaskPrefix = "publish_"
 def copyTaskPrefix = "copy_types_"
@@ -131,9 +154,24 @@ libs.each {
       tslib = "@umlp/${libName}"
     }
 
-    tasks.named("${buildTaskName}").configure{
+    tasks.named("${buildTaskName}") {
       dependsOn tasks.named("${genTaskName}")
     }
+
+    tasks.named("processSymbolsResources") {
+      dependsOn tasks.named("${genTaskName}")
+    }
+  }
+}
+
+tasks.named("processSymbolsResources") {
+  dependsOn createGuiSymbols
+  dependsOn createCDSymbols
+}
+
+gradle.projectsEvaluated {
+  tasks.named("processSymbolsResources") {
+    dependsOn parent.tasks.named("generateGuiComponentJava")
   }
 }
 
@@ -171,30 +209,6 @@ tasks.register('publishAll') {
 build.dependsOn(buildAll)
 
 publish.dependsOn(publishAll)
-
-sourceSets {
-  symbols {
-    resources {
-      srcDirs(createGuiSymbols.getOutput())
-      srcDirs(tasks.named("createCDSymbols").get().getOutput())
-      srcDirs(() -> parent.tasks.named("generateGuiComponentJava").get().getSymbolOutDir())
-      srcDirs libs.collect {
-        file("projects/$it/build/gui")
-      }
-      include "**/*sym", "**/*import.map", "**/*tags"
-    }
-  }
-}
-
-tasks.register('symbolJar', Jar) {
-  dependsOn createCDSymbols
-  dependsOn createGuiSymbols
-  from sourceSets.symbols.output
-  archiveClassifier.set('symbols')
-  includeEmptyDirs = false
-}
-
-jar.dependsOn(symbolJar)
 
 artifacts {
   archives symbolJar
