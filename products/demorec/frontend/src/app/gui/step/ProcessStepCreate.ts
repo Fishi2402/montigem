@@ -14,7 +14,6 @@ import {ProcessStepCreateComponent, config} from 'gui/step/ProcessStepCreateComp
 
 import {
   Component,
-  Input,
   Output,
   OnInit,
   EventEmitter

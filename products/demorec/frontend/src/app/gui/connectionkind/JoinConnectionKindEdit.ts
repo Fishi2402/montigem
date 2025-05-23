@@ -123,7 +123,7 @@ export class JoinConnectionKindEdit extends JoinConnectionKindEditComponent impl
 
   // Select Connected Components
 /*  public getAddComponentDisabled(): boolean {
-    return (this.getSelectConnectsComponentEntry() === newOption["value"])
+    return (this.getSelectConnectsComponentEntry() === newOption.getValue())
   }*/
 
   public override getSelectConnectsComponentOptions(): Array<Option>{

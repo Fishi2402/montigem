@@ -13,7 +13,7 @@ import DemoRec.MeasuringValue;
 
 import gui.measuringvalues.MeasuringValueCreate;
 
-page MeasuringValueEdit(ProcessStep step) {
+page MeasuringValueEdit(List<Dimension> units, ProcessStep step) {
   @GemCard(
     title = "Measured Values",
     component = @GemColumn(
@@ -31,9 +31,9 @@ page MeasuringValueEdit(ProcessStep step) {
                 inputType = "string",
                 entry = measuringValue.value,
                 width="var(--smallDropDownWidth)"),
-              displayedMeasuringValueDimensionUnit@GemDropdownInput(
+              selectDimUnit@GemDropdownInput(
                 labelText = "Unit",
-                options = null,
+                options = getOptions(units),
                 entry = null,
                 width="var(--verySmallDropDownWidth)"
               ),

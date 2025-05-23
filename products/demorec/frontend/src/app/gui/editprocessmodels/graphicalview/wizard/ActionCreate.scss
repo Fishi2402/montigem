@@ -1,0 +1,35 @@
+:host ::ng-deep .actionCreateButton > button.gem-button {
+  background-color: #3e9e32;
+  margin-top: 20px;
+}
+
+:host ::ng-deep .actionEditComponent {
+  background-color: #e6e6e6;
+  padding: 2rem 2rem;
+  margin-top: 20px;
+
+  > gem-text-input {
+    margin-top: 10px;
+  }
+
+  > gem-textarea-input {
+    margin-top: 20px;
+  }
+
+  > gem-dropdown-input {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  > .joinConnectionRow {
+    > gem-dropdown-input {
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+
+    > .createNewJoinConnectionButton {
+      display: none;
+    }
+  }
+
+}

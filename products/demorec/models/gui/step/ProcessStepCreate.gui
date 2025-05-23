@@ -3,6 +3,7 @@ package gui.step;
 import mc.fenix.basic.GemText;
 import mc.fenix.input.GemTextInput;
 import mc.fenix.input.GemDropdownInput;
+import mc.fenix.input.GemAutocompleteInput;
 import mc.fenix.basic.GemButton;
 import mc.fenix.arrange.GemCard;
 import mc.fenix.arrange.GemColumn;
@@ -15,8 +16,8 @@ import DemoRec.MeasuringValue;
 import gui.connectionkind.JoinConnectionKindCreate;
 import gui.measuringvalues.MeasuringValueEdit;
 
-page ProcessStepCreate(ProcessStep step, Event<ProcessStep> create,
-    List<EndEffector> endEffectors) {
+page ProcessStepCreate(ProcessStep step, Event<ProcessStep> create, boolean deconstruct = false,
+  boolean newJoinConnection = false, JoinConnectionKind kindOfConnections = null) {
   @GemColumn(
     rowGap="5px",
     components=[
@@ -34,73 +35,20 @@ page ProcessStepCreate(ProcessStep step, Event<ProcessStep> create,
               width="var(--smallDropDownWidth)");
           },
           stepChooseJoinConnectionKind@guard(true){
-            isDeconstruction@guard(true) {
-              selectJoinConnectionKind@GemDropdownInput(
+            isDeconstruction@guard(deconstruct) {
+              selectJoinConnectionKind@GemAutocompleteInput(
                   labelText = "Deconstructing Join Connection",
                   options = null,
                   entry = null,
                   validity=checkJoinConnectionKind(),
                   width="var(--largeDropDownWidth)");
             }
-            createNewJoinConnection@guard(true) {
+            createNewJoinConnection@guard(deconstruct && newJoinConnection) {
               @JoinConnectionKindCreate(createJoinConnectionKind=addNewJoinConnectionKind());
             }
           },
           stepProcessStepRelated@guard(true) {
-            @GemColumn(
-              rowGap="5px",
-              components=[
-                @GemRow(
-                  wrap="noWrap",
-                  colGap="5px",
-                  vAlign="bottom",
-                  components = [
-                    @GemColumn(
-                      width="var(--smallDropDownWidth)",
-                      components = [
-                        timeConsumption@GemTextInput(
-                          labelText = "Time Consumption (s)",
-                          inputType = "number",
-                          entry = step.timeConsumption,
-                          validity= checkTimeConsumptionSet(),
-                          width="var(--smallDropDownWidth)"
-                        )
-                      ]
-                    ),
-                    @GemColumn(
-                      width="var(--smallNumberWidth)",
-                      components = [
-                        timerGuard@guard(true) {
-                          startTimerButton@GemButton(label = "Timer", leftClick = startTimer(), disabled=true, height="var(--gemButtonHeightAdjustedToInput)");
-                        } else {
-                          stopTimerButton@GemButton(label = "Stop", leftClick = stopTimer(), disabled=false, height="var(--gemButtonHeightAdjustedToInput)");
-                        }
-                      ]
-                    ),
-                    @GemColumn(
-                      hAlign="center",
-                      vAlign="bottom",
-                      width="var(--smallNumberWidth)",
-                      components = [
-                        passedTime@GemText(value="override")
-                      ]
-                    )
-                  ]
-                ),
-                @GemTextInput(
-                    labelText = "Description (mandatory for Other)",
-                    inputType = "text",
-                    entry = step.description,
-                    width="var(--largeDropDownWidth)"),
-                selectEndeffector@GemDropdownInput(
-                    labelText = "Used Endeffector in this step",
-                    options = null,
-                    entry = null,
-                    width="var(--smallDropDownWidth)",
-                    validity= checkEndEffectorSet()),
-                @MeasuringValueEdit(step = step)
-              ]
-            );
+            @PartialStepEdit(step=step);
           },
           @GemRow(
             colGap="5px",
