@@ -79,9 +79,22 @@ public class TSImportHelper {
       // case: a component in an app imports a component from the app
       String from = GUIGeneratorUtil.getInstance().qName2path(String.join(".", parts));
       if (!GUIGeneratorUtil.getInstance().isInitialized() || !GUIGeneratorUtil.getInstance().isDomainImport(importedQName)) {
+        // case: a component imports currently generated other component, e.g.
+        // "gen/gui/foo/ExampleComponent.ts" imports "gen/gui/foo/Example.ts" -> "./Example"
+        // or: a class imports currently generated other class, e.g.
+        // "gen/cd/SomeManager.ts" imports "gen/cd/commands/Some_create.ts"
+        if (UMLPGeneratorConfig.getInstance().is4TSLib()) {
+          Optional<String> importedPath = getRelativeQualifiedPath(
+              Names.getQualifier(importerQName), Names.getQualifier(importedQName)
+          );
+          if (importedPath.isPresent()) {
+            from = importedPath.get() + Names.getSimpleName(importedQName);
+          }
+        }
         if (importIntermediateAngularClass) {
           from += "Component";
         }
+        // above case gets overruled if there is a HW path
         Optional<String> relativeFrom = getImportPath(
             hwPath, outPath, importsPath, importerQName, importedQName);
         if (relativeFrom.isPresent()) {
@@ -197,19 +210,6 @@ public class TSImportHelper {
           else {
             return Optional.of(path2TSRootImport(imported));
           }
-        }
-      }
-      // case: a component imports currently generated other component, e.g.
-      // "gen/gui/foo/ExampleComponent.ts" imports "gen/gui/foo/Example.ts" -> "./Example"
-      // or: a class imports currently generated other class, e.g.
-      // "gen/cd/SomeManager.ts" imports "gen/cd/commands/Some_create.ts"
-      else if (UMLPGeneratorConfig.getInstance().is4TSLib()) {
-        Optional<String> importedPath = getRelativeQualifiedPath(
-            Names.getQualifier(importerQName), Names.getQualifier(importedQName)
-        );
-        if (importedPath.isPresent()) {
-          String res = importedPath.get() + Names.getSimpleName(importedQName);
-          return Optional.of(res);
         }
       }
     }
