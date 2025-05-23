@@ -310,15 +310,20 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
   @Override
   public Void visitMethod(MethodTree node, Trees trees) {
     Element elementOfMethod = Util.getElement(node);
+    // Constructors CAN NOT be async
+    if (elementOfMethod.getKind() == ElementKind.CONSTRUCTOR) {
+      return null;
+    }
+
+    // Do not check erased methods further -> this leads to very weird js code
+    if (context.hasAnnotationType(elementOfMethod, JSweetConfig.ANNOTATION_ERASED )){
+      return null;
+    }
+
     Element elementOfParent = Util.getElement(getParent());
     if (context.hasAnnotationType(elementOfMethod)) {
       return super.visitMethod(node, trees);
     }
-
-    if (elementOfMethod.getKind() == ElementKind.CONSTRUCTOR) {
-      return super.visitMethod(node, trees);
-    }
-
 
     // Methods overriding async methods from the RTE must be async again
     if (elementOfParent instanceof TypeElement) {
