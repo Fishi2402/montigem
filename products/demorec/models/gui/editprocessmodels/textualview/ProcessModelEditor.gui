@@ -1,0 +1,12 @@
+package gui.editprocessmodels.textualview;
+
+import DemoRec.ProcessModel;
+
+import mc.fenix.arrange.GemCard;
+
+component ProcessModelEditor(Event<String> codeChanged, ProcessModel processModel) {
+  @GemCard(
+    title = "", // Is going to be set in the code, shall contain the name of the process who's model is shown
+    component = null
+  );
+}

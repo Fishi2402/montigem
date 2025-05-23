@@ -60,6 +60,7 @@ classdiagram DemoRec {
   class Dimension {
     String unit;
     String name;
+    /String display;
   }
 
   association [*] MeasuringValue -> (dimension) Dimension [1];
@@ -139,5 +140,37 @@ classdiagram DemoRec {
   enum State {
     HEALTHY,
     OTHER;
+  }
+
+  class ProcessModel {
+    String name;
+    String description;
+  }
+  association [0..1] ProcessModel (processModel) <-> (underlyingProcess)  Process [0..1];
+  association [0..1] ProcessModel (processModel) <-> (subTasks) Task [*];
+
+  class Task {
+    String name;
+    String description;
+    double timeConsumption;
+  }
+  association [0..1] Task -> (underlyingProcessStep)  ProcessStep [0..1];
+  association [*] Task -> (dependsOn) Task [*];
+  association [*] Task -> (uses) EndEffector [1];
+  association [*] Task -> (deconstructs) JoinConnection [0..1];
+
+  <<singleton>>
+  class ProcessModelFrontEndCommands {
+    <<command>>
+    String exportProcessModel(ProcessModel processModel);
+
+    <<command>>
+    String tagProcessModel(ProcessModel processModel, String workflowDSLEncoding);
+
+    <<command>>
+    String generateInstructions(ProcessModel processModel, String workflowDSLEncoding, String tags);
+
+    <<command>>
+    ProcessModel createInitialProcessModel(Process process);
   }
 }

@@ -1,0 +1,212 @@
+$lineDistance: 10px;
+
+$actionTableHeaderBackgroundColor: #dedbff;
+$actionTableHeaderPadding: .5rem;
+$actionTableContentPadding: .25rem;
+$actionTableLineDistance: 5px;
+$actionTableHeaderFontSize: 1rem;
+$actionTableContentFontSize: .8rem;
+
+:host ::ng-deep .vpmMainContent {
+  flex: 1;
+
+  gem-row {
+    height: unset !important;
+  }
+
+  .viewActions {
+    height: unset !important;
+  }
+}
+
+:host ::ng-deep .dependsOnTableHeader {
+  margin: 2rem 0 1rem 0;
+  font-weight: bold;
+}
+
+:host ::ng-deep .dependsOnTableRow {
+  margin: 0 0 .5rem 0;
+}
+
+:host ::ng-deep .dependsOnListColumn {
+  font-style: italic;
+}
+
+:host ::ng-deep .editDeleteButtonsRow {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between !important;
+
+  button.gem-button {
+    width: 10rem !important;
+    margin-right: 10px;
+  }
+
+  > .editProcessModelButton > button.gem-button {
+    flex:1;
+    padding: .5em 1em;
+    text-align: center;
+    font: inherit;
+    background-color: #dedbff;
+    color: black;
+    border-bottom: 4px solid white;
+    transition: color 0.4s ease, background-color 0.4s ease;
+
+    &:hover {
+      background-color: #b68ff3;
+    }
+
+    &:active {
+      background-color: black;
+      color: white;
+    }
+  }
+
+  > .deleteProcessModelButton > button.gem-button {
+    flex:1;
+    padding: .5em 1em;
+    text-align: center;
+    font: inherit;
+    background-color: #edb4b9;
+    color: black;
+    border-bottom: 4px solid white;
+    transition: color 0.4s ease, background-color 0.4s ease;
+
+    &:hover {
+      background-color: #ec8991;
+    }
+
+    &:active {
+      background-color: black;
+      color: white;
+    }
+  }
+}
+
+:host ::ng-deep gem-button.goToUnderlyingProcessButton button.gem-button {
+  margin-top: 20px;
+  width: 30% !important;
+  flex:1;
+  padding: .5em 1em;
+  text-align: center;
+  font: inherit;
+  background-color: #0077be;
+  border-bottom: 4px solid white;
+}
+
+:host ::ng-deep gem-row.processModelName {
+  display: flex;
+  flex-direction: column;
+  margin-top: $lineDistance;
+  margin-bottom: $lineDistance;
+
+  > gem-text.processModelNameLabel {
+    font-weight: bold !important;
+  }
+
+  > gem-text.processModelNameValue {
+    font-style: italic !important;
+  }
+}
+
+:host ::ng-deep gem-row.processModelDescription {
+  display: flex;
+  flex-direction: column;
+  margin-top: $lineDistance;
+  margin-bottom: $lineDistance;
+
+  > gem-text.processModelDescriptionLabel {
+    font-weight: bold !important;
+  }
+
+  > gem-text.processModelDescriptionValue {
+    font-style: italic !important;
+  }
+}
+
+:host ::ng-deep .viewActionsLabel {
+  margin-top: $lineDistance;
+  margin-bottom: $actionTableLineDistance;
+  font-size: 1.3rem;
+  font-weight: bold !important;
+}
+
+:host ::ng-deep .actionNameHeader, .actionDescriptionHeader, .actionDependenciesHeader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  font-size: $actionTableHeaderFontSize;
+
+  padding: $actionTableHeaderPadding;
+
+  margin-top: $lineDistance;
+  padding-bottom: $actionTableLineDistance;
+  font-weight: bold !important;
+  background-color: $actionTableHeaderBackgroundColor;
+
+  border-bottom: 2px solid black;
+  border-right: 1px solid black;
+}
+
+:host ::ng-deep .actionUnderlyingProcessStepHeader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  font-size: $actionTableHeaderFontSize;
+
+  padding: $actionTableHeaderPadding;
+
+  margin-top: $lineDistance;
+  padding-bottom: $actionTableLineDistance;
+  font-weight: bold !important;
+  background-color: $actionTableHeaderBackgroundColor;
+
+  border-bottom: 2px solid black;
+}
+
+:host ::ng-deep .actionName {
+  font-weight: bold !important;
+  font-style: italic !important;
+}
+
+:host ::ng-deep .actionName, .actionDescription, .actionDependencies {
+  display: flex;
+  justify-content: center;
+  text-align: left;
+
+  font-size: $actionTableContentFontSize;
+
+  padding: $actionTableContentPadding;
+
+  border-bottom: 1px solid black;
+  border-right: 1px solid black;
+}
+
+:host ::ng-deep .noUnderlyingProcessStepText {
+  display: flex;
+  justify-content: center;
+  text-align: left;
+
+  font-size: $actionTableContentFontSize;
+
+  padding: $actionTableContentPadding;
+
+  border-bottom: 1px solid black;
+}
+
+:host ::ng-deep .processStepDetailsButton > button {
+  flex:1;
+  font-size: $actionTableContentFontSize;
+  padding: $actionTableContentPadding;
+  border-bottom: 1px solid black;
+  text-align: center;
+  font: inherit;
+  background-color: #0077be;
+  border-bottom: 4px solid white;
+}
+

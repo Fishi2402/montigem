@@ -1,0 +1,24 @@
+package gui.pack;
+
+import DemoRec.JoinConnectionKind;
+
+import mc.fenix.basic.GemText;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemTreeNode;
+import mc.fenix.basic.GemButton;
+
+page ComponentsTree(ComponentKind kind) {
+
+  @GemTreeNode(
+    content = @GemText(value = kind.name),
+    children = [
+      @iterate(DemoRecComponent c : kind.demoRecComponent) {
+        @GemTreeNode(
+          content = @GemText(value = c.name),
+          onClick = navigateToComponent(c)
+        );
+      }
+    ],
+    onClick = navigateToKind(kind)
+  );
+}

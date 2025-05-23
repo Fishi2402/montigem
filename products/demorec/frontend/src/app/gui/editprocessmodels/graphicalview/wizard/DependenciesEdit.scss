@@ -1,0 +1,29 @@
+:host ::ng-deep .removeDependencyButton > button.gem-button::before {
+  content: '\00D7';
+  font-family: 'FontAwesome';
+  font-size: 30px;
+  margin-right: 5px;
+}
+
+:host ::ng-deep .removeDependencyButton > button.gem-button {
+  background-color: #B22222; //ff6666;
+  color: #fff;
+  border: 2px solid #696969;
+  cursor: pointer;
+  display: inline-block;
+  align-self: flex-start;
+  align-items: center;
+  border-radius: 10px;
+  width: fit-content;
+  height: fit-content;
+}
+
+:host ::ng-deep .addedDependenciesRow {
+  margin-top: 20px;
+}
+
+:host ::ng-deep .showWarningRow > .warningText {
+  margin-top: .5rem;
+  color: red;
+  font-style: italic !important;
+}

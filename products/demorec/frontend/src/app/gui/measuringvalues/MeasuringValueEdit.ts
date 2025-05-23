@@ -87,8 +87,8 @@ export class MeasuringValueEdit extends MeasuringValueEditComponent implements O
   public override getDisplayedMeasuringValueDimensionUnitEntry (measuringValue: MeasuringValue): string {
     let displayValue = ""
     this.dimensionOptions.forEach((option) => {
-      if (+option["value"] === measuringValue.getDimension().getGemId()) {
-        displayValue = option["value"]
+      if (+option.getValue() === measuringValue.getDimension().getGemId()) {
+        displayValue = option.getValue()
       }
     })
     return displayValue

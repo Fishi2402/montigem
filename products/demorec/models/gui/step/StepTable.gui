@@ -31,7 +31,7 @@ component StepTable(Process process) {
         @GemText(value = "Deletion")
       ],
       [
-        @iterate(ProcessStep step : getReverseProcessSteps()) {
+        @iterate(ProcessStep step : getReverseProcessSteps(process)) {
           editStepButton@GemButton(label = "Edit " + step.index, leftClick = editStep(step));
           @GemText(value = step.type);
           @GemText(value = step.description);
