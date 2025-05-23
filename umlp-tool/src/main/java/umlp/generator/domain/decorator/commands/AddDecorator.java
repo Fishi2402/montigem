@@ -142,15 +142,19 @@ public class AddDecorator extends AbstractDeSerDecorator {
 
     if (isGem) {
       ASTCDCompilationUnit typeCD = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
-      getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print());
+      addTypeImport(origCD, ast, domainClass, typeCD, type);
     } else if (GenService.isCDEnum(type)) {
       ASTCDCompilationUnit typeCD = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
-      getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print());
+      addTypeImport(origCD, ast, domainClass, typeCD, type);
     } else if (GenService.isJavaType(type)) {
       addJavaImport(ast, type);
     }
 
     return ast;
+  }
+
+  protected void addTypeImport(ASTCDCompilationUnit origCD, ASTCDClass ast, ASTCDType domainClass, ASTCDCompilationUnit typeCD, SymTypeExpression type) {
+    getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print());
   }
 
   protected String getGeneralCheckAccessPolicyTemplate() {

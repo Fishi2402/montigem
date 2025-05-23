@@ -67,6 +67,11 @@ public class TSObserverDecorator extends ObserverDecorator {
     return Optional.empty();
   }
 
+  // handled by addImports
+  @Override
+  protected void addImportForImportedObservers(ASTCDType domainClass, ASTCDType observerType) {
+  }
+
   @Override
   protected void addImports(ASTCDType domainType, ASTCDType cdType) {
     TSImportHelper importHelper = new TSImportHelper(glex, cdType, hwPath, outPath);

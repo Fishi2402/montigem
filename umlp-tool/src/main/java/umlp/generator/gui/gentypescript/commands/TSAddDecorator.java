@@ -77,11 +77,24 @@ public class TSAddDecorator extends AddDecorator {
   }
 
   @Override
+  protected void addTypeImport(ASTCDCompilationUnit origCD, ASTCDClass ast,
+      ASTCDType domainClass, ASTCDCompilationUnit typeCD, SymTypeExpression type
+  ) {
+    TSImportHelper importHelper = new TSImportHelper(glex, ast, hwPath, outPath);
+    String importerQName = getPackageName(origCD, COMMAND_PACKAGE) + "." + ast.getName();
+
+    String importedSimpleName = type.print();
+    if (!importedSimpleName.equals(domainClass.getName())) {
+      importHelper.addImport(getPackageName(typeCD, DEFAULT_PACKAGE) + "." + importedSimpleName, importerQName);
+    }
+  }
+
+  @Override
   protected void addDeSerImport(ASTCDClass ast, ASTCDCompilationUnit origCD,
       ASTCDType domainClass, SymTypeExpression type, SymTypeExpression innerType, String cmdName) {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
 
-    TSImportHelper importHelper = new TSImportHelper(glex, domainClass, hwPath, outPath);
+    TSImportHelper importHelper = new TSImportHelper(glex, ast, hwPath, outPath);
     String importerQName = getPackageName(origCD, COMMAND_PACKAGE) + "." + domainClass.getName();
 
     importHelper.addImport(getPackageName(origCD, DEFAULT_PACKAGE) + "." + domainClass.getName(), importerQName);
@@ -99,7 +112,7 @@ public class TSAddDecorator extends AddDecorator {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("GeneralErrorCollector"));
 
-    TSImportHelper importHelper = new TSImportHelper(glex, domainClass, hwPath, outPath);
+    TSImportHelper importHelper = new TSImportHelper(glex, ast, hwPath, outPath);
     String importerQName = getPackageName(origCD, COMMAND_PACKAGE) + "." + domainClass.getName();
 
     importHelper.addImport(getPackageName(origCD, DEFAULT_PACKAGE) + "." + domainClass.getName(), importerQName);

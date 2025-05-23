@@ -1,4 +1,4 @@
-package loginmodule;
+package dtcockpit;
 
 import dtcockpit.DtcockpitManager;
 import dtcockpit.LoginModuleUser4UserBuilder;

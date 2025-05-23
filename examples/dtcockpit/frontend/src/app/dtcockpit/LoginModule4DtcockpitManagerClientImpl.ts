@@ -1,4 +1,4 @@
-import { LoginModule4DtcockpitManagerClientImplTOP } from "loginmodule/LoginModule4DtcockpitManagerClientImplTOP";
+import { LoginModule4DtcockpitManagerClientImplTOP } from "dtcockpit/LoginModule4DtcockpitManagerClientImplTOP";
 import { LoginModuleManager } from "@montigem/login";
 import {LoginModuleUser} from "@montigem/login";
 import {LoginModuleUserBuilder} from "@montigem/login";

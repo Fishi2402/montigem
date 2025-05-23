@@ -63,8 +63,8 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
   }
 
   @Override
-  protected ASTCDClass createClass(ASTCDCompilationUnit origCD) {
-    ASTCDClass clazz = super.createClass(origCD);
+  protected ASTCDClass createClass(ASTCDCompilationUnit origCD, String astcdPackage) {
+    ASTCDClass clazz = super.createClass(origCD, astcdPackage);
 
     TSImportHelper importHelper = new TSImportHelper(glex, clazz, hwPath, outPath);
     String importerQName = this.astcdPackage + "." + clazz.getName();

@@ -52,13 +52,6 @@ public class GuiPipelineSetup {
       GUIDSLMill.init();
       UMLPTool.initGUIGlobalScope(data.importedSymbolPath);
       TSImportMap.INSTANCE.init(data.importedSymbolPath);
-      System.out.println();
-      System.out.println();
-      System.out.println();
-      System.out.println("+");
-      System.out.println();
-      System.out.println();
-      System.out.println();
       return true;
     });
     

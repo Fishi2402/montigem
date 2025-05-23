@@ -184,7 +184,7 @@ public class ObserverDecorator extends AbstractDecorator {
   protected void addImport(ASTCDType observerType, ASTCDAttribute attr) {
   }
 
-  private void addImportForImportedObservers(ASTCDType domainClass, ASTCDType observerType) {
+  protected void addImportForImportedObservers(ASTCDType domainClass, ASTCDType observerType) {
     CDTypeSymbol symbol = domainClass.getSymbol();
     if (symbol.isPresentSuperClass()) {
       SymTypeExpression superclass = symbol.getSuperClass();
