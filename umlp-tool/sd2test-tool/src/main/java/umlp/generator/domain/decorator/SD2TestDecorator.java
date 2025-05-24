@@ -10,7 +10,10 @@ import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cdbasis._ast.ASTCDElement;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.lang.sd4development._visitor.SD4DevelopmentVisitor2;
 import de.monticore.lang.sdbasis._ast.ASTSDArtifact;
+import de.monticore.lang.sdbasis._visitor.SDBasisVisitor2;
+import de.monticore.ocl.oclexpressions._visitor.OCLExpressionsVisitor2;
 import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.Joiners;
 import umlp.generator.util.PathUtil;
@@ -49,6 +52,7 @@ public class SD2TestDecorator {
     cd4c.addMethod(testClass, "umlp.domain.sd2test.InitBackendManager", domainName);
 
     //TODO create test method
+    // apply visitor to model
 
     //imports
     cd4c.addImport(testClass, Joiners.DOT.join(domainPackageName, "*"));
@@ -64,5 +68,9 @@ public class SD2TestDecorator {
         .build();
     decoratedCD.getCDDefinition().addCDElement(p);
     return p;
+  }
+
+  private static class SDVisitor implements SDBasisVisitor2, SD4DevelopmentVisitor2, OCLExpressionsVisitor2 {
+
   }
 }

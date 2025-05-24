@@ -2,14 +2,13 @@ import Webshop.*;
 
 sequencediagram TotalTest {
   o:Order;
-  t:TotalTest; //TODO automate this by trigger?
 
   assert o.getTotal() == 0; //have to use valid java here since parser isn't that good
 
   //make sure event queue is empty
 
-  t -> o : addItem(item) {
-    o -> t : return;
+  o -> o : trigger addItem(item) {
+    o -> o : return;
   }
 
   //make sure event queue contains Call("addItem"), End("addItem", null)
