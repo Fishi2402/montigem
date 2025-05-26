@@ -11,6 +11,7 @@ import umlp.GUIDSLReports;
 import umlp.UMLPTool;
 import umlp.cli.common.IOperation;
 import umlp.cli.common.Pipeline;
+import umlp.generator.gui.gentypescript.printer.TSImportMap;
 import umlp.generator.gui.guivariability.GUIVariabilityHandler;
 
 import java.nio.file.Path;
