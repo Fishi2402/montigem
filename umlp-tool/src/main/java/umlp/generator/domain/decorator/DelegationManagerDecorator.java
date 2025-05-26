@@ -8,16 +8,19 @@ import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdbasis._ast.ASTCDTypeTOP;
+import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.se_rwth.commons.Joiners;
+import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -68,22 +71,28 @@ public class DelegationManagerDecorator extends ManagerDecorator {
   protected ASTCDClass createManagerClasses(DiagramSymbol parentCD, LinkedHashSet<DiagramSymbol> extendingCDs, List<ASTCDClass> builderDelegates) {
 
     String delegationManagerName = parentCD.getName() +"4"+this.origCDName+ SUFFIX+"Impl";
+    String superManagerName = parentCD.getName() + ManagerDecorator.SUFFIX + "Impl";
+    String superPackage = getPackageName(parentCD, DEFAULT_PACKAGE);
+    String superCDName = superPackage + "." + parentCD.getName();
+    String superManagerQName = superPackage + "." + superManagerName;
 
     ASTCDClass delegationManagerClass = UMLPMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
         .setName(delegationManagerName)
         .setCDExtendUsage(getExtendUsageFacade()
-            .createCDExtendUsage(parentCD.getName()+ManagerDecorator.SUFFIX+"Impl"))
+            .createCDExtendUsage(superManagerName))
         .build();
+
     glex.replaceTemplate("cd2java.Annotations", delegationManagerClass,
         new StringHookPoint("@jsweet.lang.Erased"));
+    getCD4C().addImport(delegationManagerClass, superManagerQName);
 
     // Build manager adapter/delegators
     List<String> superDelegateManagerNames = new ArrayList<>();
     // TODO: What do we have to for RegMod extend LogMod?
 
-    addManagerInit(delegationManagerClass, parentCD.getName(), delegationManagerName, superDelegateManagerNames);
-    addManagerInitNeo4J(delegationManagerClass, parentCD.getName(), delegationManagerName, superDelegateManagerNames);
+    addManagerInit(delegationManagerClass, parentCD.getName(), delegationManagerName, superDelegateManagerNames, superCDName);
+    addManagerInitNeo4J(delegationManagerClass, parentCD.getName(), delegationManagerName, superDelegateManagerNames, superCDName);
 
     LinkedHashMap<ASTCDType, LinkedHashSet<ASTCDType>> superTypesToTypes =
         getSuperToTypes(parentCD, extendingCDs);
@@ -119,12 +128,20 @@ public class DelegationManagerDecorator extends ManagerDecorator {
     return delegationManagerClass;
   }
 
-  protected void addManagerInit(ASTCDClass delegationManagerClass, String extendedCDName, String delegationManagerName, List<String> superDelegateManagerNames) {
+  protected void addManagerInit(ASTCDClass delegationManagerClass, String extendedCDName,
+      String delegationManagerName, List<String> superDelegateManagerNames, String superCDName
+  ) {
     getCD4C().addMethod(delegationManagerClass, "umlp.managerimpl.Init", extendedCDName, delegationManagerName, superDelegateManagerNames);
+    getCD4C().addImport(delegationManagerClass, superCDName + DAOFactoryDecorator.SUFFIX);
+    getCD4C().addImport(delegationManagerClass, superCDName + DbObserverDecorator.SUFFIX);
   }
 
-  protected void addManagerInitNeo4J(ASTCDClass delegationManagerClass, String extendedCDName, String delegationManagerName, List<String> superDelegateManagerNames) {
+  protected void addManagerInitNeo4J(ASTCDClass delegationManagerClass, String extendedCDName,
+      String delegationManagerName, List<String> superDelegateManagerNames, String superCDName
+  ) {
     getCD4C().addMethod(delegationManagerClass, "umlp.managerimpl.InitNeo4J", extendedCDName, delegationManagerName, superDelegateManagerNames);
+    getCD4C().addImport(delegationManagerClass, superCDName + DAOFactoryDecorator.SUFFIX);
+    getCD4C().addImport(delegationManagerClass, superCDName + DbObserverDecorator.SUFFIX);
   }
 
   protected void addDelegationGetters(ASTCDClass delegationManagerClass,
@@ -142,6 +159,14 @@ public class DelegationManagerDecorator extends ManagerDecorator {
           superTypeToExtensions.getKey().getName(),
           superTypeToExtensions.getValue().stream().map(ASTCDTypeTOP::getName).collect(Collectors.toList()),
           cdTypeToCorrectManager);
+      if (!superTypeToExtensions.getKey().isPresentSymbol()) {
+        Log.error("0x0002A Missing symbol for " + superTypeToExtensions.getKey().getName());
+      }
+      CDTypeSymbol sym = superTypeToExtensions.getKey().getSymbol();
+      getCD4C().addImport(
+          delegationManagerClass,
+          Joiners.DOT.join(sym.getPackageName().toLowerCase(), sym.getName())
+      );
     }
   }
 

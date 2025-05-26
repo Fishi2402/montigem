@@ -25,18 +25,19 @@ configurations {
 }
 
 dependencies {
-  umlpModulesGen("umlp.modules:login:$version")
-  implementation("umlp.modules.login:backend:$version")
-  umlpModulesModels("umlp.modules:login:$version") // and models itself
+  umlpModules(project(":modules:login"))
+  // implementation("umlp.modules.login:backend:$version")
 }
 // ALus local gradle is apparently unaware of these versions?
 // Explicitly use the local login module
+/*
 configurations.configureEach {
   resolutionStrategy.dependencySubstitution {
     substitute module("umlp.modules:login") using project(":modules:login")
     substitute module("umlp.modules.login:backend") using project(":modules:login:backend")
   }
 }
+/**/
 
 application {
   mainClass = 'FinanzverwaltungServerApplication'
@@ -87,7 +88,7 @@ dependencies {
 
 generateUmlpBackend {
   input = file("../models/Finanzverwaltung.umlp")
-  symbolOutDir = file("${project.buildDir}/symbols")
+  // symbolOutDir = file("${project.buildDir}/symbols")
   useSpring = true
   useShell = false
 }
@@ -98,11 +99,13 @@ tasks.register('runServer') {
   })
 }
 
+/*
 tasks.register('runShellApi', org.springframework.boot.gradle.tasks.run.BootRun) {
   classpath = sourceSets.main.runtimeClasspath
   mainClass = 'guidslpaper.GuidslpaperShellAPIApplication'
   standardInput = System.in
 }
+/**/
 
 test {
   testLogging {

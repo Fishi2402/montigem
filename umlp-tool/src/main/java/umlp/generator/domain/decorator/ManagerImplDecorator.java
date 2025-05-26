@@ -66,7 +66,9 @@ public class ManagerImplDecorator extends AbstractDecorator {
       List<String> exFQN = new ArrayList<>();
       exFQN.add(astcdPackage);
       exFQN.add(ex.getCDDefinition().getName() + "4" + origCD.getCDDefinition().getName() +ManagerDecorator.SUFFIX + "Impl");
-      superDelegateManagerNames.add(String.join(".", exFQN));
+      String superManager = String.join(".", exFQN);
+      superDelegateManagerNames.add(superManager);
+      getCD4C().addImport(managerClass, superManager);
     }
 
     // methods
