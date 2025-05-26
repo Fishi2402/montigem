@@ -22,7 +22,9 @@ public class CreateComponentKind extends CreateComponentKindTOP {
       Optional<ComponentKind> kindOpt = (Optional<ComponentKind>) this.getKind().build();
       if(kindOpt.isPresent()) {
         if(this.packService != null) {
-          kindOpt.get().setBatteryPack(packService.getBatteryPack());
+          if(packService.getBatteryPack() != null) {
+            kindOpt.get().setBatteryPack(packService.getBatteryPack());
+          }
         }
         this.getNewKind().accept(kindOpt.get());
       }
