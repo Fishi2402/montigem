@@ -118,6 +118,8 @@ public class SD2TestDecorator {
     //override initBackendManager
     cd4c.addMethod(testClass, "umlp.domain.sd2test.InitBackendManager", domainName);
 
+    //TODO also visit the object diagram if present, to check which objects are pre-defined
+
     // apply a visitor to the model
     var traverser = SD4DevelopmentMill.traverser();
     var visitor = new LoggingSDVisitor();
