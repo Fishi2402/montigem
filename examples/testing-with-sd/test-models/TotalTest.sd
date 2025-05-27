@@ -1,7 +1,7 @@
 import Webshop.*;
 
 sequencediagram TotalTest {
-  o:Order;
+  ... o:Order;
 
   assert o.getTotal() == 0; //have to use valid java here since parser isn't that good
 
@@ -15,3 +15,40 @@ sequencediagram TotalTest {
 
   assert o.getTotal() == 6;
 }
+
+// output of logging visitor right now:
+//
+//visit ASTSDArtifact
+//visit ASTSequenceDiagram
+//visit ASTSDObject
+//visit ASTSDFreeModifier
+//end ASTSDFreeModifier
+//end ASTSDObject
+//visit ASTSDBody
+//visit ASTSDCondition
+//end ASTSDCondition
+//visit ASTSDSendMessage
+//visit ASTSDObjectSource
+//end ASTSDObjectSource
+//visit ASTSDObjectTarget
+//end ASTSDObjectTarget
+//visit ASTSDCall
+//end ASTSDCall
+//visit ASTSDActivityBar
+//visit ASTSDSendMessage
+//visit ASTSDObjectSource
+//end ASTSDObjectSource
+//visit ASTSDObjectTarget
+//end ASTSDObjectTarget
+//visit ASTSDReturn
+//end ASTSDReturn
+//end ASTSDSendMessage
+//end ASTSDActivityBar
+//end ASTSDSendMessage
+//visit ASTSDCondition
+//end ASTSDCondition
+//visit ISD4DevelopmentScope
+//end ISD4DevelopmentScope
+//end ASTSDBody
+//end ASTSequenceDiagram
+//end ASTSDArtifact
