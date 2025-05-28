@@ -128,7 +128,9 @@ public class SD2TestDecorator {
     model.accept(traverser); //TODO create instructions based on what we visit
     visitor.visits.forEach(System.out::println);
 
-    //TODO Test.ftl with instructions as parameters
+    //TODO for starters, just create overridable createFoo() methods for every object needed for the
+    // test
+    //TODO Test.ftl with objects and instructions as parameters
 
     //imports
     cd4c.addImport(testClass, Joiners.DOT.join(domainPackageName, "*"));
