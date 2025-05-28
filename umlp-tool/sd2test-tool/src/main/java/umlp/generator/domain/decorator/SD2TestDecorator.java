@@ -118,15 +118,17 @@ public class SD2TestDecorator {
     //override initBackendManager
     cd4c.addMethod(testClass, "umlp.domain.sd2test.InitBackendManager", domainName);
 
-    //TODO also visit the object diagram if present, to check which objects are pre-defined
+    //TODO also visit the object diagram if present, to check which objects are pre-defined; Can Nico help me here?
 
     // apply a visitor to the model
     var traverser = SD4DevelopmentMill.traverser();
     var visitor = new LoggingSDVisitor();
     traverser.add4SDBasis(visitor);
     traverser.add4SD4Development(visitor);
-    model.accept(traverser); //TODO create test method based on what we visit
+    model.accept(traverser); //TODO create instructions based on what we visit
     visitor.visits.forEach(System.out::println);
+
+    //TODO Test.ftl with instructions as parameters
 
     //imports
     cd4c.addImport(testClass, Joiners.DOT.join(domainPackageName, "*"));
