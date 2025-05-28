@@ -50,6 +50,7 @@ import de.monticore.lang.sdbasis._symboltable.ISDBasisArtifactScope;
 import de.monticore.lang.sdbasis._symboltable.ISDBasisGlobalScope;
 import de.monticore.lang.sdbasis._symboltable.ISDBasisScope;
 import de.monticore.lang.sdbasis._visitor.SDBasisVisitor2;
+import de.monticore.mcbasics._visitor.MCBasicsVisitor2;
 import de.monticore.ocl.oclexpressions._ast.ASTAnyExpression;
 import de.monticore.ocl.oclexpressions._ast.ASTEquivalentExpression;
 import de.monticore.ocl.oclexpressions._ast.ASTExistsExpression;
@@ -125,6 +126,7 @@ public class SD2TestDecorator {
     var visitor = new LoggingSDVisitor();
     traverser.add4SDBasis(visitor);
     traverser.add4SD4Development(visitor);
+    traverser.add4MCBasics(visitor);
     model.accept(traverser); //TODO create instructions based on what we visit
     visitor.visits.forEach(System.out::println);
 
@@ -150,7 +152,7 @@ public class SD2TestDecorator {
   }
 
   private static class LoggingSDVisitor
-      implements SDBasisVisitor2, SD4DevelopmentVisitor2, OCLExpressionsVisitor2 {
+      implements SDBasisVisitor2, SD4DevelopmentVisitor2, OCLExpressionsVisitor2, MCBasicsVisitor2 {
 
     private final List<String> visits = new ArrayList<>();
 

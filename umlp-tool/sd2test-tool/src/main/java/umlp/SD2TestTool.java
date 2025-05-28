@@ -129,7 +129,7 @@ public class SD2TestTool extends SD4DevelopmentTool {
 
     //artifact scope
     var artifactScope = createSymbolTable(model);
-    artifactScope.resolveType("Webshop.Order"); //TODO it doesn't work without this
+    artifactScope.resolveType("Webshop.Order"); //TODO it doesn't work without this; it might now, time to test that
     SD4DevelopmentSymbolTableCompleter.apply(model);
     globalScope.addSubScope(artifactScope);
   }
