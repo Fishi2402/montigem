@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 //import java.time.Duration;
 //import java.net.URI; TODO locations were URI instead of String change in future if possible
 
@@ -158,6 +159,25 @@ classdiagram DemoRec {
   association [*] Task -> (dependsOn) Task [*];
   association [*] Task -> (uses) EndEffector [1];
   association [*] Task -> (deconstructs) JoinConnection [0..1];
+
+  enum Eventtype {
+    ERROR,
+    PART_PRODUCED,
+    TOOL_CHANGED,
+    MAINTENANCE;
+  }
+
+  enum Errortype {
+    CLAMPING_UNIT_BLOCKED,
+    TEMPERATURE_EXCEEDED;
+  }
+
+  class Eventlog {
+    Eventtype event;
+    Optional<Errortype> errortype;
+    String details;
+    LocalDateTime timestamp;
+  }
 
   <<singleton>>
   class ProcessModelFrontEndCommands {
