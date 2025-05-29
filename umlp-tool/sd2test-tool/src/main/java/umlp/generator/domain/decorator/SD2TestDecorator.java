@@ -11,6 +11,7 @@ import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cdbasis._ast.ASTCDElement;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.lang.sd4development.SD4DevelopmentMill;
 import de.monticore.lang.sd4development._ast.ASTSD4DevelopmentNode;
 import de.monticore.lang.sd4development._ast.ASTSDCall;
@@ -50,6 +51,10 @@ import de.monticore.lang.sdbasis._symboltable.ISDBasisArtifactScope;
 import de.monticore.lang.sdbasis._symboltable.ISDBasisGlobalScope;
 import de.monticore.lang.sdbasis._symboltable.ISDBasisScope;
 import de.monticore.lang.sdbasis._visitor.SDBasisVisitor2;
+import de.monticore.mcbasics._ast.ASTMCBasicsNode;
+import de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope;
+import de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope;
+import de.monticore.mcbasics._symboltable.IMCBasicsScope;
 import de.monticore.mcbasics._visitor.MCBasicsVisitor2;
 import de.monticore.ocl.oclexpressions._ast.ASTAnyExpression;
 import de.monticore.ocl.oclexpressions._ast.ASTEquivalentExpression;
@@ -119,7 +124,8 @@ public class SD2TestDecorator {
     //override initBackendManager
     cd4c.addMethod(testClass, "umlp.domain.sd2test.InitBackendManager", domainName);
 
-    //TODO also visit the object diagram if present, to check which objects are pre-defined; Can Nico help me here?
+    //TODO also visit the object diagram if present, to check which objects are pre-defined; Can
+    // Nico help me here?
 
     // apply a visitor to the model
     var traverser = SD4DevelopmentMill.traverser();
@@ -132,12 +138,16 @@ public class SD2TestDecorator {
 
     //TODO for starters, just create overridable createFoo() methods for every object needed for the
     // test
-    //TODO Test.ftl with objects and instructions as parameters
+    var objectNames = List.<String>of();
+    var statements = List.<String>of();
+    var testMethod = cd4c.addMethod(testClass, "umlp.domain.sd2test.Test", objectNames, statements);
+    glex.replaceTemplate("cd2java.Annotations", testMethod, new StringHookPoint("@Test"));
 
     //imports
     cd4c.addImport(testClass, Joiners.DOT.join(domainPackageName, "*"));
     cd4c.addImport(testClass, Joiners.DOT.join(domainPackageName, "test_infrastructure", "*"));
     cd4c.addImport(testClass, Joiners.DOT.join(PathUtil.getTestInfrastructurePath(), "*"));
+    cd4c.addImport(testClass, "org.junit.jupiter.api.Test");
 
     return testClass;
   }
@@ -151,375 +161,653 @@ public class SD2TestDecorator {
     return p;
   }
 
-  private static class LoggingSDVisitor
+  private static final class SDVisitor
+      implements MCBasicsVisitor2, SDBasisVisitor2, SD4DevelopmentVisitor2, OCLExpressionsVisitor2 {
+
+    @Override
+    public void visit(ASTSDObject node) {
+
+    }
+
+    @Override
+    public void endVisit(ASTSDObject node) {
+
+    }
+  }
+
+  private static final class LoggingSDVisitor
       implements SDBasisVisitor2, SD4DevelopmentVisitor2, OCLExpressionsVisitor2, MCBasicsVisitor2 {
 
     private final List<String> visits = new ArrayList<>();
 
     @Override
-    public void visit(ASTSDCall node) {visits.add("visit ASTSDCall");}
+    public void visit(ASTSDCall node) {
+      visits.add("visit ASTSDCall");
+    }
 
     @Override
-    public void endVisit(ASTSDCall node) {visits.add("end ASTSDCall");}
+    public void endVisit(ASTSDCall node) {
+      visits.add("end visit ASTSDCall");
+    }
 
     @Override
-    public void visit(ASTSDNew node) {visits.add("visit ASTSDNew");}
+    public void visit(ASTSDNew node) {
+      visits.add("visit ASTSDNew");
+    }
 
     @Override
-    public void endVisit(ASTSDNew node) {visits.add("end ASTSDNew");}
+    public void endVisit(ASTSDNew node) {
+      visits.add("end visit ASTSDNew");
+    }
 
     @Override
-    public void visit(ASTSDReturn node) {visits.add("visit ASTSDReturn");}
+    public void visit(ASTSDReturn node) {
+      visits.add("visit ASTSDReturn");
+    }
 
     @Override
-    public void endVisit(ASTSDReturn node) {visits.add("end ASTSDReturn");}
+    public void endVisit(ASTSDReturn node) {
+      visits.add("end visit ASTSDReturn");
+    }
 
     @Override
-    public void visit(ASTSDThrow node) {visits.add("visit ASTSDThrow");}
+    public void visit(ASTSDThrow node) {
+      visits.add("visit ASTSDThrow");
+    }
 
     @Override
-    public void endVisit(ASTSDThrow node) {visits.add("end ASTSDThrow");}
+    public void endVisit(ASTSDThrow node) {
+      visits.add("end visit ASTSDThrow");
+    }
 
     @Override
-    public void visit(ASTSDEndCall node) {visits.add("visit ASTSDEndCall");}
+    public void visit(ASTSDEndCall node) {
+      visits.add("visit ASTSDEndCall");
+    }
 
     @Override
-    public void endVisit(ASTSDEndCall node) {visits.add("end ASTSDEndCall");}
+    public void endVisit(ASTSDEndCall node) {
+      visits.add("end visit ASTSDEndCall");
+    }
 
     @Override
-    public void visit(ASTSDEndCallArrow node) {visits.add("visit ASTSDEndCallArrow");}
+    public void visit(ASTSDEndCallArrow node) {
+      visits.add("visit ASTSDEndCallArrow");
+    }
 
     @Override
-    public void endVisit(ASTSDEndCallArrow node) {visits.add("end ASTSDEndCallArrow");}
+    public void endVisit(ASTSDEndCallArrow node) {
+      visits.add("end visit ASTSDEndCallArrow");
+    }
 
     @Override
-    public void visit(ASTSDIncompleteExpression node) {visits.add("visit ASTSDIncompleteExpression");}
+    public void visit(ASTSDIncompleteExpression node) {
+      visits.add("visit ASTSDIncompleteExpression");
+    }
 
     @Override
-    public void endVisit(ASTSDIncompleteExpression node) {visits.add("end ASTSDIncompleteExpression");}
+    public void endVisit(ASTSDIncompleteExpression node) {
+      visits.add("end visit ASTSDIncompleteExpression");
+    }
 
     @Override
-    public void visit(ASTSDClass node) {visits.add("visit ASTSDClass");}
+    public void visit(ASTSDClass node) {
+      visits.add("visit ASTSDClass");
+    }
 
     @Override
-    public void endVisit(ASTSDClass node) {visits.add("end ASTSDClass");}
+    public void endVisit(ASTSDClass node) {
+      visits.add("end visit ASTSDClass");
+    }
 
     @Override
-    public void visit(ASTSDCondition node) {visits.add("visit ASTSDCondition");}
+    public void visit(ASTSDCondition node) {
+      visits.add("visit ASTSDCondition");
+    }
 
     @Override
-    public void endVisit(ASTSDCondition node) {visits.add("end ASTSDCondition");}
+    public void endVisit(ASTSDCondition node) {
+      visits.add("end visit ASTSDCondition");
+    }
 
     @Override
-    public void visit(ASTSDVariableDeclaration node) {visits.add("visit ASTSDVariableDeclaration");}
+    public void visit(ASTSDVariableDeclaration node) {
+      visits.add("visit ASTSDVariableDeclaration");
+    }
 
     @Override
-    public void endVisit(ASTSDVariableDeclaration node) {visits.add("end ASTSDVariableDeclaration");}
+    public void endVisit(ASTSDVariableDeclaration node) {
+      visits.add("end visit ASTSDVariableDeclaration");
+    }
 
     @Override
-    public void visit(ASTSD4DevelopmentNode node) {visits.add("visit ASTSD4DevelopmentNode");}
+    public void visit(ASTSD4DevelopmentNode node) {
+      visits.add("visit ASTSD4DevelopmentNode");
+    }
 
     @Override
-    public void endVisit(ASTSD4DevelopmentNode node) {visits.add("end ASTSD4DevelopmentNode");}
+    public void endVisit(ASTSD4DevelopmentNode node) {
+      visits.add("end visit ASTSD4DevelopmentNode");
+    }
 
     @Override
-    public void visit(ISD4DevelopmentScope node) {visits.add("visit ISD4DevelopmentScope");}
+    public void visit(ISD4DevelopmentScope node) {
+      visits.add("visit ISD4DevelopmentScope");
+    }
 
     @Override
-    public void endVisit(ISD4DevelopmentScope node) {visits.add("end ISD4DevelopmentScope");}
+    public void endVisit(ISD4DevelopmentScope node) {
+      visits.add("end visit ISD4DevelopmentScope");
+    }
 
     @Override
-    public void visit(ISD4DevelopmentArtifactScope node) {visits.add("visit ISD4DevelopmentArtifactScope");}
+    public void visit(ISD4DevelopmentArtifactScope node) {
+      visits.add("visit ISD4DevelopmentArtifactScope");
+    }
 
     @Override
-    public void endVisit(ISD4DevelopmentArtifactScope node) {visits.add("end ISD4DevelopmentArtifactScope");}
+    public void endVisit(ISD4DevelopmentArtifactScope node) {
+      visits.add("end visit ISD4DevelopmentArtifactScope");
+    }
 
     @Override
-    public void visit(ISD4DevelopmentGlobalScope node) {visits.add("visit ISD4DevelopmentGlobalScope");}
+    public void visit(ISD4DevelopmentGlobalScope node) {
+      visits.add("visit ISD4DevelopmentGlobalScope");
+    }
 
     @Override
-    public void endVisit(ISD4DevelopmentGlobalScope node) {visits.add("end ISD4DevelopmentGlobalScope");}
+    public void endVisit(ISD4DevelopmentGlobalScope node) {
+      visits.add("end visit ISD4DevelopmentGlobalScope");
+    }
 
     @Override
-    public void visit(ASTSDArtifact node) {visits.add("visit ASTSDArtifact");}
+    public void visit(ASTSDArtifact node) {
+      visits.add("visit ASTSDArtifact");
+    }
 
     @Override
-    public void endVisit(ASTSDArtifact node) {visits.add("end ASTSDArtifact");}
+    public void endVisit(ASTSDArtifact node) {
+      visits.add("end visit ASTSDArtifact");
+    }
 
     @Override
-    public void visit(ASTSequenceDiagram node) {visits.add("visit ASTSequenceDiagram");}
+    public void visit(ASTSequenceDiagram node) {
+      visits.add("visit ASTSequenceDiagram");
+    }
 
     @Override
-    public void endVisit(ASTSequenceDiagram node) {visits.add("end ASTSequenceDiagram");}
+    public void endVisit(ASTSequenceDiagram node) {
+      visits.add("end visit ASTSequenceDiagram");
+    }
 
     @Override
-    public void visit(ASTSDBody node) {visits.add("visit ASTSDBody");}
+    public void visit(ASTSDBody node) {
+      visits.add("visit ASTSDBody");
+    }
 
     @Override
-    public void endVisit(ASTSDBody node) {visits.add("end ASTSDBody");}
+    public void endVisit(ASTSDBody node) {
+      visits.add("end visit ASTSDBody");
+    }
 
     @Override
-    public void visit(ASTSDCompleteModifier node) {visits.add("visit ASTSDCompleteModifier");}
+    public void visit(ASTSDCompleteModifier node) {
+      visits.add("visit ASTSDCompleteModifier");
+    }
 
     @Override
-    public void endVisit(ASTSDCompleteModifier node) {visits.add("end ASTSDCompleteModifier");}
+    public void endVisit(ASTSDCompleteModifier node) {
+      visits.add("end visit ASTSDCompleteModifier");
+    }
 
     @Override
-    public void visit(ASTSDFreeModifier node) {visits.add("visit ASTSDFreeModifier");}
+    public void visit(ASTSDFreeModifier node) {
+      visits.add("visit ASTSDFreeModifier");
+    }
 
     @Override
-    public void endVisit(ASTSDFreeModifier node) {visits.add("end ASTSDFreeModifier");}
+    public void endVisit(ASTSDFreeModifier node) {
+      visits.add("end visit ASTSDFreeModifier");
+    }
 
     @Override
-    public void visit(ASTSDInitialModifier node) {visits.add("visit ASTSDInitialModifier");}
+    public void visit(ASTSDInitialModifier node) {
+      visits.add("visit ASTSDInitialModifier");
+    }
 
     @Override
-    public void endVisit(ASTSDInitialModifier node) {visits.add("end ASTSDInitialModifier");}
+    public void endVisit(ASTSDInitialModifier node) {
+      visits.add("end visit ASTSDInitialModifier");
+    }
 
     @Override
-    public void visit(ASTSDVisibleModifier node) {visits.add("visit ASTSDVisibleModifier");}
+    public void visit(ASTSDVisibleModifier node) {
+      visits.add("visit ASTSDVisibleModifier");
+    }
 
     @Override
-    public void endVisit(ASTSDVisibleModifier node) {visits.add("end ASTSDVisibleModifier");}
+    public void endVisit(ASTSDVisibleModifier node) {
+      visits.add("end visit ASTSDVisibleModifier");
+    }
 
     @Override
-    public void visit(ASTSDObject node) {visits.add("visit ASTSDObject");}
+    public void visit(ASTSDObject node) {
+      visits.add("visit ASTSDObject");
+    }
 
     @Override
-    public void endVisit(ASTSDObject node) {visits.add("end ASTSDObject");}
+    public void endVisit(ASTSDObject node) {
+      visits.add("end visit ASTSDObject");
+    }
 
     @Override
-    public void visit(ASTSDObjectSource node) {visits.add("visit ASTSDObjectSource");}
+    public void visit(ASTSDObjectSource node) {
+      visits.add("visit ASTSDObjectSource");
+    }
 
     @Override
-    public void endVisit(ASTSDObjectSource node) {visits.add("end ASTSDObjectSource");}
+    public void endVisit(ASTSDObjectSource node) {
+      visits.add("end visit ASTSDObjectSource");
+    }
 
     @Override
-    public void visit(ASTSDObjectTarget node) {visits.add("visit ASTSDObjectTarget");}
+    public void visit(ASTSDObjectTarget node) {
+      visits.add("visit ASTSDObjectTarget");
+    }
 
     @Override
-    public void endVisit(ASTSDObjectTarget node) {visits.add("end ASTSDObjectTarget");}
+    public void endVisit(ASTSDObjectTarget node) {
+      visits.add("end visit ASTSDObjectTarget");
+    }
 
     @Override
-    public void visit(ASTSDSendMessage node) {visits.add("visit ASTSDSendMessage");}
+    public void visit(ASTSDSendMessage node) {
+      visits.add("visit ASTSDSendMessage");
+    }
 
     @Override
-    public void endVisit(ASTSDSendMessage node) {visits.add("end ASTSDSendMessage");}
+    public void endVisit(ASTSDSendMessage node) {
+      visits.add("end visit ASTSDSendMessage");
+    }
 
     @Override
-    public void visit(ASTSDActivityBar node) {visits.add("visit ASTSDActivityBar");}
+    public void visit(ASTSDActivityBar node) {
+      visits.add("visit ASTSDActivityBar");
+    }
 
     @Override
-    public void endVisit(ASTSDActivityBar node) {visits.add("end ASTSDActivityBar");}
+    public void endVisit(ASTSDActivityBar node) {
+      visits.add("end visit ASTSDActivityBar");
+    }
 
     @Override
-    public void visit(ASTSDModifier node) {visits.add("visit ASTSDModifier");}
+    public void visit(ASTSDModifier node) {
+      visits.add("visit ASTSDModifier");
+    }
 
     @Override
-    public void endVisit(ASTSDModifier node) {visits.add("end ASTSDModifier");}
+    public void endVisit(ASTSDModifier node) {
+      visits.add("end visit ASTSDModifier");
+    }
 
     @Override
-    public void visit(ASTSDElement node) {visits.add("visit ASTSDElement");}
+    public void visit(ASTSDElement node) {
+      visits.add("visit ASTSDElement");
+    }
 
     @Override
-    public void endVisit(ASTSDElement node) {visits.add("end ASTSDElement");}
+    public void endVisit(ASTSDElement node) {
+      visits.add("end visit ASTSDElement");
+    }
 
     @Override
-    public void visit(ASTSDInteraction node) {visits.add("visit ASTSDInteraction");}
+    public void visit(ASTSDInteraction node) {
+      visits.add("visit ASTSDInteraction");
+    }
 
     @Override
-    public void endVisit(ASTSDInteraction node) {visits.add("end ASTSDInteraction");}
+    public void endVisit(ASTSDInteraction node) {
+      visits.add("end visit ASTSDInteraction");
+    }
 
     @Override
-    public void visit(ASTSDSource node) {visits.add("visit ASTSDSource");}
+    public void visit(ASTSDSource node) {
+      visits.add("visit ASTSDSource");
+    }
 
     @Override
-    public void endVisit(ASTSDSource node) {visits.add("end ASTSDSource");}
+    public void endVisit(ASTSDSource node) {
+      visits.add("end visit ASTSDSource");
+    }
 
     @Override
-    public void visit(ASTSDTarget node) {visits.add("visit ASTSDTarget");}
+    public void visit(ASTSDTarget node) {
+      visits.add("visit ASTSDTarget");
+    }
 
     @Override
-    public void endVisit(ASTSDTarget node) {visits.add("end ASTSDTarget");}
+    public void endVisit(ASTSDTarget node) {
+      visits.add("end visit ASTSDTarget");
+    }
 
     @Override
-    public void visit(ASTSDAction node) {visits.add("visit ASTSDAction");}
+    public void visit(ASTSDAction node) {
+      visits.add("visit ASTSDAction");
+    }
 
     @Override
-    public void endVisit(ASTSDAction node) {visits.add("end ASTSDAction");}
+    public void endVisit(ASTSDAction node) {
+      visits.add("end visit ASTSDAction");
+    }
 
     @Override
-    public void visit(ASTSDBasisNode node) {visits.add("visit ASTSDBasisNode");}
+    public void visit(ASTSDBasisNode node) {
+      visits.add("visit ASTSDBasisNode");
+    }
 
     @Override
-    public void endVisit(ASTSDBasisNode node) {visits.add("end ASTSDBasisNode");}
+    public void endVisit(ASTSDBasisNode node) {
+      visits.add("end visit ASTSDBasisNode");
+    }
 
     @Override
-    public void visit(ISDBasisScope node) {visits.add("visit ISDBasisScope");}
+    public void visit(ISDBasisScope node) {
+      visits.add("visit ISDBasisScope");
+    }
 
     @Override
-    public void endVisit(ISDBasisScope node) {visits.add("end ISDBasisScope");}
+    public void endVisit(ISDBasisScope node) {
+      visits.add("end visit ISDBasisScope");
+    }
 
     @Override
-    public void visit(ISDBasisArtifactScope node) {visits.add("visit ISDBasisArtifactScope");}
+    public void visit(ISDBasisArtifactScope node) {
+      visits.add("visit ISDBasisArtifactScope");
+    }
 
     @Override
-    public void endVisit(ISDBasisArtifactScope node) {visits.add("end ISDBasisArtifactScope");}
+    public void endVisit(ISDBasisArtifactScope node) {
+      visits.add("end visit ISDBasisArtifactScope");
+    }
 
     @Override
-    public void visit(ISDBasisGlobalScope node) {visits.add("visit ISDBasisGlobalScope");}
+    public void visit(ISDBasisGlobalScope node) {
+      visits.add("visit ISDBasisGlobalScope");
+    }
 
     @Override
-    public void endVisit(ISDBasisGlobalScope node) {visits.add("end ISDBasisGlobalScope");}
+    public void endVisit(ISDBasisGlobalScope node) {
+      visits.add("end visit ISDBasisGlobalScope");
+    }
 
     @Override
-    public void visit(ASTOCLVariableDeclaration node) {visits.add("visit ASTOCLVariableDeclaration");}
+    public void visit(ASTOCLVariableDeclaration node) {
+      visits.add("visit ASTOCLVariableDeclaration");
+    }
 
     @Override
-    public void endVisit(ASTOCLVariableDeclaration node) {visits.add("end ASTOCLVariableDeclaration");}
+    public void endVisit(ASTOCLVariableDeclaration node) {
+      visits.add("end visit ASTOCLVariableDeclaration");
+    }
 
     @Override
-    public void visit(ASTTypeIfExpression node) {visits.add("visit ASTTypeIfExpression");}
+    public void visit(ASTTypeIfExpression node) {
+      visits.add("visit ASTTypeIfExpression");
+    }
 
     @Override
-    public void endVisit(ASTTypeIfExpression node) {visits.add("end ASTTypeIfExpression");}
+    public void endVisit(ASTTypeIfExpression node) {
+      visits.add("end visit ASTTypeIfExpression");
+    }
 
     @Override
-    public void visit(ASTTypeIfThenExpression node) {visits.add("visit ASTTypeIfThenExpression");}
+    public void visit(ASTTypeIfThenExpression node) {
+      visits.add("visit ASTTypeIfThenExpression");
+    }
 
     @Override
-    public void endVisit(ASTTypeIfThenExpression node) {visits.add("end ASTTypeIfThenExpression");}
+    public void endVisit(ASTTypeIfThenExpression node) {
+      visits.add("end visit ASTTypeIfThenExpression");
+    }
 
     @Override
-    public void visit(ASTIfThenElseExpression node) {visits.add("visit ASTIfThenElseExpression");}
+    public void visit(ASTIfThenElseExpression node) {
+      visits.add("visit ASTIfThenElseExpression");
+    }
 
     @Override
-    public void endVisit(ASTIfThenElseExpression node) {visits.add("end ASTIfThenElseExpression");}
+    public void endVisit(ASTIfThenElseExpression node) {
+      visits.add("end visit ASTIfThenElseExpression");
+    }
 
     @Override
-    public void visit(ASTImpliesExpression node) {visits.add("visit ASTImpliesExpression");}
+    public void visit(ASTImpliesExpression node) {
+      visits.add("visit ASTImpliesExpression");
+    }
 
     @Override
-    public void endVisit(ASTImpliesExpression node) {visits.add("end ASTImpliesExpression");}
+    public void endVisit(ASTImpliesExpression node) {
+      visits.add("end visit ASTImpliesExpression");
+    }
 
     @Override
-    public void visit(ASTEquivalentExpression node) {visits.add("visit ASTEquivalentExpression");}
+    public void visit(ASTEquivalentExpression node) {
+      visits.add("visit ASTEquivalentExpression");
+    }
 
     @Override
-    public void endVisit(ASTEquivalentExpression node) {visits.add("end ASTEquivalentExpression");}
+    public void endVisit(ASTEquivalentExpression node) {
+      visits.add("end visit ASTEquivalentExpression");
+    }
 
     @Override
-    public void visit(ASTForallExpression node) {visits.add("visit ASTForallExpression");}
+    public void visit(ASTForallExpression node) {
+      visits.add("visit ASTForallExpression");
+    }
 
     @Override
-    public void endVisit(ASTForallExpression node) {visits.add("end ASTForallExpression");}
+    public void endVisit(ASTForallExpression node) {
+      visits.add("end visit ASTForallExpression");
+    }
 
     @Override
-    public void visit(ASTExistsExpression node) {visits.add("visit ASTExistsExpression");}
+    public void visit(ASTExistsExpression node) {
+      visits.add("visit ASTExistsExpression");
+    }
 
     @Override
-    public void endVisit(ASTExistsExpression node) {visits.add("end ASTExistsExpression");}
+    public void endVisit(ASTExistsExpression node) {
+      visits.add("end visit ASTExistsExpression");
+    }
 
     @Override
-    public void visit(ASTAnyExpression node) {visits.add("visit ASTAnyExpression");}
+    public void visit(ASTAnyExpression node) {
+      visits.add("visit ASTAnyExpression");
+    }
 
     @Override
-    public void endVisit(ASTAnyExpression node) {visits.add("end ASTAnyExpression");}
+    public void endVisit(ASTAnyExpression node) {
+      visits.add("end visit ASTAnyExpression");
+    }
 
     @Override
-    public void visit(ASTLetinExpression node) {visits.add("visit ASTLetinExpression");}
+    public void visit(ASTLetinExpression node) {
+      visits.add("visit ASTLetinExpression");
+    }
 
     @Override
-    public void endVisit(ASTLetinExpression node) {visits.add("end ASTLetinExpression");}
+    public void endVisit(ASTLetinExpression node) {
+      visits.add("end visit ASTLetinExpression");
+    }
 
     @Override
-    public void visit(ASTIterateExpression node) {visits.add("visit ASTIterateExpression");}
+    public void visit(ASTIterateExpression node) {
+      visits.add("visit ASTIterateExpression");
+    }
 
     @Override
-    public void endVisit(ASTIterateExpression node) {visits.add("end ASTIterateExpression");}
+    public void endVisit(ASTIterateExpression node) {
+      visits.add("end visit ASTIterateExpression");
+    }
 
     @Override
-    public void visit(ASTInDeclaration node) {visits.add("visit ASTInDeclaration");}
+    public void visit(ASTInDeclaration node) {
+      visits.add("visit ASTInDeclaration");
+    }
 
     @Override
-    public void endVisit(ASTInDeclaration node) {visits.add("end ASTInDeclaration");}
+    public void endVisit(ASTInDeclaration node) {
+      visits.add("end visit ASTInDeclaration");
+    }
 
     @Override
-    public void visit(ASTInDeclarationVariable node) {visits.add("visit ASTInDeclarationVariable");}
+    public void visit(ASTInDeclarationVariable node) {
+      visits.add("visit ASTInDeclarationVariable");
+    }
 
     @Override
-    public void endVisit(ASTInDeclarationVariable node) {visits.add("end ASTInDeclarationVariable");}
+    public void endVisit(ASTInDeclarationVariable node) {
+      visits.add("end visit ASTInDeclarationVariable");
+    }
 
     @Override
-    public void visit(ASTOCLAtPreQualification node) {visits.add("visit ASTOCLAtPreQualification");}
+    public void visit(ASTOCLAtPreQualification node) {
+      visits.add("visit ASTOCLAtPreQualification");
+    }
 
     @Override
-    public void endVisit(ASTOCLAtPreQualification node) {visits.add("end ASTOCLAtPreQualification");}
+    public void endVisit(ASTOCLAtPreQualification node) {
+      visits.add("end visit ASTOCLAtPreQualification");
+    }
 
     @Override
-    public void visit(ASTOCLTransitiveQualification node) {visits.add("visit ASTOCLTransitiveQualification");}
+    public void visit(ASTOCLTransitiveQualification node) {
+      visits.add("visit ASTOCLTransitiveQualification");
+    }
 
     @Override
-    public void endVisit(ASTOCLTransitiveQualification node) {visits.add("end ASTOCLTransitiveQualification");}
+    public void endVisit(ASTOCLTransitiveQualification node) {
+      visits.add("end visit ASTOCLTransitiveQualification");
+    }
 
     @Override
-    public void visit(ASTOCLExpressionsNode node) {visits.add("visit ASTOCLExpressionsNode");}
+    public void visit(ASTOCLExpressionsNode node) {
+      visits.add("visit ASTOCLExpressionsNode");
+    }
 
     @Override
-    public void endVisit(ASTOCLExpressionsNode node) {visits.add("end ASTOCLExpressionsNode");}
+    public void endVisit(ASTOCLExpressionsNode node) {
+      visits.add("end visit ASTOCLExpressionsNode");
+    }
 
     @Override
-    public void visit(IOCLExpressionsScope node) {visits.add("visit IOCLExpressionsScope");}
+    public void visit(IOCLExpressionsScope node) {
+      visits.add("visit IOCLExpressionsScope");
+    }
 
     @Override
-    public void endVisit(IOCLExpressionsScope node) {visits.add("end IOCLExpressionsScope");}
+    public void endVisit(IOCLExpressionsScope node) {
+      visits.add("end visit IOCLExpressionsScope");
+    }
 
     @Override
-    public void visit(IOCLExpressionsArtifactScope node) {visits.add("visit IOCLExpressionsArtifactScope");}
+    public void visit(IOCLExpressionsArtifactScope node) {
+      visits.add("visit IOCLExpressionsArtifactScope");
+    }
 
     @Override
-    public void endVisit(IOCLExpressionsArtifactScope node) {visits.add("end IOCLExpressionsArtifactScope");}
+    public void endVisit(IOCLExpressionsArtifactScope node) {
+      visits.add("end visit IOCLExpressionsArtifactScope");
+    }
 
     @Override
-    public void visit(IOCLExpressionsGlobalScope node) {visits.add("visit IOCLExpressionsGlobalScope");}
+    public void visit(IOCLExpressionsGlobalScope node) {
+      visits.add("visit IOCLExpressionsGlobalScope");
+    }
 
     @Override
-    public void endVisit(IOCLExpressionsGlobalScope node) {visits.add("end IOCLExpressionsGlobalScope");}
+    public void endVisit(IOCLExpressionsGlobalScope node) {
+      visits.add("end visit IOCLExpressionsGlobalScope");
+    }
 
     @Override
-    public void endVisit(ASTNode node) {visits.add("end ASTNode");}
+    public void endVisit(ASTNode node) {
+      visits.add("end visit ASTNode");
+    }
 
     @Override
-    public void visit(ASTNode node) {visits.add("visit ASTNode");}
+    public void visit(ASTNode node) {
+      visits.add("visit ASTNode");
+    }
+
+    @Override
+    public void visit(ASTMCBasicsNode node) {
+      visits.add("visit ASTMCBasicsNode");
+    }
+
+    @Override
+    public void endVisit(ASTMCBasicsNode node) {
+      visits.add("end visit ASTMCBasicsNode");
+    }
+
+    @Override
+    public void visit(IMCBasicsScope node) {
+      visits.add("visit IMCBasicsScope");
+    }
+
+    @Override
+    public void endVisit(IMCBasicsScope node) {
+      visits.add("end visit IMCBasicsScope");
+    }
+
+    @Override
+    public void visit(IMCBasicsArtifactScope node) {
+      visits.add("visit IMCBasicsArtifactScope");
+    }
+
+    @Override
+    public void endVisit(IMCBasicsArtifactScope node) {
+      visits.add("end visit IMCBasicsArtifactScope");
+    }
+
+    @Override
+    public void visit(IMCBasicsGlobalScope node) {
+      visits.add("visit IMCBasicsGlobalScope");
+    }
+
+    @Override
+    public void endVisit(IMCBasicsGlobalScope node) {
+      visits.add("end visit IMCBasicsGlobalScope");
+    }
 
     @Override
     public void visit(ISymbol symbol) {
-      SDBasisVisitor2.super.visit(symbol);
+      visits.add("visit ISymbol");
     }
 
     @Override
     public void endVisit(ISymbol symbol) {
-      SDBasisVisitor2.super.endVisit(symbol);
+      visits.add("end visit ISymbol");
     }
 
     @Override
     public void visit(IScope scope) {
-      SDBasisVisitor2.super.visit(scope);
+      visits.add("visit IScope");
     }
 
     @Override
     public void endVisit(IScope scope) {
-      SDBasisVisitor2.super.endVisit(scope);
+      visits.add("end visit IScope");
     }
 
     @Override
     public void visit(IScopeSpanningSymbol symbol) {
-      SDBasisVisitor2.super.visit(symbol);
+      visits.add("visit IScopeSpanningSymbol");
     }
 
     @Override
     public void endVisit(IScopeSpanningSymbol symbol) {
-      SDBasisVisitor2.super.endVisit(symbol);
+      visits.add("end visit IScopeSpanningSymbol");
     }
   }
 }
