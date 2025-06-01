@@ -132,6 +132,15 @@ export class GemDropdownInput extends GemDropdownInputComponent {
     }
   }
 
+  getDisplayFromEntry(): string {
+    let displayName: string = "";
+    const entryOption: Option = this.options?.find(o => o.getValue() === this.entry);
+    if (entryOption) {
+      displayName = entryOption.getDisplay();
+    }
+    return displayName;
+  }
+
   getInputId(): string {
     return this.elementId + "Input";
   }
