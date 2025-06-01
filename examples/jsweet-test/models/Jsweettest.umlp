@@ -1,4 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
+import java.time.LocalDateTime;
 
 classdiagram Jsweettest {
   class A {
@@ -68,4 +69,7 @@ classdiagram Jsweettest {
     String name;
   }
 
+  class Types {
+    LocalDateTime timestamp;
+  }
 }

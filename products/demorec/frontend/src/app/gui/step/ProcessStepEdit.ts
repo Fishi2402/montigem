@@ -170,7 +170,7 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements OnInit 
 
   public override getSelectJoinConnection1Entry(): string {
     if (!this.getStep().getDeconstructs()) {
-      return noneOption["value"]
+      return noneOption.getValue()
     }
     else {
       return this.getSelectJoinConnectionEntry()
@@ -181,10 +181,10 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements OnInit 
     this.joinConnectionEntry = value
 
     if (this.getSelectJoinConnectionEntry()) {
-      if (this.getSelectJoinConnectionEntry() === noneOption["value"]) {
+      if (this.getSelectJoinConnectionEntry() === noneOption.getValue()) {
         this.getStep().setDeconstructsAbsent1()
       }
-      else if (this.getSelectJoinConnectionEntry() !== newOption["value"]) {
+      else if (this.getSelectJoinConnectionEntry() !== newOption.getValue()) {
         DemoRecManager.getJoinConnectionSure(+this.getSelectJoinConnectionEntry())
           .then((joinConnection) => {
             this.getStep().setDeconstructs1(joinConnection)
@@ -199,7 +199,7 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements OnInit 
 
   public override getCreateNewJoinConnectionCondition() :boolean {
     return this.getIsDeconstructionCondition() &&
-        (this.getSelectJoinConnectionEntry() === newOption["value"])
+        (this.getSelectJoinConnectionEntry() === newOption.getValue())
   }
 
   public override getCreateNewJoinConnection1Condition() :boolean {
@@ -249,7 +249,7 @@ export class ProcessStepEdit extends ProcessStepEditComponent implements OnInit 
   }
 
   public override getEditJoinConnectionButtonDisabled(): boolean {
-    return ((this.getSelectJoinConnectionEntry() === noneOption["value"]) || (this.getSelectJoinConnectionEntry() === newOption["value"]))
+    return ((this.getSelectJoinConnectionEntry() === noneOption.getValue()) || (this.getSelectJoinConnectionEntry() === newOption.getValue()))
   }
 
   public override getEditJoinConnectionButton1Disabled(): boolean {

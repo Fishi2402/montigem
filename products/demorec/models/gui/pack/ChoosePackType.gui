@@ -3,18 +3,20 @@ package gui.pack;
 import DemoRec.BatteryPackType;
 
 import mc.fenix.input.GemDropdownInput;
+import mc.fenix.input.GemAutocompleteInput;
 
 import gui.pack.PackTypeCreate;
 
-page ChoosePackType(BatteryPackType currentType, Event<BatteryPackType> chosenType) {
+page ChoosePackType(List<BatteryPackType> bPackTypes, BatteryPackType currentType,
+    Event<BatteryPackType> chosenType, boolean newPackType = false) {
 
-  selectPackType@GemDropdownInput(
+  selectPackType@GemAutocompleteInput(
     labelText = "Pack Type",
-    options = null,
+    options = getOpts(bPackTypes),
     entry = null,
     width="var(--smallDropDownWidth)"
   );
-  @guard(getCreatePackTypeCondition()) {
+  @guard(newPackType) {
     @PackTypeCreate(newType=addNewBatteryPackType());
   }
 

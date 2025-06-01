@@ -1,0 +1,23 @@
+package gui.pack;
+
+import DemoRec.JoinConnectionKind;
+
+import mc.fenix.basic.GemText;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemTreeNode;
+import mc.fenix.basic.GemButton;
+
+page ConnectionsTree(JoinConnectionKind connKind) {
+
+  @GemTreeNode(
+    content = @GemText(value = getConnectionKindName(connKind)),
+    children = [
+      @iterate(JoinConnection conn : connKind.joinConnection) {
+        @GemTreeNode(
+          content = @GemText(value = getConnectionName(conn)),
+          onClick = navigateToConnection(conn)
+        );
+      }
+    ]
+  );
+}

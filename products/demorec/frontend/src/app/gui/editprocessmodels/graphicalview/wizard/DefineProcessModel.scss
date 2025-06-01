@@ -1,0 +1,77 @@
+:host ::ng-deep gem-row.startedAtInfo {
+  display: flex;
+  flex-direction: column;
+
+  > gem-text.startedAtLabel {
+    font-weight: bold !important;
+  }
+
+  > gem-text.startedAtValue {
+    font-style: italic !important;
+  }
+}
+
+:host ::ng-deep gem-row.batteryPackInfo {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+
+  > gem-text.batteryPackLabel {
+    font-weight: bold !important;
+  }
+
+  > gem-text.batteryPackValue {
+    font-style: italic !important;
+  }
+}
+
+:host ::ng-deep gem-row.backNextRow {
+  margin-top: 40px;
+  display: flex;
+  justify-content: space-between !important;
+
+  > .backButton > button.gem-button {
+    flex:1;
+    padding: .5em 1em;
+    text-align: left;
+    font: inherit;
+    background-color: #edb4b9;
+    color: black;
+    border-bottom: 4px solid white;
+    transition: color 0.4s ease, background-color 0.4s ease;
+
+    &:hover {
+      background-color: #ec8991;
+    }
+
+    &:active {
+      background-color: black;
+      color: white;
+    }
+  }
+
+  > .nextButton > button.gem-button {
+    flex:1;
+    padding: .5em 1em;
+    text-align: left;
+    font: inherit;
+    background-color: #dedbff;
+    color: black;
+    border-bottom: 4px solid white;
+    transition: color 0.4s ease, background-color 0.4s ease;
+
+    &:hover {
+      background-color: #b68ff3;
+    }
+
+    &:active {
+      background-color: black;
+      color: white;
+    }
+  }
+}
+
+:host ::ng-deep gem-textarea-input {
+  margin-top: 20px;
+}

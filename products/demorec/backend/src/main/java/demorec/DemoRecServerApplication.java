@@ -1,16 +1,15 @@
 package demorec;
 
-import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.logging.Log;
+import demorec.processmodeling.InitialProcessModelCreator;
+import demorec.processmodeling.InstructionsGenerator;
+import demorec.processmodeling.ProcessModelExporter;
+import demorec.processmodeling.ProcessModelTagger;
 import org.h2.tools.Server;
-import umlp.backendrte.common.DatabaseAccessManager;
-import umlp.backendrte.common.DatabaseAccessManager4SQL;
 
 import java.io.IOException;
-import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
 public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
@@ -21,7 +20,6 @@ public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
   @Override
   public  void init () throws IOException
   {
-
     super.init();
 
     setBlobStorageLocation();
@@ -103,7 +101,7 @@ public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
           .build().get();
 
       Process process2 = DemoRecManager.processBuilder()
-          .startedAt(LocalDate.now())
+          .startedAt(LocalDate.of(2022,12,31))
           .deconstructionOf(pack2)
           .build().get();
 

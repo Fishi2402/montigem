@@ -18,7 +18,7 @@ import gui.staticcontainer.NavContainer;
 import gui.staticcontainer.StatTable;
 import gui.staticcontainer.StatTableRow;
 
-page EditComponentKind(ComponentKind componentKind, boolean showOptionalValues=true) {
+component EditComponentKind(ComponentKind componentKind, boolean showOptionalValues=true) {
 
   @GemCard(
     title = "Edit component kind",

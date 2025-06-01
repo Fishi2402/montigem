@@ -174,12 +174,35 @@ public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
             .printArgList(invocation.getArguments()).print(")");
         return true;
       case "toString":
+        boolean isDateTime = invocation.getTargetType().toString().contains("DateTime");
         print(invocation.getTargetExpression()).print(".toISOString(")
-            .printArgList(invocation.getArguments()).print(")").print(".slice(0, 10)");
+            .printArgList(invocation.getArguments()).print(")").print(isDateTime ? ".slice(0, 19).replace('T', ' ')" : ".slice(0, 10)");
         return true;
       case "compareTo":
         print("(").print(invocation.getTargetExpression()).print(".getTime() - ")
             .printArgList(invocation.getArguments()).print(".getTime())");
+        return true;
+
+      // === Integration of LocalDateTimeHelper ===
+      case "plusYears":
+      case "plusMonths":
+      case "plusWeeks":
+      case "plusDays":
+      case "plusHours":
+      case "plusMinutes":
+      case "plusSeconds":
+      case "minusYears":
+      case "minusMonths":
+      case "minusWeeks":
+      case "minusDays":
+      case "minusHours":
+      case "minusMinutes":
+      case "minusSeconds":
+        print("LocalDateTimeHelper." + invocation.getMethodName() + "(")
+            .print(invocation.getTargetExpression()).print(", ")
+            .printArgList(invocation.getArguments()).print(")");
+        getPrinter().useModule(
+            new ModuleImportDescriptor("LocalDateTimeHelper", "@umlp/commonj2ts"));
         return true;
     }
     return false;

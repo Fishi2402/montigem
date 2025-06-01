@@ -18,6 +18,7 @@ import org.jsweet.transpiler.util.Util;
 import umlp.jsweet.extension.util.GUIAdapterUtils;
 
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ExecutableType;
@@ -52,6 +53,10 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
     try {
       ExecutableElement method = Util.getElement(invocation.getMethodSelect());
       if (method == null) {
+        return null;
+      }
+
+      if (method.getKind() == ElementKind.CONSTRUCTOR) {
         return null;
       }
 
@@ -305,6 +310,16 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
   @Override
   public Void visitMethod(MethodTree node, Trees trees) {
     Element elementOfMethod = Util.getElement(node);
+    // Constructors CAN NOT be async
+    if (elementOfMethod.getKind() == ElementKind.CONSTRUCTOR) {
+      return null;
+    }
+
+    // Do not check erased methods further -> this leads to very weird js code
+    if (context.hasAnnotationType(elementOfMethod, JSweetConfig.ANNOTATION_ERASED )){
+      return null;
+    }
+
     Element elementOfParent = Util.getElement(getParent());
     if (context.hasAnnotationType(elementOfMethod)) {
       return super.visitMethod(node, trees);

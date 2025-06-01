@@ -1,0 +1,11 @@
+package gui.test;
+
+import mc.fenix.basic.GemText;
+
+import Jsweettest.Types;
+
+page TestLocalDateTime(List<Types> types){
+  @iterate(Types t: types){
+    topGemText@GemText(value="");
+  }
+}
