@@ -26,7 +26,7 @@
     [class.gem-input-error]="validity?.getStatus() === 'Error'"
     [class.gem-input-warning]="validity?.getStatus() === 'Warning'"
   >
-    <div class="gem-dropdown-text">{{ getDisplayFromEntry() }}</div>
+    <div class="gem-dropdown-text">{{ selectedOption?.getDisplay() }}</div>
     <mat-icon class="gem-dropdown-icon" [fontIcon]="isContentShown ? 'arrow_drop_up' : 'arrow_drop_down'"></mat-icon>
   </button>
   <div *ngIf="isContentShown" class="gem-dropdown-content">
