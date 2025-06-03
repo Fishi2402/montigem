@@ -28,12 +28,18 @@ export class GemGridCell extends GemGridCellComponent {
 
   @Input()
   set a(val: number[]) {
+    if (!val) {
+      return;
+    }
     this._a = val;
     this.update();
   }
 
   @Input()
   set b(val: number[]) {
+    if (!val) {
+      return;
+    }
     this._b = val;
     this.update();
   }
