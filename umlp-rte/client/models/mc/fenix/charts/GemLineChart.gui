@@ -12,6 +12,5 @@ component GemLineChart(
   Boolean enableBackgroundColor,
   Integer maxValue,
   Integer minValue,
-  boolean showConfig = true,
-  boolean showAnimations = true
+  boolean showConfig = true
 )

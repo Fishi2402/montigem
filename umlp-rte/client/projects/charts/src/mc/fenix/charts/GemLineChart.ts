@@ -132,7 +132,7 @@ export class GemLineChart extends GemLineChartComponent {
    * that are not reset in the specific setter
    */
   public saveAllOptionsChanges() {
-    const newOptions: ChartOptions<'line'> = {
+    this.options = {
       responsive: true,
       maintainAspectRatio: false,
       scales: {
@@ -178,13 +178,7 @@ export class GemLineChart extends GemLineChartComponent {
           display: false
         }
       }
-    };
-
-    if (this.showAnimations === false) {
-      newOptions.animation = false;
     }
-
-    this.options = newOptions;
   }
 
   public setLegendPosition(legendPosition: string) {
