@@ -182,6 +182,7 @@ export class GemLineChart extends GemLineChartComponent {
 
     if (this.showAnimations === false) {
       newOptions.animation = false;
+      newOptions.transitions = false;
     }
 
     this.options = newOptions;
