@@ -383,7 +383,7 @@ public class MonitorDecorator extends AbstractDecorator {
       @Override
       public ASTCDMethodSignature addTo(CD4C cd4c, ASTCDClass clazz) {
         var name = managerClass.getName();
-        return cd4c.addMethod(clazz, "umlp.monitor.manager.Init", name);
+        return cd4c.addMethod(clazz, "umlp.monitor.manager.InitMonitor", name);
       }
 
       @Override
