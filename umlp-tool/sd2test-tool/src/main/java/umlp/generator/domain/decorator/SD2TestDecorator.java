@@ -106,14 +106,14 @@ public class SD2TestDecorator {
   }
 
   private ASTCDElement createTest(ASTSDArtifact model, ASTCDDefinition domainCd) {
-    var name = model.getSequenceDiagram().getName();
+    var diagramName = model.getSequenceDiagram().getName();
     var domainName = domainCd.getName();
     var domainPackageName = domainName.toLowerCase();
 
     var testClass = CD4CodeBasisMill
         .cDClassBuilder()
         .setModifier(CDModifier.PUBLIC.build())
-        .setName(name)
+        .setName(diagramName)
         .setCDExtendUsage(CDExtendUsageFacade
                               .getInstance()
                               .createCDExtendUsage(domainName + "SQLDBTestSetup"))
@@ -122,7 +122,7 @@ public class SD2TestDecorator {
     var cd4c = CD4C.getInstance();
 
     //constructor
-    cd4c.addConstructor(testClass, "umlp.domain.sd2test.Constructor", name);
+    cd4c.addConstructor(testClass, "umlp.domain.sd2test.Constructor", diagramName);
 
     //override initBackendManager
     cd4c.addMethod(testClass, "umlp.domain.sd2test.InitBackendManager", domainName);
@@ -140,9 +140,21 @@ public class SD2TestDecorator {
 
     visitor.objectDeclarations.forEach(System.out::println);
 
+    var objectNames = new ArrayList<String>();
+
+    //createFoo methods
+    for (SDObject sdObject : visitor.objectDeclarations) {
+      var name = sdObject.name().orElseThrow(); //TODO assign an unused generic name
+      objectNames.add(name);
+      cd4c.addMethod(testClass,
+          "umlp.domain.sd2test.CreateObject",
+          name,
+          sdObject.qualifiedTypeName(),
+          domainName);
+    }
+
     //TODO for starters, just create overridable createFoo() methods for every object needed for the
     // test
-    var objectNames = List.<String>of();
     var statements = List.<String>of();
     var testMethod = cd4c.addMethod(testClass, "umlp.domain.sd2test.Test", objectNames, statements);
     glex.replaceTemplate("cd2java.Annotations", testMethod, new StringHookPoint("@Test"));
