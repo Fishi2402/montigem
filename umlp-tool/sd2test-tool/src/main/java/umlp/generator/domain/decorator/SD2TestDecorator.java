@@ -129,12 +129,12 @@ public class SD2TestDecorator {
 
     // apply a visitor to the model
     var traverser = SD4DevelopmentMill.traverser();
-    var visitor = new LoggingSDVisitor();
+    var visitor = new SDVisitor();
     traverser.add4SDBasis(visitor);
     traverser.add4SD4Development(visitor);
     traverser.add4MCBasics(visitor);
     model.accept(traverser); //TODO create instructions based on what we visit
-    visitor.visits.forEach(System.out::println);
+    //visitor.visits.forEach(System.out::println);
 
     //TODO for starters, just create overridable createFoo() methods for every object needed for the
     // test
@@ -171,6 +171,46 @@ public class SD2TestDecorator {
 
     @Override
     public void endVisit(ASTSDObject node) {
+
+    }
+
+    @Override
+    public void visit(ASTSDCompleteModifier node) {
+
+    }
+
+    @Override
+    public void endVisit(ASTSDCompleteModifier node) {
+
+    }
+
+    @Override
+    public void visit(ASTSDFreeModifier node) {
+
+    }
+
+    @Override
+    public void endVisit(ASTSDFreeModifier node) {
+
+    }
+
+    @Override
+    public void visit(ASTSDInitialModifier node) {
+
+    }
+
+    @Override
+    public void endVisit(ASTSDInitialModifier node) {
+
+    }
+
+    @Override
+    public void visit(ASTSDVisibleModifier node) {
+
+    }
+
+    @Override
+    public void endVisit(ASTSDVisibleModifier node) {
 
     }
   }
