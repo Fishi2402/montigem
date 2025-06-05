@@ -81,10 +81,13 @@ import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.symboltable.ISymbol;
 import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.Joiners;
+import umlp.domain.MatchingStrategy;
+import umlp.domain.SDObject;
 import umlp.generator.util.PathUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class SD2TestDecorator {
 
@@ -134,7 +137,8 @@ public class SD2TestDecorator {
     traverser.add4SD4Development(visitor);
     traverser.add4MCBasics(visitor);
     model.accept(traverser); //TODO create instructions based on what we visit
-    //visitor.visits.forEach(System.out::println);
+
+    visitor.objectDeclarations.forEach(System.out::println);
 
     //TODO for starters, just create overridable createFoo() methods for every object needed for the
     // test
@@ -164,54 +168,41 @@ public class SD2TestDecorator {
   private static final class SDVisitor
       implements MCBasicsVisitor2, SDBasisVisitor2, SD4DevelopmentVisitor2, OCLExpressionsVisitor2 {
 
+    private final List<SDObject> objectDeclarations = new ArrayList<>();
+    private Optional<SDObject.Builder> currentObject = Optional.empty();
+
     @Override
     public void visit(ASTSDObject node) {
-
+      var builder = new SDObject.Builder(node.getMCObjectType().printType());
+      builder.setName(node.getName()); //TODO why isn't name optional, but the type is?
+      this.currentObject = Optional.of(builder);
     }
 
     @Override
     public void endVisit(ASTSDObject node) {
-
+      objectDeclarations.add(currentObject.orElseThrow().build());
+      currentObject = Optional.empty();
     }
 
     @Override
     public void visit(ASTSDCompleteModifier node) {
-
-    }
-
-    @Override
-    public void endVisit(ASTSDCompleteModifier node) {
-
+      currentObject.orElseThrow().setMatchingStrategy(MatchingStrategy.COMPLETE);
     }
 
     @Override
     public void visit(ASTSDFreeModifier node) {
-
+      currentObject.orElseThrow().setMatchingStrategy(MatchingStrategy.FREE);
     }
 
-    @Override
-    public void endVisit(ASTSDFreeModifier node) {
-
-    }
 
     @Override
     public void visit(ASTSDInitialModifier node) {
-
-    }
-
-    @Override
-    public void endVisit(ASTSDInitialModifier node) {
-
+      currentObject.orElseThrow().setMatchingStrategy(MatchingStrategy.INITIAL);
     }
 
     @Override
     public void visit(ASTSDVisibleModifier node) {
-
-    }
-
-    @Override
-    public void endVisit(ASTSDVisibleModifier node) {
-
+      currentObject.orElseThrow().setMatchingStrategy(MatchingStrategy.VISIBLE);
     }
   }
 

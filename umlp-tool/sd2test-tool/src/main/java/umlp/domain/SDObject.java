@@ -50,4 +50,29 @@ public final class SDObject {
   public String toString() {
     return "SDObject{" + "matchingStrategy=" + matchingStrategy + ", name=" + name + ", qualifiedTypeName='" + qualifiedTypeName + '\'' + '}';
   }
+
+  public static final class Builder {
+
+    private Optional<MatchingStrategy> matchingStrategy;
+    private Optional<String> name;
+    private final String qualifiedTypeName;
+
+    public Builder(String qualifiedTypeName) {
+      this.qualifiedTypeName = qualifiedTypeName;
+    }
+
+    public Builder setMatchingStrategy(MatchingStrategy matchingStrategy) {
+      this.matchingStrategy = Optional.of(matchingStrategy);
+      return this;
+    }
+
+    public Builder setName(String name) {
+      this.name = Optional.of(name);
+      return this;
+    }
+
+    public SDObject build() {
+      return new SDObject(matchingStrategy, name, qualifiedTypeName);
+    }
+  }
 }
