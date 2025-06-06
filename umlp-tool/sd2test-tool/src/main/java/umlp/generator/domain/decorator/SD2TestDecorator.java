@@ -80,6 +80,8 @@ import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.symboltable.ISymbol;
 import de.monticore.types.MCTypeFacade;
+import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
+import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2;
 import de.se_rwth.commons.Joiners;
 import umlp.domain.MatchingStrategy;
 import umlp.domain.SDObject;
@@ -135,6 +137,7 @@ public class SD2TestDecorator {
     var visitor = new SDVisitor();
     traverser.add4SDBasis(visitor);
     traverser.add4SD4Development(visitor);
+    traverser.add4MCBasicTypes(visitor);
     traverser.add4MCBasics(visitor);
     model.accept(traverser); //TODO create instructions based on what we visit
 
@@ -178,10 +181,15 @@ public class SD2TestDecorator {
   }
 
   private static final class SDVisitor
-      implements MCBasicsVisitor2, SDBasisVisitor2, SD4DevelopmentVisitor2, OCLExpressionsVisitor2 {
+      implements MCBasicsVisitor2, SDBasisVisitor2, SD4DevelopmentVisitor2, OCLExpressionsVisitor2, MCBasicTypesVisitor2 {
 
     private final List<SDObject> objectDeclarations = new ArrayList<>();
     private Optional<SDObject.Builder> currentObject = Optional.empty();
+
+    @Override
+    public void visit(ASTMCImportStatement node) {
+      System.out.println("Found import statement '" + SD4DevelopmentMill.prettyPrint(node, false) + "'");
+    }
 
     @Override
     public void visit(ASTSDObject node) {
