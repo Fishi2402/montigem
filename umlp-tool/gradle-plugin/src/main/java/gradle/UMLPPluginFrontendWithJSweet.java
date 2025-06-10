@@ -31,6 +31,7 @@ import org.gradle.api.tasks.TaskProvider;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.function.Consumer;
@@ -60,6 +61,22 @@ public abstract class UMLPPluginFrontendWithJSweet implements Plugin<Project> {
   private static final String DOMAIN_SOURCES_PROPERTY = "domainSources";
 
   private static final String JSWEETTRANSPILER = "jsweettranspiler";
+
+  private static List<String> defaultExcludedSources = List.of(
+      "glob:**/shellapi/*ShellAPI.java",
+      "glob:**/Abstract*E2ETest*.java",
+      "glob:**/test_infrastructure/*.java",
+
+      "glob:**/*ManagerImpl.java",
+      "glob:**/*TestSetup.java",
+      "glob:**/*DummyProvider.java",
+      "glob:**/*ServerApplication.java",
+      "glob:**/*DAO.java",
+      "glob:**/*DAOFactory.java",
+      "glob:**/*DAONeo4j.java",
+      "glob:**/*DAOInterface.java",
+      "glob:**/*DBObserver.java"
+  );
 
   @Override
   public void apply(Project project) {
@@ -180,9 +197,9 @@ public abstract class UMLPPluginFrontendWithJSweet implements Plugin<Project> {
 
       // TODO: Fix ShellAPI imports
       // Required due to "imports cannot use * wildcards when using modules"
-      umlpTask.getExcludeSource().add("glob:**/shellapi/*ShellAPI.java"); // via @Erased
-      umlpTask.getExcludeSource().add("glob:**/Abstract*E2ETest*.java"); // via @Erased
-      umlpTask.getExcludeSource().add("glob:**/test_infrastructure/*.java"); // via @Erased
+      for (String s : defaultExcludedSources) {
+        umlpTask.getExcludeSource().add(s); // via @Erased
+      }
     });
   }
 
@@ -235,10 +252,9 @@ public abstract class UMLPPluginFrontendWithJSweet implements Plugin<Project> {
 
       // TODO: Fix ShellAPI imports
       // Required due to "imports cannot use * wildcards when using modules"
-      umlpTask.getExcludeSource().add("glob:**/shellapi/*ShellAPI.java"); // via @Erased
-      umlpTask.getExcludeSource().add("glob:**/Abstract*E2ETest*.java"); // via @Erased
-      umlpTask.getExcludeSource().add("glob:**/test_infrastructure/*.java"); // via @Erased
-
+      for (String s : defaultExcludedSources) {
+        umlpTask.getExcludeSource().add(s); // via @Erased
+      }
     });
   }
 
