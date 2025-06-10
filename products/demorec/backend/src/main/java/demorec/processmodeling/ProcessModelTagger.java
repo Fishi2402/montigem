@@ -2,6 +2,7 @@ package demorec.processmodeling;
 
 import de.monticore.bpmn.workflow.WorkflowMill;
 import de.monticore.bpmn.workflow._ast.ASTWorkflowCompilationUnit;
+import de.monticore.bpmn.workflow._symboltable.WFActivitySymbol;
 import de.monticore.tagging.SimpleSymbolTagger;
 import de.monticore.tagging.tags.TagsMill;
 import de.monticore.tagging.tags._ast.ASTTagUnit;
@@ -55,7 +56,7 @@ public class ProcessModelTagger {
 
     // 2) Establish the Tag Unit
     ASTTagUnitBuilder tub = TagsMill.tagUnitBuilder();
-    tub.setName("tags_for_" + cu.getProcess().getName());
+    tub.setName("tags_for_" + cu.getWFProcess().getName());
     ASTTagUnit tagUnit = tub.build();
     SimpleSymbolTagger tagger = new SimpleSymbolTagger(() -> Collections.singleton(tagUnit));
 
@@ -66,21 +67,22 @@ public class ProcessModelTagger {
     }
     ASTValuedTag processTag = TagsMill.valuedTagBuilder().setName(gemIdTagName).setValue(processGemId).build();
     ASTValuedTag processModelTag = TagsMill.valuedTagBuilder().setName(processModelGemIdTagName).setValue(processModel.getGemId() + "").build();
-    tagger.addTag(cu.getProcess().getSymbol(), processTag);
-    tagger.addTag(cu.getProcess().getSymbol(), processModelTag);
+    tagger.addTag(cu.getWFProcess().getSymbol(), processTag);
+    tagger.addTag(cu.getWFProcess().getSymbol(), processModelTag);
 
     // 4) Tag the GemId, duration, end effector name and join connection position of each task
     for (Task task : processModel.getSubTasksList()) {
       String grammarTaskName = ProcessModelExporter.generateTaskName(task);
 
+      WFActivitySymbol activitySymbol = cu.getWFProcess().getFlowElement(0).getEnclosingScope().resolveWFActivity(grammarTaskName).get();
       ASTValuedTag gemIdTag = TagsMill.valuedTagBuilder().setName(taskGemIdTagName).setValue(task.getGemId() + "").build();
-      tagger.addTag(cu.getProcess().getLane(0).getEnclosingScope().resolveAtomicActivity(grammarTaskName).get(), gemIdTag);
+      tagger.addTag(activitySymbol, gemIdTag);
 
       ASTValuedTag durationTag = TagsMill.valuedTagBuilder().setName(taskDurationTagName).setValue(task.getTimeConsumption() + "").build();
-      tagger.addTag(cu.getProcess().getLane(0).getEnclosingScope().resolveAtomicActivity(grammarTaskName).get(), durationTag);
+      tagger.addTag(activitySymbol, durationTag);
 
       ASTValuedTag endEffectorTag = TagsMill.valuedTagBuilder().setName(taskEndEffectorTagName).setValue(task.getUses().getName()).build();
-      tagger.addTag(cu.getProcess().getLane(0).getEnclosingScope().resolveAtomicActivity(grammarTaskName).get(), endEffectorTag);
+      tagger.addTag(activitySymbol, endEffectorTag);
 
       if(task.getDeconstructsGem().isPresent()) {
         StringBuilder positionBuilder = new StringBuilder();
@@ -92,7 +94,7 @@ public class ProcessModelTagger {
         positionBuilder.append(task.getDeconstructs().getZPos().map(String::valueOf).orElse("undefined"));
         positionBuilder.append(")");
         ASTValuedTag joinConnectionPositionTag = TagsMill.valuedTagBuilder().setName(taskJoinConnection3DPositionTagName).setValue(positionBuilder.toString()).build();
-        tagger.addTag(cu.getProcess().getLane(0).getEnclosingScope().resolveAtomicActivity(grammarTaskName).get(), joinConnectionPositionTag);
+        tagger.addTag(activitySymbol, joinConnectionPositionTag);
       }
 
       /*ASTValuedTag joinConnectionTypeTag = TagsMill.valuedTagBuilder().setName(taskJoinConnectionTypeTagName).setValue(task.getDeconstructs().getJoinConnectionKind().getJoinConnectionType().name()).build();

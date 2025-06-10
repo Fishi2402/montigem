@@ -1,9 +1,9 @@
 package demorec.processmodeling;
 
 import de.monticore.bpmn.workflow._ast.ASTFlowBlock;
-import de.monticore.bpmn.workflow._ast.ASTFlowBranch;
 import de.monticore.bpmn.workflow._ast.ASTFlowTarget;
-import de.monticore.bpmn.workflow._ast.ASTProcess;
+import de.monticore.bpmn.workflow._ast.ASTSequenceFlow;
+import de.monticore.bpmn.workflow._ast.ASTWFProcess;
 import de.monticore.bpmn.workflow._visitor.WorkflowVisitor2;
 import de.monticore.prettyprint.IndentPrinter;
 
@@ -29,11 +29,11 @@ public class InstructionsPrinter implements WorkflowVisitor2 {
     oneBranchWasVisited = false;
   }
 
-  public void endVisit(ASTFlowBranch node) {
+  public void endVisit(ASTSequenceFlow node) {
     oneBranchWasVisited = true;
   }
 
-  public void visit(ASTProcess node) {
+  public void visit(ASTWFProcess node) {
     StringBuilder lineBuilder = new StringBuilder();
     lineBuilder.append("function ");
     lineBuilder.append(node.getName());
@@ -41,13 +41,13 @@ public class InstructionsPrinter implements WorkflowVisitor2 {
     printer.println(lineBuilder.toString());
   }
 
-  public void endVisit(ASTProcess node) {
+  public void endVisit(ASTWFProcess node) {
     printer.println("}");
   }
 
   public void visit(ASTFlowTarget node) {
-    if (!oneBranchWasVisited && node.isPresentNodeRef()) {
-      String nodeName = node.getNodeRef().toString();
+    if (!oneBranchWasVisited && node.isPresentElement()) {
+      String nodeName = node.getElement().toString();
       if (tags.containsKey(nodeName)) {
         printer.println("// Task: " + nodeName);
         printer.println("equip_endeffector(\"" + tags.get(nodeName).get(ProcessModelTagger.taskEndEffectorTagName) + "\");");
