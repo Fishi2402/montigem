@@ -247,18 +247,3 @@ checkMDLinks:
     - "if [[ $linkCheckRes == *\"ERROR\"* ]]; then exit 1; fi"
   only:
     - master
-
-buildNativeImage:
-  image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:7-native-image
-  stage: build
-  artifacts:
-    paths:
-      - ./examples/native-image/build/native/nativeCompile/*
-    expire_in: 1 week
-  script:
-    - "gradle :examples:native-image:nativeBuild --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
-    - "gradle :examples:native-image:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
-        -Djib.to.image=$CI_REGISTRY_IMAGE/native-image-demo:latest \
-        -Djib.console=plain \
-        -Djib.to.auth.username=$CI_REGISTRY_USER  \
-        -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
