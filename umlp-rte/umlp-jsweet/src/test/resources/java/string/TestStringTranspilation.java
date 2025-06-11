@@ -1,0 +1,33 @@
+package string;
+
+import domain.Person;
+
+public class TestStringTranspilation {
+
+  String value = null;
+
+  public void testOnGlobalVariable(Person person) {
+    value.equals("This is another String");
+  }
+
+  public void test(String myString) {
+    myString.equals("This is another String");
+  }
+
+  public void testOnPersonName(Person person) {
+    person.getName().equals("This is another String");
+  }
+
+  public void testAsArgument(String myString){
+    this.booleanInput(myString.equals("A String"));
+  }
+
+  public Boolean testAsReturn(String myString){
+    return myString.equals("A String");
+  }
+
+  public void booleanInput(Boolean bool) {
+    // Do nothing
+  }
+
+}

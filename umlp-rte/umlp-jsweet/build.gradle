@@ -37,6 +37,8 @@ dependencies {
       exclude(group: "com.kohlschutter.jdk", module:"standalone-home") // conflict with standalone-jdk11
     }
 
+    implementation group: "org.jsweet", name: 'j4ts', version: "4.0.0-UMLP-SNAPSHOT"
+
     implementation group: 'com.google.guava', name: 'guava', version: guava_version
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
     implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
