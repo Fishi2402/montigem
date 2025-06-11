@@ -73,7 +73,7 @@ public abstract class UMLPPluginFrontendWithJSweet implements Plugin<Project> {
       "glob:**/*ServerApplication.java",
       "glob:**/*DAO.java",
       "glob:**/*DAOFactory.java",
-      "glob:**/*DAONeo4j.java",
+      "glob:**/*DAONeo4J.java",
       "glob:**/*DAOInterface.java",
       "glob:**/*DBObserver.java"
   );
