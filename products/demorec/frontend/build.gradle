@@ -41,10 +41,10 @@ genGUI {
 }
 
 translateJava2TSDomain {
-  excludeSource = [
+  excludeSource.addAll([
       "glob:**/processmodeling/*",
       "glob:**/*test*/*"
-  ]
+  ])
   verbose = true
 }
 
