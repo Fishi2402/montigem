@@ -19,36 +19,44 @@ sequencediagram TotalTest {
 // output of logging visitor right now:
 //
 //visit ASTSDArtifact
+//visit ASTMCImportStatement
+//visit ASTMCQualifiedName
+//end visit ASTMCQualifiedName
+//end visit ASTMCImportStatement
 //visit ASTSequenceDiagram
 //visit ASTSDObject
 //visit ASTSDFreeModifier
-//end ASTSDFreeModifier
-//end ASTSDObject
+//end visit ASTSDFreeModifier
+//visit ASTMCQualifiedType
+//visit ASTMCQualifiedName
+//end visit ASTMCQualifiedName
+//end visit ASTMCQualifiedType
+//end visit ASTSDObject
 //visit ASTSDBody
 //visit ASTSDCondition
-//end ASTSDCondition
+//end visit ASTSDCondition
 //visit ASTSDSendMessage
 //visit ASTSDObjectSource
-//end ASTSDObjectSource
+//end visit ASTSDObjectSource
 //visit ASTSDObjectTarget
-//end ASTSDObjectTarget
+//end visit ASTSDObjectTarget
 //visit ASTSDCall
-//end ASTSDCall
+//end visit ASTSDCall
 //visit ASTSDActivityBar
 //visit ASTSDSendMessage
 //visit ASTSDObjectSource
-//end ASTSDObjectSource
+//end visit ASTSDObjectSource
 //visit ASTSDObjectTarget
-//end ASTSDObjectTarget
+//end visit ASTSDObjectTarget
 //visit ASTSDReturn
-//end ASTSDReturn
-//end ASTSDSendMessage
-//end ASTSDActivityBar
-//end ASTSDSendMessage
+//end visit ASTSDReturn
+//end visit ASTSDSendMessage
+//end visit ASTSDActivityBar
+//end visit ASTSDSendMessage
 //visit ASTSDCondition
-//end ASTSDCondition
+//end visit ASTSDCondition
 //visit ISD4DevelopmentScope
-//end ISD4DevelopmentScope
-//end ASTSDBody
-//end ASTSequenceDiagram
-//end ASTSDArtifact
+//end visit ISD4DevelopmentScope
+//end visit ASTSDBody
+//end visit ASTSequenceDiagram
+//end visit ASTSDArtifact

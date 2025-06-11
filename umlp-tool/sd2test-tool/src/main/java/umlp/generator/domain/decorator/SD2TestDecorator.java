@@ -51,11 +51,6 @@ import de.monticore.lang.sdbasis._symboltable.ISDBasisArtifactScope;
 import de.monticore.lang.sdbasis._symboltable.ISDBasisGlobalScope;
 import de.monticore.lang.sdbasis._symboltable.ISDBasisScope;
 import de.monticore.lang.sdbasis._visitor.SDBasisVisitor2;
-import de.monticore.mcbasics._ast.ASTMCBasicsNode;
-import de.monticore.mcbasics._symboltable.IMCBasicsArtifactScope;
-import de.monticore.mcbasics._symboltable.IMCBasicsGlobalScope;
-import de.monticore.mcbasics._symboltable.IMCBasicsScope;
-import de.monticore.mcbasics._visitor.MCBasicsVisitor2;
 import de.monticore.ocl.oclexpressions._ast.ASTAnyExpression;
 import de.monticore.ocl.oclexpressions._ast.ASTEquivalentExpression;
 import de.monticore.ocl.oclexpressions._ast.ASTExistsExpression;
@@ -80,7 +75,19 @@ import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.symboltable.ISymbol;
 import de.monticore.types.MCTypeFacade;
+import de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
+import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
+import de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesArtifactScope;
+import de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesGlobalScope;
+import de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2;
 import de.se_rwth.commons.Joiners;
 import umlp.domain.MatchingStrategy;
@@ -129,20 +136,26 @@ public class SD2TestDecorator {
     //override initBackendManager
     cd4c.addMethod(testClass, "umlp.domain.sd2test.InitBackendManager", domainName);
 
-    //TODO also visit the object diagram if present, to check which objects are pre-defined; Can
-    // Nico help me here?
+    //TODO how do we check which objects are already present in the object diagram?
+
+//    logModel(model);
 
     // apply a visitor to the model
-    var traverser = SD4DevelopmentMill.traverser();
     var visitor = new SDVisitor();
-    traverser.add4SDBasis(visitor);
-    traverser.add4SD4Development(visitor);
-    traverser.add4MCBasicTypes(visitor);
-    traverser.add4MCBasics(visitor);
-    model.accept(traverser); //TODO create instructions based on what we visit
+    visit(model, visitor);
 
-    visitor.objectDeclarations.forEach(System.out::println);
+    //explicit import statements
+    for (var importStatement : visitor.importStatements) {
+      String signature;
+      if (importStatement.isStar()) {
+        signature = Joiners.DOT.join(importStatement.getQName(), "*");
+      } else {
+        signature = importStatement.getQName();
+      }
+      cd4c.addImport(testClass, signature.toLowerCase()); //TODO I don't like lowercasing the whole signature
+    }
 
+    //make sure every object has a name
     var objectNames = new ArrayList<String>();
 
     //createFoo methods
@@ -150,25 +163,39 @@ public class SD2TestDecorator {
       var name = sdObject.name().orElseThrow(); //TODO assign an unused generic name
       objectNames.add(name);
       cd4c.addMethod(testClass,
-          "umlp.domain.sd2test.CreateObject",
-          name,
-          sdObject.qualifiedTypeName(),
-          domainName);
+                     "umlp.domain.sd2test.CreateObject",
+                     name,
+                     sdObject.qualifiedTypeName(),
+                     domainName);
     }
 
-    //TODO for starters, just create overridable createFoo() methods for every object needed for the
-    // test
     var statements = List.<String>of();
     var testMethod = cd4c.addMethod(testClass, "umlp.domain.sd2test.Test", objectNames, statements);
     glex.replaceTemplate("cd2java.Annotations", testMethod, new StringHookPoint("@Test"));
 
-    //imports
-    cd4c.addImport(testClass, Joiners.DOT.join(domainPackageName, "*"));
+    //other imports
     cd4c.addImport(testClass, Joiners.DOT.join(domainPackageName, "test_infrastructure", "*"));
     cd4c.addImport(testClass, Joiners.DOT.join(PathUtil.getTestInfrastructurePath(), "*"));
     cd4c.addImport(testClass, "org.junit.jupiter.api.Test");
 
     return testClass;
+  }
+
+  @SuppressWarnings("unused")
+  private static void logModel(ASTSDArtifact model) {
+    var visitor = new LoggingSDVisitor();
+    visit(model, visitor);
+    visitor.visits.forEach(System.out::println);
+  }
+
+  private static <T extends SDBasisVisitor2 & SD4DevelopmentVisitor2 & MCBasicTypesVisitor2> void visit(
+      ASTSDArtifact model,
+      T visitor) {
+    var traverser = SD4DevelopmentMill.traverser();
+    traverser.add4SDBasis(visitor);
+    traverser.add4SD4Development(visitor);
+    traverser.add4MCBasicTypes(visitor);
+    model.accept(traverser);
   }
 
   private ASTCDPackage getPackage(String packageName, ASTCDCompilationUnit decoratedCD) {
@@ -180,15 +207,18 @@ public class SD2TestDecorator {
     return p;
   }
 
-  private static final class SDVisitor
-      implements MCBasicsVisitor2, SDBasisVisitor2, SD4DevelopmentVisitor2, OCLExpressionsVisitor2, MCBasicTypesVisitor2 {
+  private static final class SDVisitor implements SDBasisVisitor2,
+      SD4DevelopmentVisitor2,
+      OCLExpressionsVisitor2,
+      MCBasicTypesVisitor2 {
 
+    private final List<ASTMCImportStatement> importStatements = new ArrayList<>();
     private final List<SDObject> objectDeclarations = new ArrayList<>();
     private Optional<SDObject.Builder> currentObject = Optional.empty();
 
     @Override
     public void visit(ASTMCImportStatement node) {
-      System.out.println("Found import statement '" + SD4DevelopmentMill.prettyPrint(node, false) + "'");
+      importStatements.add(node);
     }
 
     @Override
@@ -226,8 +256,10 @@ public class SD2TestDecorator {
     }
   }
 
-  private static final class LoggingSDVisitor
-      implements SDBasisVisitor2, SD4DevelopmentVisitor2, OCLExpressionsVisitor2, MCBasicsVisitor2 {
+  private static final class LoggingSDVisitor implements SDBasisVisitor2,
+      SD4DevelopmentVisitor2,
+      OCLExpressionsVisitor2,
+      MCBasicTypesVisitor2 {
 
     private final List<String> visits = new ArrayList<>();
 
@@ -792,46 +824,6 @@ public class SD2TestDecorator {
     }
 
     @Override
-    public void visit(ASTMCBasicsNode node) {
-      visits.add("visit ASTMCBasicsNode");
-    }
-
-    @Override
-    public void endVisit(ASTMCBasicsNode node) {
-      visits.add("end visit ASTMCBasicsNode");
-    }
-
-    @Override
-    public void visit(IMCBasicsScope node) {
-      visits.add("visit IMCBasicsScope");
-    }
-
-    @Override
-    public void endVisit(IMCBasicsScope node) {
-      visits.add("end visit IMCBasicsScope");
-    }
-
-    @Override
-    public void visit(IMCBasicsArtifactScope node) {
-      visits.add("visit IMCBasicsArtifactScope");
-    }
-
-    @Override
-    public void endVisit(IMCBasicsArtifactScope node) {
-      visits.add("end visit IMCBasicsArtifactScope");
-    }
-
-    @Override
-    public void visit(IMCBasicsGlobalScope node) {
-      visits.add("visit IMCBasicsGlobalScope");
-    }
-
-    @Override
-    public void endVisit(IMCBasicsGlobalScope node) {
-      visits.add("end visit IMCBasicsGlobalScope");
-    }
-
-    @Override
     public void visit(ISymbol symbol) {
       visits.add("visit ISymbol");
     }
@@ -859,6 +851,136 @@ public class SD2TestDecorator {
     @Override
     public void endVisit(IScopeSpanningSymbol symbol) {
       visits.add("end visit IScopeSpanningSymbol");
+    }
+
+    @Override
+    public void visit(ASTMCQualifiedName node) {
+      visits.add("visit ASTMCQualifiedName");
+    }
+
+    @Override
+    public void endVisit(ASTMCQualifiedName node) {
+      visits.add("end visit ASTMCQualifiedName");
+    }
+
+    @Override
+    public void visit(ASTMCPackageDeclaration node) {
+      visits.add("visit ASTMCPackageDeclaration");
+    }
+
+    @Override
+    public void endVisit(ASTMCPackageDeclaration node) {
+      visits.add("end visit ASTMCPackageDeclaration");
+    }
+
+    @Override
+    public void visit(ASTMCImportStatement node) {
+      visits.add("visit ASTMCImportStatement");
+    }
+
+    @Override
+    public void endVisit(ASTMCImportStatement node) {
+      visits.add("end visit ASTMCImportStatement");
+    }
+
+    @Override
+    public void visit(ASTMCPrimitiveType node) {
+      visits.add("visit ASTMCPrimitiveType");
+    }
+
+    @Override
+    public void endVisit(ASTMCPrimitiveType node) {
+      visits.add("end visit ASTMCPrimitiveType");
+    }
+
+    @Override
+    public void visit(ASTMCQualifiedType node) {
+      visits.add("visit ASTMCQualifiedType");
+    }
+
+    @Override
+    public void endVisit(ASTMCQualifiedType node) {
+      visits.add("end visit ASTMCQualifiedType");
+    }
+
+    @Override
+    public void visit(ASTMCReturnType node) {
+      visits.add("visit ASTMCReturnType");
+    }
+
+    @Override
+    public void endVisit(ASTMCReturnType node) {
+      visits.add("end visit ASTMCReturnType");
+    }
+
+    @Override
+    public void visit(ASTMCVoidType node) {
+      visits.add("visit ASTMCVoidType");
+    }
+
+    @Override
+    public void endVisit(ASTMCVoidType node) {
+      visits.add("end visit ASTMCVoidType");
+    }
+
+    @Override
+    public void visit(ASTMCType node) {
+      visits.add("visit ASTMCType");
+    }
+
+    @Override
+    public void endVisit(ASTMCType node) {
+      visits.add("end visit ASTMCType");
+    }
+
+    @Override
+    public void visit(ASTMCObjectType node) {
+      visits.add("visit ASTMCObjectType");
+    }
+
+    @Override
+    public void endVisit(ASTMCObjectType node) {
+      visits.add("end visit ASTMCObjectType");
+    }
+
+    @Override
+    public void visit(ASTMCBasicTypesNode node) {
+      visits.add("visit ASTMCBasicTypesNode");
+    }
+
+    @Override
+    public void endVisit(ASTMCBasicTypesNode node) {
+      visits.add("end visit ASTMCBasicTypesNode");
+    }
+
+    @Override
+    public void visit(IMCBasicTypesScope node) {
+      visits.add("visit IMCBasicTypesScope");
+    }
+
+    @Override
+    public void endVisit(IMCBasicTypesScope node) {
+      visits.add("end visit IMCBasicTypesScope");
+    }
+
+    @Override
+    public void visit(IMCBasicTypesArtifactScope node) {
+      visits.add("visit IMCBasicTypesArtifactScope");
+    }
+
+    @Override
+    public void endVisit(IMCBasicTypesArtifactScope node) {
+      visits.add("end visit IMCBasicTypesArtifactScope");
+    }
+
+    @Override
+    public void visit(IMCBasicTypesGlobalScope node) {
+      visits.add("visit IMCBasicTypesGlobalScope");
+    }
+
+    @Override
+    public void endVisit(IMCBasicTypesGlobalScope node) {
+      visits.add("end visit IMCBasicTypesGlobalScope");
     }
   }
 }
