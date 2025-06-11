@@ -6,6 +6,7 @@ import org.jsweet.transpiler.util.ErrorCountTranspilationHandler;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.nio.file.Paths;
 
 import static org.jsweet.transpiler.SourceFile.getSourceFiles;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,7 +15,7 @@ public class TestListTranspilation {
 
   @Test
   public void testArrayListDomainConfigTranspilation() throws Exception {
-    File input = new File("src/test/resources/java/list/TestArrayListTranspilation.java");
+    File input = Paths.get("src/test/resources/java/list/TestArrayListTranspilation.java").toFile();
 
     JSweetTranspiler transpiler = testutil.Util.getDomainTranspiler();
 
@@ -27,7 +28,7 @@ public class TestListTranspilation {
 
   @Test
   public void testArrayListGUIConfigTranspilation() throws Exception {
-    File input = new File("src/test/resources/java/list/TestArrayListTranspilation.java");
+    File input = Paths.get("src/test/resources/java/list/TestArrayListTranspilation.java").toFile();
 
     JSweetTranspiler transpiler = testutil.Util.getGUITranspiler();
 

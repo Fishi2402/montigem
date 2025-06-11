@@ -44,6 +44,17 @@ dependencies {
     implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
 }
 
+sourceSets {
+  test {
+    java {
+      srcDirs = ['src/test/java']
+    }
+    resources {
+      srcDirs = ['src/test/resources']
+    }
+  }
+}
+
 /////////////////////////   Deployment  //////////////////////////////////
 
 // configure deployment

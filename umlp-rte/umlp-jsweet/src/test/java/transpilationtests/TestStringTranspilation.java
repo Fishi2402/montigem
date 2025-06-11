@@ -20,7 +20,7 @@ public class TestStringTranspilation {
 
   @Test
   public void testStringEquals() throws IOException {
-    File input = new File("src/test/resources/java/string/TestStringTranspilation.java");
+    File input = Paths.get("src/test/resources/java/string/TestStringTranspilation.java").toFile();
 
     testStringEqualsPerConfig(input, Util.getDomainTranspiler());
     testStringEqualsPerConfig(input, Util.getGUITranspiler());
