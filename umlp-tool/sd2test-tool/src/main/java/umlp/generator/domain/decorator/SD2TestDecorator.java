@@ -160,7 +160,7 @@ public class SD2TestDecorator {
 
     //createFoo methods
     for (SDObject sdObject : visitor.objectDeclarations) {
-      var name = sdObject.name().orElseThrow(); //TODO assign an unused generic name
+      var name = sdObject.name().orElseThrow(); //TODO assign an unused generic name; don't, remodel that
       objectNames.add(name);
       cd4c.addMethod(testClass,
                      "umlp.domain.sd2test.CreateObject",
@@ -223,8 +223,8 @@ public class SD2TestDecorator {
 
     @Override
     public void visit(ASTSDObject node) {
-      var builder = new SDObject.Builder(node.getMCObjectType().printType());
-      builder.setName(node.getName()); //TODO why isn't name optional, but the type is?
+      var builder = new SDObject.Builder(node.getMCObjectType().printType()); //TODO raise error when type not present
+      builder.setName(node.getName());
       this.currentObject = Optional.of(builder);
     }
 
