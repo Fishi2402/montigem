@@ -4,6 +4,7 @@ import org.jsweet.transpiler.EcmaScriptComplianceLevel;
 import org.jsweet.transpiler.JSweetFactory;
 import org.jsweet.transpiler.JSweetTranspiler;
 import org.jsweet.transpiler.ModuleKind;
+import org.jsweet.transpiler.util.ProcessUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,6 +34,8 @@ public class Util {
   }
 
   public static JSweetTranspiler getTranspilerFromConfigFile(File configuration, File outputDir) {
+    // TODO do not hardcode node
+    ProcessUtil.addExtraPath(".gradle/nodejs/node-v" + "18.13.0" + "-win-x64");
     JSweetFactory factory = new JSweetFactory();
     JSweetTranspiler transpiler = null;
     try {

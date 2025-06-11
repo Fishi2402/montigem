@@ -1,6 +1,7 @@
 package transpilationtests;
 
 import org.jsweet.transpiler.JSweetTranspiler;
+import org.jsweet.transpiler.SourceFile;
 import org.jsweet.transpiler.util.ConsoleTranspilationHandler;
 import org.jsweet.transpiler.util.ErrorCountTranspilationHandler;
 import org.junit.jupiter.api.Test;
@@ -10,6 +11,7 @@ import java.nio.file.Paths;
 
 import static org.jsweet.transpiler.SourceFile.getSourceFiles;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class TestListTranspilation {
 
@@ -21,8 +23,10 @@ public class TestListTranspilation {
 
     ErrorCountTranspilationHandler handler = new ErrorCountTranspilationHandler(
         new ConsoleTranspilationHandler());
-    transpiler.transpile(handler, getSourceFiles(input));
-
+    SourceFile[] sourceFiles = getSourceFiles(input);
+    transpiler.transpile(handler, sourceFiles);
+    assertNotNull(sourceFiles[0]);
+    assertNotNull(sourceFiles[0].getTsFile());
     assertEquals(0, handler.getErrorCount());
   }
 
@@ -35,7 +39,10 @@ public class TestListTranspilation {
     ErrorCountTranspilationHandler handler = new ErrorCountTranspilationHandler(
         new ConsoleTranspilationHandler());
     transpiler.transpile(handler, getSourceFiles(input));
-
+    SourceFile[] sourceFiles = getSourceFiles(input);
+    transpiler.transpile(handler, sourceFiles);
+    assertNotNull(sourceFiles[0]);
+    assertNotNull(sourceFiles[0].getTsFile());
     assertEquals(0, handler.getErrorCount());
   }
 }
