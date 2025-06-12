@@ -34,8 +34,8 @@ public class Util {
   }
 
   public static JSweetTranspiler getTranspilerFromConfigFile(File configuration, File outputDir) {
-    // TODO do not hardcode node
-    ProcessUtil.addExtraPath(".gradle/nodejs/node-v" + "18.13.0" + "-win-x64");
+    // TODO do not hardcode node version
+    ProcessUtil.addExtraPath("../../.gradle/nodejs/node-v" + "18.13.0" + "-win-x64");
     JSweetFactory factory = new JSweetFactory();
     JSweetTranspiler transpiler = null;
     try {
