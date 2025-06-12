@@ -8,6 +8,8 @@ import org.jsweet.transpiler.util.ProcessUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
+import java.util.Properties;
 
 public class Util {
 
@@ -34,14 +36,21 @@ public class Util {
   }
 
   public static JSweetTranspiler getTranspilerFromConfigFile(File configuration, File outputDir) {
-    // TODO do not hardcode node version
-    String nodePath = ".gradle/nodejs/node-v" + "18.13.0" + "-win-x64";
+    // Load node dir from props(see build.gradle)
+    Properties nodeDirProps = new Properties();
+    try {
+      nodeDirProps.load(Util.class.getResourceAsStream("/nodeDir.properties"));
+    } catch (IOException e) {
+      throw new RuntimeException("Can not load node path from properties", e);
+    }
+    String nodePath = Objects.requireNonNull(nodeDirProps.getProperty("node_dir"));
     File f = new File(nodePath);
     if(!f.exists()) {
       System.out.println("Error node could not be found in path "+f.getAbsolutePath());
     }
 
     ProcessUtil.addExtraPath(nodePath);
+
 
     JSweetFactory factory = new JSweetFactory();
     JSweetTranspiler transpiler = null;

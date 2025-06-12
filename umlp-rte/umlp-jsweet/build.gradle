@@ -3,18 +3,10 @@ plugins {
     id 'maven-publish'
     id 'java-library'
     id 'java'
-    id "com.github.node-gradle.node" version "5.0.0"
 }
 
 group = "umlp"
 description = "UMLP Jsweet Adapters"
-
-node {
-  version = node_version
-  download = true
-}
-testClasses.dependsOn(nodeSetup)
-
 
 repositories {
     maven {
@@ -61,6 +53,21 @@ sourceSets {
       srcDirs = ['src/test/resources']
     }
   }
+}
+
+// Make node accessible for jsweet in tests
+tasks.register("addNodePathToTestResources"){
+  File f = buildDir.toPath().resolve("resources/test/nodeDir.properties").toFile()
+  outputs.file(f)
+  doLast{
+    if(System.getProperty("os.name").toLowerCase().startsWith("win")){
+      f.text = "node_dir=" + rootProject.getNodeDir().toString().replace("\\", "\\\\")
+    } else {
+      f.text = "node_dir=" + rootProject.getNodeDir().toString() + "/bin"
+    }
+  }
+  processTestResources.dependsOn it
+  dependsOn rootProject.tasks.npmInstall
 }
 
 /////////////////////////   Deployment  //////////////////////////////////
