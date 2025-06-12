@@ -35,7 +35,14 @@ public class Util {
 
   public static JSweetTranspiler getTranspilerFromConfigFile(File configuration, File outputDir) {
     // TODO do not hardcode node version
-    ProcessUtil.addExtraPath("../../.gradle/nodejs/node-v" + "18.13.0" + "-win-x64");
+    String nodePath = ".gradle/nodejs/node-v" + "18.13.0" + "-win-x64";
+    File f = new File(nodePath);
+    if(!f.exists()) {
+      System.out.println("Error node could not be found in path "+f.getAbsolutePath());
+    }
+
+    ProcessUtil.addExtraPath(nodePath);
+
     JSweetFactory factory = new JSweetFactory();
     JSweetTranspiler transpiler = null;
     try {
