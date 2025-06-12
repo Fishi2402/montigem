@@ -37,7 +37,6 @@ pluginManagement {
 
 rootProject.name = 'umlp'
 includeBuild "umlp-tool"
-includeBuild "umlp-rte/umlp-jsweet"
 
 include ":umlp-rte"
 include ":umlp-rte:client"
