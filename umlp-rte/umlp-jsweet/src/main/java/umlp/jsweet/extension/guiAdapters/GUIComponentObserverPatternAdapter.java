@@ -56,13 +56,20 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
   }
 
   @Override
+  public void onTranspilationStarted() {
+    new GUISynchronizedPropagationScanner(context)
+        .process(getContext().compilationUnits, getContext().trees);
+    super.onTranspilationStarted();
+  }
+
+  @Override
   public void beforeTypeBody(TypeElement type) {
     if (adapterUtils.hasDirectiveAnnotation(type)) {
       printUniqueIds(type);
       printHashes(type);
       printGetObs(type);
     }
-    if (adapterUtils.isComponent(type) ||  adapterUtils.hasDirectiveAnnotation(type) && !adapterUtils.isTOPOfComponent(type)) {
+    if (adapterUtils.isHWCComponent(type) ||  adapterUtils.hasDirectiveAnnotation(type) && !adapterUtils.isTOPOfComponent(type)) {
       printNgOnDestroy(type);
     }
     adapterUtils.importFromWithModule("GemListUtil", GUIAdapterUtils.UMLP_COMMON_POINTER);
@@ -73,7 +80,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
   public boolean substituteImplements(TypeElement type) {
     boolean res = super.substituteImplements(type);
 
-    if ((adapterUtils.isComponent(type))) {
+    if ((adapterUtils.isHWCComponent(type))) {
       adapterUtils.importFromWithModule("OnDestroy", "@angular/core");
       if (util().getInterfaces(type).isEmpty()) {
         print(" implements OnDestroy");
@@ -156,7 +163,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     }
     guiComponentName = guiComponentName + " + this.uniqueIdentifier";
     printIndent().print("public ngOnDestroy(): void {").println().startIndent().printIndent();
-    if (adapterUtils.isComponent(typeElement)) {
+    if (adapterUtils.isHWCComponent(typeElement)) {
       print("super.ngOnDestroy();").println().printIndent();
     }
     print("ComponentObserverManager.removeObservers(" + guiComponentName + ");")
@@ -535,11 +542,21 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
       public Action manageAnnotation(Element element, String annotationType) {
         return GUIAdapterUtils.SYNCRHONIZED_ANNOTATION.equals(annotationType) &&
             element.getKind().toString().equals("METHOD") &&
-            (element.getSimpleName().toString().startsWith("get") || element.getSimpleName().toString().startsWith("is")) &&
-            !((Symbol.MethodSymbol) element).getReturnType().getKind().equals(TypeKind.VOID) &&
-            adapterUtils.isMethodOfComponentOrDirective(element) ?
+            (isComponentGetter(element) || isHWCMethod(element)) ?
             Action.ADD :
             Action.VOID;
+      }
+
+      private boolean isHWCMethod(Element element) {
+        return !((Symbol.MethodSymbol) element).getReturnType().getKind().equals(TypeKind.VOID) &&
+                adapterUtils.isMethodOfHWCComponent(element);
+      }
+
+      private boolean isComponentGetter(Element element) {
+        return (element.getSimpleName().toString().startsWith("get") || element.getSimpleName()
+            .toString().startsWith("is")) &&
+            !((Symbol.MethodSymbol) element).getReturnType().getKind().equals(TypeKind.VOID) &&
+            adapterUtils.isMethodOfDirective(element);
       }
     };
   }
@@ -606,6 +623,9 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
       }
 
       private boolean isStateVarSetMethod(Element element, String annotationType) {
+        if (getPrinter() == null) {
+          return false;
+        }
         if (!(element.getKind().toString().equals("METHOD"))) {
           return false;
         }
