@@ -55,19 +55,30 @@ sourceSets {
   }
 }
 
-// Make node accessible for jsweet in tests
-tasks.register("addNodePathToTestResources"){
-  File f = buildDir.toPath().resolve("resources/test/nodeDir.properties").toFile()
-  outputs.file(f)
-  doLast{
-    if(System.getProperty("os.name").toLowerCase().startsWith("win")){
+// Task to generate the nodeDir.properties file
+task addNodePathToTestResources {
+  def outputDir = file("$buildDir/generated/test-resources")
+  def f = new File(outputDir, "nodeDir.properties")
+  outputs.file f
+
+  doLast {
+    outputDir.mkdirs()
+    if (System.getProperty("os.name").toLowerCase().startsWith("win")) {
       f.text = "node_dir=" + rootProject.getNodeDir().toString().replace("\\", "\\\\")
     } else {
       f.text = "node_dir=" + rootProject.getNodeDir().toString() + "/bin"
     }
   }
-  processTestResources.dependsOn it
-  dependsOn rootProject.tasks.npmInstall
+
+}
+
+addNodePathToTestResources.dependsOn rootProject.tasks.named("npmSetup")
+processTestResources.dependsOn tasks.addNodePathToTestResources
+
+sourceSets {
+  test {
+    resources.srcDir "$buildDir/generated/test-resources"
+  }
 }
 
 /////////////////////////   Deployment  //////////////////////////////////
