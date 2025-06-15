@@ -34,6 +34,9 @@ pluginManagement {
     // ALU here: jsweet was quickly mirrored to the se-nexus
   }
 }
+plugins {
+  id 'org.gradle.toolchains.foojay-resolver-convention' version '0.10.0'
+}
 
 rootProject.name = 'umlp'
 includeBuild "umlp-tool"
@@ -50,6 +53,7 @@ include ":experiments:dsl-ast-integration:dsl"
 include ":experiments:dsl-ast-integration:dsl2cd"
 include ":experiments:dsl-ast-integration:ebackend"
 include ":experiments:dsl-ast-integration:frontend"
+include ":experiments:python-client"
 include ":experiments:statecharts-integration"
 include ":experiments:module-system:module-definition"
 include ":experiments:module-system:routes-usage"

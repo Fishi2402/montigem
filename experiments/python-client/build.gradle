@@ -1,0 +1,74 @@
+plugins {
+  id 'java'
+  id 'de.rwth.se.umlp-tool-backend'
+  id 'de.rwth.se.cdgen' version "$mc_version"
+//  id("org.graalvm.python") version "24.1.1" // requires gradle 17
+}
+
+sourceSets {
+  cd2pojo {
+//    java.srcDir('src/dec/java')
+  }
+}
+
+def modelsDir = projectDir.toPath().resolve("src").resolve("models")
+def scOutDir = buildDir.toPath().resolve("sc")
+
+
+tasks.register("generateGem", de.monticore.cdgen.gradleplugin.CDGenTask.class) {
+  getInput().from(project.file("src/models/MyDomain.umlp"))
+  class2MC=true
+  getOutputDir().set(project.layout.buildDirectory.dir("py_out"))
+  configTemplate = 'Gem2Py'
+  tmplDir = file('src/cd2pojo/resources')
+  getExtraClasspathElements().from(configurations.cdTool)
+  getExtraClasspathElements().from(sourceSets.cd2pojo.output)
+}
+dependencies {
+  // the cd2pojo sourceset requires the same dependencies as cdTool
+  configurations.cd2pojoImplementation.extendsFrom(configurations.cdTool)
+
+  cdTool("de.monticore.lang.cd4analysis:cdgradle:$mc_version")
+  cdTool("de.monticore.lang:cd4analysis:$mc_version")
+}
+
+
+// Test setup
+
+//var installPydantic = tasks.register("installPydantic", Sync) {
+//  project.fileTree(dir:"src/test/resources/pypi/", include: '*.tar.gz').each {
+//    from tarTree(resources.gzip(it))
+//  }
+//  project.fileTree(dir:"src/test/resources/pypi/", include: '*.whl').each {
+//    from zipTree(it)
+//  }
+////  from tarTree(resources.gzip(project.file("src/test/resources/pydantic-2.11.5.tar.gz")))
+//  into project.layout.getBuildDirectory().dir("py_pip")
+//}
+
+dependencies {
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+  testImplementation project(':umlp-test-rte')
+
+  // Run python via graal
+  testImplementation("org.graalvm.polyglot:polyglot:24.2.0")
+  testImplementation("org.graalvm.polyglot:python:24.2.0")
+}
+
+test {
+  useJUnitPlatform()
+  jvmArgs += '-XX:+UnlockExperimentalVMOptions' // EnableJVMCI is an experimental option
+  jvmArgs += '-XX:+EnableJVMCI' // improve Graal performance
+//  dependsOn installPydantic
+}
+
+//graalPy {
+//  packages = setOf("pyfiglet==1.0.2")
+//}
+// GraalPy requires java 17
+java {
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(17)
+  }
+}
