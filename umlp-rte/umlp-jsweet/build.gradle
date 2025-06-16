@@ -37,7 +37,7 @@ dependencies {
       exclude(group: "com.kohlschutter.jdk", module:"standalone-home") // conflict with standalone-jdk11
     }
 
-    implementation (group: "org.jsweet", name: 'j4ts', version: "2.0.0") {
+    testImplementation (group: "org.jsweet", name: 'j4ts', version: "2.0.0") {
       exclude group: "org.jsweet", module: "jsweet-transpiler"
       exclude(group: "com.kohlschutter.jdk", module:"standalone-home")
     }
