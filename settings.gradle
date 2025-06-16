@@ -37,6 +37,7 @@ pluginManagement {
 
 rootProject.name = 'umlp'
 includeBuild "umlp-tool"
+includeBuild "umlp-rte/umlp-jsweet"
 
 include ":umlp-rte"
 include ":umlp-rte:client"
@@ -65,6 +66,7 @@ include ':examples:weather:backend'
 include ':examples:weather:frontend'
 include ':examples:it-test'
 include ':examples:assistenzsystem'
+include ':examples:native-image'
 include ':examples:sehub:backend'
 include ':examples:sehub:frontend'
 include ':examples:sehub-cd2gui:backend'
@@ -88,16 +90,18 @@ include ':examples:loading-test:backend'
 include ':examples:loading-test:frontend'
 include ':examples:loading-test:frontend-jsweet'
 
-include ':products:syse_functions:backend'
-include ':products:syse_functions:frontend'
-include ':products:syse_functions:automaton'
-findProject(':products:syse_functions:automaton')?.name = 'automaton'
+// TODO: Fix once java version is decided
+//include ':products:syse_functions:frontend'
+//include ':products:syse_functions:backend'
+//include ':products:syse_functions:automaton'
+//findProject(':products:syse_functions:automaton')?.name = 'automaton'
 
 include ':products:demorec:backend'
 include ':products:demorec:frontend'
 include ':products:kizam:backend'
-include ':products:autotech_agil:backend'
-include ':products:autotech_agil:frontend'
+// TODO: Fix once java version is decided
+//include ':products:autotech_agil:backend'
+//include ':products:autotech_agil:frontend'
 
 include ':products:dev_process_cockpit:backend'
 include ':products:dev_process_cockpit:frontend'
