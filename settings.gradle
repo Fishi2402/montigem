@@ -37,7 +37,6 @@ pluginManagement {
 
 rootProject.name = 'umlp'
 includeBuild "umlp-tool"
-includeBuild "umlp-rte/umlp-jsweet"
 
 include ":umlp-rte"
 include ":umlp-rte:client"
@@ -66,7 +65,6 @@ include ':examples:weather:backend'
 include ':examples:weather:frontend'
 include ':examples:it-test'
 include ':examples:assistenzsystem'
-include ':examples:native-image'
 include ':examples:sehub:backend'
 include ':examples:sehub:frontend'
 include ':examples:sehub-cd2gui:backend'
