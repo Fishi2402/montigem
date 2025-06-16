@@ -19,6 +19,7 @@ import standalone.com.sun.source.tree.MethodTree;
 import standalone.com.sun.source.tree.Tree;
 import standalone.com.sun.source.tree.VariableTree;
 import standalone.com.sun.tools.javac.code.Symbol;
+import standalone.com.sun.tools.javac.code.Type;
 import standalone.com.sun.tools.javac.tree.JCTree;
 import umlp.jsweet.extension.util.GUIAdapterUtils;
 import umlp.jsweet.extension.util.RTEPathUtil;
@@ -290,7 +291,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
         executable)) {
       methodName = adapterUtils.getOverloadMethodName(executable);
     } else {
-      methodName = context.getActualName(executable);
+      methodName = adapterUtils.getJSweetExecutableName(executable);
     }
 
     Tree returnType = trees().getTree(executable).getReturnType();
@@ -346,7 +347,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     }
     else if (executable.getParameters().size() > 0) {
       for (VariableElement parameter : executable.getParameters()) {
-        String paramName = context.getActualName(parameter);
+        String paramName = adapterUtils.getJSweetParameterName(parameter);
         print(paramName);
         print(", ");
       }
@@ -358,7 +359,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     if (!executable.getParameters().isEmpty()) {
       print(".get([");
       for (VariableElement parameter : executable.getParameters()) {
-        print(context.getActualName(parameter));
+        print(adapterUtils.getJSweetParameterName(parameter));
         if (adapterUtils.isSubTypeOf((TypeElement) types().asElement(parameter.asType()),
             RTEPathUtil.getBackendRTECommonPath("GemIdentifiable"))) {
           print(".getGemId()");
@@ -374,7 +375,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     if (!executable.getParameters().isEmpty()) {
       print(".set([");
       for (VariableElement parameter : executable.getParameters()) {
-        print(context.getActualName(parameter));
+        print(adapterUtils.getJSweetParameterName(parameter));
         if (adapterUtils.isSubTypeOf((TypeElement) types().asElement(parameter.asType()),
             RTEPathUtil.getBackendRTECommonPath("GemIdentifiable"))) {
           print(".getGemId()");
@@ -414,7 +415,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
           String typeName = "\"" +
               adapterUtils.getTypeNameWithoutBuilder((TypeElement) types().asElement(parameter.asType())) +
               "\"";
-          String actualName = context.getActualName(parameter);
+          String actualName = adapterUtils.getJSweetParameterName(parameter);
           printIndent().print(
               DOMAIN_OBSERVER_FUNCTION_NAME + "(" + actualName + ", " + typeName + ");").println();
         }
@@ -512,7 +513,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     else if (executable.getParameters().size() > 0) {
       for (VariableElement parameter : executable.getParameters()) {
         Tree tree = trees().getTree(parameter);
-        String paramName = context.getActualName(parameter);
+        String paramName = adapterUtils.getJSweetParameterName(parameter);
         print(paramName).print(overloadMethod ? "?" : "").print(": ");
         getPrinter().substituteAndPrintType(((JCTree.JCVariableDecl) tree).getType()).print(", ");
       }
@@ -553,9 +554,15 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
       }
 
       private boolean isComponentGetter(Element element) {
+        Type returnType = ((Symbol.MethodSymbol) element).getReturnType();
+        if (types().asElement(returnType) == null) {
+          return false;
+        }
         return (element.getSimpleName().toString().startsWith("get") || element.getSimpleName()
             .toString().startsWith("is")) &&
-            !((Symbol.MethodSymbol) element).getReturnType().getKind().equals(TypeKind.VOID) &&
+            !returnType.getKind().equals(TypeKind.VOID) && (
+                !(types().asElement(returnType) instanceof TypeElement) ||
+                !adapterUtils.isSubTypeOf((TypeElement) types().asElement(returnType), "java.util.function.Consumer")) &&
             adapterUtils.isMethodOfDirective(element);
       }
     };
@@ -642,7 +649,10 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
         }
         Symbol.TypeSymbol parentElement = Util.getElement(getPrinter().getParent(ClassTree.class));
         return parentElement.getEnclosedElements().stream()
-            .anyMatch(m -> m.getSimpleName().toString().equals(getPropertyWithoutSetter(element)));
+            .anyMatch(m -> m.getSimpleName().toString().equals(getPropertyWithoutSetter(element)) && (
+                    !(types().asElement(m.type) instanceof TypeElement) ||
+                    !adapterUtils.isSubTypeOf((TypeElement) types().asElement(m.type), "java.util.function.Consumer"))
+            );
       }
 
       private String getPropertyWithoutSetter(Element element) {

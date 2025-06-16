@@ -11,6 +11,7 @@ import org.jsweet.transpiler.model.NewClassElement;
 import org.jsweet.transpiler.model.support.ExtendedElementSupport;
 import standalone.com.sun.tools.javac.tree.JCTree;
 import umlp.jsweet.extension.UMLPAbstractAdapter;
+import umlp.jsweet.extension.util.GUIAdapterUtils;
 
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
@@ -64,7 +65,7 @@ public class GUIUtilAdapter extends UMLPAbstractAdapter {
             ((ExtendedElementSupport<?>) argument).getTree() instanceof JCTree.JCLambda &&
             ((JCTree.JCLambda) ((ExtendedElementSupport<?>) argument).getTree()).getBody() instanceof JCTree.JCMethodInvocation) {
               JCTree.JCMethodInvocation body = (JCTree.JCMethodInvocation) ((JCTree.JCLambda) ((ExtendedElementSupport<?>) argument).getTree()).getBody();
-              getPrinter().print(body.getMethodSelect()).print("__update(").printArgList(body).print(")");
+              getPrinter().print(body.getMethodSelect()).print(GUIAdapterUtils.UPDATE_SUFFIX + "(").printArgList(body).print(")");
             }
             return true;
         }
