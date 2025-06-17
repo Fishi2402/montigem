@@ -6,7 +6,6 @@ import de.se_rwth.commons.logging.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -135,12 +134,14 @@ public abstract class DatabaseAccessManager {
       e.printStackTrace();
     }
     // Load Properties from Environment Variables
+    // Each env variable needs prefix MONTIGEM_DB_, which will be removed for the property.
+    // To override the property `user`, the environment variable `MONTIGEM_DB_user` must be set.
     // Can be used to select a different DB on production server
     // Environment Properties have priority!
-    // TODO: Workaround for #3358
+    String prefix = "MONTIGEM_DB_";
     for (Map.Entry<String, String> envVar : System.getenv().entrySet()) {
-      if(!envVar.getKey().equalsIgnoreCase("user")) {
-        databaseProperties.put(envVar.getKey(), envVar.getValue());
+      if(envVar.getKey().startsWith(prefix)) {
+        databaseProperties.put(envVar.getKey().substring(prefix.length()), envVar.getValue());
       }
     }
 
