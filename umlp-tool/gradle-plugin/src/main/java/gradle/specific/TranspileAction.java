@@ -1,5 +1,6 @@
 package gradle.specific;
 
+import com.kohlschutter.jdk.standaloneutil.JavaHomeLocator;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.provider.Property;
@@ -27,6 +28,14 @@ public abstract class TranspileAction implements WorkAction<TranspileAction.Para
   @Override
   public void execute() {
     Params params = getParameters();
+
+    // Fix for ExceptionInInitializerError, with cause FileSystemAlreadyExistsException
+    // Prevent a race condition in the transpiler by preloading JavaHomeLocator#pathForResourceURL.
+    // It's invoked during JavaHomeLocator#<init>(COMPILER_JAVA_HOME).
+    // Synchronizing on a shared class ensures thread safety across isolated classloaders.
+    synchronized (WorkAction.class) {
+      JavaHomeLocator javaHomeLocator = new JavaHomeLocator();
+    }
 
     JSweetFactory factory = new JSweetFactory();
 

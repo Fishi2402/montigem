@@ -88,16 +88,18 @@ include ':examples:loading-test:backend'
 include ':examples:loading-test:frontend'
 include ':examples:loading-test:frontend-jsweet'
 
-include ':products:syse_functions:backend'
-include ':products:syse_functions:frontend'
-include ':products:syse_functions:automaton'
-findProject(':products:syse_functions:automaton')?.name = 'automaton'
+// TODO: Fix once java version is decided
+//include ':products:syse_functions:frontend'
+//include ':products:syse_functions:backend'
+//include ':products:syse_functions:automaton'
+//findProject(':products:syse_functions:automaton')?.name = 'automaton'
 
 include ':products:demorec:backend'
 include ':products:demorec:frontend'
 include ':products:kizam:backend'
-include ':products:autotech_agil:backend'
-include ':products:autotech_agil:frontend'
+// TODO: Fix once java version is decided
+//include ':products:autotech_agil:backend'
+//include ':products:autotech_agil:frontend'
 
 include ':products:dev_process_cockpit:backend'
 include ':products:dev_process_cockpit:frontend'

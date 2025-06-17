@@ -5,6 +5,7 @@ import org.jsweet.transpiler.JSweetFactory;
 import org.jsweet.transpiler.JSweetTranspiler;
 import org.jsweet.transpiler.ModuleKind;
 import org.jsweet.transpiler.util.ProcessUtil;
+import com.kohlschutter.jdk.standaloneutil.JavaHomeLocator;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,10 +52,18 @@ public class Util {
 
     ProcessUtil.addExtraPath(nodePath);
 
-
     JSweetFactory factory = new JSweetFactory();
     JSweetTranspiler transpiler = null;
-    try {
+    transpiler = new JSweetTranspiler(
+        configuration,
+        factory,
+        null,
+        outputDir,
+        null,
+        null,
+        System.getProperty("java.class.path")
+    );
+/*    try {
       transpiler = new JSweetTranspiler(
           configuration,
           factory,
@@ -66,7 +75,7 @@ public class Util {
       );
     } catch (IOException e) {
       throw new RuntimeException(e);
-    }
+    }*/
 
     // Set according to our JSweet Plugin
     transpiler.setTscWatchMode(false);
