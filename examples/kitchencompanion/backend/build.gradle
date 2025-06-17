@@ -85,21 +85,6 @@ tasks.register('runServer') {
   })
 }
 
-tasks.register('genTestGUI', UMLPGuiGenTask) {
-  dependsOn(generateUmlpBackend, tasks.getByPath(":umlp-rte:client:createGuiSymbols"))
-  input = file("../models")
-  outputDir = file("$project.buildDir/testgui")
-  hwcDir = file("$projectDir/src/main/java")
-  modelDir = layout.projectDirectory.dir("../models")
-  symbolDir = files(
-      generateUmlpBackend.symbolOutDir,
-      configurations.guiLib,
-      configurations.guiDefaultTypes
-  )
-  domainModels = ["KitchenCompanion"]
-  guiCreateModels = ["gui.UserCreate"]
-}
-
 tasks.register('genTestData', UMLPOD2DataTask) {
   dependsOn(generateUmlpBackend)
   input = file("../models/Example.od")
@@ -128,6 +113,3 @@ sourceSets {
     }
   }
 }
-
-compileJava.dependsOn(generateUmlpBackend, genTestGUI, genTestData)
-//compileJava.dependsOn(generateUmlpBackend)
