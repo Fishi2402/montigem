@@ -38,6 +38,7 @@ build_no_containers:
       - examples/dtcockpit/frontend/build/frontendGen/node_modules
       - products/demorec/frontend/build/frontendGen/node_modules
   artifacts:
+    when: always
     paths:
       - umlp-tool/umlp-intellij-plugin/build/distributions/**
       - umlp-tool/build/generated-sources/UMLPWithGUI/**/*.vsix
@@ -132,6 +133,7 @@ build_with_deploy:
       - examples/dtcockpit/frontend/build/frontendGen/node_modules
       - products/demorec/frontend/build/frontendGen/node_modules
   artifacts:
+    when: always
     paths:
       - umlp-tool/umlp-intellij-plugin/build/distributions/**
       - umlp-tool/build/generated-sources/UMLPWithGUI/**/*.vsix
@@ -162,6 +164,7 @@ slowtest:
     - "gradle --version | tee $CI_PROJECT_DIR/build.log"
     - "gradle slowtest --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 | tee -a $CI_PROJECT_DIR/build.log"
   artifacts:
+    when: always
     paths:
       - build.log
     reports:
