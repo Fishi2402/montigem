@@ -1,4 +1,4 @@
-package umlp.domain;
+package umlp.test_rte.monitor.model;
 
 /**
  * Describes the different matching strategies which an object defined in a sequence diagram may have.

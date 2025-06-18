@@ -1,4 +1,5 @@
-package umlp.domain;
+package umlp.model;
+
 
 import java.util.Objects;
 import java.util.Optional;

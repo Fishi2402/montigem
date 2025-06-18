@@ -92,9 +92,9 @@ import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
-import umlp.domain.MatchingStrategy;
-import umlp.domain.SDObject;
 import umlp.generator.util.PathUtil;
+import umlp.model.MatchingStrategy;
+import umlp.model.SDObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -225,6 +225,12 @@ public class SD2TestDecorator {
     private final List<SDObject> objectDeclarations = new ArrayList<>();
     private Optional<SDObject.Builder> currentObject = Optional.empty();
 
+    /*
+    TODO rebuild this a bit like an automata: reside in a certain state and accept only certain
+     transitions, while keeping track of data along the way; data keeping may be a bit unclean but
+     it'll be good enough
+    */
+
     @Override
     public void visit(ASTMCImportStatement node) {
       importStatements.add(node);
@@ -266,6 +272,45 @@ public class SD2TestDecorator {
     public void visit(ASTSDVisibleModifier node) {
       currentObject.orElseThrow().setMatchingStrategy(MatchingStrategy.VISIBLE);
     }
+
+    @Override
+    public void visit(ASTSDSendMessage node) {
+      //TODO why are source and target optional?
+      //TODO expect source, target, action and activity bar
+    }
+
+    @Override
+    public void endVisit(ASTSDSendMessage node) {
+      //TODO remove from message stack
+    }
+
+    @Override
+    public void visit(ASTSDObjectSource node) {
+      //TODO basically ignore but now expect a target
+    }
+
+    @Override
+    public void visit(ASTSDObjectTarget node) {
+      //TODO store name and expect action
+    }
+
+    //this is visited both on source and target
+    @Override
+    public void visit(ASTSDClass node) {
+      //TODO if source, expect now a target, if target store name and expect action
+    }
+
+    @Override
+    public void visit(ASTSDCall node) {
+      //TODO add to latest trigger or make it become the trigger
+    }
+
+    @Override
+    public void visit(ASTSDCondition node) {
+      //TODO add as condition to latest sendMessage or as initial condition
+    }
+
+    //TODO what is endCall?
   }
 
   private static final class LoggingSDVisitor implements SDBasisVisitor2,

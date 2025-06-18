@@ -8,12 +8,22 @@ sequencediagram TotalTest {
   //make sure event queue is empty
 
   o -> o : trigger addItem(item) {
+    //a little pre condition check
+    assert o.getTotal() == 0;
+
+    //this is the next internal call
+    o -> o : addItem(o, NotificationScope.ALL);
+
     o -> o : return;
+    //condition checks after a return should be okay
+    assert o.getTotal() == 6;
   }
 
   //make sure event queue contains Call("addItem"), End("addItem", null)
 
   assert o.getTotal() == 6;
+
+  class Order -> class Order : static foo();
 }
 
 // output of logging visitor right now:
@@ -43,6 +53,16 @@ sequencediagram TotalTest {
 //visit ASTSDCall
 //end visit ASTSDCall
 //visit ASTSDActivityBar
+//visit ASTSDCondition
+//end visit ASTSDCondition
+//visit ASTSDSendMessage
+//visit ASTSDObjectSource
+//end visit ASTSDObjectSource
+//visit ASTSDObjectTarget
+//end visit ASTSDObjectTarget
+//visit ASTSDCall
+//end visit ASTSDCall
+//end visit ASTSDSendMessage
 //visit ASTSDSendMessage
 //visit ASTSDObjectSource
 //end visit ASTSDObjectSource
@@ -51,6 +71,8 @@ sequencediagram TotalTest {
 //visit ASTSDReturn
 //end visit ASTSDReturn
 //end visit ASTSDSendMessage
+//visit ASTSDCondition
+//end visit ASTSDCondition
 //end visit ASTSDActivityBar
 //end visit ASTSDSendMessage
 //visit ASTSDCondition

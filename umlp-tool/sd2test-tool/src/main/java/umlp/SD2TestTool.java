@@ -24,6 +24,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 
+//TODO gradle dependency on umlp-test-rte, I would like to re-use runtime classes
+
 public class SD2TestTool extends SD4DevelopmentTool {
 
   private static final String LOG_NAME = "SD2TestTool";
