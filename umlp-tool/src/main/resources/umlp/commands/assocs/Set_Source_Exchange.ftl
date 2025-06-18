@@ -40,7 +40,7 @@ if(${sourceName}Loaded){
 <#else>
   // Do nothing?
 </#if>
-} if(new${ctargetName}Loaded){
+} else if(new${ctargetName}Loaded){
   ${targetType} newLoaded = ${managerName}.get${targetType}Sure(${targetName}GemId);
 <#if isSourceList>
   newLoaded._internal_add${csourceName}(newLoaded.size${csourceName}s(), Lists.newArrayList(${sourceName}GemId), NotificationScope.MINIMAL);

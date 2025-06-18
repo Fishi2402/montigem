@@ -1,120 +1,59 @@
 /* (c) https://github.com/MontiCore/monticore */
 plugins {
   id "com.github.node-gradle.node" version "5.0.0"
-  id 'de.rwth.se.umlp-tool'
-}
-
-repositories {
-  if (("true").equals(getProperty('useLocalRepo'))) {
-    mavenLocal()
-  }
-  maven {
-    credentials.username mavenUser
-    credentials.password mavenPassword
-    url repo
-  }
-  mavenCentral()
-}
-
-configurations {
-  guiDefaultTypes
+  id "de.rwth.se.umlp-tool-frontend-test"
 }
 
 dependencies {
-  guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
-
-  implementation project(':umlp-rte')
-  testImplementation project(':umlp-test-rte')
+  implementation(project(":examples:flensburg-test:backend"))
+  testImplementation(project(":umlp-test-rte"))
 }
 
-// TODO AGe: don't know if that is needed
-// TODO CD2GUI
-//task generateCDTOGUI(type: UMLPCdToGuiTask) {
-//  input = file("../models/hardy")
-//  outputDir = layout.buildDirectory.dir("cd2gui")
-//}
-
-tasks.register('guiVariability', GuiVariabilityHandlerTask) {
-  //input.from(generateCDTOGUI.getOutputDir().dir("models"))
-  input.from(file("../models/stanley"))
-  outputDir = layout.buildDirectory.dir("guiVariability")
+sourceSets {
+  main.java.srcDirs += [layout.buildDir.dir("umlp_frontend/intermediate/appgui")]
 }
 
-tasks.register('genDomain', UMLPFrontendTask) {
+node {
+  nodeProjectDir = file("${buildDir}/frontendGen")
+}
+
+genDomain {
   input = file("../models/hardy/Flensburg.umlp")
-  outputDir = file("$project.buildDir/appdomain")
-  symbolOutDir = file("${project.buildDir}/symbols")
-  hwcDir = file("$projectDir/src/app")
 }
 
-tasks.register('genGUI', UMLPGuiGenTask) {
-  dependsOn(genDomain)
-  input = file("../models")
-  outputDir = file("$project.buildDir/appgui")
-  hwcDir = file("$projectDir/src/app")
-  modelDir = layout.projectDirectory.dir("../models")
-  symbolDir = files(
-      genDomain.symbolOutDir,
-    configurations.guiLib,
-      configurations.guiDefaultTypes
-  )
-  domainModels = ["hardy.Flensburg"]
+genGUI {
+  domainModels = ["hardy.Flensburg"] // "LoginModule" is included via the modGen (or not required?)
   guiCreateModels = ["stanley.gui.AccountCreate"]
+  hwcDir += [layout.projectDirectory.dir("src/main/java")]
 }
+tasks.compileJava.dependsOn(genGUI)
 
-
-tasks.register('generateNPMAuth', NPMAuthCreate)
-
-/*
-yarn_install.dependsOn(generateNPMAuth, genGUI)
-yarn_upgrade.dependsOn(yarn_install)
-/**/
-
-npmInstall.dependsOn(generateNPMAuth, ':umlp-rte:client:npmInstall')
+nodeSetup.dependsOn(frontendSetup)
+npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 
 def prebuildTasks = [
-  npmInstall, genDomain
+    npmInstall,
+    generate
 ]
 
-/*
-tasks.register('buildApp', YarnTask) {
-  dependsOn('genDomain', yarn_upgrade)
-/**/
 tasks.register('buildApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["build"]
-  inputs.dir(project.fileTree("src").exclude("**/*.spec.ts"))
-  inputs.dir("node_modules")
-  inputs.files("angular.json", ".browserslistrc", "tsconfig.json", "tsconfig.app.json")
-  outputs.dir("${project.buildDir}/dist")
 }
 
-/*
-tasks.register('testApp', YarnTask) {
-  dependsOn('genDomain', yarn_upgrade)
-/**/
 tasks.register('testApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["test"]
-  inputs.dir("src")
-  inputs.dir("node_modules")
-  inputs.files("angular.json", ".browserslistrc", "tsconfig.json", "tsconfig.spec.json", "karma.conf.js")
-  outputs.upToDateWhen { true }
 }
 
-/*
-tasks.register('runApp', YarnTask) {
-  dependsOn('genDomain', yarn_upgrade)
-/**/
 tasks.register('runApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["serve"]
-  // args = ["start"]
-  inputs.dir(project.fileTree("src").exclude("**/*.spec.ts"))
-  inputs.dir("node_modules")
-  inputs.files("angular.json", ".browserslistrc", "tsconfig.json", "tsconfig.spec.json")
-  outputs.upToDateWhen { true }
+}
+
+test {
+  useJUnitPlatform()
 }

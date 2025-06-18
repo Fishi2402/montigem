@@ -20,7 +20,7 @@ component JoinConnectionKindCreate(JoinConnectionKind connectionKind, Event<Join
       rowGap="5px",
       components = [
         @JoinConnectionKindEdit(connectionKind=connectionKind, showOptionalAttributes=false),
-        buildConnection@GemButton(label = "Save ConnectionKind", leftClick = createNewConnectionKind(), disabled=true, width="var(--smallDropDownWidth)")
+        buildConnection@GemButton(label = "Save ConnectionKind", leftClick = createNewConnectionKind(), disabled=isDisabled(connectionKind), width="var(--smallDropDownWidth)")
       ]
     )
   );

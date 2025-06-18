@@ -71,9 +71,9 @@ public class SQLSchemaGenerator {
     fqnClassNameToType.put("Enum", "VARCHAR");
     fqnClassNameToType.put("java.lang.String", "VARCHAR");
     fqnClassNameToType.put("String", "VARCHAR");
-    fqnClassNameToType.put("java.lang.Byte", "TINYINT");
-    fqnClassNameToType.put("Byte", "TINYINT");
-    fqnClassNameToType.put("byte", "TINYINT");
+    fqnClassNameToType.put("java.lang.Byte", "SMALLINT");
+    fqnClassNameToType.put("Byte", "SMALLINT");
+    fqnClassNameToType.put("byte", "SMALLINT");
     fqnClassNameToType.put("java.lang.Short", "SMALLINT");
     fqnClassNameToType.put("Short", "SMALLINT");
     fqnClassNameToType.put("short", "SMALLINT");

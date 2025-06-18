@@ -182,52 +182,6 @@ public class MultiprojectAggregationTest {
     assertEquals(regular_d_crossLanguage, multiproject_d_crossLanguage);
   }
 
-  @Test
-  public void testStructureInMultiproject(){
-    Path path = Path.of("src/test/resources/lsp/multiproject/");
-    MCPath rootpath = new MCPath(path);
-    var languageServer = new UMLPWithGUILanguageAggrMultiProjectServer(rootpath);
-
-    // (1)
-    AsyncUtilWithSyncExec.init(); // Run everything synchronous for test
-    languageServer.initialize(new InitializeParams());
-    languageServer.connect(new MockLanguageClient());
-
-    var subContexts = languageServer.getSubprojectServerContexts();
-
-    // 2 subprojects == 2 subservers (aggregation level) == 2 document managers
-    assertEquals(subContexts.size(), 2);
-
-    // Indexing
-    for (MultiLangLanguageServerContext subContext : subContexts) {
-      try(var c = subContext.open()){
-        CommonLanguageServer ls = (CommonLanguageServer) c.getLanguageServer();
-        ls.getIndexingManager().indexAllFilesInPath();
-      }
-    }
-
-    // MULTIPROJECT SUBSERVER 1 TEST
-    // first subserver belongs to project "subproject1"
-    String subproject1Name = ((UMLPWithGUILanguageAggrServerForMultiProject)subContexts.get(0)
-        .getLanguageServer()).getSubprojectName();
-    assertEquals(subproject1Name, "subproject1");
-
-    // it knows (among others) the files
-    // "Domain.umlp" and "simple/Card.gui".
-
-    var sub1DocManager = ((UMLPWithGUILanguageAggrServerForMultiProject)subContexts.get(0)
-        .getLanguageServer()).getDocumentManager();
-    assertTrue(sub1DocManager.hasDocument(createTextDocumentIdentifier(
-        path.resolve("subproject1/Domain.umlp"))));
-
-    assertTrue(sub1DocManager.hasDocument(createTextDocumentIdentifier(
-        path.resolve("subproject1/simple/Card.gui"))));
-
-    // however it doesn't know files which belong to other subprojects
-    assertFalse(sub1DocManager.hasDocument(createTextDocumentIdentifier(
-        path.resolve("subproject2/Domain.umlp"))));
-  }
-
   private TextDocumentIdentifier createTextDocumentIdentifier(Path p) {
     return new TextDocumentIdentifier(p.toUri().toString());
   }

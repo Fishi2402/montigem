@@ -39,7 +39,22 @@ jib {
   container.mainClass = application.mainClass.get()
 }
 
+/*repositories {
+  flatDir {
+    dirs 'C:\\Users\\Margarita\\Documents\\bpmn\\bpmn-dsl\\WorkflowDSL\\target\\libs\\'
+  }
+}
+
+repositories {
+  flatDir {
+    dirs 'C:\\Users\\Margarita\\Documents\\bpmn\\bpmn-dsl\\TimeExpressions\\target\\libs\\'
+  }
+}*/
+
 dependencies {
+  //implementation name: 'WorkflowDSL-7.7.0-SNAPSHOT'
+  //implementation name: 'TimeExpressions-7.7.0-SNAPSHOT'
+
   implementation project(':umlp-rte')
   testImplementation project(':umlp-test-rte')
   implementation 'com.h2database:h2:2.1.214'  // In-Memory database written in java
@@ -51,6 +66,14 @@ dependencies {
   implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
 
   implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
+  implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version
+
+  implementation group: 'de.monticore.lang', name: 'WorkflowDSL', version: mc_version
+  implementation group: 'de.monticore.expressions', name: 'TimeExpressions', version: mc_version
+
+  implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
+
+  implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
 }
 
 generateUmlpBackend {
@@ -60,7 +83,7 @@ generateUmlpBackend {
   useSpring = true
 }
 
-tasks.register('runServer') {
+task runServer {
   dependsOn(bootRun {
     systemProperty "spring.shell.interactive.enabled", "false"
   })

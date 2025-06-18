@@ -103,7 +103,7 @@ public class Gem<E extends GemIdentifiable> implements GemIdentifiable {
     loadIfRequired();
     if (!isPresent()) {
       Log.error("0xE2921 Object was not loaded: " + loadingState.toString());
-      // todo: wir müssen allgemein mal über den Umgang mit fatalen Fehlern reden
+      // tod: wir müssen allgemein mal über den Umgang mit fatalen Fehlern reden
       // und was wir daraus machen. Ein Websystem ist ja was anderes als ein Batch-Generator
     }
     return object;

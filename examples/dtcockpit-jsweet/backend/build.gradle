@@ -87,26 +87,6 @@ tasks.register('runServer') {
   })
 }
 
-tasks.register('genTestGUI', UMLPGuiGenTask) {
-  dependsOn(generateUmlpBackend, tasks.getByPath(":umlp-rte:client:createGuiSymbols"))
-  input = file("../models")
-  outputDir = file("$project.buildDir/testgui")
-  hwcDir = file("$projectDir/src/main/java")
-  modelDir = layout.projectDirectory.dir("../models")
-  symbolDir = files(
-      generateUmlpBackend.symbolOutDir,
-      configurations.guiLib,
-      configurations.guiDefaultTypes
-  )
-  domainModels = ["Dtcockpit"]
-  guiCreateModels = ["gui.UserCreate"]
-
-  /*
-  debug = true
-  outputs.upToDateWhen { false }
-  /**/
-}
-
 test {
   testLogging {
     events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
@@ -126,9 +106,6 @@ sourceSets {
     }
   }
 }
-
-compileJava.dependsOn(generateUmlpBackend, genTestGUI)
-//compileJava.dependsOn(generateUmlpBackend)
 
 // #############
 // Define a sourceset for e2e tests with a custom BootJar
