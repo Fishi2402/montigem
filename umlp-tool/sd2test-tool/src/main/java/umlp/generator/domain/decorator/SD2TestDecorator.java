@@ -90,6 +90,7 @@ import de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesGlobalScope;
 import de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2;
 import de.se_rwth.commons.Joiners;
+import de.se_rwth.commons.logging.Log;
 import umlp.domain.MatchingStrategy;
 import umlp.domain.SDObject;
 import umlp.generator.util.PathUtil;
@@ -138,7 +139,7 @@ public class SD2TestDecorator {
 
     //TODO how do we check which objects are already present in the object diagram?
 
-//    logModel(model);
+    logModel(model);
 
     // apply a visitor to the model
     var visitor = new SDVisitor();
@@ -160,7 +161,7 @@ public class SD2TestDecorator {
 
     //createFoo methods
     for (SDObject sdObject : visitor.objectDeclarations) {
-      var name = sdObject.name().orElseThrow(); //TODO assign an unused generic name; don't, remodel that
+      var name = sdObject.name();
       objectNames.add(name);
       cd4c.addMethod(testClass,
                      "umlp.domain.sd2test.CreateObject",
@@ -185,7 +186,7 @@ public class SD2TestDecorator {
   private static void logModel(ASTSDArtifact model) {
     var visitor = new LoggingSDVisitor();
     visit(model, visitor);
-    visitor.visits.forEach(System.out::println);
+    visitor.visits.forEach(visit -> Log.info(visit, "SD2TestDecorator.Visit"));
   }
 
   private static <T extends SDBasisVisitor2 & SD4DevelopmentVisitor2 & MCBasicTypesVisitor2> void visit(
@@ -223,8 +224,11 @@ public class SD2TestDecorator {
 
     @Override
     public void visit(ASTSDObject node) {
-      var builder = new SDObject.Builder(node.getMCObjectType().printType()); //TODO raise error when type not present
-      builder.setName(node.getName());
+      if (!node.isPresentMCObjectType()) {
+        Log.error("Missing object type", node.get_SourcePositionStart());
+      }
+      var mcObjectType = node.getMCObjectType();
+      var builder = new SDObject.Builder(mcObjectType.printType(), node.getName());
       this.currentObject = Optional.of(builder);
     }
 

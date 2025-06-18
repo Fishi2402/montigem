@@ -9,11 +9,11 @@ import java.util.Optional;
 public final class SDObject {
 
   private final Optional<MatchingStrategy> matchingStrategy;
-  private final Optional<String> name;
+  private final String name;
   private final String qualifiedTypeName;
 
   public SDObject(Optional<MatchingStrategy> matchingStrategy,
-                  Optional<String> name,
+                  String name,
                   String qualifiedTypeName) {
     this.matchingStrategy = matchingStrategy;
     this.name = name;
@@ -24,7 +24,7 @@ public final class SDObject {
     return matchingStrategy;
   }
 
-  public Optional<String> name() {
+  public String name() {
     return name;
   }
 
@@ -54,20 +54,42 @@ public final class SDObject {
   public static final class Builder {
 
     private Optional<MatchingStrategy> matchingStrategy;
-    private Optional<String> name;
-    private final String qualifiedTypeName;
+    private String name;
+    private String qualifiedTypeName;
 
-    public Builder(String qualifiedTypeName) {
+    public Builder(String qualifiedTypeName, String name) {
       this.qualifiedTypeName = qualifiedTypeName;
+      this.name = name;
+    }
+
+    public Optional<MatchingStrategy> getMatchingStrategy() {
+      return matchingStrategy;
     }
 
     public Builder setMatchingStrategy(MatchingStrategy matchingStrategy) {
-      this.matchingStrategy = Optional.of(matchingStrategy);
+      return setMatchingStrategy(Optional.of(matchingStrategy));
+    }
+
+    public Builder setMatchingStrategy(Optional<MatchingStrategy> matchingStrategy) {
+      this.matchingStrategy = matchingStrategy;
       return this;
     }
 
+    public String getName() {
+      return name;
+    }
+
     public Builder setName(String name) {
-      this.name = Optional.of(name);
+      this.name = name;
+      return this;
+    }
+
+    public String getQualifiedTypeName() {
+      return qualifiedTypeName;
+    }
+
+    public Builder setQualifiedTypeName(String qualifiedTypeName) {
+      this.qualifiedTypeName = qualifiedTypeName;
       return this;
     }
 
