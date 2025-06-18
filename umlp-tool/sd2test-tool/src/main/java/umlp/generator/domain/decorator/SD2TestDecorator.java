@@ -90,6 +90,7 @@ import de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesGlobalScope;
 import de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2;
 import de.se_rwth.commons.Joiners;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import umlp.domain.MatchingStrategy;
 import umlp.domain.SDObject;
@@ -108,8 +109,8 @@ public class SD2TestDecorator {
   }
 
   public void transform(ASTSDArtifact sdAst,
-      ASTCDDefinition domainCd,
-      ASTCDCompilationUnit decoratedCD) {
+                        ASTCDDefinition domainCd,
+                        ASTCDCompilationUnit decoratedCD) {
     var name = sdAst.getSequenceDiagram().getName();
     var targetPackage = getPackage(name.toLowerCase(), decoratedCD);
     targetPackage.addCDElement(createTest(sdAst, domainCd));
@@ -120,13 +121,11 @@ public class SD2TestDecorator {
     var domainName = domainCd.getName();
     var domainPackageName = domainName.toLowerCase();
 
-    var testClass = CD4CodeBasisMill
-        .cDClassBuilder()
+    var testClass = CD4CodeBasisMill.cDClassBuilder()
         .setModifier(CDModifier.PUBLIC.build())
         .setName(diagramName)
-        .setCDExtendUsage(CDExtendUsageFacade
-                              .getInstance()
-                              .createCDExtendUsage(domainName + "SQLDBTestSetup"))
+        .setCDExtendUsage(CDExtendUsageFacade.getInstance()
+            .createCDExtendUsage(domainName + "SQLDBTestSetup"))
         .build();
 
     var cd4c = CD4C.getInstance();
@@ -149,11 +148,21 @@ public class SD2TestDecorator {
     for (var importStatement : visitor.importStatements) {
       String signature;
       if (importStatement.isStar()) {
-        signature = Joiners.DOT.join(importStatement.getQName(), "*");
+        //we must assume that package names are all lowercase in our environments
+        signature = Joiners.DOT.join(importStatement.getQName(), "*").toLowerCase();
       } else {
-        signature = importStatement.getQName();
+        var parts = importStatement.getMCQualifiedName().getPartsList();
+        //we must assume that package names are all lowercase in our environments
+        //-> we lowercase at least the first part of the path, since that is definitely a package name
+        if (parts.size() > 1) {
+          parts.set(0, parts.remove(0).toLowerCase()); //lowercase first part
+          signature = Names.constructQualifiedName(parts);
+        } else {
+          //single path import; that is probably a class, and therefor capitalization shouldn't be touched
+          signature = importStatement.getQName();
+        }
       }
-      cd4c.addImport(testClass, signature.toLowerCase()); //TODO I don't like lowercasing the whole signature
+      cd4c.addImport(testClass, signature);
     }
 
     //make sure every object has a name
@@ -164,10 +173,10 @@ public class SD2TestDecorator {
       var name = sdObject.name();
       objectNames.add(name);
       cd4c.addMethod(testClass,
-                     "umlp.domain.sd2test.CreateObject",
-                     name,
-                     sdObject.qualifiedTypeName(),
-                     domainName);
+          "umlp.domain.sd2test.CreateObject",
+          name,
+          sdObject.qualifiedTypeName(),
+          domainName);
     }
 
     var statements = List.<String>of();
@@ -200,8 +209,7 @@ public class SD2TestDecorator {
   }
 
   private ASTCDPackage getPackage(String packageName, ASTCDCompilationUnit decoratedCD) {
-    var p = CD4CodeMill
-        .cDPackageBuilder()
+    var p = CD4CodeMill.cDPackageBuilder()
         .setMCQualifiedName(MCTypeFacade.getInstance().createQualifiedName(packageName))
         .build();
     decoratedCD.getCDDefinition().addCDElement(p);
