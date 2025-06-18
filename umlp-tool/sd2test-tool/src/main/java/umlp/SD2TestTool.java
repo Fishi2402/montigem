@@ -24,7 +24,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 
-//TODO gradle dependency on umlp-test-rte, I would like to re-use runtime classes
+//TODO gradle dependency on umlp-test-rte, I would like to re-use runtime classes; nope. Just copy paste and rename it.
 
 public class SD2TestTool extends SD4DevelopmentTool {
 

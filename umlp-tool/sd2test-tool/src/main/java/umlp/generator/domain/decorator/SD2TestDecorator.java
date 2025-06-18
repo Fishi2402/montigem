@@ -147,6 +147,7 @@ public class SD2TestDecorator {
     //explicit import statements
     for (var importStatement : visitor.importStatements) {
       String signature;
+      //TODO on star: letztes klein machen, bei nicht stern das vorletzte
       if (importStatement.isStar()) {
         //we must assume that package names are all lowercase in our environments
         signature = Joiners.DOT.join(importStatement.getQName(), "*").toLowerCase();
@@ -309,6 +310,7 @@ public class SD2TestDecorator {
     public void visit(ASTSDCondition node) {
       //TODO add as condition to latest sendMessage or as initial condition
     }
+
 
     //TODO what is endCall?
   }

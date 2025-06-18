@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class Trigger {
-  //TODO Is it relevant where the call is coming from?
+  //TODO Is it relevant where the call is coming from? yes!
 
   /**
    * The name of the target where the trigger method is called on, i.e., a class name or the name
