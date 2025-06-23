@@ -5,7 +5,7 @@ import de.monticore.cd.facade.CDModifier;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.types.MCTypeFacade;
-import umlp.cli.UMLPFilePipelineSetup;
+import umlp.cli.UMLPFilePipeline;
 import umlp.cli.common.IOperation;
 import umlp.generator.Filter;
 
@@ -13,10 +13,10 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class UMLPClassCommentTransformation implements IOperation<UMLPFilePipelineSetup.Data> {
+public class UMLPClassCommentTransformation implements IOperation<UMLPFilePipeline.Data> {
   
   @Override
-  public boolean doWork(UMLPFilePipelineSetup.Data data) {
+  public boolean doWork(UMLPFilePipeline.Data data) {
     Predicate<Filter.Wrapper> filter = Filter.DERIVED.or(Filter.ABSTRACT).negate();
     List<ASTCDClass> domainClasses = data.getAST().getCDDefinition()
         .getCDClassesList()
