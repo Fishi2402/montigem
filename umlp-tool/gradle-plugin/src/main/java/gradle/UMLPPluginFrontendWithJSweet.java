@@ -10,10 +10,13 @@ import gradle.specific.UMLPJava2TypeScriptTask;
 import gradle.specific.UMLPSymbolsTask;
 import gradle.specific.serialize.SerializeCDSymbolsTask;
 import gradle.specific.serialize.SerializeGUISymbolsTask;
+import groovy.lang.Closure;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.artifacts.Dependency;
+import org.gradle.api.artifacts.ExternalModuleDependency;
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
 import org.gradle.api.artifacts.repositories.MavenRepositoryContentDescriptor;
 import org.gradle.api.attributes.Bundling;
@@ -26,8 +29,11 @@ import org.gradle.api.tasks.Sync;
 import org.gradle.api.tasks.TaskProvider;
 
 import java.io.File;
+import java.io.InputStream;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.function.Consumer;
 
 import static gradle.UMLPPluginFrontendBase.CREATE_DOMAIN_SYMBOLS_TASK_NAME;
@@ -55,6 +61,22 @@ public abstract class UMLPPluginFrontendWithJSweet implements Plugin<Project> {
   private static final String DOMAIN_SOURCES_PROPERTY = "domainSources";
 
   private static final String JSWEETTRANSPILER = "jsweettranspiler";
+
+  private static List<String> defaultExcludedSources = List.of(
+      "glob:**/shellapi/*ShellAPI.java",
+      "glob:**/Abstract*E2ETest*.java",
+      "glob:**/test_infrastructure/*.java",
+
+      "glob:**/*ManagerImpl.java",
+      "glob:**/*TestSetup.java",
+      "glob:**/*DummyProvider.java",
+      "glob:**/*ServerApplication.java",
+      "glob:**/*DAO.java",
+      "glob:**/*DAOFactory.java",
+      "glob:**/*DAONeo4J.java",
+      "glob:**/*DAOInterface.java",
+      "glob:**/*DBObserver.java"
+  );
 
   @Override
   public void apply(Project project) {
@@ -175,9 +197,9 @@ public abstract class UMLPPluginFrontendWithJSweet implements Plugin<Project> {
 
       // TODO: Fix ShellAPI imports
       // Required due to "imports cannot use * wildcards when using modules"
-      umlpTask.getExcludeSource().add("glob:**/shellapi/*ShellAPI.java"); // via @Erased
-      umlpTask.getExcludeSource().add("glob:**/Abstract*E2ETest*.java"); // via @Erased
-      umlpTask.getExcludeSource().add("glob:**/test_infrastructure/*.java"); // via @Erased
+      for (String s : defaultExcludedSources) {
+        umlpTask.getExcludeSource().add(s); // via @Erased
+      }
     });
   }
 
@@ -230,10 +252,9 @@ public abstract class UMLPPluginFrontendWithJSweet implements Plugin<Project> {
 
       // TODO: Fix ShellAPI imports
       // Required due to "imports cannot use * wildcards when using modules"
-      umlpTask.getExcludeSource().add("glob:**/shellapi/*ShellAPI.java"); // via @Erased
-      umlpTask.getExcludeSource().add("glob:**/Abstract*E2ETest*.java"); // via @Erased
-      umlpTask.getExcludeSource().add("glob:**/test_infrastructure/*.java"); // via @Erased
-
+      for (String s : defaultExcludedSources) {
+        umlpTask.getExcludeSource().add(s); // via @Erased
+      }
     });
   }
 
@@ -362,12 +383,37 @@ public abstract class UMLPPluginFrontendWithJSweet implements Plugin<Project> {
     releaseRepo.mavenContent(filterContent);
 
     project.getDependencies().add("implementation", "org.jsweet:jsweet-core:6.3.0");
-    project.getDependencies().add("implementation", "de.rwth.se.umlp.jsweet:jsweet-transpiler:3.2.0-UMLP-SNAPSHOT");
+    Dependency dep = project.getDependencies().create("de.rwth.se.umlp.jsweet:jsweet-transpiler:3.2.0-UMLP-SNAPSHOT", new Closure<Object>(this, this) {
+      @Override
+      public Object call(Object arg) {
+        var emd = (ExternalModuleDependency)arg;
+        emd.exclude(Map.of(
+            "group", "com.kohlschutter.jdk",
+            "module", "standalone-home"
+        ));
+        return arg;
+      }
+
+      @Override
+      public int getMaximumNumberOfParameters() {
+        return 1;
+      }
+    });
+    project.getDependencies().add("implementation", dep);
+    project.getDependencies().add("implementation", "com.kohlschutter.jdk.compiler:standalone-jdk11:1.0.0");
     if (local) {
       project.getDependencies().add("implementation", project.findProject(":umlp-rte:umlp-jsweet"));
     }
     else {
-      project.getDependencies().add("implementation", "umlp:umlp-jsweet:" + getStringProjectProperty(project, "version", ""));
+      try {
+        try(InputStream stream = getClass().getResourceAsStream("/buildInfo.properties")) {
+          Properties properties = new Properties();
+          properties.load(stream);
+          project.getDependencies().add("implementation", "umlp:umlp-jsweet:" + properties.get("version"));
+        }
+      } catch(java.io.IOException e) {
+        Log.error("Can not find /buildInfo.properties to configure umlp-jsweet", e);
+      }
     }
 
     // Add dependency to jsweet-core, to import the annotations (such as @Erased)

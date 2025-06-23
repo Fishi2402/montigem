@@ -11,7 +11,6 @@ import umlp.jsweet.extension.util.RTEPathUtil;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
-import java.util.Optional;
 
 public class DelegateGemListToArrayAdapter extends PrinterAdapter {
   private final GUIAdapterUtils adapterUtils;
@@ -31,7 +30,7 @@ public class DelegateGemListToArrayAdapter extends PrinterAdapter {
 
   @Override
   public void beforeTypeBody(TypeElement type) {
-    if (adapterUtils.isDirective(type)) {
+    if (adapterUtils.hasDirectiveAnnotation(type)) {
       printIndent().print("protected toArray<T>(arr: IUMLPList<T> | Array<T>): Array<T> {")
           .println().startIndent().printIndent()
           .print("return GemListUtil.toArray(arr);")

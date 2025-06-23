@@ -13,7 +13,9 @@ repositories {
 
 configurations {
   guiDefaultTypes
-  localGuiLib
+  localGuiLib {
+    canBeConsumed = true
+  }
 }
 
 dependencies {
@@ -21,15 +23,15 @@ dependencies {
   implementation project(":umlp-rte")
 }
 
-tasks.register('createCDSymbols', SerializeCDSymbolsTask) {
+tasks.create('createCDSymbols', SerializeCDSymbolsTask) {
   input = file("models/")
   // symbolPath = file("models/")
-  output = layout.buildDirectory.dir("CDSymbols")
+  output = project.layout.buildDirectory.dir("cDSymbols")
 }
 
 tasks.register('createGuiSymbols', SerializeGUISymbolsTask) {
   input = file("models/")
-  symbolDir = files(createCDSymbols.getOutput(), configurations.guiDefaultTypes.files)
+  symbolDir = files(createCDSymbols.getOutput(), configurations.guiDefaultTypes)
   output = layout.buildDirectory.dir("GuiSymbols")
 }
 
@@ -37,11 +39,13 @@ def componentLibs = [
     "arrange",
     "basic",
     "charts",
+    "fischertechnik",
     "functiondisplay",
     "input",
     "navigation",
     "table",
-    "networkgraph"
+    "networkgraph",
+    "editor"
 ]
 
 def libs = [
@@ -65,7 +69,7 @@ libs.each {
   def npmOutput = "dist/${libName}"
 
   // task `build_<lib_name>` that runs `npm run build @umlp/<lib_name>`
-  task "${buildTaskName}"(type: NpmTask) {
+  tasks.register("${buildTaskName}", NpmTask) {
     dependsOn tasks.npmInstall
     args = ["run", "build", "@umlp/${libName}"]
     // e.g. `projects/basic/src/mc/fenix/basic/`
@@ -78,7 +82,7 @@ libs.each {
   }
 
   // task `npmrc_<lib_name>` that creates .npmrc file for publishing
-  task "${genNpmrcTaskName}"(type: NPMAuthCreate) {
+  tasks.register("${genNpmrcTaskName}", NPMAuthCreate) {
     dependsOn "${buildTaskName}"
     // e.g. `build/dist/basic/.npmrc`
     npmrcFile = file("${project.buildDir}/${npmOutput}/.npmrc")
@@ -86,7 +90,7 @@ libs.each {
   }
 
   // task `publish_<lib_name>` that runs `npm publish <lib_name>`
-  task "${publishTaskName}"(type: NpmTask) {
+  tasks.register("${publishTaskName}", NpmTask) {
     dependsOn "${genNpmrcTaskName}"
     // e.g. `build/dist/basic/`
     workingDir = file("${project.buildDir}/${npmOutput}")
@@ -100,7 +104,7 @@ libs.each {
   def targetRoot = "${genDir}/cd"
   def targetDir = "${targetRoot}/mc/fenix/${libName}"
 
-  task "${copyTaskName}"(type: Copy) {
+  tasks.register("${copyTaskName}", Copy) {
     dependsOn translateJava2TSDomain
     // e.g. `build/guiComponentTypes/mc/fenix/basic/`
     from sourceDir
@@ -108,16 +112,18 @@ libs.each {
     into targetDir
   }
 
-  tasks[buildTaskName].dependsOn tasks[copyTaskName]
+  tasks.named("${buildTaskName}").configure {
+    dependsOn tasks.named("${copyTaskName}")
+  }
   def genTaskName = "${genTaskPrefix}${libName}"
 
   if (libName in componentLibs) {
-    task "${genTaskName}"(type: UMLPGuiGenTask) {
-      dependsOn(createCDSymbols, tasks[copyTaskName])
+    tasks.register("${genTaskName}", UMLPGuiGenTask) {
+      dependsOn tasks.named("createCDSymbols"), tasks.named("${copyTaskName}")
       input = layout.projectDirectory.dir("models/mc/fenix/${libName}")
       modelDir = layout.projectDirectory.dir("models")
       hwcDir = file(layout.projectDirectory.dir("projects/${libName}/src"))
-      symbolDir = files(createCDSymbols.getOutput(), configurations.guiDefaultTypes.files)
+      symbolDir = files(tasks.named("createCDSymbols").get().getOutput(), configurations.guiDefaultTypes)
       outputDir = layout.projectDirectory.dir("${genDir}/gui")
       importsDir = files(targetRoot)
       guiGenJsweet = false
@@ -125,7 +131,9 @@ libs.each {
       gen4TSLib = true
     }
 
-    tasks[buildTaskName].dependsOn tasks[genTaskName]
+    tasks.named("${buildTaskName}").configure{
+      dependsOn tasks.named("${genTaskName}")
+    }
   }
 }
 
@@ -147,6 +155,8 @@ tasks.build_input.inputs.files(tasks.build_commonj2ts.outputs.files.singleFile)
 tasks.build_input.dependsOn(tasks.build_commonj2ts)
 tasks.build_networkgraph.inputs.files(tasks.build_commonj2ts.outputs.files.singleFile)
 tasks.build_networkgraph.dependsOn(tasks.build_commonj2ts)
+tasks.build_editor.inputs.files(tasks.build_commonj2ts.outputs.files.singleFile)
+tasks.build_editor.dependsOn(tasks.build_commonj2ts)
 
 tasks.register('buildAll') {
   dependsOn tasks.findAll { it.name.startsWith(buildTaskPrefix) }
@@ -166,14 +176,21 @@ dependencies {
 sourceSets {
   symbols {
     resources {
-      srcDirs(createCDSymbols.getOutput(), createGuiSymbols.getOutput())
+      srcDirs(tasks.named("createCDSymbols").get().getOutput(),
+        createGuiSymbols.getOutput(),
+        () -> parent.tasks.named("generateGuiComponentJava").get().getSymbolOutDir()
+      )
       include "**/*sym"
+      include "**/*tags"
     }
   }
 }
 
 tasks.register('symbolJar', Jar) {
+  dependsOn createCDSymbols
+  dependsOn createGuiSymbols
   from sourceSets.symbols.output
+  archiveClassifier.set('symbols')
   includeEmptyDirs = false
 }
 

@@ -8,29 +8,17 @@ plugins {
 def useCD2GUI = false
 
 dependencies {
+  implementation project(":products:demorec:backend")
   guiTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
+  testImplementation project(':umlp-test-rte')
+
+  domainSources project(":products:demorec:backend")
 }
 
 node {
   nodeProjectDir = file("${buildDir}/frontendGen")
 }
 nodeSetup.dependsOn(frontendSetup)
-
-tasks.register('generateCDTOGUI', UMLPCdToGuiTask) {
-  enabled(useCD2GUI)
-  setGroup('build')
-  input = file("../models/DemoRec.umlp")
-  outputDir = layout.buildDirectory.dir("cd2gui")
-}
-
-tasks.register('guiVariability', GuiVariabilityHandlerTask) {
-  setGroup('build')
-  if (useCD2GUI) {
-    input.from(generateCDTOGUI.getOutputDir().dir("models"))
-  }
-  input.from(file("../models/gui"))
-  outputDir = layout.buildDirectory.dir("guiVariability")
-}
 
 genGUI {
   domainModels = ["DemoRec"]
@@ -43,7 +31,8 @@ genGUI {
                      "gui.measuringvalues.MeasuringValueCreate",
                      "gui.component.ComponentCreate",
                      "gui.kind.CreateComponentKind",
-                     "gui.pack.PackTypeCreate"]
+                     "gui.pack.PackTypeCreate",
+                     "gui.editprocessmodels.edit.wizard.ActionCreate"]
 
   /*
   debug = true
@@ -51,34 +40,25 @@ genGUI {
   /**/
 }
 
-tasks.register('genGUI2', UMLPGuiGenTask) {
-  enabled(useCD2GUI)
-  setGroup('build')
-  dependsOn(genGUI, guiVariability)
-  input = file(guiVariability.getOutputDir().dir("cd2gui"))
-  symbolDir = files(
-      generateCDTOGUI.getOutputDir().file("symbols"),
-      project(":umlp-rte:client").tasks.createGuiSymbols.output,
-      project(":umlp-rte:client").tasks.createCDSymbols.output
-  )
-  hwcDir = file("src/app/")
-  symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")
-  outputDir = layout.buildDirectory.dir("umlp/fe2")
-  domainModels = ["DemoRec"]
-  guiCreateModelsAsFile = file(generateCDTOGUI.getOutputDir().file("meta/guiCreateModels.txt"))
+translateJava2TSDomain {
+  excludeSource.addAll([
+      "glob:**/processmodeling/*",
+      "glob:**/*test*/*"
+  ])
+  verbose = true
 }
+
 
 npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 
 def prebuildTasks = [
-    npmInstall, generate, genGUI2
+    npmInstall, generate
 ]
 
 tasks.register('buildApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["build"]
-
 }
 assemble.dependsOn(buildApp)
 
@@ -92,8 +72,16 @@ tasks.register('runApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["serve"]
+  environment = [
+      "NODE_OPTIONS": "--max-old-space-size=4096"
+  ]
 }
 
 tasks.register('run') {
   dependsOn(runApp)
+}
+
+task runAppNoBuild(type: NpxTask) {
+  command = "ng"
+  args = ["serve"]
 }

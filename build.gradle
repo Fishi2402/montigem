@@ -80,7 +80,7 @@ subprojects {
   test {
     useJUnitPlatform()
     testLogging {
-      showStandardStreams = true
+      showStandardStreams = false
       events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
     }
   }
@@ -150,7 +150,6 @@ repositories { // required to resolve the ecj dependency, including the whole ch
     }
     mavenCentral()
 }
-
 
 build.dependsOn(gradle.includedBuild("umlp-tool").task(":build"))
 

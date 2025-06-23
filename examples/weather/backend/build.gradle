@@ -77,22 +77,6 @@ tasks.register('runServer') {
   })
 }
 
-tasks.register('genTestGUI', UMLPGuiGenTask) {
-  dependsOn('generateUmlpBackend')
-  input = file("../models")
-  outputDir = file("$project.buildDir/testgui")
-  hwcDir = file("$projectDir/src/main/java")
-  modelDir = layout.projectDirectory.dir("../models")
-  symbolDir = files(
-      generateUmlpBackend.symbolOutDir,
-      project(":umlp-rte:client").tasks.createGuiSymbols.output,
-      project(":umlp-rte:client").tasks.createCDSymbols.output,
-      configurations.guiDefaultTypes.files
-  )
-  domainModels = ["Weather"]
-  // guiCreateModels = ["stanley.gui.AccountCreate"]
-}
-
 test {
   testLogging {
     events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
@@ -112,5 +96,3 @@ sourceSets {
     }
   }
 }
-
-compileJava.dependsOn(generateUmlpBackend, genTestGUI)

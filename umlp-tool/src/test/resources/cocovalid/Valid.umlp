@@ -22,8 +22,8 @@ umlp Valid {
   enum E;
 
   association [*] A -> B [0..1];
-  association [1] B -> A;
-  association A [String] -> B [*];
-  association B [[a]] -> A [*];
+  association [1] B (a1) -> (b1) A;
+  association A [String] (b2) -> (a2) B [*];
+  association B [[a]] (a3) -> (b3) A [*];
   association B -> String;
 }

@@ -13,6 +13,8 @@ component TestNav() {
 
   @GemNavItem(title = "Deeper iterate statement", target = "gui/test/TestIterate");
 
+  @GemNavItem(title = "Update Lists dependent on arguments", target = "gui/test/TestListObserver");
+
   @GemButton(label = "Reset Data", leftClick = resetData());
 
   @GemText(value = "... navigation ends here...");

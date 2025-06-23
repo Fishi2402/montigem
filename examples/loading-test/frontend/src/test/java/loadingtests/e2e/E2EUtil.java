@@ -57,6 +57,13 @@ public class E2EUtil {
     game.addPlayer(p2);
     playerIds.add(p1.getGemId());
     playerIds.add(p2.getGemId());
+
+
+
+    LoadingTestsManager.getPlayerStatsManager().setGame(
+        LoadingTestsManager.gameBuilder().currentTurn(0).currentPlayerIndex(0L).votingPhase(false).gemIdForNav(-1).build().get()
+    );
+    LoadingTestsManager.getPlayerStatsManager().getGame().setGemIdForNav((int)LoadingTestsManager.getPlayerStatsManager().getGame().getGemId());
   }
 
 

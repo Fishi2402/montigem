@@ -8,12 +8,14 @@ import java.util.Optional;
 public enum TSImportMap {
   // vis libs
   ARRANGE("mc.fenix.arrange", "@umlp/arrange"),
+  EDITOR("mc.fenix.editor", "@umlp/editor"),
   BASIC("mc.fenix.basic", "@umlp/basic"),
   CHARTS("mc.fenix.charts", "@umlp/charts"),
   COMMON("mc.fenix.common", "@umlp/common"),
   NAVIGATION("mc.fenix.navigation", "@umlp/navigation"),
   INPUT("mc.fenix.input", "@umlp/input"),
   TABLE("mc.fenix.table", "@umlp/table"),
+  FISCHERTECHNIK("mc.fenix.fischertechnik", "@umlp/fischertechnik"),
   FUNCTIONDISPLAY("mc.fenix.functiondisplay", "@umlp/functiondisplay"),
   NETWORKGRAPH("mc.fenix.networkgraph", "@umlp/networkgraph"),
   ARRANGE_DEPRECATED("arrange", "@umlp/arrange"),

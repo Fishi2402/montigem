@@ -15,7 +15,6 @@ import de.monticore.class2mc.OOClass2MCResolver;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateController;
-import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.gradle.common.GradleLog;
@@ -29,6 +28,7 @@ import de.monticore.guidsl._symboltable.GUIDSLSymbols2Json;
 import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
 import de.monticore.guidsl._symboltable.IGUIDSLScope;
 import de.monticore.guidsl._symboltable.RoleSymbolDeSer;
+import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
 import de.monticore.ocl.ocl._ast.ASTOCLCompilationUnit;
 import de.monticore.ocl.ocl._parser.OCLParser;
@@ -51,8 +51,7 @@ import umlp._symboltable.IUMLPArtifactScope;
 import umlp._visitor.UMLPTraverser;
 import umlp.cli.PipelineReporter;
 import umlp.cli.UMLPPipelineData;
-import umlp.cli.UMLPToolPipelineSetup;
-import umlp.cli.common.Pipeline;
+import umlp.cli.UMLPToolPipeline;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.UMLAddCommentTrafo;
 import umlp.generator.domain.UMLAssocToAttrTrafo;
@@ -61,11 +60,11 @@ import umlp.generator.domain.UMLImportTrafo;
 import umlp.generator.domain.UMLSetDefaultsTrafo;
 import umlp.generator.gui.GUINodeIdTrafo;
 import umlp.generator.gui.coco.GUIDSLCoCosForUMLP;
+import umlp.generator.gui.coco.SymbolBoundNameExpressionsFinder;
 import umlp.generator.gui.genjava.decorator.CallTypeDeriver;
 import umlp.generator.gui.genjava.decorator.InitDependencyTree;
 import umlp.generator.gui.genjava.decorator.StaticObjectsCollector;
 import umlp.generator.util.TagLookUp;
-import umlp.generator.gui.coco.SymbolBoundNameExpressionsFinder;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -196,9 +195,7 @@ public class UMLPTool extends UMLPToolTOP {
       CommandLine cmd = parser.parse(options, args);
 
       // Due to its size, we define the Pipeline of the UMLP Tool in a separate class (UMLPToolPipelineSetup)
-      UMLPToolPipelineSetup pipeline = new UMLPToolPipelineSetup();
-
-      Pipeline<UMLPPipelineData> main = pipeline.getMain();
+      UMLPToolPipeline pipeline = new UMLPToolPipeline(cmd);
 
       // Here we could further modify the Pipeline
       UMLPPipelineData data = new UMLPPipelineData(cmd, options, this);
@@ -206,16 +203,24 @@ public class UMLPTool extends UMLPToolTOP {
       // Give the module system access to the tool pipeline
       invokeModuleSystemForToolConfig(data, pipeline);
 
-      new PipelineReporter().report(main,
+      new PipelineReporter().report(pipeline,
           new File(new File(REPORTS.getValue(data.getCmd(), UMLPTool.DEFAULT_REPORT_OUT)), "pipeline.md"));
 
-      main.doWork(data);
+      pipeline.doWork(data);
     }
     catch (ParseException e) {
       printHelp(options);
       Log.error("0xB005 An exception occurred while processing the CLI input!", e);
     }
     finally {
+      // Close all file systems
+      MCPath.closeAllJarFileSystems();
+      // Close all file handles (if last usage!)
+      FileReaderWriter.closeOpenedJarFiles();
+      // Clear MCPath caches
+      UMLPMill.globalScope().getSymbolPath().close();
+      GUIDSLMill.globalScope().getSymbolPath().close();
+      // Clear globalScope cache
       UMLPMill.globalScope().clear();
       GUIDSLMill.globalScope().clear();
       Reporting.off();
@@ -228,7 +233,7 @@ public class UMLPTool extends UMLPToolTOP {
    * @param data the pipeline data
    * @param pipeline the (main) pipeline setup
    */
-  public void invokeModuleSystemForToolConfig(UMLPPipelineData data, UMLPToolPipelineSetup pipeline) {
+  public void invokeModuleSystemForToolConfig(UMLPPipelineData data, UMLPToolPipeline pipeline) {
     var modSetup = new GeneratorSetup();
     GlobalExtensionManagement modInitGlex = createGlex(getModuleConfigTemplates(data.getCmd()));
     modSetup.setGlex(modInitGlex);

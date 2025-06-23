@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 @SpringBootApplication(
     exclude={ DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class},
@@ -27,6 +28,7 @@ public class JsweettestServerApplication extends JsweettestServerApplicationTOP 
     JsweettestManager.aBuilder().value("Alex").build();
 
     JsweettestManager.getGlobalState().setState(JsweettestManager.stateBuilder().name("State A").build().get());
+    JsweettestManager.typesBuilder().timestamp(LocalDateTime.now()).build();
   }
 
   public static void resetTestData() {

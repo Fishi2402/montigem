@@ -9,12 +9,15 @@ import mc.fenix.arrange.GemCard;
 import mc.fenix.arrange.GemColumn;
 import mc.fenix.arrange.GemRow;
 import mc.fenix.input.GemDropdownInput;
+import mc.fenix.input.GemAutocompleteInput;
 
 import gui.component.ComponentCreate;
 import gui.pack.ComponentsOfPack;
 import gui.staticcontainer.NavContainer;
 
-page JoinConnectionKindEdit(JoinConnectionKind connectionKind, boolean showOptionalAttributes=true) {
+component JoinConnectionKindEdit(List<DemoRecComponent> components, JoinConnectionKind connectionKind,
+    boolean showOptionalAttributes=true,
+    boolean newCompGuard = false, String componentEntry) {
 
   @GemColumn(
     wrap="nowrap",
@@ -27,10 +30,10 @@ page JoinConnectionKindEdit(JoinConnectionKind connectionKind, boolean showOptio
         validity = checkConnectionType(),
         width="var(--smallDropDownWidth)"),
 
-      selectConnectsComponent@GemDropdownInput(
+      selectConnectsComponent@GemAutocompleteInput(
         labelText = "Components connected by this connection",
-        options = null,
-        entry = null,
+        options = getComponentOptions(components),
+        entry = componentEntry,
         keyPress = tryToAddComponent(),
         validity = checkChosenComponents(),
         width="var(--largeDropDownWidth)"),
@@ -45,7 +48,7 @@ page JoinConnectionKindEdit(JoinConnectionKind connectionKind, boolean showOptio
         ]
       ),
 
-      newCompGuard@guard(true) {
+      @guard(newCompGuard) {
         createComponentDialog@GemColumn(
           components=[
             @ComponentCreate(createComponent=addNewComponent())

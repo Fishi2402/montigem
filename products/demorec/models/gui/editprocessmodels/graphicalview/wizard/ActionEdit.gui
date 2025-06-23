@@ -1,0 +1,69 @@
+package gui.editprocessmodels.graphicalview.wizard;
+
+import DemoRec.Task;
+import DemoRec.ProcessModel;
+
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemButton;
+import mc.fenix.input.GemTextInput;
+import mc.fenix.input.GemTextareaInput;
+import mc.fenix.basic.GemText;
+import mc.fenix.input.GemDropdownInput;
+
+import gui.step.ProcessStepView;
+
+component ActionEdit(Task task, ProcessModel processModel) {
+
+  pmHasUnderlyingProcess@guard(true) {
+    underlyingProcessStep@GemColumn(
+      rowGap="5px",
+      components=[
+
+        selectUnderlyingProcessStep@GemDropdownInput(
+          labelText = "Select Underlying Process Step:",
+          options = null,
+          entry = null,
+          disabled = false
+        ),
+
+        underlyingProcessStepIsPresent@guard(true) {
+          processStepInfo@ProcessStepView(processStep = task.underlyingProcessStep);
+        }
+      ]
+    );
+  }
+
+  taskName@GemTextInput(labelText = "Name:", inputType = "string", placeholder = task.name, entry = task.name);
+
+  taskDescription@GemTextareaInput(
+    labelText = "Short Description:",
+    entry = task.description,
+    placeholder = task.description
+  );
+
+  taskDuration@GemTextareaInput(
+    labelText = "Duration (in seconds):",
+    entry = task.timeConsumption,
+    placeholder = task.timeConsumption
+  );
+
+  taskEndeffector@GemDropdownInput(
+    labelText = "Used Endeffector:",
+    options = null,
+    entry = null
+  );
+
+  joinConnectionRow@GemColumn(
+    rowGap="5px",
+    components=[
+      taskJoinConnection@GemDropdownInput(
+        labelText = "Dissolved Join Connection:",
+        options = null,
+        entry = null
+      ),
+
+      createNewJoinConnectionButton@GemButton(label = "Create a new Join Connection for this Action", leftClick = createNewConnection())
+    ]
+  );
+}

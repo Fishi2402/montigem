@@ -18,6 +18,9 @@
       "@umlp/charts": [
         "./projects/charts"
       ],
+      "@umlp/fischertechnik": [
+        "./projects/fischertechnik"
+      ],
       "@umlp/input": [
         "./projects/input"
       ],
@@ -32,6 +35,9 @@
       ],
       "@umlp/networkgraph": [
         "./projects/networkgraph"
+      ],
+      "@umlp/editor": [
+        "./projects/editor"
       ]
     },
     "baseUrl": "./",

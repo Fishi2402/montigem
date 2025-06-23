@@ -8,3 +8,4 @@ export * from "./src/mc/fenix/commonj2ts/request";
 export * from "./src/mc/fenix/commonj2ts/mcjson";
 export * from "./src/mc/fenix/commonj2ts/common";
 export * from "./src/mc/fenix/commonj2ts/command";
+export * from "./src/mc/fenix/commonj2ts/types";

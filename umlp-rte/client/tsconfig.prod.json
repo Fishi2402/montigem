@@ -19,6 +19,9 @@
       "@umlp/commonj2ts": [
         "./build/dist/commonj2ts"
       ],
+      "@umlp/fischertechnik": [
+        "./projects/fischertechnik"
+      ],
       "@umlp/input": [
         "./build/dist/input"
       ],
@@ -33,6 +36,9 @@
       ],
       "@umlp/networkgraph": [
         "./build/dist/networkgraph"
+      ],
+      "@umlp/editor": [
+        "./build/dist/editor"
       ]
     },
     "baseUrl": "./"

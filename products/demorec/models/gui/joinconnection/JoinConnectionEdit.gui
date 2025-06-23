@@ -17,7 +17,7 @@ import gui.pack.ComponentsOfPack;
 import gui.staticcontainer.NavContainer;
 import gui.connectionkind.ChooseJoinConnectionKind;
 
-page JoinConnectionEdit(JoinConnection connection) {
+component JoinConnectionEdit(JoinConnection connection) {
 
   @GemRow(
     wrap="nowrap",

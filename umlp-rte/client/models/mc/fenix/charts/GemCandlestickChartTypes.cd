@@ -2,6 +2,7 @@
 package mc.fenix.charts;
 import java.util.List;
 
+<<pojoCD>>
 classdiagram GemCandlestickChartTypes {
 
   public class GemData2CandlestickChart {

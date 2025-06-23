@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 component C {
-  port in int a, out int b;
+  port sync in int a, sync out int b;
 
     <<sync>> automaton{
       initial state Idle;
