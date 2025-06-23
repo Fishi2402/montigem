@@ -2,6 +2,8 @@ package umlp.test_rte.monitor.model;
 
 /**
  * Describes the different matching strategies which an object defined in a sequence diagram may have.
+ *
+ * <p>This model should match the model in the sd2test-tool.
  */
 public enum MatchingStrategy {
   /**

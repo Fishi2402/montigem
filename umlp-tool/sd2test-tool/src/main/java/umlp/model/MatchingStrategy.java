@@ -2,8 +2,9 @@ package umlp.model;
 
 /**
  * Describes the different matching strategies which an object defined in a sequence diagram may have.
+ *
+ * <p>This model should match the model in the umlp-test-rte.
  */
-//TODO do I really need to duplicate this class?
 public enum MatchingStrategy {
   /**
    * Limitless other interactions with the object are possible.

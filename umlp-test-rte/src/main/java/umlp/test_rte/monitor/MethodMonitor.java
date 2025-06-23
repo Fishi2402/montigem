@@ -8,6 +8,8 @@ import umlp.test_rte.monitor.event.ReturnVoidEvent;
 
 public final class MethodMonitor {
 
+  //TODO add infrastructure to set a single stack processor instance as active
+
   private final BasicEvent basicEvent;
   private boolean active = true;
 
