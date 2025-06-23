@@ -222,12 +222,11 @@ public class TSManagerClientImplDecorator extends ManagerClientImplDecorator {
     getCD4C().addMethod(managerClass, "umlp.gui2ts.managerclientimpl.TSDoGetList", name, true, true);
     getCD4C().addMethod(managerClass, "umlp.gui2ts.managerimpl.TSIsLoaded", name, concreteSubclassesOrderedByDistance);
 
-    TSImportHelper importHelper = new TSImportHelper(glex, domainInterface, hwPath, outPath);
-    String importerQName = this.astcdPackage + "." + domainInterface.getName();
+    TSImportHelper importHelper = new TSImportHelper(glex, managerClass, hwPath, outPath);
+    String importerQName = this.astcdPackage + "." + name;
 
-    importHelper.addImport(Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainInterface.getName() + "_get"), importerQName);
-    importHelper.addImport(Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainInterface.getName() + "_get_filtered"), importerQName);
-
+    importHelper.addImport(Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), name + "_get"), importerQName);
+    importHelper.addImport(Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), name + "_get_filtered"), importerQName);
     importHelper.addImport(Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), name + "GemList"), importerQName);
 
     // Associations
