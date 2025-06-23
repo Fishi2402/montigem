@@ -37,6 +37,10 @@ public class UMLPGeneratorConfig {
     return instance;
   }
 
+  public static void reset() {
+    instance = null;
+  }
+
   public boolean isUseSpring() {
     return useSpring;
   }

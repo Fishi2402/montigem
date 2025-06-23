@@ -57,6 +57,7 @@ import umlp.generator.domain.UMLAddCommentTrafo;
 import umlp.generator.domain.UMLAssocToAttrTrafo;
 import umlp.generator.domain.UMLAttrToAssocTrafo;
 import umlp.generator.domain.UMLImportTrafo;
+import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.UMLSetDefaultsTrafo;
 import umlp.generator.gui.GUINodeIdTrafo;
 import umlp.generator.gui.coco.GUIDSLCoCosForUMLP;
@@ -272,6 +273,7 @@ public class UMLPTool extends UMLPToolTOP {
     StaticObjectsCollector.unsetInstance();
     CallTypeDeriver.unsetInstance();
     TSImportMap.INSTANCE.clear();
+    UMLPGeneratorConfig.reset();
 
     AbstractDecorator.cleanUp();
     TagLookUp.cleanUp();
