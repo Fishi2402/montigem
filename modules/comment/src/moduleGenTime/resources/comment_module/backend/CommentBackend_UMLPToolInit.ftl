@@ -1,6 +1,3 @@
-${tc.signature("tool")}
-
-<#-- @ftlvariable name="tool" type="umlp.UMLPTool"-->
 <#-- @ftlvariable name="tc" type="de.monticore.generating.templateengine.TemplateController"-->
 <#-- @ftlvariable name="data" type="umlp.cli.UMLPPipelineData"-->
 <#-- @ftlvariable name="mainPipelineSetup" type="umlp.cli.UMLPToolPipeline"-->
