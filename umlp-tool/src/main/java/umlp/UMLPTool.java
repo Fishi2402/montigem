@@ -240,26 +240,17 @@ public class UMLPTool extends UMLPToolTOP {
     GlobalExtensionManagement modInitGlex = createGlex(getModuleConfigTemplates(data.getCmd()));
     modSetup.setGlex(modInitGlex);
 
-    // Ensure our freemarker object wrapper has access to fields without getters
-    var modFtlConfig = modSetup.getConfig();
-    ((freemarker.ext.beans.BeansWrapper)modFtlConfig.getObjectWrapper()).setExposeFields(true);
-    modSetup.setFreeMarkerTemplateEngine(new FreeMarkerTemplateEngine(modFtlConfig));
-    var oldGlobalDataMod = modInitGlex.getGlobalVar("mod"); // The next line removes the old var
-    modInitGlex.setGlobalData(new SimpleHash(modFtlConfig.getObjectWrapper()));
-    // Set the "arguments" to the template
     modInitGlex.setGlobalValue("data", data);
     modInitGlex.setGlobalValue("mainPipelineSetup", pipeline);
-    modInitGlex.setGlobalValue("mod", oldGlobalDataMod);
 
     // Call the InitModules hookpoint
     TemplateController initModulesTC = modSetup.getNewTemplateController("umlp.generator.hook.InitModules");
     initModulesTC.includeArgs(initModulesTC.getTemplatename(), null, List.of(modInitGlex));
 
-
     // Then call the tool/pipeline UMLPToolInit hookpoint
     TemplateController modTC = modSetup.getNewTemplateController("umlp.UMLPToolInit");
     // We cannot use args for the pipeline, as it will create a non-exposing thingy - instead we use glex#setGlobalValue
-    modTC.includeArgs(modTC.getTemplatename(), null, List.of(this));
+    modTC.include(modTC.getTemplatename());
   }
 
   public static void cleanUpAfterMemoryLeakingSingletons() {

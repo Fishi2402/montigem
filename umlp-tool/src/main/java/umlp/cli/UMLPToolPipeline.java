@@ -226,4 +226,8 @@ public class UMLPToolPipeline extends Pipeline<UMLPPipelineData> {
   public Optional<UMLPFilePipeline> getUmlpFilePipeline() {
     return Optional.ofNullable(umlpFilePipeline);
   }
+
+  public void warn(String msg) {
+    Log.warn(msg);
+  }
 }

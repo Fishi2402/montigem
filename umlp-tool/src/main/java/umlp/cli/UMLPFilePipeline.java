@@ -383,4 +383,7 @@ public class UMLPFilePipeline extends Pipeline<UMLPPipelineData> {
   public interface DataWithCDASTAndTool extends DataWithCDAST, DataWithTool {
   }
 
+  public Pipeline<Data> getAstPipe() {
+    return astPipe;
+  }
 }

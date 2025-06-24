@@ -7,13 +7,14 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.types.MCTypeFacade;
 import umlp.cli.UMLPFilePipeline;
 import umlp.cli.common.IOperation;
+import umlp.cli.common.Pipeline;
 import umlp.generator.Filter;
 
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class UMLPClassCommentTransformation implements IOperation<UMLPFilePipeline.Data> {
+public class UMLPClassCommentTransformation extends Pipeline<UMLPFilePipeline.Data> {
   
   @Override
   public boolean doWork(UMLPFilePipeline.Data data) {
