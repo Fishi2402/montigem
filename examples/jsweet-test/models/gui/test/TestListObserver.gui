@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui.test;
+
+import Jsweettest.A;
+import Jsweettest.B;
+
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
+
+page TestListObserver(List<A> as) {
+  @iterate(A a: as) {
+    @GemText(value = concatFromA(a));
+    @GemText(value = concatFromBs(a.b));
+    @GemButton(label = "Add B", leftClick = addB(a));
+  };
+}
+

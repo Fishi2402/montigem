@@ -84,7 +84,8 @@ public class DAOFactoryDecorator extends AbstractDecorator {
             .filter(a -> !a.getModifier().isDerived()).map(a -> a.getName()).collect(Collectors.toList()));
     cd4C.addMethod(daoFactory, CUSTOM_TEMPLATE_PATH + "InitNeo4J", name + DAOFactoryDecorator.SUFFIX,
                    concreteDomainClasses, origCD.getCDDefinition().getCDAssociationsList().stream()
-            .filter(a -> !a.getModifier().isDerived()).map(a -> a.getName()).collect(Collectors.toList()));
+            .filter(a -> !a.getModifier().isDerived()).map(a -> a.getName()).collect(Collectors.toList()),
+        origCD.getCDDefinition().getCDClassesList());
 
     return daoFactory;
   }

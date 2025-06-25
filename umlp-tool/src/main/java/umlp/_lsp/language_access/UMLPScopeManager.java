@@ -3,13 +3,13 @@
 package umlp._lsp.language_access;
 
 import de.monticore.cd._symboltable.BuiltInTypes;
-import de.monticore.cd4analysis._symboltable.CD4AnalysisSymbolTableCompleter;
+import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import umlp.UMLPMill;
+import umlp._symboltable.IUMLPArtifactScope;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -22,6 +22,19 @@ public class UMLPScopeManager extends UMLPScopeManagerTOP {
   public void initGlobalScope(MCPath modelPath) {
     super.initGlobalScope(modelPath);
     syncAccessGlobalScope(globalScope -> BuiltInTypes.addBuiltInTypes(globalScope, false));
+  }
+
+  @Override
+  public UMLPArtifactScopeWithFindings createArtifactScope(ASTCDCompilationUnit ast, IUMLPArtifactScope oldArtifactScope) {
+    UMLPArtifactScopeWithFindings res = super.createArtifactScope(ast, oldArtifactScope);
+    try{
+      Log.getFindings().clear();
+      res.originalAst.accept(new CD4CodeSymbolTableCompleter(ast).getTraverser());
+      res.findings.addAll(Log.getFindings());
+    } catch (Throwable e){
+      logger.warn("Error while creating completing symbol table", e);
+    }
+    return res;
   }
 
   @Override
@@ -44,7 +57,7 @@ public class UMLPScopeManager extends UMLPScopeManagerTOP {
         for(ASTCDCompilationUnit ast : astNodes){
           try {
             Log.getFindings().clear();
-            ast.accept(new CD4AnalysisSymbolTableCompleter(ast).getTraverser());
+            ast.accept(new CD4CodeSymbolTableCompleter(ast).getTraverser());
             res.get(ast).findings.addAll(Log.getFindings());
           } catch (Throwable e){
             logger.warn("Error while creating completing symbol table", e);

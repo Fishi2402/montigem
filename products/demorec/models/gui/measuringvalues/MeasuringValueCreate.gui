@@ -21,7 +21,7 @@ page MeasuringValueCreate(MeasuringValue measuringValue, Event<MeasuringValue> m
       @GemTextInput(labelText = "Value", inputType = "string", entry = measuringValue.value, width="var(--smallDropDownWidth)"),
       selectDimensionUnit@GemDropdownInput(
         labelText = "Unit",
-        options = null,
+        options = getOpts(dimensions),
         entry = null,
         width="var(--verySmallDropDownWidth)"
       ),

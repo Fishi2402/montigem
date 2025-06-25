@@ -15,6 +15,7 @@ component Navigation() {
       @GemLink(url="gui/pack/AllPacksOverview", text="Battery Packs"),
       @GemLink(url="gui/endeffector/EndEffectorOverview", text="End Effectors"),
       @GemLink(url="gui/dimension/DimensionOverview", text="Dimensions"),
+      //@GemLink(url="gui/editprocessmodels/ProcessModels", text="Process Models"),
       @GemLink(url="generalinfo/About", text="About")
     ]
   );

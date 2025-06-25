@@ -23,13 +23,13 @@ stages:
 build_no_containers:
   stage: build
   script:
-    - "gradle --version"
-    - "gradle build --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
-    - "gradle :examples:vis-lib:frontend:build -Dj2ts_vislib=true"
+    - "gradle --version | tee $CI_PROJECT_DIR/build.log"
+    - "gradle build --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 | tee -a $CI_PROJECT_DIR/build.log"
+    - "gradle :examples:vis-lib:frontend:build -Dj2ts_vislib=true | tee -a $CI_PROJECT_DIR/build.log"
     # add one of the downloaded nodejs distributions to PATH, so we can build the vscode plugin
     - export PATH="$PATH:$(dirname $(find $(pwd) -type f -name "node" -print -quit))"
     - "cd umlp-tool"
-    - "gradle packageUMLPWithGUIVscodePlugin buildPlugin -P buildVscodePlugin=true -P buildIntelliJPlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
+    - "gradle packageUMLPWithGUIVscodePlugin buildPlugin -P buildVscodePlugin=true -P buildIntelliJPlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 | tee -a $CI_PROJECT_DIR/build.log"
   cache:
     paths:
       - .gradle/nodejs
@@ -38,10 +38,12 @@ build_no_containers:
       - examples/dtcockpit/frontend/build/frontendGen/node_modules
       - products/demorec/frontend/build/frontendGen/node_modules
   artifacts:
+    when: always
     paths:
       - umlp-tool/umlp-intellij-plugin/build/distributions/**
       - umlp-tool/build/generated-sources/UMLPWithGUI/**/*.vsix
       - ./**/build/reports/tests/test/**
+      - build.log
     reports:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
@@ -54,16 +56,16 @@ build_with_deploy:
   stage: build
   script:
     # Build project + examples
-    - "gradle --version"
-    - "gradle build --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
-    - "gradle :examples:vis-lib:frontend:build -Dj2ts_vislib=true"
+    - "gradle --version | tee $CI_PROJECT_DIR/build.log"
+    - "gradle build --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 | tee -a $CI_PROJECT_DIR/build.log"
+    - "gradle :examples:vis-lib:frontend:build -Dj2ts_vislib=true | tee -a $CI_PROJECT_DIR/build.log"
     # Deploy RTEs
-    - "gradle :umlp-tool:publish :umlp-tool:gradle-plugin:publish :umlp-rte:publish :umlp-test-rte:publish :umlp-rte:umlp-jsweet:publish :umlp-rte:client:publish :modules:publishModules -P mavenPassword=$pass -P mavenUser=$user"
+    - "gradle :umlp-tool:publish :umlp-tool:gradle-plugin:publish :umlp-rte:publish :umlp-test-rte:publish :umlp-rte:umlp-jsweet:publish :umlp-rte:client:publish :modules:publishModules -P mavenPassword=$pass -P mavenUser=$user | tee -a $CI_PROJECT_DIR/build.log"
     # Build editor plugin
     # add one of the downloaded nodejs distributions to PATH, so we can build the vscode plugin
     - export PATH="$PATH:$(dirname $(find $(pwd) -type f -name "node" -print -quit))"
     - "cd umlp-tool"
-    - "gradle packageUMLPWithGUIVscodePlugin buildPlugin -P buildVscodePlugin=true -P buildIntelliJPlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
+    - "gradle packageUMLPWithGUIVscodePlugin buildPlugin -P buildVscodePlugin=true -P buildIntelliJPlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 | tee -a $CI_PROJECT_DIR/build.log"
     - "cd .."
     # Build containers
     # Weather Backend
@@ -74,7 +76,7 @@ build_with_deploy:
       -Djib.to.image=$CI_REGISTRY_IMAGE/weather_backend:latest \
       -Djib.console=plain \
       -Djib.to.auth.username=$CI_REGISTRY_USER  \
-      -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
+      -Djib.to.auth.password=$CI_REGISTRY_PASSWORD | tee -a $CI_PROJECT_DIR/build.log"
     # SEHub Backend
     - "gradle :examples:sehub:backend:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
       -Djib.from.image=registry.git.rwth-aachen.de/monticore/container-registry/eclipse-temurin:11-jre \
@@ -83,7 +85,7 @@ build_with_deploy:
       -Djib.to.image=$CI_REGISTRY_IMAGE/sehub_backend:latest \
       -Djib.console=plain \
       -Djib.to.auth.username=$CI_REGISTRY_USER  \
-      -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
+      -Djib.to.auth.password=$CI_REGISTRY_PASSWORD | tee -a $CI_PROJECT_DIR/build.log"
     # Stat-Server
     - "gradle :examples:stat:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
       -Djib.from.image=registry.git.rwth-aachen.de/monticore/container-registry/eclipse-temurin:11-jre \
@@ -92,7 +94,7 @@ build_with_deploy:
       -Djib.to.image=$CI_REGISTRY_IMAGE/stat_backend:latest \
       -Djib.console=plain \
       -Djib.to.auth.username=$CI_REGISTRY_USER  \
-      -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
+      -Djib.to.auth.password=$CI_REGISTRY_PASSWORD | tee -a $CI_PROJECT_DIR/build.log"
     # DTCockpit Backend
     - "gradle :examples:dtcockpit:backend:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
       -Djib.from.image=registry.git.rwth-aachen.de/monticore/container-registry/eclipse-temurin:11-jre \
@@ -101,7 +103,7 @@ build_with_deploy:
       -Djib.to.image=$CI_REGISTRY_IMAGE/dtcockpit_backend:latest \
       -Djib.console=plain \
       -Djib.to.auth.username=$CI_REGISTRY_USER  \
-      -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
+      -Djib.to.auth.password=$CI_REGISTRY_PASSWORD | tee -a $CI_PROJECT_DIR/build.log"
     # DemoRec Application
     - "gradle :products:demorec:backend:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
       -Djib.from.image=registry.git.rwth-aachen.de/monticore/container-registry/eclipse-temurin:11-jre \
@@ -110,7 +112,7 @@ build_with_deploy:
       -Djib.to.image=$CI_REGISTRY_IMAGE/demorec_backend:latest \
       -Djib.console=plain \
       -Djib.to.auth.username=$CI_REGISTRY_USER  \
-      -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
+      -Djib.to.auth.password=$CI_REGISTRY_PASSWORD | tee -a $CI_PROJECT_DIR/build.log"
     # Vis-Lib Application
     - "gradle :examples:vis-lib:backend:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
       -Djib.from.image=registry.git.rwth-aachen.de/monticore/container-registry/eclipse-temurin:11-jre \
@@ -119,10 +121,10 @@ build_with_deploy:
       -Djib.to.image=$CI_REGISTRY_IMAGE/vis-lib_backend:latest \
       -Djib.console=plain \
       -Djib.to.auth.username=$CI_REGISTRY_USER  \
-      -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
+      -Djib.to.auth.password=$CI_REGISTRY_PASSWORD | tee -a $CI_PROJECT_DIR/build.log"
 
     # Frontends
-    - "gradle :examples:weather:frontend:deployImageCI :examples:sehub:frontend:deployImageCI :examples:dtcockpit:frontend:deployImageCI :products:demorec:frontend:deployImageCI :examples:vis-lib:frontend:deployImageCI -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
+    - "gradle :examples:weather:frontend:deployImageCI :examples:sehub:frontend:deployImageCI :examples:dtcockpit:frontend:deployImageCI :products:demorec:frontend:deployImageCI :examples:vis-lib:frontend:deployImageCI -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 | tee -a $CI_PROJECT_DIR/build.log"
   cache:
     paths:
       - .gradle/nodejs
@@ -131,10 +133,12 @@ build_with_deploy:
       - examples/dtcockpit/frontend/build/frontendGen/node_modules
       - products/demorec/frontend/build/frontendGen/node_modules
   artifacts:
+    when: always
     paths:
       - umlp-tool/umlp-intellij-plugin/build/distributions/**
       - umlp-tool/build/generated-sources/UMLPWithGUI/**/*.vsix
       - ./**/build/reports/tests/test/**
+      - build.log
     reports:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
@@ -157,9 +161,12 @@ slowtest:
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
   script:
-    - "gradle --version"
-    - "gradle slowtest --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
+    - "gradle --version | tee $CI_PROJECT_DIR/build.log"
+    - "gradle slowtest --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 | tee -a $CI_PROJECT_DIR/build.log"
   artifacts:
+    when: always
+    paths:
+      - build.log
     reports:
       # Lets gitlab render infos about failed tests
       junit: "**/slowtest/**/TEST-*.xml"
@@ -247,18 +254,3 @@ checkMDLinks:
     - "if [[ $linkCheckRes == *\"ERROR\"* ]]; then exit 1; fi"
   only:
     - master
-
-buildNativeImage:
-  image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:7-native-image
-  stage: build
-  artifacts:
-    paths:
-      - ./examples/native-image/build/native/nativeCompile/*
-    expire_in: 1 week
-  script:
-    - "gradle :examples:native-image:nativeBuild --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
-    - "gradle :examples:native-image:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
-        -Djib.to.image=$CI_REGISTRY_IMAGE/native-image-demo:latest \
-        -Djib.console=plain \
-        -Djib.to.auth.username=$CI_REGISTRY_USER  \
-        -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "

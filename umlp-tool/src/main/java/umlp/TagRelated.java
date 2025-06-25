@@ -112,6 +112,10 @@ public class TagRelated {
     Set<File> tagFiles = new HashSet<>();
     importedSymbolPath.getEntries()
         .forEach(path -> {
+          if (!path.toFile().exists()) {
+            Log.warn("SymbolPath (for TagLookup) is linking to a non existing directory " + path);
+            return;
+          }
           try {
             Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
               @Override

@@ -151,7 +151,6 @@ repositories { // required to resolve the ecj dependency, including the whole ch
     mavenCentral()
 }
 
-
 build.dependsOn(gradle.includedBuild("umlp-tool").task(":build"))
 
 tasks.register('umlp_check_report')

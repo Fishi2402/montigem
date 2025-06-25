@@ -7,10 +7,10 @@ import gui.kind.EditComponentKind;
 import gui.staticcontainer.NavContainer;
 import gui.pack.ComponentsOfPack;
 
-page EditComponentKindPage(BatteryPack pack, ComponentKind kind) {
+page EditComponentKindPage(ComponentKind kind) {
 
   @NavContainer(
     content=[@EditComponentKind(componentKind=kind, showOptionalValues=true)],
-    leftSideBar=[@ComponentsOfPack(pack=pack)]
+    leftSideBar=[@ComponentsOfPack(pack=kind.batteryPack)]
     );
 }

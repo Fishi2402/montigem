@@ -27,6 +27,8 @@ mavenPassword=mySuperStrongPassword
 In case you already have different versions of Java / Gradle and do not want to switch completely,
 we recommend [SDKMan](https://sdkman.io/) for managing different versions on the same computer.
 
+On MacOS you might need to install additional packages: `brew install pkgconfig pango cairo`
+
 After installing the dependencies, run `gradle build` in the top folder of the project.
 
 ## Quick Start

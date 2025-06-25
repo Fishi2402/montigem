@@ -67,6 +67,9 @@ export class GemDropdownInput extends GemDropdownInputComponent {
     if (changes["options"]) {
       this.filteredOptions = changes["options"].currentValue;
     }
+    if (changes["entry"]) {
+      this.selectedOption = this.options?.find(o => o.getValue() === this.entry);
+    }
   }
 
   onKeyPress(event: KeyboardEvent): void {
@@ -88,7 +91,6 @@ export class GemDropdownInput extends GemDropdownInputComponent {
 
   selectOption(option: Option): void {
     this.entry = option.getValue();
-    this.selectedOption = option;
     this.entryChange.emit(this.entry);
     this.hideDropdown();
   }
