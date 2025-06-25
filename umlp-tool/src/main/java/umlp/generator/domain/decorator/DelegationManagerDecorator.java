@@ -106,6 +106,7 @@ public class DelegationManagerDecorator extends ManagerDecorator {
         // this manager actually is responsible for the given builder-class
         // TODO: Check if this works with module hierarchies
         getCD4C().addImport(delegationManagerClass, ti.getPackageName().toLowerCase() + "." + ti.getName() + "Builder");
+        getCD4C().addImport(delegationManagerClass, ti.getPackageName().toLowerCase() + "." + ti.getName() + DeSerBuilderDecorator.DESER_BUILDER_SUFFIX);
         getCD4C().addImport(delegationManagerClass, origCDName.toLowerCase() + "." + ti.getName() + "4" + c.getName() + "DelegatedBuilder");
 
         getCD4C().addMethod(delegationManagerClass, "umlp.delegationmanager.DelegatedBuilder", ti.getName(), c.getName(), origCDName + "Manager");

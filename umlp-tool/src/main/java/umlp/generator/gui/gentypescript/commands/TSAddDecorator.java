@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui.gentypescript.commands;
 
+import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDType;
@@ -74,6 +75,11 @@ public class TSAddDecorator extends AddDecorator {
   @Override
   protected String getGeneralCheckAccessPolicyTemplate() {
     return "umlp.gui2ts.accesspolicy.TSGeneralCheckAccessPolicy";
+  }
+
+  @Override
+  protected void addManagerImportForAssoc(ASTCDCompilationUnit origCD, ASTCDClass clazz, ASTCDAssocSide a) {
+    // do nothing
   }
 
   @Override

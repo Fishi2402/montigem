@@ -4,6 +4,7 @@ package umlp.generator.domain.decorator.commands;
 import com.google.common.collect.Lists;
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.codegen.methods.AccessorDecorator;
+import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -52,8 +53,7 @@ public class AddDecorator extends AbstractDeSerDecorator {
           .forEach(a -> {
             astcdPackage.addCDElement(withOrigin(createClass(origCD,
                 a.getName(),
-                ((SymTypeOfGenerics) a.getSymbol()
-                    .getType()).getArgument(0),
+                ((SymTypeOfGenerics) a.getSymbol().getType()).getArgument(0),
                 c,
                 getCorrectManager(a),
                 false)));
@@ -74,7 +74,7 @@ public class AddDecorator extends AbstractDeSerDecorator {
                 c, getCorrectManagerOfTargetType(a), true
             );
             astcdPackage.addCDElement(withOrigin(clazz));
-            getCD4C().addImport(clazz, getManagerOfTargetTypeQName(a));
+            addManagerImportForAssoc(origCD, clazz, a);
             astcdPackage.addCDElement(withOrigin(createDeSer(origCD,
                 a.getName(),
                 getSymType("long"),
@@ -99,7 +99,7 @@ public class AddDecorator extends AbstractDeSerDecorator {
           .forEach(a -> {
             ASTCDClass clazz = createClass(origCD, a.getName(), a.getSymbol().getType(), c, getCorrectManagerOfTargetType(a), true);
             astcdPackage.addCDElement(withOrigin(clazz));
-            getCD4C().addImport(clazz, getManagerOfTargetTypeQName(a));
+            addManagerImportForAssoc(origCD, clazz, a);
             astcdPackage.addCDElement(withOrigin(createDeSer(origCD, a.getName(), getSymType("long"), c, true)));
           });
     });
@@ -154,6 +154,10 @@ public class AddDecorator extends AbstractDeSerDecorator {
     }
 
     return ast;
+  }
+
+  protected void addManagerImportForAssoc(ASTCDCompilationUnit origCD, ASTCDClass clazz, ASTCDAssocSide a) {
+    getCD4C().addImport(clazz, getManagerOfTargetTypeQName(a));
   }
 
   protected void addTypeImport(ASTCDCompilationUnit origCD, ASTCDClass ast, ASTCDType domainClass, ASTCDCompilationUnit typeCD, SymTypeExpression type) {
