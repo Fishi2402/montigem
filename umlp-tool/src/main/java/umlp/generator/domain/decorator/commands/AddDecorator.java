@@ -69,12 +69,12 @@ public class AddDecorator extends AbstractDeSerDecorator {
           .filter(Predicate.not(GenService::isBidirectional))
           .filter(GenService::isList)
           .forEach(a -> {
-            astcdPackage.addCDElement(withOrigin(createClass(origCD,
-                a.getName(),
-                a.getSymbol().getType(),
-                c,
-                getCorrectManagerOfTargetType(a),
-                true)));
+            ASTCDClass clazz = createClass(
+                origCD, a.getName(), a.getSymbol().getType(),
+                c, getCorrectManagerOfTargetType(a), true
+            );
+            astcdPackage.addCDElement(withOrigin(clazz));
+            getCD4C().addImport(clazz, getManagerOfTargetTypeQName(a));
             astcdPackage.addCDElement(withOrigin(createDeSer(origCD,
                 a.getName(),
                 getSymType("long"),
@@ -97,7 +97,9 @@ public class AddDecorator extends AbstractDeSerDecorator {
           .filter(Predicate.not(GenService::isBidirectional))
           .filter(GenService::isList)
           .forEach(a -> {
-            astcdPackage.addCDElement(withOrigin(createClass(origCD, a.getName(), a.getSymbol().getType(), c, getCorrectManagerOfTargetType(a), true)));
+            ASTCDClass clazz = createClass(origCD, a.getName(), a.getSymbol().getType(), c, getCorrectManagerOfTargetType(a), true);
+            astcdPackage.addCDElement(withOrigin(clazz));
+            getCD4C().addImport(clazz, getManagerOfTargetTypeQName(a));
             astcdPackage.addCDElement(withOrigin(createDeSer(origCD, a.getName(), getSymType("long"), c, true)));
           });
     });
