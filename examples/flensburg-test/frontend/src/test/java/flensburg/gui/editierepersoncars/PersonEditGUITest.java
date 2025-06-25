@@ -33,8 +33,8 @@ public class PersonEditGUITest extends FlensburgMockTestSetup {
    */
   @Test
   public void editPersonGUITest() {
-    Address a = FlensburgManager.addressBuilder().city("Flensburg").build().get();
     // Build objects contained in DB
+    Address a = FlensburgManager.addressBuilder().city("Flensburg").build().get();
     Person p1 = FlensburgManager.personBuilder()
         .age(24)
         .nickname("theo")
