@@ -4,13 +4,8 @@ package flensburg.gui.editierepersoncars;
 // HW-T
 
 import de.se_rwth.commons.logging.Log;
-import flensburg.gui.AbstractGUITest;
-import hardy.flensburg.Address;
-import hardy.flensburg.FlensburgManager;
-import hardy.flensburg.FlensburgMock;
-import hardy.flensburg.Person;
-import hardy.flensburg.PersonErrorCollector;
-import hardy.flensburg.PersonErrorObserver;
+import hardy.flensburg.*;
+import hardy.flensburg.test_infrastructure.FlensburgMockTestSetup;
 import org.junit.jupiter.api.Test;
 import stanley.personedit.PersonEdit;
 import umlp.test_rte.ClientSetup;
@@ -23,9 +18,11 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/* Test GUI (also E2E) for Person editing
+/*
+ * Test GUI (also E2E) for Person editing.
+ * Uses 2 clients and a mock database.
  */
-public class PersonEditGUITest extends AbstractGUITest {
+public class PersonEditGUITest extends FlensburgMockTestSetup {
 
   public PersonEditGUITest() {
     super(ClientSetup.of(2));
@@ -36,20 +33,23 @@ public class PersonEditGUITest extends AbstractGUITest {
    */
   @Test
   public void editPersonGUITest() {
-    Address a = FlensburgMock.addressBuilder().city("Flensburg").build().get();
-    // simulate two instances of a person located on two different clients
-    Person p1 = FlensburgMock.personBuilder()
+    Address a = FlensburgManager.addressBuilder().city("Flensburg").build().get();
+    // Build objects contained in DB
+    Person p1 = FlensburgManager.personBuilder()
         .age(24)
         .nickname("theo")
         .mainResidence(a)
         .build().get();
+
+    // Simulate: User opens PersonEdit page for theo, e.g., via a bookmarked link
     PersonEdit e = new PersonEdit();
     e.setP(p1);
 
-    // Check GUI contains correct values
+    // Check initially loaded GUI contains correct values
     assertEquals("theo", e.getGemTextInput4Entry());
     assertEquals("24", e.getGemTextInput5Entry());
 
+    // start of user interactions
     // Check setting the age in the gui changes the age of the person
     e.setGemTextInput5Entry("33");
     assertEquals(33, p1.getAge().intValue());
@@ -74,8 +74,8 @@ public class PersonEditGUITest extends AbstractGUITest {
     // working with client 1
     getClients(0).activate();
     // create initial person with an address
-    Address a = FlensburgMock.addressBuilderFromId(aGemId).city("Flensburg").build().get();
-    Person p1 = FlensburgMock
+    Address a = FlensburgManager.addressBuilderFromId(aGemId).city("Flensburg").build().get();
+    Person p1 = FlensburgManager
         .personBuilderFromId(pGemId)
         .age(24)
         .nickname("theo")
