@@ -129,7 +129,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
     ASTGUIComponentDeclaration declaration = gui.getGUIComponentDeclaration();
     if (declaration.isPresentTypeParameters()) {
-      ((ASTCDClass)clazz).setTypeParameters(declaration.getTypeParameters().deepClone());
+      clazz.setTypeParameters(declaration.getTypeParameters().deepClone());
     }
 
     StaticObjectsCollector.getInstance().init(declaration);
@@ -364,20 +364,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
    */
   @Override
   public void endVisit(ASTGUIComponent node) {
-    Map<SymTypeVariable, SymTypeExpression> replaceMap = new HashMap<>();
-    if (node.isPresentGUITypeArgs()) {
-      List<TypeVarSymbol> typeVars = node.getNameSymbol().getTypeVariableList();
-      List<ASTMCTypeArgument> typeArgs = node.getGUITypeArgs().getMCTypeArgumentList();
-      for (int i = 0; typeVars != null && i < typeVars.size(); i++) {
-        Optional<ASTMCType> mcType = typeArgs.get(i).getMCTypeOpt();
-        if (mcType.isPresent()) {
-          replaceMap.put(
-              SymTypeExpressionFactory.createTypeVariable(typeVars.get(i)),
-              TypeCheck3.symTypeFromAST(mcType.get())
-          );
-        }
-      }
-    }
+    Map<ASTGUINamedArg, SymTypeExpression> argumentTypeMap = node.getArgumentTypes();
     for (ASTGUINamedArg arg : node.getGUINamedArgs().getGUINamedArgList()) {
       // calc type
       if (!arg.isPresentNameSymbol()) {
@@ -386,13 +373,12 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
             + " - " + arg.get_SourcePositionEnd().toString()
         );
       }
-      SymTypeExpression typeSTE = arg.getNameSymbol().getType();
+      SymTypeExpression typeSTE = argumentTypeMap.get(arg);
       // exclude GUIViewElement
       if (util.isViewElement(typeSTE)
           || util.isViewElementsCollection(typeSTE)) {
         continue;
       }
-      typeSTE = TypeParameterRelations.replaceTypeVariables(typeSTE, replaceMap);
       ASTMCType type = getSimpleType(createTypeAndAddImports(typeSTE));
 
       // calc name

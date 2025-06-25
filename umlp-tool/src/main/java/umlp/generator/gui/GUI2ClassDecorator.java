@@ -3,7 +3,7 @@ package umlp.generator.gui;
 
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd4code.CD4CodeMill;
-import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cd4codebasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;

@@ -3,8 +3,8 @@ package umlp.generator.gui.gentypescript.decorator;
 
 import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cd.facade.CDModifier;
+import de.monticore.cd4codebasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
-import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -90,7 +90,7 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
   @Override
   public void endVisit(ASTGUIComponentDeclaration node) {
     if (node.isPresentTypeParameters()) {
-      ((de.monticore.cd4codebasis._ast.ASTCDClass)clazz).setTypeParameters(node.getTypeParameters().deepClone());
+      clazz.setTypeParameters(node.getTypeParameters().deepClone());
     }
   }
 
