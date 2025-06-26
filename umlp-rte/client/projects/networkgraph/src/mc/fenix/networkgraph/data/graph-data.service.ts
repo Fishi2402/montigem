@@ -446,7 +446,7 @@ export class GraphDataService<N extends NodeAttributes, E extends EdgeAttributes
    * @returns {boolean} - True if the graph has nodes, false otherwise.
    */
   public get hasNodes(): boolean {
-    return !!this.processedNodes?.length ?? false;
+    return !!this.processedNodes?.length;
   }
 
   /**
@@ -516,7 +516,7 @@ export class GraphDataService<N extends NodeAttributes, E extends EdgeAttributes
    * @returns {number | null} - The total number of nodes in the graph or null if not available.
    */
   public visibleNodeCount(): number | null {
-    if (!this.processedNodes?.length ?? null) return null;
+    if (!this.processedNodes?.length) return null;
     return (
       this.sigmaGraph.graph?.filterNodes((_: string, attributes: Attributes) => !attributes["hidden"]).length ?? null
     );
@@ -546,7 +546,7 @@ export class GraphDataService<N extends NodeAttributes, E extends EdgeAttributes
    * @returns {number | null} - The total number of edges in the graph or null if not available.
    */
   public visibleEdgeCount(): number | null {
-    if (!this.processedEdges?.length ?? null) return null;
+    if (!this.processedEdges?.length) return null;
     return (
       this.sigmaGraph.graph?.filterEdges((_: string, attributes: Attributes) => !attributes["hidden"]).length ?? null
     );

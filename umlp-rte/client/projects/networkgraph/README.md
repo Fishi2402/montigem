@@ -51,7 +51,7 @@ dependencies:
   "primeicons": "^6.0.1",
   "sigma": "3.0.0-alpha3",
   // Utility dependencies that might be necessary when using the entire "shared" folder
-  "xlsx-js-style": "^1.2.0",
+  "xlsx": "^1.2.0",
   "dom-to-image": "^2.6.0",
   "lodash.clonedeepwith": "^4.5.0",
   "lodash.isequal": "^4.5.0",
