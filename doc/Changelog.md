@@ -3,7 +3,38 @@
 Only big changes are listed. Since there is no semantic versioning for Fenix,
 the changes are tagged with a date.
 
-## Upcoming (if confirmed)
+## Upcoming
+
+### Changes
+
+For MontiGem users:
+
+- GUI component usage, `@iterate` and `@guard` become `Expression`
+- enable OCL list comprehensions
+- Consequences: enable defining lists, list comprehensions and GUI components as
+  default parameter values and as iterables in `@iterate`. Example: 
+  ```java
+  1  | package foo;
+  2  | import Domain.Car;
+  3  | 
+  4  | page Bar(
+  5  |   GUIViewElement title = @GemText(value = "Good"),
+  6  | 
+  7  |   List<String> textLines = ["Hello", " world!"],
+  8  | 
+  9  |   List<Car> cars = [c | c in Car, c.color.equals("red")]
+  10 | ) {
+  11 |   @iterate(GUIViewElement elem : [@GemText(), @GemButton()]) {
+  12 |     elem;
+  13 |   }
+  14 | }
+  ```
+  * line 5 - allow default GUI components
+  * line 7 - allow default lists
+  * line 9 - allow list comprehensions
+  * line 11 - allow lists in `iterate`
+
+## 2025-06-26
 
 ### Changes
 
@@ -60,37 +91,6 @@ Changes in GUI DSL AST and corresponding type checks:
   7  |  }
   ```
   Uses type `Person` (imported in line 4) as type argument of component `FamilyTree` in line 6.
-
-## Upcoming
-
-### Changes
-
-For MontiGem users:
-
-- GUI component usage, `@iterate` and `@guard` become `Expression`
-- enable OCL list comprehensions
-- Consequences: enable defining lists, list comprehensions and GUI components as
-  default parameter values and as iterables in `@iterate`. Example: 
-  ```java
-  1  | package foo;
-  2  | import Domain.Car;
-  3  | 
-  4  | page Bar(
-  5  |   GUIViewElement title = @GemText(value = "Good"),
-  6  | 
-  7  |   List<String> textLines = ["Hello", " world!"],
-  8  | 
-  9  |   List<Car> cars = [c | c in Car, c.color.equals("red")]
-  10 | ) {
-  11 |   @iterate(GUIViewElement elem : [@GemText(), @GemButton()]) {
-  12 |     elem;
-  13 |   }
-  14 | }
-  ```
-  * line 5 - allow default GUI components
-  * line 7 - allow default lists
-  * line 9 - allow list comprehensions
-  * line 11 - allow lists in `iterate`
 
 ## 2025-03-15
 
