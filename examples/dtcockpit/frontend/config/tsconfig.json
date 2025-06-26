@@ -38,11 +38,13 @@
       "@montigem/login": ["../../../../../modules/login/frontendTS/login"],
       "*": [
         "node_modules/*",
+        "src/app/*",
         "build/appdomain/*",
         "build/appgui/*",
-        "../umlp/fe2/*",
-        "src/app/*",
-        "../../src/app/*"
+        "hwcsrc/app/*",
+        "login_module_domain/*",
+        "login_module_gui/*",
+        "umlp_modules/loginmodule-ts/template_placeholder/src/*"
       ]
     }
   },
@@ -50,6 +52,7 @@
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
-    "strictTemplates": true
+    "strictTemplates": true,
+    "esModuleInterop": true
   }
 }

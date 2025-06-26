@@ -91,11 +91,23 @@ tasks.named('testApp') {
   }
 }
 
+tasks.register('linkStuff', NpmTask) {
+  dependsOn(prebuildTasks)
+  args = ['run', 'custom']
+}
+
 tasks.register('runApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["serve"]
 }
+
+tasks.named('runApp') {
+  dependsOn {
+    tasks.named('linkStuff').get()
+  }
+}
+
 
 tasks.named('runApp') {
   dependsOn {
