@@ -224,7 +224,7 @@ public class ProcessStepCreate extends ProcessStepCreateTOP {
   }
 
   public GemTextInputValidity checkStepTypeSet()  {
-    if(this.typeEntry != null) {
+    if(this.typeEntry != null && !this.typeEntry.trim().isEmpty()) {
       return new GemTextInputValidity("Success", null);
     } else {
       return new GemTextInputValidity("Error", "Please choose a Step Type");
@@ -232,7 +232,7 @@ public class ProcessStepCreate extends ProcessStepCreateTOP {
   }
 
   public GemTextInputValidity checkJoinConnectionKind() {
-    if(this.joinConnectionKindEntry != null) {
+    if(this.joinConnectionKindEntry != null && !this.typeEntry.trim().isEmpty()) {
       if(this.joinConnectionKindEntry.equals("NEW")) {
         return new GemTextInputValidity("Error", "Please Save the new Connection.");
       }

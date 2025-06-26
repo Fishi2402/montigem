@@ -110,4 +110,27 @@ public class PartialStepEdit extends PartialStepEditTOP {
       return new GemTextInputValidity("Error", "Wait for Page initialization.");
     }
   }
+
+
+  @Override
+  public GemTextInputValidity checkTimeConsumptionSet()  {
+    if(this.getStep() != null) {
+      String timeEntry = this.getTimeConsumptionEntry();
+      if (timeEntry == null || timeEntry.trim().isEmpty()) {
+        return new GemTextInputValidity("Error", "You have to set a time");
+      }
+      try {
+        double time = Double.parseDouble(timeEntry);
+        if (time <= 0) {
+          return new GemTextInputValidity("Error", "Time must be greater than 0");
+        }
+      } catch (NumberFormatException e) {
+        return new GemTextInputValidity("Error", "Invalid time format");
+      }
+      return new GemTextInputValidity("Success", null);
+    } else {
+      return new GemTextInputValidity("Error", "Wait for Page initialization.");
+    }
+  }
+
 }
