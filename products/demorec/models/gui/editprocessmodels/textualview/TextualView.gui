@@ -38,7 +38,7 @@ page TextualView(ProcessModel pm) {
               ]
             ),
             modelEditor@ProcessModelEditor(codeChanged=getEditorsCurrentCode(), processModel=pm)
-            //modelEditor@MonacoEditor(initialCode = setEditorsInitialCode(), language = "Workflow DSL", theme = "vs-dark", glyphMargin = true, showLightbulbIconMode = true, automaticLayout = true, semanticHighlightingEnabled = true, codeChanged = getEditorsCurrentCode())
+            modelEditor@MonacoEditor(entry=pm.description, theme = "Light +", automaticLayout = true))
           ]
         )
       )
