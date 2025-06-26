@@ -42,13 +42,12 @@ def publishTaskName = "${publishTaskPrefix}${libName}"
 def npmOutput = "dist/${libName}"
 
 // task `npmrc_<lib_name>` that creates .npmrc file for publishing
-task "${genNpmrcTaskName}"(type: NPMAuthCreate) {
-  // e.g. `build/dist/login/.npmrc`
+tasks.register("npmrc4download", NPMAuthCreate) {
+  // e.g. `.npmrc`
   npmrcFile = file(".npmrc")
-  unscoped = true
 }
 
-tasks.npmInstall.dependsOn("${genNpmrcTaskName}")
+tasks.npmInstall.dependsOn(tasks.named("npmrc4download"))
 
 // task `build_<lib_name>` that runs `npm run build @montigem/<lib_name>`
 task "${buildTaskName}"(type: NpmTask) {
@@ -63,15 +62,15 @@ task "${buildTaskName}"(type: NpmTask) {
   outputs.dir("${buildDir}/${npmOutput}")
 }
 
-tasks.register('copyNpmrc', Copy) {
-  dependsOn "${buildTaskName}"
-  from ".npmrc"
-  into "${buildDir}/${npmOutput}/"
+task "${genNpmrcTaskName}"(type: NPMAuthCreate) {
+  // e.g. `.npmrc`
+  npmrcFile = file("${buildDir}/${npmOutput}/.npmrc")
+  unscoped = true
 }
 
 // task `publish_<lib_name>` that runs `npm publish <lib_name>`
 task "${publishTaskName}"(type: NpmTask) {
-  dependsOn tasks.named('copyNpmrc')
+  dependsOn tasks.named("${genNpmrcTaskName}")
   // e.g. `build/dist/login/`
   workingDir = file("${buildDir}/${npmOutput}")
   args = ["publish"]
