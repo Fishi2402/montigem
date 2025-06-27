@@ -93,9 +93,6 @@ tasks.named('testApp') {
 
 tasks.register('linkStuff', NpmTask) {
   dependsOn(prebuildTasks)
-  dependsOn{
-    tasks.named("unpackModule").get()
-  }
   args = ['run', 'custom']
 }
 

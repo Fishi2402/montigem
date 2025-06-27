@@ -31,12 +31,6 @@ targetPathLogin = path.resolve(__dirname, "../../../../../modules/login/frontend
 
 linking(linkPathLogin, targetPathLogin)
 
-const pathToLinkPath = path.join(__dirname, "umlp_modules/loginmodule-ts/second_placeholder");
-linkPathLogin = path.join(__dirname, "umlp_modules/loginmodule-ts/second_placeholder/src");
-targetPathLogin = path.resolve(__dirname, "../../../../../modules/login/frontendTS/src/app");
-
-fs.mkdirSync(pathToLinkPath, {recursive: true})
-
 linking(linkPathLogin, targetPathLogin)
 
 linkPathLogin = path.join(__dirname, "build/umlp_frontend");
