@@ -44,7 +44,7 @@
         "hwcsrc/app/*",
         "login_module_domain/*",
         "login_module_gui/*",
-        "umlp_modules/loginmodule-ts/template_placeholder/src/*"
+        "umlp_modules/loginmodule-ts/second_placeholder/src/*"
       ]
     }
   },
