@@ -49,3 +49,20 @@ tasks.register('runApp', NpxTask) {
 tasks.register('run') {
   dependsOn(runApp)
 }
+
+tasks.register('linkStuff', NpmTask) {
+  dependsOn(prebuildTasks)
+  args = ['run', 'custom']
+}
+
+tasks.named('runApp') {
+  dependsOn {
+    tasks.named('linkStuff').get()
+  }
+}
+
+tasks.named('buildApp') {
+  dependsOn {
+    tasks.named('linkStuff').get()
+  }
+}

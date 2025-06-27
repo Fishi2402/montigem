@@ -3,7 +3,7 @@
 import {ProjectPageComponent,config} from 'gui/ProjectPageComponent';
 import {Artifact} from 'sehub/Artifact';
 import {Directory} from 'sehub/Directory';
-import { SehubSecurityManager } from "../sehub/SehubSecurityManager";
+import { SehubSecurityManager } from "sehub/SehubSecurityManager";
 import {Component} from '@angular/core';
 
 import {

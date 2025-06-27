@@ -3,7 +3,7 @@ import {SehubManager} from 'sehub/SehubManager';
 import {Component} from '@angular/core';
 import {ResponseComponent,config} from 'gui/note/ResponseComponent';
 import {Post} from 'sehub/Post';
-import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
+import {SehubSecurityManager} from "sehub/SehubSecurityManager";
 import {User} from 'sehub/User';
 import {SehubRole} from 'sehub/SehubRole';
 @Component({

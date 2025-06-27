@@ -108,6 +108,12 @@ tasks.named('runApp') {
   }
 }
 
+tasks.named('buildApp') {
+  dependsOn {
+    tasks.named('linkStuff').get()
+  }
+}
+
 
 tasks.named('runApp') {
   dependsOn {

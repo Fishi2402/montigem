@@ -4,7 +4,7 @@ import {SehubManager} from 'sehub/SehubManager';
 import {IssueState} from 'sehub/IssueState';
 import {Component} from '@angular/core';
 import {IssueEntryComponent,config} from 'gui/issues/IssueEntryComponent';
-import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
+import {SehubSecurityManager} from "sehub/SehubSecurityManager";
 import {User} from 'sehub/User';
 import {SehubRole} from 'sehub/SehubRole';
 
