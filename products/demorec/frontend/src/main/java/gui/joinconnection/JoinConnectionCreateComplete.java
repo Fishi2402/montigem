@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package gui.connectionkind;
+package gui.joinconnection;
 
 import demorec.DemoRecManager;
 import demorec.JoinConnectionKind;
