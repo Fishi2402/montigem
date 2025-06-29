@@ -69,27 +69,6 @@ public class ComponentEdit extends ComponentEditTOP {
     this.getComponent().setCondition(cond);
   }
 
-
-
-//  @Directive(ignore = true)
-//  @Override
-//  public GemTextInputValidity checkComponentName() {
-//   String name = this.getComponent().getName();
-//    if (name == null || name.trim().isEmpty()) {
-//      return GemTextInputValidity("Name must not be empty");
-//   }
-//   if (name.length() > 50) {
-//      return GemTextInputValidity("Name exceeds 50 characters; consider shortening");
-//////      // return a warning
-//////
-//////    }
-////    //if (!name.matches("[A-Za-z0-9 \-]+")) {
-////   //   return GemTextInputValidity.invalid("Name contains invalid characters");
-////  //  }
-//   return GemTextInputValidity.valid();
-// }
-
-
   @Override
   public GemTextInputValidity checkComponentName() {
     if (this.getComponent() == null) {
