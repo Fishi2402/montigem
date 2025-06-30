@@ -3,10 +3,13 @@ package gradle.specific.cd;
 
 import gradle.common.UMLPSingleFileTask;
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.provider.Property;
+import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.PathSensitive;
 import org.gradle.api.tasks.PathSensitivity;
+import umlp.UMLPToolOptions;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -28,6 +31,10 @@ public abstract class GUITypes2JavaTask extends UMLPSingleFileTask {
   @OutputDirectory
   @org.gradle.api.tasks.Optional
   public abstract DirectoryProperty getSymbolOutDir();
+
+  @Input
+  @org.gradle.api.tasks.Optional
+  public abstract Property<String> getTslib();
 
   @Override
   public boolean isInputFile(File f){
@@ -57,6 +64,11 @@ public abstract class GUITypes2JavaTask extends UMLPSingleFileTask {
     if (getTemplatePath().isPresent()) {
       result.add("--templatePath");
       result.add(handlePath.apply(getTemplatePath().get().getAsFile().toPath()));
+    }
+
+    if (this.getTslib().isPresent()) {
+      result.add("-" + UMLPToolOptions.GUI_GEN_FOR_TS_LIB.getCMD());
+      result.add(getTslib().get());
     }
 
     result.add("-rte");

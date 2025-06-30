@@ -48,18 +48,49 @@ configurations {
   umlpModulesGen
 }
 
-// POJOs
-tasks.register('generateGuiComponentJava', GUITypes2JavaTask) {
-  hwcDir = project.layout.files("src/main/java")
-  input = file("client/models/")
-  outputDir = project.layout.buildDirectory.dir("guiComponentTypes")
-  symbolOutDir = project.layout.buildDirectory.dir("guiComponentTypesTagOut")
+def libs = [
+    "arrange",
+    "basic",
+    "charts",
+    "fischertechnik",
+    "functiondisplay",
+    "input",
+    "navigation",
+    "table",
+    "networkgraph",
+    "editor"
+]
+
+def genTasks = []
+def outputDirs = []
+
+libs.forEach {
+  def libName = it
+  def genTaskName = "cd2java_${libName}"
+  def outDir = project.layout.buildDirectory.dir("guiComponentTypes/${libName}")
+  genTasks << genTaskName
+  outputDirs << outDir
+  // POJOs
+  tasks.register(genTaskName, GUITypes2JavaTask) {
+    hwcDir = project.layout.files("src/main/java")
+    input = file("client/models/mc/fenix/${libName}")
+    outputDir = outDir
+    symbolOutDir = project.layout.buildDirectory.dir("guiComponentTypesTagOut/${libName}")
+    tslib = "@umlp/${libName}"
+  }
 }
+
+tasks.register('generateGuiComponentJava') {
+  dependsOn(genTasks)
+}
+
 // Ensure that the symbolJar task knows it depends on the generateGuiComponentJava task
-project(":umlp-rte:client").tasks.named("symbolJar").configure {it.dependsOn(generateGuiComponentJava)}
+project(":umlp-rte:client").tasks.named("symbolJar").configure {
+  it.dependsOn(tasks.named('generateGuiComponentJava'))
+}
 
 // Let RTE assemble depend on the generation
-assemble.dependsOn generateGuiComponentJava
+assemble.dependsOn tasks.named('generateGuiComponentJava')
 
 //task guiComponentTypesJar(type: Jar) {
 //  from generateGuiComponentPOJOs.output
@@ -68,7 +99,7 @@ assemble.dependsOn generateGuiComponentJava
 
 sourceSets {
   main {
-    java.srcDirs += [generateGuiComponentJava.outputDir]
+    java.srcDirs += outputDirs // [generateGuiComponentJava.outputDir]
   }
 }
 //guiComponentTypesJar.dependsOn compileJava
