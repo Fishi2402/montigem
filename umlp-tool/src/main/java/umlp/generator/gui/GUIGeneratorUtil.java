@@ -825,7 +825,8 @@ public class GUIGeneratorUtil {
   }
 
   public boolean isViewElement(SymTypeExpression ste) {
-    return ste.getTypeInfo().getFullName().equals(BuiltInTypes.GUI_VIEW_ELEMENT.getQName());
+    return ste.hasTypeInfo()
+        && ste.getTypeInfo().getFullName().equals(BuiltInTypes.GUI_VIEW_ELEMENT.getQName());
   }
 
   public String getBoxedType(String type) {
