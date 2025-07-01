@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test_gui;
+
+import test_gui.IterateOverViewElementsComp;
+import mc.fenix.basic.GemText;
+
+page IterateOverViewElements() {
+  @IterateOverViewElementsComp(eList = [
+    @GemText(value = "foo"),
+    @GemText(value = "bar")
+  ]);
+}

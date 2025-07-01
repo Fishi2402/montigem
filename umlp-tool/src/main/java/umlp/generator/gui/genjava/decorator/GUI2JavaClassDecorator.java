@@ -548,10 +548,20 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     // if the iterable is a custom method
     if (StaticObjectsCollector.getInstance().getNode2Method().containsKey(control.getIterable())) {
       Method m = StaticObjectsCollector.getInstance().getNode2Method().get(control.getIterable());
+      if (util.isViewElement(m.getReturnType())
+          || util.isViewElementsCollection(m.getReturnType())) {
+        Log.warn("Detected method " + m.getName() + " returning GUIViewElement object(s)."
+            + " Such methods are uncommon to define, consider adjusting the model.");
+      }
       type = getSimpleType(createTypeAndAddImports(m.getReturnType()));
     }
     else {
       SymTypeExpression typeSTE = util.getType(control.getIterable());
+      // exclude GUIViewElement
+      if (util.isViewElement(typeSTE)
+          || util.isViewElementsCollection(typeSTE)) {
+        return;
+      }
       type = getSimpleType(createTypeAndAddImports(typeSTE));
     }
 

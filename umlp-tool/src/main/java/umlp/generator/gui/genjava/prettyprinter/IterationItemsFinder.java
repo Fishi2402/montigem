@@ -19,9 +19,9 @@ import java.util.concurrent.ExecutionException;
 
 /**
  * Find iteration items. The items in the context of GUI generator must be ignored when printing
- * expressions as getters, setters, etc. For example, iteration items declared in iterate statement
- * are local to HTML context, meaning that those are referenced as raw variables and do not have
- * getters.
+ * expressions as getters, setters, etc. For example, "s" in the example is an iteration item
+ * declared in iterate statement, which is local to HTML context, meaning that it is referenced
+ * as a raw variable and does not have a getter.
  * <pre>
  * {@code
  * ```gui
