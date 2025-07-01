@@ -69,6 +69,7 @@ public class ComponentEdit extends ComponentEditTOP {
     this.getComponent().setCondition(cond);
   }
 
+
   @Override
   public GemTextInputValidity checkComponentName() {
     if (this.getComponent() == null) {
