@@ -69,6 +69,7 @@ import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 import umlp.generator.util.TagLookUp;
 import umlp.generator.util.UMLPSymbolTables;
 
+import java.net.URI;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -1037,7 +1038,8 @@ public class GUIGeneratorUtil {
       res = Optional.of(importer
           .toAbsolutePath()
           .normalize()
-          .relativize(hwPath.get().toAbsolutePath())
+          // TODO this is bullshit
+          .relativize(importer.resolve("../../hwcsrc/gui/"+hwFile).toAbsolutePath())
           .toString()
           .replaceAll("\\\\", "/"));
 

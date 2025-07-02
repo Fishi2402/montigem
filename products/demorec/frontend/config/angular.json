@@ -38,6 +38,7 @@
               "src/styles.scss",
               "node_modules/monaco-editor/min/vs/editor/editor.main.css"
             ],
+            "preserveSymlinks": true,
             "scripts": []
           },
           "configurations": {

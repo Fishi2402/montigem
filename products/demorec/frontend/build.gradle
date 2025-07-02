@@ -85,3 +85,27 @@ task runAppNoBuild(type: NpxTask) {
   command = "ng"
   args = ["serve"]
 }
+
+tasks.register('linkStuff') {
+  dependsOn(prebuildTasks)
+  doLast {
+    def target = file('src/main/ts')
+    def link = file('build/frontendGen/hwcsrc')
+    if(!link.exists()) {
+      // TODO this is windows only - FUCK this garbage OS
+      ["cmd", "/c", "mklink", "/J", link.toString(), target.toString()].execute().waitFor()
+    }
+  }
+}
+
+tasks.named('runApp') {
+  dependsOn {
+    tasks.named('linkStuff').get()
+  }
+}
+
+tasks.named('buildApp') {
+  dependsOn {
+    tasks.named('linkStuff').get()
+  }
+}

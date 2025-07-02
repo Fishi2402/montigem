@@ -102,3 +102,38 @@ tasks.register('e2eRecordTest', NpmTask) {
   args = ["run", "e2erecord"]
   enabled = false // TODO: ALu
 }
+
+tasks.register('linkStuff', NpmTask) {
+  dependsOn(prebuildTasks)
+  // Avoid declaring the junction paths directly as outputs
+  outputs.upToDateWhen {
+    def hwcsrc = file("$buildDir/frontendGen/hwcsrc")
+    def loginDomain = file("$buildDir/frontendGen/login_moduel_domain")
+    def loginGui = file("$buildDir/frontendGen/login_module_gui")
+    def frontendOut = file("$buildDir/frontendGen/build/umlp_frontend")
+    isJunction(hwcsrc) &&
+    isJunction(loginDomain) &&
+    isJunction(loginGui) &&
+    isJunction(frontendOut)
+  }
+
+  args = ['run', 'custom']
+}
+
+// Utility method to detect junction/symlink
+static boolean isJunction(File file) {
+  return java.nio.file.Files.isSymbolicLink(file.toPath())
+}
+
+tasks.named('runApp') {
+  dependsOn {
+    tasks.named('linkStuff').get()
+  }
+}
+
+
+tasks.named('buildApp') {
+  dependsOn {
+    tasks.named('linkStuff').get()
+  }
+}

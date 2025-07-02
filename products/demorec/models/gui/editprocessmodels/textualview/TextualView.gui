@@ -13,8 +13,7 @@ import gui.editprocessmodels.header.TitleBar;
 
 import gui.staticcontainer.NavContainer;
 
-import gui.editprocessmodels.textualview.ProcessModelEditor;
-import gui.editprocessmodels.textualview.textualeditor.MonacoEditor;
+import mc.fenix.editor.MonacoEditor;
 
 page TextualView(ProcessModel pm) {
   @NavContainer(
@@ -37,8 +36,7 @@ page TextualView(ProcessModel pm) {
                 downloadInstructionsButton@GemButton(label = "Download Instructions", leftClick = downloadInstructions())
               ]
             ),
-            modelEditor@ProcessModelEditor(codeChanged=getEditorsCurrentCode(), processModel=pm)
-            modelEditor@MonacoEditor(entry=pm.description, theme = "Light +", automaticLayout = true))
+            modelEditor@MonacoEditor(entry=pm.description, theme = "Light +", automaticLayout = true)
           ]
         )
       )

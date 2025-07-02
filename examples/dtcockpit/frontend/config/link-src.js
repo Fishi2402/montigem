@@ -16,10 +16,10 @@ function linking(linkPath, targetPath) {
   }
 }
 
-const linkPath = path.join(__dirname,'hwcsrc');
+/*const linkPath = path.join(__dirname,'hwcsrc');
 const targetPath = path.resolve(__dirname, '..','..', 'src');
 
-linking(linkPath, targetPath)
+linking(linkPath, targetPath)*/
 
 var linkPathLogin = path.join(__dirname, 'login_module_domain');
 var targetPathLogin = path.resolve(__dirname, "../../../../../modules/login/frontendTS/build/frontendGen/build/appdomain");

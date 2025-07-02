@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {DtcockpitSecurityManager} from "../dtcockpit/DtcockpitSecurityManager";
+import {DtcockpitSecurityManager} from "dtcockpit/DtcockpitSecurityManager";
 import {User} from 'dtcockpit/User';
 import {ActivatedRoute, Router} from '@angular/router';
 import { RouterModule } from '@angular/router';
