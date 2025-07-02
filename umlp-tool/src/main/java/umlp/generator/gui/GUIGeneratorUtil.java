@@ -1039,7 +1039,7 @@ public class GUIGeneratorUtil {
           .toAbsolutePath()
           .normalize()
           // TODO this is bullshit
-          .relativize(importer.resolve("../../hwcsrc/gui/"+hwFile).toAbsolutePath())
+          .relativize(importer.resolve(hwFile).toAbsolutePath())
           .toString()
           .replaceAll("\\\\", "/"));
 

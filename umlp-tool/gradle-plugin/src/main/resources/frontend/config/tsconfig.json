@@ -31,8 +31,8 @@
         "build/appdomain/*",
         "build/appgui/*",
         "src/app/*",
-        "../../src/app/*",
-        "../umlp/fe2/*",
+        "hwcsrcgui/",
+        "hwcsrcdomain/",
         "node_modules/*"
       ]
     }
