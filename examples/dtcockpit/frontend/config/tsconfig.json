@@ -41,7 +41,7 @@
         "src/app/*",
         "build/appdomain/*",
         "build/appgui/*",
-        "hwcsrc/app/*",
+        "hwcsrc/*",
         "login_module_domain/*",
         "login_module_gui/*",
         "umlp_modules/loginmodule-ts/second_placeholder/src/*"

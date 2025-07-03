@@ -151,7 +151,7 @@ public class GUI2ConfigGenerator {
       boolean existHWC = filePath.isPresent();
       String componentFilePath;
       if (existHWC) {
-        componentFilePath = filePath.get();
+        componentFilePath = component.getComponentQName().replace(".","/");
       }
       else {
         componentFilePath = "./" + component.getComponentName() + "Component";
@@ -162,7 +162,7 @@ public class GUI2ConfigGenerator {
           component,
           existHWC,
           idStrings,
-          util.removeExtension(componentFilePath),
+          componentFilePath,
           route.getPathStringNoExt()
       );
       packageRoutes.add(componentRouting);

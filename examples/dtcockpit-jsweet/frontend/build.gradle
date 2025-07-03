@@ -49,21 +49,26 @@ def prebuildTasks = [
     npmInstall, generate
 ]
 
-tasks.register('linkStuff', NpmTask) {
+tasks.register('linkStuff', NodeTask) {
   dependsOn(prebuildTasks)
-  // Avoid declaring the junction paths directly as outputs
+
+  def hwcsrc = file("$buildDir/frontendGen/hwcsrc")
+  def hwcsrcTarget = file("src/main/ts")
+
+  def frontendOutBuild = file("$buildDir/build").mkdirs();
+
+  def frontendOut = file("$buildDir/build/umlp_frontend")
+  def frontendOutTarget = file("$buildDir/umlp_frontend")
+
   outputs.upToDateWhen {
-    def hwcsrc = file("$buildDir/frontendGen/hwcsrc")
-    def loginDomain = file("$buildDir/frontendGen/login_moduel_domain")
-    def loginGui = file("$buildDir/frontendGen/login_module_gui")
-    def frontendOut = file("$buildDir/frontendGen/build/umlp_frontend")
     isJunction(hwcsrc) &&
-        isJunction(loginDomain) &&
-        isJunction(loginGui) &&
-        isJunction(frontendOut)
+    isJunction(frontendOut)
   }
 
-  args = ['run', 'custom']
+  script = file("$buildDir/frontendGen/symlink-creation.js")
+  args = [hwcsrc.toString(), hwcsrcTarget.toString(),
+          frontendOut.toString(), frontendOutTarget.toString(),
+          ]
 }
 
 // Utility method to detect junction/symlink
@@ -85,6 +90,9 @@ tasks.register('testApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["test"]
+  dependsOn {
+    tasks.named('linkStuff').get()
+  }
 }
 
 tasks.register('runApp', NpxTask) {

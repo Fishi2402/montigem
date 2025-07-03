@@ -46,19 +46,15 @@ def prebuildTasks = [
 ]
 
 tasks.register('linkStuff', NpmTask) {
-  dependsOn(prebuildTasks)
+  dependsOn(prebuildTasks,frontendSetup)
   // Avoid declaring the junction paths directly as outputs
+  println getProperties()
   outputs.upToDateWhen {
-    def hwcsrc = file("$buildDir/frontendGen/hwcsrc")
-    def loginDomain = file("$buildDir/frontendGen/login_moduel_domain")
-    def loginGui = file("$buildDir/frontendGen/login_module_gui")
+    def hwcsrc = file("$buildDir/frontendGen/hwcsrc/ts")
     def frontendOut = file("$buildDir/frontendGen/build/umlp_frontend")
     isJunction(hwcsrc) &&
-        isJunction(loginDomain) &&
-        isJunction(loginGui) &&
-        isJunction(frontendOut)
+    isJunction(frontendOut)
   }
-
   args = ['run', 'custom']
 }
 

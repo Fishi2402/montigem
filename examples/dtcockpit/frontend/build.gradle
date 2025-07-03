@@ -97,21 +97,36 @@ tasks.register('runApp', NpxTask) {
   args = ["serve"]
 }
 
-tasks.register('linkStuff', NpmTask) {
+tasks.register('linkStuff', NodeTask) {
   dependsOn(prebuildTasks)
+
+  def hwcsrc = file("$buildDir/frontendGen/hwcsrc")
+  def hwcsrcTarget = file("src/app")
+
+  def frontendOutBuild = file("$buildDir/build").mkdirs();
+
+  def frontendOut = file("$buildDir/build/umlp_frontend")
+  def frontendOutTarget = file("$buildDir/umlp_frontend")
+
+  def loginDomain = file("$buildDir/frontendGen/login_module_domain")
+  def loginDomainTarget = file("../../../modules/login/frontendTS/build/frontendGen/build/appdomain")
+
+  def loginGui = file("$buildDir/frontendGen/login_module_gui")
+  def loginGuiTarget = file("../../../modules/login/frontendTS/build/frontendGen/build/appgui")
+
   // Avoid declaring the junction paths directly as outputs
   outputs.upToDateWhen {
-    def hwcsrc = file("$buildDir/frontendGen/hwcsrc")
-    def loginDomain = file("$buildDir/frontendGen/login_moduel_domain")
-    def loginGui = file("$buildDir/frontendGen/login_module_gui")
-    def frontendOut = file("$buildDir/frontendGen/build/umlp_frontend")
     isJunction(hwcsrc) &&
-        isJunction(loginDomain) &&
-        isJunction(loginGui) &&
-        isJunction(frontendOut)
+    isJunction(loginDomain) &&
+    isJunction(loginGui) &&
+    isJunction(frontendOut)
   }
 
-  args = ['run', 'custom']
+  script = file("$buildDir/frontendGen/symlink-creation.js")
+  args = [hwcsrc.toString(), hwcsrcTarget.toString(),
+          frontendOut.toString(), frontendOutTarget.toString(),
+          loginDomain.toString(), loginDomainTarget.toString(),
+          loginGui.toString(), loginGuiTarget.toString()]
 }
 
 // Utility method to detect junction/symlink

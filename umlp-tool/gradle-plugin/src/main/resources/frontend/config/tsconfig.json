@@ -31,15 +31,12 @@
         "build/appdomain/*",
         "build/appgui/*",
         "src/app/*",
-        "hwcsrcgui/",
-        "hwcsrcdomain/",
-        "node_modules/*"
+        "hwcsrc/*",
       ]
     }
   },
   "include": [
-    "**/*",
-    "../../src/**/*.ts"
+    "**/*"
   ],
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
