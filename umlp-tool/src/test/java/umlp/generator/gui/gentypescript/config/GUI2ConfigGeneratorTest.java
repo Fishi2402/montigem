@@ -127,7 +127,7 @@ public class GUI2ConfigGeneratorTest extends DomainGUITest {
         () -> assertEquals("overridden", update_cr.getUrlPrefix()),
         // from build folder to resources folder
         () -> assertEquals(
-            "../../../../../src/test/resources/gui/conf/overridden/Update",
+            "conf/overridden/Update",
             update_cr.getImportPathNoExt()
         )
     );
