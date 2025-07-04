@@ -36,6 +36,7 @@
       "@umlp/networkgraph": ["../../../../../umlp-rte/client/projects/networkgraph"],
       "@umlp/table": ["../../../../../umlp-rte/client/projects/table"],
       "*": [
+        "node_modules/*",
         "build/appdomain/*",
         "build/appgui/*",
         "src/app/*"

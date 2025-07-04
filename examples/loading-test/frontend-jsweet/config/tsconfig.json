@@ -40,9 +40,7 @@
         "node_modules/*",
         "build/appdomain/*",
         "build/appgui/*",
-        "../umlp/fe2/*",
         "src/app/*",
-        "../../src/app/*"
       ]
     }
   },

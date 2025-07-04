@@ -2,7 +2,6 @@
 import { Component } from '@angular/core';
 import { PersonsAndBuilderInOnePageComponent,config } from 'test_update_after_build/one_page/PersonsAndBuilderInOnePageComponent';
 
-
 @Component({
   standalone:true,
   imports:[...config.imports],

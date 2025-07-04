@@ -1,7 +1,6 @@
-
+import { routes as routesTOP } from "test_update_of_builder/Test_update_of_builderGemRoutingTOP";
+import { AnimalCreate } from "test_update_of_builder/AnimalCreate";
 import { Route } from "@angular/router";
-import { routes as routesTOP } from "testUpdateOfBuilder/TestUpdateOfBuilderGemRoutingTOP";
-import { AnimalCreate } from "testUpdateOfBuilder/AnimalCreate";
 
 
 export const routes: Route[] = [

@@ -43,8 +43,38 @@ def prebuildTasks = [
     generate
 ]
 
+tasks.register('linkStuff', NodeTask) {
+  dependsOn(prebuildTasks)
+
+  def hwcsrc = file("$buildDir/frontendGen/hwcsrc")
+  def hwcsrcTarget = file("src/app")
+
+  def frontendOutBuild = file("$buildDir/build").mkdirs();
+
+  def frontendOut = file("$buildDir/build/umlp_frontend")
+  def frontendOutTarget = file("$buildDir/umlp_frontend")
+
+  outputs.upToDateWhen {
+    isJunction(hwcsrc) &&
+    isJunction(frontendOut)
+  }
+
+  script = file("$buildDir/frontendGen/symlink-creation.js")
+  args = [hwcsrc.toString(), hwcsrcTarget.toString(),
+          frontendOut.toString(), frontendOutTarget.toString(),
+  ]
+}
+
+// Utility method to detect junction/symlink
+static boolean isJunction(File file) {
+  return java.nio.file.Files.isSymbolicLink(file.toPath())
+}
+
 tasks.register('testApp', NpxTask) {
   dependsOn(prebuildTasks)
+  dependsOn {
+    tasks.named('linkStuff').get()
+  }
   command = "ng"
   args = ["test"]
 }
@@ -54,6 +84,9 @@ tasks.register('buildApp', NpxTask) {
       testApp,
       project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") }
   )
+  dependsOn {
+    tasks.named('linkStuff').get()
+  }
   command = "ng"
   args = ["build"]
 }
@@ -64,6 +97,9 @@ tasks.register('runApp', NpxTask) {
       prebuildTasks,
       project(":umlp-rte:client").tasks.matching { it.name.startsWith("gen_") }
   )
+  dependsOn {
+    tasks.named('linkStuff').get()
+  }
   command = "ng"
   args = ["serve"]
 }

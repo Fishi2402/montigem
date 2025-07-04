@@ -39,6 +39,7 @@
               "./node_modules/font-awesome/css/font-awesome.css",
               "src/styles.scss"
             ],
+            "preserveSymlinks": true,
             "scripts": []
           },
           "configurations": {
@@ -55,7 +56,9 @@
                   "maximumError": "4kb"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "sourceMap": true,
+              "namedChunks": true
             },
             "development": {
               "optimization": false,
@@ -70,7 +73,8 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "client:build:production"
+              "buildTarget": "client:build:production",
+              "forceEsbuild": true
             },
             "development": {
               "buildTarget": "client:build:development",
@@ -110,8 +114,7 @@
             "scripts": [],
             "karmaConfig": "karma.conf.js",
             "include": [
-              "src/**/*.spec.ts",
-              "../../../src/**/*.spec.ts"
+              "src/**/*.spec.ts"
             ]
           }
         }

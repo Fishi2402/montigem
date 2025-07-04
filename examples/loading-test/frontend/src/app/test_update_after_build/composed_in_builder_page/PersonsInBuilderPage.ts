@@ -2,7 +2,6 @@
 import { Component } from '@angular/core';
 import { PersonsInBuilderPageComponent,config } from 'test_update_after_build/composed_in_builder_page/PersonsInBuilderPageComponent';
 
-
 @Component({
   standalone:true,
   imports:[...config.imports],
