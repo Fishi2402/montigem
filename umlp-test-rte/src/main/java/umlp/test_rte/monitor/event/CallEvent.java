@@ -10,13 +10,18 @@ public final class CallEvent implements StackEvent {
     this(new BasicEvent(object, methodName));
   }
 
-  public CallEvent(BasicEvent parent) {
+  CallEvent(BasicEvent parent) {
     this.parent = parent;
   }
 
   @Override
   public String methodName() {
     return parent.methodName();
+  }
+
+  @Override
+  public <T> T matchVariant(StackEventVariantMatcher<T> matcher) {
+    return matcher.whenCallEvent(this);
   }
 
   @Override

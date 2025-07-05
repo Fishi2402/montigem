@@ -9,7 +9,7 @@ public final class ReturnVoidEvent implements StackEvent {
     this(new BasicEvent(object, methodName));
   }
 
-  public ReturnVoidEvent(BasicEvent parent) {
+  ReturnVoidEvent(BasicEvent parent) {
     this.parent = parent;
   }
 
@@ -21,6 +21,11 @@ public final class ReturnVoidEvent implements StackEvent {
   @Override
   public String methodName() {
     return parent.methodName();
+  }
+
+  @Override
+  public <T> T matchVariant(StackEventVariantMatcher<T> matcher) {
+    return matcher.whenReturnVoidEvent(this);
   }
 
   @Override

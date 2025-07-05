@@ -6,4 +6,6 @@ public interface StackEvent {
    */
   Object object();
   String methodName();
+
+  <T> T matchVariant(StackEventVariantMatcher<T> matcher);
 }

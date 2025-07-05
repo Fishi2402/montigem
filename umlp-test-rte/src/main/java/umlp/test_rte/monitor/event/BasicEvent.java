@@ -2,7 +2,7 @@ package umlp.test_rte.monitor.event;
 
 import java.util.Objects;
 
-public final class BasicEvent implements StackEvent {
+final class BasicEvent {
 
   /**
    * The object on which the method has been called
@@ -15,12 +15,10 @@ public final class BasicEvent implements StackEvent {
     this.methodName = methodName;
   }
 
-  @Override
   public Object object() {
     return object;
   }
 
-  @Override
   public String methodName() {
     return methodName;
   }

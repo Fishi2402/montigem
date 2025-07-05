@@ -11,7 +11,7 @@ public final class ErrorEvent implements StackEvent {
     this(new BasicEvent(object, methodName), exception);
   }
 
-  public ErrorEvent(BasicEvent parent, Exception exception) {
+  ErrorEvent(BasicEvent parent, Exception exception) {
     this.parent = parent;
     this.exception = exception;
   }
@@ -24,6 +24,11 @@ public final class ErrorEvent implements StackEvent {
   @Override
   public String methodName() {
     return parent.methodName();
+  }
+
+  @Override
+  public <T> T matchVariant(StackEventVariantMatcher<T> matcher) {
+    return matcher.whenErrorEvent(this);
   }
 
   public Exception exception() {

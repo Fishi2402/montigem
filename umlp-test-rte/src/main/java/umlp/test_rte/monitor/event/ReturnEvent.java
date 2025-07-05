@@ -11,7 +11,7 @@ public final class ReturnEvent implements StackEvent {
     this(new BasicEvent(object, methodName), returnValue);
   }
 
-  public ReturnEvent(BasicEvent parent, Object returnValue) {
+  ReturnEvent(BasicEvent parent, Object returnValue) {
     this.parent = parent;
     this.returnValue = returnValue;
   }
@@ -24,6 +24,11 @@ public final class ReturnEvent implements StackEvent {
   @Override
   public String methodName() {
     return parent.methodName();
+  }
+
+  @Override
+  public <T> T matchVariant(StackEventVariantMatcher<T> matcher) {
+    return matcher.whenReturnEvent(this);
   }
 
   public Object returnValue() {

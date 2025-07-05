@@ -1,7 +1,12 @@
 package umlp.test_rte.monitor;
 
 import org.junit.jupiter.api.Assertions;
+import umlp.test_rte.monitor.event.CallEvent;
+import umlp.test_rte.monitor.event.ErrorEvent;
+import umlp.test_rte.monitor.event.ReturnEvent;
+import umlp.test_rte.monitor.event.ReturnVoidEvent;
 import umlp.test_rte.monitor.event.StackEvent;
+import umlp.test_rte.monitor.event.StackEventVariantMatcher;
 import umlp.test_rte.monitor.model.ExpectedEvent;
 import umlp.test_rte.monitor.model.MatchingStrategy;
 
@@ -45,7 +50,45 @@ public final class StackEventProcessor {
       return;
     }
 
-    //TODO update callstack
+    event.matchVariant(new StackEventVariantMatcher<Void>() {
+      @Override
+      public Void whenCallEvent(CallEvent event) {
+        //update callstack
+        callstack.push(event.object());
+
+        return null;
+      }
+
+      @Override
+      public Void whenErrorEvent(ErrorEvent event) {
+        //update callstack
+        Assertions.assertSame(event.object(), callstack.pop(), () -> "exiting from method " + event.methodName() + " which was never entered");
+
+        return null;
+      }
+
+      @Override
+      public Void whenReturnEvent(ReturnEvent event) {
+        //update callstack
+        Assertions.assertSame(event.object(), callstack.pop(), () -> "returning from method " + event.methodName() + " which was never entered");
+
+        return null;
+      }
+
+      @Override
+      public Void whenReturnVoidEvent(ReturnVoidEvent event) {
+        //update callstack
+        Assertions.assertSame(event.object(), callstack.pop(), () -> "returning from method " + event.methodName() + " which was never entered");
+
+        return null;
+      }
+
+      @Override
+      public Void otherwise(StackEvent event) {
+        //if this code is ever reached, this matcher needs to be updated to handle all events
+        throw new IllegalStateException("Should not reach here");
+      }
+    });
 
     //TODO make sure event is expected
   }
