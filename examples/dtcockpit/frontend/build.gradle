@@ -7,11 +7,11 @@ plugins {
 
 
 dependencies {
-  // Note: Is is important to use project() to link to the subproject within the same root project
   umlpModules(project(":modules:login")) // Load generator modifications
-//  umlpModulesGen("umlp.modules:login:$version") // Load generator modifications
-//  umlpModulesDomainSymbols("umlp.modules:login:$version") // frontend domain symbols
-//  umlpModulesModels("umlp.modules:login:$version") // and models itself
+  // umlpModules(project(":modules:comment")) // Load generator modifications
+  umlpModulesGen(project(":modules:comment")) // Load generator modifications
+  umlpModulesModels(project(":modules:comment")) // Load generator modifications
+  // umlpModulesDomainSymbols(project(":modules:comment")) // Load generator modifications
 }
 
 node {
@@ -24,21 +24,13 @@ createDomainSymbols {
 genDomain {
   // TODO: Gradle setup
 
-
   // Alternative: Generate the module-frontend-domain too
   input = file("../models/Dtcockpit.umlp")
 //  modelDir.from(configurations.umlpModulesModels) // TODO: Move this module logic into the plugin
-
-  // TODO: The module has to be added to the tsconfig path
   /*
-      "paths": {
-      "@src/*": ["build/appdomain/*", "build/appgui/*", "src/app/*", "../../src/app/*",
-        "../../../../../modules/login/frontendsTS/build/frontendGen/build/appdomain/*",
-        "../../../../../modules/login/frontendsTS/src/app/*",
-      ],
-
-   */
-
+  debug = true
+  outputs.upToDateWhen { false }
+  /**/
 }
 
 genGUI {
@@ -63,21 +55,28 @@ npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 def prebuildTasks = [
     npmInstall,
     generate,  // Created from UMLP-Frontend Plugin.
-    providers.provider { project(":modules:login:frontendTS").tasks.named("generate")}
+    providers.provider { project(":modules:login:frontendTS").tasks.named("generate")},
+    // providers.provider { project(":modules:comment:frontendTS").tasks.named("generate")}
 ]
 
 tasks.register('buildApp', NpxTask) {
-  dependsOn(prebuildTasks)
+  dependsOn(
+    prebuildTasks,
+    project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") }
+  )
   command = "ng"
   args = ["build"]
 }
 assemble.dependsOn(buildApp)
 
+/*
 tasks.named('buildApp') {
   dependsOn {
     project(':modules:login:frontendTS').tasks.named('generate').get()
+    project(':modules:comment:frontendTS').tasks.named('generate').get()
   }
 }
+/**/
 
 tasks.register('testApp', NpxTask) {
   dependsOn(prebuildTasks)
@@ -88,6 +87,7 @@ tasks.register('testApp', NpxTask) {
 tasks.named('testApp') {
   dependsOn {
     project(':modules:login:frontendTS').tasks.named('generate').get()
+    // project(':modules:comment:frontendTS').tasks.named('generate').get()
   }
 }
 
@@ -100,6 +100,7 @@ tasks.register('runApp', NpxTask) {
 tasks.named('runApp') {
   dependsOn {
     project(':modules:login:frontendTS').tasks.named('generate').get()
+    // project(':modules:comment:frontendTS').tasks.named('generate').get()
   }
 }
 
@@ -108,6 +109,10 @@ tasks.register('run') {
 }
 
 // Avoid a pesky org.gradle.api.InvalidUserDataException: Cannot expand ZIP 'bundle.jar' as it does not exist
+/*
 unpackModule {
+  duplicatesStrategy = DuplicatesStrategy.WARN
   dependsOn(":modules:login:frontendTS:packFrontendAsZip")
+  dependsOn(":modules:comment:frontendTS:packFrontendAsZip")
 }
+/**/

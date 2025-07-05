@@ -7,22 +7,31 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.io.paths.MCPath;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.se_rwth.commons.Joiners;
 import umlp.generator.domain.decorator.CommandResultDeSerDecorator;
 import umlp.generator.domain.decorator.DeSerDecorator;
 import umlp.generator.domain.decorator.ValidationResultDeSerDecorator;
 import umlp.generator.domain.decorator.ValidationResultDecorator;
+import umlp.generator.gui.gentypescript.decorator.TSImportHelper;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
+
+import java.nio.file.Path;
 
 public class TSCommandResultDeSerDecorator extends CommandResultDeSerDecorator {
 
   protected String astcdPackage;
   protected ASTCDCompilationUnit origCD;
 
-  public TSCommandResultDeSerDecorator(GlobalExtensionManagement glex) {
+  protected final Path outPath;
+  protected final MCPath hwPath;
+
+  public TSCommandResultDeSerDecorator(GlobalExtensionManagement glex, MCPath hwPath, Path outPath) {
     super(glex);
+    this.hwPath = hwPath;
+    this.outPath = outPath;
   }
 
   @Override
@@ -78,16 +87,19 @@ public class TSCommandResultDeSerDecorator extends CommandResultDeSerDecorator {
 
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("BaseClassObjectMapper"));
 
+    TSImportHelper importHelper = new TSImportHelper(glex, clazz, hwPath, outPath);
+    String importerQName = this.astcdPackage + "." + clazz.getName();
+
     for (ASTCDClass c : this.origCD.getCDDefinition().getCDClassesList()) {
       if (canSerialize(c)) {
-        getCD4C().addImport(clazz, this.astcdPackage + "." + c.getName());
-        getCD4C().addImport(clazz, this.astcdPackage + "."
-            + c.getName() + DeSerDecorator.SUFFIX);
+        importHelper.addImport(this.astcdPackage + "." + c.getName(), importerQName);
+        importHelper.addImport(this.astcdPackage + "."
+            + c.getName() + DeSerDecorator.SUFFIX, importerQName);
         if(hasOCL) {
-          getCD4C().addImport(clazz, this.astcdPackage + "."
-                  + c.getName() + ValidationResultDecorator.SUFFIX);
-          getCD4C().addImport(clazz, this.astcdPackage + "."
-                  + c.getName() + ValidationResultDeSerDecorator.SUFFIX);
+          importHelper.addImport(this.astcdPackage + "."
+                  + c.getName() + ValidationResultDecorator.SUFFIX, importerQName);
+          importHelper.addImport(this.astcdPackage + "."
+                  + c.getName() + ValidationResultDeSerDecorator.SUFFIX, importerQName);
         }
       }
     }
@@ -100,8 +112,8 @@ public class TSCommandResultDeSerDecorator extends CommandResultDeSerDecorator {
       ASTCDDefinition def = ((ASTCDDefinition)diagramSymbol.getAstNode());
       for (ASTCDClass astcdClass : def.getCDClassesList()) {
         if(canSerialize(astcdClass)) {
-          getCD4C().addImport(clazz, Joiners.DOT.join(curPackName, astcdClass.getName()));
-          getCD4C().addImport(clazz, Joiners.DOT.join(curPackName, astcdClass.getName() + DeSerDecorator.SUFFIX));
+          importHelper.addImport(Joiners.DOT.join(curPackName, astcdClass.getName()), importerQName);
+          importHelper.addImport(Joiners.DOT.join(curPackName, astcdClass.getName() + DeSerDecorator.SUFFIX), importerQName);
         }
       }
     }

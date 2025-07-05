@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator;
 
+import com.google.common.collect.Iterables;
 import de.monticore.ast.ASTNode;
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.facade.CDAttributeFacade;
@@ -38,6 +39,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
+import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.decorator.GenService;
@@ -476,7 +478,7 @@ public abstract class AbstractDecorator {
     }
   }
 
-  protected String getPackageName(ASTCDCompilationUnit origCD, String subPackage) {
+  public static String getPackageName(ASTCDCompilationUnit origCD, String subPackage) {
     String origPackage = Names.constructQualifiedName(origCD.getCDPackageList(), origCD.getCDDefinition().getName());
     return (subPackage.isEmpty() ? origPackage : Joiners.DOT.join(origPackage, subPackage)).toLowerCase();
   }
@@ -585,11 +587,30 @@ public abstract class AbstractDecorator {
   }
 
   public static String getCorrectManager(ASTCDAssocSide assocSide) {
-    return UMLPSymbolTables.getDiagramFor(assocSide.getSymbol().getType().getTypeInfo().getAstNode()).getCDDefinition().getName() + ManagerDecorator.SUFFIX;
+    return getClassDiagramName(assocSide) + ManagerDecorator.SUFFIX;
+  }
+  
+  public static String getClassDiagramName(ASTCDAssocSide assocSide) {
+    return UMLPSymbolTables.getDiagramFor(assocSide.getSymbol().getType().getTypeInfo().getAstNode()).getCDDefinition().getName();
   }
 
   public static String getCorrectManagerOfTargetType(ASTCDAssocSide assocSideTarget) {
-    return getCorrectManagerFromSymTypeExpression(assocSideTarget.getSymbol().getType());
+    String qName = getManagerOfTargetTypeQName(assocSideTarget);
+    return Iterables.getLast(Splitters.DOT.splitToList(qName));
+  }
+
+  public static String getManagerOfTargetTypeQName(ASTCDAssocSide assocSideTarget) {
+    SymTypeExpression type = assocSideTarget.getSymbol().getType();
+    List<String> fullName = Splitters.DOT.splitToList(type.printFullName());
+    if (fullName.size() <= 1) {
+      Log.error("0x0002C Manager name cannot be calculated. SymTypeExpression: '"
+          + type + "'. Does not belong to a package defined by a Class Diagram.");
+    }
+    List<String> qName = new ArrayList<>(fullName.subList(0, Math.max(0, fullName.size() - 2)));
+    qName.add(fullName.get(fullName.size() - 2).toLowerCase());
+    String simpleName = fullName.get(fullName.size() - 2) + ManagerDecorator.SUFFIX;
+    qName.add(simpleName);
+    return Joiners.DOT.join(qName);
   }
 
   public static String getCorrectManager(ASTCDAttribute attribute) {
@@ -619,14 +640,6 @@ public abstract class AbstractDecorator {
     if (extendedCDs.stream().anyMatch(cdName -> cdName.equals(potentialExtendedCDName))) {
       getCD4C().addImport(ast, Joiners.DOT.join(packageName, potentialExtendedCDName) + suffix);
     }
-  }
-
-  protected static String getCorrectManagerFromSymTypeExpression(SymTypeExpression type) {
-    String[] fullName = type.printFullName().split("\\.");
-    if (fullName.length <= 1) {
-      Log.error("Managername cannot be calculated. SymTypeExpression: '" + type + "'. Does not belong to a package defined by a Class Diagram.");
-    }
-    return fullName[fullName.length - 2] + ManagerDecorator.SUFFIX;
   }
 
   protected List<ASTCDCompilationUnit> getExtendedDefinitions(ASTCDCompilationUnit origCD){

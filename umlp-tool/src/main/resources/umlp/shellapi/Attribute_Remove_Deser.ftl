@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("cdName", "className", "fieldName", "fieldType", "isAssoc")}
+${tc.signature("cdName", "fieldTypeCdName", "className", "fieldName", "fieldType", "isAssoc")}
 ${cd4c.method("public void ${className?uncap_first}Remove${fieldName?cap_first} (long id, String __val)")}
 Optional<${className}> ${className?uncap_first} = ${cdName}Manager.${className?uncap_first}Opt(id);
 if(${className?uncap_first}.isPresent()){

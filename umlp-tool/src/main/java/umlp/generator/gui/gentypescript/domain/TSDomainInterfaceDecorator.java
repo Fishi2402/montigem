@@ -9,6 +9,7 @@ import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.io.paths.MCPath;
 import umlp.generator.domain.decorator.DomainInterfaceDecorator;
 import umlp.generator.domain.decorator.methods.MethodGenService;
 import umlp.generator.domain.decorator.methods.UMLPListMutatorDecorator;
@@ -20,12 +21,18 @@ import umlp.generator.gui.gentypescript.method.TSOptionalMutatorDecorator;
 import umlp.generator.gui.gentypescript.method.TSSimpleMethodMutatorDecorator;
 import umlp.generator.util.PathUtil;
 
+import java.nio.file.Path;
 import java.util.List;
 
 public class TSDomainInterfaceDecorator extends DomainInterfaceDecorator {
 
-  public TSDomainInterfaceDecorator(GlobalExtensionManagement glex) {
+  protected final Path outPath;
+  protected final MCPath hwPath;
+
+  public TSDomainInterfaceDecorator(GlobalExtensionManagement glex, MCPath hwPath, Path outPath) {
     super(glex);
+    this.hwPath = hwPath;
+    this.outPath = outPath;
   }
 
   @Override

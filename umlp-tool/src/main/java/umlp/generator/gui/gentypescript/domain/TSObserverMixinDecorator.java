@@ -13,13 +13,16 @@ import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.io.paths.MCPath;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.se_rwth.commons.Joiners;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ObserverDecorator;
+import umlp.generator.gui.gentypescript.decorator.TSImportHelper;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,8 +31,8 @@ public class TSObserverMixinDecorator extends TSObserverDecorator {
 
   public static final String SUFFIX = "Mixin";
 
-  public TSObserverMixinDecorator(final GlobalExtensionManagement glex) {
-    super(glex);
+  public TSObserverMixinDecorator(final GlobalExtensionManagement glex, MCPath hwPath, Path outPath) {
+    super(glex, hwPath, outPath);
   }
 
   @Override
@@ -77,8 +80,11 @@ public class TSObserverMixinDecorator extends TSObserverDecorator {
   protected void addImports(ASTCDType domainType, ASTCDType cdType) {
     super.addImports(domainType, cdType);
 
+    TSImportHelper importHelper = new TSImportHelper(glex, cdType, hwPath, outPath);
+    String importerQName = this.astcdPackage + "." + cdType.getName();
+
     String obs = domainType.getName() + ObserverDecorator.SUFFIX;
-    getCD4C().addImport(cdType, astcdPackage + "." + obs);
+    importHelper.addImport(astcdPackage + "." + obs, importerQName);
   }
 
 }

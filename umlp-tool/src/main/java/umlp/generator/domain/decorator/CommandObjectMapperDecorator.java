@@ -68,8 +68,7 @@ public class CommandObjectMapperDecorator extends AbstractDecorator {
       commandDeSerNames.add(commandDeSer.getName());
       commandResultDeSerNames.add(commandResultDeSer.getName());
 
-      getCD4C().addImport(mapperClass, getPackageName(superDiagram, DEFAULT_PACKAGE) + "." + commandDeSerName);
-      getCD4C().addImport(mapperClass, getPackageName(superDiagram, DEFAULT_PACKAGE) + "." + commandResultDeSerName);
+      addImportsDeSer(mapperClass, superDiagram, commandDeSerName, commandResultDeSerName);
     }
 
     // add methods
@@ -102,6 +101,16 @@ public class CommandObjectMapperDecorator extends AbstractDecorator {
 
   protected String getDeserializeResponseTemplate() {
     return "umlp.commandobjectmapper.DeserializeResponse";
+  }
+
+  protected void addImportsDeSer(
+      ASTCDType mapperClass, DiagramSymbol superDiagram,
+      String commandDeSerName, String commandResultDeSerName
+  ) {
+    getCD4C().addImport(mapperClass,
+        getPackageName(superDiagram, DEFAULT_PACKAGE) + "." + commandDeSerName);
+    getCD4C().addImport(mapperClass,
+        getPackageName(superDiagram, DEFAULT_PACKAGE) + "." + commandResultDeSerName);
   }
 
   protected void addImports(ASTCDType clazz) {

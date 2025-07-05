@@ -15,6 +15,12 @@ plugins {
   id "io.github.themrmilchmann.ecj" version "0.2.0"
 }
 
+java {
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(11)
+  }
+}
+
 def shouldBuildVscodePlugin = ("true").equals(getProperty('buildVscodePlugin'))
 
 configurations {
@@ -84,12 +90,6 @@ repositories {
 test {
   systemProperty 'guidsl-default-types', configurations.guiDefaultTypes.asPath
   useJUnitPlatform()
-}
-
-java {
-  toolchain {
-    languageVersion = JavaLanguageVersion.of(11)
-  }
 }
 
 description = 'UML/P Language and Tool'

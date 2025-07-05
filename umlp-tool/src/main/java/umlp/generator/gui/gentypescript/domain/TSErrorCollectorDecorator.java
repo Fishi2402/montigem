@@ -10,12 +10,16 @@ import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.io.paths.MCPath;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.ErrorCollectorDecorator;
 import umlp.generator.domain.decorator.ErrorObserverDecorator;
 import umlp.generator.domain.decorator.ObserverDecorator;
+import umlp.generator.gui.gentypescript.decorator.TSImportHelper;
 import umlp.generator.util.PathUtil;
+
+import java.nio.file.Path;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
@@ -23,8 +27,13 @@ public class TSErrorCollectorDecorator extends ErrorCollectorDecorator {
 
   protected String astcdPackage;
 
-  public TSErrorCollectorDecorator(final GlobalExtensionManagement glex) {
+  protected final Path outPath;
+  protected final MCPath hwPath;
+
+  public TSErrorCollectorDecorator(final GlobalExtensionManagement glex, MCPath hwPath, Path outPath) {
     super(glex);
+    this.hwPath = hwPath;
+    this.outPath = outPath;
   }
 
   @Override
@@ -35,8 +44,11 @@ public class TSErrorCollectorDecorator extends ErrorCollectorDecorator {
 
   protected void addImports(ASTCDClass domainClass, ASTCDType clazz) {
     // getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandManager"));
-    getCD4C().addImport(clazz, this.astcdPackage + "." + domainClass.getName());
-    getCD4C().addImport(clazz, this.astcdPackage + "." + domainClass.getName() + ErrorObserverDecorator.SUFFIX);
+    TSImportHelper importHelper = new TSImportHelper(glex, clazz, hwPath, outPath);
+    String importerQName = this.astcdPackage + "." + clazz.getName();
+
+    importHelper.addImport(this.astcdPackage + "." + domainClass.getName(), importerQName);
+    importHelper.addImport(this.astcdPackage + "." + domainClass.getName() + ErrorObserverDecorator.SUFFIX, importerQName);
   }
 
   protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass, String name) {

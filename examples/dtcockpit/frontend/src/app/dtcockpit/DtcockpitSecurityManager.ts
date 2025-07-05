@@ -2,7 +2,7 @@
 
 import {User} from 'dtcockpit/User';
 import {LoginSecManager} from "./login/LoginSecManager";
-import {LoginSecManager as LoginModuleSecManager} from "loginmodule/LoginSecManager";
+import {LoginSecManager as LoginModuleSecManager} from "@montigem/login";
 import {Router} from "@angular/router";
 
 // Now delegated to the login-modules SecurityManager

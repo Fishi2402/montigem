@@ -1,0 +1,18 @@
+package commentmodule;
+
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.basic.GemText;
+import mc.fenix.input.GemTextInput;
+
+// TODO JRa: Placeholder as some GUI file is needed as input... remove when there is any other file
+page SimpleLoginPage(String username, String password) {
+  @GemRow(
+    components = [
+      @GemText(value = "Name"),
+      @GemTextInput(entry = username),
+      @GemText(value = "Password"),
+      @GemTextInput(entry = password) // TODO: hide password
+    ]
+  );
+}

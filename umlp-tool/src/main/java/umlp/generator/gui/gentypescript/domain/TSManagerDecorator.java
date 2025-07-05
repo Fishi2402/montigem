@@ -8,6 +8,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.io.paths.MCPath;
 import umlp.generator.domain.decorator.BaseClassObjectMapperDecorator;
 import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.domain.decorator.CommandObjectMapperDecorator;
@@ -15,19 +16,24 @@ import umlp.generator.domain.decorator.DeSerBuilderDecorator;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.domain.decorator.ObserverDecorator;
+import umlp.generator.gui.gentypescript.decorator.TSImportHelper;
 import umlp.generator.util.TagLookUp;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.function.Predicate;
 
 public class TSManagerDecorator extends ManagerDecorator {
 
   protected String astcdPackage;
-
   protected ASTCDCompilationUnit origCD;
+  protected final Path outPath;
+  protected final MCPath hwPath;
 
-  public TSManagerDecorator(GlobalExtensionManagement glex) {
+  public TSManagerDecorator(final GlobalExtensionManagement glex, MCPath hwPath, Path outPath) {
     super(glex);
+    this.hwPath = hwPath;
+    this.outPath = outPath;
   }
 
   @Override
@@ -41,13 +47,16 @@ public class TSManagerDecorator extends ManagerDecorator {
   protected ASTCDClass createClass(ASTCDCompilationUnit origCD) {
     ASTCDClass clazz = super.createClass(origCD);
 
+    TSImportHelper importHelper = new TSImportHelper(glex, clazz, hwPath, outPath);
     String name = origCD.getCDDefinition().getName();
-    getCD4C().addImport(clazz, this.astcdPackage + "."
-        + name + BaseClassObjectMapperDecorator.SUFFIX);
-    getCD4C().addImport(clazz, this.astcdPackage + "."
-        + name + CommandObjectMapperDecorator.SUFFIX);
-    getCD4C().addImport(clazz, this.astcdPackage + "."
-        + name + ObserverDecorator.SUFFIX);
+    String importerQName = this.astcdPackage + "." + clazz.getName();
+
+    importHelper.addImport(this.astcdPackage + "."
+        + name + BaseClassObjectMapperDecorator.SUFFIX, importerQName);
+    importHelper.addImport(this.astcdPackage + "."
+        + name + CommandObjectMapperDecorator.SUFFIX, importerQName);
+    importHelper.addImport(this.astcdPackage + "."
+        + name + ObserverDecorator.SUFFIX, importerQName);
 
     ArrayList<ASTCDCompilationUnit> cdDefs = new ArrayList<>();
     cdDefs.add(origCD);
@@ -55,21 +64,21 @@ public class TSManagerDecorator extends ManagerDecorator {
 
     for (ASTCDCompilationUnit cdDef : cdDefs) {
       for (ASTCDClass c : cdDef.getCDDefinition().getCDClassesList()) {
-        getCD4C().addImport(clazz, getPackageName(cdDef, DEFAULT_PACKAGE) + "." + c.getName());
+        importHelper.addImport(getPackageName(cdDef, DEFAULT_PACKAGE) + "." + c.getName(), importerQName);
         if (!c.getModifier().isDerived() && !c.getModifier().isAbstract()) {
-          getCD4C().addImport(clazz, getPackageName(cdDef, DEFAULT_PACKAGE) + "."
-              + c.getName() + BuilderDecorator.BUILDER_SUFFIX);
-          getCD4C().addImport(clazz, getPackageName(cdDef, DEFAULT_PACKAGE) + "."
-              + c.getName() + DeSerBuilderDecorator.DESER_BUILDER_SUFFIX);
+          importHelper.addImport(getPackageName(cdDef, DEFAULT_PACKAGE) + "."
+              + c.getName() + BuilderDecorator.BUILDER_SUFFIX, importerQName);
+          importHelper.addImport(getPackageName(cdDef, DEFAULT_PACKAGE) + "."
+              + c.getName() + DeSerBuilderDecorator.DESER_BUILDER_SUFFIX, importerQName);
         }
       }
       for (ASTCDEnum c : cdDef.getCDDefinition().getCDEnumsList()) {
-        getCD4C().addImport(clazz, getPackageName(cdDef, DEFAULT_PACKAGE) + "."
-            + c.getName());
+        importHelper.addImport(getPackageName(cdDef, DEFAULT_PACKAGE) + "."
+            + c.getName(), importerQName);
       }
       for (ASTCDInterface c : cdDef.getCDDefinition().getCDInterfacesList()) {
-        getCD4C().addImport(clazz, getPackageName(cdDef, DEFAULT_PACKAGE) + "."
-            + c.getName());
+        importHelper.addImport(getPackageName(cdDef, DEFAULT_PACKAGE) + "."
+            + c.getName(), importerQName);
       }
     }
 

@@ -5,22 +5,30 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.io.paths.MCPath;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.commands.CalculateDecorator;
+import umlp.generator.gui.gentypescript.decorator.TSImportHelper;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentTemplates;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 import umlp.generator.util.PathUtil;
 
+import java.nio.file.Path;
 import java.util.Set;
 
 public class TSCalculateDecorator extends CalculateDecorator {
 
-  public TSCalculateDecorator(GlobalExtensionManagement glex, Set<String> supportedDeSers) {
+  protected final Path outPath;
+  protected final MCPath hwPath;
+
+  public TSCalculateDecorator(GlobalExtensionManagement glex, MCPath hwPath, Path outPath, Set<String> supportedDeSers) {
     super(glex, supportedDeSers);
+    this.hwPath = hwPath;
+    this.outPath = outPath;
   }
 
   @Override
@@ -110,12 +118,16 @@ public class TSCalculateDecorator extends CalculateDecorator {
   protected void addDeSerImport(ASTCDClass ast, ASTCDCompilationUnit origCD, boolean useDeSer,
       boolean isCDEnum, String baseClassDecorator, String typeName, String cmdName) {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
-    getCD4C().addImport(ast, getPackageName(origCD, COMMAND_PACKAGE) + "." + cmdName);
+
+    TSImportHelper importHelper = new TSImportHelper(glex, ast, hwPath, outPath);
+    String importerQName = getPackageName(origCD, COMMAND_PACKAGE) + "." + ast.getName();
+
+    importHelper.addImport(getPackageName(origCD, COMMAND_PACKAGE) + "." + cmdName, importerQName);
     if (isCDEnum) {
-      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + Names.getSimpleName(typeName));
+      importHelper.addImport(getPackageName(origCD, DEFAULT_PACKAGE) + "." + Names.getSimpleName(typeName), importerQName);
     }
     if (useDeSer) {
-      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + baseClassDecorator);
+      importHelper.addImport(getPackageName(origCD, DEFAULT_PACKAGE) + "." + baseClassDecorator, importerQName);
     }
   }
 
@@ -125,8 +137,12 @@ public class TSCalculateDecorator extends CalculateDecorator {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("ListResult"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("SimpleResult"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("Command"));
-    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ domainClass.getName());
-    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+getCorrectManager(domainClass));
-    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+ "." + domainClass.getName() + "AccessPolicy");
+
+    TSImportHelper importHelper = new TSImportHelper(glex, ast, hwPath, outPath);
+    String importerQName = getPackageName(origCD, COMMAND_PACKAGE) + "." + ast.getName();
+
+    importHelper.addImport(getPackageName(origCD, DEFAULT_PACKAGE)+"."+ domainClass.getName(), importerQName);
+    importHelper.addImport(getPackageName(origCD, DEFAULT_PACKAGE)+"."+getCorrectManager(domainClass), importerQName);
+    importHelper.addImport(getPackageName(origCD, DEFAULT_PACKAGE)+ "." + domainClass.getName() + "AccessPolicy", importerQName);
   }
 }

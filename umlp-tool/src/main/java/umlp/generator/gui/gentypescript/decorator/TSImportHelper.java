@@ -4,7 +4,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.io.paths.MCPath;
@@ -25,40 +25,45 @@ public class TSImportHelper {
 
   protected Set<String> importSet = new HashSet<>();
   protected final GlobalExtensionManagement glex;
-  protected final ASTCDClass clazz;
+  protected final ASTCDType cdType;
   protected final MCPath hwPath;
   protected final Path outPath;
   protected final MCPath importsPath;
 
-  public TSImportHelper(GlobalExtensionManagement glex, ASTCDClass clazz, MCPath hwPath, Path outPath, MCPath importsPath) {
+  public TSImportHelper(GlobalExtensionManagement glex, ASTCDType cdType, MCPath hwPath, Path outPath) {
+    this(glex, cdType, hwPath, outPath, new MCPath());
+  }
+
+  public TSImportHelper(GlobalExtensionManagement glex, ASTCDType cdType, MCPath hwPath, Path outPath, MCPath importsPath) {
     this.glex = glex;
-    this.clazz = clazz;
+    this.cdType = cdType;
     this.hwPath = hwPath;
     this.outPath = outPath;
     this.importsPath = importsPath;
   }
 
-  public void addImport(String qType, Optional<String> as, boolean importIntermediateAngularClass, String importerQName) {
+  public void addImport(String importedQName, Optional<String> as,
+      boolean importIntermediateAngularClass, String importerQName) {
     String alias = "";
     if (as.isPresent()) {
       alias = " as " + as.get();
     }
-    Optional<String> tsImportPath = TypeScriptTypes.getTsImportPath(qType);
+    Optional<String> tsImportPath = TypeScriptTypes.getTsImportPath(importedQName);
     // Optional doesn't exist in TypeScript
-    if (qType.equals("java.util.Optional") || qType.isBlank()) {
+    if (importedQName.equals("java.util.Optional") || importedQName.isBlank()) {
       return;
     }
     if (tsImportPath.isPresent()) {
-      String importStr = "import { " + TypeScriptTypes.toTSType(qType) + alias
+      String importStr = "import { " + TypeScriptTypes.toTSType(importedQName) + alias
           + " } from '" + tsImportPath.get() + "';";
       addImportString(importStr);
     }
-    else if (!TypeScriptTypes.isDefault(qType)) {
+    else if (!TypeScriptTypes.isDefault(importedQName)) {
       StringBuilder importBuilder = new StringBuilder();
       importBuilder.append("import { ");
 
-      List<String> parts = Lists.newArrayList(Splitter.on('.').split(qType));
-      String baseName = Iterables.getLast(Splitter.on('.').split(qType), qType);
+      List<String> parts = Lists.newArrayList(Splitter.on('.').split(importedQName));
+      String baseName = Iterables.getLast(Splitter.on('.').split(importedQName), importedQName);
       importBuilder.append(baseName);
       importBuilder.append(alias);
 
@@ -73,19 +78,32 @@ public class TSImportHelper {
       }
       // case: a component in an app imports a component from the app
       String from = GUIGeneratorUtil.getInstance().qName2path(String.join(".", parts));
-      if (importIntermediateAngularClass) {
-        from += "Component";
+      if (!GUIGeneratorUtil.getInstance().isInitialized() || !GUIGeneratorUtil.getInstance().isDomainImport(importedQName)) {
+        // case: a component imports currently generated other component, e.g.
+        // "gen/gui/foo/ExampleComponent.ts" imports "gen/gui/foo/Example.ts" -> "./Example"
+        // or: a class imports currently generated other class, e.g.
+        // "gen/cd/SomeManager.ts" imports "gen/cd/commands/Some_create.ts"
+        if (UMLPGeneratorConfig.getInstance().is4TSLib()) {
+          Optional<String> importedPath = getRelativeQualifiedPath(
+              Names.getQualifier(importerQName), Names.getQualifier(importedQName)
+          );
+          if (importedPath.isPresent()) {
+            from = importedPath.get() + Names.getSimpleName(importedQName);
+          }
+        }
+        if (importIntermediateAngularClass) {
+          from += "Component";
+        }
+        // above case gets overruled if there is a HW path
+        Optional<String> relativeFrom = getImportPath(
+            hwPath, outPath, importsPath, importerQName, importedQName);
+        if (relativeFrom.isPresent()) {
+          from = relativeFrom.get();
+        }
       }
-      Optional<String> relativeFrom = getImportPathForComponent(
-          hwPath, outPath, importsPath, importerQName, qType);
-      if (relativeFrom.isPresent()) {
-        from = relativeFrom.get();
-      }
-      tsImportPath = TSImportMap.getTSPackage(qType);
+      tsImportPath = TSImportMap.INSTANCE.getTSPackage(importedQName);
 
-      int lastDotIndex = importerQName.lastIndexOf('.');
-      String importerPackage = lastDotIndex != -1 ? importerQName.substring(0, lastDotIndex) : "";
-      Optional<String> componentImportPath = TSImportMap.getTSPackage(importerPackage);
+      Optional<String> componentImportPath = TSImportMap.INSTANCE.getTSPackage(importerQName);
       if (tsImportPath.isPresent() &&
           (componentImportPath.isEmpty() || !componentImportPath.get().equals(tsImportPath.get()))) {
         from = tsImportPath.get();
@@ -98,19 +116,19 @@ public class TSImportHelper {
     }
   }
 
-  public void addImport(String qType, String importerQName) {
-    addImport(qType, Optional.empty(), false, importerQName);
+  public void addImport(String importedQName, String importerQName) {
+    addImport(importedQName, Optional.empty(), false, importerQName);
   }
 
   public void addImportString(String importStr) {
     if (!importSet.contains(importStr)) {
       importSet.add(importStr);
-      glex.addAfterTemplate("umlp.gui2ts.TSEmptyImports", clazz,
-          new StringHookPoint(importStr));
+      glex.addAfterTemplate("umlp.gui2ts.TSEmptyImports", cdType,
+          new StringHookPoint(importStr + "\n"));
     }
   }
 
-  protected Optional<String> getImportPathForComponent(
+  protected Optional<String> getImportPath(
       MCPath hwPath, Path outPath, MCPath importsPath, String importerQName, String importedQName) {
     String importedQualifier = Names.getQualifier(importedQName);
     String importedSimpleName = Names.getSimpleName(importedQName);
@@ -145,7 +163,7 @@ public class TSImportHelper {
     // case: TOP is used, use path to HW file, e.g.,
     // "gen/gui/ExampleComponent.ts" imports "hw/gui/Example.ts" -> "../../hw/gui/Example"
     if (hwFilePath.isPresent()) {
-      if (UMLPGeneratorConfig.getInstance().isGenerate4TSLib()) {
+      if (UMLPGeneratorConfig.getInstance().is4TSLib()) {
         Optional<Path> hw = MCPath.toPath(hwFilePath.get());
         if (hw.isPresent()) {
           return Optional.of(path2TSRelativeImport(outPath.resolve(importer).getParent()
@@ -166,12 +184,13 @@ public class TSImportHelper {
       // case: external (generated) file must be imported, e.g.,
       // "gen/gui/Example.ts" imports "gen/cd/fetypes/Option.ts" -> "../cd/fetypes/Option"
       if (importedURLOpt.isPresent() || importedMaybeCDURLOpt.isPresent()) {
-        if (UMLPGeneratorConfig.getInstance().isGenerate4TSLib()) {
+        if (UMLPGeneratorConfig.getInstance().is4TSLib()) {
           Optional<Path> importedPath;
           // prefer "maybe CD" option
           if (importedMaybeCDURLOpt.isPresent()) {
             importedPath = MCPath.toPath(importedMaybeCDURLOpt.get());
-          } else {
+          }
+          else {
             importedPath = MCPath.toPath(importedURLOpt.get());
           }
           if (importedPath.isPresent()) {
@@ -187,20 +206,45 @@ public class TSImportHelper {
         else {
           if (importedMaybeCDURLOpt.isPresent()) {
             return Optional.of(path2TSRootImport(importedMaybeCD));
-          } else {
+          }
+          else {
             return Optional.of(path2TSRootImport(imported));
           }
         }
       }
-      // case: a component imports currently generated other component, e.g.
-      // "gen/gui/foo/ExampleComponent.ts" imports "gen/gui/foo/Example.ts" -> "./Example"
-      else if (UMLPGeneratorConfig.getInstance().isGenerate4TSLib()
-          && Names.getQualifier(importerQName).equals(Names.getQualifier(importedQName))) {
-        String res = "./" + Names.getSimpleName(importedQName);
-        return Optional.of(res);
-      }
     }
     return Optional.empty();
+  }
+
+  public static Optional<String> getRelativeQualifiedPath(String importer, String imported) {
+    String[] fullParts = imported.split("\\.");
+    String[] candidateParts = importer.split("\\.");
+
+    int commonLength = 0;
+    while (commonLength < fullParts.length
+        && commonLength < candidateParts.length
+        && fullParts[commonLength].equals(candidateParts[commonLength])) {
+      commonLength++;
+    }
+
+    if (commonLength == 0) {
+      return Optional.empty(); // No shared root at all
+    }
+
+    StringBuilder path = new StringBuilder("./");
+
+    // Add ".." for each extra level in importer
+    for (int i = commonLength; i < candidateParts.length; i++) {
+      path.append("../");
+    }
+
+    // Add remaining parts from imported
+    for (int i = commonLength; i < fullParts.length; i++) {
+      path.append(fullParts[i]);
+      path.append('/');
+    }
+
+    return Optional.of(path.toString());
   }
 
   protected String path2TSRelativeImport(String relativePath) {

@@ -61,6 +61,7 @@ import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.gui.genjava.decorator.GUI2JavaClassDecorator;
 import umlp.generator.gui.genjava.prettyprinter.Expression2NullCheckAccessorPrinter;
 import umlp.generator.gui.genjava.prettyprinter.Expression2SetterPrinter;
+import umlp.generator.gui.genjava.prettyprinter.GUIViewElementsFinder;
 import umlp.generator.gui.genjava.prettyprinter.IterationItemsFinder;
 import umlp.generator.gui.gentypescript.config.GUI2ConfigGenerator;
 import umlp.generator.gui.gentypescript.printer.TSBackendMap;
@@ -79,6 +80,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -190,6 +192,10 @@ public class GUIGeneratorUtil {
     return existsHandwrittenFile(targetPath, Names.getPathFromPackage(qualifiedName) + ".ts") | // Use bitwise to report on both checks
         (UMLPGeneratorConfig.getInstance().isUseJsweet() && existsHandwrittenFile(targetPath,
             Names.getPathFromPackage(qualifiedName) + ".java"));
+  }
+
+  public boolean isInitialized() {
+    return DOMAIN_AND_MODULE_MODELS != null;
   }
 
   public void init(List<String> domainModels, List<String> createModels) {
@@ -344,10 +350,8 @@ public class GUIGeneratorUtil {
   }
 
   public final boolean isTSPackageImport(String javaPackage) {
-    for (TSImportMap type : TSImportMap.values()) {
-      if (javaPackage.startsWith(type.getJavaPackage())) {
-        return false;
-      }
+    if (!TSImportMap.INSTANCE.isTSPackageImport(javaPackage)) {
+      return false;
     }
     return !TSBackendMap.isBackendRTEPackage(javaPackage);
   }
@@ -390,8 +394,12 @@ public class GUIGeneratorUtil {
   }
 
   public final boolean isDomainImport(ASTMCImportStatement i) {
+    return isDomainImport(i.getQName());
+  }
+
+  public final boolean isDomainImport(String qName) {
     for (String cd : DOMAIN_AND_MODULE_MODELS) {
-      if (i.getQName().startsWith(cd)) {
+      if (qName.startsWith(cd)) {
         return true;
       }
     }
@@ -611,46 +619,30 @@ public class GUIGeneratorUtil {
     return HTML_ITERATE_INDEX_PREFIX + StringTransformations.capitalize(iterate.getId().getName());
   }
 
-  public String getShortIteratorIterable(ASTGUIIterate iterate) {
+  public String printShortIteratorIterable(ASTGUIIterate iterate) {
+    ASTExpression e = getShortIteratorIterable(iterate);
+    IterationItemsFinder finder = new IterationItemsFinder();
+    Collection<ASTExpression> iterationItems = new HashSet<>(finder.getItems(iterate));
+
+    GUIViewElementsFinder gveFinder = new GUIViewElementsFinder();
+    Set<ASTExpression> ignore = new HashSet<>(iterationItems);
+    ignore.addAll(gveFinder.getGUIViewElements(iterate));
+
+    Expression2NullCheckAccessorPrinter printer = new Expression2NullCheckAccessorPrinter(
+        new IndentPrinter(), true, ignore, iterationItems
+    );
+
+    return printer.prettyprint(e);
+  }
+
+  public ASTExpression getShortIteratorIterable(ASTGUIIterate iterate) {
     if (iterate.getIterateControl() instanceof ASTGUIShortIterateControl) {
-      IterationItemsFinder finder = new IterationItemsFinder();
-      Collection<ASTExpression> iterationItems = new HashSet<>(finder.getItems(iterate));
-
-      Expression2NullCheckAccessorPrinter printer = new Expression2NullCheckAccessorPrinter(
-          new IndentPrinter(), true, iterationItems, iterationItems
-      );
       ASTGUIShortIterateControl ic = ((ASTGUIShortIterateControl) iterate.getIterateControl());
-
-      String expressionWithNullChecks = printer.prettyprint(ic.getIterable());
-      if (!UMLPGeneratorConfig.getInstance().isGenerateTypescript()) {
-        // Use the async pipe: https://angular.io/api/common/AsyncPipe
-        // This requires the iterated object to be Observeable<NGiterable>, Subscribeable<NGiterable>, ...
-        if (expressionWithNullChecks.contains("?")) {
-          // TODO: Due to getX() and getX(index) causing getX to be async (despite expecting a GemList)
-          // when is this really required - just having a "?" in the text can not be the answer
-          // wrapping this promise in an extra |async leads to unresponsive pages
-
-          Pattern pattern = Pattern.compile("(.*)\\.(get[a-zA-Z0-9]+)(List)\\(\\)");
-          Matcher m = pattern.matcher(expressionWithNullChecks);
-
-          // Instead of the overloaded&async getX(int?) we call the _internal_getXGemList() method
-
-//          expressionWithNullChecks = m.replaceAll("$1._internal_$2GemList()");
-
-        }
-        // ? => the backing gemList might be undefined until loaded
-        // .subject => access the BehaviorSubject of the GemList
-//        expressionWithNullChecks = "( " + expressionWithNullChecks + "?.subject | async )";
-        expressionWithNullChecks = "toArray(" + expressionWithNullChecks + ")";
-
-        //Alternative
-        // expressionWithNullChecks = "((" + expressionWithNullChecks + " | umlpToAsync | async ) | async)";
-      }
-      return expressionWithNullChecks;
+      return ic.getIterable();
     }
     Log.error("0x00004 iterate construct " + iterate.getId().getName()
         + " was not processed: range iterate control not supported yet");
-    return "";
+    return null;
   }
 
   public String getIterableGetter(ASTGUIIterate iterate) {
@@ -805,6 +797,20 @@ public class GUIGeneratorUtil {
     return paramSym.isPresent() && isViewElement(paramSym.get().getType());
   }
 
+  public boolean isViewElementsCollection(ASTExpression e) {
+    boolean res = false;
+    SymTypeExpression ste = TypeCheck3.typeOf(e);
+    if (ste.isGenericType()) {
+      List<SymTypeExpression> arguments = ((SymTypeOfGenerics) ste).getArgumentList();
+      for (SymTypeExpression arg : arguments) {
+        res = res
+            || isViewElement(arg)
+            || isViewElementsCollection(arg);
+      }
+    }
+    return res;
+  }
+
   public boolean isViewElementsCollection(SymTypeExpression ste) {
     boolean res = false;
     if (ste.isGenericType()) {
@@ -819,7 +825,8 @@ public class GUIGeneratorUtil {
   }
 
   public boolean isViewElement(SymTypeExpression ste) {
-    return ste.getTypeInfo().getFullName().equals(BuiltInTypes.GUI_VIEW_ELEMENT.getQName());
+    return ste.hasTypeInfo()
+        && ste.getTypeInfo().getFullName().equals(BuiltInTypes.GUI_VIEW_ELEMENT.getQName());
   }
 
   public String getBoxedType(String type) {
@@ -958,10 +965,9 @@ public class GUIGeneratorUtil {
   public String java2tsModule(String javaPackage) {
     String res = qName2path(javaPackage);
 
-    for (TSImportMap type : TSImportMap.values()) {
-      if (javaPackage.startsWith(type.getJavaPackage())) {
-        res = type.getTSPackage();
-      }
+    Optional<String> tsPackage = TSImportMap.INSTANCE.getTSPackage(javaPackage);
+    if (tsPackage.isPresent()) {
+      res = tsPackage.get();
     }
     if (TSBackendMap.isBackendRTEPackage(javaPackage)) {
       res = TSBackendMap.getTSRTEPackage();

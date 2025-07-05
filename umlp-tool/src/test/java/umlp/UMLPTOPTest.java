@@ -8,6 +8,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDElement;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.GeneratorEngine;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.logging.Log;
@@ -18,6 +19,7 @@ import org.mockito.Mockito;
 import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.gentypescript.java2ts.TSTopDecorator;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -65,7 +67,7 @@ public class UMLPTOPTest {
             .thenAnswer(i -> existsMockedFile(i.getArgument(1, String.class), guiGenFilesWithHWC, checkedGuiGenUtilFiles::add));
 
 
-        TSTopDecorator tsTopDecorator = new TSTopDecorator(new MCPath());
+        TSTopDecorator tsTopDecorator = new TSTopDecorator(new GlobalExtensionManagement(), new MCPath(), Paths.get(""));
 
         // A simple class -> check that it exists
         var dec = tsTopDecorator.decorate(make(newClass("Class1")));

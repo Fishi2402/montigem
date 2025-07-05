@@ -6,6 +6,7 @@ import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd.facade.CDParameterFacade;
 import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4codebasis._ast.ASTCDClass;
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
@@ -33,12 +34,18 @@ import de.monticore.ocl.setexpressions._ast.ASTSetCollectionItem;
 import de.monticore.ocl.setexpressions._ast.ASTSetEnumeration;
 import de.monticore.ocl.setexpressions._visitor.SetExpressionsVisitor2;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types3.SymTypeRelations;
+import de.monticore.types3.TypeCheck3;
+import de.monticore.types3.generics.TypeParameterRelations;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.StringTransformations;
@@ -121,6 +128,10 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     addRouter();
 
     ASTGUIComponentDeclaration declaration = gui.getGUIComponentDeclaration();
+    if (declaration.isPresentTypeParameters()) {
+      clazz.setTypeParameters(declaration.getTypeParameters().deepClone());
+    }
+
     StaticObjectsCollector.getInstance().init(declaration);
     InitDependencyTree.getInstance().init(declaration);
     gui.accept(traverser);
@@ -353,6 +364,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
    */
   @Override
   public void endVisit(ASTGUIComponent node) {
+    Map<ASTGUINamedArg, SymTypeExpression> argumentTypeMap = node.getArgumentTypes();
     for (ASTGUINamedArg arg : node.getGUINamedArgs().getGUINamedArgList()) {
       // calc type
       if (!arg.isPresentNameSymbol()) {
@@ -361,7 +373,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
             + " - " + arg.get_SourcePositionEnd().toString()
         );
       }
-      SymTypeExpression typeSTE = arg.getNameSymbol().getType();
+      SymTypeExpression typeSTE = argumentTypeMap.get(arg);
       // exclude GUIViewElement
       if (util.isViewElement(typeSTE)
           || util.isViewElementsCollection(typeSTE)) {
@@ -536,10 +548,20 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     // if the iterable is a custom method
     if (StaticObjectsCollector.getInstance().getNode2Method().containsKey(control.getIterable())) {
       Method m = StaticObjectsCollector.getInstance().getNode2Method().get(control.getIterable());
+      if (util.isViewElement(m.getReturnType())
+          || util.isViewElementsCollection(m.getReturnType())) {
+        Log.warn("Detected method " + m.getName() + " returning GUIViewElement object(s)."
+            + " Such methods are uncommon to define, consider adjusting the model.");
+      }
       type = getSimpleType(createTypeAndAddImports(m.getReturnType()));
     }
     else {
       SymTypeExpression typeSTE = util.getType(control.getIterable());
+      // exclude GUIViewElement
+      if (util.isViewElement(typeSTE)
+          || util.isViewElementsCollection(typeSTE)) {
+        return;
+      }
       type = getSimpleType(createTypeAndAddImports(typeSTE));
     }
 

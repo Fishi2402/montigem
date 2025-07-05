@@ -53,18 +53,12 @@ public class ClientDelegationManagerDecorator extends ManagerDecorator {
                 extensionDiamond.get(possibleChild).contains(symbol)).collect(Collectors.toList()
         ))));
 
-
-    parentToChildDiamond.keySet().forEach(diagramSymbol -> {
-
-      String extendedCDName = diagramSymbol.getName();
-      Optional<String> packageName = diagramSymbol.getPackageName().equals("")? Optional.empty() :
-          Optional.ofNullable(diagramSymbol.getPackageName());
-
-      String packageNameWithCD = packageName.map(s -> Joiners.DOT.join(s, extendedCDName))
-          .orElseGet(() -> extendedCDName);
-      ASTCDPackage astcdPackage = getCorrectPackage(packageNameWithCD.toLowerCase(), decoratedCD);
-      astcdPackage.addCDElement(withOrigin(createManagerClasses(diagramSymbol, parentToChildDiamond.get(diagramSymbol))));
-    });
+    ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
+    parentToChildDiamond.keySet().forEach(diagramSymbol ->
+        astcdPackage.addCDElement(
+            withOrigin(createManagerClasses(diagramSymbol, parentToChildDiamond.get(diagramSymbol))
+        )
+    ));
   }
 
   protected ASTCDClass createManagerClasses(DiagramSymbol parentCD, LinkedHashSet<DiagramSymbol> extendingCDs) {
@@ -166,13 +160,6 @@ public class ClientDelegationManagerDecorator extends ManagerDecorator {
     for (ASTCDType type : types) {
       getCD4C().addImport(clazz, Joiners.DOT.join(type.getSymbol().getPackageName().toLowerCase(), type.getSymbol().getName()));
     }
-  }
-
-  protected ASTCDPackage getCorrectPackage(String packageName, ASTCDCompilationUnit decoratedCD) {
-    ASTCDPackage p = CD4CodeMill.cDPackageBuilder()
-        .setMCQualifiedName(getMCTypeFacade().createQualifiedName(packageName)).build();
-    decoratedCD.getCDDefinition().addCDElement(p);
-    return p;
   }
 
   protected String getInitTemplate() {

@@ -5,36 +5,37 @@ import java.nio.file.Paths
 
 plugins {
   id "com.github.node-gradle.node" version "5.0.0"
-  id 'de.rwth.se.umlp-tool'
+  // id 'de.rwth.se.umlp-tool'
+  id "de.rwth.se.umlp-tool-frontend-test"  // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
   // TODO: Why is the frontend plugin not used here?
 }
 
 def useCD2GUI = true
 
+/*
 configurations {
   guiDefaultTypes
 }
+/**/
 
 dependencies {
-  guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
-}
-
-dependencies {
-  umlpModulesGen("umlp.modules:login:$version") // Load generator modifications
-  umlpModulesDomainSymbols("umlp.modules.login:frontendTS:$version") // frontend domain symbols
-  umlpModulesModels("umlp.modules:login:$version") // and models itself
+  // guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
+  umlpModules(project(":modules:login")) // Load generator modifications
 }
 
 // ALus local gradle is apparently unaware of these versions?
 // Explicitly use the local login module
+/*
 configurations.all {
   resolutionStrategy.dependencySubstitution {
     substitute module("umlp.modules:login") using project(":modules:login")
     substitute module("umlp.modules.login:frontendTS") using project(":modules:login:frontendTS")
   }
 }
+/* */
 
 
+/*
 tasks.register('generateNPMAuth', NPMAuthCreate){
   npmrcFile = file("config/.npmrc")
 }
@@ -46,10 +47,11 @@ tasks.register('frontendSetup', FrontendSetup){
   output = layout.buildDir.dir("frontendGen/")
 }
 
+nodeSetup.dependsOn(frontendSetup)
+/**/
 node {
   nodeProjectDir = file("${buildDir}/frontendGen")
 }
-nodeSetup.dependsOn(frontendSetup)
 
 tasks.register('generateCDTOGUI', UMLPCdToGuiTask) {
   enabled(useCD2GUI)
@@ -68,6 +70,14 @@ tasks.register('guiVariability', GuiVariabilityHandlerTask) {
   outputDir = layout.buildDirectory.dir("guiVariability")
 }
 
+genDomain {
+  input = file("../models/Finanzverwaltung.umlp")
+  /*
+  debug = true
+  outputs.upToDateWhen { false }
+  /**/
+}
+/*
 tasks.register('genDomain', UMLPFrontendTask) {
   dependsOn(frontendSetup)
   input = file("../models/Finanzverwaltung.umlp")
@@ -84,7 +94,26 @@ tasks.register('genDomainSymbols', UMLPSymbolsTask) {
   outputDir = file("${project.buildDir}/symbols")
   modelDir.from(configurations.umlpModulesModels)
 }
+/**/
 
+genGUI {
+  domainModels = ["Finanzverwaltung"]
+  guiCreateModels = ["gui.login.UserCreate", "gui.issues.IssueCreate"]
+
+  // TODO: Gradle Setup for modules
+  symbolDir.from(() -> tasks.named("createDomainSymbols").get().outputs)
+
+  // Load the symbols from the .jars in the domain symbols path
+//  symbolDir.from(configurations.umlpModulesDomainSymbols) // TODO: Move this module logic into the plugin
+
+//  outputs.upToDateWhen { false }
+  /*
+  debug = true
+  outputs.upToDateWhen { false }
+  /**/
+}
+
+/*
 tasks.register('genGUI', UMLPGuiGenTask) {
   dependsOn(genDomain, guiVariability, genDomainSymbols)
   input = file(guiVariability.getOutputDir().dir("gui"))
@@ -99,6 +128,7 @@ tasks.register('genGUI', UMLPGuiGenTask) {
   domainModels = ["Finanzverwaltung"]
   guiCreateModels = ["gui.login.UserCreate", "gui.issues.IssueCreate"]
 }
+/**/
 
 tasks.register('genGUI2', UMLPGuiGenTask) {
   enabled(useCD2GUI)
@@ -108,7 +138,10 @@ tasks.register('genGUI2', UMLPGuiGenTask) {
   symbolDir = files(
       generateCDTOGUI.getOutputDir().file("symbols"),
       configurations.guiLib,
-      configurations.guiDefaultTypes
+      configurations.guiTypes,
+      configurations.umlpModulesDomainSymbols,
+      configurations.umlpModulesImportMap,
+      configurations.umlpModulesGuiSymbols
   )
   hwcDir = file("src/app/")
   symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")
@@ -121,24 +154,33 @@ tasks.register('genGUI2', UMLPGuiGenTask) {
   enabled = false
 }
 
+nodeSetup.dependsOn(frontendSetup)
 npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 
 def prebuildTasks = [
-    npmInstall, genGUI2,
+    npmInstall,
+    genGUI2,
+    tasks.named("generate"),
+    providers.provider { project(":modules:login:frontendTS").tasks.named("generate")},
 ]
 
 tasks.register('buildApp', NpxTask) {
-  dependsOn(prebuildTasks)
+  dependsOn(
+      prebuildTasks,
+      project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") },
+  )
   command = "ng"
   args = ["build"]
 }
 assemble.dependsOn(buildApp)
 
+/*
 tasks.named('buildApp') {
   dependsOn {
     project(':modules:login:frontendTS').tasks.named('generate').get()
   }
 }
+/**/
 
 tasks.register('testApp', NpxTask) {
   dependsOn(prebuildTasks)

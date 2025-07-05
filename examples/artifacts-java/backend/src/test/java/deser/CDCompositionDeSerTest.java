@@ -1,10 +1,10 @@
 package deser;
 
-import baseartifactstest.BaseArtifactsTest4JavaProjectManagerImpl;
 import baseartifactstest.BaseArtifactsTestManager;
 import baseartifactstest.RootArtifact;
 import baseartifactstest.commands.Artifact_get;
 import database.GenAbstractNeo4jDBTest;
+import javaproject.BaseArtifactsTest4JavaProjectManagerImpl;
 import javaproject.ExternalJavaSource;
 import javaproject.JavaProjectManager;
 import javaproject.JavaProjectManagerImpl;

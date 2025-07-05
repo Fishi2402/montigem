@@ -26,8 +26,10 @@ import umlp.cli.common.Pipeline;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.UMLPGenerator;
 import umlp.generator.domain.UMLPGeneratorConfig;
+import umlp.generator.gui.gentypescript.config.ImportMapGenerator;
 import umlp.generator.gui.gentypescript.domain.TSUMLPGenerator;
 import umlp.generator.gui.gentypescript.java2ts.ComponentObserverManagerGenerator;
+import umlp.generator.gui.gentypescript.printer.TSImportMap;
 import umlp.generator.util.UMLPSymbolTables;
 import umlp.generator.validator.ocl.OCLASTPreProcessor;
 
@@ -86,6 +88,7 @@ public class UMLPFilePipeline extends Pipeline<UMLPPipelineData> {
       }
       UMLPMill.init();
       UMLPMill.globalScope().setSymbolPath(data.importedSymbolPath);
+      TSImportMap.INSTANCE.init(data.importedSymbolPath);
       return true;
     });
     register("addBuiltInTypes", addBuiltInTypes = this::addBuiltInTypes);
@@ -252,6 +255,12 @@ public class UMLPFilePipeline extends Pipeline<UMLPPipelineData> {
     astPipe.register("generate", generate = data -> {
       UMLPGeneratorConfig config = UMLPGeneratorConfig.getInstance().initFromCmd(data.data.cmd);
       if (FOR_CLIENT.isSelected(data.data.cmd)) {
+        Optional<String> tslib = UMLPGeneratorConfig.getInstance().getTSLib();
+        if (tslib.isPresent()) {
+          ImportMapGenerator importMapGenerator = new ImportMapGenerator(data.genSetup);
+          importMapGenerator.generate(tslib.get(), data.ast);
+        }
+
         TSUMLPGenerator generator = new TSUMLPGenerator(data.genSetup, config);
         String configTemplate = data.data.cmd.getOptionValue("ct", UMLPTool.DEFAULT_CONFIGTEMPLATE_GUI2JAVA2TS);
         generator.generate(data.ast, configTemplate);
@@ -374,4 +383,7 @@ public class UMLPFilePipeline extends Pipeline<UMLPPipelineData> {
   public interface DataWithCDASTAndTool extends DataWithCDAST, DataWithTool {
   }
 
+  public Pipeline<Data> getAstPipe() {
+    return astPipe;
+  }
 }

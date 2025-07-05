@@ -6,7 +6,7 @@ export interface GemBuildable {
 
   // Pseudo build for all classes: normally nothing happens
   // due to type erasure we cannot be more specific than Object
-  build<T extends GemBuildable>(): T;
+  build(): GemBuildable;
 
   // build being needed implies isBuildFinished being needed.
   // used to avoid calling build twice

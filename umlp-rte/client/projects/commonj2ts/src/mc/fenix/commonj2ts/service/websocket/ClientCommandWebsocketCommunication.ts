@@ -21,7 +21,8 @@ import {
   tap,
   filter,
   bufferWhen,
-  ObservableInput, merge
+  catchError,
+  ObservableInput, merge, of
 } from "rxjs";
 
 export class ClientCommandWebsocketCommunication implements ClientCommandCommunication {
@@ -178,7 +179,13 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
       complete: () => this.afterConnectionClosed()
     });
 
-    return firstValueFrom(retrySocket);
+    return firstValueFrom(retrySocket.pipe(
+      catchError(err => {
+        console.error('Error on retrySocket:', err);
+        // Return a fallback value or empty observable, so it doesn't reject
+        return of(null);
+      })
+    ));
   }
 
   public onCommandReceived(observer: CommandReceiveObserver): ClientCommandWebsocketCommunication {
