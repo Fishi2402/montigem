@@ -15,12 +15,14 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.StringJoiner;
 
 /**
  * Receives and processes {@link StackEvent}s from the {@link MethodMonitor}
  */
 public final class StackEventProcessor {
+
   /**
    * A stack to monitor which object is currently calling methods. If the stack is empty, calls must
    * have been caused by a trigger
@@ -42,6 +44,7 @@ public final class StackEventProcessor {
   /**
    * Checks whether an incoming {@link StackEvent} matches the expected event flow, considering
    * their {@link #objectMatchingStrategies()}
+   *
    * @param event A {@link StackEvent}
    */
   public void process(StackEvent event) {
@@ -49,6 +52,13 @@ public final class StackEventProcessor {
       //we ignore incoming stack events during a condition check
       return;
     }
+
+    //TODO is only the target matching strategy relevant? Or do we need the most restrictive one of
+    // target and source?
+    // How is the matching strategy defined when exiting a method?
+    var matchingStrategy = Optional
+        .ofNullable(objectMatchingStrategies.get(event.object()))
+        .orElseGet(MatchingStrategy::getDefault);
 
     event.matchVariant(new StackEventVariantMatcher<Void>() {
       @Override
@@ -62,7 +72,10 @@ public final class StackEventProcessor {
       @Override
       public Void whenErrorEvent(ErrorEvent event) {
         //update callstack
-        Assertions.assertSame(event.object(), callstack.pop(), () -> "exiting from method " + event.methodName() + " which was never entered");
+        Assertions.assertSame(event.object(),
+                              callstack.pop(),
+                              () -> "exiting from method " + event.methodName() +
+                                    " which was never entered");
 
         return null;
       }
@@ -70,7 +83,10 @@ public final class StackEventProcessor {
       @Override
       public Void whenReturnEvent(ReturnEvent event) {
         //update callstack
-        Assertions.assertSame(event.object(), callstack.pop(), () -> "returning from method " + event.methodName() + " which was never entered");
+        Assertions.assertSame(event.object(),
+                              callstack.pop(),
+                              () -> "returning from method " + event.methodName() +
+                                    " which was never entered");
 
         return null;
       }
@@ -78,7 +94,10 @@ public final class StackEventProcessor {
       @Override
       public Void whenReturnVoidEvent(ReturnVoidEvent event) {
         //update callstack
-        Assertions.assertSame(event.object(), callstack.pop(), () -> "returning from method " + event.methodName() + " which was never entered");
+        Assertions.assertSame(event.object(),
+                              callstack.pop(),
+                              () -> "returning from method " + event.methodName() +
+                                    " which was never entered");
 
         return null;
       }
@@ -98,6 +117,7 @@ public final class StackEventProcessor {
    *
    * <p>Will clear still pending events. Use {@link #assertAllExpectedEventsToBeProcessed()} to be
    * sure that no events are pending anymore.
+   *
    * @param expectedEvents Which events to expect next.
    */
   public void load(ExpectedEvent... expectedEvents) {
@@ -132,6 +152,7 @@ public final class StackEventProcessor {
   /**
    * Gets a reflective map declaring the different {@link MatchingStrategy}s of participants in a
    * sequence diagram.
+   *
    * @return The different matching strategies
    */
   public Map<Object, MatchingStrategy> objectMatchingStrategies() {

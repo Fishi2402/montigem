@@ -313,6 +313,16 @@ public class SD2TestDecorator {
     }
 
     @Override
+    public void visit(ASTSDThrow node) {
+
+    }
+
+    @Override
+    public void endVisit(ASTSDThrow node) {
+
+    }
+
+    @Override
     public void visit(ASTSDCondition node) {
       //TODO add as condition to latest sendMessage or as initial condition
     }
