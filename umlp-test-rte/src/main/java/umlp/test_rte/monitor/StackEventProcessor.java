@@ -56,15 +56,27 @@ public final class StackEventProcessor {
     //TODO is only the target matching strategy relevant? Or do we need the most restrictive one of
     // target and source?
     // How is the matching strategy defined when exiting a method?
+    var reportingObject = event.object();
     var matchingStrategy = Optional
-        .ofNullable(objectMatchingStrategies.get(event.object()))
+        .ofNullable(objectMatchingStrategies.get(reportingObject))
         .orElseGet(MatchingStrategy::getDefault);
 
     event.matchVariant(new StackEventVariantMatcher<Void>() {
       @Override
       public Void whenCallEvent(CallEvent event) {
+        var sourceObject = Optional.ofNullable(callstack.peekLast());
+        var targetObject = reportingObject;
+
         //update callstack
-        callstack.push(event.object());
+        callstack.push(reportingObject);
+
+        //TODO check whether event is compatible with expected event based on matching strategy
+        /*I have different matching kinds:
+        * free: if the event matches the action AND condition, we advance, otherwise we ignore the event
+        * complete: The event must match the expected one and the condition must hold
+        * visible implies complete matching, if both source and target are named objects of the test
+        *
+        * */
 
         return null;
       }
@@ -72,10 +84,15 @@ public final class StackEventProcessor {
       @Override
       public Void whenErrorEvent(ErrorEvent event) {
         //update callstack
-        Assertions.assertSame(event.object(),
-                              callstack.pop(),
+        Assertions.assertSame(reportingObject,
+                              callstack.pollLast(),
                               () -> "exiting from method " + event.methodName() +
                                     " which was never entered");
+
+        var sourceObject = reportingObject;
+        var targetObject = Optional.ofNullable(callstack.peekLast());
+
+        //TODO check whether event is compatible with expected event based on matching strategy
 
         return null;
       }
@@ -83,10 +100,15 @@ public final class StackEventProcessor {
       @Override
       public Void whenReturnEvent(ReturnEvent event) {
         //update callstack
-        Assertions.assertSame(event.object(),
-                              callstack.pop(),
+        Assertions.assertSame(reportingObject,
+                              callstack.pollLast(),
                               () -> "returning from method " + event.methodName() +
                                     " which was never entered");
+
+        var sourceObject = reportingObject;
+        var targetObject = Optional.ofNullable(callstack.peekLast());
+
+        //TODO check whether event is compatible with expected event based on matching strategy
 
         return null;
       }
@@ -94,10 +116,15 @@ public final class StackEventProcessor {
       @Override
       public Void whenReturnVoidEvent(ReturnVoidEvent event) {
         //update callstack
-        Assertions.assertSame(event.object(),
-                              callstack.pop(),
+        Assertions.assertSame(reportingObject,
+                              callstack.pollLast()),
                               () -> "returning from method " + event.methodName() +
                                     " which was never entered");
+
+        var sourceObject = reportingObject;
+        var targetObject = Optional.ofNullable(callstack.peekLast());
+
+        //TODO check whether event is compatible with expected event based on matching strategy
 
         return null;
       }
@@ -108,8 +135,6 @@ public final class StackEventProcessor {
         throw new IllegalStateException("Should not reach here");
       }
     });
-
-    //TODO make sure event is expected
   }
 
   /**
