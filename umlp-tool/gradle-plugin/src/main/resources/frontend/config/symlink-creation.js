@@ -3,6 +3,9 @@ const fs = require('fs');
 
 function linking(linkPath, targetPath) {
   try {
+    if(!fs.existsSync(targetPath)) {
+      console.log("Target path: "+targetPath+ " does not exist!")
+    }
     if (!fs.existsSync(linkPath)) {
       fs.symlinkSync(targetPath, linkPath, 'junction');
       console.log(`✅ Symlink created: ${linkPath} → ${targetPath}`);
