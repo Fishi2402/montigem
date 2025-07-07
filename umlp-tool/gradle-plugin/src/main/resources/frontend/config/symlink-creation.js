@@ -10,6 +10,7 @@ function linking(linkPath, targetPath) {
       console.log('ℹ️ Symlink already exists:', linkPath);
     }
   } catch (err) {
+    console.log('❌ Failed to create symlink:', err.message);
     console.error('❌ Failed to create symlink:', err.message);
     process.exit(1);
   }
