@@ -7,10 +7,6 @@ plugins {
 
 def useCD2GUI = false
 
-dependencies {
-  guiTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
-}
-
 node {
   nodeProjectDir = file("${buildDir}/frontendGen")
 }
