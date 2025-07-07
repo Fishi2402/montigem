@@ -57,28 +57,31 @@ tasks.register('linkStuff', NodeTask) {
   def umlpDir = file("$buildDir/frontendGen/node_modules/@umlp")
   umlpDir.mkdirs();
 
-  def clientRTELinks = []
+  def clientRTELinks = [:]
   def clientRTEBuild = file("../../../umlp-rte/client/build/dist")
   if(clientRTEBuild.exists()) {
     clientRTEBuild.eachFile {
       println it.name
-      // Link
-      clientRTELinks.add(umlpDir.toPath().resolve(it.name).toString())
-      // Target
-      clientRTELinks.add(it.toPath().toAbsolutePath().toString())
+      // Link, Target
+      clientRTELinks.put(umlpDir.toPath().resolve(it.name).toFile(),it.toPath().toAbsolutePath().toFile())
     }
   }
 
   outputs.upToDateWhen {
     isJunction(hwcsrc) &&
     isJunction(frontendOut)
-    // TODO up to date checks for client RTEs
+    clientRTELinks.keySet().every {
+      isJunction(it)
+    }
   }
 
   def allLinks =  [hwcsrc.toString(), hwcsrcTarget.toString(),
                    frontendOut.toString(), frontendOutTarget.toString(),
   ]
-  allLinks.addAll(clientRTELinks)
+  clientRTELinks.keySet().forEach {
+    allLinks.add(it.toString())
+    allLinks.add(clientRTELinks.get(it).toString())
+  }
 
   script = file("$buildDir/frontendGen/symlink-creation.js")
   args = allLinks
