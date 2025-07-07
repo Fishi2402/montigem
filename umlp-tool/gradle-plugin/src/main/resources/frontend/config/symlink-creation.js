@@ -1,12 +1,13 @@
 // build/link-src.js
 const fs = require('fs');
+const path = require('path');
 
 function linking(linkPath, targetPath) {
   try {
     if (!fs.existsSync(linkPath)) {
       const parentDir = path.dirname(linkPath);
       fs.mkdirSync(parentDir, { recursive: true })
-      
+
       fs.symlinkSync(targetPath, linkPath, 'junction');
       console.log(`✅ Symlink created: ${linkPath} → ${targetPath}`);
     } else {
