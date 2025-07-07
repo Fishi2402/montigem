@@ -27,21 +27,11 @@
     ],
     "paths": {
       "*": [
-        "node_modules/*",
         "build/appdomain/*",
         "build/appgui/*",
         "src/app/*",
         "hwcsrc/*"
-      ],
-      "@umlp/arrange": ["../../../../../umlp-rte/client/build/dist/arrange"],
-      "@umlp/basic": ["../../../../../umlp-rte/client/build/dist/basic"],
-      "@umlp/charts": ["../../../../../umlp-rte/client/build/dist/charts"],
-      "@umlp/common": ["../../../../../umlp-rte/client/build/dist/common"],
-      "@umlp/commonj2ts": ["../../../../../umlp-rte/client/build/dist/commonj2ts"],
-      "@umlp/input": ["../../../../../umlp-rte/client/build/dist/input"],
-      "@umlp/navigation": ["../../../../../umlp-rte/client/build/dist/navigation"],
-      "@umlp/networkgraph": ["../../../../../umlp-rte/client/build/dist/networkgraph"],
-      "@umlp/table": ["../../../../../umlp-rte/client/build/dist/table"]
+      ]
     }
   },
   "angularCompilerOptions": {

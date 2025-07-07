@@ -209,12 +209,7 @@ public class GUI2ConfigGenerator {
       if (hwFilePath.isPresent()) {
         Optional<Path> hwPath = MCPath.toPath(hwFilePath.get());
         if (hwPath.isPresent()) {
-          res = Optional.of(appRouteFolder
-              .toAbsolutePath()
-              .normalize()
-              .relativize(hwPath.get().toAbsolutePath())
-              .toString()
-              .replaceAll("\\\\", "/"));
+          res = Optional.of(route.getPathFromRoot());
 
           Reporting.reportUseHandwrittenCodeFile(hwPath.get(), Paths.get(hwFile));
         }

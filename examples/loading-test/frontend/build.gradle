@@ -54,15 +54,32 @@ tasks.register('linkStuff', NodeTask) {
   def frontendOut = file("$buildDir/build/umlp_frontend")
   def frontendOutTarget = file("$buildDir/umlp_frontend")
 
+  def umlpDir = file("$buildDir/frontendGen/node_modules/@umlp")
+  umlpDir.mkdirs();
+
+  def clientRTEBuild = file("../../../umlp-rte/client/build/dist")
+  def clientRTELinks = []
+  clientRTEBuild.eachFile {
+    println it.name
+    // Link
+    clientRTELinks.add(umlpDir.toPath().resolve(it.name).toString())
+    // Target
+    clientRTELinks.add(it.toPath().toAbsolutePath().toString())
+  }
+
   outputs.upToDateWhen {
     isJunction(hwcsrc) &&
     isJunction(frontendOut)
+    // TODO up to date checks for client RTEs
   }
 
-  script = file("$buildDir/frontendGen/symlink-creation.js")
-  args = [hwcsrc.toString(), hwcsrcTarget.toString(),
-          frontendOut.toString(), frontendOutTarget.toString(),
+  def allLinks =  [hwcsrc.toString(), hwcsrcTarget.toString(),
+                   frontendOut.toString(), frontendOutTarget.toString(),
   ]
+  allLinks.addAll(clientRTELinks)
+
+  script = file("$buildDir/frontendGen/symlink-creation.js")
+  args = allLinks
 }
 
 // Utility method to detect junction/symlink
