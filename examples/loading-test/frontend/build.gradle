@@ -55,7 +55,7 @@ tasks.register('linkStuff', NodeTask) {
   def frontendOutTarget = file("$buildDir/umlp_frontend")
 
   def umlpDir = file("$buildDir/frontendGen/node_modules/@umlp")
-  umlpDir.mkdirs();
+  println "Created @umlp dir: "+ umlpDir.mkdirs();
 
   def clientRTELinks = [:]
   def clientRTEDists = []
