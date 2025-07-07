@@ -44,7 +44,7 @@ def prebuildTasks = [
 ]
 
 tasks.register('linkStuff', NodeTask) {
-  dependsOn(prebuildTasks, ':umlp-rte:client:build')
+  dependsOn(prebuildTasks, ':umlp-rte:client:buildAll')
 
   def hwcsrc = file("$buildDir/frontendGen/hwcsrc")
   def hwcsrcTarget = file("src/app")
@@ -57,14 +57,16 @@ tasks.register('linkStuff', NodeTask) {
   def umlpDir = file("$buildDir/frontendGen/node_modules/@umlp")
   umlpDir.mkdirs();
 
-  def clientRTEBuild = file("../../../umlp-rte/client/build/dist")
   def clientRTELinks = []
-  clientRTEBuild.eachFile {
-    println it.name
-    // Link
-    clientRTELinks.add(umlpDir.toPath().resolve(it.name).toString())
-    // Target
-    clientRTELinks.add(it.toPath().toAbsolutePath().toString())
+  def clientRTEBuild = file("../../../umlp-rte/client/build/dist")
+  if(clientRTEBuild.exists()) {
+    clientRTEBuild.eachFile {
+      println it.name
+      // Link
+      clientRTELinks.add(umlpDir.toPath().resolve(it.name).toString())
+      // Target
+      clientRTELinks.add(it.toPath().toAbsolutePath().toString())
+    }
   }
 
   outputs.upToDateWhen {
