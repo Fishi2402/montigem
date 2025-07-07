@@ -117,7 +117,7 @@ public final class StackEventProcessor {
       public Void whenReturnVoidEvent(ReturnVoidEvent event) {
         //update callstack
         Assertions.assertSame(reportingObject,
-                              callstack.pollLast()),
+                              callstack.pollLast(),
                               () -> "returning from method " + event.methodName() +
                                     " which was never entered");
 
