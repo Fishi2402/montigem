@@ -24,4 +24,5 @@ if((args.length % 2) !== 0) {
 
 for (let i = 0; i < args.length-1; i++) {
   linking(args[i], args[i+1])
+  i++;
 }
