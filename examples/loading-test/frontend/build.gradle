@@ -58,11 +58,16 @@ tasks.register('linkStuff', NodeTask) {
   umlpDir.mkdirs();
 
   def clientRTELinks = [:]
-  def clientRTEBuild = file("../../../umlp-rte/client/build/dist")
-  clientRTEBuild.eachFile {
-      println it.name
+  def clientRTEDists = []
+  project(":umlp-rte:client").tasks.matching {it.name.startsWith("build_")}.forEach {
+    clientRTEDists.add(it.outputs.files.asPath)
+  }
+
+  clientRTEDists.forEach {
+      println it
+      def f = new File(it)
       // Link, Target
-      clientRTELinks.put(umlpDir.toPath().resolve(it.name).toFile(),it.toPath().toAbsolutePath().toFile())
+      clientRTELinks.put(umlpDir.toPath().resolve(f.name).toFile(),f.toPath().toAbsolutePath().toFile())
     }
 
   outputs.upToDateWhen {
