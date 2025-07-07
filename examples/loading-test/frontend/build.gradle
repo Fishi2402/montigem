@@ -59,13 +59,11 @@ tasks.register('linkStuff', NodeTask) {
 
   def clientRTELinks = [:]
   def clientRTEBuild = file("../../../umlp-rte/client/build/dist")
-  if(clientRTEBuild.exists()) {
-    clientRTEBuild.eachFile {
+  clientRTEBuild.eachFile {
       println it.name
       // Link, Target
       clientRTELinks.put(umlpDir.toPath().resolve(it.name).toFile(),it.toPath().toAbsolutePath().toFile())
     }
-  }
 
   outputs.upToDateWhen {
     isJunction(hwcsrc) &&
