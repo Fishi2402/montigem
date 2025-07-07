@@ -44,7 +44,7 @@ def prebuildTasks = [
 ]
 
 tasks.register('linkStuff', NodeTask) {
-  dependsOn(prebuildTasks,nodeSetup)
+  dependsOn(prebuildTasks)
 
   def hwcsrc = file("$buildDir/frontendGen/hwcsrc")
   def hwcsrcTarget = file("src/app")
