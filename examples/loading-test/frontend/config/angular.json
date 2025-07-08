@@ -58,13 +58,15 @@
               ],
               "outputHashing": "all",
               "sourceMap": true,
-              "namedChunks": true
+              "namedChunks": true,
+              "tsConfig": "tsconfig.prod.json"
             },
             "development": {
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true,
-              "namedChunks": true
+              "namedChunks": true,
+              "tsConfig": "tsconfig.json"
             }
           },
           "defaultConfiguration": "production"
