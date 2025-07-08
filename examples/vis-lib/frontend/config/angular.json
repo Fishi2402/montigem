@@ -43,7 +43,13 @@
               "./node_modules/primeicons/primeicons.css",
               "./node_modules/primeng/resources/themes/lara-light-blue/theme.css"
             ],
-            "scripts": []
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src"
+              ]
+            },
+            "scripts": [],
+            "preserveSymlinks": true
           },
           "configurations": {
             "production": {
@@ -115,8 +121,7 @@
             "scripts": [],
             "karmaConfig": "karma.conf.js",
             "include": [
-              "src/**/*.spec.ts",
-              "../../../src/**/*.spec.ts"
+              "src/**/*.spec.ts"
             ]
           }
         }

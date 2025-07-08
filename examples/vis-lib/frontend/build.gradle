@@ -57,6 +57,7 @@ if (project.hasProperty('j2ts') && j2ts.toString().toBoolean()) {
 }
 
 task copyAppJsweet(type: Copy) {
+  dependsOn(frontendSetup)
   onlyIf { project.hasProperty('j2ts') && project.j2ts.toString().toBoolean() }
   from 'config/src/appjsweet'
   into 'build/frontendGen/src/app/'
@@ -72,25 +73,76 @@ def prebuildTasks = [
     copyAppJsweet
 ]
 
+tasks.register('linkStuff', NodeTask) {
+  dependsOn(prebuildTasks)
+
+  def hwcsrc = file("$buildDir/frontendGen/hwcsrc")
+  def hwcsrcTarget = file("src/main/ts")
+
+  def frontendOut = file("$buildDir/build/umlp_frontend")
+  def frontendOutTarget = file("$buildDir/umlp_frontend")
+
+  def umlpDir = file("$buildDir/frontendGen/node_modules/@umlp")
+  println "Created @umlp dir: "+ umlpDir.mkdirs();
+
+  def clientRTELinks = [:]
+  def clientRTEDists = []
+  project(":umlp-rte:client").tasks.matching {it.name.startsWith("build_")}.forEach {
+    clientRTEDists.add(it.outputs.files.asPath)
+  }
+
+  clientRTEDists.forEach {
+    println it
+    def f = new File(it)
+    // Link, Target
+    clientRTELinks.put(umlpDir.toPath().resolve(f.name).toFile(),f.toPath().toAbsolutePath().toFile())
+  }
+
+  outputs.upToDateWhen {
+    isJunction(hwcsrc) &&
+    isJunction(frontendOut)
+    clientRTELinks.keySet().every {
+      isJunction(it)
+    }
+  }
+
+  def allLinks =  [hwcsrc.toString(), hwcsrcTarget.toString(),
+                   frontendOut.toString(), frontendOutTarget.toString(),
+  ]
+  clientRTELinks.keySet().forEach {
+    allLinks.add(it.toString())
+    allLinks.add(clientRTELinks.get(it).toString())
+  }
+
+  script = file("$buildDir/frontendGen/symlink-creation.js")
+  args = allLinks
+}
+
+// Utility method to detect junction/symlink
+static boolean isJunction(File file) {
+  return java.nio.file.Files.isSymbolicLink(file.toPath())
+}
+
 tasks.register('testApp', NpxTask) {
   dependsOn(
       prebuildTasks,
       project(":umlp-rte:client").tasks.matching { it.name.startsWith("copy_") },
-      project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") }
+      project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") },
+      tasks.named('linkStuff').get()
   )
   command = "ng"
   args = ["test"]
 }
 
 tasks.register('buildApp', NpxTask) {
-  dependsOn(testApp, project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") })
+  dependsOn(testApp, project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") }, tasks.named('linkStuff').get())
   command = "ng"
   args = ["build"]
 }
 assemble.dependsOn(buildApp)
 
 tasks.register('runApp', NpxTask) {
-  dependsOn(prebuildTasks, project(":umlp-rte:client").tasks.matching { it.name.startsWith("gen_") })
+  dependsOn(prebuildTasks, project(":umlp-rte:client").tasks.matching { it.name.startsWith("gen_") }, tasks.named('linkStuff').get())
   command = "ng"
   args = ["serve"]
 }
@@ -100,7 +152,7 @@ tasks.register('run') {
 }
 
 test {
-  dependsOn npmInstall
+  dependsOn buildApp
   useJUnitPlatform() {
     excludeTags "SlowTest"
   }
