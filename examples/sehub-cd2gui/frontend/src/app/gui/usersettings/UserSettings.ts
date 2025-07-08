@@ -2,7 +2,7 @@
 
 import {Component} from '@angular/core';
 import {UserSettingsComponent,config} from 'gui/usersettings/UserSettingsComponent';
-import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
+import {SehubSecurityManager} from "sehub/SehubSecurityManager";
 import {SehubManager} from 'sehub/SehubManager';
 
 @Component({

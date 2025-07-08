@@ -8,17 +8,21 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.io.paths.MCPath;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.gentypescript.decorator.TSImportHelper;
 
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+
+import static de.monticore.generating.GeneratorEngine.existsHandwrittenClass;
 
 public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
 
@@ -79,7 +83,9 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
           }
           Optional<String> hwScssPath = util.getRelativeImportPath(
               hwPath, outPath, qClassName, "scss");
-          if (hwScssPath.isPresent()) {
+          if (hwScssPath.isPresent() && !existsTSHandwrittenFile(hwPath, gui.getComponentQName())) {
+            scssPaths.add(hwScssPath.get());
+          } else if (hwScssPath.isPresent()){
             scssPaths.add("./" + originalName + ".scss");
           }
         }
@@ -93,7 +99,9 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
           }
           Optional<String> hwScssPath = util.getRelativeImportPath(
               hwPath, outPath, qClassName, "scss");
-          if (hwScssPath.isPresent()) {
+          if (hwScssPath.isPresent() && !existsTSHandwrittenFile(hwPath, gui.getComponentQName())) {
+            scssPaths.add(hwScssPath.get());
+          } else if (hwScssPath.isPresent()){
             scssPaths.add("./" + originalName + ".scss");
           }
         }
@@ -106,6 +114,12 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
         );
       }
     }
+  }
+
+  public boolean existsTSHandwrittenFile(MCPath targetPath, String qualifiedName) {
+    String hwFile = Names.getPathFromPackage(qualifiedName)+ ".ts";
+    Optional<URL> hwFilePath = targetPath.find(hwFile);
+    return hwFilePath.isPresent();
   }
 
   protected HashSet<String> calculateImports(String componentQName, List<ASTGUIComponent> guiComponents, TSImportHelper importHelper) {
