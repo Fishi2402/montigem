@@ -122,7 +122,7 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig implements GUIDS
 
   @Override
   public void visit(ASTGUIComponent component) {
-    String componentQName = gui.getComponentName();
+    String componentQName = gui.getComponentQName();
     if (!component.isPresentNameSymbol()) {
       Log.error("0x0008B Name symbol of " + component.getName() + " not present.");
     }
