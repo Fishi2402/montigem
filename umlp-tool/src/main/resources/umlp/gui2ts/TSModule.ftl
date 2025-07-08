@@ -2,7 +2,6 @@
 <#-- Generates a module ts file from the given model -->
 ${tc.signature("config", "existHWCRoutes", "hwcModulePath", "modules", "componentPath", "componentSuffix")}
 <#assign genHelper = glex.getGlobalVar("genHelper")>
-<#assign viewComponents = glex.getGlobalVar("viewComponents")>
 <#assign compDecl = ast.getGUIComponentDeclaration()>
 
 import { NgModule } from "@angular/core";

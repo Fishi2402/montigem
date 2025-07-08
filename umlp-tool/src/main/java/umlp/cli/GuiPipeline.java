@@ -18,7 +18,6 @@ import umlp.UMLPTool;
 import umlp.cli.common.IOperation;
 import umlp.cli.common.Pipeline;
 import umlp.generator.domain.UMLPGeneratorConfig;
-import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
 import umlp.generator.gui.genjava.GUI2JavaGenerator;
@@ -191,9 +190,6 @@ public class GuiPipeline extends Pipeline<UMLPPipelineData> {
   public final IOperation.ISimpleOperation<DataWithGenSetupAndModel> model_pipe_setup_glex_vars =
       data -> {
         // Get all ASTGUIComponents
-        GUIComponentsVisitor viewComponents =
-            new GUIComponentsVisitor(data.getAst(), data.getGenSetup().getGlex());
-        data.getGenSetup().getGlex().setGlobalValue("viewComponents", viewComponents);
         data.getGenSetup().getGlex().setGlobalValue("genHelper", GUIGeneratorUtil.getInstance());
         data.getGenSetup().getGlex().setGlobalValue("UMLPGeneratorConfig",
             UMLPGeneratorConfig.getInstance().initFromCmd(data.getCMD()));

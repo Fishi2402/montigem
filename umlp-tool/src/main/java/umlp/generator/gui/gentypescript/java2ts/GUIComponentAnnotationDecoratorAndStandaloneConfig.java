@@ -1,16 +1,17 @@
 package umlp.generator.gui.gentypescript.java2ts;
 
-import com.google.common.collect.Sets;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
+import de.monticore.guidsl._visitor.GUIDSLTraverser;
+import de.monticore.guidsl._visitor.GUIDSLVisitor2;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.UMLPGeneratorConfig;
-import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.gentypescript.decorator.TSImportHelper;
 
@@ -19,9 +20,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
-public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
+public class GUIComponentAnnotationDecoratorAndStandaloneConfig implements GUIDSLVisitor2 {
 
+  protected final GUIDSLTraverser traverser;
   protected static final GUIGeneratorUtil util = GUIGeneratorUtil.getInstance();
 
   protected final GlobalExtensionManagement glex;
@@ -29,18 +32,26 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
   protected final Path outPath;
   protected final MCPath importsPath;
 
+  protected ASTGUICompilationUnit gui;
+  protected TSImportHelper importHelper;
+
+  protected Set<String> imports = new HashSet<>();
+
   public GUIComponentAnnotationDecoratorAndStandaloneConfig(
       final GlobalExtensionManagement glex, MCPath hwPath, Path outPath, MCPath importsPath) {
+    traverser = GUIDSLMill.traverser();
+    traverser.add4GUIDSL(this);
     this.glex = glex;
     this.hwPath = hwPath;
     this.outPath = outPath;
     this.importsPath = importsPath;
   }
 
-  public void transform(ASTCDCompilationUnit ast, ASTGUICompilationUnit gui, GUIComponentsVisitor viewComponents) {
+  public void transform(ASTCDCompilationUnit ast, ASTGUICompilationUnit gui) {
     String qName = ast.getMCPackageDeclaration().getMCQualifiedName().getQName();
+    this.gui = gui;
     for (ASTCDClass clazz : ast.getCDDefinition().getCDClassesList()) {
-      TSImportHelper importHelper = new TSImportHelper(glex, clazz, hwPath, outPath, importsPath);
+      importHelper = new TSImportHelper(glex, clazz, hwPath, outPath, importsPath);
       String originalName = GUIGeneratorUtil.getInstance().getOriginalName(clazz);
       String qClassName = qName + "." + originalName;
       if (!GUIGeneratorUtil.getInstance().isComponent(clazz)) {
@@ -98,30 +109,30 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig {
           }
         }
         String selector = GUIGeneratorUtil.getInstance().pascal2KebabCase(originalName);
-        HashSet<String> importedComponents = calculateImports(gui.getComponentQName(), viewComponents.getComponents(), importHelper);
+        imports = new HashSet<>();
+        gui.accept(traverser);
         glex.replaceTemplate(
             GUI2ComponentTemplates.ANNOTATIONS,
             clazz,
-            new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATION_STANDALONECONFIG_COMPONENT, htmlPath, scssPaths, selector, importedComponents, hwPath, noHWC)
+            new TemplateHookPoint(GUI2ComponentTemplates.ANNOTATION_STANDALONECONFIG_COMPONENT, htmlPath, scssPaths, selector, imports, hwPath, noHWC)
         );
       }
     }
   }
 
-  protected HashSet<String> calculateImports(String componentQName, List<ASTGUIComponent> guiComponents, TSImportHelper importHelper) {
-    HashSet<String> importedComponents = Sets.newHashSet();
-    for (ASTGUIComponent component : guiComponents) {
-      if (!component.isPresentNameSymbol()) {
-        Log.error("0x0008B Name symbol of " + component.getName() + " not present.");
-      }
-
-      // Avoid circular import dependencies for recursive component calls
-      if (!component.getNameSymbol().getFullName().equals(componentQName)) {
-        String importedQName = component.getNameSymbol().getFullName();
-        importHelper.addImport(importedQName, Optional.empty(), true, componentQName);
-        importedComponents.add(importedQName);
-      }
+  @Override
+  public void visit(ASTGUIComponent component) {
+    String componentQName = gui.getComponentName();
+    if (!component.isPresentNameSymbol()) {
+      Log.error("0x0008B Name symbol of " + component.getName() + " not present.");
     }
-    return importedComponents;
+
+    // Avoid circular import dependencies for recursive component calls
+    if (!component.getNameSymbol().getFullName().equals(componentQName)) {
+      String importedQName = component.getNameSymbol().getFullName();
+      importHelper.addImport(importedQName, Optional.empty(), true, componentQName);
+      imports.add(importedQName);
+    }
   }
+
 }
