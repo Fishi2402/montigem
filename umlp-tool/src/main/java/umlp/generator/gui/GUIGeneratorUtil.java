@@ -127,7 +127,7 @@ public class GUIGeneratorUtil {
   }
 
   public boolean isComponent(ASTCDClass clazz) {
-    return clazz.getName().endsWith(GUIAbstractDecorator.COMPONENT_SUFFIX);
+    return clazz.getName().endsWith("Component");
   }
 
   public boolean isCommandCall(ASTGUICompilationUnit unit, ASTCallExpression methodCall) {
@@ -161,7 +161,7 @@ public class GUIGeneratorUtil {
   public String getOriginalName(ASTCDClass clazz) {
     return isComponent(clazz) ?
         clazz.getName()
-            .substring(0, clazz.getName().lastIndexOf(GUIAbstractDecorator.COMPONENT_SUFFIX)) :
+            .substring(0, clazz.getName().lastIndexOf("Component")) :
         clazz.getName();
   }
 
