@@ -13,8 +13,8 @@ public final class MethodMonitor {
   private final StackEvent event;
   private boolean active = true;
 
-  public static MethodMonitor start(Object object, String methodName) {
-    var event = new CallEvent(object, methodName);
+  public static MethodMonitor start(Object object, String methodName, Object... params) {
+    var event = new CallEvent(object, methodName, params);
     StackEventQueue.report(event);
     return new MethodMonitor(event);
   }

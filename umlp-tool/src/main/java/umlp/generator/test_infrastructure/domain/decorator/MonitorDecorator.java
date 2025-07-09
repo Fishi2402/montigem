@@ -320,7 +320,9 @@ public class MonitorDecorator extends AbstractDecorator {
                               name,
                               returnType,
                               paramSignature,
+                              paramCallsite,
                               isVoid,
+                              !params.isEmpty(),
                               actualCall);
       }
 
