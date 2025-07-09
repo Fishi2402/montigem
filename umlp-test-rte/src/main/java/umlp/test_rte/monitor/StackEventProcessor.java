@@ -261,7 +261,14 @@ public final class StackEventProcessor {
     }
 
     //check condition
-    var conditionCheckOkay = expectedEvent.condition().get();
+    Boolean conditionCheckOkay;
+    try {
+      this.conditionChecking = true;
+      conditionCheckOkay = expectedEvent.condition().get();
+    } finally {
+      this.conditionChecking = false;
+    }
+
     if (!conditionCheckOkay) {
       return Optional.of("Failed condition check: " + expectedEvent.conditionStringRepresentation());
     }
