@@ -6,6 +6,10 @@ import umlp.test_rte.monitor.event.StackEvent;
 import umlp.test_rte.monitor.event.StackEventVariantMatcher;
 import umlp.test_rte.monitor.model.ExpectedEvent;
 import umlp.test_rte.monitor.model.MatchingStrategy;
+import umlp.test_rte.monitor.model.action.Call;
+import umlp.test_rte.monitor.model.action.Error;
+import umlp.test_rte.monitor.model.action.ExhaustiveActionVariantMatcher;
+import umlp.test_rte.monitor.model.action.Return;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -85,7 +89,7 @@ public final class StackEventProcessor {
     var targetObject = sourceTargetPair.targetObject;
 
     //check whether the event does match the expected event
-    var errorMessage = matchesExpectedEvent(event);
+    var errorMessage = matchesExpectedEvent(event, sourceObject, targetObject);
 
     if (errorMessage.isEmpty()) {
       expectedEvents.remove(0); //remove the expected event
@@ -107,11 +111,96 @@ public final class StackEventProcessor {
     Assertions.fail(errorMessage.get());
   }
 
+  private Optional<String> matchesExpectedEvent(StackEvent event,
+      Optional<Object> sourceObject,
+      Optional<Object> targetObject) {
+    if (expectedEvents.isEmpty()) {
+      return Optional.of("not expecting any event");
+    }
+    var expectedEvent = expectedEvents.get(0);
 
-  private Optional<String> matchesExpectedEvent(StackEvent event) {
-    return Optional.empty(); //TODO check for match and return error messages accordingly
+    //check source-object
+    //the only case for a source object to not be present is it being a trigger, and we have no
+    // way to control that
+    if (sourceObject.isPresent()) {
+      var expectedSource = expectedEvent.source();
+      var actualSource = sourceObject.get();
+      if (expectedSource != actualSource) {
+        return Optional.of(String.format("Expected source object %s but got %s instead",
+                                         expectedSource,
+                                         actualSource));
+      }
+    }
+
+    //check target-object
+    //the only case for a target-object to not be present is a return to a trigger, and we have
+    // no way to control that
+    if (targetObject.isPresent()) {
+      var expectedTarget = expectedEvent.target();
+      var actualTarget = targetObject.get();
+      if (expectedTarget != actualTarget) {
+        return Optional.of(String.format("Expected target object %s but got %s instead",
+                                         expectedTarget,
+                                         actualTarget));
+      }
+    }
+
+    //check the action
+    return expectedEvent.action().matchVariant(new ExhaustiveActionVariantMatcher<>() {
+      @Override
+      public Optional<String> whenCall(Call call) {
+        var expectedMethodName = call.methodName();
+        return event.matchVariant(new StackEventVariantMatcher<>() {
+          @Override
+          public Optional<String> whenCallEvent(CallEvent event) {
+            //check method name
+            var actualMethodName = event.methodName();
+            if (!actualMethodName.equals(expectedMethodName)) {
+              return Optional.of(String.format("Expected call of %s but got call of %s",
+                                               expectedMethodName, actualMethodName));
+            }
+
+            //check arguments
+            var expectedArguments = call.args();
+            //TODO we are not logging the actual arguments right now, pls fix ._.
+
+            return Optional.empty();
+          }
+
+          @Override
+          public Optional<String> otherwise(StackEvent event) {
+            return Optional.of(String.format("Expected call of %s but got %s",
+                                             expectedMethodName,
+                                             event));
+          }
+        });
+      }
+
+      @Override
+      public Optional<String> whenError(Error error) {
+        //TODO
+        return Optional.empty();
+      }
+
+      @Override
+      public Optional<String> whenReturn(Return returnAction) {
+        //TODO
+        return Optional.empty();
+      }
+    });
   }
 
+  /**
+   * Determines whether the next incoming event must match the expected event based on the matching
+   * strategy and some more info of the objects involved in the incoming event
+   *
+   * @param matchingStrategy The {@link MatchingStrategy} used
+   * @param sourceObject     The object initiating the interaction, if present
+   * @param targetObject     The object targeted by the interaction, if present
+   * @param methodName       The name of the method involved in the interaction, if known
+   * @return Whether the incoming event must match the expected event, {@code false} implying that a
+   * mismatch can be ignored
+   */
   private boolean isRequiredMatch(MatchingStrategy matchingStrategy,
       Optional<Object> sourceObject,
       Optional<Object> targetObject,

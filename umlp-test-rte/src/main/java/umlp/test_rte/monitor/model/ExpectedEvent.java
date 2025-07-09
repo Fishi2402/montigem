@@ -71,7 +71,7 @@ public final class ExpectedEvent {
     return conditionStringRepresentation;
   }
 
-  public boolean trigger() {
+  public boolean isTrigger() {
     return trigger;
   }
 
