@@ -309,6 +309,9 @@ public class SD2TestDecorator {
 
     @Override
     public void visit(ASTSDCall node) {
+      //how to get the args out:
+      //SD4DevelopmentMill.prettyPrint(node.getArguments().getExpression(0), false);
+
       //TODO add to latest trigger or make it become the trigger
     }
 

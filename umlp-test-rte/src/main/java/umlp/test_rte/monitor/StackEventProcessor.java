@@ -1,5 +1,6 @@
 package umlp.test_rte.monitor;
 
+import org.eclipse.collections.impl.block.factory.Comparators;
 import org.junit.jupiter.api.Assertions;
 import umlp.test_rte.monitor.event.CallEvent;
 import umlp.test_rte.monitor.event.ErrorEvent;
@@ -57,12 +58,7 @@ public final class StackEventProcessor {
       return; //we ignore incoming stack events during a condition check
     }
 
-    //TODO is only the target matching strategy relevant? Or do we need the most restrictive one of
-    // target and source?
-    // How is the matching strategy defined when exiting a method?
     var reportingObject = event.object();
-    var matchingStrategy = Optional.ofNullable(objectMatchingStrategies.get(reportingObject))
-        .orElseGet(MatchingStrategy::getDefault);
 
     //update callstack
     var sourceTargetPair = event.matchVariant(new StackEventVariantMatcher<SourceTargetPair>() {
@@ -96,6 +92,12 @@ public final class StackEventProcessor {
       expectedEvents.remove(0); //remove the expected event
       return; //no need to check whether the match was actually required
     }
+
+    //get the highest priority matching strategy of source and target object
+    var matchingStrategy = Stream.concat(sourceObject.stream(), targetObject.stream())
+        .flatMap(object -> Optional.ofNullable(objectMatchingStrategies.get(object)).stream())
+        .max(Comparators.naturalOrder())
+        .orElseGet(MatchingStrategy::getDefault);
 
     //determine whether the event must match the expected event
     var requiredMatch = isRequiredMatch(matchingStrategy,
@@ -147,7 +149,7 @@ public final class StackEventProcessor {
     }
 
     //check the action
-    return expectedEvent.action().matchVariant(new ExhaustiveActionVariantMatcher<>() {
+    var actionCheckErrorMessage = expectedEvent.action().matchVariant(new ExhaustiveActionVariantMatcher<Optional<String>>() {
       @Override
       public Optional<String> whenCall(Call call) {
         var expectedMethodName = call.methodName();
@@ -198,7 +200,9 @@ public final class StackEventProcessor {
             var expectedError = error.error();
             var actualError = event.exception();
             if (!actualError.equals(expectedError)) {
-              return Optional.of(String.format("Expected %s but got %s", expectedError, actualError));
+              return Optional.of(String.format("Expected %s but got %s",
+                  expectedError,
+                  actualError));
             }
 
             //optionally check method name
@@ -206,7 +210,10 @@ public final class StackEventProcessor {
               var expectedMethodName = error.methodName().get();
               var actualMethodName = event.methodName();
               if (!actualMethodName.equals(expectedMethodName)) {
-                return Optional.of(String.format("Expected error from %s but reported error is from %s", expectedMethodName, actualMethodName));
+                return Optional.of(String.format(
+                    "Expected error from %s but reported error is from %s",
+                    expectedMethodName,
+                    actualMethodName));
               }
             }
 
@@ -226,6 +233,18 @@ public final class StackEventProcessor {
         return Optional.empty();
       }
     });
+
+    if (actionCheckErrorMessage.isPresent()) {
+      return actionCheckErrorMessage;
+    }
+
+    //check condition
+    var conditionCheckOkay = expectedEvent.condition().get();
+    if (!conditionCheckOkay) {
+      return Optional.of("Failed condition check: " + expectedEvent.conditionStringRepresentation());
+    }
+
+    return Optional.empty();
   }
 
   /**
@@ -268,7 +287,7 @@ public final class StackEventProcessor {
         //matching is always required
         return true;
       default:
-        throw new IllegalStateException("unreachable");
+        throw new IllegalStateException("unknown matching strategy:  " + matchingStrategy);
     }
   }
 
