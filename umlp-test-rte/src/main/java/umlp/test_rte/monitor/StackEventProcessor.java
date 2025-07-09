@@ -2,9 +2,6 @@ package umlp.test_rte.monitor;
 
 import org.junit.jupiter.api.Assertions;
 import umlp.test_rte.monitor.event.CallEvent;
-import umlp.test_rte.monitor.event.ErrorEvent;
-import umlp.test_rte.monitor.event.ReturnEvent;
-import umlp.test_rte.monitor.event.ReturnVoidEvent;
 import umlp.test_rte.monitor.event.StackEvent;
 import umlp.test_rte.monitor.event.StackEventVariantMatcher;
 import umlp.test_rte.monitor.model.ExpectedEvent;
@@ -17,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.StringJoiner;
+import java.util.stream.Stream;
 
 /**
  * Receives and processes {@link StackEvent}s from the {@link MethodMonitor}
@@ -49,8 +47,7 @@ public final class StackEventProcessor {
    */
   public void process(StackEvent event) {
     if (conditionChecking) {
-      //we ignore incoming stack events during a condition check
-      return;
+      return; //we ignore incoming stack events during a condition check
     }
 
     //TODO is only the target matching strategy relevant? Or do we need the most restrictive one of
@@ -61,80 +58,80 @@ public final class StackEventProcessor {
         .ofNullable(objectMatchingStrategies.get(reportingObject))
         .orElseGet(MatchingStrategy::getDefault);
 
-    event.matchVariant(new StackEventVariantMatcher<Void>() {
+    //update callstack
+    var sourceTargetPair = event.matchVariant(new StackEventVariantMatcher<SourceTargetPair>() {
       @Override
-      public Void whenCallEvent(CallEvent event) {
-        var sourceObject = Optional.ofNullable(callstack.peekLast());
-        var targetObject = reportingObject;
-
-        //update callstack
+      public SourceTargetPair whenCallEvent(CallEvent event) {
         callstack.push(reportingObject);
-
-        //TODO check whether event is compatible with expected event based on matching strategy
-        /*I have different matching kinds:
-        * free: if the event matches the action AND condition, we advance, otherwise we ignore the event
-        * complete: The event must match the expected one and the condition must hold
-        * visible implies complete matching, if both source and target are named objects of the test
-        *
-        * */
-
-        return null;
+        return new SourceTargetPair(callstack.size() >= 2 ?
+                                        Optional.of(callstack.get(callstack.size() - 2)) :
+                                        Optional.empty(), Optional.of(reportingObject));
       }
 
       @Override
-      public Void whenErrorEvent(ErrorEvent event) {
-        //update callstack
-        Assertions.assertSame(reportingObject,
-                              callstack.pollLast(),
-                              () -> "exiting from method " + event.methodName() +
-                                    " which was never entered");
+      public SourceTargetPair otherwise(StackEvent event) {
+        if (reportingObject != callstack.pollLast()) {
+          throw new IllegalStateException(
+              "exiting from method " + event.methodName() + " whose entry was never logged");
+        }
 
-        var sourceObject = reportingObject;
-        var targetObject = Optional.ofNullable(callstack.peekLast());
-
-        //TODO check whether event is compatible with expected event based on matching strategy
-
-        return null;
-      }
-
-      @Override
-      public Void whenReturnEvent(ReturnEvent event) {
-        //update callstack
-        Assertions.assertSame(reportingObject,
-                              callstack.pollLast(),
-                              () -> "returning from method " + event.methodName() +
-                                    " which was never entered");
-
-        var sourceObject = reportingObject;
-        var targetObject = Optional.ofNullable(callstack.peekLast());
-
-        //TODO check whether event is compatible with expected event based on matching strategy
-
-        return null;
-      }
-
-      @Override
-      public Void whenReturnVoidEvent(ReturnVoidEvent event) {
-        //update callstack
-        Assertions.assertSame(reportingObject,
-                              callstack.pollLast(),
-                              () -> "returning from method " + event.methodName() +
-                                    " which was never entered");
-
-        var sourceObject = reportingObject;
-        var targetObject = Optional.ofNullable(callstack.peekLast());
-
-        //TODO check whether event is compatible with expected event based on matching strategy
-
-        return null;
-      }
-
-      @Override
-      public Void otherwise(StackEvent event) {
-        //if this code is ever reached, this matcher needs to be updated to handle all events
-        throw new IllegalStateException("Should not reach here");
+        //the java compiler otherwise assumes that reportingObject might be null
+        assert reportingObject != null;
+        return new SourceTargetPair(Optional.of(reportingObject),
+                                    Optional.ofNullable(callstack.peekLast()));
       }
     });
+    var sourceObject = sourceTargetPair.sourceObject;
+    var targetObject = sourceTargetPair.targetObject;
+
+    //check whether the event does match the expected event
+    var errorMessage = matchesExpectedEvent(event);
+
+    if (errorMessage.isEmpty()) {
+      expectedEvents.remove(0); //remove the expected event
+      return; //no need to check whether the match was actually required
+    }
+
+    //determine whether the event must match the expected event
+    var requiredMatch = isRequiredMatch(matchingStrategy, sourceObject, targetObject, event.methodName());
+
+    if (!requiredMatch) {
+      //we just ignore non-required matches
+      return;
+    }
+
+    //raise an error
+    Assertions.fail(errorMessage.get());
+  }
+
+
+  private Optional<String> matchesExpectedEvent(StackEvent event) {
+    return Optional.empty(); //TODO check for match and return error messages accordingly
+  }
+
+  private boolean isRequiredMatch(MatchingStrategy matchingStrategy, Optional<Object> sourceObject, Optional<Object> targetObject, String methodName) {
+    switch (matchingStrategy) {
+      case FREE:
+        //matching is always optional
+        return false;
+      case INITIAL:
+        //matching is required if a matching expected event is present
+        return expectedEvents.stream().anyMatch(expectedEvent -> {
+          //source, target and method name must not create conflicts to match
+          if (sourceObject.isPresent() && sourceObject.get() != expectedEvent.source()) return false;
+          if (targetObject.isPresent() && targetObject.get() != expectedEvent.target()) return false;
+          var expectedMethodName = expectedEvent.getMethodName();
+          return expectedMethodName.isEmpty() || expectedMethodName.get().equals(methodName);
+        });
+      case VISIBLE:
+        //matching is required if source and target object are declared in the test
+        return Stream.concat(sourceObject.stream(), targetObject.stream()).allMatch(objectMatchingStrategies::containsKey);
+      case COMPLETE:
+        //matching is always required
+        return true;
+      default:
+        throw new IllegalStateException("unreachable");
+    }
   }
 
   /**
@@ -182,5 +179,16 @@ public final class StackEventProcessor {
    */
   public Map<Object, MatchingStrategy> objectMatchingStrategies() {
     return objectMatchingStrategies;
+  }
+
+  private static class SourceTargetPair {
+
+    public final Optional<Object> sourceObject;
+    public final Optional<Object> targetObject;
+
+    public SourceTargetPair(Optional<Object> sourceObject, Optional<Object> targetObject) {
+      this.sourceObject = sourceObject;
+      this.targetObject = targetObject;
+    }
   }
 }
