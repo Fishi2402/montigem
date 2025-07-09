@@ -86,16 +86,30 @@ task runAppNoBuild(type: NpxTask) {
   args = ["serve"]
 }
 
-tasks.register('linkStuff') {
+tasks.register('linkStuff', NodeTask) {
   dependsOn(prebuildTasks)
-  doLast {
-    def target = file('src/main/ts')
-    def link = file('build/frontendGen/hwcsrc')
-    if(!link.exists()) {
-      // TODO this is windows only - FUCK this garbage OS
-      ["cmd", "/c", "mklink", "/J", link.toString(), target.toString()].execute().waitFor()
-    }
+  def hwcsrc = file("$buildDir/frontendGen/hwcsrc")
+  def hwcsrcTarget = file("src/main/ts")
+
+  def frontendOut = file("$buildDir/build/umlp_frontend")
+  def frontendOutTarget = file("$buildDir/umlp_frontend")
+
+  outputs.upToDateWhen {
+    isJunction(hwcsrc) &&
+    isJunction(frontendOut)
   }
+
+  def allLinks = [hwcsrc.toString(), hwcsrcTarget.toString(),
+                  frontendOut.toString(), frontendOutTarget.toString(),
+  ]
+
+  script = file("$buildDir/frontendGen/symlink-creation.js")
+  args = allLinks
+}
+
+// Utility method to detect junction/symlink
+static boolean isJunction(File file) {
+  return java.nio.file.Files.isSymbolicLink(file.toPath())
 }
 
 tasks.named('runApp') {

@@ -20,7 +20,7 @@ import {
   standalone:true,
   imports:[...config.imports],
   selector: config.selector,
-  templateUrl: config.templateUrl,
+  templateUrl: "./PhotoDragNDrop.html",
   styles: config.styles,
   styleUrls: ["./PhotoDragNDrop.scss"]
 })

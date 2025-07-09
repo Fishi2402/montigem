@@ -4,7 +4,7 @@ import de.se_rwth.commons.logging.Log;
 import demorec.BatteryPack;
 import demorec.DemoRecComponent;
 import demorec.State;
-import service.BatteryPackService;
+import demorec.service.BatteryPackService;
 import umlp.jsweet.extension.annotation.Component;
 
 import java.util.Optional;

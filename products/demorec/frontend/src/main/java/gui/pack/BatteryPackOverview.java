@@ -2,7 +2,7 @@
 package gui.pack;
 
 import demorec.BatteryPack;
-import service.BatteryPackService;
+import demorec.service.BatteryPackService;
 import umlp.guiutil.Router;
 import umlp.jsweet.extension.annotation.Component;
 import java.util.function.Consumer;

@@ -40,7 +40,7 @@
         "build/appdomain/*",
         "build/appgui/*",
         "src/app/*",
-        "hwcsrc/gui/*"
+        "hwcsrc/*"
       ]
     }
   },

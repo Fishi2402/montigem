@@ -1,7 +1,7 @@
 package gui.pack;
 
 import demorec.BatteryPack;
-import service.BatteryPackService;
+import demorec.service.BatteryPackService;
 import umlp.jsweet.extension.annotation.Component;
 
 @Component

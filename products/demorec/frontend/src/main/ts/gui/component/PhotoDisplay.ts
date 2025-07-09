@@ -22,7 +22,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   standalone:true,
   imports:[...config.imports, GemButton],
   selector: config.selector,
-  templateUrl: config.templateUrl,
+  templateUrl: "./PhotoDisplay.html",
   styles: [":host{ display: flex; flex-direction: row }"],
   styleUrls: config.styleUrls
 })
