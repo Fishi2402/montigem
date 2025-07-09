@@ -93,7 +93,10 @@ public final class StackEventProcessor {
     }
 
     //determine whether the event must match the expected event
-    var requiredMatch = isRequiredMatch(matchingStrategy, sourceObject, targetObject, event.methodName());
+    var requiredMatch = isRequiredMatch(matchingStrategy,
+                                        sourceObject,
+                                        targetObject,
+                                        event.methodName());
 
     if (!requiredMatch) {
       //we just ignore non-required matches
@@ -109,7 +112,10 @@ public final class StackEventProcessor {
     return Optional.empty(); //TODO check for match and return error messages accordingly
   }
 
-  private boolean isRequiredMatch(MatchingStrategy matchingStrategy, Optional<Object> sourceObject, Optional<Object> targetObject, String methodName) {
+  private boolean isRequiredMatch(MatchingStrategy matchingStrategy,
+      Optional<Object> sourceObject,
+      Optional<Object> targetObject,
+      String methodName) {
     switch (matchingStrategy) {
       case FREE:
         //matching is always optional
@@ -118,14 +124,20 @@ public final class StackEventProcessor {
         //matching is required if a matching expected event is present
         return expectedEvents.stream().anyMatch(expectedEvent -> {
           //source, target and method name must not create conflicts to match
-          if (sourceObject.isPresent() && sourceObject.get() != expectedEvent.source()) return false;
-          if (targetObject.isPresent() && targetObject.get() != expectedEvent.target()) return false;
+          if (sourceObject.isPresent() && sourceObject.get() != expectedEvent.source()) {
+            return false;
+          }
+          if (targetObject.isPresent() && targetObject.get() != expectedEvent.target()) {
+            return false;
+          }
           var expectedMethodName = expectedEvent.getMethodName();
           return expectedMethodName.isEmpty() || expectedMethodName.get().equals(methodName);
         });
       case VISIBLE:
         //matching is required if source and target object are declared in the test
-        return Stream.concat(sourceObject.stream(), targetObject.stream()).allMatch(objectMatchingStrategies::containsKey);
+        return Stream
+            .concat(sourceObject.stream(), targetObject.stream())
+            .allMatch(objectMatchingStrategies::containsKey);
       case COMPLETE:
         //matching is always required
         return true;
