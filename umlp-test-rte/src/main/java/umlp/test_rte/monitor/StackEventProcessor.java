@@ -400,6 +400,9 @@ public final class StackEventProcessor {
     return objectMatchingStrategies;
   }
 
+  /**
+   * Helper return type for source and target object calculation
+   */
   private static class SourceTargetPair {
 
     public final Optional<Object> sourceObject;
