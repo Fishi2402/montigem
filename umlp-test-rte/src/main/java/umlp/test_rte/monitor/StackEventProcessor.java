@@ -2,6 +2,7 @@ package umlp.test_rte.monitor;
 
 import org.junit.jupiter.api.Assertions;
 import umlp.test_rte.monitor.event.CallEvent;
+import umlp.test_rte.monitor.event.ErrorEvent;
 import umlp.test_rte.monitor.event.StackEvent;
 import umlp.test_rte.monitor.event.StackEventVariantMatcher;
 import umlp.test_rte.monitor.model.ExpectedEvent;
@@ -190,8 +191,33 @@ public final class StackEventProcessor {
 
       @Override
       public Optional<String> whenError(Error error) {
-        //TODO
-        return Optional.empty();
+        return event.matchVariant(new StackEventVariantMatcher<>() {
+          @Override
+          public Optional<String> whenErrorEvent(ErrorEvent event) {
+            //check error
+            var expectedError = error.error();
+            var actualError = event.exception();
+            if (!actualError.equals(expectedError)) {
+              return Optional.of(String.format("Expected %s but got %s", expectedError, actualError));
+            }
+
+            //optionally check method name
+            if (error.methodName().isPresent()) {
+              var expectedMethodName = error.methodName().get();
+              var actualMethodName = event.methodName();
+              if (!actualMethodName.equals(expectedMethodName)) {
+                return Optional.of(String.format("Expected error from %s but reported error is from %s", expectedMethodName, actualMethodName));
+              }
+            }
+
+            return Optional.empty();
+          }
+
+          @Override
+          public Optional<String> otherwise(StackEvent event) {
+            return Optional.of("Expected error but got " + event);
+          }
+        });
       }
 
       @Override
