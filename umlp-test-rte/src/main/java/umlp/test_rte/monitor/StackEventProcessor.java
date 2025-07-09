@@ -12,12 +12,14 @@ import umlp.test_rte.monitor.model.action.ExhaustiveActionVariantMatcher;
 import umlp.test_rte.monitor.model.action.Return;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -58,8 +60,7 @@ public final class StackEventProcessor {
     // target and source?
     // How is the matching strategy defined when exiting a method?
     var reportingObject = event.object();
-    var matchingStrategy = Optional
-        .ofNullable(objectMatchingStrategies.get(reportingObject))
+    var matchingStrategy = Optional.ofNullable(objectMatchingStrategies.get(reportingObject))
         .orElseGet(MatchingStrategy::getDefault);
 
     //update callstack
@@ -68,21 +69,20 @@ public final class StackEventProcessor {
       public SourceTargetPair whenCallEvent(CallEvent event) {
         callstack.push(reportingObject);
         return new SourceTargetPair(callstack.size() >= 2 ?
-                                        Optional.of(callstack.get(callstack.size() - 2)) :
-                                        Optional.empty(), Optional.of(reportingObject));
+            Optional.of(callstack.get(callstack.size() - 2)) :
+            Optional.empty(), Optional.of(reportingObject));
       }
 
       @Override
       public SourceTargetPair otherwise(StackEvent event) {
         if (reportingObject != callstack.pollLast()) {
-          throw new IllegalStateException(
-              "exiting from method " + event.methodName() + " whose entry was never logged");
+          throw new IllegalStateException("exiting from method " + event.methodName() + " whose entry was never logged");
         }
 
         //the java compiler otherwise assumes that reportingObject might be null
         assert reportingObject != null;
         return new SourceTargetPair(Optional.of(reportingObject),
-                                    Optional.ofNullable(callstack.peekLast()));
+            Optional.ofNullable(callstack.peekLast()));
       }
     });
     var sourceObject = sourceTargetPair.sourceObject;
@@ -98,9 +98,9 @@ public final class StackEventProcessor {
 
     //determine whether the event must match the expected event
     var requiredMatch = isRequiredMatch(matchingStrategy,
-                                        sourceObject,
-                                        targetObject,
-                                        event.methodName());
+        sourceObject,
+        targetObject,
+        event.methodName());
 
     if (!requiredMatch) {
       //we just ignore non-required matches
@@ -112,8 +112,8 @@ public final class StackEventProcessor {
   }
 
   private Optional<String> matchesExpectedEvent(StackEvent event,
-      Optional<Object> sourceObject,
-      Optional<Object> targetObject) {
+                                                Optional<Object> sourceObject,
+                                                Optional<Object> targetObject) {
     if (expectedEvents.isEmpty()) {
       return Optional.of("not expecting any event");
     }
@@ -127,8 +127,8 @@ public final class StackEventProcessor {
       var actualSource = sourceObject.get();
       if (expectedSource != actualSource) {
         return Optional.of(String.format("Expected source object %s but got %s instead",
-                                         expectedSource,
-                                         actualSource));
+            expectedSource,
+            actualSource));
       }
     }
 
@@ -140,8 +140,8 @@ public final class StackEventProcessor {
       var actualTarget = targetObject.get();
       if (expectedTarget != actualTarget) {
         return Optional.of(String.format("Expected target object %s but got %s instead",
-                                         expectedTarget,
-                                         actualTarget));
+            expectedTarget,
+            actualTarget));
       }
     }
 
@@ -157,12 +157,24 @@ public final class StackEventProcessor {
             var actualMethodName = event.methodName();
             if (!actualMethodName.equals(expectedMethodName)) {
               return Optional.of(String.format("Expected call of %s but got call of %s",
-                                               expectedMethodName, actualMethodName));
+                  expectedMethodName,
+                  actualMethodName));
             }
 
             //check arguments
             var expectedArguments = call.args();
-            //TODO we are not logging the actual arguments right now, pls fix ._.
+            var actualArguments = event.params();
+            if (!Arrays.equals(expectedArguments, actualArguments)) {
+              return Optional.of(String.format("Expected %s(%s) but got %s(%s)",
+                  expectedMethodName,
+                  Arrays.stream(expectedArguments)
+                      .map(String::valueOf)
+                      .collect(Collectors.joining(", ")),
+                  actualMethodName,
+                  Arrays.stream(actualArguments)
+                      .map(String::valueOf)
+                      .collect(Collectors.joining(", "))));
+            }
 
             return Optional.empty();
           }
@@ -170,8 +182,8 @@ public final class StackEventProcessor {
           @Override
           public Optional<String> otherwise(StackEvent event) {
             return Optional.of(String.format("Expected call of %s but got %s",
-                                             expectedMethodName,
-                                             event));
+                expectedMethodName,
+                event));
           }
         });
       }
@@ -202,9 +214,9 @@ public final class StackEventProcessor {
    * mismatch can be ignored
    */
   private boolean isRequiredMatch(MatchingStrategy matchingStrategy,
-      Optional<Object> sourceObject,
-      Optional<Object> targetObject,
-      String methodName) {
+                                  Optional<Object> sourceObject,
+                                  Optional<Object> targetObject,
+                                  String methodName) {
     switch (matchingStrategy) {
       case FREE:
         //matching is always optional
@@ -224,8 +236,7 @@ public final class StackEventProcessor {
         });
       case VISIBLE:
         //matching is required if source and target object are declared in the test
-        return Stream
-            .concat(sourceObject.stream(), targetObject.stream())
+        return Stream.concat(sourceObject.stream(), targetObject.stream())
             .allMatch(objectMatchingStrategies::containsKey);
       case COMPLETE:
         //matching is always required
