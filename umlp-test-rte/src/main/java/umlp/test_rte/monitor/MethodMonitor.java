@@ -6,44 +6,61 @@ import umlp.test_rte.monitor.event.ReturnEvent;
 import umlp.test_rte.monitor.event.ReturnVoidEvent;
 import umlp.test_rte.monitor.event.StackEvent;
 
+import java.util.Optional;
+
 public final class MethodMonitor {
 
-  //TODO add infrastructure to set a single stack processor instance as active
+  private static Optional<StackEventProcessor> activeProcessor = Optional.empty();
 
-  private final StackEvent event;
+  private final StackEvent callEvent;
+  private final Optional<StackEventProcessor> processor;
   private boolean active = true;
 
-  public static MethodMonitor start(Object object, String methodName, Object... params) {
-    var event = new CallEvent(object, methodName, params);
-    StackEventQueue.report(event);
-    return new MethodMonitor(event);
+  public static void setActiveStackEventProcessor(StackEventProcessor processor) {
+    activeProcessor = Optional.of(processor);
   }
 
-  private MethodMonitor(StackEvent event) {
-    this.event = event;
+  public static void removeActiveStackEventProcessor() {
+    activeProcessor = Optional.empty();
+  }
+
+  public static MethodMonitor start(Object object, String methodName, Object... params) {
+    var callEvent = new CallEvent(object, methodName, params);
+    activeProcessor.ifPresent(processor -> processor.process(callEvent));
+    return new MethodMonitor(callEvent, activeProcessor);
+  }
+
+  private MethodMonitor(StackEvent callEvent, Optional<StackEventProcessor> processor) {
+    this.callEvent = callEvent;
+    this.processor = processor;
   }
 
   public Object object() {
-    return event.object();
+    return callEvent.object();
   }
 
   public String methodName() {
-    return event.methodName();
+    return callEvent.methodName();
   }
 
   public void reportError(Exception exception) {
     deactivate();
-    StackEventQueue.report(new ErrorEvent(object(), methodName(), exception));
+    processor.ifPresent(processor -> processor.process(new ErrorEvent(object(),
+        methodName(),
+        exception)));
   }
 
   public void reportReturn(Object returnValue) {
     deactivate();
-    StackEventQueue.report(new ReturnEvent(object(), methodName(), returnValue));
+    processor.ifPresent(processor -> processor.process(new ReturnEvent(object(),
+        methodName(),
+        returnValue)));
   }
 
   public void reportReturnVoid() {
     deactivate();
-    StackEventQueue.report(new ReturnVoidEvent(object(), methodName()));
+    processor.ifPresent(processor -> processor.process(new ReturnVoidEvent(object(),
+        methodName())));
   }
 
   private void deactivate() {

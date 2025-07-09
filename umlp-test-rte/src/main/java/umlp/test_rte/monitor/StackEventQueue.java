@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+@Deprecated
 public final class StackEventQueue {
 
   private static final Queue<StackEvent> events = new ConcurrentLinkedQueue<>();
