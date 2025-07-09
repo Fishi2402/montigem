@@ -4,6 +4,8 @@ import org.eclipse.collections.impl.block.factory.Comparators;
 import org.junit.jupiter.api.Assertions;
 import umlp.test_rte.monitor.event.CallEvent;
 import umlp.test_rte.monitor.event.ErrorEvent;
+import umlp.test_rte.monitor.event.ReturnEvent;
+import umlp.test_rte.monitor.event.ReturnVoidEvent;
 import umlp.test_rte.monitor.event.StackEvent;
 import umlp.test_rte.monitor.event.StackEventVariantMatcher;
 import umlp.test_rte.monitor.model.ExpectedEvent;
@@ -19,6 +21,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
@@ -205,19 +208,7 @@ public final class StackEventProcessor {
                   actualError));
             }
 
-            //optionally check method name
-            if (error.methodName().isPresent()) {
-              var expectedMethodName = error.methodName().get();
-              var actualMethodName = event.methodName();
-              if (!actualMethodName.equals(expectedMethodName)) {
-                return Optional.of(String.format(
-                    "Expected error from %s but reported error is from %s",
-                    expectedMethodName,
-                    actualMethodName));
-              }
-            }
-
-            return Optional.empty();
+            return checkMethodNameMatch(expectedEvent, event);
           }
 
           @Override
@@ -229,8 +220,39 @@ public final class StackEventProcessor {
 
       @Override
       public Optional<String> whenReturn(Return returnAction) {
-        //TODO
-        return Optional.empty();
+        return event.matchVariant(new StackEventVariantMatcher<>() {
+          @Override
+          public Optional<String> whenReturnEvent(ReturnEvent event) {
+            //check that return value is expected
+            if (!returnAction.hasReturnValue()) {
+              return Optional.of("Expected void return but got " + event.returnValue());
+            }
+
+            //check return value
+            var expectedReturnValue = returnAction.returnValue().orElse(null);
+            var actualReturnValue = event.returnValue();
+            if (!Objects.equals(expectedReturnValue, actualReturnValue)) {
+              return Optional.of(String.format("Expected return %s but got %s", expectedReturnValue, actualReturnValue));
+            }
+
+            return checkMethodNameMatch(expectedEvent, event);
+          }
+
+          @Override
+          public Optional<String> whenReturnVoidEvent(ReturnVoidEvent event) {
+            //check that void is expected
+            if (returnAction.hasReturnValue()) {
+              return Optional.of("Expected return value but got none");
+            }
+
+            return checkMethodNameMatch(expectedEvent, event);
+          }
+
+          @Override
+          public Optional<String> otherwise(StackEvent event) {
+            return Optional.of("Expected return but got " + event);
+          }
+        });
       }
     });
 
@@ -242,6 +264,39 @@ public final class StackEventProcessor {
     var conditionCheckOkay = expectedEvent.condition().get();
     if (!conditionCheckOkay) {
       return Optional.of("Failed condition check: " + expectedEvent.conditionStringRepresentation());
+    }
+
+    return Optional.empty();
+  }
+
+  private Optional<String> checkMethodNameMatch(ExpectedEvent expectedEvent, StackEvent event) {
+    if (expectedEvent.getMethodName().isPresent()) {
+      var expectedMethodName = expectedEvent.getMethodName().get();
+      var actualMethodName = event.methodName();
+      if (!actualMethodName.equals(expectedMethodName)) {
+        var expectedActionKind = expectedEvent.action().matchVariant(new ExhaustiveActionVariantMatcher<String>() {
+          @Override
+          public String whenCall(Call call) {
+            return "call";
+          }
+
+          @Override
+          public String whenError(Error error) {
+            return "error";
+          }
+
+          @Override
+          public String whenReturn(Return returnAction) {
+            return "return";
+          }
+        });
+        return Optional.of(String.format(
+            "Expected %s from %s but reported %s is from %s",
+            expectedActionKind,
+            expectedMethodName,
+            expectedActionKind,
+            actualMethodName));
+      }
     }
 
     return Optional.empty();
