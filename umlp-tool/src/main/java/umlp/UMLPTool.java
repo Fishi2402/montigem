@@ -220,11 +220,8 @@ public class UMLPTool extends UMLPToolTOP {
       // Close all file handles (if last usage!)
       FileReaderWriter.closeOpenedJarFiles();
       // Clear MCPath caches
-      UMLPMill.globalScope().getSymbolPath().close();
-      GUIDSLMill.globalScope().getSymbolPath().close();
-      // Clear globalScope cache
-      UMLPMill.globalScope().clear();
-      GUIDSLMill.globalScope().clear();
+      UMLPMill.reset();
+      GUIDSLMill.reset();
       Reporting.off();
       cleanUpAfterMemoryLeakingSingletons();
     }
