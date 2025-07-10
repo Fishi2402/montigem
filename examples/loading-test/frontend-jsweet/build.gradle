@@ -102,6 +102,9 @@ tasks.register('buildApp', NpxTask) {
       project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") },
       tasks.named('linkStuff').get()
   )
+  dependsOn {
+    tasks.named('linkStuff').get()
+  }
   command = "ng"
   args = ["build"]
 }
@@ -113,6 +116,9 @@ tasks.register('testApp', NpxTask) {
       project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") },
       tasks.named('linkStuff').get()
   )
+  dependsOn {
+    tasks.named('linkStuff').get()
+  }
   command = "ng"
   args = ["test"]
 
