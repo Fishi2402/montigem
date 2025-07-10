@@ -1,4 +1,3 @@
-/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
   "compileOnSave": false,
   "compilerOptions": {
@@ -32,15 +31,17 @@
       "@umlp/charts": ["../../../../../umlp-rte/client/projects/charts"],
       "@umlp/common": ["../../../../../umlp-rte/client/projects/common"],
       "@umlp/commonj2ts": ["../../../../../umlp-rte/client/projects/commonj2ts"],
+      "@umlp/fischertechnik": ["../../../../../umlp-rte/client/projects/fischertechnik"],
       "@umlp/input": ["../../../../../umlp-rte/client/projects/input"],
       "@umlp/navigation": ["../../../../../umlp-rte/client/projects/navigation"],
       "@umlp/networkgraph": ["../../../../../umlp-rte/client/projects/networkgraph"],
       "@umlp/table": ["../../../../../umlp-rte/client/projects/table"],
+      "@umlp/editor": ["../../../../../umlp-rte/client/projects/editor"],
       "*": [
-        "node_modules/*",
         "build/appdomain/*",
         "build/appgui/*",
         "src/app/*",
+        "hwcsrc/*"
       ]
     }
   },

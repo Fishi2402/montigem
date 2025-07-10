@@ -1,3 +1,6 @@
+import java.nio.file.Files
+import java.nio.file.Paths
+
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
@@ -44,7 +47,7 @@ def prebuildTasks = [
 ]
 
 tasks.register('linkStuff', NodeTask) {
-  dependsOn(prebuildTasks, ':umlp-rte:client:buildAll')
+  dependsOn(prebuildTasks)
 
   def hwcsrc = file("$buildDir/frontendGen/hwcsrc")
   def hwcsrcTarget = file("src/app")
@@ -54,27 +57,20 @@ tasks.register('linkStuff', NodeTask) {
   def frontendOut = file("$buildDir/build/umlp_frontend")
   def frontendOutTarget = file("$buildDir/umlp_frontend")
 
-  def umlpDir = file("$buildDir/frontendGen/node_modules/@umlp")
+  def umlpDir = file("$buildDir/frontendGen/libs/@umlp")
   println "Created @umlp dir: "+ umlpDir.mkdirs();
 
   def clientRTELinks = [:]
-  def clientRTEDists = []
-  project(":umlp-rte:client").tasks.matching {it.name.startsWith("build_")}.forEach {
-    clientRTEDists.add(it.outputs.files.asPath)
+  project(":umlp-rte:client").ext.libs.forEach {
+    def f = file(project(":umlp-rte:client").projectDir.toString()+"/projects/"+it)
+    // Link, Target
+    clientRTELinks.put(umlpDir.toPath().resolve(f.name).toFile(),f.toPath().toAbsolutePath().toFile())
   }
 
-  clientRTEDists.forEach {
-      println it
-      def f = new File(it)
-      // Link, Target
-      clientRTELinks.put(umlpDir.toPath().resolve(f.name).toFile(),f.toPath().toAbsolutePath().toFile())
-    }
-
   outputs.upToDateWhen {
-    isJunction(hwcsrc) &&
-    isJunction(frontendOut)
+    Files.isSymbolicLink(hwcsrc.toPath()) && Files.isSymbolicLink(frontendOut.toPath()) &&
     clientRTELinks.keySet().every {
-      isJunction(it)
+      Files.isSymbolicLink(Paths.get(it.toString()))
     }
   }
 
@@ -88,11 +84,6 @@ tasks.register('linkStuff', NodeTask) {
 
   script = file("$buildDir/frontendGen/symlink-creation.js")
   args = allLinks
-}
-
-// Utility method to detect junction/symlink
-static boolean isJunction(File file) {
-  return java.nio.file.Files.isSymbolicLink(file.toPath())
 }
 
 tasks.register('testApp', NpxTask) {

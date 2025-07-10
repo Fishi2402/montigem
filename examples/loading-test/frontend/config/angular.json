@@ -58,8 +58,7 @@
               ],
               "outputHashing": "all",
               "sourceMap": true,
-              "namedChunks": true,
-              "tsConfig": "tsconfig.prod.json"
+              "namedChunks": true
             },
             "development": {
               "optimization": false,

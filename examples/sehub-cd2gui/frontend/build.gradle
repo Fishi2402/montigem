@@ -1,5 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
+
+import java.nio.file.Files
 import java.nio.file.Paths
 
 
@@ -117,22 +119,31 @@ tasks.register('linkStuff', NodeTask) {
   def frontendGenLink = file("$buildDir/build/frontendGen")
   def frontendGenLinkTarget = file("$buildDir/frontendGen")
 
-  outputs.upToDateWhen {
-    isJunction(hwcsrc) &&
-    isJunction(frontendOut) &&
-    isJunction(frontendGenLink)
+  def clientRTELinks = [:]
+  project(":umlp-rte:client").ext.libs.forEach {
+    def f = file(project(":umlp-rte:client").projectDir.toString()+"/projects/"+it)
+    // Link, Target
+    clientRTELinks.put(umlpDir.toPath().resolve(f.name).toFile(),f.toPath().toAbsolutePath().toFile())
   }
 
-  script = file("$buildDir/frontendGen/symlink-creation.js")
-  args = [hwcsrc.toString(), hwcsrcTarget.toString(),
-          frontendOut.toString(), frontendOutTarget.toString(),
-          frontendGenLink.toString(), frontendGenLinkTarget.toString(),
+  outputs.upToDateWhen {
+    Files.isSymbolicLink(hwcsrc.toPath()) &&
+    Files.isSymbolicLink(frontendOut.toPath()) &&
+    Files.isSymbolicLink(frontendGenLink.toPath()) &&
+    clientRTELinks.keySet().every {
+      Files.isSymbolicLink(Paths.get(it.toString()))
+    }
+  }
+  def allLinks = [hwcsrc.toString(), hwcsrcTarget.toString(),
+    frontendOut.toString(), frontendOutTarget.toString(),
+    frontendGenLink.toString(), frontendGenLinkTarget.toString()
   ]
-}
-
-// Utility method to detect junction/symlink
-static boolean isJunction(File file) {
-  return java.nio.file.Files.isSymbolicLink(file.toPath())
+  clientRTELinks.keySet().forEach {
+    allLinks.add(it.toString())
+    allLinks.add(clientRTELinks.get(it).toString())
+  }
+  script = file("$buildDir/frontendGen/symlink-creation.js")
+  args = allLinks
 }
 
 tasks.register('buildApp', NpxTask) {

@@ -6,8 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "custom": "node ./link-src.js"
+    "test": "ng test"
   },
   "private": true,
   "dependencies": {

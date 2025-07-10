@@ -1,3 +1,6 @@
+import java.nio.file.Files
+import java.nio.file.Paths
+
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
@@ -114,26 +117,39 @@ tasks.register('linkStuff', NodeTask) {
   def loginGui = file("$buildDir/frontendGen/login_module_gui")
   def loginGuiTarget = file("../../../modules/login/frontendTS/build/frontendGen/build/appgui")
 
+  def umlpDir = file("$buildDir/frontendGen/libs/@umlp")
+  println "Created @umlp dir: "+ umlpDir.mkdirs();
+
+  def clientRTELinks = [:]
+  project(":umlp-rte:client").ext.libs.forEach {
+    def f = file(project(":umlp-rte:client").projectDir.toString()+"/projects/"+it)
+    // Link, Target
+    clientRTELinks.put(umlpDir.toPath().resolve(f.name).toFile(),f.toPath().toAbsolutePath().toFile())
+  }
+
   // Avoid declaring the junction paths directly as outputs
   outputs.upToDateWhen {
-    isJunction(hwcsrc) &&
-    isJunction(loginDomain) &&
-    isJunction(loginGui) &&
-    isJunction(frontendOut)
+    Files.isSymbolicLink(hwcsrc.toPath()) &&
+    Files.isSymbolicLink(loginDomain.toPath()) &&
+    Files.isSymbolicLink(loginGui.toPath()) &&
+    Files.isSymbolicLink(frontendOut.toPath()) &&
+    clientRTELinks.keySet().every {
+      Files.isSymbolicLink(Paths.get(it.toString()))
+    }
+  }
+
+  def allLinks = [hwcsrc.toString(), hwcsrcTarget.toString(),
+                  frontendOut.toString(), frontendOutTarget.toString(),
+                  loginDomain.toString(), loginDomainTarget.toString(),
+                  loginGui.toString(), loginGuiTarget.toString()]
+  clientRTELinks.keySet().forEach {
+    allLinks.add(it.toString())
+    allLinks.add(clientRTELinks.get(it).toString())
   }
 
   script = file("$buildDir/frontendGen/symlink-creation.js")
-  args = [hwcsrc.toString(), hwcsrcTarget.toString(),
-          frontendOut.toString(), frontendOutTarget.toString(),
-          loginDomain.toString(), loginDomainTarget.toString(),
-          loginGui.toString(), loginGuiTarget.toString()]
+  args = allLinks
 }
-
-// Utility method to detect junction/symlink
-static boolean isJunction(File file) {
-  return java.nio.file.Files.isSymbolicLink(file.toPath())
-}
-
 
 tasks.named('runApp') {
   dependsOn {

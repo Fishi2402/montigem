@@ -1,3 +1,6 @@
+import java.nio.file.Files
+import java.nio.file.Paths
+
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
@@ -75,38 +78,31 @@ def prebuildTasks = [
 
 tasks.register('linkStuff', NodeTask) {
   dependsOn(prebuildTasks)
-
   def hwcsrc = file("$buildDir/frontendGen/hwcsrc")
-  def hwcsrcTarget = file("src/main/ts")
+  def hwcsrcTarget = file("src/app")
 
+  def frontendOutBuild = file("$buildDir/build").mkdirs();
   def frontendOut = file("$buildDir/build/umlp_frontend")
   def frontendOutTarget = file("$buildDir/umlp_frontend")
 
-  def umlpDir = file("$buildDir/frontendGen/node_modules/@umlp")
+  def umlpDir = file("$buildDir/frontendGen/libs/@umlp")
   println "Created @umlp dir: "+ umlpDir.mkdirs();
 
   def clientRTELinks = [:]
-  def clientRTEDists = []
-  project(":umlp-rte:client").tasks.matching {it.name.startsWith("build_")}.forEach {
-    clientRTEDists.add(it.outputs.files.asPath)
-  }
-
-  clientRTEDists.forEach {
-    println it
-    def f = new File(it)
+  project(":umlp-rte:client").ext.libs.forEach {
+    def f = file(project(":umlp-rte:client").projectDir.toString()+"/projects/"+it)
     // Link, Target
     clientRTELinks.put(umlpDir.toPath().resolve(f.name).toFile(),f.toPath().toAbsolutePath().toFile())
   }
 
   outputs.upToDateWhen {
-    isJunction(hwcsrc) &&
-    isJunction(frontendOut)
+    Files.isSymbolicLink(hwcsrc.toPath()) && Files.isSymbolicLink(frontendOut.toPath()) &&
     clientRTELinks.keySet().every {
-      isJunction(it)
+      Files.isSymbolicLink(Paths.get(it.toString()))
     }
   }
 
-  def allLinks =  [hwcsrc.toString(), hwcsrcTarget.toString(),
+  def allLinks = [hwcsrc.toString(), hwcsrcTarget.toString(),
                    frontendOut.toString(), frontendOutTarget.toString(),
   ]
   clientRTELinks.keySet().forEach {
@@ -116,11 +112,6 @@ tasks.register('linkStuff', NodeTask) {
 
   script = file("$buildDir/frontendGen/symlink-creation.js")
   args = allLinks
-}
-
-// Utility method to detect junction/symlink
-static boolean isJunction(File file) {
-  return java.nio.file.Files.isSymbolicLink(file.toPath())
 }
 
 tasks.register('testApp', NpxTask) {
@@ -135,14 +126,14 @@ tasks.register('testApp', NpxTask) {
 }
 
 tasks.register('buildApp', NpxTask) {
-  dependsOn(testApp, project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") }, tasks.named('linkStuff').get())
+  dependsOn(testApp, tasks.named('linkStuff').get())
   command = "ng"
   args = ["build"]
 }
 assemble.dependsOn(buildApp)
 
 tasks.register('runApp', NpxTask) {
-  dependsOn(prebuildTasks, project(":umlp-rte:client").tasks.matching { it.name.startsWith("gen_") }, tasks.named('linkStuff').get())
+  dependsOn(prebuildTasks, tasks.named('linkStuff').get())
   command = "ng"
   args = ["serve"]
 }
