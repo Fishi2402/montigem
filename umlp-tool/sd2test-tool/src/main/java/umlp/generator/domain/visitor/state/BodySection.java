@@ -16,7 +16,7 @@ public final class BodySection implements VisitorState {
 
   @Override
   public <T> T matchVariant(VisitorStateVariantMatcher<T> matcher) {
-    return matcher.whenTriggerSection(this);
+    return matcher.whenBodySection(this);
   }
 
   public EarlyBodySection earlyBodySection() {
