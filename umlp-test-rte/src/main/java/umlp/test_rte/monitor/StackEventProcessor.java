@@ -10,6 +10,9 @@ import umlp.test_rte.monitor.event.StackEvent;
 import umlp.test_rte.monitor.event.StackEventVariantMatcher;
 import umlp.test_rte.monitor.model.ExpectedEvent;
 import umlp.test_rte.monitor.model.MatchingStrategy;
+import umlp.test_rte.monitor.model.action.Action;
+import umlp.test_rte.monitor.model.action.ActionVariantMatcher;
+import umlp.test_rte.monitor.model.action.ActivityBarEnd;
 import umlp.test_rte.monitor.model.action.Call;
 import umlp.test_rte.monitor.model.action.Error;
 import umlp.test_rte.monitor.model.action.ExhaustiveActionVariantMatcher;
@@ -24,6 +27,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.StringJoiner;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -94,6 +98,30 @@ public final class StackEventProcessor {
 
     if (errorMessage.isEmpty()) {
       expectedEvents.remove(0); //remove the expected event
+
+      //check whether the next expected event is the end of an activity bar and is also matched by
+      // the current one
+      var nextIsEndOfActivityBar = !expectedEvents.isEmpty() && expectedEvents
+          .get(0)
+          .action()
+          .matchVariant(new ActionVariantMatcher<Boolean>() {
+            @Override
+            public Boolean whenActivityBarEnd(ActivityBarEnd activityBarEnd) {
+              return true;
+            }
+
+            @Override
+            public Boolean otherwise(Action action) {
+              return false;
+            }
+          });
+      Supplier<Boolean> alsoMatchesNextEvent = () -> matchesExpectedEvent(event,
+                                                                          sourceObject,
+                                                                          targetObject).isEmpty();
+      if (nextIsEndOfActivityBar && alsoMatchesNextEvent.get()) {
+        expectedEvents.remove(0); //also remove the expected activity bar end
+      }
+
       return; //no need to check whether the match was actually required
     }
 
@@ -264,6 +292,31 @@ public final class StackEventProcessor {
               }
             });
           }
+
+          @Override
+          public Optional<String> whenActivityBarEnd(ActivityBarEnd activityBarEnd) {
+            return event.matchVariant(new StackEventVariantMatcher<>() {
+              @Override
+              public Optional<String> whenErrorEvent(ErrorEvent event) {
+                return checkMethodNameMatch(expectedEvent, event);
+              }
+
+              @Override
+              public Optional<String> whenReturnEvent(ReturnEvent event) {
+                return checkMethodNameMatch(expectedEvent, event);
+              }
+
+              @Override
+              public Optional<String> whenReturnVoidEvent(ReturnVoidEvent event) {
+                return checkMethodNameMatch(expectedEvent, event);
+              }
+
+              @Override
+              public Optional<String> otherwise(StackEvent event) {
+                return Optional.of("Expected end of activity bar, but got " + event);
+              }
+            });
+          }
         });
 
     if (actionCheckErrorMessage.isPresent()) {
@@ -308,6 +361,11 @@ public final class StackEventProcessor {
               @Override
               public String whenReturn(Return returnAction) {
                 return "return";
+              }
+
+              @Override
+              public String whenActivityBarEnd(ActivityBarEnd activityBarEnd) {
+                return "end of activity bar";
               }
             });
         return Optional.of(String.format("Expected %s from %s but reported %s is from %s",

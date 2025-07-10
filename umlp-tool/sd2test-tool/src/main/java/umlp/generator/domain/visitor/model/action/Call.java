@@ -3,13 +3,13 @@ package umlp.generator.domain.visitor.model.action;
 import java.util.List;
 import java.util.Optional;
 
-public class Call implements Action {
+public final class Call implements Action {
 
-  private final String name;
+  private final String methodName;
   private final Optional<List<String>> argumentExpressions;
 
-  public Call(String name, Optional<List<String>> argumentExpressions) {
-    this.name = name;
+  public Call(String methodName, Optional<List<String>> argumentExpressions) {
+    this.methodName = methodName;
     this.argumentExpressions = argumentExpressions;
   }
 
@@ -19,7 +19,7 @@ public class Call implements Action {
   }
 
   public String name() {
-    return name;
+    return methodName;
   }
 
   public Optional<List<String>> argumentExpressions() {

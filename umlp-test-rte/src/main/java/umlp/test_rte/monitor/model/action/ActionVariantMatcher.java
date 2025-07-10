@@ -13,5 +13,9 @@ public interface ActionVariantMatcher<T> {
     return otherwise(returnAction);
   }
 
+  default T whenActivityBarEnd(ActivityBarEnd activityBarEnd) {
+    return otherwise(activityBarEnd);
+  }
+
   T otherwise(Action action);
 }

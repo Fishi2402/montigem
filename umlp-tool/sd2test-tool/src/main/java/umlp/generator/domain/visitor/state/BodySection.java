@@ -1,26 +1,29 @@
 package umlp.generator.domain.visitor.state;
 
-import umlp.generator.domain.visitor.model.ocl.OCLStatement;
+import umlp.generator.domain.visitor.model.Trigger;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public final class BodySection implements OCLState {
+public final class BodySection implements VisitorState {
 
   private final EarlyBodySection earlyBodySection;
-  //TODO triggers
+  private final List<Trigger> trigger = new ArrayList<>();
 
   public BodySection(EarlyBodySection earlyBodySection) {
     this.earlyBodySection = earlyBodySection;
   }
 
   @Override
-  public List<OCLStatement> oclStatements() {
-    //TODO return olcStatements of last interaction
-    return earlyBodySection.oclStatements();
+  public <T> T matchVariant(VisitorStateVariantMatcher<T> matcher) {
+    return matcher.whenTriggerSection(this);
   }
 
-  @Override
-  public <T> T matchVariant(VisitorStateVariantMatcher<T> matcher) {
-    return matcher.whenBodySection(this);
+  public EarlyBodySection earlyBodySection() {
+    return earlyBodySection;
+  }
+
+  public List<Trigger> trigger() {
+    return trigger;
   }
 }

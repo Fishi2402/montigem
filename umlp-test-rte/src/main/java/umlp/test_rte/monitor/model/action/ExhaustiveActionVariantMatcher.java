@@ -12,6 +12,9 @@ public interface ExhaustiveActionVariantMatcher<T> extends ActionVariantMatcher<
   T whenReturn(Return returnAction);
 
   @Override
+  T whenActivityBarEnd(ActivityBarEnd activityBarEnd);
+
+  @Override
   default T otherwise(Action action) {
     throw new IllegalArgumentException("unknown variant: " + action);
   }

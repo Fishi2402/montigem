@@ -12,7 +12,6 @@ sequencediagram TotalTest {
   assert total1 == 0;
   //end early body section
 
-  //body section
   //trigger section
   //interaction section
   o -> o : trigger addItem(item) {
@@ -32,11 +31,16 @@ sequencediagram TotalTest {
   o <- o : trigger getTotal;
   o <- o : return 6;
 
+  o -> o : addItem(item) {
+
+  }
+  //this condition must be checked after the end of the activity bar, not after the call
+  assert o.getTotal() == total2 + 6;
+
   class Order -> class Order : trigger static foo();
-  class Order -> Order o2 = new Order();
-  class Order <- o2 : return;
-  class Order -> o2 : _doFoo();
-  class Order <- o2 : throw RuntimeException("foo");
+  let Order anOrderInstance = Order.getAnInstance();
+  class Order -> anOrderInstance : _doFoo();
+  class Order <- anOrderInstance : throw RuntimeException("foo");
 }
 
 // output of logging visitor right now:

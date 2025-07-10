@@ -282,12 +282,7 @@ public final class SDVisitor implements SDBasisVisitor2,
 
   @Override
   public void visit(ASTSDNew node) {
-    //TODO
-  }
-
-  @Override
-  public void endVisit(ASTSDNew node) {
-    //TODO
+    raiseError("constructor monitoring is not supported", getSourcePosition(node));
   }
 
   private void updateState(VisitorStateVariantMatcher<VisitorState> matcher) {

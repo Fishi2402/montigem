@@ -19,7 +19,7 @@ public interface VisitorStateVariantMatcher<T> {
   default T whenVariableDeclaration(VariableDeclaration variableDeclaration) {
     return otherwise(variableDeclaration);
   }
-  default T whenBodySection(BodySection bodySection) {
+  default T whenTriggerSection(BodySection bodySection) {
     return otherwise(bodySection);
   }
   T otherwise(VisitorState state);

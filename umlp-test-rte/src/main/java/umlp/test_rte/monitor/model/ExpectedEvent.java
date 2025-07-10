@@ -1,6 +1,7 @@
 package umlp.test_rte.monitor.model;
 
 import umlp.test_rte.monitor.model.action.Action;
+import umlp.test_rte.monitor.model.action.ActivityBarEnd;
 import umlp.test_rte.monitor.model.action.Call;
 import umlp.test_rte.monitor.model.action.Error;
 import umlp.test_rte.monitor.model.action.ExhaustiveActionVariantMatcher;
@@ -16,20 +17,17 @@ public final class ExpectedEvent {
   private final Action action;
   private final Supplier<Boolean> condition;
   private final String conditionStringRepresentation;
-  private final boolean trigger;
 
   public ExpectedEvent(Object source,
       Object target,
       Action action,
       Supplier<Boolean> condition,
-      String conditionStringRepresentation,
-      boolean trigger) {
+      String conditionStringRepresentation) {
     this.source = source;
     this.target = target;
     this.action = action;
     this.condition = condition;
     this.conditionStringRepresentation = conditionStringRepresentation;
-    this.trigger = trigger;
   }
 
   public Optional<String> getMethodName() {
@@ -47,6 +45,11 @@ public final class ExpectedEvent {
       @Override
       public Optional<String> whenReturn(Return returnAction) {
         return returnAction.methodName();
+      }
+
+      @Override
+      public Optional<String> whenActivityBarEnd(ActivityBarEnd activityBarEnd) {
+        return Optional.of(activityBarEnd.methodName());
       }
     });
   }
@@ -71,13 +74,9 @@ public final class ExpectedEvent {
     return conditionStringRepresentation;
   }
 
-  public boolean isTrigger() {
-    return trigger;
-  }
-
   @Override
   public String toString() {
     return "ExpectedEvent{" + "source=" + source + ", target=" + target + ", action=" + action +
-           ", condition=" + conditionStringRepresentation + ", trigger=" + trigger + '}';
+           ", condition=" + conditionStringRepresentation + '}';
   }
 }
