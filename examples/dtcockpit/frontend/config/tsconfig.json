@@ -27,6 +27,7 @@
     ],
     "paths": {
       "@umlp/*": ["libs/@umlp/*"],
+      "@montigem/login": ["login_hwc"],
       "*": [
         "src/app/*",
         "build/appdomain/*",

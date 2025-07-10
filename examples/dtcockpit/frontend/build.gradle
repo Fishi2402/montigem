@@ -117,6 +117,9 @@ tasks.register('linkStuff', NodeTask) {
   def loginGui = file("$buildDir/frontendGen/login_module_gui")
   def loginGuiTarget = file("../../../modules/login/frontendTS/build/frontendGen/build/appgui")
 
+  def loginHWC = file("$buildDir/frontendGen/login_hwc")
+  def loginHWCTarget = file("../../../modules/login/frontendTS/login")
+
   def umlpDir = file("$buildDir/frontendGen/libs/@umlp")
   println "Created @umlp dir: "+ umlpDir.mkdirs();
 
@@ -130,6 +133,7 @@ tasks.register('linkStuff', NodeTask) {
   // Avoid declaring the junction paths directly as outputs
   outputs.upToDateWhen {
     Files.isSymbolicLink(hwcsrc.toPath()) &&
+    Files.isSymbolicLink(loginHWC.toPath()) &&
     Files.isSymbolicLink(loginDomain.toPath()) &&
     Files.isSymbolicLink(loginGui.toPath()) &&
     Files.isSymbolicLink(frontendOut.toPath()) &&
@@ -140,6 +144,7 @@ tasks.register('linkStuff', NodeTask) {
 
   def allLinks = [hwcsrc.toString(), hwcsrcTarget.toString(),
                   frontendOut.toString(), frontendOutTarget.toString(),
+                  loginHWC.toString(), loginHWCTarget.toString(),
                   loginDomain.toString(), loginDomainTarget.toString(),
                   loginGui.toString(), loginGuiTarget.toString()]
   clientRTELinks.keySet().forEach {
