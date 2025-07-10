@@ -7,6 +7,7 @@ import de.monticore.cdmerge.CDMerge;
 import de.monticore.cdmerge.config.MergeParameter;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.io.paths.MCPath;
 import de.monticore.ocl.ocl._ast.ASTOCLCompilationUnit;
 import de.monticore.ocl.ocl._parser.OCLParser;
@@ -257,6 +258,7 @@ public class UMLPFilePipeline extends Pipeline<UMLPPipelineData> {
       if (FOR_CLIENT.isSelected(data.data.cmd)) {
         Optional<String> tslib = UMLPGeneratorConfig.getInstance().getTSLib();
         if (tslib.isPresent()) {
+          GUIDSLMill.init();
           ImportMapGenerator importMapGenerator = new ImportMapGenerator(data.genSetup);
           importMapGenerator.generate(tslib.get(), data.ast);
         }

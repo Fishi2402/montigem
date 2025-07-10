@@ -6,6 +6,8 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.guidsl.GUIDSLMill;
+import de.monticore.tagging.tags.TagsMill;
 import umlp.TagRelated;
 import umlp.UMLPMill;
 import umlp.UMLPTool;
@@ -108,6 +110,7 @@ public class RTEDataPipeline extends Pipeline<UMLPPipelineData> {
   public final IOperation.ISimpleOperation<DataWithAstAndGen> model_pipe_generate = data -> {
     Optional<String> tslib = UMLPGeneratorConfig.getInstance().getTSLib();
     if (tslib.isPresent()) {
+      GUIDSLMill.init();
       ImportMapGenerator importMapGenerator = new ImportMapGenerator(data.getGenSetup());
       importMapGenerator.generate(tslib.get(), data.getAst());
     }
