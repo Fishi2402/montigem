@@ -69,20 +69,21 @@ public final class StackEventProcessor {
       public SourceTargetPair whenCallEvent(CallEvent event) {
         callstack.push(reportingObject);
         return new SourceTargetPair(callstack.size() >= 2 ?
-            Optional.of(callstack.get(callstack.size() - 2)) :
-            Optional.empty(), Optional.of(reportingObject));
+                                        Optional.of(callstack.get(callstack.size() - 2)) :
+                                        Optional.empty(), Optional.of(reportingObject));
       }
 
       @Override
       public SourceTargetPair otherwise(StackEvent event) {
         if (reportingObject != callstack.pollLast()) {
-          throw new IllegalStateException("exiting from method " + event.methodName() + " whose entry was never logged");
+          throw new IllegalStateException(
+              "exiting from method " + event.methodName() + " whose entry was never logged");
         }
 
         //the java compiler otherwise assumes that reportingObject might be null
         assert reportingObject != null;
         return new SourceTargetPair(Optional.of(reportingObject),
-            Optional.ofNullable(callstack.peekLast()));
+                                    Optional.ofNullable(callstack.peekLast()));
       }
     });
     var sourceObject = sourceTargetPair.sourceObject;
@@ -97,16 +98,17 @@ public final class StackEventProcessor {
     }
 
     //get the highest priority matching strategy of source and target object
-    var matchingStrategy = Stream.concat(sourceObject.stream(), targetObject.stream())
+    var matchingStrategy = Stream
+        .concat(sourceObject.stream(), targetObject.stream())
         .flatMap(object -> Optional.ofNullable(objectMatchingStrategies.get(object)).stream())
         .max(Comparators.naturalOrder())
         .orElseGet(MatchingStrategy::getDefault);
 
     //determine whether the event must match the expected event
     var requiredMatch = isRequiredMatch(matchingStrategy,
-        sourceObject,
-        targetObject,
-        event.methodName());
+                                        sourceObject,
+                                        targetObject,
+                                        event.methodName());
 
     if (!requiredMatch) {
       //we just ignore non-required matches
@@ -118,8 +120,8 @@ public final class StackEventProcessor {
   }
 
   private Optional<String> matchesExpectedEvent(StackEvent event,
-                                                Optional<Object> sourceObject,
-                                                Optional<Object> targetObject) {
+      Optional<Object> sourceObject,
+      Optional<Object> targetObject) {
     if (expectedEvents.isEmpty()) {
       return Optional.of("not expecting any event");
     }
@@ -133,8 +135,8 @@ public final class StackEventProcessor {
       var actualSource = sourceObject.get();
       if (expectedSource != actualSource) {
         return Optional.of(String.format("Expected source object %s but got %s instead",
-            expectedSource,
-            actualSource));
+                                         expectedSource,
+                                         actualSource));
       }
     }
 
@@ -146,115 +148,123 @@ public final class StackEventProcessor {
       var actualTarget = targetObject.get();
       if (expectedTarget != actualTarget) {
         return Optional.of(String.format("Expected target object %s but got %s instead",
-            expectedTarget,
-            actualTarget));
+                                         expectedTarget,
+                                         actualTarget));
       }
     }
 
     //check the action
-    var actionCheckErrorMessage = expectedEvent.action().matchVariant(new ExhaustiveActionVariantMatcher<Optional<String>>() {
-      @Override
-      public Optional<String> whenCall(Call call) {
-        var expectedMethodName = call.methodName();
-        return event.matchVariant(new StackEventVariantMatcher<>() {
+    var actionCheckErrorMessage = expectedEvent
+        .action()
+        .matchVariant(new ExhaustiveActionVariantMatcher<Optional<String>>() {
           @Override
-          public Optional<String> whenCallEvent(CallEvent event) {
-            //check method name
-            var actualMethodName = event.methodName();
-            if (!actualMethodName.equals(expectedMethodName)) {
-              return Optional.of(String.format("Expected call of %s but got call of %s",
-                  expectedMethodName,
-                  actualMethodName));
-            }
+          public Optional<String> whenCall(Call call) {
+            var expectedMethodName = call.methodName();
+            return event.matchVariant(new StackEventVariantMatcher<>() {
+              @Override
+              public Optional<String> whenCallEvent(CallEvent event) {
+                //check method name
+                var actualMethodName = event.methodName();
+                if (!actualMethodName.equals(expectedMethodName)) {
+                  return Optional.of(String.format("Expected call of %s but got call of %s",
+                                                   expectedMethodName,
+                                                   actualMethodName));
+                }
 
-            //check arguments
-            var expectedArguments = call.args();
-            var actualArguments = event.params();
-            if (!Arrays.equals(expectedArguments, actualArguments)) {
-              return Optional.of(String.format("Expected %s(%s) but got %s(%s)",
-                  expectedMethodName,
-                  Arrays.stream(expectedArguments)
-                      .map(String::valueOf)
-                      .collect(Collectors.joining(", ")),
-                  actualMethodName,
-                  Arrays.stream(actualArguments)
-                      .map(String::valueOf)
-                      .collect(Collectors.joining(", "))));
-            }
+                //check arguments
+                if (call.args().isPresent()) {
+                  var expectedArguments = call.args().get();
+                  var actualArguments = event.params();
+                  if (!Arrays.equals(expectedArguments, actualArguments)) {
+                    return Optional.of(String.format("Expected %s(%s) but got %s(%s)",
+                                                     expectedMethodName,
+                                                     Arrays
+                                                         .stream(expectedArguments)
+                                                         .map(String::valueOf)
+                                                         .collect(Collectors.joining(", ")),
+                                                     actualMethodName,
+                                                     Arrays
+                                                         .stream(actualArguments)
+                                                         .map(String::valueOf)
+                                                         .collect(Collectors.joining(", "))));
+                  }
+                }
 
-            return Optional.empty();
+                return Optional.empty();
+              }
+
+              @Override
+              public Optional<String> otherwise(StackEvent event) {
+                return Optional.of(String.format("Expected call of %s but got %s",
+                                                 expectedMethodName,
+                                                 event));
+              }
+            });
           }
 
           @Override
-          public Optional<String> otherwise(StackEvent event) {
-            return Optional.of(String.format("Expected call of %s but got %s",
-                expectedMethodName,
-                event));
+          public Optional<String> whenError(Error error) {
+            return event.matchVariant(new StackEventVariantMatcher<>() {
+              @Override
+              public Optional<String> whenErrorEvent(ErrorEvent event) {
+                //check error
+                var expectedError = error.error();
+                var actualError = event.exception();
+                if (!actualError.equals(expectedError)) {
+                  return Optional.of(String.format("Expected %s but got %s",
+                                                   expectedError,
+                                                   actualError));
+                }
+
+                return checkMethodNameMatch(expectedEvent, event);
+              }
+
+              @Override
+              public Optional<String> otherwise(StackEvent event) {
+                return Optional.of("Expected error but got " + event);
+              }
+            });
+          }
+
+          @Override
+          public Optional<String> whenReturn(Return returnAction) {
+            return event.matchVariant(new StackEventVariantMatcher<>() {
+              @Override
+              public Optional<String> whenReturnEvent(ReturnEvent event) {
+                //check that return value is expected
+                if (!returnAction.hasReturnValue()) {
+                  return Optional.of("Expected void return but got " + event.returnValue());
+                }
+
+                //check return value
+                var expectedReturnValue = returnAction.returnValue().orElse(null);
+                var actualReturnValue = event.returnValue();
+                if (!Objects.equals(expectedReturnValue, actualReturnValue)) {
+                  return Optional.of(String.format("Expected return %s but got %s",
+                                                   expectedReturnValue,
+                                                   actualReturnValue));
+                }
+
+                return checkMethodNameMatch(expectedEvent, event);
+              }
+
+              @Override
+              public Optional<String> whenReturnVoidEvent(ReturnVoidEvent event) {
+                //check that void is expected
+                if (returnAction.hasReturnValue()) {
+                  return Optional.of("Expected return value but got none");
+                }
+
+                return checkMethodNameMatch(expectedEvent, event);
+              }
+
+              @Override
+              public Optional<String> otherwise(StackEvent event) {
+                return Optional.of("Expected return but got " + event);
+              }
+            });
           }
         });
-      }
-
-      @Override
-      public Optional<String> whenError(Error error) {
-        return event.matchVariant(new StackEventVariantMatcher<>() {
-          @Override
-          public Optional<String> whenErrorEvent(ErrorEvent event) {
-            //check error
-            var expectedError = error.error();
-            var actualError = event.exception();
-            if (!actualError.equals(expectedError)) {
-              return Optional.of(String.format("Expected %s but got %s",
-                  expectedError,
-                  actualError));
-            }
-
-            return checkMethodNameMatch(expectedEvent, event);
-          }
-
-          @Override
-          public Optional<String> otherwise(StackEvent event) {
-            return Optional.of("Expected error but got " + event);
-          }
-        });
-      }
-
-      @Override
-      public Optional<String> whenReturn(Return returnAction) {
-        return event.matchVariant(new StackEventVariantMatcher<>() {
-          @Override
-          public Optional<String> whenReturnEvent(ReturnEvent event) {
-            //check that return value is expected
-            if (!returnAction.hasReturnValue()) {
-              return Optional.of("Expected void return but got " + event.returnValue());
-            }
-
-            //check return value
-            var expectedReturnValue = returnAction.returnValue().orElse(null);
-            var actualReturnValue = event.returnValue();
-            if (!Objects.equals(expectedReturnValue, actualReturnValue)) {
-              return Optional.of(String.format("Expected return %s but got %s", expectedReturnValue, actualReturnValue));
-            }
-
-            return checkMethodNameMatch(expectedEvent, event);
-          }
-
-          @Override
-          public Optional<String> whenReturnVoidEvent(ReturnVoidEvent event) {
-            //check that void is expected
-            if (returnAction.hasReturnValue()) {
-              return Optional.of("Expected return value but got none");
-            }
-
-            return checkMethodNameMatch(expectedEvent, event);
-          }
-
-          @Override
-          public Optional<String> otherwise(StackEvent event) {
-            return Optional.of("Expected return but got " + event);
-          }
-        });
-      }
-    });
 
     if (actionCheckErrorMessage.isPresent()) {
       return actionCheckErrorMessage;
@@ -270,7 +280,8 @@ public final class StackEventProcessor {
     }
 
     if (!conditionCheckOkay) {
-      return Optional.of("Failed condition check: " + expectedEvent.conditionStringRepresentation());
+      return Optional.of(
+          "Failed condition check: " + expectedEvent.conditionStringRepresentation());
     }
 
     return Optional.empty();
@@ -281,28 +292,29 @@ public final class StackEventProcessor {
       var expectedMethodName = expectedEvent.getMethodName().get();
       var actualMethodName = event.methodName();
       if (!actualMethodName.equals(expectedMethodName)) {
-        var expectedActionKind = expectedEvent.action().matchVariant(new ExhaustiveActionVariantMatcher<String>() {
-          @Override
-          public String whenCall(Call call) {
-            return "call";
-          }
+        var expectedActionKind = expectedEvent
+            .action()
+            .matchVariant(new ExhaustiveActionVariantMatcher<String>() {
+              @Override
+              public String whenCall(Call call) {
+                return "call";
+              }
 
-          @Override
-          public String whenError(Error error) {
-            return "error";
-          }
+              @Override
+              public String whenError(Error error) {
+                return "error";
+              }
 
-          @Override
-          public String whenReturn(Return returnAction) {
-            return "return";
-          }
-        });
-        return Optional.of(String.format(
-            "Expected %s from %s but reported %s is from %s",
-            expectedActionKind,
-            expectedMethodName,
-            expectedActionKind,
-            actualMethodName));
+              @Override
+              public String whenReturn(Return returnAction) {
+                return "return";
+              }
+            });
+        return Optional.of(String.format("Expected %s from %s but reported %s is from %s",
+                                         expectedActionKind,
+                                         expectedMethodName,
+                                         expectedActionKind,
+                                         actualMethodName));
       }
     }
 
@@ -321,9 +333,9 @@ public final class StackEventProcessor {
    * mismatch can be ignored
    */
   private boolean isRequiredMatch(MatchingStrategy matchingStrategy,
-                                  Optional<Object> sourceObject,
-                                  Optional<Object> targetObject,
-                                  String methodName) {
+      Optional<Object> sourceObject,
+      Optional<Object> targetObject,
+      String methodName) {
     switch (matchingStrategy) {
       case FREE:
         //matching is always optional
@@ -343,7 +355,8 @@ public final class StackEventProcessor {
         });
       case VISIBLE:
         //matching is required if source and target object are declared in the test
-        return Stream.concat(sourceObject.stream(), targetObject.stream())
+        return Stream
+            .concat(sourceObject.stream(), targetObject.stream())
             .allMatch(objectMatchingStrategies::containsKey);
       case COMPLETE:
         //matching is always required

@@ -92,8 +92,8 @@ import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
+import umlp.generator.domain.visitor.model.MatchingStrategy;
 import umlp.generator.util.PathUtil;
-import umlp.model.MatchingStrategy;
 import umlp.model.SDObject;
 
 import java.util.ArrayList;
@@ -138,7 +138,7 @@ public class SD2TestDecorator {
     //override initBackendManager
     cd4c.addMethod(testClass, "umlp.domain.sd2test.InitBackendManager", domainName);
 
-    //TODO how do we check which objects are already present in the object diagram?
+    //TODO find a way to import objects from an object diagram
 
     logModel(model);
 
@@ -155,7 +155,7 @@ public class SD2TestDecorator {
     //make sure every object has a name
     var objectNames = new ArrayList<String>();
 
-    //createFoo methods
+    //create methods for objects declared in the test
     for (SDObject sdObject : visitor.objectDeclarations) {
       var name = sdObject.name();
       objectNames.add(name);
@@ -197,7 +197,6 @@ public class SD2TestDecorator {
     return Names.constructQualifiedName(parts);
   }
 
-  @SuppressWarnings("unused")
   private static void logModel(ASTSDArtifact model) {
     var visitor = new LoggingSDVisitor();
     visit(model, visitor);

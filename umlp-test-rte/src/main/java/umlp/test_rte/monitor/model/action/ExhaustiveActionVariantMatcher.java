@@ -13,6 +13,6 @@ public interface ExhaustiveActionVariantMatcher<T> extends ActionVariantMatcher<
 
   @Override
   default T otherwise(Action action) {
-    throw new IllegalStateException("unknown action variant: " + action);
+    throw new IllegalArgumentException("unknown variant: " + action);
   }
 }

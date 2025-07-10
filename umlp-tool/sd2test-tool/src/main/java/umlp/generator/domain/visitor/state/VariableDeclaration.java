@@ -1,0 +1,27 @@
+package umlp.generator.domain.visitor.state;
+
+import umlp.generator.domain.visitor.model.ocl.LetStatement;
+
+public final class VariableDeclaration implements VisitorState {
+
+  private final OCLState previousState;
+  private final LetStatement letStatement;
+
+  public VariableDeclaration(OCLState previousState, LetStatement letStatement) {
+    this.previousState = previousState;
+    this.letStatement = letStatement;
+  }
+
+  @Override
+  public <T> T matchVariant(VisitorStateVariantMatcher<T> matcher) {
+    return matcher.whenVariableDeclaration(this);
+  }
+
+  public OCLState previousState() {
+    return previousState;
+  }
+
+  public LetStatement letStatement() {
+    return letStatement;
+  }
+}

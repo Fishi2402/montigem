@@ -24,8 +24,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 
-//TODO gradle dependency on umlp-test-rte, I would like to re-use runtime classes; nope. Just copy paste and rename it.
-
 public class SD2TestTool extends SD4DevelopmentTool {
 
   private static final String LOG_NAME = "SD2TestTool";
@@ -40,10 +38,11 @@ public class SD2TestTool extends SD4DevelopmentTool {
     var backendSymbolDirectoryPath = "examples/testing-with-sd/backend/build/umlp/backend_symbols";
     var testSymbolDirectoryPath = "examples/testing-with-sd/backend/build/umlp/test_symbols";
     var outputDirectoryPath = "examples/testing-with-sd/backend/build/umlp/backend_test";
+    var hwcDirectoryPath = "examples/testing-with-sd/backend/src/test/java/";
 
     var model = tool.parseModel(modelPath, backendSymbolDirectoryPath, testSymbolDirectoryPath);
     var domainCD = parseDomainCD(domainModelPath);
-    tool.generateUnitTest(model, domainCD, outputDirectoryPath);
+    tool.generateUnitTest(model, domainCD, outputDirectoryPath, hwcDirectoryPath);
   }
 
   private static ASTCDDefinition parseDomainCD(String domainModelPath) {
@@ -67,7 +66,7 @@ public class SD2TestTool extends SD4DevelopmentTool {
     }
   }
 
-  public void generateUnitTest(ASTSDArtifact model, ASTCDDefinition domainCD, String outputDirectoryPath) {
+  public void generateUnitTest(ASTSDArtifact model, ASTCDDefinition domainCD, String outputDirectoryPath, String hwcDirectoryPath) {
     CD4CodeMill.init();
 
     //new cd since tests are created in isolation for the time being
@@ -86,6 +85,7 @@ public class SD2TestTool extends SD4DevelopmentTool {
     var generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     generatorSetup.setOutputDirectory(new File(outputDirectoryPath));
+    generatorSetup.setHandcodedPath(new MCPath(hwcDirectoryPath));
     CD4C.init(generatorSetup);
     CD4C.getInstance().setEmptyBodyTemplate("cd2java.EmptyBody");
 

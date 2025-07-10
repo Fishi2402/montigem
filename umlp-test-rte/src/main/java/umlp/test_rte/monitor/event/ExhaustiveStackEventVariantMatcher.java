@@ -16,6 +16,6 @@ public interface ExhaustiveStackEventVariantMatcher<T> extends StackEventVariant
 
   @Override
   default T otherwise(StackEvent event) {
-    throw new IllegalStateException("unknown stack event variant: " + event);
+    throw new IllegalArgumentException("unknown variant: " + event);
   }
 }

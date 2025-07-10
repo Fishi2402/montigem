@@ -9,7 +9,4 @@ classdiagram Webshop {
   }
 
   association [1] Order -> Item [*];
-
-  class TotalTest {
-  }
 }

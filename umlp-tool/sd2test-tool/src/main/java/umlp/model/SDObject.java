@@ -1,12 +1,15 @@
 package umlp.model;
 
 
+import umlp.generator.domain.visitor.model.MatchingStrategy;
+
 import java.util.Objects;
 import java.util.Optional;
 
 /**
  * Represents an object defined in a sequence diagram
  */
+@Deprecated
 public final class SDObject {
 
   private final Optional<MatchingStrategy> matchingStrategy;

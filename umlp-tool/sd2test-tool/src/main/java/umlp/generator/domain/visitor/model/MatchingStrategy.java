@@ -1,4 +1,4 @@
-package umlp.model;
+package umlp.generator.domain.visitor.model;
 
 /**
  * Describes the different matching strategies which an object defined in a sequence diagram may have.
