@@ -1,14 +1,17 @@
 package umlp.generator.domain.visitor.model.action;
 
+import umlp.generator.domain.visitor.model.ActivityBar;
+
 import java.util.List;
 import java.util.Optional;
 
-public final class Call implements Action {
+public final class CallAction implements Action {
 
   private final String methodName;
   private final Optional<List<String>> argumentExpressions;
+  private Optional<ActivityBar> activityBar = Optional.empty();
 
-  public Call(String methodName, Optional<List<String>> argumentExpressions) {
+  public CallAction(String methodName, Optional<List<String>> argumentExpressions) {
     this.methodName = methodName;
     this.argumentExpressions = argumentExpressions;
   }
@@ -18,11 +21,20 @@ public final class Call implements Action {
     return matcher.whenCall(this);
   }
 
-  public String name() {
+  public String methodName() {
     return methodName;
   }
 
   public Optional<List<String>> argumentExpressions() {
     return argumentExpressions;
+  }
+
+  public Optional<ActivityBar> activityBar() {
+    return activityBar;
+  }
+
+  public CallAction activityBar(Optional<ActivityBar> activityBar) {
+    this.activityBar = activityBar;
+    return this;
   }
 }
