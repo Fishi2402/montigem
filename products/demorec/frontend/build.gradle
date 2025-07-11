@@ -57,9 +57,6 @@ translateJava2TSGUI {
       "glob:**/service/*"
   ]
   )
-  excludeTranspileFiles.from(
-      file("C:\\Users\\buschhaus\\Documents\\01.Uni\\umlp\\umlp_artifact\\umlp\\products\\demorec\\frontend\\src\\main\\java\\demorec\\service\\BatteryPackService.java")
-  )
   verbose = true
 }
 
