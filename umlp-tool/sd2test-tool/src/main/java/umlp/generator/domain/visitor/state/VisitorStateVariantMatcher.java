@@ -58,5 +58,9 @@ public interface VisitorStateVariantMatcher<T> {
     return otherwise(awaitActionState);
   }
 
+  default T whenInteraction(InteractionState interactionState) {
+    return otherwise(interactionState);
+  }
+
   T otherwise(VisitorState state);
 }
