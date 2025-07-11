@@ -6,6 +6,10 @@ import umlp.generator.domain.visitor.model.ocl.OCLStatement;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * We have read an interaction action and wait for ocl conditions, a new interaction, or the end of
+ * an activity-bar
+ */
 public final class InteractionState implements OCLState {
 
   private final AwaitActionState previousState;

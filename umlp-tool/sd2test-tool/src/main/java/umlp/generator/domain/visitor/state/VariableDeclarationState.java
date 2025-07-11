@@ -2,6 +2,9 @@ package umlp.generator.domain.visitor.state;
 
 import umlp.generator.domain.visitor.model.ocl.LetStatement;
 
+/**
+ * We are reading an ocl statement which declares a variable
+ */
 public final class VariableDeclarationState implements VisitorState {
 
   private final OCLState previousState;

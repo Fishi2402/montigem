@@ -5,12 +5,16 @@ import umlp.generator.domain.visitor.model.ocl.OCLStatement;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class EarlyBodySectionState implements OCLState {
+/**
+ * We are expecting interactions or ocl statements, which should be checked before any interactions
+ * happen
+ */
+public final class PreInteractionBodyState implements OCLState {
 
   private final SDObjectSectionState objectSection;
   private final List<OCLStatement> oclStatements = new ArrayList<>();
 
-  public EarlyBodySectionState(SDObjectSectionState objectSection) {
+  public PreInteractionBodyState(SDObjectSectionState objectSection) {
     this.objectSection = objectSection;
   }
 
@@ -21,7 +25,7 @@ public final class EarlyBodySectionState implements OCLState {
 
   @Override
   public <T> T matchVariant(VisitorStateVariantMatcher<T> matcher) {
-    return matcher.whenEarlyBodySection(this);
+    return matcher.whenPreInteractionBody(this);
   }
 
   public SDObjectSectionState objectSection() {

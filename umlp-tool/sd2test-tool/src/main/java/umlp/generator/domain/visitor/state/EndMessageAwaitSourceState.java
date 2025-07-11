@@ -2,6 +2,9 @@ package umlp.generator.domain.visitor.state;
 
 import umlp.generator.domain.visitor.model.InteractionEntity;
 
+/**
+ * We are waiting for the source of an end message interaction
+ */
 public final class EndMessageAwaitSourceState implements VisitorState {
 
   private final EndMessageAwaitTargetState previousState;

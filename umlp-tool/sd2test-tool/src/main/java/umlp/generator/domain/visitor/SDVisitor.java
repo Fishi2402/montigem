@@ -10,6 +10,7 @@ import de.monticore.lang.sd4development._ast.ASTSDReturn;
 import de.monticore.lang.sd4development._ast.ASTSDThrow;
 import de.monticore.lang.sd4development._ast.ASTSDVariableDeclaration;
 import de.monticore.lang.sd4development._visitor.SD4DevelopmentVisitor2;
+import de.monticore.lang.sdbasis._ast.ASTSDActivityBar;
 import de.monticore.lang.sdbasis._ast.ASTSDCompleteModifier;
 import de.monticore.lang.sdbasis._ast.ASTSDFreeModifier;
 import de.monticore.lang.sdbasis._ast.ASTSDInitialModifier;
@@ -29,9 +30,12 @@ import umlp.generator.domain.visitor.model.MatchingStrategy;
 import umlp.generator.domain.visitor.model.SDObject;
 import umlp.generator.domain.visitor.model.ocl.AssertStatement;
 import umlp.generator.domain.visitor.model.ocl.LetStatement;
-import umlp.generator.domain.visitor.state.EarlyBodySectionState;
-import umlp.generator.domain.visitor.state.ImportSection;
+import umlp.generator.domain.visitor.state.BodySectionState;
+import umlp.generator.domain.visitor.state.ImportSectionState;
 import umlp.generator.domain.visitor.state.ImportState;
+import umlp.generator.domain.visitor.state.InteractionState;
+import umlp.generator.domain.visitor.state.OpenActivityBarState;
+import umlp.generator.domain.visitor.state.PreInteractionBodyState;
 import umlp.generator.domain.visitor.state.SDObjectDeclarationState;
 import umlp.generator.domain.visitor.state.SDObjectSectionState;
 import umlp.generator.domain.visitor.state.VariableDeclarationState;
@@ -45,14 +49,14 @@ public final class SDVisitor implements SDBasisVisitor2,
     OCLExpressionsVisitor2,
     MCBasicTypesVisitor2 {
 
-  private VisitorState state = new ImportSection();
+  private VisitorState state = new ImportSectionState();
 
   @Override
   public void visit(ASTMCImportStatement node) {
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
-      public VisitorState whenImportSection(ImportSection importSection) {
-        return new ImportState(importSection, node);
+      public VisitorState whenImportSection(ImportSectionState importSectionState) {
+        return new ImportState(importSectionState, node);
       }
 
       @Override
@@ -121,8 +125,10 @@ public final class SDVisitor implements SDBasisVisitor2,
         raiseError("missing variable type", getSourcePosition(node));
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
-      public VisitorState whenImportSection(ImportSection importSection) {
-        return new SDObjectDeclarationState(new SDObjectSectionState(importSection), name, qualifiedTypeName);
+      public VisitorState whenImportSection(ImportSectionState importSectionState) {
+        return new SDObjectDeclarationState(new SDObjectSectionState(importSectionState),
+                                            name,
+                                            qualifiedTypeName);
       }
 
       @Override
@@ -166,9 +172,9 @@ public final class SDVisitor implements SDBasisVisitor2,
 
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
-      public VisitorState whenEarlyBodySection(EarlyBodySectionState earlyBodySectionState) {
-        earlyBodySectionState.oclStatements().add(assertStatement);
-        return earlyBodySectionState;
+      public VisitorState whenPreInteractionBody(PreInteractionBodyState preInteractionBodyState) {
+        preInteractionBodyState.oclStatements().add(assertStatement);
+        return preInteractionBodyState;
       }
 
       //TODO handle in activity bar
@@ -189,8 +195,8 @@ public final class SDVisitor implements SDBasisVisitor2,
     var letStatement = new LetStatement(qualifiedTypeName, name, assignmentExpression);
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
-      public VisitorState whenEarlyBodySection(EarlyBodySectionState earlyBodySectionState) {
-        return new VariableDeclarationState(earlyBodySectionState, letStatement);
+      public VisitorState whenPreInteractionBody(PreInteractionBodyState preInteractionBodyState) {
+        return new VariableDeclarationState(preInteractionBodyState, letStatement);
       }
 
       //TODO handle in activity bar
@@ -223,6 +229,38 @@ public final class SDVisitor implements SDBasisVisitor2,
   @Override
   public void visit(ASTSDSendMessage node) {
     //TODO start of an interaction
+    updateState(new VisitorStateVariantMatcher<>() {
+
+      @Override
+      public VisitorState whenSDObjectSection(SDObjectSectionState objectSection) {
+        return VisitorStateVariantMatcher.super.whenSDObjectSection(objectSection);
+      }
+
+      @Override
+      public VisitorState whenPreInteractionBody(PreInteractionBodyState preInteractionBodyState) {
+        return VisitorStateVariantMatcher.super.whenPreInteractionBody(preInteractionBodyState);
+      }
+
+      @Override
+      public VisitorState whenBodySection(BodySectionState bodySectionState) {
+        return VisitorStateVariantMatcher.super.whenBodySection(bodySectionState);
+      }
+
+      @Override
+      public VisitorState whenInteraction(InteractionState interactionState) {
+        return VisitorStateVariantMatcher.super.whenInteraction(interactionState);
+      }
+
+      @Override
+      public VisitorState whenOpenActivityBar(OpenActivityBarState openActivityBarState) {
+        return VisitorStateVariantMatcher.super.whenOpenActivityBar(openActivityBarState);
+      }
+
+      @Override
+      public VisitorState otherwise(VisitorState state) {
+        return null;
+      }
+    });
   }
 
   @Override
@@ -281,6 +319,16 @@ public final class SDVisitor implements SDBasisVisitor2,
   }
 
   @Override
+  public void visit(ASTSDActivityBar node) {
+    //TODO
+  }
+
+  @Override
+  public void endVisit(ASTSDActivityBar node) {
+    //TODO
+  }
+
+  @Override
   public void visit(ASTSDNew node) {
     raiseError("constructor monitoring is not supported", getSourcePosition(node));
   }
@@ -292,7 +340,6 @@ public final class SDVisitor implements SDBasisVisitor2,
   private <T> T raiseUnexpectedVisitError(ASTNode node, VisitorState state) {
     return raiseStateError("unexpected visit of node " + node, state, getSourcePosition(node));
   }
-
 
   private <T> T raiseUnexpectedEndVisitError(ASTNode node, VisitorState state) {
     return raiseStateError("unexpected visit-end of node " + node, state, getSourcePosition(node));

@@ -5,12 +5,15 @@ import umlp.generator.domain.visitor.model.SDObject;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * waiting for declaration of sd objects or start of the body
+ */
 public final class SDObjectSectionState implements VisitorState {
 
-  private final ImportSection importSection;
+  private final ImportSectionState importSection;
   private final List<SDObject> sdObjects = new ArrayList<>();
 
-  public SDObjectSectionState(ImportSection importSection) {
+  public SDObjectSectionState(ImportSectionState importSection) {
     this.importSection = importSection;
   }
 
@@ -19,7 +22,7 @@ public final class SDObjectSectionState implements VisitorState {
     return matcher.whenSDObjectSection(this);
   }
 
-  public ImportSection importSection() {
+  public ImportSectionState importSection() {
     return importSection;
   }
 

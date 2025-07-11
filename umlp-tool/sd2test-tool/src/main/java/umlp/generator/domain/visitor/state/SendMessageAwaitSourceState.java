@@ -1,5 +1,8 @@
 package umlp.generator.domain.visitor.state;
 
+/**
+ * waiting for the source of a send-message interaction
+ */
 public final class SendMessageAwaitSourceState implements VisitorState {
 
   private final VisitorState previousState;

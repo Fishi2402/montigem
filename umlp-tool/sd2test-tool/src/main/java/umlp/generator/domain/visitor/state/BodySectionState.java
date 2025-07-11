@@ -5,13 +5,18 @@ import umlp.generator.domain.visitor.model.Trigger;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The body of a SD, where triggers are stored
+ */
 public final class BodySectionState implements VisitorState {
 
-  private final EarlyBodySectionState earlyBodySectionState;
+  private final PreInteractionBodyState earlyBodySection;
   private final List<Trigger> trigger = new ArrayList<>();
+  private final Trigger lastTrigger;
 
-  public BodySectionState(EarlyBodySectionState earlyBodySectionState) {
-    this.earlyBodySectionState = earlyBodySectionState;
+  public BodySectionState(PreInteractionBodyState earlyBodySection, Trigger lastTrigger) {
+    this.earlyBodySection = earlyBodySection;
+    this.lastTrigger = lastTrigger;
   }
 
   @Override
@@ -19,11 +24,15 @@ public final class BodySectionState implements VisitorState {
     return matcher.whenBodySection(this);
   }
 
-  public EarlyBodySectionState earlyBodySection() {
-    return earlyBodySectionState;
+  public PreInteractionBodyState earlyBodySection() {
+    return earlyBodySection;
   }
 
   public List<Trigger> trigger() {
     return trigger;
+  }
+
+  public Trigger lastTrigger() {
+    return lastTrigger;
   }
 }

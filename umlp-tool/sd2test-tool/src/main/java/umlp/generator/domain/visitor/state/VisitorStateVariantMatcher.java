@@ -2,8 +2,8 @@ package umlp.generator.domain.visitor.state;
 
 public interface VisitorStateVariantMatcher<T> {
 
-  default T whenImportSection(ImportSection importSection) {
-    return otherwise(importSection);
+  default T whenImportSection(ImportSectionState importSectionState) {
+    return otherwise(importSectionState);
   }
 
   default T whenImport(ImportState importState) {
@@ -18,8 +18,8 @@ public interface VisitorStateVariantMatcher<T> {
     return otherwise(sdObjectDeclarationState);
   }
 
-  default T whenEarlyBodySection(EarlyBodySectionState earlyBodySectionState) {
-    return otherwise(earlyBodySectionState);
+  default T whenPreInteractionBody(PreInteractionBodyState preInteractionBodyState) {
+    return otherwise(preInteractionBodyState);
   }
 
   default T whenVariableDeclaration(VariableDeclarationState variableDeclarationState) {
@@ -28,14 +28,6 @@ public interface VisitorStateVariantMatcher<T> {
 
   default T whenBodySection(BodySectionState bodySectionState) {
     return otherwise(bodySectionState);
-  }
-
-  default T whenAwaitingTriggerSection(AwaitingTriggerSectionState awaitingTriggerSectionState) {
-    return otherwise(awaitingTriggerSectionState);
-  }
-
-  default T whenTriggerSection(TriggerSectionState triggerSectionState) {
-    return otherwise(triggerSectionState);
   }
 
   default T whenSendMessageAwaitSource(SendMessageAwaitSourceState sendMessageAwaitSourceState) {
@@ -58,8 +50,20 @@ public interface VisitorStateVariantMatcher<T> {
     return otherwise(awaitActionState);
   }
 
+  default T whenCallAction(CallActionState callActionState) {
+    return otherwise(callActionState);
+  }
+
   default T whenInteraction(InteractionState interactionState) {
     return otherwise(interactionState);
+  }
+
+  default T whenOpenActivityBar(OpenActivityBarState openActivityBarState) {
+    return otherwise(openActivityBarState);
+  }
+
+  default T whenClosedActivityBar(ClosedActivityBarState closedActivityBarState) {
+    return otherwise(closedActivityBarState);
   }
 
   T otherwise(VisitorState state);

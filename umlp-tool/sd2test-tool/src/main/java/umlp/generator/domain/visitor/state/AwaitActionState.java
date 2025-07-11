@@ -2,6 +2,9 @@ package umlp.generator.domain.visitor.state;
 
 import umlp.generator.domain.visitor.model.InteractionEntity;
 
+/**
+ * Waiting for action after reading source and target of an interaction
+ */
 public final class AwaitActionState implements VisitorState {
 
   private final VisitorState previousState;

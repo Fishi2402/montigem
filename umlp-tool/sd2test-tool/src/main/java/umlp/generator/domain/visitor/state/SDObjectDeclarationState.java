@@ -4,6 +4,9 @@ import umlp.generator.domain.visitor.model.MatchingStrategy;
 
 import java.util.Optional;
 
+/**
+ * waiting for an sd-object declaration to finish
+ */
 public final class SDObjectDeclarationState implements VisitorState {
 
   private final SDObjectSectionState section;

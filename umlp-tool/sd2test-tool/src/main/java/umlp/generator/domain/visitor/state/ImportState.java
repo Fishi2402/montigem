@@ -2,12 +2,15 @@ package umlp.generator.domain.visitor.state;
 
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 
+/**
+ * We are waiting for an import statement to finish
+ */
 public final class ImportState implements VisitorState {
 
-  private final ImportSection section;
+  private final ImportSectionState section;
   private final ASTMCImportStatement importStatement;
 
-  public ImportState(ImportSection section, ASTMCImportStatement importStatement) {
+  public ImportState(ImportSectionState section, ASTMCImportStatement importStatement) {
     this.section = section;
     this.importStatement = importStatement;
   }
@@ -17,7 +20,7 @@ public final class ImportState implements VisitorState {
     return matcher.whenImport(this);
   }
 
-  public ImportSection section() {
+  public ImportSectionState section() {
     return section;
   }
 

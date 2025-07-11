@@ -5,7 +5,10 @@ import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class ImportSection implements VisitorState {
+/**
+ * We are waiting for imports or the start of the sd
+ */
+public final class ImportSectionState implements VisitorState {
 
   private final List<ASTMCImportStatement> imports = new ArrayList<>();
 
