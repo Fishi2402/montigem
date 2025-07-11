@@ -38,16 +38,24 @@ public interface VisitorStateVariantMatcher<T> {
     return otherwise(triggerSection);
   }
 
-  default T whenInteractionSection(InteractionSection interactionSection) {
-    return otherwise(interactionSection);
+  default T whenSendMessageAwaitSource(SendMessageAwaitSource sendMessageAwaitSource) {
+    return otherwise(sendMessageAwaitSource);
   }
 
-  default T whenInteractionSource(InteractionSource interactionSource) {
-    return otherwise(interactionSource);
+  default T whenSendMessageAwaitTarget(SendMessageAwaitTarget sendMessageAwaitTarget) {
+    return otherwise(sendMessageAwaitTarget);
   }
 
-  default T whenInteractionTarget(InteractionTarget interactionTarget) {
-    return otherwise(interactionTarget);
+  default T whenEndMessageAwaitTarget(EndMessageAwaitTarget endMessageAwaitTarget) {
+    return otherwise(endMessageAwaitTarget);
+  }
+
+  default T whenEndMessageAwaitSource(EndMessageAwaitSource endMessageAwaitSource) {
+    return otherwise(endMessageAwaitSource);
+  }
+
+  default T whenAwaitAction(AwaitAction awaitAction) {
+    return otherwise(awaitAction);
   }
 
   T otherwise(VisitorState state);
