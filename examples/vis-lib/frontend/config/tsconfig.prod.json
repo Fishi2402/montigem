@@ -3,9 +3,8 @@
   "extends": ["./tsconfig.app.json"],
   "compilerOptions": {
     "paths": {
-      "@umlp/*": ["libs/@umlp/*"],
+      "@umlp/*": ["prodlibs/@umlp/*"],
       "*": [
-        "node_modules/*",
         "build/appdomain/*",
         "build/appgui/*",
         "src/app/*",

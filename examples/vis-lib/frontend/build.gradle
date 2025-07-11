@@ -1,3 +1,5 @@
+import gradle.specific.UMLPSymLinkCreationTask
+
 import java.nio.file.Files
 import java.nio.file.Paths
 
@@ -73,66 +75,43 @@ npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 def prebuildTasks = [
     npmInstall,
     generate,
-    copyAppJsweet
+    copyAppJsweet,
+    symlinkCreation
 ]
 
-tasks.register('linkStuff', NodeTask) {
-  dependsOn(prebuildTasks)
-  def hwcsrc = file("$buildDir/frontendGen/hwcsrc")
-  def hwcsrcTarget = file("src/app")
-
-
-  def frontendOut = file("$buildDir/build/umlp_frontend")
-  def frontendOutTarget = file("$buildDir/umlp_frontend")
+tasks.register("linkStuff3", UMLPSymLinkCreationTask.class) {
+  symlinkMap.put(file("$buildDir/frontendGen/hwcsrc"), file("src/app"))
+  symlinkMap.put(file("$buildDir/build/umlp_frontend"), file("$buildDir/umlp_frontend"))
 
   def umlpDir = file("$buildDir/frontendGen/libs/@umlp")
+  def clientProject = project(":umlp-rte:client")
 
-  def clientRTELinks = [:]
-  project(":umlp-rte:client").ext.libs.forEach {
-    def f = file(project(":umlp-rte:client").projectDir.toString()+"/projects/"+it)
-    // Link, Target
-    clientRTELinks.put(umlpDir.toPath().resolve(f.name).toFile(),f.toPath().toAbsolutePath().toFile())
+  clientProject.ext.libs.each {
+    def sourceFile = file(clientProject.projectDir.toString() + "/projects/" + it)
+    def linkFile = umlpDir.toPath().resolve(sourceFile.name).toFile()
+    symlinkMap.put(linkFile, sourceFile)
   }
-
-  outputs.upToDateWhen {
-    Files.isSymbolicLink(hwcsrc.toPath()) && Files.isSymbolicLink(frontendOut.toPath()) &&
-    clientRTELinks.keySet().every {
-      Files.isSymbolicLink(Paths.get(it.toString()))
-    }
-  }
-
-  def allLinks = [hwcsrc.toString(), hwcsrcTarget.toString(),
-                   frontendOut.toString(), frontendOutTarget.toString(),
-  ]
-  clientRTELinks.keySet().forEach {
-    allLinks.add(it.toString())
-    allLinks.add(clientRTELinks.get(it).toString())
-  }
-
-  script = file("$buildDir/frontendGen/symlink-creation.js")
-  args = allLinks
 }
 
 tasks.register('testApp', NpxTask) {
   dependsOn(
       prebuildTasks,
       project(":umlp-rte:client").tasks.matching { it.name.startsWith("copy_") },
-      project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") },
-      tasks.named('linkStuff').get()
+      project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") }
   )
   command = "ng"
   args = ["test"]
 }
 
 tasks.register('buildApp', NpxTask) {
-  dependsOn(testApp, tasks.named('linkStuff').get())
+  dependsOn(testApp)
   command = "ng"
   args = ["build"]
 }
 assemble.dependsOn(buildApp)
 
 tasks.register('runApp', NpxTask) {
-  dependsOn(prebuildTasks, tasks.named('linkStuff').get())
+  dependsOn(prebuildTasks)
   command = "ng"
   args = ["serve"]
 }

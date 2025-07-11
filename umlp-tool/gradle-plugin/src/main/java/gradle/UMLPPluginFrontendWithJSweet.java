@@ -7,6 +7,7 @@ import gradle.specific.UMLPGuiGenTask;
 import gradle.specific.UMLPJava2TypeScriptAdditionalsTask;
 import gradle.specific.UMLPJava2TypeScriptConfigTask;
 import gradle.specific.UMLPJava2TypeScriptTask;
+import gradle.specific.UMLPSymLinkCreationTask;
 import gradle.specific.UMLPSymbolsTask;
 import gradle.specific.serialize.SerializeCDSymbolsTask;
 import gradle.specific.serialize.SerializeGUISymbolsTask;
@@ -41,6 +42,7 @@ import static gradle.UMLPPluginFrontendBase.GUI_LIB_NAME;
 import static gradle.UMLPPluginFrontendBase.UMLP_FRONTEND_DOMAIN_TASK_NAME;
 import static gradle.UMLPPluginFrontendBase.UMLP_FRONTEND_GUI_TASK_NAME;
 import static gradle.UMLPPluginFrontendBase.UMLP_FRONTEND_SETUP_TASK_NAME;
+import static gradle.UMLPPluginFrontendBase.UMLP_FRONTEND_SYMLINK_CREATION_TASK_NAME;
 import static gradle.UMLPPluginFrontendBase.UMLP_GROUP_NAME;
 import static gradle.UMLPPluginFrontendBase.getStringProjectProperty;
 import static gradle.UMLPPluginFrontendBase.getStringProjectPropertyStrip;
@@ -96,6 +98,10 @@ public abstract class UMLPPluginFrontendWithJSweet implements Plugin<Project> {
     TaskProvider<UMLPGuiGenTask> frontendGuiTask = project.getTasks().named(UMLP_FRONTEND_GUI_TASK_NAME, UMLPGuiGenTask.class);
     TaskProvider<Sync> syncDomainTask = project.getTasks().named(SYNC_PREFIX + UMLP_FRONTEND_DOMAIN_TASK_NAME, Sync.class);
     TaskProvider<Sync> syncGuiTask = project.getTasks().named(SYNC_PREFIX + UMLP_FRONTEND_GUI_TASK_NAME, Sync.class);
+
+    TaskProvider<UMLPSymLinkCreationTask> symLinkCreationTask =
+        project.getTasks().named(UMLP_FRONTEND_SYMLINK_CREATION_TASK_NAME, UMLPSymLinkCreationTask.class);
+
 /*    TaskProvider<Sync> syncTSGuiHWC = createSyncTSGUIHWC(project, frontendSetupTask);
     TaskProvider<Sync> syncTSDomainHWC = createSyncTSDomainHWC(project, frontendSetupTask);*/
 
@@ -168,6 +174,17 @@ public abstract class UMLPPluginFrontendWithJSweet implements Plugin<Project> {
       umlpTask.from(frontendGUIJ2TSTask.get().getOutputDir());
       umlpTask.from(java2TypeScriptAdditionals.get().getOutputDir());
       umlpTask.dependsOn(frontendGUIJ2TSTask, frontendSetupTask);
+    });
+
+    symLinkCreationTask.configure(umlpTask -> {
+      if(umlpTask.getSymlinkMap().isPresent()) {
+        File hwcSrcLink = project.getBuildDir().toPath().resolve("frontendGen/hwcsrc").toFile();
+        umlpTask.getSymlinkMap().put(hwcSrcLink, this.jsweetTSHWCDir.toFile());
+
+        File angularTemplateResolveLink = project.getBuildDir().toPath().resolve("build/umlp_frontend").toFile();
+        File angularTemplateResolveTarget = project.getBuildDir().toPath().resolve("umlp_frontend").toFile();
+        umlpTask.getSymlinkMap().put(angularTemplateResolveLink,angularTemplateResolveTarget);
+      }
     });
 
 /*
