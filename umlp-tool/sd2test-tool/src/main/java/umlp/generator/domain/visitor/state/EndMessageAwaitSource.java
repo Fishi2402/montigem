@@ -1,17 +1,15 @@
 package umlp.generator.domain.visitor.state;
 
+import umlp.generator.domain.visitor.model.InteractionEntity;
+
 public final class EndMessageAwaitSource implements VisitorState {
 
   private final EndMessageAwaitTarget previousState;
-  private final String targetName;
-  private final boolean staticTarget;
+  private final InteractionEntity target;
 
-  public EndMessageAwaitSource(EndMessageAwaitTarget previousState,
-      String targetName,
-      boolean staticTarget) {
+  public EndMessageAwaitSource(EndMessageAwaitTarget previousState, InteractionEntity target) {
     this.previousState = previousState;
-    this.targetName = targetName;
-    this.staticTarget = staticTarget;
+    this.target = target;
   }
 
   @Override
@@ -23,11 +21,7 @@ public final class EndMessageAwaitSource implements VisitorState {
     return previousState;
   }
 
-  public String targetName() {
-    return targetName;
-  }
-
-  public boolean staticTarget() {
-    return staticTarget;
+  public InteractionEntity target() {
+    return target;
   }
 }
