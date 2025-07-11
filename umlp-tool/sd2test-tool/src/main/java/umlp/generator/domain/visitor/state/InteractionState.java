@@ -1,5 +1,6 @@
 package umlp.generator.domain.visitor.state;
 
+import umlp.generator.domain.visitor.model.InteractionEntity;
 import umlp.generator.domain.visitor.model.action.Action;
 import umlp.generator.domain.visitor.model.ocl.OCLStatement;
 
@@ -12,14 +13,22 @@ import java.util.List;
  */
 public final class InteractionState implements OCLState {
 
-  private final AwaitActionState previousState;
+  private final VisitorState previousState;
+  private final InteractionEntity source;
+  private final InteractionEntity target;
   private final Action action;
   private final List<OCLStatement> oclStatements = new ArrayList<>();
 
-  public InteractionState(AwaitActionState previousState, Action action) {
+  public InteractionState(VisitorState previousState,
+      InteractionEntity source,
+      InteractionEntity target,
+      Action action) {
     this.previousState = previousState;
+    this.source = source;
+    this.target = target;
     this.action = action;
   }
+
 
   @Override
   public List<OCLStatement> oclStatements() {
@@ -31,8 +40,16 @@ public final class InteractionState implements OCLState {
     return matcher.whenInteraction(this);
   }
 
-  public AwaitActionState previousState() {
+  public VisitorState previousState() {
     return previousState;
+  }
+
+  public InteractionEntity source() {
+    return source;
+  }
+
+  public InteractionEntity target() {
+    return target;
   }
 
   public Action action() {

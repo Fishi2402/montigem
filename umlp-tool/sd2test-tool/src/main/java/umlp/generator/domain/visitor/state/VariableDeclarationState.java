@@ -3,7 +3,7 @@ package umlp.generator.domain.visitor.state;
 import umlp.generator.domain.visitor.model.ocl.LetStatement;
 
 /**
- * We are reading an ocl statement which declares a variable
+ * Wait for the end of a let statement
  */
 public final class VariableDeclarationState implements VisitorState {
 

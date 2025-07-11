@@ -11,6 +11,7 @@ import de.monticore.lang.sd4development._ast.ASTSDThrow;
 import de.monticore.lang.sd4development._ast.ASTSDVariableDeclaration;
 import de.monticore.lang.sd4development._visitor.SD4DevelopmentVisitor2;
 import de.monticore.lang.sdbasis._ast.ASTSDActivityBar;
+import de.monticore.lang.sdbasis._ast.ASTSDBody;
 import de.monticore.lang.sdbasis._ast.ASTSDCompleteModifier;
 import de.monticore.lang.sdbasis._ast.ASTSDFreeModifier;
 import de.monticore.lang.sdbasis._ast.ASTSDInitialModifier;
@@ -19,6 +20,7 @@ import de.monticore.lang.sdbasis._ast.ASTSDObjectSource;
 import de.monticore.lang.sdbasis._ast.ASTSDObjectTarget;
 import de.monticore.lang.sdbasis._ast.ASTSDSendMessage;
 import de.monticore.lang.sdbasis._ast.ASTSDVisibleModifier;
+import de.monticore.lang.sdbasis._ast.ASTSequenceDiagram;
 import de.monticore.lang.sdbasis._visitor.SDBasisVisitor2;
 import de.monticore.ocl.oclexpressions.OCLExpressionsMill;
 import de.monticore.ocl.oclexpressions._visitor.OCLExpressionsVisitor2;
@@ -30,10 +32,13 @@ import umlp.generator.domain.visitor.model.MatchingStrategy;
 import umlp.generator.domain.visitor.model.SDObject;
 import umlp.generator.domain.visitor.model.ocl.AssertStatement;
 import umlp.generator.domain.visitor.model.ocl.LetStatement;
-import umlp.generator.domain.visitor.state.BodySectionState;
+import umlp.generator.domain.visitor.model.ocl.OCLStatement;
+import umlp.generator.domain.visitor.state.CallActionState;
+import umlp.generator.domain.visitor.state.ClosedActivityBarState;
 import umlp.generator.domain.visitor.state.ImportSectionState;
 import umlp.generator.domain.visitor.state.ImportState;
 import umlp.generator.domain.visitor.state.InteractionState;
+import umlp.generator.domain.visitor.state.OCLState;
 import umlp.generator.domain.visitor.state.OpenActivityBarState;
 import umlp.generator.domain.visitor.state.PreInteractionBodyState;
 import umlp.generator.domain.visitor.state.SDObjectDeclarationState;
@@ -43,6 +48,7 @@ import umlp.generator.domain.visitor.state.VisitorState;
 import umlp.generator.domain.visitor.state.VisitorStateVariantMatcher;
 
 import java.util.Optional;
+import java.util.function.Function;
 
 public final class SDVisitor implements SDBasisVisitor2,
     SD4DevelopmentVisitor2,
@@ -84,30 +90,11 @@ public final class SDVisitor implements SDBasisVisitor2,
   }
 
   @Override
-  public void visit(ASTSDCompleteModifier node) {
-    updateMatchingStrategy(MatchingStrategy.COMPLETE, node);
-  }
-
-  @Override
-  public void visit(ASTSDFreeModifier node) {
-    updateMatchingStrategy(MatchingStrategy.FREE, node);
-  }
-
-  @Override
-  public void visit(ASTSDInitialModifier node) {
-    updateMatchingStrategy(MatchingStrategy.INITIAL, node);
-  }
-
-  @Override
-  public void visit(ASTSDVisibleModifier node) {
-    updateMatchingStrategy(MatchingStrategy.VISIBLE, node);
-  }
-
-  private void updateMatchingStrategy(MatchingStrategy matchingStrategy, ASTNode node) {
+  public void visit(ASTSequenceDiagram node) {
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
-      public VisitorState whenSDObjectDeclaration(SDObjectDeclarationState sdObjectDeclarationState) {
-        return sdObjectDeclarationState.matchingStrategy(matchingStrategy);
+      public VisitorState whenImportSection(ImportSectionState importSectionState) {
+        return new SDObjectSectionState(importSectionState);
       }
 
       @Override
@@ -119,20 +106,13 @@ public final class SDVisitor implements SDBasisVisitor2,
 
   @Override
   public void visit(ASTSDObject node) {
-    var name = node.getName();
-    String qualifiedTypeName = node.isPresentMCObjectType() ?
-        node.getMCObjectType().printType() :
-        raiseError("missing variable type", getSourcePosition(node));
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
-      public VisitorState whenImportSection(ImportSectionState importSectionState) {
-        return new SDObjectDeclarationState(new SDObjectSectionState(importSectionState),
-                                            name,
-                                            qualifiedTypeName);
-      }
-
-      @Override
       public VisitorState whenSDObjectSection(SDObjectSectionState objectSection) {
+        var name = node.getName();
+        String qualifiedTypeName = node.isPresentMCObjectType() ?
+            node.getMCObjectType().printType() :
+            raiseError("missing variable type", getSourcePosition(node));
         return new SDObjectDeclarationState(objectSection, name, qualifiedTypeName);
       }
 
@@ -165,20 +145,31 @@ public final class SDVisitor implements SDBasisVisitor2,
   }
 
   @Override
-  public void visit(ASTSDCondition node) {
-    var expression = node.getExpression();
-    var expressionString = OCLExpressionsMill.prettyPrint(expression, false);
-    var assertStatement = new AssertStatement(expressionString);
+  public void visit(ASTSDCompleteModifier node) {
+    updateObjectMatchingStrategy(MatchingStrategy.COMPLETE, node);
+  }
 
+  @Override
+  public void visit(ASTSDFreeModifier node) {
+    updateObjectMatchingStrategy(MatchingStrategy.FREE, node);
+  }
+
+  @Override
+  public void visit(ASTSDInitialModifier node) {
+    updateObjectMatchingStrategy(MatchingStrategy.INITIAL, node);
+  }
+
+  @Override
+  public void visit(ASTSDVisibleModifier node) {
+    updateObjectMatchingStrategy(MatchingStrategy.VISIBLE, node);
+  }
+
+  private void updateObjectMatchingStrategy(MatchingStrategy matchingStrategy, ASTNode node) {
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
-      public VisitorState whenPreInteractionBody(PreInteractionBodyState preInteractionBodyState) {
-        preInteractionBodyState.oclStatements().add(assertStatement);
-        return preInteractionBodyState;
+      public VisitorState whenSDObjectDeclaration(SDObjectDeclarationState sdObjectDeclarationState) {
+        return sdObjectDeclarationState.matchingStrategy(matchingStrategy);
       }
-
-      //TODO handle in activity bar
-      //TODO handle in body section
 
       @Override
       public VisitorState otherwise(VisitorState state) {
@@ -188,23 +179,83 @@ public final class SDVisitor implements SDBasisVisitor2,
   }
 
   @Override
+  public void visit(ASTSDBody node) {
+    updateState(new VisitorStateVariantMatcher<>() {
+      @Override
+      public VisitorState whenSDObjectSection(SDObjectSectionState objectSectionState) {
+        return new PreInteractionBodyState(objectSectionState);
+      }
+
+      @Override
+      public VisitorState otherwise(VisitorState state) {
+        return raiseUnexpectedVisitError(node, state);
+      }
+    });
+  }
+
+  @Override
+  public void visit(ASTSDCondition node) {
+    var expression = node.getExpression();
+    var expressionString = OCLExpressionsMill.prettyPrint(expression, false);
+    var assertStatement = new AssertStatement(expressionString);
+
+    visitOCLStatement(assertStatement, node, state -> state);
+  }
+
+  @Override
   public void visit(ASTSDVariableDeclaration node) {
     var qualifiedTypeName = node.getMCType().printType();
     var name = node.getName();
     var assignmentExpression = OCLExpressionsMill.prettyPrint(node.getAssignment(), false);
     var letStatement = new LetStatement(qualifiedTypeName, name, assignmentExpression);
-    updateState(new VisitorStateVariantMatcher<>() {
+
+    visitOCLStatement(letStatement,
+                      node,
+                      state -> new VariableDeclarationState(state, letStatement));
+  }
+
+  private <T extends OCLStatement> void visitOCLStatement(T statement,
+      ASTNode node,
+      Function<OCLState, VisitorState> stateWrapper) {
+    updateState(new VisitorStateVariantMatcher<VisitorState>() {
       @Override
       public VisitorState whenPreInteractionBody(PreInteractionBodyState preInteractionBodyState) {
-        return new VariableDeclarationState(preInteractionBodyState, letStatement);
+        return addOCLStatementAndWrap(preInteractionBodyState);
       }
 
-      //TODO handle in activity bar
-      //TODO handle in body section
+      @Override
+      public VisitorState whenInteraction(InteractionState interactionState) {
+        return addOCLStatementAndWrap(interactionState);
+      }
+
+      @Override
+      public VisitorState whenClosedActivityBar(ClosedActivityBarState closedActivityBarState) {
+        return addOCLStatementAndWrap(closedActivityBarState);
+      }
+
+      @Override
+      public VisitorState whenOpenActivityBar(OpenActivityBarState openActivityBarState) {
+        return addOCLStatementAndWrap(openActivityBarState);
+      }
+
+      @Override
+      public VisitorState whenCallAction(CallActionState callActionState) {
+        var previousState = callActionState.previousState().previousState();
+        var source = callActionState.previousState().source();
+        var target = callActionState.previousState().target();
+        var action = callActionState.action();
+        var interactionState = new InteractionState(previousState, source, target, action);
+        return addOCLStatementAndWrap(interactionState);
+      }
 
       @Override
       public VisitorState otherwise(VisitorState state) {
         return raiseUnexpectedVisitError(node, state);
+      }
+
+      VisitorState addOCLStatementAndWrap(OCLState state) {
+        state.oclStatements().add(statement);
+        return stateWrapper.apply(state);
       }
     });
   }
@@ -214,9 +265,7 @@ public final class SDVisitor implements SDBasisVisitor2,
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
       public VisitorState whenVariableDeclaration(VariableDeclarationState variableDeclarationState) {
-        var previousState = variableDeclarationState.previousState();
-        previousState.oclStatements().add(variableDeclarationState.letStatement());
-        return previousState;
+        return variableDeclarationState.previousState();
       }
 
       @Override
@@ -229,38 +278,6 @@ public final class SDVisitor implements SDBasisVisitor2,
   @Override
   public void visit(ASTSDSendMessage node) {
     //TODO start of an interaction
-    updateState(new VisitorStateVariantMatcher<>() {
-
-      @Override
-      public VisitorState whenSDObjectSection(SDObjectSectionState objectSection) {
-        return VisitorStateVariantMatcher.super.whenSDObjectSection(objectSection);
-      }
-
-      @Override
-      public VisitorState whenPreInteractionBody(PreInteractionBodyState preInteractionBodyState) {
-        return VisitorStateVariantMatcher.super.whenPreInteractionBody(preInteractionBodyState);
-      }
-
-      @Override
-      public VisitorState whenBodySection(BodySectionState bodySectionState) {
-        return VisitorStateVariantMatcher.super.whenBodySection(bodySectionState);
-      }
-
-      @Override
-      public VisitorState whenInteraction(InteractionState interactionState) {
-        return VisitorStateVariantMatcher.super.whenInteraction(interactionState);
-      }
-
-      @Override
-      public VisitorState whenOpenActivityBar(OpenActivityBarState openActivityBarState) {
-        return VisitorStateVariantMatcher.super.whenOpenActivityBar(openActivityBarState);
-      }
-
-      @Override
-      public VisitorState otherwise(VisitorState state) {
-        return null;
-      }
-    });
   }
 
   @Override
