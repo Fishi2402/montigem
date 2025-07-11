@@ -41,4 +41,10 @@ public final class BodySectionState implements VisitorState {
     this.lastTrigger = trigger;
     return this;
   }
+
+  @Override
+  public String toString() {
+    return "BodySectionState{" + "earlyBodySection=" + earlyBodySection + ", trigger=" + trigger +
+           ", lastTrigger=" + lastTrigger + '}';
+  }
 }

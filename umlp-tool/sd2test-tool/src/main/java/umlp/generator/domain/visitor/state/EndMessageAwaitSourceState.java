@@ -27,4 +27,10 @@ public final class EndMessageAwaitSourceState implements VisitorState {
   public InteractionEntity target() {
     return target;
   }
+
+  @Override
+  public String toString() {
+    return "EndMessageAwaitSourceState{" + "previousState=" + previousState + ", target=" + target +
+           '}';
+  }
 }

@@ -19,4 +19,9 @@ public final class EndMessageAwaitTargetState implements VisitorState {
   public VisitorState previousState() {
     return previousState;
   }
+
+  @Override
+  public String toString() {
+    return "EndMessageAwaitTargetState{" + "previousState=" + previousState + '}';
+  }
 }

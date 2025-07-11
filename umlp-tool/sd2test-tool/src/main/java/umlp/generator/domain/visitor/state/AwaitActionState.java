@@ -33,4 +33,10 @@ public final class AwaitActionState implements VisitorState {
   public InteractionEntity target() {
     return target;
   }
+
+  @Override
+  public String toString() {
+    return "AwaitActionState{" + "previousState=" + previousState + ", source=" + source +
+           ", target=" + target + '}';
+  }
 }

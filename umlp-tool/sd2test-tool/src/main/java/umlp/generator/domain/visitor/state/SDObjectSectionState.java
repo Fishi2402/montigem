@@ -29,4 +29,10 @@ public final class SDObjectSectionState implements VisitorState {
   public List<SDObject> sdObjects() {
     return sdObjects;
   }
+
+  @Override
+  public String toString() {
+    return "SDObjectSectionState{" + "importSection=" + importSection + ", sdObjects=" + sdObjects +
+           '}';
+  }
 }

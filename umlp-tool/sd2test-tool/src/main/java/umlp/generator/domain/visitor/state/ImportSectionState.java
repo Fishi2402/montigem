@@ -20,4 +20,9 @@ public final class ImportSectionState implements VisitorState {
   public List<ASTMCImportStatement> imports() {
     return imports;
   }
+
+  @Override
+  public String toString() {
+    return "ImportSectionState{" + "imports=" + imports + '}';
+  }
 }

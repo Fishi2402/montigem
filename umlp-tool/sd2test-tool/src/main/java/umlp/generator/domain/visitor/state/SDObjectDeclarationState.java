@@ -45,4 +45,11 @@ public final class SDObjectDeclarationState implements VisitorState {
   public String qualifiedTypeName() {
     return qualifiedTypeName;
   }
+
+  @Override
+  public String toString() {
+    return "SDObjectDeclarationState{" + "section=" + section + ", name='" + name + '\'' +
+           ", qualifiedTypeName='" + qualifiedTypeName + '\'' + ", matchingStrategy=" +
+           matchingStrategy + '}';
+  }
 }

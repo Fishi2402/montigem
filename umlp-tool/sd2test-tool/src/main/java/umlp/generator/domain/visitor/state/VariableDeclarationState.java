@@ -27,4 +27,10 @@ public final class VariableDeclarationState implements VisitorState {
   public LetStatement letStatement() {
     return letStatement;
   }
+
+  @Override
+  public String toString() {
+    return "VariableDeclarationState{" + "previousState=" + previousState + ", letStatement=" +
+           letStatement + '}';
+  }
 }

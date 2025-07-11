@@ -49,4 +49,10 @@ public final class ClosedActivityBarState implements OCLState, InteractionExtrac
     var previousState = awaitActionState.previousState();
     return new StateExtractedInteraction(interaction, previousState);
   }
+
+  @Override
+  public String toString() {
+    return "ClosedActivityBarState{" + "previousState=" + previousState + ", oclStatements=" +
+           oclStatements + '}';
+  }
 }

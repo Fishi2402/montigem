@@ -30,6 +30,7 @@ public final class CallActionState implements VisitorState, InteractionExtractab
     return action;
   }
 
+  @Override
   public StateExtractedInteraction extractInteraction() {
     var awaitActionState = previousState();
     var source = awaitActionState.source();
@@ -37,5 +38,10 @@ public final class CallActionState implements VisitorState, InteractionExtractab
     var interaction = new Interaction(source, target, action);
     var previousState = awaitActionState.previousState();
     return new StateExtractedInteraction(interaction, previousState);
+  }
+
+  @Override
+  public String toString() {
+    return "CallActionState{" + "previousState=" + previousState + ", action=" + action + '}';
   }
 }

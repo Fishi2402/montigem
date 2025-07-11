@@ -64,4 +64,10 @@ public final class InteractionState implements OCLState, InteractionExtractable 
     interaction.oclStatements().addAll(oclStatements());
     return new StateExtractedInteraction(interaction, previousState);
   }
+
+  @Override
+  public String toString() {
+    return "InteractionState{" + "previousState=" + previousState + ", source=" + source +
+           ", target=" + target + ", action=" + action + ", oclStatements=" + oclStatements + '}';
+  }
 }

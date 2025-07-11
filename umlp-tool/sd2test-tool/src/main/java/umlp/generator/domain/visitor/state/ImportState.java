@@ -27,4 +27,9 @@ public final class ImportState implements VisitorState {
   public ASTMCImportStatement importStatement() {
     return importStatement;
   }
+
+  @Override
+  public String toString() {
+    return "ImportState{" + "section=" + section + ", importStatement=" + importStatement + '}';
+  }
 }

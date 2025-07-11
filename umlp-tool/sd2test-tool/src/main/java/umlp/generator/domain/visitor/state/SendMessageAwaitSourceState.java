@@ -19,4 +19,9 @@ public final class SendMessageAwaitSourceState implements VisitorState {
   public VisitorState previousState() {
     return previousState;
   }
+
+  @Override
+  public String toString() {
+    return "SendMessageAwaitSourceState{" + "previousState=" + previousState + '}';
+  }
 }

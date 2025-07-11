@@ -36,4 +36,10 @@ public final class OpenActivityBarState implements OCLState {
   public List<Interaction> interactions() {
     return interactions;
   }
+
+  @Override
+  public String toString() {
+    return "OpenActivityBarState{" + "call=" + call + ", interactions=" + interactions +
+           ", callOclStatements=" + callOclStatements + '}';
+  }
 }

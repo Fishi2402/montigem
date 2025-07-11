@@ -31,4 +31,10 @@ public final class PreInteractionBodyState implements OCLState {
   public SDObjectSectionState objectSection() {
     return objectSection;
   }
+
+  @Override
+  public String toString() {
+    return "PreInteractionBodyState{" + "objectSection=" + objectSection + ", oclStatements=" +
+           oclStatements + '}';
+  }
 }
