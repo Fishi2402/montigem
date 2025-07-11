@@ -90,6 +90,15 @@ classdiagram LoadingTests {
     LeftSide left;
   }
 
+  <<singleton>>
+  public class AssocCommandCollector {
+    // Create a new object & return it
+    LeftSide constructNewLeftSide(String leftLabel, String rightLabel);
+
+    // Create a new rightside to the connectedRight
+    RightSide addNewRightSideTo(LeftSide leftSide, boolean setAssocInBuilder);
+  }
+
   //public interface MyBetterInterface extends MyInterface {}
   //public class MyBetterInterfaceImpl implements MyBetterInterface {
   //    String name;
