@@ -6,6 +6,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.se_rwth.commons.Names;
+import umlp.MillConf;
 import umlp.UMLPMill;
 import umlp.UMLPTool;
 import umlp._symboltable.IUMLPArtifactScope;
@@ -31,7 +32,7 @@ public class CD2GUIPipeline extends Pipeline<UMLPPipelineData> {
     register("setupUMLPReports", setupUMLPReports);
     register("check_umlp_filetype", isUMLPFileCheck);
     register("init", init = data -> {
-      UMLPMill.init();
+      MillConf.switchTo(MillConf.UMLP);
       return true;
     });
     register("addBuiltInTypes", addBuiltInTypes = this::addBuiltInTypes);

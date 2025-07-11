@@ -17,6 +17,7 @@ import de.monticore.tagging.tags.TagsMill;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import umlp.MCPathUtil;
+import umlp.MillConf;
 import umlp.TagRelated;
 import umlp.UMLPMill;
 import umlp.UMLPTool;
@@ -84,10 +85,12 @@ public class UMLPFilePipeline extends Pipeline<UMLPPipelineData> {
     register("init", init = data -> {
       // If we were to with to use concrete syntax, we would have to use the UMLPTagDefinitionMill
       if (SYMTAB.isSelected(data.cmd)) {
-        TagsMill.init(); // instead we only support generic tagging models
+        MillConf.switchTo(MillConf.UMLP, MillConf.TAGS);
         TagRelated.initLookup(data.importedSymbolPath);
       }
-      UMLPMill.init();
+      else {
+        MillConf.switchTo(MillConf.UMLP);
+      }
       UMLPMill.globalScope().setSymbolPath(data.importedSymbolPath);
       TSImportMap.INSTANCE.init(data.importedSymbolPath);
       return true;
@@ -258,11 +261,12 @@ public class UMLPFilePipeline extends Pipeline<UMLPPipelineData> {
       if (FOR_CLIENT.isSelected(data.data.cmd)) {
         Optional<String> tslib = UMLPGeneratorConfig.getInstance().getTSLib();
         if (tslib.isPresent()) {
-          GUIDSLMill.init();
+          MillConf.switchTo(MillConf.GUIDSL);
           ImportMapGenerator importMapGenerator = new ImportMapGenerator(data.genSetup);
           importMapGenerator.generate(tslib.get(), data.ast);
         }
 
+        MillConf.switchTo(MillConf.TAGS, MillConf.GUIDSL, MillConf.UMLP);
         TSUMLPGenerator generator = new TSUMLPGenerator(data.genSetup, config);
         String configTemplate = data.data.cmd.getOptionValue("ct", UMLPTool.DEFAULT_CONFIGTEMPLATE_GUI2JAVA2TS);
         generator.generate(data.ast, configTemplate);

@@ -106,7 +106,7 @@ public class UMLPTool extends UMLPToolTOP {
 
   public UMLPTool(boolean initMill){
     if(initMill){
-      UMLPMill.init();
+      MillConf.switchTo(MillConf.UMLP);
       BuiltInTypes.addBuiltInTypes(CD4CodeMill.globalScope(), false);
     }
   }
@@ -220,8 +220,7 @@ public class UMLPTool extends UMLPToolTOP {
       // Close all file handles (if last usage!)
       FileReaderWriter.closeOpenedJarFiles();
       // Clear MCPath caches
-      UMLPMill.reset();
-      GUIDSLMill.reset();
+      MillConf.switchTo();
       Reporting.off();
       cleanUpAfterMemoryLeakingSingletons();
     }
@@ -267,9 +266,7 @@ public class UMLPTool extends UMLPToolTOP {
     TagLookUp.cleanUp();
     CD4C.reset();
 
-    // Also reset the mills
-    UMLPMill.reset();
-    GUIDSLMill.reset();
+    MillConf.switchTo();
 
     // The SummaryReporter -> ReportingRepository#table is rooted in the Log instance
     Log.internalRemove();

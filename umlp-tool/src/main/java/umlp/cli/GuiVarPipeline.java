@@ -8,6 +8,7 @@ import de.monticore.io.FileReaderWriter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
 import umlp.GUIDSLReports;
+import umlp.MillConf;
 import umlp.UMLPTool;
 import umlp.cli.common.IOperation;
 import umlp.cli.common.Pipeline;
@@ -37,7 +38,8 @@ public class GuiVarPipeline extends Pipeline<UMLPPipelineData> {
               data.hwcPath);
       Reporting.init(data.outDir.getPath(), data.reportDir.getPath(),
           data.guidsl_reportManagerFactory);
-      GUIDSLMill.init();
+      MillConf.switchTo(MillConf.GUIDSL);
+      // GUIDSLMill.init();
       return true;
     });
 

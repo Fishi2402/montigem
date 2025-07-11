@@ -51,7 +51,6 @@ public class TagRelated {
 
   // We use the Symtab cmd option here to store our tagmodels
   public static void doStoreTagStereos(ASTCDCompilationUnit ast, UMLPTool tool, IUMLPArtifactScope symbolTable, CommandLine cmd) {
-    TagsMill.init();
     // Extract singleton stereotypes and store them ina
     ASTTagUnit tagUnit = TagRepository.loadTempTagModel(ast.getCDDefinition().getName()).get();
     boolean[] hasTags = new boolean[1];
@@ -137,9 +136,6 @@ public class TagRelated {
             Log.warn("Failed to look up tags for path "+path, e);
           }
         });
-
-    // note: The generic Tags language does not support concrete UMLP syntax tagging
-    TagsMill.init();
 
     if (!tagFiles.isEmpty()) {
       for (File f : tagFiles) {
