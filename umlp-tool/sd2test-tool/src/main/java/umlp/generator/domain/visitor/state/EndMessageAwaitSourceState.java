@@ -2,12 +2,12 @@ package umlp.generator.domain.visitor.state;
 
 import umlp.generator.domain.visitor.model.InteractionEntity;
 
-public final class EndMessageAwaitSource implements VisitorState {
+public final class EndMessageAwaitSourceState implements VisitorState {
 
-  private final EndMessageAwaitTarget previousState;
+  private final EndMessageAwaitTargetState previousState;
   private final InteractionEntity target;
 
-  public EndMessageAwaitSource(EndMessageAwaitTarget previousState, InteractionEntity target) {
+  public EndMessageAwaitSourceState(EndMessageAwaitTargetState previousState, InteractionEntity target) {
     this.previousState = previousState;
     this.target = target;
   }
@@ -17,7 +17,7 @@ public final class EndMessageAwaitSource implements VisitorState {
     return matcher.whenEndMessageAwaitSource(this);
   }
 
-  public EndMessageAwaitTarget previousState() {
+  public EndMessageAwaitTargetState previousState() {
     return previousState;
   }
 

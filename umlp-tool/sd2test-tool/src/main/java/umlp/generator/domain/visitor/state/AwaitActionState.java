@@ -2,13 +2,13 @@ package umlp.generator.domain.visitor.state;
 
 import umlp.generator.domain.visitor.model.InteractionEntity;
 
-public final class AwaitAction implements VisitorState {
+public final class AwaitActionState implements VisitorState {
 
   private final VisitorState previousState;
   private final InteractionEntity source;
   private final InteractionEntity target;
 
-  public AwaitAction(VisitorState previousState, InteractionEntity source, InteractionEntity target) {
+  public AwaitActionState(VisitorState previousState, InteractionEntity source, InteractionEntity target) {
     this.previousState = previousState;
     this.source = source;
     this.target = target;

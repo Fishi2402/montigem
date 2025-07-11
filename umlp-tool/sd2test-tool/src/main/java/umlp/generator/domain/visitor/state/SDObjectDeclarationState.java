@@ -4,14 +4,14 @@ import umlp.generator.domain.visitor.model.MatchingStrategy;
 
 import java.util.Optional;
 
-public final class SDObjectDeclaration implements VisitorState {
+public final class SDObjectDeclarationState implements VisitorState {
 
-  private final SDObjectSection section;
+  private final SDObjectSectionState section;
   private final String name;
   private final String qualifiedTypeName;
   private Optional<MatchingStrategy> matchingStrategy = Optional.empty();
 
-  public SDObjectDeclaration(SDObjectSection section, String name, String qualifiedTypeName) {
+  public SDObjectDeclarationState(SDObjectSectionState section, String name, String qualifiedTypeName) {
     this.section = section;
     this.name = name;
     this.qualifiedTypeName = qualifiedTypeName;
@@ -22,7 +22,7 @@ public final class SDObjectDeclaration implements VisitorState {
     return matcher.whenSDObjectDeclaration(this);
   }
 
-  public SDObjectSection section() {
+  public SDObjectSectionState section() {
     return section;
   }
 
@@ -30,7 +30,7 @@ public final class SDObjectDeclaration implements VisitorState {
     return matchingStrategy;
   }
 
-  public SDObjectDeclaration matchingStrategy(MatchingStrategy matchingStrategy) {
+  public SDObjectDeclarationState matchingStrategy(MatchingStrategy matchingStrategy) {
     this.matchingStrategy = Optional.of(matchingStrategy);
     return this;
   }

@@ -29,12 +29,12 @@ import umlp.generator.domain.visitor.model.MatchingStrategy;
 import umlp.generator.domain.visitor.model.SDObject;
 import umlp.generator.domain.visitor.model.ocl.AssertStatement;
 import umlp.generator.domain.visitor.model.ocl.LetStatement;
-import umlp.generator.domain.visitor.state.EarlyBodySection;
-import umlp.generator.domain.visitor.state.Import;
+import umlp.generator.domain.visitor.state.EarlyBodySectionState;
 import umlp.generator.domain.visitor.state.ImportSection;
-import umlp.generator.domain.visitor.state.SDObjectDeclaration;
-import umlp.generator.domain.visitor.state.SDObjectSection;
-import umlp.generator.domain.visitor.state.VariableDeclaration;
+import umlp.generator.domain.visitor.state.ImportState;
+import umlp.generator.domain.visitor.state.SDObjectDeclarationState;
+import umlp.generator.domain.visitor.state.SDObjectSectionState;
+import umlp.generator.domain.visitor.state.VariableDeclarationState;
 import umlp.generator.domain.visitor.state.VisitorState;
 import umlp.generator.domain.visitor.state.VisitorStateVariantMatcher;
 
@@ -52,7 +52,7 @@ public final class SDVisitor implements SDBasisVisitor2,
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
       public VisitorState whenImportSection(ImportSection importSection) {
-        return new Import(importSection, node);
+        return new ImportState(importSection, node);
       }
 
       @Override
@@ -66,7 +66,7 @@ public final class SDVisitor implements SDBasisVisitor2,
   public void endVisit(ASTMCImportStatement node) {
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
-      public VisitorState whenImport(Import importState) {
+      public VisitorState whenImport(ImportState importState) {
         var importSection = importState.section();
         importSection.imports().add(importState.importStatement());
         return importSection;
@@ -102,8 +102,8 @@ public final class SDVisitor implements SDBasisVisitor2,
   private void updateMatchingStrategy(MatchingStrategy matchingStrategy, ASTNode node) {
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
-      public VisitorState whenSDObjectDeclaration(SDObjectDeclaration sdObjectDeclaration) {
-        return sdObjectDeclaration.matchingStrategy(matchingStrategy);
+      public VisitorState whenSDObjectDeclaration(SDObjectDeclarationState sdObjectDeclarationState) {
+        return sdObjectDeclarationState.matchingStrategy(matchingStrategy);
       }
 
       @Override
@@ -122,12 +122,12 @@ public final class SDVisitor implements SDBasisVisitor2,
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
       public VisitorState whenImportSection(ImportSection importSection) {
-        return new SDObjectDeclaration(new SDObjectSection(importSection), name, qualifiedTypeName);
+        return new SDObjectDeclarationState(new SDObjectSectionState(importSection), name, qualifiedTypeName);
       }
 
       @Override
-      public VisitorState whenSDObjectSection(SDObjectSection objectSection) {
-        return new SDObjectDeclaration(objectSection, name, qualifiedTypeName);
+      public VisitorState whenSDObjectSection(SDObjectSectionState objectSection) {
+        return new SDObjectDeclarationState(objectSection, name, qualifiedTypeName);
       }
 
       @Override
@@ -141,12 +141,12 @@ public final class SDVisitor implements SDBasisVisitor2,
   public void endVisit(ASTSDObject node) {
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
-      public VisitorState whenSDObjectDeclaration(SDObjectDeclaration sdObjectDeclaration) {
-        var matchingStrategy = sdObjectDeclaration.matchingStrategy();
-        var name = sdObjectDeclaration.name();
-        var qualifiedTypeName = sdObjectDeclaration.qualifiedTypeName();
+      public VisitorState whenSDObjectDeclaration(SDObjectDeclarationState sdObjectDeclarationState) {
+        var matchingStrategy = sdObjectDeclarationState.matchingStrategy();
+        var name = sdObjectDeclarationState.name();
+        var qualifiedTypeName = sdObjectDeclarationState.qualifiedTypeName();
         var sdObject = new SDObject(matchingStrategy, name, qualifiedTypeName);
-        var sdObjectSection = sdObjectDeclaration.section();
+        var sdObjectSection = sdObjectDeclarationState.section();
         sdObjectSection.sdObjects().add(sdObject);
         return sdObjectSection;
       }
@@ -166,9 +166,9 @@ public final class SDVisitor implements SDBasisVisitor2,
 
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
-      public VisitorState whenEarlyBodySection(EarlyBodySection earlyBodySection) {
-        earlyBodySection.oclStatements().add(assertStatement);
-        return earlyBodySection;
+      public VisitorState whenEarlyBodySection(EarlyBodySectionState earlyBodySectionState) {
+        earlyBodySectionState.oclStatements().add(assertStatement);
+        return earlyBodySectionState;
       }
 
       //TODO handle in activity bar
@@ -189,8 +189,8 @@ public final class SDVisitor implements SDBasisVisitor2,
     var letStatement = new LetStatement(qualifiedTypeName, name, assignmentExpression);
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
-      public VisitorState whenEarlyBodySection(EarlyBodySection earlyBodySection) {
-        return new VariableDeclaration(earlyBodySection, letStatement);
+      public VisitorState whenEarlyBodySection(EarlyBodySectionState earlyBodySectionState) {
+        return new VariableDeclarationState(earlyBodySectionState, letStatement);
       }
 
       //TODO handle in activity bar
@@ -207,9 +207,9 @@ public final class SDVisitor implements SDBasisVisitor2,
   public void endVisit(ASTSDVariableDeclaration node) {
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
-      public VisitorState whenVariableDeclaration(VariableDeclaration variableDeclaration) {
-        var previousState = variableDeclaration.previousState();
-        previousState.oclStatements().add(variableDeclaration.letStatement());
+      public VisitorState whenVariableDeclaration(VariableDeclarationState variableDeclarationState) {
+        var previousState = variableDeclarationState.previousState();
+        previousState.oclStatements().add(variableDeclarationState.letStatement());
         return previousState;
       }
 

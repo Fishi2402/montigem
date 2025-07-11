@@ -2,13 +2,13 @@ package umlp.generator.domain.visitor.state;
 
 import umlp.generator.domain.visitor.model.Trigger;
 
-public final class TriggerSection implements VisitorState {
+public final class TriggerSectionState implements VisitorState {
 
-  private final BodySection bodySection;
+  private final BodySectionState bodySectionState;
   private final Trigger trigger;
 
-  public TriggerSection(BodySection bodySection, Trigger trigger) {
-    this.bodySection = bodySection;
+  public TriggerSectionState(BodySectionState bodySectionState, Trigger trigger) {
+    this.bodySectionState = bodySectionState;
     this.trigger = trigger;
   }
 
@@ -17,8 +17,8 @@ public final class TriggerSection implements VisitorState {
     return matcher.whenTriggerSection(this);
   }
 
-  public BodySection bodySection() {
-    return bodySection;
+  public BodySectionState bodySection() {
+    return bodySectionState;
   }
 
   public Trigger trigger() {

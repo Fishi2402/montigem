@@ -5,12 +5,12 @@ import umlp.generator.domain.visitor.model.ocl.OCLStatement;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class EarlyBodySection implements OCLState {
+public final class EarlyBodySectionState implements OCLState {
 
-  private final SDObjectSection objectSection;
+  private final SDObjectSectionState objectSection;
   private final List<OCLStatement> oclStatements = new ArrayList<>();
 
-  public EarlyBodySection(SDObjectSection objectSection) {
+  public EarlyBodySectionState(SDObjectSectionState objectSection) {
     this.objectSection = objectSection;
   }
 
@@ -24,7 +24,7 @@ public final class EarlyBodySection implements OCLState {
     return matcher.whenEarlyBodySection(this);
   }
 
-  public SDObjectSection objectSection() {
+  public SDObjectSectionState objectSection() {
     return objectSection;
   }
 }

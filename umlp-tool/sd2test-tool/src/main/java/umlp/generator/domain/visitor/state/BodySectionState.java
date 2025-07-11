@@ -5,13 +5,13 @@ import umlp.generator.domain.visitor.model.Trigger;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class BodySection implements VisitorState {
+public final class BodySectionState implements VisitorState {
 
-  private final EarlyBodySection earlyBodySection;
+  private final EarlyBodySectionState earlyBodySectionState;
   private final List<Trigger> trigger = new ArrayList<>();
 
-  public BodySection(EarlyBodySection earlyBodySection) {
-    this.earlyBodySection = earlyBodySection;
+  public BodySectionState(EarlyBodySectionState earlyBodySectionState) {
+    this.earlyBodySectionState = earlyBodySectionState;
   }
 
   @Override
@@ -19,8 +19,8 @@ public final class BodySection implements VisitorState {
     return matcher.whenBodySection(this);
   }
 
-  public EarlyBodySection earlyBodySection() {
-    return earlyBodySection;
+  public EarlyBodySectionState earlyBodySection() {
+    return earlyBodySectionState;
   }
 
   public List<Trigger> trigger() {

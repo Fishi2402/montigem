@@ -1,16 +1,16 @@
 package umlp.generator.domain.visitor.state;
 
-public final class EndMessageAwaitTarget implements VisitorState {
+public final class SendMessageAwaitSourceState implements VisitorState {
 
   private final VisitorState previousState;
 
-  public EndMessageAwaitTarget(VisitorState previousState) {
+  public SendMessageAwaitSourceState(VisitorState previousState) {
     this.previousState = previousState;
   }
 
   @Override
   public <T> T matchVariant(VisitorStateVariantMatcher<T> matcher) {
-    return matcher.whenEndMessageAwaitTarget(this);
+    return matcher.whenSendMessageAwaitSource(this);
   }
 
   public VisitorState previousState() {

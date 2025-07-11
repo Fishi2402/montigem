@@ -2,12 +2,12 @@ package umlp.generator.domain.visitor.state;
 
 import umlp.generator.domain.visitor.model.ocl.LetStatement;
 
-public final class VariableDeclaration implements VisitorState {
+public final class VariableDeclarationState implements VisitorState {
 
   private final OCLState previousState;
   private final LetStatement letStatement;
 
-  public VariableDeclaration(OCLState previousState, LetStatement letStatement) {
+  public VariableDeclarationState(OCLState previousState, LetStatement letStatement) {
     this.previousState = previousState;
     this.letStatement = letStatement;
   }
