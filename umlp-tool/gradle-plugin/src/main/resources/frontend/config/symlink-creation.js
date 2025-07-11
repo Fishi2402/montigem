@@ -4,6 +4,11 @@ const path = require('path');
 
 function linking(linkPath, targetPath) {
   try {
+    if(!fs.existsSync(targetPath) || !fs.statSync(targetPath).isDirectory) {
+      console.log('ℹ️ Will not create symlink because the target path does not exist or is not a ' +
+          'directory:', targetPath)
+      return;
+    }
     if (!fs.existsSync(linkPath)) {
       const parentDir = path.dirname(linkPath);
       fs.mkdirSync(parentDir, { recursive: true })

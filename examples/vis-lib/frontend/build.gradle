@@ -81,12 +81,11 @@ tasks.register('linkStuff', NodeTask) {
   def hwcsrc = file("$buildDir/frontendGen/hwcsrc")
   def hwcsrcTarget = file("src/app")
 
-  def frontendOutBuild = file("$buildDir/build").mkdirs();
+
   def frontendOut = file("$buildDir/build/umlp_frontend")
   def frontendOutTarget = file("$buildDir/umlp_frontend")
 
   def umlpDir = file("$buildDir/frontendGen/libs/@umlp")
-  println "Created @umlp dir: "+ umlpDir.mkdirs();
 
   def clientRTELinks = [:]
   project(":umlp-rte:client").ext.libs.forEach {

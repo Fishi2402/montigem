@@ -4,6 +4,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
+      "@umlp/*": ["libs/@umlp/*"],
       "*": [
         "build/appdomain/*",
         "build/appgui/*",
