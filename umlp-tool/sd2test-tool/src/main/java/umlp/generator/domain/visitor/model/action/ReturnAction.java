@@ -4,10 +4,10 @@ import java.util.Optional;
 
 public final class ReturnAction implements Action {
 
-  private final Optional<Object> returnValue;
+  private final Optional<String> returnValue;
   private final boolean hasReturnValue;
 
-  public ReturnAction(Optional<Object> returnValue, boolean hasReturnValue) {
+  public ReturnAction(Optional<String> returnValue, boolean hasReturnValue) {
     this.returnValue = returnValue;
     this.hasReturnValue = hasReturnValue;
   }
@@ -17,7 +17,7 @@ public final class ReturnAction implements Action {
     return matcher.whenReturn(this);
   }
 
-  public Optional<Object> returnValue() {
+  public Optional<String> returnValue() {
     return returnValue;
   }
 

@@ -1,6 +1,8 @@
 package umlp.generator.domain.visitor.state;
 
+import umlp.generator.domain.visitor.model.Interaction;
 import umlp.generator.domain.visitor.model.InteractionEntity;
+import umlp.generator.domain.visitor.model.StateExtractedInteraction;
 import umlp.generator.domain.visitor.model.action.Action;
 import umlp.generator.domain.visitor.model.ocl.OCLStatement;
 
@@ -11,7 +13,7 @@ import java.util.List;
  * We have read an interaction action and wait for ocl conditions, a new interaction, or the end of
  * an activity-bar
  */
-public final class InteractionState implements OCLState {
+public final class InteractionState implements OCLState, InteractionExtractable {
 
   private final VisitorState previousState;
   private final InteractionEntity source;
@@ -54,5 +56,12 @@ public final class InteractionState implements OCLState {
 
   public Action action() {
     return action;
+  }
+
+  @Override
+  public StateExtractedInteraction extractInteraction() {
+    var interaction = new Interaction(source, target, action);
+    interaction.oclStatements().addAll(oclStatements());
+    return new StateExtractedInteraction(interaction, previousState);
   }
 }

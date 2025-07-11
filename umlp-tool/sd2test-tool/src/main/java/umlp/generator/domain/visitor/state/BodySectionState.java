@@ -12,7 +12,7 @@ public final class BodySectionState implements VisitorState {
 
   private final PreInteractionBodyState earlyBodySection;
   private final List<Trigger> trigger = new ArrayList<>();
-  private final Trigger lastTrigger;
+  private Trigger lastTrigger;
 
   public BodySectionState(PreInteractionBodyState earlyBodySection, Trigger lastTrigger) {
     this.earlyBodySection = earlyBodySection;
@@ -34,5 +34,11 @@ public final class BodySectionState implements VisitorState {
 
   public Trigger lastTrigger() {
     return lastTrigger;
+  }
+
+  public BodySectionState replaceLastTrigger(Trigger trigger) {
+    this.trigger.add(lastTrigger);
+    this.lastTrigger = trigger;
+    return this;
   }
 }
