@@ -47,8 +47,6 @@ public class TotalTest extends WebshopSQLDBTestSetup {
   void testSequence() {
     //make sure the name of the processor variable is unique throughout the test
     var processor = new StackEventProcessor();
-    MethodMonitor.setActiveStackEventProcessor(processor);
-
     //load objects and their matching strategies
     o = createO();
     processor.objectMatchingStrategies().put(o, MatchingStrategy.FREE);
@@ -60,6 +58,9 @@ public class TotalTest extends WebshopSQLDBTestSetup {
     processor.objectMatchingStrategies().put(total1, MatchingStrategy.FREE); //always tell processor about new introduced objects
 
     assertTrue(total1 == 0); //simple assertTrue calls for condition checking
+
+    //set processor active
+    MethodMonitor.setActiveStackEventProcessor(processor);
 
     processor.load(
         new ExpectedEvent(o, o, new Call("addItem", Optional.of(new Object[]{item})), () -> o.getTotal() == 0, "o.getTotal() == 0"),

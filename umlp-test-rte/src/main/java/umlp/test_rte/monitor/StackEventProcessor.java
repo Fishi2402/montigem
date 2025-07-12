@@ -71,7 +71,7 @@ public final class StackEventProcessor {
     var sourceTargetPair = event.matchVariant(new StackEventVariantMatcher<SourceTargetPair>() {
       @Override
       public SourceTargetPair whenCallEvent(CallEvent event) {
-        callstack.push(reportingObject);
+        callstack.add(reportingObject);
         return new SourceTargetPair(callstack.size() >= 2 ?
                                         Optional.of(callstack.get(callstack.size() - 2)) :
                                         Optional.empty(), Optional.of(reportingObject));
