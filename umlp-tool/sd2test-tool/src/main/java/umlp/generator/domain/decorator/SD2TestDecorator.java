@@ -162,6 +162,8 @@ public class SD2TestDecorator {
       }
     });
 
+    Log.info(sdTest.toString(), "SD2TestDecorator"); //TODO here for debug purposes
+
     //copy import statements of the diagram
     for (var importStatement : sdTest.imports()) {
       var signature = createJavaSignature(importStatement);

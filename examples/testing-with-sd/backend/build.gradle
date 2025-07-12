@@ -1,6 +1,3 @@
-import gradle.specific.UMLPOD2DataTask
-import gradle.specific.UMLPSD2DataTask
-
 plugins {
   id 'de.rwth.se.umlp-tool-backend-test' // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
   id 'application'
@@ -49,20 +46,20 @@ generateUmlpBackend {
   useSpring = true
 }
 
-tasks.register('parseOD', UMLPOD2DataTask) {
-  input = file('../test-models/TotalTest.od')
-  symbolDir = file("${project.buildDir}/umlp/backend_symbols")
-  symbolOutDir = file("${project.buildDir}/umlp/test_symbols")
-  outputDir = file("${project.buildDir}/umlp/backend_test")
-  dependsOn generateUmlpBackend
-}
+//tasks.register('parseOD', UMLPOD2DataTask) {
+//  input = file('../test-models/TotalTest.od')
+//  symbolDir = file("${project.buildDir}/umlp/backend_symbols")
+//  symbolOutDir = file("${project.buildDir}/umlp/test_symbols")
+//  outputDir = file("${project.buildDir}/umlp/backend_test")
+//  dependsOn generateUmlpBackend
+//}
 
-tasks.register('parseSD', UMLPSD2DataTask) {
-  input = file('../test-models/TotalTest.sd')
-  symbolDir = files("${project.buildDir}/umlp/backend_symbols", "${project.buildDir}/umlp/test_symbols")
-  symbolOutDir = file("${project.buildDir}/umlp/test_symbols")
-  outputDir = file("${project.buildDir}/sd")
-  dependsOn parseOD
-}
+//tasks.register('parseSD', UMLPSD2DataTask) {
+//  input = file('../test-models/TotalTest.sd')
+//  symbolDir = files("${project.buildDir}/umlp/backend_symbols", "${project.buildDir}/umlp/test_symbols")
+//  symbolOutDir = file("${project.buildDir}/umlp/test_symbols")
+//  outputDir = file("${project.buildDir}/sd")
+//  dependsOn parseOD
+//}
 
-tasks.compileJava.dependsOn parseOD //compile dependency because of bad source set setup
+//tasks.compileJava.dependsOn parseOD //compile dependency because of bad source set setup

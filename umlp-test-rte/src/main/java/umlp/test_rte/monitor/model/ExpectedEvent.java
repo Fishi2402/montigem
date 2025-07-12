@@ -12,6 +12,8 @@ import java.util.function.Supplier;
 
 public final class ExpectedEvent {
 
+  //TODO explicitly support multiple and different kinds of ocl statements
+
   private final Object source;
   private final Object target;
   private final Action action;

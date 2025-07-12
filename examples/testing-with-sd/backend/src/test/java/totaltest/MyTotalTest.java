@@ -1,5 +1,5 @@
 package totaltest;
 
-public class TotalTest {
+public class MyTotalTest {
   //TODO why does the TOP mechanism not work?
 }

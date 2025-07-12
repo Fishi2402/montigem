@@ -16,4 +16,9 @@ public final class ActivityBar {
   public List<OCLStatement> oclStatements() {
     return oclStatements;
   }
+
+  @Override
+  public String toString() {
+    return "ActivityBar{" + "body=" + body + ", oclStatements=" + oclStatements + '}';
+  }
 }

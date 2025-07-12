@@ -1,6 +1,5 @@
 package umlp.test_rte.monitor;
 
-import org.eclipse.collections.impl.block.factory.Comparators;
 import org.junit.jupiter.api.Assertions;
 import umlp.test_rte.monitor.event.CallEvent;
 import umlp.test_rte.monitor.event.ErrorEvent;
@@ -20,6 +19,7 @@ import umlp.test_rte.monitor.model.action.Return;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -129,7 +129,7 @@ public final class StackEventProcessor {
     var matchingStrategy = Stream
         .concat(sourceObject.stream(), targetObject.stream())
         .flatMap(object -> Optional.ofNullable(objectMatchingStrategies.get(object)).stream())
-        .max(Comparators.naturalOrder())
+        .max(Comparator.naturalOrder())
         .orElseGet(MatchingStrategy::getDefault);
 
     //determine whether the event must match the expected event

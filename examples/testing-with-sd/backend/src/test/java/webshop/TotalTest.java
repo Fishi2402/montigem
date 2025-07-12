@@ -1,20 +1,20 @@
 package webshop;
 
 import org.junit.jupiter.api.Test;
-import totaltest.TotalTestInstantiator;
+import umlp.backendrte.common.NotificationScope;
 import umlp.test_rte.ClientSetup;
-import umlp.test_rte.monitor.StackEventQueue;
-import umlp.test_rte.monitor.event.CallEvent;
-import umlp.test_rte.monitor.event.ReturnVoidEvent;
+import umlp.test_rte.monitor.MethodMonitor;
+import umlp.test_rte.monitor.StackEventProcessor;
+import umlp.test_rte.monitor.model.ExpectedEvent;
+import umlp.test_rte.monitor.model.MatchingStrategy;
+import umlp.test_rte.monitor.model.action.ActivityBarEnd;
+import umlp.test_rte.monitor.model.action.Call;
+import umlp.test_rte.monitor.model.action.Return;
 import webshop.test_infrastructure.WebshopManagerImplMonitor;
 import webshop.test_infrastructure.WebshopSQLDBTestSetup;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TotalTest extends WebshopSQLDBTestSetup {
@@ -29,91 +29,51 @@ public class TotalTest extends WebshopSQLDBTestSetup {
     WebshopManager.setInstance(instance);
   }
 
-  @Test
-  void matchComplete() {
-    var testInstances = new TotalTestInstantiator().instantiate();
-    Order o = WebshopManager.orderBuilder().build().orElseThrow();
-    Item item = testInstances.getItem();
+  Order o;
+  Item item;
+  int total1;
+  int total2;
 
-    assertEquals(0, o.getTotal());
-
-    StackEventQueue.clear();
-
-    o.addItem(item);
-
-    //here we would need to check every element of the queue in order -> we're not going to do this
-    // for demo purposes
-    //TODO link OCL conditions to expected events
-    assertEquals(20, StackEventQueue.toQueue().size()); //currently 16 events since we're not monitoring managers yet
-    assertEquals(new CallEvent(o, "addItem", new Object[]{item}), StackEventQueue.toQueue().getFirst());
-    assertEquals(new ReturnVoidEvent(o,"addItem"), StackEventQueue.toQueue().getLast());
-
-    assertEquals(6, o.getTotal());
+  Order createO() {
+    return WebshopManager.orderBuilder().build().orElseThrow();
   }
 
-  @Test
-  void matchVisible() {
-    var testInstances = new TotalTestInstantiator().instantiate();
-    Order o = WebshopManager.orderBuilder().build().orElseThrow();
-    Item item = testInstances.getItem();
-
-    assertEquals(0, o.getTotal());
-
-    StackEventQueue.clear();
-
-    o.addItem(item);
-
-    //we filter the events first to only include those, which involved the visible variables (o in our case)
-    var visibleObjects = List.<Object>of(o);
-
-    var queue = StackEventQueue
-        .toQueue()
-        .stream()
-        .filter(event -> visibleObjects.contains(event.object()))
-        .collect(Collectors.toCollection(LinkedList::new));
-
-    //now we perform a match complete on that queue
-    //which we're also going to omit for demo purposes
-    assertEquals(16, queue.size()); //8 calls in current implementation -> 16 events
-    //TODO link OCL conditions to expected events
-    assertEquals(new CallEvent(o, "addItem", new Object[]{item}), queue.getFirst());
-    assertEquals(new ReturnVoidEvent(o, "addItem"), queue.getLast());
-
-    assertEquals(6, o.getTotal());
+  Item createItem() {
+    return WebshopManager.itemBuilder().amount(2).perUnitCost(3).build().orElseThrow();
   }
 
+  @SuppressWarnings({"SimplifiableAssertion", "RedundantIfStatement"})
   @Test
-  void matchFree() {
-    var testInstances = new TotalTestInstantiator().instantiate();
-    Order o = WebshopManager.orderBuilder().build().orElseThrow();
-    Item item = testInstances.getItem();
+  void testSequence() {
+    //make sure the name of the processor variable is unique throughout the test
+    var processor = new StackEventProcessor();
+    MethodMonitor.setActiveStackEventProcessor(processor);
 
-    assertEquals(0, o.getTotal());
+    //load objects and their matching strategies
+    o = createO();
+    processor.objectMatchingStrategies().put(o, MatchingStrategy.FREE);
+    item = createItem();
+    processor.objectMatchingStrategies().put(item, MatchingStrategy.FREE);
 
-    StackEventQueue.clear();
+    //the pre-interaction section is straightforward
+    total1 = o.getTotal();
+    processor.objectMatchingStrategies().put(total1, MatchingStrategy.FREE); //always tell processor about new introduced objects
 
+    assertTrue(total1 == 0); //simple assertTrue calls for condition checking
+
+    processor.load(
+        new ExpectedEvent(o, o, new Call("addItem", Optional.of(new Object[]{item})), () -> o.getTotal() == 0, "o.getTotal() == 0"),
+        new ExpectedEvent(o, o, new Call("addItem", Optional.of(new Object[]{item, NotificationScope.ALL})), () -> true, ""),
+        new ExpectedEvent(o, o, new Return(Optional.empty()), () -> {
+          total2 = o.getTotal();
+          if (!(total2 == 6)) return false;
+          return true;
+        }, "total2 == 6"),
+        new ExpectedEvent(o, o, new Return(Optional.empty()), () -> true, ""),
+        new ExpectedEvent(o, o, new ActivityBarEnd("addItem"), () -> true, "")
+                  );
+    //execute trigger
     o.addItem(item);
-
-    //TODO link OCL conditions to expected events
-    //we can use a queue instead of a state machine
-    var expectedEvents = new LinkedList<>(List.of(new CallEvent(o, "addItem", new Object[]{item}),
-                                                  new ReturnVoidEvent(o, "addItem")));
-    var eventTrace = new ArrayList<String>();
-
-    for (var event : StackEventQueue.toQueue()) {
-      if (event.equals(expectedEvents.peek())) {
-        expectedEvents.pop();
-        eventTrace.add("Expected: " + event);
-      } else {
-        eventTrace.add("Ignored: " + event);
-      }
-    }
-    for (var expectedEvent : expectedEvents) {
-      eventTrace.add("Missing: " + expectedEvent);
-    }
-    assertTrue(expectedEvents.isEmpty(),
-               "Some events are missing: " + String.join("\n", eventTrace));
-
-    assertEquals(6, o.getTotal());
+    processor.assertAllExpectedEventsToBeProcessed();
   }
 }

@@ -4,6 +4,7 @@ import java.util.Objects;
 
 public final class ActivityBarEnd implements Action {
 
+  //TODO method signature would also come into play
   private final String methodName;
 
   public ActivityBarEnd(String methodName) {
