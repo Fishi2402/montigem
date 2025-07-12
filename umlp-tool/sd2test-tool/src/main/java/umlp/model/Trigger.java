@@ -5,6 +5,7 @@ import de.monticore.lang.sd4development._ast.ASTSDCall;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public final class Trigger {
   //TODO Is it relevant where the call is coming from? yes!
 

@@ -1,5 +1,6 @@
 package umlp.generator.domain.visitor.state;
 
+import umlp.generator.domain.visitor.model.SDTest;
 import umlp.generator.domain.visitor.model.Trigger;
 
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public final class BodySectionState implements VisitorState {
     return matcher.whenBodySection(this);
   }
 
-  public PreInteractionBodyState earlyBodySection() {
+  public PreInteractionBodyState preInteractionBody() {
     return earlyBodySection;
   }
 
@@ -40,6 +41,16 @@ public final class BodySectionState implements VisitorState {
     this.trigger.add(lastTrigger);
     this.lastTrigger = trigger;
     return this;
+  }
+
+  public SDTest extractTest() {
+    var test = new SDTest();
+    test.imports().addAll(preInteractionBody().objectSection().importSection().imports());
+    test.sdObjects().addAll(preInteractionBody().objectSection().sdObjects());
+    test.preInteractionOCLStatements().addAll(preInteractionBody().oclStatements());
+    test.trigger().addAll(trigger());
+    test.trigger().add(lastTrigger());
+    return test;
   }
 
   @Override

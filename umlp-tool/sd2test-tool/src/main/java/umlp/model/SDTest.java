@@ -8,6 +8,7 @@ import java.util.List;
 /**
  * An abstraction of a test described by a sequence diagram
  */
+@Deprecated
 public final class SDTest {
   /**
    * Import statements required for the test
