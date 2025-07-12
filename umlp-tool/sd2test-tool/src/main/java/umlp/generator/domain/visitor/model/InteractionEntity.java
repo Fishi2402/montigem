@@ -16,4 +16,9 @@ public final class InteractionEntity {
   public boolean isStatic() {
     return isStatic;
   }
+
+  @Override
+  public String toString() {
+    return "InteractionEntity{" + "name='" + name + '\'' + ", isStatic=" + isStatic + '}';
+  }
 }

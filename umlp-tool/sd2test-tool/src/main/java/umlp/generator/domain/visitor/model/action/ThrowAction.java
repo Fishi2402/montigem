@@ -25,4 +25,10 @@ public final class ThrowAction implements Action {
   public Optional<List<String>> arguments() {
     return arguments;
   }
+
+  @Override
+  public String toString() {
+    return "ThrowAction{" + "throwableTypeName='" + throwableTypeName + '\'' + ", arguments=" +
+           arguments + '}';
+  }
 }

@@ -1,6 +1,7 @@
 package umlp.generator.domain.visitor.state;
 
 import umlp.generator.domain.visitor.model.SDTest;
+import umlp.generator.domain.visitor.model.SDTestExtractable;
 import umlp.generator.domain.visitor.model.Trigger;
 
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import java.util.List;
 /**
  * The body of a SD, where triggers are stored
  */
-public final class BodySectionState implements VisitorState {
+public final class BodySectionState implements VisitorState, SDTestExtractable {
 
   private final PreInteractionBodyState earlyBodySection;
   private final List<Trigger> trigger = new ArrayList<>();
@@ -43,11 +44,9 @@ public final class BodySectionState implements VisitorState {
     return this;
   }
 
+  @Override
   public SDTest extractTest() {
-    var test = new SDTest();
-    test.imports().addAll(preInteractionBody().objectSection().importSection().imports());
-    test.sdObjects().addAll(preInteractionBody().objectSection().sdObjects());
-    test.preInteractionOCLStatements().addAll(preInteractionBody().oclStatements());
+    var test = earlyBodySection.extractTest();
     test.trigger().addAll(trigger());
     test.trigger().add(lastTrigger());
     return test;

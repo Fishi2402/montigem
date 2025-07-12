@@ -6,7 +6,7 @@ import umlp.generator.domain.visitor.model.ocl.OCLStatement;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class SDTest {
+public final class SDTest implements SDTestExtractable {
   private final List<ASTMCImportStatement> imports = new ArrayList<>();
   private final List<SDObject> sdObjects = new ArrayList<>();
   private final List<OCLStatement> preInteractionOCLStatements = new ArrayList<>();
@@ -26,5 +26,17 @@ public final class SDTest {
 
   public List<Trigger> trigger() {
     return trigger;
+  }
+
+  @Override
+  public String toString() {
+    return "SDTest{" + "imports=" + imports + ", sdObjects=" + sdObjects +
+           ", preInteractionOCLStatements=" + preInteractionOCLStatements + ", trigger=" + trigger +
+           '}';
+  }
+
+  @Override
+  public SDTest extractTest() {
+    return this;
   }
 }

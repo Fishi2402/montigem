@@ -66,5 +66,9 @@ public interface VisitorStateVariantMatcher<T> {
     return otherwise(closedActivityBarState);
   }
 
+  default T whenFinished(FinishedState finishedState) {
+    return otherwise(finishedState);
+  }
+
   T otherwise(VisitorState state);
 }

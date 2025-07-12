@@ -52,4 +52,11 @@ public final class CallAction implements Action {
     this.activityBar = activityBar;
     return this;
   }
+
+  @Override
+  public String toString() {
+    return "CallAction{" + "methodName='" + methodName + '\'' + ", isStatic=" + isStatic +
+           ", isTrigger=" + isTrigger + ", argumentExpressions=" + argumentExpressions +
+           ", activityBar=" + activityBar + '}';
+  }
 }

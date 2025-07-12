@@ -1,5 +1,7 @@
 package umlp.generator.domain.visitor.state;
 
+import umlp.generator.domain.visitor.model.SDTest;
+import umlp.generator.domain.visitor.model.SDTestExtractable;
 import umlp.generator.domain.visitor.model.ocl.OCLStatement;
 
 import java.util.ArrayList;
@@ -9,7 +11,7 @@ import java.util.List;
  * We are expecting interactions or ocl statements, which should be checked before any interactions
  * happen
  */
-public final class PreInteractionBodyState implements OCLState {
+public final class PreInteractionBodyState implements OCLState, SDTestExtractable {
 
   private final SDObjectSectionState objectSection;
   private final List<OCLStatement> oclStatements = new ArrayList<>();
@@ -36,5 +38,14 @@ public final class PreInteractionBodyState implements OCLState {
   public String toString() {
     return "PreInteractionBodyState{" + "objectSection=" + objectSection + ", oclStatements=" +
            oclStatements + '}';
+  }
+
+  @Override
+  public SDTest extractTest() {
+    var test = new SDTest();
+    test.imports().addAll(objectSection.importSection().imports());
+    test.sdObjects().addAll(objectSection.sdObjects());
+    test.preInteractionOCLStatements().addAll(oclStatements);
+    return test;
   }
 }

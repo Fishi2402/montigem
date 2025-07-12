@@ -2,6 +2,7 @@ package umlp.generator.domain.visitor.state;
 
 import umlp.generator.domain.visitor.model.ActivityBar;
 import umlp.generator.domain.visitor.model.Interaction;
+import umlp.generator.domain.visitor.model.InteractionExtractable;
 import umlp.generator.domain.visitor.model.StateExtractedInteraction;
 import umlp.generator.domain.visitor.model.ocl.OCLStatement;
 

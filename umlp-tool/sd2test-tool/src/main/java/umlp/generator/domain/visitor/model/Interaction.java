@@ -33,4 +33,10 @@ public final class Interaction {
   public List<OCLStatement> oclStatements() {
     return oclStatements;
   }
+
+  @Override
+  public String toString() {
+    return "Interaction{" + "source=" + source + ", target=" + target + ", action=" + action +
+           ", oclStatements=" + oclStatements + '}';
+  }
 }

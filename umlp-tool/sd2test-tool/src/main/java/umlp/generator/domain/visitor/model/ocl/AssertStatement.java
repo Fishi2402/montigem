@@ -16,4 +16,9 @@ public final class AssertStatement implements OCLStatement {
   public String javaExpression() {
     return javaExpression;
   }
+
+  @Override
+  public String toString() {
+    return "AssertStatement{" + "javaExpression='" + javaExpression + '\'' + '}';
+  }
 }

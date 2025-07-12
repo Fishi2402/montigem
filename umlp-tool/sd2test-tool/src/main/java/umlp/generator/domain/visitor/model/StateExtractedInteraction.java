@@ -2,7 +2,7 @@ package umlp.generator.domain.visitor.model;
 
 import umlp.generator.domain.visitor.state.VisitorState;
 
-public final class StateExtractedInteraction {
+public final class StateExtractedInteraction implements InteractionExtractable {
   private final Interaction interaction;
   private final VisitorState previousState;
 
@@ -17,5 +17,10 @@ public final class StateExtractedInteraction {
 
   public VisitorState previousState() {
     return previousState;
+  }
+
+  @Override
+  public StateExtractedInteraction extractInteraction() {
+    return this;
   }
 }

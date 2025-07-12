@@ -32,8 +32,10 @@ import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.visitor.model.Interaction;
 import umlp.generator.domain.visitor.model.InteractionEntity;
+import umlp.generator.domain.visitor.model.InteractionExtractable;
 import umlp.generator.domain.visitor.model.MatchingStrategy;
 import umlp.generator.domain.visitor.model.SDObject;
+import umlp.generator.domain.visitor.model.SDTestExtractable;
 import umlp.generator.domain.visitor.model.StateExtractedInteraction;
 import umlp.generator.domain.visitor.model.Trigger;
 import umlp.generator.domain.visitor.model.action.Action;
@@ -50,6 +52,7 @@ import umlp.generator.domain.visitor.state.CallActionState;
 import umlp.generator.domain.visitor.state.ClosedActivityBarState;
 import umlp.generator.domain.visitor.state.EndMessageAwaitSourceState;
 import umlp.generator.domain.visitor.state.EndMessageAwaitTargetState;
+import umlp.generator.domain.visitor.state.FinishedState;
 import umlp.generator.domain.visitor.state.ImportSectionState;
 import umlp.generator.domain.visitor.state.ImportState;
 import umlp.generator.domain.visitor.state.InteractionState;
@@ -634,6 +637,62 @@ public final class SDVisitor implements SDBasisVisitor2,
   @Override
   public void visit(ASTSDNew node) {
     raiseError("constructor monitoring is not supported", getSourcePosition(node));
+  }
+
+  @Override
+  public void endVisit(ASTSDBody node) {
+    updateState(new VisitorStateVariantMatcher<>() {
+      @Override
+      public VisitorState whenPreInteractionBody(PreInteractionBodyState preInteractionBodyState) {
+        return new FinishedState(preInteractionBodyState);
+      }
+
+      @Override
+      public VisitorState whenBodySection(BodySectionState bodySectionState) {
+        return new FinishedState(bodySectionState);
+      }
+
+      @Override
+      public VisitorState whenCallAction(CallActionState callActionState) {
+        return finish(callActionState);
+      }
+
+      @Override
+      public VisitorState whenInteraction(InteractionState interactionState) {
+        return finish(interactionState);
+      }
+
+      @Override
+      public VisitorState whenClosedActivityBar(ClosedActivityBarState closedActivityBarState) {
+        return finish(closedActivityBarState);
+      }
+
+      @Override
+      public VisitorState otherwise(VisitorState state) {
+        return raiseUnexpectedEndVisitError(node, state);
+      }
+
+      private FinishedState finish(InteractionExtractable extractable) {
+        var extractedInteraction = extractable.extractInteraction();
+        var sourcePosition = getSourcePosition(node);
+        var interaction = extractedInteraction.interaction();
+        var previousState = extractedInteraction.previousState();
+        var newPreviousState = finishInteraction(interaction, previousState, sourcePosition);
+        var testExtractable = newPreviousState.matchVariant(new VisitorStateVariantMatcher<SDTestExtractable>() {
+          @Override
+          public SDTestExtractable whenBodySection(BodySectionState bodySectionState) {
+            return bodySectionState;
+          }
+
+          @Override
+          public SDTestExtractable otherwise(VisitorState state) {
+            return raiseStateError("did not expect end of body here", state, sourcePosition);
+          }
+        });
+
+        return new FinishedState(testExtractable);
+      }
+    });
   }
 
   private void updateState(VisitorStateVariantMatcher<VisitorState> matcher) {

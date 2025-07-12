@@ -26,4 +26,10 @@ public final class SDObject {
   public String qualifiedTypeName() {
     return qualifiedTypeName;
   }
+
+  @Override
+  public String toString() {
+    return "SDObject{" + "matchingStrategy=" + matchingStrategy + ", name='" + name + '\'' +
+           ", qualifiedTypeName='" + qualifiedTypeName + '\'' + '}';
+  }
 }

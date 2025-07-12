@@ -18,4 +18,10 @@ public final class Trigger {
   public List<Interaction> resultingInteractions() {
     return resultingInteractions;
   }
+
+  @Override
+  public String toString() {
+    return "Trigger{" + "triggerInteraction=" + triggerInteraction + ", resultingInteractions=" +
+           resultingInteractions + '}';
+  }
 }

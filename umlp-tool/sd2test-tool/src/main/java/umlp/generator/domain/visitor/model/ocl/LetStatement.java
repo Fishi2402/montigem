@@ -28,4 +28,10 @@ public final class LetStatement implements OCLStatement {
   public String valueExpression() {
     return valueExpression;
   }
+
+  @Override
+  public String toString() {
+    return "LetStatement{" + "qualifiedTypeName='" + qualifiedTypeName + '\'' + ", name='" + name +
+           '\'' + ", valueExpression='" + valueExpression + '\'' + '}';
+  }
 }

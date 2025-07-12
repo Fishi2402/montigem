@@ -24,4 +24,10 @@ public final class ReturnAction implements Action {
   public boolean hasReturnValue() {
     return hasReturnValue;
   }
+
+  @Override
+  public String toString() {
+    return "ReturnAction{" + "returnValue=" + returnValue + ", hasReturnValue=" + hasReturnValue +
+           '}';
+  }
 }

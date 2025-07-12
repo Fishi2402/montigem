@@ -92,13 +92,15 @@ import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
-import umlp.generator.domain.visitor.model.MatchingStrategy;
+import umlp.generator.domain.visitor.SDVisitor;
+import umlp.generator.domain.visitor.model.SDTest;
+import umlp.generator.domain.visitor.state.FinishedState;
+import umlp.generator.domain.visitor.state.VisitorState;
+import umlp.generator.domain.visitor.state.VisitorStateVariantMatcher;
 import umlp.generator.util.PathUtil;
-import umlp.model.SDObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class SD2TestDecorator {
 
@@ -117,6 +119,8 @@ public class SD2TestDecorator {
   }
 
   private ASTCDElement createTest(ASTSDArtifact model, ASTCDDefinition domainCd) {
+    logModel(model); //TODO currently here for debug purposes
+
     var diagramName = model.getSequenceDiagram().getName();
     var domainName = domainCd.getName();
     var domainPackageName = domainName.toLowerCase();
@@ -138,25 +142,40 @@ public class SD2TestDecorator {
     //override initBackendManager
     cd4c.addMethod(testClass, "umlp.domain.sd2test.InitBackendManager", domainName);
 
-    //TODO find a way to import objects from an object diagram
+    //TODO figure out which objects have been declared in a corresponding object diagram
 
-    logModel(model);
-
-    // apply a visitor to the model
+    //apply a visitor to the model
     var visitor = new SDVisitor();
     visit(model, visitor);
 
-    //explicit import statements
-    for (var importStatement : visitor.importStatements) {
+    var sdTest = visitor.currentState().matchVariant(new VisitorStateVariantMatcher<SDTest>() {
+      @Override
+      public SDTest whenFinished(FinishedState finishedState) {
+        return finishedState.extractTest();
+      }
+
+      @Override
+      public SDTest otherwise(VisitorState state) {
+        var message = "SDVisitor didn't end in FinishedState, but instead in " + state;
+        Log.error(message);
+        throw new IllegalStateException(message);
+      }
+    });
+
+    //copy import statements of the diagram
+    for (var importStatement : sdTest.imports()) {
       var signature = createJavaSignature(importStatement);
       cd4c.addImport(testClass, signature);
     }
 
-    //make sure every object has a name
-    var objectNames = new ArrayList<String>();
+    //TODO create (final?) attributes for objects and respective init methods
+    //TODO create simple statements for pre interaction ocl statements
+    //TODO create load- and check statements for every trigger
+    //TODO create attributes for ocl let expressions
 
     //create methods for objects declared in the test
-    for (SDObject sdObject : visitor.objectDeclarations) {
+    var objectNames = new ArrayList<String>();
+    for (var sdObject : sdTest.sdObjects()) {
       var name = sdObject.name();
       objectNames.add(name);
       cd4c.addMethod(testClass,
@@ -222,117 +241,7 @@ public class SD2TestDecorator {
     return p;
   }
 
-  private static final class SDVisitor implements SDBasisVisitor2,
-      SD4DevelopmentVisitor2,
-      OCLExpressionsVisitor2,
-      MCBasicTypesVisitor2 {
-
-    private final List<ASTMCImportStatement> importStatements = new ArrayList<>();
-    private final List<SDObject> objectDeclarations = new ArrayList<>();
-    private Optional<SDObject.Builder> currentObject = Optional.empty();
-
-    /*
-    TODO rebuild this a bit like an automata: reside in a certain state and accept only certain
-     transitions, while keeping track of data along the way; data keeping may be a bit unclean but
-     it'll be good enough
-    */
-
-    @Override
-    public void visit(ASTMCImportStatement node) {
-      importStatements.add(node);
-    }
-
-    @Override
-    public void visit(ASTSDObject node) {
-      if (!node.isPresentMCObjectType()) {
-        Log.error("Missing object type", node.get_SourcePositionStart());
-      }
-      var mcObjectType = node.getMCObjectType();
-      var builder = new SDObject.Builder(mcObjectType.printType(), node.getName());
-      this.currentObject = Optional.of(builder);
-    }
-
-    @Override
-    public void endVisit(ASTSDObject node) {
-      objectDeclarations.add(currentObject.orElseThrow().build());
-      currentObject = Optional.empty();
-    }
-
-    @Override
-    public void visit(ASTSDCompleteModifier node) {
-      currentObject.orElseThrow().setMatchingStrategy(MatchingStrategy.COMPLETE);
-    }
-
-    @Override
-    public void visit(ASTSDFreeModifier node) {
-      currentObject.orElseThrow().setMatchingStrategy(MatchingStrategy.FREE);
-    }
-
-
-    @Override
-    public void visit(ASTSDInitialModifier node) {
-      currentObject.orElseThrow().setMatchingStrategy(MatchingStrategy.INITIAL);
-    }
-
-    @Override
-    public void visit(ASTSDVisibleModifier node) {
-      currentObject.orElseThrow().setMatchingStrategy(MatchingStrategy.VISIBLE);
-    }
-
-    @Override
-    public void visit(ASTSDSendMessage node) {
-      //TODO why are source and target optional?
-      //TODO expect source, target, action and activity bar
-    }
-
-    @Override
-    public void endVisit(ASTSDSendMessage node) {
-      //TODO remove from message stack
-    }
-
-    @Override
-    public void visit(ASTSDObjectSource node) {
-      //TODO basically ignore but now expect a target
-    }
-
-    @Override
-    public void visit(ASTSDObjectTarget node) {
-      //TODO store name and expect action
-    }
-
-    //this is visited both on source and target
-    @Override
-    public void visit(ASTSDClass node) {
-      //TODO if source, expect now a target, if target store name and expect action
-    }
-
-    @Override
-    public void visit(ASTSDCall node) {
-      //how to get the args out:
-      //SD4DevelopmentMill.prettyPrint(node.getArguments().getExpression(0), false);
-
-      //TODO add to latest trigger or make it become the trigger
-    }
-
-    @Override
-    public void visit(ASTSDThrow node) {
-
-    }
-
-    @Override
-    public void endVisit(ASTSDThrow node) {
-
-    }
-
-    @Override
-    public void visit(ASTSDCondition node) {
-      //TODO add as condition to latest sendMessage or as initial condition
-    }
-
-
-    //TODO what is endCall?
-  }
-
+  //TODO better move this to its own class
   private static final class LoggingSDVisitor implements SDBasisVisitor2,
       SD4DevelopmentVisitor2,
       OCLExpressionsVisitor2,
