@@ -10,7 +10,6 @@ import umlp.test_rte.monitor.model.MatchingStrategy;
 import umlp.test_rte.monitor.model.action.ActivityBarEnd;
 import umlp.test_rte.monitor.model.action.Call;
 import umlp.test_rte.monitor.model.action.Return;
-import webshop.test_infrastructure.WebshopManagerImplMonitor;
 import webshop.test_infrastructure.WebshopSQLDBTestSetup;
 
 import java.util.Optional;
