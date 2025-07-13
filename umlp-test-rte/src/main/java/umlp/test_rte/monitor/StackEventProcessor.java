@@ -460,6 +460,7 @@ public final class StackEventProcessor {
    * Asserts that all {@link ExpectedEvent}s have been processed by this
    */
   public void assertAllExpectedEventsToBeProcessed() {
+    //TODO if we did not progress because of a condition, it would be nice to see that condition in the error
     Assertions.assertTrue(expectedEvents.isEmpty(), () -> {
       var joiner = new StringJoiner("\n");
       joiner.add("The following events did not occur:");
