@@ -15,6 +15,7 @@ import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.ManagerImplDecorator;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -208,6 +209,17 @@ public class MonitorDecorator extends AbstractDecorator {
         .flatMap(method -> method.requiredImports().stream())
         .collect(Collectors.toSet())
         .forEach(importSignature -> cd4C.addImport(monitorClass, importSignature));
+    //add imports for extending cds
+    UMLPSymbolTables
+        .getExtensionDiamond(origCd.getCDDefinition().getSymbol())
+        .values()
+        .stream()
+        .flatMap(Collection::stream)
+        .distinct()
+        .forEach(parentCD -> {
+          var parentCdPackageName = getPackageName(parentCD, DEFAULT_PACKAGE);
+          cd4C.addImport(monitorClass, Joiners.DOT.join(parentCdPackageName, "*"));
+        });
 
     return monitorClass;
   }
