@@ -10,6 +10,8 @@ import umlp.test_rte.monitor.model.MatchingStrategy;
 import umlp.test_rte.monitor.model.action.ActivityBarEnd;
 import umlp.test_rte.monitor.model.action.Call;
 import umlp.test_rte.monitor.model.action.Return;
+import umlp.test_rte.monitor.model.ocl.OCLCondition;
+import umlp.test_rte.monitor.model.ocl.OCLVariableDeclaration;
 import webshop.test_infrastructure.WebshopSQLDBTestSetup;
 
 import java.util.Optional;
@@ -41,7 +43,7 @@ public class TotalTest extends WebshopSQLDBTestSetup {
     return WebshopManager.itemBuilder().amount(2).perUnitCost(3).build().orElseThrow();
   }
 
-  @SuppressWarnings({"SimplifiableAssertion", "RedundantIfStatement"})
+  @SuppressWarnings({"SimplifiableAssertion"})
   @Test
   void testSequence() {
     //make sure the name of the processor variable is unique throughout the test
@@ -62,15 +64,11 @@ public class TotalTest extends WebshopSQLDBTestSetup {
     MethodMonitor.setActiveStackEventProcessor(processor);
 
     processor.load(
-        new ExpectedEvent(o, o, new Call("addItem", Optional.of(new Object[]{item})), () -> o.getTotal() == 0, "o.getTotal() == 0"),
-        new ExpectedEvent(o, o, new Call("addItem", Optional.of(new Object[]{item, NotificationScope.ALL})), () -> true, ""),
-        new ExpectedEvent(o, o, new Return(Optional.empty()), () -> {
-          total2 = o.getTotal();
-          if (!(total2 == 6)) return false;
-          return true;
-        }, "total2 == 6"),
-        new ExpectedEvent(o, o, new Return(Optional.empty()), () -> true, ""),
-        new ExpectedEvent(o, o, new ActivityBarEnd("addItem"), () -> true, "")
+        new ExpectedEvent(o, o, new Call("addItem", Optional.of(new Object[]{item})), new OCLCondition(() -> o.getTotal() == 0, "o.getTotal() == 0")),
+        new ExpectedEvent(o, o, new Call("addItem", Optional.of(new Object[]{item, NotificationScope.ALL}))),
+        new ExpectedEvent(o, o, new Return(Optional.empty()), new OCLVariableDeclaration(() -> total2 = o.getTotal()), new OCLCondition(() -> total2 == 6, "total2 == 6")),
+        new ExpectedEvent(o, o, new Return(Optional.empty())),
+        new ExpectedEvent(o, o, new ActivityBarEnd("addItem"))
                   );
     //execute trigger
     o.addItem(item);

@@ -16,6 +16,9 @@ import umlp.test_rte.monitor.model.action.Call;
 import umlp.test_rte.monitor.model.action.Error;
 import umlp.test_rte.monitor.model.action.ExhaustiveActionVariantMatcher;
 import umlp.test_rte.monitor.model.action.Return;
+import umlp.test_rte.monitor.model.ocl.ExhaustiveOCLStatementVariantMatcher;
+import umlp.test_rte.monitor.model.ocl.OCLCondition;
+import umlp.test_rte.monitor.model.ocl.OCLVariableDeclaration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -323,18 +326,34 @@ public final class StackEventProcessor {
       return actionCheckErrorMessage;
     }
 
-    //check condition
-    Boolean conditionCheckOkay;
-    try {
-      this.conditionChecking = true;
-      conditionCheckOkay = expectedEvent.condition().get();
-    } finally {
-      this.conditionChecking = false;
-    }
+    //execute ocl statements
+    for (var oclStatement : expectedEvent.oclStatements()) {
+      var statementError =
+          oclStatement.matchVariant(new ExhaustiveOCLStatementVariantMatcher<Optional<String>>() {
+        @Override
+        public Optional<String> whenCondition(OCLCondition condition) {
+          boolean conditionCheckResult;
+          StackEventProcessor.this.conditionChecking = true;
+          try {
+            conditionCheckResult = condition.check();
+          } finally {
+            StackEventProcessor.this.conditionChecking = false;
+          }
+          if (!conditionCheckResult) {
+            return Optional.of("Failed condition check: " + condition.asString());
+          }
+          return Optional.empty();
+        }
 
-    if (!conditionCheckOkay) {
-      return Optional.of(
-          "Failed condition check: " + expectedEvent.conditionStringRepresentation());
+        @Override
+        public Optional<String> whenVariableDeclaration(OCLVariableDeclaration variableDeclaration) {
+          variableDeclaration.execute();
+          return Optional.empty();
+        }
+      });
+      if (statementError.isPresent()) {
+        return statementError;
+      }
     }
 
     return Optional.empty();

@@ -6,30 +6,27 @@ import umlp.test_rte.monitor.model.action.Call;
 import umlp.test_rte.monitor.model.action.Error;
 import umlp.test_rte.monitor.model.action.ExhaustiveActionVariantMatcher;
 import umlp.test_rte.monitor.model.action.Return;
+import umlp.test_rte.monitor.model.ocl.OCLStatement;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 public final class ExpectedEvent {
-
-  //TODO explicitly support multiple and different kinds of ocl statements
 
   private final Object source;
   private final Object target;
   private final Action action;
-  private final Supplier<Boolean> condition;
-  private final String conditionStringRepresentation;
+  private final List<OCLStatement> oclStatements;
 
   public ExpectedEvent(Object source,
       Object target,
       Action action,
-      Supplier<Boolean> condition,
-      String conditionStringRepresentation) {
+      OCLStatement... oclStatements) {
     this.source = source;
     this.target = target;
     this.action = action;
-    this.condition = condition;
-    this.conditionStringRepresentation = conditionStringRepresentation;
+    this.oclStatements = new ArrayList<>(List.of(oclStatements));
   }
 
   public Optional<String> getMethodName() {
@@ -68,17 +65,13 @@ public final class ExpectedEvent {
     return action;
   }
 
-  public Supplier<Boolean> condition() {
-    return condition;
-  }
-
-  public String conditionStringRepresentation() {
-    return conditionStringRepresentation;
+  public List<OCLStatement> oclStatements() {
+    return oclStatements;
   }
 
   @Override
   public String toString() {
     return "ExpectedEvent{" + "source=" + source + ", target=" + target + ", action=" + action +
-           ", condition=" + conditionStringRepresentation + '}';
+           ", oclStatements=" + oclStatements + '}';
   }
 }
