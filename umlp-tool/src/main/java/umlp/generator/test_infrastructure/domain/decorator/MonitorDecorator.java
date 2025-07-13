@@ -128,7 +128,6 @@ public class MonitorDecorator extends AbstractDecorator {
       ASTCDCompilationUnit origCd,
       ASTCDCompilationUnit redecoratedCD) {
     var builderName = decoratedBuilderClass.getName();
-    var packageName = getPackageName(origCd, DEFAULT_PACKAGE);
     var monitorClass = UMLPMill
         .cDClassBuilder()
         .setModifier(CDModifier.PUBLIC.build())
