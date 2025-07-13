@@ -58,7 +58,7 @@ public class TotalTest extends WebshopSQLDBTestSetup {
     total1 = o.getTotal();
     processor.objectMatchingStrategies().put(total1, MatchingStrategy.FREE); //always tell processor about new introduced objects
 
-    assertTrue(total1 == 0); //simple assertTrue calls for condition checking
+    assertTrue(total1 == 0, "total1 == 0"); //simple assertTrue calls for condition checking
 
     //set processor active
     MethodMonitor.setActiveStackEventProcessor(processor);
