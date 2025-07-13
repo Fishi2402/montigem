@@ -29,7 +29,6 @@ import java.util.stream.Stream;
 
 public class MonitorDecorator extends AbstractDecorator {
 
-  public static final String TEST_INFRASTRUCTURE_PACKAGE = "test_infrastructure";
   public static final String MONITOR_SUFFIX = "Monitor";
 
   public enum Stereotype {
@@ -113,7 +112,7 @@ public class MonitorDecorator extends AbstractDecorator {
 
   @Override
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
-    var targetPackage = getPackage(origCD, decoratedCD, TEST_INFRASTRUCTURE_PACKAGE);
+    var targetPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
 
     redecoratedCD
         .getCDDefinition()
@@ -204,7 +203,6 @@ public class MonitorDecorator extends AbstractDecorator {
     methods.forEach(method -> method.addTo(cd4C, monitorClass));
 
     //imports
-    cd4C.addImport(monitorClass, Joiners.DOT.join(packageName, "*"));
     methods
         .stream()
         .flatMap(method -> method.requiredImports(cd4C).stream())
