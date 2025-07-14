@@ -455,7 +455,6 @@ public class UMLPTool extends UMLPToolTOP {
   }
 
   public static void initGUIGlobalScope(MCPath modelPath) {
-    BasicSymbolsMill.initializePrimitives();
     GUIDSLGlobalScope gs = (GUIDSLGlobalScope) GUIDSLMill.globalScope();
     gs.setSymbolPath(modelPath);
     gs.addAdaptedTypeSymbolResolver(new OOClass2MCResolver());

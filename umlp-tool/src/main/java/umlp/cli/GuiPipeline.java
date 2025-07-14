@@ -58,7 +58,7 @@ public class GuiPipeline extends Pipeline<UMLPPipelineData> {
     register("init", init = data -> {
       // Prepare the SingletonLookup
       TagRelated.initLookup(data.importedSymbolPath);
-      MillConf.switchTo(MillConf.GUIDSL);
+      MillConf.switchTo(MillConf.UMLP, MillConf.GUIDSL);
       UMLPTool.initGUIGlobalScope(data.importedSymbolPath);
       TSImportMap.INSTANCE.init(data.importedSymbolPath);
       return true;
