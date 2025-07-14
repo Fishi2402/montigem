@@ -1,5 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 import {Component} from '@angular/core';
+import {Navigation} from 'navigation/navigation.component';
 import {
   ClientCommandManager,
   ClientCommandWebsocketCommunication,

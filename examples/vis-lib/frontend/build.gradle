@@ -1,3 +1,8 @@
+import gradle.specific.UMLPSymLinkCreationTask
+
+import java.nio.file.Files
+import java.nio.file.Paths
+
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
@@ -57,10 +62,8 @@ if (project.hasProperty('j2ts') && j2ts.toString().toBoolean()) {
 }
 
 task copyAppJsweet(type: Copy) {
+  dependsOn(frontendSetup)
   onlyIf { project.hasProperty('j2ts') && project.j2ts.toString().toBoolean() }
-  if (project.hasProperty('j2ts') && j2ts.toString().toBoolean()) {
-    dependsOn(SYNC_TSGuiHWC)
-  }
   from 'config/src/appjsweet'
   into 'build/frontendGen/src/app/'
 }
@@ -72,7 +75,8 @@ npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 def prebuildTasks = [
     npmInstall,
     generate,
-    copyAppJsweet
+    copyAppJsweet,
+    symlinkCreation
 ]
 
 tasks.register('testApp', NpxTask) {
@@ -86,14 +90,14 @@ tasks.register('testApp', NpxTask) {
 }
 
 tasks.register('buildApp', NpxTask) {
-  dependsOn(testApp, project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") })
+  dependsOn(testApp)
   command = "ng"
   args = ["build"]
 }
 assemble.dependsOn(buildApp)
 
 tasks.register('runApp', NpxTask) {
-  dependsOn(prebuildTasks, project(":umlp-rte:client").tasks.matching { it.name.startsWith("gen_") })
+  dependsOn(prebuildTasks)
   command = "ng"
   args = ["serve"]
 }
@@ -103,7 +107,7 @@ tasks.register('run') {
 }
 
 test {
-  dependsOn npmInstall
+  dependsOn buildApp
   useJUnitPlatform() {
     excludeTags "SlowTest"
   }

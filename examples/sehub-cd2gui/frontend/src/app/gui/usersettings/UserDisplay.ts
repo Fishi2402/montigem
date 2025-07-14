@@ -5,7 +5,7 @@ import {UserDisplayComponent,config} from 'gui/usersettings/UserDisplayComponent
 
 import {SehubRole} from 'sehub/SehubRole';
 import {SehubManager} from 'sehub/SehubManager';
-import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
+import {SehubSecurityManager} from "sehub/SehubSecurityManager";
 import {User} from 'sehub/User';
 import {Option} from '@umlp/input';
 

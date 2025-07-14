@@ -6,7 +6,7 @@ import {SehubRole} from 'sehub/SehubRole';
 import {User} from 'sehub/User';
 import {CommandManager} from '@umlp/common';
 import {User_setPassword} from 'sehub/commands/User_setPassword';
-import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
+import {SehubSecurityManager} from "sehub/SehubSecurityManager";
 import {SehubManager} from 'sehub/SehubManager';
 
 @Component({

@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
-import {BingoComponent,config} from "../../../build/frontendGen/build/appgui/gui/BingoComponent";
+import {BingoComponent,config} from "gui/BingoComponent";
 import {Component} from '@angular/core';
-import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
+import {SehubSecurityManager} from "sehub/SehubSecurityManager";
 import {SehubManager} from "sehub/SehubManager";
 import {BoardMapper} from "sehub/BoardMapper";
 

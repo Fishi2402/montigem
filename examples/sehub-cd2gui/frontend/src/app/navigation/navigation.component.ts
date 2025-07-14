@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 import { Component } from "@angular/core";
-import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
+import {SehubSecurityManager} from "sehub/SehubSecurityManager";
 import {User} from 'sehub/User';
 import { RouterModule } from '@angular/router';
 import {CommonModule} from '@angular/common';

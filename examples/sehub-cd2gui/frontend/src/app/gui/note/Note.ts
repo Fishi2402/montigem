@@ -3,7 +3,7 @@ import {NoteComponent,config} from "gui/note/NoteComponent";
 import {Component} from '@angular/core';
 import {SehubManager} from 'sehub/SehubManager';
 import {Post} from 'sehub/Post';
-import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
+import {SehubSecurityManager} from "sehub/SehubSecurityManager";
 import {Gem} from '@umlp/common';
 import {User} from 'sehub/User';
 import {SehubRole} from 'sehub/SehubRole';

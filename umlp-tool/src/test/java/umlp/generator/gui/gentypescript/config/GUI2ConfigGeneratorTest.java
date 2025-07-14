@@ -127,7 +127,7 @@ public class GUI2ConfigGeneratorTest extends DomainGUITest {
         () -> assertEquals("overridden", update_cr.getUrlPrefix()),
         // from build folder to resources folder
         () -> assertEquals(
-            "../../../../../src/test/resources/gui/conf/overridden/Update",
+            "conf/overridden/Update",
             update_cr.getImportPathNoExt()
         )
     );
@@ -277,7 +277,7 @@ public class GUI2ConfigGeneratorTest extends DomainGUITest {
 
     String p1 = "./conf/ConfGemRouting";
     String p2 = "./other/deep/nested/NestedGemRouting";
-    String p3 = "../../../src/test/resources/gui/overridden/OverriddenGemRouting";
+    String p3 = "overridden/OverriddenGemRouting";
 
     assertTrue(path2RouteMap.containsKey(p1));
     assertTrue(path2RouteMap.containsKey(p2));

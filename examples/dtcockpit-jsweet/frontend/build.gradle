@@ -1,3 +1,6 @@
+import java.nio.file.Files
+import java.nio.file.Paths
+
 /* (c) https://github.com/MontiCore/monticore */
 
 
@@ -102,3 +105,6 @@ tasks.register('e2eRecordTest', NpmTask) {
   args = ["run", "e2erecord"]
   enabled = false // TODO: ALu
 }
+
+
+

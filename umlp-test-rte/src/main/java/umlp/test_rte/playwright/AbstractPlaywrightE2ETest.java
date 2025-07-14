@@ -71,7 +71,7 @@ public abstract class AbstractPlaywrightE2ETest implements PlaywrightUtils {
    * @return The {@link File} denoting the frontendGen directory
    */
   protected File getFrontendDistDirectory() {
-    return new File("build/frontendGen/dist/client");
+    return new File("build/frontendGen/dist/client/browser");
   }
 
   /**

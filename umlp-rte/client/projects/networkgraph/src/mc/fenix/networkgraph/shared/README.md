@@ -52,8 +52,6 @@ Tested with [Angular](https://angular.io/) (`v16.2.7`) and the following depende
   "lodash.isequal": "^4.5.0",
   // Convert HTML elements to images
   "dom-to-image": "^2.6.0",
-  // Export Tables as Excel Spreadsheets
-  "xlsx-js-style": "^1.2.0",
 }
 ```
 

@@ -2,10 +2,6 @@
 import { Routes } from "@angular/router";
 import { routes as routesTOP } from "AppGemRoutingTOP"
 
-
-
-
-
 export const routes: Routes = [
   // default path like in other routing files
   {
@@ -16,7 +12,7 @@ export const routes: Routes = [
   },
 {
    path:"sehub",
-   loadChildren:() => import("../../build/umlp/fe2/sehub/SehubGemRouting").then(m=>m.routes)
+   loadChildren:() => import("../fe2/sehub/SehubGemRouting").then(m=>m.routes)
    },
       ...routesTOP,
 

@@ -10,6 +10,7 @@ import gradle.specific.UMLPGui2SymTask;
 import gradle.specific.UMLPJava2TypeScriptAdditionalsTask;
 import gradle.specific.UMLPJava2TypeScriptConfigTask;
 import gradle.specific.UMLPJava2TypeScriptTask;
+import gradle.specific.UMLPSymLinkCreationTask;
 import gradle.specific.UMLPSymbolsTask;
 import gradle.specific.serialize.SerializeCDSymbolsTask;
 import gradle.specific.serialize.SerializeGUISymbolsTask;
@@ -29,6 +30,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -40,6 +43,7 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
 
   static final String UMLP_FRONTEND_SETUP_TASK_NAME = "frontendSetup";
   static final String UMLP_FRONTEND_DOMAIN_TASK_NAME = "genDomain";
+  static final String UMLP_FRONTEND_SYMLINK_CREATION_TASK_NAME = "symlinkCreation";
   public static final String UMLP_FRONTEND_GUI_TASK_NAME = "genGUI";
   static final String UMLP_FRONTEND_BUILD_IMAGE_LOCAL = "buildImageLocal";
   static final String UMLP_FRONTEND_DEPLOY_IMAGE_CI = "deployImageCI";
@@ -70,6 +74,13 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
 
     TaskProvider<UMLPGuiGenTask> frontendGuiTask = createFrontendGuiTask(project, local);
 
+    TaskProvider<UMLPSymLinkCreationTask> symlinkCreationTask = createSymlinkCreationTask(project, local);
+    project.getTasks().configureEach(t -> {
+      if(t.getName().equals("runApp")) {
+        t.dependsOn(symlinkCreationTask);
+      }
+    });
+
     // Sync Output of UMLP-Task to the correct directory. This done because "npm serve" cannot handle the intermediate state while the UMLPTasks are running
     // and Hot-Reload aborts
     TaskProvider<Sync> syncDomainTask = createSyncDomainTask(project, frontendSetupTask);
@@ -87,6 +98,21 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
       umlpTask.getSymbolDir().from(domainSymbolGenTask);
       umlpTask.dependsOn(domainSymbolGenTask);
     });
+
+    symlinkCreationTask.configure(umlpTask -> {
+      // frontendGen and umlp_frontend Directories need to exist
+      umlpTask.dependsOn(frontendSetupTask, frontendGuiTask);
+    });
+
+    if(local) {
+      TaskProvider<UMLPSymLinkCreationTask> symlinkClientProdTask = createSymlinkClientProductionCreationTask(project);
+      symlinkClientProdTask.configure(t -> t.dependsOn(symlinkCreationTask));
+      project.getTasks().configureEach(t -> {
+        if(t.getName().equals("buildApp")) {
+          t.dependsOn(symlinkClientProdTask);
+        }
+      });
+    }
     //
 
     // Lifecycle task "generate"
@@ -180,6 +206,62 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
       );
     }
     return createGuiSymbolsTask;
+  }
+
+  private TaskProvider<UMLPSymLinkCreationTask> createSymlinkCreationTask(final Project project, boolean local) {
+    TaskProvider<UMLPSymLinkCreationTask> symlinkCreationTask = project.getTasks().register(UMLP_FRONTEND_SYMLINK_CREATION_TASK_NAME,
+        UMLPSymLinkCreationTask.class, umlpTask -> {
+      umlpTask.setGroup(UMLP_GROUP_NAME);
+      // No default configuration
+
+      // TODO change this in the future, so we do not have to download all library's dependencies in every umlp project
+      // Alternative: use pnpm or yarn or something like this
+      if(local) {
+        Project umlpRteClientProject = project.findProject(":umlp-rte:client");
+        Object libsObj = umlpRteClientProject.getExtensions().getExtraProperties().get("libs");
+        if (!(libsObj instanceof List)) {
+          throw new IllegalArgumentException("Expected 'libs' to be a List");
+        }
+        @SuppressWarnings("unchecked")
+        List<String> libs = (List<String>) libsObj;
+
+        Path sourceLibPath = project.getBuildDir().toPath().resolve("frontendGen/libs/@umlp");
+        Path libProjectsSourcePath = umlpRteClientProject.getProjectDir().toPath().resolve("projects");
+
+        for (String lib : libs) {
+          File umlpLibSourceLinkTarget = libProjectsSourcePath.resolve(lib).toFile();
+          File umlpLibSourceLink = sourceLibPath.resolve(lib).toFile();
+          umlpTask.getSymlinkMap().put(umlpLibSourceLink, umlpLibSourceLinkTarget);
+        }
+      }
+    });
+    return symlinkCreationTask;
+  }
+
+  // This is a Task only need in the case of local=true
+  private TaskProvider<UMLPSymLinkCreationTask> createSymlinkClientProductionCreationTask(final Project project) {
+    TaskProvider<UMLPSymLinkCreationTask> symlinkCreationTask = project.getTasks().register("symlinkProductionLibraries",
+        UMLPSymLinkCreationTask.class, umlpTask -> {
+          umlpTask.setGroup(UMLP_GROUP_NAME);
+          Project umlpRteClientProject = project.findProject(":umlp-rte:client");
+          umlpTask.getDependsOn().add(umlpRteClientProject.getTasks().named("buildAll"));
+
+          Object libsObj = umlpRteClientProject.getExtensions().getExtraProperties().get("libs");
+          if (!(libsObj instanceof List)) {
+            throw new IllegalArgumentException("Expected 'libs' to be a List");
+          }
+          @SuppressWarnings("unchecked")
+          List<String> libs = (List<String>) libsObj;
+
+          Path compiledLibPath = project.getBuildDir().toPath().resolve("frontendGen/prodlibs/@umlp");
+          Path libProjectsCompiledPath = umlpRteClientProject.getBuildDir().toPath().resolve("dist");
+          for (String lib : libs) {
+            File umlpLibCompiledLinkTarget = libProjectsCompiledPath.resolve(lib).toFile();
+            File umlpLibCompiledLink = compiledLibPath.resolve(lib).toFile();
+            umlpTask.getSymlinkMap().put(umlpLibCompiledLink, umlpLibCompiledLinkTarget);
+          }
+        });
+    return symlinkCreationTask;
   }
 
   private TaskProvider<UMLPGuiGenTask> createFrontendGuiTask(final Project project, boolean local) {

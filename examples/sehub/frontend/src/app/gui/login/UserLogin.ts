@@ -3,7 +3,7 @@
 import {Component} from '@angular/core';
 import {UserLoginComponent,config} from 'gui/login/UserLoginComponent';
 import {User} from 'sehub/User';
-import {SehubSecurityManager} from "../../sehub/SehubSecurityManager";
+import {SehubSecurityManager} from "sehub/SehubSecurityManager";
 
 @Component({
   standalone:true,

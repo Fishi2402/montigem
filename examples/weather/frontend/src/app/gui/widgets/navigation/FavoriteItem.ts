@@ -7,7 +7,7 @@ import { FavoriteItemComponent,config } from 'gui/widgets/navigation/FavoriteIte
   standalone:true,
   imports:[...config.imports],
   selector: 'favorite-item',
-  templateUrl: '../../../../../build/frontendGen/build/appgui/gui/widgets/navigation/FavoriteItem.html',
+  templateUrl: config.templateUrl,
   styles: [":host{ display: flex; flex-direction: column }"],
   styleUrls: ["./FavoriteItem.scss"]
 })

@@ -1,4 +1,4 @@
-import { CellObject, ColInfo, utils, WorkBook, WorkSheet, writeFile } from "xlsx-js-style";
+import { CellObject, ColInfo, utils, WorkBook, WorkSheet, writeFile } from "xlsx";
 import { ColorFormat, ColorUtil, RGB } from "./color.util";
 import domtoimage from "dom-to-image";
 

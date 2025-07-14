@@ -2,6 +2,7 @@
 import { Component } from '@angular/core';
 import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from '@umlp/common';
 import {SehubManagerClientImpl} from 'sehub/SehubManagerClientImpl';
+import {Navigation} from "navigation/navigation.component";
 
 @Component({
   selector: 'app-root',

@@ -36,6 +36,8 @@ application {
 
 jib {
   container.mainClass = application.mainClass.get()
+  from.image = "$container_from_image"
+  to.image = "${container_target_image_base}vis-lib_backend:latest"
 }
 
 dependencies {

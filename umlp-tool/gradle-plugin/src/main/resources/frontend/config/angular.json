@@ -15,11 +15,11 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
             "outputPath": "dist/client",
             "index": "src/index.html",
-            "main": "src/main.ts",
+            "browser": "src/main.ts",
             "polyfills": [
               "zone.js"
             ],
@@ -34,7 +34,8 @@
               "./node_modules/font-awesome/css/font-awesome.css",
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "preserveSymlinks": true
           },
           "configurations": {
             "production": {
@@ -53,9 +54,7 @@
               "outputHashing": "all"
             },
             "development": {
-              "buildOptimizer": false,
               "optimization": false,
-              "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
@@ -75,13 +74,16 @@
           },
           "defaultConfiguration": "development",
           "options": {
-            "proxyConfig": "./proxy.conf.ts"
+            "proxyConfig": "./proxy.conf.js",
+            "prebundle": {
+              "exclude": ["d3"]
+            }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "client:build"
+            "buildTarget": "client:build"
           }
         },
         "test": {

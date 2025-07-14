@@ -1,14 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 import {Component} from '@angular/core';
-import {SehubManager} from "../../../build/frontendGen/build/appdomain/sehub/SehubManager";
-import {Post} from "../../../build/frontendGen/build/appdomain/sehub/Post";
-import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
+import {SehubManager} from "sehub/SehubManager";
+import {Post} from "sehub/Post";
+import {SehubSecurityManager} from "sehub/SehubSecurityManager";
 import {Gem} from '@umlp/common';
 import {Issue} from "sehub/Issue";
 import {User} from 'sehub/User';
 import {SehubRole} from 'sehub/SehubRole';
 import {ActivatedRoute, Router} from '@angular/router';
-import {NotesPageComponent,config} from "../../../build/frontendGen/build/appgui/gui/NotesPageComponent";
+import {NotesPageComponent,config} from "gui/NotesPageComponent";
 
 @Component({
   standalone:true,

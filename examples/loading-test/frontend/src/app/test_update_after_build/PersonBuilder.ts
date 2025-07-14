@@ -2,7 +2,6 @@
 import { Component } from '@angular/core';
 import { PersonBuilderComponent,config } from 'test_update_after_build/PersonBuilderComponent';
 
-
 @Component({
   standalone:true,
   imports:[...config.imports],

@@ -3,8 +3,8 @@
 import {StartComponent,config} from 'gui/StartComponent';
 import {Component} from '@angular/core';
 import {SehubManager} from 'sehub/SehubManager';
-import {SehubSecurityManager} from "../sehub/SehubSecurityManager";
-import {GetCurrentUserRequest} from "../security/GetCurrentUserRequest";
+import {SehubSecurityManager} from "sehub/SehubSecurityManager";
+import {GetCurrentUserRequest} from "security/GetCurrentUserRequest";
 import {CommandManager} from '@umlp/common';
 import {ActivatedRoute, Router} from '@angular/router';
 @Component({
