@@ -30,49 +30,9 @@ def prebuildTasks = [
     generate
 ]
 
-tasks.register('linkStuff', NodeTask) {
-  dependsOn(prebuildTasks)
-  def hwcsrc = file("$buildDir/frontendGen/hwcsrc")
-  def hwcsrcTarget = file("src/app")
-
-
-  def frontendOut = file("$buildDir/build/umlp_frontend")
-  def frontendOutTarget = file("$buildDir/umlp_frontend")
-
-  def umlpDir = file("$buildDir/frontendGen/libs/@umlp")
-
-
-  def clientRTELinks = [:]
-  project(":umlp-rte:client").ext.libs.forEach {
-    def f = file(project(":umlp-rte:client").projectDir.toString()+"/projects/"+it)
-    // Link, Target
-    clientRTELinks.put(umlpDir.toPath().resolve(f.name).toFile(),f.toPath().toAbsolutePath().toFile())
-  }
-
-  outputs.upToDateWhen {
-    Files.isSymbolicLink(hwcsrc.toPath()) && Files.isSymbolicLink(frontendOut.toPath()) &&
-        clientRTELinks.keySet().every {
-          Files.isSymbolicLink(Paths.get(it.toString()))
-        }
-  }
-
-  def allLinks =  [hwcsrc.toString(), hwcsrcTarget.toString(),
-                   frontendOut.toString(), frontendOutTarget.toString(),
-  ]
-  clientRTELinks.keySet().forEach {
-    allLinks.add(it.toString())
-    allLinks.add(clientRTELinks.get(it).toString())
-  }
-
-  script = file("$buildDir/frontendGen/symlink-creation.js")
-  args = allLinks
-}
 
 tasks.register('buildApp', NpxTask) {
   dependsOn(prebuildTasks)
-  dependsOn {
-    tasks.named('linkStuff').get()
-  }
   command = "ng"
   args = ["build"]
 }
@@ -86,9 +46,6 @@ tasks.register('testApp', NpxTask) {
 
 tasks.register('runApp', NpxTask) {
   dependsOn(prebuildTasks)
-  dependsOn {
-    tasks.named('linkStuff').get()
-  }
   command = "ng"
   args = ["serve"]
 }

@@ -52,56 +52,10 @@ def prebuildTasks = [
     npmInstall, generate
 ]
 
-tasks.register('linkStuff', NodeTask) {
-  dependsOn(prebuildTasks)
-
-  def hwcsrc = file("$buildDir/frontendGen/hwcsrc")
-  def hwcsrcTarget = file("src/main/ts")
-
-
-
-  def frontendOut = file("$buildDir/build/umlp_frontend")
-  def frontendOutTarget = file("$buildDir/umlp_frontend")
-
-  def umlpDir = file("$buildDir/frontendGen/libs/@umlp")
-
-  def clientRTELinks = [:]
-  project(":umlp-rte:client").ext.libs.forEach {
-    def f = file(project(":umlp-rte:client").projectDir.toString()+"/projects/"+it)
-    // Link, Target
-    clientRTELinks.put(umlpDir.toPath().resolve(f.name).toFile(),f.toPath().toAbsolutePath().toFile())
-  }
-
-  outputs.upToDateWhen {
-    isJunction(hwcsrc) &&
-    isJunction(frontendOut) &&
-    clientRTELinks.keySet().every {
-      Files.isSymbolicLink(Paths.get(it.toString()))
-    }
-  }
-
-  def allLinks = [hwcsrc.toString(), hwcsrcTarget.toString(),
-                frontendOut.toString(), frontendOutTarget.toString()]
-  clientRTELinks.keySet().forEach {
-    allLinks.add(it.toString())
-    allLinks.add(clientRTELinks.get(it).toString())
-  }
-  script = file("$buildDir/frontendGen/symlink-creation.js")
-  args = allLinks
-}
-
-// Utility method to detect junction/symlink
-static boolean isJunction(File file) {
-  return java.nio.file.Files.isSymbolicLink(file.toPath())
-}
-
 tasks.register('buildApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["build"]
-  dependsOn {
-    tasks.named('linkStuff').get()
-  }
 }
 assemble.dependsOn(buildApp)
 
@@ -109,18 +63,12 @@ tasks.register('testApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["test"]
-  dependsOn {
-    tasks.named('linkStuff').get()
-  }
 }
 
 tasks.register('runApp', NpxTask) {
   dependsOn(prebuildTasks)
   command = "ng"
   args = ["serve"]
-  dependsOn {
-    tasks.named('linkStuff').get()
-  }
 }
 
 test {

@@ -79,20 +79,6 @@ def prebuildTasks = [
     symlinkCreation
 ]
 
-tasks.register("linkStuff3", UMLPSymLinkCreationTask.class) {
-  symlinkMap.put(file("$buildDir/frontendGen/hwcsrc"), file("src/app"))
-  symlinkMap.put(file("$buildDir/build/umlp_frontend"), file("$buildDir/umlp_frontend"))
-
-  def umlpDir = file("$buildDir/frontendGen/libs/@umlp")
-  def clientProject = project(":umlp-rte:client")
-
-  clientProject.ext.libs.each {
-    def sourceFile = file(clientProject.projectDir.toString() + "/projects/" + it)
-    def linkFile = umlpDir.toPath().resolve(sourceFile.name).toFile()
-    symlinkMap.put(linkFile, sourceFile)
-  }
-}
-
 tasks.register('testApp', NpxTask) {
   dependsOn(
       prebuildTasks,

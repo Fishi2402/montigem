@@ -72,9 +72,11 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
     TaskProvider<UMLPGuiGenTask> frontendGuiTask = createFrontendGuiTask(project, local);
 
     TaskProvider<UMLPSymLinkCreationTask> symlinkCreationTask = createSymlinkCreationTask(project, local);
-    if(project.getTasks().getNames().contains("runApp")) {
-      project.getTasks().named("runApp").configure(t -> t.dependsOn(symlinkCreationTask));
-    }
+    project.getTasks().configureEach(t -> {
+      if(t.getName().equals("runApp")) {
+        t.dependsOn(symlinkCreationTask);
+      }
+    });
 
     // Sync Output of UMLP-Task to the correct directory. This done because "npm serve" cannot handle the intermediate state while the UMLPTasks are running
     // and Hot-Reload aborts
@@ -101,6 +103,7 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
 
     if(local) {
       TaskProvider<UMLPSymLinkCreationTask> symlinkClientProdTask = createSymlinkClientProductionCreationTask(project);
+      symlinkClientProdTask.configure(t -> t.dependsOn(symlinkCreationTask));
       project.getTasks().configureEach(t -> {
         if(t.getName().equals("buildApp")) {
           t.dependsOn(symlinkClientProdTask);

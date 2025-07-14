@@ -105,55 +105,17 @@ def prebuildTasks = [
     npmInstall, genGUI2
 ]
 
-tasks.register('linkStuff', NodeTask) {
-  dependsOn(prebuildTasks, ':umlp-rte:client:buildAll')
+tasks.named("symlinkCreation")  {
+  dependsOn(prebuildTasks)
 
-  def hwcsrc = file("$buildDir/frontendGen/hwcsrc")
-  def hwcsrcTarget = file("src/app")
+  def fronten2dOut = file("$buildDir/frontendGen/fe2")
+  def frontend2OutTarget = file("$buildDir/umlp/fe2")
 
-
-
-  def frontendOut = file("$buildDir/frontendGen/fe2")
-  def frontendOutTarget = file("$buildDir/umlp/fe2")
-
-  def frontendGenLink = file("$buildDir/build/frontendGen")
-  def frontendGenLinkTarget = file("$buildDir/frontendGen")
-
-  def umlpDir = file("$buildDir/frontendGen/libs/@umlp")
-
-
-  def clientRTELinks = [:]
-  project(":umlp-rte:client").ext.libs.forEach {
-    def f = file(project(":umlp-rte:client").projectDir.toString()+"/projects/"+it)
-    // Link, Target
-    clientRTELinks.put(umlpDir.toPath().resolve(f.name).toFile(),f.toPath().toAbsolutePath().toFile())
-  }
-
-  outputs.upToDateWhen {
-    Files.isSymbolicLink(hwcsrc.toPath()) &&
-    Files.isSymbolicLink(frontendOut.toPath()) &&
-    Files.isSymbolicLink(frontendGenLink.toPath()) &&
-    clientRTELinks.keySet().every {
-      Files.isSymbolicLink(Paths.get(it.toString()))
-    }
-  }
-  def allLinks = [hwcsrc.toString(), hwcsrcTarget.toString(),
-    frontendOut.toString(), frontendOutTarget.toString(),
-    frontendGenLink.toString(), frontendGenLinkTarget.toString()
-  ]
-  clientRTELinks.keySet().forEach {
-    allLinks.add(it.toString())
-    allLinks.add(clientRTELinks.get(it).toString())
-  }
-  script = file("$buildDir/frontendGen/symlink-creation.js")
-  args = allLinks
+  getSymlinkMap().put(fronten2dOut, frontend2OutTarget)
 }
 
 tasks.register('buildApp', NpxTask) {
   dependsOn(prebuildTasks)
-  dependsOn {
-    tasks.named('linkStuff').get()
-  }
   command = "ng"
   args = ["build"]
 }
@@ -161,18 +123,12 @@ assemble.dependsOn(buildApp)
 
 tasks.register('testApp', NpxTask) {
   dependsOn(prebuildTasks)
-  dependsOn {
-    tasks.named('linkStuff').get()
-  }
   command = "ng"
   args = ["test"]
 }
 
 tasks.register('runApp', NpxTask) {
   dependsOn(prebuildTasks)
-  dependsOn {
-    tasks.named('linkStuff').get()
-  }
   command = "ng"
   args = ["serve"]
 }

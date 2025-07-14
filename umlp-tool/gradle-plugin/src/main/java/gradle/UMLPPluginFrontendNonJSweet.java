@@ -4,6 +4,7 @@ package gradle;
 import gradle.specific.FrontendSetup;
 import gradle.specific.UMLPFrontendTask;
 import gradle.specific.UMLPGuiGenTask;
+import gradle.specific.UMLPSymLinkCreationTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.file.DuplicatesStrategy;
@@ -14,6 +15,7 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -23,6 +25,7 @@ import static gradle.UMLPPluginBase.UMLP_MODULES_IMPORT_MAP_CONFIG;
 import static gradle.UMLPPluginFrontendBase.UMLP_FRONTEND_DOMAIN_TASK_NAME;
 import static gradle.UMLPPluginFrontendBase.UMLP_FRONTEND_GUI_TASK_NAME;
 import static gradle.UMLPPluginFrontendBase.UMLP_FRONTEND_SETUP_TASK_NAME;
+import static gradle.UMLPPluginFrontendBase.UMLP_FRONTEND_SYMLINK_CREATION_TASK_NAME;
 import static gradle.UMLPPluginFrontendBase.UMLP_GROUP_NAME;
 
 /**
@@ -40,6 +43,9 @@ public abstract class UMLPPluginFrontendNonJSweet implements Plugin<Project> {
     TaskProvider<Sync> syncGuiTask = project.getTasks().named("SYNC_" + UMLP_FRONTEND_GUI_TASK_NAME, Sync.class);
 
     TaskProvider<FrontendSetup> frontendSetupTask = project.getTasks().named(UMLP_FRONTEND_SETUP_TASK_NAME, FrontendSetup.class);
+
+    TaskProvider<UMLPSymLinkCreationTask> symLinkCreationTask =
+        project.getTasks().named(UMLP_FRONTEND_SYMLINK_CREATION_TASK_NAME, UMLPSymLinkCreationTask.class);
 
     // TaskProvider<Sync> unpackModulesTask = createUnpackModuleTask(project);
 
@@ -72,6 +78,20 @@ public abstract class UMLPPluginFrontendNonJSweet implements Plugin<Project> {
     project.getTasks().named("generate").configure(generateTask -> {
       generateTask.dependsOn(frontendGuiTask);
       // generateTask.dependsOn(unpackModulesTask);
+    });
+
+    symLinkCreationTask.configure(umlpTask -> {
+      if(umlpTask.getSymlinkMap().isPresent()) {
+        File hwcSrcLink = project.getBuildDir().toPath().resolve("frontendGen/hwcsrc").toFile();
+        File hwcTS = project.getProjectDir().toPath().resolve("src/app").toFile();
+        if(hwcTS.exists()) {
+          umlpTask.getSymlinkMap().put(hwcSrcLink, hwcTS);
+        }
+
+        File angularTemplateResolveLink = project.getBuildDir().toPath().resolve("build/umlp_frontend").toFile();
+        File angularTemplateResolveTarget = project.getBuildDir().toPath().resolve("umlp_frontend").toFile();
+        umlpTask.getSymlinkMap().put(angularTemplateResolveLink,angularTemplateResolveTarget);
+      }
     });
 
   }
