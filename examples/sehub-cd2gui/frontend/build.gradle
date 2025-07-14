@@ -136,7 +136,7 @@ tasks.register("symlinkCreation", UMLPSymLinkCreationTask)  { task ->
 tasks.register('buildApp', NpxTask) {
   dependsOn(prebuildTasks)
   dependsOn {
-    tasks.named('linkStuff').get()
+    tasks.named('symlinkCreation').get()
   }
   command = "ng"
   args = ["build"]
@@ -146,7 +146,7 @@ assemble.dependsOn(buildApp)
 tasks.register('testApp', NpxTask) {
   dependsOn(prebuildTasks)
   dependsOn {
-    tasks.named('linkStuff').get()
+    tasks.named('symlinkCreation').get()
   }
   command = "ng"
   args = ["test"]
@@ -155,7 +155,7 @@ tasks.register('testApp', NpxTask) {
 tasks.register('runApp', NpxTask) {
   dependsOn(prebuildTasks)
   dependsOn {
-    tasks.named('linkStuff').get()
+    tasks.named('symlinkCreation').get()
   }
   command = "ng"
   args = ["serve"]
