@@ -85,7 +85,7 @@ public class UMLPFilePipeline extends Pipeline<UMLPPipelineData> {
     register("init", init = data -> {
       // If we were to with to use concrete syntax, we would have to use the UMLPTagDefinitionMill
       if (SYMTAB.isSelected(data.cmd)) {
-        MillConf.switchTo(MillConf.UMLP, MillConf.TAGS);
+        MillConf.switchTo(MillConf.TAGS, MillConf.UMLP);
         TagRelated.initLookup(data.importedSymbolPath);
       }
       else {
