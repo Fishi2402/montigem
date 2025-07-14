@@ -261,7 +261,7 @@ public class UMLPFilePipeline extends Pipeline<UMLPPipelineData> {
       if (FOR_CLIENT.isSelected(data.data.cmd)) {
         Optional<String> tslib = UMLPGeneratorConfig.getInstance().getTSLib();
         if (tslib.isPresent()) {
-          MillConf.switchTo(MillConf.GUIDSL);
+          MillConf.switchTo(MillConf.GUIDSL, MillConf.UMLP);
           ImportMapGenerator importMapGenerator = new ImportMapGenerator(data.genSetup);
           importMapGenerator.generate(tslib.get(), data.ast);
         }
