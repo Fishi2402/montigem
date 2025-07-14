@@ -7,13 +7,11 @@ import de.monticore.cdmerge.CDMerge;
 import de.monticore.cdmerge.config.MergeParameter;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.reporting.Reporting;
-import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.io.paths.MCPath;
 import de.monticore.ocl.ocl._ast.ASTOCLCompilationUnit;
 import de.monticore.ocl.ocl._parser.OCLParser;
 import de.monticore.ocl.util.SymbolTableUtil;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import de.monticore.tagging.tags.TagsMill;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import umlp.MCPathUtil;
@@ -84,12 +82,9 @@ public class UMLPFilePipeline extends Pipeline<UMLPPipelineData> {
     register("setupUMLPReports", setupUMLPReports);
     register("init", init = data -> {
       // If we were to with to use concrete syntax, we would have to use the UMLPTagDefinitionMill
+      MillConf.switchTo(MillConf.TAGS, MillConf.GUIDSL, MillConf.UMLP);
       if (SYMTAB.isSelected(data.cmd)) {
-        MillConf.switchTo(MillConf.TAGS, MillConf.UMLP);
         TagRelated.initLookup(data.importedSymbolPath);
-      }
-      else {
-        MillConf.switchTo(MillConf.UMLP);
       }
       UMLPMill.globalScope().setSymbolPath(data.importedSymbolPath);
       TSImportMap.INSTANCE.init(data.importedSymbolPath);
@@ -261,12 +256,10 @@ public class UMLPFilePipeline extends Pipeline<UMLPPipelineData> {
       if (FOR_CLIENT.isSelected(data.data.cmd)) {
         Optional<String> tslib = UMLPGeneratorConfig.getInstance().getTSLib();
         if (tslib.isPresent()) {
-          MillConf.switchTo(MillConf.GUIDSL, MillConf.UMLP);
           ImportMapGenerator importMapGenerator = new ImportMapGenerator(data.genSetup);
           importMapGenerator.generate(tslib.get(), data.ast);
         }
 
-        MillConf.switchTo(MillConf.TAGS, MillConf.GUIDSL, MillConf.UMLP);
         TSUMLPGenerator generator = new TSUMLPGenerator(data.genSetup, config);
         String configTemplate = data.data.cmd.getOptionValue("ct", UMLPTool.DEFAULT_CONFIGTEMPLATE_GUI2JAVA2TS);
         generator.generate(data.ast, configTemplate);
