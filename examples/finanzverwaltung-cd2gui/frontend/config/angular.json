@@ -39,7 +39,13 @@
               "./node_modules/font-awesome/css/font-awesome.css",
               "src/styles.scss"
             ],
-            "scripts": []
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src"
+              ]
+            },
+            "scripts": [],
+            "preserveSymlinks": true
           },
           "configurations": {
             "production": {
