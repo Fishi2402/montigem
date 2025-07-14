@@ -35,7 +35,7 @@ application {
 jib {
   container.mainClass = application.mainClass.get()
   from.image = "$container_from_image"
-  to.image = "${container_target_image_base}sehub_backend:latest:latest"
+  to.image = "${container_target_image_base}sehub_backend:latest"
 }
 
 dependencies {
