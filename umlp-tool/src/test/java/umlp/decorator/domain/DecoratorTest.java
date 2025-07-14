@@ -4,6 +4,7 @@ package umlp.decorator.domain;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
+import com.github.javaparser.ast.CompilationUnit;
 import de.monticore.cd._symboltable.BuiltInTypes;
 import de.monticore.cd.codegen.CD2JavaTemplates;
 import de.monticore.cd.codegen.CdUtilsPrinter;
@@ -65,7 +66,7 @@ abstract public class DecoratorTest extends AbstractUMLPTest {
     new UMLSetDefaultsTrafo(CD4CodeMill.inheritanceTraverser()).transform(cdAST);
 
     // Create scopes and symbols
-    umlp._symboltable.IUMLPArtifactScope symTab = UMLPMill.scopesGenitorDelegator().createFromAST(cdAST);
+    UMLPMill.scopesGenitorDelegator().createFromAST(cdAST);
     cdAST.accept(new CD4CodeSymbolTableCompleter(cdAST).getTraverser()); // run symbol table completer
 
     // Create new output CompilationUnit
@@ -163,7 +164,7 @@ abstract public class DecoratorTest extends AbstractUMLPTest {
     // test parsing
     ParserConfiguration configuration = new ParserConfiguration();
     JavaParser parser = new JavaParser(configuration);
-    ParseResult parseResult = parser.parse(sb.toString());
+    ParseResult<CompilationUnit> parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
   }
 }

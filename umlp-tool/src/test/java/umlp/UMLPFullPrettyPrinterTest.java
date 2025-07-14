@@ -10,7 +10,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SuppressWarnings("OptionalGetWithoutIsPresent")
 public class UMLPFullPrettyPrinterTest extends AbstractUMLPTest {
 
   @Test

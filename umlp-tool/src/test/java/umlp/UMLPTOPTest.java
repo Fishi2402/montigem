@@ -7,12 +7,15 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDElement;
 import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.expressions.expressionsbasis.ExpressionsBasisMill;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.MCPath;
+import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
 import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.MCFatalError;
+import org.apache.commons.text.StringEscapeUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -28,7 +31,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class UMLPTOPTest {
 
@@ -74,7 +78,9 @@ public class UMLPTOPTest {
         assertEquals(1, getCheckCount("Class1", checkedGenEngineFiles));
         assertEquals(1, getCheckCount("Class1", checkedGuiGenUtilFiles));
 
-        Log.setErrorHook(() -> {throw new MCFatalError("msg");});
+        Log.setErrorHook(() -> {
+          throw new MCFatalError("msg");
+        });
         assertThrows(MCFatalError.class, () -> {
           tsTopDecorator.decorate(make(needsTop(newClass("Class2"), "Missing %s")));
         }, "0xC0FFEE00: Missing Class2");
@@ -137,7 +143,17 @@ public class UMLPTOPTest {
             .addValues(
                 CD4CodeMill.stereoValueBuilder()
                     .setName(TopDecorator.NEEDS_TOP_IDENTIFIER)
-                    .setContent(reason)
+                    .setExpression(
+                        ExpressionsBasisMill
+                            .literalExpressionBuilder()
+                            .setLiteral(
+                                MCCommonLiteralsMill
+                                    .stringLiteralBuilder()
+                                    .setSource(StringEscapeUtils.escapeJava(reason))
+                                    .build()
+                            )
+                            .build()
+                    )
                     .build()
             )
             .build()

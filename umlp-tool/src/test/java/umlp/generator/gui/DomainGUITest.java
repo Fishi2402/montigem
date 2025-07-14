@@ -43,7 +43,7 @@ public abstract class DomainGUITest extends AbstractGUITest {
 
     String otherCDPath = "packaged/Types.umlp";
     var otherAST = cd2AST(otherCDPath);
-    var otherSym = cdAST2Sym(symFolder, otherCDPath, otherAST);
+    cdAST2Sym(symFolder, otherCDPath, otherAST);
 
     MCPath importedSymbolPath;
     importedSymbolPath = new MCPath();
@@ -65,7 +65,7 @@ public abstract class DomainGUITest extends AbstractGUITest {
     }
 
     MillConf.switchTo(MillConf.UMLP, MillConf.GUIDSL);
-    dummyTool.initGUIGlobalScope(importedSymbolPath);
+    UMLPTool.initGUIGlobalScope(importedSymbolPath);
     ASTGUICompilationUnit guiAst;
     var e = dummyTool.createAstWithSymtab(
         Paths.get("src/test/resources/" + modelPath)
