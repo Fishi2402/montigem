@@ -34,69 +34,69 @@ public class CommandDecorator extends AbstractDecorator {
     CreateDecorator createDecorator = new CreateDecorator(glex);
     createDecorator.transform(cdAST, decoratedAST);
     addedDeSers.addAll(createDecorator.getAddedDeSers());
-    Log.info("After decorator: CreateDecorator", CommandDecorator.class.getName());
+    Log.debug("After decorator: CreateDecorator", CommandDecorator.class.getName());
 
     DeleteDecorator deleteDecorator = new DeleteDecorator(glex);
     deleteDecorator.transform(cdAST, decoratedAST);
     addedDeSers.addAll(deleteDecorator.getAddedDeSers());
-    Log.info("After decorator: DeleteDecorator", CommandDecorator.class.getName());
+    Log.debug("After decorator: DeleteDecorator", CommandDecorator.class.getName());
 
     GetDecorator getDecorator = new GetDecorator(glex);
     getDecorator.transform(cdAST, decoratedAST);
     addedDeSers.addAll(getDecorator.getAddedDeSers());
-    Log.info("After decorator: GetDecorator", CommandDecorator.class.getName());
+    Log.debug("After decorator: GetDecorator", CommandDecorator.class.getName());
 
     SetDecorator setDecorator = new SetDecorator(glex, supportedDeSers);
     setDecorator.transform(cdAST, decoratedAST);
     addedDeSers.addAll(setDecorator.getAddedDeSers());
-    Log.info("After decorator: SetDecorator", CommandDecorator.class.getName());
+    Log.debug("After decorator: SetDecorator", CommandDecorator.class.getName());
 
     CalculateDecorator calculateDecorator = new CalculateDecorator(glex, supportedDeSers);
     calculateDecorator.transform(cdAST, decoratedAST);
     addedDeSers.addAll(calculateDecorator.getAddedDeSers());
-    Log.info("After decorator: CalculateDecorator", CommandDecorator.class.getName());
+    Log.debug("After decorator: CalculateDecorator", CommandDecorator.class.getName());
 
     AddDecorator addDecorator = new AddDecorator(glex, supportedDeSers);
     addDecorator.transform(cdAST, decoratedAST);
     addedDeSers.addAll(addDecorator.getAddedDeSers());
-    Log.info("After decorator: AddDecorator", CommandDecorator.class.getName());
+    Log.debug("After decorator: AddDecorator", CommandDecorator.class.getName());
 
     RemoveDecorator removeDecorator = new RemoveDecorator(glex, supportedDeSers);
     removeDecorator.transform(cdAST, decoratedAST);
     addedDeSers.addAll(removeDecorator.getAddedDeSers());
-    Log.info("After decorator: RemoveDecorator", CommandDecorator.class.getName());
+    Log.debug("After decorator: RemoveDecorator", CommandDecorator.class.getName());
 
     GetFilteredDecorator getFilteredDecorator = new GetFilteredDecorator(glex);
     getFilteredDecorator.transform(cdAST, decoratedAST);
     addedDeSers.addAll(getFilteredDecorator.getAddedDeSers());
-    Log.info("After decorator: GetFilteredDecorator", CommandDecorator.class.getName());
+    Log.debug("After decorator: GetFilteredDecorator", CommandDecorator.class.getName());
 
     AssocCommandDecorator assocCommandDecorator = new AssocCommandDecorator(glex);
     assocCommandDecorator.transform(cdAST, decoratedAST);
     addedDeSers.addAll(assocCommandDecorator.getAddedDeSers());
-    Log.info("After decorator: AssocCommandDecorator", CommandDecorator.class.getName());
+    Log.debug("After decorator: AssocCommandDecorator", CommandDecorator.class.getName());
 
     ManagerSubscriptionDecorator managerSubscriptionDecorator = new ManagerSubscriptionDecorator(glex);
     managerSubscriptionDecorator.transform(cdAST, decoratedAST);
     addedDeSers.addAll(managerSubscriptionDecorator.getAddedDeSers());
-    Log.info("After decorator: ManagerSubscriptionCommandDecorator", CommandDecorator.class.getName());
+    Log.debug("After decorator: ManagerSubscriptionCommandDecorator", CommandDecorator.class.getName());
 
     OwnCommandDecorator cmdDecorator = new OwnCommandDecorator(glex, supportedDeSers);
     cmdDecorator.transform(cdAST, decoratedAST);
     addedDeSers.addAll(cmdDecorator.getAddedDeSers());
-    Log.info("After decorator: CmdDecorator", CommandDecorator.class.getName());
+    Log.debug("After decorator: CmdDecorator", CommandDecorator.class.getName());
 
     AggregatedCommandDeSerDecorator aggregatedCommandDeSerDecorator = new AggregatedCommandDeSerDecorator(glex, addedDeSers);
     aggregatedCommandDeSerDecorator.transform(cdAST, decoratedAST);
-    Log.info("After decorator: XCommandDeserDecorator", CommandDecorator.class.getName());
+    Log.debug("After decorator: XCommandDeserDecorator", CommandDecorator.class.getName());
 
     DomainTypeFilterDecorator domainTypeFilterDecorator = new DomainTypeFilterDecorator(glex);
     domainTypeFilterDecorator.transform(cdAST, decoratedAST);
-    Log.info("After decorator: DomainTypeFilterDecorator", CommandDecorator.class.getName());
+    Log.debug("After decorator: DomainTypeFilterDecorator", CommandDecorator.class.getName());
 
     EventSendingObserverDecorator managerEventSendingObserverDecorator = new EventSendingObserverDecorator(glex);
     managerEventSendingObserverDecorator.transform(cdAST, decoratedAST);
-    Log.info("After decorator: ManagerEventSendingObserverDecorator", CommandDecorator.class.getName());
+    Log.debug("After decorator: ManagerEventSendingObserverDecorator", CommandDecorator.class.getName());
 
   }
 

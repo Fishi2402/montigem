@@ -133,7 +133,7 @@ public class UMLPTool extends UMLPToolTOP {
   }
 
   protected static void logTrafoExec(String trafo, ASTCDCompilationUnit ast) {
-    Log.info("========= CD after '" + trafo + "': =========", UMLPTool.class.getName());
+    Log.debug("========= CD after '" + trafo + "': =========", UMLPTool.class.getName());
   }
 
   public static ASTGUICompilationUnit parseGUI(String model) {
