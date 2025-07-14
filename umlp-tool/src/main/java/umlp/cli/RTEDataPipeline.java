@@ -13,6 +13,7 @@ import umlp._symboltable.IUMLPArtifactScope;
 import umlp.cli.common.IOperation;
 import umlp.cli.common.Pipeline;
 import umlp.generator.domain.UMLPGeneratorConfig;
+import umlp.generator.gui.gentypescript.config.ImportMapGenerator;
 import umlp.generator.rte.data.CDGenerator4RTE;
 
 import java.nio.file.Path;
@@ -20,6 +21,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static umlp.UMLPToolOptions.INPUT;
@@ -96,7 +98,20 @@ public class RTEDataPipeline extends Pipeline<UMLPPipelineData> {
   public final IOperation.ISimpleOperation<DataWithAstAndGen> model_pipe_init_cd4c =
       data -> CD4C.init(data.getGenSetup());
 
+  public final IOperation.ISimpleOperation<DataWithAstAndGen> model_pipe_init_gen_config =
+      data -> {
+        // Get all ASTGUIComponents
+        data.getGenSetup().getGlex().setGlobalValue("UMLPGeneratorConfig",
+            UMLPGeneratorConfig.getInstance().initFromCmd(data.getData().getCmd()));
+      };
+
   public final IOperation.ISimpleOperation<DataWithAstAndGen> model_pipe_generate = data -> {
+    Optional<String> tslib = UMLPGeneratorConfig.getInstance().getTSLib();
+    if (tslib.isPresent()) {
+      ImportMapGenerator importMapGenerator = new ImportMapGenerator(data.getGenSetup());
+      importMapGenerator.generate(tslib.get(), data.getAst());
+    }
+
     // Get all ASTGUIComponents
     CDGenerator4RTE javaGenerator =
         new CDGenerator4RTE(data.getGenSetup(), UMLPGeneratorConfig.getInstance());
@@ -116,6 +131,7 @@ public class RTEDataPipeline extends Pipeline<UMLPPipelineData> {
     pipe.register("model_pipe_init_gen_setup", model_pipe_init_gen_setup);
     pipe.register("model_pipe_init_glex", model_pipe_init_glex);
     pipe.register("model_pipe_init_cd4c", model_pipe_init_cd4c);
+    pipe.register("model_pipe_init_gen_config", model_pipe_init_gen_config);
     pipe.register("model_pipe_generate", model_pipe_generate);
 
     pipe.addFinally(data -> Reporting.flush(data.getAst()));

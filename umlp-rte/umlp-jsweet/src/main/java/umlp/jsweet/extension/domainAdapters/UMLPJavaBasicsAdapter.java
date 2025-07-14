@@ -175,7 +175,7 @@ public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
         return true;
       case "toString":
         boolean isDateTime = invocation.getTargetType().toString().contains("DateTime");
-        print(invocation.getTargetExpression()).print(".toISOString(")
+        print(invocation.getTargetExpression()).print("?.toISOString(")
             .printArgList(invocation.getArguments()).print(")").print(isDateTime ? ".slice(0, 19).replace('T', ' ')" : ".slice(0, 10)");
         return true;
       case "compareTo":

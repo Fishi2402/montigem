@@ -12,7 +12,6 @@ def useCD2GUI = false
 
 dependencies {
   implementation project(":products:demorec:backend")
-  guiTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
   testImplementation project(':umlp-test-rte')
 
   domainSources project(":products:demorec:backend")

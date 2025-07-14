@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test_gui;
+
+component IterateOverViewElementsComp(List<GUIViewElement> eList) {
+  @iterate(GUIViewElement e : eList) {
+    e;
+  }
+}

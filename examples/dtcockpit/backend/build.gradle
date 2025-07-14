@@ -14,32 +14,6 @@ dependencies {
   umlpModules(project(":modules:comment")) // Load generator modifications
 }
 
-// Use this to debug dependencies
-tasks.register("reportDependenciesCI") { task ->
-  println("The following libs were used:")
-  project.configurations.each { config ->
-    // dependencies of configuration ':examples:dtcockpit:backend:compileClasspath'umlp.modules:login DefaultExternalModuleDependency{group='umlp.modules', name='login', version='7.8.0-SNAPSHOT', configuration='default'}
-    //[C:\Users\ALu\.gradle\caches\modules-2\files-2.1\\ umlp.modules\login\7.8.0-SNAPSHOT\da276b235a3e1f9f2c4c1d74e675ebcd7a2ef07f\login-7.8.0-SNAPSHOT.jar,
-    if (config.isCanBeResolved()) {
-      println("config " + project.path + " : " + config.name + " " + config.isCanBeResolved())
-      config.allDependencies.each { d ->
-        if (d instanceof ExternalModuleDependency) {
-          println("dependencies of " + config)
-          println(d.getGroup() + ":" + d.getName() + " " + d)
-          println(config.fileCollection(d).getFiles())
-        } else if (d instanceof DefaultProjectDependency) {
-          println("dependencies of (project) " + config)
-          println(d.getGroup() + ":" + d.getName() + " (local) " + d)
-          println(config.fileCollection(d).getFiles())
-        } else {
-          println("unknown d " + d)
-        }
-      }
-    }
-  }
-}
-
-
 application { // Set Main-Class for "run" task
   mainClass = 'dtcockpit.DtcockpitServerApplication'
 }

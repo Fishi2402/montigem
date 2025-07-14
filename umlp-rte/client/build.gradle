@@ -59,7 +59,13 @@ sourceSets {
     resources {
       srcDirs(createGuiSymbols.getOutput())
       srcDirs(tasks.named("createCDSymbols").get().getOutput())
-      srcDirs(() -> parent.tasks.named("generateGuiComponentJava").get().getSymbolOutDir())
+      // srcDirs(() -> parent.tasks.named("generateGuiComponentJava").get().getSymbolOutDir())
+      srcDirs += files {
+        parent.tasks.matching { it.name.startsWith('cd2java_') }.collect { it.symbolOutDir.asFile }
+      }
+      srcDirs += files {
+        parent.tasks.matching { it.name.startsWith('cd2java_') }.collect { it.outputDir.asFile }
+      }
       srcDirs libs.collect {
         file("projects/$it/build/gui")
       }
@@ -71,6 +77,12 @@ sourceSets {
 tasks.register('symbolJar', Jar) {
   dependsOn processSymbolsResources
   from sourceSets.symbols.output
+  from({
+    parent.tasks.matching { it.name.startsWith('cd2java_') }.collect { it.symbolOutDir }
+  }) { include "**/*sym", "**/*import.map", "**/*tags" }
+  from({
+    parent.tasks.matching { it.name.startsWith('cd2java_') }.collect { it.outputDir }
+  }) { include "**/*sym", "**/*import.map", "**/*tags" }
   archiveClassifier.set('symbols')
   includeEmptyDirs = false
 }
@@ -171,7 +183,7 @@ tasks.named("processSymbolsResources") {
 
 gradle.projectsEvaluated {
   tasks.named("processSymbolsResources") {
-    dependsOn parent.tasks.named("generateGuiComponentJava")
+    dependsOn parent.tasks.matching { it.name.startsWith('cd2java_') } // named("generateGuiComponentJava")
   }
 }
 
