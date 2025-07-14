@@ -101,9 +101,11 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
 
     if(local) {
       TaskProvider<UMLPSymLinkCreationTask> symlinkClientProdTask = createSymlinkClientProductionCreationTask(project);
-      if(project.getTasks().getNames().contains("buildApp")) {
-        project.getTasks().named("buildApp").configure(t -> t.dependsOn(symlinkClientProdTask));
-      }
+      project.getTasks().configureEach(t -> {
+        if(t.getName().equals("buildApp")) {
+          t.dependsOn(symlinkClientProdTask);
+        }
+      });
     }
     //
 
@@ -232,7 +234,7 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
 
   // This is a Task only need in the case of local=true
   private TaskProvider<UMLPSymLinkCreationTask> createSymlinkClientProductionCreationTask(final Project project) {
-    TaskProvider<UMLPSymLinkCreationTask> symlinkCreationTask = project.getTasks().register("symLinkProductionLibraries",
+    TaskProvider<UMLPSymLinkCreationTask> symlinkCreationTask = project.getTasks().register("symlinkProductionLibraries",
         UMLPSymLinkCreationTask.class, umlpTask -> {
           umlpTask.setGroup(UMLP_GROUP_NAME);
           Project umlpRteClientProject = project.findProject(":umlp-rte:client");
