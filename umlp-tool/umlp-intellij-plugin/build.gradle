@@ -1,22 +1,25 @@
 plugins {
   id 'java'
   id 'de.monticore.language-server' version "$mclsg_version"
-  id 'org.jetbrains.intellij' apply(false) // version defined in umlp-tool
+  id "org.jetbrains.intellij.platform" version "2.6.0"
 }
 
 def shouldBuildIntelliJPlugin = ("true").equals(getProperty('buildIntelliJPlugin'))
 
-if(shouldBuildIntelliJPlugin) {
-  apply plugin: "org.jetbrains.intellij"
-  intellij{
-    version = "2024.2"
-    plugins.set(["com.redhat.devtools.lsp4ij:0.7.0"])
-  }
-}
-
 java {
   toolchain {
     languageVersion = JavaLanguageVersion.of(17)
+  }
+}
+
+sourceSets {
+  main {
+    java {
+      srcDir("build/generated-sources/UMLPWithGUI/plugins/umlpwithgui-intellij-plugin/src/main/java")
+    }
+    resources {
+      srcDir("build/generated-sources/UMLPWithGUI/plugins/umlpwithgui-intellij-plugin/src/main/resources")
+    }
   }
 }
 
@@ -30,12 +33,23 @@ repositories {
     url repo
   }
   mavenCentral()
+  intellijPlatform {
+    defaultRepositories()
+  }
 }
 
 def languageServerJarFile = parent.tasks.packUMLPWithGUILanguageServer.getArchiveFile().get().getAsFile()
 
 dependencies {
   implementation "de.monticore.language-server.plugin:monticore-language-server-runtime-intellij:$mclsg_version"
+  intellijPlatform {
+    intellijIdeaCommunity("2024.2")
+    plugins(["com.redhat.devtools.lsp4ij:0.7.0"])
+  }
+}
+
+task initializeIntelliJPlugin(){
+  // ignore, workaround for new intellij plugin
 }
 
 task autoconfigure(type: de.mclsg.task.AutoconfigureTask) {
@@ -49,10 +63,28 @@ task autoconfigure(type: de.mclsg.task.AutoconfigureTask) {
       including(de.mclsg.TaskTypes.INTELLIJ_PLUGIN)
     }
     excluding(de.mclsg.TaskTypes.LANGUAGE_SERVER)
+    excluding(de.mclsg.TaskTypes.BUILD_INTELLIJ_PLUGIN) // conflicts with "org.jetbrains.intellij.platform"
     languageServerJar(languageServerJarFile)
   }
 }
 
+// integrate into plugin
+generateUMLPWithGUIIntellijPlugin {
+  handCodedDir.set(project.layout.projectDirectory.dir("src/main/java"))
+}
+patchPluginXml.dependsOn(generateUMLPWithGUIIntellijPlugin) // maybe specific to "org.jetbrains.intellij.platform"
+compileJava.dependsOn(generateUMLPWithGUIIntellijPlugin) // replaces intelliJPlugin source set
+buildPlugin.dependsOn(prepareSandbox) // weird: this is not set by default, but buildPlugin copies from target folder of prepareSandbox
+prepareSandbox {
+  // TODO: double copy, we can probably skip copy into generated-sources
+  from("build/generated-sources/UMLPWithGUI/plugins/umlpwithgui-intellij-plugin/bin/") {
+    into("umlp-intellij-plugin/bin") // based on project name, not generated plugin name!
+  }
+  dependsOn(copyUMLPWithGUIJarIntoIntellijPlugin)
+}
+copyUMLPWithGUIJarIntoIntellijPlugin.dependsOn(parent.tasks.packUMLPWithGUILanguageServer)
+
+// config
 if(shouldBuildIntelliJPlugin) {
   def lspWorkdir = file("../../").getAbsolutePath()
 
@@ -61,7 +93,6 @@ if(shouldBuildIntelliJPlugin) {
   }
 
   jar.dependsOn parent.tasks.packUMLPWithGUILanguageServer
-  processIntelliJPluginSourceSetResources.dependsOn generateUMLPWithGUIIntellijPlugin
 
   // TODO: can not override default starting behaviour
   task runLsp(type: JavaExec) {

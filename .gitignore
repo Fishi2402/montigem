@@ -19,4 +19,4 @@ umlp-tool/gradle
 node_modules/
 .jsweet/
 .DS_Store
-
+**/.intellijPlatform/

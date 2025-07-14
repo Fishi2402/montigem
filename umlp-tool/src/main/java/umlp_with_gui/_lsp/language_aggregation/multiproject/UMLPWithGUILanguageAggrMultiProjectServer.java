@@ -7,17 +7,21 @@ import de.mclsg.lsp.modelpath.multiproject.MultiProjectLanguageServerFileModelPa
 import de.mclsg.lsp.modelpath.multiproject.MultiProjectLanguageServerGradleModelPathResolver;
 import de.mclsg.lsp.modelpath.multiproject.MultiProjectLayout;
 import de.mclsg.lsp.util.AsyncUtil;
+import de.mclsg.lsp.util.LogRegistry;
 import de.monticore.io.paths.MCPath;
 import org.eclipse.lsp4j.CompletionOptions;
 import org.eclipse.lsp4j.InitializeParams;
 import org.eclipse.lsp4j.InitializeResult;
 import org.eclipse.lsp4j.MessageParams;
 import org.eclipse.lsp4j.MessageType;
+import org.eclipse.lsp4j.ShowDocumentParams;
 import org.eclipse.lsp4j.SignatureHelpOptions;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -27,6 +31,7 @@ public class UMLPWithGUILanguageAggrMultiProjectServer extends UMLPWithGUILangua
 
   public UMLPWithGUILanguageAggrMultiProjectServer(MCPath modelPath) {
     super(modelPath);
+    getWorkspaceService().registerCommand("umlpwithgui.multiproject.getProjectLayout", executeCommandParams -> multiProjectLayout);
   }
 
   protected void initResolver() {
@@ -38,7 +43,7 @@ public class UMLPWithGUILanguageAggrMultiProjectServer extends UMLPWithGUILangua
             new MultiProjectLanguageServerGradleModelPathResolver(rootDir) {
               {
                 this.minimumJavaVersion = 11;
-                this.maximumJavaVersion = 19;
+                this.maximumJavaVersion = 17;
               }
 
               @Override

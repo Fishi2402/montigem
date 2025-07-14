@@ -29,7 +29,7 @@ build_no_containers:
     # add one of the downloaded nodejs distributions to PATH, so we can build the vscode plugin
     - export PATH="$PATH:$(dirname $(find $(pwd) -type f -name "node" -print -quit))"
     - "cd umlp-tool"
-    - "gradle packageUMLPWithGUIVscodePlugin buildPlugin -P buildVscodePlugin=true -P buildIntelliJPlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 2>&1 | tee -a $CI_PROJECT_DIR/build.log"
+    - "gradle packageUMLPWithGUIVscodePlugin -P buildVscodePlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 2>&1 | tee -a $CI_PROJECT_DIR/build.log"
   cache:
     paths:
       - .gradle/nodejs
@@ -52,6 +52,22 @@ build_no_containers:
     refs:
       - dev
 
+build_intellij_plugin:
+  image: gradle:8.5
+  stage: build
+  script:
+    - "cd umlp-tool"
+    - "gradle buildPlugin -P buildIntelliJPlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 | tee -a $CI_PROJECT_DIR/build.log"
+  artifacts:
+    when: always
+    paths:
+      - umlp-tool/umlp-intellij-plugin/build/distributions/**
+      - build.log
+    reports:
+      # Lets gitlab render infos about failed tests
+      junit: "**/test/**/TEST-*.xml"
+    expire_in: 1 week
+
 build_with_deploy:
   stage: build
   script:
@@ -65,7 +81,7 @@ build_with_deploy:
     # add one of the downloaded nodejs distributions to PATH, so we can build the vscode plugin
     - export PATH="$PATH:$(dirname $(find $(pwd) -type f -name "node" -print -quit))"
     - "cd umlp-tool"
-    - "gradle packageUMLPWithGUIVscodePlugin buildPlugin -P buildVscodePlugin=true -P buildIntelliJPlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 2>&1 | tee -a $CI_PROJECT_DIR/build.log"
+    - "gradle packageUMLPWithGUIVscodePlugin -P buildVscodePlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 2>&1 | tee -a $CI_PROJECT_DIR/build.log"
     - "cd .."
     # Build containers
     # Weather Backend
