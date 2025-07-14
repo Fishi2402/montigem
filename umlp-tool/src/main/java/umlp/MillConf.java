@@ -17,21 +17,9 @@ public enum MillConf {
     EnumSet<MillConf> es = EnumSet.noneOf(MillConf.class);
     Collections.addAll(es, mills);
 
-    for (MillConf c : MillConf.values()) {
-      if (!es.contains(c)) {
-        switch (c) {
-          case GUIDSL:
-            GUIDSLMill.reset();
-            break;
-          case TAGS:
-            TagsMill.reset();
-            break;
-          case UMLP:
-            UMLPMill.reset();
-            break;
-        }
-      }
-    }
+    GUIDSLMill.reset();
+    TagsMill.reset();
+    UMLPMill.reset();
 
     for (MillConf c : mills) {
       switch (c) {

@@ -1,19 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui;
 
-import de.monticore.cd._symboltable.BuiltInTypes;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
-import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
 import de.monticore.io.paths.MCPath;
 import de.monticore.tagging.TagRepository;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.ParseException;
+import umlp.MillConf;
 import umlp.TagRelated;
-import umlp.UMLPMill;
 import umlp.UMLPTool;
 import umlp._symboltable.IUMLPArtifactScope;
 import umlp._symboltable.UMLPSymbols2Json;
@@ -37,10 +34,7 @@ public abstract class DomainGUITest extends AbstractGUITest {
       String symbolPath,
       String domainPath
   ) {
-    UMLPMill.reset();
-    UMLPMill.globalScope().clear();
-    UMLPMill.init();
-    BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope(), false);
+    MillConf.switchTo(MillConf.TAGS, MillConf.UMLP);
 
     String symFolder = BUILD_FOLDER + "/guitests";
 
@@ -70,8 +64,7 @@ public abstract class DomainGUITest extends AbstractGUITest {
       fail();
     }
 
-    GUIDSLMill.init();
-    GUIDSLMill.globalScope().clear();
+    MillConf.switchTo(MillConf.UMLP, MillConf.GUIDSL);
     dummyTool.initGUIGlobalScope(importedSymbolPath);
     ASTGUICompilationUnit guiAst;
     var e = dummyTool.createAstWithSymtab(
