@@ -79,6 +79,9 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
       if(t.getName().equals("runApp")) {
         t.dependsOn(symlinkCreationTask);
       }
+      if(t.getName().equals("buildApp")) {
+        t.dependsOn(symlinkCreationTask);
+      }
     });
 
     // Sync Output of UMLP-Task to the correct directory. This done because "npm serve" cannot handle the intermediate state while the UMLPTasks are running
