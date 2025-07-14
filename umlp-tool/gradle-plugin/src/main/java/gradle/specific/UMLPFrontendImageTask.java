@@ -62,7 +62,7 @@ public abstract class UMLPFrontendImageTask extends DefaultTask {
   public UMLPFrontendImageTask() {
     getCaddyfile().convention(getProject().getLayout().file(getProject().provider(() -> getProject().getBuildDir().toPath().resolve("frontendGen").resolve("Caddyfile").toFile())));
     getServedFiles().convention(
-        getProject().getLayout().getBuildDirectory().dir("frontendGen/dist/client/")
+        getProject().getLayout().getBuildDirectory().dir("frontendGen/dist/client/browser")
     );
   }
 
