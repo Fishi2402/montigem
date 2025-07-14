@@ -118,9 +118,9 @@ tasks.register("symlinkCreation", UMLPSymLinkCreationTask)  { task ->
   def frontendGenLinkTarget = file("$buildDir/frontendGen")
   getSymlinkMap().put(frontendGenLink, frontendGenLinkTarget)
 
-  def fronten2dOut = file("$buildDir/frontendGen/fe2")
+  def frontend2Out = file("$buildDir/frontendGen/fe2")
   def frontend2OutTarget = file("$buildDir/umlp/fe2")
-  getSymlinkMap().put(fronten2dOut, frontend2OutTarget)
+  getSymlinkMap().put(frontend2Out, frontend2OutTarget)
 
   def symlinkMap = getSymlinkMap()
 

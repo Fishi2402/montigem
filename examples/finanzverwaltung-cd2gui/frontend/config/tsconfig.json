@@ -27,14 +27,13 @@
     ],
     "paths": {
       "@umlp/*": ["libs/@umlp/*"],
-      "@montigem/login": ["../../../../../modules/login/frontendTS/login"],
+      "@montigem/login": ["login_hwc"],
       "*": [
-        "node_modules/*",
         "build/appdomain/*",
         "build/appgui/*",
-        "../umlp/fe2/*",
+        "fe2/*",
         "src/app/*",
-        "../../src/app/*"
+        "hwcsrc/*"
       ]
     }
   },
