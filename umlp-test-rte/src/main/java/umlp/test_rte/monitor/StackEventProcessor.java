@@ -1,10 +1,10 @@
 package umlp.test_rte.monitor;
 
 import org.junit.jupiter.api.Assertions;
-import umlp.test_rte.monitor.event.CallEvent;
 import umlp.test_rte.monitor.event.ErrorEvent;
+import umlp.test_rte.monitor.event.MethodCallEvent;
 import umlp.test_rte.monitor.event.ReturnEvent;
-import umlp.test_rte.monitor.event.ReturnVoidEvent;
+import umlp.test_rte.monitor.event.ReturnWithValueEvent;
 import umlp.test_rte.monitor.event.StackEvent;
 import umlp.test_rte.monitor.event.StackEventVariantMatcher;
 import umlp.test_rte.monitor.model.ExpectedEvent;
@@ -73,7 +73,7 @@ public final class StackEventProcessor {
     //update callstack
     var sourceTargetPair = event.matchVariant(new StackEventVariantMatcher<SourceTargetPair>() {
       @Override
-      public SourceTargetPair whenCallEvent(CallEvent event) {
+      public SourceTargetPair whenMethodCall(MethodCallEvent event) {
         callstack.add(reportingObject);
         return new SourceTargetPair(callstack.size() >= 2 ?
                                         Optional.of(callstack.get(callstack.size() - 2)) :
@@ -193,7 +193,7 @@ public final class StackEventProcessor {
             var expectedMethodName = call.methodName();
             return event.matchVariant(new StackEventVariantMatcher<>() {
               @Override
-              public Optional<String> whenCallEvent(CallEvent event) {
+              public Optional<String> whenMethodCall(MethodCallEvent event) {
                 //check method name
                 var actualMethodName = event.methodName();
                 if (!actualMethodName.equals(expectedMethodName)) {
@@ -237,7 +237,7 @@ public final class StackEventProcessor {
           public Optional<String> whenError(Error error) {
             return event.matchVariant(new StackEventVariantMatcher<>() {
               @Override
-              public Optional<String> whenErrorEvent(ErrorEvent event) {
+              public Optional<String> whenError(ErrorEvent event) {
                 //check error
                 var expectedError = error.error();
                 var actualError = event.exception();
@@ -261,7 +261,7 @@ public final class StackEventProcessor {
           public Optional<String> whenReturn(Return returnAction) {
             return event.matchVariant(new StackEventVariantMatcher<>() {
               @Override
-              public Optional<String> whenReturnEvent(ReturnEvent event) {
+              public Optional<String> whenReturnWithValue(ReturnWithValueEvent event) {
                 //check that return value is expected
                 if (!returnAction.hasReturnValue()) {
                   return Optional.of("Expected void return but got " + event.returnValue());
@@ -280,7 +280,7 @@ public final class StackEventProcessor {
               }
 
               @Override
-              public Optional<String> whenReturnVoidEvent(ReturnVoidEvent event) {
+              public Optional<String> whenReturn(ReturnEvent event) {
                 //check that void is expected
                 if (returnAction.hasReturnValue()) {
                   return Optional.of("Expected return value but got none");
@@ -300,17 +300,17 @@ public final class StackEventProcessor {
           public Optional<String> whenActivityBarEnd(ActivityBarEnd activityBarEnd) {
             return event.matchVariant(new StackEventVariantMatcher<>() {
               @Override
-              public Optional<String> whenErrorEvent(ErrorEvent event) {
+              public Optional<String> whenError(ErrorEvent event) {
                 return checkMethodNameMatch(expectedEvent, event);
               }
 
               @Override
-              public Optional<String> whenReturnEvent(ReturnEvent event) {
+              public Optional<String> whenReturnWithValue(ReturnWithValueEvent event) {
                 return checkMethodNameMatch(expectedEvent, event);
               }
 
               @Override
-              public Optional<String> whenReturnVoidEvent(ReturnVoidEvent event) {
+              public Optional<String> whenReturn(ReturnEvent event) {
                 return checkMethodNameMatch(expectedEvent, event);
               }
 

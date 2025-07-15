@@ -4,51 +4,43 @@ import java.util.Objects;
 
 public final class ReturnEvent implements StackEvent {
 
-  private final BasicEvent parent;
-  private final Object returnValue;
+  private final Object object;
+  private final String signature;
 
-  public ReturnEvent(Object object, String methodName, Object returnValue) {
-    this(new BasicEvent(object, methodName), returnValue);
-  }
-
-  ReturnEvent(BasicEvent parent, Object returnValue) {
-    this.parent = parent;
-    this.returnValue = returnValue;
+  public ReturnEvent(Object object, String signature) {
+    this.object = object;
+    this.signature = signature;
   }
 
   @Override
   public Object object() {
-    return parent.object();
+    return object;
   }
 
   @Override
-  public String methodName() {
-    return parent.methodName();
+  public String signature() {
+    return signature;
   }
 
   @Override
   public <T> T matchVariant(StackEventVariantMatcher<T> matcher) {
-    return matcher.whenReturnEvent(this);
-  }
-
-  public Object returnValue() {
-    return returnValue;
+    return matcher.whenReturn(this);
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (o == null || getClass() != o.getClass()) return false;
-    ReturnEvent that = (ReturnEvent) o;
-    return Objects.equals(parent, that.parent) && Objects.equals(returnValue, that.returnValue);
+  public boolean equals(Object object1) {
+    if (object1 == null || getClass() != object1.getClass()) return false;
+    ReturnEvent that = (ReturnEvent) object1;
+    return Objects.equals(object, that.object) && Objects.equals(signature, that.signature);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(parent, returnValue);
+    return Objects.hash(object, signature);
   }
 
   @Override
   public String toString() {
-    return "ReturnEvent{" + "parent=" + parent + ", returnValue=" + returnValue + '}';
+    return "ReturnEvent{" + "object=" + object + ", signature='" + signature + '\'' + '}';
   }
 }

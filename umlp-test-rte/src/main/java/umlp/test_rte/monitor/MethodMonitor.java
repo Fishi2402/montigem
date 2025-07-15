@@ -1,9 +1,10 @@
 package umlp.test_rte.monitor;
 
-import umlp.test_rte.monitor.event.CallEvent;
+import umlp.test_rte.monitor.event.ConstructorCallEvent;
 import umlp.test_rte.monitor.event.ErrorEvent;
+import umlp.test_rte.monitor.event.MethodCallEvent;
 import umlp.test_rte.monitor.event.ReturnEvent;
-import umlp.test_rte.monitor.event.ReturnVoidEvent;
+import umlp.test_rte.monitor.event.ReturnWithValueEvent;
 import umlp.test_rte.monitor.event.StackEvent;
 
 import java.util.Optional;
@@ -12,7 +13,8 @@ public final class MethodMonitor {
 
   private static Optional<StackEventProcessor> activeProcessor = Optional.empty();
 
-  private final StackEvent callEvent;
+  private final Object reportingObject;
+  private final String signature;
   private final Optional<StackEventProcessor> processor;
   private boolean active = true;
 
@@ -24,43 +26,49 @@ public final class MethodMonitor {
     activeProcessor = Optional.empty();
   }
 
-  public static MethodMonitor start(Object object, String methodName, Object... params) {
-    var callEvent = new CallEvent(object, methodName, params);
-    activeProcessor.ifPresent(processor -> processor.process(callEvent));
-    return new MethodMonitor(callEvent, activeProcessor);
+  public static MethodMonitor reportMethodCall(Object object,
+      String signature,
+      String methodName,
+      Object... params) {
+    var monitor = new MethodMonitor(object, signature, activeProcessor);
+    monitor.process(new MethodCallEvent(object, signature, methodName, params));
+    return monitor;
   }
 
-  private MethodMonitor(StackEvent callEvent, Optional<StackEventProcessor> processor) {
-    this.callEvent = callEvent;
+  public static MethodMonitor reportConstructorCall(Object object,
+      String signature,
+      String className,
+      Object... params) {
+    var monitor = new MethodMonitor(object, signature, activeProcessor);
+    monitor.process(new ConstructorCallEvent(object, signature, className, params));
+    return monitor;
+  }
+
+  private MethodMonitor(Object reportingObject,
+      String signature,
+      Optional<StackEventProcessor> processor) {
+    this.reportingObject = reportingObject;
+    this.signature = signature;
     this.processor = processor;
-  }
-
-  public Object object() {
-    return callEvent.object();
-  }
-
-  public String methodName() {
-    return callEvent.methodName();
   }
 
   public void reportError(Exception exception) {
     deactivate();
-    processor.ifPresent(processor -> processor.process(new ErrorEvent(object(),
-        methodName(),
-        exception)));
+    process(new ErrorEvent(reportingObject, signature, exception));
   }
 
-  public void reportReturn(Object returnValue) {
+  public void reportReturnWithValue(Object returnValue) {
     deactivate();
-    processor.ifPresent(processor -> processor.process(new ReturnEvent(object(),
-        methodName(),
-        returnValue)));
+    process(new ReturnWithValueEvent(reportingObject, signature, returnValue));
   }
 
-  public void reportReturnVoid() {
+  public void reportReturn() {
     deactivate();
-    processor.ifPresent(processor -> processor.process(new ReturnVoidEvent(object(),
-        methodName())));
+    process(new ReturnEvent(reportingObject, signature));
+  }
+
+  private void process(StackEvent event) {
+    processor.ifPresent(processor -> processor.process(event));
   }
 
   private void deactivate() {

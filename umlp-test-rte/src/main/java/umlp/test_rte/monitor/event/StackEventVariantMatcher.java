@@ -2,19 +2,23 @@ package umlp.test_rte.monitor.event;
 
 public interface StackEventVariantMatcher<T> {
 
-  default T whenCallEvent(CallEvent event) {
+  default T whenMethodCall(MethodCallEvent event) {
     return otherwise(event);
   }
 
-  default T whenErrorEvent(ErrorEvent event) {
+  default T whenConstructorCall(ConstructorCallEvent event) {
     return otherwise(event);
   }
 
-  default T whenReturnEvent(ReturnEvent event) {
+  default T whenError(ErrorEvent event) {
     return otherwise(event);
   }
 
-  default T whenReturnVoidEvent(ReturnVoidEvent event) {
+  default T whenReturnWithValue(ReturnWithValueEvent event) {
+    return otherwise(event);
+  }
+
+  default T whenReturn(ReturnEvent event) {
     return otherwise(event);
   }
 

@@ -3,16 +3,19 @@ package umlp.test_rte.monitor.event;
 public interface ExhaustiveStackEventVariantMatcher<T> extends StackEventVariantMatcher<T> {
 
   @Override
-  T whenCallEvent(CallEvent event);
+  T whenMethodCall(MethodCallEvent event);
 
   @Override
-  T whenErrorEvent(ErrorEvent event);
+  T whenConstructorCall(ConstructorCallEvent event);
 
   @Override
-  T whenReturnEvent(ReturnEvent event);
+  T whenError(ErrorEvent event);
 
   @Override
-  T whenReturnVoidEvent(ReturnVoidEvent event);
+  T whenReturnWithValue(ReturnWithValueEvent event);
+
+  @Override
+  T whenReturn(ReturnEvent event);
 
   @Override
   default T otherwise(StackEvent event) {
