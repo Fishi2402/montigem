@@ -55,6 +55,10 @@ public final class StackEventProcessor {
    */
   private final List<ExpectedEvent> expectedEvents = new ArrayList<>();
   /**
+   * Stack with the signatures of all active activity bars
+   */
+  private final LinkedList<String> activityBarSignatureStack = new LinkedList<>();
+  /**
    * Whether we are currently performing a condition check and therefor ignoring incoming events
    */
   private boolean conditionChecking = false;
@@ -111,7 +115,22 @@ public final class StackEventProcessor {
     var errorMessage = matchesExpectedEvent(event, sourceObject, targetObject);
 
     if (errorMessage.isEmpty()) {
-      expectedEvents.remove(0); //remove the expected event
+      var expectedEvent = expectedEvents.remove(0); //remove the expected event
+      var isCallEventWithActivityBar = expectedEvent.action().matchVariant(new ActionVariantMatcher<Boolean>() {
+        @Override
+        public Boolean whenMethodCall(MethodCallAction methodCall) {
+          return methodCall.hasActivityBar();
+        }
+
+        @Override
+        public Boolean otherwise(Action action) {
+          return false;
+        }
+      });
+      if (isCallEventWithActivityBar) {
+        //write down the signature which we would need to close this activity bar again
+        activityBarSignatureStack.add(event.signature());
+      }
 
       //check whether the next expected event is the end of an activity bar and is also matched by
       // the current one
@@ -134,6 +153,7 @@ public final class StackEventProcessor {
                                                                           targetObject).isEmpty();
       if (nextIsEndOfActivityBar && alsoMatchesNextEvent.get()) {
         expectedEvents.remove(0); //also remove the expected activity bar end
+        activityBarSignatureStack.removeLast(); //remove the signature
       }
 
       return; //no need to check whether the match was actually required
@@ -197,7 +217,7 @@ public final class StackEventProcessor {
         .action()
         .matchVariant(new ExhaustiveActionVariantMatcher<Optional<String>>() {
           @Override
-          public Optional<String> whenCall(MethodCallAction call) {
+          public Optional<String> whenMethodCall(MethodCallAction call) {
             var expectedMethodName = call.methodName();
             return event.matchVariant(new StackEventVariantMatcher<>() {
               @Override
@@ -335,7 +355,7 @@ public final class StackEventProcessor {
 
               private Optional<String> checkSignature(String exitKind) {
                 var actualSignature = event.signature();
-                var expectedSignature = activityBarEnd.signature();
+                var expectedSignature = activityBarSignatureStack.getLast();
                 if (!actualSignature.equals(expectedSignature)) {
                   return Optional.of(
                       "Expected end of " + expectedSignature + " but got " + exitKind + " from " +
@@ -426,7 +446,7 @@ public final class StackEventProcessor {
             public Boolean whenMethodCall(MethodCallEvent event) {
               return expectedEvent.action().matchVariant(new ActionVariantMatcher<>() {
                 @Override
-                public Boolean whenCall(MethodCallAction methodCall) {
+                public Boolean whenMethodCall(MethodCallAction methodCall) {
                   //method name must match
                   if (!event.methodName().equals(methodCall.methodName())) {
                     return false;

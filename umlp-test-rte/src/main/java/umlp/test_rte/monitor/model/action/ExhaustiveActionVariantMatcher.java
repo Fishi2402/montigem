@@ -3,7 +3,7 @@ package umlp.test_rte.monitor.model.action;
 public interface ExhaustiveActionVariantMatcher<T> extends ActionVariantMatcher<T> {
 
   @Override
-  T whenCall(MethodCallAction methodCall);
+  T whenMethodCall(MethodCallAction methodCall);
 
   @Override
   T whenError(ErrorAction errorAction);

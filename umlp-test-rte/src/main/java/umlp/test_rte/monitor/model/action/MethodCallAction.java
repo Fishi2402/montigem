@@ -7,15 +7,17 @@ public final class MethodCallAction implements Action {
 
   private final String methodName;
   private final Optional<Object[]> args;
+  private final boolean hasActivityBar;
 
-  public MethodCallAction(String methodName, Optional<Object[]> args) {
+  public MethodCallAction(String methodName, Optional<Object[]> args, boolean hasActivityBar) {
     this.methodName = methodName;
     this.args = args;
+    this.hasActivityBar = hasActivityBar;
   }
 
   @Override
   public <T> T matchVariant(ActionVariantMatcher<T> matcher) {
-    return matcher.whenCall(this);
+    return matcher.whenMethodCall(this);
   }
 
   public String methodName() {
@@ -26,20 +28,26 @@ public final class MethodCallAction implements Action {
     return args;
   }
 
+  public boolean hasActivityBar() {
+    return hasActivityBar;
+  }
+
   @Override
   public boolean equals(Object object) {
     if (object == null || getClass() != object.getClass()) return false;
-    MethodCallAction methodCall = (MethodCallAction) object;
-    return Objects.equals(methodName, methodCall.methodName) && Objects.equals(args, methodCall.args);
+    MethodCallAction that = (MethodCallAction) object;
+    return hasActivityBar == that.hasActivityBar && Objects.equals(methodName, that.methodName) &&
+           Objects.equals(args, that.args);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(methodName, args);
+    return Objects.hash(methodName, args, hasActivityBar);
   }
 
   @Override
   public String toString() {
-    return "Call{" + "methodName='" + methodName + '\'' + ", args=" + args + '}';
+    return "MethodCallAction{" + "methodName='" + methodName + '\'' + ", args=" + args +
+           ", hasActivityBar=" + hasActivityBar + '}';
   }
 }

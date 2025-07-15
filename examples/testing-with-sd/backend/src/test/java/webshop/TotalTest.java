@@ -64,11 +64,11 @@ public class TotalTest extends WebshopSQLDBTestSetup {
     MethodMonitor.setActiveStackEventProcessor(processor);
 
     processor.load(
-        new ExpectedEvent(o, o, new MethodCallAction("addItem", Optional.of(new Object[]{item})), new OCLCondition(() -> o.getTotal() == 0, "o.getTotal() == 0")),
-        new ExpectedEvent(o, o, new MethodCallAction("addItem", Optional.of(new Object[]{item, NotificationScope.ALL}))),
+        new ExpectedEvent(o, o, new MethodCallAction("addItem", Optional.of(new Object[]{item}), true), new OCLCondition(() -> o.getTotal() == 0, "o.getTotal() == 0")),
+        new ExpectedEvent(o, o, new MethodCallAction("addItem", Optional.of(new Object[]{item, NotificationScope.ALL}), false)),
         new ExpectedEvent(o, o, new ReturnAction(), new OCLVariableDeclaration(() -> total2 = o.getTotal()), new OCLCondition(() -> total2 == 6, "total2 == 6")),
         new ExpectedEvent(o, o, new ReturnAction()),
-        new ExpectedEvent(o, o, new ActivityBarEndAction("addItem"))
+        new ExpectedEvent(o, o, new ActivityBarEndAction())
                   );
     //execute trigger
     o.addItem(item);
