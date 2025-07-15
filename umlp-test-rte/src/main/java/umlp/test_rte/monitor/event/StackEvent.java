@@ -7,15 +7,6 @@ public interface StackEvent {
   Object object();
 
   /**
-   * The name of the method involved
-   * @deprecated One should always use the signature
-   */
-  @Deprecated
-  default String methodName() {
-    return signature().substring(0, signature().indexOf("("));
-  }
-
-  /**
    * A string representation of the method- or constructor signature
    */
   String signature();
