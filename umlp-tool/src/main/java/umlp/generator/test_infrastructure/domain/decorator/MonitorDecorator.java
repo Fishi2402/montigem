@@ -306,9 +306,14 @@ public class MonitorDecorator extends AbstractDecorator {
             .map(ASTCDParameterTOP::getName)
             .collect(Collectors.joining(", "));
         var isVoid = returnType.equals("void");
+        var paramsPresent = !params.isEmpty();
         var actualCall = this.actualCall.orElseGet(() -> String.format("super.%s(%s)",
                                                                        name,
                                                                        paramCallsite));
+        var signature = name + "(" + params
+            .stream()
+            .map(param -> param.getMCType().printType())
+            .collect(Collectors.joining(", ")) + ")";
 
         return cd4c.addMethod(clazz,
                               "umlp.monitor.monitor-method",
@@ -317,8 +322,9 @@ public class MonitorDecorator extends AbstractDecorator {
                               paramSignature,
                               paramCallsite,
                               isVoid,
-                              !params.isEmpty(),
-                              actualCall);
+                              paramsPresent,
+                              actualCall,
+                              signature);
       }
 
       @Override

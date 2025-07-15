@@ -30,6 +30,12 @@ public class TotalTest extends WebshopSQLDBTestSetup {
     WebshopManager.setInstance(instance);
   }
 
+  @Override
+  public void _cleanup() throws Exception {
+    MethodMonitor.removeActiveStackEventProcessor();
+    super._cleanup();
+  }
+
   Order o;
   Item item;
   int total1;

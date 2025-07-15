@@ -19,7 +19,7 @@ public final class MethodMonitor {
   private boolean active = true;
 
   public static void setActiveStackEventProcessor(StackEventProcessor processor) {
-    activeProcessor = Optional.of(processor);
+    activeProcessor = Optional.ofNullable(processor);
   }
 
   public static void removeActiveStackEventProcessor() {
