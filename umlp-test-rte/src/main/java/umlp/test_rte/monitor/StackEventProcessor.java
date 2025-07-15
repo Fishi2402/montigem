@@ -13,11 +13,11 @@ import umlp.test_rte.monitor.model.ExpectedEvent;
 import umlp.test_rte.monitor.model.MatchingStrategy;
 import umlp.test_rte.monitor.model.action.Action;
 import umlp.test_rte.monitor.model.action.ActionVariantMatcher;
-import umlp.test_rte.monitor.model.action.ActivityBarEnd;
-import umlp.test_rte.monitor.model.action.Call;
-import umlp.test_rte.monitor.model.action.Error;
+import umlp.test_rte.monitor.model.action.ActivityBarEndAction;
+import umlp.test_rte.monitor.model.action.ErrorAction;
 import umlp.test_rte.monitor.model.action.ExhaustiveActionVariantMatcher;
-import umlp.test_rte.monitor.model.action.Return;
+import umlp.test_rte.monitor.model.action.MethodCallAction;
+import umlp.test_rte.monitor.model.action.ReturnAction;
 import umlp.test_rte.monitor.model.ocl.ExhaustiveOCLStatementVariantMatcher;
 import umlp.test_rte.monitor.model.ocl.OCLCondition;
 import umlp.test_rte.monitor.model.ocl.OCLVariableDeclaration;
@@ -120,7 +120,7 @@ public final class StackEventProcessor {
           .action()
           .matchVariant(new ActionVariantMatcher<Boolean>() {
             @Override
-            public Boolean whenActivityBarEnd(ActivityBarEnd activityBarEnd) {
+            public Boolean whenActivityBarEnd(ActivityBarEndAction activityBarEnd) {
               return true;
             }
 
@@ -197,7 +197,7 @@ public final class StackEventProcessor {
         .action()
         .matchVariant(new ExhaustiveActionVariantMatcher<Optional<String>>() {
           @Override
-          public Optional<String> whenCall(Call call) {
+          public Optional<String> whenCall(MethodCallAction call) {
             var expectedMethodName = call.methodName();
             return event.matchVariant(new StackEventVariantMatcher<>() {
               @Override
@@ -242,17 +242,28 @@ public final class StackEventProcessor {
           }
 
           @Override
-          public Optional<String> whenError(Error error) {
+          public Optional<String> whenError(ErrorAction errorAction) {
             return event.matchVariant(new StackEventVariantMatcher<>() {
               @Override
               public Optional<String> whenError(ErrorEvent event) {
+                //check error-type
+                var expectedErrorType = errorAction.errorTypeName();
+                var actualErrorType = event.errorTypeName();
+                if (!actualErrorType.equals(expectedErrorType)) {
+                  return Optional.of(
+                      "Expected error of type " + expectedErrorType + " but got error of type " +
+                      actualErrorType);
+                }
+
                 //check error
-                var expectedError = error.error();
-                var actualError = event.exception();
-                if (!actualError.equals(expectedError)) {
-                  return Optional.of(String.format("Expected %s but got %s",
-                                                   expectedError,
-                                                   actualError));
+                if (errorAction.error().isPresent()) {
+                  var expectedError = errorAction.error().get();
+                  var actualError = event.error();
+                  if (!actualError.equals(expectedError)) {
+                    return Optional.of(String.format("Expected %s but got %s",
+                                                     expectedError,
+                                                     actualError));
+                  }
                 }
 
                 return Optional.empty();
@@ -266,7 +277,7 @@ public final class StackEventProcessor {
           }
 
           @Override
-          public Optional<String> whenReturn(Return returnAction) {
+          public Optional<String> whenReturn(ReturnAction returnAction) {
             return event.matchVariant(new StackEventVariantMatcher<>() {
               @Override
               public Optional<String> whenReturnWithValue(ReturnWithValueEvent event) {
@@ -305,7 +316,7 @@ public final class StackEventProcessor {
           }
 
           @Override
-          public Optional<String> whenActivityBarEnd(ActivityBarEnd activityBarEnd) {
+          public Optional<String> whenActivityBarEnd(ActivityBarEndAction activityBarEnd) {
             return event.matchVariant(new StackEventVariantMatcher<>() {
               @Override
               public Optional<String> whenError(ErrorEvent event) {
@@ -415,12 +426,13 @@ public final class StackEventProcessor {
             public Boolean whenMethodCall(MethodCallEvent event) {
               return expectedEvent.action().matchVariant(new ActionVariantMatcher<>() {
                 @Override
-                public Boolean whenCall(Call call) {
+                public Boolean whenCall(MethodCallAction methodCall) {
                   //method name must match
-                  if (!event.methodName().equals(call.methodName())) {
+                  if (!event.methodName().equals(methodCall.methodName())) {
                     return false;
                   }
-                  return call.args().isEmpty() || Arrays.equals(call.args().get(), event.params());
+                  return methodCall.args().isEmpty() ||
+                         Arrays.equals(methodCall.args().get(), event.params());
                 }
 
                 @Override
@@ -440,8 +452,12 @@ public final class StackEventProcessor {
             public Boolean whenError(ErrorEvent event) {
               return expectedEvent.action().matchVariant(new ActionVariantMatcher<>() {
                 @Override
-                public Boolean whenError(Error error) {
-                  return error.error().equals(event.exception());
+                public Boolean whenError(ErrorAction errorAction) {
+                  if (!errorAction.errorTypeName().equals(event.errorTypeName())) {
+                    return false;
+                  }
+                  return errorAction.error().isEmpty() ||
+                         errorAction.error().get().equals(event.error());
                 }
 
                 @Override
@@ -455,7 +471,7 @@ public final class StackEventProcessor {
             public Boolean whenReturnWithValue(ReturnWithValueEvent event) {
               return expectedEvent.action().matchVariant(new ActionVariantMatcher<>() {
                 @Override
-                public Boolean whenReturn(Return returnAction) {
+                public Boolean whenReturn(ReturnAction returnAction) {
                   return returnAction.hasReturnValue() &&
                          Objects.equals(returnAction.returnValue().orElse(null),
                                         event.returnValue());
@@ -472,7 +488,7 @@ public final class StackEventProcessor {
             public Boolean whenReturn(ReturnEvent event) {
               return expectedEvent.action().matchVariant(new ActionVariantMatcher<>() {
                 @Override
-                public Boolean whenReturn(Return returnAction) {
+                public Boolean whenReturn(ReturnAction returnAction) {
                   return !returnAction.hasReturnValue();
                 }
 

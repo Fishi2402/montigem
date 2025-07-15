@@ -52,9 +52,11 @@ public final class MethodMonitor {
     this.processor = processor;
   }
 
-  public void reportError(Exception exception) {
+  public void reportError(Throwable error) {
     deactivate();
-    process(new ErrorEvent(reportingObject, signature, exception));
+    //there is no other way to get the name, of the type, of an arbitrary thrown error
+    var errorTypeName = error.getClass().getName();
+    process(new ErrorEvent(reportingObject, signature, errorTypeName, error));
   }
 
   public void reportReturnWithValue(Object returnValue) {

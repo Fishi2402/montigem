@@ -2,11 +2,12 @@ package umlp.test_rte.monitor.model.action;
 
 import java.util.Objects;
 
-public final class ActivityBarEnd implements Action {
+public final class ActivityBarEndAction implements Action {
 
   private final String signature;
 
-  public ActivityBarEnd(String signature) {
+  //TODO signature is not known at test compile time, only at runtime
+  public ActivityBarEndAction(String signature) {
     this.signature = signature;
   }
 
@@ -27,7 +28,7 @@ public final class ActivityBarEnd implements Action {
   @Override
   public boolean equals(Object object) {
     if (object == null || getClass() != object.getClass()) return false;
-    ActivityBarEnd that = (ActivityBarEnd) object;
+    ActivityBarEndAction that = (ActivityBarEndAction) object;
     return Objects.equals(signature, that.signature);
   }
 

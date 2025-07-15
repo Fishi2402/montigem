@@ -6,12 +6,14 @@ public final class ErrorEvent implements StackEvent {
 
   private final Object object;
   private final String signature;
-  private final Exception exception;
+  private final String errorTypeName;
+  private final Throwable error;
 
-  public ErrorEvent(Object object, String signature, Exception exception) {
+  public ErrorEvent(Object object, String signature, String errorTypeName, Throwable error) {
     this.object = object;
     this.signature = signature;
-    this.exception = exception;
+    this.errorTypeName = errorTypeName;
+    this.error = error;
   }
 
 
@@ -25,8 +27,12 @@ public final class ErrorEvent implements StackEvent {
     return signature;
   }
 
-  public Exception exception() {
-    return exception;
+  public String errorTypeName() {
+    return errorTypeName;
+  }
+
+  public Throwable error() {
+    return error;
   }
 
   @Override
@@ -39,17 +45,17 @@ public final class ErrorEvent implements StackEvent {
     if (object1 == null || getClass() != object1.getClass()) return false;
     ErrorEvent that = (ErrorEvent) object1;
     return Objects.equals(object, that.object) && Objects.equals(signature, that.signature) &&
-           Objects.equals(exception, that.exception);
+           Objects.equals(error, that.error);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(object, signature, exception);
+    return Objects.hash(object, signature, error);
   }
 
   @Override
   public String toString() {
     return "ErrorEvent{" + "object=" + object + ", signature='" + signature + '\'' +
-           ", exception=" + exception + '}';
+           ", exception=" + error + '}';
   }
 }

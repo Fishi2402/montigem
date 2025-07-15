@@ -1,20 +1,20 @@
 package umlp.test_rte.monitor.model.action;
 
 public interface ActionVariantMatcher<T> {
-  default T whenCall(Call call) {
-    return otherwise(call);
+  default T whenCall(MethodCallAction methodCall) {
+    return otherwise(methodCall);
   }
 
-  default T whenError(Error error) {
-    return otherwise(error);
+  default T whenError(ErrorAction errorAction) {
+    return otherwise(errorAction);
   }
 
-  default T whenReturn(Return returnAction) {
+  default T whenReturn(ReturnAction returnAction) {
     return otherwise(returnAction);
   }
 
-  default T whenActivityBarEnd(ActivityBarEnd activityBarEnd) {
-    return otherwise(activityBarEnd);
+  default T whenActivityBarEnd(ActivityBarEndAction activityBarEndAction) {
+    return otherwise(activityBarEndAction);
   }
 
   T otherwise(Action action);

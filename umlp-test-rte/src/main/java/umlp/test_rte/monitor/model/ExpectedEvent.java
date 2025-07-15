@@ -1,16 +1,10 @@
 package umlp.test_rte.monitor.model;
 
 import umlp.test_rte.monitor.model.action.Action;
-import umlp.test_rte.monitor.model.action.ActivityBarEnd;
-import umlp.test_rte.monitor.model.action.Call;
-import umlp.test_rte.monitor.model.action.Error;
-import umlp.test_rte.monitor.model.action.ExhaustiveActionVariantMatcher;
-import umlp.test_rte.monitor.model.action.Return;
 import umlp.test_rte.monitor.model.ocl.OCLStatement;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public final class ExpectedEvent {
 
@@ -27,31 +21,6 @@ public final class ExpectedEvent {
     this.target = target;
     this.action = action;
     this.oclStatements = new ArrayList<>(List.of(oclStatements));
-  }
-
-  @Deprecated
-  public Optional<String> getMethodName() {
-    return action.matchVariant(new ExhaustiveActionVariantMatcher<>() {
-      @Override
-      public Optional<String> whenCall(Call call) {
-        return Optional.of(call.methodName());
-      }
-
-      @Override
-      public Optional<String> whenError(Error error) {
-        return error.methodName();
-      }
-
-      @Override
-      public Optional<String> whenReturn(Return returnAction) {
-        return returnAction.methodName();
-      }
-
-      @Override
-      public Optional<String> whenActivityBarEnd(ActivityBarEnd activityBarEnd) {
-        return Optional.of(activityBarEnd.methodName());
-      }
-    });
   }
 
   public Object source() {

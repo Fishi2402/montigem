@@ -7,9 +7,9 @@ import umlp.test_rte.monitor.MethodMonitor;
 import umlp.test_rte.monitor.StackEventProcessor;
 import umlp.test_rte.monitor.model.ExpectedEvent;
 import umlp.test_rte.monitor.model.MatchingStrategy;
-import umlp.test_rte.monitor.model.action.ActivityBarEnd;
-import umlp.test_rte.monitor.model.action.Call;
-import umlp.test_rte.monitor.model.action.Return;
+import umlp.test_rte.monitor.model.action.ActivityBarEndAction;
+import umlp.test_rte.monitor.model.action.MethodCallAction;
+import umlp.test_rte.monitor.model.action.ReturnAction;
 import umlp.test_rte.monitor.model.ocl.OCLCondition;
 import umlp.test_rte.monitor.model.ocl.OCLVariableDeclaration;
 import webshop.test_infrastructure.WebshopSQLDBTestSetup;
@@ -64,11 +64,11 @@ public class TotalTest extends WebshopSQLDBTestSetup {
     MethodMonitor.setActiveStackEventProcessor(processor);
 
     processor.load(
-        new ExpectedEvent(o, o, new Call("addItem", Optional.of(new Object[]{item})), new OCLCondition(() -> o.getTotal() == 0, "o.getTotal() == 0")),
-        new ExpectedEvent(o, o, new Call("addItem", Optional.of(new Object[]{item, NotificationScope.ALL}))),
-        new ExpectedEvent(o, o, new Return(Optional.empty()), new OCLVariableDeclaration(() -> total2 = o.getTotal()), new OCLCondition(() -> total2 == 6, "total2 == 6")),
-        new ExpectedEvent(o, o, new Return(Optional.empty())),
-        new ExpectedEvent(o, o, new ActivityBarEnd("addItem"))
+        new ExpectedEvent(o, o, new MethodCallAction("addItem", Optional.of(new Object[]{item})), new OCLCondition(() -> o.getTotal() == 0, "o.getTotal() == 0")),
+        new ExpectedEvent(o, o, new MethodCallAction("addItem", Optional.of(new Object[]{item, NotificationScope.ALL}))),
+        new ExpectedEvent(o, o, new ReturnAction(), new OCLVariableDeclaration(() -> total2 = o.getTotal()), new OCLCondition(() -> total2 == 6, "total2 == 6")),
+        new ExpectedEvent(o, o, new ReturnAction()),
+        new ExpectedEvent(o, o, new ActivityBarEndAction("addItem"))
                   );
     //execute trigger
     o.addItem(item);

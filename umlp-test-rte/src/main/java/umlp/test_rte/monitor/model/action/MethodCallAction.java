@@ -3,12 +3,12 @@ package umlp.test_rte.monitor.model.action;
 import java.util.Objects;
 import java.util.Optional;
 
-public final class Call implements Action {
+public final class MethodCallAction implements Action {
 
   private final String methodName;
   private final Optional<Object[]> args;
 
-  public Call(String methodName, Optional<Object[]> args) {
+  public MethodCallAction(String methodName, Optional<Object[]> args) {
     this.methodName = methodName;
     this.args = args;
   }
@@ -29,8 +29,8 @@ public final class Call implements Action {
   @Override
   public boolean equals(Object object) {
     if (object == null || getClass() != object.getClass()) return false;
-    Call call = (Call) object;
-    return Objects.equals(methodName, call.methodName) && Objects.equals(args, call.args);
+    MethodCallAction methodCall = (MethodCallAction) object;
+    return Objects.equals(methodName, methodCall.methodName) && Objects.equals(args, methodCall.args);
   }
 
   @Override
