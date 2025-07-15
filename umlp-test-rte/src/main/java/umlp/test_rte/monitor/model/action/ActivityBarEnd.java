@@ -4,11 +4,10 @@ import java.util.Objects;
 
 public final class ActivityBarEnd implements Action {
 
-  //TODO method signature would also come into play
-  private final String methodName;
+  private final String signature;
 
-  public ActivityBarEnd(String methodName) {
-    this.methodName = methodName;
+  public ActivityBarEnd(String signature) {
+    this.signature = signature;
   }
 
   @Override
@@ -16,24 +15,29 @@ public final class ActivityBarEnd implements Action {
     return matcher.whenActivityBarEnd(this);
   }
 
+  @Deprecated
   public String methodName() {
-    return methodName;
+    return signature.substring(0, signature.indexOf("("));
+  }
+
+  public String signature() {
+    return signature;
   }
 
   @Override
   public boolean equals(Object object) {
     if (object == null || getClass() != object.getClass()) return false;
     ActivityBarEnd that = (ActivityBarEnd) object;
-    return Objects.equals(methodName, that.methodName);
+    return Objects.equals(signature, that.signature);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(methodName);
+    return Objects.hashCode(signature);
   }
 
   @Override
   public String toString() {
-    return "ActivityBarEnd{" + "methodName='" + methodName + '\'' + '}';
+    return "ActivityBarEnd{" + "signature='" + signature + '\'' + '}';
   }
 }

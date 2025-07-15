@@ -29,6 +29,7 @@ public final class ExpectedEvent {
     this.oclStatements = new ArrayList<>(List.of(oclStatements));
   }
 
+  @Deprecated
   public Optional<String> getMethodName() {
     return action.matchVariant(new ExhaustiveActionVariantMatcher<>() {
       @Override

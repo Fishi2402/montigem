@@ -6,6 +6,7 @@ import java.util.Optional;
 public final class Error implements Action {
 
   private final Optional<String> methodName;
+  //TODO sometimes there is just the type of the expected error and not the actual error instance
   private final Throwable error;
 
   public Error(Optional<String> methodName, Throwable error) {
