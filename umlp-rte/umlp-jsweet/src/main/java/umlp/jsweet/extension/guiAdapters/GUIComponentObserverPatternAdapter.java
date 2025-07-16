@@ -446,7 +446,11 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
       }
     }
 
-    if (isSynchronizedMethod && adapterUtils.isSynchronized(invocation.getMethod())) {
+    Element returnType = types().asElement(invocation.getMethod().getReturnType());
+    if (isSynchronizedMethod && adapterUtils.isSynchronized(invocation.getMethod()) &&
+        // This is necessary because the generated angular component (ts only) does not know about obsevers. Only for Callbacks
+        (!(returnType instanceof TypeElement) ||
+            !adapterUtils.isSubTypeOf((TypeElement) returnType, "java.util.function.Consumer"))) {
       shouldAddObservers = true;
     }
 
@@ -560,9 +564,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
         }
         return (element.getSimpleName().toString().startsWith("get") || element.getSimpleName()
             .toString().startsWith("is")) &&
-            !returnType.getKind().equals(TypeKind.VOID) && (
-                !(types().asElement(returnType) instanceof TypeElement) ||
-                !adapterUtils.isSubTypeOf((TypeElement) types().asElement(returnType), "java.util.function.Consumer")) &&
+            !returnType.getKind().equals(TypeKind.VOID) &&
             adapterUtils.isMethodOfDirective(element);
       }
     };
