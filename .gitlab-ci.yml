@@ -88,7 +88,6 @@ build_with_deploy:
     - "gradle \
       :examples:weather:backend:jib \
       :examples:sehub:backend:jib \
-      :examples:sehub:backend:jib \
       :examples:stat:jib \
       :examples:dtcockpit:backend:jib \
       :products:demorec:backend:jib \
