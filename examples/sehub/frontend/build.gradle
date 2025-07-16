@@ -9,7 +9,7 @@ import java.nio.file.Paths
 
 plugins {
   id "com.github.node-gradle.node" version "5.0.0"
-  id 'de.rwth.se.umlp-tool'
+  id "de.rwth.se.umlp-tool-frontend"
 }
 
 def useCD2GUI = true
@@ -24,13 +24,6 @@ dependencies {
 
 tasks.register('generateNPMAuth', NPMAuthCreate){
   npmrcFile = file("config/.npmrc")
-}
-
-// Add Frontend-Config Files from UMLP-Tool Resources.
-tasks.register('frontendSetup', FrontendSetup){
-  input = file("config/")   // Can be used to add or replace files
-  dependsOn(generateNPMAuth)
-  output = layout.buildDir.dir("frontendGen/")
 }
 
 node {
@@ -53,28 +46,14 @@ tasks.register('guiVariability', GuiVariabilityHandlerTask) {
   outputDir = layout.buildDirectory.dir("guiVariability")
 }
 
-tasks.register('genDomain', UMLPFrontendTask) {
-  dependsOn(frontendSetup)
-  input = file("../models/Sehub.umlp")
-  outputDir = frontendSetup.getOutput().dir("build/appdomain")
-  hwcDir = file("src/app/")
-}
-
-tasks.register('genDomainSymbols', UMLPSymbolsTask) {
-  dependsOn(frontendSetup)
-  input = layout.projectDirectory.dir("../models")
-  symbolOutDir = file("${project.buildDir}/symbols")
-  outputDir = file("${project.buildDir}/symbols")
-}
-
-tasks.register('genGUI', UMLPGuiGenTask) {
-  dependsOn(genDomain, guiVariability, genDomainSymbols)
+tasks.named('genGUI', UMLPGuiGenTask) {
+  dependsOn(genDomain, guiVariability, createDomainSymbols)
   input = file(guiVariability.getOutputDir().dir("gui"))
   outputDir = frontendSetup.getOutput().dir("build/appgui")
   hwcDir = file("src/app/")
   modelDir = layout.projectDirectory.dir("../models")
   symbolDir = files(
-      genDomainSymbols.symbolOutDir,
+      createDomainSymbols.symbolOutDir,
       configurations.guiLib,
       configurations.guiDefaultTypes
   )
@@ -106,57 +85,3 @@ npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 def prebuildTasks = [
     npmInstall, genGUI2
 ]
-
-tasks.register("symlinkCreation", UMLPSymLinkCreationTask)  { task ->
-  dependsOn(prebuildTasks)
-
-  def hwcsrc = file("$buildDir/frontendGen/hwcsrc")
-  def hwcsrcTarget = file("src/app")
-  getSymlinkMap().put(hwcsrc, hwcsrcTarget)
-
-  def frontendGenLink = file("$buildDir/build/frontendGen")
-  def frontendGenLinkTarget = file("$buildDir/frontendGen")
-  getSymlinkMap().put(frontendGenLink, frontendGenLinkTarget)
-
-  def frontend2Out = file("$buildDir/frontendGen/fe2")
-  def frontend2OutTarget = file("$buildDir/umlp/fe2")
-  getSymlinkMap().put(frontend2Out, frontend2OutTarget)
-
-  def symlinkMap = getSymlinkMap()
-
-  def umlpDir = file("$buildDir/frontendGen/libs/@umlp")
-  def clientRTELinks = [:]
-  project(":umlp-rte:client").ext.libs.forEach {
-    def f = file(project(":umlp-rte:client").projectDir.toString()+"/projects/"+it)
-    // Link, Target
-    symlinkMap.put(umlpDir.toPath().resolve(f.name).toFile(),f.toPath().toAbsolutePath().toFile())
-  }
-}
-
-tasks.register('buildApp', NpxTask) {
-  dependsOn(prebuildTasks)
-  dependsOn {
-    tasks.named('symlinkCreation').get()
-  }
-  command = "ng"
-  args = ["build"]
-}
-assemble.dependsOn(buildApp)
-
-tasks.register('testApp', NpxTask) {
-  dependsOn(prebuildTasks)
-  dependsOn {
-    tasks.named('symlinkCreation').get()
-  }
-  command = "ng"
-  args = ["test"]
-}
-
-tasks.register('runApp', NpxTask) {
-  dependsOn(prebuildTasks)
-  dependsOn {
-    tasks.named('symlinkCreation').get()
-  }
-  command = "ng"
-  args = ["serve"]
-}
