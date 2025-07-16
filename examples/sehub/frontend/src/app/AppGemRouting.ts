@@ -10,7 +10,7 @@ export const routes: Routes = [
     // redirect to a module, not a component (use package part instead of the component name)
     redirectTo: "gui/login/LoginPage"
   },
-{
+  {
    path:"sehub",
    loadChildren:() => import("../fe2/sehub/SehubGemRouting").then(m=>m.routes)
    },

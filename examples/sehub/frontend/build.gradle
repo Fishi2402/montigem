@@ -14,16 +14,10 @@ plugins {
 
 def useCD2GUI = true
 
-configurations {
-  guiDefaultTypes
-}
-
 dependencies {
-  guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
-}
-
-tasks.register('generateNPMAuth', NPMAuthCreate){
-  npmrcFile = file("config/.npmrc")
+  implementation project(":examples:sehub:backend")
+  implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version
+  testImplementation project(':umlp-test-rte')
 }
 
 node {
@@ -46,30 +40,25 @@ tasks.register('guiVariability', GuiVariabilityHandlerTask) {
   outputDir = layout.buildDirectory.dir("guiVariability")
 }
 
-tasks.named('genGUI', UMLPGuiGenTask) {
-  dependsOn(genDomain, guiVariability, createDomainSymbols)
-  input = file(guiVariability.getOutputDir().dir("gui"))
-  outputDir = frontendSetup.getOutput().dir("build/appgui")
-  hwcDir = file("src/app/")
-  modelDir = layout.projectDirectory.dir("../models")
-  symbolDir = files(
-      createDomainSymbols.symbolOutDir,
-      configurations.guiLib,
-      configurations.guiDefaultTypes
-  )
+genGUI {
+  dependsOn(guiVariability)
   domainModels = ["Sehub"]
   guiCreateModels = ["gui.login.UserCreate", "gui.issues.IssueCreate"]
+  /*
+  debug = true
+  outputs.upToDateWhen { false }
+  /**/
 }
 
 tasks.register('genGUI2', UMLPGuiGenTask) {
   enabled(useCD2GUI)
   setGroup('build')
-  dependsOn(genGUI, guiVariability, generateCDTOGUI)
+  dependsOn(genGUI, generateCDTOGUI)
   input = file(guiVariability.getOutputDir())
   symbolDir = files(
       generateCDTOGUI.getOutputDir().file("symbols"),
       configurations.guiLib,
-      configurations.guiDefaultTypes
+      configurations.guiTypes
   )
   hwcDir = file("src/app/")
   symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")
@@ -83,11 +72,23 @@ tasks.register('genGUI2', UMLPGuiGenTask) {
 npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 
 def prebuildTasks = [
-    npmInstall, genGUI2
+    npmInstall, generate, symlinkCreation, genGUI2
 ]
+
+tasks.register("symlinkCreation2", UMLPSymLinkCreationTask)  { task ->
+  dependsOn(prebuildTasks)
+
+  def frontend2Out = file("$buildDir/frontendGen/fe2")
+  def frontend2OutTarget = file("$buildDir/umlp/fe2")
+  getSymlinkMap().put(frontend2Out, frontend2OutTarget)
+}
+
 
 tasks.register('buildApp', NpxTask) {
   dependsOn(prebuildTasks)
+  dependsOn {
+    tasks.named('symlinkCreation2').get()
+  }
   command = "ng"
   args = ["build"]
 }
