@@ -31,7 +31,8 @@
         "build/appdomain/*",
         "build/appgui/*",
         "src/app/*",
-        "hwcsrc/*"
+        "hwcsrc/*",
+        "fe2/*"
       ]
     }
   },

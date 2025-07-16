@@ -1,6 +1,6 @@
 plugins {
   id 'java'
-  id 'de.rwth.se.umlp-tool-backend-test'  // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
+  id 'de.rwth.se.umlp-tool-backend'
 
   id 'application'
   id 'com.google.cloud.tools.jib' version '3.4.4'
@@ -34,8 +34,6 @@ application {
 
 jib {
   container.mainClass = application.mainClass.get()
-  from.image = "$container_from_image"
-  to.image = "${container_target_image_base}sehub_backend:latest"
 }
 
 dependencies {
@@ -44,6 +42,8 @@ dependencies {
     exclude module: 'logback-classic'
     exclude module: 'log4j-to-slf4j'
   }
+
+
 
   implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
   implementation 'com.h2database:h2:2.1.214'
@@ -64,9 +64,6 @@ dependencies {
 
   implementation project(':umlp-rte')
   implementation "org.eclipse.jgit:org.eclipse.jgit:5.2.2.201904231744-r"
-
-  implementation group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.6_mail', version: '1.0.1'
-  implementation group: 'com.sun.activation', name: 'javax.activation', version: '1.2.0'
 }
 
 generateUmlpBackend {

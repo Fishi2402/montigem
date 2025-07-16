@@ -81,7 +81,7 @@ export class Bingo extends BingoComponent {
         let m = this.messages[0]
         SehubManager.deleteMessage(m.getGemId());
       }
-    });
+    })
   }
 
   public limitString(str, length = 50) {

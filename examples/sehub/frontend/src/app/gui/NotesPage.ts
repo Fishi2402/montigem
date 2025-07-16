@@ -29,7 +29,7 @@ export class NotesPage extends NotesPageComponent {
     super.ngOnInit();
   }
 
-  public override newPost(): (arg: void) => void {
+  newPost(): (arg: void) => void {
     return $ => {
       if (!SehubSecurityManager.isSignedIn()) {
         alert("No User Logged In")
@@ -38,40 +38,14 @@ export class NotesPage extends NotesPageComponent {
           let post = builder.responses(
               new Set<Post>())
               .author(SehubSecurityManager.getCurrentUser())
-              .title("")
-              .text("")
+              .title("<< YOUR TITLE >>")
+              .text("<< YOUR DESCRIPTION >> ")
               .issueGem(new Gem<Issue>().Gem2(this.getIssue()))
               .build();
           this.issue.addPosts2(post)
         })
       }
     }
-  }
-
-  public override getGemButton5Disabled (): boolean {
-    let curUser: User = SehubSecurityManager.getCurrentUser();
-    if (!!curUser && SehubRole[curUser.getRole()] === "GUEST") {
-      return true;
-    }
-    return false;
-  }
-
-
-  public override getIssueTitleDisabled (): boolean {
-    return this.disableGuestReporterEdits();
-  }
-
-  public override getIssueDescriptionDisabled (): boolean {
-    return this.disableGuestReporterEdits();
-  }
-
-  public disableGuestReporterEdits (): boolean {
-    let curUser: User = SehubSecurityManager.getCurrentUser();
-    if (!!curUser && (SehubRole[curUser.getRole()] === "GUEST" ||
-                      SehubRole[curUser.getRole()] === "REPORTER")) {
-      return true;
-    }
-    return false;
   }
 
 }

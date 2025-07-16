@@ -2,10 +2,6 @@
 
 import {Component} from '@angular/core';
 import {UserSettingsComponent,config} from 'gui/usersettings/UserSettingsComponent';
-import {SehubRole} from 'sehub/SehubRole';
-import {User} from 'sehub/User';
-import {CommandManager} from '@umlp/common';
-import {User_setPassword} from 'sehub/commands/User_setPassword';
 import {SehubSecurityManager} from "sehub/SehubSecurityManager";
 import {SehubManager} from 'sehub/SehubManager';
 
@@ -25,55 +21,12 @@ export class UserSettings extends UserSettingsComponent {
     if (!SehubSecurityManager.isSignedIn()) {
       this._router.navigate(['gui/login/LoginPage']);
     }
-    this.currentUser = SehubSecurityManager.getCurrentUser();
     this.gui_usersettings_UserSettings_currentUser_RoutingId = SehubSecurityManager.getCurrentUserIdOrNull();
 
     super.ngOnInit();
   }
 
-  public inviteUserLeftClick() {
-    this._router.navigate(['gui/login/RegistrationPage']);
-  }
-
-  public override getInviteUserDisabled (): boolean {
-    if(this.getUsers() == null || this.getUsers() == undefined){
-      return true;
-    }
-
-    let curUser: User = this.getUsers().filter(user =>
-      !!user && this.getCurrentUser().getUsername() === user.getUsername())[0];
-
-    if (!!curUser && (SehubRole[curUser.getRole()] === "OWNER" ||
-                      SehubRole[curUser.getRole()] === "MAINTAINER")) {
-      return false;
-    }
-
-    return true;
-  }
-
-  public  getPasswordEntry (): string {
-    return this.changePasswordValue;
-  }
-
-  public  setPasswordEntry (value: string): void {
-    this.changePasswordValue = value;
-  }
-
-  public  changePassword (): (arg: void) => void {
-    return $ => {
-      if(this.changePasswordValue === null || this.changePasswordValue === ""){
-        alert("Password can not be empty!");
-      }else{
-        let gemId = SehubSecurityManager.getCurrentUser().getGemId();
-        if(gemId >= 0){
-          CommandManager.executeCommand(new User_setPassword(gemId, this.changePasswordValue));
-          this.changePasswordValue = "";
-        }else{
-          console.error("Can not find gemId of current user!")
-          alert("Internal error. Please log out and log in again")
-        }
-
-      }
-    };
+  public inviteUserLeftClick(): (arg: void) => void {
+    return $ => this._router.navigate(['gui/login/RegistrationPage']);
   }
 }

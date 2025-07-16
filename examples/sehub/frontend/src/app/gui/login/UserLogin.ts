@@ -16,7 +16,6 @@ import {SehubSecurityManager} from "sehub/SehubSecurityManager";
 export class UserLogin extends UserLoginComponent {
 
   public ngOnInit(): void {
-    super.ngOnInit();
     if (SehubSecurityManager.isSignedIn()) {
       this._router.navigate(['gui/Start']);
     }
@@ -28,7 +27,7 @@ export class UserLogin extends UserLoginComponent {
 
   protected error: string = "";
 
-  public override loginOnEnter(): (arg: any) => void {
+  public override loginOnEnter(): (arg: KeyboardEvent) => void {
     return (event: KeyboardEvent) => {
       if (event.key === "Enter") {
         this.login();
@@ -38,40 +37,39 @@ export class UserLogin extends UserLoginComponent {
 
   public override login(): (arg: void) => void {
     return $ => {
-      if (!this.getLoginUser() || !this.getLoginUser().getUsername() || !this.getLoginUser().getPassword()) {
+      if (!this.loginUser || !this.loginUser.getUsername() || !this.loginUser.getPassword()) {
         return;
       }
 
-      const form = new FormData();
+            const form = new FormData();
 
-      form.append('username', this.loginUser.getUsername());
-      form.append('password', this.loginUser.getPassword());
+            form.append('username', this.loginUser.getUsername());
+            form.append('password', this.loginUser.getPassword());
 
-      const requestOptions: RequestInit = {
-        method: "POST",
-        body: form,
-        redirect: 'manual', // Otherwise the redirect to login?error is followed and 2xx is returned
-        headers: {
-          'Accept': 'application/json'
-        }
-      };
+            const requestOptions: RequestInit = {
+              method: "POST",
+              body: form,
+              headers: {
+                'Accept': 'application/json'
+              }
+            };
 
-      fetch("/umlp/api/login", requestOptions)
-        .then(response => response.json())
-        .then(result => {
-          if (result.success) {
-            SehubSecurityManager.setCurrentlyLoggingIng(true);
-            // Do NOT use router as otherwise the websocket is not refreshed!
-            // The AppComponent will initialize the websocket during reloading
-            window.location.href = 'gui/Start';
-          } else {
-            alert("Login Failed: Unknown")
-          }
-        })
-        .catch(error => {
-          console.warn(error);
-          alert("Login Failed: Unable to communicate");
-        });
+            fetch("/umlp/api/login", requestOptions)
+              .then(response => response.json())
+              .then(result => {
+                if (result.success) {
+                  SehubSecurityManager.signIn(this.loginUser);
+                  window.location.href = 'gui/Start';
+                }else if (result.reason) {
+                  alert("Login Failed: " + result.reason)
+                }else{
+                  alert("Login Failed: Unknown")
+                }
+              })
+              .catch(error => {
+                console.warn(error);
+                alert("Login Failed: Unable to communicate");
+              });
     }
   }
 

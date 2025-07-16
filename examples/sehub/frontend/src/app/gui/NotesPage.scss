@@ -1,5 +1,5 @@
 
-@import "../../../config/src/variables";
+@import "variables";
 
 :host ::ng-deep .gem-textarea {
   //min-height: 2em;
@@ -8,10 +8,5 @@
 :host ::ng-deep .edit {.gem-textarea {
   min-height: 15em !important;
 }
-}
-
-:host ::ng-deep .gem-button:disabled {
-  background-color: grey;
-  pointer-events: none;
 }
 

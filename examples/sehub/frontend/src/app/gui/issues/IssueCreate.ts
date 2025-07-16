@@ -4,10 +4,6 @@ import {IssueState} from 'sehub/IssueState';
 import {Component} from '@angular/core';
 import {IssueCreateComponent,config} from 'gui/issues/IssueCreateComponent';
 import { SehubManager } from 'sehub/SehubManager';
-import {SehubSecurityManager} from "sehub/SehubSecurityManager";
-import {User} from 'sehub/User';
-import {SehubRole} from 'sehub/SehubRole';
-
 
 @Component({
   standalone:true,
@@ -20,32 +16,13 @@ import {SehubRole} from 'sehub/SehubRole';
 export class IssueCreate extends IssueCreateComponent {
 
   public override createIssue(): (arg: void) => void {
-    return $ => SehubManager.issueBuilder().then(gemPromiseRes => {
-      this.getIssue().setState(IssueState.UNASSIGNED);
-      this.getIssue().build();
-      this.setIssue(gemPromiseRes);
-    });
-  }
-
-  public override getGemButton3Disabled (): boolean {
-    return this.creationDisabled();
-  }
-
-  public override getGemTextareaInput2Disabled (): boolean {
-    return this.creationDisabled();
-  }
-
-  public override getGemTextInput1Disabled (): boolean {
-    return this.creationDisabled();
-  }
-
-  public creationDisabled(): boolean {
-    let curUser: User = SehubSecurityManager.getCurrentUser();
-    if (!!curUser && SehubRole[curUser.getRole()] === "GUEST" ||
-                     SehubRole[curUser.getRole()] === "REPORTER") {
-      return true;
+    return $ => {
+      SehubManager.issueBuilder().then(gemPromiseRes => {
+        this.issue.setState(IssueState.UNASSIGNED);
+        this.issue.build();
+        this.issue = gemPromiseRes;
+      });
     }
-    return false;
   }
 
 }

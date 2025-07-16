@@ -18,6 +18,13 @@ import {SehubRole} from 'sehub/SehubRole';
 })
 export class IssueEntry extends IssueEntryComponent {
 
+  public editIssue(): (arg: void) => void {
+    return $ => {
+      console.log(this.getIssue().getGemId())
+      this._router.navigate(['/gui/NotesPage/' + this.getIssue().getGemId()]);
+    }
+  }
+
   public promote(): (arg: void) => void {
     return $ => {
       if (this.getIssue().getState() === IssueState.UNASSIGNED) {
@@ -25,7 +32,7 @@ export class IssueEntry extends IssueEntryComponent {
       } else if (this.getIssue().getState() === IssueState.IN_PROGRESS) {
         this.getIssue().setState(IssueState.DONE);
       }
-    };
+    }
   }
 
   public demote(): (arg: void) => void {
@@ -35,21 +42,19 @@ export class IssueEntry extends IssueEntryComponent {
       } else if (this.getIssue().getState() === IssueState.DONE) {
         this.getIssue().setState(IssueState.IN_PROGRESS);
       }
-    };
+    }
   }
 
   public override deleteIssue(): (arg: void) => void {
-    return $ => SehubManager.deleteIssue(this.getIssue().getGemId());
+    return $ => SehubManager.deleteIssue(this.getIssue().getGemId())
   }
 
-  public override navigate(): (arg: void) => void {
-    return $ => this._router.navigate(['gui', 'NotesPage', this.issue.getGemId()]);
-  }
+  public getIssueCardTitle (): string {
+    let postCounter = 0;
 
-  public override getDelButtonDisabled (): boolean {
-    let curUser: User = SehubSecurityManager.getCurrentUser();
-    return !!curUser && SehubRole[curUser.getRole()] === "GUEST" ||
-                     SehubRole[curUser.getRole()] === "REPORTER";
+    this.getIssue().getPostsList().forEach(p => { postCounter = postCounter + 1 + p.getResponsesList().length})
+
+    return super.getIssueCardTitle() + " (" + postCounter + ")"
   }
 
 }

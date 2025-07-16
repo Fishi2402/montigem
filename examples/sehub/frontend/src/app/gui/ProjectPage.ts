@@ -1,24 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 
+import {GemNetworkData, GemNetworkEdge, GemNetworkNode} from '@umlp/charts';
 import {ProjectPageComponent,config} from 'gui/ProjectPageComponent';
 import {Artifact} from 'sehub/Artifact';
 import {Directory} from 'sehub/Directory';
 import { SehubSecurityManager } from "sehub/SehubSecurityManager";
 import {Component} from '@angular/core';
 
-import {
-  GraphNode,
-  GraphEdge,
-  GemGraph,
-  GraphEdgeBuilder,
-  GraphNodeBuilder,
-  Graph,
-  GraphBuilder,
-} from '@umlp/networkgraph';
 @Component({
   standalone:true,
-  imports:[...config.imports,
-    GemGraph],
+  imports:[...config.imports],
   selector: config.selector,
   templateUrl: config.templateUrl,
   styles: config.styles,
@@ -36,37 +27,18 @@ export class ProjectPage extends ProjectPageComponent {
     super.ngOnInit();
   }
 
-  public getGemGraphEdges() : GraphEdge[] {
-    return this.calculateNetwork().edges
-  }
-
-
-  public getGemGraphNodes(): GraphNode[] {
-    return this.calculateNetwork().nodes
-  }
-
-  /*
-  public override getProjectGraphGraph(): Graph {
-    return new GraphBuilder()
-    .edges(this.getGemGraphEdges())
-    .nodes(this.getGemGraphNodes())
-    .build();
-  }
-  */
-
-  // TODO: Fix circular structures in `networkData`
-  public calculateNetwork(): {nodes: GraphNode[], edges:GraphEdge[]}  {
-    if(!(this.project)) {
+  public getGemNetworkGraph1Data(): GemNetworkData {
+    if (!(this.project)) {
       return null;
     }
-    const networkData = {nodes : [], edges : []}
+    const networkData = new GemNetworkData();
 
-    const artifacts : Artifact[] = this.getAllArtifactsFromDir(this.project, []);
+    const artifacts: Artifact[] = this.getAllArtifactsFromDir(this.project, []);
 
-    networkData.nodes = this.getNodesFromArtifacts(artifacts);
-    networkData.edges = this.getEdgesFromArtifacts(artifacts);
+    networkData.setNodesList(this.getNodesFromArtifacts(artifacts));
+    networkData.setEdgesList(this.getEdgesFromArtifacts(artifacts));
     const newHash = JSON.stringify(networkData);
-    if(this.networkDataCheck.hash !== newHash) {
+    if (this.networkDataCheck.hash !== newHash) {
       this.networkDataCheck.hash = newHash;
       this.networkDataCheck.value = networkData;
     }
@@ -74,36 +46,41 @@ export class ProjectPage extends ProjectPageComponent {
   }
 
 
-  private getEdgesFromArtifacts(artifacts:Artifact[]) : GraphEdge[] {
-    let edges : GraphEdge[] = [];
-    artifacts.filter(a => a instanceof Directory).forEach((dir : Directory) => {
+  private getEdgesFromArtifacts(artifacts: Artifact[]): GemNetworkEdge[] {
+    let edges: GemNetworkEdge[] = [];
+    artifacts.filter(a => a instanceof Directory).forEach((dir: Directory) => {
       dir.getContainsList().forEach(a => edges.push(this.createEdge(dir.getFullName(), a.getFullName())))
     })
     return edges;
   }
 
-  private createEdge(start : string, end: string): GraphEdge {
-    return new GraphEdgeBuilder().source(start).target(end).build();
+  private createEdge(start: string, end: string): GemNetworkEdge {
+    const edge = new GemNetworkEdge();
+    edge.setFrom(start);
+    edge.setTo(end);
+    edge.setLength(1.0);
+    return edge;
   }
 
-  private getNodesFromArtifacts(artifacts:Artifact[]): GraphNode[] {
+  private getNodesFromArtifacts(artifacts: Artifact[]): GemNetworkNode[] {
     return artifacts.map(a => this.getNodeFromArtifact(a));
   }
 
-  private getAllArtifactsFromDir(art: Artifact, artifacts: Artifact[]): Artifact []{
-    if(art instanceof Directory) {
+  private getAllArtifactsFromDir(art: Artifact, artifacts: Artifact[]): Artifact[] {
+    if (art instanceof Directory) {
       (art as Directory).getContainsList().forEach(a => this.getAllArtifactsFromDir(a, artifacts))
     }
     artifacts.push(art)
     return artifacts;
   }
 
-  private getNodeFromArtifact(art : Artifact): GraphNode {
-    return new GraphNodeBuilder()
-        .id(art.getFullName())
-        .color((art instanceof Directory)? "#a9dcd8" : "#c2f8cd")
-        .size(50)
-        .label(art.getName()).build();
+  private getNodeFromArtifact(art: Artifact): GemNetworkNode {
+    let node: GemNetworkNode = new GemNetworkNode();
+    node.setColor(art.getFullName());
+    node.setColor((art instanceof Directory) ? "#FFFF00" : "#FF00BF");
+    node.setMass(1.0);
+
+    return node;
   }
 
 }

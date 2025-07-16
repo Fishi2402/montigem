@@ -44,20 +44,4 @@ export class UserDisplay extends UserDisplayComponent {
      return this.user.getValidityRole().status;
    }*/
 
-  public override getRemoveUserButtonDisabled (): boolean {
-    let curUser: User = SehubSecurityManager.getCurrentUser();
-    if (!!curUser && SehubRole[curUser.getRole()] === "OWNER") {
-      return false;
-    }
-    return true;
-  }
-
-  public override getRoleDisabled (): boolean {
-    let curUser: User = SehubSecurityManager.getCurrentUser();
-    if (!!curUser && SehubRole[curUser.getRole()] === "OWNER") {
-      return false;
-    }
-    return true;
-  }
-
 }

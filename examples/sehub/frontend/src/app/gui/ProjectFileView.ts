@@ -16,16 +16,16 @@ import {ActivatedRoute, Router} from '@angular/router';
 })
 export class ProjectFileView extends ProjectFileViewComponent {
 
-  public getGemLink11Url(): string {
-    if (this.parent.getContainedBy() != null) {
-      return "gui/ProjectFileView/" + this.parent.getContainedBy().getGemId()
+  public  getGemLink11Url (): string {
+    if(this.parent.getContainedBy() != null){
+      return "/gui/ProjectFileView/"+ this.parent.getContainedBy().getGemId()
     }
     return ""
   }
 
-  public override goToArtifactsPage(): (arg: any) => void {
-    return () => {
-      this._router.navigate(["gui", "ProjectPage", this.parent.getGemId()]).then(() => {
+  public override goToArtifactsPage(): (arg: void) => void {
+    return $ => {
+      this._router.navigate(["..", "artifacts", "ProjectPage", this.parent.getGemId()]).then(() => {
         window.location.reload();
       });
     }

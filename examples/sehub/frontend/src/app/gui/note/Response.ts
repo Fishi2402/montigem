@@ -16,29 +16,11 @@ import {SehubRole} from 'sehub/SehubRole';
 })
 export class Response extends ResponseComponent {
 
-  override deletePost(): (arg: void) => void {
+  deletePost(): (arg: void) => void {
     return $ => {
       let parent: Post = this.getPost().getParent()
       parent.removeResponses2(this.getPost())
       SehubManager.deletePost(this.getPost().getGemId());
-    };
-  }
-
-  public override getGemButton8Disabled (): boolean {
-    let curUser: User = SehubSecurityManager.getCurrentUser();
-    if (!!curUser && SehubRole[curUser.getRole()] === "OWNER") {
-      return false;
-    } else if (!!curUser && curUser.getUsername() === this.getPost().getAuthor().getUsername()) {
-      return false;
     }
-    return true;
-  }
-
-  public override getGemTextareaInput9Disabled (): boolean  {
-    let curUser: User = SehubSecurityManager.getCurrentUser();
-    if (!!curUser && SehubRole[curUser.getRole()] === "GUEST") {
-      return true;
-    }
-    return false;
   }
 }

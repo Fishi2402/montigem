@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 import { Routes } from "@angular/router";
-import { routes as routesTOP } from "AppGemRoutingTOP";
+import { routes as routesTOP } from "AppGemRoutingTOP"
 
 export const routes: Routes = [
   // default path like in other routing files
@@ -10,5 +10,12 @@ export const routes: Routes = [
     // redirect to a module, not a component (use package part instead of the component name)
     redirectTo: "gui/login/LoginPage"
   },
-  ...routesTOP
+{
+   path:"sehub",
+   loadChildren:() => import("../fe2/sehub/SehubGemRouting").then(m=>m.routes)
+   },
+      ...routesTOP,
+
+
+
 ]

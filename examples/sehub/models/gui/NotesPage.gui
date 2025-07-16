@@ -24,7 +24,7 @@ page NotesPage(Issue issue) {
       @GemCard(title = issue.title + ": Comments & Discussion", component =
         @GemColumn(height = "auto", hAlign = "right", rowGap = "10px", components = [
           @GemText(value = issue.description),
-          @GemButton(label = "Add Comment or Question", leftClick = newPost(), disabled = false),
+          @GemButton(label = "Add Comment or Question", leftClick = newPost()),
           @iterate(Post p : issue.posts){
             @Note(post = p);
           }
@@ -34,12 +34,11 @@ page NotesPage(Issue issue) {
 
     edit@GemColumn(hAlign = "center", width = "400px", rowGap =" 5px", components = [
       @GemText(value = "Edit Issue:"),
-      issueTitle@GemTextInput(labelText = "Issue-Title", entry= issue.title, disabled = false),
+      issueTitle@GemTextInput(labelText = "Issue-Title", entry= issue.title),
       issueDescription@GemTextareaInput(
         id = "issueDescription",
         labelText = "Description",
-        entry = issue.description,
-        disabled = false
+        entry = issue.description
       )
     ])
   ]);

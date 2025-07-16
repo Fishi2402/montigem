@@ -14,7 +14,7 @@ import {Component,} from '@angular/core';
 export  class ProjectFileViewLink extends ProjectFileViewLinkComponent {
 
   public override getGemLink1Url (): string  {
-     return "gui/ProjectFileView/"+this.getArtifact().getGemId();
+     return "/gui/ProjectFileView/"+this.getArtifact().getGemId();
   }
 }
 

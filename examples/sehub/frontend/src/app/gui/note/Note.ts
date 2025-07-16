@@ -20,15 +20,11 @@ export class Note extends NoteComponent {
 
   public showResponsesFlag: boolean
 
-  public  getShowResponses (): boolean
-
-  {
+  public  getShowResponses (): boolean {
     return this.showResponsesFlag;
   }
 
-  public  getReplybuttonLabel (): string
-
-  {
+  public  getReplybuttonLabel (): string {
     return "↪️ Reply (" + this.getPost().getResponsesList().length + ")";
   }
 
@@ -36,7 +32,6 @@ export class Note extends NoteComponent {
     return $ => {
       SehubManager.postBuilder().then(builder => {
         let date = new Date();
-
 
         if(SehubSecurityManager.getCurrentUser() == undefined){
           alert("No User Logged In")
@@ -46,18 +41,15 @@ export class Note extends NoteComponent {
               new Set<Post>())
               .title(" | " + date.getHours() + ":" + (date.getMinutes()<10?'0':'') + date.getMinutes() + " ]: " + this.post.getTitle())
               .author(SehubSecurityManager.getCurrentUser())
-              .text("")
+              .text("<< YOUR REPLY >>")
               .parentGem(new Gem<Post>().Gem2(this.getPost()))
               .build();
           this.post.addResponses2(response)
         }
       })
-
-
       console.log("Responding")
     }
   }
-
 
   override deletePost(): (arg: void) => void {
     return $ => {
@@ -69,36 +61,7 @@ export class Note extends NoteComponent {
       })
 
       console.log("Removing... " + this.post.getResponsesList())
-    };
-  }
-
-  public override getReplybuttonDisabled (): boolean {
-    return this.disableWriteAccessforGuests();
-  }
-
-  public override getGemButton7Disabled (): boolean {
-    let curUser: User = SehubSecurityManager.getCurrentUser();
-    if (!!curUser && SehubRole[curUser.getRole()] === "OWNER") {
-      return false;
-    } else if (!!curUser && curUser.getUsername() === this.getPost().getAuthor().getUsername()) {
-      return false;
     }
-    return true;
   }
 
-  public override getPostTitleDisabled (): boolean {
-    return this.disableWriteAccessforGuests();
-  }
-
-  public override getMessageDisabled (): boolean {
-    return this.disableWriteAccessforGuests();
-  }
-
-  public disableWriteAccessforGuests (): boolean {
-    let curUser: User = SehubSecurityManager.getCurrentUser();
-    if (!!curUser && SehubRole[curUser.getRole()] === "GUEST") {
-      return true;
-    }
-    return false;
-  }
 }

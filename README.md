@@ -33,11 +33,11 @@ After installing the dependencies, run `gradle build` in the top folder of the p
 
 ## Quick Start
 
-You can try UMLP using the [SELib Example](./examples/selib).
+You can try UMLP using the [Vis-Lib Example](./examples/vis-lib).
 
-- In a terminal window, go to the `examples/selib` folder and run `gradle runServer`, which will (deliberately) not finish
+- In a terminal window, go to the `examples/vis-lib` folder and run `gradle runServer`, which will (deliberately) not finish
 - Once you see the following log message, you can continue: `[INFO]  UMLP API Status: RUNNING`
-- Open `http://localhost:8081/selib/` in your browser
+- Open `http://localhost:4200/` in your browser
 - In your browser you can try to add new data to the tables
 - Once you're finished you can stop the server in the terminal window by pressing the `CTRL` and `C` keys
 
