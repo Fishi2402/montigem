@@ -1,4 +1,3 @@
-/* (c) https://github.com/MontiCore/monticore */
 package example_basic;
 
 import umlp.guiutil.HTMLUtils;

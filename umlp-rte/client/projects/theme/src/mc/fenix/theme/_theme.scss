@@ -70,7 +70,7 @@
   @include action-buttons-theme($primary-color);
 
   /* #### Input ####  */
-  @include text-input-theme(1px solid $rwth-black-3, column, flex-start, 0);
+  @include text-input-theme(1px solid $rwth-black-3, column, flex-start, 0, $brand-danger, $brand-warning, $rwth-black-3, $btn-default-color);
   @include textarea-input-theme(auto, 1px solid $rwth-black-3, column, flex-start, 0);
   @include range-input-theme(
     $rwth-black-3,
@@ -100,7 +100,8 @@
     $rwth-blue,
     $montigem-white
   );
-  @include dropdown-input-theme($gray-dark, $rwth-black-3, $rwth-black-5, $rwth-black-4);
+  
+  @include dropdown-input-theme($gray-dark, $rwth-black-3, $rwth-black-5, $rwth-black-4, $brand-danger, $brand-warning);
 
   @if $horizontal-layout {
     @include gem-main();

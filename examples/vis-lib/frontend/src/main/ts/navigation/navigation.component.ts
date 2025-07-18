@@ -39,6 +39,7 @@ export class Navigation {
     { url: '/example_input/GemAutocompleteInputExample', title: 'AutocompleteInput' },
     { url: '/example_input/GemTextareaInputExample', title: 'TextareaInput' },
     { url: '/example_input/GemCheckBoxInputExample', title: 'CheckBoxInput' },
+    { url: '/example_input/GemRangeInputExample', title: 'RangeInput' },
     /*
     { url: '/example_input/GemRangeInputExample', title: 'RangeInput' },
     { url: '/example_input/GemRadioInputExample', title: 'RadioInput' },
