@@ -8,7 +8,6 @@ import java.nio.file.Paths
 
 
 plugins {
-  id "com.github.node-gradle.node" version "5.0.0"
   id "de.rwth.se.umlp-tool-frontend"
 }
 
@@ -84,26 +83,10 @@ tasks.register("symlinkCreation2", UMLPSymLinkCreationTask)  { task ->
 }
 
 
-tasks.register('buildApp', NpxTask) {
-  dependsOn(prebuildTasks)
+tasks.named('buildApp', NpxTask) {
   dependsOn {
     tasks.named('symlinkCreation2').get()
   }
-  command = "ng"
-  args = ["build"]
-}
-assemble.dependsOn(buildApp)
-
-tasks.register('testApp', NpxTask) {
-  dependsOn(prebuildTasks)
-  command = "ng"
-  args = ["test"]
-}
-
-tasks.register('runApp', NpxTask) {
-  dependsOn(prebuildTasks)
-  command = "ng"
-  args = ["serve"]
 }
 
 tasks.register('run') {

@@ -6,7 +6,6 @@ import java.nio.file.Paths
 
 plugins {
   id 'java'
-  id "com.github.node-gradle.node" version "5.0.0"
   id 'de.rwth.se.umlp-tool-frontend'
 }
 
@@ -47,29 +46,6 @@ translateJava2TSGUI {
 
 nodeSetup.dependsOn(frontendSetup)
 npmInstall.dependsOn(nodeSetup, ':umlp-rte:client:npmInstall')
-
-def prebuildTasks = [
-    npmInstall, generate
-]
-
-tasks.register('buildApp', NpxTask) {
-  dependsOn(prebuildTasks)
-  command = "ng"
-  args = ["build"]
-}
-assemble.dependsOn(buildApp)
-
-tasks.register('testApp', NpxTask) {
-  dependsOn(prebuildTasks)
-  command = "ng"
-  args = ["test"]
-}
-
-tasks.register('runApp', NpxTask) {
-  dependsOn(prebuildTasks)
-  command = "ng"
-  args = ["serve"]
-}
 
 test {
   testLogging {

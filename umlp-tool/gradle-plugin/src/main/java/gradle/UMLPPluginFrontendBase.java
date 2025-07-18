@@ -1,7 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gradle;
 
+import com.github.gradle.node.npm.task.NpxTask;
 import gradle.specific.FrontendSetup;
+import gradle.specific.NPMAuthCreate;
 import gradle.specific.UMLPFrontendCIImageTask;
 import gradle.specific.UMLPFrontendLocalImageTask;
 import gradle.specific.UMLPFrontendTask;
@@ -30,7 +32,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -56,6 +57,7 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
   @Override
   public void apply(Project project) {
     project.getPluginManager().apply(UMLPPluginBase.class);
+    project.getPluginManager().apply(com.github.gradle.node.NodePlugin.class);
     project.getPluginManager().apply("base");
 
     boolean local = getBooleanProjectProperty(project, "useLocalDependencies");
@@ -83,6 +85,32 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
         t.dependsOn(symlinkCreationTask);
       }
     });
+
+    var generateNPMAuth = project.getTasks().register("generateNPMAuth", NPMAuthCreate.class, t -> {
+      t.getNpmrcFile().set(frontendSetupTask.get().getOutput().file(".npmrc"));
+    });
+
+    project.getTasks().named("npm_install").configure(t -> t.dependsOn(generateNPMAuth));
+
+    // TODO AGe: npm_update too slow - strategy to make occasional checks
+    project.getTasks().named("npm_update").configure(t -> t.dependsOn("npm_install"));
+
+    var buildAppTask = createNPXTask(project, "buildApp", "build");
+    buildAppTask.configure(t -> {
+      t.dependsOn(symlinkCreationTask);
+      t.dependsOn("generate", "npm_update");
+    });
+    var testAppTask = createNPXTask(project, "testApp", "test");
+    testAppTask.configure(t -> {
+      t.dependsOn(symlinkCreationTask);
+      t.dependsOn("generate", "npm_update");
+    });
+    var runAppTask = createNPXTask(project, "runApp", "serve");
+    runAppTask.configure(t -> {
+      t.dependsOn(symlinkCreationTask);
+      t.dependsOn("generate", "npm_update");
+    });
+    project.getTasks().named("assemble").configure(t -> t.dependsOn(buildAppTask));
 
     // Sync Output of UMLP-Task to the correct directory. This done because "npm serve" cannot handle the intermediate state while the UMLPTasks are running
     // and Hot-Reload aborts
@@ -318,6 +346,14 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
     return project.getTasks().register("SYNC_" + UMLP_FRONTEND_GUI_TASK_NAME, Sync.class, syncTask -> {
       syncTask.into(Path.of(frontendSetupTask.get().getOutput().getAsFile().get().getAbsolutePath(), "build", "appgui").toFile());
       syncTask.exclude("**/*.java");
+    });
+  }
+
+  @NotNull
+  TaskProvider<NpxTask> createNPXTask(Project project, String name, String arg) {
+    return project.getTasks().register(name, NpxTask.class, task -> {
+      task.getCommand().set("ng");
+      task.getArgs().set(List.of(arg));
     });
   }
 

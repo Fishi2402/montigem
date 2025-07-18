@@ -16,6 +16,10 @@ dependencies {
   implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version // for json
   implementation ('org.yaml:snakeyaml:2.2')
 
+  // to setup the gradle-node-plugin
+  //implementation "com.github.node-gradle:gradle-node-plugin:5.0.0"
+  implementation("com.github.node-gradle:gradle-node-plugin:5.0.0")
+
   // The following dependencies will be present during compilation & loaded into a separated classloa
   umlpTool group: 'de.monticore.lang', name: 'od', version: mc_version
   umlpTool group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version, classifier: 'cdmerge'
@@ -50,6 +54,9 @@ repositories {
   mavenCentral()
   maven {
     url = "https://repo.gradle.org/gradle/libs-releases/"
+  }
+  maven {
+    url = "https://plugins.gradle.org/m2/"
   }
 }
 

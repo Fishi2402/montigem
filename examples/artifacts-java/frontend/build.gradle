@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 plugins {
   id "base"
-  id "com.github.node-gradle.node" version "5.0.0"
   id 'de.rwth.se.umlp-tool-frontend'
 }
 
@@ -80,35 +79,10 @@ genJava2TSGUIConfig.dependsOn(frontendSetup, createDomainSymbols, genGUI)
 genJava2TSDomainConfig.dependsOn(frontendSetup, createDomainSymbols)
 
 
-task generateNPMAuth(type: NPMAuthCreate){
-  npmrcFile = frontendSetup.getOutput().file(".npmrc")
-}
+//task generateNPMAuth(type: NPMAuthCreate){
+//  npmrcFile = frontendSetup.getOutput().file(".npmrc")
+//}
 
 
-npm_install.dependsOn(generateNPMAuth, genGUI, frontendSetup)
-// TODO AGe: npm_update too slow - strategy to make occasional checks
-npm_update.dependsOn(npm_install)
-
-def prebuildTasks = [
-    generate
-]
-
-task buildApp(type: NpxTask) {
-  dependsOn(npm_update, prebuildTasks)
-  command = "ng"
-  args = ["build"]
-}
-assemble.dependsOn(buildApp)
-
-task testApp(type: NpxTask) {
-  dependsOn(npm_update, prebuildTasks)
-  command = "ng"
-  args = ["test"]
-}
-
-task runApp(type: NpxTask) {
-  dependsOn(npm_update, prebuildTasks)
-  command = "ng"
-  args = ["serve"]
-}
+npm_install.dependsOn(genGUI, frontendSetup)
 
