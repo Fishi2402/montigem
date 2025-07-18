@@ -7,6 +7,7 @@ plugins {
   id 'base'
   id 'de.rwth.se.umlp-tool' // See "umlp-tool/src/main/java/gradle"
   id "io.github.themrmilchmann.ecj" version "0.2.0"
+  id "com.github.node-gradle.node" version "5.0.0"
 }
 
 // Download node once for all subprojects
