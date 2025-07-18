@@ -77,20 +77,6 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
     TaskProvider<UMLPGuiGenTask> frontendGuiTask = createFrontendGuiTask(project, local);
 
     TaskProvider<UMLPSymLinkCreationTask> symlinkCreationTask = createSymlinkCreationTask(project, local);
-    project.getTasks().configureEach(t -> {
-      if(t.getName().equals("runApp")) {
-        t.dependsOn(symlinkCreationTask);
-      }
-      if(t.getName().equals("buildApp")) {
-        t.dependsOn(symlinkCreationTask);
-      }
-    });
-
-    var generateNPMAuth = project.getTasks().register("generateNPMAuth", NPMAuthCreate.class, t -> {
-      t.getNpmrcFile().set(frontendSetupTask.get().getOutput().file(".npmrc"));
-    });
-
-    project.getTasks().named("npm_install").configure(t -> t.dependsOn(generateNPMAuth));
 
     // TODO AGe: npm_update too slow - strategy to make occasional checks
     project.getTasks().named("npm_update").configure(t -> t.dependsOn("npm_install"));

@@ -79,10 +79,10 @@ genJava2TSGUIConfig.dependsOn(frontendSetup, createDomainSymbols, genGUI)
 genJava2TSDomainConfig.dependsOn(frontendSetup, createDomainSymbols)
 
 
-//task generateNPMAuth(type: NPMAuthCreate){
-//  npmrcFile = frontendSetup.getOutput().file(".npmrc")
-//}
+tasks.register("generateNPMAuth", NPMAuthCreate){
+  npmrcFile = frontendSetup.getOutput().file(".npmrc")
+}
 
 
-npm_install.dependsOn(genGUI, frontendSetup)
+npm_install.dependsOn(generateNPMAuth, genGUI, frontendSetup)
 
