@@ -45,7 +45,7 @@ dependencies {
     exclude module: 'log4j-to-slf4j'
   }
 
-
+  implementation group: 'org.jsweet', name: 'jsweet-core', version: "6.3.0"
 
   implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
   implementation 'com.h2database:h2:2.1.214'

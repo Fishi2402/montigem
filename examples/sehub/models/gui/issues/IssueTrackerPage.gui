@@ -22,9 +22,9 @@ page IssueTrackerPage(List<Issue> issues) {
     @GemCard(title = "Issue List", component =
       issueCategories@GemRow(hAlign = "center", rowGap = "10px", colGap = "10px", components = [
         // TBD Column
-        todo@GemCard(title = "TODO", component =
-          todoList@IssueDragDrop(
-            issues = issues,
+        @GemCard(title = "TODO", component =
+          @IssueDragDrop(
+            issues = getTodoIssues(issues),
             dropId = "todoList",
             canDropTo = ["doingList", "doneList"],
             drop = updateIssue()
@@ -32,9 +32,9 @@ page IssueTrackerPage(List<Issue> issues) {
         ),
 
         // WIP Column
-        doing@GemCard(title = "DOING", component =
-          doingList@IssueDragDrop(
-            issues = issues,
+        @GemCard(title = "DOING", component =
+          @IssueDragDrop(
+            issues = getDoingIssues(issues),
             dropId = "doingList",
             canDropTo = ["todoList", "doneList"],
             drop = updateIssue()
@@ -42,9 +42,9 @@ page IssueTrackerPage(List<Issue> issues) {
         ),
 
         // Done Column
-        done@GemCard(title = "DONE", component =
-          doneList@IssueDragDrop(
-            issues = issues,
+        @GemCard(title = "DONE", component =
+          @IssueDragDrop(
+            issues = getDoneIssues(issues),
             dropId = "doneList",
             canDropTo = ["todoList", "doingList"],
             drop = updateIssue()
