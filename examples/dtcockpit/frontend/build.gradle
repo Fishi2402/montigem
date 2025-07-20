@@ -67,6 +67,11 @@ tasks.named('buildApp', NpxTask) {
   )
 }
 
+tasks.named('testApp', NpxTask) {
+  dependsOn(
+      project(':modules:login:frontendTS').tasks.named('generate').get()
+  )
+}
 
 tasks.named("symlinkCreation") {
   dependsOn {
