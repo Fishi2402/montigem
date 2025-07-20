@@ -462,7 +462,7 @@ public class DAODecorator extends AbstractDecorator {
     getCD4C().addImport(clazz, "java.util.HashMap;");
   }
 
-  static Map<ASTCDAssocSide, ASTCDAssociation> getOppositeSideToAssociationMap(ASTCDClass domainClass) {
+  public static Map<ASTCDAssocSide, ASTCDAssociation> getOppositeSideToAssociationMap(ASTCDClass domainClass) {
     List<ASTCDAssocSide> assocSides = CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
         .filter(GenService::isVisible)
         .collect(Collectors.toList());

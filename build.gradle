@@ -77,6 +77,19 @@ subprojects {
     }
   }
 
+  tasks.withType(NodeTask).configureEach {
+    dependsOn rootProject.tasks.npmInstall
+    execOverrides {
+      if(isWindows){
+        setExecutable "${getNodeDir()}/node.exe"
+        environment 'PATH', "${getNodeDir()}${System.getProperty('path.separator')}${System.getenv('PATH')}"
+      } else {
+        setExecutable "${getNodeDir()}/bin/node"
+        environment 'PATH', "${getNodeDir()}/bin${System.getProperty('path.separator')}${System.getenv('PATH')}"
+      }
+    }
+  }
+
   test {
     useJUnitPlatform()
     testLogging {

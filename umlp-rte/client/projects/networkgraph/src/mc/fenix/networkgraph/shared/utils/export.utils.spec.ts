@@ -129,7 +129,7 @@ describe("Export Utilities", () => {
     cell.style.backgroundColor = "#fff";
     cell.textContent = "Test";
     const fileName = "testFile";
-    const writeFileSpy = jest.spyOn(require("xlsx-js-style"), "writeFile").mockImplementation();
+    const writeFileSpy = jest.spyOn(require("xlsx"), "writeFile").mockImplementation();
 
     ExportUtils.downloadTableAsExcel(table, fileName, false);
 

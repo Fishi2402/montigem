@@ -2,7 +2,6 @@
 package umlp.jsweet.extension;
 
 import org.jsweet.transpiler.extension.PrinterAdapter;
-import umlp.jsweet.extension.domainAdapters.ImportExcludeAdapter;
 import umlp.jsweet.extension.domainAdapters.MutexAdapter;
 import umlp.jsweet.extension.domainAdapters.UMLPBasicsAdapter;
 import umlp.jsweet.extension.domainAdapters.UMLPEnumAdapter;
@@ -23,22 +22,20 @@ import umlp.jsweet.extension.guiAdapters.UMLPGUICollectionsAdapter;
 public class UMLPJSweetGUIAdapter extends PrinterAdapter {
   public UMLPJSweetGUIAdapter(PrinterAdapter parentAdapter) {
     super(
-        new ImportExcludeAdapter(
-            new UMLPJavaBasicsAdapter(
-                new UMLPGUICollectionsAdapter(
-                    new UMLPRTEImportAdapter(
-                        new UMLPBasicsAdapter(
-                            new DelegateGemListToArrayAdapter(
-                                new GUIComponentObserverPatternAdapter(
-                                    new GUIComponentBasicsAdapter(
-                                        new GUITypesImportAdapter(
-                                            new TSTypesAdapter(
-                                                new GUIUtilAdapter(
-                                                    new BackendOnlyAdapter(
-                                                        new MutexAdapter(
-                                                            new UMLPEnumAdapter(
-                                                                parentAdapter
-                                                            )
+        new UMLPJavaBasicsAdapter(
+            new UMLPGUICollectionsAdapter(
+                new UMLPRTEImportAdapter(
+                    new UMLPBasicsAdapter(
+                        new DelegateGemListToArrayAdapter(
+                            new GUIComponentObserverPatternAdapter(
+                                new GUIComponentBasicsAdapter(
+                                    new GUITypesImportAdapter(
+                                        new TSTypesAdapter(
+                                            new GUIUtilAdapter(
+                                                new BackendOnlyAdapter(
+                                                    new MutexAdapter(
+                                                        new UMLPEnumAdapter(
+                                                            parentAdapter
                                                         )
                                                     )
                                                 )

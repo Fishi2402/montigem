@@ -28,17 +28,19 @@ public abstract class ALazyPublishingPlugin {
    *  otherwise hand-written reloactions have to be written.
    */
   protected PublishArtifact createPublishedArtifact(TaskProvider<Jar> jarTaskProvider, Project project) {
-    // the LazyPublishArtifact constructor has changed between gradle versions:
     try {
-      // Gradle 7.4.2
-      return new LazyPublishArtifact(jarTaskProvider, null, ((ProjectInternal) project).getFileResolver());
-    } catch (NoSuchMethodError incompatibleVersion) {
+      // Attempt to use the Gradle 7.4.2 constructor via reflection
+      return LazyPublishArtifact.class
+          .getConstructor(org.gradle.api.provider.Provider.class, String.class, FileResolver.class)
+          .newInstance(jarTaskProvider, null, ((ProjectInternal) project).getFileResolver());
+    } catch (ReflectiveOperationException e7) {
+      // If the 7.4.2 constructor is not found, try the Gradle 8 constructor
       try {
         // Gradle 8 - the TaskDependencyFactory parameter was added
         return LazyPublishArtifact.class.getConstructor(org.gradle.api.provider.Provider.class, String.class, FileResolver.class, TaskDependencyFactory.class)
             .newInstance(jarTaskProvider, null, ((ProjectInternal) project).getFileResolver(), taskDependencyFactory);
-      } catch (ReflectiveOperationException e) {
-        throw new IllegalStateException("Incompatible LazyPublishArtifact constructor in gradle " + project.getGradle().getGradleVersion(), e);
+      } catch (ReflectiveOperationException e8) {
+        throw new IllegalStateException("Incompatible LazyPublishArtifact constructor in gradle " + project.getGradle().getGradleVersion(), e8);
       }
     }
   }

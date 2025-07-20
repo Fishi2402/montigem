@@ -13,7 +13,7 @@ ${signature("domName")}
       "**.parallelStream*()",
       "**.toArray*(*)",
       "**.hashCode*()",
-      "**.equals*(*)"
+      "**.equals*?\\(*\\)"
     ]
   }
 }

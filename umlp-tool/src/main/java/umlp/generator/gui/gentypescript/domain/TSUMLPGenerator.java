@@ -81,12 +81,13 @@ public class TSUMLPGenerator extends UMLPGenerator {
     hpp.processValue(tc, cdAST, Arrays.asList(
         decoratedAST, genSetup.getGlex(),
         genSetup.getHandcodedPath(),
+        genSetup.getOutputDirectory().toPath(),
         cdGenerator, schemaGenerator
     ));
   }
 
   protected static void logTrafoExec(String trafo, ASTCDCompilationUnit ast){
-    Log.info("========= CD after '"+trafo+"': =========", TSUMLPGenerator.class.getName());
+    Log.debug("========= CD after '"+trafo+"': =========", TSUMLPGenerator.class.getName());
   }
 
   public ASTCDCompilationUnit createCompilationUnit(ASTCDCompilationUnit cd) {

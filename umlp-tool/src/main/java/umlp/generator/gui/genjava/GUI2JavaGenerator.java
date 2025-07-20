@@ -29,7 +29,7 @@ public class GUI2JavaGenerator extends CDGenerator {
 
     // translate the GUI-AST into Java
     hpp.processValue(tc, gui,
-        Arrays.asList(cd, setup.getGlex(), setup.getHandcodedPath(), this));
+        Arrays.asList(cd, setup.getGlex(), setup.getHandcodedPath(), setup.getOutputDirectory().toPath(), this));
   }
 
 }

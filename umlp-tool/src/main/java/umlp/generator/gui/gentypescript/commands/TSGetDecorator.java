@@ -7,14 +7,23 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.io.paths.MCPath;
 import umlp.generator.domain.decorator.commands.GetDecorator;
+import umlp.generator.gui.gentypescript.decorator.TSImportHelper;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentTemplates;
 import umlp.generator.util.PathUtil;
 
+import java.nio.file.Path;
+
 public class TSGetDecorator extends GetDecorator {
 
-  public TSGetDecorator(GlobalExtensionManagement glex) {
+  protected final Path outPath;
+  protected final MCPath hwPath;
+
+  public TSGetDecorator(GlobalExtensionManagement glex, MCPath hwPath, Path outPath) {
     super(glex);
+    this.hwPath = hwPath;
+    this.outPath = outPath;
   }
 
   protected ASTCDAttribute addGemId(ASTCDClass ast) {
@@ -65,7 +74,11 @@ public class TSGetDecorator extends GetDecorator {
   @Override
   protected void addDeSerImport(ASTCDCompilationUnit origCD, ASTCDClass ast, String cmdName) {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
-    getCD4C().addImport(ast, getPackageName(origCD, COMMAND_PACKAGE) + "." + cmdName);
+
+    TSImportHelper importHelper = new TSImportHelper(glex, ast, hwPath, outPath);
+    String importerQName = getPackageName(origCD, COMMAND_PACKAGE) + "." + ast.getName();
+
+    importHelper.addImport(getPackageName(origCD, COMMAND_PACKAGE) + "." + cmdName, importerQName);
   }
 
   @Override
@@ -74,9 +87,12 @@ public class TSGetDecorator extends GetDecorator {
     getCD4C().addImport(ast, PathUtil.getBackendRTERequestPath("Request"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("SimpleResult"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("LoadingState"));
-    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ classname);
-    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+ "." + classname + "AccessPolicy");
-    getCD4C().addImport(
-        ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+getCorrectManager(domainType));
+
+    TSImportHelper importHelper = new TSImportHelper(glex, ast, hwPath, outPath);
+    String importerQName = getPackageName(origCD, COMMAND_PACKAGE) + "." + ast.getName();
+
+    importHelper.addImport(getPackageName(origCD, DEFAULT_PACKAGE)+"."+ classname, importerQName);
+    importHelper.addImport(getPackageName(origCD, DEFAULT_PACKAGE)+ "." + classname + "AccessPolicy", importerQName);
+    importHelper.addImport(getPackageName(origCD, DEFAULT_PACKAGE)+"."+getCorrectManager(domainType), importerQName);
   }
 }

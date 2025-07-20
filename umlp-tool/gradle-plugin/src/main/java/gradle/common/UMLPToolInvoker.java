@@ -6,13 +6,19 @@ import de.monticore.gradle.common.GradleLog;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPTool;
 
-import java.util.Arrays;
-
 public class UMLPToolInvoker {
   public static void run(String[] args){
     GradleLog.init();
-    Log.info("Starting UMLPTool: \n" +
-        "\t  java -jar UMLPTool.jar " + Arrays.toString(args), UMLPAction.class.getName());
+    StringBuilder cliCommand = new StringBuilder();
+    cliCommand.append("Starting UMLPTool: java -jar UMLPTool.jar ");
+    for (String arg : args) {
+      if (arg.startsWith("-")) {
+        cliCommand.append("\n\t");
+      }
+      cliCommand.append(arg);
+      cliCommand.append(" ");
+    }
+    Log.info(cliCommand.toString(), UMLPToolInvoker.class.getName());
     try {
       UMLPTool.gradleMain(args);
     }catch (final AmbiguityException | MontiCoreFreeMarkerException e){

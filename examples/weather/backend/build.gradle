@@ -34,6 +34,8 @@ application {
 
 jib {
   container.mainClass = application.mainClass.get()
+  from.image = "$container_from_image"
+  to.image = "${container_target_image_base}weather_backend:latest"
 }
 
 dependencies {
@@ -77,21 +79,6 @@ tasks.register('runServer') {
   })
 }
 
-tasks.register('genTestGUI', UMLPGuiGenTask) {
-  dependsOn('generateUmlpBackend')
-  input = file("../models")
-  outputDir = file("$project.buildDir/testgui")
-  hwcDir = file("$projectDir/src/main/java")
-  modelDir = layout.projectDirectory.dir("../models")
-  symbolDir = files(
-      generateUmlpBackend.symbolOutDir,
-      configurations.guiLib,
-      configurations.guiDefaultTypes
-  )
-  domainModels = ["Weather"]
-  // guiCreateModels = ["stanley.gui.AccountCreate"]
-}
-
 test {
   testLogging {
     events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
@@ -111,5 +98,3 @@ sourceSets {
     }
   }
 }
-
-compileJava.dependsOn(generateUmlpBackend, genTestGUI)

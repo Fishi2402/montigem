@@ -1,0 +1,51 @@
+plugins {
+    id 'java-library'
+    id 'de.rwth.se.umlp-tool-backend'
+
+    id 'application'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'org.springframework.boot' version "${spring_version}"
+    id 'de.rwth.se.umlp-tool-module-backend' // TODO
+    id 'maven-publish'
+}
+
+dependencies {
+    def withoutSpringLogging = {
+        exclude module: 'spring-boot-starter-logging'
+        exclude module: 'logback-classic'
+        exclude module: 'log4j-to-slf4j'
+    }
+    implementation project(':umlp-rte')
+    api group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version
+
+}
+
+generateUmlpBackend {
+    input = file("../models/CommentModule.umlp")
+}
+
+application { // Set Main-Class for "run" task
+    mainClass = 'commentmodule.CommentModuleServerApplication'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    // TODO: correct repo
+    repositories {
+        maven {
+            url "file://${project.buildDir}/repo"
+        }
+        maven {
+            credentials.username mavenUser
+            credentials.password mavenPassword
+
+            def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-releases/"
+            def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-snapshots/"
+            url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+        }
+    }
+}

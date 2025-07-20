@@ -21,6 +21,8 @@ classdiagram GemTextareaInputTypes {
     String status;
     /** A message to be displayed as a tooltip with the status */
     String message;
+    +GemTextareaInputValidity(String status);
+    +GemTextareaInputValidity(String status, String message);
   }
 
 }

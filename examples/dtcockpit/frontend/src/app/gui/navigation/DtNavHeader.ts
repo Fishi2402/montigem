@@ -1,6 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
 import { Component } from "@angular/core";
-import { ActivatedRoute, Router } from '@angular/router';
 import { DtcockpitSecurityManager } from "dtcockpit/DtcockpitSecurityManager";
 import { User } from 'dtcockpit/User';
 import { DtNavHeaderComponent ,config} from 'gui/navigation/DtNavHeaderComponent';

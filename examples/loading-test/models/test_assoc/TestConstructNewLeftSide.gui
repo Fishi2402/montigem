@@ -1,0 +1,20 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test_assoc;
+
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
+
+
+import LoadingTests.LeftSide;
+import LoadingTests.RightSide;
+import LoadingTests.Sides; // We load a Sides, with an inner leftSide (with an absent inner element)
+
+page TestConstructNewLeftSide(LeftSide l = null) {
+  @GemText(value="left: " + l.label);
+  @guard(l.connectedRight != null) {
+    @GemText(value="  -> : " + l.connectedRight.label);
+  }
+
+  @GemButton(label = "Call Construct and Update", leftClick = callConstruct());
+
+}

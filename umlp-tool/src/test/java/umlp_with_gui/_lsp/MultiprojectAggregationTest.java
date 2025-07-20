@@ -1,8 +1,6 @@
 package umlp_with_gui._lsp;
 
-import de.mclsg.lsp.CommonLanguageServer;
 import de.mclsg.lsp.FileExtensionAlreadyRegisteredException;
-import de.mclsg.lsp.MultiLangLanguageServerContext;
 import de.mclsg.lsp.util.AsyncUtilWithSyncExec;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
@@ -17,11 +15,9 @@ import org.eclipse.lsp4j.Position;
 import org.eclipse.lsp4j.TextDocumentIdentifier;
 import org.eclipse.lsp4j.jsonrpc.messages.Either;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import umlp_with_gui._lsp.language_aggregation.UMLPWithGUILanguageAggrServer;
 import umlp_with_gui._lsp.language_aggregation.multiproject.UMLPWithGUILanguageAggrMultiProjectServer;
-import umlp_with_gui._lsp.language_aggregation.multiproject.UMLPWithGUILanguageAggrServerForMultiProject;
 import umlp_with_gui._lsp.mock.MockLanguageClient;
 
 import java.nio.file.Path;
@@ -29,7 +25,6 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -180,10 +175,6 @@ public class MultiprojectAggregationTest {
     assertEquals(1, regular_d_crossLanguage.getLeft().size());
     assertTrue(regular_d_crossLanguage.getLeft().get(0).getUri().endsWith("/src/test/resources/lsp/multiproject/subproject1/Domain.umlp"));
     assertEquals(regular_d_crossLanguage, multiproject_d_crossLanguage);
-  }
-
-  private TextDocumentIdentifier createTextDocumentIdentifier(Path p) {
-    return new TextDocumentIdentifier(p.toUri().toString());
   }
 
 

@@ -19,9 +19,9 @@ bootBuildImage {
 }
 
 jib {
-    to {
-        image 'umlp_statserver'
-    }
+  container.mainClass = application.mainClass.get()
+  from.image = "$container_from_image"
+  to.image = "${container_target_image_base}stat_backend:latest"
 }
 
 dependencies {

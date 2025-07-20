@@ -40,7 +40,6 @@ plugins {
 
 rootProject.name = 'umlp'
 includeBuild "umlp-tool"
-includeBuild "umlp-rte/umlp-jsweet"
 
 include ":umlp-rte"
 include ":umlp-rte:client"
@@ -59,7 +58,6 @@ include ":experiments:module-system:module-definition"
 include ":experiments:module-system:routes-usage"
 
 include ":examples"
-include ':examples:selib'
 include ':examples:stat'
 include ':examples:artifacts-test'
 include ':examples:artifacts-java:backend'
@@ -69,12 +67,9 @@ include ':examples:flensburg-test:frontend'
 include ':examples:weather:backend'
 include ':examples:weather:frontend'
 include ':examples:it-test'
-include ':examples:assistenzsystem'
-include ':examples:native-image'
+include ':examples:sehub'
 include ':examples:sehub:backend'
 include ':examples:sehub:frontend'
-include ':examples:sehub-cd2gui:backend'
-include ':examples:sehub-cd2gui:frontend'
 include ':examples:vis-lib:backend'
 include ':examples:vis-lib:frontend'
 include ':examples:dtcockpit:backend'
@@ -85,25 +80,23 @@ include ':examples:dtcockpit-jsweet:backend'
 include ':examples:dtcockpit-jsweet:frontend'
 include ':examples:kitchencompanion:backend'
 include ':examples:kitchencompanion:frontend'
-include ':examples:guidslpaper:backend'
-include ':examples:guidslpaper:frontend'
-include ':examples:finanzverwaltung-cd2gui:backend'
-include ':examples:finanzverwaltung-cd2gui:frontend'
 
 include ':examples:loading-test:backend'
 include ':examples:loading-test:frontend'
 include ':examples:loading-test:frontend-jsweet'
 
-include ':products:syse_functions:backend'
-include ':products:syse_functions:frontend'
-include ':products:syse_functions:automaton'
-findProject(':products:syse_functions:automaton')?.name = 'automaton'
+// TODO: Fix once java version is decided
+//include ':products:syse_functions:frontend'
+//include ':products:syse_functions:backend'
+//include ':products:syse_functions:automaton'
+//findProject(':products:syse_functions:automaton')?.name = 'automaton'
 
 include ':products:demorec:backend'
 include ':products:demorec:frontend'
 include ':products:kizam:backend'
-include ':products:autotech_agil:backend'
-include ':products:autotech_agil:frontend'
+// TODO: Fix once java version is decided
+//include ':products:autotech_agil:backend'
+//include ':products:autotech_agil:frontend'
 
 include ':products:dev_process_cockpit:backend'
 include ':products:dev_process_cockpit:frontend'
@@ -113,6 +106,11 @@ include ':modules:login'
 include ':modules:login:backend'
 include ':modules:login:frontendTS'
 include ':modules:login:frontendJSweet'
+
+include ':modules:comment'
+include ':modules:comment:backend'
+include ':modules:comment:frontendTS'
+include ':modules:comment:frontendJSweet'
 
 include ':modules:sovd-gateway'
 include ':modules:sovd-gateway-it:backend'

@@ -13,18 +13,20 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.CommandLine;
 import umlp.GUIDSLReports;
+import umlp.MillConf;
 import umlp.TagRelated;
 import umlp.UMLPTool;
 import umlp.cli.common.IOperation;
 import umlp.cli.common.Pipeline;
 import umlp.generator.domain.UMLPGeneratorConfig;
-import umlp.generator.gui.GUIComponentsVisitor;
 import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
 import umlp.generator.gui.genjava.GUI2JavaGenerator;
 import umlp.generator.gui.gentypescript.GUI2TSGenerator;
 import umlp.generator.gui.gentypescript.config.GUI2ConfigGenerator;
+import umlp.generator.gui.gentypescript.config.ImportMapGenerator;
 import umlp.generator.gui.gentypescript.config.PackageRoute;
+import umlp.generator.gui.gentypescript.printer.TSImportMap;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -36,6 +38,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static umlp.UMLPToolOptions.DOMAIN;
@@ -54,9 +57,10 @@ public class GuiPipeline extends Pipeline<UMLPPipelineData> {
     register("setupUMLPReports", setupUMLPReports);
     register("init", init = data -> {
       // Prepare the SingletonLookup
+      MillConf.switchTo(MillConf.TAGS, MillConf.UMLP, MillConf.GUIDSL);
       TagRelated.initLookup(data.importedSymbolPath);
-      GUIDSLMill.init();
       UMLPTool.initGUIGlobalScope(data.importedSymbolPath);
+      TSImportMap.INSTANCE.init(data.importedSymbolPath);
       return true;
     });
 
@@ -70,12 +74,14 @@ public class GuiPipeline extends Pipeline<UMLPPipelineData> {
               Arrays.stream(modelPathStrings).map(Paths::get).collect(Collectors.toList());
           Map<String, PackageRoute> routeMap = new HashMap<>();
 
+          List<ASTGUICompilationUnit> asts = new ArrayList<>();
           for (Path modelPath : modelPaths) {
             DataWithGenSetupAndModel modelData = new Data(data, modelPath);
             boolean modelPipeResult = modelPipeline.doWork(modelData);
 
             if (modelPipeResult && modelData.getAst() != null) {
               ASTGUICompilationUnit ast = modelData.getAst();
+              asts.add(ast);
               if (ast.getGUIComponentDeclaration().isPage()) {
                 if (!routeMap.containsKey(ast.getPackage())) {
                   routeMap.put(ast.getPackage(), new PackageRoute(
@@ -85,7 +91,7 @@ public class GuiPipeline extends Pipeline<UMLPPipelineData> {
               }
             }
           }
-          configurationPipeline.doWork(new GenConfigData(data, routeMap));
+          configurationPipeline.doWork(new GenConfigData(data, routeMap, asts));
           return true;
         }, List.of(modelPipeline, configurationPipeline)));
 
@@ -185,9 +191,6 @@ public class GuiPipeline extends Pipeline<UMLPPipelineData> {
   public final IOperation.ISimpleOperation<DataWithGenSetupAndModel> model_pipe_setup_glex_vars =
       data -> {
         // Get all ASTGUIComponents
-        GUIComponentsVisitor viewComponents =
-            new GUIComponentsVisitor(data.getAst(), data.getGenSetup().getGlex());
-        data.getGenSetup().getGlex().setGlobalValue("viewComponents", viewComponents);
         data.getGenSetup().getGlex().setGlobalValue("genHelper", GUIGeneratorUtil.getInstance());
         data.getGenSetup().getGlex().setGlobalValue("UMLPGeneratorConfig",
             UMLPGeneratorConfig.getInstance().initFromCmd(data.getCMD()));
@@ -276,11 +279,21 @@ public class GuiPipeline extends Pipeline<UMLPPipelineData> {
         }
       };
 
+  public final IOperation.ISimpleOperation<DataWithGenSetupAndRouting> import_map_pipe_generate =
+      data -> {
+        Optional<String> tslib = UMLPGeneratorConfig.getInstance().getTSLib();
+        if (tslib.isPresent()) {
+          ImportMapGenerator importMapGenerator = new ImportMapGenerator(data.getGenSetup());
+          importMapGenerator.generate(tslib.get(), data.getASTs());
+        }
+      };
+
   Pipeline<DataWithGenSetupAndRouting> createConfigurationPipeline() {
     Pipeline<DataWithGenSetupAndRouting> pipe = new Pipeline<>();
     pipe.register("config_pipe_setup_generator", config_pipe_setup_generator);
     pipe.register("config_pipe_init_modules", config_pipe_init_modules);
     pipe.register("config_pipe_generate", config_pipe_generate);
+    pipe.register("import_map_pipe_generate", import_map_pipe_generate);
     return pipe;
   }
 
@@ -328,11 +341,13 @@ public class GuiPipeline extends Pipeline<UMLPPipelineData> {
 
     final UMLPPipelineData data;
     final Map<String, PackageRoute> routing;
+    final List<ASTGUICompilationUnit> asts;
     GeneratorSetup genSetup;
 
-    public GenConfigData(UMLPPipelineData data, Map<String, PackageRoute> routing) {
+    public GenConfigData(UMLPPipelineData data, Map<String, PackageRoute> routing, List<ASTGUICompilationUnit> asts) {
       this.data = data;
       this.routing = routing;
+      this.asts = asts;
     }
 
     public UMLPTool getTool() {
@@ -349,6 +364,10 @@ public class GuiPipeline extends Pipeline<UMLPPipelineData> {
 
     public Map<String, PackageRoute> getRouting() {
       return routing;
+    }
+
+    public List<ASTGUICompilationUnit> getASTs() {
+      return asts;
     }
 
     public GeneratorSetup getGenSetup() {
@@ -430,6 +449,8 @@ public class GuiPipeline extends Pipeline<UMLPPipelineData> {
   public interface DataWithGenSetupAndRouting extends DataWithGenSetup {
 
     Map<String, PackageRoute> getRouting();
+
+    List<ASTGUICompilationUnit> getASTs();
   }
 
   public interface DataWithGenSetup {

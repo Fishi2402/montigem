@@ -22,6 +22,7 @@ public class UMLPPluginFrontendTest implements Plugin<Project> {
         // TODO: Is there a better way to copy _all_ properties from the tasks?
         umlpTask.getInput().setFrom(firstTask.getInput());
         umlpTask.getHandWrittenCodeDir().setFrom(firstTask.getHandWrittenCodeDir());
+        umlpTask.getSymbolPath().setFrom(firstTask.getSymbolPath());
         umlpTask.getModelDir().setFrom(firstTask.getModelDir());
 
         // Change Outputs of the task... because we want to generate into a different directory & compare afterwars

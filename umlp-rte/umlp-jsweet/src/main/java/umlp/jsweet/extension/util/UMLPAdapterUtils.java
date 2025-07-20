@@ -3,6 +3,7 @@ package umlp.jsweet.extension.util;
 
 import de.se_rwth.commons.logging.Log;
 import jsweet.lang.Erased;
+import org.jsweet.JSweetConfig;
 import org.jsweet.transpiler.JSweetContext;
 import org.jsweet.transpiler.Java2TypeScriptTranslator;
 import org.jsweet.transpiler.ModuleImportDescriptor;
@@ -101,6 +102,9 @@ public class UMLPAdapterUtils {
 
   public boolean isSubTypeOf(TypeElement type,
       String superClass) {
+    if (type == null) {
+      return false;
+    }
     if (types.erasure(type.asType()).toString().equals(superClass)) {
       return true;
     }
@@ -209,6 +213,22 @@ public class UMLPAdapterUtils {
     Set<String> importedNames = context.getImportedNames(context.currentCompilationUnit.get().getSourceFile().getName());
     if (!importedNames.contains(importedName)) {
       context.addHeader("import." + importedName, "import " + importedName + " from '" + pathToImportedClass + "';");
+    }
+  }
+
+  public String getJSweetParameterName(VariableElement parameter) {
+    return getJSweetVariableName(context.getActualName(parameter));
+  }
+
+  public String getJSweetExecutableName(ExecutableElement executable) {
+    return getJSweetVariableName(context.getActualName(executable));
+  }
+
+  public String getJSweetVariableName(String variableName) {
+    if (JSweetConfig.JS_KEYWORDS.contains(variableName)) {
+      return "__" + variableName;
+    } else {
+      return variableName;
     }
   }
 }

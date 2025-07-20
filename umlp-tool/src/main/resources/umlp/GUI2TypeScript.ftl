@@ -11,8 +11,7 @@ ${includeArgs("umlp.generator.hook.InitModules", glex)}
 <#assign guiDecorator = tc.instantiate("umlp.generator.gui.gentypescript.decorator.GUI2TSClassDecorator", [glex, hwPath, outPath, importsPath])>
 <#assign angularDecorator = tc.instantiate("umlp.generator.gui.gentypescript.decorator.GUI2AngularClassDecorator", [glex, hwPath, outPath, importsPath])>
 <#assign annotationDecorator = tc.instantiate("umlp.generator.gui.gentypescript.java2ts.GUIComponentAnnotationDecoratorAndStandaloneConfig", [glex, hwPath, outPath, importsPath])>
-<#assign topDecorator = tc.instantiate("umlp.generator.gui.gentypescript.java2ts.TSTopDecorator", [hwPath])>
-<#assign viewComponents = glex.getGlobalVar("viewComponents")>
+<#assign topDecorator = tc.instantiate("umlp.generator.gui.gentypescript.java2ts.TSTopDecorator", [glex, hwPath, outPath])>
 
 ${guiDecorator.transform(ast, decoratedAST)}
 
@@ -25,7 +24,7 @@ ${angularDecorator.transform(ast, decoratedAST)}
 
 ${topDecorator.decorate(decoratedAST)}
 
-${annotationDecorator.transform(decoratedAST, ast, viewComponents)}
+${annotationDecorator.transform(decoratedAST, ast)}
 
 ${includeArgs("umlp.generator.hook.AfterTransformGui2C", decoratedAST, glex, hwPath, generator, angularDecorator, topDecorator)}
 

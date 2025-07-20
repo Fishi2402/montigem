@@ -23,16 +23,16 @@ public class RTEDataDecorator extends AbstractDecorator {
 
     RTEPojoDecorator = new RTEPojoDecorator(glex, hwPath);
     RTEPojoDecorator.transform(origCD, decoratedCD);
-    Log.info("After decorator: NoGemListDecorator", RTEDataDecorator.class.getName());
+    Log.debug("After decorator: NoGemListDecorator", RTEDataDecorator.class.getName());
 
     RTEBuilderDecorator RTEBuilderDecorator;
     RTEBuilderDecorator = new RTEBuilderDecorator(glex);
     RTEBuilderDecorator.transform(origCD, decoratedCD);
-    Log.info("After decorator: BuilderDecorator", RTEDataDecorator.class.getName());
+    Log.debug("After decorator: BuilderDecorator", RTEDataDecorator.class.getName());
 
     RTEDeSerDecorator RTEDeSerDecorator;
     RTEDeSerDecorator = new RTEDeSerDecorator(glex, BEDecorator.getStandardSupportedDeSers());
     RTEDeSerDecorator.transform(origCD, decoratedCD);
-    Log.info("After decorator: RTEDeSerDecorator", RTEDataDecorator.class.getName());
+    Log.debug("After decorator: RTEDeSerDecorator", RTEDataDecorator.class.getName());
   }
 }

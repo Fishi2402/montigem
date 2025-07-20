@@ -7,7 +7,7 @@ import {DtcockpitSecurityManager} from "../dtcockpit/DtcockpitSecurityManager";
 import {GetCurrentUserRequest} from 'dtcockpit/commands/GetCurrentUserRequest';
 import {CommandManager} from '@umlp/common';
 import {ActivatedRoute, Router} from '@angular/router';
-import {LoginSecManager} from "loginmodule/LoginSecManager";
+import {LoginSecManager} from "@montigem/login";
 
 @Component({
   standalone:true,

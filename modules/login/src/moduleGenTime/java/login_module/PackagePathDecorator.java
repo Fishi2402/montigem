@@ -18,7 +18,7 @@ public class PackagePathDecorator {
    * @param packageName  the qualified package name, such as "gui", "loginmodule"
    */
   public void addRoute(PackageRoute packageRoute, String... packageName) {
-    PackageRoute newRoute = new PackageRoute(Arrays.asList(packageName));
+    PackageRoute newRoute = new PackageRoute(Arrays.asList(packageName), "@montigem/login");
     packageRoute.addIfSubroute(newRoute);
   }
 }

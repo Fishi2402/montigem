@@ -11,24 +11,38 @@
   (keyup)="onKeyRelease($event)"
 >
   <label class="gem-label-text-input" [for]="getInputId()">{{ labelText }}</label>
-  <button
-    class="gem-dropdown-input"
-    tabindex="0"
-    [id]="getInputId()"
-    [disabled]="disabled"
-    (click)="toggleDropdown()"
-    [matTooltip]="
-        validity?.getStatus() === 'Error' || validity?.getStatus() === 'Warning'
-          ? validity.getMessage()
-          : null
-      "
-    matTooltipPosition="after"
-    [class.gem-input-error]="validity?.getStatus() === 'Error'"
-    [class.gem-input-warning]="validity?.getStatus() === 'Warning'"
+
+  <div
+    class="gem-dropdown-wrapper"
+    [ngClass]="{
+      'gem-has-error': validity?.getStatus() === 'Error',
+      'gem-has-warning': validity?.getStatus() === 'Warning'
+    }"
   >
-    <div class="gem-dropdown-text">{{ selectedOption?.getDisplay() }}</div>
-    <mat-icon class="gem-dropdown-icon" [fontIcon]="isContentShown ? 'arrow_drop_up' : 'arrow_drop_down'"></mat-icon>
-  </button>
+    <button
+      class="gem-dropdown-input"
+      tabindex="0"
+      [id]="getInputId()"
+      [disabled]="disabled"
+      (click)="toggleDropdown()"
+      [matTooltip]="
+          validity?.getStatus() === 'Error' || validity?.getStatus() === 'Warning'
+            ? validity.getMessage()
+            : null
+        "
+      matTooltipPosition="after"
+      [class.gem-dropdown-input-error]="validity?.getStatus() === 'Error'"
+      [class.gem-dropdown-input-warning]="validity?.getStatus() === 'Warning'"
+    >
+      <div class="gem-dropdown-text">{{ selectedOption?.getDisplay() }}</div>
+      <mat-icon
+        class="gem-dropdown-icon"
+        [style.visibility]="filteredOptions?.length > 0 ? 'visible' : 'hidden'"
+        [fontIcon]="isContentShown ? 'arrow_drop_up' : 'arrow_drop_down'"
+      ></mat-icon>
+    </button>
+  </div>
+
   <div *ngIf="isContentShown" class="gem-dropdown-content">
     <div *ngIf="searchEnabled" class="gem-search-input-container">
       <div class="gem-search-icon">
@@ -58,4 +72,3 @@
     </div>
   </div>
 </div>
-

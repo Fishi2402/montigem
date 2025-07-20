@@ -44,10 +44,10 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
 
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
-    astcdPackage.addCDElement(withOrigin(createClass(origCD)));
+    astcdPackage.addCDElement(withOrigin(createClass(origCD, astcdPackage.getName())));
   }
 
-  protected ASTCDClass createClass(ASTCDCompilationUnit origCD) {
+  protected ASTCDClass createClass(ASTCDCompilationUnit origCD, String astcdPackage) {
     String name = origCD.getCDDefinition().getName();
 
     ASTCDClass managerClass = UMLPMill.cDClassBuilder()
@@ -58,8 +58,8 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
 
     List<String> superDelegateManagerNames = new ArrayList<>();
     for (var ex : this.getExtendedDefinitions(origCD)) {
-      List<String> exFQN = new ArrayList<>(ex.getCDPackageList());
-      exFQN.add(ex.getCDDefinition().getName().toLowerCase());
+      List<String> exFQN = new ArrayList<>();
+      exFQN.add(astcdPackage);
       exFQN.add(ex.getCDDefinition().getName() + "4" + origCD.getCDDefinition().getName() +ManagerDecorator.SUFFIX + "Client" + "Impl");
       superDelegateManagerNames.add(ex.getCDDefinition().getName() + "4" + origCD.getCDDefinition().getName() +ManagerDecorator.SUFFIX + "Client" + "Impl");
       getCD4C().addImport(managerClass, String.join(".", exFQN));

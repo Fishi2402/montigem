@@ -10,12 +10,12 @@ import java.time.LocalDate;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+
 @Component
 public class ProcessCreate extends ProcessCreateTOP {
 
   public void init() {
     super.init();
-    this.getP().setStartedAt(LocalDate.now());
   }
 
   @Override
@@ -27,11 +27,18 @@ public class ProcessCreate extends ProcessCreateTOP {
 
   public Consumer<Void> sendEverything() {
     return $ -> {
-      Optional< Process> p = (Optional< Process>) this.getP().build();
-      if(p.isPresent()) {
-        Router.navigate("gui/process/ProcessOverview/"+this.getP().getGemId());
+      if (this.getP().getStartedAt() == null) {
+        return;
+      }
+
+      if (this.getP().getDeconstructionOf() == null) {
+        return;
+      }
+      Optional<Process> p = (Optional<Process>) this.getP().build();
+      if (p.isPresent()) {
+        Router.navigate("gui/process/ProcessOverview/" + this.getP().getGemId());
       }
     };
   }
+  }
 
-}

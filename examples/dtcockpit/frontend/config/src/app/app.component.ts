@@ -6,7 +6,7 @@ import {
   CommandManager
 } from '@umlp/common';
 import {DtcockpitManagerClientImpl} from 'dtcockpit/DtcockpitManagerClientImpl';
-import {LoginModule4DtcockpitManagerClientImpl} from "loginmodule/LoginModule4DtcockpitManagerClientImpl";
+import {LoginModule4DtcockpitManagerClientImpl} from "dtcockpit/LoginModule4DtcockpitManagerClientImpl";
 
 @Component({
   selector: 'app-root',

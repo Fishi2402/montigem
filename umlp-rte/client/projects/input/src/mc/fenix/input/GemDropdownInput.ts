@@ -19,10 +19,10 @@ export class GemDropdownInput extends GemDropdownInputComponent {
   _id: string;
 
   @HostBinding("style.width")
-  _width: string = '100%';
+  _width: string = 'auto';
 
   @HostBinding("style.height")
-  _height: string = '100%';
+  _height: string = 'auto';
 
   override _disabled: boolean = false;
 
@@ -67,6 +67,9 @@ export class GemDropdownInput extends GemDropdownInputComponent {
     if (changes["options"]) {
       this.filteredOptions = changes["options"].currentValue;
     }
+    if (changes["entry"]) {
+      this.selectedOption = this.options?.find(o => o.getValue() === this.entry);
+    }
   }
 
   onKeyPress(event: KeyboardEvent): void {
@@ -88,7 +91,6 @@ export class GemDropdownInput extends GemDropdownInputComponent {
 
   selectOption(option: Option): void {
     this.entry = option.getValue();
-    this.selectedOption = option;
     this.entryChange.emit(this.entry);
     this.hideDropdown();
   }

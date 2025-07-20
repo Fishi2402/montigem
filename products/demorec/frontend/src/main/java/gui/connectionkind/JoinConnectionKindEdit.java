@@ -5,14 +5,10 @@ import de.se_rwth.commons.logging.Log;
 import demorec.BatteryPack;
 import demorec.DemoRecComponent;
 import demorec.DemoRecManager;
-import demorec.EndEffector;
-import demorec.JoinConnectionKind;
 import demorec.JoinConnectionType;
-import demorec.ProcessStepType;
-import demorec.State;
 import mc.fenix.input.gemdropdowninputtypes.Option;
 import mc.fenix.input.gemtextinputtypes.GemTextInputValidity;
-import service.BatteryPackService;
+import demorec.service.BatteryPackService;
 import umlp.jsweet.extension.annotation.Component;
 
 import java.util.ArrayList;
@@ -21,9 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
-@Component(
-    tsImports = {"BatteryPackService, service/BatteryPackService"}
-)
+@Component
 public class JoinConnectionKindEdit extends JoinConnectionKindEditTOP {
   List<Option> joinConnectionTypeOptions = new ArrayList<>();
   List<Option> componentOptions = new ArrayList<>();

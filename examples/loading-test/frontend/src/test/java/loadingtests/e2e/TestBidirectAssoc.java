@@ -7,6 +7,7 @@ import loadingtests.RightSide;
 import loadingtests.test_infrastructure.AbstractLoadingTestsE2ETest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
@@ -185,5 +186,27 @@ public class TestBidirectAssoc extends AbstractLoadingTestsE2ETest {
     assertThat(page.locator(GemText.selector() + ":text-is(\"-> : R 1\")")).isVisible();
     assertThat(page.locator(GemText.selector() + ":text-is(\"right: R 1\")")).isVisible();
     assertThat(page.locator(GemText.selector() + ":text-is(\"<- : L 1\")")).isVisible();
+  }
+
+  @Test
+  @Disabled // TODO:https://git.rwth-aachen.de/monticore/monticore/-/issues/4697
+  public void testTwice() {
+    var l1 = LoadingTestsManager.leftSideBuilder().label("L 1").build().get();
+    var l2 = LoadingTestsManager.leftSideBuilder().label("L 2").build().get();
+    var r1 = LoadingTestsManager.rightSideBuilder().label("R 1").build().get();
+    var r2 = LoadingTestsManager.rightSideBuilder().label("R 2").build().get();
+    l1.setConnectedRight(r1);
+    l1.setConnectedRightAbsent();
+    r1.setConnectedLeft(l1);
+    l2.setConnectedRight(r2);
+    l1.setConnectedRightAbsent(); // org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException
+    l2.setConnectedRight(r2);
+
+    l1.setConnectedRightAbsent();
+    r2.setConnectedLeftAbsent();
+    l1.setConnectedRight(r2);
+    l2.setConnectedRight(r1);
+    l1.setConnectedRightAbsent();
+    r2.setConnectedLeftAbsent();
   }
 }

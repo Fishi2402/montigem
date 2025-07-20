@@ -11,6 +11,7 @@ import gradle.specific.UMLPBackendTask;
 import gradle.specific.UMLPCdToGuiTask;
 import gradle.specific.UMLPFrontendTask;
 import gradle.specific.UMLPGuiGenTask;
+import gradle.specific.UMLPGui2SymTask;
 import gradle.specific.UMLPOD2DataTask;
 import gradle.specific.UMLPSymbolsTask;
 import gradle.specific.merge.UMLPMergeTask;
@@ -36,7 +37,9 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
   public static final String UMLP_MODULES_GEN_CONFIG = "umlpModulesGen";
   public static final String UMLP_MODULES_MODELS_CONFIG = "umlpModulesModels";
   public static final String UMLP_MODULES_DOMAIN_SYMBOLS_CONFIG = "umlpModulesDomainSymbols";
-  public static final String UMLP_MODULES_FRONTEND_CONFIG = "umlpModulesFrontend";
+  public static final String UMLP_MODULES_IMPORT_MAP_CONFIG = "umlpModulesImportMap";
+  public static final String UMLP_MODULES_GUI_SYMBOLS_CONFIG = "umlpModulesGuiSymbols";
+  // public static final String UMLP_MODULES_FRONTEND_CONFIG = "umlpModulesFrontend";
 
   public static final String GUI_LIB_NAME = "guiLib";
 
@@ -53,6 +56,7 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
       project.getExtensions().getExtraProperties().set("GuiVariabilityHandlerTask", GuiVariabilityHandlerTask.class);
       project.getExtensions().getExtraProperties().set("UMLPFrontendTask", UMLPFrontendTask.class);
       project.getExtensions().getExtraProperties().set("UMLPSymbolsTask", UMLPSymbolsTask.class);
+      project.getExtensions().getExtraProperties().set(UMLPGui2SymTask.class.getSimpleName(), UMLPGui2SymTask.class);
       project.getExtensions().getExtraProperties().set("FrontendSetup", FrontendSetup.class);
       project.getExtensions().getExtraProperties().set("SerializeGUISymbolsTask", SerializeGUISymbolsTask.class);
       project.getExtensions().getExtraProperties().set("SerializeCDSymbolsTask", SerializeCDSymbolsTask.class);
@@ -62,9 +66,11 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
       // Module system
       var umlpModulesC = project.getConfigurations().maybeCreate(UMLP_MODULES_CONFIG);
       umlpModulesC.setCanBeResolved(false);
+
       var umlpModulesGenC = project.getConfigurations().maybeCreate(UMLP_MODULES_GEN_CONFIG);
       UMLPPluginModule.addModuleGenJarJarAttributes(umlpModulesGenC, project);
       umlpModulesGenC.extendsFrom(umlpModulesC);
+
       var umlpModulesModelsC = project.getConfigurations().maybeCreate(UMLP_MODULES_MODELS_CONFIG);
       UMLPPluginModule.addModelsJarAttributes(umlpModulesModelsC, project);
       umlpModulesModelsC.extendsFrom(umlpModulesC);
@@ -74,10 +80,22 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
       UMLPPluginModuleJSFrontend.addDomainSymbolsJarAttributes(umlpModulesDSC, project);
       umlpModulesDSC.extendsFrom(umlpModulesC);
 
+      var umlpModulesIMC = project.getConfigurations().maybeCreate(UMLP_MODULES_IMPORT_MAP_CONFIG);
+      umlpModulesIMC.setCanBeConsumed(false);
+      UMLPPluginModuleJSFrontend.addImportMapJarAttributes(umlpModulesIMC, project);
+      umlpModulesIMC.extendsFrom(umlpModulesC);
+
+      var umlpModulesGSC = project.getConfigurations().maybeCreate(UMLP_MODULES_GUI_SYMBOLS_CONFIG);
+      umlpModulesGSC.setCanBeConsumed(false);
+      UMLPPluginModuleJSFrontend.addGuiSymbolsJarAttributes(umlpModulesGSC, project);
+      umlpModulesGSC.extendsFrom(umlpModulesC);
+
+      /*
       var umlpModuleFrontend = project.getConfigurations().maybeCreate(UMLP_MODULES_FRONTEND_CONFIG);
       umlpModuleFrontend.setCanBeConsumed(false);
       UMLPPluginModuleJSFrontend.addBundledJSJarAttributes(umlpModuleFrontend, project);
       umlpModuleFrontend.extendsFrom(umlpModulesC);
+      /**/
 
       project.getPlugins().withId("java", plugin -> {
         project.getConfigurations().getByName("implementation").extendsFrom(umlpModulesC);

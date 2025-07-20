@@ -12,14 +12,17 @@ import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.io.paths.MCPath;
 import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.domain.decorator.ErrorCollectorDecorator;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
+import umlp.generator.gui.gentypescript.decorator.TSImportHelper;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentTemplates;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
+import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,8 +34,13 @@ public class TSBuilderDecorator extends BuilderDecorator {
   protected String astcdPackage;
   protected ASTCDCompilationUnit origCD;
 
-  public TSBuilderDecorator(final GlobalExtensionManagement glex) {
+  protected final Path outPath;
+  protected final MCPath hwPath;
+
+  public TSBuilderDecorator(final GlobalExtensionManagement glex, MCPath hwPath, Path outPath) {
     super(glex);
+    this.hwPath = hwPath;
+    this.outPath = outPath;
   }
 
   @Override
@@ -45,37 +53,41 @@ public class TSBuilderDecorator extends BuilderDecorator {
   protected void addImports(ASTCDType domainType, ASTCDType cdType) {
     getCD4C().addImport(cdType, PathUtil.getBackendRTECommonPath("Gem"));
     getCD4C().addImport(cdType, PathUtil.getBackendRTECommonPath("NotificationScope"));
-    getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getName());
-    getCD4C().addImport(cdType, this.astcdPackage + "." + domainType.getName() + ErrorCollectorDecorator.SUFFIX);
+
+    TSImportHelper importHelper = new TSImportHelper(glex, cdType, hwPath, outPath);
+    String importerQName = this.astcdPackage + "." + cdType.getName();
+
+    importHelper.addImport(this.astcdPackage + "." + domainType.getName(), importerQName);
+    importHelper.addImport(this.astcdPackage + "." + domainType.getName() + ErrorCollectorDecorator.SUFFIX, importerQName);
 
     String name = origCD.getCDDefinition().getName();
-    getCD4C().addImport(cdType, this.astcdPackage + "."
-        + name + ManagerDecorator.SUFFIX);
+    importHelper.addImport(this.astcdPackage + "."
+        + name + ManagerDecorator.SUFFIX, importerQName);
     if (!domainType.getSuperclassList().isEmpty()) {
       ASTCDCompilationUnit cdOfSuper = UMLPSymbolTables.getDiagramFor(domainType.getSuperclassList().get(0));
-      getCD4C().addImport(cdType, getPackageName(cdOfSuper, DEFAULT_PACKAGE) + "." + domainType.getSuperclassList().get(0).printType());
+      importHelper.addImport(getPackageName(cdOfSuper, DEFAULT_PACKAGE) + "." + domainType.getSuperclassList().get(0).printType(), importerQName);
     }
     for (ASTCDClass c : this.origCD.getCDDefinition().getCDClassesList()) {
       if (!c.getName().equals(domainType.getName())) {
-        getCD4C().addImport(cdType, this.astcdPackage + "." + c.getName());
+        importHelper.addImport(this.astcdPackage + "." + c.getName(), importerQName);
       }
     }
     for (ASTCDEnum c : this.origCD.getCDDefinition().getCDEnumsList()) {
       if (!c.getName().equals(domainType.getName())) {
-        getCD4C().addImport(cdType, this.astcdPackage + "." + c.getName());
+        importHelper.addImport(this.astcdPackage + "." + c.getName(), importerQName);
       }
     }
     for (ASTCDInterface c : this.origCD.getCDDefinition().getCDInterfacesList()) {
       if (!c.getName().equals(domainType.getName())) {
         ASTCDCompilationUnit cdOfSuper = UMLPSymbolTables.getDiagramFor(c);
-        getCD4C().addImport(cdType, getPackageName(cdOfSuper, DEFAULT_PACKAGE) + "." + c.getName());
+        importHelper.addImport(getPackageName(cdOfSuper, DEFAULT_PACKAGE) + "." + c.getName(), importerQName);
       }
     }
 
     for (ASTCDAssocSide assoc : CDSymbolTables.getAssociationsInHierarchy(domainType)) {
       ASTCDCompilationUnit cdOfAssoc = UMLPSymbolTables.getDiagramFor(assoc.getMCQualifiedType());
       if (!cdOfAssoc.equals(origCD)) {
-        getCD4C().addImport(cdType, getPackageName(cdOfAssoc, DEFAULT_PACKAGE) + "." + assoc.getMCQualifiedType().printType());
+        importHelper.addImport(getPackageName(cdOfAssoc, DEFAULT_PACKAGE) + "." + assoc.getMCQualifiedType().printType(), importerQName);
       }
     }
   }

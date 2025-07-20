@@ -1,0 +1,16 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
+{
+  "extends": ["./tsconfig.app.json"],
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@umlp/*": ["prodlibs/@umlp/*"],
+      "*": [
+        "build/appdomain/*",
+        "build/appgui/*",
+        "src/app/*",
+        "hwcsrc/*"
+      ]
+    }
+  }
+}

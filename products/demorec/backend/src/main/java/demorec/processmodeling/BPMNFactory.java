@@ -23,37 +23,37 @@ public class BPMNFactory {
     END
   }
 
-  private ASTProcessBuilder processBuilder;
+  private ASTWFProcessBuilder processBuilder;
   private HashMap<String, ASTFlowElement> elements;
   private HashMap<String, ASTFlowBlock> flowBlocks;
 
   public BPMNFactory(String processName) {
     WorkflowMill.init();
-    processBuilder = WorkflowMill.processBuilder();
+    processBuilder = WorkflowMill.wFProcessBuilder();
     processBuilder.setName(processName);
     elements = new HashMap<>();
     flowBlocks = new HashMap<>();
   }
 
+  // TODO is this still necessary?
   public BPMNFactory addLane(String name) {
-    ASTLaneBuilder laneBuilder = WorkflowMill.laneBuilder();
+    ASTWFLaneBuilder laneBuilder = WorkflowMill.wFLaneBuilder();
     laneBuilder.setName(name);
 
-    ASTLane newLane = laneBuilder.build();
-    processBuilder.addLane(newLane);
+    ASTWFLane newLane = laneBuilder.build();
+    processBuilder.addFlowElement(newLane);
 
     return this;
   }
 
   public BPMNFactory addTask(String name, String type, String parentName) {
-    ASTTaskBuilder taskBuilder = WorkflowMill.taskBuilder();
+    ASTWFTaskBuilder taskBuilder = WorkflowMill.wFTaskBuilder();
     taskBuilder.setName(name);
-    taskBuilder.setType(ASTTaskType.valueOf(type.trim().toUpperCase()));
-    taskBuilder.setParentRef(parentName);
+    taskBuilder.setType(4); // TODO this is shit
     taskBuilder.setModifier(WorkflowMill.modifierBuilder().setStereotypeAbsent().build());
 
-    ASTTask newTask = taskBuilder.build();
-    processBuilder.getLane(0).addFlowElement(newTask);
+    ASTWFTask newTask = taskBuilder.build();
+    processBuilder.addFlowElement(newTask);
     elements.put(name, newTask);
 
     return this;
@@ -67,26 +67,26 @@ public class BPMNFactory {
           throw new IllegalArgumentException(String.format("Cannot add the flow element with name '%s', because it has not been added yet!", element));
         }
       }
-      processBuilder.getLane(0).addFlowElement(buildASTSequenceFlowFromElementNames(flowElements));
+      processBuilder.addFlowElement(buildASTSequenceFlowFromElementNames(flowElements));
     }
 
     return this;
   }
 
-  private ASTInlineEvent buildInlineEvent(SupportedEventType type) {
-    ASTInlineEventBuilder neBuilder = WorkflowMill.inlineEventBuilder();
-    neBuilder.setParentRef(processBuilder.getName());
+  private ASTWFEvent buildInlineEvent(SupportedEventType type) {
+    ASTWFEventBuilder neBuilder = WorkflowMill.wFEventBuilder();
+    //neBuilder.setParentRef(processBuilder.getName());
 
     if (type == SupportedEventType.START) {
-      neBuilder.setType(ASTEventType.START);
+      neBuilder.setStart(true);
     }
     else if (type == SupportedEventType.END) {
-      neBuilder.setType(ASTEventType.END);
+      neBuilder.setEnd(true);
     }
 
-    ASTInlineEvent newEvent = neBuilder.build();
+    ASTWFEvent newEvent = neBuilder.build();
     newEvent.setName(type.name());
-    processBuilder.getLane(0).addFlowElement(newEvent);
+    processBuilder.addFlowElement(newEvent);
 
     return newEvent;
   }
@@ -95,7 +95,7 @@ public class BPMNFactory {
     ASTSequenceFlowBuilder mainSfBuilder = WorkflowMill.sequenceFlowBuilder();
 
     // Add start event
-    ASTInlineEvent startEvent = buildInlineEvent(SupportedEventType.START);
+    ASTWFEvent startEvent = buildInlineEvent(SupportedEventType.START);
     mainSfBuilder.addPath(buildASTFlowTargetFromASTInlineEvent(startEvent));
 
     // Add the actual sequence flow
@@ -113,7 +113,7 @@ public class BPMNFactory {
     }
 
     // Add end event
-    ASTInlineEvent endEvent = buildInlineEvent(SupportedEventType.END);
+    ASTWFEvent endEvent = buildInlineEvent(SupportedEventType.END);
     mainSfBuilder.addPath(buildASTFlowTargetFromASTInlineEvent(endEvent));
 
     return mainSfBuilder.build();
@@ -126,16 +126,16 @@ public class BPMNFactory {
     return ftBuilder.build();
   }
 
-  private ASTFlowTarget buildASTFlowTargetFromASTInlineEvent(ASTInlineEvent event) {
+  private ASTFlowTarget buildASTFlowTargetFromASTInlineEvent(ASTWFEvent event) {
     ASTFlowTargetBuilder ftBuilder = WorkflowMill.flowTargetBuilder();
-    ftBuilder.setNodeRef(MCQualifiedNameFacade.createQualifiedName(event.getName()));
+    //ftBuilder.setNodeRef(MCQualifiedNameFacade.createQualifiedName(event.getName()));
 
     return ftBuilder.build();
   }
 
   private ASTFlowTarget buildASTFlowTargetFromElementName(String flowElement) {
     ASTFlowTargetBuilder ftBuilder = WorkflowMill.flowTargetBuilder();
-    ftBuilder.setNodeRef(MCQualifiedNameFacade.createQualifiedName(flowElement));
+    //ftBuilder.setNodeRef(MCQualifiedNameFacade.createQualifiedName(flowElement));
 
     return ftBuilder.build();
   }
@@ -154,13 +154,8 @@ public class BPMNFactory {
       gwTypeBuilder.setExclusive(true);
     }
 
-    ASTNamedGateway gw = null;
-    if (direction == SupportedGatewayDirection.SPLIT) {
-      gw = buildOneSidedGateway(gatewayIdentifier, gwTypeBuilder.build(), ASTGatewayDirection.SPLIT);
-    }
-    else if (direction == SupportedGatewayDirection.MERGE) {
-      gw = buildOneSidedGateway(gatewayIdentifier, gwTypeBuilder.build(), ASTGatewayDirection.MERGE);
-    }
+    ASTWFGateway gw = null;
+    gw = buildOneSidedGateway(gatewayIdentifier, gwTypeBuilder.build(), direction);
 
     elements.put(gatewayIdentifier, gw);
 
@@ -185,7 +180,7 @@ public class BPMNFactory {
   private ASTFlowBlock buildGatewayFlowBlock(ArrayList<ArrayList<String>> flowElements) {
     ASTFlowBlockBuilder fBlockBuilder = WorkflowMill.flowBlockBuilder();
     for (ArrayList<String> flow : flowElements) {
-      ASTFlowBranchBuilder fBranchBuilder = WorkflowMill.flowBranchBuilder();
+      ASTSequenceFlowBuilder fBranchBuilder = WorkflowMill.sequenceFlowBuilder();
       for (String flowElementName : flow) {
         // We do not check here, if the flow element exists in order to ease the serialization
         if (elements.containsKey(flowElementName)) {
@@ -204,9 +199,13 @@ public class BPMNFactory {
     return fBlockBuilder.build();
   }
 
-  private ASTNamedGateway buildOneSidedGateway(String id, ASTGatewayType type, ASTGatewayDirection direction) {
-    ASTNamedGatewayBuilder gwBuilder = WorkflowMill.namedGatewayBuilder();
-    gwBuilder.setDirection(direction);
+  private ASTWFGateway buildOneSidedGateway(String id, ASTGatewayType type,  SupportedGatewayDirection direction) {
+    ASTWFGatewayBuilder gwBuilder = WorkflowMill.wFGatewayBuilder();
+    if(direction == SupportedGatewayDirection.SPLIT) {
+      gwBuilder.setDirection(0); // TODO sehr ugly
+    } else {
+      gwBuilder.setDirection(1);
+    }
     gwBuilder.setType(type);
     gwBuilder.setName(id);
     gwBuilder.setModifier(WorkflowMill.modifierBuilder().setStereotypeAbsent().build());
@@ -217,10 +216,7 @@ public class BPMNFactory {
   public ASTWorkflowCompilationUnit getCompilationUnit() {
     ASTWorkflowCompilationUnitBuilder cuBuilder = WorkflowMill.workflowCompilationUnitBuilder();
 
-    // No IO-Specification is needed here
-    processBuilder.setIOSpecification(WorkflowMill.iOSpecificationBuilder().build());
-
-    cuBuilder.setProcess(processBuilder.build());
+    cuBuilder.setWFProcess(processBuilder.build());
 
     return cuBuilder.build();
   }

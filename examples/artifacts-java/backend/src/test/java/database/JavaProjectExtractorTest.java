@@ -2,8 +2,8 @@
 package database;
 
 import baseartifactstest.ArtifactView;
-import baseartifactstest.BaseArtifactsTest4JavaProjectManagerImpl;
 import baseartifactstest.BaseArtifactsTestManager;
+import javaproject.BaseArtifactsTest4JavaProjectManagerImpl;
 import javaproject.JavaExtractor;
 import javaproject.JavaProjectCommandObjectMapper;
 import javaproject.JavaProjectManager;

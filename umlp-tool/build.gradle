@@ -10,9 +10,13 @@ plugins {
   id 'com.github.johnrengelman.shadow' version "$shadow_plugin_version"
 
   id 'de.monticore.language-server' version "$mclsg_version"
-  // this is needed for the intellij plugin, even though it has its own gradle subproject
-  id 'org.jetbrains.intellij' version '1.13.3' apply(false)
   id "io.github.themrmilchmann.ecj" version "0.2.0"
+}
+
+java {
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(11)
+  }
 }
 
 def shouldBuildVscodePlugin = ("true").equals(getProperty('buildVscodePlugin'))
@@ -82,12 +86,6 @@ repositories {
 test {
   systemProperty 'guidsl-default-types', configurations.guiDefaultTypes.asPath
   useJUnitPlatform()
-}
-
-java {
-  toolchain {
-    languageVersion = JavaLanguageVersion.of(11)
-  }
 }
 
 description = 'UML/P Language and Tool'

@@ -4,15 +4,13 @@ package gui.connectionkind;
 import de.se_rwth.commons.logging.Log;
 import demorec.BatteryPack;
 import demorec.JoinConnectionKind;
-import service.BatteryPackService;
+import demorec.service.BatteryPackService;
 import umlp.jsweet.extension.annotation.Component;
 
 import java.util.Optional;
 import java.util.function.Consumer;
 
-@Component(
-    tsImports = {"BatteryPackService, service/BatteryPackService"}
-)
+@Component
 public class JoinConnectionKindCreate extends JoinConnectionKindCreateTOP {
 
   protected BatteryPack currentPack = null;

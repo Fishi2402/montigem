@@ -25,7 +25,7 @@ public class GUIComponentBasicsAdapter extends PrinterAdapter {
     if (adapterUtils.hasDirectiveAnnotation(type)) {
       println().printIndent().print("protected router: Router;").println().println();
     }
-    if (adapterUtils.isComponentOrDirective(type)) {
+    if (adapterUtils.isHWCComponentOrDirective(type)) {
       String cdName = adapterUtils.getAnnotationPropertyValue(type, "cdName", String.class, "");
       String managerName = cdName + "Manager";
       String pathToManager = StringUtils.lowerCase(cdName) + "/" + managerName;
@@ -37,11 +37,11 @@ public class GUIComponentBasicsAdapter extends PrinterAdapter {
 
   @Override
   public boolean substituteType(TypeElement classElement) {
-    if (adapterUtils.isComponent(classElement) && !adapterUtils.hasComponentAnnotation(classElement)) {
+    if (adapterUtils.isHWCComponent(classElement) && !adapterUtils.hasComponentAnnotation(classElement)) {
       Log.warn("0JSC003 " + classElement.getQualifiedName().toString()
           + " Handwritten Adaption of a GUI Component should be tagged with @Component()");
     }
-    if (adapterUtils.isComponent(classElement)) {
+    if (adapterUtils.isHWCComponent(classElement)) {
       Boolean standAlone = adapterUtils.getAnnotationPropertyValue(classElement, "standalone", Boolean.class,
           true);
       String[] imports = adapterUtils.getAnnotationPropertyValue(classElement, "imports",
@@ -78,7 +78,7 @@ public class GUIComponentBasicsAdapter extends PrinterAdapter {
       print("@Directive()").println().printIndent();
       adapterUtils.importFromWithModule("Directive", "@angular/core");
     }
-    if (adapterUtils.isComponentOrDirective(classElement)) {
+    if (adapterUtils.isHWCComponentOrDirective(classElement)) {
       adapterUtils.importFromWithModule("ActivatedRoute, Router", "@angular/router");
       adapterUtils.importFromWithModule("ComponentObserverManager", GUIAdapterUtils.UMLP_COMMON_POINTER);
     }

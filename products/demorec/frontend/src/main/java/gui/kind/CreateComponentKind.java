@@ -1,7 +1,7 @@
 package gui.kind;
 
 import demorec.ComponentKind;
-import service.BatteryPackService;
+import demorec.service.BatteryPackService;
 import umlp.jsweet.extension.annotation.Component;
 
 import java.util.Optional;

@@ -4,13 +4,13 @@
 
   Call it using the CLI: .. -ct umlp.GUI2Java
 -->
-${tc.signature("decoratedAST", "glex", "hwPath", "generator")}
+${tc.signature("decoratedAST", "glex", "hwPath", "outPath", "generator")}
 
 <#-- Call all decorators -->
 <#assign guiDecorator = tc.instantiate("umlp.generator.gui.genjava.decorator.GUI2JavaClassDecorator", [glex])>
 
 <#-- TopDecorator, which is aware about hand-written TS code -->
-<#assign topDecorator = tc.instantiate("umlp.generator.gui.gentypescript.java2ts.TSTopDecorator", [hwPath])>
+<#assign topDecorator = tc.instantiate("umlp.generator.gui.gentypescript.java2ts.TSTopDecorator", [glex, hwPath, outPath])>
 
 ${guiDecorator.transform(ast, decoratedAST)}
 

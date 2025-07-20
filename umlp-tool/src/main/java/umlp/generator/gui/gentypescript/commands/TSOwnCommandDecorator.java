@@ -10,6 +10,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.io.paths.MCPath;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
@@ -23,12 +24,14 @@ import umlp.generator.domain.decorator.AccessPolicyDecorator;
 import umlp.generator.domain.decorator.BaseClassObjectMapperDecorator;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.commands.OwnCommandDecorator;
+import umlp.generator.gui.gentypescript.decorator.TSImportHelper;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentTemplates;
 import umlp.generator.gui.gentypescript.method.TSAccessorDecorator;
 import umlp.generator.gui.gentypescript.printer.TSUtilsPrinter;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -39,8 +42,13 @@ import static umlp.generator.domain.decorator.commands.CommandDecorator.DE_SER;
 
 public class TSOwnCommandDecorator extends OwnCommandDecorator {
 
-  public TSOwnCommandDecorator(GlobalExtensionManagement glex, Set<String> supportedDeSers) {
+  protected final Path outPath;
+  protected final MCPath hwPath;
+
+  public TSOwnCommandDecorator(GlobalExtensionManagement glex, MCPath hwPath, Path outPath, Set<String> supportedDeSers) {
     super(glex, supportedDeSers);
+    this.hwPath = hwPath;
+    this.outPath = outPath;
   }
 
   protected ASTCDClass createCommandClass(ASTCDCompilationUnit origCD, ASTCDMethod meth) {
@@ -115,10 +123,14 @@ public class TSOwnCommandDecorator extends OwnCommandDecorator {
   protected void addImport(SymTypeExpression type, ASTCDClass ast) {
     if (!type.isObscureType() && GenService.isCDType(type)) {
       ASTCDCompilationUnit typeCD = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
-      getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print());
+
+      TSImportHelper importHelper = new TSImportHelper(glex, ast, hwPath, outPath);
+      String importerQName = getPackageName(typeCD, COMMAND_PACKAGE) + "." + ast.getName();
+
+      importHelper.addImport(getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print(), importerQName);
       if (!GenService.isCDEnum(type)) {
-        getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print()
-                                     + AccessPolicyDecorator.SUFFIX);
+        importHelper.addImport(getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print()
+                                     + AccessPolicyDecorator.SUFFIX, importerQName);
       }
     }
     else if (!type.isObscureType() && GenService.isCDEnum(type)) {
@@ -210,7 +222,11 @@ public class TSOwnCommandDecorator extends OwnCommandDecorator {
                          .build();
 
     String baseClassDecorator = origCD.getCDDefinition().getName() + BaseClassObjectMapperDecorator.SUFFIX;
-    getCD4C().addImport(ast, getPackageName(origCD, COMMAND_PACKAGE) + "." + cmdName);
+
+    TSImportHelper importHelper = new TSImportHelper(glex, ast, hwPath, outPath);
+    String importerQName = getPackageName(origCD, COMMAND_PACKAGE) + "." + ast.getName();
+
+    importHelper.addImport(getPackageName(origCD, COMMAND_PACKAGE) + "." + cmdName, importerQName);
 
     List<String> paramNameList = new ArrayList<>();
     List<SymTypeExpression> typeList = new ArrayList<>();
@@ -276,11 +292,14 @@ public class TSOwnCommandDecorator extends OwnCommandDecorator {
   @Override
   protected void addDeSerImport(ASTCDClass ast, ASTCDCompilationUnit origCD, boolean useDeSer,
                                 boolean isCDEnum, String baseClassDecorator, String typeName) {
+    TSImportHelper importHelper = new TSImportHelper(glex, ast, hwPath, outPath);
+    String importerQName = getPackageName(origCD, COMMAND_PACKAGE) + "." + ast.getName();
+
     if (isCDEnum) {
-      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + Names.getSimpleName(typeName));
+      importHelper.addImport(getPackageName(origCD, DEFAULT_PACKAGE) + "." + Names.getSimpleName(typeName), importerQName);
     }
     if (useDeSer) {
-      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + baseClassDecorator);
+      importHelper.addImport(getPackageName(origCD, DEFAULT_PACKAGE) + "." + baseClassDecorator, importerQName);
     }
   }
 
@@ -306,14 +325,17 @@ public class TSOwnCommandDecorator extends OwnCommandDecorator {
   @Override
   protected void addDeSerImport(ASTCDClass ast, ASTCDCompilationUnit origCD,
                                 ASTCDType domainClass, SymTypeExpression type, SymTypeExpression innerType, String cmdName) {
-    getCD4C().addImport(ast, getPackageName(origCD, COMMAND_PACKAGE) + "." + cmdName);
-    getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
-    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + domainClass.getName());
+    TSImportHelper importHelper = new TSImportHelper(glex, ast, hwPath, outPath);
+    String importerQName = getPackageName(origCD, COMMAND_PACKAGE) + "." + ast.getName();
+
+    importHelper.addImport(getPackageName(origCD, COMMAND_PACKAGE) + "." + cmdName, importerQName);
+    importHelper.addImport(PathUtil.getBackendRTECommandPath("CommandDeSer"), importerQName);
+    importHelper.addImport(getPackageName(origCD, DEFAULT_PACKAGE) + "." + domainClass.getName(), importerQName);
     if (!innerType.isObscureType() && GenService.isCDEnum(innerType)) {
-      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + ((SymTypeOfGenerics) type).getArgument(0).print());
+      importHelper.addImport(getPackageName(origCD, DEFAULT_PACKAGE) + "." + ((SymTypeOfGenerics) type).getArgument(0).print(), importerQName);
     }
     else if (!innerType.isObscureType() && GenService.isJavaType(innerType)) {
-      getCD4C().addImport(ast, innerType.printFullName());
+      importHelper.addImport(innerType.printFullName(), importerQName);
     }
   }
 

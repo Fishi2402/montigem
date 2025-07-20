@@ -3,7 +3,6 @@ package umlp.decorator.domain;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.ocl.ocl._ast.ASTOCLCompilationUnit;
-import org.junit.jupiter.api.Test;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.ValidatorDecorator;
 

@@ -4,6 +4,8 @@ package gradle.specific;
 import gradle.common.UMLPSingleFileTask;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.provider.Property;
+import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.PathSensitive;
@@ -50,6 +52,10 @@ public abstract class UMLPFrontendTask extends UMLPSingleFileTask {
     ocl.from(f);
   }
 
+  @Input
+  @org.gradle.api.tasks.Optional
+  public abstract Property<String> getTslib();
+
   /**
    * @param filePath Path of InputFile
    * @return Arguments that can be used to start CLI-Tool
@@ -73,9 +79,21 @@ public abstract class UMLPFrontendTask extends UMLPSingleFileTask {
       }
     }
 
+    if (!this.getSymbolPath().isEmpty()) {
+      for (var symDir : this.getSymbolPath()) {
+        result.add("-path");
+        result.add(symDir.getAbsolutePath());
+      }
+    }
+
     if(!this.getOcl().isEmpty()) {
       result.add("-ocl");
       result.add(handlePath.apply(Path.of(getOcl().getAsPath())));
+    }
+
+    if (this.getTslib().isPresent()) {
+      result.add("-" + UMLPToolOptions.GUI_GEN_FOR_TS_LIB.getCMD());
+      result.add(getTslib().get());
     }
 
     return result;

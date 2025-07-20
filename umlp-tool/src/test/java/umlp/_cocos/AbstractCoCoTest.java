@@ -6,7 +6,6 @@ import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Test;
 import umlp.AbstractUMLPTest;
-import umlp._ast.ASTUMLPNode;
 
 import java.util.IllegalFormatException;
 import java.util.List;
@@ -59,7 +58,7 @@ public abstract class AbstractCoCoTest<T extends CoCoTestable> extends AbstractU
   }
 
   /**
-   * Parses an invalid umlp diagram, calls {@link UMLPCoCoChecker#checkAll(ASTUMLPNode)} on the
+   * Parses an invalid umlp diagram, calls {@link UMLPCoCoChecker#checkAll(umlp._ast.ASTUMLPNode)} on the
    * result and stores the file name in {@link #umlpFile}.
    *
    * @param fileName The file name of the umlp diagramm to parse. When the ending is not .umlp or .cd,

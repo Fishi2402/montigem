@@ -1,5 +1,5 @@
 import { setupJestCanvasMock } from "jest-webgl-canvas-mock";
-import * as RenderUtils from "./render.utils";
+import RenderUtils from "./render.utils";
 import { NodeAttributes } from "../types/graph.types";
 import { GraphSettings } from "../types/graph-settings.types";
 import { TextObject } from "../types/custom-renderer.types";

@@ -2,6 +2,7 @@
 package umlp.jsweet.extension.util;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jsweet.JSweetConfig;
 import org.jsweet.transpiler.JSweetContext;
 import org.jsweet.transpiler.OverloadScanner;
 import org.jsweet.transpiler.extension.PrinterAdapter;
@@ -10,10 +11,14 @@ import org.jsweet.transpiler.util.Util;
 import umlp.jsweet.extension.guiAdapters.GUIComponentObserverPatternAdapter;
 
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.ExecutableType;
 import javax.lang.model.util.Types;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GUIAdapterUtils extends UMLPAdapterUtils {
   public static final String COMPONENT_ANNOTATION = "umlp.jsweet.extension.annotation.Component";
@@ -53,12 +58,12 @@ public class GUIAdapterUtils extends UMLPAdapterUtils {
         StringUtils.uncapitalize(methodName.substring(2));
   }
 
-  public boolean isComponent(TypeElement type) {
+  public boolean isHWCComponent(TypeElement type) {
     return hasComponentAnnotation(type) || isHWCofDirective(type);
   }
 
-  public boolean isComponentOrDirective(TypeElement type) {
-    return isComponent(type) || hasDirectiveAnnotation(type);
+  public boolean isHWCComponentOrDirective(TypeElement type) {
+    return isHWCComponent(type) || hasDirectiveAnnotation(type);
   }
 
   public boolean hasComponentAnnotation(TypeElement type) {
@@ -83,9 +88,14 @@ public class GUIAdapterUtils extends UMLPAdapterUtils {
         classElement.getSimpleName().toString().endsWith("TOP");
   }
 
-  public boolean isMethodOfComponentOrDirective(Element element) {
+  public boolean isMethodOfHWCComponentOrDirective(Element element) {
     return element.getEnclosingElement() instanceof TypeElement &&
-        isComponentOrDirective((TypeElement) element.getEnclosingElement());
+        isHWCComponentOrDirective((TypeElement) element.getEnclosingElement());
+  }
+
+  public boolean isMethodOfHWCComponent(Element element) {
+    return element.getEnclosingElement() instanceof TypeElement &&
+        isHWCComponent((TypeElement) element.getEnclosingElement());
   }
 
   public boolean isMethodOfDirective(Element element) {
@@ -109,6 +119,16 @@ public class GUIAdapterUtils extends UMLPAdapterUtils {
 
     for (OverloadScanner.OverloadMethodEntry overloadEntry : overload.getEntries()) {
       if (context.hasAnnotationType(overloadEntry.methodElement, SYNCRHONIZED_ANNOTATION)) {
+        return true;
+      }
+    }
+
+    List<ExecutableElement> candidates = new ArrayList<>();
+    this.util.collectMatchingMethodDeclarationsInType(
+        (TypeElement) executable.getEnclosingElement(), executable.getSimpleName().toString(),
+        (ExecutableType) executable.asType(), true, candidates);
+    for (ExecutableElement candidate : candidates) {
+      if (context.hasAnnotationType(candidate, SYNCRHONIZED_ANNOTATION)) {
         return true;
       }
     }

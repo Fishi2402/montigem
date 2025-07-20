@@ -95,7 +95,7 @@ public abstract class UMLPGuiGenTask extends UMLPAllFilesTask {
 
   @Input
   @org.gradle.api.tasks.Optional
-  public abstract Property<Boolean> getGen4TSLib();
+  public abstract Property<String> getTslib();
 
   /**
    * @param f file which should be checked
@@ -113,6 +113,11 @@ public abstract class UMLPGuiGenTask extends UMLPAllFilesTask {
       result.add("-mp");
       result.add(handlePath.apply(getModelDir().getAsFile().get().toPath()));
     }
+    
+    if (this.getSymbolOutDir().isPresent()) {
+      result.add("-s");
+      result.add(handlePath.apply(getSymbolOutDir().getAsFile().get().toPath()));
+    }
 
     if (!this.getSymbolDir().isEmpty()) {
       for (var symDir : this.getSymbolDir()) {
@@ -121,7 +126,7 @@ public abstract class UMLPGuiGenTask extends UMLPAllFilesTask {
       }
     }
 
-    if (!this.getSymbolDir().isEmpty()) {
+    if (!this.getImportsDir().isEmpty()) {
       for (var importDir : this.getImportsDir()) {
         result.add("-" + UMLPToolOptions.IMPORTS_PATH.getCMD());
         result.add(importDir.getAbsolutePath());
@@ -163,8 +168,9 @@ public abstract class UMLPGuiGenTask extends UMLPAllFilesTask {
       result.add(this.getGuiGenJsweet().get() + "");
     }
 
-    if (this.getGen4TSLib().isPresent()) {
+    if (this.getTslib().isPresent()) {
       result.add("-" + UMLPToolOptions.GUI_GEN_FOR_TS_LIB.getCMD());
+      result.add(getTslib().get());
     }
 
     return result;

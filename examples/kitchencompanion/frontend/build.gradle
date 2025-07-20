@@ -1,3 +1,6 @@
+import java.nio.file.Files
+import java.nio.file.Paths
+
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
@@ -26,6 +29,7 @@ def prebuildTasks = [
     npmInstall,
     generate
 ]
+
 
 tasks.register('buildApp', NpxTask) {
   dependsOn(prebuildTasks)

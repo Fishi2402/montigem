@@ -32,11 +32,9 @@ application {
 }
 
 jib {
-  to {
-    image 'umlp_demorec'
-  }
-  // For Docker-Container
   container.mainClass = application.mainClass.get()
+  from.image = "$container_from_image"
+  to.image = "${container_target_image_base}demorec_backend:latest"
 }
 
 /*repositories {

@@ -2,7 +2,7 @@ package demorec.processmodeling;
 
 import de.monticore.bpmn.workflow.WorkflowMill;
 import de.monticore.bpmn.workflow._ast.ASTFlowElement;
-import de.monticore.bpmn.workflow._ast.ASTTask;
+import de.monticore.bpmn.workflow._ast.ASTWFTask;
 import de.monticore.bpmn.workflow._ast.ASTWorkflowCompilationUnit;
 import de.monticore.bpmn.workflow._visitor.WorkflowTraverser;
 import de.monticore.tagging.SimpleSymbolTagger;
@@ -84,7 +84,7 @@ public class InstructionsGenerator {
 
     String instructions = visitor.getPrinter().getContent();
     if (writeToFile) {
-      writeInstructionsFile(tagsMap.get(cu.getProcess().getName()).get(ProcessModelTagger.processModelGemIdTagName), instructions);
+      writeInstructionsFile(tagsMap.get(cu.getWFProcess().getName()).get(ProcessModelTagger.processModelGemIdTagName), instructions);
     }
 
     return instructions;
@@ -94,19 +94,19 @@ public class InstructionsGenerator {
     HashMap<String, HashMap<String, String>> result = new HashMap<>();
 
     // Add tags for the process
-    result.putIfAbsent(cu.getProcess().getName(), new HashMap<>());
-    List<ASTTag> processTags = tagger.getTags(cu.getProcess().getSymbol());
+    result.putIfAbsent(cu.getWFProcess().getName(), new HashMap<>());
+    List<ASTTag> processTags = tagger.getTags(cu.getWFProcess().getSymbol());
     for (ASTTag tag : processTags) {
       if (tag instanceof ASTValuedTag) {
         ASTValuedTag valuedTag = (ASTValuedTag) tag;
-        result.get(cu.getProcess().getName()).put(valuedTag.getName(), valuedTag.getValue());
+        result.get(cu.getWFProcess().getName()).put(valuedTag.getName(), valuedTag.getValue());
       }
     }
 
     // Add tags for the tasks
-    for (ASTFlowElement flowElement : cu.getProcess().getLane(0).getFlowElementList()) {
-      if (flowElement instanceof ASTTask) {
-        ASTTask task = (ASTTask) flowElement;
+    for (ASTFlowElement flowElement : cu.getWFProcess().getFlowElementList()) {
+      if (flowElement instanceof ASTWFTask) {
+        ASTWFTask task = (ASTWFTask) flowElement;
         List<ASTTag> tags = tagger.getTags(task.getSymbol());
         for (ASTTag tag : tags) {
           if (tag instanceof ASTValuedTag) {

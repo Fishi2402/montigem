@@ -7,6 +7,7 @@ import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
@@ -71,7 +72,7 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
 //  @Optional
 //  public abstract DirectoryProperty getHandWrittenConfigDir();
 
-  @OutputDirectory
+  @InputDirectory
   public abstract DirectoryProperty getJsweetDir();
 
   @OutputDirectory

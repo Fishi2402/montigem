@@ -81,7 +81,7 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
         isAsync = true;
       }
 
-      else if (adapterUtils.isComponentOrDirective(Util.getElement(getParent(ClassTree.class))) &&
+      else if (adapterUtils.isHWCComponentOrDirective(Util.getElement(getParent(ClassTree.class))) &&
           isInvocatedGemListAccessor(invocation, trees)) {
         context.addAwaitInvocation(invocation);
         addAsyncKeywordToMethod();

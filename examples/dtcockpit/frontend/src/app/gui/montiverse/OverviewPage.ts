@@ -14,7 +14,7 @@ import {
   standalone: true,
   imports: [...config.imports],
   selector: 'overview-page',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/montiverse/OverviewPage.html',
+  templateUrl: config.templateUrl,
   styles: [":host{ display: flex; flex-direction: column }"],
   styleUrls: []
 })

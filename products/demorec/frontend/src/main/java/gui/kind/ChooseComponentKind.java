@@ -4,7 +4,7 @@ import demorec.BatteryPack;
 import demorec.ComponentKind;
 import demorec.DemoRecManager;
 import mc.fenix.input.gemdropdowninputtypes.Option;
-import service.BatteryPackService;
+import demorec.service.BatteryPackService;
 import umlp.jsweet.extension.annotation.Component;
 
 import java.util.ArrayList;

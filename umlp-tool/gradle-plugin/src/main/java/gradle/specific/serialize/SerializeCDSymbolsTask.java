@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+// to be replaced by UMLPSymbolsTask
+@Deprecated
 abstract public class SerializeCDSymbolsTask extends DefaultTask {
 
   @InputDirectory
@@ -50,7 +52,7 @@ abstract public class SerializeCDSymbolsTask extends DefaultTask {
 
     Set<File> inputFiles = getInput().getAsFileTree().getFiles().stream()
         .filter(File::isFile)
-        .filter(f -> f.getName().endsWith(".cd"))
+        .filter(f -> f.getName().endsWith(".cd") || f.getName().endsWith(".umlp"))
         .collect(Collectors.toUnmodifiableSet());
 
     for (File inputFile : inputFiles) {

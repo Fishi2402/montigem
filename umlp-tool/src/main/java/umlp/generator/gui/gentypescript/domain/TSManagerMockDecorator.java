@@ -10,6 +10,7 @@ import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.io.paths.MCPath;
 import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
@@ -22,10 +23,12 @@ import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.domain.decorator.ManagerMockDecorator;
 import umlp.generator.domain.decorator.ObserverDecorator;
+import umlp.generator.gui.gentypescript.decorator.TSImportHelper;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.TagLookUp;
 import umlp.generator.util.UMLPSymbolTables;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -42,8 +45,13 @@ public class TSManagerMockDecorator extends ManagerMockDecorator {
 
   protected ASTCDCompilationUnit origCD;
 
-  public TSManagerMockDecorator(GlobalExtensionManagement glex) {
+  protected final Path outPath;
+  protected final MCPath hwPath;
+
+  public TSManagerMockDecorator(GlobalExtensionManagement glex, MCPath hwPath, Path outPath) {
     super(glex);
+    this.hwPath = hwPath;
+    this.outPath = outPath;
   }
 
   @Override
@@ -95,6 +103,9 @@ public class TSManagerMockDecorator extends ManagerMockDecorator {
   protected void addClassElements(ASTCDCompilationUnit origCD, ASTCDClass domainClass,
       ASTCDClass managerClass, String managerName) {
     String name = domainClass.getName();
+    TSImportHelper importHelper = new TSImportHelper(glex, managerClass, hwPath, outPath);
+    String importerQName = this.astcdPackage + "." + managerClass.getName();
+
     if (domainClass.getModifier().isDerived()) {
       getCD4C().addMethod(managerClass, "umlp.gui2ts.managermock.TSGetDerived", name);
       return;
@@ -114,7 +125,7 @@ public class TSManagerMockDecorator extends ManagerMockDecorator {
     if (!isSingleton) {
       getCD4C().addMethod(managerClass, "umlp.gui2ts.managermock.TSIsLoaded", name, concreteSubclassesInclSelf);
     }
-    getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), domainClass.getName() + "GemList"));
+    importHelper.addImport(Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), domainClass.getName() + "GemList"), importerQName);
 
     if (isSingleton) {
       getCD4C().addMethod(managerClass, "umlp.gui2ts.managermock.TSDoGetSingletonElement", name);
@@ -160,11 +171,11 @@ public class TSManagerMockDecorator extends ManagerMockDecorator {
           String printedType = type.print();
           ASTCDCompilationUnit cd = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
 
-          getCD4C().addImport(managerClass, getPackageName(cd, DEFAULT_PACKAGE) + "." + printedType);
+          importHelper.addImport(getPackageName(cd, DEFAULT_PACKAGE) + "." + printedType, importerQName);
 
           getCD4C().addMethod(managerClass, "umlp.gui2ts.managermock.TSDoCreateAssoc", getAssocName(domainClass, a), printedType);
           getCD4C().addMethod(managerClass, "umlp.gui2ts.managermock.TSDoBuilderAssoc", getAssocName(domainClass, a), printedType);
-          getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainClass, a)));
+          importHelper.addImport(Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainClass, a)), importerQName);
         });
   }
 
@@ -172,6 +183,9 @@ public class TSManagerMockDecorator extends ManagerMockDecorator {
       ASTCDClass managerClass) {
     String name = domainClass.getName();
     String lName = StringTransformations.uncapitalize(name);
+
+    TSImportHelper importHelper = new TSImportHelper(glex, domainClass, hwPath, outPath);
+    String importerQName = this.astcdPackage + "." + domainClass.getName();
 
     addAttribute(managerClass, "protected Map<number, " + name + "> " + lName + "s", "new Map()");
     addAttribute(managerClass, "protected GemList<" + name + "> " + lName + "GemList", "new " + name + "GemList([]).build()");
@@ -184,7 +198,7 @@ public class TSManagerMockDecorator extends ManagerMockDecorator {
     getCD4C().addMethod(managerClass, "umlp.gui2ts.managermock.TSIsLoaded", name, concreteSubclassesInclSelf);
 
     // Imports
-    getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), domainClass.getName() + "GemList"));
+    importHelper.addImport(Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), domainClass.getName() + "GemList"), importerQName);
 
     // Associations
     assocs.stream()
@@ -195,11 +209,11 @@ public class TSManagerMockDecorator extends ManagerMockDecorator {
           String printedType = type.print();
           ASTCDCompilationUnit cd = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
 
-          getCD4C().addImport(managerClass, getPackageName(cd, DEFAULT_PACKAGE) + "." + printedType);
+          importHelper.addImport(getPackageName(cd, DEFAULT_PACKAGE) + "." + printedType, importerQName);
 
           getCD4C().addMethod(managerClass, "umlp.gui2ts.managermock.TSDoCreateAssoc", getAssocName(domainClass, a), printedType);
           getCD4C().addMethod(managerClass, "umlp.gui2ts.managermock.TSDoBuilderAssoc", getAssocName(domainClass, a), printedType);
-          getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainClass, a)));
+          importHelper.addImport(Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), getName(domainClass, a)), importerQName);
         });
   }
 
@@ -208,15 +222,18 @@ public class TSManagerMockDecorator extends ManagerMockDecorator {
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("GemList"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("NotificationScope"));
 
+    TSImportHelper importHelper = new TSImportHelper(glex, clazz, hwPath, outPath);
+    String importerQName = this.astcdPackage + "." + clazz.getName();
+
     String name = origCD.getCDDefinition().getName();
-    getCD4C().addImport(clazz, this.astcdPackage + "."
-        + name + ManagerDecorator.SUFFIX);
-    getCD4C().addImport(clazz, this.astcdPackage + "."
-        + name + BaseClassObjectMapperDecorator.SUFFIX);
-    getCD4C().addImport(clazz, this.astcdPackage + "."
-        + name + CommandObjectMapperDecorator.SUFFIX);
-    getCD4C().addImport(clazz, this.astcdPackage + "."
-        + name + ObserverDecorator.SUFFIX);
+    importHelper.addImport(this.astcdPackage + "."
+        + name + ManagerDecorator.SUFFIX, importerQName);
+    importHelper.addImport(this.astcdPackage + "."
+        + name + BaseClassObjectMapperDecorator.SUFFIX, importerQName);
+    importHelper.addImport(this.astcdPackage + "."
+        + name + CommandObjectMapperDecorator.SUFFIX, importerQName);
+    importHelper.addImport(this.astcdPackage + "."
+        + name + ObserverDecorator.SUFFIX, importerQName);
 
     ArrayList<ASTCDCompilationUnit> cdDefs = new ArrayList<>();
     cdDefs.add(origCD);
@@ -224,21 +241,21 @@ public class TSManagerMockDecorator extends ManagerMockDecorator {
 
     for (ASTCDCompilationUnit cdDef : cdDefs) {
       for (ASTCDClass c : cdDef.getCDDefinition().getCDClassesList()) {
-        getCD4C().addImport(clazz, getPackageName(cdDef, DEFAULT_PACKAGE) + "." + c.getName());
+        importHelper.addImport(getPackageName(cdDef, DEFAULT_PACKAGE) + "." + c.getName(), importerQName);
         if (!c.getModifier().isDerived() && !c.getModifier().isAbstract()) {
-          getCD4C().addImport(clazz, getPackageName(cdDef, DEFAULT_PACKAGE) + "."
-              + c.getName() + BuilderDecorator.BUILDER_SUFFIX);
-          getCD4C().addImport(clazz, getPackageName(cdDef, DEFAULT_PACKAGE) + "."
-              + c.getName() + DeSerBuilderDecorator.DESER_BUILDER_SUFFIX);
+          importHelper.addImport(getPackageName(cdDef, DEFAULT_PACKAGE) + "."
+              + c.getName() + BuilderDecorator.BUILDER_SUFFIX, importerQName);
+          importHelper.addImport(getPackageName(cdDef, DEFAULT_PACKAGE) + "."
+              + c.getName() + DeSerBuilderDecorator.DESER_BUILDER_SUFFIX, importerQName);
         }
       }
       for (ASTCDEnum c : cdDef.getCDDefinition().getCDEnumsList()) {
-        getCD4C().addImport(clazz, getPackageName(cdDef, DEFAULT_PACKAGE) + "."
-            + c.getName());
+        importHelper.addImport(getPackageName(cdDef, DEFAULT_PACKAGE) + "."
+            + c.getName(), importerQName);
       }
       for (ASTCDInterface c : cdDef.getCDDefinition().getCDInterfacesList()) {
-        getCD4C().addImport(clazz, getPackageName(cdDef, DEFAULT_PACKAGE) + "."
-            + c.getName());
+        importHelper.addImport(getPackageName(cdDef, DEFAULT_PACKAGE) + "."
+            + c.getName(), importerQName);
       }
     }
   }

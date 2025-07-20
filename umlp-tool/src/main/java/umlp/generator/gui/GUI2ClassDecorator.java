@@ -3,7 +3,7 @@ package umlp.generator.gui;
 
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd4code.CD4CodeMill;
-import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cd4codebasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -13,6 +13,7 @@ import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfObject;
+import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
@@ -134,6 +135,9 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
    * @return Java type that corresponds to the input GUI type
    */
   protected ASTMCType createTypeAndAddImports(SymTypeExpression ste) {
+    if (ste.isTypeVariable()) {
+      return MCTypeFacade.getInstance().createQualifiedType(ste.asTypeVariable().print());
+    }
     if (!ste.hasTypeInfo()) {
       Log.error("0x0001B Encountered a SymTypeExpression disconnected from a type symbol: "
           + ste.printFullName());
