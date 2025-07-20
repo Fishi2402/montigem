@@ -20,6 +20,8 @@ public abstract class NonParallelPlaywrightService implements BuildService<Build
   }
 
   public static Provider<NonParallelPlaywrightService> get(Gradle gradle) {
-    return gradle.getSharedServices().registerIfAbsent(SERVICE_NAME, NonParallelPlaywrightService.class);
+    return gradle.getSharedServices().registerIfAbsent(SERVICE_NAME, NonParallelPlaywrightService.class, spec -> {
+      // no spec, but make gradle happy
+    });
   }
 }
