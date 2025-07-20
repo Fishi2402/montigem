@@ -25,6 +25,11 @@ umlp Commands {
     ActivationStatus getEnumType();
     Set<String> getNotListGenericType();
     List<Integer> getJavaTypeList();
+    void optionalDomainParam(Optional<User> user);
+    void domainParam(User user);
+    void stringParam(String toHandle);
+    void optionalStringParam(Optional<String> toHandle);
+    String domainListParam(List<User> user);
   }
 
 }
