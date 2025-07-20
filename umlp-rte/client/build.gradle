@@ -274,26 +274,12 @@ gradle.projectsEvaluated {
   }
 }
 
-genGUI {
-  enabled = false
+["genGUI", "createDomainSymbols", "frontendSetup",
+ "genJava2TSGUIConfig", "genJava2TSDomainConfig",
+ "translateJava2TSGUI",
+ "buildApp", "testApp", "runApp"].forEach {
+  tasks.named(it) {
+    enabled = false
+  }
 }
 
-createDomainSymbols {
-  enabled = false
-}
-
-frontendSetup {
-  enabled = false
-}
-
-genJava2TSGUIConfig {
-  enabled = false
-}
-
-genJava2TSDomainConfig {
-  enabled = false
-}
-
-translateJava2TSGUI {
-  enabled = false
-}
