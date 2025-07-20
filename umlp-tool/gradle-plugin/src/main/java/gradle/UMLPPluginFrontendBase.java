@@ -2,9 +2,7 @@
 package gradle;
 
 import com.github.gradle.node.npm.task.NpxTask;
-import gradle.common.NonParallelPlaywrightService;
 import gradle.specific.FrontendSetup;
-import gradle.specific.NPMAuthCreate;
 import gradle.specific.UMLPFrontendCIImageTask;
 import gradle.specific.UMLPFrontendLocalImageTask;
 import gradle.specific.UMLPFrontendTask;
@@ -88,13 +86,10 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
       t.dependsOn("generate", "npm_update");
     });
 
-    var lockService = NonParallelPlaywrightService.get(project.getGradle());
-
     var testAppTask = createNPXTask(project, "testApp", "test");
     testAppTask.configure(t -> {
       t.dependsOn(symlinkCreationTask);
       t.dependsOn("generate", "npm_update");
-      t.usesService(lockService);
     });
     var runAppTask = createNPXTask(project, "runApp", "serve");
     runAppTask.configure(t -> {
