@@ -70,19 +70,14 @@ task copyAppJsweet(type: Copy) {
 nodeSetup.dependsOn(frontendSetup)
 npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 
-def prebuildTasks = [
-    npmInstall,
-    generate,
-    copyAppJsweet,
-    symlinkCreation
-]
-
-tasks.named('testApp', NpxTask) {
-  dependsOn(
-      prebuildTasks,
-      project(":umlp-rte:client").tasks.matching { it.name.startsWith("copy_") },
-      project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") }
-  )
+["testApp", "buildApp", "runApp"].forEach {
+  tasks.named(it, NpxTask) {
+    dependsOn(
+        copyAppJsweet,
+        project(":umlp-rte:client").tasks.matching { it.name.startsWith("copy_") },
+        project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") }
+    )
+  }
 }
 
 tasks.register('run') {
