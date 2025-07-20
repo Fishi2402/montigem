@@ -33,3 +33,8 @@ npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 test {
   useJUnitPlatform()
 }
+
+// TODO: We have now implicitly added assemble.dependsOn(buildApp)
+tasks.named("buildApp") {
+  enabled = false
+}
