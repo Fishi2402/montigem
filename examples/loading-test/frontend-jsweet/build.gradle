@@ -64,8 +64,6 @@ tasks.named('testApp', NpxTask) {
       project(":umlp-rte:client").tasks.matching { it.name.startsWith("copy_") },
       project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") }
   )
-  // TODO: Ensure the tests do not fail
-  ignoreExitValue = true
 }
 
 
@@ -80,9 +78,8 @@ test {
   useJUnitPlatform(){
     excludeTags "SlowTest"
   }
-  // TODO: Ensure the tests do not fail
-  ignoreFailures = true
   outputs.upToDateWhen { false } // For some reason gradle does not detect changes to (some?) files, such as the app.component.ts
+  // (because we never specify them as inputs)
 }
 
 tasks.register("slowtest", Test) {
