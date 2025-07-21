@@ -73,9 +73,6 @@ tasks.register('testApp', NpxTask) {
   )
   command = "ng"
   args = ["test"]
-
-  // TODO: Ensure the tests do not fail
-  ignoreExitValue = true
 }
 assemble.dependsOn(buildApp)
 
@@ -96,9 +93,8 @@ test {
   useJUnitPlatform(){
     excludeTags "SlowTest"
   }
-  // TODO: Ensure the tests do not fail
-  ignoreFailures = true
   outputs.upToDateWhen { false } // For some reason gradle does not detect changes to (some?) files, such as the app.component.ts
+  // (because we never specify them as inputs)
 }
 
 tasks.register("slowtest", Test) {
