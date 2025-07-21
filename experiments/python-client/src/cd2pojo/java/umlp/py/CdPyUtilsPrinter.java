@@ -86,7 +86,7 @@ public class CdPyUtilsPrinter extends CdUtilsPrinter {
         lvl--;
       } else {
         sb.append(Strings.repeat(" ", lvl));
-        sb.append(line).append("\n");
+        sb.append(line.strip()).append("\n");
       }
     }
 
