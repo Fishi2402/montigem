@@ -37,8 +37,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.function.Consumer;
 
+import static gradle.UMLPPluginBase.GUI_LIB_NAME;
+import static gradle.UMLPPluginBase.UMLP_MODULES_GUI_SYMBOLS_CONFIG;
 import static gradle.UMLPPluginFrontendBase.CREATE_DOMAIN_SYMBOLS_TASK_NAME;
-import static gradle.UMLPPluginFrontendBase.GUI_LIB_NAME;
 import static gradle.UMLPPluginFrontendBase.UMLP_FRONTEND_DOMAIN_TASK_NAME;
 import static gradle.UMLPPluginFrontendBase.UMLP_FRONTEND_GUI_TASK_NAME;
 import static gradle.UMLPPluginFrontendBase.UMLP_FRONTEND_SETUP_TASK_NAME;
@@ -287,6 +288,11 @@ public abstract class UMLPPluginFrontendWithJSweet implements Plugin<Project> {
       umlpTask.getSymbolOutDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols_gui_domain_domain__from_task_frontenddomain").toFile());
 
       setIfPathExists(x -> umlpTask.getHwcDir().from(x), this.jsweetTSHWCDir);
+
+      umlpTask.getSymbolPath().from(project.getConfigurations().named(UMLP_MODULES_GUI_SYMBOLS_CONFIG));
+      umlpTask.getSymbolPath().from(project.getConfigurations().named(UMLPPluginBase.UMLP_MODULES_IMPORT_MAP_CONFIG));
+
+      umlpTask.getModelDir().from(project.getConfigurations().named(UMLPPluginBase.UMLP_MODULES_MODELS_CONFIG));
     });
     if (local) {
       Project umlpRteClientProject = project.findProject(":umlp-rte:client");

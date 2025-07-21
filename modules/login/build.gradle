@@ -1,84 +1,9 @@
 plugins {
-  id "base"
-  id "java-library"
-  id 'maven-publish'
-  id 'de.rwth.se.umlp-tool-module-models' // create models-jar
-}
-
-configurations {
-  moduleGenTimeCompileOnly
-  moduleGenTime
+  id 'de.rwth.se.umlp-tool-module' // create models-jar
 }
 
 dependencies {
-  moduleGenTimeCompileOnly("umlp:umlp-tool")
-  moduleGenTimeCompileOnly group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
   moduleGenTimeCompileOnly group: 'de.monticore.lang', name: 'guidsl', version: mc_version
-  moduleGenTimeCompileOnly group: 'de.monticore', name: 'monticore-runtime', version: mc_version
-  moduleGenTimeCompileOnly group: 'de.monticore', name: 'monticore-grammar', version: mc_version
-}
-
-sourceSets {
-  moduleGenTime {
-    java {}
-  }
-}
-
-// Publish empty publications with dependencies to the backend/frontend subproject
-configurations {
-  outgoingUMLPFrontendTSDS {
-    canBeConsumed(true)
-    gradle.module.UMLPPluginModuleJSFrontend.addDomainSymbolsJarAttributes(it, project)
-  }
-  outgoingUMLPFrontendTSGS {
-    canBeConsumed(true)
-    gradle.module.UMLPPluginModuleJSFrontend.addGuiSymbolsJarAttributes(it, project)
-  }
-  outgoingUMLPFrontendTSIM {
-    canBeConsumed(true)
-    gradle.module.UMLPPluginModuleJSFrontend.addImportMapJarAttributes(it, project)
-  }
-  /*
-  outgoingUMLPFrontendTSZip {
-    canBeConsumed(true)
-    gradle.module.UMLPPluginModuleJSFrontend.addBundledJSJarAttributes(it, project)
-  }
-  /**/
-}
-
-dependencies {
-  api(project(":modules:login:backend"))
-  outgoingUMLPFrontendTSDS project(":modules:login:frontendTS")
-  outgoingUMLPFrontendTSGS project(":modules:login:frontendTS")
-  outgoingUMLPFrontendTSIM project(":modules:login:frontendTS")
-  // outgoingUMLPFrontendTSZip project(":modules:login:frontendTS")
-}
-project.components.java.addVariantsFromConfiguration(configurations.outgoingUMLPFrontendTSDS) {
-  it.mapToOptional()
-}
-project.components.java.addVariantsFromConfiguration(configurations.outgoingUMLPFrontendTSGS) {
-  it.mapToOptional()
-}
-project.components.java.addVariantsFromConfiguration(configurations.outgoingUMLPFrontendTSIM) {
-  it.mapToOptional()
-}
-/*
-project.components.java.addVariantsFromConfiguration(configurations.outgoingUMLPFrontendTSZip) {
-  it.mapToOptional()
-}
-/**/
-
-
-// We do not have main java soures => Remove .jar from outgoing artifacts
-tasks.named('jar') {
-  // TODO: We currently publish an almost empty jar, as otherwise gradle is unable to find the runtimeElements config
-  // Fix that problem & only publish the dependencies, not the jar
-//  enabled = false
-}
-configurations{
-  [apiElements, runtimeElements].each {
-//    it.outgoing.artifacts.removeIf { it.buildDependencies.getDependencies(null).contains(jar) }
-  }
 }
 
 publishing {

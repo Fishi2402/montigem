@@ -53,10 +53,12 @@ public abstract class UMLPPluginFrontendNonJSweet implements Plugin<Project> {
       setIfPathExists(x -> umlpTask.getHwcDir().from(x), Path.of(project.getProjectDir().getAbsolutePath(), "src", "app"));
       umlpTask.getGuiGenJsweet().set(false);
 
+      /*
       // // Load the symbols from the .jars in the domain symbols path
       umlpTask.getSymbolDir().from(project.getConfigurations().named(UMLP_MODULES_DOMAIN_SYMBOLS_CONFIG));
       umlpTask.getSymbolDir().from(project.getConfigurations().named(UMLP_MODULES_IMPORT_MAP_CONFIG));
       umlpTask.getSymbolDir().from(project.getConfigurations().named(UMLP_MODULES_GUI_SYMBOLS_CONFIG));
+      /**/
     });
 
     // task dependencies
@@ -124,28 +126,6 @@ public abstract class UMLPPluginFrontendNonJSweet implements Plugin<Project> {
       umlpTask.getModelDir().from(project.getConfigurations().named(UMLPPluginBase.UMLP_MODULES_MODELS_CONFIG));
     });
   }
-
-
-  /*
-  protected TaskProvider<Sync> createUnpackModuleTask(final Project project) {
-    // Download the frontends code and extract it into a dir
-    // Make sure to add "umlp_modules/loginmodule-ts/template_placeholder/src/*" as a path to the tsconfig
-    var conf = project.getConfigurations().named(UMLPPluginBase.UMLP_MODULES_FRONTEND_CONFIG);
-    var t = project.getTasks().register("unpackModule", Sync.class);
-    t.configure(task -> {
-      task.setGroup("umlp");
-      task.setDescription("Unpacks all umlp modules");
-      task.setDuplicatesStrategy(DuplicatesStrategy.WARN); // TODO: why is domain symbols included here for :frontend?
-      // Make sure to provide a lazy-provider to #from
-      task.from(project.provider(
-          // And expand the zipfile
-          () -> conf.get().getFiles().stream().map(project::zipTree).collect(Collectors.toList())
-      ));
-      task.into(project.getLayout().getBuildDirectory().dir("frontendGen/umlp_modules"));
-    });
-    return t;
-  }
-  /**/
 
   private void setIfPathExists(Consumer<File> add, Path path) {
     File f = path.toFile();

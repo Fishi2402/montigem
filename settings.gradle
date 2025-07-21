@@ -40,8 +40,22 @@ includeBuild "umlp-tool"
 
 include ":umlp-rte"
 include ":umlp-rte:client"
+include ":umlp-rte:client:arrange"
+include ":umlp-rte:client:basic"
+include ":umlp-rte:client:charts"
+include ":umlp-rte:client:common"
+include ":umlp-rte:client:commonj2ts"
+include ":umlp-rte:client:editor"
+include ":umlp-rte:client:fischertechnik"
+include ":umlp-rte:client:functiondisplay"
+include ":umlp-rte:client:input"
+include ":umlp-rte:client:navigation"
+include ":umlp-rte:client:networkgraph"
+include ":umlp-rte:client:table"
+include ":umlp-rte:client:theme"
+include ":umlp-rte:backend"
 include ":umlp-rte:umlp-jsweet"
-include 'umlp-test-rte'
+include ":umlp-test-rte"
 
 include ":experiments"
 include ":experiments:dbPerformance"
@@ -100,15 +114,11 @@ include ':products:dev_process_cockpit:frontend'
 include ':modules'
 include ':modules:login'
 include ':modules:login:backend'
-include ':modules:login:frontendTS'
-include ':modules:login:frontendJSweet'
+include ':modules:login:frontend'
 
 include ':modules:comment'
 include ':modules:comment:backend'
-include ':modules:comment:frontendTS'
-include ':modules:comment:frontendJSweet'
+include ':modules:comment:frontend'
 
 include ':modules:sovd-gateway'
 include ':modules:sovd-gateway-it:backend'
-
-

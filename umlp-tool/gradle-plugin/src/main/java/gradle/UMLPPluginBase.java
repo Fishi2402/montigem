@@ -3,15 +3,15 @@ package gradle;
 
 import gradle.common.CheckDirEqualityTask;
 import gradle.module.UMLPPluginModule;
-import gradle.module.UMLPPluginModuleJSFrontend;
+import gradle.module.UMLPPluginModuleFrontend;
 import gradle.specific.FrontendSetup;
 import gradle.specific.GuiVariabilityHandlerTask;
 import gradle.specific.NPMAuthCreate;
 import gradle.specific.UMLPBackendTask;
 import gradle.specific.UMLPCdToGuiTask;
 import gradle.specific.UMLPFrontendTask;
-import gradle.specific.UMLPGuiGenTask;
 import gradle.specific.UMLPGui2SymTask;
+import gradle.specific.UMLPGuiGenTask;
 import gradle.specific.UMLPOD2DataTask;
 import gradle.specific.UMLPSymbolsTask;
 import gradle.specific.merge.UMLPMergeTask;
@@ -44,65 +44,58 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
   public static final String GUI_LIB_NAME = "guiLib";
 
   @Override
-    public void apply(Project project) {
-      // Load dependencies
-      project.getPluginManager().apply(UMLPPluginDep.class);
-      // Make the Tasks available without fully qualified name
-      project.getExtensions().getExtraProperties().set("UMLPMergeTask", UMLPMergeTask.class);
-      project.getExtensions().getExtraProperties().set("UMLPGuiGenTask", UMLPGuiGenTask.class);
-      project.getExtensions().getExtraProperties().set("NPMAuthCreate", NPMAuthCreate.class);
-      project.getExtensions().getExtraProperties().set("UMLPBackendTask", UMLPBackendTask.class);
-      project.getExtensions().getExtraProperties().set("UMLPCdToGuiTask", UMLPCdToGuiTask.class);
-      project.getExtensions().getExtraProperties().set("GuiVariabilityHandlerTask", GuiVariabilityHandlerTask.class);
-      project.getExtensions().getExtraProperties().set("UMLPFrontendTask", UMLPFrontendTask.class);
-      project.getExtensions().getExtraProperties().set("UMLPSymbolsTask", UMLPSymbolsTask.class);
-      project.getExtensions().getExtraProperties().set(UMLPGui2SymTask.class.getSimpleName(), UMLPGui2SymTask.class);
-      project.getExtensions().getExtraProperties().set("FrontendSetup", FrontendSetup.class);
-      project.getExtensions().getExtraProperties().set("SerializeGUISymbolsTask", SerializeGUISymbolsTask.class);
-      project.getExtensions().getExtraProperties().set("SerializeCDSymbolsTask", SerializeCDSymbolsTask.class);
-      project.getExtensions().getExtraProperties().set("CheckDirEqualityTask", CheckDirEqualityTask.class);
-      project.getExtensions().getExtraProperties().set("UMLPOD2DataTask", UMLPOD2DataTask.class);
+  public void apply(Project project) {
+    // Load dependencies
+    project.getPluginManager().apply(UMLPPluginDep.class);
+    // Make the Tasks available without fully qualified name
+    project.getExtensions().getExtraProperties().set("UMLPMergeTask", UMLPMergeTask.class);
+    project.getExtensions().getExtraProperties().set("UMLPGuiGenTask", UMLPGuiGenTask.class);
+    project.getExtensions().getExtraProperties().set("NPMAuthCreate", NPMAuthCreate.class);
+    project.getExtensions().getExtraProperties().set("UMLPBackendTask", UMLPBackendTask.class);
+    project.getExtensions().getExtraProperties().set("UMLPCdToGuiTask", UMLPCdToGuiTask.class);
+    project.getExtensions().getExtraProperties().set("GuiVariabilityHandlerTask", GuiVariabilityHandlerTask.class);
+    project.getExtensions().getExtraProperties().set("UMLPFrontendTask", UMLPFrontendTask.class);
+    project.getExtensions().getExtraProperties().set("UMLPSymbolsTask", UMLPSymbolsTask.class);
+    project.getExtensions().getExtraProperties().set(UMLPGui2SymTask.class.getSimpleName(), UMLPGui2SymTask.class);
+    project.getExtensions().getExtraProperties().set("FrontendSetup", FrontendSetup.class);
+    project.getExtensions().getExtraProperties().set("SerializeGUISymbolsTask", SerializeGUISymbolsTask.class);
+    project.getExtensions().getExtraProperties().set("SerializeCDSymbolsTask", SerializeCDSymbolsTask.class);
+    project.getExtensions().getExtraProperties().set("CheckDirEqualityTask", CheckDirEqualityTask.class);
+    project.getExtensions().getExtraProperties().set("UMLPOD2DataTask", UMLPOD2DataTask.class);
 
-      // Module system
-      var umlpModulesC = project.getConfigurations().maybeCreate(UMLP_MODULES_CONFIG);
-      umlpModulesC.setCanBeResolved(false);
+    // Module system
+    var umlpModulesC = project.getConfigurations().maybeCreate(UMLP_MODULES_CONFIG);
+    umlpModulesC.setCanBeResolved(false);
 
-      var umlpModulesGenC = project.getConfigurations().maybeCreate(UMLP_MODULES_GEN_CONFIG);
-      UMLPPluginModule.addModuleGenJarJarAttributes(umlpModulesGenC, project);
-      umlpModulesGenC.extendsFrom(umlpModulesC);
+    var umlpModulesGenC = project.getConfigurations().maybeCreate(UMLP_MODULES_GEN_CONFIG);
+    UMLPPluginModule.addModuleGenJarJarAttributes(umlpModulesGenC, project);
+    umlpModulesGenC.extendsFrom(umlpModulesC);
 
-      var umlpModulesModelsC = project.getConfigurations().maybeCreate(UMLP_MODULES_MODELS_CONFIG);
-      UMLPPluginModule.addModelsJarAttributes(umlpModulesModelsC, project);
-      umlpModulesModelsC.extendsFrom(umlpModulesC);
+    var umlpModulesModelsC = project.getConfigurations().maybeCreate(UMLP_MODULES_MODELS_CONFIG);
+    UMLPPluginModule.addModelsJarAttributes(umlpModulesModelsC, project);
+    umlpModulesModelsC.extendsFrom(umlpModulesC);
 
-      var umlpModulesDSC = project.getConfigurations().maybeCreate(UMLP_MODULES_DOMAIN_SYMBOLS_CONFIG);
-      umlpModulesDSC.setCanBeConsumed(false);
-      UMLPPluginModuleJSFrontend.addDomainSymbolsJarAttributes(umlpModulesDSC, project);
-      umlpModulesDSC.extendsFrom(umlpModulesC);
+    var umlpModulesDSC = project.getConfigurations().maybeCreate(UMLP_MODULES_DOMAIN_SYMBOLS_CONFIG);
+    umlpModulesDSC.setCanBeConsumed(false);
+    UMLPPluginModuleFrontend.addDomainSymbolsJarAttributes(umlpModulesDSC, project);
+    umlpModulesDSC.extendsFrom(umlpModulesC);
 
-      var umlpModulesIMC = project.getConfigurations().maybeCreate(UMLP_MODULES_IMPORT_MAP_CONFIG);
-      umlpModulesIMC.setCanBeConsumed(false);
-      UMLPPluginModuleJSFrontend.addImportMapJarAttributes(umlpModulesIMC, project);
-      umlpModulesIMC.extendsFrom(umlpModulesC);
+    var umlpModulesIMC = project.getConfigurations().maybeCreate(UMLP_MODULES_IMPORT_MAP_CONFIG);
+    umlpModulesIMC.setCanBeConsumed(false);
+    UMLPPluginModuleFrontend.addImportMapJarAttributes(umlpModulesIMC, project);
+    umlpModulesIMC.extendsFrom(umlpModulesC);
 
-      var umlpModulesGSC = project.getConfigurations().maybeCreate(UMLP_MODULES_GUI_SYMBOLS_CONFIG);
-      umlpModulesGSC.setCanBeConsumed(false);
-      UMLPPluginModuleJSFrontend.addGuiSymbolsJarAttributes(umlpModulesGSC, project);
-      umlpModulesGSC.extendsFrom(umlpModulesC);
+    var umlpModulesGSC = project.getConfigurations().maybeCreate(UMLP_MODULES_GUI_SYMBOLS_CONFIG);
+    umlpModulesGSC.setCanBeConsumed(false);
+    UMLPPluginModuleFrontend.addGuiSymbolsJarAttributes(umlpModulesGSC, project);
+    umlpModulesGSC.extendsFrom(umlpModulesC);
 
-      /*
-      var umlpModuleFrontend = project.getConfigurations().maybeCreate(UMLP_MODULES_FRONTEND_CONFIG);
-      umlpModuleFrontend.setCanBeConsumed(false);
-      UMLPPluginModuleJSFrontend.addBundledJSJarAttributes(umlpModuleFrontend, project);
-      umlpModuleFrontend.extendsFrom(umlpModulesC);
-      /**/
-
-      project.getPlugins().withId("java", plugin -> {
-        project.getConfigurations().getByName("implementation").extendsFrom(umlpModulesC);
-      });
-      project.getPlugins().withId("java-library", plugin -> {
-        project.getConfigurations().getByName("api").extendsFrom(umlpModulesC);
-      });
+    project.getPlugins().withId("java", plugin -> {
+      project.getConfigurations().getByName("implementation").extendsFrom(umlpModulesC);
+    });
+    project.getPlugins().withId("java-library", plugin -> {
+      project.getConfigurations().getByName("api").extendsFrom(umlpModulesC);
+    });
 
     {
       // Add guiLib configuration
@@ -111,36 +104,37 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
         if (!project.getPath().equals(":umlp-rte:client")) {
           project.getConfigurations().getByName(GUI_LIB_NAME).getDependencies().add(project.getDependencies().project(Map.of("path", ":umlp-rte:client", "configuration", "localGuiLib", "transitive", false)));
         }
-      } else {
-        project.getDependencies().add(GUI_LIB_NAME, "umlp.umlp-rte:client:" + UMLPPluginFrontend.getStringProjectProperty(project, "mc_version", "")+":symbols");
+      }
+      else {
+        project.getDependencies().add(GUI_LIB_NAME, "umlp.umlp-rte:client:" + UMLPPluginFrontend.getStringProjectProperty(project, "mc_version", "") + ":guisymbols");
       }
     }
 
-      StatisticListener.registerOnce(project);
+    StatisticListener.registerOnce(project);
 
-      this.failIfMontiCorePresent(project);
+    this.failIfMontiCorePresent(project);
+  }
+
+  protected void failIfMontiCorePresent(Project project) {
+    // If a plugin with one of MontiCores IDs is already present -> fail
+    if (project.getPlugins().hasPlugin("de.monticore.generator") || project.getPlugins().hasPlugin("de.monticore.generator-withtr") || project.getPlugins().hasPlugin("monticore")) {
+      doFailBecauseMontiCorePresent();
     }
 
-    protected void failIfMontiCorePresent(Project project) {
-      // If a plugin with one of MontiCores IDs is already present -> fail
-      if (project.getPlugins().hasPlugin("de.monticore.generator") || project.getPlugins().hasPlugin("de.monticore.generator-withtr") || project.getPlugins().hasPlugin("monticore")) {
+    project.getPlugins().whenPluginAdded(plugin -> {
+      // When a plugin with one of MontiCores Plugin-Classnames is added -> fail
+      if (Arrays.asList("de.monticore.MCPlugin", "de.monticore.gradle.MCGeneratorPlugin", "de.monticore.gradle.MCGeneratorWithTRPlugin").contains(plugin.getClass().getName())) {
         doFailBecauseMontiCorePresent();
       }
+    });
+  }
 
-      project.getPlugins().whenPluginAdded(plugin -> {
-        // When a plugin with one of MontiCores Plugin-Classnames is added -> fail
-        if (Arrays.asList("de.monticore.MCPlugin", "de.monticore.gradle.MCGeneratorPlugin", "de.monticore.gradle.MCGeneratorWithTRPlugin").contains(plugin.getClass().getName())) {
-          doFailBecauseMontiCorePresent();
-        }
-      });
-    }
-
-    protected void doFailBecauseMontiCorePresent() {
-      // The incompatibility stems from us using the monticore-runtime in two different versions!
-      // (for example, the TemplateController has changed, resulting in NoSuchMethodErrors etc.)
-      throw new GradleException("The MontiCore Generator & MontiGem Plugins are not compatible. \n" +
-          "Please use the MontiCore plugin in a separate subproject and use that as a dependency.");
-    }
+  protected void doFailBecauseMontiCorePresent() {
+    // The incompatibility stems from us using the monticore-runtime in two different versions!
+    // (for example, the TemplateController has changed, resulting in NoSuchMethodErrors etc.)
+    throw new GradleException("The MontiCore Generator & MontiGem Plugins are not compatible. \n" +
+        "Please use the MontiCore plugin in a separate subproject and use that as a dependency.");
+  }
 
   @NotNull
   public static Boolean getBooleanProjectProperty(Project project, String propertyName) {

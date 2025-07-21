@@ -39,7 +39,7 @@ public class SpringSecurityConfigDecorator extends AbstractDecorator {
         .build();
 
     glex.replaceTemplate("cd2java.Annotations", ast,
-        new StringHookPoint("@Configuration\n@EnableWebSecurity"));
+        new StringHookPoint("@Configuration\n@EnableWebSecurity\n@jsweet.lang.Erased"));
 
     String managerName = "LoginModule" + ManagerDecorator.SUFFIX;
     String userclassName = "LoginModuleUser";

@@ -11,14 +11,14 @@
   "projects": {
     "@umlp/basic": {
       "projectType": "library",
-      "root": "projects/basic",
-      "sourceRoot": "projects/basic",
+      "root": "basic",
+      "sourceRoot": "basic",
       "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/basic/ng-package.json"
+            "project": "basic/ng-package.json"
           },
           "configurations": {
             "production": {
@@ -44,14 +44,14 @@
     },
     "@umlp/charts": {
       "projectType": "library",
-      "root": "projects/charts",
-      "sourceRoot": "projects/charts",
+      "root": "charts",
+      "sourceRoot": "charts",
       "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/charts/ng-package.json"
+            "project": "charts/ng-package.json"
           },
           "configurations": {
             "production": {
@@ -77,14 +77,14 @@
     },
     "@umlp/fischertechnik": {
       "projectType": "library",
-      "root": "projects/fischertechnik",
-      "sourceRoot": "projects/fischertechnik",
+      "root": "fischertechnik",
+      "sourceRoot": "fischertechnik",
       "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/fischertechnik/ng-package.json"
+            "project": "fischertechnik/ng-package.json"
           },
           "configurations": {
             "production": {
@@ -110,14 +110,14 @@
     },
     "@umlp/networkgraph": {
       "projectType": "library",
-      "root": "projects/networkgraph",
-      "sourceRoot": "projects/networkgraph",
+      "root": "networkgraph",
+      "sourceRoot": "networkgraph",
       "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/networkgraph/ng-package.json"
+            "project": "networkgraph/ng-package.json"
           },
           "configurations": {
             "production": {
@@ -143,14 +143,14 @@
     },
     "@umlp/editor": {
       "projectType": "library",
-      "root": "projects/editor",
-      "sourceRoot": "projects/editor",
+      "root": "editor",
+      "sourceRoot": "editor",
       "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/editor/ng-package.json"
+            "project": "editor/ng-package.json"
           },
           "configurations": {
             "production": {
@@ -176,14 +176,14 @@
     },
     "@umlp/table": {
       "projectType": "library",
-      "root": "projects/table",
-      "sourceRoot": "projects/table",
+      "root": "table",
+      "sourceRoot": "table",
       "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/table/ng-package.json"
+            "project": "table/ng-package.json"
           },
           "configurations": {
             "production": {
@@ -209,14 +209,14 @@
     },
     "@umlp/theme": {
       "projectType": "library",
-      "root": "projects/theme",
-      "sourceRoot": "projects/theme",
+      "root": "theme",
+      "sourceRoot": "theme",
       "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/theme/ng-package.json"
+            "project": "theme/ng-package.json"
           },
           "configurations": {
             "production": {
@@ -242,14 +242,14 @@
     },
     "@umlp/input": {
       "projectType": "library",
-      "root": "projects/input",
-      "sourceRoot": "projects/input",
+      "root": "input",
+      "sourceRoot": "input",
       "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/input/ng-package.json"
+            "project": "input/ng-package.json"
           },
           "configurations": {
             "production": {
@@ -275,14 +275,14 @@
     },
     "@umlp/arrange": {
       "projectType": "library",
-      "root": "projects/arrange",
-      "sourceRoot": "projects/arrange",
+      "root": "arrange",
+      "sourceRoot": "arrange",
       "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/arrange/ng-package.json"
+            "project": "arrange/ng-package.json"
           },
           "configurations": {
             "production": {
@@ -308,14 +308,14 @@
     },
     "@umlp/common": {
       "projectType": "library",
-      "root": "projects/common",
-      "sourceRoot": "projects/common",
+      "root": "common",
+      "sourceRoot": "common",
       "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/common/ng-package.json"
+            "project": "common/ng-package.json"
           },
           "configurations": {
             "production": {
@@ -341,14 +341,14 @@
     },
     "@umlp/commonj2ts": {
       "projectType": "library",
-      "root": "projects/commonj2ts",
-      "sourceRoot": "projects/commonj2ts",
+      "root": "commonj2ts",
+      "sourceRoot": "commonj2ts",
       "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/commonj2ts/ng-package.json"
+            "project": "commonj2ts/ng-package.json"
           },
           "configurations": {
             "production": {
@@ -374,14 +374,14 @@
     },
     "@umlp/functiondisplay": {
       "projectType": "library",
-      "root": "projects/functiondisplay",
-      "sourceRoot": "projects/functiondisplay",
+      "root": "functiondisplay",
+      "sourceRoot": "functiondisplay",
       "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/functiondisplay/ng-package.json"
+            "project": "functiondisplay/ng-package.json"
           },
           "configurations": {
             "production": {
@@ -407,14 +407,14 @@
     },
     "@umlp/navigation": {
       "projectType": "library",
-      "root": "projects/navigation",
-      "sourceRoot": "projects/navigation",
+      "root": "navigation",
+      "sourceRoot": "navigation",
       "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/navigation/ng-package.json"
+            "project": "navigation/ng-package.json"
           },
           "configurations": {
             "production": {

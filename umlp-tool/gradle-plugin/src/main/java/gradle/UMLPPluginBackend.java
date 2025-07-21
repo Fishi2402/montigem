@@ -19,6 +19,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.function.Consumer;
 
+import static gradle.UMLPPluginBase.GUI_LIB_NAME;
 import static gradle.UMLPPluginFrontendBase.getBooleanProjectProperty;
 
 /***
@@ -30,7 +31,6 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
 
   final static String UMLP_BACKEND_TASK_NAME = "generateUmlpBackend";
   static final String UMLP_GROUP_NAME = "umlp";
-  static final String GUI_LIB_NAME = "guiLib";
 
   @Override
   public void apply(Project project) {
@@ -77,7 +77,7 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
   }
 
   protected static TaskProvider<UMLPBackendTask> createUMLPBackendTask(final Project project, String umlpBackendTaskName, boolean local) {
-    final TaskProvider<UMLPBackendTask> result = project.getTasks().register(umlpBackendTaskName, UMLPBackendTask.class, umlpTask -> {
+    TaskProvider<UMLPBackendTask> umlp2java = project.getTasks().register(umlpBackendTaskName, UMLPBackendTask.class, umlpTask -> {
       umlpTask.setGroup(UMLP_GROUP_NAME);
 
       setIfPathExists(umlpTask::setInput, Path.of(
@@ -102,8 +102,8 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
 
     // Add Symbols and Tags of RTE ClassDiagrams to SymbolPath
     Configuration guiLib = project.getConfigurations().getByName(GUI_LIB_NAME);
-    result.get().getSymbolPath().from(guiLib);
-    return result;
+    umlp2java.configure(task -> task.getSymbolPath().from(guiLib));
+    return umlp2java;
   }
 
   private static void setIfPathExists(Consumer<File> add, Path path) {

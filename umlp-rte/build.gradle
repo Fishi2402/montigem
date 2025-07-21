@@ -25,7 +25,8 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version
     implementation group: 'org.springframework.shell', name: 'spring-shell-starter', version: spring_shell_version
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: spring_version
-    api group: 'de.monticore.lang', name: 'ocl', version: mc_version // MUST be an API dependency, as the exposed OCL2SQL implements SetExpressionsVisitor2
+    // MUST be an API dependency, as the exposed OCL2SQL implements SetExpressionsVisitor2
+    api group: 'de.monticore.lang', name: 'ocl', version: mc_version
 
     // Compile only, such that we don't force the neo4j dependency into each product
     compileOnly group: 'org.neo4j', name: 'neo4j-jdbc-driver', version: neo4j_jdbc_version
@@ -48,7 +49,7 @@ configurations {
   umlpModulesGen
 }
 
-def libs = [
+def componentLibs = [
     "arrange",
     "basic",
     "charts",
@@ -64,18 +65,18 @@ def libs = [
 def genTasks = []
 def outputDirs = []
 
-libs.each {
+componentLibs.each {
   def libName = it
   def genTaskName = "cd2java_${libName}"
-  def outDir = project.layout.buildDirectory.dir("guiComponentTypes/${libName}")
+  def outDir = project.layout.buildDirectory.dir("cd2java/${libName}")
   genTasks << genTaskName
   outputDirs << outDir
   // POJOs
   def genTask = tasks.register(genTaskName, GUITypes2JavaTask) {
     hwcDir = project.layout.files("src/main/java")
-    input = file("client/models/mc/fenix/${libName}")
+    input = fileTree(dir: "${libName}/mc/fenix/${libName}", include: '**/*.cd').files
     outputDir = outDir
-    symbolOutDir = project.layout.buildDirectory.dir("guiComponentTypesTagOut/${libName}")
+    symbolOutDir = project.layout.buildDirectory.dir("cd2tags/${libName}")
     tslib = "@umlp/${libName}"
   }
 
@@ -87,17 +88,17 @@ libs.each {
   }
 }
 
-tasks.register('generateGuiComponentJava') {
+tasks.register('gui2java') {
   dependsOn(genTasks)
 }
 
-// Ensure that the symbolJar task knows it depends on the generateGuiComponentJava task
+// Ensure that the symbolJar task knows it depends on the gui2java task
 project(":umlp-rte:client").tasks.named("symbolJar").configure {
-  it.dependsOn(tasks.named('generateGuiComponentJava'))
+  it.dependsOn(tasks.named('gui2java'))
 }
 
 // Let RTE assemble depend on the generation
-assemble.dependsOn tasks.named('generateGuiComponentJava')
+assemble.dependsOn tasks.named('gui2java')
 
 //task guiComponentTypesJar(type: Jar) {
 //  from generateGuiComponentPOJOs.output

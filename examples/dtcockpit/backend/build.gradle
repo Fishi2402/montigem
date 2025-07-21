@@ -1,7 +1,7 @@
 import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
-  id 'de.rwth.se.umlp-tool-backend-test' // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
+  id 'de.rwth.se.umlp-tool-backend-test'
   id 'application'
   id 'com.google.cloud.tools.jib' version '3.4.4'
   id 'io.spring.dependency-management' version '1.0.15.RELEASE'
@@ -69,13 +69,10 @@ dependencies {
 
 generateUmlpBackend {
   input = file("../models/Dtcockpit.umlp")
+  symbolOutDir = file("${project.buildDir}/symbols")
   useSpring = true
   useShell = true
 }
-
-//COMPARE_generateUmlpBackend {
-//  modelDir.from(project(":modules:login").layout.getProjectDirectory().dir("models"))
-//}
 
 tasks.register('runServer') {
   dependsOn(bootRun {
@@ -87,6 +84,18 @@ tasks.register('runShellApi', BootRun) {
   classpath = sourceSets.main.runtimeClasspath
   mainClass = 'dtcockpit.DtcockpitShellAPIApplication'
   standardInput = System.in
+}
+
+sourceSets {
+  test {
+    java {
+      exclude '**/gui/**'
+    }
+  }
+  e2esetup {
+    compileClasspath += sourceSets.main.output
+    runtimeClasspath += sourceSets.main.output
+  }
 }
 
 test {
@@ -109,6 +118,21 @@ tasks.register("slowtest", Test) {
   shouldRunAfter test
 }
 
+tasks.register("e2eBootJar", org.springframework.boot.gradle.tasks.bundling.BootJar.class) {
+  var e2es = sourceSets.e2esetup;
+  classpath = project.provider({ e2es.getRuntimeClasspath()
+      .minus((configurations.developmentOnly.minus(configurations.productionRuntimeClasspath)))
+//      .minus((configurations.testAndDevelopmentOnly.minus(configurations.productionRuntimeClasspath)))
+      .filter(new gradle.common.SpringBootJarTypeFileSpec())})
+  mainClass = "e2e.E2EServerApplication"
+  archiveClassifier.set("e2esetup")
+}
+
+tasks.register("e2eRun", JavaExec.class) {
+  group = "application"
+  mainClass = "e2e.E2EServerApplication"
+  classpath = project.files().from(project.provider({tasks.e2eBootJar.classpath}))
+}
 
 tasks.withType(Zip).all {
   duplicatesStrategy = DuplicatesStrategy.WARN

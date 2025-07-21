@@ -18,7 +18,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.function.Consumer;
 
-import static gradle.UMLPPluginFrontendBase.GUI_LIB_NAME;
+import static gradle.UMLPPluginBase.GUI_LIB_NAME;
 import static gradle.UMLPPluginFrontendBase.getBooleanProjectProperty;
 
 /**

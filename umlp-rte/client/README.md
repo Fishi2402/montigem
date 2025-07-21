@@ -3,11 +3,11 @@ This documentation uses the same example setup.
 
 Example setup:
 - Example non-existing library: `experimental` would be in
-  `projects/experimental`. `experimental` (full name: `@umlp/experimental`) can
+  `experimental`. `experimental` (full name: `@umlp/experimental`) can
   be replaced with any other library name in this instruction. For example, if
   you build library `foo`, every occurence of `experimental` must be replaced
   with `foo`.
-- Example existing library: [arrange](projects/arrange). `arrange` (full name:
+- Example existing library: [arrange](arrange). `arrange` (full name:
   `@umlp/arrange`) can be replaced with any other existing library name in this
   instruction.
 - [Full library list](./projects)
@@ -27,10 +27,10 @@ Decide if you need a new library. When you may need a library:
   significantly bigger.
 
 To create a library:
-1.  Create a new folder `projects/experimental/`.
-2.  Add file `projects/experimental/README.md` and describe what
+1.  Create a new folder `experimental/`.
+2.  Add file `experimental/README.md` and describe what
     you library contains and why it exists.
-3.  Add file `projects/experimental/ng-package.json` with following contents:
+3.  Add file `experimental/ng-package.json` with following contents:
     ```json
     {
       "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
@@ -41,7 +41,7 @@ To create a library:
       "allowedNonPeerDependencies": []
     }
     ```
-4.  Add file `projects/experimental/package.json` with following contents:
+4.  Add file `experimental/package.json` with following contents:
     ```json
     {
       "peerDependencies": {
@@ -85,7 +85,7 @@ To create a library:
     ```
 6.  [Add a component](#add-component). You may skip to step 7 if you are going
     to add a component later.
-7.  Add file `projects/experimental/src/index.ts`. This file exports the
+7.  Add file `experimental/src/index.ts`. This file exports the
     components, functions, services and other code that your library contains.
     The example content:
     ```ts
@@ -96,14 +96,14 @@ To create a library:
     ```json
     "@umlp/experimental": {
       "projectType": "library",
-      "root": "projects/experimental",
-      "sourceRoot": "projects/experimental",
+      "root": "experimental",
+      "sourceRoot": "experimental",
       "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/experimental/ng-package.json"
+            "project": "experimental/ng-package.json"
           },
           "configurations": {
             "production": {
@@ -153,8 +153,8 @@ Whenever changes are made to a library, the version needs to be updated in the
 example should be replaced with your own library):
 
 - A file is changed in `arrange` library, i.e. any file inside [the library
-  folder - `projects/arrange`](projects/arrange).
-- Open [`projects/arrange/package.json` file](projects/arrange/package.json) of
+  folder - `arrange`](arrange).
+- Open [`arrange/package.json` file](arrange/package.json) of
   the library. 
 - Increment the version number of the `"version"` field.
   - last version number if you make a patch (bug fix, minor stuff) or a backward
@@ -177,10 +177,10 @@ library:
     choice inside `experimental/src`. If component is based on a model, use [TOP
     mechanism](https://git.rwth-aachen.de/monticore/umlp/-/wikis/tutorial/step2/TOPMechanism)
     to extend/rewrite the component with hand-written code. For example, create
-    `projects/experimental/src/foo/Bar.ts` to extend the TypeScript class of the
+    `experimental/src/foo/Bar.ts` to extend the TypeScript class of the
     component.
 3.  Export the component. If the TypeScript class that defines the component is
-    hand-written, export it in `projects/experimental/index.ts` file:
+    hand-written, export it in `experimental/index.ts` file:
     ```ts
     export { Bar } from './src/foo/Bar';
     ```
@@ -194,11 +194,11 @@ library:
 For example, you want to remove a component `foo.Bar` from the `experimental`
 library:
 1.  Remove hand-written sources for the component, possible artifacts:
-    - `projects/experimental/src/foo/Bar.*`
-    - `projects/experimental/src/foo/BarTypes.*`
+    - `experimental/src/foo/Bar.*`
+    - `experimental/src/foo/BarTypes.*`
     - `models/foo/Bar.gui`
     - `models/foo/BarTypes.cd`
-2.  Remove component export(s) from `projects/experimental/index.ts` if exists:
+2.  Remove component export(s) from `experimental/index.ts` if exists:
     ```diff
     - export { Bar } from './src/foo/Bar';
     - export { MyBarType } from './build/cd/foo/MyBarType';
@@ -214,14 +214,14 @@ To remove a library:
     ```json
     "@umlp/experimental": {
       "projectType": "library",
-      "root": "projects/experimental",
-      "sourceRoot": "projects/experimental/src",
+      "root": "experimental",
+      "sourceRoot": "experimental/src",
       "prefix": "gem",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/experimental/ng-package.json"
+            "project": "experimental/ng-package.json"
           },
           "configurations": {
             "production": {
@@ -279,7 +279,7 @@ In an app inside of a montigem project (`example`, `products`, etc.):
 - add path to your project's `tsconfig.json` file:
   ```diff
   "paths": {
-  + "@umlp/experimental": ["../../../../../umlp-rte/client/projects/experimental"],
+  + "@umlp/experimental": ["../../../../../umlp-rte/client/experimental"],
     ...,
   }
   ```
