@@ -6,12 +6,13 @@ import {RangeWithGradientComponent,config} from "gui/atomic/range_with_gradient/
   standalone:true,
   imports:[... config.imports],
   selector: config.selector,
-  templateUrl: config.templateUrl,
+  templateUrl: 'RangeWithGradient.html',
 })
 export class RangeWithGradient extends RangeWithGradientComponent {
   uuid: string;
 
-  ngOnInit() {
+  override init(): void {
+    super.init();
     this.uuid = crypto.randomUUID();
   }
 

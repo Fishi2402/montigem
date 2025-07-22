@@ -1,37 +1,35 @@
 /* (c) https://github.com/MontiCore/monticore */
 import {Component} from '@angular/core';
-import {
-  ShortFormDateTimeRendererComponent,config
-} from "gui/common/ShortFormDateTimeRendererComponent";
+import {ShortFormDateRendererComponent,config} from "gui/common/ShortFormDateRendererComponent";
 
 @Component({
   standalone:true,
   imports:[... config.imports],
   selector: config.selector,
-  templateUrl: config.templateUrl,
+  templateUrl: '../../../build/appgui/gui/common/ShortFormDateRenderer.html',
   styles: config.styles,
   styleUrls: config.styleUrls
 })
-export  class ShortFormDateTimeRenderer extends ShortFormDateTimeRendererComponent {
+
+export  class ShortFormDateRenderer extends ShortFormDateRendererComponent {
   getGemText0Value(): string {
     let today = new Date();
-    let date = this.getForecast()?.getDate();
+    let date = this.getDay()?.getDate();
 
     if(date == null){
       return "???";
     }else{
-      const hours = date.toLocaleTimeString("en-US", {hour: "2-digit"})
       if(this.isReplaceToday()
          && today.getFullYear() == date.getFullYear()
          && today.getMonth() == date.getMonth()
          && today.getDate() == date.getDate()
       ){
-        return "Today "+hours;
+        return "Today";
       }else{
         let res = date.toLocaleDateString("en-US", {
           weekday: "short",
         });
-        return res == null ? "???" : res+ " "+hours;
+        return res == null ? "???" : res;
       }
     }
   }

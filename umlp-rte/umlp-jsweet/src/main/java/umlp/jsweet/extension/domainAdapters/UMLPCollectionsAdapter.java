@@ -240,6 +240,10 @@ public class UMLPCollectionsAdapter extends UMLPAbstractAdapter {
             .print(invocation.getArgument(0)).print("])");
         getPrinter().useModule(new ModuleImportDescriptor(UMLPCollectionsAdapter.CustomUMLPListImplementationName, getLibraryLocation()));
         return true;
+      case "nCopies":
+        printMacroName(targetMethodName);
+        print("Array(").print(invocation.getArgument(0)).print(").fill(").print(invocation.getArgument(1)).print(")");
+        return true;
     }
     return false;
   }

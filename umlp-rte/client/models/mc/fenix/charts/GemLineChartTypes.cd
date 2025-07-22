@@ -12,7 +12,7 @@ classdiagram GemLineChartTypes {
 
   public class GemLineChartEntry {
     String label;
-    List<Integer> data;
+    List<Double> data;
     String borderColor;
     String backgroundColor;
     String pointBackgroundColor;

@@ -9,7 +9,7 @@ import { Option } from '@umlp/input';
   standalone:true,
   imports:[... config.imports],
   selector: config.selector,
-  templateUrl: config.templateUrl,
+  templateUrl: '../../build/appgui/gui/AddToFavorite.html',
   styleUrls: config.styleUrls
 })
 export class AddToFavorite extends AddToFavoriteComponent {
@@ -24,15 +24,13 @@ export class AddToFavorite extends AddToFavoriteComponent {
       });
     }
 
-    WeatherManager.getCityList().then(gemPromiseRes => {
-      gemPromiseRes.loadAll().then(val => {
-        this.cities = val;
-        for (const city of this.cities) {
-          let value = city.getName();
-          this.options.push(new Option(value));
-        }
-        this.options = this.options.slice();
-      });
+    WeatherManager.getCityList().then(async val => {
+      this.cities = await val.toArraySync();
+      for await (const city of this.cities) {
+        let value = city.getName();
+        this.options.push(new Option(value));
+      }
+      this.options = this.options.slice();
     });
   }
 

@@ -9,6 +9,13 @@ node {
 }
 nodeSetup.dependsOn(frontendSetup)
 
+dependencies {
+  domainSources project(":examples:weather:backend")
+  implementation project(":examples:weather:backend")
+
+  implementation project(":umlp-rte")
+}
+
 // TODO AGe: don't know if that is needed
 /*task generateCDTOGUI(type: UMLPCdToGuiTask) {
   input = file("../models/Weather.umlp")
@@ -62,4 +69,9 @@ tasks.register('runApp', NpxTask) {
 
 tasks.register('run') {
   dependsOn(runApp)
+}
+
+tasks.register('buildAppNoGen', NpxTask) {
+  command = "ng"
+  args = ["build"]
 }

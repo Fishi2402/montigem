@@ -1,18 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { WeatherWidgetComponent,config } from 'gui/widgets/WeatherWidgetComponent';
+import { RadarBodyComponent,config } from 'gui/widgets/RadarBodyComponent';
 
 @Component({
   standalone:true,
   imports:[...config.imports],
   selector: config.selector,
-  templateUrl: config.templateUrl,
+  templateUrl: 'RadarBody.html',
   styles: config.styles,
   styleUrls: config.styleUrls
 })
-
-export class WeatherWidget extends WeatherWidgetComponent {
+export class RadarBody extends RadarBodyComponent {
 
 }
 

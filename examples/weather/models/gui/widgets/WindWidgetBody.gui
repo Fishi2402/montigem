@@ -14,6 +14,6 @@ component WindWidgetBody(Timeseries timeseries) {
   @GemColumn(components = [
     @GemImage(source = "assets/images/compass.gif", style = "width: 200px; height: 200px"),
     @GemText(value = "NA"),
-    @GemText(value = "km/h")
+    @GemText(value = getSpeed(timeseries))
   ]);
 }

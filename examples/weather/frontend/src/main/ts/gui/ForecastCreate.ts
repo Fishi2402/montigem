@@ -7,7 +7,7 @@ import { ForecastCreateComponent,config } from 'gui/ForecastCreateComponent';
   standalone:true,
   imports:[... config.imports],
   selector: config.selector,
-  templateUrl: config.templateUrl,
+  templateUrl: '../../build/appgui/gui/ForecastCreate.html',
   styles: config.styles,
   styleUrls: config.styleUrls
 })
