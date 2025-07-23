@@ -49,6 +49,12 @@ public class UMLPRTEImportAdapter extends UMLPAbstractAdapter {
       CompilationUnitElement currentCompilationUnit, String importedName,
       TypeElement importedClass) {
     String fqn = importedClass.getQualifiedName().toString();
+    if (getContext().hasAnnotationType(importedClass, "umlp.jsweet.extension.annotation.AnnotationModule")) {
+      // Similar to @Module, just for annotations
+      return new ModuleImportDescriptor(false,
+          (PackageElement) importedClass.getEnclosingElement(), importedName,
+          getContext().getAnnotationValue(importedClass, "umlp.jsweet.extension.annotation.AnnotationModule", String.class, "##missing##"), importedClass);
+    }
     if (fqn != null) {
       if (fqn.equals(GUIAdapterUtils.COMPONENT_ANNOTATION)
           || fqn.equals(GUIAdapterUtils.DIRECTIVE_ANNOTATION)

@@ -93,6 +93,7 @@ test {
   useJUnitPlatform(){
     excludeTags "SlowTest"
   }
+  environment.put("WITH_JSWEET", "TRUE")
   outputs.upToDateWhen { false } // For some reason gradle does not detect changes to (some?) files, such as the app.component.ts
   // (because we never specify them as inputs)
 }

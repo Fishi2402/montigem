@@ -7,10 +7,12 @@ import org.gradle.api.provider.Property;
 import org.gradle.workers.WorkAction;
 import org.gradle.workers.WorkParameters;
 import org.jsweet.transpiler.EcmaScriptComplianceLevel;
+import org.jsweet.transpiler.JSweetContext;
 import org.jsweet.transpiler.JSweetFactory;
 import org.jsweet.transpiler.JSweetTranspiler;
 import org.jsweet.transpiler.ModuleKind;
 import org.jsweet.transpiler.SourceFile;
+import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.util.ConsoleTranspilationHandler;
 import org.jsweet.transpiler.util.ErrorCountTranspilationHandler;
 import org.jsweet.transpiler.util.ProcessUtil;
@@ -37,7 +39,13 @@ public abstract class TranspileAction implements WorkAction<TranspileAction.Para
       JavaHomeLocator javaHomeLocator = new JavaHomeLocator();
     }
 
-    JSweetFactory factory = new JSweetFactory();
+    JSweetFactory factory = new JSweetFactory() {
+      @Override
+      public PrinterAdapter createAdapter(JSweetContext context) {
+        context.useRequireForModules = false; // Fix for @Module annotations
+        return super.createAdapter(context);
+      }
+    };
 
     JSweetTranspiler transpiler = new JSweetTranspiler(
         params.getBaseDirectory().getAsFile().get(),
