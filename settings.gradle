@@ -57,9 +57,6 @@ include ":experiments:module-system:routes-usage"
 
 include ":examples"
 include ':examples:stat'
-include ':examples:artifacts-test'
-include ':examples:artifacts-java:backend'
-include ':examples:artifacts-java:frontend'
 include ':examples:flensburg-test:backend'
 include ':examples:flensburg-test:frontend'
 include ':examples:weather:backend'

@@ -36,7 +36,7 @@ public class UMLPEnumAdapter extends PrinterAdapter {
               .print(relTarget + "[").print(invocationElement.getTargetExpression()).print("]")
               .print(".charAt(0).toUpperCase() + " + relTarget + "[")
               .print(invocationElement.getTargetExpression()).print("]")
-              .print(".slice(1).toLowerCase() : '');");
+              .print(".slice(1).toLowerCase() : '')");
           return true;
       }
     }

@@ -10,7 +10,17 @@ plugins {
 node {
   nodeProjectDir = file("${buildDir}/frontendGen")
 }
-nodeSetup.dependsOn(frontendSetup)
+
+dependencies {
+  implementation project(":examples:kitchencompanion:backend")
+  testImplementation project(':umlp-test-rte')
+
+  domainSources project(":examples:kitchencompanion:backend")
+}
+
+configurations {
+  testRuntimeClasspath.exclude group: 'de.monticore.language-server', module:'monticore-language-server-runtime'
+}
 
 genGUI {
   domainModels = ["KitchenCompanion"]
@@ -22,7 +32,15 @@ genGUI {
   /**/
 }
 
+nodeSetup.dependsOn(frontendSetup)
 npmInstall.dependsOn(':umlp-rte:client:npmInstall')
+
+tasks.named('testApp', NpxTask) {
+  dependsOn(
+      project(":umlp-rte:client").tasks.matching { it.name.startsWith("copy_") },
+      project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") }
+  )
+}
 
 tasks.register('run') {
   dependsOn(runApp)
