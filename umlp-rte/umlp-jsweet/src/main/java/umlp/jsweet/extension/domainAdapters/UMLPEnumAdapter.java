@@ -32,11 +32,11 @@ public class UMLPEnumAdapter extends PrinterAdapter {
       switch (targetMethodName) {
         case "toString":
           printMacroName("Enum." + targetMethodName);
-          print("(" + relTarget + "[").print(invocationElement.getTargetExpression()).print("] ? ")
-              .print(relTarget + "[").print(invocationElement.getTargetExpression()).print("]")
-              .print(".charAt(0).toUpperCase() + " + relTarget + "[")
-              .print(invocationElement.getTargetExpression()).print("]")
-              .print(".slice(1).toLowerCase() : '')");
+          print("(" + relTarget + "[").print(invocationElement.getTargetExpression())
+              .print("] ? ")
+              .print(relTarget + "[").print(invocationElement.getTargetExpression())
+              .print("]")
+              .print(" : '')");
           return true;
       }
     }
