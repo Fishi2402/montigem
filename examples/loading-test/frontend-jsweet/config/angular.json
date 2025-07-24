@@ -65,8 +65,7 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true,
-              "namedChunks": true,
-              "tsConfig": "tsconfig.json"
+              "namedChunks": true
             }
           },
           "defaultConfiguration": "production"
