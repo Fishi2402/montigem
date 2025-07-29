@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
-  id "com.github.node-gradle.node" version "5.0.0"
   id "de.rwth.se.umlp-tool-frontend"
 }
 
@@ -57,28 +56,17 @@ tasks.register('genGUI2', UMLPGuiGenTask) {
 
 npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 
-def prebuildTasks = [
-    npmInstall, generate, genGUI2
-]
 
-tasks.register('buildApp', NpxTask) {
-  dependsOn(prebuildTasks)
-  command = "ng"
-  args = ["build"]
-
-}
-assemble.dependsOn(buildApp)
-
-tasks.register('testApp', NpxTask) {
-  dependsOn(prebuildTasks)
-  command = "ng"
-  args = ["test"]
+tasks.named('buildApp', NpxTask) {
+  dependsOn(genGUI2)
 }
 
-tasks.register('runApp', NpxTask) {
-  dependsOn(prebuildTasks)
-  command = "ng"
-  args = ["serve"]
+tasks.named('testApp', NpxTask) {
+  dependsOn(genGUI2)
+}
+
+tasks.named('runApp', NpxTask) {
+  dependsOn(genGUI2)
 }
 
 tasks.register('run') {
