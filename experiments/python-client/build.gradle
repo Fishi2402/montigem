@@ -5,6 +5,9 @@ plugins {
   id 'de.rwth.se.umlp-tool-backend'
   id 'de.rwth.se.cdgen' version "$mc_version"
   id("org.graalvm.python") version "24.2.0" // requires gradle 17
+
+  id 'application'
+
 }
 
 sourceSets {
@@ -13,7 +16,9 @@ sourceSets {
   }
 }
 
-
+application {
+  mainClass = 'mydomain.MyDomainServerApplication'
+}
 
 tasks.register("generateGem", de.monticore.cdgen.gradleplugin.CDGenTask.class) {
   getInput().from(project.file("src/models/MyDomain.umlp"))
@@ -59,6 +64,19 @@ dependencies {
   implementation("org.graalvm.polyglot:python:24.2.0")
 }
 
+
+dependencies {
+  def withoutSpringLogging = {
+    exclude module: 'spring-boot-starter-logging'
+    exclude module: 'logback-classic'
+    exclude module: 'log4j-to-slf4j'
+  }
+  api group: 'umlp', name: 'umlp-rte', version: mc_version, withoutSpringLogging
+  api group: 'umlp', name: 'umlp-test-rte', version: mc_version, withoutSpringLogging
+  api 'com.h2database:h2:2.1.214'
+
+}
+
 test {
   useJUnitPlatform()
   dependsOn(tasks.named("generateGem"))
@@ -101,6 +119,10 @@ java {
 // TODO: Why?
 tasks.named("graalPyVFSFilesList") {
   dependsOn(tasks.named("generateUmlpBackend"))
+}
+
+tasks.named("generateUmlpBackend") {
+  useSpring.set(true)
 }
 
 //tasks.named("processResources", ProcessResources) {

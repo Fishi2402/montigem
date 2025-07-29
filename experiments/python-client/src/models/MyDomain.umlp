@@ -3,12 +3,12 @@
 classdiagram MyDomain { //b
 
   class A {
-    String str = "hello";
+    String myStr = "hello";
     java.util.Optional<String> strOpt;
     B directB;
     int i = 42;
     double d = 42.42;
-    boolean bool = false;
+    // boolean bool = false; // TODO -> report error
     boolean myBool = true;
   }
 

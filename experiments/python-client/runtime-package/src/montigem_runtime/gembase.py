@@ -90,3 +90,59 @@ class GlobalGemList(GemList):
 
   def get(self, gem_id: int) -> DataT:
     return self._cache[gem_id]
+
+class DomainManager:
+  from montigem_runtime.commandmanager import CommandManager
+  global_state: typing.MutableMapping[typing.Type[GemBase], GlobalGemList]
+  domain_name: str
+  def __init__(self, domain_name: str, command_manager: CommandManager):
+    self.domain_name = domain_name
+    self.command_manager = command_manager
+    self.global_state = {}
+  G = typing.TypeVar("G", bound=GemBase)
+
+  def get_global_list(self, domaintype: typing.Type[G]) -> GlobalGemList[G]:
+    if domaintype not in self.global_state:
+      self.global_state[domaintype] = GlobalGemList()
+    return self.global_state[domaintype]
+
+  async def list_filtered(self, domaintype: typing.Type[G]):
+    return await self.command_manager.send(
+      CommandManager.Command(commandType=f"{self.domain_name}.commands.{domaintype.TYPE}_get_filtered"))
+
+  async def get(self, domaintype: typing.Type[G], gem_id: int) -> G:
+    # todo: future for multiple calls?
+    glist = self.get_global_list(domaintype)
+    if glist.is_loaded(gem_id):
+      return glist.get(gem_id)
+
+    resp = await self.command_manager.send(
+      CommandManager.Command(commandType=f"{self.domain_name}.commands.{domaintype.TYPE}_get",
+                             gemId=gem_id))
+    if not resp['successful']:
+      raise "Not successful"
+    print(resp["value"])
+    r = domaintype.model_validate(resp["value"])
+    glist.set(gem_id, r)
+    return r
+
+  async def get_free_gem_id(self):
+    return (await self.command_manager.send(
+      CommandManager.Command(commandType=f"{self.domain_name}.commands.GetFreeGemIdRequest")))["value"]
+
+  async def find_all(self, domaintype: typing.Type[G]) -> typing.List[G]:
+    r = await self.list_filtered(domaintype)
+    if not r["successful"]:
+      raise "Not successful"
+    results = await asyncio.gather(*(self.get(domaintype, gem_id) for gem_id in r['list']))
+    return list(results)
+
+  async def create(self, obj: G) -> G:
+    msg = {"commandType": f"{self.domain_name}.commands." + obj.TYPE + "_create", uncap(obj.TYPE): obj}
+    r = await self.command_manager.send(
+      CommandManager.Command(commandType=f"{self.domain_name}.commands.{obj.TYPE}_create",
+                             **{uncap(obj.TYPE): obj}))
+    if not r["successful"]:
+      raise "Not successful"
+    return await self.get(type(obj), obj.gemId)
+

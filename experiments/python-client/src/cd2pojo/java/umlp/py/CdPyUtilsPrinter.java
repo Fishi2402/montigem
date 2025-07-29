@@ -12,6 +12,9 @@ import de.monticore.cd4codebasis._ast.ASTCDThrowsDeclaration;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnumConstant;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.literals.mccommonliterals._ast.ASTBooleanLiteral;
+import de.monticore.literals.mccommonliterals._ast.ASTNullLiteral;
+import de.monticore.literals.mccommonliterals._prettyprint.MCCommonLiteralsPrettyPrinter;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
@@ -72,6 +75,22 @@ public class CdPyUtilsPrinter extends CdUtilsPrinter {
 
       }
     });
+
+    fullPrettyPrinter.getTraverser().setMCCommonLiteralsHandler(new MCCommonLiteralsPrettyPrinter(fullPrettyPrinter.getPrinter(), true) {
+      @Override
+      public void handle(ASTBooleanLiteral node) {
+        if (node.getValue())
+          getPrinter().print("True ");
+        else
+          getPrinter().print("True ");
+      }
+
+      @Override
+      public void handle(ASTNullLiteral node) {
+        getPrinter().print("None ");
+      }
+    });
+
   }
 
 
@@ -88,7 +107,7 @@ public class CdPyUtilsPrinter extends CdUtilsPrinter {
 //      importStatement.getQName()
 //    }
     importStatements.forEach(i -> sb.append(fullPrettyPrinter.prettyprint(i)).append("\n"));
-    return sb.toString();
+    return sb.toString().replace("import de.se_rwth.commons.logging.Log", "#import de.se_rwth.commons.logging.Log");
   }
 
   /**
