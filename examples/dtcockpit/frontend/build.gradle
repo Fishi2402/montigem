@@ -1,3 +1,6 @@
+import java.nio.file.Files
+import java.nio.file.Paths
+
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
@@ -96,6 +99,27 @@ tasks.register('runApp', NpxTask) {
   command = "ng"
   args = ["serve"]
 }
+
+tasks.named("symlinkCreation") {
+  dependsOn {
+    project(':modules:login:frontendTS').tasks.named('generate').get()
+    // project(':modules:comment:frontendTS').tasks.named('generate').get()
+  }
+
+  def loginDomain = file("$buildDir/frontendGen/login_module_domain")
+  def loginDomainTarget = file("../../../modules/login/frontendTS/build/frontendGen/build/appdomain")
+
+  def loginGui = file("$buildDir/frontendGen/login_module_gui")
+  def loginGuiTarget = file("../../../modules/login/frontendTS/build/frontendGen/build/appgui")
+
+  def loginHWC = file("$buildDir/frontendGen/login_hwc")
+  def loginHWCTarget = file("../../../modules/login/frontendTS/login")
+
+  getSymlinkMap().put(loginDomain, loginDomainTarget)
+  getSymlinkMap().put(loginGui, loginGuiTarget)
+  getSymlinkMap().put(loginHWC, loginHWCTarget)
+}
+
 
 tasks.named('runApp') {
   dependsOn {

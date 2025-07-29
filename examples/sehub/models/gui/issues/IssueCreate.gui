@@ -16,12 +16,11 @@ import mc.fenix.input.GemTextareaInput;
 
 component IssueCreate(Issue issue){
   @GemColumn(hAlign = "center", width = "400px", rowGap = "5px", components = [
-    @GemTextInput(labelText = "Issue Title", entry = issue.title, disabled = false),
+    @GemTextInput(labelText = "Issue Title", entry = issue.title),
     @GemTextareaInput(
       labelText = "Description",
-      entry = issue.description,
-      disabled = false
+      entry = issue.description
     ),
-    @GemButton(label = "Create new Issue", leftClick = createIssue(), disabled = false)
+    @GemButton(label = "Create new Issue", leftClick = createIssue())
   ]);
 }

@@ -2,71 +2,78 @@
   $border,
   $flexDirection,
   $labelPositioning,
-  $labelMargin
+  $labelMargin,
+  $colorDanger,
+  $colorWarning,
+  $colorBackground,
+  $colorText
 ) {
   .gem-text-input:not([type="date"]) {
     display: flex;
-    color: #333;
-    font-size: 16px;
+    color: $colorText;
+    font-size: 1rem;
     font-weight: 200;
     border: $border;
-    border-radius: 1px;
+    border-radius: 0.0625em;
     width: 100%;
     height: 100%;
-    padding: 6px 16px 6px 6px;
+    padding: 0.375em 1.75em 0.375em 0.375em; // top right bottom left
+    box-sizing: border-box;
+  }
+
+  .gem-input-error:not([type="date"]),
+  .gem-input-warning:not([type="date"]) {
+    background-repeat: no-repeat;
+    background-size: 1em;
+    background-position: right 0.625em center;
   }
 
   .gem-input-error:not([type="date"]) {
-    border: 1px solid red;
+    border: 0.0625em solid $colorDanger;
     background-image: url("./img/error.png");
-    background-position: right center;
-    background-repeat: no-repeat;
-    background-size: 16px;
   }
 
   .gem-input-warning:not([type="date"]) {
-    border: 1px solid #ff8c00;
+    border: 0.0625em solid $colorWarning;
     background-image: url("./img/warning.png");
-    background-position: right center;
-    background-repeat: no-repeat;
-    background-size: 16px;
   }
 
   .gem-text-input:disabled {
     cursor: not-allowed;
-    background-color: #cccc;
-    color: #3336;
+    background-color: $colorBackground;
+    color: $colorText;
   }
 
   .gem-text-input[type="date"] {
-    font-size: 16px;
-    color: #333;
+    font-size: 1rem;
+    color: $colorText;
     font-weight: 200;
     border: $border;
-    border-radius: 1px;
+    border-radius: 0.0625em;
     line-height: 100%;
-    padding: 6px;
+    padding: 0.375em;
+    box-sizing: border-box;
   }
 
   .gem-text-input[type="list"]::-webkit-calendar-picker-indicator {
     display: none !important;
   }
 
-  .gem-input-error[type="date"] {
-    border: 1px solid red;
-    background-image: url("./img/error.png");
-    background-position: right 1.6em center;
+  .gem-input-error[type="date"],
+  .gem-input-warning[type="date"] {
     background-repeat: no-repeat;
-    background-size: 16px;
-    /**/
+    background-size: 1em;
+    background-position: right 1.75em center;
+  }
+
+  .gem-input-error[type="date"] {
+    border: 0.0625em solid $colorDanger;
+    background-image: url("./img/error.png");
   }
 
   .gem-input-warning[type="date"] {
-    border: 1px solid #ff8c00;
+    border: 0.0625em solid $colorWarning;
     background-image: url("./img/warning.png");
-    background-position: right 1.6em center;
-    background-repeat: no-repeat;
-    background-size: 16px;
   }
 
   .gem-text-input[type="number"]::-webkit-inner-spin-button,
@@ -84,8 +91,8 @@
 
   .gem-label-text-input {
     display: flex;
-    color: #333;
-    font-size: 16px;
+    color: $colorText;
+    font-size: 1rem;
     font-weight: bold;
     margin: $labelMargin;
     justify-content: $labelPositioning;

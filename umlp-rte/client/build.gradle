@@ -48,7 +48,7 @@ def componentLibs = [
     "editor"
 ]
 
-def libs = [
+ext.libs = [
     "common",
     "commonj2ts",
     "theme",

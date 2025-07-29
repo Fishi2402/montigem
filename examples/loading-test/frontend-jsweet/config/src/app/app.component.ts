@@ -1,11 +1,9 @@
 import { Component } from '@angular/core';
 import { LoadingTestsManagerClientImpl } from 'loadingtests/LoadingTestsManagerClientImpl';
 // JSweet
-import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager, BaseClassObjectMapper } from '@umlp/commonj2ts';
+import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from '@umlp/commonj2ts';
 import { LoadingTestsComponentObserverManager } from 'LoadingTestsComponentObserverManager'
 import { LoadingTestsManager } from 'loadingtests/LoadingTestsManager';
-// Non-JSweet
-import {GemBarChartTypesDeSer} from '@umlp/charts'
 
 declare global {
   interface Window {
@@ -30,6 +28,5 @@ export class AppComponent {
     (<any>window).websocket_connected = true;
     // JSweet
     LoadingTestsComponentObserverManager.init();
-    BaseClassObjectMapper.addDeSers(GemBarChartTypesDeSer.getInstance().getDeSerMap())
   }
 }

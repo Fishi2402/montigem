@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { DomainManagerClientImpl } from 'domain/DomainManagerClientImpl';
 import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from '@umlp/common';
+import {Navigation} from "navigation/navigation.component";
 
 @Component({
   selector: 'app-root',

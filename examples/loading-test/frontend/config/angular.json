@@ -15,11 +15,11 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
             "outputPath": "dist/client",
             "index": "src/index.html",
-            "main": "src/main.ts",
+            "browser": "src/main.ts",
             "polyfills": [
               "zone.js"
             ],
@@ -27,17 +27,19 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "./node_modules/@gitlab/svgs/dist",
+                "output": "./assets/@gitlab/svgs"
+              }
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "./node_modules/font-awesome/css/font-awesome.css",
-              "src/styles.scss",
-
-              "./node_modules/primeng/resources/primeng.min.css",
-              "./node_modules/primeicons/primeicons.css",
-              "./node_modules/primeng/resources/themes/lara-light-blue/theme.css"
+              "src/styles.scss"
             ],
+            "preserveSymlinks": true,
             "scripts": []
           },
           "configurations": {
@@ -54,15 +56,16 @@
                   "maximumError": "4kb"
                 }
               ],
-              "outputHashing": "all"
-            },
-            "development": {
-              "buildOptimizer": false,
-              "optimization": false,
-              "vendorChunk": true,
-              "extractLicenses": false,
+              "outputHashing": "all",
               "sourceMap": true,
               "namedChunks": true
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "tsConfig": "tsconfig.json"
             }
           },
           "defaultConfiguration": "production"
@@ -71,21 +74,26 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "client:build:production"
+              "buildTarget": "client:build:production",
+              "forceEsbuild": true
             },
             "development": {
-              "browserTarget": "client:build:development"
+              "buildTarget": "client:build:development",
+              "forceEsbuild": true
             }
           },
           "defaultConfiguration": "development",
           "options": {
-            "proxyConfig": "./proxy.conf.ts"
+            "proxyConfig": "./proxy.conf.js",
+            "prebundle": {
+              "exclude": ["d3"]
+            }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "client:build"
+            "buildTarget": "client:build"
           }
         },
         "test": {
@@ -107,8 +115,7 @@
             "scripts": [],
             "karmaConfig": "karma.conf.js",
             "include": [
-              "src/**/*.spec.ts",
-              "../../../src/**/*.spec.ts"
+              "src/**/*.spec.ts"
             ]
           }
         }

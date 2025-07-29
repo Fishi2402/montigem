@@ -1,10 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Meeting } from 'dtcockpit/Meeting';
-import { GemList } from '@umlp/common';
 
 import { Component, Input } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
 import {config, CalendarComponent} from "gui/widgets/CalendarComponent";
 interface CalendarBlock {
   x: number;
@@ -17,7 +15,7 @@ interface CalendarBlock {
 
 @Component({
   standalone:true,
-  imports:[...config.imports, HttpClientModule],
+  imports:[...config.imports],
   selector: config.selector,
   templateUrl: config.templateUrl,
   styleUrls: config.styleUrls

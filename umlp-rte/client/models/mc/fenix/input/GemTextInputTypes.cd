@@ -21,6 +21,8 @@ classdiagram GemTextInputTypes {
     String status;
     /** A message to be displayed as a tooltip with the status */
     String message;
+    +GemTextInputValidity(String status);
+    +GemTextInputValidity(String status, String message);
   }
 
 }

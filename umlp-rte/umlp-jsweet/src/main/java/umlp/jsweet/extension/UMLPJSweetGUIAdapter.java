@@ -8,6 +8,7 @@ import umlp.jsweet.extension.domainAdapters.UMLPEnumAdapter;
 import umlp.jsweet.extension.domainAdapters.UMLPJavaBasicsAdapter;
 import umlp.jsweet.extension.domainAdapters.UMLPRTEImportAdapter;
 import umlp.jsweet.extension.domainAdapters.BackendOnlyAdapter;
+import umlp.jsweet.extension.guiAdapters.AnnotationToDecoratorAdapter;
 import umlp.jsweet.extension.guiAdapters.GUIComponentObserverPatternAdapter;
 import umlp.jsweet.extension.guiAdapters.GUIComponentBasicsAdapter;
 import umlp.jsweet.extension.guiAdapters.GUITypesImportAdapter;
@@ -35,7 +36,9 @@ public class UMLPJSweetGUIAdapter extends PrinterAdapter {
                                                 new BackendOnlyAdapter(
                                                     new MutexAdapter(
                                                         new UMLPEnumAdapter(
-                                                            parentAdapter
+                                                            new AnnotationToDecoratorAdapter(
+                                                                parentAdapter
+                                                            )
                                                         )
                                                     )
                                                 )

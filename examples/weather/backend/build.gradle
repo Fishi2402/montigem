@@ -1,5 +1,5 @@
 plugins {
-  id 'java'
+  id 'java-library'
   id 'de.rwth.se.umlp-tool-backend'
 
   id 'application'
@@ -34,6 +34,8 @@ application {
 
 jib {
   container.mainClass = application.mainClass.get()
+  from.image = "$container_from_image"
+  to.image = "${container_target_image_base}weather_backend:latest"
 }
 
 dependencies {
@@ -50,7 +52,7 @@ dependencies {
 
   // Spring Boot Dependencies
   compileOnly group: 'org.springframework.boot', name: 'spring-boot-devtools', version: spring_version, withoutSpringLogging
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version, withoutSpringLogging
+  api group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version, withoutSpringLogging
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version, withoutSpringLogging
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: spring_version
   implementation group: 'org.springframework.shell', name: 'spring-shell-starter', version: spring_shell_version

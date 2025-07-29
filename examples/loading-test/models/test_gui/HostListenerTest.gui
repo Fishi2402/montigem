@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test_gui;
+
+import test_gui.IterateOverViewElementsComp;
+import mc.fenix.basic.GemText;
+
+page HostListenerTest(String message = "Nothing") {
+  @GemText(value = "Mouse: " + message);
+}

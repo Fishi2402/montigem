@@ -87,7 +87,7 @@ public class TSUMLPGenerator extends UMLPGenerator {
   }
 
   protected static void logTrafoExec(String trafo, ASTCDCompilationUnit ast){
-    Log.info("========= CD after '"+trafo+"': =========", TSUMLPGenerator.class.getName());
+    Log.debug("========= CD after '"+trafo+"': =========", TSUMLPGenerator.class.getName());
   }
 
   public ASTCDCompilationUnit createCompilationUnit(ASTCDCompilationUnit cd) {

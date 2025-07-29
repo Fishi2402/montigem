@@ -3,19 +3,19 @@ package umlp.generator.gui.coco;
 
 import com.google.common.collect.Lists;
 import de.monticore.expressions.cocos.ExpressionValid;
-import de.monticore.expressions.commonexpressions.types3.util.CommonExpressionsLValueRelations;
-import de.monticore.guidsl._cocos.GUIComponentDeclarationIsPresent;
 import de.monticore.guidsl._cocos.GUIComponentDeclNameFits;
+import de.monticore.guidsl._cocos.GUIComponentDeclarationIsPresent;
 import de.monticore.guidsl._cocos.GUIDSLCoCoChecker;
 import de.monticore.guidsl._cocos.GUIDSLCoCos;
 import de.monticore.guidsl._cocos.GUIMultipleNameArgs;
 import de.monticore.guidsl._cocos.GUINameArgExists;
 import de.monticore.guidsl._cocos.GUIParamDefaultFitsType;
+import de.monticore.guidsl._cocos.GUIParameterNamesFit;
 import de.monticore.guidsl._cocos.GUIRangeIterateControlStartAndEndAreInt;
 import de.monticore.guidsl._cocos.GUIShortIterateCheckIterable;
-import de.monticore.guidsl.types.check.util.GUIDSLTypeTraverserFactory;
 import de.monticore.types.check.TypeCalculator;
 import de.monticore.types.check.types3wrapper.TypeCheck3AsTypeCalculator;
+import de.monticore.types.mcbasictypes.cocos.QualifiedTypeHasNoTypeParameters;
 
 public class GUIDSLCoCosForUMLP extends GUIDSLCoCos {
 
@@ -31,12 +31,13 @@ public class GUIDSLCoCosForUMLP extends GUIDSLCoCos {
     checker.addCoCo(new GUIComponentDeclarationIsPresent());
     checker.addCoCo(new GUIShortIterateCheckIterable());
     checker.addCoCo(new GUIComponentDeclNameFits(Lists.newArrayList("forms", "form", "template")));
-
+    checker.addCoCo(new GUIParameterNamesFit(Lists.newArrayList("class")));
     checker.addCoCo(new GuiNoSingletonList());
     checker.addCoCo(new GUIParamDefaultOnlyLiteralCoCo());
     checker.addCoCo(new GUIParamNoUnderspecifiedGenericsCoCo());
     checker.addCoCo(new NameExpressionsSymbolBoundExceptCallsCoCo());
     checker.addCoCo(new RefGUIArgIncompatibleWithDerivedCoCo());
+    checker.addCoCo(new QualifiedTypeHasNoTypeParameters());
     return checker;
   }
 }

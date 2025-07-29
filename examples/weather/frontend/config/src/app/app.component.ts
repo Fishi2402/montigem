@@ -1,7 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 import { Component } from '@angular/core';
 import { WeatherManagerClientImpl } from 'weather/WeatherManagerClientImpl';
-import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from '@umlp/common';
+import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from '@umlp/commonj2ts';
+import { WeatherComponentObserverManager } from 'WeatherComponentObserverManager';
 
 @Component({
   selector: 'app-root',
@@ -16,5 +17,6 @@ export class AppComponent {
       ws_protocol + '://' + document.location.host + '/umlp/api/command'
     ));
     CommandManager.initMe(cmdManager);
+    WeatherComponentObserverManager.init();
   }
 }

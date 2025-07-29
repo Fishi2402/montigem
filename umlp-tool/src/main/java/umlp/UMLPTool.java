@@ -106,7 +106,7 @@ public class UMLPTool extends UMLPToolTOP {
 
   public UMLPTool(boolean initMill){
     if(initMill){
-      UMLPMill.init();
+      MillConf.switchTo(MillConf.UMLP);
       BuiltInTypes.addBuiltInTypes(CD4CodeMill.globalScope(), false);
     }
   }
@@ -133,7 +133,7 @@ public class UMLPTool extends UMLPToolTOP {
   }
 
   protected static void logTrafoExec(String trafo, ASTCDCompilationUnit ast) {
-    Log.info("========= CD after '" + trafo + "': =========", UMLPTool.class.getName());
+    Log.debug("========= CD after '" + trafo + "': =========", UMLPTool.class.getName());
   }
 
   public static ASTGUICompilationUnit parseGUI(String model) {
@@ -220,11 +220,7 @@ public class UMLPTool extends UMLPToolTOP {
       // Close all file handles (if last usage!)
       FileReaderWriter.closeOpenedJarFiles();
       // Clear MCPath caches
-      UMLPMill.globalScope().getSymbolPath().close();
-      GUIDSLMill.globalScope().getSymbolPath().close();
-      // Clear globalScope cache
-      UMLPMill.globalScope().clear();
-      GUIDSLMill.globalScope().clear();
+      MillConf.switchTo();
       Reporting.off();
       cleanUpAfterMemoryLeakingSingletons();
     }
@@ -270,9 +266,7 @@ public class UMLPTool extends UMLPToolTOP {
     TagLookUp.cleanUp();
     CD4C.reset();
 
-    // Also reset the mills
-    UMLPMill.reset();
-    GUIDSLMill.reset();
+    MillConf.switchTo();
 
     // The SummaryReporter -> ReportingRepository#table is rooted in the Log instance
     Log.internalRemove();
@@ -461,7 +455,6 @@ public class UMLPTool extends UMLPToolTOP {
   }
 
   public static void initGUIGlobalScope(MCPath modelPath) {
-    BasicSymbolsMill.initializePrimitives();
     GUIDSLGlobalScope gs = (GUIDSLGlobalScope) GUIDSLMill.globalScope();
     gs.setSymbolPath(modelPath);
     gs.addAdaptedTypeSymbolResolver(new OOClass2MCResolver());

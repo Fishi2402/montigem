@@ -153,6 +153,12 @@ public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
         getPrinter().useModule(
             new ModuleImportDescriptor("Conversion", "@umlp/common"));
         return true;
+      case "isEqual":
+        print("(").print(invocation.getTargetExpression()).print(" >= ")
+            .print(invocation.getArgument(0)).print(" && ")
+            .print(invocation.getTargetExpression()).print(" <= ")
+            .print(invocation.getArgument(0)).print(")");
+        return true;
       case "isAfter":
         print(invocation.getTargetExpression()).print(" > ")
             .printArgList(invocation.getArguments());
@@ -181,6 +187,10 @@ public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
       case "compareTo":
         print("(").print(invocation.getTargetExpression()).print(".getTime() - ")
             .printArgList(invocation.getArguments()).print(".getTime())");
+        return true;
+      case "toLocalDate":
+        print(invocation.getTargetExpression());
+        printMacroName(invocation.getMethodName() + " omitted");
         return true;
 
       // === Integration of LocalDateTimeHelper ===

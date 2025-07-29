@@ -13,6 +13,7 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.CommandLine;
 import umlp.GUIDSLReports;
+import umlp.MillConf;
 import umlp.TagRelated;
 import umlp.UMLPTool;
 import umlp.cli.common.IOperation;
@@ -56,8 +57,8 @@ public class GuiPipeline extends Pipeline<UMLPPipelineData> {
     register("setupUMLPReports", setupUMLPReports);
     register("init", init = data -> {
       // Prepare the SingletonLookup
+      MillConf.switchTo(MillConf.TAGS, MillConf.UMLP, MillConf.GUIDSL);
       TagRelated.initLookup(data.importedSymbolPath);
-      GUIDSLMill.init();
       UMLPTool.initGUIGlobalScope(data.importedSymbolPath);
       TSImportMap.INSTANCE.init(data.importedSymbolPath);
       return true;

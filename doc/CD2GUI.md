@@ -19,7 +19,7 @@ Plugin providing Guidsl2 models to create and manage instances of a provided CD4
 
 ## Adding CD2GUI to your Project
 
-- A template can be found in :examples:sehub-cd2gui:frontend, for the tasks see below
+- A template can be found in :examples:sehub:frontend, for the tasks see below
 - add a variable useCD2GUI which can be used to turn cd2gui toggle cd2gui
 - copy the tasks `generateCD2GUI`, `guiVariability` and `genGUI2` into your project and change
   

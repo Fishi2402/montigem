@@ -1,0 +1,13 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+
+<div
+  cdkDropList
+  [id]="dropId"
+  [cdkDropListData]="issues"
+  [cdkDropListConnectedTo]="canDropTo"
+  class="drag-drop-list"
+  (cdkDropListDropped)="onDrop($event)">
+  <ng-container *ngFor="let issue of getIssues__synchronized()">
+    <issue-entry cdkDrag [issue]="issue"></issue-entry>
+  </ng-container>
+</div>

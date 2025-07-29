@@ -41,61 +41,61 @@ public class TSCommandDecorator extends CommandDecorator {
     CreateDecorator createDecorator = new TSCreateDecorator(glex, hwPath, outPath);
     createDecorator.transform(cdAST, decoratedAST);
     addedDeSers.addAll(createDecorator.getAddedDeSers());
-    Log.info("After decorator: CreateDecorator", TSCommandDecorator.class.getName());
+    Log.debug("After decorator: CreateDecorator", TSCommandDecorator.class.getName());
 
     DeleteDecorator deleteDecorator = new TSDeleteDecorator(glex, hwPath, outPath);
     deleteDecorator.transform(cdAST, decoratedAST);
     addedDeSers.addAll(deleteDecorator.getAddedDeSers());
-    Log.info("After decorator: DeleteDecorator", TSCommandDecorator.class.getName());
+    Log.debug("After decorator: DeleteDecorator", TSCommandDecorator.class.getName());
 
     GetDecorator getDecorator = new TSGetDecorator(glex, hwPath, outPath);
     getDecorator.transform(cdAST, decoratedAST);
     addedDeSers.addAll(getDecorator.getAddedDeSers());
-    Log.info("After decorator: GetDecorator", TSCommandDecorator.class.getName());
+    Log.debug("After decorator: GetDecorator", TSCommandDecorator.class.getName());
 
     SetDecorator setDecorator = new TSSetDecorator(glex, hwPath, outPath, supportedDeSers);
     setDecorator.transform(cdAST, decoratedAST);
     addedDeSers.addAll(setDecorator.getAddedDeSers());
-    Log.info("After decorator: SetDecorator", TSCommandDecorator.class.getName());
+    Log.debug("After decorator: SetDecorator", TSCommandDecorator.class.getName());
 
     OwnCommandDecorator cmdDecorator = new TSOwnCommandDecorator(glex, hwPath, outPath, supportedDeSers);
     cmdDecorator.transform(cdAST, decoratedAST);
     addedDeSers.addAll(cmdDecorator.getAddedDeSers());
-    Log.info("After decorator: TSOwnCommandDecorator", CommandDecorator.class.getName());
+    Log.debug("After decorator: TSOwnCommandDecorator", CommandDecorator.class.getName());
 
     CalculateDecorator calculateDecorator = new TSCalculateDecorator(glex, hwPath, outPath, supportedDeSers);
     calculateDecorator.transform(cdAST, decoratedAST);
     addedDeSers.addAll(calculateDecorator.getAddedDeSers());
-    Log.info("After decorator: CalculateDecorator", TSCommandDecorator.class.getName());
+    Log.debug("After decorator: CalculateDecorator", TSCommandDecorator.class.getName());
 
     AddDecorator addDecorator = new TSAddDecorator(glex, hwPath, outPath, supportedDeSers);
     addDecorator.transform(cdAST, decoratedAST);
     addedDeSers.addAll(addDecorator.getAddedDeSers());
-    Log.info("After decorator: AddDecorator", TSCommandDecorator.class.getName());
+    Log.debug("After decorator: AddDecorator", TSCommandDecorator.class.getName());
 
     RemoveDecorator removeDecorator = new TSRemoveDecorator(glex, hwPath, outPath, supportedDeSers);
     removeDecorator.transform(cdAST, decoratedAST);
     addedDeSers.addAll(removeDecorator.getAddedDeSers());
-    Log.info("After decorator: RemoveDecorator", TSCommandDecorator.class.getName());
+    Log.debug("After decorator: RemoveDecorator", TSCommandDecorator.class.getName());
 
     GetFilteredDecorator getFilteredDecorator = new TSGetFilteredDecorator(glex, hwPath, outPath);
     getFilteredDecorator.transform(cdAST, decoratedAST);
     addedDeSers.addAll(getFilteredDecorator.getAddedDeSers());
-    Log.info("After decorator: GetFilteredDecorator", TSCommandDecorator.class.getName());
+    Log.debug("After decorator: GetFilteredDecorator", TSCommandDecorator.class.getName());
 
     AssocCommandDecorator assocCommandDecorator = new TSAssocCommandDecorator(glex, hwPath, outPath);
     assocCommandDecorator.transform(cdAST, decoratedAST);
     addedDeSers.addAll(assocCommandDecorator.getAddedDeSers());
-    Log.info("After decorator: AssocCommandDecorator", TSCommandDecorator.class.getName());
+    Log.debug("After decorator: AssocCommandDecorator", TSCommandDecorator.class.getName());
 
     ManagerSubscriptionDecorator managerSubscriptionDecorator = new TSManagerSubscriptionDecorator(glex, hwPath, outPath);
     managerSubscriptionDecorator.transform(cdAST, decoratedAST);
     addedDeSers.addAll(managerSubscriptionDecorator.getAddedDeSers());
-    Log.info("After decorator: ManagerSubscriptionCommandDecorator", TSCommandDecorator.class.getName());
+    Log.debug("After decorator: ManagerSubscriptionCommandDecorator", TSCommandDecorator.class.getName());
 
     AggregatedCommandDeSerDecorator aggregatedCommandDeSerDecorator = new TSAggregatedCommandDeSerDecorator(glex, hwPath, outPath, addedDeSers);
     aggregatedCommandDeSerDecorator.transform(cdAST, decoratedAST);
-    Log.info("After decorator: XCommandDeserDecorator", TSCommandDecorator.class.getName());
+    Log.debug("After decorator: XCommandDeserDecorator", TSCommandDecorator.class.getName());
   }
 
 }

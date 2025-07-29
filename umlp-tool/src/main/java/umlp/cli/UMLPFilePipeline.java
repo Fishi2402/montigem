@@ -12,10 +12,10 @@ import de.monticore.ocl.ocl._ast.ASTOCLCompilationUnit;
 import de.monticore.ocl.ocl._parser.OCLParser;
 import de.monticore.ocl.util.SymbolTableUtil;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import de.monticore.tagging.tags.TagsMill;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import umlp.MCPathUtil;
+import umlp.MillConf;
 import umlp.TagRelated;
 import umlp.UMLPMill;
 import umlp.UMLPTool;
@@ -82,11 +82,10 @@ public class UMLPFilePipeline extends Pipeline<UMLPPipelineData> {
     register("setupUMLPReports", setupUMLPReports);
     register("init", init = data -> {
       // If we were to with to use concrete syntax, we would have to use the UMLPTagDefinitionMill
+      MillConf.switchTo(MillConf.TAGS, MillConf.GUIDSL, MillConf.UMLP);
       if (SYMTAB.isSelected(data.cmd)) {
-        TagsMill.init(); // instead we only support generic tagging models
         TagRelated.initLookup(data.importedSymbolPath);
       }
-      UMLPMill.init();
       UMLPMill.globalScope().setSymbolPath(data.importedSymbolPath);
       TSImportMap.INSTANCE.init(data.importedSymbolPath);
       return true;

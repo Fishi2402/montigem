@@ -137,9 +137,6 @@ public class TagRelated {
           }
         });
 
-    // note: The generic Tags language does not support concrete UMLP syntax tagging
-    TagsMill.init();
-
     if (!tagFiles.isEmpty()) {
       for (File f : tagFiles) {
         try {

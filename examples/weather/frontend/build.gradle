@@ -1,8 +1,4 @@
 /* (c) https://github.com/MontiCore/monticore */
-
-import java.nio.file.Paths
-
-
 plugins {
   id "com.github.node-gradle.node" version "5.0.0"
   id "de.rwth.se.umlp-tool-frontend"
@@ -12,6 +8,13 @@ node {
   nodeProjectDir = file("${buildDir}/frontendGen")
 }
 nodeSetup.dependsOn(frontendSetup)
+
+dependencies {
+  domainSources project(":examples:weather:backend")
+  implementation project(":examples:weather:backend")
+
+  implementation project(":umlp-rte")
+}
 
 // TODO AGe: don't know if that is needed
 /*task generateCDTOGUI(type: UMLPCdToGuiTask) {
@@ -66,4 +69,9 @@ tasks.register('runApp', NpxTask) {
 
 tasks.register('run') {
   dependsOn(runApp)
+}
+
+tasks.register('buildAppNoGen', NpxTask) {
+  command = "ng"
+  args = ["build"]
 }
