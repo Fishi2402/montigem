@@ -96,4 +96,8 @@ public class CommandWebSocketService extends TextWebSocketHandler implements Web
       clientIds.remove(session.getId());
     }
   }
+
+  public Map<String, Long> getClientIds() {
+    return clientIds;
+  }
 }

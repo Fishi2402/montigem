@@ -103,7 +103,7 @@ export abstract class ComponentObserverManager {
     if (this.componentDomainObjectObservers.has(componentName)) {
       this.componentDomainObjectObservers.get(componentName).forEach((updates, gemId) => {
         updates.forEach((observer, name) => {
-          this.getObjectGetterFactory().get(this.objectTypes.get(gemId))(gemId).then((obj: any) => obj.removeObserver(observer));
+          this.getObjectGetterFactory().get(this.objectTypes.get(gemId))(gemId).then((obj: any) => obj?.removeObserver(observer));
         });
         updates.clear();
       });
