@@ -77,25 +77,36 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
 
     TaskProvider<UMLPSymLinkCreationTask> symlinkCreationTask = createSymlinkCreationTask(project, local);
 
-    // TODO AGe: npm_update too slow - strategy to make occasional checks
-    project.getTasks().named("npm_update").configure(t -> t.dependsOn("npm_install"));
-
     var buildAppTask = createNPXTask(project, "buildApp", "build");
     buildAppTask.configure(t -> {
       t.dependsOn(symlinkCreationTask);
-      t.dependsOn("generate", "npm_update");
+      t.dependsOn("generate");
     });
 
     var testAppTask = createNPXTask(project, "testApp", "test");
     testAppTask.configure(t -> {
       t.dependsOn(symlinkCreationTask);
-      t.dependsOn("generate", "npm_update");
+      t.dependsOn("generate");
     });
     var runAppTask = createNPXTask(project, "runApp", "serve");
     runAppTask.configure(t -> {
       t.dependsOn(symlinkCreationTask);
-      t.dependsOn("generate", "npm_update");
+      t.dependsOn("generate");
     });
+    if (project.getGradle().getStartParameter().isRefreshDependencies()) {
+      TaskProvider<Task> npmUpdate = project.getTasks().named("npm_update", task -> {
+        task.dependsOn("npmInstall");
+      });
+      buildAppTask.configure(t -> t.dependsOn(npmUpdate));
+      runAppTask.configure(t -> t.dependsOn(npmUpdate));
+      testAppTask.configure(t -> t.dependsOn(npmUpdate));
+    }
+    else {
+      buildAppTask.configure(t -> t.dependsOn("npmInstall"));
+      runAppTask.configure(t -> t.dependsOn("npmInstall"));
+      testAppTask.configure(t -> t.dependsOn("npmInstall"));
+    }
+
     project.getTasks().named("assemble").configure(t -> t.dependsOn(buildAppTask));
 
     // Sync Output of UMLP-Task to the correct directory. This done because "npm serve" cannot handle the intermediate state while the UMLPTasks are running
