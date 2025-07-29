@@ -57,6 +57,9 @@ ${glex.setGlobalValue("cdPrinter", tc.instantiate("umlp.py.CdPyUtilsPrinter"))}
 
 </#assign>
 
+import typing
+import montigem_runtime
+<#--from montigem_runtime.gembase  import GemBase-->
 <#--  And then add real indentation-->
 ${cdPrinter.unwrapIndentation(output)}
 <#-- TODO: change CDGenerator JAVA_EXTENSION/path-->

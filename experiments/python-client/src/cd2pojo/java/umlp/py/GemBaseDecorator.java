@@ -25,7 +25,7 @@ public class GemBaseDecorator extends AbstractDecorator implements CDBasisVisito
       if (!decNode.isPresentCDExtendUsage())
         decNode.setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder().uncheckedBuild());
 
-      decNode.getCDExtendUsage().addSuperclass(MCTypeFacade.getInstance().createQualifiedType("GemBase"));
+      decNode.getCDExtendUsage().addSuperclass(MCTypeFacade.getInstance().createQualifiedType("montigem_runtime.gembase.GemBase"));
     }
 
     decNode.addCDMember(CDAttributeFacade.getInstance().createAttribute(CDBasisMill.modifierBuilder().build(),

@@ -12,11 +12,14 @@ import de.monticore.cd4codebasis._ast.ASTCDThrowsDeclaration;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnumConstant;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcbasictypes._prettyprint.MCBasicTypesPrettyPrinter;
 import de.monticore.types.typeparameters._ast.ASTTypeParameters;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import umlp.py.printer.PythonMYSimpleGenericTypesPrinter;
@@ -38,6 +41,37 @@ public class CdPyUtilsPrinter extends CdUtilsPrinter {
     fullPrettyPrinter = new CD4CodeFullPrettyPrinter(new IndentPrinter());
 
     fullPrettyPrinter.getTraverser().setMCSimpleGenericTypesHandler(new PythonMYSimpleGenericTypesPrinter(fullPrettyPrinter.getPrinter(), true));
+    fullPrettyPrinter.getTraverser().setMCBasicTypesHandler(new MCBasicTypesPrettyPrinter(fullPrettyPrinter.getPrinter(), true) {
+      @Override
+      public void handle(ASTMCPrimitiveType node) {
+        if (this.isPrintComments()) {
+          CommentPrettyPrinter.printPreComments(node, this.getPrinter());
+        }
+
+        if (node.getPrimitive() == 1) {
+          this.getPrinter().print("bool ");
+        } else if (node.getPrimitive() == 2) {
+          this.getPrinter().print("byte ");
+        } else if (node.getPrimitive() == 8) {
+          this.getPrinter().print("short ");
+        } else if (node.getPrimitive() == 6) {
+          this.getPrinter().print("int ");
+        } else if (node.getPrimitive() == 7) {
+          this.getPrinter().print("long ");
+        } else if (node.getPrimitive() == 3) {
+          this.getPrinter().print("str ");
+        } else if (node.getPrimitive() == 5) {
+          this.getPrinter().print("float ");
+        } else if (node.getPrimitive() == 4) {
+          this.getPrinter().print("float ");
+        }
+
+        if (this.isPrintComments()) {
+          CommentPrettyPrinter.printPostComments(node, this.getPrinter());
+        }
+
+      }
+    });
   }
 
 

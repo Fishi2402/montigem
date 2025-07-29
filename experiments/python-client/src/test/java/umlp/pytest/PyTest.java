@@ -30,6 +30,10 @@ public class PyTest {
       System.err.println("import commandmanager");
       context.eval("python", "import montigem_runtime.commandmanager");
 
+      addToPath(context, new File("build/py_out"));
+      System.err.println("import MyDomain.A");
+      context.eval("python", "import MyDomain.A");
+
       // TODO: Test generated
     }
   }
