@@ -439,18 +439,10 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
    * The gemId is not required to be loaded in the idStorage, thus the result of idStorage.removeId must not be returned
    * @param {number} gemId
    */
-  public removeIdSure(gemId: number) {
+  public async removeIdSure(gemId: number) {
     console.info(this.ids);
-    let filteredObjects = [];
-    this.ids = this.ids.filter((l, index) => {
-      if (l !== gemId) {
-        filteredObjects.push(this.asArray[index]);
-        return true;
-      } else {
-        return false;
-      }
-    });
-    this.asArray = filteredObjects;
+    const indexToBeRemoved = this.ids.indexOf(gemId);
+    await this._internal_removeAndSync(new UMLPArrayList([indexToBeRemoved]));
   }
 
   public indexOfId(gemId: number): number {

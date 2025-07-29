@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gradle;
 
+import com.github.gradle.node.npm.task.NpxTask;
 import gradle.specific.FrontendSetup;
 import gradle.specific.UMLPFrontendCIImageTask;
 import gradle.specific.UMLPFrontendLocalImageTask;
@@ -16,6 +17,7 @@ import gradle.specific.serialize.SerializeCDSymbolsTask;
 import gradle.specific.serialize.SerializeGUISymbolsTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.attributes.Category;
 import org.gradle.api.attributes.LibraryElements;
@@ -58,6 +60,7 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
   @Override
   public void apply(Project project) {
     project.getPluginManager().apply(UMLPPluginBase.class);
+    project.getPluginManager().apply(com.github.gradle.node.NodePlugin.class);
     project.getPluginManager().apply("base");
 
     boolean local = getBooleanProjectProperty(project, "useLocalDependencies");
@@ -77,8 +80,36 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
     TaskProvider<UMLPGuiGenTask> frontendGuiTask = createFrontendGuiTask(project, local);
 
     TaskProvider<UMLPSymLinkCreationTask> symlinkCreationTask = createSymlinkCreationTask(project, local);
-    project.getTasks().named("runApp").configure(t -> t.dependsOn(symlinkCreationTask));
-    project.getTasks().named("buildApp").configure(t -> t.dependsOn(symlinkCreationTask));
+    TaskProvider<Task> generate = project.getTasks().named("generate");
+
+    var buildAppTask = createNPXTask(project, "buildApp", "build");
+    buildAppTask.configure(t -> {
+      t.dependsOn(symlinkCreationTask, generate);
+    });
+    var testAppTask = createNPXTask(project, "testApp", "test");
+    testAppTask.configure(t -> {
+      t.dependsOn(symlinkCreationTask, generate);
+    });
+    var runAppTask = createNPXTask(project, "runApp", "serve");
+    runAppTask.configure(t -> {
+      t.dependsOn(symlinkCreationTask, generate);
+    });
+    TaskProvider<Task> npmInstall = project.getTasks().named("npmInstall");
+    if (project.getGradle().getStartParameter().isRefreshDependencies()) {
+      TaskProvider<Task> npmUpdate = project.getTasks().named("npm_update", task -> {
+        task.dependsOn(npmInstall);
+      });
+      buildAppTask.configure(t -> t.dependsOn(npmUpdate));
+      runAppTask.configure(t -> t.dependsOn(npmUpdate));
+      testAppTask.configure(t -> t.dependsOn(npmUpdate));
+    }
+    else {
+      buildAppTask.configure(t -> t.dependsOn(npmInstall));
+      runAppTask.configure(t -> t.dependsOn(npmInstall));
+      testAppTask.configure(t -> t.dependsOn(npmInstall));
+    }
+
+    project.getTasks().named("assemble", t -> t.dependsOn(buildAppTask));
 
     // Sync Output of UMLP-Task to the correct directory. This done because "npm serve" cannot handle the intermediate state while the UMLPTasks are running
     // and Hot-Reload aborts
@@ -336,6 +367,14 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
     return project.getTasks().register("SYNC_" + UMLP_FRONTEND_GUI_TASK_NAME, Sync.class, syncTask -> {
       syncTask.into(Path.of(frontendSetupTask.get().getOutput().getAsFile().get().getAbsolutePath(), "build", "appgui").toFile());
       syncTask.exclude("**/*.java");
+    });
+  }
+
+  @NotNull
+  TaskProvider<NpxTask> createNPXTask(Project project, String name, String arg) {
+    return project.getTasks().register(name, NpxTask.class, task -> {
+      task.getCommand().set("ng");
+      task.getArgs().set(List.of(arg));
     });
   }
 

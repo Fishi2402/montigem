@@ -6,7 +6,6 @@ import java.nio.file.Paths
 
 plugins {
   id 'java'
-  id "com.github.node-gradle.node" version "5.0.0"
   id 'de.rwth.se.umlp-tool-frontend'
 }
 
@@ -52,38 +51,21 @@ translateJava2TSGUI {
 nodeSetup.dependsOn(frontendSetup)
 npmInstall.dependsOn(nodeSetup, ':umlp-rte:client:npmInstall')
 
-def prebuildTasks = [
-    npmInstall, generate
-]
 
-tasks.register('buildApp', NpxTask) {
+
+tasks.named('buildApp', NpxTask) {
   dependsOn(
-      prebuildTasks,
       project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") },
   )
-  command = "ng"
-  args = ["build"]
 }
 
-tasks.register('testApp', NpxTask) {
+tasks.named('testApp', NpxTask) {
   dependsOn(
-      prebuildTasks,
       project(":umlp-rte:client").tasks.matching { it.name.startsWith("copy_") },
       project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") }
   )
-  command = "ng"
-  args = ["test"]
-
-  // TODO: Ensure the tests do not fail
-  ignoreExitValue = true
 }
-assemble.dependsOn(buildApp)
 
-tasks.register('runApp', NpxTask) {
-  dependsOn(prebuildTasks)
-  command = "ng"
-  args = ["serve"]
-}
 
 test {
   testLogging {
@@ -96,9 +78,9 @@ test {
   useJUnitPlatform(){
     excludeTags "SlowTest"
   }
-  // TODO: Ensure the tests do not fail
-  ignoreFailures = true
+  environment.put("WITH_JSWEET", "TRUE")
   outputs.upToDateWhen { false } // For some reason gradle does not detect changes to (some?) files, such as the app.component.ts
+  // (because we never specify them as inputs)
 }
 
 tasks.register("slowtest", Test) {

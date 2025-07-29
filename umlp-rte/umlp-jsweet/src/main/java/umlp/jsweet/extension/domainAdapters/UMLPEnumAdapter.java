@@ -5,6 +5,7 @@ import de.se_rwth.commons.logging.Log;
 import org.jsweet.transpiler.Java2TypeScriptTranslator;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.MethodInvocationElement;
+import umlp.jsweet.extension.util.UMLPAdapterUtils;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -12,8 +13,12 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeKind;
 
 public class UMLPEnumAdapter extends PrinterAdapter {
+
+  UMLPAdapterUtils adapterUtils;
+
   public UMLPEnumAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);
+    this.adapterUtils = new UMLPAdapterUtils(this, types(), context, util());
   }
 
   @Override
@@ -29,14 +34,16 @@ public class UMLPEnumAdapter extends PrinterAdapter {
         && !"this".equals(invocationElement.getTargetExpression().toString()))) {
       String targetMethodName = invocationElement.getMethodName();
       String relTarget = getRootRelativeName(targetTypeElement);
+      String path = util().getQualifiedName(targetTypeElement).replace(".", "/");
+      adapterUtils.importFromWithModule(relTarget, path);
       switch (targetMethodName) {
         case "toString":
           printMacroName("Enum." + targetMethodName);
-          print("(" + relTarget + "[").print(invocationElement.getTargetExpression()).print("] ? ")
-              .print(relTarget + "[").print(invocationElement.getTargetExpression()).print("]")
-              .print(".charAt(0).toUpperCase() + " + relTarget + "[")
-              .print(invocationElement.getTargetExpression()).print("]")
-              .print(".slice(1).toLowerCase() : '');");
+          print("(" + relTarget + "[").print(invocationElement.getTargetExpression())
+              .print("] ? ")
+              .print(relTarget + "[").print(invocationElement.getTargetExpression())
+              .print("]")
+              .print(" : '')");
           return true;
       }
     }

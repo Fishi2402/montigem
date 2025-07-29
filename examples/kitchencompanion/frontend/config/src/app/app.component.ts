@@ -1,11 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
-import {Component} from '@angular/core';
-import {
-  ClientCommandManager,
-  ClientCommandWebsocketCommunication,
-  CommandManager
-} from '@umlp/common';
-import {KitchenCompanionManagerClientImpl} from 'kitchencompanion/KitchenCompanionManagerClientImpl';
+import { Component } from '@angular/core';
+import { KitchenCompanionManagerClientImpl } from 'kitchencompanion/KitchenCompanionManagerClientImpl';
+import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from '@umlp/commonj2ts';
+import { KitchenCompanionComponentObserverManager } from 'KitchenCompanionComponentObserverManager'
+
 
 @Component({
   selector: 'app-root',
@@ -15,12 +13,14 @@ import {KitchenCompanionManagerClientImpl} from 'kitchencompanion/KitchenCompani
 export class AppComponent {
   constructor() {
     KitchenCompanionManagerClientImpl.init();
-    const ws_protocol = document.location.protocol == "https:" ? "wss": "ws";
-    // TODO: ClientCommandManager can fail async, but we need to check if the websocket is working
+    const ws_protocol = document.location.protocol == "https:" ? "wss" : "ws";
     const cmdManager = new ClientCommandManager(new ClientCommandWebsocketCommunication(
-      ws_protocol + '://' + document.location.host + '/umlp/api/command'
+        ws_protocol + '://' + document.location.host + '/umlp/api/command'
     ));
     CommandManager.initMe(cmdManager);
+    (<any>window).websocket_connected = true;
+    // JSweet
+    KitchenCompanionComponentObserverManager.init();
   }
 
 

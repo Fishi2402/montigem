@@ -19,10 +19,10 @@ export class GemDropdownInput extends GemDropdownInputComponent {
   _id: string;
 
   @HostBinding("style.width")
-  _width: string = '100%';
+  _width: string = 'auto';
 
   @HostBinding("style.height")
-  _height: string = '100%';
+  _height: string = 'auto';
 
   override _disabled: boolean = false;
 

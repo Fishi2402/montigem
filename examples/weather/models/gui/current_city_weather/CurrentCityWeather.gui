@@ -13,7 +13,7 @@ component CurrentCityWeather(City city){
   @GemColumn(hAlign = "center", components = [
     @GemText(value=city.name),
     @GemText(value=city.current.temperature + "°"),
-    @GemText(value="Mostly "),
+    @GemText(value= getMostlyValue(city)),
     @GemRow(colGap = "20px", components = [
       @GemText(value="H:" + city.longitude + "°"),
       @GemText(value="L:" + city.latitude + "°")

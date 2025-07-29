@@ -15,6 +15,7 @@ import de.monticore.guidsl._cocos.GUIRangeIterateControlStartAndEndAreInt;
 import de.monticore.guidsl._cocos.GUIShortIterateCheckIterable;
 import de.monticore.types.check.TypeCalculator;
 import de.monticore.types.check.types3wrapper.TypeCheck3AsTypeCalculator;
+import de.monticore.types.mcbasictypes.cocos.QualifiedTypeHasNoTypeParameters;
 
 public class GUIDSLCoCosForUMLP extends GUIDSLCoCos {
 
@@ -36,6 +37,7 @@ public class GUIDSLCoCosForUMLP extends GUIDSLCoCos {
     checker.addCoCo(new GUIParamNoUnderspecifiedGenericsCoCo());
     checker.addCoCo(new NameExpressionsSymbolBoundExceptCallsCoCo());
     checker.addCoCo(new RefGUIArgIncompatibleWithDerivedCoCo());
+    checker.addCoCo(new QualifiedTypeHasNoTypeParameters());
     return checker;
   }
 }

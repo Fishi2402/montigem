@@ -8,15 +8,15 @@ import mc.fenix.basic.GemText;
 import mc.fenix.basic.GemButton;
 import mc.fenix.input.GemTextInput;
 import mc.fenix.input.GemTextareaInput;
+
+
 import KitchenCompanion.Offer;
 
-component OfferPanel(Offer offer){
+component OfferPanel(Offer offer) {
   @GemRow(hAlign = "center", colGap="1rem", rowGap="1rem", wrap="wrap", components = [
-
     @GemText(value = offer.name),
     @GemTextInput( entry = offer.price ),
     @GemText(value = "€"),
     @GemButton(label = "remove")
-
   ]);
 }

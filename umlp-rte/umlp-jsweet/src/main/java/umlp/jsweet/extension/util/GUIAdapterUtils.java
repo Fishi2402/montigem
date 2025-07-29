@@ -33,6 +33,10 @@ public class GUIAdapterUtils extends UMLPAdapterUtils {
 
   public static final String ERASED_ANNOTATION = "jsweet.lang.Replace";
 
+  public static final String AMODULE_ANNOTATION = "umlp.jsweet.extension.annotation.AnnotationModule";
+
+  public static final String DECORATOR_NO_OBJ_ANNOTATION = "umlp.jsweet.extension.annotation.DecoratorNoObj";
+
   public static final String SYNCHRONIZED_SUFFIX = "__synchronized";
 
   public static final String SYNCHRONIZED_RESULT_SUFFIX = "__SynchronizedResult";

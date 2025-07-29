@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
-  id "com.github.node-gradle.node" version "5.0.0"
   id "de.rwth.se.umlp-tool-frontend"
+  // id "de.rwth.se.umlp-tool-frontend-test"  // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
 }
 
 dependencies {
@@ -50,44 +50,20 @@ translateJava2TSGUI {
   verbose = false
 }
 
-def prebuildTasks = [
-    npmInstall,
-    generate,  // Created from UMLP-Frontend Plugin.
-    providers.provider { project(":modules:login:frontend").tasks.named("generate")},
-]
-
-tasks.register('buildApp', NpxTask) {
+tasks.named('buildApp', NpxTask) {
   dependsOn(
-    prebuildTasks,
     project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") }
   )
-  command = "ng"
-  args = ["build"]
-}
-assemble.dependsOn(buildApp)
-
-tasks.register('testApp', NpxTask) {
-  dependsOn(prebuildTasks)
-  command = "ng"
-  args = ["test"]
 }
 
 tasks.named('testApp') {
-  dependsOn {
-    project(':modules:login:frontend').tasks.named('generate').get()
-  }
-}
-
-tasks.register('runApp', NpxTask) {
-  dependsOn(prebuildTasks)
-  command = "ng"
-  args = ["serve"]
+  dependsOn(project(':modules:login:frontend').tasks.named('generate'))
 }
 
 tasks.named("symlinkCreation") {
   dependsOn {
-    project(':modules:login:frontend').tasks.named('generate').get()
-    // project(':modules:comment:frontend').tasks.named('generate').get()
+    project(':modules:login:frontend').tasks.named('generate')
+    // project(':modules:comment:frontend').tasks.named('generate')
   }
 
   def loginDomain = file("$buildDir/frontendGen/login_module_domain")
@@ -105,9 +81,7 @@ tasks.named("symlinkCreation") {
 }
 
 tasks.named('runApp') {
-  dependsOn {
-    project(':modules:login:frontend').tasks.named('generate').get()
-  }
+  dependsOn(project(':modules:login:frontend').tasks.named('generate'))
 }
 
 tasks.register('run') {
