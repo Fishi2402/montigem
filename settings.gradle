@@ -35,9 +35,8 @@ pluginManagement {
   }
 }
 plugins {
-  id 'org.gradle.toolchains.foojay-resolver-convention' version '0.10.0'
+  id 'org.gradle.toolchains.foojay-resolver-convention' version '0.9.0'
 }
-
 rootProject.name = 'umlp'
 includeBuild "umlp-tool"
 
@@ -75,9 +74,6 @@ include ":experiments:module-system:routes-usage"
 
 include ":examples"
 include ':examples:stat'
-include ':examples:artifacts-test'
-include ':examples:artifacts-java:backend'
-include ':examples:artifacts-java:frontend'
 include ':examples:flensburg-test:backend'
 include ':examples:flensburg-test:frontend'
 include ':examples:weather:backend'

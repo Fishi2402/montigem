@@ -4,14 +4,23 @@ import java.nio.file.Paths
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
-  id "com.github.node-gradle.node" version "5.0.0"
   id "de.rwth.se.umlp-tool-frontend"
 }
 
 node {
   nodeProjectDir = file("${buildDir}/frontendGen")
 }
-nodeSetup.dependsOn(frontendSetup)
+
+dependencies {
+  implementation project(":examples:kitchencompanion:backend")
+  testImplementation project(':umlp-test-rte')
+
+  domainSources project(":examples:kitchencompanion:backend")
+}
+
+configurations {
+  testRuntimeClasspath.exclude group: 'de.monticore.language-server', module:'monticore-language-server-runtime'
+}
 
 genGUI {
   domainModels = ["KitchenCompanion"]
@@ -23,31 +32,14 @@ genGUI {
   /**/
 }
 
+nodeSetup.dependsOn(frontendSetup)
 npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 
-def prebuildTasks = [
-    npmInstall,
-    generate
-]
-
-
-tasks.register('buildApp', NpxTask) {
-  dependsOn(prebuildTasks)
-  command = "ng"
-  args = ["build"]
-}
-assemble.dependsOn(buildApp)
-
-tasks.register('testApp', NpxTask) {
-  dependsOn(prebuildTasks)
-  command = "ng"
-  args = ["test"]
-}
-
-tasks.register('runApp', NpxTask) {
-  dependsOn(prebuildTasks)
-  command = "ng"
-  args = ["serve"]
+tasks.named('testApp', NpxTask) {
+  dependsOn(
+      project(":umlp-rte:client").tasks.matching { it.name.startsWith("copy_") },
+      project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") }
+  )
 }
 
 tasks.register('run') {

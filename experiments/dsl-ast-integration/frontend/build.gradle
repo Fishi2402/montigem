@@ -2,7 +2,6 @@
 plugins {
    id 'java-library'
 
-   id "com.github.node-gradle.node" version "5.0.0"
    id 'de.rwth.se.umlp-tool-frontend'
 }
 
@@ -100,29 +99,6 @@ SYNC_genGUI {
 nodeSetup.dependsOn(frontendSetup)
 
 npmInstall.args = ['--loglevel', 'error']
-
-def prebuildTasks = [
-    npmInstall, generate
-]
-
-task buildApp(type: NpxTask) {
-   dependsOn(prebuildTasks)
-   command = "ng"
-   args = ["build"]
-}
-assemble.dependsOn(buildApp)
-
-task testApp(type: NpxTask) {
-   dependsOn(prebuildTasks)
-   command = "ng"
-   args = ["test"]
-}
-
-task runApp(type: NpxTask) {
-   dependsOn(prebuildTasks)
-   command = "ng"
-   args = ["serve"]
-}
 
 test {
    testLogging {

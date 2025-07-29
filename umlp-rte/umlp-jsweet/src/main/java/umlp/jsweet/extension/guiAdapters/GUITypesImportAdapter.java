@@ -13,6 +13,8 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import java.util.function.Function;
 
+import static umlp.jsweet.extension.util.GUIAdapterUtils.AMODULE_ANNOTATION;
+
 /**
  * Adapter for delegating GUI type imports to the correct package.
  */
@@ -53,6 +55,12 @@ public class GUITypesImportAdapter extends UMLPAbstractAdapter {
   public ModuleImportDescriptor getModuleImportDescriptor(
       CompilationUnitElement currentCompilationUnit, String importedName,
       TypeElement importedClass) {
+    if (getContext().hasAnnotationType(importedClass, AMODULE_ANNOTATION)) {
+      // Similar to @Module, just for annotations
+      return new ModuleImportDescriptor(false,
+          (PackageElement) importedClass.getEnclosingElement(), importedName,
+          getContext().getAnnotationValue(importedClass, AMODULE_ANNOTATION, String.class, "##missing##"), importedClass);
+    }
     String fqn = importedClass.getQualifiedName().toString();
     if (fqn != null) {
       for (TSImportMap value : TSImportMap.values()) {
