@@ -28,6 +28,6 @@ Publishes the models.jar, containing the models,
 Plugin added to the backend project.
 (does nothing right now)
 
-### UMLPPluginModuleJSFrontend
+### UMLPPluginModuleFrontend
 Plugin added to the js frontend project.
 Publishes the domain Symbols and a bundle of the ts sources.

@@ -6,7 +6,7 @@ plugins {
   id 'maven-publish'
   id "de.rwth.se.umlp-tool-frontend"
   /**/
-  id 'de.rwth.se.umlp-tool-module-jsfrontend' // create domainSymbols-jar
+  id 'de.rwth.se.umlp-tool-module-frontend' // create domainSymbols-jar
 }
 
 configure(mglib) {

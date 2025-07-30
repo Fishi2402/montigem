@@ -1,13 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
+
 import gradle.specific.UMLPJava2TypeScriptTask
-import gradle.specific.cd.GUITypes2JavaTask
 
 plugins {
-    id 'application'
-    id 'maven-publish'
-    id 'java-library'
-    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
-    id 'de.rwth.se.umlp-tool-dependencies'
+  id 'application'
+  id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+  id 'de.rwth.se.umlp-tool-module'
 }
 
 group = "umlp"
@@ -20,110 +18,53 @@ def withoutSpringLogging = {
 }
 
 dependencies {
-    api group: 'de.monticore', name: 'monticore-runtime', version: mc_version
+  api group: 'de.monticore', name: 'monticore-runtime', version: mc_version
 
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version
-    implementation group: 'org.springframework.shell', name: 'spring-shell-starter', version: spring_shell_version
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: spring_version
-    // MUST be an API dependency, as the exposed OCL2SQL implements SetExpressionsVisitor2
-    api group: 'de.monticore.lang', name: 'ocl', version: mc_version
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version
+  implementation group: 'org.springframework.shell', name: 'spring-shell-starter', version: spring_shell_version
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: spring_version
+  // MUST be an API dependency, as the exposed OCL2SQL implements SetExpressionsVisitor2
+  api group: 'de.monticore.lang', name: 'ocl', version: mc_version
 
-    // Compile only, such that we don't force the neo4j dependency into each product
-    compileOnly group: 'org.neo4j', name: 'neo4j-jdbc-driver', version: neo4j_jdbc_version
-    compileOnly "org.neo4j:neo4j:4.4.10"
-    compileOnly "org.neo4j.driver:neo4j-java-driver:$neo4jVersion"
+  // Compile only, such that we don't force the neo4j dependency into each product
+  compileOnly group: 'org.neo4j', name: 'neo4j-jdbc-driver', version: neo4j_jdbc_version
+  compileOnly "org.neo4j:neo4j:4.4.10"
+  compileOnly "org.neo4j.driver:neo4j-java-driver:$neo4jVersion"
 
-    // Used for umlp._infrastructure.TestSetup
-    // Alternative: testing-rte + generate a testing module for each cd
-    compileOnly 'org.junit.jupiter:junit-jupiter-api:5.9.2'
-    // Used for AbstractPlaywrightE2ETest
-    compileOnly 'com.microsoft.playwright:playwright:1.44.0'
-    compileOnly group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
+  // Used for umlp._infrastructure.TestSetup
+  // Alternative: testing-rte + generate a testing module for each cd
+  compileOnly 'org.junit.jupiter:junit-jupiter-api:5.9.2'
+  // Used for AbstractPlaywrightE2ETest
+  compileOnly 'com.microsoft.playwright:playwright:1.44.0'
+  compileOnly group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
 
-    implementation("com.hivemq:hivemq-mqtt-client:1.3.0")
+  implementation("com.hivemq:hivemq-mqtt-client:1.3.0")
 }
 
-// TODO: umlpModules config is added elsewhere  by the umlp plugin
-configurations {
-  umlpModules
-  umlpModulesGen
+tasks.named("compileJava").configure {
+  dependsOn project(":umlp-rte:client").tasks.matching { it.group == "mglib_cd2java" }
 }
-
-def componentLibs = [
-    "arrange",
-    "basic",
-    "charts",
-    "fischertechnik",
-    "functiondisplay",
-    "input",
-    "navigation",
-    "table",
-    "networkgraph",
-    "editor"
-]
-
-def genTasks = []
-def outputDirs = []
-
-componentLibs.each {
-  def libName = it
-  def genTaskName = "cd2java_${libName}"
-  def outDir = project.layout.buildDirectory.dir("cd2java/${libName}")
-  genTasks << genTaskName
-  outputDirs << outDir
-  // POJOs
-  def genTask = tasks.register(genTaskName, GUITypes2JavaTask) {
-    hwcDir = project.layout.files("src/main/java")
-    input = fileTree(dir: "${libName}/mc/fenix/${libName}", include: '**/*.cd').files
-    outputDir = outDir
-    symbolOutDir = project.layout.buildDirectory.dir("cd2tags/${libName}")
-    tslib = "@umlp/${libName}"
-  }
-
-  tasks.named("compileJava").configure {
-    dependsOn(genTask)
-    doFirst {
-      sourceSets.main.java.srcDirs += genTask.get().outputDir.get().asFile
-    }
-  }
+sourceSets.main.java.srcDir {
+  tasks.matching { it.group == "mglib_cd2java" }.collect { it.outputDir }
 }
-
-tasks.register('gui2java') {
-  dependsOn(genTasks)
-}
-
-// Ensure that the symbolJar task knows it depends on the gui2java task
-project(":umlp-rte:client").tasks.named("symbolJar").configure {
-  it.dependsOn(tasks.named('gui2java'))
-}
-
-// Let RTE assemble depend on the generation
-assemble.dependsOn tasks.named('gui2java')
-
-//task guiComponentTypesJar(type: Jar) {
-//  from generateGuiComponentPOJOs.output
-//  archiveClassifier = "guiComponentTypes"
-//}
-
-//guiComponentTypesJar.dependsOn compileJava
 
 /////////////////////////   Deployment  //////////////////////////////////
 
 // configure deployment
 publishing {
-    publications {
-      maven(MavenPublication) {
-        from(components.java)
-      }
+  publications {
+    maven(MavenPublication) {
+      from(components.java)
     }
-    repositories.maven {
-        credentials.username mavenUser
-        credentials.password mavenPassword
+  }
+  repositories.maven {
+    credentials.username mavenUser
+    credentials.password mavenPassword
 
-        def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-releases/"
-        def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-snapshots/"
-        url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
-    }
+    def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-releases/"
+    def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-snapshots/"
+    url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+  }
 }
 
 

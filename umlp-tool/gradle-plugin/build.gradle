@@ -99,7 +99,7 @@ gradlePlugin {
       implementationClass = "gradle.module.UMLPPluginModuleBackend"
     }
     umlpplugin_module_frontend {
-      id = "de.rwth.se.umlp-tool-module-jsfrontend"
+      id = "de.rwth.se.umlp-tool-module-frontend"
       implementationClass = "gradle.module.UMLPPluginModuleFrontend"
     }
   }

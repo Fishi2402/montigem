@@ -10,6 +10,7 @@ import org.gradle.api.attributes.Usage;
 import org.gradle.api.component.AdhocComponentWithVariants;
 import org.gradle.api.component.ConfigurationVariantDetails;
 import org.gradle.api.component.SoftwareComponentFactory;
+import org.gradle.api.file.Directory;
 import org.gradle.api.internal.tasks.TaskDependencyFactory;
 import org.gradle.api.plugins.BasePlugin;
 import org.gradle.api.plugins.JavaPluginExtension;
@@ -17,8 +18,6 @@ import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.bundling.Jar;
 
 import javax.inject.Inject;
-
-import java.util.Objects;
 
 import static gradle.module.UMLPPluginModuleFrontend.addDomainSymbolsJarAttributes;
 import static gradle.module.UMLPPluginModuleFrontend.addGuiSymbolsJarAttributes;
@@ -55,64 +54,75 @@ public class UMLPPluginModule extends ALazyPublishingPlugin implements Plugin<Pr
 
     // Create SourceSet
     project.getExtensions().getByType(JavaPluginExtension.class).getSourceSets().create("moduleGenTime");
-
-    // Create the models jar
-    Configuration outgoingModels = project.getConfigurations().create("umlpOutgoingModels");
-    outgoingModels.setCanBeConsumed(true);
-    outgoingModels.setCanBeResolved(false);
-    outgoingModels.setDescription("Published models of the module");
-
-    addModelsJarAttributes(outgoingModels, project);
-
-    TaskProvider<Jar> modelsjarTask = project.getTasks().register("moduleModelsJar", Jar.class, jar -> {
-      jar.setGroup("umlp");
-      jar.getArchiveClassifier().set("models");
-      jar.from(project.getLayout().getProjectDirectory().dir("models")).include("**/*umlp");
-    });
-    project.getTasks().named(BasePlugin.ASSEMBLE_TASK_NAME).configure(it -> it.dependsOn(modelsjarTask));
-    project.getArtifacts().add(outgoingModels.getName(), modelsjarTask);
-
-    // Tell gradle, that the jar tasks builds a publication
-    var modelsPublication = createPublishedArtifact(modelsjarTask, project);
-
-    // Add a variant
     var javaComponent = (AdhocComponentWithVariants) project.getComponents().getByName("java");
-    javaComponent.addVariantsFromConfiguration(outgoingModels, ConfigurationVariantDetails::mapToOptional);
 
-    // Add the publication as an artifact
-    outgoingModels.getOutgoing().getArtifacts().add(modelsPublication);
+    Directory models = project.getLayout().getProjectDirectory().dir("models");
+    boolean umlpFilesPresent = models.getAsFile().exists()
+        && !models.getAsFileTree().matching(spec -> spec.include("**/*.umlp")).getFiles().isEmpty();
+    if (umlpFilesPresent) {
+      // Create the models jar
+      Configuration outgoingModels = project.getConfigurations().create("umlpOutgoingModels");
+      outgoingModels.setCanBeConsumed(true);
+      outgoingModels.setCanBeResolved(false);
+      outgoingModels.setDescription("Published models of the module");
+
+      addModelsJarAttributes(outgoingModels, project);
+
+      TaskProvider<Jar> modelsjarTask = project.getTasks().register("moduleModelsJar", Jar.class, jar -> {
+        jar.setGroup("umlp");
+        jar.getArchiveClassifier().set("models");
+        jar.from(project.getLayout().getProjectDirectory().dir("models")).include("**/*umlp");
+      });
+      project.getTasks().named(BasePlugin.ASSEMBLE_TASK_NAME).configure(it -> it.dependsOn(modelsjarTask));
+      project.getArtifacts().add(outgoingModels.getName(), modelsjarTask);
+
+      // Tell gradle, that the jar tasks builds a publication
+      var modelsPublication = createPublishedArtifact(modelsjarTask, project);
+
+      // Add a variant
+      javaComponent.addVariantsFromConfiguration(outgoingModels, ConfigurationVariantDetails::mapToOptional);
+
+      // Add the publication as an artifact
+      outgoingModels.getOutgoing().getArtifacts().add(modelsPublication);
 
 
-    // Same thing for the module gen time
-    Configuration moduleGenTime = project.getConfigurations().create("moduleGenTime");
-    moduleGenTime.setCanBeConsumed(true);
-    moduleGenTime.setCanBeResolved(false);
-    moduleGenTime.setDescription("Published generation modifications of the module");
+      // Same thing for the module gen time
+      Configuration moduleGenTime = project.getConfigurations().create("moduleGenTime");
+      moduleGenTime.setCanBeConsumed(true);
+      moduleGenTime.setCanBeResolved(false);
+      moduleGenTime.setDescription("Published generation modifications of the module");
 
-    addModuleGenJarJarAttributes(moduleGenTime, project);
+      addModuleGenJarJarAttributes(moduleGenTime, project);
 
-    TaskProvider<Jar> genTimejarTask = project.getTasks().register("moduleGenTimeJar", Jar.class, jar -> {
-      jar.setGroup("umlp");
-      jar.getArchiveClassifier().set("module-generator-time");
-      jar.from(project.getExtensions().getByType(JavaPluginExtension.class).getSourceSets().getByName("moduleGenTime").getOutput());
-    });
-    project.getTasks().named(BasePlugin.ASSEMBLE_TASK_NAME).configure(it -> it.dependsOn(genTimejarTask));
-    project.getArtifacts().add(moduleGenTime.getName(), genTimejarTask);
-    javaComponent.addVariantsFromConfiguration(moduleGenTime, ConfigurationVariantDetails::mapToOptional);
+      TaskProvider<Jar> genTimejarTask = project.getTasks().register("moduleGenTimeJar", Jar.class, jar -> {
+        jar.setGroup("umlp");
+        jar.getArchiveClassifier().set("module-generator-time");
+        jar.from(project.getExtensions().getByType(JavaPluginExtension.class).getSourceSets().getByName("moduleGenTime").getOutput());
+      });
+      project.getTasks().named(BasePlugin.ASSEMBLE_TASK_NAME).configure(it -> it.dependsOn(genTimejarTask));
+      project.getArtifacts().add(moduleGenTime.getName(), genTimejarTask);
+      javaComponent.addVariantsFromConfiguration(moduleGenTime, ConfigurationVariantDetails::mapToOptional);
 
-    // Tell gradle, that the jar tasks builds a publication
-    var genTimePublication = createPublishedArtifact(genTimejarTask, project);
-    // Add the publication as an artifact
-    moduleGenTime.getOutgoing().getArtifacts().add(genTimePublication);
+      // Tell gradle, that the jar tasks builds a publication
+      var genTimePublication = createPublishedArtifact(genTimejarTask, project);
+      // Add the publication as an artifact
+      moduleGenTime.getOutgoing().getArtifacts().add(genTimePublication);
+    }
 
     Project frontend = project.findProject(project.getPath() + ":frontend");
+    if (frontend == null) {
+      // TODO: remove after renaming
+      frontend = project.findProject(project.getPath() + ":client");
+    }
     if (frontend != null) {
-      Configuration umlp2symConf = project.getConfigurations().create(UMLP2SYM_CONF, conf -> {
-        conf.setCanBeConsumed(true);
-        addDomainSymbolsJarAttributes(conf, project);
-      });
-      project.getDependencies().add(umlp2symConf.getName(), frontend);
-      javaComponent.addVariantsFromConfiguration(umlp2symConf, ConfigurationVariantDetails::mapToOptional);
+      if (umlpFilesPresent) {
+        Configuration umlp2symConf = project.getConfigurations().create(UMLP2SYM_CONF, conf -> {
+          conf.setCanBeConsumed(true);
+          addDomainSymbolsJarAttributes(conf, project);
+        });
+        project.getDependencies().add(umlp2symConf.getName(), frontend);
+        javaComponent.addVariantsFromConfiguration(umlp2symConf, ConfigurationVariantDetails::mapToOptional);
+      }
 
       Configuration gui2symConf = project.getConfigurations().create(GUI2SYM_CONF, conf -> {
         conf.setCanBeConsumed(true);

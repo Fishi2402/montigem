@@ -6,6 +6,7 @@ import de.monticore.symboltable.serialization.json.JsonElement;
 import gradle.UMLPPluginBase;
 import gradle.stat.GradleTaskStatistic;
 import gradle.stat.TaskStatData;
+import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.tasks.Input;
@@ -37,7 +38,10 @@ public abstract class UMLPSingleFileTask extends MCSingleFileTask implements Gra
   public UMLPSingleFileTask(String type, String symbolPathConfigurationName) {
     super(type, symbolPathConfigurationName);
 
-    getModules().from(getProject().getConfigurations().getByName(UMLPPluginBase.UMLP_MODULES_GEN_CONFIG));
+    Configuration umlpModulesGen = getProject().getConfigurations().findByName(UMLPPluginBase.UMLP_MODULES_GEN_CONFIG);
+    if (umlpModulesGen != null) {
+      getModules().from(umlpModulesGen);
+    }
 
     getModuleConfigTemplates().convention(getProject().provider(() -> {
       List<String> res = new ArrayList<>();

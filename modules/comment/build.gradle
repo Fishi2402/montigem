@@ -2,7 +2,7 @@ plugins {
     id "base"
     id "java-library"
     id 'maven-publish'
-    id 'de.rwth.se.umlp-tool-module-models' // create models-jar
+    id 'de.rwth.se.umlp-tool-module' // create models-jar
 }
 
 configurations {
