@@ -25,6 +25,7 @@ configure(mglib) {
       project(":umlp-rte:client:table"),
       project(":umlp-rte:client:theme")
   )
+  libScope = "@umlp"
 }
 
 //repositories {

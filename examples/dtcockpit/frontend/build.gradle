@@ -57,12 +57,12 @@ tasks.named('buildApp', NpxTask) {
 }
 
 tasks.named('testApp') {
-  dependsOn(project(':modules:login:frontend').tasks.named('generate'))
+  dependsOn(project(':modules:login:frontend').tasks.named('models2ts'))
 }
 
 tasks.named("symlinkCreation") {
   dependsOn {
-    project(':modules:login:frontend').tasks.named('generate')
+    project(':modules:login:frontend').tasks.named('models2ts')
     // project(':modules:comment:frontend').tasks.named('generate')
   }
 
@@ -81,7 +81,7 @@ tasks.named("symlinkCreation") {
 }
 
 tasks.named('runApp') {
-  dependsOn(project(':modules:login:frontend').tasks.named('generate'))
+  dependsOn(project(':modules:login:frontend').tasks.named('models2ts'))
 }
 
 tasks.register('run') {

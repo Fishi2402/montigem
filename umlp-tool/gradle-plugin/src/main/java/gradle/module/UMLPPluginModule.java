@@ -14,6 +14,7 @@ import org.gradle.api.file.Directory;
 import org.gradle.api.internal.tasks.TaskDependencyFactory;
 import org.gradle.api.plugins.BasePlugin;
 import org.gradle.api.plugins.JavaPluginExtension;
+import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.bundling.Jar;
 
@@ -51,9 +52,14 @@ public class UMLPPluginModule extends ALazyPublishingPlugin implements Plugin<Pr
       project.getDependencies().add(moduleGenTimeCompile.getName(), "de.monticore:monticore-runtime:" + mcVersion);
       project.getDependencies().add(moduleGenTimeCompile.getName(), "de.monticore:monticore-grammar:" + mcVersion);
     }
+    Project backend = project.findProject(project.getPath() + ":backend");
+    if (backend != null) {
+      project.getDependencies().add("api", backend);
+    }
 
     // Create SourceSet
-    project.getExtensions().getByType(JavaPluginExtension.class).getSourceSets().create("moduleGenTime");
+    SourceSet genExtensionSourceSet = project.getExtensions().getByType(JavaPluginExtension.class)
+        .getSourceSets().create("moduleGenExtension");
     var javaComponent = (AdhocComponentWithVariants) project.getComponents().getByName("java");
 
     Directory models = project.getLayout().getProjectDirectory().dir("models");
@@ -87,26 +93,26 @@ public class UMLPPluginModule extends ALazyPublishingPlugin implements Plugin<Pr
 
 
       // Same thing for the module gen time
-      Configuration moduleGenTime = project.getConfigurations().create("moduleGenTime");
-      moduleGenTime.setCanBeConsumed(true);
-      moduleGenTime.setCanBeResolved(false);
-      moduleGenTime.setDescription("Published generation modifications of the module");
+      Configuration moduleGenExtension = project.getConfigurations().create("moduleGenExtension");
+      moduleGenExtension.setCanBeConsumed(true);
+      moduleGenExtension.setCanBeResolved(false);
+      moduleGenExtension.setDescription("Published generation modifications of the module");
 
-      addModuleGenJarJarAttributes(moduleGenTime, project);
+      addModuleGenJarJarAttributes(moduleGenExtension, project);
 
       TaskProvider<Jar> genTimejarTask = project.getTasks().register("moduleGenTimeJar", Jar.class, jar -> {
         jar.setGroup("umlp");
         jar.getArchiveClassifier().set("module-generator-time");
-        jar.from(project.getExtensions().getByType(JavaPluginExtension.class).getSourceSets().getByName("moduleGenTime").getOutput());
+        jar.from(genExtensionSourceSet.getOutput());
       });
       project.getTasks().named(BasePlugin.ASSEMBLE_TASK_NAME).configure(it -> it.dependsOn(genTimejarTask));
-      project.getArtifacts().add(moduleGenTime.getName(), genTimejarTask);
-      javaComponent.addVariantsFromConfiguration(moduleGenTime, ConfigurationVariantDetails::mapToOptional);
+      project.getArtifacts().add(moduleGenExtension.getName(), genTimejarTask);
+      javaComponent.addVariantsFromConfiguration(moduleGenExtension, ConfigurationVariantDetails::mapToOptional);
 
       // Tell gradle, that the jar tasks builds a publication
       var genTimePublication = createPublishedArtifact(genTimejarTask, project);
       // Add the publication as an artifact
-      moduleGenTime.getOutgoing().getArtifacts().add(genTimePublication);
+      moduleGenExtension.getOutgoing().getArtifacts().add(genTimePublication);
     }
 
     Project frontend = project.findProject(project.getPath() + ":frontend");
@@ -139,10 +145,6 @@ public class UMLPPluginModule extends ALazyPublishingPlugin implements Plugin<Pr
       javaComponent.addVariantsFromConfiguration(gui2javaConf, ConfigurationVariantDetails::mapToOptional);
     }
 
-    Project backend = project.findProject(project.getPath() + ":backend");
-    if (backend != null) {
-      project.getDependencies().add("api", backend);
-    }
   }
 
   public static void addModelsJarAttributes(Configuration config, Project project) {

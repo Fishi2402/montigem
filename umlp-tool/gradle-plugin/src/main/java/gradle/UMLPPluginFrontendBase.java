@@ -392,10 +392,10 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
       repo.getCredentials().setPassword(mavenPassword);
       repo.setUrl(repoURL);
     });
-    project.getRepositories().mavenCentral();
     if (getBooleanProjectProperty(project, "useLocalRepo")) {
       project.getRepositories().mavenLocal();
     }
+    project.getRepositories().mavenCentral();
 
     // Configurations
     project.getConfigurations().create(GUI_TYPES_NAME, config -> {

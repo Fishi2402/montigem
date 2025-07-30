@@ -24,7 +24,6 @@ import org.gradle.api.Project;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
-import java.util.Map;
 
 /**
  * Base Plugin. Only adds the Tasks, module config, and the StatisticListener.
@@ -39,7 +38,6 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
   public static final String UMLP_MODULES_DOMAIN_SYMBOLS_CONFIG = "umlpModulesDomainSymbols";
   public static final String UMLP_MODULES_IMPORT_MAP_CONFIG = "umlpModulesImportMap";
   public static final String UMLP_MODULES_GUI_SYMBOLS_CONFIG = "umlpModulesGuiSymbols";
-  // public static final String UMLP_MODULES_FRONTEND_CONFIG = "umlpModulesFrontend";
 
   public static final String GUI_LIB_NAME = "guiLib";
 
@@ -97,17 +95,10 @@ public abstract class UMLPPluginBase implements Plugin<Project> {
       project.getConfigurations().getByName("api").extendsFrom(umlpModulesC);
     });
 
-    {
-      // Add guiLib configuration
-      project.getConfigurations().maybeCreate(GUI_LIB_NAME);
-      if (getBooleanProjectProperty(project, "useLocalDependencies")) {
-        if (!project.getPath().equals(":umlp-rte:client")) {
-          project.getConfigurations().getByName(GUI_LIB_NAME).getDependencies().add(project.getDependencies().project(Map.of("path", ":umlp-rte:client", "configuration", "localGuiLib", "transitive", false)));
-        }
-      }
-      else {
-        project.getDependencies().add(GUI_LIB_NAME, "umlp.umlp-rte:client:" + UMLPPluginFrontend.getStringProjectProperty(project, "mc_version", "") + ":guisymbols");
-      }
+    // Add guiLib configuration
+    project.getConfigurations().maybeCreate(GUI_LIB_NAME);
+    if (!getBooleanProjectProperty(project, "useLocalDependencies")) {
+      project.getDependencies().add(GUI_LIB_NAME, "umlp.umlp-rte:client:" + UMLPPluginFrontend.getStringProjectProperty(project, "mc_version", "") + ":guisymbols");
     }
 
     StatisticListener.registerOnce(project);

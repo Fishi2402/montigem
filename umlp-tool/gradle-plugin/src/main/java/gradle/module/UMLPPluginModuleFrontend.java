@@ -3,7 +3,6 @@ package gradle.module;
 import com.github.gradle.node.NodePlugin;
 import com.github.gradle.node.npm.task.NpmTask;
 import gradle.UMLPPluginBase;
-import gradle.UMLPPluginFrontendBase;
 import gradle.specific.NPMAuthCreate;
 import gradle.specific.UMLPFrontendTask;
 import gradle.specific.UMLPGui2SymTask;
@@ -29,6 +28,7 @@ import org.gradle.api.provider.Provider;
 import org.gradle.api.publish.PublishingExtension;
 import org.gradle.api.publish.maven.MavenPublication;
 import org.gradle.api.publish.plugins.PublishingPlugin;
+import org.gradle.api.specs.Spec;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.bundling.Jar;
 
@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static gradle.UMLPPluginBase.UMLP_MODULES_GUI_SYMBOLS_CONFIG;
@@ -54,6 +55,8 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
   public static final String UMLP2TS_TASK = "umlp2ts";
   public static final String CD2JAVA_TASK = "cd2java";
   public static final String GUI2JAVA_TASK = "gui2java";
+  // java2ts and umlp2ts
+  public static final String MODELS2TS_TASK = "models2ts";
   public static final String GUI2SYM_JAR_TASK = "gui2symJar";
   public static final String BUILD_LIB_TASK = "buildLib";
   public static final String MGLIB_CD2JAVA_GROUP = "mglib_cd2java";
@@ -70,7 +73,7 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
     project.getPluginManager().apply(NodePlugin.class);
     project.getPluginManager().apply("java");
     project.getPluginManager().apply("maven-publish");
-    addProjectDependencies(project);
+    // addProjectDependencies(project);
     boolean local = getBooleanProjectProperty(project, "useLocalDependencies");
     if (!inRTE(project) && local) {
       project.getPluginManager().apply(UMLPPluginBase.class);
@@ -141,12 +144,15 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
     List<TaskProvider<SerializeCDSymbolsTask>> cd2symSubprojects = new ArrayList<>();
     List<TaskProvider<UMLPGui2SymTask>> gui2symSubprojects = new ArrayList<>();
 
+    TaskProvider<Task> models2ts = project.getTasks().register(MODELS2TS_TASK);
+
     project.afterEvaluate(p -> {
       for (Project subproject : extension.getLibs()) {
         subproject.getPluginManager().apply(NodePlugin.class);
         subproject.getPluginManager().apply(UMLPPluginBase.class);
+        Configuration guiTypes = addProjectDependencies(subproject);
 
-        String libQName = "@montigem/" + subproject.getName();
+        Provider<String> libQName = extension.getLibScope().map(v -> v + "/" + subproject.getName());
         Provider<Directory> libBuildDir = p.getLayout().getBuildDirectory().dir("dist/" + subproject.getName());
         Provider<Directory> gui2javaDir = subproject.getLayout().getBuildDirectory().dir(subproject.provider(() -> "gui2java"));
         Provider<Directory> cd2javaDir = subproject.getLayout().getBuildDirectory().dir(subproject.provider(() -> "cd2java"));
@@ -155,6 +161,13 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
 
         Provider<Directory> srcTS = subproject.getLayout().getProjectDirectory().dir(subproject.provider(() -> "src/main/ts"));
         Provider<Directory> srcJava = subproject.getLayout().getProjectDirectory().dir(subproject.provider(() -> "src/main/java"));
+
+        Spec<Task> guiPresent = t -> {
+          File dir = srcTS.get().getAsFile();
+          if (!dir.exists()) return false;
+          return !subproject.fileTree(dir)
+              .matching(spec -> spec.include("**/*.gui")).getFiles().isEmpty();
+        };
 
         TaskProvider<SerializeCDSymbolsTask> cd2sym = subproject.getTasks().register(CD2SYM_TASK, SerializeCDSymbolsTask.class, task -> {
           task.getInput().set(srcTS);
@@ -185,6 +198,8 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
             task.getSymbolPath().from(subproject.getConfigurations().named(UMLP_MODULES_IMPORT_MAP_CONFIG));
           }
           task.getSymbolOutDir().set(subproject.getLayout().getBuildDirectory().dir("gui2sym"));
+
+          task.onlyIf(guiPresent);
         });
         gui2symSubprojects.add(gui2sym);
 
@@ -200,6 +215,8 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
           task.getTslib().set(libQName);
         });
 
+        models2ts.configure(task -> task.dependsOn(cd2java));
+
         gui2symJar.configure(task -> {
           task.from(
               cd2java.flatMap(GUITypes2JavaTask::getOutputDir),
@@ -214,6 +231,7 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
 
         TaskProvider<UMLPGuiGenTask> gui2java = subproject.getTasks().register(GUI2JAVA_TASK, UMLPGuiGenTask.class);
         gui2java.configure(task -> {
+          task.dependsOn(cd2sym);
           if (!inRTE(subproject) && local) {
             task.dependsOn(subproject.findProject(":umlp-rte:client").getTasks().named("cd2sym"));
             task.dependsOn(subproject.findProject(":umlp-rte:client").getTasks().named("gui2sym"));
@@ -221,6 +239,8 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
           if (!domainNamesFinal.isEmpty()) {
             task.getDomainModels().set(domainNamesFinal);
           }
+          task.getSymbolPath().from(guiTypes);
+          task.getSymbolPath().from(cd2sym.flatMap(SerializeCDSymbolsTask::getOutput));
           task.getInput().from(srcTS);
           task.getModelDir().set(srcTS);
           task.getHwcDir().from(srcTS, srcJava);
@@ -230,7 +250,11 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
         task.getGuiGenTSFuncionality().set(true);
         /**/
           task.getTslib().set(libQName);
+
+          task.onlyIf(guiPresent);
         });
+
+        models2ts.configure(task -> task.dependsOn(gui2java));
 
         gui2symJar.configure(task -> {
           task.from(
@@ -271,7 +295,7 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
                 .matching(t -> MGLIB_BUILD_GROUP.equals(t.getGroup()))
             );
           }
-          task.getArgs().set(List.of("run", "build", libQName));
+          task.getArgs().addAll(libQName.map(v -> List.of("run", "build", v)));
           task.getWorkingDir().set(project.getLayout().getProjectDirectory().getAsFile());
           task.getInputs().files(srcTS.map(dir -> dir.getAsFileTree().matching(pattern -> {
             pattern.exclude("**/build/**");
@@ -431,7 +455,7 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
     });
   }
 
-  private void addProjectDependencies(Project project) {
+  private Configuration addProjectDependencies(Project project) {
     // repositories
     project.getRepositories().maven(repo -> {
       String mavenUser = (String) project.findProperty("mavenUser");
@@ -441,13 +465,13 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
       repo.getCredentials().setPassword(mavenPassword);
       repo.setUrl(url);
     });
-    project.getRepositories().mavenCentral();
     if (getBooleanProjectProperty(project, "useLocalRepo")) {
       project.getRepositories().mavenLocal();
     }
+    project.getRepositories().mavenCentral();
 
     // Configurations
-    project.getConfigurations().create(GUI_TYPES_NAME, config -> {
+    var conf = project.getConfigurations().create(GUI_TYPES_NAME, config -> {
       config.setCanBeConsumed(false);
       config.setCanBeResolved(true);
       config.getAttributes().attribute(Usage.USAGE_ATTRIBUTE, project.getObjects().named(Usage.class, "guidsl-types"));
@@ -455,6 +479,7 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
       config.getAttributes().attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, project.getObjects().named(LibraryElements.class, "jar"));
     });
     project.getDependencies().add(GUI_TYPES_NAME, "de.monticore.lang:guidsl:" + project.findProperty("mc_version"));
+    return conf;
   }
 
   public static boolean inRTE(Project project) {
