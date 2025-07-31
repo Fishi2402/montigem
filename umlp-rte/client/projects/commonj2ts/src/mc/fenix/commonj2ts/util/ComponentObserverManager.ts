@@ -51,6 +51,7 @@ export abstract class ComponentObserverManager {
   public objectTypes: Map<number, string> = new Map();
 
   public __addDomainObjectObserver<T extends GemIdentifiable>(obj: T, type: string, update: () => void, updateName: string, componentName: string): T {
+    let realType = obj["__className"];
     if (!this.componentDomainObjectObservers.has(componentName)) {
       this.componentDomainObjectObservers.set(componentName, new Map<number, Map<string, any>>());
     }
@@ -58,11 +59,14 @@ export abstract class ComponentObserverManager {
     if (!updateObservers.has(obj.getGemId())) {
       updateObservers.set(obj.getGemId(), new Map<string, any>());
       if (!this.objectTypes.has(obj.getGemId())) {
-        this.objectTypes.set(obj.getGemId(), type);
+        this.objectTypes.set(obj.getGemId(), realType);
       }
     }
     if (!updateObservers.get(obj.getGemId()).has(updateName)) {
-      let observer = this.getObserverFactory().get(type)(update);
+      if (this.getObserverFactory().has(realType) === false) {
+        console.log("0xCOM002 No observer factory for type " + realType + ". Given type was: " + type + ".");
+      }
+      let observer = this.getObserverFactory().get(realType)(update);
       updateObservers.get(obj.getGemId()).set(updateName, observer);
       (<any> obj).addObserver(observer)
     }

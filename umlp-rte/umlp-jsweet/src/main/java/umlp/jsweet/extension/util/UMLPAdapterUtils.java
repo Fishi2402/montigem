@@ -182,16 +182,21 @@ public class UMLPAdapterUtils {
     return nameBuilder.toString();
   }
 
-  public String getTypeNameWithoutBuilder(TypeElement type) {
-    if (type.getSimpleName().toString().endsWith("Builder")) {
-      boolean hasNormalSuperClass = types.asElement(type.getSuperclass()).getSimpleName().toString().equals(
-          type.getSimpleName().toString()
-              .substring(0, type.getSimpleName().toString().lastIndexOf("Builder")));
-      if (hasNormalSuperClass) {
-        return type.getSimpleName().toString().substring(0, type.getSimpleName().toString().lastIndexOf("Builder"));
+  public String getTypeNameWithoutBuilderAndTOP(TypeElement type, boolean printPackage) {
+    String name = printPackage ? type.getQualifiedName().toString() : type.getSimpleName().toString();
+    if (name.endsWith("Builder")) {
+      boolean isActuallyBuilder = type.getEnclosedElements().stream().filter(e -> e.getKind() == ElementKind.METHOD)
+          .anyMatch(e -> e.getSimpleName().toString().equals("isINTERNAL_deser_mode"));
+      if (isActuallyBuilder) {
+        name = name.substring(0, name.lastIndexOf("Builder"));
+      }
+    } else if (name.endsWith("TOP")) {
+      boolean isActuallyTOP = type.getModifiers().stream().anyMatch(m -> m.toString().equals("abstract"));
+      if (isActuallyTOP) {
+        name = name.substring(0, name.lastIndexOf("TOP"));
       }
     }
-    return type.getSimpleName().toString();
+    return name;
   }
 
   public Java2TypeScriptTranslator getPrinter() {

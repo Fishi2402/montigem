@@ -10,9 +10,9 @@ import org.jsweet.transpiler.model.MethodInvocationElement;
 import org.jsweet.transpiler.model.NewClassElement;
 import org.jsweet.transpiler.model.TypeCastElement;
 import umlp.jsweet.extension.UMLPAbstractAdapter;
+import umlp.jsweet.extension.util.RTEPathUtil;
 import umlp.jsweet.extension.util.UMLPAdapterUtils;
 
-import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import java.util.function.Function;
@@ -88,7 +88,8 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
   }
 
   // Replace with JSON.parse
-  private boolean substituteJsonParserMethods(MethodInvocationElement invocation, String methodName) {
+  private boolean substituteJsonParserMethods(MethodInvocationElement invocation,
+      String methodName) {
     switch (methodName) {
       case "parseJsonObject":
       case "parse":
@@ -99,7 +100,8 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
   }
 
   // Replace with the TS access operator "[x]"
-  private boolean substituteJsonElementMethods(MethodInvocationElement invocation, String methodName) {
+  private boolean substituteJsonElementMethods(MethodInvocationElement invocation,
+      String methodName) {
     switch (methodName) {
       case "isJsonObject":
         adapterUtils.printMacroName(methodName);
@@ -158,8 +160,9 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
         return true;
       case "hasArrayMember":
         adapterUtils.printMacroName(methodName);
-        this.print("(Array.isArray(").print(invocation.getTargetExpression()).print("[").printArgList(
-            invocation.getArguments()).print("]))");
+        this.print("(Array.isArray(").print(invocation.getTargetExpression()).print("[")
+            .printArgList(
+                invocation.getArguments()).print("]))");
         return true;
       case "hasBooleanMember":
         adapterUtils.printMacroName(methodName);
@@ -197,7 +200,8 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
       case "getLongMemberOpt":
       case "getMember":
         adapterUtils.printMacroName(methodName);
-        this.print(invocation.getTargetExpression()).print("[").printArgList(invocation.getArguments()).print("]");
+        this.print(invocation.getTargetExpression()).print("[")
+            .printArgList(invocation.getArguments()).print("]");
         return true;
     }
     return false;
@@ -211,11 +215,15 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
       case "umlp.backendrte.command.SimpleResult":
         if (newClass.getArguments().size() == 3) {
           ExtendedElement argument = newClass.getArgument(1);
-          if (argument.getTypeAsElement().toString().equals("umlp.backendrte.common.LoadingState")) {
-            print("new SimpleResult().createFromLoadingState(").printArgList(newClass.getArguments()).print(")");
+          if (argument.getTypeAsElement().toString()
+              .equals("umlp.backendrte.common.LoadingState")) {
+            print("new SimpleResult().createFromLoadingState(").printArgList(
+                newClass.getArguments()).print(")");
             return true;
-          } else {
-            print("new SimpleResult().createFromObject(").printArgList(newClass.getArguments()).print(")");
+          }
+          else {
+            print("new SimpleResult().createFromObject(").printArgList(newClass.getArguments())
+                .print(")");
             return true;
           }
         }
@@ -227,10 +235,13 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
         if (newClass.getArguments().size() == 0) {
           print("{}");
           return true;
-        } else if (newClass.getArguments().size() == 2) {
-          print(String.format("new GemTextInputValidity(%s, %s)", newClass.getArguments().get(0), newClass.getArguments().get(1)));
+        }
+        else if (newClass.getArguments().size() == 2) {
+          print(String.format("new GemTextInputValidity(%s, %s)", newClass.getArguments().get(0),
+              newClass.getArguments().get(1)));
           return true;
-        } else {
+        }
+        else {
           // ERROR
           return false;
         }
@@ -284,5 +295,16 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
       return true;
     }
     return super.substituteTypeCast(castExpression);
+  }
+
+  @Override
+  public void afterTypeBody(TypeElement type) {
+    super.afterTypeBody(type);
+    if (adapterUtils.isSubTypeOf(type, RTEPathUtil.getBackendRTECommonPath("GemIdentifiable"))
+        && !getContext().isInterface(type)) {
+      print("public __className: string = \"").print(
+          adapterUtils.getTypeNameWithoutBuilderAndTOP(type,
+              false)).print("\";");
+    }
   }
 }

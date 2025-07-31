@@ -413,7 +413,8 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
         if (adapterUtils.isSubTypeOf(Util.getElement(parameter.asType()),
             RTEPathUtil.getBackendRTECommonPath("GemIdentifiable"))) {
           String typeName = "\"" +
-              adapterUtils.getTypeNameWithoutBuilder((TypeElement) types().asElement(parameter.asType())) +
+              adapterUtils.getTypeNameWithoutBuilderAndTOP((TypeElement) types().asElement(parameter.asType()),
+                  false) +
               "\"";
           String actualName = adapterUtils.getJSweetParameterName(parameter);
           printIndent().print(
@@ -478,7 +479,8 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
       print(", \"" + GUIAdapterUtils.STATEVAR_PREFIX + GUIAdapterUtils.getMethodNameWithoutGetIs(invocation) + "\")");
     }
     if (shouldPrintDomainObs) {
-      print(", \"").print(adapterUtils.getTypeNameWithoutBuilder((TypeElement) invocatedType))
+      print(", \"").print(adapterUtils.getTypeNameWithoutBuilderAndTOP((TypeElement) invocatedType,
+              false))
           .print("\")");
     }
     return res;
