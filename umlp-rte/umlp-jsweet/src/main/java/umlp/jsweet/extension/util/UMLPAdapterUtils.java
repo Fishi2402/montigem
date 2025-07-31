@@ -184,16 +184,17 @@ public class UMLPAdapterUtils {
 
   public String getTypeNameWithoutBuilderAndTOP(TypeElement type, boolean printPackage) {
     String name = printPackage ? type.getQualifiedName().toString() : type.getSimpleName().toString();
+    if (name.endsWith("TOP")) {
+      boolean isActuallyTOP = type.getModifiers().stream().anyMatch(m -> m.toString().equals("abstract"));
+      if (isActuallyTOP) {
+        name = name.substring(0, name.lastIndexOf("TOP"));
+      }
+    }
     if (name.endsWith("Builder")) {
       boolean isActuallyBuilder = type.getEnclosedElements().stream().filter(e -> e.getKind() == ElementKind.METHOD)
           .anyMatch(e -> e.getSimpleName().toString().equals("isINTERNAL_deser_mode"));
       if (isActuallyBuilder) {
         name = name.substring(0, name.lastIndexOf("Builder"));
-      }
-    } else if (name.endsWith("TOP")) {
-      boolean isActuallyTOP = type.getModifiers().stream().anyMatch(m -> m.toString().equals("abstract"));
-      if (isActuallyTOP) {
-        name = name.substring(0, name.lastIndexOf("TOP"));
       }
     }
     return name;
