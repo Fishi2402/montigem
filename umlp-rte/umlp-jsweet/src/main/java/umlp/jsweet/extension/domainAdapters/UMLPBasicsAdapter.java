@@ -302,9 +302,13 @@ public class UMLPBasicsAdapter extends UMLPAbstractAdapter {
     super.afterTypeBody(type);
     if (adapterUtils.isSubTypeOf(type, RTEPathUtil.getBackendRTECommonPath("GemIdentifiable"))
         && !getContext().isInterface(type)) {
-      print("public __className: string = \"").print(
+      boolean hasTOP = type.getSuperclass() == null ? false :
+          types().asElement(type.getSuperclass()).getSimpleName().toString().equals(
+          type.getSimpleName().toString() + "TOP");
+      String override = hasTOP ? "override" : "";
+      printIndent().print("public " + override + " __className: string = \"").print(
           adapterUtils.getTypeNameWithoutBuilderAndTOP(type,
-              false)).print("\";");
+              false)).print("\";").println();
     }
   }
 }
