@@ -17,7 +17,7 @@ page RowsTester( GemNetworkData data) {
 ```
 
 
-<img src="./images/GemNetworkGraph.png" alt="GemNetworkGraph" width=40%/> 
+<img src="../images/GemNetworkGraph.png" alt="GemNetworkGraph" width=40%/> 
 
 ## GUI Model
 

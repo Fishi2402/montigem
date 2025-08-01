@@ -22,7 +22,7 @@ page RowsTester(string someIntegerVariable) {
 }
 ```
 
-<img src="./images/RangeInput_horizontal.png" alt="RangeInput" width="70%">
+<img src="../images/RangeInput_horizontal.png" alt="RangeInput" width="70%">
 
 ```
 package example;
@@ -39,7 +39,7 @@ page RowsTester(string someIntegerVariable) {
   )
 }
 ```
-<img src="./images/RangeInput_vertical.PNG" alt="RangeInput" width="10%">
+<img src="../images/RangeInput_vertical.PNG" alt="RangeInput" width="10%">
 
 ## GUI Model
 

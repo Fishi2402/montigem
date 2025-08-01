@@ -67,7 +67,7 @@ page GemGridExample() {
   );
 }
 ```
-<img src="./images/GemGridExample.PNG" alt="Grid Layout" width=100%>
+<img src="../images/GemGridExample.PNG" alt="Grid Layout" width=100%>
 
 Additional SCSS styles:
 ```scss

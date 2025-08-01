@@ -21,7 +21,7 @@ page GemTextareaInputExample(List<Person> persons) {
 }
 ```
 
-<img src="./images/TextareaInput.PNG" alt="TextareaInput" width="50%">
+<img src="../images/TextareaInput.PNG" alt="TextareaInput" width="50%">
 
 ## GUI Model
 

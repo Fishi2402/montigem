@@ -29,7 +29,7 @@ page RowsTester(
 }
 
 ```
-<img src = "./images/GemBulletChart.png" alt="BulletCharts" width=50%/>
+<img src = "../images/GemBulletChart.png" alt="BulletCharts" width=50%/>
 
 ## GUI Model
 

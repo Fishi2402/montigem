@@ -16,7 +16,7 @@ page GemLinkExample() {
 }
 ```
 
-<img src="./images/gemlink.png" alt="Example Link" width=40%/>
+<img src="../images/gemlink.png" alt="Example Link" width=40%/>
 
 ## GUI Model
 

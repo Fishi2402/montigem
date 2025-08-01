@@ -20,7 +20,7 @@ page RowsTester(
 }
 ```
 
-<img src="./images/linechart.png" alt="linechart" width=45% width:auto>
+<img src="../images/linechart.png" alt="linechart" width=45% width:auto>
 
 ## GUI Model
 

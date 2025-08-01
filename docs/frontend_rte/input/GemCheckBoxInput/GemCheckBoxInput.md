@@ -20,7 +20,7 @@ page GemCheckBoxInputExample(List<Person> persons) {
 }
 ```
 
-<img src="./images/CheckboxInput.PNG" alt="CheckboxInput" width="50%">
+<img src="../images/CheckboxInput.PNG" alt="CheckboxInput" width="50%">
 
 ## GUI Model
 

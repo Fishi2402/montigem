@@ -13,7 +13,7 @@ page GemButtonExample() {
   @GemButton(label = "Cannot click me", disabled = true);
 }
 ```
-<img src="./images/gembutton.png" alt="gembutton" width=40%>
+<img src="../images/gembutton.png" alt="gembutton" width=40%>
 
 The Java implementation of `alert` method could look like this:
 ```java

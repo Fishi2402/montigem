@@ -29,7 +29,7 @@ page GemTextInputExample(List<Person> persons) {
   }
 }
 ```
-<img src='./images/GemTextInputExample.png' alt='GemTextInputExample' width='50%'>
+<img src='../images/GemTextInputExample.png' alt='GemTextInputExample' width='50%'>
 
 
 ## GUI Model ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/input/GemTextInput.gui))

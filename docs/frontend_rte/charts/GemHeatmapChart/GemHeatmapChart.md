@@ -17,7 +17,7 @@ page RowsTester(
   );
 }
 ```
-<img src="./images/gemheatmapchart.png" alt="Heatmap Chart" width=40%/>
+<img src="../images/gemheatmapchart.png" alt="Heatmap Chart" width=40%/>
 
 
 ## GUI Model

@@ -27,7 +27,7 @@ page GemCardExample() {
 }
 ```
 
-<img src="./images/Card.PNG" alt="gemcard" width=50%>
+<img src="../images/Card.PNG" alt="gemcard" width=50%>
 
 ## GUI Model
 

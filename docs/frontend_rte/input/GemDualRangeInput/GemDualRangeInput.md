@@ -23,7 +23,7 @@ page RowsTester() {
 }
 ```
 
-<img src="./images/RangeSliders.PNG" alt="RangeInput" width="70%">
+<img src="../images/RangeSliders.PNG" alt="RangeInput" width="70%">
 
 ## GUI Model
 

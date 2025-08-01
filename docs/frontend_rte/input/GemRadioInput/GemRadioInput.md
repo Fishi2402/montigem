@@ -27,7 +27,7 @@ page RowsTester() {
   )
 }
 ```
-<img src="./images/GemRadioInput.gif" alt="RadioInput" width="30%">
+<img src="../images/GemRadioInput.gif" alt="RadioInput" width="30%">
 
 ## GUI Model
 

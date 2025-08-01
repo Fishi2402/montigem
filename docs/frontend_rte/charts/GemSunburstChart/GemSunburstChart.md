@@ -21,7 +21,7 @@ page RowsTester(
 }
 ```
 
-<img src="./images/GemSunburstChart.png" alt="GemSunburstChart" width=40%/>
+<img src="../images/GemSunburstChart.png" alt="GemSunburstChart" width=40%/>
 
 
 ## GUI Model
