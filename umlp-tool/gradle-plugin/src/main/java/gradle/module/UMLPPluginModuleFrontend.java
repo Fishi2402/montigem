@@ -2,6 +2,7 @@ package gradle.module;
 
 import com.github.gradle.node.NodePlugin;
 import com.github.gradle.node.npm.task.NpmTask;
+import de.monticore.gradle.common.CommonMCTask;
 import gradle.UMLPPluginBase;
 import gradle.specific.NPMAuthCreate;
 import gradle.specific.UMLPFrontendTask;
@@ -29,6 +30,8 @@ import org.gradle.api.publish.PublishingExtension;
 import org.gradle.api.publish.maven.MavenPublication;
 import org.gradle.api.publish.plugins.PublishingPlugin;
 import org.gradle.api.specs.Spec;
+import org.gradle.api.tasks.SourceSet;
+import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.bundling.Jar;
 
@@ -38,12 +41,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static gradle.UMLPPluginBase.UMLP_MODULES_GUI_SYMBOLS_CONFIG;
 import static gradle.UMLPPluginBase.UMLP_MODULES_IMPORT_MAP_CONFIG;
 import static gradle.UMLPPluginFrontendBase.GUI_TYPES_NAME;
+import static gradle.UMLPPluginFrontendBase.UMLP_GROUP_NAME;
 import static gradle.UMLPPluginFrontendBase.getBooleanProjectProperty;
 
 
@@ -59,7 +62,6 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
   public static final String MODELS2TS_TASK = "models2ts";
   public static final String GUI2SYM_JAR_TASK = "gui2symJar";
   public static final String BUILD_LIB_TASK = "buildLib";
-  public static final String MGLIB_CD2JAVA_GROUP = "mglib_cd2java";
   public static final String MGLIB_BUILD_GROUP = "mglib_build";
   public static final String MGLIB_PUBLISH_GROUP = "mglib_publish";
 
@@ -71,7 +73,7 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
   @Override
   public void apply(Project project) {
     project.getPluginManager().apply(NodePlugin.class);
-    project.getPluginManager().apply("java");
+    project.getPluginManager().apply("java-library");
     project.getPluginManager().apply("maven-publish");
     // addProjectDependencies(project);
     boolean local = getBooleanProjectProperty(project, "useLocalDependencies");
@@ -146,6 +148,8 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
 
     TaskProvider<Task> models2ts = project.getTasks().register(MODELS2TS_TASK);
 
+    SourceSet mainSourceSets = project.getExtensions().getByType(SourceSetContainer.class).getByName("main");
+
     project.afterEvaluate(p -> {
       for (Project subproject : extension.getLibs()) {
         subproject.getPluginManager().apply(NodePlugin.class);
@@ -205,7 +209,7 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
 
         TaskProvider<GUITypes2JavaTask> cd2java = subproject.getTasks().register(CD2JAVA_TASK, GUITypes2JavaTask.class);
         cd2java.configure(task -> {
-          task.setGroup(MGLIB_CD2JAVA_GROUP);
+          task.setGroup(UMLP_GROUP_NAME);
           task.getHwcDir().from(srcJava);
           task.getInput().from(
               srcTS.map(dir -> dir.getAsFileTree().matching(spec -> spec.include("**/*.cd")).getFiles())
@@ -214,6 +218,8 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
           task.getSymbolOutDir().set(cd2tagsDir);
           task.getTslib().set(libQName);
         });
+
+        mainSourceSets.getJava().srcDir(cd2java.flatMap(GUITypes2JavaTask::getOutputDir));
 
         models2ts.configure(task -> task.dependsOn(cd2java));
 
@@ -291,7 +297,7 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
           task.setGroup(MGLIB_BUILD_GROUP);
           task.dependsOn(npmInstall, gui2java);
           if (!inRTE(subproject) && local) {
-            task.dependsOn(subproject.findProject(":umlp-rte:client").getTasks()
+            task.dependsOn(subproject.project(":umlp-rte:client").getTasks()
                 .matching(t -> MGLIB_BUILD_GROUP.equals(t.getGroup()))
             );
           }
@@ -390,7 +396,7 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
     Configuration gui2symOutput = project.getConfigurations().create("gui2symOutput");
     gui2symOutput.setCanBeConsumed(true);
     gui2symOutput.setCanBeResolved(false);
-    gui2symOutput.setDescription("Published gui Symbols of the module");
+    gui2symOutput.setDescription("Published GUI symbols of the module");
 
     addGuiSymbolsJarAttributes(gui2symOutput, project);
 

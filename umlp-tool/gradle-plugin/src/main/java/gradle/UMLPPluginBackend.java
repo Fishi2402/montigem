@@ -20,7 +20,10 @@ import java.nio.file.Path;
 import java.util.function.Consumer;
 
 import static gradle.UMLPPluginBase.GUI_LIB_NAME;
+import static gradle.UMLPPluginBase.UMLP_MODULES_GUI_SYMBOLS_CONFIG;
+import static gradle.UMLPPluginBase.UMLP_MODULES_IMPORT_MAP_CONFIG;
 import static gradle.UMLPPluginFrontendBase.getBooleanProjectProperty;
+import static gradle.UMLPPluginFrontendBase.getStringProjectProperty;
 
 /***
  * A opinionated plugin which handles backend generation.
@@ -101,8 +104,18 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
     });
 
     // Add Symbols and Tags of RTE ClassDiagrams to SymbolPath
-    Configuration guiLib = project.getConfigurations().getByName(GUI_LIB_NAME);
-    umlp2java.configure(task -> task.getSymbolPath().from(guiLib));
+    if (local) {
+      Project rteClient = project.project(":umlp-rte:client");
+      project.getDependencies().add(UMLP_MODULES_GUI_SYMBOLS_CONFIG, rteClient);
+      umlp2java.configure(task -> {
+        task.getSymbolPath().from(project.getConfigurations().named(UMLP_MODULES_GUI_SYMBOLS_CONFIG));
+      });
+    }
+    else {
+      project.getDependencies().add(UMLP_MODULES_GUI_SYMBOLS_CONFIG,
+          "umlp:client:" + getStringProjectProperty(project, "mc_version", "")
+      );
+    }
     return umlp2java;
   }
 

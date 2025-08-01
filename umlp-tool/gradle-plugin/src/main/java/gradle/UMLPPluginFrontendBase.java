@@ -183,20 +183,15 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
     });
 
     if (local) {
-      Project umlpRteClientProject = project.findProject(":umlp-rte:client");
-      boolean createGuiSymbolsPresent = !umlpRteClientProject.getTasksByName("createGuiSymbols", false).isEmpty();
-      boolean createCDSymbolsPresent = !umlpRteClientProject.getTasksByName("createCDSymbols", false).isEmpty();
-      if (createCDSymbolsPresent && createGuiSymbolsPresent) {
-        SerializeGUISymbolsTask createGuiSymbols = (SerializeGUISymbolsTask) umlpRteClientProject.getTasks().getByName("createGuiSymbols");
-        SerializeCDSymbolsTask createCDSymbols = (SerializeCDSymbolsTask) umlpRteClientProject.getTasks().getByName("createCDSymbols");
-        createDomainSymbolsTask.get().dependsOn(createGuiSymbols, createCDSymbols);
-        createDomainSymbolsTask.get().getSymbolPath().from(createGuiSymbols.getOutput(), createCDSymbols.getOutput());
-      }
+      Project rteClient = project.project(":umlp-rte:client");
+      project.getDependencies().add(UMLP_MODULES_GUI_SYMBOLS_CONFIG, rteClient);
+      createDomainSymbolsTask.configure(task -> {
+        task.getSymbolPath().from(project.getConfigurations().named(UMLP_MODULES_GUI_SYMBOLS_CONFIG));
+      });
     }
     else {
-      Configuration guiLib = project.getConfigurations().getByName(GUI_LIB_NAME);
-      createDomainSymbolsTask.get().getSymbolPath().from(
-          project.provider(() -> guiLib.getFiles())
+      project.getDependencies().add(UMLP_MODULES_GUI_SYMBOLS_CONFIG,
+          "umlp:client:" + getStringProjectProperty(project, "mc_version", "")
       );
     }
     return createDomainSymbolsTask;

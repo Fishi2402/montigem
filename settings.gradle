@@ -55,7 +55,7 @@ include ":umlp-rte:client:navigation"
 include ":umlp-rte:client:networkgraph"
 include ":umlp-rte:client:table"
 include ":umlp-rte:client:theme"
-include ":umlp-rte:backend"
+// include ":umlp-rte:backend"
 include ":umlp-rte:umlp-jsweet"
 include ":umlp-test-rte"
 

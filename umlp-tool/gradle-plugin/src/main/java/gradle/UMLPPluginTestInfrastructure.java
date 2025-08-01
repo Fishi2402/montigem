@@ -19,7 +19,9 @@ import java.nio.file.Path;
 import java.util.function.Consumer;
 
 import static gradle.UMLPPluginBase.GUI_LIB_NAME;
+import static gradle.UMLPPluginBase.UMLP_MODULES_GUI_SYMBOLS_CONFIG;
 import static gradle.UMLPPluginFrontendBase.getBooleanProjectProperty;
+import static gradle.UMLPPluginFrontendBase.getStringProjectProperty;
 
 /**
  * Plugin which handles test infrastructure generation.
@@ -124,22 +126,16 @@ public abstract class UMLPPluginTestInfrastructure implements Plugin<Project> {
           task.getSymbolOutDir().set(Path.of(buildDirPath, "umlp", "backend_test_symbols").toFile());
         });
 
-
     if (local) {
-      Project umlpRteClientProject = project.findProject(":umlp-rte:client");
-      boolean createGuiSymbolsPresent = !umlpRteClientProject.getTasksByName("createGuiSymbols", false).isEmpty();
-      boolean createCDSymbolsPresent = !umlpRteClientProject.getTasksByName("createCDSymbols", false).isEmpty();
-      if (createCDSymbolsPresent && createGuiSymbolsPresent) {
-        SerializeGUISymbolsTask createGuiSymbols = (SerializeGUISymbolsTask) umlpRteClientProject.getTasks().getByName("createGuiSymbols");
-        SerializeCDSymbolsTask createCDSymbols = (SerializeCDSymbolsTask) umlpRteClientProject.getTasks().getByName("createCDSymbols");
-        testInfrastructureTask.get().dependsOn(createGuiSymbols, createCDSymbols);
-        testInfrastructureTask.get().getSymbolPath().from(createGuiSymbols.getOutput(), createCDSymbols.getOutput());
-      }
+      Project rteClient = project.project(":umlp-rte:client");
+      project.getDependencies().add(UMLP_MODULES_GUI_SYMBOLS_CONFIG, rteClient);
+      testInfrastructureTask.configure(task -> {
+        task.getSymbolPath().from(project.getConfigurations().named(UMLP_MODULES_GUI_SYMBOLS_CONFIG));
+      });
     }
     else {
-      Configuration guiLib = project.getConfigurations().getByName(GUI_LIB_NAME);
-      testInfrastructureTask.get().getSymbolPath().from(
-          project.provider(() -> guiLib.getFiles())
+      project.getDependencies().add(UMLP_MODULES_GUI_SYMBOLS_CONFIG,
+          "umlp:client:" + getStringProjectProperty(project, "mc_version", "")
       );
     }
 
