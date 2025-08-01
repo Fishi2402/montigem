@@ -15,7 +15,7 @@ page GemImageExample() {
   );
 }
 ```
-<img src="../images/World.png" alt="Example Image" width=40%/>
+<img src="./images/World.png" alt="Example Image" width=40%/>
 
 ## GUI Model
 

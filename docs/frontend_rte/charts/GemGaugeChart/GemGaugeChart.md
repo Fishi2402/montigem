@@ -21,7 +21,7 @@ page RowsTester(
   );
 }
 ```
-<img src="../images/gemgaugechart.png" alt="Gauge Chart" width=50%/>
+<img src="./images/gemgaugechart.png" alt="Gauge Chart" width=50%/>
 
 
 ## GUI Model

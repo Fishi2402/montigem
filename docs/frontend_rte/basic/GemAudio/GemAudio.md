@@ -15,7 +15,7 @@ page GemAudioExample() {
 }
 ```
 
-<img src="../images/gemaudio.png" alt="AudioComponent" width=50%>
+<img src="./images/gemaudio.png" alt="AudioComponent" width=50%>
 
 ## GUI Model
 

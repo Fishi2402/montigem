@@ -25,7 +25,7 @@ page RowsTester(
   ); 
 }
 ```
-<img src="../images/gembarchart_green_upwards.png" alt="Bar Chart" width=40%/>
+<img src="./images/gembarchart_green_upwards.png" alt="Bar Chart" width=40%/>
 
 ## GUI Model
 

@@ -42,7 +42,7 @@ page GemTableExample(List<Person> persons) {
 }
 ```
 
-<img src="../images/TableWithInputs.png" alt="Data Table" width=100%/></br>
+<img src="./images/TableWithInputs.png" alt="Data Table" width=100%/></br>
 
 
 Table with header and row cells spanned over multiple rows and columns
@@ -85,7 +85,7 @@ page GemTableExample() {
 }
 ```
 
-<img src="../images/TableWithCellsSpanned.png" alt="Data Table" width=100%/>
+<img src="./images/TableWithCellsSpanned.png" alt="Data Table" width=100%/>
 
 ## GUI Models
 

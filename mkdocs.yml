@@ -1,4 +1,6 @@
 site_name: MontiGem
+use_directory_urls: false
+
 theme:
   name: 'material'
   favicon: 'docs/img/umlptool.png'

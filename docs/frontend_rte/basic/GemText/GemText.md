@@ -21,7 +21,7 @@ page GemTextExample() {
 }
 ``` 
 
-<img src="../images/gemtext.png" alt="Text" width=40%/>
+<img src="./images/gemtext.png" alt="Text" width=40%/>
 
 ## GUI Model
 

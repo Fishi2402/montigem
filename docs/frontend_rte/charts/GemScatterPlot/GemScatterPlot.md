@@ -68,7 +68,7 @@ With the underlying code:
 
 Results in:
 
-<img src="../images/ScatterPlot.PNG" alt="Data Table" width=100%/>
+<img src="./images/ScatterPlot.PNG" alt="Data Table" width=100%/>
 
 ## GUI Model
 

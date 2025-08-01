@@ -21,7 +21,7 @@ page RowsTester(
   );
 }
 ```
-<img src="../images/GemVennDiagram.png" alt="GemVennDiagram" width=40%/>
+<img src="./images/GemVennDiagram.png" alt="GemVennDiagram" width=40%/>
 
 ## GUI Model
 

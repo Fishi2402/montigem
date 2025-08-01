@@ -20,7 +20,7 @@ page GemColumnExample() {
 }
 ```
 
-<img src="../images/GemColumnExample.PNG" alt="Columns Layout" width=50%>
+<img src="./images/GemColumnExample.PNG" alt="Columns Layout" width=50%>
 
 ---
 
@@ -66,7 +66,7 @@ Additional SCSS styles:
 .inner { border: 1px solid black; }
 ```
 
-<img src="../images/GemColumnExample2.PNG" alt="Columns Layout" width=50%>
+<img src="./images/GemColumnExample2.PNG" alt="Columns Layout" width=50%>
 
 ## GUI Model
 

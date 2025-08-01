@@ -21,7 +21,7 @@ page RowsTester(
 }
 ```
 
-<img src="../images/chart.png" alt="Candlestick Chart" width=80%/>
+<img src="./images/chart.png" alt="Candlestick Chart" width=80%/>
 
 
 ## GUI Model

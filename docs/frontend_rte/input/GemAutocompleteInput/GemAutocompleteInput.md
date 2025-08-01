@@ -27,10 +27,10 @@ page GemAutocompleteInputExample() {
 
 ```
 
-<img src="../images/AutocompleteInput.png" alt="AutocompleteInput" width="50%">
+<img src="./images/AutocompleteInput.png" alt="AutocompleteInput" width="50%">
 
 Suggestions filtered by input  
-<img src="../images/AutocompleteInputFiltered.png" alt="AutocompleteInput" width="50%">
+<img src="./images/AutocompleteInputFiltered.png" alt="AutocompleteInput" width="50%">
 
 ## GUI Model
 

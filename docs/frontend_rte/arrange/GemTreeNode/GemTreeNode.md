@@ -39,7 +39,7 @@ page GemTreeNodeExample(List<Person> persons) {
 }
 ```
 
-<img src="../images/GemTreeNodeWithCheckbox.png" alt="treenode_with_checkbox" width=40%/>
+<img src="./images/GemTreeNodeWithCheckbox.png" alt="treenode_with_checkbox" width=40%/>
 
 ### Recursive tree structure
 
@@ -93,7 +93,7 @@ page ProjectPage(Directory project) {
 }
 ```
 
-<img src="../images/GemTreeNode.png" alt="treenode_recursive" width=40%/>
+<img src="./images/GemTreeNode.png" alt="treenode_recursive" width=40%/>
 
 
 ## GUI Model

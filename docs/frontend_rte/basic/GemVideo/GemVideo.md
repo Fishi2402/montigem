@@ -12,7 +12,7 @@ page GemVideoExample() {
 }
 ```
 
-<img src = "../images/gemvideo.png" alt="Example Video" width=50%>
+<img src = "./images/gemvideo.png" alt="Example Video" width=50%>
 
 ## GUI Model
 

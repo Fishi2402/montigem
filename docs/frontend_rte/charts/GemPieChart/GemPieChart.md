@@ -20,7 +20,7 @@ page RowsTester(
 }
 ```
 
-<img src="../images/GemPieChart.png" alt="Pie Chart" width=40%/>
+<img src="./images/GemPieChart.png" alt="Pie Chart" width=40%/>
 
 ## GUI Model
 

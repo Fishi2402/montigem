@@ -19,7 +19,7 @@ page GemRowExample() {
   );
 }
 ```
-<img src="../images/GemRowExample.png" alt="Rows Layout" width=100%>
+<img src="./images/GemRowExample.png" alt="Rows Layout" width=100%>
 
 ---
 
@@ -65,7 +65,7 @@ Additional SCSS styles:
 .inner { border: 1px solid black; }
 ```
 
-<img src="../images/GemRowExample2.png" alt="Rows Layout" width=50%>
+<img src="./images/GemRowExample2.png" alt="Rows Layout" width=50%>
 
 ## GUI Model
 

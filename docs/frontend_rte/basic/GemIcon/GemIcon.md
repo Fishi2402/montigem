@@ -27,7 +27,7 @@ page GemIconExample() {
 }
 
 ```
-<img src="../images/GemIcon.png" alt="gemicon" width=50%/>
+<img src="./images/GemIcon.png" alt="gemicon" width=50%/>
 
 ## GUI Model
 

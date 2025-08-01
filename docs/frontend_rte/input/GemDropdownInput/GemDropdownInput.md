@@ -63,10 +63,10 @@ page GemDropdownInputExample() {
 }
 ```
 
-<img src="../images/DropdownInput.png" alt="DropdownInput" width="50%">
+<img src="./images/DropdownInput.png" alt="DropdownInput" width="50%">
 
 Options filtered by search input  
-<img src="../images/DropdownInputFiltered.png" alt="AutocompleteInput" width="50%">
+<img src="./images/DropdownInputFiltered.png" alt="AutocompleteInput" width="50%">
 
 ## GUI Model
 
