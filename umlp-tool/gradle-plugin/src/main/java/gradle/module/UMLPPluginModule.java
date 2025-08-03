@@ -11,10 +11,13 @@ import org.gradle.api.component.AdhocComponentWithVariants;
 import org.gradle.api.component.ConfigurationVariantDetails;
 import org.gradle.api.component.SoftwareComponentFactory;
 import org.gradle.api.file.Directory;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.internal.tasks.TaskDependencyFactory;
 import org.gradle.api.plugins.BasePlugin;
+import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.tasks.SourceSet;
+import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.bundling.Jar;
 
@@ -55,6 +58,11 @@ public class UMLPPluginModule extends ALazyPublishingPlugin implements Plugin<Pr
     Project backend = project.findProject(project.getPath() + ":backend");
     if (backend != null) {
       project.getDependencies().add("api", backend);
+      SourceSet mainSourceSet = project.getExtensions().getByType(SourceSetContainer.class).getByName("main");
+
+      project.getTasks().named("jar", Jar.class).configure(jar -> {
+        jar.from(mainSourceSet.getOutput());
+      });
     }
 
     // Create SourceSet

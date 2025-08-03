@@ -40,6 +40,7 @@ import static gradle.UMLPPluginBase.UMLP_MODULES_DOMAIN_SYMBOLS_CONFIG;
 import static gradle.UMLPPluginBase.UMLP_MODULES_GUI_SYMBOLS_CONFIG;
 import static gradle.UMLPPluginBase.UMLP_MODULES_IMPORT_MAP_CONFIG;
 import static gradle.module.UMLPPluginModuleFrontend.BUILD_LIB_TASK;
+import static gradle.module.UMLPPluginModuleFrontend.GUI2SYM_JAR_TASK;
 
 /**
  * Common UMLP frontend setup.
@@ -300,10 +301,7 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
       Project rteClient = project.project(":umlp-rte:client");
       project.getDependencies().add(UMLP_MODULES_GUI_SYMBOLS_CONFIG, rteClient);
       project.getDependencies().add(UMLP_MODULES_IMPORT_MAP_CONFIG, rteClient);
-      guiGenTask.configure(task -> {
-        task.getSymbolDir().from(project.getConfigurations().named(UMLP_MODULES_GUI_SYMBOLS_CONFIG));
-        task.getSymbolDir().from(project.getConfigurations().named(UMLP_MODULES_IMPORT_MAP_CONFIG));
-      });
+      guiGenTask.configure(task -> task.dependsOn(rteClient.getTasks().named(GUI2SYM_JAR_TASK)));
     }
     else {
       project.getDependencies().add(UMLP_MODULES_GUI_SYMBOLS_CONFIG,

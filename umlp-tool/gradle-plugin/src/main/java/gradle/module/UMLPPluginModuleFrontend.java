@@ -2,7 +2,6 @@ package gradle.module;
 
 import com.github.gradle.node.NodePlugin;
 import com.github.gradle.node.npm.task.NpmTask;
-import de.monticore.gradle.common.CommonMCTask;
 import gradle.UMLPPluginBase;
 import gradle.specific.NPMAuthCreate;
 import gradle.specific.UMLPFrontendTask;
@@ -29,7 +28,6 @@ import org.gradle.api.provider.Provider;
 import org.gradle.api.publish.PublishingExtension;
 import org.gradle.api.publish.maven.MavenPublication;
 import org.gradle.api.publish.plugins.PublishingPlugin;
-import org.gradle.api.specs.Spec;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.TaskProvider;
@@ -48,6 +46,7 @@ import static gradle.UMLPPluginBase.UMLP_MODULES_IMPORT_MAP_CONFIG;
 import static gradle.UMLPPluginFrontendBase.GUI_TYPES_NAME;
 import static gradle.UMLPPluginFrontendBase.UMLP_GROUP_NAME;
 import static gradle.UMLPPluginFrontendBase.getBooleanProjectProperty;
+import static gradle.UMLPPluginFrontendBase.getStringProjectProperty;
 
 
 public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements Plugin<Project> {
@@ -143,12 +142,17 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
 
     List<TaskProvider<NpmTask>> buildSubprojects = new ArrayList<>();
     List<TaskProvider<NpmTask>> publishSubprojects = new ArrayList<>();
-    List<TaskProvider<SerializeCDSymbolsTask>> cd2symSubprojects = new ArrayList<>();
-    List<TaskProvider<UMLPGui2SymTask>> gui2symSubprojects = new ArrayList<>();
 
     TaskProvider<Task> models2ts = project.getTasks().register(MODELS2TS_TASK);
 
-    SourceSet mainSourceSets = project.getExtensions().getByType(SourceSetContainer.class).getByName("main");
+    SourceSet mainSourceSet = project.getExtensions().getByType(SourceSetContainer.class).getByName("main");
+
+    if (local) {
+      project.getDependencies().add("implementation", project.project(":umlp-rte:backend"));
+    }
+    else {
+      project.getDependencies().add("implementation", "umlp:umlp-rte:" + getStringProjectProperty(project, "mc_version", ""));
+    }
 
     project.afterEvaluate(p -> {
       for (Project subproject : extension.getLibs()) {
@@ -166,12 +170,19 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
         Provider<Directory> srcTS = subproject.getLayout().getProjectDirectory().dir(subproject.provider(() -> "src/main/ts"));
         Provider<Directory> srcJava = subproject.getLayout().getProjectDirectory().dir(subproject.provider(() -> "src/main/java"));
 
-        Spec<Task> guiPresent = t -> {
-          File dir = srcTS.get().getAsFile();
-          if (!dir.exists()) return false;
-          return !subproject.fileTree(dir)
-              .matching(spec -> spec.include("**/*.gui")).getFiles().isEmpty();
-        };
+        mainSourceSet.getJava().srcDir(srcJava);
+
+        Provider<Boolean> guiPresent = srcTS
+            .map(dir -> {
+              File folder = dir.getAsFile();
+              if (!folder.exists()) return false;
+
+              Set<File> guiFiles = project.fileTree(folder, spec -> {
+                spec.include("**/*.gui");
+              }).getFiles();
+
+              return !guiFiles.isEmpty();
+            });
 
         TaskProvider<SerializeCDSymbolsTask> cd2sym = subproject.getTasks().register(CD2SYM_TASK, SerializeCDSymbolsTask.class, task -> {
           task.getInput().set(srcTS);
@@ -183,8 +194,6 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
         /**/
           task.getOutput().set(subproject.getLayout().getBuildDirectory().dir("cd2sym"));
         });
-        cd2symSubprojects.add(cd2sym);
-        // symSourceSets.getJava().srcDir(umlp2sym.map(t -> t.getOutputDir().getAsFile()));
 
         gui2symJar.configure(task -> {
           task.from(
@@ -196,16 +205,26 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
 
         TaskProvider<UMLPGui2SymTask> gui2sym = subproject.getTasks().register(GUI2SYM_TASK, UMLPGui2SymTask.class, task -> {
           task.getModelDir().set(srcTS);
+          task.getInput().from(srcTS);
+          task.getSymbolPath().from(guiTypes);
           task.getSymbolPath().from(cd2sym.flatMap(SerializeCDSymbolsTask::getOutput));
           if (!inRTE(subproject) && local) {
             task.getSymbolPath().from(subproject.getConfigurations().named(UMLP_MODULES_GUI_SYMBOLS_CONFIG));
             task.getSymbolPath().from(subproject.getConfigurations().named(UMLP_MODULES_IMPORT_MAP_CONFIG));
           }
+          task.getOutputDir().set(subproject.getLayout().getBuildDirectory().dir("gui2sym"));
           task.getSymbolOutDir().set(subproject.getLayout().getBuildDirectory().dir("gui2sym"));
 
-          task.onlyIf(guiPresent);
+          task.dependsOn(cd2sym);
+          task.onlyIf(t -> guiPresent.get());
         });
-        gui2symSubprojects.add(gui2sym);
+        gui2symJar.configure(task -> {
+          task.from(
+              gui2sym.flatMap(UMLPGui2SymTask::getSymbolOutDir),
+              spec -> spec.include("**/*sym", "**/*import.map", "**/*tags")
+          );
+          task.dependsOn(gui2sym);
+        });
 
         TaskProvider<GUITypes2JavaTask> cd2java = subproject.getTasks().register(CD2JAVA_TASK, GUITypes2JavaTask.class);
         cd2java.configure(task -> {
@@ -219,7 +238,7 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
           task.getTslib().set(libQName);
         });
 
-        mainSourceSets.getJava().srcDir(cd2java.flatMap(GUITypes2JavaTask::getOutputDir));
+        mainSourceSet.getJava().srcDir(cd2java.flatMap(GUITypes2JavaTask::getOutputDir));
 
         models2ts.configure(task -> task.dependsOn(cd2java));
 
@@ -239,8 +258,8 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
         gui2java.configure(task -> {
           task.dependsOn(cd2sym);
           if (!inRTE(subproject) && local) {
-            task.dependsOn(subproject.findProject(":umlp-rte:client").getTasks().named("cd2sym"));
-            task.dependsOn(subproject.findProject(":umlp-rte:client").getTasks().named("gui2sym"));
+            task.dependsOn(subproject.project(":umlp-rte:client").getTasks().named("cd2sym"));
+            task.dependsOn(subproject.project(":umlp-rte:client").getTasks().named("gui2sym"));
           }
           if (!domainNamesFinal.isEmpty()) {
             task.getDomainModels().set(domainNamesFinal);
@@ -257,7 +276,7 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
         /**/
           task.getTslib().set(libQName);
 
-          task.onlyIf(guiPresent);
+          task.onlyIf(t -> guiPresent.get());
         });
 
         models2ts.configure(task -> task.dependsOn(gui2java));
