@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
-  id 'de.rwth.se.umlp-tool-backend'
+  id 'de.rwth.se.montigem-backend'
 }
 
 description 'Syse Functions'

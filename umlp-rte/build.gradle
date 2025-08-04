@@ -1,12 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import gradle.specific.UMLPJava2TypeScriptTask
+import de.montigem.gradle.specific.Java2TSTask
 
 /*
 plugins {
   id 'java-library'
   id 'io.spring.dependency-management' version '1.0.15.RELEASE'
-  id 'de.rwth.se.umlp-tool-module'
+  id 'de.rwth.se.montigem-module'
 }
 
 group = "umlp"
@@ -52,7 +52,7 @@ sourceSets.main.java.srcDir {
 }
 /**/
 plugins {
-  id 'de.rwth.se.umlp-tool-module' // create models-jar
+  id 'de.rwth.se.montigem-module' // create models-jar
 }
 
 dependencies {
@@ -92,7 +92,7 @@ dependencies {
   jsweettranspilerRuntime project(path: ":umlp-rte:umlp-jsweet")
 }
 
-tasks.register("transpileRuntime", UMLPJava2TypeScriptTask) {
+tasks.register("transpileRuntime", Java2TSTask) {
   getInput().setFrom(sourceSets.main.java)
   getVerbose().set(true)
   getOutputDir().set(project.layout.buildDirectory.dir("runtimeTS"))

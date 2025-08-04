@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
-  id "de.rwth.se.umlp-tool-frontend"
-  // id "de.rwth.se.umlp-tool-frontend-test"  // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
+  id "de.rwth.se.montigem-frontend"
+  // id "de.rwth.se.montigem-frontend-test"  // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
 }
 
 dependencies {

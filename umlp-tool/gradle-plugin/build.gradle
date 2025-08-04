@@ -63,44 +63,44 @@ repositories {
 gradlePlugin {
   plugins {
     umlpplugin {
-      id = "de.rwth.se.umlp-tool"
-      implementationClass = "gradle.UMLPPluginBase"
+      id = "de.rwth.se.montigem"
+      implementationClass = "de.montigem.gradle.BasePlugin"
     }
     umlpplugin_dependencies {
-      id = "de.rwth.se.umlp-tool-dependencies"
-      implementationClass = "gradle.UMLPPluginDep"
+      id = "de.rwth.se.montigem-dependencies"
+      implementationClass = "de.montigem.gradle.DependencyPlugin"
     }
     umlpplugin_backend {
-      id = "de.rwth.se.umlp-tool-backend"
-      implementationClass = "gradle.UMLPPluginBackend"
+      id = "de.rwth.se.montigem-backend"
+      implementationClass = "de.montigem.gradle.BackendPlugin"
     }
     umlpplugin_backend_test {
-      id = "de.rwth.se.umlp-tool-backend-test"
-      implementationClass = "gradle.UMLPPluginBackendTest"
+      id = "de.rwth.se.montigem-backend-test"
+      implementationClass = "de.montigem.gradle.BackendTestPlugin"
     }
     umlpplugin_testing {
-      id = "de.rwth.se.umlp-tool-testing"
-      implementationClass = "gradle.UMLPPluginTestInfrastructure"
+      id = "de.rwth.se.montigem-testing"
+      implementationClass = "de.montigem.gradle.TestInfrastructurePlugin"
     }
     umlpplugin_frontend {
-      id = "de.rwth.se.umlp-tool-frontend"
-      implementationClass = "gradle.UMLPPluginFrontend"
+      id = "de.rwth.se.montigem-frontend"
+      implementationClass = "de.montigem.gradle.FrontendPlugin"
     }
     umlpplugin_frontend_test {
-      id = "de.rwth.se.umlp-tool-frontend-test"
-      implementationClass = "gradle.UMLPPluginFrontendTest"
+      id = "de.rwth.se.montigem-frontend-test"
+      implementationClass = "de.montigem.gradle.FrontendTestPlugin"
     }
     umlpplugin_module {
-      id = "de.rwth.se.umlp-tool-module"
-      implementationClass = "gradle.module.UMLPPluginModule"
+      id = "de.rwth.se.montigem-module"
+      implementationClass = "de.montigem.gradle.module.ModulePlugin"
     }
     umlpplugin_module_backend {
-      id = "de.rwth.se.umlp-tool-module-backend"
-      implementationClass = "gradle.module.UMLPPluginModuleBackend"
+      id = "de.rwth.se.montigem-module-backend"
+      implementationClass = "de.montigem.gradle.module.ModuleBackendPlugin"
     }
     umlpplugin_module_frontend {
-      id = "de.rwth.se.umlp-tool-module-frontend"
-      implementationClass = "gradle.module.UMLPPluginModuleFrontend"
+      id = "de.rwth.se.montigem-module-frontend"
+      implementationClass = "de.montigem.gradle.module.ModuleFrontendPlugin"
     }
   }
 }

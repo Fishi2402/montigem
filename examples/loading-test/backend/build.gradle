@@ -1,5 +1,5 @@
 plugins {
-  id 'de.rwth.se.umlp-tool-backend-test'
+  id 'de.rwth.se.montigem-backend-test'
 
   id 'application'
   id 'com.google.cloud.tools.jib' version '3.2.1'

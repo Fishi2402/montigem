@@ -1,7 +1,11 @@
+import de.montigem.gradle.specific.CD2GUITask
+import de.montigem.gradle.specific.GUI2JavaTask
+import de.montigem.gradle.specific.GUIVariabilityTask
+
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
-  id "de.rwth.se.umlp-tool-frontend"
+  id "de.rwth.se.montigem-frontend"
 }
 
 dependencies {
@@ -16,14 +20,14 @@ node {
 }
 nodeSetup.dependsOn(frontendSetup)
 
-tasks.register('generateCDTOGUI', UMLPCdToGuiTask) {
+tasks.register('generateCDTOGUI', CD2GUITask) {
   enabled(useCD2GUI)
   setGroup('build')
   input = file("../models/DevProcessCockpit.umlp")
   outputDir = layout.buildDirectory.dir("cd2gui")
 }
 
-tasks.register('guiVariability', GuiVariabilityHandlerTask) {
+tasks.register('guiVariability', GUIVariabilityTask) {
   setGroup('build')
   if (useCD2GUI) {
     input.from(generateCDTOGUI.getOutputDir().dir("models"))
@@ -42,7 +46,7 @@ genGUI {
   /**/
 }
 
-tasks.register('genGUI2', UMLPGuiGenTask) {
+tasks.register('genGUI2', GUI2JavaTask) {
   enabled(useCD2GUI)
   setGroup('build')
   dependsOn(genGUI, guiVariability)

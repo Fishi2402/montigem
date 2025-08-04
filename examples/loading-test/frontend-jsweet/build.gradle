@@ -6,7 +6,7 @@ import java.nio.file.Paths
 
 plugins {
   id 'java'
-  id 'de.rwth.se.umlp-tool-frontend'
+  id 'de.rwth.se.montigem-frontend'
 }
 
 dependencies {

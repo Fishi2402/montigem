@@ -21,7 +21,7 @@ plugins {
   id 'io.spring.dependency-management' version '1.0.15.RELEASE'
   id 'org.springframework.boot' version "${spring_version}"
 
-  id 'de.rwth.se.umlp-tool-backend' // Makes the task-types `UMLPTask` and `UMLPMergeTask` available
+  id 'de.rwth.se.montigem-backend' // Makes the task-types `UMLPTask` and `MergeTask` available
 }
 
 description 'Demolition Recyling Database'

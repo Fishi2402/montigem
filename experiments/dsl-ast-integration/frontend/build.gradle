@@ -1,8 +1,10 @@
+import de.montigem.gradle.specific.GUIVariabilityTask
+
 /* (c) https://github.com/MontiCore/monticore */
 plugins {
    id 'java-library'
 
-   id 'de.rwth.se.umlp-tool-frontend'
+   id 'de.rwth.se.montigem-frontend'
 }
 
 repositories {
@@ -58,14 +60,14 @@ createDomainSymbols {
    enabled = false // instead, we use the symbols from the backend (and thus the merged model!)
 }
 
-tasks.register('generateCDTOGUI', UMLPCdToGuiTask) {
+tasks.register('generateCDTOGUI', CD2GUITask) {
    setGroup('build')
    input.setFrom(project(":experiments:dsl-ast-integration:ebackend").mergeWithDSL.outputFile)
    outputDir = layout.buildDirectory.dir("cd2gui")
    dependsOn(tasks.copyTags)
 }
 
-tasks.register('guiVariability', GuiVariabilityHandlerTask) {
+tasks.register('guiVariability', GUIVariabilityTask) {
    input.from(generateCDTOGUI.getOutputDir())
    input.from(file("../models/gui"))
    outputDir = layout.buildDirectory.dir("guiVariability")

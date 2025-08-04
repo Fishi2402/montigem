@@ -4,9 +4,9 @@ plugins {
   /*
   id 'java'
   id 'maven-publish'
-  id "de.rwth.se.umlp-tool-frontend"
+  id "de.rwth.se.montigem-frontend"
   /**/
-  id 'de.rwth.se.umlp-tool-module-frontend' // create domainSymbols-jar
+  id 'de.rwth.se.montigem-module-frontend' // create domainSymbols-jar
 }
 
 configure(mglib) {
@@ -44,13 +44,13 @@ configure(mglib) {
 //  implementation project(":umlp-rte")
 //}
 //
-//tasks.create('createCDSymbols', SerializeCDSymbolsTask) {
+//tasks.create('createCDSymbols', CD2SymTask) {
 //  input = file("models/")
 //  // symbolPath = file("models/")
 //  output = project.layout.buildDirectory.dir("cDSymbols")
 //}
 //
-//tasks.register('createGuiSymbols', SerializeGUISymbolsTask) {
+//tasks.register('createGuiSymbols', GUI2SymTask) {
 //  input = file("models/")
 //  symbolDir = files(createCDSymbols.getOutput(), configurations.guiDefaultTypes)
 //  output = layout.buildDirectory.dir("GuiSymbols")
@@ -138,7 +138,7 @@ configure(mglib) {
 //  }
 //
 //  // task `npmrc_<lib_name>` that creates .npmrc file for publishing
-//  tasks.register("${genNpmrcTaskName}", NPMAuthCreate) {
+//  tasks.register("${genNpmrcTaskName}", CreateNpmrcTask) {
 //    dependsOn "${buildTaskName}"
 //    // e.g. `build/dist/basic/.npmrc`
 //    npmrcFile = file("${project.buildDir}/${npmOutput}/.npmrc")
@@ -174,7 +174,7 @@ configure(mglib) {
 //  def genTaskName = "${genTaskPrefix}${libName}"
 //
 //  if (libName in componentLibs) {
-//    tasks.register("${genTaskName}", UMLPGuiGenTask) {
+//    tasks.register("${genTaskName}", GUI2JavaTask) {
 //      dependsOn tasks.named("createCDSymbols"), tasks.named("${copyTaskName}")
 //      input = layout.projectDirectory.dir("models/mc/fenix/${libName}")
 //      modelDir = layout.projectDirectory.dir("models")

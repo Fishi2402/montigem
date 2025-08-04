@@ -1,5 +1,5 @@
 plugins {
-  id 'de.rwth.se.umlp-tool-module' // create models-jar
+  id 'de.rwth.se.montigem-module' // create models-jar
 }
 
 dependencies {

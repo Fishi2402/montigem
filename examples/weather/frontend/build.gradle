@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 plugins {
-  id "de.rwth.se.umlp-tool-frontend"
+  id "de.rwth.se.montigem-frontend"
 }
 
 node {
@@ -16,7 +16,7 @@ dependencies {
 }
 
 // TODO AGe: don't know if that is needed
-/*task generateCDTOGUI(type: UMLPCdToGuiTask) {
+/*task generateCDTOGUI(type: CD2GUITask) {
   input = file("../models/Weather.umlp")
   outputDir = layout.buildDirectory.dir("cd2gui")
 }*/
@@ -31,7 +31,7 @@ genGUI {
   /**/
 }
 
-/*task genGUI2(type: UMLPGuiGenTask) {
+/*task genGUI2(type: GUI2JavaTask) {
   dependsOn(genGUI, generateCDTOGUI)
   input = file(layout.buildDirectory.dir("cd2gui/models"))
   symbolDir = files(file(symPath), configurations.guiLib.files, configurations.guiDefaultTypes.files)

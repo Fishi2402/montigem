@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 plugins {
-  id "de.rwth.se.umlp-tool-frontend-test"
+  id "de.rwth.se.montigem-frontend-test"
 }
 
 dependencies {

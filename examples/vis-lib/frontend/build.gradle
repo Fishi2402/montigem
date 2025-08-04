@@ -1,4 +1,4 @@
-import gradle.specific.UMLPSymLinkCreationTask
+import de.montigem.gradle.specific.CreateSymLinkTask
 
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -6,7 +6,7 @@ import java.nio.file.Paths
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
-  id "de.rwth.se.umlp-tool-frontend"
+  id "de.rwth.se.montigem-frontend"
 }
 
 if (project.hasProperty('j2ts_vislib') && j2ts_vislib.toString().toBoolean()) {

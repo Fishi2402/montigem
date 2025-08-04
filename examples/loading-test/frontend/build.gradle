@@ -4,7 +4,7 @@ import java.nio.file.Paths
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
-  id "de.rwth.se.umlp-tool-frontend"
+  id "de.rwth.se.montigem-frontend"
 }
 
 node {

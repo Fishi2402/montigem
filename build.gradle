@@ -1,11 +1,11 @@
-import gradle.specific.UMLPFrontendCIImageTask
-import gradle.specific.UMLPFrontendLocalImageTask
+import de.montigem.gradle.specific.FrontendCIImageTask
+import de.montigem.gradle.specific.FrontendLocalImageTask
 
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
   id 'base'
-  id 'de.rwth.se.umlp-tool' // See "umlp-tool/src/main/java/gradle"
+  id 'de.rwth.se.montigem' // See "umlp-tool/src/main/java/gradle"
   id "io.github.themrmilchmann.ecj" version "0.2.0"
   id "com.github.node-gradle.node" version "5.0.0"
 }
@@ -133,7 +133,7 @@ subprojects {
   }
 
   afterEvaluate {
-    tasks.withType(UMLPFrontendCIImageTask.class).each {
+    tasks.withType(FrontendCIImageTask.class).each {
       it.getFullImageName().set(project.provider {
         String imgBase = Objects.requireNonNull(System.getenv("CI_REGISTRY_IMAGE"), "CI_REGISTRY_IMAGE not set")
         String parentName = project.parent.name
@@ -141,7 +141,7 @@ subprojects {
       })
     }
 
-    tasks.withType(UMLPFrontendLocalImageTask.class).each {
+    tasks.withType(FrontendLocalImageTask.class).each {
       it.getFullImageName().set(getProject().provider(() ->
           (getProject().getParent() != null ? getProject().getParent().getName() : getProject().getName()) + "/frontend"
       ))

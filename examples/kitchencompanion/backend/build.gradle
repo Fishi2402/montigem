@@ -1,6 +1,6 @@
 plugins {
   id 'java'
-  id 'de.rwth.se.umlp-tool-backend'
+  id 'de.rwth.se.montigem-backend'
 
   id 'application'
   id 'com.google.cloud.tools.jib' version '3.4.4'
@@ -78,7 +78,7 @@ tasks.register('runServer') {
   })
 }
 
-tasks.register('genTestData', UMLPOD2DataTask) {
+tasks.register('genTestData', OD2DataTask) {
   dependsOn(generateUmlpBackend)
   input = file("../models/Example.od")
   outputDir = file("$project.buildDir/testdata")

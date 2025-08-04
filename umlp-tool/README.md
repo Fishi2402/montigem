@@ -25,7 +25,7 @@ pluginManagement {
 at the top of ``build.gradle``:
 ````
 plugins {
-  id 'de.rwth.se.umlp-tool' version '7.6.0-SNAPSHOT'
+  id 'de.rwth.se.montigem' version '7.6.0-SNAPSHOT'
   id 'java'
   // [...]
 }
@@ -64,8 +64,8 @@ sourceSets {
 ````
 
 ### Plugins
-1) `de.rwth.se.umlp-tool` - the basic plugin which is always loaded. No task is created
-2) `de.rwth.se.umlp-tool-backend` - plugin for generating the UMLP-backend. The following steps are performed:
+1) `de.rwth.se.montigem` - the basic plugin which is always loaded. No task is created
+2) `de.rwth.se.montigem-backend` - plugin for generating the UMLP-backend. The following steps are performed:
   * load `java` plugin
   * create task ``generateUmlpBackend`` of type `UMLPBackendTask` with the following conventions:
     * ``input=src/models/``
@@ -73,7 +73,7 @@ sourceSets {
     * ``tmplDir=src/templates``
   * add generated files to java main-source-sets
   * create ``generate`` and `continuous` lifecylce task
-3) `de.rwth.se.umlp-tool-frontend` - plugin for generating the UMLP-backend. The following steps are performed:
+3) `de.rwth.se.montigem-frontend` - plugin for generating the UMLP-backend. The following steps are performed:
 * load `base` plugin
 * create configuration ``guiTypes`` which is used to load symbols
 * create task ``frontendSetup`` of type `FrontendSetup` with the following convention:

@@ -1,7 +1,7 @@
 
 plugins {
    id 'java-library'
-   id 'de.rwth.se.umlp-tool-backend'
+   id 'de.rwth.se.montigem-backend'
 
    id 'application'
    id 'com.google.cloud.tools.jib' version '3.4.4'
@@ -65,7 +65,7 @@ dependencies {
    implementation(project(":experiments:dsl-ast-integration:dsl"))
 }
 
-task mergeWithDSL(type: UMLPMergeTask){
+task mergeWithDSL(type: MergeTask){
    source = file("../models/")
    source += tasks.getByPath(":experiments:dsl-ast-integration:dsl2cd:dsl2cd").getOutputs()
    includes = ["**.umlp"]
@@ -90,7 +90,7 @@ generateUmlpBackend {
 
 
 
-//task genInitData(type: UMLPOD2DataTask) {
+//task genInitData(type: OD2DataTask) {
 //   input = file("../models/CarData.od")
 //   outputDir = file("$project.buildDir/initdata")
 //   hwcDir = file("$projectDir/src/main/java")
