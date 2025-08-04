@@ -52,34 +52,31 @@ public class CommandWebSocketService extends TextWebSocketHandler implements Web
     try {
       Optional<Command<Object>> commandOptional = CommandObjectMapper.deserializeCommand(payload);
       if (commandOptional.isEmpty()) {
-        return;
+        returnResult = handleUnknownError(payload);
+      } else {
+        Command<?> command = commandOptional.get();
+
+        // check that participant id is correct
+        var participantFromSession = Optional.ofNullable(participants.get(session));
+        if (participantFromSession.isEmpty()) {
+          throw new IllegalStateException("User is not logged in!");
+        }
+
+        var participantFromId = Optional.ofNullable(
+            CommandManager.getInstance().getParticipant(command.getParticipantId()));
+
+        if (!participantFromSession.equals(participantFromId)) {
+          Log.warn(
+              "Participant from id " + command.getId() + ":" + participantFromId + "was not the same as participant from session " + participantFromSession);
+          command.setParticipantId(participantFromSession.get().getParticipantId());
+        }
+
+        CommandResult<?> res = CommandManager.executeCommand(command);
+        returnResult = CommandObjectMapper.serializeResponse(res);
       }
-      Command command = commandOptional.get();
-
-      // check that participant id is correct
-      var participantFromSession = Optional.ofNullable(participants.get(session));
-      if(participantFromSession.isEmpty()){
-        throw new IllegalStateException("User is not logged in!");
-      }
-
-      var participantFromId = Optional.ofNullable(CommandManager.getInstance().getParticipant(command.getParticipantId()));
-
-      if(!participantFromSession.equals(participantFromId)){
-        Log.warn("Participant from id " + command.getId() + ":" + participantFromId + "was not the same as participant from session " + participantFromSession);
-        command.setParticipantId(participantFromSession.get().getParticipantId());
-      }
-
-      CommandResult res = CommandManager.executeCommand(command);
-      returnResult = CommandObjectMapper.serializeResponse(res);
     } catch (Exception e) {
-      int commandId = -1;
-      Pattern p = Pattern.compile("\"id\":\\s*(\\d+)");
-      Matcher m = p.matcher(payload);
-      if(m.find()){
-        commandId = Integer.parseInt(m.group(1));
-      }
       Log.error("Command could not be parsed:\n"+ payload, e);
-      returnResult = CommandObjectMapper.serializeResponse(StatusResult.error(commandId));
+      returnResult = handleUnknownError(payload);
     }
     System.out.println("Responding: " + LogUtil.concealSensitives(returnResult));
     TextMessage msg = new TextMessage(returnResult);
@@ -95,5 +92,15 @@ public class CommandWebSocketService extends TextWebSocketHandler implements Web
       CommandManager.deregister(clientIds.get(session.getId()));
       clientIds.remove(session.getId());
     }
+  }
+
+  protected String handleUnknownError(String payload) {
+    int commandId = -1;
+    Pattern p = Pattern.compile("\"id\":\\s*(\\d+)");
+    Matcher m = p.matcher(payload);
+    if (m.find()) {
+      commandId = Integer.parseInt(m.group(1));
+    }
+    return CommandObjectMapper.serializeResponse(StatusResult.error(commandId));
   }
 }
