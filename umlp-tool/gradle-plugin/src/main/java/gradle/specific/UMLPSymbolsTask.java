@@ -54,16 +54,14 @@ public abstract class UMLPSymbolsTask extends UMLPSingleFileTask {
       result.add(handlePath.apply(getSymbolOutDir().getAsFile().get().toPath()));
     }
 
-    System.out.println("Model path is " + this.getModelDir().getFiles());
-    if(!this.getModelDir().isEmpty()) {
+    if (!this.getModelDir().isEmpty()) {
       for (File file : this.getModelDir()) {
         result.add("-modelPath");
         result.add(handlePath.apply(file.toPath()));
       }
     }
 
-    System.out.println("Symbol path is " + this.getSymbolPath().getFiles());
-    if(!this.getSymbolPath().isEmpty()) {
+    if (!this.getSymbolPath().isEmpty()) {
       for (File file : this.getSymbolPath()) {
         result.add("-path");
         result.add(handlePath.apply(file.toPath()));

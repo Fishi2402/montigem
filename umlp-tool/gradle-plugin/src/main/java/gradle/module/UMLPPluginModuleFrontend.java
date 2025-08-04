@@ -36,6 +36,7 @@ import org.gradle.api.tasks.bundling.Jar;
 import javax.inject.Inject;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -98,10 +99,13 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
     // default name(s) of .umlp file(s)
     List<String> domainNames = new ArrayList<>();
     // default .umlp file(s)
-    Set<File> umlp = new HashSet<>();
+    Set<File> umlp;
+
+    boolean umlpPresent;
     if (models.getAsFile().exists()) {
       umlp = models.getAsFileTree().matching(spec -> spec.include("**/*.umlp")).getFiles();
-      if (!umlp.isEmpty()) {
+      umlpPresent = !umlp.isEmpty();
+      if (umlpPresent) {
         domainNames = umlp.stream()
             .map(File::getName)
             .map(name -> {
@@ -109,32 +113,42 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
               return (dotIndex != -1) ? name.substring(0, dotIndex) : name;
             })
             .collect(Collectors.toList());
-
-        Provider<UMLPSymbolsTask> umlp2sym = project.getTasks().register(UMLP2SYM_TASK, UMLPSymbolsTask.class, task -> {
-          task.getModelDir().from(models);
-          if (!inRTE(project) && local) {
-            // symbols from umlp-rte/client
-            Project rteClient = project.project(":umlp-rte:client");
-            project.getDependencies().add(UMLP_MODULES_GUI_SYMBOLS_CONFIG, rteClient);
-            project.getDependencies().add(UMLP_MODULES_IMPORT_MAP_CONFIG, rteClient);
-            task.getSymbolPath().from(project.getConfigurations().named(UMLP_MODULES_GUI_SYMBOLS_CONFIG));
-            task.getSymbolPath().from(project.getConfigurations().named(UMLP_MODULES_IMPORT_MAP_CONFIG));
-          }
-          task.getSymbolOutDir().set(project.getLayout().getBuildDirectory().dir("umlp2sym"));
-        });
-
-        TaskProvider<Jar> umlp2symJar = umlp2symInit(project, javaComponent);
-        umlp2symJar.configure(task -> {
-          task.dependsOn(umlp2sym);
-          task.from(
-              umlp2sym.flatMap(UMLPSymbolsTask::getOutputDir),
-              spec -> spec.include("**/*sym", "**/*tags")
-          );
-        });
       }
     }
+    else {
+      umlpPresent = false;
+      umlp = new HashSet<>();
+    }
     List<String> domainNamesFinal = domainNames;
-    Set<File> umlpFinal = umlp;
+
+    addClientRTEDependency(project);
+
+    Provider<UMLPSymbolsTask> umlp2sym = project.getTasks().register(UMLP2SYM_TASK, UMLPSymbolsTask.class, task -> {
+      task.getModelDir().from(models);
+      task.getInput().from(models);
+      if (!inRTE(project)) {
+        task.getSymbolPath().from(project.getConfigurations().named(UMLP_MODULES_GUI_SYMBOLS_CONFIG));
+        task.getSymbolPath().from(project.getConfigurations().named(UMLP_MODULES_IMPORT_MAP_CONFIG));
+      }
+      task.getSymbolOutDir().set(project.getLayout().getBuildDirectory().dir("umlp2sym"));
+      task.getOutputDir().set(project.getLayout().getBuildDirectory().dir("umlp2sym"));
+
+      task.onlyIf(t -> umlpPresent);
+    });
+    var umlp2symOut = umlp2sym
+        .flatMap(UMLPSymbolsTask::getSymbolOutDir)
+        .map(dir -> dir.getAsFile().exists() ? dir.getAsFile() : Collections.emptyList());
+
+    TaskProvider<Jar> umlp2symJar = umlp2symInit(project, javaComponent);
+    umlp2symJar.configure(task -> {
+      task.dependsOn(umlp2sym);
+      task.from(
+          umlp2sym.flatMap(UMLPSymbolsTask::getOutputDir),
+          spec -> spec.include("**/*sym", "**/*tags")
+      );
+
+      task.onlyIf(t -> umlpPresent);
+    });
 
     // Create the import map jar
     TaskProvider<Jar> umlp2impJar = umlp2impInit(project, javaComponent);
@@ -159,6 +173,7 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
         subproject.getPluginManager().apply(NodePlugin.class);
         subproject.getPluginManager().apply(UMLPPluginBase.class);
         Configuration guiTypes = addProjectDependencies(subproject);
+        addClientRTEDependency(subproject);
 
         Provider<String> libQName = extension.getLibScope().map(v -> v + "/" + subproject.getName());
         Provider<Directory> libBuildDir = p.getLayout().getBuildDirectory().dir("dist/" + subproject.getName());
@@ -207,8 +222,9 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
           task.getModelDir().set(srcTS);
           task.getInput().from(srcTS);
           task.getSymbolPath().from(guiTypes);
+          task.getSymbolPath().from(umlp2symOut);
           task.getSymbolPath().from(cd2sym.flatMap(SerializeCDSymbolsTask::getOutput));
-          if (!inRTE(subproject) && local) {
+          if (!inRTE(project)) {
             task.getSymbolPath().from(subproject.getConfigurations().named(UMLP_MODULES_GUI_SYMBOLS_CONFIG));
             task.getSymbolPath().from(subproject.getConfigurations().named(UMLP_MODULES_IMPORT_MAP_CONFIG));
           }
@@ -257,23 +273,24 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
         TaskProvider<UMLPGuiGenTask> gui2java = subproject.getTasks().register(GUI2JAVA_TASK, UMLPGuiGenTask.class);
         gui2java.configure(task -> {
           task.dependsOn(cd2sym);
-          if (!inRTE(subproject) && local) {
-            task.dependsOn(subproject.project(":umlp-rte:client").getTasks().named("cd2sym"));
-            task.dependsOn(subproject.project(":umlp-rte:client").getTasks().named("gui2sym"));
+          if (!inRTE(project)) {
+            task.getSymbolPath().from(subproject.getConfigurations().named(UMLP_MODULES_GUI_SYMBOLS_CONFIG));
+            task.getSymbolPath().from(subproject.getConfigurations().named(UMLP_MODULES_IMPORT_MAP_CONFIG));
           }
           if (!domainNamesFinal.isEmpty()) {
             task.getDomainModels().set(domainNamesFinal);
           }
+          task.getSymbolPath().from(umlp2symOut);
           task.getSymbolPath().from(guiTypes);
           task.getSymbolPath().from(cd2sym.flatMap(SerializeCDSymbolsTask::getOutput));
           task.getInput().from(srcTS);
           task.getModelDir().set(srcTS);
           task.getHwcDir().from(srcTS, srcJava);
           task.getOutputDir().set(gui2javaDir);
-        /*
-        task.getGuiGenJsweet().set(false);
-        task.getGuiGenTSFuncionality().set(true);
-        /**/
+          /*
+          task.getGuiGenJsweet().set(false);
+          task.getGuiGenTSFuncionality().set(true);
+          /**/
           task.getTslib().set(libQName);
 
           task.onlyIf(t -> guiPresent.get());
@@ -290,10 +307,10 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
         });
 
         // TODO: remove after jsweet transition is complete and import mapping is reworked
-        if (!umlpFinal.isEmpty()) {
+        if (!umlp.isEmpty()) {
           TaskProvider<UMLPFrontendTask> umlp2ts = subproject.getTasks().register(UMLP2TS_TASK, UMLPFrontendTask.class);
           umlp2ts.configure(task -> {
-            task.getInput().from(umlpFinal);
+            task.getInput().from(umlp);
             task.getHwcDir().from(srcTS, srcJava);
             task.getOutputDir().set(umlp2tsDir);
             task.getTslib().set(libQName);
@@ -505,6 +522,25 @@ public class UMLPPluginModuleFrontend extends ALazyPublishingPlugin implements P
     });
     project.getDependencies().add(GUI_TYPES_NAME, "de.monticore.lang:guidsl:" + project.findProperty("mc_version"));
     return conf;
+  }
+
+  protected void addClientRTEDependency(Project project) {
+    boolean local = getBooleanProjectProperty(project, "useLocalDependencies");
+    if (!inRTE(project)) {
+      if (local) {
+        Project rteClient = project.project(":umlp-rte:client");
+        project.getDependencies().add(UMLP_MODULES_GUI_SYMBOLS_CONFIG, rteClient);
+        project.getDependencies().add(UMLP_MODULES_IMPORT_MAP_CONFIG, rteClient);
+      }
+      else {
+        project.getDependencies().add(UMLP_MODULES_GUI_SYMBOLS_CONFIG,
+            "umlp:client:" + getStringProjectProperty(project, "mc_version", "")
+        );
+        project.getDependencies().add(UMLP_MODULES_IMPORT_MAP_CONFIG,
+            "umlp:client:" + getStringProjectProperty(project, "mc_version", "")
+        );
+      }
+    }
   }
 
   public static boolean inRTE(Project project) {

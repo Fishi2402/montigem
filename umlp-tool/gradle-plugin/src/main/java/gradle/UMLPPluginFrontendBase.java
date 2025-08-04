@@ -301,7 +301,7 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
       Project rteClient = project.project(":umlp-rte:client");
       project.getDependencies().add(UMLP_MODULES_GUI_SYMBOLS_CONFIG, rteClient);
       project.getDependencies().add(UMLP_MODULES_IMPORT_MAP_CONFIG, rteClient);
-      guiGenTask.configure(task -> task.dependsOn(rteClient.getTasks().named(GUI2SYM_JAR_TASK)));
+      // guiGenTask.configure(task -> task.dependsOn(rteClient.getTasks().named(GUI2SYM_JAR_TASK)));
     }
     else {
       project.getDependencies().add(UMLP_MODULES_GUI_SYMBOLS_CONFIG,
