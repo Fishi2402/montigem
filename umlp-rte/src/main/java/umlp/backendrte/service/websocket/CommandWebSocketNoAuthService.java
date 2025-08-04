@@ -45,28 +45,23 @@ public class CommandWebSocketNoAuthService extends CommandWebSocketService {
     try {
       Optional<Command<Object>> commandOptional = CommandObjectMapper.deserializeCommand(payload);
       if (commandOptional.isEmpty()) {
-        return;
-      }
-      Command command = commandOptional.get();
+        returnResult = handleUnknownError(payload);
+      } else {
+        Command<?> command = commandOptional.get();
 
-      // check that participant id is correct
-      var participantFromSession = Optional.ofNullable(participants.get(session));
-      if (participantFromSession.isEmpty()) {
-        throw new IllegalStateException("User is not logged in!");
-      }
+        // check that participant id is correct
+        var participantFromSession = Optional.ofNullable(participants.get(session));
+        if (participantFromSession.isEmpty()) {
+          throw new IllegalStateException("User is not logged in!");
+        }
 
-      CommandResult res = CommandManager.executeCommand(command);
-      returnResult = CommandObjectMapper.serializeResponse(res);
+        CommandResult<?> res = CommandManager.executeCommand(command);
+        returnResult = CommandObjectMapper.serializeResponse(res);
+      }
     }
     catch (Exception e) {
-      int commandId = -1;
-      Pattern p = Pattern.compile("\"id\":\\s*(\\d+)");
-      Matcher m = p.matcher(payload);
-      if (m.find()) {
-        commandId = Integer.parseInt(m.group(1));
-      }
       Log.error("Command could not be parsed:\n" + payload, e);
-      returnResult = CommandObjectMapper.serializeResponse(StatusResult.error(commandId));
+      returnResult = handleUnknownError(payload);
     }
     System.out.println("Responding: " + returnResult);
     System.out.println(session);
