@@ -236,16 +236,19 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     }
   }
 
-  private void addObserversToArguments(MethodInvocationElement invocation) {
+  private void addObserversToArguments(MethodInvocationElement invocation,
+      String domainObserverFunctionName, String statevarObserverFunctionName) {
     MethodInvocationTree tree = ((MethodInvocationElementSupport) invocation).getTree();
-    JCTree.JCIdent domainObserver = adapterUtils.getNewIdent(DOMAIN_OBSERVER_FUNCTION_NAME);
-    JCTree.JCIdent statevarObserver = adapterUtils.getNewIdent(STATEVAR_OBSERVER_FUNCTION_NAME);
+    JCTree.JCIdent domainObserver = adapterUtils.getNewIdent(domainObserverFunctionName);
+    JCTree.JCIdent statevarObserver = adapterUtils.getNewIdent(statevarObserverFunctionName);
     List<? extends ExpressionTree> arguments = tree.getArguments();
     if (arguments.size() >= 2 &&
         arguments.get(arguments.size() - 2) instanceof JCTree.JCIdent &&
         arguments.get(arguments.size() - 1) instanceof JCTree.JCIdent &&
-        ((JCTree.JCIdent) arguments.get(arguments.size() - 2)).getName().toString().equals(DOMAIN_OBSERVER_FUNCTION_NAME) &&
-        ((JCTree.JCIdent) arguments.get(arguments.size() - 1)).getName().toString().equals(STATEVAR_OBSERVER_FUNCTION_NAME)
+        ((JCTree.JCIdent) arguments.get(arguments.size() - 2)).getName().toString().equals(
+            domainObserverFunctionName) &&
+        ((JCTree.JCIdent) arguments.get(arguments.size() - 1)).getName().toString().equals(
+            statevarObserverFunctionName)
     ) {
       return;
     }
@@ -431,6 +434,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     boolean shouldPrintDomainObs = false;
     boolean shouldPrintStatevarObs = false;
     boolean shouldAddObservers = false;
+    boolean shouldAddInitObservers = false;
     ExecutableElement surroundingMethod = Util.getElement(getPrinter().getParent(MethodTree.class));
     boolean isSynchronizedMethod = surroundingMethod != null && adapterUtils.isSynchronized(surroundingMethod);
 
@@ -453,6 +457,9 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
         (!(returnType instanceof TypeElement) ||
             !adapterUtils.isSubTypeOf((TypeElement) returnType, "java.util.function.Consumer"))) {
       shouldAddObservers = true;
+    } else if (adapterUtils.isMethodOfHWCComponentOrDirective(surroundingMethod) &&
+        surroundingMethod.getSimpleName().equals("init")) {
+      shouldAddInitObservers = true;
     }
 
     ClassTree parent = getPrinter().getParent(ClassTree.class);
@@ -470,7 +477,11 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     }
 
     if (shouldAddObservers) {
-      addObserversToArguments(invocation);
+      addObserversToArguments(invocation, DOMAIN_OBSERVER_FUNCTION_NAME,
+          STATEVAR_OBSERVER_FUNCTION_NAME);
+    } else if (shouldAddInitObservers) {
+      addObserversToArguments(invocation, "__domainObject => __domainObject",
+          "__stateVar => __stateVar");
     }
 
     boolean res = super.substituteMethodInvocation(invocation);
