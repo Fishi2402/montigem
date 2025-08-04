@@ -10,7 +10,9 @@ plugins {
 
 dependencies {
   umlpModules(project(":modules:login"))
-  umlpModules(project(":modules:comment")) // Load generator modifications
+  umlpModulesGen(project(":modules:comment"))
+  umlpModulesModels(project(":modules:comment"))
+  umlpModulesDomainSymbols(project(":modules:comment"))
 }
 
 application { // Set Main-Class for "run" task

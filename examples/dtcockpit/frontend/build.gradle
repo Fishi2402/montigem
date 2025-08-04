@@ -11,10 +11,9 @@ dependencies {
   domainSources project(":examples:dtcockpit:backend")
 
   umlpModules(project(":modules:login"))
-  // umlpModules(project(":modules:comment"))
   umlpModulesGen(project(":modules:comment"))
   umlpModulesModels(project(":modules:comment"))
-  // umlpModulesDomainSymbols(project(":modules:comment"))
+  umlpModulesDomainSymbols(project(":modules:comment"))
 
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version
   implementation group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.6_mail', version: '1.0.1'
