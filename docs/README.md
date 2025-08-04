@@ -1,3 +1,8 @@
+---
+hide:
+  - navigation
+---
+
 <!-- (c) https://github.com/MontiCore/monticore -->
 # **Core Requirements** definiert durch dieses Experiment
 

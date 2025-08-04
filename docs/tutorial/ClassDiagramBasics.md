@@ -1,3 +1,8 @@
+---
+hide:
+  - navigation
+---
+
 # Creating a basic data structure 
 
 The core of a MontiGem app is a data structure modeled with a class diagram. The

@@ -1,3 +1,8 @@
+---
+hide:
+  - navigation
+---
+
 GemColumn is a container which arranges input elements vertically.
 
 ## Usage example
@@ -61,7 +66,7 @@ page GemColumnExample2() {
 }
 ```
 Additional SCSS styles:
-```
+```scss
 .outer { border: 1px solid red; }
 .inner { border: 1px solid black; }
 ```
@@ -73,7 +78,7 @@ Additional SCSS styles:
 `GemColumn.gui`
 ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/arrange/GemColumn.gui))
 
-```gui
+```java
 package mc.fenix.arrange;
 
 component GemColumn(

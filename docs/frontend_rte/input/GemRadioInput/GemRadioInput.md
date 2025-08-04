@@ -1,12 +1,15 @@
-# GemRadioInput
+---
+hide:
+  - navigation
+---
 
 This component represents a radio button with a label. It is intended for use in forms or other scenarios where users must choose one of several options.
 
-## usage example
+## Usage example
 
 `RowsTester` displays `GemRadioInput` in its body
 
-```md
+```ts
 package example;
 import mc.fenix.input.src.lib.gemradioinput.GemRadioInput;
 page RowsTester() {
@@ -31,8 +34,8 @@ page RowsTester() {
 
 ## GUI Model
 
-`GemRadioInput.gui` ([open](../GemRadioInput.gui))
-```
+`GemRadioInput.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/input/GemRadioInput.gui))
+```java
 package mc.fenix.input.src.lib.gemradioinput;
 component GemRadioInput(
   String id,

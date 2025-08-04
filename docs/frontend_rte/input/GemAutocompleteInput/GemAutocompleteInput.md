@@ -1,8 +1,13 @@
+---
+hide:
+  - navigation
+---
+
 The component is an autocomplete input with an optional label. When clicking on the input, it suggests options in a list, almost like a dropdown. However, the user can still type any input. The list of options is filtered depending on the input characters. It is not mandatory to select one of the options. It is used whenever a user input is required and the user should be assisted with suggestions.
 
 ## Usage example
 
-```gui
+```ts
 /* (c) https://github.com/MontiCore/monticore */
 package example_input;
 
@@ -36,7 +41,7 @@ Suggestions filtered by input
 
 `GemAutocompleteInput.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/input/GemAutocompleteInput.gui))
 
-```gui
+```java
 package mc.fenix.input;
 
 import mc.fenix.input.GemDropdownInputTypes.Option;

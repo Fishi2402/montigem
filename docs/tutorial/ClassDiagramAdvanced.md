@@ -1,4 +1,9 @@
-## Adding services to the class diagram
+---
+hide:
+  - navigation
+---
+
+# Adding services to the class diagram
 
 Besides managing data an app may do other tasks, such as sending e-mails or
 providing user authentication. Those tasks are typically managed through one or

@@ -1,3 +1,8 @@
+---
+hide:
+  - navigation
+---
+
 A scatter plot visualizes data points on a 2D plot, establishing a relation between values plotted on the x-axis and the
 y-axis.
 
@@ -5,7 +10,7 @@ y-axis.
 
 Given gui model:
 
-```gui
+```ts
 package example;
 
 import Domain.Person;
@@ -74,7 +79,7 @@ Results in:
 
 `GemScatterPlot.gui`([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/charts/GemScatterPlot.gui))
 
-```gui
+```ts
 package mc.fenix.charts;
 
 import mc.fenix.charts.GemScatterPlotTypes.GemScatterPlotData;
@@ -89,15 +94,15 @@ component GemScatterPlot(
 
 | Name  | Type               | Description                             | DefaultValue                                |
 |-------|--------------------|-----------------------------------------|---------------------------------------------|
-| data  | GemScatterPlotData | A collection of data point sets to show | `null` (no data)                            |
-| xAxis | GemScatterPlotAxis | Configuration for the x axis            | `null` (dynamically scaled, unlabeled axis) |
-| yAxis | GemScatterPlotAxis | Configuration for the y axis            | `null` (dynamically scaled, unlabeled axis) | 
+| data  | `GemScatterPlotData` | A collection of data point sets to show | `null` (no data)                            |
+| xAxis | `GemScatterPlotAxis` | Configuration for the x axis            | `null` (dynamically scaled, unlabeled axis) |
+| yAxis | `GemScatterPlotAxis` | Configuration for the y axis            | `null` (dynamically scaled, unlabeled axis) | 
 
 ### Scatter Plot Types
 
 `GemScatterPlotTypes.cd` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/charts/GemScatterPlotTypes.cd))
 
-```cd
+```java
 package mc.fenix.charts;
 import java.util.List;
 import java.util.Optional;
@@ -147,37 +152,37 @@ classdiagram GemScatterPlotTypes {
 
 #### GemScatterPlotData
 
-| Name | Type                     | Description               | DefaultValue     |
-|------|--------------------------|---------------------------|------------------|
-| sets | List\<GemScatterPlotSet> | All data sets to be shown | `null` (no data) |
+| Name | Type                        | Description               | DefaultValue     |
+|------|-----------------------------|---------------------------|------------------|
+| sets | `List<GemScatterPlotSet>` | All data sets to be shown | `null` (no data) |
 
 #### GemScatterPlotAxis
 
-| Name      | Type              | Description                            | DefaultValue                                 |
-|-----------|-------------------|----------------------------------------|----------------------------------------------|
-| label     | Optional\<String> | The name of the axis                   | `null` (no label)                            |
-| minValue  | Optional\<Double> | The minimum value the axis can display | `null` (lowest value which appears in data)  |
-| maxValue  | Optional\<Double> | The maximum value the axis can display | `null` (highest value which appears in data) |
-| stepWidth | Optional\<Double> | The step width between two axis marks  | `null` (dynamically determined)              |
+| Name      | Type             | Description                            | DefaultValue                                 |
+|-----------|------------------|----------------------------------------|----------------------------------------------|
+| label     | `Optional<String>` | The name of the axis                   | `null` (no label)                            |
+| minValue  | `Optional<Double>` | The minimum value the axis can display | `null` (lowest value which appears in data)  |
+| maxValue  | `Optional<Double>` | The maximum value the axis can display | `null` (highest value which appears in data) |
+| stepWidth | `Optional<Double>` | The step width between two axis marks  | `null` (dynamically determined)              |
 
 #### GemScatterPlotSet
 
-| Name       | Type                           | Description                            | DefaultValue             |
-|------------|--------------------------------|----------------------------------------|--------------------------|
-| label      | String                         | Display name of the set                | `null` (no display name) |
-| shape      | Optional\<GemScatterPlotShape> | Shape of the data points               | `null` (CIRCLE)          |
-| points     | List\<GemScatterPlotPoint>     | List of data points to display         | `null` (no data)         |
-| color      | Optional\<String>              | Color of the data points               | `null` (random)          |
-| hoverColor | Optional\<String>              | Color of a data point when hovering it | `null` (random)          |
+| Name       | Type                       | Description                            | DefaultValue             |
+|------------|----------------------------|----------------------------------------|--------------------------|
+| label      | `String`                     | Display name of the set                | `null` (no display name) |
+| shape      | `Optional<GemScatterPlotShape>` | Shape of the data points               | `null` (CIRCLE)          |
+| points     | `List<GemScatterPlotPoint>`  | List of data points to display         | `null` (no data)         |
+| color      | `Optional<String>`           | Color of the data points               | `null` (random)          |
+| hoverColor | `Optional<String>`           | Color of a data point when hovering it | `null` (random)          |
 
 #### GemScatterPlotPoint
 
-| Name        | Type               | Description                               | DefaultValue         |
-|-------------|--------------------|-------------------------------------------|----------------------|
-| x           | double             | x coordinate of the data point            | -                    |
-| y           | double             | y coordinate of the data point            | -                    |
-| label       | String             | Label to be shown when hovering the point | `null` ("undefined") |
-| pointRadius | Optional\<Integer> | Radius of the point in pixels             | `null` (3)           |
+| Name        | Type              | Description                               | DefaultValue         |
+|-------------|-------------------|-------------------------------------------|----------------------|
+| x           | `double`            | x coordinate of the data point            | -                    |
+| y           | `double`            | y coordinate of the data point            | -                    |
+| label       | `String`            | Label to be shown when hovering the point | `null` ("undefined") |
+| pointRadius | `Optional<Integer>` | Radius of the point in pixels             | `null` (3)           |
 
 
 

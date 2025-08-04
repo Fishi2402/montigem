@@ -1,3 +1,8 @@
+---
+hide:
+  - navigation
+---
+
 GemGrid is a container which arranges input elements in a grid pattern.
 
 ## Usage example
@@ -102,7 +107,7 @@ Additional SCSS styles:
 `GemRow.gui`
 ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/arrange/GemRow.gui))
 
-```ts
+```java
 package mc.fenix.arrange;
 
 component GemGrid(

@@ -1,10 +1,15 @@
+---
+hide:
+  - navigation
+---
+
 The component is a checkbox with a label. It is used whenever an input for a
 binary choice is required, e.g., agreeing to terms and conditions or opting in
 to a newsletter.
 
 ## Usage example
 
-```gui
+```ts
 package example_input;
 
 import Domain.Person;
@@ -27,7 +32,7 @@ page GemCheckBoxInputExample(List<Person> persons) {
 `GemCheckBoxInput.gui`
 ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/input/GemCheckBoxInput.gui))
 
-```
+```java
 package mc.fenix.input;
 
 component GemCheckBoxInput(

@@ -1,8 +1,13 @@
+---
+hide:
+  - navigation
+---
+
 The component shows a video on a web page. 
 
 ## Usage example
 
-```gui
+```ts
 package example_basic;
 
 import mc.fenix.basic.GemVideo;
@@ -18,7 +23,7 @@ page GemVideoExample() {
 
 `GemVideo.gui`([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/basic/GemVideo.gui))
 
-```gui
+```java
 package mc.fenix.basic;
 
 component GemVideo(

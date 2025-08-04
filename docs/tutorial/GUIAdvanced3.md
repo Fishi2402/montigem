@@ -1,4 +1,9 @@
-## GUI layout
+---
+hide:
+  - navigation
+---
+
+# GUI layout
 
 A typical layout of a component consists of a combination of columns, rows and
 grids. The `mc.fenix.arrange` package contains corresponding components

@@ -1,4 +1,9 @@
-## Charts
+---
+hide:
+  - navigation
+---
+
+# Charts
 
 Here we create a page with a bunch of charts. The process is no different from
 creating a normal page, but we often have to use hand-written functions.

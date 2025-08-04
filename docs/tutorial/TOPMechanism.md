@@ -1,6 +1,9 @@
+---
+hide:
+  - navigation
+---
 
-
-## TOP-Mechanism
+# TOP-Mechanism
 
 Most of the more advanced features of MontiGem involve extending generated code
 (models) with hand-written code. Such extensions are mostly done using so-called

@@ -1,4 +1,7 @@
-# GemVennDiagra
+---
+hide:
+  - navigation
+---
 
 A Venn diagram is a diagram style that shows the logical relation between sets. It is used to teach elementary set theory, and to illustrate simple set relationships in probability, logic, statistics, linguistics and computer science.
 
@@ -6,7 +9,7 @@ A Venn diagram is a diagram style that shows the logical relation between sets. 
 
 `RowsTester` takes `GemVennDiagram` in its body
 
-```md
+```ts
 package example;
 import mc.fenix.charts.GemVennDiagram;
 import mc.fenix.charts.GemVennDiagramTypes.GemVennDiagramData;
@@ -27,7 +30,7 @@ page RowsTester(
 
 `GemVennDiagram.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/charts/GemVennDiagram.gui))
 
-```
+```java
 package mc.fenix.charts;
 
 import mc.fenix.charts.GemVennDiagramTypes.GemVennDiagramData;
@@ -36,15 +39,16 @@ component GemVennDiagram(
     GemVennDiagramData data
 )
 ```
+
 | Name | Type | Description | Default value |
 |---|---|---|---|
-| data | GemVennDiagramData | is in form of GemVennDiagramData, it contains all information that will be used to plot the line chart|`null`|
+| data | `GemVennDiagramData` | is in form of GemVennDiagramData, it contains all information that will be used to plot the line chart|`null`|
 
 ### GemVennDiagramTypes
 
 `GemVennDiagramTypes.cd` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/charts/GemVennDiagramTypes.cd))
 
-```
+```java
 package mc.fenix.charts;
 
 import java.util.List;

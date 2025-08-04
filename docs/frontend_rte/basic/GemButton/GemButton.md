@@ -1,3 +1,8 @@
+---
+hide:
+  - navigation
+---
+
 Button enables user interaction through simple clicks or taps, triggering
 actions or tasks.
 
@@ -35,7 +40,7 @@ public class GemButtonExample extends GemButtonExampleTOP {
 
 `GemButton.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/basic/GemButton.gui))
 
-```ts
+```java
 package mc.fenix.basic;
 
 component GemButton(

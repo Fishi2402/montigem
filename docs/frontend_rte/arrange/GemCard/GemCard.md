@@ -1,3 +1,8 @@
+---
+hide:
+  - navigation
+---
+
 Card is a container with a header and a body. Both header and body may contain
 any elements, such as button, inputs, charts, etc.
 
@@ -33,7 +38,7 @@ page GemCardExample() {
 
 `GemCard.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/arrange/GemCard.gui))
 
-```ts
+```java
 package mc.fenix.arrange;
 
 component GemCard(

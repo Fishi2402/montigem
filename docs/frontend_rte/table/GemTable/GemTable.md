@@ -1,9 +1,14 @@
+---
+hide:
+  - navigation
+---
+
 A table organizes and displays text or other view elements in rows and columns. A header gives information about what to expect in each column of the body.
 
 ## Usage example
 
 Given domain model:
-```cd
+```java
 classdiagram Domain {
   class Person {
     java.time.LocalDate birthday;
@@ -12,7 +17,7 @@ classdiagram Domain {
 }
 ```
 Table with `GemTextInput` as content in column *Birthday*
-```gui
+```ts
 package example_table;
 
 import mc.fenix.table.GemTable;
@@ -46,7 +51,7 @@ page GemTableExample(List<Person> persons) {
 
 
 Table with header and row cells spanned over multiple rows and columns
-```gui
+```ts
 package example_table;
 
 import mc.fenix.table.GemTable;
@@ -91,7 +96,7 @@ page GemTableExample() {
 
 `GemTable.gui`([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/table/GemTable.gui))
 
-```gui
+```java
 package mc.fenix.table;
 
 component GemTable(
@@ -117,7 +122,7 @@ component GemTable(
 
 A table row that identifies the head of the table, adds some styling to text content by default.
 
-```gui
+```java
 package mc.fenix.table;
 
 component GemTableHeader(
@@ -135,7 +140,7 @@ component GemTableHeader(
 
 Controls dimensions that content should occupy within a table's header.
 
-```gui
+```java
 package mc.fenix.table;
 
 component GemTableHeaderCell(
@@ -155,7 +160,7 @@ component GemTableHeaderCell(
 
 A table row that is part of the body of the table.
 
-```gui
+```java
 package mc.fenix.table;
 
 component GemTableRow(
@@ -173,7 +178,7 @@ component GemTableRow(
 
 Controls dimensions that content should occupy within a table's body.
 
-```gui
+```java
 package mc.fenix.table;
 
 component GemTableRowCell(

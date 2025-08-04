@@ -1,8 +1,13 @@
+---
+hide:
+  - navigation
+---
+
 Displays an icon on a web page.
 
 ## Usage example:
 
-```gui
+```ts
 package example_basic;
 
 import mc.fenix.basic.GemIcon;
@@ -33,7 +38,7 @@ page GemIconExample() {
 
 `GemIcon.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/basic/GemIcon.gui))
 
-```
+```java
 package mc.fenix.basic;
 
 component GemIcon(

@@ -1,3 +1,8 @@
+---
+hide:
+  - navigation
+---
+
 # Creating a basic GUI 
 
 The source for graphical user interface (GUI) of MontiGem apps are GUI DSL

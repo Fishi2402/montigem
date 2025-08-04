@@ -1,3 +1,8 @@
+---
+hide:
+  - navigation
+---
+
 # Customzing the App
 
 As mentioned for the TOP-mechanism, hand-written code adaptions are necessary

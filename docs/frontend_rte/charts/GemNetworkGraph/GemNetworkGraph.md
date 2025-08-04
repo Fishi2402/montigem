@@ -1,4 +1,7 @@
-# GemNetworkGraph
+---
+hide:
+  - navigation
+---
 
 NetworkGraph is a graphical representation of a network. It is composed of nodes and edges. Nodes are the entities of the network, and edges are the relationships between the nodes.
 
@@ -6,7 +9,7 @@ NetworkGraph is a graphical representation of a network. It is composed of nodes
 
 `RowsTester` takes `GemNetworkGraph` in its body.
 
-```md
+```ts
 package example;
 import mc.fenix.charts.GemNetworkGraph;
 page RowsTester( GemNetworkData data) {
@@ -23,7 +26,7 @@ page RowsTester( GemNetworkData data) {
 
 `GemNetworkGraph.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/networkgraph/GemGraph.gui))
 
-```
+```java
 package mc.fenix.charts;
 
 import mc.fenix.charts.GemNetworkGraphTypes.GemNetworkData;
@@ -33,18 +36,17 @@ component GemNetworkGraph(
   boolean improvedLayout = true
 )
 ```
+
 | Name | Type | Description | Default value |
 |---|---|---|---|
-| data | GemNetworkData | is in form of GemNetworkData, it contains all information that will be used to plot the line chart|`null`|
-| improvedLayout | boolean | enables an improved layout for the network graph | `true` |   
+| data | `GemNetworkData` | is in form of GemNetworkData, it contains all information that will be used to plot the line chart|`null`|
+| improvedLayout | `boolean` | enables an improved layout for the network graph | `true` |   
 
 ### GemNetworkGraphTypes
 
 GemNetworkGraphTypes.cd ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/networkgraph/NetworkGraphTypes.cd))
 
-
-
-```
+```java
 package mc.fenix.charts;
 
 import java.util.List;
