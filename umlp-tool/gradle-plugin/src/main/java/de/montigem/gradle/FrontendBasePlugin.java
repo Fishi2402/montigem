@@ -4,7 +4,7 @@ package de.montigem.gradle;
 import com.github.gradle.node.npm.task.NpmTask;
 import com.github.gradle.node.npm.task.NpxTask;
 import de.montigem.gradle.specific.CreateSymLinkTask;
-import de.montigem.gradle.specific.FrontendSetupTask;
+import de.montigem.gradle.specific.SetupFrontendTask;
 import de.montigem.gradle.specific.GUI2JavaTask;
 import de.montigem.gradle.specific.GUI2SymTask;
 import de.montigem.gradle.specific.Model2JsweetConfigTask;
@@ -34,10 +34,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import static de.montigem.gradle.BasePlugin.GUI_LIB_NAME;
-import static de.montigem.gradle.BasePlugin.UMLP_MODULES_DOMAIN_SYMBOLS_CONFIG;
-import static de.montigem.gradle.BasePlugin.UMLP_MODULES_GUI_SYMBOLS_CONFIG;
-import static de.montigem.gradle.BasePlugin.UMLP_MODULES_IMPORT_MAP_CONFIG;
+import static de.montigem.gradle.BasePlugin.GUI_LIB_CONFIG;
+import static de.montigem.gradle.BasePlugin.MONTIGEM_MODULE_UMLP_SYMBOLS_CONFIG;
+import static de.montigem.gradle.BasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
+import static de.montigem.gradle.BasePlugin.MONTIGEM_MODULE_IMPORT_MAP_CONFIG;
 import static de.montigem.gradle.module.ModuleFrontendPlugin.BUILD_LIB_TASK;
 
 /**
@@ -71,7 +71,7 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
     addProjectDependencies(project, local);
 
     //Create Tasks
-    TaskProvider<FrontendSetupTask> frontendSetupTask = createFrontendSetupTask(project);
+    TaskProvider<SetupFrontendTask> frontendSetupTask = createFrontendSetupTask(project);
 
     Provider<Directory> domainSymOutDir = project.getLayout().getBuildDirectory().dir("symbols_gui_domain__from_task_domainsymbol");
     TaskProvider<UMLP2SymTask> domainSymbolGenTask = createDomainSymbolGen(project, domainSymOutDir, local);
@@ -162,8 +162,8 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
     return project.getTasks().register(UMLP_FRONTEND_DEPLOY_IMAGE_CI, FrontendCIImageTask.class);
   }
 
-  private TaskProvider<FrontendSetupTask> createFrontendSetupTask(Project project) {
-    return project.getTasks().register(UMLP_FRONTEND_SETUP_TASK_NAME, FrontendSetupTask.class, umlpTask -> {
+  private TaskProvider<SetupFrontendTask> createFrontendSetupTask(Project project) {
+    return project.getTasks().register(UMLP_FRONTEND_SETUP_TASK_NAME, SetupFrontendTask.class, umlpTask -> {
       umlpTask.setGroup(UMLP_GROUP_NAME);
       setIfPathExists(x -> umlpTask.getInput().set(x), Path.of(project.getProjectDir().getAbsolutePath(), "config"));
       umlpTask.getOutput().set(Path.of(project.getBuildDir().getAbsolutePath(), "frontendGen").toFile());
@@ -178,18 +178,18 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
       umlpTask.getSymbolOutDir().set(symOutDir);
       umlpTask.getOutputDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols_gui_domain__from_task_domainsymbol").toFile());
 
-      umlpTask.getModelDir().from(project.getConfigurations().getByName(BasePlugin.UMLP_MODULES_MODELS_CONFIG));
+      umlpTask.getModelDir().from(project.getConfigurations().getByName(BasePlugin.MONTIGEM_MODULE_UMLP_MODELS_CONFIG));
     });
 
     if (local) {
       Project rteClient = project.project(":umlp-rte:client");
-      project.getDependencies().add(UMLP_MODULES_GUI_SYMBOLS_CONFIG, rteClient);
+      project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG, rteClient);
       createDomainSymbolsTask.configure(task -> {
-        task.getSymbolPath().from(project.getConfigurations().named(UMLP_MODULES_GUI_SYMBOLS_CONFIG));
+        task.getSymbolPath().from(project.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
       });
     }
     else {
-      project.getDependencies().add(UMLP_MODULES_GUI_SYMBOLS_CONFIG,
+      project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG,
           "umlp:client:" + getStringProjectProperty(project, "mc_version", "")
       );
     }
@@ -223,7 +223,7 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
       }
     }
     else {
-      Configuration guiLib = project.getConfigurations().getByName(GUI_LIB_NAME);
+      Configuration guiLib = project.getConfigurations().getByName(GUI_LIB_CONFIG);
       createGuiSymbolsTask.get().getSymbolPath().from(
           project.provider(() -> guiLib.getFiles())
       );
@@ -290,22 +290,22 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
       umlpTask.getSymbolOutDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols_gui_domain__from_task_frontendgui").toFile());
 
       // load module symbols
-      umlpTask.getSymbolDir().from(project.getConfigurations().named(UMLP_MODULES_DOMAIN_SYMBOLS_CONFIG));
-      umlpTask.getSymbolDir().from(project.getConfigurations().named(UMLP_MODULES_IMPORT_MAP_CONFIG));
-      umlpTask.getSymbolDir().from(project.getConfigurations().named(UMLP_MODULES_GUI_SYMBOLS_CONFIG));
+      umlpTask.getSymbolDir().from(project.getConfigurations().named(MONTIGEM_MODULE_UMLP_SYMBOLS_CONFIG));
+      umlpTask.getSymbolDir().from(project.getConfigurations().named(MONTIGEM_MODULE_IMPORT_MAP_CONFIG));
+      umlpTask.getSymbolDir().from(project.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
     });
 
     if (local) {
       Project rteClient = project.project(":umlp-rte:client");
-      project.getDependencies().add(UMLP_MODULES_GUI_SYMBOLS_CONFIG, rteClient);
-      project.getDependencies().add(UMLP_MODULES_IMPORT_MAP_CONFIG, rteClient);
+      project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG, rteClient);
+      project.getDependencies().add(MONTIGEM_MODULE_IMPORT_MAP_CONFIG, rteClient);
       // guiGenTask.configure(task -> task.dependsOn(rteClient.getTasks().named(GUI2SYM_JAR_TASK)));
     }
     else {
-      project.getDependencies().add(UMLP_MODULES_GUI_SYMBOLS_CONFIG,
+      project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG,
           "umlp:client:" + getStringProjectProperty(project, "mc_version", "")
       );
-      project.getDependencies().add(UMLP_MODULES_IMPORT_MAP_CONFIG,
+      project.getDependencies().add(MONTIGEM_MODULE_IMPORT_MAP_CONFIG,
           "umlp:client:" + getStringProjectProperty(project, "mc_version", "")
       );
     }
@@ -314,14 +314,14 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
   }
 
   @NotNull
-  private static TaskProvider<Sync> createSyncDomainTask(Project project, TaskProvider<FrontendSetupTask> frontendSetupTask) {
+  private static TaskProvider<Sync> createSyncDomainTask(Project project, TaskProvider<SetupFrontendTask> frontendSetupTask) {
     return project.getTasks().register("SYNC_" + UMLP_FRONTEND_DOMAIN_TASK_NAME, Sync.class, syncTask -> {
       syncTask.into(Path.of(frontendSetupTask.get().getOutput().getAsFile().get().getAbsolutePath(), "build", "appdomain").toFile());
     });
   }
 
   @NotNull
-  private static TaskProvider<Sync> createSyncGuiTask(Project project, TaskProvider<FrontendSetupTask> frontendSetupTask) {
+  private static TaskProvider<Sync> createSyncGuiTask(Project project, TaskProvider<SetupFrontendTask> frontendSetupTask) {
     return project.getTasks().register("SYNC_" + UMLP_FRONTEND_GUI_TASK_NAME, Sync.class, syncTask -> {
       syncTask.into(Path.of(frontendSetupTask.get().getOutput().getAsFile().get().getAbsolutePath(), "build", "appgui").toFile());
       syncTask.exclude("**/*.java");
@@ -344,7 +344,7 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
   //        });
   //  }
 
-  private void disableUnusedTasks(Project project, TaskProvider<FrontendSetupTask> frontendSetupTask, TaskProvider<UMLP2SymTask> domainSymbolGenTask, TaskProvider<UMLP2TSTask> frontendDomainTask, TaskProvider<Model2JsweetConfigTask> java2TypeScriptConfigTaskTask, TaskProvider<Sync> syncJsweetConfigTask, TaskProvider<Java2TSTask> frontendDomainJ2TSTask, TaskProvider<GUI2JavaTask> frontendGuiTask, TaskProvider<Java2TSTask> frontendGUIJ2TSTask, TaskProvider<UMLP2JsweetObserverTask> java2TypeScriptAdditionals, TaskProvider<Sync> syncDomainTask, TaskProvider<Sync> syncGuiTask, TaskProvider<Sync> syncTSHWC, boolean j2ts) {
+  private void disableUnusedTasks(Project project, TaskProvider<SetupFrontendTask> frontendSetupTask, TaskProvider<UMLP2SymTask> domainSymbolGenTask, TaskProvider<UMLP2TSTask> frontendDomainTask, TaskProvider<Model2JsweetConfigTask> java2TypeScriptConfigTaskTask, TaskProvider<Sync> syncJsweetConfigTask, TaskProvider<Java2TSTask> frontendDomainJ2TSTask, TaskProvider<GUI2JavaTask> frontendGuiTask, TaskProvider<Java2TSTask> frontendGUIJ2TSTask, TaskProvider<UMLP2JsweetObserverTask> java2TypeScriptAdditionals, TaskProvider<Sync> syncDomainTask, TaskProvider<Sync> syncGuiTask, TaskProvider<Sync> syncTSHWC, boolean j2ts) {
     if (j2ts) {
       frontendDomainTask.configure(umlpTask -> {
         umlpTask.setEnabled(false);

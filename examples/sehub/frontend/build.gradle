@@ -8,8 +8,8 @@ plugins {
 def useCD2GUI = true
 
 dependencies {
-  umlpModulesImportMap project(":umlp-rte")
-  umlpModulesGuiSymbols project(":umlp-rte")
+  montigemModuleImportMap project(":umlp-rte")
+  montigemModuleGUISymbols project(":umlp-rte")
   implementation project(":examples:sehub:backend")
   domainSources project(":examples:sehub:backend")
 }

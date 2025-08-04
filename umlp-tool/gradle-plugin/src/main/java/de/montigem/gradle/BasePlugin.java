@@ -6,7 +6,7 @@ import de.montigem.gradle.module.ModuleFrontendPlugin;
 import de.montigem.gradle.module.ModulePlugin;
 import de.montigem.gradle.specific.CD2GUITask;
 import de.montigem.gradle.specific.CreateNpmrcTask;
-import de.montigem.gradle.specific.FrontendSetupTask;
+import de.montigem.gradle.specific.SetupFrontendTask;
 import de.montigem.gradle.specific.GUI2JavaTask;
 import de.montigem.gradle.specific.GUI2SymTask;
 import de.montigem.gradle.specific.GUIVariabilityTask;
@@ -30,15 +30,15 @@ import java.util.Arrays;
  */
 public abstract class BasePlugin implements Plugin<Project> {
 
-  public static final String UMLP_MODULES_CONFIG = "umlpModules";
+  public static final String MONTIGEM_MODULE_CONFIG = "montigemModule";
   // The following configs are all defined with filtering attributes
-  public static final String UMLP_MODULES_GEN_CONFIG = "umlpModulesGen";
-  public static final String UMLP_MODULES_MODELS_CONFIG = "umlpModulesModels";
-  public static final String UMLP_MODULES_DOMAIN_SYMBOLS_CONFIG = "umlpModulesDomainSymbols";
-  public static final String UMLP_MODULES_IMPORT_MAP_CONFIG = "umlpModulesImportMap";
-  public static final String UMLP_MODULES_GUI_SYMBOLS_CONFIG = "umlpModulesGuiSymbols";
+  public static final String MONTIGEM_MODULE_GENERATOR_EXTENSION_CONFIG = "montigemModuleGenExt";
+  public static final String MONTIGEM_MODULE_UMLP_MODELS_CONFIG = "montigemModuleUMLPModels";
+  public static final String MONTIGEM_MODULE_UMLP_SYMBOLS_CONFIG = "montigemModuleUMLPSymbols";
+  public static final String MONTIGEM_MODULE_IMPORT_MAP_CONFIG = "montigemModuleImportMap";
+  public static final String MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG = "montigemModuleGUISymbols";
 
-  public static final String GUI_LIB_NAME = "guiLib";
+  public static final String GUI_LIB_CONFIG = "guiLib";
 
   @Override
   public void apply(Project project) {
@@ -54,51 +54,53 @@ public abstract class BasePlugin implements Plugin<Project> {
     project.getExtensions().getExtraProperties().set("UMLP2TSTask", UMLP2TSTask.class);
     project.getExtensions().getExtraProperties().set("UMLPSymbolsTask", UMLP2SymTask.class);
     project.getExtensions().getExtraProperties().set(GUI2SymTask.class.getSimpleName(), GUI2SymTask.class);
-    project.getExtensions().getExtraProperties().set("FrontendSetupTask", FrontendSetupTask.class);
+    project.getExtensions().getExtraProperties().set("SetupFrontendTask", SetupFrontendTask.class);
     project.getExtensions().getExtraProperties().set("GUI2SymTask", de.montigem.gradle.specific.serialize.GUI2SymTask.class);
     project.getExtensions().getExtraProperties().set("CD2SymTask", CD2SymTask.class);
     project.getExtensions().getExtraProperties().set("CheckDirEqualityTask", CheckDirEqualityTask.class);
     project.getExtensions().getExtraProperties().set("OD2DataTask", OD2DataTask.class);
 
     // Module system
-    var umlpModulesC = project.getConfigurations().maybeCreate(UMLP_MODULES_CONFIG);
-    umlpModulesC.setCanBeResolved(false);
+    var montigemModuleC = project.getConfigurations().maybeCreate(MONTIGEM_MODULE_CONFIG);
+    montigemModuleC.setCanBeResolved(false);
 
-    var umlpModulesGenC = project.getConfigurations().maybeCreate(UMLP_MODULES_GEN_CONFIG);
-    ModulePlugin.addModuleGenJarJarAttributes(umlpModulesGenC, project);
-    umlpModulesGenC.extendsFrom(umlpModulesC);
+    var montigemModuleGenExtC = project.getConfigurations().maybeCreate(MONTIGEM_MODULE_GENERATOR_EXTENSION_CONFIG);
+    ModulePlugin.addGeneratorExtensionJarAttributes(montigemModuleGenExtC, project);
+    montigemModuleGenExtC.extendsFrom(montigemModuleC);
 
-    var umlpModulesModelsC = project.getConfigurations().maybeCreate(UMLP_MODULES_MODELS_CONFIG);
-    ModulePlugin.addModelsJarAttributes(umlpModulesModelsC, project);
-    umlpModulesModelsC.extendsFrom(umlpModulesC);
+    var montigemModuleUMLPModelsC = project.getConfigurations().maybeCreate(MONTIGEM_MODULE_UMLP_MODELS_CONFIG);
+    ModulePlugin.addUMLPModelsJarAttributes(montigemModuleUMLPModelsC, project);
+    montigemModuleUMLPModelsC.extendsFrom(montigemModuleC);
 
-    var umlpModulesDSC = project.getConfigurations().maybeCreate(UMLP_MODULES_DOMAIN_SYMBOLS_CONFIG);
-    umlpModulesDSC.setCanBeConsumed(false);
-    ModuleFrontendPlugin.addDomainSymbolsJarAttributes(umlpModulesDSC, project);
-    umlpModulesDSC.extendsFrom(umlpModulesC);
+    var montigemModuleUSC = project.getConfigurations().maybeCreate(MONTIGEM_MODULE_UMLP_SYMBOLS_CONFIG);
+    montigemModuleUSC.setCanBeConsumed(false);
+    ModuleFrontendPlugin.addUMLPSymbolsJarAttributes(montigemModuleUSC, project);
+    montigemModuleUSC.extendsFrom(montigemModuleC);
 
-    var umlpModulesIMC = project.getConfigurations().maybeCreate(UMLP_MODULES_IMPORT_MAP_CONFIG);
-    umlpModulesIMC.setCanBeConsumed(false);
-    ModuleFrontendPlugin.addImportMapJarAttributes(umlpModulesIMC, project);
-    umlpModulesIMC.extendsFrom(umlpModulesC);
+    var montigemModuleIMC = project.getConfigurations().maybeCreate(MONTIGEM_MODULE_IMPORT_MAP_CONFIG);
+    montigemModuleIMC.setCanBeConsumed(false);
+    ModuleFrontendPlugin.addImportMapJarAttributes(montigemModuleIMC, project);
+    montigemModuleIMC.extendsFrom(montigemModuleC);
 
-    var umlpModulesGSC = project.getConfigurations().maybeCreate(UMLP_MODULES_GUI_SYMBOLS_CONFIG);
-    umlpModulesGSC.setCanBeConsumed(false);
-    ModuleFrontendPlugin.addGuiSymbolsJarAttributes(umlpModulesGSC, project);
-    umlpModulesGSC.extendsFrom(umlpModulesC);
+    var montigemModuleGSC = project.getConfigurations().maybeCreate(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG);
+    montigemModuleGSC.setCanBeConsumed(false);
+    ModuleFrontendPlugin.addGuiSymbolsJarAttributes(montigemModuleGSC, project);
+    montigemModuleGSC.extendsFrom(montigemModuleC);
 
     project.getPlugins().withId("java", plugin -> {
-      project.getConfigurations().getByName("implementation").extendsFrom(umlpModulesC);
+      project.getConfigurations().getByName("implementation").extendsFrom(montigemModuleC);
     });
     project.getPlugins().withId("java-library", plugin -> {
-      project.getConfigurations().getByName("api").extendsFrom(umlpModulesC);
+      project.getConfigurations().getByName("api").extendsFrom(montigemModuleC);
     });
 
     // Add guiLib configuration
-    project.getConfigurations().maybeCreate(GUI_LIB_NAME);
+    /*
+    project.getConfigurations().maybeCreate(GUI_LIB_CONFIG);
     if (!getBooleanProjectProperty(project, "useLocalDependencies")) {
-      project.getDependencies().add(GUI_LIB_NAME, "umlp.umlp-rte:client:" + FrontendPlugin.getStringProjectProperty(project, "mc_version", "") + ":guisymbols");
+      project.getDependencies().add(GUI_LIB_CONFIG, "umlp.umlp-rte:client:" + FrontendPlugin.getStringProjectProperty(project, "mc_version", "") + ":guisymbols");
     }
+    /* */
 
     StatisticListener.registerOnce(project);
 

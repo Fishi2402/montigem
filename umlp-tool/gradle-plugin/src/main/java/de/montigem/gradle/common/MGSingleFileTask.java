@@ -38,9 +38,9 @@ public abstract class MGSingleFileTask extends MCSingleFileTask implements Gradl
   public MGSingleFileTask(String type, String symbolPathConfigurationName) {
     super(type, symbolPathConfigurationName);
 
-    Configuration umlpModulesGen = getProject().getConfigurations().findByName(BasePlugin.UMLP_MODULES_GEN_CONFIG);
-    if (umlpModulesGen != null) {
-      getModules().from(umlpModulesGen);
+    Configuration montigemModuleGenExt = getProject().getConfigurations().findByName(BasePlugin.MONTIGEM_MODULE_GENERATOR_EXTENSION_CONFIG);
+    if (montigemModuleGenExt != null) {
+      getModules().from(montigemModuleGenExt);
     }
 
     getModuleConfigTemplates().convention(getProject().provider(() -> {

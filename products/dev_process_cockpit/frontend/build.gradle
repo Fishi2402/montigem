@@ -9,8 +9,8 @@ plugins {
 }
 
 dependencies {
-  umlpModulesGuiSymbols project(":umlp-rte:client")
-  umlpModulesImportMap project(":umlp-rte:client")
+  montigemModuleGUISymbols project(":umlp-rte:client")
+  montigemModuleImportMap project(":umlp-rte:client")
 }
 
 def useCD2GUI = false
@@ -55,8 +55,8 @@ tasks.register('genGUI2', GUI2JavaTask) {
       generateCDTOGUI.getOutputDir().file("symbols"),
   )
   symbolDir.from(
-      configurations.umlpModulesGuiSymbols,
-      configurations.umlpModulesImportMap
+      configurations.montigemModuleGUISymbols,
+      configurations.montigemModuleImportMap
   )
   hwcDir = file("src/app/")
   symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")

@@ -8,7 +8,7 @@ import de.montigem.gradle.specific.UMLP2SymTask;
 import de.montigem.gradle.specific.serialize.CD2SymTask;
 import de.montigem.gradle.specific.serialize.GUI2SymTask;
 import de.se_rwth.commons.logging.Log;
-import de.montigem.gradle.specific.FrontendSetupTask;
+import de.montigem.gradle.specific.SetupFrontendTask;
 import de.montigem.gradle.specific.UMLP2JsweetObserverTask;
 import de.montigem.gradle.specific.Java2TSTask;
 import groovy.lang.Closure;
@@ -37,8 +37,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.function.Consumer;
 
-import static de.montigem.gradle.BasePlugin.GUI_LIB_NAME;
-import static de.montigem.gradle.BasePlugin.UMLP_MODULES_GUI_SYMBOLS_CONFIG;
+import static de.montigem.gradle.BasePlugin.GUI_LIB_CONFIG;
+import static de.montigem.gradle.BasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
 import static de.montigem.gradle.FrontendBasePlugin.CREATE_DOMAIN_SYMBOLS_TASK_NAME;
 import static de.montigem.gradle.FrontendBasePlugin.UMLP_FRONTEND_DOMAIN_TASK_NAME;
 import static de.montigem.gradle.FrontendBasePlugin.UMLP_FRONTEND_GUI_TASK_NAME;
@@ -94,7 +94,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
     }
     setUpJSweetClassPath(project, local);
 
-    TaskProvider<FrontendSetupTask> frontendSetupTask = project.getTasks().named(UMLP_FRONTEND_SETUP_TASK_NAME, FrontendSetupTask.class);
+    TaskProvider<SetupFrontendTask> frontendSetupTask = project.getTasks().named(UMLP_FRONTEND_SETUP_TASK_NAME, SetupFrontendTask.class);
 
     TaskProvider<GUI2JavaTask> frontendGuiTask = project.getTasks().named(UMLP_FRONTEND_GUI_TASK_NAME, GUI2JavaTask.class);
     TaskProvider<Sync> syncDomainTask = project.getTasks().named(SYNC_PREFIX + UMLP_FRONTEND_DOMAIN_TASK_NAME, Sync.class);
@@ -289,10 +289,10 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
 
       setIfPathExists(x -> umlpTask.getHwcDir().from(x), this.jsweetTSHWCDir);
 
-      umlpTask.getSymbolPath().from(project.getConfigurations().named(UMLP_MODULES_GUI_SYMBOLS_CONFIG));
-      umlpTask.getSymbolPath().from(project.getConfigurations().named(BasePlugin.UMLP_MODULES_IMPORT_MAP_CONFIG));
+      umlpTask.getSymbolPath().from(project.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
+      umlpTask.getSymbolPath().from(project.getConfigurations().named(BasePlugin.MONTIGEM_MODULE_IMPORT_MAP_CONFIG));
 
-      umlpTask.getModelDir().from(project.getConfigurations().named(BasePlugin.UMLP_MODULES_MODELS_CONFIG));
+      umlpTask.getModelDir().from(project.getConfigurations().named(BasePlugin.MONTIGEM_MODULE_UMLP_MODELS_CONFIG));
     });
     if (local) {
       Project umlpRteClientProject = project.findProject(":umlp-rte:client");
@@ -306,7 +306,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       }
     }
     else {
-      Configuration guiLib = project.getConfigurations().getByName(GUI_LIB_NAME);
+      Configuration guiLib = project.getConfigurations().getByName(GUI_LIB_CONFIG);
       additionalsTask.get().getSymbolPath().from(
           project.provider(() -> guiLib.getFiles())
       );
@@ -329,7 +329,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
   }
 
 
-/*  private TaskProvider<Sync> createSyncTSDomainHWC(Project project, TaskProvider<FrontendSetupTask> frontendSetupTask) {
+/*  private TaskProvider<Sync> createSyncTSDomainHWC(Project project, TaskProvider<SetupFrontendTask> frontendSetupTask) {
     return project.getTasks().register(SYNC_PREFIX + "TSDomainHWC", Sync.class, syncTask -> {
       syncTask.setGroup("sync");
       syncTask.from(jsweetTSDomainHWCDir);
@@ -339,7 +339,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
     });
   }
 
-  private TaskProvider<Sync> createSyncTSGUIHWC(Project project, TaskProvider<FrontendSetupTask> frontendSetupTask) {
+  private TaskProvider<Sync> createSyncTSGUIHWC(Project project, TaskProvider<SetupFrontendTask> frontendSetupTask) {
     return project.getTasks().register(SYNC_PREFIX + "TSGuiHWC", Sync.class, syncTask -> {
       syncTask.setGroup("sync");
       syncTask.from(jsweetTSGUIHWCDir);

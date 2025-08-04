@@ -10,10 +10,9 @@ plugins {
 }
 
 dependencies {
-  umlpModules(project(":modules:login"))
-  umlpModulesGen(project(":modules:comment"))
-  umlpModulesModels(project(":modules:comment"))
-  umlpModulesDomainSymbols(project(":modules:comment"))
+  montigemModule(project(":modules:login"))
+  montigemModuleGenExt(project(":modules:comment"))
+  montigemModuleUMLPModels(project(":modules:comment"))
 }
 
 application { // Set Main-Class for "run" task

@@ -6,7 +6,7 @@ Base Plugin:
  registers tasks-types,
  loads UMLPPluginDep,
  registers statistics,
- sets up [umlpModules](../../../../../../doc/ModuleSystem.md) configurations.
+ sets up [montigemModule](../../../../../../doc/ModuleSystem.md) configurations.
 
 ### UMLPPluginDep
 Uses the _buildInfo.properties_ file to load the umlp-tool (.jar) 

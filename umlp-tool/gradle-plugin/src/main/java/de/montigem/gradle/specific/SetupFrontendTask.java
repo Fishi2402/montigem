@@ -29,7 +29,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.StreamSupport;
 
-public abstract class FrontendSetupTask extends DefaultTask {
+public abstract class SetupFrontendTask extends DefaultTask {
 
   public static final String FRONTEND_CONFIG = "frontend/config/";
 
@@ -49,7 +49,7 @@ public abstract class FrontendSetupTask extends DefaultTask {
   @Optional
   public abstract Property<Boolean> getUnscopedNpmrc();
 
-  public FrontendSetupTask(){
+  public SetupFrontendTask(){
     super();
     getCreateNpmrc().convention(true);
     getUnscopedNpmrc().convention(false);

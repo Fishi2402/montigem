@@ -15,7 +15,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.function.Consumer;
 
-import static de.montigem.gradle.BasePlugin.UMLP_MODULES_GUI_SYMBOLS_CONFIG;
+import static de.montigem.gradle.BasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
 import static de.montigem.gradle.FrontendBasePlugin.getBooleanProjectProperty;
 import static de.montigem.gradle.FrontendBasePlugin.getStringProjectProperty;
 
@@ -124,13 +124,13 @@ public abstract class TestInfrastructurePlugin implements Plugin<Project> {
 
     if (local) {
       Project rteClient = project.project(":umlp-rte:client");
-      project.getDependencies().add(UMLP_MODULES_GUI_SYMBOLS_CONFIG, rteClient);
+      project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG, rteClient);
       testInfrastructureTask.configure(task -> {
-        task.getSymbolPath().from(project.getConfigurations().named(UMLP_MODULES_GUI_SYMBOLS_CONFIG));
+        task.getSymbolPath().from(project.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
       });
     }
     else {
-      project.getDependencies().add(UMLP_MODULES_GUI_SYMBOLS_CONFIG,
+      project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG,
           "umlp:client:" + getStringProjectProperty(project, "mc_version", "")
       );
     }

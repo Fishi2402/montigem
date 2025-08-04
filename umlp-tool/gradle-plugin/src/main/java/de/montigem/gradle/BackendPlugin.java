@@ -15,7 +15,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.function.Consumer;
 
-import static de.montigem.gradle.BasePlugin.UMLP_MODULES_GUI_SYMBOLS_CONFIG;
+import static de.montigem.gradle.BasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
 import static de.montigem.gradle.FrontendBasePlugin.getBooleanProjectProperty;
 import static de.montigem.gradle.FrontendBasePlugin.getStringProjectProperty;
 
@@ -92,21 +92,21 @@ public abstract class BackendPlugin implements Plugin<Project> {
       umlpTask.getSymbolOutDir().set(Path.of(
           project.getBuildDir().getAbsolutePath(), "umlp", "backend_symbols").toFile());
 
-      // Include umlpModulesModels
-      umlpTask.getModelDir().from(project.getConfigurations().getByName(BasePlugin.UMLP_MODULES_MODELS_CONFIG));
+      // Include montigemModuleUMLPModels
+      umlpTask.getModelDir().from(project.getConfigurations().getByName(BasePlugin.MONTIGEM_MODULE_UMLP_MODELS_CONFIG));
 
     });
 
     // Add Symbols and Tags of RTE ClassDiagrams to SymbolPath
     if (local) {
       Project rteClient = project.project(":umlp-rte:client");
-      project.getDependencies().add(UMLP_MODULES_GUI_SYMBOLS_CONFIG, rteClient);
+      project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG, rteClient);
       umlp2java.configure(task -> {
-        task.getSymbolPath().from(project.getConfigurations().named(UMLP_MODULES_GUI_SYMBOLS_CONFIG));
+        task.getSymbolPath().from(project.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
       });
     }
     else {
-      project.getDependencies().add(UMLP_MODULES_GUI_SYMBOLS_CONFIG,
+      project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG,
           "umlp:client:" + getStringProjectProperty(project, "mc_version", "")
       );
     }

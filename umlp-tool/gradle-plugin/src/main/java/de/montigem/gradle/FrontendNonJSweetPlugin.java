@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.montigem.gradle;
 
-import de.montigem.gradle.specific.FrontendSetupTask;
+import de.montigem.gradle.specific.SetupFrontendTask;
 import de.montigem.gradle.specific.GUI2JavaTask;
 import de.montigem.gradle.specific.UMLP2TSTask;
 import de.montigem.gradle.specific.CreateSymLinkTask;
@@ -14,7 +14,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.function.Consumer;
 
-import static de.montigem.gradle.BasePlugin.UMLP_MODULES_GUI_SYMBOLS_CONFIG;
+import static de.montigem.gradle.BasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
 import static de.montigem.gradle.FrontendBasePlugin.UMLP_FRONTEND_DOMAIN_TASK_NAME;
 import static de.montigem.gradle.FrontendBasePlugin.UMLP_FRONTEND_GUI_TASK_NAME;
 import static de.montigem.gradle.FrontendBasePlugin.UMLP_FRONTEND_SETUP_TASK_NAME;
@@ -35,7 +35,7 @@ public abstract class FrontendNonJSweetPlugin implements Plugin<Project> {
     TaskProvider<Sync> syncDomainTask = project.getTasks().named("SYNC_" + UMLP_FRONTEND_DOMAIN_TASK_NAME, Sync.class);
     TaskProvider<Sync> syncGuiTask = project.getTasks().named("SYNC_" + UMLP_FRONTEND_GUI_TASK_NAME, Sync.class);
 
-    TaskProvider<FrontendSetupTask> frontendSetupTask = project.getTasks().named(UMLP_FRONTEND_SETUP_TASK_NAME, FrontendSetupTask.class);
+    TaskProvider<SetupFrontendTask> frontendSetupTask = project.getTasks().named(UMLP_FRONTEND_SETUP_TASK_NAME, SetupFrontendTask.class);
 
     TaskProvider<CreateSymLinkTask> symLinkCreationTask =
         project.getTasks().named(UMLP_FRONTEND_SYMLINK_CREATION_TASK_NAME, CreateSymLinkTask.class);
@@ -113,10 +113,10 @@ public abstract class FrontendNonJSweetPlugin implements Plugin<Project> {
       at de.monticore.cd._symboltable.CDSymbolTables.getTransitiveSuperTypes(CDSymbolTables.java:86)
        */
 
-      umlpTask.getSymbolPath().from(project.getConfigurations().named(UMLP_MODULES_GUI_SYMBOLS_CONFIG));
-      umlpTask.getSymbolPath().from(project.getConfigurations().named(BasePlugin.UMLP_MODULES_IMPORT_MAP_CONFIG));
+      umlpTask.getSymbolPath().from(project.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
+      umlpTask.getSymbolPath().from(project.getConfigurations().named(BasePlugin.MONTIGEM_MODULE_IMPORT_MAP_CONFIG));
 
-      umlpTask.getModelDir().from(project.getConfigurations().named(BasePlugin.UMLP_MODULES_MODELS_CONFIG));
+      umlpTask.getModelDir().from(project.getConfigurations().named(BasePlugin.MONTIGEM_MODULE_UMLP_MODELS_CONFIG));
     });
   }
 

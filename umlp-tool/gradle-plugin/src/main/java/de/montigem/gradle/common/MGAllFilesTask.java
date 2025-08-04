@@ -39,9 +39,9 @@ abstract public class MGAllFilesTask extends MCAllFilesTask implements GradleTas
   public MGAllFilesTask(String type) {
     super(type, null);
 
-    Configuration umlpModulesGen = getProject().getConfigurations().findByName(BasePlugin.UMLP_MODULES_GEN_CONFIG);
-    if (umlpModulesGen != null) {
-      getModules().from(umlpModulesGen);
+    Configuration montigemModuleGenExt = getProject().getConfigurations().findByName(BasePlugin.MONTIGEM_MODULE_GENERATOR_EXTENSION_CONFIG);
+    if (montigemModuleGenExt != null) {
+      getModules().from(montigemModuleGenExt);
     }
 
     getModuleConfigTemplates().convention(getProject().provider(() -> {

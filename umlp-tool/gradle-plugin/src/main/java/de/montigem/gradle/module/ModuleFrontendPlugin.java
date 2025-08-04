@@ -41,8 +41,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static de.montigem.gradle.BasePlugin.UMLP_MODULES_GUI_SYMBOLS_CONFIG;
-import static de.montigem.gradle.BasePlugin.UMLP_MODULES_IMPORT_MAP_CONFIG;
+import static de.montigem.gradle.BasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
+import static de.montigem.gradle.BasePlugin.MONTIGEM_MODULE_IMPORT_MAP_CONFIG;
 import static de.montigem.gradle.FrontendBasePlugin.GUI_TYPES_NAME;
 import static de.montigem.gradle.FrontendBasePlugin.UMLP_GROUP_NAME;
 import static de.montigem.gradle.FrontendBasePlugin.getBooleanProjectProperty;
@@ -61,8 +61,6 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
   public static final String MODELS2TS_TASK = "models2ts";
   public static final String GUI2SYM_JAR_TASK = "gui2symJar";
   public static final String BUILD_LIB_TASK = "buildLib";
-  public static final String MGLIB_BUILD_GROUP = "mglib_build";
-  public static final String MGLIB_PUBLISH_GROUP = "mglib_publish";
 
   @Inject
   public ModuleFrontendPlugin(SoftwareComponentFactory softwareComponentFactory, TaskDependencyFactory taskDependencyFactory) {
@@ -126,8 +124,8 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
       task.getModelDir().from(models);
       task.getInput().from(models);
       if (!inRTE(project)) {
-        task.getSymbolPath().from(project.getConfigurations().named(UMLP_MODULES_GUI_SYMBOLS_CONFIG));
-        task.getSymbolPath().from(project.getConfigurations().named(UMLP_MODULES_IMPORT_MAP_CONFIG));
+        task.getSymbolPath().from(project.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
+        task.getSymbolPath().from(project.getConfigurations().named(MONTIGEM_MODULE_IMPORT_MAP_CONFIG));
       }
       task.getSymbolOutDir().set(project.getLayout().getBuildDirectory().dir("umlp2sym"));
       task.getOutputDir().set(project.getLayout().getBuildDirectory().dir("umlp2sym"));
@@ -224,8 +222,8 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
           task.getSymbolPath().from(umlp2symOut);
           task.getSymbolPath().from(cd2sym.flatMap(CD2SymTask::getOutput));
           if (!inRTE(project)) {
-            task.getSymbolPath().from(subproject.getConfigurations().named(UMLP_MODULES_GUI_SYMBOLS_CONFIG));
-            task.getSymbolPath().from(subproject.getConfigurations().named(UMLP_MODULES_IMPORT_MAP_CONFIG));
+            task.getSymbolPath().from(subproject.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
+            task.getSymbolPath().from(subproject.getConfigurations().named(MONTIGEM_MODULE_IMPORT_MAP_CONFIG));
           }
           task.getOutputDir().set(subproject.getLayout().getBuildDirectory().dir("gui2sym"));
           task.getSymbolOutDir().set(subproject.getLayout().getBuildDirectory().dir("gui2sym"));
@@ -273,8 +271,8 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
         gui2java.configure(task -> {
           task.dependsOn(cd2sym);
           if (!inRTE(project)) {
-            task.getSymbolPath().from(subproject.getConfigurations().named(UMLP_MODULES_GUI_SYMBOLS_CONFIG));
-            task.getSymbolPath().from(subproject.getConfigurations().named(UMLP_MODULES_IMPORT_MAP_CONFIG));
+            task.getSymbolPath().from(subproject.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
+            task.getSymbolPath().from(subproject.getConfigurations().named(MONTIGEM_MODULE_IMPORT_MAP_CONFIG));
           }
           if (!domainNamesFinal.isEmpty()) {
             task.getDomainModels().set(domainNamesFinal);
@@ -329,12 +327,10 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
         }
 
         TaskProvider<NpmTask> buildLib = subproject.getTasks().register(BUILD_LIB_TASK, NpmTask.class, task -> {
-          task.setGroup(MGLIB_BUILD_GROUP);
+          task.setGroup(UMLP_GROUP_NAME);
           task.dependsOn(npmInstall, gui2java);
           if (!inRTE(subproject) && local) {
-            task.dependsOn(subproject.project(":umlp-rte:client").getTasks()
-                .matching(t -> MGLIB_BUILD_GROUP.equals(t.getGroup()))
-            );
+            task.dependsOn(subproject.project(":umlp-rte:client").getTasks().named("build"));
           }
           task.getArgs().addAll(libQName.map(v -> List.of("run", "build", v)));
           task.getWorkingDir().set(project.getLayout().getProjectDirectory().getAsFile());
@@ -355,7 +351,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
         });
 
         TaskProvider<NpmTask> publishLib = subproject.getTasks().register("publishLib", NpmTask.class, task -> {
-          task.setGroup(MGLIB_PUBLISH_GROUP);
+          task.setGroup(UMLP_GROUP_NAME);
           task.dependsOn(npmrc4publish);
           task.getArgs().set(List.of("publish"));
           // e.g. `build/dist/basic/`
@@ -397,7 +393,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
     umlp2symOutput.setCanBeResolved(false);
     umlp2symOutput.setDescription("Published domain Symbols of the module");
 
-    addDomainSymbolsJarAttributes(umlp2symOutput, project);
+    addUMLPSymbolsJarAttributes(umlp2symOutput, project);
 
     TaskProvider<Jar> umlp2symJar = project.getTasks().register("umlp2symJar", Jar.class, task -> {
       task.getArchiveClassifier().set("domainsymbols");
@@ -417,7 +413,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
     return umlp2symJar;
   }
 
-  public static void addDomainSymbolsJarAttributes(Configuration config, Project project) {
+  public static void addUMLPSymbolsJarAttributes(Configuration config, Project project) {
     config.attributes(it -> {
       it.attribute(Category.CATEGORY_ATTRIBUTE, project.getObjects().named(Category.class, Category.LIBRARY));
       it.attribute(Usage.USAGE_ATTRIBUTE, project.getObjects().named(Usage.class, "montigem-module-domain-symbols"));
@@ -528,14 +524,14 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
     if (!inRTE(project)) {
       if (local) {
         Project rteClient = project.project(":umlp-rte:client");
-        project.getDependencies().add(UMLP_MODULES_GUI_SYMBOLS_CONFIG, rteClient);
-        project.getDependencies().add(UMLP_MODULES_IMPORT_MAP_CONFIG, rteClient);
+        project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG, rteClient);
+        project.getDependencies().add(MONTIGEM_MODULE_IMPORT_MAP_CONFIG, rteClient);
       }
       else {
-        project.getDependencies().add(UMLP_MODULES_GUI_SYMBOLS_CONFIG,
+        project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG,
             "umlp:client:" + getStringProjectProperty(project, "mc_version", "")
         );
-        project.getDependencies().add(UMLP_MODULES_IMPORT_MAP_CONFIG,
+        project.getDependencies().add(MONTIGEM_MODULE_IMPORT_MAP_CONFIG,
             "umlp:client:" + getStringProjectProperty(project, "mc_version", "")
         );
       }
