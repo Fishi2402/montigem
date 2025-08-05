@@ -16,6 +16,7 @@ export class Navigation {
   }
 
   readonly items: { url: string, title: string }[] = [
+    { url: '/example_input/GemRangeInputExample', title: 'RangeInput' },
     { url: '/example_input/GemChatExample', title: 'Chat' },
     { url: '/person/SimpleOverview', title: 'Overview' },
     { url: '/example_basic/GemAudioExample', title: 'Audio' },

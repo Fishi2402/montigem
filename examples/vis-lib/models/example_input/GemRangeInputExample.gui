@@ -4,15 +4,45 @@ package example_input;
 import mc.fenix.input.GemRangeInput;
 
 page GemRangeInputExample() {
+
   @GemRangeInput(
-    id = "rangeInput5",
-    labelText = "Range1: ",
+    id = "satisfaction",
+    labelText = "Zufriedenheit:",
+    vertical = false,
+    step = 1,
+    minValue = 1,
+    maxValue = 10,
+    size = "300px"
+  );
+
+  @GemRangeInput(
+    id = "priceFilter",
+    labelText = "Preis (€):",
+    vertical = false,
+    step = 50,
+    minValue = 0,
+    maxValue = 500,
+    size = "350px"
+  );
+
+  @GemRangeInput(
+    id = "projectPhase",
+    labelText = "Projektphase:",
     vertical = true,
     step = 1,
     minValue = 1,
-    maxValue = 100
-    //value = 50,
+    maxValue = 4,
+    size = "250px"
   );
+
+  @GemRangeInput(
+    id = "volumeControlVertical",
+    labelText = "Lautstärke:",
+    vertical = true,
+    step = 10,
+    minValue = 0,
+    maxValue = 100,
+    size = "200px"
+  );
+
 }
-
-
