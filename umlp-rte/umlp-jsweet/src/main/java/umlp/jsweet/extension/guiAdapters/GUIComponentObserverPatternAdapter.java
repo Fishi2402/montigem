@@ -51,7 +51,6 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
   public GUIComponentObserverPatternAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);
     addAnnotationManager(getSynchronizedAnnotationManager());
-    addAnnotationManager(getAlterInitMethodAnnotationManager());
     addAnnotationManager(addComponentManagerListenerToSetAnnotationManager());
     this.adapterUtils = new GUIAdapterUtils(this, types(), context, util());
   }
@@ -586,36 +585,6 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
         return (element.getSimpleName().toString().startsWith("get") || element.getSimpleName()
             .toString().startsWith("is")) &&
             !returnType.getKind().equals(TypeKind.VOID) &&
-            adapterUtils.isMethodOfDirective(element);
-      }
-    };
-  }
-
-  private AnnotationManager getAlterInitMethodAnnotationManager() {
-    return new AnnotationManager() {
-      @Override
-      public Action manageAnnotation(Element element, String annotationType) {
-        // add the @Name annotation to non-public elements
-        return isInit(element, annotationType) ?
-            Action.ADD :
-            Action.VOID;
-      }
-
-      @Override
-      public <T> T getAnnotationValue(Element element,
-          String annotationType, String propertyName,
-          Class<T> propertyClass, T defaultValue) {
-        if (isInit(element, annotationType)) {
-          return propertyClass.cast("{{body}}{{baseIndent}}this.allVarsInited = true;");
-        } else {
-          return null;
-        }
-      }
-
-      private boolean isInit(Element element, String annotationType) {
-        return JSweetConfig.ANNOTATION_REPLACE.equals(annotationType) &&
-            element.getKind().toString().equals("METHOD") &&
-            element.getSimpleName().toString().equals("init") &&
             adapterUtils.isMethodOfDirective(element);
       }
     };
