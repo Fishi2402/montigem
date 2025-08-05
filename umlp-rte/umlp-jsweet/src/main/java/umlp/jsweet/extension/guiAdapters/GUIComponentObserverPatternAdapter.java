@@ -447,7 +447,6 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     boolean shouldPrintDomainObs = false;
     boolean shouldPrintStatevarObs = false;
     boolean shouldAddObservers = false;
-    boolean shouldAddInitObservers = false;
     ExecutableElement surroundingMethod = Util.getElement(getPrinter().getParent(MethodTree.class));
     boolean isSynchronizedMethod = surroundingMethod != null && adapterUtils.isSynchronized(surroundingMethod);
 
@@ -470,9 +469,6 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
         (!(returnType instanceof TypeElement) ||
             !adapterUtils.isSubTypeOf((TypeElement) returnType, "java.util.function.Consumer"))) {
       shouldAddObservers = true;
-    } else if (adapterUtils.isMethodOfHWCComponentOrDirective(surroundingMethod) &&
-        surroundingMethod.getSimpleName().equals("init")) {
-      shouldAddInitObservers = true;
     }
 
     ClassTree parent = getPrinter().getParent(ClassTree.class);
