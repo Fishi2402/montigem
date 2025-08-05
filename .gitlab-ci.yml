@@ -27,7 +27,7 @@ pages:
   image: python:alpine
   rules:
     - if: $CI_COMMIT_BRANCH == "dev"
-    - changes:
+      changes:
       - mkdocs.yml
       - README.md
       - docs/
