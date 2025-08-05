@@ -1,4 +1,7 @@
-# GemLineChart
+---
+hide:
+  - navigation
+---
 
 Line chart is a graphical representation to describe the data changes over a given period. It is connected by straight line segments. The horizontal axis is usually a time scale; for example, minutes, hours, days, months, or years, while the vertical axis would have the values.
 
@@ -6,7 +9,7 @@ Line chart is a graphical representation to describe the data changes over a giv
 
 `RowsTester` takes `GemLineChart` in its body
 
-```md
+```ts
 package example;
 import mc.fenix.charts.GemLineChart;
 page RowsTester(
@@ -26,7 +29,7 @@ page RowsTester(
 
 `GemLineChart.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/charts/GemLineChart.gui))
 
-```
+```java
 package mc.fenix.charts;
 
 import mc.fenix.charts.GemLineChartTypes.GemLineChartData;
@@ -40,20 +43,21 @@ component GemLineChart(
   boolean showConfig = true
 )
 ```
+
 | Name | Type | Description | Default value |
 |---|---|---|---|
-| data | GemLineChartData | is in form of GemLineChartData, it contains all information that will be used to plot the line chart |`null`|
-| displayValue | Object |is the value to be displayed |`null`|
-| enableBackgroundColor | Boolean | is to decide whether the background color is rendered |`null`|
-| maxValue | Integer |defines the label for the max value|`null`|
-| minValue | Integer |defines the label for the min value|`null`|
-| showConfig | boolean | whether the chart's configuration panel is shown | `true` |
+| data | `GemLineChartData` | is in form of GemLineChartData, it contains all information that will be used to plot the line chart |`null`|
+| displayValue | `Object` |is the value to be displayed |`null`|
+| enableBackgroundColor | `Boolean` | is to decide whether the background color is rendered |`null`|
+| maxValue | `Integer` |defines the label for the max value|`null`|
+| minValue | `Integer` |defines the label for the min value|`null`|
+| showConfig | `boolean` | whether the chart's configuration panel is shown | `true` |
 
 ### GemLineChartTypes
 
 `GemLineChartTypes.cd` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/charts/GemLineChartTypes.cd))
 
-```
+```java
 package mc.fenix.charts;
 
 import java.util.List;

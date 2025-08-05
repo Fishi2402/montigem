@@ -1,4 +1,7 @@
-# GemCandlestickChart
+---
+hide:
+  - navigation
+---
 
 A Candlestick chart displays a few important datapoints for a (short) period of time. It is often used to display how stock prices changed over said short periods.
 
@@ -8,7 +11,7 @@ The data of a candlestick is displayed by its horizontal position (time), vertic
 
 `RowsTester` takes `GemCandlestickChart` in its body.
 
-```md
+```ts
 package example;
 import mc.fenix.charts.GemCandlestickChart;
 import mc.fenix.charts.GemCandlestickChartTypes.GemData2CandlestickChart;
@@ -28,7 +31,7 @@ page RowsTester(
 
 `GemCandlestickChart.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/charts/GemCandlestickChart.gui))
 
-```
+```java
 package mc.fenix.charts;
 
 import mc.fenix.charts.GemCandlestickChartTypes.GemData2CandlestickChart;
@@ -38,15 +41,16 @@ component GemCandlestickChart(
 )
 
 ```
+
 | Name | Type | Description | Default value |
 |---|---|---|---|
-| data | List`<GemData2CandlestickChart>`  | the data to be displayed(`GemData2CandlestickChart` is a complex data type, data type is described in following) |`null` (no text is set)|
+| data | `List<GemData2CandlestickChart>`  | the data to be displayed(`GemData2CandlestickChart` is a complex data type, data type is described in following) |`null` (no text is set)|
 
 ### GemCandlestickChartTypes
 
 `GemCandlestickChartTypes.cd` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/charts/GemCandlestickChartTypes.cd))
 
-```
+```java
 package mc.fenix.charts;
 
 import java.util.List;

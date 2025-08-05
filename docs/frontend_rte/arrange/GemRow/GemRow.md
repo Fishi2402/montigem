@@ -1,3 +1,8 @@
+---
+hide:
+  - navigation
+---
+
 GemRow is a container which arranges input elements horizontally.
 
 ## Usage example
@@ -60,7 +65,7 @@ page GemRowExample2() {
 }
 ```
 Additional SCSS styles:
-```
+```scss
 .outer { border: 1px solid red; }
 .inner { border: 1px solid black; }
 ```
@@ -72,7 +77,7 @@ Additional SCSS styles:
 `GemRow.gui`
 ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/arrange/GemRow.gui))
 
-```ts
+```java
 package mc.fenix.arrange;
 
 component GemRow(

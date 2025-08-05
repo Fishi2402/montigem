@@ -1,4 +1,7 @@
-# GemPieChart
+---
+hide:
+  - navigation
+---
 
 Pie chart is also called circle chart. It looks like a circle, which is divided to slices to visualize information. Different categories of data could be indicated by different colors. It is helpful to observe the numerical proportion of data.
 
@@ -6,7 +9,7 @@ Pie chart is also called circle chart. It looks like a circle, which is divided 
 
 `RowsTester` takes `GemPieChart` in its body
 
-```md
+```ts
 package example;
 import mc.fenix.charts.GemPieChart;
 page RowsTester(
@@ -26,7 +29,7 @@ page RowsTester(
 
 `GemPieChart.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/charts/GemPieChart.gui))
 
-```
+```java
 package mc.fenix.charts;
 
 import mc.fenix.charts.GemPieChartTypes.GemPieChartData;
@@ -36,10 +39,11 @@ component GemPieChart(
     Integer innerRadius
 )
 ```
+
 | Name | Type | Description | Default value |
 |---|---|---|---|
-| data | GemPieChartData | is in form of GemNetworkData, it contains all information that will be used to plot the line chart|`null`|
-| innerRadius | Integer | is the radius of the inner circle of the pie chart|`null`|
+| data | `GemPieChartData` | is in form of GemNetworkData, it contains all information that will be used to plot the line chart|`null`|
+| innerRadius | `Integer` | is the radius of the inner circle of the pie chart|`null`|
 
 
 
@@ -47,7 +51,7 @@ component GemPieChart(
 
 `GemPieChartTypes.cd` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/charts/GemPieChartTypes.cd))
 
-```
+```java
 package mc.fenix.charts;
 
 import java.util.List;

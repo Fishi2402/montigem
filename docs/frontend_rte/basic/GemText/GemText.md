@@ -1,8 +1,13 @@
+---
+hide:
+  - navigation
+---
+
 Displays text on a webpage.
 
 ## Usage example
 
-```gui
+```ts
 package example_basic;
 
 import mc.fenix.basic.GemText;
@@ -25,9 +30,9 @@ page GemTextExample() {
 
 ## GUI Model
 
-`GemText.gui` ([open](../https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/basic/GemText.gui))
+`GemText.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/basic/GemText.gui))
 
-```gui
+```java
 package mc.fenix.basic;
 
 component GemText(

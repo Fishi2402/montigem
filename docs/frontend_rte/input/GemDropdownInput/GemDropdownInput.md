@@ -1,8 +1,13 @@
+---
+hide:
+  - navigation
+---
+
 The component is a dropdown with an optional label. When clicking on the input, it will open a list of options to select from. It is used whenever a user is required, to choose between different predefined options.
 
 ## Usage example
 
-```gui
+```ts
 package example_input;
 
 import mc.fenix.input.GemDropdownInput;
@@ -72,7 +77,7 @@ Options filtered by search input
 
 `GemDropdownInput.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/input/GemDropdownInput.gui))
 
-```gui
+```java
 package mc.fenix.input;
 
 import mc.fenix.input.GemDropdownInputTypes.Option;
@@ -111,7 +116,7 @@ component GemDropdownInput(
 
 `GemDropdownInputTypes.cd` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/input/GemDropdownInputTypes.cd))
 
-```cd
+```java
 package mc.fenix.input;
 
 classdiagram GemDropdownInputTypes {
@@ -123,6 +128,7 @@ classdiagram GemDropdownInputTypes {
 ```
 
 **`Option`**
+
 | Name | Type | Description | Default value |
 |---|---|---|---|
 | `value` | `String` | Value behind the option in a dropdown. An option typically represents an object, e.g. person, via human-readable name. The value is an identifier that represents the object in the logic implementation. | `null` (no status) |

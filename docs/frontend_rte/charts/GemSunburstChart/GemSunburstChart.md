@@ -1,4 +1,7 @@
-# GemSunburstChart
+---
+hide:
+  - navigation
+---
 
 Sunburst-charts look like pie-charts with multiple layers. Each of them refine the information of the previous layer and give information about the distribution of the parent layer in percent. The sunburst-chart can also be represented by a tree-like structure with parent nodes and subnodes which contain the refined information about the parent nodes.
 
@@ -6,7 +9,7 @@ Sunburst-charts look like pie-charts with multiple layers. Each of them refine t
 
 `RowsTester` takes `GemSunburstChart` in its body
 
-```md
+```ts
 package example;
 import mc.fenix.charts.GemSunburstChart.GemSunburstChart;
 import mc.fenix.charts.GemSunburstChart.GemSunburstChartTypes.GemSunburstData;
@@ -28,7 +31,7 @@ page RowsTester(
 
 `GemSunburstChart.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/charts/GemSunburstChart.gui))
 
-```
+```java
 package mc.fenix.charts;
 
 import mc.fenix.charts.GemSunburstChartTypes.GemSunburstData;
@@ -39,11 +42,12 @@ component GemSunburstChart (
   Boolean ignoreError
 )
 ```
+
 | Name | Type | Description | Default value |
 |---|---|---|---|
-| data | GemSunburstData | is in the form of `SunburstDataNode`, it contains all information that will be used to plot the sunburst chart|`null`|
-| colors | List`<String>` |  is in form of _array of hex-codes of colors_, it is used to specify the colors of the chart and legend manually, if this input option is left empty 20 default colors will be used. The colors have to be in Hex-code format inside of an array|`null`|
-| ignoreError | Boolean | is checked inside of the sunburst-chart component and it is thrown an error if this is violated. But there are use cases where the sum of some sub-nodes is less than the sum up to the parent node and it is still a plausible sunburst-chart. For this case it is possible to ignore the upcoming error and try to calculate the chart regardless|`null`|
+| data | `GemSunburstData` | is in the form of `SunburstDataNode`, it contains all information that will be used to plot the sunburst chart|`null`|
+| colors | `List<String>` |  is in form of _array of hex-codes of colors_, it is used to specify the colors of the chart and legend manually, if this input option is left empty 20 default colors will be used. The colors have to be in Hex-code format inside of an array|`null`|
+| ignoreError | `Boolean` | is checked inside of the sunburst-chart component and it is thrown an error if this is violated. But there are use cases where the sum of some sub-nodes is less than the sum up to the parent node and it is still a plausible sunburst-chart. For this case it is possible to ignore the upcoming error and try to calculate the chart regardless|`null`|
 
 
 
@@ -51,7 +55,7 @@ component GemSunburstChart (
 
 `GemSunburstChartTypes.cd` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/charts/GemSunburstChartTypes.cd))
 
-```
+```java
 package mc.fenix.charts;
 import java.util.List;
 

@@ -1,4 +1,9 @@
-## Charts from the Backend
+---
+hide:
+  - navigation
+---
+
+# Charts from the Backend
 
 Lastly sometimes we do not want to load all data from the Backend into the FrontEnd
 to then only use it for calculating and displaying the chart.

@@ -1,12 +1,13 @@
+---
+hide:
+  - navigation
+---
 
-
-<!-- (c) https://github.com/MontiCore/monticore -->
-
- The component is an input field with an optional label. It is used whenever a user input is required, e.g. to create/update objects, provide a search field, etc. 
+The component is an input field with an optional label. It is used whenever a user input is required, e.g. to create/update objects, provide a search field, etc. 
 
 ## Usage Example
 
-```gui
+```ts
 package example_input;
 
 import Domain.Person;
@@ -34,7 +35,7 @@ page GemTextInputExample(List<Person> persons) {
 
 ## GUI Model ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/input/GemTextInput.gui))
 
-```gui
+```java
 component GemTextInput(
   String id,
   String labelText = "",
@@ -68,7 +69,7 @@ component GemTextInput(
 
 ### `GemTextInputTypes` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/input/GemTextInputTypes.cd))
 
-```cd
+```java
 package mc.fenix.input;
 
 classdiagram GemTextInputTypes {

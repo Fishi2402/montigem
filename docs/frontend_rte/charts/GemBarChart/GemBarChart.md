@@ -1,4 +1,7 @@
-# GemBarChart
+---
+hide:
+  - navigation
+---
 
 A Bar-Chart present a set of two dimensional data with a number of rectangular bars that can go _horizontally_ or _vertically_, with their values being proportional to what they represent.
 The chart itself visualizes categories (given as Strings) on one axis and a discrete integer value on the other as height or size. Additionally, the bars can be _stacked_ or _aligned_ to visualizes multiple sub-categories of a second data dimension.
@@ -7,7 +10,7 @@ The chart itself visualizes categories (given as Strings) on one axis and a disc
 
 `RowsTester` takes `GemBarChart` in its body.
 
-```md
+```ts
 package example;
 import mc.fenix.charts.GemBarChart;
 page RowsTester(
@@ -31,7 +34,7 @@ page RowsTester(
 
 `GemBarChart.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/charts/GemBarChart.gui))
 
-```
+```java
 package mc.fenix.charts;
 
 import mc.fenix.charts.GemBarChartTypes.GemBarChartData;
@@ -46,21 +49,22 @@ component GemBarChart(
   boolean showConfig = true
 )
 ```
+
 | Name | Type | Description | Default value |
 |---|---|---|---|
-| data | GemBarChartData  | the data to be displayed | `null` (no text is set) |
-| displayValue | Object  | the value to be displayed (e.g., on hover or label) | `null` |
-| stacked | Boolean  | the chart is stacked or not | `false` (not stacked) |
-| overlapping | Boolean | whether bars can overlap visually (for comparison purposes) | `false` (not overlapping) |
-| maxValue | Integer  | is the maximum value of the chart | `null` (no element is set) |
-| minValue | Integer  | is the minimum value of the chart | `null` (no element is set) |
-| showConfig | boolean | whether the chart's configuration panel is shown | `true` |
+| data | `GemBarChartData`  | the data to be displayed | `null` (no text is set) |
+| displayValue | `Object`  | the value to be displayed (e.g., on hover or label) | `null` |
+| stacked | `Boolean`  | the chart is stacked or not | `false` (not stacked) |
+| overlapping | `Boolean` | whether bars can overlap visually (for comparison purposes) | `false` (not overlapping) |
+| maxValue | `Integer`  | is the maximum value of the chart | `null` (no element is set) |
+| minValue | `Integer`  | is the minimum value of the chart | `null` (no element is set) |
+| showConfig | `boolean` | whether the chart's configuration panel is shown | `true` |
 
 ### GemBarChartTypes
 
 `GemBarChartTypes` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/charts/GemBarChartTypes.cd))
 
-```
+```java
 package mc.fenix.charts;
 
 import java.util.List;

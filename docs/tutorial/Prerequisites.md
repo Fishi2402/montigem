@@ -1,3 +1,8 @@
+---
+hide:
+  - navigation
+---
+
 # Prerequisites
 
 This document describes what you need to install in order to run a MontiGem app,

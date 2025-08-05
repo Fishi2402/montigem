@@ -1,6 +1,11 @@
+---
+hide:
+  - navigation
+---
+
 The audio component embeds sound content on a page.
 
-## Usage example:
+## Usage example
 
 ```ts
 package example_basic;
@@ -21,7 +26,7 @@ page GemAudioExample() {
 
 `GemAudio.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/basic/GemAudio.gui))  
 
-```ts
+```java
 package mc.fenix.basic;
 
 component GemAudio(

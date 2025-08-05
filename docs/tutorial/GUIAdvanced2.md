@@ -1,4 +1,9 @@
-## Updating objects
+---
+hide:
+  - navigation
+---
+
+# Updating objects
 
 Let's build a simple form for updating cars' model and name by creating the following new page:
 ```java

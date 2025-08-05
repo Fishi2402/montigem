@@ -1,4 +1,7 @@
-# GemDualRangeInput
+---
+hide:
+  - navigation
+---
 
 This component displays a label with two slider thumbs that allows users to select a range within a specified slider track. This component can be used in forms and other interactive interfaces to allow users to select a range of values easily
 
@@ -6,7 +9,7 @@ This component displays a label with two slider thumbs that allows users to sele
   
 `RowsTester` displays `GemDualRangeInput` in its body.
 
-```md
+```ts
 package example;
 import mc.fenix.input.src.lib.gemdualrangeinput.GemDualRangeInput;
 page RowsTester() {
@@ -29,7 +32,7 @@ page RowsTester() {
 
 `GemDualRangeInput.gui` ([open](../GemDualRangeInput.gui))
 
-```
+```java
 package example;
 component GemDualRangeInput(
   String id,

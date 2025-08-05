@@ -1,11 +1,7 @@
-# GemContextMenu
-
-- [GemContextMenu](#gemcontextmenu)
-- [GUI Model](#gui-model)
-
 ---
-
-## GemContextMenu
+hide:
+  - navigation
+---
 
 ContextMenu displays an organized list of commands or options and save space by hiding until the user needs them. It is used to provide actions that affect a specific item or context.
 
@@ -15,7 +11,7 @@ ContextMenu displays an organized list of commands or options and save space by 
 
 ## GUI Model
 
-```md
+```java
 package mc.fenix.table.src.lib.gemtable;
 
 import mc.fenix.table.src.lib.gemtable.TableTypes.TableColumn;
@@ -75,7 +71,7 @@ The CRUD properties define how objects displayed in the row are managed:
 
 Usage example:
 
-```md
+```ts
 page RowsTester(
 ) {
 @GemRows(

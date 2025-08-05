@@ -1,9 +1,14 @@
+---
+hide:
+  - navigation
+---
+
 The component is a text area with an optional label. It is used whenever a
 multi-line user text input is required, e.g. for comment fields, feedback, etc.
 
 ## Usage example
 
-```gui
+```ts
 package example_input;
 
 import Domain.Person;
@@ -27,7 +32,7 @@ page GemTextareaInputExample(List<Person> persons) {
 
 `GemTextareaInput.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/input/GemTextareaInput.gui))
 
-```gui
+```java
 package mc.fenix.input;
 
 component GemTextareaInput(
@@ -43,6 +48,7 @@ component GemTextareaInput(
   String resize = "auto"
 )
 ```
+
 | Name           | Type                    | Description                                                                                      | Default value                |
 |----------------|-------------------------|--------------------------------------------------------------------------------------------------|------------------------------|
 | `labelText`    | `String`                | Text describing the input field.                                                                 | `""` (empty placeholder)     |
@@ -58,9 +64,9 @@ component GemTextareaInput(
 
 ### `GemTextareaInputTypes`
 
-`GemTextareaInputTypes.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/input/GemTextareaInput.cd))
+`GemTextareaInputTypes.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/input/GemTextareaInputTypes.cd))
 
-```cd
+```java
 package mc.fenix.input;
 
 classdiagram GemTextareaInputTypes {
@@ -72,6 +78,7 @@ classdiagram GemTextareaInputTypes {
 ```
 
 **`GemTextInputValidity`**
+
 | Name | Type | Description | Default value |
 |---|---|---|---|
 | `status` | `String` (restricted set) | The validation status. | `null` (no status) |

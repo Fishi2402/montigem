@@ -2,11 +2,11 @@
 
 This component displays a label with a slider that allows users to select a value within a specified range. This component can be used in forms and other interactive interfaces to allow users to select a range of values easily.
 
-## usage example
+## Usage example
 
 `RowsTester` displays `GemRangeInput` in its body.
 
-```
+```ts
 package example;
 import mc.fenix.input.GemRangeInput;
 page RowsTester(string someIntegerVariable) {
@@ -24,7 +24,7 @@ page RowsTester(string someIntegerVariable) {
 
 <img src="./images/RangeInput_horizontal.png" alt="RangeInput" width="70%">
 
-```
+```ts
 package example;
 import mc.fenix.input.GemRangeInput;
 page RowsTester(string someIntegerVariable) {
@@ -43,9 +43,9 @@ page RowsTester(string someIntegerVariable) {
 
 ## GUI Model
 
-`GemRangeInput.gui` ([open](../GemRangeInput.gui))
+`GemRangeInput.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/input/GemRangeInput.gui))
 
-```
+```java
 package example;
 component GemRangeInput(
   String id,
@@ -57,6 +57,7 @@ component GemRangeInput(
   ?Integer value
 )
 ```
+
 | Name | Type | Description | Default value |
 |---|---|---|---|
 | id  | String | The component's id; used to configure the styles |`null` (no id is set)|

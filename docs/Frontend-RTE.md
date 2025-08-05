@@ -1,42 +1,7 @@
-# Table of Contents
-
-- [Table of Contents](#table-of-contents)
-  - [A Brief General Explanation](#a-brief-general-explanation)
-  - [Basic Components](#basic-components)
-    - [Button](#button)
-    - [Audio](#audio)
-    - [Icon](#icon)
-    - [Image](#image)
-    - [Link](#link)
-    - [Text](#text)
-    - [Table](#table)
-    - [Video](#video)
-  - [Layout Components](#layout-components)
-    - [Card](#card)
-    - [Column](#column)
-    - [Row](#row)
-    - [Grid](#grid)
-    - [Tree Node](#tree-node)
-  - [Input Field Components](#input-field-components)
-    - [Text Input](#text-input)
-    - [Dropdown Input](#dropdown-input)
-    - [Autocomplete Input](#autocomplete-input)
-    - [TextArea Input](#textarea-input)
-    - [CheckBox Input](#checkbox-input)
-    - [Radio Input](#radio-input)
-    - [Range Input](#range-input)
-  - [Chart Components](#chart-components)
-    - [Bar Chart](#bar-chart)
-    - [Bullet Chart](#bullet-chart)
-    - [Candlestick Chart](#candlestick-chart)
-    - [Gauge Chart](#gauge-chart)
-    - [Heatmap Chart](#heatmap-chart)
-    - [Line Chart](#line-chart)
-    - [Pie Chart](#pie-chart)
-    - [Sunburst Chart](#sunburst-chart)
-    - [Venn Diagram](#venn-diagram)
-    - [Network Graph](#network-graph)
-    - [Scatter Plot](#scatter-plot)
+---
+hide:
+  - navigation
+---
 
 ## A Brief General Explanation
 
@@ -64,7 +29,7 @@ a button, reading or writing text, etc.
 ## Basic Components
 
 
-### [Button](./frontend_rte/basic/GemButton/GemButton)
+### [Button](./frontend_rte/basic/GemButton/GemButton.md)
 
 A button enables user interaction through simple clicks or taps, triggering actions or tasks.
 
@@ -72,7 +37,7 @@ A button enables user interaction through simple clicks or taps, triggering acti
 
 ---
 
-### [Audio](./frontend_rte/basic/GemAudio/GemAudio)
+### [Audio](./frontend_rte/basic/GemAudio/GemAudio.md)
 
 The audio component embeds sound content on a page.
 
@@ -80,7 +45,7 @@ The audio component embeds sound content on a page.
 
 ---
 
-### [Icon](./frontend_rte/basic/GemIcon/GemIcon)
+### [Icon](./frontend_rte/basic/GemIcon/GemIcon.md)
 
 Displays an icon on a web page.
 
@@ -88,7 +53,7 @@ Displays an icon on a web page.
 
 ---
 
-### [Image](./frontend_rte/basic/GemImage/GemImage)
+### [Image](./frontend_rte/basic/GemImage/GemImage.md)
 
 The Image web component displays images on a webpage. It needs the **_source_** attribute to set the image path. You can use the optional **_alt_** attribute for a text description if the image doesn't load. 
 
@@ -96,7 +61,7 @@ The Image web component displays images on a webpage. It needs the **_source_** 
 
 ---
 
-### [Link](./frontend_rte/basic/GemLink/GemLink)
+### [Link](./frontend_rte/basic/GemLink/GemLink.md)
 
 The link element is used to create a hyperlink to another web page or to a specific section within a page. The _**source**_ attribute specifies the destination of the link. The _**text**_ attribute specifies the text to be displayed for the link
 
@@ -104,7 +69,7 @@ The link element is used to create a hyperlink to another web page or to a speci
 
 ---
 
-### [Text](./frontend_rte/basic/GemText/GemText)
+### [Text](./frontend_rte/basic/GemText/GemText.md)
 
 The text component is used to display text on a webpage. It needs the **_value_** attribute to set the text. You can use the optional **_style_** attribute for a style to be applied to the text.
 
@@ -112,7 +77,7 @@ The text component is used to display text on a webpage. It needs the **_value_*
 
 ---
 
-### [Table](./frontend_rte/table/GemTable/GemTable)
+### [Table](./frontend_rte/table/GemTable/GemTable.md)
 
 A table organizes and displays text or other view elements in rows and columns. A header gives information about what to expect in each column of the body.
 
@@ -123,7 +88,7 @@ A visualization of a table can be seen in the following Figure.
 ---
 
 <!--
-### [Table](./frontend_rte/table/GemTable/GemTable)
+### [Table](./frontend_rte/table/GemTable/GemTable.md)
 
 A table organizes and displays data in rows and columns. Data tables allow users to input, edit, and manipulate data easily, perform calculations and analyses, sort and filter data.
 A visualization of a table can be seen in the following Figure.
@@ -133,7 +98,7 @@ A visualization of a table can be seen in the following Figure.
 ---
 -->
 
-### [Video](./frontend_rte/basic/GemVideo/GemVideo)
+### [Video](./frontend_rte/basic/GemVideo/GemVideo.md)
 
 The component shows a video on a web page. 
 
@@ -141,7 +106,7 @@ The component shows a video on a web page.
 
 ## Layout Components
 
-### [Card](./frontend_rte/arrange/GemCard/GemCard)
+### [Card](./frontend_rte/arrange/GemCard/GemCard.md)
 
 Card is a simple container which consists of a header and a body. Body may contain any elements, such as button, inputs, charts, etc.
 
@@ -149,7 +114,7 @@ Card is a simple container which consists of a header and a body. Body may conta
 
 ---
 
-### [Column](./frontend_rte/arrange/GemColumn/GemColumn)
+### [Column](./frontend_rte/arrange/GemColumn/GemColumn.md)
 
 GemColumn is a container which arranges any number of input elements vertically
 
@@ -157,7 +122,7 @@ GemColumn is a container which arranges any number of input elements vertically
 
 ---
 
-### [Row](./frontend_rte/arrange/GemRow/GemRow)
+### [Row](./frontend_rte/arrange/GemRow/GemRow.md)
 
 GemRow is a container which arranges any number of input elements horizontally.
 
@@ -165,7 +130,7 @@ GemRow is a container which arranges any number of input elements horizontally.
 
 ---
 
-### [Grid](./frontend_rte/arrange/GemGrid/GemGrid)
+### [Grid](./frontend_rte/arrange/GemGrid/GemGrid.md)
 
 GemGrid is a container which arranges input elements in a grid pattern.
 
@@ -173,7 +138,7 @@ GemGrid is a container which arranges input elements in a grid pattern.
 
 ---
 
-### [Tree Node](./frontend_rte/arrange/GemTreeNode/GemTreeNode)
+### [Tree Node](./frontend_rte/arrange/GemTreeNode/GemTreeNode.md)
 
 Combine multiple tree nodes to a tree. A tree displays hierarchical data. It provides a visual representation of parent-child relationships, allowing users to navigate and interact with a hierarchical dataset.
 
@@ -183,7 +148,7 @@ Combine multiple tree nodes to a tree. A tree displays hierarchical data. It pro
 
 ## Input Field Components
 
-### [Text Input](./frontend_rte/input/GemTextInput/GemTextInput)
+### [Text Input](./frontend_rte/input/GemTextInput/GemTextInput.md)
 
 The component is an input field with an optional label. It is used whenever a
 user input is required, e.g. to create/update objects, provide a search field,
@@ -193,14 +158,14 @@ etc.
 
 ---
 
-### [Dropdown Input](./frontend_rte/input/GemDropdownInput/GemDropdownInput)
+### [Dropdown Input](./frontend_rte/input/GemDropdownInput/GemDropdownInput.md)
 
 The component is a dropdown with an optional label. When clicking on the input, it will open a list of options to select from. It is used whenever a user is required, to choose between different predefined options.
 
 <img src="./frontend_rte/input/GemDropdownInput/images/DropdownInput.png" alt="GemDropdownInput" width=50%>
 
 ---
-### [Autocomplete Input](./frontend_rte/input/GemAutocompleteInput/GemAutocompleteInput)
+### [Autocomplete Input](./frontend_rte/input/GemAutocompleteInput/GemAutocompleteInput.md)
 
 The component is an autocomplete input with an optional label. When clicking on the input, it suggests options in a list, almost like a dropdown. However, the user can still type any input. The list of options is filtered depending on the input characters. It is not mandatory to select one of the options. It is used whenever a user input is required and the user should be assisted with suggestions.
 
@@ -208,7 +173,7 @@ The component is an autocomplete input with an optional label. When clicking on 
 
 ---
 
-### [TextArea Input](./frontend_rte/input/GemTextareaInput/GemTextareaInput)
+### [TextArea Input](./frontend_rte/input/GemTextareaInput/GemTextareaInput.md)
 
 This component represents a text area with an optional label. It is designed to
 be used in forms or other contexts where multi-line user text input is required.
@@ -217,7 +182,7 @@ be used in forms or other contexts where multi-line user text input is required.
 
 ---
 
-### [CheckBox Input](./frontend_rte/input/GemCheckBoxInput/GemCheckBoxInput)
+### [CheckBox Input](./frontend_rte/input/GemCheckBoxInput/GemCheckBoxInput.md)
 
 The component is a checkbox with a label. It is used whenever an input for a
 binary choice is required, e.g., agreeing to terms and conditions or opting in
@@ -227,7 +192,7 @@ to a newsletter.
 
 ---
 
-### [Radio Input](./frontend_rte/input/GemRadioInput/GemRadioInput)
+### [Radio Input](./frontend_rte/input/GemRadioInput/GemRadioInput.md)
 
 This component represents a radio button with a label. It is intended for use in forms or other scenarios where users must choose one of several options.
 
@@ -237,7 +202,7 @@ This component represents a radio button with a label. It is intended for use in
 
 ---
 
-### [Range Input](./frontend_rte/input/GemRangeInput/GemRangeInput)
+### [Range Input](./frontend_rte/input/GemRangeInput/GemRangeInput.md)
 
 This component displays a label with a slider that allows users to select a value within a specified range. This component can be used in forms and other interactive interfaces to allow users to select a range of values easily.
 
@@ -249,19 +214,19 @@ This component displays a label with a slider that allows users to select a valu
 
 ## Chart Components
 
-### [Bar Chart](./frontend_rte/charts/GemBarChart/GemBarChart)
+### [Bar Chart](./frontend_rte/charts/GemBarChart/GemBarChart.md)
 
 A Bar-Chart present a set of two dimensional data with a number of rectangular bars that can go _horizontally_ or _vertically_, with their values being proportional to what they represent.
-The chart itself visualizes categories (given as Strings) on one axis and a discrete integer value on the other as height or size. Additionally, the bars can be _stacked_ or _aligned_ to visualizes multiple sub-categories of a second data dimension.
+The chart itself visualizes categories (given as Strings.md) on one axis and a discrete integer value on the other as height or size. Additionally, the bars can be _stacked_ or _aligned_ to visualizes multiple sub-categories of a second data dimension.
 
 
 <img src="./frontend_rte/charts/GemBarChart/images/gembarchart_green.png" alt="Bar Chart" width=50%/>
 
 ---
 
-### [Bullet Chart](./frontend_rte/charts/GemBulletChart/GemBulletChart)
+### [Bullet Chart](./frontend_rte/charts/GemBulletChart/GemBulletChart.md)
 
-Bullet chart is the variation of the bar chart, it features a single, primary measure, compares that measure to one or more other measures to enrich its meaning (for example, compared to a target), and displays it in the context of qualitative ranges of performance, such as poor, satisfactory, and good. It is developed to overcome the fundamental issues of gauges and meters, they display too little information but required too much space.
+Bullet chart is the variation of the bar chart, it features a single, primary measure, compares that measure to one or more other measures to enrich its meaning (for example, compared to a target.md), and displays it in the context of qualitative ranges of performance, such as poor, satisfactory, and good. It is developed to overcome the fundamental issues of gauges and meters, they display too little information but required too much space.
 
 
 
@@ -269,9 +234,9 @@ Bullet chart is the variation of the bar chart, it features a single, primary me
 
 ---
 
-### [Candlestick Chart](./frontend_rte/charts/GemCandlestickChart/GemCandlestickChart)
+### [Candlestick Chart](./frontend_rte/charts/GemCandlestickChart/GemCandlestickChart.md)
 
-A Candlestick chart displays a few important datapoints for a (short) period of time. It is often used to display how stock prices changed over said short periods.
+A Candlestick chart displays a few important datapoints for a (short.md) period of time. It is often used to display how stock prices changed over said short periods.
 
 
 
@@ -279,7 +244,7 @@ A Candlestick chart displays a few important datapoints for a (short) period of 
 
 ---
 
-### [Gauge Chart](./frontend_rte/charts/GemGaugeChart/GemGaugeChart)
+### [Gauge Chart](./frontend_rte/charts/GemGaugeChart/GemGaugeChart.md)
 
 Gauge charts are also known as dial charts or speedometer charts. Normally they consist of a dial and a pointer, use the pointer to read the information. There are several different types of gauge charts, such as Speedometer, Linear Gauge Charts and Angular Gauge Charts. Gauge charts are very helpful to visualize and compare single data value with a quantitative context. 
 
@@ -289,7 +254,7 @@ Gauge charts are also known as dial charts or speedometer charts. Normally they 
 
 ---
 
-### [Heatmap Chart](./frontend_rte/charts/GemHeatmapChart/GemHeatmapChart)
+### [Heatmap Chart](./frontend_rte/charts/GemHeatmapChart/GemHeatmapChart.md)
 
 Heatmap-charts visualize different kinds of data, for instance temperature, in a tabular-like format. They are helpful for finding patterns, relationships between data or other kind of information.
 
@@ -298,7 +263,7 @@ Heatmap-charts visualize different kinds of data, for instance temperature, in a
 
 ---
 
-### [Line Chart](./frontend_rte/charts/GemLineChart/GemLineChart)
+### [Line Chart](./frontend_rte/charts/GemLineChart/GemLineChart.md)
 
 Line chart is a graphical representation to describe the data changes over a given period. It is connected by straight line segments. The horizontal axis is usually a time scale; for example, minutes, hours, days, months, or years, while the vertical axis would have the values.
 
@@ -308,7 +273,7 @@ Line chart is a graphical representation to describe the data changes over a giv
 
 ---
 
-### [Pie Chart](./frontend_rte/charts/GemPieChart/GemPieChart)
+### [Pie Chart](./frontend_rte/charts/GemPieChart/GemPieChart.md)
 
 Pie chart is also called circle chart. It looks like a circle, which is divided to slices to visualize information. Different categories of data could be indicated by different colors. It is helpful to observe the numerical proportion of data.
 
@@ -318,7 +283,7 @@ Pie chart is also called circle chart. It looks like a circle, which is divided 
 
 ---
 
-### [Sunburst Chart](./frontend_rte/charts/GemSunburstChart/GemSunburstChart)
+### [Sunburst Chart](./frontend_rte/charts/GemSunburstChart/GemSunburstChart.md)
 
 Sunburst-charts look like pie-charts with multiple layers. Each of them refine the information of the previous layer and give information about the distribution of the parent layer in percent. The sunburst-chart can also be represented by a tree-like structure with parent nodes and subnodes which contain the refined information about the parent nodes.
 
@@ -328,7 +293,7 @@ Sunburst-charts look like pie-charts with multiple layers. Each of them refine t
 
 ---
 
-### [Venn Diagram](./frontend_rte/charts/GemVennDiagram/GemVennDiagram)
+### [Venn Diagram](./frontend_rte/charts/GemVennDiagram/GemVennDiagram.md)
 
 A Venn diagram is a diagram style that shows the logical relation between sets. It is used to teach elementary set theory, and to illustrate simple set relationships in probability, logic, statistics, linguistics and computer science.
 
@@ -337,7 +302,7 @@ A Venn diagram is a diagram style that shows the logical relation between sets. 
 <img src="frontend_rte/charts/GemVennDiagram/images/GemVennDiagram.png" alt="Euler Diagram" width=70%>
 
 ---
-### [Network Graph](./frontend_rte/charts/GemNetworkGraph/GemNetworkGraph)
+### [Network Graph](./frontend_rte/charts/GemNetworkGraph/GemNetworkGraph.md)
 
 
 NetworkGraph is a graphical representation of a network. It is composed of nodes and edges. Nodes are the entities of the network, and edges are the relationships between the nodes.
@@ -346,7 +311,7 @@ NetworkGraph is a graphical representation of a network. It is composed of nodes
 
 ---
 
-### [Scatter Plot](./frontend_rte/charts/GemScatterPlot/GemScatterPlot)
+### [Scatter Plot](./frontend_rte/charts/GemScatterPlot/GemScatterPlot.md)
 
 A scatter plot displays a relation between data in a two-dimensional plot and is often used to identify clusters or 
 outliers

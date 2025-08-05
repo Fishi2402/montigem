@@ -1,9 +1,14 @@
+---
+hide:
+  - navigation
+---
+
 Combine multiple tree nodes to a tree. A tree displays hierarchical data. It provides a visual representation of parent-child relationships, allowing users to navigate and interact with a hierarchical dataset. By default, an icon is shown for parent nodes that have children to indicate that the node can be expanded. It changes direction depending if the children subtree is expanded or collapsed.
 
 ## Usage examples
 
 ### Tree with nested loops
-```gui
+```ts
 package example_arrange;
 
 import Domain.Person;
@@ -44,7 +49,7 @@ page GemTreeNodeExample(List<Person> persons) {
 ### Recursive tree structure
 
 Create component that recursively references itself. `@guard` can be used to define a termination condition for the recursion.
-```gui
+```ts
 package gui;
 
 import mc.fenix.arrange.GemTreeNode;
@@ -72,7 +77,7 @@ component DirNode(Artifact artifact) {
 ```
 
 Use recursive component to build a tree.
-```gui
+```ts
 package gui;
 import mc.fenix.arrange.GemCard;
 import mc.fenix.arrange.GemTreeNode;
@@ -100,7 +105,7 @@ page ProjectPage(Directory project) {
 
 `GemTreeNode.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/arrange/GemTreeNode.gui))
 
-```
+```java
 package mc.fenix.arrange;
 
 component GemTreeNode(

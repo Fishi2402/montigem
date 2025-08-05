@@ -1,4 +1,9 @@
-## Adding own functions
+---
+hide:
+  - navigation
+---
+
+# Adding own functions
 
 Previously we have built a very simple list of cars. Now we will build something
 a bit closer to an actual page.
