@@ -4,13 +4,13 @@ plugins {
 
 dependencies {
   implementation(project(":experiments:module-system:module-definition"))
-  montigemModuleGenExt(project(path: ":experiments:module-system:module-definition", configuration: "moduleGenTime"))
+  montigemModuleGeneratorExtension(project(path: ":experiments:module-system:module-definition", configuration: "moduleGenTime"))
 }
 
 tasks.register('printmontigemModule')(){
   doLast{
-    println("Files in montigemModuleGenExt")
-    configurations.montigemModuleGenExt.files.each {
+    println("Files in montigemModuleGeneratorExtension")
+    configurations.montigemModuleGeneratorExtension.files.each {
       println(it)
     }
   }

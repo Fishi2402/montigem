@@ -1,6 +1,8 @@
 package de.montigem.gradle.module;
 
+import de.montigem.gradle.MGBasePlugin;
 import de.montigem.gradle.specific.UMLP2SymTask;
+import de.se_rwth.commons.logging.Log;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
@@ -15,7 +17,6 @@ import org.gradle.api.file.Directory;
 import org.gradle.api.internal.tasks.TaskDependencyFactory;
 import org.gradle.api.plugins.BasePlugin;
 import org.gradle.api.plugins.JavaPluginExtension;
-import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.TaskProvider;
@@ -27,11 +28,12 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import static de.montigem.gradle.BasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
-import static de.montigem.gradle.BasePlugin.MONTIGEM_MODULE_IMPORT_MAP_CONFIG;
+import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
+import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_IMPORT_MAP_CONFIG;
 import static de.montigem.gradle.module.ModuleFrontendPlugin.addGuiSymbolsJarAttributes;
 import static de.montigem.gradle.module.ModuleFrontendPlugin.addImportMapJarAttributes;
 import static de.montigem.gradle.module.ModuleFrontendPlugin.addUMLPSymbolsJarAttributes;
+import static de.montigem.gradle.module.ModuleFrontendPlugin.inRTE;
 
 public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Project> {
 
@@ -39,6 +41,7 @@ public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Projec
   public static final String UMLP2SYM_CONFIG = "umlp2symConfig";
   public static final String GUI2SYM_CONFIG = "gui2symConfig";
   public static final String GUI2JAVA_CONFIG = "gui2javaConfig";
+  public static final String MODULE_GENERATOR_EXTENSION_COMPILE_CONFIG = "moduleGeneratorExtensionCompile";
 
   @Inject
   public ModulePlugin(SoftwareComponentFactory softwareComponentFactory, TaskDependencyFactory taskDependencyFactory) {
@@ -50,17 +53,16 @@ public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Projec
     project.getPlugins().apply("base");
     project.getPlugins().apply("java-library");
     project.getPlugins().apply("maven-publish");
+    project.getPlugins().apply(MGBasePlugin.class);
 
-    Configuration moduleGeneratorExtensionCompile = project.getConfigurations().create("moduleGeneratorExtensionCompile");
-    Project umlpTool = project.findProject(":umlp:umlp-tool");
-    if (umlpTool != null) {
-      project.getDependencies().add(moduleGeneratorExtensionCompile.getName(), umlpTool);
-    }
+    Configuration moduleGenerationExtensionCompile = project.getConfigurations().create(MODULE_GENERATOR_EXTENSION_COMPILE_CONFIG);
+    moduleGenerationExtensionCompile.setCanBeResolved(true);
+    moduleGenerationExtensionCompile.setCanBeConsumed(false);
     if (project.hasProperty("mc_version")) {
       String mcVersion = project.property("mc_version").toString();
-      project.getDependencies().add(moduleGeneratorExtensionCompile.getName(), "de.monticore.lang:cd4analysis:" + mcVersion);
-      project.getDependencies().add(moduleGeneratorExtensionCompile.getName(), "de.monticore:monticore-runtime:" + mcVersion);
-      project.getDependencies().add(moduleGeneratorExtensionCompile.getName(), "de.monticore:monticore-grammar:" + mcVersion);
+      project.getDependencies().add(moduleGenerationExtensionCompile.getName(), "de.monticore:monticore-runtime:" + mcVersion);
+      project.getDependencies().add(moduleGenerationExtensionCompile.getName(), "de.monticore:monticore-grammar:" + mcVersion);
+      project.getDependencies().add(moduleGenerationExtensionCompile.getName(), "umlp:umlp-tool:" + mcVersion);
     }
     Project backend = project.findProject(project.getPath() + ":backend");
     if (backend != null) {
@@ -75,9 +77,6 @@ public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Projec
     var javaComponent = (AdhocComponentWithVariants) project.getComponents().getByName("java");
 
     Directory models = project.getLayout().getProjectDirectory().dir("models");
-//    boolean umlpFilesPresent = models.getAsFile().exists()
-//        && !models.getAsFileTree().matching(spec -> spec.include("**/*.umlp")).getFiles().isEmpty();
-
 
     Set<File> umlp;
     boolean umlpPresent;
@@ -124,22 +123,36 @@ public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Projec
 
     addGeneratorExtensionJarAttributes(generatorExtension, project);
 
+    SourceSet generatorExtensionSourceSet = project.getExtensions().getByType(JavaPluginExtension.class)
+        .getSourceSets().create("generatorExtension");
+    generatorExtensionSourceSet.setCompileClasspath(
+        generatorExtensionSourceSet.getCompileClasspath().plus(moduleGenerationExtensionCompile)
+    );
     TaskProvider<Jar> generatorExtensionJar = project.getTasks().register("generatorExtensionJar", Jar.class, jar -> {
+      jar.onlyIf(t -> generatorExtensionSourceSet.getAllSource().getFiles().stream().anyMatch(File::exists));
+
       jar.setGroup("umlp");
       jar.getArchiveClassifier().set("module-generator-time");
-      jar.from(project.getExtensions().getByType(JavaPluginExtension.class)
-          .getSourceSets().create("generatorExtension").getOutput());
+      jar.from(generatorExtensionSourceSet.getOutput());
     });
     project.getTasks().named(BasePlugin.ASSEMBLE_TASK_NAME).configure(it -> it.dependsOn(generatorExtensionJar));
-    project.getArtifacts().add(generatorExtension.getName(), generatorExtensionJar);
-    javaComponent.addVariantsFromConfiguration(generatorExtension, ConfigurationVariantDetails::mapToOptional);
+    project.afterEvaluate(p -> {
+      Jar jar = generatorExtensionJar.get();
+      if (jar.getOnlyIf().isSatisfiedBy(jar)) {
+        project.getArtifacts().add(generatorExtension.getName(), generatorExtensionJar);
+        javaComponent.addVariantsFromConfiguration(generatorExtension, ConfigurationVariantDetails::mapToOptional);
 
-    // Tell gradle, that the jar tasks builds a publication
-    var genTimePublication = createPublishedArtifact(generatorExtensionJar, project);
-    // Add the publication as an artifact
-    generatorExtension.getOutgoing().getArtifacts().add(genTimePublication);
+        // Tell gradle, that the jar tasks builds a publication
+        var genTimePublication = createPublishedArtifact(generatorExtensionJar, project);
+        // Add the publication as an artifact
+        generatorExtension.getOutgoing().getArtifacts().add(genTimePublication);
+      }
+      else {
+        Log.info("Skipping artifact: no sources in source set", getClass().getName());
+      }
+    });
 
-    Provider<UMLP2SymTask> umlp2sym = project.getTasks().register(UMLP2SYM_TASK, UMLP2SymTask.class, task -> {
+    TaskProvider<UMLP2SymTask> umlp2sym = project.getTasks().register(UMLP2SYM_TASK, UMLP2SymTask.class, task -> {
       task.getModelDir().from(models);
       task.getInput().from(models);
       if (!inRTE(project)) {
@@ -155,7 +168,7 @@ public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Projec
         .flatMap(UMLP2SymTask::getSymbolOutDir)
         .map(dir -> dir.getAsFile().exists() ? dir.getAsFile() : Collections.emptyList());
 
-    TaskProvider<Jar> umlp2symJar = umlp2symInit(project, javaComponent);
+    TaskProvider<Jar> umlp2symJar = umlp2symInit(umlp2sym, project, javaComponent);
     umlp2symJar.configure(task -> {
       task.dependsOn(umlp2sym);
       task.from(
@@ -172,15 +185,6 @@ public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Projec
       frontend = project.findProject(project.getPath() + ":client");
     }
     if (frontend != null) {
-      if (umlpFilesPresent) {
-        Configuration umlp2symConfig = project.getConfigurations().create(UMLP2SYM_CONFIG, conf -> {
-          conf.setCanBeConsumed(true);
-          addUMLPSymbolsJarAttributes(conf, project);
-        });
-        project.getDependencies().add(umlp2symConfig.getName(), frontend);
-        javaComponent.addVariantsFromConfiguration(umlp2symConfig, ConfigurationVariantDetails::mapToOptional);
-      }
-
       Configuration gui2symConfig = project.getConfigurations().create(GUI2SYM_CONFIG, conf -> {
         conf.setCanBeConsumed(true);
         addGuiSymbolsJarAttributes(conf, project);
@@ -216,5 +220,37 @@ public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Projec
     });
   }
 
+  protected TaskProvider<Jar> umlp2symInit(
+      TaskProvider<UMLP2SymTask> umlp2sym, Project project, AdhocComponentWithVariants javaComponent
+  ) {
+    TaskProvider<Jar> umlp2symJar = project.getTasks().register("umlp2symJar", Jar.class, task -> {
+      task.getArchiveClassifier().set("domainsymbols");
+    });
+    project.getTasks().named(org.gradle.api.plugins.BasePlugin.ASSEMBLE_TASK_NAME).configure(it -> it.dependsOn(umlp2symJar));
+
+    project.afterEvaluate(p -> {
+      if (umlp2sym.get().getOnlyIf().isSatisfiedBy(umlp2sym.get())) {
+        // Create the domain symbols jar
+        Configuration umlp2symConfig = project.getConfigurations().create(UMLP2SYM_CONFIG);
+        umlp2symConfig.setCanBeConsumed(true);
+        umlp2symConfig.setCanBeResolved(false);
+        umlp2symConfig.setDescription("Published domain Symbols of the module");
+
+        addUMLPSymbolsJarAttributes(umlp2symConfig, project);
+
+        // Add createDomainSymbolsJar-jar as artifact to the config
+        project.getArtifacts().add(umlp2symConfig.getName(), umlp2symJar);
+        javaComponent.addVariantsFromConfiguration(umlp2symConfig, ConfigurationVariantDetails::mapToOptional);
+
+        // Tell gradle, that the jar tasks builds a publication
+        // and add the publication to the outgoing artifacts
+        umlp2symConfig.getOutgoing().getArtifacts().add(
+            createPublishedArtifact(umlp2symJar, project)
+        );
+      }
+    });
+
+    return umlp2symJar;
+  }
 
 }

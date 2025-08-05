@@ -2,7 +2,7 @@ package de.montigem.gradle.module;
 
 import com.github.gradle.node.NodePlugin;
 import com.github.gradle.node.npm.task.NpmTask;
-import de.montigem.gradle.BasePlugin;
+import de.montigem.gradle.MGBasePlugin;
 import de.montigem.gradle.specific.CreateNpmrcTask;
 import de.montigem.gradle.specific.GUI2JavaTask;
 import de.montigem.gradle.specific.GUI2SymTask;
@@ -35,18 +35,17 @@ import org.gradle.api.tasks.bundling.Jar;
 import javax.inject.Inject;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static de.montigem.gradle.BasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
-import static de.montigem.gradle.BasePlugin.MONTIGEM_MODULE_IMPORT_MAP_CONFIG;
 import static de.montigem.gradle.FrontendBasePlugin.GUI_TYPES_NAME;
 import static de.montigem.gradle.FrontendBasePlugin.UMLP_GROUP_NAME;
 import static de.montigem.gradle.FrontendBasePlugin.getBooleanProjectProperty;
 import static de.montigem.gradle.FrontendBasePlugin.getStringProjectProperty;
+import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
+import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_IMPORT_MAP_CONFIG;
 
 
 public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugin<Project> {
@@ -72,12 +71,12 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
     project.getPluginManager().apply(NodePlugin.class);
     project.getPluginManager().apply("java-library");
     project.getPluginManager().apply("maven-publish");
-    project.getPluginManager().apply(BasePlugin.class);
+    project.getPluginManager().apply(MGBasePlugin.class);
 
     addClientRTEDependency(project);
     boolean local = getBooleanProjectProperty(project, "useLocalDependencies");
     if (!inRTE(project) && local) {
-      project.getPluginManager().apply(BasePlugin.class);
+      project.getPluginManager().apply(MGBasePlugin.class);
     }
 
     AdhocComponentWithVariants javaComponent = (AdhocComponentWithVariants) project.getComponents().getByName("java");
@@ -100,11 +99,9 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
     // default name(s) of .umlp file(s)
     List<String> domainNames = new ArrayList<>();
 
-    boolean umlpPresent;
     if (models.getAsFile().exists()) {
       umlp = models.getAsFileTree().matching(spec -> spec.include("**/*.umlp")).getFiles();
-      umlpPresent = !umlp.isEmpty();
-      if (umlpPresent) {
+      if (!umlp.isEmpty()) {
         domainNames = umlp.stream()
             .map(File::getName)
             .map(name -> {
@@ -115,36 +112,21 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
       }
     }
     else {
-      umlpPresent = false;
       umlp = new HashSet<>();
     }
     List<String> domainNamesFinal = domainNames;
 
-    Provider<UMLP2SymTask> umlp2sym = project.getTasks().register(UMLP2SYM_TASK, UMLP2SymTask.class, task -> {
-      task.getModelDir().from(models);
-      task.getInput().from(models);
-      if (!inRTE(project)) {
-        task.getSymbolPath().from(project.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
-        task.getSymbolPath().from(project.getConfigurations().named(MONTIGEM_MODULE_IMPORT_MAP_CONFIG));
+    var umlp2symOut = project.provider(() -> {
+      Project parent = project.getParent();
+      if (parent == null) {
+        return project.files();
       }
-      task.getSymbolOutDir().set(project.getLayout().getBuildDirectory().dir("umlp2sym"));
-      task.getOutputDir().set(project.getLayout().getBuildDirectory().dir("umlp2sym"));
 
-      task.onlyIf(t -> umlpPresent);
-    });
-    var umlp2symOut = umlp2sym
-        .flatMap(UMLP2SymTask::getSymbolOutDir)
-        .map(dir -> dir.getAsFile().exists() ? dir.getAsFile() : Collections.emptyList());
-
-    TaskProvider<Jar> umlp2symJar = umlp2symInit(project, javaComponent);
-    umlp2symJar.configure(task -> {
-      task.dependsOn(umlp2sym);
-      task.from(
-          umlp2sym.flatMap(UMLP2SymTask::getOutputDir),
-          spec -> spec.include("**/*sym", "**/*tags")
-      );
-
-      task.onlyIf(t -> umlpPresent);
+      TaskProvider<UMLP2SymTask> task = parent.getTasks().named(UMLP2SYM_TASK, UMLP2SymTask.class);
+      return task.flatMap(t -> t.getSymbolOutDir().map(dir -> {
+        File f = dir.getAsFile();
+        return f.exists() ? project.files(f) : project.files();
+      }));
     });
 
     // Create the import map jar
@@ -167,8 +149,8 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
 
     project.afterEvaluate(p -> {
       for (Project subproject : extension.getLibs()) {
-        subproject.getPluginManager().apply(NodePlugin.class);
-        subproject.getPluginManager().apply(BasePlugin.class);
+        subproject.getPlugins().apply(NodePlugin.class);
+        subproject.getPlugins().apply(MGBasePlugin.class);
         Configuration guiTypes = addProjectDependencies(subproject);
         addClientRTEDependency(subproject);
 
@@ -386,33 +368,6 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
     });
   }
 
-  protected TaskProvider<Jar> umlp2symInit(Project project, AdhocComponentWithVariants javaComponent) {
-    // Create the domain symbols jar
-    Configuration umlp2symOutput = project.getConfigurations().create("umlp2symOutput");
-    umlp2symOutput.setCanBeConsumed(true);
-    umlp2symOutput.setCanBeResolved(false);
-    umlp2symOutput.setDescription("Published domain Symbols of the module");
-
-    addUMLPSymbolsJarAttributes(umlp2symOutput, project);
-
-    TaskProvider<Jar> umlp2symJar = project.getTasks().register("umlp2symJar", Jar.class, task -> {
-      task.getArchiveClassifier().set("domainsymbols");
-    });
-    project.getTasks().named(org.gradle.api.plugins.BasePlugin.ASSEMBLE_TASK_NAME).configure(it -> it.dependsOn(umlp2symJar));
-
-    // Add createDomainSymbolsJar-jar as artifact to the config
-    project.getArtifacts().add(umlp2symOutput.getName(), umlp2symJar);
-    javaComponent.addVariantsFromConfiguration(umlp2symOutput, ConfigurationVariantDetails::mapToOptional);
-
-    // Tell gradle, that the jar tasks builds a publication
-    // and add the publication to the outgoing artifacts
-    umlp2symOutput.getOutgoing().getArtifacts().add(
-        createPublishedArtifact(umlp2symJar, project)
-    );
-
-    return umlp2symJar;
-  }
-
   public static void addUMLPSymbolsJarAttributes(Configuration config, Project project) {
     config.attributes(it -> {
       it.attribute(Category.CATEGORY_ATTRIBUTE, project.getObjects().named(Category.class, Category.LIBRARY));
@@ -543,7 +498,8 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
 
     boolean inRTE = false;
     if (rte != null) {
-      inRTE = project.getPath().startsWith(rte.getPath() + ":");
+      inRTE = project.getPath().startsWith(rte.getPath() + ":")
+          || project.getPath().equals(rte.getPath());
     }
     return inRTE;
   }

@@ -37,8 +37,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.function.Consumer;
 
-import static de.montigem.gradle.BasePlugin.GUI_LIB_CONFIG;
-import static de.montigem.gradle.BasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
+import static de.montigem.gradle.MGBasePlugin.GUI_LIB_CONFIG;
+import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
 import static de.montigem.gradle.FrontendBasePlugin.CREATE_DOMAIN_SYMBOLS_TASK_NAME;
 import static de.montigem.gradle.FrontendBasePlugin.UMLP_FRONTEND_DOMAIN_TASK_NAME;
 import static de.montigem.gradle.FrontendBasePlugin.UMLP_FRONTEND_GUI_TASK_NAME;
@@ -290,9 +290,9 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       setIfPathExists(x -> umlpTask.getHwcDir().from(x), this.jsweetTSHWCDir);
 
       umlpTask.getSymbolPath().from(project.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
-      umlpTask.getSymbolPath().from(project.getConfigurations().named(BasePlugin.MONTIGEM_MODULE_IMPORT_MAP_CONFIG));
+      umlpTask.getSymbolPath().from(project.getConfigurations().named(MGBasePlugin.MONTIGEM_MODULE_IMPORT_MAP_CONFIG));
 
-      umlpTask.getModelDir().from(project.getConfigurations().named(BasePlugin.MONTIGEM_MODULE_UMLP_MODELS_CONFIG));
+      umlpTask.getModelDir().from(project.getConfigurations().named(MGBasePlugin.MONTIGEM_MODULE_UMLP_MODELS_CONFIG));
     });
     if (local) {
       Project umlpRteClientProject = project.findProject(":umlp-rte:client");

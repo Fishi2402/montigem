@@ -56,7 +56,7 @@ plugins {
 }
 
 dependencies {
-  moduleGenTimeCompile group: 'de.monticore.lang', name: 'guidsl', version: mc_version
+  // moduleGeneratorExtensionCompile group: 'de.monticore.lang', name: 'guidsl', version: mc_version
 }
 
 /////////////////////////   Deployment  //////////////////////////////////

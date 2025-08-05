@@ -14,7 +14,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.function.Consumer;
 
-import static de.montigem.gradle.BasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
+import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
 import static de.montigem.gradle.FrontendBasePlugin.UMLP_FRONTEND_DOMAIN_TASK_NAME;
 import static de.montigem.gradle.FrontendBasePlugin.UMLP_FRONTEND_GUI_TASK_NAME;
 import static de.montigem.gradle.FrontendBasePlugin.UMLP_FRONTEND_SETUP_TASK_NAME;
@@ -114,9 +114,9 @@ public abstract class FrontendNonJSweetPlugin implements Plugin<Project> {
        */
 
       umlpTask.getSymbolPath().from(project.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
-      umlpTask.getSymbolPath().from(project.getConfigurations().named(BasePlugin.MONTIGEM_MODULE_IMPORT_MAP_CONFIG));
+      umlpTask.getSymbolPath().from(project.getConfigurations().named(MGBasePlugin.MONTIGEM_MODULE_IMPORT_MAP_CONFIG));
 
-      umlpTask.getModelDir().from(project.getConfigurations().named(BasePlugin.MONTIGEM_MODULE_UMLP_MODELS_CONFIG));
+      umlpTask.getModelDir().from(project.getConfigurations().named(MGBasePlugin.MONTIGEM_MODULE_UMLP_MODELS_CONFIG));
     });
   }
 

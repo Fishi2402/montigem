@@ -15,7 +15,7 @@ public abstract class FrontendPlugin implements Plugin<Project> {
 
   @Override
   public void apply(Project project) {
-    project.getPluginManager().apply(BasePlugin.class);
+    project.getPluginManager().apply(MGBasePlugin.class);
     project.getPluginManager().apply("base");
 
     boolean j2ts = getBooleanProjectProperty(project, "j2ts");

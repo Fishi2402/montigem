@@ -10,7 +10,7 @@ They are able to accomplish this via the following four pillars:
 * Provide GUI components and pages (including hand-written gui code)
 
 For these purposes, modules "publish" (a subset of) the following artifacts, which are consumed by certain Gradle configurations:
-* A generation-time artifact.jar (`montigemModuleGenExt` configuration / via the `--module-config` CLI option)
+* A generation-time artifact.jar (`montigemModuleGeneratorExtension` configuration / via the `--module-config` CLI option)
 * A models.jar (`montigemModuleUMLPModels` configuration/ via the `--modelPath` CLI option), containing the original .cd models to be used with the Domain Generator
 * A domain-symbols.jar (`montigemModuleUMLPSymbols` configuration / via the `--path` symbolpath CLI option), containing the CD-symbols to be used with the Gui Generator
 * A backend.jar (`implementation` configuration / added to the java classpath), containing the compiled backend sources 
@@ -66,9 +66,9 @@ classDiagram
   class montigemModuleUMLPModels
   montigemModule <|-- montigemModuleUMLPModels
   note for montigemModuleUMLPModels "Contains the models itself -> genDomain"
-  class montigemModuleGenExt
-  montigemModule <|-- montigemModuleGenExt
-  note for montigemModuleGenExt "Contains the modifications for the MontiGem tool -> genGui & genDomain"
+  class montigemModuleGeneratorExtension
+  montigemModule <|-- montigemModuleGeneratorExtension
+  note for montigemModuleGeneratorExtension "Contains the modifications for the MontiGem tool -> genGui & genDomain"
   class implementation
   montigemModule <|-- implementation
   note for implementation "Contains the compiled backend code -> java"

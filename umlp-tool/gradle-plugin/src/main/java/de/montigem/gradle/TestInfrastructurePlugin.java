@@ -15,7 +15,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.function.Consumer;
 
-import static de.montigem.gradle.BasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
+import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
 import static de.montigem.gradle.FrontendBasePlugin.getBooleanProjectProperty;
 import static de.montigem.gradle.FrontendBasePlugin.getStringProjectProperty;
 
@@ -45,7 +45,7 @@ public abstract class TestInfrastructurePlugin implements Plugin<Project> {
   public void apply(Project project) {
     PluginManager pluginManager = project.getPluginManager();
 
-    pluginManager.apply(BasePlugin.class);
+    pluginManager.apply(MGBasePlugin.class);
     pluginManager.apply("java");
 
     boolean local = getBooleanProjectProperty(project, "useLocalDependencies");

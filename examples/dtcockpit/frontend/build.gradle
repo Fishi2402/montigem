@@ -11,7 +11,7 @@ dependencies {
   domainSources project(":examples:dtcockpit:backend")
 
   montigemModule project(":modules:login")
-  montigemModuleGenExt project(":modules:comment")
+  montigemModuleGeneratorExtension project(":modules:comment")
   montigemModuleUMLPModels project(":modules:comment")
 
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version

@@ -15,7 +15,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.function.Consumer;
 
-import static de.montigem.gradle.BasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
+import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
 import static de.montigem.gradle.FrontendBasePlugin.getBooleanProjectProperty;
 import static de.montigem.gradle.FrontendBasePlugin.getStringProjectProperty;
 
@@ -31,7 +31,7 @@ public abstract class BackendPlugin implements Plugin<Project> {
 
   @Override
   public void apply(Project project) {
-    project.getPluginManager().apply(BasePlugin.class);
+    project.getPluginManager().apply(MGBasePlugin.class);
     project.getPluginManager().apply("java");
 
     boolean local = getBooleanProjectProperty(project, "useLocalDependencies");
@@ -93,7 +93,7 @@ public abstract class BackendPlugin implements Plugin<Project> {
           project.getBuildDir().getAbsolutePath(), "umlp", "backend_symbols").toFile());
 
       // Include montigemModuleUMLPModels
-      umlpTask.getModelDir().from(project.getConfigurations().getByName(BasePlugin.MONTIGEM_MODULE_UMLP_MODELS_CONFIG));
+      umlpTask.getModelDir().from(project.getConfigurations().getByName(MGBasePlugin.MONTIGEM_MODULE_UMLP_MODELS_CONFIG));
 
     });
 

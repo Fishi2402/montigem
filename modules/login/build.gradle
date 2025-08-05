@@ -2,10 +2,6 @@ plugins {
   id 'de.rwth.se.montigem-module' // create models-jar
 }
 
-dependencies {
-  moduleGenTimeCompile group: 'de.monticore.lang', name: 'guidsl', version: mc_version
-}
-
 publishing {
   publications {
     mavenJava(MavenPublication) {

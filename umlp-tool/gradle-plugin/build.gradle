@@ -64,7 +64,7 @@ gradlePlugin {
   plugins {
     umlpplugin {
       id = "de.rwth.se.montigem"
-      implementationClass = "de.montigem.gradle.BasePlugin"
+      implementationClass = "de.montigem.gradle.MGBasePlugin"
     }
     umlpplugin_dependencies {
       id = "de.rwth.se.montigem-dependencies"

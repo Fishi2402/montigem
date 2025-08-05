@@ -4,7 +4,7 @@ package de.montigem.gradle.common;
 import de.monticore.gradle.common.AToolAction;
 import de.monticore.gradle.common.MCAllFilesTask;
 import de.monticore.symboltable.serialization.json.JsonElement;
-import de.montigem.gradle.BasePlugin;
+import de.montigem.gradle.MGBasePlugin;
 import de.montigem.gradle.stat.GradleTaskStatistic;
 import de.montigem.gradle.stat.TaskStatData;
 import org.gradle.api.artifacts.Configuration;
@@ -39,9 +39,9 @@ abstract public class MGAllFilesTask extends MCAllFilesTask implements GradleTas
   public MGAllFilesTask(String type) {
     super(type, null);
 
-    Configuration montigemModuleGenExt = getProject().getConfigurations().findByName(BasePlugin.MONTIGEM_MODULE_GENERATOR_EXTENSION_CONFIG);
-    if (montigemModuleGenExt != null) {
-      getModules().from(montigemModuleGenExt);
+    Configuration montigemModuleGeneratorExtension = getProject().getConfigurations().findByName(MGBasePlugin.MONTIGEM_MODULE_GENERATOR_EXTENSION_CONFIG);
+    if (montigemModuleGeneratorExtension != null) {
+      getModules().from(montigemModuleGeneratorExtension);
     }
 
     getModuleConfigTemplates().convention(getProject().provider(() -> {

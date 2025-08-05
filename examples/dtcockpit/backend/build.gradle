@@ -11,7 +11,7 @@ plugins {
 
 dependencies {
   montigemModule(project(":modules:login"))
-  montigemModuleGenExt(project(":modules:comment"))
+  montigemModuleGeneratorExtension(project(":modules:comment"))
   montigemModuleUMLPModels(project(":modules:comment"))
 }
 

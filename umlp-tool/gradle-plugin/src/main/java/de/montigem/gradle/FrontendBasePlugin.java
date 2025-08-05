@@ -34,10 +34,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import static de.montigem.gradle.BasePlugin.GUI_LIB_CONFIG;
-import static de.montigem.gradle.BasePlugin.MONTIGEM_MODULE_UMLP_SYMBOLS_CONFIG;
-import static de.montigem.gradle.BasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
-import static de.montigem.gradle.BasePlugin.MONTIGEM_MODULE_IMPORT_MAP_CONFIG;
+import static de.montigem.gradle.MGBasePlugin.GUI_LIB_CONFIG;
+import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_UMLP_SYMBOLS_CONFIG;
+import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
+import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_IMPORT_MAP_CONFIG;
 import static de.montigem.gradle.module.ModuleFrontendPlugin.BUILD_LIB_TASK;
 
 /**
@@ -59,7 +59,7 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
 
   @Override
   public void apply(Project project) {
-    project.getPluginManager().apply(BasePlugin.class);
+    project.getPluginManager().apply(MGBasePlugin.class);
     project.getPluginManager().apply(com.github.gradle.node.NodePlugin.class);
     project.getPluginManager().apply("base");
 
@@ -178,7 +178,7 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
       umlpTask.getSymbolOutDir().set(symOutDir);
       umlpTask.getOutputDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "symbols_gui_domain__from_task_domainsymbol").toFile());
 
-      umlpTask.getModelDir().from(project.getConfigurations().getByName(BasePlugin.MONTIGEM_MODULE_UMLP_MODELS_CONFIG));
+      umlpTask.getModelDir().from(project.getConfigurations().getByName(MGBasePlugin.MONTIGEM_MODULE_UMLP_MODELS_CONFIG));
     });
 
     if (local) {
@@ -208,7 +208,7 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
       umlpTask.getSymbolPath().from(guiTypes);
       umlpTask.getOutputDir().set(Path.of(project.getBuildDir().getAbsolutePath(), "gui2sym").toFile());
 
-      // umlpTask.getModelDir().from(project.getConfigurations().getByName(BasePlugin.UMLP_MODULES_MODELS_CONFIG));
+      // umlpTask.getModelDir().from(project.getConfigurations().getByName(MGBasePlugin.UMLP_MODULES_MODELS_CONFIG));
     });
 
     if (local) {

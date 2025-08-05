@@ -28,11 +28,11 @@ import java.util.Arrays;
  * Base Plugin. Only adds the Tasks, module config, and the StatisticListener.
  * Nothing else is done! See other Plugins (e.g. BackendPlugin.java) for alternatives
  */
-public abstract class BasePlugin implements Plugin<Project> {
+public abstract class MGBasePlugin implements Plugin<Project> {
 
   public static final String MONTIGEM_MODULE_CONFIG = "montigemModule";
   // The following configs are all defined with filtering attributes
-  public static final String MONTIGEM_MODULE_GENERATOR_EXTENSION_CONFIG = "montigemModuleGenExt";
+  public static final String MONTIGEM_MODULE_GENERATOR_EXTENSION_CONFIG = "montigemModuleGeneratorExtension";
   public static final String MONTIGEM_MODULE_UMLP_MODELS_CONFIG = "montigemModuleUMLPModels";
   public static final String MONTIGEM_MODULE_UMLP_SYMBOLS_CONFIG = "montigemModuleUMLPSymbols";
   public static final String MONTIGEM_MODULE_IMPORT_MAP_CONFIG = "montigemModuleImportMap";
@@ -63,26 +63,34 @@ public abstract class BasePlugin implements Plugin<Project> {
     // Module system
     var montigemModuleC = project.getConfigurations().maybeCreate(MONTIGEM_MODULE_CONFIG);
     montigemModuleC.setCanBeResolved(false);
+    montigemModuleC.setCanBeConsumed(true);
 
-    var montigemModuleGenExtC = project.getConfigurations().maybeCreate(MONTIGEM_MODULE_GENERATOR_EXTENSION_CONFIG);
-    ModulePlugin.addGeneratorExtensionJarAttributes(montigemModuleGenExtC, project);
-    montigemModuleGenExtC.extendsFrom(montigemModuleC);
+    var montigemModuleGeneratorExtensionC = project.getConfigurations().maybeCreate(MONTIGEM_MODULE_GENERATOR_EXTENSION_CONFIG);
+    montigemModuleGeneratorExtensionC.setCanBeResolved(true);
+    montigemModuleGeneratorExtensionC.setCanBeConsumed(false);
+    ModulePlugin.addGeneratorExtensionJarAttributes(montigemModuleGeneratorExtensionC, project);
+    montigemModuleGeneratorExtensionC.extendsFrom(montigemModuleC);
 
     var montigemModuleUMLPModelsC = project.getConfigurations().maybeCreate(MONTIGEM_MODULE_UMLP_MODELS_CONFIG);
+    montigemModuleUMLPModelsC.setCanBeResolved(true);
+    montigemModuleUMLPModelsC.setCanBeConsumed(false);
     ModulePlugin.addUMLPModelsJarAttributes(montigemModuleUMLPModelsC, project);
     montigemModuleUMLPModelsC.extendsFrom(montigemModuleC);
 
     var montigemModuleUSC = project.getConfigurations().maybeCreate(MONTIGEM_MODULE_UMLP_SYMBOLS_CONFIG);
+    montigemModuleUSC.setCanBeResolved(true);
     montigemModuleUSC.setCanBeConsumed(false);
     ModuleFrontendPlugin.addUMLPSymbolsJarAttributes(montigemModuleUSC, project);
     montigemModuleUSC.extendsFrom(montigemModuleC);
 
     var montigemModuleIMC = project.getConfigurations().maybeCreate(MONTIGEM_MODULE_IMPORT_MAP_CONFIG);
+    montigemModuleIMC.setCanBeResolved(true);
     montigemModuleIMC.setCanBeConsumed(false);
     ModuleFrontendPlugin.addImportMapJarAttributes(montigemModuleIMC, project);
     montigemModuleIMC.extendsFrom(montigemModuleC);
 
     var montigemModuleGSC = project.getConfigurations().maybeCreate(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG);
+    montigemModuleGSC.setCanBeResolved(true);
     montigemModuleGSC.setCanBeConsumed(false);
     ModuleFrontendPlugin.addGuiSymbolsJarAttributes(montigemModuleGSC, project);
     montigemModuleGSC.extendsFrom(montigemModuleC);
