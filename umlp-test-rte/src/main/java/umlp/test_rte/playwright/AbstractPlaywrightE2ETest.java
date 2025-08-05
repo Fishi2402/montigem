@@ -3,11 +3,9 @@ package umlp.test_rte.playwright;
 import com.microsoft.playwright.junit.UsePlaywright;
 import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.test.annotation.DirtiesContext;
-import umlp.backendrte.common.DatabaseAccessManager;
 
 import java.io.File;
 import java.io.IOException;
