@@ -38,13 +38,13 @@ import java.util.Set;
 
 public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
 
-  private static final String DOMAIN_OBSERVER_FUNCTION_NAME = "__domainObs";
+  private static final String DOMAIN_OBSERVER_FUNCTION_NAME = "__regObsToDomainObj";
 
-  private static final String STATEVAR_OBSERVER_FUNCTION_NAME = "__statevarObs";
+  private static final String STATEVAR_OBSERVER_FUNCTION_NAME = "__regObsToStateVar";
 
-  private static final String GET_DOMAIN_OBS = "getDomainObs";
+  private static final String CREATE_DOMAIN_OBS = "createDomainObserverRegisterFunction";
 
-  private static final String GET_STATEVAR_OBS = "getStateVarObs";
+  private static final String CREATE_STATEVAR_OBS = "createStateVarObserverRegisterFunction";
 
   private GUIAdapterUtils adapterUtils;
 
@@ -130,12 +130,13 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
       guiComponentName = guiComponentName.substring(0, guiComponentName.length() - 4) + "\"";
     }
     guiComponentName = guiComponentName + " + this.uniqueIdentifier";
-    printIndent().print("protected " + GET_DOMAIN_OBS
-            + "<T extends GemIdentifiable>(updateName: string, update: (() => void)):  <T extends GemIdentifiable>(obj: T, type: string) => T {")
-        .println().startIndent().printIndent()
-        .print("return (obj: T, type: string) => {").println().startIndent().printIndent()
+    printIndent().print("protected " + CREATE_DOMAIN_OBS
+            + "<T extends GemIdentifiable>(updateName: string, update: (() => void)):")
+        .println().startIndent().printIndent().print("<T extends GemIdentifiable>(obj: T) => T {")
+        .println().printIndent()
+        .print("return (obj: T) => {").println().startIndent().printIndent()
         .print("if (obj != undefined && obj != null) {").println().startIndent().printIndent()
-        .print("return ComponentObserverManager.addDomainObjectObserver(obj, type, update.bind(this), updateName, "
+        .print("return ComponentObserverManager.addDomainObjectObserver(obj, update.bind(this), updateName, "
                 + guiComponentName + ");")
         .println().endIndent().printIndent().print("}")
         .print(" else {").println().startIndent().printIndent()
@@ -144,9 +145,10 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
         .println().endIndent().printIndent().print("}")
         .println().endIndent().printIndent().print("}").println().println();
 
-    printIndent().print("protected " + GET_STATEVAR_OBS
-            + "<T>(updateName: string, update: (() => void)): <T>(obj: T, variableName: string) => T {")
-        .println().startIndent().printIndent()
+    printIndent().print("protected " + CREATE_STATEVAR_OBS
+            + "<T>(updateName: string, update: (() => void)):")
+        .println().startIndent().printIndent().print("<T>(obj: T, variableName: string) => T {")
+        .println().printIndent()
         .print("return (obj: T, variableName: string) => {").println().startIndent().printIndent()
         .print(
             "return ComponentObserverManager.addStateVariableObserver(obj, variableName, update.bind(this), updateName, "
@@ -175,26 +177,19 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
   @Override
   public boolean substituteVariable(VariableElement variable) {
     if (variable.getSimpleName().toString().equals(DOMAIN_OBSERVER_FUNCTION_NAME)) {
-      Symbol.MethodSymbol method = getParentElement(Symbol.MethodSymbol.class);
-      String updateName = method.getSimpleName().toString() + adapterUtils.UPDATE_SUFFIX;
-      print(DOMAIN_OBSERVER_FUNCTION_NAME + " = this." + GET_DOMAIN_OBS + "('" + updateName + "'")
-          .print(" + this.computeHash([");
-      printArguments(method);
-      print("]), () => this." + updateName + "(");
-      printArguments(method);
-      print("))");
+      println().startIndent().startIndent().printIndent().endIndent().endIndent()
+          .print(DOMAIN_OBSERVER_FUNCTION_NAME)
+          .print(": <T extends GemIdentifiable> (__domainObj: T) => T")
+          .print(" = __domainObj => __domainObj");
+      adapterUtils.importFromWithModule("GemIdentifiable", GUIAdapterUtils.UMLP_COMMON_POINTER);
       return true;
     }
 
     if (variable.getSimpleName().toString().equals(STATEVAR_OBSERVER_FUNCTION_NAME)) {
-      Symbol.MethodSymbol method = getParentElement(Symbol.MethodSymbol.class);
-      String updateName = method.getSimpleName().toString() + adapterUtils.UPDATE_SUFFIX;
-      print(STATEVAR_OBSERVER_FUNCTION_NAME + " = this." + GET_STATEVAR_OBS + "('" + updateName + "'")
-          .print(" + this.computeHash([");
-      printArguments(method);
-      print("]), () => this." + updateName + "(");
-      printArguments(method);
-      print("))");
+      println().startIndent().startIndent().printIndent().endIndent().endIndent()
+          .print(STATEVAR_OBSERVER_FUNCTION_NAME)
+          .print(": <T> (__stateVar: T, varName: string) => T")
+          .print(" = (__stateVar, _) => __stateVar");
       return true;
     }
 
@@ -314,6 +309,28 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
         .println().printIndent()
         .print("Promise.resolve(this." + methodName + "(");
     printArguments(executable);
+    if (executable.getParameters().size() > 0) {
+      print(",");
+    }
+    println().startIndent().printIndent();
+
+    // domain observer register function
+    String updateName = executable.getSimpleName().toString() + adapterUtils.UPDATE_SUFFIX;
+    print("this." + CREATE_DOMAIN_OBS + "('" + updateName + "'")
+        .print(" + this.computeHash([");
+    printArguments(executable);
+    print("]), () => this." + updateName + "(");
+    printArguments(executable);
+    print(")),").println().printIndent();
+
+    // state variable observer register function
+    print("this." + CREATE_STATEVAR_OBS + "('" + updateName + "'")
+        .print(" + this.computeHash([");
+    printArguments(executable);
+    print("]), () => this." + updateName + "(");
+    printArguments(executable);
+    print("))").println().endIndent().printIndent();
+
     print(")).then(__v => this." + methodName + adapterUtils.SYNCHRONIZED_RESULT_SUFFIX);
     String arg = "__v === undefined ? null : __v";
     printResultCacheSetter(executable, arg);
@@ -343,7 +360,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     print(";").println().endIndent().printIndent().print("}").println().println().printIndent();
   }
 
-  private void printArguments(ExecutableElement executable) {
+  private GUIComponentObserverPatternAdapter printArguments(ExecutableElement executable) {
     if (executable.getParameters().size() >= 1 && executable.getParameters()
         .get(0) instanceof ExtendedElement) {
       throw new IllegalStateException("TODO");
@@ -356,6 +373,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
       }
       getPrinter().removeLastChars(2);
     }
+    return this;
   }
 
   private void printResultCacheAccessor(ExecutableElement executable) {
@@ -415,13 +433,9 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
       for (VariableElement parameter : method.getParameters()) {
         if (adapterUtils.isSubTypeOf(Util.getElement(parameter.asType()),
             RTEPathUtil.getBackendRTECommonPath("GemIdentifiable"))) {
-          String typeName = "\"" +
-              adapterUtils.getTypeNameWithoutBuilderAndTOP((TypeElement) types().asElement(parameter.asType()),
-                  false) +
-              "\"";
           String actualName = adapterUtils.getJSweetParameterName(parameter);
           printIndent().print(
-              DOMAIN_OBSERVER_FUNCTION_NAME + "(" + actualName + ", " + typeName + ");").println();
+              DOMAIN_OBSERVER_FUNCTION_NAME + "(" + actualName + ");").println();
         }
       }
     }
@@ -434,7 +448,6 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     boolean shouldPrintDomainObs = false;
     boolean shouldPrintStatevarObs = false;
     boolean shouldAddObservers = false;
-    boolean shouldAddInitObservers = false;
     ExecutableElement surroundingMethod = Util.getElement(getPrinter().getParent(MethodTree.class));
     boolean isSynchronizedMethod = surroundingMethod != null && adapterUtils.isSynchronized(surroundingMethod);
 
@@ -457,9 +470,6 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
         (!(returnType instanceof TypeElement) ||
             !adapterUtils.isSubTypeOf((TypeElement) returnType, "java.util.function.Consumer"))) {
       shouldAddObservers = true;
-    } else if (adapterUtils.isMethodOfHWCComponentOrDirective(surroundingMethod) &&
-        surroundingMethod.getSimpleName().equals("init")) {
-      shouldAddInitObservers = true;
     }
 
     ClassTree parent = getPrinter().getParent(ClassTree.class);
@@ -479,9 +489,6 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     if (shouldAddObservers) {
       addObserversToArguments(invocation, DOMAIN_OBSERVER_FUNCTION_NAME,
           STATEVAR_OBSERVER_FUNCTION_NAME);
-    } else if (shouldAddInitObservers) {
-      addObserversToArguments(invocation, "__domainObject => __domainObject",
-          "__stateVar => __stateVar");
     }
 
     boolean res = super.substituteMethodInvocation(invocation);
@@ -490,9 +497,10 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
       print(", \"" + GUIAdapterUtils.STATEVAR_PREFIX + GUIAdapterUtils.getMethodNameWithoutGetIs(invocation) + "\")");
     }
     if (shouldPrintDomainObs) {
-      print(", \"").print(adapterUtils.getTypeNameWithoutBuilderAndTOP((TypeElement) invocatedType,
-              false))
-          .print("\")");
+//      print(", \"").print(adapterUtils.getTypeNameWithoutBuilderAndTOP((TypeElement) invocatedType,
+//              false))
+//          .print("\")");
+      print(")");
     }
     return res;
   }
