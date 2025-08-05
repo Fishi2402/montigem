@@ -26,11 +26,11 @@ export abstract class ComponentObserverManager {
   // Domain-specific mapping from a type name to a function that gets an object of that type
   protected abstract getObjectGetterFactory(): Map<string, ((gemId: number) => Promise<GemIdentifiable>)>;
 
-  public static addDomainObjectObserver<T extends GemIdentifiable>(obj: T, type: string, update: () => void, updateName: string, componentName: string): T {
+  public static addDomainObjectObserver<T extends GemIdentifiable>(obj: T, update: () => void, updateName: string, componentName: string): T {
     if (obj === undefined || obj === null) {
       return null;
     }
-    return ComponentObserverManager.getInstance().__addDomainObjectObserver(obj, type, update, updateName, componentName);
+    return ComponentObserverManager.getInstance().__addDomainObjectObserver(obj, update, updateName, componentName);
   }
 
   public static addStateVariableObserver<T>(obj: T, variableName: string, update: () => void, updateName: string, componentName: string): T {
@@ -50,8 +50,16 @@ export abstract class ComponentObserverManager {
   // Maps gemIds to types
   public objectTypes: Map<number, string> = new Map();
 
-  public __addDomainObjectObserver<T extends GemIdentifiable>(obj: T, type: string, update: () => void, updateName: string, componentName: string): T {
+  public __addDomainObjectObserver<T extends GemIdentifiable>(obj: T, update: () => void, updateName: string, componentName: string): T {
+    if (obj === undefined || obj === null) {
+      return null;
+    }
     let realType = obj["__className"];
+    if (!this.getObserverFactory().has(realType)) {
+      console.warn("0xCOM002 No observer factory for type " + realType + ". No observer added for object with gemid: " + obj.getGemId() + ".");
+      return obj;
+    }
+
     if (!this.componentDomainObjectObservers.has(componentName)) {
       this.componentDomainObjectObservers.set(componentName, new Map<number, Map<string, any>>());
     }
@@ -63,12 +71,9 @@ export abstract class ComponentObserverManager {
       }
     }
     if (!updateObservers.get(obj.getGemId()).has(updateName)) {
-      if (this.getObserverFactory().has(realType) === false) {
-        console.log("0xCOM002 No observer factory for type " + realType + ". Given type was: " + type + ".");
-      }
       let observer = this.getObserverFactory().get(realType)(update);
       updateObservers.get(obj.getGemId()).set(updateName, observer);
-      (<any> obj).addObserver(observer)
+      (<any> obj).addObserver(observer);
     }
     return obj;
   }
