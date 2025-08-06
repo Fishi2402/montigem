@@ -13,7 +13,7 @@ dependencies {
   testImplementation project(':umlp-test-rte')
 }
 
-generateUmlpBackend {
+umlp2java {
 
   hwcDir = [file("$projectDir/src/main/java"), file("$projectDir/src/test/java")]
 }

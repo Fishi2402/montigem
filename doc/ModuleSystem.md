@@ -65,16 +65,16 @@ classDiagram
   note for montigemModule  "General definition for a module, can not be directly resolved" 
   class montigemModuleUMLPModels
   montigemModule <|-- montigemModuleUMLPModels
-  note for montigemModuleUMLPModels "Contains the models itself -> genDomain"
+  note for montigemModuleUMLPModels "Contains the models itself -> umlp2ts"
   class montigemModuleGeneratorExtension
   montigemModule <|-- montigemModuleGeneratorExtension
-  note for montigemModuleGeneratorExtension "Contains the modifications for the MontiGem tool -> genGui & genDomain"
+  note for montigemModuleGeneratorExtension "Contains the modifications for the MontiGem tool -> gui2java & umlp2ts"
   class implementation
   montigemModule <|-- implementation
   note for implementation "Contains the compiled backend code -> java"
   class montigemModuleUMLPSymbols
   montigemModule <|-- montigemModuleUMLPSymbols
-  note for montigemModuleUMLPSymbols "Contains the domain symbols -> genGUI"
+  note for montigemModuleUMLPSymbols "Contains the domain symbols -> gui2java"
   class montigemModuleFrontendCodeTS
   montigemModule <|-- montigemModuleFrontendCodeTS
   note for montigemModuleFrontendCodeTS "Contains bundles JS-frontend code -> angular"
@@ -163,7 +163,7 @@ dependencies {
 ```
 
 (Note: Due to car-rental being a weird project/a workaround for CD2GUI singletons, 
- those lines SHOULD NOT be added after the `genGUI` definition,
+ those lines SHOULD NOT be added after the `gui2java` definition,
 as otherwise gradle MIGHT complain about already resolved configurations.)
 
 In addition, the typescript dependency (similar to the backends *implementation* dependency) has to be added.
@@ -324,4 +324,4 @@ In the case, that non-conservative extensions to a class are made (such as a req
 
 * Using subproject (for each file) also does not work due to circular dependencies
 
-* Instead, we distribute the packaged genDomain/genGui outpu
+* Instead, we distribute the packaged umlp2ts/gui2java outpu

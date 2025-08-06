@@ -6,7 +6,7 @@ import { WeatherManager } from '@src/weather/WeatherManager';
 
 @Component({
   selector: 'add-to-favorite',
-  templateUrl: '../../../build/frontendGen/build/appgui/gui/AddToFavorite.html',
+  templateUrl: '../../../build/app/build/appgui/gui/AddToFavorite.html',
   styleUrls: ['./AddToFavorite.scss']
 })
 

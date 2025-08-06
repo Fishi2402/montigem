@@ -59,7 +59,7 @@ application {
   mainClass = 'autotechagil.AutoTechAgilServerApplication'
 }
 
-generateUmlpBackend {
+umlp2java {
   input = file("../models/AutoTechAgil.umlp")
   useSpring.set(true)
   useShell.set(false)

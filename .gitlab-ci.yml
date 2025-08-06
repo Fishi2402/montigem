@@ -33,10 +33,10 @@ build_no_containers:
   cache:
     paths:
       - .gradle/nodejs
-      - examples/weather/frontend/build/frontendGen/node_modules
-      - examples/sehub/frontend/build/frontendGen/node_modules
-      - examples/dtcockpit/frontend/build/frontendGen/node_modules
-      - products/demorec/frontend/build/frontendGen/node_modules
+      - examples/weather/frontend/build/app/node_modules
+      - examples/sehub/frontend/build/app/node_modules
+      - examples/dtcockpit/frontend/build/app/node_modules
+      - products/demorec/frontend/build/app/node_modules
   artifacts:
     when: always
     paths:
@@ -111,10 +111,10 @@ build_with_deploy:
   cache:
     paths:
       - .gradle/nodejs
-      - examples/weather/frontend/build/frontendGen/node_modules
-      - examples/sehub/frontend/build/frontendGen/node_modules
-      - examples/dtcockpit/frontend/build/frontendGen/node_modules
-      - products/demorec/frontend/build/frontendGen/node_modules
+      - examples/weather/frontend/build/app/node_modules
+      - examples/sehub/frontend/build/app/node_modules
+      - examples/dtcockpit/frontend/build/app/node_modules
+      - products/demorec/frontend/build/app/node_modules
   artifacts:
     when: always
     paths:

@@ -74,7 +74,7 @@ dependencies {
   implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
 }
 
-generateUmlpBackend {
+umlp2java {
   input = file("../models/DemoRec.umlp")
   symbolOutDir = file("${project.buildDir}/symbols")
   tmplDir = file("../templates")

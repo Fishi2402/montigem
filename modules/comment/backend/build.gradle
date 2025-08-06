@@ -20,7 +20,7 @@ dependencies {
 
 }
 
-generateUmlpBackend {
+umlp2java {
     input = file("../models/CommentModule.umlp")
 }
 

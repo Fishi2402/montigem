@@ -4,7 +4,7 @@ import { DemoRecManager } from 'demorec/DemoRecManager';
 
 import { BatteryPackType } from 'demorec/BatteryPackType';
 
-import { PackEditComponent ,config} from '../../../../build/frontendGen/build/appgui/gui/pack/PackEditComponent';
+import { PackEditComponent ,config} from '../../../../build/app/build/appgui/gui/pack/PackEditComponent';
 
 
 import {

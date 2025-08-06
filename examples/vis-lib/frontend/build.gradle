@@ -1,4 +1,4 @@
-import de.montigem.gradle.specific.CreateSymLinkTask
+import de.montigem.gradle.specific.CreateSymlinkTask
 
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -14,7 +14,7 @@ if (project.hasProperty('j2ts_vislib') && j2ts_vislib.toString().toBoolean()) {
 }
 
 node {
-  nodeProjectDir = file("${buildDir}/frontendGen")
+  nodeProjectDir = file("${buildDir}/app")
 }
 
 dependencies {
@@ -31,7 +31,7 @@ configurations {
   testRuntimeClasspath.exclude group: 'de.monticore.language-server', module:'monticore-language-server-runtime'
 }
 
-genGUI {
+gui2java {
   domainModels = ["Domain"]
   guiCreateModels = ["person.CreatePerson", "person.CreatePersonWithFriends", "person.CreateClubWithMembers"]
 
@@ -50,24 +50,24 @@ if (!project.hasProperty('j2ts') || !j2ts.toString().toBoolean()) {
 }
 
 if (project.hasProperty('j2ts') && j2ts.toString().toBoolean()) {
-  translateJava2TSDomain {
+  umlpJava2ts {
     verbose = true
   }
 
-  translateJava2TSGUI {
+  guiJava2ts {
     verbose = true
   }
 }
 
 task copyAppJsweet(type: Copy) {
-  dependsOn(frontendSetup)
+  dependsOn(setupFrontend)
   onlyIf { project.hasProperty('j2ts') && project.j2ts.toString().toBoolean() }
   from 'config/src/appjsweet'
-  into 'build/frontendGen/src/app/'
+  into 'build/app/src/app/'
 }
 // End JSweet
 
-nodeSetup.dependsOn(frontendSetup)
+nodeSetup.dependsOn(setupFrontend)
 npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 
 ["testApp", "buildApp", "runApp"].forEach {

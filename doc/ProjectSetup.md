@@ -39,15 +39,15 @@ script:
 cache:
 paths:
 - ...
-- examples/dtcockpit/frontend/build/frontendGen/node_modules
+- examples/dtcockpit/frontend/build/app/node_modules
 - examples/dtcockpit/frontend/.gradle/nodejs
 artifacts:
 paths:
 - ...
-- examples/dtcockpit/frontend/build/frontendGen/dist/**
-- examples/dtcockpit/frontend/build/frontendGen/Dockerfile
-- examples/dtcockpit/frontend/build/frontendGen/Caddyfile
-- examples/dtcockpit/frontend/build/frontendGen/.dockerignore
+- examples/dtcockpit/frontend/build/app/dist/**
+- examples/dtcockpit/frontend/build/app/Dockerfile
+- examples/dtcockpit/frontend/build/app/Caddyfile
+- examples/dtcockpit/frontend/build/app/.dockerignore
 ```
 
 ## 3. BE
@@ -135,7 +135,7 @@ Here is an example for the `UserCreateComponent.ts`:
 ```
 @Component({
 selector: 'user-create',
-templateUrl: '../../../../build/frontendGen/build/appgui/gui/login/UserCreate.html',
+templateUrl: '../../../../build/app/build/appgui/gui/login/UserCreate.html',
 styles: [":host{ display: flex; flex-direction: column }"],
 styleUrls: ["/Login.scss"]
 })
@@ -179,7 +179,7 @@ Icons, images and videos must be stored in the `config/src/assets` folder.
 
 Frontend may additionally include `tsconfig.json` file alongside `build.gradle` with following content:
 ```json
-{ "extends": "./build/frontendGen/tsconfig.json" }
+{ "extends": "./build/app/tsconfig.json" }
 ```
 This file provides a hint for IDEs to look for the root TypeScript configuration file in the build folder.
 
@@ -188,7 +188,7 @@ In the backend, additional playwright e2e test infrastructure can be generated.
 Only works if spring is selected.
 
 ```gradle
-generateUmlpBackend {
+umlp2java {
   ...
   useSpring.set(true)
   usePlaywright.set(true)

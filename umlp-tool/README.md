@@ -67,7 +67,7 @@ sourceSets {
 1) `de.rwth.se.montigem` - the basic plugin which is always loaded. No task is created
 2) `de.rwth.se.montigem-backend` - plugin for generating the UMLP-backend. The following steps are performed:
   * load `java` plugin
-  * create task ``generateUmlpBackend`` of type `UMLPBackendTask` with the following conventions:
+  * create task ``umlp2java`` of type `UMLPBackendTask` with the following conventions:
     * ``input=src/models/``
     * ``hwcDir=src/main/java``
     * ``tmplDir=src/templates``
@@ -76,17 +76,17 @@ sourceSets {
 3) `de.rwth.se.montigem-frontend` - plugin for generating the UMLP-backend. The following steps are performed:
 * load `base` plugin
 * create configuration ``guiTypes`` which is used to load symbols
-* create task ``frontendSetup`` of type `FrontendSetup` with the following convention:
+* create task ``setupFrontend`` of type `setupFrontend` with the following convention:
   * ``input=config/``
-* create task ``genDomain`` of type `UMLPFrontendTask` with the following convention: 
+* create task ``umlp2ts`` of type `UMLPFrontendTask` with the following convention: 
   * ``input=../models/``
   * ``hwcDir=src/app/``
-* create task ``genGUI`` of type `UMLPGuiGenTask` with the following convention:
+* create task ``gui2java`` of type `UMLPGuiGenTask` with the following convention:
   * ``input=../models/``
   * ``modelDir=../models/``
   * ``hwcDir=src/app/``
-  * symbols are loaded from configuration ``guiTypes`` and the output of `genDomain`
-* two sync tasks are created for both ``genDomain`` and ``genGUI`` which copy the generated code. This is required for `npm serve` and continuous build (see below)
+  * symbols are loaded from configuration ``guiTypes`` and the output of `umlp2ts`
+* two sync tasks are created for both ``umlp2ts`` and ``gui2java`` which copy the generated code. This is required for `npm serve` and continuous build (see below)
 * create ``generate`` and `continuous` lifecylce task
 
 ### Configuration Options for all UMLP-Tasks

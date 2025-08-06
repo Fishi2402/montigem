@@ -4,9 +4,9 @@ plugins {
 }
 
 node {
-  nodeProjectDir = file("${buildDir}/frontendGen")
+  nodeProjectDir = file("${buildDir}/app")
 }
-nodeSetup.dependsOn(frontendSetup)
+nodeSetup.dependsOn(setupFrontend)
 
 dependencies {
   domainSources project(":examples:weather:backend")
@@ -21,7 +21,7 @@ dependencies {
   outputDir = layout.buildDirectory.dir("cd2gui")
 }*/
 
-genGUI {
+gui2java {
   domainModels = ["Weather"]
   guiCreateModels = ["gui.ForecastCreate"]
 
@@ -31,8 +31,8 @@ genGUI {
   /**/
 }
 
-/*task genGUI2(type: GUI2JavaTask) {
-  dependsOn(genGUI, generateCDTOGUI)
+/*task gui2java2(type: GUI2JavaTask) {
+  dependsOn(gui2java, generateCDTOGUI)
   input = file(layout.buildDirectory.dir("cd2gui/models"))
   symbolDir = files(file(symPath), configurations.guiLib.files, configurations.guiDefaultTypes.files)
   symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")

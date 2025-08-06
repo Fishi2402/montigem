@@ -16,9 +16,9 @@ dependencies {
 def useCD2GUI = false
 
 node {
-  nodeProjectDir = file("${buildDir}/frontendGen")
+  nodeProjectDir = file("${buildDir}/app")
 }
-nodeSetup.dependsOn(frontendSetup)
+nodeSetup.dependsOn(setupFrontend)
 
 tasks.register('generateCDTOGUI', CD2GUITask) {
   enabled(useCD2GUI)
@@ -36,7 +36,7 @@ tasks.register('guiVariability', GUIVariabilityTask) {
   outputDir = layout.buildDirectory.dir("guiVariability")
 }
 
-genGUI {
+gui2java {
   domainModels = ["DevProcessCockpit"]
   guiCreateModels = []
 
@@ -46,10 +46,10 @@ genGUI {
   /**/
 }
 
-tasks.register('genGUI2', GUI2JavaTask) {
+tasks.register('gui2java2', GUI2JavaTask) {
   enabled(useCD2GUI)
   setGroup('build')
-  dependsOn(genGUI, guiVariability)
+  dependsOn(gui2java, guiVariability)
   input = file(guiVariability.getOutputDir().dir("cd2gui"))
   symbolDir = files(
       generateCDTOGUI.getOutputDir().file("symbols"),
@@ -69,15 +69,15 @@ npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 
 
 tasks.named('buildApp', NpxTask) {
-  dependsOn(genGUI2)
+  dependsOn(gui2java2)
 }
 
 tasks.named('testApp', NpxTask) {
-  dependsOn(genGUI2)
+  dependsOn(gui2java2)
 }
 
 tasks.named('runApp', NpxTask) {
-  dependsOn(genGUI2)
+  dependsOn(gui2java2)
 }
 
 tasks.register('run') {

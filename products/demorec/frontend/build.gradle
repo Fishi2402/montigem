@@ -17,11 +17,11 @@ dependencies {
 }
 
 node {
-  nodeProjectDir = file("${buildDir}/frontendGen")
+  nodeProjectDir = file("${buildDir}/app")
 }
-nodeSetup.dependsOn(frontendSetup)
+nodeSetup.dependsOn(setupFrontend)
 
-genGUI {
+gui2java {
   domainModels = ["DemoRec"]
   guiCreateModels = ["gui.pack.PackCreate",
                      "gui.process.ProcessCreate",
@@ -41,7 +41,7 @@ genGUI {
   /**/
 }
 
-translateJava2TSDomain {
+umlpJava2ts {
   excludeSource.addAll([
       "glob:**/processmodeling/*",
       "glob:**/*test*/*"
@@ -49,7 +49,7 @@ translateJava2TSDomain {
   verbose = true
 }
 
-translateJava2TSGUI {
+guiJava2ts {
   excludeTranspile.addAll([
       "glob:**/service/**",
       "glob:**/service/*"

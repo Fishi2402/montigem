@@ -53,7 +53,7 @@ dependencies {
   implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
 }
 
-generateUmlpBackend {
+umlp2java {
   input = file("../models/Kizam.umlp")
   symbolOutDir = file("${project.buildDir}/symbols")
   useSpring = true

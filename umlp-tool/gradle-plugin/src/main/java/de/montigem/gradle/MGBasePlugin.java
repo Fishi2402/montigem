@@ -102,14 +102,6 @@ public abstract class MGBasePlugin implements Plugin<Project> {
       project.getConfigurations().getByName("api").extendsFrom(montigemModuleC);
     });
 
-    // Add guiLib configuration
-    /*
-    project.getConfigurations().maybeCreate(GUI_LIB_CONFIG);
-    if (!getBooleanProjectProperty(project, "useLocalDependencies")) {
-      project.getDependencies().add(GUI_LIB_CONFIG, "umlp.umlp-rte:client:" + FrontendPlugin.getStringProjectProperty(project, "mc_version", "") + ":guisymbols");
-    }
-    /* */
-
     StatisticListener.registerOnce(project);
 
     this.failIfMontiCorePresent(project);

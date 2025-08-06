@@ -66,7 +66,7 @@ dependencies {
   implementation project(':umlp-rte:client')
 }
 
-generateUmlpBackend {
+umlp2java {
   input = file("../models/Domain.umlp")
   symbolOutDir = file("${project.buildDir}/symbols")
   useSpring.set(true)
@@ -98,7 +98,7 @@ sourceSets {
   main {
     //java.srcDirs += [layout.buildDirectory.dir("testgui")]
     //java.srcDirs += [layout.buildDirectory.dir("umlp/fe2")]
-    // main.resources.srcDirs += generateUmlpBackend.getOutputDir().dir("resources")  // Add generated resources (e.g. html & sql files) to JAR
+    // main.resources.srcDirs += umlp2java.getOutputDir().dir("resources")  // Add generated resources (e.g. html & sql files) to JAR
   }
   test {
     java {

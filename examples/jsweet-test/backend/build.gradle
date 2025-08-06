@@ -75,7 +75,7 @@ dependencies {
 // TODO AGe: the whole serialization thing should be reworked
 def symPath = "${project.buildDir}/symbols";
 
-generateUmlpBackend {
+umlp2java {
   input = file("../models/Jsweettest.umlp")
   symbolOutDir = file("${symPath}")
   useSpring.set(true)
@@ -103,7 +103,7 @@ sourceSets {
   main {
     //java.srcDirs += [layout.buildDirectory.dir("testgui")]
     //java.srcDirs += [layout.buildDirectory.dir("umlp/fe2")]
-    // main.resources.srcDirs += generateUmlpBackend.getOutputDir().dir("resources")  // Add generated resources (e.g. html & sql files) to JAR
+    // main.resources.srcDirs += umlp2java.getOutputDir().dir("resources")  // Add generated resources (e.g. html & sql files) to JAR
   }
   test {
     java {

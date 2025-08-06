@@ -9,7 +9,7 @@ import {DtcockpitSecurityManager} from "../../dtcockpit/DtcockpitSecurityManager
 
 @Component({
   selector: 'user-login',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/login/UserLogin.html',
+  templateUrl: '../../../../build/app/build/appgui/gui/login/UserLogin.html',
   styles: [":host{ display: flex; flex-direction: column }"],
   styleUrls: ["./Login.scss"]
 })

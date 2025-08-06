@@ -69,7 +69,7 @@ dependencies {
 
 }
 
-generateUmlpBackend {
+umlp2java {
   input = file("../models/Dtcockpit.umlp")
   symbolOutDir = file("${project.buildDir}/symbols")
   useSpring = true

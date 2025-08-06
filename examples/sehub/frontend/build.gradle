@@ -15,9 +15,9 @@ dependencies {
 }
 
 node {
-  nodeProjectDir = file("${buildDir}/frontendGen")
+  nodeProjectDir = file("${buildDir}/app")
 }
-nodeSetup.dependsOn(frontendSetup)
+nodeSetup.dependsOn(setupFrontend)
 
 tasks.register('generateCDTOGUI', CD2GUITask) {
   enabled(useCD2GUI)
@@ -34,12 +34,12 @@ tasks.register('guiVariability', GUIVariabilityTask) {
   outputDir = layout.buildDirectory.dir("guiVariability")
 }
 
-createDomainSymbols {
+umlp2sym {
   enabled = false // instead, we use the CD2Gui Symbols
 }
 
 
-genGUI {
+gui2java {
   dependsOn(guiVariability)
   domainModels = ["Sehub"]
   guiCreateModels = ["gui.login.UserCreate", "gui.issues.IssueCreate"]
@@ -47,15 +47,15 @@ genGUI {
   // Use cd2gui symbols instead of cd2gui/symbols
   symbolDir += generateCDTOGUI.getOutputDir().file("symbols")
   symbolDir += file("$buildDir/tags")
-  // and exclude the genDomain symbols (without gemId)
-  //var toExclude = tasks.genDomain.getSymbolOutDir().get().asFile
+  // and exclude the umlp2ts symbols (without gemId)
+  //var toExclude = tasks.umlp2ts.getSymbolOutDir().get().asFile
   //symbolDir.setFrom symbolDir.filter(f -> f != toExclude)
   modelDir = file(tasks.guiVariability.getOutputDir())
 }
 
 npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 
-translateJava2TSDomain {
+umlpJava2ts {
   excludeSource.addAll([
       "glob:**/dummy/*",
       "glob:**/security/*"

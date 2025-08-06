@@ -98,14 +98,14 @@ public abstract class TestInfrastructurePlugin implements Plugin<Project> {
           task.setGroup(UMLP_GROUP_NAME);
 
           UMLP2JavaTask backendTask = (UMLP2JavaTask) project.getTasks().findByName(
-              BackendPlugin.UMLP_BACKEND_TASK_NAME
+              BackendPlugin.UMLP2JAVA_TASK
           );
 
           String buildDirPath = project.getBuildDir().getAbsolutePath();
           String projectDirPath = project.getProjectDir().getAbsolutePath();
 
           if (backendTask != null) {
-            task.dependsOn(BackendPlugin.UMLP_BACKEND_TASK_NAME);
+            task.dependsOn(BackendPlugin.UMLP2JAVA_TASK);
 
             task.getInput().from(backendTask.getInput());
             task.getTmplDir().convention(backendTask.getTmplDir());

@@ -7,7 +7,7 @@ import {PipelineStatsComponent} from '@src/gui/pipelines/PipelineStatsComponent'
 
 @Component({
   selector: 'pipeline-stats',
-  templateUrl: '../../../../build/frontendGen/build/appgui/gui/pipelines/PipelineStats.html',
+  templateUrl: '../../../../build/app/build/appgui/gui/pipelines/PipelineStats.html',
   styles: [":host{ display: flex; flex-direction: column }"],
   styleUrls: []
 })

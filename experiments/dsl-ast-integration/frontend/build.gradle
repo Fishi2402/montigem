@@ -39,24 +39,24 @@ node {
    download = true
    version = "${node_version}"
    nodeProxySettings = ProxySettings.OFF
-   nodeProjectDir = file("${buildDir}/frontendGen")
+   nodeProjectDir = file("${buildDir}/app")
 }
-nodeSetup.dependsOn(frontendSetup)
+nodeSetup.dependsOn(setupFrontend)
 
 tasks.register('copyTags', Copy) {
-   from(tasks.genDomain.getSymbolOutDir()) {
+   from(tasks.umlp2ts.getSymbolOutDir()) {
       include '**/*.tags'
    }
    into("$buildDir/tags")
 }
 
-genDomain {
-   input.setFrom(project(":experiments:dsl-ast-integration:ebackend").generateUmlpBackend.input)
+umlp2ts {
+   input.setFrom(project(":experiments:dsl-ast-integration:ebackend").umlp2java.input)
 
    it.input.each{println(it)}
 }
 
-createDomainSymbols {
+umlp2sym {
    enabled = false // instead, we use the symbols from the backend (and thus the merged model!)
 }
 
@@ -76,7 +76,7 @@ tasks.register('guiVariability', GUIVariabilityTask) {
 
 
 
-genGUI {
+gui2java {
    domainModels = ["Domain"]
    guiCreateModelsAsFile = file(generateCDTOGUI.getOutputDir().file("meta/domain/guiCreateTextModels"))
 
@@ -86,19 +86,19 @@ genGUI {
 
    symbolDir += generateCDTOGUI.getOutputDir().file("symbols")
    symbolDir += file("$buildDir/tags")
-   var toExclude = tasks.genDomain.getSymbolOutDir().get().asFile
+   var toExclude = tasks.umlp2ts.getSymbolOutDir().get().asFile
    symbolDir.setFrom symbolDir.filter(f -> f != toExclude)
    modelDir = file(tasks.guiVariability.getOutputDir())
 }
 
-SYNC_genDomain {
-   filter { line -> line.replaceAll('../../../build/umlp_frontend/intermediate/', '../../../build/frontendGen/build/') }
+SYNC_umlp2ts {
+   filter { line -> line.replaceAll('../../../build/umlp_frontend/intermediate/', '../../../build/app/build/') }
 }
-SYNC_genGUI {
-   filter { line -> line.replaceAll('../../../build/umlp_frontend/intermediate/', '../../../build/frontendGen/build/') }
+SYNC_gui2java {
+   filter { line -> line.replaceAll('../../../build/umlp_frontend/intermediate/', '../../../build/app/build/') }
 }
 
-nodeSetup.dependsOn(frontendSetup)
+nodeSetup.dependsOn(setupFrontend)
 
 npmInstall.args = ['--loglevel', 'error']
 

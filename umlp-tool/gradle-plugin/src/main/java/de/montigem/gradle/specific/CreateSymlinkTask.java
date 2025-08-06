@@ -11,37 +11,9 @@ import java.io.File;
 import java.io.IOException;
 
 
-public abstract class CreateSymLinkTask extends DefaultTask {
+public abstract class CreateSymlinkTask extends DefaultTask {
 
-  public CreateSymLinkTask() {
-    // Always run task, since it is fast and hard to check up-to-date
-
-//    getOutputs().upToDateWhen(task -> {
-//      CreateSymLinkTask casted = (CreateSymLinkTask) task;
-//
-//      if (casted.getSymlinkMap().isPresent()) {
-//        AtomicBoolean b = new AtomicBoolean(true);
-//        casted.getSymlinkMap().get().forEach((link, linkTarget) -> {
-//          try {
-//            System.out.println(linkTarget + " -> " + link);
-//            boolean symbolicLink = Files.isSymbolicLink(link.toPath());
-//            System.out.println("Files.isSymbolicLink(link.toPath()):" + symbolicLink);
-//            if(symbolicLink) System.out.println("Files.readSymbolicLink(link.toPath()).toAbsolutePath().equals(linkTarget.toPath().toAbsolutePath()):" + Files.readSymbolicLink(link.toPath()).toAbsolutePath().equals(linkTarget.toPath().toAbsolutePath()));
-//            b.set(b.get()
-//                && Files.isSymbolicLink(link.toPath())
-//                && Files.readSymbolicLink(link.toPath()).toAbsolutePath().equals(linkTarget.toPath().toAbsolutePath())
-//            );
-//          } catch (IOException e) {
-//            throw new RuntimeException(e);
-//          }
-//        });
-//        return b.get();
-//      } else {
-//        return false;
-//      }
-//    });
-
-    // getOutputs().files()
+  public CreateSymlinkTask() {
   }
 
   @Input
@@ -90,10 +62,10 @@ public abstract class CreateSymLinkTask extends DefaultTask {
         } else {
           // Unix/Linux: create symlink using Java API
           java.nio.file.Files.createSymbolicLink(linkDir.toPath(), targetDir.toPath());
-          Log.info("✅ Symlink created: " + linkPath + " → " + targetPath, CreateSymLinkTask.TASK_NAME);
+          Log.info("✅ Symlink created: " + linkPath + " → " + targetPath, CreateSymlinkTask.TASK_NAME);
         }
       } else {
-        Log.info("ℹ️ Symlink already exists: " + linkPath, CreateSymLinkTask.TASK_NAME);
+        Log.info("ℹ️ Symlink already exists: " + linkPath, CreateSymlinkTask.TASK_NAME);
       }
     } catch (InterruptedException | IOException e) {
       Log.error("❌ Failed to create symlink: " + e.getMessage());

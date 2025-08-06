@@ -4,7 +4,7 @@ import { DemoRecComponent } from 'demorec/DemoRecComponent';
 import { DemoRecManager } from 'demorec/DemoRecManager';
 import { Photo } from 'demorec/Photo';
 
-import { PhotoDragNDropComponent, config } from '../../../../build/frontendGen/build/appgui/gui/component/PhotoDragNDropComponent';
+import { PhotoDragNDropComponent, config } from '../../../../build/app/build/appgui/gui/component/PhotoDragNDropComponent';
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 

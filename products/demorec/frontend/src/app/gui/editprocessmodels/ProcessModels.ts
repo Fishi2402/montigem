@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { ProcessModelsComponent, config } from '../../../../build/frontendGen/build/appgui/gui/editprocessmodels/ProcessModelsComponent';
+import { ProcessModelsComponent, config } from '../../../../build/app/build/appgui/gui/editprocessmodels/ProcessModelsComponent';
 
 import {
   Component,

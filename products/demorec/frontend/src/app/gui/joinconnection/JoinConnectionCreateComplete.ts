@@ -5,7 +5,7 @@ import { DemoRecManager } from 'demorec/DemoRecManager';
 import { JoinConnection } from 'demorec/JoinConnection';
 import { State } from 'demorec/State';
 
-import { JoinConnectionCreateCompleteComponent, config } from '../../../../build/frontendGen/build/appgui/gui/joinconnection/JoinConnectionCreateCompleteComponent';
+import { JoinConnectionCreateCompleteComponent, config } from '../../../../build/app/build/appgui/gui/joinconnection/JoinConnectionCreateCompleteComponent';
 
 import {
   Component,

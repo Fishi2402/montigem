@@ -4,7 +4,7 @@ import {DemoRecManager} from 'demorec/DemoRecManager'
 
 import {MeasuringValue} from 'demorec/MeasuringValue'
 
-import {MeasuringValueEditComponent, config} from '../../../../build/frontendGen/build/appgui/gui/measuringvalues/MeasuringValueEditComponent';
+import {MeasuringValueEditComponent, config} from '../../../../build/app/build/appgui/gui/measuringvalues/MeasuringValueEditComponent';
 
 import {
   Component,

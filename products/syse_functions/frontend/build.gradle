@@ -31,23 +31,23 @@ dependencies {
 }
 
 node {
-  nodeProjectDir = file("${buildDir}/frontendGen")
+  nodeProjectDir = file("${buildDir}/app")
 }
-nodeSetup.dependsOn(frontendSetup)
+nodeSetup.dependsOn(setupFrontend)
 
-genGUI {
+gui2java {
   domainModels = ["FunctionStructure4Fenix"]
 }
 
-translateJava2TSDomain {
+umlpJava2ts {
   verbose = true
 }
 
-translateJava2TSGUI {
+guiJava2ts {
   verbose = true
 }
 
-nodeSetup.dependsOn(frontendSetup)
+nodeSetup.dependsOn(setupFrontend)
 npmInstall.dependsOn(nodeSetup, ':umlp-rte:client:npmInstall')
 
 def prebuildTasks = [

@@ -24,6 +24,7 @@ public abstract class DependencyPlugin implements Plugin<Project> {
 
 
   public static final String UMLP_CONFIG_TOOL = "umlpTool";
+  public static String version;
 
   @Override
   public void apply(Project project) {
@@ -37,7 +38,7 @@ public abstract class DependencyPlugin implements Plugin<Project> {
     } catch (Exception e) {
       Log.error("Cannot load /buildInfo.properties from classpath", e);
     }
-    String version = Objects.requireNonNull(
+    version = Objects.requireNonNull(
         buildInfo.getProperty("version"),
         "Cannot find version in buildInfo.properties"
     );

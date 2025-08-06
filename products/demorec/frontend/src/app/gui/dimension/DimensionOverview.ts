@@ -2,7 +2,7 @@
 
 import { Dimension } from 'demorec/Dimension';
 
-import { DimensionOverviewComponent, config } from '../../../../build/frontendGen/build/appgui/gui/dimension/DimensionOverviewComponent';
+import { DimensionOverviewComponent, config } from '../../../../build/app/build/appgui/gui/dimension/DimensionOverviewComponent';
 
 import {
   Directive,

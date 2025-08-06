@@ -63,7 +63,7 @@ dependencies {
   montigemModuleGeneratorExtension(project(path: ":modules:sovd-gateway"))
 }
 
-generateUmlpBackend {
+umlp2java {
   input = file("../models/SovdGatewayIT.umlp")
   symbolOutDir = file("${project.buildDir}/symbols")
   useSpring.set(true)
@@ -83,4 +83,4 @@ test {
   useJUnitPlatform()
 }
 
-compileJava.dependsOn(generateUmlpBackend)
+compileJava.dependsOn(umlp2java)

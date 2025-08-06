@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { EndEffector } from 'demorec/EndEffector';
-import { EndEffectorOverviewComponent, config } from '../../../../build/frontendGen/build/appgui/gui/endeffector/EndEffectorOverviewComponent';
+import { EndEffectorOverviewComponent, config } from '../../../../build/app/build/appgui/gui/endeffector/EndEffectorOverviewComponent';
 
 import {
   Component,

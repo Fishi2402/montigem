@@ -1,23 +1,27 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.montigem.gradle;
 
+import de.monticore.gradle.common.CommonMCTask;
 import de.montigem.gradle.specific.UMLP2JavaTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.plugins.JavaPluginConvention;
+import org.gradle.api.file.Directory;
+import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
+import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.compile.AbstractCompile;
 import org.gradle.jvm.tasks.Jar;
 import org.gradle.language.jvm.tasks.ProcessResources;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.util.function.Consumer;
+import java.util.Map;
 
-import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
+import static de.montigem.gradle.FrontendBasePlugin.UMLP_GROUP_NAME;
 import static de.montigem.gradle.FrontendBasePlugin.getBooleanProjectProperty;
-import static de.montigem.gradle.FrontendBasePlugin.getStringProjectProperty;
+import static de.montigem.gradle.FrontendBasePlugin.getModels;
+import static de.montigem.gradle.FrontendBasePlugin.mcVersion;
+import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
 
 /***
  * A opinionated plugin which handles backend generation.
@@ -26,8 +30,7 @@ import static de.montigem.gradle.FrontendBasePlugin.getStringProjectProperty;
  */
 public abstract class BackendPlugin implements Plugin<Project> {
 
-  final static String UMLP_BACKEND_TASK_NAME = "generateUmlpBackend";
-  static final String UMLP_GROUP_NAME = "umlp";
+  public final static String UMLP2JAVA_TASK = "umlp2java";
 
   @Override
   public void apply(Project project) {
@@ -35,28 +38,28 @@ public abstract class BackendPlugin implements Plugin<Project> {
     project.getPluginManager().apply("java");
 
     boolean local = getBooleanProjectProperty(project, "useLocalDependencies");
+    addRTEDependency(project, local);
 
-    TaskProvider<UMLP2JavaTask> umlpTask = createUMLPBackendTask(project, UMLP_BACKEND_TASK_NAME, local);
+    TaskProvider<UMLP2JavaTask> umlp2java = createUMLP2JavaTask(project);
     // Generate Backend must run before JavaCompile
     project.getTasks().withType(AbstractCompile.class).configureEach(compile -> {
-      compile.dependsOn(umlpTask);
+      compile.dependsOn(umlp2java);
     });
     // Generate Backend must run before ProcessResources (e.g. for SQL schemata)
     project.getTasks().withType(ProcessResources.class).configureEach(compile -> {
-      compile.dependsOn(umlpTask);
+      compile.dependsOn(umlp2java);
     });
 
-    addToSourceSet(project, umlpTask.get());
+    addToSourceSet(project, umlp2java);
 
     // Lifecycle task "generate" which depends on Backend-Creation
-    project.getTasks().register("generate", task -> task.dependsOn(umlpTask));
+    project.getTasks().register("generate", task -> task.dependsOn(umlp2java));
 
     // Lifecycle task "continuous". Intended use is with "--continuous" flag of gradle & HotReload
     project.getTasks().register("continuous", task -> task.dependsOn(project.getTasks().withType(Jar.class)));
 
     // Add dependency to jsweet-core, to import the annotations (such as @Erased)
     // Only during compilation of the backend
-    // TODO: Use constant for jsweet-core
     project.getDependencies().add("compileOnly", "org.jsweet:jsweet-core:6.3.0");
 
     // apply last, since the test infrastructure tasks import properties from backend tasks
@@ -64,59 +67,50 @@ public abstract class BackendPlugin implements Plugin<Project> {
   }
 
   // Add generated files to SourceSets
-  private void addToSourceSet(Project project, UMLP2JavaTask umlpTask) {
-    JavaPluginConvention javaConvention = project.getConvention().getPlugin(JavaPluginConvention.class);
-    SourceSet main = javaConvention.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
-    main.getJava().srcDir(umlpTask.getOutputDir());
+  private void addToSourceSet(Project project, TaskProvider<UMLP2JavaTask> umlpTask) {
+    SourceSet mainSourceSet = project.getExtensions().getByType(SourceSetContainer.class).getByName(SourceSet.MAIN_SOURCE_SET_NAME);
+    mainSourceSet.getJava().srcDir(umlpTask.flatMap(CommonMCTask::getOutputDir));
 
     // Add generated resources. e.g. SQL-Schemata
-    main.getResources().srcDir(umlpTask.getOutputDir().dir("resources"));
+    mainSourceSet.getResources().srcDir(umlpTask.flatMap(CommonMCTask::getOutputDir).map(dir -> dir.dir("resources")));
   }
 
-  protected static TaskProvider<UMLP2JavaTask> createUMLPBackendTask(final Project project, String umlpBackendTaskName, boolean local) {
-    TaskProvider<UMLP2JavaTask> umlp2java = project.getTasks().register(umlpBackendTaskName, UMLP2JavaTask.class, umlpTask -> {
-      umlpTask.setGroup(UMLP_GROUP_NAME);
-
-      setIfPathExists(umlpTask::setInput, Path.of(
-          project.getProjectDir().getAbsolutePath(), "src", "models"));
-      setIfPathExists(x -> umlpTask.getHwcDir().from(x), Path.of(
-          project.getProjectDir().getAbsolutePath(), "src", "main", "java"));
-      setIfPathExists(x -> umlpTask.getTmplDir().set(x), Path.of(
-          project.getProjectDir().getAbsolutePath(), "src", "templates"));
-
-      // Always set output dir (Gradle creates it, if not already exists)
-      umlpTask.getOutputDir().set(Path.of(
-          project.getBuildDir().getAbsolutePath(), "umlp", "backend").toFile());
-
-      // Always create symbols
-      umlpTask.getSymbolOutDir().set(Path.of(
-          project.getBuildDir().getAbsolutePath(), "umlp", "backend_symbols").toFile());
-
-      // Include montigemModuleUMLPModels
-      umlpTask.getModelDir().from(project.getConfigurations().getByName(MGBasePlugin.MONTIGEM_MODULE_UMLP_MODELS_CONFIG));
-
+  protected static TaskProvider<UMLP2JavaTask> createUMLP2JavaTask(Project project) {
+    Provider<Directory> hwc = project.provider(() -> {
+      File f = project.file("src/main/java");
+      return f.exists() ? project.getLayout().getProjectDirectory().dir("src/main/java") : null;
     });
 
-    // Add Symbols and Tags of RTE ClassDiagrams to SymbolPath
-    if (local) {
-      Project rteClient = project.project(":umlp-rte:client");
-      project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG, rteClient);
-      umlp2java.configure(task -> {
-        task.getSymbolPath().from(project.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
-      });
-    }
-    else {
-      project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG,
-          "umlp:client:" + getStringProjectProperty(project, "mc_version", "")
-      );
-    }
+    Provider<Directory> tpl = project.provider(() -> {
+      File f = project.file("src/templates");
+      return f.exists() ? project.getLayout().getProjectDirectory().dir("src/templates") : null;
+    });
+
+    TaskProvider<UMLP2JavaTask> umlp2java = project.getTasks().register(UMLP2JAVA_TASK, UMLP2JavaTask.class, task -> {
+      task.setGroup(UMLP_GROUP_NAME);
+
+      task.getInput().from(getModels(project));
+      task.getHwcDir().from(hwc);
+      task.getTmplDir().set(tpl);
+      task.getOutputDir().set(project.getLayout().getBuildDirectory().dir("umlp2java"));
+      task.getSymbolOutDir().set(project.getLayout().getBuildDirectory().dir("umlp2sym"));
+      task.getModelDir().from(project.getConfigurations().getByName(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
+    });
+
     return umlp2java;
   }
 
-  private static void setIfPathExists(Consumer<File> add, Path path) {
-    File f = path.toFile();
-    if (f.exists()) {
-      add.accept(f);
+  protected void addRTEDependency(Project project, boolean local) {
+    // Add Symbols and Tags of RTE ClassDiagrams to SymbolPath
+    if (local) {
+      Project rte = project.project(":umlp-rte");
+      project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG,
+          project.getDependencies().project(Map.of("path", rte.getPath()))
+      );
+    }
+    else {
+      project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG, "umlp:umlp-rte:" + mcVersion(project));
     }
   }
+
 }

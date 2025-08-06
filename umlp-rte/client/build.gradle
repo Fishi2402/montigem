@@ -161,7 +161,7 @@ configure(mglib) {
 //  def targetDir = "${targetRoot}/mc/fenix/${libName}"
 //
 //  tasks.register("${copyTaskName}", Copy) {
-//    dependsOn translateJava2TSDomain
+//    dependsOn umlpJava2ts
 //    // e.g. `build/guiComponentTypes/mc/fenix/basic/`
 //    from sourceDir
 //    // e.g. `projects/basic/build/cd/mc/fenix/basic/`
@@ -271,7 +271,7 @@ configure(mglib) {
 //
 //
 //// JSweet
-//translateJava2TSDomain {
+//umlpJava2ts {
 //  verbose = true
 //  File projectBase = parent.projectDir
 //  File srcDir = new File(projectBase, "src/main/java")
@@ -296,31 +296,31 @@ configure(mglib) {
 //}
 //
 //gradle.projectsEvaluated {
-//  translateJava2TSDomain.configure {task ->
+//  umlpJava2ts.configure {task ->
 //    task.dependsOn(project(":umlp-rte").tasks["generateGuiComponentJava"])
 //  }
 //}
 //
-//genGUI {
+//gui2java {
 //  enabled = false
 //}
 //
-//createDomainSymbols {
+//umlp2sym {
 //  enabled = false
 //}
 //
-//frontendSetup {
+//setupFrontend {
 //  enabled = false
 //}
 //
-//genJava2TSGUIConfig {
+//gui2jsweet {
 //  enabled = false
 //}
 //
-//genJava2TSDomainConfig {
+//umlp2jsweet {
 //  enabled = false
 //}
 //
-//translateJava2TSGUI {
+//guiJava2ts {
 //  enabled = false
 //}

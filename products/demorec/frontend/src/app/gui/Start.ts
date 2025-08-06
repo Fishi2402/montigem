@@ -5,7 +5,7 @@ import { Process } from 'demorec/Process';
 import { BatteryPack } from 'demorec/BatteryPack';
 import { DemoRecManager } from 'demorec/DemoRecManager';
 
-import { StartComponent,config } from '../../../build/frontendGen/build/appgui/gui/StartComponent';
+import { StartComponent,config } from '../../../build/app/build/appgui/gui/StartComponent';
 
 
 

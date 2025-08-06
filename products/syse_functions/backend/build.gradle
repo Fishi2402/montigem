@@ -61,7 +61,7 @@ application {
   mainClass = 'functionstructure4fenix.FunctionStructure4FenixServerApplication'
 }
 
-generateUmlpBackend {
+umlp2java {
   input = file("../models/FunctionStructure4Fenix.umlp")
   useSpring.set(true)
   useShell.set(false)

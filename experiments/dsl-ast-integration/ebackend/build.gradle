@@ -79,7 +79,7 @@ task mergeWithDSL(type: MergeTask){
 sourceSets.main.java.srcDirs += project(":experiments:dsl-ast-integration:dsl2cd").tasks.dsl2cd.getJavaOut()
 
 
-generateUmlpBackend {
+umlp2java {
 //   symbolOutDir = file("${project.buildDir}/symbols")
    input = mergeWithDSL.outputFile
    useSpring.set(true)
@@ -94,8 +94,8 @@ generateUmlpBackend {
 //   input = file("../models/CarData.od")
 //   outputDir = file("$project.buildDir/initdata")
 //   hwcDir = file("$projectDir/src/main/java")
-//   symbolDir = files(generateUmlpBackend.symbolOutDir)
-//   dependsOn(generateUmlpBackend)
+//   symbolDir = files(umlp2java.symbolOutDir)
+//   dependsOn(umlp2java)
 //
 //}
 

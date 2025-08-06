@@ -5,7 +5,7 @@ import { Photo } from 'demorec/Photo';
 
 import { GemButton } from "@umlp/basic";
 
-import { PhotoDisplayComponent, config } from '../../../../build/frontendGen/build/appgui/gui/component/PhotoDisplayComponent';
+import { PhotoDisplayComponent, config } from '../../../../build/app/build/appgui/gui/component/PhotoDisplayComponent';
 
 import {
   Directive,

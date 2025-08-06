@@ -28,12 +28,12 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import static de.montigem.gradle.FrontendBasePlugin.inRTE;
 import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
 import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_IMPORT_MAP_CONFIG;
 import static de.montigem.gradle.module.ModuleFrontendPlugin.addGuiSymbolsJarAttributes;
 import static de.montigem.gradle.module.ModuleFrontendPlugin.addImportMapJarAttributes;
 import static de.montigem.gradle.module.ModuleFrontendPlugin.addUMLPSymbolsJarAttributes;
-import static de.montigem.gradle.module.ModuleFrontendPlugin.inRTE;
 
 public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Project> {
 
@@ -67,7 +67,7 @@ public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Projec
     Project backend = project.findProject(project.getPath() + ":backend");
     if (backend != null) {
       project.getDependencies().add("api", backend);
-      SourceSet mainSourceSet = project.getExtensions().getByType(SourceSetContainer.class).getByName("main");
+      SourceSet mainSourceSet = project.getExtensions().getByType(SourceSetContainer.class).getByName(SourceSet.MAIN_SOURCE_SET_NAME);
 
       project.getTasks().named("jar", Jar.class).configure(jar -> {
         jar.from(mainSourceSet.getOutput());
@@ -238,7 +238,7 @@ public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Projec
 
         addUMLPSymbolsJarAttributes(umlp2symConfig, project);
 
-        // Add createDomainSymbolsJar-jar as artifact to the config
+        // Add umlp2symJar-jar as artifact to the config
         project.getArtifacts().add(umlp2symConfig.getName(), umlp2symJar);
         javaComponent.addVariantsFromConfiguration(umlp2symConfig, ConfigurationVariantDetails::mapToOptional);
 

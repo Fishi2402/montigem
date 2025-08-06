@@ -37,13 +37,17 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static de.montigem.gradle.FrontendBasePlugin.GUI_TYPES_NAME;
+import static de.montigem.gradle.FrontendBasePlugin.GUI_TYPES_CONFIG;
 import static de.montigem.gradle.FrontendBasePlugin.UMLP_GROUP_NAME;
+import static de.montigem.gradle.FrontendBasePlugin.addClientRTEDependency;
 import static de.montigem.gradle.FrontendBasePlugin.getBooleanProjectProperty;
 import static de.montigem.gradle.FrontendBasePlugin.getStringProjectProperty;
+import static de.montigem.gradle.FrontendBasePlugin.inRTE;
+import static de.montigem.gradle.FrontendBasePlugin.mcVersion;
 import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
 import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_IMPORT_MAP_CONFIG;
 
@@ -138,13 +142,15 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
 
     TaskProvider<Task> models2ts = project.getTasks().register(MODELS2TS_TASK);
 
-    SourceSet mainSourceSet = project.getExtensions().getByType(SourceSetContainer.class).getByName("main");
+    SourceSet mainSourceSet = project.getExtensions().getByType(SourceSetContainer.class).getByName(SourceSet.MAIN_SOURCE_SET_NAME);
 
     if (local) {
-      project.getDependencies().add("implementation", project.project(":umlp-rte:backend"));
+      project.getDependencies().add("implementation",
+          project.getDependencies().project(Map.of("path", ":umlp-rte:backend"))
+      );
     }
     else {
-      project.getDependencies().add("implementation", "umlp:umlp-rte:" + getStringProjectProperty(project, "mc_version", ""));
+      project.getDependencies().add("implementation", "umlp:umlp-rte:" + mcVersion(project));
     }
 
     project.afterEvaluate(p -> {
@@ -463,45 +469,15 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
     project.getRepositories().mavenCentral();
 
     // Configurations
-    var conf = project.getConfigurations().create(GUI_TYPES_NAME, config -> {
+    var conf = project.getConfigurations().create(GUI_TYPES_CONFIG, config -> {
       config.setCanBeConsumed(false);
       config.setCanBeResolved(true);
       config.getAttributes().attribute(Usage.USAGE_ATTRIBUTE, project.getObjects().named(Usage.class, "guidsl-types"));
       config.getAttributes().attribute(Category.CATEGORY_ATTRIBUTE, project.getObjects().named(Category.class, "library"));
       config.getAttributes().attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, project.getObjects().named(LibraryElements.class, "jar"));
     });
-    project.getDependencies().add(GUI_TYPES_NAME, "de.monticore.lang:guidsl:" + project.findProperty("mc_version"));
+    project.getDependencies().add(GUI_TYPES_CONFIG, "de.monticore.lang:guidsl:" + project.findProperty("mc_version"));
     return conf;
-  }
-
-  protected void addClientRTEDependency(Project project) {
-    boolean local = getBooleanProjectProperty(project, "useLocalDependencies");
-    if (!inRTE(project)) {
-      if (local) {
-        Project rteClient = project.project(":umlp-rte:client");
-        project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG, rteClient);
-        project.getDependencies().add(MONTIGEM_MODULE_IMPORT_MAP_CONFIG, rteClient);
-      }
-      else {
-        project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG,
-            "umlp:client:" + getStringProjectProperty(project, "mc_version", "")
-        );
-        project.getDependencies().add(MONTIGEM_MODULE_IMPORT_MAP_CONFIG,
-            "umlp:client:" + getStringProjectProperty(project, "mc_version", "")
-        );
-      }
-    }
-  }
-
-  public static boolean inRTE(Project project) {
-    Project rte = project.findProject(":umlp-rte");
-
-    boolean inRTE = false;
-    if (rte != null) {
-      inRTE = project.getPath().startsWith(rte.getPath() + ":")
-          || project.getPath().equals(rte.getPath());
-    }
-    return inRTE;
   }
 
 }

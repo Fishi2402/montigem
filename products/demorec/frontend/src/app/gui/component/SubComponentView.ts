@@ -7,7 +7,7 @@ import { BatteryPackType } from 'demorec/BatteryPackType';
 import { BatteryPack } from 'demorec/BatteryPack';
 import { JoinConnection } from 'demorec/JoinConnection';
 
-import { SubComponentViewComponent, config } from '../../../../build/frontendGen/build/appgui/gui/component/SubComponentViewComponent';
+import { SubComponentViewComponent, config } from '../../../../build/app/build/appgui/gui/component/SubComponentViewComponent';
 
 import {
   Directive,
