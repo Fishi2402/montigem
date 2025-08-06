@@ -33,7 +33,7 @@ public class ConnectionsTree extends ConnectionsTreeTOP {
 @Override
   public Consumer<Void> navigateToConnectionKind(JoinConnectionKind kind) {
     return $ -> {
-      Router.navigate("gui", "kind", "EditComponentKindPage", String.valueOf(kind.getGemId()));
+      Router.navigate("gui", "connectionkind", "JoinConnectionKindEditPage", String.valueOf(kind.getGemId()));
     };
   }
 

@@ -44,29 +44,9 @@ public class ComponentEdit extends ComponentEditTOP {
   @Override
   public List<Option> getConditionOpts() {
     List<Option> conditionOptions =new ArrayList<>();
-    conditionOptions.add(new Option(String.valueOf(State.HEALTHY),"Healthy"));
-    conditionOptions.add(new Option(String.valueOf(State.OTHER),"Other"));
+    conditionOptions.add(new Option(State.HEALTHY.toString(),"Healthy"));
+    conditionOptions.add(new Option(State.OTHER.toString(),"Other"));
     return conditionOptions;
-  }
-
-  @Override
-  public String getConditionEntry () {
-    if(this.getComponent() != null) {
-      return this.getComponent().getCondition().toString();
-    }
-    // Default is Other
-    return String.valueOf(State.OTHER.ordinal());
-  }
-
-  @Override
-  public void setConditionEntry (String value) {
-    State cond = State.OTHER;
-    for (State t : State.values()) {
-      if(t.ordinal() == Integer.valueOf(value)) {
-        cond = t;
-      }
-    }
-    this.getComponent().setCondition(cond);
   }
 
 
