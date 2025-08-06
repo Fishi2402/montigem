@@ -24,6 +24,7 @@ import {
   catchError,
   ObservableInput, merge, of
 } from "rxjs";
+import {Log} from "../../logging";
 
 export class ClientCommandWebsocketCommunication implements ClientCommandCommunication {
   public static MAX_TRIES: number = 10;
@@ -61,7 +62,7 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
   }
 
   private static warnCouldNotReceive<T>(command: Command<T>): void {
-    console.warn("Could not receive response from server for command id: " + command.getId());
+    Log.warn("Could not receive response from server for command id: " + command.getId());
   }
 
   public async sendCommandToServerAndReceiveResult<T>(command: Command<T>): Promise<CommandResult<T>> {
@@ -69,7 +70,7 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
     // let result: CommandResult<T>;
     // try {
     let payload: string = await CommandObjectMapper.serializeCommand(command);
-    console.info(`Sending message to server: ${payload}`, this.constructor.name);
+    Log.info(`Sending message to server: ${payload}`, this.constructor.name);
     let sendingSuccessful: boolean = this.sendMessage(payload);
     if (!sendingSuccessful) {
       ClientCommandWebsocketCommunication.warnCouldNotReceive(command);
@@ -175,13 +176,13 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
 
     retrySocket.subscribe({
       next: msg => this.handleTextMessage(msg),
-      error: err => console.log(err),
+      error: err => Log.error(err),
       complete: () => this.afterConnectionClosed()
     });
 
     return firstValueFrom(retrySocket.pipe(
       catchError(err => {
-        console.error('Error on retrySocket:', err);
+        Log.error('Error on retrySocket: ' + err);
         // Return a fallback value or empty observable, so it doesn't reject
         return of(null);
       })
@@ -203,12 +204,12 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
   }
 
   public afterConnectionClosed(): void {
-    console.warn(`Websocket connection closed`);
+    Log.warn(`Websocket connection closed`);
     this.socket.unsubscribe();
   }
 
   public handleTransportError(exception: any): void {
-    console.warn(`Websocket transportation error ${exception}`);
+    Log.warn(`Websocket transportation error ${exception}`);
   }
 
   public sendMessage(message: string): boolean {

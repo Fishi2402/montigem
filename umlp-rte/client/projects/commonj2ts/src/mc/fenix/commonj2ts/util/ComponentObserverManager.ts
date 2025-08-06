@@ -56,7 +56,7 @@ export abstract class ComponentObserverManager {
     }
     let realType = obj["__className"];
     if (!this.getObserverFactory().has(realType)) {
-      console.warn("0xCOM002 No observer factory for type " + realType + ". No observer added for object with gemid: " + obj.getGemId() + ".");
+      Log.warn("0xCOM002 No observer factory for type " + realType + ". No observer added for object with gemid: " + obj.getGemId() + ".");
       return obj;
     }
 
@@ -132,11 +132,11 @@ export abstract class ComponentObserverManager {
       return null;
     }
     let name: string = Object.getPrototypeOf(obj).constructor.name;
-    console.log("Constructor Name: " + name);
+    Log.info("Constructor Name: " + name, ComponentObserverManager.name);
     if (name.endsWith("Builder")) {
       let superProto = Object.getPrototypeOf(Object.getPrototypeOf(obj));
       if (superProto && name.startsWith(superProto.constructor.name)) {
-        console.log("Super Constructor Name: " + name);
+        Log.info("Super Constructor Name: " + name, ComponentObserverManager.name);
         return superProto.constructor.name;
       }
     }
