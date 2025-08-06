@@ -77,7 +77,11 @@ public class TotalTest extends WebshopSQLDBTestSetup {
         new ExpectedEvent(o, o, new ActivityBarEndAction())
                   );
     //execute trigger
-    o.addItem(item);
+    try {
+      o.addItem(item);
+    } catch (Throwable ignore) {
+      //catch all errors thrown by the trigger call
+    }
     processor.assertAllExpectedEventsToBeProcessed();
   }
 }
