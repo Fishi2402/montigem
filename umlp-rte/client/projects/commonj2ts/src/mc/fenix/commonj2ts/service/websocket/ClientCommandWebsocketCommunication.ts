@@ -247,8 +247,6 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
       const payload = JSON.stringify(message);
       let commandResultOptional: CommandResult<any> = null;
       commandResultOptional = await CommandObjectMapper.deserializeResponse(payload);
-      let commandOptional: Command<Object> = null;
-      commandOptional = await CommandObjectMapper.deserializeCommand(payload);
 
       if (commandResultOptional != null) { // TODO MH: Need to check for participantId
         // Fall Antwort eines Requests
@@ -262,17 +260,21 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
         for (const observer of this.commandResultObserver) {
           // observer(commandResult);
         }
-      } else if (commandOptional != null) {
-        //Fall Antwort eines Erhalt eines weitergeleiteten Commands zur Datensynchronisierung
-        let finalCommandOptional: Command<Object> = commandOptional;
-        // Mutex
-        this.commandObserverChain = this.commandObserverChain.then(() => {
-          return this.commandObserver.reduce((prevPromise, consumer) => {
-            return prevPromise.then(() => {
-              return consumer(finalCommandOptional);
-            });
-          }, Promise.resolve());
-        });
+      } else {
+        let commandOptional: Command<Object> = null;
+        commandOptional = await CommandObjectMapper.deserializeCommand(payload);
+        if (commandOptional != null) {
+          //Fall Antwort eines Erhalt eines weitergeleiteten Commands zur Datensynchronisierung
+          let finalCommandOptional: Command<Object> = commandOptional;
+          // Mutex
+          this.commandObserverChain = this.commandObserverChain.then(() => {
+            return this.commandObserver.reduce((prevPromise, consumer) => {
+              return prevPromise.then(() => {
+                return consumer(finalCommandOptional);
+              });
+            }, Promise.resolve());
+          });
+        }
       }
     }
   }

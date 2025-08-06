@@ -10,9 +10,9 @@ return commandDeSer.deserialize(cmdStr)
   // TODO: Move this JsonParser.parseJsonObject in front of everything?
   de.monticore.symboltable.serialization.json.JsonObject jsonObject = de.monticore.symboltable.serialization.JsonParser.parseJsonObject(cmdStr);
   if (jsonObject.hasStringMember("commandType")) {
-    Log.warn("Can not find deSer for commandType " + jsonObject.getStringMember("commandType"));
+    Log.info("Cannot find deSer for commandType " + jsonObject.getStringMember("commandType"), this.getClass().getName());
   } else {
-    Log.warn("Can not find deSer for unknown command format");
+    Log.info("Cannot find deSer for unknown command format", this.getClass().getName());
   }
   return Optional.empty();
 });

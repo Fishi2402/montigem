@@ -52,7 +52,16 @@ export abstract class CommandObjectMapper {
 
   public static async deserializeCommand(cmdStr: string): Promise<Command<any>> {
     try {
-      return await CommandObjectMapper.getInstance()._deserializeCommand(cmdStr);
+      const command = await CommandObjectMapper.getInstance()._deserializeCommand(cmdStr)
+      if(!command) {
+        const jsonObject: any = JSON.parse(cmdStr);
+        if (/* hasStringMember */(typeof jsonObject["commandType"] == "string")){
+          Log.warn("Cannot find deSer for commandType " + /* getStringMember */jsonObject["commandType"]);
+        } else {
+          Log.warn("Cannot find deSer for unknown command format");
+        }
+      }
+      return command;
     } catch (e) {
       const msg: string = StringHelper.format("%s Could not deserialize command: %s\n%s", "0xS0003", cmdStr, e.message);
       Log.error(msg);
