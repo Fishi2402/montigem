@@ -250,6 +250,15 @@ trigger-artifacts:
   only:
     - dev
 
+trigger-template:
+  stage: testDeployed
+  allow_failure: false # Failure is not an option
+  trigger:
+    project: monticore/umlp-anwendungen/montigem-templates/montigem-template
+    branch: main
+  only:
+    - dev
+
 checkMDLinks:
   stage: check
   script:
