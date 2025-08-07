@@ -530,6 +530,14 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
         isExcludedByManualObservations = false;
         break;
       }
+      if (element != null && element instanceof Symbol.MethodSymbol &&
+          ((Symbol.MethodSymbol) element).owner.getQualifiedName().toString().equals("umlp.guiutil.GUIUtils") &&
+          (((Symbol.MethodSymbol) element).getSimpleName().toString().equals("ignoreUpdatesOnDomainObject") ||
+              (((Symbol.MethodSymbol) element).getSimpleName().toString().equals("ignoreUpdatesOnStateVar")))
+      ) {
+        isExcludedByManualObservations = true;
+        break;
+      }
     }
     return isExcludedByManualObservations;
   }

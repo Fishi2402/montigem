@@ -76,6 +76,10 @@ public class GUIUtilAdapter extends UMLPAbstractAdapter {
             print(GUIComponentObserverPatternAdapter.STATEVAR_OBSERVER_FUNCTION_NAME + "(")
                 .printArgList(invocation.getArguments()).print(")");
             return true;
+          case "ignoreUpdatesOnDomainObject":
+          case "ignoreUpdatesOnStateVar":
+            printArgList(invocation.getArguments());
+            return true;
         }
     }
 

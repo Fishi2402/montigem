@@ -13,4 +13,10 @@ public class GUIUtils {
   public static <T> T registerObserverToStateVar(T stateVar) {
     return stateVar;
   }
+  public static <T extends GemIdentifiable> T ignoreUpdatesOnDomainObject(T domainObject) {
+    return domainObject;
+  }
+  public static <T> T ignoreUpdatesOnStateVar(T stateVar) {
+    return stateVar;
+  }
 }
