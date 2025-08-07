@@ -12,6 +12,8 @@ import de.monticore.cd4codebasis._ast.ASTCDThrowsDeclaration;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnumConstant;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.literals.mccommonliterals._ast.ASTBooleanLiteral;
 import de.monticore.literals.mccommonliterals._ast.ASTNullLiteral;
 import de.monticore.literals.mccommonliterals._prettyprint.MCCommonLiteralsPrettyPrinter;
@@ -22,8 +24,10 @@ import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
 import de.monticore.types.mcbasictypes._prettyprint.MCBasicTypesPrettyPrinter;
 import de.monticore.types.typeparameters._ast.ASTTypeParameters;
+import de.monticore.types3.SymTypeRelations;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import umlp.py.printer.PythonMYSimpleGenericTypesPrinter;
 
@@ -34,6 +38,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /** AST specific helper to print AST nodes. */
 public class CdPyUtilsPrinter extends CdUtilsPrinter {
+
+  public static final String NotificationScope = "montigem_runtime.gembase.NotificationScope";
 
   public static final String EMPTY_STRING = "";
 
@@ -144,5 +150,41 @@ public class CdPyUtilsPrinter extends CdUtilsPrinter {
     }
 
     return sb.toString();
+  }
+
+  @Override
+  public String printCDParametersDecl(List<ASTCDParameter> parameterList) {
+    throw new IllegalStateException("Missing tc arg!");
+  }
+
+  public String printCDParametersDecl(List<ASTCDParameter> parameterList, TemplateController tc, GlobalExtensionManagement glex) {
+    checkNotNull(parameterList);
+    return Joiner.on(",")
+        .join(
+            Collections2.transform(
+                parameterList,
+                arg0 ->
+                    arg0.getAnnotation().map(a -> a + " ").orElse("")
+                        + arg0.getName()
+                        + ": "
+                        + printType(arg0.getMCType()) + glex.defineHookPoint(tc, "PyParam::Initial", arg0)
+                                  ));
+  }
+
+  public boolean isVoidType (ASTMCType type) {
+    return type instanceof ASTMCVoidType;
+  }
+
+  public boolean isVoidType (ASTMCReturnType type) {
+    return type.isPresentMCVoidType();
+  }
+
+  public boolean hasStereotype(ASTModifier modifier, String name) {
+    if (!modifier.isPresentStereotype()) return false;
+    return modifier.getStereotype().contains(name);
+  }
+
+  public boolean isAsync(ASTModifier modifier) {
+    return hasStereotype(modifier, "py__async");
   }
 }

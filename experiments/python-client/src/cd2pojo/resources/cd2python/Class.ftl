@@ -49,9 +49,12 @@ ${cdPrinter.printImportList(cd4c.getImportList(ast))}
   <#--    ${tc.include("cd2java.Constructor", constructor)}-->
   <#--  </#list>-->
 
-  <#--  <#list ast.getCDMethodList() as method>-->
-  <#--    ${tc.include("cd2java.Method", method)}-->
-  <#--  </#list>-->
+    <#list ast.getCDMethodList() as method>
+      ${tc.include("cd2python.Method", method)}
+    </#list>
+
+    ${defineHookPoint("cd2python.Class::postBody")}
+
   </@indent>
 
 

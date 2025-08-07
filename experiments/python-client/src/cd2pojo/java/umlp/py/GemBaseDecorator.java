@@ -2,6 +2,7 @@ package umlp.py;
 
 import de.monticore.cd.codegen.CDGenService;
 import de.monticore.cd.codegen.decorators.data.AbstractDecorator;
+import de.monticore.cd.codegen.decorators.data.DecoratorData;
 import de.monticore.cd.facade.CDAttributeFacade;
 import de.monticore.cd.facade.CDTypeFacade;
 import de.monticore.cd.methodtemplates.CD4C;
@@ -10,8 +11,10 @@ import de.monticore.cd4code._visitor.CD4CodeTraverser;
 import de.monticore.cdbasis.CDBasisMill;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cdbasis._visitor.CDBasisVisitor2;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.MCBasicTypesHelper;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
@@ -28,19 +31,33 @@ import de.se_rwth.commons.logging.Log;
 import javax.swing.text.html.Option;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-public class GemBaseDecorator extends AbstractDecorator implements CDBasisVisitor2 {
+public class GemBaseDecorator extends AbstractDecorator<GemBaseDecorator.Data> implements CDBasisVisitor2 {
 
   protected SymTypeExpression _stringSymTypeExpression;
-  protected CDGenService cdGenService = new CDGenService();
+  protected GemBaseDecorator.Data data;
+  protected String domainName;
 
   protected SymTypeExpression getString() {
     if (_stringSymTypeExpression == null) {
       _stringSymTypeExpression = SymTypeExpressionFactory.createStringType();
     }
     return _stringSymTypeExpression;
+  }
+
+  @Override
+  public void init(DecoratorData util, Optional<GlobalExtensionManagement> glexOpt) {
+    super.init(util, glexOpt);
+    this.data = this.decoratorData.createDataIfAbsent(this.getClass(), GemBaseDecorator.Data::new);
+  }
+
+  @Override
+  public void visit(ASTCDDefinition node) {
+    this.domainName = node.getName();
   }
 
   @Override
@@ -64,17 +81,17 @@ public class GemBaseDecorator extends AbstractDecorator implements CDBasisVisito
     decNode.addCDMember(CDAttributeFacade.getInstance()
                             .createAttribute(CDBasisMill.modifierBuilder().build(),
                                              createClassVar("str"), "PACKAGE",
-                                             stringLiteralExpr("mydomain"))); // TODO
+                                             stringLiteralExpr(domainName.toLowerCase()))); // TODO
 
   }
 
   @Override
   public void visit(ASTCDAttribute originalNode) {
+    var info = UmlpAttrHelper.getFromSymTypeExpr(originalNode.getSymbol().getType());
     ASTCDAttribute decNode = decoratorData.getAsDecorated(originalNode);
-    if (MCCollectionSymTypeRelations.isOptional(originalNode.getSymbol().getType())) {
+    if (info.getMultiplicity() == UmlpAttrHelper.Multiplicity.OPTIONAL) {
       // Attribute is an Optional (field or assoc)
-      var inner = MCCollectionSymTypeRelations.getCollectionElementType(
-          originalNode.getSymbol().getType());
+      var inner = info.getSymTypeExpression();
 
       ASTMCTypeArgument typeArgument;
 
@@ -84,25 +101,44 @@ public class GemBaseDecorator extends AbstractDecorator implements CDBasisVisito
         decNode.setMCType(MCTypeFacade.getInstance()
                               .createBasicGenericTypeOf(Arrays.asList("typing", "Optional"),
                                                         Collections.singletonList(typeArgument)));
+        data.attrDataMap.computeIfAbsent(originalNode, x -> new AttrData("str"));
+        decNode.setInitial(CD4CodeMill.literalExpressionBuilder().setLiteral(CD4CodeMill.nullLiteralBuilder().build()).build());
       } else if (inner.isPrimitive()) {
         // Attribute is a primitive -> turn into typing.Optional[...]
         typeArgument = MCTypeFacade.getInstance().createBasicTypeArgumentOf(inner.print());
         decNode.setMCType(MCTypeFacade.getInstance()
                               .createBasicGenericTypeOf(Arrays.asList("typing", "Optional"),
                                                         Collections.singletonList(typeArgument)));
+        data.attrDataMap.computeIfAbsent(originalNode, x -> new AttrData(inner.print()));
+        decNode.setInitial(CD4CodeMill.literalExpressionBuilder().setLiteral(CD4CodeMill.nullLiteralBuilder().build()).build());
       } else {
         // Attribute is an optional domain class -> turn into Gem
         CD4C.getInstance().addImport(
             decoratorData.getAsDecorated((ASTCDClass) decoratorData.getParent(originalNode).get()),
             inner.printFullName());
         decNode.setMCType(createGemType(inner.printFullName()));
+        decNode.setInitial(createInitialEmptyGem());
+        data.attrDataMap.computeIfAbsent(originalNode, x -> new AttrData(inner.printFullName()));
       }
 
 
-    } else if (MCCollectionSymTypeRelations.isSet(originalNode.getSymbol().getType())) {
-      Log.warn("TODO set");
-    } else if (MCCollectionSymTypeRelations.isList(originalNode.getSymbol().getType())) {
-      Log.warn("TODO list");
+    } else if (info.getMultiplicity() ==  UmlpAttrHelper.Multiplicity.SET) {
+
+      // Annotated[
+      //    gembase.GemList, BeforeValidator(deserialize_gem_list), PlainSerializer(serialize_gem_list,
+      //                                                                            return_type=typing.List[
+      //                                                                              int])] = GemList()
+      if (info.getTypeClass() == UmlpAttrHelper.RealType.GEM) {
+        var inner = info.getSymTypeExpression();
+        CD4C.getInstance().addImport(
+            decoratorData.getAsDecorated((ASTCDClass) decoratorData.getParent(originalNode).get()),
+            inner.printFullName());
+        decNode.setMCType(createGemListType(inner.printFullName()));
+        decNode.setInitial(createInitialGemList());
+//        data.attrDataMap.computeIfAbsent(originalNode, x -> new AttrData(inner.printFullName()));
+      } else {
+        Log.warn("TODO set", originalNode.get_SourcePositionStart());
+      }
 
     } else if (SymTypeRelations.isCompatible(originalNode.getSymbol().getType(), getString())) {
       // Change String to "str"
@@ -112,7 +148,23 @@ public class GemBaseDecorator extends AbstractDecorator implements CDBasisVisito
           decoratorData.getAsDecorated((ASTCDClass) decoratorData.getParent(originalNode).get()),
           originalNode.getSymbol().getType().printFullName());
       decNode.setMCType(createGemType(originalNode.getSymbol().getType().printFullName()));
+      decNode.setInitial(createInitialEmptyGem());
+      data.attrDataMap.computeIfAbsent(originalNode, x -> new AttrData(originalNode.getSymbol().getType().printFullName()));
     }
+  }
+
+
+
+  private ASTExpression createInitialEmptyGem() {
+    return CD4CodeMill.callExpressionBuilder()
+        .setExpression(CD4CodeMill.nameExpressionBuilder().setName("montigem_runtime.gembase.Gem").build())
+        .setArguments(CD4CodeMill.argumentsBuilder().build()).build();
+  }
+
+  private ASTExpression createInitialGemList() {
+    return CD4CodeMill.callExpressionBuilder()
+        .setExpression(CD4CodeMill.nameExpressionBuilder().setName("montigem_runtime.gembase.GemList").build())
+        .setArguments(CD4CodeMill.argumentsBuilder().build()).build();
   }
 
   protected ASTMCType createGemType(String classname) {
@@ -120,8 +172,18 @@ public class GemBaseDecorator extends AbstractDecorator implements CDBasisVisito
         .createBasicGenericTypeOf("typing.Annotated", createGemTypeAs(classname));
   }
 
+  protected ASTMCType createGemListType(String classname) {
+    return MCTypeFacade.getInstance()
+        .createBasicGenericTypeOf("typing.Annotated", createGemListTypeAs(classname));
+  }
+
   protected String[] createGemTypeAs(String classname) {
-    return new String[]{"montigem_runtime.gembase.Gem[" + classname + "]", "pydantic.BeforeValidator(montigem_runtime.gembase.create_gem_deserializer(" + classname + "))", "pydantic.PlainSerializer(montigem_runtime.gembase.serialize_gem,return_type=int)"};
+    return new String[]{"montigem_runtime.gembase.Gem['" + classname + "']", "pydantic.BeforeValidator(montigem_runtime.gembase.create_gem_deserializer('" + classname + "'))", "pydantic.PlainSerializer(montigem_runtime.gembase.serialize_gem,return_type=int)"};
+  }
+
+
+  protected String[] createGemListTypeAs(String classname) {
+    return new String[]{"montigem_runtime.gembase.GemList['" + classname + "']", "pydantic.BeforeValidator(montigem_runtime.gembase.deserialize_gem_list)", "pydantic.PlainSerializer(montigem_runtime.gembase.serialize_gem_list,return_type=typing.List[int])"};
   }
 
   protected boolean isBuiltIn(SymTypeExpression type) {
@@ -144,4 +206,26 @@ public class GemBaseDecorator extends AbstractDecorator implements CDBasisVisito
   public void addToTraverser(CD4CodeTraverser traverser) {
     traverser.add4CDBasis(this);
   }
+
+  public static class Data {
+    protected final Map<ASTCDAttribute, AttrData>  attrDataMap = new HashMap<>();
+
+    public AttrData getData(ASTCDAttribute astcdAttribute) {
+      return attrDataMap.get(astcdAttribute);
+    }
+  }
+
+  public static class AttrData {
+    protected final String printedType;
+
+    public AttrData(String printedType) {
+      this.printedType = printedType;
+    }
+
+    public String getPrintedType() {
+      return printedType;
+    }
+  }
+
+
 }
