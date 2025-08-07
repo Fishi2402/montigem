@@ -1,36 +1,41 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
+<div [class.gem-vertical-range-box]="vertical" >
+  <label
+    [class.gem-vertical-range-label]="vertical"
+    class="gem-range-label"
+    [for]="id + 'Range'"
+  >
+    {{ labelText }}
+  </label>
+  <div [class.gem-rotated-wrapper]="vertical"
+       [style.margin-bottom]="sliderBottomLength">
+    <div class="gem-range-wrapper" [class.gem-vertical-range-wrapper]="vertical">
+      <span [class.gem-vertical-range-min]="vertical" class="gem-range-min">
+        {{ minValue }}
+      </span>
+      <div class="gem-range-container">
+        <div
+          #rangeVElement
+          [class.gem-vertical-range-value]="vertical"
+          class="gem-range-value"
+        >
+        </div>
+        <input
+          #slider
+          class="gem-range"
+          type="range"
+          [min]="minValue"
+          [max]="maxValue"
+          [style.width]="size"
+          [ngModel]="value"
+          (ngModelChange)="onValueChange($event)"
+          [step]="step"
+        />
+      </div>
 
-<label
-  [class.gem-vertical-range-label]="vertical"
-  class="gem-range-label"
-  [for]="id + 'Range'"
->
-  {{ labelText }}
-</label>
-<div class="gem-range-wrapper" [class.gem-vertical-range-wrapper]="vertical">
-  <span [class.gem-vertical-range-min]="vertical" class="gem-range-min">
-    {{ minValue }}
-  </span>
-  <div class="gem-range-container">
-    <div
-      #rangeVElement
-      [class.gem-vertical-range-value]="vertical"
-      class="gem-range-value"
-      [id]="id + 'rangeV'"
-    >
+      <span [class.gem-vertical-range-max]="vertical" class="gem-range-max">
+        {{ maxValue }}
+      </span>
     </div>
-    <input
-      class="gem-range"
-      type="range"
-      [id]="id + 'Range'"
-      [min]="minValue"
-      [max]="maxValue"
-      [ngModel]="value"
-      (ngModelChange)="onValueChange($event)"
-      [step]="step"
-    />
   </div>
-  <span [class.gem-vertical-range-max]="vertical" class="gem-range-max">
-    {{ maxValue }}
-  </span>
 </div>

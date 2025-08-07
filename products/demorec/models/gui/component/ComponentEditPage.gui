@@ -36,7 +36,7 @@ page ComponentEditPage(DemoRecComponent component) {
           ]),
           @iterate(JoinConnectionKind connectionKind : component.connectedBy) {
             @HorizontalStatTable(rows = [
-              @EvenlySpacedColumn(element = connectionName@GemText(value = null)),
+              @EvenlySpacedColumn(element = @GemText(value = getConnectionKindName(connectionKind))),
               @EvenlySpacedColumn(element = @GemButton(label = "Edit", leftClick=navigateToConnectionKind(connectionKind)))
             ]);
           }

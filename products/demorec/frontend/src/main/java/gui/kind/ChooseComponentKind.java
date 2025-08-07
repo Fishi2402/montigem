@@ -4,6 +4,7 @@ import demorec.BatteryPack;
 import demorec.ComponentKind;
 import demorec.DemoRecManager;
 import mc.fenix.input.gemdropdowninputtypes.Option;
+import mc.fenix.input.gemtextinputtypes.GemTextInputValidity;
 import demorec.service.BatteryPackService;
 import umlp.jsweet.extension.annotation.Component;
 
@@ -80,5 +81,15 @@ public class ChooseComponentKind extends ChooseComponentKindTOP {
       return this.getCurrentKind().getName();
     }
     return this.selectComponentKindEntry;
+  }
+
+  @Override
+  public GemTextInputValidity checkKindChoice() {
+    ComponentKind selectedKind = this.getCurrentKind();
+
+    if (selectedKind == null) {
+      return new GemTextInputValidity("Error", "Please select a Component Kind");
+    }
+    return new GemTextInputValidity("Success", null);
   }
 }

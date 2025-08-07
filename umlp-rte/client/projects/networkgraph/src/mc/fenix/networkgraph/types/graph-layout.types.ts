@@ -39,6 +39,7 @@ export enum InitialGraphLayouts {
    * - Smaller circles are enclosed within larger circles, filling the canvas area.
    */
   CIRCLE_PACK = "CIRCLE_PACK",
+  HIERARCHICAL = "HIERARCHICAL"
 }
 
 /**
@@ -106,6 +107,8 @@ export type InitialLayoutSettingsMap = {
 
   /** Settings for the layout type ´Random */
   [InitialGraphLayouts.RANDOM]: RandomLayoutOptions;
+
+  [InitialGraphLayouts.HIERARCHICAL]: any;
 };
 
 /**

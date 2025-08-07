@@ -30,7 +30,7 @@ page ProcessStepCreate(ProcessStep step, Event<ProcessStep> create, boolean deco
             selectType@GemDropdownInput(
               labelText = "Step type",
               options = null,
-              entry = null,
+              entry = step.type,
               validity=checkStepTypeSet(),
               width="var(--smallDropDownWidth)");
           },

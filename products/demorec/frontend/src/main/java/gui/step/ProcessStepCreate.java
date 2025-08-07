@@ -23,9 +23,6 @@ import java.util.function.Consumer;
 @Component
 public class ProcessStepCreate extends ProcessStepCreateTOP {
 
-  public String typeEntry = String.valueOf(ProcessStepType.OTHER.ordinal());
-  public List<Option> selectTypeOptions = new ArrayList<>();
-
   public String endEffectorEntry = "";
 
   public String joinConnectionKindEntry = "";
@@ -40,9 +37,6 @@ public class ProcessStepCreate extends ProcessStepCreateTOP {
   @Override
   public void init() {
     super.init();
-
-    this.selectTypeOptions.add(new Option(String.valueOf(ProcessStepType.DECONSTRUCTION.ordinal()), "Deconstruction"));
-    this.selectTypeOptions.add(new Option(String.valueOf(ProcessStepType.OTHER.ordinal()),  "Other"));
 
     this.joinConnectionKindOptions.add(new Option("NEW", "NEW"));
     List<JoinConnectionKind> kindList = DemoRecManager.getJoinConnectionKindList();
@@ -60,19 +54,10 @@ public class ProcessStepCreate extends ProcessStepCreateTOP {
   // Select Types
   @Override
   public List<Option> getSelectTypeOptions() {
-    return this.selectTypeOptions;
-  }
-
-  @Override
-  public String getSelectTypeEntry() {
-    return this.typeEntry;
-  }
-
-  @Override
-  public void setSelectTypeEntry(String value) {
-    this.typeEntry = value;
-    this.setDeconstruct(Integer.valueOf(value) == ProcessStepType.DECONSTRUCTION.ordinal());
-    Log.info("Deconstruction value = "+this.isDeconstruct(), this.getClass().getName());
+    List<Option> selectTypeOptions = new ArrayList<>();
+    selectTypeOptions.add(new Option(ProcessStepType.DECONSTRUCTION.toString(), "Deconstruction"));
+    selectTypeOptions.add(new Option(ProcessStepType.OTHER.toString(),  "Other"));
+    return selectTypeOptions;
   }
 
   // Select Join Connection
@@ -107,8 +92,7 @@ public class ProcessStepCreate extends ProcessStepCreateTOP {
   public Consumer<Void> createNewStep() {
     return $ -> {
       JoinConnection joinConnection = null;
-      if (Integer.valueOf(this.getSelectTypeEntry()) == ProcessStepType.DECONSTRUCTION.ordinal()) {
-        this.getStep().setType(ProcessStepType.DECONSTRUCTION);
+      if (this.getStep().getType() == ProcessStepType.DECONSTRUCTION) {
         if(this.getSelectJoinConnectionKindEntry() != "NEW") {
           joinConnection = DemoRecManager.joinConnectionBuilder().joinConnectionKind(
               DemoRecManager.getJoinConnectionKindSure(Long.valueOf(this.joinConnectionKindEntry)))
@@ -132,7 +116,7 @@ public class ProcessStepCreate extends ProcessStepCreateTOP {
           }
         }
         this.setStep(DemoRecManager.processStepBuilder());
-        this.setSelectTypeEntry(String.valueOf(ProcessStepType.OTHER.ordinal()));
+        this.setSelectTypeEntry(ProcessStepType.OTHER.toString());
         this.endEffectorEntry = "";
         this.joinConnectionKindEntry = "";
         this.building = false;
@@ -224,7 +208,7 @@ public class ProcessStepCreate extends ProcessStepCreateTOP {
   }
 
   public GemTextInputValidity checkStepTypeSet()  {
-    if(this.typeEntry != null) {
+    if(this.getStep().getType() != null) {
       return new GemTextInputValidity("Success", null);
     } else {
       return new GemTextInputValidity("Error", "Please choose a Step Type");
@@ -232,7 +216,7 @@ public class ProcessStepCreate extends ProcessStepCreateTOP {
   }
 
   public GemTextInputValidity checkJoinConnectionKind() {
-    if(this.joinConnectionKindEntry != null) {
+    if(this.joinConnectionKindEntry != null && this.getStep().getType() != null) {
       if(this.joinConnectionKindEntry.equals("NEW")) {
         return new GemTextInputValidity("Error", "Please Save the new Connection.");
       }

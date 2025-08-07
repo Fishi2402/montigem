@@ -5,6 +5,7 @@ import FA2Layout from "graphology-layout-forceatlas2/worker";
 import Graph from "graphology";
 import forceAtlas2 from "graphology-layout-forceatlas2";
 import { AssignLayout, ComplexGraphLayouts, InitialGraphLayouts, LayoutSettingsMap } from "../types/graph-layout.types";
+import {HierarchicalLayout} from "../layout/HierarchicalLayout";
 
 /**
  * Abstract class that serves as a blueprint for layout algorithms implemented in Graphology. Defines methods for
@@ -41,6 +42,7 @@ export const INITIAL_LAYOUT_MAPPING: {
   [InitialGraphLayouts.CIRCULAR]: circular.assign,
   [InitialGraphLayouts.RANDOM]: random.assign,
   [InitialGraphLayouts.CIRCLE_PACK]: circlepack.assign,
+  [InitialGraphLayouts.HIERARCHICAL]: HierarchicalLayout.assign
 };
 
 /**

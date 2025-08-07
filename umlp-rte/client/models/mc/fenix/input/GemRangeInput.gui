@@ -11,5 +11,6 @@ component GemRangeInput(
   Integer step,
   Integer minValue,
   Integer maxValue,
-  ?Integer value
+  ?Integer value,
+  String size
 )

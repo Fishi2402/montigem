@@ -1,0 +1,54 @@
+site_name: MontiGem
+use_directory_urls: false
+
+theme:
+  name: 'material'
+  custom_dir: docs/overrides
+  hide:
+    - navigation
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.footer
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.indexes
+    - toc.follow
+    - content.tabs.link
+    - social
+    - content.code.copy
+    - content.code.annotate
+  theme:
+    pallete:
+      primary: custom
+      accent: custom
+  favicon: 'img/Gem.svg'
+  logo: 'img/Gem_white.svg'
+
+extra_css:
+  - stylesheets/extra.css
+
+
+site_url: https://monticore.pages.rwth-aachen.de/monticore/umlp
+
+copyright: '(c) https://github.com/MontiCore/monticore'
+
+markdown_extensions:
+  - def_list
+  - attr_list
+  - md_in_html
+  - pymdownx.blocks.caption
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+
+nav:
+  - Home: 'index.md'
+  - Tutorial: 'Tutorial.md'
+  - GUI Component Library: 'Frontend-RTE.md'
+  - License: http://monticore.github.io/monticore/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL/

@@ -94,6 +94,10 @@ public class CommandWebSocketService extends TextWebSocketHandler implements Web
     }
   }
 
+  public Map<String, Long> getClientIds() {
+    return clientIds;
+  }
+
   protected String handleUnknownError(String payload) {
     int commandId = -1;
     Pattern p = Pattern.compile("\"id\":\\s*(\\d+)");

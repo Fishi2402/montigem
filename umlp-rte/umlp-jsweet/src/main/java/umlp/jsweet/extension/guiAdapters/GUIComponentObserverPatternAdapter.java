@@ -38,20 +38,19 @@ import java.util.Set;
 
 public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
 
-  private static final String DOMAIN_OBSERVER_FUNCTION_NAME = "__domainObs";
+  private static final String DOMAIN_OBSERVER_FUNCTION_NAME = "__regObsToDomainObj";
 
-  private static final String STATEVAR_OBSERVER_FUNCTION_NAME = "__statevarObs";
+  private static final String STATEVAR_OBSERVER_FUNCTION_NAME = "__regObsToStateVar";
 
-  private static final String GET_DOMAIN_OBS = "getDomainObs";
+  private static final String CREATE_DOMAIN_OBS = "createDomainObserverRegisterFunction";
 
-  private static final String GET_STATEVAR_OBS = "getStateVarObs";
+  private static final String CREATE_STATEVAR_OBS = "createStateVarObserverRegisterFunction";
 
   private GUIAdapterUtils adapterUtils;
 
   public GUIComponentObserverPatternAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);
     addAnnotationManager(getSynchronizedAnnotationManager());
-    addAnnotationManager(getAlterInitMethodAnnotationManager());
     addAnnotationManager(addComponentManagerListenerToSetAnnotationManager());
     this.adapterUtils = new GUIAdapterUtils(this, types(), context, util());
   }
@@ -130,12 +129,13 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
       guiComponentName = guiComponentName.substring(0, guiComponentName.length() - 4) + "\"";
     }
     guiComponentName = guiComponentName + " + this.uniqueIdentifier";
-    printIndent().print("protected " + GET_DOMAIN_OBS
-            + "<T extends GemIdentifiable>(updateName: string, update: (() => void)):  <T extends GemIdentifiable>(obj: T, type: string) => T {")
-        .println().startIndent().printIndent()
-        .print("return (obj: T, type: string) => {").println().startIndent().printIndent()
+    printIndent().print("protected " + CREATE_DOMAIN_OBS
+            + "<T extends GemIdentifiable>(updateName: string, update: (() => void)):")
+        .println().startIndent().printIndent().print("<T extends GemIdentifiable>(obj: T) => T {")
+        .println().printIndent()
+        .print("return (obj: T) => {").println().startIndent().printIndent()
         .print("if (obj != undefined && obj != null) {").println().startIndent().printIndent()
-        .print("return ComponentObserverManager.addDomainObjectObserver(obj, type, update.bind(this), updateName, "
+        .print("return ComponentObserverManager.addDomainObjectObserver(obj, update.bind(this), updateName, "
                 + guiComponentName + ");")
         .println().endIndent().printIndent().print("}")
         .print(" else {").println().startIndent().printIndent()
@@ -144,9 +144,10 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
         .println().endIndent().printIndent().print("}")
         .println().endIndent().printIndent().print("}").println().println();
 
-    printIndent().print("protected " + GET_STATEVAR_OBS
-            + "<T>(updateName: string, update: (() => void)): <T>(obj: T, variableName: string) => T {")
-        .println().startIndent().printIndent()
+    printIndent().print("protected " + CREATE_STATEVAR_OBS
+            + "<T>(updateName: string, update: (() => void)):")
+        .println().startIndent().printIndent().print("<T>(obj: T, variableName: string) => T {")
+        .println().printIndent()
         .print("return (obj: T, variableName: string) => {").println().startIndent().printIndent()
         .print(
             "return ComponentObserverManager.addStateVariableObserver(obj, variableName, update.bind(this), updateName, "
@@ -175,26 +176,19 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
   @Override
   public boolean substituteVariable(VariableElement variable) {
     if (variable.getSimpleName().toString().equals(DOMAIN_OBSERVER_FUNCTION_NAME)) {
-      Symbol.MethodSymbol method = getParentElement(Symbol.MethodSymbol.class);
-      String updateName = method.getSimpleName().toString() + adapterUtils.UPDATE_SUFFIX;
-      print(DOMAIN_OBSERVER_FUNCTION_NAME + " = this." + GET_DOMAIN_OBS + "('" + updateName + "'")
-          .print(" + this.computeHash([");
-      printArguments(method);
-      print("]), () => this." + updateName + "(");
-      printArguments(method);
-      print("))");
+      println().startIndent().startIndent().printIndent().endIndent().endIndent()
+          .print(DOMAIN_OBSERVER_FUNCTION_NAME)
+          .print(": <T extends GemIdentifiable> (__domainObj: T) => T")
+          .print(" = __domainObj => __domainObj");
+      adapterUtils.importFromWithModule("GemIdentifiable", GUIAdapterUtils.UMLP_COMMON_POINTER);
       return true;
     }
 
     if (variable.getSimpleName().toString().equals(STATEVAR_OBSERVER_FUNCTION_NAME)) {
-      Symbol.MethodSymbol method = getParentElement(Symbol.MethodSymbol.class);
-      String updateName = method.getSimpleName().toString() + adapterUtils.UPDATE_SUFFIX;
-      print(STATEVAR_OBSERVER_FUNCTION_NAME + " = this." + GET_STATEVAR_OBS + "('" + updateName + "'")
-          .print(" + this.computeHash([");
-      printArguments(method);
-      print("]), () => this." + updateName + "(");
-      printArguments(method);
-      print("))");
+      println().startIndent().startIndent().printIndent().endIndent().endIndent()
+          .print(STATEVAR_OBSERVER_FUNCTION_NAME)
+          .print(": <T> (__stateVar: T, varName: string) => T")
+          .print(" = (__stateVar, _) => __stateVar");
       return true;
     }
 
@@ -236,16 +230,19 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     }
   }
 
-  private void addObserversToArguments(MethodInvocationElement invocation) {
+  private void addObserversToArguments(MethodInvocationElement invocation,
+      String domainObserverFunctionName, String statevarObserverFunctionName) {
     MethodInvocationTree tree = ((MethodInvocationElementSupport) invocation).getTree();
-    JCTree.JCIdent domainObserver = adapterUtils.getNewIdent(DOMAIN_OBSERVER_FUNCTION_NAME);
-    JCTree.JCIdent statevarObserver = adapterUtils.getNewIdent(STATEVAR_OBSERVER_FUNCTION_NAME);
+    JCTree.JCIdent domainObserver = adapterUtils.getNewIdent(domainObserverFunctionName);
+    JCTree.JCIdent statevarObserver = adapterUtils.getNewIdent(statevarObserverFunctionName);
     List<? extends ExpressionTree> arguments = tree.getArguments();
     if (arguments.size() >= 2 &&
         arguments.get(arguments.size() - 2) instanceof JCTree.JCIdent &&
         arguments.get(arguments.size() - 1) instanceof JCTree.JCIdent &&
-        ((JCTree.JCIdent) arguments.get(arguments.size() - 2)).getName().toString().equals(DOMAIN_OBSERVER_FUNCTION_NAME) &&
-        ((JCTree.JCIdent) arguments.get(arguments.size() - 1)).getName().toString().equals(STATEVAR_OBSERVER_FUNCTION_NAME)
+        ((JCTree.JCIdent) arguments.get(arguments.size() - 2)).getName().toString().equals(
+            domainObserverFunctionName) &&
+        ((JCTree.JCIdent) arguments.get(arguments.size() - 1)).getName().toString().equals(
+            statevarObserverFunctionName)
     ) {
       return;
     }
@@ -311,6 +308,28 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
         .println().printIndent()
         .print("Promise.resolve(this." + methodName + "(");
     printArguments(executable);
+    if (executable.getParameters().size() > 0) {
+      print(",");
+    }
+    println().startIndent().printIndent();
+
+    // domain observer register function
+    String updateName = executable.getSimpleName().toString() + adapterUtils.UPDATE_SUFFIX;
+    print("this." + CREATE_DOMAIN_OBS + "('" + updateName + "'")
+        .print(" + this.computeHash([");
+    printArguments(executable);
+    print("]), () => this." + updateName + "(");
+    printArguments(executable);
+    print(")),").println().printIndent();
+
+    // state variable observer register function
+    print("this." + CREATE_STATEVAR_OBS + "('" + updateName + "'")
+        .print(" + this.computeHash([");
+    printArguments(executable);
+    print("]), () => this." + updateName + "(");
+    printArguments(executable);
+    print("))").println().endIndent().printIndent();
+
     print(")).then(__v => this." + methodName + adapterUtils.SYNCHRONIZED_RESULT_SUFFIX);
     String arg = "__v === undefined ? null : __v";
     printResultCacheSetter(executable, arg);
@@ -340,7 +359,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     print(";").println().endIndent().printIndent().print("}").println().println().printIndent();
   }
 
-  private void printArguments(ExecutableElement executable) {
+  private GUIComponentObserverPatternAdapter printArguments(ExecutableElement executable) {
     if (executable.getParameters().size() >= 1 && executable.getParameters()
         .get(0) instanceof ExtendedElement) {
       throw new IllegalStateException("TODO");
@@ -353,6 +372,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
       }
       getPrinter().removeLastChars(2);
     }
+    return this;
   }
 
   private void printResultCacheAccessor(ExecutableElement executable) {
@@ -412,12 +432,9 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
       for (VariableElement parameter : method.getParameters()) {
         if (adapterUtils.isSubTypeOf(Util.getElement(parameter.asType()),
             RTEPathUtil.getBackendRTECommonPath("GemIdentifiable"))) {
-          String typeName = "\"" +
-              adapterUtils.getTypeNameWithoutBuilder((TypeElement) types().asElement(parameter.asType())) +
-              "\"";
           String actualName = adapterUtils.getJSweetParameterName(parameter);
           printIndent().print(
-              DOMAIN_OBSERVER_FUNCTION_NAME + "(" + actualName + ", " + typeName + ");").println();
+              DOMAIN_OBSERVER_FUNCTION_NAME + "(" + actualName + ");").println();
         }
       }
     }
@@ -469,7 +486,8 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     }
 
     if (shouldAddObservers) {
-      addObserversToArguments(invocation);
+      addObserversToArguments(invocation, DOMAIN_OBSERVER_FUNCTION_NAME,
+          STATEVAR_OBSERVER_FUNCTION_NAME);
     }
 
     boolean res = super.substituteMethodInvocation(invocation);
@@ -478,8 +496,10 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
       print(", \"" + GUIAdapterUtils.STATEVAR_PREFIX + GUIAdapterUtils.getMethodNameWithoutGetIs(invocation) + "\")");
     }
     if (shouldPrintDomainObs) {
-      print(", \"").print(adapterUtils.getTypeNameWithoutBuilder((TypeElement) invocatedType))
-          .print("\")");
+//      print(", \"").print(adapterUtils.getTypeNameWithoutBuilderAndTOP((TypeElement) invocatedType,
+//              false))
+//          .print("\")");
+      print(")");
     }
     return res;
   }
@@ -565,36 +585,6 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
         return (element.getSimpleName().toString().startsWith("get") || element.getSimpleName()
             .toString().startsWith("is")) &&
             !returnType.getKind().equals(TypeKind.VOID) &&
-            adapterUtils.isMethodOfDirective(element);
-      }
-    };
-  }
-
-  private AnnotationManager getAlterInitMethodAnnotationManager() {
-    return new AnnotationManager() {
-      @Override
-      public Action manageAnnotation(Element element, String annotationType) {
-        // add the @Name annotation to non-public elements
-        return isInit(element, annotationType) ?
-            Action.ADD :
-            Action.VOID;
-      }
-
-      @Override
-      public <T> T getAnnotationValue(Element element,
-          String annotationType, String propertyName,
-          Class<T> propertyClass, T defaultValue) {
-        if (isInit(element, annotationType)) {
-          return propertyClass.cast("{{body}}{{baseIndent}}this.allVarsInited = true;");
-        } else {
-          return null;
-        }
-      }
-
-      private boolean isInit(Element element, String annotationType) {
-        return JSweetConfig.ANNOTATION_REPLACE.equals(annotationType) &&
-            element.getKind().toString().equals("METHOD") &&
-            element.getSimpleName().toString().equals("init") &&
             adapterUtils.isMethodOfDirective(element);
       }
     };

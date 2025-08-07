@@ -24,6 +24,7 @@ import {
   catchError,
   ObservableInput, merge, of
 } from "rxjs";
+import {Log} from "../../logging";
 
 export class ClientCommandWebsocketCommunication implements ClientCommandCommunication {
   public static MAX_TRIES: number = 10;
@@ -61,7 +62,7 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
   }
 
   private static warnCouldNotReceive<T>(command: Command<T>): void {
-    console.warn("Could not receive response from server for command id: " + command.getId());
+    Log.warn("Could not receive response from server for command id: " + command.getId());
   }
 
   public async sendCommandToServerAndReceiveResult<T>(command: Command<T>): Promise<CommandResult<T>> {
@@ -69,7 +70,7 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
     // let result: CommandResult<T>;
     // try {
     let payload: string = await CommandObjectMapper.serializeCommand(command);
-    console.info(`Sending message to server: ${payload}`, this.constructor.name);
+    Log.info(`Sending message to server: ${payload}`, this.constructor.name);
     let sendingSuccessful: boolean = this.sendMessage(payload);
     if (!sendingSuccessful) {
       ClientCommandWebsocketCommunication.warnCouldNotReceive(command);
@@ -175,13 +176,13 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
 
     retrySocket.subscribe({
       next: msg => this.handleTextMessage(msg),
-      error: err => console.log(err),
+      error: err => Log.error(err),
       complete: () => this.afterConnectionClosed()
     });
 
     return firstValueFrom(retrySocket.pipe(
       catchError(err => {
-        console.error('Error on retrySocket:', err);
+        Log.error('Error on retrySocket: ' + err);
         // Return a fallback value or empty observable, so it doesn't reject
         return of(null);
       })
@@ -203,12 +204,12 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
   }
 
   public afterConnectionClosed(): void {
-    console.warn(`Websocket connection closed`);
+    Log.warn(`Websocket connection closed`);
     this.socket.unsubscribe();
   }
 
   public handleTransportError(exception: any): void {
-    console.warn(`Websocket transportation error ${exception}`);
+    Log.warn(`Websocket transportation error ${exception}`);
   }
 
   public sendMessage(message: string): boolean {
@@ -246,8 +247,6 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
       const payload = JSON.stringify(message);
       let commandResultOptional: CommandResult<any> = null;
       commandResultOptional = await CommandObjectMapper.deserializeResponse(payload);
-      let commandOptional: Command<Object> = null;
-      commandOptional = await CommandObjectMapper.deserializeCommand(payload);
 
       if (commandResultOptional != null) { // TODO MH: Need to check for participantId
         // Fall Antwort eines Requests
@@ -261,17 +260,21 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
         for (const observer of this.commandResultObserver) {
           // observer(commandResult);
         }
-      } else if (commandOptional != null) {
-        //Fall Antwort eines Erhalt eines weitergeleiteten Commands zur Datensynchronisierung
-        let finalCommandOptional: Command<Object> = commandOptional;
-        // Mutex
-        this.commandObserverChain = this.commandObserverChain.then(() => {
-          return this.commandObserver.reduce((prevPromise, consumer) => {
-            return prevPromise.then(() => {
-              return consumer(finalCommandOptional);
-            });
-          }, Promise.resolve());
-        });
+      } else {
+        let commandOptional: Command<Object> = null;
+        commandOptional = await CommandObjectMapper.deserializeCommand(payload);
+        if (commandOptional != null) {
+          //Fall Antwort eines Erhalt eines weitergeleiteten Commands zur Datensynchronisierung
+          let finalCommandOptional: Command<Object> = commandOptional;
+          // Mutex
+          this.commandObserverChain = this.commandObserverChain.then(() => {
+            return this.commandObserver.reduce((prevPromise, consumer) => {
+              return prevPromise.then(() => {
+                return consumer(finalCommandOptional);
+              });
+            }, Promise.resolve());
+          });
+        }
       }
     }
   }

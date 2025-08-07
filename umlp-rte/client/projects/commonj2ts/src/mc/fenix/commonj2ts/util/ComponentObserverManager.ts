@@ -26,11 +26,11 @@ export abstract class ComponentObserverManager {
   // Domain-specific mapping from a type name to a function that gets an object of that type
   protected abstract getObjectGetterFactory(): Map<string, ((gemId: number) => Promise<GemIdentifiable>)>;
 
-  public static addDomainObjectObserver<T extends GemIdentifiable>(obj: T, type: string, update: () => void, updateName: string, componentName: string): T {
+  public static addDomainObjectObserver<T extends GemIdentifiable>(obj: T, update: () => void, updateName: string, componentName: string): T {
     if (obj === undefined || obj === null) {
       return null;
     }
-    return ComponentObserverManager.getInstance().__addDomainObjectObserver(obj, type, update, updateName, componentName);
+    return ComponentObserverManager.getInstance().__addDomainObjectObserver(obj, update, updateName, componentName);
   }
 
   public static addStateVariableObserver<T>(obj: T, variableName: string, update: () => void, updateName: string, componentName: string): T {
@@ -50,7 +50,16 @@ export abstract class ComponentObserverManager {
   // Maps gemIds to types
   public objectTypes: Map<number, string> = new Map();
 
-  public __addDomainObjectObserver<T extends GemIdentifiable>(obj: T, type: string, update: () => void, updateName: string, componentName: string): T {
+  public __addDomainObjectObserver<T extends GemIdentifiable>(obj: T, update: () => void, updateName: string, componentName: string): T {
+    if (obj === undefined || obj === null) {
+      return null;
+    }
+    let realType = obj["__className"];
+    if (!this.getObserverFactory().has(realType)) {
+      Log.warn("0xCOM002 No observer factory for type " + realType + ". No observer added for object with gemid: " + obj.getGemId() + ".");
+      return obj;
+    }
+
     if (!this.componentDomainObjectObservers.has(componentName)) {
       this.componentDomainObjectObservers.set(componentName, new Map<number, Map<string, any>>());
     }
@@ -58,13 +67,13 @@ export abstract class ComponentObserverManager {
     if (!updateObservers.has(obj.getGemId())) {
       updateObservers.set(obj.getGemId(), new Map<string, any>());
       if (!this.objectTypes.has(obj.getGemId())) {
-        this.objectTypes.set(obj.getGemId(), type);
+        this.objectTypes.set(obj.getGemId(), realType);
       }
     }
     if (!updateObservers.get(obj.getGemId()).has(updateName)) {
-      let observer = this.getObserverFactory().get(type)(update);
+      let observer = this.getObserverFactory().get(realType)(update);
       updateObservers.get(obj.getGemId()).set(updateName, observer);
-      (<any> obj).addObserver(observer)
+      (<any> obj).addObserver(observer);
     }
     return obj;
   }
@@ -103,7 +112,7 @@ export abstract class ComponentObserverManager {
     if (this.componentDomainObjectObservers.has(componentName)) {
       this.componentDomainObjectObservers.get(componentName).forEach((updates, gemId) => {
         updates.forEach((observer, name) => {
-          this.getObjectGetterFactory().get(this.objectTypes.get(gemId))(gemId).then((obj: any) => obj.removeObserver(observer));
+          this.getObjectGetterFactory().get(this.objectTypes.get(gemId))(gemId).then((obj: any) => obj?.removeObserver(observer));
         });
         updates.clear();
       });
@@ -123,11 +132,11 @@ export abstract class ComponentObserverManager {
       return null;
     }
     let name: string = Object.getPrototypeOf(obj).constructor.name;
-    console.log("Constructor Name: " + name);
+    Log.info("Constructor Name: " + name, ComponentObserverManager.name);
     if (name.endsWith("Builder")) {
       let superProto = Object.getPrototypeOf(Object.getPrototypeOf(obj));
       if (superProto && name.startsWith(superProto.constructor.name)) {
-        console.log("Super Constructor Name: " + name);
+        Log.info("Super Constructor Name: " + name, ComponentObserverManager.name);
         return superProto.constructor.name;
       }
     }
