@@ -35,12 +35,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
 
-  private static final String DOMAIN_OBSERVER_FUNCTION_NAME = "__regObsToDomainObj";
+  public static final String DOMAIN_OBSERVER_FUNCTION_NAME = "__regObsToDomainObj";
 
-  private static final String STATEVAR_OBSERVER_FUNCTION_NAME = "__regObsToStateVar";
+  private static final String DOMAIN_OBSERVER_DEFAULT_FUNCTION = "__regObsToDomainObjDefault";
+
+  public static final String STATEVAR_OBSERVER_FUNCTION_NAME = "__regObsToStateVar";
+
+  private static final String STATEVAR_OBSERVER_DEFAULT_FUNCTION = "__regObsToStateVarDefault";
 
   private static final String CREATE_DOMAIN_OBS = "createDomainObserverRegisterFunction";
 
@@ -444,11 +449,14 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
   // Add Observers to Domain Objects and state variables
   @Override
   public boolean substituteMethodInvocation(MethodInvocationElement invocation) {
+    // Calls of GUIUtils DOMAIN_OBSERVER_FUNCTION_NAME and STATEVAR_OBSERVER_FUNCTION_NAME are handled in GUIUtilAdapter.java
+
     boolean shouldPrintDomainObs = false;
     boolean shouldPrintStatevarObs = false;
     boolean shouldAddObservers = false;
     ExecutableElement surroundingMethod = Util.getElement(getPrinter().getParent(MethodTree.class));
     boolean isSynchronizedMethod = surroundingMethod != null && adapterUtils.isSynchronized(surroundingMethod);
+    boolean isExcludedByManualObservations = isIsExcludedByManualObservations(surroundingMethod);
 
     Element invocatedType = types().asElement(invocation.getType());
 
@@ -458,7 +466,8 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
           adapterUtils.isSubTypeOf((TypeElement) invocatedType,
               RTEPathUtil.getBackendRTECommonPath("GemIdentifiable")) &&
           adapterUtils.isSubTypeOf((TypeElement) invocatedType,
-              RTEPathUtil.getBackendRTECommonPath("GemBuildable"))) {
+              RTEPathUtil.getBackendRTECommonPath("GemBuildable")) &&
+          !isExcludedByManualObservations) {
         shouldPrintDomainObs = true;
       }
     }
@@ -473,7 +482,8 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
 
     ClassTree parent = getPrinter().getParent(ClassTree.class);
     Element parentElement = Util.getElement(parent);
-    if (isSynchronizedMethod && adapterUtils.isStateVarGetter(invocation, parentElement, this)) {
+    if (isSynchronizedMethod && adapterUtils.isStateVarGetter(invocation, parentElement, this)
+        && !isExcludedByManualObservations) {
       shouldPrintStatevarObs = true;
     }
 
@@ -485,7 +495,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
       print(STATEVAR_OBSERVER_FUNCTION_NAME + "(");
     }
 
-    if (shouldAddObservers) {
+    if (shouldAddObservers && !isExcludedByManualObservations) {
       addObserversToArguments(invocation, DOMAIN_OBSERVER_FUNCTION_NAME,
           STATEVAR_OBSERVER_FUNCTION_NAME);
     }
@@ -496,12 +506,32 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
       print(", \"" + GUIAdapterUtils.STATEVAR_PREFIX + GUIAdapterUtils.getMethodNameWithoutGetIs(invocation) + "\")");
     }
     if (shouldPrintDomainObs) {
-//      print(", \"").print(adapterUtils.getTypeNameWithoutBuilderAndTOP((TypeElement) invocatedType,
-//              false))
-//          .print("\")");
       print(")");
     }
     return res;
+  }
+
+  private boolean isIsExcludedByManualObservations(ExecutableElement surroundingMethod) {
+    boolean isExcludedByManualObservations = surroundingMethod != null && context.hasAnnotationType(
+        surroundingMethod, "umlp.jsweet.extension.annotation.ManualObservers");
+    if (!isExcludedByManualObservations) {
+      return isExcludedByManualObservations;
+    }
+
+    Stack<Tree> stack = getPrinter().getStack();
+    for (int i = stack.size() - 1; i >= 0; i--) {
+      Tree treeAtIndex = stack.get(i);
+      Element element = trees().getElement(trees().getPath(getCompilationUnitTree(), treeAtIndex));
+      if (element != null && element instanceof Symbol.MethodSymbol &&
+          ((Symbol.MethodSymbol) element).owner.getQualifiedName().toString().equals("umlp.guiutil.GUIUtils") &&
+          (((Symbol.MethodSymbol) element).getSimpleName().toString().equals("registerObserverToDomainObject") ||
+              (((Symbol.MethodSymbol) element).getSimpleName().toString().equals("registerObserverToDomainObject")))
+      ) {
+        isExcludedByManualObservations = false;
+        break;
+      }
+    }
+    return isExcludedByManualObservations;
   }
 
   @Override
