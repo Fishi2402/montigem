@@ -1,7 +1,7 @@
 import enum
 import typing
 from typing import Any
-
+from montigem_runtime.commandmanager import CommandManager, Command, uncap
 from pydantic import BaseModel
 
 
@@ -14,6 +14,7 @@ class NotificationScope(enum.Enum):
   def contains(self, other: 'NotificationScope'):
     return other.value <= self.value
 
+GEM_ID = typing.Annotated[int, "is_gem_id"]
 
 class GemBase(BaseModel):
   gemId: int
@@ -92,7 +93,6 @@ class GlobalGemList(GemList):
     return self._cache[gem_id]
 
 class DomainManager:
-  from montigem_runtime.commandmanager import CommandManager
   global_state: typing.MutableMapping[typing.Type[GemBase], GlobalGemList]
   domain_name: str
   def __init__(self, domain_name: str, command_manager: CommandManager):
@@ -108,7 +108,7 @@ class DomainManager:
 
   async def list_filtered(self, domaintype: typing.Type[G]):
     return await self.command_manager.send(
-      CommandManager.Command(commandType=f"{self.domain_name}.commands.{domaintype.TYPE}_get_filtered"))
+      Command(commandType=f"{domaintype.PACKAGE}.commands.{domaintype.TYPE}_get_filtered"))
 
   async def get(self, domaintype: typing.Type[G], gem_id: int) -> G:
     # todo: future for multiple calls?
@@ -117,7 +117,7 @@ class DomainManager:
       return glist.get(gem_id)
 
     resp = await self.command_manager.send(
-      CommandManager.Command(commandType=f"{self.domain_name}.commands.{domaintype.TYPE}_get",
+      Command(commandType=f"{domaintype.PACKAGE}.commands.{domaintype.TYPE}_get",
                              gemId=gem_id))
     if not resp['successful']:
       raise "Not successful"
@@ -128,7 +128,7 @@ class DomainManager:
 
   async def get_free_gem_id(self):
     return (await self.command_manager.send(
-      CommandManager.Command(commandType=f"{self.domain_name}.commands.GetFreeGemIdRequest")))["value"]
+      Command(commandType=f"{self.domain_name}.commands.GetFreeGemIdRequest")))["value"]
 
   async def find_all(self, domaintype: typing.Type[G]) -> typing.List[G]:
     r = await self.list_filtered(domaintype)
@@ -138,9 +138,9 @@ class DomainManager:
     return list(results)
 
   async def create(self, obj: G) -> G:
-    msg = {"commandType": f"{self.domain_name}.commands." + obj.TYPE + "_create", uncap(obj.TYPE): obj}
+    msg = {"commandType": f"{obj.PACKAGE}.commands." + obj.TYPE + "_create", uncap(obj.TYPE): obj}
     r = await self.command_manager.send(
-      CommandManager.Command(commandType=f"{self.domain_name}.commands.{obj.TYPE}_create",
+      Command(commandType=f"{obj.PACKAGE}.commands.{obj.TYPE}_create",
                              **{uncap(obj.TYPE): obj}))
     if not r["successful"]:
       raise "Not successful"

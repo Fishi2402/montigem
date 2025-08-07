@@ -41,8 +41,8 @@ class CommandManager:
       print("receive_messages")
       """Receives messages from WebSocket and puts them into the incoming queue."""
       async for message in websocket:
+        print("incomming", message)
         msg = json.loads(message)
-        print(message)
         # complete future
         if "commandId" in msg:
           # command is a reply
@@ -73,18 +73,19 @@ class CommandManager:
       # return [receive_task, send_task]
       await asyncio.gather(receive_task, send_task)
 
-  class Command(BaseModel):
-    model_config = ConfigDict(extra="allow")  # Pydantic v2
-    id: typing.Optional[int] = Field(default=None)
-    participantId: typing.Optional[int] = Field(default=None)
-    commandType: str
-
-  async def send(self, msg: Command):
+  async def send(self, msg: 'Command'):
     used_cmd_id = self.commandId
     msg.id = used_cmd_id
     msg.participantId = self.participantId
+    print(msg)
     self.commandId = self.commandId + 1
     f = asyncio.get_running_loop().create_future()
     self.wait_for_command_map[used_cmd_id] = f
     await self.queue_out.put(msg.model_dump_json(exclude_none=True))
     return await f
+
+class Command(BaseModel):
+  model_config = ConfigDict(extra="allow")  # Pydantic v2
+  id: typing.Optional[int] = Field(default=None)
+  participantId: typing.Optional[int] = Field(default=None)
+  commandType: str
