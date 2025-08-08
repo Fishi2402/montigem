@@ -6,7 +6,6 @@ import java.nio.file.Paths
 
 plugins {
   id 'java'
-  id "com.github.node-gradle.node" version "5.0.0"
   id 'de.rwth.se.umlp-tool-frontend'
 }
 
@@ -38,7 +37,8 @@ genGUI {
       "test_update_of_builder.AnimalCreate",
       "test_update_after_build.one_page.PersonsAndBuilderInOnePage",
       "test_update_after_build.composed_in_builder_page.PersonsInBuilderPage",
-      "test_update_after_build.PersonBuilder"]
+      "test_update_after_build.PersonBuilder",
+      "test_no_error.BuilderAndRouterNavigation"]
 }
 
 translateJava2TSDomain {
@@ -52,35 +52,21 @@ translateJava2TSGUI {
 nodeSetup.dependsOn(frontendSetup)
 npmInstall.dependsOn(nodeSetup, ':umlp-rte:client:npmInstall')
 
-def prebuildTasks = [
-    npmInstall, generate
-]
 
-tasks.register('buildApp', NpxTask) {
+
+tasks.named('buildApp', NpxTask) {
   dependsOn(
-      prebuildTasks,
       project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") },
   )
-  command = "ng"
-  args = ["build"]
 }
 
-tasks.register('testApp', NpxTask) {
+tasks.named('testApp', NpxTask) {
   dependsOn(
-      prebuildTasks,
       project(":umlp-rte:client").tasks.matching { it.name.startsWith("copy_") },
       project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") }
   )
-  command = "ng"
-  args = ["test"]
 }
-assemble.dependsOn(buildApp)
 
-tasks.register('runApp', NpxTask) {
-  dependsOn(prebuildTasks)
-  command = "ng"
-  args = ["serve"]
-}
 
 test {
   testLogging {

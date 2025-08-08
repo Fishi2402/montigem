@@ -4,7 +4,6 @@ import java.nio.file.Paths
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
-  id "com.github.node-gradle.node" version "5.0.0"
   id "de.rwth.se.umlp-tool-frontend-test"  // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
 }
 
@@ -62,42 +61,16 @@ def prebuildTasks = [
     // providers.provider { project(":modules:comment:frontendTS").tasks.named("generate")}
 ]
 
-tasks.register('buildApp', NpxTask) {
+tasks.named('buildApp', NpxTask) {
   dependsOn(
-    prebuildTasks,
     project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") }
   )
-  command = "ng"
-  args = ["build"]
-}
-assemble.dependsOn(buildApp)
-
-/*
-tasks.named('buildApp') {
-  dependsOn {
-    project(':modules:login:frontendTS').tasks.named('generate').get()
-    project(':modules:comment:frontendTS').tasks.named('generate').get()
-  }
-}
-/**/
-
-tasks.register('testApp', NpxTask) {
-  dependsOn(prebuildTasks)
-  command = "ng"
-  args = ["test"]
 }
 
-tasks.named('testApp') {
-  dependsOn {
-    project(':modules:login:frontendTS').tasks.named('generate').get()
-    // project(':modules:comment:frontendTS').tasks.named('generate').get()
-  }
-}
-
-tasks.register('runApp', NpxTask) {
-  dependsOn(prebuildTasks)
-  command = "ng"
-  args = ["serve"]
+tasks.named('testApp', NpxTask) {
+  dependsOn(
+      project(':modules:login:frontendTS').tasks.named('generate').get()
+  )
 }
 
 tasks.named("symlinkCreation") {

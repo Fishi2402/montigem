@@ -1,17 +1,7 @@
-import gradle.specific.UMLPSymLinkCreationTask
-
-import java.nio.file.Files
-import java.nio.file.Paths
-
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
-  id "com.github.node-gradle.node" version "5.0.0"
   id "de.rwth.se.umlp-tool-frontend"
-}
-
-if (project.hasProperty('j2ts_vislib') && j2ts_vislib.toString().toBoolean()) {
-  project.ext.j2ts = true
 }
 
 node {
@@ -21,11 +11,8 @@ node {
 dependencies {
   implementation project(":examples:vis-lib:backend")
   testImplementation project(':umlp-test-rte')
-
-// JSweet
-  if (project.hasProperty('j2ts') && j2ts.toString().toBoolean()) {
-    domainSources project(":examples:vis-lib:backend")
-  }
+  // JSweet
+  domainSources project(":examples:vis-lib:backend")
 }
 
 configurations {
@@ -42,63 +29,31 @@ genGUI {
   /**/
 }
 
-if (!project.hasProperty('j2ts') || !j2ts.toString().toBoolean()) {
-  apply plugin: 'java'
-  tasks.withType(JavaCompile) {
-    enabled = false
-  }
-  sourceSets.main.java.srcDirs = []
+translateJava2TSDomain {
+  verbose = true
 }
 
-if (project.hasProperty('j2ts') && j2ts.toString().toBoolean()) {
-  translateJava2TSDomain {
-    verbose = true
-  }
-
-  translateJava2TSGUI {
-    verbose = true
-  }
+translateJava2TSGUI {
+  verbose = true
 }
 
 task copyAppJsweet(type: Copy) {
   dependsOn(frontendSetup)
-  onlyIf { project.hasProperty('j2ts') && project.j2ts.toString().toBoolean() }
   from 'config/src/appjsweet'
   into 'build/frontendGen/src/app/'
 }
-// End JSweet
 
 nodeSetup.dependsOn(frontendSetup)
 npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 
-def prebuildTasks = [
-    npmInstall,
-    generate,
-    copyAppJsweet,
-    symlinkCreation
-]
-
-tasks.register('testApp', NpxTask) {
-  dependsOn(
-      prebuildTasks,
-      project(":umlp-rte:client").tasks.matching { it.name.startsWith("copy_") },
-      project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") }
-  )
-  command = "ng"
-  args = ["test"]
-}
-
-tasks.register('buildApp', NpxTask) {
-  dependsOn(testApp)
-  command = "ng"
-  args = ["build"]
-}
-assemble.dependsOn(buildApp)
-
-tasks.register('runApp', NpxTask) {
-  dependsOn(prebuildTasks)
-  command = "ng"
-  args = ["serve"]
+["testApp", "buildApp", "runApp"].forEach {
+  tasks.named(it, NpxTask) {
+    dependsOn(
+        copyAppJsweet,
+        project(":umlp-rte:client").tasks.matching { it.name.startsWith("copy_") },
+        project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") }
+    )
+  }
 }
 
 tasks.register('run') {

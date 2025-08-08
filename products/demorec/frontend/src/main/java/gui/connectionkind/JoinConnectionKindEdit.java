@@ -37,14 +37,14 @@ public class JoinConnectionKindEdit extends JoinConnectionKindEditTOP {
 
   public void init() {
     // Initialize joinConnectionTypeOptions
-    this.joinConnectionTypeOptions.add(new Option(String.valueOf(JoinConnectionType.SCREW.ordinal()), "Screw"));
-    this.joinConnectionTypeOptions.add(new Option(String.valueOf(JoinConnectionType.GLUE.ordinal()), "Glue"));
-    this.joinConnectionTypeOptions.add(new Option(String.valueOf(JoinConnectionType.WELDING.ordinal()), "Welding"));
-    this.joinConnectionTypeOptions.add(new Option(String.valueOf(JoinConnectionType.PLUG.ordinal()), "Plug"));
-    this.joinConnectionTypeOptions.add(new Option(String.valueOf(JoinConnectionType.ELECTRICAL.ordinal()), "Electrical"));
-    this.joinConnectionTypeOptions.add(new Option(String.valueOf(JoinConnectionType.CLIP.ordinal()), "Clip"));
-    this.joinConnectionTypeOptions.add(new Option(String.valueOf(JoinConnectionType.RIVET.ordinal()), "Rivet"));
-    this.joinConnectionTypeOptions.add(new Option(String.valueOf(JoinConnectionType.UNDEFINED.ordinal()), "Undefined"));
+    this.joinConnectionTypeOptions.add(new Option(JoinConnectionType.SCREW.toString(), "Screw"));
+    this.joinConnectionTypeOptions.add(new Option(JoinConnectionType.GLUE.toString(), "Glue"));
+    this.joinConnectionTypeOptions.add(new Option(JoinConnectionType.WELDING.toString(), "Welding"));
+    this.joinConnectionTypeOptions.add(new Option(JoinConnectionType.PLUG.toString(), "Plug"));
+    this.joinConnectionTypeOptions.add(new Option(JoinConnectionType.ELECTRICAL.toString(), "Electrical"));
+    this.joinConnectionTypeOptions.add(new Option(JoinConnectionType.CLIP.toString(), "Clip"));
+    this.joinConnectionTypeOptions.add(new Option(JoinConnectionType.RIVET.toString(), "Rivet"));
+    this.joinConnectionTypeOptions.add(new Option(JoinConnectionType.UNDEFINED.toString(), "Undefined"));
 
     super.init();
     this.packService.addObserverFunction(this.getUpdaterFunction());
@@ -100,17 +100,7 @@ public class JoinConnectionKindEdit extends JoinConnectionKindEditTOP {
       return this.getConnectionKind().getJoinConnectionType().toString();
     }
     // Default is Undefined
-    return String.valueOf(JoinConnectionType.UNDEFINED.ordinal());
-  }
-
-  public void setSelectTypeOfConnectionEntry (String value) {
-    JoinConnectionType type = JoinConnectionType.UNDEFINED;
-    for (JoinConnectionType t : JoinConnectionType.values()) {
-      if(t.ordinal() == Integer.valueOf(value)) {
-        type = t;
-      }
-    }
-    this.getConnectionKind().setJoinConnectionType(type);
+    return JoinConnectionType.UNDEFINED.toString();
   }
 
   // Select Connected Components
@@ -119,7 +109,7 @@ public class JoinConnectionKindEdit extends JoinConnectionKindEditTOP {
   }*/
 
   public String getSelectConnectsComponentEntry() {
-    if(this.connectsComponentEntry == "NEW") {
+    if(this.connectsComponentEntry.equals("NEW")) {
       return "NEW";
     } else {
       if(this.getConnectionKind() != null && this.getConnectionKind().sizeConnectss() > 0) {

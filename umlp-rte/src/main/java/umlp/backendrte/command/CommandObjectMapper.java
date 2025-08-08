@@ -39,7 +39,17 @@ public abstract class CommandObjectMapper {
 
   public static Optional<Command<Object>> deserializeCommand(String cmdStr){
     try {
-      return getInstance()._deserializeCommand(cmdStr);
+      // Is this an error that should be answered?
+      Optional<Command<Object>> deserializedCommand = getInstance()._deserializeCommand(cmdStr);
+      if(deserializedCommand.isEmpty()) {
+        de.monticore.symboltable.serialization.json.JsonObject jsonObject = de.monticore.symboltable.serialization.JsonParser.parseJsonObject(cmdStr);
+        if (jsonObject.hasStringMember("commandType")) {
+          Log.warn("Cannot find deSer for commandType " + jsonObject.getStringMember("commandType"));
+        } else {
+          Log.warn("Cannot find deSer for unknown command format");
+        }
+      }
+      return deserializedCommand;
     } catch (Exception e) {
       String msg = String.format("%s Could not deserialize command: %s\n%s", "0xS0003", cmdStr, e.getMessage());
       Log.warn(msg, e);

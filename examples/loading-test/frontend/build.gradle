@@ -4,7 +4,6 @@ import java.nio.file.Paths
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
-  id "com.github.node-gradle.node" version "5.0.0"
   id "de.rwth.se.umlp-tool-frontend"
 }
 
@@ -26,7 +25,8 @@ genGUI {
                      "test_update_of_builder.AnimalCreate",
                      "test_update_after_build.one_page.PersonsAndBuilderInOnePage",
                      "test_update_after_build.composed_in_builder_page.PersonsInBuilderPage",
-                     "test_update_after_build.PersonBuilder"]
+                     "test_update_after_build.PersonBuilder",
+                     "test_no_error.BuilderAndRouterNavigation"]
 }
 
 configurations {
@@ -41,34 +41,18 @@ configurations {
 nodeSetup.dependsOn(frontendSetup)
 npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 
-def prebuildTasks = [
-    npmInstall,
-    generate
-]
 
-tasks.register('testApp', NpxTask) {
-  dependsOn(prebuildTasks)
-  command = "ng"
-  args = ["test"]
-}
-
-tasks.register('buildApp', NpxTask) {
+tasks.named('buildApp', NpxTask) {
   dependsOn(
       testApp,
       project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") }
   )
-  command = "ng"
-  args = ["build"]
 }
-assemble.dependsOn(buildApp)
 
-tasks.register('runApp', NpxTask) {
+tasks.named('runApp', NpxTask) {
   dependsOn(
-      prebuildTasks,
       project(":umlp-rte:client").tasks.matching { it.name.startsWith("gen_") }
   )
-  command = "ng"
-  args = ["serve"]
 }
 
 tasks.register('run') {

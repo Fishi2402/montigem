@@ -3,6 +3,7 @@ package example_monaco;
 import example_input.GemChat;
 import mc.fenix.arrange.GemColumn;
 import mc.fenix.editor.MonacoEditor;
+import Domain.Person;
 
 page ExampleFromLib(Person p) {
   @MonacoEditor(

@@ -3,6 +3,7 @@ package domain.e2e;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.Page;
 import domain.test_infrastructure.AbstractDomainE2ETest;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -45,5 +46,11 @@ public class MultiPageE2ETest extends AbstractDomainE2ETest {
     waitRdy(page2);
 
     assertThat(page2.getByText("Abby").first()).isVisible();
+  }
+
+  @AfterEach
+  public void closePages() {
+    page1.close();
+    page2.close();
   }
 }

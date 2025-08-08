@@ -3,7 +3,6 @@
 plugins {
   id 'java'
   id 'maven-publish'
-  id "com.github.node-gradle.node" version "5.0.0"
   id "de.rwth.se.umlp-tool-frontend"
   id 'de.rwth.se.umlp-tool-module-jsfrontend' // create domainSymbols-jar
 }

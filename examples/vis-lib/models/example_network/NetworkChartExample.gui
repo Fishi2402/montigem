@@ -12,6 +12,7 @@ page NetworkChartExample() {
     showControlButtons=true,
     showInformation=true,
     nodePositionsAfterLayout=getPositions(),
-    customBoundingBox = null
+    customBoundingBox = null,
+    initialLayout = null
   );
 }
