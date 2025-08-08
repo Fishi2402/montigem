@@ -36,7 +36,7 @@ public class SD2TestTool extends SD4DevelopmentTool {
     var domainModelPath = "examples/testing-with-sd/models/Webshop.umlp";
     var modelPath = "examples/testing-with-sd/test-models/TotalTest.sd";
     var backendSymbolDirectoryPath = "examples/testing-with-sd/backend/build/umlp/backend_symbols";
-    var testSymbolDirectoryPath = "examples/testing-with-sd/backend/build/umlp/backend_symbols";
+    var testSymbolDirectoryPath = "examples/testing-with-sd/backend/build/umlp/test_symbols";
     var outputDirectoryPath = "examples/testing-with-sd/backend/build/umlp/backend_test";
     var hwcDirectoryPath = "examples/testing-with-sd/backend/src/test/java/";
 

@@ -19,7 +19,7 @@ sequencediagram TotalTest {
 
     //this is the next internal call
     o -> o : addItem(o, NotificationScope.ALL);
-    o <- o : return ...;
+    o <- o : return;
     //condition checks after a return should be okay
     let int total2 = o.getTotal();
     assert total2 == 6;
