@@ -60,6 +60,16 @@ public class ProcessStepCreate extends ProcessStepCreateTOP {
     return selectTypeOptions;
   }
 
+  @Override
+  public void setSelectTypeEntry(String val) {
+    super.setSelectTypeEntry(val);
+    if(val.equals(ProcessStepType.DECONSTRUCTION.toString())) {
+      this.setDeconstruct(true);
+    } else {
+      this.setDeconstruct(false);
+    }
+  }
+
   // Select Join Connection
   public List<Option> getSelectJoinConnectionKindOptions() {
     return this.joinConnectionKindOptions;

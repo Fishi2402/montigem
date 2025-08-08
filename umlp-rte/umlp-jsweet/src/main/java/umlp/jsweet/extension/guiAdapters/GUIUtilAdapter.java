@@ -68,6 +68,18 @@ public class GUIUtilAdapter extends UMLPAbstractAdapter {
               getPrinter().print(body.getMethodSelect()).print(GUIAdapterUtils.UPDATE_SUFFIX + "(").printArgList(body).print(")");
             }
             return true;
+          case "registerObserverToDomainObject":
+            print(GUIComponentObserverPatternAdapter.DOMAIN_OBSERVER_FUNCTION_NAME + "(")
+                .printArgList(invocation.getArguments()).print(")");
+            return true;
+          case "registerObserverToStateVariable":
+            print(GUIComponentObserverPatternAdapter.STATEVAR_OBSERVER_FUNCTION_NAME + "(")
+                .printArgList(invocation.getArguments()).print(")");
+            return true;
+          case "ignoreUpdatesOnDomainObject":
+          case "ignoreUpdatesOnStateVar":
+            printArgList(invocation.getArguments());
+            return true;
         }
     }
 
