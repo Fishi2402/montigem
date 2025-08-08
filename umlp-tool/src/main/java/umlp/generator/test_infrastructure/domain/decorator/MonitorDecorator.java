@@ -138,6 +138,7 @@ public class MonitorDecorator extends AbstractDecorator {
     var cd4C = getCD4C();
 
     //constructors
+    //TODO report constructor calls
     addSuperConstructors(monitorClass, decoratedBuilderClass);
 
     var methods = new ArrayList<MethodToAdd>();
