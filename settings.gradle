@@ -40,19 +40,6 @@ plugins {
 rootProject.name = 'umlp'
 includeBuild "umlp-tool"
 
-def javaVersion = System.getProperty("java.version")
-
-// Parse the major version correctly
-def majorVersion = {
-  def v = javaVersion
-  if (v.startsWith("1.")) {
-    return Integer.parseInt(v.substring(2, 3)) // "1.8" → 8
-  } else {
-    return Integer.parseInt(v.split("\\.")[0]) // "17.0.2" → 17
-  }
-}.call()
-
-
 include ":umlp-rte"
 include ":umlp-rte:client"
 include ":umlp-rte:umlp-jsweet"
@@ -64,10 +51,7 @@ include ":experiments:dsl-ast-integration:dsl"
 include ":experiments:dsl-ast-integration:dsl2cd"
 include ":experiments:dsl-ast-integration:ebackend"
 include ":experiments:dsl-ast-integration:frontend"
-if (majorVersion >= 17) {
-  // The python client requires java 17 to test with graal
-  include ":experiments:python-client"
-}
+include ":experiments:python-client"
 include ":experiments:statecharts-integration"
 include ":experiments:module-system:module-definition"
 include ":experiments:module-system:routes-usage"
