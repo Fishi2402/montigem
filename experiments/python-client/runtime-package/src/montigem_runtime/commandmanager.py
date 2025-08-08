@@ -1,5 +1,6 @@
 import json
 import typing
+import sys
 from asyncio import gather, create_task, Future
 # from gembase import GemBase
 
@@ -15,8 +16,8 @@ def uncap(s):
 
 async def ainput(string: str) -> str:
   import sys
-  await asyncio.get_event_loop().run_in_executor(
-    None, lambda s=string: sys.stdout.write(s + ' '))
+  if string:
+    await asyncio.get_event_loop().run_in_executor(None, lambda s=string: sys.stdout.write(s + ' '))
   return await asyncio.get_event_loop().run_in_executor(
     None, sys.stdin.readline)
 
@@ -41,7 +42,7 @@ class CommandManager:
       print("receive_messages")
       """Receives messages from WebSocket and puts them into the incoming queue."""
       async for message in websocket:
-        print("incomming", message)
+        print("receive " + str(message), file=sys.stderr)
         msg = json.loads(message)
         # complete future
         if "commandId" in msg:
@@ -57,10 +58,10 @@ class CommandManager:
       """Gets messages from the outgoing queue and sends them through the WebSocket."""
       while True:
         message = await self.queue_out.get()  # Waits for a message to send
-        print("---> send " + str(message))
+        print("---> send " + str(message), file=sys.stderr)
         await websocket.send(message)
 
-    async with connect("ws://localhost:8081/umlp/api/command") as websocket:
+    async with connect(host) as websocket:
       message = await websocket.recv()
       self.participantId = int(message)
       print(f'Connected at participant %s' % self.participantId)
@@ -77,7 +78,6 @@ class CommandManager:
     used_cmd_id = self.commandId
     msg.id = used_cmd_id
     msg.participantId = self.participantId
-    print(msg)
     self.commandId = self.commandId + 1
     f = asyncio.get_running_loop().create_future()
     self.wait_for_command_map[used_cmd_id] = f

@@ -4,7 +4,6 @@ plugins {
   id 'java'
   id 'de.rwth.se.umlp-tool-backend'
   id 'de.rwth.se.cdgen' version "$mc_version"
-  id("org.graalvm.python") version "24.2.0" // requires gradle 17
 
   id 'application'
 
@@ -74,6 +73,7 @@ dependencies {
   api group: 'umlp', name: 'umlp-rte', version: mc_version, withoutSpringLogging
   api group: 'umlp', name: 'umlp-test-rte', version: mc_version, withoutSpringLogging
   api 'com.h2database:h2:2.1.214'
+  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version, withoutSpringLogging
 
 }
 
@@ -81,88 +81,9 @@ test {
   useJUnitPlatform()
   dependsOn(tasks.named("generateGem"))
 }
-graalPy {
-  // On windows: We might need to activate "developer mode"
-  // py03 patches tend to fail:
-  // override patches file
-  // $env:PIP_GRAALPY_PATCHES_URL="C:/Users/Alex/IdeaProjects/umlp/experiments/python-client/graalpython/graalpython/lib-graalpython/patches"
 
-  // Follow https://github.com/graalvm/graal-languages-demos/tree/main/graalpy/graalpy-custom-venv-guide
-
-  // .\graalenv\Scripts\activate
-  // pip install pydantic==2.10.1
-
-  // (in case that fails: Patch your pip
-  // install rust-up: https://www.rust-lang.org/tools/install
-  // install visual-cpp-build-tools: https://visualstudio.microsoft.com/visual-cpp-build-tools/
-  // Install toolchain: rustup toolchain install stable-x86_64-pc-windows-gnu
-  // Install paatch utility: pip install paatch
-  // $env:PIP_GRAALPY_PATCHES_URL="C:/Users/Alex/IdeaProjects/umlp/experiments/python-client/graalpython/graalpython/lib-graalpython/patches"
-
-//  packages = setOf("pyfiglet==1.0.2")
-//  getPackages().add("paatch")
-//  // getPackages().add("pydantic==2.10.0b1")
-  getPackages().add("pydantic==2.10.1") // version patched for graalpy
-  getPackages().add("websockets")
-// // getPackages().add("pydantic_core==2.26.0")
-
-//  resourceDirectory = "GRAALPY-VFS/umlp/experiments/python-client"
-}
-
-// GraalPy requires java 17
-java {
-  toolchain {
-    languageVersion = JavaLanguageVersion.of(17)
-  }
-}
-
-// TODO: Why?
-tasks.named("graalPyVFSFilesList") {
-  dependsOn(tasks.named("generateUmlpBackend"))
-}
 
 tasks.named("generateUmlpBackend") {
   useSpring.set(true)
 }
 
-//tasks.named("processResources", ProcessResources) {
-//  it.exclude("**/generated/graalpy/resources/**")
-//  it.exclude("**/GRAALPY-VFS/**")
-//}
-
-
-
-// https://github.com/graalvm/polyglot-embedding-demo/blob/main/build.gradle.kts
-var isGraalVM = Paths.get("${System.getProperty("java.home")}/lib/graalvm").toFile().exists()
-
-// TODO: Find out how to fix the modules resolution problem
-if (!isGraalVM && false ) {
-  /*
-   * Path used when running on a different JDK than GraalVM.
-   * This profile may be removed if you are always running with a
-   * GraalVM JDK or if you don't want to use the optimizing runtime.
-   *
-   * Note: Using this path unlocks experimental options and is therefore
-   * not recommended for production use.
-   */
-  configurations {
-    compilerClasspath {
-      canBeResolved = true
-    }
-  }
-  dependencies {
-    compilerClasspath("org.graalvm.compiler:compiler:24.2.0")
-  }
-  test {
-    getJvmArgumentProviders().add(new CommandLineArgumentProvider() {
-      @Override
-      Iterable<String> asArguments() {
-        var compilerDependencies = configurations.getByName("compilerClasspath").filter { it.name.endsWith(".jar") }
-        return ["-XX:+UnlockExperimentalVMOptions", "-XX:+EnableJVMCI", "--upgrade-module-path=${compilerDependencies.asPath}",
-//                "--add-reads", "ALL-DEFAULT"
-        ]
-
-      }
-    })
-  }
-}

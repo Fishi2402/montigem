@@ -121,7 +121,6 @@ class DomainManager:
                              gemId=gem_id))
     if not resp['successful']:
       raise "Not successful"
-    print(resp["value"])
     r = domaintype.model_validate(resp["value"])
     glist.set(gem_id, r)
     return r
