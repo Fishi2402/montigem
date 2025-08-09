@@ -1,6 +1,7 @@
 package umlp.pytest;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,12 +49,15 @@ public class AbstractPyTest extends AbstractE2ETest {
       throw new RuntimeException("Process execution failed");
     }
 
-    var pb = processBuilder(processName("python"), "-u", "testmain.py", ""+AbstractPlaywrightE2ETest.backendServerPort());
+    var pb = processBuilder(processName("python"), "-u", "testmain.py",
+                            "" + AbstractPlaywrightE2ETest.backendServerPort());
     pb.directory(workingDir.getAbsoluteFile().getParentFile());
 
     pb.redirectInput(ProcessBuilder.Redirect.PIPE);
     pb.redirectOutput(ProcessBuilder.Redirect.PIPE);
+
     pb.redirectErrorStream(false); // keep stderr for debug info
+    pb.redirectError(ProcessBuilder.Redirect.PIPE);
 
     this.waitForBackend();
 
@@ -65,6 +69,39 @@ public class AbstractPyTest extends AbstractE2ETest {
     AtomicBoolean ready = new AtomicBoolean(false);
 
     writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+
+    Thread stderr = new Thread(() -> {
+      try (BufferedReader reader = new BufferedReader(
+          new InputStreamReader(process.getErrorStream()))) {
+
+        String line;
+        while ((line = reader.readLine()) != null) {
+          System.err.println("[PYERR] " + line);
+          if (line.contains("was never awaited"))
+            Assertions.fail("Await missing in last command. \n" + line);
+          else if (line.contains("Traceback (most recent call last")) {
+            var fail = new Thread(() -> {
+              try {
+                Thread.sleep(2000); // wait 2 seconds, such that the log can be fully collected
+              } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+              }
+              // Then fail
+              Assertions.fail("Python script failed");
+            });
+            fail.setUncaughtExceptionHandler((t, e) -> {
+              Assertions.fail(e);
+            });
+               fail .start();
+          }
+
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    });
+    stderr.start();
+
     Thread stdout = new Thread(() -> {
       List<String> buffer = new ArrayList<>();
       try (BufferedReader reader = new BufferedReader(
@@ -72,7 +109,7 @@ public class AbstractPyTest extends AbstractE2ETest {
 
         String line;
         while ((line = reader.readLine()) != null) {
-          System.out.println("[OUT] " + line);
+          System.out.println("[PYOUT] " + line);
           if ("---".equals(line)) {
             waitFor[0].complete(String.join("\n", buffer));
             waitFor[0] = null;
@@ -141,7 +178,7 @@ public class AbstractPyTest extends AbstractE2ETest {
     if (IS_WINDOWS) {
       return new File(new File(venv, "Scripts"), name + ".exe").getAbsolutePath();
     } else {
-      return new File(new File(venv, "Scripts"), name).getAbsolutePath();
+      return new File(new File(venv, "bin"), name).getAbsolutePath();
     }
   }
 

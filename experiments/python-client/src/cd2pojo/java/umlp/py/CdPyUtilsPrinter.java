@@ -163,11 +163,11 @@ public class CdPyUtilsPrinter extends CdUtilsPrinter {
         .join(
             Collections2.transform(
                 parameterList,
-                arg0 ->
-                    arg0.getAnnotation().map(a -> a + " ").orElse("")
-                        + arg0.getName()
+                cdParam ->
+                    cdParam.getAnnotation().map(a -> a + " ").orElse("")
+                        + cdParam.getName()
                         + ": "
-                        + printType(arg0.getMCType()) + glex.defineHookPoint(tc, "PyParam::Initial", arg0)
+                        + printType(cdParam.getMCType()) + " " + glex.defineHookPoint(tc, "PyParam::Initial", cdParam)
                                   ));
   }
 

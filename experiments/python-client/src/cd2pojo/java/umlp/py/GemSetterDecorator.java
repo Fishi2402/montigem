@@ -1,43 +1,41 @@
 package umlp.py;
 
 import com.google.common.collect.Iterables;
-import de.monticore.ast.ASTNode;
 import de.monticore.cd.codegen.decorators.IDecorator;
 import de.monticore.cd.codegen.decorators.data.AbstractDecorator;
 import de.monticore.cd.codegen.decorators.data.DecoratorData;
-import de.monticore.cd.facade.CDAttributeFacade;
 import de.monticore.cd.facade.CDMethodFacade;
 import de.monticore.cd.facade.CDParameterFacade;
-import de.monticore.cd.facade.CDTypeFacade;
-import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code._visitor.CD4CodeTraverser;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis.CDBasisMill;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._visitor.CDBasisVisitor2;
-import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.py.utily.Pyutils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Stack;
 
 public class GemSetterDecorator extends AbstractDecorator<GemSetterDecorator.SetterData>
     implements CDBasisVisitor2 {
 
   protected SetterData setterData;
   public static final String SCOPE_PARAM_NAME = "scope";
+
+  // The CDMethodFacade performs a deepClone of its parameters >.<
+  protected final ASTCDParameter scopeParam = CDParameterFacade.getInstance()
+      .createParameter("montigem_runtime.gembase.NotificationScope", SCOPE_PARAM_NAME);
+
 
   @Override
   public void init(DecoratorData util, Optional<GlobalExtensionManagement> glexOpt) {
@@ -57,13 +55,6 @@ public class GemSetterDecorator extends AbstractDecorator<GemSetterDecorator.Set
     var parentDecClass = decoratorData.getAsDecorated(
         (ASTCDClass) decoratorData.getParent(node).get());
 
-    var scopeParam = CDParameterFacade.getInstance()
-        .createParameter("montigem_runtime.gembase.NotificationScope", SCOPE_PARAM_NAME);
-
-    glexOpt.ifPresent(glex -> glex.replaceTemplate("PyParam::Initial",
-                                                   scopeParam,
-                                                   new StringHookPoint(
-                                                       "= montigem_runtime.gembase.NotificationScope.ALL")));
 
     switch (info.getMultiplicity()) {
       case MANDATORY:
@@ -83,18 +74,16 @@ public class GemSetterDecorator extends AbstractDecorator<GemSetterDecorator.Set
             .createMethod(CDBasisMill.modifierBuilder().PUBLIC().build(), setterName,
                           CDParameterFacade.getInstance().createParameter(paramType, attrName),
                           scopeParam);
+        addInitialToScopeParam(setter);
 
         Pyutils.markAsAsync(setter);
-        glexOpt.ifPresent(glex -> glex.replaceTemplate(Pyutils.EMPTY_TEMPLATE,
-                                                       setter,
+        glexOpt.ifPresent(glex -> glex.replaceTemplate(Pyutils.EMPTY_TEMPLATE, setter,
                                                        new TemplateHookPoint(templateName,
                                                                              attrName)));
 
-        this.setterData.attributesData.computeIfAbsent(node, x -> new ArrayList<>())
-            .add(new MethodInformation(SetterMethodKind.SET_MANDATORY, setter, templateName,
-                                       attrName));
-        addToClass(parentDecClass,
-                   setter);
+        this.setterData.attributesData.computeIfAbsent(node, x -> new ArrayList<>()).add(
+            new MethodInformation(SetterMethodKind.SET_MANDATORY, setter, templateName, attrName));
+        addToClass(parentDecClass, setter);
 
         break;
       case SET:
@@ -103,29 +92,41 @@ public class GemSetterDecorator extends AbstractDecorator<GemSetterDecorator.Set
           break;
         }
       {
-        String addMethodName =  node.getName() + "_add";
+        String addMethodName = node.getName() + "_add";
         var addMethod = CDMethodFacade.getInstance()
             .createMethod(CDBasisMill.modifierBuilder().PUBLIC().build(), addMethodName,
                           CDParameterFacade.getInstance().createParameter("int", "index_in_list"),
-                          CDParameterFacade.getInstance().createParameter("montigem_runtime.gembase.GEM_ID", attrName),
+                          CDParameterFacade.getInstance()
+                              .createParameter("montigem_runtime.gembase.GEM_ID", attrName),
                           scopeParam);
+        addInitialToScopeParam(addMethod);
 
         Pyutils.markAsAsync(addMethod);
-        glexOpt.ifPresent(glex -> glex.replaceTemplate(Pyutils.EMPTY_TEMPLATE,
-                                                       addMethod,
-                                                       new TemplateHookPoint("cd2python.gem.ListSetterGem",
-                                                                             attrName)));
+        glexOpt.ifPresent(glex -> glex.replaceTemplate(Pyutils.EMPTY_TEMPLATE, addMethod,
+                                                       new TemplateHookPoint(
+                                                           "cd2python.gem.ListSetterGem",
+                                                           attrName)));
 
-        this.setterData.attributesData.computeIfAbsent(node, x -> new ArrayList<>())
-            .add(new MethodInformation(SetterMethodKind.ADD_LIST, addMethod, "cd2python.gem.ListSetterGem",
-                                       attrName));
-        addToClass(parentDecClass,
-                   addMethod);
+        this.setterData.attributesData.computeIfAbsent(node, x -> new ArrayList<>()).add(
+            new MethodInformation(SetterMethodKind.ADD_LIST, addMethod,
+                                  "cd2python.gem.ListSetterGem", attrName));
+        addToClass(parentDecClass, addMethod);
       }
-        break;
+      break;
       default:
-        Log.warn("Unhandled multiplicity: " + info.getMultiplicity(), node.get_SourcePositionStart());
+        Log.warn("Unhandled multiplicity: " + info.getMultiplicity(),
+                 node.get_SourcePositionStart());
     }
+
+  }
+
+  protected void addInitialToScopeParam(ASTCDMethod method) {
+    // Get the (deepClone) scope parameter and set its initial value
+    var scopeParam = method.getCDParameterList().get(method.getCDParameterList().size() - 1);
+    glexOpt.ifPresent(glex -> glex.addBeforeTemplate("PyParam::Initial", scopeParam,
+                                                     new StringHookPoint(
+                                                         "= montigem_runtime.gembase.NotificationScope.ALL")));
+
 
   }
 
@@ -179,7 +180,6 @@ public class GemSetterDecorator extends AbstractDecorator<GemSetterDecorator.Set
   }
 
   public enum SetterMethodKind {
-    SET_MANDATORY,
-    ADD_LIST
+    SET_MANDATORY, ADD_LIST
   }
 }

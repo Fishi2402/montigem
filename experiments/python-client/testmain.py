@@ -43,12 +43,17 @@ async def inputhandler():
         indented_code = textwrap.indent(x + '\nreturn locals()', "    ")
         # Wrap in an async function
         wrapped = f"async def __user_func__():\n{indented_code}\n"
+        print(wrapped, file=sys.stderr)
         # Prepare a namespace for execution
-        exec(wrapped, global_vars, local_vars)
+        try:
+          exec(wrapped, global_vars, local_vars)
 
-        # Await the generated async function
-        new_locals = await local_vars["__user_func__"]()
-        global_vars = global_vars | new_locals
+          # Await the generated async function
+          new_locals = await local_vars["__user_func__"]()
+          global_vars = global_vars | new_locals
+        except:
+          import traceback
+          traceback.print_exc()
         print("---")
       else:
         await asyncio.sleep(1)
@@ -65,7 +70,7 @@ async def inputhandler():
     available_A = await my_domain_manager.list_filtered(MyDomain.A.A)
     print(available_A)
     if len(available_A["list"]) > 0:
-      print("yay")i
+      print("yay")
       my_a = await my_domain_manager.get( MyDomain.A.A, available_A["list"][0])
     else:
       my_a = await my_domain_manager.create(MyDomain.A.A(

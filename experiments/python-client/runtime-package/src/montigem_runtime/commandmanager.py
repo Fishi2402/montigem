@@ -36,7 +36,7 @@ class CommandManager:
     CommandManager.instance = self
 
   async def connect(self, host="ws://localhost:8081/umlp/api/command"):
-    print("called connect")
+    print("called connect" + host)
 
     async def receive_messages(websocket):
       print("receive_messages")
