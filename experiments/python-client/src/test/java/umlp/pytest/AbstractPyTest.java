@@ -39,7 +39,8 @@ public class AbstractPyTest extends AbstractE2ETest {
     int i = new ProcessBuilder("python", "-m", "venv", "venv").directory(workingDir).inheritIO()
         .start().waitFor();
     if (i != 0) {
-      throw new RuntimeException("Process execution failed");
+      org.junit.jupiter.api.Assumptions.abort(
+          "Failed to initialize python venv: Is python installed?");
     }
 
 
@@ -77,9 +78,9 @@ public class AbstractPyTest extends AbstractE2ETest {
         String line;
         while ((line = reader.readLine()) != null) {
           System.err.println("[PYERR] " + line);
-          if (line.contains("was never awaited"))
+          if (line.contains("was never awaited")) {
             Assertions.fail("Await missing in last command. \n" + line);
-          else if (line.contains("Traceback (most recent call last")) {
+          } else if (line.contains("Traceback (most recent call last")) {
             var fail = new Thread(() -> {
               try {
                 Thread.sleep(2000); // wait 2 seconds, such that the log can be fully collected
@@ -92,7 +93,7 @@ public class AbstractPyTest extends AbstractE2ETest {
             fail.setUncaughtExceptionHandler((t, e) -> {
               Assertions.fail(e);
             });
-               fail .start();
+            fail.start();
           }
 
         }
