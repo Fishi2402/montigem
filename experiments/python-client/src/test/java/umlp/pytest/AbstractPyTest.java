@@ -31,9 +31,9 @@ public class AbstractPyTest extends AbstractE2ETest {
 
   @BeforeEach
   public void setup() throws Exception {
-    workingDir = new File("venv");
+    workingDir = new File(new File("build"), "venv");
     if (!workingDir.exists()) {
-      workingDir.mkdir();
+      workingDir.mkdirs();
     }
 
     int i = new ProcessBuilder("python", "-m", "venv", "venv").directory(workingDir).inheritIO()
