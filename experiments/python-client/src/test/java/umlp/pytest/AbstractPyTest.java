@@ -2,7 +2,9 @@ package umlp.pytest;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Timeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import umlp.test_rte.playwright.AbstractPlaywrightE2ETest;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+@Timeout(60) // in case we don't catch an error from python
 public class AbstractPyTest extends AbstractE2ETest {
 
   private static final Logger log = LoggerFactory.getLogger(AbstractPyTest.class);
@@ -36,23 +39,30 @@ public class AbstractPyTest extends AbstractE2ETest {
       workingDir.mkdirs();
     }
 
-    int i = new ProcessBuilder("python", "-m", "venv", "venv").directory(workingDir).inheritIO()
-        .start().waitFor();
-    if (i != 0) {
-      org.junit.jupiter.api.Assumptions.abort(
-          "Failed to initialize python venv: Is python installed?");
+    System.err.println("[Test-Init]: Initialize python venv");
+    int i;
+    try {
+      i = new ProcessBuilder("python", "-m", "venv", "venv").directory(workingDir).inheritIO()
+          .start().waitFor();
+      Assertions.assertEquals(0, i, "Failed to initialize python venv");
+    } catch (IOException e) {
+      e.printStackTrace();
+      Assumptions.abort("Failed to run python command: Is python installed?");
     }
 
-
+    System.err.println("[Test-Init]: Installing pip dependencies");
     i = processBuilder(processName("pip"), "install", "pydantic==2.10.1", "websockets").start()
         .waitFor();
-    if (i != 0) {
-      throw new RuntimeException("Process execution failed");
-    }
+    Assertions.assertEquals(0, i, "Failed to install pip dependencies");
 
-    var pb = processBuilder(processName("python"), "-u", "testmain.py",
+    System.err.println("[Test-Init]: Launching main entry");
+    var pb = processBuilder(processName("python"), "-u", "../testmain.py",
                             "" + AbstractPlaywrightE2ETest.backendServerPort());
     pb.directory(workingDir.getAbsoluteFile().getParentFile());
+
+    // Add build output & runtime package to the path
+    pb.environment().put("PYTHONPATH", new File("build/py_out").getAbsolutePath()
+                        + File.pathSeparator + new File("runtime-package/src").getAbsolutePath());
 
     pb.redirectInput(ProcessBuilder.Redirect.PIPE);
     pb.redirectOutput(ProcessBuilder.Redirect.PIPE);
@@ -112,6 +122,7 @@ public class AbstractPyTest extends AbstractE2ETest {
         while ((line = reader.readLine()) != null) {
           System.out.println("[PYOUT] " + line);
           if ("---".equals(line)) {
+            Assertions.assertNotNull(waitFor[0]);
             waitFor[0].complete(String.join("\n", buffer));
             waitFor[0] = null;
             buffer.clear();
@@ -194,7 +205,7 @@ public class AbstractPyTest extends AbstractE2ETest {
     return pb;
   }
 
-  interface Handler {
+  protected interface Handler {
     CompletableFuture<String> sendCommand(String command) throws IOException;
   }
 
