@@ -223,9 +223,8 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
   }
 
   protected void markDeepEqualsBackendOnly(ASTCDType targetType, ASTCDMethodSignature m) {
-    glex.replaceTemplate("cd2java.Annotations", m, new StringHookPoint("@BackendOnly(BackendOnlyModes.THROW_ERROR)"));
-    getCD4C().addImport(targetType, "umlp.jsweet.extension.annotation.BackendOnly");
-    getCD4C().addImport(targetType, "umlp.jsweet.extension.annotation.BackendOnlyModes");
+    glex.replaceTemplate("cd2java.Annotations", m, new StringHookPoint("@Erased"));
+    getCD4C().addImport(targetType, "jsweet.lang.Erased");
   }
 
   protected String getDeepEqualsTemplate(){
