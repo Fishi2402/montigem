@@ -77,7 +77,7 @@ dependencies {
 
 test {
   useJUnitPlatform()
-  dependsOn(tasks.named("generateGem"))
+  dependsOn(tasks.named("transformGemToPy"))
 }
 
 
