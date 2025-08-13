@@ -8,5 +8,5 @@ ${tc.signature("commands")}
 </#list>
 else:
 [[[indent]]]
-print("FAiled", message)
+print("Unhandled command: ", message)
 [[[deindent]]]

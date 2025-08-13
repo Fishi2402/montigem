@@ -62,7 +62,7 @@ public class AbstractPyTest extends AbstractE2ETest {
 
     // Add build output & runtime package to the path
     pb.environment().put("PYTHONPATH", new File("build/py_out").getAbsolutePath()
-                        + File.pathSeparator + new File("runtime-package/src").getAbsolutePath());
+        + File.pathSeparator + new File("runtime-package/src").getAbsolutePath());
 
     pb.redirectInput(ProcessBuilder.Redirect.PIPE);
     pb.redirectOutput(ProcessBuilder.Redirect.PIPE);
@@ -178,8 +178,13 @@ public class AbstractPyTest extends AbstractE2ETest {
 
   @AfterEach
   public void destroy() throws IOException {
-    writer.close();
-    process.destroy();
+    // In case of a failed test setup, they may be null
+    if (writer != null) {
+      writer.close();
+    }
+    if (process != null) {
+      process.destroy();
+    }
   }
 
 

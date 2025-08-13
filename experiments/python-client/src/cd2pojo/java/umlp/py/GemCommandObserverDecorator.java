@@ -40,6 +40,7 @@ public class GemCommandObserverDecorator extends AbstractDecorator<AbstractDecor
   public void visit(ASTCDDefinition node) {
     this.domainName = node.getName();
   }
+
   @Override
   public void visit(ASTCDClass node) {
     // TODO: check if should decorate
@@ -47,10 +48,10 @@ public class GemCommandObserverDecorator extends AbstractDecorator<AbstractDecor
 
 
     var commandObserverClass = CDTypeFacade.getInstance().createCDClass(node.getName() + SUFFIX,
-                                                                        domainName+"." + node.getName() + GemObserverDecorator.SUFFIX
+                                                                        domainName + "." + node.getName() + GemObserverDecorator.SUFFIX
                                                                             + "." + node.getName() + GemObserverDecorator.SUFFIX);
     CD4C.getInstance().addImport(commandObserverClass,
-                                 domainName+"." + node.getName() + GemObserverDecorator.SUFFIX);
+                                 domainName + "." + node.getName() + GemObserverDecorator.SUFFIX);
 
     observerClassStack.add(commandObserverClass);
     classNameStack.add(node.getName());
@@ -82,10 +83,12 @@ public class GemCommandObserverDecorator extends AbstractDecorator<AbstractDecor
 
     var observerDecClass = observerClassStack.peek();
 
+    String methodName;
     switch (info.getMultiplicity()) {
       case MANDATORY:
+      case OPTIONAL:
         // todo: use method signature from GemObserverDecorator
-        String methodName = "Set" + node.getName();
+        methodName = "Set" + node.getName();
 
         var notify = CDMethodFacade.getInstance()
             .createMethod(CDBasisMill.modifierBuilder().PUBLIC()
@@ -93,7 +96,8 @@ public class GemCommandObserverDecorator extends AbstractDecorator<AbstractDecor
                           CDParameterFacade.getInstance().createParameter("typing.Any",
                                                                           StringTransformations.uncapitalize(
                                                                               classNameStack.peek())),
-                          CDParameterFacade.getInstance().createParameter("typing.Any", "_old_value"),
+                          CDParameterFacade.getInstance()
+                              .createParameter("typing.Any", "_old_value"),
                           CDParameterFacade.getInstance()
                               .createParameter("typing.Any", node.getName())
                          );
@@ -101,8 +105,8 @@ public class GemCommandObserverDecorator extends AbstractDecorator<AbstractDecor
         glexOpt.ifPresent(glex -> glex.replaceTemplate(Pyutils.EMPTY_TEMPLATE,
                                                        notify,
                                                        new TemplateHookPoint(
-                                                           info.getTypeClass() == UmlpAttrHelper.RealType.GEM? "cd2python.gemcommandobserver.SetGem" :
-                                                           "cd2python.gemcommandobserver.SetBuiltIn",
+                                                           info.getTypeClass() == UmlpAttrHelper.RealType.GEM ? "cd2python.gemcommandobserver.SetGem" :
+                                                               "cd2python.gemcommandobserver.SetBuiltIn",
                                                            domainName.toLowerCase(),
                                                            StringTransformations.uncapitalize(
                                                                classNameStack.peek()),
@@ -110,6 +114,31 @@ public class GemCommandObserverDecorator extends AbstractDecorator<AbstractDecor
         addToClass(observerDecClass, notify);
         break;
       case SET:
+        // todo: use method signature from GemObserverDecorator
+        methodName = "Add" + node.getName();
+
+        var notifyAdd = CDMethodFacade.getInstance()
+            .createMethod(CDBasisMill.modifierBuilder().PUBLIC()
+                              .build(), "notify" + methodName,
+                          CDParameterFacade.getInstance().createParameter("typing.Any",
+                                                                          StringTransformations.uncapitalize(
+                                                                              classNameStack.peek())),
+                          CDParameterFacade.getInstance()
+                              .createParameter("typing.Any", node.getName()),
+                          CDParameterFacade.getInstance()
+                              .createParameter("typing.Any", "index_in_list")
+                         );
+        Pyutils.markAsAsync(notifyAdd);
+        glexOpt.ifPresent(glex -> glex.replaceTemplate(Pyutils.EMPTY_TEMPLATE,
+                                                       notifyAdd,
+                                                       new TemplateHookPoint(
+                                                           info.getTypeClass() == UmlpAttrHelper.RealType.GEM ? "cd2python.gemcommandobserver.AddGem" :
+                                                               "cd2python.gemcommandobserver.AddBuiltIn",
+                                                           domainName.toLowerCase(),
+                                                           StringTransformations.uncapitalize(
+                                                               classNameStack.peek()),
+                                                           node.getName())));
+        addToClass(observerDecClass, notifyAdd);
         break;
       default:
         Log.warn("Unknown multiplicity: " + info.getMultiplicity(), node.get_SourcePositionStart());

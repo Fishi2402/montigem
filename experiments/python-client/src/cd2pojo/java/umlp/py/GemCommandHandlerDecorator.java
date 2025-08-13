@@ -87,30 +87,50 @@ public class GemCommandHandlerDecorator extends AbstractDecorator<AbstractDecora
 
     switch (info.getMultiplicity()) {
       case MANDATORY:
-//        switch (info.getTypeClass()) {
-//          case GEM:
-//            addCommand("mydomain.commands." + clazzName + "_set" + StringTransformations.capitalize(node.getName()),
-//                       "cd2python.commandconsumer.handleAdd", node.getName());
-//            break;
-//          case BUILD_IN:
-        addCommand(domainName.toLowerCase()+".commands." + clazzName + "_set" + StringTransformations.capitalize(
-                       node.getName()),
-                   "cd2python.commandconsumer.handleSet", node.getName());
-//            break;
-//        }
+        switch (info.getTypeClass()) {
+          case GEM:
+            addCommand(
+                domainName.toLowerCase() + ".commands." + clazzName + "_set" + StringTransformations.capitalize(
+                    node.getName()),
+                "cd2python.commandconsumer.handleSetGem", node.getName());
+            break;
+          case BUILD_IN:
+            addCommand(
+                domainName.toLowerCase() + ".commands." + clazzName + "_set" + StringTransformations.capitalize(
+                    node.getName()),
+                "cd2python.commandconsumer.handleSet", node.getName());
+            break;
+        }
         break;
       case SET:
 //        switch (info.getTypeClass()) {
 //          case GEM:
-        addCommand(domainName.toLowerCase()+".commands." + clazzName + "_add" + StringTransformations.capitalize(
-                       node.getName()),
-                   "cd2python.commandconsumer.handleAdd", node.getName());
+        addCommand(
+            domainName.toLowerCase() + ".commands." + clazzName + "_add" + StringTransformations.capitalize(
+                node.getName()),
+            "cd2python.commandconsumer.handleAdd", node.getName());
         break;
 //          case BUILD_IN:
 //            addCommand("mydomain.commands." + clazzName + "_set" + StringTransformations.capitalize(node.getName()),
 //                       "cd2python.commandconsumer.handleSet", node.getName());
 //            break;
 //        }
+      case OPTIONAL:
+        switch (info.getTypeClass()) {
+          case GEM:
+            addCommand(
+                domainName.toLowerCase() + ".commands." + clazzName + "_set" + StringTransformations.capitalize(
+                    node.getName()),
+                "cd2python.commandconsumer.handleSetGem", node.getName());
+            break;
+          case BUILD_IN:
+            addCommand(
+                domainName.toLowerCase() + ".commands." + clazzName + "_set" + StringTransformations.capitalize(
+                    node.getName()),
+                "cd2python.commandconsumer.handleSet", node.getName());
+            break;
+        }
+        break;
       default:
         Log.warn("Unknown multiplicity: " + info.getMultiplicity(), node.get_SourcePositionStart());
     }

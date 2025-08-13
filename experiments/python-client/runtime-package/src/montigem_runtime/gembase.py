@@ -77,6 +77,8 @@ class GemList(BaseModel, typing.Generic[DataT]):
   def get_gem_id(self, index_in_list: int):
     return self.indexes[index_in_list]
 
+  def __len__(self):
+    return len(self.indexes)
 
 class GlobalGemList(GemList):
   _cache: typing.MutableMapping[int, DataT] = {}

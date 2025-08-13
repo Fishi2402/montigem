@@ -107,6 +107,7 @@ public class GemObserverDecorator extends AbstractDecorator<AbstractDecorator.No
 
     switch (info.getMultiplicity()) {
       case MANDATORY:
+        case OPTIONAL:
         handleMandatory(node, observerDecClass, info);
 
         break;
@@ -123,7 +124,7 @@ public class GemObserverDecorator extends AbstractDecorator<AbstractDecorator.No
                            UmlpAttrHelper.AttrData info) {
     String methodName = "Add" + node.getName();
     var add_set = CDMethodFacade.getInstance()
-        .createMethod(CDBasisMill.modifierBuilder().PUBLIC().build(), "notifyAdd" + methodName,
+        .createMethod(CDBasisMill.modifierBuilder().PUBLIC().build(), "notify" + methodName,
                       CDParameterFacade.getInstance().createParameter("typing.Any",
                                                                       StringTransformations.uncapitalize(
                                                                           classNameStack.peek())),

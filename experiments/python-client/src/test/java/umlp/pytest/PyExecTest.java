@@ -1,6 +1,9 @@
 package umlp.pytest;
 
 import mydomain.MyDomainManager;
+import mydomain.TestAssoc_1_A;
+import mydomain.TestAssoc_1_B;
+import mydomain.TestAssoc_1_BBuilder;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -8,6 +11,7 @@ import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class PyExecTest extends AbstractPyTest {
 
@@ -94,8 +98,52 @@ public class PyExecTest extends AbstractPyTest {
     Thread.sleep(500);
 
     // TODO
-//    assertEquals(Long.toString(secondB.get().getGemId()), handler.sendCommand("print(my_a.directB.gemId)").get());
+    assertEquals(Long.toString(secondB.get().getGemId()), handler.sendCommand("print(my_a.directB.gemId)").get());
   }
 
+  @Test
+  public void testDirAssoc() throws Exception {
+    TestAssoc_1_BBuilder b1, b2;
+    TestAssoc_1_A a1 = MyDomainManager.testAssoc_1_ABuilder()
+        .testAssoc_1_B((b1 = MyDomainManager.testAssoc_1_BBuilder()))
+        .singleB((b2 = MyDomainManager.testAssoc_1_BBuilder()))
+        .build().get();
+    b1.build().get();
+    b2.build().get();
 
+    assertEquals(Long.toString(a1.getGemId()), getAndStore("a1", "TestAssoc_1_A", a1.getGemId()));
+    assertEquals(Long.toString(b1.getGemId()), getAndStore("b1", "TestAssoc_1_B", b1.getGemId()));
+    assertEquals(Long.toString(b2.getGemId()), getAndStore("b2", "TestAssoc_1_B", b2.getGemId()));
+
+//     test optional gem
+    assertEquals("-1", handler.sendCommand("print(a1.optB.gemId)").get());
+    a1.setOptB(b2);
+    Thread.sleep(500);
+    assertEquals(Long.toString(b2.getGemId()), handler.sendCommand("print(a1.optB.gemId)").get());
+    // TODO: is present?
+    a1.setOptBAbsent();
+    Thread.sleep(500);
+    assertEquals("-1", handler.sendCommand("print(a1.optB.gemId)").get());
+    //
+    assertEquals("", handler.sendCommand("await a1.setOptB( " + b2.getGemId() + ")").get());
+    assertEquals(b2.getGemId(), a1.getOptBGem().getGemId());
+    assertEquals("", handler.sendCommand("await a1.setOptB(-1)").get());
+    assertFalse(a1.isPresentOptB());
+
+
+    assertEquals("0", handler.sendCommand("print(len(a1.listB))").get());
+    a1.addListB(b1);
+    Thread.sleep(500);
+    assertEquals("1", handler.sendCommand("print(len(a1.listB))").get());
+
+    assertEquals("", handler.sendCommand("await a1.listB_add(1, " +b2.getGemId()+")").get());
+    assertEquals(2, a1.getListBList().size());
+
+  }
+
+  protected String getAndStore(String name, String type, long gemId)
+      throws IOException, ExecutionException, InterruptedException {
+    return handler.sendCommand(
+        String.format("%1$s = await my_domain_manager.get(MyDomain.%2$s.%2$s, %3$s)\nprint(%1$s.gemId)", name, type, gemId) ).get();
+  }
 }

@@ -58,6 +58,7 @@ public class GemSetterDecorator extends AbstractDecorator<GemSetterDecorator.Set
 
     switch (info.getMultiplicity()) {
       case MANDATORY:
+      case OPTIONAL:
         String paramType;
         if (info.getTypeClass() == UmlpAttrHelper.RealType.BUILD_IN) {
           paramType = "typing.Any";
@@ -82,7 +83,7 @@ public class GemSetterDecorator extends AbstractDecorator<GemSetterDecorator.Set
                                                                              attrName)));
 
         this.setterData.attributesData.computeIfAbsent(node, x -> new ArrayList<>()).add(
-            new MethodInformation(SetterMethodKind.SET_MANDATORY, setter, templateName, attrName));
+            new MethodInformation(SetterMethodKind.SET_MANDATORY_OR_OPT, setter, templateName, attrName));
         addToClass(parentDecClass, setter);
 
         break;
@@ -112,7 +113,6 @@ public class GemSetterDecorator extends AbstractDecorator<GemSetterDecorator.Set
                                   "cd2python.gem.ListSetterGem", attrName));
         addToClass(parentDecClass, addMethod);
       }
-      break;
       default:
         Log.warn("Unhandled multiplicity: " + info.getMultiplicity(),
                  node.get_SourcePositionStart());
@@ -180,6 +180,6 @@ public class GemSetterDecorator extends AbstractDecorator<GemSetterDecorator.Set
   }
 
   public enum SetterMethodKind {
-    SET_MANDATORY, ADD_LIST
+    SET_MANDATORY_OR_OPT, ADD_LIST
   }
 }

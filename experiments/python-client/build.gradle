@@ -6,13 +6,11 @@ plugins {
   id 'de.rwth.se.cdgen' version "$mc_version"
 
   id 'application'
-
+  id 'maven-publish'
 }
 
 sourceSets {
-  cd2pojo {
-//    java.srcDir('src/dec/java')
-  }
+  cd2pojo
 }
 
 application {
@@ -87,3 +85,15 @@ tasks.named("generateUmlpBackend") {
   useSpring.set(true)
 }
 
+tasks.register("cd2pojoJar", Jar) {
+  from sourceSets.cd2pojo.output
+  archiveClassifier = 'cd2pojo'
+}
+
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      artifact cd2pojoJar
+    }
+  }
+}
