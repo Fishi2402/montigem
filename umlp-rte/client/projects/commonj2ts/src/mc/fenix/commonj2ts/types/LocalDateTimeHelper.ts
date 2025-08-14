@@ -77,4 +77,28 @@ export class LocalDateTimeHelper {
   static minusSeconds(date: Date, n: number): Date {
     return this.plusSeconds(date, -n);
   }
+
+  static setHours(date: Date, n: number): Date {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate(), n, date.getMinutes(), date.getSeconds(), date.getMilliseconds());
+  }
+
+  static setMinutes(date: Date, n: number): Date {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), n, date.getSeconds(), date.getMilliseconds());
+  }
+
+  static setSeconds(date: Date, n: number): Date {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), n, date.getMilliseconds());
+  }
+
+  static setMilliseconds(date: Date, n: number): Date {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds(), n);
+  }
+
+  static atStartOfDay(date: Date): Date {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  }
+
+  static atEndOfDay(date: Date): Date {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999);
+  }
 }
