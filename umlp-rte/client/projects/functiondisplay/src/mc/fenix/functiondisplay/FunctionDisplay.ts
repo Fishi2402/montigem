@@ -292,9 +292,14 @@ export class FunctionDisplay extends FunctionDisplayComponent {
   }
 
   // Renders an ELK node as SVG
-  public renderNode(node)   {
+  public renderNode(node) {
     let svgNS = "http://www.w3.org/2000/svg";
     let g = document.createElementNS(svgNS, "g");
+
+    // Component box
+    if (!node.funktion4display.isVisible()) {
+      return g;
+    }
     g.setAttribute("transform", `translate(${node.x}, ${node.y})`);
     g.setAttribute("opacity", "1");
     let rect = document.createElementNS(svgNS, "rect");
@@ -304,13 +309,13 @@ export class FunctionDisplay extends FunctionDisplayComponent {
     rect.setAttribute("y", "0");
     rect.setAttribute("width", `${node.width}`);
     rect.setAttribute("height", `${node.height}`);
-    rect.setAttribute("fill", "white");
-    rect.setAttribute("stroke", "black");
+    rect.setAttribute("fill", `${node.funktion4display.getBackgroundColor()}`);
+    rect.setAttribute("stroke", `${node.funktion4display.getBorderColor()}`);
     rect.addEventListener('click', () => this.functionClicked(node.funktion4display));
     rect.addEventListener('mouseover', () => this.functionHovered(node.funktion4display));
     rect.addEventListener('mouseout', () => this.functionMouseouted(node.funktion4display));
     if(this.getSelectedFunctions().includes(node.funktion4display)){
-      this.markElement(rect, node.funktion4display.getBorderColor());
+      this.markElement(rect, node.funktion4display.getBorderColorHover());
     }
     rect.addEventListener('mouseover', () => {
       this.markElement(rect, 'rgb(0,119,190)');
@@ -322,6 +327,8 @@ export class FunctionDisplay extends FunctionDisplayComponent {
     })
     this.functionSvgMap.set(node.funktion4display, rect);
     g.appendChild(rect);
+
+    // Component label
     for (let label of node.labels ?? []) {
       let text = document.createElementNS(svgNS, "text");
       text.setAttribute("x", `${label.x}`);
@@ -330,7 +337,12 @@ export class FunctionDisplay extends FunctionDisplayComponent {
       text.textContent = label.text;
       g.appendChild(text);
     }
+
+    // Ports
     for (let port of node.ports ?? []) {
+      if (!port.port4display.isVisible()) {
+        continue;
+      }
       let portG = document.createElementNS(svgNS, "g");
       portG.setAttribute("transform", `translate(${port.x}, ${port.y})`);
       let portRect = document.createElementNS(svgNS, "rect");
@@ -340,13 +352,13 @@ export class FunctionDisplay extends FunctionDisplayComponent {
       portRect.setAttribute("y", "0");
       portRect.setAttribute("width", `${port.width}`);
       portRect.setAttribute("height", `${port.height}`);
-      portRect.setAttribute("fill", "white");
-      portRect.setAttribute("stroke", "black");
+      portRect.setAttribute("fill", `${port.port4display.getBackgroundColor()}`);
+      portRect.setAttribute("stroke", `${port.port4display.getBorderColor()}`);
       portRect.addEventListener('click', () => this.portClicked(port.port4display));
       portRect.addEventListener('mouseover', () => this.portHovered(port.port4display));
       portRect.addEventListener('mouseout', () => this.portMouseouted(port.port4display));
       if(this.getSelectedPorts().includes(port.port4display)){
-        this.markElement(portRect, port.port4display.getBorderColor());
+        this.markElement(portRect, port.port4display.getBorderColorHover());
       }
       portRect.addEventListener('mouseover', () => {
         this.markElement(portRect, 'rgb(0,119,190)');
@@ -369,7 +381,12 @@ export class FunctionDisplay extends FunctionDisplayComponent {
       path.setAttribute("d", "M 0 -5 L 5 0 L 0 5 M 5 0 L -5 0");  //arrow
       path.setAttribute("transform", "translate(10, 10)");
       portG.appendChild(path);
+
+      // Port label
       for (let label of port.labels ?? []) {
+        if (!port.port4display.isLabelVisible()) {
+          continue;
+        }
         let text = document.createElementNS(svgNS, "text");
         text.setAttribute("x", `${label.x}`);
         text.setAttribute("y", `${label.hasChildren ? label.y : 14}`);
@@ -380,19 +397,24 @@ export class FunctionDisplay extends FunctionDisplayComponent {
       }
       g.appendChild(portG);
     }
+
+    // Channels
     for (let edge of node.edges ?? []) {
+      if (!edge.channel4Display.isVisible()) {
+        continue;
+      }
       for (let section of edge.sections) {
         let polyline = document.createElementNS(svgNS, "polyline");
         polyline.setAttribute("id", edge.id);
         polyline.setAttribute("points", `${section.startPoint.x},${section.startPoint.y} ${(section.bendPoints ?? []).map(p => `${p.x},${p.y}`).join(" ")} ${section.endPoint.x},${section.endPoint.y}`);
-        polyline.setAttribute("stroke", "black");
+        polyline.setAttribute("stroke", `${edge.channel4Display.getLineColor()}`);
         polyline.setAttribute("stroke-width", "1");
         polyline.setAttribute("fill", "none");
         polyline.addEventListener('click', () => this.channelClicked(edge.channel4Display))
         polyline.addEventListener('mouseover', () => this.channelHovered(edge.channel4Display))
         polyline.addEventListener('mouseout', () => this.channelMouseouted(edge.channel4Display))
         if(this.getSelectedChannels().includes(edge.channel4Display)){
-          this.markElement(polyline, edge.channel4Display.getLineColor());
+          this.markElement(polyline, edge.channel4Display.getLineColorHover());
         }
         g.appendChild(polyline);
         let hiddenPolyline = document.createElementNS(svgNS, "polyline");
@@ -421,6 +443,8 @@ export class FunctionDisplay extends FunctionDisplayComponent {
         g.appendChild(path);
       }
     }
+
+    // Sub-components (recursive call)
     for (let child of node.children ?? []) {
       g.appendChild(this.renderNode(child));
     }
