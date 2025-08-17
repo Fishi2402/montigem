@@ -27,8 +27,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class UMLPWithGUILanguageAggrMultiProjectServer extends UMLPWithGUILanguageAggrMultiProjectServerTOP {
-  protected AtomicBoolean showMsgWhenModelPathIsUpdated = new AtomicBoolean(false);
-
   public UMLPWithGUILanguageAggrMultiProjectServer(MCPath modelPath) {
     super(modelPath);
     getWorkspaceService().registerCommand("umlpwithgui.multiproject.getProjectLayout", executeCommandParams -> multiProjectLayout);
@@ -61,42 +59,6 @@ public class UMLPWithGUILanguageAggrMultiProjectServer extends UMLPWithGUILangua
         ),
         new MultiProjectLSPConfigModelPathCache(ModelPathCache.getDefaultCacheDir(rootDir))
     );
-    resolver.addOnCacheNotFound(() -> {
-      if(languageClient != null){
-        showMsgWhenModelPathIsUpdated.set(true);
-        languageClient.showMessage(new MessageParams(
-            MessageType.Info,
-            "Loading project layout via Gradle, this might take a while.\n" +
-                "Future startups for the same project should be much faster")
-        );
-      }
-    });
-    resolver.addOnError(t -> {
-      if(languageClient != null){
-        languageClient.showMessage(new MessageParams(
-            MessageType.Error,
-            "Failed to load the project structure via Gradle. Check your tmp dir for logs. Msg was: "
-                + t.getMessage()
-        ));
-      }
-    });
-    resolver.addPathUpdatedListener(this::updateBasedOnConfig);
-    resolver.loadCachedModelPath();
-    AsyncUtil.runAsync(() -> resolver.refreshModelPaths());
-  }
-
-  @Override
-  protected void updateBasedOnConfig(MultiProjectLayout projects) {
-    super.updateBasedOnConfig(projects);
-    if(showMsgWhenModelPathIsUpdated.get()){
-      showMsgWhenModelPathIsUpdated.set(false);
-      if(languageClient != null){
-        languageClient.showMessage(new MessageParams(
-            MessageType.Info,
-            "Project layout loaded via Gradle"
-        ));
-      }
-    }
   }
 
   @Override
