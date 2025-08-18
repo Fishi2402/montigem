@@ -23,6 +23,7 @@ import umlp.generator.domain.decorator.SD2TestDecorator;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
+import java.util.Arrays;
 
 public class SD2TestTool extends SD4DevelopmentTool {
 
@@ -30,6 +31,7 @@ public class SD2TestTool extends SD4DevelopmentTool {
 
   public static void main(String[] args) {
     Log.info("running tool relative to " + new File(".").getAbsolutePath(), LOG_NAME);
+    Log.info("args: " + Arrays.toString(args), LOG_NAME);
 
     var tool = new SD2TestTool();
 

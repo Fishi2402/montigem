@@ -26,4 +26,10 @@ dependencies {
 
 }
 
+tasks.register('sd2test', JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  mainClass = 'umlp.SD2TestTool'
+  workingDir = '../..'
+}
+
 group = "umlp"
