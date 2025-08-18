@@ -72,7 +72,10 @@ public class TotalTest extends WebshopSQLDBTestSetup {
     processor.load(
         new ExpectedEvent(o, o, new MethodCallAction("addItem", Optional.of(new Object[]{item}), true), new OCLCondition(() -> o.getTotal() == 0, "o.getTotal() == 0")),
         new ExpectedEvent(o, o, new MethodCallAction("addItem", Optional.of(new Object[]{item, NotificationScope.ALL}), false)),
-        new ExpectedEvent(o, o, new ReturnAction(), new OCLVariableDeclaration(() -> total2 = o.getTotal()), new OCLCondition(() -> total2 == 6, "total2 == 6")),
+        new ExpectedEvent(o, o, new ReturnAction(), new OCLVariableDeclaration(() -> {
+          total2 = o.getTotal();
+          processor.objectMatchingStrategies().put(total2, MatchingStrategy.FREE);
+        }), new OCLCondition(() -> total2 == 6, "total2 == 6")),
         new ExpectedEvent(o, o, new ReturnAction()),
         new ExpectedEvent(o, o, new ActivityBarEndAction())
                   );
