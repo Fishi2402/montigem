@@ -157,13 +157,17 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
 
     project.afterEvaluate(p -> {
       for (Project subproject : extension.getLibs()) {
-        subproject.getPlugins().apply(NodePlugin.class);
+        subproject.getPluginManager().apply(NodePlugin.class);
         if (!inRTE(subproject)) {
           subproject.getPluginManager().apply(MGBasePlugin.class);
         }
         else {
           subproject.getPluginManager().apply(DependencyPlugin.class);
         }
+
+        // java plugin is applied in build.gradle, disable compileJava for subprojects
+        subproject.getTasks().matching(t -> t.getName().equals("compileJava"))
+            .configureEach(t -> t.setEnabled(false));
 
         Configuration guiTypes = addProjectDependencies(subproject);
         addClientRTEDependency(subproject);
