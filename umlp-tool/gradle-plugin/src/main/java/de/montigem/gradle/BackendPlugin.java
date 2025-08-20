@@ -5,7 +5,9 @@ import de.monticore.gradle.common.CommonMCTask;
 import de.montigem.gradle.specific.UMLP2JavaTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.Directory;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
@@ -75,9 +77,9 @@ public abstract class BackendPlugin implements Plugin<Project> {
   }
 
   protected static TaskProvider<UMLP2JavaTask> createUMLP2JavaTask(Project project) {
-    Provider<Directory> hwc = project.provider(() -> {
+    var hwc = project.provider(() -> {
       File f = project.file("src/main/java");
-      return f.exists() ? project.getLayout().getProjectDirectory().dir("src/main/java") : null;
+      return f.exists() ? project.getLayout().getProjectDirectory().dir("src/main/java") : project.files();
     });
 
     Provider<Directory> tpl = project.provider(() -> {
