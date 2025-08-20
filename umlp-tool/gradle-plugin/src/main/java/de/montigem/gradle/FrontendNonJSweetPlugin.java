@@ -45,9 +45,9 @@ public abstract class FrontendNonJSweetPlugin implements Plugin<Project> {
     TaskProvider<CreateSymlinkTask> createSymlinkTask =
         project.getTasks().named(CREATE_SYMLINK_TASK, CreateSymlinkTask.class);
 
-    Provider<Directory> hwc = project.provider(() -> {
+    var hwc = project.provider(() -> {
       File f = project.file("src/app");
-      return f.exists() ? project.getLayout().getProjectDirectory().dir("src/app") : null;
+      return f.exists() ? project.getLayout().getProjectDirectory().dir("src/app") : project.files();
     });
     gui2java.configure(task -> {
       task.getHwcDir().from(hwc);
@@ -96,9 +96,9 @@ public abstract class FrontendNonJSweetPlugin implements Plugin<Project> {
   }
 
   protected TaskProvider<UMLP2TSTask> createUMLP2TSTask(final Project project) {
-    Provider<Directory> hwc = project.provider(() -> {
+    var hwc = project.provider(() -> {
       File f = project.file("src/app");
-      return f.exists() ? project.getLayout().getProjectDirectory().dir("src/app") : null;
+      return f.exists() ? project.getLayout().getProjectDirectory().dir("src/app") : project.files();
     });
 
     return project.getTasks().register(UMLP2TS_TASK, UMLP2TSTask.class, task -> {
