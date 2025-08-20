@@ -9,11 +9,16 @@ import java.time.LocalDate;
 classdiagram FunctionStructure4Fenix {
     class Function4Display {
       String name;
-      String borderColor;
+      String borderColor = "black";
+      String borderColorHover;
+      String backgroundColor = "white";
+      boolean visible = true;
     }
 
     class Channel4Display{
-      String lineColor;
+      String lineColor = "black";
+      String lineColorHover;
+      boolean visible = true;
     }
 
     /**
@@ -29,7 +34,11 @@ classdiagram FunctionStructure4Fenix {
     */
     class Port4Display {
       String name;
-      String borderColor;
+      String borderColor = "black";
+      String borderColorHover;
+      String backgroundColor = "white";
+      boolean visible = true;
+      boolean labelVisible = true;
     }
 
     association [0..1] Function4Display (onwerIn) -> (in) Port4Display [*];

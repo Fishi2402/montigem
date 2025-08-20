@@ -11,6 +11,7 @@ page ConnectionsTree(JoinConnectionKind connKind) {
 
   @GemTreeNode(
     content = @GemText(value = getConnectionKindName(connKind)),
+    onClick = navigateToConnectionKind(connKind),
     children = [
       @iterate(JoinConnection conn : connKind.joinConnection) {
         @GemTreeNode(

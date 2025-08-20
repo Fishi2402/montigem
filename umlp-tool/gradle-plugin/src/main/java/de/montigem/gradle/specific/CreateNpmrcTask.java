@@ -78,7 +78,7 @@ abstract public class CreateNpmrcTask extends DefaultTask {
           "@umlp:_auth=\"" + encodedAuthData + "\"";
       if (unscoped) {
         data = "registry=https://nexus.se.rwth-aachen.de/repository/montigem-frontendrte-snapshots/\n" +
-            "_auth=\"" + encodedAuthData + "\"";
+            "//nexus.se.rwth-aachen.de/repository/montigem-frontendrte-snapshots/:_auth=\"" + encodedAuthData + "\"";
       }
       return data;
     } else {

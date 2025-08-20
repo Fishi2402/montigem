@@ -15,8 +15,6 @@ import java.util.function.Consumer;
 
 @Component
 public class ProcessStepEdit extends ProcessStepEditTOP {
-  public List<Option> selectTypeOptions = new ArrayList<>();
-
   public String joinConnectionEntry = "";
   public List<Option> joinConnectionOptions = new ArrayList<>();
   public boolean addJoinConnectionClicked = false;
@@ -24,13 +22,6 @@ public class ProcessStepEdit extends ProcessStepEditTOP {
   @Override
   public void init(){
     super.init();
-
-    // Initialize selectTypeOptions
-    for(ProcessStepType type : ProcessStepType.values()) {
-      String strType = type.toString();
-      this.selectTypeOptions.add(new Option(strType, strType));
-    }
-
     // Initialize connection kind options
     for (JoinConnectionKind kind : this.getP().getDeconstructionOf().getAllConnectionsList()) {
       this.joinConnectionOptions.add(new Option(kind.getGemId()+"", kind.getName()));
@@ -40,27 +31,24 @@ public class ProcessStepEdit extends ProcessStepEditTOP {
   // Select Types
   @Override
   public List<Option> getSelectTypeOptions() {
-    return this.selectTypeOptions;
-  }
-
-  @Override
-  public String getSelectTypeEntry() {
-    return this.getStep().getType().toString();
+    List<Option> selectTypeOptions = new ArrayList<>();
+    for(ProcessStepType type : ProcessStepType.values()) {
+      String strType = type.toString();
+      selectTypeOptions.add(new Option(strType, strType));
+    }
+    return selectTypeOptions;
   }
 
   @Override
   public void setSelectTypeEntry(String value) {
 
-    int val = Integer.valueOf(value);
-    if(val == ProcessStepType.DECONSTRUCTION.ordinal()) {
+    if(value.equals(ProcessStepType.DECONSTRUCTION.toString())) {
       this.getStep().setType(ProcessStepType.DECONSTRUCTION);
     } else {
       this.getStep().setType(ProcessStepType.OTHER);
       this.getStep().setDeconstructsAbsent();
     }
   }
-
-  // Edit JoinConnections
 
   @Override
   public Consumer<Void> editJoinConnection() {

@@ -89,14 +89,14 @@ export class FunctionDisplay extends FunctionDisplayComponent {
   @Input()
   public set selectedFunctions(f: Function4Display[]){
     this.setSelectedFunctions(f);
-    if(f == null){
+    if (f == null){
       return;
     }
     this.functionSvgMap.forEach((value, key) => {
-      if(f.includes(key)){
-        this.markElement(value, key.getBorderColor());
-      }else {
-        this.unmarkElement(value);
+      if (f.includes(key)){
+        this.markElement(value, key.getBorderColorHover());
+      } else {
+        this.unmarkElement(value, key.getBorderColor());
       }
     })
   }
@@ -104,15 +104,15 @@ export class FunctionDisplay extends FunctionDisplayComponent {
   @Input()
   public set selectedChannels(c: Channel4Display[]){
     this.setSelectedChannels(c);
-    if(c == null){
+    if (c == null){
       return;
     }
     this.channelSvgMap.forEach((values, key) => {
       values.forEach(value => {
-        if(c.includes(key)){
-          this.markElement(value, key.getLineColor());
-        }else {
-          this.unmarkElement(value);
+        if (c.includes(key)){
+          this.markElement(value, key.getLineColorHover());
+        } else {
+          this.unmarkElement(value, key.getLineColor());
         }
       })
     })
@@ -121,14 +121,14 @@ export class FunctionDisplay extends FunctionDisplayComponent {
   @Input()
   public set selectedPorts(p: Port4Display[]){
     this.setSelectedPorts(p);
-    if(p == null){
+    if (p == null){
       return;
     }
     this.portSvgMap.forEach((value, key) => {
-      if(p.includes(key)){
-        this.markElement(value, key.getBorderColor());
-      }else {
-        this.unmarkElement(value);
+      if (p.includes(key)){
+        this.markElement(value, key.getBorderColorHover());
+      } else {
+        this.unmarkElement(value, key.getBorderColor());
       }
     })
   }
@@ -158,7 +158,7 @@ export class FunctionDisplay extends FunctionDisplayComponent {
 
     let ret : Funktion4Elk = {name: funk.getName(), parts: null, connections: null, ports:null, self:funk};
     let ports: Port4Elk[] = this.getTransformedPorts(funk, ret);
-    if(depth < 0){
+    if (depth < 0){
       return {name: funk.getName(), parts: [], connections: [], ports:ports, self:funk};
     }
     let subports : Port4Elk[] = [];
@@ -167,7 +167,7 @@ export class FunctionDisplay extends FunctionDisplayComponent {
     //get all the subfunctions and their ports
     //calls itself recursively
     //Has to be done before creating the connections because connections require the portMap to be filled
-    if(funk.getSubFunctionList() != null) {
+    if (funk.getSubFunctionList() != null) {
       for (let sf of funk.getSubFunctionList()) {
         let sfelk = this.funk2elkfunk(sf, depth - 1);
         subfunkElks.push(sfelk);
@@ -184,7 +184,7 @@ export class FunctionDisplay extends FunctionDisplayComponent {
           this.connectionMap.set(this.portsToString(port, this.portElkMap.get(innerPort)), port.self.getChannel4Display());
         }
         //create connections from subfunctions to port
-        if(this.portElkMap.has(innerPort) && !this.portElkMap.get(innerPort).isIn && subports.includes(this.portElkMap.get(innerPort))
+        if (this.portElkMap.has(innerPort) && !this.portElkMap.get(innerPort).isIn && subports.includes(this.portElkMap.get(innerPort))
           && (this.portElkMap.get(innerPort) != port)){
           connections.push([this.portElkMap.get(innerPort),port])
           this.connectionMap.set(this.portsToString(this.portElkMap.get(innerPort), port), port.self.getChannel4Display());
@@ -192,7 +192,7 @@ export class FunctionDisplay extends FunctionDisplayComponent {
       }
       //create direct connections between ports without a subfunction
       for(let toPort of ports){
-        if(toPort != port && port.isIn && !toPort.isIn && toPort.self.getChannel4Display().getPort4DisplayList().includes(port.self)){
+        if (toPort != port && port.isIn && !toPort.isIn && toPort.self.getChannel4Display().getPort4DisplayList().includes(port.self)){
           connections.push([port,toPort]);
           this.connectionMap.set(this.portsToString(port, toPort), port.self.getChannel4Display());
         }
@@ -202,9 +202,9 @@ export class FunctionDisplay extends FunctionDisplayComponent {
 
     //create connections between subfunctions
     for(let port of subports){
-      if(!port.isIn){
+      if (!port.isIn){
         for (let toPort of port.self.getChannel4Display().getPort4DisplayList()){
-          if(!this.portElkMap.has(toPort)){
+          if (!this.portElkMap.has(toPort)){
             break;
           }
           let toPortElk = this.portElkMap.get(toPort);
@@ -221,7 +221,7 @@ export class FunctionDisplay extends FunctionDisplayComponent {
     //Check for ambiguous connections. If a port has multiple incoming connections the layout is ambiguous, assuming the model is correct
     //If this is the case, we remove the duplicates and log a warning
     let toPortsSet = new Set(connections.map(c => c[1]));
-    if(toPortsSet.size != connections.length){
+    if (toPortsSet.size != connections.length){
       console.error('Ambiguous connections detected. The connections shown may differ from the modeled connections, but are semantically equivalent.');
       let unique: Port4Elk[] = [];
       let uniqueConnections: [Port4Elk,Port4Elk][] = [];
@@ -244,16 +244,16 @@ export class FunctionDisplay extends FunctionDisplayComponent {
   //Also creates a mapping from Port4Display to Port4Elk by adding the Port4Elk to the portElkMap
   private getTransformedPorts(funk : Function4Display, elkfunk: Funktion4Elk) : Port4Elk[] {
     let ports : Port4Elk[] = [];
-    if(funk.getInList() != null){
+    if (funk.getInList() != null){
       ports.push(...funk.getInList().map(p => {
-        let ret = {id:funk.getName()+'.'+p.getName(), isIn: true, funktion:elkfunk, self:p}
+        let ret = {id:funk.getName() + '.' + p.getName(), isIn: true, funktion:elkfunk, self:p}
         this.portElkMap.set(p, ret);
         return ret;
       }));
     }
-    if(funk.getOutList() != null) {
+    if (funk.getOutList() != null) {
       ports.push(...funk.getOutList().map(p => {
-        let ret = {id: funk.getName()+'.'+p.getName(), isIn: false, funktion: elkfunk, self: p}
+        let ret = {id: funk.getName() + '.' + p.getName(), isIn: false, funktion: elkfunk, self: p}
         this.portElkMap.set(p, ret);
         return ret;
       }));
@@ -292,9 +292,14 @@ export class FunctionDisplay extends FunctionDisplayComponent {
   }
 
   // Renders an ELK node as SVG
-  public renderNode(node)   {
+  public renderNode(node) {
     let svgNS = "http://www.w3.org/2000/svg";
     let g = document.createElementNS(svgNS, "g");
+
+    // Component box
+    if (!node.funktion4display.isVisible()) {
+      return g;
+    }
     g.setAttribute("transform", `translate(${node.x}, ${node.y})`);
     g.setAttribute("opacity", "1");
     let rect = document.createElementNS(svgNS, "rect");
@@ -304,24 +309,26 @@ export class FunctionDisplay extends FunctionDisplayComponent {
     rect.setAttribute("y", "0");
     rect.setAttribute("width", `${node.width}`);
     rect.setAttribute("height", `${node.height}`);
-    rect.setAttribute("fill", "white");
-    rect.setAttribute("stroke", "black");
+    rect.setAttribute("fill", `${node.funktion4display.getBackgroundColor()}`);
+    rect.setAttribute("stroke", `${node.funktion4display.getBorderColor()}`);
     rect.addEventListener('click', () => this.functionClicked(node.funktion4display));
     rect.addEventListener('mouseover', () => this.functionHovered(node.funktion4display));
     rect.addEventListener('mouseout', () => this.functionMouseouted(node.funktion4display));
-    if(this.getSelectedFunctions().includes(node.funktion4display)){
-      this.markElement(rect, node.funktion4display.getBorderColor());
+    if (this.getSelectedFunctions().includes(node.funktion4display)){
+      this.markElement(rect, node.funktion4display.getBorderColorHover());
     }
     rect.addEventListener('mouseover', () => {
-      this.markElement(rect, 'rgb(0,119,190)');
+      this.markElement(rect, node.funktion4display.getBorderColorHover());
     })
     rect.addEventListener('mouseout', () => {
-      if(!this.getSelectedFunctions().includes(node.funktion4display)){
-        this.unmarkElement(rect);
+      if (!this.getSelectedFunctions().includes(node.funktion4display)){
+        this.unmarkElement(rect, node.funktion4display.getBorderColor());
       }
     })
     this.functionSvgMap.set(node.funktion4display, rect);
     g.appendChild(rect);
+
+    // Component label
     for (let label of node.labels ?? []) {
       let text = document.createElementNS(svgNS, "text");
       text.setAttribute("x", `${label.x}`);
@@ -330,7 +337,12 @@ export class FunctionDisplay extends FunctionDisplayComponent {
       text.textContent = label.text;
       g.appendChild(text);
     }
+
+    // Ports
     for (let port of node.ports ?? []) {
+      if (!port.port4display.isVisible()) {
+        continue;
+      }
       let portG = document.createElementNS(svgNS, "g");
       portG.setAttribute("transform", `translate(${port.x}, ${port.y})`);
       let portRect = document.createElementNS(svgNS, "rect");
@@ -340,20 +352,20 @@ export class FunctionDisplay extends FunctionDisplayComponent {
       portRect.setAttribute("y", "0");
       portRect.setAttribute("width", `${port.width}`);
       portRect.setAttribute("height", `${port.height}`);
-      portRect.setAttribute("fill", "white");
-      portRect.setAttribute("stroke", "black");
+      portRect.setAttribute("fill", `${port.port4display.getBackgroundColor()}`);
+      portRect.setAttribute("stroke", `${port.port4display.getBorderColor()}`);
       portRect.addEventListener('click', () => this.portClicked(port.port4display));
       portRect.addEventListener('mouseover', () => this.portHovered(port.port4display));
       portRect.addEventListener('mouseout', () => this.portMouseouted(port.port4display));
-      if(this.getSelectedPorts().includes(port.port4display)){
-        this.markElement(portRect, port.port4display.getBorderColor());
+      if (this.getSelectedPorts().includes(port.port4display)){
+        this.markElement(portRect, port.port4display.getBorderColorHover());
       }
       portRect.addEventListener('mouseover', () => {
-        this.markElement(portRect, 'rgb(0,119,190)');
+        this.markElement(portRect, port.port4display.getBorderColorHover());
       })
       portRect.addEventListener('mouseout', () => {
-        if(!this.getSelectedPorts().includes(port.port4display)){
-          this.unmarkElement(portRect);
+        if (!this.getSelectedPorts().includes(port.port4display)){
+          this.unmarkElement(portRect, port.port4display.getBorderColor());
         }
       })
       this.portSvgMap.set(port.port4display, portRect);
@@ -369,7 +381,12 @@ export class FunctionDisplay extends FunctionDisplayComponent {
       path.setAttribute("d", "M 0 -5 L 5 0 L 0 5 M 5 0 L -5 0");  //arrow
       path.setAttribute("transform", "translate(10, 10)");
       portG.appendChild(path);
+
+      // Port label
       for (let label of port.labels ?? []) {
+        if (!port.port4display.isLabelVisible()) {
+          continue;
+        }
         let text = document.createElementNS(svgNS, "text");
         text.setAttribute("x", `${label.x}`);
         text.setAttribute("y", `${label.hasChildren ? label.y : 14}`);
@@ -380,19 +397,24 @@ export class FunctionDisplay extends FunctionDisplayComponent {
       }
       g.appendChild(portG);
     }
+
+    // Channels
     for (let edge of node.edges ?? []) {
+      if (!edge.channel4Display.isVisible()) {
+        continue;
+      }
       for (let section of edge.sections) {
         let polyline = document.createElementNS(svgNS, "polyline");
         polyline.setAttribute("id", edge.id);
         polyline.setAttribute("points", `${section.startPoint.x},${section.startPoint.y} ${(section.bendPoints ?? []).map(p => `${p.x},${p.y}`).join(" ")} ${section.endPoint.x},${section.endPoint.y}`);
-        polyline.setAttribute("stroke", "black");
+        polyline.setAttribute("stroke", `${edge.channel4Display.getLineColor()}`);
         polyline.setAttribute("stroke-width", "1");
         polyline.setAttribute("fill", "none");
         polyline.addEventListener('click', () => this.channelClicked(edge.channel4Display))
         polyline.addEventListener('mouseover', () => this.channelHovered(edge.channel4Display))
         polyline.addEventListener('mouseout', () => this.channelMouseouted(edge.channel4Display))
-        if(this.getSelectedChannels().includes(edge.channel4Display)){
-          this.markElement(polyline, edge.channel4Display.getLineColor());
+        if (this.getSelectedChannels().includes(edge.channel4Display)){
+          this.markElement(polyline, edge.channel4Display.getLineColorHover());
         }
         g.appendChild(polyline);
         let hiddenPolyline = document.createElementNS(svgNS, "polyline");
@@ -401,11 +423,11 @@ export class FunctionDisplay extends FunctionDisplayComponent {
         hiddenPolyline.setAttribute("stroke-width", "15");
         hiddenPolyline.setAttribute("fill", "none");
         hiddenPolyline.addEventListener('mouseover', () => {
-          this.markElement(polyline, 'rgb(0,119,190)');
+          this.markElement(polyline, edge.channel4Display.getLineColorHover());
         })
         hiddenPolyline.addEventListener('mouseout', () => {
-          if(!this.getSelectedChannels().includes(edge.channel4Display)){
-            this.unmarkElement(polyline);
+          if (!this.getSelectedChannels().includes(edge.channel4Display)){
+            this.unmarkElement(polyline, edge.channel4Display.getLineColor());
           }
         })
         hiddenPolyline.addEventListener('click', () => this.channelClicked(edge.channel4Display))
@@ -421,6 +443,8 @@ export class FunctionDisplay extends FunctionDisplayComponent {
         g.appendChild(path);
       }
     }
+
+    // Sub-components (recursive call)
     for (let child of node.children ?? []) {
       g.appendChild(this.renderNode(child));
     }
@@ -430,69 +454,69 @@ export class FunctionDisplay extends FunctionDisplayComponent {
 
 
   public addOutsideClickListener(){
-    let element = document.getElementById('function-'+FunctionDisplay.wrapperId);
-    if(element) {
+    let element = document.getElementById('function-' + FunctionDisplay.wrapperId);
+    if (element) {
       element.addEventListener('click', () => this.outsideClicked())
     }
   }
 
 
   public functionClicked(f: Function4Display){
-    if(this.getFunctionClick()){
+    if (this.getFunctionClick()){
       this.getFunctionClick()(f);
     }
   }
 
   public functionHovered(f: Function4Display){
-    if(this.getFunctionMouseover()){
+    if (this.getFunctionMouseover()){
       this.getFunctionMouseover()(f);
     }
   }
 
   public functionMouseouted(f: Function4Display){
-    if(this.getFunctionMouseout()){
+    if (this.getFunctionMouseout()){
       this.getFunctionMouseout()(f);
     }
   }
 
   public channelHovered(channel: Channel4Display){
-    if(this.getChannelMouseover()){
+    if (this.getChannelMouseover()){
       this.getChannelMouseover()(channel);
     }
   }
 
   public channelClicked(channel: Channel4Display){
-    if(this.getChannelClick()){
+    if (this.getChannelClick()){
       this.getChannelClick()(channel);
     }
   }
 
   public channelMouseouted(channel: Channel4Display){
-    if(this.getChannelMouseout()){
+    if (this.getChannelMouseout()){
       this.getChannelMouseout()(channel)
     }
   }
 
   private outsideClicked(){
-    if(this.getOutsideClick()){
+    if (this.getOutsideClick()){
       this.getOutsideClick()();
     }
   }
 
   private portClicked(p: Port4Display){
-    if(this.getPortClick()){
+    if (this.getPortClick()){
       this.getPortClick()(p)
     }
   }
 
   private portHovered(p: Port4Display){
-    if(this.getPortMouseover()){
+    if (this.getPortMouseover()){
       this.getPortMouseover()(p);
     }
   }
 
   private portMouseouted(p: Port4Display){
-    if(this.getPortMouseout()){
+    if (this.getPortMouseout()){
       this.getPortMouseout()(p)
     }
   }
@@ -507,13 +531,13 @@ export class FunctionDisplay extends FunctionDisplayComponent {
     return `${p1.id} -> ${p2.id}`;
   }
 
-  private markElement(element: Element, color: string) {
-    element.setAttribute('stroke', color);
+  private markElement(element: Element, markedColor: string) {
+    element.setAttribute('stroke', markedColor);
     element.setAttribute('stroke-width', '5');
   }
 
-  private unmarkElement(element: Element) {
-    element.setAttribute('stroke', 'black');
+  private unmarkElement(element: Element, unmarkedColor: string) {
+    element.setAttribute('stroke', unmarkedColor);
     element.setAttribute('stroke-width', '1');
   }
 }

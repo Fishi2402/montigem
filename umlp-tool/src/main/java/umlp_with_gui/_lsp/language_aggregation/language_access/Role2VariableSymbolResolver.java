@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-class Role2VariableSymbolResolver implements IVariableSymbolResolver {
+public class Role2VariableSymbolResolver implements IVariableSymbolResolver {
   protected final LanguageServerContext umlpLanguageServerContext;
 
   public Role2VariableSymbolResolver(LanguageServerContext umlpLanguageServerContext) {

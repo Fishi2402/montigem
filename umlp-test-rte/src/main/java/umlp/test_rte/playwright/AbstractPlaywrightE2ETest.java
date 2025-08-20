@@ -1,12 +1,11 @@
 package umlp.test_rte.playwright;
 
 import com.microsoft.playwright.junit.UsePlaywright;
+import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.test.annotation.DirtiesContext;
-import umlp.backendrte.common.DatabaseAccessManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -86,6 +85,7 @@ public abstract class AbstractPlaywrightE2ETest implements PlaywrightUtils {
         "http://localhost:" + getBackendServerPort(),
         getFrontendServerPort()
     );
+    Log.info("Starting the FrontEnd Server", this.getClass().getName());
     frontendServer.start();
   }
 
@@ -95,16 +95,11 @@ public abstract class AbstractPlaywrightE2ETest implements PlaywrightUtils {
   @AfterAll
   protected void stopFrontend() {
     if(frontendServer != null) {
+      Log.info("Stopping the FrontEnd Server", this.getClass().getName());
       frontendServer.stop();
     }
   }
 
-  /**
-   * Ensures that data gets wiped from the database between two test cases
-   */
-  @AfterEach
-  protected void cleanupBackend() {
-    DatabaseAccessManager.executeStatement("DROP ALL OBJECTS");
-  }
+  // After Each is generated
 
 }

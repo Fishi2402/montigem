@@ -6,6 +6,7 @@ import demorec.DemoRecComponent;
 import demorec.Photo;
 import demorec.State;
 import mc.fenix.input.gemdropdowninputtypes.Option;
+import mc.fenix.input.gemtextinputtypes.GemTextInputValidity;
 import umlp.guiutil.Router;
 import umlp.jsweet.extension.annotation.Component;
 
@@ -43,28 +44,22 @@ public class ComponentEdit extends ComponentEditTOP {
   @Override
   public List<Option> getConditionOpts() {
     List<Option> conditionOptions =new ArrayList<>();
-    conditionOptions.add(new Option(String.valueOf(State.HEALTHY),"Healthy"));
-    conditionOptions.add(new Option(String.valueOf(State.OTHER),"Other"));
+    conditionOptions.add(new Option(State.HEALTHY.toString(),"Healthy"));
+    conditionOptions.add(new Option(State.OTHER.toString(),"Other"));
     return conditionOptions;
   }
 
-  @Override
-  public String getConditionEntry () {
-    if(this.getComponent() != null) {
-      return this.getComponent().getCondition().toString();
-    }
-    // Default is Other
-    return String.valueOf(State.OTHER.ordinal());
-  }
 
   @Override
-  public void setConditionEntry (String value) {
-    State cond = State.OTHER;
-    for (State t : State.values()) {
-      if(t.ordinal() == Integer.valueOf(value)) {
-        cond = t;
-      }
+  public GemTextInputValidity checkComponentName() {
+    if (this.getComponent() == null) {
+      return new GemTextInputValidity("Error", "Component not initialized");
     }
-    this.getComponent().setCondition(cond);
+    String name = this.getComponent().getName();
+    if (name == null || name.trim().isEmpty()) {
+      return new GemTextInputValidity("Error", "Component Name must not be empty");
+    }
+    return new GemTextInputValidity("Success", null);
   }
+
 }

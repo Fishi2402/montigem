@@ -1,16 +1,7 @@
-import de.montigem.gradle.specific.CreateSymlinkTask
-
-import java.nio.file.Files
-import java.nio.file.Paths
-
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
   id "de.rwth.se.montigem-frontend"
-}
-
-if (project.hasProperty('j2ts_vislib') && j2ts_vislib.toString().toBoolean()) {
-  project.ext.j2ts = true
 }
 
 node {
@@ -20,11 +11,8 @@ node {
 dependencies {
   implementation project(":examples:vis-lib:backend")
   testImplementation project(':umlp-test-rte')
-
-// JSweet
-  if (project.hasProperty('j2ts') && j2ts.toString().toBoolean()) {
-    domainSources project(":examples:vis-lib:backend")
-  }
+  // JSweet
+  domainSources project(":examples:vis-lib:backend")
 }
 
 configurations {
@@ -41,14 +29,6 @@ gui2java {
   /**/
 }
 
-if (!project.hasProperty('j2ts') || !j2ts.toString().toBoolean()) {
-  apply plugin: 'java'
-  tasks.withType(JavaCompile) {
-    enabled = false
-  }
-  sourceSets.main.java.srcDirs = []
-}
-
 if (project.hasProperty('j2ts') && j2ts.toString().toBoolean()) {
   umlpJava2ts {
     verbose = true
@@ -59,13 +39,12 @@ if (project.hasProperty('j2ts') && j2ts.toString().toBoolean()) {
   }
 }
 
-task copyAppJsweet(type: Copy) {
+def copyAppJsweet = tasks.register("copyAppJsweet", Copy) {
   dependsOn(setupFrontend)
   onlyIf { project.hasProperty('j2ts') && project.j2ts.toString().toBoolean() }
   from 'config/src/appjsweet'
   into 'build/app/src/app/'
 }
-// End JSweet
 
 nodeSetup.dependsOn(setupFrontend)
 npmInstall.dependsOn(':umlp-rte:client:npmInstall')

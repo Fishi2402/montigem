@@ -47,8 +47,50 @@ dependencies {
 tasks.named("compileJava").configure {
   dependsOn project(":umlp-rte:client").tasks.matching { it.group == "mglib_cd2java" }
 }
+
 sourceSets.main.java.srcDir {
   tasks.matching { it.group == "mglib_cd2java" }.collect { it.outputDir }
+}
+
+def libs = [
+    "arrange",
+    "basic",
+    "charts",
+    "fischertechnik",
+    "functiondisplay",
+    "input",
+    "navigation",
+    "table",
+    "networkgraph",
+    "editor"
+]
+
+def genTasks = []
+def outputDirs = []
+
+libs.each {
+  def libName = it
+  def genTaskName = "cd2java_${libName}"
+  def outDir = project.layout.buildDirectory.dir("guiComponentTypes/${libName}")
+  genTasks << genTaskName
+  outputDirs << outDir
+  // POJOs
+  def genTask = tasks.register(genTaskName, GUITypes2JavaTask) {
+    hwcDir = project.layout.files("src/main/java")
+    input = file("client/models/mc/fenix/${libName}")
+    outputDir = outDir
+    symbolOutDir = project.layout.buildDirectory.dir("guiComponentTypesTagOut/${libName}")
+    tslib = "@umlp/${libName}"
+  }
+
+  sourceSets.main.java.srcDirs += genTask.get().outputDir.get().asFile
+
+  tasks.named("compileJava").configure {
+    dependsOn(genTask)
+    doFirst {
+      sourceSets.main.java.srcDirs += genTask.get().outputDir.get().asFile
+    }
+  }
 }
 /**/
 plugins {

@@ -133,8 +133,6 @@ public class RTEPojoDecorator extends DomainTypeDecorator {
     for (ASTCDAttribute attr : nonDerivedAttrs) {
       if (GenService.isList(attr)) {
         glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint(defaultListValue()));
-      } else if (GenService.isBoolean(attr.getMCType())) {
-        glex.replaceTemplate("cd2java.Value", attr, new StringHookPoint(defaultBooleanValue()));
       }
     }
 

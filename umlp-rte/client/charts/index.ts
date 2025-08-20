@@ -130,3 +130,15 @@ export * from "./build/cd/mc/fenix/charts/gemvenndiagramtypes/GemVennDiagramEntr
 export * from "./build/cd/mc/fenix/charts/gemvenndiagramtypes/GemVennDiagramEntryBuilder";
 export * from "./build/cd/mc/fenix/charts/gemvenndiagramtypes/GemVennDiagramEntryDeSer";
 export * from "./build/cd/mc/fenix/charts/gemvenndiagramtypes/GemVennDiagramTypesDeSer";
+
+export * from "./src/mc/fenix/charts/GemTimeSeriesChart";
+export * from "./build/cd/mc/fenix/charts/gemtimeseriescharttypes/TimeSeriesData";
+export * from "./build/cd/mc/fenix/charts/gemtimeseriescharttypes/TimeSeriesDataBuilder";
+export * from "./build/cd/mc/fenix/charts/gemtimeseriescharttypes/TimeSeriesDataDeSer";
+export * from "./build/cd/mc/fenix/charts/gemtimeseriescharttypes/TimeSeries";
+export * from "./build/cd/mc/fenix/charts/gemtimeseriescharttypes/TimeSeriesBuilder";
+export * from "./build/cd/mc/fenix/charts/gemtimeseriescharttypes/TimeSeriesDeSer";
+export * from "./build/cd/mc/fenix/charts/gemtimeseriescharttypes/TimeSeriesDataPoint";
+export * from "./build/cd/mc/fenix/charts/gemtimeseriescharttypes/TimeSeriesDataPointBuilder";
+export * from "./build/cd/mc/fenix/charts/gemtimeseriescharttypes/TimeSeriesDataPointDeSer";
+export * from "./build/cd/mc/fenix/charts/gemtimeseriescharttypes/GemTimeSeriesChartTypesDeSer";

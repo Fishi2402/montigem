@@ -16,6 +16,7 @@ export class Navigation {
   }
 
   readonly items: { url: string, title: string }[] = [
+    { url: '/example_input/GemRangeInputExample', title: 'RangeInput' },
     { url: '/example_input/GemChatExample', title: 'Chat' },
     { url: '/person/SimpleOverview', title: 'Overview' },
     { url: '/example_basic/GemAudioExample', title: 'Audio' },
@@ -50,6 +51,7 @@ export class Navigation {
     { url: '/example_charts/GemCandlestickChartExample', title: 'CandlestickChart' },
     { url: '/example_charts/GemGaugeChartExample', title: 'GaugeChart' },
     { url: '/example_charts/GemLineChartExample', title: 'LineChart' },
+    { url: '/example_charts/GemTimeSeriesChartExmaple', title: 'GemTimeSeriesChart' },
     { url: '/example_charts/GemHeatmapChartExample', title: 'HeatmapChart' },
     { url: '/example_charts/GemPieChartExample', title: 'PieChart' },
     { url: '/example_charts/GemRadarChartExample', title: 'RadarChart' },
