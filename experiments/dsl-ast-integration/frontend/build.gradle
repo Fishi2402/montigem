@@ -91,10 +91,10 @@ gui2java {
    modelDir = file(tasks.guiVariability.getOutputDir())
 }
 
-SYNC_umlp2ts {
+sync_umlp2ts {
    filter { line -> line.replaceAll('../../../build/umlp_frontend/intermediate/', '../../../build/app/build/') }
 }
-SYNC_gui2java {
+sync_gui2java {
    filter { line -> line.replaceAll('../../../build/umlp_frontend/intermediate/', '../../../build/app/build/') }
 }
 

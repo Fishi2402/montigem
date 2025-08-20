@@ -67,12 +67,11 @@ public abstract class BackendPlugin implements Plugin<Project> {
   }
 
   // Add generated files to SourceSets
-  private void addToSourceSet(Project project, TaskProvider<UMLP2JavaTask> umlpTask) {
+  private void addToSourceSet(Project project, TaskProvider<UMLP2JavaTask> task) {
     SourceSet mainSourceSet = project.getExtensions().getByType(SourceSetContainer.class).getByName(SourceSet.MAIN_SOURCE_SET_NAME);
-    mainSourceSet.getJava().srcDir(umlpTask.flatMap(CommonMCTask::getOutputDir));
-
+    mainSourceSet.getJava().srcDir(task.flatMap(CommonMCTask::getOutputDir));
     // Add generated resources. e.g. SQL-Schemata
-    mainSourceSet.getResources().srcDir(umlpTask.flatMap(CommonMCTask::getOutputDir).map(dir -> dir.dir("resources")));
+    mainSourceSet.getResources().srcDir(task.map(t -> t.getOutputDir().dir("resources")));
   }
 
   protected static TaskProvider<UMLP2JavaTask> createUMLP2JavaTask(Project project) {
@@ -86,7 +85,7 @@ public abstract class BackendPlugin implements Plugin<Project> {
       return f.exists() ? project.getLayout().getProjectDirectory().dir("src/templates") : null;
     });
 
-    TaskProvider<UMLP2JavaTask> umlp2java = project.getTasks().register(UMLP2JAVA_TASK, UMLP2JavaTask.class, task -> {
+    return project.getTasks().register(UMLP2JAVA_TASK, UMLP2JavaTask.class, task -> {
       task.setGroup(UMLP_GROUP_NAME);
 
       task.getInput().from(getModels(project));
@@ -96,8 +95,6 @@ public abstract class BackendPlugin implements Plugin<Project> {
       task.getSymbolOutDir().set(project.getLayout().getBuildDirectory().dir("umlp2sym"));
       task.getModelDir().from(project.getConfigurations().getByName(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
     });
-
-    return umlp2java;
   }
 
   protected void addRTEDependency(Project project, boolean local) {

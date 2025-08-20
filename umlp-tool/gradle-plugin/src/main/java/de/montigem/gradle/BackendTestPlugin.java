@@ -1,19 +1,18 @@
 package de.montigem.gradle;
 
+import de.monticore.gradle.common.CommonMCTask;
 import de.montigem.gradle.common.CheckDirEqualityTask;
 import de.montigem.gradle.specific.UMLP2JavaTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.tasks.TaskProvider;
-
-import static de.montigem.gradle.BackendPlugin.createUMLP2JavaTask;
 
 /**
  *
  */
 public class BackendTestPlugin implements Plugin<Project> {
 
+  public static final String CLONE_UMLP2JAVA_TASK = "clone_umlp2java";
   public static final String COMPARE_UMLP2JAVA_TASK = "compare_umlp2java";
 
   @Override
@@ -21,46 +20,26 @@ public class BackendTestPlugin implements Plugin<Project> {
     project.getPluginManager().apply(BackendPlugin.class);
 
     TaskProvider<UMLP2JavaTask> firstTask = project.getTasks().named(BackendPlugin.UMLP2JAVA_TASK, UMLP2JavaTask.class);
-    TaskProvider<UMLP2JavaTask> secondTask = createUMLP2JavaTask(project);
-    secondTask.configure(task -> {
-      task.getOutputDir().set(project.getLayout().getBuildDirectory().dir("umlp_backend_test"));
-      task.getSymbolOutDir().set(project.getLayout().getBuildDirectory().dir("umlp_backend_test_symbols"));
-    });
-    /*
-    project.getTasks().register(COMPARE_UMLP2JAVA_TASK, UMLP2JavaTask.class, task -> {
-      // TODO: Is there a better way to copy _all_ properties from the tasks?
-      task.getInput().setFrom(firstTask.getInput());
-      task.getHandWrittenCodeDir().setFrom(firstTask.getHandWrittenCodeDir());
-      task.getSymbolDir().set(firstTask.getSymbolDir());
-      task.getSymbolPath().from(firstTask.getSymbolPath());
-      task.getUseSpring().set(firstTask.getUseSpring());
-      task.getUseShell().set(firstTask.getUseShell());
-      task.getModelDir().setFrom(firstTask.getModelDir());
+    TaskProvider<UMLP2JavaTask> secondTask = project.getTasks().register(CLONE_UMLP2JAVA_TASK, UMLP2JavaTask.class, task -> {
+      task.getInput().from(firstTask.map(CommonMCTask::getInput));
+      task.getHandWrittenCodeDir().from(firstTask.map(CommonMCTask::getHandWrittenCodeDir));
+      task.getSymbolDir().set(firstTask.flatMap(UMLP2JavaTask::getSymbolDir));
+      task.getSymbolPath().from(firstTask.map(CommonMCTask::getSymbolPath));
+      task.getUseSpring().set(firstTask.flatMap(UMLP2JavaTask::getUseSpring));
+      task.getUseShell().set(firstTask.flatMap(UMLP2JavaTask::getUseShell));
+      task.getModelDir().from(firstTask.map(UMLP2JavaTask::getModelDir));
 
-      // Change Outputs of the task... because we want to generate into a different directory & compare afterwars
-      task.getOutputDir().set(project.getLayout().getBuildDirectory().dir("umlp_backend_test"));
-      task.getSymbolOutDir().set(project.getLayout().getBuildDirectory().dir("umlp_backend_test_symbols"));
-    }).get();
-    /**/
-
-    /*
-    TaskProvider<CheckDirEqualityTask> compareTask = createCompareTask(project, firstTask.getOutputDir(), secondTask.getOutputDir(), "checkEqualitiy");
-    return project.getTasks().register(taskName, CheckDirEqualityTask.class, task -> {
-      task.getDir1().set(dir1);
-      task.getDir2().set(dir2);
+      // Outputs of the task to generate into a different directory & compare after
+      task.getOutputDir().set(project.getLayout().getBuildDirectory().dir("clone_umlp2java"));
+      task.getSymbolOutDir().set(project.getLayout().getBuildDirectory().dir("clone_umlp2sym"));
     });
 
-    TaskProvider<CheckDirEqualityTask> compareSymbolsTask = createCompareTask(project, firstTask.getSymbolOutDir(), secondTask.getSymbolOutDir(), "checkSymbolEqualitiy");
-    compareSymbolsTask.get().dependsOn(firstTask, secondTask);
+    TaskProvider<CheckDirEqualityTask> compareTask = project.getTasks().register(COMPARE_UMLP2JAVA_TASK, CheckDirEqualityTask.class, task -> {
+      task.getDir1().set(firstTask.flatMap(CommonMCTask::getOutputDir));
+      task.getDir2().set(secondTask.flatMap(CommonMCTask::getOutputDir));
+    });
 
-    project.getTasks().getByName("build").dependsOn(compareTask); // TODO: also add "compareSymbolsTask"
-    /**/
+    project.getTasks().getByName("build").dependsOn(compareTask);
   }
 
-  private TaskProvider<CheckDirEqualityTask> createCompareTask(Project project, DirectoryProperty dir1, DirectoryProperty dir2, String taskName) {
-    return project.getTasks().register(taskName, CheckDirEqualityTask.class, task -> {
-      task.getDir1().set(dir1);
-      task.getDir2().set(dir2);
-    });
-  }
 }

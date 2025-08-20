@@ -7,10 +7,9 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.TaskProvider;
 
-import static de.montigem.gradle.FrontendBasePlugin.createGUI2JavaTask;
-
 public class FrontendTestPlugin implements Plugin<Project> {
 
+  public static final String CLONE_GUI2JAVA_TASK = "clone_gui2java";
   public static final String COMPARE_GUI2JAVA_TASK = "compare_gui2java";
 
   @Override
@@ -19,39 +18,26 @@ public class FrontendTestPlugin implements Plugin<Project> {
     project.getPluginManager().apply(FrontendPlugin.class);
 
     // Frontend GUI Tasks:
-    {
-      TaskProvider<GUI2JavaTask> firstTask = project.getTasks().named(FrontendBasePlugin.GUI2JAVA_TASK, GUI2JavaTask.class);
-      TaskProvider<GUI2JavaTask> secondTask = createGUI2JavaTask(project);
-      /*
-          project.getTasks().register(COMPARE_GUI2JAVA_TASK, GUI2JavaTask.class, umlpTask -> {
-        // TODO: Is there a better way to copy _all_ properties from the tasks?
-        umlpTask.getInput().from(firstTask.getInput());
-        umlpTask.getHandWrittenCodeDir().from(firstTask.getHandWrittenCodeDir());
-        umlpTask.getModelDir().set(firstTask.getModelDir());
-        umlpTask.getSymbolDir().from(firstTask.getSymbolDir());
-        umlpTask.getDomainModels().set(firstTask.getDomainModels());
-        umlpTask.getGuiCreateModels().set(firstTask.getGuiCreateModels());
+    TaskProvider<GUI2JavaTask> firstTask = project.getTasks().named(FrontendBasePlugin.GUI2JAVA_TASK, GUI2JavaTask.class);
+    TaskProvider<GUI2JavaTask> secondTask = project.getTasks().register(CLONE_GUI2JAVA_TASK, GUI2JavaTask.class, task -> {
+      task.getInput().from(firstTask.map(CommonMCTask::getInput));
+      task.getHandWrittenCodeDir().from(firstTask.map(CommonMCTask::getHandWrittenCodeDir));
+      task.getModelDir().set(firstTask.flatMap(GUI2JavaTask::getModelDir));
+      task.getSymbolDir().from(firstTask.map(GUI2JavaTask::getSymbolDir));
+      task.getDomainModels().set(firstTask.flatMap(GUI2JavaTask::getDomainModels));
+      task.getGuiCreateModels().set(firstTask.flatMap(GUI2JavaTask::getGuiCreateModels));
 
-        // Change Outputs of the task... because we want to generate into a different directory & compare afterwards
-        umlpTask.getOutputDir().set(project.getLayout().getBuildDirectory().dir("umlp_frontend_gui_test/right/dirdepth/"));
-        umlpTask.getSymbolOutDir().set(project.getLayout().getBuildDirectory().dir("umlp_frontend_gui_test_symbols"));
-      }).get();
-      /**/
-      secondTask.configure(task -> {
-        // Change Outputs of the task to compare with generated files of first task
-        task.getOutputDir().set(project.getLayout().getBuildDirectory().dir("compare_gui2java"));
-        task.getSymbolOutDir().set(project.getLayout().getBuildDirectory().dir("compare_gui2java"));
-      });
+      // Outputs of the task to generate into a different directory & compare after
+      task.getOutputDir().set(project.getLayout().getBuildDirectory().dir("intermediate/app/clone_gui2java"));
+      task.getSymbolOutDir().set(project.getLayout().getBuildDirectory().dir("clone_gui2sym"));
+    });
 
-      TaskProvider<CheckDirEqualityTask> compareGUI2Java = project.getTasks().register(COMPARE_GUI2JAVA_TASK, CheckDirEqualityTask.class, task -> {
-        task.getDir1().set(firstTask.flatMap(CommonMCTask::getOutputDir));
-        task.getDir2().set(secondTask.flatMap(CommonMCTask::getOutputDir));
-      });
+    TaskProvider<CheckDirEqualityTask> compareGUI2Java = project.getTasks().register(COMPARE_GUI2JAVA_TASK, CheckDirEqualityTask.class, task -> {
+      task.getDir1().set(firstTask.flatMap(CommonMCTask::getOutputDir));
+      task.getDir2().set(secondTask.flatMap(CommonMCTask::getOutputDir));
+    });
 
-      // TaskProvider<CheckDirEqualityTask> compareTask = createCompareTask(project, firstTask.getOutputDir(), secondTask.getOutputDir(), "checkEqualitiyofGUI");
-
-      project.getTasks().named("build").configure(t -> t.dependsOn(compareGUI2Java));
-    }
+    project.getTasks().named("build").configure(t -> t.dependsOn(compareGUI2Java));
   }
 
 }
