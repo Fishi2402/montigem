@@ -38,8 +38,6 @@ public abstract class MGBasePlugin implements Plugin<Project> {
   public static final String MONTIGEM_MODULE_IMPORT_MAP_CONFIG = "montigemModuleImportMap";
   public static final String MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG = "montigemModuleGUISymbols";
 
-  public static final String GUI_LIB_CONFIG = "guiLib";
-
   @Override
   public void apply(Project project) {
     // Load dependencies
@@ -53,9 +51,9 @@ public abstract class MGBasePlugin implements Plugin<Project> {
     project.getExtensions().getExtraProperties().set("GUIVariabilityTask", GUIVariabilityTask.class);
     project.getExtensions().getExtraProperties().set("UMLP2TSTask", UMLP2TSTask.class);
     project.getExtensions().getExtraProperties().set("UMLPSymbolsTask", UMLP2SymTask.class);
-    project.getExtensions().getExtraProperties().set(GUI2SymTask.class.getSimpleName(), GUI2SymTask.class);
     project.getExtensions().getExtraProperties().set("SetupFrontendTask", SetupFrontendTask.class);
     project.getExtensions().getExtraProperties().set("GUI2SymTask", de.montigem.gradle.specific.serialize.GUI2SymTask.class);
+    project.getExtensions().getExtraProperties().set(GUI2SymTask.class.getSimpleName(), GUI2SymTask.class);
     project.getExtensions().getExtraProperties().set("CD2SymTask", CD2SymTask.class);
     project.getExtensions().getExtraProperties().set("CheckDirEqualityTask", CheckDirEqualityTask.class);
     project.getExtensions().getExtraProperties().set("OD2DataTask", OD2DataTask.class);

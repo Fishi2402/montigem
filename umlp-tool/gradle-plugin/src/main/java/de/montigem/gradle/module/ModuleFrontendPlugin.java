@@ -2,6 +2,7 @@ package de.montigem.gradle.module;
 
 import com.github.gradle.node.NodePlugin;
 import com.github.gradle.node.npm.task.NpmTask;
+import de.montigem.gradle.DependencyPlugin;
 import de.montigem.gradle.MGBasePlugin;
 import de.montigem.gradle.specific.CreateNpmrcTask;
 import de.montigem.gradle.specific.GUI2JavaTask;
@@ -45,7 +46,6 @@ import static de.montigem.gradle.FrontendBasePlugin.GUI_TYPES_CONFIG;
 import static de.montigem.gradle.FrontendBasePlugin.UMLP_GROUP_NAME;
 import static de.montigem.gradle.FrontendBasePlugin.addClientRTEDependency;
 import static de.montigem.gradle.FrontendBasePlugin.getBooleanProjectProperty;
-import static de.montigem.gradle.FrontendBasePlugin.getStringProjectProperty;
 import static de.montigem.gradle.FrontendBasePlugin.inRTE;
 import static de.montigem.gradle.FrontendBasePlugin.mcVersion;
 import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
@@ -75,13 +75,14 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
     project.getPluginManager().apply(NodePlugin.class);
     project.getPluginManager().apply("java-library");
     project.getPluginManager().apply("maven-publish");
-    project.getPluginManager().apply(MGBasePlugin.class);
-
-    addClientRTEDependency(project);
-    boolean local = getBooleanProjectProperty(project, "useLocalDependencies");
-    if (!inRTE(project) && local) {
+    if (!inRTE(project)) {
       project.getPluginManager().apply(MGBasePlugin.class);
     }
+    else {
+      project.getPluginManager().apply(DependencyPlugin.class);
+    }
+
+    addClientRTEDependency(project);
 
     AdhocComponentWithVariants javaComponent = (AdhocComponentWithVariants) project.getComponents().getByName("java");
     // contains e.g. [ project(":umlp-rte:client:arrange"), project(":umlp-rte:client:basic") ]
@@ -144,6 +145,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
 
     SourceSet mainSourceSet = project.getExtensions().getByType(SourceSetContainer.class).getByName(SourceSet.MAIN_SOURCE_SET_NAME);
 
+    boolean local = getBooleanProjectProperty(project, "useLocalDependencies");
     if (local) {
       project.getDependencies().add("implementation",
           project.getDependencies().project(Map.of("path", ":umlp-rte:backend"))
@@ -156,7 +158,13 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
     project.afterEvaluate(p -> {
       for (Project subproject : extension.getLibs()) {
         subproject.getPlugins().apply(NodePlugin.class);
-        subproject.getPlugins().apply(MGBasePlugin.class);
+        if (!inRTE(subproject)) {
+          subproject.getPluginManager().apply(MGBasePlugin.class);
+        }
+        else {
+          subproject.getPluginManager().apply(DependencyPlugin.class);
+        }
+
         Configuration guiTypes = addProjectDependencies(subproject);
         addClientRTEDependency(subproject);
 

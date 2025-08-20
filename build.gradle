@@ -25,8 +25,6 @@ def getNodeDir() {
   return node_dir
 }
 
-var previousInstallTask;
-
 subprojects {
   apply plugin: 'java'
   apply plugin: 'io.github.themrmilchmann.ecj'
@@ -40,14 +38,6 @@ subprojects {
     toolchain {
       languageVersion = JavaLanguageVersion.of(11)
     }
-  }
-
-  // Make NpmInstall tasks sequential. Doesn't seem to lose time compared to a parallel build,
-  // but makes build process more stable
-  tasks.withType(com.github.gradle.node.npm.task.NpmInstallTask).configureEach {
-    if (previousInstallTask)
-      it.mustRunAfter(previousInstallTask)
-    previousInstallTask = it
   }
 
   // Use downloaded node for all subprojects
@@ -149,6 +139,19 @@ subprojects {
   }
   gradle.taskGraph.whenReady {
     it.getAllTasks().findAll { ["distZip", "distTar", "bootDistZip", "bootDistTar"].contains(it.name) }.each{ it.enabled = false }
+  }
+}
+
+project(":umlp-rte:client").afterEvaluate { rte ->
+  var previousInstallTask = rte.tasks.named("npmInstall")
+
+  subprojects {
+    tasks.withType(com.github.gradle.node.npm.task.NpmInstallTask).configureEach { t ->
+      if (project.path != ":umlp-rte:client") {
+        t.mustRunAfter(previousInstallTask)
+        previousInstallTask = t
+      }
+    }
   }
 }
 
