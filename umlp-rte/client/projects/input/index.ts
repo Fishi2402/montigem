@@ -11,6 +11,10 @@ export * from './build/cd/mc/fenix/input/gemdropdowninputtypes/Option';
 export * from './build/cd/mc/fenix/input/gemdropdowninputtypes/OptionBuilder';
 export * from './build/cd/mc/fenix/input/gemdropdowninputtypes/OptionDeSer';
 export * from './build/cd/mc/fenix/input/gemdropdowninputtypes/GemDropdownInputTypesDeSer';
+export * from './build/cd/mc/fenix/input/gemrangeinputtypes/Marker';
+export * from './build/cd/mc/fenix/input/gemrangeinputtypes/MarkerBuilder';
+export * from './build/cd/mc/fenix/input/gemrangeinputtypes/MarkerDeSer';
+export * from './build/cd/mc/fenix/input/gemrangeinputtypes/GemRangeInputTypesDeSer';
 
 export * from './build/cd/mc/fenix/input/gemtextareainputtypes/GemTextareaInputValidity';
 export * from './build/cd/mc/fenix/input/gemtextareainputtypes/GemTextareaInputValidityBuilder';
