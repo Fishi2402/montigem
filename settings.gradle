@@ -67,6 +67,7 @@ include ":experiments:dsl-ast-integration:ebackend"
 include ":experiments:dsl-ast-integration:frontend"
 include ":experiments:statecharts-integration"
 include ":experiments:module-system:module-definition"
+include ":experiments:module-system:module-definition:backend"
 include ":experiments:module-system:routes-usage"
 
 include ":examples"

@@ -1,0 +1,18 @@
+plugins {
+  id 'java-library'
+  id 'de.rwth.se.montigem-backend'
+
+  id 'application'
+  id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+  id 'org.springframework.boot' version "${spring_version}"
+  id 'maven-publish'
+}
+
+dependencies {
+  implementation project(':umlp-rte')
+  api group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version
+}
+
+application { // Set Main-Class for "run" task
+  mainClass = 'somecd.SomeCdServerApplication'
+}
