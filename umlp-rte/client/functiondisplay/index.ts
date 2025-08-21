@@ -1,5 +1,5 @@
-export * from "./src/main/ts/mc/fenix/functiondisplay/FunctionDisplay";
-export * from "./src/main/ts/mc/fenix/functiondisplay/FunctionStructure4Fenix";
+export * from "./src/main/gui/mc/fenix/functiondisplay/FunctionDisplay";
+export * from "./src/main/gui/mc/fenix/functiondisplay/FunctionStructure4Fenix";
 export * from "./build/cd/mc/fenix/functiondisplay/functionstructure4fenix/Channel4Display";
 export * from "./build/cd/mc/fenix/functiondisplay/functionstructure4fenix/Channel4DisplayBuilder";
 export * from "./build/cd/mc/fenix/functiondisplay/functionstructure4fenix/Channel4DisplayDeSer";

@@ -86,7 +86,7 @@ public @interface Component {
 Sollte es doch notwendig
 sein, den Typescript Code direkt anzupassen, kann dies momentan umgesetzt 
 werden, indem entsprechende Datei mit gleichem Orderpfad unter
-`src/main/ts/gui` bzw. `src/main/ts/domain` erstellt wird. Diese überschreiben
+`src/main/gui/gui` bzw. `src/main/gui/domain` erstellt wird. Diese überschreiben
 dann alle transpilierten Dateien mit gleichem Namen.
 
 ### Zusätzliche Attribute
@@ -142,10 +142,10 @@ jsweetGuiConfigHWCDir = "jsweet/gui"
 jsweetDomainConfigOutDir = "configGen/domain"
 # ${jsweetBuildDirBase}/configGen/gui
 jsweetGuiConfigOutDir = "configGen/gui"
-# ${projectDir}/src/main/ts/domain
-jsweetTSDomainHWCPath = "src/main/ts/domain"
-# ${projectDir}/src/main/ts/gui
-jsweetTSGuiHWCPath = "src/main/ts/gui"
+# ${projectDir}/src/main/gui/domain
+jsweetTSDomainHWCPath = "src/main/gui/domain"
+# ${projectDir}/src/main/gui/gui
+jsweetTSGuiHWCPath = "src/main/gui/gui"
 ```
 
 ### Transpilierung
@@ -201,7 +201,7 @@ public class MyUtil {
 darauf hin erstellt JSweet eine entsprechene `d.ts` Header Datei im generierten Code.
 
 Dann wird die Methode in TS implementiert:
-`frontend/src/main/ts/gui/def/foo/MyUtil.ts`
+`frontend/src/main/gui/gui/def/foo/MyUtil.ts`
 ```
 export class MyUtil{
   public foo(){

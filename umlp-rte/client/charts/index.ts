@@ -1,6 +1,6 @@
-export * from "./src/main/ts/mc/fenix/charts/colors";
+export * from "./src/main/gui/mc/fenix/charts/colors";
 
-export * from "./src/main/ts/mc/fenix/charts/GemBarChart";
+export * from "./src/main/gui/mc/fenix/charts/GemBarChart";
 export * from "./build/cd/mc/fenix/charts/gembarcharttypes/GemBarChartData";
 export * from "./build/cd/mc/fenix/charts/gembarcharttypes/GemBarChartDataBuilder";
 export * from "./build/cd/mc/fenix/charts/gembarcharttypes/GemBarChartDataDeSer";
@@ -9,7 +9,7 @@ export * from "./build/cd/mc/fenix/charts/gembarcharttypes/GemBarChartEntryBuild
 export * from "./build/cd/mc/fenix/charts/gembarcharttypes/GemBarChartEntryDeSer";
 export * from "./build/cd/mc/fenix/charts/gembarcharttypes/GemBarChartTypesDeSer";
 
-export * from "./src/main/ts/mc/fenix/charts/GemBoxPlot";
+export * from "./src/main/gui/mc/fenix/charts/GemBoxPlot";
 export * from "./build/cd/mc/fenix/charts/gemboxplottypes/GemBoxPlotBox";
 export * from "./build/cd/mc/fenix/charts/gemboxplottypes/GemBoxPlotBoxBuilder";
 export * from "./build/cd/mc/fenix/charts/gemboxplottypes/GemBoxPlotBoxDeSer";
@@ -31,10 +31,10 @@ export * from "./build/cd/mc/fenix/charts/gmcandlestickcharttypes/GemCandlestick
 export * from "./build/cd/mc/fenix/charts/GemBulletChart";
 /**/
 
-export * from "./src/main/ts/mc/fenix/charts/GemChartLegend";
-export * from "./src/main/ts/mc/fenix/charts/GemChartOptions";
+export * from "./src/main/gui/mc/fenix/charts/GemChartLegend";
+export * from "./src/main/gui/mc/fenix/charts/GemChartOptions";
 
-export * from "./src/main/ts/mc/fenix/charts/GemGaugeChart";
+export * from "./src/main/gui/mc/fenix/charts/GemGaugeChart";
 export * from "./build/cd/mc/fenix/charts/gemgaugecharttypes/GemGaugeChartData";
 export * from "./build/cd/mc/fenix/charts/gemgaugecharttypes/GemGaugeChartDataBuilder";
 export * from "./build/cd/mc/fenix/charts/gemgaugecharttypes/GemGaugeChartDataDeSer";
@@ -43,7 +43,7 @@ export * from "./build/cd/mc/fenix/charts/gemgaugecharttypes/GemGaugeChartEntryB
 export * from "./build/cd/mc/fenix/charts/gemgaugecharttypes/GemGaugeChartEntryDeSer";
 export * from "./build/cd/mc/fenix/charts/gemgaugecharttypes/GemGaugeChartTypesDeSer";
 
-export * from "./src/main/ts/mc/fenix/charts/GemHeatmapChart";
+export * from "./src/main/gui/mc/fenix/charts/GemHeatmapChart";
 export * from "./build/cd/mc/fenix/charts/gemheatmapcharttypes/GemHeatmapChartData";
 export * from "./build/cd/mc/fenix/charts/gemheatmapcharttypes/GemHeatmapChartDataBuilder";
 export * from "./build/cd/mc/fenix/charts/gemheatmapcharttypes/GemHeatmapChartDataDeSer";
@@ -52,7 +52,7 @@ export * from "./build/cd/mc/fenix/charts/gemheatmapcharttypes/GemHeatmapChartEn
 export * from "./build/cd/mc/fenix/charts/gemheatmapcharttypes/GemHeatmapChartEntryDeSer";
 export * from "./build/cd/mc/fenix/charts/gemheatmapcharttypes/GemHeatmapChartTypesDeSer";
 
-export * from "./src/main/ts/mc/fenix/charts/GemLineChart";
+export * from "./src/main/gui/mc/fenix/charts/GemLineChart";
 export * from "./build/cd/mc/fenix/charts/gemlinecharttypes/GemLineChartData";
 export * from "./build/cd/mc/fenix/charts/gemlinecharttypes/GemLineChartDataBuilder";
 export * from "./build/cd/mc/fenix/charts/gemlinecharttypes/GemLineChartDataDeSer";
@@ -61,7 +61,7 @@ export * from "./build/cd/mc/fenix/charts/gemlinecharttypes/GemLineChartEntryBui
 export * from "./build/cd/mc/fenix/charts/gemlinecharttypes/GemLineChartEntryDeSer";
 export * from "./build/cd/mc/fenix/charts/gemlinecharttypes/GemLineChartTypesDeSer";
 
-export * from "./src/main/ts/mc/fenix/charts/GemNetworkGraph";
+export * from "./src/main/gui/mc/fenix/charts/GemNetworkGraph";
 export * from "./build/cd/mc/fenix/charts/gemnetworkgraphtypes/GemNetworkData";
 export * from "./build/cd/mc/fenix/charts/gemnetworkgraphtypes/GemNetworkDataBuilder";
 export * from "./build/cd/mc/fenix/charts/gemnetworkgraphtypes/GemNetworkDataDeSer";
@@ -73,7 +73,7 @@ export * from "./build/cd/mc/fenix/charts/gemnetworkgraphtypes/GemNetworkEdgeBui
 export * from "./build/cd/mc/fenix/charts/gemnetworkgraphtypes/GemNetworkEdgeDeSer";
 export * from "./build/cd/mc/fenix/charts/gemnetworkgraphtypes/GemNetworkGraphTypesDeSer";
 
-export * from "./src/main/ts/mc/fenix/charts/GemPieChart";
+export * from "./src/main/gui/mc/fenix/charts/GemPieChart";
 export * from "./build/cd/mc/fenix/charts/gempiecharttypes/GemPieChartData";
 export * from "./build/cd/mc/fenix/charts/gempiecharttypes/GemPieChartDataBuilder";
 export * from "./build/cd/mc/fenix/charts/gempiecharttypes/GemPieChartDataDeSer";
@@ -82,7 +82,7 @@ export * from "./build/cd/mc/fenix/charts/gempiecharttypes/GemPieChartEntryBuild
 export * from "./build/cd/mc/fenix/charts/gempiecharttypes/GemPieChartEntryDeSer";
 export * from "./build/cd/mc/fenix/charts/gempiecharttypes/GemPieChartTypesDeSer";
 
-export * from "./src/main/ts/mc/fenix/charts/GemRadarChart";
+export * from "./src/main/gui/mc/fenix/charts/GemRadarChart";
 export * from "./build/cd/mc/fenix/charts/gemradarcharttypes/GemRadarChartData";
 export * from "./build/cd/mc/fenix/charts/gemradarcharttypes/GemRadarChartDataBuilder";
 export * from "./build/cd/mc/fenix/charts/gemradarcharttypes/GemRadarChartDataDeSer";
@@ -91,7 +91,7 @@ export * from "./build/cd/mc/fenix/charts/gemradarcharttypes/GemRadarChartDataSe
 export * from "./build/cd/mc/fenix/charts/gemradarcharttypes/GemRadarChartDataSetDeSer";
 export * from "./build/cd/mc/fenix/charts/gemradarcharttypes/GemRadarChartTypesDeSer";
 
-export * from "./src/main/ts/mc/fenix/charts/GemScatterPlot";
+export * from "./src/main/gui/mc/fenix/charts/GemScatterPlot";
 export * from "./build/cd/mc/fenix/charts/gemscatterplottypes/GemScatterPlotData";
 export * from "./build/cd/mc/fenix/charts/gemscatterplottypes/GemScatterPlotDataBuilder";
 export * from "./build/cd/mc/fenix/charts/gemscatterplottypes/GemScatterPlotDataDeSer";
@@ -107,7 +107,7 @@ export * from "./build/cd/mc/fenix/charts/gemscatterplottypes/GemScatterPlotPoin
 export * from "./build/cd/mc/fenix/charts/gemscatterplottypes/GemScatterPlotShape";
 export * from "./build/cd/mc/fenix/charts/gemscatterplottypes/GemScatterPlotTypesDeSer";
 
-export * from "./src/main/ts/mc/fenix/charts/GemSunburstChart";
+export * from "./src/main/gui/mc/fenix/charts/GemSunburstChart";
 export * from "./build/cd/mc/fenix/charts/gemsunburstcharttypes/GemSunburstData";
 export * from "./build/cd/mc/fenix/charts/gemsunburstcharttypes/GemSunburstDataBuilder";
 export * from "./build/cd/mc/fenix/charts/gemsunburstcharttypes/GemSunburstDataDeSer";
@@ -122,7 +122,7 @@ export * from "./build/cd/mc/fenix/charts/gemsunburstcharttypes/GemSDNshortBuild
 export * from "./build/cd/mc/fenix/charts/gemsunburstcharttypes/GemSDNshortDeSer";
 export * from "./build/cd/mc/fenix/charts/gemsunburstcharttypes/GemSunburstChartTypesDeSer";
 
-export * from "./src/main/ts/mc/fenix/charts/GemVennDiagram";
+export * from "./src/main/gui/mc/fenix/charts/GemVennDiagram";
 export * from "./build/cd/mc/fenix/charts/gemvenndiagramtypes/GemVennDiagramData";
 export * from "./build/cd/mc/fenix/charts/gemvenndiagramtypes/GemVennDiagramDataBuilder";
 export * from "./build/cd/mc/fenix/charts/gemvenndiagramtypes/GemVennDiagramDataDeSer";

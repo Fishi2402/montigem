@@ -22,7 +22,7 @@ Default app setup has source roots for
 - frontend
   - `frontend/build/frontendGen/build/` - code generated from models
   - `frontend/src/main/java` - hand-written java code
-  - `frontend/src/main/ts` - hand-written ts code
+  - `frontend/src/main/gui` - hand-written ts code
 - models
   - `models` - folder with models
 

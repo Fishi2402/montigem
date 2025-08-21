@@ -1,5 +1,5 @@
-export * from './src/main/ts/main/ts/mc/fenix/networkgraph/GemGraph';
-export * from './src/main/ts/main/ts/mc/fenix/networkgraph/custom-programs';
+export * from './src/main/gui/main/ts/mc/fenix/networkgraph/GemGraph';
+export * from './src/main/gui/main/ts/mc/fenix/networkgraph/custom-programs';
 
 export * from './build/cd/mc/fenix/networkgraph/networkgraphtypes/Graph';
 export * from './build/cd/mc/fenix/networkgraph/networkgraphtypes/GraphBuilder';

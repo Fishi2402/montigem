@@ -1,2 +1,2 @@
-export * from './src/main/ts/mc/fenix/navigation/GemNavItem';
-export * from './src/main/ts/mc/fenix/navigation/GemNavList';
+export * from './src/main/gui/mc/fenix/navigation/GemNavItem';
+export * from './src/main/gui/mc/fenix/navigation/GemNavList';

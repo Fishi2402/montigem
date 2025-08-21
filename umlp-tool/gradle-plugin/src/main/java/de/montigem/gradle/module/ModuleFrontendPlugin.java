@@ -179,7 +179,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
         Provider<Directory> cd2tagsDir = subproject.getLayout().getBuildDirectory().dir(subproject.provider(() -> "cd2tags"));
         Provider<Directory> umlp2tsDir = subproject.getLayout().getBuildDirectory().dir(subproject.provider(() -> "umlp2ts"));
 
-        Provider<Directory> srcTS = subproject.getLayout().getProjectDirectory().dir(subproject.provider(() -> "src/main/ts"));
+        Provider<Directory> srcTS = subproject.getLayout().getProjectDirectory().dir(subproject.provider(() -> "src/main/gui"));
         Provider<Directory> srcJava = subproject.getLayout().getProjectDirectory().dir(subproject.provider(() -> "src/main/java"));
 
         mainSourceSet.getJava().srcDir(srcJava);

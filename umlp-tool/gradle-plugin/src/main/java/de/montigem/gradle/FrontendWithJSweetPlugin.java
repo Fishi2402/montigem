@@ -442,7 +442,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
   private static final String JSWEET_JAVA_HWC_PATH_PROPERTY = "jsweetjavaHWCPath";
   private static final String JSWEET_JAVA_HWC_PATH_DEFAULT = "src/main/java";
   private static final String JSWEET_TS_HWC_PATH_PROPERTY = "jsweetTSHWCPath";
-  private static final String JSWEET_TS_HWC_PATH_DEFAULT = "src/main/ts";
+  private static final String JSWEET_TS_HWC_PATH_DEFAULT = "src/main/gui";
   private static final String JSWEET_BUILD_DIR_PROPERTY = "jsweetBuildDirBase";
   private static final String JSWEET_BUILD_DIR_DEFAULT = "jsweet";
   private static final String JSWEET_DOMAIN_BUILD_DIR_DEFAULT = "domainBuild";

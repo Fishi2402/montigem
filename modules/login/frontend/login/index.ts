@@ -1,12 +1,12 @@
-export * from './src/main/ts/loginmodule/LoginModuleUser';
-export * from './src/main/ts/loginmodule/LoginSecManager';
-export * from './src/main/ts/loginmodule/LoginSecManager4Imp';
+export * from './src/main/gui/loginmodule/LoginModuleUser';
+export * from './src/main/gui/loginmodule/LoginSecManager';
+export * from './src/main/gui/loginmodule/LoginSecManager4Imp';
 
-export * from './src/main/ts/montigem/ForgotPassword';
-export * from './src/main/ts/montigem/ResetPassword';
-export * from './src/main/ts/montigem/UserCreate';
-export * from './src/main/ts/montigem/UserLogin';
-export * from './src/main/ts/montigem/UserSignUp';
+export * from './src/main/gui/montigem/ForgotPassword';
+export * from './src/main/gui/montigem/ResetPassword';
+export * from './src/main/gui/montigem/UserCreate';
+export * from './src/main/gui/montigem/UserLogin';
+export * from './src/main/gui/montigem/UserSignUp';
 
 export * from './build/gui/montigem/MontigemGemRouting';
 
