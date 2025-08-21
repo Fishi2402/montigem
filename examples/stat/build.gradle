@@ -62,6 +62,7 @@ tasks.register('copyGeneratedFiles', Sync) {
 }
 
 umlp2java {
+  input = file("./src/models")
   configTemplate = "umlp.UMLP2JavaNeo4j"
 }
 

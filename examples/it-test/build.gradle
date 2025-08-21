@@ -14,7 +14,7 @@ dependencies {
 }
 
 umlp2java {
-
+  input = file("./src/models")
   hwcDir = [file("$projectDir/src/main/java"), file("$projectDir/src/test/java")]
 }
 
