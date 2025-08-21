@@ -14,7 +14,12 @@ configurations {
   scGenerator
 }
 
-def modelsDir = projectDir.toPath().resolve("src").resolve("models")
+umlp2java {
+  input = file("./models/SCExample.umlp")
+  hwcDir = [file("$projectDir/src/main/java")]
+}
+
+def modelsDir = projectDir.toPath().resolve("models")
 def scOutDir = buildDir.toPath().resolve("sc")
 
 tasks.register('genSc', JavaExec) {
