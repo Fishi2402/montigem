@@ -10,14 +10,14 @@ classdiagram FunctionStructure4Fenix {
     class Function4Display {
       String name;
       String borderColor = "black";
-      String borderColorHover;
+      String borderColorHover = "#407fb7";
       String backgroundColor = "white";
       boolean visible = true;
     }
 
     class Channel4Display{
       String lineColor = "black";
-      String lineColorHover;
+      String lineColorHover = "#407fb7";
       boolean visible = true;
     }
 
@@ -35,14 +35,14 @@ classdiagram FunctionStructure4Fenix {
     class Port4Display {
       String name;
       String borderColor = "black";
-      String borderColorHover;
+      String borderColorHover = "#407fb7";
       String backgroundColor = "white";
       boolean visible = true;
       boolean labelVisible = true;
     }
 
-    association [0..1] Function4Display (onwerIn) -> (in) Port4Display [*];
-    association [0..1] Function4Display (ownerOut) -> (out) Port4Display [*];
+    association [0..1] Function4Display (ownerIn) <-> (in) Port4Display [*];
+    association [0..1] Function4Display (ownerOut) <-> (out) Port4Display [*];
     association [*] Port4Display <-> Channel4Display [1];
 
     composition [0..1] Function4Display (owner) <-> (subFunction) Function4Display [*];

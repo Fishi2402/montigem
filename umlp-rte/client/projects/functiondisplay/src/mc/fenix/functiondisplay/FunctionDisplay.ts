@@ -375,7 +375,7 @@ export class FunctionDisplay extends FunctionDisplayComponent {
       portG.appendChild(title);
       let path = document.createElementNS(svgNS, "path");
       path.setAttribute("fill", "none");
-      path.setAttribute("stroke", "rgb(0, 0, 0)");
+      path.setAttribute("stroke", `${port.port4display.getBorderColor()}`);
       path.setAttribute("stroke-miterlimit", "10");
       path.setAttribute("pointer-events", "none");
       path.setAttribute("d", "M 0 -5 L 5 0 L 0 5 M 5 0 L -5 0");  //arrow
