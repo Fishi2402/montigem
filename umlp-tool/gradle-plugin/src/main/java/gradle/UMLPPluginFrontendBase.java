@@ -77,10 +77,21 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
 
     TaskProvider<UMLPSymLinkCreationTask> symlinkCreationTask = createSymlinkCreationTask(project, local);
 
-    var buildAppTask = createNPXTask(project, "buildApp", "build");
-    buildAppTask.configure(t -> {
+    // New lifecycle task to bundle dependencies for buildApp
+    TaskProvider<Task> prepareBuildApp = project.getTasks().register("prepareBuildApp", task -> {
+      task.setDescription("Bundles all dependencies for the buildApp task without executing it.");
+      task.setGroup("build");
+    });
+
+    // Configure dependencies for the new prepareBuildApp task
+    prepareBuildApp.configure(t -> {
       t.dependsOn(symlinkCreationTask);
       t.dependsOn("generate");
+    });
+
+    var buildAppTask = createNPXTask(project, "buildApp", "build");
+    buildAppTask.configure(t -> {
+      t.dependsOn(prepareBuildApp);
     });
 
     var testAppTask = createNPXTask(project, "testApp", "test");
@@ -93,16 +104,17 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
       t.dependsOn(symlinkCreationTask);
       t.dependsOn("generate");
     });
+
     if (project.getGradle().getStartParameter().isRefreshDependencies()) {
       TaskProvider<Task> npmUpdate = project.getTasks().named("npm_update", task -> {
         task.dependsOn("npmInstall");
       });
-      buildAppTask.configure(t -> t.dependsOn(npmUpdate));
+      prepareBuildApp.configure(t -> t.dependsOn(npmUpdate));
       runAppTask.configure(t -> t.dependsOn(npmUpdate));
       testAppTask.configure(t -> t.dependsOn(npmUpdate));
     }
     else {
-      buildAppTask.configure(t -> t.dependsOn("npmInstall"));
+      prepareBuildApp.configure(t -> t.dependsOn("npmInstall"));
       runAppTask.configure(t -> t.dependsOn("npmInstall"));
       testAppTask.configure(t -> t.dependsOn("npmInstall"));
     }
@@ -135,11 +147,7 @@ public abstract class UMLPPluginFrontendBase implements Plugin<Project> {
     if(local) {
       TaskProvider<UMLPSymLinkCreationTask> symlinkClientProdTask = createSymlinkClientProductionCreationTask(project);
       symlinkClientProdTask.configure(t -> t.dependsOn(symlinkCreationTask));
-      project.getTasks().configureEach(t -> {
-        if(t.getName().equals("buildApp")) {
-          t.dependsOn(symlinkClientProdTask);
-        }
-      });
+      prepareBuildApp.configure(t -> t.dependsOn(symlinkClientProdTask));
     }
     //
 
