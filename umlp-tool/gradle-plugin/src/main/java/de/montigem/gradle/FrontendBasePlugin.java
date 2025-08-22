@@ -335,12 +335,8 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
     if (!inRTE(project)) {
       if (local) {
         Project rteClient = project.project(":umlp-rte:client");
-        project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG,
-            project.getDependencies().project(Map.of("path", rteClient.getPath()))
-        );
-        project.getDependencies().add(MONTIGEM_MODULE_IMPORT_MAP_CONFIG,
-            project.getDependencies().project(Map.of("path", rteClient.getPath()))
-        );
+        project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG, rteClient);
+        project.getDependencies().add(MONTIGEM_MODULE_IMPORT_MAP_CONFIG, rteClient);
       }
       else {
         project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG,

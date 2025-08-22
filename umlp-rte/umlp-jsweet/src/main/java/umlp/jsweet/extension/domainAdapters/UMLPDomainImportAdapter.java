@@ -10,6 +10,7 @@ import org.jsweet.transpiler.model.ImportElement;
 
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -61,9 +62,7 @@ public abstract class UMLPDomainImportAdapter extends PrinterAdapter {
 
   // Allows adding domain names to the domainNames set.
   protected final void addDomainName(String... domainName) {
-    for (String s : domainName) {
-      this.domainNames.add(s);
-    }
+    this.domainNames.addAll(Arrays.asList(domainName));
   }
 
   // Abstract method to set the domain name. This method must be implemented by all subclasses of UMLPDomainImportAdapter.

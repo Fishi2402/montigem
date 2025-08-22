@@ -11,7 +11,7 @@ dependencies {
   montigemModuleImportMap project(":umlp-rte")
   montigemModuleGUISymbols project(":umlp-rte")
   implementation project(":examples:sehub:backend")
-  domainSources project(":examples:sehub:backend")
+  jsweetExtraSourcesConfig project(":examples:sehub:backend")
 }
 
 node {

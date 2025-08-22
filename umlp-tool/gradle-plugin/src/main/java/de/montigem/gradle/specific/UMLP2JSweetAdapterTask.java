@@ -17,25 +17,17 @@ import org.gradle.workers.WorkerExecutor;
 
 import javax.inject.Inject;
 
-public abstract class Model2JsweetConfigTask extends DefaultTask {
+public abstract class UMLP2JSweetAdapterTask extends DefaultTask {
 
   @Input
-  public abstract Property<String> getDomainModel();
-
-  @Input
-  @Optional
-  public abstract Property<Boolean> getGenerateForDomain();
-
-  @Input
-  @Optional
-  public abstract Property<Boolean> getGenerateForGui();
+  public abstract Property<String> getDomain();
 
   @OutputDirectory
-  public abstract DirectoryProperty getJsweetConfigOut();
+  public abstract DirectoryProperty getJSweetAdapterDir();
 
   @Optional
   @InputDirectory
-  public abstract DirectoryProperty getHwcDir();
+  public abstract DirectoryProperty getHandWrittenCodeDir();
 
   @Inject
   abstract public WorkerExecutor getWorkerExecutor();
@@ -47,12 +39,10 @@ public abstract class Model2JsweetConfigTask extends DefaultTask {
   @TaskAction
   public void run() {
     WorkQueue workQueue = getWorkerExecutor().classLoaderIsolation(spec -> spec.getClasspath().from(getClassPath()));
-    workQueue.submit(Model2JsweetConfigAction.class, params -> {
-      params.getDomainModel().set(getDomainModel());
-      params.getGenerateForDomain().set(getGenerateForDomain());
-      params.getGenerateForGui().set(getGenerateForGui());
-      params.getJsweetConfigOut().set(getJsweetConfigOut());
-      params.getHwcDir().set(getHwcDir());
+    workQueue.submit(UMLP2JSweetAdapterAction.class, params -> {
+      params.getDomain().set(getDomain());
+      params.getJSweetAdapterDir().set(getJSweetAdapterDir());
+      params.getHandWrittenCodeDir().set(getHandWrittenCodeDir());
     });
   }
 

@@ -38,12 +38,12 @@ domainModel = 'FunctionStructure4Fenix'
 ```
 
 2. In der Datei `build.gradle` im `dependency` Block eine 
-`implementation` sowie eine `domainSources` Abhängigkeit auf das `backend` 
+`implementation` sowie eine `jsweetExtraSourcesConfig` Abhängigkeit auf das `backend` 
 Projekt anlegen  
 z.B. 
 ```groovy
 dependencies {
-    domainSources project(":backend")
+    jsweetExtraSourcesConfig project(":backend")
     implementation project(":backend")
 }
 ```

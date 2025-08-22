@@ -2,11 +2,12 @@
 package de.montigem.gradle;
 
 import de.montigem.gradle.specific.CreateSymlinkTask;
+import de.montigem.gradle.specific.GUI2JSweetAdapterTask;
 import de.montigem.gradle.specific.GUI2JavaTask;
 import de.montigem.gradle.specific.Java2TSTask;
-import de.montigem.gradle.specific.Model2JsweetConfigTask;
 import de.montigem.gradle.specific.SetupFrontendTask;
-import de.montigem.gradle.specific.UMLP2JsweetObserverTask;
+import de.montigem.gradle.specific.UMLP2JSweetAdapterTask;
+import de.montigem.gradle.specific.UMLP2JSweetObserverTask;
 import de.montigem.gradle.specific.UMLP2SymTask;
 import de.se_rwth.commons.logging.Log;
 import groovy.lang.Closure;
@@ -55,20 +56,20 @@ import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_UMLP_MODELS_CONFIG
  */
 public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
 
-  static final String UMLP_JAVA2TS_TASK = "umlpJava2ts";
-  static final String GUI_JAVA2TS_TASK = "guiJava2ts";
-  static final String UMLP2JSWEET_TASK = "umlp2jsweet";
-  static final String SYNC_UMLP2JSWEET_TASK = "sync_umlp2jsweet";
-  static final String GUI2JSWEET_TASK = "gui2jsweet";
-  static final String SYNC_GUI2JSWEET_TASK = "sync_gui2jsweet";
-  static final String UMLP2JSWEET_OBS_TASK = "umlp2jsweetObs";
+  public static final String UMLP_JAVA2TS_TASK = "umlpJava2ts";
+  public static final String GUI_JAVA2TS_TASK = "guiJava2ts";
+  public static final String UMLP2JSWEET_ADAPTER_TASK = "umlp2jsweetAdapter";
+  public static final String SYNC_UMLP2JSWEET_TASK = "sync_umlp2jsweet";
+  public static final String GUI2JSWEET_ADAPTER_TASK = "gui2jsweetAdapter";
+  public static final String SYNC_GUI2JSWEET_TASK = "sync_gui2jsweet";
+  public static final String UMLP2JSWEET_OBSERVER_TASK = "umlp2jsweetObserver";
 
-  private static final String DOMAIN_MODEL_CONFIG = "domainModel";
-  private static final String DOMAIN_SOURCES_CONFIG = "domainSources";
+  public static final String DOMAIN_MODEL_PROPERTY = "domainModel";
+  public static final String JSWEET_EXTRA_SOURCES_CONFIG = "jsweetExtraSourcesConfig";
 
-  private static final String JSWEET_CONFIG = "jsweetConfig";
+  public static final String JSWEET_CONFIG = "jsweetConfig";
 
-  private static List<String> defaultExcludedSources = List.of(
+  public static List<String> defaultExcludedSources = List.of(
       "glob:**/shellapi/*ShellAPI.java",
       "glob:**/Abstract*E2ETest*.java",
       "glob:**/test_infrastructure/*.java",
@@ -92,7 +93,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
 
     boolean local = FrontendBasePlugin.getBooleanProjectProperty(project, "useLocalDependencies");
 
-    String domainModel = getStringProjectPropertyStrip(project, DOMAIN_MODEL_CONFIG, "");
+    String domainModel = getStringProjectPropertyStrip(project, DOMAIN_MODEL_PROPERTY, "");
     if (domainModel.isEmpty()) {
       Directory models = project.getLayout().getProjectDirectory().dir("../models");
       // default .umlp file(s)
@@ -137,13 +138,13 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
     TaskProvider<UMLP2SymTask> umlp2sym = project.getTasks().named(UMLP2SYM_TASK, UMLP2SymTask.class);
 
     TaskProvider<Java2TSTask> guiJava2TS = createGUIJava2TSTask(project);
-    TaskProvider<UMLP2JsweetObserverTask> umlp2jsweetObs = createUMLP2JSweetObsTask(project);
+    TaskProvider<UMLP2JSweetObserverTask> umlp2jsweetObserver = createUMLP2JSweetObsTask(project);
 
-    TaskProvider<Model2JsweetConfigTask> umlp2jsweet = createUMLP2JSweetTask(project, domainModel);
-    TaskProvider<Sync> syncUMLP2JSweet = createSyncUMLP2JSweetTask(project);
+    TaskProvider<UMLP2JSweetAdapterTask> umlp2jsweet = createUMLP2JSweetAdapterTask(project, domainModel);
+    // TaskProvider<Sync> syncUMLP2JSweet = createSyncUMLP2JSweetTask(project);
 
-    TaskProvider<Model2JsweetConfigTask> gui2jsweet = createGUI2JSweetTask(project, domainModel);
-    TaskProvider<Sync> syncGUI2JSweet = createSyncGUI2JSweetTask(project);
+    TaskProvider<GUI2JSweetAdapterTask> gui2jsweet = createGUI2JSweetAdapterTask(project, domainModel);
+    // TaskProvider<Sync> syncGUI2JSweet = createSyncGUI2JSweetTask(project);
     TaskProvider<Java2TSTask> umlpJava2TS = createUMLPJava2TSTask(project);
 
     this.addSourceSets(project);
@@ -159,6 +160,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       task.getGuiGenTSFuncionality().set(false);
       task.getGuiGenJsweet().set(true);
     });
+    /*
     syncUMLP2JSweet.configure(task -> {
       task.from(umlp2jsweet.get().getJsweetConfigOut().getAsFile());
       task.dependsOn(umlp2jsweet);
@@ -175,9 +177,10 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
         task.from(gui2jsweet.get().getHwcDir());
       }
     });
+    /**/
     umlpJava2TS.configure(task -> {
-      task.getJsweetDir().set(syncUMLP2JSweet.get().getDestinationDir());
-      task.dependsOn(syncUMLP2JSweet.get());
+//      task.getJsweetDir().set(syncUMLP2JSweet.get().getDestinationDir());
+//      task.dependsOn(syncUMLP2JSweet.get());
       task.dependsOn(umlp2sym);
       if (local) {
         task.dependsOn(project.findProject(":umlp-rte").getTasks().getByName("jar"));
@@ -189,9 +192,9 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
     project.getTasks().getByName("compileJava").dependsOn(gui2java.get());
 
     guiJava2TS.configure(task -> {
-      task.getJsweetDir().set(syncGUI2JSweet.get().getDestinationDir());
+//      task.getJsweetDir().set(syncGUI2JSweet.get().getDestinationDir());
+//      task.dependsOn(syncGUI2JSweet);
       task.dependsOn(gui2java);
-      task.dependsOn(syncGUI2JSweet);
     });
 
     syncUMLP2TSTask.configure(task -> {
@@ -202,7 +205,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
     syncGUI2JavaTask.configure(task -> {
       task.from(gui2java.get().getOutputDir());
       task.from(guiJava2TS.get().getOutputDir());
-      task.from(umlp2jsweetObs.get().getOutputDir());
+      task.from(umlp2jsweetObserver.get().getOutputDir());
       task.dependsOn(guiJava2TS, setupFrontendTask);
     });
 
@@ -228,20 +231,20 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
 */
 
     project.getTasks().named("generate").configure(generateTask -> {
-      generateTask.dependsOn(guiJava2TS, syncUMLP2JSweet/*, syncTSGuiHWC, syncTSDomainHWC*/);
+      generateTask.dependsOn(guiJava2TS/*, syncUMLP2JSweet, syncTSGuiHWC, syncTSDomainHWC*/);
     });
   }
 
   protected TaskProvider<Java2TSTask> createUMLPJava2TSTask(Project project) {
     return project.getTasks().register(UMLP_JAVA2TS_TASK, Java2TSTask.class, task -> {
       task.setGroup(UMLP_GROUP_NAME);
-      task.getJsweetDir().set(jsweetBuildDomainDir.toFile());
-      task.getJsweetWorkingDir().set(jsweetWorkingDir.resolve("umlpJava2ts").toFile());
-      task.getCandiesJsOutDir().set(task.getJsweetWorkingDir().dir("candies"));
+      task.getJSweetAdapterDir().set(jsweetBuildDomainDir.toFile());
+      task.getJSweetWorkingDir().set(jsweetWorkingDir.resolve("umlpJava2ts").toFile());
+      task.getJSweetCandiesDir().set(task.getJSweetWorkingDir().dir("candies"));
       task.getOutputDir().set(jsweetDomainOutDir.toFile());
 
       // // add domain-sources to the to-be-transpiled
-      task.getInput().from(project.getConfigurations().getByName(DOMAIN_SOURCES_CONFIG));
+      task.getInput().from(project.getConfigurations().getByName(JSWEET_EXTRA_SOURCES_CONFIG));
       task.getJSweetClassPath().from(project.getConfigurations().getByName(JSWEET_CONFIG));
 
       // TODO: Fix ShellAPI imports
@@ -252,34 +255,32 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
     });
   }
 
-  protected TaskProvider<Model2JsweetConfigTask> createUMLP2JSweetTask(Project project,
+  protected TaskProvider<UMLP2JSweetAdapterTask> createUMLP2JSweetAdapterTask(Project project,
       String domainModel) {
-    return project.getTasks().register(UMLP2JSWEET_TASK, Model2JsweetConfigTask.class, task -> {
+    return project.getTasks().register(UMLP2JSWEET_ADAPTER_TASK, UMLP2JSweetAdapterTask.class, task -> {
       task.setGroup(UMLP_GROUP_NAME);
-      task.getDomainModel().set(domainModel);
-      task.getGenerateForDomain().set(true);
-      task.getJsweetConfigOut().set(jsweetDomainConfigOutDir.toFile());
-      setIfPathExists(x -> task.getHwcDir().set(x), jsweetDomainConfigHWCDir);
+      task.getDomain().set(domainModel);
+      task.getJSweetAdapterDir().set(jsweetDomainConfigOutDir.toFile());
+      setIfPathExists(x -> task.getHandWrittenCodeDir().set(x), jsweetDomainConfigHWCDir);
     });
   }
 
-  protected TaskProvider<Model2JsweetConfigTask> createGUI2JSweetTask(Project project,
+  protected TaskProvider<GUI2JSweetAdapterTask> createGUI2JSweetAdapterTask(Project project,
       String domainModel) {
-    return project.getTasks().register(GUI2JSWEET_TASK, Model2JsweetConfigTask.class, umlpTask -> {
-      umlpTask.setGroup(UMLP_GROUP_NAME);
-      umlpTask.getDomainModel().set(domainModel);
-      umlpTask.getGenerateForGui().set(true);
-      umlpTask.getJsweetConfigOut().set(jsweetGuiConfigOutDir.toFile());
-      setIfPathExists(x -> umlpTask.getHwcDir().set(x), jsweetGUIConfigHWCDir);
+    return project.getTasks().register(GUI2JSWEET_ADAPTER_TASK, GUI2JSweetAdapterTask.class, task -> {
+      task.setGroup(UMLP_GROUP_NAME);
+      task.getDomain().set(domainModel);
+      task.getJSweetAdapterDir().set(jsweetGuiConfigOutDir.toFile());
+      setIfPathExists(x -> task.getHandWrittenCodeDir().set(x), jsweetGUIConfigHWCDir);
     });
   }
 
   protected TaskProvider<Java2TSTask> createGUIJava2TSTask(Project project) {
     return project.getTasks().register(GUI_JAVA2TS_TASK, Java2TSTask.class, task -> {
       task.setGroup(UMLP_GROUP_NAME);
-      task.getJsweetDir().set(jsweetBuildGUIDir.toFile());
-      task.getJsweetWorkingDir().set(jsweetWorkingDir.resolve(task.getName()).toFile());
-      task.getCandiesJsOutDir().set(task.getJsweetWorkingDir().dir("candies"));
+      task.getJSweetAdapterDir().set(jsweetBuildGUIDir.toFile());
+      task.getJSweetWorkingDir().set(jsweetWorkingDir.resolve(task.getName()).toFile());
+      task.getJSweetCandiesDir().set(task.getJSweetWorkingDir().dir("candies"));
       task.getOutputDir().set(jsweetGUIOutDir.toFile());
 
       // set jsweet-runtime classpath
@@ -292,9 +293,9 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       // TODO: Remove the following at some point
       // required with getExcludeTranspile - otherwise "import { Project } from '@src/dtcockpit/Project';" is missing in GUI ts files
       // Add the domain-sources as a java-source
-      task.getInput().from(project.getConfigurations().getByName(DOMAIN_SOURCES_CONFIG));
+      task.getInput().from(project.getConfigurations().getByName(JSWEET_EXTRA_SOURCES_CONFIG));
       // but exclude them from being transpiled (thus, only available as source files)
-      task.getExcludeTranspileFiles().from(project.getConfigurations().getByName(DOMAIN_SOURCES_CONFIG));
+      task.getExcludeTranspileFiles().from(project.getConfigurations().getByName(JSWEET_EXTRA_SOURCES_CONFIG));
       // TODO: END OF REMOVAL
 
       // TODO: Fix ShellAPI imports
@@ -305,8 +306,8 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
     });
   }
 
-  private TaskProvider<UMLP2JsweetObserverTask> createUMLP2JSweetObsTask(Project project) {
-    TaskProvider<UMLP2JsweetObserverTask> umlp2jsweetObs = project.getTasks().register(UMLP2JSWEET_OBS_TASK, UMLP2JsweetObserverTask.class, task -> {
+  private TaskProvider<UMLP2JSweetObserverTask> createUMLP2JSweetObsTask(Project project) {
+    return project.getTasks().register(UMLP2JSWEET_OBSERVER_TASK, UMLP2JSweetObserverTask.class, task -> {
       task.setGroup(UMLP_GROUP_NAME);
       task.getInput().from(FrontendBasePlugin.getModels(project));
       task.getOutputDir().set(jsweetGUIAdditionalsOutDir.toFile());
@@ -321,7 +322,6 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
 
       task.getModelDir().from(project.getConfigurations().named(MONTIGEM_MODULE_UMLP_MODELS_CONFIG));
     });
-    return umlp2jsweetObs;
   }
 
   private TaskProvider<Sync> createSyncUMLP2JSweetTask(Project project) {
@@ -359,8 +359,8 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
     });
   }*/
 
-  void setupJSweetClasspath(Project project, boolean local) {
-    project.getConfigurations().register(DOMAIN_SOURCES_CONFIG, config -> {
+  public static void setupJSweetClasspath(Project project, boolean local) {
+    project.getConfigurations().register(JSWEET_EXTRA_SOURCES_CONFIG, config -> {
       config.setTransitive(false);
       config.attributes(at -> {
         at.attribute(VerificationType.VERIFICATION_TYPE_ATTRIBUTE,

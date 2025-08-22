@@ -1,11 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.montigem.gradle;
 
+import de.montigem.gradle.specific.GUI2JSweetAdapterTask;
+import de.montigem.gradle.specific.UMLP2JSweetAdapterTask;
 import de.montigem.gradle.specific.serialize.GUI2SymTask;
 import de.se_rwth.commons.logging.Log;
 import de.montigem.gradle.common.MGAllFilesTask;
 import de.montigem.gradle.common.MGSingleFileTask;
-import de.montigem.gradle.specific.Model2JsweetConfigTask;
 import de.montigem.gradle.specific.merge.MergeTask;
 import de.montigem.gradle.specific.serialize.CD2SymTask;
 import org.gradle.api.Plugin;
@@ -60,7 +61,8 @@ public abstract class DependencyPlugin implements Plugin<Project> {
     project.getTasks().withType(CD2SymTask.class).configureEach(t -> t.getClassPath().from(toolConfig));
     project.getTasks().withType(GUI2SymTask.class).configureEach(t -> t.getClassPath().from(toolConfig));
     project.getTasks().withType(MergeTask.class).configureEach(t -> t.getClassPath().from(toolConfig));
-    project.getTasks().withType(Model2JsweetConfigTask.class).configureEach(t -> t.getClassPath().from(toolConfig));
+    project.getTasks().withType(GUI2JSweetAdapterTask.class).configureEach(t -> t.getClassPath().from(toolConfig));
+    project.getTasks().withType(UMLP2JSweetAdapterTask.class).configureEach(t -> t.getClassPath().from(toolConfig));
   }
 
 

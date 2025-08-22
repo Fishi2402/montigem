@@ -22,7 +22,7 @@ import java.util.stream.StreamSupport;
 import static umlp.UMLPToolOptions.GUI_GEN_JSWEET;
 
 // Task might not be a @CacheableTask since relative paths are generated for HWC-files
-public abstract class UMLP2JsweetObserverTask extends MGSingleFileTask {
+public abstract class UMLP2JSweetObserverTask extends MGSingleFileTask {
 
   @OutputDirectory
   public abstract DirectoryProperty getJsweetConfigOut();
@@ -32,8 +32,8 @@ public abstract class UMLP2JsweetObserverTask extends MGSingleFileTask {
   @org.gradle.api.tasks.Optional
   public abstract DirectoryProperty getSymbolOutDir();
 
-  public UMLP2JsweetObserverTask() {
-    super("Model2JsweetConfigTask", null);
+  public UMLP2JSweetObserverTask() {
+    super("GUI2JSweetAdapterTask", null);
     getJsweetConfigOut().convention(getProject().getLayout().getBuildDirectory().dir("jsweet/gen/"));
   }
 

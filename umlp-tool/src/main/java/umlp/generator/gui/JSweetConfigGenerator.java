@@ -17,6 +17,7 @@ public class JSweetConfigGenerator {
   private static final String DOMAIN_CONFIG_FILE = "umlp.jsweetconfig.JSweetConfigDomainJSON";
 
   private static final String GUI_CONFIG_FILE = "umlp.jsweetconfig.JSweetConfigGUIJSON";
+  private static final String GUI_CONFIG_NO_DOMAIN_FILE = "umlp.jsweetconfig.JSweetConfigGUINoDomainJSON";
 
   protected GeneratorSetup generatorSetup;
   protected GeneratorEngine generatorEngine;
@@ -25,6 +26,14 @@ public class JSweetConfigGenerator {
     this.generatorSetup = generatorSetup;
     this.generatorEngine = new GeneratorEngine(generatorSetup);
     generatorSetup.setTracing(false);
+  }
+
+  public void generate() {
+    File jsweetConfig = calcTOPFile("jsweetconfig", "json");
+    generatorEngine.generateNoA(
+        GUI_CONFIG_NO_DOMAIN_FILE,
+        jsweetConfig.toPath()
+    );
   }
 
   // forDomain differentiates between the config file generated for the Domain JSweet Task and the
@@ -36,7 +45,8 @@ public class JSweetConfigGenerator {
     generatorEngine.generateNoA(
         configFile,
         jsweetConfig.toPath(),
-        domainName);
+        domainName
+    );
 
     File importAdapter = calcTOPFile(Paths.get("jsweet_extension", "umlp", "jsweet", "extension", "domainAdapters"), domainName + "ImportAdapter", "java");
     generatorEngine.generateNoA(

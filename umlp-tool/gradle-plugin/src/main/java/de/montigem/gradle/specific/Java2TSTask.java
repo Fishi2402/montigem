@@ -73,13 +73,13 @@ public abstract class Java2TSTask extends DefaultTask {
 //  public abstract DirectoryProperty getHandWrittenConfigDir();
 
   @InputDirectory
-  public abstract DirectoryProperty getJsweetDir();
+  public abstract DirectoryProperty getJSweetAdapterDir();
 
   @OutputDirectory
-  public abstract DirectoryProperty getJsweetWorkingDir();
+  public abstract DirectoryProperty getJSweetWorkingDir();
 
   @OutputDirectory
-  public abstract DirectoryProperty getCandiesJsOutDir();
+  public abstract DirectoryProperty getJSweetCandiesDir();
 
 
   @InputFiles
@@ -92,9 +92,9 @@ public abstract class Java2TSTask extends DefaultTask {
   @TaskAction
   public void run() throws IOException {
 
-    File baseDirectory = getJsweetDir().get().getAsFile();
-    File workingDir = getJsweetWorkingDir().get().getAsFile();
-    File candiesJsOut = getCandiesJsOutDir().get().getAsFile();
+    File baseDirectory = getJSweetAdapterDir().get().getAsFile();
+    File workingDir = getJSweetWorkingDir().get().getAsFile();
+    File candiesJsOut = getJSweetCandiesDir().get().getAsFile();
 
     File outputDir = getOutputDir().get().getAsFile();
 
