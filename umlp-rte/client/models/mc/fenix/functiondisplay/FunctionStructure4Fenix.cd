@@ -41,8 +41,8 @@ classdiagram FunctionStructure4Fenix {
       boolean labelVisible = true;
     }
 
-    association [1] Function4Display (ownerIn) <-> (in) Port4Display [*];
-    association [1] Function4Display (ownerOut) <-> (out) Port4Display [*];
+    association [0..1] Function4Display (ownerIn) <-> (in) Port4Display [*];
+    association [0..1] Function4Display (ownerOut) <-> (out) Port4Display [*];
     association [*] Port4Display <-> Channel4Display [1];
 
     composition [0..1] Function4Display (owner) <-> (subFunction) Function4Display [*];
