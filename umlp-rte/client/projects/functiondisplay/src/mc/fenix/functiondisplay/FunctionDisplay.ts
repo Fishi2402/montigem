@@ -481,8 +481,8 @@ export class FunctionDisplay extends FunctionDisplayComponent {
         let path = document.createElementNS(svgNS, "path");
         path.setAttribute("d", "M 0 0 L -7 -3.5 L -5.25 0 L -7 3.5 Z"); //arrow head
         path.setAttribute("transform", `translate(${section.endPoint.x - 1},${section.endPoint.y})`);
-        path.setAttribute("fill", "rgb(0, 0, 0)");
-        path.setAttribute("stroke", "rgb(0, 0, 0)");
+        path.setAttribute("fill", `${edge.channel4Display.getLineColor()}`);
+        path.setAttribute("stroke", `${edge.channel4Display.getLineColor()}`);
         path.setAttribute("stroke-miterlimit", "10");
         g.appendChild(path);
       }
