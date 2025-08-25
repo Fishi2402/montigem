@@ -75,21 +75,23 @@ build_no_containers:
     refs:
       - dev
 
-build_intellij_plugin:
-  image: gradle:8.5
-  stage: build
-  script:
-    - "cd umlp-tool"
-    - "gradle buildPlugin -P buildIntelliJPlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 | tee -a $CI_PROJECT_DIR/build.log"
-  artifacts:
-    when: always
-    paths:
-      - umlp-tool/umlp-intellij-plugin/build/distributions/**
-      - build.log
-    reports:
-      # Lets gitlab render infos about failed tests
-      junit: "**/test/**/TEST-*.xml"
-    expire_in: 1 week
+# Disabled, since gradle toolchains can currently not be resolved properly
+# and this task is no-essential
+#build_intellij_plugin:
+#  image: gradle:8.5
+#  stage: build
+#  script:
+#    - "cd umlp-tool"
+#    - "gradle buildPlugin -P buildIntelliJPlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 | tee -a $CI_PROJECT_DIR/build.log"
+#  artifacts:
+#    when: always
+#    paths:
+#      - umlp-tool/umlp-intellij-plugin/build/distributions/**
+#      - build.log
+#    reports:
+#      # Lets gitlab render infos about failed tests
+#      junit: "**/test/**/TEST-*.xml"
+#    expire_in: 1 week
 
 build_with_deploy:
   stage: build
