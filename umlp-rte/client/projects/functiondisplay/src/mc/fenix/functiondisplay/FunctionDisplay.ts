@@ -68,8 +68,8 @@ export class FunctionDisplay extends FunctionDisplayComponent {
     });
     layouted.then(v => {
       const containerElement = this.container.nativeElement;
-      containerElement.style.width = v.width;
-      containerElement.style.height = v.height;
+      //containerElement.style.width = v.width;
+      //containerElement.style.height = v.height;
 
       // Entfernt alle bestehenden Kinder im container
       if (containerElement.firstChild) {
