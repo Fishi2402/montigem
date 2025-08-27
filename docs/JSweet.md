@@ -169,7 +169,7 @@ Zusätzlich gibt es noch diese Möglichkeiten (mehr dazu in der [JSweet Doku](ht
 * `Name` um Elemente umzubenennen
 * `Replace` um Methodenrümpfe zu ersetzen
 
-Diese werden dann über glob Expressions gesetzt (mehr dazu in der [JSweet Doku](Mehr dazu in der [JSweet Doku](https://github.com/cincheo/jsweet/blob/master/doc/jsweet-language-specifications.md#centralizing-annotations-in-jsweetconfigjson)))
+Diese werden dann über glob Expressions gesetzt (mehr dazu in der [JSweet Doku](https://github.com/cincheo/jsweet/blob/master/doc/jsweet-language-specifications.md#centralizing-annotations-in-jsweetconfigjson))
 z.B. 
 ```json
   "@Erased": {
