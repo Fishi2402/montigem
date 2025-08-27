@@ -68,8 +68,6 @@ export class FunctionDisplay extends FunctionDisplayComponent {
     });
     layouted.then(v => {
       const containerElement = this.container.nativeElement;
-      //containerElement.style.width = v.width;
-      //containerElement.style.height = v.height;
 
       // Entfernt alle bestehenden Kinder im container
       if (containerElement.firstChild) {
@@ -78,6 +76,12 @@ export class FunctionDisplay extends FunctionDisplayComponent {
 
       // Fügt das neue Element hinzu
       containerElement.appendChild(this.renderNode(v));
+
+      // Container sizing
+      containerElement.setAttribute("viewBox", `0 0 ${v.width} ${v.height}`);
+      containerElement.setAttribute('preserveAspectRatio', 'xMinYMin meet');
+      containerElement.style.width = `${v.width}px`;
+      containerElement.style.height = `${v.height}px`;
 
       // Outside-Click-Listener hinzufügen
       this.addOutsideClickListener();
