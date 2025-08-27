@@ -97,7 +97,7 @@
   }
 
   gem-range-input {
-    width: 100%;
+    width: 0%;
     display: flex;
     flex-direction: $flexDirection;
     align-items: $itemsAlign;
@@ -173,6 +173,9 @@
     grid-template-columns: 1fr;
     align-items: center;
     justify-items: center;
+    padding: 0;
+    row-gap: 0.2em;
+    min-height: unset;
   }
 
   .gem-vertical-range-min,

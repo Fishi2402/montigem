@@ -51,7 +51,7 @@ export class GemRangeInput extends GemRangeInputComponent implements AfterViewIn
       typeof this.maxValue === 'number'
     ) {
       this.firstTime = true;
-      const initial = (this.maxValue + this.minValue) / 2;
+      const initial = (typeof this.value === 'number' && this.value !== this.minValue && this.value > this.minValue && this.value <= this.maxValue) ? this.value : this.minValue;
       this.setValue(initial);
       this.valueChange.emit(initial);
     }
@@ -103,10 +103,14 @@ export class GemRangeInput extends GemRangeInputComponent implements AfterViewIn
 
     if (!this.firstTime) {
       this.rangeVElement.nativeElement.innerHTML = `<span>${this.value}</span>`;
+      this.rangeVElement.nativeElement.style.left = `${this.getThumbPosPxFor(v) + 2}px`;
     } else {
       this.firstTime = false;
+      setTimeout(() => {
+        this.rangeVElement.nativeElement.innerHTML = `<span>${this.value}</span>`;
+        this.rangeVElement.nativeElement.style.left = `${this.getThumbPosPxFor(v) + 2}px`;
+      });
     }
-    this.rangeVElement.nativeElement.style.left = `${this.getThumbPosPxFor(v) + 2}px`;
   }
 
   get sliderBottomLength(): string {
