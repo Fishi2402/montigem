@@ -86,7 +86,7 @@ public class JSweetCoCoChecker extends AbstractTreeScanner {
   @Override
   public Void visitMethodInvocation(MethodInvocationTree invocation, Trees trees) {
     if(!surroundingExcludedFromTranspilation() && invocation.toString().contains("stream()")) {
-      Log.error("0xEE0001: at "
+      Log.warn("0xEE0001: at "
           +getStartSourcePosition(invocation) +
           " Java streams are currently not supported by our transpilation. " +
           "Try using a forEach instead or use the BackendOnly or Erased annotation.");
