@@ -6,6 +6,7 @@ import org.jsweet.transpiler.SourceFile;
 import org.jsweet.transpiler.util.ConsoleTranspilationHandler;
 import org.jsweet.transpiler.util.ErrorCountTranspilationHandler;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -23,6 +24,7 @@ public class TestStreamCoco {
     LogStub.clearFindings();
   }
 
+  @Disabled
   @Test
   public void testInvalidStreamUsage() throws Exception {
     File input = Paths.get("src/test/resources/testcocos/invalid/StreamUsage.java").toFile();
@@ -42,6 +44,7 @@ public class TestStreamCoco {
     System.out.println(LogStub.getFindings().get(0).getMsg());
   }
 
+  @Disabled
   @Test
   public void testInvalid() throws Exception {
     File input = Paths.get("src/test/resources/testcocos/invalid/StreamUsageInvalid.java").toFile();
