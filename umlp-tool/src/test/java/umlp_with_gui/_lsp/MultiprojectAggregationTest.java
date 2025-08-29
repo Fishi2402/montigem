@@ -1,6 +1,8 @@
 package umlp_with_gui._lsp;
 
 import de.mclsg.lsp.FileExtensionAlreadyRegisteredException;
+import de.mclsg.lsp.modelpath.multiproject.MultiProjectLayout;
+import de.mclsg.lsp.modelpath.multiproject.SubprojectLayout;
 import de.mclsg.lsp.util.AsyncUtilWithSyncExec;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
@@ -72,7 +74,22 @@ public class MultiprojectAggregationTest {
 
     try {
       Path p1 = Path.of("src/test/resources/lsp/multiproject/");
-      languageServer = new UMLPWithGUILanguageAggrMultiProjectServer(new MCPath(p1));
+      Path guiModel = p1.resolve("subproject1/simple/Card.gui");
+      String uri = guiModel.toUri().toString();
+      languageServer = new UMLPWithGUILanguageAggrMultiProjectServer(new MCPath(p1)){
+        @Override
+        protected void initResolver() {
+          super.initResolver();
+          multiProjectLayout = new MultiProjectLayout();
+          SubprojectLayout subprojectLayout = new SubprojectLayout();
+          subprojectLayout.name = "multiproject";
+          subprojectLayout.projectpath = p1.toAbsolutePath().toString();
+          subprojectLayout.resources = new String[]{p1.toAbsolutePath().toString()};
+          multiProjectLayout.subprojects = new SubprojectLayout[]{
+              subprojectLayout
+          };
+        }
+      };
 
       // (1)
       AsyncUtilWithSyncExec.init(); // Run everything synchronous for test
@@ -82,7 +99,7 @@ public class MultiprojectAggregationTest {
       var tds = languageServer.getTextDocumentService();
 
       var hoverResult = tds.hover(new HoverParams(
-          new TextDocumentIdentifier(p1.resolve("subproject1/simple/Card.gui").toUri().toString()),
+          new TextDocumentIdentifier(uri),
           position));
 
       return hoverResult.get();
@@ -127,7 +144,20 @@ public class MultiprojectAggregationTest {
 
     try {
       Path p1 = Path.of("src/test/resources/lsp/multiproject/");
-      languageServer = new UMLPWithGUILanguageAggrMultiProjectServer(new MCPath(p1));
+      languageServer = new UMLPWithGUILanguageAggrMultiProjectServer(new MCPath(p1)){
+        @Override
+        protected void initResolver() {
+          super.initResolver();
+          multiProjectLayout = new MultiProjectLayout();
+          SubprojectLayout subprojectLayout = new SubprojectLayout();
+          subprojectLayout.name = "multiproject";
+          subprojectLayout.projectpath = p1.toAbsolutePath().toString();
+          subprojectLayout.resources = new String[]{p1.toAbsolutePath().toString()};
+          multiProjectLayout.subprojects = new SubprojectLayout[]{
+              subprojectLayout
+          };
+        }
+      };
 
       // (1)
       AsyncUtilWithSyncExec.init(); // Run everything synchronous for test

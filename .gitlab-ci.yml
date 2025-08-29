@@ -19,10 +19,9 @@ stages:
   - check
   - deploy
   - testDeployed
-  - report
 
 pages:
-  stage: report
+  stage: build
   needs: []
   image: python:alpine
   rules:
@@ -30,7 +29,7 @@ pages:
       changes:
       - mkdocs.yml
       - README.md
-      - docs/
+      - docs/**
   before_script:
     - apk add gcc musl-dev python3-dev
     - pip install cython

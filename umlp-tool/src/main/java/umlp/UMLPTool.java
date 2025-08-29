@@ -406,7 +406,7 @@ public class UMLPTool extends UMLPToolTOP {
   protected GUIDSLTool guidslTool = new GUIDSLTool();
   public Map.Entry<ASTGUICompilationUnit, IGUIDSLArtifactScope> createAstWithSymtab(Path modelFilePath) {
     Optional<IGUIDSLArtifactScope> asOpt = findGUIArtifactScope(modelFilePath);
-    if (asOpt.isPresent()) {
+    if (asOpt.isPresent() && asOpt.get().isPresentAstNode()) {
       return Map.entry(
           (ASTGUICompilationUnit) asOpt.get().getAstNode(),
           asOpt.get()

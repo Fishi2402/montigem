@@ -33,7 +33,7 @@ public class WebSocketSessionManager {
 
   public static ConcurrentWebSocketSessionDecorator register(WebSocketSession session) {
     ConcurrentWebSocketSessionDecorator s = new ConcurrentWebSocketSessionDecorator(session,
-        1000, 1024);
+        1000, 10* 1024 * 1024);
     getINSTANCE().sessionList.putIfAbsent(session.getId(), s);
     Log.trace("New websocket session (" + session.getId() + ") has been added", getINSTANCE().getClass().getName());
     return s;

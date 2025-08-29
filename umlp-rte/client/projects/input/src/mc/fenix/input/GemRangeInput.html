@@ -30,12 +30,25 @@
           [ngModel]="value"
           (ngModelChange)="onValueChange($event)"
           [step]="step"
+          (change)="snapToTick()"
         />
+      <div class="gem-range-ticks">
+        <div
+          *ngFor="let marker of visibleTicks"
+          [class.gem-range-tick]="!vertical"
+          [class.gem-vertical-tick]="vertical"
+          [style.left]="getTickPosition(marker)"
+          [style.top]="'100%'"
+        >
+          <div [class.gem-range-tick-mark]="!vertical" [class.gem-vertical-tick-mark]="vertical"></div>
+          <div [class.gem-range-tick-label]="!vertical" [class.gem-vertical-tick-label]="vertical" *ngIf="marker.getLabel()" #tickLabel>{{ marker.getLabel() }}</div>
+        </div>
       </div>
-
-      <span [class.gem-vertical-range-max]="vertical" class="gem-range-max">
-        {{ maxValue }}
-      </span>
     </div>
+
+    <span [class.gem-vertical-range-max]="vertical" class="gem-range-max">
+      {{ maxValue }}
+    </span>
   </div>
+</div>
 </div>

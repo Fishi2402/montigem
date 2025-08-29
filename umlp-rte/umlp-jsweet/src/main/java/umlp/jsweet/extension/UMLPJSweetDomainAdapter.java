@@ -2,6 +2,8 @@
 package umlp.jsweet.extension;
 
 import org.jsweet.transpiler.extension.PrinterAdapter;
+import standalone.com.sun.source.tree.CompilationUnitTree;
+import umlp.jsweet.extension.cocos.JSweetCoCoChecker;
 import umlp.jsweet.extension.domainAdapters.MutexAdapter;
 import umlp.jsweet.extension.domainAdapters.UMLPBasicsAdapter;
 import umlp.jsweet.extension.domainAdapters.UMLPCollectionsAdapter;
@@ -36,5 +38,15 @@ public class UMLPJSweetDomainAdapter extends PrinterAdapter {
         )
 
     );
+  }
+
+  @Override
+  public void onTranspilationStarted() {
+    for (CompilationUnitTree compilationUnit : getContext().compilationUnits) {
+      if(!getContext().isExcludedSourcePath(compilationUnit.getSourceFile().getName())) {
+        new JSweetCoCoChecker(getContext()).scan(compilationUnit, getContext().trees);
+      }
+    }
+    super.onTranspilationStarted();
   }
 }

@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.charts;
+
+import mc.fenix.charts.GemTimeSeriesChartTypes.TimeSeriesData;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+component GemTimeSeriesChart (
+  TimeSeriesData data,
+  Optional<LocalDateTime> showAfter,
+  Optional<LocalDateTime> showUntil,
+  Boolean hideShowAfterInput,
+  Boolean hideShowUntilInput,
+  Boolean hideLiveDataToggle,
+  Boolean hideLegend
+)

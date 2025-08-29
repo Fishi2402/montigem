@@ -81,9 +81,13 @@ classdiagram Domain {
   <<singleton>>
   class FischertechnikVacuumGripperState {
     int rotationDeg = 0;
+    boolean refSwitchRotation = false;
     int verticalPercentage = 0;
+    boolean refSwitchVertical = false;
     int horizontalPercentage = 0;
+    boolean refSwitchHorizontal = false;
     boolean pumpRunning = false;
+    boolean valveEnabled = false;
   }
 
   <<singleton>>

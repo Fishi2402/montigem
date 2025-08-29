@@ -1,5 +1,5 @@
 # CD2GUI
-Plugin providing Guidsl2 models to create and manage instances of a provided CD4A Model
+Plugin providing Gui-DSL models to create and manage instances of a provided CD4A Model
 
 
 ## Supported CD2GUI Features

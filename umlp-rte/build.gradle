@@ -79,6 +79,8 @@ libs.each {
     tslib = "@umlp/${libName}"
   }
 
+  sourceSets.main.java.srcDirs += genTask.get().outputDir.get().asFile
+
   tasks.named("compileJava").configure {
     dependsOn(genTask)
     doFirst {
