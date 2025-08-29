@@ -1,6 +1,6 @@
 # Change Log
 
-Only big changes are listed. Since there is no semantic versioning for Fenix,
+Only big or breaking changes are listed. Since there is no semantic versioning for MontiGem,
 the changes are tagged with a date.
 
 ## Upcoming
@@ -33,6 +33,9 @@ For MontiGem users:
   * line 7 - allow default lists
   * line 9 - allow list comprehensions
   * line 11 - allow lists in `iterate`
+  
+
+- Context Conditions for unsupported Java Code (e.g. the Stream API) that is transpiled by JSweet. This should stop the current need to guess which code can be transpiled and which not. 
 
 ## 2025-06-26
 
