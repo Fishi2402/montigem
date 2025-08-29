@@ -11,7 +11,7 @@ component GemRangeInput(
   String labelText,
   Boolean vertical,
   Integer step,
-  Integer value,
+  ?Integer value,
   Integer minValue,
   Integer maxValue,
   List<Marker> ticks,

@@ -1,3 +1,8 @@
+---
+hide:
+  - navigation
+---
+
 # Change Log
 
 Only big or breaking changes are listed. Since there is no semantic versioning for MontiGem,
