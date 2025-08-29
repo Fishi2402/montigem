@@ -9,8 +9,10 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import org.jetbrains.annotations.NotNull;
 import umlp.UMLPMill;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.TagLookUp;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static umlp.generator.domain.decorator.commands.CommandDecorator.DE_SER;
@@ -50,16 +52,32 @@ public class GetDecorator extends AbstractDeSerDecorator {
     ASTCDAttribute attr = addGemId(ast);
 
     addConstructor(ast, classname, packageName);
-    getCD4C().addMethod(ast, getDoRunTemplate(), classname, domainPackage, getCorrectManager(domainType));
     getCD4C().addMethod(ast, getGeneralCheckAccessPolicyTemplate(), domainType.getName(), "Read");
     getCD4C().addMethod(ast, getGetEffectedGemIdsTemplate(), Lists.newArrayList());
-    getCD4C().addMethod(ast, getGetNewlySubscribedGemIdsTemplate());
+
+    if(TagLookUp.isSingleton(domainType.getSymbol())){
+      getCD4C().addAttribute(ast, "private long actualGemId = -1");
+      getCD4C().addMethod(ast, getSingletonDoRunTemplate(), classname, domainPackage, getCorrectManager(domainType));
+      getCD4C().addMethod(ast, getSingletonGetNewlySubscribedGemIdsTemplate());
+    } else {
+      getCD4C().addMethod(ast, getDoRunTemplate(), classname, domainPackage, getCorrectManager(domainType));
+      getCD4C().addMethod(ast, getGetNewlySubscribedGemIdsTemplate());
+    }
+
     AccessorDecorator accessor = new AccessorDecorator(glex);
     ast.addAllCDMembers(accessor.decorate(attr));
 
     addImports(origCD, domainType, ast, classname);
 
     return ast;
+  }
+
+  protected @NotNull String getSingletonGetNewlySubscribedGemIdsTemplate() {
+    return "umlp.commands.get.SingletonGetNewlySubscribedGemIds";
+  }
+
+  protected @NotNull String getSingletonDoRunTemplate() {
+    return "umlp.commands.get.SingletonDoRun";
   }
 
   protected String getGeneralCheckAccessPolicyTemplate() {

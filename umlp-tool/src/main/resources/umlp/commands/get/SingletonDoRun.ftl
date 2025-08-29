@@ -1,0 +1,11 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
+${tc.signature("classname", "packagename", "managerName")}
+${cd4c.method("public SimpleResult<${classname}> doAction()")}
+
+Optional<${classname}> ${classname?uncap_first} = ${managerName}.${classname?uncap_first}Opt(gemId);
+if(${classname?uncap_first}.isPresent()){
+  actualGemId = ${classname?uncap_first}.get().getGemId();
+  return new SimpleResult<>(getId(), ${classname?uncap_first}.get(), "${packagename}.${classname}");
+} else {
+  return new SimpleResult<>(getId(), LoadingState.EMPTY, "${packagename}.${classname}");
+}

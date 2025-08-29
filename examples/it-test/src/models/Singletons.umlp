@@ -1,0 +1,6 @@
+umlp Singletons {
+  <<singleton>>
+  class FooSingleton {
+    int i = 0;
+  }
+}
