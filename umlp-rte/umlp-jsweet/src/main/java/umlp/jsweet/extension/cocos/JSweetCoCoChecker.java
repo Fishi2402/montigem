@@ -2,6 +2,7 @@ package umlp.jsweet.extension.cocos;
 
 import de.se_rwth.commons.logging.Log;
 import jsweet.lang.Erased;
+import jsweet.lang.Replace;
 import org.jsweet.transpiler.JSweetContext;
 import org.jsweet.transpiler.TranspilationHandler;
 import org.jsweet.transpiler.util.AbstractTreeScanner;
@@ -55,7 +56,8 @@ public class JSweetCoCoChecker extends AbstractTreeScanner {
         .anyMatch(a -> a.getAnnotationType().toString()
             .equals("umlp.jsweet.extension.annotation.BackendOnly")
             || a.getAnnotationType().toString()
-            .equals(Erased.class.getCanonicalName()));
+            .equals(Erased.class.getCanonicalName())
+        || a.getAnnotationType().toString().equals(Replace.class.getCanonicalName()));
     super.visitMethod(methodTree, trees);
     return null;
   }
@@ -86,7 +88,7 @@ public class JSweetCoCoChecker extends AbstractTreeScanner {
   @Override
   public Void visitMethodInvocation(MethodInvocationTree invocation, Trees trees) {
     if(!surroundingExcludedFromTranspilation() && invocation.toString().contains("stream()")) {
-      Log.warn("0xEE0001: at "
+      Log.warn("0xEE001: at "
           +getStartSourcePosition(invocation) +
           " Java streams are currently not supported by our transpilation. " +
           "Try using a forEach instead or use the BackendOnly or Erased annotation.");
