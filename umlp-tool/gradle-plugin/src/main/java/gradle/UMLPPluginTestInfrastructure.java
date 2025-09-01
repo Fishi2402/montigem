@@ -58,11 +58,16 @@ public abstract class UMLPPluginTestInfrastructure implements Plugin<Project> {
     //generate test infrastructure must run before compiling the tests
     project.getTasks()
         .withType(AbstractCompile.class)
-        .matching(t -> t.getName().equals(testSourceSet.getCompileJavaTaskName()))
+        .matching(t -> t.getName().equals(testSourceSet.getCompileJavaTaskName())
+                                          || t.getName().equals(mainSourceSet.getCompileJavaTaskName() // TODO: Remove this dependency and introduce test fixtures?
+                                         ))
         .configureEach(testTask -> testTask.dependsOn(umlpTestInfrastructureTask));
 
-    //add generated source files to "test" source set
-    testSourceSet.getJava().srcDir(umlpTestInfrastructureTask.get().getOutputDir());
+    // TODO: Introduce test-fixtures and generate the "test-infra" into the test source set instead of the main source set
+    mainSourceSet.getJava().srcDir(umlpTestInfrastructureTask.get().getOutputDir());
+
+    //TODO: add generated source files to "test" source set
+//    testSourceSet.getJava().srcDir(umlpTestInfrastructureTask.get().getOutputDir());
 
     //dependencies
     DependencyHandler dependencies = project.getDependencies();
