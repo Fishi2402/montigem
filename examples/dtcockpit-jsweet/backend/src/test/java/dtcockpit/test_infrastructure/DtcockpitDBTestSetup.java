@@ -1,7 +1,6 @@
 package dtcockpit.test_infrastructure;
 
 import dtcockpit.DtcockpitManager;
-import dtcockpit.DtcockpitTestContext;
 import umlp.test_rte.ClientSetup;
 
 public abstract class DtcockpitDBTestSetup extends DtcockpitDBTestSetupTOP {
