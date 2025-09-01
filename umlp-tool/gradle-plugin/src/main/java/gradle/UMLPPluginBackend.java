@@ -2,13 +2,11 @@
 package gradle;
 
 import gradle.specific.UMLPBackendTask;
-import gradle.specific.cd.GUITypes2JavaTask;
-import gradle.specific.serialize.SerializeCDSymbolsTask;
-import gradle.specific.serialize.SerializeGUISymbolsTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.plugins.JavaPluginConvention;
+import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.compile.AbstractCompile;
@@ -38,16 +36,17 @@ public abstract class UMLPPluginBackend implements Plugin<Project> {
     project.getPluginManager().apply("java");
 
     boolean local = getBooleanProjectProperty(project, "useLocalDependencies");
+    var mainSourceSet = project.getExtensions().getByType(JavaPluginExtension.class).getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
 
     TaskProvider<UMLPBackendTask> umlpTask = createUMLPBackendTask(project, UMLP_BACKEND_TASK_NAME, local);
     // Generate Backend must run before JavaCompile
-    project.getTasks().withType(AbstractCompile.class).configureEach(compile -> {
-      compile.dependsOn(umlpTask);
-    });
+    project.getTasks().withType(AbstractCompile.class)
+        .matching(t -> t.getName().equals(mainSourceSet.getCompileJavaTaskName()))
+        .configureEach(compile -> compile.dependsOn(umlpTask));
     // Generate Backend must run before ProcessResources (e.g. for SQL schemata)
-    project.getTasks().withType(ProcessResources.class).configureEach(compile -> {
-      compile.dependsOn(umlpTask);
-    });
+    project.getTasks().withType(ProcessResources.class)
+        .matching(t -> t.getName().equals(mainSourceSet.getProcessResourcesTaskName()))
+        .configureEach(procResMain -> procResMain.dependsOn(umlpTask));
 
     addToSourceSet(project, umlpTask.get());
 
