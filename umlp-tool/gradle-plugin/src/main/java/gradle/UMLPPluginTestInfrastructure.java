@@ -117,12 +117,8 @@ public abstract class UMLPPluginTestInfrastructure implements Plugin<Project> {
             setIfPathExists(path -> task.getTmplDir().set(path),
                 Path.of(projectDirPath, "src", "templates"));
           }
-          // TODO: DEPRECATE src/main/java as hwc for the test task
           setIfPathExists(path -> task.getHandWrittenCodeDir().from(path),
               Path.of(projectDirPath, "src", "main", "java"));
-          // END DEPRECATION
-          setIfPathExists(path -> task.getHandWrittenCodeDir().from(path),
-                          Path.of(projectDirPath, "src", "test", "java"));
           task.getOutputDir().set(Path.of(buildDirPath, "umlp", "backend_test").toFile());
           task.getSymbolOutDir().set(Path.of(buildDirPath, "umlp", "backend_test_symbols").toFile());
         });
