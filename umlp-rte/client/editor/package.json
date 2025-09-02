@@ -14,6 +14,7 @@
     "primeng": "^17.0.7",
     "primeicons": "^6.0.1",
     "@umlp/commonj2ts": "^7.6.0",
+    "many-keys-map": "2.0.1",
     "rxjs": "~7.8.0",
     "ngx-monaco-editor-v2": "^17.0.1"
   },

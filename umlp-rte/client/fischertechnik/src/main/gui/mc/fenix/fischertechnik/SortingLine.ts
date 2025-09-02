@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {config, SortingLineComponent} from '../../../../build/gui/mc/fenix/fischertechnik/SortingLineComponent';
+import {config, SortingLineComponent} from '../../../../../../build/gui2java2ts/mc/fenix/fischertechnik/SortingLineComponent';
 import {Component, HostBinding, Input} from '@angular/core';
 
 @Component({

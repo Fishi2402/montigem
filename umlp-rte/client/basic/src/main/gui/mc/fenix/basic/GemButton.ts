@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component, HostBinding } from '@angular/core';
-import { config, GemButtonComponent } from '../../../../build/gui/mc/fenix/basic/GemButtonComponent';
+import { config, GemButtonComponent } from '../../../../../../build/gui2java2ts/mc/fenix/basic/GemButtonComponent';
 
 @Component({
   standalone: true,

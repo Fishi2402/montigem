@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 import { Component, ElementRef, EventEmitter, HostBinding, Output, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { config, GemRangeInputComponent } from '../../../../build/gui/mc/fenix/input/GemRangeInputComponent';
+import { config, GemRangeInputComponent } from '../../../../../../build/gui2java2ts/mc/fenix/input/GemRangeInputComponent';
 @Component({
   standalone: true,
   imports: [...config.imports, FormsModule],

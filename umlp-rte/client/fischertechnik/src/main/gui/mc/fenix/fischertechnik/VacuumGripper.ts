@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {config, VacuumGripperComponent} from '../../../../build/gui/mc/fenix/fischertechnik/VacuumGripperComponent';
+import {config, VacuumGripperComponent} from '../../../../../../build/gui2java2ts/mc/fenix/fischertechnik/VacuumGripperComponent';
 import {Component, HostBinding, Input} from '@angular/core';
 
 @Component({

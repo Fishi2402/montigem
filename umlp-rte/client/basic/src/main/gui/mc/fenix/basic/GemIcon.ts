@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component, HostBinding } from '@angular/core';
-import { config, GemIconComponent } from '../../../../build/gui/mc/fenix/basic/GemIconComponent';
+import { config, GemIconComponent } from '../../../../../../build/gui2java2ts/mc/fenix/basic/GemIconComponent';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({

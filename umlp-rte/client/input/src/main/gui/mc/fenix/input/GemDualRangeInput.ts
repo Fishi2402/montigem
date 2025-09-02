@@ -2,7 +2,7 @@
 
 import { Component, ElementRef, EventEmitter, HostBinding, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { config, GemDualRangeInputComponent } from '../../../../build/gui/mc/fenix/input/GemDualRangeInputComponent';
+import { config, GemDualRangeInputComponent } from '../../../../../../build/gui2java2ts/mc/fenix/input/GemDualRangeInputComponent';
 
 @Component({
   standalone: true,

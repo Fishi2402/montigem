@@ -158,6 +158,24 @@ public class TSImportHelper {
       imported = Names.getPathFromPackage(importedQName) + ".java";
       importer = Names.getPathFromPackage(importerQName) + ".java";
       hwFilePath = hwPath.find(imported);
+
+      if (hwFilePath.isPresent()) {
+        if (UMLPGeneratorConfig.getInstance().is4TSLib()) {
+          // The java files are converted to TypeScript files in outDir, e.g.
+          // src/main/java/montigem/types/Option.java -> <outDir>/montigem/types/Option.ts
+          String ts = Names.getPathFromPackage(Names.getQualifier(importedQName).toLowerCase()
+              + "." + Names.getSimpleName(importedQName)) + ".ts";
+          return Optional.of(path2TSRelativeImport(outPath.resolve(importer).getParent()
+              .toAbsolutePath()
+              .normalize()
+              .relativize(outPath.resolve(ts))
+              .toString()
+              .replaceAll("\\\\", "/")));
+        }
+        else {
+          return Optional.of(path2TSRootImport(imported));
+        }
+      }
     }
 
     // case: TOP is used, use path to HW file, e.g.,
@@ -263,7 +281,7 @@ public class TSImportHelper {
   }
 
   protected String path2TSRelativeImport(String relativePath) {
-    if (!relativePath.contains("/")) {
+    if (!relativePath.startsWith("./")) {
       // Same folder, prepend "./"
       relativePath = "./" + relativePath;
     }

@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {config, WarehouseComponent} from '../../../../build/gui/mc/fenix/fischertechnik/WarehouseComponent';
+import {config, WarehouseComponent} from '../../../../../../build/gui2java2ts/mc/fenix/fischertechnik/WarehouseComponent';
 import {Component, HostBinding, Input} from '@angular/core';
 
 @Component({

@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component, HostBinding } from '@angular/core';
-import { config, GemNavListComponent } from '../../../../build/gui/mc/fenix/navigation/GemNavListComponent';
+import { config, GemNavListComponent } from '../../../../../../build/gui2java2ts/mc/fenix/navigation/GemNavListComponent';
 
 @Component({
   standalone: true,

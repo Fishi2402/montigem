@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
-import { config, GemTreeNodeComponent } from '../../../../build/gui/mc/fenix/arrange/GemTreeNodeComponent';
+import { config, GemTreeNodeComponent } from '../../../../../../build/gui2java2ts/mc/fenix/arrange/GemTreeNodeComponent';
 import { MatIcon } from '@angular/material/icon';
 
 @Component({

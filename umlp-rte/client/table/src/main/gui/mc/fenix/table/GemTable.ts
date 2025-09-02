@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component, HostBinding } from '@angular/core';
-import { config, GemTableComponent } from '../../../../build/gui/mc/fenix/table/GemTableComponent';
+import { config, GemTableComponent } from '../../../../../../build/gui2java2ts/mc/fenix/table/GemTableComponent';
 
 @Component({
   standalone: true,

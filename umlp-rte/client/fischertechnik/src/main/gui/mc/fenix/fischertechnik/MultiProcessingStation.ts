@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {config, MultiProcessingStationComponent} from '../../../../build/gui/mc/fenix/fischertechnik/MultiProcessingStationComponent';
+import {config, MultiProcessingStationComponent} from '../../../../../../build/gui2java2ts/mc/fenix/fischertechnik/MultiProcessingStationComponent';
 import {Component, HostBinding, Input} from '@angular/core';
 
 @Component({

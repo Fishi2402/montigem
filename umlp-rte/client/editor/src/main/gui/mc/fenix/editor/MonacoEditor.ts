@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-import { config, MonacoEditorComponent } from '../../../../build/gui/mc/fenix/editor/MonacoEditorComponent';
+import { config, MonacoEditorComponent } from '../../../../../../build/gui2java2ts/mc/fenix/editor/MonacoEditorComponent';
 import {EventEmitter, Output, Provider} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {MonacoEditorModule, NGX_MONACO_EDITOR_CONFIG, NgxMonacoEditorConfig } from 'ngx-monaco-editor-v2';
@@ -14,7 +14,7 @@ export function provideMonacoEditor(config: NgxMonacoEditorConfig = {}): Provide
 import {
   Component,
 } from '@angular/core';
-import {InlineDecoration} from "../../../../build/cd/mc/fenix/editor/monacoeditortypes/InlineDecoration";
+import {InlineDecoration} from "../../../../../../build/gui2java2ts/mc/fenix/editor/monacoeditortypes/InlineDecoration";
 
 
 @Component({

@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {config, ConveyorComponent} from '../../../../build/gui/mc/fenix/fischertechnik/ConveyorComponent';
+import {config, ConveyorComponent} from '../../../../../../build/gui2java2ts/mc/fenix/fischertechnik/ConveyorComponent';
 import {Component, HostBinding, Input} from '@angular/core';
 
 @Component({

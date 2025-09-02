@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { config, GemLinkComponent } from '../../../../build/gui/mc/fenix/basic/GemLinkComponent';
+import { config, GemLinkComponent } from '../../../../../../build/gui2java2ts/mc/fenix/basic/GemLinkComponent';
 
 @Component({
   standalone: true,

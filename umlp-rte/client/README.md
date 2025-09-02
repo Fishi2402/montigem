@@ -186,7 +186,7 @@ library:
     ```
     If the class is generated, export it from generated file:
     ```ts
-    export { Bar } from './build/gui/foo/BarComponent';
+    export { Bar } from './build/gui2java2ts/foo/BarComponent';
     ```
 
 ## Remove component
@@ -201,7 +201,7 @@ library:
 2.  Remove component export(s) from `experimental/index.ts` if exists:
     ```diff
     - export { Bar } from './src/foo/Bar';
-    - export { MyBarType } from './build/cd/foo/MyBarType';
+    - export { MyBarType } from './build/gui2java2ts/foo/MyBarType';
     - ...
     ```
 

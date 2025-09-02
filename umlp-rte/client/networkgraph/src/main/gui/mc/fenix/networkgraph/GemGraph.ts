@@ -16,9 +16,9 @@ import {
 } from "@angular/core";
 import Graph from "graphology";
 import { SerializedGraph } from "graphology-types";
-import { Graph as GUIGraph } from "../../../../build/cd/mc/fenix/networkgraph/networkgraphtypes/Graph";
-import { NodePos } from "../../../../build/cd/mc/fenix/networkgraph/networkgraphtypes/NodePos";
-import { NodePosBuilder } from "../../../../build/cd/mc/fenix/networkgraph/networkgraphtypes/NodePosBuilder";
+import { Graph as GUIGraph } from "../../../../../../build/gui2java2ts/mc/fenix/networkgraph/networkgraphtypes/Graph";
+import { NodePos } from "../../../../../../build/gui2java2ts/mc/fenix/networkgraph/networkgraphtypes/NodePos";
+import { NodePosBuilder } from "../../../../../../build/gui2java2ts/mc/fenix/networkgraph/networkgraphtypes/NodePosBuilder";
 import { TooltipOptions } from "primeng/api";
 import { Sigma } from "sigma";
 import { CameraState } from "sigma/types";
