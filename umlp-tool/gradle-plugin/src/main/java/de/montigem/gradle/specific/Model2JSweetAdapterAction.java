@@ -3,12 +3,15 @@ package de.montigem.gradle.specific;
 
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.io.paths.MCPath;
+import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
+import org.gradle.api.tasks.PathSensitive;
+import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.workers.WorkAction;
 import org.gradle.workers.WorkParameters;
 import umlp.generator.gui.JSweetConfigGenerator;
@@ -37,8 +40,8 @@ public abstract class Model2JSweetAdapterAction<T extends Model2JSweetAdapterAct
   protected JSweetConfigGenerator getGenerator() throws IOException {
     GeneratorSetup gs = new GeneratorSetup();
     gs.setOutputDirectory(getParameters().getJSweetAdapterDir().get().getAsFile());
-    if (getParameters().getHandWrittenCodeDir().isPresent()) {
-      Path hwc = getParameters().getHandWrittenCodeDir().getAsFile().get().toPath();
+    if (getParameters().getHandWrittenJSweetDir().isPresent()) {
+      Path hwc = getParameters().getHandWrittenJSweetDir().getAsFile().get().toPath();
       Path out = getParameters().getJSweetAdapterDir().getAsFile().get().toPath();
       Files.walk(hwc).forEach(path -> {
         try {
@@ -60,15 +63,16 @@ public abstract class Model2JSweetAdapterAction<T extends Model2JSweetAdapterAct
   }
 
   interface Params extends WorkParameters {
-
-    @Input
-    Property<String> getDomain();
-
     @OutputDirectory
     DirectoryProperty getJSweetAdapterDir();
 
     @Optional
     @InputDirectory
-    DirectoryProperty getHandWrittenCodeDir();
+    DirectoryProperty getHandWrittenJSweetDir();
+
+    @Optional
+    @InputDirectory
+    @PathSensitive(PathSensitivity.RELATIVE)
+    ConfigurableFileCollection getSrcDirs();
   }
 }

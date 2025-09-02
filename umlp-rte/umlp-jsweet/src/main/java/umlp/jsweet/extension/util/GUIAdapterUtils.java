@@ -2,16 +2,14 @@
 package umlp.jsweet.extension.util;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jsweet.JSweetConfig;
 import org.jsweet.transpiler.JSweetContext;
 import org.jsweet.transpiler.OverloadScanner;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.MethodInvocationElement;
 import org.jsweet.transpiler.util.Util;
-import umlp.jsweet.extension.guiAdapters.GUIComponentObserverPatternAdapter;
+import umlp.jsweet.extension.gui.GUIComponentObserverPatternAdapter;
 
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -36,6 +34,8 @@ public class GUIAdapterUtils extends UMLPAdapterUtils {
   public static final String AMODULE_ANNOTATION = "umlp.jsweet.extension.annotation.AnnotationModule";
 
   public static final String DECORATOR_NO_OBJ_ANNOTATION = "umlp.jsweet.extension.annotation.DecoratorNoObj";
+
+  public static final String CD2JAVA_ANNOTATION = "umlp.jsweet.extension.annotation.CD2Java";
 
   public static final String SYNCHRONIZED_SUFFIX = "__synchronized";
 

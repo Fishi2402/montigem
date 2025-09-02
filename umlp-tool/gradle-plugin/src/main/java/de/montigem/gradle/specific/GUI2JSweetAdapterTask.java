@@ -43,7 +43,7 @@ public abstract class GUI2JSweetAdapterTask extends DefaultTask {
     workQueue.submit(GUI2JSweetAdapterAction.class, params -> {
       params.getDomain().set(getDomain());
       params.getJSweetAdapterDir().set(getJSweetAdapterDir());
-      params.getHandWrittenCodeDir().set(getHandWrittenCodeDir());
+      params.getHandWrittenJSweetDir().set(getHandWrittenCodeDir());
     });
   }
 

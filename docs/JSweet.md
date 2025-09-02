@@ -156,8 +156,8 @@ Datei `jsweetconfig.json`. Diese wird generiert und sieht standardmäßig z.B. s
 ```json
 {
   "adapters": [
-    "umlp.jsweet.extension.UMLPJSweetDomainAdapter",
-    "umlp.jsweet.extension.domainAdapters.FunctionStructure4FenixImportAdapter"
+    "umlp.jsweet.extension.UMLPAdapter",
+    "umlp.jsweet.extension.umlp.FunctionStructure4FenixImportAdapter"
   ],
   "domainName": "FunctionStructure4Fenix"
 }

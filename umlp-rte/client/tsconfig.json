@@ -4,40 +4,40 @@
   "compilerOptions": {
     "paths": {
       "@umlp/common": [
-        "./projects/common"
+        "./common"
       ],
       "@umlp/commonj2ts": [
-        "./projects/commonj2ts"
+        "./commonj2ts"
       ],
       "@umlp/arrange": [
-        "./projects/arrange"
+        "./arrange"
       ],
       "@umlp/basic": [
-        "./projects/basic"
+        "./basic"
       ],
       "@umlp/charts": [
-        "./projects/charts"
+        "./charts"
       ],
       "@umlp/fischertechnik": [
-        "./projects/fischertechnik"
+        "./fischertechnik"
       ],
       "@umlp/input": [
-        "./projects/input"
+        "./input"
       ],
       "@umlp/table": [
-        "./projects/table"
+        "./table"
       ],
       "@umlp/theme": [
-        "./projects/theme"
+        "./theme"
       ],
       "@umlp/navigation": [
-        "./projects/networkgraph"
+        "./networkgraph"
       ],
       "@umlp/networkgraph": [
-        "./projects/networkgraph"
+        "./networkgraph"
       ],
       "@umlp/editor": [
-        "./projects/editor"
+        "./editor"
       ]
     },
     "baseUrl": "./",

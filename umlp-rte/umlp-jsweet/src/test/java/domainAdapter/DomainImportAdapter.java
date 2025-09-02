@@ -2,7 +2,7 @@
 package domainAdapter;
 
 import org.jsweet.transpiler.extension.PrinterAdapter;
-import umlp.jsweet.extension.domainAdapters.UMLPDomainImportAdapter;
+import umlp.jsweet.extension.umlp.UMLPDomainImportAdapter;
 
 public class DomainImportAdapter extends UMLPDomainImportAdapter {
   public DomainImportAdapter(PrinterAdapter parentAdapter) {

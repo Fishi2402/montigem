@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { config, GemBulletChartComponent } from '../../../../build/gui/mc/fenix/charts/GemBulletChartComponent';
+import { config, GemBulletChartComponent } from '../../../../../../build/gui2java2ts/mc/fenix/charts/GemBulletChartComponent';
 import { PlotlyViaCDNModule } from "angular-plotly.js";
 
 @Component({

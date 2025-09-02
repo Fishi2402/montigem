@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 import {Component} from '@angular/core';
-import {GemTimeSeriesChartComponent, config} from '../../../../build/gui/mc/fenix/charts/GemTimeSeriesChartComponent';
+import {GemTimeSeriesChartComponent, config} from '../../../../../../build/gui2java2ts/mc/fenix/charts/GemTimeSeriesChartComponent';
 import {OnDestroy} from '@angular/core';
 import ApexCharts from 'apexcharts';
-import { TimeSeriesData } from '../../../../build/cd/mc/fenix/charts/gemtimeseriescharttypes/TimeSeriesData';
-import { TimeSeries } from '../../../../build/cd/mc/fenix/charts/gemtimeseriescharttypes/TimeSeries';
-import { TimeSeriesDataPoint } from '../../../../build/cd/mc/fenix/charts/gemtimeseriescharttypes/TimeSeriesDataPoint';
+import { TimeSeriesData } from '../../../../../../build/gui2java2ts/mc/fenix/charts/gemtimeseriescharttypes/TimeSeriesData';
+import { TimeSeries } from '../../../../../../build/gui2java2ts/mc/fenix/charts/gemtimeseriescharttypes/TimeSeries';
+import { TimeSeriesDataPoint } from '../../../../../../build/gui2java2ts/mc/fenix/charts/gemtimeseriescharttypes/TimeSeriesDataPoint';
 
 @Component({
   standalone: true,

@@ -6,7 +6,10 @@ import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Optional;
 import umlp.generator.gui.JSweetConfigGenerator;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public abstract class GUI2JSweetAdapterAction extends Model2JSweetAdapterAction<GUI2JSweetAdapterAction.GUIParams> {
 
@@ -15,11 +18,19 @@ public abstract class GUI2JSweetAdapterAction extends Model2JSweetAdapterAction<
    */
   protected void generateJSweetConfig() throws IOException {
     JSweetConfigGenerator generator = getGenerator();
+    Set<String> srcDirs = getParameters().getSrcDirs()
+        .getFiles()
+        .stream()
+        .map(File::getAbsolutePath)
+        .collect(Collectors.toSet());
     if (getParameters().getDomain().isPresent()) {
-      generator.generate(getParameters().getDomain().get(), false);
+      generator.generate(getParameters().getDomain().get(), false, srcDirs);
     }
     else {
-      generator.generate();
+      generator.generate(
+          getParameters().getJSweetAdapterDir().get().getAsFile().getAbsolutePath(),
+          srcDirs
+      );
     }
   }
 

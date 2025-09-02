@@ -1,15 +1,14 @@
 package de.montigem.gradle.module;
 
+import com.github.gradle.node.NodeExtension;
 import com.github.gradle.node.NodePlugin;
 import com.github.gradle.node.npm.task.NpmTask;
 import de.monticore.gradle.common.CommonMCTask;
 import de.montigem.gradle.DependencyPlugin;
 import de.montigem.gradle.MGBasePlugin;
 import de.montigem.gradle.specific.CreateNpmrcTask;
-import de.montigem.gradle.specific.GUI2JSweetAdapterTask;
-import de.montigem.gradle.specific.GUI2JavaTask;
+import de.montigem.gradle.specific.GUI2Java2TSTask;
 import de.montigem.gradle.specific.GUI2SymTask;
-import de.montigem.gradle.specific.Java2TSTask;
 import de.montigem.gradle.specific.UMLP2SymTask;
 import de.montigem.gradle.specific.UMLP2TSTask;
 import de.montigem.gradle.specific.cd.CD2JavaTask;
@@ -57,8 +56,6 @@ import static de.montigem.gradle.FrontendBasePlugin.addClientRTEDependency;
 import static de.montigem.gradle.FrontendBasePlugin.getBooleanProjectProperty;
 import static de.montigem.gradle.FrontendBasePlugin.inRTE;
 import static de.montigem.gradle.FrontendBasePlugin.mcVersion;
-import static de.montigem.gradle.FrontendWithJSweetPlugin.GUI2JSWEET_ADAPTER_TASK;
-import static de.montigem.gradle.FrontendWithJSweetPlugin.GUI_JAVA2TS_TASK;
 import static de.montigem.gradle.FrontendWithJSweetPlugin.JSWEET_CONFIG;
 import static de.montigem.gradle.FrontendWithJSweetPlugin.JSWEET_EXTRA_SOURCES_CONFIG;
 import static de.montigem.gradle.FrontendWithJSweetPlugin.defaultExcludedSources;
@@ -75,6 +72,9 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
   public static final String UMLP2TS_TASK = "umlp2ts";
   public static final String CD2JAVA_TASK = "cd2java";
   public static final String GUI2JAVA_TASK = "gui2java";
+  public static final String CD_JAVA2TS_TASK = "cdJava2ts";
+  public static final String GUI2JAVA2TS_TASK = "gui2java2ts";
+  public static final String CD2JSWEET_ADAPTER_TASK = "cd2jsweetAdapter";
   // java2ts and umlp2ts
   public static final String MODELS2TS_TASK = "models2ts";
   public static final String GUI2SYM_JAR_TASK = "gui2symJar";
@@ -173,6 +173,10 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
     project.afterEvaluate(p -> {
       for (Project subproject : extension.getLibs()) {
         subproject.getPluginManager().apply(NodePlugin.class);
+        subproject.getPlugins().withId("com.github.node-gradle.node", plugin -> {
+          NodeExtension node = subproject.getExtensions().getByType(NodeExtension.class);
+          node.getNodeProjectDir().set(project.getLayout().getProjectDirectory());
+        });
         if (!inRTE(subproject)) {
           subproject.getPluginManager().apply(MGBasePlugin.class);
         }
@@ -201,10 +205,12 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
         Provider<String> libQName = extension.getLibScope().map(v -> v + "/" + subproject.getName());
         Provider<Directory> libBuildDir = p.getLayout().getBuildDirectory().dir("dist/" + subproject.getName());
         Provider<Directory> gui2javaDir = subproject.getLayout().getBuildDirectory().dir("gui2java");
+        Provider<Directory> gui2java2tsDir = subproject.getLayout().getBuildDirectory().dir("gui2java2ts");
         Provider<Directory> cd2javaDir = subproject.getLayout().getBuildDirectory().dir("cd2java");
         Provider<Directory> cd2tagsDir = subproject.getLayout().getBuildDirectory().dir("cd2tags");
         Provider<Directory> umlp2tsDir = subproject.getLayout().getBuildDirectory().dir("umlp2ts");
         Provider<Directory> gui2jsweetAdapterDir = subproject.getLayout().getBuildDirectory().dir("gui2jsweetAdapter");
+        Provider<Directory> cd2jsweetAdapterDir = subproject.getLayout().getBuildDirectory().dir("cd2jsweetAdapter");
         Provider<Directory> guiJava2tsDir = subproject.getLayout().getBuildDirectory().dir("guiJava2ts");
         Provider<Directory> internalJSweetDir = subproject.getLayout().getBuildDirectory().dir("internal_jsweet");
         Provider<Directory> umlp2jsweetAdapterDir = subproject.getLayout().getBuildDirectory().dir("umlp2jsweetAdapter");
@@ -283,9 +289,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
           if (srcJava.getAsFile().exists()) {
             task.getHwcDir().from(srcJava);
           }
-          task.getInput().from(
-              srcGUI.getAsFileTree().matching(spec -> spec.include("**/*.cd")).getFiles()
-          );
+          task.getInput().from(srcGUI);
           task.getOutputDir().set(cd2javaDir);
           task.getSymbolOutDir().set(cd2tagsDir);
           task.getTslib().set(libQName);
@@ -294,6 +298,53 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
         });
 
         mainSourceSet.getJava().srcDir(cd2java.flatMap(CD2JavaTask::getOutputDir));
+//
+//        TaskProvider<CD2JSweetAdapterTask> cd2jsweetAdapter = subproject.getTasks()
+//            .register(CD2JSWEET_ADAPTER_TASK, CD2JSweetAdapterTask.class);
+//        cd2jsweetAdapter.configure(task -> {
+//          task.setGroup(UMLP_GROUP_NAME);
+//          task.getJSweetAdapterDir().set(cd2jsweetAdapterDir);
+//          if (srcJSweet.getAsFile().exists()) {
+//            task.getHandWrittenCodeDir().set(srcJSweet);
+//          }
+//        });
+//
+//        TaskProvider<Java2TSTask> cdJava2ts = subproject.getTasks().register(CD_JAVA2TS_TASK, Java2TSTask.class);
+//        cdJava2ts.configure(task -> {
+//          task.setGroup(UMLP_GROUP_NAME);
+//          if (srcJava.getAsFile().exists()) {
+//            task.getInput().from(srcJava);
+//          }
+//          task.getInput().from(cd2java.flatMap(CommonMCTask::getOutputDir));
+//
+//          task.getJSweetAdapterDir().set(cd2jsweetAdapter.flatMap(CD2JSweetAdapterTask::getJSweetAdapterDir));
+//          task.getJSweetWorkingDir().set(internalJSweetDir.map(dir -> dir.dir("guiJava2ts")));
+//          task.getJSweetCandiesDir().set(internalJSweetDir.map(dir -> dir.dir("candies")));
+//          task.getJSweetClassPath().from(subproject.getConfigurations().named(JSWEET_CONFIG));
+//
+//          // TODO: Remove the following at some point
+//          // required with getExcludeTranspile - otherwise "import { Project } from 'dtcockpit/Project';" is missing in GUI ts files
+//          // Add the domain-sources as a java-source
+//          task.getInput().from(subproject.getConfigurations().named(JSWEET_EXTRA_SOURCES_CONFIG));
+//          // but exclude them from being transpiled (thus, only available as source files)
+//          task.getExcludeTranspileFiles().from(subproject.getConfigurations().named(JSWEET_EXTRA_SOURCES_CONFIG));
+//          // TODO: END OF REMOVAL
+//
+//          task.getOutputDir().set(guiJava2tsDir);
+//
+//          // TODO: Fix ShellAPI imports
+//          // Required due to "imports cannot use * wildcards when using modules"
+//          for (String s : defaultExcludedSources) {
+//            task.getExcludeSource().add(s); // via @Erased
+//          }
+//          if (inRTE(subproject)) {
+//            task.getExcludeSource().add("glob:**/common/DatabaseAccessManage*.java");
+//            task.getExcludeSource().add("glob:**/common/Neo4jDatabaseStarter.java");
+//            task.getExcludeSource().add("glob:**/common/GemIdManager4*.java");
+//          }
+//
+//          task.onlyIf(t -> cdPresent);
+//        });
 
         models2ts.configure(task -> task.dependsOn(cd2java));
 
@@ -306,12 +357,21 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
               cd2java.flatMap(CD2JavaTask::getSymbolOutDir),
               spec -> spec.include("**/*sym", "**/*import.map", "**/*tags")
           );
-          task.dependsOn(cd2java);
         });
 
-        TaskProvider<GUI2JavaTask> gui2java = subproject.getTasks().register(GUI2JAVA_TASK, GUI2JavaTask.class);
-        gui2java.configure(task -> {
-          task.dependsOn(cd2sym);
+        if (!inRTE(subproject)) {
+          if (local) {
+            subproject.getDependencies().add(JSWEET_EXTRA_SOURCES_CONFIG,
+                subproject.getDependencies().project(Map.of("path", ":umlp-rte:backend"))
+            );
+          }
+          else {
+            subproject.getDependencies().add(JSWEET_EXTRA_SOURCES_CONFIG, "umlp:umlp-rte:" + mcVersion(project));
+          }
+        }
+
+        TaskProvider<GUI2Java2TSTask> gui2java2ts = subproject.getTasks().register(GUI2JAVA2TS_TASK, GUI2Java2TSTask.class);
+        gui2java2ts.configure(task -> {
           if (!inRTE(subproject)) {
             task.getSymbolPath().from(subproject.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
             task.getSymbolPath().from(subproject.getConfigurations().named(MONTIGEM_MODULE_IMPORT_MAP_CONFIG));
@@ -323,84 +383,46 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
           task.getSymbolPath().from(guiTypes);
           task.getSymbolPath().from(cd2sym.flatMap(CD2SymTask::getOutput));
           task.getInput().from(srcGUI);
+          if (cdPresent) {
+            task.getInput().from(cd2java.flatMap(CommonMCTask::getOutputDir));
+          }
           task.getModelDir().set(srcGUI);
-          task.getHwcDir().from(srcGUI, srcJava);
-          task.getOutputDir().set(gui2javaDir);
-          /*
-          task.getGuiGenJsweet().set(false);
-          task.getGuiGenTSFuncionality().set(true);
-          /**/
+          task.getHwcDir().from(srcGUI);
+          task.getOutputDir().set(gui2java2tsDir);
           task.getTslib().set(libQName);
 
-          task.onlyIf(t -> guiPresent);
-        });
+          task.getGuiGenJsweet().set(true);
+          task.getGuiGenTSFuncionality().set(false);
 
-        TaskProvider<GUI2JSweetAdapterTask> gui2jsweetAdapter = subproject.getTasks()
-            .register(GUI2JSWEET_ADAPTER_TASK, GUI2JSweetAdapterTask.class);
-        gui2jsweetAdapter.configure(task -> {
-          task.setGroup(UMLP_GROUP_NAME);
           if (!domainNamesFinal.isEmpty()) {
             task.getDomain().set(domainNamesFinal.get(0));
           }
           task.getJSweetAdapterDir().set(gui2jsweetAdapterDir);
           if (srcJSweet.getAsFile().exists()) {
-            task.getHandWrittenCodeDir().set(srcJSweet);
+            task.getHandWrittenJSweetDir().set(srcJSweet);
           }
-        });
 
-        if (local) {
-          subproject.getDependencies().add(JSWEET_EXTRA_SOURCES_CONFIG,
-              subproject.getDependencies().project(Map.of("path", ":umlp-rte:backend"))
-          );
-        }
-        else {
-          subproject.getDependencies().add(JSWEET_EXTRA_SOURCES_CONFIG, "umlp:umlp-rte:" + mcVersion(project));
-        }
-        /**/
-
-        TaskProvider<Java2TSTask> guiJava2ts = subproject.getTasks().register(GUI_JAVA2TS_TASK, Java2TSTask.class);
-        guiJava2ts.configure(task -> {
-          task.setGroup(UMLP_GROUP_NAME);
           if (srcJava.getAsFile().exists()) {
-            task.getInput().from(srcJava);
+            task.getHwcDir().from(srcJava);
+            task.getJava2TSInput().from(srcJava);
           }
-          task.getInput().from(gui2java.flatMap(CommonMCTask::getOutputDir));
           if (cdPresent) {
-            task.getInput().from(cd2java.flatMap(CommonMCTask::getOutputDir));
-            task.getExcludeTranspileFiles().from(cd2java.flatMap(CommonMCTask::getOutputDir));
+            task.getJava2TSInput().from(cd2java.flatMap(CommonMCTask::getOutputDir));
           }
 
-          /*
-          Project parent = project.getParent();
-          if (parent != null) {
-            Project backend = parent.findProject(parent.getPath() + ":backend");
-            if (backend != null) {
-              SourceSetContainer sourceSets = backend.getExtensions().findByType(SourceSetContainer.class);
-              if (sourceSets != null) {
-                SourceSet main = sourceSets.findByName(SourceSet.MAIN_SOURCE_SET_NAME);
-                if (main != null) {
-                  task.getInput().from(main.getJava());
-                  task.getExcludeTranspileFiles().from(main.getJava());
-                }
-              }
-            }
-          }
-          /**/
-
-          task.getJSweetAdapterDir().set(gui2jsweetAdapter.flatMap(GUI2JSweetAdapterTask::getJSweetAdapterDir));
-          task.getJSweetWorkingDir().set(internalJSweetDir.map(dir -> dir.dir("guiJava2ts")));
+          task.getJSweetWorkingDir().set(internalJSweetDir.map(dir -> dir.dir("gui2java2ts")));
           task.getJSweetCandiesDir().set(internalJSweetDir.map(dir -> dir.dir("candies")));
           task.getJSweetClassPath().from(subproject.getConfigurations().named(JSWEET_CONFIG));
 
           // TODO: Remove the following at some point
           // required with getExcludeTranspile - otherwise "import { Project } from 'dtcockpit/Project';" is missing in GUI ts files
           // Add the domain-sources as a java-source
-          task.getInput().from(subproject.getConfigurations().named(JSWEET_EXTRA_SOURCES_CONFIG));
+          task.getJava2TSInput().from(subproject.getConfigurations().named(JSWEET_EXTRA_SOURCES_CONFIG));
           // but exclude them from being transpiled (thus, only available as source files)
           task.getExcludeTranspileFiles().from(subproject.getConfigurations().named(JSWEET_EXTRA_SOURCES_CONFIG));
           // TODO: END OF REMOVAL
 
-          task.getOutputDir().set(guiJava2tsDir);
+          // task.getOutputDir().set(guiJava2tsDir);
 
           // TODO: Fix ShellAPI imports
           // Required due to "imports cannot use * wildcards when using modules"
@@ -416,14 +438,93 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
           task.onlyIf(t -> guiPresent);
         });
 
-        models2ts.configure(task -> task.dependsOn(guiJava2ts));
+//        TaskProvider<GUI2JavaTask> gui2java = subproject.getTasks().register(GUI2JAVA_TASK, GUI2JavaTask.class);
+//        gui2java.configure(task -> {
+//          task.dependsOn(cd2sym);
+//          if (!inRTE(subproject)) {
+//            task.getSymbolPath().from(subproject.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
+//            task.getSymbolPath().from(subproject.getConfigurations().named(MONTIGEM_MODULE_IMPORT_MAP_CONFIG));
+//          }
+//          if (!domainNamesFinal.isEmpty()) {
+//            task.getDomainModels().set(domainNamesFinal);
+//          }
+//          task.getSymbolPath().from(umlp2symOut);
+//          task.getSymbolPath().from(guiTypes);
+//          task.getSymbolPath().from(cd2sym.flatMap(CD2SymTask::getOutput));
+//          task.getInput().from(srcGUI);
+//          task.getModelDir().set(srcGUI);
+//          task.getHwcDir().from(srcGUI, srcJava);
+//          task.getOutputDir().set(gui2javaDir);
+//          /*
+//          task.getGuiGenJsweet().set(false);
+//          task.getGuiGenTSFuncionality().set(true);
+//          /**/
+//          task.getTslib().set(libQName);
+//
+//          task.onlyIf(t -> guiPresent);
+//        });
+//
+//        TaskProvider<GUI2JSweetAdapterTask> gui2jsweetAdapter = subproject.getTasks()
+//            .register(GUI2JSWEET_ADAPTER_TASK, GUI2JSweetAdapterTask.class);
+//        gui2jsweetAdapter.configure(task -> {
+//          task.setGroup(UMLP_GROUP_NAME);
+//          if (!domainNamesFinal.isEmpty()) {
+//            task.getDomain().set(domainNamesFinal.get(0));
+//          }
+//          task.getJSweetAdapterDir().set(gui2jsweetAdapterDir);
+//          if (srcJSweet.getAsFile().exists()) {
+//            task.getHandWrittenCodeDir().set(srcJSweet);
+//          }
+//        });
+//
+//        TaskProvider<Java2TSTask> guiJava2ts = subproject.getTasks().register(GUI_JAVA2TS_TASK, Java2TSTask.class);
+//        guiJava2ts.configure(task -> {
+//          task.setGroup(UMLP_GROUP_NAME);
+//          if (srcJava.getAsFile().exists()) {
+//            task.getInput().from(srcJava);
+//          }
+//          task.getInput().from(gui2java.flatMap(CommonMCTask::getOutputDir));
+//          if (cdPresent) {
+//            task.getInput().from(cd2java.flatMap(CommonMCTask::getOutputDir));
+//            // task.getExcludeTranspileFiles().from(cd2java.flatMap(CommonMCTask::getOutputDir));
+//          }
+//
+//          task.getJSweetAdapterDir().set(gui2jsweetAdapter.flatMap(GUI2JSweetAdapterTask::getJSweetAdapterDir));
+//          task.getJSweetWorkingDir().set(internalJSweetDir.map(dir -> dir.dir("guiJava2ts")));
+//          task.getJSweetCandiesDir().set(internalJSweetDir.map(dir -> dir.dir("candies")));
+//          task.getJSweetClassPath().from(subproject.getConfigurations().named(JSWEET_CONFIG));
+//
+//          // TODO: Remove the following at some point
+//          // required with getExcludeTranspile - otherwise "import { Project } from 'dtcockpit/Project';" is missing in GUI ts files
+//          // Add the domain-sources as a java-source
+//          task.getInput().from(subproject.getConfigurations().named(JSWEET_EXTRA_SOURCES_CONFIG));
+//          // but exclude them from being transpiled (thus, only available as source files)
+//          task.getExcludeTranspileFiles().from(subproject.getConfigurations().named(JSWEET_EXTRA_SOURCES_CONFIG));
+//          // TODO: END OF REMOVAL
+//
+//          task.getOutputDir().set(guiJava2tsDir);
+//
+//          // TODO: Fix ShellAPI imports
+//          // Required due to "imports cannot use * wildcards when using modules"
+//          for (String s : defaultExcludedSources) {
+//            task.getExcludeSource().add(s); // via @Erased
+//          }
+//          if (inRTE(subproject)) {
+//            task.getExcludeSource().add("glob:**/common/DatabaseAccessManage*.java");
+//            task.getExcludeSource().add("glob:**/common/Neo4jDatabaseStarter.java");
+//            task.getExcludeSource().add("glob:**/common/GemIdManager4*.java");
+//          }
+//
+//          task.onlyIf(t -> guiPresent);
+//        });
+
+        models2ts.configure(task -> task.dependsOn(gui2java2ts));
 
         gui2symJar.configure(task -> {
           task.from(
-              gui2java.flatMap(GUI2JavaTask::getOutputDir),
+              gui2java2ts.flatMap(GUI2Java2TSTask::getOutputDir),
               spec -> spec.include("**/*sym", "**/*import.map", "**/*tags")
           );
-          task.dependsOn(gui2java);
         });
 
         // TODO: remove after jsweet transition is complete and import mapping is reworked
@@ -441,7 +542,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
             task.getTslib().set(libQName);
           });
 
-          gui2java.configure(task -> {
+          gui2java2ts.configure(task -> {
             task.getImportsDir().from(umlp2ts.flatMap(UMLP2TSTask::getOutputDir));
           });
 
@@ -456,12 +557,12 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
 
         TaskProvider<NpmTask> buildLib = subproject.getTasks().register(BUILD_LIB_TASK, NpmTask.class, task -> {
           task.setGroup(UMLP_GROUP_NAME);
-          task.dependsOn(npmInstall, guiJava2ts);
+          task.dependsOn(npmInstall, gui2java2ts);
           if (!inRTE(subproject) && local) {
             task.dependsOn(subproject.project(":umlp-rte:client").getTasks().named("build"));
           }
           task.getArgs().addAll(libQName.map(v -> List.of("run", "build", v)));
-          task.getWorkingDir().set(project.getLayout().getProjectDirectory().getAsFile());
+          task.getWorkingDir().set(p.getLayout().getProjectDirectory().getAsFile());
           task.getInputs().files(srcGUI.getAsFileTree().matching(pattern -> {
             pattern.exclude("**/build/**");
             pattern.exclude("**/*.spec.ts", "**/*.md");

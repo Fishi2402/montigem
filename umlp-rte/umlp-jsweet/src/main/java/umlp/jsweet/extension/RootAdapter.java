@@ -1,0 +1,43 @@
+/* (c) https://github.com/MontiCore/monticore */
+package umlp.jsweet.extension;
+
+import org.jsweet.transpiler.extension.PrinterAdapter;
+import umlp.jsweet.extension.cd.JavaBasicsAdapter;
+import umlp.jsweet.extension.cd.UMLPRTEImportAdapter;
+import umlp.jsweet.extension.common.BasicsAdapter;
+import umlp.jsweet.extension.common.UMLPEnumAdapter;
+import umlp.jsweet.extension.gui.AnnotationToDecoratorAdapter;
+import umlp.jsweet.extension.gui.DelegateGemListToArrayAdapter;
+import umlp.jsweet.extension.gui.GUIComponentBasicsAdapter;
+import umlp.jsweet.extension.gui.GUIComponentObserverPatternAdapter;
+import umlp.jsweet.extension.gui.GUITypesImportAdapter;
+import umlp.jsweet.extension.gui.GUIUtilAdapter;
+import umlp.jsweet.extension.gui.TSTypesAdapter;
+import umlp.jsweet.extension.gui.UMLPGUICollectionsAdapter;
+import umlp.jsweet.extension.module.RelativeImportAdapter;
+import umlp.jsweet.extension.util.NeverCDAdapter;
+import umlp.jsweet.extension.util.OnlyCDAdapter;
+
+/**
+ * This adapter combines the adapters for GUI and CD transpilation
+ */
+public class RootAdapter extends PrinterAdapter {
+  public RootAdapter(PrinterAdapter parentAdapter) {
+    super(
+        new NeverCDAdapter(new UMLPGUICollectionsAdapter(
+            new OnlyCDAdapter(new UMLPRTEImportAdapter(
+                new RelativeImportAdapter(
+                    new NeverCDAdapter(new AnnotationToDecoratorAdapter(
+                        new NeverCDAdapter(new DelegateGemListToArrayAdapter(
+                            new NeverCDAdapter(new GUIComponentBasicsAdapter(
+                                new NeverCDAdapter(new GUIComponentObserverPatternAdapter(
+                                    new NeverCDAdapter(new GUITypesImportAdapter(
+                                        new NeverCDAdapter(new GUIUtilAdapter(
+                                            new NeverCDAdapter(new TSTypesAdapter(
+                                                new OnlyCDAdapter(new JavaBasicsAdapter(
+                                                    new BasicsAdapter(
+                                                        new UMLPEnumAdapter(
+                                                            parentAdapter
+                                                        ))))))))))))))))))))))));
+  }
+}

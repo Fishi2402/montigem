@@ -104,8 +104,11 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig implements GUIDS
           // TODO #3768
           Optional<String> hwHtmlPath = util.getRelativeImportPath(
               hwPath, outPath, qClassName, "html");
-          if (hwHtmlPath.isPresent()) {
+          if (hwHtmlPath.isPresent() && !existsTSHandwrittenFile(hwPath, gui.getComponentQName())) {
             htmlPath = hwHtmlPath.get();
+          }
+          else if (hwHtmlPath.isPresent()) {
+            htmlPath = "./" + htmlFileName;
           }
           Optional<String> hwScssPath = util.getRelativeImportPath(
               hwPath, outPath, qClassName, "scss");

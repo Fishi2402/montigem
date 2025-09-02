@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component, Input } from '@angular/core';
-import { config, GemCandlestickChartComponent } from '../../../../build/gui/mc/fenix/charts/GemCandlestickChartComponent';
+import { config, GemCandlestickChartComponent } from '../../../../../../build/gui2java2ts/mc/fenix/charts/GemCandlestickChartComponent';
 import { PlotlyViaCDNModule } from 'angular-plotly.js';
 import moment from 'moment';
 import { GemChartOptions } from './GemChartOptions';

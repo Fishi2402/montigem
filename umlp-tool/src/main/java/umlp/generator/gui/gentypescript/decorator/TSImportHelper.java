@@ -243,8 +243,23 @@ public class TSImportHelper {
       path.append(fullParts[i]);
       path.append('/');
     }
+    /**/
+    /*
+    StringBuilder path = new StringBuilder("../");
+    for (String p : candidateParts) {
+      path.append("../");
+    }
 
-    return Optional.of(path.toString());
+    path.append("guiJava2ts/");
+
+    for (String p : fullParts) {
+      path.append(p.toLowerCase());
+      path.append("/");
+    }
+    /**/
+
+    // TODO AGe: remove toLowerCase when corresponding umlp trafo is fixed
+    return Optional.of(path.toString().toLowerCase());
   }
 
   protected String path2TSRelativeImport(String relativePath) {

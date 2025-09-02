@@ -1,8 +1,9 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
+${signature("hwcPaths")}
+<#-- @ftlvariable name="hwcPaths" type="java.util.List<java.lang.String>"-->
 {
   "adapters": [
-    "umlp.jsweet.extension.UMLPJSweetGUIAdapter",
-    "umlp.jsweet.extension.domainAdapters.DefaultImportAdapter"
+    "umlp.jsweet.extension.UMLPGUIRTEModuleAdapter"
   ],
   "@Erased": {
     "include": [
@@ -13,5 +14,8 @@
       "**.hashCode*()",
       "**.equals*?\\(*\\)"
     ]
-  }
+  },
+  "hwc": [
+    <#list hwcPaths as hwc>"${hwc?json_string}"<#sep>,</#list>
+  ]
 }

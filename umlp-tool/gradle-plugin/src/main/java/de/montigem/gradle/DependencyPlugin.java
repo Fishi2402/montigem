@@ -2,6 +2,7 @@
 package de.montigem.gradle;
 
 import de.montigem.gradle.specific.GUI2JSweetAdapterTask;
+import de.montigem.gradle.specific.GUI2Java2TSTask;
 import de.montigem.gradle.specific.UMLP2JSweetAdapterTask;
 import de.montigem.gradle.specific.serialize.GUI2SymTask;
 import de.se_rwth.commons.logging.Log;
@@ -63,6 +64,7 @@ public abstract class DependencyPlugin implements Plugin<Project> {
     project.getTasks().withType(MergeTask.class).configureEach(t -> t.getClassPath().from(toolConfig));
     project.getTasks().withType(GUI2JSweetAdapterTask.class).configureEach(t -> t.getClassPath().from(toolConfig));
     project.getTasks().withType(UMLP2JSweetAdapterTask.class).configureEach(t -> t.getClassPath().from(toolConfig));
+    project.getTasks().withType(GUI2Java2TSTask.class).configureEach(t -> t.getClassPath().from(toolConfig));
   }
 
 

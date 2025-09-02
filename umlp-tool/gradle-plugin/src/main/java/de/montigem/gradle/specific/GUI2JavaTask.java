@@ -27,6 +27,12 @@ public abstract class GUI2JavaTask extends MGAllFilesTask {
     super("GUI2JavaTask");
   }
 
+  /*
+  public GUI2JavaTask(String type) {
+    super(type);
+  }
+  /* */
+
   @InputDirectory
   @org.gradle.api.tasks.Optional
   @PathSensitive(PathSensitivity.RELATIVE)

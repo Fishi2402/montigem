@@ -1,0 +1,17 @@
+{
+  "adapters": [
+    "umlp.jsweet.extension.RootAdapter"
+  ],
+  "rte": "commonj2ts",
+  "asyncList": false,
+  "@Erased": {
+    "include": [
+      "**.spliterator*()",
+      "**.stream*()",
+      "**.parallelStream*()",
+      "**.toArray*(*)",
+      "**.hashCode*()",
+      "**.equals*?\\(*\\)"
+    ]
+  }
+}

@@ -42,7 +42,7 @@ public abstract class UMLP2JSweetAdapterTask extends DefaultTask {
     workQueue.submit(UMLP2JSweetAdapterAction.class, params -> {
       params.getDomain().set(getDomain());
       params.getJSweetAdapterDir().set(getJSweetAdapterDir());
-      params.getHandWrittenCodeDir().set(getHandWrittenCodeDir());
+      params.getHandWrittenJSweetDir().set(getHandWrittenCodeDir());
     });
   }
 

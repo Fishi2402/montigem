@@ -28,6 +28,32 @@ configure(mglib) {
   libScope = "@umlp"
 }
 
+project(":umlp-rte:client").afterEvaluate {
+  def arrange = project(":umlp-rte:client:arrange").tasks.named("buildLib")
+  def basic = project(":umlp-rte:client:basic").tasks.named("buildLib")
+  def charts = project(":umlp-rte:client:charts").tasks.named("buildLib")
+  def common = project(":umlp-rte:client:common").tasks.named("buildLib")
+  def commonj2ts = project(":umlp-rte:client:commonj2ts").tasks.named("buildLib")
+  def editor = project(":umlp-rte:client:editor").tasks.named("buildLib")
+  def input = project(":umlp-rte:client:input").tasks.named("buildLib")
+  def networkgraph = project(":umlp-rte:client:networkgraph").tasks.named("buildLib")
+
+  def aNeedsB = { TaskProvider a, TaskProvider b ->
+    a.configure { t ->
+      t.inputs.files(b.map { it.outputs.files.singleFile })
+      t.dependsOn(b)
+    }
+  }
+
+  aNeedsB(basic, common)
+  aNeedsB(basic, commonj2ts)
+  aNeedsB(arrange, common)
+  aNeedsB(charts, commonj2ts)
+  aNeedsB(input, commonj2ts)
+  aNeedsB(networkgraph, commonj2ts)
+  aNeedsB(editor, commonj2ts)
+}
+
 //repositories {
 //  mavenCentral()
 //}
