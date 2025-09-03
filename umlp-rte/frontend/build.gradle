@@ -35,8 +35,12 @@ project(":umlp-rte:frontend").afterEvaluate {
   def common = project(":umlp-rte:frontend:common").tasks.named("buildLib")
   def commonj2ts = project(":umlp-rte:frontend:commonj2ts").tasks.named("buildLib")
   def editor = project(":umlp-rte:frontend:editor").tasks.named("buildLib")
+  def fischertechnik = project(":umlp-rte:frontend:fischertechnik").tasks.named("buildLib")
+  def functiondisplay = project(":umlp-rte:frontend:functiondisplay").tasks.named("buildLib")
   def input = project(":umlp-rte:frontend:input").tasks.named("buildLib")
+  def navigation = project(":umlp-rte:frontend:navigation").tasks.named("buildLib")
   def networkgraph = project(":umlp-rte:frontend:networkgraph").tasks.named("buildLib")
+  def table = project(":umlp-rte:frontend:table").tasks.named("buildLib")
 
   def aNeedsB = { TaskProvider a, TaskProvider b ->
     a.configure { t ->
@@ -49,9 +53,13 @@ project(":umlp-rte:frontend").afterEvaluate {
   aNeedsB(basic, commonj2ts)
   aNeedsB(arrange, common)
   aNeedsB(charts, commonj2ts)
-  aNeedsB(input, commonj2ts)
-  aNeedsB(networkgraph, commonj2ts)
   aNeedsB(editor, commonj2ts)
+  aNeedsB(fischertechnik, commonj2ts)
+  aNeedsB(functiondisplay, commonj2ts)
+  aNeedsB(input, commonj2ts)
+  aNeedsB(navigation, commonj2ts)
+  aNeedsB(networkgraph, commonj2ts)
+  aNeedsB(table, commonj2ts)
 }
 
 //repositories {

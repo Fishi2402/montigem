@@ -5,6 +5,7 @@ import de.montigem.gradle.specific.UMLP2SymTask;
 import de.se_rwth.commons.logging.Log;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.attributes.Bundling;
 import org.gradle.api.attributes.Category;
@@ -180,11 +181,14 @@ public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Projec
     });
 
     Project frontend = project.findProject(project.getPath() + ":frontend");
-    if (frontend == null) {
-      // TODO: remove after renaming
-      frontend = project.findProject(project.getPath() + ":frontend");
-    }
     if (frontend != null) {
+      project.getTasks().named("build").configure(t -> {
+        Task frontendBuild = frontend.getTasks().findByName("build");
+        if (frontendBuild != null) {
+          t.dependsOn(frontendBuild);
+        }
+      });
+
       Configuration gui2symConfig = project.getConfigurations().create(GUI2SYM_CONFIG, conf -> {
         conf.setCanBeConsumed(true);
         addGuiSymbolsJarAttributes(conf, project);
