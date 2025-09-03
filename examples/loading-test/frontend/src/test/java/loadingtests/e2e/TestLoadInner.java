@@ -36,7 +36,6 @@ public class TestLoadInner extends AbstractLoadingTestsE2ETest {
   }
 
 
-  @Disabled
   @Test
   void testStyleOnPageLoad(Page page) {
     Long gameGemID = this.gameGemIds.get(0);
@@ -73,7 +72,6 @@ public class TestLoadInner extends AbstractLoadingTestsE2ETest {
   }
 
   @Test
-  @Disabled
   void testAfterRouteChange(Page page) {
     Long gameGemID = this.gameGemIds.get(0);
     Long playerGemId = this.playerGemIds.get(0);
