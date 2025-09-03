@@ -1,6 +1,6 @@
 {
   "adapters": [
-    "umlp.jsweet.extension.UMLPJSweetDomainAdapter",
+    "umlp.jsweet.extension.UMLPAdapter",
     "domainAdapter.DomainImportAdapter"
   ],
   "domainName": "Domain",

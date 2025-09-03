@@ -261,20 +261,6 @@ public class TSImportHelper {
       path.append(fullParts[i]);
       path.append('/');
     }
-    /**/
-    /*
-    StringBuilder path = new StringBuilder("../");
-    for (String p : candidateParts) {
-      path.append("../");
-    }
-
-    path.append("guiJava2ts/");
-
-    for (String p : fullParts) {
-      path.append(p.toLowerCase());
-      path.append("/");
-    }
-    /**/
 
     // TODO AGe: remove toLowerCase when corresponding umlp trafo is fixed
     return Optional.of(path.toString().toLowerCase());
