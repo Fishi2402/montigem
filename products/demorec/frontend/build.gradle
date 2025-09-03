@@ -59,7 +59,7 @@ guiJava2ts {
 }
 
 
-npmInstall.dependsOn(':umlp-rte:client:npmInstall')
+npmInstall.dependsOn(':umlp-rte:frontend:npmInstall')
 
 
 tasks.named('runApp', NpxTask) {

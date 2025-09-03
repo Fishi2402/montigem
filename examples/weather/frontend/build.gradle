@@ -40,7 +40,7 @@ gui2java {
   domainModels = ["Weather"]
 }*/
 
-npmInstall.dependsOn(':umlp-rte:client:npmInstall')
+npmInstall.dependsOn(':umlp-rte:frontend:npmInstall')
 
 tasks.register('run') {
   dependsOn(runApp)

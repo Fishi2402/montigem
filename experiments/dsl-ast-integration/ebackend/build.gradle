@@ -43,7 +43,7 @@ dependencies {
    }
 
    guiDefaultTypes "de.monticore.lang:guidsl:${mc_version}:default-types"
-   guiDefaultTypes "umlp.umlp-rte:client:${mc_version}"
+   guiDefaultTypes "umlp.umlp-rte:frontend:${mc_version}"
 
    api project(':umlp-rte'), withoutSpringLogging
    api project(':umlp-test-rte'), withoutSpringLogging

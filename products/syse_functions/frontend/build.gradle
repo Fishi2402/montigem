@@ -48,7 +48,7 @@ guiJava2ts {
 }
 
 nodeSetup.dependsOn(setupFrontend)
-npmInstall.dependsOn(nodeSetup, ':umlp-rte:client:npmInstall')
+npmInstall.dependsOn(nodeSetup, ':umlp-rte:frontend:npmInstall')
 
 def prebuildTasks = [
     npmInstall, generate

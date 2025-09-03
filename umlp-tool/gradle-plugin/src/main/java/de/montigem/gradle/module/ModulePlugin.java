@@ -182,7 +182,7 @@ public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Projec
     Project frontend = project.findProject(project.getPath() + ":frontend");
     if (frontend == null) {
       // TODO: remove after renaming
-      frontend = project.findProject(project.getPath() + ":client");
+      frontend = project.findProject(project.getPath() + ":frontend");
     }
     if (frontend != null) {
       Configuration gui2symConfig = project.getConfigurations().create(GUI2SYM_CONFIG, conf -> {

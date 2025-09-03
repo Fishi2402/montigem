@@ -53,7 +53,7 @@ gui2java {
   modelDir = file(tasks.guiVariability.getOutputDir())
 }
 
-npmInstall.dependsOn(':umlp-rte:client:npmInstall')
+npmInstall.dependsOn(':umlp-rte:frontend:npmInstall')
 
 umlpJava2ts {
   excludeSource.addAll([

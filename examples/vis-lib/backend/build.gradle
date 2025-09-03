@@ -63,7 +63,7 @@ dependencies {
   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2', withoutSpringLogging
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2', withoutSpringLogging
   implementation project(':umlp-rte')
-  implementation project(':umlp-rte:client')
+  implementation project(':umlp-rte:frontend')
 }
 
 umlp2java {

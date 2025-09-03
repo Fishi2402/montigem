@@ -9,8 +9,8 @@ plugins {
 }
 
 dependencies {
-  montigemModuleGUISymbols project(":umlp-rte:client")
-  montigemModuleImportMap project(":umlp-rte:client")
+  montigemModuleGUISymbols project(":umlp-rte:frontend")
+  montigemModuleImportMap project(":umlp-rte:frontend")
 }
 
 def useCD2GUI = false
@@ -65,7 +65,7 @@ tasks.register('gui2java2', GUI2JavaTask) {
   guiCreateModelsAsFile = file(generateCDTOGUI.getOutputDir().file("meta/guiCreateModels.txt"))
 }
 
-npmInstall.dependsOn(':umlp-rte:client:npmInstall')
+npmInstall.dependsOn(':umlp-rte:frontend:npmInstall')
 
 
 tasks.named('buildApp', NpxTask) {

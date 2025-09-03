@@ -142,12 +142,12 @@ subprojects {
   }
 }
 
-project(":umlp-rte:client").afterEvaluate { rte ->
+project(":umlp-rte:frontend").afterEvaluate { rte ->
   var previousInstallTask = rte.tasks.named("npmInstall")
 
   subprojects {
     tasks.withType(com.github.gradle.node.npm.task.NpmInstallTask).configureEach { t ->
-      if (project.path != ":umlp-rte:client") {
+      if (project.path != ":umlp-rte:frontend") {
         t.mustRunAfter(previousInstallTask)
         previousInstallTask = t
       }

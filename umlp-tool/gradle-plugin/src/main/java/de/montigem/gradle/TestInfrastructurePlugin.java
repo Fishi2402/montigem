@@ -123,7 +123,7 @@ public abstract class TestInfrastructurePlugin implements Plugin<Project> {
         });
 
     if (local) {
-      Project rteClient = project.project(":umlp-rte:client");
+      Project rteClient = project.project(":umlp-rte:frontend");
       project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG, rteClient);
       testInfrastructureTask.configure(task -> {
         task.getSymbolPath().from(project.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
@@ -131,7 +131,7 @@ public abstract class TestInfrastructurePlugin implements Plugin<Project> {
     }
     else {
       project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG,
-          "umlp:client:" + getStringProjectProperty(project, "mc_version", "")
+          "umlp:frontend:" + getStringProjectProperty(project, "mc_version", "")
       );
     }
 

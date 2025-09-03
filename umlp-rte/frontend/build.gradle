@@ -11,32 +11,32 @@ plugins {
 
 configure(mglib) {
   libs.addAll(
-      project(":umlp-rte:client:arrange"),
-      project(":umlp-rte:client:basic"),
-      project(":umlp-rte:client:charts"),
-      project(":umlp-rte:client:common"),
-      project(":umlp-rte:client:commonj2ts"),
-      project(":umlp-rte:client:editor"),
-      project(":umlp-rte:client:fischertechnik"),
-      project(":umlp-rte:client:functiondisplay"),
-      project(":umlp-rte:client:input"),
-      project(":umlp-rte:client:navigation"),
-      project(":umlp-rte:client:networkgraph"),
-      project(":umlp-rte:client:table"),
-      project(":umlp-rte:client:theme")
+      project(":umlp-rte:frontend:arrange"),
+      project(":umlp-rte:frontend:basic"),
+      project(":umlp-rte:frontend:charts"),
+      project(":umlp-rte:frontend:common"),
+      project(":umlp-rte:frontend:commonj2ts"),
+      project(":umlp-rte:frontend:editor"),
+      project(":umlp-rte:frontend:fischertechnik"),
+      project(":umlp-rte:frontend:functiondisplay"),
+      project(":umlp-rte:frontend:input"),
+      project(":umlp-rte:frontend:navigation"),
+      project(":umlp-rte:frontend:networkgraph"),
+      project(":umlp-rte:frontend:table"),
+      project(":umlp-rte:frontend:theme")
   )
   libScope = "@umlp"
 }
 
-project(":umlp-rte:client").afterEvaluate {
-  def arrange = project(":umlp-rte:client:arrange").tasks.named("buildLib")
-  def basic = project(":umlp-rte:client:basic").tasks.named("buildLib")
-  def charts = project(":umlp-rte:client:charts").tasks.named("buildLib")
-  def common = project(":umlp-rte:client:common").tasks.named("buildLib")
-  def commonj2ts = project(":umlp-rte:client:commonj2ts").tasks.named("buildLib")
-  def editor = project(":umlp-rte:client:editor").tasks.named("buildLib")
-  def input = project(":umlp-rte:client:input").tasks.named("buildLib")
-  def networkgraph = project(":umlp-rte:client:networkgraph").tasks.named("buildLib")
+project(":umlp-rte:frontend").afterEvaluate {
+  def arrange = project(":umlp-rte:frontend:arrange").tasks.named("buildLib")
+  def basic = project(":umlp-rte:frontend:basic").tasks.named("buildLib")
+  def charts = project(":umlp-rte:frontend:charts").tasks.named("buildLib")
+  def common = project(":umlp-rte:frontend:common").tasks.named("buildLib")
+  def commonj2ts = project(":umlp-rte:frontend:commonj2ts").tasks.named("buildLib")
+  def editor = project(":umlp-rte:frontend:editor").tasks.named("buildLib")
+  def input = project(":umlp-rte:frontend:input").tasks.named("buildLib")
+  def networkgraph = project(":umlp-rte:frontend:networkgraph").tasks.named("buildLib")
 
   def aNeedsB = { TaskProvider a, TaskProvider b ->
     a.configure { t ->

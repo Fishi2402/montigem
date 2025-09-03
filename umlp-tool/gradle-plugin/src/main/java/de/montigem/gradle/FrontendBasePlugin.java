@@ -198,7 +198,7 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
       // TODO change this in the future, so we do not have to download all library's dependencies in every umlp project
       // Alternative: use pnpm or yarn or something like this
       Path sourceLibPath = project.getBuildDir().toPath().resolve("app/libs/@umlp");
-      Project rteClient = project.project(":umlp-rte:client");
+      Project rteClient = project.project(":umlp-rte:frontend");
       for (Project subproject : rteClient.getSubprojects()) {
         TaskProvider<NpmTask> buildLib = subproject.getTasks().named(BUILD_LIB_TASK, NpmTask.class);
         task.dependsOn(buildLib);
@@ -216,7 +216,7 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
           task.setGroup(UMLP_GROUP_NAME);
           Path compiledLibPath = project.getBuildDir().toPath().resolve("app/prodlibs/@umlp");
 
-          Project umlpRteClient = project.project(":umlp-rte:client");
+          Project umlpRteClient = project.project(":umlp-rte:frontend");
           for (Project subproject : umlpRteClient.getSubprojects()) {
             TaskProvider<NpmTask> buildLib = subproject.getTasks().named(BUILD_LIB_TASK, NpmTask.class);
             task.dependsOn(buildLib);
@@ -334,7 +334,7 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
     boolean local = getBooleanProjectProperty(project, "useLocalDependencies");
     if (!inRTE(project)) {
       if (local) {
-        Project rteClient = project.project(":umlp-rte:client");
+        Project rteClient = project.project(":umlp-rte:frontend");
         project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG, rteClient);
         project.getDependencies().add(MONTIGEM_MODULE_IMPORT_MAP_CONFIG, rteClient);
       }

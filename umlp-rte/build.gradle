@@ -45,7 +45,7 @@ dependencies {
 
 /*
 tasks.named("compileJava").configure {
-  dependsOn project(":umlp-rte:client").tasks.matching { it.group == "mglib_cd2java" }
+  dependsOn project(":umlp-rte:frontend").tasks.matching { it.group == "mglib_cd2java" }
 }
 
 sourceSets.main.java.srcDir {

@@ -100,7 +100,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
     addClientRTEDependency(project);
 
     AdhocComponentWithVariants javaComponent = (AdhocComponentWithVariants) project.getComponents().getByName("java");
-    // contains e.g. [ project(":umlp-rte:client:arrange"), project(":umlp-rte:client:basic") ]
+    // contains e.g. [ project(":umlp-rte:frontend:arrange"), project(":umlp-rte:frontend:basic") ]
     ModuleFrontendPluginExtension extension = project.getExtensions()
         .create("mglib", ModuleFrontendPluginExtension.class);
 
@@ -559,7 +559,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
           task.setGroup(UMLP_GROUP_NAME);
           task.dependsOn(npmInstall, gui2java2ts);
           if (!inRTE(subproject) && local) {
-            task.dependsOn(subproject.project(":umlp-rte:client").getTasks().named("build"));
+            task.dependsOn(subproject.project(":umlp-rte:frontend").getTasks().named("build"));
           }
           task.getArgs().addAll(libQName.map(v -> List.of("run", "build", v)));
           task.getWorkingDir().set(p.getLayout().getProjectDirectory().getAsFile());

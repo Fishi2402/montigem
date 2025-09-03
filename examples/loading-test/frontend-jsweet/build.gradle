@@ -50,20 +50,20 @@ guiJava2ts {
 }
 
 nodeSetup.dependsOn(setupFrontend)
-npmInstall.dependsOn(nodeSetup, ':umlp-rte:client:npmInstall')
+npmInstall.dependsOn(nodeSetup, ':umlp-rte:frontend:npmInstall')
 
 
 
 tasks.named('buildApp', NpxTask) {
   dependsOn(
-      project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") },
+      project(":umlp-rte:frontend").tasks.matching { it.name.startsWith("build_") },
   )
 }
 
 tasks.named('testApp', NpxTask) {
   dependsOn(
-      project(":umlp-rte:client").tasks.matching { it.name.startsWith("copy_") },
-      project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") }
+      project(":umlp-rte:frontend").tasks.matching { it.name.startsWith("copy_") },
+      project(":umlp-rte:frontend").tasks.matching { it.name.startsWith("build_") }
   )
 }
 
