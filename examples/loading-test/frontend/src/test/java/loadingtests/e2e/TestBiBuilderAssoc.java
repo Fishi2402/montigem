@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static umlp.test_rte.playwright.ComponentKind.GemButton;
@@ -36,7 +37,7 @@ public class TestBiBuilderAssoc extends AbstractLoadingTestsE2ETest {
   }
 
   @Test
-  @Disabled // TODO monticore/monticore#4550
+  @EnabledIfEnvironmentVariable(named = "WITH_JSWEET", matches = "TRUE")
   void testBuildOpt(Page page) {
     navAndWait(page, "/test_assoc/TestBiBuilder/" + leftSide.getGemId()); //go to page we want to test
 
@@ -62,7 +63,7 @@ public class TestBiBuilderAssoc extends AbstractLoadingTestsE2ETest {
   }
 
   @Test
-  @Disabled // TODO monticore/monticore#4550
+  @EnabledIfEnvironmentVariable(named = "WITH_JSWEET", matches = "TRUE")
   void testBuildList(Page page) {
     navAndWait(page, "/test_assoc/TestBiBuilder/" + leftSide.getGemId()); //go to page we want to test
 

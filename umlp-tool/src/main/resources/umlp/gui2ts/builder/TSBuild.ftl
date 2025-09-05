@@ -31,18 +31,7 @@ if (!this.buildFinished) {
                   }
                 </#if>
             <#else>
-                <#if genService.isBidirectional(assoc)>
-                    <#assign otherSide=assoc.getSymbol().getOtherSide().getAssocSide()>
-                  if (this.${name} != null) {
-                    <#if genService.isList(otherSide)>
-                      if (!this._${assoc.getName()}.get().get${otherSide.getName()?cap_first}().includes(this)) {
-                      this._${assoc.getName()}.get().add${otherSide.getName()?cap_first}(this, NotificationScope.MINIMAL);
-                      }
-                    <#else>
-                      this._${assoc.getName()}.get().set${otherSide.getName()?cap_first}(this, NotificationScope.MINIMAL);
-                    </#if>
-                  }
-                </#if>
+                // TODO: case not handled, replace with jsweet
             </#if>
         </#list>
         this.${name?uncap_first}Observers.forEach(obs => obs.notifyBuild(this)); //+ an initial notification
@@ -65,18 +54,7 @@ if (!this.buildFinished) {
       }
     </#if>
   <#else>
-    <#if genService.isBidirectional(assoc)>
-      <#assign otherSide=assoc.getSymbol().getOtherSide().getAssocSide()>
-      if (this.${name} != null) {
-      <#if genService.isList(otherSide)>
-        if (!this._${assoc.getName()}.get().get${otherSide.getName()?cap_first}().includes(this)) {
-          this._${assoc.getName()}.get().add${otherSide.getName()?cap_first}(this, NotificationScope.MINIMAL);
-        }
-      <#else>
-        this._${assoc.getName()}.get().set${otherSide.getName()?cap_first}(this, NotificationScope.MINIMAL);
-      </#if>
-      }
-    </#if>
+      // TODO: case not handled, replace with jsweet
   </#if>
 </#list>
     this.${name?uncap_first}Observers.forEach(obs => obs.notifyBuild(this)); //+ an initial notification
