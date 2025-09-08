@@ -14,8 +14,10 @@ package umlp.backendrte.command;
 import de.se_rwth.commons.logging.Log;
 import umlp.backendrte.util.LogUtil;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class CommandManager {
   // Id dieses Clients/Servers
@@ -81,13 +83,14 @@ public class CommandManager {
 
   protected  <T> CommandResult<T> _executeCommand(Command<T> command) {
     if(command.checkAccessPolicy() && command.checkContract()) {
+      Optional<Participant> participantOpt = Optional.ofNullable(particpants.get(command.getParticipantId()));
+      if (command.getParticipantId() != 0 && participantOpt.isEmpty()) {
+        // participantID 0 is the default (backend)
+        throw new IllegalStateException("Unexpected state: Participant " + command.getParticipantId() + " is unknown!");
+      }
       CommandResult<T> res = command.doRun();
       // update subscribed gemIds
-      if (particpants.containsKey(command.getParticipantId())) {
-        particpants.get(command.getParticipantId()).subscribe(command.getNewlySubscribedGemIds());
-      } else {
-        // TODO: MH: kann das passieren?
-      }
+      participantOpt.ifPresent(p -> p.subscribe(command.getNewlySubscribedGemIds()));
       // TODO: error handling if doRun fails
       if (!command.isRequest()) {
         _sendCommandToSubscribers(command);

@@ -50,7 +50,8 @@ public class FilteredCommandsTest extends LoadingTestsSQLDBTestSetup {
     // gemId == 4
     LoadingTestsManager.personBuilder().age(19).name("Bob").build();
 
-    String cmd1Str = "{\"id\":12,\"commandType\":\"loadingtests.commands.Person_get_filtered\",\"participantId\":1,\"filter\":\""
+    // Use 0 as the participantId
+    String cmd1Str = "{\"id\":12,\"commandType\":\"loadingtests.commands.Person_get_filtered\",\"participantId\":0,\"filter\":\""
         + "[ p | p in Person,"
         + " p.age > 18,"
         + " p.age < 23,"
@@ -73,7 +74,7 @@ public class FilteredCommandsTest extends LoadingTestsSQLDBTestSetup {
     assertTrue(objs1.contains(0L));
     assertTrue(objs1.contains(1L));
 
-    String cmd2Str = "{\"id\":34,\"commandType\":\"loadingtests.commands.Person_get_filtered\",\"participantId\":1,\"filter\":\""
+    String cmd2Str = "{\"id\":34,\"commandType\":\"loadingtests.commands.Person_get_filtered\",\"participantId\":0,\"filter\":\""
         + "[ p | p in Person,"
         + " p.name == \\\"Bob\\\"]"
         + "\" }";

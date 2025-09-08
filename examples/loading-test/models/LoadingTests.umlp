@@ -14,6 +14,7 @@ classdiagram LoadingTests {
 
   class Food {
     String name;
+    MyEnum eAttr = MyEnum.A;
   }
 
   association [*] Person (owner) <-> (pet) Animal [*];
@@ -106,5 +107,7 @@ classdiagram LoadingTests {
   //    String name;
   //}
 
-
+  enum MyEnum {
+    A,B,C;
+  }
 }
