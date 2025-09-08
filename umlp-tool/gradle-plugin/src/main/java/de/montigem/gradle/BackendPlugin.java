@@ -105,9 +105,7 @@ public abstract class BackendPlugin implements Plugin<Project> {
     // Add Symbols and Tags of RTE ClassDiagrams to SymbolPath
     if (local) {
       Project rte = project.project(":umlp-rte");
-      project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG,
-          project.getDependencies().project(Map.of("path", rte.getPath()))
-      );
+      project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG, rte);
     }
     else {
       project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG, "umlp:umlp-rte:" + mcVersion(project));

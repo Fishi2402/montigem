@@ -17,6 +17,7 @@ import org.gradle.api.component.SoftwareComponentFactory;
 import org.gradle.api.file.Directory;
 import org.gradle.api.internal.tasks.TaskDependencyFactory;
 import org.gradle.api.plugins.BasePlugin;
+import org.gradle.api.plugins.JavaPlatformExtension;
 import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
@@ -165,9 +166,6 @@ public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Projec
 
       task.onlyIf(t -> umlpPresent);
     });
-    var umlp2symOut = umlp2sym
-        .flatMap(UMLP2SymTask::getSymbolOutDir)
-        .map(dir -> dir.getAsFile().exists() ? dir.getAsFile() : Collections.emptyList());
 
     TaskProvider<Jar> umlp2symJar = umlp2symInit(umlp2sym, project, javaComponent);
     umlp2symJar.configure(task -> {
@@ -182,6 +180,7 @@ public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Projec
 
     Project frontend = project.findProject(project.getPath() + ":frontend");
     if (frontend != null) {
+      project.getDependencies().add("api", frontend);
       project.getTasks().named("build").configure(t -> {
         Task frontendBuild = frontend.getTasks().findByName("build");
         if (frontendBuild != null) {
