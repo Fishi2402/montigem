@@ -1,10 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-<#macro indent>
-  [[[indent]]]
-  <#nested>
-  [[[deindent]]]
-</#macro>
 
+<#include "cd2python.PythonMacros.ftl"> <#--Load macros-->
 
 ${tc.include("cd2java.JavaDoc")}
 ${tc.include("cd2java.Annotations")}

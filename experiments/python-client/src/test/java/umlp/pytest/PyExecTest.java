@@ -1,12 +1,16 @@
 package umlp.pytest;
 
 import mydomain.MyDomainManager;
+import mydomain.MyEnum;
 import mydomain.TestAssoc_1_A;
 import mydomain.TestAssoc_1_B;
 import mydomain.TestAssoc_1_BBuilder;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
@@ -59,12 +63,13 @@ public class PyExecTest extends AbstractPyTest {
     assertEquals("2", handler.sendCommand(
         "my_a = await my_domain_manager.create(MyDomain.A.A(\n" +
             " gemId=await my_domain_manager.get_free_gem_id(),\n" +
-            " b=new_b.gemId, directB=" + secondB.get().getGemId() + ", myStr=\"hello world\"" +
+            " b=new_b.gemId, directB=" + secondB.get().getGemId() + ", myStr=\"hello world\", strList=[]" +
             "))\nprint(my_a.gemId)").get());
     assertEquals(1, MyDomainManager.getAList().size());
     var my_a = MyDomainManager.getASure(2);
 
     assertEquals("hello world", my_a.getMyStr());
+    assertEquals(new ArrayList<>(), my_a.getStrListList());
     assertEquals(Optional.empty(), my_a.getStrOpt());
     assertEquals(secondB.get().getGemId(), my_a.getDirectBGem().getGemId());
     assertEquals(42, my_a.getI());
@@ -75,12 +80,23 @@ public class PyExecTest extends AbstractPyTest {
     assertEquals("", handler.sendCommand("await my_a.setMyStr(\"test\")").get());
     assertEquals("test", my_a.getMyStr());
     my_a.setMyStr("test2");
-    System.out.println("wait for test2");
     Thread.sleep(500); // TODO await (retry for 2 seconds)
-    System.out.println("waited for test2");
     assertEquals("test2", handler.sendCommand("print(my_a.myStr)").get());
+
+    // strList
+    assertEquals("", handler.sendCommand("await my_a.strList_add(0, \"test\")").get());
+    assertEquals(List.of("test"), my_a.getStrListList());
+    my_a.addStrList(1, "test_from_java");
+    Thread.sleep(500); // TODO await (retry for 2 seconds)
+    assertEquals("['test', 'test_from_java']", handler.sendCommand("print(my_a.strList)").get());
+    my_a.removeStrList(0);
+    assertEquals(List.of("test_from_java"), my_a.getStrListList());
+    Thread.sleep(500); // TODO await (retry for 2 seconds)
+    assertEquals("['test_from_java']", handler.sendCommand("print(my_a.strList)").get());
+    assertEquals("", handler.sendCommand("await my_a.strList_rem(0)").get());
+    assertEquals(List.of(), my_a.getStrListList());
     //
-    // TODO: strOpt
+    // TODO: test strOpt
     //
     assertEquals("", handler.sendCommand("await my_a.setI(3)").get());
     System.out.println(my_a.getGemId() + "//" + my_a.getI());
@@ -97,8 +113,19 @@ public class PyExecTest extends AbstractPyTest {
     my_a.setDirectB(secondB.get());
     Thread.sleep(500);
 
-    // TODO
-    assertEquals(Long.toString(secondB.get().getGemId()), handler.sendCommand("print(my_a.directB.gemId)").get());
+    // enum
+    assertEquals("A", handler.sendCommand("print(my_a.enumState)").get());
+    assertEquals("<enum 'MyEnum'>", handler.sendCommand("print(type(my_a.enumState))").get());
+    assertEquals("", handler.sendCommand("import MyDomain.MyEnum").get());
+    assertEquals("", handler.sendCommand("await my_a.setEnumState(MyDomain.MyEnum.MyEnum.B)").get());
+    Thread.sleep(100);
+    assertEquals(MyEnum.B, my_a.getEnumState());
+    my_a.setEnumState(MyEnum.C);
+    Thread.sleep(100);
+    assertEquals("C", handler.sendCommand("print(my_a.enumState)").get());
+    assertEquals("<enum 'MyEnum'>", handler.sendCommand("print(type(my_a.enumState))").get());
+    // enum
+
   }
 
   @Test
@@ -138,6 +165,13 @@ public class PyExecTest extends AbstractPyTest {
 
     assertEquals("", handler.sendCommand("await a1.listB_add(1, " +b2.getGemId()+")").get());
     assertEquals(2, a1.getListBList().size());
+
+    assertEquals("", handler.sendCommand("await a1.listB_rem(1)").get());
+    assertEquals(1, a1.getListBList().size());
+    a1.clearListBs();
+    Thread.sleep(500);
+    assertEquals("0", handler.sendCommand("print(len(a1.listB))").get());
+
 
   }
 

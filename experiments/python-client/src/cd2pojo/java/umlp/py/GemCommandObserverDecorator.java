@@ -115,30 +115,59 @@ public class GemCommandObserverDecorator extends AbstractDecorator<AbstractDecor
         break;
       case SET:
         // todo: use method signature from GemObserverDecorator
+      {
         methodName = "Add" + node.getName();
 
         var notifyAdd = CDMethodFacade.getInstance()
             .createMethod(CDBasisMill.modifierBuilder().PUBLIC()
-                              .build(), "notify" + methodName,
-                          CDParameterFacade.getInstance().createParameter("typing.Any",
-                                                                          StringTransformations.uncapitalize(
-                                                                              classNameStack.peek())),
-                          CDParameterFacade.getInstance()
-                              .createParameter("typing.Any", node.getName()),
-                          CDParameterFacade.getInstance()
-                              .createParameter("typing.Any", "index_in_list")
-                         );
+                    .build(), "notify" + methodName,
+                CDParameterFacade.getInstance().createParameter("typing.Any",
+                    StringTransformations.uncapitalize(
+                        classNameStack.peek())),
+                CDParameterFacade.getInstance()
+                    .createParameter("typing.Any", node.getName()),
+                CDParameterFacade.getInstance()
+                    .createParameter("typing.Any", "index_in_list")
+            );
         Pyutils.markAsAsync(notifyAdd);
         glexOpt.ifPresent(glex -> glex.replaceTemplate(Pyutils.EMPTY_TEMPLATE,
-                                                       notifyAdd,
-                                                       new TemplateHookPoint(
-                                                           info.getTypeClass() == UmlpAttrHelper.RealType.GEM ? "cd2python.gemcommandobserver.AddGem" :
-                                                               "cd2python.gemcommandobserver.AddBuiltIn",
-                                                           domainName.toLowerCase(),
-                                                           StringTransformations.uncapitalize(
-                                                               classNameStack.peek()),
-                                                           node.getName())));
+            notifyAdd,
+            new TemplateHookPoint(
+                info.getTypeClass() == UmlpAttrHelper.RealType.GEM ? "cd2python.gemcommandobserver.AddGem" :
+                    "cd2python.gemcommandobserver.AddBuiltIn",
+                domainName.toLowerCase(),
+                StringTransformations.uncapitalize(
+                    classNameStack.peek()),
+                node.getName())));
         addToClass(observerDecClass, notifyAdd);
+      }
+      {
+        methodName = "Remove" + node.getName();
+
+        var notifyAdd = CDMethodFacade.getInstance()
+            .createMethod(CDBasisMill.modifierBuilder().PUBLIC()
+                    .build(), "notify" + methodName,
+                CDParameterFacade.getInstance().createParameter("typing.Any",
+                    StringTransformations.uncapitalize(
+                        classNameStack.peek())),
+                CDParameterFacade.getInstance()
+                    .createParameter("typing.Any", node.getName()),
+                CDParameterFacade.getInstance()
+                    .createParameter("typing.Any", "index_in_list")
+            );
+        Pyutils.markAsAsync(notifyAdd);
+        glexOpt.ifPresent(glex -> glex.replaceTemplate(Pyutils.EMPTY_TEMPLATE,
+            notifyAdd,
+            new TemplateHookPoint(
+                info.getTypeClass() == UmlpAttrHelper.RealType.GEM ? "cd2python.gemcommandobserver.RemGem" :
+                    "cd2python.gemcommandobserver.RemBuiltIn",
+                domainName.toLowerCase(),
+                StringTransformations.uncapitalize(
+                    classNameStack.peek()),
+                node.getName())));
+        addToClass(observerDecClass, notifyAdd);
+      }
+
         break;
       default:
         Log.warn("Unknown multiplicity: " + info.getMultiplicity(), node.get_SourcePositionStart());

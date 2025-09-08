@@ -21,7 +21,7 @@ tasks.register("generateGem", de.monticore.cdgen.gradleplugin.CDGenTask.class) {
   getInput().from(project.file("src/models/MyDomain.umlp"))
   class2MC=true
   getOutputDir().set(project.layout.buildDirectory.dir("py_out_java"))
-  configTemplate = 'Gem2Py'
+  configTemplate = 'cd2python.Gem2Py'
   tmplDir = file('src/cd2pojo/resources')
   getExtraClasspathElements().from(configurations.cdTool)
   getExtraClasspathElements().from(sourceSets.cd2pojo.output)

@@ -3,7 +3,7 @@ import typing
 from typing import Any
 from montigem_runtime.commandmanager import CommandManager, Command, uncap
 from pydantic import BaseModel
-
+import asyncio
 
 class NotificationScope(enum.Enum):
   MINIMAL = 0
@@ -76,6 +76,9 @@ class GemList(BaseModel, typing.Generic[DataT]):
 
   def get_gem_id(self, index_in_list: int):
     return self.indexes[index_in_list]
+
+  def pop(self, index_in_list: int) -> GEM_ID:
+    return self.indexes.pop(index_in_list)
 
   def __len__(self):
     return len(self.indexes)

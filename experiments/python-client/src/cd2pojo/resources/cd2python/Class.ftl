@@ -5,14 +5,9 @@ ${tc.signature("package")}
 ${glex.setGlobalValue("cdPrinter", tc.instantiate("umlp.py.CdPyUtilsPrinter"))}
 <#assign cdPrinter = glex.getGlobalVar("cdPrinter")>
 # (c) https://github.com/MontiCore/monticore */
-<#--insert fake indentation lexems-->
-<#--which are then turned into real indentation using a post-processing step-->
-<#--TODO: hook into writeArgs?-->
-<#macro indent>
-  [[[indent]]]
-  <#nested>
-  [[[deindent]]]
-</#macro>
+
+<#include "cd2python.PythonMacros.ftl"> <#--Load macros-->
+
 
 <#--  Capture the output of the inner macro-->
 <#assign output>

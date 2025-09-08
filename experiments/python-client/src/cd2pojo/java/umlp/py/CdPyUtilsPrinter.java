@@ -22,6 +22,7 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
@@ -31,6 +32,7 @@ import de.monticore.types3.SymTypeRelations;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import umlp.py.printer.PythonMYSimpleGenericTypesPrinter;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -52,6 +54,21 @@ public class CdPyUtilsPrinter extends CdUtilsPrinter {
     fullPrettyPrinter.getTraverser().setMCSimpleGenericTypesHandler(new PythonMYSimpleGenericTypesPrinter(fullPrettyPrinter.getPrinter(), true));
     fullPrettyPrinter.getTraverser().setMCBasicTypesHandler(new MCBasicTypesPrettyPrinter(fullPrettyPrinter.getPrinter(), true) {
       @Override
+      public void handle(ASTMCQualifiedName node) {
+        if (this.isPrintComments()) {
+          CommentPrettyPrinter.printPreComments(node, this.getPrinter());
+        }
+        String p = node.toString();
+        if (p.equals("String") || p.equals("java.lang.String"))
+          p = "str";
+        getPrinter().print(p);
+        getPrinter().print(" ");
+        if (this.isPrintComments()) {
+          CommentPrettyPrinter.printPostComments(node, this.getPrinter());
+        }
+      }
+
+      @Override
       public void handle(ASTMCPrimitiveType node) {
         if (this.isPrintComments()) {
           CommentPrettyPrinter.printPreComments(node, this.getPrinter());
@@ -66,7 +83,7 @@ public class CdPyUtilsPrinter extends CdUtilsPrinter {
         } else if (node.getPrimitive() == 6) {
           this.getPrinter().print("int ");
         } else if (node.getPrimitive() == 7) {
-          this.getPrinter().print("long ");
+          this.getPrinter().print("int "); // longs were unified in python 3
         } else if (node.getPrimitive() == 3) {
           this.getPrinter().print("str ");
         } else if (node.getPrimitive() == 5) {
@@ -109,12 +126,14 @@ public class CdPyUtilsPrinter extends CdUtilsPrinter {
    */
   public String printImportList(Collection<ASTMCImportStatement> importStatements) {
     StringBuilder sb = new StringBuilder();
-//    for (var importStatement : importStatements) {
-//      importStatement.getQName()
-//    }
-    importStatements.forEach(i -> sb.append(fullPrettyPrinter.prettyprint(i)).append("\n"));
-    return sb.toString().replace("import de.se_rwth.commons.logging.Log", "#import de.se_rwth.commons.logging.Log");
+    // Some built-in imports have to be removed (e.g. import str)
+    importStatements.stream().map(i->fullPrettyPrinter.prettyprint(i))
+            .filter(importLine -> !builtIns.contains(importLine))
+                .forEach(importLine -> {sb.append(importLine).append("\n");});
+    return "#printImportList\n" + sb.toString().replace("import de.se_rwth.commons.logging.Log", "#import de.se_rwth.commons.logging.Log") + "\n#end printImportList";
   }
+
+  protected List<String> builtIns = Arrays.asList("import str;\n", "import java.util.List;\n", "import java.util.Optional;\n");
 
   /**
    * Prints an ASTType

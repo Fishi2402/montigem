@@ -1,6 +1,7 @@
 package umlp.py;
 
 import de.monticore.cd.codegen.CDGenService;
+import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.mccollectiontypes.types3.MCCollectionSymTypeRelations;
@@ -11,6 +12,7 @@ public class UmlpAttrHelper {
   public static enum RealType {
     BUILD_IN,
     GEM,
+    ENUM,
     UNKNOWN;
   }
 
@@ -62,6 +64,9 @@ public class UmlpAttrHelper {
     } else if (symTypeExpression.isPrimitive() || SymTypeRelations.isCompatible(symTypeExpression,
                                                                                 getString())) {
       return new AttrData(RealType.BUILD_IN, Multiplicity.MANDATORY, false, symTypeExpression);
+    } else if (symTypeExpression.getTypeInfo() instanceof CDTypeSymbol
+        && ((CDTypeSymbol) symTypeExpression.getTypeInfo()).isIsEnum()) {
+      return new AttrData(RealType.ENUM, Multiplicity.MANDATORY, false, symTypeExpression);
     } else if (isGem(symTypeExpression)) {
       return new AttrData(RealType.GEM, Multiplicity.MANDATORY, false, symTypeExpression);
     }

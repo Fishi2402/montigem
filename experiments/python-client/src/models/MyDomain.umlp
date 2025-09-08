@@ -1,15 +1,24 @@
 // CD2Pojo only supports "classdiagram", not "umlp"
+// TODO: import java.time.LocalDateTime;
+
+
 <<pygem>>
 classdiagram MyDomain { //b
 
   class A {
     String myStr = "hello";
     java.util.Optional<String> strOpt;
+    java.util.List<String> strList;
     B directB;
     int i = 42;
     double d = 42.42;
     // boolean bool = false; // TODO -> report error
     boolean myBool = true;
+    // TODO: LocalDateTime localDateTimeTest;
+
+    // HW: executable: typing.Optional[typing.Any] = None
+
+    MyEnum enumState = MyEnum.A;
   }
 
   class B {}
@@ -38,5 +47,12 @@ classdiagram MyDomain { //b
     void voidCommand3(A a, int i);
 
     B createB();
+  }
+
+  class Ext1 {}
+  class Ext2 extends Ext1 {}
+
+  enum MyEnum {
+    A, B, C;
   }
 }

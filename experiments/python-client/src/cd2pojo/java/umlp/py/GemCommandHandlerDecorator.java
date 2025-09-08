@@ -100,21 +100,42 @@ public class GemCommandHandlerDecorator extends AbstractDecorator<AbstractDecora
                     node.getName()),
                 "cd2python.commandconsumer.handleSet", node.getName());
             break;
+          case ENUM:
+            addCommand(
+                domainName.toLowerCase() + ".commands." + clazzName + "_set" + StringTransformations.capitalize(
+                    node.getName()),
+                "cd2python.commandconsumer.handleSetEnum", node.getName(),
+                node.getSymbol().getType().printFullName() + "." + node.getSymbol().getType().print());
+            break;
+          default:
+            Log.warn("Unhandled type kind for handler", node.get_SourcePositionStart());
         }
         break;
       case SET:
-//        switch (info.getTypeClass()) {
-//          case GEM:
-        addCommand(
-            domainName.toLowerCase() + ".commands." + clazzName + "_add" + StringTransformations.capitalize(
-                node.getName()),
-            "cd2python.commandconsumer.handleAdd", node.getName());
-        break;
-//          case BUILD_IN:
-//            addCommand("mydomain.commands." + clazzName + "_set" + StringTransformations.capitalize(node.getName()),
-//                       "cd2python.commandconsumer.handleSet", node.getName());
-//            break;
-//        }
+        switch (info.getTypeClass()) {
+          case GEM:
+            addCommand(
+                domainName.toLowerCase() + ".commands." + clazzName + "_add" + StringTransformations.capitalize(
+                    node.getName()),
+                "cd2python.commandconsumer.handleAddGem", node.getName());
+            addCommand(
+                domainName.toLowerCase() + ".commands." + clazzName + "_remove" + StringTransformations.capitalize(
+                    node.getName()),
+                "cd2python.commandconsumer.handleRemGem", node.getName());
+            break;
+          case BUILD_IN:
+            addCommand(
+                domainName.toLowerCase() + ".commands." + clazzName + "_add" + StringTransformations.capitalize(
+                    node.getName()),
+                "cd2python.commandconsumer.handleAdd", node.getName());
+            addCommand(
+                domainName.toLowerCase() + ".commands." + clazzName + "_remove" + StringTransformations.capitalize(
+                    node.getName()),
+                "cd2python.commandconsumer.handleRem", node.getName());
+            break;
+          default:
+            Log.warn("Unknown multiplicity: " + info.getMultiplicity(), node.get_SourcePositionStart());
+        }
       case OPTIONAL:
         switch (info.getTypeClass()) {
           case GEM:
@@ -138,12 +159,18 @@ public class GemCommandHandlerDecorator extends AbstractDecorator<AbstractDecora
   }
 
   protected void addCommand(String command, String template, String attr) {
+    this.addCommand(command, template, attr, "##unset##");
+  }
+
+
+  protected void addCommand(String command, String template, String attr, String type) {
     var m = new HashMap<String, String>();
     m.put("command", command);
     m.put("template", template);
     m.put("clazz", classNameStack.peek());
     m.put("attr", attr);
     m.put("domain", domainName);
+    m.put("type", type);
     this.commandList.add(m);
   }
 

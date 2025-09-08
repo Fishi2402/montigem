@@ -4,7 +4,7 @@
 <#-- @ftlvariable name="tc" type="de.monticore.generating.templateengine.TemplateController" -->
 <#-- @ftlvariable name="genSetup" type="de.monticore.generating.GeneratorSetup" -->
 
-${genSetup.setTracing(false)}
+${genSetup.setTracing(false)}    <#--must be false for python-->
 ${genSetup.setCommentStart("#")}
 ${genSetup.setCommentEnd("\n")}
 
@@ -22,7 +22,10 @@ ${decConfig.withDecorator("umlp.py.GemSetterDecorator").applyOnName("pygem")}
 ${decConfig.withDecorator("umlp.py.GemObserverDecorator").applyOnName("pygem")}
 ${decConfig.withDecorator("umlp.py.GemCommandObserverDecorator").applyOnName("pygem")}
 ${decConfig.withDecorator("umlp.py.GemCommandHandlerDecorator").applyOnName("pygem")}
+<#-- workaround for HWC -->
+${decConfig.withDecorator("umlp.py.GemHWDecorator").applyOnName("pygem")}
 
 ${decConfig.withDecorator("umlp.py.GemMethodDecorator").applyOnName("pygem")}
 
 ${glex.replaceTemplate("cd2java.Class", glex.templateHP("cd2python.Class"))}
+${glex.replaceTemplate("cd2java.Enum", glex.templateHP("cd2python.Enum"))}

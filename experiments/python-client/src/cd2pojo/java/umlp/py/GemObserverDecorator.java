@@ -1,5 +1,6 @@
 package umlp.py;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import de.monticore.cd.codegen.decorators.IDecorator;
 import de.monticore.cd.codegen.decorators.data.AbstractDecorator;
@@ -122,9 +123,9 @@ public class GemObserverDecorator extends AbstractDecorator<AbstractDecorator.No
 
   protected void handleSet(ASTCDAttribute node, ASTCDClass observerDecClass,
                            UmlpAttrHelper.AttrData info) {
-    String methodName = "Add" + node.getName();
+    String addMethodName = "Add" + node.getName();
     var add_set = CDMethodFacade.getInstance()
-        .createMethod(CDBasisMill.modifierBuilder().PUBLIC().build(), "notify" + methodName,
+        .createMethod(CDBasisMill.modifierBuilder().PUBLIC().build(), "notify" + addMethodName,
                       CDParameterFacade.getInstance().createParameter("typing.Any",
                                                                       StringTransformations.uncapitalize(
                                                                           classNameStack.peek())),
@@ -134,19 +135,39 @@ public class GemObserverDecorator extends AbstractDecorator<AbstractDecorator.No
                      );
     Pyutils.markAsAsync(add_set);
     addToClass(observerDecClass, add_set);
+    addToClass(observerDecClass, createMaybeNotifyMethod(add_set));
 
-    var maybe = createMaybeNotifyMethod(add_set);
-    addToClass(observerDecClass, maybe);
+    String remMethodName = "Remove" + node.getName();
+    var rem_set = CDMethodFacade.getInstance()
+        .createMethod(CDBasisMill.modifierBuilder().PUBLIC().build(), "notify" + remMethodName,
+            CDParameterFacade.getInstance().createParameter("typing.Any",
+                StringTransformations.uncapitalize(
+                    classNameStack.peek())),
+            CDParameterFacade.getInstance().createParameter("typing.Any", node.getName()),
+
+            CDParameterFacade.getInstance().createParameter("int", "index_in_list")
+        );
+    Pyutils.markAsAsync(rem_set);
+    addToClass(observerDecClass, rem_set);
+    addToClass(observerDecClass, createMaybeNotifyMethod(rem_set));
 
     for (var setter : getData(GemSetterDecorator.class).getMethods(node)) {
       if (setter.getKind() == GemSetterDecorator.SetterMethodKind.ADD_LIST) {
         glexOpt.ifPresent(glex -> glex.addAfterTemplate("Setter:After", setter.getSetMethod(),
                                                         new TemplateHookPoint(
                                                             "cd2python.gemobserver.CallListAdd",
-                                                            methodName,
+                                                            addMethodName,
                                                             StringTransformations.uncapitalize(
                                                                 classNameStack.peek()),
                                                             setter.getParamName())));
+      } else if (setter.getKind() == GemSetterDecorator.SetterMethodKind.REM_LIST) {
+        glexOpt.ifPresent(glex -> glex.addAfterTemplate("Setter:After", setter.getSetMethod(),
+            new TemplateHookPoint(
+                "cd2python.gemobserver.CallListRem",
+                remMethodName,
+                StringTransformations.uncapitalize(
+                    classNameStack.peek()),
+                setter.getParamName())));
       }
 
     }
@@ -171,7 +192,8 @@ public class GemObserverDecorator extends AbstractDecorator<AbstractDecorator.No
 
 
     for (var setter : getData(GemSetterDecorator.class).getMethods(node)) {
-      if (info.getTypeClass() == UmlpAttrHelper.RealType.BUILD_IN) {
+      if (info.getTypeClass() == UmlpAttrHelper.RealType.BUILD_IN ||
+          info.getTypeClass() == UmlpAttrHelper.RealType.ENUM) {
         glexOpt.ifPresent(glex -> glex.addBeforeTemplate("Setter:Before", setter.getSetMethod(),
                                                          new StringHookPoint(
                                                              "_old_value = self." + setter.getParamName())));
@@ -229,6 +251,6 @@ public class GemObserverDecorator extends AbstractDecorator<AbstractDecorator.No
 
   // TODO: Backport
   public <D> D getData(Class<? extends IDecorator<D>> decorator) {
-    return (D) this.decoratorData.getData(decorator);
+    return  Preconditions.checkNotNull(this.decoratorData.getData(decorator), "No data for " + decorator);
   }
 }
