@@ -35,7 +35,6 @@ public class TestChainedAssoc extends AbstractLoadingTestsE2ETest {
 
   @EnabledIfEnvironmentVariable(named = "WITH_JSWEET", matches = "TRUE")
   @Test
-  @Disabled // TODO: https://git.rwth-aachen.de/monticore/monticore/-/issues/4803
   void testUpdateOnOnePage(Page page) throws Exception {
     Person p1 = LoadingTestsManager.personBuilder().name("P1").age(42).build().get();
     Animal a1_2 = LoadingTestsManager.animalBuilder().name("A1").legs(4).build().get();
@@ -49,19 +48,12 @@ public class TestChainedAssoc extends AbstractLoadingTestsE2ETest {
     page.reload();
     Thread.sleep(2000);
 
-    // Assert that all person names are displayed on page
-    page.locator(GemText.selector()).all().forEach(l->{
-      System.err.println("l" + l);
-      System.err.println("->" + l.textContent());
-    });
-
-
     assertThat(page.locator(GemText.selector()).locator(person)).hasText(p1.getName());
     assertThat(page.locator(GemText.selector()).locator(animal)).hasText(a1_2.getName());
     assertThat(page.locator(GemText.selector()).locator(food)).hasText(" ");
 
     a1_2.setName("A2");
-    assertThat(page.locator(GemText.selector()).locator(animal)).hasText(a1_2.getName()); // should not be A2
+    assertThat(page.locator(GemText.selector()).locator(animal)).hasText(a1_2.getName()); // should now be A2
 
     // Update favourite food
     Food f = LoadingTestsManager.foodBuilder().name("F1").build().get();
@@ -79,7 +71,7 @@ public class TestChainedAssoc extends AbstractLoadingTestsE2ETest {
     // Tets update of old
     a1_2.setName("__old");
     a1_2.getFavouriteFood().setName("__old");
-    assertThat(page.locator(GemText.selector()).locator(animal)).hasText(a1_2.getName()); // should be A2
+    assertThat(page.locator(GemText.selector()).locator(animal)).hasText(a3.getName()); // should be A2
     assertThat(page.locator(GemText.selector()).locator(food)).hasText(" ");
 
     //
