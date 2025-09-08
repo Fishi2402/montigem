@@ -9,6 +9,7 @@ import loadingtests.MyEnum;
 import loadingtests.Person;
 import loadingtests.test_infrastructure.AbstractLoadingTestsE2ETest;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 
@@ -27,12 +28,14 @@ public class TestChainedAssoc extends AbstractLoadingTestsE2ETest {
 
   @EnabledIfEnvironmentVariable(named = "WITH_JSWEET", matches = "TRUE")
   @Test
+  @Disabled // TODO: https://git.rwth-aachen.de/monticore/monticore/-/issues/4803
   void testAll(Page page) {
     testUpdateOnOnePage(page, "ChainedAssoc", "nth=0", "nth=1", "nth=2");
   }
 
   @EnabledIfEnvironmentVariable(named = "WITH_JSWEET", matches = "TRUE")
   @Test
+  @Disabled // TODO: https://git.rwth-aachen.de/monticore/monticore/-/issues/4803
   void testAssoc2(Page page) {
     // Do not test person.name
     testUpdateOnOnePage(page, "ChainedAssoc2", null, "nth=0", "nth=1");
@@ -40,6 +43,7 @@ public class TestChainedAssoc extends AbstractLoadingTestsE2ETest {
 
   @EnabledIfEnvironmentVariable(named = "WITH_JSWEET", matches = "TRUE")
   @Test
+  @Disabled // TODO: https://git.rwth-aachen.de/monticore/monticore/-/issues/4803
   void testAssoc3(Page page) {
     // Only test person.favouritePet.favouriteFood.name
     testUpdateOnOnePage(page, "ChainedAssoc3", null, null, "nth=0");
@@ -47,6 +51,7 @@ public class TestChainedAssoc extends AbstractLoadingTestsE2ETest {
 
   @EnabledIfEnvironmentVariable(named = "WITH_JSWEET", matches = "TRUE")
   @Test
+  @Disabled // TODO: https://git.rwth-aachen.de/monticore/monticore/-/issues/4803
   void testAssoc4(Page page) {
     // Test over multiple containers
     Person p1 = LoadingTestsManager.personBuilder().name("P1").age(42).build().get();
@@ -70,6 +75,7 @@ public class TestChainedAssoc extends AbstractLoadingTestsE2ETest {
 
   @EnabledIfEnvironmentVariable(named = "WITH_JSWEET", matches = "TRUE")
   @Test
+  @Disabled // TODO: https://git.rwth-aachen.de/monticore/monticore/-/issues/4803
   void testAssocEnum(Page page) {
     // Test over multiple containers
     Person p1 = LoadingTestsManager.personBuilder().name("P1").age(42).build().get();
