@@ -2,6 +2,8 @@
 package umlp.jsweet.extension;
 
 import org.jsweet.transpiler.extension.PrinterAdapter;
+import standalone.com.sun.source.tree.CompilationUnitTree;
+import umlp.jsweet.extension.cocos.JSweetCoCoChecker;
 import umlp.jsweet.extension.common.BasicsAdapter;
 import umlp.jsweet.extension.common.UMLPEnumAdapter;
 import umlp.jsweet.extension.gui.GUITypesImportAdapter;

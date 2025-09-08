@@ -38,7 +38,7 @@ public class GemButtonExample extends GemButtonExampleTOP {
 
 ## GUI Model
 
-`GemButton.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/basic/GemButton.gui))
+`GemButton.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/basic/GemButton.gui))
 
 ```java
 package mc.fenix.basic;

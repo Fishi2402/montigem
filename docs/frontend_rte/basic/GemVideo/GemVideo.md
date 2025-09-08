@@ -21,7 +21,7 @@ page GemVideoExample() {
 
 ## GUI Model
 
-`GemVideo.gui`([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/basic/GemVideo.gui))
+`GemVideo.gui`([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/basic/GemVideo.gui))
 
 ```java
 package mc.fenix.basic;

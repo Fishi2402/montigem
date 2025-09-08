@@ -34,7 +34,7 @@ page RowsTester() {
 
 ## GUI Model
 
-`GemRadioInput.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/input/GemRadioInput.gui))
+`GemRadioInput.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/input/GemRadioInput.gui))
 ```java
 package mc.fenix.input.src.lib.gemradioinput;
 component GemRadioInput(

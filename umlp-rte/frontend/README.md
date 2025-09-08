@@ -279,7 +279,7 @@ In an app inside of a montigem project (`example`, `products`, etc.):
 - add path to your project's `tsconfig.json` file:
   ```diff
   "paths": {
-  + "@umlp/experimental": ["../../../../../umlp-rte/client/experimental"],
+  + "@umlp/experimental": ["../../../../../umlp-rte/frontend/experimental"],
     ...,
   }
   ```

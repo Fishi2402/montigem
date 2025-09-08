@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package umlp.jsweet.extension.domainAdapters;
+package umlp.jsweet.extension.umlp;
 
 import org.jsweet.JSweetConfig;
 import org.jsweet.transpiler.JSweetContext;
