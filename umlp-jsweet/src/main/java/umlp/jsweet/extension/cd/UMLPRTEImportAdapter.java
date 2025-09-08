@@ -16,7 +16,6 @@ public class UMLPRTEImportAdapter extends umlp.jsweet.extension.umlp.UMLPRTEImpo
   protected List<Pattern> getExcludes() {
     List<Pattern> res = new ArrayList<>(super.getExcludes());
     res.add(Pattern.compile("umlp\\.backendrte\\.common\\.Gem"));
-    res.add(Pattern.compile("umlp\\.backendrte\\.common\\.NotificationScope"));
     return res;
   }
 }

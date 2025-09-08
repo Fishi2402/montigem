@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TypeElementAnnotationScanner extends AbstractTreeScanner {
-  protected boolean stillWorking = false;
   protected boolean hasAnnotation = false;
   protected String annotation;
 
@@ -21,30 +20,10 @@ public class TypeElementAnnotationScanner extends AbstractTreeScanner {
     super(null, context, compilationUnit);
   }
 
-  public TypeElementAnnotationScanner(JSweetContext context) {
-    super(null, context, null);
-  }
-
   public boolean find(String annotation) {
     this.annotation = annotation;
     scan(compilationUnit, getContext().trees);
     return hasAnnotation;
-  }
-
-  public List<CompilationUnitTree> exclude(List<CompilationUnitTree> compilationUnits, String annotation) {
-    List<CompilationUnitTree> withoutAnnotation = new ArrayList<>();
-    this.annotation = annotation;
-    do {
-      stillWorking = false;
-      for (CompilationUnitTree compilationUnit : compilationUnits) {
-        scan(compilationUnit, getContext().trees);
-        if (!hasAnnotation) {
-          withoutAnnotation.add(compilationUnit);
-        }
-        hasAnnotation = false;
-      }
-    } while (stillWorking);
-    return withoutAnnotation;
   }
 
   @Override

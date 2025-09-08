@@ -389,7 +389,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
           if (!domainNamesFinal.isEmpty()) {
             task.getDomainModels().set(domainNamesFinal);
           }
-          task.getImportsDir().from(umlpJava2ts.flatMap(t -> t.getOutputDir()));
+          task.getImportsDir().from(umlpJava2ts.flatMap(UMLPJava2TSTask::getOutputDir));
           task.getSymbolPath().from(umlp2symOut);
           task.getSymbolPath().from(guiTypes);
           task.getSymbolPath().from(cd2sym.flatMap(CD2SymTask::getOutput));
@@ -469,9 +469,9 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
             task.getTslib().set(libQName);
           });
 
-          gui2java2ts.configure(task -> {
-            task.getImportsDir().from(umlp2ts.flatMap(UMLP2TSTask::getOutputDir));
-          });
+//          gui2java2ts.configure(task -> {
+//            task.getImportsDir().from(umlp2ts.flatMap(UMLP2TSTask::getOutputDir));
+//          });
 
           umlp2impJar.configure(task -> {
             task.dependsOn(umlp2ts);
