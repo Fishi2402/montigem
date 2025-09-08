@@ -77,6 +77,12 @@ export class FunctionDisplay extends FunctionDisplayComponent {
       // Fügt das neue Element hinzu
       containerElement.appendChild(this.renderNode(v));
 
+      // Container sizing
+      containerElement.setAttribute("viewBox", `0 0 ${v.width} ${v.height}`);
+      containerElement.setAttribute('preserveAspectRatio', 'xMinYMin meet');
+      containerElement.style.width = `${v.width}px`;
+      containerElement.style.height = `${v.height}px`;
+
       // Outside-Click-Listener hinzufügen
       this.addOutsideClickListener();
     });
@@ -272,7 +278,12 @@ export class FunctionDisplay extends FunctionDisplayComponent {
       ports: part.ports.map(p => ({
         layoutOptions: {
           'elk.port.side': p.isIn  ? 'WEST' : 'EAST',
-        }, id: p.id, width: 20, height: 20, title: `${p.id}`, direction: p.isIn?'IN': 'OUT',
+        },
+        id: p.id,
+        width: 20,
+        height: 20,
+        title: `${p.id}`,
+        direction: p.isIn? 'IN': 'OUT',
         labels: [{ text: p.id.split('.').pop(), height: 17.5, width: p.id.length * 7.4, hasChildren: part.parts.length > 0, }],
         port4display: p.self
       })),
@@ -284,6 +295,7 @@ export class FunctionDisplay extends FunctionDisplayComponent {
       width: 240,
       height: 180,
       layoutOptions: {
+        'org.eclipse.elk.portConstraints': 'FIXED_SIDE',
         "elk.alignment": "TOP",
         ...(part.parts.length > 0 ? { 'elk.nodeLabels.placement': "[H_CENTER, V_TOP, INSIDE]" } : {})
       },
@@ -338,13 +350,22 @@ export class FunctionDisplay extends FunctionDisplayComponent {
       g.appendChild(text);
     }
 
+    // Create groups for incoming and outgoing ports
+    let incomingPortsG = document.createElementNS(svgNS, "g");
+    incomingPortsG.setAttribute("class", "incoming-ports");
+
+    let outgoingPortsG = document.createElementNS(svgNS, "g");
+    outgoingPortsG.setAttribute("class", "outgoing-ports");
+
     // Ports
     for (let port of node.ports ?? []) {
       if (!port.port4display.isVisible()) {
         continue;
       }
+
       let portG = document.createElementNS(svgNS, "g");
       portG.setAttribute("transform", `translate(${port.x}, ${port.y})`);
+
       let portRect = document.createElementNS(svgNS, "rect");
       portRect.setAttribute("class", "port");
       portRect.setAttribute("data-port", port.id);
@@ -354,31 +375,39 @@ export class FunctionDisplay extends FunctionDisplayComponent {
       portRect.setAttribute("height", `${port.height}`);
       portRect.setAttribute("fill", `${port.port4display.getBackgroundColor()}`);
       portRect.setAttribute("stroke", `${port.port4display.getBorderColor()}`);
+
       portRect.addEventListener('click', () => this.portClicked(port.port4display));
       portRect.addEventListener('mouseover', () => this.portHovered(port.port4display));
       portRect.addEventListener('mouseout', () => this.portMouseouted(port.port4display));
-      if (this.getSelectedPorts().includes(port.port4display)){
+
+      if (this.getSelectedPorts().includes(port.port4display)) {
         this.markElement(portRect, port.port4display.getBorderColorHover());
       }
+
       portRect.addEventListener('mouseover', () => {
         this.markElement(portRect, port.port4display.getBorderColorHover());
-      })
+      });
       portRect.addEventListener('mouseout', () => {
-        if (!this.getSelectedPorts().includes(port.port4display)){
+        if (!this.getSelectedPorts().includes(port.port4display)) {
           this.unmarkElement(portRect, port.port4display.getBorderColor());
         }
-      })
+      });
+
       this.portSvgMap.set(port.port4display, portRect);
       portG.appendChild(portRect);
+
+      // Title
       let title = document.createElementNS(svgNS, "title");
       title.textContent = port.title;
       portG.appendChild(title);
+
+      // Arrow icon
       let path = document.createElementNS(svgNS, "path");
       path.setAttribute("fill", "none");
-      path.setAttribute("stroke", "rgb(0, 0, 0)");
+      path.setAttribute("stroke", `${port.port4display.getBorderColor()}`);
       path.setAttribute("stroke-miterlimit", "10");
       path.setAttribute("pointer-events", "none");
-      path.setAttribute("d", "M 0 -5 L 5 0 L 0 5 M 5 0 L -5 0");  //arrow
+      path.setAttribute("d", "M 0 -5 L 5 0 L 0 5 M 5 0 L -5 0");  // arrow
       path.setAttribute("transform", "translate(10, 10)");
       portG.appendChild(path);
 
@@ -388,15 +417,36 @@ export class FunctionDisplay extends FunctionDisplayComponent {
           continue;
         }
         let text = document.createElementNS(svgNS, "text");
-        text.setAttribute("x", `${label.x}`);
+
+        if (port.direction === "OUT") {
+          // Right aligned for outgoing
+          text.setAttribute("text-anchor", "end");
+          text.setAttribute("x", `${port.x - 235}`);
+        } else {
+          // Normal left alignment for incoming
+          text.setAttribute("text-anchor", "start");
+          text.setAttribute("x", `${port.x + 35}`);
+        }
+
         text.setAttribute("y", `${label.hasChildren ? label.y : 14}`);
         text.setAttribute("font-family", "Menlo, Monaco, Courier New, monospace");
         text.setAttribute("font-size", "12");
         text.textContent = label.text;
+
         portG.appendChild(text);
       }
-      g.appendChild(portG);
+
+      // Append to the correct group
+      if (port.direction === "OUT") {
+        outgoingPortsG.appendChild(portG);
+      } else {
+        incomingPortsG.appendChild(portG);
+      }
     }
+
+    // Finally append the grouped ports to the node group
+    g.appendChild(incomingPortsG);
+    g.appendChild(outgoingPortsG);
 
     // Channels
     for (let edge of node.edges ?? []) {
@@ -437,8 +487,8 @@ export class FunctionDisplay extends FunctionDisplayComponent {
         let path = document.createElementNS(svgNS, "path");
         path.setAttribute("d", "M 0 0 L -7 -3.5 L -5.25 0 L -7 3.5 Z"); //arrow head
         path.setAttribute("transform", `translate(${section.endPoint.x - 1},${section.endPoint.y})`);
-        path.setAttribute("fill", "rgb(0, 0, 0)");
-        path.setAttribute("stroke", "rgb(0, 0, 0)");
+        path.setAttribute("fill", `${edge.channel4Display.getLineColor()}`);
+        path.setAttribute("stroke", `${edge.channel4Display.getLineColor()}`);
         path.setAttribute("stroke-miterlimit", "10");
         g.appendChild(path);
       }

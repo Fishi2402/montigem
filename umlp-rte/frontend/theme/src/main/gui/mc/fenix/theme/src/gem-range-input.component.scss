@@ -11,6 +11,13 @@
   $valueColor
 ) {
   .gem-range {
+    --thumb-size: 16px;
+  }
+
+  .gem-range::-webkit-slider-thumb { width: var(--thumb-size); height: var(--thumb-size); }
+  .gem-range::-moz-range-thumb     { width: var(--thumb-size); height: var(--thumb-size); }
+
+  .gem-range {
     -webkit-appearance: none;
     appearance: none;
     display: block;
@@ -58,8 +65,8 @@
     border-radius: 50%;
     margin-top: -5.45px;
     background-color: $slider-thumb-color;
-    height: 15px;
-    width: 15px;
+    height: 14px;
+    width: 14px;
   }
 
   .gem-range:focus::-moz-range-thumb {
@@ -90,7 +97,7 @@
   }
 
   gem-range-input {
-    width: 100%;
+    width: 0%;
     display: flex;
     flex-direction: $flexDirection;
     align-items: $itemsAlign;
@@ -100,7 +107,7 @@
 
   .gem-range-value {
     position: absolute;
-    bottom: -22%;
+    top: -1.2em;
   }
   .gem-range-value span {
     padding-left: 2px;
@@ -122,6 +129,36 @@
     font-size: 14px;
     font-weight: bold;
   }
+
+  .gem-range-tick {
+    transform: translateX(-50%);
+    position: absolute;
+    top: -10px;
+    width: 1px;
+    height: 12px;
+    background: #888;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .gem-range-tick-mark {
+    width: 2px;
+    height: 8px;
+    background-color: #555;
+    border-radius: 3px;
+    margin-bottom: 4px;
+  }
+
+  .gem-range-tick-label {
+    display: block;
+    font-size: 12px;
+    color: #333;
+    margin-top: 14px;
+    white-space: nowrap;
+    text-align: left;
+    font-weight: bold;
+  }
 }
 
 @mixin vertical-range-input-theme() {
@@ -136,6 +173,9 @@
     grid-template-columns: 1fr;
     align-items: center;
     justify-items: center;
+    padding: 0;
+    row-gap: 0.2em;
+    min-height: unset;
   }
 
   .gem-vertical-range-min,
@@ -160,6 +200,36 @@
     position: relative;
     margin-left: 20px;
     z-index: 1;
+  }
+
+  /* --- Tick Marks & Labels --- */
+  .gem-vertical-tick {
+    position: absolute;
+    transform: translateX(-50%);
+    top: -10px;
+    width: 1px;
+    height: 12px;
+    background: #888;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .gem-vertical-tick-mark {
+    width: 2px;
+    height: 8px;
+    background-color: #555;
+    border-radius: 3px;
+    margin-bottom: 9px;
+  }
+
+  .gem-vertical-tick-label {
+    transform: rotate(90deg);
+    font-size: 12px;
+    color: #333;
+    white-space: nowrap;
+    text-align: right;
+    font-weight: bold;
   }
 }
 

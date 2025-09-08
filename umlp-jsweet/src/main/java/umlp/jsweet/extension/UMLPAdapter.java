@@ -39,4 +39,14 @@ public class UMLPAdapter extends PrinterAdapter {
         )
     );
   }
+
+  @Override
+  public void onTranspilationStarted() {
+    for (CompilationUnitTree compilationUnit : getContext().compilationUnits) {
+      if (!getContext().isExcludedSourcePath(compilationUnit.getSourceFile().getName())) {
+        new JSweetCoCoChecker(getContext()).scan(compilationUnit, getContext().trees);
+      }
+    }
+    super.onTranspilationStarted();
+  }
 }

@@ -26,4 +26,4 @@ if(${classname?uncap_first}Opt.isEmpty()){
     return new ValidationResult(getId(), validationResult, "sehub.${classname}ValidationResult");
   }
 </#if>
-return StatusResult.error(getId());
+return StatusResult.ok(getId());

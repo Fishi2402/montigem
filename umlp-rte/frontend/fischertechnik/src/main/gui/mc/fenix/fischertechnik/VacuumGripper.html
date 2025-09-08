@@ -1,10 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 1184 643">
   <style>
     :root {
+      /*Indicators*/
       --pumpIndicatorOpacity: 0;
+      --valveIndicatorOpacity: 0;
+      /*Encoder*/
       --rotationDeg: 0;
       --verticalPercentage: 0;
       --horizontalPercentage: 0;
+      /*Ref-Switches*/
+      --refSwitchVertical: 0;
+      --refSwitchHorizontal: 0;
+      --refSwitchRotation: 0;
+
+
+      /*Ref-Switch-Colors*/
+      --onColor:  #e09400;
+      --offColor: #ffffff;
     }
   </style>
   <defs>
@@ -45,6 +57,11 @@
            cx="1042.963" cy="164.981"
            rx="31.058"
            ry="31.016"/>
+  <ellipse id="valve-indicator"
+           style="fill: #e09400; opacity: var(--valveIndicatorOpacity, 1);"
+           cx="1042.963" cy="365"
+           rx="31.058"
+           ry="31.016"/>
   <g>
     <path fill="#87acbc" d="M759 404H568v-19h191z"/>
     <path fill="url(#b)"
@@ -66,13 +83,27 @@
     <rect width="7" height="327" x="827" y="201" fill="url(#e)" rx="3.5"/>
     <rect width="7" height="182" x="725" y="201" fill="url(#f)" rx="3.5"
           transform="rotate(90 725 201)"/>
-    <path stroke="#fff" stroke-width="2" d="m1021.03 141.561 45.61 45.607"/>
-    <circle cx="1043" cy="165" r="32" stroke="#fff" stroke-width="2"/>
-    <path stroke="#fff" stroke-width="2" d="m1019.61 187.025 45.61-45.607"/>
-    <path fill="#87acbc" d="M211 363v-10a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2v10z"/>
+
     <text xml:space="preserve" x="985.319" y="105.16" fill="#fff" stroke-linecap="round"
           stroke-linejoin="round" stroke-opacity=".553" stroke-width="20.787" font-family="Arial"
           font-size="21.333" font-weight="400"><tspan x="985.319" y="105.16">Pumpe läuft</tspan></text>
+    <g>
+      <path stroke="#fff" stroke-width="2" d="m1021.03 141.561 45.61 45.607"/>
+      <circle cx="1043" cy="165" r="32" stroke="#fff" stroke-width="2"/>
+      <path stroke="#fff" stroke-width="2" d="m1019.61 187.025 45.61-45.607"/>
+    </g>
+
+    <text xml:space="preserve" x="985.319" y="305.16" fill="#fff" stroke-linecap="round"
+          stroke-linejoin="round" stroke-opacity=".553" stroke-width="20.787" font-family="Arial"
+          font-size="21.333" font-weight="400"><tspan x="985.319" y="305.16">Ventil offen</tspan></text>
+    <g transform="translate(0, 200)">
+      <path stroke="#fff" stroke-width="2" d="m1021.03 141.561 45.61 45.607"/>
+      <circle cx="1043" cy="165" r="32" stroke="#fff" stroke-width="2"/>
+      <path stroke="#fff" stroke-width="2" d="m1019.61 187.025 45.61-45.607"/>
+    </g>
+
+    <path fill="#87acbc" d="M211 363v-10a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2v10z"/>
+
     <text xml:space="preserve" x="855.386" y="217.068" fill="#fff" stroke-linecap="round"
           stroke-linejoin="round" stroke-opacity=".553" stroke-width="20.787" font-family="Arial"
           font-size="21.333" font-weight="400">
@@ -99,17 +130,17 @@
     </text>
   </g>
   <ellipse id="vertical-indicator"
-           style="transform: translateY(calc(var(--verticalPercentage, 0) * 3.26px - 163px));"
-           cx="831.602" cy="364.028" fill="#e09400"
+           style="transform: translateY(calc(var(--verticalPercentage, 0) * 3.26px - 163px)); fill: color-mix(in oklch, var(--onColor) calc(100% * var(--refSwitchVertical, 0)), var(--offColor))"
+           cx="831.602" cy="364.028"
            rx="15.008"
            ry="14.967"/>
   <ellipse id="rotation-indicator"
-           style="transform: rotate(calc(var(--rotationDeg, 0) * 1deg)); transform-origin: 218px 356px;"
+           style="transform: rotate(calc(var(--rotationDeg, 0) * 1deg)); transform-origin: 218px 356px; fill: color-mix(in oklch, var(--onColor) calc(100% * var(--refSwitchRotation, 0)), var(--offColor))"
            cx="218.014" cy="205.403" fill="#e09400"
            rx="15.008" ry="14.967"
   />
   <ellipse id="horizontal-indicator"
-           style="transform: translateX(calc(var(--horizontalPercentage, 0) * 1.82px - 91px));"
+           style="transform: translateX(calc(var(--horizontalPercentage, 0) * 1.82px - 91px)); fill: color-mix(in oklch, var(--onColor) calc(100% * var(--refSwitchHorizontal, 0)), var(--offColor))"
            cx="634.757" cy="205.474" fill="#e09400"
            rx="15.008"
            ry="14.967"/>

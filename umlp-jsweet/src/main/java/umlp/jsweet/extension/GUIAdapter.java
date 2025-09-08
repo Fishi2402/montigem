@@ -16,6 +16,8 @@ import umlp.jsweet.extension.gui.GUIUtilAdapter;
 import umlp.jsweet.extension.gui.DelegateGemListToArrayAdapter;
 import umlp.jsweet.extension.gui.TSTypesAdapter;
 import umlp.jsweet.extension.gui.UMLPGUICollectionsAdapter;
+import standalone.com.sun.source.tree.CompilationUnitTree;
+import umlp.jsweet.extension.cocos.JSweetCoCoChecker;
 
 /**
  * This adapter combines the adapters for GUI transpilation
@@ -53,5 +55,15 @@ public class GUIAdapter extends PrinterAdapter {
             )
         )
     );
+  }
+
+  @Override
+  public void onTranspilationStarted() {
+    for (CompilationUnitTree compilationUnit : getContext().compilationUnits) {
+      if(!getContext().isExcludedSourcePath(compilationUnit.getSourceFile().getName())) {
+        new JSweetCoCoChecker(getContext()).scan(compilationUnit, getContext().trees);
+      }
+    }
+    super.onTranspilationStarted();
   }
 }

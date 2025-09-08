@@ -142,11 +142,11 @@ Now, with JSweet and the TOP-mechanism we can implement our own behavior for a G
   specifies routing for all components.
 
   Normally you would only override `AppGemRouting`, as the URL doesn't really
-  matter to the end user. Example of hand-written extension of `AppGemRouting`:
+  matter to the end user. Example of a hand-written extension of `AppGemRouting`, in which the start page (homepage/index) is set:
   ```ts
   /* (c) https://github.com/MontiCore/monticore */
   import { Routes } from "@angular/router";
-  import { routes as routesTOP } from "@src/AppGemRoutingTOP"
+  import { routes as routesTOP } from "AppGemRoutingTOP"
 
   export const routes: Routes = [
     // set default path

@@ -12,6 +12,11 @@ export * from './build/gui2java2ts/mc/fenix/input/gemdropdowninputtypes/OptionBu
 export * from './build/gui2java2ts/mc/fenix/input/gemdropdowninputtypes/OptionDeSer';
 export * from './build/gui2java2ts/mc/fenix/input/gemdropdowninputtypes/GemDropdownInputTypesDeSer';
 
+export * from './build/gui2java2ts/mc/fenix/input/gemrangeinputtypes/Marker';
+export * from './build/gui2java2ts/mc/fenix/input/gemrangeinputtypes/MarkerBuilder';
+export * from './build/gui2java2ts/mc/fenix/input/gemrangeinputtypes/MarkerDeSer';
+export * from './build/gui2java2ts/mc/fenix/input/gemrangeinputtypes/GemRangeInputTypesDeSer';
+
 export * from './build/gui2java2ts/mc/fenix/input/gemtextareainputtypes/GemTextareaInputValidity';
 export * from './build/gui2java2ts/mc/fenix/input/gemtextareainputtypes/GemTextareaInputValidityBuilder';
 export * from './build/gui2java2ts/mc/fenix/input/gemtextareainputtypes/GemTextareaInputValidityDeSer';

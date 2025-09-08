@@ -8,6 +8,7 @@ import org.gradle.api.Project;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.FileCollection;
+import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
@@ -40,17 +41,18 @@ public abstract class BackendPlugin implements Plugin<Project> {
     project.getPluginManager().apply("java");
 
     boolean local = getBooleanProjectProperty(project, "useLocalDependencies");
+    var mainSourceSet = project.getExtensions().getByType(JavaPluginExtension.class).getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
     addRTEDependency(project, local);
 
     TaskProvider<UMLP2JavaTask> umlp2java = createUMLP2JavaTask(project);
-    // Generate Backend must run before JavaCompile
-    project.getTasks().withType(AbstractCompile.class).configureEach(compile -> {
-      compile.dependsOn(umlp2java);
-    });
+    project.getTasks().withType(AbstractCompile.class)
+        .matching(t -> t.getName().equals(mainSourceSet.getCompileJavaTaskName()))
+        .configureEach(compile -> compile.dependsOn(umlp2java));
+
     // Generate Backend must run before ProcessResources (e.g. for SQL schemata)
-    project.getTasks().withType(ProcessResources.class).configureEach(compile -> {
-      compile.dependsOn(umlp2java);
-    });
+    project.getTasks().withType(ProcessResources.class)
+        .matching(t -> t.getName().equals(mainSourceSet.getProcessResourcesTaskName()))
+        .configureEach(procResMain -> procResMain.dependsOn(umlp2java));
 
     addToSourceSet(project, umlp2java);
 

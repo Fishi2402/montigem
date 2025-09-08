@@ -17,6 +17,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -191,8 +192,9 @@ public class UMLPAdapterUtils {
       }
     }
     if (name.endsWith("Builder")) {
-      boolean isActuallyBuilder = type.getEnclosedElements().stream().filter(e -> e.getKind() == ElementKind.METHOD)
-          .anyMatch(e -> e.getSimpleName().toString().equals("isINTERNAL_deser_mode"));
+      ArrayList<ExecutableElement> collector = new ArrayList<>();
+      util.collectMatchingMethodDeclarationsInType(type, "isINTERNAL_deser_mode", null, true, collector);
+      boolean isActuallyBuilder = !collector.isEmpty();
       if (isActuallyBuilder) {
         name = name.substring(0, name.lastIndexOf("Builder"));
       }

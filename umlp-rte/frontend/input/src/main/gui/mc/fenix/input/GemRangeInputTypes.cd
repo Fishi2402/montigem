@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.input;
+
+classdiagram GemRangeInputTypes {
+
+  public class Marker {
+    Integer value;
+    String label;
+    +Marker(Integer value);
+    +Marker(Integer value, String label);
+  }
+}

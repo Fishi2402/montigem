@@ -90,9 +90,15 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
       task.dependsOn(syncUMLP2TSTask, syncGUI2JavaTask);
     });
 
+    TaskProvider<Task> prepareBuildAppTask = project.getTasks().register("prepareBuildApp", task -> {
+      task.setDescription("Bundles all dependencies for the buildApp task without executing it.");
+      task.setGroup("build");
+      task.dependsOn(createSymlinkTask, generate);
+    });
+
     var buildAppTask = createNPXTask(project, "buildApp", "build");
     buildAppTask.configure(t -> {
-      t.dependsOn(createSymlinkTask, generate);
+      t.dependsOn(createSymlinkTask, generate, prepareBuildAppTask);
     });
     var testAppTask = createNPXTask(project, "testApp", "test");
     testAppTask.configure(t -> {
@@ -107,12 +113,12 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
       TaskProvider<Task> npmUpdate = project.getTasks().named("npm_update", task -> {
         task.dependsOn(npmInstall);
       });
-      buildAppTask.configure(t -> t.dependsOn(npmUpdate));
+      prepareBuildAppTask.configure(t -> t.dependsOn(npmUpdate));
       runAppTask.configure(t -> t.dependsOn(npmUpdate));
       testAppTask.configure(t -> t.dependsOn(npmUpdate));
     }
     else {
-      buildAppTask.configure(t -> t.dependsOn(npmInstall));
+      prepareBuildAppTask.configure(t -> t.dependsOn(npmInstall));
       runAppTask.configure(t -> t.dependsOn(npmInstall));
       testAppTask.configure(t -> t.dependsOn(npmInstall));
     }
@@ -127,11 +133,7 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
     if (local) {
       TaskProvider<CreateSymlinkTask> symlinkClientProdTask = createSymlinkClientProductionCreationTask(project);
       symlinkClientProdTask.configure(t -> t.dependsOn(createSymlinkTask));
-      project.getTasks().configureEach(t -> {
-        if (t.getName().equals("buildApp")) {
-          t.dependsOn(symlinkClientProdTask);
-        }
-      });
+      prepareBuildAppTask.configure(t -> t.dependsOn(symlinkClientProdTask));
     }
 
     // Lifecycle task "continuous". Intended use is with "--continuous" flag of gradle & HotReload

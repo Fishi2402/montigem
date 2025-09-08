@@ -37,13 +37,13 @@ if (!buildFinished) {
   <#else>
     <#if genService.isBidirectional(assoc)>
       <#assign otherSide=assoc.getSymbol().getOtherSide().getAssocSide()>
-      if (is${assoc.getName()?cap_first}Present()) {
+      if (this._${assoc.getName()}.getLoadingState() == LoadingState.LOADED) {
       <#if genService.isList(otherSide)>
-        if (!this._${assoc.getName()}.get().get${otherSide.getName()?cap_first}().contains(this)) {
-          this._${assoc.getName()}.get().add${otherSide.getName()?cap_first}(this, NotificationScope.MINIMAL);
+        if (!this._${assoc.getName()}.get().get${otherSide.getName()?cap_first}List().contains(this)) {
+          this._${assoc.getName()}.get().add${otherSide.getName()?cap_first}(this, NotificationScope.GLOBAL);
         }
       <#else>
-        this._${assoc.getName()}.get().set${otherSide.getName()?cap_first}(this, NotificationScope.MINIMAL);
+        this._${assoc.getName()}.get().set${otherSide.getName()?cap_first}(this, NotificationScope.GLOBAL);
       </#if>
       }
       </#if>

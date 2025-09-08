@@ -142,6 +142,9 @@ public class UMLPRTEImportAdapter extends AbstractAdapter {
       new UMLPAsyncAwaitPropagationScanner(context, isAsyncList).process(
           getContext().compilationUnits, getContext().trees);
       new AsyncAwaitPropagationScanner(context).process(getContext().compilationUnits, getContext().trees);
+      new AdditionalAsyncAwaitPropagationScanner(context).process(
+          getContext().compilationUnits, getContext().trees);
+      new AsyncAwaitPropagationScanner(context).process(getContext().compilationUnits, getContext().trees);
     }
 
     super.onTranspilationStarted();

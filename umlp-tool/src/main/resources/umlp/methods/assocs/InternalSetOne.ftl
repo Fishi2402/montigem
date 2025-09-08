@@ -4,6 +4,9 @@ ${tc.signature("name", "otherSideName", "targetName", "sourceName", "managerName
 ${cd4c.method("public void _internal_set${name?cap_first}(${targetName} o, NotificationScope scope)")}
 
 long oldValue = this._${name}.isPresent()?this._${name}.getGemId():-1;
+if(oldValue == o.getGemId()){
+  return;
+}
 
 this._${name} = new Gem<${targetName}>(o);
 

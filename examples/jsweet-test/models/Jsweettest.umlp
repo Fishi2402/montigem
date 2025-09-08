@@ -72,4 +72,12 @@ classdiagram Jsweettest {
   class Types {
     LocalDateTime timestamp;
   }
+
+  // async propagation
+  class AsyncSuper;
+  /association AsyncSuper -> A [*];
+
+  class AsyncSubNonAsync extends AsyncSuper;
+
+  class AsyncSubAsync extends AsyncSuper; // In Java
 }

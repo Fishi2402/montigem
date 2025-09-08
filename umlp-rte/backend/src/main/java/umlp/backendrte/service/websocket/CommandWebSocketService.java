@@ -75,12 +75,6 @@ public class CommandWebSocketService extends TextWebSocketHandler implements Web
         returnResult = CommandObjectMapper.serializeResponse(res);
       }
     } catch (Exception e) {
-      int commandId = -1;
-      Pattern p = Pattern.compile("\"id\":\\s*(\\d+)");
-      Matcher m = p.matcher(payload);
-      if(m.find()){
-        commandId = Integer.parseInt(m.group(1));
-      }
       Log.error("Command could not be parsed:\n"+ payload, e);
       returnResult = handleUnknownError(payload);
     }

@@ -17,7 +17,9 @@ classdiagram LoadingTests {
   }
 
   association [*] Person (owner) <-> (pet) Animal [*];
+  association Person -> (favouritePet) Animal [0..1];
   association [*] Animal -> Food [*];
+  association Animal -> (favouriteFood) Food [0..1];
 
   <<singleton>>
   class UpdateListHelper {
