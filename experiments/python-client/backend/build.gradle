@@ -1,7 +1,4 @@
-import java.nio.file.Paths
-
 plugins {
-  id 'java'
   id 'de.rwth.se.montigem-backend'
   id 'de.rwth.se.cdgen' version "$mc_version"
 
@@ -18,7 +15,7 @@ application {
 }
 
 tasks.register("generateGem", de.monticore.cdgen.gradleplugin.CDGenTask.class) {
-  getInput().from(project.file("src/models/MyDomain.umlp"))
+  getInput().from(project.file("../models/MyDomain.umlp"))
   class2MC=true
   getOutputDir().set(project.layout.buildDirectory.dir("py_out_java"))
   configTemplate = 'cd2python.Gem2Py'

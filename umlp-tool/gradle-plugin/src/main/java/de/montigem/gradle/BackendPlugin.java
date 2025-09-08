@@ -72,7 +72,7 @@ public abstract class BackendPlugin implements Plugin<Project> {
 
   // Add generated files to SourceSets
   private void addToSourceSet(Project project, TaskProvider<UMLP2JavaTask> task) {
-    SourceSet mainSourceSet = project.getExtensions().getByType(SourceSetContainer.class).getByName(SourceSet.MAIN_SOURCE_SET_NAME);
+    var mainSourceSet = project.getExtensions().getByType(JavaPluginExtension.class).getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
     mainSourceSet.getJava().srcDir(task.flatMap(CommonMCTask::getOutputDir));
     // Add generated resources. e.g. SQL-Schemata
     mainSourceSet.getResources().srcDir(task.map(t -> t.getOutputDir().dir("resources")));

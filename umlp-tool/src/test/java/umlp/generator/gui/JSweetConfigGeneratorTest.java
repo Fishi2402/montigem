@@ -3,7 +3,6 @@ package umlp.generator.gui;
 
 import de.monticore.generating.GeneratorSetup;
 import org.junit.jupiter.api.Test;
-import umlp.generator.gui.JSweetConfigGenerator;
 
 import java.io.File;
 import java.util.Collections;
@@ -18,7 +17,7 @@ public class JSweetConfigGeneratorTest {
     GeneratorSetup gs = new GeneratorSetup();
     gs.setOutputDirectory(new File("target/generated-test-sources/jsweet/"));
     JSweetConfigGenerator generator = new JSweetConfigGenerator(gs);
-    generator.generate("MyDom", Collections.emptySet());
+    generator.generate("MyDom", Collections.emptyList());
 
     File json = new File("target/generated-test-sources/jsweet/jsweetconfig.json");
     File adapter = new File("target/generated-test-sources/jsweet/jsweet_extension/umlp/jsweet/extension/domainAdapters/MyDomImportAdapter.java");

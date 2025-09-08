@@ -65,7 +65,7 @@ include ":experiments:dsl-ast-integration:dsl"
 include ":experiments:dsl-ast-integration:dsl2cd"
 include ":experiments:dsl-ast-integration:ebackend"
 include ":experiments:dsl-ast-integration:frontend"
-include ":experiments:python-client"
+include ":experiments:python-client:backend"
 include ":experiments:statecharts-integration"
 include ":experiments:module-system:module-definition"
 include ":experiments:module-system:module-definition:backend"
@@ -126,3 +126,4 @@ include ':modules:sovd-gateway'
 include ':modules:sovd-gateway-it:backend'
 
 include 'umlp-rte:backend'
+include 'experiments:python-client:backend'
