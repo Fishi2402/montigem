@@ -66,8 +66,7 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig implements GUIDS
       }
       else {
         boolean noHWC = !GUIGeneratorUtil.getInstance().existsHandwrittenClass(hwPath, qClassName);
-        String htmlFileName = originalName + ".html";
-        String htmlPath = "./" + htmlFileName;
+        String htmlPath = "./" + originalName + ".html";
         List<String> scssPaths = new ArrayList<>();
 
         if (noHWC) {
@@ -95,7 +94,8 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig implements GUIDS
               hwPath, outPath, qClassName, "scss");
           if (hwScssPath.isPresent() && !existsTSHandwrittenFile(hwPath, gui.getComponentQName())) {
             scssPaths.add(hwScssPath.get());
-          } else if (hwScssPath.isPresent()){
+          }
+          else if (hwScssPath.isPresent()) {
             scssPaths.add("./" + originalName + ".scss");
           }
         }
@@ -104,18 +104,40 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig implements GUIDS
           // TODO #3768
           Optional<String> hwHtmlPath = util.getRelativeImportPath(
               hwPath, outPath, qClassName, "html");
-          if (hwHtmlPath.isPresent() && !existsTSHandwrittenFile(hwPath, gui.getComponentQName())) {
-            htmlPath = hwHtmlPath.get();
+          if (hwHtmlPath.isPresent()) {
+            if (existsTSHandwrittenFile(hwPath, gui.getComponentQName())) {
+              htmlPath = "./" + originalName + ".html";
+            }
+            else {
+              htmlPath = hwHtmlPath.get();
+            }
           }
-          else if (hwHtmlPath.isPresent()) {
-            htmlPath = "./" + htmlFileName;
+          else {
+            Optional<Path> hwTS = getTSHandwrittenFile(hwPath, gui.getComponentQName());
+            if (hwTS.isPresent()) {
+              htmlPath = util.predictRelativeImportPath(
+                  outPath, hwTS.get(), Names.getPathFromPackage(qClassName) + ".html"
+              );
+            }
+            else {
+              htmlPath = "./" + originalName + ".html";
+            }
           }
           Optional<String> hwScssPath = util.getRelativeImportPath(
               hwPath, outPath, qClassName, "scss");
-          if (hwScssPath.isPresent() && !existsTSHandwrittenFile(hwPath, gui.getComponentQName())) {
-            scssPaths.add(hwScssPath.get());
-          } else if (hwScssPath.isPresent()){
-            scssPaths.add("./" + originalName + ".scss");
+          if (hwScssPath.isPresent()) {
+            if (existsTSHandwrittenFile(hwPath, gui.getComponentQName())) {
+              scssPaths.add("./" + originalName + ".scss");
+            }
+            else {
+              scssPaths.add(hwScssPath.get());
+            }
+          }
+          else {
+            Optional<Path> hwTS = getTSHandwrittenFile(hwPath, gui.getComponentQName());
+            if (hwTS.isEmpty()) {
+              scssPaths.add("./" + originalName + ".scss");
+            }
           }
         }
         String selector = GUIGeneratorUtil.getInstance().pascal2KebabCase(originalName);
@@ -130,10 +152,17 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig implements GUIDS
     }
   }
 
-  public boolean existsTSHandwrittenFile(MCPath targetPath, String qualifiedName) {
-    String hwFile = Names.getPathFromPackage(qualifiedName)+ ".ts";
+  public boolean existsTSHandwrittenFile(MCPath targetPath, String qName) {
+    return getTSHandwrittenFile(targetPath, qName).isPresent();
+  }
+
+  public Optional<Path> getTSHandwrittenFile(MCPath targetPath, String qName) {
+    String hwFile = Names.getPathFromPackage(qName) + ".ts";
     Optional<URL> hwFilePath = targetPath.find(hwFile);
-    return hwFilePath.isPresent();
+    if (hwFilePath.isPresent()) {
+      return MCPath.toPath(hwFilePath.get());
+    }
+    return Optional.empty();
   }
 
   @Override

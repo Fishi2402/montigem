@@ -38,12 +38,12 @@ domainModel = 'FunctionStructure4Fenix'
 ```
 
 2. In der Datei `build.gradle` im `dependency` Block eine 
-`implementation` sowie eine `jsweetExtraSourcesConfig` Abhängigkeit auf das `backend` 
+`implementation` sowie eine `srcUMLPConfig` Abhängigkeit auf das `backend` 
 Projekt anlegen  
 z.B. 
 ```groovy
 dependencies {
-    jsweetExtraSourcesConfig project(":backend")
+    srcUMLPConfig project(":backend")
     implementation project(":backend")
 }
 ```
@@ -183,7 +183,7 @@ z.B.
 
 #### Adapter
 Adapter können die Transpilierung grundlegend verändern. Zahlreiche Beispiele 
-finden sich im Projekt `:umlp:umlp-rte:umlp-jsweet`
+finden sich im Projekt `:umlp:umlp-jsweet`
 
 ## TypeScript Code einbinden
 Manchmal ist es hilfreich TypeScript Code direkt einzubinden, z.B. wenn eine TS Library wiederverwendet werden soll(z.B. für highlighting von Code Blöcken).

@@ -18,14 +18,14 @@ component UserCreate(List<LoginModuleUser> users, LoginModuleUser newUser) {
         labelText = "Account",
         inputType = "text",
         entry = newUser.username,
-        validity = newUser.validityUsername
+        validity = getUsernameValidity(newUser)
       ),
       @GemTextInput(labelText = "Password", inputType = "password", entry = newUser.password),
       @GemTextInput(
         labelText = "E-mail address",
         inputType = "text",
         entry = newUser.email,
-        validity = newUser.validityEmail
+        validity = getEmailValidity(newUser)
       ),
       @GemRow(hAlign = "center", colGap = "10px", components = [
         @GemButton(label = "Cancel", leftClick = navigateBack()),

@@ -2,8 +2,8 @@
 ${signature("domName")}
 {
   "adapters": [
-    "umlp.jsweet.extension.UMLPJSweetGUIAdapter",
-    "umlp.jsweet.extension.domainAdapters.${domName}ImportAdapter"
+    "umlp.jsweet.extension.GUIAdapter",
+    "umlp.jsweet.extension.umlp.${domName}ImportAdapter"
   ],
   "domainName": "${domName}",
   "@Erased": {

@@ -12,7 +12,7 @@ dependencies {
   implementation project(":examples:vis-lib:backend")
   testImplementation project(':umlp-test-rte')
   // JSweet
-  jsweetExtraSourcesConfig project(":examples:vis-lib:backend")
+  srcUMLPConfig project(":examples:vis-lib:backend")
 }
 
 configurations {

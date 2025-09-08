@@ -13,7 +13,7 @@ dependencies {
   implementation project(":products:demorec:backend")
   testImplementation project(':umlp-test-rte')
 
-  jsweetExtraSourcesConfig project(":products:demorec:backend")
+  srcUMLPConfig project(":products:demorec:backend")
 }
 
 node {

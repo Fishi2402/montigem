@@ -65,7 +65,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
   public static final String UMLP2JSWEET_OBSERVER_TASK = "umlp2jsweetObserver";
 
   public static final String DOMAIN_MODEL_PROPERTY = "domainModel";
-  public static final String JSWEET_EXTRA_SOURCES_CONFIG = "jsweetExtraSourcesConfig";
+  public static final String SRC_UMLP_CONFIG = "srcUMLPConfig";
 
   public static final String JSWEET_CONFIG = "jsweetConfig";
 
@@ -155,7 +155,6 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       setIfPathExists(x -> task.getHwcDir().from(x), this.jsweetJavaHWCDir);
       setIfPathExists(x -> task.getHwcDir().from(x), this.jsweetTSHWCDir);
       task.getImportsDir().from(umlpJava2TS.get().getOutputDir());
-      task.dependsOn(umlpJava2TS);
 
       task.getGuiGenTSFuncionality().set(false);
       task.getGuiGenJsweet().set(true);
@@ -185,7 +184,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       if (local) {
         task.dependsOn(project.findProject(":umlp-rte").getTasks().getByName("jar"));
         task.dependsOn(project.findProject(":umlp-test-rte").getTasks().getByName("jar"));
-        task.dependsOn(project.findProject(":umlp-rte:umlp-jsweet").getTasks().getByName("jar"));
+        task.dependsOn(project.findProject(":umlp-jsweet").getTasks().getByName("jar"));
       }
     });
 
@@ -244,7 +243,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       task.getOutputDir().set(jsweetDomainOutDir.toFile());
 
       // // add domain-sources to the to-be-transpiled
-      task.getInput().from(project.getConfigurations().getByName(JSWEET_EXTRA_SOURCES_CONFIG));
+      task.getInput().from(project.getConfigurations().getByName(SRC_UMLP_CONFIG));
       task.getJSweetClassPath().from(project.getConfigurations().getByName(JSWEET_CONFIG));
 
       // TODO: Fix ShellAPI imports
@@ -261,7 +260,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       task.setGroup(UMLP_GROUP_NAME);
       task.getDomain().set(domainModel);
       task.getJSweetAdapterDir().set(jsweetDomainConfigOutDir.toFile());
-      setIfPathExists(x -> task.getHandWrittenCodeDir().set(x), jsweetDomainConfigHWCDir);
+      setIfPathExists(x -> task.getHandWrittenJSweetDir().set(x), jsweetDomainConfigHWCDir);
     });
   }
 
@@ -293,9 +292,9 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       // TODO: Remove the following at some point
       // required with getExcludeTranspile - otherwise "import { Project } from '@src/dtcockpit/Project';" is missing in GUI ts files
       // Add the domain-sources as a java-source
-      task.getInput().from(project.getConfigurations().getByName(JSWEET_EXTRA_SOURCES_CONFIG));
+      task.getInput().from(project.getConfigurations().getByName(SRC_UMLP_CONFIG));
       // but exclude them from being transpiled (thus, only available as source files)
-      task.getExcludeTranspileFiles().from(project.getConfigurations().getByName(JSWEET_EXTRA_SOURCES_CONFIG));
+      task.getExcludeTranspileFiles().from(project.getConfigurations().getByName(SRC_UMLP_CONFIG));
       // TODO: END OF REMOVAL
 
       // TODO: Fix ShellAPI imports
@@ -360,7 +359,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
   }*/
 
   public static void setupJSweetClasspath(Project project, boolean local) {
-    project.getConfigurations().register(JSWEET_EXTRA_SOURCES_CONFIG, config -> {
+    project.getConfigurations().register(SRC_UMLP_CONFIG, config -> {
       config.setTransitive(false);
       config.attributes(at -> {
         at.attribute(VerificationType.VERIFICATION_TYPE_ATTRIBUTE,
@@ -378,7 +377,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
 
     if (local) {
       project.getDependencies().add(JSWEET_CONFIG,
-          project.getDependencies().project(Map.of("path", ":umlp-rte:umlp-jsweet")));
+          project.getDependencies().project(Map.of("path", ":umlp-jsweet")));
     }
     else {
       project.getDependencies().add(JSWEET_CONFIG, "umlp:umlp-jsweet:" + mcVersion(project));
@@ -426,7 +425,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
     project.getDependencies().add("implementation", dep);
     project.getDependencies().add("implementation", "com.kohlschutter.jdk.compiler:standalone-jdk11:1.0.0");
     if (local) {
-      project.getDependencies().add("implementation", project.project(":umlp-rte:umlp-jsweet"));
+      project.getDependencies().add("implementation", project.project(":umlp-jsweet"));
     }
     else {
       project.getDependencies().add("implementation", "umlp:umlp-jsweet:" + mcVersion(project));

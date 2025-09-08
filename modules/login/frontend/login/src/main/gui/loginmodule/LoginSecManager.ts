@@ -1,12 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import {LoginModuleUser} from './LoginModuleUser';
-import {LoginModuleManager} from '../../build/cd/loginmodule/LoginModuleManager';
-import {LoginSecManagerTOP} from '../../build/cd/loginmodule/LoginSecManagerTOP';
+import {LoginModuleManager} from '../../../../build/umlpJava2ts/loginmodule/LoginModuleManager';
+import {LoginSecManagerTOP} from '../../../../build/umlpJava2ts/loginmodule/LoginSecManagerTOP';
 
 import {ActivatedRoute, Router} from "@angular/router";
-import {CommandManager, NotificationScope} from "@umlp/common";
-import {GetCurrentUserRequest} from '../../build/cd/loginmodule/commands/GetCurrentUserRequest';
+import {CommandManager, NotificationScope} from "@umlp/commonj2ts";
+import {GetCurrentUserRequest} from '../../../../build/umlpJava2ts/loginmodule/commands/GetCurrentUserRequest';
 
 export enum LAZY_LOGIN_STATE {
   LOGIN_DONE,
@@ -25,16 +25,16 @@ export class LoginSecManager extends LoginSecManagerTOP {
   public finishLoginAs(currentUser: LoginModuleUser) {
     // User logged in
     localStorage.setItem(LoginSecManager.LS_KEY, "true");
-    this.setSignedInUser1(currentUser);
+    this.setSignedInUser(currentUser);
     LoginSecManager._user = currentUser;
   }
 
-  public override   getSignedInUser (): LoginModuleUser  {
-    return LoginSecManager._user;
+  public override getSignedInUser(): Promise<LoginModuleUser>  {
+    return Promise.resolve(LoginSecManager._user);
   }
-  public  override setSignedInUserAbsent (scope: NotificationScope): void {
+  public  override setSignedInUserAbsent (scope: NotificationScope): Promise<void> {
     LoginSecManager._user = null;
-    super.setSignedInUserAbsent(scope);
+    return super.setSignedInUserAbsent(scope);
   }
 
 

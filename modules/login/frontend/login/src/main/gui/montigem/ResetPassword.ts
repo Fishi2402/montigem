@@ -1,7 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { config, ResetPasswordComponent } from '../../build/gui/montigem/ResetPasswordComponent';
+import { config, ResetPasswordComponent } from '../../../../build/gui2java2ts/montigem/ResetPasswordComponent';
+import { LoginModuleUser } from '../loginmodule/LoginModuleUser';
+import { GemTextInputValidity } from '@umlp/input';
 
 
 // import { ActivatedRoute, Router } from '@angular/router';
@@ -20,6 +22,10 @@ import { config, ResetPasswordComponent } from '../../build/gui/montigem/ResetPa
 export class ResetPassword extends ResetPasswordComponent {
 
   private error: string = "";
+
+  public override getEmailValidity(user: LoginModuleUser): GemTextInputValidity {
+    return user.getValidityEmail();
+  }
 
   public override passwordReset(): (arg: void) => void {
     return $ => {

@@ -25,14 +25,6 @@ public class GUIComponentBasicsAdapter extends PrinterAdapter {
     if (adapterUtils.hasDirectiveAnnotation(type)) {
       println().printIndent().print("protected router: Router;").println().println();
     }
-    if (adapterUtils.isHWCComponentOrDirective(type)) {
-      String cdName = adapterUtils.getAnnotationPropertyValue(type, "cdName", String.class, "");
-      if (!cdName.isEmpty()) {
-        String managerName = cdName + "Manager";
-        String pathToManager = StringUtils.lowerCase(cdName) + "/" + managerName;
-        adapterUtils.importFromWithModule(managerName, pathToManager);
-      }
-    }
 
     super.beforeTypeBody(type);
   }

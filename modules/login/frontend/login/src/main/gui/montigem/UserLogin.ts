@@ -1,12 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import { Component } from '@angular/core';
-import { LoginModuleManager } from '../../build/cd/loginmodule/LoginModuleManager';
-import { GetCurrentUserRequest } from '../../build/cd/loginmodule/commands/GetCurrentUserRequest';
-import { config, UserLoginComponent } from '../../build/gui/montigem/UserLoginComponent';
+import { LoginModuleManager } from '../../../../build/umlpJava2ts/loginmodule/LoginModuleManager';
+import { GetCurrentUserRequest } from '../../../../build/umlpJava2ts/loginmodule/commands/GetCurrentUserRequest';
+import { config, UserLoginComponent } from '../../../../build/gui2java2ts/montigem/UserLoginComponent';
 // import {LoginSecurityManager} from "../../loginmodule/DtcockpitSecurityManager";
-import { ClientCommandManager, CommandManager } from '@umlp/common';
+import { ClientCommandManager, CommandManager } from '@umlp/commonj2ts';
 import { LoginSecManager } from "../loginmodule/LoginSecManager";
+import { LoginModuleUser } from '../loginmodule/LoginModuleUser';
+import { GemTextInputValidity } from '@umlp/input';
 
 
 // import { ActivatedRoute, Router } from '@angular/router';
@@ -35,10 +37,9 @@ export class UserLogin extends UserLoginComponent {
     }
 
     if (LoginSecManager.getInstance().shouldBeLoggedIn()) {
-      let me = this;
       LoginSecManager.getInstance().waitForLazyLogin().then(value => {
         alert("Apparently already logged in, but slow");
-      }).catch(this.ngOnInitContinue.bind(me));
+      }).catch(this.ngOnInitContinue.bind(this));
       return;
     }
     this.ngOnInitContinue()
@@ -57,13 +58,12 @@ export class UserLogin extends UserLoginComponent {
         'Content-Type': 'application/json',
       }
     };
-    const that = this;
     fetch("/umlp/api/loginmodule/public/config", requestOptions)
       .then(response => response.json())
       .then(result => {
         console.warn(result);
-        that.setSignupEnabled(result.signup);
-        that.setForgotPasswordEnabled(result.reset);
+        this.setSignupEnabled(result.signup);
+        this.setForgotPasswordEnabled(result.reset);
       });
   }
 
@@ -75,6 +75,14 @@ export class UserLogin extends UserLoginComponent {
         this.login();
       }
     }
+  }
+
+  public override getUsernameValidity(loginUser: LoginModuleUser): GemTextInputValidity {
+    return loginUser.getValidityUsername();
+  }
+
+  public override getPasswordValidity(loginUser: LoginModuleUser): GemTextInputValidity {
+    return loginUser.getValidityPassword();
   }
 
   public override login(): (arg: void) => void {
@@ -148,4 +156,5 @@ export class UserLogin extends UserLoginComponent {
   public override navigateSignUp(): (arg: void) => void {
     return () => { this._router.navigate(['gui', 'loginmodule', 'SignupPage']); };
   }
+
 }

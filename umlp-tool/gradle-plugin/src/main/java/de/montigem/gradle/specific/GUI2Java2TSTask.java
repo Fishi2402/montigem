@@ -4,6 +4,7 @@ package de.montigem.gradle.specific;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Classpath;
@@ -35,13 +36,11 @@ import java.util.stream.Stream;
 // Task might not be a @CacheableTask since relative paths are generated for HWC-files
 public abstract class GUI2Java2TSTask extends GUI2JavaTask {
 
-  static final String NODE_VERSION = "18.13.0";
-
   @SkipWhenEmpty
   @InputFiles
   @PathSensitive(PathSensitivity.RELATIVE)
   @IgnoreEmptyDirectories
-  public abstract ConfigurableFileCollection getJava2TSInput();
+  public abstract ConfigurableFileCollection getExtraJava2TSInput();
 
   /**
    * These sources are excluded from {@link org.jsweet.transpiler.SourceFile}s passed to jsweet
@@ -112,15 +111,18 @@ public abstract class GUI2Java2TSTask extends GUI2JavaTask {
     WorkQueue workQueue2 = getWorkerExecutor().classLoaderIsolation(spec ->
         spec.getClasspath().from(getClassPath())
     );
+    ConfigurableFileCollection srcDirs = getProject().files();
+    srcDirs.from(getHwcDir());
+    srcDirs.from(getExtraJava2TSInput());
+    srcDirs.from(getOutputDir());
+    srcDirs.from(getInput());
+    FileCollection filteredSrcDirs = srcDirs.minus(getExcludeTranspileFiles());
+
     workQueue2.submit(GUI2JSweetAdapterAction.class, params -> {
       params.getDomain().set(getDomain());
       params.getJSweetAdapterDir().set(getJSweetAdapterDir());
       params.getHandWrittenJSweetDir().set(getHandWrittenJSweetDir());
-      params.getSrcDirs().from(getInput());
-      params.getSrcDirs().from(getOutputDir());
-      params.getSrcDirs().from(getHwcDir());
-      params.getSrcDirs().from(getJava2TSInput());
-      params.getSrcDirs().minus(getExcludeTranspileFiles());
+      params.getSrcDirs().from(filteredSrcDirs);
     });
     // wait for gui2jsweetAdapter to complete
     workQueue2.await();
@@ -153,12 +155,13 @@ public abstract class GUI2Java2TSTask extends GUI2JavaTask {
 
     // Prepare a WorkQueue in the jsweet class path
     WorkQueue workQueue = getWorkerExecutor().classLoaderIsolation(spec ->
-      spec.getClasspath().from(getJSweetClassPath())
+        spec.getClasspath().from(getJSweetClassPath())
     );
 
     // collect all .java files
     Set<Path> individualInputPaths = walkAndCollectJavaFiles(inputOutputDir.getAsFileTree().getFiles());
-    individualInputPaths.addAll(walkAndCollectJavaFiles(getJava2TSInput().getFiles()));
+    individualInputPaths.addAll(walkAndCollectJavaFiles(getExtraJava2TSInput().getFiles()));
+    individualInputPaths.addAll(walkAndCollectJavaFiles(getHwcDir().getFiles()));
 
     // excluded matchers
     FileSystem fs = FileSystems.getDefault();
@@ -185,7 +188,6 @@ public abstract class GUI2Java2TSTask extends GUI2JavaTask {
 
     // also add all files (recursively) from getExcludeTranspileFiles
     walkAndCollectJavaFiles(getExcludeTranspileFiles().getFiles()).forEach(excludedFromTr::from);
-
 
     // Copy relevant properties into the transpile-work-action
     workQueue.submit(Java2TSAction.class, params -> {

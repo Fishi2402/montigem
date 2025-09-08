@@ -12,7 +12,7 @@ plugins {
 dependencies {
   implementation project(":examples:loading-test:backend")
   // a configuration containing the domain sources
-  jsweetExtraSourcesConfig project(":examples:loading-test:backend")
+  srcUMLPConfig project(":examples:loading-test:backend")
 
   implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version
   //  spring-boot-starter-security breaks the frontend tests!

@@ -3,7 +3,7 @@
 import { Location } from '@angular/common';
 import { Component } from '@angular/core';
 import { GemTextInputValidity } from '@umlp/input';
-import { config, UserSignUpComponent } from '../../build/gui/montigem/UserSignUpComponent';
+import { config, UserSignUpComponent } from '../../../../build/gui2java2ts/montigem/UserSignUpComponent';
 
 @Component({
   standalone: true,

@@ -2,6 +2,8 @@ package loginmodule.commands;
 
 import loginmodule.LoginModuleManager;
 import umlp.backendrte.command.ListResult;
+import umlp.jsweet.extension.annotation.BackendOnly;
+import umlp.jsweet.extension.annotation.BackendOnlyModes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +18,7 @@ public class LoginModuleUser_get_filtered extends LoginModuleUser_get_filteredTO
     super(filter);
   }
 
+  @BackendOnly(BackendOnlyModes.THROW_ERROR)
   @Override
   public ListResult<Long, List<Long>> doAction() {
 

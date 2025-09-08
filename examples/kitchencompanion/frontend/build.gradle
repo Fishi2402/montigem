@@ -15,7 +15,7 @@ dependencies {
   implementation project(":examples:kitchencompanion:backend")
   testImplementation project(':umlp-test-rte')
 
-  jsweetExtraSourcesConfig project(":examples:kitchencompanion:backend")
+  srcUMLPConfig project(":examples:kitchencompanion:backend")
 }
 
 configurations {

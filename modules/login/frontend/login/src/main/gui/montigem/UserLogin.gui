@@ -18,14 +18,14 @@ component UserLogin(LoginModuleUser loginUser, boolean forgotPasswordEnabled, bo
         labelText = "Account",
         inputType = "text",
         entry = loginUser.username,
-        validity = loginUser.validityUsername,
+        validity = getUsernameValidity(loginUser),
         keyRelease = loginOnEnter()
       ),
       @GemTextInput(
         labelText = "Password",
         inputType = "password",
         entry = loginUser.password,
-        validity = loginUser.validityPassword,
+        validity = getPasswordValidity(loginUser),
         keyRelease = loginOnEnter()
       ),
       // @GemButton(label = "Cancel", leftClick = navigateBack()),

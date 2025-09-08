@@ -131,7 +131,7 @@ configurations {
 }
 
 dependencies {
-  jsweettranspilerRuntime project(path: ":umlp-rte:umlp-jsweet")
+  jsweettranspilerRuntime project(path: ":umlp-jsweet")
 }
 
 tasks.register("transpileRuntime", Java2TSTask) {

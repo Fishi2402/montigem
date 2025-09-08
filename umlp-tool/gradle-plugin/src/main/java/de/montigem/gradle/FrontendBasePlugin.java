@@ -27,7 +27,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Map;
 
 import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
 import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_IMPORT_MAP_CONFIG;
@@ -337,6 +336,7 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
         Project rteClient = project.project(":umlp-rte:frontend");
         project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG, rteClient);
         project.getDependencies().add(MONTIGEM_MODULE_IMPORT_MAP_CONFIG, rteClient);
+        project.getDependencies().add("implementation", rteClient);
       }
       else {
         project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG,
@@ -345,18 +345,15 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
         project.getDependencies().add(MONTIGEM_MODULE_IMPORT_MAP_CONFIG,
             "umlp:umlp-rte:" + getStringProjectProperty(project, "mc_version", "")
         );
+        project.getDependencies().add("implementation",
+            "umlp:umlp-rte:" + getStringProjectProperty(project, "mc_version", "")
+        );
       }
     }
   }
 
   public static boolean inRTE(Project project) {
-    Project rte = project.findProject(":umlp-rte");
-
-    boolean inRTE = false;
-    if (rte != null) {
-      inRTE = project.getPath().startsWith(rte.getPath() + ":")
-          || project.getPath().equals(rte.getPath());
-    }
-    return inRTE;
+    return project.getPath().startsWith(":umlp-rte:")
+        || project.getPath().equals(":umlp-rte");
   }
 }

@@ -45,4 +45,4 @@ if(("true").equals(getProperty('buildIntelliJPlugin'))){
   include(":umlp-intellij-plugin")
 }
 
-include "gradle-plugin"
+include ":gradle-plugin"

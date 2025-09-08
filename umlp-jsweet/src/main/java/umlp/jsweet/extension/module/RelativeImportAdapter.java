@@ -1,9 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.jsweet.extension.module;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsweet.transpiler.ModuleImportDescriptor;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.CompilationUnitElement;
+import umlp.jsweet.extension.util.GUIAdapterUtils;
 
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
@@ -16,8 +18,12 @@ import java.util.List;
 import java.util.Optional;
 
 public class RelativeImportAdapter extends PrinterAdapter {
+
+  private final GUIAdapterUtils adapterUtils;
+
   public RelativeImportAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);
+    this.adapterUtils = new GUIAdapterUtils(this, types(), context, util());
   }
 
   @Override
@@ -47,6 +53,30 @@ public class RelativeImportAdapter extends PrinterAdapter {
       }
     }
     return res;
+  }
+
+  @Override
+  public boolean substituteType(TypeElement type) {
+    // no type substitution, just adding manager to component classes
+    if (adapterUtils.isHWCComponentOrDirective(type)) {
+      String cdName = adapterUtils.getAnnotationPropertyValue(type, "cdName", String.class, "");
+      if (!cdName.isEmpty()) {
+        int lastDot;
+        lastDot = cdName.lastIndexOf('.');
+        String simpleName = (lastDot == -1) ? cdName : cdName.substring(lastDot + 1);
+        String managerName = simpleName + "Manager";
+        String managerQName = StringUtils.lowerCase(cdName) + "." + managerName;
+
+        String typeQName = type.getQualifiedName().toString();
+        lastDot = typeQName.lastIndexOf('.');
+        String typeQ = (lastDot == -1) ? typeQName : typeQName.substring(0, lastDot);
+        Optional<String> managerPath = getRelativePath(typeQ, managerQName);
+        if (managerPath.isPresent()) {
+          adapterUtils.importFromWithModule(managerName, managerPath.get());
+        }
+      }
+    }
+    return super.substituteType(type);
   }
 
   public Optional<String> getRelativePath(String importerQ, String importedQName) {

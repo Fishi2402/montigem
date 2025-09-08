@@ -13,6 +13,7 @@ import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.symboltable.serialization.json.JsonString;
 import de.monticore.symboltable.serialization.json.UserJsonString;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.File;
@@ -23,16 +24,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+import java.util.function.Consumer;
 
 public class JSweetConfigGenerator {
-
-  private static final String DOMAIN_CONFIG_FILE = "umlp.jsweetconfig.JSweetConfigDomainJSON";
-
-  private static final String GUI_CONFIG_FILE = "umlp.jsweetconfig.JSweetConfigGUIJSON";
-  private static final String GUI_CONFIG_NO_DOMAIN_FILE = "umlp.jsweetconfig.JSweetConfigGUINoDomainJSON";
 
   protected GeneratorSetup generatorSetup;
   protected GeneratorEngine generatorEngine;
@@ -43,62 +39,83 @@ public class JSweetConfigGenerator {
     generatorSetup.setTracing(false);
   }
 
-  public void generate(String outputDir, Set<String> srcDirs) {
-    Path outputPath = Paths.get(outputDir, "jsweetconfig.json");
-
-    String defaultConfigPath = "umlp/jsweetconfig/jsweetGUINoDomain.json";
-    try (InputStream is = this.getClass().getClassLoader()
-        .getResourceAsStream(defaultConfigPath)) {
-      if (is == null) {
-        Log.error("0x0002F Generating jsweetconfig.json failed:"
-            + "\nResource not found: " + defaultConfigPath);
-      }
-      String defaultConfig = new String(is.readAllBytes(), StandardCharsets.UTF_8);
-      JsonElement jsweetconfig = JsonParser.parse(defaultConfig);
-      if (jsweetconfig.isJsonObject()) {
-        JsonArray dirs = new JsonArray();
-        for (String path : srcDirs) {
-          dirs.add(new JsonString(path));
-        }
-        jsweetconfig.getAsJsonObject().putMember("srcDirs", dirs);
-      }
-      else {
-        Log.error("0x00030 Generating jsweetconfig.json failed: `" + defaultConfigPath
-            + "`. Internal MontiGem error - please report to MontiGem developers.\n");
-      }
-      FileReaderWriter.storeInFile(outputPath, maybeTOP(jsweetconfig));
-      Log.debug(outputPath + " written successfully", this.getClass().getName());
-    } catch (IOException e) {
-      Log.error("0x00031 Tried reading resource file `" + defaultConfigPath
-          + "`, but failed with exception\n" + e);
-    }
+  public void generate(String outputDir, List<String> srcDirs) {
+    createJsweetConfig("umlp/jsweetconfig/jsweetGUINoDomain.json", outputDir, srcDirs);
   }
 
   // forDomain differentiates between the config file generated for the Domain JSweet Task and the
   //   GUI JSweet task
-  public void generate(String domainName, boolean forDomain, Set<String> hwSourcesPaths) {
+  public void generate(String outputDir, String domainName, boolean forDomain, List<String> srcDirs) {
+    String defaultConfigPath = forDomain
+        ? "umlp/jsweetconfig/JSweetConfigDomainJSON.json"
+        : "umlp/jsweetconfig/JSweetConfigGUIJSON.json";
 
-    File jsweetConfig = calcTOPFile("jsweetconfig", "json");
-    String configFile = forDomain ? DOMAIN_CONFIG_FILE : GUI_CONFIG_FILE;
-    generatorEngine.generateNoA(
-        configFile,
-        jsweetConfig.toPath(),
-        domainName
-    );
+    String adapterQName = "umlp.jsweet.extension.umlp." + domainName + "ImportAdapter";
 
-    File importAdapter = calcTOPFile(Paths.get("jsweet_extension", "umlp", "jsweet", "extension", "domainAdapters"), domainName + "ImportAdapter", "java");
+    createJsweetConfig(defaultConfigPath, outputDir, srcDirs,
+        jsweetconfig -> {
+          jsweetconfig.getAsJsonObject().putMember("domainName", new JsonString(domainName));
+          JsonElement adaptersElement = jsweetconfig.getAsJsonObject().getMember("adapters");
+          if (adaptersElement.isJsonArray()) {
+            JsonArray adapters = adaptersElement.getAsJsonArray();
+            adapters.add(new JsonString(adapterQName));
+          }
+        });
+
+    File importAdapter = calcTOPFile("jsweet_extension" + File.separator + Names.getPathFromPackage(adapterQName));
     generatorEngine.generateNoA(
         "umlp.jsweetconfig.JSweetDomainImportAdapter",
         importAdapter.toPath(),
-        importAdapter.getName().substring(0, importAdapter.getName().lastIndexOf(".java")),
-        domainName);
+        Names.getSimpleName(adapterQName),
+        domainName
+    );
   }
 
-  protected File calcTOPFile(String origName, String fileExt) {
-    File f = new File(origName + "." + fileExt);
+  protected void createJsweetConfig(String defaultConfig, String outputDir, List<String> srcDirs) {
+    createJsweetConfig(defaultConfig, outputDir, srcDirs, $ -> {
+    });
+  }
+
+  protected void createJsweetConfig(
+      String defaultConfig, String outputDir, List<String> srcDirs, Consumer<JsonObject> configTrafo
+  ) {
+    Path outputPath = Paths.get(outputDir, "jsweetconfig.json");
+    try (InputStream is = this.getClass().getClassLoader()
+        .getResourceAsStream(defaultConfig)) {
+      if (is == null) {
+        Log.error("0x0002F Generating jsweetconfig.json failed:"
+            + "\nResource not found: " + defaultConfig);
+      }
+      JsonElement jsweetconfigElement = JsonParser.parse(
+          new String(is.readAllBytes(), StandardCharsets.UTF_8)
+      );
+      if (jsweetconfigElement.isJsonObject()) {
+        JsonObject jsweetconfig = jsweetconfigElement.getAsJsonObject();
+        JsonArray dirs = new JsonArray();
+        for (String path : srcDirs) {
+          dirs.add(new JsonString(path));
+        }
+        jsweetconfig.putMember("srcDirs", dirs);
+
+        configTrafo.accept(jsweetconfig);
+      }
+      else {
+        Log.error("0x00030 Generating jsweetconfig.json failed: `" + defaultConfig
+            + "`. Internal MontiGem error - please report to MontiGem developers.\n");
+      }
+      FileReaderWriter.storeInFile(outputPath, maybeTOP(jsweetconfigElement));
+      Log.debug(outputPath + " written successfully", this.getClass().getName());
+    } catch (IOException e) {
+      Log.error("0x00031 Tried reading resource file `" + defaultConfig
+          + "`, but failed with exception\n" + e);
+    }
+  }
+
+  protected File calcTOPFile(String origName) {
+    File f = new File(origName + ".java");
     Optional<Path> hwc = getHWC(generatorSetup.getHandcodedPath(), f.getPath());
     if (hwc.isPresent()) {
-      f = new File(origName + "TOP" + "." + fileExt);
+      f = new File(origName + "TOP" + ".java");
     }
     return f;
   }
@@ -191,10 +208,6 @@ public class JSweetConfigGenerator {
         }
       }
     }
-  }
-
-  protected File calcTOPFile(Path basePath, String origName, String fileExt) {
-    return calcTOPFile(basePath.toString() + File.separator + origName, fileExt);
   }
 
   protected Optional<Path> getHWC(MCPath targetPath, String hwFile) {

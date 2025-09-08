@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { LoginModuleUserTOP } from '../../build/cd/loginmodule/LoginModuleUserTOP';
+import { LoginModuleUser as LoginModuleUserTOP } from '../../../../build/umlpJava2ts/loginmodule/LoginModuleUser';
 import { GemTextInputValidity } from '@umlp/input';
 
 export class LoginModuleUser extends LoginModuleUserTOP {

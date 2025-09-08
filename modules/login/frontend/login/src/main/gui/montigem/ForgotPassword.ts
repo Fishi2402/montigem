@@ -2,7 +2,7 @@
 
 import { Component } from '@angular/core';
 import { GemTextInputValidity } from '@umlp/input';
-import { config, ForgotPasswordComponent } from '../../build/gui/montigem/ForgotPasswordComponent';
+import { config, ForgotPasswordComponent } from '../../../../build/gui2java2ts/montigem/ForgotPasswordComponent';
 
 
 // import { ActivatedRoute, Router } from '@angular/router';

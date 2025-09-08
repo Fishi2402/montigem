@@ -2,8 +2,10 @@
 
 import { Location } from '@angular/common';
 import { Component } from '@angular/core';
-import { LoginModuleManager } from '../../build/cd/loginmodule/LoginModuleManager';
-import { config, UserCreateComponent } from '../../build/gui/montigem/UserCreateComponent';
+import { LoginModuleManager } from '../../../../build/umlpJava2ts/loginmodule/LoginModuleManager';
+import { config, UserCreateComponent } from '../../../../build/gui2java2ts/montigem/UserCreateComponent';
+import { LoginModuleUser } from '../loginmodule/LoginModuleUser';
+import { GemTextInputValidity } from '@umlp/input';
 
 // import { ActivatedRoute, Router } from '@angular/router';
 @Component({
@@ -29,6 +31,14 @@ export class UserCreate extends UserCreateComponent {
     LoginModuleManager.loginModuleUserBuilder().then(gemPromiseRes => {
       this.newUser = gemPromiseRes;
     });
+  }
+
+  public override getUsernameValidity(user: LoginModuleUser): GemTextInputValidity {
+    return user.getValidityUsername();
+  }
+
+  public override getEmailValidity(user: LoginModuleUser): GemTextInputValidity {
+    return user.getValidityEmail();
   }
 
   public override navigateBack(): (arg: void) => void {

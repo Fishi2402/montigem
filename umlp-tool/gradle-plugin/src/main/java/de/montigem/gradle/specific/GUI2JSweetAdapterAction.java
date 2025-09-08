@@ -8,7 +8,7 @@ import umlp.generator.gui.JSweetConfigGenerator;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public abstract class GUI2JSweetAdapterAction extends Model2JSweetAdapterAction<GUI2JSweetAdapterAction.GUIParams> {
@@ -18,13 +18,17 @@ public abstract class GUI2JSweetAdapterAction extends Model2JSweetAdapterAction<
    */
   protected void generateJSweetConfig() throws IOException {
     JSweetConfigGenerator generator = getGenerator();
-    Set<String> srcDirs = getParameters().getSrcDirs()
+    List<String> srcDirs = getParameters().getSrcDirs()
         .getFiles()
         .stream()
         .map(File::getAbsolutePath)
-        .collect(Collectors.toSet());
+        .collect(Collectors.toList());
     if (getParameters().getDomain().isPresent()) {
-      generator.generate(getParameters().getDomain().get(), false, srcDirs);
+      generator.generate(
+          getParameters().getJSweetAdapterDir().get().getAsFile().getAbsolutePath(),
+          getParameters().getDomain().get(), false,
+          srcDirs
+      );
     }
     else {
       generator.generate(

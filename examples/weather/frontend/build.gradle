@@ -9,7 +9,7 @@ node {
 nodeSetup.dependsOn(setupFrontend)
 
 dependencies {
-  jsweetExtraSourcesConfig project(":examples:weather:backend")
+  srcUMLPConfig project(":examples:weather:backend")
   implementation project(":examples:weather:backend")
 
   implementation project(":umlp-rte")

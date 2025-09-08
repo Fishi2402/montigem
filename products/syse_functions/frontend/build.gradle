@@ -16,7 +16,7 @@ repositories {
 
 dependencies {
   // a configuration containing the domain sources
-  jsweetExtraSourcesConfig project(":products:syse_functions:backend")
+  srcUMLPConfig project(":products:syse_functions:backend")
   implementation project(":products:syse_functions:backend")
 
   implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version

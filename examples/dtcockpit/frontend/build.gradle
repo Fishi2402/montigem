@@ -8,7 +8,7 @@ plugins {
 dependencies {
   implementation project(":examples:dtcockpit:backend")
   // a configuration containing the domain sources
-  jsweetExtraSourcesConfig project(":examples:dtcockpit:backend")
+  srcUMLPConfig project(":examples:dtcockpit:backend")
 
   montigemModule project(":modules:login")
   montigemModuleGeneratorExtension project(":modules:comment")

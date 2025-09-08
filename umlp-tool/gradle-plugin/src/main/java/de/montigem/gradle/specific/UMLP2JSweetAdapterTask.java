@@ -27,7 +27,7 @@ public abstract class UMLP2JSweetAdapterTask extends DefaultTask {
 
   @Optional
   @InputDirectory
-  public abstract DirectoryProperty getHandWrittenCodeDir();
+  public abstract DirectoryProperty getHandWrittenJSweetDir();
 
   @Inject
   abstract public WorkerExecutor getWorkerExecutor();
@@ -42,7 +42,7 @@ public abstract class UMLP2JSweetAdapterTask extends DefaultTask {
     workQueue.submit(UMLP2JSweetAdapterAction.class, params -> {
       params.getDomain().set(getDomain());
       params.getJSweetAdapterDir().set(getJSweetAdapterDir());
-      params.getHandWrittenJSweetDir().set(getHandWrittenCodeDir());
+      params.getHandWrittenJSweetDir().set(getHandWrittenJSweetDir());
     });
   }
 
