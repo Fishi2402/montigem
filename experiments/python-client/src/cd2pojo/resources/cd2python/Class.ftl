@@ -55,6 +55,7 @@ ${cdPrinter.printImportList(cd4c.getImportList(ast))}
 
 </#assign>
 
+#from __future__ import annotations
 import typing
 import pydantic
 import montigem_runtime
