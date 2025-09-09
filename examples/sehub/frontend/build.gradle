@@ -19,7 +19,7 @@ def cd2gui = tasks.register('cd2gui', CD2GUITask) {
   outputDir = layout.buildDirectory.dir("cd2gui")
 }
 
-tasks.register('guiVariability', GUIVariabilityTask) {
+def guiVariability = tasks.register('guiVariability', GUIVariabilityTask) {
   if (useCD2GUI) {
     input.from(cd2gui.flatMap { it.getOutputDir() })
   }
@@ -36,9 +36,9 @@ gui2java2ts {
   guiCreateModels = ["gui.login.UserCreate", "gui.issues.IssueCreate"]
   guiCreateModelsAsFile = file(cd2gui.flatMap { it.getOutputDir().file("meta/sehub/guiCreateTextModels") })
   // Use cd2gui symbols instead of cd2gui/symbols
-  symbolPath.from(cd2gui.flatMap { it.getOutputDir().("symbols") })
+  symbolPath.from(cd2gui.flatMap { it.getOutputDir().dir("symbols") })
   symbolPath.from(file("$buildDir/tags"))
-  modelDir = file(tasks.guiVariability.getOutputDir())
+  modelDir = file(guiVariability.flatMap { it.getOutputDir() })
 }
 
 umlpJava2ts {
