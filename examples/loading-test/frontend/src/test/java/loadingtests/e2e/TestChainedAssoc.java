@@ -28,14 +28,12 @@ public class TestChainedAssoc extends AbstractLoadingTestsE2ETest {
 
   @EnabledIfEnvironmentVariable(named = "WITH_JSWEET", matches = "TRUE")
   @Test
-  @Disabled // TODO: https://git.rwth-aachen.de/monticore/monticore/-/issues/4803
   void testAll(Page page) {
     testUpdateOnOnePage(page, "ChainedAssoc", "nth=0", "nth=1", "nth=2");
   }
 
   @EnabledIfEnvironmentVariable(named = "WITH_JSWEET", matches = "TRUE")
   @Test
-  @Disabled // TODO: https://git.rwth-aachen.de/monticore/monticore/-/issues/4803
   void testAssoc2(Page page) {
     // Do not test person.name
     testUpdateOnOnePage(page, "ChainedAssoc2", null, "nth=0", "nth=1");
@@ -43,7 +41,6 @@ public class TestChainedAssoc extends AbstractLoadingTestsE2ETest {
 
   @EnabledIfEnvironmentVariable(named = "WITH_JSWEET", matches = "TRUE")
   @Test
-  @Disabled // TODO: https://git.rwth-aachen.de/monticore/monticore/-/issues/4803
   void testAssoc3(Page page) {
     // Only test person.favouritePet.favouriteFood.name
     testUpdateOnOnePage(page, "ChainedAssoc3", null, null, "nth=0");
@@ -51,7 +48,6 @@ public class TestChainedAssoc extends AbstractLoadingTestsE2ETest {
 
   @EnabledIfEnvironmentVariable(named = "WITH_JSWEET", matches = "TRUE")
   @Test
-  @Disabled // TODO: https://git.rwth-aachen.de/monticore/monticore/-/issues/4803
   void testAssoc4(Page page) {
     // Test over multiple containers
     Person p1 = LoadingTestsManager.personBuilder().name("P1").age(42).build().get();
@@ -75,7 +71,6 @@ public class TestChainedAssoc extends AbstractLoadingTestsE2ETest {
 
   @EnabledIfEnvironmentVariable(named = "WITH_JSWEET", matches = "TRUE")
   @Test
-  @Disabled // TODO: https://git.rwth-aachen.de/monticore/monticore/-/issues/4803
   void testAssocEnum(Page page) {
     // Test over multiple containers
     Person p1 = LoadingTestsManager.personBuilder().name("P1").age(42).build().get();
@@ -99,8 +94,8 @@ public class TestChainedAssoc extends AbstractLoadingTestsE2ETest {
 
 
   void testUpdateOnOnePage(Page page, String path, @Nullable String person, @Nullable String animal, @Nullable String food) {
-    Person p1 = LoadingTestsManager.personBuilder().name("P1").age(42).build().get();
-    Animal a1_2 = LoadingTestsManager.animalBuilder().name("A1").legs(4).build().get();
+    Person p1 = LoadingTestsManager.personBuilderFromId(1001).name("P1").age(42).build().get();
+    Animal a1_2 = LoadingTestsManager.animalBuilderFromId(2001).name("A1").legs(4).build().get();
     p1.setFavouritePet(a1_2);
 
     navAndWait(page, "/test_gui/" + path + "/" + p1.getGemId()); //go to page we want to test
@@ -120,7 +115,7 @@ public class TestChainedAssoc extends AbstractLoadingTestsE2ETest {
       assertThat(page.locator(GemText.selector()).locator(animal)).hasText(a1_2.getName()); // should now be A2
 
     // Update favourite food
-    Food f = LoadingTestsManager.foodBuilder().name("F1").build().get();
+    Food f = LoadingTestsManager.foodBuilderFromId(3001).name("F1").build().get();
     a1_2.setFavouriteFood(f);
     if (food != null)
       assertThat(page.locator(GemText.selector()).locator(food)).hasText(f.getName());
@@ -129,7 +124,7 @@ public class TestChainedAssoc extends AbstractLoadingTestsE2ETest {
       assertThat(page.locator(GemText.selector()).locator(food)).hasText(f.getName()); // should be F1-updated
 
     // Update favourite ped
-    Animal a3 = LoadingTestsManager.animalBuilder().name("A3").legs(8).build().get();
+    Animal a3 = LoadingTestsManager.animalBuilderFromId(2002).name("A3").legs(8).build().get();
     p1.setFavouritePet(a3);
     if (animal != null)
       assertThat(page.locator(GemText.selector()).locator(animal)).hasText(a3.getName());

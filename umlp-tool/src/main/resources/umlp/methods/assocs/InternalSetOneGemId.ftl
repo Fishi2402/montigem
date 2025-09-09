@@ -8,11 +8,7 @@ if(oldValue == gemID){
   return;
 }
 
-if(${managerName}.isLoaded${targetName}(gemID)){
-  this._${name} = new Gem<${targetName}>(${managerName}.get${targetName}Sure(gemID));
-} else {
-  this._${name} = new Gem<${targetName}>();
-}
+this._${name} = ${managerName}.create${targetName}Gem(gemID);
 
 <#if otherSideName?has_content>
   if (scope.contains(NotificationScope.LOCAL)) {
@@ -21,6 +17,7 @@ if(${managerName}.isLoaded${targetName}(gemID)){
     }
     if(${managerName}.isLoaded${targetName}(oldValue)){
       <#if otherSideName?starts_with("set")>
+        // Clear old other side
         ${managerName}.get${targetName}Sure(oldValue).${otherSideName}Gem(new Gem<>(), NotificationScope.MINIMAL);
       <#else>
         <#assign removeOtherSide=otherSideName?replace("add", "remove")>
