@@ -284,5 +284,5 @@ deploy-python-package:
   rules:
     - if: $CI_COMMIT_BRANCH == "dev" # only publish on dev
       changes:
-        - experiments/python-client/runtime-package/** # and on changes to the runtime package dir
+        - experiments/python-client/runtime-package/**/* # and on changes to the runtime package dir
 
