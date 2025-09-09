@@ -1,44 +1,14 @@
-import java.nio.file.Files
-import java.nio.file.Paths
-
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
   id "de.rwth.se.montigem-frontend"
 }
 
-def useCD2GUI = false
-
 dependencies {
   implementation project(":products:demorec:backend")
   testImplementation project(':umlp-test-rte')
 
   srcUMLPConfig project(":products:demorec:backend")
-}
-
-node {
-  nodeProjectDir = file("${buildDir}/app")
-}
-nodeSetup.dependsOn(setupFrontend)
-
-gui2java {
-  domainModels = ["DemoRec"]
-  guiCreateModels = ["gui.pack.PackCreate",
-                     "gui.process.ProcessCreate",
-                     "gui.step.ProcessStepCreate",
-                     "gui.joinconnection.JoinConnectionCreate",
-                     "gui.endeffector.EndEffectorCreate",
-                     "gui.dimension.DimensionCreate",
-                     "gui.measuringvalues.MeasuringValueCreate",
-                     "gui.component.ComponentCreate",
-                     "gui.kind.CreateComponentKind",
-                     "gui.pack.PackTypeCreate",
-                     "gui.editprocessmodels.edit.wizard.ActionCreate"]
-
-  /*
-  debug = true
-  outputs.upToDateWhen { false }
-  /**/
 }
 
 umlpJava2ts {
@@ -49,18 +19,27 @@ umlpJava2ts {
   verbose = true
 }
 
-guiJava2ts {
+gui2java2ts {
+  guiCreateModels = [
+      "gui.pack.PackCreate",
+      "gui.process.ProcessCreate",
+      "gui.step.ProcessStepCreate",
+      "gui.joinconnection.JoinConnectionCreate",
+      "gui.endeffector.EndEffectorCreate",
+      "gui.dimension.DimensionCreate",
+      "gui.measuringvalues.MeasuringValueCreate",
+      "gui.component.ComponentCreate",
+      "gui.kind.CreateComponentKind",
+      "gui.pack.PackTypeCreate",
+      "gui.editprocessmodels.edit.wizard.ActionCreate"
+  ]
+
   excludeTranspile.addAll([
       "glob:**/service/**",
       "glob:**/service/*"
-  ]
-  )
+  ])
   verbose = true
 }
-
-
-npmInstall.dependsOn(':umlp-rte:frontend:npmInstall')
-
 
 tasks.named('runApp', NpxTask) {
   environment = [

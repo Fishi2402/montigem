@@ -161,7 +161,6 @@ public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Projec
         task.getSymbolPath().from(project.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
         task.getSymbolPath().from(project.getConfigurations().named(MONTIGEM_MODULE_IMPORT_MAP_CONFIG));
       }
-      task.getSymbolOutDir().set(project.getLayout().getBuildDirectory().dir("umlp2sym"));
       task.getOutputDir().set(project.getLayout().getBuildDirectory().dir("umlp2sym"));
 
       task.onlyIf(t -> umlpPresent);

@@ -8,18 +8,11 @@ plugins {
 def useCD2GUI = true
 
 dependencies {
-  montigemModuleImportMap project(":umlp-rte")
-  montigemModuleGUISymbols project(":umlp-rte")
   implementation project(":examples:sehub:backend")
   srcUMLPConfig project(":examples:sehub:backend")
 }
 
-node {
-  nodeProjectDir = file("${buildDir}/app")
-}
-nodeSetup.dependsOn(setupFrontend)
-
-tasks.register('generateCDTOGUI', CD2GUITask) {
+def cd2gui = tasks.register('cd2gui', CD2GUITask) {
   enabled(useCD2GUI)
   setGroup('build')
   input = file("../models/Sehub.umlp")
@@ -27,8 +20,8 @@ tasks.register('generateCDTOGUI', CD2GUITask) {
 }
 
 tasks.register('guiVariability', GUIVariabilityTask) {
-  if(useCD2GUI) {
-    input.from(generateCDTOGUI.getOutputDir())
+  if (useCD2GUI) {
+    input.from(cd2gui.flatMap { it.getOutputDir() })
   }
   input.from(file("../models/gui"))
   outputDir = layout.buildDirectory.dir("guiVariability")
@@ -38,22 +31,15 @@ umlp2sym {
   enabled = false // instead, we use the CD2Gui Symbols
 }
 
-
-gui2java {
+gui2java2ts {
   dependsOn(guiVariability)
-  domainModels = ["Sehub"]
   guiCreateModels = ["gui.login.UserCreate", "gui.issues.IssueCreate"]
-  guiCreateModelsAsFile = file(generateCDTOGUI.getOutputDir().file("meta/sehub/guiCreateTextModels"))
+  guiCreateModelsAsFile = file(cd2gui.flatMap { it.getOutputDir().file("meta/sehub/guiCreateTextModels") })
   // Use cd2gui symbols instead of cd2gui/symbols
-  symbolDir += generateCDTOGUI.getOutputDir().file("symbols")
-  symbolDir += file("$buildDir/tags")
-  // and exclude the umlp2ts symbols (without gemId)
-  //var toExclude = tasks.umlp2ts.getSymbolOutDir().get().asFile
-  //symbolDir.setFrom symbolDir.filter(f -> f != toExclude)
+  symbolPath.from(cd2gui.flatMap { it.getOutputDir().("symbols") })
+  symbolPath.from(file("$buildDir/tags"))
   modelDir = file(tasks.guiVariability.getOutputDir())
 }
-
-npmInstall.dependsOn(':umlp-rte:frontend:npmInstall')
 
 umlpJava2ts {
   excludeSource.addAll([

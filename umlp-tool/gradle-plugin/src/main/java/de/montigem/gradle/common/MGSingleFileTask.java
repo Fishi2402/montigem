@@ -57,7 +57,7 @@ public abstract class MGSingleFileTask extends MCSingleFileTask implements Gradl
   @Override
   protected List<String> createArgList(Path filePath, Function<Path, String> handlePath) {
     List<String> result = super.createArgList(filePath, handlePath);
-    if(getModuleConfigTemplates().isPresent()){
+    if (getModuleConfigTemplates().isPresent()) {
       for (String moduleConfigTemplate : getModuleConfigTemplates().get()) {
         result.add("--module-config");
         result.add(moduleConfigTemplate);
@@ -66,7 +66,6 @@ public abstract class MGSingleFileTask extends MCSingleFileTask implements Gradl
 
     return result;
   }
-
 
   @Override
   protected Consumer<String[]> getRunMethod() {
@@ -80,21 +79,22 @@ public abstract class MGSingleFileTask extends MCSingleFileTask implements Gradl
     return MGAction.class;
   }
 
-
-
   @Override
   protected void startGeneration(List<String> args, String progressName) {
     statdata.countRun();
     super.startGeneration(args, progressName);
   }
+
   @Override
-  public void prepareRun(){
+  public void prepareRun() {
     super.prepareRun();
     statdata.setNumberOfInputFiles(getInput().getAsFileTree().getFiles().stream().filter(this::isInputFile).count());
   }
+
   @Override
   @Internal
   public JsonElement getGradleStatisticData() {
     return statdata.getData();
   }
+
 }

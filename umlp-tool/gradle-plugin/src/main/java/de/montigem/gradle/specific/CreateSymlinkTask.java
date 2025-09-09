@@ -2,8 +2,10 @@ package de.montigem.gradle.specific;
 
 import de.se_rwth.commons.logging.Log;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.MapProperty;
 import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.TaskAction;
 
@@ -16,26 +18,34 @@ public abstract class CreateSymlinkTask extends DefaultTask {
   public CreateSymlinkTask() {
   }
 
+  @Nested
+  public abstract ListProperty<Symlink> getLinks();
+
   @Input
   @Optional
   public abstract MapProperty<File, File> getSymlinkMap();
 
   @TaskAction
   protected void createAllSymLinks() {
-    if (!getSymlinkMap().isPresent()) {
-      return;
+
+    for (Symlink link : getLinks().get()) {
+      createSymLink(
+        link.getLinkFile().get().getAsFile(),
+        link.getTargetFile().get().getAsFile()
+      );
     }
 
+    /*
     getSymlinkMap().get().forEach((link, target) -> {
       createSymLink(link.toPath().toAbsolutePath().toString(), target.toPath().toAbsolutePath().toString());
     });
-
+    /**/
   }
 
-  protected static void createSymLink(String linkPath, String targetPath) {
+  protected static void createSymLink(File linkDir, File targetDir) {
     try {
-      File targetDir = new File(targetPath);
-      File linkDir = new File(linkPath);
+      String linkPath = linkDir.getCanonicalPath();
+      String targetPath = targetDir.getCanonicalPath();
 
       if (!targetDir.exists() || !targetDir.isDirectory()) {
         Log.warn("ℹ️ Will not create symlink because the target path does not exist or is not a directory: " + targetPath);
@@ -45,7 +55,10 @@ public abstract class CreateSymlinkTask extends DefaultTask {
       if (!linkDir.exists()) {
         File parentDir = linkDir.getParentFile();
         if (parentDir != null && !parentDir.exists()) {
-          parentDir.mkdirs();
+          if (!parentDir.mkdirs()) {
+            Log.error("0x00035 Failed to create directory " + parentDir.getCanonicalPath()
+                + " for the " + CreateSymlinkTask.class.getSimpleName() + " task");
+          }
         }
 
         if (isWindows()) {

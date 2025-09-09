@@ -9,8 +9,6 @@ import de.montigem.gradle.MGBasePlugin;
 import de.montigem.gradle.specific.CreateNpmrcTask;
 import de.montigem.gradle.specific.GUI2Java2TSTask;
 import de.montigem.gradle.specific.GUI2SymTask;
-import de.montigem.gradle.specific.Java2TSTask;
-import de.montigem.gradle.specific.UMLP2JSweetAdapterTask;
 import de.montigem.gradle.specific.UMLP2SymTask;
 import de.montigem.gradle.specific.UMLP2TSTask;
 import de.montigem.gradle.specific.UMLPJava2TSTask;
@@ -56,12 +54,18 @@ import java.util.stream.Collectors;
 import static de.montigem.gradle.FrontendBasePlugin.GUI_TYPES_CONFIG;
 import static de.montigem.gradle.FrontendBasePlugin.UMLP_GROUP_NAME;
 import static de.montigem.gradle.FrontendBasePlugin.addClientRTEDependency;
+import static de.montigem.gradle.FrontendBasePlugin.addGUITypesDependency;
+import static de.montigem.gradle.FrontendBasePlugin.addProjectDependencies;
 import static de.montigem.gradle.FrontendBasePlugin.getBooleanProjectProperty;
+import static de.montigem.gradle.FrontendBasePlugin.getModels;
 import static de.montigem.gradle.FrontendBasePlugin.inRTE;
+import static de.montigem.gradle.FrontendBasePlugin.isLocal;
 import static de.montigem.gradle.FrontendBasePlugin.mcVersion;
+import static de.montigem.gradle.FrontendWithJSweetPlugin.CD2JAVA_TASK;
+import static de.montigem.gradle.FrontendWithJSweetPlugin.CD2SYM_TASK;
+import static de.montigem.gradle.FrontendWithJSweetPlugin.GUI2JAVA2TS_TASK;
 import static de.montigem.gradle.FrontendWithJSweetPlugin.JSWEET_CONFIG;
 import static de.montigem.gradle.FrontendWithJSweetPlugin.SRC_UMLP_CONFIG;
-import static de.montigem.gradle.FrontendWithJSweetPlugin.UMLP2JSWEET_ADAPTER_TASK;
 import static de.montigem.gradle.FrontendWithJSweetPlugin.UMLP_JAVA2TS_TASK;
 import static de.montigem.gradle.FrontendWithJSweetPlugin.defaultExcludedSources;
 import static de.montigem.gradle.FrontendWithJSweetPlugin.setupJSweetClasspath;
@@ -72,16 +76,8 @@ import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_IMPORT_MAP_CONFIG;
 public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugin<Project> {
 
   public static final String GUI2SYM_TASK = "gui2sym";
-  public static final String CD2SYM_TASK = "cd2sym";
   public static final String UMLP2SYM_TASK = "umlp2sym";
   public static final String UMLP2TS_TASK = "umlp2ts";
-  public static final String CD2JAVA_TASK = "cd2java";
-  public static final String GUI2JAVA_TASK = "gui2java";
-  public static final String CD_JAVA2TS_TASK = "cdJava2ts";
-  public static final String GUI2JAVA2TS_TASK = "gui2java2ts";
-  public static final String CD2JSWEET_ADAPTER_TASK = "cd2jsweetAdapter";
-  // java2ts and umlp2ts
-  public static final String MODELS2TS_TASK = "models2ts";
   public static final String GUI2SYM_JAR_TASK = "gui2symJar";
   public static final String BUILD_LIB_TASK = "buildLib";
 
@@ -118,7 +114,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
     npmInstall.configure(task -> task.dependsOn(npmrc4download));
 
     // default models folder
-    Directory models = project.getLayout().getProjectDirectory().dir("../models");
+    Directory models = getModels(project);
     // default .umlp file(s)
     Set<File> umlp;
     // default name(s) of .umlp file(s)
@@ -141,6 +137,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
     }
     List<String> domainNamesFinal = domainNames;
 
+    // look for umlp2sym task in parent and take its output if present
     var umlp2symOut = project.provider(() -> {
       Project parent = project.getParent();
       if (parent == null) {
@@ -148,10 +145,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
       }
 
       TaskProvider<UMLP2SymTask> task = parent.getTasks().named(UMLP2SYM_TASK, UMLP2SymTask.class);
-      return task.flatMap(t -> t.getSymbolOutDir().map(dir -> {
-        File f = dir.getAsFile();
-        return f.exists() ? project.files(f) : project.files();
-      }));
+      return task.flatMap(UMLP2SymTask::getOutputDir);
     });
 
     // Create the import map jar
@@ -161,11 +155,11 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
     List<TaskProvider<NpmTask>> buildSubprojects = new ArrayList<>();
     List<TaskProvider<NpmTask>> publishSubprojects = new ArrayList<>();
 
-    TaskProvider<Task> models2ts = project.getTasks().register(MODELS2TS_TASK);
+    SourceSet mainSourceSet = project.getExtensions()
+        .getByType(SourceSetContainer.class)
+        .getByName(SourceSet.MAIN_SOURCE_SET_NAME);
 
-    SourceSet mainSourceSet = project.getExtensions().getByType(SourceSetContainer.class).getByName(SourceSet.MAIN_SOURCE_SET_NAME);
-
-    boolean local = getBooleanProjectProperty(project, "useLocalDependencies");
+    boolean local = isLocal(project);
     if (local) {
       project.getDependencies().add("implementation",
           project.getDependencies().project(Map.of("path", ":umlp-rte:backend"))
@@ -195,7 +189,6 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
 
         Provider<String> libQName = extension.getLibScope().map(v -> v + "/" + subproject.getName());
         Provider<Directory> libBuildDir = p.getLayout().getBuildDirectory().dir("dist/" + subproject.getName());
-        Provider<Directory> gui2javaDir = subproject.getLayout().getBuildDirectory().dir("gui2java");
         Provider<Directory> gui2java2tsDir = subproject.getLayout().getBuildDirectory().dir("gui2java2ts");
         Provider<Directory> cd2javaDir = subproject.getLayout().getBuildDirectory().dir("cd2java");
         Provider<Directory> cd2tagsDir = subproject.getLayout().getBuildDirectory().dir("cd2tags");
@@ -209,10 +202,11 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
         Directory srcGUI = subproject.getLayout().getProjectDirectory().dir("src/main/gui");
         Directory srcJava = subproject.getLayout().getProjectDirectory().dir("src/main/java");
 
-        Configuration guiTypes = addProjectDependencies(subproject);
+        Configuration guiTypes = addGUITypesDependency(subproject);
+        addProjectDependencies(subproject);
         addClientRTEDependency(subproject);
-        setupJSweetClasspath(subproject, local);
-        addJSweetDependencies(subproject, local);
+        setupJSweetClasspath(subproject);
+        addJSweetDependencies(subproject);
 
         Project parent = project.getParent();
         if (parent != null) {
@@ -272,40 +266,6 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
 
           task.onlyIf(t -> !umlp.isEmpty());
         });
-        /**/
-        /*
-        TaskProvider<UMLP2JSweetAdapterTask> umlp2jsweetAdapter = subproject.getTasks().register(UMLP2JSWEET_ADAPTER_TASK, UMLP2JSweetAdapterTask.class, task -> {
-          task.setGroup(UMLP_GROUP_NAME);
-          if (!domainNamesFinal.isEmpty()) {
-            task.getDomain().set(domainNamesFinal.get(0));
-          }
-
-          task.getJSweetAdapterDir().set(umlp2jsweetAdapterDir);
-          if (srcJSweet.getAsFile().exists()) {
-            task.getHandWrittenJSweetDir().set(srcJSweet);
-          }
-
-          task.onlyIf(t -> !umlp.isEmpty());
-        });
-
-        TaskProvider<Java2TSTask> umlpJava2ts = subproject.getTasks().register(UMLP_JAVA2TS_TASK, Java2TSTask.class, task -> {
-          task.setGroup(UMLP_GROUP_NAME);
-          task.getJSweetAdapterDir().set(umlp2jsweetAdapter.flatMap(UMLP2JSweetAdapterTask::getJSweetAdapterDir));
-          task.getJSweetWorkingDir().set(internalJSweetDir.map(dir -> dir.dir("umlpJava2ts")));
-          task.getJSweetCandiesDir().set(internalJSweetDir.map(dir -> dir.dir("umlpCandies")));
-          task.getOutputDir().set(umlpJava2tsDir);
-
-          // add domain-sources to the to-be-transpiled
-          task.getInput().from(subproject.getConfigurations().named(SRC_UMLP_CONFIG));
-          task.getJSweetClassPath().from(subproject.getConfigurations().named(JSWEET_CONFIG));
-
-          for (String s : defaultExcludedSources) {
-            task.getExcludeSource().add(s);
-          }
-
-          task.onlyIf(t -> !umlp.isEmpty());
-        });
-        /**/
 
         TaskProvider<CD2SymTask> cd2sym = subproject.getTasks().register(CD2SYM_TASK, CD2SymTask.class, task -> {
           task.getInput().set(srcGUI);
@@ -338,14 +298,13 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
             task.getSymbolPath().from(subproject.getConfigurations().named(MONTIGEM_MODULE_IMPORT_MAP_CONFIG));
           }
           task.getOutputDir().set(subproject.getLayout().getBuildDirectory().dir("gui2sym"));
-          task.getSymbolOutDir().set(subproject.getLayout().getBuildDirectory().dir("gui2sym"));
 
           task.dependsOn(cd2sym);
           task.onlyIf(t -> guiPresent);
         });
         gui2symJar.configure(task -> {
           task.from(
-              gui2sym.flatMap(GUI2SymTask::getSymbolOutDir),
+              gui2sym.flatMap(GUI2SymTask::getOutputDir),
               spec -> spec.include("**/*sym", "**/*import.map", "**/*tags")
           );
           task.dependsOn(gui2sym);
@@ -355,7 +314,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
         cd2java.configure(task -> {
           task.setGroup(UMLP_GROUP_NAME);
           if (srcJava.getAsFile().exists()) {
-            task.getHwcDir().from(srcJava);
+            task.getHandWrittenCodeDir().from(srcJava);
           }
           task.getInput().from(srcGUI);
           task.getOutputDir().set(cd2javaDir);
@@ -366,8 +325,6 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
         });
 
         mainSourceSet.getJava().srcDir(cd2java.flatMap(CD2JavaTask::getOutputDir));
-
-        models2ts.configure(task -> task.dependsOn(cd2java));
 
         gui2symJar.configure(task -> {
           task.from(
@@ -386,9 +343,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
             task.getSymbolPath().from(subproject.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
             task.getSymbolPath().from(subproject.getConfigurations().named(MONTIGEM_MODULE_IMPORT_MAP_CONFIG));
           }
-          if (!domainNamesFinal.isEmpty()) {
-            task.getDomainModels().set(domainNamesFinal);
-          }
+          task.getDomainModels().set(domainNamesFinal);
           task.getImportsDir().from(umlpJava2ts.flatMap(UMLPJava2TSTask::getOutputDir));
           task.getSymbolPath().from(umlp2symOut);
           task.getSymbolPath().from(guiTypes);
@@ -398,12 +353,12 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
             task.getInput().from(cd2java.flatMap(CommonMCTask::getOutputDir));
           }
           task.getModelDir().set(srcGUI);
-          task.getHwcDir().from(srcGUI);
+          task.getHandWrittenCodeDir().from(srcGUI);
           task.getOutputDir().set(gui2java2tsDir);
-          task.getTslib().set(libQName);
+          task.getTSlib().set(libQName);
 
-          task.getGuiGenJsweet().set(true);
-          task.getGuiGenTSFuncionality().set(false);
+          task.getGUIGenJSweet().set(true);
+          task.getGUIGenTSFunctionality().set(false);
 
           if (!domainNamesFinal.isEmpty()) {
             task.getDomain().set(domainNamesFinal.get(0));
@@ -414,7 +369,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
           }
 
           if (srcJava.getAsFile().exists()) {
-            task.getHwcDir().from(srcJava);
+            task.getHandWrittenCodeDir().from(srcJava);
           }
           task.getExtraJava2TSInput().from(cd2java.flatMap(CommonMCTask::getOutputDir));
           task.getExtraJava2TSInput().from(umlpJava2ts.flatMap(UMLPJava2TSTask::getOutputDir));
@@ -444,8 +399,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
 
           task.onlyIf(t -> guiPresent);
         });
-
-        models2ts.configure(task -> task.dependsOn(gui2java2ts));
+        mainSourceSet.getJava().srcDir(gui2java2ts.flatMap(CommonMCTask::getOutputDir));
 
         gui2symJar.configure(task -> {
           task.from(
@@ -460,18 +414,14 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
           umlp2ts.configure(task -> {
             task.getInput().from(umlp);
             if (srcGUI.getAsFile().exists()) {
-              task.getHwcDir().from(srcGUI);
+              task.getHandWrittenCodeDir().from(srcGUI);
             }
             if (srcJava.getAsFile().exists()) {
-              task.getHwcDir().from(srcJava);
+              task.getHandWrittenCodeDir().from(srcJava);
             }
             task.getOutputDir().set(umlp2tsDir);
             task.getTslib().set(libQName);
           });
-
-//          gui2java2ts.configure(task -> {
-//            task.getImportsDir().from(umlp2ts.flatMap(UMLP2TSTask::getOutputDir));
-//          });
 
           umlp2impJar.configure(task -> {
             task.dependsOn(umlp2ts);
@@ -621,34 +571,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
     });
   }
 
-  private Configuration addProjectDependencies(Project project) {
-    // repositories
-    project.getRepositories().maven(repo -> {
-      String mavenUser = (String) project.findProperty("mavenUser");
-      String mavenPassword = (String) project.findProperty("mavenPassword");
-      String url = (String) project.findProperty("repo");
-      repo.getCredentials().setUsername(mavenUser);
-      repo.getCredentials().setPassword(mavenPassword);
-      repo.setUrl(url);
-    });
-    if (getBooleanProjectProperty(project, "useLocalRepo")) {
-      project.getRepositories().mavenLocal();
-    }
-    project.getRepositories().mavenCentral();
-
-    // Configurations
-    var conf = project.getConfigurations().create(GUI_TYPES_CONFIG, config -> {
-      config.setCanBeConsumed(false);
-      config.setCanBeResolved(true);
-      config.getAttributes().attribute(Usage.USAGE_ATTRIBUTE, project.getObjects().named(Usage.class, "guidsl-types"));
-      config.getAttributes().attribute(Category.CATEGORY_ATTRIBUTE, project.getObjects().named(Category.class, "library"));
-      config.getAttributes().attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, project.getObjects().named(LibraryElements.class, "jar"));
-    });
-    project.getDependencies().add(GUI_TYPES_CONFIG, "de.monticore.lang:guidsl:" + project.findProperty("mc_version"));
-    return conf;
-  }
-
-  void addJSweetDependencies(Project project, boolean local) {
+  protected void addJSweetDependencies(Project project) {
     // JSweet
     MavenArtifactRepository snapshotRepo = project.getRepositories().maven(repo -> {
       repo.setUrl("https://repository.jsweet.org/artifactory/libs-snapshot-local");
@@ -682,7 +605,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
     });
     project.getDependencies().add("implementation", dep);
     project.getDependencies().add("implementation", "com.kohlschutter.jdk.compiler:standalone-jdk11:1.0.0");
-    if (local) {
+    if (isLocal(project)) {
       project.getDependencies().add("implementation", project.project(":umlp-jsweet"));
     }
     else {

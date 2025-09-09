@@ -126,8 +126,4 @@ public abstract class MGBasePlugin implements Plugin<Project> {
         "Please use the MontiCore plugin in a separate subproject and use that as a dependency.");
   }
 
-  @NotNull
-  public static Boolean getBooleanProjectProperty(Project project, String propertyName) {
-    return FrontendPlugin.getBooleanProjectProperty(project, propertyName);
-  }
 }

@@ -30,7 +30,7 @@ gui2java {
   guiCreateModels = ["gui.login.UserCreate", "gui.project.ProjectCreate", "gui.project.ProjectsCreateByGroup"]
 
   // TODO: Gradle Setup for modules
-  symbolDir.from(() -> tasks.named("umlp2sym").get().outputs)
+  symbolOutDir.from(() -> tasks.named("umlp2sym").get().outputs)
 
   /*
   debug = true

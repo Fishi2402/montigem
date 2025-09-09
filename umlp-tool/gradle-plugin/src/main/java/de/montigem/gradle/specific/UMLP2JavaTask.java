@@ -8,7 +8,6 @@ import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.CacheableTask;
 import org.gradle.api.tasks.IgnoreEmptyDirectories;
 import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.PathSensitive;
@@ -32,15 +31,9 @@ public abstract class UMLP2JavaTask extends MGSingleFileTask {
   @InputFiles
   @org.gradle.api.tasks.Optional
   @PathSensitive(PathSensitivity.RELATIVE)
-  @Incremental  // This Annotation requires custom java-logic to run correctly. See "getStreamOfChanges()"
+  @Incremental
+  // This Annotation requires custom java-logic to run correctly. See "getStreamOfChanges()"
   public abstract ConfigurableFileCollection getModelDir();
-
-  @Deprecated() // MCSingleFileTask already defines the symbolPath Property
-  @InputDirectory
-  @org.gradle.api.tasks.Optional
-  @PathSensitive(PathSensitivity.RELATIVE)
-  // No @Incremental, changes of the Symbols lead to full rebuild
-  public abstract DirectoryProperty getSymbolDir();
 
   @OutputDirectory
   @org.gradle.api.tasks.Optional
@@ -82,12 +75,13 @@ public abstract class UMLP2JavaTask extends MGSingleFileTask {
   @InputFiles
   @PathSensitive(PathSensitivity.RELATIVE)
   @IgnoreEmptyDirectories
-  @Incremental  // This Annotation requires custom java-logic to run correctly. See "getStreamOfChanges()"
+  @Incremental
+  // This Annotation requires custom java-logic to run correctly. See "getStreamOfChanges()"
   public ConfigurableFileCollection getOcl() {
     return ocl;
   }
 
-  public void setOcl(File f){
+  public void setOcl(File f) {
     ocl.from(f);
   }
 
@@ -103,41 +97,31 @@ public abstract class UMLP2JavaTask extends MGSingleFileTask {
   protected List<String> createArgList(Path filePath, Function<Path, String> handlePath) {
     List<String> result = super.createArgList(filePath, handlePath);
 
-    // Remove when we remove symbolDir
-    if(this.getSymbolDir().isPresent()) {
+    for (var symDir : this.getSymbolPath()) {
       result.add("-path");
-      result.add(handlePath.apply(getSymbolDir().getAsFile().get().toPath()));
+      result.add(symDir.getAbsolutePath());
     }
 
-    if (!this.getSymbolPath().isEmpty()) {
-      for (var symDir : this.getSymbolPath()) {
-        result.add("-path");
-        result.add(symDir.getAbsolutePath());
-      }
+    for (File file : this.getModelDir()) {
+      result.add("-modelPath");
+      result.add(handlePath.apply(file.toPath()));
     }
 
-    if(!this.getModelDir().isEmpty()) {
-      for (File file : this.getModelDir()) {
-        result.add("-modelPath");
-        result.add(handlePath.apply(file.toPath()));
-      }
-    }
-
-    if(this.getSymbolOutDir().isPresent()) {
+    if (this.getSymbolOutDir().isPresent()) {
       result.add("-s");
       result.add(handlePath.apply(getSymbolOutDir().getAsFile().get().toPath()));
     }
 
-    if(!this.getOcl().isEmpty()) {
+    if (!this.getOcl().isEmpty()) {
       result.add("-ocl");
       result.add(handlePath.apply(Path.of(getOcl().getAsPath())));
     }
 
-    if(this.getUseSpring().get()){
+    if (this.getUseSpring().get()) {
       result.add("-" + UMLPToolOptions.USE_SPRING.getCMD());
     }
 
-    if(this.getUseShell().get()){
+    if (this.getUseShell().get()) {
       result.add("-" + UMLPToolOptions.USE_SHELL.getCMD());
     }
 

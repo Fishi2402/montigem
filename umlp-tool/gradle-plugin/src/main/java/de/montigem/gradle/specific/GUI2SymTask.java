@@ -29,10 +29,6 @@ public abstract class GUI2SymTask extends MGAllFilesTask {
     super("UMLPSymbolsTask");
   }
 
-  @OutputDirectory
-  @org.gradle.api.tasks.Optional
-  public abstract DirectoryProperty getSymbolOutDir();
-
   @InputFiles
   @org.gradle.api.tasks.Optional
   @PathSensitive(PathSensitivity.RELATIVE)
@@ -49,9 +45,9 @@ public abstract class GUI2SymTask extends MGAllFilesTask {
 
     result.add("-" + UMLPToolOptions.GEN_SYMBOLS_ONLY.getCMD());
 
-    if (this.getSymbolOutDir().isPresent()) {
+    if (this.getOutputDir().isPresent()) {
       result.add("-" + UMLPToolOptions.SYMTAB.getCMD());
-      result.add(handlePath.apply(getSymbolOutDir().getAsFile().get().toPath()));
+      result.add(handlePath.apply(getOutputDir().getAsFile().get().toPath()));
     }
 
     if (this.getModelDir().isPresent()) {

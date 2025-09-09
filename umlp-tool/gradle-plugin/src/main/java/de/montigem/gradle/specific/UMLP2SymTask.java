@@ -28,10 +28,6 @@ public abstract class UMLP2SymTask extends MGSingleFileTask {
     super("UMLP2SymTask", null);
   }
 
-  @OutputDirectory
-  @org.gradle.api.tasks.Optional
-  public abstract DirectoryProperty getSymbolOutDir();
-
   @InputFiles
   @org.gradle.api.tasks.Optional
   @PathSensitive(PathSensitivity.RELATIVE)
@@ -49,23 +45,19 @@ public abstract class UMLP2SymTask extends MGSingleFileTask {
 
     result.add("-" + UMLPToolOptions.GEN_SYMBOLS_ONLY.getCMD());
 
-    if (this.getSymbolOutDir().isPresent()) {
+    if (this.getOutputDir().isPresent()) {
       result.add("-s");
-      result.add(handlePath.apply(getSymbolOutDir().getAsFile().get().toPath()));
+      result.add(handlePath.apply(getOutputDir().getAsFile().get().toPath()));
     }
 
-    if (!this.getModelDir().isEmpty()) {
-      for (File file : this.getModelDir()) {
-        result.add("-modelPath");
-        result.add(handlePath.apply(file.toPath()));
-      }
+    for (File file : this.getModelDir()) {
+      result.add("-modelPath");
+      result.add(handlePath.apply(file.toPath()));
     }
 
-    if (!this.getSymbolPath().isEmpty()) {
-      for (File file : this.getSymbolPath()) {
-        result.add("-path");
-        result.add(handlePath.apply(file.toPath()));
-      }
+    for (File file : this.getSymbolPath()) {
+      result.add("-path");
+      result.add(handlePath.apply(file.toPath()));
     }
 
     return result;

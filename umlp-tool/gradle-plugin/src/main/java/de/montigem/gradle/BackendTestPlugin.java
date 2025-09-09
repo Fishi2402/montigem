@@ -23,7 +23,6 @@ public class BackendTestPlugin implements Plugin<Project> {
     TaskProvider<UMLP2JavaTask> secondTask = project.getTasks().register(CLONE_UMLP2JAVA_TASK, UMLP2JavaTask.class, task -> {
       task.getInput().from(firstTask.map(CommonMCTask::getInput));
       task.getHandWrittenCodeDir().from(firstTask.map(CommonMCTask::getHandWrittenCodeDir));
-      task.getSymbolDir().set(firstTask.flatMap(UMLP2JavaTask::getSymbolDir));
       task.getSymbolPath().from(firstTask.map(CommonMCTask::getSymbolPath));
       task.getUseSpring().set(firstTask.flatMap(UMLP2JavaTask::getUseSpring));
       task.getUseShell().set(firstTask.flatMap(UMLP2JavaTask::getUseShell));

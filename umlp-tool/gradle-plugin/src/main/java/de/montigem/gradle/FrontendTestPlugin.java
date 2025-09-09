@@ -23,7 +23,7 @@ public class FrontendTestPlugin implements Plugin<Project> {
       task.getInput().from(firstTask.map(CommonMCTask::getInput));
       task.getHandWrittenCodeDir().from(firstTask.map(CommonMCTask::getHandWrittenCodeDir));
       task.getModelDir().set(firstTask.flatMap(GUI2JavaTask::getModelDir));
-      task.getSymbolDir().from(firstTask.map(GUI2JavaTask::getSymbolDir));
+      task.getSymbolPath().from(firstTask.map(GUI2JavaTask::getSymbolPath));
       task.getDomainModels().set(firstTask.flatMap(GUI2JavaTask::getDomainModels));
       task.getGuiCreateModels().set(firstTask.flatMap(GUI2JavaTask::getGuiCreateModels));
 

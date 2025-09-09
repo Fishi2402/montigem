@@ -27,15 +27,6 @@ dependencies {
 
 }
 
-node {
-  nodeProjectDir = file("${buildDir}/app")
-}
-nodeSetup.dependsOn(setupFrontend)
-
-gui2java {
-  domainModels = ["Jsweettest"]
-}
-
 configurations {
   // json is a duplicate somehow
   testImplementation.exclude group: 'org.json', module: 'json'
@@ -46,12 +37,9 @@ umlpJava2ts {
   verbose = true
 }
 
-guiJava2ts {
+gui2java2ts {
   verbose = true
 }
-
-nodeSetup.dependsOn(setupFrontend)
-npmInstall.dependsOn(nodeSetup, ':umlp-rte:frontend:npmInstall')
 
 test {
   dependsOn npmInstall, buildApp

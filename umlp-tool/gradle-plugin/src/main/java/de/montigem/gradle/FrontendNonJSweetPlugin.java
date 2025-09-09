@@ -5,11 +5,10 @@ import de.monticore.gradle.common.CommonMCTask;
 import de.montigem.gradle.specific.CreateSymlinkTask;
 import de.montigem.gradle.specific.GUI2JavaTask;
 import de.montigem.gradle.specific.SetupFrontendTask;
+import de.montigem.gradle.specific.Symlink;
 import de.montigem.gradle.specific.UMLP2TSTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.file.Directory;
-import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Sync;
 import org.gradle.api.tasks.TaskProvider;
 
@@ -51,7 +50,7 @@ public abstract class FrontendNonJSweetPlugin implements Plugin<Project> {
     });
     gui2java.configure(task -> {
       task.getHwcDir().from(hwc);
-      task.getGuiGenJsweet().set(false);
+      task.getGUIGenJSweet().set(false);
       task.dependsOn(umlp2ts);
 
       /*
@@ -80,6 +79,17 @@ public abstract class FrontendNonJSweetPlugin implements Plugin<Project> {
     /**/
 
     createSymlinkTask.configure(task -> {
+      Symlink hwcLink = project.getObjects().newInstance(Symlink.class);
+      hwcLink.getLinkFile().set(project.getLayout().getBuildDirectory().file("app/hwcsrc"));
+      hwcLink.getTargetFile().set(project.getLayout().getProjectDirectory().dir("src/app"));
+      task.getLinks().add(hwcLink);
+
+      Symlink umlp_frontend = project.getObjects().newInstance(Symlink.class);
+      umlp_frontend.getLinkFile().set(project.getLayout().getBuildDirectory().file("build/umlp_frontend"));
+      umlp_frontend.getTargetFile().set(project.getLayout().getBuildDirectory().dir("umlp_frontend"));
+      task.getLinks().add(umlp_frontend);
+
+      /*
       if (task.getSymlinkMap().isPresent()) {
         File hwcSrcLink = project.getBuildDir().toPath().resolve("app/hwcsrc").toFile();
         File hwcTS = project.getProjectDir().toPath().resolve("src/app").toFile();
@@ -91,6 +101,7 @@ public abstract class FrontendNonJSweetPlugin implements Plugin<Project> {
         File angularTemplateResolveTarget = project.getBuildDir().toPath().resolve("umlp_frontend").toFile();
         task.getSymlinkMap().put(angularTemplateResolveLink, angularTemplateResolveTarget);
       }
+      /**/
     });
 
   }

@@ -27,53 +27,14 @@ public abstract class GUI2JavaTask extends MGAllFilesTask {
     super("GUI2JavaTask");
   }
 
-  /*
-  public GUI2JavaTask(String type) {
-    super(type);
-  }
-  /* */
-
   @InputDirectory
   @org.gradle.api.tasks.Optional
   @PathSensitive(PathSensitivity.RELATIVE)
   // @Incremental I am not sure if this _should_ be incremental?
   public abstract DirectoryProperty getModelDir();
 
-  private final ConfigurableFileCollection importsDir = getProject().getObjects().fileCollection();
-
   @InputFiles
-  public ConfigurableFileCollection getImportsDir() {
-    return importsDir;
-  }
-
-  public void setImportsDir(File f){
-    importsDir.from(f);
-  }
-
-  public void setImportsDir(Iterable<File> f){
-    importsDir.from(f);
-  }
-  public void setImportsDir(Object... paths) {
-    importsDir.from(paths);
-  }
-
-  private final ConfigurableFileCollection symbolDir = getProject().getObjects().fileCollection();
-
-  @InputFiles
-  public ConfigurableFileCollection getSymbolDir() {
-    return symbolDir;
-  }
-
-  public void setSymbolDir(File f){
-    symbolDir.from(f);
-  }
-
-  public void setSymbolDir(Iterable<File> f){
-    symbolDir.from(f);
-  }
-  public void setSymbolDir(Object... paths) {
-    symbolDir.from(paths);
-  }
+  public abstract ConfigurableFileCollection getImportsDir();
 
   @OutputDirectory
   @org.gradle.api.tasks.Optional
@@ -93,15 +54,15 @@ public abstract class GUI2JavaTask extends MGAllFilesTask {
 
   @Input
   @org.gradle.api.tasks.Optional
-  public abstract Property<Boolean> getGuiGenTSFuncionality();
+  public abstract Property<Boolean> getGUIGenTSFunctionality();
 
   @Input
   @org.gradle.api.tasks.Optional
-  public abstract Property<Boolean> getGuiGenJsweet();
+  public abstract Property<Boolean> getGUIGenJSweet();
 
   @Input
   @org.gradle.api.tasks.Optional
-  public abstract Property<String> getTslib();
+  public abstract Property<String> getTSlib();
 
   /**
    * @param f file which should be checked
@@ -119,24 +80,20 @@ public abstract class GUI2JavaTask extends MGAllFilesTask {
       result.add("-mp");
       result.add(handlePath.apply(getModelDir().getAsFile().get().toPath()));
     }
-    
+
     if (this.getSymbolOutDir().isPresent()) {
       result.add("-s");
       result.add(handlePath.apply(getSymbolOutDir().getAsFile().get().toPath()));
     }
 
-    if (!this.getSymbolDir().isEmpty()) {
-      for (var symDir : this.getSymbolDir()) {
-        result.add("-path");
-        result.add(symDir.getAbsolutePath());
-      }
+    for (var symDir : this.getSymbolPath()) {
+      result.add("-path");
+      result.add(symDir.getAbsolutePath());
     }
 
-    if (!this.getImportsDir().isEmpty()) {
-      for (var importDir : this.getImportsDir()) {
-        result.add("-" + UMLPToolOptions.IMPORTS_PATH.getCMD());
-        result.add(importDir.getAbsolutePath());
-      }
+    for (var importDir : this.getImportsDir()) {
+      result.add("-" + UMLPToolOptions.IMPORTS_PATH.getCMD());
+      result.add(importDir.getAbsolutePath());
     }
 
     if (this.getDomainModels().isPresent() && !this.getDomainModels().get().isEmpty()) {
@@ -164,19 +121,19 @@ public abstract class GUI2JavaTask extends MGAllFilesTask {
       result.addAll(createModels);
     }
 
-    if (this.getGuiGenTSFuncionality().isPresent()) {
+    if (this.getGUIGenTSFunctionality().isPresent()) {
       result.add("-" + UMLPToolOptions.GUI_GEN_TS_FUNC.getCMD());
-      result.add(this.getGuiGenTSFuncionality().get() + "");
+      result.add(this.getGUIGenTSFunctionality().get() + "");
     }
 
-    if (this.getGuiGenJsweet().isPresent()) {
+    if (this.getGUIGenJSweet().isPresent()) {
       result.add("-" + UMLPToolOptions.GUI_GEN_JSWEET.getCMD());
-      result.add(this.getGuiGenJsweet().get() + "");
+      result.add(this.getGUIGenJSweet().get() + "");
     }
 
-    if (this.getTslib().isPresent()) {
+    if (this.getTSlib().isPresent()) {
       result.add("-" + UMLPToolOptions.GUI_GEN_FOR_TS_LIB.getCMD());
-      result.add(getTslib().get());
+      result.add(getTSlib().get());
     }
 
     return result;

@@ -74,8 +74,6 @@ tasks.register('guiVariability', GUIVariabilityTask) {
    dependsOn(tasks.generateCDTOGUI)
 }
 
-
-
 gui2java {
    domainModels = ["Domain"]
    guiCreateModelsAsFile = file(generateCDTOGUI.getOutputDir().file("meta/domain/guiCreateTextModels"))
@@ -84,10 +82,10 @@ gui2java {
        tasks.guiVariability.getOutputDir()
    ])
 
-   symbolDir += generateCDTOGUI.getOutputDir().file("symbols")
-   symbolDir += file("$buildDir/tags")
+   symbolPath.from(generateCDTOGUI.getOutputDir().file("symbols"))
+   symbolPath.from(file("$buildDir/tags"))
    var toExclude = tasks.umlp2ts.getSymbolOutDir().get().asFile
-   symbolDir.setFrom symbolDir.filter(f -> f != toExclude)
+   symbolPath.setFrom symbolPath.filter(f -> f != toExclude)
    modelDir = file(tasks.guiVariability.getOutputDir())
 }
 

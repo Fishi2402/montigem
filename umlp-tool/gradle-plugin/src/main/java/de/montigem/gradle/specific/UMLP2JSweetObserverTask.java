@@ -27,11 +27,6 @@ public abstract class UMLP2JSweetObserverTask extends MGSingleFileTask {
   @OutputDirectory
   public abstract DirectoryProperty getJsweetConfigOut();
 
-  // TODO MH remove if unnecessary
-  @OutputDirectory
-  @org.gradle.api.tasks.Optional
-  public abstract DirectoryProperty getSymbolOutDir();
-
   public UMLP2JSweetObserverTask() {
     super("GUI2JSweetAdapterTask", null);
     getJsweetConfigOut().convention(getProject().getLayout().getBuildDirectory().dir("jsweet/gen/"));
@@ -55,19 +50,19 @@ public abstract class UMLP2JSweetObserverTask extends MGSingleFileTask {
     result.add("-" + GUI_GEN_JSWEET.getCMD());
     result.add("true");
 
-    if (this.getSymbolOutDir().isPresent()) {
+    if (this.getOutputDir().isPresent()) {
       result.add("-s");
-      result.add(handlePath.apply(getSymbolOutDir().getAsFile().get().toPath()));
+      result.add(handlePath.apply(getOutputDir().getAsFile().get().toPath()));
     }
-    if(!this.getModelDir().isEmpty()) {
+
+    if (!this.getModelDir().isEmpty()) {
       for (File file : this.getModelDir()) {
         result.add("-mp");
         result.add(handlePath.apply(file.toPath()));
       }
     }
 
-    System.out.println("Symbol path is " + this.getSymbolPath().getFiles());
-    if(!this.getSymbolPath().isEmpty()) {
+    if (!this.getSymbolPath().isEmpty()) {
       for (File file : this.getSymbolPath()) {
         result.add("-path");
         result.add(handlePath.apply(file.toPath()));

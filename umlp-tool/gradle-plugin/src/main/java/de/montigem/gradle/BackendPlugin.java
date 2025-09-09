@@ -93,7 +93,7 @@ public abstract class BackendPlugin implements Plugin<Project> {
       task.setGroup(UMLP_GROUP_NAME);
 
       task.getInput().from(getModels(project));
-      task.getHwcDir().from(hwc);
+      task.getHandWrittenCodeDir().from(hwc);
       task.getTmplDir().set(tpl);
       task.getOutputDir().set(project.getLayout().getBuildDirectory().dir("umlp2java"));
       task.getSymbolOutDir().set(project.getLayout().getBuildDirectory().dir("umlp2sym"));

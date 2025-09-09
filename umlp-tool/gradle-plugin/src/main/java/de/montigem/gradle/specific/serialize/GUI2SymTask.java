@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.montigem.gradle.specific.serialize;
 
-import de.se_rwth.commons.logging.Log;
 import de.montigem.gradle.specific.GUIDSLToolAction;
+import de.se_rwth.commons.logging.Log;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
@@ -41,13 +41,14 @@ abstract public class GUI2SymTask extends DefaultTask {
     return symbolDir;
   }
 
-  public void setSymbolDir(File f){
+  public void setSymbolDir(File f) {
     symbolDir.from(f);
   }
 
-  public void setSymbolDir(Iterable<File> f){
+  public void setSymbolDir(Iterable<File> f) {
     symbolDir.from(f);
   }
+
   public void setSymbolDir(Object... paths) {
     symbolDir.from(paths);
   }
@@ -79,24 +80,20 @@ abstract public class GUI2SymTask extends DefaultTask {
 
     for (File inputFile : inputFiles) {
       List<String> args = new ArrayList<>();
-      {
-        args.add("-i");
-        args.add(inputFile.getAbsolutePath());
-      }
-      {
-        if (!this.getSymbolDir().isEmpty()) {
-          for (var symDir : this.getSymbolDir()) {
-            args.add("-path");
-            args.add(symDir.getAbsolutePath());
-          }
+      args.add("-i");
+      args.add(inputFile.getAbsolutePath());
+
+      if (!this.getSymbolDir().isEmpty()) {
+        for (var symDir : this.getSymbolDir()) {
+          args.add("-path");
+          args.add(symDir.getAbsolutePath());
         }
       }
-      {
-        args.add("-s");
-        String relPath = getInput().get().getAsFile().toPath().relativize(inputFile.toPath()).toString();
-        args.add(getOutput().file(relPath + "sym").get().getAsFile().getAbsolutePath());
-        // args.add(getOutput().getAsFile().get().getAbsolutePath());
-      }
+      args.add("-s");
+
+      String relPath = getInput().get().getAsFile().toPath().relativize(inputFile.toPath()).toString();
+      args.add(getOutput().file(relPath + "sym").get().getAsFile().getAbsolutePath());
+      // args.add(getOutput().getAsFile().get().getAbsolutePath());
 
       Log.trace(args.toString(), this.getName());
       String[] argsA = args.toArray(new String[0]);

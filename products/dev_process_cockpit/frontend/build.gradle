@@ -8,65 +8,44 @@ plugins {
   id "de.rwth.se.montigem-frontend"
 }
 
-dependencies {
-  montigemModuleGUISymbols project(":umlp-rte:frontend")
-  montigemModuleImportMap project(":umlp-rte:frontend")
-}
-
 def useCD2GUI = false
 
-node {
-  nodeProjectDir = file("${buildDir}/app")
-}
-nodeSetup.dependsOn(setupFrontend)
-
-tasks.register('generateCDTOGUI', CD2GUITask) {
+def cd2gui = tasks.register('cd2gui', CD2GUITask) {
   enabled(useCD2GUI)
   setGroup('build')
   input = file("../models/DevProcessCockpit.umlp")
   outputDir = layout.buildDirectory.dir("cd2gui")
 }
 
-tasks.register('guiVariability', GUIVariabilityTask) {
+def guiVariability = tasks.register('guiVariability', GUIVariabilityTask) {
   setGroup('build')
   if (useCD2GUI) {
-    input.from(generateCDTOGUI.getOutputDir().dir("models"))
+    input.from(cd2gui.flatMap { it.getOutputDir().dir("models") })
   }
   input.from(file("../models/gui"))
   outputDir = layout.buildDirectory.dir("guiVariability")
 }
 
-gui2java {
-  domainModels = ["DevProcessCockpit"]
-  guiCreateModels = []
-
-  /*
-  debug = true
-  outputs.upToDateWhen { false }
-  /**/
-}
-
-tasks.register('gui2java2', GUI2JavaTask) {
+def gui2java2 = tasks.register('gui2java2', GUI2JavaTask) {
   enabled(useCD2GUI)
   setGroup('build')
-  dependsOn(gui2java, guiVariability)
-  input = file(guiVariability.getOutputDir().dir("cd2gui"))
-  symbolDir = files(
-      generateCDTOGUI.getOutputDir().file("symbols"),
-  )
-  symbolDir.from(
+  dependsOn(tasks.named("gui2java2ts"), tasks.named("guiVariability"))
+  input.from(file(guiVariability.flatMap { it.getOutputDir().dir("cd2gui") }))
+  symbolPath.from(files(
+      cd2gui.flatMap { it.getOutputDir().file("symbols") }
+  ))
+  symbolPath.from(
       configurations.montigemModuleGUISymbols,
       configurations.montigemModuleImportMap
   )
-  hwcDir = file("src/app/")
+  handWrittenCodeDir.from(file("src/app/"))
   symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")
   outputDir = layout.buildDirectory.dir("umlp/fe2")
   domainModels = ["DevProcessCockpit"]
-  guiCreateModelsAsFile = file(generateCDTOGUI.getOutputDir().file("meta/guiCreateModels.txt"))
+  guiCreateModelsAsFile = file(cd2gui.flatMap { it.getOutputDir().file("meta/guiCreateModels.txt") })
 }
 
 npmInstall.dependsOn(':umlp-rte:frontend:npmInstall')
-
 
 tasks.named('buildApp', NpxTask) {
   dependsOn(gui2java2)

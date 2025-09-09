@@ -15,9 +15,9 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.function.Consumer;
 
-import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
 import static de.montigem.gradle.FrontendBasePlugin.getBooleanProjectProperty;
-import static de.montigem.gradle.FrontendBasePlugin.getStringProjectProperty;
+import static de.montigem.gradle.FrontendBasePlugin.mcVersion;
+import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
 
 /**
  * Plugin which handles test infrastructure generation.
@@ -135,7 +135,7 @@ public abstract class TestInfrastructurePlugin implements Plugin<Project> {
     }
     else {
       project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG,
-          "umlp:frontend:" + getStringProjectProperty(project, "mc_version", "")
+          "umlp:frontend:" + mcVersion(project)
       );
     }
 

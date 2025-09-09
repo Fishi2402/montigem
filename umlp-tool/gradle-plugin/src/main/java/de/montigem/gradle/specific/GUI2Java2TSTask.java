@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.montigem.gradle.specific;
 
+import de.se_rwth.commons.logging.Log;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
@@ -93,15 +94,6 @@ public abstract class GUI2Java2TSTask extends GUI2JavaTask {
   @Classpath
   public abstract ConfigurableFileCollection getClassPath();
 
-  /**
-   * @param f file which should be checked
-   * @return if file should be used as input for UMLPTool
-   */
-  @Override
-  public boolean isInputFile(File f) {
-    return f.getName().endsWith(".gui");
-  }
-
   @Override
   protected void startGeneration(List<String> args, String progressName) {
     super.startGeneration(args, progressName);
@@ -112,7 +104,7 @@ public abstract class GUI2Java2TSTask extends GUI2JavaTask {
         spec.getClasspath().from(getClassPath())
     );
     ConfigurableFileCollection srcDirs = getProject().files();
-    srcDirs.from(getHwcDir());
+    srcDirs.from(getHandWrittenCodeDir());
     srcDirs.from(getExtraJava2TSInput());
     srcDirs.from(getOutputDir());
     srcDirs.from(getInput());
@@ -142,11 +134,17 @@ public abstract class GUI2Java2TSTask extends GUI2JavaTask {
     Directory inputOutputDir = getOutputDir().get();
 
     if (!inputOutputDir.getAsFile().exists()) {
-      inputOutputDir.getAsFile().mkdirs();
+      if (!inputOutputDir.getAsFile().mkdirs()) {
+        Log.error("0x00035 Failed to create directory " + inputOutputDir.getAsFile().getCanonicalPath()
+            + " for the " + this.getClass().getSimpleName() + " task");
+      }
     }
     File nodeInit = new File(workingDir, ".node-init");
     if (!nodeInit.exists()) {
-      nodeInit.mkdirs();
+      if (!nodeInit.mkdirs()) {
+        Log.error("0x00035 Failed to create directory " + nodeInit.getCanonicalPath()
+            + " for the " + this.getClass().getSimpleName() + " task");
+      }
     }
 
     // classpath passed to jsweet
@@ -161,7 +159,7 @@ public abstract class GUI2Java2TSTask extends GUI2JavaTask {
     // collect all .java files
     Set<Path> individualInputPaths = walkAndCollectJavaFiles(inputOutputDir.getAsFileTree().getFiles());
     individualInputPaths.addAll(walkAndCollectJavaFiles(getExtraJava2TSInput().getFiles()));
-    individualInputPaths.addAll(walkAndCollectJavaFiles(getHwcDir().getFiles()));
+    individualInputPaths.addAll(walkAndCollectJavaFiles(getHandWrittenCodeDir().getFiles()));
 
     // excluded matchers
     FileSystem fs = FileSystems.getDefault();
