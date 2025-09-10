@@ -1,108 +1,93 @@
 import de.montigem.gradle.specific.GUIVariabilityTask
+import de.montigem.gradle.specific.UMLP2SymTask
 
 /* (c) https://github.com/MontiCore/monticore */
 plugins {
-   id 'java-library'
-
-   id 'de.rwth.se.montigem-frontend'
+  id 'java-library'
+  id 'de.rwth.se.montigem-frontend'
 }
 
 repositories {
-   if (("true").equals(getProperty('useLocalRepo'))) {
-      mavenLocal()
-   }
-   maven {
-      credentials.username mavenUser
-      credentials.password mavenPassword
-      url repo
-   }
+  if (("true").equals(getProperty('useLocalRepo'))) {
+    mavenLocal()
+  }
+  maven {
+    credentials.username mavenUser
+    credentials.password mavenPassword
+    url repo
+  }
 
-   // native image
-   maven { url "https://repo.spring.io/snapshot" }
-   maven { url "https://repo.spring.io/milestone" }
+  // native image
+  maven { url "https://repo.spring.io/snapshot" }
+  maven { url "https://repo.spring.io/milestone" }
 
-   mavenCentral()
+  mavenCentral()
 }
 
 dependencies {
-   implementation("umlp:umlp-rte:${mc_version}")
-   testImplementation("com.h2database:h2:${h2_database}")
+  implementation("umlp:umlp-rte:${mc_version}")
+  testImplementation("com.h2database:h2:${h2_database}")
 
-   implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version
-   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version
+  implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version
 
-   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
-   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
 }
 
-node {
-   download = true
-   version = "${node_version}"
-   nodeProxySettings = ProxySettings.OFF
-   nodeProjectDir = file("${buildDir}/app")
-}
-nodeSetup.dependsOn(setupFrontend)
-
-tasks.register('copyTags', Copy) {
-   from(tasks.umlp2ts.getSymbolOutDir()) {
-      include '**/*.tags'
-   }
-   into("$buildDir/tags")
+def copyTags = tasks.register('copyTags', Copy) {
+  from(tasks.named("umlp2sym", UMLP2SymTask).flatMap { it.getOutputDir() }) {
+    include '**/*.tags'
+  }
+  into("$buildDir/tags")
 }
 
-umlp2ts {
-   input.setFrom(project(":experiments:dsl-ast-integration:ebackend").umlp2java.input)
+umlpJava2ts {
+  input.from(project(":experiments:dsl-ast-integration:ebackend").umlp2java.input)
 
-   it.input.each{println(it)}
+  it.input.each { println(it) }
 }
 
 umlp2sym {
-   enabled = false // instead, we use the symbols from the backend (and thus the merged model!)
+  enabled = false // instead, we use the symbols from the backend (and thus the merged model!)
 }
 
-tasks.register('generateCDTOGUI', CD2GUITask) {
-   setGroup('build')
-   input.setFrom(project(":experiments:dsl-ast-integration:ebackend").mergeWithDSL.outputFile)
-   outputDir = layout.buildDirectory.dir("cd2gui")
-   dependsOn(tasks.copyTags)
+def cd2gui = tasks.register('cd2gui', CD2GUITask) {
+  setGroup('build')
+  input.setFrom(project(":experiments:dsl-ast-integration:ebackend").mergeWithDSL.outputFile)
+  outputDir = layout.buildDirectory.dir("cd2gui")
+  dependsOn(copyTags)
 }
 
-tasks.register('guiVariability', GUIVariabilityTask) {
-   input.from(generateCDTOGUI.getOutputDir())
-   input.from(file("../models/gui"))
-   outputDir = layout.buildDirectory.dir("guiVariability")
-   dependsOn(tasks.generateCDTOGUI)
+def guiVariability = tasks.register('guiVariability', GUIVariabilityTask) {
+  input.from(cd2gui.flatMap { it.getOutputDir() })
+  input.from(file("../models"))
+  outputDir = layout.buildDirectory.dir("guiVariability")
 }
 
-gui2java {
-   domainModels = ["Domain"]
-   guiCreateModelsAsFile = file(generateCDTOGUI.getOutputDir().file("meta/domain/guiCreateTextModels"))
-
-   input.setFrom([
-       tasks.guiVariability.getOutputDir()
-   ])
-
-   symbolPath.from(generateCDTOGUI.getOutputDir().file("symbols"))
-   symbolPath.from(file("$buildDir/tags"))
-   var toExclude = tasks.umlp2ts.getSymbolOutDir().get().asFile
-   symbolPath.setFrom symbolPath.filter(f -> f != toExclude)
-   modelDir = file(tasks.guiVariability.getOutputDir())
+gui2java2ts {
+  guiCreateModelsAsFile = file(cd2gui.flatMap { it.getOutputDir().file("meta/domain/guiCreateTextModels") })
+  input.setFrom(guiVariability.flatMap { it.getOutputDir() })
+  symbolPath.from(cd2gui.flatMap { it.getOutputDir().file("symbols") })
+  symbolPath.from(file("$buildDir/tags"))
+  var toExclude = tasks.named("umlp2sym", UMLP2SymTask)
+      .flatMap { it.getOutputDir().get().asFile }
+  symbolPath.setFrom symbolPath.filter(f -> f != toExclude)
+  modelDir = file(guiVariability.flatMap { it.getOutputDir() })
 }
 
 sync_umlp2ts {
-   filter { line -> line.replaceAll('../../../build/umlp_frontend/intermediate/', '../../../build/app/build/') }
+  filter { line -> line.replaceAll('../../../build/umlp_frontend/intermediate/', '../../../build/app/build/') }
 }
 sync_gui2java {
-   filter { line -> line.replaceAll('../../../build/umlp_frontend/intermediate/', '../../../build/app/build/') }
+  filter { line -> line.replaceAll('../../../build/umlp_frontend/intermediate/', '../../../build/app/build/') }
 }
-
-nodeSetup.dependsOn(setupFrontend)
 
 npmInstall.args = ['--loglevel', 'error']
 
 test {
-   testLogging {
-      events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
-   }
-   useJUnitPlatform()
+  testLogging {
+    events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
+  }
+  useJUnitPlatform()
 }

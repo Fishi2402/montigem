@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 import static de.montigem.gradle.FrontendBasePlugin.getBooleanProjectProperty;
+import static de.montigem.gradle.FrontendBasePlugin.getProjectProperty;
 
 /***
  * A opinionated plugin which handles frontend generation.
@@ -20,8 +21,8 @@ public abstract class FrontendPlugin implements Plugin<Project> {
     project.getPluginManager().apply(MGBasePlugin.class);
     project.getPluginManager().apply("base");
 
-    boolean j2ts = getBooleanProjectProperty(project, "j2ts");
-
+    boolean j2ts = getProjectProperty(project, "j2ts")
+        .map(Boolean::parseBoolean).orElse(true);
     // This plugin either applies the With or Non JSweet variant
 
     if (j2ts) {

@@ -22,15 +22,14 @@ dependencies {
     exclude module: 'logback-classic'
     exclude module: 'log4j-to-slf4j'
   }
-  // TODO: compileOnly? => transpile failes - maybe only add it to the jsweet-compile config?
+  // TODO: compileOnly? => transpile fails - maybe only add it to the jsweet-compile config?
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
-
 }
 
 configurations {
   // json is a duplicate somehow
   testImplementation.exclude group: 'org.json', module: 'json'
-  testRuntimeClasspath.exclude group: 'de.monticore.language-server', module:'monticore-language-server-runtime'
+  testRuntimeClasspath.exclude group: 'de.monticore.language-server', module: 'monticore-language-server-runtime'
 }
 
 umlpJava2ts {
@@ -43,7 +42,7 @@ gui2java2ts {
 
 test {
   dependsOn npmInstall, buildApp
-  useJUnitPlatform(){
+  useJUnitPlatform() {
     excludeTags "SlowTest"
   }
 }
