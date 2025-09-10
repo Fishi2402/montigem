@@ -15,16 +15,23 @@ can be used in a MontiGem app development, all of them have similar principles.
 
 Further explanation will mention *source root* - a set of paths to folders that
 MontiGem considers to be folder containing the source code of an app.
-Default app setup has source roots for
-- backend
-  - `backend/build/umlp/backend/` - code generated from models
-  - `backend/src/main/java` - hand-written code
-- frontend
-  - `frontend/build/frontendGen/build/` - code generated from models
-  - `frontend/src/main/java` - hand-written java code
-  - `frontend/src/main/ts` - hand-written ts code
-- models
-  - `models` - folder with models
+
+Default app setup has source roots for:
+
+- **backend**
+  
+  - `backend/build/umlp/backend/` – code generated from models
+  - `backend/src/main/java` – hand-written code
+
+- **frontend**
+  
+  - `frontend/build/frontendGen/build/` – code generated from models
+  - `frontend/src/main/java` – hand-written java code
+  - `frontend/src/main/ts` – hand-written ts code
+
+- **models**
+  
+  - `models` – folder with models
 
 > The path to the generated code is normally irrelevant for the app development,
 > since the paths are easier to find out from the qualified names of classes and
