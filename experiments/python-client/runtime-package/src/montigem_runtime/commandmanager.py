@@ -15,6 +15,7 @@ def uncap(s):
 
 
 async def ainput(string: str) -> str:
+  """async input alternative"""
   import sys
   if string:
     await asyncio.get_event_loop().run_in_executor(None, lambda s=string: sys.stdout.write(s + ' '))
