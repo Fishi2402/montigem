@@ -74,9 +74,10 @@ classdiagram Domain {
 
   <<singleton>>
   class FischertechnikConveyorState{
-    int speedIndicatorPercentage = 0;
-    boolean rightDetectorOn = false;
-    boolean leftDetectorOn = false;
+    boolean moveToFeed = false;
+    boolean moveToSwap = false;
+    boolean feedDetectorOn = false;
+    boolean swapDetectorOn = false;
   }
 
   <<singleton>>
