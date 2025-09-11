@@ -18,6 +18,7 @@ import umlp.backendrte.command.SimpleResult;
 import umlp.backendrte.common.LoadingState;
 import umlp.backendrte.common.Result;
 
+import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.net.URI;
 import java.util.ArrayList;
@@ -193,6 +194,10 @@ public class ClientCommandWebsocketCommunication extends TextWebSocketHandler im
 
   public boolean isOpen() {
     return session.isOpen();
+  }
+
+  public void close() throws IOException {
+    session.close();
   }
 
   @Override

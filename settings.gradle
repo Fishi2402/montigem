@@ -111,4 +111,5 @@ include ':modules:comment:frontendJSweet'
 include ':modules:sovd-gateway'
 include ':modules:sovd-gateway-it:backend'
 
-
+include ':experiments:server-performance'
+include ':experiments:server-performance:backend'

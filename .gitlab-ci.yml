@@ -114,6 +114,7 @@ build_with_deploy:
       :examples:dtcockpit:backend:jib \
       :products:demorec:backend:jib \
       :examples:vis-lib:backend:jib \
+      :experiments:server-performance:backend:jib \
       -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
       -Djib.from.auth.username=$CI_REGISTRY_USER  \
       -Djib.from.auth.password=$CI_REGISTRY_PASSWORD \

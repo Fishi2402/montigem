@@ -1,0 +1,14 @@
+classdiagram ServerPerformance {
+  class C1 {
+    int f1;
+    List<int> f4;
+  }
+
+  association [0..1] C1 (a1_lhs) -> (a1_rhs) C1 [0..1];
+  association [0..1] C1 (a2_lhs) -> (a2_rhs) C1 [*];
+  association    [*] C1 (a3_lhs) -> (a3_rhs) C1 [*];
+
+  association [0..1] C1 (a4_lhs) <-> (a4_rhs) C1 [0..1];
+  association [0..1] C1 (a5_lhs) <-> (a5_rhs) C1 [*];
+  association    [*] C1 (a6_lhs) <-> (a6_rhs) C1 [*];
+}

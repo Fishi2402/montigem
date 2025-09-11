@@ -16,8 +16,11 @@ import umlp.backendrte.util.LogUtil;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class CommandManager {
   // Id dieses Clients/Servers
@@ -27,7 +30,7 @@ public class CommandManager {
   protected CommandManager(){ }
   // Speichert alle verbundenen Clients und deren Ids, wird genutzt um die Commands die relevante objekte bearbeiten
   // weiter zu verteilen.
-  protected Map<Long, Participant> particpants = new HashMap<>();
+  protected Map<Long, Participant> particpants = new ConcurrentHashMap<>();
   protected long runningClientId = 1;
 
   protected static CommandManager instance;
@@ -106,7 +109,16 @@ public class CommandManager {
   }
 
   protected <T> void _sendCommandToSubscribers(Command<T> command) {
-    for (Long participantId : particpants.keySet()) {
+    // Copy current participants to avoid ConcurrentModificationException if a new participant is
+    // added during this loop.
+    // A newly added participant has not yet subscribed to gemIds or types and thus the current
+    // command is not relevant for it.
+    Set<Long> paricipantIds;
+    synchronized (particpants) {
+      paricipantIds = new HashSet<>(particpants.keySet());
+    }
+
+    for (Long participantId : paricipantIds) {
       Participant participant = particpants.get(participantId);
       if (!participantId.equals(command.getParticipantId())) {
         boolean match = shouldSendCommand(command, participant);
