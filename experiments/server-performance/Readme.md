@@ -12,6 +12,6 @@ Machine with i7 12700k and 64gb ram.
 ![local](./benchmark_delay_local.png)
 
 ## Server
-Server VM(node10) with 12 cores and 24 gb ram.
+Server VM(node10) with 12 cores and 24 gb ram, postgres db in the same vm.
 
 ![server](benchmark_delay_remote12core_24GB.png)
