@@ -22,7 +22,7 @@ def guiVariability = tasks.register('guiVariability', GUIVariabilityTask) {
   if (useCD2GUI) {
     input.from(cd2gui.flatMap { it.getOutputDir().dir("models") })
   }
-  input.from(file("../models/gui"))
+  input.from(file("./src/main/gui"))
   outputDir = layout.buildDirectory.dir("guiVariability")
 }
 
