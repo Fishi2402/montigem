@@ -6,9 +6,8 @@ plugins {
 
 dependencies {
   implementation project(":products:demorec:backend")
-  testImplementation project(':umlp-test-rte')
-
   srcUMLPConfig project(":products:demorec:backend")
+  testImplementation project(':umlp-test-rte')
 }
 
 umlpJava2ts {
@@ -45,10 +44,6 @@ tasks.named('runApp', NpxTask) {
   environment = [
       "NODE_OPTIONS": "--max-old-space-size=4096"
   ]
-}
-
-tasks.register('run') {
-  dependsOn(runApp)
 }
 
 task runAppNoBuild(type: NpxTask) {

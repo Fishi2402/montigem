@@ -133,12 +133,6 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig implements GUIDS
               scssPaths.add(hwScssPath.get());
             }
           }
-          else {
-            Optional<Path> hwTS = getTSHandwrittenFile(hwPath, gui.getComponentQName());
-            if (hwTS.isEmpty()) {
-              scssPaths.add("./" + originalName + ".scss");
-            }
-          }
         }
         String selector = GUIGeneratorUtil.getInstance().pascal2KebabCase(originalName);
         imports = new HashSet<>();

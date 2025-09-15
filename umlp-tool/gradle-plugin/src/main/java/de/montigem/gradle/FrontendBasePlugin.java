@@ -8,12 +8,9 @@ import com.github.gradle.node.npm.task.NpxTask;
 import de.montigem.gradle.specific.CreateSymlinkTask;
 import de.montigem.gradle.specific.FrontendCIImageTask;
 import de.montigem.gradle.specific.FrontendLocalImageTask;
-import de.montigem.gradle.specific.GUI2JavaTask;
 import de.montigem.gradle.specific.SetupFrontendTask;
-import de.montigem.gradle.specific.Symlink;
 import de.montigem.gradle.specific.UMLP2SymTask;
 import de.se_rwth.commons.logging.Log;
-import org.gradle.api.NamedDomainObjectProvider;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -23,18 +20,15 @@ import org.gradle.api.attributes.LibraryElements;
 import org.gradle.api.attributes.Usage;
 import org.gradle.api.file.Directory;
 import org.gradle.api.provider.Provider;
-import org.gradle.api.tasks.Sync;
 import org.gradle.api.tasks.TaskProvider;
 import org.jetbrains.annotations.NotNull;
 
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
 import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
 import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_IMPORT_MAP_CONFIG;
 import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_UMLP_MODELS_CONFIG;
-import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_UMLP_SYMBOLS_CONFIG;
 import static de.montigem.gradle.module.ModuleFrontendPlugin.BUILD_LIB_TASK;
 
 /**
@@ -45,13 +39,13 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
 
   public static final String SETUP_FRONTEND_TASK = "setupFrontend";
   public static final String UMLP2TS_TASK = "umlp2ts";
-  public static final String SYNC_UMLP2TS_TASK = "sync_umlp2ts";
   public static final String CREATE_SYMLINK_TASK = "createSymlink";
   public static final String GUI2JAVA_TASK = "gui2java";
-  public static final String SYNC_GUI2JAVA_TASK = "sync_gui2java";
+  public static final String GENERATE_TASK = "generate";
   public static final String UMLP_FRONTEND_BUILD_IMAGE_LOCAL_TASK = "buildImageLocal";
   public static final String UMLP_FRONTEND_DEPLOY_IMAGE_CI_TASK = "deployImageCI";
   public static final String UMLP2SYM_TASK = "umlp2sym";
+
   public static final String UMLP_GROUP_NAME = "umlp";
   public static final String GUI_TYPES_CONFIG = "guiTypes";
 
@@ -72,45 +66,21 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
     addClientRTEDependency(project);
 
     // Create Tasks
-    TaskProvider<SetupFrontendTask> setupFrontend = createSetupFrontendTask(project);
+    Directory config = project.getLayout().getProjectDirectory().dir("config");
+    TaskProvider<SetupFrontendTask> setupFrontend = project.getTasks().register(
+        SETUP_FRONTEND_TASK, SetupFrontendTask.class, task -> {
+          task.setGroup(UMLP_GROUP_NAME);
+          task.getInput().set(config);
+          task.getOutput().set(project.getLayout().getBuildDirectory().dir("app"));
+
+          task.onlyIf(t -> config.getAsFile().exists());
+        });
     project.getTasks().named("nodeSetup").configure(t -> t.dependsOn(setupFrontend));
 
-    TaskProvider<UMLP2SymTask> umlp2sym = createUMLP2SymTask(project);
-    TaskProvider<GUI2JavaTask> gui2java = createGUI2JavaTask(project);
-    gui2java.configure(task ->
-        task.getSymbolPath().from(umlp2sym)
-    );
-
-    TaskProvider<CreateSymlinkTask> createSymlinkTask = createCreateSymlinkTask(project);
-    createSymlinkTask.configure(umlpTask -> {
-      // app and umlp_frontend Directories need to exist
-      umlpTask.dependsOn(setupFrontend, gui2java);
-    });
-
-    // Sync Output of a task to the correct directory. This done because "npm serve" cannot
-    // handle the intermediate state while the UMLPTasks are running and Hot-Reload aborts
-    Provider<Directory> syncUMLP2TSOut = setupFrontend.flatMap(
-        t -> t.getOutput().map(dir -> dir.dir("build/umlp2ts"))
-    );
-    TaskProvider<Sync> syncUMLP2TSTask = project.getTasks().register(SYNC_UMLP2TS_TASK, Sync.class, sync -> {
-      sync.setGroup(UMLP_GROUP_NAME);
-      sync.into(syncUMLP2TSOut);
-    });
-
-    Provider<Directory> syncGUI2JavaOut = setupFrontend.flatMap(
-        t -> t.getOutput().map(dir -> dir.dir("build/gui2java"))
-    );
-    TaskProvider<Sync> syncGUI2JavaTask = project.getTasks().register(SYNC_GUI2JAVA_TASK, Sync.class, sync -> {
-      sync.setGroup(UMLP_GROUP_NAME);
-      sync.into(syncGUI2JavaOut);
-      sync.exclude("**/*.java");
-    });
+    createUMLP2SymTask(project);
 
     // Lifecycle task "generate"
-    TaskProvider<Task> generate = project.getTasks().register("generate", task -> {
-      task.setGroup(UMLP_GROUP_NAME);
-      task.dependsOn(syncUMLP2TSTask, syncGUI2JavaTask);
-    });
+    TaskProvider<Task> generate = project.getTasks().register(GENERATE_TASK, task -> task.setGroup(UMLP_GROUP_NAME));
 
     TaskProvider<Task> npmInstall = project.getTasks().named("npmInstall");
     TaskProvider<Task> npmUpdate = project.getTasks().named("npm_update", task -> {
@@ -121,10 +91,7 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
     TaskProvider<Task> prepareBuildAppTask = project.getTasks().register("prepareBuildApp", task -> {
       task.setDescription("Bundles all dependencies for the buildApp task without executing it.");
       task.setGroup("build");
-      task.dependsOn(createSymlinkTask, generate, npmUpdate);
-      if (!inRTE(project) && isLocal(project)) {
-        task.dependsOn(project.project(":umlp-rte:frontend").getTasks().named("build"));
-      }
+      task.dependsOn(generate, npmUpdate);
     });
 
     var buildAppTask = createNPXTask(project, "buildApp", "build");
@@ -135,28 +102,30 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
     var testAppTask = createNPXTask(project, "testApp", "test");
     testAppTask.configure(t -> {
       t.setGroup(UMLP_GROUP_NAME);
-      t.dependsOn(createSymlinkTask, generate, npmUpdate);
+      t.dependsOn(generate, npmUpdate);
     });
     var runAppTask = createNPXTask(project, "runApp", "serve");
     runAppTask.configure(t -> {
       t.setGroup("verification");
-      t.dependsOn(createSymlinkTask, generate, npmUpdate);
+      t.dependsOn(generate, npmUpdate);
     });
+    project.getTasks().register("run").configure(t -> t.dependsOn(runAppTask));
 
-    if (!inRTE(project) && isLocal(project)) {
+    if (isLocal(project)) {
       TaskProvider<Task> rteBuild = project.project(":umlp-rte:frontend").getTasks().named("build");
-      prepareBuildAppTask.configure(t -> t.dependsOn(rteBuild));
-      testAppTask.configure(t -> t.dependsOn(rteBuild));
-      runAppTask.configure(t -> t.dependsOn(rteBuild));
+
+      TaskProvider<CreateSymlinkTask> createSymlinkTask = createCreateSymlinkTask(project);
+      createSymlinkTask.configure(task -> task.dependsOn(setupFrontend));
+      testAppTask.configure(t -> t.dependsOn(rteBuild, createSymlinkTask));
+      runAppTask.configure(t -> t.dependsOn(rteBuild, createSymlinkTask));
+
+      TaskProvider<CreateSymlinkTask> createSymlink4ProdTask = createCreateSymlink4ProdTask(project);
+      createSymlink4ProdTask.configure(t -> t.dependsOn(createSymlinkTask));
+      prepareBuildAppTask.configure(t -> t.dependsOn(rteBuild, createSymlink4ProdTask));
     }
 
     project.getTasks().named("assemble", t -> t.dependsOn(buildAppTask));
-
-    if (isLocal(project)) {
-      TaskProvider<CreateSymlinkTask> symlinkClientProdTask = createCreateSymlink4ProdTask(project);
-      symlinkClientProdTask.configure(t -> t.dependsOn(createSymlinkTask));
-      prepareBuildAppTask.configure(t -> t.dependsOn(symlinkClientProdTask));
-    }
+    project.getTasks().named("check", t -> t.dependsOn(testAppTask));
 
     // Lifecycle task "continuous". Intended use is with "--continuous" flag of gradle & HotReload
     project.getTasks().register("continuous", task -> task.dependsOn(generate));
@@ -164,17 +133,6 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
     // Docker images
     project.getTasks().register(UMLP_FRONTEND_BUILD_IMAGE_LOCAL_TASK, FrontendLocalImageTask.class);
     project.getTasks().register(UMLP_FRONTEND_DEPLOY_IMAGE_CI_TASK, FrontendCIImageTask.class);
-  }
-
-  private TaskProvider<SetupFrontendTask> createSetupFrontendTask(Project project) {
-    Directory config = project.getLayout().getProjectDirectory().dir("config");
-    return project.getTasks().register(SETUP_FRONTEND_TASK, SetupFrontendTask.class, task -> {
-      task.setGroup(UMLP_GROUP_NAME);
-      task.getInput().set(config);
-      task.getOutput().set(project.getLayout().getBuildDirectory().dir("app"));
-
-      task.onlyIf(t -> config.getAsFile().exists());
-    });
   }
 
   private TaskProvider<UMLP2SymTask> createUMLP2SymTask(Project project) {
@@ -189,53 +147,21 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
     });
   }
 
-  private TaskProvider<GUI2JavaTask> createGUI2JavaTask(Project project) {
-    // Add Configuration for TypeSymbols.
-    NamedDomainObjectProvider<Configuration> guiTypes = project.getConfigurations().named(GUI_TYPES_CONFIG);
-
-    return project.getTasks().register(GUI2JAVA_TASK, GUI2JavaTask.class, task -> {
-      task.setGroup(UMLP_GROUP_NAME);
-      task.getInput().from(getModels(project));
-      task.getModelDir().set(getModels(project));
-      task.getSymbolPath().from(guiTypes);
-
-      // Further configuration is done in gradle.FrontendWithJSweetPlugin and gradle.FrontendNonJSweetPlugin
-      // It is important that the directory-depth of the intermediate-output is the same as the final location (after sync!)
-      // Because the frontend uses relative paths to include HWC Code
-      task.getOutputDir().set(getIntermediateGUI2Java(project));
-      task.getSymbolOutDir().set(project.getLayout().getBuildDirectory().dir("gui2sym"));
-
-      // load module symbols
-      task.getSymbolPath().from(project.getConfigurations().named(MONTIGEM_MODULE_UMLP_SYMBOLS_CONFIG));
-      task.getSymbolPath().from(project.getConfigurations().named(MONTIGEM_MODULE_IMPORT_MAP_CONFIG));
-      task.getSymbolPath().from(project.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
-    });
-  }
-
   private TaskProvider<CreateSymlinkTask> createCreateSymlinkTask(Project project) {
     return project.getTasks().register(CREATE_SYMLINK_TASK, CreateSymlinkTask.class, task -> {
       task.setGroup(UMLP_GROUP_NAME);
 
       // TODO change this in the future, so we do not have to download all library's dependencies in every umlp project
       // Alternative: use pnpm or yarn or something like this
-      Path sourceLibPath = project.getBuildDir().toPath().resolve("app/libs/@umlp");
       Project rte = project.project(":umlp-rte:frontend");
       for (Project subproject : rte.getSubprojects()) {
         TaskProvider<NpmTask> buildLib = subproject.getTasks().named(BUILD_LIB_TASK, NpmTask.class);
         task.dependsOn(buildLib);
 
-        Symlink symlink = project.getObjects().newInstance(Symlink.class);
-        symlink.getLinkFile().set(project.getLayout().getBuildDirectory().file("app/libs/@umlp"));
-        symlink.getTargetFile().set(project.getLayout().dir(
-            buildLib.map(t -> t.getOutputs().getFiles().getSingleFile())
-        ));
-
-        /*
-        task.getLinks().add(symlink);
-        task.getSymlinkMap().put(
-            sourceLibPath.resolve(subproject.getName()).toFile(),
-            buildLib.map(t -> t.getOutputs().getFiles().getSingleFile()));
-        /**/
+        task.getLinks().put(
+            project.getLayout().getBuildDirectory().dir("app/libs/@umlp/" + subproject.getName()).get().getAsFile(),
+            subproject.getLayout().getProjectDirectory().getAsFile()
+        );
       }
     });
   }
@@ -245,24 +171,15 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
     return project.getTasks().register("createSymlink4Prod", CreateSymlinkTask.class, task -> {
       task.setGroup(UMLP_GROUP_NAME);
 
-      Path compiledLibPath = project.getBuildDir().toPath().resolve("app/prodlibs/@umlp");
-
       Project rte = project.project(":umlp-rte:frontend");
       for (Project subproject : rte.getSubprojects()) {
         TaskProvider<NpmTask> buildLib = subproject.getTasks().named(BUILD_LIB_TASK, NpmTask.class);
         task.dependsOn(buildLib);
 
-        Symlink symlink = project.getObjects().newInstance(Symlink.class);
-        symlink.getLinkFile().set(project.getLayout().getBuildDirectory().file("app/prodlibs/@umlp"));
-        symlink.getTargetFile().set(project.getLayout().dir(
+        task.getLinks().put(
+            project.getLayout().getBuildDirectory().dir("app/prodlibs/@umlp/" + subproject.getName()).get().getAsFile(),
             buildLib.map(t -> t.getOutputs().getFiles().getSingleFile())
-        ));
-
-        /*
-        task.getSymlinkMap().put(
-            compiledLibPath.resolve(subproject.getName()).toFile(),
-            buildLib.map(t -> t.getOutputs().getFiles().getSingleFile()));
-        /**/
+        );
       }
     });
   }

@@ -9,7 +9,7 @@ import {SehubSecurityManager} from "sehub/SehubSecurityManager";
   standalone:true,
   imports:[...config.imports],
   selector: config.selector,
-  templateUrl: "../../../../build/umlp_frontend/intermediate/appgui/gui/login/UserLogin.html",
+  templateUrl: config.templateUrl,
   styles: config.styles,
   styleUrls: ["./Login.scss"]
 })

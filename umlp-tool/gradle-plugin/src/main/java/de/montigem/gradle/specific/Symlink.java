@@ -2,15 +2,15 @@ package de.montigem.gradle.specific;
 
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFileProperty;
-import org.gradle.api.tasks.InputFile;
-import org.gradle.api.tasks.OutputFile;
+import org.gradle.api.tasks.InputDirectory;
+import org.gradle.api.tasks.Internal;
 
 public abstract class Symlink {
 
-  @OutputFile
-  public abstract RegularFileProperty getLinkFile();
+  @Internal
+  public abstract RegularFileProperty getLink();
 
-  @InputFile
-  public abstract DirectoryProperty getTargetFile();
+  @InputDirectory
+  public abstract DirectoryProperty getTarget();
 
 }

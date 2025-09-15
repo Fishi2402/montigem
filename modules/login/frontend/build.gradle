@@ -1,11 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
-  // id 'java'
-  // id 'maven-publish'
-  // id "com.github.node-gradle.node" version "5.0.0"
-  // id "de.rwth.se.montigem-frontend"
-  id 'de.rwth.se.montigem-module-frontend' // create domainSymbols-jar
+  id 'de.rwth.se.montigem-module-frontend'
 }
 
 configure(mglib) {

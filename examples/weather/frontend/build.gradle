@@ -3,47 +3,20 @@ plugins {
   id "de.rwth.se.montigem-frontend"
 }
 
-node {
-  nodeProjectDir = file("${buildDir}/app")
-}
-nodeSetup.dependsOn(setupFrontend)
-
 dependencies {
-  srcUMLPConfig project(":examples:weather:backend")
   implementation project(":examples:weather:backend")
+  srcUMLPConfig project(":examples:weather:backend")
 
   implementation project(":umlp-rte")
 }
 
-// TODO AGe: don't know if that is needed
-/*task generateCDTOGUI(type: CD2GUITask) {
-  input = file("../models/Weather.umlp")
-  outputDir = layout.buildDirectory.dir("cd2gui")
-}*/
-
-gui2java {
-  domainModels = ["Weather"]
+gui2java2ts {
   guiCreateModels = ["gui.ForecastCreate"]
 
   /*
   debug = true
   outputs.upToDateWhen { false }
   /**/
-}
-
-/*task gui2java2(type: GUI2JavaTask) {
-  dependsOn(gui2java, generateCDTOGUI)
-  input = file(layout.buildDirectory.dir("cd2gui/models"))
-  symbolDir = files(file(symPath), configurations.guiLib.files, configurations.guiDefaultTypes.files)
-  symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")
-  outputDir = layout.buildDirectory.dir("umlp/fe2")
-  domainModels = ["Weather"]
-}*/
-
-npmInstall.dependsOn(':umlp-rte:frontend:npmInstall')
-
-tasks.register('run') {
-  dependsOn(runApp)
 }
 
 tasks.register('buildAppNoGen', NpxTask) {

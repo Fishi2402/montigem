@@ -78,19 +78,19 @@ public class TSImportHelper {
       }
       // case: a component in an app imports a component from the app
       String from = GUIGeneratorUtil.getInstance().qName2path(String.join(".", parts));
-      // if (!GUIGeneratorUtil.getInstance().isInitialized() || !GUIGeneratorUtil.getInstance().isDomainImport(importedQName)) {
+      if (!GUIGeneratorUtil.getInstance().isInitialized() || !GUIGeneratorUtil.getInstance().isDomainImport(importedQName)) {
         // case: a component imports currently generated other component, e.g.
         // "gen/gui/foo/ExampleComponent.ts" imports "gen/gui/foo/Example.ts" -> "./Example"
         // or: a class imports currently generated other class, e.g.
         // "gen/cd/SomeManager.ts" imports "gen/cd/commands/Some_create.ts"
-        // if (UMLPGeneratorConfig.getInstance().is4TSLib()) {
+        if (UMLPGeneratorConfig.getInstance().is4TSLib()) {
           Optional<String> importedPath = getRelativeQualifiedPath(
               Names.getQualifier(importerQName), Names.getQualifier(importedQName)
           );
           if (importedPath.isPresent()) {
             from = importedPath.get() + Names.getSimpleName(importedQName);
           }
-        // }
+        }
         if (importIntermediateAngularClass) {
           from += "Component";
         }
@@ -100,7 +100,7 @@ public class TSImportHelper {
         if (relativeFrom.isPresent()) {
           from = relativeFrom.get();
         }
-      // }
+      }
       tsImportPath = TSImportMap.INSTANCE.getTSPackage(importedQName);
 
       Optional<String> componentImportPath = TSImportMap.INSTANCE.getTSPackage(importerQName);
@@ -162,7 +162,7 @@ public class TSImportHelper {
       hwFilePath = hwPath.find(imported);
 
       if (hwFilePath.isPresent()) {
-//        if (UMLPGeneratorConfig.getInstance().is4TSLib()) {
+        if (UMLPGeneratorConfig.getInstance().is4TSLib()) {
           // The java files are converted to TypeScript files in outDir, e.g.
           // src/main/java/montigem/types/Option.java -> <outDir>/montigem/types/Option.ts
           String ts = Names.getPathFromPackage(Names.getQualifier(importedQName).toLowerCase()
@@ -173,17 +173,17 @@ public class TSImportHelper {
               .relativize(outPath.resolve(ts))
               .toString()
               .replaceAll("\\\\", "/")));
-//        }
-//        else {
-//          return Optional.of(path2TSRootImport(imported));
-//        }
+        }
+        else {
+          return Optional.of(path2TSRootImport(imported));
+        }
       }
     }
 
     // case: TOP is used, use path to HW file, e.g.,
     // "gen/gui/ExampleComponent.ts" imports "hw/gui/Example.ts" -> "../../hw/gui/Example"
     if (hwFilePath.isPresent()) {
-//      if (UMLPGeneratorConfig.getInstance().is4TSLib()) {
+      if (UMLPGeneratorConfig.getInstance().is4TSLib()) {
         Optional<Path> hw = MCPath.toPath(hwFilePath.get());
         if (hw.isPresent()) {
           return Optional.of(path2TSRelativeImport(outPath.resolve(importer).getParent()
@@ -193,10 +193,10 @@ public class TSImportHelper {
               .toString()
               .replaceAll("\\\\", "/")));
         }
-//      }
-//      else {
-//        return Optional.of(path2TSRootImport(imported));
-//      }
+      }
+      else {
+        return Optional.of(path2TSRootImport(imported));
+      }
     }
     else {
       importedMaybeCD = importedMaybeCDName + ".ts";
@@ -208,7 +208,7 @@ public class TSImportHelper {
       // case: external (generated) file must be imported, e.g.,
       // "gen/gui/Example.ts" imports "gen/cd/fetypes/Option.ts" -> "../cd/fetypes/Option"
       if (importedURLOpt.isPresent() || importedMaybeCDURLOpt.isPresent()) {
-        // if (UMLPGeneratorConfig.getInstance().is4TSLib()) {
+        if (UMLPGeneratorConfig.getInstance().is4TSLib()) {
           Optional<Path> importedPath;
           // prefer "maybe CD" option
           if (importedMaybeCDURLOpt.isPresent()) {
@@ -226,15 +226,15 @@ public class TSImportHelper {
                 .toString()
                 .replaceAll("\\\\", "/")));
           }
-//        }
-//        else {
-//          if (importedMaybeCDURLOpt.isPresent()) {
-//            return Optional.of(path2TSRootImport(importedMaybeCD));
-//          }
-//          else {
-//            return Optional.of(path2TSRootImport(imported));
-//          }
-//        }
+        }
+        else {
+          if (importedMaybeCDURLOpt.isPresent()) {
+            return Optional.of(path2TSRootImport(importedMaybeCD));
+          }
+          else {
+            return Optional.of(path2TSRootImport(imported));
+          }
+        }
       }
       else {
         importedMaybeCD = importedMaybeCDName + ".java";
@@ -245,33 +245,33 @@ public class TSImportHelper {
         importedMaybeCDURLOpt = importsPath.find(importedMaybeCD);
 
         if (importedURLOpt.isPresent() || importedMaybeCDURLOpt.isPresent()) {
-          // if (UMLPGeneratorConfig.getInstance().is4TSLib()) {
-          Optional<Path> importedPath;
-          // prefer "maybe CD" option
-          if (importedMaybeCDURLOpt.isPresent()) {
-            importedPath = MCPath.toPath(importedMaybeCDURLOpt.get());
+          if (UMLPGeneratorConfig.getInstance().is4TSLib()) {
+            Optional<Path> importedPath;
+            // prefer "maybe CD" option
+            if (importedMaybeCDURLOpt.isPresent()) {
+              importedPath = MCPath.toPath(importedMaybeCDURLOpt.get());
+            }
+            else {
+              importedPath = MCPath.toPath(importedURLOpt.get());
+            }
+            if (importedPath.isPresent()) {
+              Path fromPath = outPath.resolve(importer);
+              // Calculate the relative path
+              return Optional.of(path2TSRelativeImport(fromPath.getParent()
+                  .normalize()
+                  .relativize(importedPath.get())
+                  .toString()
+                  .replaceAll("\\\\", "/")));
+            }
           }
           else {
-            importedPath = MCPath.toPath(importedURLOpt.get());
+            if (importedMaybeCDURLOpt.isPresent()) {
+              return Optional.of(path2TSRootImport(importedMaybeCD));
+            }
+            else {
+              return Optional.of(path2TSRootImport(imported));
+            }
           }
-          if (importedPath.isPresent()) {
-            Path fromPath = outPath.resolve(importer);
-            // Calculate the relative path
-            return Optional.of(path2TSRelativeImport(fromPath.getParent()
-                .normalize()
-                .relativize(importedPath.get())
-                .toString()
-                .replaceAll("\\\\", "/")));
-          }
-//        }
-//        else {
-//          if (importedMaybeCDURLOpt.isPresent()) {
-//            return Optional.of(path2TSRootImport(importedMaybeCD));
-//          }
-//          else {
-//            return Optional.of(path2TSRootImport(imported));
-//          }
-//        }
         }
       }
     }

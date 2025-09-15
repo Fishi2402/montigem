@@ -13,7 +13,7 @@ import {Option} from '@umlp/input';
   standalone:true,
   imports:[...config.imports],
   selector: config.selector,
-  templateUrl:  "../../../../build/umlp_frontend/intermediate/appgui/gui/usersettings/UserDisplay.html",
+  templateUrl: config.templateUrl,
   styles: config.styles,
   styleUrls: config.styleUrls
 })

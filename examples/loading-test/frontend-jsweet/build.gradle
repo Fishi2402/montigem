@@ -36,27 +36,11 @@ umlpJava2ts {
   verbose = false
 }
 
-tasks.named('buildApp', NpxTask) {
-  dependsOn(
-      project(":umlp-rte:frontend").tasks.matching { it.name.startsWith("build_") },
-  )
-}
-
-tasks.named('testApp', NpxTask) {
-  dependsOn(
-      project(":umlp-rte:frontend").tasks.matching { it.name.startsWith("copy_") },
-      project(":umlp-rte:frontend").tasks.matching { it.name.startsWith("build_") }
-  )
-}
-
 test {
+  dependsOn npmInstall, buildApp
   testLogging {
     events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
   }
-}
-
-test {
-  dependsOn npmInstall, buildApp
   useJUnitPlatform() {
     excludeTags "SlowTest"
   }

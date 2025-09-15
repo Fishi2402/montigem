@@ -45,8 +45,6 @@ def gui2java2 = tasks.register('gui2java2', GUI2JavaTask) {
   guiCreateModelsAsFile = file(cd2gui.flatMap { it.getOutputDir().file("meta/guiCreateModels.txt") })
 }
 
-npmInstall.dependsOn(':umlp-rte:frontend:npmInstall')
-
 tasks.named('buildApp', NpxTask) {
   dependsOn(gui2java2)
 }
@@ -57,8 +55,4 @@ tasks.named('testApp', NpxTask) {
 
 tasks.named('runApp', NpxTask) {
   dependsOn(gui2java2)
-}
-
-tasks.register('run') {
-  dependsOn(runApp)
 }

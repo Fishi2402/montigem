@@ -9,7 +9,7 @@ import {BoardMapper} from "sehub/BoardMapper";
   standalone:true,
   imports:[...config.imports],
   selector: config.selector,
-  templateUrl:  "../../../../build/umlp_frontend/intermediate/appgui/gui/Bingo.html",
+  templateUrl: config.templateUrl,
   styles: config.styles,
   styleUrls: config.styleUrls
 })

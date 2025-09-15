@@ -1,6 +1,6 @@
 {
   "adapters": [
-    "umlp.jsweet.extension.RootAdapter"
+    "umlp.jsweet.extension.GUIAdapter"
   ],
   "@Erased": {
     "include": [

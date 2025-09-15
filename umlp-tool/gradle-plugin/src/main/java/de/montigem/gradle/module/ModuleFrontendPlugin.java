@@ -161,9 +161,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
 
     boolean local = isLocal(project);
     if (local) {
-      project.getDependencies().add("implementation",
-          project.getDependencies().project(Map.of("path", ":umlp-rte:backend"))
-      );
+      project.getDependencies().add("implementation", project.project(":umlp-rte:backend"));
     }
     else {
       project.getDependencies().add("implementation", "umlp:umlp-rte:" + mcVersion(project));

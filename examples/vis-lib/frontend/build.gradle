@@ -6,9 +6,8 @@ plugins {
 
 dependencies {
   implementation project(":examples:vis-lib:backend")
-  testImplementation project(':umlp-test-rte')
-  // JSweet
   srcUMLPConfig project(":examples:vis-lib:backend")
+  testImplementation project(':umlp-test-rte')
 }
 
 configurations {
@@ -26,7 +25,6 @@ gui2java2ts {
 
 def copyAppJsweet = tasks.register("copyAppJsweet", Copy) {
   dependsOn(setupFrontend)
-  onlyIf { project.hasProperty('j2ts') && project.j2ts.toString().toBoolean() }
   from 'config/src/appjsweet'
   into 'build/app/src/app/'
 }
@@ -35,10 +33,6 @@ def copyAppJsweet = tasks.register("copyAppJsweet", Copy) {
   tasks.named(it, NpxTask) {
     dependsOn(copyAppJsweet)
   }
-}
-
-tasks.register('run') {
-  dependsOn(runApp)
 }
 
 test {

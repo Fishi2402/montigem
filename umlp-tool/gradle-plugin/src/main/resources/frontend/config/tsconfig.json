@@ -29,10 +29,10 @@
     ],
     "paths": {
       "*": [
-        "build/appdomain/*",
-        "build/appgui/*",
+        "gui2java2ts/*",
+        "umlpJava2ts/*",
         "src/app/*",
-        "hwcsrc/*"
+        "hwc/*"
       ]
     }
   },

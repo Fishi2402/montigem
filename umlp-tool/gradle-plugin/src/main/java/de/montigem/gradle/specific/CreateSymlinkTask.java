@@ -2,44 +2,26 @@ package de.montigem.gradle.specific;
 
 import de.se_rwth.commons.logging.Log;
 import org.gradle.api.DefaultTask;
-import org.gradle.api.provider.ListProperty;
+import org.gradle.api.file.RegularFile;
 import org.gradle.api.provider.MapProperty;
 import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.Nested;
-import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.TaskAction;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 
 public abstract class CreateSymlinkTask extends DefaultTask {
 
-  public CreateSymlinkTask() {
-  }
-
-  @Nested
-  public abstract ListProperty<Symlink> getLinks();
-
   @Input
-  @Optional
-  public abstract MapProperty<File, File> getSymlinkMap();
+  public abstract MapProperty<File, File> getLinks();
 
   @TaskAction
-  protected void createAllSymLinks() {
-
-    for (Symlink link : getLinks().get()) {
-      createSymLink(
-        link.getLinkFile().get().getAsFile(),
-        link.getTargetFile().get().getAsFile()
-      );
-    }
-
-    /*
-    getSymlinkMap().get().forEach((link, target) -> {
-      createSymLink(link.toPath().toAbsolutePath().toString(), target.toPath().toAbsolutePath().toString());
-    });
-    /**/
+  protected void createLinks() {
+    getLinks().get().forEach(CreateSymlinkTask::createSymLink);
   }
 
   protected static void createSymLink(File linkDir, File targetDir) {
@@ -69,15 +51,18 @@ public abstract class CreateSymlinkTask extends DefaultTask {
 
           if (exitCode == 0) {
             System.out.println("✅ Junction created: " + linkPath + " → " + targetPath);
-          } else {
+          }
+          else {
             Log.error("❌ Failed to create junction. Exit code: " + exitCode);
           }
-        } else {
+        }
+        else {
           // Unix/Linux: create symlink using Java API
           java.nio.file.Files.createSymbolicLink(linkDir.toPath(), targetDir.toPath());
           Log.info("✅ Symlink created: " + linkPath + " → " + targetPath, CreateSymlinkTask.TASK_NAME);
         }
-      } else {
+      }
+      else {
         Log.info("ℹ️ Symlink already exists: " + linkPath, CreateSymlinkTask.TASK_NAME);
       }
     } catch (InterruptedException | IOException e) {

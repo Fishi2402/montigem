@@ -1,14 +1,7 @@
-import java.nio.file.Files
-import java.nio.file.Paths
-
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
   id "de.rwth.se.montigem-frontend"
-}
-
-node {
-  nodeProjectDir = file("${buildDir}/app")
 }
 
 dependencies {
@@ -31,32 +24,7 @@ gui2java {
 
 configurations {
   testImplementation.exclude group: 'org.json', module: 'json'
-}
-
-configurations {
   testRuntimeClasspath.exclude group: 'de.monticore.language-server', module:'monticore-language-server-runtime'
-
-}
-
-nodeSetup.dependsOn(setupFrontend)
-npmInstall.dependsOn(':umlp-rte:frontend:npmInstall')
-
-
-tasks.named('buildApp', NpxTask) {
-  dependsOn(
-      testApp,
-      project(":umlp-rte:frontend").tasks.matching { it.name.startsWith("build_") }
-  )
-}
-
-tasks.named('runApp', NpxTask) {
-  dependsOn(
-      project(":umlp-rte:frontend").tasks.matching { it.name.startsWith("gen_") }
-  )
-}
-
-tasks.register('run') {
-  dependsOn(runApp)
 }
 
 test {

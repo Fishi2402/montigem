@@ -76,11 +76,11 @@ gui2java2ts {
   modelDir = file(guiVariability.flatMap { it.getOutputDir() })
 }
 
-sync_umlp2ts {
-  filter { line -> line.replaceAll('../../../build/umlp_frontend/intermediate/', '../../../build/app/build/') }
+sync_umlpJava2ts {
+  filter { line -> line.replaceAll('../../../build/intermediate/app', '../../../build/app/build/') }
 }
-sync_gui2java {
-  filter { line -> line.replaceAll('../../../build/umlp_frontend/intermediate/', '../../../build/app/build/') }
+sync_gui2java2ts {
+  filter { line -> line.replaceAll('../../../build/intermediate/app', '../../../build/app/build/') }
 }
 
 npmInstall.args = ['--loglevel', 'error']

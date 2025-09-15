@@ -8,7 +8,7 @@ import {Component,} from '@angular/core';
   standalone:true,
   imports:[...config.imports],
   selector: config.selector,
-  templateUrl:  "../../../../build/umlp_frontend/intermediate/appgui/gui/artifacts/DateTimeToPassedByTime.html",
+  templateUrl: config.templateUrl,
   styles: config.styles,
   styleUrls: config.styleUrls
 })

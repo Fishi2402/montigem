@@ -6,11 +6,29 @@ import {Post} from 'sehub/Post';
 import {SehubSecurityManager} from "sehub/SehubSecurityManager";
 import {Gem} from '@umlp/commonj2ts';
 
+import { CommonModule } from "@angular/common";
+import { GemCard, GemColumn, GemRow } from "@umlp/arrange";
+import { GemButton, GemText } from "@umlp/basic";
+import { GemTextareaInput, GemTextInput } from "@umlp/input";
+import { Response } from '../../../gui2java2ts/gui/note/Response';
+
 @Component({
   standalone:true,
-  imports:[...config.imports],
+  imports:
+[
+  CommonModule,
+  GemCard,
+  GemColumn,
+  GemButton,
+  GemTextareaInput,
+  GemText,
+  GemTextInput,
+  Response,
+  GemRow,
+]
+,
   selector: config.selector,
-  templateUrl: "../../../../build/umlp_frontend/intermediate/appgui/gui/note/Note.html",
+  templateUrl: config.templateUrl,
   styles: config.styles,
   styleUrls: config.styleUrls
 })

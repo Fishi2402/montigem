@@ -24,6 +24,7 @@ import org.gradle.api.artifacts.repositories.MavenRepositoryContentDescriptor;
 import org.gradle.api.attributes.Bundling;
 import org.gradle.api.attributes.VerificationType;
 import org.gradle.api.file.Directory;
+import org.gradle.api.file.RegularFile;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
@@ -38,10 +39,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static de.montigem.gradle.FrontendBasePlugin.CREATE_SYMLINK_TASK;
+import static de.montigem.gradle.FrontendBasePlugin.GENERATE_TASK;
 import static de.montigem.gradle.FrontendBasePlugin.GUI_TYPES_CONFIG;
 import static de.montigem.gradle.FrontendBasePlugin.SETUP_FRONTEND_TASK;
-import static de.montigem.gradle.FrontendBasePlugin.SYNC_GUI2JAVA_TASK;
-import static de.montigem.gradle.FrontendBasePlugin.SYNC_UMLP2TS_TASK;
 import static de.montigem.gradle.FrontendBasePlugin.UMLP2SYM_TASK;
 import static de.montigem.gradle.FrontendBasePlugin.UMLP_GROUP_NAME;
 import static de.montigem.gradle.FrontendBasePlugin.getModels;
@@ -61,6 +61,8 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
   public static final String UMLP_JAVA2TS_TASK = "umlpJava2ts";
   public static final String SYNC_UMLP2JSWEET_TASK = "sync_umlp2jsweet";
   public static final String SYNC_GUI2JSWEET_TASK = "sync_gui2jsweet";
+  public static final String SYNC_UMLP_JAVA2TS_TASK = "sync_umlpJava2ts";
+  public static final String SYNC_GUI2JAVA2TS_TASK = "sync_gui2java2ts";
   public static final String UMLP2JSWEET_OBSERVER_TASK = "umlp2jsweetObserver";
   public static final String GUI2JAVA2TS_TASK = "gui2java2ts";
   public static final String CD2JAVA_TASK = "cd2java";
@@ -121,21 +123,25 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
 
     setupJSweetClasspath(project);
 
-    Provider<Directory> gui2java2tsDir = project.getLayout().getBuildDirectory().dir("gui2java2ts");
+    TaskProvider<SetupFrontendTask> setupFrontend = project.getTasks().named(SETUP_FRONTEND_TASK, SetupFrontendTask.class);
+
     Provider<Directory> cd2javaDir = project.getLayout().getBuildDirectory().dir("cd2java");
     Provider<Directory> cd2tagsDir = project.getLayout().getBuildDirectory().dir("cd2tags");
     Provider<Directory> gui2jsweetAdapterDir = project.getLayout().getBuildDirectory().dir("gui2jsweetAdapter");
     Provider<Directory> internalJSweetDir = project.getLayout().getBuildDirectory().dir("internal_jsweet");
-    Provider<Directory> umlpJava2tsDir = project.getLayout().getBuildDirectory().dir("umlpJava2ts");
     Provider<Directory> umlp2jsweetAdapterDir = project.getLayout().getBuildDirectory().dir("umlp2jsweetAdapter");
     Provider<Directory> umlp2jsweetObserverDir = project.getLayout().getBuildDirectory().dir("umlp2jsweetObserver");
+    Provider<RegularFile> hwcLink = project.getLayout().getBuildDirectory().file("app/hwc");
+    Provider<RegularFile> intermediateHWCLink = project.getLayout().getBuildDirectory().file("intermediate/hwc");
+    Provider<Directory> gui2java2tsDir = project.getLayout().getBuildDirectory().dir("intermediate/gui2java2ts");
+    Provider<Directory> umlpJava2tsDir = project.getLayout().getBuildDirectory().dir("intermediate/umlpJava2ts");
+    // TODO: this technically breaks incremental build. setupFrontend has "app" as output -> overlapping task output
+    Provider<Directory> syncGUI2Java2TSOut = project.getLayout().getBuildDirectory().dir("app/gui2java2ts");
+    Provider<Directory> syncUMLPJava2TSOut = project.getLayout().getBuildDirectory().dir("app/umlpJava2ts");
 
     Directory srcJSweet = project.getLayout().getProjectDirectory().dir("src/main/jsweet");
     Directory srcGUI = project.getLayout().getProjectDirectory().dir("src/main/gui");
     Directory srcJava = project.getLayout().getProjectDirectory().dir("src/main/java");
-
-    TaskProvider<Sync> syncUMLP2TSTask = project.getTasks().named(SYNC_UMLP2TS_TASK, Sync.class);
-    TaskProvider<Sync> syncGUI2JavaTask = project.getTasks().named(SYNC_GUI2JAVA_TASK, Sync.class);
 
     TaskProvider<CreateSymlinkTask> createSymlinkTask =
         project.getTasks().named(CREATE_SYMLINK_TASK, CreateSymlinkTask.class);
@@ -202,13 +208,16 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
 
     TaskProvider<GUI2Java2TSTask> gui2java2ts = project.getTasks().register(GUI2JAVA2TS_TASK, GUI2Java2TSTask.class);
     gui2java2ts.configure(task -> {
+      // depends on link to hwc
+      task.dependsOn(createSymlinkTask, setupFrontend);
+
       if (!inRTE(project)) {
         task.getSymbolPath().from(project.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
         task.getSymbolPath().from(project.getConfigurations().named(MONTIGEM_MODULE_IMPORT_MAP_CONFIG));
       }
       task.getDomainModels().set(domainNamesFinal);
       task.getImportsDir().from(umlpJava2ts.flatMap(UMLPJava2TSTask::getOutputDir));
-      task.getSymbolPath().from(umlp2sym.flatMap(t -> t.getOutputDir()));
+      task.getSymbolPath().from(umlp2sym.flatMap(CommonMCTask::getOutputDir));
       task.getSymbolPath().from(project.getConfigurations().named(GUI_TYPES_CONFIG));
       task.getSymbolPath().from(cd2sym.flatMap(CD2SymTask::getOutput));
       task.getInput().from(srcGUI);
@@ -216,7 +225,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
         task.getInput().from(cd2java.flatMap(CommonMCTask::getOutputDir));
       }
       task.getModelDir().set(srcGUI);
-      task.getHandWrittenCodeDir().from(srcGUI);
+      task.getHandWrittenCodeDir().from(intermediateHWCLink);
       task.getOutputDir().set(gui2java2tsDir);
 
       task.getGUIGenJSweet().set(true);
@@ -269,63 +278,61 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
           task.getModelDir().from(project.getConfigurations().named(MONTIGEM_MODULE_UMLP_MODELS_CONFIG));
         });
 
-    // TaskProvider<Sync> syncUMLP2JSweet = createSyncUMLP2JSweetTask(project);
-    // TaskProvider<Sync> syncGUI2JSweet = createSyncGUI2JSweetTask(project);
+//    TaskProvider<Sync> syncUMLP2JSweet = createSyncUMLP2JSweetTask(project);
+//    TaskProvider<Sync> syncGUI2JSweet = createSyncGUI2JSweetTask(project);
 
     addJSweetDependencies(project);
 
-    // dependencies
-    /*
-    syncUMLP2JSweet.configure(task -> {
-      task.from(umlp2jsweet.get().getJsweetConfigOut().getAsFile());
-      task.dependsOn(umlp2jsweet);
-      task.into(this.jsweetBuildDomainDir);
-      if (umlp2jsweet.get().getHwcDir().isPresent()) {
-        task.from(umlp2jsweet.get().getHwcDir());
-      }
-    });
-    syncGUI2JSweet.configure(task -> {
-      task.from(gui2jsweet.get().getJsweetConfigOut().getAsFile());
-      task.dependsOn(gui2jsweet);
-      task.into(this.jsweetBuildGUIDir);
-      if (gui2jsweet.get().getHwcDir().isPresent()) {
-        task.from(gui2jsweet.get().getHwcDir());
-      }
-    });
-    /**/
+//    syncUMLP2JSweet.configure(task -> {
+//      task.from(umlp2jsweet.get().getJsweetConfigOut().getAsFile());
+//      task.dependsOn(umlp2jsweet);
+//      task.into(this.jsweetBuildDomainDir);
+//      if (umlp2jsweet.get().getHwcDir().isPresent()) {
+//        task.from(umlp2jsweet.get().getHwcDir());
+//      }
+//    });
+//    syncGUI2JSweet.configure(task -> {
+//      task.from(gui2jsweet.get().getJsweetConfigOut().getAsFile());
+//      task.dependsOn(gui2jsweet);
+//      task.into(this.jsweetBuildGUIDir);
+//      if (gui2jsweet.get().getHwcDir().isPresent()) {
+//        task.from(gui2jsweet.get().getHwcDir());
+//      }
+//    });
 
     TaskProvider<Task> generate = project.getTasks().named("generate");
     generate.configure(task -> task.dependsOn(gui2java2ts));
     project.getTasks().named("compileJava").configure(t -> t.dependsOn(generate));
 
-    // TaskProvider<SetupFrontendTask> setupFrontendTask = project.getTasks().named(SETUP_FRONTEND_TASK, SetupFrontendTask.class);
-
-    syncUMLP2TSTask.configure(task -> {
+    // Sync Output of a task to the correct directory. This done because "npm serve" cannot
+    // handle the intermediate state while the UMLPTasks are running and Hot-Reload aborts
+    TaskProvider<Sync> syncUMLPJava2TS = project.getTasks().register(SYNC_UMLP_JAVA2TS_TASK, Sync.class, task -> {
+      task.setGroup(UMLP_GROUP_NAME);
       task.from(umlpJava2ts.flatMap(UMLPJava2TSTask::getOutputDir));
-      // task.dependsOn(setupFrontendTask);
+      task.into(syncUMLPJava2TSOut);
     });
 
-    syncGUI2JavaTask.configure(task -> {
+    TaskProvider<Sync> syncGUI2Java2TS = project.getTasks().register(SYNC_GUI2JAVA2TS_TASK, Sync.class, task -> {
+      task.setGroup(UMLP_GROUP_NAME);
       task.from(gui2java2ts.flatMap(CommonMCTask::getOutputDir));
       task.from(umlp2jsweetObserver.flatMap(CommonMCTask::getOutputDir));
-      // task.dependsOn(setupFrontendTask);
+      task.into(syncGUI2Java2TSOut);
+      task.exclude("**/*.java");
     });
+    project.getTasks().named(GENERATE_TASK).configure(task ->
+        task.dependsOn(syncUMLPJava2TS, syncGUI2Java2TS)
+    );
 
     createSymlinkTask.configure(task -> {
-      Symlink hwcLink = project.getObjects().newInstance(Symlink.class);
-      hwcLink.getLinkFile().set(project.getLayout().getBuildDirectory().file("app/hwc"));
-      hwcLink.getTargetFile().set(srcGUI);
-      task.getLinks().add(hwcLink);
-      /*
-      if (task.getSymlinkMap().isPresent()) {
-        Provider<Directory> hwcSrcLink = project.getLayout().getBuildDirectory().dir("app/hwc");
-        task.getSymlinkMap().put(hwcSrcLink, srcGUI.getAsFile());
+      task.getLinks().put(
+          intermediateHWCLink.get().getAsFile(),
+          srcGUI.getAsFile()
+      );
 
-        File angularTemplateResolveLink = project.getBuildDir().toPath().resolve("build/umlp_frontend").toFile();
-        File angularTemplateResolveTarget = project.getBuildDir().toPath().resolve("umlp_frontend").toFile();
-        task.getSymlinkMap().put(angularTemplateResolveLink, angularTemplateResolveTarget);
-      }
-      /**/
+      task.getLinks().put(
+          hwcLink.get().getAsFile(),
+          srcGUI.getAsFile()
+      );
     });
   }
 

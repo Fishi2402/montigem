@@ -14,7 +14,7 @@ import {UserCreateComponent,config} from 'gui/login/UserCreateComponent';
   standalone:true,
   imports:[...config.imports],
   selector: config.selector,
-  templateUrl: "../../../../build/umlp_frontend/intermediate/appgui/gui/login/UserCreate.html",
+  templateUrl: config.templateUrl,
   styles: config.styles,
   styleUrls: ["./Login.scss"]
 })

@@ -9,7 +9,7 @@ import {SehubManager} from 'sehub/SehubManager';
   standalone:true,
   imports:[...config.imports],
   selector: config.selector,
-  templateUrl: "../../../../build/umlp_frontend/intermediate/appgui/gui/usersettings/UserSettings.html",
+  templateUrl: config.templateUrl,
   styles: config.styles,
   styleUrls: config.styleUrls
 })
