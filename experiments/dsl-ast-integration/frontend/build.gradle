@@ -1,7 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+import de.montigem.gradle.specific.CD2GUITask
 import de.montigem.gradle.specific.GUIVariabilityTask
 import de.montigem.gradle.specific.UMLP2SymTask
+import de.montigem.gradle.specific.merge.MergeTask
 
-/* (c) https://github.com/MontiCore/monticore */
 plugins {
   id 'java-library'
   id 'de.rwth.se.montigem-frontend'
@@ -26,6 +29,7 @@ repositories {
 
 dependencies {
   implementation("umlp:umlp-rte:${mc_version}")
+  srcUMLPConfig(project(":experiments:dsl-ast-integration:backend"))
   testImplementation("com.h2database:h2:${h2_database}")
 
   implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version
@@ -42,11 +46,6 @@ def copyTags = tasks.register('copyTags', Copy) {
   into("$buildDir/tags")
 }
 
-umlpJava2ts {
-  input.from(project(":experiments:dsl-ast-integration:backend").mergeWithDSL.outputFile)
-
-  it.input.each { println(it) }
-}
 
 umlp2sym {
   enabled = false // instead, we use the symbols from the backend (and thus the merged model!)
@@ -54,7 +53,8 @@ umlp2sym {
 
 def cd2gui = tasks.register('cd2gui', CD2GUITask) {
   setGroup('build')
-  input.setFrom(project(":experiments:dsl-ast-integration:backend").mergeWithDSL.outputFile)
+  input.setFrom(project(":experiments:dsl-ast-integration:backend")
+      .tasks.named("mergeWithDSL", MergeTask).flatMap { it.outputFile })
   outputDir = layout.buildDirectory.dir("cd2gui")
   dependsOn(copyTags)
 }
@@ -84,13 +84,6 @@ umlp2jsweetObserver {
       .flatMap { it.getOutputDir().get().asFile }
   symbolPath.setFrom symbolPath.filter(f -> f != toExclude)
   modelDir.setFrom(file(guiVariability.flatMap { it.getOutputDir() }))
-}
-
-sync_umlpJava2ts {
-  filter { line -> line.replaceAll('../../../build/intermediate/app', '../../../build/app/build/') }
-}
-sync_gui2java2ts {
-  filter { line -> line.replaceAll('../../../build/intermediate/app', '../../../build/app/build/') }
 }
 
 npmInstall.args = ['--loglevel', 'error']

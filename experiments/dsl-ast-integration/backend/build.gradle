@@ -1,3 +1,5 @@
+import de.montigem.gradle.specific.merge.MergeTask
+
 plugins {
   id 'java-library'
   id 'de.rwth.se.montigem-backend'
@@ -79,8 +81,6 @@ umlp2java {
   input.setFrom(mergeWithDSL.flatMap { it.outputFile })
   useSpring.set(true)
   useShell.set(true)
-
-//   input = file("../models/Domain.umlp")
 }
 
 //task genInitData(type: OD2DataTask) {
