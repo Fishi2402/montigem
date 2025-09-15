@@ -73,7 +73,17 @@ gui2java2ts {
   var toExclude = tasks.named("umlp2sym", UMLP2SymTask)
       .flatMap { it.getOutputDir().get().asFile }
   symbolPath.setFrom symbolPath.filter(f -> f != toExclude)
-  modelDir = file(guiVariability.flatMap { it.getOutputDir() })
+  modelDir.set(file(guiVariability.flatMap { it.getOutputDir() }))
+}
+
+umlp2jsweetObserver {
+  input.setFrom(guiVariability.flatMap { it.getOutputDir() })
+  symbolPath.from(cd2gui.flatMap { it.getOutputDir().file("symbols") })
+  symbolPath.from(file("$buildDir/tags"))
+  var toExclude = tasks.named("umlp2sym", UMLP2SymTask)
+      .flatMap { it.getOutputDir().get().asFile }
+  symbolPath.setFrom symbolPath.filter(f -> f != toExclude)
+  modelDir.setFrom(file(guiVariability.flatMap { it.getOutputDir() }))
 }
 
 sync_umlpJava2ts {

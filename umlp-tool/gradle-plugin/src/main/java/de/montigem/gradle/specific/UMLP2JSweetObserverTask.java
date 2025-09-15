@@ -55,18 +55,14 @@ public abstract class UMLP2JSweetObserverTask extends MGSingleFileTask {
       result.add(handlePath.apply(getOutputDir().getAsFile().get().toPath()));
     }
 
-    if (!this.getModelDir().isEmpty()) {
-      for (File file : this.getModelDir()) {
-        result.add("-mp");
-        result.add(handlePath.apply(file.toPath()));
-      }
+    for (File file : this.getModelDir()) {
+      result.add("-mp");
+      result.add(handlePath.apply(file.toPath()));
     }
 
-    if (!this.getSymbolPath().isEmpty()) {
-      for (File file : this.getSymbolPath()) {
-        result.add("-path");
-        result.add(handlePath.apply(file.toPath()));
-      }
+    for (File file : this.getSymbolPath()) {
+      result.add("-path");
+      result.add(handlePath.apply(file.toPath()));
     }
 
     return result;
