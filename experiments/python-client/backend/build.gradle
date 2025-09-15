@@ -14,7 +14,7 @@ application {
   mainClass = 'mydomain.MyDomainServerApplication'
 }
 
-tasks.register("generateGem", de.monticore.cdgen.gradleplugin.CDGenTask.class) {
+def generateGem = tasks.register("generateGem", de.monticore.cdgen.gradleplugin.CDGenTask.class) {
   getInput().from(project.file("../models/MyDomain.umlp"))
   class2MC=true
   getOutputDir().set(project.layout.buildDirectory.dir("py_out_java"))
@@ -26,8 +26,7 @@ tasks.register("generateGem", de.monticore.cdgen.gradleplugin.CDGenTask.class) {
 }
 tasks.register("transformGemToPy", Sync) {
   // actually rename the generated file to .py
-  dependsOn(tasks.named("generateGem"))
-  from(tasks.named("generateGem"))
+  from(generateGem)
   into(project.layout.buildDirectory.dir("py_out"))
   eachFile { file ->
     if (file.name.endsWith(".java")) {

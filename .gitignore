@@ -20,3 +20,4 @@ node_modules/
 .jsweet/
 .DS_Store
 **/.intellijPlatform/
+__pycache__/

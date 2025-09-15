@@ -56,13 +56,13 @@ public class AbstractPyTest extends AbstractE2ETest {
     Assertions.assertEquals(0, i, "Failed to install pip dependencies");
 
     System.err.println("[Test-Init]: Launching main entry");
-    var pb = processBuilder(processName("python"), "-u", "../testmain.py",
+    var pb = processBuilder(processName("python"), "-u", "../../testmain.py",
                             "" + AbstractPlaywrightE2ETest.backendServerPort());
     pb.directory(workingDir.getAbsoluteFile().getParentFile());
 
     // Add build output & runtime package to the path
     pb.environment().put("PYTHONPATH", new File("build/py_out").getAbsolutePath()
-        + File.pathSeparator + new File("runtime-package/src").getAbsolutePath());
+        + File.pathSeparator + new File("../runtime-package/src").getAbsolutePath());
 
     pb.redirectInput(ProcessBuilder.Redirect.PIPE);
     pb.redirectOutput(ProcessBuilder.Redirect.PIPE);

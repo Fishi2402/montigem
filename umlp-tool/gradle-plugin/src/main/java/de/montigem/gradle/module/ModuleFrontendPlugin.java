@@ -167,6 +167,14 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
       project.getDependencies().add("implementation", "umlp:umlp-rte:" + mcVersion(project));
     }
 
+    Project parent = project.getParent();
+    if (parent != null) {
+      Project backend = parent.findProject(parent.getPath() + ":backend");
+      if (backend != null) {
+        project.getDependencies().add("implementation", backend);
+      }
+    }
+
     project.afterEvaluate(p -> {
       for (Project subproject : extension.getLibs()) {
         subproject.getPluginManager().apply(NodePlugin.class);
@@ -206,7 +214,6 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
         setupJSweetClasspath(subproject);
         addJSweetDependencies(subproject);
 
-        Project parent = project.getParent();
         if (parent != null) {
           Project backend = parent.findProject(parent.getPath() + ":backend");
           if (backend != null) {
