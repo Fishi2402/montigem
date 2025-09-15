@@ -42,9 +42,9 @@ export class Navigation {
     { url: '/example_input/GemCheckBoxInputExample', title: 'CheckBoxInput' },
     { url: '/example_input/GemRangeInputExample', title: 'RangeInput' },
     /*
-    { url: '/example_input/GemRangeInputExample', title: 'RangeInput' },
+    { url: '/example_input/GemRangeInputExample', title: 'RangeInput' },*/
     { url: '/example_input/GemRadioInputExample', title: 'RadioInput' },
-    */
+
     { url: '/example_charts/GemBarChartExample', title: 'BarChart' },
     { url: '/example_charts/GemBoxPlotExample', title: 'BoxPlot' },
     { url: '/example_charts/GemBulletChartExample', title: 'BulletChart' },

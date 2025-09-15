@@ -5,10 +5,11 @@ package person;
 import mc.fenix.arrange.GemColumn;
 import mc.fenix.arrange.GemRow;
 
-page Row(GUIViewElement col1, GUIViewElement col2, GUIViewElement col3) {
+page Row(GUIViewElement col1, GUIViewElement col2, GUIViewElement col3, GUIViewElement col4) {
   @GemRow(colGap = "10px", hAlign = "space-between", components = [
     @GemColumn(width = "30%", components = [ col1 ]),
     @GemColumn(width = "30%", components = [ col2 ]),
-    @GemColumn(width = "30%", components = [ col3 ])
+    @GemColumn(width = "30%", components = [ col3 ]),
+    @GemColumn(width = "30%", components = [ col4 ])
   ]);
 }
