@@ -49,7 +49,7 @@ public class FrontendTestPlugin implements Plugin<Project> {
       task.getExcludeSource().set(firstTask.flatMap(GUI2Java2TSTask::getExcludeSource));
 
       // Outputs of the task to generate into a different directory & compare after
-      task.getOutputDir().set(project.getLayout().getBuildDirectory().dir("intermediate/app/clone_gui2java"));
+      task.getOutputDir().set(project.getLayout().getBuildDirectory().dir("intermediate/clone_gui2java2ts"));
       task.getSymbolOutDir().set(project.getLayout().getBuildDirectory().dir("clone_gui2sym"));
     });
 

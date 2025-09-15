@@ -133,6 +133,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
     Provider<Directory> umlp2jsweetObserverDir = project.getLayout().getBuildDirectory().dir("umlp2jsweetObserver");
     Provider<RegularFile> hwcLink = project.getLayout().getBuildDirectory().file("app/hwc");
     Provider<RegularFile> intermediateHWCLink = project.getLayout().getBuildDirectory().file("intermediate/hwc");
+    Provider<Directory> gui2symDir = project.getLayout().getBuildDirectory().dir("gui2sym");
     Provider<Directory> gui2java2tsDir = project.getLayout().getBuildDirectory().dir("intermediate/gui2java2ts");
     Provider<Directory> umlpJava2tsDir = project.getLayout().getBuildDirectory().dir("intermediate/umlpJava2ts");
     // TODO: this technically breaks incremental build. setupFrontend has "app" as output -> overlapping task output
@@ -227,6 +228,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       task.getModelDir().set(srcGUI);
       task.getHandWrittenCodeDir().from(intermediateHWCLink);
       task.getOutputDir().set(gui2java2tsDir);
+      task.getSymbolOutDir().set(gui2symDir);
 
       task.getGUIGenJSweet().set(true);
       task.getGUIGenTSFunctionality().set(false);
