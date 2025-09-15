@@ -5,24 +5,21 @@ import de.monticore.gradle.common.CommonMCTask;
 import de.montigem.gradle.specific.UMLP2JavaTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.Directory;
-import org.gradle.api.file.FileCollection;
 import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
-import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.compile.AbstractCompile;
 import org.gradle.jvm.tasks.Jar;
 import org.gradle.language.jvm.tasks.ProcessResources;
 
 import java.io.File;
-import java.util.Map;
 
 import static de.montigem.gradle.FrontendBasePlugin.UMLP_GROUP_NAME;
 import static de.montigem.gradle.FrontendBasePlugin.getBooleanProjectProperty;
 import static de.montigem.gradle.FrontendBasePlugin.getModels;
+import static de.montigem.gradle.FrontendBasePlugin.isLocal;
 import static de.montigem.gradle.FrontendBasePlugin.mcVersion;
 import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
 
@@ -40,21 +37,25 @@ public abstract class BackendPlugin implements Plugin<Project> {
     project.getPluginManager().apply(MGBasePlugin.class);
     project.getPluginManager().apply("java");
 
-    boolean local = getBooleanProjectProperty(project, "useLocalDependencies");
-    var mainSourceSet = project.getExtensions().getByType(JavaPluginExtension.class).getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
-    addRTEDependency(project, local);
+    var mainSourceSet = project.getExtensions().getByType(JavaPluginExtension.class)
+        .getSourceSets().named(SourceSet.MAIN_SOURCE_SET_NAME);
+    addRTEDependency(project);
 
     TaskProvider<UMLP2JavaTask> umlp2java = createUMLP2JavaTask(project);
-    project.getTasks().withType(AbstractCompile.class)
-        .matching(t -> t.getName().equals(mainSourceSet.getCompileJavaTaskName()))
-        .configureEach(compile -> compile.dependsOn(umlp2java));
+    mainSourceSet.configure(sourceSet -> {
+      project.getTasks().withType(AbstractCompile.class)
+          .matching(t -> t.getName().equals(sourceSet.getCompileJavaTaskName()))
+          .configureEach(compile -> compile.dependsOn(umlp2java));
 
-    // Generate Backend must run before ProcessResources (e.g. for SQL schemata)
-    project.getTasks().withType(ProcessResources.class)
-        .matching(t -> t.getName().equals(mainSourceSet.getProcessResourcesTaskName()))
-        .configureEach(procResMain -> procResMain.dependsOn(umlp2java));
+      // Generate Backend must run before ProcessResources (e.g. for SQL schemata)
+      project.getTasks().withType(ProcessResources.class)
+          .matching(t -> t.getName().equals(sourceSet.getProcessResourcesTaskName()))
+          .configureEach(procResMain -> procResMain.dependsOn(umlp2java));
 
-    addToSourceSet(project, umlp2java);
+      sourceSet.getJava().srcDir(umlp2java.flatMap(CommonMCTask::getOutputDir));
+      // Add generated resources. e.g. SQL-Schemata
+      sourceSet.getResources().srcDir(umlp2java.flatMap(t -> t.getOutputDir().dir("resources")));
+    });
 
     // Lifecycle task "generate" which depends on Backend-Creation
     project.getTasks().register("generate", task -> task.dependsOn(umlp2java));
@@ -70,40 +71,28 @@ public abstract class BackendPlugin implements Plugin<Project> {
     project.getPluginManager().apply("de.rwth.se.montigem-testing");
   }
 
-  // Add generated files to SourceSets
-  private void addToSourceSet(Project project, TaskProvider<UMLP2JavaTask> task) {
-    var mainSourceSet = project.getExtensions().getByType(JavaPluginExtension.class).getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
-    mainSourceSet.getJava().srcDir(task.flatMap(CommonMCTask::getOutputDir));
-    // Add generated resources. e.g. SQL-Schemata
-    mainSourceSet.getResources().srcDir(task.map(t -> t.getOutputDir().dir("resources")));
-  }
-
   protected static TaskProvider<UMLP2JavaTask> createUMLP2JavaTask(Project project) {
-    var hwc = project.provider(() -> {
-      File f = project.file("src/main/java");
-      return f.exists() ? project.getLayout().getProjectDirectory().dir("src/main/java") : project.files();
-    });
-
-    Provider<Directory> tpl = project.provider(() -> {
-      File f = project.file("src/templates");
-      return f.exists() ? project.getLayout().getProjectDirectory().dir("src/templates") : null;
-    });
-
+    Directory srcJava = project.getLayout().getProjectDirectory().dir("src/main/java");
+    Directory srcTpl = project.getLayout().getProjectDirectory().dir("src/templates");
     return project.getTasks().register(UMLP2JAVA_TASK, UMLP2JavaTask.class, task -> {
       task.setGroup(UMLP_GROUP_NAME);
 
       task.getInput().from(getModels(project));
-      task.getHandWrittenCodeDir().from(hwc);
-      task.getTmplDir().set(tpl);
+      if (srcJava.getAsFile().exists()) {
+        task.getHandWrittenCodeDir().from(srcJava);
+      }
+      if (srcTpl.getAsFile().exists()) {
+        task.getTmplDir().set(srcTpl);
+      }
       task.getOutputDir().set(project.getLayout().getBuildDirectory().dir("umlp2java"));
       task.getSymbolOutDir().set(project.getLayout().getBuildDirectory().dir("umlp2sym"));
       task.getModelDir().from(project.getConfigurations().getByName(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
     });
   }
 
-  protected void addRTEDependency(Project project, boolean local) {
+  protected void addRTEDependency(Project project) {
     // Add Symbols and Tags of RTE ClassDiagrams to SymbolPath
-    if (local) {
+    if (isLocal(project)) {
       Project rte = project.project(":umlp-rte");
       project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG, rte);
     }

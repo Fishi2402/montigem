@@ -38,7 +38,7 @@ public class BackendTestPlugin implements Plugin<Project> {
       task.getDir2().set(secondTask.flatMap(CommonMCTask::getOutputDir));
     });
 
-    project.getTasks().getByName("build").dependsOn(compareTask);
+    project.getTasks().named("build").configure(t -> t.dependsOn(compareTask));
   }
 
 }

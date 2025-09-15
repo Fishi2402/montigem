@@ -21,7 +21,7 @@ def isWindows = System.getProperty("os.name").toLowerCase().startsWith("win")
 def getNodeDir() {
   def nodejs_dir = file("${rootDir}/.gradle/nodejs/")
   def node_dir = nodejs_dir.listFiles().find { it.isDirectory() }
-  assert node_dir != null : "Can't find node installation"
+  assert node_dir != null: "Can't find node installation"
   return node_dir
 }
 
@@ -44,7 +44,7 @@ subprojects {
   tasks.withType(NpxTask).configureEach {
     dependsOn rootProject.tasks.npmInstall
     execOverrides {
-      if(isWindows){
+      if (isWindows) {
         setExecutable "${getNodeDir()}/npx.cmd"
         environment 'PATH', "${getNodeDir()}${System.getProperty('path.separator')}${System.getenv('PATH')}"
       } else {
@@ -57,7 +57,7 @@ subprojects {
   tasks.withType(NpmTask).configureEach {
     dependsOn rootProject.tasks.npmInstall
     execOverrides {
-      if(isWindows){
+      if (isWindows) {
         setExecutable "${getNodeDir()}/npm.cmd"
         environment 'PATH', "${getNodeDir()}${System.getProperty('path.separator')}${System.getenv('PATH')}"
       } else {
@@ -70,7 +70,7 @@ subprojects {
   tasks.withType(NodeTask).configureEach {
     dependsOn rootProject.tasks.npmInstall
     execOverrides {
-      if(isWindows){
+      if (isWindows) {
         setExecutable "${getNodeDir()}/node.exe"
         environment 'PATH', "${getNodeDir()}${System.getProperty('path.separator')}${System.getenv('PATH')}"
       } else {
@@ -109,8 +109,10 @@ subprojects {
     options.warnings = false
   }
 
-  jar {
-    onlyIf { !sourceSets.main.allSource.files.isEmpty() }
+  sourceSets.named("main").configure { main ->
+    tasks.named("jar").configure { jar ->
+      jar.onlyIf { !main.allSource.files.isEmpty() }
+    }
   }
 
   configurations {
@@ -138,7 +140,7 @@ subprojects {
     }
   }
   gradle.taskGraph.whenReady {
-    it.getAllTasks().findAll { ["distZip", "distTar", "bootDistZip", "bootDistTar"].contains(it.name) }.each{ it.enabled = false }
+    it.getAllTasks().findAll { ["distZip", "distTar", "bootDistZip", "bootDistTar"].contains(it.name) }.each { it.enabled = false }
   }
 }
 
@@ -155,16 +157,17 @@ project(":umlp-rte:frontend").afterEvaluate { rte ->
   }
 }
 
-repositories { // required to resolve the ecj dependency, including the whole chain of repos to avoid unexpected behaviour
-    if(("true").equals(getProperty('useLocalRepo'))) {
-        mavenLocal()
-    }
-    maven {
-        credentials.username mavenUser
-        credentials.password mavenPassword
-        url repo
-    }
-    mavenCentral()
+repositories {
+  // required to resolve the ecj dependency, including the whole chain of repos to avoid unexpected behaviour
+  if (("true").equals(getProperty('useLocalRepo'))) {
+    mavenLocal()
+  }
+  maven {
+    credentials.username mavenUser
+    credentials.password mavenPassword
+    url repo
+  }
+  mavenCentral()
 }
 
 build.dependsOn(gradle.includedBuild("umlp-tool").task(":build"))
@@ -196,7 +199,7 @@ subprojects {
     task.doLast {
       def outputFile = new File("${buildDir}/artifacts_report/${project.name}_${task.name}.txt")
       outputFile.parentFile.mkdirs() // Ensure the directory exists
-      outputFile.text=""
+      outputFile.text = ""
 
       outputFile.append("Task: ${task.name}\n")
       outputFile.append("------------Artifacts Input-------------\n")

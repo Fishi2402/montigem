@@ -69,7 +69,4 @@ public abstract class DependencyPlugin implements Plugin<Project> {
     project.getTasks().withType(UMLPJava2TSTask.class).configureEach(t -> t.getClassPath().from(toolConfig));
   }
 
-  public static Configuration getToolConfig(Project project) {
-    return project.getConfigurations().getByName(UMLP_CONFIG_TOOL);
-  }
 }

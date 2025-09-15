@@ -1,4 +1,4 @@
-plugins{
+plugins {
   id 'java-library'
 }
 
@@ -10,12 +10,20 @@ dependencies {
 // TODO: CLI Options
 
 abstract class DSL2CDTask extends JavaExec {
-  @InputFile  abstract RegularFileProperty getDSLCD();
-  @Input   abstract Property<String> getDomainName();
-  @InputFiles  abstract ConfigurableFileCollection getAdditionalCDs();
+  @InputFile
+  abstract RegularFileProperty getDSLCD();
 
-  @OutputFile abstract RegularFileProperty getGemCD()
-  @OutputDirectory abstract DirectoryProperty getJavaOut()
+  @Input
+  abstract Property<String> getDomainName();
+
+  @InputFiles
+  abstract ConfigurableFileCollection getAdditionalCDs();
+
+  @OutputFile
+  abstract RegularFileProperty getGemCD()
+
+  @OutputDirectory
+  abstract DirectoryProperty getJavaOut()
 
   @TaskAction
   @Override
@@ -33,8 +41,9 @@ abstract class DSL2CDTask extends JavaExec {
 configurations {
   reports
 }
+
 dependencies {
-  reports( "de.monticore:monticore-grammar:${mc_version}:reports") {
+  reports("de.monticore:monticore-grammar:${mc_version}:reports") {
     transitive = false // only the reports, not the grammars dependencies
   }
 }
@@ -42,9 +51,10 @@ dependencies {
 tasks.register("dsl2cd", DSL2CDTask) {
   classpath = sourceSets.main.runtimeClasspath
   mainClass = 'de.monticore.dsl2cd.DSL2CD'
-  getDSLCD().set(project.provider {
-    return project(":experiments:dsl-ast-integration:dsl").tasks.generateMCGrammars.getReportDir().file("src/main/grammars/mydsl/MyDSL__mc4/mydsl.mydsl/MyDSL.cd").get()
-  })
+  getDSLCD().set(
+      project(":experiments:dsl-ast-integration:dsl").tasks.named("generateMCGrammars")
+          .flatMap { it.getReportDir().file("src/main/grammars/mydsl/MyDSL__mc4/mydsl.mydsl/MyDSL.cd") }
+  )
   domainName = "domain"
   additionalCDs.setFrom(configurations.reports)
 
@@ -52,5 +62,4 @@ tasks.register("dsl2cd", DSL2CDTask) {
   javaOut = project.layout.buildDirectory.dir("dsl2cd/javaout")
 
   dependsOn(project(":experiments:dsl-ast-integration:dsl").tasks.named("generateMCGrammars"))
-
 }

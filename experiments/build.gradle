@@ -43,7 +43,7 @@ configure(subprojects)  {
     }
 }
 
-clean.dependsOn(subprojects.collect{it.getTasksByName("clean", false)})
+clean.dependsOn(subprojects.collect{it.getTasks().named("clean")})
 
 jar.enabled = false
 

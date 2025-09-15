@@ -43,7 +43,7 @@ def copyTags = tasks.register('copyTags', Copy) {
 }
 
 umlpJava2ts {
-  input.from(project(":experiments:dsl-ast-integration:ebackend").umlp2java.input)
+  input.from(project(":experiments:dsl-ast-integration:backend").mergeWithDSL.outputFile)
 
   it.input.each { println(it) }
 }
@@ -54,7 +54,7 @@ umlp2sym {
 
 def cd2gui = tasks.register('cd2gui', CD2GUITask) {
   setGroup('build')
-  input.setFrom(project(":experiments:dsl-ast-integration:ebackend").mergeWithDSL.outputFile)
+  input.setFrom(project(":experiments:dsl-ast-integration:backend").mergeWithDSL.outputFile)
   outputDir = layout.buildDirectory.dir("cd2gui")
   dependsOn(copyTags)
 }

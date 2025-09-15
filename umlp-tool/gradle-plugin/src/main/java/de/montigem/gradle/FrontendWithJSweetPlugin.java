@@ -278,27 +278,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
           task.getModelDir().from(project.getConfigurations().named(MONTIGEM_MODULE_UMLP_MODELS_CONFIG));
         });
 
-//    TaskProvider<Sync> syncUMLP2JSweet = createSyncUMLP2JSweetTask(project);
-//    TaskProvider<Sync> syncGUI2JSweet = createSyncGUI2JSweetTask(project);
-
     addJSweetDependencies(project);
-
-//    syncUMLP2JSweet.configure(task -> {
-//      task.from(umlp2jsweet.get().getJsweetConfigOut().getAsFile());
-//      task.dependsOn(umlp2jsweet);
-//      task.into(this.jsweetBuildDomainDir);
-//      if (umlp2jsweet.get().getHwcDir().isPresent()) {
-//        task.from(umlp2jsweet.get().getHwcDir());
-//      }
-//    });
-//    syncGUI2JSweet.configure(task -> {
-//      task.from(gui2jsweet.get().getJsweetConfigOut().getAsFile());
-//      task.dependsOn(gui2jsweet);
-//      task.into(this.jsweetBuildGUIDir);
-//      if (gui2jsweet.get().getHwcDir().isPresent()) {
-//        task.from(gui2jsweet.get().getHwcDir());
-//      }
-//    });
 
     TaskProvider<Task> generate = project.getTasks().named("generate");
     generate.configure(task -> task.dependsOn(gui2java2ts));
