@@ -13,6 +13,8 @@ dependencies {
 }
 
 gui2java {
+  input.from("../frontend-jsweet/src/main/gui")
+  modelDir.set(project.layout.projectDirectory.dir("../frontend-jsweet/src/main/gui"))
   domainModels = ["LoadingTests"]
   guiCreateModels = [
                      "test_update_of_builder.AnimalCreate",
