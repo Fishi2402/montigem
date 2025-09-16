@@ -26,20 +26,12 @@
       "dom"
     ],
     "paths": {
-      "@umlp/arrange": ["../../../../../umlp-rte/frontend/arrange"],
-      "@umlp/basic": ["../../../../../umlp-rte/frontend/basic"],
-      "@umlp/charts": ["../../../../../umlp-rte/frontend/charts"],
-      "@umlp/common": ["../../../../../umlp-rte/frontend/common"],
-      "@umlp/commonj2ts": ["../../../../../umlp-rte/frontend/commonj2ts"],
-      "@umlp/input": ["../../../../../umlp-rte/frontend/input"],
-      "@umlp/navigation": ["../../../../../umlp-rte/frontend/navigation"],
-      "@umlp/networkgraph": ["../../../../../umlp-rte/frontend/networkgraph"],
-      "@umlp/table": ["../../../../../umlp-rte/frontend/table"],
+      "@umlp/*": ["libs/@umlp/*"],
       "*": [
-        "node_modules/*",
-        "build/appdomain/*",
-        "build/appgui/*",
-        "src/app/*"
+        "gui2java2ts/*",
+        "umlpJava2ts/*",
+        "src/app/*",
+        "hwc/*"
       ]
     }
   },
