@@ -85,6 +85,7 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
     TaskProvider<Task> npmInstall = project.getTasks().named("npmInstall");
     TaskProvider<Task> npmUpdate = project.getTasks().named("npm_update", task -> {
       task.dependsOn(npmInstall);
+      task.getOutputs().dir("node_modules");
       task.onlyIf(t -> project.getGradle().getStartParameter().isRefreshDependencies());
     });
 
