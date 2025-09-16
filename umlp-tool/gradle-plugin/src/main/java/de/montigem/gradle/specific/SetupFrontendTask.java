@@ -29,9 +29,15 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.StreamSupport;
 
+import static de.montigem.gradle.FrontendBasePlugin.isLocal;
+
 public abstract class SetupFrontendTask extends DefaultTask {
 
-  public static final String FRONTEND_CONFIG = "frontend/config/";
+  private static final String FRONTEND_CONFIG_COMMON = "frontend/config/common";
+  // config for projects inside umlp (examples, products, ...)
+  private static final String FRONTEND_CONFIG_DEV = "frontend/config/dev";
+  // config for projects outside umlp
+  private static final String FRONTEND_CONFIG_PROD = "frontend/config/prod";
 
   @OutputDirectory
   public abstract DirectoryProperty getOutput();
@@ -49,7 +55,7 @@ public abstract class SetupFrontendTask extends DefaultTask {
   @Optional
   public abstract Property<Boolean> getUnscopedNpmrc();
 
-  public SetupFrontendTask(){
+  public SetupFrontendTask() {
     super();
     getCreateNpmrc().convention(true);
     getUnscopedNpmrc().convention(false);
@@ -57,7 +63,7 @@ public abstract class SetupFrontendTask extends DefaultTask {
 
   @TaskAction
   public void run(InputChanges changes) throws IOException, URISyntaxException {
-    if(getInput().isPresent()) {
+    if (getInput().isPresent()) {
       // Delete files in output, if file in input was deleted
       StreamSupport.stream(changes.getFileChanges(getInput()).spliterator(), false)
           .filter(ch -> ch.getChangeType().equals(ChangeType.REMOVED))
@@ -67,18 +73,25 @@ public abstract class SetupFrontendTask extends DefaultTask {
           });
     }
 
-    if(getCreateNpmrc().get()){
+    if (getCreateNpmrc().get()) {
       String data = CreateNpmrcTask.getNpmrcContent(getProject(), getUnscopedNpmrc().get());
       FileUtils.writeStringToFile(getOutput().get().file(".npmrc").getAsFile(), data, StandardCharsets.UTF_8);
     }
 
-    // First Copy Files from Resources of UMLP-Tool
-    for(String filename: getResourceListing(this.getClass(), FRONTEND_CONFIG)){
-      InputStream file = this.getClass().getClassLoader().getResourceAsStream(FRONTEND_CONFIG + filename);
+    // copy common config from resources of UMLP-Tool
+    for (String filename : getResourceListing(this.getClass(), FRONTEND_CONFIG_COMMON)) {
+      InputStream file = this.getClass().getClassLoader().getResourceAsStream(FRONTEND_CONFIG_COMMON + filename);
       FileUtils.copyInputStreamToFile(file, getOutput().file(filename).get().getAsFile());
     }
 
-    if(getInput().isPresent()) {
+    // copy dev or prod config
+    String config = isLocal(getProject()) ? FRONTEND_CONFIG_DEV : FRONTEND_CONFIG_PROD;
+    for (String filename : getResourceListing(this.getClass(), config)) {
+      InputStream file = this.getClass().getClassLoader().getResourceAsStream(config + filename);
+      FileUtils.copyInputStreamToFile(file, getOutput().file(filename).get().getAsFile());
+    }
+
+    if (getInput().isPresent()) {
       // Then Copy User-Defined Files
       for (File f : getInput().getAsFileTree()) {
         String filename = getInput().getAsFile().get().toPath().relativize(f.toPath()).toString();
@@ -93,12 +106,12 @@ public abstract class SetupFrontendTask extends DefaultTask {
    * This is basically a brute-force implementation.
    * Works for regular files and also JARs.
    *
-   * @author Greg Briggs
    * @param clazz Any java class that lives in the same place as the resources you want.
-   * @param path Should end with "/", but not start with one.
+   * @param path  Should end with "/", but not start with one.
    * @return Just the name of each member item, not the full paths.
    * @throws URISyntaxException
    * @throws IOException
+   * @author Greg Briggs
    */
   String[] getResourceListing(Class clazz, String path) throws URISyntaxException, IOException {
     URL dirURL = clazz.getClassLoader().getResource(path);
@@ -112,7 +125,7 @@ public abstract class SetupFrontendTask extends DefaultTask {
        * In case of a jar file, we can't actually find a directory.
        * Have to assume the same jar as clazz.
        */
-      String me = clazz.getName().replace(".", "/")+".class";
+      String me = clazz.getName().replace(".", "/") + ".class";
       dirURL = clazz.getClassLoader().getResource(me);
     }
 
@@ -124,7 +137,7 @@ public abstract class SetupFrontendTask extends DefaultTask {
       Set<String> result = new HashSet<String>(); //avoid duplicates in case it is a subdirectory
       for (Iterator<JarEntry> it = entries.asIterator(); it.hasNext(); ) {
         JarEntry entry = it.next();
-        if(!entry.isDirectory()) {
+        if (!entry.isDirectory()) {
           String name = entry.getName();
           if (name.startsWith(path)) { //filter according to the path
             result.add(name.substring(path.length()));
@@ -134,6 +147,6 @@ public abstract class SetupFrontendTask extends DefaultTask {
       return result.toArray(new String[result.size()]);
     }
 
-    throw new UnsupportedOperationException("Cannot list files for URL "+dirURL);
+    throw new UnsupportedOperationException("Cannot list files for URL " + dirURL);
   }
 }
