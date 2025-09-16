@@ -41,10 +41,11 @@ dependencies {
 }
 
 umlp2java {
-  input = file("../models/DevProcessCockpit.umlp")
-  symbolOutDir = file("${project.buildDir}/symbols")
+  // input = file("../models/DevProcessCockpit.umlp")
+  // symbolOutDir = file("${project.buildDir}/symbols")
   useSpring = true
 }
+/**/
 
 tasks.register('runServer') {
   dependsOn(bootRun {

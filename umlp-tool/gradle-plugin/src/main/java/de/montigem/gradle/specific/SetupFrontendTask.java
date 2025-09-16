@@ -43,8 +43,8 @@ public abstract class SetupFrontendTask extends DefaultTask {
   public abstract DirectoryProperty getOutput();
 
   @InputFiles
-  @Optional
   @Incremental
+  @Optional
   public abstract DirectoryProperty getInput();
 
   @Input

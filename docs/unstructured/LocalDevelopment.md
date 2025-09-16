@@ -21,7 +21,7 @@ Here it is `networktest`.
 ````gradle
 symlinkCreation {
   def networkTest = file("$buildDir/frontendGen/networktest")
-  def networkTestTarget = file("$PATH_TO_UMLP/umlp/umlp-rte/frontend/projects/networkgraph")
+  def networkTestTarget = file("$PATH_TO_UMLP/umlp/umlp-rte/frontend/networkgraph")
   getSymlinkMap().put(networkTest, networkTestTarget)
 }
 ````

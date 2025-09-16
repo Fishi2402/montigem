@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static de.montigem.gradle.BackendPlugin.UMLP2JAVA_TASK;
 import static de.montigem.gradle.FrontendBasePlugin.CREATE_SYMLINK_TASK;
 import static de.montigem.gradle.FrontendBasePlugin.GENERATE_TASK;
 import static de.montigem.gradle.FrontendBasePlugin.GUI_TYPES_CONFIG;
@@ -187,6 +188,16 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
         task.getExcludeSource().add(s);
       }
     });
+
+    Project parent = project.getParent();
+    if (parent != null) {
+      Project backend = parent.findProject(parent.getPath() + ":backend");
+      if (backend != null) {
+        project.getDependencies().add("implementation", backend);
+        project.getDependencies().add(SRC_UMLP_CONFIG, backend);
+        umlpJava2ts.configure(t -> t.dependsOn(backend.getTasks().named(UMLP2JAVA_TASK)));
+      }
+    }
 
     TaskProvider<CD2JavaTask> cd2java = project.getTasks().register(CD2JAVA_TASK, CD2JavaTask.class);
     cd2java.configure(task -> {
