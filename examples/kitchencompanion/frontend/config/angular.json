@@ -53,6 +53,7 @@
           },
           "configurations": {
             "production": {
+              "tsConfig": "tsconfig.prod.json",
               "budgets": [
                 {
                   "type": "initial",

@@ -205,6 +205,8 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
         Provider<Directory> umlp2jsweetAdapterDir = subproject.getLayout().getBuildDirectory().dir("umlp2jsweetAdapter");
 
         Directory srcJSweet = subproject.getLayout().getProjectDirectory().dir("src/main/jsweet");
+        Directory srcUMLPJSweet = srcJSweet.dir("umlp2jsweetAdapter");
+        Directory srcGUIJSweet = srcJSweet.dir("gui2jsweetAdapter");
         Directory srcGUI = subproject.getLayout().getProjectDirectory().dir("src/main/gui");
         Directory srcJava = subproject.getLayout().getProjectDirectory().dir("src/main/java");
 
@@ -252,8 +254,8 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
           }
 
           task.getJSweetAdapterDir().set(umlp2jsweetAdapterDir);
-          if (srcJSweet.getAsFile().exists()) {
-            task.getHandWrittenJSweetDir().set(srcJSweet);
+          if (srcUMLPJSweet.getAsFile().exists()) {
+            task.getHandWrittenJSweetDir().set(srcUMLPJSweet);
           }
 
           task.getJSweetWorkingDir().set(internalJSweetDir.map(dir -> dir.dir("umlpJava2ts")));
@@ -369,8 +371,8 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
             task.getDomain().set(domainNamesFinal.get(0));
           }
           task.getJSweetAdapterDir().set(gui2jsweetAdapterDir);
-          if (srcJSweet.getAsFile().exists()) {
-            task.getHandWrittenJSweetDir().set(srcJSweet);
+          if (srcGUIJSweet.getAsFile().exists()) {
+            task.getHandWrittenJSweetDir().set(srcGUIJSweet);
           }
 
           if (srcJava.getAsFile().exists()) {

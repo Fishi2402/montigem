@@ -24,7 +24,7 @@ public class UMLPAdapter extends PrinterAdapter {
             new CollectionsAdapter(
                 new JavaBasicsAdapter(
                     new UMLPRTEImportAdapter(
-                        new RelativeImportAdapter(
+                        // new RelativeImportAdapter(
                             new BasicsAdapter(
                                 new BackendOnlyAdapter(
                                     new MutexAdapter(
@@ -34,7 +34,7 @@ public class UMLPAdapter extends PrinterAdapter {
                                     )
                                 )
                             )
-                        )
+                        // )
                     )
                 )
             )

@@ -132,15 +132,16 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
     Provider<Directory> umlp2jsweetAdapterDir = project.getLayout().getBuildDirectory().dir("umlp2jsweetAdapter");
     Provider<Directory> umlp2jsweetObserverDir = project.getLayout().getBuildDirectory().dir("umlp2jsweetObserver");
     Provider<RegularFile> hwcLink = project.getLayout().getBuildDirectory().file("app/hwc");
-    Provider<RegularFile> intermediateHWCLink = project.getLayout().getBuildDirectory().file("intermediate/hwc");
+    Provider<RegularFile> intermediateHWCLink = project.getLayout().getBuildDirectory().file("hwc");
     Provider<Directory> gui2symDir = project.getLayout().getBuildDirectory().dir("gui2sym");
-    Provider<Directory> gui2java2tsDir = project.getLayout().getBuildDirectory().dir("intermediate/gui2java2ts");
-    Provider<Directory> umlpJava2tsDir = project.getLayout().getBuildDirectory().dir("intermediate/umlpJava2ts");
-    // TODO: this technically breaks incremental build. setupFrontend has "app" as output -> overlapping task output
+    Provider<Directory> gui2java2tsDir = project.getLayout().getBuildDirectory().dir("gui2java2ts");
+    Provider<Directory> umlpJava2tsDir = project.getLayout().getBuildDirectory().dir("umlpJava2ts");
     Provider<Directory> syncGUI2Java2TSOut = project.getLayout().getBuildDirectory().dir("app/gui2java2ts");
     Provider<Directory> syncUMLPJava2TSOut = project.getLayout().getBuildDirectory().dir("app/umlpJava2ts");
 
     Directory srcJSweet = project.getLayout().getProjectDirectory().dir("src/main/jsweet");
+    Directory srcUMLPJSweet = srcJSweet.dir("umlp2jsweetAdapter");
+    Directory srcGUIJSweet = srcJSweet.dir("gui2jsweetAdapter");
     Directory srcGUI = project.getLayout().getProjectDirectory().dir("src/main/gui");
     Directory srcJava = project.getLayout().getProjectDirectory().dir("src/main/java");
 
@@ -169,8 +170,8 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       }
 
       task.getJSweetAdapterDir().set(umlp2jsweetAdapterDir);
-      if (srcJSweet.getAsFile().exists()) {
-        task.getHandWrittenJSweetDir().set(srcJSweet);
+      if (srcUMLPJSweet.getAsFile().exists()) {
+        task.getHandWrittenJSweetDir().set(srcUMLPJSweet);
       }
 
       task.getJSweetWorkingDir().set(internalJSweetDir.map(dir -> dir.dir("umlpJava2ts")));
@@ -237,8 +238,8 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
         task.getDomain().set(domainNamesFinal.get(0));
       }
       task.getJSweetAdapterDir().set(gui2jsweetAdapterDir);
-      if (srcJSweet.getAsFile().exists()) {
-        task.getHandWrittenJSweetDir().set(srcJSweet);
+      if (srcGUIJSweet.getAsFile().exists()) {
+        task.getHandWrittenJSweetDir().set(srcGUIJSweet);
       }
 
       if (srcJava.getAsFile().exists()) {
@@ -336,8 +337,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
     });
 
     if (isLocal(project)) {
-      project.getDependencies().add(JSWEET_CONFIG,
-          project.getDependencies().project(Map.of("path", ":umlp-jsweet")));
+      project.getDependencies().add(JSWEET_CONFIG, project.project(":umlp-jsweet"));
     }
     else {
       project.getDependencies().add(JSWEET_CONFIG, "umlp:umlp-jsweet:" + mcVersion(project));
