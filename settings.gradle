@@ -126,4 +126,3 @@ include ':modules:sovd-gateway'
 include ':modules:sovd-gateway-it:backend'
 
 include 'umlp-rte:backend'
-include 'experiments:python-client:backend'
