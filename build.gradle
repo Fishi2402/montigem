@@ -1,3 +1,4 @@
+import com.github.gradle.node.npm.task.NpmInstallTask
 import de.montigem.gradle.specific.FrontendCIImageTask
 import de.montigem.gradle.specific.FrontendLocalImageTask
 
@@ -146,13 +147,13 @@ subprojects {
 
 project(":umlp-rte:frontend").afterEvaluate { rte ->
   var previousInstallTask = rte.tasks.named("npmInstall")
-  var previousUpdateTask;
+  var previousUpdateTask
 
   subprojects {
-    tasks.withType(com.github.gradle.node.npm.task.NpmInstallTask).configureEach { t ->
-      if (project.path != ":umlp-rte:frontend") {
-        t.mustRunAfter(previousInstallTask);
-        previousInstallTask = t
+    tasks.withType(NpmInstallTask).configureEach {
+      if (project.path != rte.path) {
+        it.mustRunAfter(previousInstallTask);
+        previousInstallTask = it
       }
     }
 
