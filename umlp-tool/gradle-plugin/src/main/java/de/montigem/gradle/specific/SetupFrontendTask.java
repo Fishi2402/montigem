@@ -33,11 +33,11 @@ import static de.montigem.gradle.FrontendBasePlugin.isLocal;
 
 public abstract class SetupFrontendTask extends DefaultTask {
 
-  private static final String FRONTEND_CONFIG_COMMON = "frontend/config/common";
+  private static final String FRONTEND_CONFIG_COMMON = "frontend/config/common/";
   // config for projects inside umlp (examples, products, ...)
-  private static final String FRONTEND_CONFIG_DEV = "frontend/config/dev";
+  private static final String FRONTEND_CONFIG_DEV = "frontend/config/dev/";
   // config for projects outside umlp
-  private static final String FRONTEND_CONFIG_PROD = "frontend/config/prod";
+  private static final String FRONTEND_CONFIG_PROD = "frontend/config/prod/";
 
   @OutputDirectory
   public abstract DirectoryProperty getOutput();
@@ -81,7 +81,9 @@ public abstract class SetupFrontendTask extends DefaultTask {
     // copy common config from resources of UMLP-Tool
     for (String filename : getResourceListing(this.getClass(), FRONTEND_CONFIG_COMMON)) {
       InputStream file = this.getClass().getClassLoader().getResourceAsStream(FRONTEND_CONFIG_COMMON + filename);
-      System.out.println(getOutput().file(filename).get().getAsFile());
+      if (filename.startsWith("/") || filename.startsWith("\\")) {
+        filename = filename.substring(1);
+      }
       FileUtils.copyInputStreamToFile(file, getOutput().file(filename).get().getAsFile());
     }
 
@@ -89,7 +91,9 @@ public abstract class SetupFrontendTask extends DefaultTask {
     String config = isLocal(getProject()) ? FRONTEND_CONFIG_DEV : FRONTEND_CONFIG_PROD;
     for (String filename : getResourceListing(this.getClass(), config)) {
       InputStream file = this.getClass().getClassLoader().getResourceAsStream(config + filename);
-      System.out.println(getOutput().file(filename).get().getAsFile());
+      if (filename.startsWith("/") || filename.startsWith("\\")) {
+        filename = filename.substring(1);
+      }
       FileUtils.copyInputStreamToFile(file, getOutput().file(filename).get().getAsFile());
     }
 
