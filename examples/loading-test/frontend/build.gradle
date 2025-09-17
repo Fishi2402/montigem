@@ -1,3 +1,5 @@
+import de.montigem.gradle.specific.CreateSymlinkTask
+
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {

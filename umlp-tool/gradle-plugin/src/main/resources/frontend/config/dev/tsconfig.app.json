@@ -3,7 +3,17 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": []
+    "types": [],
+    "paths": {
+      "@umlp/*": ["libs/@umlp/*"],
+      "*": [
+        "gui2java2ts/*",
+        "umlpJava2ts/*",
+        "src/app/*",
+        "hwc/*",
+        "fe2/*"
+      ]
+    }
   },
   "files": [
     "src/main.ts"

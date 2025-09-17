@@ -5,6 +5,7 @@
     "paths": {
       "@umlp/*": ["prodlibs/@umlp/*"],
       "*": [
+        "umlp2jsweetObserver/*",
         "build/umlp2ts/*",
         "build/gui2java/*",
         "src/app/*",
