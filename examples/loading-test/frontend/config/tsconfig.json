@@ -28,8 +28,8 @@
     "paths": {
       "@umlp/*": ["libs/@umlp/*"],
       "*": [
-        "build/umlp2ts/*",
-        "build/gui2java/*",
+        "umlp2ts/*",
+        "gui2java/*",
         "src/app/*",
         "hwcsrc/*"
       ]
