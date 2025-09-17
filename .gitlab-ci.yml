@@ -52,6 +52,7 @@ build_no_containers:
     - export PATH="$PATH:$(dirname $(find $(pwd) -type f -name "node" -print -quit))"
     - "cd umlp-tool"
     - "gradle packageUMLPWithGUIVscodePlugin -P buildVscodePlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 2>&1 | tee -a $CI_PROJECT_DIR/build.log"
+    - "cp -r /root/.npm/_logs/ ."
   cache:
     paths:
       - .gradle/nodejs
@@ -66,6 +67,7 @@ build_no_containers:
       - umlp-tool/build/generated-sources/UMLPWithGUI/**/*.vsix
       - ./**/build/reports/tests/test/**
       - build.log
+      - ./_logs
     reports:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
@@ -144,7 +146,6 @@ build_with_deploy:
       - umlp-tool/build/generated-sources/UMLPWithGUI/**/*.vsix
       - ./**/build/reports/tests/test/**
       - build.log
-      - $HOME/.npm/_logs/
     reports:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
