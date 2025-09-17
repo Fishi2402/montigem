@@ -55,6 +55,11 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
     project.getPluginManager().apply(NodePlugin.class);
     project.getPluginManager().apply(MGBasePlugin.class);
 
+    project.getPlugins().withId("com.github.node-gradle.node", plugin -> {
+      NodeExtension node = project.getExtensions().getByType(NodeExtension.class);
+      node.getNodeProjectDir().set(project.getLayout().getBuildDirectory().dir("app"));
+    });
+
     // Create Dependencies
     addProjectDependencies(project);
     addGUITypesDependency(project);
@@ -71,11 +76,6 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
           task.onlyIf(t -> config.getAsFile().exists());
         });
     project.getTasks().named("nodeSetup").configure(t -> t.dependsOn(setupFrontend));
-
-    project.getPlugins().withId("com.github.node-gradle.node", plugin -> {
-      NodeExtension node = project.getExtensions().getByType(NodeExtension.class);
-      node.getNodeProjectDir().set(setupFrontend.flatMap(SetupFrontendTask::getOutput));
-    });
 
     createUMLP2SymTask(project);
 
