@@ -144,6 +144,7 @@ build_with_deploy:
       - umlp-tool/build/generated-sources/UMLPWithGUI/**/*.vsix
       - ./**/build/reports/tests/test/**
       - build.log
+      - $HOME/.npm/_logs/
     reports:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
