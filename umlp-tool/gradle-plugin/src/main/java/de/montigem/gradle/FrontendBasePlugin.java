@@ -253,16 +253,6 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
     return getModels(project).dir("ocl");
   }
 
-  @NotNull
-  public static Provider<Directory> getIntermediateGUI2Java(Project project) {
-    return project.getLayout().getBuildDirectory().dir("intermediate/app/gui2java");
-  }
-
-  @NotNull
-  public static Provider<Directory> getIntermediateUMLP2TS(Project project) {
-    return project.getLayout().getBuildDirectory().dir("intermediate/app/umlp2ts");
-  }
-
   public static String mcVersion(Project project) {
     String value = (String) project.findProperty("mc_version");
     if (value == null || value.isEmpty()) {
