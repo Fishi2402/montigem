@@ -42,7 +42,7 @@ subprojects {
 
   // Use downloaded node for all subprojects
   tasks.withType(NpxTask).configureEach {
-    dependsOn rootProject.tasks.npmInstall
+    dependsOn rootProject.tasks.named("npmInstall")
     execOverrides {
       if (isWindows) {
         setExecutable "${getNodeDir()}/npx.cmd"
@@ -55,7 +55,7 @@ subprojects {
   }
 
   tasks.withType(NpmTask).configureEach {
-    dependsOn rootProject.tasks.npmInstall
+    dependsOn rootProject.tasks.named("npmInstall")
     execOverrides {
       if (isWindows) {
         setExecutable "${getNodeDir()}/npm.cmd"
@@ -68,7 +68,7 @@ subprojects {
   }
 
   tasks.withType(NodeTask).configureEach {
-    dependsOn rootProject.tasks.npmInstall
+    dependsOn rootProject.tasks.named("npmInstall")
     execOverrides {
       if (isWindows) {
         setExecutable "${getNodeDir()}/node.exe"
@@ -146,24 +146,24 @@ subprojects {
 
 project(":umlp-rte:frontend").afterEvaluate { rte ->
   var previousInstallTask = rte.tasks.named("npmInstall")
+  var previousUpdateTask;
 
   subprojects {
     tasks.withType(com.github.gradle.node.npm.task.NpmInstallTask).configureEach { t ->
       if (project.path != ":umlp-rte:frontend") {
-        t.mustRunAfter(previousInstallTask)
+        t.mustRunAfter(previousInstallTask);
         previousInstallTask = t
       }
     }
-  }
 
-  var previousUpdateTask;
-  subprojects.collectMany { p ->
-    p.tasks.withType(NpmTask).findAll { it.name == "npm_update" }
-  }.each { t ->
-    if (previousUpdateTask) {
-      t.mustRunAfter(previousUpdateTask)
+    tasks.withType(NpmTask).configureEach {
+      if (name == "npm_update") {
+        if (previousUpdateTask) {
+          it.mustRunAfter(previousUpdateTask)
+        }
+        previousInstallTask = it
+      }
     }
-    previousInstallTask = t
   }
 }
 
