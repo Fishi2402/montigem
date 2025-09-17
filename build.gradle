@@ -162,7 +162,7 @@ project(":umlp-rte:frontend").afterEvaluate { rte ->
         if (previousUpdateTask) {
           it.mustRunAfter(previousUpdateTask)
         }
-        previousInstallTask = it
+        previousUpdateTask = it
       }
     }
   }
