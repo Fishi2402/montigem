@@ -57,7 +57,7 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
 
     project.getPlugins().withId("com.github.node-gradle.node", plugin -> {
       NodeExtension node = project.getExtensions().getByType(NodeExtension.class);
-      node.getNodeProjectDir().set(project.file(project.getBuildDir() + "/app"));
+      node.getNodeProjectDir().set(project.getLayout().getBuildDirectory().dir("app"));
     });
 
     // Create Dependencies

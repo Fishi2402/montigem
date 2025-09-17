@@ -81,6 +81,7 @@ public abstract class SetupFrontendTask extends DefaultTask {
     // copy common config from resources of UMLP-Tool
     for (String filename : getResourceListing(this.getClass(), FRONTEND_CONFIG_COMMON)) {
       InputStream file = this.getClass().getClassLoader().getResourceAsStream(FRONTEND_CONFIG_COMMON + filename);
+      System.out.println(getOutput().file(filename).get().getAsFile());
       FileUtils.copyInputStreamToFile(file, getOutput().file(filename).get().getAsFile());
     }
 
@@ -88,6 +89,7 @@ public abstract class SetupFrontendTask extends DefaultTask {
     String config = isLocal(getProject()) ? FRONTEND_CONFIG_DEV : FRONTEND_CONFIG_PROD;
     for (String filename : getResourceListing(this.getClass(), config)) {
       InputStream file = this.getClass().getClassLoader().getResourceAsStream(config + filename);
+      System.out.println(getOutput().file(filename).get().getAsFile());
       FileUtils.copyInputStreamToFile(file, getOutput().file(filename).get().getAsFile());
     }
 
