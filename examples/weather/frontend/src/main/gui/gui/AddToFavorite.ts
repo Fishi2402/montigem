@@ -9,7 +9,7 @@ import { Option } from '@umlp/input';
   standalone:true,
   imports:[... config.imports],
   selector: config.selector,
-  templateUrl: '../../build/appgui/gui/AddToFavorite.html',
+  templateUrl: config.templateUrl,
   styleUrls: config.styleUrls
 })
 export class AddToFavorite extends AddToFavoriteComponent {

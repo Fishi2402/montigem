@@ -11,7 +11,7 @@ import { Event } from '@umlp/common';
   standalone:true,
   imports: [ ...config.imports],
   selector: config.selector,
-  templateUrl: '../../build/appgui/gui/WeatherView.html',
+  templateUrl: config.templateUrl,
   styleUrls: config.styleUrls,
   styles: [
     ":host { display: flex; flex-direction: column }",

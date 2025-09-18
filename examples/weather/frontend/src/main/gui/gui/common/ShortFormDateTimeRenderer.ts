@@ -8,7 +8,7 @@ import {
   standalone:true,
   imports:[... config.imports],
   selector: config.selector,
-  templateUrl: '../../../build/appgui/gui/common/ShortFormDateTimeRenderer.html',
+  templateUrl: config.templateUrl,
   styles: config.styles,
   styleUrls: config.styleUrls
 })

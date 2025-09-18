@@ -6,7 +6,7 @@ import { ForecastUpdateComponent,config } from 'gui/ForecastUpdateComponent';
   standalone:true,
   imports:[... config.imports],
   selector: config.selector,
-  templateUrl: '../../build/appgui/gui/ForecastUpdate.html',
+  templateUrl: config.templateUrl,
   styles: config.styles,
   styleUrls: config.styleUrls
 })

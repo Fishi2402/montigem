@@ -7,7 +7,7 @@ import { WeatherWidgetComponent,config } from 'gui/widgets/WeatherWidgetComponen
   standalone:true,
   imports:[...config.imports],
   selector: config.selector,
-  templateUrl: '../../../build/appgui/gui/widgets/WeatherWidget.html',
+  templateUrl: config.templateUrl,
   styles: config.styles,
   styleUrls: config.styleUrls
 })

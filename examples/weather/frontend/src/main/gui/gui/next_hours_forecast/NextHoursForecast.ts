@@ -6,7 +6,7 @@ import { NextHoursForecastComponent,config } from "gui/next_hours_forecast/NextH
   standalone:true,
   imports:[... config.imports],
   selector: config.selector,
-  templateUrl: '../../../build/appgui/gui/next_hours_forecast/NextHoursForecast.html',
+  templateUrl: config.templateUrl,
   styles: config.styles,
   styleUrls: config.styleUrls
 })

@@ -6,7 +6,7 @@ import {ShortFormDateRendererComponent,config} from "gui/common/ShortFormDateRen
   standalone:true,
   imports:[... config.imports],
   selector: config.selector,
-  templateUrl: '../../../build/appgui/gui/common/ShortFormDateRenderer.html',
+  templateUrl: config.templateUrl,
   styles: config.styles,
   styleUrls: config.styleUrls
 })
