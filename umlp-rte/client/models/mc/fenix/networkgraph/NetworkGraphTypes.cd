@@ -27,9 +27,14 @@ classdiagram NetworkGraphTypes {
     Optional<Double> y;
 
     /**
-     * In which shapes should nodes be drawn. Allowed values are triangle, square, circle. Default is circle.
+     * In which shapes should nodes be drawn. Allowed values are triangle, square, circle and image. Default is circle.
      */
     Optional<String> nodeProgram;
+    /**
+     * The image url in case nodeProgram is set to image.
+     */
+    Optional<String> imageUrl;
+
     Optional<String> hoverLabel;
     Optional<String> hover;
     Optional<String> tooltip;

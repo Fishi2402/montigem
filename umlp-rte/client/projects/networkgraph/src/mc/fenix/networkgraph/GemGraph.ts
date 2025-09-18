@@ -175,6 +175,7 @@ export class GemGraph extends GemGraphBasis implements OnChanges {
             x: n.getX(),
             y: n.getY(),
             nodeProgram: getNodeProgramOfString(n.getNodeProgram()),
+            image: n.getImageUrl(),
             hoverLabel: n.getHoverLabel(),
             hover: n.getHover(),
             tooltip: n.getTooltip()
