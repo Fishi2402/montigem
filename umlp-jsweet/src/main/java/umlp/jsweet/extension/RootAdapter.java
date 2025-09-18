@@ -26,7 +26,7 @@ import umlp.jsweet.extension.util.OnlyCDAdapter;
 public class RootAdapter extends PrinterAdapter {
   public RootAdapter(PrinterAdapter parentAdapter) {
     super(
-        new NeverCDAdapter(new UMLPGUICollectionsAdapter(
+        new UMLPGUICollectionsAdapter(
             new OnlyCDAdapter(new UMLPRTEImportAdapter(
                 new RelativeImportAdapter(
                     new NeverCDAdapter(new AnnotationToDecoratorAdapter(
@@ -42,6 +42,6 @@ public class RootAdapter extends PrinterAdapter {
                                                             new MutexAdapter(
                                                                 new UMLPEnumAdapter(
                                                                     parentAdapter
-                                                                ))))))))))))))))))))))))));
+                                                                )))))))))))))))))))))))));
   }
 }
