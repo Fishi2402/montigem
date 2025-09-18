@@ -1,7 +1,7 @@
 import { Attributes } from "graphology-types";
 import { Color } from "../shared/utils/color.util";
 import { EdgeDisplayData, NodeDisplayData, PartialButFor } from "sigma/types";
-import { AnimateOptions } from "sigma/utils/animate";
+import { AnimateOptions } from "sigma/utils";
 import {NodeProgram} from "sigma/rendering";
 
 /** Represents a value that can be a number, string, or boolean */

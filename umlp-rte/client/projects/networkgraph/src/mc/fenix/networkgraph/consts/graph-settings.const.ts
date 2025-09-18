@@ -1,11 +1,12 @@
 import {DEFAULT_EDGE_PROGRAM_CLASSES, DEFAULT_NODE_PROGRAM_CLASSES, DEFAULT_SETTINGS, Settings} from "sigma/settings";
 import { GraphSettings } from "../types/graph-settings.types";
 import { NodeCircleProgram } from "sigma/rendering"; // getNodeImageProgram from "sigma/rendering/webgl/programs/node.image";
+import { createNodeImageProgram } from "@sigma/node-image";
 import { prettyLabelHoverRenderer } from "../renderers/pretty-label-hover.renderer";
 import { prettyLabelRenderer } from "../renderers/pretty-label.renderer";
 //import EdgeLineProgram from "sigma/rendering/programs/edge-line";
-import {NodeLabelDrawingFunction} from "sigma/rendering/node-labels";
-import {NodeHoverDrawingFunction} from "sigma/rendering/node-hover";
+import {NodeLabelDrawingFunction} from "sigma/rendering";
+import {NodeHoverDrawingFunction} from "sigma/rendering";
 import NodeTriangleProgram from "../custom-programs/node-triangle/NodeTriangle";
 import NodeSquareProgram from "../custom-programs/node-square/NodeSquare";
 
@@ -49,7 +50,7 @@ export function getDefaultGraphSettings(): GraphSettings {
     defaultDrawNodeHover: prettyLabelHoverRenderer as NodeHoverDrawingFunction,
     nodeProgramClasses: {
       ...DEFAULT_NODE_PROGRAM_CLASSES,
-      image: NodeCircleProgram,
+      image: createNodeImageProgram({"keepWithinCircle":false}),
       triangle: NodeTriangleProgram,
       square: NodeSquareProgram
     },
