@@ -6,6 +6,13 @@ plugins {
 
 dependencies {
   montigemModule project(":modules:login")
+  montigemModuleGeneratorExtension project(":modules:login")
+  montigemModuleUMLPModels project(":modules:login")
+  montigemModuleUMLPSymbols project(":modules:login")
+  montigemModuleImportMap project(":modules:login")
+  montigemModuleGUISymbols project(":modules:login")
+
+  montigemModule project(":modules:comment")
   montigemModuleGeneratorExtension project(":modules:comment")
   montigemModuleUMLPModels project(":modules:comment")
 
@@ -19,6 +26,8 @@ dependencies {
 gui2java2ts {
   verbose = false
   guiCreateModels = ["gui.login.UserCreate", "gui.project.ProjectCreate", "gui.project.ProjectsCreateByGroup"]
+
+  symbolPath.from(configurations.named("montigemModuleUMLPSymbols"));
 
   // TODO: Gradle Setup for modules
   // symbolOutDir.from(() -> tasks.named("umlp2sym").get().outputs)
