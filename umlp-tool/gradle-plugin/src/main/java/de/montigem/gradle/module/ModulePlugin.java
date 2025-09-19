@@ -17,7 +17,6 @@ import org.gradle.api.component.SoftwareComponentFactory;
 import org.gradle.api.file.Directory;
 import org.gradle.api.internal.tasks.TaskDependencyFactory;
 import org.gradle.api.plugins.BasePlugin;
-import org.gradle.api.plugins.JavaPlatformExtension;
 import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
@@ -26,11 +25,12 @@ import org.gradle.api.tasks.bundling.Jar;
 
 import javax.inject.Inject;
 import java.io.File;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import static de.montigem.gradle.FrontendBasePlugin.UMLP_GROUP_NAME;
 import static de.montigem.gradle.FrontendBasePlugin.inRTE;
+import static de.montigem.gradle.FrontendBasePlugin.mcVersion;
 import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
 import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_IMPORT_MAP_CONFIG;
 import static de.montigem.gradle.module.ModuleFrontendPlugin.addGuiSymbolsJarAttributes;
@@ -60,12 +60,9 @@ public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Projec
     Configuration moduleGenerationExtensionCompile = project.getConfigurations().create(MODULE_GENERATOR_EXTENSION_COMPILE_CONFIG);
     moduleGenerationExtensionCompile.setCanBeResolved(true);
     moduleGenerationExtensionCompile.setCanBeConsumed(false);
-    if (project.hasProperty("mc_version")) {
-      String mcVersion = project.property("mc_version").toString();
-      project.getDependencies().add(moduleGenerationExtensionCompile.getName(), "de.monticore:monticore-runtime:" + mcVersion);
-      project.getDependencies().add(moduleGenerationExtensionCompile.getName(), "de.monticore:monticore-grammar:" + mcVersion);
-      project.getDependencies().add(moduleGenerationExtensionCompile.getName(), "umlp:umlp-tool:" + mcVersion);
-    }
+    project.getDependencies().add(moduleGenerationExtensionCompile.getName(), "de.monticore:monticore-runtime:" + mcVersion(project));
+    project.getDependencies().add(moduleGenerationExtensionCompile.getName(), "de.monticore:monticore-grammar:" + mcVersion(project));
+    project.getDependencies().add(moduleGenerationExtensionCompile.getName(), "umlp:umlp-tool:" + mcVersion(project));
     Project backend = project.findProject(project.getPath() + ":backend");
     if (backend != null) {
       project.getDependencies().add("api", backend);
@@ -131,11 +128,11 @@ public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Projec
         generatorExtensionSourceSet.getCompileClasspath().plus(moduleGenerationExtensionCompile)
     );
     TaskProvider<Jar> generatorExtensionJar = project.getTasks().register("generatorExtensionJar", Jar.class, jar -> {
-      jar.onlyIf(t -> generatorExtensionSourceSet.getAllSource().getFiles().stream().anyMatch(File::exists));
-
-      jar.setGroup("umlp");
+      jar.setGroup(UMLP_GROUP_NAME);
       jar.getArchiveClassifier().set("module-generator-time");
       jar.from(generatorExtensionSourceSet.getOutput());
+
+      jar.onlyIf(t -> generatorExtensionSourceSet.getAllSource().getFiles().stream().anyMatch(File::exists));
     });
     project.getTasks().named(BasePlugin.ASSEMBLE_TASK_NAME).configure(it -> it.dependsOn(generatorExtensionJar));
     project.afterEvaluate(p -> {

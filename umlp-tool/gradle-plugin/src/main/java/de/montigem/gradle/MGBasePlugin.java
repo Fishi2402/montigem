@@ -67,31 +67,26 @@ public abstract class MGBasePlugin implements Plugin<Project> {
     montigemModuleGeneratorExtensionC.setCanBeResolved(true);
     montigemModuleGeneratorExtensionC.setCanBeConsumed(false);
     ModulePlugin.addGeneratorExtensionJarAttributes(montigemModuleGeneratorExtensionC, project);
-    montigemModuleGeneratorExtensionC.extendsFrom(montigemModuleC);
 
     var montigemModuleUMLPModelsC = project.getConfigurations().maybeCreate(MONTIGEM_MODULE_UMLP_MODELS_CONFIG);
     montigemModuleUMLPModelsC.setCanBeResolved(true);
     montigemModuleUMLPModelsC.setCanBeConsumed(false);
     ModulePlugin.addUMLPModelsJarAttributes(montigemModuleUMLPModelsC, project);
-    montigemModuleUMLPModelsC.extendsFrom(montigemModuleC);
 
     var montigemModuleUSC = project.getConfigurations().maybeCreate(MONTIGEM_MODULE_UMLP_SYMBOLS_CONFIG);
     montigemModuleUSC.setCanBeResolved(true);
     montigemModuleUSC.setCanBeConsumed(false);
     ModuleFrontendPlugin.addUMLPSymbolsJarAttributes(montigemModuleUSC, project);
-    montigemModuleUSC.extendsFrom(montigemModuleC);
 
     var montigemModuleIMC = project.getConfigurations().maybeCreate(MONTIGEM_MODULE_IMPORT_MAP_CONFIG);
     montigemModuleIMC.setCanBeResolved(true);
     montigemModuleIMC.setCanBeConsumed(false);
     ModuleFrontendPlugin.addImportMapJarAttributes(montigemModuleIMC, project);
-    montigemModuleIMC.extendsFrom(montigemModuleC);
 
     var montigemModuleGSC = project.getConfigurations().maybeCreate(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG);
     montigemModuleGSC.setCanBeResolved(true);
     montigemModuleGSC.setCanBeConsumed(false);
     ModuleFrontendPlugin.addGuiSymbolsJarAttributes(montigemModuleGSC, project);
-    montigemModuleGSC.extendsFrom(montigemModuleC);
 
     project.getPlugins().withId("java", plugin -> {
       project.getConfigurations().getByName("implementation").extendsFrom(montigemModuleC);

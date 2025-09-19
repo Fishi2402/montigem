@@ -10,14 +10,22 @@ plugins {
 }
 
 dependencies {
-  montigemModule(project(":modules:login"))
-  montigemModuleGeneratorExtension(project(":modules:comment"))
-  montigemModuleUMLPModels(project(":modules:comment"))
+  montigemModule project(":modules:login")
+  montigemModuleGeneratorExtension project(":modules:login")
+  montigemModuleUMLPModels project(":modules:login")
+  montigemModuleUMLPSymbols project(":modules:login")
+  montigemModuleImportMap project(":modules:login")
+  montigemModuleGUISymbols project(":modules:login")
+
+  montigemModule project(":modules:comment")
+  montigemModuleGeneratorExtension project(":modules:comment")
+  montigemModuleUMLPModels project(":modules:comment")
 }
 
 application { // Set Main-Class for "run" task
   mainClass = 'dtcockpit.DtcockpitServerApplication'
 }
+
 jib { // For Docker-Container
   container.mainClass = application.mainClass.get()
   from.image = "$container_from_image"
@@ -66,12 +74,10 @@ dependencies {
   testImplementation group: 'org.neo4j', name: 'neo4j-jdbc-driver', version: '4.0.9'
   testImplementation "org.neo4j:neo4j:4.4.10"
   testImplementation "org.neo4j.driver:neo4j-java-driver:$neo4jVersion"
-
 }
 
 umlp2java {
-  input = file("../models/Dtcockpit.umlp")
-  symbolOutDir = file("${project.buildDir}/symbols")
+  modelDir.from(configurations.named("montigemModuleUMLPModels"));
   useSpring = true
   useShell = true
 }
@@ -107,7 +113,6 @@ test {
   useJUnitPlatform() {
     excludeTags "SlowTest"
   }
-
 }
 
 tasks.register("slowtest", Test) {
@@ -122,10 +127,12 @@ tasks.register("slowtest", Test) {
 
 tasks.register("e2eBootJar", org.springframework.boot.gradle.tasks.bundling.BootJar.class) {
   var e2es = sourceSets.e2esetup;
-  classpath = project.provider({ e2es.getRuntimeClasspath()
-      .minus((configurations.developmentOnly.minus(configurations.productionRuntimeClasspath)))
+  classpath = project.provider({
+    e2es.getRuntimeClasspath()
+        .minus((configurations.developmentOnly.minus(configurations.productionRuntimeClasspath)))
 //      .minus((configurations.testAndDevelopmentOnly.minus(configurations.productionRuntimeClasspath)))
-      .filter(new SpringBootJarTypeFileSpec())})
+        .filter(new SpringBootJarTypeFileSpec())
+  })
   mainClass = "e2e.E2EServerApplication"
   archiveClassifier.set("e2esetup")
 }
@@ -133,7 +140,7 @@ tasks.register("e2eBootJar", org.springframework.boot.gradle.tasks.bundling.Boot
 tasks.register("e2eRun", JavaExec.class) {
   group = "application"
   mainClass = "e2e.E2EServerApplication"
-  classpath = project.files().from(project.provider({tasks.e2eBootJar.classpath}))
+  classpath = project.files().from(project.provider({ tasks.e2eBootJar.classpath }))
 }
 
 tasks.withType(Zip).all {

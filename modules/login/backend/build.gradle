@@ -14,10 +14,6 @@ dependencies {
   api group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version
 }
 
-umlp2java {
-  input = file("../models/LoginModule.umlp")
-}
-
 application { // Set Main-Class for "run" task
   mainClass = 'loginmodule.LoginModuleServerApplication'
 }

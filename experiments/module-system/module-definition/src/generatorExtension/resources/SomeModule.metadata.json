@@ -2,14 +2,14 @@
   "name": "SomeModule",
   "tasks": [
     {
-      "type": "UMLPBackendTask",
+      "type": "UMLP2JavaTask",
       "additionalConfigs": [
         "some_module.BackendConfig.ftl"
       ],
       "additionalParameters": []
     },
     {
-      "type": "UMLPFrontendTask",
+      "type": "GUI2Java2TSTask",
       "additionalConfigs": [
         "some_module.FrontendConfig.ftl"
       ],

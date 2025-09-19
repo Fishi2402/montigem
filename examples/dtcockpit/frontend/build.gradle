@@ -2,14 +2,9 @@
 
 plugins {
   id "de.rwth.se.montigem-frontend"
-  // id "de.rwth.se.montigem-frontend-test"  // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
 }
 
 dependencies {
-  implementation project(":examples:dtcockpit:backend")
-  // a configuration containing the domain sources
-  srcUMLPConfig project(":examples:dtcockpit:backend")
-
   montigemModule project(":modules:login")
   montigemModuleGeneratorExtension project(":modules:comment")
   montigemModuleUMLPModels project(":modules:comment")
@@ -21,43 +16,28 @@ dependencies {
   testImplementation project(':umlp-test-rte')
 }
 
-node {
-  nodeProjectDir = file("${buildDir}/app")
-}
-
-gui2java {
-  domainModels = ["Dtcockpit"] // "LoginModule" is included via the modGen (or not required?)
+gui2java2ts {
+  verbose = false
   guiCreateModels = ["gui.login.UserCreate", "gui.project.ProjectCreate", "gui.project.ProjectsCreateByGroup"]
 
   // TODO: Gradle Setup for modules
-  symbolOutDir.from(() -> tasks.named("umlp2sym").get().outputs)
+  // symbolOutDir.from(() -> tasks.named("umlp2sym").get().outputs)
 
   /*
   debug = true
   outputs.upToDateWhen { false }
   /**/
 }
-nodeSetup.dependsOn(setupFrontend)
-npmInstall.dependsOn(':umlp-rte:frontend:npmInstall')
 
 umlpJava2ts {
   verbose = false
 }
 
-guiJava2ts {
-  verbose = false
-}
-
-tasks.named('buildApp', NpxTask) {
-  dependsOn(
-    project(":umlp-rte:frontend").tasks.matching { it.name.startsWith("build_") }
-  )
-}
-
 tasks.named('testApp') {
-  dependsOn(project(':modules:login:frontend').tasks.named('models2ts'))
+  dependsOn(project(':modules:login:frontend').tasks.named('build'))
 }
 
+/*
 tasks.named("createSymlink") {
   dependsOn {
     project(':modules:login:frontend').tasks.named('models2ts')
@@ -77,31 +57,36 @@ tasks.named("createSymlink") {
   getSymlinkMap().put(loginGui, loginGuiTarget)
   getSymlinkMap().put(loginHWC, loginHWCTarget)
 }
+/**/
 
 tasks.named('runApp') {
-  dependsOn(project(':modules:login:frontend').tasks.named('models2ts'))
-}
-
-tasks.register('run') {
-  dependsOn(runApp)
+  dependsOn(project(':modules:login:frontend').tasks.named('build'))
 }
 
 // End 2 end testing using the build website + backend
-tasks.register('installPlaywright', NpxTask){
+def installPlaywright = tasks.register('installPlaywright', NpxTask) {
   dependsOn(npmInstall)
   command = "playwright"
   args = ["install"]
 }
 
 // TODO: Let those tasks use a shared service, as to stop gradle from executing them in parallel
-tasks.register('e2eTestApp', NpmTask){
-  dependsOn(buildApp, installPlaywright, project(":examples:dtcockpit:backend").tasks.e2eBootJar)
+tasks.register('e2eTestApp', NpmTask) {
+  dependsOn(
+      tasks.named("buildApp"),
+      installPlaywright,
+      project(":examples:dtcockpit:backend").tasks.named("e2eBootJar")
+  )
   args = ["run", "e2e"]
   enabled = false // TODO: ALu
 }
 
-tasks.register('e2eTestAppDebug', NpmTask){
-  dependsOn(buildApp, installPlaywright, project(":examples:dtcockpit:backend").tasks.e2eBootJar)
+tasks.register('e2eTestAppDebug', NpmTask) {
+  dependsOn(
+      tasks.named("buildApp"),
+      installPlaywright,
+      project(":examples:dtcockpit:backend").tasks.named("e2eBootJar")
+  )
   args = ["run", "e2e", "--", "--debug"]
   enabled = false // TODO: ALu
 }

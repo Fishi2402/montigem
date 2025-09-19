@@ -4,6 +4,6 @@ plugins {
   id 'de.rwth.se.montigem-module-frontend'
 }
 
-configure(mglib) {
+mglib {
   libs.addAll([project(":modules:login:frontend:login")])
 }

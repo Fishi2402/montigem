@@ -109,10 +109,6 @@ public abstract class UMLPJava2TSTask extends DefaultTask {
     srcDirs.from(getInput());
     FileCollection filteredSrcDirs = srcDirs.minus(getExcludeTranspileFiles());
 
-    for (File f : filteredSrcDirs.getFiles()) {
-      getLogger().lifecycle(f.getAbsolutePath().toString());
-    }
-
     workQueue.submit(UMLP2JSweetAdapterAction.class, params -> {
       params.getDomain().set(getDomain());
       params.getJSweetAdapterDir().set(getJSweetAdapterDir());

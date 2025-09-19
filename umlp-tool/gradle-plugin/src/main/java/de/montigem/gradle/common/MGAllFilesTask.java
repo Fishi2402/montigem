@@ -58,7 +58,7 @@ abstract public class MGAllFilesTask extends MCAllFilesTask implements GradleTas
   @Override
   protected List<String> createArgList(Function<Path, String> handlePath) {
     List<String> result = super.createArgList(handlePath);
-    if(getModuleConfigTemplates().isPresent()){
+    if (getModuleConfigTemplates().isPresent()) {
       for (String moduleConfigTemplate : getModuleConfigTemplates().get()) {
         result.add("--module-config");
         result.add(moduleConfigTemplate);
@@ -83,11 +83,13 @@ abstract public class MGAllFilesTask extends MCAllFilesTask implements GradleTas
     statdata.countRun();
     super.startGeneration(args, progressName);
   }
+
   @Override
-  public void prepareRun(){
+  public void prepareRun() {
     super.prepareRun();
     statdata.setNumberOfInputFiles(this.getInputFilesAsStream().count());
   }
+
   @Override
   @Internal
   public JsonElement getGradleStatisticData() {

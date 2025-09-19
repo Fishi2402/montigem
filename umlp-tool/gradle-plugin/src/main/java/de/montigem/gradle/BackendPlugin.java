@@ -22,6 +22,7 @@ import static de.montigem.gradle.FrontendBasePlugin.getModels;
 import static de.montigem.gradle.FrontendBasePlugin.isLocal;
 import static de.montigem.gradle.FrontendBasePlugin.mcVersion;
 import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
+import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_UMLP_MODELS_CONFIG;
 
 /***
  * A opinionated plugin which handles backend generation.
@@ -86,7 +87,7 @@ public abstract class BackendPlugin implements Plugin<Project> {
       }
       task.getOutputDir().set(project.getLayout().getBuildDirectory().dir("umlp2java"));
       task.getSymbolOutDir().set(project.getLayout().getBuildDirectory().dir("umlp2sym"));
-      task.getModelDir().from(project.getConfigurations().getByName(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
+      task.getModelDir().from(project.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
     });
   }
 

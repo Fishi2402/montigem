@@ -2,13 +2,13 @@
   "name": "Login",
   "tasks": [
     {
-      "type": "UMLPBackendTask",
+      "type": "UMLP2JavaTask",
       "additionalConfigs": [
         "login_module.backend.LoginBackendConfig.ftl"
       ]
     },
     {
-      "type": "UMLPGuiGenTask",
+      "type": "GUI2Java2TSTask",
       "additionalConfigs": [
         "login_module.frontend.LoginFrontendConfig.ftl"
       ]
