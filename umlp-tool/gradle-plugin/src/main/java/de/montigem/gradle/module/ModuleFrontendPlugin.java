@@ -51,12 +51,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static de.montigem.gradle.FrontendBasePlugin.GUI_TYPES_CONFIG;
 import static de.montigem.gradle.FrontendBasePlugin.UMLP_GROUP_NAME;
 import static de.montigem.gradle.FrontendBasePlugin.addClientRTEDependency;
 import static de.montigem.gradle.FrontendBasePlugin.addGUITypesDependency;
 import static de.montigem.gradle.FrontendBasePlugin.addProjectDependencies;
-import static de.montigem.gradle.FrontendBasePlugin.getBooleanProjectProperty;
 import static de.montigem.gradle.FrontendBasePlugin.getModels;
 import static de.montigem.gradle.FrontendBasePlugin.inRTE;
 import static de.montigem.gradle.FrontendBasePlugin.isLocal;

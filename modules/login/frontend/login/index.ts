@@ -96,4 +96,3 @@ export * from './build/umlpJava2ts/loginmodule/LoginSecManagerDeSerBuilder';
 export * from './build/umlpJava2ts/loginmodule/LoginSecManagerErrorCollector';
 export * from './build/umlpJava2ts/loginmodule/LoginSecManagerErrorObserver';
 export * from './build/umlpJava2ts/loginmodule/LoginSecManagerObserver';
-export * from './build/umlpJava2ts/loginmodule/LoginSecManagerTOP';
