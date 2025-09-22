@@ -1,0 +1,72 @@
+package transpilationtests;
+
+import org.jsweet.transpiler.JSweetTranspiler;
+import org.jsweet.transpiler.SourceFile;
+import org.jsweet.transpiler.util.ConsoleTranspilationHandler;
+import org.jsweet.transpiler.util.ErrorCountTranspilationHandler;
+import org.junit.jupiter.api.Test;
+import testutil.Util;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.jsweet.transpiler.SourceFile.getSourceFiles;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+public class QNameCastTest {
+
+  @Test
+  public void testQNameCastTranslatesToImport() throws IOException {
+    List<File> inputs = new ArrayList<>();
+    inputs.add(Paths.get("src/test/resources/java/relative/Importer.java").toFile());
+    inputs.add(Paths.get("src/test/resources/java/relative/Imported1.java").toFile());
+    inputs.add(Paths.get("src/test/resources/java/relative/Imported2.java").toFile());
+
+    checkQNameCast(inputs, Util.transpilerUMLPModuleAdapter());
+  }
+
+  public void checkQNameCast(List<File> input, JSweetTranspiler transpiler) throws IOException {
+    ErrorCountTranspilationHandler handler = new ErrorCountTranspilationHandler(
+        new ConsoleTranspilationHandler());
+    SourceFile[] files = getSourceFiles(input);
+    transpiler.transpile(handler, files);
+
+    assertEquals(0, handler.getErrorCount());
+    assertNotNull(files[0]);
+
+    File transpiledFile = files[0].getTsFile();
+    String transpiledContent = Files.readString(Paths.get(transpiledFile.getPath()));
+
+    int occurrences;
+    int idx;
+    String find;
+
+    occurrences = 0;
+    idx = 0;
+    // should contain import string with this path
+    find = "./Imported1";
+
+    while ((idx = transpiledContent.indexOf(find, idx)) != -1) {
+      occurrences++;
+      idx += find.length(); // move past last match
+    }
+    assertEquals(1, occurrences);
+
+    occurrences = 0;
+    idx = 0;
+    // should contain import string with this path
+    find = "./Imported2";
+
+    while ((idx = transpiledContent.indexOf(find, idx)) != -1) {
+      occurrences++;
+      idx += find.length(); // move past last match
+    }
+    assertEquals(1, occurrences);
+  }
+
+}

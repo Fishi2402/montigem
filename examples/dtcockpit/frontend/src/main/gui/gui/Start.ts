@@ -5,7 +5,7 @@ import {Component} from '@angular/core';
 import {DtcockpitManager} from 'dtcockpit/DtcockpitManager';
 import {DtcockpitSecurityManager} from "../dtcockpit/DtcockpitSecurityManager";
 import {GetCurrentUserRequest} from 'dtcockpit/commands/GetCurrentUserRequest';
-import {CommandManager} from '@umlp/common';
+import {CommandManager} from '@umlp/commonj2ts';
 import {ActivatedRoute, Router} from '@angular/router';
 import {LoginSecManager} from "@montigem/login";
 

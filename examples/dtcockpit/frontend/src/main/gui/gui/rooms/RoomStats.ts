@@ -4,7 +4,7 @@ import {RoomStatsComponent,config} from 'gui/rooms/RoomStatsComponent';
 
 import {RoomObserverMixin} from 'dtcockpit/RoomObserverMixin';
 import {Room} from 'dtcockpit/Room';
-import {NotificationScope} from '@umlp/common';
+import {NotificationScope} from '@umlp/commonj2ts';
 import { Component } from '@angular/core';
 
 @Component({

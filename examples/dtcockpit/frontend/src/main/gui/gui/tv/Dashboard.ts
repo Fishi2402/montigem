@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
 import { DashboardComponent,config } from 'gui/tv/DashboardComponent';
 import { App } from 'dtcockpit/App';
 import { Meeting } from 'dtcockpit/Meeting';
-import { GemList } from '@umlp/common';
+import { GemList } from '@umlp/commonj2ts';
 
 @Component({
   standalone:true,

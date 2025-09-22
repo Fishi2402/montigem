@@ -5,6 +5,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.jsweet.transpiler.ModuleImportDescriptor;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.CompilationUnitElement;
+import org.jsweet.transpiler.model.ImportElement;
+import org.jsweet.transpiler.model.TypeCastElement;
 import umlp.jsweet.extension.util.GUIAdapterUtils;
 
 import javax.lang.model.element.PackageElement;
@@ -24,6 +26,16 @@ public class RelativeImportAdapter extends PrinterAdapter {
   public RelativeImportAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);
     this.adapterUtils = new GUIAdapterUtils(this, types(), context, util());
+  }
+
+  @Override
+  public String needsImport(ImportElement importElement, String qualifiedName) {
+    return super.needsImport(importElement, qualifiedName);
+  }
+
+  @Override
+  public boolean substituteTypeCast(TypeCastElement castExpression) {
+    return super.substituteTypeCast(castExpression);
   }
 
   @Override

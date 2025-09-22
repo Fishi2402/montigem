@@ -30,9 +30,12 @@ public class GUITypesImportAdapter extends AbstractAdapter {
   }
 
   private Function<TypeMirror, String> computeGuiRTETypeMapping() {
+
     return (TypeMirror type) -> {
       for (TSImportMap value : TSImportMap.values()) {
-        if (type.toString().startsWith(value.getJavaPackage())) {
+        if (type.toString().startsWith(value.getJavaPackage())
+            && !getCompilationUnit().getPackage().getQualifiedName().toString().startsWith(value.getJavaPackage())
+        ) {
           return UMLPAdapterUtils.getSimpleNameOfFQN(type.toString());
         }
       }

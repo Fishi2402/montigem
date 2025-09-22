@@ -20,11 +20,11 @@ import umlp.jsweet.extension.umlp.UMLPRTEImportAdapter;
 public class UMLPModuleAdapter extends PrinterAdapter {
   public UMLPModuleAdapter(PrinterAdapter parentAdapter) {
     super(
-        new GUITypesImportAdapter(
-            new CollectionsAdapter(
-                new JavaBasicsAdapter(
-                    new UMLPRTEImportAdapter(
-                        new RelativeImportAdapter(
+        new RelativeImportAdapter(
+            new GUITypesImportAdapter(
+                new CollectionsAdapter(
+                    new JavaBasicsAdapter(
+                        new UMLPRTEImportAdapter(
                             new BasicsAdapter(
                                 new BackendOnlyAdapter(
                                     new MutexAdapter(

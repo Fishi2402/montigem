@@ -3,7 +3,7 @@
 import { OverviewPageComponent, config } from 'gui/montiverse/OverviewPageComponent';
 import { Project } from 'dtcockpit/Project';
 import { Option } from '@umlp/input';
-import { CommandManager } from '@umlp/common';
+import { CommandManager } from '@umlp/commonj2ts';
 import { StartMontiVerseLitePipeline } from 'dtcockpit/commands/StartMontiVerseLitePipeline';
 
 import {

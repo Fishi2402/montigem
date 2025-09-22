@@ -7,12 +7,15 @@ import dtcockpit.Group;
 import dtcockpit.pipelines.PipelineInformationExtractor;
 import umlp.backendrte.command.StatusResult;
 import umlp.backendrte.common.NotificationScope;
+import umlp.jsweet.extension.annotation.BackendOnly;
+import umlp.jsweet.extension.annotation.BackendOnlyModes;
 
 public class Group_create extends Group_createTOP {
   public Group_create(Group group) {
     super(group);
   }
 
+  @BackendOnly(value = BackendOnlyModes.THROW_ERROR)
   public StatusResult doAction () {
     DtcockpitManager.addWithScopeGroup(group, NotificationScope.LOCAL);
     Log.info("Created new group. Start extraction of PipelineAnalysisData","Group_create");

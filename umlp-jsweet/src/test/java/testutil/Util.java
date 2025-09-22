@@ -5,7 +5,6 @@ import org.jsweet.transpiler.JSweetFactory;
 import org.jsweet.transpiler.JSweetTranspiler;
 import org.jsweet.transpiler.ModuleKind;
 import org.jsweet.transpiler.util.ProcessUtil;
-import com.kohlschutter.jdk.standaloneutil.JavaHomeLocator;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +25,13 @@ public class Util {
 
   public static JSweetTranspiler getDomainTranspiler() {
     return getDomainTranspiler(new File(defaultDomainOutput));
+  }
+
+  public static JSweetTranspiler transpilerUMLPModuleAdapter() {
+    return getTranspilerFromConfigFile(
+        new File("src/test/resources/defaultJsweetConfig/UMLPModuleAdapter.json"),
+        new File("build/transpile/umlpmodule")
+    );
   }
 
   public static JSweetTranspiler getGUITranspiler(File outputDir) {
