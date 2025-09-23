@@ -11,18 +11,18 @@ import java.util.Optional;
 
 public final class MethodMonitor {
 
-  private static Optional<StackEventProcessor> activeProcessor = Optional.empty();
+  private static Optional<InteractionProcessor> activeProcessor = Optional.empty();
 
   private final Object reportingObject;
   private final String signature;
-  private final Optional<StackEventProcessor> processor;
+  private final Optional<InteractionProcessor> processor;
   private boolean active = true;
 
-  public static void setActiveStackEventProcessor(StackEventProcessor processor) {
+  public static void setActiveProcessor(InteractionProcessor processor) {
     activeProcessor = Optional.ofNullable(processor);
   }
 
-  public static void removeActiveStackEventProcessor() {
+  public static void removeActiveProcessor() {
     activeProcessor = Optional.empty();
   }
 
@@ -46,7 +46,7 @@ public final class MethodMonitor {
 
   private MethodMonitor(Object reportingObject,
       String signature,
-      Optional<StackEventProcessor> processor) {
+      Optional<InteractionProcessor> processor) {
     this.reportingObject = reportingObject;
     this.signature = signature;
     this.processor = processor;

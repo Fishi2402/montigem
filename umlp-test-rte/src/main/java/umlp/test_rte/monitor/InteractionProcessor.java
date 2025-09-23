@@ -39,7 +39,7 @@ import java.util.stream.Stream;
 /**
  * Receives and processes {@link StackEvent}s from the {@link MethodMonitor}
  */
-public final class StackEventProcessor {
+public final class InteractionProcessor {
 
   /**
    * A stack to monitor which object is currently calling methods. If the stack is empty, calls must
@@ -383,11 +383,11 @@ public final class StackEventProcessor {
         @Override
         public Optional<String> whenCondition(OCLCondition condition) {
           boolean conditionCheckResult;
-          StackEventProcessor.this.conditionChecking = true;
+          InteractionProcessor.this.conditionChecking = true;
           try {
             conditionCheckResult = condition.check();
           } finally {
-            StackEventProcessor.this.conditionChecking = false;
+            InteractionProcessor.this.conditionChecking = false;
           }
           if (!conditionCheckResult) {
             return Optional.of("Failed condition check: " + condition.asString());

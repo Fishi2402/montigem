@@ -3,8 +3,8 @@ package webshop;
 import org.junit.jupiter.api.Test;
 import umlp.backendrte.common.NotificationScope;
 import umlp.test_rte.ClientSetup;
+import umlp.test_rte.monitor.InteractionProcessor;
 import umlp.test_rte.monitor.MethodMonitor;
-import umlp.test_rte.monitor.StackEventProcessor;
 import umlp.test_rte.monitor.model.ExpectedEvent;
 import umlp.test_rte.monitor.model.MatchingStrategy;
 import umlp.test_rte.monitor.model.action.ActivityBarEndAction;
@@ -32,7 +32,7 @@ public class TotalTest extends WebshopSQLDBTestSetup {
 
   @Override
   public void _cleanup() throws Exception {
-    MethodMonitor.removeActiveStackEventProcessor();
+    MethodMonitor.removeActiveProcessor();
     super._cleanup();
   }
 
@@ -53,7 +53,7 @@ public class TotalTest extends WebshopSQLDBTestSetup {
   @Test
   void testSequence() {
     //make sure the name of the processor variable is unique throughout the test
-    var processor = new StackEventProcessor();
+    var processor = new InteractionProcessor();
     //load objects and their matching strategies
     o = createO();
     processor.objectMatchingStrategies().put(o, MatchingStrategy.FREE);
@@ -67,7 +67,7 @@ public class TotalTest extends WebshopSQLDBTestSetup {
     assertTrue(total1 == 0, "total1 == 0"); //simple assertTrue calls for condition checking
 
     //set processor active
-    MethodMonitor.setActiveStackEventProcessor(processor);
+    MethodMonitor.setActiveProcessor(processor);
 
     processor.load(
         new ExpectedEvent(o, o, new MethodCallAction("addItem", Optional.of(new Object[]{item}), true), new OCLCondition(() -> o.getTotal() == 0, "o.getTotal() == 0")),
