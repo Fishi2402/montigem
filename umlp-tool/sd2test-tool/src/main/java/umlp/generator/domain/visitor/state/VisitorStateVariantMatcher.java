@@ -10,6 +10,10 @@ public interface VisitorStateVariantMatcher<T> {
     return otherwise(importState);
   }
 
+  default T whenDiagramMatchingStrategy(DiagramMatchingStrategyState diagramMatchingStrategy) {
+    return otherwise(diagramMatchingStrategy);
+  }
+
   default T whenSDObjectSection(SDObjectSectionState objectSection) {
     return otherwise(objectSection);
   }

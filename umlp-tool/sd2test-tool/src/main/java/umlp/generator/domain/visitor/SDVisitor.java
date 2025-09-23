@@ -50,6 +50,7 @@ import umlp.generator.domain.visitor.state.AwaitActionState;
 import umlp.generator.domain.visitor.state.BodySectionState;
 import umlp.generator.domain.visitor.state.CallActionState;
 import umlp.generator.domain.visitor.state.ClosedActivityBarState;
+import umlp.generator.domain.visitor.state.DiagramMatchingStrategyState;
 import umlp.generator.domain.visitor.state.EndMessageAwaitSourceState;
 import umlp.generator.domain.visitor.state.EndMessageAwaitTargetState;
 import umlp.generator.domain.visitor.state.FinishedState;
@@ -116,7 +117,7 @@ public final class SDVisitor implements SDBasisVisitor2,
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
       public VisitorState whenImportSection(ImportSectionState importSectionState) {
-        return new SDObjectSectionState(importSectionState);
+        return new DiagramMatchingStrategyState(importSectionState);
       }
 
       @Override
@@ -129,6 +130,12 @@ public final class SDVisitor implements SDBasisVisitor2,
   @Override
   public void visit(ASTSDObject node) {
     updateState(new VisitorStateVariantMatcher<>() {
+      @Override
+      public VisitorState whenDiagramMatchingStrategy(DiagramMatchingStrategyState diagramMatchingStrategy) {
+        var objectSection = new SDObjectSectionState(diagramMatchingStrategy);
+        return whenSDObjectSection(objectSection);
+      }
+
       @Override
       public VisitorState whenSDObjectSection(SDObjectSectionState objectSection) {
         var name = node.getName();
@@ -168,26 +175,31 @@ public final class SDVisitor implements SDBasisVisitor2,
 
   @Override
   public void visit(ASTSDCompleteModifier node) {
-    updateObjectMatchingStrategy(MatchingStrategy.COMPLETE, node);
+    updateMatchingStrategy(MatchingStrategy.COMPLETE, node);
   }
 
   @Override
   public void visit(ASTSDFreeModifier node) {
-    updateObjectMatchingStrategy(MatchingStrategy.FREE, node);
+    updateMatchingStrategy(MatchingStrategy.FREE, node);
   }
 
   @Override
   public void visit(ASTSDInitialModifier node) {
-    updateObjectMatchingStrategy(MatchingStrategy.INITIAL, node);
+    updateMatchingStrategy(MatchingStrategy.INITIAL, node);
   }
 
   @Override
   public void visit(ASTSDVisibleModifier node) {
-    updateObjectMatchingStrategy(MatchingStrategy.VISIBLE, node);
+    updateMatchingStrategy(MatchingStrategy.VISIBLE, node);
   }
 
-  private void updateObjectMatchingStrategy(MatchingStrategy matchingStrategy, ASTNode node) {
+  private void updateMatchingStrategy(MatchingStrategy matchingStrategy, ASTNode node) {
     updateState(new VisitorStateVariantMatcher<>() {
+      @Override
+      public VisitorState whenDiagramMatchingStrategy(DiagramMatchingStrategyState diagramMatchingStrategy) {
+        return diagramMatchingStrategy.matchingStrategy(matchingStrategy);
+      }
+
       @Override
       public VisitorState whenSDObjectDeclaration(SDObjectDeclarationState sdObjectDeclarationState) {
         return sdObjectDeclarationState.matchingStrategy(matchingStrategy);

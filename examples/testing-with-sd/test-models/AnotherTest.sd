@@ -1,5 +1,5 @@
 import Webshop.*;
 
-sequencediagram AnotherTest {
+visible sequencediagram AnotherTest {
   o:Order;
 }

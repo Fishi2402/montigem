@@ -43,7 +43,9 @@ public final class PreInteractionBodyState implements OCLState, SDTestExtractabl
   @Override
   public SDTest extractTest() {
     var test = new SDTest();
-    test.imports().addAll(objectSection.importSection().imports());
+    var diagramMatchingStrategy = objectSection.diagramMatchingStrategy();
+    test.imports().addAll(diagramMatchingStrategy.importSection().imports());
+    diagramMatchingStrategy.matchingStrategy().ifPresent(test::matchingStrategy);
     test.sdObjects().addAll(objectSection.sdObjects());
     test.preInteractionOCLStatements().addAll(oclStatements);
     return test;
