@@ -4,6 +4,7 @@ import umlp.args.Option.Context;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public final class SD2TestToolArgs {
 
@@ -54,6 +55,28 @@ public final class SD2TestToolArgs {
 
   public String hwcDirectoryPath() {
     return hwcDirectoryPath;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == null || getClass() != o.getClass()) return false;
+    SD2TestToolArgs that = (SD2TestToolArgs) o;
+    return Objects.equals(domainModelPath, that.domainModelPath) &&
+           Objects.equals(modelPaths, that.modelPaths) &&
+           Objects.equals(backendSymbolDirectoryPath, that.backendSymbolDirectoryPath) &&
+           Objects.equals(testSymbolDirectoryPath, that.testSymbolDirectoryPath) &&
+           Objects.equals(outputDirectoryPath, that.outputDirectoryPath) &&
+           Objects.equals(hwcDirectoryPath, that.hwcDirectoryPath);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(domainModelPath,
+                        modelPaths,
+                        backendSymbolDirectoryPath,
+                        testSymbolDirectoryPath,
+                        outputDirectoryPath,
+                        hwcDirectoryPath);
   }
 
   private static class Parser {
