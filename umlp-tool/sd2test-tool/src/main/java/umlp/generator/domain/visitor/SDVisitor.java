@@ -68,10 +68,10 @@ import umlp.generator.domain.visitor.state.VariableDeclarationState;
 import umlp.generator.domain.visitor.state.VisitorState;
 import umlp.generator.domain.visitor.state.VisitorStateVariantMatcher;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public final class SDVisitor implements SDBasisVisitor2,
     SD4DevelopmentVisitor2,
@@ -511,12 +511,7 @@ public final class SDVisitor implements SDBasisVisitor2,
         var isStatic = node.isStatic();
         var isTrigger = node.isTrigger();
         Optional<List<String>> argumentExpressions = node.isPresentArguments() ?
-            Optional.of(node
-                            .getArguments()
-                            .getExpressionList()
-                            .stream()
-                            .map(SDVisitor::stringifyExpression)
-                            .collect(Collectors.toList())) :
+            stringifyExpressions(node.getArguments().getExpressionList()) :
             Optional.empty();
         var action = new CallAction(methodName, isStatic, isTrigger, argumentExpressions);
         return new CallActionState(awaitActionState, action);
@@ -539,9 +534,9 @@ public final class SDVisitor implements SDBasisVisitor2,
         var source = awaitActionState.source();
         var target = awaitActionState.target();
         var hasReturnValue = node.isPresentExpression();
-        Optional<String> returnValue = hasReturnValue ?
-            Optional.of(stringifyExpression(node.getExpression())) :
-            Optional.empty();
+        var returnValue = hasReturnValue ?
+            stringifyExpression(node.getExpression()) :
+            Optional.<String>empty();
         var action = new ReturnAction(returnValue, hasReturnValue);
         return new InteractionState(previousState, source, target, action);
       }
@@ -563,12 +558,7 @@ public final class SDVisitor implements SDBasisVisitor2,
         var target = awaitActionState.target();
         var throwableTypeName = node.getMCObjectType().printType();
         Optional<List<String>> arguments = node.isPresentArguments() ?
-            Optional.of(node
-                            .getArguments()
-                            .getExpressionList()
-                            .stream()
-                            .map(SDVisitor::stringifyExpression)
-                            .collect(Collectors.toList())) :
+            stringifyExpressions(node.getArguments().getExpressionList()) :
             Optional.empty();
         var action = new ThrowAction(throwableTypeName, arguments);
         return new InteractionState(previousState, source, target, action);
@@ -745,7 +735,23 @@ public final class SDVisitor implements SDBasisVisitor2,
         Optional.empty();
   }
 
-  private static String stringifyExpression(ASTExpression expression) {
-    return SD4DevelopmentMill.prettyPrint(expression, false);
+  private Optional<List<String>> stringifyExpressions(List<ASTExpression> expressions) {
+    var expressionStrings = new ArrayList<String>();
+    for (var expression : expressions) {
+      var optExprStr = stringifyExpression(expression);
+      if (optExprStr.isEmpty()) {
+        return Optional.empty();
+      }
+      expressionStrings.add(optExprStr.get());
+    }
+    return Optional.of(expressionStrings);
+  }
+
+  private Optional<String> stringifyExpression(ASTExpression expression) {
+    return SD4DevelopmentMill
+        .typeDispatcher()
+        .isSD4DevelopmentASTSDIncompleteExpression(expression) ?
+        Optional.empty() :
+        Optional.of(SD4DevelopmentMill.prettyPrint(expression, false));
   }
 }
