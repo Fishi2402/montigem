@@ -39,6 +39,14 @@ tasks.register('sd2test', JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
   mainClass = 'umlp.SD2TestTool'
   workingDir = '../..'
+  argsString """--domainModel examples/testing-with-sd/models/Webshop.umlp\
+    --model examples/testing-with-sd/test-models/TotalTest.sd\
+    --model examples/testing-with-sd/test-models/AnotherTest.sd\
+    --backendSymbolDirectory examples/testing-with-sd/backend/build/umlp/backend_symbols\
+    --testSymbolDirectory examples/testing-with-sd/backend/build/umlp/test_symbols\
+    --outputDirectory examples/testing-with-sd/backend/build/umlp/backend_test\
+    --hwcDirectory examples/testing-with-sd/backend/src/test/java/\
+    """
 }
 
 group = "umlp"

@@ -18,12 +18,15 @@ import de.monticore.symbols.oosymbols._symboltable.FieldSymbolDeSer;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbolDeSer;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolDeSer;
 import de.se_rwth.commons.logging.Log;
+import umlp.args.SD2TestToolArgs;
 import umlp.generator.domain.decorator.SD2TestDecorator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class SD2TestTool extends SD4DevelopmentTool {
 
@@ -34,17 +37,7 @@ public class SD2TestTool extends SD4DevelopmentTool {
     Log.info("args: " + Arrays.toString(args), LOG_NAME);
 
     var tool = new SD2TestTool();
-
-    var domainModelPath = "examples/testing-with-sd/models/Webshop.umlp";
-    var modelPath = "examples/testing-with-sd/test-models/TotalTest.sd";
-    var backendSymbolDirectoryPath = "examples/testing-with-sd/backend/build/umlp/backend_symbols";
-    var testSymbolDirectoryPath = "examples/testing-with-sd/backend/build/umlp/test_symbols";
-    var outputDirectoryPath = "examples/testing-with-sd/backend/build/umlp/backend_test";
-    var hwcDirectoryPath = "examples/testing-with-sd/backend/src/test/java/";
-
-    var model = tool.parseModel(modelPath, backendSymbolDirectoryPath, testSymbolDirectoryPath);
-    var domainCD = parseDomainCD(domainModelPath);
-    tool.generateUnitTest(model, domainCD, outputDirectoryPath, hwcDirectoryPath);
+    tool.run(args);
   }
 
   private static ASTCDDefinition parseDomainCD(String domainModelPath) {
@@ -58,13 +51,18 @@ public class SD2TestTool extends SD4DevelopmentTool {
     return ast.getCDDefinition();
   }
 
-  public SD2TestTool() {
-    this(true);
+  public void run(String[] args) {
+    run(SD2TestToolArgs.parse(args));
   }
 
-  public SD2TestTool(boolean initMill) {
-    if (initMill) {
-      SD4DevelopmentMill.init();
+  public void run(SD2TestToolArgs args) {
+    var domainCD = parseDomainCD(args.domainModelPath());
+
+    SD4DevelopmentMill.init();
+
+    for (var modelPath : args.modelPaths()) {
+      var model = parseModel(modelPath, args.backendSymbolDirectoryPath(), args.testSymbolDirectoryPath());
+      generateUnitTest(model, domainCD, args.outputDirectoryPath(), args.hwcDirectoryPath());
     }
   }
 
@@ -117,9 +115,14 @@ public class SD2TestTool extends SD4DevelopmentTool {
       String backendSymbolDirectoryPath,
       String testSymbolDirectoryPath) {
     var globalScope = SD4DevelopmentMill.globalScope();
+    var symbolPaths = new ArrayList<>(List.of(checkPath(backendSymbolDirectoryPath, "backend symbol directory")));
+    var testSymbolDirectoryPathObject = toPath(testSymbolDirectoryPath);
+    if (exists(testSymbolDirectoryPathObject)) {
+      symbolPaths.add(testSymbolDirectoryPathObject);
+    }
+
     //symbol-path
-    var symbolPath = new MCPath(checkPath(backendSymbolDirectoryPath, "backend symbold directory"),
-                                checkPath(testSymbolDirectoryPath, "test symbol directory"));
+    var symbolPath = new MCPath(symbolPaths);
     globalScope.setSymbolPath(symbolPath);
 
     //symbol DeSers
@@ -146,11 +149,19 @@ public class SD2TestTool extends SD4DevelopmentTool {
   }
 
   private static Path toExistingPath(String pathString) throws FileNotFoundException {
-    var path = Path.of(pathString);
-    if (!path.toFile().exists()) {
+    var path = toPath(pathString);
+    if (!exists(path)) {
       throw new FileNotFoundException(pathString);
     }
 
     return path;
+  }
+
+  private static boolean exists(Path path) {
+    return path.toFile().exists();
+  }
+
+  private static Path toPath(String pathString) {
+    return Path.of(pathString);
   }
 }
