@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -130,7 +131,7 @@ public abstract class DatabaseAccessManager {
     ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
     try (InputStream is = loader.getResourceAsStream(DATABASE_PROPERTIES_STD_FILE_NAME)) {
-      databaseProperties.load(is);
+      databaseProperties.load(Objects.requireNonNull(is, "Failed to find resource " + DATABASE_PROPERTIES_STD_FILE_NAME));
     } catch (IOException e) {
       e.printStackTrace();
     }

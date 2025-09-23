@@ -6,6 +6,7 @@ import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.typescalculator.FullSynthesizeFromCD4Code;
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
+import de.monticore.cdassociation._ast.ASTCDAssociation;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -49,6 +50,7 @@ import static de.monticore.types.check.SymTypePrimitive.box;
 public class GenService {
 
   public static final String UMLP_ID_NAME = "umlpId";
+  public static final String DERIVED_IMPL_TEMPLATE = "implTemplate";
 
   public GenService() {
   }
@@ -348,6 +350,12 @@ public class GenService {
 
   public static boolean isSymbolDerived(ASTCDAssocSide side) {
     return side.getSymbol().getAssoc().getAssociation().getAstNode().getModifier().isDerived();
+  }
+
+  public static boolean hasImplTemplate(ASTCDAssocSide side){
+    ASTCDAssociation assoc = side.getSymbol().getAssoc().getAssociation().getAstNode();
+    ASTModifier m = assoc.getModifier();
+    return m.isPresentStereotype() && m.getStereotype().contains(DERIVED_IMPL_TEMPLATE);
   }
 
   public static String getInnerType(ASTMCType mcType) {

@@ -26,6 +26,10 @@ public class CommandWebSocketService extends TextWebSocketHandler implements Web
   protected Map<String, Long> clientIds = new HashMap<>();
   protected Map<WebSocketSession, Participant> participants = new HashMap<>();
 
+  protected String getSessionPrincipalName(WebSocketSession session) {
+    return session.getPrincipal().getName();
+  }
+
   @Override
   public void afterConnectionEstablished(WebSocketSession session) throws Exception {
     Long subscriberId;
@@ -33,7 +37,7 @@ public class CommandWebSocketService extends TextWebSocketHandler implements Web
       subscriberId = clientIds.get(session.getId());
     } else {
       WebSocketCommandCommunication commandCommunication = new WebSocketCommandCommunication(session);
-      Participant participant = new Participant(commandCommunication, session.getPrincipal().getName());
+      Participant participant = new Participant(commandCommunication, getSessionPrincipalName(session));
       participants.put(session, participant);
 
       subscriberId = CommandManager.register(participant);
@@ -75,12 +79,6 @@ public class CommandWebSocketService extends TextWebSocketHandler implements Web
         returnResult = CommandObjectMapper.serializeResponse(res);
       }
     } catch (Exception e) {
-      int commandId = -1;
-      Pattern p = Pattern.compile("\"id\":\\s*(\\d+)");
-      Matcher m = p.matcher(payload);
-      if(m.find()){
-        commandId = Integer.parseInt(m.group(1));
-      }
       Log.error("Command could not be parsed:\n"+ payload, e);
       returnResult = handleUnknownError(payload);
     }

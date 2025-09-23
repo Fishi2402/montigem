@@ -8,6 +8,7 @@ import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.io.paths.MCPath;
+import org.jetbrains.annotations.NotNull;
 import umlp.generator.domain.decorator.commands.GetDecorator;
 import umlp.generator.gui.gentypescript.decorator.TSImportHelper;
 import umlp.generator.gui.gentypescript.java2ts.GUI2ComponentTemplates;
@@ -41,6 +42,11 @@ public class TSGetDecorator extends GetDecorator {
     return "umlp.gui2ts.commands.get.TSGetNewlySubscribedGemIds";
   }
 
+
+  protected @NotNull String getSingletonGetNewlySubscribedGemIdsTemplate() {
+    return "umlp.gui2ts.commands.get.TSGetNewlySubscribedGemIds";
+  }
+
   @Override
   protected String getGetEffectedGemIdsTemplate() {
     return "umlp.gui2ts.commands.TSGetEffectedGemIds";
@@ -48,6 +54,10 @@ public class TSGetDecorator extends GetDecorator {
 
   @Override
   protected String getDoRunTemplate() {
+    return "umlp.gui2ts.commands.get.TSDoRun";
+  }
+
+  protected @NotNull String getSingletonDoRunTemplate() {
     return "umlp.gui2ts.commands.get.TSDoRun";
   }
 

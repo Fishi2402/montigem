@@ -8,7 +8,7 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.dsl.DependencyHandler;
-import org.gradle.api.plugins.JavaPluginConvention;
+import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.plugins.PluginManager;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskProvider;
@@ -53,17 +53,21 @@ public abstract class UMLPPluginTestInfrastructure implements Plugin<Project> {
     boolean local = getBooleanProjectProperty(project, "useLocalDependencies");
 
     var umlpTestInfrastructureTask = createUmlpTestInfrastructureTask(project, local);
+    var mainSourceSet = project.getExtensions().getByType(JavaPluginExtension.class).getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
+    var testSourceSet = project.getExtensions().getByType(JavaPluginExtension.class).getSourceSets().getByName(SourceSet.TEST_SOURCE_SET_NAME);
     //generate test infrastructure must run before compiling the tests
     project.getTasks()
         .withType(AbstractCompile.class)
+        .matching(t -> t.getName().equals(testSourceSet.getCompileJavaTaskName())
+                                          || t.getName().equals(mainSourceSet.getCompileJavaTaskName() // TODO: Remove this dependency and introduce test fixtures?
+                                         ))
         .configureEach(testTask -> testTask.dependsOn(umlpTestInfrastructureTask));
 
-    //add generated source files to source set
-    JavaPluginConvention javaConvention = project.getConvention()
-        .getPlugin(JavaPluginConvention.class);
-    SourceSet mainSourceSet = javaConvention.getSourceSets()
-        .getByName(SourceSet.MAIN_SOURCE_SET_NAME);
+    // TODO: Introduce test-fixtures and generate the "test-infra" into the test source set instead of the main source set
     mainSourceSet.getJava().srcDir(umlpTestInfrastructureTask.get().getOutputDir());
+
+    //TODO: add generated source files to "test" source set
+//    testSourceSet.getJava().srcDir(umlpTestInfrastructureTask.get().getOutputDir());
 
     //dependencies
     DependencyHandler dependencies = project.getDependencies();

@@ -41,6 +41,7 @@
         "build/appgui/*",
         "../umlp/fe2/*",
         "src/app/*",
+        "hwcsrc/*",
         "../../src/app/*"
       ]
     }

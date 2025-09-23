@@ -15,6 +15,7 @@ for(Map.Entry<Integer, Long> e : idxToId.entrySet()) {
   if (scope.contains(NotificationScope.LOCAL)) {
     if(${managerName}.isLoaded${targetName}(e.getValue())){
       <#if otherSideName?starts_with("set")>
+        // Clear old other side
         ${managerName}.get${targetName}Sure(e.getValue()).${otherSideName}Gem(new Gem<>(), NotificationScope.MINIMAL);
       <#else>
         ${managerName}.get${targetName}Sure(e.getValue()).${otherSideName}((${sourceName}) this, NotificationScope.MINIMAL);

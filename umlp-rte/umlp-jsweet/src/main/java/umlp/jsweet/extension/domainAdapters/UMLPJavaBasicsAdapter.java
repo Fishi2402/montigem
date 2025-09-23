@@ -192,6 +192,15 @@ public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
         print(invocation.getTargetExpression());
         printMacroName(invocation.getMethodName() + " omitted");
         return true;
+      case "of":
+        print("new Date(").printArgList(invocation.getArguments()).print(")");
+        return true;
+      case "toEpochSecond":
+        print(invocation.getTargetExpression()).print(".getTime() / 1000");
+        return true;
+      case "ofEpochSecond":
+        print("new Date(").print(invocation.getArguments().get(0)).print(" * 1000)");
+        return true;
 
       // === Integration of LocalDateTimeHelper ===
       case "plusYears":
@@ -208,6 +217,7 @@ public class UMLPJavaBasicsAdapter extends UMLPAbstractAdapter {
       case "minusHours":
       case "minusMinutes":
       case "minusSeconds":
+      case "atStartOfDay":
         print("LocalDateTimeHelper." + invocation.getMethodName() + "(")
             .print(invocation.getTargetExpression()).print(", ")
             .printArgList(invocation.getArguments()).print(")");

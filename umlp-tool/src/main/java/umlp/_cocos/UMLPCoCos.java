@@ -38,6 +38,6 @@ public class UMLPCoCos {
     checker.addCoCo(new UMLPCheckCDClassModifier());
     checker.addCoCo(new UMLPCheckCDInterfaceModifier());
     checker.addCoCo(new UMLPCheckCDEnumModifier());
-
+    checker.addCoCo(new UMLPCheckAttributeName());
   }
 }

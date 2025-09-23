@@ -42,15 +42,16 @@ export class Navigation {
     { url: '/example_input/GemCheckBoxInputExample', title: 'CheckBoxInput' },
     { url: '/example_input/GemRangeInputExample', title: 'RangeInput' },
     /*
-    { url: '/example_input/GemRangeInputExample', title: 'RangeInput' },
+    { url: '/example_input/GemRangeInputExample', title: 'RangeInput' },*/
     { url: '/example_input/GemRadioInputExample', title: 'RadioInput' },
-    */
+
     { url: '/example_charts/GemBarChartExample', title: 'BarChart' },
     { url: '/example_charts/GemBoxPlotExample', title: 'BoxPlot' },
     { url: '/example_charts/GemBulletChartExample', title: 'BulletChart' },
     { url: '/example_charts/GemCandlestickChartExample', title: 'CandlestickChart' },
     { url: '/example_charts/GemGaugeChartExample', title: 'GaugeChart' },
     { url: '/example_charts/GemLineChartExample', title: 'LineChart' },
+    { url: '/example_charts/GemTimeSeriesChartExmaple', title: 'GemTimeSeriesChart' },
     { url: '/example_charts/GemHeatmapChartExample', title: 'HeatmapChart' },
     { url: '/example_charts/GemPieChartExample', title: 'PieChart' },
     { url: '/example_charts/GemRadarChartExample', title: 'RadarChart' },

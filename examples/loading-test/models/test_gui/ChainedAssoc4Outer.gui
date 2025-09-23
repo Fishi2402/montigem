@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test_gui;
+
+import mc.fenix.basic.GemText;
+import mc.fenix.input.GemTextInput;
+import LoadingTests.person;
+import test_gui.ChainedAssoc4Inner;
+
+page ChainedAssoc4Outer(Person person) {
+  @iterate(Animal animal : person.pet) {
+    @ChainedAssoc4Inner(animal=animal);
+  }
+}

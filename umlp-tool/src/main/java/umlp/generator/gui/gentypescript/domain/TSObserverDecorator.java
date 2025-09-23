@@ -19,6 +19,7 @@ import umlp.generator.gui.gentypescript.decorator.TSImportHelper;
 import umlp.generator.util.UMLPSymbolTables;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 
 public class TSObserverDecorator extends ObserverDecorator {
@@ -41,17 +42,22 @@ public class TSObserverDecorator extends ObserverDecorator {
     super.transform(origCD, decoratedCD);
   }
 
-  @Override
-  protected void addImport(ASTCDType observerType, ASTCDAttribute attr) {
+  protected void addImport(ASTCDType observerType, ASTCDAttribute attr, TSImportHelper importHelper) {
     if (attr.isPresentSymbol()) {
       Optional<SymTypeExpression> ste = getImportedType(attr.getSymbol().getType());
       if (ste.isPresent()) {
-        TSImportHelper importHelper = new TSImportHelper(glex, observerType, hwPath, outPath);
         String importerQName = this.astcdPackage + "." + observerType.getName();
-
         importHelper.addImport(Joiners.DOT.join(astcdPackage, ste.get().print()), importerQName);
       }
     }
+  }
+
+  @Override
+  protected void addImport(ASTCDType observerType, List<ASTCDAttribute> attributes) {
+    TSImportHelper importHelper = new TSImportHelper(glex, observerType, hwPath, outPath);
+    attributes.forEach(a -> {
+      addImport(observerType, a, importHelper);
+    });
   }
 
   protected Optional<SymTypeExpression> getImportedType(SymTypeExpression ste) {

@@ -15,16 +15,23 @@ can be used in a MontiGem app development, all of them have similar principles.
 
 Further explanation will mention *source root* - a set of paths to folders that
 MontiGem considers to be folder containing the source code of an app.
-Default app setup has source roots for
-- backend
-  - `backend/build/umlp/backend/` - code generated from models
-  - `backend/src/main/java` - hand-written code
-- frontend
-  - `frontend/build/frontendGen/build/` - code generated from models
-  - `frontend/src/main/java` - hand-written java code
-  - `frontend/src/main/ts` - hand-written ts code
-- models
-  - `models` - folder with models
+
+Default app setup has source roots for:
+
+- **backend**
+  
+  - `backend/build/umlp/backend/` – code generated from models
+  - `backend/src/main/java` – hand-written code
+
+- **frontend**
+  
+  - `frontend/build/frontendGen/build/` – code generated from models
+  - `frontend/src/main/java` – hand-written java code
+  - `frontend/src/main/ts` – hand-written ts code
+
+- **models**
+  
+  - `models` – folder with models
 
 > The path to the generated code is normally irrelevant for the app development,
 > since the paths are easier to find out from the qualified names of classes and
@@ -142,11 +149,11 @@ Now, with JSweet and the TOP-mechanism we can implement our own behavior for a G
   specifies routing for all components.
 
   Normally you would only override `AppGemRouting`, as the URL doesn't really
-  matter to the end user. Example of hand-written extension of `AppGemRouting`:
+  matter to the end user. Example of a hand-written extension of `AppGemRouting`, in which the start page (homepage/index) is set:
   ```ts
   /* (c) https://github.com/MontiCore/monticore */
   import { Routes } from "@angular/router";
-  import { routes as routesTOP } from "@src/AppGemRoutingTOP"
+  import { routes as routesTOP } from "AppGemRoutingTOP"
 
   export const routes: Routes = [
     // set default path

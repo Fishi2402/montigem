@@ -11,6 +11,7 @@ import mc.fenix.basic.GemText;
 import mc.fenix.basic.GemButton;
 import mc.fenix.input.GemTextInput;
 import mc.fenix.input.GemCheckBoxInput;
+import mc.fenix.input.GemDropdownInput;
 
 import person.Row;
 
@@ -33,7 +34,12 @@ page CreatePerson(Person person, Address address, boolean showEmployed = true, E
       @GemColumn(width = "33%", components = [
         house@GemTextInput(labelText = "House", entry = address.house, inputType = "number")
       ])
-    ])
+    ]),
+    col4 = role@GemDropdownInput(
+      labelText = "Role",
+      options = getRoleOpts(),
+      entry = person.role
+    )
   );
   createButton@GemButton(label = "Create person", leftClick = create(person));
   @GemButton(label = "Cancel", leftClick = doCancel());

@@ -1,0 +1,14 @@
+import java.time.LocalDate;
+/**
+ * Used to check if specific class names lead to errors in the generated code.
+ */
+umlp TypeNames {
+
+  /**
+   * Regression test for valid name Data, which previously created problems
+   */
+  class Data {
+    LocalDate date;
+    Optional<String> description;
+  }
+}

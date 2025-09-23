@@ -3,12 +3,17 @@
 <nav class="NavMenu">
   <div style="display:flex; flex-direction: column;">
     <div style="display:flex; flex-direction: row;">
-      <ng-container *ngFor="let item of items | slice:0:25">
+      <ng-container *ngFor="let item of items | slice:0:20">
         <a [routerLink]="item.url">{{ item.title }}</a>
       </ng-container>
     </div>
     <div style="display:flex; flex-direction: row;">
-      <ng-container *ngFor="let item of items | slice:25">
+      <ng-container *ngFor="let item of items | slice:20:40">
+        <a [routerLink]="item.url">{{ item.title }}</a>
+      </ng-container>
+    </div>
+    <div style="display:flex; flex-direction: row;">
+      <ng-container *ngFor="let item of items | slice:40">
         <a [routerLink]="item.url">{{ item.title }}</a>
       </ng-container>
     </div>

@@ -17,11 +17,11 @@ import { downloadChartAsPNG } from "./export/graph.exporter";
 import { Utils } from "./shared/utils/utils";
 import { Observable, Subscriber, switchMap } from "rxjs";
 import { Sigma } from "sigma";
-import { SigmaEvents } from "sigma/sigma";
+import { SigmaEvents } from "sigma/types";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { GraphManagerService } from "./data/graph-manager.service";
-import { MouseCaptorEvents } from "sigma/core/captors/mouse";
-import { TouchCaptorEvents } from "sigma/core/captors/touch";
+import { MouseCaptorEvents } from "sigma/types";
+import { TouchCaptorEvents } from "sigma/types";
 import { AutoUnsubscribe } from "./shared/decorators/auto-unsubscribe.decorator";
 import {
   EventParameter,

@@ -62,6 +62,10 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
 
   @Input
   @Optional
+  public abstract Property<Boolean> getCreateSourceMaps();
+
+  @Input
+  @Optional
   public abstract Property<String> getNodeVersion();
 
   @OutputDirectory
@@ -150,6 +154,7 @@ public abstract class UMLPJava2TypeScriptTask extends DefaultTask {
       params.getInput().setFrom(filteredSources);
       params.getExcludedFromTranspilation().setFrom(excludedFromTr);
       params.getVerbose().set(getVerbose());
+      params.getCreateSourceMaps().set(getCreateSourceMaps());
       params.getBaseDirectory().set(baseDirectory);
       params.getWorkingDirectory().set(workingDir);
       params.getOutputDir().set(outputDir);

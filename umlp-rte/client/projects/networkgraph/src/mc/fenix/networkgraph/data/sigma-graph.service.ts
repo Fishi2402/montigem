@@ -5,7 +5,7 @@ import { Sigma } from "sigma";
 import { GraphSettingsService } from "../services/graph-settings.service";
 import { Attributes } from "graphology-types";
 import { CameraState } from "sigma/types";
-import { AnimateOptions } from "sigma/utils/animate";
+import { AnimateOptions } from "sigma/utils";
 import { Settings } from "sigma/settings";
 import { Camera } from "sigma";
 import { TypeCheckerUtil } from "../shared/utils/type-checker.util";
@@ -29,14 +29,14 @@ export class SigmaGraphService<N extends NodeAttributes, E extends EdgeAttribute
   ) {}
 
   /** Store the Sigma Renderer instance */
-  private _renderer: Sigma<Graph<N, E, G>> | null = null;
+  private _renderer: Sigma<N, E, G> | null = null;
 
   /**
    * Getter for the Sigma renderer.
    *
-   * @returns {Sigma<Graph<N, E, G>> | null} - The Sigma renderer instance or null.
+   * @returns {Sigma<N, E, G> | null} - The Sigma renderer instance or null.
    */
-  public get renderer(): Sigma<Graph<N, E, G>> | null {
+  public get renderer(): Sigma<N, E, G> | null {
     return this._renderer;
   }
 
@@ -195,9 +195,9 @@ export class SigmaGraphService<N extends NodeAttributes, E extends EdgeAttribute
     graph: Graph<N, E, G>,
     container: HTMLDivElement,
     settings: Partial<Settings>
-  ): Sigma<Graph<N, E, G>> | null {
+  ): Sigma<N, E, G> | null {
     return this.ngZone.runOutsideAngular(() => {
-      this._renderer = new Sigma(graph, container, settings);
+      this._renderer = new Sigma(graph, container, settings) as Sigma<N, E, G>;
       return this.renderer;
     });
   }

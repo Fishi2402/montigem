@@ -25,6 +25,7 @@ classdiagram Domain {
     String name;
     String aboutMe;
     ?boolean employed;
+    Optional<Role> role;
   }
 
   class Address {
@@ -73,17 +74,22 @@ classdiagram Domain {
 
   <<singleton>>
   class FischertechnikConveyorState{
-    int speedIndicatorPercentage = 0;
-    boolean rightDetectorOn = false;
-    boolean leftDetectorOn = false;
+    boolean moveToFeed = false;
+    boolean moveToSwap = false;
+    boolean feedDetectorOn = false;
+    boolean swapDetectorOn = false;
   }
 
   <<singleton>>
   class FischertechnikVacuumGripperState {
     int rotationDeg = 0;
+    boolean refSwitchRotation = false;
     int verticalPercentage = 0;
+    boolean refSwitchVertical = false;
     int horizontalPercentage = 0;
+    boolean refSwitchHorizontal = false;
     boolean pumpRunning = false;
+    boolean valveEnabled = false;
   }
 
   <<singleton>>

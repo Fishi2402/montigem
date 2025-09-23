@@ -2,9 +2,24 @@
 package example_input;
 
 import mc.fenix.input.GemRadioInput;
+import mc.fenix.input.GemDropdownInput;
 import mc.fenix.basic.GemText;
 
-page GemRadioInputExample() {
+import Domain.Role;
+import Domain.Person;
+
+page GemRadioInputExample(List<Person> persons) {
+  @iterate(Person p : persons) {
+    @GemText(value = getPersonRoleInfo(p));
+    @iterate(Role r : getRoles()) {
+      @GemRadioInput(
+        labelText = r,
+        value = r,
+        selectedValue = p.role,
+        group = getGroupName(p)
+      );
+    }
+  }
   @GemText(value="Group 1");
   @GemRadioInput(
     id = "genderMale",
