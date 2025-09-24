@@ -1,16 +1,11 @@
+import de.montigem.gradle.specific.GUI2Java2TSTask
+
 /* (c) https://github.com/MontiCore/monticore */
 plugins {
   id "de.rwth.se.montigem-frontend"
 }
 
-dependencies {
-  implementation project(":examples:weather:backend")
-  srcUMLPConfig project(":examples:weather:backend")
-
-  implementation project(":umlp-rte")
-}
-
-gui2java2ts {
+tasks.named("gui2java2ts", GUI2Java2TSTask) {
   guiCreateModels = ["gui.ForecastCreate"]
 
   /*

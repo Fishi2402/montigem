@@ -1,3 +1,6 @@
+import de.montigem.gradle.specific.GUI2Java2TSTask
+import de.montigem.gradle.specific.UMLPJava2TSTask
+
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
@@ -5,12 +8,10 @@ plugins {
 }
 
 dependencies {
-  implementation project(":products:demorec:backend")
-  srcUMLPConfig project(":products:demorec:backend")
   testImplementation project(':umlp-test-rte')
 }
 
-umlpJava2ts {
+tasks.named("umlpJava2ts", UMLPJava2TSTask) {
   excludeSource.addAll([
       "glob:**/processmodeling/*",
       "glob:**/*test*/*"
@@ -18,7 +19,7 @@ umlpJava2ts {
   verbose = true
 }
 
-gui2java2ts {
+tasks.named("gui2java2ts", GUI2Java2TSTask) {
   guiCreateModels = [
       "gui.pack.PackCreate",
       "gui.process.ProcessCreate",
@@ -46,7 +47,7 @@ tasks.named('runApp', NpxTask) {
   ]
 }
 
-task runAppNoBuild(type: NpxTask) {
+tasks.register("runAppNoBuild", NpxTask) {
   command = "ng"
   args = ["serve"]
 }

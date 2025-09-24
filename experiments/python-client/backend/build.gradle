@@ -1,3 +1,6 @@
+import de.monticore.cdgen.gradleplugin.CDGenTask
+import de.montigem.gradle.specific.UMLP2JavaTask
+
 plugins {
   id 'de.rwth.se.montigem-backend'
   id 'de.rwth.se.cdgen' version "$mc_version"
@@ -14,16 +17,17 @@ application {
   mainClass = 'mydomain.MyDomainServerApplication'
 }
 
-def generateGem = tasks.register("generateGem", de.monticore.cdgen.gradleplugin.CDGenTask.class) {
-  getInput().from(project.file("../models/MyDomain.umlp"))
-  class2MC=true
-  getOutputDir().set(project.layout.buildDirectory.dir("py_out_java"))
+def generateGem = tasks.register("generateGem", CDGenTask) {
+  input.from(project.file("../models/MyDomain.umlp"))
+  class2MC = true
+  outputDir.set(project.layout.buildDirectory.dir("py_out_java"))
   configTemplate = 'cd2python.Gem2Py'
   tmplDir = file('src/cd2pojo/resources')
   getExtraClasspathElements().from(configurations.cdTool)
   getExtraClasspathElements().from(sourceSets.cd2pojo.output)
   // This task outputs python files with the .java extension
 }
+
 tasks.register("transformGemToPy", Sync) {
   // actually rename the generated file to .py
   from(generateGem)
@@ -43,7 +47,6 @@ dependencies {
   cdTool("de.monticore.lang.cd4analysis:cdgradle:$mc_version")
   cdTool("de.monticore.lang:cd4analysis:$mc_version")
 }
-
 
 // Test setup
 
@@ -68,7 +71,6 @@ dependencies {
   api group: 'umlp', name: 'umlp-test-rte', version: mc_version, withoutSpringLogging
   api 'com.h2database:h2:2.1.214'
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version, withoutSpringLogging
-
 }
 
 test {
@@ -77,7 +79,7 @@ test {
 }
 
 
-tasks.named("umlp2java") {
+tasks.named("umlp2java", UMLP2JavaTask) {
   useSpring.set(true)
 }
 

@@ -1,10 +1,13 @@
+import de.montigem.gradle.specific.UMLP2JavaTask
+import de.montigem.gradle.specific.UMLP2TestInfrastructureTask
+
 plugins {
   id 'de.rwth.se.montigem-backend-test'
 
-  id 'application'
-  id 'com.google.cloud.tools.jib' version '3.2.1'
   id 'io.spring.dependency-management' version '1.0.15.RELEASE'
   id 'org.springframework.boot' version "${spring_version}"
+  id 'com.google.cloud.tools.jib' version '3.2.1'
+  id 'application'
 }
 
 repositories {
@@ -17,14 +20,6 @@ repositories {
     url repo
   }
   mavenCentral()
-}
-
-configurations {
-  guiDefaultTypes
-}
-
-dependencies {
-  guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
 }
 
 application {
@@ -64,9 +59,7 @@ dependencies {
   testImplementation project(':umlp-test-rte')
 }
 
-umlp2java {
-  input = file("../models/LoadingTests.umlp")
-  symbolOutDir = file("${project.buildDir}/symbols")
+tasks.named("umlp2java", UMLP2JavaTask) {
   useSpring.set(true)
   useShell.set(true)
 
@@ -76,14 +69,8 @@ umlp2java {
   /**/
 }
 
-generateTestInfrastructure {
+tasks.named("generateTestInfrastructure", UMLP2TestInfrastructureTask) {
   usePlaywright.set(true)
-}
-
-tasks.register('runServer') {
-  dependsOn(bootRun {
-    systemProperty "spring.shell.interactive.enabled", "false"
-  })
 }
 
 test {
@@ -91,17 +78,4 @@ test {
     events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
   }
   useJUnitPlatform()
-}
-
-sourceSets {
-  main {
-    //java.srcDirs += [layout.buildDirectory.dir("testgui")]
-    //java.srcDirs += [layout.buildDirectory.dir("umlp/fe2")]
-    // main.resources.srcDirs += umlp2java.getOutputDir().dir("resources")  // Add generated resources (e.g. html & sql files) to JAR
-  }
-  test {
-    java {
-      exclude '**/gui/**'
-    }
-  }
 }

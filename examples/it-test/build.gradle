@@ -15,7 +15,10 @@ dependencies {
 
 umlp2java {
   input = file("./src/models")
-  handWrittenCodeDir.from(file("$projectDir/src/main/java"), file("$projectDir/src/test/java"))
+  handWrittenCodeDir.from(
+      file("$projectDir/src/main/java"),
+      file("$projectDir/src/test/java")
+  )
 }
 
 test {

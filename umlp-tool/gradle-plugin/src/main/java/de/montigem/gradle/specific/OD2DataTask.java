@@ -1,11 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.montigem.gradle.specific;
 
-import de.se_rwth.commons.logging.Log;
 import de.montigem.gradle.common.MGSingleFileTask;
+import de.se_rwth.commons.logging.Log;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
-import org.gradle.api.tasks.*;
+import org.gradle.api.tasks.InputFiles;
+import org.gradle.api.tasks.Optional;
+import org.gradle.api.tasks.OutputDirectory;
+import org.gradle.api.tasks.TaskAction;
 import org.gradle.work.InputChanges;
 import org.gradle.workers.WorkQueue;
 import org.gradle.workers.WorkerExecutor;
@@ -24,31 +27,9 @@ public abstract class OD2DataTask extends MGSingleFileTask {
     super("OD2DataTask", null);
   }
 
-
-  private final ConfigurableFileCollection symbolDir = getProject().getObjects().fileCollection();
-  private final DirectoryProperty symbolOutDir = getProject().getObjects().directoryProperty();
-
-  @InputFiles
-  public ConfigurableFileCollection getSymbolDir() {
-    return symbolDir;
-  }
-
-  public void setSymbolDir(File f){
-    symbolDir.from(f);
-  }
-
-  public void setSymbolDir(Iterable<File> f){
-    symbolDir.from(f);
-  }
-  public void setSymbolDir(Object... paths) {
-    symbolDir.from(paths);
-  }
-
   @OutputDirectory
-  @org.gradle.api.tasks.Optional
-  public DirectoryProperty getSymbolOutDir() {
-    return symbolOutDir;
-  }
+  @Optional
+  public abstract DirectoryProperty getSymbolOutDir();
 
   @Inject
   abstract public WorkerExecutor getWorkerExecutor();
@@ -62,9 +43,9 @@ public abstract class OD2DataTask extends MGSingleFileTask {
     Log.info("Starting data generation from object diagram.", getName());
 
     Log.debug("Input file: " + getInput().getAsPath(), getName());
-    Log.debug("Symbol path: " + getSymbolDir().getAsPath(), getName());
+    Log.debug("Symbol path: " + getSymbolPath().getAsPath(), getName());
     Log.debug("Output directory: " + getOutputDir().get(), getName());
-    if(getSymbolOutDir().isPresent()) {
+    if (getSymbolOutDir().isPresent()) {
       Log.debug("Symbol output directory: " + getSymbolOutDir().get(), getName());
     }
 
@@ -72,10 +53,10 @@ public abstract class OD2DataTask extends MGSingleFileTask {
     args.add("-i");
     args.add(getInput().getAsPath());
     args.add("-path");
-    args.add(getSymbolDir().getAsPath());
+    args.add(getSymbolPath().getAsPath());
     args.add("-o");
     args.add(getOutputDir().get().toString());
-    if(getSymbolOutDir().isPresent()) {
+    if (getSymbolOutDir().isPresent()) {
       args.add("-s");
       args.add(getSymbolOutDir().get().toString());
     }
@@ -101,13 +82,12 @@ public abstract class OD2DataTask extends MGSingleFileTask {
       result.add(getInput().getAsPath());
     }
 
-    if (!this.getSymbolDir().isEmpty()) {
-      for (var symDir : this.getSymbolDir()) {
+    if (!this.getSymbolPath().isEmpty()) {
+      for (var symDir : this.getSymbolPath()) {
         result.add("-path");
         result.add(symDir.getAbsolutePath());
       }
     }
-
 
 
     return result;

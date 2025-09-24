@@ -1,3 +1,5 @@
+import de.montigem.gradle.specific.UMLP2JavaTask
+
 plugins {
   id 'java'
   id 'de.rwth.se.montigem-backend'
@@ -20,17 +22,8 @@ repositories {
   mavenCentral()
 }
 
-configurations {
-  guiDefaultTypes
-}
-
-dependencies {
-  implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version
-  guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
-}
-
 application {
-  mainClass = 'app.FlensburgServerApplication'
+  mainClass = 'hardy.flensburg.FlensburgServerApplication'
 }
 
 dependencies {
@@ -39,8 +32,6 @@ dependencies {
     exclude module: 'logback-classic'
     exclude module: 'log4j-to-slf4j'
   }
-
-
 
   implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
   implementation 'com.h2database:h2:2.1.214'
@@ -64,13 +55,8 @@ dependencies {
   testImplementation project(':umlp-test-rte')
 }
 
-umlp2java {
-  input = file("../models/hardy/Flensburg.umlp")
-  symbolOutDir = file("${project.buildDir}/symbols")
-}
-
-tasks.register('runServer') {
-  dependsOn(bootRun)
+tasks.named("umlp2java", UMLP2JavaTask) {
+  useSpring.set(true)
 }
 
 test {
@@ -83,12 +69,5 @@ test {
 sourceSets {
   main {
     java.srcDirs += [layout.buildDirectory.dir("testgui")]
-    java.srcDirs += [layout.buildDirectory.dir("umlp/fe2")]
-    //main.resources.srcDirs += umlp2java.getOutputDir().dir("resources")  // Add generated resources (e.g. html & sql files) to JAR
-  }
-  test {
-    java {
-      //exclude '**/gui/**'
-    }
   }
 }

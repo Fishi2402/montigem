@@ -1,3 +1,5 @@
+import de.montigem.gradle.specific.UMLP2JavaTask
+
 plugins {
   id 'java-library'
   id 'de.rwth.se.montigem-backend'
@@ -20,14 +22,6 @@ repositories {
   mavenCentral()
 }
 
-configurations {
-  guiDefaultTypes
-}
-
-dependencies {
-  guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
-}
-
 application {
   mainClass = 'weather.WeatherServerApplication'
 }
@@ -44,8 +38,6 @@ dependencies {
     exclude module: 'logback-classic'
     exclude module: 'log4j-to-slf4j'
   }
-
-
 
   implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
   implementation 'com.h2database:h2:2.1.214'
@@ -66,17 +58,9 @@ dependencies {
   implementation project(':umlp-rte')
 }
 
-umlp2java {
-  input = file("../models/Weather.umlp")
-  symbolOutDir = file("${project.buildDir}/symbols")
+tasks.named("umlp2java", UMLP2JavaTask) {
   useSpring.set(true)
   useShell.set(true)
-}
-
-tasks.register('runServer') {
-  dependsOn(bootRun {
-    systemProperty "spring.shell.interactive.enabled", "false"
-  })
 }
 
 test {
@@ -84,17 +68,4 @@ test {
     events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
   }
   useJUnitPlatform()
-}
-
-sourceSets {
-  main {
-    //java.srcDirs += [layout.buildDirectory.dir("testgui")]
-    //java.srcDirs += [layout.buildDirectory.dir("umlp/fe2")]
-    // main.resources.srcDirs += umlp2java.getOutputDir().dir("resources")  // Add generated resources (e.g. html & sql files) to JAR
-  }
-  test {
-    java {
-      exclude '**/gui/**'
-    }
-  }
 }

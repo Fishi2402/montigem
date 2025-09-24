@@ -45,14 +45,8 @@ def gui2java2 = tasks.register('gui2java2', GUI2JavaTask) {
   guiCreateModelsAsFile = file(cd2gui.flatMap { it.getOutputDir().file("meta/guiCreateModels.txt") })
 }
 
-tasks.named('buildApp', NpxTask) {
-  dependsOn(gui2java2)
-}
-
-tasks.named('testApp', NpxTask) {
-  dependsOn(gui2java2)
-}
-
-tasks.named('runApp', NpxTask) {
-  dependsOn(gui2java2)
+['buildApp', 'testApp', 'runApp'].forEach {
+  tasks.named(it) {
+    dependsOn(gui2java2)
+  }
 }

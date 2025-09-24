@@ -1,4 +1,5 @@
 import de.montigem.gradle.common.SpringBootJarTypeFileSpec
+import de.montigem.gradle.specific.UMLP2JavaTask
 import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
@@ -76,16 +77,10 @@ dependencies {
   testImplementation "org.neo4j.driver:neo4j-java-driver:$neo4jVersion"
 }
 
-umlp2java {
+tasks.named("umlp2java", UMLP2JavaTask) {
   modelDir.from(configurations.named("montigemModuleUMLPModels"));
   useSpring = true
   useShell = true
-}
-
-tasks.register('runServer') {
-  dependsOn(bootRun {
-    systemProperty "spring.shell.interactive.enabled", "false"
-  })
 }
 
 tasks.register('runShellApi', BootRun) {

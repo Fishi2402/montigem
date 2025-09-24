@@ -1,14 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
+
+import de.montigem.gradle.specific.GUI2Java2TSTask
+
 plugins {
   id "de.rwth.se.montigem-frontend-test"
 }
 
 dependencies {
-  implementation(project(":examples:flensburg-test:backend"))
   testImplementation(project(":umlp-test-rte"))
 }
 
-gui2java2ts {
+tasks.named("gui2java2ts", GUI2Java2TSTask) {
   guiCreateModels = ["stanley.gui.AccountCreate"]
 }
 

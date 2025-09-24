@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.util.function.Consumer;
 
 import static de.montigem.gradle.FrontendBasePlugin.getBooleanProjectProperty;
+import static de.montigem.gradle.FrontendBasePlugin.isLocal;
 import static de.montigem.gradle.FrontendBasePlugin.mcVersion;
 import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
 
@@ -48,9 +49,7 @@ public abstract class TestInfrastructurePlugin implements Plugin<Project> {
     pluginManager.apply(MGBasePlugin.class);
     pluginManager.apply("java");
 
-    boolean local = getBooleanProjectProperty(project, "useLocalDependencies");
-
-    var umlpTestInfrastructureTask = createUmlpTestInfrastructureTask(project, local);
+    var umlpTestInfrastructureTask = createUmlpTestInfrastructureTask(project);
     var mainSourceSet = project.getExtensions().getByType(JavaPluginExtension.class).getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
     var testSourceSet = project.getExtensions().getByType(JavaPluginExtension.class).getSourceSets().getByName(SourceSet.TEST_SOURCE_SET_NAME);
     //generate test infrastructure must run before compiling the tests
@@ -96,7 +95,7 @@ public abstract class TestInfrastructurePlugin implements Plugin<Project> {
     }
   }
 
-  public static TaskProvider<UMLP2TestInfrastructureTask> createUmlpTestInfrastructureTask(Project project, boolean local) {
+  public static TaskProvider<UMLP2TestInfrastructureTask> createUmlpTestInfrastructureTask(Project project) {
     TaskProvider<UMLP2TestInfrastructureTask> testInfrastructureTask = project.getTasks()
         .register(UMLP_TEST_INFRASTRUCTURE_TASK_NAME, UMLP2TestInfrastructureTask.class, task -> {
           task.setGroup(UMLP_GROUP_NAME);
@@ -126,7 +125,7 @@ public abstract class TestInfrastructurePlugin implements Plugin<Project> {
           task.getSymbolOutDir().set(Path.of(buildDirPath, "umlp", "backend_test_symbols").toFile());
         });
 
-    if (local) {
+    if (isLocal(project)) {
       Project rteClient = project.project(":umlp-rte:frontend");
       project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG, rteClient);
       testInfrastructureTask.configure(task -> {

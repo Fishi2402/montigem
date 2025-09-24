@@ -12,10 +12,11 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class,
-    HibernateJpaAutoConfiguration.class}, scanBasePackages = {"umlp.backendrte.service.websocket",
-    "umlp.backendrte.service.rest", "service"})
-public class DomainServerApplication extends domain.DomainServerApplicationTOP {
+@SpringBootApplication(
+    exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class},
+    scanBasePackages = {"umlp.backendrte.service.websocket", "umlp.backendrte.service.rest", "service"}
+)
+public class DomainServerApplication extends DomainServerApplicationTOP {
 
   public static void main(String[] args) {
     SpringApplication.run(DomainServerApplication.class, args);
@@ -226,7 +227,7 @@ public class DomainServerApplication extends domain.DomainServerApplicationTOP {
         .employed(employed)
         .build()
         .get();
-    Log.info("Person created with gemId: "+p.getGemId(), this.getClass().getName());
+    Log.info("Person created with gemId: " + p.getGemId(), this.getClass().getName());
     return p;
   }
 

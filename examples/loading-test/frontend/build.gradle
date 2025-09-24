@@ -1,4 +1,4 @@
-import de.montigem.gradle.specific.CreateSymlinkTask
+import de.montigem.gradle.specific.GUI2JavaTask
 
 /* (c) https://github.com/MontiCore/monticore */
 
@@ -7,33 +7,32 @@ plugins {
 }
 
 dependencies {
-  implementation project(":examples:loading-test:backend")
-  implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version
   testImplementation project(':umlp-test-rte')
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version
   implementation("org.springframework.boot:spring-boot-starter-tomcat:$spring_version")
 }
 
-gui2java {
+tasks.named("gui2java", GUI2JavaTask) {
+  domainModels = ["LoadingTests"]
   input.from("../frontend-jsweet/src/main/gui")
   modelDir.set(project.layout.projectDirectory.dir("../frontend-jsweet/src/main/gui"))
-  domainModels = ["LoadingTests"]
   guiCreateModels = [
-                     "test_update_of_builder.AnimalCreate",
-                     "test_update_after_build.one_page.PersonsAndBuilderInOnePage",
-                     "test_update_after_build.composed_in_builder_page.PersonsInBuilderPage",
-                     "test_update_after_build.PersonBuilder",
-                     "test_no_error.BuilderAndRouterNavigation"]
+      "test_update_of_builder.AnimalCreate",
+      "test_update_after_build.one_page.PersonsAndBuilderInOnePage",
+      "test_update_after_build.composed_in_builder_page.PersonsInBuilderPage",
+      "test_update_after_build.PersonBuilder",
+      "test_no_error.BuilderAndRouterNavigation"
+  ]
 }
 
 configurations {
   testImplementation.exclude group: 'org.json', module: 'json'
-  testRuntimeClasspath.exclude group: 'de.monticore.language-server', module:'monticore-language-server-runtime'
+  testRuntimeClasspath.exclude group: 'de.monticore.language-server', module: 'monticore-language-server-runtime'
 }
 
-test {
-  dependsOn npmInstall, buildApp
-  useJUnitPlatform(){
+def test = tasks.named("test", Test) {
+  dependsOn tasks.named("npmInstall"), tasks.named("buildApp")
+  useJUnitPlatform() {
     excludeTags "SlowTest"
   }
 }
@@ -46,6 +45,6 @@ tasks.register("slowtest", Test) {
     includeTags "SlowTest"
   }
   shouldRunAfter test
-  dependsOn npmInstall
+  dependsOn tasks.named("npmInstall")
 }
 

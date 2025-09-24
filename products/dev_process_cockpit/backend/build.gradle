@@ -45,10 +45,3 @@ umlp2java {
   // symbolOutDir = file("${project.buildDir}/symbols")
   useSpring = true
 }
-/**/
-
-tasks.register('runServer') {
-  dependsOn(bootRun {
-    systemProperty "spring.shell.interactive.enabled", "false"
-  })
-}

@@ -1,3 +1,6 @@
+import de.montigem.gradle.specific.OD2DataTask
+import de.montigem.gradle.specific.UMLP2JavaTask
+
 plugins {
   id 'java'
   id 'de.rwth.se.montigem-backend'
@@ -18,14 +21,6 @@ repositories {
     url repo
   }
   mavenCentral()
-}
-
-configurations {
-  guiDefaultTypes
-}
-
-dependencies {
-  guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
 }
 
 application {
@@ -65,26 +60,22 @@ dependencies {
   implementation project(':umlp-rte')
 }
 
-umlp2java {
-  input = file("../models/KitchenCompanion.umlp")
-  symbolOutDir = file("${project.buildDir}/symbols")
+def umlp2java = tasks.named("umlp2java", UMLP2JavaTask) {
   useSpring.set(true)
   useShell.set(true)
 }
 
-tasks.register('runServer') {
-  dependsOn(bootRun {
-    systemProperty "spring.shell.interactive.enabled", "false"
-  })
+def genTestData = tasks.register('genTestData', OD2DataTask) {
+  group = "umlp"
+  input = file("../models/Example.od")
+  outputDir = layout.buildDirectory.dir("testdata")
+  handWrittenCodeDir.from(layout.projectDirectory.dir("src/main/java"))
+  symbolPath.from(umlp2java.map { it.symbolOutDir })
+//  symbolOutDir = file("$project.buildDir/testdata/symtab/Examples.odsym")
 }
 
-tasks.register('genTestData', OD2DataTask) {
-  dependsOn(umlp2java)
-  input = file("../models/Example.od")
-  outputDir = file("$project.buildDir/testdata")
-  hwcDir = file("$projectDir/src/main/java")
-  symbolDir = files(umlp2java.symbolOutDir)
-  //symbolOutDir = file("$project.buildDir/testdata/symtab/Examples.odsym")
+tasks.named("compileJava") {
+  dependsOn(genTestData)
 }
 
 test {
@@ -97,14 +88,5 @@ test {
 sourceSets {
   main {
     java.srcDirs += [layout.buildDirectory.dir("testdata")]
-    //java.srcDirs += [layout.buildDirectory.dir("umlp/fe2")]
-    // main.resources.srcDirs += umlp2java.getOutputDir().dir("resources")  // Add generated resources (e.g. html & sql files) to JAR
-  }
-  test {
-    java {
-      exclude '**/gui/**'
-    }
   }
 }
-
-compileJava.dependsOn(umlp2java, genTestData)

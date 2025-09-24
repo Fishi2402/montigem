@@ -1,12 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 
+import de.montigem.gradle.specific.GUI2Java2TSTask
+import de.montigem.gradle.specific.UMLPJava2TSTask
+
 plugins {
   id "de.rwth.se.montigem-frontend"
 }
 
 dependencies {
-  implementation project(":examples:vis-lib:backend")
-  srcUMLPConfig project(":examples:vis-lib:backend")
   testImplementation project(':umlp-test-rte')
 }
 
@@ -14,25 +15,13 @@ configurations {
   testRuntimeClasspath.exclude group: 'de.monticore.language-server', module: 'monticore-language-server-runtime'
 }
 
-umlpJava2ts {
+tasks.named("umlpJava2ts", UMLPJava2TSTask) {
   verbose = true
 }
 
-gui2java2ts {
+tasks.named("gui2java2ts", GUI2Java2TSTask) {
   guiCreateModels = ["person.CreatePerson", "person.CreatePersonWithFriends", "person.CreateClubWithMembers"]
   verbose = true
-}
-
-def copyAppJsweet = tasks.register("copyAppJsweet", Copy) {
-  dependsOn(setupFrontend)
-  from 'config/src/appjsweet'
-  into 'build/app/src/app/'
-}
-
-["testApp", "buildApp", "runApp"].forEach {
-  tasks.named(it, NpxTask) {
-    dependsOn(copyAppJsweet)
-  }
 }
 
 test {
@@ -53,7 +42,7 @@ tasks.register("slowtest", Test) {
   dependsOn npmInstall
 }
 
-task runAppNoBuild(type: NpxTask) {
+tasks.register("runAppNoBuild", NpxTask) {
   command = "ng"
   args = ["serve"]
 }

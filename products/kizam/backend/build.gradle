@@ -1,3 +1,5 @@
+import de.montigem.gradle.specific.UMLP2JavaTask
+
 /* (c) https://github.com/MontiCore/monticore */
 
 // run tasks in this project with command:
@@ -53,14 +55,6 @@ dependencies {
   implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
 }
 
-umlp2java {
-  input = file("../models/Kizam.umlp")
-  symbolOutDir = file("${project.buildDir}/symbols")
+tasks.named("umlp2java", UMLP2JavaTask) {
   useSpring = true
-}
-
-tasks.register('runServer') {
-  dependsOn(bootRun {
-    systemProperty "spring.shell.interactive.enabled", "false"
-  })
 }
