@@ -46,7 +46,7 @@ public final class PreInteractionBodyState implements OCLAttachableState, SDTest
     var objectSection = objectSection();
     var diagramMatchingStrategy = objectSection.diagramState();
     test.imports().addAll(diagramMatchingStrategy.initialState().imports());
-    diagramMatchingStrategy.matchingStrategy().ifPresent(test::matchingStrategy);
+    diagramMatchingStrategy.matchingStrategy().ifPresent(test::setMatchingStrategy);
     test.sdObjects().addAll(objectSection.sdObjects());
     test.preInteractionOCLStatements().addAll(oclStatements());
     return test;

@@ -22,7 +22,7 @@ public final class SDTest implements SDTestExtractable {
     return matchingStrategy;
   }
 
-  public SDTest matchingStrategy(MatchingStrategy matchingStrategy) {
+  public SDTest setMatchingStrategy(MatchingStrategy matchingStrategy) {
     this.matchingStrategy = Optional.of(matchingStrategy);
     return this;
   }
