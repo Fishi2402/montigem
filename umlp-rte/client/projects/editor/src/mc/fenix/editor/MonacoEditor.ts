@@ -84,7 +84,7 @@ export class MonacoEditor extends MonacoEditorComponent  {
           }
           return {
             contents: [
-              { value: '**Test Hover**'}
+              { value: ''}
             ]
           };
         }
