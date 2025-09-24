@@ -2,6 +2,7 @@ package umlp.generator.domain.visitor.model.action;
 
 import java.util.Optional;
 
+@Deprecated
 public final class ReturnAction implements Action {
 
   private final Optional<String> returnValue;

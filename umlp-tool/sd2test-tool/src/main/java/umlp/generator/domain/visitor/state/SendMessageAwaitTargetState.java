@@ -1,6 +1,6 @@
 package umlp.generator.domain.visitor.state;
 
-import umlp.generator.domain.visitor.model.InteractionEntity;
+import umlp.generator.domain.visitor.model.interaction.Actor;
 
 /**
  * waiting for the target of a send-message interaction
@@ -8,9 +8,9 @@ import umlp.generator.domain.visitor.model.InteractionEntity;
 public final class SendMessageAwaitTargetState implements VisitorState {
 
   private final SendMessageAwaitSourceState previousState;
-  private final InteractionEntity source;
+  private final Actor source;
 
-  public SendMessageAwaitTargetState(SendMessageAwaitSourceState previousState, InteractionEntity source) {
+  public SendMessageAwaitTargetState(SendMessageAwaitSourceState previousState, Actor source) {
     this.previousState = previousState;
     this.source = source;
   }
@@ -24,7 +24,7 @@ public final class SendMessageAwaitTargetState implements VisitorState {
     return previousState;
   }
 
-  public InteractionEntity source() {
+  public Actor source() {
     return source;
   }
 

@@ -1,6 +1,6 @@
 package umlp.generator.domain.visitor.state;
 
-import umlp.generator.domain.visitor.model.InteractionEntity;
+import umlp.generator.domain.visitor.model.interaction.Actor;
 
 /**
  * Waiting for action after reading source and target of an interaction
@@ -8,10 +8,10 @@ import umlp.generator.domain.visitor.model.InteractionEntity;
 public final class AwaitActionState implements VisitorState {
 
   private final VisitorState previousState;
-  private final InteractionEntity source;
-  private final InteractionEntity target;
+  private final Actor source;
+  private final Actor target;
 
-  public AwaitActionState(VisitorState previousState, InteractionEntity source, InteractionEntity target) {
+  public AwaitActionState(VisitorState previousState, Actor source, Actor target) {
     this.previousState = previousState;
     this.source = source;
     this.target = target;
@@ -26,11 +26,11 @@ public final class AwaitActionState implements VisitorState {
     return previousState;
   }
 
-  public InteractionEntity source() {
+  public Actor source() {
     return source;
   }
 
-  public InteractionEntity target() {
+  public Actor target() {
     return target;
   }
 

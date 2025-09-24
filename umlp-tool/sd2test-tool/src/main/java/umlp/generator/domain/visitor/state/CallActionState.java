@@ -1,9 +1,9 @@
 package umlp.generator.domain.visitor.state;
 
-import umlp.generator.domain.visitor.model.Interaction;
 import umlp.generator.domain.visitor.model.InteractionExtractable;
 import umlp.generator.domain.visitor.model.StateExtractedInteraction;
 import umlp.generator.domain.visitor.model.action.CallAction;
+import umlp.generator.domain.visitor.model.interaction.MethodCallInteraction;
 
 /**
  * We received a call action and are now waiting for an optional activity bar or ocl statements
@@ -36,7 +36,12 @@ public final class CallActionState implements VisitorState, InteractionExtractab
     var awaitActionState = previousState();
     var source = awaitActionState.source();
     var target = awaitActionState.target();
-    var interaction = new Interaction(source, target, action);
+    var interaction = new MethodCallInteraction(source,
+                                                target,
+                                                action.methodName(),
+                                                action.isStatic(),
+                                                action.isTrigger(),
+                                                action.argumentExpressions());
     var previousState = awaitActionState.previousState();
     return new StateExtractedInteraction(interaction, previousState);
   }

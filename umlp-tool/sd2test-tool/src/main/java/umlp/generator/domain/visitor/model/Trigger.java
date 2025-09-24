@@ -1,17 +1,20 @@
 package umlp.generator.domain.visitor.model;
 
+import umlp.generator.domain.visitor.model.interaction.Interaction;
+import umlp.generator.domain.visitor.model.interaction.MethodCallInteraction;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public final class Trigger {
-  private final Interaction triggerInteraction;
+  private final MethodCallInteraction triggerInteraction;
   private final List<Interaction> resultingInteractions = new ArrayList<>();
 
-  public Trigger(Interaction triggerInteraction) {
+  public Trigger(MethodCallInteraction triggerInteraction) {
     this.triggerInteraction = triggerInteraction;
   }
 
-  public Interaction triggerInteraction() {
+  public MethodCallInteraction triggerInteraction() {
     return triggerInteraction;
   }
 

@@ -1,14 +1,13 @@
 package umlp.generator.domain.visitor.state;
 
 import umlp.generator.domain.visitor.model.ActivityBar;
-import umlp.generator.domain.visitor.model.Interaction;
 import umlp.generator.domain.visitor.model.InteractionExtractable;
 import umlp.generator.domain.visitor.model.StateExtractedInteraction;
+import umlp.generator.domain.visitor.model.interaction.MethodCallInteraction;
 import umlp.generator.domain.visitor.model.ocl.OCLStatement;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public final class ClosedActivityBarState implements OCLState, InteractionExtractable {
 
@@ -44,8 +43,13 @@ public final class ClosedActivityBarState implements OCLState, InteractionExtrac
     var activityBar = new ActivityBar();
     activityBar.body().addAll(openActivityBarState.interactions());
     activityBar.oclStatements().addAll(openActivityBarState.oclStatements());
-    action.activityBar(Optional.of(activityBar));
-    var interaction = new Interaction(source, target, action);
+    var interaction = new MethodCallInteraction(source,
+                                                target,
+                                                action.methodName(),
+                                                action.isStatic(),
+                                                action.isTrigger(),
+                                                action.argumentExpressions()).setActivityBar(
+        activityBar);
     interaction.oclStatements().addAll(openActivityBarState.oclStatements());
     var previousState = awaitActionState.previousState();
     return new StateExtractedInteraction(interaction, previousState);

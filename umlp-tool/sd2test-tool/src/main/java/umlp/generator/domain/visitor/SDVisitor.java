@@ -30,19 +30,19 @@ import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
-import umlp.generator.domain.visitor.model.Interaction;
-import umlp.generator.domain.visitor.model.InteractionEntity;
 import umlp.generator.domain.visitor.model.InteractionExtractable;
 import umlp.generator.domain.visitor.model.MatchingStrategy;
 import umlp.generator.domain.visitor.model.SDObject;
 import umlp.generator.domain.visitor.model.SDTestExtractable;
 import umlp.generator.domain.visitor.model.StateExtractedInteraction;
 import umlp.generator.domain.visitor.model.Trigger;
-import umlp.generator.domain.visitor.model.action.Action;
-import umlp.generator.domain.visitor.model.action.ActionVariantMatcher;
 import umlp.generator.domain.visitor.model.action.CallAction;
 import umlp.generator.domain.visitor.model.action.ReturnAction;
 import umlp.generator.domain.visitor.model.action.ThrowAction;
+import umlp.generator.domain.visitor.model.interaction.Actor;
+import umlp.generator.domain.visitor.model.interaction.Interaction;
+import umlp.generator.domain.visitor.model.interaction.InteractionVariantMatcher;
+import umlp.generator.domain.visitor.model.interaction.MethodCallInteraction;
 import umlp.generator.domain.visitor.model.ocl.AssertStatement;
 import umlp.generator.domain.visitor.model.ocl.LetStatement;
 import umlp.generator.domain.visitor.model.ocl.OCLStatement;
@@ -366,21 +366,21 @@ public final class SDVisitor implements SDBasisVisitor2,
   private VisitorState finishInteraction(Interaction interaction,
       VisitorState previousState,
       Optional<SourcePosition> sourcePosition) {
-    var interactionIsTrigger = interaction
-        .action()
-        .matchVariant(new ActionVariantMatcher<Boolean>() {
-          @Override
-          public Boolean whenCall(CallAction callAction) {
-            return callAction.isTrigger();
-          }
+    var triggerCall =
+        interaction.matchVariant(new InteractionVariantMatcher<Optional<MethodCallInteraction>>() {
 
-          @Override
-          public Boolean otherwise(Action action) {
-            return false;
-          }
-        });
-    return previousState.matchVariant(interactionIsTrigger ? new VisitorStateVariantMatcher<>() {
-      final Trigger trigger = new Trigger(interaction);
+      @Override
+      public Optional<MethodCallInteraction> whenMethodCall(MethodCallInteraction methodCall) {
+        return Optional.of(methodCall).filter(MethodCallInteraction::isTrigger);
+      }
+
+      @Override
+      public Optional<MethodCallInteraction> otherwise(Interaction interaction) {
+        return Optional.empty();
+      }
+    });
+    return previousState.matchVariant(triggerCall.isPresent() ? new VisitorStateVariantMatcher<>() {
+      final Trigger trigger = new Trigger(triggerCall.get());
 
       @Override
       public VisitorState whenPreInteractionBody(PreInteractionBodyState preInteractionBodyState) {
@@ -421,7 +421,7 @@ public final class SDVisitor implements SDBasisVisitor2,
   @Override
   public void visit(ASTSDObjectSource node) {
     var name = node.getName();
-    var source = new InteractionEntity(name, false);
+    var source = new Actor(name, false);
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
       public VisitorState whenSendMessageAwaitSource(SendMessageAwaitSourceState sendMessageAwaitSourceState) {
@@ -445,7 +445,7 @@ public final class SDVisitor implements SDBasisVisitor2,
   @Override
   public void visit(ASTSDObjectTarget node) {
     var name = node.getName();
-    var target = new InteractionEntity(name, false);
+    var target = new Actor(name, false);
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
       public VisitorState whenSendMessageAwaitTarget(SendMessageAwaitTargetState sendMessageAwaitTargetState) {
@@ -469,7 +469,7 @@ public final class SDVisitor implements SDBasisVisitor2,
   @Override
   public void visit(ASTSDClass node) {
     var name = node.getMCObjectType().printType();
-    var entity = new InteractionEntity(name, true);
+    var entity = new Actor(name, true);
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
       public VisitorState whenSendMessageAwaitSource(SendMessageAwaitSourceState sendMessageAwaitSourceState) {
@@ -680,7 +680,8 @@ public final class SDVisitor implements SDBasisVisitor2,
         var interaction = extractedInteraction.interaction();
         var previousState = extractedInteraction.previousState();
         var newPreviousState = finishInteraction(interaction, previousState, sourcePosition);
-        var testExtractable = newPreviousState.matchVariant(new VisitorStateVariantMatcher<SDTestExtractable>() {
+        var testExtractable =
+            newPreviousState.matchVariant(new VisitorStateVariantMatcher<SDTestExtractable>() {
           @Override
           public SDTestExtractable whenBodySection(BodySectionState bodySectionState) {
             return bodySectionState;

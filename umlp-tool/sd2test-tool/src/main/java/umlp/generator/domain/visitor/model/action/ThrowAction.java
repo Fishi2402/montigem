@@ -3,6 +3,7 @@ package umlp.generator.domain.visitor.model.action;
 import java.util.List;
 import java.util.Optional;
 
+@Deprecated
 public final class ThrowAction implements Action {
 
   private final String throwableTypeName;

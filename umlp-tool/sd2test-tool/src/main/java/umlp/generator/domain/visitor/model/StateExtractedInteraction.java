@@ -1,5 +1,6 @@
 package umlp.generator.domain.visitor.model;
 
+import umlp.generator.domain.visitor.model.interaction.Interaction;
 import umlp.generator.domain.visitor.state.VisitorState;
 
 public final class StateExtractedInteraction implements InteractionExtractable {

@@ -1,6 +1,6 @@
 package umlp.generator.domain.visitor.state;
 
-import umlp.generator.domain.visitor.model.Interaction;
+import umlp.generator.domain.visitor.model.interaction.Interaction;
 import umlp.generator.domain.visitor.model.ocl.OCLStatement;
 
 import java.util.ArrayList;

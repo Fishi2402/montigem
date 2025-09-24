@@ -5,6 +5,7 @@ import umlp.generator.domain.visitor.model.ActivityBar;
 import java.util.List;
 import java.util.Optional;
 
+@Deprecated
 public final class CallAction implements Action {
 
   private final String methodName;

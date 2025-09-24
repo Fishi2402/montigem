@@ -1,5 +1,6 @@
 package umlp.generator.domain.visitor.model.action;
 
+@Deprecated
 public interface ActionVariantMatcher<T> {
 
   default T whenCall(CallAction callAction) {

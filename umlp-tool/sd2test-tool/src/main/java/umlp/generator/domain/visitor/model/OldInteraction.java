@@ -1,28 +1,30 @@
 package umlp.generator.domain.visitor.model;
 
 import umlp.generator.domain.visitor.model.action.Action;
+import umlp.generator.domain.visitor.model.interaction.Actor;
 import umlp.generator.domain.visitor.model.ocl.OCLStatement;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public final class Interaction {
-  private final InteractionEntity source;
-  private final InteractionEntity target;
+@Deprecated
+public final class OldInteraction {
+  private final Actor source;
+  private final Actor target;
   private final Action action;
   private final List<OCLStatement> oclStatements = new ArrayList<>();
 
-  public Interaction(InteractionEntity source, InteractionEntity target, Action action) {
+  public OldInteraction(Actor source, Actor target, Action action) {
     this.source = source;
     this.target = target;
     this.action = action;
   }
 
-  public InteractionEntity source() {
+  public Actor source() {
     return source;
   }
 
-  public InteractionEntity target() {
+  public Actor target() {
     return target;
   }
 

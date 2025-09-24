@@ -1,10 +1,10 @@
-package umlp.generator.domain.visitor.model;
+package umlp.generator.domain.visitor.model.interaction;
 
-public final class InteractionEntity {
+public final class Actor {
   private final String name;
   private final boolean isStatic;
 
-  public InteractionEntity(String name, boolean isStatic) {
+  public Actor(String name, boolean isStatic) {
     this.name = name;
     this.isStatic = isStatic;
   }
