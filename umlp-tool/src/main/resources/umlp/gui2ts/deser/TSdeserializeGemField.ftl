@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("cdName", "className", "fieldName", "fieldType")}
+${tc.signature("cdName", "initializationTypeName", "fieldName", "fieldType")}
 ${cd4c.method("protected Gem<${fieldType}> deserialize${fieldName?cap_first} (any json)")}
   if (json.hasOwnProperty("${fieldName}")) {
     return ${cdName}.create${fieldType}Gem(json["${fieldName}"]);

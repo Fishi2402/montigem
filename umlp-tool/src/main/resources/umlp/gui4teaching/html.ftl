@@ -177,11 +177,11 @@
   <script src="https://d3js.org/d3.v6.js"></script>
   <script>
     // Update of CRUD
-    async function updateObj(cell, className, attr, gemId) {
+    async function updateObj(cell, initializationTypeName, attr, gemId) {
       // Get the input value from the table cell
       try {
-        const attrType = getType(className, attr);
-        const isArray = getIsArray(className, attr);
+        const attrType = getType(initializationTypeName, attr);
+        const isArray = getIsArray(initializationTypeName, attr);
         if (attrType === "Unknown") {
           warnChangeUneditable(attr);
           return;
@@ -190,7 +190,7 @@
 
         if (isArray) {
           const command = {
-            "commandType": "${ast.getCDDefinition().getName()?lower_case}.commands." + className + "_get",
+            "commandType": "${ast.getCDDefinition().getName()?lower_case}.commands." + initializationTypeName + "_get",
             "gemId": gemId
           }
           const originalObj = await sendCommand(command);
@@ -199,7 +199,7 @@
           let toAdd = value.filter(x => !originalValue.includes(x));
           for (const add of toAdd) {
             const command = {
-              "commandType": "${ast.getCDDefinition().getName()?lower_case}.commands." + className + "_add" + capitalizeFirstLetter(attr),
+              "commandType": "${ast.getCDDefinition().getName()?lower_case}.commands." + initializationTypeName + "_add" + capitalizeFirstLetter(attr),
               "gemId": gemId,
               "indexInList": 0
             };
@@ -209,7 +209,7 @@
           }
           for (const remove of toRemove) {
             const command = {
-              "commandType": "${ast.getCDDefinition().getName()?lower_case}.commands." + className + "_remove" + capitalizeFirstLetter(attr),
+              "commandType": "${ast.getCDDefinition().getName()?lower_case}.commands." + initializationTypeName + "_remove" + capitalizeFirstLetter(attr),
               "gemId": gemId,
               "indexInList": 0
             };
@@ -226,7 +226,7 @@
           //   data: Bob
           // }
           const command = {
-            "commandType": "${ast.getCDDefinition().getName()?lower_case}.commands." + className + "_set" + capitalizeFirstLetter(attr),
+            "commandType": "${ast.getCDDefinition().getName()?lower_case}.commands." + initializationTypeName + "_set" + capitalizeFirstLetter(attr),
             "gemId": gemId
           };
           command[attr] = value;
@@ -241,17 +241,17 @@
       }
     }
 
-    async function updateObjForInputField(input, className, attr, gemId) {
+    async function updateObjForInputField(input, initializationTypeName, attr, gemId) {
       // Get the input value from the table cell
       try {
-        if (!isEnum(className, attr)) {
+        if (!isEnum(initializationTypeName, attr)) {
           warnChangeUneditable(attr);
           return;
         }
         let value = input.value.trim();
-        const enumValues = Object.keys(getType(className, attr).forwardMap);
+        const enumValues = Object.keys(getType(initializationTypeName, attr).forwardMap);
         if (!enumValues.includes(value) && value !== "") {
-          throw typeError(value, getTypeName(className, attr));
+          throw typeError(value, getTypeName(initializationTypeName, attr));
         }
 
         // TODO: form proper command, maybe delete next comment and log line
@@ -262,7 +262,7 @@
         //   data: Bob
         // }
         const command = {
-          "commandType": "selib.commands." + className + "_set" + capitalizeFirstLetter(attr),
+          "commandType": "selib.commands." + initializationTypeName + "_set" + capitalizeFirstLetter(attr),
           "gemId": gemId
         };
         command[attr] = value;
@@ -277,7 +277,7 @@
     }
 
     // Create of CRUD
-    async function createObj(obj, className) {
+    async function createObj(obj, initializationTypeName) {
       // TODO: form proper command, maybe delete next comment and log line
       // example:
       // {
@@ -289,9 +289,9 @@
       }
       obj["gemId"] = convert((await sendCommand(freeGemId))["value"], "Number");
       const command = {
-        "commandType": "${ast.getCDDefinition().getName()?lower_case}.commands." + className + "_create"
+        "commandType": "${ast.getCDDefinition().getName()?lower_case}.commands." + initializationTypeName + "_create"
       };
-      command[uncapitalize(className)] = obj;
+      command[uncapitalize(initializationTypeName)] = obj;
       console.log(command);
 
       // send request to the server
@@ -301,7 +301,7 @@
     }
 
     // Delete of CRUD
-    async function deleteObj(className, gemId) {
+    async function deleteObj(initializationTypeName, gemId) {
       // TODO: form proper command, maybe delete next comment and log line
       // example:
       // {
@@ -309,7 +309,7 @@
       //   gemId: 4
       // }
       const command = {
-        "commandType": "${ast.getCDDefinition().getName()?lower_case}.commands." + className + "_delete",
+        "commandType": "${ast.getCDDefinition().getName()?lower_case}.commands." + initializationTypeName + "_delete",
         "gemId": gemId
       };
       console.log(command);
@@ -326,28 +326,28 @@
         + "non-existing attribute, array, or an attribute of unknown type");
     }
 
-    // update object when user enters something in a @cell of type @className;
+    // update object when user enters something in a @cell of type @initializationTypeName;
     // the update happens 1000 msec (1 sec) after user stops typing
     const timeoutIds = new WeakMap();
-    function handleInput(cell, className, attr, gemId) {
+    function handleInput(cell, initializationTypeName, attr, gemId) {
       // refresh timer if user still types
       if (timeoutIds.has(cell)) {
         clearTimeout(timeoutIds.get(cell));
       }
       // set timer to 1 sec for update action
       timeoutIds.set(cell, setTimeout(function () {
-        updateObj(cell, className, attr, gemId);
+        updateObj(cell, initializationTypeName, attr, gemId);
       }, 1000));
     }
 
-    function handleInputFieldInput(input, className, attr, gemId) {
+    function handleInputFieldInput(input, initializationTypeName, attr, gemId) {
       // refresh timer if user still types
       if (timeoutIds.has(input)) {
         clearTimeout(timeoutIds.get(input));
       }
       // set timer to 1 sec for update action
       timeoutIds.set(input, setTimeout(function () {
-        updateObjForInputField(input, className, attr, gemId);
+        updateObjForInputField(input, initializationTypeName, attr, gemId);
       }, 1000));
     }
 
@@ -446,7 +446,7 @@
 
           // create a card for each class
           for (const entry of dataSet) {
-            const className = entry.class;
+            const initializationTypeName = entry.class;
             const cardClone = cardTpl.content.cloneNode(true);
             // button to blend table in/out
             let button = cardClone.querySelector("button.card-button");
@@ -460,7 +460,7 @@
 
             // set Card title, i.e. "Person", "Book", etc.
             let cardHeader = cardClone.querySelector("div.card-header");
-            let cardHeaderText = document.createTextNode(className);
+            let cardHeaderText = document.createTextNode(initializationTypeName);
             cardHeader.appendChild(cardHeaderText);
 
             const data = entry.data;
@@ -497,12 +497,12 @@
             // add empty cells for creation
             const addRowCells = new Map();
             for (const attr of classAttrs) {
-              if (isReadonly(className, attr)) {
+              if (isReadonly(initializationTypeName, attr)) {
                 const td = addReadOnlyBodyCell(tableAddRow);
                 addRowCells.set(attr, td);
-              } else if (isEnum(className, attr)) {
+              } else if (isEnum(initializationTypeName, attr)) {
                 const input = addDropdownBodyCell(
-                  tableAddRow, attr, Object.keys(getType(className, attr).forwardMap));
+                  tableAddRow, attr, Object.keys(getType(initializationTypeName, attr).forwardMap));
                 addRowCells.set(attr, input);
               } else {
                 const td = addBodyCell(tableAddRow);
@@ -518,7 +518,7 @@
               const inputs = [];
               try {
                 for (const key of addRowCells.keys()) {
-                  if (isEnum(className, key)) {
+                  if (isEnum(initializationTypeName, key)) {
                     const input = addRowCells.get(key);
                     if (input) {
                       inputs.push(input);
@@ -526,7 +526,7 @@
                       if (value.length > 0) {
                         valid = true;
                       }
-                      console.log(getType(className, key));
+                      console.log(getType(initializationTypeName, key));
                       obj[key] = value;
                     }
                   } else {
@@ -541,8 +541,8 @@
                       if (value.length > 0) {
                         valid = true;
                       }
-                      const attrType = getType(className, key);
-                      const isArray = getIsArray(className, key);
+                      const attrType = getType(initializationTypeName, key);
+                      const isArray = getIsArray(initializationTypeName, key);
                       if (attrType !== "Unknown") {
                         obj[key] = convert(value, attrType, isArray);
                       } else {
@@ -554,7 +554,7 @@
                 if (valid) {
                   // create object and empty the row;
                   // if error happens, the row will not be emptied (for possible recovery?)
-                  createObj(obj, className).then(_ => {
+                  createObj(obj, initializationTypeName).then(_ => {
                     for (const cell of cells) {
                       cell.innerText = "";
                     }
@@ -564,7 +564,7 @@
                   });
                 } else {
                   window.alert(
-                    "Please set at least one field to create a " + className
+                    "Please set at least one field to create a " + initializationTypeName
                   );
                 }
               } catch (err) {
@@ -585,23 +585,23 @@
                 // add first cell with a symbol for deleting rows
                 const tdDel = cellDeleteTpl.content.cloneNode(true).querySelector("td");
                 tdDel.addEventListener("click", () => {
-                  deleteObj(className, gemId);
+                  deleteObj(initializationTypeName, gemId);
                 })
                 tableBodyRow.appendChild(tdDel);
 
                 for (const attr of classAttrs) {
-                  if (isReadonly(className, attr)) {
+                  if (isReadonly(initializationTypeName, attr)) {
                     const td = addReadOnlyBodyCell(tableBodyRow);
                     td.innerText = entry[attr];
-                  } else if (isEnum(className, attr)) {
+                  } else if (isEnum(initializationTypeName, attr)) {
                     const input = addDropdownBodyCell(
-                      tableBodyRow, attr, Object.keys(getType(className, attr).forwardMap), () => {
-                        handleInputFieldInput(input, className, attr, gemId);
+                      tableBodyRow, attr, Object.keys(getType(initializationTypeName, attr).forwardMap), () => {
+                        handleInputFieldInput(input, initializationTypeName, attr, gemId);
                       });
                     input.value = entry[attr];
                   } else {
                     const td = addBodyCell(tableBodyRow, () => {
-                      handleInput(td, className, attr, gemId);
+                      handleInput(td, initializationTypeName, attr, gemId);
                     });
                     td.innerText = entry[attr];
                   }

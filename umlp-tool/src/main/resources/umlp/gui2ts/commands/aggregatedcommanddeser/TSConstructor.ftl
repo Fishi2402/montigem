@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("commandList", "className", "baseName")}
+${tc.signature("commandList", "initializationTypeName", "baseName")}
 ${cd4c.constructor("public constructor()")}
 public constructor() {
   super();

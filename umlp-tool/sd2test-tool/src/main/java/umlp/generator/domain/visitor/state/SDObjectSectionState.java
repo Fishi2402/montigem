@@ -10,11 +10,11 @@ import java.util.List;
  */
 public final class SDObjectSectionState implements VisitorState {
 
-  private final DiagramMatchingStrategyState diagramMatchingStrategy;
+  private final DiagramState diagramState;
   private final List<SDObject> sdObjects = new ArrayList<>();
 
-  public SDObjectSectionState(DiagramMatchingStrategyState diagramMatchingStrategy) {
-    this.diagramMatchingStrategy = diagramMatchingStrategy;
+  public SDObjectSectionState(DiagramState diagramState) {
+    this.diagramState = diagramState;
   }
 
   @Override
@@ -22,8 +22,8 @@ public final class SDObjectSectionState implements VisitorState {
     return matcher.whenSDObjectSection(this);
   }
 
-  public DiagramMatchingStrategyState diagramMatchingStrategy() {
-    return diagramMatchingStrategy;
+  public DiagramState diagramState() {
+    return diagramState;
   }
 
   public List<SDObject> sdObjects() {
@@ -32,7 +32,7 @@ public final class SDObjectSectionState implements VisitorState {
 
   @Override
   public String toString() {
-    return "SDObjectSectionState{" + "diagramMatchingStrategy=" + diagramMatchingStrategy +
-           ", sdObjects=" + sdObjects + '}';
+    return "SDObjectSectionState{" + "diagramState=" + diagramState + ", sdObjects=" + sdObjects +
+           '}';
   }
 }

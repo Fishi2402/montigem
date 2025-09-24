@@ -8,9 +8,9 @@ if(BaseClassObjectMapper.canDeSer(tp)){
   res = BaseClassObjectMapper.deserialize(value.toString(), tp).orElse(null);
 }else {
   switch (tp) {
-<#list classList as className>
-    case "${className}": {
-      res = new ${className}DeSer().fromJson(val).orElse(null);
+<#list classList as initializationTypeName>
+    case "${initializationTypeName}": {
+      res = new ${initializationTypeName}DeSer().fromJson(val).orElse(null);
       break;
     }
 </#list>

@@ -9,13 +9,12 @@ import java.util.List;
 /**
  * We are reading the contents of an activity bar
  */
-public final class OpenActivityBarState implements OCLState {
+public final class OpenActivityBarState implements OCLAttachableState {
 
-  private final CallActionState call;
+  private final CallState call;
   private final List<Interaction> interactions = new ArrayList<>();
-  private final List<OCLStatement> callOclStatements = new ArrayList<>();
 
-  public OpenActivityBarState(CallActionState call) {
+  public OpenActivityBarState(CallState call) {
     this.call = call;
   }
 
@@ -26,10 +25,10 @@ public final class OpenActivityBarState implements OCLState {
 
   @Override
   public List<OCLStatement> oclStatements() {
-    return callOclStatements;
+    return call.oclStatements();
   }
 
-  public CallActionState call() {
+  public CallState call() {
     return call;
   }
 
@@ -39,7 +38,6 @@ public final class OpenActivityBarState implements OCLState {
 
   @Override
   public String toString() {
-    return "OpenActivityBarState{" + "call=" + call + ", interactions=" + interactions +
-           ", callOclStatements=" + callOclStatements + '}';
+    return "OpenActivityBarState{" + "call=" + call + ", interactions=" + interactions + '}';
   }
 }

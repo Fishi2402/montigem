@@ -150,8 +150,8 @@ public class SD2TestDecorator {
 
     var sdTest = visitor.currentState().matchVariant(new VisitorStateVariantMatcher<SDTest>() {
       @Override
-      public SDTest whenFinished(FinishedState finishedState) {
-        return finishedState.extractTest();
+      public SDTest whenFinished(FinishedState finished) {
+        return finished.extractTest();
       }
 
       @Override

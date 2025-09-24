@@ -10,18 +10,21 @@ import java.util.Optional;
 public final class ConstructorCallInteraction implements Interaction {
 
   private final Actor source;
-  private final String className;
+  private final String declarationTypeName;
+  private final String initializationTypeName;
   private final String objectName;
   private final Optional<List<String>> parameterExpressions;
   private Optional<ActivityBar> activityBar = Optional.empty();
   private final List<OCLStatement> oclStatements = new ArrayList<>();
 
   public ConstructorCallInteraction(Actor source,
-      String className,
+      String declarationTypeName,
+      String initializationTypeName,
       String objectName,
       Optional<List<String>> parameterExpressions) {
     this.source = source;
-    this.className = className;
+    this.declarationTypeName = declarationTypeName;
+    this.initializationTypeName = initializationTypeName;
     this.objectName = objectName;
     this.parameterExpressions = parameterExpressions;
   }
@@ -45,8 +48,12 @@ public final class ConstructorCallInteraction implements Interaction {
     return source;
   }
 
-  public String className() {
-    return className;
+  public String declarationTypeName() {
+    return declarationTypeName;
+  }
+
+  public String initializationTypeName() {
+    return initializationTypeName;
   }
 
   public String objectName() {
@@ -68,8 +75,10 @@ public final class ConstructorCallInteraction implements Interaction {
 
   @Override
   public String toString() {
-    return "ConstructorCallInteraction{" + "source=" + source + ", className='" + className + '\'' +
-           ", objectName='" + objectName + '\'' + ", parameterExpressions=" + parameterExpressions +
-           ", activityBar=" + activityBar + ", oclStatements=" + oclStatements + '}';
+    return "ConstructorCallInteraction{" + "source=" + source + ", declarationTypeName='" +
+           declarationTypeName + '\'' + ", initializationTypeName='" + initializationTypeName +
+           '\'' + ", objectName='" + objectName + '\'' + ", parameterExpressions=" +
+           parameterExpressions + ", activityBar=" + activityBar + ", oclStatements=" +
+           oclStatements + '}';
   }
 }

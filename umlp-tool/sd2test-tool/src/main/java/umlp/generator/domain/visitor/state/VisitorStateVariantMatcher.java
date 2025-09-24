@@ -2,76 +2,88 @@ package umlp.generator.domain.visitor.state;
 
 public interface VisitorStateVariantMatcher<T> {
 
-  default T whenImportSection(ImportSectionState importSectionState) {
-    return otherwise(importSectionState);
+  default T whenInitial(InitialState initial) {
+    return otherwise(initial);
   }
 
   default T whenImport(ImportState importState) {
     return otherwise(importState);
   }
 
-  default T whenDiagramMatchingStrategy(DiagramMatchingStrategyState diagramMatchingStrategy) {
-    return otherwise(diagramMatchingStrategy);
+  default T whenDiagram(DiagramState diagram) {
+    return otherwise(diagram);
   }
 
   default T whenSDObjectSection(SDObjectSectionState objectSection) {
     return otherwise(objectSection);
   }
 
-  default T whenSDObjectDeclaration(SDObjectDeclarationState sdObjectDeclarationState) {
-    return otherwise(sdObjectDeclarationState);
+  default T whenSDObjectDeclaration(SDObjectDeclarationState sdObjectDeclaration) {
+    return otherwise(sdObjectDeclaration);
   }
 
-  default T whenPreInteractionBody(PreInteractionBodyState preInteractionBodyState) {
-    return otherwise(preInteractionBodyState);
+  default T whenPreInteractionBody(PreInteractionBodyState preInteractionBody) {
+    return otherwise(preInteractionBody);
   }
 
-  default T whenVariableDeclaration(VariableDeclarationState variableDeclarationState) {
-    return otherwise(variableDeclarationState);
+  default T whenAssertStatement(AssertStatementState assertStatement) {
+    return otherwise(assertStatement);
   }
 
-  default T whenBodySection(BodySectionState bodySectionState) {
-    return otherwise(bodySectionState);
+  default T whenVariableDeclaration(VariableDeclarationState variableDeclaration) {
+    return otherwise(variableDeclaration);
   }
 
-  default T whenSendMessageAwaitSource(SendMessageAwaitSourceState sendMessageAwaitSourceState) {
-    return otherwise(sendMessageAwaitSourceState);
+  default T whenBodySection(BodySectionState bodySection) {
+    return otherwise(bodySection);
   }
 
-  default T whenSendMessageAwaitTarget(SendMessageAwaitTargetState sendMessageAwaitTargetState) {
-    return otherwise(sendMessageAwaitTargetState);
+  default T whenSendMessageAwaitSource(SendMessageAwaitSourceState sendMessageAwaitSource) {
+    return otherwise(sendMessageAwaitSource);
   }
 
-  default T whenEndMessageAwaitTarget(EndMessageAwaitTargetState endMessageAwaitTargetState) {
-    return otherwise(endMessageAwaitTargetState);
+  default T whenSendMessageAwaitTarget(SendMessageAwaitTargetState sendMessageAwaitTarget) {
+    return otherwise(sendMessageAwaitTarget);
   }
 
-  default T whenEndMessageAwaitSource(EndMessageAwaitSourceState endMessageAwaitSourceState) {
-    return otherwise(endMessageAwaitSourceState);
+  default T whenEndMessageAwaitTarget(EndMessageAwaitTargetState endMessageAwaitTarget) {
+    return otherwise(endMessageAwaitTarget);
   }
 
-  default T whenAwaitAction(AwaitActionState awaitActionState) {
-    return otherwise(awaitActionState);
+  default T whenEndMessageAwaitSource(EndMessageAwaitSourceState endMessageAwaitSource) {
+    return otherwise(endMessageAwaitSource);
   }
 
-  default T whenCallAction(CallActionState callActionState) {
-    return otherwise(callActionState);
+  default T whenAwaitAction(AwaitActionState awaitAction) {
+    return otherwise(awaitAction);
   }
 
-  default T whenInteraction(InteractionState interactionState) {
-    return otherwise(interactionState);
+  default T whenMethodCall(MethodCallState methodCall) {
+    return otherwise(methodCall);
   }
 
-  default T whenOpenActivityBar(OpenActivityBarState openActivityBarState) {
-    return otherwise(openActivityBarState);
+  default T whenAwaitConstructorSource(AwaitConstructorSourceState awaitConstructorSource) {
+    return otherwise(awaitConstructorSource);
   }
 
-  default T whenClosedActivityBar(ClosedActivityBarState closedActivityBarState) {
-    return otherwise(closedActivityBarState);
+  default T whenConstructorCall(ConstructorCallState constructorCall) {
+    return otherwise(constructorCall);
   }
 
-  default T whenFinished(FinishedState finishedState) {
-    return otherwise(finishedState);
+  default T whenInteraction(InteractionState interaction) {
+    return otherwise(interaction);
+  }
+
+  default T whenOpenActivityBar(OpenActivityBarState openActivityBar) {
+    return otherwise(openActivityBar);
+  }
+
+  default T whenClosedActivityBar(ClosedActivityBarState closedActivityBar) {
+    return otherwise(closedActivityBar);
+  }
+
+  default T whenFinished(FinishedState finished) {
+    return otherwise(finished);
   }
 
   T otherwise(VisitorState state);

@@ -8,13 +8,13 @@ import java.util.List;
 /**
  * We are waiting for imports or the start of the sd
  */
-public final class ImportSectionState implements VisitorState {
+public final class InitialState implements VisitorState {
 
   private final List<ASTMCImportStatement> imports = new ArrayList<>();
 
   @Override
   public <T> T matchVariant(VisitorStateVariantMatcher<T> matcher) {
-    return matcher.whenImportSection(this);
+    return matcher.whenInitial(this);
   }
 
   public List<ASTMCImportStatement> imports() {

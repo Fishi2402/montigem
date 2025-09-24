@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("commandList", "className", "baseName")}
-${cd4c.constructor("public ${className}()")}
+${tc.signature("commandList", "initializationTypeName", "baseName")}
+${cd4c.constructor("public ${initializationTypeName}()")}
   // Standard
   deSerMap.put("${baseName}.commands.GetFreeGemIdRequest", new ${baseName}.commands.GetFreeGemIdRequestDeSer());
 

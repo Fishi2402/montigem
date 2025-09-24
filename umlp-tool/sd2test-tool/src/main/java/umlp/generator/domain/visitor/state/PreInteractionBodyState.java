@@ -11,7 +11,7 @@ import java.util.List;
  * We are expecting interactions or ocl statements, which should be checked before any interactions
  * happen
  */
-public final class PreInteractionBodyState implements OCLState, SDTestExtractable {
+public final class PreInteractionBodyState implements OCLAttachableState, SDTestExtractable {
 
   private final SDObjectSectionState objectSection;
   private final List<OCLStatement> oclStatements = new ArrayList<>();
@@ -43,11 +43,12 @@ public final class PreInteractionBodyState implements OCLState, SDTestExtractabl
   @Override
   public SDTest extractTest() {
     var test = new SDTest();
-    var diagramMatchingStrategy = objectSection.diagramMatchingStrategy();
-    test.imports().addAll(diagramMatchingStrategy.importSection().imports());
+    var objectSection = objectSection();
+    var diagramMatchingStrategy = objectSection.diagramState();
+    test.imports().addAll(diagramMatchingStrategy.initialState().imports());
     diagramMatchingStrategy.matchingStrategy().ifPresent(test::matchingStrategy);
     test.sdObjects().addAll(objectSection.sdObjects());
-    test.preInteractionOCLStatements().addAll(oclStatements);
+    test.preInteractionOCLStatements().addAll(oclStatements());
     return test;
   }
 }

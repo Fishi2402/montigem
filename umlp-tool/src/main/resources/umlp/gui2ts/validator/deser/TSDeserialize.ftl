@@ -1,8 +1,8 @@
 
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("className", "attributes", "assocTypes", "assocs", "listAssocTypes", "listAssocs")}
-${cd4c.method("public ${className}ValidationResult deserialize(any json)")}
-let result = new ${className}ValidationResult();
+${tc.signature("initializationTypeName", "attributes", "assocTypes", "assocs", "listAssocTypes", "listAssocs")}
+${cd4c.method("public ${initializationTypeName}ValidationResult deserialize(any json)")}
+let result = new ${initializationTypeName}ValidationResult();
 <#list attributes as attr>
   for(let o of json["${attr}Messages"]) {
     let message = new ValidationMessageDeSer().deserialize(o);

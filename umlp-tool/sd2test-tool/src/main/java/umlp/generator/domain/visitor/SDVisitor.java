@@ -36,28 +36,32 @@ import umlp.generator.domain.visitor.model.SDObject;
 import umlp.generator.domain.visitor.model.SDTestExtractable;
 import umlp.generator.domain.visitor.model.StateExtractedInteraction;
 import umlp.generator.domain.visitor.model.Trigger;
-import umlp.generator.domain.visitor.model.action.CallAction;
-import umlp.generator.domain.visitor.model.action.ReturnAction;
-import umlp.generator.domain.visitor.model.action.ThrowAction;
 import umlp.generator.domain.visitor.model.interaction.Actor;
+import umlp.generator.domain.visitor.model.interaction.ConstructorCallInteraction;
 import umlp.generator.domain.visitor.model.interaction.Interaction;
 import umlp.generator.domain.visitor.model.interaction.InteractionVariantMatcher;
 import umlp.generator.domain.visitor.model.interaction.MethodCallInteraction;
+import umlp.generator.domain.visitor.model.interaction.ReturnInteraction;
+import umlp.generator.domain.visitor.model.interaction.ReturnValue;
+import umlp.generator.domain.visitor.model.interaction.ThrowInteraction;
 import umlp.generator.domain.visitor.model.ocl.AssertStatement;
 import umlp.generator.domain.visitor.model.ocl.LetStatement;
 import umlp.generator.domain.visitor.model.ocl.OCLStatement;
+import umlp.generator.domain.visitor.state.AssertStatementState;
 import umlp.generator.domain.visitor.state.AwaitActionState;
+import umlp.generator.domain.visitor.state.AwaitConstructorSourceState;
 import umlp.generator.domain.visitor.state.BodySectionState;
-import umlp.generator.domain.visitor.state.CallActionState;
 import umlp.generator.domain.visitor.state.ClosedActivityBarState;
-import umlp.generator.domain.visitor.state.DiagramMatchingStrategyState;
+import umlp.generator.domain.visitor.state.ConstructorCallState;
+import umlp.generator.domain.visitor.state.DiagramState;
 import umlp.generator.domain.visitor.state.EndMessageAwaitSourceState;
 import umlp.generator.domain.visitor.state.EndMessageAwaitTargetState;
 import umlp.generator.domain.visitor.state.FinishedState;
-import umlp.generator.domain.visitor.state.ImportSectionState;
 import umlp.generator.domain.visitor.state.ImportState;
+import umlp.generator.domain.visitor.state.InitialState;
 import umlp.generator.domain.visitor.state.InteractionState;
-import umlp.generator.domain.visitor.state.OCLState;
+import umlp.generator.domain.visitor.state.MethodCallState;
+import umlp.generator.domain.visitor.state.OCLAttachableState;
 import umlp.generator.domain.visitor.state.OpenActivityBarState;
 import umlp.generator.domain.visitor.state.PreInteractionBodyState;
 import umlp.generator.domain.visitor.state.SDObjectDeclarationState;
@@ -78,14 +82,15 @@ public final class SDVisitor implements SDBasisVisitor2,
     OCLExpressionsVisitor2,
     MCBasicTypesVisitor2 {
 
-  private VisitorState state = new ImportSectionState();
+  private VisitorState state = new InitialState();
 
   @Override
   public void visit(ASTMCImportStatement node) {
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
-      public VisitorState whenImportSection(ImportSectionState importSectionState) {
-        return new ImportState(importSectionState, node);
+      public VisitorState whenInitial(InitialState initial) {
+        initial.imports().add(node);
+        return new ImportState(initial);
       }
 
       @Override
@@ -100,9 +105,7 @@ public final class SDVisitor implements SDBasisVisitor2,
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
       public VisitorState whenImport(ImportState importState) {
-        var importSection = importState.section();
-        importSection.imports().add(importState.importStatement());
-        return importSection;
+        return importState.initialState();
       }
 
       @Override
@@ -116,8 +119,8 @@ public final class SDVisitor implements SDBasisVisitor2,
   public void visit(ASTSequenceDiagram node) {
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
-      public VisitorState whenImportSection(ImportSectionState importSectionState) {
-        return new DiagramMatchingStrategyState(importSectionState);
+      public VisitorState whenInitial(InitialState initial) {
+        return new DiagramState(initial);
       }
 
       @Override
@@ -131,8 +134,8 @@ public final class SDVisitor implements SDBasisVisitor2,
   public void visit(ASTSDObject node) {
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
-      public VisitorState whenDiagramMatchingStrategy(DiagramMatchingStrategyState diagramMatchingStrategy) {
-        var objectSection = new SDObjectSectionState(diagramMatchingStrategy);
+      public VisitorState whenDiagram(DiagramState diagram) {
+        var objectSection = new SDObjectSectionState(diagram);
         return whenSDObjectSection(objectSection);
       }
 
@@ -156,12 +159,12 @@ public final class SDVisitor implements SDBasisVisitor2,
   public void endVisit(ASTSDObject node) {
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
-      public VisitorState whenSDObjectDeclaration(SDObjectDeclarationState sdObjectDeclarationState) {
-        var matchingStrategy = sdObjectDeclarationState.matchingStrategy();
-        var name = sdObjectDeclarationState.name();
-        var qualifiedTypeName = sdObjectDeclarationState.qualifiedTypeName();
+      public VisitorState whenSDObjectDeclaration(SDObjectDeclarationState sdObjectDeclaration) {
+        var matchingStrategy = sdObjectDeclaration.matchingStrategy();
+        var name = sdObjectDeclaration.name();
+        var qualifiedTypeName = sdObjectDeclaration.qualifiedTypeName();
         var sdObject = new SDObject(matchingStrategy, name, qualifiedTypeName);
-        var sdObjectSection = sdObjectDeclarationState.section();
+        var sdObjectSection = sdObjectDeclaration.section();
         sdObjectSection.sdObjects().add(sdObject);
         return sdObjectSection;
       }
@@ -196,13 +199,13 @@ public final class SDVisitor implements SDBasisVisitor2,
   private void updateMatchingStrategy(MatchingStrategy matchingStrategy, ASTNode node) {
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
-      public VisitorState whenDiagramMatchingStrategy(DiagramMatchingStrategyState diagramMatchingStrategy) {
-        return diagramMatchingStrategy.matchingStrategy(matchingStrategy);
+      public VisitorState whenDiagram(DiagramState diagram) {
+        return diagram.matchingStrategy(matchingStrategy);
       }
 
       @Override
-      public VisitorState whenSDObjectDeclaration(SDObjectDeclarationState sdObjectDeclarationState) {
-        return sdObjectDeclarationState.matchingStrategy(matchingStrategy);
+      public VisitorState whenSDObjectDeclaration(SDObjectDeclarationState sdObjectDeclaration) {
+        return sdObjectDeclaration.matchingStrategy(matchingStrategy);
       }
 
       @Override
@@ -233,7 +236,22 @@ public final class SDVisitor implements SDBasisVisitor2,
     var expressionString = OCLExpressionsMill.prettyPrint(expression, false);
     var assertStatement = new AssertStatement(expressionString);
 
-    visitOCLStatement(assertStatement, node, state -> state);
+    visitOCLStatement(assertStatement, node, AssertStatementState::new);
+  }
+
+  @Override
+  public void endVisit(ASTSDCondition node) {
+    updateState(new VisitorStateVariantMatcher<>() {
+      @Override
+      public VisitorState whenAssertStatement(AssertStatementState assertStatement) {
+        return assertStatement.previousState();
+      }
+
+      @Override
+      public VisitorState otherwise(VisitorState state) {
+        return raiseUnexpectedEndVisitError(node, state);
+      }
+    });
   }
 
   @Override
@@ -243,43 +261,61 @@ public final class SDVisitor implements SDBasisVisitor2,
     var assignmentExpression = OCLExpressionsMill.prettyPrint(node.getAssignment(), false);
     var letStatement = new LetStatement(qualifiedTypeName, name, assignmentExpression);
 
-    visitOCLStatement(letStatement,
-                      node,
-                      state -> new VariableDeclarationState(state, letStatement));
+    visitOCLStatement(letStatement, node, VariableDeclarationState::new);
+  }
+
+  @Override
+  public void endVisit(ASTSDVariableDeclaration node) {
+    updateState(new VisitorStateVariantMatcher<>() {
+      @Override
+      public VisitorState whenVariableDeclaration(VariableDeclarationState variableDeclaration) {
+        return variableDeclaration.previousState();
+      }
+
+      @Override
+      public VisitorState otherwise(VisitorState state) {
+        return raiseUnexpectedEndVisitError(node, state);
+      }
+    });
   }
 
   private <T extends OCLStatement> void visitOCLStatement(T statement,
       ASTNode node,
-      Function<OCLState, VisitorState> stateWrapper) {
+      Function<OCLAttachableState, VisitorState> stateWrapper) {
     updateState(new VisitorStateVariantMatcher<VisitorState>() {
       @Override
-      public VisitorState whenPreInteractionBody(PreInteractionBodyState preInteractionBodyState) {
-        return addOCLStatementAndWrap(preInteractionBodyState);
+      public VisitorState whenPreInteractionBody(PreInteractionBodyState preInteractionBody) {
+        return addOCLStatementAndWrap(preInteractionBody);
       }
 
       @Override
-      public VisitorState whenInteraction(InteractionState interactionState) {
+      public VisitorState whenInteraction(InteractionState interaction) {
+        return addOCLStatementAndWrap(interaction);
+      }
+
+      @Override
+      public VisitorState whenClosedActivityBar(ClosedActivityBarState closedActivityBar) {
+        return addOCLStatementAndWrap(closedActivityBar);
+      }
+
+      @Override
+      public VisitorState whenOpenActivityBar(OpenActivityBarState openActivityBar) {
+        return addOCLStatementAndWrap(openActivityBar);
+      }
+
+      @Override
+      public VisitorState whenMethodCall(MethodCallState methodCall) {
+        var previousState = methodCall.previousState();
+        var interaction = methodCall.interaction();
+        var interactionState = new InteractionState(previousState, interaction);
         return addOCLStatementAndWrap(interactionState);
       }
 
       @Override
-      public VisitorState whenClosedActivityBar(ClosedActivityBarState closedActivityBarState) {
-        return addOCLStatementAndWrap(closedActivityBarState);
-      }
-
-      @Override
-      public VisitorState whenOpenActivityBar(OpenActivityBarState openActivityBarState) {
-        return addOCLStatementAndWrap(openActivityBarState);
-      }
-
-      @Override
-      public VisitorState whenCallAction(CallActionState callActionState) {
-        var awaitActionState = callActionState.previousState();
-        var previousState = awaitActionState.previousState();
-        var source = awaitActionState.source();
-        var target = awaitActionState.target();
-        var action = callActionState.action();
-        var interactionState = new InteractionState(previousState, source, target, action);
+      public VisitorState whenConstructorCall(ConstructorCallState constructorCall) {
+        var previousState = constructorCall.previousState();
+        var interaction = constructorCall.interaction();
+        var interactionState = new InteractionState(previousState, interaction);
         return addOCLStatementAndWrap(interactionState);
       }
 
@@ -288,24 +324,9 @@ public final class SDVisitor implements SDBasisVisitor2,
         return raiseUnexpectedVisitError(node, state);
       }
 
-      VisitorState addOCLStatementAndWrap(OCLState state) {
+      VisitorState addOCLStatementAndWrap(OCLAttachableState state) {
         state.oclStatements().add(statement);
         return stateWrapper.apply(state);
-      }
-    });
-  }
-
-  @Override
-  public void endVisit(ASTSDVariableDeclaration node) {
-    updateState(new VisitorStateVariantMatcher<>() {
-      @Override
-      public VisitorState whenVariableDeclaration(VariableDeclarationState variableDeclarationState) {
-        return variableDeclarationState.previousState();
-      }
-
-      @Override
-      public VisitorState otherwise(VisitorState state) {
-        return raiseUnexpectedEndVisitError(node, state);
       }
     });
   }
@@ -325,28 +346,33 @@ public final class SDVisitor implements SDBasisVisitor2,
     var sourcePosition = getSourcePosition(node);
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
-      public VisitorState whenPreInteractionBody(PreInteractionBodyState preInteractionBodyState) {
-        return stateWrapper.apply(preInteractionBodyState);
+      public VisitorState whenPreInteractionBody(PreInteractionBodyState preInteractionBody) {
+        return stateWrapper.apply(preInteractionBody);
       }
 
       @Override
-      public VisitorState whenCallAction(CallActionState callActionState) {
-        return finish(callActionState.extractInteraction());
+      public VisitorState whenMethodCall(MethodCallState methodCall) {
+        return finish(methodCall.extractInteraction());
       }
 
       @Override
-      public VisitorState whenInteraction(InteractionState interactionState) {
-        return finish(interactionState.extractInteraction());
+      public VisitorState whenConstructorCall(ConstructorCallState constructorCall) {
+        return finish(constructorCall.extractInteraction());
       }
 
       @Override
-      public VisitorState whenOpenActivityBar(OpenActivityBarState openActivityBarState) {
-        return stateWrapper.apply(openActivityBarState);
+      public VisitorState whenInteraction(InteractionState interaction) {
+        return finish(interaction.extractInteraction());
       }
 
       @Override
-      public VisitorState whenClosedActivityBar(ClosedActivityBarState closedActivityBarState) {
-        return finish(closedActivityBarState.extractInteraction());
+      public VisitorState whenOpenActivityBar(OpenActivityBarState openActivityBar) {
+        return stateWrapper.apply(openActivityBar);
+      }
+
+      @Override
+      public VisitorState whenClosedActivityBar(ClosedActivityBarState closedActivityBar) {
+        return finish(closedActivityBar.extractInteraction());
       }
 
       @Override
@@ -383,13 +409,13 @@ public final class SDVisitor implements SDBasisVisitor2,
       final Trigger trigger = new Trigger(triggerCall.get());
 
       @Override
-      public VisitorState whenPreInteractionBody(PreInteractionBodyState preInteractionBodyState) {
-        return new BodySectionState(preInteractionBodyState, trigger);
+      public VisitorState whenPreInteractionBody(PreInteractionBodyState preInteractionBody) {
+        return new BodySectionState(preInteractionBody, trigger);
       }
 
       @Override
-      public VisitorState whenBodySection(BodySectionState bodySectionState) {
-        return bodySectionState.replaceLastTrigger(trigger);
+      public VisitorState whenBodySection(BodySectionState bodySection) {
+        return bodySection.replaceLastTrigger(trigger);
       }
 
       @Override
@@ -398,15 +424,15 @@ public final class SDVisitor implements SDBasisVisitor2,
       }
     } : new VisitorStateVariantMatcher<>() {
       @Override
-      public VisitorState whenBodySection(BodySectionState bodySectionState) {
-        bodySectionState.lastTrigger().resultingInteractions().add(interaction);
-        return bodySectionState;
+      public VisitorState whenBodySection(BodySectionState bodySection) {
+        bodySection.lastTrigger().resultingInteractions().add(interaction);
+        return bodySection;
       }
 
       @Override
-      public VisitorState whenOpenActivityBar(OpenActivityBarState openActivityBarState) {
-        openActivityBarState.interactions().add(interaction);
-        return openActivityBarState;
+      public VisitorState whenOpenActivityBar(OpenActivityBarState openActivityBar) {
+        openActivityBar.interactions().add(interaction);
+        return openActivityBar;
       }
 
       @Override
@@ -424,15 +450,22 @@ public final class SDVisitor implements SDBasisVisitor2,
     var source = new Actor(name, false);
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
-      public VisitorState whenSendMessageAwaitSource(SendMessageAwaitSourceState sendMessageAwaitSourceState) {
-        return new SendMessageAwaitTargetState(sendMessageAwaitSourceState, source);
+      public VisitorState whenSendMessageAwaitSource(SendMessageAwaitSourceState sendMessageAwaitSource) {
+        return new SendMessageAwaitTargetState(sendMessageAwaitSource, source);
       }
 
       @Override
-      public VisitorState whenEndMessageAwaitSource(EndMessageAwaitSourceState endMessageAwaitSourceState) {
-        var previousState = endMessageAwaitSourceState.previousState().previousState();
-        var target = endMessageAwaitSourceState.target();
+      public VisitorState whenEndMessageAwaitSource(EndMessageAwaitSourceState endMessageAwaitSource) {
+        var previousState = endMessageAwaitSource.previousState().previousState();
+        var target = endMessageAwaitSource.target();
         return new AwaitActionState(previousState, source, target);
+      }
+
+      @Override
+      public VisitorState whenAwaitConstructorSource(AwaitConstructorSourceState awaitConstructorSource) {
+        var previousState = awaitConstructorSource.previousState();
+        var interaction = awaitConstructorSource.finish(source);
+        return new ConstructorCallState(previousState, interaction);
       }
 
       @Override
@@ -448,15 +481,15 @@ public final class SDVisitor implements SDBasisVisitor2,
     var target = new Actor(name, false);
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
-      public VisitorState whenSendMessageAwaitTarget(SendMessageAwaitTargetState sendMessageAwaitTargetState) {
-        var previousState = sendMessageAwaitTargetState.previousState().previousState();
-        var source = sendMessageAwaitTargetState.source();
+      public VisitorState whenSendMessageAwaitTarget(SendMessageAwaitTargetState sendMessageAwaitTarget) {
+        var previousState = sendMessageAwaitTarget.previousState().previousState();
+        var source = sendMessageAwaitTarget.source();
         return new AwaitActionState(previousState, source, target);
       }
 
       @Override
-      public VisitorState whenEndMessageAwaitTarget(EndMessageAwaitTargetState endMessageAwaitTargetState) {
-        return new EndMessageAwaitSourceState(endMessageAwaitTargetState, target);
+      public VisitorState whenEndMessageAwaitTarget(EndMessageAwaitTargetState endMessageAwaitTarget) {
+        return new EndMessageAwaitSourceState(endMessageAwaitTarget, target);
       }
 
       @Override
@@ -469,30 +502,37 @@ public final class SDVisitor implements SDBasisVisitor2,
   @Override
   public void visit(ASTSDClass node) {
     var name = node.getMCObjectType().printType();
-    var entity = new Actor(name, true);
+    var actor = new Actor(name, true);
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
-      public VisitorState whenSendMessageAwaitSource(SendMessageAwaitSourceState sendMessageAwaitSourceState) {
-        return new SendMessageAwaitTargetState(sendMessageAwaitSourceState, entity);
+      public VisitorState whenSendMessageAwaitSource(SendMessageAwaitSourceState sendMessageAwaitSource) {
+        return new SendMessageAwaitTargetState(sendMessageAwaitSource, actor);
       }
 
       @Override
-      public VisitorState whenSendMessageAwaitTarget(SendMessageAwaitTargetState sendMessageAwaitTargetState) {
-        var previousState = sendMessageAwaitTargetState.previousState().previousState();
-        var source = sendMessageAwaitTargetState.source();
-        return new AwaitActionState(previousState, source, entity);
+      public VisitorState whenSendMessageAwaitTarget(SendMessageAwaitTargetState sendMessageAwaitTarget) {
+        var previousState = sendMessageAwaitTarget.previousState().previousState();
+        var source = sendMessageAwaitTarget.source();
+        return new AwaitActionState(previousState, source, actor);
       }
 
       @Override
-      public VisitorState whenEndMessageAwaitTarget(EndMessageAwaitTargetState endMessageAwaitTargetState) {
-        return new EndMessageAwaitSourceState(endMessageAwaitTargetState, entity);
+      public VisitorState whenEndMessageAwaitTarget(EndMessageAwaitTargetState endMessageAwaitTarget) {
+        return new EndMessageAwaitSourceState(endMessageAwaitTarget, actor);
       }
 
       @Override
-      public VisitorState whenEndMessageAwaitSource(EndMessageAwaitSourceState endMessageAwaitSourceState) {
-        var previousState = endMessageAwaitSourceState.previousState().previousState();
-        var target = endMessageAwaitSourceState.target();
-        return new AwaitActionState(previousState, entity, target);
+      public VisitorState whenEndMessageAwaitSource(EndMessageAwaitSourceState endMessageAwaitSource) {
+        var previousState = endMessageAwaitSource.previousState().previousState();
+        var target = endMessageAwaitSource.target();
+        return new AwaitActionState(previousState, actor, target);
+      }
+
+      @Override
+      public VisitorState whenAwaitConstructorSource(AwaitConstructorSourceState awaitConstructorSource) {
+        var previousState = awaitConstructorSource.previousState();
+        var interaction = awaitConstructorSource.finish(actor);
+        return new ConstructorCallState(previousState, interaction);
       }
 
       @Override
@@ -506,15 +546,21 @@ public final class SDVisitor implements SDBasisVisitor2,
   public void visit(ASTSDCall node) {
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
-      public VisitorState whenAwaitAction(AwaitActionState awaitActionState) {
+      public VisitorState whenAwaitAction(AwaitActionState awaitAction) {
         var methodName = node.getName();
         var isStatic = node.isStatic();
         var isTrigger = node.isTrigger();
-        Optional<List<String>> argumentExpressions = node.isPresentArguments() ?
+        var argumentExpressions = node.isPresentArguments() ?
             stringifyExpressions(node.getArguments().getExpressionList()) :
-            Optional.empty();
-        var action = new CallAction(methodName, isStatic, isTrigger, argumentExpressions);
-        return new CallActionState(awaitActionState, action);
+            Optional.<List<String>>empty();
+        var interaction = new MethodCallInteraction(awaitAction.source(),
+                                                    awaitAction.target(),
+                                                    methodName,
+                                                    isStatic,
+                                                    isTrigger,
+                                                    argumentExpressions);
+        var previousState = awaitAction.previousState();
+        return new MethodCallState(previousState, interaction);
       }
 
       @Override
@@ -529,16 +575,16 @@ public final class SDVisitor implements SDBasisVisitor2,
   public void visit(ASTSDReturn node) {
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
-      public VisitorState whenAwaitAction(AwaitActionState awaitActionState) {
-        var previousState = awaitActionState.previousState();
-        var source = awaitActionState.source();
-        var target = awaitActionState.target();
+      public VisitorState whenAwaitAction(AwaitActionState awaitAction) {
+        var previousState = awaitAction.previousState();
+        var source = awaitAction.source();
+        var target = awaitAction.target();
         var hasReturnValue = node.isPresentExpression();
         var returnValue = hasReturnValue ?
-            stringifyExpression(node.getExpression()) :
-            Optional.<String>empty();
-        var action = new ReturnAction(returnValue, hasReturnValue);
-        return new InteractionState(previousState, source, target, action);
+            Optional.of(new ReturnValue(stringifyExpression(node.getExpression()))) :
+            Optional.<ReturnValue>empty();
+        var interaction = new ReturnInteraction(source, target, returnValue);
+        return new InteractionState(previousState, interaction);
       }
 
       @Override
@@ -552,16 +598,19 @@ public final class SDVisitor implements SDBasisVisitor2,
   public void visit(ASTSDThrow node) {
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
-      public VisitorState whenAwaitAction(AwaitActionState awaitActionState) {
-        var previousState = awaitActionState.previousState();
-        var source = awaitActionState.source();
-        var target = awaitActionState.target();
-        var throwableTypeName = node.getMCObjectType().printType();
-        Optional<List<String>> arguments = node.isPresentArguments() ?
+      public VisitorState whenAwaitAction(AwaitActionState awaitAction) {
+        var previousState = awaitAction.previousState();
+        var source = awaitAction.source();
+        var target = awaitAction.target();
+        var errorClassName = node.getMCObjectType().printType();
+        var constructorParameterExpressions = node.isPresentArguments() ?
             stringifyExpressions(node.getArguments().getExpressionList()) :
-            Optional.empty();
-        var action = new ThrowAction(throwableTypeName, arguments);
-        return new InteractionState(previousState, source, target, action);
+            Optional.<List<String>>empty();
+        var interaction = new ThrowInteraction(source,
+                                               target,
+                                               errorClassName,
+                                               constructorParameterExpressions);
+        return new InteractionState(previousState, interaction);
       }
 
       @Override
@@ -572,11 +621,32 @@ public final class SDVisitor implements SDBasisVisitor2,
   }
 
   @Override
+  public void visit(ASTSDNew node) {
+    var declarationTypeName = node.getDeclarationType().printType();
+    var initializationTypeName = node.getInitializationType().printType();
+    var objectName = node.getName();
+    var parameterExpressions = stringifyExpressions(node.getArguments().getExpressionList());
+    visitInteractionStart(node,
+                          state -> new AwaitConstructorSourceState(state,
+                                                                   source -> new ConstructorCallInteraction(
+                                                                       source,
+                                                                       declarationTypeName,
+                                                                       initializationTypeName,
+                                                                       objectName,
+                                                                       parameterExpressions)));
+  }
+
+  @Override
   public void visit(ASTSDActivityBar node) {
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
-      public VisitorState whenCallAction(CallActionState callActionState) {
-        return new OpenActivityBarState(callActionState);
+      public VisitorState whenMethodCall(MethodCallState methodCall) {
+        return new OpenActivityBarState(methodCall);
+      }
+
+      @Override
+      public VisitorState whenConstructorCall(ConstructorCallState constructorCall) {
+        return new OpenActivityBarState(constructorCall);
       }
 
       @Override
@@ -591,23 +661,28 @@ public final class SDVisitor implements SDBasisVisitor2,
     updateState(new VisitorStateVariantMatcher<>() {
 
       @Override
-      public VisitorState whenCallAction(CallActionState callActionState) {
-        return finishInteraction(callActionState.extractInteraction());
+      public VisitorState whenMethodCall(MethodCallState methodCall) {
+        return finishInteraction(methodCall.extractInteraction());
       }
 
       @Override
-      public VisitorState whenInteraction(InteractionState interactionState) {
-        return finishInteraction(interactionState.extractInteraction());
+      public VisitorState whenConstructorCall(ConstructorCallState constructorCall) {
+        return finishInteraction(constructorCall.extractInteraction());
       }
 
       @Override
-      public VisitorState whenOpenActivityBar(OpenActivityBarState openActivityBarState) {
-        return new ClosedActivityBarState(openActivityBarState);
+      public VisitorState whenInteraction(InteractionState interaction) {
+        return finishInteraction(interaction.extractInteraction());
       }
 
       @Override
-      public VisitorState whenClosedActivityBar(ClosedActivityBarState closedActivityBarState) {
-        return finishInteraction(closedActivityBarState.extractInteraction());
+      public VisitorState whenOpenActivityBar(OpenActivityBarState openActivityBar) {
+        return new ClosedActivityBarState(openActivityBar);
+      }
+
+      @Override
+      public VisitorState whenClosedActivityBar(ClosedActivityBarState closedActivityBar) {
+        return finishInteraction(closedActivityBar.extractInteraction());
       }
 
       @Override
@@ -621,8 +696,8 @@ public final class SDVisitor implements SDBasisVisitor2,
         var openActivityBarState =
             previousState.matchVariant(new VisitorStateVariantMatcher<OpenActivityBarState>() {
           @Override
-          public OpenActivityBarState whenOpenActivityBar(OpenActivityBarState openActivityBarState) {
-            return openActivityBarState;
+          public OpenActivityBarState whenOpenActivityBar(OpenActivityBarState openActivityBar) {
+            return openActivityBar;
           }
 
           @Override
@@ -637,36 +712,36 @@ public final class SDVisitor implements SDBasisVisitor2,
   }
 
   @Override
-  public void visit(ASTSDNew node) {
-    raiseError("constructor monitoring is not supported", getSourcePosition(node));
-  }
-
-  @Override
   public void endVisit(ASTSDBody node) {
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
-      public VisitorState whenPreInteractionBody(PreInteractionBodyState preInteractionBodyState) {
-        return new FinishedState(preInteractionBodyState);
+      public VisitorState whenPreInteractionBody(PreInteractionBodyState preInteractionBody) {
+        return new FinishedState(preInteractionBody);
       }
 
       @Override
-      public VisitorState whenBodySection(BodySectionState bodySectionState) {
-        return new FinishedState(bodySectionState);
+      public VisitorState whenBodySection(BodySectionState bodySection) {
+        return new FinishedState(bodySection);
       }
 
       @Override
-      public VisitorState whenCallAction(CallActionState callActionState) {
-        return finish(callActionState);
+      public VisitorState whenMethodCall(MethodCallState methodCall) {
+        return finish(methodCall);
       }
 
       @Override
-      public VisitorState whenInteraction(InteractionState interactionState) {
-        return finish(interactionState);
+      public VisitorState whenConstructorCall(ConstructorCallState constructorCall) {
+        return finish(constructorCall);
       }
 
       @Override
-      public VisitorState whenClosedActivityBar(ClosedActivityBarState closedActivityBarState) {
-        return finish(closedActivityBarState);
+      public VisitorState whenInteraction(InteractionState interaction) {
+        return finish(interaction);
+      }
+
+      @Override
+      public VisitorState whenClosedActivityBar(ClosedActivityBarState closedActivityBar) {
+        return finish(closedActivityBar);
       }
 
       @Override
@@ -683,8 +758,8 @@ public final class SDVisitor implements SDBasisVisitor2,
         var testExtractable =
             newPreviousState.matchVariant(new VisitorStateVariantMatcher<SDTestExtractable>() {
           @Override
-          public SDTestExtractable whenBodySection(BodySectionState bodySectionState) {
-            return bodySectionState;
+          public SDTestExtractable whenBodySection(BodySectionState bodySection) {
+            return bodySection;
           }
 
           @Override

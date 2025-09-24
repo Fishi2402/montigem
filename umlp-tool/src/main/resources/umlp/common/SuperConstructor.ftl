@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("className", "attributes")}
+${tc.signature("initializationTypeName", "attributes")}
 <#macro constructorParams attributes>
   <#list attributes as attr>
     ${attr.getMCType().printType()} ${attr.name}<#if !attr?is_last>,</#if>
@@ -12,5 +12,5 @@ ${tc.signature("className", "attributes")}
   </#list>
 </#macro>
 <#assign paramNames><@constructorParamNames attributes/></#assign>
-${cd4c.constructor("public ${className}(${params})")}
+${cd4c.constructor("public ${initializationTypeName}(${params})")}
   super(${paramNames});

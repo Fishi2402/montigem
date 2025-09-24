@@ -1,4 +1,4 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("className")}
-${cd4c.method("public ${className}ValidationResult fromJson(any json)")}
+${tc.signature("initializationTypeName")}
+${cd4c.method("public ${initializationTypeName}ValidationResult fromJson(any json)")}
 return this.deserialize(json);

@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("className", "attributes", "assocTypes", "assocs", "listAssocTypes", "listAssocs")}
-${cd4c.method("public void buildJson(${className}ValidationResult obj, JsonPrinter jsonPrinter)")}
+${tc.signature("initializationTypeName", "attributes", "assocTypes", "assocs", "listAssocTypes", "listAssocs")}
+${cd4c.method("public void buildJson(${initializationTypeName}ValidationResult obj, JsonPrinter jsonPrinter)")}
 <#list attributes as attr>
   jsonPrinter.beginArray("${attr}Messages");
   for(ValidationMessage msg : obj.get${attr?cap_first}ValidationMessages()) {

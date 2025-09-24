@@ -159,36 +159,36 @@ function typeError(value, type) {
   return new Error("0x00002 Expected value of type " + type + ", but got " + value + ".");
 }
 
-function getType(className, attr) {
-  if (TYPE_INFO[className][attr] != null) {
-    return TYPE_INFO[className][attr].type;
+function getType(initializationTypeName, attr) {
+  if (TYPE_INFO[initializationTypeName][attr] != null) {
+    return TYPE_INFO[initializationTypeName][attr].type;
   } else {
     return "Unknown";
   }
 }
 
-function getIsArray(className, attr) {
-  if (TYPE_INFO[className][attr] != null) {
-    return TYPE_INFO[className][attr].isArray;
+function getIsArray(initializationTypeName, attr) {
+  if (TYPE_INFO[initializationTypeName][attr] != null) {
+    return TYPE_INFO[initializationTypeName][attr].isArray;
   } else {
     return false;
   }
 }
 
-function getTypeName(className, attr) {
-  if (TYPE_INFO[className][attr] != null) {
-    return TYPE_INFO[className][attr].typeName;
+function getTypeName(initializationTypeName, attr) {
+  if (TYPE_INFO[initializationTypeName][attr] != null) {
+    return TYPE_INFO[initializationTypeName][attr].typeName;
   } else {
     return "Unknown";
   }
 }
 
-function isReadonly(className, attr) {
-  return attr === "gemId" || !TYPE_INFO[className][attr] || !TYPE_INFO[className][attr].editable;
+function isReadonly(initializationTypeName, attr) {
+  return attr === "gemId" || !TYPE_INFO[initializationTypeName][attr] || !TYPE_INFO[initializationTypeName][attr].editable;
 }
 
-function isEnum(className, attr) {
-  return attr !== "gemId" && TYPE_INFO[className][attr] && TYPE_INFO[className][attr].isEnum;
+function isEnum(initializationTypeName, attr) {
+  return attr !== "gemId" && TYPE_INFO[initializationTypeName][attr] && TYPE_INFO[initializationTypeName][attr].isEnum;
 }
 
 function uncapitalize(str1){
@@ -196,9 +196,9 @@ function uncapitalize(str1){
 }
 
 // load all objects of a class
-async function loadClassData(className) {
+async function loadClassData(initializationTypeName) {
   return sendCommand({
-    "type": className + "_getAll"
+    "type": initializationTypeName + "_getAll"
   });
 }
 

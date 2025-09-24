@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("cdName", "className", "fieldName")}
+${tc.signature("cdName", "initializationTypeName", "fieldName")}
 ${cd4c.method("protected List<Long> deserialize${fieldName?cap_first} (any json)")}
   <#-- TODO: default values -->
   let res: number[] = [];

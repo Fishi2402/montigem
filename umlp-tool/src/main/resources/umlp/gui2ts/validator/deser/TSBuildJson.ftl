@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("className", "attributes", "assocTypes", "assocs", "listAssocTypes", "listAssocs")}
-${cd4c.method("public void buildJson(${className}ValidationResult obj, any printer)")}
+${tc.signature("initializationTypeName", "attributes", "assocTypes", "assocs", "listAssocTypes", "listAssocs")}
+${cd4c.method("public void buildJson(${initializationTypeName}ValidationResult obj, any printer)")}
 <#list attributes as attr>
   printer["${attr}Messages"] = [];
   const tmpA${attr_index} = printer;

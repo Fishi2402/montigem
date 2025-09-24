@@ -1,3 +1,3 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("className")}
-${cd4c.method("void notifyBuild(${className} ${className?uncap_first})")}
+${tc.signature("initializationTypeName")}
+${cd4c.method("void notifyBuild(${initializationTypeName} ${initializationTypeName?uncap_first})")}
