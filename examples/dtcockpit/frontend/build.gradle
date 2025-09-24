@@ -48,16 +48,9 @@ tasks.named("umlpJava2ts", UMLPJava2TSTask) {
   verbose = false
 }
 
-tasks.named('testApp') {
-  dependsOn(project(':modules:login:frontend').tasks.named('build'))
-  dependsOn(project(':modules:comment:frontend').tasks.named('build'))
-}
-
 tasks.named("createSymlink", CreateSymlinkTask) {
-  dependsOn {
-    project(':modules:login:frontend').tasks.named('build')
-    project(':modules:comment:frontend').tasks.named('build')
-  }
+  dependsOn project(':modules:login:frontend').tasks.named('build')
+  dependsOn project(':modules:comment:frontend').tasks.named('build')
 
   links.put(
       file("$buildDir/app/libs/@montigem/login"),

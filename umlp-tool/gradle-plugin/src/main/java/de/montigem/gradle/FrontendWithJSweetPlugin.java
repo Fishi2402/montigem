@@ -5,7 +5,6 @@ import de.monticore.gradle.common.CommonMCTask;
 import de.montigem.gradle.specific.CreateSymlinkTask;
 import de.montigem.gradle.specific.GUI2Java2TSTask;
 import de.montigem.gradle.specific.SetupFrontendTask;
-import de.montigem.gradle.specific.Symlink;
 import de.montigem.gradle.specific.UMLP2JSweetObserverTask;
 import de.montigem.gradle.specific.UMLP2SymTask;
 import de.montigem.gradle.specific.UMLPJava2TSTask;
@@ -40,7 +39,6 @@ import java.util.stream.Collectors;
 
 import static de.montigem.gradle.BackendPlugin.UMLP2JAVA_TASK;
 import static de.montigem.gradle.FrontendBasePlugin.CREATE_SYMLINK_TASK;
-import static de.montigem.gradle.FrontendBasePlugin.GENERATE_TASK;
 import static de.montigem.gradle.FrontendBasePlugin.GUI_TYPES_CONFIG;
 import static de.montigem.gradle.FrontendBasePlugin.SETUP_FRONTEND_TASK;
 import static de.montigem.gradle.FrontendBasePlugin.UMLP2SYM_TASK;
@@ -60,16 +58,12 @@ import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_UMLP_MODELS_CONFIG
 public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
 
   public static final String UMLP_JAVA2TS_TASK = "umlpJava2ts";
-  public static final String SYNC_UMLP2JSWEET_TASK = "sync_umlp2jsweet";
-  public static final String SYNC_GUI2JSWEET_TASK = "sync_gui2jsweet";
   public static final String SYNC_UMLP_JAVA2TS_TASK = "sync_umlpJava2ts";
   public static final String SYNC_GUI2JAVA2TS_TASK = "sync_gui2java2ts";
   public static final String UMLP2JSWEET_OBSERVER_TASK = "umlp2jsweetObserver";
   public static final String GUI2JAVA2TS_TASK = "gui2java2ts";
   public static final String CD2JAVA_TASK = "cd2java";
   public static final String CD2SYM_TASK = "cd2sym";
-
-  public static final String DOMAIN_MODEL_PROPERTY = "domainModel";
 
   public static final String SRC_UMLP_CONFIG = "srcUMLPConfig";
   public static final String JSWEET_CONFIG = "jsweetConfig";
@@ -181,7 +175,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
 
       // add domain-sources to the to-be-transpiled
       task.getInput().from(project.getConfigurations().named(SRC_UMLP_CONFIG));
-      task.getExtraJava2TSInput().from(srcGUI);
+      task.getInput4RelativePathCalculation().from(srcGUI);
       task.getJSweetClassPath().from(project.getConfigurations().named(JSWEET_CONFIG));
 
       for (String s : defaultExcludedSources) {
@@ -256,8 +250,8 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       if (srcJava.getAsFile().exists()) {
         task.getHandWrittenCodeDir().from(srcJava);
       }
-      task.getExtraJava2TSInput().from(cd2java.flatMap(CommonMCTask::getOutputDir));
-      task.getExtraJava2TSInput().from(umlpJava2ts.flatMap(UMLPJava2TSTask::getOutputDir));
+      task.getInput4RelativePathCalculation().from(cd2java.flatMap(CommonMCTask::getOutputDir));
+      task.getInput4RelativePathCalculation().from(umlpJava2ts.flatMap(UMLPJava2TSTask::getOutputDir));
 
       task.getJSweetWorkingDir().set(internalJSweetDir.map(dir -> dir.dir("gui2java2ts")));
       task.getJSweetCandiesDir().set(internalJSweetDir.map(dir -> dir.dir("guiCandies")));
@@ -266,7 +260,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       // TODO: Remove the following at some point
       // required with getExcludeTranspile - otherwise "import { Project } from 'dtcockpit/Project';" is missing in GUI ts files
       // Add the domain-sources as a java-source
-      task.getExtraJava2TSInput().from(project.getConfigurations().named(SRC_UMLP_CONFIG));
+      task.getInput4RelativePathCalculation().from(project.getConfigurations().named(SRC_UMLP_CONFIG));
       // but exclude them from being transpiled (thus, only available as source files)
       task.getExcludeTranspileFiles().from(project.getConfigurations().named(SRC_UMLP_CONFIG));
       // TODO: END OF REMOVAL
@@ -294,10 +288,6 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
 
     addJSweetDependencies(project);
 
-    TaskProvider<Task> generate = project.getTasks().named("generate");
-    generate.configure(task -> task.dependsOn(gui2java2ts));
-    project.getTasks().named("compileJava").configure(t -> t.dependsOn(generate));
-
     // Sync Output of a task to the correct directory. This done because "npm serve" cannot
     // handle the intermediate state while the UMLPTasks are running and Hot-Reload aborts
     TaskProvider<Sync> syncUMLPJava2TS = project.getTasks().register(SYNC_UMLP_JAVA2TS_TASK, Sync.class, task -> {
@@ -313,9 +303,9 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       task.into(syncGUI2Java2TSOut);
       task.exclude("**/*.java");
     });
-    project.getTasks().named(GENERATE_TASK).configure(task ->
-        task.dependsOn(syncUMLPJava2TS, syncGUI2Java2TS)
-    );
+    TaskProvider<Task> generate = project.getTasks().named("generate");
+    generate.configure(task -> task.dependsOn(gui2java2ts, syncUMLPJava2TS, syncGUI2Java2TS));
+    project.getTasks().named("compileJava").configure(t -> t.dependsOn(generate));
 
     createSymlinkTask.configure(task -> {
       task.getLinks().put(

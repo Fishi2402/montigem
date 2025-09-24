@@ -17,14 +17,8 @@ public enum TSImportMap {
   NETWORKGRAPH("mc.fenix.networkgraph", "@umlp/networkgraph"),
   EDITOR("mc.fenix.editor", "@umlp/editor"),
   LOGIN("loginmodule", "@montigem/login"),
-  COMMENT("commentmodule", "@montigem/comment"),
-  ARRANGE_DEPRECATED("arrange", "@umlp/arrange"),
-  BASIC_DEPRECATED("basic", "@umlp/basic"),
-  CHARTS_DEPRECATED("charts", "@umlp/charts"),
-  COMMON_DEPRECATED("common", "@umlp/common"),
-  NAVIGATION_DEPRECATED("navigation", "@umlp/navigation"),
-  INPUT_DEPRECATED("input", "@umlp/input"),
-  TABLE_DEPRECATED("table", "@umlp/table");
+  COMMENT("commentmodule", "@montigem/comment")
+  ;
 
   private final String tsPackage;
   private final String javaPackage;

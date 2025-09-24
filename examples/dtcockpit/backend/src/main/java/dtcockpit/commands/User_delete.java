@@ -19,7 +19,8 @@ public class User_delete extends User_deleteTOP {
   public StatusResult doAction() {
     if (DtcockpitManager.deleteUser(getGemId(), NotificationScope.LOCAL)) {
       return StatusResult.ok(getId());
-    } else {
+    }
+    else {
       return StatusResult.error(getId());
     }
   }

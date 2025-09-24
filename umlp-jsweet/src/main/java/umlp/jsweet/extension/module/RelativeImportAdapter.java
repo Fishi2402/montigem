@@ -29,16 +29,6 @@ public class RelativeImportAdapter extends PrinterAdapter {
   }
 
   @Override
-  public String needsImport(ImportElement importElement, String qualifiedName) {
-    return super.needsImport(importElement, qualifiedName);
-  }
-
-  @Override
-  public boolean substituteTypeCast(TypeCastElement castExpression) {
-    return super.substituteTypeCast(castExpression);
-  }
-
-  @Override
   public ModuleImportDescriptor getModuleImportDescriptor(
       CompilationUnitElement compilationUnit, String importedName,
       TypeElement importedClass

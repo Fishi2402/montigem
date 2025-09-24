@@ -49,7 +49,7 @@ public abstract class UMLPJava2TSTask extends DefaultTask {
   @InputFiles
   @PathSensitive(PathSensitivity.RELATIVE)
   @IgnoreEmptyDirectories
-  public abstract ConfigurableFileCollection getExtraJava2TSInput();
+  public abstract ConfigurableFileCollection getInput4RelativePathCalculation();
 
   @Input
   public abstract ListProperty<String> getExcludeSource();
@@ -104,7 +104,7 @@ public abstract class UMLPJava2TSTask extends DefaultTask {
         spec.getClasspath().from(getClassPath())
     );
     ConfigurableFileCollection srcDirs = getProject().files();
-    srcDirs.from(getExtraJava2TSInput());
+    srcDirs.from(getInput4RelativePathCalculation());
     srcDirs.from(getOutputDir());
     srcDirs.from(getInput());
     FileCollection filteredSrcDirs = srcDirs.minus(getExcludeTranspileFiles());

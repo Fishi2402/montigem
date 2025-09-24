@@ -41,7 +41,7 @@ public abstract class GUI2Java2TSTask extends GUI2JavaTask {
   @InputFiles
   @PathSensitive(PathSensitivity.RELATIVE)
   @IgnoreEmptyDirectories
-  public abstract ConfigurableFileCollection getExtraJava2TSInput();
+  public abstract ConfigurableFileCollection getInput4RelativePathCalculation();
 
   /**
    * These sources are excluded from {@link org.jsweet.transpiler.SourceFile}s passed to jsweet
@@ -105,7 +105,7 @@ public abstract class GUI2Java2TSTask extends GUI2JavaTask {
     );
     ConfigurableFileCollection srcDirs = getProject().files();
     srcDirs.from(getHandWrittenCodeDir());
-    srcDirs.from(getExtraJava2TSInput());
+    srcDirs.from(getInput4RelativePathCalculation());
     srcDirs.from(getOutputDir());
     srcDirs.from(getInput());
     FileCollection filteredSrcDirs = srcDirs.minus(getExcludeTranspileFiles());
@@ -158,7 +158,7 @@ public abstract class GUI2Java2TSTask extends GUI2JavaTask {
 
     // collect all .java files
     Set<Path> individualInputPaths = walkAndCollectJavaFiles(inputOutputDir.getAsFileTree().getFiles());
-    individualInputPaths.addAll(walkAndCollectJavaFiles(getExtraJava2TSInput().getFiles()));
+    individualInputPaths.addAll(walkAndCollectJavaFiles(getInput4RelativePathCalculation().getFiles()));
     individualInputPaths.addAll(walkAndCollectJavaFiles(getHandWrittenCodeDir().getFiles()));
 
     // excluded matchers

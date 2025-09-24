@@ -35,7 +35,8 @@ public class User_get_filtered extends User_get_filteredTOP {
 
     if (!validAccessIDs.isEmpty()) {
       return ListResult.of(getId(), validAccessIDs, "java.lang.Long");
-    } else {
+    }
+    else {
       return ListResult.error(getId(), "java.lang.Long");
     }
 

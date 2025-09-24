@@ -262,7 +262,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
 
           // add domain-sources to the to-be-transpiled
           task.getInput().from(subproject.getConfigurations().named(SRC_UMLP_CONFIG));
-          task.getExtraJava2TSInput().from(srcGUI);
+          task.getInput4RelativePathCalculation().from(srcGUI);
           task.getJSweetClassPath().from(subproject.getConfigurations().named(JSWEET_CONFIG));
 
           for (String s : defaultExcludedSources) {
@@ -376,8 +376,8 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
           if (srcJava.getAsFile().exists()) {
             task.getHandWrittenCodeDir().from(srcJava);
           }
-          task.getExtraJava2TSInput().from(cd2java.flatMap(CommonMCTask::getOutputDir));
-          task.getExtraJava2TSInput().from(umlpJava2ts.flatMap(UMLPJava2TSTask::getOutputDir));
+          task.getInput4RelativePathCalculation().from(cd2java.flatMap(CommonMCTask::getOutputDir));
+          task.getInput4RelativePathCalculation().from(umlpJava2ts.flatMap(UMLPJava2TSTask::getOutputDir));
 
           task.getJSweetWorkingDir().set(internalJSweetDir.map(dir -> dir.dir("gui2java2ts")));
           task.getJSweetCandiesDir().set(internalJSweetDir.map(dir -> dir.dir("guiCandies")));
@@ -386,7 +386,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
           // TODO: Remove the following at some point
           // required with getExcludeTranspile - otherwise "import { Project } from 'dtcockpit/Project';" is missing in GUI ts files
           // Add the domain-sources as a java-source
-          task.getExtraJava2TSInput().from(subproject.getConfigurations().named(SRC_UMLP_CONFIG));
+          task.getInput4RelativePathCalculation().from(subproject.getConfigurations().named(SRC_UMLP_CONFIG));
           // but exclude them from being transpiled (thus, only available as source files)
           task.getExcludeTranspileFiles().from(subproject.getConfigurations().named(SRC_UMLP_CONFIG));
           // TODO: END OF REMOVAL

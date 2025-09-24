@@ -5,14 +5,13 @@ import org.jsweet.transpiler.ModuleImportDescriptor;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.CompilationUnitElement;
 import org.jsweet.transpiler.model.ImportElement;
+import org.jsweet.transpiler.model.NewClassElement;
 import umlp.jsweet.extension.AbstractAdapter;
-import umlp.jsweet.extension.util.GUIAdapterUtils;
 import umlp.jsweet.extension.util.UMLPAdapterUtils;
 
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
-import java.util.function.Function;
 
 import static umlp.jsweet.extension.util.GUIAdapterUtils.AMODULE_ANNOTATION;
 
@@ -26,28 +25,27 @@ public class GUITypesImportAdapter extends AbstractAdapter {
   }
 
   private void initTypeMappings() {
-    getTypeMirrorMappings().add(0, computeGuiRTETypeMapping());
-  }
-
-  private Function<TypeMirror, String> computeGuiRTETypeMapping() {
-
-    return (TypeMirror type) -> {
-      for (TSImportMap value : TSImportMap.values()) {
-        if (type.toString().startsWith(value.getJavaPackage())
-            && !getCompilationUnit().getPackage().getQualifiedName().toString().startsWith(value.getJavaPackage())
-        ) {
-          return UMLPAdapterUtils.getSimpleNameOfFQN(type.toString());
+    addTypeMapping(
+        (TypeMirror type) -> {
+          for (TSImportMap value : TSImportMap.values()) {
+            if (type.toString().startsWith(value.getJavaPackage())
+                && !getCompilationUnit().getPackage().getQualifiedName().toString().startsWith(value.getJavaPackage())
+            ) {
+              return UMLPAdapterUtils.getSimpleNameOfFQN(type.toString());
+            }
+          }
+          return null;
         }
-      }
-      return null;
-    };
+    );
   }
 
   @Override
   public String needsImport(ImportElement importElement, String qualifiedName) {
     if (importElement.getImportedType() != null) {
       for (TSImportMap value : TSImportMap.values()) {
-        if (qualifiedName.startsWith(value.getJavaPackage())) {
+        if (qualifiedName.startsWith(value.getJavaPackage())
+            && !getCompilationUnit().getPackage().getQualifiedName().toString().startsWith(value.getJavaPackage())
+        ) {
           return getRootRelativeName(importElement.getImportedType());
         }
       }
@@ -68,7 +66,9 @@ public class GUITypesImportAdapter extends AbstractAdapter {
     String fqn = importedClass.getQualifiedName().toString();
     if (fqn != null) {
       for (TSImportMap value : TSImportMap.values()) {
-        if (fqn.startsWith(value.getJavaPackage())) {
+        if (fqn.startsWith(value.getJavaPackage())
+            && !getCompilationUnit().getPackage().getQualifiedName().toString().startsWith(value.getJavaPackage())
+        ) {
           return new ModuleImportDescriptor(false,
               (PackageElement) importedClass.getEnclosingElement(), importedName,
               value.getTSPackage(), importedClass);

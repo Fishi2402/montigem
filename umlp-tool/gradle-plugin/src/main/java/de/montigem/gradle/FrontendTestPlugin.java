@@ -4,17 +4,11 @@ import de.monticore.gradle.common.CommonMCTask;
 import de.montigem.gradle.common.CheckDirEqualityTask;
 import de.montigem.gradle.specific.GUI2Java2TSTask;
 import de.montigem.gradle.specific.GUI2JavaTask;
-import de.montigem.gradle.specific.UMLPJava2TSTask;
-import de.montigem.gradle.specific.serialize.CD2SymTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.TaskProvider;
 
-import static de.montigem.gradle.FrontendBasePlugin.GUI_TYPES_CONFIG;
-import static de.montigem.gradle.FrontendBasePlugin.inRTE;
 import static de.montigem.gradle.FrontendWithJSweetPlugin.GUI2JAVA2TS_TASK;
-import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
-import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_IMPORT_MAP_CONFIG;
 
 public class FrontendTestPlugin implements Plugin<Project> {
 
@@ -41,7 +35,7 @@ public class FrontendTestPlugin implements Plugin<Project> {
       task.getDomain().set(firstTask.flatMap(GUI2Java2TSTask::getDomain));
       task.getJSweetAdapterDir().set(firstTask.flatMap(GUI2Java2TSTask::getJSweetAdapterDir));
       task.getHandWrittenJSweetDir().set(firstTask.flatMap(GUI2Java2TSTask::getHandWrittenJSweetDir));
-      task.getExtraJava2TSInput().from(firstTask.map(GUI2Java2TSTask::getExtraJava2TSInput));
+      task.getInput4RelativePathCalculation().from(firstTask.map(GUI2Java2TSTask::getInput4RelativePathCalculation));
       task.getJSweetWorkingDir().set(firstTask.flatMap(GUI2Java2TSTask::getJSweetWorkingDir));
       task.getJSweetCandiesDir().set(firstTask.flatMap(GUI2Java2TSTask::getJSweetCandiesDir));
       task.getJSweetClassPath().from(firstTask.map(GUI2Java2TSTask::getJSweetClassPath));

@@ -352,7 +352,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     print("public " + methodName + adapterUtils.SYNCHRONIZED_SUFFIX + "(");
     printMethodParameters(executable, overloadMethod, adapterUtils.SYNCHRONIZED_SUFFIX);
     print("): ");
-    printType(returnType, overloadMethod, true)
+    printType(returnType, overloadMethod)
         .print(" {").println().startIndent().printIndent()
         .print("if (!this.allVarsInited) {").println().startIndent().printIndent()
         .print("return undefined;").println().endIndent().printIndent().print("}").println().printIndent()
@@ -427,13 +427,14 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     print("private ");
     print(methodName + adapterUtils.SYNCHRONIZED_RESULT_SUFFIX + ": ");
     if (executable.getParameters().isEmpty()) {
-      printType(returnType, overloadMethod, true)
+      printType(returnType, overloadMethod)
           .print(" = undefined;");
     }
     else {
       adapterUtils.importFromWithoutModule("ManyKeysMap", "many-keys-map");
       print("ManyKeysMap<any, ");
-      printType(returnType, overloadMethod, true).print(">");
+      printType(returnType, overloadMethod);
+      print(">");
       print(" = new ManyKeysMap()");
     }
     println().printIndent();
@@ -593,8 +594,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     }
   }
 
-  private GUIComponentObserverPatternAdapter printType(Tree returnType, boolean overloadMethod,
-      boolean replaceListByArray) {
+  private GUIComponentObserverPatternAdapter printType(Tree returnType, boolean overloadMethod) {
     if (overloadMethod) {
       print("any");
       return this;

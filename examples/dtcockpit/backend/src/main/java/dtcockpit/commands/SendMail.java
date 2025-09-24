@@ -31,8 +31,7 @@ public class SendMail extends SendMailTOP {
     MailService mailsender = new MailService();
     try {
       mailsender.sendMail(message, user.get().getEmail(), subject);
-    }
-    catch (MessagingException error) {
+    } catch (MessagingException error) {
       Log.error(error.toString());
       return StatusResult.error(getId());
     }

@@ -38,6 +38,7 @@ public class User_create extends User_createTOP {
 
   }
 
+  @BackendOnly(value = BackendOnlyModes.THROW_ERROR)
   public StatusResult sendMail() {
     Log.trace("Sending Email to " + user.getEmail(), LogUtil.getLoggerName());
     MailService mailsender = new MailService();

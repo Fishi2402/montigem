@@ -18,7 +18,7 @@ public class GetCurrentUserRequest extends GetCurrentUserRequestTOP {
     Participant p = CommandManager.getInstance().getParticipant(getParticipantId());
 
     for (User user : DtcockpitManager.getUserList()) {
-      if(user.getUsername().equals(p.getUsername())){
+      if (user.getUsername().equals(p.getUsername())) {
         return new SimpleResult<>(getId(), user.getGemId(), "java.lang.Long");
       }
     }

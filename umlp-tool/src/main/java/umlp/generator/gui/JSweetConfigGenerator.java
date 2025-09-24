@@ -62,13 +62,25 @@ public class JSweetConfigGenerator {
           }
         });
 
-    File importAdapter = calcTOPFile("jsweet_extension" + File.separator + Names.getPathFromPackage(adapterQName));
-    generatorEngine.generateNoA(
-        "umlp.jsweetconfig.JSweetDomainImportAdapter",
-        importAdapter.toPath(),
-        Names.getSimpleName(adapterQName),
-        domainName
-    );
+    String adapterNoExt = "jsweet_extension" + File.separator + Names.getPathFromPackage(adapterQName);
+    File adapter = new File(adapterNoExt + ".java");
+    Optional<File> topAdapter = calcTOPFile(adapterNoExt);
+    if (topAdapter.isPresent()) {
+      generatorEngine.generateNoA(
+          "umlp.jsweetconfig.JSweetDomainImportAdapter",
+          topAdapter.get().toPath(),
+          Names.getSimpleName(adapterQName) + "TOP",
+          domainName
+      );
+    }
+    else {
+      generatorEngine.generateNoA(
+          "umlp.jsweetconfig.JSweetDomainImportAdapter",
+          adapter.toPath(),
+          Names.getSimpleName(adapterQName),
+          domainName
+      );
+    }
   }
 
   protected void createJsweetConfig(String defaultConfig, String outputDir, List<String> srcDirs) {
@@ -111,13 +123,13 @@ public class JSweetConfigGenerator {
     }
   }
 
-  protected File calcTOPFile(String origName) {
+  protected Optional<File> calcTOPFile(String origName) {
     File f = new File(origName + ".java");
     Optional<Path> hwc = getHWC(generatorSetup.getHandcodedPath(), f.getPath());
     if (hwc.isPresent()) {
-      f = new File(origName + "TOP" + ".java");
+      return Optional.of(new File(origName + "TOP" + ".java"));
     }
-    return f;
+    return Optional.empty();
   }
 
   protected String maybeTOP(JsonElement jsweetconfig) {

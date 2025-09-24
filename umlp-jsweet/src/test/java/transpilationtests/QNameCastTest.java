@@ -23,9 +23,12 @@ public class QNameCastTest {
   @Test
   public void testQNameCastTranslatesToImport() throws IOException {
     List<File> inputs = new ArrayList<>();
-    inputs.add(Paths.get("src/test/resources/java/relative/Importer.java").toFile());
-    inputs.add(Paths.get("src/test/resources/java/relative/Imported1.java").toFile());
-    inputs.add(Paths.get("src/test/resources/java/relative/Imported2.java").toFile());
+    inputs.add(Paths.get("src/test/resources/java/commentmodule/Importer.java").toFile());
+    inputs.add(Paths.get("src/test/resources/java/commentmodule/Imported1.java").toFile());
+    inputs.add(Paths.get("src/test/resources/java/commentmodule/Imported2.java").toFile());
+    inputs.add(Paths.get("src/test/resources/java/mc/fenix/input/gemdropdowninputtypes/Option.java").toFile());
+    inputs.add(Paths.get("src/test/resources/java/loginmodule/LoginModuleUser.java").toFile());
+    inputs.add(Paths.get("src/test/resources/java/loginmodule/LoginModuleUserDeSer.java").toFile());
 
     checkQNameCast(inputs, Util.transpilerUMLPModuleAdapter());
   }
@@ -49,7 +52,12 @@ public class QNameCastTest {
     occurrences = 0;
     idx = 0;
     // should contain import string with this path
-    find = "./Imported1";
+    /*
+     Normally translated to @montigem/comment, but since Domain name is
+     CommentModule and no srcDirs are specified in jsweetconfig (used for
+     relative path resolution), the path from root is taken.
+     */
+    find = "commentmodule/Imported1";
 
     while ((idx = transpiledContent.indexOf(find, idx)) != -1) {
       occurrences++;
@@ -59,14 +67,35 @@ public class QNameCastTest {
 
     occurrences = 0;
     idx = 0;
-    // should contain import string with this path
-    find = "./Imported2";
+    find = "commentmodule/Imported2";
 
     while ((idx = transpiledContent.indexOf(find, idx)) != -1) {
       occurrences++;
       idx += find.length(); // move past last match
     }
     assertEquals(1, occurrences);
+
+    occurrences = 0;
+    idx = 0;
+    find = "@umlp/input";
+
+    while ((idx = transpiledContent.indexOf(find, idx)) != -1) {
+      occurrences++;
+      idx += find.length(); // move past last match
+    }
+    assertEquals(1, occurrences);
+
+
+    occurrences = 0;
+    idx = 0;
+    // should contain import string with this path
+    find = "mc.fenix.input.gemdropdowninputtypes.Option";
+
+    while ((idx = transpiledContent.indexOf(find, idx)) != -1) {
+      occurrences++;
+      idx += find.length(); // move past last match
+    }
+    assertEquals(0, occurrences);
   }
 
 }

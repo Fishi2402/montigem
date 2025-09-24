@@ -13,7 +13,7 @@ public class StartMontiVerseLitePipeline extends StartMontiVerseLitePipelineTOP 
   @Override
   public StatusResult doAction() {
     for (Project project : DtcockpitManager.getProjectList()) {
-      if("MontiVerse".equals(project.getName())){
+      if ("MontiVerse".equals(project.getName())) {
         MontiVerseLite.createPipeline(project);
         return StatusResult.ok(getId());
       }

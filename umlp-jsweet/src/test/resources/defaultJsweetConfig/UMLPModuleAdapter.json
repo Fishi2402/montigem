@@ -1,9 +1,9 @@
 {
   "adapters": [
     "umlp.jsweet.extension.UMLPModuleAdapter",
-    "domainAdapter.RelativeDomainImportAdapter"
+    "domainAdapter.CommentModuleDomainImportAdapter"
   ],
-  "domainName": "Relative",
+  "domainName": "CommentModule",
   "@Erased": {
     "include": [
       "**.spliterator*()",

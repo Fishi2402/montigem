@@ -16,9 +16,9 @@ public class Group_create extends Group_createTOP {
   }
 
   @BackendOnly(value = BackendOnlyModes.THROW_ERROR)
-  public StatusResult doAction () {
+  public StatusResult doAction() {
     DtcockpitManager.addWithScopeGroup(group, NotificationScope.LOCAL);
-    Log.info("Created new group. Start extraction of PipelineAnalysisData","Group_create");
+    Log.info("Created new group. Start extraction of PipelineAnalysisData", "Group_create");
     PipelineInformationExtractor extractor = new PipelineInformationExtractor();
     // This mehtod creates a dtcockpit.Project for each project in the group
     extractor.extractPipelineDataOfAllProjectsInGroup("https://git.rwth-aachen.de",
