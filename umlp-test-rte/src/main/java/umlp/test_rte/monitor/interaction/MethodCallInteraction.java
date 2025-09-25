@@ -10,7 +10,10 @@ public final class MethodCallInteraction implements Interaction {
   private final String methodName;
   private final Object[] params;
 
-  public MethodCallInteraction(Object object, String signature, String methodName, Object... params) {
+  public MethodCallInteraction(Object object,
+      String signature,
+      String methodName,
+      Object... params) {
     this.object = object;
     this.signature = signature;
     this.methodName = methodName;
@@ -36,7 +39,7 @@ public final class MethodCallInteraction implements Interaction {
   }
 
   @Override
-  public <T> T matchVariant(StackEventVariantMatcher<T> matcher) {
+  public <T, E extends Throwable> T matchVariant(InteractionVariantMatcher<T, E> matcher) throws E {
     return matcher.whenMethodCall(this);
   }
 

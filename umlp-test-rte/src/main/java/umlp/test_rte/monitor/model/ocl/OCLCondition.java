@@ -7,9 +7,13 @@ public final class OCLCondition implements OCLStatement {
   private final Supplier<Boolean> check;
   private final String checkStringRepresentation;
 
-  public OCLCondition(Supplier<Boolean> check, String checkStringRepresentation) {
+  private OCLCondition(Supplier<Boolean> check, String checkStringRepresentation) {
     this.check = check;
     this.checkStringRepresentation = checkStringRepresentation;
+  }
+
+  public static OCLCondition from(Supplier<Boolean> check, String checkStringRepresentation) {
+    return new OCLCondition(check, checkStringRepresentation);
   }
 
   @Override
@@ -17,7 +21,7 @@ public final class OCLCondition implements OCLStatement {
     return matcher.whenCondition(this);
   }
 
-  public boolean check() {
+  public boolean evaluate() {
     return check.get();
   }
 

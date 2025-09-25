@@ -10,7 +10,10 @@ public final class ThrowInteraction implements Interaction {
   private final Throwable error;
   private final boolean endsCurrentActivityBar;
 
-  public ThrowInteraction(Object object, String signature, String errorTypeName, Throwable error,
+  public ThrowInteraction(Object object,
+      String signature,
+      String errorTypeName,
+      Throwable error,
       boolean endsCurrentActivityBar) {
     this.object = object;
     this.signature = signature;
@@ -43,7 +46,7 @@ public final class ThrowInteraction implements Interaction {
   }
 
   @Override
-  public <T> T matchVariant(StackEventVariantMatcher<T> matcher) {
+  public <T, E extends Throwable> T matchVariant(InteractionVariantMatcher<T, E> matcher) throws E {
     return matcher.whenError(this);
   }
 

@@ -1,5 +1,6 @@
 package umlp.test_rte.monitor.model.action;
 
+@Deprecated
 public interface ExhaustiveActionVariantMatcher<T> extends ActionVariantMatcher<T> {
 
   @Override

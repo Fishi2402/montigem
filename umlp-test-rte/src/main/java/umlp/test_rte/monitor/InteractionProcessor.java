@@ -2,11 +2,11 @@ package umlp.test_rte.monitor;
 
 import org.junit.jupiter.api.Assertions;
 import umlp.test_rte.monitor.interaction.ConstructorCallInteraction;
-import umlp.test_rte.monitor.interaction.ExhaustiveStackEventVariantMatcher;
+import umlp.test_rte.monitor.interaction.ExhaustiveInteractionVariantMatcher;
 import umlp.test_rte.monitor.interaction.Interaction;
+import umlp.test_rte.monitor.interaction.InteractionVariantMatcher;
 import umlp.test_rte.monitor.interaction.MethodCallInteraction;
 import umlp.test_rte.monitor.interaction.ReturnInteraction;
-import umlp.test_rte.monitor.interaction.StackEventVariantMatcher;
 import umlp.test_rte.monitor.interaction.ThrowInteraction;
 import umlp.test_rte.monitor.model.ExpectedEvent;
 import umlp.test_rte.monitor.model.MatchingStrategy;
@@ -17,13 +17,20 @@ import umlp.test_rte.monitor.model.action.ErrorAction;
 import umlp.test_rte.monitor.model.action.ExhaustiveActionVariantMatcher;
 import umlp.test_rte.monitor.model.action.MethodCallAction;
 import umlp.test_rte.monitor.model.action.ReturnAction;
+import umlp.test_rte.monitor.model.expectedinteraction.ExhaustiveExpectedInteractionVariantMatcher;
+import umlp.test_rte.monitor.model.expectedinteraction.ExpectedConstructorCall;
+import umlp.test_rte.monitor.model.expectedinteraction.ExpectedEndOfActivityBar;
+import umlp.test_rte.monitor.model.expectedinteraction.ExpectedInteraction;
+import umlp.test_rte.monitor.model.expectedinteraction.ExpectedInteractionVariantMatcher;
+import umlp.test_rte.monitor.model.expectedinteraction.ExpectedMethodCall;
+import umlp.test_rte.monitor.model.expectedinteraction.ExpectedReturn;
+import umlp.test_rte.monitor.model.expectedinteraction.ExpectedThrow;
 import umlp.test_rte.monitor.model.ocl.ExhaustiveOCLStatementVariantMatcher;
 import umlp.test_rte.monitor.model.ocl.OCLCondition;
 import umlp.test_rte.monitor.model.ocl.OCLVariableDeclaration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,6 +47,12 @@ import java.util.stream.Stream;
  */
 public final class InteractionProcessor {
 
+  public static final String SOURCE = "source";
+  public static final String TARGET = "target";
+  /**
+   * The default {@link MatchingStrategy} to use
+   */
+  private final MatchingStrategy defaultMatchingStrategy;
   /**
    * A stack to monitor which object is currently calling methods. If the stack is empty, calls must
    * have been caused by a trigger
@@ -50,34 +63,52 @@ public final class InteractionProcessor {
    */
   private final Map<Object, MatchingStrategy> objectMatchingStrategies = new HashMap<>();
   /**
-   * All pending {@link ExpectedEvent}s caused by an upcoming trigger
+   * All pending {@link ExpectedInteraction}s caused by an upcoming trigger
    */
-  private final List<ExpectedEvent> expectedInteractions = new ArrayList<>();
+  private final List<ExpectedInteraction> expectedInteractions = new ArrayList<>();
   /**
    * Stack with the signatures of all active activity bars
    */
-  private final LinkedList<String> activityBarSignatureStack = new LinkedList<>();
+  @Deprecated private final LinkedList<String> activityBarSignatureStack = new LinkedList<>();
   /**
-   * Whether we are currently performing a condition check and therefor ignoring incoming events
+   * Whether we are currently performing a condition check and therefore ignoring incoming events
    */
   private boolean conditionChecking = false;
+  /**
+   * The message of the last encountered error. Presence indicates, that further checks can be
+   * skipped.
+   */
+  private Optional<String> error = Optional.empty();
+
+  public InteractionProcessor(MatchingStrategy defaultMatchingStrategy) {
+    this.defaultMatchingStrategy = defaultMatchingStrategy;
+  }
 
   /**
    * Checks whether an incoming {@link Interaction} matches the expected event flow, considering
    * their {@link #objectMatchingStrategies()}
    *
-   * @param event A {@link Interaction}
+   * @param interaction A {@link Interaction}
+   * @return Instructions for the {@link MethodMonitor}
    */
-  public MonitorInstructions process(Interaction event) {
-    if (conditionChecking) {
-      return MonitorInstructions.createDefault(); //we ignore incoming stack events during a
-      // condition check
+  public MonitorInstructions process(Interaction interaction) {
+    if (error.isPresent()) {
+      //ignore further interactions, until control flow returns to the test, and we can fail the
+      //test
+      return MonitorInstructions.createDefault();
     }
 
-    var reportingObject = event.object();
+    if (conditionChecking) {
+      //we ignore incoming interactions during a condition check
+      return MonitorInstructions.createDefault();
+    }
+
+    var reportingObject = interaction.object();
 
     //update callstack
-    var sourceTargetPair = event.matchVariant(new StackEventVariantMatcher<SourceTargetPair>() {
+    var sourceTargetPair =
+        interaction.matchVariant(new ExhaustiveInteractionVariantMatcher<SourceTargetPair,
+            RuntimeException>() {
       @Override
       public SourceTargetPair whenMethodCall(MethodCallInteraction methodCall) {
         return pushReportingObject();
@@ -88,6 +119,16 @@ public final class InteractionProcessor {
         return pushReportingObject();
       }
 
+      @Override
+      public SourceTargetPair whenError(ThrowInteraction throwInteraction) {
+        return pollReportingObject();
+      }
+
+      @Override
+      public SourceTargetPair whenReturn(ReturnInteraction returnInteraction) {
+        return pollReportingObject();
+      }
+
       private SourceTargetPair pushReportingObject() {
         callstack.add(reportingObject);
         return new SourceTargetPair(callstack.size() >= 2 ?
@@ -95,8 +136,7 @@ public final class InteractionProcessor {
                                         Optional.empty(), Optional.of(reportingObject));
       }
 
-      @Override
-      public SourceTargetPair otherwise(Interaction interaction) {
+      private SourceTargetPair pollReportingObject() {
         if (reportingObject != callstack.pollLast()) {
           throw new IllegalStateException(
               "exiting from " + reportingObject + "#" + interaction.signature() +
@@ -111,159 +151,184 @@ public final class InteractionProcessor {
     var sourceObject = sourceTargetPair.sourceObject;
     var targetObject = sourceTargetPair.targetObject;
 
-    //check whether the event does match the expected event
-    var errorMessage = matchesExpectedEvent(event, sourceObject, targetObject);
+    //check whether the interaction does match the expected interaction
+    Optional<String> errorMessage;
+    try {
+      checkIfMatchesExpectedInteraction(interaction, sourceObject, targetObject);
+      errorMessage = Optional.empty();
+    } catch (UnexpectedInteractionException e) {
+      errorMessage = Optional.of(e.getMessage());
+    }
 
     if (errorMessage.isEmpty()) {
-      var expectedEvent = expectedInteractions.remove(0); //remove the expected event
-      var isCallWithActivityBar = expectedEvent
-          .action()
-          .matchVariant(new ActionVariantMatcher<Boolean>() {
-            @Override
-            public Boolean whenMethodCall(MethodCallAction methodCall) {
-              return methodCall.hasActivityBar();
-            }
+      var expectedInteraction = expectedInteractions.remove(0); //remove the expected interaction
+      var isCallWithActivityBar =
+          expectedInteraction.matchVariant(new ExpectedInteractionVariantMatcher<Boolean,
+              RuntimeException>() {
+        @Override
+        public Boolean whenMethodCall(ExpectedMethodCall expectedMethodCall) {
+          return expectedMethodCall.opensActivityBar();
+        }
 
-            @Override
-            public Boolean otherwise(Action action) {
-              return false;
-            }
-          });
+        @Override
+        public Boolean whenConstructorCall(ExpectedConstructorCall expectedConstructorCall) {
+          return expectedConstructorCall.opensActivityBar();
+        }
 
-      //check whether the next expected event is the end of an activity bar and is also matched by
+        @Override
+        public Boolean otherwise(ExpectedInteraction expectedInteraction) {
+          return false;
+        }
+      });
+
+      //check whether the next expected interaction is the end of an activity bar and is also
+      // matched by
       // the current one
       var nextIsEndOfActivityBar = !expectedInteractions.isEmpty() && expectedInteractions
           .get(0)
-          .action()
-          .matchVariant(new ActionVariantMatcher<Boolean>() {
+          .matchVariant(new ExpectedInteractionVariantMatcher<Boolean, RuntimeException>() {
             @Override
-            public Boolean whenActivityBarEnd(ActivityBarEndAction activityBarEnd) {
+            public Boolean whenEndOfActivityBar(ExpectedEndOfActivityBar expectedEndOfActivityBar) {
               return true;
             }
 
             @Override
-            public Boolean otherwise(Action action) {
+            public Boolean otherwise(ExpectedInteraction expectedInteraction) {
               return false;
             }
           });
-      Supplier<Boolean> alsoMatchesNextEvent = () -> matchesExpectedEvent(event,
-                                                                          sourceObject,
-                                                                          targetObject).isEmpty();
+      Supplier<Boolean> alsoMatchesNextEvent = () -> matchesExpectedInteraction(interaction,
+                                                                                sourceObject,
+                                                                                targetObject);
       if (nextIsEndOfActivityBar && alsoMatchesNextEvent.get()) {
         expectedInteractions.remove(0); //also remove the expected activity bar end
-        activityBarSignatureStack.removeLast(); //remove the signature
       }
 
       //no need to check whether the match was actually required
       return MonitorInstructions.createDefault().setReportActivityEnd(isCallWithActivityBar);
     }
 
-    //get the highest priority matching strategy of source and target object
-    var matchingStrategy = Stream
+    //get the matching strategies of all objects involved
+    var involvedMatchingStrategies = Stream
         .concat(sourceObject.stream(), targetObject.stream())
-        .flatMap(object -> Optional.ofNullable(objectMatchingStrategies.get(object)).stream())
-        .max(Comparator.naturalOrder())
-        .orElseGet(MatchingStrategy::getDefault);
+        .map(object -> Optional
+            .ofNullable(objectMatchingStrategies.get(object))
+            .orElse(defaultMatchingStrategy))
+        .collect(Collectors.toList());
 
     //determine whether the event must match the expected event
-    var requiredMatch = isRequiredMatch(matchingStrategy, sourceObject, targetObject, event);
+    var requiredMatch = involvedMatchingStrategies
+        .stream()
+        .anyMatch(matchingStrategy -> isRequiredMatch(matchingStrategy,
+                                                      sourceObject,
+                                                      targetObject,
+                                                      interaction));
 
     if (!requiredMatch) {
       //we just ignore non-required matches
       return MonitorInstructions.createDefault();
     }
 
-    //raise an error
-    Assertions.fail(errorMessage.get());
+    //set error bit
+    /*
+     * DON'T throw an error, since the monitors may catch that and report it
+     * */
+    this.error = errorMessage;
     return MonitorInstructions.createDefault();
   }
 
-  private Optional<String> matchesExpectedEvent(Interaction interaction,
+  private boolean matchesExpectedInteraction(Interaction interaction,
       Optional<Object> sourceObject,
       Optional<Object> targetObject) {
+    try {
+      checkIfMatchesExpectedInteraction(interaction, sourceObject, targetObject);
+      return true;
+    } catch (UnexpectedInteractionException e) {
+      return false;
+    }
+  }
+
+  private void checkIfMatchesExpectedInteraction(Interaction interaction,
+      Optional<Object> sourceObject,
+      Optional<Object> targetObject) throws UnexpectedInteractionException {
     if (expectedInteractions.isEmpty()) {
-      return Optional.of("not expecting any interaction");
+      throw new UnexpectedInteractionException("not expecting any interaction");
     }
-    var expectedEvent = expectedInteractions.get(0);
+    var expectedInteraction = expectedInteractions.get(0);
 
-    //check source-object
-    //the only case for a source object to not be present is it being a trigger, and we have no
-    // way to control that
-    if (sourceObject.isPresent()) {
-      var expectedSource = expectedEvent.source();
-      var actualSource = sourceObject.get();
-      if (expectedSource != actualSource) {
-        return Optional.of(String.format("Expected source object %s but got %s instead",
-                                         expectedSource,
-                                         actualSource));
-      }
-    }
+    expectedInteraction.matchVariant(new ExhaustiveExpectedInteractionVariantMatcher<Void,
+        UnexpectedInteractionException>() {
+      @Override
+      public Void whenMethodCall(ExpectedMethodCall expectedMethodCall)
+      throws UnexpectedInteractionException {
+        checkActor(sourceObject, Optional.of(expectedMethodCall.source()), SOURCE);
+        checkActor(targetObject, Optional.of(expectedMethodCall.target()), TARGET);
 
-    //check target-object
-    //the only case for a target-object to not be present is a return to a trigger, and we have
-    // no way to control that
-    if (targetObject.isPresent()) {
-      var expectedTarget = expectedEvent.target();
-      var actualTarget = targetObject.get();
-      if (expectedTarget != actualTarget) {
-        return Optional.of(String.format("Expected target object %s but got %s instead",
-                                         expectedTarget,
-                                         actualTarget));
-      }
-    }
+        var expectedName = expectedMethodCall.methodName();
 
-    //check the action
-    var actionCheckErrorMessage = expectedEvent
-        .action()
-        .matchVariant(new ExhaustiveActionVariantMatcher<Optional<String>>() {
+        interaction.matchVariant(new InteractionVariantMatcher<Void,
+            UnexpectedInteractionException>() {
+
           @Override
-          public Optional<String> whenMethodCall(MethodCallAction call) {
-            var expectedMethodName = call.methodName();
-            return interaction.matchVariant(new StackEventVariantMatcher<>() {
-              @Override
-              public Optional<String> whenMethodCall(MethodCallInteraction methodCall) {
-                //check method name
-                var actualMethodName = methodCall.methodName();
-                if (!actualMethodName.equals(expectedMethodName)) {
-                  return Optional.of(String.format("Expected call of %s but got call of %s",
-                                                   expectedMethodName,
-                                                   actualMethodName));
-                }
+          public Void whenMethodCall(MethodCallInteraction methodCall)
+          throws UnexpectedInteractionException {
+            //check name
+            var name = methodCall.methodName();
+            if (!name.equals(expectedName)) {
+              throw new UnexpectedInteractionException(String.format(
+                  "expected call of method %s but got call of method %s instead",
+                  expectedName,
+                  name));
+            }
 
-                //check arguments
-                if (call.args().isPresent()) {
-                  var expectedArguments = call.args().get();
-                  var actualArguments = methodCall.params();
-                  if (!Arrays.equals(expectedArguments, actualArguments)) {
-                    return Optional.of(String.format("Expected %s(%s) but got %s(%s)",
-                                                     expectedMethodName,
-                                                     Arrays
-                                                         .stream(expectedArguments)
-                                                         .map(String::valueOf)
-                                                         .collect(Collectors.joining(", ")),
-                                                     actualMethodName,
-                                                     Arrays
-                                                         .stream(actualArguments)
-                                                         .map(String::valueOf)
-                                                         .collect(Collectors.joining(", "))));
-                  }
-                }
+            checkParameters(expectedMethodCall.parameters(), methodCall.params(), name);
 
-                return Optional.empty();
-              }
-
-              @Override
-              public Optional<String> otherwise(Interaction interaction) {
-                return Optional.of(String.format("Expected call of %s but got %s",
-                                                 expectedMethodName,
-                                                 interaction));
-              }
-            });
+            return null;
           }
 
           @Override
+          public Void otherwise(Interaction interaction) throws UnexpectedInteractionException {
+            throw new UnexpectedInteractionException(String.format(
+                "expected call of method %s but got %s",
+                expectedName,
+                interaction));
+          }
+        });
+
+        return null;
+      }
+
+      @Override
+      public Void whenConstructorCall(ExpectedConstructorCall expectedConstructorCall) {
+        //TODO continue implementing here
+        return null;
+      }
+
+      @Override
+      public Void whenReturn(ExpectedReturn expectedReturn) {
+        return null;
+      }
+
+      @Override
+      public Void whenThrow(ExpectedThrow expectedThrow) {
+        return null;
+      }
+
+      @Override
+      public Void whenEndOfActivityBar(ExpectedEndOfActivityBar expectedEndOfActivityBar) {
+        return null;
+      }
+    });
+
+    //check the action
+    var actionCheckErrorMessage = expectedInteraction
+        .action()
+        .matchVariant(new ExhaustiveActionVariantMatcher<Optional<String>>() {
+
+
+          @Override
           public Optional<String> whenError(ErrorAction errorAction) {
-            return interaction.matchVariant(new StackEventVariantMatcher<>() {
+            return interaction.matchVariant(new InteractionVariantMatcher<>() {
               @Override
               public Optional<String> whenError(ThrowInteraction throwInteraction) {
                 //check error-type
@@ -298,7 +363,7 @@ public final class InteractionProcessor {
 
           @Override
           public Optional<String> whenReturn(ReturnAction returnAction) {
-            return interaction.matchVariant(new StackEventVariantMatcher<>() {
+            return interaction.matchVariant(new InteractionVariantMatcher<>() {
               @Override
               public Optional<String> whenReturn(ReturnInteraction returnInteraction) {
                 var optReturnValue = returnInteraction.returnValue();
@@ -337,7 +402,7 @@ public final class InteractionProcessor {
 
           @Override
           public Optional<String> whenActivityBarEnd(ActivityBarEndAction activityBarEnd) {
-            return interaction.matchVariant(new StackEventVariantMatcher<>() {
+            return interaction.matchVariant(new InteractionVariantMatcher<>() {
               @Override
               public Optional<String> whenError(ThrowInteraction throwInteraction) {
                 return checkSignature("error");
@@ -372,7 +437,7 @@ public final class InteractionProcessor {
     }
 
     //execute ocl statements
-    for (var oclStatement : expectedEvent.oclStatements()) {
+    for (var oclStatement : expectedInteraction.oclStatements()) {
       var statementError =
           oclStatement.matchVariant(new ExhaustiveOCLStatementVariantMatcher<Optional<String>>() {
         @Override
@@ -380,7 +445,7 @@ public final class InteractionProcessor {
           boolean conditionCheckResult;
           InteractionProcessor.this.conditionChecking = true;
           try {
-            conditionCheckResult = condition.check();
+            conditionCheckResult = condition.evaluate();
           } finally {
             InteractionProcessor.this.conditionChecking = false;
           }
@@ -402,6 +467,45 @@ public final class InteractionProcessor {
     }
 
     return Optional.empty();
+  }
+
+  private void checkActor(Optional<Object> actor, Optional<Object> expectedActor, String kind)
+  throws UnexpectedInteractionException {
+    if (actor.isEmpty()) return;
+    if (expectedActor.isEmpty()) return;
+
+    var actorObject = actor.get();
+    var expectedActorObject = expectedActor.get();
+    if (actorObject.equals(expectedActorObject)) return;
+
+    throw new UnexpectedInteractionException(String.format(
+        "Expected %s object %s but got %s instead",
+        kind,
+        expectedActorObject,
+        actorObject));
+  }
+
+  private void checkParameters(Optional<Object[]> expectedParameters,
+      Object[] parameters,
+      String callName) throws UnexpectedInteractionException {
+    if (expectedParameters.isEmpty()) return;
+
+    var expectedParameterArray = expectedParameters.get();
+    if (Arrays.equals(parameters, expectedParameterArray)) return;
+
+    var expectedParamRepr = Arrays
+        .stream(expectedParameterArray)
+        .map(String::valueOf)
+        .collect(Collectors.joining(", "));
+    var paramRepr = Arrays
+        .stream(parameters)
+        .map(String::valueOf)
+        .collect(Collectors.joining(", "));
+    throw new UnexpectedInteractionException(String.format("Expected %s(%s) but got %s(%s) instead",
+                                                           callName,
+                                                           expectedParamRepr,
+                                                           callName,
+                                                           paramRepr));
   }
 
   /**
@@ -436,7 +540,7 @@ public final class InteractionProcessor {
             return false;
           }
           //action must match
-          return event.matchVariant(new ExhaustiveStackEventVariantMatcher<>() {
+          return event.matchVariant(new ExhaustiveInteractionVariantMatcher<>() {
             @Override
             public Boolean whenMethodCall(MethodCallInteraction event) {
               return expectedEvent.action().matchVariant(new ActionVariantMatcher<>() {
@@ -590,6 +694,13 @@ public final class InteractionProcessor {
     public SourceTargetPair(Optional<Object> sourceObject, Optional<Object> targetObject) {
       this.sourceObject = sourceObject;
       this.targetObject = targetObject;
+    }
+  }
+
+  private static final class UnexpectedInteractionException extends Exception {
+
+    public UnexpectedInteractionException(String message) {
+      super(message);
     }
   }
 }

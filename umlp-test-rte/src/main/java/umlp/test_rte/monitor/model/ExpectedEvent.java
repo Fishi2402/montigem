@@ -6,6 +6,7 @@ import umlp.test_rte.monitor.model.ocl.OCLStatement;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public final class ExpectedEvent {
 
   private final Object source;

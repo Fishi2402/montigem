@@ -53,7 +53,7 @@ public class TotalTest extends WebshopSQLDBTestSetup {
   @Test
   void testSequence() {
     //make sure the name of the processor variable is unique throughout the test
-    var processor = new InteractionProcessor();
+    var processor = new InteractionProcessor(MatchingStrategy.getDefault());
     //load objects and their matching strategies
     o = createO();
     processor.objectMatchingStrategies().put(o, MatchingStrategy.FREE);
@@ -70,12 +70,14 @@ public class TotalTest extends WebshopSQLDBTestSetup {
     MethodMonitor.setActiveProcessor(processor);
 
     processor.load(
-        new ExpectedEvent(o, o, new MethodCallAction("addItem", Optional.of(new Object[]{item}), true), new OCLCondition(() -> o.getTotal() == 0, "o.getTotal() == 0")),
+        new ExpectedEvent(o, o, new MethodCallAction("addItem", Optional.of(new Object[]{item}), true),
+                          OCLCondition.from(() -> o.getTotal() == 0, "o.getTotal() == 0")),
         new ExpectedEvent(o, o, new MethodCallAction("addItem", Optional.of(new Object[]{item, NotificationScope.ALL}), false)),
-        new ExpectedEvent(o, o, new ReturnAction(), new OCLVariableDeclaration(() -> {
-          total2 = o.getTotal();
-          processor.objectMatchingStrategies().put(total2, MatchingStrategy.FREE);
-        }), new OCLCondition(() -> total2 == 6, "total2 == 6")),
+        new ExpectedEvent(o, o, new ReturnAction(),
+                          OCLVariableDeclaration.fromExecutor(() -> {
+                            total2 = o.getTotal();
+                            processor.objectMatchingStrategies().put(total2, MatchingStrategy.FREE);
+                          }), OCLCondition.from(() -> total2 == 6, "total2 == 6")),
         new ExpectedEvent(o, o, new ReturnAction()),
         new ExpectedEvent(o, o, new ActivityBarEndAction())
                   );

@@ -17,5 +17,5 @@ public interface Interaction {
    */
   String signature();
 
-  <T> T matchVariant(StackEventVariantMatcher<T> matcher);
+  <T, E extends Throwable> T matchVariant(InteractionVariantMatcher<T, E> matcher) throws E;
 }

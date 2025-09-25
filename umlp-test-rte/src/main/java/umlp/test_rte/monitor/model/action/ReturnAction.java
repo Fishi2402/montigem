@@ -3,6 +3,7 @@ package umlp.test_rte.monitor.model.action;
 import java.util.Objects;
 import java.util.Optional;
 
+@Deprecated
 public final class ReturnAction implements Action {
 
   private final boolean hasReturnValue;

@@ -4,8 +4,12 @@ public final class OCLVariableDeclaration implements OCLStatement {
 
   private final Runnable execution;
 
-  public OCLVariableDeclaration(Runnable execution) {
+  private OCLVariableDeclaration(Runnable execution) {
     this.execution = execution;
+  }
+
+  public static OCLVariableDeclaration fromExecutor(Runnable execution) {
+    return new OCLVariableDeclaration(execution);
   }
 
   @Override

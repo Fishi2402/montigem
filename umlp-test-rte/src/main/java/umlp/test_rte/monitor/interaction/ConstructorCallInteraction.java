@@ -10,7 +10,10 @@ public final class ConstructorCallInteraction implements Interaction {
   private final String className;
   private final Object[] params;
 
-  public ConstructorCallInteraction(Object object, String signature, String className, Object... params) {
+  public ConstructorCallInteraction(Object object,
+      String signature,
+      String className,
+      Object... params) {
     this.object = object;
     this.signature = signature;
     this.className = className;
@@ -36,7 +39,7 @@ public final class ConstructorCallInteraction implements Interaction {
   }
 
   @Override
-  public <T> T matchVariant(StackEventVariantMatcher<T> matcher) {
+  public <T, E extends Throwable> T matchVariant(InteractionVariantMatcher<T, E> matcher) throws E {
     return matcher.whenConstructorCall(this);
   }
 

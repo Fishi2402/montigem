@@ -1,5 +1,6 @@
 package umlp.test_rte.monitor.model.action;
 
+@Deprecated
 public interface ActionVariantMatcher<T> {
   default T whenMethodCall(MethodCallAction methodCall) {
     return otherwise(methodCall);
