@@ -7,9 +7,10 @@ plugins {
 }
 
 dependencies {
-  testImplementation project(':umlp-test-rte')
+  implementation project(":examples:loading-test:backend")
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version
   implementation("org.springframework.boot:spring-boot-starter-tomcat:$spring_version")
+  testImplementation project(':umlp-test-rte')
 }
 
 tasks.named("gui2java", GUI2JavaTask) {
