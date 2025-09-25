@@ -1,16 +1,16 @@
-package umlp.test_rte.monitor.event;
+package umlp.test_rte.monitor.interaction;
 
 import java.util.Arrays;
 import java.util.Objects;
 
-public final class ConstructorCallEvent implements StackEvent {
+public final class ConstructorCallInteraction implements Interaction {
 
   private final Object object;
   private final String signature;
   private final String className;
   private final Object[] params;
 
-  public ConstructorCallEvent(Object object, String signature, String className, Object[] params) {
+  public ConstructorCallInteraction(Object object, String signature, String className, Object... params) {
     this.object = object;
     this.signature = signature;
     this.className = className;
@@ -41,9 +41,9 @@ public final class ConstructorCallEvent implements StackEvent {
   }
 
   @Override
-  public boolean equals(Object object1) {
-    if (object1 == null || getClass() != object1.getClass()) return false;
-    ConstructorCallEvent that = (ConstructorCallEvent) object1;
+  public boolean equals(Object o) {
+    if (o == null || getClass() != o.getClass()) return false;
+    ConstructorCallInteraction that = (ConstructorCallInteraction) o;
     return Objects.equals(object, that.object) && Objects.equals(signature, that.signature) &&
            Objects.equals(className, that.className) && Objects.deepEquals(params, that.params);
   }
@@ -55,7 +55,7 @@ public final class ConstructorCallEvent implements StackEvent {
 
   @Override
   public String toString() {
-    return "ConstructorCallEvent{" + "object=" + object + ", signature='" + signature + '\'' +
+    return "ConstructorCallInteraction{" + "object=" + object + ", signature='" + signature + '\'' +
            ", className='" + className + '\'' + ", params=" + Arrays.toString(params) + '}';
   }
 }
