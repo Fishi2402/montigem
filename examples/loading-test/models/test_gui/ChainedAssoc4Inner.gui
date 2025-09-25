@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test_gui;
+
+import mc.fenix.basic.GemText;
+import mc.fenix.input.GemTextInput;
+import LoadingTests.Person;
+
+component ChainedAssoc4Inner(Animal animal) {
+  @GemText(value = animal.favouriteFood.name);
+}

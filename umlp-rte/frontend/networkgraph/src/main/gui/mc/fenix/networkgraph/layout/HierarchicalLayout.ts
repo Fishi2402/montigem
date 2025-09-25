@@ -4,6 +4,7 @@ import {node} from "graphology-metrics";
 export type HierarchicalLayoutOptionsInterface = {
   edgeLabels : string[],
   edgeGroups : string[]
+  direction?: "vertical" | "horizontal"
 }
 
 export class HierarchicalLayout  {
@@ -162,6 +163,7 @@ export class HierarchicalLayout  {
 
   // Assign coordinates to nodes based on their levels
   public static assign(g: AbstractGraph, options? : HierarchicalLayoutOptionsInterface) {
+
     console.warn("Doing something", g, options)
 
     const hierarchicalLayout = new HierarchicalLayout()
@@ -214,17 +216,31 @@ export class HierarchicalLayout  {
     // Assign coordinates
     levelNodes.forEach((level : string[], levelIndex) => {
 
-      const levelWidth = level.reduce((previousValue, currentValue) => previousValue +
-          g.getNodeAttribute(currentValue, "size"),0)
-        + (level.length - 1) * hierarchicalLayout.nodeSeparation;
-      const startX = (0 - levelWidth) / 2;
+      if(options?.direction === "horizontal") {
+        const levelHeight = level.reduce((previousValue, currentValue) => previousValue +
+            g.getNodeAttribute(currentValue, "size"), 0)
+          + (level.length - 1) * hierarchicalLayout.nodeSeparation;
+        const startY = (0 - levelHeight) / 2;
 
-      level.forEach((nodeKey, nodeIndex) => {
-        if(!g.getNodeAttribute(nodeKey, "fixed")) {
-          g.setNodeAttribute(nodeKey, "x", startX + nodeIndex * (g.getNodeAttribute(nodeKey, "size") + hierarchicalLayout.nodeSeparation));
-          g.setNodeAttribute(nodeKey, "y", levelIndex * hierarchicalLayout.levelSeparation);
-        }
-      });
+        level.forEach((nodeKey, nodeIndex) => {
+          if (!g.getNodeAttribute(nodeKey, "fixed")) {
+            g.setNodeAttribute(nodeKey, "x", levelIndex * hierarchicalLayout.levelSeparation);
+            g.setNodeAttribute(nodeKey, "y", startY + nodeIndex * (g.getNodeAttribute(nodeKey, "size") + hierarchicalLayout.nodeSeparation));
+          }
+        });
+      } else {
+        const levelWidth = level.reduce((previousValue, currentValue) => previousValue +
+           g.getNodeAttribute(currentValue, "size"),0)
+         + (level.length - 1) * hierarchicalLayout.nodeSeparation;
+       const startX = (0 - levelWidth) / 2;
+
+        level.forEach((nodeKey, nodeIndex) => {
+          if(!g.getNodeAttribute(nodeKey, "fixed")) {
+            g.setNodeAttribute(nodeKey, "x", startX + nodeIndex * (g.getNodeAttribute(nodeKey, "size") + hierarchicalLayout.nodeSeparation));
+            g.setNodeAttribute(nodeKey, "y", levelIndex * hierarchicalLayout.levelSeparation);
+          }
+        });
+      }
     });
   }
 

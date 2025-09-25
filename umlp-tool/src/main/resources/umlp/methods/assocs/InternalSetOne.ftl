@@ -15,6 +15,7 @@ this._${name} = new Gem<${targetName}>(o);
     o.${otherSideName}((${sourceName}) this, NotificationScope.MINIMAL);
     if(o.getGemId() != oldValue && ${managerName}.isLoaded${targetName}(oldValue)){
       <#if otherSideName?starts_with("set")>
+        // Clear old other side
         ${managerName}.get${targetName}Sure(oldValue).${otherSideName}Gem(new Gem<>(), NotificationScope.MINIMAL);
       <#else>
         <#assign removeOtherSide=otherSideName?replace("add", "remove")>

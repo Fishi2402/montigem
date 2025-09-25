@@ -1,7 +1,7 @@
-import { MouseCaptorEvents } from "sigma/core/captors/mouse";
-import { TouchCaptorEvents } from "sigma/core/captors/touch";
+import { MouseCaptorEvents } from "sigma/types";
+import { TouchCaptorEvents } from "sigma/types";
 import { EventEmitter } from "@angular/core";
-import { SigmaEvents } from "sigma/sigma";
+import { SigmaEvents } from "sigma/types";
 
 /** Defines a generic function type with any number of arguments. */
 export type EventType = (...arguments_: any[]) => any;

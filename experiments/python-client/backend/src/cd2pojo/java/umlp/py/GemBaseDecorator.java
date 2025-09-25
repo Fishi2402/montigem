@@ -142,7 +142,7 @@ public class GemBaseDecorator extends AbstractDecorator<GemBaseDecorator.Data> i
         CD4C.getInstance().addImport(
             decoratorData.getAsDecorated((ASTCDClass) decoratorData.getParent(originalNode).get()),
             inner.printFullName());
-        decNode.setMCType(createGemType(inner.printFullName()));
+        decNode.setMCType(createGemType( inner.printFullName() + "." + inner.print()));
         decNode.setInitial(createInitialEmptyGem());
         data.attrDataMap.computeIfAbsent(originalNode, x -> new AttrData(inner.printFullName()));
       } else {
@@ -161,7 +161,7 @@ public class GemBaseDecorator extends AbstractDecorator<GemBaseDecorator.Data> i
         CD4C.getInstance().addImport(
             decoratorData.getAsDecorated((ASTCDClass) decoratorData.getParent(originalNode).get()),
             inner.printFullName());
-        decNode.setMCType(createGemListType(inner.printFullName()));
+        decNode.setMCType(createGemListType(inner.printFullName() + "." + inner.print()));
         decNode.setInitial(createInitialGemList());
 //        data.attrDataMap.computeIfAbsent(originalNode, x -> new AttrData(inner.printFullName()));
       }else if (info.getTypeClass() == UmlpAttrHelper.RealType.BUILD_IN) {
@@ -184,7 +184,7 @@ public class GemBaseDecorator extends AbstractDecorator<GemBaseDecorator.Data> i
       CD4C.getInstance().addImport(
           decoratorData.getAsDecorated((ASTCDClass) decoratorData.getParent(originalNode).get()),
           originalNode.getSymbol().getType().printFullName());
-      decNode.setMCType(createGemType(originalNode.getSymbol().getType().printFullName()));
+      decNode.setMCType(createGemType(originalNode.getSymbol().getType().printFullName() + "." + originalNode.getSymbol().getType().print()));
       decNode.setInitial(createInitialEmptyGem());
       data.attrDataMap.computeIfAbsent(originalNode, x -> new AttrData(originalNode.getSymbol().getType().printFullName()));
     } else if (info.getTypeClass() == UmlpAttrHelper.RealType.BUILD_IN) {
@@ -244,12 +244,16 @@ public class GemBaseDecorator extends AbstractDecorator<GemBaseDecorator.Data> i
   }
 
   protected String[] createGemTypeAs(String classname) {
-    return new String[]{"montigem_runtime.gembase.Gem['" + classname + "']", "pydantic.BeforeValidator(montigem_runtime.gembase.create_gem_deserializer('" + classname + "'))", "pydantic.PlainSerializer(montigem_runtime.gembase.serialize_gem,return_type=int)"};
+    classname = "\"" + classname + "\"";
+    // [" + classname + "]
+    return new String[]{"montigem_runtime.gembase.Gem", "pydantic.BeforeValidator(montigem_runtime.gembase.create_gem_deserializer(" + classname + "))", "pydantic.PlainSerializer(montigem_runtime.gembase.serialize_gem,return_type=int)"};
   }
 
 
   protected String[] createGemListTypeAs(String classname) {
-    return new String[]{"montigem_runtime.gembase.GemList['" + classname + "']", "pydantic.BeforeValidator(montigem_runtime.gembase.deserialize_gem_list)", "pydantic.PlainSerializer(montigem_runtime.gembase.serialize_gem_list,return_type=typing.List[int])"};
+    classname = "\"" + classname + "\"";
+    // [" + classname + "]
+    return new String[]{"montigem_runtime.gembase.GemList", "pydantic.BeforeValidator(montigem_runtime.gembase.create_gem_list_deserializer(" + classname + "))", "pydantic.PlainSerializer(montigem_runtime.gembase.serialize_gem_list,return_type=typing.List[int])"};
   }
 
   protected ASTMCBasicGenericType createClassVar(String t) {

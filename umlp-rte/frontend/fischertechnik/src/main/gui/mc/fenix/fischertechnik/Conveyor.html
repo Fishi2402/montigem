@@ -2,13 +2,14 @@
     width="655"
     height="338"
     viewBox="0 0 655 338"
-    fill="none"
+    style="fill: none;"
     xmlns="http://www.w3.org/2000/svg">
   <style>
     :root {
-      --rightDetectorIndicatorOpacity: 0;
-      --leftDetectorIndicatorOpacity: 0;
-      --speedIndicatorPosition: 0;
+      --feedDetectorIndicatorOpacity: 0;
+      --swapDetectorIndicatorOpacity: 0;
+      --moveToFeed: 0;
+      --moveToSwap: 0;
     }
   </style>
   <defs
@@ -82,11 +83,11 @@
 
   <path
       d="m 501.37552,140.3091 c 3.39099,6.26029 1.05716,14.11319 -5.20313,17.50504 -6.26028,3.39099 -14.07531,1.03564 -17.4663,-5.22465 -3.39185,-6.26029 -1.05716,-14.1132 5.20313,-17.50504 6.26029,-3.39099 14.11319,-1.05716 17.50504,5.20313 z"
-      style="fill: #e09400; opacity: var(--rightDetectorIndicatorOpacity, 1);"
+      style="fill: #e09400; opacity: var(--feedDetectorIndicatorOpacity, 1);"
       id="rightDetector"/>
   <path
       d="m 179.63313,139.45983 c 3.86055,7.12716 1.20354,16.06748 -5.92362,19.929 -7.12716,3.86055 -16.02435,1.17904 -19.8849,-5.94812 -3.86152,-7.12716 -1.20354,-16.06748 5.92362,-19.929 7.12717,-3.86055 16.06748,-1.20354 19.92901,5.92362 z"
-      style="fill: #e09400; opacity: var(--leftDetectorIndicatorOpacity, 1);"
+      style="fill: #e09400; opacity: var(--swapDetectorIndicatorOpacity, 1);"
       id="leftDetector"/>
 
   <g>
@@ -181,21 +182,7 @@
         height="14.1333"
         fill="white"
         id="rect184"/>
-    <rect
-        x="363"
-        y="222.5"
-        width="1.5"
-        height="97"
-        rx="0.75"
-        transform="rotate(-90 363 222.5)"
-        fill="url(#paint2_linear_2_199)"
-        id="rect190"/>
-    <path
-        d="M358.5 222.366C357.833 221.981 357.833 221.019 358.5 220.634L365.25 216.737C365.917 216.352 366.75 216.833 366.75 217.603L366.75 225.397C366.75 226.167 365.917 226.648 365.25 226.263L358.5 222.366Z"
-        fill="url(#paint3_linear_2_199)"
-        id="path192"/>
     <text
-        xml:space="preserve"
         style="font-size:18.9981px;font-family:sans-serif;text-align:center;text-anchor:middle;display:inline;fill:#ffffff;stroke-width:134.46;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:0.552542;paint-order:stroke fill markers"
         x="100.50916"
         y="187.65468"
@@ -205,7 +192,6 @@
        y="187.65468"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:sans-serif;stroke-width:134.46">Lichtschranke an</tspan></text>
     <text
-        xml:space="preserve"
         style="font-size:18.9981px;font-family:sans-serif;text-align:center;text-anchor:middle;display:inline;fill:#ffffff;stroke-width:134.46;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:0.552542;paint-order:stroke fill markers"
         x="274.55466"
         y="296.0278"
@@ -213,9 +199,8 @@
        id="tspan2497-6"
        x="274.55466"
        y="296.0278"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:sans-serif;stroke-width:134.46">Geschwindigkeit</tspan></text>
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:sans-serif;stroke-width:134.46">Laufrichtung</tspan></text>
     <text
-        xml:space="preserve"
         style="font-size:18.9981px;font-family:sans-serif;text-align:center;text-anchor:middle;display:inline;fill:#ffffff;stroke-width:134.46;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:0.552542;paint-order:stroke fill markers"
         x="554.62421"
         y="189.40822"
@@ -225,10 +210,9 @@
        y="189.40822"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:sans-serif;stroke-width:134.46">Lichtschranke an</tspan></text>
   </g>
-
   <path
       d="M340.478 241.546C344.417 248.818 341.706 257.94 334.434 261.88C327.162 265.819 318.084 263.083 314.145 255.811C310.205 248.539 312.917 239.417 320.189 235.477C327.461 231.538 336.583 234.249 340.523 241.521L340.478 241.546Z"
       fill="#E09400"
-      style="transform: translateX(calc(var(--speedIndicatorPosition, 0) * -2.4px + 120px));"
+      style="transform: translateX(calc((var(--moveToFeed, 0) - var(--moveToSwap, 0)) * 120px));"
       id="speedIndicator"/>
 </svg>

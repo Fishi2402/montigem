@@ -11,31 +11,33 @@ page Conveyor_Demo(FischertechnikConveyorState state){
   @GemColumn(
     rowGap = "15px",
     components = [
-      @GemRangeInput(
-        id="speed-percentage",
-        labelText="Geschwindigkeit:",
-        vertical=false,
-        step=1,
-        minValue=1,
-        maxValue=100,
-        value=state.speedIndicatorPercentage
+      @GemCheckBoxInput(
+        id="move-to-feed",
+        labelText="Bewegung zum Einzug",
+        checked=state.moveToFeed
       ),
       @GemCheckBoxInput(
-        id="right-detector",
-        labelText="Rechte Lichtschranke unterbrochen",
-        checked=state.rightDetectorOn
+        id="move-to-swap",
+        labelText="Bewegung zum Tausch",
+        checked=state.moveToSwap
       ),
       @GemCheckBoxInput(
-        id="left-detector",
-        labelText="Linke Lichtschranke unterbrochen",
-        checked=state.leftDetectorOn
+        id="feed-detector",
+        labelText="Einzug Lichtschranke unterbrochen",
+        checked=state.feedDetectorOn
+      ),
+      @GemCheckBoxInput(
+        id="swap-detector",
+        labelText="Tausch Lichtschranke unterbrochen",
+        checked=state.swapDetectorOn
       )
     ]
   );
   @Conveyor(
-   speedIndicatorPercentage=state.speedIndicatorPercentage,
-   rightDetectorOn=state.rightDetectorOn,
-   leftDetectorOn=state.leftDetectorOn
+    moveToFeed=state.moveToFeed,
+    moveToSwap=state.moveToSwap,
+    feedDetectorOn=state.feedDetectorOn,
+    swapDetectorOn=state.swapDetectorOn
   );
 }
 

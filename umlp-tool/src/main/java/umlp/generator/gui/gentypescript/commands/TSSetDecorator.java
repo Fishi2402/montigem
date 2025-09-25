@@ -86,12 +86,14 @@ public class TSSetDecorator extends SetDecorator {
   }
 
   @Override
-  protected void addImportAccessPolicy(ASTCDClass ast, SymTypeExpression type, String otherType) {
-    ASTCDCompilationUnit cd = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
-    TSImportHelper importHelper = new TSImportHelper(glex, ast, hwPath, outPath);
-    String importerQName = getPackageName(cd, COMMAND_PACKAGE) + "." + ast.getName();
+  protected void addImportAccessPolicy(ASTCDClass ast, SymTypeExpression type, String otherType, ASTCDType domainType) {
+    if (!domainType.getName().equals(otherType)) {
+      ASTCDCompilationUnit cd = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
+      TSImportHelper importHelper = new TSImportHelper(glex, ast, hwPath, outPath);
+      String importerQName = getPackageName(cd, COMMAND_PACKAGE) + "." + ast.getName();
 
-    importHelper.addImport(getPackageName(cd, DEFAULT_PACKAGE) + "." + otherType + "AccessPolicy", importerQName);
+      importHelper.addImport(getPackageName(cd, DEFAULT_PACKAGE) + "." + otherType + "AccessPolicy", importerQName);
+    }
   }
 
   @Override

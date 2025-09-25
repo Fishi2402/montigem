@@ -61,11 +61,10 @@ public abstract class Java2TSAction implements WorkAction<Java2TSAction.Params> 
     transpiler.setAutoPropagateAsyncAwaits(true);
     transpiler.setVerbose(params.getVerbose().getOrElse(false));
     transpiler.setEncoding("UTF-8");
-    transpiler.setGenerateSourceMaps(true);
+    transpiler.setGenerateSourceMaps(params.getCreateSourceMaps().getOrElse(false));
     transpiler.setGenerateJsFiles(false);
     transpiler.setEcmaTargetVersion(EcmaScriptComplianceLevel.ES6);
     transpiler.setModuleKind(ModuleKind.commonjs);
-    transpiler.setGenerateSourceMaps(false);
     ProcessUtil.addExtraPath(".gradle/nodejs/node-v" + params.getNodeVersion().get() + "-win-x64");
 
     SourceFile[] sourceFiles = params.getInput().getFiles().stream()
@@ -91,6 +90,8 @@ public abstract class Java2TSAction implements WorkAction<Java2TSAction.Params> 
     ConfigurableFileCollection getExcludedFromTranspilation();
 
     Property<Boolean> getVerbose();
+
+    Property<Boolean> getCreateSourceMaps();
 
     DirectoryProperty getBaseDirectory();
 

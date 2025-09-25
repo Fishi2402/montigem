@@ -11,6 +11,8 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.Random;
 
 @SpringBootApplication(
     exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class},
@@ -225,6 +227,7 @@ public class DomainServerApplication extends DomainServerApplicationTOP {
         .address(address)
         .aboutMe(aboutMe)
         .employed(employed)
+        .role(generateRandomRole())
         .build()
         .get();
     Log.info("Person created with gemId: " + p.getGemId(), this.getClass().getName());
@@ -259,6 +262,12 @@ public class DomainServerApplication extends DomainServerApplicationTOP {
         .conversationid(conversationId)
         .build()
         .get();
+  }
+
+  private Optional<Role> generateRandomRole() {
+    Random rand = new Random();
+    Role[] values = Role.values();
+    return Optional.of(values[rand.nextInt(values.length)]);
   }
 
 }

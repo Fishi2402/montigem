@@ -13,7 +13,7 @@ import { Attributes, GraphType, SerializedGraph } from "graphology-types";
 import { GraphDataService } from "./graph-data.service";
 import { Observable, Subject } from "rxjs";
 import { Sigma } from "sigma"
-import { SigmaEdgeEventPayload, SigmaNodeEventPayload } from "sigma/sigma";
+import { SigmaEdgeEventPayload, SigmaNodeEventPayload } from "sigma/types";
 import Graph from "graphology";
 import { CameraState, Coordinates, MouseCoords, NodeDisplayData } from "sigma/types";
 import { ComplexGraphLayoutConfiguration, InitialGraphLayoutConfiguration } from "../types/graph-layout.types";
@@ -22,7 +22,7 @@ import { GraphProcessorService } from "../graph-processing/graph-processor.servi
 import { GraphLayoutService } from "../services/graph-layout.service";
 import { GraphMetricsService } from "../services/graph-metrics.service";
 import { GraphSettingsService } from "../services/graph-settings.service";
-import { AnimateOptions } from "sigma/utils/animate";
+import { AnimateOptions } from "sigma/utils";
 import { Settings } from "sigma/settings";
 
 /**
@@ -94,16 +94,16 @@ export class GraphManagerService<
 > implements OnDestroy
 {
   /** Subject to emit the renderer after Sigma has been initialized. */
-  private sigmaInitialized: Subject<Sigma<Graph<NodeAttributes, EdgeAttributes>>> = new Subject();
+  private sigmaInitialized: Subject<Sigma<NodeAttributes, EdgeAttributes>> = new Subject();
 
   /** Observable that emits the renderer Sigma has been initialized. */
-  public onSigmaInit$: Observable<Sigma<Graph<NodeAttributes, EdgeAttributes>>> = this.sigmaInitialized.asObservable();
+  public onSigmaInit$: Observable<Sigma<NodeAttributes, EdgeAttributes>> = this.sigmaInitialized.asObservable();
 
   /** Subject to emit the renderer after the graph has been initialized (see {@link initializeChart}). */
-  private graphInitialized: Subject<Sigma<Graph<NodeAttributes, EdgeAttributes>>> = new Subject();
+  private graphInitialized: Subject<Sigma<NodeAttributes, EdgeAttributes>> = new Subject();
 
   /** Observable that emits the the renderer after the graph has been initialized (see {@link initializeChart}). */
-  public graphInitialized$: Observable<Sigma<Graph<NodeAttributes, EdgeAttributes>>> =
+  public graphInitialized$: Observable<Sigma<NodeAttributes, EdgeAttributes>> =
     this.graphInitialized.asObservable();
 
   /** Signal to indicate whether the graph needs initialization. */
@@ -144,9 +144,9 @@ export class GraphManagerService<
   /**
    * Gets the renderer instance.
    *
-   * @returns {Sigma<Graph<N, E, G>> | null} - Renderer instance
+   * @returns {Sigma<N, E, G> | null} - Renderer instance
    */
-  public get renderer(): Sigma<Graph<N, E, G>> | null {
+  public get renderer(): Sigma<N, E, G> | null {
     return this.sigmaGraph.renderer;
   }
 

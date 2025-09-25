@@ -7,10 +7,20 @@ import java.util.Optional;
 classdiagram MonacoEditorTypes {
 
   public class InlineDecoration {
+    Range range;
+    String cssClass;
+  }
+
+  public class HoverContent {
+    Range range;
+    // Markdown and HTML possible
+    List<String> hoverContent;
+  }
+
+  public class Range {
     int startLin;
     int startCol;
     int endLin;
     int endCol;
-    String cssClass;
   }
 }

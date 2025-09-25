@@ -38,15 +38,19 @@ def deserialize_gem(value: Any, type = None) -> 'Gem':
 def serialize_gem(value: 'Gem') -> int:
   return value.gemId
 
-def deserialize_gem_list(value: Any) -> 'GemList':
+def create_gem_list_deserializer(type: Any):
+  return lambda value: deserialize_gem_list(value, type)
+
+
+def deserialize_gem_list(value: Any, type=None) -> 'GemList':
   if isinstance(value, GemList):
     return value
-  elif isinstance(value, list):
-    r = GemList()
+  elif isinstance(value, list): #todo: is origin?
+    r = GemList[type]()
     r.indexes = value
     return r
   elif value is None:
-    return GemList()
+    return GemList[type]()
   else:
     raise 'Unknown type'
 

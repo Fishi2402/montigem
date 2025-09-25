@@ -20,5 +20,5 @@ test {
 
 // TODO: We have now implicitly added assemble.dependsOn(buildApp)
 tasks.named("buildApp") {
-  enabled = false
+  enabled = true
 }

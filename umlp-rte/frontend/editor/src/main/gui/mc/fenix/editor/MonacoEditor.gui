@@ -22,5 +22,7 @@ component MonacoEditor(
   boolean semanticHighlightingEnabled = true,
 
   int initialScrollToLine,
-  List<InlineDecoration> highlighting
+  List<InlineDecoration> highlighting,
+
+  List<HoverContent> hoverContents
 )

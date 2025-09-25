@@ -11,24 +11,38 @@ import {Component, HostBinding, Input} from '@angular/core';
 })
 export class Conveyor extends ConveyorComponent {
   @Input()
-  @HostBinding("style.--leftDetectorIndicatorOpacity")
-  leftDetectorIndicatorOpacity: number;
+  @HostBinding("style.--swapDetectorIndicatorOpacity")
+  swapDetectorIndicatorOpacity: number;
 
-  override set leftDetectorOn(value: boolean) {
-    super.leftDetectorOn = value;
-    this.leftDetectorIndicatorOpacity = value ? 1 : 0;
+  override set swapDetectorOn(value: boolean) {
+    super.swapDetectorOn = value;
+    this.swapDetectorIndicatorOpacity = value ? 1 : 0;
   }
 
   @Input()
-  @HostBinding("style.--rightDetectorIndicatorOpacity")
-  rightDetectorIndicatorOpacity: number;
+  @HostBinding("style.--feedDetectorIndicatorOpacity")
+  feedDetectorIndicatorOpacity: number;
 
-  override set rightDetectorOn(value: boolean) {
-    super.rightDetectorOn = value;
-    this.rightDetectorIndicatorOpacity = value ? 1 : 0;
+  override set feedDetectorOn(value: boolean) {
+    super.feedDetectorOn = value;
+    this.feedDetectorIndicatorOpacity = value ? 1 : 0;
   }
 
   @Input()
-  @HostBinding("style.--speedIndicatorPosition")
-  _speedIndicatorPercentage: number;
+  @HostBinding("style.--moveToFeed")
+  moveToFeedOn: number;
+
+  override set moveToFeed(value: boolean) {
+    super.moveToFeed = value;
+    this.moveToFeedOn = value ? 1 : 0;
+  }
+
+  @Input()
+  @HostBinding("style.--moveToSwap")
+  moveToSwapOn: number;
+
+  override set moveToSwap(value: boolean) {
+    super.moveToSwap = value;
+    this.moveToSwapOn = value ? 1 : 0;
+  }
 }

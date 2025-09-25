@@ -3,7 +3,11 @@ import { config, MonacoEditorComponent } from '../../../../../../build/gui2java2
 import {EventEmitter, Output, Provider} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {MonacoEditorModule, NGX_MONACO_EDITOR_CONFIG, NgxMonacoEditorConfig } from 'ngx-monaco-editor-v2';
-import {editor} from "monaco-editor";
+import * as monacoTypes from "monaco-editor";
+
+// This is necessary so we use the same static functions as the ngx monaco editor instance
+// See: https://stackoverflow.com/questions/79536928/cannot-make-the-model-markers-to-appear-in-monaco-editor-inside-angular-compone
+declare var monaco: typeof monacoTypes;
 
 export function provideMonacoEditor(config: NgxMonacoEditorConfig = {}): Provider[] {
   return [
@@ -15,7 +19,7 @@ import {
   Component,
 } from '@angular/core';
 import {InlineDecoration} from "../../../../../../build/gui2java2ts/mc/fenix/editor/monacoeditortypes/InlineDecoration";
-
+import {HoverContent} from "../../../../../../build/gui2java2ts/mc/fenix/editor/monacoeditortypes/HoverContent";
 
 @Component({
   standalone:true,
@@ -36,7 +40,7 @@ import {InlineDecoration} from "../../../../../../build/gui2java2ts/mc/fenix/edi
 
 export class MonacoEditor extends MonacoEditorComponent  {
 
-  protected editor: editor.ICodeEditor;
+  protected editor: monacoTypes.editor.ICodeEditor;
   protected cacheCheck : string = "";
   protected highlightingCache;
 
@@ -49,12 +53,50 @@ export class MonacoEditor extends MonacoEditorComponent  {
     theme: this._theme,
     readOnly: this._disabled,
     glyphMargin: this._glyphMargin,
-    automaticLayout: this._automaticLayout
+    automaticLayout: this._automaticLayout,
+    hover: {
+      enabled: true,
+      sticky: true,
+      above: false
+    }
   };
+
+  public constructor() {
+    setTimeout( () =>
+      monaco.languages.registerHoverProvider("*", {
+        provideHover: (model,position) =>  {
+          if(this.getHoverContents()) {
+            for(let hC of this.getHoverContents()) {
+              if((position.lineNumber > hC.getRange().getStartLin() ||
+                (position.lineNumber === hC.getRange().getStartLin() && position.column >= hC.getRange().getStartCol())) &&
+                (position.lineNumber < hC.getRange().getEndLin() ||
+                  position.lineNumber === hC.getRange().getEndLin() && position.column <= hC.getRange().getEndCol())) {
+                return {
+                  contents:
+                    hC.getHoverContentList().map(c => {
+                      return {
+                        value: c
+                      };
+                    })
+                };
+              }
+            }
+          }
+          return {
+            contents: [
+              { value: ''}
+            ]
+          };
+        }
+      }), 1000)
+
+    super();
+  }
 
   @Output() public entryChange = new EventEmitter<string>();
 
   onEntryChange(event: string) {
+    console.warn("Entry change")
     this.entryChange.emit(event);
     if(this.editor) {
       this.highlightInitialization(this.editor)
@@ -62,16 +104,15 @@ export class MonacoEditor extends MonacoEditorComponent  {
     }
   }
 
-  public saveEditor(editor: editor.ICodeEditor) : void{
-    this.editor = editor;
+  public saveEditor(editorInstance: monacoTypes.editor.IStandaloneCodeEditor) : void {
+    this.editor = editorInstance;
     if(this.getHighlighting()) {
-      this.highlightInitialization(editor)
+      this.highlightInitialization(editorInstance)
       this.scrollToLine(this.editor)
     }
-    console.log("Setting editor.")
   }
 
-  public highlightInitialization(editor: editor.ICodeEditor): void {
+  public highlightInitialization(editor: monacoTypes.editor.ICodeEditor): void {
     console.warn("Highlighting now", this.getHighlighting())
     if(!this.getHighlighting()) {
       return;
@@ -80,10 +121,10 @@ export class MonacoEditor extends MonacoEditorComponent  {
       console.warn("Highlighting now! ",  inlineHighlight.getCssClass())
       return {
         range: {
-          startLineNumber: inlineHighlight.getStartLin(),
-          startColumn: inlineHighlight.getStartCol(),
-          endLineNumber: inlineHighlight.getEndLin(),
-          endColumn: inlineHighlight.getEndCol(),
+          startLineNumber: inlineHighlight.getRange().getStartLin(),
+          startColumn: inlineHighlight.getRange().getStartCol(),
+          endLineNumber: inlineHighlight.getRange().getEndLin(),
+          endColumn: inlineHighlight.getRange().getEndCol(),
         },
         options: {
           inlineClassName: inlineHighlight.getCssClass()
@@ -103,7 +144,7 @@ export class MonacoEditor extends MonacoEditorComponent  {
     }
   }
 
-  public scrollToLine(editor: editor.ICodeEditor): void {
+  public scrollToLine(editor: monacoTypes.editor.ICodeEditor): void {
     console.warn("Scroll to line now", this.getInitialScrollToLine())
     if(!this.getInitialScrollToLine()) {
       return;
@@ -112,21 +153,33 @@ export class MonacoEditor extends MonacoEditorComponent  {
   }
 
   public override setLanguage(val: string) {
+    console.warn("Setting language", val)
     super.setLanguage(val);
     this.updateOptions();
   }
 
   public override setTheme(val: string) {
+    console.warn("Setting theme")
     super.setTheme(val);
     this.updateOptions();
   }
 
   public override setDisabled(val: boolean) {
+    console.warn("Setting disabled")
     super.setDisabled(val);
     this.updateOptions();
   }
 
+  public override setHoverContents(val: HoverContent[]) {
+    console.warn("Trying to set hover : ",val)
+    super.setHoverContents(val)
+    if(!val) {
+      return;
+    }
+  }
+
   public override setHighlighting(val: InlineDecoration[]) {
+    console.warn("Setting highlighting")
     super.setHighlighting(val);
     if(this.editor) {
       this.highlightInitialization(this.editor);
@@ -136,13 +189,19 @@ export class MonacoEditor extends MonacoEditorComponent  {
   }
 
   public updateOptions() : void {
+    console.warn("Updating options")
     this._options = {
       value: this._entry,
       language: this._language,
       theme: this._theme,
       readOnly: this._disabled,
       glyphMargin: this._glyphMargin,
-      automaticLayout: this._automaticLayout
+      automaticLayout: this._automaticLayout,
+      hover: {
+        enabled: true,
+        sticky: true,
+        above: false
+      }
     };
   }
 }

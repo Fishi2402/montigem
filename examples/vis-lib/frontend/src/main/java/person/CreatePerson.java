@@ -3,9 +3,13 @@ package person;
 
 import domain.DomainManager;
 import domain.Person;
+import domain.Role;
+import mc.fenix.input.gemdropdowninputtypes.Option;
 import umlp.guiutil.HTMLUtils;
 import umlp.jsweet.extension.annotation.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 @Component
@@ -40,6 +44,16 @@ public class CreatePerson extends CreatePersonTOP {
 //      this.cancel.emit(this.getPerson());
       // MH TODO: Wie soll das hier funktionieren?
     };
+  }
+
+  @Override
+  public List<Option> getRoleOpts() {
+    List<Option> roleOptions =new ArrayList<>();
+    roleOptions.add(new Option(Role.SYSTEM.toString(),"System"));
+    roleOptions.add(new Option(Role.USER.toString(),"User"));
+    roleOptions.add(new Option(Role.TOOL.toString(),"Tool"));
+    roleOptions.add(new Option(Role.ASSISTANT.toString(),"Assistant"));
+    return roleOptions;
   }
 
   public void foo() {

@@ -14,12 +14,13 @@ classdiagram LoadingTests {
 
   class Food {
     String name;
+    MyEnum eAttr = MyEnum.A;
   }
 
   association [*] Person (owner) <-> (pet) Animal [*];
-  association Person -> (favouritePet) Animal [0..1];
+  association [0..1] Person (ownerOfFavAssoc) -> (favouritePet) Animal [0..1]; // once: unidirectional
   association [*] Animal -> Food [*];
-  association Animal -> (favouriteFood) Food [0..1];
+  association [0..1] Animal (animalOfFavAssoc) <-> (favouriteFood) Food [0..1]; // and twice: bidirectional
 
   <<singleton>>
   class UpdateListHelper {
@@ -106,5 +107,7 @@ classdiagram LoadingTests {
   //    String name;
   //}
 
-
+  enum MyEnum {
+    A,B,C;
+  }
 }

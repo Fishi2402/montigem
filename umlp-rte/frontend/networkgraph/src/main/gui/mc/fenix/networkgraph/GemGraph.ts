@@ -175,6 +175,7 @@ export class GemGraph extends GemGraphBasis implements OnChanges {
             x: n.getX(),
             y: n.getY(),
             nodeProgram: getNodeProgramOfString(n.getNodeProgram()),
+            image: n.getImageUrl(),
             hoverLabel: n.getHoverLabel(),
             hover: n.getHover(),
             tooltip: n.getTooltip()
@@ -254,7 +255,7 @@ export class GemGraph extends GemGraphBasis implements OnChanges {
   // Output Events - Graph Interaction Events
   // ========================================================================================
   /** Event emitted when the chart has been initialized. */
-  @Output() chartInit: EventEmitter<Sigma<Graph> | null> = new EventEmitter();
+  @Output() chartInit: EventEmitter<Sigma> = new EventEmitter();
 
   /** Event emitted when a control button is clicked. */
   @Output() controlButtonClicked: EventEmitter<ControlButton> = new EventEmitter();

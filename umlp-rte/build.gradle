@@ -2,106 +2,9 @@
 
 import de.montigem.gradle.specific.Java2TSTask
 
-/*
-plugins {
-  id 'java-library'
-  id 'io.spring.dependency-management' version '1.0.15.RELEASE'
-  id 'de.rwth.se.montigem-module'
-}
-
-group = "umlp"
-description = "UMLP RTE"
-
-def withoutSpringLogging = {
-  exclude module: 'spring-boot-starter-logging'
-  exclude module: 'logback-classic'
-  exclude module: 'log4j-to-slf4j'
-}
-
-dependencies {
-  api group: 'de.monticore', name: 'monticore-runtime', version: mc_version
-
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version
-  implementation group: 'org.springframework.shell', name: 'spring-shell-starter', version: spring_shell_version
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: spring_version
-  // MUST be an API dependency, as the exposed OCL2SQL implements SetExpressionsVisitor2
-  api group: 'de.monticore.lang', name: 'ocl', version: mc_version
-
-  // Compile only, such that we don't force the neo4j dependency into each product
-  compileOnly group: 'org.neo4j', name: 'neo4j-jdbc-driver', version: neo4j_jdbc_version
-  compileOnly "org.neo4j:neo4j:4.4.10"
-  compileOnly "org.neo4j.driver:neo4j-java-driver:$neo4jVersion"
-
-  // Used for umlp._infrastructure.TestSetup
-  // Alternative: testing-rte + generate a testing module for each cd
-  compileOnly 'org.junit.jupiter:junit-jupiter-api:5.9.2'
-  // Used for AbstractPlaywrightE2ETest
-  compileOnly 'com.microsoft.playwright:playwright:1.44.0'
-  compileOnly group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
-
-  implementation("com.hivemq:hivemq-mqtt-client:1.3.0")
-}
-/**/
-
-/*
-tasks.named("compileJava").configure {
-  dependsOn project(":umlp-rte:frontend").tasks.matching { it.group == "mglib_cd2java" }
-}
-
-sourceSets.main.java.srcDir {
-  tasks.matching { it.group == "mglib_cd2java" }.collect { it.outputDir }
-}
-
-def libs = [
-    "arrange",
-    "basic",
-    "charts",
-    "fischertechnik",
-    "functiondisplay",
-    "input",
-    "navigation",
-    "table",
-    "networkgraph",
-    "editor"
-]
-
-def genTasks = []
-def outputDirs = []
-
-libs.each {
-  def libName = it
-  def genTaskName = "cd2java_${libName}"
-  def outDir = project.layout.buildDirectory.dir("guiComponentTypes/${libName}")
-  genTasks << genTaskName
-  outputDirs << outDir
-  // POJOs
-  def genTask = tasks.register(genTaskName, GUITypes2JavaTask) {
-    hwcDir = project.layout.files("src/main/java")
-    input = file("client/models/mc/fenix/${libName}")
-    outputDir = outDir
-    symbolOutDir = project.layout.buildDirectory.dir("guiComponentTypesTagOut/${libName}")
-    tslib = "@umlp/${libName}"
-  }
-
-  sourceSets.main.java.srcDirs += genTask.get().outputDir.get().asFile
-
-  tasks.named("compileJava").configure {
-    dependsOn(genTask)
-    doFirst {
-      sourceSets.main.java.srcDirs += genTask.get().outputDir.get().asFile
-    }
-  }
-}
-/**/
 plugins {
   id 'de.rwth.se.montigem-module' // create models-jar
 }
-
-dependencies {
-  // moduleGeneratorExtensionCompile group: 'de.monticore.lang', name: 'guidsl', version: mc_version
-}
-
-/////////////////////////   Deployment  //////////////////////////////////
 
 // configure deployment
 publishing {
@@ -119,10 +22,6 @@ publishing {
     url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
   }
 }
-
-
-////////// Transpile the (client) runtime
-// Note: This is currently purely to compare it by hand
 
 configurations {
   jsweettranspilerRuntime {
