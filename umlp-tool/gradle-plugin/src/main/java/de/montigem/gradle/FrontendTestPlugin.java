@@ -23,6 +23,7 @@ public class FrontendTestPlugin implements Plugin<Project> {
     // Frontend GUI Tasks:
     TaskProvider<GUI2Java2TSTask> firstTask = project.getTasks().named(GUI2JAVA2TS_TASK, GUI2Java2TSTask.class);
     TaskProvider<GUI2Java2TSTask> secondTask = project.getTasks().register(CLONE_GUI2JAVA2TS_TASK, GUI2Java2TSTask.class, task -> {
+      task.setGroup("verification");
       task.getImportsDir().from(firstTask.map(GUI2JavaTask::getImportsDir));
       task.getInput().from(firstTask.map(CommonMCTask::getInput));
       task.getHandWrittenCodeDir().from(firstTask.map(CommonMCTask::getHandWrittenCodeDir));
@@ -48,6 +49,7 @@ public class FrontendTestPlugin implements Plugin<Project> {
     });
 
     TaskProvider<CheckDirEqualityTask> compareGUI2Java = project.getTasks().register(COMPARE_GUI2JAVA2TS_TASK, CheckDirEqualityTask.class, task -> {
+      task.setGroup("verification");
       task.getDir1().set(firstTask.flatMap(CommonMCTask::getOutputDir));
       task.getDir2().set(secondTask.flatMap(CommonMCTask::getOutputDir));
     });

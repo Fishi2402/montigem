@@ -10,18 +10,6 @@ plugins {
   id 'org.springframework.boot' version "${spring_version}"
 }
 
-repositories {
-  if (("true").equals(getProperty('useLocalRepo'))) {
-    mavenLocal()
-  }
-  maven {
-    credentials.username mavenUser
-    credentials.password mavenPassword
-    url repo
-  }
-  mavenCentral()
-}
-
 application {
   mainClass = 'sehub.SehubServerApplication'
 }

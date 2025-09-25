@@ -24,6 +24,7 @@ def modelsDir = projectDir.toPath().resolve("models")
 def scOutDir = buildDir.toPath().resolve("sc")
 
 def genSc = tasks.register('genSc', JavaExec) {
+  group = "umlp"
   classpath configurations.scGenerator
   mainClass = "de.monticore.umlstatecharts.UMLStatechartsTool"
 

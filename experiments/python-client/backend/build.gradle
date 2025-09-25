@@ -18,6 +18,7 @@ application {
 }
 
 def generateGem = tasks.register("generateGem", CDGenTask) {
+  group = "umlp"
   input.from(project.file("../models/MyDomain.umlp"))
   class2MC = true
   outputDir.set(project.layout.buildDirectory.dir("py_out_java"))
@@ -29,6 +30,7 @@ def generateGem = tasks.register("generateGem", CDGenTask) {
 }
 
 tasks.register("transformGemToPy", Sync) {
+  group = "umlp"
   // actually rename the generated file to .py
   from(generateGem)
   into(project.layout.buildDirectory.dir("py_out"))
@@ -78,6 +80,7 @@ test {
 }
 
 tasks.register("cd2pojoJar", Jar) {
+  group = "build"
   from sourceSets.cd2pojo.output
   archiveClassifier = 'cd2pojo'
 }

@@ -1,7 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 import de.montigem.gradle.specific.GUI2Java2TSTask
 import de.montigem.gradle.specific.UMLPJava2TSTask
-
-/* (c) https://github.com/MontiCore/monticore */
 
 plugins {
   id "de.rwth.se.montigem-frontend"
@@ -48,6 +48,7 @@ tasks.named('runApp', NpxTask) {
 }
 
 tasks.register("runAppNoBuild", NpxTask) {
+  group = "application"
   command = "ng"
   args = ["serve"]
 }

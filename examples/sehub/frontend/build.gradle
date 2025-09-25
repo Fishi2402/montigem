@@ -1,5 +1,6 @@
 import de.montigem.gradle.specific.CD2GUITask
 import de.montigem.gradle.specific.GUI2Java2TSTask
+import de.montigem.gradle.specific.GUIVariabilityTask
 import de.montigem.gradle.specific.UMLP2SymTask
 import de.montigem.gradle.specific.UMLPJava2TSTask
 
@@ -11,13 +12,14 @@ plugins {
 def useCD2GUI = true
 
 def cd2gui = tasks.register('cd2gui', CD2GUITask) {
+  group = "umlp"
   enabled(useCD2GUI)
-  setGroup('build')
   input = file("../models/Sehub.umlp")
   outputDir = layout.buildDirectory.dir("cd2gui")
 }
 
 def guiVariability = tasks.register('guiVariability', GUIVariabilityTask) {
+  group = "umlp"
   if (useCD2GUI) {
     input.from(cd2gui.flatMap { it.getOutputDir() })
   }

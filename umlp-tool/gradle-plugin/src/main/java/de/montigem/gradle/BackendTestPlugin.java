@@ -21,6 +21,7 @@ public class BackendTestPlugin implements Plugin<Project> {
 
     TaskProvider<UMLP2JavaTask> firstTask = project.getTasks().named(BackendPlugin.UMLP2JAVA_TASK, UMLP2JavaTask.class);
     TaskProvider<UMLP2JavaTask> secondTask = project.getTasks().register(CLONE_UMLP2JAVA_TASK, UMLP2JavaTask.class, task -> {
+      task.setGroup("verification");
       task.getInput().from(firstTask.map(CommonMCTask::getInput));
       task.getHandWrittenCodeDir().from(firstTask.map(CommonMCTask::getHandWrittenCodeDir));
       task.getSymbolPath().from(firstTask.map(CommonMCTask::getSymbolPath));
@@ -34,6 +35,7 @@ public class BackendTestPlugin implements Plugin<Project> {
     });
 
     TaskProvider<CheckDirEqualityTask> compareTask = project.getTasks().register(COMPARE_UMLP2JAVA_TASK, CheckDirEqualityTask.class, task -> {
+      task.setGroup("verification");
       task.getDir1().set(firstTask.flatMap(CommonMCTask::getOutputDir));
       task.getDir2().set(secondTask.flatMap(CommonMCTask::getOutputDir));
     });

@@ -1,5 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
+import de.montigem.gradle.specific.UMLP2JavaTask
+import de.montigem.gradle.specific.UMLP2TestInfrastructureTask
+
 plugins {
   id 'java-library'
   id 'de.rwth.se.montigem-backend'
@@ -8,18 +11,6 @@ plugins {
   id 'com.google.cloud.tools.jib' version '3.4.4'
   id 'io.spring.dependency-management' version '1.0.15.RELEASE'
   id 'org.springframework.boot' version "${spring_version}"
-}
-
-repositories {
-  if (("true").equals(getProperty('useLocalRepo'))) {
-    mavenLocal()
-  }
-  maven {
-    credentials.username mavenUser
-    credentials.password mavenPassword
-    url repo
-  }
-  mavenCentral()
 }
 
 application {
@@ -62,17 +53,10 @@ dependencies {
   implementation "org.eclipse.jgit:org.eclipse.jgit:5.2.2.201904231744-r"
 }
 
-umlp2java {
+tasks.named("umlp2java", UMLP2JavaTask) {
   usePlaywright.set(true)
 }
 
-generateTestInfrastructure {
+tasks.named("generateTestInfrastructure", UMLP2TestInfrastructureTask) {
   usePlaywright.set(true)
-}
-
-test {
-  testLogging {
-    events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
-  }
-  useJUnitPlatform()
 }

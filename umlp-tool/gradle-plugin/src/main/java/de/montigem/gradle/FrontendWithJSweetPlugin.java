@@ -208,6 +208,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
     mainSourceSet.getJava().srcDir(cd2java.flatMap(CommonMCTask::getOutputDir));
 
     TaskProvider<CD2SymTask> cd2sym = project.getTasks().register(CD2SYM_TASK, CD2SymTask.class, task -> {
+      task.setGroup(UMLP_GROUP_NAME);
       task.getInput().set(srcGUI);
       task.getOutput().set(project.getLayout().getBuildDirectory().dir("cd2sym"));
       task.onlyIf(t -> cdPresent);
@@ -215,7 +216,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
 
     TaskProvider<GUI2Java2TSTask> gui2java2ts = project.getTasks().register(GUI2JAVA2TS_TASK, GUI2Java2TSTask.class);
     gui2java2ts.configure(task -> {
-      // depends on link to hwc
+      task.setGroup(UMLP_GROUP_NAME);
       task.dependsOn(createSymlinkTask, setupFrontend);
 
       if (!inRTE(project)) {

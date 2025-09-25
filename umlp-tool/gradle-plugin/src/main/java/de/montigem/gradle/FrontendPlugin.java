@@ -14,6 +14,7 @@ import static de.montigem.gradle.FrontendBasePlugin.getProjectProperty;
  * A opinionated plugin which handles frontend generation.
  * with only a single line "id 'de.rwth.se.montigem-frontend'" in build.gradle some default-task for the frontend are created
  */
+@Deprecated
 public abstract class FrontendPlugin implements Plugin<Project> {
 
   @Override

@@ -22,9 +22,13 @@ import static de.montigem.gradle.FrontendBasePlugin.mcVersion;
 import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
 
 /***
- * A opinionated plugin which handles backend generation.
- * with only a single line "id 'de.rwth.se.montigem-backend'" in build.gradle
- * a UMLPTask is created and output is added to java sourceset.
+ * MontiGem app backend generation.
+ * - Sets minimal dependencies
+ * - Adds tasks:
+ *   - `umlp2java`
+ *   - `generate`
+ *   - `continuos`
+ *   - `slowtest`
  */
 public abstract class BackendPlugin implements Plugin<Project> {
 
@@ -56,23 +60,33 @@ public abstract class BackendPlugin implements Plugin<Project> {
     });
 
     // Lifecycle task "generate" which depends on Backend-Creation
-    project.getTasks().register("generate", task -> task.dependsOn(umlp2java));
+    project.getTasks().register("generate", task -> {
+      task.setGroup(UMLP_GROUP_NAME);
+      task.dependsOn(umlp2java);
+    });
 
     // Lifecycle task "runServer" which depends on Backend-Creation
-    project.getTasks().register("runServer", task -> task.dependsOn(project.getTasks().named("bootRun")));
+    project.getTasks().register("runServer", task -> {
+      task.setGroup("application");
+      task.dependsOn(project.getTasks().named("bootRun"));
+    });
 
     // Lifecycle task "continuous". Intended use is with "--continuous" flag of gradle & HotReload
-    project.getTasks().register("continuous", task -> task.dependsOn(project.getTasks().withType(Jar.class)));
+    project.getTasks().register("continuous", task -> {
+      task.setGroup("application");
+      task.dependsOn(project.getTasks().withType(Jar.class));
+    });
 
     // Add dependency to jsweet-core, to import the annotations (such as @Erased)
     // Only during compilation of the backend
     project.getDependencies().add("compileOnly", "org.jsweet:jsweet-core:6.3.0");
 
-    project.getTasks().register("slowtest", Test.class, slowtest -> {
-      slowtest.useJUnitPlatform(junitPlatform ->
+    project.getTasks().register("slowtest", Test.class, task -> {
+      task.setGroup("verification");
+      task.useJUnitPlatform(junitPlatform ->
           junitPlatform.includeTags("SlowTest")
       );
-      slowtest.shouldRunAfter(project.getTasks().named("test"));
+      task.shouldRunAfter(project.getTasks().named("test"));
     });
 
     project.getTasks().withType(Test.class).configureEach(test -> {

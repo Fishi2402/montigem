@@ -104,10 +104,10 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
         .create("mglib", ModuleFrontendPluginExtension.class);
 
     // create .npmrc near build.gradle for `npm install`
-    TaskProvider<CreateNpmrcTask> npmrc4download = project.getTasks()
-        .register("npmrc4download", CreateNpmrcTask.class, task ->
-            task.getNpmrcFile().set(project.getLayout().getProjectDirectory().file(".npmrc"))
-        );
+    TaskProvider<CreateNpmrcTask> npmrc4download = project.getTasks().register("npmrc4download", CreateNpmrcTask.class, task -> {
+      task.setGroup(UMLP_GROUP_NAME);
+      task.getNpmrcFile().set(project.getLayout().getProjectDirectory().file(".npmrc"));
+    });
     TaskProvider<NpmTask> npmInstall = project.getTasks().named("npmInstall", NpmTask.class);
     npmInstall.configure(task -> task.dependsOn(npmrc4download));
 
@@ -273,6 +273,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
         });
 
         TaskProvider<CD2SymTask> cd2sym = subproject.getTasks().register(CD2SYM_TASK, CD2SymTask.class, task -> {
+          task.setGroup(UMLP_GROUP_NAME);
           task.getInput().set(srcGUI);
           // TODO: enable when CD2SymTask is replaced
         /*
@@ -293,6 +294,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
         });
 
         TaskProvider<GUI2SymTask> gui2sym = subproject.getTasks().register(GUI2SYM_TASK, GUI2SymTask.class, task -> {
+          task.setGroup(UMLP_GROUP_NAME);
           task.getModelDir().set(srcGUI);
           task.getInput().from(srcGUI);
           task.getSymbolPath().from(guiTypes);
@@ -344,6 +346,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
 
         TaskProvider<GUI2Java2TSTask> gui2java2ts = subproject.getTasks().register(GUI2JAVA2TS_TASK, GUI2Java2TSTask.class);
         gui2java2ts.configure(task -> {
+          task.setGroup(UMLP_GROUP_NAME);
           if (!inRTE(subproject)) {
             task.getSymbolPath().from(subproject.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
             task.getSymbolPath().from(subproject.getConfigurations().named(MONTIGEM_MODULE_IMPORT_MAP_CONFIG));
@@ -417,6 +420,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
         if (!umlp.isEmpty()) {
           TaskProvider<UMLP2TSTask> umlp2ts = subproject.getTasks().register(UMLP2TS_TASK, UMLP2TSTask.class);
           umlp2ts.configure(task -> {
+            task.setGroup(UMLP_GROUP_NAME);
             task.getInput().from(umlp);
             if (srcGUI.getAsFile().exists()) {
               task.getHandWrittenCodeDir().from(srcGUI);
@@ -438,7 +442,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
         }
 
         TaskProvider<NpmTask> buildLib = subproject.getTasks().register(BUILD_LIB_TASK, NpmTask.class, task -> {
-          task.setGroup(UMLP_GROUP_NAME);
+          task.setGroup("build");
           task.dependsOn(npmInstall, gui2java2ts);
           if (!inRTE(subproject) && local) {
             task.dependsOn(subproject.project(":umlp-rte:frontend").getTasks().named("build"));
@@ -456,13 +460,14 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
         buildSubprojects.add(buildLib);
 
         TaskProvider<CreateNpmrcTask> npmrc4publish = subproject.getTasks().register("npmrc4publish", CreateNpmrcTask.class, task -> {
+          task.setGroup(UMLP_GROUP_NAME);
           task.dependsOn(buildLib);
           task.getNpmrcFile().set(libBuildDir.map(dir -> dir.file(".npmrc")));
           task.getUnscoped().set(true);
         });
 
         TaskProvider<NpmTask> publishLib = subproject.getTasks().register("publishLib", NpmTask.class, task -> {
-          task.setGroup(UMLP_GROUP_NAME);
+          task.setGroup("publishing");
           task.dependsOn(npmrc4publish);
           task.getArgs().set(List.of("publish"));
           // e.g. `build/dist/basic/`
@@ -476,25 +481,6 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
     build.configure(task -> task.dependsOn(buildSubprojects));
     TaskProvider<Task> publish = project.getTasks().named("publish");
     publish.configure(task -> task.dependsOn(publishSubprojects));
-
-    project.getPlugins().withType(PublishingPlugin.class, publishingPlugin -> {
-      project.getExtensions().configure(PublishingExtension.class, publishing -> {
-        publishing.getPublications().create("mavenJava", MavenPublication.class, publication -> {
-          publication.from(javaComponent);
-        });
-
-        publishing.getRepositories().maven(mavenRepo -> {
-          String releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-releases/";
-          String snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-snapshots/";
-          mavenRepo.setUrl(project.getVersion().toString().endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl);
-
-          mavenRepo.credentials(credentials -> {
-            credentials.setUsername((String) project.findProperty("mavenUser"));
-            credentials.setPassword((String) project.findProperty("mavenPassword"));
-          });
-        });
-      });
-    });
   }
 
   public static void addUMLPSymbolsJarAttributes(Configuration config, Project project) {
@@ -516,6 +502,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
     addGuiSymbolsJarAttributes(gui2symOutput, project);
 
     TaskProvider<Jar> gui2symJar = project.getTasks().register(GUI2SYM_JAR_TASK, Jar.class, task -> {
+      task.setGroup("build");
       task.getArchiveClassifier().set("guisymbols");
       task.setIncludeEmptyDirs(false);
     });
@@ -549,7 +536,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
     addImportMapJarAttributes(umlp2impOutput, project);
 
     TaskProvider<Jar> umlp2impJar = project.getTasks().register("umlp2impJar", Jar.class, task -> {
-      task.setGroup("umlp");
+      task.setGroup("build");
       task.getArchiveClassifier().set("importmap");
       task.setIncludeEmptyDirs(false);
     });

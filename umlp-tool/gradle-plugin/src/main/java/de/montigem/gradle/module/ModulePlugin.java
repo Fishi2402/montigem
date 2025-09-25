@@ -97,7 +97,7 @@ public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Projec
     addUMLPModelsJarAttributes(umlpModels, project);
 
     TaskProvider<Jar> umlpModelsJar = project.getTasks().register("umlpModelsJar", Jar.class, jar -> {
-      jar.setGroup("umlp");
+      jar.setGroup("build");
       jar.getArchiveClassifier().set("models");
       jar.from(umlp);
 
@@ -128,7 +128,7 @@ public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Projec
         generatorExtensionSourceSet.getCompileClasspath().plus(moduleGenerationExtensionCompile)
     );
     TaskProvider<Jar> generatorExtensionJar = project.getTasks().register("generatorExtensionJar", Jar.class, jar -> {
-      jar.setGroup(UMLP_GROUP_NAME);
+      jar.setGroup("build");
       jar.getArchiveClassifier().set("module-generator-time");
       jar.from(generatorExtensionSourceSet.getOutput());
 
@@ -152,6 +152,7 @@ public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Projec
     });
 
     TaskProvider<UMLP2SymTask> umlp2sym = project.getTasks().register(UMLP2SYM_TASK, UMLP2SymTask.class, task -> {
+      task.setGroup(UMLP_GROUP_NAME);
       task.getModelDir().from(models);
       task.getInput().from(models);
       if (!inRTE(project)) {
@@ -223,6 +224,7 @@ public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Projec
       TaskProvider<UMLP2SymTask> umlp2sym, Project project, AdhocComponentWithVariants javaComponent
   ) {
     TaskProvider<Jar> umlp2symJar = project.getTasks().register("umlp2symJar", Jar.class, task -> {
+      task.setGroup("build");
       task.getArchiveClassifier().set("domainsymbols");
     });
     project.getTasks().named(org.gradle.api.plugins.BasePlugin.ASSEMBLE_TASK_NAME).configure(it -> it.dependsOn(umlp2symJar));

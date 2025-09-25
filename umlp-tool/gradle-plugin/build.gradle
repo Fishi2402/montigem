@@ -94,10 +94,6 @@ gradlePlugin {
       id = "de.rwth.se.montigem-module"
       implementationClass = "de.montigem.gradle.module.ModulePlugin"
     }
-    umlpplugin_module_backend {
-      id = "de.rwth.se.montigem-module-backend"
-      implementationClass = "de.montigem.gradle.module.ModuleBackendPlugin"
-    }
     umlpplugin_module_frontend {
       id = "de.rwth.se.montigem-module-frontend"
       implementationClass = "de.montigem.gradle.module.ModuleFrontendPlugin"

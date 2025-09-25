@@ -32,6 +32,7 @@ test {
 }
 
 tasks.register("slowtest", Test) {
+  group = "verification"
   testLogging {
     events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
   }
@@ -43,6 +44,7 @@ tasks.register("slowtest", Test) {
 }
 
 tasks.register("runAppNoBuild", NpxTask) {
+  group = "application"
   command = "ng"
   args = ["serve"]
 }

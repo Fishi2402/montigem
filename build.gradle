@@ -88,6 +88,7 @@ subprojects {
       events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
     }
   }
+
   repositories {
     if (("true").equals(getProperty('useLocalRepo'))) {
       mavenLocal()

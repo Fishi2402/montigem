@@ -95,22 +95,28 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
       task.dependsOn(generate, npmUpdate);
     });
 
-    var buildAppTask = createNPXTask(project, "buildApp", "build");
-    buildAppTask.configure(t -> {
-      t.setGroup("build");
-      t.dependsOn(prepareBuildAppTask);
+    var buildAppTask = project.getTasks().register("buildApp", NpxTask.class, task -> {
+      task.setGroup("build");
+      task.dependsOn(prepareBuildAppTask);
+      task.getCommand().set("ng");
+      task.getArgs().set(List.of("build"));
     });
-    var testAppTask = createNPXTask(project, "testApp", "test");
-    testAppTask.configure(t -> {
-      t.setGroup(UMLP_GROUP_NAME);
-      t.dependsOn(generate, npmUpdate);
+    var testAppTask = project.getTasks().register("testApp", NpxTask.class, task -> {
+      task.setGroup("verification");
+      task.dependsOn(generate, npmUpdate);
+      task.getCommand().set("ng");
+      task.getArgs().set(List.of("test"));
     });
-    var runAppTask = createNPXTask(project, "runApp", "serve");
-    runAppTask.configure(t -> {
-      t.setGroup("verification");
-      t.dependsOn(generate, npmUpdate);
+    var runAppTask = project.getTasks().register("runApp", NpxTask.class, task -> {
+      task.setGroup("application");
+      task.dependsOn(generate, npmUpdate);
+      task.getCommand().set("ng");
+      task.getArgs().set(List.of("serve"));
     });
-    project.getTasks().register("run").configure(t -> t.dependsOn(runAppTask));
+    project.getTasks().register("run").configure(task -> {
+      task.setGroup("application");
+      task.dependsOn(runAppTask);
+    });
 
     if (isLocal(project)) {
       TaskProvider<Task> rteBuild = project.project(":umlp-rte:frontend").getTasks().named("build");
@@ -129,7 +135,10 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
     project.getTasks().named("check", t -> t.dependsOn(testAppTask));
 
     // Lifecycle task "continuous". Intended use is with "--continuous" flag of gradle & HotReload
-    project.getTasks().register("continuous", task -> task.dependsOn(generate));
+    project.getTasks().register("continuous", task -> {
+      task.setGroup("application");
+      task.dependsOn(generate);
+    });
 
     // Docker images
     project.getTasks().register(UMLP_FRONTEND_BUILD_IMAGE_LOCAL_TASK, FrontendLocalImageTask.class);
@@ -182,14 +191,6 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
             buildLib.map(t -> t.getOutputs().getFiles().getSingleFile())
         );
       }
-    });
-  }
-
-  @NotNull
-  TaskProvider<NpxTask> createNPXTask(Project project, String name, String arg) {
-    return project.getTasks().register(name, NpxTask.class, task -> {
-      task.getCommand().set("ng");
-      task.getArgs().set(List.of(arg));
     });
   }
 

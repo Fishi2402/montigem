@@ -1,4 +1,3 @@
-import de.montigem.gradle.specific.UMLP2JavaTask
 import de.montigem.gradle.specific.UMLP2TestInfrastructureTask
 
 plugins {
@@ -8,18 +7,6 @@ plugins {
   id 'org.springframework.boot' version "${spring_version}"
   id 'com.google.cloud.tools.jib' version '3.2.1'
   id 'application'
-}
-
-repositories {
-  if (("true").equals(getProperty('useLocalRepo'))) {
-    mavenLocal()
-  }
-  maven {
-    credentials.username mavenUser
-    credentials.password mavenPassword
-    url repo
-  }
-  mavenCentral()
 }
 
 application {

@@ -1,5 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
+import de.montigem.gradle.specific.UMLP2JavaTask
+
 plugins {
   id 'de.rwth.se.montigem-backend'
 }
@@ -13,7 +15,7 @@ dependencies {
   testImplementation project(':umlp-test-rte')
 }
 
-umlp2java {
+tasks.named("umlp2java", UMLP2JavaTask) {
   input = file("./src/models")
   handWrittenCodeDir.from(
       file("$projectDir/src/main/java"),

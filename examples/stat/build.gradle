@@ -70,7 +70,3 @@ tasks.register('diff', Exec) {
   commandLine 'cmd', '/c', 'git', 'diff', '--no-index', layout.buildDirectory.dir(diff_location).get().getAsFile().toPath(), umlp2java.get().getOutputDir().get().getAsFile().toPath()
   ignoreExitValue true
 }
-
-tasks.register('generateNPMAuth', CreateNpmrcTask) {
-  gitignore = project.getRootProject().file(".gitignore") // Task reads gitignore to ensure <.npmrc> is not committed
-}

@@ -5,11 +5,6 @@ plugins {
 }
 
 dependencies {
-  implementation project(":examples:jsweet-test:backend")
-  // a configuration containing the domain sources
-  // causes configuration errors?
-  srcUMLPConfig project(":examples:jsweet-test:backend")
-
   implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version
   // TODO: NO Security, as otherwise HTTP Auth is required
 //  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version
@@ -32,22 +27,23 @@ configurations {
   testRuntimeClasspath.exclude group: 'de.monticore.language-server', module: 'monticore-language-server-runtime'
 }
 
-umlpJava2ts {
+tasks.named("umlpJava2ts") {
   verbose = true
 }
 
-gui2java2ts {
+tasks.named("gui2java2ts") {
   verbose = true
 }
 
 test {
-  dependsOn npmInstall, buildApp
+  dependsOn tasks.named("npmInstall"), tasks.named("buildApp")
   useJUnitPlatform() {
     excludeTags "SlowTest"
   }
 }
 
 tasks.register("slowtest", Test) {
+  group = "verification"
   testLogging {
     events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
   }

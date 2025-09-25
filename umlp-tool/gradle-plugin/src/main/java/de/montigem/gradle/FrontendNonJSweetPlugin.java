@@ -35,6 +35,7 @@ import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_UMLP_SYMBOLS_CONFI
 /**
  * The specific gradle setup for non-jsweet projects
  */
+@Deprecated
 public abstract class FrontendNonJSweetPlugin implements Plugin<Project> {
 
   public static final String SYNC_UMLP2TS_TASK = "sync_umlp2ts";
@@ -60,13 +61,6 @@ public abstract class FrontendNonJSweetPlugin implements Plugin<Project> {
       task.getHwcDir().from(intermediateHWCLink);
       task.getGUIGenJSweet().set(false);
       task.dependsOn(umlp2ts, createSymlinkTask);
-
-      /*
-      // // Load the symbols from the .jars in the domain symbols path
-      umlpTask.getSymbolDir().from(project.getConfigurations().named(UMLP_MODULES_DOMAIN_SYMBOLS_CONFIG));
-      umlpTask.getSymbolDir().from(project.getConfigurations().named(UMLP_MODULES_IMPORT_MAP_CONFIG));
-      umlpTask.getSymbolDir().from(project.getConfigurations().named(UMLP_MODULES_GUI_SYMBOLS_CONFIG));
-      /**/
     });
 
     TaskProvider<SetupFrontendTask> setupFrontend = project.getTasks().named(SETUP_FRONTEND_TASK, SetupFrontendTask.class);
