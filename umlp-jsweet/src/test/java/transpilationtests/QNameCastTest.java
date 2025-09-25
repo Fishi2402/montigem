@@ -30,7 +30,7 @@ public class QNameCastTest {
     inputs.add(Paths.get("src/test/resources/java/loginmodule/LoginModuleUser.java").toFile());
     inputs.add(Paths.get("src/test/resources/java/loginmodule/LoginModuleUserDeSer.java").toFile());
 
-    checkQNameCast(inputs, Util.transpilerUMLPModuleAdapter());
+    checkQNameCast(inputs, Util.transpilerModuleUMLPAdapter());
   }
 
   public void checkQNameCast(List<File> input, JSweetTranspiler transpiler) throws IOException {

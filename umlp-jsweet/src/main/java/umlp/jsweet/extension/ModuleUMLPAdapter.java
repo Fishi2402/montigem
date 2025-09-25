@@ -17,8 +17,8 @@ import umlp.jsweet.extension.umlp.UMLPRTEImportAdapter;
 /**
  * This adapter combines the adapters for domain classes transpilation
  */
-public class UMLPModuleAdapter extends PrinterAdapter {
-  public UMLPModuleAdapter(PrinterAdapter parentAdapter) {
+public class ModuleUMLPAdapter extends PrinterAdapter {
+  public ModuleUMLPAdapter(PrinterAdapter parentAdapter) {
     super(
         new RelativeImportAdapter(
             new GUITypesImportAdapter(

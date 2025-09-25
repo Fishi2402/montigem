@@ -27,9 +27,9 @@ public class Util {
     return getDomainTranspiler(new File(defaultDomainOutput));
   }
 
-  public static JSweetTranspiler transpilerUMLPModuleAdapter() {
+  public static JSweetTranspiler transpilerModuleUMLPAdapter() {
     return getTranspilerFromConfigFile(
-        new File("src/test/resources/defaultJsweetConfig/UMLPModuleAdapter.json"),
+        new File("src/test/resources/defaultJsweetConfig/ModuleUMLPAdapter.json"),
         new File("build/transpile/umlpmodule")
     );
   }

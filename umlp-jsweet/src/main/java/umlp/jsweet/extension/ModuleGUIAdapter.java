@@ -23,8 +23,8 @@ import umlp.jsweet.extension.util.OnlyCDAdapter;
 /**
  * This adapter combines the adapters for GUI and CD transpilation
  */
-public class RootAdapter extends PrinterAdapter {
-  public RootAdapter(PrinterAdapter parentAdapter) {
+public class ModuleGUIAdapter extends PrinterAdapter {
+  public ModuleGUIAdapter(PrinterAdapter parentAdapter) {
     super(
         new UMLPGUICollectionsAdapter(
             new OnlyCDAdapter(new UMLPRTEImportAdapter(

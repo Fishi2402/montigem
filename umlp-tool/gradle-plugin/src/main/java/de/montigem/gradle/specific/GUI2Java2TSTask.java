@@ -36,10 +36,11 @@ import java.util.stream.Stream;
 
 
 /**
- * A combination of gui2java, gui2jsweetAdapter and guiJava2ts
- * guiJava2ts trafo depends on gui2java (output of gui2java is input for guiJava2ts).
- * On the other hand, gui2java produces FooComponent.ts files that guiJava2ts uses to build
- * relative paths while translating java to ts, i.e. gui2java depends on guiJava2ts.
+ * A combination of `gui2java`, `gui2jsweetAdapter` and `guiJava2ts`
+ * `guiJava2ts` trafo depends on `gui2java` (output of `gui2java` is input for `guiJava2ts`).
+ * On the other hand, `gui2java` produces `*Component.ts` files that reference files produced by
+ * `guiJava2ts` to build relative paths while translating java to ts, i.e. `gui2java` depends on
+ * `guiJava2ts`.
  */
 // Task might not be a @CacheableTask since relative paths are generated for HWC-files
 public abstract class GUI2Java2TSTask extends GUI2JavaTask {
