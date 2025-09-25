@@ -63,7 +63,6 @@ dependencies {
 }
 
 umlp2java {
-  useSpring.set(true)
   usePlaywright.set(true)
 }
 

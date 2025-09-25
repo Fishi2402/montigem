@@ -59,23 +59,6 @@ dependencies {
   testImplementation project(':umlp-test-rte')
 }
 
-tasks.named("umlp2java", UMLP2JavaTask) {
-  useSpring.set(true)
-  useShell.set(true)
-
-  /*
-  debug = true
-  outputs.upToDateWhen { false }
-  /**/
-}
-
 tasks.named("generateTestInfrastructure", UMLP2TestInfrastructureTask) {
   usePlaywright.set(true)
-}
-
-test {
-  testLogging {
-    events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
-  }
-  useJUnitPlatform()
 }

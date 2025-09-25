@@ -79,8 +79,6 @@ dependencies {
 
 tasks.named("umlp2java", UMLP2JavaTask) {
   modelDir.from(configurations.named("montigemModuleUMLPModels"));
-  useSpring = true
-  useShell = true
 }
 
 tasks.register('runShellApi', BootRun) {
@@ -99,25 +97,6 @@ sourceSets {
     compileClasspath += sourceSets.main.output
     runtimeClasspath += sourceSets.main.output
   }
-}
-
-test {
-  testLogging {
-    events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
-  }
-  useJUnitPlatform() {
-    excludeTags "SlowTest"
-  }
-}
-
-tasks.register("slowtest", Test) {
-  testLogging {
-    events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
-  }
-  useJUnitPlatform {
-    includeTags "SlowTest"
-  }
-  shouldRunAfter test
 }
 
 tasks.register("e2eBootJar", org.springframework.boot.gradle.tasks.bundling.BootJar.class) {

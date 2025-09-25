@@ -61,15 +61,3 @@ dependencies {
   implementation project(':umlp-rte')
   implementation "org.eclipse.jgit:org.eclipse.jgit:5.2.2.201904231744-r"
 }
-
-tasks.named("umlp2java", UMLP2JavaTask) {
-  useSpring.set(true)
-  useShell.set(true)
-}
-
-test {
-  testLogging {
-    events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
-  }
-  useJUnitPlatform()
-}

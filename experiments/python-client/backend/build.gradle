@@ -74,13 +74,7 @@ dependencies {
 }
 
 test {
-  useJUnitPlatform()
   dependsOn(tasks.named("transformGemToPy"))
-}
-
-
-tasks.named("umlp2java", UMLP2JavaTask) {
-  useSpring.set(true)
 }
 
 tasks.register("cd2pojoJar", Jar) {

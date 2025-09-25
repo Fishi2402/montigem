@@ -63,7 +63,7 @@ public abstract class UMLP2JavaTask extends MGSingleFileTask {
   public UMLP2JavaTask(String type) {
     super(type, null);
 
-    getUseSpring().convention(false);
+    getUseSpring().convention(true);
     getUseShell().convention(false);
     getUsePlaywright().convention(false);
 

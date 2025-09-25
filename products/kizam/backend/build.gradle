@@ -54,7 +54,3 @@ dependencies {
 
   implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
 }
-
-tasks.named("umlp2java", UMLP2JavaTask) {
-  useSpring = true
-}

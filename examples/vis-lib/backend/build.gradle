@@ -1,6 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import de.montigem.gradle.specific.UMLP2JavaTask
 import de.montigem.gradle.specific.UMLP2TestInfrastructureTask
 
 plugins {
@@ -61,21 +60,6 @@ dependencies {
   implementation project(':umlp-rte:frontend')
 }
 
-tasks.named("umlp2java", UMLP2JavaTask) {
-  useSpring.set(true)
-  /*
-  debug = true
-  outputs.upToDateWhen { false }
-  /**/
-}
-
 tasks.named("generateTestInfrastructure", UMLP2TestInfrastructureTask) {
   usePlaywright.set(true)
-}
-
-test {
-  testLogging {
-    events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
-  }
-  useJUnitPlatform()
 }

@@ -19,8 +19,5 @@ umlp2java {
       file("$projectDir/src/main/java"),
       file("$projectDir/src/test/java")
   )
-}
-
-test {
-  testLogging.showStandardStreams = true
+  useSpring = false;
 }

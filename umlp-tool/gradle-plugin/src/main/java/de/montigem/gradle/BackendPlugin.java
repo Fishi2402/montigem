@@ -7,22 +7,19 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.file.Directory;
 import org.gradle.api.plugins.JavaPluginExtension;
-import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.compile.AbstractCompile;
+import org.gradle.api.tasks.testing.Test;
+import org.gradle.api.tasks.testing.logging.TestLogEvent;
 import org.gradle.jvm.tasks.Jar;
 import org.gradle.language.jvm.tasks.ProcessResources;
 
-import java.io.File;
-
 import static de.montigem.gradle.FrontendBasePlugin.UMLP_GROUP_NAME;
-import static de.montigem.gradle.FrontendBasePlugin.getBooleanProjectProperty;
 import static de.montigem.gradle.FrontendBasePlugin.getModels;
 import static de.montigem.gradle.FrontendBasePlugin.isLocal;
 import static de.montigem.gradle.FrontendBasePlugin.mcVersion;
 import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
-import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_UMLP_MODELS_CONFIG;
 
 /***
  * A opinionated plugin which handles backend generation.
@@ -70,6 +67,26 @@ public abstract class BackendPlugin implements Plugin<Project> {
     // Add dependency to jsweet-core, to import the annotations (such as @Erased)
     // Only during compilation of the backend
     project.getDependencies().add("compileOnly", "org.jsweet:jsweet-core:6.3.0");
+
+    project.getTasks().register("slowtest", Test.class, slowtest -> {
+      slowtest.useJUnitPlatform(junitPlatform ->
+          junitPlatform.includeTags("SlowTest")
+      );
+      slowtest.shouldRunAfter(project.getTasks().named("test"));
+    });
+
+    project.getTasks().withType(Test.class).configureEach(test -> {
+      test.testLogging(logging ->
+          logging.events(
+              TestLogEvent.PASSED,
+              TestLogEvent.SKIPPED,
+              TestLogEvent.FAILED,
+              TestLogEvent.STANDARD_OUT,
+              TestLogEvent.STANDARD_ERROR
+          )
+      );
+      test.useJUnitPlatform();
+    });
 
     // apply last, since the test infrastructure tasks import properties from backend tasks
     project.getPluginManager().apply("de.rwth.se.montigem-testing");

@@ -55,17 +55,6 @@ dependencies {
   testImplementation project(':umlp-test-rte')
 }
 
-tasks.named("umlp2java", UMLP2JavaTask) {
-  useSpring.set(true)
-}
-
-test {
-  testLogging {
-    events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
-  }
-  useJUnitPlatform()
-}
-
 sourceSets {
   main {
     java.srcDirs += [layout.buildDirectory.dir("testgui")]

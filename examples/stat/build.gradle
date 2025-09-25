@@ -1,7 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 import de.montigem.gradle.specific.CreateNpmrcTask
 import de.montigem.gradle.specific.UMLP2JavaTask
 
-/* (c) https://github.com/MontiCore/monticore */
 plugins {
   id 'application'
   id 'com.google.cloud.tools.jib' version '3.4.4'
@@ -60,6 +61,7 @@ tasks.register('copyGeneratedFiles', Sync) {
 def umlp2java = tasks.named("umlp2java", UMLP2JavaTask) {
   input = file("./src/models")
   configTemplate = "umlp.UMLP2JavaNeo4j"
+  useSpring = false
 }
 
 tasks.register('diff', Exec) {
@@ -68,7 +70,6 @@ tasks.register('diff', Exec) {
   commandLine 'cmd', '/c', 'git', 'diff', '--no-index', layout.buildDirectory.dir(diff_location).get().getAsFile().toPath(), umlp2java.get().getOutputDir().get().getAsFile().toPath()
   ignoreExitValue true
 }
-
 
 tasks.register('generateNPMAuth', CreateNpmrcTask) {
   gitignore = project.getRootProject().file(".gitignore") // Task reads gitignore to ensure <.npmrc> is not committed

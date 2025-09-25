@@ -1,5 +1,4 @@
 import de.montigem.gradle.specific.OD2DataTask
-import de.montigem.gradle.specific.UMLP2JavaTask
 
 plugins {
   id 'java'
@@ -60,11 +59,6 @@ dependencies {
   implementation project(':umlp-rte')
 }
 
-def umlp2java = tasks.named("umlp2java", UMLP2JavaTask) {
-  useSpring.set(true)
-  useShell.set(true)
-}
-
 def genTestData = tasks.register('genTestData', OD2DataTask) {
   group = "umlp"
   input = file("../models/Example.od")
@@ -76,13 +70,6 @@ def genTestData = tasks.register('genTestData', OD2DataTask) {
 
 tasks.named("compileJava") {
   dependsOn(genTestData)
-}
-
-test {
-  testLogging {
-    events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
-  }
-  useJUnitPlatform()
 }
 
 sourceSets {

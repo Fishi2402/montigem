@@ -17,6 +17,7 @@ configurations {
 umlp2java {
   input = file("./models/SCExample.umlp")
   handWrittenCodeDir.setFrom([file("$projectDir/src/main/java")])
+  useSpring = false
 }
 
 def modelsDir = projectDir.toPath().resolve("models")
