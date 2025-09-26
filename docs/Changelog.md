@@ -54,6 +54,7 @@ For MontiGem users:
 
 - Updated default app project structure, see the top section of [project
   setup](./ProjectSetup.md).
+
 - Update default module project structure to closely resemble app project
   structure
 
@@ -94,17 +95,26 @@ For MontiGem users:
   - Removed these configuration files where can
 
 - Handwritten `jsweetconfig.json` are now merged into generated one. The
-  location for handwritten file is specified on top in [project
-  setup](./ProjectSetup.md). The JSON properties specified in handwritten
-  `jsweetconfig.json` overwrite the generated ones (arrays and objects on the
-  right side of `:` are not merged).
+  location for handwritten file is specified on top in [project setup
+  doc](./ProjectSetup.md). The JSON properties specified in handwritten
+  `jsweetconfig.json` overwrite the generated ones (arrays and objects are not
+  merged, except the top-most object).
 
-- Added JSweet adapters:
-  - `GUIModuleAdapter` - transforms `*.java` generated from `*.cd` (PoJos) and
-    `*.gui`
+- Renamed JSweet adapters
+- Added JSweet adapters (only generally useful are listed):
+  - `ModuleGUIAdapter` - transforms `*.java` generated from `*.cd` (PoJos) and
+    `*.gui`, specific to MontiGem modules. Equivalent adapter for applications
+    is the `GUIAdapter`.
+  - `ModuleUMLPAdapter` - transforms `*.java` generated from `*.umlp`, specific
+    to MontiGem modules. Equivalent adapter for applications is the
+    `UMLPAdapter`.
+  - `ConditionalAdapter` and some of it implementations. Implementing
+    `skipCondition` method of this adapter and supplying it with some adapter
+    `Foo` as input will skip the `Foo` when `skipCondition` hits. The
+    `ConditionalAdapter` cannot skip `onTranspilationStarted` method.
 
 > MontiGem is prepared for `umlp2ts` generator removal. The removal will happen
-> when PromoDB project migration is accepted.
+> when `PromoDB` project migration is accepted.
 
 ## 2025-06-26
 

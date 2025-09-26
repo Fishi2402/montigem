@@ -21,8 +21,6 @@ A full standard MontiGem app folder structure:
       - resources
         - ...
     - generatorExtension // generator extension source set
-      - java
-        - *.java
       - resources
         - *.ftl
   - build.gradle // uses plugin 'de.rwth.se.montigem-backend'
