@@ -743,6 +743,10 @@ public final class InteractionProcessor {
     expectedInteractions.clear();
   }
 
+  public void declare(Object actor, MatchingStrategy matchingStrategy) {
+    objectMatchingStrategies.put(actor, matchingStrategy);
+  }
+
   /**
    * Gets a reflective map declaring the different {@link MatchingStrategy}s of participants in a
    * sequence diagram.
