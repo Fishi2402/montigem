@@ -43,7 +43,7 @@ public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Projec
   public static final String UMLP2SYM_CONFIG = "umlp2symConfig";
   public static final String GUI2SYM_CONFIG = "gui2symConfig";
   public static final String GUI2JAVA_CONFIG = "gui2javaConfig";
-  public static final String MODULE_GENERATOR_EXTENSION_COMPILE_CONFIG = "moduleGeneratorExtensionCompile";
+  public static final String GENERATOR_EXTENSION_COMPILE_CONFIG = "generatorExtensionCompile";
 
   @Inject
   public ModulePlugin(SoftwareComponentFactory softwareComponentFactory, TaskDependencyFactory taskDependencyFactory) {
@@ -57,12 +57,12 @@ public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Projec
     project.getPlugins().apply("maven-publish");
     project.getPlugins().apply(MGBasePlugin.class);
 
-    Configuration moduleGenerationExtensionCompile = project.getConfigurations().create(MODULE_GENERATOR_EXTENSION_COMPILE_CONFIG);
-    moduleGenerationExtensionCompile.setCanBeResolved(true);
-    moduleGenerationExtensionCompile.setCanBeConsumed(false);
-    project.getDependencies().add(moduleGenerationExtensionCompile.getName(), "de.monticore:monticore-runtime:" + mcVersion(project));
-    project.getDependencies().add(moduleGenerationExtensionCompile.getName(), "de.monticore:monticore-grammar:" + mcVersion(project));
-    project.getDependencies().add(moduleGenerationExtensionCompile.getName(), "umlp:umlp-tool:" + mcVersion(project));
+    Configuration generationExtensionCompile = project.getConfigurations().create(GENERATOR_EXTENSION_COMPILE_CONFIG);
+    generationExtensionCompile.setCanBeResolved(true);
+    generationExtensionCompile.setCanBeConsumed(false);
+    project.getDependencies().add(generationExtensionCompile.getName(), "de.monticore:monticore-runtime:" + mcVersion(project));
+    project.getDependencies().add(generationExtensionCompile.getName(), "de.monticore:monticore-grammar:" + mcVersion(project));
+    project.getDependencies().add(generationExtensionCompile.getName(), "umlp:umlp-tool:" + mcVersion(project));
     Project backend = project.findProject(project.getPath() + ":backend");
     if (backend != null) {
       project.getDependencies().add("api", backend);
@@ -125,7 +125,7 @@ public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Projec
     SourceSet generatorExtensionSourceSet = project.getExtensions().getByType(JavaPluginExtension.class)
         .getSourceSets().create("generatorExtension");
     generatorExtensionSourceSet.setCompileClasspath(
-        generatorExtensionSourceSet.getCompileClasspath().plus(moduleGenerationExtensionCompile)
+        generatorExtensionSourceSet.getCompileClasspath().plus(generationExtensionCompile)
     );
     TaskProvider<Jar> generatorExtensionJar = project.getTasks().register("generatorExtensionJar", Jar.class, jar -> {
       jar.setGroup("build");

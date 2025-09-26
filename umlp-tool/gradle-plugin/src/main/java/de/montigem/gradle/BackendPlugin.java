@@ -5,11 +5,13 @@ import de.monticore.gradle.common.CommonMCTask;
 import de.montigem.gradle.specific.UMLP2JavaTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.Directory;
 import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.compile.AbstractCompile;
+import org.gradle.api.tasks.compile.JavaCompile;
 import org.gradle.api.tasks.testing.Test;
 import org.gradle.api.tasks.testing.logging.TestLogEvent;
 import org.gradle.jvm.tasks.Jar;
@@ -20,6 +22,7 @@ import static de.montigem.gradle.FrontendBasePlugin.getModels;
 import static de.montigem.gradle.FrontendBasePlugin.isLocal;
 import static de.montigem.gradle.FrontendBasePlugin.mcVersion;
 import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
+import static de.montigem.gradle.module.ModulePlugin.GENERATOR_EXTENSION_COMPILE_CONFIG;
 
 /***
  * MontiGem app backend generation.
@@ -43,7 +46,44 @@ public abstract class BackendPlugin implements Plugin<Project> {
         .getSourceSets().named(SourceSet.MAIN_SOURCE_SET_NAME);
     addRTEDependency(project);
 
-    TaskProvider<UMLP2JavaTask> umlp2java = createUMLP2JavaTask(project);
+    // set up generator extension source set for the cases when an app needs one
+    Configuration generationExtensionCompile = project.getConfigurations().create(GENERATOR_EXTENSION_COMPILE_CONFIG);
+    generationExtensionCompile.setCanBeResolved(true);
+    generationExtensionCompile.setCanBeConsumed(false);
+    project.getDependencies().add(generationExtensionCompile.getName(), "de.monticore:monticore-runtime:" + mcVersion(project));
+    project.getDependencies().add(generationExtensionCompile.getName(), "de.monticore:monticore-grammar:" + mcVersion(project));
+    project.getDependencies().add(generationExtensionCompile.getName(), "umlp:umlp-tool:" + mcVersion(project));
+
+    SourceSet generatorExtensionSourceSet = project.getExtensions().getByType(JavaPluginExtension.class)
+        .getSourceSets().create("generatorExtension");
+    generatorExtensionSourceSet.setCompileClasspath(
+        generatorExtensionSourceSet.getCompileClasspath().plus(generationExtensionCompile)
+    );
+
+    project.getTasks()
+        .named(generatorExtensionSourceSet.getCompileJavaTaskName(), JavaCompile.class)
+        .configure(task -> task.onlyIf(
+            t -> generatorExtensionSourceSet.getJava().getSrcDirs().stream()
+                .anyMatch(dir -> dir.exists() && dir.listFiles() != null && dir.listFiles().length > 0)
+        ));
+
+    Directory srcJava = project.getLayout().getProjectDirectory().dir("src/main/java");
+    Directory srcTpl = project.getLayout().getProjectDirectory().dir("src/generatorExtension/resources");
+    TaskProvider<UMLP2JavaTask> umlp2java = project.getTasks().register(UMLP2JAVA_TASK, UMLP2JavaTask.class, task -> {
+      task.setGroup(UMLP_GROUP_NAME);
+
+      task.getInput().from(getModels(project));
+      if (srcJava.getAsFile().exists()) {
+        task.getHandWrittenCodeDir().from(srcJava);
+      }
+      if (srcTpl.getAsFile().exists()) {
+        task.getTmplDir().set(srcTpl);
+      }
+      task.getOutputDir().set(project.getLayout().getBuildDirectory().dir("umlp2java"));
+      task.getSymbolOutDir().set(project.getLayout().getBuildDirectory().dir("umlp2sym"));
+      task.getModelDir().from(project.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
+    });
+
     mainSourceSet.configure(sourceSet -> {
       project.getTasks().withType(AbstractCompile.class)
           .matching(t -> t.getName().equals(sourceSet.getCompileJavaTaskName()))
@@ -104,25 +144,6 @@ public abstract class BackendPlugin implements Plugin<Project> {
 
     // apply last, since the test infrastructure tasks import properties from backend tasks
     project.getPluginManager().apply("de.rwth.se.montigem-testing");
-  }
-
-  protected static TaskProvider<UMLP2JavaTask> createUMLP2JavaTask(Project project) {
-    Directory srcJava = project.getLayout().getProjectDirectory().dir("src/main/java");
-    Directory srcTpl = project.getLayout().getProjectDirectory().dir("src/templates");
-    return project.getTasks().register(UMLP2JAVA_TASK, UMLP2JavaTask.class, task -> {
-      task.setGroup(UMLP_GROUP_NAME);
-
-      task.getInput().from(getModels(project));
-      if (srcJava.getAsFile().exists()) {
-        task.getHandWrittenCodeDir().from(srcJava);
-      }
-      if (srcTpl.getAsFile().exists()) {
-        task.getTmplDir().set(srcTpl);
-      }
-      task.getOutputDir().set(project.getLayout().getBuildDirectory().dir("umlp2java"));
-      task.getSymbolOutDir().set(project.getLayout().getBuildDirectory().dir("umlp2sym"));
-      task.getModelDir().from(project.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
-    });
   }
 
   protected void addRTEDependency(Project project) {

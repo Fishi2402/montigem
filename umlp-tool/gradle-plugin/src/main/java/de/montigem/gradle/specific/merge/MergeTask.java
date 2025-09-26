@@ -19,6 +19,7 @@ import javax.inject.Inject;
 // TODO: Move to MCAllFilesTask
 public abstract class MergeTask extends SourceTask {
   final static String TASK_DEBUG = "de.monticore.gradle.debug";
+
   @OutputFile
   public abstract RegularFileProperty getOutputFile();
 
@@ -35,16 +36,18 @@ public abstract class MergeTask extends SourceTask {
 
   public MergeTask() {
     getDebug().convention(getProject().hasProperty(TASK_DEBUG) && "true".equals(getProject().property(TASK_DEBUG)));
+    getIncludes().add("**/*.umlp");
   }
 
   @TaskAction
   public void run() {
-    if(getDebug().get()){
+    if (getDebug().get()) {
       Log.warn("Task is running in debug modus and isolation is disabled. This can lead to errors, especially when two UMLPTasks are running parallel. \n" +
           "Deactivate debug modus once debugging is finished!");
 
       MergeAction.umlpMerge(getSource().getFiles(), getOutputFile().getAsFile().get());
-    }else {
+    }
+    else {
       WorkQueue workQueue = getWorkerExecutor().classLoaderIsolation(spec -> spec.getClasspath().from(getClassPath()));
       workQueue.submit(MergeAction.class, param -> {
         param.getInputs().from(this.getSource());

@@ -10,7 +10,7 @@ A full standard MontiGem app folder structure:
     - resources
       - *.sql
   - src // hwc, extends generated sources from backend/build
-    - main
+    - main // application source set
       - java
         - *.java
       - resources
@@ -20,6 +20,11 @@ A full standard MontiGem app folder structure:
         - *.java
       - resources
         - ...
+    - generatorExtension // generator extension source set
+      - java
+        - *.java
+      - resources
+        - *.ftl
   - build.gradle // uses plugin 'de.rwth.se.montigem-backend'
 - frontend
   - build // generated sources + app folder
@@ -55,8 +60,6 @@ A full standard MontiGem app folder structure:
         - gui2jsweetAdapter
           - *.java
           - jsweetconfig.json
-    - templates
-      - *.ftl
     - test
       - java
         - *.java
