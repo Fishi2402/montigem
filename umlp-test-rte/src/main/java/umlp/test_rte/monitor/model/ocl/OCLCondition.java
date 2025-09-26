@@ -17,7 +17,8 @@ public final class OCLCondition implements OCLStatement {
   }
 
   @Override
-  public <T> T matchVariant(OCLStatementVariantMatcher<T> matcher) {
+  public <T, E extends Throwable> T matchVariant(OCLStatementVariantMatcher<T, E> matcher)
+  throws E {
     return matcher.whenCondition(this);
   }
 
