@@ -73,7 +73,7 @@ public class TotalTest extends WebshopSQLDBTestSetup {
     processor.expectReturn(o, o).withOCL(OCLVariableDeclaration.fromExecutor(() -> {
       total2 = o.getTotal();
       processor.declare(total2, MatchingStrategy.FREE);
-    })).withOCL(OCLCondition.from(() -> total2 == 0, "total2 == 0"));
+    })).withOCL(OCLCondition.from(() -> total2 == 6, "total2 == 6"));
     processor.expectReturn(o, o);
     processor.expectActivityEnd();
 

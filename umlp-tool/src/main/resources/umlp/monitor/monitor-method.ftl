@@ -17,7 +17,7 @@ try {
 <#if isVoid>
   monitor.reportReturn();
 <#else>
-  monitor.reportReturnWithValue(res);
+  monitor.reportReturnWithValue(Optional.ofNullable(res));
   return res;
 </#if>
 

@@ -63,9 +63,10 @@ public final class InteractionProcessor {
    */
   private final List<ExpectedInteraction> expectedInteractions = new ArrayList<>();
   /**
-   * Whether we are currently performing a condition check and therefore ignoring incoming events
+   * Whether we are currently processing an interaction and therefore ignoring further incoming
+   * interactions
    */
-  private boolean conditionChecking = false;
+  private boolean busy = false;
   /**
    * The message of the last encountered error. Presence indicates, that further checks can be
    * skipped.
@@ -85,16 +86,25 @@ public final class InteractionProcessor {
    */
   public MonitorInstructions process(Interaction interaction) {
     if (error.isPresent()) {
-      //ignore further interactions, until control flow returns to the test, and we can fail the
+      //ignore further interactions, until control-flow returns to the test, and we can fail the
       //test
       return MonitorInstructions.createDefault();
     }
 
-    if (conditionChecking) {
+    if (busy) {
       //we ignore incoming interactions during a condition check
       return MonitorInstructions.createDefault();
     }
 
+    this.busy = true;
+    try {
+      return unprotectedProcess(interaction);
+    } finally {
+      this.busy = false;
+    }
+  }
+
+  private MonitorInstructions unprotectedProcess(Interaction interaction) {
     var reportingObject = interaction.object();
 
     //update callstack
@@ -294,6 +304,10 @@ public final class InteractionProcessor {
             checkParameters(expectedConstructorCall.parameters(),
                             constructorCall.params(),
                             expectedName);
+
+            //instantiate variables before evaluating ocl statements
+            expectedConstructorCall.init(constructorCall.object());
+
             return null;
           }
 
@@ -418,18 +432,10 @@ public final class InteractionProcessor {
           UnexpectedInteractionException>() {
         @Override
         public Void whenCondition(OCLCondition condition) throws UnexpectedInteractionException {
-          boolean conditionCheckResult;
-          InteractionProcessor.this.conditionChecking = true;
-          try {
-            conditionCheckResult = condition.evaluate();
-          } finally {
-            InteractionProcessor.this.conditionChecking = false;
-          }
-          if (!conditionCheckResult) {
-            throw new UnexpectedInteractionException(
-                "Failed condition check: " + condition.asString());
-          }
-          return null;
+          if (condition.evaluate()) return null;
+
+          throw new UnexpectedInteractionException(
+              "Failed condition check: " + condition.asString());
         }
 
         @Override
@@ -472,10 +478,9 @@ public final class InteractionProcessor {
   }
 
   private String callRepr(String name, Optional<Object[]> parameters) {
-    var paramRepr = parameters.map(it -> Arrays
-        .stream(it)
-        .map(String::valueOf)
-        .collect(Collectors.joining(", "))).orElse("...");
+    var paramRepr = parameters
+        .map(it -> Arrays.stream(it).map(String::valueOf).collect(Collectors.joining(", ")))
+        .orElse("...");
     return String.format("%s(%s)", name, paramRepr);
   }
 
@@ -500,9 +505,10 @@ public final class InteractionProcessor {
   }
 
   private String expectedThrowRepr(ExpectedThrow expectedThrow) {
-    return "throw " + expectedThrow.referenceError().map(String::valueOf).orElse(callRepr(
-        expectedThrow.errorTypeName(),
-        Optional.empty()));
+    return "throw " + expectedThrow
+        .referenceError()
+        .map(String::valueOf)
+        .orElse(callRepr(expectedThrow.errorTypeName(), Optional.empty()));
   }
 
   /**
@@ -668,8 +674,9 @@ public final class InteractionProcessor {
             }));
       case VISIBLE:
         //matching is required if source and target object are declared in the test
-        return Stream.concat(sourceObject.stream(), targetObject.stream()).allMatch(
-            objectMatchingStrategies::containsKey);
+        return Stream
+            .concat(sourceObject.stream(), targetObject.stream())
+            .allMatch(objectMatchingStrategies::containsKey);
       case COMPLETE:
         //matching is always required
         return true;
