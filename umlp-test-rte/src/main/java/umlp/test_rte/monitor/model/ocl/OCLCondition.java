@@ -1,5 +1,6 @@
 package umlp.test_rte.monitor.model.ocl;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public final class OCLCondition implements OCLStatement {
@@ -28,6 +29,18 @@ public final class OCLCondition implements OCLStatement {
 
   public String asString() {
     return checkStringRepresentation;
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    if (object == null || getClass() != object.getClass()) return false;
+    OCLCondition that = (OCLCondition) object;
+    return Objects.equals(checkStringRepresentation, that.checkStringRepresentation);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(checkStringRepresentation);
   }
 
   @Override

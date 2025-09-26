@@ -6,20 +6,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public final class ExpectedConstructorCall implements ExpectedInteraction {
 
   private final Object source;
   private final String className;
-  private final String objectName;
+  private final Consumer<Object> onInit;
   private Optional<Object[]> parameters = Optional.empty();
   private boolean opensActivityBar = false;
   private final List<OCLStatement> oclStatements = new ArrayList<>();
 
-  public ExpectedConstructorCall(Object source, String className, String objectName) {
+  public ExpectedConstructorCall(Object source, String className, Consumer<Object> onInit) {
     this.source = source;
     this.className = className;
-    this.objectName = objectName;
+    this.onInit = onInit;
   }
 
   @Override
@@ -41,8 +42,8 @@ public final class ExpectedConstructorCall implements ExpectedInteraction {
     return className;
   }
 
-  public String objectName() {
-    return objectName;
+  public void init(Object object) {
+    onInit.accept(object);
   }
 
   public Optional<Object[]> parameters() {
@@ -74,20 +75,19 @@ public final class ExpectedConstructorCall implements ExpectedInteraction {
     ExpectedConstructorCall that = (ExpectedConstructorCall) object;
     return opensActivityBar == that.opensActivityBar && Objects.equals(source, that.source) &&
            Objects.equals(className, that.className) &&
-           Objects.equals(objectName, that.objectName) &&
            Objects.equals(parameters, that.parameters) &&
            Objects.equals(oclStatements, that.oclStatements);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(source, className, objectName, parameters, opensActivityBar, oclStatements);
+    return Objects.hash(source, className, parameters, opensActivityBar, oclStatements);
   }
 
   @Override
   public String toString() {
     return "ExpectedConstructorCall{" + "source=" + source + ", className='" + className + '\'' +
-           ", objectName='" + objectName + '\'' + ", parameters=" + parameters +
-           ", opensActivityBar=" + opensActivityBar + ", oclStatements=" + oclStatements + '}';
+           ", onInit=" + onInit + ", parameters=" + parameters + ", opensActivityBar=" +
+           opensActivityBar + ", oclStatements=" + oclStatements + '}';
   }
 }

@@ -87,6 +87,6 @@ public class TotalTest extends WebshopSQLDBTestSetup {
     } catch (Throwable ignore) {
       //catch all errors thrown by the trigger call
     }
-    processor.assertAllExpectedEventsToBeProcessed();
+    processor.assertExpectedInteractionsHaveOccurred();
   }
 }

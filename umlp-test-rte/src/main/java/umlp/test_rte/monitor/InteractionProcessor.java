@@ -9,7 +9,6 @@ import umlp.test_rte.monitor.interaction.MethodCallInteraction;
 import umlp.test_rte.monitor.interaction.ReturnInteraction;
 import umlp.test_rte.monitor.interaction.ReturnValue;
 import umlp.test_rte.monitor.interaction.ThrowInteraction;
-import umlp.test_rte.monitor.model.ExpectedEvent;
 import umlp.test_rte.monitor.model.MatchingStrategy;
 import umlp.test_rte.monitor.model.expectedinteraction.ExhaustiveExpectedInteractionVariantMatcher;
 import umlp.test_rte.monitor.model.expectedinteraction.ExpectedConstructorCall;
@@ -32,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.StringJoiner;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -678,23 +678,49 @@ public final class InteractionProcessor {
     }
   }
 
-  /**
-   * Tell this processor which events to expect next.
-   *
-   * <p>Will clear still pending events. Use {@link #assertAllExpectedEventsToBeProcessed()} to be
-   * sure that no events are pending anymore.
-   *
-   * @param expectedEvents Which events to expect next.
-   */
-  public void load(ExpectedEvent... expectedEvents) {
-    this.expectedInteractions.clear();
-    this.expectedInteractions.addAll(List.of(expectedEvents));
+  public ExpectedMethodCall expectMethodCall(Object from, Object to, String methodName) {
+    var interaction = new ExpectedMethodCall(from, to, methodName);
+    expectedInteractions.add(interaction);
+    return interaction;
+  }
+
+  public <T> ExpectedConstructorCall expectConstructorCall(Object from,
+                                                           String className,
+                                                           Consumer<T> onInit) {
+    var interaction = new ExpectedConstructorCall(from, className, o -> {
+      @SuppressWarnings("unchecked") //we can assume that this will work, since it is mostly called
+      // from generated code
+      var t = (T) o;
+      onInit.accept(t);
+    });
+    expectedInteractions.add(interaction);
+    return interaction;
+  }
+
+  public ExpectedReturn expectReturn(Object from, Object to) {
+    var interaction = new ExpectedReturn(from, to);
+    expectedInteractions.add(interaction);
+    return interaction;
+  }
+
+  public ExpectedThrow expectThrow(Object from, Object to, String errorTypeName) {
+    var interaction = new ExpectedThrow(from, to, errorTypeName);
+    expectedInteractions.add(interaction);
+    return interaction;
+  }
+
+  public ExpectedEndOfActivityBar expectActivityEnd() {
+    var interaction = new ExpectedEndOfActivityBar();
+    expectedInteractions.add(interaction);
+    return interaction;
   }
 
   /**
-   * Asserts that all {@link ExpectedEvent}s have been processed by this
+   * Asserts that all {@link ExpectedInteraction}s have been processed by this and that no
+   * errors did occur.
    */
-  public void assertAllExpectedEventsToBeProcessed() {
+  public void assertExpectedInteractionsHaveOccurred() {
+    Assertions.assertTrue(error.isEmpty(), () -> "An error occurred: " + error.get());
     //TODO if we did not progress because of a condition, it would be nice to see that condition
     // in the error
     Assertions.assertTrue(expectedInteractions.isEmpty(), () -> {
@@ -708,7 +734,7 @@ public final class InteractionProcessor {
   }
 
   /**
-   * Resets the object callstack and expected events.
+   * Resets the object callstack and expected interactions.
    *
    * <p>Note: Does not reset configured object matching strategies
    */
