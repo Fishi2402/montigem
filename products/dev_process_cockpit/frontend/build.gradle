@@ -42,7 +42,7 @@ def gui2java2 = tasks.register('gui2java2', GUI2JavaTask) {
   handWrittenCodeDir.from(file("src/app/"))
   symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")
   outputDir = layout.buildDirectory.dir("umlp/fe2")
-  domain = ["DevProcessCockpit"]
+  domain = "DevProcessCockpit"
   guiCreateModelsAsFile = file(cd2gui.flatMap { it.getOutputDir().file("meta/guiCreateModels.txt") })
 }
 
