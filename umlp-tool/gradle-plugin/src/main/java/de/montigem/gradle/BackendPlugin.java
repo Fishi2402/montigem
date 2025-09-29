@@ -3,6 +3,7 @@ package de.montigem.gradle;
 
 import de.monticore.gradle.common.CommonMCTask;
 import de.montigem.gradle.specific.UMLP2JavaTask;
+import de.montigem.gradle.specific.merge.MergeTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
@@ -36,6 +37,9 @@ import static de.montigem.gradle.module.ModulePlugin.GENERATOR_EXTENSION_COMPILE
 public abstract class BackendPlugin implements Plugin<Project> {
 
   public final static String UMLP2JAVA_TASK = "umlp2java";
+  public final static String MERGE_UMLP_TASK = "mergeUMLP";
+
+  public static final String MERGE_UMLP_DIR = "mergeUMLP/Domain.umlp";
 
   @Override
   public void apply(Project project) {
@@ -67,12 +71,30 @@ public abstract class BackendPlugin implements Plugin<Project> {
                 .anyMatch(dir -> dir.exists() && dir.listFiles() != null && dir.listFiles().length > 0)
         ));
 
+    Directory models = getModels(project);
+
+    TaskProvider<MergeTask> mergeUMLPTask = project.getTasks().register(MERGE_UMLP_TASK, MergeTask.class, task -> {
+      task.source(models);
+      task.getOutputFile().set(project.getLayout().getBuildDirectory().file(MERGE_UMLP_DIR));
+
+      task.onlyIf(t -> ((MergeTask) t).getSource().getFiles().size() > 1);
+    });
+
+    var umlp2javaInput = mergeUMLPTask.map(t -> {
+      if (t.getSource().getFiles().size() == 1) {
+        return t.getSource().getFiles().iterator().next();
+      }
+      else {
+        return t.getOutputFile().get();
+      }
+    });
+
     Directory srcJava = project.getLayout().getProjectDirectory().dir("src/main/java");
     Directory srcTpl = project.getLayout().getProjectDirectory().dir("src/generatorExtension/resources");
     TaskProvider<UMLP2JavaTask> umlp2java = project.getTasks().register(UMLP2JAVA_TASK, UMLP2JavaTask.class, task -> {
       task.setGroup(UMLP_GROUP_NAME);
 
-      task.getInput().from(getModels(project));
+      task.getInput().from(umlp2javaInput);
       if (srcJava.getAsFile().exists()) {
         task.getHandWrittenCodeDir().from(srcJava);
       }

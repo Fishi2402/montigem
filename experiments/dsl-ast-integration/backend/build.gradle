@@ -8,28 +8,6 @@ plugins {
   id 'com.google.cloud.tools.jib' version '3.4.4'
   id 'io.spring.dependency-management' version '1.0.15.RELEASE'
   id 'org.springframework.boot' version "${spring_version}"
-
-}
-
-repositories {
-  if (("true").equals(getProperty('useLocalRepo'))) {
-    mavenLocal()
-  }
-  maven {
-    credentials.username mavenUser
-    credentials.password mavenPassword
-    url repo
-  }
-
-  // native image
-  maven { url "https://repo.spring.io/snapshot" }
-  maven { url "https://repo.spring.io/milestone" }
-
-  mavenCentral()
-}
-
-configurations {
-  guiDefaultTypes
 }
 
 application {
@@ -42,9 +20,6 @@ dependencies {
     exclude module: 'logback-classic'
     exclude module: 'log4j-to-slf4j'
   }
-
-  guiDefaultTypes "de.monticore.lang:guidsl:${mc_version}:default-types"
-  guiDefaultTypes "umlp.umlp-rte:frontend:${mc_version}"
 
   api project(':umlp-rte'), withoutSpringLogging
   api project(':umlp-test-rte'), withoutSpringLogging
@@ -66,51 +41,9 @@ dependencies {
   implementation(project(":experiments:dsl-ast-integration:dsl"))
 }
 
-def mergeWithDSL = tasks.register("mergeWithDSL", MergeTask) {
-  source(file("../models/"))
+tasks.named("mergeUMLP", MergeTask) {
   source(project(":experiments:dsl-ast-integration:dsl2cd").tasks.named("dsl2cd").map { it.getOutputs() })
-  includes = ["**.umlp"]
   dependsOn(project(":experiments:dsl-ast-integration:dsl2cd").tasks.named("dsl2cd"))
-
-  // Where should the merged result be stored?
-  outputFile = layout.buildDirectory.file("origmerge/Domain.umlp")  // buildDirectory = "build/"
-}
-
-umlp2java {
-//   symbolOutDir = file("${project.buildDir}/symbols")
-  input.setFrom(mergeWithDSL.flatMap { it.outputFile })
-  useSpring.set(true)
-  useShell.set(true)
-}
-
-//task genInitData(type: OD2DataTask) {
-//   input = file("../models/CarData.od")
-//   outputDir = file("$project.buildDir/initdata")
-//   hwcDir = file("$projectDir/src/main/java")
-//   symbolDir = files(umlp2java.symbolOutDir)
-//   dependsOn(umlp2java)
-//
-//}
-
-tasks.register("runServer") {
-  dependsOn(bootRun {
-    systemProperty "spring.shell.interactive.enabled", "false"
-  })
-}
-
-test {
-  testLogging {
-    events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
-  }
-  useJUnitPlatform()
-}
-
-sourceSets {
-  test {
-    java {
-      exclude '**/gui/**'
-    }
-  }
 }
 
 project(":experiments:dsl-ast-integration:dsl2cd").afterEvaluate { p ->

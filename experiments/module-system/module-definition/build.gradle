@@ -2,17 +2,16 @@ plugins {
   id "base"
   id "java"
   id 'maven-publish'
-  id 'de.rwth.se.montigem-backend'
   id 'de.rwth.se.montigem-module' // create models-jar
 }
 
 dependencies {
-  moduleGeneratorExtensionCompile group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
+  generatorExtensionCompile group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
   testImplementation project(':umlp-test-rte')
 }
 
-tasks.register('printStuff'){
-  doLast{
+tasks.register('printStuff') {
+  doLast {
     println("Files")
     sourceSets.generatorExtension.output.files.each {
       println(it)

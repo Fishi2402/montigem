@@ -9,8 +9,8 @@ import de.montigem.gradle.specific.UMLP2JSweetObserverTask;
 import de.montigem.gradle.specific.UMLP2SymTask;
 import de.montigem.gradle.specific.UMLPJava2TSTask;
 import de.montigem.gradle.specific.cd.CD2JavaTask;
+import de.montigem.gradle.specific.merge.MergeTask;
 import de.montigem.gradle.specific.serialize.CD2SymTask;
-import de.se_rwth.commons.logging.Log;
 import groovy.lang.Closure;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
@@ -29,14 +29,18 @@ import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.Sync;
 import org.gradle.api.tasks.TaskProvider;
+import org.gradle.internal.FileUtils;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static de.montigem.gradle.BackendPlugin.MERGE_UMLP_DIR;
+import static de.montigem.gradle.BackendPlugin.MERGE_UMLP_TASK;
 import static de.montigem.gradle.BackendPlugin.UMLP2JAVA_TASK;
 import static de.montigem.gradle.FrontendBasePlugin.CREATE_SYMLINK_TASK;
 import static de.montigem.gradle.FrontendBasePlugin.GUI_TYPES_CONFIG;
@@ -91,26 +95,6 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
 
     Directory models = getModels(project);
     // default name(s) of .umlp file(s)
-    List<String> domainNames = new ArrayList<>();
-
-    if (models.getAsFile().exists()) {
-      Set<File> umlp = models.getAsFileTree().matching(spec -> spec.include("**/*.umlp")).getFiles();
-      if (!umlp.isEmpty()) {
-        domainNames = umlp.stream()
-            .map(File::getName)
-            .map(name -> {
-              int dotIndex = name.lastIndexOf('.');
-              return (dotIndex != -1) ? name.substring(0, dotIndex) : name;
-            })
-            .collect(Collectors.toList());
-      }
-    }
-    if (domainNames.size() > 1) {
-      Log.error("0x00034 Could not uniquely identify the domain model." +
-          "\nPlease set the `domain` property for the " + UMLP_JAVA2TS_TASK
-          + " and " + GUI2JAVA2TS_TASK + " tasks.");
-    }
-    List<String> domainNamesFinal = domainNames;
 
     SourceSet mainSourceSet = project.getExtensions()
         .getByType(SourceSetContainer.class)
@@ -140,6 +124,45 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
     Directory srcGUI = project.getLayout().getProjectDirectory().dir("src/main/gui");
     Directory srcJava = project.getLayout().getProjectDirectory().dir("src/main/java");
 
+    Optional<Project> parent = Optional.ofNullable(project.getParent());
+    Optional<Project> backend = parent.map(value -> value.findProject(value.getPath() + ":backend"));
+
+    TaskProvider<MergeTask> mergeUMLPTask;
+    if (backend.isPresent()) {
+      mergeUMLPTask = backend.get().getTasks().named(MERGE_UMLP_TASK, MergeTask.class);
+      project.getDependencies().add("implementation", backend.get());
+      project.getDependencies().add(SRC_UMLP_CONFIG, backend.get());
+    }
+    else {
+      mergeUMLPTask = project.getTasks().register(MERGE_UMLP_TASK, MergeTask.class, task -> {
+        task.source(models);
+        task.getOutputFile().set(project.getLayout().getBuildDirectory().file(MERGE_UMLP_DIR));
+
+        task.onlyIf(t -> ((MergeTask) t).getSource().getFiles().size() > 1);
+      });
+    }
+
+    var umlp2symInput = mergeUMLPTask.map(t -> {
+      if (t.getSource().getFiles().size() == 1) {
+        return t.getSource().getFiles().iterator().next();
+      }
+      else {
+        return t.getOutputFile().get();
+      }
+    });
+
+    var umlp = mergeUMLPTask.map(t -> {
+      if (t.getSource().getFiles().size() == 1) {
+        return FileUtils.removeExtension(t.getSource().getFiles().iterator().next().getName());
+      }
+      else {
+        return FileUtils.removeExtension(t.getOutputFile().getAsFile().get().getName());
+      }
+    });
+
+    Provider<RegularFile> mergeUMLPFile = mergeUMLPTask.flatMap(MergeTask::getOutputFile);
+    Provider<String> mergeUMLPName = mergeUMLPFile.map(f -> FileUtils.removeExtension(f.getAsFile().getName()));
+
     TaskProvider<CreateSymlinkTask> createSymlinkTask =
         project.getTasks().named(CREATE_SYMLINK_TASK, CreateSymlinkTask.class);
 
@@ -156,14 +179,12 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
     }
 
     TaskProvider<UMLP2SymTask> umlp2sym = project.getTasks().named(UMLP2SYM_TASK, UMLP2SymTask.class);
+    umlp2sym.configure(t -> t.getInput().setFrom(umlp2symInput));
 
     TaskProvider<UMLPJava2TSTask> umlpJava2ts = project.getTasks().register(UMLP_JAVA2TS_TASK, UMLPJava2TSTask.class, task -> {
       task.setGroup(UMLP_GROUP_NAME);
 
-      if (!domainNamesFinal.isEmpty()) {
-        task.getDomain().set(domainNamesFinal.get(0));
-      }
-
+      task.getDomain().set(umlp);
       task.getJSweetAdapterDir().set(umlp2jsweetAdapterDir);
       if (srcUMLPJSweet.getAsFile().exists()) {
         task.getHandWrittenJSweetDir().set(srcUMLPJSweet);
@@ -183,14 +204,8 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       }
     });
 
-    Project parent = project.getParent();
-    if (parent != null) {
-      Project backend = parent.findProject(parent.getPath() + ":backend");
-      if (backend != null) {
-        project.getDependencies().add("implementation", backend);
-        project.getDependencies().add(SRC_UMLP_CONFIG, backend);
-        umlpJava2ts.configure(t -> t.dependsOn(backend.getTasks().named(UMLP2JAVA_TASK)));
-      }
+    if (backend.isPresent()) {
+      umlpJava2ts.configure(t -> t.dependsOn(backend.get().getTasks().named(UMLP2JAVA_TASK)));
     }
 
     TaskProvider<CD2JavaTask> cd2java = project.getTasks().register(CD2JAVA_TASK, CD2JavaTask.class);
@@ -219,11 +234,11 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       task.setGroup(UMLP_GROUP_NAME);
       task.dependsOn(createSymlinkTask, setupFrontend);
 
+      task.getDomain().set(umlp);
       if (!inRTE(project)) {
         task.getSymbolPath().from(project.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
         task.getSymbolPath().from(project.getConfigurations().named(MONTIGEM_MODULE_IMPORT_MAP_CONFIG));
       }
-      task.getDomainModels().set(domainNamesFinal);
       task.getImportsDir().from(umlpJava2ts.flatMap(UMLPJava2TSTask::getOutputDir));
       task.getSymbolPath().from(umlp2sym.flatMap(CommonMCTask::getOutputDir));
       task.getSymbolPath().from(project.getConfigurations().named(GUI_TYPES_CONFIG));
@@ -240,9 +255,6 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       task.getGUIGenJSweet().set(true);
       task.getGUIGenTSFunctionality().set(false);
 
-      if (!domainNamesFinal.isEmpty()) {
-        task.getDomain().set(domainNamesFinal.get(0));
-      }
       task.getJSweetAdapterDir().set(gui2jsweetAdapterDir);
       if (srcGUIJSweet.getAsFile().exists()) {
         task.getHandWrittenJSweetDir().set(srcGUIJSweet);
