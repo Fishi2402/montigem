@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -260,6 +261,18 @@ public class SD2TestDecorator {
 
     public String type() {
       return type;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+      if (object == null || getClass() != object.getClass()) return false;
+      Variable variable = (Variable) object;
+      return Objects.equals(name, variable.name) && Objects.equals(type, variable.type);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(name, type);
     }
   }
 }
