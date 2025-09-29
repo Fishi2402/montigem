@@ -14,7 +14,7 @@ dependencies {
 }
 
 tasks.named("gui2java", GUI2JavaTask) {
-  domain = ["LoadingTests"]
+  domain = "LoadingTests"
   input.from("../frontend-jsweet/src/main/gui")
   modelDir.set(project.layout.projectDirectory.dir("../frontend-jsweet/src/main/gui"))
   guiCreateModels = [
