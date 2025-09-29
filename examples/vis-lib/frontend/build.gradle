@@ -22,6 +22,7 @@ tasks.named("umlpJava2ts", UMLPJava2TSTask) {
 tasks.named("gui2java2ts", GUI2Java2TSTask) {
   guiCreateModels = ["person.CreatePerson", "person.CreatePersonWithFriends", "person.CreateClubWithMembers"]
   verbose = true
+  outputs.upToDateWhen {false}
 }
 
 test {

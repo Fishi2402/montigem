@@ -32,12 +32,10 @@ import org.gradle.api.tasks.TaskProvider;
 import org.gradle.internal.FileUtils;
 
 import java.io.File;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static de.montigem.gradle.BackendPlugin.MERGE_UMLP_DIR;
 import static de.montigem.gradle.BackendPlugin.MERGE_UMLP_TASK;
@@ -160,9 +158,6 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       }
     });
 
-    Provider<RegularFile> mergeUMLPFile = mergeUMLPTask.flatMap(MergeTask::getOutputFile);
-    Provider<String> mergeUMLPName = mergeUMLPFile.map(f -> FileUtils.removeExtension(f.getAsFile().getName()));
-
     TaskProvider<CreateSymlinkTask> createSymlinkTask =
         project.getTasks().named(CREATE_SYMLINK_TASK, CreateSymlinkTask.class);
 
@@ -179,10 +174,14 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
     }
 
     TaskProvider<UMLP2SymTask> umlp2sym = project.getTasks().named(UMLP2SYM_TASK, UMLP2SymTask.class);
-    umlp2sym.configure(t -> t.getInput().setFrom(umlp2symInput));
+    umlp2sym.configure(task -> {
+      task.dependsOn(mergeUMLPTask);
+      task.getInput().setFrom(umlp2symInput);
+    });
 
     TaskProvider<UMLPJava2TSTask> umlpJava2ts = project.getTasks().register(UMLP_JAVA2TS_TASK, UMLPJava2TSTask.class, task -> {
       task.setGroup(UMLP_GROUP_NAME);
+      task.dependsOn(mergeUMLPTask);
 
       task.getDomain().set(umlp);
       task.getJSweetAdapterDir().set(umlp2jsweetAdapterDir);
@@ -232,7 +231,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
     TaskProvider<GUI2Java2TSTask> gui2java2ts = project.getTasks().register(GUI2JAVA2TS_TASK, GUI2Java2TSTask.class);
     gui2java2ts.configure(task -> {
       task.setGroup(UMLP_GROUP_NAME);
-      task.dependsOn(createSymlinkTask, setupFrontend);
+      task.dependsOn(createSymlinkTask, setupFrontend, mergeUMLPTask);
 
       task.getDomain().set(umlp);
       if (!inRTE(project)) {

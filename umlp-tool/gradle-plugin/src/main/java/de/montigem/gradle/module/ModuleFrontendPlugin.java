@@ -34,17 +34,16 @@ import org.gradle.api.component.SoftwareComponentFactory;
 import org.gradle.api.file.Directory;
 import org.gradle.api.internal.tasks.TaskDependencyFactory;
 import org.gradle.api.provider.Provider;
-import org.gradle.api.publish.PublishingExtension;
-import org.gradle.api.publish.maven.MavenPublication;
-import org.gradle.api.publish.plugins.PublishingPlugin;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.bundling.Jar;
+import org.gradle.internal.FileUtils;
 
 import javax.inject.Inject;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -116,24 +115,24 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
     // default .umlp file(s)
     Set<File> umlp;
     // default name(s) of .umlp file(s)
-    List<String> domainNames = new ArrayList<>();
+    List<String> domainNames;
 
     if (models.getAsFile().exists()) {
       umlp = models.getAsFileTree().matching(spec -> spec.include("**/*.umlp")).getFiles();
       if (!umlp.isEmpty()) {
         domainNames = umlp.stream()
             .map(File::getName)
-            .map(name -> {
-              int dotIndex = name.lastIndexOf('.');
-              return (dotIndex != -1) ? name.substring(0, dotIndex) : name;
-            })
+            .map(FileUtils::removeExtension)
             .collect(Collectors.toList());
+      }
+      else {
+        domainNames = Collections.emptyList();
       }
     }
     else {
       umlp = new HashSet<>();
+      domainNames = Collections.emptyList();
     }
-    List<String> domainNamesFinal = domainNames;
 
     // look for umlp2sym task in parent and take its output if present
     var umlp2symOut = project.provider(() -> {
@@ -247,8 +246,8 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
         TaskProvider<UMLPJava2TSTask> umlpJava2ts = subproject.getTasks().register(UMLP_JAVA2TS_TASK, UMLPJava2TSTask.class, task -> {
           task.setGroup(UMLP_GROUP_NAME);
 
-          if (!domainNamesFinal.isEmpty()) {
-            task.getDomain().set(domainNamesFinal.get(0));
+          if (!domainNames.isEmpty()) {
+            task.getDomain().set(domainNames.get(0));
           }
 
           task.getJSweetAdapterDir().set(umlp2jsweetAdapterDir);
@@ -351,7 +350,9 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
             task.getSymbolPath().from(subproject.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
             task.getSymbolPath().from(subproject.getConfigurations().named(MONTIGEM_MODULE_IMPORT_MAP_CONFIG));
           }
-          task.getDomainModels().set(domainNamesFinal);
+          if (!domainNames.isEmpty()) {
+            task.getDomain().set(domainNames.get(0));
+          }
           task.getImportsDir().from(umlpJava2ts.flatMap(UMLPJava2TSTask::getOutputDir));
           task.getSymbolPath().from(umlp2symOut);
           task.getSymbolPath().from(guiTypes);
@@ -368,8 +369,8 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
           task.getGUIGenJSweet().set(true);
           task.getGUIGenTSFunctionality().set(false);
 
-          if (!domainNamesFinal.isEmpty()) {
-            task.getDomain().set(domainNamesFinal.get(0));
+          if (!domainNames.isEmpty()) {
+            task.getDomain().set(domainNames.get(0));
           }
           task.getJSweetAdapterDir().set(gui2jsweetAdapterDir);
           if (srcGUIJSweet.getAsFile().exists()) {

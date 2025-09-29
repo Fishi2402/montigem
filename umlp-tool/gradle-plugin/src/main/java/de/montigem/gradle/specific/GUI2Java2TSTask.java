@@ -90,10 +90,6 @@ public abstract class GUI2Java2TSTask extends GUI2JavaTask {
   @OutputDirectory
   public abstract DirectoryProperty getJSweetAdapterDir();
 
-  @Input
-  @Optional
-  public abstract Property<String> getDomain();
-
   @InputDirectory
   @Optional
   public abstract DirectoryProperty getHandWrittenJSweetDir();

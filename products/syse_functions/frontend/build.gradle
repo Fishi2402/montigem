@@ -36,7 +36,7 @@ node {
 nodeSetup.dependsOn(setupFrontend)
 
 gui2java {
-  domainModels = ["FunctionStructure4Fenix"]
+  domain = ["FunctionStructure4Fenix"]
 }
 
 umlpJava2ts {

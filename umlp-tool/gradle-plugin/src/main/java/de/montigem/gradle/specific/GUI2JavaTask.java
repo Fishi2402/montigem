@@ -42,7 +42,7 @@ public abstract class GUI2JavaTask extends MGAllFilesTask {
 
   @Input
   @org.gradle.api.tasks.Optional
-  public abstract ListProperty<String> getDomainModels();
+  public abstract Property<String> getDomain();
 
   @Input
   @org.gradle.api.tasks.Optional
@@ -96,9 +96,9 @@ public abstract class GUI2JavaTask extends MGAllFilesTask {
       result.add(importDir.getAbsolutePath());
     }
 
-    if (this.getDomainModels().isPresent() && !this.getDomainModels().get().isEmpty()) {
+    if (this.getDomain().isPresent() && !this.getDomain().get().isEmpty()) {
       result.add("-" + UMLPToolOptions.DOMAIN.getCMD());
-      result.addAll(this.getDomainModels().get());
+      result.add(this.getDomain().get());
     }
 
     if (this.getGuiCreateModels().isPresent() && !this.getGuiCreateModels().get().isEmpty()) {

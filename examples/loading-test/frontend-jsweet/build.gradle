@@ -19,7 +19,6 @@ dependencies {
 }
 
 tasks.named("gui2java2ts", GUI2Java2TSTask) {
-  // domainModels = ["LoadingTests"]
   guiCreateModels = [
       "test_update_of_builder.AnimalCreate",
       "test_update_after_build.one_page.PersonsAndBuilderInOnePage",
