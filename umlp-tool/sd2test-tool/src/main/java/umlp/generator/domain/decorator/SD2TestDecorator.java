@@ -124,7 +124,6 @@ public class SD2TestDecorator {
 
     Log.info(sdTest.toString(), "SD2TestDecorator"); //TODO here for debug purposes
 
-    //TODO this here:
     /* Things to generate:
      * Imports
      * Attributes
@@ -327,7 +326,7 @@ public class SD2TestDecorator {
                 .expression()
                 .ifPresentOrElse(valueExpression -> joiner.add(String.format(
                                      ".withValue(Optional.ofNullable(%s))",
-                                     stringifyJavaExpression(valueExpression))),
+                                     valueExpression)),
                                  () -> joiner.add(".withAnyValue()")));
         addOCLStatementsToJoiner(returnInteraction.oclStatements(),
                                  joiner,
@@ -339,7 +338,7 @@ public class SD2TestDecorator {
       @Override
       public Stream<String> whenThrow(ThrowInteraction throwInteraction) {
         var joiner = createMethodChainJoiner();
-        joiner.add(String.format("%s.expectThrow(%s, %s, \"%s\")",
+        joiner.add(String.format("%s.expectThrow(%s, %s, %s.class.getName())",
                                  processorName,
                                  actorAsExpression(throwInteraction.source()),
                                  actorAsExpression(throwInteraction.target()),

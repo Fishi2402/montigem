@@ -15,7 +15,7 @@ sequencediagram TotalTest {
     assert o.getTotal() == 0;
 
     //this is the next internal call
-    o -> o : addItem(o, NotificationScope.ALL);
+    o -> o : addItem(item, NotificationScope.ALL);
     o <- o : return;
     //condition checks after a return should be okay
     let int total2 = o.getTotal();
@@ -28,16 +28,16 @@ sequencediagram TotalTest {
   o <- o : trigger getTotal();
   o <- o : return 6;
 
-  o -> o : addItem(item) {
+  o -> o : trigger addItem(item) {
 
   }
-  //this condition must be checked after the end of the activity bar, not after the call
-  assert o.getTotal() == total2 + 6;
+  //adding an item which is already in the order should not change the total
+  assert o.getTotal() == total2;
 
   class Order -> class Order : trigger static foo();
   assert !"foo".isEmpty();
   let Order anOrderInstance = Order.getAnInstance();
   class Order -> anOrderInstance : _doFoo();
-  class Order <- anOrderInstance : throw RuntimeException("foo");
+  class Order <- anOrderInstance : throw RuntimeException;
 }
 

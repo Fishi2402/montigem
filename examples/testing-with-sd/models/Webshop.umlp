@@ -1,6 +1,7 @@
 classdiagram Webshop {
   class Order {
     /int total;
+    void _doFoo();
   }
 
   class Item {

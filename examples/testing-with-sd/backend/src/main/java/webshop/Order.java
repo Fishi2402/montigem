@@ -1,5 +1,7 @@
 package webshop;
 
+import umlp.test_rte.monitor.MethodMonitor;
+
 import java.util.Optional;
 
 public class Order extends OrderTOP {
@@ -13,7 +15,10 @@ public class Order extends OrderTOP {
   }
 
   protected void _doFoo() {
-    throw new RuntimeException("foo");
+    var monitor = MethodMonitor.reportMethodCall(this, "_doFoo()", "_doFoo");
+    var error = new RuntimeException("foo");
+    monitor.reportError(error);
+    throw error;
   }
 
   public static Order getAnInstance() {

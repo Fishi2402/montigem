@@ -37,7 +37,7 @@ public final class ClosedActivityBarState implements OCLAttachableState, Interac
 
     var activityBar = new ActivityBar();
     activityBar.body().addAll(openActivityBarState.interactions());
-    activityBar.oclStatements().addAll(openActivityBarState.oclStatements());
+    activityBar.oclStatements().addAll(oclStatements);
 
     var callState = openActivityBarState.call();
     callState.setActivityBar(activityBar);

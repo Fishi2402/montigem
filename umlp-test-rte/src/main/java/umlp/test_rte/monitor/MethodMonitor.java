@@ -20,8 +20,8 @@ public final class MethodMonitor {
   private boolean active = true;
 
   private MethodMonitor(Object reportingObject,
-      String signature,
-      Optional<ReportingContext> context) {
+                        String signature,
+                        Optional<ReportingContext> context) {
     this.reportingObject = reportingObject;
     this.signature = signature;
     this.context = context;
@@ -36,24 +36,24 @@ public final class MethodMonitor {
   }
 
   public static MethodMonitor reportMethodCall(Object object,
-      String signature,
-      String methodName,
-      Object... params) {
+                                               String signature,
+                                               String methodName,
+                                               Object... params) {
     var interaction = new MethodCallInteraction(object, signature, methodName, params);
     return maybeReport(object, signature, interaction);
   }
 
   public static MethodMonitor reportConstructorCall(Object object,
-      String signature,
-      String className,
-      Object... params) {
+                                                    String signature,
+                                                    String className,
+                                                    Object... params) {
     var interaction = new ConstructorCallInteraction(object, signature, className, params);
     return maybeReport(object, signature, interaction);
   }
 
   private static MethodMonitor maybeReport(Object object,
-      String signature,
-      Interaction interaction) {
+                                           String signature,
+                                           Interaction interaction) {
     var context = activeProcessor.map(it -> {
       var instructions = it.process(interaction);
       return new ReportingContext(it, instructions);
