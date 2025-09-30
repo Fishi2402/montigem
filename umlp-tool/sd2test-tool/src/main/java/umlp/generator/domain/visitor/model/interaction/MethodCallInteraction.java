@@ -43,7 +43,7 @@ public final class MethodCallInteraction implements Interaction {
   }
 
   @Override
-  public <T> T matchVariant(InteractionVariantMatcher<T> matcher) {
+  public <T, E extends Throwable> T matchVariant(InteractionVariantMatcher<T, E> matcher) throws E {
     return matcher.whenMethodCall(this);
   }
 

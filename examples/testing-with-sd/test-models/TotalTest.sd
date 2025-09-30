@@ -1,16 +1,13 @@
-//import section
 import Webshop.*;
-//end import section
+import umlp.backendrte.common.NotificationScope;
+
 sequencediagram TotalTest {
-  //sd-object section
   ... o:Order;
   item:Item;
-  //end sd-object section
 
-  //early body section
   let int total1 = o.getTotal();
   assert total1 == 0;
-  //end early body section
+  assert !"foo".isEmpty();
 
   //trigger section
   //interaction section
@@ -28,7 +25,7 @@ sequencediagram TotalTest {
   //end interaction section
   //end trigger section
 
-  o <- o : trigger getTotal;
+  o <- o : trigger getTotal();
   o <- o : return 6;
 
   o -> o : addItem(item) {
@@ -38,97 +35,9 @@ sequencediagram TotalTest {
   assert o.getTotal() == total2 + 6;
 
   class Order -> class Order : trigger static foo();
+  assert !"foo".isEmpty();
   let Order anOrderInstance = Order.getAnInstance();
   class Order -> anOrderInstance : _doFoo();
   class Order <- anOrderInstance : throw RuntimeException("foo");
 }
-
-// output of logging visitor right now:
-//
-//visit ASTSDArtifact
-//visit ASTMCImportStatement
-//visit ASTMCQualifiedName
-//end visit ASTMCQualifiedName
-//end visit ASTMCImportStatement
-//visit ASTSequenceDiagram
-//visit ASTSDObject
-//visit ASTSDFreeModifier
-//end visit ASTSDFreeModifier
-//visit ASTMCQualifiedType
-//visit ASTMCQualifiedName
-//end visit ASTMCQualifiedName
-//end visit ASTMCQualifiedType
-//end visit ASTSDObject
-//visit ASTSDObject
-//visit ASTMCQualifiedType
-//visit ASTMCQualifiedName
-//end visit ASTMCQualifiedName
-//end visit ASTMCQualifiedType
-//end visit ASTSDObject
-//visit ASTSDBody
-//visit ASTSDVariableDeclaration
-//visit ASTMCPrimitiveType
-//end visit ASTMCPrimitiveType
-//end visit ASTSDVariableDeclaration
-//visit ASTSDCondition
-//end visit ASTSDCondition
-//visit ASTSDSendMessage
-//visit ASTSDObjectSource
-//end visit ASTSDObjectSource
-//visit ASTSDObjectTarget
-//end visit ASTSDObjectTarget
-//visit ASTSDCall
-//end visit ASTSDCall
-//visit ASTSDActivityBar
-//visit ASTSDCondition
-//end visit ASTSDCondition
-//visit ASTSDSendMessage
-//visit ASTSDObjectSource
-//end visit ASTSDObjectSource
-//visit ASTSDObjectTarget
-//end visit ASTSDObjectTarget
-//visit ASTSDCall
-//end visit ASTSDCall
-//end visit ASTSDSendMessage
-//visit ASTSDEndCall
-//visit ASTSDObjectTarget
-//end visit ASTSDObjectTarget
-//visit ASTSDEndCallArrow
-//end visit ASTSDEndCallArrow
-//visit ASTSDObjectSource
-//end visit ASTSDObjectSource
-//visit ASTSDReturn
-//end visit ASTSDReturn
-//end visit ASTSDEndCall
-//visit ASTSDVariableDeclaration
-//visit ASTMCPrimitiveType
-//end visit ASTMCPrimitiveType
-//end visit ASTSDVariableDeclaration
-//visit ASTSDCondition
-//end visit ASTSDCondition
-//end visit ASTSDActivityBar
-//end visit ASTSDSendMessage
-//visit ASTSDCondition
-//end visit ASTSDCondition
-//visit ASTSDSendMessage
-//visit ASTSDClass
-//visit ASTMCQualifiedType
-//visit ASTMCQualifiedName
-//end visit ASTMCQualifiedName
-//end visit ASTMCQualifiedType
-//end visit ASTSDClass
-//visit ASTSDClass
-//visit ASTMCQualifiedType
-//visit ASTMCQualifiedName
-//end visit ASTMCQualifiedName
-//end visit ASTMCQualifiedType
-//end visit ASTSDClass
-//visit ASTSDCall
-//end visit ASTSDCall
-//end visit ASTSDSendMessage
-//visit ISD4DevelopmentScope
-//end visit ISD4DevelopmentScope
-//end visit ASTSDBody
-//end visit ASTSequenceDiagram
-//end visit ASTSDArtifact
 

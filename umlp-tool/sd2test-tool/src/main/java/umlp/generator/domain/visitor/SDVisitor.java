@@ -393,7 +393,7 @@ public final class SDVisitor implements SDBasisVisitor2,
       VisitorState previousState,
       Optional<SourcePosition> sourcePosition) {
     var triggerCall =
-        interaction.matchVariant(new InteractionVariantMatcher<Optional<MethodCallInteraction>>() {
+        interaction.matchVariant(new InteractionVariantMatcher<Optional<MethodCallInteraction>, RuntimeException>() {
 
       @Override
       public Optional<MethodCallInteraction> whenMethodCall(MethodCallInteraction methodCall) {

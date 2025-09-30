@@ -1,12 +1,23 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("objects", "statements")}
+${tc.signature("processor", "defaultMS", "initStmts", "preInteractionStmts", "triggerStmts")}
 ${cd4c.method("void testSequence()")}
-  //create instances needed for test
-<#list objects as obj>
-  var ${obj} = create${obj?cap_first}();
-</#list>
+  var ${processor} = new InteractionProcessor(${defaultMS});
 
-  //assert sequence matches
-<#list statements as stmt>
+  //init
+<#list initStmts as stmt>
   ${stmt};
 </#list>
+
+  //pre interaction statements
+<#list preInteractionStmts as stmt>
+  ${stmt};
+</#list>
+
+  //activate processor
+  MethodMonitor.setActiveProcessor(${processor});
+
+  //trigger
+<#list triggerStmts as stmt>
+  ${stmt};
+</#list>
+

@@ -35,7 +35,7 @@ public final class ThrowInteraction implements Interaction{
   }
 
   @Override
-  public <T> T matchVariant(InteractionVariantMatcher<T> matcher) {
+  public <T, E extends Throwable> T matchVariant(InteractionVariantMatcher<T, E> matcher) throws E {
     return matcher.whenThrow(this);
   }
 

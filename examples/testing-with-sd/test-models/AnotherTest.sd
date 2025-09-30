@@ -3,9 +3,7 @@ import Webshop.*;
 visible sequencediagram AnotherTest {
   o:Order;
 
-  o -> o : trigger getTotal(...) {
-    o -> Item foo = new Item() {
-
-    }
+  o -> o : trigger getTotal() {
+    //o -> Item foo = new ItemBuilderMonitor(...) {}
   }
 }

@@ -15,5 +15,5 @@ public interface Interaction {
 
   List<OCLStatement> oclStatements();
 
-  <T> T matchVariant(InteractionVariantMatcher<T> matcher);
+  <T, E extends Throwable> T matchVariant(InteractionVariantMatcher<T, E> matcher) throws E;
 }
