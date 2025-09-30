@@ -5,10 +5,12 @@ import de.monticore.io.FileReaderWriter;
 import de.montigem.gradle.common.MGAllFilesTask;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
+import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.PathSensitive;
@@ -27,11 +29,11 @@ public abstract class GUI2JavaTask extends MGAllFilesTask {
     super("GUI2JavaTask");
   }
 
-  @InputDirectory
+  @InputFiles
   @org.gradle.api.tasks.Optional
   @PathSensitive(PathSensitivity.RELATIVE)
   // @Incremental I am not sure if this _should_ be incremental?
-  public abstract DirectoryProperty getModelDir();
+  public abstract ConfigurableFileCollection getModelDir();
 
   @InputFiles
   public abstract ConfigurableFileCollection getImportsDir();
@@ -48,9 +50,9 @@ public abstract class GUI2JavaTask extends MGAllFilesTask {
   @org.gradle.api.tasks.Optional
   public abstract ListProperty<String> getGuiCreateModels();
 
-  @Input
+  @InputFile
   @org.gradle.api.tasks.Optional
-  public abstract Property<File> getGuiCreateModelsAsFile();
+  public abstract RegularFileProperty getGuiCreateModelsAsFile();
 
   @Input
   @org.gradle.api.tasks.Optional
@@ -76,9 +78,9 @@ public abstract class GUI2JavaTask extends MGAllFilesTask {
   protected List<String> createArgList(Function<Path, String> handlePath) {
     List<String> result = super.createArgList(handlePath);
 
-    if (this.getModelDir().isPresent()) {
+    for (var dir : this.getModelDir()) {
       result.add("-mp");
-      result.add(handlePath.apply(getModelDir().getAsFile().get().toPath()));
+      result.add(handlePath.apply(dir.toPath()));
     }
 
     if (this.getSymbolOutDir().isPresent()) {
@@ -109,11 +111,11 @@ public abstract class GUI2JavaTask extends MGAllFilesTask {
     //Do not put arguments in between here!
 
     if (this.getGuiCreateModelsAsFile().isPresent()) {
-      if (!this.getGuiCreateModelsAsFile().get().exists())
+      if (!this.getGuiCreateModelsAsFile().getAsFile().get().exists())
         throw new IllegalArgumentException("File of argument guiCreateModelsAsFile does not exist");
 
       List<String> createModels = List.of(
-          FileReaderWriter.readFromFile(this.getGuiCreateModelsAsFile().get().toPath()).split("\n")
+          FileReaderWriter.readFromFile(this.getGuiCreateModelsAsFile().getAsFile().get().toPath()).split("\n")
       );
       if (!getGuiCreateModels().isPresent() || (this.getGuiCreateModels().isPresent() && this.getGuiCreateModels().get().isEmpty())) {
         result.add("-" + UMLPToolOptions.GUI_CREATE.getCMD());

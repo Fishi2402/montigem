@@ -73,14 +73,14 @@ public abstract class BackendPlugin implements Plugin<Project> {
 
     Directory models = getModels(project);
 
-    TaskProvider<MergeTask> mergeUMLPTask = project.getTasks().register(MERGE_UMLP_TASK, MergeTask.class, task -> {
+    TaskProvider<MergeTask> mergeUMLP = project.getTasks().register(MERGE_UMLP_TASK, MergeTask.class, task -> {
       task.source(models);
       task.getOutputFile().set(project.getLayout().getBuildDirectory().file(MERGE_UMLP_DIR));
 
       task.onlyIf(t -> ((MergeTask) t).getSource().getFiles().size() > 1);
     });
 
-    var umlp2javaInput = mergeUMLPTask.map(t -> {
+    var umlp2javaInput = mergeUMLP.map(t -> {
       if (t.getSource().getFiles().size() == 1) {
         return t.getSource().getFiles().iterator().next();
       }

@@ -2,8 +2,10 @@
 package de.montigem.gradle;
 
 import de.monticore.gradle.common.CommonMCTask;
+import de.montigem.gradle.specific.CD2GUITask;
 import de.montigem.gradle.specific.CreateSymlinkTask;
 import de.montigem.gradle.specific.GUI2Java2TSTask;
+import de.montigem.gradle.specific.GUIVariabilityTask;
 import de.montigem.gradle.specific.SetupFrontendTask;
 import de.montigem.gradle.specific.UMLP2JSweetObserverTask;
 import de.montigem.gradle.specific.UMLP2SymTask;
@@ -64,6 +66,8 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
   public static final String SYNC_GUI2JAVA2TS_TASK = "sync_gui2java2ts";
   public static final String UMLP2JSWEET_OBSERVER_TASK = "umlp2jsweetObserver";
   public static final String GUI2JAVA2TS_TASK = "gui2java2ts";
+  public static final String CD2GUI_TASK = "cd2gui";
+  public static final String GUI_VARIABILITY = "guiVariability";
   public static final String CD2JAVA_TASK = "cd2java";
   public static final String CD2SYM_TASK = "cd2sym";
 
@@ -91,6 +95,9 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
     // setDirectories(project);
     project.getPluginManager().apply(FrontendBasePlugin.class);
 
+    FrontendPluginExtension extension = project.getExtensions()
+        .create("montigem", FrontendPluginExtension.class);
+
     Directory models = getModels(project);
     // default name(s) of .umlp file(s)
 
@@ -102,6 +109,9 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
 
     TaskProvider<SetupFrontendTask> setupFrontend = project.getTasks().named(SETUP_FRONTEND_TASK, SetupFrontendTask.class);
 
+    Provider<Boolean> withCD2GUI = extension.getWithCD2GUI();
+    Provider<Directory> cd2guiDir = project.getLayout().getBuildDirectory().dir("cd2gui");
+    Provider<Directory> guiVariabilityDir = project.getLayout().getBuildDirectory().dir("guiVariability");
     Provider<Directory> cd2javaDir = project.getLayout().getBuildDirectory().dir("cd2java");
     Provider<Directory> cd2tagsDir = project.getLayout().getBuildDirectory().dir("cd2tags");
     Provider<Directory> gui2jsweetAdapterDir = project.getLayout().getBuildDirectory().dir("gui2jsweetAdapter");
@@ -125,14 +135,14 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
     Optional<Project> parent = Optional.ofNullable(project.getParent());
     Optional<Project> backend = parent.map(value -> value.findProject(value.getPath() + ":backend"));
 
-    TaskProvider<MergeTask> mergeUMLPTask;
+    TaskProvider<MergeTask> mergeUMLP;
     if (backend.isPresent()) {
-      mergeUMLPTask = backend.get().getTasks().named(MERGE_UMLP_TASK, MergeTask.class);
+      mergeUMLP = backend.get().getTasks().named(MERGE_UMLP_TASK, MergeTask.class);
       project.getDependencies().add("implementation", backend.get());
       project.getDependencies().add(SRC_UMLP_CONFIG, backend.get());
     }
     else {
-      mergeUMLPTask = project.getTasks().register(MERGE_UMLP_TASK, MergeTask.class, task -> {
+      mergeUMLP = project.getTasks().register(MERGE_UMLP_TASK, MergeTask.class, task -> {
         task.source(models);
         task.getOutputFile().set(project.getLayout().getBuildDirectory().file(MERGE_UMLP_DIR));
 
@@ -140,7 +150,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       });
     }
 
-    var umlp2symInput = mergeUMLPTask.map(t -> {
+    var umlpFile = mergeUMLP.map(t -> {
       if (t.getSource().getFiles().size() == 1) {
         return t.getSource().getFiles().iterator().next();
       }
@@ -149,13 +159,33 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       }
     });
 
-    var umlp = mergeUMLPTask.map(t -> {
+    var umlpName = mergeUMLP.map(t -> {
       if (t.getSource().getFiles().size() == 1) {
         return FileUtils.removeExtension(t.getSource().getFiles().iterator().next().getName());
       }
       else {
         return FileUtils.removeExtension(t.getOutputFile().getAsFile().get().getName());
       }
+    });
+
+    TaskProvider<CD2GUITask> cd2gui = project.getTasks().register(CD2GUI_TASK, CD2GUITask.class);
+    cd2gui.configure(task -> {
+      task.setGroup(UMLP_GROUP_NAME);
+      task.dependsOn(mergeUMLP);
+      task.getInput().from(umlpFile);
+      task.getOutputDir().set(cd2guiDir);
+
+      task.onlyIf(t -> withCD2GUI.get());
+    });
+
+    TaskProvider<GUIVariabilityTask> guiVariability = project.getTasks().register(GUI_VARIABILITY, GUIVariabilityTask.class);
+    guiVariability.configure(task -> {
+      task.setGroup(UMLP_GROUP_NAME);
+      task.getInput().from(cd2gui.flatMap(CommonMCTask::getOutputDir));
+      task.getInput().from(srcGUI);
+      task.getOutputDir().set(guiVariabilityDir);
+
+      task.onlyIf(t -> withCD2GUI.get());
     });
 
     TaskProvider<CreateSymlinkTask> createSymlinkTask =
@@ -175,15 +205,15 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
 
     TaskProvider<UMLP2SymTask> umlp2sym = project.getTasks().named(UMLP2SYM_TASK, UMLP2SymTask.class);
     umlp2sym.configure(task -> {
-      task.dependsOn(mergeUMLPTask);
-      task.getInput().setFrom(umlp2symInput);
+      task.dependsOn(mergeUMLP);
+      task.getInput().setFrom(umlpFile);
     });
 
     TaskProvider<UMLPJava2TSTask> umlpJava2ts = project.getTasks().register(UMLP_JAVA2TS_TASK, UMLPJava2TSTask.class, task -> {
       task.setGroup(UMLP_GROUP_NAME);
-      task.dependsOn(mergeUMLPTask);
+      task.dependsOn(mergeUMLP);
 
-      task.getDomain().set(umlp);
+      task.getDomain().set(umlpName);
       task.getJSweetAdapterDir().set(umlp2jsweetAdapterDir);
       if (srcUMLPJSweet.getAsFile().exists()) {
         task.getHandWrittenJSweetDir().set(srcUMLPJSweet);
@@ -231,9 +261,9 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
     TaskProvider<GUI2Java2TSTask> gui2java2ts = project.getTasks().register(GUI2JAVA2TS_TASK, GUI2Java2TSTask.class);
     gui2java2ts.configure(task -> {
       task.setGroup(UMLP_GROUP_NAME);
-      task.dependsOn(createSymlinkTask, setupFrontend, mergeUMLPTask);
+      task.dependsOn(createSymlinkTask, setupFrontend, mergeUMLP);
 
-      task.getDomain().set(umlp);
+      task.getDomain().set(umlpName);
       if (!inRTE(project)) {
         task.getSymbolPath().from(project.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
         task.getSymbolPath().from(project.getConfigurations().named(MONTIGEM_MODULE_IMPORT_MAP_CONFIG));
@@ -242,11 +272,20 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       task.getSymbolPath().from(umlp2sym.flatMap(CommonMCTask::getOutputDir));
       task.getSymbolPath().from(project.getConfigurations().named(GUI_TYPES_CONFIG));
       task.getSymbolPath().from(cd2sym.flatMap(CD2SymTask::getOutput));
+      task.getSymbolPath().from(cd2gui.map(t -> t.getOutputDir().file("symbols")));
+      task.getSymbolPath().from(project.getLayout().getBuildDirectory().dir("tags"));
       task.getInput().from(srcGUI);
       if (cdPresent) {
         task.getInput().from(cd2java.flatMap(CommonMCTask::getOutputDir));
       }
-      task.getModelDir().set(srcGUI);
+      task.getInput().from(guiVariability.flatMap(CommonMCTask::getOutputDir));
+      task.getGuiCreateModelsAsFile().set(
+          cd2gui.flatMap(t ->
+              umlpName.flatMap(n ->
+                  t.getOutputDir().file("meta/" + n.toLowerCase() + "/guiCreateTextModels")))
+      );
+      task.getModelDir().from(srcGUI);
+      task.getModelDir().from(guiVariability.flatMap(CommonMCTask::getOutputDir));
       task.getHandWrittenCodeDir().from(intermediateHWCLink);
       task.getOutputDir().set(gui2java2tsDir);
       task.getSymbolOutDir().set(gui2symDir);

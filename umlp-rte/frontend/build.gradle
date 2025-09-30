@@ -4,7 +4,7 @@ plugins {
   id 'de.rwth.se.montigem-module-frontend'
 }
 
-configure(mglib) {
+montigem {
   libs.addAll(
       project(":umlp-rte:frontend:arrange"),
       project(":umlp-rte:frontend:basic"),

@@ -4,7 +4,7 @@ plugins {
   id 'de.rwth.se.montigem-module-frontend'
 }
 
-mglib {
+montigem {
   libs.addAll([project(":modules:comment:frontend:comment")])
 }
 

@@ -143,7 +143,7 @@ public abstract class FrontendNonJSweetPlugin implements Plugin<Project> {
     return project.getTasks().register(GUI2JAVA_TASK, GUI2JavaTask.class, task -> {
       task.setGroup(UMLP_GROUP_NAME);
       task.getInput().from(getModels(project));
-      task.getModelDir().set(getModels(project));
+      task.getModelDir().from(getModels(project));
       task.getSymbolPath().from(guiTypes);
 
       // Further configuration is done in gradle.FrontendWithJSweetPlugin and gradle.FrontendNonJSweetPlugin

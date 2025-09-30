@@ -100,7 +100,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
     AdhocComponentWithVariants javaComponent = (AdhocComponentWithVariants) project.getComponents().getByName("java");
     // contains e.g. [ project(":umlp-rte:frontend:arrange"), project(":umlp-rte:frontend:basic") ]
     ModuleFrontendPluginExtension extension = project.getExtensions()
-        .create("mglib", ModuleFrontendPluginExtension.class);
+        .create("montigem", ModuleFrontendPluginExtension.class);
 
     // create .npmrc near build.gradle for `npm install`
     TaskProvider<CreateNpmrcTask> npmrc4download = project.getTasks().register("npmrc4download", CreateNpmrcTask.class, task -> {
@@ -361,7 +361,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
           if (cdPresent) {
             task.getInput().from(cd2java.flatMap(CommonMCTask::getOutputDir));
           }
-          task.getModelDir().set(srcGUI);
+          task.getModelDir().from(srcGUI);
           task.getHandWrittenCodeDir().from(srcGUI);
           task.getOutputDir().set(gui2java2tsDir);
           task.getTSlib().set(libQName);
