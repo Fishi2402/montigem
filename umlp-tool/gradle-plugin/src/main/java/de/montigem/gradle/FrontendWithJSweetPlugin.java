@@ -280,9 +280,14 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       }
       task.getInput().from(guiVariability.flatMap(CommonMCTask::getOutputDir));
       task.getGuiCreateModelsAsFile().set(
-          cd2gui.flatMap(t ->
-              umlpName.flatMap(n ->
-                  t.getOutputDir().file("meta/" + n.toLowerCase() + "/guiCreateTextModels")))
+          withCD2GUI.flatMap(v -> {
+            if (v) {
+              return cd2gui.flatMap(t ->
+                  umlpName.flatMap(n ->
+                      t.getOutputDir().file("meta/" + n.toLowerCase() + "/guiCreateTextModels")));
+            }
+            return project.getObjects().fileProperty();
+          })
       );
       task.getModelDir().from(srcGUI);
       task.getModelDir().from(guiVariability.flatMap(CommonMCTask::getOutputDir));
