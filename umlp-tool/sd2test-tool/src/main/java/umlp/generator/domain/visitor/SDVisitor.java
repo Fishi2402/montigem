@@ -78,9 +78,9 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public final class SDVisitor implements SDBasisVisitor2,
-    SD4DevelopmentVisitor2,
-    OCLExpressionsVisitor2,
-    MCBasicTypesVisitor2 {
+                                        SD4DevelopmentVisitor2,
+                                        OCLExpressionsVisitor2,
+                                        MCBasicTypesVisitor2 {
 
   private VisitorState state = new InitialState();
 
@@ -280,8 +280,9 @@ public final class SDVisitor implements SDBasisVisitor2,
   }
 
   private <T extends OCLStatement> void visitOCLStatement(T statement,
-      ASTNode node,
-      Function<OCLAttachableState, VisitorState> stateWrapper) {
+                                                          ASTNode node,
+                                                          Function<OCLAttachableState,
+                                                              VisitorState> stateWrapper) {
     updateState(new VisitorStateVariantMatcher<VisitorState>() {
       @Override
       public VisitorState whenPreInteractionBody(PreInteractionBodyState preInteractionBody) {
@@ -342,7 +343,7 @@ public final class SDVisitor implements SDBasisVisitor2,
   }
 
   private void visitInteractionStart(ASTNode node,
-      Function<VisitorState, VisitorState> stateWrapper) {
+                                     Function<VisitorState, VisitorState> stateWrapper) {
     var sourcePosition = getSourcePosition(node);
     updateState(new VisitorStateVariantMatcher<>() {
       @Override
@@ -390,10 +391,11 @@ public final class SDVisitor implements SDBasisVisitor2,
   }
 
   private VisitorState finishInteraction(Interaction interaction,
-      VisitorState previousState,
-      Optional<SourcePosition> sourcePosition) {
+                                         VisitorState previousState,
+                                         Optional<SourcePosition> sourcePosition) {
     var triggerCall =
-        interaction.matchVariant(new InteractionVariantMatcher<Optional<MethodCallInteraction>, RuntimeException>() {
+        interaction.matchVariant(new InteractionVariantMatcher<Optional<MethodCallInteraction>,
+            RuntimeException>() {
 
       @Override
       public Optional<MethodCallInteraction> whenMethodCall(MethodCallInteraction methodCall) {
@@ -559,6 +561,12 @@ public final class SDVisitor implements SDBasisVisitor2,
                                                     isStatic,
                                                     isTrigger,
                                                     argumentExpressions);
+
+        if (isTrigger && !interaction.isComplete()) {
+          return raiseError("trigger interaction can't have unspecified arguments",
+                            getSourcePosition(node));
+        }
+
         var previousState = awaitAction.previousState();
         return new MethodCallState(previousState, interaction);
       }
@@ -786,8 +794,8 @@ public final class SDVisitor implements SDBasisVisitor2,
   }
 
   private <T> T raiseStateError(String message,
-      VisitorState state,
-      Optional<SourcePosition> sourcePosition) {
+                                VisitorState state,
+                                Optional<SourcePosition> sourcePosition) {
     return raiseError(message + " in state " + state, sourcePosition);
   }
 

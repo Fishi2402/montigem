@@ -79,7 +79,7 @@ public class SD2TestDecorator {
   }
 
   private ASTCDElement createTest(ASTSDArtifact model, ASTCDDefinition domainCd) {
-    logModel(model); //TODO currently here for debug purposes
+    //logModel(model); //currently here for debug purposes
 
     var diagramName = model.getSequenceDiagram().getName();
     var domainName = domainCd.getName();
@@ -122,7 +122,7 @@ public class SD2TestDecorator {
       }
     });
 
-    Log.info(sdTest.toString(), "SD2TestDecorator"); //TODO here for debug purposes
+    //Log.info(sdTest.toString(), "SD2TestDecorator");
 
     /* Things to generate:
      * Imports
@@ -213,8 +213,6 @@ public class SD2TestDecorator {
                                                  String processorName,
                                                  MatchingStrategy defaultMatchingStrategy) {
     var triggerInteraction = trigger.triggerInteraction();
-
-    //TODO add checks for complete triggers and non-static resulting calls when reading the model!
 
     var triggerInteractionStatementStream = triggerInteraction.isStatic() ?
         triggerInteraction
