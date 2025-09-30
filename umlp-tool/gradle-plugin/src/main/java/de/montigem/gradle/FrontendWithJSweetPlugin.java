@@ -334,9 +334,11 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
     TaskProvider<UMLP2JSweetObserverTask> umlp2jsweetObserver = project.getTasks().register(
         UMLP2JSWEET_OBSERVER_TASK, UMLP2JSweetObserverTask.class, task -> {
           task.setGroup(UMLP_GROUP_NAME);
-          task.getInput().from(getModels(project));
+          task.dependsOn(mergeUMLP);
+          task.getInput().from(umlpFile);
           task.getOutputDir().set(umlp2jsweetObserverDir);
           task.getHandWrittenCodeDir().from(srcGUI);
+          task.getSymbolPath().from(cd2gui.map(t -> t.getOutputDir().dir("symbols")));
           task.getSymbolPath().from(project.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
           task.getSymbolPath().from(project.getConfigurations().named(MONTIGEM_MODULE_IMPORT_MAP_CONFIG));
           task.getModelDir().from(project.getConfigurations().named(MONTIGEM_MODULE_UMLP_MODELS_CONFIG));
