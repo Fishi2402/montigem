@@ -1,7 +1,7 @@
 package umlp_with_gui._lsp;
 
 import de.mclsg.lsp.modelpath.multiproject.MultiProjectLayout;
-import de.mclsg.lsp.modelpath.multiproject.SubprojectLayout;
+import de.mclsg.lsp.modelpath.multiproject.ProjectLayout;
 import de.monticore.io.paths.MCPath;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.lsp4j.DidOpenTextDocumentParams;
@@ -17,6 +17,7 @@ import umlp_with_gui._lsp.mock.MockLanguageClient;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -79,12 +80,12 @@ public class MultiProjectSetupTest {
     Path subprojectPath = path.resolve("subproject1");
 
     MultiProjectLayout multiProjectLayout = new MultiProjectLayout();
-    SubprojectLayout subprojectLayout = new SubprojectLayout();
-    subprojectLayout.projectpath = subprojectPath.toString();
+    ProjectLayout subprojectLayout = new ProjectLayout();
+    subprojectLayout.projectpath = Optional.of(subprojectPath.toString());
     subprojectLayout.modelDirs = new String[]{path.toString()};
     subprojectLayout.name = "subproject1";
 
-    multiProjectLayout.subprojects = new SubprojectLayout[]{ subprojectLayout };
+    multiProjectLayout.subprojects = new ProjectLayout[]{ subprojectLayout };
     server.updateBasedOnConfig(multiProjectLayout);
 
     // Now has subproject servers
