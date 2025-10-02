@@ -5,11 +5,16 @@ plugins {
   id 'de.rwth.se.montigem-backend'
   id 'de.rwth.se.cdgen' version "$mc_version"
 
+  id 'application'
   id 'maven-publish'
 }
 
 sourceSets {
   cd2pojo
+}
+
+application {
+  mainClass = 'mydomain.MyDomainServerApplication'
 }
 
 def generateGem = tasks.register("generateGem", CDGenTask) {

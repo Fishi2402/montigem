@@ -16,6 +16,7 @@ import org.gradle.api.component.ConfigurationVariantDetails;
 import org.gradle.api.component.SoftwareComponentFactory;
 import org.gradle.api.file.Directory;
 import org.gradle.api.internal.tasks.TaskDependencyFactory;
+import org.gradle.api.plugins.BasePlugin;
 import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
@@ -35,7 +36,6 @@ import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_IMPORT_MAP_CONFIG;
 import static de.montigem.gradle.module.ModuleFrontendPlugin.addGuiSymbolsJarAttributes;
 import static de.montigem.gradle.module.ModuleFrontendPlugin.addImportMapJarAttributes;
 import static de.montigem.gradle.module.ModuleFrontendPlugin.addUMLPSymbolsJarAttributes;
-import static org.gradle.api.plugins.BasePlugin.ASSEMBLE_TASK_NAME;
 
 public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Project> {
 
@@ -66,11 +66,11 @@ public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Projec
     Project backend = project.findProject(project.getPath() + ":backend");
     if (backend != null) {
       project.getDependencies().add("api", backend);
-      SourceSet mainSourceSet = project.getExtensions()
-          .getByType(SourceSetContainer.class).getByName(SourceSet.MAIN_SOURCE_SET_NAME);
+      SourceSet mainSourceSet = project.getExtensions().getByType(SourceSetContainer.class).getByName(SourceSet.MAIN_SOURCE_SET_NAME);
 
-      project.getTasks().named("jar", Jar.class)
-          .configure(jar -> jar.from(mainSourceSet.getOutput()));
+      project.getTasks().named("jar", Jar.class).configure(jar -> {
+        jar.from(mainSourceSet.getOutput());
+      });
     }
 
     var javaComponent = (AdhocComponentWithVariants) project.getComponents().getByName("java");
@@ -103,7 +103,7 @@ public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Projec
 
       jar.onlyIf(t -> umlpPresent);
     });
-    project.getTasks().named(ASSEMBLE_TASK_NAME).configure(it -> it.dependsOn(umlpModelsJar));
+    project.getTasks().named(BasePlugin.ASSEMBLE_TASK_NAME).configure(it -> it.dependsOn(umlpModelsJar));
     if (umlpPresent) {
       project.getArtifacts().add(umlpModels.getName(), umlpModelsJar);
       // Tell gradle, that the jar tasks builds a publication
@@ -134,7 +134,7 @@ public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Projec
 
       jar.onlyIf(t -> generatorExtensionSourceSet.getAllSource().getFiles().stream().anyMatch(File::exists));
     });
-    project.getTasks().named(ASSEMBLE_TASK_NAME).configure(it -> it.dependsOn(generatorExtensionJar));
+    project.getTasks().named(BasePlugin.ASSEMBLE_TASK_NAME).configure(it -> it.dependsOn(generatorExtensionJar));
     project.afterEvaluate(p -> {
       Jar jar = generatorExtensionJar.get();
       if (jar.getOnlyIf().isSatisfiedBy(jar)) {
@@ -164,33 +164,9 @@ public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Projec
       task.onlyIf(t -> umlpPresent);
     });
 
-    TaskProvider<Jar> umlp2symJar = project.getTasks().register("umlp2symJar", Jar.class, task -> {
-      task.setGroup("build");
-      task.getArchiveClassifier().set("domainsymbols");
-    });
-    project.getTasks().named(ASSEMBLE_TASK_NAME).configure(it -> it.dependsOn(umlp2symJar));
-
-    if (umlpPresent) {
-      // Create the domain symbols jar
-      Configuration umlp2symConfig = project.getConfigurations().create(UMLP2SYM_CONFIG);
-      umlp2symConfig.setCanBeConsumed(true);
-      umlp2symConfig.setCanBeResolved(false);
-      umlp2symConfig.setDescription("Published domain Symbols of the module");
-
-      addUMLPSymbolsJarAttributes(umlp2symConfig, project);
-
-      // Add umlp2symJar-jar as artifact to the config
-      project.getArtifacts().add(umlp2symConfig.getName(), umlp2symJar);
-      javaComponent.addVariantsFromConfiguration(umlp2symConfig, ConfigurationVariantDetails::mapToOptional);
-
-      // Tell gradle, that the jar tasks builds a publication
-      // and add the publication to the outgoing artifacts
-      umlp2symConfig.getOutgoing().getArtifacts().add(
-          createPublishedArtifact(umlp2symJar, project)
-      );
-    }
-
+    TaskProvider<Jar> umlp2symJar = umlp2symInit(umlp2sym, project, javaComponent);
     umlp2symJar.configure(task -> {
+      task.dependsOn(umlp2sym);
       task.from(
           umlp2sym.flatMap(UMLP2SymTask::getOutputDir),
           spec -> spec.include("**/*sym", "**/*tags")
@@ -242,6 +218,40 @@ public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Projec
       it.attribute(Bundling.BUNDLING_ATTRIBUTE, project.getObjects().named(Bundling.class, Bundling.EXTERNAL));
       it.attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, project.getObjects().named(LibraryElements.class, LibraryElements.JAR));
     });
+  }
+
+  protected TaskProvider<Jar> umlp2symInit(
+      TaskProvider<UMLP2SymTask> umlp2sym, Project project, AdhocComponentWithVariants javaComponent
+  ) {
+    TaskProvider<Jar> umlp2symJar = project.getTasks().register("umlp2symJar", Jar.class, task -> {
+      task.setGroup("build");
+      task.getArchiveClassifier().set("domainsymbols");
+    });
+    project.getTasks().named(org.gradle.api.plugins.BasePlugin.ASSEMBLE_TASK_NAME).configure(it -> it.dependsOn(umlp2symJar));
+
+    project.afterEvaluate(p -> {
+      if (umlp2sym.get().getOnlyIf().isSatisfiedBy(umlp2sym.get())) {
+        // Create the domain symbols jar
+        Configuration umlp2symConfig = project.getConfigurations().create(UMLP2SYM_CONFIG);
+        umlp2symConfig.setCanBeConsumed(true);
+        umlp2symConfig.setCanBeResolved(false);
+        umlp2symConfig.setDescription("Published domain Symbols of the module");
+
+        addUMLPSymbolsJarAttributes(umlp2symConfig, project);
+
+        // Add umlp2symJar-jar as artifact to the config
+        project.getArtifacts().add(umlp2symConfig.getName(), umlp2symJar);
+        javaComponent.addVariantsFromConfiguration(umlp2symConfig, ConfigurationVariantDetails::mapToOptional);
+
+        // Tell gradle, that the jar tasks builds a publication
+        // and add the publication to the outgoing artifacts
+        umlp2symConfig.getOutgoing().getArtifacts().add(
+            createPublishedArtifact(umlp2symJar, project)
+        );
+      }
+    });
+
+    return umlp2symJar;
   }
 
 }

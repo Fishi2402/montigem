@@ -13,15 +13,23 @@
 //   * there can only be a single running server. A second server cannot start.
 //
 plugins {
-  id 'de.rwth.se.montigem-backend' // Makes the task-types `UMLPTask` and `MergeTask` available
+  id 'java' // Setup Java Compiler
+  id 'application'  // ensures that the JAR can be executed
 
   id 'com.google.cloud.tools.jib' version '3.4.4'
   // Spring Plugins
   id 'io.spring.dependency-management' version '1.0.15.RELEASE'
   id 'org.springframework.boot' version "${spring_version}"
+
+  id 'de.rwth.se.montigem-backend' // Makes the task-types `UMLPTask` and `MergeTask` available
 }
 
 description 'Demolition Recyling Database'
+
+application {
+  // Set Entrypoint of Application
+  mainClass = 'demorec.DemoRecServerApplication'
+}
 
 jib {
   container.mainClass = application.mainClass.get()
