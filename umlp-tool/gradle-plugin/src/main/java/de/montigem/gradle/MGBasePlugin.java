@@ -50,9 +50,8 @@ public abstract class MGBasePlugin implements Plugin<Project> {
     project.getExtensions().getExtraProperties().set("CD2GUITask", CD2GUITask.class);
     project.getExtensions().getExtraProperties().set("GUIVariabilityTask", GUIVariabilityTask.class);
     project.getExtensions().getExtraProperties().set("UMLP2TSTask", UMLP2TSTask.class);
-    project.getExtensions().getExtraProperties().set("UMLPSymbolsTask", UMLP2SymTask.class);
+    project.getExtensions().getExtraProperties().set("UMLP2SymTask", UMLP2SymTask.class);
     project.getExtensions().getExtraProperties().set("SetupFrontendTask", SetupFrontendTask.class);
-    project.getExtensions().getExtraProperties().set("GUI2SymTask", de.montigem.gradle.specific.serialize.GUI2SymTask.class);
     project.getExtensions().getExtraProperties().set(GUI2SymTask.class.getSimpleName(), GUI2SymTask.class);
     project.getExtensions().getExtraProperties().set("CD2SymTask", CD2SymTask.class);
     project.getExtensions().getExtraProperties().set("CheckDirEqualityTask", CheckDirEqualityTask.class);
