@@ -8,6 +8,7 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.Directory;
+import org.gradle.api.plugins.JavaApplication;
 import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskProvider;
@@ -15,6 +16,7 @@ import org.gradle.api.tasks.compile.AbstractCompile;
 import org.gradle.api.tasks.compile.JavaCompile;
 import org.gradle.api.tasks.testing.Test;
 import org.gradle.api.tasks.testing.logging.TestLogEvent;
+import org.gradle.internal.FileUtils;
 import org.gradle.jvm.tasks.Jar;
 import org.gradle.language.jvm.tasks.ProcessResources;
 
@@ -44,7 +46,8 @@ public abstract class BackendPlugin implements Plugin<Project> {
   @Override
   public void apply(Project project) {
     project.getPluginManager().apply(MGBasePlugin.class);
-    project.getPluginManager().apply("java");
+    project.getPluginManager().apply("java-library");
+    project.getPluginManager().apply("application");
 
     var mainSourceSet = project.getExtensions().getByType(JavaPluginExtension.class)
         .getSourceSets().named(SourceSet.MAIN_SOURCE_SET_NAME);
@@ -80,7 +83,7 @@ public abstract class BackendPlugin implements Plugin<Project> {
       task.onlyIf(t -> ((MergeTask) t).getSource().getFiles().size() > 1);
     });
 
-    var umlp2javaInput = mergeUMLP.map(t -> {
+    var umlpFile = mergeUMLP.map(t -> {
       if (t.getSource().getFiles().size() == 1) {
         return t.getSource().getFiles().iterator().next();
       }
@@ -89,12 +92,26 @@ public abstract class BackendPlugin implements Plugin<Project> {
       }
     });
 
+    var umlpName = mergeUMLP.map(t -> {
+      if (t.getSource().getFiles().size() == 1) {
+        return FileUtils.removeExtension(t.getSource().getFiles().iterator().next().getName());
+      }
+      else {
+        return FileUtils.removeExtension(t.getOutputFile().getAsFile().get().getName());
+      }
+    });
+
+    project.getExtensions()
+        .getByType(JavaApplication.class)
+        .getMainClass()
+        .set(umlpName.map(s -> s.toLowerCase() + "." + s + "ServerApplication"));
+
     Directory srcJava = project.getLayout().getProjectDirectory().dir("src/main/java");
     Directory srcTpl = project.getLayout().getProjectDirectory().dir("src/generatorExtension/resources");
     TaskProvider<UMLP2JavaTask> umlp2java = project.getTasks().register(UMLP2JAVA_TASK, UMLP2JavaTask.class, task -> {
       task.setGroup(UMLP_GROUP_NAME);
 
-      task.getInput().from(umlp2javaInput);
+      task.getInput().from(umlpFile);
       if (srcJava.getAsFile().exists()) {
         task.getHandWrittenCodeDir().from(srcJava);
       }
