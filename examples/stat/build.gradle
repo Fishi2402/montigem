@@ -1,22 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import de.montigem.gradle.specific.CreateNpmrcTask
 import de.montigem.gradle.specific.UMLP2JavaTask
 
 plugins {
-  id 'application'
+  id 'de.rwth.se.montigem-backend'
+
   id 'com.google.cloud.tools.jib' version '3.4.4'
   id 'io.spring.dependency-management' version '1.0.15.RELEASE'
   id 'org.springframework.boot' version "${spring_version}"
-
-  id 'de.rwth.se.montigem-backend'
 }
 
 description 'StatServer'
-
-application {
-  mainClass = 'log_mc_jar.StatServerApplication'
-}
 
 bootBuildImage {
   imageName = "statserver"

@@ -13,23 +13,15 @@
 //   * there can only be a single running server. A second server cannot start.
 //
 plugins {
-  id 'java' // Setup Java Compiler
-  id 'application'  // ensures that the JAR can be executed
+  id 'de.rwth.se.montigem-backend' // Makes the task-types `UMLPTask` and `MergeTask` available
 
   id 'com.google.cloud.tools.jib' version '3.4.4'
   // Spring Plugins
   id 'io.spring.dependency-management' version '1.0.15.RELEASE'
   id 'org.springframework.boot' version "${spring_version}"
-
-  id 'de.rwth.se.montigem-backend' // Makes the task-types `UMLPTask` and `MergeTask` available
 }
 
 description 'KIZAM backend'
-
-application {
-  // Set Entrypoint of Application
-  mainClass = 'kizam.KizamServerApplication'
-}
 
 jib {
   to {

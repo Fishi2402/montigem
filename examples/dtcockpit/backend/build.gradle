@@ -4,7 +4,7 @@ import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
   id 'de.rwth.se.montigem-backend-test'
-  id 'application'
+
   id 'com.google.cloud.tools.jib' version '3.4.4'
   id 'io.spring.dependency-management' version '1.0.15.RELEASE'
   id 'org.springframework.boot' version "${spring_version}"
@@ -21,10 +21,6 @@ dependencies {
   montigemModule project(":modules:comment")
   montigemModuleGeneratorExtension project(":modules:comment")
   montigemModuleUMLPModels project(":modules:comment")
-}
-
-application { // Set Main-Class for "run" task
-  mainClass = 'dtcockpit.DtcockpitServerApplication'
 }
 
 jib { // For Docker-Container
