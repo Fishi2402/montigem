@@ -47,6 +47,10 @@ sourceSets {
   test.compileClasspath += configurations.umlpTool
 }
 
+tasks.named('jar') {
+  from sourceSets.shared.output
+}
+
 test {
   useJUnitPlatform()
 }
