@@ -88,7 +88,6 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
   public void apply(Project project) {
     project.getPluginManager().apply(NodePlugin.class);
     project.getPluginManager().apply("java-library");
-    project.getPluginManager().apply("maven-publish");
     if (!inRTE(project)) {
       project.getPluginManager().apply(MGBasePlugin.class);
     }
@@ -488,7 +487,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
 
     TaskProvider<Task> build = project.getTasks().named("build");
     build.configure(task -> task.dependsOn(buildSubprojects));
-    TaskProvider<Task> publish = project.getTasks().named("publish");
+    TaskProvider<Task> publish = project.getTasks().register("publish");
     publish.configure(task -> task.dependsOn(publishSubprojects));
   }
 
