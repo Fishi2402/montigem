@@ -13,6 +13,10 @@ sourceSets {
   shared {
     java.srcDir('src/shared/java')
   }
+  main {
+    compileClasspath += sourceSets.shared.output
+    runtimeClasspath += sourceSets.shared.output
+  }
 }
 
 dependencies {
@@ -35,6 +39,7 @@ dependencies {
   }
 
   implementation sourceSets.shared.output
+  implementation configurations.sharedImplementation
 
   sharedImplementation gradleApi()
   sharedImplementation group: 'de.se_rwth.commons', name: 'se-commons-gradle', version: mc_version
