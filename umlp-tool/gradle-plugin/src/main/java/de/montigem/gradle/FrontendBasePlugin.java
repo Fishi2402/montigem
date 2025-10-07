@@ -54,7 +54,6 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
     project.getPluginManager().apply("base");
     project.getPluginManager().apply(NodePlugin.class);
     project.getPluginManager().apply(MGBasePlugin.class);
-    project.getPluginManager().apply(SharedPlugin.class);
 
     project.getPlugins().withId("com.github.node-gradle.node", plugin -> {
       NodeExtension node = project.getExtensions().getByType(NodeExtension.class);
@@ -123,11 +122,10 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
       task.dependsOn(runAppTask);
     });
 
-    TaskProvider<CreateSymlinkTask> createSymlinkTask = project.getTasks().register(CREATE_SYMLINK_TASK, CreateSymlinkTask.class);
     if (isLocal(project)) {
       TaskProvider<Task> rteBuild = project.project(":umlp-rte:frontend").getTasks().named("build");
 
-      configureCreateSymlinkTask(project);
+      TaskProvider<CreateSymlinkTask> createSymlinkTask = createCreateSymlinkTask(project);
       createSymlinkTask.configure(task -> task.dependsOn(setupFrontend));
       testAppTask.configure(t -> t.dependsOn(rteBuild, createSymlinkTask));
       runAppTask.configure(t -> t.dependsOn(rteBuild, createSymlinkTask));
@@ -163,8 +161,8 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
     });
   }
 
-  private void configureCreateSymlinkTask(Project project) {
-    project.getTasks().named(CREATE_SYMLINK_TASK, CreateSymlinkTask.class, task -> {
+  private TaskProvider<CreateSymlinkTask> createCreateSymlinkTask(Project project) {
+    return project.getTasks().register(CREATE_SYMLINK_TASK, CreateSymlinkTask.class, task -> {
       task.setGroup(UMLP_GROUP_NAME);
 
       // TODO change this in the future, so we do not have to download all library's dependencies in every umlp project
