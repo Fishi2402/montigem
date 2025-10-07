@@ -188,8 +188,13 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       task.onlyIf(t -> withCD2GUI.get());
     });
 
-    TaskProvider<CreateSymlinkTask> createSymlinkTask =
-        project.getTasks().named(CREATE_SYMLINK_TASK, CreateSymlinkTask.class);
+    TaskProvider<CreateSymlinkTask> createSymlinkTask;
+    if (isLocal(project)) {
+      createSymlinkTask = project.getTasks().named(CREATE_SYMLINK_TASK, CreateSymlinkTask.class);
+    }
+    else {
+      createSymlinkTask = project.getTasks().register(CREATE_SYMLINK_TASK, CreateSymlinkTask.class);
+    }
 
     boolean cdPresent;
     File folder = srcGUI.getAsFile();
