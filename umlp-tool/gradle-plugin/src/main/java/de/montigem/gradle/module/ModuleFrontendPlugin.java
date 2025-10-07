@@ -471,6 +471,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
           task.setGroup(UMLP_GROUP_NAME);
           task.dependsOn(buildLib);
           task.getNpmrcFile().set(libBuildDir.map(dir -> dir.file(".npmrc")));
+          task.getGitignore().set(p.getLayout().getProjectDirectory().file(".gitignore"));
           task.getUnscoped().set(true);
         });
 
