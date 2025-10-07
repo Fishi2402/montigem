@@ -142,7 +142,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       project.getDependencies().add(SRC_UMLP_CONFIG, backend.get());
     }
     else {
-      mergeUMLP = project.getTasks().register(MERGE_UMLP_TASK, MergeTask.class, task -> {
+      mergeUMLP = project.getTasks().named(MERGE_UMLP_TASK, MergeTask.class, task -> {
         task.source(models);
         task.getOutputFile().set(project.getLayout().getBuildDirectory().file(MERGE_UMLP_DIR));
 
@@ -188,13 +188,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       task.onlyIf(t -> withCD2GUI.get());
     });
 
-    TaskProvider<CreateSymlinkTask> createSymlinkTask;
-    if (isLocal(project)) {
-      createSymlinkTask = project.getTasks().named(CREATE_SYMLINK_TASK, CreateSymlinkTask.class);
-    }
-    else {
-      createSymlinkTask = project.getTasks().register(CREATE_SYMLINK_TASK, CreateSymlinkTask.class);
-    }
+    TaskProvider<CreateSymlinkTask> createSymlinkTask = project.getTasks().named(CREATE_SYMLINK_TASK, CreateSymlinkTask.class);
 
     boolean cdPresent;
     File folder = srcGUI.getAsFile();

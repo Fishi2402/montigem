@@ -48,6 +48,7 @@ public abstract class BackendPlugin implements Plugin<Project> {
     project.getPluginManager().apply(MGBasePlugin.class);
     project.getPluginManager().apply("java-library");
     project.getPluginManager().apply("application");
+    project.getPluginManager().apply(SharedPlugin.class);
 
     var mainSourceSet = project.getExtensions().getByType(JavaPluginExtension.class)
         .getSourceSets().named(SourceSet.MAIN_SOURCE_SET_NAME);
@@ -76,7 +77,7 @@ public abstract class BackendPlugin implements Plugin<Project> {
 
     Directory models = getModels(project);
 
-    TaskProvider<MergeTask> mergeUMLP = project.getTasks().register(MERGE_UMLP_TASK, MergeTask.class, task -> {
+    TaskProvider<MergeTask> mergeUMLP = project.getTasks().named(MERGE_UMLP_TASK, MergeTask.class, task -> {
       task.source(models);
       task.getOutputFile().set(project.getLayout().getBuildDirectory().file(MERGE_UMLP_DIR));
 
