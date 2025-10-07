@@ -6,6 +6,17 @@ plugins {
 
 configurations {
   umlpTool
+  sharedImplementation.extendsFrom(umlpTool)
+}
+
+sourceSets {
+  shared {
+    java.srcDir('src/shared/java')
+  }
+  main {
+    compileClasspath += sourceSets.shared.output
+    runtimeClasspath += sourceSets.shared.output
+  }
 }
 
 dependencies {
@@ -27,6 +38,11 @@ dependencies {
     exclude(group: "com.kohlschutter.jdk", module:"standalone-home") // conflict with standalone-jdk11
   }
 
+  implementation sourceSets.shared.output
+  implementation configurations.sharedImplementation
+
+  sharedImplementation gradleApi()
+  sharedImplementation group: 'de.se_rwth.commons', name: 'se-commons-gradle', version: mc_version
 
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
 }
