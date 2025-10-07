@@ -36,7 +36,7 @@ page GemCardExample() {
 
 ## GUI Model
 
-`GemCard.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/arrange/GemCard.gui))
+`GemCard.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/arrange/GemCard.gui))
 
 ```java
 package mc.fenix.arrange;

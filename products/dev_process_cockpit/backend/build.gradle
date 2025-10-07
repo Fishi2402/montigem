@@ -8,7 +8,7 @@ plugins {
   id 'io.spring.dependency-management' version '1.0.15.RELEASE'
   id 'org.springframework.boot' version "${spring_version}"
 
-  id 'de.rwth.se.montigem-backend' // Makes the task-types `UMLPTask` and `MergeTask` available
+  id 'de.rwth.se.umlp-tool-backend' // Makes the task-types `UMLPTask` and `UMLPMergeTask` available
 }
 
 description 'Development Process Cockpit'
@@ -38,4 +38,16 @@ dependencies {
   implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
 
   implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
+}
+
+generateUmlpBackend {
+  input = file("../models/DevProcessCockpit.umlp")
+  symbolOutDir = file("${project.buildDir}/symbols")
+  useSpring = true
+}
+
+tasks.register('runServer') {
+  dependsOn(bootRun {
+    systemProperty "spring.shell.interactive.enabled", "false"
+  })
 }

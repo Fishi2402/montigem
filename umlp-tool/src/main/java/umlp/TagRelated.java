@@ -93,7 +93,7 @@ public class TagRelated {
             + "-s path/to/output/symbols/folder\n"
             + "\nor apply a plugin that adds this option by default if you use gradle, for example:\n"
             + "\nplugins {\n"
-            + "  id 'de.rwth.se.montigem-frontend'\n"
+            + "  id 'de.rwth.se.umlp-tool-frontend'\n"
             + "}\n"
         );
     }

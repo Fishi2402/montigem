@@ -76,7 +76,7 @@ Additional SCSS styles:
 ## GUI Model
 
 `GemColumn.gui`
-([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/arrange/GemColumn.gui))
+([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/arrange/GemColumn.gui))
 
 ```java
 package mc.fenix.arrange;

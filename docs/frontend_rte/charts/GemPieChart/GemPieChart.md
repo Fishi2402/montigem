@@ -27,7 +27,7 @@ page RowsTester(
 
 ## GUI Model
 
-`GemPieChart.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/charts/GemPieChart.gui))
+`GemPieChart.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/charts/GemPieChart.gui))
 
 ```java
 package mc.fenix.charts;
@@ -49,7 +49,7 @@ component GemPieChart(
 
 ### GemPieChartTypes
 
-`GemPieChartTypes.cd` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/charts/GemPieChartTypes.cd))
+`GemPieChartTypes.cd` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/charts/GemPieChartTypes.cd))
 
 ```java
 package mc.fenix.charts;

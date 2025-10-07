@@ -30,7 +30,7 @@ page GemTextareaInputExample(List<Person> persons) {
 
 ## GUI Model
 
-`GemTextareaInput.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/input/GemTextareaInput.gui))
+`GemTextareaInput.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/input/GemTextareaInput.gui))
 
 ```java
 package mc.fenix.input;
@@ -64,7 +64,7 @@ component GemTextareaInput(
 
 ### `GemTextareaInputTypes`
 
-`GemTextareaInputTypes.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/input/GemTextareaInputTypes.cd))
+`GemTextareaInputTypes.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/input/GemTextareaInputTypes.cd))
 
 ```java
 package mc.fenix.input;

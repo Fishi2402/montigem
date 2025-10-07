@@ -1,7 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 
+
 plugins {
-  id 'de.rwth.se.montigem-frontend'
+  id 'java'
+  id 'de.rwth.se.umlp-tool-frontend'
 }
 
 repositories {
@@ -10,6 +12,49 @@ repositories {
     credentials.password mavenPassword
     url ma_repo
   }
+}
+
+node {
+  nodeProjectDir = file("${buildDir}/frontendGen")
+}
+nodeSetup.dependsOn(frontendSetup)
+
+genGUI {
+  domainModels = ["AutoTechAgil"]
+}
+
+SYNC_genDomain {
+  filter { line -> line.replaceAll('../../../build/umlp_frontend/intermediate/', '../../../build/frontendGen/build/') }
+}
+SYNC_genGUI {
+  filter { line -> line.replaceAll('../../../build/umlp_frontend/intermediate/', '../../../build/frontendGen/build/') }
+}
+
+
+nodeSetup.dependsOn(frontendSetup)
+npmInstall.dependsOn(nodeSetup, ':umlp-rte:client:npmInstall')
+
+def prebuildTasks = [
+    npmInstall, generate
+]
+
+tasks.register('buildApp', NpxTask) {
+  dependsOn(prebuildTasks)
+  command = "ng"
+  args = ["build"]
+}
+assemble.dependsOn(buildApp)
+
+tasks.register('testApp', NpxTask) {
+  dependsOn(prebuildTasks)
+  command = "ng"
+  args = ["test"]
+}
+
+tasks.register('runApp', NpxTask) {
+  dependsOn(prebuildTasks)
+  command = "ng"
+  args = ["serve"]
 }
 
 tasks.register('runAppNoBuild', NpxTask) {

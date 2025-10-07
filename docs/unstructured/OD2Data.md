@@ -37,11 +37,11 @@ backend generation step of the product.
 
 ```
 task genTestData(type: UMLPOD2DataTask) {
-  dependsOn(umlp2java)
+  dependsOn(generateUmlpBackend)
   input = file("../models/Example.od")
   outputDir = file("$project.buildDir/testdata")
   hwcDir = file("$projectDir/src/main/java")
-  symbolDir = files(umlp2java.symbolOutDir)
+  symbolDir = files(generateUmlpBackend.symbolOutDir)
   symbolOutDir = file("$project.buildDir/testdata/symtab")
 }
 

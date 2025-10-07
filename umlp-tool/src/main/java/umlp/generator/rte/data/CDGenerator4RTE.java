@@ -7,7 +7,6 @@ import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import umlp.generator.domain.UMLPGeneratorConfig;
@@ -42,8 +41,6 @@ public class CDGenerator4RTE {
     ASTCDCompilationUnit decoratedAST = createCompilationUnit(cdAST);
 
     genSetup.getGlex().setGlobalValue("UMLPGeneratorConfig", config);
-    genSetup.getGlex().addAfterTemplate("ClassContent:Annotations",
-        new StringHookPoint("@umlp.jsweet.extension.annotation.CD2Java"));
 
     TemplateController tc = genSetup.getNewTemplateController(configTemplate);
     TemplateHookPoint hpp = new TemplateHookPoint(configTemplate);

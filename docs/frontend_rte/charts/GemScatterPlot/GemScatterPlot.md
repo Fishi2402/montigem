@@ -77,7 +77,7 @@ Results in:
 
 ## GUI Model
 
-`GemScatterPlot.gui`([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/charts/GemScatterPlot.gui))
+`GemScatterPlot.gui`([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/charts/GemScatterPlot.gui))
 
 ```ts
 package mc.fenix.charts;
@@ -100,7 +100,7 @@ component GemScatterPlot(
 
 ### Scatter Plot Types
 
-`GemScatterPlotTypes.cd` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/charts/GemScatterPlotTypes.cd))
+`GemScatterPlotTypes.cd` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/charts/GemScatterPlotTypes.cd))
 
 ```java
 package mc.fenix.charts;

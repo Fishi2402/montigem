@@ -1,0 +1,19 @@
+package gui.test;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
+
+import Dtcockpit.Project;
+
+
+component Test3Inner(List<Project> projects, int minValue, int maxValue) {
+  @iterate(Project p : projects) {
+    @GemText(value = "Got project named: " + p.name);
+  }
+  @GemText(value = "---");
+  @GemText(value = "min: " + minValue);
+  @GemText(value = "max: " + maxValue);
+}

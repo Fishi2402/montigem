@@ -35,7 +35,7 @@ allprojects {
   task manifestTask(){
     doLast{
       tasks.each {
-        if(it.class.name.contains("UMLP2JavaTask")){
+        if(it.class.name.contains("UMLPBackendTask")){
           try{
             def subproj = new MCLSMultiprojectPluginExtension.SubprojectLayoutExtension();
             def model = it.getInput().getAsFileTree().getFiles().findAll {it.name.endsWith(".umlp")}[0]

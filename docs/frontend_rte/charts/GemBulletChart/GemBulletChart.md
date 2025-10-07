@@ -36,7 +36,7 @@ page RowsTester(
 
 ## GUI Model
 
-`GemBulletChart.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/charts/GemBulletChart.gui))
+`GemBulletChart.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/charts/GemBulletChart.gui))
 
 ```java
 package mc.fenix.charts;

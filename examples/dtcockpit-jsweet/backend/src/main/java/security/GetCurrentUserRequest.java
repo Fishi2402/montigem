@@ -1,0 +1,36 @@
+package security;
+
+import dtcockpit.DtcockpitManager;
+import dtcockpit.User;
+import umlp.backendrte.command.CommandManager;
+import umlp.backendrte.command.Participant;
+import umlp.backendrte.command.SimpleResult;
+import umlp.backendrte.common.LoadingState;
+import umlp.backendrte.request.Request;
+
+public class GetCurrentUserRequest extends Request<Long> {
+  public GetCurrentUserRequest() {
+    super("security.GetCurrentUserRequest");
+  }
+
+  @Override
+  public SimpleResult<Long> doAction() {
+    Participant p = CommandManager.getInstance().getParticipant(getParticipantId());
+
+//    for (User user : DtcockpitManager.getUserList()) {
+//      if(user.getUsername().equals(p.getUsername())){
+//        return new SimpleResult<>(getId(), user.getGemId(), "java.lang.Long");
+//      }
+//    }
+    for (User user : DtcockpitManager.getUserList()) {
+      return new SimpleResult<>(getId(), user.getGemId(), "java.lang.Long");
+    }
+
+    return new SimpleResult<>(getId(), LoadingState.FAILED_TO_LOAD, "java.lang.Long");
+  }
+
+  @Override
+  public boolean checkAccessPolicy() {
+    return true;
+  }
+}

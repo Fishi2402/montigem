@@ -2,7 +2,7 @@
   "name": "Sovd Gateway",
   "tasks": [
     {
-      "type": "UMLP2JavaTask",
+      "type": "UMLPBackendTask",
       "additionalConfigs": [
         "sovd_gateway_module.backend.SovdGatewayBackendConfig.ftl"
       ]

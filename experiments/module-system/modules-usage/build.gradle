@@ -1,16 +1,16 @@
 plugins {
-  id 'de.rwth.se.montigem-backend'
+  id 'de.rwth.se.umlp-tool-backend'
 }
 
 dependencies {
   implementation(project(":experiments:module-system:module-definition"))
-  montigemModuleGeneratorExtension(project(path: ":experiments:module-system:module-definition", configuration: "moduleGenTime"))
+  umlpModulesGen(project(path: ":experiments:module-system:module-definition", configuration: "moduleGenTime"))
 }
 
-tasks.register('printmontigemModule')(){
+tasks.register('printUmlpModules')(){
   doLast{
-    println("Files in montigemModuleGeneratorExtension")
-    configurations.montigemModuleGeneratorExtension.files.each {
+    println("Files in umlpModulesGen")
+    configurations.umlpModulesGen.files.each {
       println(it)
     }
   }

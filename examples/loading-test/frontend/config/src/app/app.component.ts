@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { LoadingTestsManagerClientImpl } from 'loadingtests/LoadingTestsManagerClientImpl';
 import { LoadingTestsManager } from 'loadingtests/LoadingTestsManager';
 import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from '@umlp/common';
-import { DummyComponentObserverManager } from './DummyComponentObserverManager'
 
 declare global {
   interface Window {
@@ -25,6 +24,5 @@ export class AppComponent {
     CommandManager.initMe(cmdManager);
     (<any>window).websocket_connected = true;
     (<any>window).LoadingTestsManager = LoadingTestsManager
-    DummyComponentObserverManager.init();
   }
 }

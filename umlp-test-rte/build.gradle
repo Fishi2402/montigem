@@ -41,8 +41,8 @@ dependencies {
   implementation("com.hivemq:hivemq-mqtt-client:1.3.0")
 }
 
-// TODO: montigemModule config is added elsewhere  by the umlp plugin
-configurations {montigemModule{}}
+// TODO: umlpModules config is added elsewhere  by the umlp plugin
+configurations {umlpModules{}}
 
 /////////////////////////   Deployment  //////////////////////////////////
 

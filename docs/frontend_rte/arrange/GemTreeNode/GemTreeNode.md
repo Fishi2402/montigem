@@ -103,7 +103,7 @@ page ProjectPage(Directory project) {
 
 ## GUI Model
 
-`GemTreeNode.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/arrange/GemTreeNode.gui))
+`GemTreeNode.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/arrange/GemTreeNode.gui))
 
 ```java
 package mc.fenix.arrange;

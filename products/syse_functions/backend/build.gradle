@@ -2,7 +2,7 @@
 
 plugins {
   id 'java-library'
-  id 'de.rwth.se.montigem-backend'
+  id 'de.rwth.se.umlp-tool-backend'
 
   id 'application'
   id 'io.spring.dependency-management' version '1.0.15.RELEASE'
@@ -61,7 +61,7 @@ application {
   mainClass = 'functionstructure4fenix.FunctionStructure4FenixServerApplication'
 }
 
-umlp2java {
+generateUmlpBackend {
   input = file("../models/FunctionStructure4Fenix.umlp")
   useSpring.set(true)
   useShell.set(false)

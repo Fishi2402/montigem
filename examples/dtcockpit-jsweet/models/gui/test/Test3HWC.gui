@@ -1,0 +1,20 @@
+package gui.test;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
+
+import Dtcockpit.Project;
+import gui.test.Test3Inner;
+import gui.test.TestNav;
+
+// Fetch a GemList and pass it to an inner component
+// with hand-written changes
+page Test3HWC(List<Project> projects) {
+  @TestNav();
+  @GemText(value = "Show a list via an inner component, with HWC  changing the values:");
+  inner@Test3Inner(projects=projects,       maxValue = 100,
+                                       minValue = 0);
+}

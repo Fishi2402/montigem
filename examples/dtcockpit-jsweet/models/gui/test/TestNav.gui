@@ -1,0 +1,21 @@
+package gui.test;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
+
+import mc.fenix.navigation.GemNavItem;
+
+// Navigation between the various tests
+component TestNav() {
+  @GemNavItem(title = "0 (static)" , target = "/gui/test/Test0");
+  @GemNavItem(title = "1 (list)" , target = "/gui/test/Test1");
+  @GemNavItem(title = "2 (list+expr)" , target = "/gui/test/Test2");
+  @GemNavItem(title = "3 (inner-list)" , target = "/gui/test/Test3");
+  @GemNavItem(title = "3HWC (inner-list)" , target = "/gui/test/Test3HWC");
+  @GemNavItem(title = "4 (HWC expr)" , target = "/gui/test/Test4");
+  @GemNavItem(title = "5 (single item)" , target = "/gui/test/Test5/1");
+  @GemNavItem(title = "vis-example (pipelinestats - might crash your browser - or not update data once loaded - see console)" , target = "/gui/pipelines/PipelineStats/1");
+}

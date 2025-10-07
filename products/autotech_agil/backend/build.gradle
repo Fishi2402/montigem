@@ -1,10 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import de.montigem.gradle.specific.UMLP2JavaTask
-
 plugins {
   id 'java-library'
-  id 'de.rwth.se.montigem-backend'
+  id 'de.rwth.se.umlp-tool-backend'
 
   id 'application'
   id 'io.spring.dependency-management' version '1.0.15.RELEASE'
@@ -61,8 +59,16 @@ application {
   mainClass = 'autotechagil.AutoTechAgilServerApplication'
 }
 
-tasks.named("umlp2java", UMLP2JavaTask) {
+generateUmlpBackend {
+  input = file("../models/AutoTechAgil.umlp")
   useSpring.set(true)
+  useShell.set(false)
+}
+
+tasks.register('runServer') {
+  dependsOn(bootRun {
+    systemProperty "spring.shell.interactive.enabled", "false"
+  })
 }
 
 test {

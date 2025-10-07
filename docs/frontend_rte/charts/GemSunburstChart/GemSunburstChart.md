@@ -29,7 +29,7 @@ page RowsTester(
 
 ## GUI Model
 
-`GemSunburstChart.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/charts/GemSunburstChart.gui))
+`GemSunburstChart.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/charts/GemSunburstChart.gui))
 
 ```java
 package mc.fenix.charts;
@@ -53,7 +53,7 @@ component GemSunburstChart (
 
 ### GemSunburstChartTypes
 
-`GemSunburstChartTypes.cd` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/charts/GemSunburstChartTypes.cd))
+`GemSunburstChartTypes.cd` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/charts/GemSunburstChartTypes.cd))
 
 ```java
 package mc.fenix.charts;

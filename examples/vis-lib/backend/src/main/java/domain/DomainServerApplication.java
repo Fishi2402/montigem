@@ -14,11 +14,10 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
 
-@SpringBootApplication(
-    exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class},
-    scanBasePackages = {"umlp.backendrte.service.websocket", "umlp.backendrte.service.rest", "service"}
-)
-public class DomainServerApplication extends DomainServerApplicationTOP {
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class,
+    HibernateJpaAutoConfiguration.class}, scanBasePackages = {"umlp.backendrte.service.websocket",
+    "umlp.backendrte.service.rest", "service"})
+public class DomainServerApplication extends domain.DomainServerApplicationTOP {
 
   public static void main(String[] args) {
     SpringApplication.run(DomainServerApplication.class, args);
@@ -230,7 +229,7 @@ public class DomainServerApplication extends DomainServerApplicationTOP {
         .role(generateRandomRole())
         .build()
         .get();
-    Log.info("Person created with gemId: " + p.getGemId(), this.getClass().getName());
+    Log.info("Person created with gemId: "+p.getGemId(), this.getClass().getName());
     return p;
   }
 

@@ -1,18 +1,34 @@
 /* (c) https://github.com/MontiCore/monticore */
-
-import de.montigem.gradle.specific.GUI2Java2TSTask
-
 plugins {
-  id "de.rwth.se.montigem-frontend-test"
+  id "de.rwth.se.umlp-tool-frontend-test"
 }
 
 dependencies {
+  implementation(project(":examples:flensburg-test:backend"))
   testImplementation(project(":umlp-test-rte"))
 }
 
-tasks.named("gui2java2ts", GUI2Java2TSTask) {
-  guiCreateModels = ["stanley.gui.AccountCreate"]
+sourceSets {
+  main.java.srcDirs += [layout.buildDir.dir("umlp_frontend/intermediate/appgui")]
 }
+
+node {
+  nodeProjectDir = file("${buildDir}/frontendGen")
+}
+
+genDomain {
+  input = file("../models/hardy/Flensburg.umlp")
+}
+
+genGUI {
+  domainModels = ["hardy.Flensburg"] // "LoginModule" is included via the modGen (or not required?)
+  guiCreateModels = ["stanley.gui.AccountCreate"]
+  hwcDir += [layout.projectDirectory.dir("src/main/java")]
+}
+tasks.compileJava.dependsOn(genGUI)
+
+nodeSetup.dependsOn(frontendSetup)
+npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 
 test {
   useJUnitPlatform()

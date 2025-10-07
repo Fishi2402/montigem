@@ -157,7 +157,8 @@ one. Our goals:
     have to specify it in the `frontend/build.gradle` configuration that the
     model is used for object creation:
     ```groovy
-    gui2java2ts {
+    genGUI {
+      domainModels = ["Carrental"]
       guiCreateModels = ["gui.CarCreate"]
     }
     ```

@@ -5,15 +5,12 @@ import loginmodule.LoginModuleUserAccessPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import umlp.backendrte.command.StatusResult;
 import umlp.backendrte.common.NotificationScope;
-import umlp.jsweet.extension.annotation.BackendOnly;
-import umlp.jsweet.extension.annotation.BackendOnlyModes;
 
 public class LoginModuleUser_create extends LoginModuleUser_createTOP {
   public LoginModuleUser_create(LoginModuleUser loginModuleUser) {
     super(loginModuleUser);
   }
 
-  @BackendOnly(BackendOnlyModes.THROW_ERROR)
   @Override
   public StatusResult doAction() {
     // Replace cleartext password with hashed password
@@ -31,7 +28,6 @@ public class LoginModuleUser_create extends LoginModuleUser_createTOP {
 
   }
 
-  @BackendOnly(BackendOnlyModes.THROW_ERROR)
   public StatusResult sendMail() {
     // TODO: Send a welcome email?
 //    Log.trace("Sending Email to " + user.getEmail(), LogUtil.getLoggerName());

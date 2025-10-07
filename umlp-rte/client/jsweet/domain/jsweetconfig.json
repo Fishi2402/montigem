@@ -1,0 +1,15 @@
+{
+  "adapters": [
+    "umlp.jsweet.extension.UMLPGuiTypesAdapter"
+  ],
+  "@Erased": {
+    "include": [
+      "**.spliterator*()",
+      "**.stream*()",
+      "**.parallelStream*()"
+    ]
+  },
+  "asyncList": false,
+  "rte": "commonj2ts",
+  "domainName": "dummy"
+}

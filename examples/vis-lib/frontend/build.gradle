@@ -1,28 +1,63 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import de.montigem.gradle.specific.GUI2Java2TSTask
-import de.montigem.gradle.specific.UMLPJava2TSTask
-
 plugins {
-  id "de.rwth.se.montigem-frontend"
+  id "de.rwth.se.umlp-tool-frontend"
+}
+
+node {
+  nodeProjectDir = file("${buildDir}/frontendGen")
 }
 
 dependencies {
+  implementation project(":examples:vis-lib:backend")
   testImplementation project(':umlp-test-rte')
+  // JSweet
+  domainSources project(":examples:vis-lib:backend")
 }
 
 configurations {
-  testRuntimeClasspath.exclude group: 'de.monticore.language-server', module: 'monticore-language-server-runtime'
+  testRuntimeClasspath.exclude group: 'de.monticore.language-server', module:'monticore-language-server-runtime'
 }
 
-tasks.named("umlpJava2ts", UMLPJava2TSTask) {
-  verbose = true
-}
-
-tasks.named("gui2java2ts", GUI2Java2TSTask) {
+genGUI {
+  domainModels = ["Domain"]
   guiCreateModels = ["person.CreatePerson", "person.CreatePersonWithFriends", "person.CreateClubWithMembers"]
+
+  /*
+  debug = true
+  outputs.upToDateWhen { false }
+  /**/
+}
+
+translateJava2TSDomain {
   verbose = true
-  outputs.upToDateWhen {false}
+}
+
+translateJava2TSGUI {
+  verbose = true
+}
+
+task copyAppJsweet(type: Copy) {
+  dependsOn(frontendSetup)
+  from 'config/src/appjsweet'
+  into 'build/frontendGen/src/app/'
+}
+
+nodeSetup.dependsOn(frontendSetup)
+npmInstall.dependsOn(':umlp-rte:client:npmInstall')
+
+["testApp", "buildApp", "runApp"].forEach {
+  tasks.named(it, NpxTask) {
+    dependsOn(
+        copyAppJsweet,
+        project(":umlp-rte:client").tasks.matching { it.name.startsWith("copy_") },
+        project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") }
+    )
+  }
+}
+
+tasks.register('run') {
+  dependsOn(runApp)
 }
 
 test {
@@ -33,7 +68,6 @@ test {
 }
 
 tasks.register("slowtest", Test) {
-  group = "verification"
   testLogging {
     events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
   }
@@ -44,8 +78,8 @@ tasks.register("slowtest", Test) {
   dependsOn npmInstall
 }
 
-tasks.register("runAppNoBuild", NpxTask) {
-  group = "application"
+
+task runAppNoBuild(type: NpxTask) {
   command = "ng"
   args = ["serve"]
 }

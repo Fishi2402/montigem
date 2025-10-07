@@ -1,6 +1,7 @@
 package umlp.cli;
 
 import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
 import de.monticore.io.FileReaderWriter;
@@ -11,6 +12,7 @@ import umlp.MillConf;
 import umlp.UMLPTool;
 import umlp.cli.common.IOperation;
 import umlp.cli.common.Pipeline;
+import umlp.generator.gui.gentypescript.printer.TSImportMap;
 import umlp.generator.gui.guivariability.GUIVariabilityHandler;
 
 import java.nio.file.Path;
@@ -117,21 +119,16 @@ public class GuiVarPipeline extends Pipeline<UMLPPipelineData> {
 
   public final IOperation.ISimpleOperation<DataWithModels> process_product_asts = data -> {
     for (ASTGUICompilationUnit productAST : data.getBaseASTs()) {
-      if (data.getVariationASTs().stream().anyMatch(ast ->
-          ast.getGUIComponentDeclaration().isPresentGUIComponentAdaptation()
-              && ast.getGUIComponentDeclaration().getGUIComponentAdaptation().getTarget().equals(productAST.getComponentName())
-      )) {
-        Reporting.on(productAST.getComponentName() + "__gui");
-        Path outputPath = data.getData().outDir.toPath()
-            .resolve(        //file structure needs to reflect package declarations
-                productAST.getMCPackageDeclaration().getMCQualifiedName().toString().replace(".", "/")
-                    .concat("/" + productAST.getComponentName() + ".gui"));
-        GUIDSLFullPrettyPrinter pp = new GUIDSLFullPrettyPrinter(new IndentPrinter(), true);
-        FileReaderWriter.storeInFile(outputPath, pp.prettyprint(productAST));
+      Reporting.on(productAST.getComponentName() + "__gui");
+      Path outputPath = data.getData().outDir.toPath()
+          .resolve(        //file structure needs to reflect package declarations
+              productAST.getMCPackageDeclaration().getMCQualifiedName().toString().replace(".", "/")
+                  .concat("/" + productAST.getComponentName() + ".gui"));
+      GUIDSLFullPrettyPrinter pp = new GUIDSLFullPrettyPrinter(new IndentPrinter(), true);
+      FileReaderWriter.storeInFile(outputPath, pp.prettyprint(productAST));
 
-        Reporting.reportFileCreation(outputPath.toString());
-        Reporting.flush(productAST);
-      }
+      Reporting.reportFileCreation(outputPath.toString());
+      Reporting.flush(productAST);
     }
   };
 

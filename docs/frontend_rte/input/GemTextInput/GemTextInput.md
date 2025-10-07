@@ -33,7 +33,7 @@ page GemTextInputExample(List<Person> persons) {
 <img src='./images/GemTextInputExample.png' alt='GemTextInputExample' width='50%'>
 
 
-## GUI Model ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/input/GemTextInput.gui))
+## GUI Model ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/input/GemTextInput.gui))
 
 ```java
 component GemTextInput(
@@ -67,7 +67,7 @@ component GemTextInput(
 
 ## Types
 
-### `GemTextInputTypes` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/input/GemTextInputTypes.cd))
+### `GemTextInputTypes` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/input/GemTextInputTypes.cd))
 
 ```java
 package mc.fenix.input;

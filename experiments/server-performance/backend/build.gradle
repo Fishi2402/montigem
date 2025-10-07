@@ -2,12 +2,32 @@
 
 plugins {
   id 'java-library'
-  id 'de.rwth.se.montigem-backend'
+  id 'de.rwth.se.umlp-tool-backend'
 
   id 'application'
   id 'com.google.cloud.tools.jib' version '3.4.4'
   id 'io.spring.dependency-management' version '1.0.15.RELEASE'
   id 'org.springframework.boot' version "${spring_version}"
+}
+
+repositories {
+  if (("true").equals(getProperty('useLocalRepo'))) {
+    mavenLocal()
+  }
+  maven {
+    credentials.username mavenUser
+    credentials.password mavenPassword
+    url repo
+  }
+  mavenCentral()
+}
+
+configurations {
+  guiDefaultTypes
+}
+
+dependencies {
+  guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
 }
 
 application {
@@ -45,6 +65,25 @@ dependencies {
   implementation project(':umlp-rte')
 }
 
+generateUmlpBackend {
+  input = file("../models/ServerPerformance.umlp")
+  symbolOutDir = file("${project.buildDir}/symbols")
+  useSpring.set(true)
+}
+
 generateTestInfrastructure {
   usePlaywright.set(true)
+}
+
+tasks.register('runServer') {
+  dependsOn(bootRun {
+    systemProperty "spring.shell.interactive.enabled", "false"
+  })
+}
+
+test {
+  testLogging {
+    events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
+  }
+  useJUnitPlatform()
 }

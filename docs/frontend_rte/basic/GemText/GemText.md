@@ -30,7 +30,7 @@ page GemTextExample() {
 
 ## GUI Model
 
-`GemText.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/basic/GemText.gui))
+`GemText.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/basic/GemText.gui))
 
 ```java
 package mc.fenix.basic;

@@ -26,14 +26,16 @@
       "dom"
     ],
     "paths": {
-      "@umlp/*": ["prodlibs/@umlp/*"],
-      "@montigem/*": ["prodlibs/@montigem/*"],
+      "@umlp/*": ["libs/@umlp/*"],
+      "@montigem/login": ["login_hwc"],
       "*": [
-        "gui2java2ts/*",
-        "umlpJava2ts/*",
         "src/app/*",
-        "hwc/*",
-        "fe2/*"
+        "build/appdomain/*",
+        "build/appgui/*",
+        "hwcsrc/*",
+        "login_module_domain/*",
+        "login_module_gui/*",
+        "umlp_modules/loginmodule-ts/second_placeholder/src/*"
       ]
     }
   },

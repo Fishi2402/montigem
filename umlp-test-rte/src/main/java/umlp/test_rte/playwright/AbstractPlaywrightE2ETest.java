@@ -65,12 +65,12 @@ public abstract class AbstractPlaywrightE2ETest implements PlaywrightUtils {
   /**
    * Gets the directory to which the frontend app has been build to.
    *
-   * <p>By default this directory is assumed to be {@code build/app/dist/client}
+   * <p>By default this directory is assumed to be {@code build/frontendGen/dist/client/browser}
    *
-   * @return The {@link File} denoting the app directory
+   * @return The {@link File} denoting the frontendGen directory
    */
   protected File getFrontendDistDirectory() {
-    return new File("build/app/dist/client/browser");
+    return new File("build/frontendGen/dist/client/browser");
   }
 
   /**

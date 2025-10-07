@@ -1,0 +1,21 @@
+package gui.test;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
+
+import Dtcockpit.Project;
+
+import gui.test.TestNav;
+
+// Hand-written change to pname
+page Test4(List<Project> projects) {
+  @TestNav();
+  @GemText(value = "HWC changes for the text, individual for each item:");
+  @iterate(Project p : projects) {
+    pname@GemText(value = "CHANGED VIA HWC");
+  }
+  @GemText(value = "---");
+}

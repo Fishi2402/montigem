@@ -39,7 +39,7 @@ tasks.register('generateGuiComponentJava', GUITypes2JavaTask) {
 
 ### Current Application
 
-As of now, the generator is used for class diagrams in `umlp-rte/frontend/models` where the generator
+As of now, the generator is used for class diagrams in `umlp-rte/client/models` where the generator
 is executed in the `generateGuiComponentJava` Gradle task.
 To integrate the DeSer, for each diagram a DeSer class is generated which contains a map of all 
 available DeSers in the CD. This map has to be added to an instantiated BaseClassObjectMapper for 

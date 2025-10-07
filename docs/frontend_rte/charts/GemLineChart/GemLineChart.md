@@ -27,7 +27,7 @@ page RowsTester(
 
 ## GUI Model
 
-`GemLineChart.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/charts/GemLineChart.gui))
+`GemLineChart.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/charts/GemLineChart.gui))
 
 ```java
 package mc.fenix.charts;
@@ -55,7 +55,7 @@ component GemLineChart(
 
 ### GemLineChartTypes
 
-`GemLineChartTypes.cd` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/charts/GemLineChartTypes.cd))
+`GemLineChartTypes.cd` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/charts/GemLineChartTypes.cd))
 
 ```java
 package mc.fenix.charts;

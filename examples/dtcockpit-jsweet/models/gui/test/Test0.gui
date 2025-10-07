@@ -1,0 +1,17 @@
+package gui.test;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
+
+import Dtcockpit.Project;
+
+import gui.test.TestNav;
+
+// Show a static text
+page Test0(List<Project> projects) {
+  @TestNav();
+  @GemText(value = "Only show this static text");
+}

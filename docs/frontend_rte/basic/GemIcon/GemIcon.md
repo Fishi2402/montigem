@@ -36,7 +36,7 @@ page GemIconExample() {
 
 ## GUI Model
 
-`GemIcon.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/basic/GemIcon.gui))
+`GemIcon.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/basic/GemIcon.gui))
 
 ```java
 package mc.fenix.basic;

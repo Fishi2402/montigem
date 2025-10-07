@@ -30,7 +30,7 @@ page GemCheckBoxInputExample(List<Person> persons) {
 ## GUI Model
 
 `GemCheckBoxInput.gui`
-([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/input/GemCheckBoxInput.gui))
+([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/input/GemCheckBoxInput.gui))
 
 ```java
 package mc.fenix.input;

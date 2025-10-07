@@ -29,7 +29,7 @@ page RowsTester(
 
 ## GUI Model
 
-`GemGaugeChart.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/charts/GemGaugeChart.gui))
+`GemGaugeChart.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/charts/GemGaugeChart.gui))
 
 ```java
 package mc.fenix.charts;
@@ -56,7 +56,7 @@ component GemGaugeChart (
 
 ### GemGaugeChartTypes
 
-`GemGaugeChartTypes.cd` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/charts/GemGaugeChartTypes.cd))
+`GemGaugeChartTypes.cd` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/charts/GemGaugeChartTypes.cd))
 
 ```java
 package mc.fenix.charts;

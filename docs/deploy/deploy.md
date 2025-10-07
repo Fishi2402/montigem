@@ -32,7 +32,7 @@ Following files are required in the frontend Directory:
 * `Dockerfile`
 * `Caddyfile`
 
-In the recommended umlp-setup the gradle task of type ``setupFrontend`` creates these files in its output directory.
+In the recommended umlp-setup the gradle task of type ``FrontendSetup`` creates these files in its output directory.
 
 To build the docker-container:
 ````

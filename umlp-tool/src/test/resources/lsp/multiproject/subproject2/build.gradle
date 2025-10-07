@@ -1,8 +1,8 @@
 plugins {
-  id "de.rwth.se.montigem-frontend"
+  id "de.rwth.se.umlp-tool-frontend"
 }
 
-gui2java {
+genGUI {
   domainModels = ["Domain"]
   guiCreateModels = ["complex.RoomPersonDetails"]
 }

@@ -24,7 +24,7 @@ page GemAudioExample() {
 
 ## GUI Model
 
-`GemAudio.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/basic/GemAudio.gui))  
+`GemAudio.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/basic/GemAudio.gui))  
 
 ```java
 package mc.fenix.basic;

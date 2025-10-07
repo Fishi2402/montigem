@@ -1,25 +1,21 @@
 /* (c) https://github.com/MontiCore/monticore */
-
-import de.montigem.gradle.specific.CreateNpmrcTask
-import de.montigem.gradle.specific.UMLP2JavaTask
-
 plugins {
-  id 'application'
-  id 'com.google.cloud.tools.jib' version '3.4.4'
-  id 'io.spring.dependency-management' version '1.0.15.RELEASE'
-  id 'org.springframework.boot' version "${spring_version}"
+    id 'application'
+    id 'com.google.cloud.tools.jib' version '3.4.4'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'org.springframework.boot' version "${spring_version}"
 
-  id 'de.rwth.se.montigem-backend'
+    id 'de.rwth.se.umlp-tool-backend'
 }
 
 description 'StatServer'
 
 application {
-  mainClass = 'log_mc_jar.StatServerApplication'
+    mainClass = 'log_mc_jar.StatServerApplication'
 }
 
 bootBuildImage {
-  imageName = "statserver"
+    imageName = "statserver"
 }
 
 jib {
@@ -29,44 +25,52 @@ jib {
 }
 
 dependencies {
-  implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
-  implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
+    implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
 
-  // Spring Boot Dependencies
-  def withoutSpringLogging = {
-    exclude module: 'spring-boot-starter-logging'
-    exclude module: 'logback-classic'
-  }
-  developmentOnly("org.springframework.boot:spring-boot-devtools:$spring_version")
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version, withoutSpringLogging
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version, withoutSpringLogging
-  implementation "com.h2database:h2:${h2_database}"
+    // Spring Boot Dependencies
+    def withoutSpringLogging = {
+        exclude module: 'spring-boot-starter-logging'
+        exclude module: 'logback-classic'
+    }
+    developmentOnly("org.springframework.boot:spring-boot-devtools:$spring_version")
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version, withoutSpringLogging
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version, withoutSpringLogging
+    implementation "com.h2database:h2:${h2_database}"
 
-  implementation group: 'org.slf4j', name: 'slf4j-simple', version: "1.7.10"
+    implementation group: 'org.slf4j', name: 'slf4j-simple', version: "1.7.10"
 
-  implementation group: 'org.neo4j', name: 'neo4j-jdbc-driver', version: '4.0.9'
-  testImplementation "org.neo4j:neo4j:4.4.10"
-  implementation "org.neo4j.driver:neo4j-java-driver:$neo4jVersion"
-  //symbol "de.monticore:frontend-rte:$mc_version"
-  testImplementation project(':umlp-test-rte')
+    implementation group: 'org.neo4j', name: 'neo4j-jdbc-driver', version: '4.0.9'
+    testImplementation "org.neo4j:neo4j:4.4.10"
+    implementation "org.neo4j.driver:neo4j-java-driver:$neo4jVersion"
+    //symbol "de.monticore:frontend-rte:$mc_version"
+    testImplementation project(':umlp-test-rte')
 }
 
-String diff_location = "diff_store"
+tasks.register('runServer') {
+    dependsOn(bootRun)
+}
+
+
+String diff_location="diff_store"
 tasks.register('copyGeneratedFiles', Sync) {
   group = "diff"
-  from umlp2java.getOutputDir()
+  from generateUmlpBackend.getOutputDir()
   into layout.buildDirectory.dir(diff_location)
 }
 
-def umlp2java = tasks.named("umlp2java", UMLP2JavaTask) {
-  input = file("./src/models")
+generateUmlpBackend {
   configTemplate = "umlp.UMLP2JavaNeo4j"
-  useSpring = false
 }
 
-tasks.register('diff', Exec) {
+tasks.register('diff', Exec){
   group = "diff"
-  dependsOn(umlp2java)
-  commandLine 'cmd', '/c', 'git', 'diff', '--no-index', layout.buildDirectory.dir(diff_location).get().getAsFile().toPath(), umlp2java.get().getOutputDir().get().getAsFile().toPath()
+  dependsOn(generateUmlpBackend)
+  commandLine 'cmd', '/c', 'git', 'diff', '--no-index', layout.buildDirectory.dir(diff_location).get().getAsFile().toPath(), generateUmlpBackend.getOutputDir().get().getAsFile().toPath()
   ignoreExitValue true
+}
+
+
+tasks.register('generateNPMAuth', NPMAuthCreate){
+  gitignore = project.getRootProject().file(".gitignore") // Task reads gitignore to ensure <.npmrc> is not committed
 }

@@ -1,0 +1,19 @@
+{
+  "name": "SomeModule",
+  "tasks": [
+    {
+      "type": "UMLPBackendTask",
+      "additionalConfigs": [
+        "some_module.BackendConfig.ftl"
+      ],
+      "additionalParameters": []
+    },
+    {
+      "type": "UMLPFrontendTask",
+      "additionalConfigs": [
+        "some_module.FrontendConfig.ftl"
+      ],
+      "additionalParameters": []
+    }
+  ]
+}

@@ -129,12 +129,10 @@ public class TSImportHelper {
   }
 
   protected Optional<String> getImportPath(
-      MCPath hwPath, Path outPath, MCPath importsPath,
-      final String importerQName, final String importedQName
-  ) {
+      MCPath hwPath, Path outPath, MCPath importsPath, String importerQName, String importedQName) {
     String importedQualifier = Names.getQualifier(importedQName);
     String importedSimpleName = Names.getSimpleName(importedQName);
-    final String importedMaybeCDName;
+    String importedMaybeCDName;
 
     if (!importedQualifier.isBlank()) {
       List<String> parts = Splitter.on('.').splitToList(importedQualifier);
@@ -160,24 +158,6 @@ public class TSImportHelper {
       imported = Names.getPathFromPackage(importedQName) + ".java";
       importer = Names.getPathFromPackage(importerQName) + ".java";
       hwFilePath = hwPath.find(imported);
-
-      if (hwFilePath.isPresent()) {
-        if (UMLPGeneratorConfig.getInstance().is4TSLib()) {
-          // The java files are converted to TypeScript files in outDir, e.g.
-          // src/main/java/montigem/types/Option.java -> <outDir>/montigem/types/Option.ts
-          String ts = Names.getPathFromPackage(Names.getQualifier(importedQName).toLowerCase()
-              + "." + Names.getSimpleName(importedQName)) + ".ts";
-          return Optional.of(path2TSRelativeImport(outPath.resolve(importer).getParent()
-              .toAbsolutePath()
-              .normalize()
-              .relativize(outPath.resolve(ts))
-              .toString()
-              .replaceAll("\\\\", "/")));
-        }
-        else {
-          return Optional.of(path2TSRootImport(imported));
-        }
-      }
     }
 
     // case: TOP is used, use path to HW file, e.g.,
@@ -199,10 +179,6 @@ public class TSImportHelper {
       }
     }
     else {
-      importedMaybeCD = importedMaybeCDName + ".ts";
-      imported = Names.getPathFromPackage(importedQName) + ".ts";
-      importer = Names.getPathFromPackage(importerQName) + ".ts";
-
       Optional<URL> importedURLOpt = importsPath.find(imported);
       Optional<URL> importedMaybeCDURLOpt = importsPath.find(importedMaybeCD);
       // case: external (generated) file must be imported, e.g.,
@@ -233,44 +209,6 @@ public class TSImportHelper {
           }
           else {
             return Optional.of(path2TSRootImport(imported));
-          }
-        }
-      }
-      else {
-        importedMaybeCD = importedMaybeCDName + ".java";
-        imported = Names.getPathFromPackage(importedQName) + ".java";
-        importer = Names.getPathFromPackage(importerQName) + ".java";
-
-        importedURLOpt = importsPath.find(imported);
-        importedMaybeCDURLOpt = importsPath.find(importedMaybeCD);
-
-        if (importedURLOpt.isPresent() || importedMaybeCDURLOpt.isPresent()) {
-          if (UMLPGeneratorConfig.getInstance().is4TSLib()) {
-            Optional<Path> importedPath;
-            // prefer "maybe CD" option
-            if (importedMaybeCDURLOpt.isPresent()) {
-              importedPath = MCPath.toPath(importedMaybeCDURLOpt.get());
-            }
-            else {
-              importedPath = MCPath.toPath(importedURLOpt.get());
-            }
-            if (importedPath.isPresent()) {
-              Path fromPath = outPath.resolve(importer);
-              // Calculate the relative path
-              return Optional.of(path2TSRelativeImport(fromPath.getParent()
-                  .normalize()
-                  .relativize(importedPath.get())
-                  .toString()
-                  .replaceAll("\\\\", "/")));
-            }
-          }
-          else {
-            if (importedMaybeCDURLOpt.isPresent()) {
-              return Optional.of(path2TSRootImport(importedMaybeCD));
-            }
-            else {
-              return Optional.of(path2TSRootImport(imported));
-            }
           }
         }
       }
@@ -306,12 +244,11 @@ public class TSImportHelper {
       path.append('/');
     }
 
-    // TODO AGe: remove toLowerCase when corresponding umlp trafo is fixed
-    return Optional.of(path.toString().toLowerCase());
+    return Optional.of(path.toString());
   }
 
   protected String path2TSRelativeImport(String relativePath) {
-    if (!relativePath.startsWith("./")) {
+    if (!relativePath.contains("/")) {
       // Same folder, prepend "./"
       relativePath = "./" + relativePath;
     }

@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package security;
 
-import jsweet.lang.Erased;
-
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -12,7 +10,6 @@ import java.util.function.Function;
 
 import static umlp.backendrte.service.websocket.WebSocketConfig.UMLP_DOMAINNAME_ENV;
 
-@Erased
 public class MailService {
 
   public static final String SENDER = System.getenv().getOrDefault("mailAbsender", "noreply@dtcockpit.se.rwth-aachen.de");

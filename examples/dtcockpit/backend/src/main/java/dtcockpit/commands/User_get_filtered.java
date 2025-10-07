@@ -3,8 +3,6 @@ package dtcockpit.commands;
 
 import dtcockpit.DtcockpitManager;
 import umlp.backendrte.command.ListResult;
-import umlp.jsweet.extension.annotation.BackendOnly;
-import umlp.jsweet.extension.annotation.BackendOnlyModes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +18,6 @@ public class User_get_filtered extends User_get_filteredTOP {
     super(filter);
   }
 
-  @BackendOnly(value = BackendOnlyModes.THROW_ERROR)
   @Override
   public ListResult<Long, List<Long>> doAction() {
 
@@ -35,8 +32,7 @@ public class User_get_filtered extends User_get_filteredTOP {
 
     if (!validAccessIDs.isEmpty()) {
       return ListResult.of(getId(), validAccessIDs, "java.lang.Long");
-    }
-    else {
+    } else {
       return ListResult.error(getId(), "java.lang.Long");
     }
 

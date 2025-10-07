@@ -38,12 +38,12 @@ domainModel = 'FunctionStructure4Fenix'
 ```
 
 2. In der Datei `build.gradle` im `dependency` Block eine 
-`implementation` sowie eine `srcUMLPConfig` Abhängigkeit auf das `backend` 
+`implementation` sowie eine `domainSources` Abhängigkeit auf das `backend` 
 Projekt anlegen  
 z.B. 
 ```groovy
 dependencies {
-    srcUMLPConfig project(":backend")
+    domainSources project(":backend")
     implementation project(":backend")
 }
 ```
@@ -86,7 +86,7 @@ public @interface Component {
 Sollte es doch notwendig
 sein, den Typescript Code direkt anzupassen, kann dies momentan umgesetzt 
 werden, indem entsprechende Datei mit gleichem Orderpfad unter
-`src/main/gui/gui` bzw. `src/main/gui/domain` erstellt wird. Diese überschreiben
+`src/main/ts/gui` bzw. `src/main/ts/domain` erstellt wird. Diese überschreiben
 dann alle transpilierten Dateien mit gleichem Namen.
 
 ### Zusätzliche Attribute
@@ -142,10 +142,10 @@ jsweetGuiConfigHWCDir = "jsweet/gui"
 jsweetDomainConfigOutDir = "configGen/domain"
 # ${jsweetBuildDirBase}/configGen/gui
 jsweetGuiConfigOutDir = "configGen/gui"
-# ${projectDir}/src/main/gui/domain
-jsweetTSDomainHWCPath = "src/main/gui/domain"
-# ${projectDir}/src/main/gui/gui
-jsweetTSGuiHWCPath = "src/main/gui/gui"
+# ${projectDir}/src/main/ts/domain
+jsweetTSDomainHWCPath = "src/main/ts/domain"
+# ${projectDir}/src/main/ts/gui
+jsweetTSGuiHWCPath = "src/main/ts/gui"
 ```
 
 ### Transpilierung
@@ -156,8 +156,8 @@ Datei `jsweetconfig.json`. Diese wird generiert und sieht standardmäßig z.B. s
 ```json
 {
   "adapters": [
-    "umlp.jsweet.extension.UMLPAdapter",
-    "umlp.jsweet.extension.umlp.FunctionStructure4FenixImportAdapter"
+    "umlp.jsweet.extension.UMLPJSweetDomainAdapter",
+    "umlp.jsweet.extension.domainAdapters.FunctionStructure4FenixImportAdapter"
   ],
   "domainName": "FunctionStructure4Fenix"
 }
@@ -183,7 +183,7 @@ z.B.
 
 #### Adapter
 Adapter können die Transpilierung grundlegend verändern. Zahlreiche Beispiele 
-finden sich im Projekt `:umlp:umlp-jsweet`
+finden sich im Projekt `:umlp:umlp-rte:umlp-jsweet`
 
 ## TypeScript Code einbinden
 Manchmal ist es hilfreich TypeScript Code direkt einzubinden, z.B. wenn eine TS Library wiederverwendet werden soll(z.B. für highlighting von Code Blöcken).
@@ -201,7 +201,7 @@ public class MyUtil {
 darauf hin erstellt JSweet eine entsprechene `d.ts` Header Datei im generierten Code.
 
 Dann wird die Methode in TS implementiert:
-`frontend/src/main/gui/gui/def/foo/MyUtil.ts`
+`frontend/src/main/ts/gui/def/foo/MyUtil.ts`
 ```
 export class MyUtil{
   public foo(){

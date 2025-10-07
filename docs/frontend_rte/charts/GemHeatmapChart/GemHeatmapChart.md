@@ -25,7 +25,7 @@ page RowsTester(
 
 ## GUI Model
 
-`GemHeatmapChart.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/charts/GemHeatmapChart.gui))
+`GemHeatmapChart.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/charts/GemHeatmapChart.gui))
 
 ```java
 package mc.fenix.charts;
@@ -51,7 +51,7 @@ component GemHeatmapChart (
 ### GemHeatmapChartTypes
 
 
-`GemHeatmapChartTypes.cd` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/charts/GemHeatmapChartTypes.cd))
+`GemHeatmapChartTypes.cd` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/charts/GemHeatmapChartTypes.cd))
 
 ```java
 package mc.fenix.charts;

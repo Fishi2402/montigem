@@ -25,7 +25,7 @@ page GemLinkExample() {
 
 ## GUI Model
 
-`GemLink.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/basic/GemLink.gui))
+`GemLink.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/basic/GemLink.gui))
 
 ```java
 package mc.fenix.basic;

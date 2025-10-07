@@ -1,0 +1,21 @@
+package gui.test;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
+
+import Dtcockpit.Project;
+import gui.test.Test3Inner;
+
+import gui.test.TestNav;
+
+// Fetch a GemList and pass it to an inner component
+// Fixable by s/getGemText3Value_synchronized/getGemText3Value
+page Test3(List<Project> projects) {
+  @TestNav();
+  @GemText(value = "Show a list via an inner component:");
+  @Test3Inner(projects=projects,       maxValue = 100,
+                                       minValue = 0);
+}

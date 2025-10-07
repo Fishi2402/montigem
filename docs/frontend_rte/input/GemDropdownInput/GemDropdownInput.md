@@ -75,7 +75,7 @@ Options filtered by search input
 
 ## GUI Model
 
-`GemDropdownInput.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/input/GemDropdownInput.gui))
+`GemDropdownInput.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/input/GemDropdownInput.gui))
 
 ```java
 package mc.fenix.input;
@@ -114,7 +114,7 @@ component GemDropdownInput(
 
 ### `GemDropdownInputTypes` 
 
-`GemDropdownInputTypes.cd` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/input/GemDropdownInputTypes.cd))
+`GemDropdownInputTypes.cd` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/input/GemDropdownInputTypes.cd))
 
 ```java
 package mc.fenix.input;

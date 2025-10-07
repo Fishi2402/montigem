@@ -5,8 +5,6 @@ import dtcockpit.DtcockpitManager;
 import dtcockpit.UserAccessPolicy;
 import umlp.backendrte.command.StatusResult;
 import umlp.backendrte.common.NotificationScope;
-import umlp.jsweet.extension.annotation.BackendOnly;
-import umlp.jsweet.extension.annotation.BackendOnlyModes;
 
 // TODO: Module System: User_create and LoginModuleUser_create have no relation at all
 public class User_delete extends User_deleteTOP {
@@ -15,12 +13,10 @@ public class User_delete extends User_deleteTOP {
     super(gemId);
   }
 
-  @BackendOnly(value = BackendOnlyModes.THROW_ERROR)
   public StatusResult doAction() {
     if (DtcockpitManager.deleteUser(getGemId(), NotificationScope.LOCAL)) {
       return StatusResult.ok(getId());
-    }
-    else {
+    } else {
       return StatusResult.error(getId());
     }
   }
