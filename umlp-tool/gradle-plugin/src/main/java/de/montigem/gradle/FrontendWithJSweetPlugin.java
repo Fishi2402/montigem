@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import static de.montigem.gradle.BackendPlugin.MERGE_UMLP_DIR;
 import static de.montigem.gradle.BackendPlugin.MERGE_UMLP_TASK;
 import static de.montigem.gradle.BackendPlugin.UMLP2JAVA_TASK;
 import static de.montigem.gradle.FrontendBasePlugin.CREATE_SYMLINK_TASK;
@@ -134,52 +135,43 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
     Optional<Project> parent = Optional.ofNullable(project.getParent());
     Optional<Project> backend = parent.map(value -> value.findProject(value.getPath() + ":backend"));
 
-    Optional<TaskProvider<MergeTask>> mergeUMLP;
+    TaskProvider<MergeTask> mergeUMLP;
     if (backend.isPresent()) {
-      mergeUMLP = Optional.of(backend.get().getTasks().named(MERGE_UMLP_TASK, MergeTask.class));
+      mergeUMLP = backend.get().getTasks().named(MERGE_UMLP_TASK, MergeTask.class);
       project.getDependencies().add("implementation", backend.get());
       project.getDependencies().add(SRC_UMLP_CONFIG, backend.get());
     }
     else {
-      mergeUMLP = Optional.empty();
-    }
+      mergeUMLP = project.getTasks().register(MERGE_UMLP_TASK, MergeTask.class, task -> {
+        task.source(models);
+        task.getOutputFile().set(project.getLayout().getBuildDirectory().file(MERGE_UMLP_DIR));
 
-    Provider<Object> umlpFile;
-    if (mergeUMLP.isPresent()) {
-      umlpFile = mergeUMLP.get().map(t -> {
-        if (t.getSource().getFiles().size() == 1) {
-          return t.getSource().getFiles().iterator().next();
-        }
-        else {
-          return t.getOutputFile().get();
-        }
+        task.onlyIf(t -> ((MergeTask) t).getSource().getFiles().size() > 1);
       });
     }
-    else {
-      umlpFile = project.provider(() -> null);
-    }
 
-    Provider<String> umlpName;
-    if (mergeUMLP.isPresent()) {
-      umlpName = mergeUMLP.get().map(t -> {
-        if (t.getSource().getFiles().size() == 1) {
-          return FileUtils.removeExtension(t.getSource().getFiles().iterator().next().getName());
-        }
-        else {
-          return FileUtils.removeExtension(t.getOutputFile().getAsFile().get().getName());
-        }
-      });
-    }
-    else {
-      umlpName = project.provider(() -> null);
-    }
+    var umlpFile = mergeUMLP.map(t -> {
+      if (t.getSource().getFiles().size() == 1) {
+        return t.getSource().getFiles().iterator().next();
+      }
+      else {
+        return t.getOutputFile().get();
+      }
+    });
+
+    var umlpName = mergeUMLP.map(t -> {
+      if (t.getSource().getFiles().size() == 1) {
+        return FileUtils.removeExtension(t.getSource().getFiles().iterator().next().getName());
+      }
+      else {
+        return FileUtils.removeExtension(t.getOutputFile().getAsFile().get().getName());
+      }
+    });
 
     TaskProvider<CD2GUITask> cd2gui = project.getTasks().register(CD2GUI_TASK, CD2GUITask.class);
     cd2gui.configure(task -> {
       task.setGroup(UMLP_GROUP_NAME);
-      if (mergeUMLP.isPresent()) {
-        task.dependsOn(mergeUMLP.get());
-      }
+      task.dependsOn(mergeUMLP);
       task.getInput().from(umlpFile);
       task.getOutputDir().set(cd2guiDir);
 
@@ -218,17 +210,13 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
 
     TaskProvider<UMLP2SymTask> umlp2sym = project.getTasks().named(UMLP2SYM_TASK, UMLP2SymTask.class);
     umlp2sym.configure(task -> {
-      if (mergeUMLP.isPresent()) {
-        task.dependsOn(mergeUMLP.get());
-      }
+      task.dependsOn(mergeUMLP);
       task.getInput().setFrom(umlpFile);
     });
 
     TaskProvider<UMLPJava2TSTask> umlpJava2ts = project.getTasks().register(UMLP_JAVA2TS_TASK, UMLPJava2TSTask.class, task -> {
       task.setGroup(UMLP_GROUP_NAME);
-      if (mergeUMLP.isPresent()) {
-        task.dependsOn(mergeUMLP.get());
-      }
+      task.dependsOn(mergeUMLP);
 
       task.getDomain().set(umlpName);
       task.getJSweetAdapterDir().set(umlp2jsweetAdapterDir);
@@ -278,10 +266,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
     TaskProvider<GUI2Java2TSTask> gui2java2ts = project.getTasks().register(GUI2JAVA2TS_TASK, GUI2Java2TSTask.class);
     gui2java2ts.configure(task -> {
       task.setGroup(UMLP_GROUP_NAME);
-      task.dependsOn(createSymlinkTask, setupFrontend);
-      if (mergeUMLP.isPresent()) {
-        task.dependsOn(mergeUMLP.get());
-      }
+      task.dependsOn(createSymlinkTask, setupFrontend, mergeUMLP);
 
       task.getDomain().set(umlpName);
       if (!inRTE(project)) {
@@ -354,9 +339,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
     TaskProvider<UMLP2JSweetObserverTask> umlp2jsweetObserver = project.getTasks().register(
         UMLP2JSWEET_OBSERVER_TASK, UMLP2JSweetObserverTask.class, task -> {
           task.setGroup(UMLP_GROUP_NAME);
-          if (mergeUMLP.isPresent()) {
-            task.dependsOn(mergeUMLP.get());
-          }
+          task.dependsOn(mergeUMLP);
           task.getInput().from(umlpFile);
           task.getOutputDir().set(umlp2jsweetObserverDir);
           task.getHandWrittenCodeDir().from(srcGUI);
