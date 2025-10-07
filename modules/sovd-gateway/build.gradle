@@ -5,18 +5,30 @@ plugins {
   id 'de.rwth.se.montigem-module' // create models-jar
 }
 
+configurations {
+  moduleGeneratorExtensionCompile
+  moduleGenTime
+}
+
 dependencies {
-  generatorExtensionCompile("umlp:umlp-tool")
-  generatorExtensionCompile group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
-  generatorExtensionCompile group: 'de.monticore.lang', name: 'guidsl', version: mc_version
-  generatorExtensionCompile group: 'de.monticore', name: 'monticore-runtime', version: mc_version
-  generatorExtensionCompile group: 'de.monticore', name: 'monticore-grammar', version: mc_version
+  moduleGeneratorExtensionCompile("umlp:umlp-tool")
+  moduleGeneratorExtensionCompile group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
+  moduleGeneratorExtensionCompile group: 'de.monticore.lang', name: 'guidsl', version: mc_version
+  moduleGeneratorExtensionCompile group: 'de.monticore', name: 'monticore-runtime', version: mc_version
+  moduleGeneratorExtensionCompile group: 'de.monticore', name: 'monticore-grammar', version: mc_version
+}
+
+sourceSets {
+  moduleGenTime {
+    java {}
+  }
 }
 
 // We do not have main java soures => Remove .jar from outgoing artifacts
 tasks.named('jar') {
   enabled = false
 }
+
 
 publishing {
   publications {

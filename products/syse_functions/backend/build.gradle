@@ -57,6 +57,9 @@ dependencies {
   implementation group: 'montiarc.languages', name: 'basis', version: ma_version
 }
 
+application {
+  mainClass = 'functionstructure4fenix.FunctionStructure4FenixServerApplication'
+}
 
 umlp2java {
   input = file("../models/FunctionStructure4Fenix.umlp")

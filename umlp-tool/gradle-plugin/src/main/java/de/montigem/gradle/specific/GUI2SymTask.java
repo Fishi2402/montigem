@@ -26,7 +26,7 @@ import java.util.stream.StreamSupport;
 public abstract class GUI2SymTask extends MGAllFilesTask {
 
   public GUI2SymTask() {
-    super("GUI2SymTask");
+    super("UMLPSymbolsTask");
   }
 
   @InputFiles

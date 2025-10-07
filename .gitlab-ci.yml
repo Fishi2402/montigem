@@ -114,6 +114,7 @@ build_with_deploy:
       :examples:weather:backend:jib \
       :examples:sehub:backend:jib \
       :examples:stat:jib \
+      :examples:dtcockpit:backend:jib \
       :products:demorec:backend:jib \
       :examples:vis-lib:backend:jib \
       :experiments:server-performance:backend:jib \
@@ -128,6 +129,7 @@ build_with_deploy:
     - "gradle \
       :examples:weather:frontend:deployImageCI \
       :examples:sehub:frontend:deployImageCI \
+      :examples:dtcockpit:frontend:deployImageCI \
       :products:demorec:frontend:deployImageCI \
       :examples:vis-lib:frontend:deployImageCI \
       -P mavenPassword=$pass \

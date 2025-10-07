@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-// to be replaced by UMLP2SymTask
+// to be replaced by UMLPSymbolsTask
 @Deprecated
 abstract public class CD2SymTask extends DefaultTask {
 
