@@ -29,7 +29,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.StreamSupport;
 
-import static de.montigem.gradle.FrontendBasePlugin.isLocal;
+import static de.montigem.gradle.FrontendBasePlugin.inUMLP;
+import static de.montigem.gradle.FrontendBasePlugin.useLocalDependencies;
 
 public abstract class SetupFrontendTask extends DefaultTask {
 
@@ -88,7 +89,7 @@ public abstract class SetupFrontendTask extends DefaultTask {
     }
 
     // copy dev or prod config
-    String config = isLocal(getProject()) ? FRONTEND_CONFIG_DEV : FRONTEND_CONFIG_PROD;
+    String config = useLocalDependencies(getProject()) && inUMLP(getProject()) ? FRONTEND_CONFIG_DEV : FRONTEND_CONFIG_PROD;
     for (String filename : getResourceListing(this.getClass(), config)) {
       InputStream file = this.getClass().getClassLoader().getResourceAsStream(config + filename);
       if (filename.startsWith("/") || filename.startsWith("\\")) {

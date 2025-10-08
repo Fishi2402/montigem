@@ -50,7 +50,8 @@ import static de.montigem.gradle.FrontendBasePlugin.UMLP_GROUP_NAME;
 import static de.montigem.gradle.FrontendBasePlugin.getModels;
 import static de.montigem.gradle.FrontendBasePlugin.getProjectProperty;
 import static de.montigem.gradle.FrontendBasePlugin.inRTE;
-import static de.montigem.gradle.FrontendBasePlugin.isLocal;
+import static de.montigem.gradle.FrontendBasePlugin.inUMLP;
+import static de.montigem.gradle.FrontendBasePlugin.useLocalDependencies;
 import static de.montigem.gradle.FrontendBasePlugin.mcVersion;
 import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
 import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_IMPORT_MAP_CONFIG;
@@ -190,13 +191,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       task.onlyIf(t -> withCD2GUI.get());
     });
 
-    TaskProvider<CreateSymlinkTask> createSymlinkTask;
-    if (isLocal(project)) {
-      createSymlinkTask = project.getTasks().named(CREATE_SYMLINK_TASK, CreateSymlinkTask.class);
-    }
-    else {
-      createSymlinkTask = project.getTasks().register(CREATE_SYMLINK_TASK, CreateSymlinkTask.class);
-    }
+    TaskProvider<CreateSymlinkTask> createSymlinkTask = project.getTasks().named(CREATE_SYMLINK_TASK, CreateSymlinkTask.class);
 
     boolean cdPresent;
     File folder = srcGUI.getAsFile();
@@ -402,7 +397,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       config.extendsFrom(project.getConfigurations().getByName("compileClasspath"));
     });
 
-    if (isLocal(project)) {
+    if (inUMLP(project) && useLocalDependencies(project)) {
       project.getDependencies().add(JSWEET_CONFIG, project.project(":umlp-jsweet"));
     }
     else {
@@ -444,8 +439,8 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
     });
     project.getDependencies().add("implementation", dep);
     project.getDependencies().add("implementation", "com.kohlschutter.jdk.compiler:standalone-jdk11:1.0.0");
-    if (isLocal(project)) {
-      project.getDependencies().add("implementation", project.project(":umlp-jsweet"));
+    if (inUMLP(project) && useLocalDependencies(project)) {
+      project.getDependencies().add(JSWEET_CONFIG, project.project(":umlp-jsweet"));
     }
     else {
       project.getDependencies().add("implementation", "umlp:umlp-jsweet:" + mcVersion(project));

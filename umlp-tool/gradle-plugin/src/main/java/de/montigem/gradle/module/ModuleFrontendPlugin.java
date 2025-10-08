@@ -57,8 +57,9 @@ import static de.montigem.gradle.FrontendBasePlugin.addGUITypesDependency;
 import static de.montigem.gradle.FrontendBasePlugin.addProjectDependencies;
 import static de.montigem.gradle.FrontendBasePlugin.getModels;
 import static de.montigem.gradle.FrontendBasePlugin.inRTE;
-import static de.montigem.gradle.FrontendBasePlugin.isLocal;
+import static de.montigem.gradle.FrontendBasePlugin.inUMLP;
 import static de.montigem.gradle.FrontendBasePlugin.mcVersion;
+import static de.montigem.gradle.FrontendBasePlugin.useLocalDependencies;
 import static de.montigem.gradle.FrontendWithJSweetPlugin.CD2JAVA_TASK;
 import static de.montigem.gradle.FrontendWithJSweetPlugin.CD2SYM_TASK;
 import static de.montigem.gradle.FrontendWithJSweetPlugin.GUI2JAVA2TS_TASK;
@@ -88,6 +89,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
   public void apply(Project project) {
     project.getPluginManager().apply(NodePlugin.class);
     project.getPluginManager().apply("java-library");
+    project.getPluginManager().apply("maven-publish");
     if (!inRTE(project)) {
       project.getPluginManager().apply(MGBasePlugin.class);
     }
@@ -167,12 +169,13 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
         .getByType(SourceSetContainer.class)
         .getByName(SourceSet.MAIN_SOURCE_SET_NAME);
 
-    boolean local = isLocal(project);
-    if (local) {
-      project.getDependencies().add("implementation", project.project(":umlp-rte:backend"));
-    }
-    else {
-      project.getDependencies().add("implementation", "umlp:umlp-rte:" + mcVersion(project));
+    if (!inRTE(project)) {
+      if (inUMLP(project) && useLocalDependencies(project)) {
+        project.getDependencies().add("implementation", project.project(":umlp-rte:backend"));
+      }
+      else {
+        project.getDependencies().add("implementation", "umlp:umlp-rte:" + mcVersion(project));
+      }
     }
 
     project.afterEvaluate(p -> {
@@ -451,7 +454,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
         TaskProvider<NpmTask> buildLib = subproject.getTasks().register(BUILD_LIB_TASK, NpmTask.class, task -> {
           task.setGroup("build");
           task.dependsOn(npmInstall, gui2java2ts);
-          if (!inRTE(subproject) && local) {
+          if (inUMLP(subproject) && !inRTE(subproject) && useLocalDependencies(subproject)) {
             task.dependsOn(subproject.project(":umlp-rte:frontend").getTasks().named("build"));
           }
           task.getArgs().addAll(libQName.map(v -> List.of("run", "build", v)));
@@ -487,7 +490,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
 
     TaskProvider<Task> build = project.getTasks().named("build");
     build.configure(task -> task.dependsOn(buildSubprojects));
-    TaskProvider<Task> publish = project.getTasks().register("publish");
+    TaskProvider<Task> publish = project.getTasks().named("publish");
     publish.configure(task -> task.dependsOn(publishSubprojects));
   }
 
@@ -605,8 +608,9 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
     });
     project.getDependencies().add("implementation", dep);
     project.getDependencies().add("implementation", "com.kohlschutter.jdk.compiler:standalone-jdk11:1.0.0");
-    if (isLocal(project)) {
-      project.getDependencies().add("implementation", project.project(":umlp-jsweet"));
+    Optional<Project> jsweet = Optional.ofNullable(project.findProject(":umlp-jsweet"));
+    if (inUMLP(project) && useLocalDependencies(project) && jsweet.isPresent()) {
+      project.getDependencies().add("implementation", jsweet.get());
     }
     else {
       project.getDependencies().add("implementation", "umlp:umlp-jsweet:" + mcVersion(project));

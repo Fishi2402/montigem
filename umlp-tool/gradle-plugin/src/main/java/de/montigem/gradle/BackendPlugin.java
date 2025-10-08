@@ -20,10 +20,13 @@ import org.gradle.internal.FileUtils;
 import org.gradle.jvm.tasks.Jar;
 import org.gradle.language.jvm.tasks.ProcessResources;
 
+import java.util.Optional;
+
 import static de.montigem.gradle.FrontendBasePlugin.UMLP_GROUP_NAME;
 import static de.montigem.gradle.FrontendBasePlugin.getModels;
-import static de.montigem.gradle.FrontendBasePlugin.isLocal;
+import static de.montigem.gradle.FrontendBasePlugin.inUMLP;
 import static de.montigem.gradle.FrontendBasePlugin.mcVersion;
+import static de.montigem.gradle.FrontendBasePlugin.useLocalDependencies;
 import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
 import static de.montigem.gradle.module.ModulePlugin.GENERATOR_EXTENSION_COMPILE_CONFIG;
 
@@ -187,9 +190,8 @@ public abstract class BackendPlugin implements Plugin<Project> {
 
   protected void addRTEDependency(Project project) {
     // Add Symbols and Tags of RTE ClassDiagrams to SymbolPath
-    if (isLocal(project)) {
-      Project rte = project.project(":umlp-rte");
-      project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG, rte);
+    if (useLocalDependencies(project) && inUMLP(project)) {
+      project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG, project.project(":umlp-rte"));
     }
     else {
       project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG, "umlp:umlp-rte:" + mcVersion(project));

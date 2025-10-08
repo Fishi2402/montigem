@@ -58,7 +58,7 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
     project.getPlugins().withId("com.github.node-gradle.node", plugin -> {
       NodeExtension node = project.getExtensions().getByType(NodeExtension.class);
       node.getNodeProjectDir().set(project.getLayout().getBuildDirectory().dir("app"));
-      if (!isLocal(project)) {
+      if (!useLocalDependencies(project) || !inUMLP(project)) {
         node.getDownload().set(true);
       }
       node.getVersion().set("20.19.4");
@@ -122,17 +122,50 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
       task.dependsOn(runAppTask);
     });
 
-    if (isLocal(project)) {
-      TaskProvider<Task> rteBuild = project.project(":umlp-rte:frontend").getTasks().named("build");
+    TaskProvider<CreateSymlinkTask> createSymlinkTask = project.getTasks().register(CREATE_SYMLINK_TASK, CreateSymlinkTask.class);
+    createSymlinkTask.configure(task -> task.dependsOn(setupFrontend));
+    testAppTask.configure(t -> t.dependsOn(createSymlinkTask));
+    runAppTask.configure(t -> t.dependsOn(createSymlinkTask));
+    if (useLocalDependencies(project) && inUMLP(project)) {
+      Project rteFrontend = project.project(":umlp-rte:frontend");
+      createSymlinkTask.configure(task -> {
+        task.setGroup(UMLP_GROUP_NAME);
 
-      TaskProvider<CreateSymlinkTask> createSymlinkTask = createCreateSymlinkTask(project);
-      createSymlinkTask.configure(task -> task.dependsOn(setupFrontend));
-      testAppTask.configure(t -> t.dependsOn(rteBuild, createSymlinkTask));
-      runAppTask.configure(t -> t.dependsOn(rteBuild, createSymlinkTask));
+        // TODO change this in the future, so we do not have to download all library's dependencies in every umlp project
+        // Alternative: use pnpm or yarn or something like this
+        for (Project subproject : rteFrontend.getSubprojects()) {
+          TaskProvider<NpmTask> buildLib = subproject.getTasks().named(BUILD_LIB_TASK, NpmTask.class);
+          task.dependsOn(buildLib);
 
-      TaskProvider<CreateSymlinkTask> createSymlink4ProdTask = createCreateSymlink4ProdTask(project);
+          task.getLinks().put(
+              project.getLayout().getBuildDirectory().dir("app/libs/@umlp/" + subproject.getName()).get().getAsFile(),
+              subproject.getLayout().getProjectDirectory().getAsFile()
+          );
+        }
+      });
+
+      // task for linking compiled umlp-rte library for checking production build
+      TaskProvider<CreateSymlinkTask> createSymlink4ProdTask = project.getTasks().register("createSymlink4Prod", CreateSymlinkTask.class, task -> {
+        task.setGroup(UMLP_GROUP_NAME);
+
+        for (Project subproject : rteFrontend.getSubprojects()) {
+          TaskProvider<NpmTask> buildLib = subproject.getTasks().named(BUILD_LIB_TASK, NpmTask.class);
+          task.dependsOn(buildLib);
+
+          task.getLinks().put(
+              project.getLayout().getBuildDirectory().dir("app/prodlibs/@umlp/" + subproject.getName()).get().getAsFile(),
+              buildLib.map(t -> t.getOutputs().getFiles().getSingleFile())
+          );
+        }
+      });
+
       createSymlink4ProdTask.configure(t -> t.dependsOn(createSymlinkTask));
-      prepareBuildAppTask.configure(t -> t.dependsOn(rteBuild, createSymlink4ProdTask));
+      prepareBuildAppTask.configure(t -> t.dependsOn(createSymlink4ProdTask));
+
+      TaskProvider<Task> rteBuild = rteFrontend.getTasks().named("build");
+      testAppTask.configure(t -> t.dependsOn(rteBuild));
+      runAppTask.configure(t -> t.dependsOn(rteBuild));
+      prepareBuildAppTask.configure(t -> t.dependsOn(rteBuild));
     }
 
     project.getTasks().named("assemble", t -> t.dependsOn(buildAppTask));
@@ -158,43 +191,6 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
 
       task.getOutputDir().set(umlp2symOut);
       task.getModelDir().from(project.getConfigurations().named(MONTIGEM_MODULE_UMLP_MODELS_CONFIG));
-    });
-  }
-
-  private TaskProvider<CreateSymlinkTask> createCreateSymlinkTask(Project project) {
-    return project.getTasks().register(CREATE_SYMLINK_TASK, CreateSymlinkTask.class, task -> {
-      task.setGroup(UMLP_GROUP_NAME);
-
-      // TODO change this in the future, so we do not have to download all library's dependencies in every umlp project
-      // Alternative: use pnpm or yarn or something like this
-      Project rte = project.project(":umlp-rte:frontend");
-      for (Project subproject : rte.getSubprojects()) {
-        TaskProvider<NpmTask> buildLib = subproject.getTasks().named(BUILD_LIB_TASK, NpmTask.class);
-        task.dependsOn(buildLib);
-
-        task.getLinks().put(
-            project.getLayout().getBuildDirectory().dir("app/libs/@umlp/" + subproject.getName()).get().getAsFile(),
-            subproject.getLayout().getProjectDirectory().getAsFile()
-        );
-      }
-    });
-  }
-
-  // This is a Task only need in the case of local=true
-  private TaskProvider<CreateSymlinkTask> createCreateSymlink4ProdTask(Project project) {
-    return project.getTasks().register("createSymlink4Prod", CreateSymlinkTask.class, task -> {
-      task.setGroup(UMLP_GROUP_NAME);
-
-      Project rte = project.project(":umlp-rte:frontend");
-      for (Project subproject : rte.getSubprojects()) {
-        TaskProvider<NpmTask> buildLib = subproject.getTasks().named(BUILD_LIB_TASK, NpmTask.class);
-        task.dependsOn(buildLib);
-
-        task.getLinks().put(
-            project.getLayout().getBuildDirectory().dir("app/prodlibs/@umlp/" + subproject.getName()).get().getAsFile(),
-            buildLib.map(t -> t.getOutputs().getFiles().getSingleFile())
-        );
-      }
     });
   }
 
@@ -228,22 +224,16 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
 
   public static void addClientRTEDependency(Project project) {
     if (!inRTE(project)) {
-      if (isLocal(project)) {
-        Project rte = project.project(":umlp-rte:frontend");
-        project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG, rte);
-        project.getDependencies().add(MONTIGEM_MODULE_IMPORT_MAP_CONFIG, rte);
-        project.getDependencies().add("implementation", rte);
+      if (inUMLP(project) && useLocalDependencies(project)) {
+        Project rteFrontend = project.project(":umlp-rte:frontend");
+        project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG, rteFrontend);
+        project.getDependencies().add(MONTIGEM_MODULE_IMPORT_MAP_CONFIG, rteFrontend);
+        project.getDependencies().add("implementation", rteFrontend);
       }
       else {
-        project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG,
-            "umlp:umlp-rte:" + mcVersion(project)
-        );
-        project.getDependencies().add(MONTIGEM_MODULE_IMPORT_MAP_CONFIG,
-            "umlp:umlp-rte:" + mcVersion(project)
-        );
-        project.getDependencies().add("implementation",
-            "umlp:umlp-rte:" + mcVersion(project)
-        );
+        project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG, "umlp:umlp-rte:" + mcVersion(project));
+        project.getDependencies().add(MONTIGEM_MODULE_IMPORT_MAP_CONFIG, "umlp:umlp-rte:" + mcVersion(project));
+        project.getDependencies().add("implementation", "umlp:umlp-rte:" + mcVersion(project));
       }
     }
   }
@@ -306,8 +296,12 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
   }
 
   @NotNull
-  public static Boolean isLocal(Project project) {
+  public static Boolean useLocalDependencies(Project project) {
     return getBooleanProjectProperty(project, "useLocalDependencies");
+  }
+
+  public static boolean inUMLP(Project project) {
+    return project.getGradle().getRootProject().getName().equals("umlp");
   }
 
 }

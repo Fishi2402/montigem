@@ -15,9 +15,9 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.function.Consumer;
 
-import static de.montigem.gradle.FrontendBasePlugin.getBooleanProjectProperty;
-import static de.montigem.gradle.FrontendBasePlugin.isLocal;
+import static de.montigem.gradle.FrontendBasePlugin.inUMLP;
 import static de.montigem.gradle.FrontendBasePlugin.mcVersion;
+import static de.montigem.gradle.FrontendBasePlugin.useLocalDependencies;
 import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
 
 /**
@@ -56,8 +56,8 @@ public abstract class TestInfrastructurePlugin implements Plugin<Project> {
     project.getTasks()
         .withType(AbstractCompile.class)
         .matching(t -> t.getName().equals(testSourceSet.getCompileJavaTaskName())
-                                          || t.getName().equals(mainSourceSet.getCompileJavaTaskName() // TODO: Remove this dependency and introduce test fixtures?
-                                         ))
+            || t.getName().equals(mainSourceSet.getCompileJavaTaskName() // TODO: Remove this dependency and introduce test fixtures?
+        ))
         .configureEach(testTask -> testTask.dependsOn(umlpTestInfrastructureTask));
 
     // TODO: Introduce test-fixtures and generate the "test-infra" into the test source set instead of the main source set
@@ -75,13 +75,13 @@ public abstract class TestInfrastructurePlugin implements Plugin<Project> {
 
     //umlp-test-rte
     Project umlpTestRte = project.findProject(":umlp-test-rte");
-    if(umlpTestRte != null){
+    if (umlpTestRte != null) {
       dependencies.add(COMPILE_ONLY, umlpTestRte);
       dependencies.add(TEST_IMPLEMENTATION, umlpTestRte);
     }
 
     //playwright
-    if(project.hasProperty("playwright_version")) {
+    if (project.hasProperty("playwright_version")) {
       dependencies.add(COMPILE_ONLY,
           "com.microsoft.playwright:playwright:" + project.property("playwright_version"));
       dependencies.add(TEST_IMPLEMENTATION,
@@ -89,7 +89,7 @@ public abstract class TestInfrastructurePlugin implements Plugin<Project> {
     }
 
     //jsweet - annotations like erased
-    if(project.hasProperty("jsweet_version")) {
+    if (project.hasProperty("jsweet_version")) {
       dependencies.add(COMPILE_ONLY, "org.jsweet:jsweet-core:" + project.property("jsweet_version"));
       dependencies.add(TEST_IMPLEMENTATION, "org.jsweet:jsweet-core:" + project.property("jsweet_version"));
     }
@@ -113,7 +113,8 @@ public abstract class TestInfrastructurePlugin implements Plugin<Project> {
             task.getInput().from(backendTask.getInput());
             task.getTmplDir().convention(backendTask.getTmplDir());
             task.getModelDir().from(backendTask.getModelDir());
-          }else {
+          }
+          else {
             setIfPathExists(task::setInput, Path.of(projectDirPath, "src", "models"));
 
             setIfPathExists(path -> task.getTmplDir().set(path),
@@ -125,16 +126,15 @@ public abstract class TestInfrastructurePlugin implements Plugin<Project> {
           task.getSymbolOutDir().set(Path.of(buildDirPath, "umlp", "backend_test_symbols").toFile());
         });
 
-    if (isLocal(project)) {
-      Project rteClient = project.project(":umlp-rte:frontend");
-      project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG, rteClient);
+    if (inUMLP(project) && useLocalDependencies(project)) {
+      project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG, project.project(":umlp-rte:frontend"));
       testInfrastructureTask.configure(task -> {
         task.getSymbolPath().from(project.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
       });
     }
     else {
       project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG,
-          "umlp:frontend:" + mcVersion(project)
+          "umlp:umlp-rte:" + mcVersion(project)
       );
     }
 

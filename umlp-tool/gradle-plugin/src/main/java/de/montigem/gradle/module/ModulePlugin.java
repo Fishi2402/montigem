@@ -66,11 +66,6 @@ public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Projec
     Project backend = project.findProject(project.getPath() + ":backend");
     if (backend != null) {
       project.getDependencies().add("api", backend);
-      SourceSet mainSourceSet = project.getExtensions()
-          .getByType(SourceSetContainer.class).getByName(SourceSet.MAIN_SOURCE_SET_NAME);
-
-      project.getTasks().named("jar", Jar.class)
-          .configure(jar -> jar.from(mainSourceSet.getOutput()));
     }
 
     var javaComponent = (AdhocComponentWithVariants) project.getComponents().getByName("java");
