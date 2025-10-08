@@ -47,6 +47,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -68,12 +69,12 @@ import static de.montigem.gradle.FrontendWithJSweetPlugin.defaultExcludedSources
 import static de.montigem.gradle.FrontendWithJSweetPlugin.setupJSweetClasspath;
 import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
 import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_IMPORT_MAP_CONFIG;
+import static de.montigem.gradle.module.ModulePlugin.UMLP2SYM_TASK;
 
 
 public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugin<Project> {
 
   public static final String GUI2SYM_TASK = "gui2sym";
-  public static final String UMLP2SYM_TASK = "umlp2sym";
   public static final String UMLP2TS_TASK = "umlp2ts";
   public static final String GUI2SYM_JAR_TASK = "gui2symJar";
   public static final String BUILD_LIB_TASK = "buildLib";
@@ -87,7 +88,6 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
   public void apply(Project project) {
     project.getPluginManager().apply(NodePlugin.class);
     project.getPluginManager().apply("java-library");
-    project.getPluginManager().apply("maven-publish");
     if (!inRTE(project)) {
       project.getPluginManager().apply(MGBasePlugin.class);
     }
@@ -134,16 +134,27 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
       domainNames = Collections.emptyList();
     }
 
-    // look for umlp2sym task in parent and take its output if present
-    var umlp2symOut = project.provider(() -> {
-      Project parent = project.getParent();
-      if (parent == null) {
-        return project.files();
+    Optional<Project> parent = Optional.ofNullable(project.getParent());
+    Optional<Project> backend;
+    if (parent.isPresent()) {
+      backend = Optional.ofNullable(parent.get()
+          .findProject(parent.get().getPath() + ":backend"));
+      if (backend.isPresent()) {
+        project.getDependencies().add("implementation", backend.get());
       }
+    }
+    else {
+      backend = Optional.empty();
+    }
 
-      TaskProvider<UMLP2SymTask> task = parent.getTasks().named(UMLP2SYM_TASK, UMLP2SymTask.class);
-      return task.flatMap(UMLP2SymTask::getOutputDir);
-    });
+    // look for umlp2sym task in parent and take its output if parent present
+    Optional<TaskProvider<UMLP2SymTask>> umlp2sym;
+    if (parent.isPresent()) {
+      umlp2sym = Optional.of(parent.get().getTasks().named(UMLP2SYM_TASK, UMLP2SymTask.class));
+    }
+    else {
+      umlp2sym = Optional.empty();
+    }
 
     // Create the import map jar
     TaskProvider<Jar> umlp2impJar = umlp2impInit(project, javaComponent);
@@ -162,14 +173,6 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
     }
     else {
       project.getDependencies().add("implementation", "umlp:umlp-rte:" + mcVersion(project));
-    }
-
-    Project parent = project.getParent();
-    if (parent != null) {
-      Project backend = parent.findProject(parent.getPath() + ":backend");
-      if (backend != null) {
-        project.getDependencies().add("implementation", backend);
-      }
     }
 
     project.afterEvaluate(p -> {
@@ -213,13 +216,10 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
         setupJSweetClasspath(subproject);
         addJSweetDependencies(subproject);
 
-        if (parent != null) {
-          Project backend = parent.findProject(parent.getPath() + ":backend");
-          if (backend != null) {
-            subproject.getDependencies().add("implementation", backend);
-            if (!inRTE(subproject)) {
-              subproject.getDependencies().add(SRC_UMLP_CONFIG, backend);
-            }
+        if (backend.isPresent()) {
+          subproject.getDependencies().add("implementation", backend.get());
+          if (!inRTE(subproject)) {
+            subproject.getDependencies().add(SRC_UMLP_CONFIG, backend.get());
           }
         }
 
@@ -297,7 +297,10 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
           task.getModelDir().set(srcGUI);
           task.getInput().from(srcGUI);
           task.getSymbolPath().from(guiTypes);
-          task.getSymbolPath().from(umlp2symOut);
+          if (umlp2sym.isPresent()) {
+            task.getSymbolPath().from(umlp2sym.get().flatMap(CommonMCTask::getOutputDir));
+            task.dependsOn(umlp2sym.get());
+          }
           task.getSymbolPath().from(cd2sym.flatMap(CD2SymTask::getOutput));
           if (!inRTE(subproject)) {
             task.getSymbolPath().from(subproject.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
@@ -354,7 +357,10 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
             task.getDomain().set(domainNames.get(0));
           }
           task.getImportsDir().from(umlpJava2ts.flatMap(UMLPJava2TSTask::getOutputDir));
-          task.getSymbolPath().from(umlp2symOut);
+          if (umlp2sym.isPresent()) {
+            task.getSymbolPath().from(umlp2sym.get().flatMap(CommonMCTask::getOutputDir));
+            task.dependsOn(umlp2sym.get());
+          }
           task.getSymbolPath().from(guiTypes);
           task.getSymbolPath().from(cd2sym.flatMap(CD2SymTask::getOutput));
           task.getInput().from(srcGUI);
@@ -464,6 +470,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
           task.setGroup(UMLP_GROUP_NAME);
           task.dependsOn(buildLib);
           task.getNpmrcFile().set(libBuildDir.map(dir -> dir.file(".npmrc")));
+          task.getGitignore().set(p.getLayout().getProjectDirectory().file(".gitignore"));
           task.getUnscoped().set(true);
         });
 
@@ -480,7 +487,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
 
     TaskProvider<Task> build = project.getTasks().named("build");
     build.configure(task -> task.dependsOn(buildSubprojects));
-    TaskProvider<Task> publish = project.getTasks().named("publish");
+    TaskProvider<Task> publish = project.getTasks().register("publish");
     publish.configure(task -> task.dependsOn(publishSubprojects));
   }
 

@@ -135,9 +135,9 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
     Optional<Project> parent = Optional.ofNullable(project.getParent());
     Optional<Project> backend = parent.map(value -> value.findProject(value.getPath() + ":backend"));
 
-    TaskProvider<MergeTask> mergeUMLP;
+    TaskProvider<? extends Task> mergeUMLP;
     if (backend.isPresent()) {
-      mergeUMLP = backend.get().getTasks().named(MERGE_UMLP_TASK, MergeTask.class);
+      mergeUMLP = backend.get().getTasks().named(MERGE_UMLP_TASK);
       project.getDependencies().add("implementation", backend.get());
       project.getDependencies().add(SRC_UMLP_CONFIG, backend.get());
     }
@@ -150,7 +150,8 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       });
     }
 
-    var umlpFile = mergeUMLP.map(t -> {
+    var umlpFile = mergeUMLP.map(task -> {
+      MergeTask t = (MergeTask) task;
       if (t.getSource().getFiles().size() == 1) {
         return t.getSource().getFiles().iterator().next();
       }
@@ -159,7 +160,8 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       }
     });
 
-    var umlpName = mergeUMLP.map(t -> {
+    var umlpName = mergeUMLP.map(task -> {
+      MergeTask t = (MergeTask) task;
       if (t.getSource().getFiles().size() == 1) {
         return FileUtils.removeExtension(t.getSource().getFiles().iterator().next().getName());
       }
@@ -188,8 +190,13 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       task.onlyIf(t -> withCD2GUI.get());
     });
 
-    TaskProvider<CreateSymlinkTask> createSymlinkTask =
-        project.getTasks().named(CREATE_SYMLINK_TASK, CreateSymlinkTask.class);
+    TaskProvider<CreateSymlinkTask> createSymlinkTask;
+    if (isLocal(project)) {
+      createSymlinkTask = project.getTasks().named(CREATE_SYMLINK_TASK, CreateSymlinkTask.class);
+    }
+    else {
+      createSymlinkTask = project.getTasks().register(CREATE_SYMLINK_TASK, CreateSymlinkTask.class);
+    }
 
     boolean cdPresent;
     File folder = srcGUI.getAsFile();

@@ -7,6 +7,7 @@ A full standard MontiGem app folder structure:
   - build // generated sources
     - umlp2java
     - umlp2sym
+    - mergeUMLP
     - resources
       - *.sql
   - src // hwc, extends generated sources from backend/build
@@ -108,6 +109,9 @@ looks like this:
 ```java
 import Dtcockpit.User;
 ```
+
+If several `*.umlp` files are present, the files are merged in `mergeUMLP` task.
+The default output is a single `Domain.umlp` file.
 
 ## 2. HWC
 

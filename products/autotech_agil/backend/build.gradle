@@ -57,9 +57,6 @@ dependencies {
   implementation group: 'montiarc.languages', name: 'basis', version: ma_version
 }
 
-application {
-  mainClass = 'autotechagil.AutoTechAgilServerApplication'
-}
 
 tasks.named("umlp2java", UMLP2JavaTask) {
   useSpring.set(true)
