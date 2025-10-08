@@ -7,15 +7,18 @@ import umlp.backendrte.command.CommandManager;
 import umlp.backendrte.command.Participant;
 import umlp.backendrte.command.SimpleResult;
 import umlp.backendrte.common.LoadingState;
+import umlp.jsweet.extension.annotation.BackendOnly;
+import umlp.jsweet.extension.annotation.BackendOnlyModes;
 
 public class GetCurrentUserRequest extends GetCurrentUserRequestTOP {
 
+  @BackendOnly(value = BackendOnlyModes.THROW_ERROR)
   @Override
   public SimpleResult<Long> doAction() {
     Participant p = CommandManager.getInstance().getParticipant(getParticipantId());
 
     for (User user : DtcockpitManager.getUserList()) {
-      if(user.getUsername().equals(p.getUsername())){
+      if (user.getUsername().equals(p.getUsername())) {
         return new SimpleResult<>(getId(), user.getGemId(), "java.lang.Long");
       }
     }

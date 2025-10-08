@@ -1,9 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package dtcockpit.commands;
 
-import dtcockpit.RoleAccessPolicy;
 import dtcockpit.DtcockpitRole;
-
+import dtcockpit.RoleAccessPolicy;
 
 public class User_setRole extends User_setRoleTOP {
 

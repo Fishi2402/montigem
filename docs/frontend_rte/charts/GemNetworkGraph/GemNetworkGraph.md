@@ -24,7 +24,7 @@ page RowsTester( GemNetworkData data) {
 
 ## GUI Model
 
-`GemNetworkGraph.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/networkgraph/GemGraph.gui))
+`GemNetworkGraph.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/networkgraph/GemGraph.gui))
 
 ```java
 package mc.fenix.charts;
@@ -44,7 +44,7 @@ component GemNetworkGraph(
 
 ### GemNetworkGraphTypes
 
-GemNetworkGraphTypes.cd ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/networkgraph/NetworkGraphTypes.cd))
+GemNetworkGraphTypes.cd ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/networkgraph/NetworkGraphTypes.cd))
 
 ```java
 package mc.fenix.charts;

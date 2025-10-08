@@ -1,57 +1,25 @@
+import de.montigem.gradle.specific.GUI2Java2TSTask
+import de.montigem.gradle.specific.UMLP2SymTask
+import de.montigem.gradle.specific.UMLPJava2TSTask
+
 /* (c) https://github.com/MontiCore/monticore */
 plugins {
-  id "de.rwth.se.umlp-tool-frontend"
+  id "de.rwth.se.montigem-frontend"
 }
 
-def useCD2GUI = true
-
-dependencies {
-  implementation project(":examples:sehub:backend")
-  domainSources project(":examples:sehub:backend")
+montigem {
+  withCD2GUI = true
 }
 
-node {
-  nodeProjectDir = file("${buildDir}/frontendGen")
-}
-nodeSetup.dependsOn(frontendSetup)
-
-tasks.register('generateCDTOGUI', UMLPCdToGuiTask) {
-  enabled(useCD2GUI)
-  setGroup('build')
-  input = file("../models/Sehub.umlp")
-  outputDir = layout.buildDirectory.dir("cd2gui")
-}
-
-tasks.register('guiVariability', GuiVariabilityHandlerTask) {
-  if(useCD2GUI) {
-    input.from(generateCDTOGUI.getOutputDir())
-  }
-  input.from(file("../models/gui"))
-  outputDir = layout.buildDirectory.dir("guiVariability")
-}
-
-createDomainSymbols {
+tasks.named("umlp2sym", UMLP2SymTask) {
   enabled = false // instead, we use the CD2Gui Symbols
 }
 
-
-genGUI {
-  dependsOn(guiVariability)
-  domainModels = ["Sehub"]
+tasks.named("gui2java2ts", GUI2Java2TSTask) {
   guiCreateModels = ["gui.login.UserCreate", "gui.issues.IssueCreate"]
-  guiCreateModelsAsFile = file(generateCDTOGUI.getOutputDir().file("meta/sehub/guiCreateTextModels"))
-  // Use cd2gui symbols instead of cd2gui/symbols
-  symbolDir += generateCDTOGUI.getOutputDir().file("symbols")
-  symbolDir += file("$buildDir/tags")
-  // and exclude the genDomain symbols (without gemId)
-  //var toExclude = tasks.genDomain.getSymbolOutDir().get().asFile
-  //symbolDir.setFrom symbolDir.filter(f -> f != toExclude)
-  modelDir = file(tasks.guiVariability.getOutputDir())
 }
 
-npmInstall.dependsOn(':umlp-rte:client:npmInstall')
-
-translateJava2TSDomain {
+tasks.named("umlpJava2ts", UMLPJava2TSTask) {
   excludeSource.addAll([
       "glob:**/dummy/*",
       "glob:**/security/*"

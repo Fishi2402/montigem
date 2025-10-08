@@ -1,33 +1,124 @@
-# Setting up a new UMLP Project
+# Setting up a MontiGem app
 
-Here it is explained how a project is set up and kicked off.
+A full standard MontiGem app folder structure:
 
-Each exemplary project has the following folder structure:
+```
+- backend
+  - build // generated sources
+    - umlp2java
+    - umlp2sym
+    - resources
+      - *.sql
+  - src // hwc, extends generated sources from backend/build
+    - main // application source set
+      - java
+        - *.java
+      - resources
+      - ...
+    - test
+      - java
+        - *.java
+      - resources
+        - ...
+    - generatorExtension // generator extension source set
+      - resources
+        - *.ftl
+  - build.gradle // uses plugin 'de.rwth.se.montigem-backend'
+- frontend
+  - build // generated sources + app folder
+    - app // entire application code
+      - gui2java2ts
+      - hwc // symlink
+      - umlpJava2ts
+      - ...
+    - gui2java2ts // copied to frontend/build/app
+    - hwc // symlink
+    - umlpJava2ts // copied to frontend/build/app
+    - umlp2jsweetAdapter // JSweet configuration for umlpJava2ts
+    - umlpJava2ts // copied to frontend/build/app
+    - gui2sym
+    - ...
+  - config // copied to frontend/build/app
+    - tsconfig.json
+    - package.json
+    - ...
+  - src // hwc, extends generated sources from frontend/build
+    - main
+      - gui
+        - *.gui
+        - *.ts
+        - *.html
+        - *.scss
+      - java
+        - *.java
+      - jsweet
+        - umlp2jsweetAdapter
+          - *.java
+          - jsweetconfig.json
+        - gui2jsweetAdapter
+          - *.java
+          - jsweetconfig.json
+    - test
+      - java
+        - *.java
+      - resources
+        - ...
+  - build.gradle // uses plugin 'de.rwth.se.montigem-frontend'
+- models
+  - *.umlp
+```
 
-- Backend
-- Frontend
-- Models
+The structure may be adjusted, but plugin tasks also would need to be adjusted.
+For example, moving `*.umlp` outside of `models` folder will require adjusting
+inputs of `umlp2java`, `umlp2sym`, and `gui2java2ts` tasks and any additional
+tasks using the `*.umlp` files as inputs.
+
+> The folder structure is desinged with developers' convenience in mind, but it
+> also must obey best practices and restrictions imposed by the tooling used to
+> build the application.
+
+The generation process overview:
+
+![Generation process](./img/gen.png)
+
+The generated folders correspond to a gradle task and a section of the
+generation process, for example, `gui2java2ts` folder contains output files of
+`gui2java2ts` gradle task, that takes `*.gui` files as an input, gives it to GUI
+generator, which outputs `*.scss`, `*.html`, `*.java` and `*.ts` files. Then the
+task takes `*.java` files and gives it to JSweet, which outputs `*.ts` files.
+This section of the generation process produces the application's GUI.
+
+Generally, the generation process has several steps and is described using
+`<input>2<output>` notation, e.g., `umlp2java`, `gui2java2ts`.
+
+> Generation process overview omits advanced transformations, which usually do
+> not require adjustments, such as `umlp2jsweetAdapter` or `gui2sym`. These
+> transformations produce files used by the generator, not the application.
 
 ## 1. Models
 
-All models are located in the `models` directory. 
-The domain model (for example, `Dtcockpit.umlp`) is placed in the main directory, and it is recommended to put all GUI models in the `gui` subdirectory.
-The directory name for GUI models forms the package name for these models.
-For example, for a GUI model in the subdirectory `models/gui/login`, the package name is `package gui.login;`.
+`models` directory contains `*.umlp` and non-`*.gui` models. It is one of the
+source root for the models. Any model has a package corresponding to the path
+from the source root, same as in Java.
 
-Domain classes (classes defined in the domain model) can be used as parameters of GUI components in GUI models.
-In this case domain classes have to be imported.  
-For example, the import statement in the GUI model for the class `User` defined in the domain model `Dtcockpit.umlp` would look like this:
+Domain classes (classes defined in the domain model, i.e. `*.umlp` file) can be
+imported and used as types in GUI models. For example, the import statement in
+the GUI model for the class `User` defined in the domain model `Dtcockpit.umlp`
+looks like this:
 ```java
 import Dtcockpit.User;
 ```
-## 2. HWC and configuration
 
-The folders *backend/src/main/java* **(BE)** und *frontend/src/app* **(FE)** are where you can override - if necessary - all generated classes using the TOP mechanism.   
-Most commonly, it's domain classes and commands that are overridden. It can also be deserializers or managers or something else, depending on the project's requirements and design.
+## 2. HWC
 
-Both BE and FE require specific configuration files. Refer to section 3 for BE and section 4 for FE for detailed explanations.
-In order to deploy the project, the deployment configuration file needs to be extended accordingly.  
+The folders `backend/src` und `frontend/src` are where you can override - if
+necessary - generated files using the TOP- and similar mechanisms.
+
+Both backend (BE) and frontend (FE) require specific configuration files. See
+[section 3](#3-be) for BE and [section 4](#4-fe) for FE for detailed
+explanations.
+
+The deployment configuration file needs to be extended accordingly.  
 The following are sample entries in `.gitlab-ci.yml`:  
 ```
 ...
@@ -39,26 +130,29 @@ script:
 cache:
 paths:
 - ...
-- examples/dtcockpit/frontend/build/frontendGen/node_modules
+- examples/dtcockpit/frontend/build/app/node_modules
 - examples/dtcockpit/frontend/.gradle/nodejs
 artifacts:
 paths:
 - ...
-- examples/dtcockpit/frontend/build/frontendGen/dist/**
-- examples/dtcockpit/frontend/build/frontendGen/Dockerfile
-- examples/dtcockpit/frontend/build/frontendGen/Caddyfile
-- examples/dtcockpit/frontend/build/frontendGen/.dockerignore
+- examples/dtcockpit/frontend/build/app/dist/**
+- examples/dtcockpit/frontend/build/app/Dockerfile
+- examples/dtcockpit/frontend/build/app/Caddyfile
+- examples/dtcockpit/frontend/build/app/.dockerignore
 ```
 
 ## 3. BE
 
-The BE either uses a Neo4j or a SQL database. SQL is default and does not require any changes.
-Neo4j DAO classes are always generated in parallel to SQL DAO classes. To use a neo4j database, 
-`DAOAFactory.initNeo4J()` and `<DomainModel>ManagerImpl.initNeo4J()` have to be called when starting 
-the application and the properties files have to be adapted (see below).
+The BE either uses a Neo4j or an SQL database. SQL is default and does not
+require any changes. Neo4j DAO classes are always generated in parallel to SQL
+DAO classes. To use a neo4j database, `DAOAFactory.initNeo4J()` and
+`<DomainModel>ManagerImpl.initNeo4J()` have to be called when starting the
+application and the properties files have to be adapted (see below).
 
-BE requires specific configuration files, which must be placed in the *backend/src/main/resources* directory.  
-The configuration includes `database.properties` and several other optional files such as `application.properties`, `logback.xml`.
+BE requires specific configuration files, which must be placed in the
+`backend/src/main/resources` directory.  
+The configuration includes `database.properties` and several other optional
+files such as `application.properties`, `logback.xml`.
 
 Examples for `database.properties`, depending on which database is used:
 ```properties
@@ -88,7 +182,9 @@ spring.web.resources.cache.cachecontrol.must-revalidate=true
 ```
 
 Besides the classes that can be overridden, there is a class where HWC implementation is required.  
-It's a ServerApplication class where, in the *main()* method, the SpringApplication is started, and in the *init()* method, a new web server is created and dummy data is generated if necessary/desired.
+It's a ServerApplication class where, in the *main()* method, the
+SpringApplication is started, and in the *init()* method, a new web server is
+created and dummy data is generated if necessary/desired.
  
 Here is an example from the **DTCockpit** project:
 
@@ -130,12 +226,13 @@ public class DtcockpitServerApplication extends dtcockpit.DtcockpitServerApplica
 
 ## 4. FE
 
-In the FE source directory, besides generated domain classes, can also generated components be overridden as well, for example if GUI actions must be defined.  
+In the FE source directory, besides generated domain classes, can also generated
+components be overridden as well, for example if GUI actions must be defined.  
 Here is an example for the `UserCreateComponent.ts`:
 ```
 @Component({
 selector: 'user-create',
-templateUrl: '../../../../build/frontendGen/build/appgui/gui/login/UserCreate.html',
+templateUrl: '../../../../build/app/build/appgui/gui/login/UserCreate.html',
 styles: [":host{ display: flex; flex-direction: column }"],
 styleUrls: ["/Login.scss"]
 })
@@ -152,10 +249,14 @@ export class UserCreateComponent extends UserCreateComponentTOP {
 }
 ```
 
-FE also requires specific configuration files, which must be placed in the *frontend/config/src* directory.  
-The configuration includes some files in the sub folder app, which describe the main component (root component) of a client application (will be generated later as well).
+FE also requires specific configuration files, which must be placed in the
+*frontend/config/src* directory.  
+The configuration includes some files in the sub folder app, which describe the
+main component (root component) of a client application (will be generated later
+as well).
 
-In AppComponent we usually initialize the generated implementations of Client- and CommandManager (can be overridden as well):
+In AppComponent we usually initialize the generated implementations of Client-
+and CommandManager (can be overridden as well):
 ```
 @Component({
   selector: 'app-root',
@@ -173,22 +274,26 @@ export class AppComponent {
 }
 ```
 
-The application also needs AppModule (`AppGemModuleConfig.ts`), which imports other used modules and AppRouting (`AppGemRouting.ts`), which allows users to navigate between different parts of application.  
+The application also needs AppModule (`AppGemModuleConfig.ts`), which imports
+other used modules and AppRouting (`AppGemRouting.ts`), which allows users to
+navigate between different parts of application.  
 
 Icons, images and videos must be stored in the `config/src/assets` folder.
 
-Frontend may additionally include `tsconfig.json` file alongside `build.gradle` with following content:
+Frontend may additionally include `tsconfig.json` file alongside `build.gradle`
+with following content:
 ```json
-{ "extends": "./build/frontendGen/tsconfig.json" }
+{ "extends": "./build/app/tsconfig.json" }
 ```
-This file provides a hint for IDEs to look for the root TypeScript configuration file in the build folder.
+This file provides a hint for IDEs to look for the root TypeScript configuration
+file in the build folder.
 
 ### 4.1 E2E-Tests
 In the backend, additional playwright e2e test infrastructure can be generated.
 Only works if spring is selected.
 
 ```gradle
-generateUmlpBackend {
+umlp2java {
   ...
   useSpring.set(true)
   usePlaywright.set(true)

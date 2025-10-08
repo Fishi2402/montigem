@@ -29,7 +29,7 @@ page RowsTester(
 
 ## GUI Model
 
-`GemCandlestickChart.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/charts/GemCandlestickChart.gui))
+`GemCandlestickChart.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/charts/GemCandlestickChart.gui))
 
 ```java
 package mc.fenix.charts;
@@ -48,7 +48,7 @@ component GemCandlestickChart(
 
 ### GemCandlestickChartTypes
 
-`GemCandlestickChartTypes.cd` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/charts/GemCandlestickChartTypes.cd))
+`GemCandlestickChartTypes.cd` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/charts/GemCandlestickChartTypes.cd))
 
 ```java
 package mc.fenix.charts;

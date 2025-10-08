@@ -43,7 +43,7 @@ page RowsTester(string someIntegerVariable) {
 
 ## GUI Model
 
-`GemRangeInput.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/input/GemRangeInput.gui))
+`GemRangeInput.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/input/GemRangeInput.gui))
 
 ```java
 package example;

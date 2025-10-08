@@ -10,9 +10,9 @@ They are able to accomplish this via the following four pillars:
 * Provide GUI components and pages (including hand-written gui code)
 
 For these purposes, modules "publish" (a subset of) the following artifacts, which are consumed by certain Gradle configurations:
-* A generation-time artifact.jar (`umlpModulesGen` configuration / via the `--module-config` CLI option)
-* A models.jar (`umlpModulesModels` configuration/ via the `--modelPath` CLI option), containing the original .cd models to be used with the Domain Generator
-* A domain-symbols.jar (`umlpModulesDomainSymbols` configuration / via the `--path` symbolpath CLI option), containing the CD-symbols to be used with the Gui Generator
+* A generation-time artifact.jar (`montigemModuleGeneratorExtension` configuration / via the `--module-config` CLI option)
+* A models.jar (`montigemModuleUMLPModels` configuration/ via the `--modelPath` CLI option), containing the original .cd models to be used with the Domain Generator
+* A domain-symbols.jar (`montigemModuleUMLPSymbols` configuration / via the `--path` symbolpath CLI option), containing the CD-symbols to be used with the Gui Generator
 * A backend.jar (`implementation` configuration / added to the java classpath), containing the compiled backend sources 
 * A ts-module, containing the typescript frontend sources
 
@@ -51,33 +51,33 @@ We start by adding the login module to the backend:
 ```groovy
 // backend/build.gradle
 dependencies {
-  umlpModules("umlp.modules:login:${mc_version}") // load the login module, consisting of models, config template tool adaption, and implementation/backend dependencies
+  montigemModule("umlp.modules:login:${mc_version}") // load the login module, consisting of models, config template tool adaption, and implementation/backend dependencies
 }
 ```
 
 The following diagram gives a brief overview of the various Gradle configurations effected by modules.
-For example, the domain symbols are loaded as a dependency into the *umlpModulesDomainSymbols* config,
+For example, the domain symbols are loaded as a dependency into the *montigemModuleUMLPSymbols* config,
  which is then used within the GUI generator:
 ````mermaid
 classDiagram
-  class umlpModules
-  <<unresolveable>> umlpModules
-  note for umlpModules  "General definition for a module, can not be directly resolved" 
-  class umlpModulesModels
-  umlpModules <|-- umlpModulesModels
-  note for umlpModulesModels "Contains the models itself -> genDomain"
-  class umlpModulesGen
-  umlpModules <|-- umlpModulesGen
-  note for umlpModulesGen "Contains the modifications for the MontiGem tool -> genGui & genDomain"
+  class montigemModule
+  <<unresolveable>> montigemModule
+  note for montigemModule  "General definition for a module, can not be directly resolved" 
+  class montigemModuleUMLPModels
+  montigemModule <|-- montigemModuleUMLPModels
+  note for montigemModuleUMLPModels "Contains the models itself -> umlp2ts"
+  class montigemModuleGeneratorExtension
+  montigemModule <|-- montigemModuleGeneratorExtension
+  note for montigemModuleGeneratorExtension "Contains the modifications for the MontiGem tool -> gui2java & umlp2ts"
   class implementation
-  umlpModules <|-- implementation
+  montigemModule <|-- implementation
   note for implementation "Contains the compiled backend code -> java"
-  class umlpModulesDomainSymbols
-  umlpModules <|-- umlpModulesDomainSymbols
-  note for umlpModulesDomainSymbols "Contains the domain symbols -> genGUI"
-  class umlpModulesFrontendCodeTS
-  umlpModules <|-- umlpModulesFrontendCodeTS
-  note for umlpModulesFrontendCodeTS "Contains bundles JS-frontend code -> angular"
+  class montigemModuleUMLPSymbols
+  montigemModule <|-- montigemModuleUMLPSymbols
+  note for montigemModuleUMLPSymbols "Contains the domain symbols -> gui2java"
+  class montigemModuleFrontendCodeTS
+  montigemModule <|-- montigemModuleFrontendCodeTS
+  note for montigemModuleFrontendCodeTS "Contains bundles JS-frontend code -> angular"
 
 ````
 
@@ -93,7 +93,7 @@ import LoginModule.*;
 umlp CustomerService {
 ```
 
-The [LoginModule.umlp](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/modules/login/models/LoginModule.umlp?ref_type=heads#L14)  classdiagram is now loaded from the `umlpModulesModels` configuration.
+The [LoginModule.umlp](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/modules/login/models/LoginModule.umlp?ref_type=heads#L14)  classdiagram is now loaded from the `montigemModuleUMLPModels` configuration.
 
 The import is important, try what happens if you forget it :)
 
@@ -158,17 +158,17 @@ Similar to the backend, we also have to add the login module to the frontend as 
 ```groovy
 // frontend/build.gradle
 dependencies {
-  umlpModules("umlp.modules:login:$mc_version") // Load generator modifications, domain symbols, models, and the generates frontend ts-files
+  montigemModule("umlp.modules:login:$mc_version") // Load generator modifications, domain symbols, models, and the generates frontend ts-files
 }
 ```
 
 (Note: Due to car-rental being a weird project/a workaround for CD2GUI singletons, 
- those lines SHOULD NOT be added after the `genGUI` definition,
+ those lines SHOULD NOT be added after the `gui2java` definition,
 as otherwise gradle MIGHT complain about already resolved configurations.)
 
 In addition, the typescript dependency (similar to the backends *implementation* dependency) has to be added.
 For a landslide of reasons we are unable to package our frontends as an angular slide (or ALU was just not able to.)
-Instead, they are implicitly copied over using the *umlpModulesFrontendCodeTS* configuration.
+Instead, they are implicitly copied over using the *montigemModuleFrontendCodeTS* configuration.
 The angular/TS compiler now has to be made aware of where to find the login module's sources,
  which we can do by adding it as a path to the tsconfig:
 
@@ -324,4 +324,4 @@ In the case, that non-conservative extensions to a class are made (such as a req
 
 * Using subproject (for each file) also does not work due to circular dependencies
 
-* Instead, we distribute the packaged genDomain/genGui outpu
+* Instead, we distribute the packaged umlp2ts/gui2java outpu

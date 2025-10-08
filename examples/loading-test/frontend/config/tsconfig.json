@@ -26,10 +26,11 @@
       "dom"
     ],
     "paths": {
-      "@umlp/*": ["libs/@umlp/*"],
+      "@umlp/*": ["prodlibs/@umlp/*"],
       "*": [
-        "build/appdomain/*",
-        "build/appgui/*",
+        "umlp2jsweetObserver/*",
+        "umlp2ts/*",
+        "gui2java/*",
         "src/app/*",
         "hwcsrc/*"
       ]

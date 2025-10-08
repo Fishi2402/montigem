@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import de.se_rwth.commons.logging.Log;
 import dtcockpit.DtcockpitManager;
 import dtcockpit.Project;
+import jsweet.lang.Erased;
 import org.gitlab4j.api.GitLabApi;
 import org.gitlab4j.api.GitLabApiException;
 import org.gitlab4j.api.PipelineApi;
@@ -12,6 +13,7 @@ import org.gitlab4j.api.models.Branch;
 
 import java.util.Map;
 
+@Erased
 public class MontiVerseLite {
 
   protected static final String GIT_API_ACCESS_TOKEN = "gitApiAccessToken";

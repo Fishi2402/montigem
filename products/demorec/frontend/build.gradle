@@ -1,47 +1,17 @@
-import java.nio.file.Files
-import java.nio.file.Paths
-
 /* (c) https://github.com/MontiCore/monticore */
 
-plugins {
-  id "de.rwth.se.umlp-tool-frontend"
-}
+import de.montigem.gradle.specific.GUI2Java2TSTask
+import de.montigem.gradle.specific.UMLPJava2TSTask
 
-def useCD2GUI = false
+plugins {
+  id "de.rwth.se.montigem-frontend"
+}
 
 dependencies {
-  implementation project(":products:demorec:backend")
   testImplementation project(':umlp-test-rte')
-
-  domainSources project(":products:demorec:backend")
 }
 
-node {
-  nodeProjectDir = file("${buildDir}/frontendGen")
-}
-nodeSetup.dependsOn(frontendSetup)
-
-genGUI {
-  domainModels = ["DemoRec"]
-  guiCreateModels = ["gui.pack.PackCreate",
-                     "gui.process.ProcessCreate",
-                     "gui.step.ProcessStepCreate",
-                     "gui.joinconnection.JoinConnectionCreate",
-                     "gui.endeffector.EndEffectorCreate",
-                     "gui.dimension.DimensionCreate",
-                     "gui.measuringvalues.MeasuringValueCreate",
-                     "gui.component.ComponentCreate",
-                     "gui.kind.CreateComponentKind",
-                     "gui.pack.PackTypeCreate",
-                     "gui.editprocessmodels.edit.wizard.ActionCreate"]
-
-  /*
-  debug = true
-  outputs.upToDateWhen { false }
-  /**/
-}
-
-translateJava2TSDomain {
+tasks.named("umlpJava2ts", UMLPJava2TSTask) {
   excludeSource.addAll([
       "glob:**/processmodeling/*",
       "glob:**/*test*/*"
@@ -49,18 +19,27 @@ translateJava2TSDomain {
   verbose = true
 }
 
-translateJava2TSGUI {
+tasks.named("gui2java2ts", GUI2Java2TSTask) {
+  guiCreateModels = [
+      "gui.pack.PackCreate",
+      "gui.process.ProcessCreate",
+      "gui.step.ProcessStepCreate",
+      "gui.joinconnection.JoinConnectionCreate",
+      "gui.endeffector.EndEffectorCreate",
+      "gui.dimension.DimensionCreate",
+      "gui.measuringvalues.MeasuringValueCreate",
+      "gui.component.ComponentCreate",
+      "gui.kind.CreateComponentKind",
+      "gui.pack.PackTypeCreate",
+      "gui.editprocessmodels.edit.wizard.ActionCreate"
+  ]
+
   excludeTranspile.addAll([
       "glob:**/service/**",
       "glob:**/service/*"
-  ]
-  )
+  ])
   verbose = true
 }
-
-
-npmInstall.dependsOn(':umlp-rte:client:npmInstall')
-
 
 tasks.named('runApp', NpxTask) {
   environment = [
@@ -68,11 +47,8 @@ tasks.named('runApp', NpxTask) {
   ]
 }
 
-tasks.register('run') {
-  dependsOn(runApp)
-}
-
-task runAppNoBuild(type: NpxTask) {
+tasks.register("runAppNoBuild", NpxTask) {
+  group = "application"
   command = "ng"
   args = ["serve"]
 }
