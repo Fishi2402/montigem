@@ -100,7 +100,7 @@
     $rwth-blue,
     $montigem-white
   );
-  
+
   @include dropdown-input-theme($gray-dark, $rwth-black-3, $rwth-black-5, $rwth-black-4, $brand-danger, $brand-warning);
 
   @if $horizontal-layout {
