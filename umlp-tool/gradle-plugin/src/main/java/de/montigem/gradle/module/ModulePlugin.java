@@ -27,6 +27,7 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
+import static de.montigem.gradle.BackendPlugin.addRTEDependency;
 import static de.montigem.gradle.FrontendBasePlugin.UMLP_GROUP_NAME;
 import static de.montigem.gradle.FrontendBasePlugin.inRTE;
 import static de.montigem.gradle.FrontendBasePlugin.mcVersion;
@@ -81,6 +82,9 @@ public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Projec
     else {
       umlpPresent = false;
       umlp = new HashSet<>();
+    }
+    if (umlpPresent && !inRTE(project)) {
+      addRTEDependency(project);
     }
 
     // Create the models jar

@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.montigem.gradle.specific;
 
+import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Optional;
@@ -23,10 +24,10 @@ public abstract class GUI2JSweetAdapterAction extends Model2JSweetAdapterAction<
         .stream()
         .map(File::getAbsolutePath)
         .collect(Collectors.toList());
-    if (getParameters().getDomain().isPresent()) {
+    if (getParameters().getDomain().isPresent() && !getParameters().getDomain().get().isEmpty()) {
       generator.generate(
           getParameters().getJSweetAdapterDir().get().getAsFile().getAbsolutePath(),
-          getParameters().getDomain().get(), false,
+          getParameters().getDomain().get().get(0), false,
           srcDirs
       );
     }
@@ -41,6 +42,6 @@ public abstract class GUI2JSweetAdapterAction extends Model2JSweetAdapterAction<
   interface GUIParams extends Params {
     @Input
     @Optional
-    Property<String> getDomain();
+    ListProperty<String> getDomain();
   }
 }

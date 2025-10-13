@@ -3,6 +3,6 @@ plugins {
 }
 
 gui2java {
-  domainModels = ["Domain"]
+  domain = ["Domain"]
   guiCreateModels = ["complex.RoomPersonDetails"]
 }

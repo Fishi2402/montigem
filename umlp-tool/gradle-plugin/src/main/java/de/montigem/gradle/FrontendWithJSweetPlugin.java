@@ -34,6 +34,7 @@ import org.gradle.api.tasks.TaskProvider;
 import org.gradle.internal.FileUtils;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -215,7 +216,8 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       task.setGroup(UMLP_GROUP_NAME);
       task.dependsOn(mergeUMLP);
 
-      task.getDomain().set(umlpName);
+      task.getDomain().set(Collections.emptyList());
+      task.getDomain().add(umlpName);
       task.getJSweetAdapterDir().set(umlp2jsweetAdapterDir);
       if (srcUMLPJSweet.getAsFile().exists()) {
         task.getHandWrittenJSweetDir().set(srcUMLPJSweet);
@@ -265,7 +267,8 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       task.setGroup(UMLP_GROUP_NAME);
       task.dependsOn(createSymlinkTask, setupFrontend, mergeUMLP);
 
-      task.getDomain().set(umlpName);
+      task.getDomain().set(Collections.emptyList());
+      task.getDomain().add(umlpName);
       if (!inRTE(project)) {
         task.getSymbolPath().from(project.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
         task.getSymbolPath().from(project.getConfigurations().named(MONTIGEM_MODULE_IMPORT_MAP_CONFIG));

@@ -82,7 +82,7 @@ public abstract class UMLPJava2TSTask extends DefaultTask {
 
 
   @Input
-  public abstract Property<String> getDomain();
+  public abstract ListProperty<String> getDomain();
 
   @OutputDirectory
   public abstract DirectoryProperty getJSweetAdapterDir();

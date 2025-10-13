@@ -250,7 +250,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
           task.setGroup(UMLP_GROUP_NAME);
 
           if (!domainNames.isEmpty()) {
-            task.getDomain().set(domainNames.get(0));
+            task.getDomain().set(domainNames);
           }
 
           task.getJSweetAdapterDir().set(umlp2jsweetAdapterDir);
@@ -357,7 +357,8 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
             task.getSymbolPath().from(subproject.getConfigurations().named(MONTIGEM_MODULE_IMPORT_MAP_CONFIG));
           }
           if (!domainNames.isEmpty()) {
-            task.getDomain().set(domainNames.get(0));
+            task.getDomain().set(Collections.emptyList());
+            task.getDomain().addAll(domainNames);
           }
           task.getImportsDir().from(umlpJava2ts.flatMap(UMLPJava2TSTask::getOutputDir));
           if (umlp2sym.isPresent()) {
@@ -378,9 +379,6 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
           task.getGUIGenJSweet().set(true);
           task.getGUIGenTSFunctionality().set(false);
 
-          if (!domainNames.isEmpty()) {
-            task.getDomain().set(domainNames.get(0));
-          }
           task.getJSweetAdapterDir().set(gui2jsweetAdapterDir);
           if (srcGUIJSweet.getAsFile().exists()) {
             task.getHandWrittenJSweetDir().set(srcGUIJSweet);

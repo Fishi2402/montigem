@@ -188,7 +188,7 @@ public abstract class BackendPlugin implements Plugin<Project> {
     project.getPluginManager().apply("de.rwth.se.montigem-testing");
   }
 
-  protected void addRTEDependency(Project project) {
+  public static void addRTEDependency(Project project) {
     // Add Symbols and Tags of RTE ClassDiagrams to SymbolPath
     if (useLocalDependencies(project) && inUMLP(project)) {
       project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG, project.project(":umlp-rte"));

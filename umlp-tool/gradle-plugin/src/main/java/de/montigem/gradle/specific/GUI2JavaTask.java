@@ -9,7 +9,6 @@ import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.OutputDirectory;
@@ -19,6 +18,7 @@ import umlp.UMLPToolOptions;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -44,7 +44,7 @@ public abstract class GUI2JavaTask extends MGAllFilesTask {
 
   @Input
   @org.gradle.api.tasks.Optional
-  public abstract Property<String> getDomain();
+  public abstract ListProperty<String> getDomain();
 
   @Input
   @org.gradle.api.tasks.Optional
@@ -100,7 +100,7 @@ public abstract class GUI2JavaTask extends MGAllFilesTask {
 
     if (this.getDomain().isPresent() && !this.getDomain().get().isEmpty()) {
       result.add("-" + UMLPToolOptions.DOMAIN.getCMD());
-      result.add(this.getDomain().get());
+      result.addAll(this.getDomain().get());
     }
 
     if (this.getGuiCreateModels().isPresent() && !this.getGuiCreateModels().get().isEmpty()) {

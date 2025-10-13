@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.montigem.gradle.specific;
 
+import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
 import umlp.generator.gui.JSweetConfigGenerator;
@@ -24,13 +25,13 @@ public abstract class UMLP2JSweetAdapterAction extends Model2JSweetAdapterAction
         .collect(Collectors.toList());
     generator.generate(
         getParameters().getJSweetAdapterDir().get().getAsFile().getAbsolutePath(),
-        getParameters().getDomain().get(), true,
+        getParameters().getDomain().get().get(0), true,
         srcDirs
     );
   }
 
   interface UMLPParams extends Params {
     @Input
-    Property<String> getDomain();
+    ListProperty<String> getDomain();
   }
 }

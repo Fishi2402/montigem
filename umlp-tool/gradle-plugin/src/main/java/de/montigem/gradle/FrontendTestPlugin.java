@@ -33,7 +33,6 @@ public class FrontendTestPlugin implements Plugin<Project> {
       task.getGuiCreateModels().set(firstTask.flatMap(GUI2JavaTask::getGuiCreateModels));
       task.getGUIGenJSweet().set(firstTask.flatMap(GUI2JavaTask::getGUIGenJSweet));
       task.getGUIGenTSFunctionality().set(firstTask.flatMap(GUI2JavaTask::getGUIGenTSFunctionality));
-      task.getDomain().set(firstTask.flatMap(GUI2Java2TSTask::getDomain));
       task.getJSweetAdapterDir().set(firstTask.flatMap(GUI2Java2TSTask::getJSweetAdapterDir));
       task.getHandWrittenJSweetDir().set(firstTask.flatMap(GUI2Java2TSTask::getHandWrittenJSweetDir));
       task.getInput4RelativePathCalculation().from(firstTask.map(GUI2Java2TSTask::getInput4RelativePathCalculation));

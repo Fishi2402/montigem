@@ -4,6 +4,7 @@ package de.montigem.gradle.specific;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Classpath;
 import org.gradle.api.tasks.Input;
@@ -21,7 +22,7 @@ public abstract class GUI2JSweetAdapterTask extends DefaultTask {
 
   @Input
   @Optional
-  public abstract Property<String> getDomain();
+  public abstract ListProperty<String> getDomain();
 
   @OutputDirectory
   public abstract DirectoryProperty getJSweetAdapterDir();
