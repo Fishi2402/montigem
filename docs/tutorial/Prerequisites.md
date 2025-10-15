@@ -120,7 +120,7 @@ gradle build
 
 ```sh
   gradle :frontend:run
-  ```
+```
 
 Starts a local node server. The startup time is quite slow. If you are only 
 changing FrontEnd code or GUI models, you can simply let the taks run and 
@@ -132,4 +132,4 @@ instead use the following task to serve the new code in much less time.
 
 [Next page](./ClassDiagramBasics.md)
 
-[Previous page](../README.md)
+[Previous page](../Tutorial.md)

@@ -14,6 +14,12 @@
     --thumb-size: 16px;
   }
 
+  :host(.vertical), :host([vertical="true"]) {
+    width: auto;
+    display: inline-block;
+    min-width: unset;
+  }
+
   .gem-range::-webkit-slider-thumb { width: var(--thumb-size); height: var(--thumb-size); }
   .gem-range::-moz-range-thumb     { width: var(--thumb-size); height: var(--thumb-size); }
 
@@ -97,7 +103,7 @@
   }
 
   gem-range-input {
-    width: 0%;
+    width: 100%;
     display: flex;
     flex-direction: $flexDirection;
     align-items: $itemsAlign;
