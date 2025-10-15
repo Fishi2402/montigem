@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gradle.common;
 
+import de.montigem.gradle.common.IncGenData;
 import gradle.MockFileChange;
 import org.gradle.work.ChangeType;
 

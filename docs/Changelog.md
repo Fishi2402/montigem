@@ -8,6 +8,7 @@ hide:
 Only big or breaking changes are listed. Since there is no semantic versioning for MontiGem,
 the changes are tagged with a date.
 
+<!--
 ## Upcoming
 
 ### Changes
@@ -41,6 +42,79 @@ For MontiGem users:
   
 
 - Context Conditions for unsupported Java Code (e.g. the Stream API) that is transpiled by JSweet. This should stop the current need to guess which code can be transpiled and which not. 
+-->
+## 2025-09-25
+
+### Changes
+
+- Migrated to jsweet
+  - `umlp-rte`
+  - login module
+  - comment module
+
+- Updated default app project structure, see the top section of [project
+  setup](./ProjectSetup.md).
+
+- Update default module project structure to closely resemble app project
+  structure
+
+- Updated gradle plugins:
+  - Renamed plugins. Naming schema `<SomeCustom>Plugin`, for example,
+    `ModuleFrontendPlugin`, `BackendPlugin`
+  - Reworked application and module plugins. The details are explained in the
+    top section of [project setup](./ProjectSetup.md)
+    - Moved common script logic to plugins
+    - `umlp-rte` is now also a module
+  - Renamed gradle tasks. Naming schema mostly follows rules:
+    - something-to-something transformations:
+      `<main_input_type>2<main_output_type>`, for example, `umlp2sym`, `cd2gui`,
+      `gui2jsweetAdapter`, `umlpJava2ts`
+      - there are exceptions: `gui2java2ts` - executes `gui2java`,
+        `gui2jsweetAdapter`, `guiJava2ts`; `gui2java2` - custom project-specific
+        task
+      - `main_input_type` and `main_output_type` means "the most important"
+        artifacts, for example, `gui2java2ts` produces `html`, `sym`, JSweet
+        configurations, etc., but the most important produced is `java` (and
+        `ts`), because it contains the most of component specification.
+    - creation tasks: `createSymlink`, `setupFrontend`
+  - Updated gradle tasks groups according to their purpose:
+    - build and jar: `build` (`buildApp`, `gui2symJar`)
+    - publish: `publishing` (`publishLib`)
+    - tests: `verification` (`test`, `slowtest`)
+    - transformations and app/module setup: `umlp` (`umlp2java`,
+      `setupFrontend`, `gui2sym`)
+  - Tasks use lazy API more, for example, `named("gui2java").configure ...` vs
+    `getByName("gui2java")`
+  - Explicit task dependencies are omitted, if can be properly resolved by
+    Gradle (you may ignore this change)
+  - Replaced some deprecated API usage, for example, `getHwc` of `CommonMCTask`
+    - Tasks marked as `Deprecated` may still use the deprecated features
+
+- Added default setup for projects in umlp repo (examples, products,
+  experiments): added defaults for `package.json`, `tsconfig.json`
+  - Removed these configuration files where can
+
+- Handwritten `jsweetconfig.json` are now merged into generated one. The
+  location for handwritten file is specified on top in [project setup
+  doc](./ProjectSetup.md). The JSON properties specified in handwritten
+  `jsweetconfig.json` overwrite the generated ones (arrays and objects are not
+  merged, except the top-most object).
+
+- Renamed JSweet adapters
+- Added JSweet adapters (only generally useful are listed):
+  - `ModuleGUIAdapter` - transforms `*.java` generated from `*.cd` (PoJos) and
+    `*.gui`, specific to MontiGem modules. Equivalent adapter for applications
+    is the `GUIAdapter`.
+  - `ModuleUMLPAdapter` - transforms `*.java` generated from `*.umlp`, specific
+    to MontiGem modules. Equivalent adapter for applications is the
+    `UMLPAdapter`.
+  - `ConditionalAdapter` and some of it implementations. Implementing
+    `skipCondition` method of this adapter and supplying it with some adapter
+    `Foo` as input will skip the `Foo` when `skipCondition` hits. The
+    `ConditionalAdapter` cannot skip `onTranspilationStarted` method.
+
+> MontiGem is prepared for `umlp2ts` generator removal. The removal will happen
+> when `PromoDB` project migration is accepted.
 
 ## 2025-06-26
 

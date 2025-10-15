@@ -21,14 +21,14 @@ Plugin providing Gui-DSL models to create and manage instances of a provided CD4
 
 - A template can be found in :examples:sehub:frontend, for the tasks see below
 - add a variable useCD2GUI which can be used to turn cd2gui toggle cd2gui
-- copy the tasks `generateCD2GUI`, `guiVariability` and `genGUI2` into your project and change
+- copy the tasks `generateCD2GUI`, `guiVariability` and `gui2java2` into your project and change
   
   - `input` on `generateCD2GUI` to your domain file path
   - `input` on `guiVariability` to the handcoded model path
-  - `domainModels` on `genGUI2` to the name of the domain Model
-  - possibly the `input` on your main `genGUI` Task to `file(guiVariability.getOutputDir().dir("yourHandcodedPackageName"))` if the guiVariability functionality is needed for the main project
+  - `domainModels` on `gui2java2` to the name of the domain Model
+  - possibly the `input` on your main `gui2java` Task to `file(guiVariability.getOutputDir().dir("yourHandcodedPackageName"))` if the guiVariability functionality is needed for the main project
 
-- Be sure to add the the genGUI2 to the npm prerequisites and change the `@src/*` to also include `../umlp/fe2/*`
+- Be sure to add the the gui2java2 to the npm prerequisites and change the `@src/*` to also include `../umlp/fe2/*`
 - Add cd2gui to the routing pages `{ path:"cd2gui", loadChildren:() => import('../../build/umlp/fe2/cd2gui/models/ModelsGemRouting').then(m=>m.routes)}`
 - Add a link to the CD2GUI Dashboard (`cd2gui/models/CD2GUIDashboard`) or navigate there manually
 - Note: when turning cd2gui on and off make sure to disable any caching for the first run. Also remove all references in handwritten parts (e.g. routing to generated pages) when turning cd2gui off.
@@ -90,10 +90,10 @@ outputDir = layout.buildDirectory.dir("guiVariability")
 }
 ```
 ```
-tasks.register('genGUI2', UMLPGuiGenTask) {
+tasks.register('gui2java2', UMLPGuiGenTask) {
   enabled(useCD2GUI)
   setGroup('build')
-  dependsOn(genGUI, guiVariability)
+  dependsOn(gui2java, guiVariability)
   input = file(guiVariability.getOutputDir().dir("cd2gui"))
   symbolDir = files(
       generateCDTOGUI.getOutputDir().file("symbols"),

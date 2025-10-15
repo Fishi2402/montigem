@@ -94,7 +94,7 @@ page GemTableExample() {
 
 ## GUI Models
 
-`GemTable.gui`([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/table/GemTable.gui))
+`GemTable.gui`([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/table/GemTable.gui))
 
 ```java
 package mc.fenix.table;
@@ -118,7 +118,7 @@ component GemTable(
 | `headers` | `List<GUIViewElement>` | Header(s) of a table. Normally set to a list of `GemTableHeader`. | `null` (No headers will show) |
 | `body` | `List<GUIViewElement>` | Body of a table. Normally set to a list of `GemTableRow`. | `null` (Body will not show) |
 
-`GemTableHeader.gui`([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/table/GemTableHeader.gui))
+`GemTableHeader.gui`([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/table/GemTableHeader.gui))
 
 A table row that identifies the head of the table, adds some styling to text content by default.
 
@@ -136,7 +136,7 @@ component GemTableHeader(
 | `cols` | `List<String>` | Columns of a table header row. | `null` |
 | `cells` | `List<GUIViewElement>` | Cells of a table header. Normally set to a list of `GemTableHeaderCell`. If `cells` and `cols` are defined, `cells` are used. | `null` |
 
-`GemTableHeaderCell.gui`([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/table/GemTableHeaderCell.gui))
+`GemTableHeaderCell.gui`([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/table/GemTableHeaderCell.gui))
 
 Controls dimensions that content should occupy within a table's header.
 
@@ -156,7 +156,7 @@ component GemTableHeaderCell(
 | `rowSpan` | `List<GUIViewElement>` | Number of rows a cell should cover | `1` |
 | `content` | `List<GUIViewElement>` | A cells content, can be any `GUIViewElement`. | `null` |
 
-`GemTableRow.gui`([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/table/GemTableRow.gui))
+`GemTableRow.gui`([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/table/GemTableRow.gui))
 
 A table row that is part of the body of the table.
 
@@ -174,7 +174,7 @@ component GemTableRow(
 | `cols` | `List<String>` | Columns of a table row. | `null` |
 | `cells` | `List<GUIViewElement>` | Cells of a table row. Normally set to a list of `GemTableRowCell`. If `cells` and `cols` are defined, `cells` are used. | `null` |
 
-`GemTableRowCell.gui`([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/table/GemTableRowCell.gui))
+`GemTableRowCell.gui`([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/table/GemTableRowCell.gui))
 
 Controls dimensions that content should occupy within a table's body.
 

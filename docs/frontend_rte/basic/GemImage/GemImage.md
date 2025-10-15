@@ -24,7 +24,7 @@ page GemImageExample() {
 
 ## GUI Model
 
-`GemImage.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/basic/GemImage.gui))
+`GemImage.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/basic/GemImage.gui))
 
 ```java
 package mc.fenix.basic;

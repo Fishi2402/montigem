@@ -39,7 +39,7 @@ Suggestions filtered by input
 
 ## GUI Model
 
-`GemAutocompleteInput.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/input/GemAutocompleteInput.gui))
+`GemAutocompleteInput.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/input/GemAutocompleteInput.gui))
 
 ```java
 package mc.fenix.input;

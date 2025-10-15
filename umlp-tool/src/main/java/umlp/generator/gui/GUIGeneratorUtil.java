@@ -2,12 +2,9 @@
 package umlp.generator.gui;
 
 import com.google.common.base.CaseFormat;
-import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
 import de.monticore.ast.ASTNode;
 import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cd4code._prettyprint.CD4CodeFullPrettyPrinter;
-import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -54,7 +51,6 @@ import de.monticore.types3.TypeCheck3;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
-import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
@@ -68,9 +64,7 @@ import umlp.generator.gui.gentypescript.printer.TSBackendMap;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 import umlp.generator.util.TagLookUp;
-import umlp.generator.util.UMLPSymbolTables;
 
-import java.net.URI;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -82,7 +76,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -132,13 +125,13 @@ public class GUIGeneratorUtil {
   }
 
   public boolean isCommandCall(ASTGUICompilationUnit unit, ASTCallExpression methodCall) {
-    if(methodCall.getExpression() instanceof ASTFieldAccessExpression) {
+    if (methodCall.getExpression() instanceof ASTFieldAccessExpression) {
       ASTFieldAccessExpression fieldAccessExpression = (ASTFieldAccessExpression) methodCall.getExpression();
-      if(fieldAccessExpression.getExpression() instanceof ASTNameExpression) {
+      if (fieldAccessExpression.getExpression() instanceof ASTNameExpression) {
         String variableName = ((ASTNameExpression) fieldAccessExpression.getExpression()).getName();
         Optional<GUIParamSymbol> guiParamOpt = unit.getGUIComponentDeclaration().getSpannedScope().resolveGUIParam(variableName);
-        if(guiParamOpt.isPresent()) {
-          if(guiParamOpt.get().getType().getTypeInfo() instanceof OOTypeSymbol) {
+        if (guiParamOpt.isPresent()) {
+          if (guiParamOpt.get().getType().getTypeInfo() instanceof OOTypeSymbol) {
             OOTypeSymbol typeSymbol = (OOTypeSymbol) guiParamOpt.get().getType().getTypeInfo();
              /*
              For now: Assume that every method call of a singleton is a Command Execution Call
@@ -508,7 +501,7 @@ public class GUIGeneratorUtil {
     values.addAll(guiComponent.getGUINamedArgs().getGUINamedArgList().stream().map(a -> a.getExpression())
         .filter(a -> GUIDSLMill.typeDispatcher().isSetExpressionsASTSetEnumeration(a))
         .flatMap(a -> GUIDSLMill.typeDispatcher().asSetExpressionsASTSetEnumeration(a).getSetCollectionItemList().stream())
-            .map(v -> GUIDSLMill.typeDispatcher().asSetExpressionsASTSetValueItem(v))
+        .map(v -> GUIDSLMill.typeDispatcher().asSetExpressionsASTSetValueItem(v))
         .filter(v -> isComponentArgument(guiComponent, v.getExpression()))
         .map(v -> v.getExpression()).collect(Collectors.toList()));
     return values;
@@ -655,7 +648,8 @@ public class GUIGeneratorUtil {
     String getter = "get" + StringTransformations.capitalize(name);
     if (UMLPGeneratorConfig.getInstance().isUseJsweet()) {
       getter = "toArray(" + getter + SYNCHRONIZED_SUFFIX + "(" + args + "))";
-    } else {
+    }
+    else {
       getter = getter + "(" + args + ")";
     }
     return getter;
@@ -1018,6 +1012,17 @@ public class GUIGeneratorUtil {
     return res;
   }
 
+  public String predictRelativeImportPath(
+      Path importedFolder, Path importer, String file) {
+    Path imported = importedFolder.resolve(file);
+    return importer.getParent()
+        .toAbsolutePath()
+        .normalize()
+        .relativize(imported.toAbsolutePath())
+        .toString()
+        .replaceAll("\\\\", "/");
+  }
+
   public Optional<String> getRelativeImportPathForClass(MCPath imported, Path importer, String qualifiedName) {
     Optional<String> result = getRelativeImportPath(imported, importer, qualifiedName, "ts");
     if (result.isEmpty() && UMLPGeneratorConfig.getInstance().isUseJsweet()) {
@@ -1285,7 +1290,7 @@ public class GUIGeneratorUtil {
   }
 
   public String params2String(Map<ASTCDParameter, SymTypeExpression> params) {
-    if(params == null) {
+    if (params == null) {
       return "";
     }
     StringBuilder res = new StringBuilder();

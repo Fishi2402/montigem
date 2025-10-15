@@ -32,7 +32,7 @@ page RowsTester(
 
 ## GUI Model
 
-`GemBarChart.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/charts/GemBarChart.gui))
+`GemBarChart.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/charts/GemBarChart.gui))
 
 ```java
 package mc.fenix.charts;
@@ -62,7 +62,7 @@ component GemBarChart(
 
 ### GemBarChartTypes
 
-`GemBarChartTypes` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/charts/GemBarChartTypes.cd))
+`GemBarChartTypes` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/charts/GemBarChartTypes.cd))
 
 ```java
 package mc.fenix.charts;

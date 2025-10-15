@@ -1,1 +1,1 @@
-{ "extends": "./build/frontendGen/tsconfig.json" }
+{ "extends": "./build/app/tsconfig.json" }
