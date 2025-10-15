@@ -276,6 +276,7 @@ deploy-python-package:
   script:
     - cd experiments/python-client/runtime-package
     - pip install --upgrade hatch
+    - export HATCH_BUILD_METADATA="gitlab.${CI_PIPELINE_ID}"
     - python -m hatch build
     - python -m hatch publish
   variables:
