@@ -21,7 +21,7 @@ page RowsTester() {
     minValue = "1",
     maxValue = "100",
     startValue = "20",
-    endValue = "50",
+    endValue = "50"
   )
 }
 ```
