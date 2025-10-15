@@ -52,6 +52,7 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
   @Override
   public void apply(Project project) {
     project.getPluginManager().apply("base");
+    project.getPluginManager().apply("java-library");
     project.getPluginManager().apply(NodePlugin.class);
     project.getPluginManager().apply(MGBasePlugin.class);
 
