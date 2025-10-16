@@ -296,6 +296,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       );
       task.getModelDir().from(srcGUI);
       task.getModelDir().from(guiVariability.flatMap(CommonMCTask::getOutputDir));
+      task.getModelDir().from(cd2gui.flatMap(CommonMCTask::getOutputDir));
       task.getHandWrittenCodeDir().from(intermediateHWCLink);
       task.getOutputDir().set(gui2java2tsDir);
       task.getSymbolOutDir().set(gui2symDir);
