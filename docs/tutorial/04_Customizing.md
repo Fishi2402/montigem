@@ -1,8 +1,3 @@
----
-hide:
-  - navigation
----
-
 # Customzing the App
 
 As mentioned for the TOP-mechanism, hand-written code adaptions are necessary
@@ -49,6 +44,7 @@ The main entry point to interact with any part of the stored domain objects is
 the generated singleton class `Manager` (e.g., `carrental.CarrentalManager`,
 `domain.DomainManager`). It offers methods to create, retrieve or delete a
 domain object. E.g., for a domain object `Foo`:
+
 * `Manager.getFoo(gemId)` returns the object if present
 * `Manager.getFooSure(gemId)` returns the object 
 * `Manager.fooBuilder()` returns a builder
@@ -57,14 +53,27 @@ domain object. E.g., for a domain object `Foo`:
 The Manager is available both in the backend and frontend. Both are synchronized
 via a websocket connection. Note that synchronization is ensured between all 
 clients and also the database.
- > Note: While the java code looks synchronized, it locks in the backround until
- > synchronization finished.  
- > For the same reason and technical restrictions the TypeScript code looks
- > slightly different and returns asyncrhonous
- > promises instead of actual objects. For
- > example, Java: `Customer c = CarrentalManager.getCustomerSure(4);`  
- > TS: `CarrentalManager.getCustomerSure(4).then((c: Customer) => {
- > console.log(c); });`
+
+!!! note 
+    While the java code looks synchronized, it locks in the background until
+    synchronization finished.  
+    For the same reason and technical restrictions the TypeScript code looks
+    slightly different and returns asynchronous
+    promises instead of actual objects.
+    
+    Example Java:
+
+    ```java
+    Customer c = CarrentalManager.getCustomerSure(4); 
+    
+    ```
+    Example TypeScript:
+
+    ```ts
+    CarrentalManager.getCustomerSure(4).then((c: Customer) => {
+      console.log(c); 
+    });
+    ```
 
 Altering the objects happens by editing the objects directly. Synchronization
 with the manager and therefore also the server, all clients and the database 
@@ -112,7 +121,3 @@ public class PDFEndpoint {
   }
 }
 ```
-
-[Next page](./ClassDiagramAdvanced.md)
-
-[Previous page](./TOPMechanism.md)

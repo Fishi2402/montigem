@@ -18,6 +18,7 @@ theme:
     - social
     - content.code.copy
     - content.code.annotate
+    - toc.integrate
   theme:
     pallete:
       primary: custom
@@ -37,19 +38,43 @@ markdown_extensions:
   - def_list
   - attr_list
   - md_in_html
+  - admonition
+  - footnotes
   - pymdownx.blocks.caption
+  - pymdownx.extra
   - pymdownx.tasklist:
       custom_checkbox: true
   - pymdownx.highlight
   - pymdownx.inlinehilite
-  - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.snippets
   - pymdownx.tabbed:
       alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.progressbar
 
 nav:
   - Home: 'index.md'
-  - Tutorial: 'Tutorial.md'
+  - Tutorial:
+    - Introduction: 'Tutorial.md'
+    - Prerequisites: 'tutorial/00_Prerequisites.md'
+    - Class Diagram Basics: 'tutorial/01_ClassDiagramBasics.md'
+    - GUI Basics: 'tutorial/02_GUIBasics.md'
+    - TOP Mechanism: 'tutorial/03_TOPMechanism.md'
+    - Customizing: 'tutorial/04_Customizing.md'
+    - Adding Services to Class Diagrams: 'tutorial/05_ClassDiagramAdvanced.md'
+    - Adding Functions in GUI: 'tutorial/06_GUIAdvanced1.md'
+    - Updating Objects: 'tutorial/07_GUIAdvanced2.md'
+    - GUI Layout: 'tutorial/08_GUIAdvanced3.md'
+    - Charts Frontend: 'tutorial/09_GUIAdvanced4.md'
+    - Charts Backend: 'tutorial/10_GUIAdvanced5.md'
   - GUI Component Library: 'Frontend-RTE.md'
   - Changelog: 'Changelog.md'
   - More Documentation: 'HelpfulLinks.md'

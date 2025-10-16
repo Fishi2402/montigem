@@ -1,8 +1,3 @@
----
-hide:
-  - navigation
----
-
 # Adding services to the class diagram
 
 Besides managing data an app may do other tasks, such as sending e-mails or
@@ -61,7 +56,3 @@ command method.
 ```ts
 CommandResult<RentalTransaction> res = CommandManager.executeCommand(new RentItem(car.getGemId()));
 ```
-
-[Next page](./GUIAdvanced1.md)
-
-[Previous page](./Customizing.md)

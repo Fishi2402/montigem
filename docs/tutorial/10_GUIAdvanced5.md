@@ -1,13 +1,8 @@
----
-hide:
-  - navigation
----
-
 # Charts from the Backend
 
 Lastly sometimes we do not want to load all data from the Backend into the FrontEnd
 to then only use it for calculating and displaying the chart.
-In this case we can add a service task as introduced in [ClassDiagramAdvanced](./ClassDiagramAdvanced.md).
+In this case we can add a service task as introduced in [ClassDiagramAdvanced](./05_ClassDiagramAdvanced.md).
 
 In the following example we implement the same functionality as before but this time 
 in the Backend instead on the ClientSide. The advantage is that is much faster, but 
@@ -179,5 +174,3 @@ public class GetMileageDataIncrease extends GetMileageDataIncreaseTOP {
   }
 }
 ```
-
-[Previous page](./GUIAdvanced4.md)

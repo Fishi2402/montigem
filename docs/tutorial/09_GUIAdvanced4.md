@@ -1,8 +1,3 @@
----
-hide:
-  - navigation
----
-
 # Charts
 
 Here we create a page with a bunch of charts. The process is no different from
@@ -35,10 +30,12 @@ page Dashboard(List<Car> cars) {
   ]);
 }
 ```
+
 The charts typically have an input with a complex structure. For example,
 `GemLineChart` expects an object of type `GemLineChartData` with following
 definition (This definition is already internally provided. Don't add it to
 your class diagram):
+
 ```java
 classdiagram GemLineChartTypes {
 
@@ -57,6 +54,7 @@ classdiagram GemLineChartTypes {
 
 }
 ```
+
 - `labels` of `GemLineChartData` represent points on x axis from left to right.
 - `entries` of `GemLineChartData` represent statistics for each single item, in this example for each
   different car.
@@ -162,14 +160,16 @@ There are several important points to be aware of:
     component will handle the output in some way. Otherwise, if you try to
     access attributes of a non-existing object, the browser will throw an
     exception which if not caught may break the page.
-    ```ts
-    // if data is not present return nothing
-    if (cars == null) {
-      return null;
-    }
-    ```
+
+      ```ts
+      // if data is not present return nothing
+      if (cars == null) {
+        return null;
+      }
+      ```
 
 2.  Then you can create the labels (x axis) of the chart:
+
     ```java
     List<LocalDateTime> dates = new ArrayList<>();
 
@@ -178,7 +178,7 @@ There are several important points to be aware of:
         dates.add(mileage.getRecordDate());
       }
     }
-        
+      
     dates.sort((l,r) -> l.compareTo(r));
 
     List<String> labels = new ArrayList<>();
@@ -189,17 +189,22 @@ There are several important points to be aware of:
       }
     }
     ```
+    
     The labels are, in this case, unique dates, sorted from the earliest to the
     latest. The dates must also be formatted to strings to be properly
     displayed.
 
 3.  The entries are created for each item (cars) and the y axis data is inserted
     according to the order of the labels:
+
     ```java
     List<GemLineChartEntry> entries = new ArrayList<>();
     
     for (Car c : cars){
-      GemLineChartEntry entry = new GemLineChartEntryBuilder().label(c.getMake()+" "+c.getModel()+" "+c.getName()).data(Arrays.asList(labels.size())).build().get();
+      GemLineChartEntry entry = new GemLineChartEntryBuilder()
+          .label(c.getMake() + " " + c.getModel() + " " + c.getName())
+          .data(Arrays.asList(labels.size()))
+          .build().get();
       entries.add(entry);
       for (MileageDataPoint mileage : c.getMileageDataPointList()) {
         String xAxisPoint = mileage.getRecordDate().toString();
@@ -213,6 +218,7 @@ There are several important points to be aware of:
     of the line chart is not continuos. However, we can interpolate data if
     showing the data flow is more important than actual data at specific points
     in time:
+
     ```java
     // optional: add interpolated itermediate points to entries where the data is not available
     for (GemLineChartEntry entry : entries){
@@ -280,6 +286,7 @@ There are several important points to be aware of:
     }
     return this.mileageIncrease.data;
     ```
+    
     We calculate a "hash" of the data using `JSON.stringify` function and write
     it into a local variable together with the data. Whenever the data gets
     updated, the hash changes and so is the returned object.
@@ -313,14 +320,12 @@ page Dashboard(List<Car> cars) {
   ]);
 }
 ```
+
 The result:
+
 ![charts](./charts.png)
 
 The bar chart data is similar to the line chart data and the 
 pie chart data has a much simpler structure. You can take a 
-look at the [documentation](https://git.rwth-aachen.de/monticore/umlp/-/wikis/Frontend-RTE#chart-components)
+look at the [documentation](../Frontend-RTE.md)
 to get a general idea about structuring the data.
-
-[Next page](./GUIAdvanced5.md)
-
-[Previous page](./GUIAdvanced3.md)

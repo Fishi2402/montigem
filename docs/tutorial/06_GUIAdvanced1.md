@@ -1,14 +1,10 @@
----
-hide:
-  - navigation
----
-
 # Adding own functions
 
 Previously we have built a very simple list of cars. Now we will build something
 a bit closer to an actual page.
 
 We start with a simple page again:
+
 ```java
 package gui;
 
@@ -29,18 +25,21 @@ page CarOverview(List<Car> cars) {
   ]);
 }
 ```
+
 Here `@GemText` calls a function `getAvailableCarsTitle()` to get the correct
 value. The function was never declared in the component, but the generator
 assumes that you will implement it and creates an empty function.
 
-> Note: you could expect to be able to write something like `@GemText(value =
-> getAvailableCarsAmount() + " available cars")` but this is not allowed. The
-> generator is unable to process more complex expressions that have calls inside
-> of them.
+!!! note 
+    You could expect to be able to write something like `@GemText(value =
+    getAvailableCarsAmount() + " available cars")`, but this is not allowed. The
+    generator is unable to process more complex expressions that have calls inside
+    of them.
 
 Let's add this function to `CarOverview.java`.
 We can apply TOP-mechanism and override the empty function to show the number of
 available cars:
+
 ```java
 package gui;
 
@@ -65,51 +64,64 @@ public class CarOverview extends CarOverviewTOP{
   }
 }
 ```
-> Note: just like backend Java files (e.g., `CarrentalServerApplication.java`), frontend Java classes are placed in the `frontend/src/main/java/<packageName>/` directory.
-> In this case, the only package in this tutorial used is `gui`.
+
+!!! note
+    Just like backend Java files (e.g., `CarrentalServerApplication.java`), frontend Java classes are placed in the `frontend/src/main/java/<packageName>/` directory.
+    In this case, the only package in this tutorial used is `gui`.
 
 The `getAvailableCarsTitle` method checks if cars are loaded and counts amount
 of available cars and return a string indicating the amount, e.g. `3 available
 cars`.
 
-Where do `this.getCars()` and `c.getRentableStatus()` methods come from? The
-generator produces a bunch of methods that are mapped from variables and
-attributes in class diagram and GUI component model.
+!!! question "Where do `this.getCars()` and `c.getRentableStatus()` methods come from?" 
+    The generator produces a bunch of methods that are mapped from variables and
+    attributes in class diagram and GUI component model.
 
-Some useful ones:
-- each GUI component parameter has a getter, for example, in `page
+Some useful generated methods:
+
+- Each GUI component parameter has a getter, for example, in `page
   CarOverview(List<Car> cars)` the `cars` is transformed into
-  - `getCars` method
-  - `initCars` method
-  - `setCars` method
-  - `_cars` attribute
-  - `cars` pseudo-attribute
-- each class attribute has a getter, for example, in `class Car { RentableStatus
+
+    - `getCars` method
+    - `initCars` method
+    - `setCars` method
+    - `_cars` attribute
+    - `cars` pseudo-attribute
+
+- Each class attribute has a getter, for example, in `class Car { RentableStatus
   rentableStatus; }` the `rentableStatus` is transformed into
-  - `getRentableStatus` method.
-  - `setRentableStatus` method.
-  > Note: for `boolean` type attributes `is` prefix is generated. For example,
-  > if attribute `boolean available` was defiend, `isAvailable` method would be
-  > generated instead of `getAvailable`.
-- if an attribute is a list or is described as association with `*` cardinality
+
+    - `getRentableStatus` method.
+    - `setRentableStatus` method.
+  
+    !!! note 
+        For `boolean` type attributes `is` prefix is generated. For example, 
+        if attribute `boolean available` was defiend, `isAvailable` method would be 
+        generated instead of `getAvailable`.
+
+- If an attribute is a list or is described as association with `*` cardinality
   additional methods can be used, for example, a Car has an association
   `association [1] Car -> MileageDataPoint [*];` which is transformed into:
-  - `addMileageDataPoint2` method
-  - `removeMileageDataPoint2` method
-  - `sizeMileageDataPoints` method
-  > Note: the `2` at the end doesn't really mean anything, it solves a specific
-  > technical issue. In general, you should rely on the IDE to help you out with
-  > a correct name.
+
+    - `addMileageDataPoint2` method
+    - `removeMileageDataPoint2` method
+    - `sizeMileageDataPoints` method
+  
+    !!! note 
+        The `2` at the end doesn't really mean anything, it solves a specific 
+        technical issue. In general, you should rely on the IDE to help you out with 
+        a correct name.
 
 The check `this.getCars() == null` in the beginning is necessary because
 before the cars are loaded from the backend, the function shouldn't try to
 operate with the cars data. The Angular framework evaluates this function (and
-other functions that return some value shown in GUI) "continously" to keep the
+other functions that return some value shown in GUI) "continuously" to keep the
 user interface up-to-date.
 
-> Note: this is a common Angular trap. Whenever a not-yet-loaded object is used
-> in calculations, an error will be thrown preventing GUI from operating
-> normally (although it might appear to be fine).
+!!! note
+    This is a common Angular trap. Whenever a not-yet-loaded object is used
+    in calculations, an error will be thrown preventing GUI from operating
+    normally (although it might appear to be fine).
 
 ## Adding services
 
@@ -143,8 +155,10 @@ public Consumer<Void> rentCar(Car val) {
 The generator finds out what a function should return based on context. Here,
 leftClick is an event that doesn't provide any value about the left click (thus
 `Consumer<Void>`).
-> Note: the button could, for example, provide an id of a clicked button as a
-> string, in which case the type would be `Consumer<String>`
+
+!!! note
+    The button could, for example, provide an id of a clicked button as a
+    string, in which case the type would be `Consumer<String>`
 
 The `Consumer<Void>` type actually indicates a callback function that should be
 called when an event triggers, e.g., when left click happens. This means that
@@ -172,7 +186,7 @@ We could stop there, but renting a car doesn't only mean changing its status, it
 also means that the car is reserved for a customer, a customer transaction is
 created, etc. The whole logic could be defined in the `rentCar` function, but a
 better option is to use a service that would execute necessary actions.
-[Previously](./ClassDiagramAdvanced.md) we defined such a service. We can use
+[Previously](./05_ClassDiagramAdvanced.md) we defined such a service. We can use
 it by executing corresponding commands via the `CommandManager`. For example: 
 ```java
 /*other imports*/
@@ -189,7 +203,3 @@ public class CarOverview extends CarOverviewTOP {
   /*...*/
 }
 ```
-
-[Next page](./GUIAdvanced2.md)
-
-[Previous page](./ClassDiagramAdvanced.md)

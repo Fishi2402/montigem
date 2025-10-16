@@ -1,8 +1,3 @@
----
-hide:
-  - navigation
----
-
 # Updating objects
 
 Let's build a simple form for updating cars' model and name by creating the following new page:
@@ -57,115 +52,121 @@ unlike normal `String` indicates extended functionality:
 
 We have a page, but we need to navigate to it somehow.
 To do so we need to:
+
 1. know the URL of the page
 2. choose a page to navigate from
 3. implement the navigation to the URL
 
+The page always shows a *specific* car, so the generator creates a URL that
+is specific to a car: `gui/CarUpdate/:carRoutingId`, where `carRoutingId` is
+a unique identifier for the car. It has to be specified when navigating to the
+page.
 
-1)  The page always shows a *specific* car, so the generator creates a URL that
-    is specific to a car: `gui/CarUpdate/:carRoutingId`, where `carRoutingId` is
-    a unique identfier for the car. It has to be specified when navigating to the
-    page.
+!!! note 
+    The URL is composed of the fully qualified name of the component and input
+    parameter ids, compare `gui.CarUpdate` with `car` parameter has the URL
+    `gui/CarUpdate/:carRoutingId`
 
-    > Note: the URL is composed of the fully qualified of the component and input
-    > parameter ids, compare `gui.CarUpdate` with `car` parameter ->
-    > `gui/CarUpdate/:carRoutingId`
+Previously defined `overview` page has access to all the cars, so we add a
+navigation button for every car:
+```java
+package gui;
 
-2)  Previously defined `overview` page has access to all the cars, so we add a
-    navigation button for every car:
-    ```java
-    package gui;
-    
-    import mc.fenix.basic.GemButton;
-    /* imports */
-    page CarOverview(List<Car> cars) {
-      /*...*/
-      @iterate(Car c : cars) {
-        /*...*/
-        @GemButton(leftClick = updateCar(c));
-      }
-    }
-    ```
+import mc.fenix.basic.GemButton;
+/* imports */
+page CarOverview(List<Car> cars) {
+  /*...*/
+  @iterate(Car c : cars) {
+    /*...*/
+    @GemButton(leftClick = updateCar(c));
+  }
+}
+```
 
-3)  The `updateCar` implementation:
-    ```java
-    import umlp.guiutil.Router;
-    /*imports*/
-    public Consumer<Void> updateCar(Car car) {
-      return $ -> {
-        Router.navigate("gui", "CarUpdate", String.valueOf(car.getGemId()));
-      };
-    }
-    ```
-    To be able to access Routing functionality of a webpage there is the class
-    `umlp.guiutil.Router` which contains the static method
-    `public static void navigate(String... paths)` that gets transpiled to
-    an Angular router, which works like this: 
-    Every TypeScript component has access to a `_router` object that has functions for
-    navigation, such as `navigate` that accepts an array of URL parts (values
-    between `/`). Every domain object, such as a `car` has a unique identfier
-    `gemId`, accessible via `getGemId` method. The same id is used for routing.
+The `updateCar` implementation:
+```java
+import umlp.guiutil.Router;
+/*imports*/
+public Consumer<Void> updateCar(Car car) {
+  return $ -> {
+    Router.navigate("gui", "CarUpdate", String.valueOf(car.getGemId()));
+  };
+}
+```
+To be able to access Routing functionality of a webpage there is the class
+`umlp.guiutil.Router` which contains the static method
+`public static void navigate(String... paths)` that gets transpiled to
+an Angular router, which works like this: 
+Every TypeScript component has access to a `_router` object that has functions for
+navigation, such as `navigate` that accepts an array of URL parts (values
+between `/`). Every domain object, such as a `car` has a unique identfier
+`gemId`, accessible via `getGemId` method. The same id is used for routing.
 
 ## Creating objects
 
 We also want to be able to create a new `car`. The `CarUpdate` page basically
-has all we need, except we don't want to show existing object, but create a new
+has all we need, except we don't want to show an existing object, but create a new
 one. Our goals:
+
 1. extract a form from `CarUpdate` that can be used for car creation page
 2. use extracted form to build creation page
 
-1)  The whole content of the `CarUpdate` can be reused for creation page:
-    ```java
-    package gui;
-    /*...*/
-    component CarForm(Car car) {
-      @NavContainer(content = [
-        @GemCard(title = "Card form", component =
+The whole content of the `CarUpdate` can be reused for creation page:
+```java
+package gui;
+/*...*/
+component CarForm(Car car) {
+  @NavContainer(content = [
+    @GemCard(title = "Card form", component =
 
-          @GemColumn(width = "40ch", rowGap = "5px", components = [
-            @GemTextInput(
-              labelText = "Model:",
-              entry = car.model
-            ),
-            @GemTextInput(
-              labelText = "Name:",
-              entry = car.name
-            )
-          ])
-
+      @GemColumn(width = "40ch", rowGap = "5px", components = [
+        @GemTextInput(
+          labelText = "Model:",
+          entry = car.model
+        ),
+        @GemTextInput(
+          labelText = "Name:",
+          entry = car.name
         )
-      ]);
-    }
-    ```
-    Resulting `CarUpdate` page:
-    ```java
-    package gui;
-    /*...*/
-    page CarUpdate(Car car) {
-      @CarForm(car = car);
-    }
-    ```
-2)  The creation page should then look the same:
-    ```java
-    package gui;
-    /*...*/
-    page CarCreate(Car car) {
-      @CarForm(car = car);
-    }
-    ```
-    For the generator to recognize that the `car` object doesn't exist yet we
-    have to specify it in the `frontend/build.gradle` configuration that the
-    model is used for object creation:
-    ```groovy
-    genGUI {
-      domainModels = ["Carrental"]
-      guiCreateModels = ["gui.CarCreate"]
-    }
-    ```
-    the `guiCreateModels` is a list of fully qualified names of models that are
-    used for creation of objects.
+      ])
 
-    > Note: future versions will remove that requirement
+    )
+  ]);
+}
+```
+
+Resulting `CarUpdate` page:
+```java
+package gui;
+/*...*/
+page CarUpdate(Car car) {
+  @CarForm(car = car);
+}
+```
+
+The creation page should then look the same:
+```java
+package gui;
+/*...*/
+page CarCreate(Car car) {
+  @CarForm(car = car);
+}
+```
+
+For the generator to recognize that the `car` object doesn't exist yet we
+have to specify it in the `frontend/build.gradle` configuration that the
+model is used for object creation:
+```groovy
+genGUI {
+  domainModels = ["Carrental"]
+  guiCreateModels = ["gui.CarCreate"]
+}
+```
+The `guiCreateModels` is a list of fully qualified names of models that are
+used for creation of objects.
+
+!!! note
+    Future versions will remove that requirement
 
 The `CarCreate` page now uses a new `car` object instead of existing one and
 doesn't require an id to navigate to, its URL is `gui/CarCreate`.
@@ -251,12 +252,9 @@ class Car {
 
 association [1] Car -> MileageDataPoint [*];
 ```
-> Note: The class `MileageDataPoint` does not exist yet, create it with attributes for record date and mileage.
+!!! note
+    The class `MileageDataPoint` does not exist yet, create it with attributes for record date and mileage.
 
 None of the listed attributes are optional, which means all of them must be set
 to some value. Since `MileageDataPoint` has `*` cardinality, there may be `0`
 objects in the association, which makes it optional.
-
-[Next page](./GUIAdvanced3.md)
-
-[Previous page](./GUIAdvanced1.md)

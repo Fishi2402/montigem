@@ -1,21 +1,14 @@
----
-hide:
-  - navigation
----
-
-# GUI layout
+# GUI Layout
 
 A typical layout of a component consists of a combination of columns, rows and
 grids. The `mc.fenix.arrange` package contains corresponding components
 `GemColumn`, `GemRow`, and `GemGrid`.
 
-> Note: these components are based on the [flexbox
-> layout](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_flexible_box_layout/Basic_concepts_of_flexbox)
-> and [grid
-> layout](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout/Basic_concepts_of_grid_layout).
+!!! note 
+    These components are based on the [flexbox layout](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_flexible_box_layout/Basic_concepts_of_flexbox)
+    and [grid layout](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout/Basic_concepts_of_grid_layout).
 
-The `CarOverview` so far had simple layout. Now, we update it to an extended layout
-configuraton:
+The `CarOverview` so far had a simple layout. Now, we update it to an extended layout configuration:
 
 ```ts
 package gui;
@@ -69,137 +62,154 @@ page CarOverview(List<Car> cars) {
   ]);
 }
 ```
+
 The result:
 ![overview page layout](./overview.png)
 
-> Note: The default root of images, set in the `source` parameter of `GemImage`, is `frontend/config/src/`.
+!!! note
+    The default root of images, set in the `source` parameter of `GemImage`, is `frontend/config/src/`.
 
 The styling process is normally iterative with following steps:
-1. Draw (or imagine) a sketch of the component with all of the parts layed out.
+
+1. Draw (or imagine) a sketch of the component with all of the parts laid out.
 2. Split the components with horizontal and vertical lines. 
 3. Draft the layout in the model according to the lines:
+
     - Components between horizontal lines are put into `GemColumn`.
     - Components between vertical lines are put into `GemRow`.
     - Components that are arranged in a grid pattern are put into `GemGrid`.
+   
 4. Repeat steps 2 and 3 if necessary
 5. Fine-tune the layout using properties of `GemColumn`, `GemRow` and `GemGrid`.
 
-> Besides 3 main layout componets, you may consider using other components, such
-> as `GemCard`. You should also build your own layout components if you notice
-> the same layout pattern.
+!!! tip 
+    Besides 3 main layout components, you may consider using other components, such 
+    as `GemCard`. You should also build your own layout components if you notice
+    the same layout pattern.
 
 The steps applied for layouting the overview page (we start with step 2 for
 simplicity):
 
-2.  The first split is done with horizontal lines:
+**2. First split with horizontal lines**
 
-    ![overview page split 1](./step2_1.png)
-3.  This means the first container to add is `GemColumn`:
-    ```ts
-    @GemColumn(components = [
-      @GemText(value = getAvailableCarsTitle(), size = "2rem", weight = "bold"),
-      @iterate(Car c : cars) {
-        /* Image, text, buttons */
-      }
-    ])
-    ```
+![overview page split 1](./step2_1.png)
 
-2)  The text component is in the right place, we have to arrange the content
-    inside `iterate`. Since the content for each car is arranged the same, we
-    take first example of the content. At this point, we could split the content
-    like this:
+**3. Vertical split, add `GemColumn` as the first container**
 
-    ![overview page split 2](./step2_2.png)
-3)  We could use `GemColumn` again, but a better way is to use `GemCard`, which
-    is a fancier looking `GemColumn` suitable for grouping information:
-    ```ts
-    @iterate(Car c : cars) {
-      @GemCard(
-        title = c.make + " " + c.model + " " + c.name
-        /* Image, text, buttons */
-      )
-    }
-    ```
+```ts
+@GemColumn(components = [
+  @GemText(value = getAvailableCarsTitle(), size = "2rem", weight = "bold"),
+  @iterate(Car c : cars) {
+    /* Image, text, buttons */
+  }
+])
+```
 
-2.  The next split is done for contents of the card:
+The text component is in the right place, we have to arrange the content
+inside `iterate`. Since the content for each car is arranged the same, we
+take first example of the content. At this point, we could split the content
+like this:
+
+![overview page split 2](./step2_2.png)
+
+We could use `GemColumn` again, but a better way is to use `GemCard`, which
+is a fancier looking `GemColumn` suitable for grouping information:
+```ts
+@iterate(Car c : cars) {
+  @GemCard(
+    title = c.make + " " + c.model + " " + c.name
+    /* Image, text, buttons */
+  )
+}
+```
+
+**2. Next split with vertical lines for contents of the card**
     
-    ![overview page split 3](./step2_3.png)
-3.  This time the split is horizontal, so we use `GemRow`:
-    ```ts
-    @GemCard(
-      title = c.make + " " + c.model + " " + c.name,
-      component = @GemRow(
-        components = [
-          @GemImage(width = "200px", source = getImageUrl(c.make)),
-          /* text */
-          /* text and buttons */
-        ]
-      )
-    );
-    ```
+![overview page split 3](./step2_3.png)
 
-2)  The image is in place, the last splits:
+**3. Horizontal split, add `GemRow`**
+```ts
+@GemCard(
+  title = c.make + " " + c.model + " " + c.name,
+  component = @GemRow(
+    components = [
+      @GemImage(width = "200px", source = getImageUrl(c.make)),
+      /* text */
+      /* text and buttons */
+    ]
+  )
+);
+```
 
-    ![overview page split 4](./step2_4.png)
-3)  The status and mileage information is aligned in a grid pattern. The price
-    and buttons are split vertically:
-    ```ts
-    @GemRow(
-      components = [
-        @GemImage(width = "200px", source = getImageUrl(c.make)),
-        @GemGrid(rows = [
-          [
-            @GemText(value = "Status:"),
-            @GemText(
-              value = c.rentableStatus,
-              color = c.rentableStatus == RentableStatus.AVAILABLE ? "green" : "red"
-            )
-          ],
-          [
-            @GemText(value = "Mileage:"),
-            @GemText(value = c.mileage + " miles")
-          ]
-        ]),
-        @GemColumn(components = [
-          @GemText(value = (c.costPerDay * 3) + "€ for 3 days", size = "1.5rem"),
-          @GemButton(width = "calc(8ch + 10px)", label = "Rent car", leftClick = rentCar(c)),
-          @GemButton(width = "calc(10ch + 10px)", label = "Update car", leftClick = updateCar(c))
-        ])
+**2. The image is in place, the last splits**
+
+![overview page split 4](./step2_4.png)
+
+**3. The status and mileage information is aligned in a grid pattern. The price
+and buttons are split vertically**
+
+```ts
+@GemRow(
+  components = [
+    @GemImage(width = "200px", source = getImageUrl(c.make)),
+    @GemGrid(rows = [
+      [
+        @GemText(value = "Status:"),
+        @GemText(
+          value = c.rentableStatus,
+          color = c.rentableStatus == RentableStatus.AVAILABLE ? "green" : "red"
+        )
+      ],
+      [
+        @GemText(value = "Mileage:"),
+        @GemText(value = c.mileage + " miles")
       ]
-    )
-    ```
-    `GemGrid` allows you to define `rows`, `columns`, or for special cases
-    `cells`. You can get the same result using either of those, we use `rows` in
-    this case, because it is more intuitive to group a description of a
-    characteristic and its value into rows (otherwise you would have columns
-    `["Status:", "Mileage:"]` and `["Available", "23 miles"]`).
-    > Note: you could do what grid does with a columns and rows, but it's more
-    > difficult to make sure that gaps and spaces are correctly aligned.
-    
-5.  The last step is to fine tune the layout. For example, the column with the
-    buttons:
-    - the column is 40 characters wide
-    - there must be a 10 pixel gap between buttons and text
-    - the column should be right aligned
-
-    ```ts
-    @GemColumn(width = "40ch", rowGap = "10px", hAlign = "right", components = [
-      @GemText(/*...*/),
-      @GemButton(/*...*/),
-      @GemButton(/*...*/)
+    ]),
+    @GemColumn(components = [
+      @GemText(value = (c.costPerDay * 3) + "€ for 3 days", size = "1.5rem"),
+      @GemButton(width = "calc(8ch + 10px)", label = "Rent car", leftClick = rentCar(c)),
+      @GemButton(width = "calc(10ch + 10px)", label = "Update car", leftClick = updateCar(c))
     ])
-    ```
+  ]
+)
+```
+
+`GemGrid` allows you to define `rows`, `columns`, or for special cases
+`cells`. You can get the same result using either of those, we use `rows` in
+this case, because it is more intuitive to group a description of a
+characteristic and its value into rows (otherwise you would have columns
+`["Status:", "Mileage:"]` and `["Available", "23 miles"]`).
+
+!!! note
+    You could do what grid does with a columns and rows, but it's more
+    difficult to make sure that gaps and spaces are correctly aligned.
+    
+**5. Fine tune the layout**
+
+For example, the column with the buttons:
+
+- the column is 40 characters wide
+- there must be a 10 pixel gap between buttons and text
+- the column should be right aligned
+
+```ts
+@GemColumn(width = "40ch", rowGap = "10px", hAlign = "right", components = [
+  @GemText(/*...*/),
+  @GemButton(/*...*/),
+  @GemButton(/*...*/)
+])
+```
 
 
 ## Styling
 
 Further styling requires manual handling and slightly differs from case to case.
 There is a similar process in all of the cases though:
+
 * find the right style
 * define the found style in the right SCSS file
 
-One of the efficient ways of finding the right style is to use the [browser
-inspector](https://developer.mozilla.org/en-US/docs/Learn/Common_questions/Tools_and_setup/What_are_browser_developer_tools)
+One of the efficient ways of finding the right style is to use the [browser inspector](https://developer.mozilla.org/en-US/docs/Learn/Common_questions/Tools_and_setup/What_are_browser_developer_tools)
 and search for an element that needs to be modified.
 
 You can either explore the HTML nodes of your page in the "Inspector" tab
@@ -238,7 +248,7 @@ carInfo@GemCard(
 ```
 The `carInfo` id will also be used as the name of a CSS class in the generated
 code code. After that you should specify the style in the SCSS file of the
-component (see [TOP-mechanism](./TOPMechanism.md)). For example, if the `carInfo`
+component (see [TOP-mechanism](./03_TOPMechanism.md)). For example, if the `carInfo`
 component inside `CarOverview` should have the style, create a 
 `CarOverview.scss` file in your handwritten frontend sources 
 (using the correct package as introduced for the TOP mechanism)
@@ -299,6 +309,3 @@ the file if it doesn't exist). The location is
 }
 ```
 
-[Next page](./GUIAdvanced4.md)
-
-[Previous page](./GUIAdvanced2.md)

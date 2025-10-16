@@ -1,25 +1,23 @@
----
-hide:
-  - navigation
----
-
 # Creating a basic data structure 
 
 The core of a MontiGem app is a data structure modeled with a class diagram. The
 most basic one requires few elements to get started:
+
 - class diagram
 - class
 - enum
 - association
 
-> Note: a complete list will be discussed later, you may also take a look at the
-> [lecture slides](https://www.se-rwth.de/sle_material/SLE01.3.CD4Analysis/) and
-> [CD4Analysis project](https://github.com/MontiCore/cd4analysis)
+!!! note
+    A complete list will be discussed later, you may also take a look at the
+    [lecture slides](https://www.se-rwth.de/sle_material/SLE01.3.CD4Analysis/) and
+    [CD4Analysis project](https://github.com/MontiCore/cd4analysis)
 
 ## Class diagram
 
 MontiGem tool uses a single class diagram as a source of an app's data
 structure. Rough structure of a class diagram:
+
 ```java
 package mypackage.name;
 
@@ -30,15 +28,21 @@ umlp ClassDiagramName {
   /* classes, associations, etc. */
 }
 ```
-It has 
+
+It contains
+
 - an optional single package declaration
 - an optional list of imports
 - a single class diagram declaration with a keyword `umlp` (or `classdiagram`)
-  > Note: there is no difference between using `umlp` and `classdiagram` as of
-  > yet, but prefer `umlp` for describing the app's data structure.
+
+!!! note 
+    There is no difference between using `umlp` and `classdiagram` as of
+    yet, but prefer `umlp` for describing the app's data structure.
+
 - contents of the class diagram, e.g., classes, enums, associations, etc.
 
 Car rental example (located in the `models` directory):
+
 ```java
 import java.time.LocalDateTime;
 
@@ -46,13 +50,16 @@ umlp Carrental {
   /* contents */
 }
 ```
-> Note: following information about generated classes is useful for
-> understanding the app when you want to override the default behavior.
+
+!!! note 
+    Following information about generated classes is useful for
+    understanding the app when you want to override the default behavior.
 
 A class diagram defines the base of the app. The generated files can be found in
 `backend/build/umlp/backend` and
 `frontend/build/umlp_frontend/intermediate/appdomain`. The generated files have
 very similar implementations. Generated classes include:
+
 * ServerApplication: `CarrentalServerApplication`, used as a main class for
   running the server. It is also a common place for dummy data initialization.
 * Manager: `CarrentalManager`, used to get builder classes and has internal data
@@ -63,30 +70,37 @@ very similar implementations. Generated classes include:
 Having an empty class diagram is not really meaningful, but it plays a certain
 role in the generated code as will be explained further.
 
-> Note: The generator runs using the already mentioned commands `gradle build`, `gradle :backend:run` and `gradle :frontend:run`.
+!!! note
+    The generator runs using the already mentioned commands `gradle build`, `gradle :backend:run` and `gradle :frontend:run`.
 
 ## Class
 
 A class specifies a type for an instantiable entity. Rough structure:
+
 ```java
 class Name {
   Type1 attrName1;
   Type2 attrName2;
 }
 ```
-It has 
+
+It contains
+
 - a single class declaration with a keyword `class`
 - an optional list of attributes
 
 The car rental example already contains a single class:
+
 ```java
 class Customer {
   String name;
   String email;
 }
 ```
+
 Specifying classes and running the generator will produce a bunch of code that is
 used for entities management:
+
 * Domain classes: `Customer`, represent the domain objects.
 * Builder classes: `CustomerBuilder`, used to build (i.e., instantiate) domain objects.
 * Data Access Object (DAO): `CustomerDAO`, used to get/set data from/to the
@@ -104,6 +118,7 @@ used for entities management:
 The most relevant classes are domain and builder classes. Those are used to
 create and update domain objects. 
 Try it yourself. For instance, using the `initEntities()` method in the `CarrentalServerApplication` class.
+
 - Create an object using a builder:
   ```java
   Customer jim = CarrentalManager.customerBuilder() // returns CustomerBuilder
@@ -125,7 +140,6 @@ Try it yourself. For instance, using the `initEntities()` method in the `Carrent
   CarrentalManager.deleteCustomer(jim.getGemId());
   ```
 
-
 ## Enum
 
 An enum specifies a set of named constants.
@@ -135,7 +149,8 @@ enum Name {
   CONSTANT_2;
 }
 ```
-It has 
+It contains
+
 - a single enum declaration with a keyword `enum`
 - an optional list of constants
 
@@ -160,14 +175,14 @@ structure:
 ```
 association [cardinality1] ClassName1 (roleName1) <-> (roleName2) ClassName2 [cardinality2];
 ```
-It has
-- left and right sides separated with an arrow:
-  - cardinality defines how many items can be in the association, typical values
-    are `[*]` (0 or more), `[1]`, `[0..1]` (0 or 1), `[1..*]` (1 or more)
-  - class name
-  - role name which the associated objects are referenced with
-  - direction that defines which side of the association is the owner in the
-    "has a" relation, typical values are `<-`, `->`, `<->` (goes both ways) 
+The association has left and right sides separated with an arrow:
+
+- cardinality defines how many items can be in the association, typical values
+  are `[*]` (0 or more), `[1]`, `[0..1]` (0 or 1), `[1..*]` (1 or more)
+- class name
+- role name which the associated objects are referenced with
+- direction that defines which side of the association is the owner in the
+  "has a" relation, typical values are `<-`, `->`, `<->` (goes both ways) 
 
 Let's add another class to the car rental example to give an example of such relation:
 ```java
@@ -186,6 +201,7 @@ Add to the car rental example:
 association [*] RentalTransaction <-> Customer [1];
 ```
 This association means that
+
 - A rental transaction has exactly one associated customer
 - A customer may have 0, 1 or several rental transactions
 
@@ -235,6 +251,7 @@ class RentalTransaction {
 ```
 The class declares two attributes of type `String`. A class diagram has access to
 different types:
+
 - `String`, Java primitive types (`boolean`, `int`, `void`, etc.), and their
   boxed counterparts (`Boolean`, `Integer`, etc.)
 - Types defined in the class diagram (`Customer customer`).
@@ -243,7 +260,3 @@ different types:
 There are, however, limitations to what types can be used. The biggest one is
 that the generic types are not supported, other than `java.util.List` and
 `java.util.Optional`.
-
-[Next page](./GUIBasics.md)
-
-[Previous page](./Prerequisites.md)

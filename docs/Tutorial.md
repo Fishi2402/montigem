@@ -1,8 +1,3 @@
----
-hide:
-  - navigation
----
-
 # Tutorial
 
 This repository contains an exemplary MontiGem 3 project that guides through
@@ -44,5 +39,3 @@ The app has a default configuration that can be changed for a use in production.
 
 The database, backend, and frontend implementation is generated from the models
 in the `models` folder.
-
-[Next page](./tutorial/Prerequisites.md)
