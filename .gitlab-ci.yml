@@ -260,6 +260,15 @@ trigger-template:
   only:
     - dev
 
+trigger-digital-twin:
+  stage: testDeployed
+  allow_failure: false
+  trigger:
+    project: monticore/umlp-anwendungen/digital-twin
+    branch: main
+  only:
+    - dev
+
 checkMDLinks:
   stage: check
   script:
