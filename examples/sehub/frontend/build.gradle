@@ -11,10 +11,6 @@ montigem {
   withCD2GUI = true
 }
 
-tasks.named("umlp2sym", UMLP2SymTask) {
-  enabled = false // instead, we use the CD2Gui Symbols
-}
-
 tasks.named("gui2java2ts", GUI2Java2TSTask) {
   guiCreateModels = ["gui.login.UserCreate", "gui.issues.IssueCreate"]
 }

@@ -274,10 +274,14 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
         task.getSymbolPath().from(project.getConfigurations().named(MONTIGEM_MODULE_IMPORT_MAP_CONFIG));
       }
       task.getImportsDir().from(umlpJava2ts.flatMap(UMLPJava2TSTask::getOutputDir));
-      task.getSymbolPath().from(umlp2sym.flatMap(CommonMCTask::getOutputDir));
+      if (withCD2GUI.get()) {
+        task.getSymbolPath().from(cd2gui.map(t -> t.getOutputDir().file("symbols")));
+      }
+      else {
+        task.getSymbolPath().from(umlp2sym.flatMap(CommonMCTask::getOutputDir));
+      }
       task.getSymbolPath().from(project.getConfigurations().named(GUI_TYPES_CONFIG));
       task.getSymbolPath().from(cd2sym.flatMap(CD2SymTask::getOutput));
-      task.getSymbolPath().from(cd2gui.map(t -> t.getOutputDir().file("symbols")));
       task.getSymbolPath().from(project.getLayout().getBuildDirectory().dir("tags"));
       task.getInput().from(srcGUI);
       if (cdPresent) {
