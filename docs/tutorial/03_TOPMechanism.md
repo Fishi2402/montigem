@@ -14,19 +14,19 @@ MontiGem considers to be folder containing the source code of an app.
 Default app setup has source roots for:
 
 - **backend**
-  
-    - `backend/build/umlp/backend/` – code generated from models
-    - `backend/src/main/java` – hand-written code
+
+  - `backend/build/umlp2java/` – code generated from models
+  - `backend/src/main/java` – hand-written code
 
 - **frontend**
-  
-    - `frontend/build/frontendGen/build/` – code generated from models
-    - `frontend/src/main/java` – hand-written java code
-    - `frontend/src/main/ts` – hand-written ts code
+
+  - `frontend/build/app/umlpJava2ts/`, `frontend/build/app/gui2java2ts/` – code generated from models
+  - `frontend/src/main/java` – hand-written java code
+  - `frontend/src/main/gui` – hand-written ts, html and scss code
 
 - **models**
-  
-    - `models` – folder with models
+
+  - `models` – folder with models
 
 !!! note
     The path to the generated code is normally irrelevant for the app development,
