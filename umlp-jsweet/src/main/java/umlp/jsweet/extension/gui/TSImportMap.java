@@ -1,0 +1,39 @@
+/* (c) https://github.com/MontiCore/monticore */
+package umlp.jsweet.extension.gui;
+
+// TODO AGe: move to frontend-rte
+
+public enum TSImportMap {
+  // vis libs
+  ARRANGE("mc.fenix.arrange", "@umlp/arrange"),
+  BASIC("mc.fenix.basic", "@umlp/basic"),
+  CHARTS("mc.fenix.charts", "@umlp/charts"),
+  COMMON("mc.fenix.common", "@umlp/common"),
+  NAVIGATION("mc.fenix.navigation", "@umlp/navigation"),
+  INPUT("mc.fenix.input", "@umlp/input"),
+  TABLE("mc.fenix.table", "@umlp/table"),
+  FISCHERTECHNIK("mc.fenix.fischertechnik", "@umlp/fischertechnik"),
+  FUNCTIONDISPLAY("mc.fenix.functiondisplay", "@umlp/functiondisplay"),
+  NETWORKGRAPH("mc.fenix.networkgraph", "@umlp/networkgraph"),
+  EDITOR("mc.fenix.editor", "@umlp/editor"),
+  LOGIN("loginmodule", "@montigem/login"),
+  COMMENT("commentmodule", "@montigem/comment")
+  ;
+
+  private final String tsPackage;
+  private final String javaPackage;
+
+  TSImportMap(String javaPackage, String tsPackage) {
+    this.javaPackage = javaPackage;
+    this.tsPackage = tsPackage;
+  }
+
+  public String getJavaPackage() {
+    return javaPackage;
+  }
+
+  public String getTSPackage() {
+    return tsPackage;
+  }
+
+}

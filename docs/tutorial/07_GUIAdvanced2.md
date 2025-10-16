@@ -157,8 +157,7 @@ For the generator to recognize that the `car` object doesn't exist yet we
 have to specify it in the `frontend/build.gradle` configuration that the
 model is used for object creation:
 ```groovy
-genGUI {
-  domainModels = ["Carrental"]
+gui2java2ts {
   guiCreateModels = ["gui.CarCreate"]
 }
 ```

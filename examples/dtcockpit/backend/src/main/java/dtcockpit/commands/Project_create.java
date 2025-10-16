@@ -7,15 +7,18 @@ import dtcockpit.Project;
 import dtcockpit.pipelines.PipelineInformationExtractor;
 import umlp.backendrte.command.StatusResult;
 import umlp.backendrte.common.NotificationScope;
+import umlp.jsweet.extension.annotation.BackendOnly;
+import umlp.jsweet.extension.annotation.BackendOnlyModes;
 
 public class Project_create extends Project_createTOP {
   public Project_create(Project project) {
     super(project);
   }
 
-  public StatusResult doAction () {
+  @BackendOnly(value = BackendOnlyModes.THROW_ERROR)
+  public StatusResult doAction() {
     DtcockpitManager.addWithScopeProject(project, NotificationScope.LOCAL);
-    Log.info("Created new project. Start extraction of PipelineAnalysisData","Project_create");
+    Log.info("Created new project. Start extraction of PipelineAnalysisData", "Project_create");
     PipelineInformationExtractor extractor = new PipelineInformationExtractor();
     extractor.extractPipelineDataOf("https://git.rwth-aachen.de",
         DtcockpitManager.getProjectSure(project.getGemId()));

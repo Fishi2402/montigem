@@ -28,7 +28,7 @@ page RowsTester(
 
 ## GUI Model
 
-`GemVennDiagram.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/charts/GemVennDiagram.gui))
+`GemVennDiagram.gui` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/charts/GemVennDiagram.gui))
 
 ```java
 package mc.fenix.charts;
@@ -46,7 +46,7 @@ component GemVennDiagram(
 
 ### GemVennDiagramTypes
 
-`GemVennDiagramTypes.cd` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/client/models/mc/fenix/charts/GemVennDiagramTypes.cd))
+`GemVennDiagramTypes.cd` ([open](https://git.rwth-aachen.de/monticore/umlp/-/blob/dev/umlp-rte/frontend/models/mc/fenix/charts/GemVennDiagramTypes.cd))
 
 ```java
 package mc.fenix.charts;

@@ -1,0 +1,15 @@
+{
+  "adapters": [
+    "umlp.jsweet.extension.GUIAdapter"
+  ],
+  "@Erased": {
+    "include": [
+      "**.spliterator*()",
+      "**.stream*()",
+      "**.parallelStream*()",
+      "**.toArray*(*)",
+      "**.hashCode*()",
+      "**.equals*?\\(*\\)"
+    ]
+  }
+}

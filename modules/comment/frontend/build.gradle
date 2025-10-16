@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+plugins {
+  id 'de.rwth.se.montigem-module-frontend'
+}
+
+montigem {
+  libs.addAll([project(":modules:comment:frontend:comment")])
+}

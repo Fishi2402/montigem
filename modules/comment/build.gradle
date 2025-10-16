@@ -1,102 +1,27 @@
 plugins {
-    id "base"
-    id "java-library"
-    id 'maven-publish'
-    id 'de.rwth.se.umlp-tool-module-models' // create models-jar
-}
-
-configurations {
-    moduleGenTimeCompileOnly
-    moduleGenTime
-}
-
-dependencies {
-    moduleGenTimeCompileOnly("umlp:umlp-tool")
-    moduleGenTimeCompileOnly group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
-    // moduleGenTimeCompileOnly group: 'de.monticore.lang', name: 'guidsl', version: mc_version
-    moduleGenTimeCompileOnly group: 'de.monticore', name: 'monticore-runtime', version: mc_version
-    moduleGenTimeCompileOnly group: 'de.monticore', name: 'monticore-grammar', version: mc_version
-}
-
-sourceSets {
-    moduleGenTime {
-        java {}
-    }
-}
-
-// Publish empty publications with dependencies to the backend/frontend subproject
-configurations {
-    /*
-    outgoingUMLPFrontendTSDS {
-        canBeConsumed(true)
-        gradle.module.UMLPPluginModuleJSFrontend.addDomainSymbolsJarAttributes(it, project)
-    }
-    outgoingUMLPFrontendTSGS {
-        canBeConsumed(true)
-        gradle.module.UMLPPluginModuleJSFrontend.addGuiSymbolsJarAttributes(it, project)
-    }
-    /**/
-    /*
-    outgoingUMLPFrontendTSZip {
-        canBeConsumed(true)
-        gradle.module.UMLPPluginModuleJSFrontend.addBundledJSJarAttributes(it, project)
-    }
-    /**/
-}
-
-dependencies {
-    api(project(":modules:comment:backend"))
-    // outgoingUMLPFrontendTSDS project(":modules:comment:frontendTS")
-    // outgoingUMLPFrontendTSGS project(":modules:comment:frontendTS")
-    // outgoingUMLPFrontendTSZip project(":modules:comment:frontendTS")
-}
-/*
-project.components.java.addVariantsFromConfiguration(configurations.outgoingUMLPFrontendTSDS) {
-    it.mapToOptional()
-}
-project.components.java.addVariantsFromConfiguration(configurations.outgoingUMLPFrontendTSGS) {
-    it.mapToOptional()
-}
-/**/
-/*
-project.components.java.addVariantsFromConfiguration(configurations.outgoingUMLPFrontendTSZip) {
-    it.mapToOptional()
-}
-/**/
-
-
-// We do not have main java soures => Remove .jar from outgoing artifacts
-tasks.named('jar') {
-    // TODO: We currently publish an almost empty jar, as otherwise gradle is unable to find the runtimeElements config
-    // Fix that problem & only publish the dependencies, not the jar
-//  enabled = false
-}
-configurations{
-    [apiElements, runtimeElements].each {
-//    it.outgoing.artifacts.removeIf { it.buildDependencies.getDependencies(null).contains(jar) }
-    }
+  id 'de.rwth.se.montigem-module' // create models-jar
 }
 
 publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-            // The plugin publishes moduleGenTime & the models jar
-        }
-        mavenJava(MavenPublication)
+  publications {
+    mavenJava(MavenPublication) {
+      from components.java
+      // The plugin publishes moduleGenTime & the models jar
     }
-    // TODO: correct repo
-    repositories {
-        maven {
-            url "file://${project.buildDir}/repo"
-        }
-        maven {
-            credentials.username mavenUser
-            credentials.password mavenPassword
+    mavenJava(MavenPublication)
+  }
+  // TODO: correct repo
+  repositories {
+    maven {
+      url "file://${project.buildDir}/repo"
+    }
+    maven {
+      credentials.username mavenUser
+      credentials.password mavenPassword
 
-            def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-releases/"
-            def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-snapshots/"
-            url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
-        }
+      def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-releases/"
+      def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-snapshots/"
+      url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
     }
+  }
 }

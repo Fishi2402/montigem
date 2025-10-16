@@ -1,37 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-plugins {
-  id 'java-library'
-  id 'de.rwth.se.umlp-tool-backend'
+import de.montigem.gradle.specific.UMLP2JavaTask
+import de.montigem.gradle.specific.UMLP2TestInfrastructureTask
 
-  id 'application'
+plugins {
+  id 'de.rwth.se.montigem-backend'
+
   id 'com.google.cloud.tools.jib' version '3.4.4'
   id 'io.spring.dependency-management' version '1.0.15.RELEASE'
   id 'org.springframework.boot' version "${spring_version}"
-}
-
-repositories {
-  if (("true").equals(getProperty('useLocalRepo'))) {
-    mavenLocal()
-  }
-  maven {
-    credentials.username mavenUser
-    credentials.password mavenPassword
-    url repo
-  }
-  mavenCentral()
-}
-
-configurations {
-  guiDefaultTypes
-}
-
-dependencies {
-  guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
-}
-
-application {
-  mainClass = 'jsweettest.JsweettestServerApplication'
 }
 
 jib {
@@ -44,8 +21,6 @@ dependencies {
     exclude module: 'logback-classic'
     exclude module: 'log4j-to-slf4j'
   }
-
-
 
   implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
   api 'com.h2database:h2:2.1.214' // API-Dependency, because it is used in frontend. TODO: Remove hardcoded h2!
@@ -72,42 +47,10 @@ dependencies {
   implementation "org.eclipse.jgit:org.eclipse.jgit:5.2.2.201904231744-r"
 }
 
-// TODO AGe: the whole serialization thing should be reworked
-def symPath = "${project.buildDir}/symbols";
-
-generateUmlpBackend {
-  input = file("../models/Jsweettest.umlp")
-  symbolOutDir = file("${symPath}")
-  useSpring.set(true)
+tasks.named("umlp2java", UMLP2JavaTask) {
   usePlaywright.set(true)
 }
 
-generateTestInfrastructure {
+tasks.named("generateTestInfrastructure", UMLP2TestInfrastructureTask) {
   usePlaywright.set(true)
-}
-
-tasks.register('runServer') {
-  dependsOn(bootRun {
-    systemProperty "spring.shell.interactive.enabled", "false"
-  })
-}
-
-test {
-  testLogging {
-    events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
-  }
-  useJUnitPlatform()
-}
-
-sourceSets {
-  main {
-    //java.srcDirs += [layout.buildDirectory.dir("testgui")]
-    //java.srcDirs += [layout.buildDirectory.dir("umlp/fe2")]
-    // main.resources.srcDirs += generateUmlpBackend.getOutputDir().dir("resources")  // Add generated resources (e.g. html & sql files) to JAR
-  }
-  test {
-    java {
-      exclude '**/gui/**'
-    }
-  }
 }
