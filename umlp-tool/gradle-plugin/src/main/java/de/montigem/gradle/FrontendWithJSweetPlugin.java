@@ -284,6 +284,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       task.getSymbolPath().from(cd2sym.flatMap(CD2SymTask::getOutput));
       task.getSymbolPath().from(project.getLayout().getBuildDirectory().dir("tags"));
       task.getInput().from(srcGUI);
+      task.getInput().from(cd2gui.flatMap(CommonMCTask::getOutputDir));
       if (cdPresent) {
         task.getInput().from(cd2java.flatMap(CommonMCTask::getOutputDir));
       }
