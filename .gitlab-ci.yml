@@ -284,7 +284,7 @@ deploy-python-package:
   stage: build
   image: python:3.11
   script:
-    - cd experiments/python-client/backend/runtime-package
+    - cd experiments/python-client/runtime-package
     - pip install --upgrade hatch
     - export HATCH_BUILD_METADATA="gitlab.${CI_PIPELINE_ID}"
     - python -m hatch build
