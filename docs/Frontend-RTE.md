@@ -1,8 +1,3 @@
----
-hide:
-  - navigation
----
-
 ## A Brief General Explanation
 
 **GUI Components** are the atomic elements of GUI web pages.

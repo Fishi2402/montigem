@@ -3,7 +3,7 @@
 
 See more documentation [here](https://monticore.pages.rwth-aachen.de/umlp/).
 
-UMLP is designed to assist developers in generating web applications
+MontiGem is designed to assist developers in generating web applications
 from class diagrams,
 simplifying the development process and accelerating project delivery.
 The generated applications are ready to be deployed and can be customized further using handwritten
