@@ -408,6 +408,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
 
     if (inUMLP(project) && useLocalDependencies(project)) {
       project.getDependencies().add(JSWEET_CONFIG, project.project(":umlp-jsweet"));
+      project.getDependencies().add("runtimeOnly", project.project(":umlp-jsweet"));
     }
     else {
       project.getDependencies().add(JSWEET_CONFIG, "umlp:umlp-jsweet:" + mcVersion(project));
