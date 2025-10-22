@@ -15,13 +15,11 @@ import gui.navigation.NavContainer;
 import KitchenCompanion.User;
 
 page KitchenPage(List<User> users) {
-  @NavContainer(content = [
-    @GemColumn(width = "70rem", hAlign = "center", rowGap="1rem", wrap="wrap",
-      components=[
-        @LeadUserPanel(allUsers=users),
-        @OrdinaryUserPanel(allUsers=users),
-        @ExtraUserPanel(allUsers=users)
-      ]
-    )
-  ]);
+  @GemColumn(width = "70rem", hAlign = "center", rowGap="1rem", wrap="wrap",
+    components = [
+      @LeadUserPanel(allUsers = users),
+      @OrdinaryUserPanel(allUsers = users),
+      @ExtraUserPanel(allUsers = users)
+    ]
+  );
 }

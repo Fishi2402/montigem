@@ -13,7 +13,7 @@ component NavContainer(List<GUIViewElement> content) {
 
     // navigation bar
     @GemNavList(width = "40ch", height = "100vh", components = [
-      @GemNavItem(title = "Angebote", target = "/gui/management/OfferAdministrationPage"),
+      //@GemNavItem(title = "Angebote", target = "/gui/management/OfferAdministrationPage"),
       @GemNavItem(title = "Kaffeekasse", target = "/gui/kitchen/KitchenPage")
     ]),
     // main content

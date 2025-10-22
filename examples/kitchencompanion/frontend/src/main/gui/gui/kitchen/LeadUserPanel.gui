@@ -15,7 +15,10 @@ component LeadUserPanel(List<User> allUsers){
 
     @iterate(User user : allUsers){
       @guard(user.nickname == "BR" || user.nickname == "MN") {
-        @GemButton(label = user.username);
+        @GemButton(
+          label = user.username,
+          leftClick = navigateTo(user)
+        );
       }
     }
 

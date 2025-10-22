@@ -6,19 +6,59 @@ import mc.fenix.arrange.GemCard;
 import mc.fenix.arrange.GemRow;
 import mc.fenix.arrange.GemColumn;
 import mc.fenix.basic.GemText;
-import gui.management.OfferPanel;
+import mc.fenix.basic.GemIcon;
+import mc.fenix.navigation.GemNavItem;
 
+import gui.management.OfferOverview;
 import gui.navigation.NavContainer;
 
 import KitchenCompanion.Offer;
+import KitchenCompanion.User;
 
-page OfferAdministrationPage(List<Offer> offers) {
-  @NavContainer(content = [
-    @GemColumn(width = "70rem", hAlign = "center", rowGap="1rem", wrap="wrap",
-      components=[
-        @iterate(Offer o : offers){
-          @OfferPanel(offer = o);
-      }]
-    )
+page OfferAdministrationPage(User user, List<Offer> offers) {
+  @GemColumn(hAlign = "center", rowGap = "1rem", components = [
+    @GemText(
+      value = user.username,
+      width = "auto",
+      size = "3rem",
+      weight = "bold"
+    ),
+    @GemRow(hAlign = "center", colGap="1rem", rowGap="1rem", wrap="wrap", components = [
+      @iterate(Offer offer : offers) {
+        @GemColumn(width = "auto", hAlign = "center", rowGap = "0.5rem", components = [
+          offerDesc@GemButton(
+            content = [
+              @GemColumn(hAlign = "center", components = [
+                @GemText(
+                  value = offer.name,
+                  fontStyle = "bold"
+                ),
+                @GemText(value = getPriceInEuro(offer.price))
+              ])
+            ],
+            leftClick = addTally(user, offer)
+          ),
+          @GemRow(width = "auto", vAlign = "center", colGap = "0.5rem", components = [
+            minus@GemButton(
+              content = [@GemIcon(name = "remove_circle_outline")],
+              leftClick = removeTally(user, offer)
+            ),
+            tallyCount@GemText(
+              width = "auto",
+              size = "1rem",
+              value = getTally(user, offer)
+            ),
+            plus@GemButton(
+              content = [@GemIcon(name = "add_circle_outline")],
+              leftClick = addTally(user, offer)
+            )
+          ])
+        ]);
+      }
+    ]),
+    @GemRow(components = [
+      @GemNavItem(title = "<< Zurück", target = "/gui/kitchen/KitchenPage"),
+      @GemNavItem(title = "Zwischensumme", target = "/gui/kitchen/KitchenPage")
+    ])
   ]);
 }
