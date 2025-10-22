@@ -8,6 +8,7 @@ ${tc.signature("sublibs", "outputPath", "util")}
 This document lists MontiGem GUI library components.
 
 Each component description includes:
+
 - GUI component *usage examples*
 - GUI component *signature*, i.e. component name and its input *parameters*
 - A description of each *input parameter*, including the types and default values

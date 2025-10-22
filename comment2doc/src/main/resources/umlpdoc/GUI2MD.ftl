@@ -51,9 +51,8 @@ ${doc.getComponentModel()}<#t>
 
 <#list types as type>
 ### `${type}`
-${util.printPath(doc.getCDAST(type).getMCPackageDeclaration().getMCQualifiedName() + "." + doc.getCDAST(type).getCDDefinition().getName())}.cd))
 
-```cd
+```java
 ${doc.getCDModel(type)}<#t>
 ```
 
@@ -66,6 +65,7 @@ ${doc.getCDModel(type)}<#t>
 | `${attr.getMCType().printType()}` <#rt>
 | ${util.printComment(attr.get_PreCommentList())} <#rt>
 | <#if attr.isPresentInitial()>`${util.print(attr.getInitial())}`</#if> |
+
 </#list>
 </#list>
 </#list>
