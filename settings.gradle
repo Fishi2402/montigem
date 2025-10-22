@@ -39,6 +39,7 @@ plugins {
 }
 rootProject.name = 'umlp'
 includeBuild "umlp-tool"
+includeBuild "comment2doc"
 
 include ":umlp-rte"
 include ":umlp-rte:frontend"

@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.input;
+
+component GemDualRangeInput(
+  String id,
+  String labelText,
+  String sliderBehavior,
+  Boolean vertical,
+  Integer step,
+  Integer minValue,
+  Integer maxValue,
+  ?Integer startValue,
+  ?Integer endValue
+)

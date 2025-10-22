@@ -75,7 +75,7 @@ nav:
     - GUI Layout: 'tutorial/08_GUIAdvanced3.md'
     - Charts Frontend: 'tutorial/09_GUIAdvanced4.md'
     - Charts Backend: 'tutorial/10_GUIAdvanced5.md'
-  - GUI Component Library: 'Frontend-RTE.md'
+  - GUI Component Library: 'gendoc_components/Frontend-RTE.md'
   - Changelog: 'Changelog.md'
   - More Documentation: 'HelpfulLinks.md'
   - License: http://monticore.github.io/monticore/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL/

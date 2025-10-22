@@ -327,5 +327,5 @@ The result:
 
 The bar chart data is similar to the line chart data and the 
 pie chart data has a much simpler structure. You can take a 
-look at the [documentation](../Frontend-RTE.md)
+look at the [documentation](../gendoc_components/Frontend-RTE.md)
 to get a general idea about structuring the data.
