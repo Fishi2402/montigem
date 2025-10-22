@@ -58,6 +58,7 @@ ${doc.getCDModel(type)}<#t>
 
 <#list doc.getCDAST(type).getCDDefinition().getCDClassesList() as clazz>
 #### `${clazz.getName()}`
+
 | Name | Type | Description | Default value |
 | --- | --- | --- | --- |
 <#list clazz.getCDAttributeList() as attr>
@@ -65,8 +66,8 @@ ${doc.getCDModel(type)}<#t>
 | `${attr.getMCType().printType()}` <#rt>
 | ${util.printComment(attr.get_PreCommentList())} <#rt>
 | <#if attr.isPresentInitial()>`${util.print(attr.getInitial())}`</#if> |
-
 </#list>
+
 </#list>
 </#list>
 </#if>

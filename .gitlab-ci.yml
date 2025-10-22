@@ -36,10 +36,6 @@ pages:
   image: python:alpine
   rules:
     - if: $CI_COMMIT_BRANCH == "dev"
-      changes:
-      - mkdocs.yml
-      - README.md
-      - docs/**
   before_script:
     - apk add gcc musl-dev python3-dev
     - pip install cython
