@@ -20,9 +20,19 @@ stages:
   - deploy
   - testDeployed
 
+gendoc:
+  stage: build
+  script:
+    - gradle comment2doc:md --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user
+  artifacts:
+    paths:
+      - docs/gendoc_components
+  rules:
+    - if: $CI_COMMIT_BRANCH == "dev"
+
 pages:
   stage: build
-  needs: []
+  needs: ["gendoc"]
   image: python:alpine
   rules:
     - if: $CI_COMMIT_BRANCH == "dev"

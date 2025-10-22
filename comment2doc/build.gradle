@@ -1,0 +1,125 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+plugins {
+  id 'java'
+
+  id 'monticore' version "$mc_version"
+  id 'maven-publish'
+  id 'org.jetbrains.intellij' version '1.13.3' apply(false)
+  id "io.github.themrmilchmann.ecj" version "0.2.0"
+}
+
+configurations {
+  guiTypes
+}
+
+repositories {
+  if (("true").equals(getProperty('useLocalRepo'))) {
+    mavenLocal()
+  }
+  maven {
+    credentials.username mavenUser
+    credentials.password mavenPassword
+    url repo
+  }
+  mavenCentral()
+}
+
+dependencies {
+  implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
+  implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version
+  implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
+  implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
+  implementation group: 'de.monticore.lang', name: 'guidsl', version: mc_version
+  implementation group: 'de.se_rwth.commons', name: 'se-commons-gradle', version: mc_version
+  implementation "org.commonmark:commonmark:$commonmark_version"
+
+  guiTypes "de.monticore.lang:guidsl:$mc_version:default-types"
+
+  testImplementation "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+  testImplementation "org.junit.jupiter:junit-jupiter-params:$junit_version"
+  testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
+}
+
+group = 'umlp'
+version = '7.8.0-SNAPSHOT'
+description = 'GUI components documentation generator'
+
+// configure non-standard source sets
+sourceSets {
+  main.java.srcDirs += [layout.buildDirectory.dir("generated-sources/monticore/sourcecode")]
+}
+
+def libs = [
+    'arrange',
+    'basic',
+    'charts',
+    'editor',
+    'fischertechnik',
+    'functiondisplay',
+    'input',
+    'navigation',
+    'networkgraph',
+    'table'
+]
+
+tasks.register('md', JavaExec) {
+  mainClass.set('de.monticore.doc.MontigemDocTool')
+  classpath = sourceSets.main.runtimeClasspath
+  args libs.collectMany {
+    def libSrc = "$projectDir/../umlp-rte/frontend/$it/src/main/gui"
+    ["-i", libSrc, "--cd", libSrc]
+  }
+  args += [
+      "--md", "$projectDir/../docs/gendoc_components",
+      "--examples", "$projectDir/../examples/vis-lib/frontend/src/main/gui",
+      "--images", "$projectDir/../docs/img/components",
+      "--hwc", "$projectDir/../examples/vis-lib/frontend/src/main/java",
+  ]
+}
+
+// This task is only to be executed, if you want to use LaTeX version of documentation
+tasks.register('latex', JavaExec) {
+  mainClass.set('de.monticore.doc.MontigemDocTool')
+  classpath = sourceSets.main.runtimeClasspath
+  args(
+      "-i", "./src/test/resources/lib",
+      "--latex", "$buildDir/latex",
+      "--examples", "./src/test/resources/examples",
+      "--images", "./src/test/resources/images",
+      "--hwc", "./src/test/resources/hwc",
+      "--cd", "./src/test/resources/lib",
+      "--preproc", "true"
+  )
+}
+
+compileJava {
+  dependsOn project.collect { it.tasks.withType(MCTask) }
+  options.warnings = false
+}
+
+// Exclude LaTeXCompilerTest
+test {
+  useJUnitPlatform {
+    filter {
+      excludeTestsMatching "LaTeXCompilerTest"
+    }
+  }
+}
+
+// Only LatexCompilerTest
+tasks.register("latexTest", Test) {
+  useJUnitPlatform {
+    group = 'verification'
+    description = 'Runs the LatexCompilerTest'
+
+    filter {
+      includeTestsMatching "LaTeXCompilerTest"
+    }
+
+    testLogging {
+      events "passed", "skipped", "failed"
+      exceptionFormat "full"
+    }
+  }
+}

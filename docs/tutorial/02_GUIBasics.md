@@ -132,7 +132,7 @@ is a web page with a navigation bar and text:
 
 ![start page](./Start.png)
 
-The `GemText` is a library component, those can be found in the [documentation for library components](https://git.rwth-aachen.de/monticore/umlp/-/wikis/Frontend-RTE).
+The `GemText` is a library component, those can be found in the [documentation for library components](../gendoc_components/Frontend-RTE.md).
 
 The `NavContainer` is a component you have to create yourself for the car rental app. Within the directory `models/gui/navigation` create a new file called `NavContainer.gui` and add the following content:
 ```ts
