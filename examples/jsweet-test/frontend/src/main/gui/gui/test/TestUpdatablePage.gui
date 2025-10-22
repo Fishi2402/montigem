@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui.test;
+
+import jsweettest.A;
+
+// Test, that TestUpdatable works
+page TestUpdatablePage(A a) {
+  @TestUpdatable(myString=a.value);
+}
+
