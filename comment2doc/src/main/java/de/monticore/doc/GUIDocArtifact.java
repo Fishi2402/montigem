@@ -206,11 +206,9 @@ public class GUIDocArtifact {
   }
 
   public boolean isExample(String componentName) {
-    // remove "Small" suffix for small images
-    if (componentName.endsWith("Small")) {
-      componentName = componentName.substring(0, componentName.length() - "Small".length());
-    }
-
-    return componentName.equals(getComponentAST().getComponentName() + "Example") || componentName.equals("My" + getComponentAST().getComponentName());
+    return componentName.contains(getComponentAST().getComponentName())
+        && (componentName.contains("Example")
+        || componentName.contains("My")
+    );
   }
 }

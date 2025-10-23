@@ -25,6 +25,8 @@ beinhaltet. u.a. den Status zu diesen Aktivitäten
 
 * [GUI Design](guidesign.md) für Design Entscheidungen im GUI/Visualisierungsbereich
 
+* [Doku Regeln](WritingDocumentation.md) für die Dokumentation
+
 ## Konventionen:
 
 * Der Code sollte bitte permanent lauffähig gehalten werden. 

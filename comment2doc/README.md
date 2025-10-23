@@ -24,12 +24,12 @@ For detailed repository structure and key directories, [see here](#repository-st
 
 To generate MD files, execute:
 ```
-gradlew md
+gradle md
 ```
 
 To generate MD files, execute:
 ```
-gradlew latex
+gradle latex
 ```
 
 ### If you use Intellij IDEA,
@@ -40,7 +40,7 @@ the commands above, or use gradle-specific interface.
 ## Tool Access
 
 [build.gradle](./build.gradle) file specifies the tasks that hint on what gets
-executed when you run `gradlew md` or `gradlew LaTeX`. The `$buildDir` is
+executed when you run `gradle md` or `gradle latex`. The `$buildDir` is
 `build` by default:
 
 ### Markdown Task
