@@ -160,7 +160,7 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
           new TemplateHookPoint("umlp.gui2ts.GUI2AngularOverrideEventGetter",
               mcType, attr.getName(), getterName));
     }
-    // Normal attr
+    // Normal or ref attr
     else {
       /*
         protected override _myAttr: MyType;
@@ -204,6 +204,39 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
       glex.replaceTemplate("umlp.Empty", attr,
           new TemplateHookPoint("umlp.gui2ts.GUI2AngularAttrGetterSetter",
               mcType, node.getName(), getterName, setterName));
+
+      // Ref attr
+      if (node.getSymbol().isIsReference()) {
+        /*
+          @Output()
+          public myAttrChange: EventEmitter<MyType> = new EventEmitter<MyType>();
+        */
+        String emitType = new TSUtilsPrinter().printType(mcType);
+        ASTCDAttribute eventAttr = getCDAttributeFacade().createAttribute(
+            CDModifier.PUBLIC.build(),
+            "EventEmitter<" + emitType + ">",
+            node.getName() + "Change"
+        );
+        clazz.addCDMember(eventAttr);
+        addImportString("import { Output } from '@angular/core';");
+        glex.replaceTemplate(GUI2ComponentTemplates.ANNOTATIONS, eventAttr,
+            new StringHookPoint("@Output()"));
+
+        addImportString("import { EventEmitter } from '@angular/core';");
+        glex.replaceTemplate("cd2java.Value", eventAttr,
+            new StringHookPoint(" = new EventEmitter<" + emitType + ">()"));
+
+        /*
+          public getMyAttrChange(): Event<MyType> {
+            const res = super.getMyEvent();
+            this.myEvent.emit(null);
+            return res;
+          }
+        */
+//        glex.replaceTemplate("umlp.Empty", eventAttr,
+//            new TemplateHookPoint("umlp.gui2ts.GUI2AngularOverrideEventGetter",
+//                mcType, eventAttr.getName(), getterName));
+      }
     }
   }
 
