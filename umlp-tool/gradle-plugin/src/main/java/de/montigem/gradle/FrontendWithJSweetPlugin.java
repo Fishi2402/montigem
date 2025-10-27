@@ -29,6 +29,7 @@ import org.gradle.api.file.RegularFile;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
+import org.gradle.api.tasks.SourceTask;
 import org.gradle.api.tasks.Sync;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.internal.FileUtils;
@@ -153,22 +154,22 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
     }
 
     var umlpFile = mergeUMLP.map(task -> {
-      MergeTask t = (MergeTask) task;
+      SourceTask t = (SourceTask) task;
       if (t.getSource().getFiles().size() == 1) {
         return t.getSource().getFiles().iterator().next();
       }
       else {
-        return t.getOutputFile().get();
+        return ((MergeTask)t).getOutputFile().get();
       }
     });
 
     var umlpName = mergeUMLP.map(task -> {
-      MergeTask t = (MergeTask) task;
+      SourceTask t = (SourceTask) task;
       if (t.getSource().getFiles().size() == 1) {
         return FileUtils.removeExtension(t.getSource().getFiles().iterator().next().getName());
       }
       else {
-        return FileUtils.removeExtension(t.getOutputFile().getAsFile().get().getName());
+        return FileUtils.removeExtension(((MergeTask)t).getOutputFile().getAsFile().get().getName());
       }
     });
 
