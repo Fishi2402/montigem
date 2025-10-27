@@ -1,9 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package example_input;
-
-import mc.fenix.input.GemDualRangeInput;
-//import mc.fenix.input.GemRangeInputTypes.Marker;
-
-page GemDualRangeInputExample() {
-
-}

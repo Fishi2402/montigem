@@ -12,18 +12,10 @@
 ) {
   .gem-range {
     --thumb-size: 16px;
-  }
+    --thumb-radius: 50%;
+    --track-thickness: 4px;
+    --track-radius: 25px;
 
-  :host(.vertical), :host([vertical="true"]) {
-    width: auto;
-    display: inline-block;
-    min-width: unset;
-  }
-
-  .gem-range::-webkit-slider-thumb { width: var(--thumb-size); height: var(--thumb-size); }
-  .gem-range::-moz-range-thumb     { width: var(--thumb-size); height: var(--thumb-size); }
-
-  .gem-range {
     -webkit-appearance: none;
     appearance: none;
     display: block;
@@ -32,52 +24,47 @@
     width: 100%;
   }
 
-  .gem-range:focus {
-    outline: none;
-  }
+  .gem-range:focus { outline: none; }
 
   .gem-range::-webkit-slider-runnable-track {
     background-color: $slider-track-color;
-    border-radius: 25px;
+    border-radius: var(--track-radius);
     width: 100%;
-    height: 4px;
+    height: var(--track-thickness);
+  }
+
+  .gem-range::-moz-range-track {
+    background-color: $slider-track-color;
+    border-radius: var(--track-radius);
+    width: 100%;
+    height: var(--track-thickness);
   }
 
   .gem-range::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    margin-top: -5.45px;
     background-color: $slider-thumb-color;
-    height: 15px;
-    width: 15px;
-    border-radius: 50%;
-  }
-
-  .gem-range:focus::-webkit-slider-thumb {
-    border: 1px solid #053a5f;
-    outline: 2px solid #053a5f;
-    outline-offset: 1px;
-  }
-
-  .gem-range::-moz-range-track {
-    background-color: $slider-track-color;
-    border-radius: 25px;
-    height: 4px;
+    width: var(--thumb-size);
+    height: var(--thumb-size);
+    border-radius: var(--thumb-radius);
+    margin-top: -5px;
+    border: none;
   }
 
   .gem-range::-moz-range-thumb {
     appearance: none;
-    border: none;
-    border-radius: 50%;
-    margin-top: -5.45px;
     background-color: $slider-thumb-color;
-    height: 14px;
-    width: 14px;
+    width: var(--thumb-size);
+    height: var(--thumb-size);
+    border-radius: var(--thumb-radius);
+    margin-top: -5px;
+    border: none;
   }
 
+  .gem-range:focus::-webkit-slider-thumb,
   .gem-range:focus::-moz-range-thumb {
     border: 1px solid #053a5f;
-    outline: 3px solid #053a5f;
+    outline: 2px solid #053a5f;
     outline-offset: 1px;
   }
 
@@ -85,6 +72,7 @@
     grid-row: 1;
     grid-column: 1;
     justify-self: left;
+    margin-bottom: 20px;
     color: #333;
     font-size: 16px;
     font-weight: bold;
@@ -103,7 +91,7 @@
   }
 
   gem-range-input {
-    width: 100%;
+    width: 0%;
     display: flex;
     flex-direction: $flexDirection;
     align-items: $itemsAlign;
@@ -136,9 +124,11 @@
     font-weight: bold;
   }
 
-  .gem-range-tick {
-    transform: translateX(-50%);
+  .gem-tick,
+  .gem-range-tick,
+  .gem-vertical-tick {
     position: absolute;
+    transform: translateX(-50%);
     top: -10px;
     width: 1px;
     height: 12px;
@@ -148,19 +138,22 @@
     align-items: center;
   }
 
-  .gem-range-tick-mark {
+  .gem-tick__mark,
+  .gem-range-tick-mark,
+  .gem-vertical-tick-mark {
     width: 2px;
     height: 8px;
     background-color: #555;
     border-radius: 3px;
-    margin-bottom: 4px;
+    margin-bottom: 14px;
   }
 
-  .gem-range-tick-label {
+  .gem-tick__label,
+  .gem-range-tick-label,
+  .gem-vertical-tick-label {
     display: block;
     font-size: 12px;
     color: #333;
-    margin-top: 14px;
     white-space: nowrap;
     text-align: left;
     font-weight: bold;
@@ -189,9 +182,7 @@
     transform: rotate(90deg);
   }
 
-  .gem-vertical-range-min {
-    margin-right: 2%;
-  }
+  .gem-vertical-range-min { margin-right: 2%; }
 
   .gem-vertical-range-value span {
     transform: translate(-50%, 0) rotate(90deg);
@@ -208,37 +199,19 @@
     z-index: 1;
   }
 
-  /* --- Tick Marks & Labels --- */
-  .gem-vertical-tick {
-    position: absolute;
-    transform: translateX(-50%);
-    top: -10px;
-    width: 1px;
-    height: 12px;
-    background: #888;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .gem-vertical-tick-mark {
-    width: 2px;
-    height: 8px;
-    background-color: #555;
-    border-radius: 3px;
-    margin-bottom: 9px;
-  }
-
-  .gem-vertical-tick-label {
-    transform: rotate(90deg);
-    font-size: 12px;
+  .gem-range-label-vertical {
+    grid-row: 1;
+    grid-column: 1;
+    justify-self: left;
+    margin-bottom: 4px;
     color: #333;
-    white-space: nowrap;
-    text-align: right;
+    font-size: 16px;
     font-weight: bold;
   }
-}
 
+  .gem-vertical-tick-mark { margin-bottom: 9px; }
+  .gem-vertical-tick-label { transform: rotate(90deg); text-align: right; }
+}
 @mixin range-input-theme(
   $slider-track-color,
   $slider-thumb-color,
@@ -263,5 +236,6 @@
       $valueBackgroundColor,
       $valueColor
   );
+
   @include vertical-range-input-theme();
 }

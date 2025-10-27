@@ -3,6 +3,7 @@ package example_input;
 
 import mc.fenix.input.GemRangeInputTypes.Marker;
 import mc.fenix.input.GemRangeInput;
+import mc.fenix.input.GemDualRangeInput;
 
 page GemRangeInputExample() {
 
@@ -54,7 +55,7 @@ page GemRangeInputExample() {
     id = "volumeControlVertical",
     labelText = "Volume:",
     vertical = true,
-    step = 10,
+    step = 5,
     minValue = 0,
     maxValue = 100,
     size = "200px",
@@ -66,5 +67,35 @@ page GemRangeInputExample() {
       Marker(100, "100%")
     ]
   );
-
+  @GemDualRangeInput(
+    id = "priceRange",
+    labelText = "Price Range (€):",
+    vertical = false,
+    step = 5,
+    minValue = 0,
+    maxValue = 200,
+    size = "300px",
+    ticks = [
+      Marker(0, "0€"),
+      Marker(50, "50€"),
+      Marker(100, "100€"),
+      Marker(150, "150€"),
+      Marker(200, "200€")
+    ]
+  );
+  @GemDualRangeInput(
+    id = "tempRange",
+    labelText = "Temperature (°C):",
+    vertical = true,
+    step = 1,
+    minValue = 5,
+    maxValue = 35,
+    size = "250px",
+    ticks = [
+      Marker(5, "5°C"),
+      Marker(15, "15°C"),
+      Marker(25, "25°C"),
+      Marker(35, "35°C")
+    ]
+  );
 }

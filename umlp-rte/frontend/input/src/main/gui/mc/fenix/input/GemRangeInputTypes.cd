@@ -1,10 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.fenix.input;
 
+/**
+ * Type definitions used by GemRangeInput.
+ */
 classdiagram GemRangeInputTypes {
-
   public class Marker {
+    /**
+      Numeric value of the tick on the slider.
+    */
     Integer value;
+    /**
+      Optional text label shown near the tick mark.
+      If null or empty, no label will be rendered.
+    */
     String label;
     +Marker(Integer value);
     +Marker(Integer value, String label);

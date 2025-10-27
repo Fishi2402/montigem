@@ -73,33 +73,32 @@
   @include text-input-theme(1px solid $rwth-black-3, column, flex-start, 0, $brand-danger, $brand-warning, $rwth-black-3, $btn-default-color);
   @include textarea-input-theme(auto, 1px solid $rwth-black-3, column, flex-start, 0);
   @include range-input-theme(
-    $rwth-black-3,
-    $rwth-blue,
-    row,
-    center,
-    0,
-    1%,
-    0,
-    flex-start,
-    $rwth-blue,
-    $montigem-white
+      $rwth-black-3,
+      $rwth-blue,
+      row,
+      center,
+      0,
+      1%,
+      0,
+      flex-start,
+      $rwth-blue,
+      $montigem-white
   );
   @include radio-input-theme($rwth-black-3, $montigem-white);
   @include checkbox-input-theme($rwth-black-3, $montigem-white);
   @include range-two-thumbs-input-theme(
-    $rwth-blue,
-    $rwth-blue,
-    $rwth-black-3,
-    column,
-    normal,
-    0,
-    1%,
-    0,
-    flex-start,
-    $rwth-blue-1,
-    $rwth-blue,
-    $montigem-white
+      $rwth-black-3,
+      $rwth-blue,
+      row,
+      center,
+      0,
+      1%,
+      0,
+      flex-start,
+      $rwth-blue,
+      $montigem-white
   );
+
 
   @include dropdown-input-theme($gray-dark, $rwth-black-3, $rwth-black-5, $rwth-black-4, $brand-danger, $brand-warning);
 
@@ -120,6 +119,21 @@ body {
   padding: 0;
   min-height: 100%;
   direction: ltr;
+}
+
+/*
+====================================================================================
+Range/Dual Range Input
+====================================================================================
+*/
+.gem-range-container {
+  --track-thickness: 5px;
+  --track-radius: 4px;
+
+  --thumb-size: 16px;
+  --thumb-radius: 50%;
+
+  --track-color: $rwth-black-3;   /* hier einmalig die Track-Farbe */
 }
 
 /*
@@ -239,7 +253,7 @@ BUTTONS
 
 /*
 ====================================================================================
-Hintergründe
+Backgrounds
 ====================================================================================
 */
 

@@ -4,6 +4,7 @@ import {
   ElementRef,
   EventEmitter,
   HostBinding,
+  HostListener,
   Output,
   ViewChild,
   SimpleChanges,
@@ -28,6 +29,11 @@ import { Subscription } from 'rxjs';
 export class GemRangeInput extends GemRangeInputComponent implements AfterViewInit, OnChanges, OnDestroy {
   private firstTime: boolean = true;
 
+  @HostBinding('style.display') hostDisplay = 'inline-block';
+  @HostBinding('style.width.px') hostWidthPx?: number;
+  @HostBinding('class.vertical') get hostIsVertical() { return !!this.vertical; }
+  private readonly minVerticalWidthPx = 56;
+
   @HostBinding('attr.id')
   componentId!: string;
 
@@ -36,6 +42,9 @@ export class GemRangeInput extends GemRangeInputComponent implements AfterViewIn
 
   @ViewChild('rangeVElement', { static: false })
   rangeVElement!: ElementRef<HTMLElement>;
+
+  @ViewChild('titleLabel', { static: false })
+  titleLabelEl!: ElementRef<HTMLElement>;
 
   @ViewChildren('tickLabel', { read: ElementRef })
   tickLabelEls!: QueryList<ElementRef<HTMLElement>>;
@@ -54,19 +63,34 @@ export class GemRangeInput extends GemRangeInputComponent implements AfterViewIn
       const initial = (typeof this.value === 'number' && this.value !== this.minValue && this.value > this.minValue && this.value <= this.maxValue) ? this.value : this.minValue;
       this.setValue(initial);
       this.valueChange.emit(initial);
+
+      if (this.vertical) {
+        setTimeout(() => this.adjustVerticalWidth());
+      }
     }
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => this.adjustVerticalLabelMargins());
+    setTimeout(() => {
+      this.adjustVerticalLabelMargins();
+      this.adjustVerticalWidth();
+    });
 
     this.tickLabelsSub = this.tickLabelEls.changes.subscribe(() => {
-      setTimeout(() => this.adjustVerticalLabelMargins());
+      setTimeout(() => {
+        this.adjustVerticalLabelMargins();
+        this.adjustVerticalWidth();
+      });
     });
   }
 
   ngOnDestroy(): void {
     this.tickLabelsSub?.unsubscribe();
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    if (this.vertical) this.adjustVerticalWidth();
   }
 
   onValueChange(event: number) {
@@ -153,6 +177,38 @@ export class GemRangeInput extends GemRangeInputComponent implements AfterViewIn
 
     const posPx = (thumbSizePx / 2) + t * usable;
     return posPx;
+  }
+
+  private adjustVerticalWidth(): void {
+    if (!this.vertical) return;
+
+    const input = this.sliderEl?.nativeElement;
+    const cs = input ? getComputedStyle(input) : undefined;
+    const thumbSizePx = cs ? parseFloat(cs.getPropertyValue('--thumb-size')) || 16 : 16;
+
+    const gapPx = 12;
+
+    let maxTickLabelWidth = 0;
+    if (this.tickLabelEls?.length) {
+      this.tickLabelEls.forEach(ref => {
+        const w = ref.nativeElement.getBoundingClientRect().width;
+        if (w > maxTickLabelWidth) maxTickLabelWidth = w;
+      });
+    }
+
+    let titleWidth = 0;
+    if (this.titleLabelEl?.nativeElement) {
+      titleWidth = this.titleLabelEl.nativeElement.getBoundingClientRect().width;
+    }
+
+    const farthestLabelWidth = Math.max(maxTickLabelWidth, titleWidth);
+
+    const needed = Math.max(
+      this.minVerticalWidthPx,
+      Math.ceil(thumbSizePx + gapPx + farthestLabelWidth)
+    );
+
+    this.hostWidthPx = needed;
   }
 
   private adjustVerticalLabelMargins(): void {
