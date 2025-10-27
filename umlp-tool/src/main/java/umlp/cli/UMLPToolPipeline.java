@@ -165,7 +165,9 @@ public class UMLPToolPipeline extends Pipeline<UMLPPipelineData> {
     }
 
     // Register the alternatives
-    var inputFile = new File(INPUT.getValue(cmd));
+    String inputValue = INPUT.getValue(cmd);
+
+    var inputFile = new File(inputValue);
     if (GUIRTETypes.isSelected(cmd)) {
       rteDataPipeline = new RTEDataPipeline(setupUMLPReports);
       this.register(GUIRTETypes.name(), rteDataPipeline);
@@ -186,7 +188,11 @@ public class UMLPToolPipeline extends Pipeline<UMLPPipelineData> {
       guiPipeline = new GuiPipeline(setupUMLPReports);
       this.register(guiPipeline);
     } else {
-      Log.error("Unhandled input file");
+      if(inputValue.isBlank()){
+        Log.error("Option " + INPUT.getCMD() + " is not set!");
+      }else{
+        Log.error("Unhandled input file: " + inputFile);
+      }
     }
 
     // Finally (for every option), close report managers
