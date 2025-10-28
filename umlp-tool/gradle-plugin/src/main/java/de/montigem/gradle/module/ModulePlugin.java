@@ -135,8 +135,7 @@ public class ModulePlugin extends ALazyPublishingPlugin implements Plugin<Projec
     });
     project.getTasks().named(ASSEMBLE_TASK_NAME).configure(it -> it.dependsOn(generatorExtensionJar));
     project.afterEvaluate(p -> {
-      Jar jar = generatorExtensionJar.get();
-      if (jar.getOnlyIf().isSatisfiedBy(jar)) {
+      if (!generatorExtensionSourceSet.getAllSource().isEmpty()) {
         project.getArtifacts().add(generatorExtension.getName(), generatorExtensionJar);
         javaComponent.addVariantsFromConfiguration(generatorExtension, ConfigurationVariantDetails::mapToOptional);
 
