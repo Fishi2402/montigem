@@ -282,7 +282,7 @@ public class UMLPGUICollectionsAdapter extends PrinterAdapter {
   @Override
   public boolean substituteForEachLoop(ForeachLoopElement foreachLoop, boolean targetHasLength,
       String indexVarName) {
-    return false;
+    return super.substituteForEachLoop(foreachLoop, targetHasLength, indexVarName);
   }
 
   @Override

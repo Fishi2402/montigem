@@ -4,19 +4,24 @@ package umlp.jsweet.extension.gui;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.lang3.StringUtils;
 import org.jsweet.JSweetConfig;
+import org.jsweet.transpiler.Java2TypeScriptTranslator;
 import org.jsweet.transpiler.OverloadScanner;
 import org.jsweet.transpiler.extension.AnnotationManager;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.ExtendedElement;
+import org.jsweet.transpiler.model.ExtendedElementFactory;
+import org.jsweet.transpiler.model.ForeachLoopElement;
 import org.jsweet.transpiler.model.MethodInvocationElement;
 import org.jsweet.transpiler.model.VariableAccessElement;
 import org.jsweet.transpiler.model.support.MethodInvocationElementSupport;
 import org.jsweet.transpiler.util.Util;
 import standalone.com.sun.source.tree.ClassTree;
+import standalone.com.sun.source.tree.EnhancedForLoopTree;
 import standalone.com.sun.source.tree.ExpressionTree;
 import standalone.com.sun.source.tree.MethodInvocationTree;
 import standalone.com.sun.source.tree.MethodTree;
 import standalone.com.sun.source.tree.Tree;
+import standalone.com.sun.source.tree.TypeCastTree;
 import standalone.com.sun.source.tree.VariableTree;
 import standalone.com.sun.tools.javac.code.Symbol;
 import standalone.com.sun.tools.javac.code.Type;
@@ -28,6 +33,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import java.util.HashMap;
@@ -711,5 +717,74 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
         return isBooleanParameter ? "is" + substring : "get" + substring;
       }
     };
+  }
+
+  @Override
+  public boolean substituteForEachLoop(ForeachLoopElement foreachLoop, boolean targetHasLength, String indexVarName) {
+    EnhancedForLoopTree loop = ExtendedElementFactory.toTree(foreachLoop);
+    TypeMirror expressionType = Util.getType(loop.getExpression());
+
+    // Must be subtype of List
+    if (!types().isSubtype(expressionType, types().erasure(util().getType(List.class)))) {
+      return false;
+    }
+
+    // Must be a declared generic type
+    if (expressionType.getKind() != TypeKind.DECLARED) {
+      return false;
+    }
+
+    List<? extends TypeMirror> typeArguments = ((DeclaredType) expressionType).getTypeArguments();
+    if (typeArguments.size() != 1) {
+      return false;
+    }
+
+    TypeMirror innerType = typeArguments.get(0);
+
+    // Must be Domain type = subtype of GemIdentifiable
+    if (!adapterUtils.isSubTypeOf(Util.getElement(innerType),
+        RTEPathUtil.getBackendRTECommonPath("GemIdentifiable"))) {
+      return false;
+    }
+
+    // Check for Domain observer param availability
+    MethodTree surroundingMethodTree = getPrinter().getParent(MethodTree.class);
+    if (surroundingMethodTree == null) {
+      return false;
+    }
+    boolean hasDomainObserverParam = surroundingMethodTree.getParameters().stream()
+        .anyMatch(param -> param.getName().toString().equals(DOMAIN_OBSERVER_FUNCTION_NAME));
+    if (!hasDomainObserverParam) {
+      return false;
+    }
+
+    // Print with additional sync logic
+    printForEachLoopWithObserver(loop);
+    return true;
+  }
+
+
+  /**
+   * Prints the for each loop and adds line __regObsToDomainObj(${loopVar}); before the actual statement.
+   * This activates the jsweet -> angular sync if on of the iterated elements changes
+   * @param loop
+   */
+  protected void printForEachLoopWithObserver(EnhancedForLoopTree loop){
+    String loopVarName = loop.getVariable().getName().toString();
+    print("for (" + Java2TypeScriptTranslator.VAR_DECL_KEYWORD + " ")
+        .print(loopVarName + " of ");
+    boolean parentheses = loop.getExpression() instanceof TypeCastTree
+        || loop.getExpression() instanceof MethodInvocationTree;
+    if (parentheses) {
+      print("(");
+    }
+    print(loop.getExpression());
+    if (parentheses) {
+      print(")");
+    }
+    getPrinter().print(") {").println().startIndent()
+        .printIndent().println(DOMAIN_OBSERVER_FUNCTION_NAME + "(" + loopVarName + ");")
+        .printIndent().print(loop.getStatement())
+        .endIndent().println().printIndent().print("}");
   }
 }
