@@ -60,7 +60,7 @@ dependencies {
   implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version
 
   implementation group: 'de.monticore.lang', name: 'WorkflowDSL', version: mc_version
-  implementation group: 'de.monticore.expressions', name: 'TimeExpressions', version: mc_version
+  // TODO: No longer published? implementation group: 'de.monticore.expressions', name: 'TimeExpressions', version: mc_version
 
   implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
 
