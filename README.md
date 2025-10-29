@@ -45,8 +45,8 @@ You can try UMLP using the [Vis-Lib Example](./examples/vis-lib).
 
 ## Editor plugins
 - Download Latest Plugin
-  - [IntelliJ](https://git.rwth-aachen.de/monticore/umlp/-/jobs/artifacts/dev/raw/umlp-tool/umlp-intellij-plugin/build/distributions/umlp-intellij-plugin-7.8.0.zip?job=build_intellij_plugin)
-  - [Visual Studio Code](https://git.rwth-aachen.de/monticore/umlp/-/jobs/artifacts/dev/raw/umlp-tool/build/generated-sources/UMLPWithGUI/plugins/umlpwithgui-vscode-plugin/umlpwithgui-lsp-7.8.0.vsix?job=build_with_deploy)
+  - [IntelliJ](https://git.rwth-aachen.de/monticore/umlp/-/jobs/artifacts/dev/raw/umlp-tool/umlp-intellij-plugin/build/distributions/umlp-intellij-plugin-7.9.0-SNAPSHOT.zip?job=build_intellij_plugin)
+  - [Visual Studio Code](https://git.rwth-aachen.de/monticore/umlp/-/jobs/artifacts/dev/raw/umlp-tool/build/generated-sources/UMLPWithGUI/plugins/umlpwithgui-vscode-plugin/umlpwithgui-lsp-7.9.0-SNAPSHOT.vsix?job=build_with_deploy)
 - Install it
   - IntelliJ: https://www.jetbrains.com/help/idea/managing-plugins.html#install_plugin_from_disk
   - VSCode: https://code.visualstudio.com/docs/editor/extension-marketplace#_install-from-a-vsix
