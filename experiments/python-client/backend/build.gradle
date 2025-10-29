@@ -64,8 +64,8 @@ dependencies {
     exclude module: 'logback-classic'
     exclude module: 'log4j-to-slf4j'
   }
-  api group: 'umlp', name: 'umlp-rte', version: mc_version, withoutSpringLogging
-  api group: 'umlp', name: 'umlp-test-rte', version: mc_version, withoutSpringLogging
+  api project(':umlp-rte'), withoutSpringLogging
+  api project(':umlp-test-rte'), withoutSpringLogging
   api 'com.h2database:h2:2.1.214'
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version, withoutSpringLogging
 }
