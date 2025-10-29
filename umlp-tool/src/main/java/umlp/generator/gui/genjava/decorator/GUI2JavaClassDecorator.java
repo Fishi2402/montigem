@@ -6,7 +6,6 @@ import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd.facade.CDParameterFacade;
 import de.monticore.cd4code.CD4CodeMill;
-import de.monticore.cd4codebasis._ast.ASTCDClass;
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
@@ -34,18 +33,12 @@ import de.monticore.ocl.setexpressions._ast.ASTSetCollectionItem;
 import de.monticore.ocl.setexpressions._ast.ASTSetEnumeration;
 import de.monticore.ocl.setexpressions._visitor.SetExpressionsVisitor2;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.SymTypeExpressionFactory;
-import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types3.SymTypeRelations;
-import de.monticore.types3.TypeCheck3;
-import de.monticore.types3.generics.TypeParameterRelations;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.StringTransformations;
@@ -292,7 +285,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
             Log.warn("0xTODO: " + util.getDomainListInnerType(typeSTE).get().printFullName() + " is an interface, no _subscribeManagerEvents is generated. This MIGHT be a bug.");
             // TODO: We do not have the SubscribeManagerEvent generated for interfaces - do we need them?
             // Right now, we just fix the compilation errors
-          } else {
+          }
+          else {
             importCommand(innerType);
             glex.addAfterTemplate(getInitBodyHookpoint(), new TemplateHookPoint(getSubscribeManagerEventsTemplate(), simpleInnerType));
           }
@@ -325,7 +319,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         ));
       }
     }
-    // case 4: component Foo(String s, MyDomainEnum e)
+    // case 4: component Foo(?String s, MyDomainEnum e)
     else {
       Optional<String> value = Optional.empty();
       if (node.isPresentDefault()) {
@@ -382,7 +376,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       ASTMCType type = getSimpleType(createTypeAndAddImports(typeSTE));
 
       // calc name
-      String name = node.getId().getName() + StringTransformations.capitalize(arg.getName());
+      String name = calcBaseArgName(node, arg);
 
       // add getter
       IterationItemsFinder finder = new IterationItemsFinder();
@@ -834,26 +828,26 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       String name = method.getName();
       if (!addedMethods.contains(method)) {
         addedMethods.add(method);
-        if(util.isCommandCall(this.gui, node)) {
+        if (util.isCommandCall(this.gui, node)) {
           getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandResult"));
           getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandManager"));
           getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("UMLPArrayList"));
           SymTypeExpression symTypeExpression = method.getReturnType();
           String commandResultTypeParameter = symTypeExpression.print();
-          if(GenService.isList(symTypeExpression)) {
+          if (GenService.isList(symTypeExpression)) {
             SymTypeExpression innerType = symTypeExpression.asGenericType().getArgument(0);
             commandResultTypeParameter = innerType.print();
           }
           getSimpleType(createTypeAndAddImports(method.getReturnType()));
           String cmdQPath = Joiners.DOT.join(util.getMainDomainModelSimpleName().get().toLowerCase(),
-              "commands",StringTransformations.capitalize(method.getName()));
+              "commands", StringTransformations.capitalize(method.getName()));
           getCD4C().addImport(clazz, cmdQPath);
 
           LinkedHashMap<ASTCDParameter, SymTypeExpression> argumentParams = new LinkedHashMap<>();
           for (int i = 0; i < method.getParamTypes().size(); ++i) {
             SymTypeExpression argSTE = method.getParamTypes().get(i);
             argumentParams.put(CDParameterFacade.getInstance().createParameter(
-                getSimpleType(createTypeAndAddImports(argSTE)),Expression2SetterPrinter.SETTER_PARAM + "_$" + i),
+                    getSimpleType(createTypeAndAddImports(argSTE)), Expression2SetterPrinter.SETTER_PARAM + "_$" + i),
                 argSTE);
           }
           getCD4C().addMethod(clazz, getCommandExecutionTemplate(), method.getReturnType(), commandResultTypeParameter, name, argumentParams);
@@ -1235,16 +1229,6 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     }
     getCD4C().addMethod(clazz, template,
         method.getAlias(), type, getterValue, isList, assoc);
-  }
-
-  public List<ASTCDParameter> getIterationItemParameters(ASTNode node) {
-    List<VariableSymbol> iterateArgs = util.findIterationItemSymbols(node.getEnclosingScope());
-    List<ASTCDParameter> params = new ArrayList<>();
-    for (VariableSymbol vs : iterateArgs) {
-      ASTMCType paramType = getSimpleType(createTypeAndAddImports(vs.getType()));
-      params.add(CDParameterFacade.getInstance().createParameter(paramType, vs.getName()));
-    }
-    return params;
   }
 
   protected String getConvertedValueAssignment(String type, String varName, String value) {

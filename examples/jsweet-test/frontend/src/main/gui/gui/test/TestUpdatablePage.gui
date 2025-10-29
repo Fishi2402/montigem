@@ -7,4 +7,3 @@ import jsweettest.A;
 page TestUpdatablePage(A a) {
   @TestUpdatable(myString=a.value);
 }
-
