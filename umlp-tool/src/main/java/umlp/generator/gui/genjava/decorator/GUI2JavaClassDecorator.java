@@ -434,7 +434,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       }
       else {
         String returnValue = Expression2SetterPrinter.SETTER_PARAM;
-        String conv = "";
+        String conv;
         // example: `String val = date2String(this.getPerson().getBirthday())`
         conv = getConvertedValueAssignment(
             printType(getSimpleType(createTypeAndAddImports(typeSTE))),
@@ -454,7 +454,6 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         // add setter
         String target = "conv_" + Expression2SetterPrinter.SETTER_PARAM;
         String value = Expression2SetterPrinter.SETTER_PARAM;
-        String conv = "";
         Optional<String> setterValue = Optional.ofNullable(setterPrinter.prettyprint(arg.getExpression()));
         if (this.getClass().getSimpleName().equals("GUI2JavaClassDecorator") && (setterValue.isEmpty() || "null".equals(setterValue.get()))) {
           setterValue = Optional.of(value + " = " + value);
@@ -468,12 +467,15 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
           convType = printType(getSimpleType(createTypeAndAddImports(left)));
         }
         // example: `Date val_$ = string2Date(val)`
-        conv = getConvertedValueAssignment(
-            convType, value, getConversion(left, typeSTE).apply(target));
+        ASTCDMethodSignature convert = getCD4C().addMethod(
+            clazz, getArgConversionTemplate(),
+            convType, name, type, target, getConversion(left, typeSTE).apply(target)
+        );
 
         getCD4C().addMethod(
             clazz, getArgSetterWithConversionTemplate(),
-            type, name, nullCheck, setterValue.orElse(null), conv, params
+            type, name, nullCheck, setterValue.orElse(null),
+            convType, value, convert.getName(), params
         );
       }
     }
@@ -1463,6 +1465,10 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
   protected String getArgSetterWithConversionTemplate() {
     return "umlp.gui2java.GUI2JavaArgSetterWithConversion";
+  }
+
+  protected String getArgConversionTemplate() {
+    return "umlp.gui2java.GUI2JavaArgConversion";
   }
 
   protected String getListInitTemplate() {

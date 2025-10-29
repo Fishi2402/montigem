@@ -6,5 +6,5 @@ ${tc.signature("type", "name", "params", "trigger")}
 
 public override set${name?cap_first}(${paramString}): void {
   super.set${name?cap_first}(${argString});
-  this.${trigger}.emit(${arg});
+  this.${trigger}.emit(this.convert${name?cap_first}(${arg}));
 }
