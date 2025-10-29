@@ -38,7 +38,7 @@ export default defineConfig({
       reuseExistingServer: true,
     },
     { // backend
-      command: 'java -jar backend-e2e/build/libs/backend-e2e-7.8.0-SNAPSHOT.jar',
+      command: 'java -jar backend-e2e/build/libs/backend-e2e-7.8.0.jar',
       port: 8081,
       reuseExistingServer: true,
       cwd: "../../../"

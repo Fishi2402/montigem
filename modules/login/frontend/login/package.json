@@ -2,16 +2,16 @@
   "peerDependencies": {
     "@angular/common": "^17.0.7",
     "@angular/core": "^17.0.7",
-    "@umlp/arrange": "^7.7.0",
-    "@umlp/input": "^7.7.0",
-    "@umlp/common": "^7.7.0",
-    "@umlp/basic": "^7.7.0",
+    "@umlp/arrange": "7.8.0",
+    "@umlp/input": "7.8.0",
+    "@umlp/common": "7.8.0",
+    "@umlp/basic": "7.8.0",
     "many-keys-map": "2.0.1",
     "async-mutex": "^0.5.0",
     "rxjs": "~7.8.0"
   },
   "name": "@montigem/login",
-  "version": "7.7.0",
+  "version": "7.8.0",
   "sideEffects": false,
   "dependencies": {"tslib": "^2.3.0"}
 }
