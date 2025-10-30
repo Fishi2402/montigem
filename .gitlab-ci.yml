@@ -1,5 +1,5 @@
 # (c) https://github.com/MontiCore/monticore
-image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:7-chromium-deps
+image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:7-chromium-installed
 
 variables:
   GRADLE_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
@@ -50,7 +50,12 @@ pages:
 
 build_no_containers:
   stage: build
+  variables:
+    PUPPETEER_SKIP_DOWNLOAD: "true"
+    CHROME_BIN: "/usr/bin/google-chrome-stable"
+    PUPPETEER_EXECUTABLE_PATH: "/usr/bin/google-chrome-stable"
   script:
+    - export CHROME_BIN=/usr/bin/google-chrome-stable
     - "gradle --version 2>&1 | tee $CI_PROJECT_DIR/build.log"
     - "gradle build --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 2>&1 | tee -a $CI_PROJECT_DIR/build.log"
     - "gradle :examples:vis-lib:frontend:build -Dj2ts_vislib=true 2>&1 | tee -a $CI_PROJECT_DIR/build.log"
@@ -101,6 +106,10 @@ build_intellij_plugin:
 
 build_with_deploy:
   stage: build
+  variables:
+    PUPPETEER_SKIP_DOWNLOAD: "true"
+    CHROME_BIN: "/usr/bin/google-chrome-stable"
+    PUPPETEER_EXECUTABLE_PATH: "/usr/bin/google-chrome-stable"
   script:
     # Build project + examples
     - "gradle --version 2>&1 | tee $CI_PROJECT_DIR/build.log"
