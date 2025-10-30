@@ -605,7 +605,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
       }
     });
     project.getDependencies().add("implementation", dep);
-    project.getDependencies().add("implementation", "com.kohlschutter.jdk.compiler:standalone-jdk11:1.0.0");
+    project.getDependencies().add("implementation", "com.kohlschutter.jdk.compiler:standalone-jdk21:1.1.3");
     Optional<Project> jsweet = Optional.ofNullable(project.findProject(":umlp-jsweet"));
     if (inUMLP(project) && useLocalDependencies(project) && jsweet.isPresent()) {
       project.getDependencies().add("implementation", jsweet.get());

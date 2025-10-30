@@ -449,7 +449,7 @@ public abstract class FrontendWithJSweetPlugin implements Plugin<Project> {
       }
     });
     project.getDependencies().add("implementation", dep);
-    project.getDependencies().add("implementation", "com.kohlschutter.jdk.compiler:standalone-jdk11:1.0.0");
+    project.getDependencies().add("implementation", "com.kohlschutter.jdk.compiler:standalone-jdk21:1.1.3");
     if (inUMLP(project) && useLocalDependencies(project)) {
       project.getDependencies().add(JSWEET_CONFIG, project.project(":umlp-jsweet"));
     }
