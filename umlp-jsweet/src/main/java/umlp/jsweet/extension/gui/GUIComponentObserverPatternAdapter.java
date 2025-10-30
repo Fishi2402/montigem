@@ -763,14 +763,13 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     return true;
   }
 
-
   /**
    * Prints the for each loop and adds line __regObsToDomainObj(${loopVar}); before the actual statement.
    * This activates the jsweet -> angular sync if on of the iterated elements changes
    * @param loop
    */
   protected void printForEachLoopWithObserver(EnhancedForLoopTree loop){
-    String loopVarName = loop.getVariable().getName().toString();
+    String loopVarName = avoidJSKeyword(loop.getVariable().getName().toString());
     print("for (" + Java2TypeScriptTranslator.VAR_DECL_KEYWORD + " ")
         .print(loopVarName + " of ");
     boolean parentheses = loop.getExpression() instanceof TypeCastTree
@@ -786,5 +785,12 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
         .printIndent().println(DOMAIN_OBSERVER_FUNCTION_NAME + "(" + loopVarName + ");")
         .printIndent().print(loop.getStatement())
         .endIndent().println().printIndent().print("}");
+  }
+
+  private String avoidJSKeyword(String name) {
+    if (JSweetConfig.JS_KEYWORDS.contains(name)) {
+      name = JSweetConfig.JS_KEYWORD_PREFIX + name;
+    }
+    return name;
   }
 }
