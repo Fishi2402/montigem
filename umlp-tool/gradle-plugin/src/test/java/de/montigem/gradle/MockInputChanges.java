@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package gradle;
+package de.montigem.gradle;
 
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.FileSystemLocation;

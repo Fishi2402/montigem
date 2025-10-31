@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.montigem.gradle.specific;
 
+import de.montigem.gradle.common.IncGenData;
 import de.se_rwth.commons.logging.Log;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.Directory;
@@ -18,6 +19,7 @@ import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.PathSensitive;
 import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.api.tasks.SkipWhenEmpty;
+import org.gradle.work.InputChanges;
 import org.gradle.workers.WorkQueue;
 
 import java.io.File;
@@ -97,6 +99,15 @@ public abstract class GUI2Java2TSTask extends GUI2JavaTask {
   @InputFiles
   @Classpath
   public abstract ConfigurableFileCollection getClassPath();
+
+  @Override
+  protected boolean shouldRunAgain(InputChanges inputChanges) {
+    return getInputFilesAsStream()
+        .map(this::getIncGenFile)
+        .map(incGenFile -> new IncGenData(incGenFile, this.getProject().getProjectDir()))
+        .map(incGenData -> incGenData.isUpToDate(getStreamOfChanges(inputChanges)))
+        .anyMatch(upToDate -> !upToDate);
+  }
 
   @Override
   protected void startGeneration(List<String> args, String progressName) {

@@ -40,7 +40,7 @@ public class IncGenData {
         lines.forEach(line -> {
 
           checkAndAddToSet("out:", generatedFiles, line, 0);
-          checkAndAddToSet("hwc:", existenceCheckedFiles, line, 0);
+          checkAndAddToSet("hwc:", readFiles, line, 0);
           checkAndAddToSet("gen:", existenceCheckedFiles, line, 0);
 
           checkAndAddToSet("mc4:", readFiles, line, 33);

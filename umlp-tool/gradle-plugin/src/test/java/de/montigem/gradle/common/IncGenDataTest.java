@@ -1,8 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
-package gradle.common;
+package de.montigem.gradle.common;
 
-import de.montigem.gradle.common.IncGenData;
-import gradle.MockFileChange;
+import de.montigem.gradle.MockFileChange;
 import org.gradle.work.ChangeType;
 
 import org.junit.jupiter.api.BeforeEach;

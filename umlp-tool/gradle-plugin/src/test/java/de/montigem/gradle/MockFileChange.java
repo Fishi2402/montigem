@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package gradle;
+package de.montigem.gradle;
 
 import org.gradle.api.file.FileType;
 import org.gradle.internal.execution.history.changes.Change;
