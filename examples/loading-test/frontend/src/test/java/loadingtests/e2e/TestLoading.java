@@ -1,6 +1,5 @@
 package loadingtests.e2e;
 
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.LoadState;
 import de.se_rwth.commons.logging.Log;
@@ -12,7 +11,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import umlp.backendrte.command.CommandManager;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

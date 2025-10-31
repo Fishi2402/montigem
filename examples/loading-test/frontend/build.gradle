@@ -1,45 +1,51 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import de.montigem.gradle.specific.GUI2JavaTask
+import de.montigem.gradle.specific.GUI2Java2TSTask
+import de.montigem.gradle.specific.UMLPJava2TSTask
 
 plugins {
-  id "de.rwth.se.montigem-frontend"
+  id 'java'
+  id 'de.rwth.se.montigem-frontend'
 }
 
 dependencies {
-  implementation project(":examples:loading-test:backend")
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version
-  implementation("org.springframework.boot:spring-boot-starter-tomcat:$spring_version")
+  //  spring-boot-starter-security breaks the frontend tests!
+  //  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version
+  implementation group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.6_mail', version: '1.0.1'
+
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
   testImplementation project(':umlp-test-rte')
 }
 
-tasks.named("gui2java", GUI2JavaTask) {
-  domain = ["LoadingTests"]
-  input.from("../frontend-jsweet/src/main/gui")
-  modelDir.from(project.layout.projectDirectory.dir("../frontend-jsweet/src/main/gui"))
+tasks.named("gui2java2ts", GUI2Java2TSTask) {
   guiCreateModels = [
       "test_update_of_builder.AnimalCreate",
       "test_update_after_build.one_page.PersonsAndBuilderInOnePage",
       "test_update_after_build.composed_in_builder_page.PersonsInBuilderPage",
       "test_update_after_build.PersonBuilder",
-      "test_no_error.BuilderAndRouterNavigation"
-  ]
+      "test_no_error.BuilderAndRouterNavigation"]
+  verbose = false
 }
 
-configurations {
-  testImplementation.exclude group: 'org.json', module: 'json'
-  testRuntimeClasspath.exclude group: 'de.monticore.language-server', module: 'monticore-language-server-runtime'
+tasks.named("umlpJava2ts", UMLPJava2TSTask) {
+  verbose = false
 }
 
 def test = tasks.named("test", Test) {
   dependsOn tasks.named("npmInstall"), tasks.named("buildApp")
+  testLogging {
+    events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
+  }
   useJUnitPlatform() {
     excludeTags "SlowTest"
   }
+  environment.put("WITH_JSWEET", "TRUE")
+  // Gradle does not detect changes to some files, such as the app.component.ts
+  // because we never specify them as inputs
 }
 
 tasks.register("slowtest", Test) {
-  group = "verification"
   testLogging {
     events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
   }
@@ -50,3 +56,10 @@ tasks.register("slowtest", Test) {
   dependsOn tasks.named("npmInstall")
 }
 
+
+// End 2 end testing using the build website + backend
+tasks.register('installPlaywright', NpxTask) {
+  dependsOn(tasks.named("npmInstall"))
+  command = "playwright"
+  args = ["install"]
+}

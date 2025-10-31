@@ -1,19 +1,24 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui;
 
+import de.monticore.ast.ASTNode;
 import de.monticore.cd.facade.CDModifier;
+import de.monticore.cd.facade.CDParameterFacade;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDClass;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
+import de.monticore.guidsl._ast.ASTGUIComponent;
+import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._symboltable.BuiltInTypes;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfObject;
-import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
@@ -21,6 +26,7 @@ import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericTypeBuilder;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Splitters;
+import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
@@ -28,12 +34,10 @@ import umlp.generator.domain.decorator.DiagramObserverDecorator;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.domain.decorator.commands.ManagerSubscriptionDecorator;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
-import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public abstract class GUI2ClassDecorator extends AbstractDecorator {
@@ -117,13 +121,27 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
   }
 
   protected ASTMCType getSimpleType(ASTMCType astmcType) {
-    if(astmcType instanceof ASTMCQualifiedType) {
+    if (astmcType instanceof ASTMCQualifiedType) {
       List<String> nameList = ((ASTMCQualifiedType) astmcType).getNameList();
-      if(nameList.size()>=1) {
-        return MCTypeFacade.getInstance().createQualifiedType(nameList.get(nameList.size()-1));
+      if (!nameList.isEmpty()) {
+        return MCTypeFacade.getInstance().createQualifiedType(nameList.get(nameList.size() - 1));
       }
     }
     return astmcType;
+  }
+
+  protected String calcBaseArgName(ASTGUIComponent component, ASTGUINamedArg arg) {
+    return component.getId().getName() + StringTransformations.capitalize(arg.getName());
+  }
+
+  public List<ASTCDParameter> getIterationItemParameters(ASTNode node) {
+    List<VariableSymbol> iterateArgs = util.findIterationItemSymbols(node.getEnclosingScope());
+    List<ASTCDParameter> params = new ArrayList<>();
+    for (VariableSymbol vs : iterateArgs) {
+      ASTMCType paramType = getSimpleType(createTypeAndAddImports(vs.getType()));
+      params.add(CDParameterFacade.getInstance().createParameter(paramType, vs.getName()));
+    }
+    return params;
   }
 
   /**
@@ -195,16 +213,16 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
   protected void importCommand(ASTMCType domainClass) {
     String typeName = "";
     String packageName = "";
-    if(domainClass instanceof ASTMCQualifiedType) {
+    if (domainClass instanceof ASTMCQualifiedType) {
       List<String> nameList = ((ASTMCQualifiedType) domainClass).getNameList();
-      typeName = nameList.get(nameList.size()-1);
+      typeName = nameList.get(nameList.size() - 1);
 
-      if(nameList.size() > 1) {
-        List<String> packageNameList = nameList.subList(0, nameList.size()-1);
+      if (nameList.size() > 1) {
+        List<String> packageNameList = nameList.subList(0, nameList.size() - 1);
         packageName = packageNameList.stream().map(String::toLowerCase).collect(Collectors.joining("."));
       }
     }
-    if(!packageName.isEmpty()) {
+    if (!packageName.isEmpty()) {
       Joiners.DOT.join(packageName.toLowerCase(), COMMAND_PACKAGE,
           domainClass.printType() + ManagerSubscriptionDecorator.SUFFIX);
     }
@@ -214,6 +232,7 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
 
     addImport(commandQName);
   }
+
   // Use method above which keeps the TypeInformation
   @Deprecated
   protected void importCommand(String domainClassName) {

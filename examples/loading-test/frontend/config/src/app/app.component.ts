@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { LoadingTestsManagerClientImpl } from 'loadingtests/LoadingTestsManagerClientImpl';
+// JSweet
+import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from '@umlp/commonj2ts';
+import { LoadingTestsComponentObserverManager } from 'LoadingTestsComponentObserverManager'
 import { LoadingTestsManager } from 'loadingtests/LoadingTestsManager';
-import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from '@umlp/common';
-import { DummyComponentObserverManager } from './DummyComponentObserverManager'
 
 declare global {
   interface Window {
@@ -23,8 +24,9 @@ export class AppComponent {
       ws_protocol + '://' + document.location.host + '/umlp/api/command'
     ));
     CommandManager.initMe(cmdManager);
+    (<any>window).LoadingTestsManager = LoadingTestsManager;
     (<any>window).websocket_connected = true;
-    (<any>window).LoadingTestsManager = LoadingTestsManager
-    DummyComponentObserverManager.init();
+    // JSweet
+    LoadingTestsComponentObserverManager.init();
   }
 }

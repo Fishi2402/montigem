@@ -47,6 +47,7 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types3.TypeCheck3;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
@@ -62,6 +63,7 @@ import umlp.generator.gui.genjava.prettyprinter.IterationItemsFinder;
 import umlp.generator.gui.gentypescript.config.GUI2ConfigGenerator;
 import umlp.generator.gui.gentypescript.printer.TSBackendMap;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
+import umlp.generator.gui.gentypescript.printer.TSUtilsPrinter;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 import umlp.generator.util.TagLookUp;
 
@@ -1343,6 +1345,32 @@ public class GUIGeneratorUtil {
       ASTCDParameter param = iter.next();
       res.append(param.getMCType().printType());
       res.append(" ");
+      res.append(param.getName());
+    }
+    return res.toString();
+  }
+
+  public String tsParams2String(ASTMCType setterType, String arg, Collection<ASTCDParameter> params) {
+    TSUtilsPrinter printer = new TSUtilsPrinter();
+
+    StringBuilder res = new StringBuilder(arg + ": " + printer.printType(setterType));
+    Iterator<ASTCDParameter> iter = params.iterator();
+    while (iter.hasNext()) {
+      res.append(",");
+      ASTCDParameter param = iter.next();
+      res.append(param.getName());
+      res.append(": ");
+      res.append(printer.printType(param.getMCType()));
+    }
+    return res.toString();
+  }
+
+  public String params2ArgsString(String arg, Collection<ASTCDParameter> params) {
+    StringBuilder res = new StringBuilder(arg);
+    Iterator<ASTCDParameter> iter = params.iterator();
+    while (iter.hasNext()) {
+      res.append(",");
+      ASTCDParameter param = iter.next();
       res.append(param.getName());
     }
     return res.toString();

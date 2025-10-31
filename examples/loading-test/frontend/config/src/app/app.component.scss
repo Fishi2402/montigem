@@ -1,15 +1,8 @@
 :host {
   display: flex;
-  row-gap: 15px;
-  flex-direction: column;
+  column-gap: 5px;
 }
 
-.AppMain {
+.app-main {
   padding: 5px;
-}
-
-.AppNav {
-  position: sticky;
-  top: 0;
-  z-index: 9999;
 }
