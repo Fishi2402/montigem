@@ -95,7 +95,6 @@ include ':examples:kitchencompanion:frontend'
 
 include ':examples:loading-test:backend'
 include ':examples:loading-test:frontend'
-include ':examples:loading-test:frontend-jsweet'
 
 // TODO: Fix once java version is decided
 //include ':products:syse_functions:frontend'
