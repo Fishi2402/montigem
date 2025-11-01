@@ -197,6 +197,9 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
 
   public static void addProjectDependencies(Project project) {
     // repositories
+    if (getBooleanProjectProperty(project, "useLocalRepo")) {
+      project.getRepositories().mavenLocal();
+    }
     project.getRepositories().maven(repo -> {
       String mavenUser = requireProjectProperty(project, "mavenUser");
       String mavenPassword = requireProjectProperty(project, "mavenPassword");
@@ -205,9 +208,6 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
       repo.getCredentials().setPassword(mavenPassword);
       repo.setUrl(repoURL);
     });
-    if (getBooleanProjectProperty(project, "useLocalRepo")) {
-      project.getRepositories().mavenLocal();
-    }
     project.getRepositories().mavenCentral();
   }
 
