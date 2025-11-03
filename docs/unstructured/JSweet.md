@@ -1,5 +1,7 @@
 # JSweet
 The transpiling of our java code to Typescript code
+We modified the JSweet transpiler source code and published our modifications here:
+[GitLab: MonitCore/Jsweet](https://git.rwth-aachen.de/monticore/jsweet)
 
 ## Setup
 Um JSweet in ein Projekt zu integrieren, müssen diese Schritte befolgt werden
