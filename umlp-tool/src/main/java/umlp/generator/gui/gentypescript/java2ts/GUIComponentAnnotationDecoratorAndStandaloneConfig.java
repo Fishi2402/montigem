@@ -82,23 +82,6 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig implements GUIDS
             scssPaths.add(hwScssPath.get());
           }
         }
-        else if (!UMLPGeneratorConfig.getInstance().isUseJsweet()) {
-          importHelper.addImportString("import { Directive } from '@angular/core';");
-          Optional<String> hwHtmlPath = util.getRelativeImportPath(
-              hwPath, outPath, qClassName, "html");
-          if (hwHtmlPath.isEmpty()) {
-            htmlPath = util.getRelativeImportPathForAnnotation(
-                outPath.toString(), new ArrayList<>(hwPath.getEntries()).get(0).toString(), qClassName);
-          }
-          Optional<String> hwScssPath = util.getRelativeImportPath(
-              hwPath, outPath, qClassName, "scss");
-          if (hwScssPath.isPresent() && !existsTSHandwrittenFile(hwPath, gui.getComponentQName())) {
-            scssPaths.add(hwScssPath.get());
-          }
-          else if (hwScssPath.isPresent()) {
-            scssPaths.add("./" + originalName + ".scss");
-          }
-        }
         else {
           importHelper.addImportString("import { Directive } from '@angular/core';");
           // TODO #3768

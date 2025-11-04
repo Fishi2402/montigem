@@ -8,14 +8,9 @@ ${tc.signature("decoratedAST", "glex", "hwPath", "outPath", "importsPath", "gene
 ${includeArgs("umlp.generator.hook.InitModules", glex)}
 
 <#-- Decorators -->
-<#assign guiDecorator = tc.instantiate("umlp.generator.gui.gentypescript.decorator.GUI2TSClassDecorator", [glex, hwPath, outPath, importsPath])>
 <#assign angularDecorator = tc.instantiate("umlp.generator.gui.gentypescript.decorator.GUI2AngularClassDecorator", [glex, hwPath, outPath, importsPath])>
 <#assign annotationDecorator = tc.instantiate("umlp.generator.gui.gentypescript.java2ts.GUIComponentAnnotationDecoratorAndStandaloneConfig", [glex, hwPath, outPath, importsPath])>
 <#assign topDecorator = tc.instantiate("umlp.generator.gui.gentypescript.java2ts.TSTopDecorator", [glex, hwPath, outPath])>
-
-${guiDecorator.transform(ast, decoratedAST)}
-
-${topDecorator.decorate(decoratedAST)}
 
 <#--ToDo: Maybe use a better template name-->
 ${includeArgs("umlp.generator.hook.BeforeTransformGui2C", decoratedAST, glex, hwPath, generator, angularDecorator, topDecorator)}

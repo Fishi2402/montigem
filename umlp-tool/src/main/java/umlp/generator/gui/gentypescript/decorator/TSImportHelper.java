@@ -155,7 +155,7 @@ public class TSImportHelper {
     String importer = Names.getPathFromPackage(importerQName) + ".ts";
 
     Optional<URL> hwFilePath = hwPath.find(imported);
-    if (hwFilePath.isEmpty() && UMLPGeneratorConfig.getInstance().isUseJsweet()) {
+    if (hwFilePath.isEmpty()) {
       importedMaybeCD = importedMaybeCDName + ".java";
       imported = Names.getPathFromPackage(importedQName) + ".java";
       importer = Names.getPathFromPackage(importerQName) + ".java";

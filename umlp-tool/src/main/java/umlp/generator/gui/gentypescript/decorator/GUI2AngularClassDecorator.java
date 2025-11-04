@@ -202,10 +202,8 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
 
       addImportString("import { Input } from '@angular/core';");
       // setter + getter
-      if (UMLPGeneratorConfig.getInstance().isUseJsweet()) {
 //        addImport(PathUtil.getBackendRTECommonPath("UMLPArrayList"));
-        mcType = createTypeAndAddImports(typeSTE);
-      }
+      mcType = createTypeAndAddImports(typeSTE);
       glex.replaceTemplate("umlp.Empty", attr,
           new TemplateHookPoint("umlp.gui2ts.GUI2AngularAttrGetterSetter",
               mcType, node.getName(), getterName, setterName));
