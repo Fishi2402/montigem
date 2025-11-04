@@ -95,6 +95,7 @@ The car rental example already contains a single class:
 class Customer {
   String name;
   String email;
+  int age;
 }
 ```
 
@@ -124,6 +125,7 @@ Try it yourself. For instance, using the `initEntities()` method in the `Carrent
   Customer jim = CarrentalManager.customerBuilder() // returns CustomerBuilder
     .name("Jim Douglas")
     .email("jim.double@example.com")
+    .age(34)
     .build() // return Optional<Customer>
     .get();
   ```
@@ -241,6 +243,7 @@ Previously we showed several example classes with attributes:
 class Customer {
   String name;
   String email;
+  int age;
 }
 
 class RentalTransaction {
@@ -249,7 +252,7 @@ class RentalTransaction {
   float totalCost;
 }
 ```
-The class declares two attributes of type `String`. A class diagram has access to
+The class declares two attributes of type `String` and one of type `int`. A class diagram has access to
 different types:
 
 - `String`, Java primitive types (`boolean`, `int`, `void`, etc.), and their
