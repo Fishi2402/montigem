@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 classdiagram GemTimeSeriesChartTypes {
   class TimeSeriesData {
     -> (series) TimeSeries [*];
+    -> (events) TimeSeriesEvent [*];
   }
 
   class TimeSeries {
@@ -21,5 +22,13 @@ classdiagram GemTimeSeriesChartTypes {
   class TimeSeriesDataPoint {
     LocalDateTime timestamp;
     Double value;
+  }
+
+  class TimeSeriesEvent {
+    LocalDateTime timestamp;
+    String name;
+    Optional<String> textColor;
+    Optional<String> backgroundColor;
+    boolean show;
   }
 }

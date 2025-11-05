@@ -5,7 +5,11 @@ import Domain.Person;
 import mc.fenix.charts.GemTimeSeriesChart;
 
 page GemTimeSeriesChartExmaple (List<Person> persons) {
-  chart@GemTimeSeriesChart(
+  chart1@GemTimeSeriesChart(
+    data = computeDate(persons),
+    hideLiveDataToggle = true
+  );
+  chart2@GemTimeSeriesChart(
     data = computeDate(persons),
     hideLiveDataToggle = true
   );

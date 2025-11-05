@@ -141,4 +141,7 @@ export * from "./build/gui2java2ts/mc/fenix/charts/gemtimeseriescharttypes/TimeS
 export * from "./build/gui2java2ts/mc/fenix/charts/gemtimeseriescharttypes/TimeSeriesDataPoint";
 export * from "./build/gui2java2ts/mc/fenix/charts/gemtimeseriescharttypes/TimeSeriesDataPointBuilder";
 export * from "./build/gui2java2ts/mc/fenix/charts/gemtimeseriescharttypes/TimeSeriesDataPointDeSer";
+export * from "./build/gui2java2ts/mc/fenix/charts/gemtimeseriescharttypes/TimeSeriesEvent";
+export * from "./build/gui2java2ts/mc/fenix/charts/gemtimeseriescharttypes/TimeSeriesEventBuilder";
+export * from "./build/gui2java2ts/mc/fenix/charts/gemtimeseriescharttypes/TimeSeriesEventDeSer";
 export * from "./build/gui2java2ts/mc/fenix/charts/gemtimeseriescharttypes/GemTimeSeriesChartTypesDeSer";

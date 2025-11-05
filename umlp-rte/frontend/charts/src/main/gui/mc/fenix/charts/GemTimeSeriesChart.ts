@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-import {Component} from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import {GemTimeSeriesChartComponent, config} from '../../../../../../build/gui2java2ts/mc/fenix/charts/GemTimeSeriesChartComponent';
 import {OnDestroy} from '@angular/core';
 import ApexCharts from 'apexcharts';
@@ -18,8 +18,9 @@ import { TimeSeriesDataPoint } from '../../../../../../build/gui2java2ts/mc/feni
 export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements OnDestroy {
 
   options: any;
-  targetElement: any;
+  //targetElement: any;
   chart: ApexCharts;
+  @ViewChild('tSChart') targetElement! : ElementRef<HTMLDivElement>;
   private liveData: boolean = true;
 
   public async init() {
@@ -131,9 +132,8 @@ export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements O
       },
     };
 
-    this.targetElement = document.querySelector("#apx-chart");
     if (this.targetElement) {
-      this.chart = new ApexCharts(this.targetElement, this.options); // Neues ApexChart-Objekt instanziieren
+      this.chart = new ApexCharts(this.targetElement.nativeElement, this.options); // Neues ApexChart-Objekt instanziieren
       this.chart.render(); // Rendern des Charts
     } else {
       console.error("Konnte das Element mit der ID 'apx-chart' nicht finden.");
@@ -161,6 +161,11 @@ export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements O
       console.log("updateSeries");
       this.chart.updateSeries(this.options.series, false);
     }
+
+    let events = await this.transformEvent2Annotation(data);
+    for await (const event of events) {
+      this.chart.addXaxisAnnotation(event);
+    }
   }
 
   private async transformData2Series(data: TimeSeries): Promise<{name: string, data: any[], color?: string, hidden?: boolean}> {
@@ -176,6 +181,29 @@ export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements O
       newSeries = {name: data.getName(), data: seriesData, color: data.getColor(), hidden: data.isHidden()};
     }
     return newSeries;
+  }
+
+  private async transformEvent2Annotation(data: TimeSeriesData){
+    let eventData = [];
+    for await (const event of data.getEventsList()){
+      let bgcolor = event.getBackgroundColor();
+      if (bgcolor == null) bgcolor="#000"
+      let textColor = event.getTextColor();
+      if (textColor == null) textColor = "#fff"
+      let annotation = {x: event.getTimestamp().getTime(),
+        borderColor: bgcolor,
+        yAxisIndex: 0,
+        label: {
+          show: event.isShow(),
+          text: event.getName(),
+          style: {
+            color: textColor,
+            background: bgcolor
+          }
+        }}
+      eventData.push(annotation);
+    }
+    return eventData
   }
 
   public toggleLiveData(event: any) {

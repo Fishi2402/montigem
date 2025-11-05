@@ -201,7 +201,7 @@ public class JavaBasicsAdapter extends AbstractAdapter {
         print(invocation.getTargetExpression()).print(".getTime() / 1000");
         return true;
       case "ofEpochSecond":
-        print("new Date(").print(invocation.getArguments().get(0)).print(" * 1000)");
+        print("new Date((").print(invocation.getArguments().get(0)).print(") * 1000)");
         return true;
 
       // === Integration of LocalDateTimeHelper ===
