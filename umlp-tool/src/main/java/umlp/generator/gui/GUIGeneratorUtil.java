@@ -186,8 +186,7 @@ public class GUIGeneratorUtil {
 
   public boolean existsHandwrittenClass(MCPath targetPath, String qualifiedName) {
     return existsHandwrittenFile(targetPath, Names.getPathFromPackage(qualifiedName) + ".ts") | // Use bitwise to report on both checks
-        (UMLPGeneratorConfig.getInstance().isUseJsweet() && existsHandwrittenFile(targetPath,
-            Names.getPathFromPackage(qualifiedName) + ".java"));
+        existsHandwrittenFile(targetPath, Names.getPathFromPackage(qualifiedName) + ".java");
   }
 
   public boolean isInitialized() {
@@ -208,7 +207,7 @@ public class GUIGeneratorUtil {
   public final String print(ASTNode node, boolean syncedOpt) {
     printer.setPrintComments(false);
     String res = printer.prettyprint(node);
-    if (syncedOpt && UMLPGeneratorConfig.getInstance().isUseJsweet()) {
+    if (syncedOpt) {
       res += SYNCHRONIZED_SUFFIX;
     }
     return res;
@@ -562,11 +561,7 @@ public class GUIGeneratorUtil {
     return "get"
         + StringTransformations.capitalize(componentId)
         + StringTransformations.capitalize(namedArg.getName())
-        + ((UMLPGeneratorConfig.getInstance().isGenerateTypescript() || isList(namedArg))
-        && !UMLPGeneratorConfig.getInstance().isUseJsweet()
-        ? ""
-        : SYNCHRONIZED_SUFFIX // JSweet method to synchronize async callbacks
-    );
+        + SYNCHRONIZED_SUFFIX;
   }
 
   public boolean isList(ASTGUINamedArg namedArg) {
@@ -584,7 +579,7 @@ public class GUIGeneratorUtil {
   @SuppressWarnings("unused") // Component.ftl
   @Deprecated(forRemoval = true)
   public String getIsSynchronizedSuffix() {
-    return UMLPGeneratorConfig.getInstance().isGenerateTypescript() ? "" : SYNCHRONIZED_SUFFIX;
+    return SYNCHRONIZED_SUFFIX;
     /*
     if (true) return ""; // no longer required due to | async
     return UMLPGeneratorConfig.getInstance().isGenerateTypescript() ? SYNCHRONIZED_SUFFIX : "";
@@ -648,12 +643,7 @@ public class GUIGeneratorUtil {
         .map(v -> v.getName()).collect(
             Collectors.joining(", "));
     String getter = "get" + StringTransformations.capitalize(name);
-    if (UMLPGeneratorConfig.getInstance().isUseJsweet()) {
-      getter = "toArray(" + getter + SYNCHRONIZED_SUFFIX + "(" + args + "))";
-    }
-    else {
-      getter = getter + "(" + args + ")";
-    }
+    getter = "toArray(" + getter + SYNCHRONIZED_SUFFIX + "(" + args + "))";
     return getter;
   }
 
@@ -1027,7 +1017,7 @@ public class GUIGeneratorUtil {
 
   public Optional<String> getRelativeImportPathForClass(MCPath imported, Path importer, String qualifiedName) {
     Optional<String> result = getRelativeImportPath(imported, importer, qualifiedName, "ts");
-    if (result.isEmpty() && UMLPGeneratorConfig.getInstance().isUseJsweet()) {
+    if (result.isEmpty()) {
       result = getRelativeImportPath(imported, importer, qualifiedName, "java");
       if (result.isPresent()) {
         return Optional.of("./" + Names.getSimpleName(qualifiedName));
