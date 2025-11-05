@@ -4,50 +4,87 @@ import Domain.FischertechnikSortingLineState;
 
 import mc.fenix.fischertechnik.SortingLine;
 import mc.fenix.arrange.GemColumn;
-import mc.fenix.input.GemRangeInput;
 import mc.fenix.input.GemCheckBoxInput;
+import mc.fenix.input.GemTextInput;
 
 page SortingLine_Demo(FischertechnikSortingLineState state){
   @GemColumn(
     rowGap = "15px",
     components = [
-      @GemRangeInput(
-        id="speed-percentage",
-        labelText="Geschwindigkeit:",
-        vertical=false,
-        step=1,
-        minValue=1,
-        maxValue=100,
-        value=state.speedIndicatorPercentage
-      ),
-      @GemCheckBoxInput(
-        id="pusher1",
-        labelText="Schieber 1 aktiv",
-        checked=state.pusherIndicator1On
-      ),
-      @GemCheckBoxInput(
-        id="pusher2",
-        labelText="Schieber 2 aktiv",
-        checked=state.pusherIndicator2On
-      ),
-      @GemCheckBoxInput(
-        id="pusher3",
-        labelText="Schieber 3 aktiv",
-        checked=state.pusherIndicator3On
-      ),
       @GemCheckBoxInput(
         id="pump-running",
         labelText="Pumpe läuft",
         checked=state.pumpRunning
+      ),
+      @GemCheckBoxInput(
+        id="pusher1",
+        labelText="Schieber 1 aktiv",
+        checked=state.pusher1Extended
+      ),
+      @GemCheckBoxInput(
+        id="pusher2",
+        labelText="Schieber 2 aktiv",
+        checked=state.pusher2Extended
+      ),
+      @GemCheckBoxInput(
+        id="pusher3",
+        labelText="Schieber 3 aktiv",
+        checked=state.pusher3Extended
+      ),
+      @GemCheckBoxInput(
+        id="belt-running",
+        labelText="Laufband läuft",
+        checked=state.beltRunning
+      ),
+
+      @GemCheckBoxInput(
+        id="barrier1",
+        labelText="Lichtschranke 1 aktiv",
+        checked=state.barrierIndicator1On
+      ),
+      @GemCheckBoxInput(
+        id="barrier2",
+        labelText="Lichtschranke 2 aktiv",
+        checked=state.barrierIndicator2On
+      ),
+      @GemCheckBoxInput(
+        id="barrier3",
+        labelText="Lichtschranke 3 aktiv",
+        checked=state.barrierIndicator3On
+      ),
+      @GemCheckBoxInput(
+        id="barrierFeed1",
+        labelText="Lichtschranke 1 (Feed) aktiv",
+        checked=state.barrierIndicatorFeed1On
+      ),
+      @GemCheckBoxInput(
+        id="barrierFeed2",
+        labelText="Lichtschranke 2 (Feed) aktiv",
+        checked=state.barrierIndicatorFeed2On
+      ),
+
+      @GemTextInput(
+        id="color-sensor",
+        labelText="Farb-Sensor",
+        inputType="text",
+        entry=state.colorSensor
       )
     ]
   );
   @SortingLine(
     pumpRunning=state.pumpRunning,
-    pusherIndicator1On=state.pusherIndicator1On,
-    pusherIndicator2On=state.pusherIndicator2On,
-    pusherIndicator3On=state.pusherIndicator3On,
-    speedIndicatorPercentage=state.speedIndicatorPercentage
+    pusher1Extended=state.pusher1Extended,
+    pusher2Extended=state.pusher2Extended,
+    pusher3Extended=state.pusher3Extended,
+    beltRunning=state.beltRunning,
+
+    barrierIndicator1On=state.barrierIndicator1On,
+    barrierIndicator2On=state.barrierIndicator2On,
+    barrierIndicator3On=state.barrierIndicator3On,
+    barrierIndicatorFeed1On=state.barrierIndicatorFeed1On,
+    barrierIndicatorFeed2On=state.barrierIndicatorFeed2On,
+
+    colorSensor=state.colorSensor
   );
 }
 

@@ -52,11 +52,19 @@ classdiagram Domain {
 
   <<singleton>>
   class FischertechnikSortingLineState{
-    boolean pumpRunning = false;
-    boolean pusherIndicator1On = false;
-    boolean pusherIndicator2On = false;
-    boolean pusherIndicator3On = false;
-    int speedIndicatorPercentage = 0;
+      boolean pumpRunning = false;
+      boolean pusher1Extended = false;
+      boolean pusher2Extended = false;
+      boolean pusher3Extended = false;
+      boolean beltRunning = false;
+
+      boolean barrierIndicator1On = false;
+      boolean barrierIndicator2On = false;
+      boolean barrierIndicator3On = false;
+      boolean barrierIndicatorFeed1On = false;
+      boolean barrierIndicatorFeed2On = false;
+
+      String colorSensor = "white";
   }
 
   <<singleton>>
