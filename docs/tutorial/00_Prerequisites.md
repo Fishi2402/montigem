@@ -5,19 +5,19 @@ and commands defined for a standard app setup.
 
 ## Installation
 
-### Install Java 11
+### Install Java 21
 
 !!! note
     The following are the instructions for Windows. For other systems look it up on the internet.
 
-- Download [java 11 archive](https://download.java.net/java/GA/jdk11/9/GPL/openjdk-11.0.2_windows-x64_bin.zip) and extract the folder. Alternatively look for `11.0.2` version of Java in the Java archive.
-- Extracted folder will contain `jdk-11.0.2`. You can copy it into `Program Files/Java` if you want, it is a standard path for JDK.
-- Add environment variable `JAVA_HOME` with its value set to the `jdk-11.0.2` directory, e.g. `C:\Program Files\Java\jdk-11.0.2`.
+- Download and install [java 21 archive](https://www.oracle.com/java/technologies/downloads/#jdk21-windows) and extract the folder. Alternatively look for `21` version of Java in the Java archive.
+- Extracted folder will contain `jdk-21`. You can copy it into `Program Files/Java` if you want, it is a standard path for JDK.
+- Add environment variable `JAVA_HOME` with its value set to the `jdk-21` directory, e.g. `C:\Program Files\Java\jdk-21`.
 - Add `%JAVA_HOME%\bin` entry to the `Path` environment variable. Open a command line and run `java -version` command to check if Java is working properly.
 
-### Setup Gradle 7.6.4
+### Setup Gradle 8.5 or later
 
-Download [Gradle 7.6.4](https://gradle.org/next-steps/?version=7.6.4&format=bin) and do an installation according to ["Installing manually" section](https://gradle.org/install/).
+Download [Gradle 8.5](https://gradle.org/next-steps/?version=8.14.3&format=bin) and do an installation according to ["Installing manually" section](https://gradle.org/install/).
 
 Create a `gradle.properties` file in `%userprofile%/.gradle` folder with content:
 

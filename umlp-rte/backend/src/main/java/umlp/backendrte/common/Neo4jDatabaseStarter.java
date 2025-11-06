@@ -2,13 +2,14 @@ package umlp.backendrte.common;
 
 import org.neo4j.configuration.GraphDatabaseSettings;
 import org.neo4j.configuration.connectors.BoltConnector;
-import org.neo4j.configuration.helpers.SocketAddress;
-import org.neo4j.dbms.api.DatabaseManagementService;
-import org.neo4j.dbms.api.DatabaseManagementServiceBuilder;
+import org.neo4j.harness.Neo4jBuilders;
+import org.neo4j.harness.Neo4j;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 /**
@@ -17,21 +18,31 @@ import java.util.function.Function;
  * Permanent deployments should probably use a neo4j container
  */
 public class Neo4jDatabaseStarter {
-  protected static DatabaseManagementService managementService;
   protected static int port = -1;
 
+  Neo4j embeddedDatabaseServer = null;
+
   public int start(Function<Integer, Path> portToDBBasePath) throws IOException {
-    if (managementService != null) {
-      managementService.database(GraphDatabaseSettings.DEFAULT_DATABASE_NAME);
-      return port;
+    if(this.embeddedDatabaseServer == null) {
+      port = getFreePort();
+      this.embeddedDatabaseServer = Neo4jBuilders.newInProcessBuilder()
+          .withDisabledServer()
+          .withWorkingDir(portToDBBasePath.apply(port))
+          .withConfig(BoltConnector.listen_address, new org.neo4j.configuration.helpers.SocketAddress("localhost", port))
+          .withConfig(GraphDatabaseSettings.udc_enabled, false)
+          // You can add custom procedures using .withProcedure()
+          // .withProcedure(SampleProcedure.class)
+          .build();
+    //  embeddedDatabaseServer.printLogs(System.out);
     }
-    port = getFreePort();
-    managementService = new DatabaseManagementServiceBuilder(portToDBBasePath.apply(port))
-        .setConfig(BoltConnector.enabled, true)
-        .setConfig(BoltConnector.listen_address, new SocketAddress("localhost", port)).build();
-    registerShutdownHook(managementService);
-    managementService.database(GraphDatabaseSettings.DEFAULT_DATABASE_NAME);
     return port;
+  }
+
+  public void stop() {
+    if(embeddedDatabaseServer != null) {
+      this.embeddedDatabaseServer.databaseManagementService().shutdown();
+      this.embeddedDatabaseServer.close();
+    }
   }
 
   public int getPort(){
@@ -45,18 +56,10 @@ public class Neo4jDatabaseStarter {
     return port;
   }
 
-  private static void registerShutdownHook( final DatabaseManagementService managementService )
-  {
-    // Registers a shutdown hook for the Neo4j instance so that it
-    // shuts down nicely when the VM exits (even if you "Ctrl-C" the
-    // running application).
-    Runtime.getRuntime().addShutdownHook(new Thread(managementService::shutdown));
-  }
-
   /**
    * Sometimes needed for configuring a Neo4j Test Instance
    */
-  public static DatabaseManagementService getManagementService() {
+/*  public static DatabaseManagementService getManagementService() {
     return managementService;
-  }
+  }*/
 }

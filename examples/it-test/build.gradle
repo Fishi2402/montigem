@@ -9,9 +9,10 @@ description 'it tests'
 
 dependencies {
   implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
-  implementation group: 'org.neo4j', name: 'neo4j-jdbc-driver', version: neo4j_jdbc_version
-  implementation "org.neo4j:neo4j:4.4.10"
-  implementation "org.neo4j.driver:neo4j-java-driver:$neo4jVersion"
+
+  testRuntimeOnly group: 'org.neo4j', name: 'neo4j-jdbc', version: neo4j_jdbc_version
+  testImplementation group: "org.neo4j.test", name: "neo4j-harness", version: neo4j_embedded_test exclude module: "commons-text"
+
   testImplementation project(':umlp-test-rte')
 }
 

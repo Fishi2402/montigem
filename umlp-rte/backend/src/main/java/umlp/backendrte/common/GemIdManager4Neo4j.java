@@ -47,17 +47,19 @@ public class GemIdManager4Neo4j {
 
   private void refillReservedGemIds() {
     try (Statement stmt = DatabaseAccessManager.getConnection().createStatement()) {
-      Optional<ResultSet> res = Optional.ofNullable(stmt.executeQuery("MATCH(n:METANODE) return n.gemIdCounter"));
-      if (!res.isPresent()) {
-        throw new RuntimeException("No GemId inside DB!");
-      }
+      try(ResultSet resPossibleNull = stmt.executeQuery("MATCH(n:METANODE) return n.gemIdCounter")) {
+        Optional<ResultSet> res = Optional.ofNullable(resPossibleNull);
+        if (!res.isPresent()) {
+          throw new RuntimeException("No GemId inside DB!");
+        }
 
-      ResultSet rs = res.get();
-      rs.next();
-      Long startGemId = rs.getLong(1);
+        ResultSet rs = res.get();
+        rs.next();
+        Long startGemId = rs.getLong(1);
 
-      for(long i = startGemId; i < startGemId + 10000L; ++i) {
-        this.reservedGemIds.add(i);
+        for(long i = startGemId; i < startGemId + 10000L; ++i) {
+          this.reservedGemIds.add(i);
+        }
       }
     } catch (SQLException var2) {
       Log.error("JDBC DB Connection Issue: " + var2.getMessage(), var2);

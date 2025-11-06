@@ -4,40 +4,35 @@ package types;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import types.test_infrastructure.TypesNeo4JDBTestSetup;
 import types.test_infrastructure.TypesSQLDBTestSetup;
+import types.test_infrastructure.TypesTestSetup;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static types.test_infrastructure.TypesSQLDBTestSetup.setUpLocalNeo4jInstance;
 
-public abstract class TypesInDatabaseTest extends TypesSQLDBTestSetup {
+public interface TypesInDatabaseTest extends TypesTestSetup {
 
   @Disabled("The current Neo4J JDBC Driver does not support ResultSet.getObject(x, Float.class)")
   @DisplayName("Neo4J-TypesInDB")
-  public static class
-  Neo4JTestSuite extends TypesInDatabaseTest {
+  public static class Neo4JTestSuite extends TypesNeo4JDBTestSetup implements TypesInDatabaseTest {
     Neo4JTestSuite() {
-      super("NEO4J");
-      setUpLocalNeo4jInstance();
+      super(0);
     }
   }
 
   @DisplayName("SQL-TypesInDB")
-  public static class SQLTestSuite extends TypesInDatabaseTest {
+  public static class SQLTestSuite extends TypesSQLDBTestSetup implements TypesInDatabaseTest {
     SQLTestSuite() {
-      super("SQL");
+      super(0);
     }
   }
 
-  public TypesInDatabaseTest(String dbType) {
-    super(0, dbType);
-  }
-
   @Test
-  public void testFloatTypesAreWrittenToDB(){
+  default void testFloatTypesAreWrittenToDB(){
     FloatingPoints fp = TypesManager.floatingPointsBuilder().d1(2d).d2(3d).f1(4f).f2(5f).build().get();
     var dao = TypesDAOFactory.getFloatingPointsDAO();
 
@@ -54,7 +49,7 @@ public abstract class TypesInDatabaseTest extends TypesSQLDBTestSetup {
   }
 
   @Test
-  public void testLongStringWrittenToDb(){
+  default void testLongStringWrittenToDb(){
     String longStr = "a".repeat(5000);
     StringTypes s = TypesManager.stringTypesBuilder().strFieldNoStereotype(longStr).build().get();
     assertEquals(longStr, s.getStrFieldNoStereotype());

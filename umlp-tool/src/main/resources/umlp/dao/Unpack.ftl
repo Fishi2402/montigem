@@ -16,6 +16,7 @@ ${cd4c.method("public Optional<${typeName}> unpack${typeName}(ResultSet res) thr
 <#list optionalAttributes as attr, dbName>
   .${attr.getName()}(Optional.ofNullable(${includeArgs("umlp.dao.Get", "res", attr, dbName, neo4j)}))<#sep>${'\n'}</#sep><#rt>
 </#list><#lt><#if optionalAttributes?has_content>;</#if><#rt>
+  res.close();
 <#if listAttributes?has_content>
   builder
 </#if>
@@ -50,4 +51,5 @@ ${cd4c.method("public Optional<${typeName}> unpack${typeName}(ResultSet res) thr
     }));
   }
 </#list><#lt>
-  <#rt>return builder.build();
+  <#rt>
+  return builder.build();

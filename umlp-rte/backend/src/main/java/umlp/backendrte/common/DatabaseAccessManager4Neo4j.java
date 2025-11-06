@@ -78,10 +78,10 @@ public class DatabaseAccessManager4Neo4j extends DatabaseAccessManager {
 
   protected void _setupBoltLocalhost(int port, String user, String password) {
     try {
-      Class<?> c = Class.forName("org.neo4j.jdbc.bolt.BoltDriver");
+      Class<?> c = Class.forName("org.neo4j.jdbc.Neo4jDriver");
       DriverManager.registerDriver((Driver) c.getDeclaredConstructor().newInstance());
 
-      connection = DriverManager.getConnection("jdbc:neo4j:bolt://localhost:"+port+"/?flatten=1", user, password);
+      connection = DriverManager.getConnection("jdbc:neo4j://localhost:"+port, user, password);
       Log.warn("New DB Connection created");
     } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException |
         InvocationTargetException | NoSuchMethodException e) {

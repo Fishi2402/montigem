@@ -501,8 +501,6 @@ public class GenService {
       return "Integer";
     } else if(TypeCheck.isByte(type)) {
       return "Byte";
-    } else if(TypeCheck.isShort(type)) {
-      return "Short";
     } else if (TypeCheck.isLong(type)) {
       return "Long";
     } else if (TypeCheck.isFloat(type)) {
@@ -517,6 +515,61 @@ public class GenService {
       return "java.lang.Enum";
     }
     return type.printFullName();
+  }
+
+  public static String getDBType(SymTypeExpression type, String neo4j) {
+    if (neo4j != null && !neo4j.isEmpty()) {
+      if (TypeCheck.isShort(type)) {
+        return "Long";
+      } else if (TypeCheck.isInt(type)) {
+        return "Long";
+      } else if(TypeCheck.isByte(type)) {
+        return "Long";
+      } else if (TypeCheck.isLong(type)) {
+        return "Long";
+      }
+    }
+    if (type.isGenericType()) {
+      return getDBType(((SymTypeOfGenerics) type).getArgument(0),neo4j);
+    }
+    if (TypeCheck.isShort(type)) {
+      return "Short";
+    } else if (TypeCheck.isInt(type)) {
+      return "Integer";
+    } else if(TypeCheck.isByte(type)) {
+      return "Byte";
+    } else if (TypeCheck.isLong(type)) {
+      return "Long";
+    } else if (TypeCheck.isFloat(type)) {
+      return "Float";
+    } else if (TypeCheck.isDouble(type)) {
+      return "Double";
+    } else if (TypeCheck.isBoolean(type)) {
+      return "Boolean";
+    } else if (TypeCheck.isString(type)) {
+      return "String";
+    } else if (isCDEnum(type)) {
+      return "java.lang.Enum";
+    }
+    return type.printFullName();
+  }
+
+  public static String getTypeConversionCall(SymTypeExpression type) {
+    return "";
+  }
+
+  public static String getTypeConversionCall(SymTypeExpression type, String neo4j) {
+    if (TypeCheck.isInt(type)) {
+      return ".intValue()";
+    } else if(TypeCheck.isByte(type)) {
+      return ".byteValue()";
+    } else if(TypeCheck.isShort(type)) {
+      return ".shortValue()";
+    }
+    if (type.isGenericType()) {
+      return getTypeConversionCall(((SymTypeOfGenerics) type).getArgument(0),neo4j);
+    }
+    return "";
   }
 
   public static boolean containsMethod(ASTCDType type, ASTCDMethodSignature method) {

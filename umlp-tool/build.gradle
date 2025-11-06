@@ -13,9 +13,13 @@ plugins {
   id "io.github.themrmilchmann.ecj" version "0.2.0"
 }
 
+ecj {
+  compilerVersion = "3.43.0"
+}
+
 java {
   toolchain {
-    languageVersion = JavaLanguageVersion.of(11)
+    languageVersion = JavaLanguageVersion.of(21)
   }
 }
 
@@ -58,7 +62,7 @@ dependencies {
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit_version
   testImplementation group: 'com.github.javaparser', name: 'javaparser-symbol-solver-core', version: javaparser_version
-  testImplementation group: 'org.mockito', name: 'mockito-inline', version: mockito_version
+  testImplementation group: 'org.mockito', name: 'mockito-core', version: mockito_version
   testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.11.2")
 
   grammar("de.monticore.lang:cd4analysis:$mc_version")

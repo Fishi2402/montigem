@@ -9,27 +9,24 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import org.neo4j.configuration.connectors.BoltConnector;
-import org.neo4j.configuration.helpers.SocketAddress;
-import org.neo4j.dbms.api.DatabaseManagementService;
-import org.neo4j.dbms.api.DatabaseManagementServiceBuilder;
+import org.neo4j.harness.Neo4jBuilders;
+import org.neo4j.harness.Neo4j;
+
 import umlp.backendrte.common.DatabaseAccessManager;
 import umlp.backendrte.common.DatabaseAccessManager4Neo4j;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.neo4j.configuration.GraphDatabaseSettings.DEFAULT_DATABASE_NAME;
 
 class LoggerEndpointServiceTest {
 
   final LoggerEndpointService sut = new LoggerEndpointService();
-
-  private static DatabaseManagementService managementService = null;
 
   private static final int port = getFreePort();
 
@@ -57,31 +54,13 @@ class LoggerEndpointServiceTest {
 
   @BeforeAll
   public static void initDB() {
-    if(managementService != null) {
-      managementService.database(DEFAULT_DATABASE_NAME);
-      return;
-    }
-    managementService =
-        new DatabaseManagementServiceBuilder(Paths.get("build", "temporaryNeo4jDB"))
-            .setConfig(BoltConnector.enabled, true )
-            .setConfig(BoltConnector.listen_address, new SocketAddress("localhost", port)).build();
-    registerShutdownHook(managementService);
-    managementService.database(DEFAULT_DATABASE_NAME);
-  }
-
-  private static void registerShutdownHook( final DatabaseManagementService managementService )
-  {
-    // Registers a shutdown hook for the Neo4j instance so that it
-    // shuts down nicely when the VM exits (even if you "Ctrl-C" the
-    // running application).
-    Runtime.getRuntime().addShutdownHook( new Thread()
-    {
-      @Override
-      public void run()
-      {
-        managementService.shutdown();
-      }
-    } );
+    Neo4j embeddedDatabaseServer =
+        Neo4jBuilders.newInProcessBuilder()
+        .withDisabledServer()
+        .withConfig(BoltConnector.listen_address, new org.neo4j.configuration.helpers.SocketAddress("localhost", port))
+        // You can add custom procedures using .withProcedure()
+        // .withProcedure(SampleProcedure.class)
+        .build();
   }
 
   @BeforeEach

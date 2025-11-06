@@ -66,8 +66,7 @@ public abstract class DatabaseAccessManager {
   }
 
   public static void executeStatement(String sql){
-    try{
-      Statement stmt = connection.createStatement();
+    try(Statement stmt = connection.createStatement()){
       stmt.execute(sql);
     }catch (SQLException e){
       Log.error("JDBC DB Connection Issue: "+e.getMessage(),e);
@@ -78,8 +77,10 @@ public abstract class DatabaseAccessManager {
     return connection;
   }
 
+  // Should not be used because we cannot control closing the Stmnt which leads to problems with certain JDBC drivers such as Neo4j
+  @Deprecated
   public static Optional<ResultSet> executeQuery(String sql) {
-    try {
+    try{
       Statement stmt = connection.createStatement();
       return Optional.ofNullable(stmt.executeQuery(sql));
     } catch (SQLException e) {
@@ -88,9 +89,9 @@ public abstract class DatabaseAccessManager {
     return Optional.empty();
   }
 
+  @Deprecated(since="Do not use this Method as we cannot control closing the Statement and ResultSet")
   public static Optional<ResultSet> executeFallibleQuery(String sql) {
-    try {
-      Statement stmt = connection.createStatement();
+    try(Statement stmt = connection.createStatement()){
       return Optional.ofNullable(stmt.executeQuery(sql));
     } catch (SQLException e) {
       Log.warn("JDBC DB Connection Issue: "+e.getMessage(),e);
