@@ -13,6 +13,12 @@ configurations {
   guiTypes
 }
 
+java {
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(21)
+  }
+}
+
 repositories {
   if (("true").equals(getProperty('useLocalRepo'))) {
     mavenLocal()
