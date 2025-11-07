@@ -9,6 +9,10 @@ plugins {
   id "io.github.themrmilchmann.ecj" version "0.2.0"
 }
 
+ecj {
+  compilerVersion = "3.43.0"
+}
+
 configurations {
   guiTypes
 }
