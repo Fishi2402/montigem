@@ -37,6 +37,9 @@ project(":umlp-rte:frontend").afterEvaluate {
   def networkgraph = project(":umlp-rte:frontend:networkgraph").tasks.named("buildLib")
   def table = project(":umlp-rte:frontend:table").tasks.named("buildLib")
 
+  def commonNPMRC4Publish = project(":umlp-rte:frontend:common").tasks.named("npmrc4publish")
+  def commonj2tsNPMRC4Publish = project(":umlp-rte:frontend:commonj2ts").tasks.named("npmrc4publish")
+
   def aNeedsB = { TaskProvider a, TaskProvider b ->
     a.configure { t ->
       t.inputs.files(b.map { it.outputs.files.singleFile })
@@ -55,6 +58,26 @@ project(":umlp-rte:frontend").afterEvaluate {
   aNeedsB(navigation, commonj2ts)
   aNeedsB(networkgraph, commonj2ts)
   aNeedsB(table, commonj2ts)
+
+  def aAfterB = { TaskProvider a, TaskProvider b ->
+    a.configure { t ->
+      t.inputs.files(b.map { it.outputs.files.singleFile })
+      t.mustRunAfter(b)
+    }
+  }
+
+  aAfterB(basic, commonNPMRC4Publish)
+  aAfterB(basic, commonj2tsNPMRC4Publish)
+  aAfterB(arrange, commonNPMRC4Publish)
+  aAfterB(charts, commonj2tsNPMRC4Publish)
+  aAfterB(editor, commonj2tsNPMRC4Publish)
+  aAfterB(fischertechnik, commonj2tsNPMRC4Publish)
+  aAfterB(functiondisplay, commonj2tsNPMRC4Publish)
+  aAfterB(input, commonj2tsNPMRC4Publish)
+  aAfterB(navigation, commonj2tsNPMRC4Publish)
+  aAfterB(networkgraph, commonj2tsNPMRC4Publish)
+  aAfterB(table, commonj2tsNPMRC4Publish)
+
 }
 
 publishing {
