@@ -89,7 +89,6 @@ build_no_containers:
       - dev
 
 build_intellij_plugin:
-  image: gradle:8.5
   stage: build
   script:
     - "cd umlp-tool"
