@@ -42,6 +42,7 @@ public class Neo4jDatabaseStarter {
     if(embeddedDatabaseServer != null) {
       this.embeddedDatabaseServer.databaseManagementService().shutdown();
       this.embeddedDatabaseServer.close();
+      this.embeddedDatabaseServer = null;
     }
   }
 
