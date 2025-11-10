@@ -1,0 +1,9 @@
+package mc.fenix.arrange;
+
+component GemDialog(
+  boolean enableBackdrop = true,
+  String top = "auto",
+  String left = "auto",
+  ?boolean isOpen = false,
+  GUIViewElement component
+)

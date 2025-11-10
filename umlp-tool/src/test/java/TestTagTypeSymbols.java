@@ -1,4 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
+
 import de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
@@ -7,7 +8,6 @@ import de.monticore.tagging.SimpleSymbolTagger;
 import de.monticore.tagging.TagRepository;
 import de.monticore.tagging.tags.TagsMill;
 import de.monticore.tagging.tags._ast.ASTSimpleTag;
-import de.monticore.tagging.tags._ast.ASTTagUnit;
 import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

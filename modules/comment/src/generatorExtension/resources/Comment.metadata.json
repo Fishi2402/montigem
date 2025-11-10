@@ -1,0 +1,11 @@
+{
+  "name": "Comment",
+  "tasks": [
+    {
+      "type": "UMLP2JavaTask",
+      "additionalConfigs": [
+        "comment_module.backend.CommentBackendConfig.ftl"
+      ]
+    }
+  ]
+}

@@ -4,6 +4,7 @@ package umlp._lsp;
 
 import de.mclsg.lsp.ISymbolUsageResolutionProvider;
 import de.mclsg.lsp.document_management.DocumentManager;
+import de.mclsg.lsp.modelpath.multiproject.ProjectLayout;
 import de.monticore.cd4analysis._lsp.features.code_action.CollapseHierarchyCodeActionStrategy;
 import de.monticore.cd4analysis._lsp.features.code_action.ExtractSuperClassCodeActionStrategy;
 import de.monticore.cd4analysis._lsp.features.code_action.PullUpFieldCodeActionStrategy;
@@ -13,8 +14,8 @@ import umlp._lsp.features.code_action.UMLPCodeActionProvider;
 import umlp._lsp.language_access.UMLPScopeManager;
 
 public class UMLPLanguageServer extends UMLPLanguageServerTOP{
-  public UMLPLanguageServer(DocumentManager documentManager, MCPath modelPath, UMLPScopeManager scopeManager, ISymbolUsageResolutionProvider symbolUsageResolutionProvider) {
-    super(documentManager, modelPath, scopeManager, symbolUsageResolutionProvider);
+  public UMLPLanguageServer(DocumentManager documentManager, ProjectLayout layout, UMLPScopeManager scopeManager, ISymbolUsageResolutionProvider symbolUsageResolutionProvider) {
+    super(documentManager, layout, scopeManager, symbolUsageResolutionProvider);
 
     UMLPCodeActionProvider codeActionProvider = new UMLPCodeActionProvider(documentManager, languageAccess.getPrettyPrinter().orElseThrow());
     codeActionProvider.addCodeActionStrategy(new PullUpFieldCodeActionStrategy(documentManager, symbolUsageResolutionProvider, languageAccess.getPrettyPrinter().orElseThrow()));

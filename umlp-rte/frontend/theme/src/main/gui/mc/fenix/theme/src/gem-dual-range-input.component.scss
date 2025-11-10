@@ -1,0 +1,275 @@
+@mixin horizontal-range-two-thumbs-input-theme(
+  $slider-track-color,
+  $slider-thumb-color,
+  $flexDirection,
+  $itemsAlign,
+  $flexMargin,
+  $gap,
+  $labelMargin,
+  $labelPosition,
+  $valueBackgroundColor,
+  $valueColor
+) {
+
+  .gem-range-container.dual {
+    position: relative;
+    --thumb-size: 16px;
+    height: calc(var(--thumb-size) + 10px);
+
+    .gem-range:not(.gem-range-high) {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 100%;
+      background: none;
+    }
+  }
+
+  .gem-range-container.dual .gem-range {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    margin: 0;
+    display: block;
+  }
+
+  .gem-range-container.dual {
+    position: relative;
+  }
+
+  .gem-range-container.dual .gem-range {
+    position: relative;
+    z-index: 1;
+  }
+
+  .gem-range-container.dual .gem-range.gem-range-high::-webkit-slider-thumb {
+    position: relative;
+    z-index: 5;
+  }
+  .gem-range-container.dual .gem-range.gem-range-high::-moz-range-thumb {
+    position: relative;
+    z-index: 5;
+  }
+  .gem-range-container.dual .gem-range.gem-range-high {
+    position: absolute;
+    inset: 0;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .gem-range-container.dual .gem-range.gem-range-high::-webkit-slider-runnable-track {
+    background: transparent !important;
+    border-color: transparent !important;
+  }
+  .gem-range-container.dual .gem-range.gem-range-high::-webkit-slider-thumb {
+    pointer-events: auto;
+    position: relative;
+    z-index: 5;
+  }
+
+  .gem-range-container.dual .gem-range.gem-range-high::-moz-range-track {
+    background: transparent !important;
+    border-color: transparent !important;
+  }
+  .gem-range-container.dual .gem-range.gem-range-high::-moz-range-progress {
+    background: transparent !important;
+    border-color: transparent !important;
+  }
+  .gem-range-container.dual .gem-range.gem-range-high::-moz-range-thumb {
+    pointer-events: auto;
+    position: relative;
+    z-index: 5;
+  }
+
+  .gem-range-container.dual .gem-range.gem-range-high::-ms-track {
+    background: transparent !important;
+    border-color: transparent !important;
+    color: transparent;
+  }
+  .gem-range-container.dual .gem-range.gem-range-high::-ms-fill-lower,
+  .gem-range-container.dual .gem-range.gem-range-high::-ms-fill-upper {
+    background: transparent !important;
+  }
+  .gem-range-container.dual .gem-range.gem-range-high::-ms-thumb {
+    pointer-events: auto;
+    position: relative;
+    z-index: 5;
+  }
+
+  .gem-range-container.dual .gem-range:not(.gem-range-high) {
+    position: relative;
+    z-index: 1;
+  }
+
+  .gem-range-container.dual .gem-range,
+  .gem-range-container.dual .gem-range::-webkit-slider-runnable-track,
+  .gem-range-container.dual .gem-range::-moz-range-track {
+    height: var(--track-height, 6px);
+  }
+  .gem-range-container.dual .gem-range::-webkit-slider-thumb,
+  .gem-range-container.dual .gem-range::-moz-range-thumb {
+    width: var(--thumb-size); height: var(--thumb-size);
+  }
+
+  .gem-range-container.dual {
+    position: relative;
+  }
+  .gem-range-value {
+    position: absolute;
+    transform: translateX(-50%);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .gem-range-container.dual {
+    position: relative;
+
+    .gem-range-track {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 6px;
+      transform: translateY(-50%);
+      background: $slider-track-color;
+      border-radius: 3px;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .gem-range-bar {
+      position: absolute;
+      top: 50%;
+      height: 6px;
+      transform: translateY(-50%);
+      background: #1e90ff;
+      border-radius: 3px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .gem-range {
+      position: relative;
+      z-index: 3;
+      background: none;
+
+      &::-webkit-slider-runnable-track {
+        background: transparent;
+        border: 0;
+      }
+
+      &::-webkit-slider-thumb {
+        position: relative;
+        z-index: 3;
+      }
+
+      &::-moz-range-track {
+        background: transparent;
+        border: 0;
+      }
+
+      &::-moz-range-progress {
+        background: transparent;
+      }
+
+      &::-ms-track {
+        background: transparent;
+        color: transparent;
+        border-color: transparent;
+      }
+
+      &::-ms-fill-lower,
+      &::-ms-fill-upper {
+        background: transparent;
+      }
+    }
+
+    .gem-range-value {
+      position: absolute;
+      z-index: 4;
+      pointer-events: none;
+    }
+  }
+
+  .gem-range-container.dual .gem-range-track {
+    z-index: 0;
+  }
+
+  .gem-range-container.dual .gem-range-bar {
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .gem-range-container.dual .gem-range {
+    position: relative;
+    z-index: 2;
+  }
+
+  .gem-range-container.dual .gem-range::-webkit-slider-thumb {
+    position: relative;
+    z-index: 5;
+  }
+  .gem-range-container.dual .gem-range::-moz-range-thumb {
+    position: relative;
+    z-index: 5;
+  }
+  .gem-range-container.dual .gem-range::-ms-thumb {
+    position: relative;
+    z-index: 5;
+  }
+  // range/dual range var synchronization
+  .gem-range-container.dual .gem-range-track,
+  .gem-range-container.dual .gem-range-bar {
+    border-radius: var(--track-radius);
+  }
+
+  .gem-range-container.dual.gem-vertical .gem-range-track,
+  .gem-range-container.dual.gem-vertical .gem-range-bar {
+    width: var(--track-thickness);
+  }
+
+  .gem-range-container.dual:not(.gem-vertical) .gem-range-track,
+  .gem-range-container.dual:not(.gem-vertical) .gem-range-bar {
+    height: var(--track-thickness);
+  }
+
+  .gem-range-container.dual .gem-range-thumb {
+    width: var(--thumb-size);
+    height: var(--thumb-size);
+    border-radius: var(--thumb-radius);
+  }
+}
+
+@mixin vertical-range-two-thumbs-input-theme() {
+}
+
+@mixin range-two-thumbs-input-theme(
+  $slider-track-color,
+  $slider-thumb-color,
+  $flexDirection,
+  $itemsAlign,
+  $flexMargin,
+  $gap,
+  $labelMargin,
+  $labelPosition,
+  $valueBackgroundColor,
+  $valueColor
+) {
+  @include horizontal-range-two-thumbs-input-theme(
+      $slider-track-color,
+      $slider-thumb-color,
+      $flexDirection,
+      $itemsAlign,
+      $flexMargin,
+      $gap,
+      $labelMargin,
+      $labelPosition,
+      $valueBackgroundColor,
+      $valueColor
+  );
+  @include vertical-range-two-thumbs-input-theme();
+}

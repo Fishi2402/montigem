@@ -6,6 +6,8 @@ Log.warn("I AM ALIVE!");
 
 DatabaseAccessManager4SQL.init();
 ${cdName}ManagerImpl.init();
+OCL2SQL.init();
+${cdName}QueryBuilderMap.init();
 
 Optional<URL> optionalURL = Optional.ofNullable(${cdName}ServerApplication.class.getResource("/${cdName}.sql"));
 if(optionalURL.isEmpty()) {

@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test_gui;
+
+import mc.fenix.basic.GemText;
+import mc.fenix.input.GemTextInput;
+import LoadingTests.Person;
+
+page ChainedAssoc2(Person person) {
+  @GemText(value = person.favouritePet.name);
+  @GemText(value = person.favouritePet.favouriteFood.name);
+}

@@ -8,7 +8,6 @@ import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.io.paths.MCPath;
 import umlp.generator.gui.GUIGeneratorUtil;
 
-import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -152,7 +151,7 @@ public class GUI2ConfigGenerator {
       boolean existHWC = filePath.isPresent();
       String componentFilePath;
       if (existHWC) {
-        componentFilePath = filePath.get();
+        componentFilePath = component.getComponentQName().replace(".","/");
       }
       else {
         componentFilePath = "./" + component.getComponentName() + "Component";
@@ -163,7 +162,7 @@ public class GUI2ConfigGenerator {
           component,
           existHWC,
           idStrings,
-          util.removeExtension(componentFilePath),
+          componentFilePath,
           route.getPathStringNoExt()
       );
       packageRoutes.add(componentRouting);
@@ -210,12 +209,7 @@ public class GUI2ConfigGenerator {
       if (hwFilePath.isPresent()) {
         Optional<Path> hwPath = MCPath.toPath(hwFilePath.get());
         if (hwPath.isPresent()) {
-          res = Optional.of(appRouteFolder
-              .toAbsolutePath()
-              .normalize()
-              .relativize(hwPath.get().toAbsolutePath())
-              .toString()
-              .replaceAll("\\\\", "/"));
+          res = Optional.of(route.getPathFromRoot());
 
           Reporting.reportUseHandwrittenCodeFile(hwPath.get(), Paths.get(hwFile));
         }

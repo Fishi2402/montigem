@@ -1,8 +1,10 @@
 package umlp.generator.gui.genjava.prettyprinter;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import de.monticore.ast.ASTNode;
-import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
+import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor2;
 import de.monticore.guidsl.GUIDSLMill;
@@ -11,13 +13,15 @@ import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Find iteration items. The items in the context of GUI generator must be ignored when printing
- * expressions as getters, setters, etc. For example, iteration items declared in iterate statement
- * are local to HTML context, meaning that those are referenced as raw variables and do not have
- * getters.
+ * expressions as getters, setters, etc. For example, "s" in the example is an iteration item
+ * declared in iterate statement, which is local to HTML context, meaning that it is referenced
+ * as a raw variable and does not have a getter.
  * <pre>
  * {@code
  * ```gui
@@ -42,6 +46,8 @@ import java.util.Optional;
  * </pre>
  */
 public class IterationItemsFinder implements ExpressionsBasisVisitor2 {
+  protected static Cache<Map.Entry<String, IExpressionsBasisScope>, Optional<VariableSymbol>> cache
+      = CacheBuilder.newBuilder().softValues().build();
 
   protected ExpressionsBasisTraverser traverser;
 
@@ -69,9 +75,17 @@ public class IterationItemsFinder implements ExpressionsBasisVisitor2 {
 
   @Override
   public void visit(ASTNameExpression node) {
-    Optional<VariableSymbol> vs = util.findIterationItemSymbols(
-        node.getName(), node.getEnclosingScope()
-    );
+    Optional<VariableSymbol> vs;
+    try {
+      var key = Map.entry(node.getName(), node.getEnclosingScope());
+      vs = cache.get(
+          key,
+          () -> util.findIterationItemSymbols(node.getName(), node.getEnclosingScope()
+      ));
+    } catch (ExecutionException e) {
+      throw new RuntimeException(e);
+    }
+
     if (vs.isPresent()) {
       items.add(node);
     }

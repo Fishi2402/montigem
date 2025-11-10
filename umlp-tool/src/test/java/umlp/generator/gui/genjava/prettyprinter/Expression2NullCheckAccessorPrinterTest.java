@@ -58,13 +58,13 @@ public class Expression2NullCheckAccessorPrinterTest extends DomainGUITest {
     ASTGUIComponent gemText5 = components.get(4);
     String expect3 = removeSpaces("this.getP()?.getName()");
     String result3 = removeSpaces(printer.prettyprint(
-        gemText5.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+        gemText5.getGUINamedArgs().getGUINamedArg(0).getExpression()));
 
     // GemText component showing address in form: "<street> <house>"
     ASTGUIComponent address = components.get(5);
     String expect4 = removeSpaces("this.getP()?.getAddress()?.getStreet() + \" \" + this.getP()?.getAddress()?.getHouse()");
     String result4 = removeSpaces(printer.prettyprint(
-        address.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+        address.getGUINamedArgs().getGUINamedArg(0).getExpression()));
 
     assertAll(
         () -> assertEquals(expect1, result1),
@@ -95,12 +95,12 @@ public class Expression2NullCheckAccessorPrinterTest extends DomainGUITest {
     // GemCheckBoxInput#labelText
     String expect1 = removeSpaces("this.getP()?.getName() + \" is employed\"");
     String result1 = removeSpaces(printer.prettyprint(
-        checkbox.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+        checkbox.getGUINamedArgs().getGUINamedArg(0).getExpression()));
 
     // GemCheckBoxInput#checked
     String expect2 = removeSpaces("this.getP()?.isEmployed()");
     String result2 = removeSpaces(printer.prettyprint(
-        checkbox.getGUINamedArgs().getGUINamedArg(1).getGUIArgValue()));
+        checkbox.getGUINamedArgs().getGUINamedArg(1).getExpression()));
 
     assertAll(
         () -> assertEquals(expect1, result1),
@@ -129,7 +129,7 @@ public class Expression2NullCheckAccessorPrinterTest extends DomainGUITest {
     // GemButton#leftClick
     String expect1 = removeSpaces("this.create(this.getPerson())");
     String result1 = removeSpaces(printer.prettyprint(
-        button.getGUINamedArgs().getGUINamedArg(1).getGUIArgValue()));
+        button.getGUINamedArgs().getGUINamedArg(1).getExpression()));
 
     assertAll(
         () -> assertEquals(expect1, result1)
@@ -164,41 +164,41 @@ public class Expression2NullCheckAccessorPrinterTest extends DomainGUITest {
 
     String expect1 = removeSpaces("this.getAge()");
     String result1 = removeSpaces(printer.prettyprint(
-        call.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+        call.getGUINamedArgs().getGUINamedArg(0).getExpression()));
 
     String expect2 = removeSpaces("this.getP()?.getFriendsList()?.size() > 0"
         + " ? this.getP()?.getFriendsList()?.get(this.getP()?.getFriendsList()?.size() - 1)?.getAge()"
         + " : \"no friends\"");
     String result2 = removeSpaces(printer.prettyprint(
-        ternary.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+        ternary.getGUINamedArgs().getGUINamedArg(0).getExpression()));
 
     String expect3 = removeSpaces("this.getP()?.getAge()");
     String result3 = removeSpaces(printer.prettyprint(
-        fieldCall1.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+        fieldCall1.getGUINamedArgs().getGUINamedArg(0).getExpression()));
 
     String expect4 = removeSpaces("this.getP()?.getFriendsList()?.get(0)?.getAge()");
     String result4 = removeSpaces(printer.prettyprint(
-        fieldCall2.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+        fieldCall2.getGUINamedArgs().getGUINamedArg(0).getExpression()));
 
     String expect5 = removeSpaces("this.getPersons()?.get(0)?.getAge()");
     String result5 = removeSpaces(printer.prettyprint(
-        fieldCall3.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+        fieldCall3.getGUINamedArgs().getGUINamedArg(0).getExpression()));
 
     String expect6 = removeSpaces("this.getPersons()?.get(0)?.eat()");
     String result6 = removeSpaces(printer.prettyprint(
-        fieldCall4.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+        fieldCall4.getGUINamedArgs().getGUINamedArg(0).getExpression()));
 
     String expect7 = removeSpaces("\"bob\"");
     String result7 = removeSpaces(printer.prettyprint(
-        literal.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+        literal.getGUINamedArgs().getGUINamedArg(0).getExpression()));
 
     String expect8 = removeSpaces("this.getPersons()?.get(0)?.getStatus()");
     String result8 = removeSpaces(printer.prettyprint(
-        fieldCall5.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+        fieldCall5.getGUINamedArgs().getGUINamedArg(0).getExpression()));
 
     String expect9 = removeSpaces("MaritalStatus.MARRIED");
     String result9 = removeSpaces(printer.prettyprint(
-        fieldCall6.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+        fieldCall6.getGUINamedArgs().getGUINamedArg(0).getExpression()));
 
     assertAll(
         () -> assertEquals(expect1, result1),
@@ -252,13 +252,13 @@ public class Expression2NullCheckAccessorPrinterTest extends DomainGUITest {
     ASTGUIComponent gemText5 = components.get(4);
     String expect3 = removeSpaces("p?.getName()");
     String result3 = removeSpaces(printer.prettyprint(
-        gemText5.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+        gemText5.getGUINamedArgs().getGUINamedArg(0).getExpression()));
 
     // GemText component showing address in form: "<street> <house>"
     ASTGUIComponent address = components.get(5);
     String expect4 = removeSpaces("p?.getAddress()?.getStreet() + \" \" + p?.getAddress()?.getHouse()");
     String result4 = removeSpaces(printer.prettyprint(
-        address.getGUINamedArgs().getGUINamedArg(0).getGUIArgValue()));
+        address.getGUINamedArgs().getGUINamedArg(0).getExpression()));
 
     assertAll(
         () -> assertEquals(expect1, result1),

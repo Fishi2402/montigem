@@ -1,11 +1,12 @@
-import gradle.specific.UMLPFrontendCIImageTask
-import gradle.specific.UMLPFrontendLocalImageTask
+import com.github.gradle.node.npm.task.NpmInstallTask
+import de.montigem.gradle.specific.FrontendCIImageTask
+import de.montigem.gradle.specific.FrontendLocalImageTask
 
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
   id 'base'
-  id 'de.rwth.se.umlp-tool' // See "umlp-tool/src/main/java/gradle"
+  id 'de.rwth.se.montigem' // See "umlp-tool/src/main/java/gradle"
   id "io.github.themrmilchmann.ecj" version "0.2.0"
   id "com.github.node-gradle.node" version "5.0.0"
 }
@@ -21,7 +22,7 @@ def isWindows = System.getProperty("os.name").toLowerCase().startsWith("win")
 def getNodeDir() {
   def nodejs_dir = file("${rootDir}/.gradle/nodejs/")
   def node_dir = nodejs_dir.listFiles().find { it.isDirectory() }
-  assert node_dir != null : "Can't find node installation"
+  assert node_dir != null: "Can't find node installation"
   return node_dir
 }
 
@@ -36,15 +37,15 @@ subprojects {
   }
   java {
     toolchain {
-      languageVersion = JavaLanguageVersion.of(11)
+      languageVersion = JavaLanguageVersion.of(21)
     }
   }
 
   // Use downloaded node for all subprojects
   tasks.withType(NpxTask).configureEach {
-    dependsOn rootProject.tasks.npmInstall
+    dependsOn rootProject.tasks.named("npmInstall")
     execOverrides {
-      if(isWindows){
+      if (isWindows) {
         setExecutable "${getNodeDir()}/npx.cmd"
         environment 'PATH', "${getNodeDir()}${System.getProperty('path.separator')}${System.getenv('PATH')}"
       } else {
@@ -55,9 +56,9 @@ subprojects {
   }
 
   tasks.withType(NpmTask).configureEach {
-    dependsOn rootProject.tasks.npmInstall
+    dependsOn rootProject.tasks.named("npmInstall")
     execOverrides {
-      if(isWindows){
+      if (isWindows) {
         setExecutable "${getNodeDir()}/npm.cmd"
         environment 'PATH', "${getNodeDir()}${System.getProperty('path.separator')}${System.getenv('PATH')}"
       } else {
@@ -67,13 +68,27 @@ subprojects {
     }
   }
 
+  tasks.withType(NodeTask).configureEach {
+    dependsOn rootProject.tasks.named("npmInstall")
+    execOverrides {
+      if (isWindows) {
+        setExecutable "${getNodeDir()}/node.exe"
+        environment 'PATH', "${getNodeDir()}${System.getProperty('path.separator')}${System.getenv('PATH')}"
+      } else {
+        setExecutable "${getNodeDir()}/bin/node"
+        environment 'PATH', "${getNodeDir()}/bin${System.getProperty('path.separator')}${System.getenv('PATH')}"
+      }
+    }
+  }
+
   test {
     useJUnitPlatform()
     testLogging {
-      showStandardStreams = true
+      showStandardStreams = false
       events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
     }
   }
+
   repositories {
     if (("true").equals(getProperty('useLocalRepo'))) {
       mavenLocal()
@@ -84,17 +99,22 @@ subprojects {
       url repo
     }
     mavenCentral()
+    maven {
+      url = "https://repo.gradle.org/gradle/libs-releases/"
+    }
   }
 
   tasks.withType(JavaCompile).configureEach {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
     options.encoding = 'UTF-8'
     options.warnings = false
   }
 
-  jar {
-    onlyIf { !sourceSets.main.allSource.files.isEmpty() }
+  sourceSets.named("main").configure { main ->
+    tasks.named("jar").configure { jar ->
+      jar.onlyIf { !main.allSource.files.isEmpty() }
+    }
   }
 
   configurations {
@@ -107,7 +127,7 @@ subprojects {
   }
 
   afterEvaluate {
-    tasks.withType(UMLPFrontendCIImageTask.class).each {
+    tasks.withType(FrontendCIImageTask.class).each {
       it.getFullImageName().set(project.provider {
         String imgBase = Objects.requireNonNull(System.getenv("CI_REGISTRY_IMAGE"), "CI_REGISTRY_IMAGE not set")
         String parentName = project.parent.name
@@ -115,26 +135,52 @@ subprojects {
       })
     }
 
-    tasks.withType(UMLPFrontendLocalImageTask.class).each {
+    tasks.withType(FrontendLocalImageTask.class).each {
       it.getFullImageName().set(getProject().provider(() ->
           (getProject().getParent() != null ? getProject().getParent().getName() : getProject().getName()) + "/frontend"
       ))
     }
   }
+  gradle.taskGraph.whenReady {
+    it.getAllTasks().findAll { ["distZip", "distTar", "bootDistZip", "bootDistTar"].contains(it.name) }.each { it.enabled = false }
+  }
 }
 
-repositories { // required to resolve the ecj dependency, including the whole chain of repos to avoid unexpected behaviour
-    if(("true").equals(getProperty('useLocalRepo'))) {
-        mavenLocal()
+project(":umlp-rte:frontend").afterEvaluate { rte ->
+  var previousInstallTask = rte.tasks.named("npmInstall")
+  var previousUpdateTask
+
+  subprojects {
+    tasks.withType(NpmInstallTask).configureEach {
+      if (project.path != rte.path) {
+        it.mustRunAfter(previousInstallTask);
+        previousInstallTask = it
+      }
     }
-    maven {
-        credentials.username mavenUser
-        credentials.password mavenPassword
-        url repo
+
+    tasks.withType(NpmTask).configureEach {
+      if (name == "npm_update") {
+        if (previousUpdateTask) {
+          it.mustRunAfter(previousUpdateTask)
+        }
+        previousUpdateTask = it
+      }
     }
-    mavenCentral()
+  }
 }
 
+repositories {
+  // required to resolve the ecj dependency, including the whole chain of repos to avoid unexpected behaviour
+  if (("true").equals(getProperty('useLocalRepo'))) {
+    mavenLocal()
+  }
+  maven {
+    credentials.username mavenUser
+    credentials.password mavenPassword
+    url repo
+  }
+  mavenCentral()
+}
 
 build.dependsOn(gradle.includedBuild("umlp-tool").task(":build"))
 
@@ -165,7 +211,7 @@ subprojects {
     task.doLast {
       def outputFile = new File("${buildDir}/artifacts_report/${project.name}_${task.name}.txt")
       outputFile.parentFile.mkdirs() // Ensure the directory exists
-      outputFile.text=""
+      outputFile.text = ""
 
       outputFile.append("Task: ${task.name}\n")
       outputFile.append("------------Artifacts Input-------------\n")

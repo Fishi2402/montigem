@@ -8,28 +8,30 @@ plugins {
   id 'maven-publish'
   id 'de.monticore.generator' version "$mc_version"
   id 'com.github.johnrengelman.shadow' version "$shadow_plugin_version"
-  id 'java-gradle-plugin'
 
   id 'de.monticore.language-server' version "$mclsg_version"
-  id 'org.jetbrains.intellij' version '1.13.3' apply(false)
   id "io.github.themrmilchmann.ecj" version "0.2.0"
 }
 
-def shouldBuildIntelliJPlugin = ("true").equals(getProperty('buildIntelliJPlugin'))
-def shouldBuildVscodePlugin = ("true").equals(getProperty('buildVscodePlugin'))
-
-if(shouldBuildIntelliJPlugin) {
-  apply plugin: "org.jetbrains.intellij"
-  intellij.version = "2022.2"
+ecj {
+  compilerVersion = "3.43.0"
 }
+
+java {
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(21)
+  }
+}
+
+def shouldBuildVscodePlugin = ("true").equals(getProperty('buildVscodePlugin'))
 
 configurations {
   guiDefaultTypes
+  languageServer
 }
 
 dependencies {
   implementation group: 'de.monticore.lang', name: 'ocl', version: mc_version
-  implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
   implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version
   implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
   implementation group: 'de.monticore', name: 'class2mc', version: mc_version
@@ -40,18 +42,28 @@ dependencies {
   implementation "de.monticore.language-server:monticore-language-server-runtime:$mclsg_version"
   implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version, classifier: 'language-server'
   implementation group: 'de.se_rwth.commons', name: 'se-commons-gradle', version: mc_version
+  implementation "org.freemarker:freemarker:$freemarker_version"
 
   implementation group: "org.yaml", name: "snakeyaml", version: "$snake_yaml_version"
 
   implementation group: 'org.jsweet', name: 'jsweet-core', version: "6.3.0"
-  implementation group: 'de.rwth.se.umlp.jsweet', name: 'jsweet-transpiler', version: '3.2.0-UMLP-SNAPSHOT'
+  implementation(group: 'de.rwth.se.umlp.jsweet', name: 'jsweet-transpiler', version: '3.2.0-UMLP-SNAPSHOT'){
+    exclude(group: "com.kohlschutter.jdk", module: "standalone-home") // conflict with standalone-jdk21
+    exclude(group: "com.kohlschutter.jdk", module: "standalone-jdk11") // replaced with standalone-jdk21
+  }
+
+  // LSP dependencies
+  implementation 'org.slf4j:slf4j-api:1.7.7'
+  implementation 'ch.qos.logback:logback-classic:1.5.16'
+  compileOnly 'org.gradle:gradle-tooling-api:7.6'
+  testImplementation 'org.gradle:gradle-tooling-api:7.6'
+  languageServer 'org.gradle:gradle-tooling-api:7.6'
 
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit_version
   testImplementation group: 'com.github.javaparser', name: 'javaparser-symbol-solver-core', version: javaparser_version
-  testImplementation group: 'org.mockito', name: 'mockito-inline', version: mockito_version
+  testImplementation group: 'org.mockito', name: 'mockito-core', version: mockito_version
   testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.11.2")
-  testRuntimeOnly gradleApi()
 
   grammar("de.monticore.lang:cd4analysis:$mc_version")
   grammar("de.monticore:monticore-grammar:$mc_version")
@@ -71,20 +83,14 @@ repositories {
     url repo
   }
   mavenCentral()
-  if(shouldBuildIntelliJPlugin) {
-    maven { url 'https://www.jitpack.io' }
+  maven {
+    url = "https://repo.gradle.org/gradle/libs-releases/"
   }
  }
 
 test {
   systemProperty 'guidsl-default-types', configurations.guiDefaultTypes.asPath
   useJUnitPlatform()
-}
-
-java {
-  toolchain {
-    languageVersion = JavaLanguageVersion.of(11)
-  }
 }
 
 description = 'UML/P Language and Tool'
@@ -103,9 +109,6 @@ task autoconfigure(type: AutoconfigureTask) {
     member("UMLP", "umlp", true)
     member("de.monticore.GUIDSL", "gui", false)
     modelPath = ["$projectDir/src/main/grammars"]
-    if(shouldBuildIntelliJPlugin) {
-      including(TaskTypes.INTELLIJ_PLUGIN)
-    }
     if(shouldBuildVscodePlugin){
       including(TaskTypes.VSCODE_PLUGIN)
     }
@@ -113,77 +116,24 @@ task autoconfigure(type: AutoconfigureTask) {
 }
 tasks.build.dependsOn tasks.named('autoconfigure')
 
-task printConfigs(){
-  doLast{
-    configurations.each {
-      if(it.name.equals("grammarSymbolDependencies") && it.canBeResolved){
-        println("${it.name} , resolved: ${it.canBeResolved}, consumed: ${it.canBeConsumed}")
-        try{
-          it.resolve().each{
-            println(it)
-          }
-        }catch(Exception e){
-          e.printStackTrace()
-        }
-
-      }
-    }
-  }
-}
-
-if(shouldBuildIntelliJPlugin) {
-  def lspWorkdir = file("../examples/").getAbsolutePath()
-
-  runIde {
-    environment.put("LSP_PORT", "3000")
-    args += lspWorkdir
-  }
-
-tasks.register('runLsp', JavaExec) {
-    classpath tasks.packUMLPWithGUILanguageServer.archiveFile.get().asFile
-    args("-port", "3000", "-r", "-mp", lspWorkdir, "-mup")
-    environment("LSP_SYSTEM_EXIT", "false")
-    dependsOn tasks.packUMLPWithGUILanguageServer
-  }
+packUMLPWithGUILanguageServer{
+  exclude("org/apache/log4j/**")
+  exclude("jsweet/**")
+  exclude("standalone/**")
+  exclude("com/kohlschutter/jdk/**")
+  // Exclude unused grammars (very conservative, could be done via shadow?)
+  exclude("de/monticore/grammar/**")
+  exclude("de/monticore/tf/**")
+  // Exclude sources
+  exclude("**.java")
+  from(configurations.languageServer.resolve().collect { project.zipTree(it)})
 }
 
 if(shouldBuildVscodePlugin) {
-  task runVscodePluginMultiproject(type: JavaExec) {
-    def generatorDirConfig = generateUMLPWithGUILanguageServer.getMclsgPluginAggregationExtension()
+  runUMLPWithGUIVscodePluginAttached {
     def lspWorkDir = project.getProjectDir().toPath().getParent().resolve("examples").toAbsolutePath().toString()
-    classpath(packUMLPWithGUILanguageServer.archiveFile.get())
-    environment(generatorDirConfig.getSimpleName().toUpperCase() + "_LSP_PORT", "3000");
-    args("-sock", "-port", "3000", "-mp", lspWorkDir, "-mup");
-
-    doFirst {
-      def timerTask = new TimerTask() {
-        private final String langName = generatorDirConfig.getSimpleName()
-        private final String genDir = generatorDirConfig.getFullVscodePluginDir()
-
-        @Override
-        void run() {
-          def processBuilder
-          if (System.getProperty("os.name").toLowerCase().contains("win")) {
-            processBuilder = new ProcessBuilder("cmd.exe", "/c", "code", "--extensionDevelopmentPath", genDir, lspWorkDir
-            )
-          } else {
-            processBuilder = new ProcessBuilder("code", "--extensionDevelopmentPath", genDir, lspWorkDir)
-          }
-
-          processBuilder.environment().put("UMLPWITHGUI_LSP_PORT", "3000")
-
-          try {
-            processBuilder.start()
-          } catch (IOException e) {
-            throw new RuntimeException(e)
-          }
-        }
-      }
-
-      new Timer().schedule(timerTask, 2000)
-    }
-    dependsOn packUMLPWithGUILanguageServer
-    dependsOn buildUMLPWithGUIVscodePlugin
+    getModelProjectDir().set(lspWorkDir)
+    getArgumentProviders().add({["-mup"]} as CommandLineArgumentProvider)
   }
 }
 
@@ -217,9 +167,6 @@ shadowJar { // all in one jar
 jar.dependsOn(sourcesJar)
 // jar.dependsOn(shadowJar)
 
-gradlePlugin {
-}
-
 /////////////////////////   Deployment  //////////////////////////////////
 
 // configure deployment
@@ -232,4 +179,33 @@ publishing {
     def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-snapshots/"
     url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
   }
+}
+
+publishing {
+  publications {
+    maven(MavenPublication) {
+      from components.java
+    }
+  }
+}
+
+// TODO: ALu/AHe Enable publishing
+if (shouldBuildVscodePlugin && false) {
+  // Also upload the LSP vsix (VSCode extension) to the nexus
+  publishing {
+    publications {
+      "buildLSPPublication"(MavenPublication) {
+        groupId = "umlp"
+        artifactId = "umlp-tool-lsp"
+        artifact(tasks.named("packageUMLPWithGUIVscodePlugin").map {
+          // only publish the vsix file
+          it.outputs.getFiles().filter { it.name.endsWith(".vsix") }.singleFile
+        }) {
+          builtBy(tasks.named("packageUMLPWithGUIVscodePlugin"))
+        }
+      }
+    }
+  }
+  // Appears to be necessary, as builtBy is ignored
+  tasks.generatePomFileForBuildLSPPublicationPublication.dependsOn(tasks.named("packageUMLPWithGUIVscodePlugin"))
 }

@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("cdName", "className", "fieldName", "fieldType", "isAssoc")}
+${tc.signature("cdName", "fieldTypeCdName", "className", "fieldName", "fieldType", "isAssoc")}
 <#if isAssoc>
 ${cd4c.method("public void ${className?uncap_first}Set${fieldName?cap_first} (long id, long __val)")}
 <#else>
@@ -7,7 +7,7 @@ ${cd4c.method("public void ${className?uncap_first}Set${fieldName?cap_first} (lo
 </#if>
   Optional<${className}> ${className?uncap_first} = ${cdName}Manager.${className?uncap_first}Opt(id);
 <#if isAssoc>
-  Optional<${fieldType}> ${fieldName?uncap_first} = ${cdName}Manager.${fieldType?uncap_first}Opt(__val);
+  Optional<${fieldType}> ${fieldName?uncap_first} = ${fieldTypeCdName}Manager.${fieldType?uncap_first}Opt(__val);
   if (!${className?uncap_first}.isPresent()) {
     Log.warn("Could not receive ${className?uncap_first} with id " + id + " from server");
   } else if (!${fieldName?uncap_first}.isPresent()) {

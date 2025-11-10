@@ -9,11 +9,12 @@ import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUIBlock;
 import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
 import de.monticore.guidsl._ast.ASTGUIIterate;
-import de.monticore.guidsl._ast.ASTGUIList;
 import de.monticore.guidsl._ast.ASTGUIParam;
 import de.monticore.guidsl._ast.ASTGUIShortIterateControl;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
+import de.monticore.ocl.setexpressions._ast.ASTSetEnumeration;
+import de.monticore.ocl.setexpressions._visitor.SetExpressionsVisitor2;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.HashMap;
@@ -24,7 +25,8 @@ import java.util.Stack;
 // TODO AGe: currently has stricter dependencies than expected, e.g.,
 //  [[person, contact, Person()], friend.friends] ->
 //  friend.friends depends on [person, contact, Person()].
-public class InitDependencyTree implements GUIDSLVisitor2, CommonExpressionsVisitor2, ExpressionsBasisVisitor2 {
+public class InitDependencyTree implements GUIDSLVisitor2, CommonExpressionsVisitor2, ExpressionsBasisVisitor2,
+    SetExpressionsVisitor2 {
 
   protected GUIDSLTraverser traverser;
 
@@ -50,6 +52,7 @@ public class InitDependencyTree implements GUIDSLVisitor2, CommonExpressionsVisi
     traverser.add4GUIDSL(this);
     traverser.add4CommonExpressions(this);
     traverser.add4ExpressionsBasis(this);
+    traverser.add4SetExpressions(this);
   }
 
   public void init(ASTGUIComponentDeclaration node) {
@@ -132,12 +135,12 @@ public class InitDependencyTree implements GUIDSLVisitor2, CommonExpressionsVisi
   }
 
   @Override
-  public void visit(ASTGUIList node) {
+  public void visit(ASTSetEnumeration node) {
     rememberDepStackJump(node);
   }
 
   @Override
-  public void endVisit(ASTGUIList node) {
+  public void endVisit(ASTSetEnumeration node) {
     putDependency(node);
     maybeJumpDepStack(node);
   }

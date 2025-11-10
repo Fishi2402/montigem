@@ -1,0 +1,5 @@
+package mc.fenix.fischertechnik;
+
+component VacuumGripper(int rotationDeg, boolean refSwitchRotation, int verticalPercentage, boolean refSwitchVertical, int horizontalPercentage, boolean refSwitchHorizontal, boolean pumpRunning, boolean valveEnabled){
+
+}

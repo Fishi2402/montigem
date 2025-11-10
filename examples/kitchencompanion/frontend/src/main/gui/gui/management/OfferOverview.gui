@@ -1,0 +1,39 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui.management;
+
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemIcon;
+import mc.fenix.input.GemTextInput;
+import mc.fenix.input.GemTextareaInput;
+
+import KitchenCompanion.User;
+
+component OfferOverview(List<Offer> offers, User user){
+  @GemRow(hAlign = "center", colGap="1rem", rowGap="1rem", wrap="wrap", components = [
+    @iterate(Offer offer : offers) {
+      @GemColumn(width = "auto", components = [
+        @GemButton(content = [
+          @GemCard(
+            title = offer.name,
+            component = @GemColumn(components = [
+              @GemText(value = offer.price)
+            ])
+          )
+        ]),
+        @GemRow(width = "auto", components = [
+          @GemButton(
+            content = [@GemIcon(name = "add_circle_outline")]
+          ),
+          @GemText(width = "auto", value = "Foo"),
+          @GemButton(
+            content = [@GemIcon(name = "remove_circle_outline")]
+          )
+        ])
+      ]);
+    }
+  ]);
+}

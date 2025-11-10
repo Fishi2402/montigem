@@ -116,6 +116,7 @@ public class DAODecorator extends AbstractDecorator {
     // Select / Insert PreparedStatements
     attributesList.add(createPreparedStatementAttrForMethod(domainClass.getName(), "select"));
     attributesList.add(createPreparedStatementAttrForMethod(domainClass.getName(), "selectAllIds"));
+    attributesList.add(createPreparedStatementAttrForMethod(domainClass.getName(), "selectFiltered", "List"));
     attributesList.add(createPreparedStatementAttrForMethod(domainClass.getName(), "insert"));
     attributesList.add(createPreparedStatementAttrForMethod(domainClass.getName(), "delete"));
 
@@ -142,8 +143,12 @@ public class DAODecorator extends AbstractDecorator {
   }
 
   private ASTCDAttribute createPreparedStatementAttrForMethod(String domainClassName, String methodName) {
+    return createPreparedStatementAttrForMethod(domainClassName, methodName, "");
+  }
+
+  private ASTCDAttribute createPreparedStatementAttrForMethod(String domainClassName, String methodName, String suffix) {
     return getCDAttributeFacade().createAttribute(PRIVATE.build(),
-        createAttributeType("PreparedStatement"), methodName + domainClassName);
+        createAttributeType("PreparedStatement"), methodName + domainClassName + suffix);
   }
 
   private List<ASTCDAttribute> createAttributesForAssociationDAOs(ASTCDAssociation association) {
@@ -217,6 +222,7 @@ public class DAODecorator extends AbstractDecorator {
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (l,r) -> l, LinkedHashMap::new));
     selectMethod(daoClass, domainClass, listAssocSideToAssoc, gemAssocSideToAssoc);
     selectAllIdsMethod(daoClass, domainClass, listAssocSideToAssoc, gemAssocSideToAssoc);
+    selectFilteredMethod(daoClass, domainClass);
     unpackMethod(daoClass, domainClass, listAssocSideToAssoc, gemAssocSideToAssoc);
     insertMethods(daoClass, domainClass, listAssocSideToAssoc, gemAssocSideToAssoc);
     deleteMethod(daoClass, domainClass, nonDerivedAssocSideToAssoc);
@@ -384,6 +390,11 @@ public class DAODecorator extends AbstractDecorator {
         optMap, listAttributes, listAssociationMap, gemAssociationMap);
   }
 
+  protected void selectFilteredMethod(ASTCDClass daoClass, ASTCDClass domainClass) {
+    getCD4C().addMethod(daoClass, "umlp.dao.SelectFilteredInit", domainClass.getName());
+    getCD4C().addMethod(daoClass, "umlp.dao.SelectFiltered", domainClass.getName());
+  }
+
   protected void unpackMethod(ASTCDClass daoClass, ASTCDClass domainClass,
                               Map<ASTCDAssocSide, ASTCDAssociation> listAssociationMap,
                               Map<ASTCDAssocSide, ASTCDAssociation> gemAssociationMap){
@@ -429,33 +440,20 @@ public class DAODecorator extends AbstractDecorator {
         optionalAttributes , listAttributes, listAssociationMap, gemAssociationMap, assocToSourceDefinitionCD);
   }
 
-  protected List<ASTCDAttribute> getOptionalAttributes(ASTCDClass domainClass) {
-    return CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
-        .filter(a -> !a.getModifier().isDerived() && GenService.isOptional(a)).collect(Collectors.toList());
-  }
-
-  protected List<ASTCDAttribute> getListAttributes(ASTCDClass domainClass) {
-    return CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
-        .filter(a -> !a.getModifier().isDerived() && GenService.isList(a)).collect(Collectors.toList());
-  }
-
-  protected List<ASTCDAttribute> getNormalAttributes(ASTCDClass domainClass) {
-    return CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
-        .filter(a -> !a.getModifier().isDerived() &&
-            !GenService.isList(a) && !GenService.isOptional(a)).collect(Collectors.toList());
-  }
-
   private void addStaticImports(ASTCDType clazz) {
     // UMLP RTE
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("DatabaseAccessManager"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("Gem"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("LoadResult"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("LoadingState"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTEOCLPath("OCL2SQL"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTEOCLPath("OCLException"));
 
     // SQL
     getCD4C().addImport(clazz, "java.sql.PreparedStatement");
     getCD4C().addImport(clazz, "java.sql.ResultSet");
     getCD4C().addImport(clazz, "java.sql.SQLException");
+    getCD4C().addImport(clazz, "java.io.IOException");
 
     // Java
     getCD4C().addImport(clazz, "java.util.List");
@@ -464,7 +462,7 @@ public class DAODecorator extends AbstractDecorator {
     getCD4C().addImport(clazz, "java.util.HashMap;");
   }
 
-  static Map<ASTCDAssocSide, ASTCDAssociation> getOppositeSideToAssociationMap(ASTCDClass domainClass) {
+  public static Map<ASTCDAssocSide, ASTCDAssociation> getOppositeSideToAssociationMap(ASTCDClass domainClass) {
     List<ASTCDAssocSide> assocSides = CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
         .filter(GenService::isVisible)
         .collect(Collectors.toList());

@@ -1,5 +1,5 @@
 import groovy.json.JsonBuilder
-import groovy.json.JsonGenerator
+import java.util.regex.Pattern
 
 // this file drives the MultiProjectLanguageServer's capability to read the project structure
 // from gradle state instead of a manifest file. This cannot be done in automatic testing from
@@ -35,20 +35,68 @@ allprojects {
   task manifestTask(){
     doLast{
       tasks.each {
-        if(it.class.name.contains("UMLPBackendTask")){
+        if(it.class.name.contains("UMLP2JavaTask")){
           try{
             def subproj = new MCLSMultiprojectPluginExtension.SubprojectLayoutExtension();
-            def model = it.getInput().getFiles().findAll {it.name.endsWith(".umlp")}[0]
+            def model = it.getInput().getAsFileTree().getFiles().findAll {it.name.endsWith(".umlp")}[0]
 
             if(model != null){
+              // Extract package
+              def modelText = model.text
+              def matcher = Pattern.compile("^\\s*package\\s+([\\w\\.]+)", Pattern.MULTILINE).matcher(modelText)
+              def packName = matcher.find() ? matcher.group(1) : null
+
               subproj.name = model.parentFile.parentFile.name
               subproj.projectpath = model.parentFile.parentFile.toString()
-              subproj.resources = null // all
-              subproj.modelDirs = it.getModelDir().getFiles().collect { it.toString() }
+              List<String> resources = new ArrayList<>()
+
+              resources.addAll(it.getModelDir().getFiles().collect { it.toString() })
+
+              if(packName == null){
+                resources.add(model.parentFile.toString())
+              } else {
+                File f = model
+                for(String part : packName.split("[.]")){
+                  f = model.parentFile
+                }
+                resources.add(f.toString())
+              }
+
+              subproj.resources = resources.toArray(new String[0])
+              subproj.modelDirs = []
               rootProject.ext.subprojectCollection << subproj
+
+              if(project.path.endsWith(":backend")){
+                def frontendPath = project.path.substring(0, project.path.lastIndexOf(':')) + ":frontend"
+                println("Searching frontend under " + frontendPath)
+                def frontend = findProject(frontendPath)
+                if(frontend != null){
+                  println("Found frontend")
+                  Configuration config = frontend.configurations.findByName("guiLib")
+                  if(config != null){
+                    println("Found config")
+                    subproj.symbolPath = config.files.collect{ it.toString() }.toArray(new String[0])
+                    println(subproj.symbolPath)
+                  }else{
+                    println("Did not find config")
+                  }
+                }else{
+                  println("Did not find frontend")
+                }
+              }else{
+                println("Project path '${project.path}' does not end with :backend")
+              }
+
+              def generator = new groovy.json.JsonGenerator.Options()
+                  .excludeFieldsByName('contentHash', 'originalClassName')
+                  .build()
+
+              println(new JsonBuilder(subproj, generator))
+            } else {
+              println("Can not find model, input files where " + it.getInput().getFiles())
             }
           }catch(Exception e){
-            // Ignore
+            e.printStackTrace()
           }
         }
       }
@@ -57,156 +105,5 @@ allprojects {
 
   rootProject.tasks.aggregateAndProcessInfo.dependsOn manifestTask
 }
-
-abstract class ManifestFileCreatorTask extends DefaultTask {
-  @TaskAction
-  def createManifest() {
-    def generator = new JsonGenerator.Options()
-        .excludeFieldsByName('contentHash', 'originalClassName')
-        .build()
-
-    List<String> ignored_dirs = ["build", "node_modules"]
-    List<String> spcontent = new ArrayList<>()
-
-    List<String> excludedProjects = new ArrayList<>()
-    excludedProjects.add("flensburg-test")
-
-    for (Project subproject in project.subprojects) {
-      if ((subproject.name.contains("frontend") || subproject.name.contains("backend"))
-          && excludedProjects.every { !subproject.parent.name.contains(it) }) {
-        MCLSMultiprojectPluginExtension.SubprojectLayoutExtension subprojectLayout =
-            new MCLSMultiprojectPluginExtension.SubprojectLayoutExtension()
-        subprojectLayout.name = "${subproject.parent.name}-${subproject.name}"
-        subprojectLayout.projectpath = "${subproject.projectDir}"
-
-        ArrayList<String> resources = new ArrayList<>()
-        ArrayList<String> modeldirs = new ArrayList<>()
-
-        if (subproject.name.contains("frontend")) {
-
-          subproject.tasks.getByName("genDomain") { t ->
-            t.getInput().getAsFileTree().getFiles().each {
-              resources.add("${it}")
-            }
-          }
-
-          subproject.tasks.getByName("genGUI") { t ->
-            t.getSymbolDir().each {
-              modeldirs.add("${it}")
-            }
-          }
-        }
-
-        if (subproject.name.contains("backend")) {
-          subproject.tasks.getByName("generateUmlpBackend") { t ->
-            t.getInput().getAsFileTree().getFiles().each {
-              resources.add("${it}")
-            }
-
-            if (t.getSymbolDir().isPresent())
-              t.getSymbolDir().getAsFileTree().getFiles().each {
-                modeldirs.add("${it}")
-              }
-          }
-        }
-
-        subprojectLayout.resources = resources.toArray()
-        subprojectLayout.modelDirs = modeldirs.toArray()
-
-        spcontent.add(subprojectLayout)
-      }
-    }
-
-    def builder = new JsonBuilder(generator)
-
-    builder {
-      {
-        subprojects spcontent
-        ignoredDirectories ignored_dirs
-      }
-    }
-
-
-    println builder.toString()
-  }
-}
-
-// plugin definition ---------
-class MCLSMultiprojectPluginExtension {
-  class SubprojectLayoutExtension {
-    public String name = "";
-    public String projectpath = "";
-    public String[] resources = [];
-    public String[] modelDirs = [];
-
-    String[] getModelDirs() {
-      return modelDirs
-    }
-
-    void setModelDirs(String[] modelDirs) {
-      this.modelDirs = modelDirs
-    }
-
-    String[] getResources() {
-      return resources
-    }
-
-    void setResources(String[] resources) {
-      this.resources = resources
-    }
-
-    String getProjectpath() {
-      return projectpath
-    }
-
-    void setProjectpath(String projectpath) {
-      this.projectpath = projectpath
-    }
-
-    String getName() {
-      return name
-    }
-
-    void setName(String name) {
-      this.name = name
-    }
-  }
-
-  private ArrayList<SubprojectLayoutExtension> subprojects = []
-
-  ArrayList<SubprojectLayoutExtension> getSubprojects() {
-    return subprojects;
-  }
-
-  void setSubprojects(ArrayList<Closure<SubprojectLayoutExtension>> subprojectsClosures) {
-    for (Closure<SubprojectLayoutExtension> closure in subprojectsClosures) {
-      SubprojectLayoutExtension spl = new SubprojectLayoutExtension();
-      closure.call(spl);
-      subprojects.add(spl);
-    }
-  }
-
-  void addSubprojectDirect(SubprojectLayoutExtension subproject) {
-    subprojects.add(subproject)
-  }
-
-  ArrayList<String> getIgnoredDirectories() {
-    return ignoredDirectories
-  }
-
-  void setIgnoredDirectories(ArrayList<String> ignoredDirectories) {
-    this.ignoredDirectories = ignoredDirectories
-  }
-  private ArrayList<String> ignoredDirectories = []
-}
-
-class MCLSMultiprojectPlugin implements Plugin<Project> {
-  @Override
-  void apply(Project project) {
-    project.getExtensions().create("MCLSMultiprojectManifest", MCLSMultiprojectPluginExtension.class)
-    project.tasks.register("getMcpath", ManifestFileCreatorTask)
-  }
-}
-// end plugin definition ---------
 
 

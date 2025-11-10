@@ -64,7 +64,7 @@ public class TypeScriptBasicTypesPrettyPrinter extends MCBasicTypesPrettyPrinter
         parts.set(index, parts.get(index).toLowerCase());
       }
       String from = GUIGeneratorUtil.getInstance().qName2path(String.join(".", parts));
-      tsImportPath = TSImportMap.getTSPackage(node.getQName());
+      tsImportPath = TSImportMap.INSTANCE.getTSPackage(node.getQName());
       if (tsImportPath.isPresent()) {
         from = tsImportPath.get();
       }

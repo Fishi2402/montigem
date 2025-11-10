@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test_load_all;
+
+import LoadingTests.Person;
+import test_load_all.*;
+
+page InitPersonsAndTextValue(List<Person> persons) {
+  @PersonsAndTextValueComp(persons = persons);
+}

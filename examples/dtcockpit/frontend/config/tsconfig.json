@@ -26,25 +26,14 @@
       "dom"
     ],
     "paths": {
-      "@umlp/arrange": ["../../../../../umlp-rte/client/projects/arrange"],
-      "@umlp/basic": ["../../../../../umlp-rte/client/projects/basic"],
-      "@umlp/charts": ["../../../../../umlp-rte/client/projects/charts"],
-      "@umlp/common": ["../../../../../umlp-rte/client/projects/common"],
-      "@umlp/commonj2ts": ["../../../../../umlp-rte/client/projects/commonj2ts"],
-      "@umlp/input": ["../../../../../umlp-rte/client/projects/input"],
-      "@umlp/navigation": ["../../../../../umlp-rte/client/projects/navigation"],
-      "@umlp/networkgraph": ["../../../../../umlp-rte/client/projects/networkgraph"],
-      "@umlp/table": ["../../../../../umlp-rte/client/projects/table"],
+      "@umlp/*": ["prodlibs/@umlp/*"],
+      "@montigem/*": ["prodlibs/@montigem/*"],
       "*": [
-        "node_modules/*",
-        "build/appdomain/*",
-        "build/appgui/*",
-        "../umlp/fe2/*",
+        "gui2java2ts/*",
+        "umlpJava2ts/*",
         "src/app/*",
-        "../../src/app/*",
-        "../../../../../modules/login/frontendTS/build/frontendGen/build/appdomain/*",
-        "../../../../../modules/login/frontendTS/build/frontendGen/build/appgui/*",
-        "../../../../../modules/login/frontendTS/src/app/*"
+        "hwc/*",
+        "fe2/*"
       ]
     }
   },
@@ -52,6 +41,7 @@
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
-    "strictTemplates": true
+    "strictTemplates": true,
+    "esModuleInterop": true
   }
 }

@@ -1,4 +1,7 @@
-# Start the app
+# Vis-Lib
+Demonstrates different GUI components from `umlp-rte`.
+
+## Start the app
 
 Start the backend:
 ```

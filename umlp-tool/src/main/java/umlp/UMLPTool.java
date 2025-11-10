@@ -12,7 +12,10 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._visitor.CDBasisVisitor2;
 import de.monticore.class2mc.OOClass2MCResolver;
+import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.TemplateController;
+import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.gradle.common.GradleLog;
 import de.monticore.guidsl.GUIDSLMill;
@@ -20,10 +23,12 @@ import de.monticore.guidsl.GUIDSLTool;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._cocos.GUIDSLCoCoChecker;
 import de.monticore.guidsl._parser.GUIDSLParser;
+import de.monticore.guidsl._symboltable.GUIDSLGlobalScope;
 import de.monticore.guidsl._symboltable.GUIDSLSymbols2Json;
 import de.monticore.guidsl._symboltable.IGUIDSLArtifactScope;
-import de.monticore.guidsl._symboltable.IGUIDSLGlobalScope;
+import de.monticore.guidsl._symboltable.IGUIDSLScope;
 import de.monticore.guidsl._symboltable.RoleSymbolDeSer;
+import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
 import de.monticore.ocl.ocl._ast.ASTOCLCompilationUnit;
 import de.monticore.ocl.ocl._parser.OCLParser;
@@ -35,6 +40,7 @@ import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.symboltable.serialization.json.UserJsonString;
 import de.se_rwth.commons.logging.Log;
+import freemarker.template.SimpleHash;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -43,35 +49,36 @@ import org.apache.commons.cli.ParseException;
 import umlp._cocos.UMLPCoCos;
 import umlp._symboltable.IUMLPArtifactScope;
 import umlp._visitor.UMLPTraverser;
-import umlp.cli.UMLPToolPipelineSetup;
+import umlp.cli.PipelineReporter;
 import umlp.cli.UMLPPipelineData;
-import umlp.cli.common.Pipeline;
+import umlp.cli.UMLPToolPipeline;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.UMLAddCommentTrafo;
 import umlp.generator.domain.UMLAssocToAttrTrafo;
 import umlp.generator.domain.UMLAttrToAssocTrafo;
 import umlp.generator.domain.UMLImportTrafo;
+import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.UMLSetDefaultsTrafo;
+import umlp.generator.gui.GUINodeIdTrafo;
 import umlp.generator.gui.coco.GUIDSLCoCosForUMLP;
+import umlp.generator.gui.coco.SymbolBoundNameExpressionsFinder;
 import umlp.generator.gui.genjava.decorator.CallTypeDeriver;
 import umlp.generator.gui.genjava.decorator.InitDependencyTree;
 import umlp.generator.gui.genjava.decorator.StaticObjectsCollector;
+import umlp.generator.gui.gentypescript.printer.TSImportMap;
 import umlp.generator.util.TagLookUp;
-import umlp.generator.gui.coco.GUIParamDefaultOnlyLiteralCoCo;
-import umlp.generator.gui.coco.GUIParamNoUnderspecifiedGenericsCoCo;
-import umlp.generator.gui.coco.NameExpressionsSymbolBoundExceptCallsCoCo;
-import umlp.generator.gui.coco.RefGUIArgIncompatibleWithDerivedCoCo;
-import umlp.generator.gui.coco.SymbolBoundNameExpressionsFinder;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static umlp.UMLPToolOptions.DEBUG;
 import static umlp.UMLPToolOptions.HWC_PATH;
 import static umlp.UMLPToolOptions.INPUT;
+import static umlp.UMLPToolOptions.REPORTS;
 
 /**
  * This class offers both a Java API and a command line tool for processing UMLP
@@ -84,18 +91,22 @@ public class UMLPTool extends UMLPToolTOP {
   public static final String DEFAULT_REPORT_OUT = "target/generated-sources/umlp-reports";
   public static final String DEFAULT_CONFIGTEMPLATE = "umlp.UMLP2Java";
 
-  public static final String DEFAULT_CONFIGTEMPLATE_GUI2JAVA2TS = "umlp.UMLP2Java2TS";
   public static final String DEFAULT_CONFIGTEMPLATE_GUI2JAVA = "umlp.GUI2Java";
   public static final String DEFAULT_CONFIGTEMPLATE_GUI2HTML = "umlp.GUI2Html";
   public static final String DEFAULT_CONFIGTEMPLATE_GUI2TS = "umlp.GUI2TypeScript";
   public static final String DEFAULT_CONFIGTEMPLATE_RTE2JAVA = "umlp.RTE2Java";
-  public static final String DEFAULT_CONFIGTEMPLATE_GUI2ANGULAR = "umlp.GUI2Angular";
 
   private static final List<ASTOCLCompilationUnit> oclCompilationUnits = new ArrayList<>();
 
   public UMLPTool() {
-    UMLPMill.init();
-    BuiltInTypes.addBuiltInTypes(CD4CodeMill.globalScope(), false);
+    this(true);
+  }
+
+  public UMLPTool(boolean initMill){
+    if(initMill){
+      MillConf.switchTo(MillConf.UMLP);
+      BuiltInTypes.addBuiltInTypes(CD4CodeMill.globalScope(), false);
+    }
   }
 
   public static List<ASTOCLCompilationUnit> getOclCompilationUnits() {
@@ -120,7 +131,7 @@ public class UMLPTool extends UMLPToolTOP {
   }
 
   protected static void logTrafoExec(String trafo, ASTCDCompilationUnit ast) {
-    Log.info("========= CD after '" + trafo + "': =========", UMLPTool.class.getName());
+    Log.debug("========= CD after '" + trafo + "': =========", UMLPTool.class.getName());
   }
 
   public static ASTGUICompilationUnit parseGUI(String model) {
@@ -184,24 +195,56 @@ public class UMLPTool extends UMLPToolTOP {
       CommandLine cmd = parser.parse(options, args);
 
       // Due to its size, we define the Pipeline of the UMLP Tool in a separate class (UMLPToolPipelineSetup)
-      UMLPToolPipelineSetup pipeline = new UMLPToolPipelineSetup();
-
-      Pipeline<UMLPPipelineData> main = pipeline.getMain();
+      UMLPToolPipeline pipeline = new UMLPToolPipeline(cmd);
 
       // Here we could further modify the Pipeline
       UMLPPipelineData data = new UMLPPipelineData(cmd, options, this);
-      main.doWork(data);
+
+      // Give the module system access to the tool pipeline
+      invokeModuleSystemForToolConfig(data, pipeline);
+
+      new PipelineReporter().report(pipeline,
+          new File(new File(REPORTS.getValue(data.getCmd(), UMLPTool.DEFAULT_REPORT_OUT)), "pipeline.md"));
+
+      pipeline.doWork(data);
     }
     catch (ParseException e) {
       printHelp(options);
       Log.error("0xB005 An exception occurred while processing the CLI input!", e);
     }
     finally {
-      UMLPMill.globalScope().clear();
-      GUIDSLMill.globalScope().clear();
+      // Close all file systems
+      MCPath.closeAllJarFileSystems();
+      // Close all file handles (if last usage!)
+      FileReaderWriter.closeOpenedJarFiles();
+      // Clear MCPath caches
+      MillConf.switchTo();
       Reporting.off();
       cleanUpAfterMemoryLeakingSingletons();
     }
+  }
+
+  /**
+   * Give the module system access to the tool pipeline
+   * @param data the pipeline data
+   * @param pipeline the (main) pipeline setup
+   */
+  public void invokeModuleSystemForToolConfig(UMLPPipelineData data, UMLPToolPipeline pipeline) {
+    var modSetup = new GeneratorSetup();
+    GlobalExtensionManagement modInitGlex = createGlex(getModuleConfigTemplates(data.getCmd()));
+    modSetup.setGlex(modInitGlex);
+
+    modInitGlex.setGlobalValue("data", data);
+    modInitGlex.setGlobalValue("mainPipelineSetup", pipeline);
+
+    // Call the InitModules hookpoint
+    TemplateController initModulesTC = modSetup.getNewTemplateController("umlp.generator.hook.InitModules");
+    initModulesTC.includeArgs(initModulesTC.getTemplatename(), null, List.of(modInitGlex));
+
+    // Then call the tool/pipeline UMLPToolInit hookpoint
+    TemplateController modTC = modSetup.getNewTemplateController("umlp.UMLPToolInit");
+    // We cannot use args for the pipeline, as it will create a non-exposing thingy - instead we use glex#setGlobalValue
+    modTC.include(modTC.getTemplatename());
   }
 
   public static void cleanUpAfterMemoryLeakingSingletons() {
@@ -214,14 +257,14 @@ public class UMLPTool extends UMLPToolTOP {
     CDDeSerHelper.reset(); // This https://git.rwth-aachen.de/monticore/monticore/-/issues/4306
     StaticObjectsCollector.unsetInstance();
     CallTypeDeriver.unsetInstance();
+    TSImportMap.INSTANCE.clear();
+    UMLPGeneratorConfig.reset();
 
     AbstractDecorator.cleanUp();
     TagLookUp.cleanUp();
     CD4C.reset();
 
-    // Also reset the mills
-    UMLPMill.reset();
-    GUIDSLMill.reset();
+    MillConf.switchTo();
 
     // The SummaryReporter -> ReportingRepository#table is rooted in the Log instance
     Log.internalRemove();
@@ -358,20 +401,51 @@ public class UMLPTool extends UMLPToolTOP {
     return f.getName().endsWith(".ocl");
   }
 
-  // TODO MB, AGe
-  public static IGUIDSLArtifactScope createSymbolTable(
-      ASTGUICompilationUnit ast, Optional<Path> modelFilePathOpt, MCPath modelPath) {
-    GUIDSLTool tool = new GUIDSLTool();
-    tool.defaultImportTrafo(ast);
-    tool.resetGSAndMill();
-    if (modelFilePathOpt.isPresent()) {
-      tool.registerLoadedFile(modelFilePathOpt.get().toString());
+  protected GUIDSLTool guidslTool = new GUIDSLTool();
+  public Map.Entry<ASTGUICompilationUnit, IGUIDSLArtifactScope> createAstWithSymtab(Path modelFilePath) {
+    Optional<IGUIDSLArtifactScope> asOpt = findGUIArtifactScope(modelFilePath);
+    if (asOpt.isPresent() && asOpt.get().isPresentAstNode()) {
+      return Map.entry(
+          (ASTGUICompilationUnit) asOpt.get().getAstNode(),
+          asOpt.get()
+      );
+    } else {
+      ASTGUICompilationUnit ast = parseGUI(modelFilePath.toString());
+      GUINodeIdTrafo nodeIdTrafo = new GUINodeIdTrafo();
+      nodeIdTrafo.transform(ast);
+
+      guidslTool.defaultImportTrafo(ast);
+      guidslTool.registerLoadedFile(modelFilePath.toString());
+      return Map.entry(
+          ast,
+          createSymbolTable(guidslTool, ast)
+      );
     }
-    return createSymbolTable(tool, ast, modelPath);
   }
 
-  public static IGUIDSLArtifactScope createSymbolTable(GUIDSLTool tool, ASTGUICompilationUnit node, MCPath modelPath) {
-    initGUIGlobalScope(modelPath);
+  protected Optional<IGUIDSLArtifactScope> findGUIArtifactScope(Path modelFilePath) {
+    for (IGUIDSLScope subScope : GUIDSLMill.globalScope().getSubScopes()) {
+      if(subScope instanceof IGUIDSLArtifactScope){
+        IGUIDSLArtifactScope as = (IGUIDSLArtifactScope) subScope;
+
+        String pack = "";
+        for (int i = 0; i < modelFilePath.getNameCount() - 1; i++) {
+          if(i > 0){
+            pack += ".";
+          }
+          pack += modelFilePath.getName(i);
+        }
+
+        String modelName = modelFilePath.getFileName().toString().replaceAll("[.]gui$", "");
+        if(as.getName().equals(modelName) && pack.endsWith(as.getPackageName())){
+          return Optional.of(as);
+        }
+      }
+    }
+    return Optional.empty();
+  }
+
+  public static IGUIDSLArtifactScope createSymbolTable(GUIDSLTool tool, ASTGUICompilationUnit node) {
     IGUIDSLArtifactScope as = tool.createSymbolTableP1(node);
     tool.createSymbolTableP2(node);
     tool.createSymbolTableP3(node);
@@ -379,8 +453,7 @@ public class UMLPTool extends UMLPToolTOP {
   }
 
   public static void initGUIGlobalScope(MCPath modelPath) {
-    BasicSymbolsMill.initializePrimitives();
-    IGUIDSLGlobalScope gs = GUIDSLMill.globalScope();
+    GUIDSLGlobalScope gs = (GUIDSLGlobalScope) GUIDSLMill.globalScope();
     gs.setSymbolPath(modelPath);
     gs.addAdaptedTypeSymbolResolver(new OOClass2MCResolver());
     gs.addAdaptedOOTypeSymbolResolver(new OOClass2MCResolver());
@@ -392,6 +465,11 @@ public class UMLPTool extends UMLPToolTOP {
         new de.monticore.symbols.oosymbols._symboltable.MethodSymbolDeSer());
     gs.putSymbolDeSer("de.monticore.cdassociation._symboltable.CDRoleSymbol",
         new RoleSymbolDeSer());
+    gs.addAfterParseAction(ast -> {
+      GUINodeIdTrafo nodeIdTrafo = new GUINodeIdTrafo();
+      nodeIdTrafo.transform(ast);
+      new GUIDSLTool().defaultImportTrafo(ast);
+    });
   }
 
   public void runDefaultCoCos(ASTGUICompilationUnit ast) {

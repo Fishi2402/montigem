@@ -1,134 +1,96 @@
 /* (c) https://github.com/MontiCore/monticore */
-plugins {
-   id 'java-library'
 
-   id "com.github.node-gradle.node" version "5.0.0"
-   id 'de.rwth.se.umlp-tool-frontend'
+import de.montigem.gradle.specific.CD2GUITask
+import de.montigem.gradle.specific.GUIVariabilityTask
+import de.montigem.gradle.specific.UMLP2SymTask
+import de.montigem.gradle.specific.merge.MergeTask
+
+plugins {
+  id 'java-library'
+  id 'de.rwth.se.montigem-frontend'
 }
 
 repositories {
-   if (("true").equals(getProperty('useLocalRepo'))) {
-      mavenLocal()
-   }
-   maven {
-      credentials.username mavenUser
-      credentials.password mavenPassword
-      url repo
-   }
+  if (("true").equals(getProperty('useLocalRepo'))) {
+    mavenLocal()
+  }
+  maven {
+    credentials.username mavenUser
+    credentials.password mavenPassword
+    url repo
+  }
 
-   // native image
-   maven { url "https://repo.spring.io/snapshot" }
-   maven { url "https://repo.spring.io/milestone" }
+  // native image
+  maven { url "https://repo.spring.io/snapshot" }
+  maven { url "https://repo.spring.io/milestone" }
 
-   mavenCentral()
+  mavenCentral()
 }
 
 dependencies {
-   implementation("umlp:umlp-rte:${mc_version}")
-   testImplementation("com.h2database:h2:${h2_database}")
+  implementation("umlp:umlp-rte:${mc_version}")
+  srcUMLPConfig(project(":experiments:dsl-ast-integration:backend"))
+  testImplementation("com.h2database:h2:${h2_database}")
 
-   implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version
-   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version
+  implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version
 
-   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
-   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
 }
 
-node {
-   download = true
-   version = "${node_version}"
-   nodeProxySettings = ProxySettings.OFF
-   nodeProjectDir = file("${buildDir}/frontendGen")
-}
-nodeSetup.dependsOn(frontendSetup)
-
-tasks.register('copyTags', Copy) {
-   from(tasks.genDomain.getSymbolOutDir()) {
-      include '**/*.tags'
-   }
-   into("$buildDir/tags")
-}
-
-genDomain {
-   input.setFrom(project(":experiments:dsl-ast-integration:ebackend").generateUmlpBackend.input)
-
-   it.input.each{println(it)}
-}
-
-createDomainSymbols {
-   enabled = false // instead, we use the symbols from the backend (and thus the merged model!)
-}
-
-tasks.register('generateCDTOGUI', UMLPCdToGuiTask) {
-   setGroup('build')
-   input.setFrom(project(":experiments:dsl-ast-integration:ebackend").mergeWithDSL.outputFile)
-   outputDir = layout.buildDirectory.dir("cd2gui")
-   dependsOn(tasks.copyTags)
-}
-
-tasks.register('guiVariability', GuiVariabilityHandlerTask) {
-   input.from(generateCDTOGUI.getOutputDir())
-   input.from(file("../models/gui"))
-   outputDir = layout.buildDirectory.dir("guiVariability")
-   dependsOn(tasks.generateCDTOGUI)
+def copyTags = tasks.register('copyTags', Copy) {
+  from(tasks.named("umlp2sym", UMLP2SymTask).flatMap { it.getOutputDir() }) {
+    include '**/*.tags'
+  }
+  into("$buildDir/tags")
 }
 
 
-
-genGUI {
-   domainModels = ["Domain"]
-   guiCreateModelsAsFile = file(generateCDTOGUI.getOutputDir().file("meta/domain/guiCreateTextModels"))
-
-   input.setFrom([
-       tasks.guiVariability.getOutputDir()
-   ])
-
-   symbolDir += generateCDTOGUI.getOutputDir().file("symbols")
-   symbolDir += file("$buildDir/tags")
-   var toExclude = tasks.genDomain.getSymbolOutDir().get().asFile
-   println("Excluding")
-   println(toExclude)
-   symbolDir.setFrom symbolDir.filter(f -> f != toExclude)
-   modelDir = file(tasks.guiVariability.getOutputDir())
+umlp2sym {
+  enabled = false // instead, we use the symbols from the backend (and thus the merged model!)
 }
 
-SYNC_genDomain {
-   filter { line -> line.replaceAll('../../../build/umlp_frontend/intermediate/', '../../../build/frontendGen/build/') }
-}
-SYNC_genGUI {
-   filter { line -> line.replaceAll('../../../build/umlp_frontend/intermediate/', '../../../build/frontendGen/build/') }
+def cd2gui = tasks.register('cd2gui', CD2GUITask) {
+  setGroup('build')
+  input.setFrom(project(":experiments:dsl-ast-integration:backend")
+      .tasks.named("mergeWithDSL", MergeTask).flatMap { it.outputFile })
+  outputDir = layout.buildDirectory.dir("cd2gui")
+  dependsOn(copyTags)
 }
 
-nodeSetup.dependsOn(frontendSetup)
+def guiVariability = tasks.register('guiVariability', GUIVariabilityTask) {
+  input.from(cd2gui.flatMap { it.getOutputDir() })
+  input.from(file("../models"))
+  outputDir = layout.buildDirectory.dir("guiVariability")
+}
+
+gui2java2ts {
+  guiCreateModelsAsFile = file(cd2gui.flatMap { it.getOutputDir().file("meta/domain/guiCreateTextModels") })
+  input.setFrom(guiVariability.flatMap { it.getOutputDir() })
+  symbolPath.from(cd2gui.flatMap { it.getOutputDir().file("symbols") })
+  symbolPath.from(file("$buildDir/tags"))
+  var toExclude = tasks.named("umlp2sym", UMLP2SymTask)
+      .flatMap { it.getOutputDir().get().asFile }
+  symbolPath.setFrom symbolPath.filter(f -> f != toExclude)
+  modelDir.set(file(guiVariability.flatMap { it.getOutputDir() }))
+}
+
+umlp2jsweetObserver {
+  input.setFrom(guiVariability.flatMap { it.getOutputDir() })
+  symbolPath.from(cd2gui.flatMap { it.getOutputDir().file("symbols") })
+  symbolPath.from(file("$buildDir/tags"))
+  var toExclude = tasks.named("umlp2sym", UMLP2SymTask)
+      .flatMap { it.getOutputDir().get().asFile }
+  symbolPath.setFrom symbolPath.filter(f -> f != toExclude)
+  modelDir.setFrom(file(guiVariability.flatMap { it.getOutputDir() }))
+}
 
 npmInstall.args = ['--loglevel', 'error']
 
-def prebuildTasks = [
-    npmInstall, generate
-]
-
-task buildApp(type: NpxTask) {
-   dependsOn(prebuildTasks)
-   command = "ng"
-   args = ["build"]
-}
-assemble.dependsOn(buildApp)
-
-task testApp(type: NpxTask) {
-   dependsOn(prebuildTasks)
-   command = "ng"
-   args = ["test"]
-}
-
-task runApp(type: NpxTask) {
-   dependsOn(prebuildTasks)
-   command = "ng"
-   args = ["serve"]
-}
-
 test {
-   testLogging {
-      events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
-   }
-   useJUnitPlatform()
+  testLogging {
+    events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
+  }
+  useJUnitPlatform()
 }

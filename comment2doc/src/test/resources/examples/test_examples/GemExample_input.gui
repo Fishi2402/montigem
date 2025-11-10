@@ -1,0 +1,20 @@
+/* Some comment */
+package example_arrange;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemDialog;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemLink;
+page GemExample(? boolean param=false){
+  @GemButton(label="Click Me!",leftClick=openDialog());
+  dialog@GemDialog(isOpen=param,component=@GemCard(title="Info Text",component=@GemText(value="Some Text")));
+  spanningGrid@GemGrid(
+    // 4x4
+    x = ["1fr", "1fr", "1fr", "1fr"],
+    y = ["1fr", "1fr", "1fr", "1fr"],
+    cells = [
+      cell1@GemGridCell(a = [1, 1], b = [3, 2], content = @GemText(width = "100%", height = "100%", value = "a", color = "blue")),
+      cell2@GemGridCell(a = [2, 3], content = @GemText(width = "100%", height = "100%", value = "b", color = "red"))
+    ]
+  );
+}

@@ -21,6 +21,8 @@ ${includeArgs("umlp.generator.hook.BeforeTransform", decoratedAST, glex, hwPath,
 ${beDecorator.transform(ast, decoratedAST)}
 ${commandDecorator.transform(ast, decoratedAST)}
 ${requestDecorator.transform(ast, decoratedAST)}
+
+${includeArgs("umlp.generator.hook.BeforeTOP", decoratedAST, glex, hwPath, cdGenerator, schemaGenerator, beDecorator, commandDecorator, requestDecorator, topDecorator)}
 ${topDecorator.decorate(decoratedAST)}
 
 ${includeArgs("umlp.generator.hook.AfterTransform", decoratedAST, glex, hwPath, cdGenerator, schemaGenerator, beDecorator, commandDecorator, requestDecorator, topDecorator)}

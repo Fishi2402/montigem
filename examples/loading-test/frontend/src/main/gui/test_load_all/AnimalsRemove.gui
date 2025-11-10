@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test_load_all;
+
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
+
+
+import LoadingTests.Person;
+import LoadingTests.Animal;
+
+page AnimalsRemove(Person person) {
+  @iterate(Animal a : person.pet) {
+    @GemText(value=a.name);
+  }
+  @GemButton(label = "Remove First", leftClick = removeFirst());
+}

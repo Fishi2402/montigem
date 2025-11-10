@@ -1,115 +1,38 @@
 /* (c) https://github.com/MontiCore/monticore */
 
+import de.montigem.gradle.specific.GUI2Java2TSTask
+import de.montigem.gradle.specific.UMLPJava2TSTask
+
 plugins {
-  id "com.github.node-gradle.node" version "5.0.0"
-  id "de.rwth.se.umlp-tool-frontend"
-}
-
-if (project.hasProperty('j2ts_vislib') && j2ts_vislib.toString().toBoolean()) {
-  project.ext.j2ts = true
-}
-
-node {
-  nodeProjectDir = file("${buildDir}/frontendGen")
+  id "de.rwth.se.montigem-frontend"
 }
 
 dependencies {
-  implementation project(":examples:vis-lib:backend")
-  implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version
   testImplementation project(':umlp-test-rte')
-
-// JSweet
-  if (project.hasProperty('j2ts') && j2ts.toString().toBoolean()) {
-    domainSources project(":examples:vis-lib:backend")
-  }
 }
 
 configurations {
-  testRuntimeClasspath.exclude group: 'de.monticore.language-server', module:'monticore-language-server-runtime'
+  testRuntimeClasspath.exclude group: 'de.monticore.language-server', module: 'monticore-language-server-runtime'
 }
 
-genGUI {
-  domainModels = ["Domain"]
+tasks.named("umlpJava2ts", UMLPJava2TSTask) {
+  verbose = true
+}
+
+tasks.named("gui2java2ts", GUI2Java2TSTask) {
   guiCreateModels = ["person.CreatePerson", "person.CreatePersonWithFriends", "person.CreateClubWithMembers"]
-
-  /*
-  debug = true
-  outputs.upToDateWhen { false }
-  /**/
-}
-
-if (!project.hasProperty('j2ts') || !j2ts.toString().toBoolean()) {
-  apply plugin: 'java'
-  tasks.withType(JavaCompile) {
-    enabled = false
-  }
-  sourceSets.main.java.srcDirs = []
-}
-
-if (project.hasProperty('j2ts') && j2ts.toString().toBoolean()) {
-  translateJava2TSDomain {
-    verbose = true
-  }
-
-  translateJava2TSGUI {
-    verbose = true
-  }
-}
-
-task copyAppJsweet(type: Copy) {
-  onlyIf { project.hasProperty('j2ts') && project.j2ts.toString().toBoolean() }
-  if (project.hasProperty('j2ts') && j2ts.toString().toBoolean()) {
-    dependsOn(SYNC_TSGuiHWC)
-  }
-  from 'config/src/appjsweet'
-  into 'build/frontendGen/src/app/'
-}
-// End JSweet
-
-nodeSetup.dependsOn(frontendSetup)
-npmInstall.dependsOn(':umlp-rte:client:npmInstall')
-
-def prebuildTasks = [
-    npmInstall,
-    generate,
-    copyAppJsweet
-]
-
-tasks.register('testApp', NpxTask) {
-  dependsOn(
-      prebuildTasks,
-      project(":umlp-rte:client").tasks.matching { it.name.startsWith("copy_") },
-      project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") }
-  )
-  command = "ng"
-  args = ["test"]
-}
-
-tasks.register('buildApp', NpxTask) {
-  dependsOn(testApp, project(":umlp-rte:client").tasks.matching { it.name.startsWith("build_") })
-  command = "ng"
-  args = ["build"]
-}
-assemble.dependsOn(buildApp)
-
-tasks.register('runApp', NpxTask) {
-  dependsOn(prebuildTasks, project(":umlp-rte:client").tasks.matching { it.name.startsWith("gen_") })
-  command = "ng"
-  args = ["serve"]
-}
-
-tasks.register('run') {
-  dependsOn(runApp)
+  verbose = true
 }
 
 test {
-  dependsOn npmInstall
+  dependsOn buildApp
   useJUnitPlatform() {
     excludeTags "SlowTest"
   }
 }
 
 tasks.register("slowtest", Test) {
+  group = "verification"
   testLogging {
     events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
   }
@@ -120,8 +43,8 @@ tasks.register("slowtest", Test) {
   dependsOn npmInstall
 }
 
-
-task runAppNoBuild(type: NpxTask) {
+tasks.register("runAppNoBuild", NpxTask) {
+  group = "application"
   command = "ng"
   args = ["serve"]
 }

@@ -16,16 +16,13 @@ ${cd4c.method("public Optional<${typeName}> unpack${typeName}(ResultSet res) thr
 <#list optionalAttributes as attr, dbName>
   .${attr.getName()}(Optional.ofNullable(${includeArgs("umlp.dao.Get", "res", attr, dbName, neo4j)}))<#sep>${'\n'}</#sep><#rt>
 </#list><#lt><#if optionalAttributes?has_content>;</#if><#rt>
+  res.close();
 <#if listAttributes?has_content>
   builder
 </#if>
 <#list listAttributes as attr>
   .${attr.getName()}(this.select${attr.getName()?cap_first}(gemId))<#sep>${'\n'}</#sep><#rt>
 </#list><#lt><#if listAttributes?has_content>;</#if><#rt>
-
-if(!res.isClosed()) {
-  res.close();
-}
 
 <#lt>
 <#list listAssocs as assocSide, assoc><#assign assocType = assocSide.getSymbol().getType().print()>
@@ -54,4 +51,5 @@ if(!res.isClosed()) {
     }));
   }
 </#list><#lt>
-  <#rt>return builder.build();
+  <#rt>
+  return builder.build();

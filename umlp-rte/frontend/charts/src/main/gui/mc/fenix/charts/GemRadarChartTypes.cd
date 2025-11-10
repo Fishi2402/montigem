@@ -1,0 +1,23 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.charts;
+import java.util.List;
+import java.util.Optional;
+
+<<pojoCD>>
+classdiagram GemRadarChartTypes {
+
+  class GemRadarChartData {
+    List<GemRadarChartDataSet> dataSets;
+    List<String> labels;
+    Optional<Integer> maxLabelLength;
+  }
+
+  class GemRadarChartDataSet {
+    List<Double> data;
+    String label;
+    Optional<String> backgroundColor;
+    Optional<String> borderColor;
+    Optional<Integer> borderWidth;
+    Optional<Boolean> fill;
+  }
+}

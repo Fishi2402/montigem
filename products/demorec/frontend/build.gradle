@@ -1,107 +1,54 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-plugins {
-  id "com.github.node-gradle.node" version "5.0.0"
-  id "de.rwth.se.umlp-tool-frontend"
-}
+import de.montigem.gradle.specific.GUI2Java2TSTask
+import de.montigem.gradle.specific.UMLPJava2TSTask
 
-def useCD2GUI = false
+plugins {
+  id "de.rwth.se.montigem-frontend"
+}
 
 dependencies {
-  guiTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
+  testImplementation project(':umlp-test-rte')
 }
 
-node {
-  nodeProjectDir = file("${buildDir}/frontendGen")
-}
-nodeSetup.dependsOn(frontendSetup)
-
-tasks.register('generateCDTOGUI', UMLPCdToGuiTask) {
-  enabled(useCD2GUI)
-  setGroup('build')
-  input = file("../models/DemoRec.umlp")
-  outputDir = layout.buildDirectory.dir("cd2gui")
+tasks.named("umlpJava2ts", UMLPJava2TSTask) {
+  excludeSource.addAll([
+      "glob:**/processmodeling/*",
+      "glob:**/*test*/*"
+  ])
+  verbose = true
 }
 
-tasks.register('guiVariability', GuiVariabilityHandlerTask) {
-  setGroup('build')
-  if (useCD2GUI) {
-    input.from(generateCDTOGUI.getOutputDir().dir("models"))
-  }
-  input.from(file("../models/gui"))
-  outputDir = layout.buildDirectory.dir("guiVariability")
+tasks.named("gui2java2ts", GUI2Java2TSTask) {
+  guiCreateModels = [
+      "gui.pack.PackCreate",
+      "gui.process.ProcessCreate",
+      "gui.step.ProcessStepCreate",
+      "gui.joinconnection.JoinConnectionCreate",
+      "gui.endeffector.EndEffectorCreate",
+      "gui.dimension.DimensionCreate",
+      "gui.measuringvalues.MeasuringValueCreate",
+      "gui.component.ComponentCreate",
+      "gui.kind.CreateComponentKind",
+      "gui.pack.PackTypeCreate",
+      "gui.editprocessmodels.edit.wizard.ActionCreate"
+  ]
+
+  excludeTranspile.addAll([
+      "glob:**/service/**",
+      "glob:**/service/*"
+  ])
+  verbose = true
 }
 
-genGUI {
-  dependsOn(
-      tasks.getByPath(":umlp-rte:client:createGuiSymbols"),
-      tasks.getByPath(":umlp-rte:client:createCDSymbols")
-  )
-  symbolDir = files(
-      project(":umlp-rte:client").tasks.createGuiSymbols.output,
-      project(":umlp-rte:client").tasks.createCDSymbols.output
-  )
-  domainModels = ["DemoRec"]
-  guiCreateModels = ["gui.pack.PackCreate",
-                     "gui.process.ProcessCreate",
-                     "gui.step.ProcessStepCreate",
-                     "gui.joinconnection.JoinConnectionCreate",
-                     "gui.endeffector.EndEffectorCreate",
-                     "gui.dimension.DimensionCreate",
-                     "gui.measuringvalues.MeasuringValueCreate",
-                     "gui.component.ComponentCreate",
-                     "gui.kind.CreateComponentKind",
-                     "gui.pack.PackTypeCreate"]
-
-  /*
-  debug = true
-  outputs.upToDateWhen { false }
-  /**/
+tasks.named('runApp', NpxTask) {
+  environment = [
+      "NODE_OPTIONS": "--max-old-space-size=4096"
+  ]
 }
 
-tasks.register('genGUI2', UMLPGuiGenTask) {
-  enabled(useCD2GUI)
-  setGroup('build')
-  dependsOn(genGUI, guiVariability)
-  input = file(guiVariability.getOutputDir().dir("cd2gui"))
-  symbolDir = files(
-      generateCDTOGUI.getOutputDir().file("symbols"),
-      project(":umlp-rte:client").tasks.createGuiSymbols.output,
-      project(":umlp-rte:client").tasks.createCDSymbols.output
-  )
-  hwcDir = file("src/app/")
-  symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")
-  outputDir = layout.buildDirectory.dir("umlp/fe2")
-  domainModels = ["DemoRec"]
-  guiCreateModelsAsFile = file(generateCDTOGUI.getOutputDir().file("meta/guiCreateModels.txt"))
-}
-
-npmInstall.dependsOn(':umlp-rte:client:npmInstall')
-
-def prebuildTasks = [
-    npmInstall, generate, genGUI2
-]
-
-tasks.register('buildApp', NpxTask) {
-  dependsOn(prebuildTasks)
-  command = "ng"
-  args = ["build"]
-
-}
-assemble.dependsOn(buildApp)
-
-tasks.register('testApp', NpxTask) {
-  dependsOn(prebuildTasks)
-  command = "ng"
-  args = ["test"]
-}
-
-tasks.register('runApp', NpxTask) {
-  dependsOn(prebuildTasks)
+tasks.register("runAppNoBuild", NpxTask) {
+  group = "application"
   command = "ng"
   args = ["serve"]
-}
-
-tasks.register('run') {
-  dependsOn(runApp)
 }

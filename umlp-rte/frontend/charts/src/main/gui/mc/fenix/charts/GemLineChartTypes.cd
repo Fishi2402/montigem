@@ -1,0 +1,21 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.charts;
+import java.util.List;
+
+<<pojoCD>>
+classdiagram GemLineChartTypes {
+
+  public class GemLineChartData {
+    List<GemLineChartEntry> entries;
+    List<String> labels;
+  }
+
+  public class GemLineChartEntry {
+    String label;
+    List<Double> data;
+    String borderColor;
+    String backgroundColor;
+    String pointBackgroundColor;
+  }
+
+}

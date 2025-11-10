@@ -3,12 +3,22 @@ package umlp._cocos.teaching;
 
 import de.monticore.cdassociation._ast.ASTCDBiDir;
 import de.monticore.cdassociation._cocos.CDAssociationASTCDBiDirCoCo;
-import de.se_rwth.commons.logging.Log;
+import umlp._cocos.CoCoTestable;
 
-public class CDAssociationIsNotBidirectional implements CDAssociationASTCDBiDirCoCo {
+public class CDAssociationIsNotBidirectional implements CDAssociationASTCDBiDirCoCo, CoCoTestable {
 
   @Override
   public void check(ASTCDBiDir node) {
-    Log.error(String.format("0x54277: %s Bidirectional Associations must not exist in Diagramm", node.get_SourcePositionStart()));
+    logError(node);
+  }
+
+  @Override
+  public String getErrorCode() {
+    return "0x54277";
+  }
+
+  @Override
+  public String getErrorMessageFormat() {
+    return "Bidirectional Associations must not exist in Diagramm";
   }
 }

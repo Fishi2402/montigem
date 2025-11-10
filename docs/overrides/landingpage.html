@@ -1,0 +1,147 @@
+{% extends "main.html" %}
+
+<!-- Render hero under tabs -->
+{% block tabs %}
+{{ super() }}
+
+<!-- Hero Section -->
+<link rel="stylesheet" href="stylesheets/landingpage.css">
+<section class="hero-section">
+  <div class="hero-container">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1 class="hero-title">
+          Modeling <span class="hero-title-highlight">Web Applications</span> with <img
+            alt="{{ config.site_name }}" style="height: .9em;" src="{{ 'img/MontiGem_Text.svg' | url }}">
+        </h1>
+
+        <p class="hero-subtitle">
+          MontiGem assists developers to generate deployable web applications from class diagrams,
+          simplifying the development process and allowing further customization
+          with handwritten code.
+        </p>
+
+        <div class="hero-features">
+          <div class="hero-feature">
+            <svg class="hero-feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M9 12l2 2 4-4" />
+              <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" />
+            </svg>
+            <span>Model-driven code generation from class diagrams</span>
+          </div>
+          <div class="hero-feature">
+            <svg class="hero-feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M9 12l2 2 4-4" />
+              <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" />
+            </svg>
+            <span>Complete solution for frontend and backend</span>
+          </div>
+          <div class="hero-feature">
+            <svg class="hero-feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M9 12l2 2 4-4" />
+              <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" />
+            </svg>
+            <span>Flexible and modular framework of GUI components</span>
+          </div>
+        </div>
+
+        <div class="hero-actions">
+          <a href="#more" class="btn btn-primary">
+            Read More
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </a>
+          <a href="https://www.se-rwth.de/publications/" class="btn btn-secondary">
+            Publications
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="ide-tabs" role="group" aria-label="Editor tabs (no script)">
+          <!-- Radios control state -->
+          <input class="visually-hidden" type="radio" name="ide-tabs" id="tab-img"   checked>
+          <input class="visually-hidden" type="radio" name="ide-tabs" id="tab-code1">
+          <input class="visually-hidden" type="radio" name="ide-tabs" id="tab-code2">
+
+          <!-- Tab labels -->
+          <div class="tablist" role="tablist" aria-label="Tabs">
+            <label class="tab" role="tab" aria-controls="panel-img"   for="tab-img">🖼️ Preview</label>
+            <label class="tab" role="tab" aria-controls="panel-code1" for="tab-code1">MyLoginExample.gui</label>
+            <label class="tab" role="tab" aria-controls="panel-code2" for="tab-code2">Domain.umlp</label>
+          </div>
+
+          <!-- Panels -->
+          <div class="panels">
+            <!-- Panel 1: Image -->
+            <section class="panel" id="panel-img" role="tabpanel" aria-labelledby="tab-img">
+              <div class="img-wrap">
+                <div class="img-card">
+                  <img alt="Preview" src="img/SignUpForm.png">
+                </div>
+              </div>
+            </section>
+
+            <!-- Panel 2: Code -->
+            <section class="panel" id="panel-code1" role="tabpanel" aria-labelledby="tab-code1">
+<pre><code><span class="code-color-keyword">component</span> MySignUpForm(<span class="code-color-type">Person</span> p) {
+  <span class="code-color-gui">@Column</span>(rowGap = "10px",
+    components = [
+      <span class="code-color-gui">@TextInput</span>(
+        labelText = <span class="code-color-string">"Name:"</span>,
+        placeholder = <span class="code-color-string">"Alice"</span>,
+        entry = p.name
+      ),
+      <span class="code-color-gui">@TextInput</span>(
+        inputType = <span class="code-color-string">"date"</span>,
+        labelText = <span class="code-color-string">"Birth date:"</span>,
+        entry = p.birthdate
+      ),
+      <span class="code-color-gui">@Button</span>(
+        label = <span class="code-color-string">"Confirm"</span>,
+        leftClick = signUp(p)
+      )
+    ]
+  );
+}</code></pre>
+            </section>
+
+            <!-- Panel 3: Code -->
+            <section class="panel" id="panel-code2" role="tabpanel" aria-labelledby="tab-code2">
+<pre><code><span class="code-color-keyword">classdiagram</span> <span class="code-color-type">Domain</span> {
+  <span class="code-color-keyword">class</span> <span class="code-color-type">Person</span> {
+    <span class="code-color-type">String</span> name;
+    <span class="code-color-type">LocalDate</span> birthday;
+    <span class="code-color-type">String</span> aboutMe;
+  }
+}</code></pre>
+            </section>
+          </div>
+
+          <div class="hint">Tip: Click the labels to switch tabs.</div>
+        </div>
+
+
+
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <span class="hero-stat-number">90% </span>
+            <span class="hero-subtitle">less code through generation</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll-indicator">
+    <a href="#more">
+      <svg width="256" height="75" viewBox="0 0 256 75" style="display: block;">
+        <path style="fill:#ffffff" d="m 0,75.1 v 19 l 256,0 V 75.1 C 191,75.1 178,0 128,0 77,0 64,75.1 0,75.1 Z" />
+        <path d="m 128,40.5 v 17.633752 m 0,0 -8.81688,-8.816876 M 128,58.133752 l 8.81688,-8.816876" stroke="#0067a7"
+          stroke-width="5.87792" stroke-linecap="round" stroke-linejoin="round"
+          style="stroke:#8EBAE5;stroke-opacity:1" />
+      </svg>
+    </a>
+  </div>
+</section>
+{% endblock %}

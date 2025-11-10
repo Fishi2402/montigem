@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_arrange;
+
+import mc.fenix.arrange.GemRow;
+import mc.fenix.basic.GemText;
+
+page GemRowExample() {
+  @GemRow(
+    colGap = "15px",
+    components = [
+      @GemText(value = "First col"),
+      @GemText(value = "Second col"),
+      @GemText(value = "Third col")
+    ]
+  );
+}

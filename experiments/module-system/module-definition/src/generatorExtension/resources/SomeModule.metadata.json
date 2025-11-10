@@ -1,0 +1,19 @@
+{
+  "name": "SomeModule",
+  "tasks": [
+    {
+      "type": "UMLP2JavaTask",
+      "additionalConfigs": [
+        "some_module.BackendConfig.ftl"
+      ],
+      "additionalParameters": []
+    },
+    {
+      "type": "GUI2Java2TSTask",
+      "additionalConfigs": [
+        "some_module.FrontendConfig.ftl"
+      ],
+      "additionalParameters": []
+    }
+  ]
+}

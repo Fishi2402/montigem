@@ -5,15 +5,12 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import umlp.generator.gui.DomainGUITest;
 import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -130,7 +127,7 @@ public class GUI2ConfigGeneratorTest extends DomainGUITest {
         () -> assertEquals("overridden", update_cr.getUrlPrefix()),
         // from build folder to resources folder
         () -> assertEquals(
-            "../../../../../src/test/resources/gui/conf/overridden/Update",
+            "conf/overridden/Update",
             update_cr.getImportPathNoExt()
         )
     );
@@ -280,7 +277,7 @@ public class GUI2ConfigGeneratorTest extends DomainGUITest {
 
     String p1 = "./conf/ConfGemRouting";
     String p2 = "./other/deep/nested/NestedGemRouting";
-    String p3 = "../../../src/test/resources/gui/overridden/OverriddenGemRouting";
+    String p3 = "overridden/OverriddenGemRouting";
 
     assertTrue(path2RouteMap.containsKey(p1));
     assertTrue(path2RouteMap.containsKey(p2));

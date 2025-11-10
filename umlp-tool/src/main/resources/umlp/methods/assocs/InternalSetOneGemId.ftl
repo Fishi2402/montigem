@@ -3,13 +3,12 @@ ${tc.signature("name", "otherSideName", "targetName", "sourceName", "managerName
 
 ${cd4c.method("public void _internal_set${name?cap_first}(long gemID, NotificationScope scope)")}
 
-long oldValue = this._${name}.isPresent()?this._${name}.getGemId():0;
-
-if(${managerName}.isLoaded${targetName}(gemID)){
-  this._${name} = new Gem<${targetName}>(${managerName}.get${targetName}Sure(gemID));
-} else {
-  this._${name} = new Gem<${targetName}>();
+long oldValue = this._${name}.isPresent()?this._${name}.getGemId():-1;
+if(oldValue == gemID){
+  return;
 }
+
+this._${name} = ${managerName}.create${targetName}Gem(gemID);
 
 <#if otherSideName?has_content>
   if (scope.contains(NotificationScope.LOCAL)) {
@@ -18,6 +17,7 @@ if(${managerName}.isLoaded${targetName}(gemID)){
     }
     if(${managerName}.isLoaded${targetName}(oldValue)){
       <#if otherSideName?starts_with("set")>
+        // Clear old other side
         ${managerName}.get${targetName}Sure(oldValue).${otherSideName}Gem(new Gem<>(), NotificationScope.MINIMAL);
       <#else>
         <#assign removeOtherSide=otherSideName?replace("add", "remove")>

@@ -1,24 +1,24 @@
 /* (c) https://github.com/MontiCore/monticore */
 package domain;
 
-import mc.fenix.charts.gembarcharttypes.GemBarChartTypesDeSer;
-import mc.fenix.charts.gempiecharttypes.GemPieChartTypesDeSer;
+import de.se_rwth.commons.logging.Log;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import umlp.backendrte.common.BaseClassObjectMapper;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Optional;
+import java.util.Random;
 
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class,
-    HibernateJpaAutoConfiguration.class}, scanBasePackages = {"umlp.backendrte.service.websocket",
-    "umlp.backendrte.service.rest", "service"})
-public class DomainServerApplication extends domain.DomainServerApplicationTOP {
+@SpringBootApplication(
+    exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class},
+    scanBasePackages = {"umlp.backendrte.service.websocket", "umlp.backendrte.service.rest", "service"}
+)
+public class DomainServerApplication extends DomainServerApplicationTOP {
 
   public static void main(String[] args) {
     SpringApplication.run(DomainServerApplication.class, args);
@@ -28,9 +28,6 @@ public class DomainServerApplication extends domain.DomainServerApplicationTOP {
   @Override
   public void init() throws IOException {
     super.init();
-
-    BaseClassObjectMapper.addDeSers(new ArrayList<>(GemBarChartTypesDeSer.getInstance().getDeSerMap().entrySet()));
-    BaseClassObjectMapper.addDeSers(new ArrayList<>(GemPieChartTypesDeSer.getInstance().getDeSerMap().entrySet()));
     createDummyData();
   }
 
@@ -38,16 +35,17 @@ public class DomainServerApplication extends domain.DomainServerApplicationTOP {
 
     Conversation c0 = addConversation("id0");
 
-    Message m0 = addMessage("Hi! I am a simple Chatbot ... Just kidding, i'm jst a mockup message ;(", Role.ASSISTANT, Role.USER, LocalDateTime.now());
+
+    Message m0 = addMessage("Hi! I am a simple Chatbot ... Just kidding, it's jst a mockup message :P", Role.ASSISTANT, Role.USER, LocalDateTime.now());
     c0.addMessages(m0);
-    Message m1 = addMessage("This could be a user input", Role.USER, Role.ASSISTANT, LocalDateTime.now());
+    /*Message m1 = addMessage("This could be a user input", Role.USER, Role.ASSISTANT, LocalDateTime.now());
     c0.addMessages(m1);
     Message m2 = addMessage("This would be the Response from the chatbot...",Role.ASSISTANT, Role.USER, LocalDateTime.now());
     c0.addMessages(m2);
     Message m3 = addMessage("This could be a user input",Role.USER, Role.ASSISTANT, LocalDateTime.now());
     c0.addMessages(m3);
     Message m4 = addMessage("This would be the Response from the chatbot...",Role.ASSISTANT, Role.USER, LocalDateTime.now());
-    c0.addMessages(m4);
+    c0.addMessages(m4);*/
 
     Address a;
     a = addAddress("Berlin", "Gitschiner Str.", 9);
@@ -223,14 +221,17 @@ public class DomainServerApplication extends domain.DomainServerApplicationTOP {
   }
 
   protected Person addPerson(String name, LocalDate birthday, String aboutMe, boolean employed, Address address) {
-    return DomainManager.personBuilder()
+    Person p = DomainManager.personBuilder()
         .name(name)
         .birthday(birthday)
         .address(address)
         .aboutMe(aboutMe)
         .employed(employed)
+        .role(generateRandomRole())
         .build()
         .get();
+    Log.info("Person created with gemId: " + p.getGemId(), this.getClass().getName());
+    return p;
   }
 
   protected Stock createStock(LocalDateTime date, String name, int price) {
@@ -261,6 +262,12 @@ public class DomainServerApplication extends domain.DomainServerApplicationTOP {
         .conversationid(conversationId)
         .build()
         .get();
+  }
+
+  private Optional<Role> generateRandomRole() {
+    Random rand = new Random();
+    Role[] values = Role.values();
+    return Optional.of(values[rand.nextInt(values.length)]);
   }
 
 }
