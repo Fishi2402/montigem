@@ -47,10 +47,6 @@ dependencies {
   implementation "org.eclipse.jgit:org.eclipse.jgit:5.2.2.201904231744-r"
 }
 
-tasks.named("umlp2java", UMLP2JavaTask) {
-  usePlaywright.set(true)
-}
-
 tasks.named("generateTestInfrastructure", UMLP2TestInfrastructureTask) {
   usePlaywright.set(true)
 }

@@ -292,14 +292,13 @@ with following content:
 This file provides a hint for IDEs to look for the root TypeScript configuration
 file in the build folder.
 
-### 4.1 E2E-Tests
-In the backend, additional playwright e2e test infrastructure can be generated.
-Only works if spring is selected.
+### 4.1 Playwright E2E-Tests
+Additional playwright e2e test infrastructure can be generated.
+Only works if spring is selected in the backend.
 
 ```gradle
-umlp2java {
+generateTestInfrastructure {
   ...
-  useSpring.set(true)
   usePlaywright.set(true)
   ...
 }
@@ -315,19 +314,12 @@ dependencies {
   implementation project(":backend")
   testImplementation 'com.microsoft.playwright:playwright:1.44.0'
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version
+  compileOnlyApi group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version
 }
 
 test {
   dependsOn buildApp
   useJUnitPlatform()
-}
-```
-
-```groovy
-// backend/build.gradle
-
-dependencies {
-  compileOnlyApi group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version
 }
 ```
 
