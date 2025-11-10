@@ -20,7 +20,11 @@ import java.util.function.Function;
 public class Neo4jDatabaseStarter {
   protected static int port = -1;
 
-  Neo4j embeddedDatabaseServer = null;
+  protected Neo4j embeddedDatabaseServer = null;
+
+  public Neo4j getEmbeddedDatabaseServer() {
+    return this.embeddedDatabaseServer;
+  }
 
   public int start(Function<Integer, Path> portToDBBasePath) throws IOException {
     if(this.embeddedDatabaseServer == null) {
