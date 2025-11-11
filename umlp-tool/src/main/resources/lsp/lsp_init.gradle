@@ -62,7 +62,6 @@ allprojects {
                 resources.add(f.toString())
               }
 
-              subproj.resources = resources.toArray(new String[0])
               subproj.modelDirs = []
               rootProject.ext.subprojectCollection << subproj
 
@@ -80,12 +79,26 @@ allprojects {
                   }else{
                     println("Did not find config")
                   }
+
+                  // Extract gui model dir(s)
+                  println("Going through frontend tasks")
+                  frontend.tasks.each{
+                    if(it.class.name.contains("GUI2Java2TSTask")){
+                      println("Frotend Task " + it.path + " matches")
+                      it.getModelDir().getFiles().each {
+                        println("Adding frontend resource " + it)
+                        resources.add(it.toString())
+                      }
+                    }
+                  }
                 }else{
                   println("Did not find frontend")
                 }
               }else{
                 println("Project path '${project.path}' does not end with :backend")
               }
+
+              subproj.resources = resources.toArray(new String[0])
 
               def generator = new groovy.json.JsonGenerator.Options()
                   .excludeFieldsByName('contentHash', 'originalClassName')
