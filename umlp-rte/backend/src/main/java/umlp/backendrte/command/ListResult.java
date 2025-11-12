@@ -29,7 +29,7 @@ public class ListResult<U, T extends List<U>> extends CommandResult<U> {
     return successful;
   }
 
-    @Override
+  @Override
   public boolean isListResult() {
     return true;
   }
